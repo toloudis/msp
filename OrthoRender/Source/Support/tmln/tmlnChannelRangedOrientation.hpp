@@ -1,0 +1,1 @@
+#error tmlnChannelRangedOrientation.hpp is obsolete

@@ -1,0 +1,310 @@
+/****************************************************************************\
+**  envSTLHelpers.hpp
+**  
+**	envSTLHelpers is meant to contain definitions useful when using the
+**	STL in our library.
+**
+**	StudioGPU
+**	Copyright(C) 2003 - All Rights Reserved
+\****************************************************************************/
+
+#ifdef ENV_STLHELPERS_HPP
+#error envSTLHelpers.hpp multiple included
+#endif
+#define ENV_STLHELPERS_HPP
+
+#include <algorithm>	// for_each
+#include <functional>
+
+
+//============================================================================
+//	envSTLHelpers
+//============================================================================
+namespace envSTLHelpers
+{
+
+//----------------------------------------------------------------------------
+//	DeleteContainer is meant to be used on containers of pointers.  It will
+//	delete every object in the container and empty the container.
+//----------------------------------------------------------------------------
+template<class C>
+void DeleteContainer(C& io_Container)
+{
+	typename C::iterator it = io_Container.begin();
+	typename C::iterator end = io_Container.end();
+
+	while( it != end )
+	{
+		delete *it;
+		++it;
+	}
+
+	io_Container.clear();
+}
+
+//----------------------------------------------------------------------------
+//	copy_if is the "missing" STL function which copies only if the predicate
+//	returns true.
+//----------------------------------------------------------------------------
+template<class In, class Out, class Pred>
+Out copy_if(In first, In last, Out res, Pred p)
+{
+	while( first != last )
+	{
+		if( p(*first) )
+			*res++ = *first;
+		++first;
+	}
+
+	return res;
+}
+
+//----------------------------------------------------------------------------
+//	ForEachPair calls the given function object for each unique pair
+//	combination of objects in the given sequence.  (Objects are not paired
+//	with themselves).  This can be visualized as all of the combinations
+//	in the lower triangle of a matrix (not including the diagonal).
+//----------------------------------------------------------------------------
+template< class Iterator, class Function >
+inline void ForEachPair(Iterator i_Begin, Iterator i_End, Function i_Function)
+{
+	if( i_Begin == i_End ) return;	//	no objects
+
+	Iterator outer = i_Begin;
+	Iterator next_to_last = i_End;
+	--next_to_last;
+
+	for( ; outer != next_to_last ; ++outer )
+	{
+		Iterator inner = outer;
+		++inner;
+
+		for( ; inner != i_End ; ++inner )
+			i_Function(*outer, *inner);
+	}		
+}
+
+//----------------------------------------------------------------------------
+//	ForAll works the same way as if you called std::for_each passing
+//  in the begin and end iterators.
+//----------------------------------------------------------------------------
+template< class Container, class Function >
+inline void ForAll(Container& i_Container, Function i_Function)
+{
+	std::for_each( i_Container.begin(), i_Container.end(), i_Function );
+}
+
+//----------------------------------------------------------------------------
+//	ForAll works the same way as if you called std::for_each passing
+//  in the begin and end iterators.
+//----------------------------------------------------------------------------
+template< class Container, class Function >
+inline void RForAll(Container& i_Container, Function i_Function)
+{
+	std::for_each( i_Container.rbegin(), i_Container.rend(), i_Function );
+}
+
+//----------------------------------------------------------------------------
+//	ForAllForAll is used for nested containers.  It will call the function on
+//	each item in the nested vectors.
+//----------------------------------------------------------------------------
+template< class Container, class Function >
+inline void ForAllForAll(Container& i_Container, Function i_Function)
+{
+	typename Container::iterator it, end = i_Container.end();
+	for( it = i_Container.begin(); it != end; ++it )
+	{
+		ForAll( *it, i_Function );
+	}
+}
+
+//----------------------------------------------------------------------------
+//	RemoveOneValue 
+//----------------------------------------------------------------------------
+template<class C, class V>
+bool RemoveOneValue(C& io_Container, const V& i_Value)
+{
+	typename C::iterator it = io_Container.begin();
+	typename C::iterator end = io_Container.end();
+
+	while( it != end )
+	{
+		if (*it == i_Value)
+		{
+			io_Container.erase( it );
+			return true;
+		}
+		++it;
+	}
+	return false;
+}
+
+//----------------------------------------------------------------------------
+//	RemoveAllValues 
+//----------------------------------------------------------------------------
+template<class C, class V>
+void RemoveAllValues(C& io_Container, const V& i_Value)
+{
+	typename C::iterator it = io_Container.begin();
+
+	while( it != io_Container.end() )
+	{
+		if (*it == i_Value)
+			it = io_Container.erase( it );
+		else
+			++it;
+	}
+}
+
+//----------------------------------------------------------------------------
+//	DeleteOneValue 
+//----------------------------------------------------------------------------
+template<class C, class V>
+bool DeleteOneValue(C& io_Container, const V& i_Value)
+{
+	typename C::iterator it = io_Container.begin();
+	typename C::iterator end = io_Container.end();
+
+	while( it != end )
+	{
+		if (*it == i_Value)
+		{
+			delete (*it);
+			io_Container.erase( it );
+			return true;
+		}
+		++it;
+	}
+	return false;
+}
+
+//----------------------------------------------------------------------------
+//	Contains - returns true if value exists in container 
+//----------------------------------------------------------------------------
+template<class C, class V>
+bool Contains(C& io_Container, const V& i_Value)
+{
+	typename C::const_iterator it, end = io_Container.end();
+	for (it = io_Container.begin(); it != end; ++it )
+	{
+		if (*it == i_Value)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+//----------------------------------------------------------------------------
+//	MemFun - Same as std::mem_fun, but only works for member functions
+//  that return void. Takes no parameters
+//----------------------------------------------------------------------------
+template<class C>
+class mem_fun_t : public std::unary_function<C*, void>
+{
+	public :
+
+		explicit mem_fun_t( void ( C::*i_pMemberFunction )() )
+			: m_pMemberFunction( i_pMemberFunction ) {}
+
+		void operator()( C* i_pObject ) const
+		{
+			( i_pObject->*m_pMemberFunction )();
+		}
+
+	private :
+
+		void ( C::*m_pMemberFunction )();
+};
+
+template<class C> 
+inline mem_fun_t<C> MemFun( void ( C::*i_pMemberFunction )() )
+{
+	return mem_fun_t<C>( i_pMemberFunction );
+}	
+
+//----------------------------------------------------------------------------
+//	MemFun - Same as std::mem_fun, but only works for member functions
+//  that return void.  Takes 1 parameter
+//----------------------------------------------------------------------------
+template<class C, class V>
+class mem_fun1_t : public std::binary_function<C*, V, void> 
+{
+	public :
+
+		explicit mem_fun1_t( void ( C::*i_pMemberFunction )( V ) )
+			: m_pMemberFunction( i_pMemberFunction ) {}
+
+		void operator()( C* i_pObject, V i_Value ) const
+		{
+			( i_pObject->*m_pMemberFunction )( i_Value );
+		}
+
+	private :
+
+		void ( C::*m_pMemberFunction )( V );
+};
+
+template<class C, class V> 
+inline mem_fun1_t<C, V> MemFun( void ( C::*i_pMemberFunction )( V ) )
+{
+	return mem_fun1_t<C, V>( i_pMemberFunction );
+}	
+
+//----------------------------------------------------------------------------
+//	MemFunRef - Same as std::mem_fun_ref, but only works for member functions
+//  that return void.  Takes no parameters
+//----------------------------------------------------------------------------
+template<class C>
+class mem_fun_ref_t : public std::unary_function<C*, void>
+{
+	public :
+
+		explicit mem_fun_ref_t( void ( C::*i_pMemberFunction )() )
+			: m_pMemberFunction( i_pMemberFunction ) {}
+
+		void operator()( C& i_Object ) const
+		{
+			( i_Object.*m_pMemberFunction )();
+		}
+
+	private :
+
+		void ( C::*m_pMemberFunction )();
+};
+
+template<class C> 
+inline mem_fun_ref_t<C> MemFunRef( void ( C::*i_pMemberFunction )() )
+{
+	return mem_fun_ref_t<C>( i_pMemberFunction );
+}	
+
+//----------------------------------------------------------------------------
+//	MemFunRef - Same as std::mem_fun_ref, but only works for member functions
+//  that return void.  Takes 1 parameter
+//----------------------------------------------------------------------------
+template<class C, class V>
+class mem_fun_ref1_t : public std::binary_function<C*, V, void>
+{
+	public :
+
+		explicit mem_fun_ref1_t( void ( C::*i_pMemberFunction )( V ) )
+			: m_pMemberFunction( i_pMemberFunction ) {}
+
+		void operator()( C& i_Object, V i_Value ) const
+		{
+			( i_Object.*m_pMemberFunction )( i_Value );
+		}
+
+	private :
+
+		void ( C::*m_pMemberFunction )( V );
+};
+
+template<class C, class V> 
+inline mem_fun_ref1_t<C, V> MemFunRef( void ( C::*i_pMemberFunction )( V ) )
+{
+	return mem_fun_ref1_t<C, V>( i_pMemberFunction );
+}	
+
+}

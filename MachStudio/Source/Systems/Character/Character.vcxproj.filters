@@ -1,0 +1,242 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{0c16ee58-8156-48d5-bcf4-b6f6c2f9a7aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Undo">
+      <UniqueIdentifier>{48c0737a-cd8b-4b2a-9921-5f5e21e33efe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{96877868-3f50-4316-ac03-54948c5c3e53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{9ac83d76-ac8a-48b6-beec-ae3ec98e65a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Timeline">
+      <UniqueIdentifier>{11586726-a247-4273-8340-01b6ecbdd933}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Drivers">
+      <UniqueIdentifier>{1059fa44-feab-43a5-9b20-7c33b0e5a738}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Expressions">
+      <UniqueIdentifier>{fbfa427d-1e5f-49c9-95c4-8a7e61ff2167}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Gui\chtrAnimList.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\chtrCommands.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\chtrCommandSubdivLevel.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\chtrContextMenuInterest.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\chtrDialogDataUtil.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\chtrDialogInterest.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\chtrDialogUtil.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\chtrGeomList.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Undo\chtrActualOperations.cpp">
+      <Filter>Undo</Filter>
+    </ClCompile>
+    <ClCompile Include="Undo\chtrOperations.cpp">
+      <Filter>Undo</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\chtrData.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\chtrDataParser.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\chtrDocumentChunk.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\chtrDocumentInterest.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\chtrExpressionData.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\chtrScriptData.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\chtrExportInterest.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\chtrFBXExportInterest.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\chtrMRayExportInterest.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\chtrObject.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\chtrObjectMgr.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\chtrRendermanExportInterest.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\chtrReportMemInterest.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\chtrScriptObject.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\chtrSelectInterest.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Timeline\chtrAdapterGetPosition.cpp">
+      <Filter>Timeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\chtrDriverAnimationFull.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\chtrDriverCreator.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Expressions\chtrExpressionDataParser.cpp">
+      <Filter>Expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="Expressions\chtrExpressionDriverCreator.cpp">
+      <Filter>Expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="Expressions\chtrExpressionObject.cpp">
+      <Filter>Expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="Expressions\chtrExpressionOperations.cpp">
+      <Filter>Expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="Expressions\chtrExpressionPropertyObject.cpp">
+      <Filter>Expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="Expressions\chtrExpressionsDialogUtil.cpp">
+      <Filter>Expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="chtrSystem.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Gui\chtrAnimList.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\chtrCommands.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\chtrCommandSubdivLevel.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\chtrContextMenuInterest.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\chtrDialogDataUtil.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\chtrDialogInterest.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\chtrDialogUtil.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\chtrGeomList.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\chtrPartConstants.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Undo\chtrActualOperations.hpp">
+      <Filter>Undo</Filter>
+    </ClInclude>
+    <ClInclude Include="Undo\chtrOperations.hpp">
+      <Filter>Undo</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\chtrData.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\chtrDataParser.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\chtrDocumentChunk.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\chtrDocumentInterest.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\chtrExpressionData.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\chtrScriptData.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\chtrExportInterest.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\chtrFBXExportInterest.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\chtrMRayExportInterest.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\chtrObject.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\chtrObjectMgr.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\chtrRendermanExportInterest.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\chtrReportMemInterest.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\chtrScriptObject.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\chtrSelectInterest.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Timeline\chtrAdapterGetPosition.hpp">
+      <Filter>Timeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\chtrDriverAnimationFull.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\chtrDriverCreator.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Expressions\chtrExpressionDataParser.hpp">
+      <Filter>Expressions</Filter>
+    </ClInclude>
+    <ClInclude Include="Expressions\chtrExpressionDef.hpp">
+      <Filter>Expressions</Filter>
+    </ClInclude>
+    <ClInclude Include="Expressions\chtrExpressionDriverCreator.hpp">
+      <Filter>Expressions</Filter>
+    </ClInclude>
+    <ClInclude Include="Expressions\chtrExpressionObject.hpp">
+      <Filter>Expressions</Filter>
+    </ClInclude>
+    <ClInclude Include="Expressions\chtrExpressionOperations.hpp">
+      <Filter>Expressions</Filter>
+    </ClInclude>
+    <ClInclude Include="Expressions\chtrExpressionPropertyObject.hpp">
+      <Filter>Expressions</Filter>
+    </ClInclude>
+    <ClInclude Include="Expressions\chtrExpressionsDialogUtil.hpp">
+      <Filter>Expressions</Filter>
+    </ClInclude>
+    <ClInclude Include="chtrSystem.hpp" />
+  </ItemGroup>
+</Project>

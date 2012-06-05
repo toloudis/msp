@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "compile_sgpu", "compile_sgpu\compile_sgpu.vcproj", "{A28D7F3A-98DF-4C87-9244-2AEA598C0926}"
+	ProjectSection(ProjectDependencies) = postProject
+		{27F11563-3E71-484A-869C-3561FB7F952B} = {27F11563-3E71-484A-869C-3561FB7F952B}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gen_sgpu", "gen_sgpu\gen_sgpu.vcproj", "{27F11563-3E71-484A-869C-3561FB7F952B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Support Files", "Support Files", "{50637956-73E4-4CA1-A5DE-739F29533A2E}"
+	ProjectSection(SolutionItems) = preProject
+		compile_sgpu\ast_dump.txt = compile_sgpu\ast_dump.txt
+		compile_sgpu\hlsl_sample.fx = compile_sgpu\hlsl_sample.fx
+		..\MetaSLNodeGraph\Data\shaders\illumination_sgpu.msl = ..\MetaSLNodeGraph\Data\shaders\illumination_sgpu.msl
+		compile_sgpu\sgpu_sample.fx = compile_sgpu\sgpu_sample.fx
+		..\MetaSLNodeGraph\Data\shaders\shader_lib.xmsl = ..\MetaSLNodeGraph\Data\shaders\shader_lib.xmsl
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{16EEE719-C1B7-48FA-8244-A68644D92655}"
+	ProjectSection(SolutionItems) = preProject
+		ReadMe.txt = ReadMe.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A28D7F3A-98DF-4C87-9244-2AEA598C0926}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A28D7F3A-98DF-4C87-9244-2AEA598C0926}.Debug|Win32.Build.0 = Debug|Win32
+		{A28D7F3A-98DF-4C87-9244-2AEA598C0926}.Debug|x64.ActiveCfg = Debug|x64
+		{A28D7F3A-98DF-4C87-9244-2AEA598C0926}.Debug|x64.Build.0 = Debug|x64
+		{A28D7F3A-98DF-4C87-9244-2AEA598C0926}.Release|Win32.ActiveCfg = Release|Win32
+		{A28D7F3A-98DF-4C87-9244-2AEA598C0926}.Release|Win32.Build.0 = Release|Win32
+		{A28D7F3A-98DF-4C87-9244-2AEA598C0926}.Release|x64.ActiveCfg = Release|x64
+		{A28D7F3A-98DF-4C87-9244-2AEA598C0926}.Release|x64.Build.0 = Release|x64
+		{27F11563-3E71-484A-869C-3561FB7F952B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{27F11563-3E71-484A-869C-3561FB7F952B}.Debug|Win32.Build.0 = Debug|Win32
+		{27F11563-3E71-484A-869C-3561FB7F952B}.Debug|x64.ActiveCfg = Debug|x64
+		{27F11563-3E71-484A-869C-3561FB7F952B}.Debug|x64.Build.0 = Debug|x64
+		{27F11563-3E71-484A-869C-3561FB7F952B}.Release|Win32.ActiveCfg = Release|Win32
+		{27F11563-3E71-484A-869C-3561FB7F952B}.Release|Win32.Build.0 = Release|Win32
+		{27F11563-3E71-484A-869C-3561FB7F952B}.Release|x64.ActiveCfg = Release|x64
+		{27F11563-3E71-484A-869C-3561FB7F952B}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

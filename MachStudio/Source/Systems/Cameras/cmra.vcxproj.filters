@@ -1,0 +1,512 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Data">
+      <UniqueIdentifier>{f283e41b-9dd8-4965-8069-435fe0d08e6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{d10c7c67-ce5e-47ca-a73c-09a58e089a49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Undo">
+      <UniqueIdentifier>{54937add-20a9-4e79-b45d-17dce32f8af1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{6ac7d0fe-1bef-435d-ad73-04d94b3972b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Timeline">
+      <UniqueIdentifier>{8fe94987-15cd-4256-a92f-a5a67f62429f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Drivers">
+      <UniqueIdentifier>{f5cf6274-83da-4afc-bc34-33e734356b6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Drivers\Unused">
+      <UniqueIdentifier>{14fcbfd9-4b30-4aca-affe-6e609f2339cd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Data\cmraData.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\cmraDataMgr.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\cmraDataParser.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\cmraDocumentChunk.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\cmraDocumentInterest.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\cmraFollowUtil.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\cmraLensTable.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\cmraScriptData.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\cmraAnimList.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\cmraCommands.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\cmraDialogDataUtil.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\cmraDialogInterest.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\cmraDialogUtil.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Undo\cmraActualOperations.cpp">
+      <Filter>Undo</Filter>
+    </ClCompile>
+    <ClCompile Include="Undo\cmraOperations.cpp">
+      <Filter>Undo</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\cmraCameraObject.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\cmraExportInterest.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\cmraFBXExportInterest.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\cmraIconObject.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\cmraObjectMgr.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\cmraRendermanExportInterest.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\cmraScriptObject.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\cmraSelectInterest.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\cmraThinkInterest.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Timeline\cmraAdapterReference.cpp">
+      <Filter>Timeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Timeline\cmraChannelCapture.cpp">
+      <Filter>Timeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverCapture.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverCaptureInfo.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverCaptureParser.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverCircle.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverCircleInfo.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverCircleParser.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverCreator.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverDirector.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverDirectorParser.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverFocusAttach.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverFocusAttachInfo.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverFocusAttachParser.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverFocusDistanceAttach.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverFocusDistanceAttachInfo.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverFocusDistanceAttachParser.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverFollow.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverFollowInfo.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverFollowParser.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverKeyPositionAndTarget.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverKeyPositionAndTargetInfo.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverKeyPositionAndTargetParser.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverMayaScript.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverMayaScriptInfo.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverMayaScriptParser.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverRenderPass.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverRenderPassInfo.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverRenderPassParser.cpp">
+      <Filter>Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverDataPositionInfo.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverDataPositionParser.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverDataSubjectInfo.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverDataSubjectParser.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverDataViewTypeInfo.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverDataViewTypeParser.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverFramedArc.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverFramedArcInfo.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverFramedArcParser.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverFramedBase.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverFramedBaseInfo.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverFramedBaseParser.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverFramedCloseUp.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverFramedCloseUpParser.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverFramedMedLong.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverFramedMedLongParser.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverFramedOverhead.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverFramedOverheadParser.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverKeyPosition.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverKeyPositionInfo.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverKeyPositionParser.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverKeyTarget.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverKeyTargetInfo.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverKeyTargetParser.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverTarget.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverTargetInfo.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="Drivers\cmraDriverTargetParser.cpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClCompile>
+    <ClCompile Include="cmraSystem.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Data\cmraData.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\cmraDataMgr.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\cmraDataParser.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\cmraDocumentChunk.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\cmraDocumentInterest.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\cmraFollowUtil.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\cmraLensTable.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\cmraScriptData.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\cmraAnimList.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\cmraCommands.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\cmraDialogDataUtil.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\cmraDialogInterest.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\cmraDialogUtil.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Undo\cmraActualOperations.hpp">
+      <Filter>Undo</Filter>
+    </ClInclude>
+    <ClInclude Include="Undo\cmraOperations.hpp">
+      <Filter>Undo</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\cmraCameraObject.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\cmraExportInterest.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\cmraFBXExportInterest.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\cmraIconObject.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\cmraObjectMgr.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\cmraRendermanExportInterest.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\cmraScriptObject.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\cmraSelectInterest.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\cmraThinkInterest.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Timeline\cmraAdapterReference.hpp">
+      <Filter>Timeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Timeline\cmraChannelCapture.hpp">
+      <Filter>Timeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverCapture.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverCaptureInfo.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverCaptureParser.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverCircle.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverCircleInfo.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverCircleParser.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverCreator.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverDirector.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverDirectorParser.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverFocusAttach.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverFocusAttachInfo.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverFocusAttachParser.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverFocusDistanceAttach.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverFocusDistanceAttachInfo.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverFocusDistanceAttachParser.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverFollow.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverFollowInfo.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverFollowParser.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverKeyPositionAndTarget.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverKeyPositionAndTargetInfo.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverKeyPositionAndTargetParser.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverMayaScript.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverMayaScriptInfo.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverMayaScriptParser.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverRenderPass.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverRenderPassInfo.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverRenderPassParser.hpp">
+      <Filter>Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverDataPositionInfo.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverDataPositionParser.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverDataSubjectInfo.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverDataSubjectParser.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverDataViewTypeInfo.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverDataViewTypeParser.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverFramedArc.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverFramedArcInfo.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverFramedArcParser.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverFramedBase.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverFramedBaseInfo.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverFramedBaseParser.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverFramedCloseUp.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverFramedCloseUpParser.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverFramedMedLong.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverFramedMedLongParser.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverFramedOverhead.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverFramedOverheadParser.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverKeyPosition.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverKeyPositionInfo.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverKeyPositionParser.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverKeyTarget.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverKeyTargetInfo.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverKeyTargetParser.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverTarget.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverTargetInfo.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="Drivers\cmraDriverTargetParser.hpp">
+      <Filter>Drivers\Unused</Filter>
+    </ClInclude>
+    <ClInclude Include="cmraSystem.hpp" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,43 @@
+/*****************************************************************************
+ * Copyright 1986-2008 by mental images GmbH, Fasanenstr. 81, D-10623 Berlin,
+ * Germany. All rights reserved.
+ *****************************************************************************/
+
+shader Generator_dots
+{
+  input:
+		Color   dot = Color(1,1,1,1)
+		{			
+			display_name("Dot Color");
+			soft_range(Color(0,0,0,0),Color(1,1,1,1));
+			description( "The color of the dots." );
+		};
+		Color   background = Color(0,0,0,1)
+		{		
+			display_name("Background Color");
+			soft_range(Color(0,0,0,0),Color(1,1,1,1));
+			description( "The color of the background." );
+		};
+		float  dotSize  = 0.2
+		{		
+			display_name("Dot Size");
+			soft_range(float(0),float(1));
+			description( "The size of the dots within the valid range." );
+		};
+    
+  output:
+    Color result;
+    
+    void main()
+    {
+		float  dotRadius = 0.3;
+		float2 m = fmod(abs(texture_coordinate[0].xy), dotSize)/dotSize;
+		float  d = length(distance(m,float2(0.5,0.5)));
+		result    = lerp(background, dot, (d < dotRadius) ? 1.0 : 0.0);
+    }
+}
+{
+	description( "Generates a polka dot pattern based on location of the "
+	             "input in the range [0-1] x [0-1]." );
+}
+;

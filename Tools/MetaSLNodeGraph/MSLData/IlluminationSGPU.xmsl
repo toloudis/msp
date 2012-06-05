@@ -1,0 +1,21 @@
+<root>
+  <version major="1" minor="0"/>
+  <metasl_code file_name="illumination_sgpu.msl"/>
+  <metasl_code file_name="texture_lookup.msl"/>
+  <node name="Texture_lookup_2d_1" class="Texture_lookup_2d">
+    <input name="texture" value="default.dds"/>
+    <input name="texture_space" value="0"/>
+    <input name="texture_uv"/>
+    <output name="result"/>
+  </node>
+
+  <node name="Illumination_sgpu_1" class="Illumination_sgpu">
+    <input name="diffuse_color" value="1 1 1 1">
+      <attachment target_name="result" target_node="Texture_lookup_2d_1"/>
+    </input>
+    <input name="diffuse_scalar" value="0.7"/>
+    <output name="result"/>
+    <output name="diffuse"/>
+  </node>
+
+</root>

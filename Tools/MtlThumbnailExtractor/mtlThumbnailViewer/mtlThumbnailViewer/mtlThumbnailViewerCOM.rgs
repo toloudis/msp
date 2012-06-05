@@ -1,0 +1,34 @@
+HKCR
+{
+	mtlThumbnailViewerCOM.1 = s 'mtlThumbnailViewer Class'
+	{
+		CLSID = s '{2BB80AFB-3520-465C-9DED-85E518CDB2D6}'
+	}
+	mtlThumbnailViewerCOM = s 'mtlThumbnailViewer Class'
+	{
+		CLSID = s '{2BB80AFB-3520-465C-9DED-85E518CDB2D6}'
+		CurVer = s 'mtlThumbnailViewerCOM.1'
+	}
+	NoRemove .mtl
+	{
+		shellex
+		{
+			{BB2E617C-0920-11d1-9A0B-00C04FC2D6C1} = s '{2BB80AFB-3520-465C-9DED-85E518CDB2D6}'
+		}
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {2BB80AFB-3520-465C-9DED-85E518CDB2D6} = s 'mtlThumbnailViewer Class'
+		{
+			ProgID = s 'mtlThumbnailViewerCOM.1'
+			VersionIndependentProgID = s 'mtlThumbnailViewerCOM'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			val AppID = s '%APPID%'
+			'TypeLib' = s '{700D73A8-2F74-496B-B2DA-55BFDE96E2BE}'
+		}
+	}
+}

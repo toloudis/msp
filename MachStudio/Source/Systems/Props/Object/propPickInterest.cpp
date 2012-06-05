@@ -1,0 +1,1 @@
+#error propPickInterest.cpp is obsolete

@@ -1,0 +1,274 @@
+/*****************************************************************************
+**	cmraDriverMayaScript.hpp
+**
+**		Derived driver class for the camera key
+**
+**	Extra Large Technology
+**	Copyright(C) 2005 - All Rights Reserved
+\****************************************************************************/
+
+#ifdef CMRA_DRIVERMAYASCRIPT_HPP
+#error cmraDriverMayaScript.hpp multiply included
+#endif
+#define CMRA_DRIVERMAYASCRIPT_HPP
+
+#ifndef TMLN_DRIVER_HPP
+#include "Support/tmln/tmlnDriver.hpp"
+#endif
+#ifndef IT_STRING_HPP
+#include "Core/it/itString.hpp"
+#endif
+#ifndef MA_POINT3D_HPP
+#include "Core/ma/maPoint3d.hpp"
+#endif
+#ifndef PRTY_BOOLEAN_HPP
+#include "Core/prty/prtyBoolean.hpp"
+#endif
+#ifndef PRTY_FLOAT_HPP
+#include "Core/prty/prtyFloat.hpp"
+#endif
+#ifndef PRTY_FILENAME_HPP
+#include "Core/prty/prtyFileName.hpp"
+#endif
+#ifndef PRTY_POINT3D_HPP
+#include "Core/prty/prtyPoint3d.hpp"
+#endif
+#ifndef PRTY_TEXT_HPP
+#include "Core/prty/prtyText.hpp"
+#endif 
+
+
+
+//============================================================================
+//============================================================================
+class tmlnChannelFloat;
+class tmlnChannelPosition;
+class cmraDriverMayaScriptInfo;
+class cam3dAnimKeys;
+class prtyComboBoxUIInfo;
+class prtyRangedFloatUIInfo;
+
+//============================================================================
+//============================================================================
+class cmraDriverMayaScript : public tmlnDriver
+{
+public:
+	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------
+	cmraDriverMayaScript( tmlnChannelPosition& i_ChannelPosition, 
+						  tmlnChannelPosition& i_ChannelTarget, 
+						  tmlnChannelFloat& i_ChannelFov, 
+						  tmlnChannelFloat& i_ChannelTilt );
+
+	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------
+	~cmraDriverMayaScript();
+
+	//--------------------------------------------------------------------
+	// Return string for description of driver (include its current state)
+	// to display in the gui when the mouse hovers over the clip.
+	//--------------------------------------------------------------------
+	std::string GetHoverDescription();
+
+	//--------------------------------------------------------------------
+	//  GetDriverInfo - return data structure representing state of
+	//		this driver suitable for writing to a file.
+	//	The returned value should be created with "new" and will
+	//		be deleted by the caller.
+	//--------------------------------------------------------------------
+	virtual tmlnDriverInfo*  GetDriverInfo() const;
+
+	//--------------------------------------------------------------------
+	// Set internal variables from data structure
+	//--------------------------------------------------------------------
+	void SetDriverInfo(	const cmraDriverMayaScriptInfo& i_Info, 
+						prtyProperty::UndoFlags i_Undoable = prtyProperty::eNoUndo);
+
+	//--------------------------------------------------------------------
+	//  Update position of things that are being driven
+	//--------------------------------------------------------------------
+	virtual void  Operate(float i_Time);
+
+	//--------------------------------------------------------------------
+	//	return the fill color to be used for this driver type
+	//--------------------------------------------------------------------
+	virtual maFloatRGBA GetClipFillColor() const;
+
+	//--------------------------------------------------------------------
+	// Returns how long the animation keyframe data is in terms
+	// of frames. (This does not do any computation with the
+	// current frame rate).
+	//--------------------------------------------------------------------
+	float GetAnimationNumFrames() const;
+
+	//--------------------------------------------------------------------
+	// Returns how long the animation is in seconds given the 
+	// frame rate and other data about this animation.
+	//--------------------------------------------------------------------
+	float GetAnimationLength() const;
+
+	//--------------------------------------------------------------------
+	//  get a list of resources.  the resources will be appended to the
+	//	passed in list.
+	//--------------------------------------------------------------------
+	void GetResourceList( fsResourceTrackerData& io_List );
+
+	//====================================================================
+	// Get/Set data
+	//====================================================================
+
+	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------
+	inline const itString&	GetAnimFilename() const;
+
+	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------
+	inline float GetFrameRate() const;
+	void SetFrameRate( float i_Val );
+
+	//--------------------------------------------------------------------
+	// -1.0 is default, meaning use the beginning of the clip
+	//--------------------------------------------------------------------
+	inline float GetStartFrame() const;
+	void SetStartFrame( float i_Val );
+
+	//--------------------------------------------------------------------
+	// -1.0 is default, meaning use the end of the clip
+	//--------------------------------------------------------------------
+	inline float GetEndFrame() const;
+	void SetEndFrame( float i_Val );
+
+	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------
+	inline bool GetLooping() const;
+	void SetLooping( bool i_bSetFlag );
+
+	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------
+	inline bool IsDriverToAnimLength() const;
+	void SetDriverToAnimLengthFlag( bool i_bSetFlag );
+
+	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------
+	inline const maPoint3d& GetOffset() const;
+	void SetOffset(const maPoint3d& i_Offset );
+
+	//--------------------------------------------------------------------
+	//	PerformSplit - Split up the details of this driver between itself
+	//	and the driver passed in.
+	//--------------------------------------------------------------------
+	virtual void PerformSplit( tmlnDriver* io_pDriverAtEnd, float i_fTime );
+
+private:
+	//--------------------------------------------------------------------
+	//	Perform the operate on a single channel
+	//--------------------------------------------------------------------
+	void OperateChannel( float i_Time, tmlnChannelPosition& i_Channel, maPoint3d& i_Goal );
+	void OperateChannel( float i_Time, tmlnChannelFloat& i_Channel, float i_Goal );
+
+	//--------------------------------------------------------------------
+	// Resize duration of driver to match length of animation if requested
+	//--------------------------------------------------------------------
+	void update_driver_length_from_anim_length();
+
+	//--------------------------------------------------------------------
+	// Check value of animation start properties and move 
+	//	begin time if needed.
+	//--------------------------------------------------------------------
+	void snap_anim_start();
+
+	//--------------------------------------------------------------------
+	// Compute frame of animation to use based on frame rate, 
+	//	start/end frame, etc.
+	//--------------------------------------------------------------------
+	float compute_frame(float i_Time);
+
+	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------
+	void AnimFileNameChanged(prtyProperty *i_pProperty, bool i_bDirty);
+	void AnimationPropertiesChanged(prtyProperty *i_pProperty, bool i_bDirty);
+	void DriverToAnimLengthChanged(prtyProperty *i_pProperty, bool i_bDirty);
+	void UseAnimStartChanged(prtyProperty *i_pProperty, bool i_bDirty);
+	void LengthChanged(prtyProperty *i_pProperty, bool i_bDirty);
+	void PropertyChanged(prtyProperty *i_pProperty, bool i_bDirty);
+
+private:
+	tmlnChannelPosition&	m_ChannelPosition;
+	tmlnChannelPosition&	m_ChannelTarget;
+	tmlnChannelFloat&		m_ChannelFov;
+	tmlnChannelFloat&		m_ChannelTilt;
+
+	cam3dAnimKeys*	m_pAnimKeys;
+	int m_NumFrames;			// computed, not written to file
+	bool m_bDisableResize;		// while doing a "SetData()", disable m_bDriverToAnimLength resizing
+
+	// Need to keep track of these UI Infos because we need to
+	// adjust them after the contructor
+	prtyComboBoxUIInfo *m_pAnimFilenameUIInfo;
+	prtyRangedFloatUIInfo *m_pStartFrameUIInfo;
+	prtyRangedFloatUIInfo *m_pEndFrameUIInfo;
+
+	prtyFileName	m_AnimFilename;
+	prtyFloat		m_FrameRate;
+	prtyFloat		m_StartFrame;			// -1.0 is default / not set
+	prtyFloat		m_EndFrame;			// -1.0 is default / not set
+	prtyBoolean		m_bLooping;
+	prtyBoolean		m_bDriverToAnimLength;
+	prtyBoolean		m_bUseAnimStart;
+	prtyPoint3d		m_Offset;			// offset all positions by this amount
+	prtyFloat		m_CutThreshold;
+
+	// This property is not saved to file, just used for display
+	prtyFloat		m_AnimStartTime;
+};
+
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+inline const itString&	cmraDriverMayaScript::GetAnimFilename() const
+{
+	return m_AnimFilename.GetValue();
+}
+
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+inline float cmraDriverMayaScript::GetFrameRate() const
+{
+	return m_FrameRate.GetValue();
+}
+//--------------------------------------------------------------------
+// -1.0 is default, meaning use the beginning of the clip
+//--------------------------------------------------------------------
+inline float cmraDriverMayaScript::GetStartFrame() const
+{
+	return m_StartFrame.GetValue();
+}
+
+//--------------------------------------------------------------------
+// -1.0 is default, meaning use the end of the clip
+//--------------------------------------------------------------------
+inline float cmraDriverMayaScript::GetEndFrame() const
+{
+	return m_EndFrame.GetValue();
+}
+
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+inline bool cmraDriverMayaScript::GetLooping() const
+{
+	return m_bLooping.GetValue();
+}
+
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+inline bool cmraDriverMayaScript::IsDriverToAnimLength() const
+{
+	return m_bDriverToAnimLength.GetValue();
+}
+
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+const maPoint3d& cmraDriverMayaScript::GetOffset() const
+{
+	return m_Offset.GetValue();
+}
+

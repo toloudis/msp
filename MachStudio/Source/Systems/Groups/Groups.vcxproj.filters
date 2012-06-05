@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Undo">
+      <UniqueIdentifier>{8387b064-913c-4467-8b1d-ca1de721e09c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{e56e2fe3-f62c-40e0-9d2a-898945996b83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{c4cb9eab-cd5f-470b-bf1d-4fcfb88e0198}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI\wxGUI">
+      <UniqueIdentifier>{ba640f14-974e-448e-aba2-815025326da0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{c227414a-9c1f-4a6b-b23b-bc2ba39bee3e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Undo\grupActualOperations.cpp">
+      <Filter>Undo</Filter>
+    </ClCompile>
+    <ClCompile Include="Undo\grupObjectOperation.cpp">
+      <Filter>Undo</Filter>
+    </ClCompile>
+    <ClCompile Include="Undo\grupOperations.cpp">
+      <Filter>Undo</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\grupData.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\grupDocumentChunk.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\grupDocumentInterest.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\grupGroupsDataParser.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\grupCommands.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\grupDialogDataUtil.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\grupDialogInterest.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\grupDialogUtil.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\wxGUI\grupGroupObjectsPage.cpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\wxGUI\grupGroupObjectsPageBase.cpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\grupGroupObject.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\grupObjectMgr.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\grupSelectInterest.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="grupSystem.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Undo\grupActualOperations.hpp">
+      <Filter>Undo</Filter>
+    </ClInclude>
+    <ClInclude Include="Undo\grupObjectOperation.hpp">
+      <Filter>Undo</Filter>
+    </ClInclude>
+    <ClInclude Include="Undo\grupOperations.hpp">
+      <Filter>Undo</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\grupData.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\grupDocumentChunk.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\grupDocumentInterest.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\grupGroupsDataParser.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\grupCommands.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\grupDialogDataUtil.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\grupDialogInterest.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\grupDialogUtil.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\wxGUI\grupGroupObjectsPage.hpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\wxGUI\grupGroupObjectsPageBase.h">
+      <Filter>GUI\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\grupGroupObject.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\grupObjectMgr.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\grupSelectInterest.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="grupSystem.hpp" />
+  </ItemGroup>
+</Project>

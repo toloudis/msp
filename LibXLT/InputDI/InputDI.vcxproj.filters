@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="In">
+      <UniqueIdentifier>{38f9ad2c-8045-4c7c-af89-f5c439554b35}</UniqueIdentifier>
+      <Extensions>*.hpp</Extensions>
+    </Filter>
+    <Filter Include="In\Inprivate">
+      <UniqueIdentifier>{0177c2f6-cd52-412d-ac3d-96c07fb0ae49}</UniqueIdentifier>
+      <Extensions>*.hpp,*.cpp</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="In\private\inDeviceMgrPACWin.cpp">
+      <Filter>In\Inprivate</Filter>
+    </ClCompile>
+    <ClCompile Include="In\private\inDirectInputWin.cpp">
+      <Filter>In\Inprivate</Filter>
+    </ClCompile>
+    <ClCompile Include="In\private\inGamepadPACWin.cpp">
+      <Filter>In\Inprivate</Filter>
+    </ClCompile>
+    <ClCompile Include="In\private\inKeyboardPACWin.cpp">
+      <Filter>In\Inprivate</Filter>
+    </ClCompile>
+    <ClCompile Include="In\private\inMousePACWin.cpp">
+      <Filter>In\Inprivate</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="In\private\inDeviceMgrPACWin.hpp">
+      <Filter>In\Inprivate</Filter>
+    </ClInclude>
+    <ClInclude Include="In\private\inDirectInputWin.hpp">
+      <Filter>In\Inprivate</Filter>
+    </ClInclude>
+    <ClInclude Include="In\private\inDITypes.hpp">
+      <Filter>In\Inprivate</Filter>
+    </ClInclude>
+    <ClInclude Include="In\private\inGamepadPACWin.hpp">
+      <Filter>In\Inprivate</Filter>
+    </ClInclude>
+    <ClInclude Include="In\private\inKeyboardPACWin.hpp">
+      <Filter>In\Inprivate</Filter>
+    </ClInclude>
+    <ClInclude Include="In\private\inMousePACWin.hpp">
+      <Filter>In\Inprivate</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

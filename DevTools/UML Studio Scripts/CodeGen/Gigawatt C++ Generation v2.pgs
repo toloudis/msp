@@ -1,0 +1,958 @@
+;; ==================================================================
+;; Copyright (C) 1997-2000 PragSoft Corporation. All rights reserved.
+;; ==================================================================
+;; You can modify this script to suit your own purposes.
+
+;; Exposed Options:
+
+;$ Preserve Changes
+;? Preserves hand-coded sections enclosed in PRESERVE comment blocks.
+
+;$ Add To Project Tree
+;? Adds an icon for the generated file to the project tree, under the "Generated" folder.
+
+;$ Copyright Notice = Copyright (c) 2002, <Company Name>
+;? Puts a copyright comment at the top of generated files (separate lines with ^r^n).
+
+;$ Include In Headers = 
+;? Enter one or more files, separated by spaces (eg, Myfile.h <windows.h>)
+
+;$ Include In Bodies = 
+;? Enter one or more files, separated by spaces (eg, Myfile.h <windows.h>)
+
+;$ Allow Debugging
+;? Writes the name of each successfully loaded script function to the log window.
+
+;; Internal Options:
+
+(setq $ClearProjectTree t)
+
+;; Globals:
+
+(setq lnBreak		"^r^n"
+	  separator		"// ------------------------------------------------------------^r^n"
+	  preserveBegin	"PRESERVE:BEGIN"
+	  preserveEnd	"PRESERVE:END")
+
+;; ---------------------------------------------------------------------
+
+(fun PragMain (scope docName genPath genName genBanner genFlags)
+	(prog []
+		(PgUnmarkAll 'master)
+
+		(and (PgTry
+				(cond [(eq scope 'selObjects) 
+					   (GenerateModelCPP (PgFind 'model 'currModel) genPath t)]
+					  [(eq scope 'currModel) 
+					   (GenerateModelCPP (PgFind 'model 'currModel) genPath nil)]
+					  [(eq scope 'allModels)
+					   (all (model (PgList 'model 'all))
+							(GenerateModelCPP model genPath nil)
+							t)])
+				(PgWriteLog "C++ code generation completed." lnBreak))
+			 (PgWriteLog "C++ code generation aborted." lnBreak)
+		)
+	)
+)
+
+;; ---------------------------------------------------------------------
+;; When selOnly is non-nil, only the selected places are considered.
+
+(fun GenerateModelCPP (model path selOnly)
+	(let [(props (PgProps model)) (package (PackageList model nil))]
+		 (and (memq 'genCode (sublist props 'flags))
+			  (all (place (PgList 'place model selOnly))
+				   (GeneratePlaceCPP place path package)
+				   t))
+	)
+)
+
+;; ---------------------------------------------------------------------
+;; Return the package list for a model.
+
+(fun PackageList (model package)
+	(let [(parentMaster (car (sublist (PgProps model) 'parentMaster)))
+		  (parentModel (car (sublist (PgProps model) 'parentModel)))]
+		 (cond [(and parentMaster
+					 (eq (car (sublist (PgProps parentMaster) 'tool)) 'place3))	;; is the master a package?
+				(PackageList parentModel (cons (car (sublist (PgProps parentMaster) 'name)) package))]
+			   [t package])))
+
+;; ---------------------------------------------------------------------
+(fun GeneratePlaceCPP (place path package)
+	(let [(props (PgProps place)) master mems kind]
+		 (setq master (car (sublist props 'master)))
+		 (cond 
+			[(and master
+				  (not (PgMarked master))
+				  (memq 'genCode (sublist (PgProps master) 'flags)))
+
+			 ;; Mark the place, so that we generate code for it only once:
+			 (PgMark master)
+
+			 (cond [(setq mems (sublist props 'members))
+
+					;; It's a place group; generate code for its members:
+					(all (mem mems)
+						 (setq memProps (PgProps mem)
+							   kind (substr (car (sublist memProps 'tool)) 0 5))
+						 (and (== kind 'place)
+							  (GeneratePlaceCPP mem path package))
+						 t)]
+				   [t
+					;; It's not a group; generate code for the place master:
+					(setq fileNames (GenerateMasterCPP master path package))
+					(and $ClearProjectTree
+						 (PgClearTree 'codeModel))
+					(cond [$AddToProjectTree
+						   ;; Add the generated files to the project tree:
+						   (PgAddTree 'codeModel (car fileNames) nil)
+						   (PgAddTree 'codeModel (cadr fileNames) $ClearProjectTree)])
+
+					(setq $ClearProjectTree nil)])]
+		 )
+	)
+)
+
+;; ---------------------------------------------------------------------
+(fun GenerateMasterCPP (master path package)
+	(prog [(props (PgProps master))
+		   file parts name base baseName id macro oldFilesPath
+		   headerName bodyName headerPath bodyPath interimHeaderPath interimBodyPath 
+		   headerNeedsMerging bodyNeedsMerging head body
+		   assocs bases contains relations model access (n 0)
+		   exceps attrs methods comment incFileName incFiles
+		   aProps aName aVal (aInits "") classPars targ]
+
+		  (setq nspace (car (sublist props 'namespace)))
+
+		  ;; Don't generate code for the master if it's genCode flag isn't set:
+		  (and (not (memq 'genCode (sublist props 'flags)))
+			   (return))
+
+		  (setq file (car (sublist props 'file)))
+		  (and (setq parts (BreakAbsoluteDir file))
+			   (setq path (car parts)
+					 file (cadr parts))
+			   (mkdir path))
+		  
+		  (setq path (strconc path (PackageToPath nspace)))
+		  (CreatePathHierarchy path)
+
+		  (setq oldFilesPath (strconc path "\oldfiles"))
+		  (mkdir oldFilesPath)
+
+		  (setq name (car (sublist props 'name))
+				base (cond [(== file "") name][t file])
+				baseName (PgMakeName "" base)
+				nspace (PgMakeName "" (car (sublist props 'namespace)))
+				id (PgMakeName "" name)
+				comment (car (sublist props 'comment))
+				macro (strconc baseName "_HPP")
+				headerName (strconc baseName ".hpp")
+				bodyName (strconc baseName ".cpp")
+				headerPath (strconc path "\" headerName)
+				bodyPath (strconc path "\" bodyName)
+				headerNeedsMerging (FileNeedsMerging headerPath)
+				bodyNeedsMerging (FileNeedsMerging bodyPath)
+				interimHeaderPath (cond [headerNeedsMerging (strconc oldFilesPath "\_tmp_" headerName)]
+										[t headerPath])
+				interimBodyPath (cond [bodyNeedsMerging (strconc oldFilesPath "\_tmp_" bodyName)]
+									  [t bodyPath]))
+
+		  ;; Open header (.hpp) file for writing:
+		  (setq head (caperr (open interimHeaderPath "w") t))
+		  (and (null? (car head))
+			   (PgWriteLog "ERROR: can't create '" interimHeaderPath "'" lnBreak)
+			   (return))
+		  (setq head (car head))
+
+		  ;; Open body (.cpp) file for writing:
+		  (setq body (caperr (open interimBodyPath "w") t))
+		  (and (null? (car body))
+			   (PgWriteLog "ERROR: can't create '" interimBodyPath "'" lnBreak)
+			   (close head)
+			   (return))
+		  (setq body (car body))
+
+		  (PgWriteLog "Generating: " headerName " + " bodyName lnBreak)
+
+		  (and $CopyrightNotice
+			   (princ "/****************************************************************************\" lnBreak head)
+			   (princ "**^t" headerName lnBreak head)
+                           (princ "**" lnBreak head)
+                           (princ "**^t(file description here)" lnBreak head)
+                           (princ "**" lnBreak head)
+                           (princ "**^tExtra Large Technology" lnBreak head)
+			   (princ "**^tCopyright(C) 2004 - All Rights Reserved" lnBreak head)
+			   (princ "\****************************************************************************/" lnBreak head)
+			   (princ lnBreak head))
+;		  (GeneratePreserveNote head)
+		  (and $CopyrightNotice
+			   (princ "/****************************************************************************\" lnBreak body)
+			   (princ "**^t" bodyName lnBreak body)
+                           (princ "**" lnBreak body)
+                           (princ "**^t^tsee .hpp" lnBreak body)
+                           (princ "**" lnBreak body)
+                           (princ "**^tExtra Large Technology" lnBreak body)
+			   (princ "**^tCopyright(C) 2004 - All Rights Reserved" lnBreak body)
+			   (princ "\****************************************************************************/" lnBreak body)
+			   (princ lnBreak body))
+;		  (GeneratePreserveNote body)
+
+		  (setq classPars (sublist props 'pars)
+				assocs (PgAssociations master)
+				bases (sublist assocs 'base)
+			    contains (sublist assocs 'contain)
+			    relations (sublist assocs 'relation)
+			    exceps (PgList 'exception master)
+			    attrs (PgList 'attribute master)
+			    methods (PgList 'method master))
+
+		  ;; Generate macro:
+
+		  (princ
+			"#ifdef " macro lnBreak
+			"#error " headerName " multiply included" lnBreak
+			"#endif" lnBreak
+			"#define " macro lnBreak lnBreak
+			head)
+
+		  (and $IncludeInHeaders
+			   (GenerateIncludes $IncludeInHeaders head))
+
+		  (and $IncludeInBodies
+			   (GenerateIncludes $IncludeInBodies body))
+
+		  ;; Generate #include's for inherited/contained classes:
+		  (and bases
+			   (all (handy bases)
+					(setq incFileName (strconc (LinkTargetFileName handy) ".hpp"))
+					(cond [(member incFileName incFiles)]
+						  [t (setq incFiles (cons incFileName incFiles))
+							 (princ "#include ^"" incFileName "^"" lnBreak head)
+							 (setq n (++ n))])))
+		  (and (or contains relations)
+			   (all (handy (conc contains relations))
+					;; import it only if generating code for it later
+					(and (memq 'genCode (sublist (PgProps handy) 'flags))
+						 (setq incFileName (strconc (LinkTargetFileName handy) ".hpp"))
+						 (cond [(member incFileName incFiles)]
+							   [t (setq incFiles (cons incFileName incFiles))
+								  (princ "#include ^"" incFileName "^"" lnBreak head)
+								  (setq n (++ n))]))
+					t))
+
+		  (and (> n 0)
+			   (princ lnBreak head))
+
+		  ;; Include header file in .cpp file:
+		  (princ lnBreak "#include ^"" headerName "^"" lnBreak lnBreak body)
+
+		  ;; Write class comment:
+;		  (and (not (== comment ""))
+;			   (princ (PgMakeComment comment "// ") lnBreak lnBreak head))
+
+		  ;; Write opening namspace:
+          (and (not (== nspace ""))
+			   (princ lnBreak "namespace " nspace " {" lnBreak lnBreak head)
+			   (princ "namespace " nspace " {" lnBreak lnBreak body))
+
+		  ;; write template declaration:
+		  (PrintTemplatePars classPars t head)
+
+		  ;; Write class name:
+		  (princ "class " id head)
+
+		  ;; Write base class names:
+		  (and bases
+			   (setq n 0)
+			   (princ " : " head)
+			   (all (handy bases)
+					(and (> (setq n (++ n)) 1)
+						 (princ ", " head))
+					(PrintAccessName (car (sublist (PgProps handy) 'access)) head) 
+					(princ " " (LinkTargetName handy) head)
+					(PrintClassForLink handy 'target head)
+					t))
+
+		  (princ lnBreak "{" lnBreak head)
+
+		  ;; Start with public access:
+		  (setq access (list 'public))
+		  (princ "^t" head)
+		  (PrintAccessName (car access) head)
+		  (princ ":" lnBreak lnBreak head)
+
+		  ;; Generate implicit class method declarations only if not explicitly defined by user:
+
+;		  (cond [(not (MethodDefined methods id))
+;				 (all (attr attrs)
+;					  (setq aProps (PgProps attr)
+;							aName (car (sublist aProps 'name))
+;							aVal (car (sublist aProps 'value)))
+;					  (and (not (== aVal ""))
+;						   (setq aInits (strconc aInits lnBreak "^t" aName " = " aVal ";")))
+;					  t)
+;
+;				 ;; Default constructor:
+;				 (princ "^t" id " ();" lnBreak head)
+;				 (princ separator body)
+;				 (PrintTemplatePars classPars t body)
+;				 (princ id body)
+;				 (PrintTemplatePars classPars nil body)
+;				 (princ "::" id " ()" lnBreak body)
+;				 (GenerateMemInitListCPP head body attrs bases contains)
+;				 (GeneratePreserveBlock body aInits)
+;
+;				 ;; Copy constructor:
+;				 (princ "^t" id " (const " id "&);" lnBreak head)
+;				 (princ separator body)
+;				 (PrintTemplatePars classPars t body)
+;				 (princ id body)
+;				 (PrintTemplatePars classPars nil body)
+;				 (princ "::" id " (const " id "&)" lnBreak body)
+;				 (GenerateMemInitListCPP head body attrs bases contains)
+;				 (GeneratePreserveBlock body nil)])
+;
+;		  (cond [(not (MethodDefined methods (strconc "~" id)))
+;				 ;; Destructor:
+;				 (princ "^t^t~" id " ();" lnBreak head)
+;
+;				 (princ separator body)
+;				 (PrintTemplatePars classPars t body)
+;				 (princ id body)
+;				 (PrintTemplatePars classPars nil body)
+;				 (princ "::~" id " ()" lnBreak body)
+;				 (GeneratePreserveBlock body nil)])
+;
+;		  (cond [(not (or (MethodDefined methods "operator=") (MethodDefined methods "operator =")))
+;				 ;; Memberwise assignment:
+;				 (princ "^t" id "& operator = (const " id " &arg);" lnBreak head)
+;
+;				 (princ separator body)
+;				 (PrintTemplatePars classPars t body)
+;				 (princ id "& " id body)
+;				 (PrintTemplatePars classPars nil body)
+;				 (princ "::" "operator = (const " id " &arg)" lnBreak body)
+;				 (GeneratePreserveBlock body "return *this;")])
+
+		  ;; Exception declarations:
+		  (and exceps
+			   (all (excep exceps)
+					(GenerateExceptionCPP excep head body id access)
+					t))
+
+		  ;; Methods:
+		  (and methods
+			   (all (meth methods)
+				    (GenerateMethodCPP classPars meth head body id access)
+				    t))
+
+		  ;; Attributes:
+		  (and attrs
+			   (all (attr attrs)
+					(and (setq handy (PgProps attr))
+						 (memq 'getset (sublist handy 'mode))
+						 (GenerateGetSetCPP attr head body id access))
+					t)
+			   (all (attr attrs)
+					(GenerateAttributeCPP attr head body id access)
+					t))
+
+		  ;; Containments:
+		  (and contains
+			   (all (con contains)
+				    (GenerateRelationCPP con head body id access t)
+				    t))
+
+		  ;; Relationships:
+;		  (and relations
+;			   (all (rel relations)
+;				    (GenerateRelationCPP rel head body id access nil)
+;				    t))
+
+		  ;; End class declaration:
+		  (princ "};" lnBreak head)
+
+		  ;; Write closing namspace:
+          (and (not (== nspace ""))
+			   (princ lnBreak "} // " nspace lnBreak head)
+			   (princ "} // " nspace lnBreak body))
+
+;		  (princ lnBreak "#endif" lnBreak head)
+
+		  (close head)
+		  (close body)
+		  (and headerNeedsMerging
+			   ;; Make a copy of the existing files before overwriting them with the merged ones:
+			   (copyfile headerPath (strconc oldFilesPath "\_old_" headerName))
+			   (PgMergeFiles headerPath interimHeaderPath headerPath preserveBegin preserveEnd)
+			   (PgWriteLog "    -> Merging existing " headerName " with generated version" lnBreak))
+		  (and bodyNeedsMerging
+			   ;; Make a copy of the existing files before overwriting them with the merged ones:
+			   (copyfile bodyPath (strconc oldFilesPath "\_old_" bodyName))
+			   (PgMergeFiles bodyPath interimBodyPath bodyPath preserveBegin preserveEnd)
+			   (PgWriteLog "    -> Merging existing " bodyName " with generated version" lnBreak))
+		  (return (list headerPath bodyPath))
+	)
+)
+
+;; ---------------------------------------------------------------------
+;; For example, given:
+;;		"product.browser.common"
+;; Returns:
+;;		"\product\browser\common"
+
+(fun PackageToPath (package)
+	(prog [ch (n (strlen package)) (idx 0) (prev 0) (path "") (dot (nthchar "." 0))]
+		loop
+		  (cond [(>= idx n)
+				 (setq path (strconc path (substr package prev (- idx prev))))
+				 (and (not (== path "")) (setq path (strconc "\" path)))
+				 (return path)])
+		  (setq ch (nthchar package idx))
+		  (and (eq ch dot)
+		  	   (setq path (strconc path (substr package prev (- idx prev)) "\")
+				 	 prev (++ idx)))
+		  (setq idx (++ idx))
+		  (go loop)
+	)
+)
+
+;; ---------------------------------------------------------------------
+;; For example, given:
+;;		"C:\product\browser\common"
+;; Tries to create:
+;;		"C:\product"
+;;		"C:\product\browser"
+;;		"C:\product\browser\common"
+
+(fun CreatePathHierarchy (path)
+	(prog [ch (n (strlen path)) (idx 0) (slash (nthchar "\" 0))]
+		loop
+		  (cond [(and (>= idx n) (neq ch slash))
+		  		 (mkdir (substr path 0 idx))
+				 (return)])
+		  (setq ch (nthchar path idx))
+		  (and (eq ch slash)
+		  	   (mkdir (substr path 0 idx)))
+		  (setq idx (++ idx))
+		  (go loop)
+	)
+)
+
+;; ---------------------------------------------------------------------
+(fun GenerateIncludes (files inFile)
+	(prog [(len (strlen files)) (idx 0) (prevIdx 0) fname ch left
+			(space (nthchar " " 0)) (doubleq (nthchar "^"" 0)) (leftAngle (nthchar "<" 0))]
+	loop
+		(cond [(> idx len) (princ lnBreak inFile) (return)]
+			  [(= idx len) (setq ch space)]
+			  [t (setq ch (nthchar files idx))])
+		(cond [(= ch space)
+			   (cond [(> idx prevIdx)
+					  (princ "#include " inFile)
+					  (setq fname (substr files prevIdx (- idx prevIdx))
+							left (nthchar fname 0))
+					  (cond [(= left doubleq) (princ fname inFile)]
+							[(= left leftAngle) (princ fname inFile)]
+							[t (print fname inFile)])
+					  (princ lnBreak inFile)])
+			   (setq prevIdx (++ idx))])
+		(setq idx (++ idx))
+		(go loop)))
+
+;; ---------------------------------------------------------------------
+(fun GenerateMemInitListCPP (head body attrs bases contains)
+	(prog [props modes type value (n 0)]
+
+		;; Member initialization list for base classes:
+		(all (base bases)
+			 (princ 
+				(cond [(> (setq n (++ n)) 1) ", "][t "^t^t:"])
+				(LinkTargetName base)
+				body)
+			 (PrintClassForLink base 'target body)
+			 (princ "()" body)
+			 t)
+
+		;; Member initialization list for contained classes:
+		(all (con contains)
+			 (princ 
+				(cond [(> (setq n (++ n)) 1) ", "][t "^t^t:"])
+				(LinkMemName (PgProps con))
+				body)
+			 (PrintClassForLink con 'target body)
+			 (princ "()" body)
+			 t)
+
+		;; Initialization of constant/reference attributes:
+		(all (attr attrs)
+			 (setq props (PgProps attr)
+				   name (car (sublist props 'name))
+				   modes (sublist props 'mode)
+				   type (car (sublist props 'type))
+				   value (car (sublist props 'value)))
+			 (cond [(and (not (memq 'static modes))
+						 (or (memq 'const modes)
+							 (and (not (equal type ""))
+								  (= (nthchar type (-- (strlen type))) (nthchar "&" 0)))))
+					(and (== value "")
+						 (setq value 'unspecified))
+					(princ 
+						(cond [(> (setq n (++ n)) 1) ", "][t "^t^t:"])
+						name "(" value ")" 
+						body)])
+			 t)
+		(and (> n 0)
+			 (princ lnBreak "^t^t//TODO: check and complete member initialisation list!" lnBreak body))
+	)
+)
+
+;; ---------------------------------------------------------------------
+(fun GenerateExceptionCPP (excep head body id access)
+	(prog [(props (PgProps excep)) comment mems]
+		(setq comment (car (sublist props 'comment))
+			  mems (sublist props 'members))
+
+		;; Write comment:
+		(and (not (== comment ""))
+			 (princ (PgMakeComment comment "// " 1) lnBreak head))
+
+		(princ "^texception " (car (sublist props 'name)) " {" head)
+
+		(and mems
+			 (princ lnBreak head))
+
+		(all (mem mems)
+			 (setq type (car (sublist mem 'type)))
+			 (princ "^t^t" (cond [type] [t "int"]) " " (car (sublist mem 'name)) ";" lnBreak head))
+		(princ "^t};" lnBreak head)
+	)
+)
+
+;; ---------------------------------------------------------------------
+(fun MethodDefined (methods name)
+	(prog ()
+		loop
+		  (and (null? methods) 
+			   (return nil))
+		  (and (== (car (sublist (PgProps (car methods)) 'name)) name)
+			   (return t))
+		  (setq methods (cdr methods))
+		  (go loop)))
+
+;; ---------------------------------------------------------------------
+(fun GenerateMethodCPP (classPars meth head body id access)
+	(prog [(props (PgProps meth)) acc comment modes name returns code n]
+		(setq acc (car (sublist props 'access))
+			  comment (car (sublist props 'comment))
+			  modes (sublist props 'mode)
+			  name (car (sublist props 'name))
+			  returns (car (sublist props 'returns))
+			  hasBody (not (memq 'abstract modes))
+			  code (car (sublist props 'code)))
+
+		;; Abstract implies virtual:
+		(and (memq 'abstract modes) 
+			 (not (memq 'virtual modes))
+			 (setq modes (cons 'virtual modes)))
+
+		;; Method access right:
+		(and (neq acc (car access))
+			 (rplaca access acc)
+			 (princ "^t^t" lnBreak head)
+			 (PrintAccessName acc head)
+			 (princ ":" lnBreak lnBreak head))
+
+		;; Method comment banner:
+
+		(princ "^t^t//--------------------------------------------------------------------" lnBreak head)
+		(princ "//----------------------------------------------------------------------------" lnBreak body)
+;		(and hasBody 
+;			(princ separator body))
+		(and (not (== comment ""))
+			 (princ (PgMakeComment comment "^t// " 1) lnBreak head)
+			 hasBody
+			 (princ (PgMakeComment comment "// ") lnBreak body))
+		(princ "^t^t//--------------------------------------------------------------------" lnBreak head)
+		(princ "//----------------------------------------------------------------------------" lnBreak body)
+
+		(princ "^t^t" head)
+		(PrintModeName (remove 'const modes) head)
+		(and (== returns "")
+			 (setq returns "int"))
+
+		;; write template declaration:
+		(PrintTemplatePars classPars t body)
+
+		;; No return type if a constructor or destructor:
+		(and (not (or (== name id) (== name (strconc "~" id))))
+			 (princ returns " " head)
+			 hasBody
+			 (princ returns " " body))
+		(princ name "(" head)
+
+		(cond [hasBody
+			   (princ id body)
+			   (PrintTemplatePars classPars nil body)
+			   (princ "::" name "(" body)])
+
+		;; Method parameters:
+		(setq n 0)
+		(all (par (sublist props 'pars))
+			 (and (> (setq n (++ n)) 1)
+				  (princ ", " head)
+				  hasBody
+				  (princ ", " body))
+			 (GenerateParCPP par head body hasBody)
+			 t)
+		(princ ")" head)
+		(and hasBody
+			(princ ")" body))
+
+		;; For constant methods:
+		(and (memq 'const modes)
+			 (princ " const" head)
+			 hasBody
+			 (princ " const" body))
+		(and hasBody
+			(princ lnBreak body))
+
+		;; Write method throw list:
+		(and (> (CountOther props 'exception) 0)
+			 (princ " throw(" head)
+			 (cond [hasBody (princ " throw(" body)]
+				   [t])
+			 (setq n 0)
+			 (all (other (sublist props 'others))
+				  (cond [(eq (cadr other) 'exception)
+						 (and (> (setq n (++ n)) 1)
+							  (princ ", " head)
+							  hasBody
+							  (princ ", " body))
+						 (GenerateOtherCPP other head body hasBody)])
+				  t)
+			 (princ ")" head)
+			 hasBody
+			 (princ ")" lnBreak body))
+
+		(princ "{" lnBreak "}" lnBreak lnBreak body )
+
+;		(cond [(not (== code "")) (princ (PgIndentText code 0) lnBreak lnBreak body)]
+;			  [hasBody (GeneratePreserveBlock body nil)(princ lnBreak body)]
+;			  [t (princ " = 0" head)])
+			 
+		(princ ";" lnBreak lnBreak head)
+	)
+)
+
+;; ---------------------------------------------------------------------
+(fun GenerateParCPP (par head body hasBody)
+	(let [(name (car (sublist par 'name)))
+		  (type (car (sublist par 'type)))
+		  (dir (sublist par 'dir))
+		  (value (car (sublist par 'value)))]
+
+;		 (and (equal dir '(in))
+;			  (princ "const " head)
+;			  hasBody
+;			  (princ "const " body))
+
+		 (and (== type "")
+			  (setq type "int"))
+
+		 (princ type " " head)
+		 (and (memq 'out dir)
+			  (princ "&" head))
+
+		 (princ name head)
+		 (and (not (== value ""))
+			  (princ " = " value head))
+
+		 (and hasBody
+			 (princ type " " body)
+			 (cond [(memq 'out dir) (princ "&" body)]
+				   [t])
+			 (princ name body))
+	)
+)
+
+;; ---------------------------------------------------------------------
+(fun GenerateOtherCPP (other head body hasBody)
+	;; Print the name:
+	(princ (car other) head)
+	(and hasBody
+		(princ (car other) body))
+)
+
+;; ---------------------------------------------------------------------
+(fun GenerateGetSetCPP (attr head body id access)
+	(prog [(props (PgProps attr)) modes name]
+		(setq modes (sublist props 'mode)
+			  name (car (sublist props 'name))
+			  card (car (sublist props 'card)))
+
+		(and (not (member card '("" "1")))
+			 (PgWriteLog "WARNING: use of Get/Set not supported for attribute '" name "' because its cardinality > 1." lnBreak)
+			 (return))
+
+		;; Public access right:
+		(and (neq 'public (car access))
+			 (rplaca access 'public)
+			 (PrintAccessName 'public head)
+			 (princ ":" lnBreak head))
+
+		;; Generate inline Get function:
+		(princ "^t" head)
+		(and (memq 'static modes)
+             (princ "static " head))
+		(princ "const " head)
+		(PrintContainer props head)
+		(princ "&^t" (PgMakeName "Get" name) " () "
+			   (cond [(memq 'static modes) ""][t "const "])
+			   "{return " name ";}" lnBreak head)
+
+		;; Generate inline Set function:
+		(and (not (memq 'const modes))
+			 (not (memq 'final modes))
+			 (princ "^t" (cond [(memq 'static modes) "static "][t ""])
+					"void^t" (PgMakeName "Set" name) " (const " 
+					head)
+			 (PrintContainer props head)
+			 (princ " &val)^t{" name " = val;}" lnBreak head))
+	)
+)
+
+;; ---------------------------------------------------------------------
+(fun GenerateAttributeCPP (attr head body id access)
+	(prog [(props (PgProps attr)) acc comment modes name value n]
+		(setq acc (car (sublist props 'access))
+			  comment (car (sublist props 'comment))
+			  modes (sublist props 'mode)
+			  name (car (sublist props 'name))
+			  card (car (sublist props 'card))
+			  value (car (sublist props 'value)))
+
+		;; Attribute access right:
+		(and (neq acc (car access))
+			 (rplaca access acc)
+                         (princ lnBreak "^t" head)
+                         (PrintAccessName acc head)
+			 (princ ":" lnBreak lnBreak head))
+
+		;; Attribute comment:
+		(princ "^t" head)
+		(and (not (== comment ""))
+			 (setq comment (PgMakeComment comment "// " 1))
+			 (princ lnBreak comment lnBreak head))
+
+		(princ "^t" head)
+		(PrintModeName (remove 'getset modes) head)
+		(setq hasContainer (PrintContainer props head))
+		(princ "^t" name head)
+		;; print cardinality as array:
+		(and (eq hasContainer 'none)
+			 (not (member card '("" "1")))
+			 (princ "[" card "]" head))
+		(princ ";" lnBreak head)
+
+		(and (or (memq 'const modes)
+				 (memq 'static modes))
+			 (== value "")
+			 (PgWriteLog "ERROR: initial value expected for const/static member '" name "'" lnBreak))
+
+		(cond [(memq 'static modes)
+			   ;; Initialiser for static attribute:
+			   (and (memq 'const modes)
+					(princ "const " body))
+			   (setq hasContainer (PrintContainer props body))
+			   (princ " " id "::" name body)
+			   ;; print cardinality as array:
+			   (and (eq hasContainer 'none)
+					(not (member card '("" "1")))
+					(princ "[" card "]" body))
+			   (princ " = " body)
+			   (and (== value "")
+					(setq value 'unspecified))
+			   (princ value ";" lnBreak body)])
+	)
+)
+
+;; ---------------------------------------------------------------------
+(fun GenerateRelationCPP (rel head body id access contained)
+	(prog [(props (PgProps rel)) acc comment name value type]
+		;; Don't generate code for the link if it's genCode flag isn't set:
+		(and (not (memq 'genCode (sublist props 'flags)))
+			 (return))
+		(setq acc (car (sublist props 'access))
+			  comment (car (sublist props 'comment))
+			  name (car (sublist props 'name))
+			  value (car (sublist props 'value))
+			  type (LinkTargetName rel))
+
+		;; Relation access right:
+		(and (neq acc (car access))
+			 (rplaca access acc)
+			 (PrintAccessName acc head)
+			 (princ ":" lnBreak head))
+
+		;; Relation comment:
+		(and (not (== comment ""))
+			 (setq comment (PgMakeComment comment "// " 1))
+			 (princ lnBreak comment lnBreak head))
+
+		(princ "^t" type head)
+		(PrintClassForLink rel 'target head)
+
+		;; Relation member name:
+		(princ "^t" head)
+		(and (not contained)
+			 (princ "*" head))
+		(princ (LinkMemName props) ";" lnBreak head)
+	)
+)
+
+;; ---------------------------------------------------------------------
+(fun LinkTargetFileName (link)
+	(let [(link (PgProps link)) tarPlace tarMaster fName]
+		(setq tarPlace (PgProps (car (sublist link 'target)))
+			  tarMaster (PgProps (car (sublist tarPlace 'master)))
+			  fName (car (sublist tarMaster 'file))
+			  fName (cond [(== fName "") (car (sublist tarMaster 'name))][t fName]))
+		(PgMakeName "" fName)))
+
+;; ---------------------------------------------------------------------
+(fun LinkTargetName (link)
+	(let [(targ (car (sublist (PgProps link) 'target)))]
+		 (setq targ (car (sublist (PgProps targ) 'master))
+			   targ (car (sublist (PgProps targ) 'name)))
+		 (strconc (LinkTargetNamespace link) (PgMakeName "" targ))))
+
+;; ---------------------------------------------------------------------
+(fun LinkTargetNamespace (link)
+    (let [(link (PgProps link)) tarPlace tarMaster nspace]
+          (setq tarPlace (PgProps (car (sublist link 'target)))
+                tarMaster (PgProps (car (sublist tarPlace 'master)))
+                nspace (car (sublist tarMaster 'namespace)))
+          (cond [(and nspace (not (== nspace ""))) (setq nspace (strconc nspace "::"))]
+                [t (setq nspace "")])
+          (PgMakeName "" nspace)))
+
+;; ---------------------------------------------------------------------
+(fun LinkMemName (props)
+	(let [(name (car (sublist props 'name)))
+		  (role (cadr (sublist props 'role)))]
+		 (cond [(not (== role "")) (PgMakeName "" role)]
+			   [(not (== name "")) (PgMakeName "" name)]
+			   [t 'unnamed])))
+
+;; ---------------------------------------------------------------------
+(fun PrintClassForLink (link srcOrTarget file)
+	(let [(targ (car (sublist (PgProps link) srcOrTarget)))]
+		 (setq targ (car (sublist (PgProps targ) 'master)))
+		 (PrintTemplateArgs (sublist (PgProps targ) 'args) file)))
+
+;; ---------------------------------------------------------------------
+(fun PrintAccessName (access file)
+	(and access (neq access 'package) (princ access file)))
+
+;; ---------------------------------------------------------------------
+(fun PrintModeName (modes file)
+	 (and (memq 'virtual modes)
+		  (princ "virtual " file))
+	 (and (memq 'static modes)
+		  (princ "static " file))
+	 (and (memq 'const modes)
+		  (princ "const " file)))
+
+;; ---------------------------------------------------------------------
+(fun PrintContainer (props file)
+	(let [(type (car (sublist props 'type)))
+		  (container (car (sublist props 'container)))]
+		 (cond [(and container (not (== container "")))
+			    (princ container "<" type file)
+			    (princ ">" file)]
+			   [t
+			    (princ type file)
+				'none])))
+
+;; ---------------------------------------------------------------------
+(fun PrintTemplatePars (pars full file)
+	(cond [pars
+			(princ (cond [full "template <"][t "<"]) file)
+			(let [(n 0)]
+				(all (par pars)
+					 (and (> (setq n (++ n)) 1)
+						  (princ ", " file))
+					 (and full
+						  (princ (cond [(== (cadr par) "") "class"][t (cadr par)]) " " file))
+					 (princ (car par) file)))
+			(princ ">" file)
+			(and full (princ lnBreak file))]))
+
+;; ---------------------------------------------------------------------
+(fun PrintTemplateArgs (args file)
+	(cond [args
+			(princ "<" file)
+			(let [(n 0)]
+				(all (arg args)
+					 (and (> (setq n (++ n)) 1)
+						  (princ ", " file))
+					 (princ arg file)))
+			(princ ">" file)]))
+
+;; ---------------------------------------------------------------------
+(fun CountOther (props kind)
+	(let [(n 0)]
+		 (all (other (sublist props 'others))
+			  (and (eq (cadr other) kind)
+				   (setq n (++ n)))
+			  t)
+		 n))
+
+;; ---------------------------------------------------------------------
+(fun FileNeedsMerging (filePath)
+	(and $PreserveChanges
+		 (let [(chan (caperr (open filePath "r") t))]
+			  (cond [(null? (car chan)) nil]
+					[t (close (car chan)) t]))))
+
+;; ---------------------------------------------------------------------
+(fun GeneratePreserveNote (file)
+	(princ
+		"// NOTE: please use a " preserveBegin "/" preserveEnd " comment block" lnBreak
+		"//       to preserve your hand-coding across code generations." lnBreak lnBreak
+		file))
+
+;; ---------------------------------------------------------------------
+(fun GeneratePreserveBlock (file code)
+	(princ 
+		"{" lnBreak
+		"^t// " preserveBegin lnBreak
+		"^t// Insert your preservable code here..." lnBreak
+		file)
+	(and code
+		 (princ "^t" code lnBreak file))
+	(princ "^t// " preserveEnd lnBreak "}" lnBreak lnBreak file))
+
+;; ---------------------------------------------------------------------
+;; For example given:	"C:\Project\Simulator\Valve.hpp"
+;; it returns:			("C:\Project\Simulator" "Valve")
+;; If the path is not absolute, it returns nil.
+
+(fun BreakAbsoluteDir (str)
+	(prog [(len (strlen str)) (colon (nthchar ":" 0)) 
+		   (backslash (nthchar "\" 0)) (dot (nthchar "." 0)) idx]
+		(and (or (< len 2) (not (= (nthchar str 1) colon))) 
+			 (return))
+		(setq idx (-- len))
+	loop
+		(cond [(<= idx 0) (return)]
+			  [(= (nthchar str idx) dot) (setq len idx)]
+			  [(= (nthchar str idx) backslash) 
+			   (return (list (substr str 0 idx) 
+							 (substr str (++ idx) (- len (++ idx)))))])
+		(setq idx (-- idx))
+		(go loop)))

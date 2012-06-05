@@ -1,0 +1,73 @@
+#must match the struct in the cpp file for this shader!
+
+$ifndef "sgpu_illum_PhongReflection_mi"
+set "sgpu_illum_PhongReflection_mi" "true"
+
+declare shader
+	color "sgpu_illum_PhongReflection" (	
+		color texture	"diffuseMap",
+		color texture	"reflectFactorMap",
+		color texture	"reflectSmearMap",
+		color texture	"specularMap",
+		color texture	"transparencyMap",
+		color texture	"emissiveMap",
+		color			"g_diffuse",
+		color			"g_emissive",
+		color			"g_specular",
+		scalar			"IOR",
+		scalar			"fresnelBias",
+		scalar			"fresnelPower",
+		scalar			"g_emissiveIntensity",
+		scalar			"g_reflectivity",
+		scalar			"g_shininess",
+		scalar			"g_specularPower",
+		scalar			"g_transparency",
+		scalar			"reflFactor",
+		scalar			"reflLOD",
+		scalar			"refrFactor",
+		scalar			"refrLOD",
+		scalar			"smearMapScale",
+		
+		color texture	"diffuseEnvMap",	
+		color texture	"specularEnvMap",		
+		color			"g_envDiffuseColor",
+		color			"g_envSpecularColor",
+		scalar			"g_diffuseFactor",
+		scalar			"g_diffuseEnvAngle",	
+		scalar			"g_specularFactor",
+		scalar			"g_specularEnvAngle",
+		
+		boolean			"reflEnable",
+		scalar			"reflSamples",
+		
+		scalar			"u_scale",
+		scalar			"v_scale",
+		scalar			"u_offset",
+		scalar			"v_offset",
+		scalar			"uv_rotation",
+	
+		color texture	"normalMap",
+		scalar			"normalMapScale",
+		
+		boolean			"bEnableAO",		
+		color			"aoColor",
+		scalar			"aoRadiusNear",
+		scalar			"aoRadiusFar",
+		scalar			"aoAngleBias",
+		scalar			"aoAttenuation",
+		scalar			"aoContrast",
+		scalar			"aoCamNear",
+		scalar			"aoCamFar",
+		scalar			"aoSamples",
+		
+		boolean			"bEnableGI",
+		boolean			"bEnableSWL",
+		
+		integer			"mode",      # light selection mode 0,1,2,4
+		array light		"lights"
+	)
+	version 1
+	apply material
+end declare
+
+$endif

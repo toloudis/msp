@@ -1,0 +1,64 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "geoTest", "geoTest.vcproj", "{049E2530-F0C2-4FF8-943A-2B01266C0BFB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E20B3798-CA5E-4942-B337-225BA58EA219} = {E20B3798-CA5E-4942-B337-225BA58EA219}
+		{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC} = {2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Base", "..\..\..\..\Terawatt\Base\Base.vcproj", "{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Math", "..\..\..\..\Terawatt\Math\Math.vcproj", "{E20B3798-CA5E-4942-B337-225BA58EA219}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SourceCodeControl) = preSolution
+		SccNumberOfProjects = 2
+		SccProjectUniqueName0 = ..\\..\\..\\..\\Terawatt\\Base\\Base.vcproj
+		SccProjectName0 = \u0022$/Terawatt/Base\u0022,\u0020KJOAAAAA
+		SccLocalPath0 = ..\\..\\..\\..\\Terawatt\\Base
+		SccProvider0 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		SccProjectUniqueName1 = ..\\..\\..\\..\\Terawatt\\Math\\Math.vcproj
+		SccProjectName1 = \u0022$/Terawatt/Math\u0022,\u0020TOPAAAAA
+		SccLocalPath1 = ..\\..\\..\\..\\Terawatt\\Math
+		SccProvider1 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+	EndGlobalSection
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Debug Managed = Debug Managed
+		Release = Release
+		Release Managed = Release Managed
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{049E2530-F0C2-4FF8-943A-2B01266C0BFB}.Debug.ActiveCfg = Debug|Win32
+		{049E2530-F0C2-4FF8-943A-2B01266C0BFB}.Debug.Build.0 = Debug|Win32
+		{049E2530-F0C2-4FF8-943A-2B01266C0BFB}.Debug Managed.ActiveCfg = Debug|Win32
+		{049E2530-F0C2-4FF8-943A-2B01266C0BFB}.Debug Managed.Build.0 = Debug|Win32
+		{049E2530-F0C2-4FF8-943A-2B01266C0BFB}.Release.ActiveCfg = Release|Win32
+		{049E2530-F0C2-4FF8-943A-2B01266C0BFB}.Release.Build.0 = Release|Win32
+		{049E2530-F0C2-4FF8-943A-2B01266C0BFB}.Release Managed.ActiveCfg = Release|Win32
+		{049E2530-F0C2-4FF8-943A-2B01266C0BFB}.Release Managed.Build.0 = Release|Win32
+		{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}.Debug.ActiveCfg = Debug|Win32
+		{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}.Debug.Build.0 = Debug|Win32
+		{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}.Debug Managed.ActiveCfg = Debug Managed|Win32
+		{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}.Debug Managed.Build.0 = Debug Managed|Win32
+		{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}.Release.ActiveCfg = Release|Win32
+		{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}.Release.Build.0 = Release|Win32
+		{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}.Release Managed.ActiveCfg = Release Managed|Win32
+		{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}.Release Managed.Build.0 = Release Managed|Win32
+		{E20B3798-CA5E-4942-B337-225BA58EA219}.Debug.ActiveCfg = Debug|Win32
+		{E20B3798-CA5E-4942-B337-225BA58EA219}.Debug.Build.0 = Debug|Win32
+		{E20B3798-CA5E-4942-B337-225BA58EA219}.Debug Managed.ActiveCfg = Debug Managed|Win32
+		{E20B3798-CA5E-4942-B337-225BA58EA219}.Debug Managed.Build.0 = Debug Managed|Win32
+		{E20B3798-CA5E-4942-B337-225BA58EA219}.Release.ActiveCfg = Release|Win32
+		{E20B3798-CA5E-4942-B337-225BA58EA219}.Release.Build.0 = Release|Win32
+		{E20B3798-CA5E-4942-B337-225BA58EA219}.Release Managed.ActiveCfg = Release Managed|Win32
+		{E20B3798-CA5E-4942-B337-225BA58EA219}.Release Managed.Build.0 = Release Managed|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,38 @@
+// SkpStudioGpuExport.idl : IDL source for SkpStudioGpuExport
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (SkpStudioGpuExport.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(D2AC12A0-BE9B-4141-9E54-08E47A437AB3),
+	helpstring("ISkpStudioGpuExporter Interface"),
+	pointer_default(unique)
+]
+interface ISkpStudioGpuExporter : IUnknown{
+};
+[
+	uuid(C07A4395-54CB-43F7-A4E7-8C6CDC4EEAEA),
+	version(1.0),
+	helpstring("SkpStudioGpuExport 1.0 Type Library")
+]
+library SkpStudioGpuExportLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(6B828FF4-0676-4E35-A367-5DF780DBBCCA),
+		helpstring("SkpStudioGpuExporter Class")
+	]
+	coclass SkpStudioGpuExporter
+	{
+		[default] interface ISkpStudioGpuExporter;
+	};
+};
+
+
+
+

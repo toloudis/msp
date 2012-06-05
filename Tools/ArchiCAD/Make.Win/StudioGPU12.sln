@@ -1,0 +1,38 @@
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StudioGPU", "StudioGPU12.vcproj", "{C7300C02-8F70-4984-998D-F28184B6C645}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5E8F95D8-418E-4E24-9793-5243089E470A} = {5E8F95D8-418E-4E24-9793-5243089E470A}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EncinaCAD12", "..\..\EncinaCAD2\Make.Win\EncinaCAD12.vcproj", "{5E8F95D8-418E-4E24-9793-5243089E470A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		StudioGPU12|Win32 = StudioGPU12|Win32
+		StudioGPU12Bug|Win32 = StudioGPU12Bug|Win32
+		StudioGPU13-32|Win32 = StudioGPU13-32|Win32
+		StudioGPU13-32Bug|Win32 = StudioGPU13-32Bug|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C7300C02-8F70-4984-998D-F28184B6C645}.StudioGPU12|Win32.ActiveCfg = ReleaseAC12US|Win32
+		{C7300C02-8F70-4984-998D-F28184B6C645}.StudioGPU12|Win32.Build.0 = ReleaseAC12US|Win32
+		{C7300C02-8F70-4984-998D-F28184B6C645}.StudioGPU12Bug|Win32.ActiveCfg = DebugAC12US|Win32
+		{C7300C02-8F70-4984-998D-F28184B6C645}.StudioGPU12Bug|Win32.Build.0 = DebugAC12US|Win32
+		{C7300C02-8F70-4984-998D-F28184B6C645}.StudioGPU13-32|Win32.ActiveCfg = ReleaseAC13-32US|Win32
+		{C7300C02-8F70-4984-998D-F28184B6C645}.StudioGPU13-32|Win32.Build.0 = ReleaseAC13-32US|Win32
+		{C7300C02-8F70-4984-998D-F28184B6C645}.StudioGPU13-32Bug|Win32.ActiveCfg = DebugAC13-32US|Win32
+		{C7300C02-8F70-4984-998D-F28184B6C645}.StudioGPU13-32Bug|Win32.Build.0 = DebugAC13-32US|Win32
+		{5E8F95D8-418E-4E24-9793-5243089E470A}.StudioGPU12|Win32.ActiveCfg = ReleaseAC12|Win32
+		{5E8F95D8-418E-4E24-9793-5243089E470A}.StudioGPU12|Win32.Build.0 = ReleaseAC12|Win32
+		{5E8F95D8-418E-4E24-9793-5243089E470A}.StudioGPU12Bug|Win32.ActiveCfg = DebugAC12|Win32
+		{5E8F95D8-418E-4E24-9793-5243089E470A}.StudioGPU12Bug|Win32.Build.0 = DebugAC12|Win32
+		{5E8F95D8-418E-4E24-9793-5243089E470A}.StudioGPU13-32|Win32.ActiveCfg = ReleaseAC13-32|Win32
+		{5E8F95D8-418E-4E24-9793-5243089E470A}.StudioGPU13-32|Win32.Build.0 = ReleaseAC13-32|Win32
+		{5E8F95D8-418E-4E24-9793-5243089E470A}.StudioGPU13-32Bug|Win32.ActiveCfg = DebugAC13-32|Win32
+		{5E8F95D8-418E-4E24-9793-5243089E470A}.StudioGPU13-32Bug|Win32.Build.0 = DebugAC13-32|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

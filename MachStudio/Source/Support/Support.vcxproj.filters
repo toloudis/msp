@@ -1,0 +1,2105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="dyn">
+      <UniqueIdentifier>{df9c5ae2-d6b0-4747-b100-9a30c9e92135}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dyn\GUI">
+      <UniqueIdentifier>{b2cce94c-5b1c-4c0a-875e-1a090c8402ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dyn\Drivers">
+      <UniqueIdentifier>{51b46291-f2a2-4b6b-bdcf-f8d23936a929}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cmps">
+      <UniqueIdentifier>{0ed8f68e-56de-4f81-bce7-03e93ecc8aaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cmps\private">
+      <UniqueIdentifier>{455a6bc8-da0c-4306-80d1-1038b1d8ed8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="spln">
+      <UniqueIdentifier>{fc9edf35-692c-4f25-b63a-1984cc13acbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tmln">
+      <UniqueIdentifier>{b3bd2b33-b449-411a-95d6-cafeaaff2fc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tmln\Channels">
+      <UniqueIdentifier>{26af73ba-c576-4ae5-ad31-6d08965f77d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vis">
+      <UniqueIdentifier>{a10f01ee-e783-4cc2-85e9-1b1c2b70da07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pnt">
+      <UniqueIdentifier>{7e5d0e0f-139a-433a-9704-054c711b4cf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mnm">
+      <UniqueIdentifier>{22b875d0-cd36-4c95-a15f-cb89b5ffdcca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mnm\Data">
+      <UniqueIdentifier>{6eee6cc0-e7f8-4373-b8a2-3e86a25a1c83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fsys">
+      <UniqueIdentifier>{86b54c57-c99e-42cd-ad95-a04853617dc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mode">
+      <UniqueIdentifier>{500070d5-0a14-4aa2-b173-16e30e6337b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gsup">
+      <UniqueIdentifier>{c8bb52a4-0398-47f5-9bbe-c849216206a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ltst">
+      <UniqueIdentifier>{ce45cd50-2f51-4642-ad3d-f54a06b0ed4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ltst\private">
+      <UniqueIdentifier>{4bdd25d6-73dd-4e11-9991-07ac473ebe69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ltst\GUI">
+      <UniqueIdentifier>{5d1c9148-98f1-43b4-8aee-f808fe6b160f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cams">
+      <UniqueIdentifier>{1cb27c52-f8e0-4e75-85e8-117a0985e419}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lyer">
+      <UniqueIdentifier>{37fba145-fadf-4034-b3fb-ac9896f96ea4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mexp">
+      <UniqueIdentifier>{1d317fa7-4c9d-44df-bbe4-9b2b79fc4add}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="grps">
+      <UniqueIdentifier>{01df7874-fe6b-485f-81e0-fdcca536023c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="evmt">
+      <UniqueIdentifier>{8efc406e-5ffb-463b-a265-8cc90122e6fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="evmt\private">
+      <UniqueIdentifier>{4d5e4abc-9fbc-43aa-baa0-f26721998954}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="evmt\GUI">
+      <UniqueIdentifier>{363a10d5-d416-4091-848a-33b383d114e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mtrl">
+      <UniqueIdentifier>{390b0b30-d418-4d80-9365-41551156077d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mtrl\GUI">
+      <UniqueIdentifier>{dcdc0ae9-b16e-4205-8eb9-5b6bd3d0f93f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pyth">
+      <UniqueIdentifier>{4870b5fe-3604-4a39-b7d7-ef8b40cdd248}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pyth\wxGUI">
+      <UniqueIdentifier>{ba651f1e-370a-460b-94c7-f36904730d63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fgmt">
+      <UniqueIdentifier>{e51808d1-7d53-4553-9942-325a7f3c85bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fgmt\GUI">
+      <UniqueIdentifier>{8df9e039-02fc-43fd-b64d-48dd083a8aec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fgmt\wxGUI">
+      <UniqueIdentifier>{2ec532da-2daa-4567-babb-e1d31edecf83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ptm">
+      <UniqueIdentifier>{93023c8b-237f-4d72-934d-7d5586a42a19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ptm\wxGUI">
+      <UniqueIdentifier>{54dd572b-0c04-4556-9ba1-7db1bebd4d88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rlyr">
+      <UniqueIdentifier>{4b5bce98-f9e4-416e-b212-bb8aa4f55a3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rlyr\private">
+      <UniqueIdentifier>{c8d19cbe-ab21-42ab-9e2c-5838a7a176d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rlyr\data">
+      <UniqueIdentifier>{98e57b94-980f-498e-b093-b8dcfd7f02d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="capt">
+      <UniqueIdentifier>{e153c41b-6fe9-4bec-929a-ba4204f5ab00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rprf">
+      <UniqueIdentifier>{96610a03-0e54-4822-b113-62f09850299f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="xtra">
+      <UniqueIdentifier>{ff94b47a-d2f4-4c31-8cf9-723ac688a75d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="xtra\GUI">
+      <UniqueIdentifier>{69126df3-eb10-4cf9-9b83-2f0aced2c38c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="brsh">
+      <UniqueIdentifier>{dd205bd4-5960-4c65-b692-daa69289c345}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="brsh\wxGUI">
+      <UniqueIdentifier>{c1b44e54-db53-429e-9d35-736619e3bca8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="brsh\data">
+      <UniqueIdentifier>{c83deb4a-cf50-4fef-82ec-ac35355f0052}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rmp">
+      <UniqueIdentifier>{c63255be-045f-47cd-853e-d2dcde648a4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rmp\private">
+      <UniqueIdentifier>{97fa6b00-b64c-4ed7-a1e1-c3fc1c708689}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cmpr">
+      <UniqueIdentifier>{58a8d3ce-918b-44ad-85ce-e969c5b1938c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cmpr\private">
+      <UniqueIdentifier>{04d0bac3-8885-4390-b069-49c5aee8ac68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rman">
+      <UniqueIdentifier>{ebc649f2-937b-4bcb-8851-39d998df68c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="xfrm">
+      <UniqueIdentifier>{59ec9f01-aad3-4441-bd69-1ffcbb10f3f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="xfrm\wxGUI">
+      <UniqueIdentifier>{6398513d-dcfb-473d-9d2f-8d49974d3317}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fbx">
+      <UniqueIdentifier>{e87853fc-fb2c-43fe-b11d-922f5a3cfe23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mray">
+      <UniqueIdentifier>{bd230409-c51d-4c19-8a3d-ee9baf71143a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pfx">
+      <UniqueIdentifier>{4761b2f3-d851-49cf-a036-0aad65de69d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="swl">
+      <UniqueIdentifier>{62dcf1c1-e98e-4ab9-95ac-574a818af3db}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dyn\dynChannelControl.cpp">
+      <Filter>dyn</Filter>
+    </ClCompile>
+    <ClCompile Include="dyn\dynControlData.cpp">
+      <Filter>dyn</Filter>
+    </ClCompile>
+    <ClCompile Include="dyn\dynControlDataParser.cpp">
+      <Filter>dyn</Filter>
+    </ClCompile>
+    <ClCompile Include="dyn\dynDriverCreator.cpp">
+      <Filter>dyn</Filter>
+    </ClCompile>
+    <ClCompile Include="dyn\dynPackage.cpp">
+      <Filter>dyn</Filter>
+    </ClCompile>
+    <ClCompile Include="dyn\dynScriptObject.cpp">
+      <Filter>dyn</Filter>
+    </ClCompile>
+    <ClCompile Include="dyn\dynSelectInterest.cpp">
+      <Filter>dyn</Filter>
+    </ClCompile>
+    <ClCompile Include="dyn\GUI\dynCreateOperation.cpp">
+      <Filter>dyn\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="dyn\GUI\dynDeleteOperation.cpp">
+      <Filter>dyn\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="dyn\Gui\dynDialogUtil.cpp">
+      <Filter>dyn\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="dyn\GUI\dynOperations.cpp">
+      <Filter>dyn\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="dyn\GUI\dynPropertyObject.cpp">
+      <Filter>dyn\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="dyn\Drivers\dynDriverTransformKey.cpp">
+      <Filter>dyn\Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="dyn\Drivers\dynDriverTransformKeyInfo.cpp">
+      <Filter>dyn\Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="dyn\Drivers\dynDriverTransformKeyParser.cpp">
+      <Filter>dyn\Drivers</Filter>
+    </ClCompile>
+    <ClCompile Include="cmps\private\cmpsCompass.cpp">
+      <Filter>cmps\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cmps\private\cmpsCompassMgr.cpp">
+      <Filter>cmps\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cmps\private\cmpsCompassObject.cpp">
+      <Filter>cmps\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cmps\private\cmpsCompassObject3Axis.cpp">
+      <Filter>cmps\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cmps\private\cmpsCompassObjectRotate.cpp">
+      <Filter>cmps\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cmps\private\cmpsCompassObjectScale.cpp">
+      <Filter>cmps\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cmps\private\cmpsCompassObjectSelect.cpp">
+      <Filter>cmps\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cmps\private\cmpsCompassObjectSingle.cpp">
+      <Filter>cmps\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cmps\private\cmpsCompassObjectTranslate.cpp">
+      <Filter>cmps\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cmps\private\cmpsCompassRotate.cpp">
+      <Filter>cmps\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cmps\private\cmpsCompassScale.cpp">
+      <Filter>cmps\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cmps\private\cmpsCompassSelect.cpp">
+      <Filter>cmps\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cmps\private\cmpsCompassTranslate.cpp">
+      <Filter>cmps\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cmps\private\cmpsManipObject.cpp">
+      <Filter>cmps\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cmps\private\cmpsObjectSimple.cpp">
+      <Filter>cmps\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cmps\private\cmpsPackage.cpp">
+      <Filter>cmps\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cmps\private\cmpsPickInterest.cpp">
+      <Filter>cmps\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cmps\private\cmpsSelectMgr.cpp">
+      <Filter>cmps\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cmps\private\cmpsWorldAxis.cpp">
+      <Filter>cmps\private</Filter>
+    </ClCompile>
+    <ClCompile Include="spln\splnCurveMgr.cpp">
+      <Filter>spln</Filter>
+    </ClCompile>
+    <ClCompile Include="spln\splnCurveModel.cpp">
+      <Filter>spln</Filter>
+    </ClCompile>
+    <ClCompile Include="spln\splnCurvePointObject.cpp">
+      <Filter>spln</Filter>
+    </ClCompile>
+    <ClCompile Include="spln\splnCurveSelect.cpp">
+      <Filter>spln</Filter>
+    </ClCompile>
+    <ClCompile Include="spln\splnPackage.cpp">
+      <Filter>spln</Filter>
+    </ClCompile>
+    <ClCompile Include="spln\splnPickInterest.cpp">
+      <Filter>spln</Filter>
+    </ClCompile>
+    <ClCompile Include="spln\splnSpline.cpp">
+      <Filter>spln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnAdapterPosition.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnBaseData.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnBaseDataParser.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnBlendDriver.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnChannel.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnChannelInfo.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnChannelInfoParser.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnChannelSet.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnCreator.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnDriver.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnDriverClipboard.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnDriverDialogUtil.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnDriverIdMgr.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnDriverInfo.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnDriverInfoParser.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnPackage.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnParser.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnScriptObject.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnSelectionUtil.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnTimeEditUIInfo.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnTimeInOutData.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnTimeInOutMgr.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnTimeInterest.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnTimeLine.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnTimelineMgr.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnTimeUtil.cpp">
+      <Filter>tmln</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnChannelAnimationFull.cpp">
+      <Filter>tmln\Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnChannelAnimationSub.cpp">
+      <Filter>tmln\Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnChannelBoolean.cpp">
+      <Filter>tmln\Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnChannelColor.cpp">
+      <Filter>tmln\Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnChannelFileName.cpp">
+      <Filter>tmln\Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnChannelFilePath.cpp">
+      <Filter>tmln\Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnChannelFloat.cpp">
+      <Filter>tmln\Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnChannelOrientation.cpp">
+      <Filter>tmln\Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnChannelPosition.cpp">
+      <Filter>tmln\Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnChannelRenderPass.cpp">
+      <Filter>tmln\Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnChannelScale.cpp">
+      <Filter>tmln\Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnChannelTextureFileName.cpp">
+      <Filter>tmln\Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="tmln\tmlnChannelVideo.cpp">
+      <Filter>tmln\Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="vis\visMgr.cpp">
+      <Filter>vis</Filter>
+    </ClCompile>
+    <ClCompile Include="vis\visPackage.cpp">
+      <Filter>vis</Filter>
+    </ClCompile>
+    <ClCompile Include="vis\visVisibleInterest.cpp">
+      <Filter>vis</Filter>
+    </ClCompile>
+    <ClCompile Include="pnt\pntPackage.cpp">
+      <Filter>pnt</Filter>
+    </ClCompile>
+    <ClCompile Include="pnt\pntPickInterest.cpp">
+      <Filter>pnt</Filter>
+    </ClCompile>
+    <ClCompile Include="pnt\pntPoint.cpp">
+      <Filter>pnt</Filter>
+    </ClCompile>
+    <ClCompile Include="pnt\pntPointMgr.cpp">
+      <Filter>pnt</Filter>
+    </ClCompile>
+    <ClCompile Include="pnt\pntPointObject.cpp">
+      <Filter>pnt</Filter>
+    </ClCompile>
+    <ClCompile Include="pnt\pntPointSelect.cpp">
+      <Filter>pnt</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\mnmAppPackageMgr.cpp">
+      <Filter>mnm</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\mnmAppUtil.cpp">
+      <Filter>mnm</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\mnmAutoSaveMgr.cpp">
+      <Filter>mnm</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\mnmAviUtil.cpp">
+      <Filter>mnm</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\mnmBaseData.cpp">
+      <Filter>mnm</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\mnmBaseDataParser.cpp">
+      <Filter>mnm</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\mnmCompassUtil.cpp">
+      <Filter>mnm</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\mnmDebugInfoWin.cpp">
+      <Filter>mnm</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\mnmObject.cpp">
+      <Filter>mnm</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\mnmPackage.cpp">
+      <Filter>mnm</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\mnmPaths.cpp">
+      <Filter>mnm</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\mnmQuickTimeSound.cpp">
+      <Filter>mnm</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\mnmQuickTimeUtil.cpp">
+      <Filter>mnm</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\mnmReference.cpp">
+      <Filter>mnm</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\mnmReferencePosChannel.cpp">
+      <Filter>mnm</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\mnmScreenCaptureUtil.cpp">
+      <Filter>mnm</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\mnmSecurityMgr.cpp">
+      <Filter>mnm</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\mnmThinkMgr.cpp">
+      <Filter>mnm</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\mnmTimeCodeMgr.cpp">
+      <Filter>mnm</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\mnmTimeCodeUtil.cpp">
+      <Filter>mnm</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\mnmVJoystick.cpp">
+      <Filter>mnm</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\Data\mnmAppPackageDocumentChunk.cpp">
+      <Filter>mnm\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\Data\mnmAppPackageDocumentInterest.cpp">
+      <Filter>mnm\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="mnm\Data\mnmAppPackageParser.cpp">
+      <Filter>mnm\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="fsys\fsysDirListUtil.cpp">
+      <Filter>fsys</Filter>
+    </ClCompile>
+    <ClCompile Include="fsys\fsysFileInfo.cpp">
+      <Filter>fsys</Filter>
+    </ClCompile>
+    <ClCompile Include="fsys\fsysFileList.cpp">
+      <Filter>fsys</Filter>
+    </ClCompile>
+    <ClCompile Include="fsys\fsysFileUtil.cpp">
+      <Filter>fsys</Filter>
+    </ClCompile>
+    <ClCompile Include="mode\modeCommandSwitchMode.cpp">
+      <Filter>mode</Filter>
+    </ClCompile>
+    <ClCompile Include="mode\modeMode.cpp">
+      <Filter>mode</Filter>
+    </ClCompile>
+    <ClCompile Include="mode\modeModeMgr.cpp">
+      <Filter>mode</Filter>
+    </ClCompile>
+    <ClCompile Include="mode\modeModeTime.cpp">
+      <Filter>mode</Filter>
+    </ClCompile>
+    <ClCompile Include="gsup\gsupReAttachUtil.cpp">
+      <Filter>gsup</Filter>
+    </ClCompile>
+    <ClCompile Include="gsup\gsupTreeCtrlUtil.cpp">
+      <Filter>gsup</Filter>
+    </ClCompile>
+    <ClCompile Include="ltst\ltstInfluenceUtil.cpp">
+      <Filter>ltst</Filter>
+    </ClCompile>
+    <ClCompile Include="ltst\ltstIsolatable.cpp">
+      <Filter>ltst</Filter>
+    </ClCompile>
+    <ClCompile Include="ltst\ltstIsolateMgr.cpp">
+      <Filter>ltst</Filter>
+    </ClCompile>
+    <ClCompile Include="ltst\ltstLightSet.cpp">
+      <Filter>ltst</Filter>
+    </ClCompile>
+    <ClCompile Include="ltst\ltstLightSetInterest.cpp">
+      <Filter>ltst</Filter>
+    </ClCompile>
+    <ClCompile Include="ltst\ltstLightSetMgr.cpp">
+      <Filter>ltst</Filter>
+    </ClCompile>
+    <ClCompile Include="ltst\ltstLightSetsData.cpp">
+      <Filter>ltst</Filter>
+    </ClCompile>
+    <ClCompile Include="ltst\private\ltstLightSetInterestMgr.cpp">
+      <Filter>ltst\private</Filter>
+    </ClCompile>
+    <ClCompile Include="ltst\private\ltstLightSetNode.cpp">
+      <Filter>ltst\private</Filter>
+    </ClCompile>
+    <ClCompile Include="ltst\private\ltstLightSetObject.cpp">
+      <Filter>ltst\private</Filter>
+    </ClCompile>
+    <ClCompile Include="ltst\GUI\ltstReAttachUtil.cpp">
+      <Filter>ltst\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="cams\camsCameraMgr.cpp">
+      <Filter>cams</Filter>
+    </ClCompile>
+    <ClCompile Include="cams\camsDirectorsCutMgr.cpp">
+      <Filter>cams</Filter>
+    </ClCompile>
+    <ClCompile Include="cams\camsFollowUtil.cpp">
+      <Filter>cams</Filter>
+    </ClCompile>
+    <ClCompile Include="lyer\lyerLayerData.cpp">
+      <Filter>lyer</Filter>
+    </ClCompile>
+    <ClCompile Include="lyer\lyerLayerInterest.cpp">
+      <Filter>lyer</Filter>
+    </ClCompile>
+    <ClCompile Include="lyer\lyerLayerMgr.cpp">
+      <Filter>lyer</Filter>
+    </ClCompile>
+    <ClCompile Include="lyer\lyerObject.cpp">
+      <Filter>lyer</Filter>
+    </ClCompile>
+    <ClCompile Include="mexp\mexpExportData.cpp">
+      <Filter>mexp</Filter>
+    </ClCompile>
+    <ClCompile Include="mexp\mexpExporter.cpp">
+      <Filter>mexp</Filter>
+    </ClCompile>
+    <ClCompile Include="mexp\mexpExporterUtil.cpp">
+      <Filter>mexp</Filter>
+    </ClCompile>
+    <ClCompile Include="mexp\mexpExportInterest.cpp">
+      <Filter>mexp</Filter>
+    </ClCompile>
+    <ClCompile Include="mexp\mexpMgr.cpp">
+      <Filter>mexp</Filter>
+    </ClCompile>
+    <ClCompile Include="mexp\mexpRecorderCamera.cpp">
+      <Filter>mexp</Filter>
+    </ClCompile>
+    <ClCompile Include="mexp\mexpRecorderDirectorsCut.cpp">
+      <Filter>mexp</Filter>
+    </ClCompile>
+    <ClCompile Include="mexp\mexpRecorderNode.cpp">
+      <Filter>mexp</Filter>
+    </ClCompile>
+    <ClCompile Include="mexp\mexpRecorderPosition.cpp">
+      <Filter>mexp</Filter>
+    </ClCompile>
+    <ClCompile Include="mexp\mexpRecorderRotation.cpp">
+      <Filter>mexp</Filter>
+    </ClCompile>
+    <ClCompile Include="grps\grpsGroupData.cpp">
+      <Filter>grps</Filter>
+    </ClCompile>
+    <ClCompile Include="grps\grpsGroupInterest.cpp">
+      <Filter>grps</Filter>
+    </ClCompile>
+    <ClCompile Include="grps\grpsGroupMgr.cpp">
+      <Filter>grps</Filter>
+    </ClCompile>
+    <ClCompile Include="evmt\evmtEnvironment.cpp">
+      <Filter>evmt</Filter>
+    </ClCompile>
+    <ClCompile Include="evmt\evmtEnvironmentInterest.cpp">
+      <Filter>evmt</Filter>
+    </ClCompile>
+    <ClCompile Include="evmt\evmtEnvironmentMgr.cpp">
+      <Filter>evmt</Filter>
+    </ClCompile>
+    <ClCompile Include="evmt\evmtInfluenceUtil.cpp">
+      <Filter>evmt</Filter>
+    </ClCompile>
+    <ClCompile Include="evmt\private\evmtEnvironmentObject.cpp">
+      <Filter>evmt\private</Filter>
+    </ClCompile>
+    <ClCompile Include="evmt\GUI\evmtReAttachUtil.cpp">
+      <Filter>evmt\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\mtrlCommands.cpp">
+      <Filter>mtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\mtrlDriverCreator.cpp">
+      <Filter>mtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\mtrlHighlight.cpp">
+      <Filter>mtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\mtrlIconUtil.cpp">
+      <Filter>mtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\mtrlMaterialParser.cpp">
+      <Filter>mtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\mtrlPackage.cpp">
+      <Filter>mtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\mtrlScriptObject.cpp">
+      <Filter>mtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\mtrlSelectInterest.cpp">
+      <Filter>mtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\Gui\mtrlDialogUtil.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\GUI\mtrlDisplacement.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\GUI\mtrlDisplacementData.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\Gui\mtrlGlow.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\Gui\mtrlGlowData.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\GUI\mtrlNormals.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\GUI\mtrlNormalsData.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\Gui\mtrlOperations.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\GUI\mtrlOutline.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\GUI\mtrlOutlineData.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\GUI\mtrlPropertyObject.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\GUI\mtrlRefl.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\GUI\mtrlReflData.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\GUI\mtrlRendermanOverride.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\GUI\mtrlRendermanOverrideData.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\GUI\mtrlSetOperation.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\GUI\mtrlShaderObject.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\GUI\mtrlShaderUtil.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\GUI\mtrlSurfaceShader.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\GUI\mtrlTextureFilter.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\GUI\mtrlTextureFilterData.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\GUI\mtrlUVTransform.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="mtrl\GUI\mtrlUVTransformData.cpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythCaptureOptions.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythCommands.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythControlProperty.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythDebug.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythDialogs.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\GUI\pythDialogUtil.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythEnvironments.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythEventCallbackMgr.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythFgmtProperty.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythFunctionUtil.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythGroups.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythLayers.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythLightSets.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythLog.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythModules.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythMtrlProperty.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythPackage.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythProperty.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythPropertyUtil.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythRenderLayers.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythSelection.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythThinkInterest.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythTimeline.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythUserScriptUtil.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\pythUtil.cpp">
+      <Filter>pyth</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\wxGUI\pythPythonDialog.cpp">
+      <Filter>pyth\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="pyth\wxGUI\pythPythonDialogBase.cpp">
+      <Filter>pyth\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="fgmt\fgmtCommands.cpp">
+      <Filter>fgmt</Filter>
+    </ClCompile>
+    <ClCompile Include="fgmt\fgmtFragmentParser.cpp">
+      <Filter>fgmt</Filter>
+    </ClCompile>
+    <ClCompile Include="fgmt\fgmtHighlight.cpp">
+      <Filter>fgmt</Filter>
+    </ClCompile>
+    <ClCompile Include="fgmt\fgmtPackage.cpp">
+      <Filter>fgmt</Filter>
+    </ClCompile>
+    <ClCompile Include="fgmt\fgmtScriptObject.cpp">
+      <Filter>fgmt</Filter>
+    </ClCompile>
+    <ClCompile Include="fgmt\fgmtSelectInterest.cpp">
+      <Filter>fgmt</Filter>
+    </ClCompile>
+    <ClCompile Include="fgmt\GUI\fgmtDialogUtil.cpp">
+      <Filter>fgmt\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="fgmt\GUI\fgmtOperations.cpp">
+      <Filter>fgmt\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="fgmt\GUI\fgmtPropertyObject.cpp">
+      <Filter>fgmt\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="fgmt\wxGUI\fgmtUVEditor.cpp">
+      <Filter>fgmt\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ptm\ptmControlFactoryTimeline.cpp">
+      <Filter>ptm</Filter>
+    </ClCompile>
+    <ClCompile Include="ptm\wxGUI\ptmTime_TimeEdit.cpp">
+      <Filter>ptm\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ptm\wxGUI\ptmTimeEdit.cpp">
+      <Filter>ptm\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="rlyr\rlyrPackage.cpp">
+      <Filter>rlyr</Filter>
+    </ClCompile>
+    <ClCompile Include="rlyr\rlyrPassesObject.cpp">
+      <Filter>rlyr</Filter>
+    </ClCompile>
+    <ClCompile Include="rlyr\rlyrRenderCam.cpp">
+      <Filter>rlyr</Filter>
+    </ClCompile>
+    <ClCompile Include="rlyr\rlyrRenderLayer.cpp">
+      <Filter>rlyr</Filter>
+    </ClCompile>
+    <ClCompile Include="rlyr\rlyrRenderLayerInterest.cpp">
+      <Filter>rlyr</Filter>
+    </ClCompile>
+    <ClCompile Include="rlyr\rlyrRenderLayerMgr.cpp">
+      <Filter>rlyr</Filter>
+    </ClCompile>
+    <ClCompile Include="rlyr\private\rlyrRenderLayerNode.cpp">
+      <Filter>rlyr\private</Filter>
+    </ClCompile>
+    <ClCompile Include="rlyr\private\rlyrRenderLayerObject.cpp">
+      <Filter>rlyr\private</Filter>
+    </ClCompile>
+    <ClCompile Include="rlyr\data\rlyrLayersData.cpp">
+      <Filter>rlyr\data</Filter>
+    </ClCompile>
+    <ClCompile Include="rlyr\data\rlyrLayersDataParser.cpp">
+      <Filter>rlyr\data</Filter>
+    </ClCompile>
+    <ClCompile Include="rlyr\data\rlyrLayersDocumentChunk.cpp">
+      <Filter>rlyr\data</Filter>
+    </ClCompile>
+    <ClCompile Include="rlyr\data\rlyrLayersDocumentInterest.cpp">
+      <Filter>rlyr\data</Filter>
+    </ClCompile>
+    <ClCompile Include="rlyr\data\rlyrPassesData.cpp">
+      <Filter>rlyr\data</Filter>
+    </ClCompile>
+    <ClCompile Include="capt\captOutputDataDocumentChunk.cpp">
+      <Filter>capt</Filter>
+    </ClCompile>
+    <ClCompile Include="capt\captOutputDataDocumentInterest.cpp">
+      <Filter>capt</Filter>
+    </ClCompile>
+    <ClCompile Include="capt\captOutputDataParser.cpp">
+      <Filter>capt</Filter>
+    </ClCompile>
+    <ClCompile Include="capt\captOutputRenderProgressInterest.cpp">
+      <Filter>capt</Filter>
+    </ClCompile>
+    <ClCompile Include="capt\captRenderOutputData.cpp">
+      <Filter>capt</Filter>
+    </ClCompile>
+    <ClCompile Include="capt\captRenderOutputDataUtil.cpp">
+      <Filter>capt</Filter>
+    </ClCompile>
+    <ClCompile Include="capt\captRenderOutputObject.cpp">
+      <Filter>capt</Filter>
+    </ClCompile>
+    <ClCompile Include="capt\captRenderOutputTagsUtil.cpp">
+      <Filter>capt</Filter>
+    </ClCompile>
+    <ClCompile Include="capt\captRenderProgressData.cpp">
+      <Filter>capt</Filter>
+    </ClCompile>
+    <ClCompile Include="capt\captRenderProgressInterest.cpp">
+      <Filter>capt</Filter>
+    </ClCompile>
+    <ClCompile Include="capt\captRenderProgressMgr.cpp">
+      <Filter>capt</Filter>
+    </ClCompile>
+    <ClCompile Include="capt\captStereoUtil.cpp">
+      <Filter>capt</Filter>
+    </ClCompile>
+    <ClCompile Include="rprf\rprfPrefsCategory.cpp">
+      <Filter>rprf</Filter>
+    </ClCompile>
+    <ClCompile Include="rprf\rprfPrefsData.cpp">
+      <Filter>rprf</Filter>
+    </ClCompile>
+    <ClCompile Include="rprf\rprfPrefsDataParser.cpp">
+      <Filter>rprf</Filter>
+    </ClCompile>
+    <ClCompile Include="rprf\rprfPrefsObject.cpp">
+      <Filter>rprf</Filter>
+    </ClCompile>
+    <ClCompile Include="rprf\rprfPrefsUtil.cpp">
+      <Filter>rprf</Filter>
+    </ClCompile>
+    <ClCompile Include="xtra\xtraDriverCreator.cpp">
+      <Filter>xtra</Filter>
+    </ClCompile>
+    <ClCompile Include="xtra\xtraPackage.cpp">
+      <Filter>xtra</Filter>
+    </ClCompile>
+    <ClCompile Include="xtra\xtraPropertyData.cpp">
+      <Filter>xtra</Filter>
+    </ClCompile>
+    <ClCompile Include="xtra\xtraPropertyDataParser.cpp">
+      <Filter>xtra</Filter>
+    </ClCompile>
+    <ClCompile Include="xtra\xtraPython.cpp">
+      <Filter>xtra</Filter>
+    </ClCompile>
+    <ClCompile Include="xtra\xtraScriptObject.cpp">
+      <Filter>xtra</Filter>
+    </ClCompile>
+    <ClCompile Include="xtra\xtraSelectInterest.cpp">
+      <Filter>xtra</Filter>
+    </ClCompile>
+    <ClCompile Include="xtra\GUI\xtraCommands.cpp">
+      <Filter>xtra\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="xtra\GUI\xtraOperations.cpp">
+      <Filter>xtra\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="brsh\brshBrushStroke.cpp">
+      <Filter>brsh</Filter>
+    </ClCompile>
+    <ClCompile Include="brsh\brshColorDialogUtil.cpp">
+      <Filter>brsh</Filter>
+    </ClCompile>
+    <ClCompile Include="brsh\brshPaintBrushMgr.cpp">
+      <Filter>brsh</Filter>
+    </ClCompile>
+    <ClCompile Include="brsh\wxGUI\brshColorDialog.cpp">
+      <Filter>brsh\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="brsh\wxGUI\brshColorDialogBase.cpp">
+      <Filter>brsh\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="brsh\data\brshData.cpp">
+      <Filter>brsh\data</Filter>
+    </ClCompile>
+    <ClCompile Include="brsh\data\brshPropertyObject.cpp">
+      <Filter>brsh\data</Filter>
+    </ClCompile>
+    <ClCompile Include="rmp\rmpData.cpp">
+      <Filter>rmp</Filter>
+    </ClCompile>
+    <ClCompile Include="rmp\rmpDialogMgr.cpp">
+      <Filter>rmp</Filter>
+    </ClCompile>
+    <ClCompile Include="rmp\rmpDialogUtil.cpp">
+      <Filter>rmp</Filter>
+    </ClCompile>
+    <ClCompile Include="rmp\rmpObject.cpp">
+      <Filter>rmp</Filter>
+    </ClCompile>
+    <ClCompile Include="rmp\rmpPackage.cpp">
+      <Filter>rmp</Filter>
+    </ClCompile>
+    <ClCompile Include="rmp\rmpTextureMgr.cpp">
+      <Filter>rmp</Filter>
+    </ClCompile>
+    <ClCompile Include="rmp\private\rmpDataParserUtil.cpp">
+      <Filter>rmp\private</Filter>
+    </ClCompile>
+    <ClCompile Include="rmp\private\rmpTextureUtil.cpp">
+      <Filter>rmp\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cmpr\cmprCompressUtil.cpp">
+      <Filter>Cmpr</Filter>
+    </ClCompile>
+    <ClCompile Include="cmpr\private\cmprZipUtil.cpp">
+      <Filter>Cmpr\private</Filter>
+    </ClCompile>
+    <ClCompile Include="rman\rmanExporter.cpp">
+      <Filter>rman</Filter>
+    </ClCompile>
+    <ClCompile Include="rman\rmanExportInterest.cpp">
+      <Filter>rman</Filter>
+    </ClCompile>
+    <ClCompile Include="rman\rmanMgr.cpp">
+      <Filter>rman</Filter>
+    </ClCompile>
+    <ClCompile Include="xfrm\xfrmApplyTransformUtil.cpp">
+      <Filter>xfrm</Filter>
+    </ClCompile>
+    <ClCompile Include="xfrm\xfrmTransformGroup.cpp">
+      <Filter>xfrm</Filter>
+    </ClCompile>
+    <ClCompile Include="xfrm\xfrmTransformMgr.cpp">
+      <Filter>xfrm</Filter>
+    </ClCompile>
+    <ClCompile Include="xfrm\wxGUI\xfrmSurfaceTreeNode.cpp">
+      <Filter>xfrm\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="xfrm\wxGUI\xfrmSurfaceView.cpp">
+      <Filter>xfrm\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="fbx\fbxExporter.cpp">
+      <Filter>fbx</Filter>
+    </ClCompile>
+    <ClCompile Include="fbx\fbxExportInterest.cpp">
+      <Filter>fbx</Filter>
+    </ClCompile>
+    <ClCompile Include="fbx\fbxMgr.cpp">
+      <Filter>fbx</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\mrayExporter.cpp">
+      <Filter>mray</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\mrayExportInterest.cpp">
+      <Filter>mray</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\mrayMgr.cpp">
+      <Filter>mray</Filter>
+    </ClCompile>
+    <ClCompile Include="pfx\pfxData.cpp">
+      <Filter>pfx</Filter>
+    </ClCompile>
+    <ClCompile Include="pfx\pfxDataParser.cpp">
+      <Filter>pfx</Filter>
+    </ClCompile>
+    <ClCompile Include="pfx\pfxPackage.cpp">
+      <Filter>pfx</Filter>
+    </ClCompile>
+    <ClCompile Include="pfx\pfxPostEffectMgr.cpp">
+      <Filter>pfx</Filter>
+    </ClCompile>
+    <ClCompile Include="pfx\pfxPostEffectObject.cpp">
+      <Filter>pfx</Filter>
+    </ClCompile>
+    <ClCompile Include="swl\swlDataParser.cpp">
+      <Filter>swl</Filter>
+    </ClCompile>
+    <ClCompile Include="swl\swlInterest.cpp">
+      <Filter>swl</Filter>
+    </ClCompile>
+    <ClCompile Include="swl\swlPackage.cpp">
+      <Filter>swl</Filter>
+    </ClCompile>
+    <ClCompile Include="swl\swlPropertyObject.cpp">
+      <Filter>swl</Filter>
+    </ClCompile>
+    <ClCompile Include="swl\swlScriptObject.cpp">
+      <Filter>swl</Filter>
+    </ClCompile>
+    <ClCompile Include="swl\swlSelectionUtil.cpp">
+      <Filter>swl</Filter>
+    </ClCompile>
+    <ClCompile Include="SupportLayer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="dyn\dynChannelControl.hpp">
+      <Filter>dyn</Filter>
+    </ClInclude>
+    <ClInclude Include="dyn\dynControlData.hpp">
+      <Filter>dyn</Filter>
+    </ClInclude>
+    <ClInclude Include="dyn\dynControlDataParser.hpp">
+      <Filter>dyn</Filter>
+    </ClInclude>
+    <ClInclude Include="dyn\dynDriverCreator.hpp">
+      <Filter>dyn</Filter>
+    </ClInclude>
+    <ClInclude Include="dyn\dynPackage.hpp">
+      <Filter>dyn</Filter>
+    </ClInclude>
+    <ClInclude Include="dyn\dynScriptObject.hpp">
+      <Filter>dyn</Filter>
+    </ClInclude>
+    <ClInclude Include="dyn\dynSelectInterest.hpp">
+      <Filter>dyn</Filter>
+    </ClInclude>
+    <ClInclude Include="dyn\GUI\dynCreateOperation.hpp">
+      <Filter>dyn\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="dyn\GUI\dynDeleteOperation.hpp">
+      <Filter>dyn\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="dyn\Gui\dynDialogUtil.hpp">
+      <Filter>dyn\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="dyn\GUI\dynOperations.hpp">
+      <Filter>dyn\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="dyn\GUI\dynPropertyObject.hpp">
+      <Filter>dyn\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="dyn\Drivers\dynDriverTransformKey.hpp">
+      <Filter>dyn\Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="dyn\Drivers\dynDriverTransformKeyInfo.hpp">
+      <Filter>dyn\Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="dyn\Drivers\dynDriverTransformKeyParser.hpp">
+      <Filter>dyn\Drivers</Filter>
+    </ClInclude>
+    <ClInclude Include="cmps\cmpsCompass.hpp">
+      <Filter>cmps</Filter>
+    </ClInclude>
+    <ClInclude Include="cmps\cmpsCompassMgr.hpp">
+      <Filter>cmps</Filter>
+    </ClInclude>
+    <ClInclude Include="cmps\cmpsManipObject.hpp">
+      <Filter>cmps</Filter>
+    </ClInclude>
+    <ClInclude Include="cmps\cmpsPackage.hpp">
+      <Filter>cmps</Filter>
+    </ClInclude>
+    <ClInclude Include="cmps\cmpsPickInterest.hpp">
+      <Filter>cmps</Filter>
+    </ClInclude>
+    <ClInclude Include="cmps\cmpsRenderLayer.hpp">
+      <Filter>cmps</Filter>
+    </ClInclude>
+    <ClInclude Include="cmps\cmpsSelectMgr.hpp">
+      <Filter>cmps</Filter>
+    </ClInclude>
+    <ClInclude Include="cmps\cmpsWorldAxis.hpp">
+      <Filter>cmps</Filter>
+    </ClInclude>
+    <ClInclude Include="cmps\private\cmpsCompassObject.hpp">
+      <Filter>cmps\private</Filter>
+    </ClInclude>
+    <ClInclude Include="cmps\private\cmpsCompassObject3Axis.hpp">
+      <Filter>cmps\private</Filter>
+    </ClInclude>
+    <ClInclude Include="cmps\private\cmpsCompassObjectRotate.hpp">
+      <Filter>cmps\private</Filter>
+    </ClInclude>
+    <ClInclude Include="cmps\private\cmpsCompassObjectScale.hpp">
+      <Filter>cmps\private</Filter>
+    </ClInclude>
+    <ClInclude Include="cmps\private\cmpsCompassObjectSelect.hpp">
+      <Filter>cmps\private</Filter>
+    </ClInclude>
+    <ClInclude Include="cmps\private\cmpsCompassObjectSingle.hpp">
+      <Filter>cmps\private</Filter>
+    </ClInclude>
+    <ClInclude Include="cmps\private\cmpsCompassObjectTranslate.hpp">
+      <Filter>cmps\private</Filter>
+    </ClInclude>
+    <ClInclude Include="cmps\private\cmpsCompassRotate.hpp">
+      <Filter>cmps\private</Filter>
+    </ClInclude>
+    <ClInclude Include="cmps\private\cmpsCompassScale.hpp">
+      <Filter>cmps\private</Filter>
+    </ClInclude>
+    <ClInclude Include="cmps\private\cmpsCompassSelect.hpp">
+      <Filter>cmps\private</Filter>
+    </ClInclude>
+    <ClInclude Include="cmps\private\cmpsCompassTranslate.hpp">
+      <Filter>cmps\private</Filter>
+    </ClInclude>
+    <ClInclude Include="cmps\private\cmpsObjectSimple.hpp">
+      <Filter>cmps\private</Filter>
+    </ClInclude>
+    <ClInclude Include="spln\splnCurveMgr.hpp">
+      <Filter>spln</Filter>
+    </ClInclude>
+    <ClInclude Include="spln\splnCurveModel.hpp">
+      <Filter>spln</Filter>
+    </ClInclude>
+    <ClInclude Include="spln\splnCurvePointObject.hpp">
+      <Filter>spln</Filter>
+    </ClInclude>
+    <ClInclude Include="spln\splnCurveSelect.hpp">
+      <Filter>spln</Filter>
+    </ClInclude>
+    <ClInclude Include="spln\splnPackage.hpp">
+      <Filter>spln</Filter>
+    </ClInclude>
+    <ClInclude Include="spln\splnPickInterest.hpp">
+      <Filter>spln</Filter>
+    </ClInclude>
+    <ClInclude Include="spln\splnSpline.hpp">
+      <Filter>spln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnAdapterPosition.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnBaseData.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnBaseDataParser.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnBlendDriver.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnChannel.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnChannelInfo.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnChannelInfoParser.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnChannelSet.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnCreator.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnDriver.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnDriverClipboard.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnDriverDialogUtil.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnDriverIdMgr.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnDriverInfo.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnDriverInfoParser.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnPackage.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnParser.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnScriptObject.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnSelectionUtil.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnTimeEditUIInfo.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnTimeInOutData.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnTimeInOutMgr.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnTimeInterest.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnTimeLine.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnTimelineMgr.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnTimeUtil.hpp">
+      <Filter>tmln</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnChannelAnimationFull.hpp">
+      <Filter>tmln\Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnChannelAnimationSub.hpp">
+      <Filter>tmln\Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnChannelBoolean.hpp">
+      <Filter>tmln\Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnChannelColor.hpp">
+      <Filter>tmln\Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnChannelFileName.hpp">
+      <Filter>tmln\Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnChannelFilePath.hpp">
+      <Filter>tmln\Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnChannelFloat.hpp">
+      <Filter>tmln\Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnChannelOrientation.hpp">
+      <Filter>tmln\Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnChannelPosition.hpp">
+      <Filter>tmln\Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnChannelRenderPass.hpp">
+      <Filter>tmln\Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnChannelScale.hpp">
+      <Filter>tmln\Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnChannelTextureFileName.hpp">
+      <Filter>tmln\Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="tmln\tmlnChannelVideo.hpp">
+      <Filter>tmln\Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="vis\visMgr.hpp">
+      <Filter>vis</Filter>
+    </ClInclude>
+    <ClInclude Include="vis\visPackage.hpp">
+      <Filter>vis</Filter>
+    </ClInclude>
+    <ClInclude Include="vis\visVisibleInterest.hpp">
+      <Filter>vis</Filter>
+    </ClInclude>
+    <ClInclude Include="pnt\pntPackage.hpp">
+      <Filter>pnt</Filter>
+    </ClInclude>
+    <ClInclude Include="pnt\pntPickInterest.hpp">
+      <Filter>pnt</Filter>
+    </ClInclude>
+    <ClInclude Include="pnt\pntPoint.hpp">
+      <Filter>pnt</Filter>
+    </ClInclude>
+    <ClInclude Include="pnt\pntPointMgr.hpp">
+      <Filter>pnt</Filter>
+    </ClInclude>
+    <ClInclude Include="pnt\pntPointObject.hpp">
+      <Filter>pnt</Filter>
+    </ClInclude>
+    <ClInclude Include="pnt\pntPointSelect.hpp">
+      <Filter>pnt</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmAppPackageMgr.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmAppUtil.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmAutoSaveMgr.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmAviUtil.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmBaseData.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmBaseDataParser.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmCompassUtil.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmConstants.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmDebugInfo.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmErrorCodes.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmObject.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmPackage.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmPaths.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmPickMask.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmQuickTimeSound.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmQuickTimeUtil.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmReference.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmReferencePosChannel.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmScreenCaptureUtil.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmSecurityMgr.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmThinkInterest.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmThinkMgr.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmTimeCodeMgr.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmTimeCodeUtil.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\mnmVJoystick.hpp">
+      <Filter>mnm</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\Data\mnmAppPackageData.hpp">
+      <Filter>mnm\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\Data\mnmAppPackageDocumentChunk.hpp">
+      <Filter>mnm\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\Data\mnmAppPackageDocumentInterest.hpp">
+      <Filter>mnm\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="mnm\Data\mnmAppPackageParser.hpp">
+      <Filter>mnm\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="fsys\fsysDirListUtil.hpp">
+      <Filter>fsys</Filter>
+    </ClInclude>
+    <ClInclude Include="fsys\fsysFileInfo.hpp">
+      <Filter>fsys</Filter>
+    </ClInclude>
+    <ClInclude Include="fsys\fsysFileList.hpp">
+      <Filter>fsys</Filter>
+    </ClInclude>
+    <ClInclude Include="fsys\fsysFileUtil.hpp">
+      <Filter>fsys</Filter>
+    </ClInclude>
+    <ClInclude Include="mode\modeCommandSwitchMode.hpp">
+      <Filter>mode</Filter>
+    </ClInclude>
+    <ClInclude Include="mode\modeConstants.hpp">
+      <Filter>mode</Filter>
+    </ClInclude>
+    <ClInclude Include="mode\modeMode.hpp">
+      <Filter>mode</Filter>
+    </ClInclude>
+    <ClInclude Include="mode\modeModeMgr.hpp">
+      <Filter>mode</Filter>
+    </ClInclude>
+    <ClInclude Include="mode\modeModeTime.hpp">
+      <Filter>mode</Filter>
+    </ClInclude>
+    <ClInclude Include="gsup\gsupReAttachUtil.hpp">
+      <Filter>gsup</Filter>
+    </ClInclude>
+    <ClInclude Include="gsup\gsupTreeCtrlUtil.hpp">
+      <Filter>gsup</Filter>
+    </ClInclude>
+    <ClInclude Include="ltst\ltstInfluenceUtil.hpp">
+      <Filter>ltst</Filter>
+    </ClInclude>
+    <ClInclude Include="ltst\ltstIsolatable.hpp">
+      <Filter>ltst</Filter>
+    </ClInclude>
+    <ClInclude Include="ltst\ltstIsolateMgr.hpp">
+      <Filter>ltst</Filter>
+    </ClInclude>
+    <ClInclude Include="ltst\ltstLightSet.hpp">
+      <Filter>ltst</Filter>
+    </ClInclude>
+    <ClInclude Include="ltst\ltstLightSetInterest.hpp">
+      <Filter>ltst</Filter>
+    </ClInclude>
+    <ClInclude Include="ltst\ltstLightSetMgr.hpp">
+      <Filter>ltst</Filter>
+    </ClInclude>
+    <ClInclude Include="ltst\ltstLightSetsData.hpp">
+      <Filter>ltst</Filter>
+    </ClInclude>
+    <ClInclude Include="ltst\private\ltstLightSetInterestMgr.hpp">
+      <Filter>ltst\private</Filter>
+    </ClInclude>
+    <ClInclude Include="ltst\private\ltstLightSetLight.hpp">
+      <Filter>ltst\private</Filter>
+    </ClInclude>
+    <ClInclude Include="ltst\private\ltstLightSetNode.hpp">
+      <Filter>ltst\private</Filter>
+    </ClInclude>
+    <ClInclude Include="ltst\private\ltstLightSetObject.hpp">
+      <Filter>ltst\private</Filter>
+    </ClInclude>
+    <ClInclude Include="ltst\private\ltstLightSetUtil.hpp">
+      <Filter>ltst\private</Filter>
+    </ClInclude>
+    <ClInclude Include="ltst\GUI\ltstReAttachUtil.hpp">
+      <Filter>ltst\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="cams\camsCameraMgr.hpp">
+      <Filter>cams</Filter>
+    </ClInclude>
+    <ClInclude Include="cams\camsDirectorsCut.hpp">
+      <Filter>cams</Filter>
+    </ClInclude>
+    <ClInclude Include="cams\camsDirectorsCutMgr.hpp">
+      <Filter>cams</Filter>
+    </ClInclude>
+    <ClInclude Include="cams\camsFollowUtil.hpp">
+      <Filter>cams</Filter>
+    </ClInclude>
+    <ClInclude Include="lyer\lyerLayerData.hpp">
+      <Filter>lyer</Filter>
+    </ClInclude>
+    <ClInclude Include="lyer\lyerLayerInterest.hpp">
+      <Filter>lyer</Filter>
+    </ClInclude>
+    <ClInclude Include="lyer\lyerLayerMgr.hpp">
+      <Filter>lyer</Filter>
+    </ClInclude>
+    <ClInclude Include="lyer\lyerLayerStyle.hpp">
+      <Filter>lyer</Filter>
+    </ClInclude>
+    <ClInclude Include="lyer\lyerObject.hpp">
+      <Filter>lyer</Filter>
+    </ClInclude>
+    <ClInclude Include="mexp\mexpChannelRecorder.hpp">
+      <Filter>mexp</Filter>
+    </ClInclude>
+    <ClInclude Include="mexp\mexpExportData.hpp">
+      <Filter>mexp</Filter>
+    </ClInclude>
+    <ClInclude Include="mexp\mexpExporter.hpp">
+      <Filter>mexp</Filter>
+    </ClInclude>
+    <ClInclude Include="mexp\mexpExporterUtil.hpp">
+      <Filter>mexp</Filter>
+    </ClInclude>
+    <ClInclude Include="mexp\mexpExportInterest.hpp">
+      <Filter>mexp</Filter>
+    </ClInclude>
+    <ClInclude Include="mexp\mexpMgr.hpp">
+      <Filter>mexp</Filter>
+    </ClInclude>
+    <ClInclude Include="mexp\mexpRecorderCamera.hpp">
+      <Filter>mexp</Filter>
+    </ClInclude>
+    <ClInclude Include="mexp\mexpRecorderDirectorsCut.hpp">
+      <Filter>mexp</Filter>
+    </ClInclude>
+    <ClInclude Include="mexp\mexpRecorderNode.hpp">
+      <Filter>mexp</Filter>
+    </ClInclude>
+    <ClInclude Include="mexp\mexpRecorderPosition.hpp">
+      <Filter>mexp</Filter>
+    </ClInclude>
+    <ClInclude Include="mexp\mexpRecorderRotation.hpp">
+      <Filter>mexp</Filter>
+    </ClInclude>
+    <ClInclude Include="grps\grpsGroupData.hpp">
+      <Filter>grps</Filter>
+    </ClInclude>
+    <ClInclude Include="grps\grpsGroupInterest.hpp">
+      <Filter>grps</Filter>
+    </ClInclude>
+    <ClInclude Include="grps\grpsGroupMgr.hpp">
+      <Filter>grps</Filter>
+    </ClInclude>
+    <ClInclude Include="evmt\evmtEnvironment.hpp">
+      <Filter>evmt</Filter>
+    </ClInclude>
+    <ClInclude Include="evmt\evmtEnvironmentInterest.hpp">
+      <Filter>evmt</Filter>
+    </ClInclude>
+    <ClInclude Include="evmt\evmtEnvironmentMgr.hpp">
+      <Filter>evmt</Filter>
+    </ClInclude>
+    <ClInclude Include="evmt\evmtInfluenceUtil.hpp">
+      <Filter>evmt</Filter>
+    </ClInclude>
+    <ClInclude Include="evmt\private\evmtEnvironmentObject.hpp">
+      <Filter>evmt\private</Filter>
+    </ClInclude>
+    <ClInclude Include="evmt\GUI\evmtReAttachUtil.hpp">
+      <Filter>evmt\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\mtrlCommands.hpp">
+      <Filter>mtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\mtrlDriverCreator.hpp">
+      <Filter>mtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\mtrlHighlight.hpp">
+      <Filter>mtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\mtrlIconUtil.hpp">
+      <Filter>mtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\mtrlMaterialParser.hpp">
+      <Filter>mtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\mtrlPackage.hpp">
+      <Filter>mtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\mtrlScriptObject.hpp">
+      <Filter>mtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\mtrlSelectInterest.hpp">
+      <Filter>mtrl</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\Gui\mtrlDialogUtil.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\GUI\mtrlDisplacement.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\GUI\mtrlDisplacementData.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\Gui\mtrlGlow.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\Gui\mtrlGlowData.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\GUI\mtrlNormals.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\GUI\mtrlNormalsData.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\Gui\mtrlOperations.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\GUI\mtrlOutline.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\GUI\mtrlOutlineData.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\GUI\mtrlPropertyObject.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\GUI\mtrlRefl.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\GUI\mtrlReflData.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\GUI\mtrlRendermanOverride.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\GUI\mtrlRendermanOverrideData.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\GUI\mtrlSetOperation.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\GUI\mtrlShaderObject.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\GUI\mtrlShaderUtil.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\GUI\mtrlSurfaceShader.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\GUI\mtrlTextureFilter.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\GUI\mtrlTextureFilterData.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\GUI\mtrlUVTransform.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mtrl\GUI\mtrlUVTransformData.hpp">
+      <Filter>mtrl\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythCaptureOptions.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythCommands.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythControlProperty.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythDebug.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythDialogs.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\GUI\pythDialogUtil.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythEnvironments.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythEventCallbackMgr.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythFgmtProperty.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythFunctionUtil.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythGroups.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythLayers.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythLightSets.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythLog.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythModules.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythMtrlProperty.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythPackage.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythProperty.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythPropertyUtil.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythPython.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythRenderLayers.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythSelection.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythThinkInterest.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythTimeline.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythUserScriptUtil.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\pythUtil.hpp">
+      <Filter>pyth</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\wxGUI\pythPythonDialog.hpp">
+      <Filter>pyth\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="pyth\wxGUI\pythPythonDialogBase.h">
+      <Filter>pyth\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="fgmt\fgmtCommands.hpp">
+      <Filter>fgmt</Filter>
+    </ClInclude>
+    <ClInclude Include="fgmt\fgmtFragmentData.hpp">
+      <Filter>fgmt</Filter>
+    </ClInclude>
+    <ClInclude Include="fgmt\fgmtFragmentParser.hpp">
+      <Filter>fgmt</Filter>
+    </ClInclude>
+    <ClInclude Include="fgmt\fgmtFragmentsAOData.hpp">
+      <Filter>fgmt</Filter>
+    </ClInclude>
+    <ClInclude Include="fgmt\fgmtHighlight.hpp">
+      <Filter>fgmt</Filter>
+    </ClInclude>
+    <ClInclude Include="fgmt\fgmtPackage.hpp">
+      <Filter>fgmt</Filter>
+    </ClInclude>
+    <ClInclude Include="fgmt\fgmtScriptObject.hpp">
+      <Filter>fgmt</Filter>
+    </ClInclude>
+    <ClInclude Include="fgmt\fgmtSelectInterest.hpp">
+      <Filter>fgmt</Filter>
+    </ClInclude>
+    <ClInclude Include="fgmt\GUI\fgmtDialogUtil.hpp">
+      <Filter>fgmt\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="fgmt\GUI\fgmtOperations.hpp">
+      <Filter>fgmt\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="fgmt\GUI\fgmtPropertyObject.hpp">
+      <Filter>fgmt\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="fgmt\wxGUI\fgmtUVEditor.hpp">
+      <Filter>fgmt\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ptm\ptmControlFactoryTimeline.hpp">
+      <Filter>ptm</Filter>
+    </ClInclude>
+    <ClInclude Include="ptm\wxGUI\ptmTemplate_TimeEdit.hpp">
+      <Filter>ptm\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ptm\wxGUI\ptmTime_TimeEdit.hpp">
+      <Filter>ptm\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ptm\wxGUI\ptmTimeEdit.hpp">
+      <Filter>ptm\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="rlyr\rlyrPackage.hpp">
+      <Filter>rlyr</Filter>
+    </ClInclude>
+    <ClInclude Include="rlyr\rlyrPassesObject.hpp">
+      <Filter>rlyr</Filter>
+    </ClInclude>
+    <ClInclude Include="rlyr\rlyrRenderCam.hpp">
+      <Filter>rlyr</Filter>
+    </ClInclude>
+    <ClInclude Include="rlyr\rlyrRenderLayer.hpp">
+      <Filter>rlyr</Filter>
+    </ClInclude>
+    <ClInclude Include="rlyr\rlyrRenderLayerInterest.hpp">
+      <Filter>rlyr</Filter>
+    </ClInclude>
+    <ClInclude Include="rlyr\rlyrRenderLayerMgr.hpp">
+      <Filter>rlyr</Filter>
+    </ClInclude>
+    <ClInclude Include="rlyr\private\rlyrRenderLayerNode.hpp">
+      <Filter>rlyr\private</Filter>
+    </ClInclude>
+    <ClInclude Include="rlyr\private\rlyrRenderLayerObject.hpp">
+      <Filter>rlyr\private</Filter>
+    </ClInclude>
+    <ClInclude Include="rlyr\data\rlyrLayersData.hpp">
+      <Filter>rlyr\data</Filter>
+    </ClInclude>
+    <ClInclude Include="rlyr\data\rlyrLayersDataParser.hpp">
+      <Filter>rlyr\data</Filter>
+    </ClInclude>
+    <ClInclude Include="rlyr\data\rlyrLayersDocumentChunk.hpp">
+      <Filter>rlyr\data</Filter>
+    </ClInclude>
+    <ClInclude Include="rlyr\data\rlyrLayersDocumentInterest.hpp">
+      <Filter>rlyr\data</Filter>
+    </ClInclude>
+    <ClInclude Include="rlyr\data\rlyrPassesData.hpp">
+      <Filter>rlyr\data</Filter>
+    </ClInclude>
+    <ClInclude Include="capt\captOutputDataDocumentChunk.hpp">
+      <Filter>capt</Filter>
+    </ClInclude>
+    <ClInclude Include="capt\captOutputDataDocumentInterest.hpp">
+      <Filter>capt</Filter>
+    </ClInclude>
+    <ClInclude Include="capt\captOutputDataParser.hpp">
+      <Filter>capt</Filter>
+    </ClInclude>
+    <ClInclude Include="capt\captOutputRenderProgressInterest.hpp">
+      <Filter>capt</Filter>
+    </ClInclude>
+    <ClInclude Include="capt\captRenderOutputData.hpp">
+      <Filter>capt</Filter>
+    </ClInclude>
+    <ClInclude Include="capt\captRenderOutputDataUtil.hpp">
+      <Filter>capt</Filter>
+    </ClInclude>
+    <ClInclude Include="capt\captRenderOutputObject.hpp">
+      <Filter>capt</Filter>
+    </ClInclude>
+    <ClInclude Include="capt\captRenderOutputTagsUtil.hpp">
+      <Filter>capt</Filter>
+    </ClInclude>
+    <ClInclude Include="capt\captRenderProgressData.hpp">
+      <Filter>capt</Filter>
+    </ClInclude>
+    <ClInclude Include="capt\captRenderProgressInterest.hpp">
+      <Filter>capt</Filter>
+    </ClInclude>
+    <ClInclude Include="capt\captRenderProgressMgr.hpp">
+      <Filter>capt</Filter>
+    </ClInclude>
+    <ClInclude Include="capt\captStereoUtil.hpp">
+      <Filter>capt</Filter>
+    </ClInclude>
+    <ClInclude Include="rprf\rprfPrefsCategory.hpp">
+      <Filter>rprf</Filter>
+    </ClInclude>
+    <ClInclude Include="rprf\rprfPrefsData.hpp">
+      <Filter>rprf</Filter>
+    </ClInclude>
+    <ClInclude Include="rprf\rprfPrefsDataParser.hpp">
+      <Filter>rprf</Filter>
+    </ClInclude>
+    <ClInclude Include="rprf\rprfPrefsObject.hpp">
+      <Filter>rprf</Filter>
+    </ClInclude>
+    <ClInclude Include="rprf\rprfPrefsUtil.hpp">
+      <Filter>rprf</Filter>
+    </ClInclude>
+    <ClInclude Include="xtra\xtraDriverCreator.hpp">
+      <Filter>xtra</Filter>
+    </ClInclude>
+    <ClInclude Include="xtra\xtraPackage.hpp">
+      <Filter>xtra</Filter>
+    </ClInclude>
+    <ClInclude Include="xtra\xtraPropertyData.hpp">
+      <Filter>xtra</Filter>
+    </ClInclude>
+    <ClInclude Include="xtra\xtraPropertyDataParser.hpp">
+      <Filter>xtra</Filter>
+    </ClInclude>
+    <ClInclude Include="xtra\xtraPython.hpp">
+      <Filter>xtra</Filter>
+    </ClInclude>
+    <ClInclude Include="xtra\xtraScriptObject.hpp">
+      <Filter>xtra</Filter>
+    </ClInclude>
+    <ClInclude Include="xtra\xtraSelectInterest.hpp">
+      <Filter>xtra</Filter>
+    </ClInclude>
+    <ClInclude Include="xtra\GUI\xtraCommands.hpp">
+      <Filter>xtra\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="xtra\GUI\xtraOperations.hpp">
+      <Filter>xtra\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="brsh\brshBrushStroke.hpp">
+      <Filter>brsh</Filter>
+    </ClInclude>
+    <ClInclude Include="brsh\brshColorDialogUtil.hpp">
+      <Filter>brsh</Filter>
+    </ClInclude>
+    <ClInclude Include="brsh\brshPaintBrushMgr.hpp">
+      <Filter>brsh</Filter>
+    </ClInclude>
+    <ClInclude Include="brsh\wxGUI\brshColorDialog.hpp">
+      <Filter>brsh\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="brsh\wxGUI\brshColorDialogBase.h">
+      <Filter>brsh\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="brsh\data\brshData.hpp">
+      <Filter>brsh\data</Filter>
+    </ClInclude>
+    <ClInclude Include="brsh\data\brshPropertyObject.hpp">
+      <Filter>brsh\data</Filter>
+    </ClInclude>
+    <ClInclude Include="rmp\rmpData.hpp">
+      <Filter>rmp</Filter>
+    </ClInclude>
+    <ClInclude Include="rmp\rmpDialogMgr.hpp">
+      <Filter>rmp</Filter>
+    </ClInclude>
+    <ClInclude Include="rmp\rmpDialogUtil.hpp">
+      <Filter>rmp</Filter>
+    </ClInclude>
+    <ClInclude Include="rmp\rmpObject.hpp">
+      <Filter>rmp</Filter>
+    </ClInclude>
+    <ClInclude Include="rmp\rmpPackage.hpp">
+      <Filter>rmp</Filter>
+    </ClInclude>
+    <ClInclude Include="rmp\rmpTextureMgr.hpp">
+      <Filter>rmp</Filter>
+    </ClInclude>
+    <ClInclude Include="rmp\private\rmpDataParserUtil.hpp">
+      <Filter>rmp\private</Filter>
+    </ClInclude>
+    <ClInclude Include="rmp\private\rmpTextureUtil.hpp">
+      <Filter>rmp\private</Filter>
+    </ClInclude>
+    <ClInclude Include="cmpr\cmprCompressUtil.hpp">
+      <Filter>Cmpr</Filter>
+    </ClInclude>
+    <ClInclude Include="cmpr\private\cmprZipUtil.hpp">
+      <Filter>Cmpr\private</Filter>
+    </ClInclude>
+    <ClInclude Include="rman\rmanExporter.hpp">
+      <Filter>rman</Filter>
+    </ClInclude>
+    <ClInclude Include="rman\rmanExportInterest.hpp">
+      <Filter>rman</Filter>
+    </ClInclude>
+    <ClInclude Include="rman\rmanMgr.hpp">
+      <Filter>rman</Filter>
+    </ClInclude>
+    <ClInclude Include="xfrm\xfrmApplyTransformUtil.hpp">
+      <Filter>xfrm</Filter>
+    </ClInclude>
+    <ClInclude Include="xfrm\xfrmTransformGroup.hpp">
+      <Filter>xfrm</Filter>
+    </ClInclude>
+    <ClInclude Include="xfrm\xfrmTransformMgr.hpp">
+      <Filter>xfrm</Filter>
+    </ClInclude>
+    <ClInclude Include="xfrm\xfrmTransformNode.hpp">
+      <Filter>xfrm</Filter>
+    </ClInclude>
+    <ClInclude Include="xfrm\xfrmTransformNodeCallback.hpp">
+      <Filter>xfrm</Filter>
+    </ClInclude>
+    <ClInclude Include="xfrm\wxGUI\xfrmSurfaceTreeNode.hpp">
+      <Filter>xfrm\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="xfrm\wxGUI\xfrmSurfaceView.hpp">
+      <Filter>xfrm\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx\fbxExporter.hpp">
+      <Filter>fbx</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx\fbxExportInterest.hpp">
+      <Filter>fbx</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx\fbxMgr.hpp">
+      <Filter>fbx</Filter>
+    </ClInclude>
+    <ClInclude Include="mray\mrayExporter.hpp">
+      <Filter>mray</Filter>
+    </ClInclude>
+    <ClInclude Include="mray\mrayExportInterest.hpp">
+      <Filter>mray</Filter>
+    </ClInclude>
+    <ClInclude Include="mray\mrayMgr.hpp">
+      <Filter>mray</Filter>
+    </ClInclude>
+    <ClInclude Include="pfx\pfxData.hpp">
+      <Filter>pfx</Filter>
+    </ClInclude>
+    <ClInclude Include="pfx\pfxDataParser.hpp">
+      <Filter>pfx</Filter>
+    </ClInclude>
+    <ClInclude Include="pfx\pfxPackage.hpp">
+      <Filter>pfx</Filter>
+    </ClInclude>
+    <ClInclude Include="pfx\pfxPostEffectMgr.hpp">
+      <Filter>pfx</Filter>
+    </ClInclude>
+    <ClInclude Include="pfx\pfxPostEffectObject.hpp">
+      <Filter>pfx</Filter>
+    </ClInclude>
+    <ClInclude Include="swl\swlData.hpp">
+      <Filter>swl</Filter>
+    </ClInclude>
+    <ClInclude Include="swl\swlDataParser.hpp">
+      <Filter>swl</Filter>
+    </ClInclude>
+    <ClInclude Include="swl\swlInterest.hpp">
+      <Filter>swl</Filter>
+    </ClInclude>
+    <ClInclude Include="swl\swlPackage.hpp">
+      <Filter>swl</Filter>
+    </ClInclude>
+    <ClInclude Include="swl\swlPropertyObject.hpp">
+      <Filter>swl</Filter>
+    </ClInclude>
+    <ClInclude Include="swl\swlScriptObject.hpp">
+      <Filter>swl</Filter>
+    </ClInclude>
+    <ClInclude Include="swl\swlSelectionUtil.hpp">
+      <Filter>swl</Filter>
+    </ClInclude>
+    <ClInclude Include="SupportLayer.hpp" />
+  </ItemGroup>
+</Project>

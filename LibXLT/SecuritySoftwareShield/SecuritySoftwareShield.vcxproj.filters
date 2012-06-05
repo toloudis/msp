@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="scrty">
+      <UniqueIdentifier>{94ac60f4-cb1e-4b3f-82f3-312ee42dc0ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scrty\private">
+      <UniqueIdentifier>{0f3b962a-8b6e-454e-bb7c-de67288577e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="scrty\wxGUI">
+      <UniqueIdentifier>{d0b5aac3-0a3a-490e-8f5f-f74f43a631ed}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="scrty\scrtysMgr.hpp">
+      <Filter>scrty</Filter>
+    </ClInclude>
+    <ClInclude Include="scrty\scrtysPackage.hpp">
+      <Filter>scrty</Filter>
+    </ClInclude>
+    <ClInclude Include="scrty\private\wxGUI\ProductActivationDialog.hpp">
+      <Filter>scrty\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="scrty\private\wxGUI\ProductActivationDialogBase.h">
+      <Filter>scrty\wxGUI</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="scrty\private\scrtysMgr.cpp">
+      <Filter>scrty\private</Filter>
+    </ClCompile>
+    <ClCompile Include="scrty\private\scrtysPackage.cpp">
+      <Filter>scrty\private</Filter>
+    </ClCompile>
+    <ClCompile Include="scrty\private\wxGUI\ProductActivationDialog.cpp">
+      <Filter>scrty\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="scrty\private\wxGUI\ProductActivationDialogBase.cpp">
+      <Filter>scrty\wxGUI</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

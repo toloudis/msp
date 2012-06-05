@@ -1,0 +1,1406 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Import">
+      <UniqueIdentifier>{72b45dbe-09f4-4837-9102-050d83d2ba15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Import\wxGUI">
+      <UniqueIdentifier>{c16454e2-724b-4688-8b55-b525106c342c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ProjectSetup">
+      <UniqueIdentifier>{17bc79f1-dc65-441b-9085-7426fc98008b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ProjectSetup\Data">
+      <UniqueIdentifier>{469227c4-f153-4d1d-840b-9f2feebdfbbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SceneSetup">
+      <UniqueIdentifier>{e433a49d-67ea-4c67-8aae-59fbb935e867}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SceneSetup\Data">
+      <UniqueIdentifier>{5bb38760-ae53-4e99-b5c0-f109da5c4956}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SceneSetup\GUI">
+      <UniqueIdentifier>{4ab8d49a-a6a6-421c-b3e5-084901ce1803}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SceneSetup\GUI\wxGUI">
+      <UniqueIdentifier>{6c0ee513-1f1c-43e8-9709-fb28acdc724f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Prefs">
+      <UniqueIdentifier>{c7cc3835-488d-4baa-a8d8-937a18be66e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Prefs\wxGUI">
+      <UniqueIdentifier>{c3a13a40-28ac-435c-9366-6887fa73868c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Channels">
+      <UniqueIdentifier>{af2987ea-8e1e-4e26-aeab-7caa31d50794}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Channels\data">
+      <UniqueIdentifier>{3d488bbb-0165-48f9-8bbc-f6d31492e4c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Channels\wxGUI">
+      <UniqueIdentifier>{cef32533-933f-413d-a50e-28c41e7e5e55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Channels\Notes">
+      <UniqueIdentifier>{b35fea10-dabb-4f66-a021-cef78f1d350f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Channels\Markers">
+      <UniqueIdentifier>{426c1276-be79-44a6-9021-a129516ac0b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Channels\Undo">
+      <UniqueIdentifier>{5badc056-6365-4458-bc0e-ba5a11a6d44e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Reports">
+      <UniqueIdentifier>{ac3d9da0-e0ac-43ef-a991-96e36beb91fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Reports\ReportInv">
+      <UniqueIdentifier>{12c9baa9-dc16-4228-ad5a-e3fd1b392be5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Reports\ReportMem">
+      <UniqueIdentifier>{b9f88667-dace-488d-b738-58e2124fcb18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Capture">
+      <UniqueIdentifier>{50120e77-6356-4a39-8e90-86ac239b780a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Capture\Stats">
+      <UniqueIdentifier>{b91abadb-765b-42b9-8303-b27e9f676fac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Capture\Commands">
+      <UniqueIdentifier>{4cc96995-3ee2-4ebc-af86-91694b3e984c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Capture\Outputs">
+      <UniqueIdentifier>{10d316b1-d7f7-4288-9fc0-264256a5e390}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Capture\wxGUI">
+      <UniqueIdentifier>{128992fa-f056-4117-b773-20d34da4dc1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Playback">
+      <UniqueIdentifier>{9f7da3b6-9dda-426d-83f0-4e65008a8acd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Playback\wxGUI">
+      <UniqueIdentifier>{a8a02629-5b9b-457e-845c-04acf570cb66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FilmGates">
+      <UniqueIdentifier>{af016ae6-67c6-4e10-a935-f077bd0815dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UndoHistory">
+      <UniqueIdentifier>{92fcf7be-448e-4b6d-be37-226ca7322de3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UndoHistory\wxGUI">
+      <UniqueIdentifier>{4692a295-6b33-4429-8aed-693fe518fda7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderPrefs">
+      <UniqueIdentifier>{0118f7a6-b478-48e1-8361-924185239a44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Keyframing">
+      <UniqueIdentifier>{de23b6a9-4cc1-4f4e-9573-4c5338675031}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderPanels">
+      <UniqueIdentifier>{870df574-8fe9-4c94-8982-e27ae873da7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderPanels\wxGUI">
+      <UniqueIdentifier>{40969d00-d824-400f-a699-94d5fee35b43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadPrefs">
+      <UniqueIdentifier>{3a57f4cb-4182-451d-9953-2023972dca4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadPrefs\wxGUI">
+      <UniqueIdentifier>{57d5c30d-a283-4986-ab06-a7bad646ace9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Python Object">
+      <UniqueIdentifier>{d39be775-429a-4035-99ee-e9b67e200f04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Debug">
+      <UniqueIdentifier>{55666448-fdd0-4981-a03e-a16a40adad61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Debug\wxGUI">
+      <UniqueIdentifier>{5bb393a6-d5d9-4c36-8754-6bc41cc22de7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MaterialBrowse">
+      <UniqueIdentifier>{e2115d1c-16fa-468d-ac52-b008ab4762b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MaterialBrowse\wxGUI">
+      <UniqueIdentifier>{4824c70e-de21-4206-ae88-47d4bc3943e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ObjectManip">
+      <UniqueIdentifier>{68dce537-0cbb-4d59-b3bb-9eb1b63e27d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ResourceTracker">
+      <UniqueIdentifier>{d1a3c5bd-b3fd-48ea-858b-bf4e5d72e675}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ResourceTracker\wxGUI">
+      <UniqueIdentifier>{414836db-b0f0-462a-ac7b-476e5323a753}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderLayers">
+      <UniqueIdentifier>{620b3de2-59e2-4b5a-bb27-898a70f03b17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderLayers\wxGUI">
+      <UniqueIdentifier>{d2a9b8d1-8a31-43f0-a9e6-ee2f9cfe66d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Export">
+      <UniqueIdentifier>{dc5da48b-a5cd-43ed-8a80-d5dc83df286d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Import\ImportData.cpp">
+      <Filter>Import</Filter>
+    </ClCompile>
+    <ClCompile Include="Import\ImportDialogUtil.cpp">
+      <Filter>Import</Filter>
+    </ClCompile>
+    <ClCompile Include="Import\ImportUtil.cpp">
+      <Filter>Import</Filter>
+    </ClCompile>
+    <ClCompile Include="Import\wxGUI\ImportDialog.cpp">
+      <Filter>Import\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Import\wxGUI\ImportDialogBase.cpp">
+      <Filter>Import\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectSetup\prjPython.cpp">
+      <Filter>ProjectSetup</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectSetup\ProjectSetupMgr.cpp">
+      <Filter>ProjectSetup</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectSetup\Data\ProjectSetupData.cpp">
+      <Filter>ProjectSetup\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectSetup\Data\ProjectSetupDataParser.cpp">
+      <Filter>ProjectSetup\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneSetup\SceneSetupMgr.cpp">
+      <Filter>SceneSetup</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneSetup\Data\SceneSetupDataParser.cpp">
+      <Filter>SceneSetup\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneSetup\Data\SceneSetupDocumentChunk.cpp">
+      <Filter>SceneSetup\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneSetup\Data\SceneSetupDocumentInterest.cpp">
+      <Filter>SceneSetup\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneSetup\Gui\SceneSetupDialogUtil.cpp">
+      <Filter>SceneSetup\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneSetup\GUI\wxGUI\SceneSetupDialog.cpp">
+      <Filter>SceneSetup\GUI\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneSetup\GUI\wxGUI\SceneSetupDialogBase.cpp">
+      <Filter>SceneSetup\GUI\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Prefs\prefsCommands.cpp">
+      <Filter>Prefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Prefs\PrefsData.cpp">
+      <Filter>Prefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Prefs\prefsDataInterest.cpp">
+      <Filter>Prefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Prefs\PrefsDialogUtil.cpp">
+      <Filter>Prefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Prefs\PrefsMgr.cpp">
+      <Filter>Prefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Prefs\PrefsPythLayouts.cpp">
+      <Filter>Prefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Prefs\prefsQuickData.cpp">
+      <Filter>Prefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Prefs\prefsQuickDataInterest.cpp">
+      <Filter>Prefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Prefs\prefsQuickMgr.cpp">
+      <Filter>Prefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Prefs\prefsRenderPrefsData.cpp">
+      <Filter>Prefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Prefs\wxGUI\prefsLayoutChoice.cpp">
+      <Filter>Prefs\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Prefs\wxGUI\prefsLayoutMgr.cpp">
+      <Filter>Prefs\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Prefs\wxGUI\prefsQuickDialog.cpp">
+      <Filter>Prefs\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\chnlCommandCreateDriver.cpp">
+      <Filter>Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\chnlCommands.cpp">
+      <Filter>Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\chnlCommandUtil.cpp">
+      <Filter>Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\chnlDeleteDriverOperation.cpp">
+      <Filter>Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\chnlDialogUtil.cpp">
+      <Filter>Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\chnlOperations.cpp">
+      <Filter>Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\chnlPackage.cpp">
+      <Filter>Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\chnlPrefsInterest.cpp">
+      <Filter>Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\chnlPython.cpp">
+      <Filter>Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\chnlSelectInterest.cpp">
+      <Filter>Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\chnlSnapUtil.cpp">
+      <Filter>Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\chnlTimeTickMgr.cpp">
+      <Filter>Channels</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\Data\chnlTimeData.cpp">
+      <Filter>Channels\data</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\Data\chnlTimeDataParser.cpp">
+      <Filter>Channels\data</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\Data\chnlTimeDocumentChunk.cpp">
+      <Filter>Channels\data</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\Data\chnlTimeDocumentInterest.cpp">
+      <Filter>Channels\data</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\wxGUI\chnlChannelClip.cpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\wxGUI\chnlChannelControl.cpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\wxGUI\chnlClipDriver.cpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\wxGUI\chnlMarkerBar.cpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\wxGUI\chnlMarkerIcon.cpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\wxGUI\chnlNoteIcon.cpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\wxGUI\chnlTimeCommon.cpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\wxGUI\chnlTimeIcon.cpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\wxGUI\chnlTimeLabel.cpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\wxGUI\chnlTimelineGuideUtil.cpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\wxGUI\chnlTimelineMarquee.cpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\wxGUI\chnlTimelinePanel.cpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\wxGUI\chnlTimeSlider.cpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\wxGUI\chnlTraxDialog.cpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\Notes\chnlNotesMgr.cpp">
+      <Filter>Channels\Notes</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\Notes\chnlNotesOperations.cpp">
+      <Filter>Channels\Notes</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\Notes\chnlPythonNotes.cpp">
+      <Filter>Channels\Notes</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\Markers\chnlMarkerMgr.cpp">
+      <Filter>Channels\Markers</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\Markers\chnlMarkerOperations.cpp">
+      <Filter>Channels\Markers</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\Markers\chnlPythonMarkers.cpp">
+      <Filter>Channels\Markers</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\Undo\chnlAddOperation.cpp">
+      <Filter>Channels\Undo</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\Undo\chnlDataOperation.cpp">
+      <Filter>Channels\Undo</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\Undo\chnlDeleteOperation.cpp">
+      <Filter>Channels\Undo</Filter>
+    </ClCompile>
+    <ClCompile Include="Reports\rptPackage.cpp">
+      <Filter>Reports</Filter>
+    </ClCompile>
+    <ClCompile Include="Reports\rptPython.cpp">
+      <Filter>Reports</Filter>
+    </ClCompile>
+    <ClCompile Include="Reports\rptReport.cpp">
+      <Filter>Reports</Filter>
+    </ClCompile>
+    <ClCompile Include="Reports\rptReportData.cpp">
+      <Filter>Reports</Filter>
+    </ClCompile>
+    <ClCompile Include="Reports\rptReportMgr.cpp">
+      <Filter>Reports</Filter>
+    </ClCompile>
+    <ClCompile Include="Reports\rptReportUtil.cpp">
+      <Filter>Reports</Filter>
+    </ClCompile>
+    <ClCompile Include="Reports\ReportInv\rptReportInv.cpp">
+      <Filter>Reports\ReportInv</Filter>
+    </ClCompile>
+    <ClCompile Include="Reports\ReportMem\rptReportMem.cpp">
+      <Filter>Reports\ReportMem</Filter>
+    </ClCompile>
+    <ClCompile Include="Reports\ReportMem\rptReportMemInterest.cpp">
+      <Filter>Reports\ReportMem</Filter>
+    </ClCompile>
+    <ClCompile Include="Reports\ReportMem\rptReportMemMgr.cpp">
+      <Filter>Reports\ReportMem</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrAccumulationBuffer.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrMBlurMotionSampler.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrModeRender.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrModeRenderBake.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrModeRenderBatch.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrModeRenderFrame.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrMotionSampler.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrPackage.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrPostRenderUtil.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderBakeData.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderBakeDataUtil.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderBakeDialogUtil.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderBatchData.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderBatchDataParser.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderBatchDataUtil.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderBatchDialogUtil.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderMrayLive.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderMrayLiveData.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderMrayLiveDataInterest.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderMrayLiveMgr.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderMrayLiveUtil.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderOptionsDialogUtil.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderProgressDialogUtil.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderRmanLive.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderRmanLiveData.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderRmanLiveDataInterest.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderRmanLiveMgr.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderRmanLiveUtil.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderStateDataParser.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderStateUtil.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderThread.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderUtil.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrWatermarkObject.cpp">
+      <Filter>Capture</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderStatsDataUtil.cpp">
+      <Filter>Capture\Stats</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrRenderStatsDialogUtil.cpp">
+      <Filter>Capture\Stats</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrCommands.cpp">
+      <Filter>Capture\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrPythonCommands.cpp">
+      <Filter>Capture\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrWriteAVI.cpp">
+      <Filter>Capture\Outputs</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrWriteQuickTime.cpp">
+      <Filter>Capture\Outputs</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\cptrWriteUtil.cpp">
+      <Filter>Capture\Outputs</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\wxGUI\cptrDialogUtil.cpp">
+      <Filter>Capture\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\wxGUI\cptrRenderBakeDialog.cpp">
+      <Filter>Capture\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\wxGUI\cptrRenderBatchDialog.cpp">
+      <Filter>Capture\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\wxGUI\cptrRenderBatchDialogBase.cpp">
+      <Filter>Capture\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\wxGUI\cptrRenderOptionsDialog.cpp">
+      <Filter>Capture\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\wxGUI\cptrRenderOptionsDialogBase.cpp">
+      <Filter>Capture\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\wxGUI\cptrRenderProgressDialog.cpp">
+      <Filter>Capture\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\wxGUI\cptrRenderProgressDialogBase.cpp">
+      <Filter>Capture\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\wxGUI\cptrRenderStatsDialog.cpp">
+      <Filter>Capture\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\wxGUI\cptrRenderStatsDialogBase.cpp">
+      <Filter>Capture\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\wxGUI\cptrToPhotoshopDialog.cpp">
+      <Filter>Capture\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Playback\plbkModePlayback.cpp">
+      <Filter>Playback</Filter>
+    </ClCompile>
+    <ClCompile Include="Playback\plbkPackage.cpp">
+      <Filter>Playback</Filter>
+    </ClCompile>
+    <ClCompile Include="Playback\plbkPlaybackControlsDialogUtil.cpp">
+      <Filter>Playback</Filter>
+    </ClCompile>
+    <ClCompile Include="Playback\wxGUI\plbkPlaybackControlsDialog.cpp">
+      <Filter>Playback\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Playback\wxGUI\plbkPlaybackControlsDialogBase.cpp">
+      <Filter>Playback\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="FilmGates\fgtCommandShowFrame.cpp">
+      <Filter>FilmGates</Filter>
+    </ClCompile>
+    <ClCompile Include="FilmGates\fgtFrame.cpp">
+      <Filter>FilmGates</Filter>
+    </ClCompile>
+    <ClCompile Include="FilmGates\fgtFrameMgr.cpp">
+      <Filter>FilmGates</Filter>
+    </ClCompile>
+    <ClCompile Include="FilmGates\fgtPackage.cpp">
+      <Filter>FilmGates</Filter>
+    </ClCompile>
+    <ClCompile Include="UndoHistory\UndoHistoryData.cpp">
+      <Filter>UndoHistory</Filter>
+    </ClCompile>
+    <ClCompile Include="UndoHistory\UndoHistoryDialogUtil.cpp">
+      <Filter>UndoHistory</Filter>
+    </ClCompile>
+    <ClCompile Include="UndoHistory\UndoHistoryUtil.cpp">
+      <Filter>UndoHistory</Filter>
+    </ClCompile>
+    <ClCompile Include="UndoHistory\wxGUI\UndoHistoryDialog.cpp">
+      <Filter>UndoHistory\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UndoHistory\wxGUI\UndoHistoryDialogBase.cpp">
+      <Filter>UndoHistory\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPrefs\rndrPrefsDataInterest.cpp">
+      <Filter>RenderPrefs</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPrefs\rndrPrefsDialogUtil.cpp">
+      <Filter>RenderPrefs</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPrefs\rndrPrefsMgr.cpp">
+      <Filter>RenderPrefs</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPrefs\rndrPrefsUtil.cpp">
+      <Filter>RenderPrefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyframing\keyfKeyCreator.cpp">
+      <Filter>Keyframing</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyframing\keyfKeyframeUtil.cpp">
+      <Filter>Keyframing</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyframing\keyfPackage.cpp">
+      <Filter>Keyframing</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyframing\keyfPython.cpp">
+      <Filter>Keyframing</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyframing\keyfThinkInterest.cpp">
+      <Filter>Keyframing</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPanels\rpnCommandChangeLayout.cpp">
+      <Filter>RenderPanels</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPanels\rpnCommandFocusAllPanels.cpp">
+      <Filter>RenderPanels</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPanels\rpnCommandFocusCamera.cpp">
+      <Filter>RenderPanels</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPanels\rpnCommands.cpp">
+      <Filter>RenderPanels</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPanels\GUI\rpnDialogUtil.cpp">
+      <Filter>RenderPanels</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPanels\rpnDocumentChunk.cpp">
+      <Filter>RenderPanels</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPanels\rpnDocumentInterest.cpp">
+      <Filter>RenderPanels</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPanels\rpnOperations.cpp">
+      <Filter>RenderPanels</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPanels\rpnPackage.cpp">
+      <Filter>RenderPanels</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPanels\rpnPanelViewer.cpp">
+      <Filter>RenderPanels</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPanels\rpnRenderingPrefs.cpp">
+      <Filter>RenderPanels</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPanels\rpnRenderPane.cpp">
+      <Filter>RenderPanels</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPanels\wxGUI\rpnCameraChoice.cpp">
+      <Filter>RenderPanels\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPanels\wxGUI\rpnPanelGrid.cpp">
+      <Filter>RenderPanels\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPanels\wxGUI\rpnRenderPanel.cpp">
+      <Filter>RenderPanels\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadPrefs\LoadPrefsData.cpp">
+      <Filter>LoadPrefs</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadPrefs\LoadPrefsDialogUtil.cpp">
+      <Filter>LoadPrefs</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadPrefs\LoadPrefsMgr.cpp">
+      <Filter>LoadPrefs</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadPrefs\wxGUI\LoadPreferencesDialog.cpp">
+      <Filter>LoadPrefs\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadPrefs\wxGUI\LoadPreferencesDialogBase.cpp">
+      <Filter>LoadPrefs\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="PythonObject\pytDialogInterest.cpp">
+      <Filter>Python Object</Filter>
+    </ClCompile>
+    <ClCompile Include="PythonObject\pytFeature.cpp">
+      <Filter>Python Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\dbgConsoleDataUtil.cpp">
+      <Filter>Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\dbgConsoleDialogUtil.cpp">
+      <Filter>Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\dbgConsoleStream.cpp">
+      <Filter>Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\wxGUI\dbgConsoleDialog.cpp">
+      <Filter>Debug\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\wxGUI\dbgConsoleDialogBase.cpp">
+      <Filter>Debug\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialBrowse\mbrwDialogUtil.cpp">
+      <Filter>MaterialBrowse</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialBrowse\mbrwPackage.cpp">
+      <Filter>MaterialBrowse</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialBrowse\mbrwPaintUtil.cpp">
+      <Filter>MaterialBrowse</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialBrowse\wxGUI\mbrwMaterialSwatchDialog.cpp">
+      <Filter>MaterialBrowse\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialBrowse\wxGUI\mbrwMaterialSwatchDialogBase.cpp">
+      <Filter>MaterialBrowse\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManip\mnpCommands.cpp">
+      <Filter>ObjectManip</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManip\mnpFreeFormInteraction.cpp">
+      <Filter>ObjectManip</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManip\mnpInteraction.cpp">
+      <Filter>ObjectManip</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManip\mnpModeObjectManip.cpp">
+      <Filter>ObjectManip</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManip\mnpPackage.cpp">
+      <Filter>ObjectManip</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManip\mnpPlacementInteraction.cpp">
+      <Filter>ObjectManip</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManip\mnpRotateInteraction.cpp">
+      <Filter>ObjectManip</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManip\mnpScaleInteraction.cpp">
+      <Filter>ObjectManip</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManip\mnpTranslateInteraction.cpp">
+      <Filter>ObjectManip</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManip\mnpTranslatePlaneInteraction.cpp">
+      <Filter>ObjectManip</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManip\mnpTranslateVectorInteraction.cpp">
+      <Filter>ObjectManip</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceTracker\ResourceTrackerDialogUtil.cpp">
+      <Filter>ResourceTracker</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceTracker\ResourceTrackerPackage.cpp">
+      <Filter>ResourceTracker</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceTracker\wxGUI\ResourceTrackerDialog.cpp">
+      <Filter>ResourceTracker\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceTracker\wxGUI\ResourceTrackerDialogBase.cpp">
+      <Filter>ResourceTracker\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderLayers\rdrLayersDataUtil.cpp">
+      <Filter>RenderLayers</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderLayers\rdrLayersDialogUtil.cpp">
+      <Filter>RenderLayers</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderLayers\wxGUI\rdrLayersDialog.cpp">
+      <Filter>RenderLayers\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderLayers\wxGUI\rdrLayersDialogBase.cpp">
+      <Filter>RenderLayers\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderLayers\wxGUI\rdrLayersObjectsPage.cpp">
+      <Filter>RenderLayers\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderLayers\wxGUI\rdrLayersObjectsPageBase.cpp">
+      <Filter>RenderLayers\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Export\ExportUtil.cpp">
+      <Filter>Export</Filter>
+    </ClCompile>
+    <ClCompile Include="Export\FBXExportUtil.cpp">
+      <Filter>Export</Filter>
+    </ClCompile>
+    <ClCompile Include="FeaturesLayer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Import\ImportData.hpp">
+      <Filter>Import</Filter>
+    </ClInclude>
+    <ClInclude Include="Import\ImportDialogUtil.hpp">
+      <Filter>Import</Filter>
+    </ClInclude>
+    <ClInclude Include="Import\ImportUtil.hpp">
+      <Filter>Import</Filter>
+    </ClInclude>
+    <ClInclude Include="Import\wxGUI\ImportDialog.hpp">
+      <Filter>Import\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Import\wxGUI\ImportDialogBase.h">
+      <Filter>Import\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectSetup\prjPython.hpp">
+      <Filter>ProjectSetup</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectSetup\ProjectSetupMgr.hpp">
+      <Filter>ProjectSetup</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectSetup\Data\ProjectSetupData.hpp">
+      <Filter>ProjectSetup\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectSetup\Data\ProjectSetupDataParser.hpp">
+      <Filter>ProjectSetup\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneSetup\SceneSetupMgr.hpp">
+      <Filter>SceneSetup</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneSetup\Data\SceneSetupData.hpp">
+      <Filter>SceneSetup\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneSetup\Data\SceneSetupDataParser.hpp">
+      <Filter>SceneSetup\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneSetup\Data\SceneSetupDocumentChunk.hpp">
+      <Filter>SceneSetup\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneSetup\Data\SceneSetupDocumentInterest.hpp">
+      <Filter>SceneSetup\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneSetup\Gui\SceneSetupDialogUtil.hpp">
+      <Filter>SceneSetup\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneSetup\GUI\wxGUI\SceneSetupDialog.hpp">
+      <Filter>SceneSetup\GUI\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneSetup\GUI\wxGUI\SceneSetupDialogBase.h">
+      <Filter>SceneSetup\GUI\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Prefs\prefsCommands.hpp">
+      <Filter>Prefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Prefs\PrefsData.hpp">
+      <Filter>Prefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Prefs\prefsDataInterest.hpp">
+      <Filter>Prefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Prefs\PrefsDialogUtil.hpp">
+      <Filter>Prefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Prefs\PrefsMgr.hpp">
+      <Filter>Prefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Prefs\PrefsPythLayouts.hpp">
+      <Filter>Prefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Prefs\prefsQuickData.hpp">
+      <Filter>Prefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Prefs\prefsQuickDataInterest.hpp">
+      <Filter>Prefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Prefs\prefsQuickMgr.hpp">
+      <Filter>Prefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Prefs\prefsRenderPrefsData.hpp">
+      <Filter>Prefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Prefs\wxGUI\prefsLayoutChoice.hpp">
+      <Filter>Prefs\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Prefs\wxGUI\prefsLayoutMgr.hpp">
+      <Filter>Prefs\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Prefs\wxGUI\prefsQuickDialog.hpp">
+      <Filter>Prefs\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\chnlCommandCreateDriver.hpp">
+      <Filter>Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\chnlCommands.hpp">
+      <Filter>Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\chnlCommandUtil.hpp">
+      <Filter>Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\chnlDeleteDriverOperation.hpp">
+      <Filter>Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\chnlDialogUtil.hpp">
+      <Filter>Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\chnlOperations.hpp">
+      <Filter>Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\chnlPackage.hpp">
+      <Filter>Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\chnlPrefsInterest.hpp">
+      <Filter>Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\chnlPython.hpp">
+      <Filter>Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\chnlSelectInterest.hpp">
+      <Filter>Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\chnlSnapUtil.hpp">
+      <Filter>Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\chnlTimeTickMgr.hpp">
+      <Filter>Channels</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\Data\chnlTimeData.hpp">
+      <Filter>Channels\data</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\Data\chnlTimeDataParser.hpp">
+      <Filter>Channels\data</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\Data\chnlTimeDocumentChunk.hpp">
+      <Filter>Channels\data</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\Data\chnlTimeDocumentInterest.hpp">
+      <Filter>Channels\data</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\wxGUI\chnlChannelClip.hpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\wxGUI\chnlChannelControl.hpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\wxGUI\chnlClipDriver.hpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\wxGUI\chnlMarkerBar.hpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\wxGUI\chnlMarkerIcon.hpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\wxGUI\chnlNoteIcon.hpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\wxGUI\chnlTimeCommon.hpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\wxGUI\chnlTimeIcon.hpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\wxGUI\chnlTimeLabel.hpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\wxGUI\chnlTimelineGuideUtil.hpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\wxGUI\chnlTimelineMarquee.hpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\wxGUI\chnlTimelinePanel.hpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\wxGUI\chnlTimeSlider.hpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\wxGUI\chnlTraxDialog.hpp">
+      <Filter>Channels\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\Notes\chnlNotesMgr.hpp">
+      <Filter>Channels\Notes</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\Notes\chnlNotesOperations.hpp">
+      <Filter>Channels\Notes</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\Notes\chnlPythonNotes.hpp">
+      <Filter>Channels\Notes</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\Markers\chnlMarkerMgr.hpp">
+      <Filter>Channels\Markers</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\Markers\chnlMarkerOperations.hpp">
+      <Filter>Channels\Markers</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\Markers\chnlPythonMarkers.hpp">
+      <Filter>Channels\Markers</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\Undo\chnlAddOperation.hpp">
+      <Filter>Channels\Undo</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\Undo\chnlDataOperation.hpp">
+      <Filter>Channels\Undo</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\Undo\chnlDeleteOperation.hpp">
+      <Filter>Channels\Undo</Filter>
+    </ClInclude>
+    <ClInclude Include="Reports\rptPackage.hpp">
+      <Filter>Reports</Filter>
+    </ClInclude>
+    <ClInclude Include="Reports\rptPython.hpp">
+      <Filter>Reports</Filter>
+    </ClInclude>
+    <ClInclude Include="Reports\rptReport.hpp">
+      <Filter>Reports</Filter>
+    </ClInclude>
+    <ClInclude Include="Reports\rptReportData.hpp">
+      <Filter>Reports</Filter>
+    </ClInclude>
+    <ClInclude Include="Reports\rptReportMgr.hpp">
+      <Filter>Reports</Filter>
+    </ClInclude>
+    <ClInclude Include="Reports\rptReportUtil.hpp">
+      <Filter>Reports</Filter>
+    </ClInclude>
+    <ClInclude Include="Reports\ReportInv\rptReportInv.hpp">
+      <Filter>Reports\ReportInv</Filter>
+    </ClInclude>
+    <ClInclude Include="Reports\ReportMem\rptReportMem.hpp">
+      <Filter>Reports\ReportMem</Filter>
+    </ClInclude>
+    <ClInclude Include="Reports\ReportMem\rptReportMemInterest.hpp">
+      <Filter>Reports\ReportMem</Filter>
+    </ClInclude>
+    <ClInclude Include="Reports\ReportMem\rptReportMemMgr.hpp">
+      <Filter>Reports\ReportMem</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrAccumulationBuffer.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrErrorCodes.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrMBlurMotionSampler.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrModeRender.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrModeRenderBake.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrModeRenderBatch.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrModeRenderFrame.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrMotionSampler.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrPackage.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrPostRenderUtil.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderBakeData.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderBakeDataUtil.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderBakeDialogUtil.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderBatchData.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderBatchDataParser.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderBatchDataUtil.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderBatchDialogUtil.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderMrayLive.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderMrayLiveData.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderMrayLiveDataInterest.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderMrayLiveMgr.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderMrayLiveUtil.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderOptionsDialogUtil.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderProgressDialogUtil.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderRmanLive.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderRmanLiveData.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderRmanLiveDataInterest.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderRmanLiveMgr.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderRmanLiveUtil.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderStateDataParser.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderStateUtil.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderThread.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderUtil.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrWatermarkObject.hpp">
+      <Filter>Capture</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderStatsData.hpp">
+      <Filter>Capture\Stats</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderStatsDataUtil.hpp">
+      <Filter>Capture\Stats</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrRenderStatsDialogUtil.hpp">
+      <Filter>Capture\Stats</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrCommands.hpp">
+      <Filter>Capture\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrPythonCommands.hpp">
+      <Filter>Capture\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrWriteAVI.hpp">
+      <Filter>Capture\Outputs</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrWriteQuickTime.hpp">
+      <Filter>Capture\Outputs</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\cptrWriteUtil.hpp">
+      <Filter>Capture\Outputs</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\wxGUI\cptrDialogUtil.hpp">
+      <Filter>Capture\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\wxGUI\cptrRenderBakeDialog.hpp">
+      <Filter>Capture\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\wxGUI\cptrRenderBatchDialog.hpp">
+      <Filter>Capture\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\wxGUI\cptrRenderBatchDialogBase.h">
+      <Filter>Capture\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\wxGUI\cptrRenderOptionsDialog.hpp">
+      <Filter>Capture\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\wxGUI\cptrRenderOptionsDialogBase.h">
+      <Filter>Capture\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\wxGUI\cptrRenderProgressDialog.hpp">
+      <Filter>Capture\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\wxGUI\cptrRenderProgressDialogBase.h">
+      <Filter>Capture\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\wxGUI\cptrRenderStatsDialog.hpp">
+      <Filter>Capture\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\wxGUI\cptrRenderStatsDialogBase.h">
+      <Filter>Capture\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\wxGUI\cptrToPhotoshopDialog.hpp">
+      <Filter>Capture\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Playback\plbkModePlayback.hpp">
+      <Filter>Playback</Filter>
+    </ClInclude>
+    <ClInclude Include="Playback\plbkPackage.hpp">
+      <Filter>Playback</Filter>
+    </ClInclude>
+    <ClInclude Include="Playback\plbkPlaybackControlsDialogUtil.hpp">
+      <Filter>Playback</Filter>
+    </ClInclude>
+    <ClInclude Include="Playback\wxGUI\plbkPlaybackControlsDialog.hpp">
+      <Filter>Playback\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Playback\wxGUI\plbkPlaybackControlsDialogBase.h">
+      <Filter>Playback\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="FilmGates\fgtCommandShowFrame.hpp">
+      <Filter>FilmGates</Filter>
+    </ClInclude>
+    <ClInclude Include="FilmGates\fgtFrame.hpp">
+      <Filter>FilmGates</Filter>
+    </ClInclude>
+    <ClInclude Include="FilmGates\fgtFrameMgr.hpp">
+      <Filter>FilmGates</Filter>
+    </ClInclude>
+    <ClInclude Include="FilmGates\fgtPackage.hpp">
+      <Filter>FilmGates</Filter>
+    </ClInclude>
+    <ClInclude Include="UndoHistory\UndoHistoryData.hpp">
+      <Filter>UndoHistory</Filter>
+    </ClInclude>
+    <ClInclude Include="UndoHistory\UndoHistoryDialogUtil.hpp">
+      <Filter>UndoHistory</Filter>
+    </ClInclude>
+    <ClInclude Include="UndoHistory\UndoHistoryUtil.hpp">
+      <Filter>UndoHistory</Filter>
+    </ClInclude>
+    <ClInclude Include="UndoHistory\wxGUI\UndoHistoryDialog.hpp">
+      <Filter>UndoHistory\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="UndoHistory\wxGUI\UndoHistoryDialogBase.h">
+      <Filter>UndoHistory\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPrefs\rndrPrefsDataInterest.hpp">
+      <Filter>RenderPrefs</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPrefs\rndrPrefsDialogUtil.hpp">
+      <Filter>RenderPrefs</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPrefs\rndrPrefsMgr.hpp">
+      <Filter>RenderPrefs</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPrefs\rndrPrefsUtil.hpp">
+      <Filter>RenderPrefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyframing\keyfKeyCreator.hpp">
+      <Filter>Keyframing</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyframing\keyfKeyframeUtil.hpp">
+      <Filter>Keyframing</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyframing\keyfPackage.hpp">
+      <Filter>Keyframing</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyframing\keyfPython.hpp">
+      <Filter>Keyframing</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyframing\keyfThinkInterest.hpp">
+      <Filter>Keyframing</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPanels\rpnCommandChangeLayout.hpp">
+      <Filter>RenderPanels</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPanels\rpnCommandFocusAllPanels.hpp">
+      <Filter>RenderPanels</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPanels\rpnCommandFocusCamera.hpp">
+      <Filter>RenderPanels</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPanels\rpnCommands.hpp">
+      <Filter>RenderPanels</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPanels\GUI\rpnDialogUtil.hpp">
+      <Filter>RenderPanels</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPanels\rpnDocumentChunk.hpp">
+      <Filter>RenderPanels</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPanels\rpnDocumentInterest.hpp">
+      <Filter>RenderPanels</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPanels\rpnOperations.hpp">
+      <Filter>RenderPanels</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPanels\rpnPackage.hpp">
+      <Filter>RenderPanels</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPanels\rpnPanelViewer.hpp">
+      <Filter>RenderPanels</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPanels\rpnRenderingPrefs.hpp">
+      <Filter>RenderPanels</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPanels\rpnRenderPane.hpp">
+      <Filter>RenderPanels</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPanels\wxGUI\rpnCameraChoice.hpp">
+      <Filter>RenderPanels\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPanels\wxGUI\rpnPanelGrid.hpp">
+      <Filter>RenderPanels\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPanels\wxGUI\rpnRenderPanel.hpp">
+      <Filter>RenderPanels\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadPrefs\LoadPrefsData.hpp">
+      <Filter>LoadPrefs</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadPrefs\LoadPrefsDialogUtil.hpp">
+      <Filter>LoadPrefs</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadPrefs\LoadPrefsMgr.hpp">
+      <Filter>LoadPrefs</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadPrefs\wxGUI\LoadPreferencesDialog.hpp">
+      <Filter>LoadPrefs\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadPrefs\wxGUI\LoadPreferencesDialogBase.h">
+      <Filter>LoadPrefs\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="PythonObject\pytDialogInterest.hpp">
+      <Filter>Python Object</Filter>
+    </ClInclude>
+    <ClInclude Include="PythonObject\pytFeature.hpp">
+      <Filter>Python Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug\dbgConsoleDataUtil.hpp">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug\dbgConsoleDialogUtil.hpp">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug\dbgConsoleStream.hpp">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug\wxGUI\dbgConsoleDialog.hpp">
+      <Filter>Debug\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug\wxGUI\dbgConsoleDialogBase.h">
+      <Filter>Debug\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialBrowse\mbrwDialogUtil.hpp">
+      <Filter>MaterialBrowse</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialBrowse\mbrwPackage.hpp">
+      <Filter>MaterialBrowse</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialBrowse\mbrwPaintUtil.hpp">
+      <Filter>MaterialBrowse</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialBrowse\wxGUI\mbrwMaterialSwatchDialog.hpp">
+      <Filter>MaterialBrowse\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialBrowse\wxGUI\mbrwMaterialSwatchDialogBase.h">
+      <Filter>MaterialBrowse\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManip\mnpCommands.hpp">
+      <Filter>ObjectManip</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManip\mnpConstants.hpp">
+      <Filter>ObjectManip</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManip\mnpFreeFormInteraction.hpp">
+      <Filter>ObjectManip</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManip\mnpInteraction.hpp">
+      <Filter>ObjectManip</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManip\mnpModeObjectManip.hpp">
+      <Filter>ObjectManip</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManip\mnpPackage.hpp">
+      <Filter>ObjectManip</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManip\mnpPlacementInteraction.hpp">
+      <Filter>ObjectManip</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManip\mnpRotateInteraction.hpp">
+      <Filter>ObjectManip</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManip\mnpScaleInteraction.hpp">
+      <Filter>ObjectManip</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManip\mnpTranslateInteraction.hpp">
+      <Filter>ObjectManip</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManip\mnpTranslatePlaneInteraction.hpp">
+      <Filter>ObjectManip</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManip\mnpTranslateVectorInteraction.hpp">
+      <Filter>ObjectManip</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceTracker\ResourceTrackerDialogUtil.hpp">
+      <Filter>ResourceTracker</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceTracker\ResourceTrackerPackage.hpp">
+      <Filter>ResourceTracker</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceTracker\wxGUI\ResourceTrackerDialog.hpp">
+      <Filter>ResourceTracker\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceTracker\wxGUI\ResourceTrackerDialogBase.h">
+      <Filter>ResourceTracker\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderLayers\rdrLayersDataUtil.hpp">
+      <Filter>RenderLayers</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderLayers\rdrLayersDialogUtil.hpp">
+      <Filter>RenderLayers</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderLayers\wxGUI\rdrLayersDialog.hpp">
+      <Filter>RenderLayers\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderLayers\wxGUI\rdrLayersDialogBase.h">
+      <Filter>RenderLayers\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderLayers\wxGUI\rdrLayersObjectsPage.hpp">
+      <Filter>RenderLayers\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderLayers\wxGUI\rdrLayersObjectsPageBase.h">
+      <Filter>RenderLayers\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\wxGUI\ExportConstants.hpp">
+      <Filter>Export</Filter>
+    </ClInclude>
+    <ClInclude Include="Export\ExportUtil.hpp">
+      <Filter>Export</Filter>
+    </ClInclude>
+    <ClInclude Include="Export\FBXExportUtil.hpp">
+      <Filter>Export</Filter>
+    </ClInclude>
+    <ClInclude Include="FeaturesLayer.hpp" />
+  </ItemGroup>
+</Project>

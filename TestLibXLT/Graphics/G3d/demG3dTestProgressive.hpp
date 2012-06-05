@@ -1,0 +1,91 @@
+/*****************************************************************************
+**  demG3dTestProgressive.hpp
+**
+**		This mode displays a demonstration/test of the progressive mesh.
+**
+**	Extra Large Technology
+**	Copyright(C) 2003 - All Rights Reserved
+\****************************************************************************/
+
+#ifdef DEM_G3DTESTPROGRESSIVE_HPP
+#error demG3dTestProgressive.hpp multiply included
+#endif
+#define DEM_G3DTESTPROGRESSIVE_HPP
+
+#ifndef DEM_G3DTESTMODE_HPP
+#include "demG3dTestMode.hpp"
+#endif
+
+#ifndef MA_POINT3D_HPP
+#include "maPoint3d.hpp"
+#endif
+
+#ifndef G3D_FRAGMENT_HPP
+#include "g3dFragment.hpp"
+#endif
+
+#ifndef MAT_MATERIAL_HPP
+#include "matMaterial.hpp"
+#endif
+
+#include <vector>
+
+class g3dViewer;
+class g3dScene;
+class g3dSceneNode;
+class g3dStaticProgModel;
+class g3dDirectionalLight;
+class g3dPointLight;
+class matPlainTexture;
+class matMatAnim;
+
+class demG3dTestProgressive 
+:	public demG3dTestMode
+{
+	public:
+
+		//====================================================================
+		//====================================================================
+		demG3dTestProgressive(g3dViewer &i_Viewer);
+
+		//====================================================================
+		//====================================================================
+		virtual ~demG3dTestProgressive();
+
+		//====================================================================
+		//	Think
+		//====================================================================
+		virtual void Think();
+
+		//====================================================================
+		//====================================================================
+		virtual void Initialize();
+
+		//====================================================================
+		//====================================================================
+		virtual void DeInitialize();
+
+		//====================================================================
+		//	Override this function to get appCharEvents.
+		//====================================================================
+		virtual void ReceiveCharEvent(appCharEvent& i_Event);
+
+	private:
+		g3dViewer &m_Viewer;
+		g3dScene *m_Scene;
+		g3dSceneNode *m_Root;
+
+		g3dFragment* m_RectFragment;
+
+		matMaterial m_RectMat;
+
+		g3dStaticProgModel* m_Rect;
+
+		matTexture* m_RectTexture1;
+
+		g3dDirectionalLight* m_Light1;
+		g3dDirectionalLight* m_Light2;
+
+		std::vector<maPoint3d> m_Vertices;
+		std::vector<maPoint3d> m_Normals;
+};

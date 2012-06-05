@@ -1,0 +1,728 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="StudioGPU"
+	ProjectGUID="{C7300C02-8F70-4984-998D-F28184B6C645}">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="DebugAC9|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;E:\ArchiCAD API Dev Kit Win 6.1\Support\Inc&quot;;&quot;E:\ArchiCAD API Dev Kit Win 6.1\Support\Modules\GSRoot&quot;;&quot;E:\ArchiCAD API Dev Kit Win 6.1\Support\Modules\InputOutput&quot;;&quot;E:\ArchiCAD API Dev Kit Win 6.1\Support\Modules\DGLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 6.1\Support\Modules\UCLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 6.1\Support\Modules\UDLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 6.1\Support\Modules\TextEngine&quot;;&quot;E:\ArchiCAD API Dev Kit Win 6.1\Support\Modules\GeometryLIB&quot;;&quot;E:\ArchiCAD API Dev Kit Win 6.1\Support\Modules\VBElemDialogs&quot;;&quot;E:\EncinaCAD AC9&quot;;E:\EncinaCAD2\Src;E:\EncinaCAD2\Src\Attribute;E:\EncinaCAD2\Src\Database;E:\EncinaCAD2\Src\Element;E:\EncinaCAD2\Src\Environment;E:\EncinaCAD2\Src\Event;E:\EncinaCAD2\Src\Geometry;E:\EncinaCAD2\Src\Interface;E:\EncinaCAD2\Src\Memo;E:\EncinaCAD2\Src\Message;E:\EncinaCAD2\Src\Model;E:\EncinaCAD2\Src\Object;E:\EncinaCAD2\Src\Subscriber;E:\EncinaCAD2\Src\Utility;E:\StudioGPU\Src;E:\StudioGPU\Src\About;E:\StudioGPU\Src\Base64;&quot;E:\StudioGPU\Src\Building Review&quot;;&quot;E:\StudioGPU\Src\Calculate Rooms&quot;;&quot;E:\StudioGPU\Src\Energy Analysis&quot;;&quot;E:\StudioGPU\Src\Energy login&quot;;E:\StudioGPU\Src\FileSaver;E:\StudioGPU\Src\GBS_Soap;E:\StudioGPU\Src\Preferences;E:\StudioGPU\Src\SOAP;E:\StudioGPU\Src\Version;E:\StudioGPU\Src\Zip"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;DEBUVERS"
+				StringPooling="TRUE"
+				MinimalRebuild="FALSE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				BufferSecurityCheck="TRUE"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				ObjectFile="$(IntDir)/"
+				ProgramDataBaseFileName="&quot;$(OutDir)/$(ProjectName).pdb&quot;"
+				BrowseInformation="1"
+				BrowseInformationFile="$(IntDir)/"
+				WarningLevel="3"
+				WarnAsError="TRUE"
+				SuppressStartupBanner="TRUE"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"
+				CallingConvention="0"
+				CompileAs="2"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/export:GetExportedFuncAddrs,@1 /export:SetImportedFuncAddrs,@2"
+				AdditionalDependencies="&quot;E:\EncinaCAD2\Make.Win\DebugAC9\EncinaCAD.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 6.1\Support\Lib\Win\ACAP_STAT.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 6.1\Support\Modules\DGLib\Win\DGImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 6.1\Support\Modules\GSRoot\Win\GSRootImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 6.1\Support\Modules\InputOutput\Win\InputOutputImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 6.1\Support\Modules\UCLib\Win\UCImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 6.1\Support\Modules\UDLib\Win\UDImp.lib&quot; ws2_32.lib"
+				OutputFile="&quot;$(OutDir)/$(ProjectName).apx&quot;"
+				LinkIncremental="2"
+				LinkDLL="TRUE"
+				IgnoreDefaultLibraryNames="MSVCRTD.lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
+				SubSystem="0"
+				EntryPointSymbol="DllMainEntry@12"
+				ImportLibrary=""
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				AdditionalIncludeDirectories="&quot;E:\ArchiCAD API Dev Kit Win 6.1\Support\Modules\DGLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 6.1\Support\Inc&quot;;&quot;E:\EncinaCAD AC9&quot;;E:\StudioGPU\GDL\EnergyLibrary9Win;E:\StudioGPU\RFIX.WIN;E:\StudioGPU\RFIX\Images;E:\StudioGPU\Src\Version"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="DebugAC10|Win32"
+			OutputDirectory="C:\Program Files\Graphisoft\ArchiCAD 10\Add-Ons\StudioGPU"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Inc&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GSRoot&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\InputOutput&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\DGLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\UCLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\UDLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\TextEngine&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GeometryLIB&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\VBElemDialogs&quot;;&quot;E:\EncinaCAD AC10&quot;;E:\EncinaCAD2\Src;E:\EncinaCAD2\Src\Attribute;E:\EncinaCAD2\Src\Database;E:\EncinaCAD2\Src\Element;E:\EncinaCAD2\Src\Environment;E:\EncinaCAD2\Src\Event;E:\EncinaCAD2\Src\Geometry;E:\EncinaCAD2\Src\Interface;E:\EncinaCAD2\Src\Memo;E:\EncinaCAD2\Src\Message;E:\EncinaCAD2\Src\Model;E:\EncinaCAD2\Src\Object;E:\EncinaCAD2\Src\Subscriber;E:\EncinaCAD2\Src\Utility;E:\StudioGPU\Src;E:\StudioGPU\Src\About;E:\StudioGPU\Src\Base64;&quot;E:\StudioGPU\Src\Building Review&quot;;&quot;E:\StudioGPU\Src\Calculate Rooms&quot;;&quot;E:\StudioGPU\Src\Energy Analysis&quot;;&quot;E:\StudioGPU\Src\Energy login&quot;;E:\StudioGPU\Src\FileSaver;E:\StudioGPU\Src\GBS_Soap;E:\StudioGPU\Src\Preferences;E:\StudioGPU\Src\SOAP;E:\StudioGPU\Src\Version;E:\StudioGPU\Src\Zip"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL"
+				StringPooling="TRUE"
+				MinimalRebuild="FALSE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				BufferSecurityCheck="TRUE"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				ObjectFile="$(IntDir)/"
+				ProgramDataBaseFileName="&quot;$(OutDir)/$(ProjectName).pdb&quot;"
+				BrowseInformation="1"
+				BrowseInformationFile="$(IntDir)/"
+				WarningLevel="3"
+				WarnAsError="TRUE"
+				SuppressStartupBanner="TRUE"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="1"
+				CallingConvention="0"
+				CompileAs="2"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/export:GetExportedFuncAddrs,@1 /export:SetImportedFuncAddrs,@2"
+				AdditionalDependencies="&quot;E:\EncinaCAD2\Make.Win\DebugAC10\EncinaCAD.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Lib\Win\ACAP_STAT.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\DGLib\Win\DGImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GSRoot\Win\GSRootImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\InputOutput\Win\InputOutputImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\UCLib\Win\UCImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\UDLib\Win\UDImp.lib&quot; ws2_32.lib"
+				OutputFile="&quot;$(OutDir)/StudioGPU.apx&quot;"
+				LinkIncremental="2"
+				LinkDLL="TRUE"
+				IgnoreDefaultLibraryNames="MSVCRTD.lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/StudioGPU.pdb"
+				SubSystem="0"
+				OptimizeReferences="0"
+				EnableCOMDATFolding="0"
+				EntryPointSymbol="DllMainEntry@12"
+				ImportLibrary=""
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				AdditionalIncludeDirectories="&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\DGLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Inc&quot;;&quot;E:\EncinaCAD AC10&quot;;E:\StudioGPU\GDL\EnergyLibrary10Win;E:\StudioGPU\RFIX.WIN;E:\StudioGPU\RFIX\Images;E:\StudioGPU\Src\Version"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="ReleaseAC11US|Win32"
+			OutputDirectory="C:\Program Files\Graphisoft\ArchiCAD 11\Add-Ons"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				AdditionalIncludeDirectories="&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Inc&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\GSUtils&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\GX&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\GSRoot&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\InputOutput&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\DGLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\Geometry&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\GeometryLIB&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\UCLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\ModelerGraphics&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\GSModelDevLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\MPIInterfaceDevLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\UDLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\TextEngine&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\GDL&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\GSModeler\Model3D&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\VBElemDialogs&quot;;&quot;E:\EncinaCAD AC11&quot;;E:\EncinaCAD2\Src;E:\EncinaCAD2\Src\Attribute;E:\EncinaCAD2\Src\Database;E:\EncinaCAD2\Src\Element;E:\EncinaCAD2\Src\Environment;E:\EncinaCAD2\Src\Event;E:\EncinaCAD2\Src\Geometry;E:\EncinaCAD2\Src\Interface;E:\EncinaCAD2\Src\Memo;E:\EncinaCAD2\Src\Message;E:\EncinaCAD2\Src\Model;E:\EncinaCAD2\Src\Object;E:\EncinaCAD2\Src\Serialise;E:\EncinaCAD2\Src\Subscriber;E:\EncinaCAD2\Src\Utility;E:\StudioGPU\Src;e:\StudioGPU\Src\Export;E:\boost.org;&quot;E:\Studio GPU Exporter SDK\2003\include&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LOCAL_US;SERVER_SELECTION"
+				StringPooling="FALSE"
+				MinimalRebuild="FALSE"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="2"
+				BufferSecurityCheck="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				ObjectFile="$(IntDir)/"
+				ProgramDataBaseFileName="&quot;$(OutDir)/$(ProjectName).pdb&quot;"
+				BrowseInformation="1"
+				BrowseInformationFile="$(IntDir)/"
+				WarningLevel="3"
+				WarnAsError="TRUE"
+				SuppressStartupBanner="TRUE"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="0"
+				CallingConvention="0"
+				CompileAs="2"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/export:GetExportedFuncAddrs,@1 /export:SetImportedFuncAddrs,@2"
+				AdditionalDependencies="&quot;E:\EncinaCAD2\Make.Win\ReleaseAC11\EncinaCAD.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Lib\Win\ACAP_STAT.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\DGLib\Win\DGImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\GSRoot\Win\GSRootImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\InputOutput\Win\InputOutputImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\UCLib\Win\UCImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\UDLib\Win\UDImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\GX\Win\GXImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\GSModeler\Win\GSModelerImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\Geometry\Win\GeometryImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\ModelerGraphics\Win\ModelerGraphicsImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\PixMapIO\Win\PixMapIOImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\UCLib\Win\UCImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\UDLib\Win\UDImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\VBElemDialogs\Win\VBElemDialogsImp.LIB&quot; &quot;E:\ModelAccess API\Make.Win\Release11\libModelAccess.lib&quot; &quot;E:\Studio GPU Exporter SDK\2003\lib\sgpuExportLib_VS2003_Static.lib&quot; &quot;E:\Studio GPU Exporter SDK\2003\lib\Core.lib&quot; &quot;E:\Studio GPU Exporter SDK\2003\lib\Graphics.lib&quot;"
+				OutputFile="&quot;$(OutDir)/StudioGPU.apx&quot;"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				LinkDLL="TRUE"
+				IgnoreDefaultLibraryNames="MSVCRTD.lib"
+				SubSystem="0"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				EntryPointSymbol="DllMainEntry@12"
+				ImportLibrary=""
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				AdditionalIncludeDirectories="&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\DGLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Inc&quot;;&quot;E:\EncinaCAD AC11&quot;;E:\StudioGPU\RFIX.WIN;E:\StudioGPU\RFIX\Images;E:\StudioGPU\Src;E:\StudioGPU\RO\US;E:\StudioGPU\RO\RFIX;E:\StudioGPU\RINT\US;E:\StudioGPU\RINT\US\Images;E:\EncinaCAD2\RINT\US"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="ReleaseAC10US|Win32"
+			OutputDirectory="C:\Program Files\Graphisoft\ArchiCAD 10\Add-Ons"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				AdditionalIncludeDirectories="&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Inc&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GSUtils&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GX&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GSRoot&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\InputOutput&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\DGLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\Geometry&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GeometryLIB&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\UCLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\ModelerGraphics&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GSModelDevLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\MPIInterfaceDevLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\UDLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\TextEngine&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GDL&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GSModeler\Model3D&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\VBElemDialogs&quot;;&quot;E:\EncinaCAD AC10&quot;;E:\EncinaCAD2\Src;E:\EncinaCAD2\Src\Attribute;E:\EncinaCAD2\Src\Database;E:\EncinaCAD2\Src\Element;E:\EncinaCAD2\Src\Environment;E:\EncinaCAD2\Src\Event;E:\EncinaCAD2\Src\Geometry;E:\EncinaCAD2\Src\Interface;E:\EncinaCAD2\Src\Memo;E:\EncinaCAD2\Src\Message;E:\EncinaCAD2\Src\Model;E:\EncinaCAD2\Src\Object;E:\EncinaCAD2\Src\Serialise;E:\EncinaCAD2\Src\Subscriber;E:\EncinaCAD2\Src\Utility;E:\StudioGPU\Src;e:\StudioGPU\Src\Export;E:\boost.org;&quot;E:\Studio GPU Exporter SDK\2003\include&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LOCAL_US;SERVER_SELECTION"
+				StringPooling="FALSE"
+				MinimalRebuild="FALSE"
+				RuntimeLibrary="2"
+				BufferSecurityCheck="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				ObjectFile="$(IntDir)/"
+				ProgramDataBaseFileName="&quot;$(OutDir)/$(ProjectName).pdb&quot;"
+				BrowseInformation="1"
+				BrowseInformationFile="$(IntDir)/"
+				WarningLevel="3"
+				WarnAsError="TRUE"
+				SuppressStartupBanner="TRUE"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="0"
+				CallingConvention="0"
+				CompileAs="2"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/export:GetExportedFuncAddrs,@1 /export:SetImportedFuncAddrs,@2"
+				AdditionalDependencies="&quot;E:\EncinaCAD2\Make.Win\ReleaseAC10\EncinaCAD.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Lib\Win\ACAP_STAT.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\DGLib\Win\DGImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GSRoot\Win\GSRootImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\InputOutput\Win\InputOutputImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\UCLib\Win\UCImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\UDLib\Win\UDImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GX\Win\GXImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GSModeler\Win\GSModelerImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\Geometry\Win\GeometryImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\ModelerGraphics\Win\ModelerGraphicsImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\UCLib\Win\UCImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\UDLib\Win\UDImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\VBElemDialogs\Win\VBElemDialogsImp.LIB&quot; &quot;E:\ModelAccess API\Make.Win\Release10\libModelAccess.lib&quot; &quot;E:\Studio GPU Exporter SDK\2003\lib\sgpuExportLib_VS2003_Static.lib&quot; &quot;E:\Studio GPU Exporter SDK\2003\lib\Core.lib&quot; &quot;E:\Studio GPU Exporter SDK\2003\lib\Graphics.lib&quot;"
+				OutputFile="&quot;$(OutDir)/StudioGPU.apx&quot;"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				LinkDLL="TRUE"
+				IgnoreDefaultLibraryNames="MSVCRTD.lib"
+				SubSystem="0"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				EntryPointSymbol="DllMainEntry@12"
+				ImportLibrary=""
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				AdditionalIncludeDirectories="&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\DGLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Inc&quot;;&quot;E:\EncinaCAD AC10&quot;;E:\StudioGPU\RFIX.WIN;E:\StudioGPU\RFIX\Images;E:\StudioGPU\Src;E:\StudioGPU\RINT\US;E:\StudioGPU\RO\US;E:\StudioGPU\RO\RFIX;E:\StudioGPU\RINT\US\Images;E:\EncinaCAD2\RINT\US"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="DebugAC11US|Win32"
+			OutputDirectory="C:\Program Files\Graphisoft\ArchiCAD 11\Add-Ons"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				AdditionalIncludeDirectories="&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Inc&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\GSUtils&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\GX&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\GSRoot&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\InputOutput&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\DGLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\Geometry&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\GeometryLIB&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\UCLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\ModelerGraphics&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\GSModelDevLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\MPIInterfaceDevLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\UDLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\TextEngine&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\GDL&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\GSModeler\Model3D&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\VBElemDialogs&quot;;&quot;E:\EncinaCAD AC11&quot;;E:\EncinaCAD2\Src;E:\EncinaCAD2\Src\Attribute;E:\EncinaCAD2\Src\Database;E:\EncinaCAD2\Src\Element;E:\EncinaCAD2\Src\Environment;E:\EncinaCAD2\Src\Event;E:\EncinaCAD2\Src\Geometry;E:\EncinaCAD2\Src\Interface;E:\EncinaCAD2\Src\Memo;E:\EncinaCAD2\Src\Message;E:\EncinaCAD2\Src\Model;E:\EncinaCAD2\Src\Object;E:\EncinaCAD2\Src\Serialise;E:\EncinaCAD2\Src\Subscriber;E:\EncinaCAD2\Src\Utility;E:\StudioGPU\Src;e:\StudioGPU\Src\Export;E:\boost.org;&quot;E:\Studio GPU Exporter SDK\2003\include&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LOCAL_US"
+				StringPooling="FALSE"
+				MinimalRebuild="FALSE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				BufferSecurityCheck="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				ObjectFile="$(IntDir)/"
+				ProgramDataBaseFileName="&quot;$(OutDir)/$(ProjectName).pdb&quot;"
+				BrowseInformation="1"
+				BrowseInformationFile="$(IntDir)/"
+				WarningLevel="3"
+				WarnAsError="TRUE"
+				SuppressStartupBanner="TRUE"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="3"
+				CallingConvention="0"
+				CompileAs="2"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/export:GetExportedFuncAddrs,@1 /export:SetImportedFuncAddrs,@2"
+				AdditionalDependencies="&quot;E:\EncinaCAD2\Make.Win\DebugAC11\EncinaCAD.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Lib\Win\ACAP_STAT.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\DGLib\Win\DGImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\GSRoot\Win\GSRootImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\InputOutput\Win\InputOutputImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\UCLib\Win\UCImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\UDLib\Win\UDImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\GX\Win\GXImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\GSModeler\Win\GSModelerImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\Geometry\Win\GeometryImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\ModelerGraphics\Win\ModelerGraphicsImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\PixMapIO\Win\PixMapIOImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\UCLib\Win\UCImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\UDLib\Win\UDImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\VBElemDialogs\Win\VBElemDialogsImp.LIB&quot; &quot;E:\ModelAccess API\Make.Win\Release11\libModelAccess.lib&quot; &quot;E:\Studio GPU Exporter SDK\2003\lib\sgpuExportLib_VS2003_Static.lib&quot; &quot;E:\Studio GPU Exporter SDK\2003\lib\Core.lib&quot; &quot;E:\Studio GPU Exporter SDK\2003\lib\Graphics.lib&quot;"
+				OutputFile="&quot;$(OutDir)/StudioGPU.apx&quot;"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="&quot;E:\Studio GPU Exporter SDK\2003\lib&quot;"
+				LinkDLL="TRUE"
+				IgnoreAllDefaultLibraries="FALSE"
+				IgnoreDefaultLibraryNames="MSVCRT.lib"
+				GenerateDebugInformation="TRUE"
+				SubSystem="0"
+				OptimizeReferences="0"
+				EnableCOMDATFolding="0"
+				OptimizeForWindows98="0"
+				EntryPointSymbol="DllMainEntry@12"
+				ImportLibrary=""
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				AdditionalIncludeDirectories="&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Modules\DGLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Inc&quot;;&quot;E:\EncinaCAD AC11&quot;;E:\StudioGPU\RFIX.WIN;E:\StudioGPU\RFIX\Images;E:\StudioGPU\Src;E:\StudioGPU\RO\US;E:\StudioGPU\RO\RFIX;E:\StudioGPU\RINT\US;E:\StudioGPU\RINT\US\Images;E:\EncinaCAD2\RINT\US"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="DebugAC10US|Win32"
+			OutputDirectory="C:\Program Files\Graphisoft\ArchiCAD 10\Add-Ons"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				AdditionalIncludeDirectories="&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Inc&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GSUtils&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GX&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GSRoot&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\InputOutput&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\DGLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\Geometry&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GeometryLIB&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\UCLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\ModelerGraphics&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GSModelDevLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\MPIInterfaceDevLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\UDLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\TextEngine&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GDL&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GSModeler\Model3D&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\VBElemDialogs&quot;;&quot;E:\EncinaCAD AC10&quot;;E:\EncinaCAD2\Src;E:\EncinaCAD2\Src\Attribute;E:\EncinaCAD2\Src\Database;E:\EncinaCAD2\Src\Element;E:\EncinaCAD2\Src\Environment;E:\EncinaCAD2\Src\Event;E:\EncinaCAD2\Src\Geometry;E:\EncinaCAD2\Src\Interface;E:\EncinaCAD2\Src\Memo;E:\EncinaCAD2\Src\Message;E:\EncinaCAD2\Src\Model;E:\EncinaCAD2\Src\Object;E:\EncinaCAD2\Src\Serialise;E:\EncinaCAD2\Src\Subscriber;E:\EncinaCAD2\Src\Utility;E:\StudioGPU\Src;e:\StudioGPU\Src\Export;E:\boost.org;&quot;E:\Studio GPU Exporter SDK\2003\include&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LOCAL_US"
+				StringPooling="FALSE"
+				MinimalRebuild="FALSE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				BufferSecurityCheck="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				ObjectFile="$(IntDir)/"
+				ProgramDataBaseFileName="&quot;$(OutDir)/$(ProjectName).pdb&quot;"
+				BrowseInformation="1"
+				BrowseInformationFile="$(IntDir)/"
+				WarningLevel="3"
+				WarnAsError="TRUE"
+				SuppressStartupBanner="TRUE"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="3"
+				CallingConvention="0"
+				CompileAs="2"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/export:GetExportedFuncAddrs,@1 /export:SetImportedFuncAddrs,@2"
+				AdditionalDependencies="&quot;E:\EncinaCAD2\Make.Win\DebugAC10\EncinaCAD.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Lib\Win\ACAP_STAT.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\DGLib\Win\DGImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GSRoot\Win\GSRootImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\InputOutput\Win\InputOutputImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\UCLib\Win\UCImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\UDLib\Win\UDImp.lib&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GX\Win\GXImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\GSModeler\Win\GSModelerImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\Geometry\Win\GeometryImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\ModelerGraphics\Win\ModelerGraphicsImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\UCLib\Win\UCImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\UDLib\Win\UDImp.LIB&quot; &quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\VBElemDialogs\Win\VBElemDialogsImp.LIB&quot; &quot;E:\ModelAccess API\Make.Win\Release10\libModelAccess.lib&quot; &quot;E:\Studio GPU Exporter SDK\2003\lib\sgpuExportLib_VS2003_Static.lib&quot; &quot;E:\Studio GPU Exporter SDK\2003\lib\Core.lib&quot; &quot;E:\Studio GPU Exporter SDK\2003\lib\Graphics.lib&quot;"
+				OutputFile="&quot;$(OutDir)/StudioGPU.apx&quot;"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				LinkDLL="TRUE"
+				IgnoreDefaultLibraryNames="MSVCRT.lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/$(ProjectName).pdb"
+				SubSystem="0"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				EntryPointSymbol="DllMainEntry@12"
+				ImportLibrary=""
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				AdditionalIncludeDirectories="&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Modules\DGLib&quot;;&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Inc&quot;;&quot;E:\EncinaCAD AC10&quot;;E:\StudioGPU\RFIX.WIN;E:\StudioGPU\RFIX\Images;E:\StudioGPU\Src;E:\StudioGPU\RINT\US;E:\StudioGPU\RO\US;E:\StudioGPU\RO\RFIX;E:\StudioGPU\RINT\US\Images;E:\EncinaCAD2\RINT\US"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Sources"
+			Filter="c;cpp;cc;cxx">
+			<File
+				RelativePath="..\Src\StudioGPU.cpp">
+			</File>
+			<File
+				RelativePath="..\Src\StudioGPUAddon.cpp">
+			</File>
+			<Filter
+				Name="Export"
+				Filter="">
+				<File
+					RelativePath="..\Src\Export\ExportStudioGPU.cpp">
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Headers"
+			Filter="h;hpp;hxx">
+			<File
+				RelativePath="..\Src\StudioGPUAddon.h">
+			</File>
+			<File
+				RelativePath="..\Src\StudioGPUResource.h">
+			</File>
+			<File
+				RelativePath="..\Src\Version.h">
+			</File>
+			<Filter
+				Name="Export"
+				Filter="">
+				<File
+					RelativePath="..\Src\Export\ExportStudioGPU.h">
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Resources"
+			Filter="r;res;rc;rc2;grc">
+			<File
+				RelativePath="..\RFIX.WIN\StudioGPU.rc">
+			</File>
+			<File
+				RelativePath="..\RFIX\StudioGPUFix10.grc">
+				<FileConfiguration
+					Name="ReleaseAC11US|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseAC10US|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Compiling StudioGPUFix10.grc..."
+						CommandLine="&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Tools\Win\ResConv.exe&quot; -m r -D WINDOWS -T W -i &quot;$(ProjectDir)..\RFIX\StudioGPUFix10.grc&quot; -p &quot;$(ProjectDir)..\RFIX\Images&quot; -o &quot;$(ProjectDir)..\RO\RFIX\StudioGPUFix.rc10&quot;"
+						Outputs="$(OutDir)\StudioGPUFix.rc10"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugAC10US|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Compiling StudioGPUFix10.grc..."
+						CommandLine="&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Tools\Win\ResConv.exe&quot; -m r -D WINDOWS -T W -i &quot;$(ProjectDir)..\RFIX\StudioGPUFix10.grc&quot; -p &quot;$(ProjectDir)..\RFIX\Images&quot; -o &quot;$(ProjectDir)..\RO\RFIX\StudioGPUFix.rc10&quot;"
+						Outputs="$(OutDir)\StudioGPUFix.rc10"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\RFIX\StudioGPUFix11.grc">
+				<FileConfiguration
+					Name="DebugAC9|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseAC11US|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Compiling StudioGPUFix11.grc..."
+						CommandLine="&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Tools\Win\ResConv.exe&quot; -m r -D WINDOWS -T W -i &quot;$(ProjectDir)..\RFIX\StudioGPUFix11.grc&quot; -p &quot;$(ProjectDir)..\RFIX\Images&quot; -o &quot;$(ProjectDir)..\RO\RFIX\StudioGPUFix.rc11&quot;"
+						Outputs="$(OutDir)\StudioGPUFix.rc11"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="ReleaseAC10US|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugAC11US|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Compiling StudioGPUFix11.grc..."
+						CommandLine="&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Tools\Win\ResConv.exe&quot; -m r -D WINDOWS -T W -i &quot;$(ProjectDir)..\RFIX\StudioGPUFix11.grc&quot; -p &quot;$(ProjectDir)..\RFIX\Images&quot; -o &quot;$(ProjectDir)..\RO\RFIX\StudioGPUFix.rc11&quot;
+"
+						Outputs="$(OutDir)\StudioGPUFix.rc11"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="DebugAC10US|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
+			</File>
+			<Filter
+				Name="US"
+				Filter="">
+				<File
+					RelativePath="..\..\EncinaCAD2\RINT\US\EncinaCAD.grc">
+					<FileConfiguration
+						Name="ReleaseAC11US|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Compiling EncinaCAD.grc..."
+							CommandLine="&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Tools\Win\ResConv.exe&quot; -m r -D WINDOWS -T W -i &quot;$(ProjectDir)..\..\EncinaCAD2\RINT\US\EncinaCAD.grc&quot; -p &quot;$(ProjectDir)..\RFIX\Images&quot; -o &quot;$(ProjectDir)..\RO\US\EncinaCAD.rc11&quot;
+"
+							Outputs="$(OutDir)\EncinaCAD.rc11"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ReleaseAC10US|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Compiling EncinaCAD.grc..."
+							CommandLine="&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Tools\Win\ResConv.exe&quot; -m r -D WINDOWS -T W -i &quot;$(ProjectDir)..\..\EncinaCAD2\RINT\US\EncinaCAD.grc&quot; -p &quot;$(ProjectDir)..\RFIX\Images&quot; -o &quot;$(ProjectDir)..\RO\US\EncinaCAD.rc10&quot;
+"
+							Outputs="$(OutDir)\EncinaCAD.rc10"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugAC11US|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Compiling EncinaCAD.grc..."
+							CommandLine="&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Tools\Win\ResConv.exe&quot; -m r -D WINDOWS -T W -i &quot;$(ProjectDir)..\..\EncinaCAD2\RINT\US\EncinaCAD.grc&quot; -p &quot;$(ProjectDir)..\RFIX\Images&quot; -o &quot;$(ProjectDir)..\RO\US\EncinaCAD.rc11&quot;
+"
+							Outputs="$(OutDir)\EncinaCAD.rc11"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugAC10US|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Compiling EncinaCAD.grc..."
+							CommandLine="&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Tools\Win\ResConv.exe&quot; -m r -D WINDOWS -T W -i &quot;$(ProjectDir)..\..\EncinaCAD2\RINT\US\EncinaCAD.grc&quot; -p &quot;$(ProjectDir)..\RFIX\Images&quot; -o &quot;$(ProjectDir)..\RO\US\EncinaCAD.rc10&quot;
+"
+							Outputs="$(OutDir)\EncinaCAD.rc10"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\RINT\US\Progress.grc">
+					<FileConfiguration
+						Name="ReleaseAC11US|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Compiling Progress.grc..."
+							CommandLine="&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Tools\Win\ResConv.exe&quot; -m r -D WINDOWS -T W -i &quot;$(ProjectDir)..\RINT\US\Progress.grc&quot; -p &quot;$(ProjectDir)..\RFIX\Images&quot; -o &quot;$(ProjectDir)..\RO\US\Progress.rc11&quot;
+"
+							Outputs="Progress.rc11"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ReleaseAC10US|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Compiling Progress.grc"
+							CommandLine="&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Tools\Win\ResConv.exe&quot; -m r -D WINDOWS -T W -i &quot;$(ProjectDir)..\RINT\US\Progress.grc&quot; -p &quot;$(ProjectDir)..\RFIX\Images&quot; -o &quot;$(ProjectDir)..\RO\US\Progress.rc10&quot;
+"
+							Outputs="$(OutDir)\Progress.rc10"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugAC11US|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Compiling Progress.grc..."
+							CommandLine="&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Tools\Win\ResConv.exe&quot; -m r -D WINDOWS -T W -i &quot;$(ProjectDir)..\RINT\US\Progress.grc&quot; -p &quot;$(ProjectDir)..\RFIX\Images&quot; -o &quot;$(ProjectDir)..\RO\US\Progress.rc11&quot;
+"
+							Outputs="Progress.rc11"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugAC10US|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Compiling Progress.grc"
+							CommandLine="&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Tools\Win\ResConv.exe&quot; -m r -D WINDOWS -T W -i &quot;$(ProjectDir)..\RINT\US\Progress.grc&quot; -p &quot;$(ProjectDir)..\RFIX\Images&quot; -o &quot;$(ProjectDir)..\RO\US\Progress.rc10&quot;
+"
+							Outputs="$(OutDir)\Progress.rc10"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\RINT\US\StudioGPU.grc">
+					<FileConfiguration
+						Name="DebugAC10|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Compiling StudioGPU.grc..."
+							CommandLine="&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Tools\Win\ResConv.exe&quot; -m r -D WINDOWS -T W -i &quot;$(ProjectDir)..\RINT\US\StudioGPU.grc&quot; -p &quot;$(ProjectDir)..\RFIX\Images&quot; -o &quot;$(ProjectDir)..\RO\US\StudioGPU.rc10&quot;
+"
+							Outputs="$(OutDir)\StudioGPU.rc10"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ReleaseAC11US|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Compiling StudioGPU.grc..."
+							CommandLine="&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Tools\Win\ResConv.exe&quot; -m r -D WINDOWS -T W -i &quot;$(ProjectDir)..\RINT\US\StudioGPU.grc&quot; -p &quot;$(ProjectDir)..\RFIX\Images&quot; -o &quot;$(ProjectDir)..\RO\US\StudioGPU.rc11&quot;
+"
+							Outputs="$(OutDir)\StudioGPU.rc11"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ReleaseAC10US|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Compiling StudioGPU.grc..."
+							CommandLine="&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Tools\Win\ResConv.exe&quot; -m r -D WINDOWS -T W -i &quot;$(ProjectDir)..\RINT\US\StudioGPU.grc&quot; -p &quot;$(ProjectDir)..\RFIX\Images&quot; -o &quot;$(ProjectDir)..\RO\US\StudioGPU.rc10&quot;
+"
+							Outputs="$(OutDir)\StudioGPU.rc10"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugAC11US|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Compiling StudioGPU.grc..."
+							CommandLine="&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Tools\Win\ResConv.exe&quot; -m r -D WINDOWS -T W -i &quot;$(ProjectDir)..\RINT\US\StudioGPU.grc&quot; -p &quot;$(ProjectDir)..\RFIX\Images&quot; -o &quot;$(ProjectDir)..\RO\US\StudioGPU.rc11&quot;
+"
+							Outputs="$(OutDir)\StudioGPU.rc11"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugAC10US|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Compiling StudioGPU.grc..."
+							CommandLine="&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Tools\Win\ResConv.exe&quot; -m r -D WINDOWS -T W -i &quot;$(ProjectDir)..\RINT\US\StudioGPU.grc&quot; -p &quot;$(ProjectDir)..\RFIX\Images&quot; -o &quot;$(ProjectDir)..\RO\US\StudioGPU.rc10&quot;
+"
+							Outputs="$(OutDir)\StudioGPU.rc10"/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\RINT\US\StudioGPUStrings.grc">
+					<FileConfiguration
+						Name="DebugAC9|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Compiling StudioGPUStrings.grc..."
+							Outputs="Compiling StudioGPUStrings.grc..."/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugAC10|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Compiling StudioGPUStrings.grc..."
+							CommandLine="&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Tools\Win\ResConv.exe&quot; -m r -D WINDOWS -T W -i &quot;$(ProjectDir)..\RINT\US\StudioGPUStrings.grc&quot; -p &quot;$(ProjectDir)..\RFIX\Images&quot; -o &quot;$(ProjectDir)..\RO\US\StudioGPUStrings.rc10&quot;
+"
+							Outputs="$(OutDir)\StudioGPUStrings.rc10"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ReleaseAC11US|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Compiling StudioGPUStrings.grc..."
+							CommandLine="&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Tools\Win\ResConv.exe&quot; -m r -D WINDOWS -T W -i &quot;$(ProjectDir)..\RINT\US\StudioGPUStrings.grc&quot; -p &quot;$(ProjectDir)..\RFIX\Images&quot; -o &quot;$(ProjectDir)..\RO\US\StudioGPUStrings.rc11&quot;
+"
+							Outputs="$(OutDir)\StudioGPUStrings.rc11"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="ReleaseAC10US|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Compiling StudioGPUStrings.grc..."
+							CommandLine="&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Tools\Win\ResConv.exe&quot; -m r -D WINDOWS -T W -i &quot;$(ProjectDir)..\RINT\US\StudioGPUStrings.grc&quot; -p &quot;$(ProjectDir)..\RFIX\Images&quot; -o &quot;$(ProjectDir)..\RO\US\StudioGPUStrings.rc10&quot;
+"
+							Outputs="$(OutDir)\StudioGPUStrings.rc10"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugAC11US|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Compiling StudioGPUStrings.grc..."
+							CommandLine="&quot;E:\ArchiCAD API Dev Kit Win 11\Support\Tools\Win\ResConv.exe&quot; -m r -D WINDOWS -T W -i &quot;$(ProjectDir)..\RINT\US\StudioGPUStrings.grc&quot; -p &quot;$(ProjectDir)..\RFIX\Images&quot; -o &quot;$(ProjectDir)..\RO\US\StudioGPUStrings.rc11&quot;
+"
+							Outputs="$(OutDir)\StudioGPUStrings.rc11"/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="DebugAC10US|Win32">
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Compiling StudioGPUStrings.grc..."
+							CommandLine="&quot;E:\ArchiCAD API Dev Kit Win 10\Support\Tools\Win\ResConv.exe&quot; -m r -D WINDOWS -T W -i &quot;$(ProjectDir)..\RINT\US\StudioGPUStrings.grc&quot; -p &quot;$(ProjectDir)..\RFIX\Images&quot; -o &quot;$(ProjectDir)..\RO\US\StudioGPUStrings.rc10&quot;
+"
+							Outputs="$(OutDir)\StudioGPUStrings.rc10"/>
+					</FileConfiguration>
+				</File>
+			</Filter>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

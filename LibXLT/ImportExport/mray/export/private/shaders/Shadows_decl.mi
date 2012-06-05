@@ -1,0 +1,28 @@
+#must match the struct in the cpp file for this shader!
+
+$ifndef "sgpu_illum_Shadows_mi"
+set "sgpu_illum_Shadows_mi" "true"
+
+declare shader
+	color "sgpu_illum_Shadows" (
+				
+		scalar			"g_transparency",
+		color texture	"transparencyMap",
+		
+		scalar			"u_scale",
+		scalar			"v_scale",
+		scalar			"u_offset",
+		scalar			"v_offset",
+		scalar			"uv_rotation",
+	
+		color texture	"normalMap",
+		scalar			"normalMapScale",
+		
+		integer			"mode",      # light selection mode 0,1,2,4
+		array light		"lights"
+	)
+	version 1
+	apply material
+end declare
+
+$endif

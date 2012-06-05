@@ -1,0 +1,248 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{20480B9F-ACF2-4047-92CF-3F1E82088CA0}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>TerawattManagedControls</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <RootNamespace>TerawattManagedControls</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>..\..\Lib\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AdobeColors.cs" />
+    <Compile Include="AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ColorRGBAEdit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ColorRGBEdit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ctrl2DColorBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ctrlVerticalColorSlider.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FileChooser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FloatEdit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FolderChooser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="frmColorPicker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FXForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="KeyCombo.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MultiRangedBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ObjectList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PanelLayout.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RadioGroup.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="RangedFloat.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SplashImage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TreeViewMS.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Vector3Edit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Vector3Editor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Vector3EditRanged.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Vector3EditUpDown.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <EmbeddedResource Include="ColorRGBAEdit.bmp" />
+    <EmbeddedResource Include="ColorRGBAEdit.resx">
+      <DependentUpon>ColorRGBAEdit.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ColorRGBEdit.bmp" />
+    <EmbeddedResource Include="ColorRGBEdit.resx">
+      <DependentUpon>ColorRGBEdit.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ctrl2DColorBox.resx">
+      <DependentUpon>ctrl2DColorBox.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ctrlVerticalColorSlider.resx">
+      <DependentUpon>ctrlVerticalColorSlider.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FileChooser.bmp" />
+    <EmbeddedResource Include="FileChooser.resx">
+      <DependentUpon>FileChooser.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FloatEdit.resx">
+      <DependentUpon>FloatEdit.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FolderChooser.bmp" />
+    <EmbeddedResource Include="FolderChooser.resx">
+      <DependentUpon>FolderChooser.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmColorPicker.resx">
+      <DependentUpon>frmColorPicker.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KeyCombo.resx">
+      <DependentUpon>KeyCombo.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MultiRangedBox.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MultiRangedBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ObjectList.bmp" />
+    <EmbeddedResource Include="ObjectList.resx">
+      <DependentUpon>ObjectList.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PanelLayout.resx">
+      <DependentUpon>PanelLayout.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RadioGroup.bmp" />
+    <EmbeddedResource Include="RangedFloat.bmp" />
+    <EmbeddedResource Include="RangedFloat.resx">
+      <DependentUpon>RangedFloat.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SplashImage.resx">
+      <DependentUpon>SplashImage.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Vector3Edit.bmp" />
+    <EmbeddedResource Include="Vector3Edit.resx">
+      <DependentUpon>Vector3Edit.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Vector3EditRanged.resx">
+      <DependentUpon>Vector3EditRanged.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Vector3EditUpDown.resx">
+      <DependentUpon>Vector3EditUpDown.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Content Include="FloatEdit.bmp" />
+    <Content Include="Vector3EditRanged.bmp" />
+    <Content Include="Vector3EditUpDown.bmp" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

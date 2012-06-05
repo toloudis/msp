@@ -1,0 +1,74 @@
+/**********************************************************************
+
+							STUDIOGPU ADDON
+
+ 	File:		StudioGPU.r
+
+	Purpose:	Windows resources for the StudioGPU add-on
+
+	Target:		ArchiCAD 9-12
+
+	Copyright:	Encina Ltd 2009
+
+	Revision history:
+	10-06-09	RW	Created
+
+ **********************************************************************/
+
+#include <Windows.h>
+#include <Winver.h>
+
+#define INT__APP
+#include "EncinaCADVersion.h"
+#include "Version.h"
+
+
+#include "GSLocalization.h"
+#include "DGDefs.h"
+
+#if !defined (WINDOWS)
+#define WINDOWS
+#endif
+
+
+#define ORIGINAL_NAME	"StudioGPU.apx"
+#define INTERNAL_NAME	APP_VERSION
+
+
+#define METHOD_API
+
+#if defined(ARCHICAD_13_0)
+
+#include "EncinaCAD.rc13"
+#include "StudioGPU.rc13"
+#include "StudioGPUFix.rc13"
+#include "StudioGPUStrings.rc13"
+#include "Progress.rc13"
+
+#elif defined(ARCHICAD_12_0)
+
+#include "EncinaCAD.rc12"
+#include "StudioGPU.rc12"
+#include "StudioGPUFix.rc12"
+#include "StudioGPUStrings.rc12"
+#include "Progress.rc12"
+
+#elif defined(ARCHICAD_11_0)
+
+#include "EncinaCAD.rc11"
+#include "StudioGPU.rc11"
+#include "StudioGPUFix.rc11"
+#include "StudioGPUStrings.rc11"
+#include "Progress.rc11"
+
+#elif defined(ARCHICAD_10_0)
+
+#include "EncinaCAD.rc10"
+#include "StudioGPU.rc10"
+#include "StudioGPUFix.rc10"
+#include "StudioGPUStrings.rc10"
+#include "Progress.rc10"
+
+#endif
+
+1	ICON	LOADONCALL MOVEABLE IMPURE  ACAP.ico

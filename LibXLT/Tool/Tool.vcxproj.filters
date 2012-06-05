@@ -1,0 +1,819 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="api3d">
+      <UniqueIdentifier>{4f3e0e1a-d031-46ca-a0d9-79c8bc293122}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="api3d\private">
+      <UniqueIdentifier>{69b4262c-5457-4b39-b037-4a5d40f3348a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cam3d">
+      <UniqueIdentifier>{06114cac-386f-4b09-a013-382f2f9b7a86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cam3d\private">
+      <UniqueIdentifier>{9d2caa71-1e4c-4c2b-8fbf-4094e76c6bf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pick3d">
+      <UniqueIdentifier>{616e48ea-9ed4-4f2d-bfaf-447c9175328b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pick3d\private">
+      <UniqueIdentifier>{ad3b2463-5656-46a1-9a93-d258720c703b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sel3d">
+      <UniqueIdentifier>{4960dda8-796b-4e09-b2a4-e2a4c919748c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sel3d\private">
+      <UniqueIdentifier>{35d804b7-e28f-4808-aa9e-513e1c1a8fe9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tma3d">
+      <UniqueIdentifier>{78761d26-ac10-457c-9a79-18d5d28ec061}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tma3d\private">
+      <UniqueIdentifier>{dc3df329-d295-441b-b74c-36494ece5dd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cma">
+      <UniqueIdentifier>{2ee7dc05-ce5f-40ab-a658-0ab8539d8047}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cma\private">
+      <UniqueIdentifier>{a5e9e2fa-d93f-40f1-866c-cba1d5fe75d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="doc">
+      <UniqueIdentifier>{d355418c-4cf8-431e-80c7-f48e860351cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="doc\private">
+      <UniqueIdentifier>{3c6b4cb0-8ef8-4546-a8cb-94b06873ad55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rstk">
+      <UniqueIdentifier>{a80654c0-5c69-4804-bc2c-3b9ae2caac34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gui">
+      <UniqueIdentifier>{e2d61c90-a68c-4f66-94db-127eda3f9271}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gui\private">
+      <UniqueIdentifier>{ea0ec1d1-098c-4bb8-9bf3-4f3f5ea50e2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gpx">
+      <UniqueIdentifier>{f6fce244-6453-4abe-936b-be9af16d5a60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gpx\private">
+      <UniqueIdentifier>{26ff91da-acda-454e-a6a3-55b3d705348a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gpx\Proxies">
+      <UniqueIdentifier>{27250067-cd77-469d-a49a-54671739ae19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="icn">
+      <UniqueIdentifier>{31a9b213-fc1e-4951-877d-2b96e21e96d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="icn\private">
+      <UniqueIdentifier>{185e43fc-97f5-4edf-b2a8-828d40f3c92f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ctxm">
+      <UniqueIdentifier>{89f0b858-425c-472e-946e-4aa7ddabdeea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ctxm\private">
+      <UniqueIdentifier>{22789750-4815-4df1-a17f-6be559ac67d2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="api3d\api3dBakeScene.hpp">
+      <Filter>api3d</Filter>
+    </ClInclude>
+    <ClInclude Include="api3d\api3dBillboard.hpp">
+      <Filter>api3d</Filter>
+    </ClInclude>
+    <ClInclude Include="api3d\api3dImport.hpp">
+      <Filter>api3d</Filter>
+    </ClInclude>
+    <ClInclude Include="api3d\api3dLightMgr.hpp">
+      <Filter>api3d</Filter>
+    </ClInclude>
+    <ClInclude Include="api3d\api3dObject.hpp">
+      <Filter>api3d</Filter>
+    </ClInclude>
+    <ClInclude Include="api3d\api3dObjectEntity.hpp">
+      <Filter>api3d</Filter>
+    </ClInclude>
+    <ClInclude Include="api3d\api3dObjectGeom.hpp">
+      <Filter>api3d</Filter>
+    </ClInclude>
+    <ClInclude Include="api3d\api3dObjectNode.hpp">
+      <Filter>api3d</Filter>
+    </ClInclude>
+    <ClInclude Include="api3d\api3dObjectSimple.hpp">
+      <Filter>api3d</Filter>
+    </ClInclude>
+    <ClInclude Include="api3d\api3dObjectSingle.hpp">
+      <Filter>api3d</Filter>
+    </ClInclude>
+    <ClInclude Include="api3d\api3dParticleGenerator.hpp">
+      <Filter>api3d</Filter>
+    </ClInclude>
+    <ClInclude Include="api3d\api3dProjectedLightWrapper.hpp">
+      <Filter>api3d</Filter>
+    </ClInclude>
+    <ClInclude Include="api3d\api3dReference.hpp">
+      <Filter>api3d</Filter>
+    </ClInclude>
+    <ClInclude Include="api3d\api3dResourceFinder.hpp">
+      <Filter>api3d</Filter>
+    </ClInclude>
+    <ClInclude Include="api3d\api3dScene.hpp">
+      <Filter>api3d</Filter>
+    </ClInclude>
+    <ClInclude Include="api3d\api3dShape.hpp">
+      <Filter>api3d</Filter>
+    </ClInclude>
+    <ClInclude Include="api3d\api3dSharedModelMgr.hpp">
+      <Filter>api3d</Filter>
+    </ClInclude>
+    <ClInclude Include="api3d\api3dSubdiv.hpp">
+      <Filter>api3d</Filter>
+    </ClInclude>
+    <ClInclude Include="api3d\api3dTargetRendererMgr.hpp">
+      <Filter>api3d</Filter>
+    </ClInclude>
+    <ClInclude Include="api3d\private\api3dNodeReference.hpp">
+      <Filter>api3d\private</Filter>
+    </ClInclude>
+    <ClInclude Include="api3d\private\api3dSceneImpl.hpp">
+      <Filter>api3d\private</Filter>
+    </ClInclude>
+    <ClInclude Include="cam3d\cam3dAnimKeys.hpp">
+      <Filter>cam3d</Filter>
+    </ClInclude>
+    <ClInclude Include="cam3d\cam3dImport.hpp">
+      <Filter>cam3d</Filter>
+    </ClInclude>
+    <ClInclude Include="cam3d\cam3dManipMaya.hpp">
+      <Filter>cam3d</Filter>
+    </ClInclude>
+    <ClInclude Include="cam3d\cam3dManipOrthoPan.hpp">
+      <Filter>cam3d</Filter>
+    </ClInclude>
+    <ClInclude Include="cam3d\cam3dManipUtil.hpp">
+      <Filter>cam3d</Filter>
+    </ClInclude>
+    <ClInclude Include="cam3d\cam3dMgr.hpp">
+      <Filter>cam3d</Filter>
+    </ClInclude>
+    <ClInclude Include="cam3d\cam3dPackage.hpp">
+      <Filter>cam3d</Filter>
+    </ClInclude>
+    <ClInclude Include="cam3d\cam3dUtil.hpp">
+      <Filter>cam3d</Filter>
+    </ClInclude>
+    <ClInclude Include="pick3d\pick3dMgr.hpp">
+      <Filter>pick3d</Filter>
+    </ClInclude>
+    <ClInclude Include="pick3d\pick3dPackage.hpp">
+      <Filter>pick3d</Filter>
+    </ClInclude>
+    <ClInclude Include="pick3d\pick3dPickBuffer.hpp">
+      <Filter>pick3d</Filter>
+    </ClInclude>
+    <ClInclude Include="pick3d\pick3dPickInterest.hpp">
+      <Filter>pick3d</Filter>
+    </ClInclude>
+    <ClInclude Include="pick3d\pick3dPickItem.hpp">
+      <Filter>pick3d</Filter>
+    </ClInclude>
+    <ClInclude Include="pick3d\pick3dPickList.hpp">
+      <Filter>pick3d</Filter>
+    </ClInclude>
+    <ClInclude Include="pick3d\pick3dPickObject.hpp">
+      <Filter>pick3d</Filter>
+    </ClInclude>
+    <ClInclude Include="sel3d\sel3dCastUtil.hpp">
+      <Filter>sel3d</Filter>
+    </ClInclude>
+    <ClInclude Include="sel3d\sel3dMgr.hpp">
+      <Filter>sel3d</Filter>
+    </ClInclude>
+    <ClInclude Include="sel3d\sel3dObject.hpp">
+      <Filter>sel3d</Filter>
+    </ClInclude>
+    <ClInclude Include="sel3d\sel3dPackage.hpp">
+      <Filter>sel3d</Filter>
+    </ClInclude>
+    <ClInclude Include="sel3d\sel3dSelectInterest.hpp">
+      <Filter>sel3d</Filter>
+    </ClInclude>
+    <ClInclude Include="sel3d\sel3dUndoOperation.hpp">
+      <Filter>sel3d</Filter>
+    </ClInclude>
+    <ClInclude Include="tma3d\tma3dCursorMgr.hpp">
+      <Filter>tma3d</Filter>
+    </ClInclude>
+    <ClInclude Include="tma3d\tma3dRenderView.hpp">
+      <Filter>tma3d</Filter>
+    </ClInclude>
+    <ClInclude Include="tma3d\tma3dScreenUtil.hpp">
+      <Filter>tma3d</Filter>
+    </ClInclude>
+    <ClInclude Include="tma3d\tma3dViewerMgr.hpp">
+      <Filter>tma3d</Filter>
+    </ClInclude>
+    <ClInclude Include="cma\cmaActualOperations.hpp">
+      <Filter>cma</Filter>
+    </ClInclude>
+    <ClInclude Include="cma\cmaCommand.hpp">
+      <Filter>cma</Filter>
+    </ClInclude>
+    <ClInclude Include="cma\cmaCommandMgr.hpp">
+      <Filter>cma</Filter>
+    </ClInclude>
+    <ClInclude Include="cma\cmaCommandSimple.hpp">
+      <Filter>cma</Filter>
+    </ClInclude>
+    <ClInclude Include="cma\cmaCommandToggle.hpp">
+      <Filter>cma</Filter>
+    </ClInclude>
+    <ClInclude Include="cma\cmaData.hpp">
+      <Filter>cma</Filter>
+    </ClInclude>
+    <ClInclude Include="cma\cmaOperations.hpp">
+      <Filter>cma</Filter>
+    </ClInclude>
+    <ClInclude Include="cma\cmaPackage.hpp">
+      <Filter>cma</Filter>
+    </ClInclude>
+    <ClInclude Include="doc\docCustomDocumentMgr.hpp">
+      <Filter>doc</Filter>
+    </ClInclude>
+    <ClInclude Include="doc\docDocument.hpp">
+      <Filter>doc</Filter>
+    </ClInclude>
+    <ClInclude Include="doc\docDocumentChunk.hpp">
+      <Filter>doc</Filter>
+    </ClInclude>
+    <ClInclude Include="doc\docDocumentInterest.hpp">
+      <Filter>doc</Filter>
+    </ClInclude>
+    <ClInclude Include="doc\docDocumentWithChunks.hpp">
+      <Filter>doc</Filter>
+    </ClInclude>
+    <ClInclude Include="doc\docSingleDocumentMgr.hpp">
+      <Filter>doc</Filter>
+    </ClInclude>
+    <ClInclude Include="doc\docSingleTypeMgr.hpp">
+      <Filter>doc</Filter>
+    </ClInclude>
+    <ClInclude Include="doc\private\docDocumentType.hpp">
+      <Filter>doc\private</Filter>
+    </ClInclude>
+    <ClInclude Include="rstk\rstkDataMgr.hpp">
+      <Filter>Rstk</Filter>
+    </ClInclude>
+    <ClInclude Include="rstk\rstkDataParser.hpp">
+      <Filter>Rstk</Filter>
+    </ClInclude>
+    <ClInclude Include="rstk\rstkDocumentChunk.hpp">
+      <Filter>Rstk</Filter>
+    </ClInclude>
+    <ClInclude Include="rstk\rstkDocumentInterest.hpp">
+      <Filter>Rstk</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\guiCommandMgr.hpp">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\guiConstants.hpp">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\guiContextMenu.hpp">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\guiCursor.hpp">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\guiCustomDocHandler.hpp">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\guiDialogTabbedMgr.hpp">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\guiFileDialogUtils.hpp">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\guiMainWindow.hpp">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\guiMenuMgr.hpp">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\guiMessageBox.hpp">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\guiProgressDialog.hpp">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\guiPropertyDialog.hpp">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\guiPropertyGrid.hpp">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\guiSingleDocHandler.hpp">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\guiSplashScreen.hpp">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\guiStatusBarMgr.hpp">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\guiToolbarMgr.hpp">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\guiXMLTextReader.hpp">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\guiXMLTextReaderStd.hpp">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\guiXMLTextWriter.hpp">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\guiXMLTextWriterStd.hpp">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxProxyDefs.hpp">
+      <Filter>gpx</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxProxyMgr.hpp">
+      <Filter>gpx</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxProxyObject.hpp">
+      <Filter>gpx</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxProxyUtil.hpp">
+      <Filter>gpx</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxRenderControl.hpp">
+      <Filter>gpx</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxAmbientOcclusion.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxBillboard.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxCamera.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxCharacter.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxEffectData.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxEffectDisplacement.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxEffectGlow.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxEffectNormals.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxEffectOutline.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxEffectReflection.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxEffectRendermanOverride.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxEffectTextureFilter.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxEffectUVTransform.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxEnvironment.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxFog.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxFragment.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxGlobalAmbient.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxGlobalIllumination.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxIconSet.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxLight.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxPointLight.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxProjectedLight.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxReference.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxRenderPrefs.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxRenderState.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxSceneObject.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxShaderParams.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxText.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="gpx\gpxTransformControl.hpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClInclude>
+    <ClInclude Include="icn\icnIconLayer.hpp">
+      <Filter>icn</Filter>
+    </ClInclude>
+    <ClInclude Include="icn\icnIconScale.hpp">
+      <Filter>icn</Filter>
+    </ClInclude>
+    <ClInclude Include="icn\icnIconSet.hpp">
+      <Filter>icn</Filter>
+    </ClInclude>
+    <ClInclude Include="ctxm\ctxmContextMenu.hpp">
+      <Filter>ctxm</Filter>
+    </ClInclude>
+    <ClInclude Include="ctxm\ctxmContextMenuInterest.hpp">
+      <Filter>ctxm</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="api3d\private\api3dBakeScene.cpp">
+      <Filter>api3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="api3d\private\api3dBillboard.cpp">
+      <Filter>api3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="api3d\private\api3dImport.cpp">
+      <Filter>api3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="api3d\private\api3dLightMgr.cpp">
+      <Filter>api3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="api3d\private\api3dNodeReference.cpp">
+      <Filter>api3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="api3d\private\api3dObject.cpp">
+      <Filter>api3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="api3d\private\api3dObjectEntity.cpp">
+      <Filter>api3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="api3d\private\api3dObjectGeom.cpp">
+      <Filter>api3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="api3d\private\api3dObjectNode.cpp">
+      <Filter>api3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="api3d\private\api3dObjectSimple.cpp">
+      <Filter>api3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="api3d\private\api3dObjectSingle.cpp">
+      <Filter>api3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="api3d\private\api3dParticleGenerator.cpp">
+      <Filter>api3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="api3d\private\api3dProjectedLightWrapper.cpp">
+      <Filter>api3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="api3d\private\api3dReference.cpp">
+      <Filter>api3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="api3d\private\api3dResourceFinder.cpp">
+      <Filter>api3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="api3d\private\api3dScene.cpp">
+      <Filter>api3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="api3d\private\api3dSceneImpl.cpp">
+      <Filter>api3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="api3d\private\api3dShape.cpp">
+      <Filter>api3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="api3d\private\api3dSharedModelMgr.cpp">
+      <Filter>api3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="api3d\private\api3dSubdiv.cpp">
+      <Filter>api3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="api3d\private\api3dTargetRendererMgr.cpp">
+      <Filter>api3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cam3d\private\cam3dAnimKeys.cpp">
+      <Filter>cam3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cam3d\private\cam3dImport.cpp">
+      <Filter>cam3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cam3d\private\cam3dManipMaya.cpp">
+      <Filter>cam3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cam3d\private\cam3dManipOrthoPan.cpp">
+      <Filter>cam3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cam3d\private\cam3dManipUtil.cpp">
+      <Filter>cam3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cam3d\private\cam3dMgr.cpp">
+      <Filter>cam3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cam3d\private\cam3dPackage.cpp">
+      <Filter>cam3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cam3d\private\cam3dUtil.cpp">
+      <Filter>cam3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="pick3d\private\pick3dMgr.cpp">
+      <Filter>pick3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="pick3d\private\pick3dPackage.cpp">
+      <Filter>pick3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="pick3d\private\pick3dPickBuffer.cpp">
+      <Filter>pick3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="pick3d\private\pick3dPickInterest.cpp">
+      <Filter>pick3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="pick3d\private\pick3dPickItem.cpp">
+      <Filter>pick3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="pick3d\private\pick3dPickList.cpp">
+      <Filter>pick3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="pick3d\private\pick3dPickObject.cpp">
+      <Filter>pick3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="sel3d\private\sel3dCastUtil.cpp">
+      <Filter>sel3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="sel3d\private\sel3dMgr.cpp">
+      <Filter>sel3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="sel3d\private\sel3dObject.cpp">
+      <Filter>sel3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="sel3d\private\sel3dPackage.cpp">
+      <Filter>sel3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="sel3d\private\sel3dSelectInterest.cpp">
+      <Filter>sel3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="sel3d\private\sel3dUndoOperation.cpp">
+      <Filter>sel3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="tma3d\private\tma3dCursorMgr.cpp">
+      <Filter>tma3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="tma3d\private\tma3dRenderView.cpp">
+      <Filter>tma3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="tma3d\private\tma3dScreenUtil.cpp">
+      <Filter>tma3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="tma3d\private\tma3dViewerMgr.cpp">
+      <Filter>tma3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cma\private\cmaActualOperations.cpp">
+      <Filter>cma\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cma\private\cmaCommand.cpp">
+      <Filter>cma\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cma\private\cmaCommandMgr.cpp">
+      <Filter>cma\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cma\private\cmaCommandSimple.cpp">
+      <Filter>cma\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cma\private\cmaCommandToggle.cpp">
+      <Filter>cma\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cma\private\cmaOperations.cpp">
+      <Filter>cma\private</Filter>
+    </ClCompile>
+    <ClCompile Include="cma\private\cmaPackage.cpp">
+      <Filter>cma\private</Filter>
+    </ClCompile>
+    <ClCompile Include="doc\private\docCustomDocumentMgr.cpp">
+      <Filter>doc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="doc\private\docDocument.cpp">
+      <Filter>doc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="doc\private\docDocumentChunk.cpp">
+      <Filter>doc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="doc\private\docDocumentWithChunks.cpp">
+      <Filter>doc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="doc\private\docSingleDocumentMgr.cpp">
+      <Filter>doc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="doc\private\docSingleTypeMgr.cpp">
+      <Filter>doc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="rstk\rstkDataMgr.cpp">
+      <Filter>Rstk</Filter>
+    </ClCompile>
+    <ClCompile Include="rstk\rstkDataParser.cpp">
+      <Filter>Rstk</Filter>
+    </ClCompile>
+    <ClCompile Include="rstk\rstkDocumentChunk.cpp">
+      <Filter>Rstk</Filter>
+    </ClCompile>
+    <ClCompile Include="rstk\rstkDocumentInterest.cpp">
+      <Filter>Rstk</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\private\guiCommandMgr.cpp">
+      <Filter>gui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\private\guiContextMenu.cpp">
+      <Filter>gui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\private\guiCursor.cpp">
+      <Filter>gui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\private\guiCustomDocHandler.cpp">
+      <Filter>gui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\private\guiDialogTabbedMgr.cpp">
+      <Filter>gui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\private\guiFileDialogUtils.cpp">
+      <Filter>gui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\private\guiMainWindow.cpp">
+      <Filter>gui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\private\guiMenuMgr.cpp">
+      <Filter>gui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\private\guiMessageBox.cpp">
+      <Filter>gui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\private\guiProgressDialog.cpp">
+      <Filter>gui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\private\guiPropertyDialog.cpp">
+      <Filter>gui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\private\guiPropertyGrid.cpp">
+      <Filter>gui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\private\guiSingleDocHandler.cpp">
+      <Filter>gui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\private\guiSplashScreen.cpp">
+      <Filter>gui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\private\guiStatusBarMgr.cpp">
+      <Filter>gui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\private\guiToolbarMgr.cpp">
+      <Filter>gui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\private\guiXMLTextReader.cpp">
+      <Filter>gui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\private\guiXMLTextReaderStd.cpp">
+      <Filter>gui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\private\guiXMLTextWriter.cpp">
+      <Filter>gui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\private\guiXMLTextWriterStd.cpp">
+      <Filter>gui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxProxyMgr.cpp">
+      <Filter>gpx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxProxyObject.cpp">
+      <Filter>gpx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxRenderControl.cpp">
+      <Filter>gpx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxAmbientOcclusion.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxBillboard.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxCamera.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxCharacter.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxEffectData.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxEffectDisplacement.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxEffectGlow.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxEffectNormals.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxEffectOutline.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxEffectReflection.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxEffectRendermanOverride.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxEffectTextureFilter.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxEffectUVTransform.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxEnvironment.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxFog.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxFragment.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxGlobalAmbient.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxGlobalIllumination.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxIconSet.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxLight.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxPointLight.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxProjectedLight.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxReference.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxRenderPrefs.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxRenderState.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxSceneObject.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxShaderParams.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxText.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="gpx\private\gpxTransformControl.cpp">
+      <Filter>gpx\Proxies</Filter>
+    </ClCompile>
+    <ClCompile Include="icn\private\icnIconLayer.cpp">
+      <Filter>icn\private</Filter>
+    </ClCompile>
+    <ClCompile Include="icn\private\icnIconScale.cpp">
+      <Filter>icn\private</Filter>
+    </ClCompile>
+    <ClCompile Include="icn\private\icnIconSet.cpp">
+      <Filter>icn\private</Filter>
+    </ClCompile>
+    <ClCompile Include="ctxm\private\ctxmContextMenu.cpp">
+      <Filter>ctxm\private</Filter>
+    </ClCompile>
+    <ClCompile Include="ctxm\private\ctxmContextMenuInterest.cpp">
+      <Filter>ctxm\private</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

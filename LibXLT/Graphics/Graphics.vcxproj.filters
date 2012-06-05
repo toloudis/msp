@@ -1,0 +1,1910 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="G2d">
+      <UniqueIdentifier>{a0513533-7032-47b5-80d3-81729c9d534a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="G2d\private">
+      <UniqueIdentifier>{a61d2dea-9db3-4b46-82db-f447bd83b3d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="An">
+      <UniqueIdentifier>{89d2f334-bf07-4de4-baeb-c730702f5db9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="An\AnPrivate">
+      <UniqueIdentifier>{f2b352ef-3a70-45bc-aa0e-485b26975441}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="G3d">
+      <UniqueIdentifier>{4b78df5e-85fb-4c9d-aa40-5c728b2c9307}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="G3d\private">
+      <UniqueIdentifier>{aeaca0ce-e7b3-4c37-9c88-5ec440c12ef0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sc">
+      <UniqueIdentifier>{77341640-1212-4b5a-9b34-a7ee11a51afd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sc\ScPrivate">
+      <UniqueIdentifier>{1058b9c4-44e8-47db-9ca5-f16e5129d983}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mat">
+      <UniqueIdentifier>{e34af14d-6d56-4d84-8726-b20190f78aeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mat\MatPrivate">
+      <UniqueIdentifier>{b5e46d23-793e-40b7-9218-8686918d0c4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cam">
+      <UniqueIdentifier>{7a3ec2a8-0b3b-4661-bab1-7fb718c90eb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cam\CamPrivate">
+      <UniqueIdentifier>{07b37482-0f7e-4e23-9782-5eeee7a0a1de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ent">
+      <UniqueIdentifier>{33b19ac2-5cfc-4c8f-9345-e481431f7c81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ent\private">
+      <UniqueIdentifier>{dc59ec3d-8041-486b-b3ee-8f017cb168c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scr">
+      <UniqueIdentifier>{09e5e3c9-ba74-41fa-a5dd-93bcb69a5a41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scr\private">
+      <UniqueIdentifier>{10eed913-226b-4b00-8382-3a0d9caf0157}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sprt">
+      <UniqueIdentifier>{8a80ff29-b1fb-4d06-acec-dc5d648a90d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sprt\private">
+      <UniqueIdentifier>{ce901eb4-546d-49e2-80f8-d17280fa1f7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Eff">
+      <UniqueIdentifier>{61ffff6c-1eac-4bba-b2a4-38fc2e95c23e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Eff\private">
+      <UniqueIdentifier>{057d4f2c-781d-468f-81f6-65425422e59d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mdl">
+      <UniqueIdentifier>{bf28ac20-0c39-4bb0-91e1-e32f2cdae2e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mdl\private">
+      <UniqueIdentifier>{20d69a7c-54e7-4e2f-923f-02d7db6f124b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mtr">
+      <UniqueIdentifier>{c29c5cf5-35f9-497d-98c5-53336b7ac20a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mtr\private">
+      <UniqueIdentifier>{f47e346b-70ca-4590-a367-bc3201364339}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Smdl">
+      <UniqueIdentifier>{6f4ceca7-1a25-4c74-9045-2de2864847b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Smdl\private">
+      <UniqueIdentifier>{0b30da0f-62e0-4815-925c-36770cc9caa7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Emdl">
+      <UniqueIdentifier>{2921dd16-3bb8-4643-a985-ef89e70de46a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Emdl\private">
+      <UniqueIdentifier>{0b89028e-a086-48a8-919d-7b49bbea099c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Prt">
+      <UniqueIdentifier>{5f7e317c-cff1-455e-899e-c1235d8162ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Prt\private">
+      <UniqueIdentifier>{176505f5-0f43-47fc-96a8-60860a1fabcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rt">
+      <UniqueIdentifier>{157dc047-3676-40b6-a004-01662cb2ed67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rt\private">
+      <UniqueIdentifier>{53c31271-cc3e-4823-8989-3d122340320c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vtx">
+      <UniqueIdentifier>{0cf70edc-8da8-41ac-911c-21af9d046fe9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vtx\private">
+      <UniqueIdentifier>{e02e0f97-176b-4bd1-9fed-09192041f11b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hair">
+      <UniqueIdentifier>{9ccdfd29-b9e1-47e7-9697-c45bfd8bd07d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hair\private">
+      <UniqueIdentifier>{dafe0062-a10d-413e-bad7-6ab03f9cacfc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="G2d\g2dARGBColor.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dDepthStencilBuffer.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dErrorCodes.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dExceptionX.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dFontHandle.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dFontUtil.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dHDRUtil.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dImage.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dImageCreate.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dImageSave.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dOpenEXRDefines.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dOpenEXROutStream.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dPackage.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dPFD.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dRenderTarget.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dResetHandler.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dResourceCounter.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dRGBColor.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dScanlineOpenEXRUtil.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dScreenCaptureUtil.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dScreenResolution.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dScreenUtil.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dSystem.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dTGAUtil.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dTiledOpenEXRUtil.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dWindow.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\private\rgbe.h">
+      <Filter>G2d\private</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\private\tga.h">
+      <Filter>G2d\private</Filter>
+    </ClInclude>
+    <ClInclude Include="An\an2StateAnimation.hpp">
+      <Filter>An</Filter>
+    </ClInclude>
+    <ClInclude Include="An\an3StateAnimation.hpp">
+      <Filter>An</Filter>
+    </ClInclude>
+    <ClInclude Include="An\anAnimation.hpp">
+      <Filter>An</Filter>
+    </ClInclude>
+    <ClInclude Include="An\anConstantAnimation.hpp">
+      <Filter>An</Filter>
+    </ClInclude>
+    <ClInclude Include="An\anFrameAnimation.hpp">
+      <Filter>An</Filter>
+    </ClInclude>
+    <ClInclude Include="An\anKeyAnimation.hpp">
+      <Filter>An</Filter>
+    </ClInclude>
+    <ClInclude Include="An\anKeyData.hpp">
+      <Filter>An</Filter>
+    </ClInclude>
+    <ClInclude Include="An\anPackage.hpp">
+      <Filter>An</Filter>
+    </ClInclude>
+    <ClInclude Include="An\anTypedAnimation.hpp">
+      <Filter>An</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dBake.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dBaseRenderer.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dConditionalCompile.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dConstants.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dCubicReflectionTargetRenderer.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dDirectionalLight.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dErrorCodes.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dExceptionX.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dFragment.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dFragmentCreate.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dIndexPtr.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dJitterSettings.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dLayer.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dLayerContainer.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dLight.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dLightMgr.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dMeshInfo.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dMeshUtil.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dOcclusiontree.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dPackage.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dPassBuffers.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dPickInfo.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dPlanarReflectionTargetRenderer.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dPointLight.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dPostProcessing.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dPrefs.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dPrimitiveFragmentUtil.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dProjectedLight.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dRendererMgr.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dRenderingHints.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dRenderState.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dScene.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dSceneNode.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dSceneRenderEngine.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dSceneRenderEngineCreate.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dSceneRenderer.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dSceneRendererCreate.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dSceneRendererTypes.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dSceneTraverse.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dSingleLightRendering.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dSpotLight.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dSystem.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dTargetRenderer.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dThreadControl.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dType.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dVertexBuffer.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dViewer.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="Sc\scAnimatableLODObject.hpp">
+      <Filter>Sc</Filter>
+    </ClInclude>
+    <ClInclude Include="Sc\scAnimatableObject.hpp">
+      <Filter>Sc</Filter>
+    </ClInclude>
+    <ClInclude Include="Sc\scBillboard.hpp">
+      <Filter>Sc</Filter>
+    </ClInclude>
+    <ClInclude Include="Sc\scCompoundObject.hpp">
+      <Filter>Sc</Filter>
+    </ClInclude>
+    <ClInclude Include="Sc\scControlAnim.hpp">
+      <Filter>Sc</Filter>
+    </ClInclude>
+    <ClInclude Include="Sc\scLODObject.hpp">
+      <Filter>Sc</Filter>
+    </ClInclude>
+    <ClInclude Include="Sc\scObject.hpp">
+      <Filter>Sc</Filter>
+    </ClInclude>
+    <ClInclude Include="Sc\scObjectMgr.hpp">
+      <Filter>Sc</Filter>
+    </ClInclude>
+    <ClInclude Include="Sc\scParticleGenerator.hpp">
+      <Filter>Sc</Filter>
+    </ClInclude>
+    <ClInclude Include="Sc\scParticleGeneratorTemplate.hpp">
+      <Filter>Sc</Filter>
+    </ClInclude>
+    <ClInclude Include="Sc\scRotateControl.hpp">
+      <Filter>Sc</Filter>
+    </ClInclude>
+    <ClInclude Include="Sc\scScene.hpp">
+      <Filter>Sc</Filter>
+    </ClInclude>
+    <ClInclude Include="Sc\scSceneWorld.hpp">
+      <Filter>Sc</Filter>
+    </ClInclude>
+    <ClInclude Include="Sc\scThreadGroup.hpp">
+      <Filter>Sc</Filter>
+    </ClInclude>
+    <ClInclude Include="Sc\scTransformControl.hpp">
+      <Filter>Sc</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matErrorCodes.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matExceptionX.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matMatAnim.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matMaterial.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matMaterialLayer.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matMatParamIndex.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matMetaFX.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matMetaFXParser.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matPackage.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matShaderEffect.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matShaderIndex.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matShaderMgr.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matShaderParser.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matTexture.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matTextureMgr.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matTexturePathUtil.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matTextureTracking.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matTextureType.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matThumbnailParser.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matUVATexture.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\private\matUVATextureParseUtil.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Cam\camCamera.hpp">
+      <Filter>Cam</Filter>
+    </ClInclude>
+    <ClInclude Include="Cam\camCameraManip.hpp">
+      <Filter>Cam</Filter>
+    </ClInclude>
+    <ClInclude Include="Cam\camCameraManipOrbit.hpp">
+      <Filter>Cam</Filter>
+    </ClInclude>
+    <ClInclude Include="Cam\camCameraManipTarget.hpp">
+      <Filter>Cam</Filter>
+    </ClInclude>
+    <ClInclude Include="Ent\entAnimation.hpp">
+      <Filter>Ent</Filter>
+    </ClInclude>
+    <ClInclude Include="Ent\entAnimInstance.hpp">
+      <Filter>Ent</Filter>
+    </ClInclude>
+    <ClInclude Include="Ent\entAnimKeys.hpp">
+      <Filter>Ent</Filter>
+    </ClInclude>
+    <ClInclude Include="Ent\entAnimTemplate.hpp">
+      <Filter>Ent</Filter>
+    </ClInclude>
+    <ClInclude Include="Ent\entEntity.hpp">
+      <Filter>Ent</Filter>
+    </ClInclude>
+    <ClInclude Include="Ent\entFragInfoSink.hpp">
+      <Filter>Ent</Filter>
+    </ClInclude>
+    <ClInclude Include="Ent\entImport.hpp">
+      <Filter>Ent</Filter>
+    </ClInclude>
+    <ClInclude Include="Ent\entModelInstance.hpp">
+      <Filter>Ent</Filter>
+    </ClInclude>
+    <ClInclude Include="Ent\entModelTemplate.hpp">
+      <Filter>Ent</Filter>
+    </ClInclude>
+    <ClInclude Include="Ent\entPackage.hpp">
+      <Filter>Ent</Filter>
+    </ClInclude>
+    <ClInclude Include="Ent\entScene.hpp">
+      <Filter>Ent</Filter>
+    </ClInclude>
+    <ClInclude Include="Ent\entSceneWorld.hpp">
+      <Filter>Ent</Filter>
+    </ClInclude>
+    <ClInclude Include="Scr\scrCreator.hpp">
+      <Filter>Scr</Filter>
+    </ClInclude>
+    <ClInclude Include="Scr\scrImage.hpp">
+      <Filter>Scr</Filter>
+    </ClInclude>
+    <ClInclude Include="Scr\scrPrimitive.hpp">
+      <Filter>Scr</Filter>
+    </ClInclude>
+    <ClInclude Include="Scr\scrText.hpp">
+      <Filter>Scr</Filter>
+    </ClInclude>
+    <ClInclude Include="sprt\sprtSpriteData.hpp">
+      <Filter>sprt</Filter>
+    </ClInclude>
+    <ClInclude Include="sprt\sprtSpriteGroupFrag.hpp">
+      <Filter>sprt</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effBakeData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effBakeDataParser.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effBillboardData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effBlinnData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effBlinnDataParser.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effBlurData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effDisplacementData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effDisplacementDataParser.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effDOFData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effFurData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effFurDataParser.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effGlowData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effGlowDataParser.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effHairData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effHairDataParser.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effLambertData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effLambertDataParser.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effLightGlowData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effMaskAlphaData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effNormalsData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effNormalsDataParser.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effOcclusionData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effOutlineData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effOutlineDataParser.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effParticleData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effPhongData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effPhongDataParser.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effRampData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effReflData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effReflDataParser.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effRendermanOverrideData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effRendermanOverrideDataParser.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effShaderParams.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effShaderSDK.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effSkinData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effSkinDataParser.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effSolidData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effStrandHairData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effTexturedData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effTextureFilterData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effToonData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effToonDataParser.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effUnlitData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effWaterData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effWaterDataParser.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlAnimImport.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlCameraAnimWriter.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlErrorCodes.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlExceptionX.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlFragCreate.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlFragInfo.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlFragInfoSinkKDTree.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlFragUtil.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlHairInfo.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlImport.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlMaterialInfo.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlMaterialMerge.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlMatInfo.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlMatInfoTable.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlModelingPackageData.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlModelingPackageListMgr.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlModelingPackageParser.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlNodeInfo.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlNodeUtil.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlPathReference.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlReader.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlSkinInfo.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlSkinUtil.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlSplitFragInfo.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlSubdivInfo.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\mdlWriter.hpp">
+      <Filter>Mdl</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\private\mdlDefs.hpp">
+      <Filter>Mdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\private\mdlHairParser.hpp">
+      <Filter>Mdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\private\mdlHierarchyImportParser.hpp">
+      <Filter>Mdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\private\mdlHierarchyNodeInfoParser.hpp">
+      <Filter>Mdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\private\mdlHierarchyParser.hpp">
+      <Filter>Mdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\private\mdlImportUtil.hpp">
+      <Filter>Mdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\private\mdlIndexUtil.hpp">
+      <Filter>Mdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\private\mdlMaterialLegacyParser.hpp">
+      <Filter>Mdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\private\mdlMaterialParser.hpp">
+      <Filter>Mdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\private\mdlMeshMayaParser.hpp">
+      <Filter>Mdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\private\mdlMeshParser.hpp">
+      <Filter>Mdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\private\mdlModelingPackageWriter.hpp">
+      <Filter>Mdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\private\mdlRotationOrder.hpp">
+      <Filter>Mdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\private\mdlSkinParser.hpp">
+      <Filter>Mdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="mdl\private\mdlSubdivParser.hpp">
+      <Filter>Mdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="mtr\mtrMaterialSaver.hpp">
+      <Filter>Mtr</Filter>
+    </ClInclude>
+    <ClInclude Include="mtr\mtrMaterialUtil.hpp">
+      <Filter>Mtr</Filter>
+    </ClInclude>
+    <ClInclude Include="mtr\mtrTextureFinder.hpp">
+      <Filter>Mtr</Filter>
+    </ClInclude>
+    <ClInclude Include="mtr\mtrThumbnailData.hpp">
+      <Filter>Mtr</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\smdlBoneVertex.hpp">
+      <Filter>Smdl</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\smdlCharacterAnimation.hpp">
+      <Filter>Smdl</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\smdlCharacterSkin.hpp">
+      <Filter>Smdl</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\smdlGeoAnimatableObject.hpp">
+      <Filter>Smdl</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\smdlGeoAnimKeys.hpp">
+      <Filter>Smdl</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\smdlGeoFrameAnimation.hpp">
+      <Filter>Smdl</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\smdlHierarchyObject.hpp">
+      <Filter>Smdl</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\smdlKeyRootMap.hpp">
+      <Filter>Smdl</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\smdlMorphAnimKeys.hpp">
+      <Filter>Smdl</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\smdlMorphFrameAnimation.hpp">
+      <Filter>Smdl</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\smdlMorphTarget.hpp">
+      <Filter>Smdl</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\smdlPackage.hpp">
+      <Filter>Smdl</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\smdlSkeletonObject.hpp">
+      <Filter>Smdl</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\smdlSubdivCharacter.hpp">
+      <Filter>Smdl</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\smdlTree.hpp">
+      <Filter>Smdl</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\smdlVertexAnimation.hpp">
+      <Filter>Smdl</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\smdlVertexAnimKeys.hpp">
+      <Filter>Smdl</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\smdlVertexObject.hpp">
+      <Filter>Smdl</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\private\smdlBezierPatch.hpp">
+      <Filter>Smdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\private\smdlBoneDisplay.hpp">
+      <Filter>Smdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\private\smdlBoneFragment.hpp">
+      <Filter>Smdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\private\smdlHairSurface.hpp">
+      <Filter>Smdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\private\smdlInfluenceSorter.hpp">
+      <Filter>Smdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\private\smdlMeshAutoLowRes.hpp">
+      <Filter>Smdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\private\smdlMeshGPUSkin.hpp">
+      <Filter>Smdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\private\smdlMeshSingleSkin.hpp">
+      <Filter>Smdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\private\smdlMeshSkinGroup.hpp">
+      <Filter>Smdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\private\smdlMeshStaticGroup.hpp">
+      <Filter>Smdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\private\smdlSubAnimation.hpp">
+      <Filter>Smdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\private\smdlSubdivNetwork.hpp">
+      <Filter>Smdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\private\smdlSubdivNetworkMgr.hpp">
+      <Filter>Smdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\private\smdlSubdivSurface.hpp">
+      <Filter>Smdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\private\smdlSubdivUtil.hpp">
+      <Filter>Smdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\private\smdlSurface.hpp">
+      <Filter>Smdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="smdl\private\smdlTessellatorBase.hpp">
+      <Filter>Smdl\private</Filter>
+    </ClInclude>
+    <ClInclude Include="emdl\emdlAnimKeys.hpp">
+      <Filter>Emdl</Filter>
+    </ClInclude>
+    <ClInclude Include="emdl\emdlCharacterAnimKeys.hpp">
+      <Filter>Emdl</Filter>
+    </ClInclude>
+    <ClInclude Include="emdl\emdlCharacterTemplate.hpp">
+      <Filter>Emdl</Filter>
+    </ClInclude>
+    <ClInclude Include="emdl\emdlHierTemplate.hpp">
+      <Filter>Emdl</Filter>
+    </ClInclude>
+    <ClInclude Include="emdl\emdlImport.hpp">
+      <Filter>Emdl</Filter>
+    </ClInclude>
+    <ClInclude Include="emdl\emdlPackage.hpp">
+      <Filter>Emdl</Filter>
+    </ClInclude>
+    <ClInclude Include="emdl\emdlStaticTemplate.hpp">
+      <Filter>Emdl</Filter>
+    </ClInclude>
+    <ClInclude Include="emdl\emdlVertexAnimKeys.hpp">
+      <Filter>Emdl</Filter>
+    </ClInclude>
+    <ClInclude Include="emdl\emdlVertexTemplate.hpp">
+      <Filter>Emdl</Filter>
+    </ClInclude>
+    <ClInclude Include="prt\prtBlockEmitter.hpp">
+      <Filter>Prt</Filter>
+    </ClInclude>
+    <ClInclude Include="prt\prtCircleEmitter.hpp">
+      <Filter>Prt</Filter>
+    </ClInclude>
+    <ClInclude Include="prt\prtConeParticleGenerator.hpp">
+      <Filter>Prt</Filter>
+    </ClInclude>
+    <ClInclude Include="prt\prtEmitter.hpp">
+      <Filter>Prt</Filter>
+    </ClInclude>
+    <ClInclude Include="prt\prtExceptionX.hpp">
+      <Filter>Prt</Filter>
+    </ClInclude>
+    <ClInclude Include="prt\prtGeneratorEventHandler.hpp">
+      <Filter>Prt</Filter>
+    </ClInclude>
+    <ClInclude Include="prt\prtGeneratorUtil.hpp">
+      <Filter>Prt</Filter>
+    </ClInclude>
+    <ClInclude Include="prt\prtImport.hpp">
+      <Filter>Prt</Filter>
+    </ClInclude>
+    <ClInclude Include="prt\prtParticleGenerator.hpp">
+      <Filter>Prt</Filter>
+    </ClInclude>
+    <ClInclude Include="prt\prtParticleGeneratorTemplate.hpp">
+      <Filter>Prt</Filter>
+    </ClInclude>
+    <ClInclude Include="prt\prtPointEmitter.hpp">
+      <Filter>Prt</Filter>
+    </ClInclude>
+    <ClInclude Include="prt\prtSpiralParticleGenerator.hpp">
+      <Filter>Prt</Filter>
+    </ClInclude>
+    <ClInclude Include="prt\prtSpriteGroupParticleGenerator.hpp">
+      <Filter>Prt</Filter>
+    </ClInclude>
+    <ClInclude Include="prt\prtStaticParticleGenerator.hpp">
+      <Filter>Prt</Filter>
+    </ClInclude>
+    <ClInclude Include="prt\prtVertexAnimation.hpp">
+      <Filter>Prt</Filter>
+    </ClInclude>
+    <ClInclude Include="prt\prtVertexAnimKeys.hpp">
+      <Filter>Prt</Filter>
+    </ClInclude>
+    <ClInclude Include="prt\private\prtAnimationUtil.hpp">
+      <Filter>Prt\private</Filter>
+    </ClInclude>
+    <ClInclude Include="prt\private\prtParticleManager.hpp">
+      <Filter>Prt\private</Filter>
+    </ClInclude>
+    <ClInclude Include="rt\rtEngine.hpp">
+      <Filter>Rt</Filter>
+    </ClInclude>
+    <ClInclude Include="rt\rtIntersections.hpp">
+      <Filter>Rt</Filter>
+    </ClInclude>
+    <ClInclude Include="rt\rtStructures.hpp">
+      <Filter>Rt</Filter>
+    </ClInclude>
+    <ClInclude Include="vtx\vtxCompressionUtil.hpp">
+      <Filter>vtx</Filter>
+    </ClInclude>
+    <ClInclude Include="vtx\vtxDeltaEncoder.hpp">
+      <Filter>vtx</Filter>
+    </ClInclude>
+    <ClInclude Include="vtx\vtxDeltaLosslessEncoder.hpp">
+      <Filter>vtx</Filter>
+    </ClInclude>
+    <ClInclude Include="vtx\vtxDeltaToleranceEncoder.hpp">
+      <Filter>vtx</Filter>
+    </ClInclude>
+    <ClInclude Include="vtx\vtxExceptionX.hpp">
+      <Filter>vtx</Filter>
+    </ClInclude>
+    <ClInclude Include="vtx\vtxGeometryCacheWriter.hpp">
+      <Filter>vtx</Filter>
+    </ClInclude>
+    <ClInclude Include="vtx\vtxNormal16BitEncoder.hpp">
+      <Filter>vtx</Filter>
+    </ClInclude>
+    <ClInclude Include="vtx\vtxNormalLosslessEncoder.hpp">
+      <Filter>vtx</Filter>
+    </ClInclude>
+    <ClInclude Include="vtx\vtxStreamCompression.hpp">
+      <Filter>vtx</Filter>
+    </ClInclude>
+    <ClInclude Include="vtx\vtxVertexAnimBudget.hpp">
+      <Filter>vtx</Filter>
+    </ClInclude>
+    <ClInclude Include="vtx\vtxVertexAnimImport.hpp">
+      <Filter>vtx</Filter>
+    </ClInclude>
+    <ClInclude Include="vtx\vtxVertexAnimKeys.hpp">
+      <Filter>vtx</Filter>
+    </ClInclude>
+    <ClInclude Include="vtx\vtxVertexAnimKeysCompressed.hpp">
+      <Filter>vtx</Filter>
+    </ClInclude>
+    <ClInclude Include="vtx\vtxVertexAnimKeysDynamic.hpp">
+      <Filter>vtx</Filter>
+    </ClInclude>
+    <ClInclude Include="vtx\vtxVertexAnimKeysStatic.hpp">
+      <Filter>vtx</Filter>
+    </ClInclude>
+    <ClInclude Include="vtx\vtxVertexAnimWriter.hpp">
+      <Filter>vtx</Filter>
+    </ClInclude>
+    <ClInclude Include="vtx\vtxVertexFrame.hpp">
+      <Filter>vtx</Filter>
+    </ClInclude>
+    <ClInclude Include="vtx\vtxVertexFramesCompressed.hpp">
+      <Filter>vtx</Filter>
+    </ClInclude>
+    <ClInclude Include="vtx\vtxVertexFramesDynamic.hpp">
+      <Filter>vtx</Filter>
+    </ClInclude>
+    <ClInclude Include="vtx\private\vtxDeltaCompression.hpp">
+      <Filter>vtx\private</Filter>
+    </ClInclude>
+    <ClInclude Include="vtx\private\vtxVertexFileSeeker.hpp">
+      <Filter>vtx\private</Filter>
+    </ClInclude>
+    <ClInclude Include="vtx\private\vtxZLibCompress.hpp">
+      <Filter>vtx\private</Filter>
+    </ClInclude>
+    <ClInclude Include="hair\hairFragmentCreate.hpp">
+      <Filter>hair</Filter>
+    </ClInclude>
+    <ClInclude Include="hair\hairImport.hpp">
+      <Filter>hair</Filter>
+    </ClInclude>
+    <ClInclude Include="hair\HairReader.h">
+      <Filter>hair</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsLayer.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="G2d\private\g2dDepthStencilBuffer.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dExceptionX.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dFontUtil.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dHDRUtil.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dImageCreate.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dImageSave.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dOpenEXROutStream.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dPackage.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dPFD.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dRenderTarget.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dResetHandler.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dResourceCounter.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dScanlineOpenEXRUtil.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dScreenCaptureUtil.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dScreenUtil.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dSystem.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dTGAUtil.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dTiledOpenEXRUtil.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dWindow.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\rgbe.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\tga.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="An\private\anAnimation.cpp">
+      <Filter>An\AnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="An\private\anFrameAnimation.cpp">
+      <Filter>An\AnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="An\private\anPackage.cpp">
+      <Filter>An\AnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dBake.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dConstants.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dCubicReflectionTargetRenderer.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dDirectionalLight.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dExceptionX.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dFragment.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dFragmentCreate.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dIndexPtr.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dJitterSettings.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dLayer.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dLayerContainer.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dLight.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dLightMgr.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dMeshUtil.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dOcclusionTree.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dPackage.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dPassBuffers.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dPickInfo.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dPlanarReflectionTargetRenderer.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dPointLight.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dPostProcessing.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dPrefs.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dPrimitiveFragmentUtil.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dProjectedLight.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dRendererMgr.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dRenderingHints.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dScene.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dSceneNode.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dSceneRenderEngineCreate.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dSceneRendererCreate.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dSceneTraverse.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dSingleLightRendering.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dSpotLight.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dTargetRenderer.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dThreadControl.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dViewer.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Sc\private\scAnimatableLODObject.cpp">
+      <Filter>Sc\ScPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sc\private\scAnimatableObject.cpp">
+      <Filter>Sc\ScPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sc\private\scBillboard.cpp">
+      <Filter>Sc\ScPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sc\private\scCompoundObject.cpp">
+      <Filter>Sc\ScPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sc\private\scControlAnim.cpp">
+      <Filter>Sc\ScPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sc\private\scLODObject.cpp">
+      <Filter>Sc\ScPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sc\private\scObject.cpp">
+      <Filter>Sc\ScPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sc\private\scObjectMgr.cpp">
+      <Filter>Sc\ScPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sc\private\scParticleGenerator.cpp">
+      <Filter>Sc\ScPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sc\private\scParticleGeneratorTemplate.cpp">
+      <Filter>Sc\ScPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sc\private\scRotateControl.cpp">
+      <Filter>Sc\ScPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sc\private\scScene.cpp">
+      <Filter>Sc\ScPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sc\private\scSceneWorld.cpp">
+      <Filter>Sc\ScPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sc\private\scThreadGroup.cpp">
+      <Filter>Sc\ScPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sc\private\scTransformControl.cpp">
+      <Filter>Sc\ScPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matExceptionX.cpp">
+      <Filter>Mat\MatPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matMatAnim.cpp">
+      <Filter>Mat\MatPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matMaterial.cpp">
+      <Filter>Mat\MatPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matMaterialLayer.cpp">
+      <Filter>Mat\MatPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matMetaFX.cpp">
+      <Filter>Mat\MatPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matMetaFXParser.cpp">
+      <Filter>Mat\MatPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matPackage.cpp">
+      <Filter>Mat\MatPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matShaderEffect.cpp">
+      <Filter>Mat\MatPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matShaderMgr.cpp">
+      <Filter>Mat\MatPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matShaderParser.cpp">
+      <Filter>Mat\MatPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matTexture.cpp">
+      <Filter>Mat\MatPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matTextureMgr.cpp">
+      <Filter>Mat\MatPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matTexturePathUtil.cpp">
+      <Filter>Mat\MatPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matTextureTracking.cpp">
+      <Filter>Mat\MatPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matThumbnailParser.cpp">
+      <Filter>Mat\MatPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matUVATexture.cpp">
+      <Filter>Mat\MatPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matUVATextureParseUtil.cpp">
+      <Filter>Mat\MatPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Cam\private\camCamera.cpp">
+      <Filter>Cam\CamPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Cam\private\camCameraManip.cpp">
+      <Filter>Cam\CamPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Cam\private\camCameraManipOrbit.cpp">
+      <Filter>Cam\CamPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ent\private\entAnimation.cpp">
+      <Filter>Ent\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Ent\private\entAnimInstance.cpp">
+      <Filter>Ent\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Ent\private\entAnimTemplate.cpp">
+      <Filter>Ent\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Ent\private\entEntity.cpp">
+      <Filter>Ent\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Ent\private\entImport.cpp">
+      <Filter>Ent\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Ent\private\entModelInstance.cpp">
+      <Filter>Ent\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Ent\private\entModelTemplate.cpp">
+      <Filter>Ent\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Ent\private\entPackage.cpp">
+      <Filter>Ent\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Ent\private\entScene.cpp">
+      <Filter>Ent\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Ent\private\entSceneWorld.cpp">
+      <Filter>Ent\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Scr\private\scrCreator.cpp">
+      <Filter>Scr\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Scr\private\scrImage.cpp">
+      <Filter>Scr\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Scr\private\scrPrimitive.cpp">
+      <Filter>Scr\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Scr\private\scrText.cpp">
+      <Filter>Scr\private</Filter>
+    </ClCompile>
+    <ClCompile Include="sprt\private\sprtSpriteGroupFrag.cpp">
+      <Filter>sprt\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effBakeData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effBakeDataParser.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effBillboardData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effBlinnData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effBlinnDataParser.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effBlurData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effDisplacementData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effDisplacementDataParser.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effDOFData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effFurData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effFurDataParser.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effGlowData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effGlowDataParser.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effHairData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effHairDataParser.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effLambertData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effLambertDataParser.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effLightGlowData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effMaskAlphaData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effNormalsData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effNormalsDataParser.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effOcclusionData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effOutlineData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effOutlineDataParser.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effParticleData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effPhongData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effPhongDataParser.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effRampData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effReflData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effReflDataParser.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effRendermanOverrideData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effRendermanOverrideDataParser.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effShaderParams.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effShaderSDK.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effSkinData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effSkinDataParser.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effSolidData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effStrandHairData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effTexturedData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effTextureFilterData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effToonData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effToonDataParser.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effUnlitData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effWaterData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effWaterDataParser.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlAnimImport.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlCameraAnimWriter.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlDefs.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlExceptionX.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlFragCreate.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlFragInfo.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlFragInfoSinkKDTree.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlFragUtil.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlHairParser.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlHierarchyImportParser.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlHierarchyNodeInfoParser.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlHierarchyParser.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlImport.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlImportUtil.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlIndexUtil.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlMaterialInfo.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlMaterialLegacyParser.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlMaterialMerge.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlMaterialParser.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlMatInfo.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlMeshMayaParser.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlMeshParser.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlModelingPackageListMgr.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlModelingPackageParser.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlModelingPackageWriter.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlNodeInfo.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlNodeUtil.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlPathReference.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlReader.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlRotationOrder.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlSkinParser.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlSkinUtil.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlSplitFragInfo.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlSubdivInfo.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlSubdivParser.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mdl\private\mdlWriter.cpp">
+      <Filter>Mdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mtr\private\mtrMaterialSaver.cpp">
+      <Filter>Mtr\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mtr\private\mtrMaterialUtil.cpp">
+      <Filter>Mtr\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mtr\private\mtrTextureFinder.cpp">
+      <Filter>Mtr\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mtr\private\mtrThumbnailData.cpp">
+      <Filter>Mtr\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlBezierPatch.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlBoneDisplay.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlBoneFragment.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlCharacterAnimation.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlGeoAnimatableObject.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlGeoAnimKeys.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlGeoFrameAnimation.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlHairSurface.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlHierarchyObject.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlInfluenceSorter.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlMeshAutoLowRes.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlMeshGPUSkin.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlMeshSingleSkin.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlMeshSkinGroup.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlMeshStaticGroup.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlMorphAnimKeys.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlMorphFrameAnimation.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlPackage.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlSkeletonObject.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlSubAnimation.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlSubdivCharacter.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlSubdivNetwork.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlSubdivNetworkMgr.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlSubdivSurface.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlSubdivUtil.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlSurface.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlTessellatorBase.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlVertexAnimation.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlVertexAnimKeys.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="smdl\private\smdlVertexObject.cpp">
+      <Filter>Smdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="emdl\private\emdlAnimKeys.cpp">
+      <Filter>Emdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="emdl\private\emdlCharacterAnimKeys.cpp">
+      <Filter>Emdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="emdl\private\emdlCharacterTemplate.cpp">
+      <Filter>Emdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="emdl\private\emdlHierTemplate.cpp">
+      <Filter>Emdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="emdl\private\emdlImport.cpp">
+      <Filter>Emdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="emdl\private\emdlPackage.cpp">
+      <Filter>Emdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="emdl\private\emdlStaticTemplate.cpp">
+      <Filter>Emdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="emdl\private\emdlVertexAnimKeys.cpp">
+      <Filter>Emdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="emdl\private\emdlVertexTemplate.cpp">
+      <Filter>Emdl\private</Filter>
+    </ClCompile>
+    <ClCompile Include="prt\private\prtBlockEmitter.cpp">
+      <Filter>Prt\private</Filter>
+    </ClCompile>
+    <ClCompile Include="prt\private\prtCircleEmitter.cpp">
+      <Filter>Prt\private</Filter>
+    </ClCompile>
+    <ClCompile Include="prt\private\prtConeParticleGenerator.cpp">
+      <Filter>Prt\private</Filter>
+    </ClCompile>
+    <ClCompile Include="prt\private\prtEmitter.cpp">
+      <Filter>Prt\private</Filter>
+    </ClCompile>
+    <ClCompile Include="prt\private\prtExceptionX.cpp">
+      <Filter>Prt\private</Filter>
+    </ClCompile>
+    <ClCompile Include="prt\private\prtGeneratorEventHandler.cpp">
+      <Filter>Prt\private</Filter>
+    </ClCompile>
+    <ClCompile Include="prt\private\prtGeneratorUtil.cpp">
+      <Filter>Prt\private</Filter>
+    </ClCompile>
+    <ClCompile Include="prt\private\prtImport.cpp">
+      <Filter>Prt\private</Filter>
+    </ClCompile>
+    <ClCompile Include="prt\private\prtParticleGenerator.cpp">
+      <Filter>Prt\private</Filter>
+    </ClCompile>
+    <ClCompile Include="prt\private\prtParticleGeneratorTemplate.cpp">
+      <Filter>Prt\private</Filter>
+    </ClCompile>
+    <ClCompile Include="prt\private\prtPointEmitter.cpp">
+      <Filter>Prt\private</Filter>
+    </ClCompile>
+    <ClCompile Include="prt\private\prtSpiralParticleGenerator.cpp">
+      <Filter>Prt\private</Filter>
+    </ClCompile>
+    <ClCompile Include="prt\private\prtSpriteGroupParticleGenerator.cpp">
+      <Filter>Prt\private</Filter>
+    </ClCompile>
+    <ClCompile Include="prt\private\prtStaticParticleGenerator.cpp">
+      <Filter>Prt\private</Filter>
+    </ClCompile>
+    <ClCompile Include="prt\private\prtVertexAnimation.cpp">
+      <Filter>Prt\private</Filter>
+    </ClCompile>
+    <ClCompile Include="prt\private\prtVertexAnimKeys.cpp">
+      <Filter>Prt\private</Filter>
+    </ClCompile>
+    <ClCompile Include="rt\private\rtEngine.cpp">
+      <Filter>Rt\private</Filter>
+    </ClCompile>
+    <ClCompile Include="rt\private\rtIntersections.cpp">
+      <Filter>Rt\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vtx\private\vtxCompressionUtil.cpp">
+      <Filter>vtx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vtx\private\vtxDeltaCompression.cpp">
+      <Filter>vtx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vtx\private\vtxDeltaEncoder.cpp">
+      <Filter>vtx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vtx\private\vtxDeltaLosslessEncoder.cpp">
+      <Filter>vtx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vtx\private\vtxDeltaToleranceEncoder.cpp">
+      <Filter>vtx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vtx\private\vtxExceptionX.cpp">
+      <Filter>vtx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vtx\private\vtxGeometryCacheWriter.cpp">
+      <Filter>vtx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vtx\private\vtxNormal16BitEncoder.cpp">
+      <Filter>vtx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vtx\private\vtxNormalLosslessEncoder.cpp">
+      <Filter>vtx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vtx\private\vtxStreamCompression.cpp">
+      <Filter>vtx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vtx\private\vtxVertexAnimBudget.cpp">
+      <Filter>vtx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vtx\private\vtxVertexAnimImport.cpp">
+      <Filter>vtx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vtx\private\vtxVertexAnimKeysCompressed.cpp">
+      <Filter>vtx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vtx\private\vtxVertexAnimKeysDynamic.cpp">
+      <Filter>vtx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vtx\private\vtxVertexAnimKeysStatic.cpp">
+      <Filter>vtx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vtx\private\vtxVertexAnimWriter.cpp">
+      <Filter>vtx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vtx\private\vtxVertexFileSeeker.cpp">
+      <Filter>vtx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vtx\private\vtxVertexFramesCompressed.cpp">
+      <Filter>vtx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vtx\private\vtxVertexFramesDynamic.cpp">
+      <Filter>vtx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vtx\private\vtxZLibCompress.cpp">
+      <Filter>vtx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="hair\private\hairFragmentCreate.cpp">
+      <Filter>hair\private</Filter>
+    </ClCompile>
+    <ClCompile Include="hair\private\hairImport.cpp">
+      <Filter>hair\private</Filter>
+    </ClCompile>
+    <ClCompile Include="hair\private\HairReader.cpp">
+      <Filter>hair\private</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsLayer.cpp" />
+  </ItemGroup>
+</Project>

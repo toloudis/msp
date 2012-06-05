@@ -1,0 +1,22 @@
+HKCR
+{
+	NoRemove AppID
+	{
+		'%APPID%' = s 'mtlThumbnailViewer'
+		'mtlThumbnailViewer.DLL'
+		{
+			val AppID = s '%APPID%'
+		}
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {78B61071-0490-45AF-AC14-297BF431E538} = s 'CompReg Class'
+		{
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{700D73A8-2F74-496B-B2DA-55BFDE96E2BE}'
+		}
+	}
+}

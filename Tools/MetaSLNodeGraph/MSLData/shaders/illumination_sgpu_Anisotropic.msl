@@ -1,0 +1,149 @@
+/*****************************************************************************
+ * Test version of a base shader for sgpu test compiler.
+ *****************************************************************************/
+
+shader Illumination_sgpu_Anisotropic
+{
+  input:    
+  Color  diffuse_color = Color(1,1,1,1)
+  {	
+      display_name("Diffuse Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "The color used to tint the Diffuse Reflectance Color." );
+  };
+  float diffuse_scalar = 0.7
+  {		
+      display_name("Diffuse Float");
+      hard_range(float(0),float(1));
+      description( "The intensity of the light diffusely reflected from "
+      "this surface." );
+  };
+  Color  specular_color = Color(1,1,1,1)
+  {	
+      display_name("Specular Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "The color used to tint the Specular Reflectance Color." );
+  };
+  float specular_scalar = 0.7
+  {		
+      display_name("Specular Float");
+      hard_range(float(0),float(1));
+      description( "The intensity of the light specularly reflected from "
+      "this surface." );
+  };
+  float specular_power = 10
+  {		
+      display_name("Shininess");
+      hard_range(float(0),float(50));
+      description( "The tightness of the specular highlight" );
+  };
+	float g_UPower = 1.0
+	{
+      display_name("Anisotropy Power");
+      hard_range(float(0),float(1));
+	};
+	float g_VPower = 0.0
+	{
+      display_name("Anisotropy Angle");
+      hard_range(float(0),float(90));
+	};
+	float aniso_factor = 1.0
+	{
+      display_name("Anisotropy Factor");
+      hard_range(float(0),float(1));
+	};
+
+    
+  output:
+  Color result;
+  Color diffuse;
+  Color specular;
+
+float WardAnisotropicSpecular(float3 normal, float3 lightDir, float3 eyeDir, float3 Tangent, float3 Binormal, float Ax, float Ay )
+{
+	//inputs
+	//V = surface to eye unit vector
+	//L = surface to light unit vector
+	//H = half angle
+	//N = Surface normal unit vector
+	//X = Tangent
+	//Y = Binormal
+	//Ax = x anisotropy
+	//Ay = y anisotropy
+	
+	float3 V = eyeDir;
+	float3 L = lightDir;
+	float3 H = normalize(V + L);
+	float3 N = normal;
+	float3 X = Tangent;
+	float3 Y = Binormal;
+	
+	//Ay = clamp(Ay, 0, 90) * PI_DIV_180;
+	//float wx = max(Ax * sin(Ay), AThres);
+	//float wy = max(Ax * cos(Ay), AThres);
+	
+	// Set Ax, Ay make sure wx, wy they are not going to zero
+	Ay = clamp(Ay, 0.1, 89.9) * 3.14159265 / 180.0;
+	Ax = clamp(Ax, 0, 1.0);	
+	
+	float wx = 0.5 - 0.5 * Ax * (cos(Ay) - sin(Ay));
+	float wy = 0.5 + 0.5 * Ax * (cos(Ay) - sin(Ay));
+
+	//precalc
+	float NdotL = dot(N, L);
+	float NdotH = dot(N, H);
+	float NdotV = dot(N, V);
+	float HdotX = dot(H, X) / wx;
+	float HdotY = dot(H, Y) / wy;
+	
+	if( NdotL < 0 ) return 0;
+	if( NdotV < 0 ) return 0;
+
+	//specular distribution term
+	float power = -2 * ( (HdotX*HdotX + HdotY*HdotY) / (1 + NdotH) );
+	float coef = rsqrt( NdotL * NdotV );
+	float refl = NdotL / (4 * wx * wy);
+	float term = coef * refl * exp( power );
+
+	return term;
+}
+
+
+  void main() 
+  {
+      diffuse = Color(0.0,0.0,0.0,0.0);
+      specular = Color(0.0,0.0,0.0,0.0);
+  
+      Color Rd = diffuse_color * diffuse_scalar;
+      Color Rs = specular_color * specular_scalar;
+      
+      	// enumerate lights
+		Light_iterator light;
+		foreach (light)
+		{
+			float cosine = saturate(light.dot_nl);
+			if (cosine > 0.0) {
+				diffuse += cosine * light.contribution;
+
+				float anisotropy = WardAnisotropicSpecular( normal, light.direction, -direction, 
+					texture_tangent[0], texture_binormal[0], g_UPower, g_VPower );
+				anisotropy *= aniso_factor;
+
+				specular += light.contribution * pow(anisotropy, max(specular_power, 0.001)) ;
+			}
+		}
+      
+      diffuse *= Rd;
+      specular *= Rs;
+      diffuse.a = 1.0;
+      specular.a = 1.0;
+      
+      // irradiance term skipped
+      
+      result = diffuse + specular;
+      result.a = 1.0;
+
+  }
+}
+;
+

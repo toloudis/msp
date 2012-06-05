@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="In">
+      <UniqueIdentifier>{60507b64-59f6-4233-af6b-a2e62200be34}</UniqueIdentifier>
+      <Extensions>*.hpp</Extensions>
+    </Filter>
+    <Filter Include="In\Inprivate">
+      <UniqueIdentifier>{8397e8bb-1705-46b3-a407-0403f094b8ee}</UniqueIdentifier>
+      <Extensions>*.hpp,*.cpp</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="in\inTabletPACWin.hpp">
+      <Filter>In</Filter>
+    </ClInclude>
+    <ClInclude Include="in\inTPCInfo.hpp">
+      <Filter>In</Filter>
+    </ClInclude>
+    <ClInclude Include="in\private\inTPCHeader.hpp">
+      <Filter>In\Inprivate</Filter>
+    </ClInclude>
+    <ClInclude Include="in\private\inTPCInkCollector.hpp">
+      <Filter>In\Inprivate</Filter>
+    </ClInclude>
+    <ClInclude Include="in\private\inTPCInkCollectorEvents.hpp">
+      <Filter>In\Inprivate</Filter>
+    </ClInclude>
+    <ClInclude Include="in\private\inTPCInkOverlay.hpp">
+      <Filter>In\Inprivate</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="in\private\inTabletPACWin.cpp">
+      <Filter>In\Inprivate</Filter>
+    </ClCompile>
+    <ClCompile Include="in\private\inTPCInfo.cpp">
+      <Filter>In\Inprivate</Filter>
+    </ClCompile>
+    <ClCompile Include="in\private\inTPCInkCollector.cpp">
+      <Filter>In\Inprivate</Filter>
+    </ClCompile>
+    <ClCompile Include="in\private\inTPCInkCollectorEvents.cpp">
+      <Filter>In\Inprivate</Filter>
+    </ClCompile>
+    <ClCompile Include="in\private\inTPCInkOverlay.cpp">
+      <Filter>In\Inprivate</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

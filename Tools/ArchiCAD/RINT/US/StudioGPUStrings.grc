@@ -1,0 +1,59 @@
+/**********************************************************************
+
+							STUDIOGPU ADDON
+
+ 	File:		StudioGPUStrings.grc
+
+	Purpose:	String resources for the StudioGPU addon
+
+	Target:		ArchiCAD 12
+
+	Copyright:	Encina Ltd 2009
+
+	Revision history:
+	07-05-2009	RW	Created
+
+ **********************************************************************/
+
+'STR#' 32520  "Title Strings" {
+	/*[ 1]*/	"StudioGPU Export Progress"
+	/*[ 2]*/	"Writing 3D elements"
+}
+
+
+'STR#' 32521  "General Strings" {
+	/*[ 1]*/	""
+}
+
+
+'STR#' 32522 "Notify Strings" {
+	/*[ 1]*/	""
+}
+
+
+'STR#' 32523 "Warning Strings" {
+	/*[ 1]*/	""
+}
+
+
+'STR#' 32524 "Error Strings" {
+	/*[ 1]*/	""
+}
+
+
+'STR#' 32525 "Preference Strings" {
+	/*[ 1]*/	""
+}
+
+
+'STR#' 32526 "Undo Strings" {
+	/*[ 1]*/	""
+}
+
+
+'STR#' 32528	"Application Strings" {
+	/*[ 1]*/	"StudioGPU"
+	/*[ 2]*/	"StudioGPU for Archicad"
+	/*[ 3]*/	"An add-on to export an ArchiCAD 3D model to StudioGPU"
+	/*[ 4]*/	"An internal error has ocurred in the StudioGPU Export addon. Please e-mail the steps leading to this situation to <support@encina.co.uk>"
+}

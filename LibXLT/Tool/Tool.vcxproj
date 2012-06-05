@@ -1,0 +1,853 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug Iterator|Win32">
+      <Configuration>Debug Iterator</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug Iterator|x64">
+      <Configuration>Debug Iterator</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug Managed|Win32">
+      <Configuration>Debug Managed</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug Managed|x64">
+      <Configuration>Debug Managed</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_RenderNode|Win32">
+      <Configuration>Debug_RenderNode</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_RenderNode|x64">
+      <Configuration>Debug_RenderNode</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Gold|Win32">
+      <Configuration>Gold</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Gold|x64">
+      <Configuration>Gold</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release Managed|Win32">
+      <Configuration>Release Managed</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release Managed|x64">
+      <Configuration>Release Managed</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RenderNode|Win32">
+      <Configuration>RenderNode</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RenderNode|x64">
+      <Configuration>RenderNode</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C4C1C648-7CC8-48E6-AA4B-9E34F0C8AB1D}</ProjectGuid>
+    <RootNamespace>Tool</RootNamespace>
+    <Keyword>ManagedCProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Gold|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Gold|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Python\include;$(ProjectDir)..\..\3rdParty\WxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Python\include;$(ProjectDir)..\..\3rdParty\WxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Python\include;$(ProjectDir)..\..\3rdParty\WxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Python\include;$(ProjectDir)..\..\3rdParty\WxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Python\include;$(ProjectDir)..\..\3rdParty\WxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Python\include;$(ProjectDir)..\..\3rdParty\WxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Python\include;$(ProjectDir)..\..\3rdParty\WxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Python\include;$(ProjectDir)..\..\3rdParty\WxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Python\include;$(ProjectDir)..\..\3rdParty\WxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Python\include;$(ProjectDir)..\..\3rdParty\WxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Python\include;$(ProjectDir)..\..\3rdParty\WxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;ENV_BUILD=ENV_GOLDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Python\include;$(ProjectDir)..\..\3rdParty\WxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;NDEBUG;ENV_BUILD=ENV_GOLDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Python\include;$(ProjectDir)..\..\3rdParty\WxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;ENV_BUILD=ENV_GOLDBUILD;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Python\include;$(ProjectDir)..\..\3rdParty\WxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;NDEBUG;ENV_BUILD=ENV_GOLDBUILD;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Python\include;$(ProjectDir)..\..\3rdParty\WxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Python\include;$(ProjectDir)..\..\3rdParty\WxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Data">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="api3d\api3dBakeScene.hpp" />
+    <ClInclude Include="api3d\api3dBillboard.hpp" />
+    <ClInclude Include="api3d\api3dImport.hpp" />
+    <ClInclude Include="api3d\api3dLightMgr.hpp" />
+    <ClInclude Include="api3d\api3dObject.hpp" />
+    <ClInclude Include="api3d\api3dObjectEntity.hpp" />
+    <ClInclude Include="api3d\api3dObjectGeom.hpp" />
+    <ClInclude Include="api3d\api3dObjectNode.hpp" />
+    <ClInclude Include="api3d\api3dObjectSimple.hpp" />
+    <ClInclude Include="api3d\api3dObjectSingle.hpp" />
+    <ClInclude Include="api3d\api3dParticleGenerator.hpp" />
+    <ClInclude Include="api3d\api3dProjectedLightWrapper.hpp" />
+    <ClInclude Include="api3d\api3dReference.hpp" />
+    <ClInclude Include="api3d\api3dResourceFinder.hpp" />
+    <ClInclude Include="api3d\api3dScene.hpp" />
+    <ClInclude Include="api3d\api3dShape.hpp" />
+    <ClInclude Include="api3d\api3dSharedModelMgr.hpp" />
+    <ClInclude Include="api3d\api3dSubdiv.hpp" />
+    <ClInclude Include="api3d\api3dTargetRendererMgr.hpp" />
+    <ClInclude Include="api3d\private\api3dNodeReference.hpp" />
+    <ClInclude Include="api3d\private\api3dSceneImpl.hpp" />
+    <ClInclude Include="cam3d\cam3dAnimKeys.hpp" />
+    <ClInclude Include="cam3d\cam3dImport.hpp" />
+    <ClInclude Include="cam3d\cam3dManipMaya.hpp" />
+    <ClInclude Include="cam3d\cam3dManipOrthoPan.hpp" />
+    <ClInclude Include="cam3d\cam3dManipUtil.hpp" />
+    <ClInclude Include="cam3d\cam3dMgr.hpp" />
+    <ClInclude Include="cam3d\cam3dPackage.hpp" />
+    <ClInclude Include="cam3d\cam3dUtil.hpp" />
+    <ClInclude Include="pick3d\pick3dMgr.hpp" />
+    <ClInclude Include="pick3d\pick3dPackage.hpp" />
+    <ClInclude Include="pick3d\pick3dPickBuffer.hpp" />
+    <ClInclude Include="pick3d\pick3dPickInterest.hpp" />
+    <ClInclude Include="pick3d\pick3dPickItem.hpp" />
+    <ClInclude Include="pick3d\pick3dPickList.hpp" />
+    <ClInclude Include="pick3d\pick3dPickObject.hpp" />
+    <ClInclude Include="sel3d\sel3dCastUtil.hpp" />
+    <ClInclude Include="sel3d\sel3dMgr.hpp" />
+    <ClInclude Include="sel3d\sel3dObject.hpp" />
+    <ClInclude Include="sel3d\sel3dPackage.hpp" />
+    <ClInclude Include="sel3d\sel3dSelectInterest.hpp" />
+    <ClInclude Include="sel3d\sel3dUndoOperation.hpp" />
+    <ClInclude Include="tma3d\tma3dCursorMgr.hpp" />
+    <ClInclude Include="tma3d\tma3dRenderView.hpp" />
+    <ClInclude Include="tma3d\tma3dScreenUtil.hpp" />
+    <ClInclude Include="tma3d\tma3dViewerMgr.hpp" />
+    <ClInclude Include="cma\cmaActualOperations.hpp" />
+    <ClInclude Include="cma\cmaCommand.hpp" />
+    <ClInclude Include="cma\cmaCommandMgr.hpp" />
+    <ClInclude Include="cma\cmaCommandSimple.hpp" />
+    <ClInclude Include="cma\cmaCommandToggle.hpp" />
+    <ClInclude Include="cma\cmaData.hpp" />
+    <ClInclude Include="cma\cmaOperations.hpp" />
+    <ClInclude Include="cma\cmaPackage.hpp" />
+    <ClInclude Include="doc\docCustomDocumentMgr.hpp" />
+    <ClInclude Include="doc\docDocument.hpp" />
+    <ClInclude Include="doc\docDocumentChunk.hpp" />
+    <ClInclude Include="doc\docDocumentInterest.hpp" />
+    <ClInclude Include="doc\docDocumentWithChunks.hpp" />
+    <ClInclude Include="doc\docSingleDocumentMgr.hpp" />
+    <ClInclude Include="doc\docSingleTypeMgr.hpp" />
+    <ClInclude Include="doc\private\docDocumentType.hpp" />
+    <ClInclude Include="rstk\rstkDataMgr.hpp" />
+    <ClInclude Include="rstk\rstkDataParser.hpp" />
+    <ClInclude Include="rstk\rstkDocumentChunk.hpp" />
+    <ClInclude Include="rstk\rstkDocumentInterest.hpp" />
+    <ClInclude Include="gui\guiCommandMgr.hpp" />
+    <ClInclude Include="gui\guiConstants.hpp" />
+    <ClInclude Include="gui\guiContextMenu.hpp" />
+    <ClInclude Include="gui\guiCursor.hpp" />
+    <ClInclude Include="gui\guiCustomDocHandler.hpp" />
+    <ClInclude Include="gui\guiDialogTabbedMgr.hpp" />
+    <ClInclude Include="gui\guiFileDialogUtils.hpp" />
+    <ClInclude Include="gui\guiMainWindow.hpp" />
+    <ClInclude Include="gui\guiMenuMgr.hpp" />
+    <ClInclude Include="gui\guiMessageBox.hpp" />
+    <ClInclude Include="gui\guiProgressDialog.hpp" />
+    <ClInclude Include="gui\guiPropertyDialog.hpp" />
+    <ClInclude Include="gui\guiPropertyGrid.hpp" />
+    <ClInclude Include="gui\guiSingleDocHandler.hpp" />
+    <ClInclude Include="gui\guiSplashScreen.hpp" />
+    <ClInclude Include="gui\guiStatusBarMgr.hpp" />
+    <ClInclude Include="gui\guiToolbarMgr.hpp" />
+    <ClInclude Include="gui\guiXMLTextReader.hpp" />
+    <ClInclude Include="gui\guiXMLTextReaderStd.hpp" />
+    <ClInclude Include="gui\guiXMLTextWriter.hpp" />
+    <ClInclude Include="gui\guiXMLTextWriterStd.hpp" />
+    <ClInclude Include="gpx\gpxProxyDefs.hpp" />
+    <ClInclude Include="gpx\gpxProxyMgr.hpp" />
+    <ClInclude Include="gpx\gpxProxyObject.hpp" />
+    <ClInclude Include="gpx\gpxProxyUtil.hpp" />
+    <ClInclude Include="gpx\gpxRenderControl.hpp" />
+    <ClInclude Include="gpx\gpxAmbientOcclusion.hpp" />
+    <ClInclude Include="gpx\gpxBillboard.hpp" />
+    <ClInclude Include="gpx\gpxCamera.hpp" />
+    <ClInclude Include="gpx\gpxCharacter.hpp" />
+    <ClInclude Include="gpx\gpxEffectData.hpp" />
+    <ClInclude Include="gpx\gpxEffectDisplacement.hpp" />
+    <ClInclude Include="gpx\gpxEffectGlow.hpp" />
+    <ClInclude Include="gpx\gpxEffectNormals.hpp" />
+    <ClInclude Include="gpx\gpxEffectOutline.hpp" />
+    <ClInclude Include="gpx\gpxEffectReflection.hpp" />
+    <ClInclude Include="gpx\gpxEffectRendermanOverride.hpp" />
+    <ClInclude Include="gpx\gpxEffectTextureFilter.hpp" />
+    <ClInclude Include="gpx\gpxEffectUVTransform.hpp" />
+    <ClInclude Include="gpx\gpxEnvironment.hpp" />
+    <ClInclude Include="gpx\gpxFog.hpp" />
+    <ClInclude Include="gpx\gpxFragment.hpp" />
+    <ClInclude Include="gpx\gpxGlobalAmbient.hpp" />
+    <ClInclude Include="gpx\gpxGlobalIllumination.hpp" />
+    <ClInclude Include="gpx\gpxIconSet.hpp" />
+    <ClInclude Include="gpx\gpxLight.hpp" />
+    <ClInclude Include="gpx\gpxPointLight.hpp" />
+    <ClInclude Include="gpx\gpxProjectedLight.hpp" />
+    <ClInclude Include="gpx\gpxReference.hpp" />
+    <ClInclude Include="gpx\gpxRenderPrefs.hpp" />
+    <ClInclude Include="gpx\gpxRenderState.hpp" />
+    <ClInclude Include="gpx\gpxSceneObject.hpp" />
+    <ClInclude Include="gpx\gpxShaderParams.hpp" />
+    <ClInclude Include="gpx\gpxText.hpp" />
+    <ClInclude Include="gpx\gpxTransformControl.hpp" />
+    <ClInclude Include="icn\icnIconLayer.hpp" />
+    <ClInclude Include="icn\icnIconScale.hpp" />
+    <ClInclude Include="icn\icnIconSet.hpp" />
+    <ClInclude Include="ctxm\ctxmContextMenu.hpp" />
+    <ClInclude Include="ctxm\ctxmContextMenuInterest.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="api3d\private\api3dBakeScene.cpp" />
+    <ClCompile Include="api3d\private\api3dBillboard.cpp" />
+    <ClCompile Include="api3d\private\api3dImport.cpp" />
+    <ClCompile Include="api3d\private\api3dLightMgr.cpp" />
+    <ClCompile Include="api3d\private\api3dNodeReference.cpp" />
+    <ClCompile Include="api3d\private\api3dObject.cpp" />
+    <ClCompile Include="api3d\private\api3dObjectEntity.cpp" />
+    <ClCompile Include="api3d\private\api3dObjectGeom.cpp" />
+    <ClCompile Include="api3d\private\api3dObjectNode.cpp" />
+    <ClCompile Include="api3d\private\api3dObjectSimple.cpp" />
+    <ClCompile Include="api3d\private\api3dObjectSingle.cpp" />
+    <ClCompile Include="api3d\private\api3dParticleGenerator.cpp" />
+    <ClCompile Include="api3d\private\api3dProjectedLightWrapper.cpp" />
+    <ClCompile Include="api3d\private\api3dReference.cpp" />
+    <ClCompile Include="api3d\private\api3dResourceFinder.cpp" />
+    <ClCompile Include="api3d\private\api3dScene.cpp" />
+    <ClCompile Include="api3d\private\api3dSceneImpl.cpp" />
+    <ClCompile Include="api3d\private\api3dShape.cpp" />
+    <ClCompile Include="api3d\private\api3dSharedModelMgr.cpp" />
+    <ClCompile Include="api3d\private\api3dSubdiv.cpp" />
+    <ClCompile Include="api3d\private\api3dTargetRendererMgr.cpp" />
+    <ClCompile Include="cam3d\private\cam3dAnimKeys.cpp" />
+    <ClCompile Include="cam3d\private\cam3dImport.cpp" />
+    <ClCompile Include="cam3d\private\cam3dManipMaya.cpp" />
+    <ClCompile Include="cam3d\private\cam3dManipOrthoPan.cpp" />
+    <ClCompile Include="cam3d\private\cam3dManipUtil.cpp" />
+    <ClCompile Include="cam3d\private\cam3dMgr.cpp" />
+    <ClCompile Include="cam3d\private\cam3dPackage.cpp" />
+    <ClCompile Include="cam3d\private\cam3dUtil.cpp" />
+    <ClCompile Include="pick3d\private\pick3dMgr.cpp" />
+    <ClCompile Include="pick3d\private\pick3dPackage.cpp" />
+    <ClCompile Include="pick3d\private\pick3dPickBuffer.cpp" />
+    <ClCompile Include="pick3d\private\pick3dPickInterest.cpp" />
+    <ClCompile Include="pick3d\private\pick3dPickItem.cpp" />
+    <ClCompile Include="pick3d\private\pick3dPickList.cpp" />
+    <ClCompile Include="pick3d\private\pick3dPickObject.cpp" />
+    <ClCompile Include="sel3d\private\sel3dCastUtil.cpp" />
+    <ClCompile Include="sel3d\private\sel3dMgr.cpp" />
+    <ClCompile Include="sel3d\private\sel3dObject.cpp" />
+    <ClCompile Include="sel3d\private\sel3dPackage.cpp" />
+    <ClCompile Include="sel3d\private\sel3dSelectInterest.cpp" />
+    <ClCompile Include="sel3d\private\sel3dUndoOperation.cpp" />
+    <ClCompile Include="tma3d\private\tma3dCursorMgr.cpp" />
+    <ClCompile Include="tma3d\private\tma3dRenderView.cpp" />
+    <ClCompile Include="tma3d\private\tma3dScreenUtil.cpp" />
+    <ClCompile Include="tma3d\private\tma3dViewerMgr.cpp" />
+    <ClCompile Include="cma\private\cmaActualOperations.cpp" />
+    <ClCompile Include="cma\private\cmaCommand.cpp" />
+    <ClCompile Include="cma\private\cmaCommandMgr.cpp" />
+    <ClCompile Include="cma\private\cmaCommandSimple.cpp" />
+    <ClCompile Include="cma\private\cmaCommandToggle.cpp" />
+    <ClCompile Include="cma\private\cmaOperations.cpp" />
+    <ClCompile Include="cma\private\cmaPackage.cpp" />
+    <ClCompile Include="doc\private\docCustomDocumentMgr.cpp" />
+    <ClCompile Include="doc\private\docDocument.cpp" />
+    <ClCompile Include="doc\private\docDocumentChunk.cpp" />
+    <ClCompile Include="doc\private\docDocumentWithChunks.cpp" />
+    <ClCompile Include="doc\private\docSingleDocumentMgr.cpp" />
+    <ClCompile Include="doc\private\docSingleTypeMgr.cpp" />
+    <ClCompile Include="rstk\rstkDataMgr.cpp" />
+    <ClCompile Include="rstk\rstkDataParser.cpp" />
+    <ClCompile Include="rstk\rstkDocumentChunk.cpp" />
+    <ClCompile Include="rstk\rstkDocumentInterest.cpp" />
+    <ClCompile Include="gui\private\guiCommandMgr.cpp" />
+    <ClCompile Include="gui\private\guiContextMenu.cpp" />
+    <ClCompile Include="gui\private\guiCursor.cpp" />
+    <ClCompile Include="gui\private\guiCustomDocHandler.cpp" />
+    <ClCompile Include="gui\private\guiDialogTabbedMgr.cpp" />
+    <ClCompile Include="gui\private\guiFileDialogUtils.cpp" />
+    <ClCompile Include="gui\private\guiMainWindow.cpp" />
+    <ClCompile Include="gui\private\guiMenuMgr.cpp" />
+    <ClCompile Include="gui\private\guiMessageBox.cpp" />
+    <ClCompile Include="gui\private\guiProgressDialog.cpp" />
+    <ClCompile Include="gui\private\guiPropertyDialog.cpp" />
+    <ClCompile Include="gui\private\guiPropertyGrid.cpp" />
+    <ClCompile Include="gui\private\guiSingleDocHandler.cpp" />
+    <ClCompile Include="gui\private\guiSplashScreen.cpp" />
+    <ClCompile Include="gui\private\guiStatusBarMgr.cpp" />
+    <ClCompile Include="gui\private\guiToolbarMgr.cpp" />
+    <ClCompile Include="gui\private\guiXMLTextReader.cpp" />
+    <ClCompile Include="gui\private\guiXMLTextReaderStd.cpp" />
+    <ClCompile Include="gui\private\guiXMLTextWriter.cpp" />
+    <ClCompile Include="gui\private\guiXMLTextWriterStd.cpp" />
+    <ClCompile Include="gpx\private\gpxProxyMgr.cpp" />
+    <ClCompile Include="gpx\private\gpxProxyObject.cpp" />
+    <ClCompile Include="gpx\private\gpxRenderControl.cpp" />
+    <ClCompile Include="gpx\private\gpxAmbientOcclusion.cpp" />
+    <ClCompile Include="gpx\private\gpxBillboard.cpp" />
+    <ClCompile Include="gpx\private\gpxCamera.cpp" />
+    <ClCompile Include="gpx\private\gpxCharacter.cpp" />
+    <ClCompile Include="gpx\private\gpxEffectData.cpp" />
+    <ClCompile Include="gpx\private\gpxEffectDisplacement.cpp" />
+    <ClCompile Include="gpx\private\gpxEffectGlow.cpp" />
+    <ClCompile Include="gpx\private\gpxEffectNormals.cpp" />
+    <ClCompile Include="gpx\private\gpxEffectOutline.cpp" />
+    <ClCompile Include="gpx\private\gpxEffectReflection.cpp" />
+    <ClCompile Include="gpx\private\gpxEffectRendermanOverride.cpp" />
+    <ClCompile Include="gpx\private\gpxEffectTextureFilter.cpp" />
+    <ClCompile Include="gpx\private\gpxEffectUVTransform.cpp" />
+    <ClCompile Include="gpx\private\gpxEnvironment.cpp" />
+    <ClCompile Include="gpx\private\gpxFog.cpp" />
+    <ClCompile Include="gpx\private\gpxFragment.cpp" />
+    <ClCompile Include="gpx\private\gpxGlobalAmbient.cpp" />
+    <ClCompile Include="gpx\private\gpxGlobalIllumination.cpp" />
+    <ClCompile Include="gpx\private\gpxIconSet.cpp" />
+    <ClCompile Include="gpx\private\gpxLight.cpp" />
+    <ClCompile Include="gpx\private\gpxPointLight.cpp" />
+    <ClCompile Include="gpx\private\gpxProjectedLight.cpp" />
+    <ClCompile Include="gpx\private\gpxReference.cpp" />
+    <ClCompile Include="gpx\private\gpxRenderPrefs.cpp" />
+    <ClCompile Include="gpx\private\gpxRenderState.cpp" />
+    <ClCompile Include="gpx\private\gpxSceneObject.cpp" />
+    <ClCompile Include="gpx\private\gpxShaderParams.cpp" />
+    <ClCompile Include="gpx\private\gpxText.cpp" />
+    <ClCompile Include="gpx\private\gpxTransformControl.cpp" />
+    <ClCompile Include="icn\private\icnIconLayer.cpp" />
+    <ClCompile Include="icn\private\icnIconScale.cpp" />
+    <ClCompile Include="icn\private\icnIconSet.cpp" />
+    <ClCompile Include="ctxm\private\ctxmContextMenu.cpp" />
+    <ClCompile Include="ctxm\private\ctxmContextMenuInterest.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

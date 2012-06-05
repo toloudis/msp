@@ -1,0 +1,172 @@
+/*****************************************************************************
+ * Test version of a base shader for sgpu test compiler.
+ *****************************************************************************/
+
+shader Illumination_sgpu_Subsurface
+{
+  input:    
+  Color  g_BaseColor = Color(1,1,1,1)
+  {	
+      display_name("Base diffuse Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "Color from base map." );
+  };
+  float g_DiffuseFactor = 1.0
+  {		
+      display_name("Diffuse factor");
+      hard_range(float(0),float(1));
+      description( "diffuse lighting multiplier" );
+  };
+  Color  g_specColor = Color(0.45, 0.65, 1.0,1.0)
+  {	
+      display_name("Specular Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "specular color." );
+  };
+  float g_specPower = 0.2
+  {		
+      display_name("Specular Factor");
+      hard_range(float(0),float(10));
+      description( "multiplier for specular contribution" );
+  };
+  float g_specGloss = 15
+  {		
+      display_name("Specular Exponent");
+      hard_range(float(0),float(10));
+      description( "power for specular contribution" );
+  };
+  Color  g_translucency = Color(0,0,0,0)
+  {	
+      display_name("Translucency Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "Color from translucency map." );
+  };
+  float g_transMultiplier = 1.0
+  {		
+      display_name("Translucent Power");
+      hard_range(float(0),float(2));
+      description( "Translucent Power" );
+  };
+  float g_transRampOff = 1.0
+  {		
+      display_name("Translucent Ramp Off");
+      hard_range(float(0),float(2));
+      description( "translucent ramp off" );
+  };
+Color g_transColIn = Color(0.87, 0.91, 0.96, 1.0)
+  {	
+      display_name("Unscattered Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "unscattered color" );
+  };
+Color g_transColOut = Color(1.0, 0.71, 0.32, 1.0)
+  {	
+      display_name("Melanin Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "Melanin color" );
+  };
+Color g_transColBack = Color(0.58, 0.2, 0.24, 1.0)
+  {	
+      display_name("Hemoglobin Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "Hemoglobin color" );
+  };
+float g_specFresnel = 3.0
+  {		
+      display_name("Fresnel");
+      hard_range(float(0),float(100));
+      description( "fresnel strength" );
+  };
+float g_fresnelPower = 15.0
+  {		
+      display_name("Fresnel Power");
+      hard_range(float(0),float(100));
+      description( "fresnel power" );
+  };
+float g_fresnelGloss = 0.0
+  {		
+      display_name("Fresnel Gloss");
+      hard_range(float(0),float(100));
+      description( "fresnel gloss" );
+  };
+
+    
+  output:
+  Color result;
+  Color diffuse;
+  Color specular;
+
+//=======================Translucency lighting model=======================
+Color TransPass(float4 DotLN)
+{
+	float4 Translucence 	= smoothstep(-g_transRampOff  * g_translucency,float4(1,1,1,1),abs(DotLN)) 
+					;//- smoothstep(float4(1,1,1,1),float4(1,1,1,1),DotLN); // or should it be step(float4(1,1,1,1), DotLN);//???
+	
+	float4 Colourise = lerp(g_transColBack, lerp(g_transColOut * g_transMultiplier,g_transColIn,DotLN),Translucence);
+	
+	return (Colourise * Translucence);
+}
+
+//================Specular component 1 (front on)=======================
+float SpecularFrontOn(	float3 Normals,
+					float3 EyeVec,
+					float3 LightVec,
+					float Power,
+					float Gloss)
+{
+	float3 SpecReflect = (2 * dot(Normals,LightVec) * Normals - LightVec);
+	// when dot prod is less than 0, spec contrib is 0.
+	// correct for low gloss with epsilon
+	float Specular = pow(saturate(dot(SpecReflect, EyeVec)), max(0.001f, Gloss)) * Power;
+	return Specular;
+}
+
+
+float FresnelMask(	float3 Normals,
+				float3 EyeVec)
+{
+	float Fresnel = dot(EyeVec,Normals) * g_specFresnel;
+	return saturate(Fresnel);
+}
+//================================Pixel shader - Complete================================
+
+
+  void main() 
+  {
+      diffuse = Color(0.0,0.0,0.0,0.0);
+      specular = Color(0.0,0.0,0.0,0.0);
+  
+      	// enumerate lights
+		Light_iterator light;
+		foreach (light)
+		{
+			float4 DotLN		= float4(light.dot_nl,light.dot_nl,light.dot_nl,light.dot_nl);
+
+			Color Translucency	= TransPass(DotLN);
+			Color a = g_BaseColor;
+			Color b 			= (Translucency);
+			Color BaseLighting = (a * b)*(a + b + b - 2*a*b);
+
+			float fresnelMask = FresnelMask(normal,-direction);
+			float FresnelStrength	= saturate(1 - fresnelMask) * g_fresnelPower + 1;
+			float FresnelGlossiness	= fresnelMask * g_fresnelGloss + 1;
+			specular += light.contribution * SpecularFrontOn(normal,-direction,light.direction,
+							g_specPower * FresnelStrength,
+							g_specGloss * FresnelGlossiness * max(0.1,g_specColor.a)) 
+						* g_specColor * Translucency.x;
+			
+			diffuse += BaseLighting * light.contribution * g_DiffuseFactor;
+		}
+      
+      diffuse.a = 1.0;
+      specular.a = 1.0;
+      
+      // irradiance term skipped
+      
+      result = diffuse + specular;
+      result.a = 1.0;
+
+  }
+}
+;
+

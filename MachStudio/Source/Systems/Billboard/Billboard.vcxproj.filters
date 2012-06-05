@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{2de4f10f-f37b-4275-8809-3d5571c84ea6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Undo">
+      <UniqueIdentifier>{2eb58441-62cb-489b-aaa6-812ec1c72313}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{bd9a6c3b-2834-4c9c-a584-40a4a1f7da3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{2a2f8988-9b8e-4771-82ed-5edefac65344}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Timeline">
+      <UniqueIdentifier>{8b14c1a0-b607-491d-b25b-f6b95065a2b9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Gui\billCommands.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\billDialogDataUtil.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\billDialogInterest.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\billDialogUtil.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\billGeomList.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Undo\billActualOperations.cpp">
+      <Filter>Undo</Filter>
+    </ClCompile>
+    <ClCompile Include="Undo\billOperations.cpp">
+      <Filter>Undo</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\billData.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\billDataParser.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\billDocumentChunk.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\billDocumentInterest.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\billScriptData.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\billBillboardObject.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\billObjectMgr.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\billScriptObject.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\billSelectInterest.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Timeline\billDriverCreator.cpp">
+      <Filter>Timeline</Filter>
+    </ClCompile>
+    <ClCompile Include="billSystem.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Gui\billCommands.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\billDialogDataUtil.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\billDialogInterest.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\billDialogUtil.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\billGeomList.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Undo\billActualOperations.hpp">
+      <Filter>Undo</Filter>
+    </ClInclude>
+    <ClInclude Include="Undo\billOperations.hpp">
+      <Filter>Undo</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\billData.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\billDataParser.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\billDocumentChunk.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\billDocumentInterest.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\billScriptData.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\billBillboardObject.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\billObjectMgr.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\billScriptObject.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\billSelectInterest.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Timeline\billDriverCreator.hpp">
+      <Filter>Timeline</Filter>
+    </ClInclude>
+    <ClInclude Include="billSystem.hpp" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,77 @@
+#must match the struct in the cpp file for this shader!
+
+$ifndef "sgpu_illum_SubSurfaceScatter_mi"
+set "sgpu_illum_SubSurfaceScatter_mi" "true"
+
+declare shader
+	color "sgpu_illum_SubSurfaceScatter" (
+		color texture	"diffTex",
+		color texture	"transMapIn",
+		color texture	"transMapOut",
+		color texture	"transMapBack",
+		color texture	"transTex",
+		color texture	"specTex",
+		color texture	"specPowerTex",
+		color texture	"microTex",
+		color texture	"transparencyTex",
+		color texture	"cubeTex",
+		color texture	"reflectFactorTex",
+		color			"g_transColIn",
+		color			"g_transColOut",
+		color			"g_transColBack",
+		color			"g_specColor",
+		scalar			"g_transMultiplier",
+		scalar			"g_transRampOff",
+		scalar			"g_specPower",
+		scalar			"g_specGloss",
+		scalar			"g_specFresnel",
+		scalar			"g_fresnelPower",
+		scalar			"g_fresnelGloss",
+		scalar			"g_microScale",
+		scalar			"g_transparency",
+		scalar			"g_reflectivity",
+		scalar			"fresnelPower",
+		scalar			"fresnelBias",
+		scalar			"reflBlur",
+		scalar			"g_reflMapAngle",
+		
+		color texture	"diffuseEnvMap",	
+		color texture	"specularEnvMap",		
+		color			"g_envDiffuseColor",
+		color			"g_envSpecularColor",
+		scalar			"g_diffuseFactor",
+		scalar			"g_diffuseEnvAngle",	
+		scalar			"g_specularFactor",
+		scalar			"g_specularEnvAngle",
+		
+		scalar			"u_scale",
+		scalar			"v_scale",
+		scalar			"u_offset",
+		scalar			"v_offset",
+		scalar			"uv_rotation",
+	
+		color texture	"normalMap",
+		scalar			"normalMapScale",
+		
+		boolean			"bEnableAO",		
+		color			"aoColor",
+		scalar			"aoRadiusNear",
+		scalar			"aoRadiusFar",
+		scalar			"aoAngleBias",
+		scalar			"aoAttenuation",
+		scalar			"aoContrast",
+		scalar			"aoCamNear",
+		scalar			"aoCamFar",
+		scalar			"aoSamples",
+		
+		boolean			"bEnableGI",
+		boolean			"bEnableSWL",
+		
+		integer			"mode",      # light selection mode 0,1,2,4
+		array light		"lights"
+	)
+	version 1
+	apply material
+end declare
+
+$endif

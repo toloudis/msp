@@ -1,0 +1,34 @@
+/**********************************************************************
+
+							STUDIOGPU ADDON
+
+ 	File:		StudioGPUFix13.grc
+
+	Purpose:	Fixed resources for the StudioGPU addon
+
+	Target:		ArchiCAD 13
+
+	Copyright:	Encina Ltd 2009
+
+	Revision history:
+	07-05-2009	RW	Created
+
+ **********************************************************************/
+
+@ #include "MDIDs_APICD.h"
+
+'MDID'	32500	"Addon Indentification" {
+	DEV_ID
+	LOC_ID
+}
+
+'VERS' {
+	"Encina Ltd"
+	"Copyright Encina Ltd 2009"
+	"StudioGPU Export"
+	1.02
+	1.02
+	"ArchiCAD"
+	13.0
+	" (2450)"
+}

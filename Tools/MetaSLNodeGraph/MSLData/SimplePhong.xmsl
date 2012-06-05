@@ -1,0 +1,26 @@
+<root>
+  <version major="1" minor="0"/>
+  <metasl_code file_name="illumination_phong.msl"/>
+  <metasl_code file_name="texture_lookup.msl"/>
+  <node name="Texture_lookup_2d_1" class="Texture_lookup_2d">
+    <input name="texture" value="default.dds"/>
+    <input name="texture_space" value="0"/>
+    <input name="texture_uv"/>
+    <output name="result"/>
+  </node>
+
+  <node name="phong_illum" class="Illumination_phong">
+    <input name="diffuse_color" value="1 1 1 1">
+      <attachment target_name="result" target_node="Texture_lookup_2d_1"/>
+    </input>
+    <input name="diffuse_scalar" value="0.7"/>
+    <input name="specular_color" value="0.95082 0.627577 0.0545552 1"/>
+    <input name="specular_scalar" value="0.201258"/>
+    <input name="specular_shininess" value="7.54717"/>
+    <output name="result"/>
+    <output name="sum"/>
+    <output name="diffuse"/>
+    <output name="specular"/>
+  </node>
+
+</root>

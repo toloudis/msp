@@ -1,0 +1,255 @@
+;  Simple.nvv - 2 dir lights, 2 point lights
+;
+; v0  -- position
+; v3  -- normal
+; v7  -- tex coord
+; v8  -- tex coord1
+;
+; c0-3   -- world/view/proj matrix
+; c4     -- light vector
+; c5-8   -- inverse/transpose world matrix
+; c9     -- {0.0, 0.5, 1.0, -1.0}
+; c10    -- eye point
+; c11-14 -- world matrix
+; c15.w	 -- specular power
+;
+; c22    -- ambient light * material ambient
+; c23    -- light color * material diffuse (dir light 1)
+; c24    -- light color * material specular (dir light 1)
+; c25    -- direction (dir light 1)
+; c26    -- light color * material diffuse (dir light 2)
+; c27    -- light color * material specular (dir light 2)
+; c28    -- direction (dir light 2)
+;
+; c32    -- light color * material diffuse  (pos light 1)
+; c33    -- light color * material specular (pos light 1)
+; c34    -- position (pos light 1)
+; c35    -- attenuation (pos light 1)
+; c36    -- light color * material diffuse  (pos light 2)
+; c37    -- light color * material specular (pos light 2)
+; c38    -- position (pos light 2)
+; c39    -- attenuation (pos light 2)
+
+#define CV_MAT_SPECULARPOWER 15
+
+#define CV_LIGHT_AMBIENT 22
+#define CV_DLIGHT1_DIFFCOLOR 23
+#define CV_DLIGHT1_SPECCOLOR 24
+#define CV_DLIGHT1_DIRECTION 25
+#define CV_DLIGHT2_DIFFCOLOR 26
+#define CV_DLIGHT2_SPECCOLOR 27
+#define CV_DLIGHT2_DIRECTION 28
+
+#define CV_PLIGHT1_DIFFCOLOR 32
+#define CV_PLIGHT1_SPECCOLOR 33
+#define CV_PLIGHT1_POSITION 34
+#define CV_PLIGHT1_ATTENUATION 35
+#define CV_PLIGHT2_DIFFCOLOR 36
+#define CV_PLIGHT2_SPECCOLOR 37
+#define CV_PLIGHT2_POSITION 38
+#define CV_PLIGHT2_ATTENUATION 39
+
+#define R_NORMAL r0
+#define R_EYE_VERTEX r1
+#define R_EYE_VECTOR r2
+#define R_ATTEN r5
+#define R_DIFFUSE r6
+#define R_TEMP r7
+#define R_HALF_VECTOR r8
+#define R_VERTEX_TO_LIGHT r9
+#define R_SPECULAR r10
+
+vs.1.0
+
+;transform position
+dp4 oPos.x, v0, c0
+dp4 oPos.y, v0, c1
+dp4 oPos.z, v0, c2
+dp4 oPos.w, v0, c3
+
+;transform normal
+dp3 R_NORMAL.x, v3, c5
+dp3 R_NORMAL.y, v3, c6
+dp3 R_NORMAL.z, v3, c7
+
+;normalize normal
+dp3 R_NORMAL.w, R_NORMAL, R_NORMAL
+rsq R_NORMAL.w, R_NORMAL.w
+mul R_NORMAL, R_NORMAL, R_NORMAL.w
+
+;compute world space position
+dp4 R_EYE_VERTEX.x, v0, c11
+dp4 R_EYE_VERTEX.y, v0, c12
+dp4 R_EYE_VERTEX.z, v0, c13
+dp4 R_EYE_VERTEX.w, v0, c14
+
+;vector from point to eye
+add R_EYE_VECTOR, c10, -R_EYE_VERTEX
+
+;normalize e
+dp3 R_EYE_VECTOR.w, R_EYE_VECTOR, R_EYE_VECTOR
+rsq R_EYE_VECTOR.w, R_EYE_VECTOR.w
+mul R_EYE_VECTOR, R_EYE_VECTOR, R_EYE_VECTOR.w
+
+; output texture coordinates directly
+mov oT0, v7
+;mov oT1, v8
+
+; Get the material power
+mov r3.w, c[CV_MAT_SPECULARPOWER].w
+
+; Start with material ambient * light ambient
+; pre-computed when setting up the constants
+mov R_DIFFUSE, c[CV_LIGHT_AMBIENT]
+
+; *****************************
+; ** Directional Light 1
+
+; Dot normal with light vector
+; This is the intensity of the diffuse component
+dp3 r3.x, R_NORMAL, c[CV_DLIGHT1_DIRECTION]
+
+; This is the intensity of the specular component
+; Calculate half vector (light vector + eye vector)
+mov R_HALF_VECTOR, c[CV_DLIGHT1_DIRECTION]
+add R_HALF_VECTOR, R_HALF_VECTOR, R_EYE_VECTOR
+
+; normalize half-vector
+dp3 R_HALF_VECTOR.w, R_HALF_VECTOR, R_HALF_VECTOR
+rsq R_HALF_VECTOR.w, R_HALF_VECTOR.w												
+mul R_HALF_VECTOR, R_HALF_VECTOR, R_HALF_VECTOR.w	
+
+; Dot normal with half-vector.  
+dp3 r3.yz, R_NORMAL, R_HALF_VECTOR
+
+; Calculate the diffuse & specular factors
+lit r4, r3
+
+; add the (diffuse color * diffuse light color * diffuse intensity(R4.y))
+mad R_DIFFUSE, r4.y, c[CV_DLIGHT1_DIFFCOLOR], R_DIFFUSE
+
+; specular (specular color * specular light color * specular intensity(R4.z))
+mul R_SPECULAR, c[CV_DLIGHT1_SPECCOLOR], r4.z
+
+; *****************************
+; ** Directional Light 2
+
+; Dot normal with light vector
+; This is the intensity of the diffuse component
+dp3 r3.x, R_NORMAL, c[CV_DLIGHT2_DIRECTION]
+
+; This is the intensity of the specular component
+; Calculate half vector (light vector + eye vector)
+mov R_HALF_VECTOR, c[CV_DLIGHT1_DIRECTION]
+add R_HALF_VECTOR, R_HALF_VECTOR, R_EYE_VECTOR
+
+; normalize half-vector
+dp3 R_HALF_VECTOR.w, R_HALF_VECTOR, R_HALF_VECTOR
+rsq R_HALF_VECTOR.w, R_HALF_VECTOR.w												
+mul R_HALF_VECTOR, R_HALF_VECTOR, R_HALF_VECTOR.w	
+
+; Dot normal with half-vector.  
+dp3 r3.yz, R_NORMAL, R_HALF_VECTOR
+
+; Calculate the diffuse & specular factors
+lit r4, r3
+
+; add the (diffuse color * diffuse light color * diffuse intensity(R4.y))
+mad R_DIFFUSE, r4.y, c[CV_DLIGHT2_DIFFCOLOR], R_DIFFUSE
+
+; specular (specular color * specular light color * specular intensity(R4.z))
+mad R_SPECULAR, c[CV_DLIGHT2_SPECCOLOR], r4.z, R_SPECULAR
+
+
+; *****************************
+; ** Point Light 1
+
+; Calculate vector from vertex to light in eye space
+add R_VERTEX_TO_LIGHT, c[CV_PLIGHT1_POSITION],-R_EYE_VERTEX
+dp3 R_TEMP.w, R_VERTEX_TO_LIGHT, R_VERTEX_TO_LIGHT	
+rsq R_VERTEX_TO_LIGHT.w, R_TEMP.w
+
+; Get the attenuation
+dst R_TEMP, R_TEMP.wwww, R_VERTEX_TO_LIGHT.wwww		; (1, d, d*d, 1/d)
+dp3 R_TEMP.w, R_TEMP, c[CV_PLIGHT1_ATTENUATION]		; (a0 + a1*d + a2*d2)
+rcp R_ATTEN.w, R_TEMP.w								; 1 / (a0 + a1*d + a2*d)	
+
+; Normalize the vertex to the light vector
+mul R_VERTEX_TO_LIGHT, R_VERTEX_TO_LIGHT, R_VERTEX_TO_LIGHT.w
+
+; Dot normal with light vector (from vertex to light)
+; This is the intensity of the diffuse component
+dp3 r3.x, R_NORMAL, R_VERTEX_TO_LIGHT
+
+; Calculate half-vector (light vector + eye vector)
+; This is used for the specular component
+add R_HALF_VECTOR, R_EYE_VECTOR, R_VERTEX_TO_LIGHT
+
+; Normalize the half-vector
+dp3 R_HALF_VECTOR.w, R_HALF_VECTOR, R_HALF_VECTOR
+rsq R_HALF_VECTOR.w, R_HALF_VECTOR.w
+mul R_HALF_VECTOR, R_HALF_VECTOR, R_HALF_VECTOR.w
+
+; Dot normal with half-vector
+; This is the intensity of the specular component
+dp3 r3.yz, R_HALF_VECTOR, R_NORMAL
+
+; Calculate the diffuse & specular factors
+lit r4, r3
+
+; Scale the factors by the attenuation
+mul r4, r4, R_ATTEN.w
+
+; add the (diffuse color * diffuse light color * diffuse intensity(r4.y))
+mad R_DIFFUSE, r4.y, c[CV_PLIGHT1_DIFFCOLOR], R_DIFFUSE
+
+; add the (specular color * specular light color * specular intensity(r4.z))
+; result into the output color
+mad R_SPECULAR, c[CV_PLIGHT1_SPECCOLOR], r4.z, R_SPECULAR
+
+
+; *****************************
+; ** Point Light 2
+
+; Calculate vector from vertex to light in eye space
+add R_VERTEX_TO_LIGHT, c[CV_PLIGHT2_POSITION],-R_EYE_VERTEX
+dp3 R_TEMP.w, R_VERTEX_TO_LIGHT, R_VERTEX_TO_LIGHT	
+rsq R_VERTEX_TO_LIGHT.w, R_TEMP.w
+
+; Get the attenuation
+dst R_TEMP, R_TEMP.wwww, R_VERTEX_TO_LIGHT.wwww		; (1, d, d*d, 1/d)
+dp3 R_TEMP.w, R_TEMP, c[CV_PLIGHT2_ATTENUATION]		; (a0 + a1*d + a2*d2)
+rcp R_ATTEN.w, R_TEMP.w								; 1 / (a0 + a1*d + a2*d)	
+
+; Normalize the vertex to the light vector
+mul R_VERTEX_TO_LIGHT, R_VERTEX_TO_LIGHT, R_VERTEX_TO_LIGHT.w
+
+; Dot normal with light vector (from vertex to light)
+; This is the intensity of the diffuse component
+dp3 r3.x, R_NORMAL, R_VERTEX_TO_LIGHT
+
+; Calculate half-vector (light vector + eye vector)
+; This is used for the specular component
+add R_HALF_VECTOR, R_EYE_VECTOR, R_VERTEX_TO_LIGHT
+
+; Normalize the half-vector
+dp3 R_HALF_VECTOR.w, R_HALF_VECTOR, R_HALF_VECTOR
+rsq R_HALF_VECTOR.w, R_HALF_VECTOR.w
+mul R_HALF_VECTOR, R_HALF_VECTOR, R_HALF_VECTOR.w
+
+; Dot normal with half-vector
+; This is the intensity of the specular component
+dp3 r3.yz, R_HALF_VECTOR, R_NORMAL
+
+; Calculate the diffuse & specular factors
+lit r4, r3
+
+; Scale the factors by the attenuation
+mul r4, r4, R_ATTEN.w
+
+; add the (diffuse color * diffuse light color * diffuse intensity(r4.y))
+mad oD0, r4.y, c[CV_PLIGHT2_DIFFCOLOR], R_DIFFUSE
+
+; add the (specular color * specular light color * specular intensity(r4.z))
+; result into the output color
+mad oD1, c[CV_PLIGHT2_SPECCOLOR], r4.z, R_SPECULAR

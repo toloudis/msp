@@ -1,0 +1,897 @@
+/*****************************************************************************
+**  Support.hsl
+**
+**      Support functions for .sl functions
+**
+**	Studio GPU
+**	Copyright(C) 2010 - All Rights Reserved
+\****************************************************************************/
+
+//--------------------------------------------------------------------
+// Debugging functions
+//--------------------------------------------------------------------
+void Print( string i_mssg )
+{
+	printf("%s\n", i_mssg);
+}
+void Print( string i_name; string i_str )
+{
+	printf("%s = %s\n", i_name, i_str);
+}
+void Print( string i_name ; string i_str )
+{
+	printf("%s = %s\n",i_name,i_str);
+}
+void Print( string i_name ; color i_color )
+{
+	printf("%s = %c\n",i_name,i_color);
+}
+void Print( string i_name ; point i_point )
+{
+	printf("%s = %p\n",i_name,i_point);
+}
+void Print( string i_name ; vector i_vector )
+{
+	printf("%s = %v\n",i_name,i_vector);
+}
+void Print( string i_name ; float i_float )
+{
+	printf("%s = %f\n",i_name,i_float);
+}
+void Print( string i_name ; matrix i_mat )
+{
+	printf("%s = %m\n",i_name,i_mat);
+}
+void PrintNormal( string i_name ; normal i_normal )
+{
+	printf("%s = %f, %f, %f\n",i_name,xcomp(i_normal),ycomp(i_normal),zcomp(i_normal));
+}
+void PrintVector( string i_name ; vector i_vec )
+{
+	printf("%s = %f, %f, %f\n",i_name,xcomp(i_vec),ycomp(i_vec),zcomp(i_vec));
+}
+void PrintColor( string i_name ; color i_col )
+{
+	printf("%s = %f, %f, %f\n",i_name,i_col[0],i_col[1],i_col[2]);
+}
+void PrintPoint( string i_name ; point i_pt )
+{
+	printf("%s = %f, %f, %f\n",i_name,xcomp(i_pt),ycomp(i_pt),zcomp(i_pt));
+}
+void PrintVectors( string i_name1 ; vector i_vec1 ; string i_name2 ; vector i_vec2 )
+{
+	printf("%s = %f, %f, %f  || %s = %f, %f, %f  || \n",i_name1,xcomp(i_vec1),ycomp(i_vec1),zcomp(i_vec1),i_name2,xcomp(i_vec2),ycomp(i_vec2),zcomp(i_vec2));
+}
+void PrintPair( string i_name1 ; vector i_vec1 ; string i_name2 ; float i_val2 )
+{
+	printf("%s = %f, %f, %f || %s = %f\n",i_name1,xcomp(i_vec1),ycomp(i_vec1),zcomp(i_vec1),i_name2,i_val2);
+}
+
+//--------------------------------------------------------------------
+// shadingnormal()
+//--------------------------------------------------------------------
+normal shadingnormal(normal N)
+{
+    normal Ns = normalize(N);
+    uniform float sides = 2;
+    uniform float raydepth;
+    attribute("Sides", sides);
+    rayinfo("depth", raydepth);
+    if (sides == 2 || raydepth > 0)
+	Ns = faceforward(Ns, I, Ns);
+    return Ns;
+}
+
+//--------------------------------------------------------------------
+// sqr()
+//--------------------------------------------------------------------
+float sqr(float x)
+{ 
+	return x*x; 
+}
+
+//--------------------------------------------------------------------
+// attenuation()
+//--------------------------------------------------------------------
+float attenuation(float d; float falloffStart;
+                  float falloffx; float falloffy; float falloffz; float falloffw)
+{
+	
+	float atten = 1;
+
+	if (d > falloffStart)
+	{
+		atten = 1 / (falloffx + 
+					 falloffy * (d - falloffStart) + 
+					 falloffz * (d - falloffStart) * (d - falloffStart) + 
+					 falloffw * (d - falloffStart) * (d - falloffStart) * (d - falloffStart) );
+
+	}
+	else
+	{
+		atten = 1 / falloffx;
+	}
+	return atten;
+}
+
+//--------------------------------------------------------------------
+// MakeUVTransform()
+//--------------------------------------------------------------------
+matrix MakeUVTransform(	float i_UScale;
+						float i_VScale;
+						float i_UTrans;
+						float i_VTrans;
+						float i_UVAngle;)
+{
+	// scale, then rotate, then translate.
+	matrix m = 1;
+
+	m = scale( m , vector(i_UScale, i_VScale, 1) );
+	m = rotate( m , (i_UVAngle * (PI/180)), vector(0,0,1) );
+	m = translate(m , point(i_UTrans, i_VTrans, 0) );
+
+	//transpose(m);
+	return m;
+}
+
+//--------------------------------------------------------------------
+// lerp()
+//--------------------------------------------------------------------
+float lerp( float x; float y; float s )
+{
+	return x + s*(y-x);
+}
+
+//--------------------------------------------------------------------
+// lerp()
+//--------------------------------------------------------------------
+vector lerp( vector x; vector y; vector s )
+{
+	return x + s*(y-x);
+}
+
+//--------------------------------------------------------------------
+// lerp()
+//--------------------------------------------------------------------
+vector lerp( vector x; vector y; float s )
+{
+	return x + s*(y-x);
+}
+
+//--------------------------------------------------------------------
+// lerp()
+//--------------------------------------------------------------------
+color lerp( color x; color y; color s )
+{
+	return x + s*(y-x);
+}
+
+//--------------------------------------------------------------------
+// lerp()
+//--------------------------------------------------------------------
+color lerp( color x; color y; float s )
+{
+	return x + s*(y-x);
+}
+
+//--------------------------------------------------------------------
+// rotateAboutY()
+//--------------------------------------------------------------------
+vector rotateAboutY(vector vec; float angle)
+{
+	if (angle == 0)
+		return vec;
+	else
+	{
+		float s = sin(radians(angle));
+		float c = cos(radians(angle));
+		return vector(zcomp(vec)*s + xcomp(vec)*c,  
+					  ycomp(vec),
+					  zcomp(vec)*c - xcomp(vec)*s);
+	}
+}
+
+//--------------------------------------------------------------------
+// saturate()
+//--------------------------------------------------------------------
+float saturate(float in)
+{
+	float retVal = in;
+	if ( in < 0 ) retVal = 0;
+	if ( in > 1 ) retVal = 1;	
+	return retVal;
+}
+
+//--------------------------------------------------------------------
+// fastFresnel()
+//--------------------------------------------------------------------
+float fastFresnel(float NdotE; float R0; float power)
+{
+   return R0 + (1.0-R0)*pow(abs(1.0 - saturate(NdotE)), power);
+} 
+
+//--------------------------------------------------------------------
+// MSP_fresnel()
+//--------------------------------------------------------------------
+float MSP_fresnel(float NdotE; float eta)
+{
+	float R0 = (1.0-eta)*(1.0-eta)/((1.0+eta)*(1.0+eta));
+	return fastFresnel(NdotE, R0, 5.0);
+}
+
+//--------------------------------------------------------------------
+// PhongDiffuse()
+//--------------------------------------------------------------------
+color PhongDiffuse(vector norm; vector lightDir; color lDiffColor; color sDiffColor)
+{
+	float cosine = saturate(norm.lightDir);
+	return cosine * (lDiffColor * sDiffColor);
+}
+
+//--------------------------------------------------------------------
+// PhongSpecular()
+//--------------------------------------------------------------------
+color PhongSpecular(vector norm; vector lightDir; vector eyeDir; 
+					color lSpecColor; color sSpecColor; float sSpecPower)
+{
+	float specComp = saturate( norm.normalize(lightDir + eyeDir) );
+	float doSpec = norm.lightDir>0 ? 1 : 0;
+    specComp = doSpec * (pow(specComp, max(0.001, sSpecPower)));
+	return specComp * (lSpecColor * sSpecColor);
+}
+
+//--------------------------------------------------------------------
+// OrenNayarDiffuse()
+//--------------------------------------------------------------------
+float OrenNayarDiffuse(vector L; vector I; vector N; float roughness)
+{
+	float sigmasq = roughness*roughness;
+	float A = 1.0 - 0.5 * sigmasq/(sigmasq+0.33);
+	float B = 0.45 * sigmasq/(sigmasq+0.09);
+	
+	float IdotN = I.N;
+	float LdotN = L.N;
+	float theta_r = acos(IdotN);
+	float theta_i = acos(LdotN);
+	float Bfactor = max(0, cos(theta_i-theta_r));
+	if (Bfactor > 0)
+	{
+		float alpha = max(theta_i, theta_r);
+		float beta = min(theta_i, theta_r);
+		Bfactor *= sin(alpha) * tan(beta);
+	}
+	return A + B * Bfactor;
+}
+
+//--------------------------------------------------------------------
+// BlinnSpecular()
+//--------------------------------------------------------------------
+color BlinnSpecular(vector norm; vector lightDir; vector eyeDir; 
+	color lSpecColor; color sSpecColor; float eccentricity; float IOR;
+	float specularBias; float specularPower)
+{
+	// eyeDir is passed as dir FROM shade point TO eye
+	// lightDir is passed as dir FROM shade point TO light
+
+	vector H = normalize(lightDir + eyeDir);
+	// NdotH = cos a
+	float NdotH = norm.H;
+	float NdotE = norm.eyeDir;
+	float EdotH = eyeDir.H;
+	float NdotL = norm.lightDir;
+	
+	float Gb = 2 * NdotH * NdotE / EdotH;
+	float Gc = 2 * NdotH * NdotL / EdotH; 
+	float G = min(Gb, Gc);
+	G = min(1, G);
+	
+	// eccentricity varies from 0 to 1. 
+	// D3 = [ c^2 / (1 + cos^2(a)(c^2 - 1)) ]^2
+	float c2 = eccentricity*eccentricity;
+	float D3 = ( c2 / ( 1 + (NdotH*NdotH*(c2-1)) ) );
+	float D = D3*D3;
+	
+	// eta = ni/nt. assume air-material is the interface
+	float F = MSP_fresnel(NdotE, 1/(IOR+0.0001)); 
+
+	float specComp = D * G * F / NdotE;
+	specComp = max(specComp, 0);
+	return (specComp * specularPower) * (lSpecColor * sSpecColor);
+}
+
+//--------------------------------------------------------------------
+// expand()
+//--------------------------------------------------------------------
+vector expand(vector v)
+{
+	return 2.0*(v-0.5);
+}
+
+//--------------------------------------------------------------------
+// CartesianToPolar()
+//--------------------------------------------------------------------
+vector CartesianToPolar( vector vec )
+{
+	vector nvec = normalize( vec );
+	return vector( (atan( zcomp(nvec), xcomp(nvec) )+PI)*(1/(2*PI)), acos( ycomp(nvec) )*(1/PI) , 1 );
+}
+
+//--------------------------------------------------------------------
+// ClampedFloatTexture()
+// This code behaves exactly like the standard one-point texture()
+// function, except it limits the maximum filter width to ’maxwidth’.
+//--------------------------------------------------------------------
+float ClampedFloatTexture(string texturename; float ss; float tt;
+						  float width; float maxwidth; float blur)
+{
+	// calculate change in ss and tt across the micropolygon
+	float ds_u = Du(ss) * du;
+	float ds_v = Dv(ss) * dv;
+	float dt_u = Du(tt) * du;
+	float dt_v = Dv(tt) * dv;
+
+	// scale coordinate deltas by filter width multiplier
+	ds_u *= width; ds_v *= width;
+	dt_u *= width; dt_v *= width;
+
+	// clamp to maxwidth
+	ds_u = clamp(ds_u, -maxwidth, maxwidth);
+	ds_v = clamp(ds_v, -maxwidth, maxwidth);
+	dt_u = clamp(dt_u, -maxwidth, maxwidth);
+	dt_v = clamp(dt_v, -maxwidth, maxwidth);
+
+	// find lower edge of filter region
+	float ss2 = ss - (0.5*ds_u + 0.5*ds_v);
+	float tt2 = tt - (0.5*dt_u + 0.5*dt_v);
+
+	// four-point texture call
+	return float texture(texturename[0], ss2, tt2,
+						 ss2 + ds_u, tt2 + dt_u,
+						 ss2 + ds_u + ds_v, tt2 + dt_u + dt_v,
+						 ss2 + ds_v, tt2 + dt_v,
+						 "filter", "gaussian", "blur", blur);
+}
+
+//--------------------------------------------------------------------
+// ClampedColorTexture()
+// This code behaves exactly like the standard one-point texture()
+// function, except it limits the maximum filter width to ’maxwidth’.
+//--------------------------------------------------------------------
+color ClampedColorTexture(string texturename; float ss, tt, width, maxwidth; float blur)
+{
+	// calculate change in ss and tt across the micropolygon
+	float ds_u = Du(ss) * du;
+	float ds_v = Dv(ss) * dv;
+	float dt_u = Du(tt) * du;
+	float dt_v = Dv(tt) * dv;
+
+	// scale coordinate deltas by filter width multiplier
+	ds_u *= width; ds_v *= width;
+	dt_u *= width; dt_v *= width;
+
+	// clamp to maxwidth
+	ds_u = clamp(ds_u, -maxwidth, maxwidth);
+	ds_v = clamp(ds_v, -maxwidth, maxwidth);
+	dt_u = clamp(dt_u, -maxwidth, maxwidth);
+	dt_v = clamp(dt_v, -maxwidth, maxwidth);
+
+	// find lower edge of filter region
+	float ss2 = ss - (0.5*ds_u + 0.5*ds_v);
+	float tt2 = tt - (0.5*dt_u + 0.5*dt_v);
+
+	// four-point texture call	
+	return color texture(texturename, ss2, tt2,
+						 ss2 + ds_u, tt2 + dt_u,
+						 ss2 + ds_u + ds_v, tt2 + dt_u + dt_v,
+						 ss2 + ds_v, tt2 + dt_v,
+						 "filter", "gaussian", "lerp", 1, "blur", blur);
+}
+
+//--------------------------------------------------------------------
+// Tex2D()
+//--------------------------------------------------------------------
+color tex2D(string texName; float ss; float tt)
+{
+	color outCol = 1;
+	if (texName != "")
+	{
+		outCol *= ClampedColorTexture(texName,ss,tt,0,0,0);
+	}
+	return outCol;
+}
+
+//--------------------------------------------------------------------
+// Tex2DCombineOpacity()
+//--------------------------------------------------------------------
+color Tex2DCombineOpacity(string texName; color i_color; float ss; float tt)
+{
+	color outCol = i_color;
+	if (texName != "")
+	{
+		outCol *= ClampedColorTexture(texName,ss,tt,0,0,0);
+	}
+	return color(outCol[0],outCol[0],outCol[0]);
+}
+
+//--------------------------------------------------------------------
+// Tex2DCombine()
+//--------------------------------------------------------------------
+color Tex2DCombine(string texName; color i_color; float ss; float tt)
+{
+	color outCol = i_color;
+	if (texName != "")
+	{
+		outCol *= ClampedColorTexture(texName,ss,tt,0,0,0);
+	}
+	return outCol;
+}
+
+//--------------------------------------------------------------------
+// Tex2DReplace()
+//--------------------------------------------------------------------
+color Tex2DReplace(string texName; color i_color; float ss; float tt)
+{
+	color outCol = i_color;
+	if (texName != "")
+	{
+		outCol = ClampedColorTexture(texName,ss,tt,0,0,0);
+	}
+	return outCol;
+}
+
+//--------------------------------------------------------------------
+// tex2Dlod()
+//--------------------------------------------------------------------
+color tex2Dlod(string texName; float ss; float tt; float lod)
+{
+	color outCol = color(0,0,0);
+	if (texName != "")
+	{
+		outCol = ClampedColorTexture(texName,ss,tt,0,0,lod);
+	}
+	return outCol;
+}
+
+//--------------------------------------------------------------------
+// Tex2DNormal()
+//--------------------------------------------------------------------
+vector Tex2DNormal(string samp; float ss; float tt)
+{
+	vector bumpNormal = vector(0,0,1);
+	if (samp != "")
+	{
+		color tex = tex2D(samp, ss, tt);
+		bumpNormal = normalize( expand( vector(tex[0],tex[1],tex[2]) ) );
+	}
+	return bumpNormal;
+}
+
+//--------------------------------------------------------------------
+// SampleEnvironment()
+//--------------------------------------------------------------------
+color SampleEnvironment(vector worldEyeDir; vector worldNormal;
+						string CubeMap)
+{
+	vector norm = transform("world",N);
+	vector incid = transform("world",I);
+	float nDotV = incid.norm;
+	vector reflVect = normalize(reflect(normalize(incid),normalize(norm)));
+	vector polar = CartesianToPolar(reflVect);
+	return tex2Dlod(CubeMap, polar[0], polar[1], 0);
+}
+
+//--------------------------------------------------------------------
+// SampleEnvironment()
+//--------------------------------------------------------------------
+color SampleEnvironment(vector worldEyeDir; vector worldNormal;
+						string CubeMap; float angle)
+{
+	// do world space reflection
+	vector norm = transform("world",N);
+	vector incid = transform("world",I);
+	float nDotV = incid.norm;
+	vector reflVect = normalize(reflect(normalize(incid),normalize(norm)));
+	vector rotateVec = rotateAboutY(reflVect, angle);
+	vector polar = CartesianToPolar(rotateVec);
+	return tex2Dlod(CubeMap, polar[0], polar[1], 0);
+}
+
+//--------------------------------------------------------------------
+// SampleEnvironmentLOD()
+//--------------------------------------------------------------------
+color SampleEnvironmentLOD(vector worldEyeDir; vector worldNormal;
+						    string CubeMap; float angle; float mipLOD)
+{
+	// do world space reflection
+	vector norm = transform("world",N);
+	vector incid = transform("world",I);
+	float nDotV = incid.norm;
+	vector reflVect = normalize(reflect(normalize(incid),normalize(norm)));
+	vector rotateVec = rotateAboutY(reflVect, angle);
+	vector polar = CartesianToPolar(rotateVec);
+	return tex2Dlod(CubeMap, polar[0], polar[1], mipLOD);
+}
+
+//--------------------------------------------------------------------
+// SampleEnvDiffuse()
+//--------------------------------------------------------------------
+color SampleEnvDiffuse(vector worldNormal;
+					   string CubeMap)
+{
+	vector polar = CartesianToPolar(transform("world",N));
+	return tex2Dlod(CubeMap, polar[0], polar[1], 0);
+}
+
+//--------------------------------------------------------------------
+// SampleEnvDiffuse()
+//--------------------------------------------------------------------
+color SampleEnvDiffuse(vector worldNormal;
+						string CubeMap;
+						float angle)
+{
+	vector norm = rotateAboutY(transform("world",N), angle);
+	vector polar = CartesianToPolar(norm);
+	return tex2Dlod(CubeMap, polar[0], polar[1], 0);
+}
+
+//--------------------------------------------------------------------
+// SampleEnvDiffuseLOD()
+//--------------------------------------------------------------------
+color SampleEnvDiffuseLOD(vector worldNormal;
+						   string CubeMap;
+						   float angle; 
+						   float mipLod)
+{
+	vector norm = rotateAboutY(transform("world",N), angle);
+	vector polar = CartesianToPolar(norm);
+	return tex2Dlod(CubeMap, polar[0], polar[1], mipLod);
+}
+
+//--------------------------------------------------------------------
+// GetBumpNormal()
+//--------------------------------------------------------------------
+normal GetBumpNormal(string normalMap; float normalMapScale; float ss; float tt)
+{
+	normal outNormal = N;
+
+	if ( normalMap != "" )
+	{
+		color mapColor = tex2Dlod(normalMap, ss, tt, 0);
+		vector mapNormal = (( vector(mapColor[0],mapColor[1],mapColor[2]) * 2 ) - 1) * vector(normalMapScale,normalMapScale,1);
+
+		float det = Du(ss)*Dv(tt) - Du(tt)*Dv(ss);
+		vector udir = normalize((Du(P)*Dv(tt) - Dv(P)*Du(tt))/det);
+		vector vdir = normalize((Dv(P)*Du(ss) - Du(P)*Dv(ss))/det);
+
+		vector basisx = normalize(udir);
+		vector basisy = normalize(vdir);
+		vector basisz = normalize(N);
+
+		matrix tangentMat = matrix( xcomp(basisx), ycomp(basisx), zcomp(basisx), 0 ,
+									xcomp(basisy), ycomp(basisy), zcomp(basisy), 0 ,
+									xcomp(basisz), ycomp(basisz), zcomp(basisz), 0 ,
+									0            , 0            , 0            , 1 );
+
+		vector TanNormal = transform( tangentMat , mapNormal );
+
+		outNormal = normal(TanNormal);
+	}
+
+	return faceforward(normalize(outNormal),I);
+}
+
+//--------------------------------------------------------------------
+// myRefract()
+//--------------------------------------------------------------------
+void myRefract(
+	float fresnelBias;
+	float fresnelPower;
+	vector incom; 
+	vector norm; 
+	float index_external; 
+	float index_internal; 
+	output vector o_reflection; 
+	output vector o_refraction; 
+	output float o_reflectance; 
+	output float o_transmittance;
+	) 
+{
+	float eta = index_external/index_internal; 
+	
+	o_reflection = reflect(incom, norm);
+	o_refraction = refract(incom, norm, eta);
+	
+	o_reflectance = fastFresnel((-incom).norm, fresnelBias, fresnelPower);
+	o_transmittance = 1 - o_reflectance;
+}
+
+//--------------------------------------------------------------------
+// RayTrace()
+//--------------------------------------------------------------------
+color
+RayTrace (point P;                     /* position */
+		  vector Rdir;                 /* direction to trace */
+		  float nsamples;			   /* how many rays to cast */
+         )
+{
+    color C = 0;
+	float i, j;
+	for (i = 0;  i < nsamples;  i += 1) {
+	    for (j = 0;  j < nsamples;  j += 1) {
+			vector R = Rdir + ((i)/nsamples - 0.5) +((j)/nsamples - 0.5);
+			point Pray = P + ((j)/nsamples - 0.5) + ((i)/nsamples - 0.5);
+			C += trace (P, normalize(R));
+	    }
+	}
+	C /= (nsamples*nsamples);
+   
+    return C;
+}
+
+//--------------------------------------------------------------------
+// desat()
+//--------------------------------------------------------------------
+color desat( color c ; float f )
+{
+	color chsv = ctransform("rgb","hsv",c);
+	setcomp(chsv,1,f*comp(chsv,1));
+	return ctransform("hsv","rgb",chsv);
+}
+
+//--------------------------------------------------------------------
+// GetReflection()
+//--------------------------------------------------------------------
+color GetReflection(float ss; float tt; normal bumpNormal; 
+					 normal worldNormal; point ScreenPos; vector WorldEyeDir; 
+					 float bumpScale; float refrFactor; float reflFactor;
+					 string reflectFactorSampler; float g_isPlanar;
+					 float fresnelBias; float fresnelPower; float IOR;
+					 string cubeMap; string planarSampler; float reflLOD;
+					 float reflEnable; float reflType)
+{
+	color rr = color(0,0,0);
+
+	if ( reflEnable == 1 )
+	{
+		color reflColorFactor = color(reflFactor,reflFactor,reflFactor);
+		color refrColorFactor = color(refrFactor,refrFactor,refrFactor);
+		float fresnelRefl;
+		float fresnelRefr;
+
+		color factorCol = Tex2DReplace(reflectFactorSampler, color(1,1,1), ss, tt);
+		reflColorFactor *= factorCol;
+		refrColorFactor *= factorCol;
+
+		normal Nf = normalize(worldNormal);
+		vector incid = normalize(transform("world",I));
+		vector norm = normalize(transform("world",Nf));
+
+		// Planar map
+		if (g_isPlanar == 1)
+		{
+			if ( reflFactor != 0 )
+			{
+				fresnelRefl = fastFresnel((-WorldEyeDir).worldNormal, fresnelBias, fresnelPower);
+
+				// Map-based reflection
+				if ( reflType == 0 )
+				{				
+					point Pndc = transform("NDC",P);
+					setxcomp( Pndc , xcomp(Pndc)+xcomp(bumpNormal)*bumpScale*0.1 );
+					setycomp( Pndc , ycomp(Pndc)+ycomp(bumpNormal)*bumpScale*0.1 );
+					rr = tex2Dlod(planarSampler, xcomp(Pndc), ycomp(Pndc), reflLOD) *  fresnelRefl * reflColorFactor;
+				}
+				
+				// Ray traced reflection
+				else if ( reflType == 1 )
+				{
+					rr = trace(P,reflect(I, Nf)) * fresnelRefl * reflColorFactor;
+				}
+			}
+		}
+
+		// Cube map
+		else
+		{		
+			color reflColor = 0;
+			color refrColor = 0;
+			
+			// Map-based reflection
+			if ( reflType == 0 )
+			{	
+				if ( reflFactor != 0 )
+				{
+					fresnelRefl = fastFresnel((-incid).norm, fresnelBias, fresnelPower);
+					vector reflVect = reflect(incid, norm);
+
+					if ( cubeMap != "" )
+					{
+						reflColor = color environment(cubeMap,reflVect);
+					}
+				}
+				if ( refrFactor != 0 )
+				{
+					fresnelRefr = 1 - fresnelRefl;
+					vector refrVect = refract(incid, norm, 1.0/IOR);
+
+					if ( cubeMap != "" )
+					{
+						refrColor = color environment(cubeMap,refrVect);
+					}
+				}
+			}
+			
+			// Ray traced reflection
+			else if ( reflType == 1 )
+			{
+				normal n = normalize(worldNormal);
+				vector i = normalize(I);
+				vector nf = faceforward(n, i);	
+
+				fresnelRefl = fastFresnel((-incid).norm, fresnelBias, fresnelPower);
+				fresnelRefr = 1 - fresnelRefl;
+
+				if ( reflFactor != 0 )
+				{
+					reflColor = trace(P, reflect(I, nf) );
+				}
+
+				if ( refrFactor != 0 )
+				{
+					vector refractRay = refract( i, n , (-i.n >= 0) ? 1/IOR : IOR );
+					refrColor = trace(P, refractRay );
+					//float raydepth = -1;
+					//rayinfo("depth",raydepth);
+					//if (raydepth > 0)
+					//	refrColor /= (raydepth);
+				}
+			}
+
+			reflColor *= fresnelRefl * reflColorFactor;
+			refrColor *= fresnelRefr * refrColorFactor;
+			
+			rr = reflColor + refrColor;
+		}
+
+	}
+	
+	return rr;
+}
+
+//--------------------------------------------------------------------
+// falloff()
+//--------------------------------------------------------------------
+float falloff(float r; float attenuation)
+{
+	float atten = 1 - attenuation*r*r;
+	return max(0, atten);
+}
+
+//--------------------------------------------------------------------
+// CalculateAO()
+//--------------------------------------------------------------------
+color CalculateAO( point shadePt; normal norm; float samples; float maxvariation; 
+				   float maxdist; float coneangle; float bRenderAO;
+				   color AOColor; float AORadiusNear; float AORadiusFar;
+				   float AOAngleBias; float AOAttenuation; float AOContrast;
+				   float AOBlurWidth; float AOBlurSharpness; float AOOverscanPixels;
+				   float camNearClip; float camFarClip)
+{
+	float ao = 1;
+	if ( bRenderAO == 1 )
+	{
+		float ao = 0;
+		float r = lerp( AORadiusNear, AORadiusFar, (zcomp(shadePt) - camNearClip) / (abs(camFarClip - camNearClip)) );
+		float coneAngle = PI/2 - radians(AOAngleBias);
+		indirectdiffuse(shadePt,normalize(norm),samples,
+						"maxvariation",maxvariation,"maxdist",r,"coneangle",coneAngle,"hitmode", 
+						"shader", "occlusion", ao, "falloff", .00001, "falloffmode", 1);		
+		//aoCol *= AOColor;
+		//aoCol *= AOContrast;
+	}
+
+	return color(1-ao);
+}
+
+//--------------------------------------------------------------------
+// CalculateGI()
+//--------------------------------------------------------------------
+color CalculateGI( point shadePt; normal norm; float samples; float maxvariation; 
+				   float maxdist; float coneangle; float bRenderGI;
+				   color GIColor; float GIRadiusNear; float GIRadiusFar;
+				   float GIAngleBias; float GIAttenuation; float GIContrast;
+				   float GIBlurWidth; float GIBlurSharpness; float GIOverscanPixels;
+				   float camNearClip; float camFarClip)
+{
+	color gi = 0;
+	if ( bRenderGI == 1 )
+	{
+		color gi = 0;
+		float r = lerp( GIRadiusNear, GIRadiusFar, (zcomp(shadePt) - camNearClip) / (abs(camFarClip - camNearClip)) );
+		float coneAngle = PI/2 - radians(GIAngleBias);
+		gi = indirectdiffuse(shadePt,normalize(norm),samples,
+							 "maxvariation",maxvariation,"maxdist",r,"coneangle",coneAngle,"hitmode", 
+							 "shader", "falloff", GIAttenuation/100);
+		gi *= GIColor;
+		gi *= GIContrast;
+	}
+
+	return gi;
+}
+
+//--------------------------------------------------------------------
+// CalculateGIAO()
+//--------------------------------------------------------------------
+color CalculateGIAO( output color C; point shadePt; normal norm; float camNearClip; float camFarClip;
+					 float GISamples; float GIMaxVariation; float GIMaxDist; float GIConeAngle; float bRenderGI;
+					 color GIColor; float GIRadiusNear;	float GIRadiusFar; float GIAngleBias; float GIAttenuation; float GIContrast; 
+					 float AOSamples; float AOMaxVariation; float AOMaxDist; float AOConeAngle; float bRenderAO;
+					 color AOColor; float AORadiusNear;	float AORadiusFar; float AOAngleBias; float AOAttenuation; float AOContrast; 
+					 output varying color outGI;
+					 )
+{
+
+	if ( bRenderAO == 1 )
+	{
+		float ao = 0;
+		float r = lerp( AORadiusNear, AORadiusFar, (zcomp(shadePt) - camNearClip) / (abs(camFarClip - camNearClip)) );
+		float coneAngle = PI/2 - radians(AOAngleBias);
+		indirectdiffuse(shadePt,normalize(norm),AOSamples,
+						"maxvariation",AOMaxVariation,"maxdist",r,
+						"coneangle",coneAngle,"hitmode","shader", 
+						"occlusion", ao, "falloff", AOAttenuation, "falloffmode", 1);	
+		color aoCol = color(1-ao);
+		aoCol = mix(color(1,1,1), AOColor, (1-aoCol)*AOContrast);
+		C *= aoCol;
+	}
+
+	if ( bRenderGI == 1 )
+	{
+		color gi = 0;
+		float r = lerp( GIRadiusNear, GIRadiusFar, (zcomp(shadePt) - camNearClip) / (abs(camFarClip - camNearClip)) );
+		float coneAngle = PI/2 - radians(GIAngleBias);
+		gi = indirectdiffuse(shadePt,normalize(norm),GISamples,
+							"maxvariation",GIMaxVariation,"maxdist",r,
+							"coneangle",coneAngle,"hitmode","shader",
+							"falloff", GIAttenuation, "falloffmode", 1);
+		gi = mix(gi, GIColor, gi*GIContrast);
+		outGI = gi;
+		C += gi;
+	}	
+
+	return C;
+}
+
+//------------------------------------------------------------------------
+// ContainsPoint()
+//------------------------------------------------------------------------
+float ContainsPoint(point i_Point;
+	 			    float bbox_min_x; float bbox_min_y; float bbox_min_z;
+				    float bbox_max_x; float bbox_max_y; float bbox_max_z )
+{
+	if (i_Point[0] > bbox_max_x)
+	{
+		return 0;
+	}
+	if (i_Point[0] < bbox_min_x)
+	{
+		return 0;
+	}
+	if (i_Point[1] > bbox_max_y)
+	{
+		return 0;
+	}
+	if (i_Point[1] < bbox_min_y)
+	{
+		return 0;
+	}
+	if (i_Point[2] > bbox_max_z)
+	{
+		return 0;
+	}
+	if (i_Point[2] < bbox_min_z)
+	{
+		return 0;
+	}
+	return 1;
+}

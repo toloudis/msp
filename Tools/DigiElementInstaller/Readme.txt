@@ -1,0 +1,1 @@
+Required installed NSIS 2.40 or later and GetVersion plug-in in NSIS directory

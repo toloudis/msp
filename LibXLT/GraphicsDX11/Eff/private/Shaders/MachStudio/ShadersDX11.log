@@ -1,0 +1,15 @@
+﻿  Build started 4/29/2012 8:38:09 PM.
+  Project "D:\Projects\SourceCode_2.0.0.190\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj" on node 1 (all target(s)).
+  defaultshaders:
+  Skipping target "defaultshaders" because all output files are up-to-date with respect to the input files.
+  postpixelshaders:
+  Skipping target "postpixelshaders" because all output files are up-to-date with respect to the input files.
+  shaders:
+  Skipping target "shaders" because all output files are up-to-date with respect to the input files.
+  Done Building Project "D:\Projects\SourceCode_2.0.0.190\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj" (all target(s)).
+  
+  Build succeeded.
+      0 Warning(s)
+      0 Error(s)
+  
+  Time Elapsed 00:00:00.06

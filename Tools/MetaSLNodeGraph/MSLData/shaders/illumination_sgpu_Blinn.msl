@@ -1,0 +1,190 @@
+/*****************************************************************************
+ * Test version of a base shader for sgpu test compiler.
+ *****************************************************************************/
+
+shader Illumination_sgpu_Blinn
+{
+  input:    
+  Color  diffuse_color = Color(1,1,1,1)
+  {	
+      display_name("Diffuse Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "The color used to tint the Diffuse Reflectance Color." );
+  };
+  float diffuse_scalar = 0.7
+  {		
+      display_name("Diffuse Float");
+      hard_range(float(0),float(1));
+      description( "The intensity of the light diffusely reflected from "
+      "this surface." );
+  };
+  Color  specular_color = Color(1,1,1,1)
+  {	
+      display_name("Specular Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "The color used to tint the Specular Reflectance Color." );
+  };
+  float specular_scalar = 0.7
+  {		
+      display_name("Specular Float");
+      hard_range(float(0),float(1));
+      description( "The intensity of the light specularly reflected from "
+      "this surface." );
+  };
+  float specular_power = 0.7
+  {		
+      display_name("Specular Power");
+      hard_range(float(0),float(50));
+      description( "The tightness of the specular highlight" );
+  };
+  float roughness = 0.0
+  {		
+      display_name("Roughness");
+      hard_range(float(0),float(1));
+      description( "Oren-Nayar diffuse roughness, 0 is lambertian" );
+  };
+  float eccentricity = 0.5
+  {		
+      display_name("Eccentricity");
+      hard_range(float(0),float(1));
+      description( "Blinn specular highlight shape" );
+  };
+  float ior = 0.0
+  {		
+      display_name("IOR");
+      hard_range(float(0),float(1));
+      description( "Blinn index of refraction" );
+  };
+  float specularPower = 1.0
+  {		
+      display_name("Specular Power");
+      hard_range(float(0),float(10));
+      description( "Blinn specular power" );
+  };
+
+    
+  output:
+  Color result;
+  Color diffuse;
+  Color specular;
+
+	// fresnel approximation
+	float fastFresnel(float NdotE, float R0, float power)
+	{
+		// R(theta) = (1/2) ((g-c)/(g+c))^2 (1 + [ (c(g+c)-(eta)^2)/(c(g-c)+ (eta)^2) ]2)
+		// approximate:
+		// R(theta) ~= Ra(theta) = R(0) + (1-R(0))*(1-cos(theta))^5
+	   return R0 + (1.0-R0)*pow(abs(1.0 - saturate(NdotE)), power);
+	} 
+
+	float fresnel(float NdotE, float eta)
+	{
+		// eta = ni/nt.
+		// ni is usually 1 for air, and nt would be the IOR of the material.
+		// that means we might want 1/IOR for eta.
+
+		// R(theta) = (1/2) ((g-c)/(g+c))^2 (1 + [ (c(g+c)-(eta)^2)/(c(g-c)+ (eta)^2) ]2)
+		// where:
+		// cos(theta) = NdotV
+		// c = eta*cos(theta)
+		// g = sqrt(1 + c^2 - eta^2)
+
+		// Note: compute R0 on the CPU and provide as a
+		// constant; it is more efficient than computing R0 in
+		// the shader. R0 is:
+		// when theta = 0, c = eta and g = 1
+		float R0 = (1.0-eta)*(1.0-eta)/((1.0+eta)*(1.0+eta));
+		//float R0 = pow(1.0-eta, 2.0) / pow(1.0+eta, 2.0);
+		
+		// eye and normal are assumed to be normalized
+		return fastFresnel(NdotE, R0, 5.0);
+	}
+	float OrenNayarDiffuse(float3 L, float3 I, float3 N, float rough)
+	{
+		float sigmasq = rough*rough;
+		float A = 1.0 - 0.5 * sigmasq/(sigmasq+0.33);
+		float B = 0.45 * sigmasq/(sigmasq+0.09);
+		
+		float IdotN = dot(I,N);
+		float LdotN = dot(L,N);
+		float theta_r = acos(IdotN);
+		float theta_i = acos(LdotN);
+		float Bfactor = max(0, cos(theta_i-theta_r));
+		if (Bfactor > 0)
+		{
+			float alpha = max(theta_i, theta_r);
+			float beta = min(theta_i, theta_r);
+			Bfactor *= sin(alpha) * tan(beta);
+		}
+		return A + B * Bfactor;
+	}
+
+	float BlinnSpecular(float3 i_normal, float3 i_lightDir, float3 i_eyeDir, 
+		float i_eccentricity, float i_IOR,
+		float i_specularPower)
+	{
+		// eyeDir is passed as dir FROM shade point TO eye
+		// lightDir is passed as dir FROM shade point TO light
+
+		float3 H = normalize(i_lightDir + i_eyeDir);
+		// NdotH = cos a
+		float NdotH = dot(i_normal, H);
+		float NdotE = dot(i_normal, i_eyeDir);
+		float EdotH = dot(i_eyeDir, H);
+		float NdotL = dot(i_normal, i_lightDir);
+		
+		float Gb = 2 * NdotH * NdotE / EdotH;
+		float Gc = 2 * NdotH * NdotL / EdotH; 
+		float G = min(Gb, Gc);
+		G = min(1, G);
+		
+		// eccentricity varies from 0 to 1. 
+		// D3 = [ c^2 / (1 + cos^2(a)(c^2 - 1)) ]^2
+		float c2 = i_eccentricity*i_eccentricity;
+		float D3 = ( c2 / ( 1 + (NdotH*NdotH*(c2-1)) ) );
+		float D = D3*D3;
+		
+		// eta = ni/nt. assume air-material is the interface
+		float F = fresnel(NdotE, 1/(i_IOR+0.0001)); 
+
+		float specComp = D * G * F / NdotE;
+		specComp = max(specComp, 0);
+		return (specComp * i_specularPower);
+	}
+
+  void main() 
+  {
+      diffuse = Color(0.0,0.0,0.0,0.0);
+      specular = Color(0.0,0.0,0.0,0.0);
+  
+      Color Rd = diffuse_color * diffuse_scalar;
+      Color Rs = specular_color * specular_scalar;
+      
+      	// enumerate lights
+		Light_iterator light;
+		foreach (light)
+		{
+			float cosine = saturate(light.dot_nl);
+			if (cosine > 0.0) {
+				diffuse += cosine * light.contribution;
+				if (roughness>0)
+					diffuse *= OrenNayarDiffuse(light.direction, -direction, normal, roughness);
+				specular += light.contribution * BlinnSpecular(normal, light.direction, -direction, 
+					eccentricity, ior, specularPower);
+			}
+		}
+      
+      diffuse *= Rd;
+      specular *= Rs;
+      diffuse.a = 1.0;
+      specular.a = 1.0;
+      
+      // irradiance term skipped
+      
+      result = diffuse + specular;
+      result.a = 1.0;
+
+  }
+}
+;
+

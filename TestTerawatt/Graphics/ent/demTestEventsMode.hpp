@@ -1,0 +1,73 @@
+/*****************************************************************************
+**  demTestEventsMode.hpp
+**
+**		This mode test events attached to animation frames
+**
+**	Extra Large Technology
+**	Copyright(C) 2003 - All Rights Reserved
+\****************************************************************************/
+
+#ifdef DEM_TESTEVENTSMODE_HPP
+#error demTestEventsMode.hpp multiply included
+#endif
+#define DEM_TESTEVENTSMODE_HPP
+
+#ifndef DEM_VIEWERMODE_HPP
+#include "demViewerMode.hpp"
+#endif
+
+#ifndef FS_LOCATOR_HPP
+#include "fsLocator.hpp"
+#endif
+
+
+class g3dDirectionalLight;
+class entEntity;
+class entEntityTemplate;
+
+class demTestEventsMode 
+:	public demViewerMode
+{
+	public:
+
+		//====================================================================
+		//====================================================================
+		demTestEventsMode();
+
+		//====================================================================
+		//====================================================================
+		virtual ~demTestEventsMode();
+
+		//====================================================================
+		//	Think
+		//====================================================================
+		virtual void Think();
+
+		//====================================================================
+		//====================================================================
+		virtual void Initialize();
+
+		//====================================================================
+		//====================================================================
+		virtual void DeInitialize();
+
+		//====================================================================
+		//	Override this function to get appCharEvents.
+		//====================================================================
+		virtual void ReceiveCharEvent(appCharEvent& i_Event);
+
+	private:
+
+		//====================================================================
+		//====================================================================
+		void reset_camera();
+
+		g3dDirectionalLight* m_Light1;
+		g3dDirectionalLight* m_Light2;
+		
+		fsLocator				m_DataPath;
+
+		// Entity stuff
+		entEntity*				m_Entity;
+		entEntityTemplate*		m_EntityTemplate;
+};

@@ -1,0 +1,24 @@
+#must match the struct in the cpp file for this shader!
+
+$ifndef "sgpu_displacement_mi"
+set "sgpu_displacement_mi" "true"
+
+declare shader
+	scalar "sgpu_displacement" (	
+		color texture	"dispMap",
+		scalar			"dispMapScale",
+		scalar			"dispMapBias",
+		scalar			"dispMapBlur",
+		vector			"dispMapUVScale",
+		vector			"dispMapSize",
+		
+		scalar			"u_scale",
+		scalar			"v_scale",
+		scalar			"u_offset",
+		scalar			"v_offset",
+		scalar			"uv_rotation"
+	)
+	version 1
+end declare
+
+$endif

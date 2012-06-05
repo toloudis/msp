@@ -1,0 +1,9 @@
+; SkpStudioGpuExport.def : Declares the module parameters.
+
+LIBRARY      "SkpStudioGpuExport.DLL"
+
+EXPORTS
+	DllCanUnloadNow		PRIVATE
+	DllGetClassObject	PRIVATE
+	DllRegisterServer	PRIVATE
+	DllUnregisterServer	PRIVATE

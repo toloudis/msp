@@ -1,0 +1,1 @@
+C:\"Program Files (x86)"\"Microsoft DirectX SDK (November 2008)"\Utilities\bin\x86\fxc.exe -nologo -Tfx_2_0 /Gfp /FoC:\Projects\SourceCode\TestApps\ShaderCompiler\Custom.o C:\Projects\SourceCode\TestApps\ShaderCompiler\CustomInMemory.hlsl

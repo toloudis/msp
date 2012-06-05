@@ -1,0 +1,1544 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug Iterator|Win32">
+      <Configuration>Debug Iterator</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug Iterator|x64">
+      <Configuration>Debug Iterator</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug Managed|Win32">
+      <Configuration>Debug Managed</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug Managed|x64">
+      <Configuration>Debug Managed</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_RenderNode|Win32">
+      <Configuration>Debug_RenderNode</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_RenderNode|x64">
+      <Configuration>Debug_RenderNode</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Gold|Win32">
+      <Configuration>Gold</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Gold|x64">
+      <Configuration>Gold</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release Managed|Win32">
+      <Configuration>Release Managed</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release Managed|x64">
+      <Configuration>Release Managed</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RenderNode|Win32">
+      <Configuration>RenderNode</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RenderNode|x64">
+      <Configuration>RenderNode</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{1D25A739-3967-4BAF-AA18-53690B00BD55}</ProjectGuid>
+    <RootNamespace>Graphics</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Gold|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Gold|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\OpenEXR;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\Graphics\Graphics.pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0407</Culture>
+    </ResourceCompile>
+    <Lib>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\OpenEXR;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\Graphics\Graphics.pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0407</Culture>
+    </ResourceCompile>
+    <Lib>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\OpenEXR;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\Graphics\Graphics.pch</PrecompiledHeaderOutputFile>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0407</Culture>
+    </ResourceCompile>
+    <Lib>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\OpenEXR;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\Graphics\Graphics.pch</PrecompiledHeaderOutputFile>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0407</Culture>
+    </ResourceCompile>
+    <Lib>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\OpenEXR;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\Graphics\Graphics.pch</PrecompiledHeaderOutputFile>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0407</Culture>
+    </ResourceCompile>
+    <Lib>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\OpenEXR;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\Graphics\Graphics.pch</PrecompiledHeaderOutputFile>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0407</Culture>
+    </ResourceCompile>
+    <Lib>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\OpenEXR;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\Graphics\Graphics.pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0407</Culture>
+    </ResourceCompile>
+    <Lib>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\OpenEXR;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\Graphics\Graphics.pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0407</Culture>
+    </ResourceCompile>
+    <Lib>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\OpenEXR;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\Graphics\Graphics.pch</PrecompiledHeaderOutputFile>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0407</Culture>
+    </ResourceCompile>
+    <Lib>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\OpenEXR;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\Graphics\Graphics.pch</PrecompiledHeaderOutputFile>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0407</Culture>
+    </ResourceCompile>
+    <Lib>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\OpenEXR;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;ENV_BUILD=ENV_GOLDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\Graphics\Graphics.pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0407</Culture>
+    </ResourceCompile>
+    <Lib>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\OpenEXR;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;ENV_BUILD=ENV_GOLDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\Graphics\Graphics.pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0407</Culture>
+    </ResourceCompile>
+    <Lib>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\OpenEXR;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;ENV_BUILD=ENV_GOLDBUILD;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\Graphics\Graphics.pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0407</Culture>
+    </ResourceCompile>
+    <Lib>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\OpenEXR;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;ENV_BUILD=ENV_GOLDBUILD;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\Graphics\Graphics.pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0407</Culture>
+    </ResourceCompile>
+    <Lib>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\OpenEXR;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\Graphics\Graphics.pch</PrecompiledHeaderOutputFile>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0407</Culture>
+    </ResourceCompile>
+    <Lib>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\OpenEXR;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\Graphics\Graphics.pch</PrecompiledHeaderOutputFile>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0407</Culture>
+    </ResourceCompile>
+    <Lib>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Data">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Xml">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="G2d\g2dARGBColor.hpp" />
+    <ClInclude Include="G2d\g2dDepthStencilBuffer.hpp" />
+    <ClInclude Include="G2d\g2dErrorCodes.hpp" />
+    <ClInclude Include="G2d\g2dExceptionX.hpp" />
+    <ClInclude Include="G2d\g2dFontHandle.hpp" />
+    <ClInclude Include="G2d\g2dFontUtil.hpp" />
+    <ClInclude Include="G2d\g2dHDRUtil.hpp" />
+    <ClInclude Include="G2d\g2dImage.hpp" />
+    <ClInclude Include="G2d\g2dImageCreate.hpp" />
+    <ClInclude Include="G2d\g2dImageSave.hpp" />
+    <ClInclude Include="G2d\g2dOpenEXRDefines.hpp" />
+    <ClInclude Include="G2d\g2dOpenEXROutStream.hpp" />
+    <ClInclude Include="G2d\g2dPackage.hpp" />
+    <ClInclude Include="G2d\g2dPFD.hpp" />
+    <ClInclude Include="G2d\g2dRenderTarget.hpp" />
+    <ClInclude Include="G2d\g2dResetHandler.hpp" />
+    <ClInclude Include="G2d\g2dResourceCounter.hpp" />
+    <ClInclude Include="G2d\g2dRGBColor.hpp" />
+    <ClInclude Include="G2d\g2dScanlineOpenEXRUtil.hpp" />
+    <ClInclude Include="G2d\g2dScreenCaptureUtil.hpp" />
+    <ClInclude Include="G2d\g2dScreenResolution.hpp" />
+    <ClInclude Include="G2d\g2dScreenUtil.hpp" />
+    <ClInclude Include="G2d\g2dSystem.hpp" />
+    <ClInclude Include="G2d\g2dTGAUtil.hpp" />
+    <ClInclude Include="G2d\g2dTiledOpenEXRUtil.hpp" />
+    <ClInclude Include="G2d\g2dWindow.hpp" />
+    <ClInclude Include="G2d\private\rgbe.h" />
+    <ClInclude Include="G2d\private\tga.h" />
+    <ClInclude Include="An\an2StateAnimation.hpp" />
+    <ClInclude Include="An\an3StateAnimation.hpp" />
+    <ClInclude Include="An\anAnimation.hpp" />
+    <ClInclude Include="An\anConstantAnimation.hpp" />
+    <ClInclude Include="An\anFrameAnimation.hpp" />
+    <ClInclude Include="An\anKeyAnimation.hpp" />
+    <ClInclude Include="An\anKeyData.hpp" />
+    <ClInclude Include="An\anPackage.hpp" />
+    <ClInclude Include="An\anTypedAnimation.hpp" />
+    <ClInclude Include="G3d\g3dBake.hpp" />
+    <ClInclude Include="G3d\g3dBaseRenderer.hpp" />
+    <ClInclude Include="G3d\g3dConditionalCompile.hpp" />
+    <ClInclude Include="G3d\g3dConstants.hpp" />
+    <ClInclude Include="G3d\g3dCubicReflectionTargetRenderer.hpp" />
+    <ClInclude Include="G3d\g3dDirectionalLight.hpp" />
+    <ClInclude Include="G3d\g3dErrorCodes.hpp" />
+    <ClInclude Include="G3d\g3dExceptionX.hpp" />
+    <ClInclude Include="G3d\g3dFragment.hpp" />
+    <ClInclude Include="G3d\g3dFragmentCreate.hpp" />
+    <ClInclude Include="G3d\g3dIndexPtr.hpp" />
+    <ClInclude Include="G3d\g3dJitterSettings.hpp" />
+    <ClInclude Include="G3d\g3dLayer.hpp" />
+    <ClInclude Include="G3d\g3dLayerContainer.hpp" />
+    <ClInclude Include="G3d\g3dLight.hpp" />
+    <ClInclude Include="G3d\g3dLightMgr.hpp" />
+    <ClInclude Include="G3d\g3dMeshInfo.hpp" />
+    <ClInclude Include="G3d\g3dMeshUtil.hpp" />
+    <ClInclude Include="G3d\g3dOcclusiontree.hpp" />
+    <ClInclude Include="G3d\g3dPackage.hpp" />
+    <ClInclude Include="G3d\g3dPassBuffers.hpp" />
+    <ClInclude Include="G3d\g3dPickInfo.hpp" />
+    <ClInclude Include="G3d\g3dPlanarReflectionTargetRenderer.hpp" />
+    <ClInclude Include="G3d\g3dPointLight.hpp" />
+    <ClInclude Include="G3d\g3dPostProcessing.hpp" />
+    <ClInclude Include="G3d\g3dPrefs.hpp" />
+    <ClInclude Include="G3d\g3dPrimitiveFragmentUtil.hpp" />
+    <ClInclude Include="G3d\g3dProjectedLight.hpp" />
+    <ClInclude Include="G3d\g3dRendererMgr.hpp" />
+    <ClInclude Include="G3d\g3dRenderingHints.hpp" />
+    <ClInclude Include="G3d\g3dRenderState.hpp" />
+    <ClInclude Include="G3d\g3dScene.hpp" />
+    <ClInclude Include="G3d\g3dSceneNode.hpp" />
+    <ClInclude Include="G3d\g3dSceneRenderEngine.hpp" />
+    <ClInclude Include="G3d\g3dSceneRenderEngineCreate.hpp" />
+    <ClInclude Include="G3d\g3dSceneRenderer.hpp" />
+    <ClInclude Include="G3d\g3dSceneRendererCreate.hpp" />
+    <ClInclude Include="G3d\g3dSceneRendererTypes.hpp" />
+    <ClInclude Include="G3d\g3dSceneTraverse.hpp" />
+    <ClInclude Include="G3d\g3dSingleLightRendering.hpp" />
+    <ClInclude Include="G3d\g3dSpotLight.hpp" />
+    <ClInclude Include="G3d\g3dSystem.hpp" />
+    <ClInclude Include="G3d\g3dTargetRenderer.hpp" />
+    <ClInclude Include="G3d\g3dThreadControl.hpp" />
+    <ClInclude Include="G3d\g3dType.hpp" />
+    <ClInclude Include="G3d\g3dVertexBuffer.hpp" />
+    <ClInclude Include="G3d\g3dViewer.hpp" />
+    <ClInclude Include="Sc\scAnimatableLODObject.hpp" />
+    <ClInclude Include="Sc\scAnimatableObject.hpp" />
+    <ClInclude Include="Sc\scBillboard.hpp" />
+    <ClInclude Include="Sc\scCompoundObject.hpp" />
+    <ClInclude Include="Sc\scControlAnim.hpp" />
+    <ClInclude Include="Sc\scLODObject.hpp" />
+    <ClInclude Include="Sc\scObject.hpp" />
+    <ClInclude Include="Sc\scObjectMgr.hpp" />
+    <ClInclude Include="Sc\scParticleGenerator.hpp" />
+    <ClInclude Include="Sc\scParticleGeneratorTemplate.hpp" />
+    <ClInclude Include="Sc\scRotateControl.hpp" />
+    <ClInclude Include="Sc\scScene.hpp" />
+    <ClInclude Include="Sc\scSceneWorld.hpp" />
+    <ClInclude Include="Sc\scThreadGroup.hpp" />
+    <ClInclude Include="Sc\scTransformControl.hpp" />
+    <ClInclude Include="Mat\matErrorCodes.hpp" />
+    <ClInclude Include="Mat\matExceptionX.hpp" />
+    <ClInclude Include="Mat\matMatAnim.hpp" />
+    <ClInclude Include="Mat\matMaterial.hpp" />
+    <ClInclude Include="Mat\matMaterialLayer.hpp" />
+    <ClInclude Include="Mat\matMatParamIndex.hpp" />
+    <ClInclude Include="Mat\matMetaFX.hpp" />
+    <ClInclude Include="Mat\matMetaFXParser.hpp" />
+    <ClInclude Include="Mat\matPackage.hpp" />
+    <ClInclude Include="Mat\matShaderEffect.hpp" />
+    <ClInclude Include="Mat\matShaderIndex.hpp" />
+    <ClInclude Include="Mat\matShaderMgr.hpp" />
+    <ClInclude Include="Mat\matShaderParser.hpp" />
+    <ClInclude Include="Mat\matTexture.hpp" />
+    <ClInclude Include="Mat\matTextureMgr.hpp" />
+    <ClInclude Include="Mat\matTexturePathUtil.hpp" />
+    <ClInclude Include="Mat\matTextureTracking.hpp" />
+    <ClInclude Include="Mat\matTextureType.hpp" />
+    <ClInclude Include="Mat\matThumbnailParser.hpp" />
+    <ClInclude Include="Mat\matUVATexture.hpp" />
+    <ClInclude Include="Mat\private\matUVATextureParseUtil.hpp" />
+    <ClInclude Include="Cam\camCamera.hpp" />
+    <ClInclude Include="Cam\camCameraManip.hpp" />
+    <ClInclude Include="Cam\camCameraManipOrbit.hpp" />
+    <ClInclude Include="Cam\camCameraManipTarget.hpp" />
+    <ClInclude Include="Ent\entAnimation.hpp" />
+    <ClInclude Include="Ent\entAnimInstance.hpp" />
+    <ClInclude Include="Ent\entAnimKeys.hpp" />
+    <ClInclude Include="Ent\entAnimTemplate.hpp" />
+    <ClInclude Include="Ent\entEntity.hpp" />
+    <ClInclude Include="Ent\entFragInfoSink.hpp" />
+    <ClInclude Include="Ent\entImport.hpp" />
+    <ClInclude Include="Ent\entModelInstance.hpp" />
+    <ClInclude Include="Ent\entModelTemplate.hpp" />
+    <ClInclude Include="Ent\entPackage.hpp" />
+    <ClInclude Include="Ent\entScene.hpp" />
+    <ClInclude Include="Ent\entSceneWorld.hpp" />
+    <ClInclude Include="Scr\scrCreator.hpp" />
+    <ClInclude Include="Scr\scrImage.hpp" />
+    <ClInclude Include="Scr\scrPrimitive.hpp" />
+    <ClInclude Include="Scr\scrText.hpp" />
+    <ClInclude Include="sprt\sprtSpriteData.hpp" />
+    <ClInclude Include="sprt\sprtSpriteGroupFrag.hpp" />
+    <ClInclude Include="Eff\effBakeData.hpp" />
+    <ClInclude Include="Eff\effBakeDataParser.hpp" />
+    <ClInclude Include="Eff\effBillboardData.hpp" />
+    <ClInclude Include="Eff\effBlinnData.hpp" />
+    <ClInclude Include="Eff\effBlinnDataParser.hpp" />
+    <ClInclude Include="Eff\effBlurData.hpp" />
+    <ClInclude Include="Eff\effDisplacementData.hpp" />
+    <ClInclude Include="Eff\effDisplacementDataParser.hpp" />
+    <ClInclude Include="Eff\effDOFData.hpp" />
+    <ClInclude Include="Eff\effFurData.hpp" />
+    <ClInclude Include="Eff\effFurDataParser.hpp" />
+    <ClInclude Include="Eff\effGlowData.hpp" />
+    <ClInclude Include="Eff\effGlowDataParser.hpp" />
+    <ClInclude Include="Eff\effHairData.hpp" />
+    <ClInclude Include="Eff\effHairDataParser.hpp" />
+    <ClInclude Include="Eff\effLambertData.hpp" />
+    <ClInclude Include="Eff\effLambertDataParser.hpp" />
+    <ClInclude Include="Eff\effLightGlowData.hpp" />
+    <ClInclude Include="Eff\effMaskAlphaData.hpp" />
+    <ClInclude Include="Eff\effNormalsData.hpp" />
+    <ClInclude Include="Eff\effNormalsDataParser.hpp" />
+    <ClInclude Include="Eff\effOcclusionData.hpp" />
+    <ClInclude Include="Eff\effOutlineData.hpp" />
+    <ClInclude Include="Eff\effOutlineDataParser.hpp" />
+    <ClInclude Include="Eff\effParticleData.hpp" />
+    <ClInclude Include="Eff\effPhongData.hpp" />
+    <ClInclude Include="Eff\effPhongDataParser.hpp" />
+    <ClInclude Include="Eff\effRampData.hpp" />
+    <ClInclude Include="Eff\effReflData.hpp" />
+    <ClInclude Include="Eff\effReflDataParser.hpp" />
+    <ClInclude Include="Eff\effRendermanOverrideData.hpp" />
+    <ClInclude Include="Eff\effRendermanOverrideDataParser.hpp" />
+    <ClInclude Include="Eff\effShaderParams.hpp" />
+    <ClInclude Include="Eff\effShaderSDK.hpp" />
+    <ClInclude Include="Eff\effSkinData.hpp" />
+    <ClInclude Include="Eff\effSkinDataParser.hpp" />
+    <ClInclude Include="Eff\effSolidData.hpp" />
+    <ClInclude Include="Eff\effStrandHairData.hpp" />
+    <ClInclude Include="Eff\effTexturedData.hpp" />
+    <ClInclude Include="Eff\effTextureFilterData.hpp" />
+    <ClInclude Include="Eff\effToonData.hpp" />
+    <ClInclude Include="Eff\effToonDataParser.hpp" />
+    <ClInclude Include="Eff\effUnlitData.hpp" />
+    <ClInclude Include="Eff\effWaterData.hpp" />
+    <ClInclude Include="Eff\effWaterDataParser.hpp" />
+    <ClInclude Include="mdl\mdlAnimImport.hpp" />
+    <ClInclude Include="mdl\mdlCameraAnimWriter.hpp" />
+    <ClInclude Include="mdl\mdlErrorCodes.hpp" />
+    <ClInclude Include="mdl\mdlExceptionX.hpp" />
+    <ClInclude Include="mdl\mdlFragCreate.hpp" />
+    <ClInclude Include="mdl\mdlFragInfo.hpp" />
+    <ClInclude Include="mdl\mdlFragInfoSinkKDTree.hpp" />
+    <ClInclude Include="mdl\mdlFragUtil.hpp" />
+    <ClInclude Include="mdl\mdlHairInfo.hpp" />
+    <ClInclude Include="mdl\mdlImport.hpp" />
+    <ClInclude Include="mdl\mdlMaterialInfo.hpp" />
+    <ClInclude Include="mdl\mdlMaterialMerge.hpp" />
+    <ClInclude Include="mdl\mdlMatInfo.hpp" />
+    <ClInclude Include="mdl\mdlMatInfoTable.hpp" />
+    <ClInclude Include="mdl\mdlModelingPackageData.hpp" />
+    <ClInclude Include="mdl\mdlModelingPackageListMgr.hpp" />
+    <ClInclude Include="mdl\mdlModelingPackageParser.hpp" />
+    <ClInclude Include="mdl\mdlNodeInfo.hpp" />
+    <ClInclude Include="mdl\mdlNodeUtil.hpp" />
+    <ClInclude Include="mdl\mdlPathReference.hpp" />
+    <ClInclude Include="mdl\mdlReader.hpp" />
+    <ClInclude Include="mdl\mdlSkinInfo.hpp" />
+    <ClInclude Include="mdl\mdlSkinUtil.hpp" />
+    <ClInclude Include="mdl\mdlSplitFragInfo.hpp" />
+    <ClInclude Include="mdl\mdlSubdivInfo.hpp" />
+    <ClInclude Include="mdl\mdlWriter.hpp" />
+    <ClInclude Include="mdl\private\mdlDefs.hpp" />
+    <ClInclude Include="mdl\private\mdlHairParser.hpp" />
+    <ClInclude Include="mdl\private\mdlHierarchyImportParser.hpp" />
+    <ClInclude Include="mdl\private\mdlHierarchyNodeInfoParser.hpp" />
+    <ClInclude Include="mdl\private\mdlHierarchyParser.hpp" />
+    <ClInclude Include="mdl\private\mdlImportUtil.hpp" />
+    <ClInclude Include="mdl\private\mdlIndexUtil.hpp" />
+    <ClInclude Include="mdl\private\mdlMaterialLegacyParser.hpp" />
+    <ClInclude Include="mdl\private\mdlMaterialParser.hpp" />
+    <ClInclude Include="mdl\private\mdlMeshMayaParser.hpp" />
+    <ClInclude Include="mdl\private\mdlMeshParser.hpp" />
+    <ClInclude Include="mdl\private\mdlModelingPackageWriter.hpp" />
+    <ClInclude Include="mdl\private\mdlRotationOrder.hpp" />
+    <ClInclude Include="mdl\private\mdlSkinParser.hpp" />
+    <ClInclude Include="mdl\private\mdlSubdivParser.hpp" />
+    <ClInclude Include="mtr\mtrMaterialSaver.hpp" />
+    <ClInclude Include="mtr\mtrMaterialUtil.hpp" />
+    <ClInclude Include="mtr\mtrTextureFinder.hpp" />
+    <ClInclude Include="mtr\mtrThumbnailData.hpp" />
+    <ClInclude Include="smdl\smdlBoneVertex.hpp" />
+    <ClInclude Include="smdl\smdlCharacterAnimation.hpp" />
+    <ClInclude Include="smdl\smdlCharacterSkin.hpp" />
+    <ClInclude Include="smdl\smdlGeoAnimatableObject.hpp" />
+    <ClInclude Include="smdl\smdlGeoAnimKeys.hpp" />
+    <ClInclude Include="smdl\smdlGeoFrameAnimation.hpp" />
+    <ClInclude Include="smdl\smdlHierarchyObject.hpp" />
+    <ClInclude Include="smdl\smdlKeyRootMap.hpp" />
+    <ClInclude Include="smdl\smdlMorphAnimKeys.hpp" />
+    <ClInclude Include="smdl\smdlMorphFrameAnimation.hpp" />
+    <ClInclude Include="smdl\smdlMorphTarget.hpp" />
+    <ClInclude Include="smdl\smdlPackage.hpp" />
+    <ClInclude Include="smdl\smdlSkeletonObject.hpp" />
+    <ClInclude Include="smdl\smdlSubdivCharacter.hpp" />
+    <ClInclude Include="smdl\smdlTree.hpp" />
+    <ClInclude Include="smdl\smdlVertexAnimation.hpp" />
+    <ClInclude Include="smdl\smdlVertexAnimKeys.hpp" />
+    <ClInclude Include="smdl\smdlVertexObject.hpp" />
+    <ClInclude Include="smdl\private\smdlBezierPatch.hpp" />
+    <ClInclude Include="smdl\private\smdlBoneDisplay.hpp" />
+    <ClInclude Include="smdl\private\smdlBoneFragment.hpp" />
+    <ClInclude Include="smdl\private\smdlHairSurface.hpp" />
+    <ClInclude Include="smdl\private\smdlInfluenceSorter.hpp" />
+    <ClInclude Include="smdl\private\smdlMeshAutoLowRes.hpp" />
+    <ClInclude Include="smdl\private\smdlMeshGPUSkin.hpp" />
+    <ClInclude Include="smdl\private\smdlMeshSingleSkin.hpp" />
+    <ClInclude Include="smdl\private\smdlMeshSkinGroup.hpp" />
+    <ClInclude Include="smdl\private\smdlMeshStaticGroup.hpp" />
+    <ClInclude Include="smdl\private\smdlSubAnimation.hpp" />
+    <ClInclude Include="smdl\private\smdlSubdivNetwork.hpp" />
+    <ClInclude Include="smdl\private\smdlSubdivNetworkMgr.hpp" />
+    <ClInclude Include="smdl\private\smdlSubdivSurface.hpp" />
+    <ClInclude Include="smdl\private\smdlSubdivUtil.hpp" />
+    <ClInclude Include="smdl\private\smdlSurface.hpp" />
+    <ClInclude Include="smdl\private\smdlTessellatorBase.hpp" />
+    <ClInclude Include="emdl\emdlAnimKeys.hpp" />
+    <ClInclude Include="emdl\emdlCharacterAnimKeys.hpp" />
+    <ClInclude Include="emdl\emdlCharacterTemplate.hpp" />
+    <ClInclude Include="emdl\emdlHierTemplate.hpp" />
+    <ClInclude Include="emdl\emdlImport.hpp" />
+    <ClInclude Include="emdl\emdlPackage.hpp" />
+    <ClInclude Include="emdl\emdlStaticTemplate.hpp" />
+    <ClInclude Include="emdl\emdlVertexAnimKeys.hpp" />
+    <ClInclude Include="emdl\emdlVertexTemplate.hpp" />
+    <ClInclude Include="prt\prtBlockEmitter.hpp" />
+    <ClInclude Include="prt\prtCircleEmitter.hpp" />
+    <ClInclude Include="prt\prtConeParticleGenerator.hpp" />
+    <ClInclude Include="prt\prtEmitter.hpp" />
+    <ClInclude Include="prt\prtExceptionX.hpp" />
+    <ClInclude Include="prt\prtGeneratorEventHandler.hpp" />
+    <ClInclude Include="prt\prtGeneratorUtil.hpp" />
+    <ClInclude Include="prt\prtImport.hpp" />
+    <ClInclude Include="prt\prtParticleGenerator.hpp" />
+    <ClInclude Include="prt\prtParticleGeneratorTemplate.hpp" />
+    <ClInclude Include="prt\prtPointEmitter.hpp" />
+    <ClInclude Include="prt\prtSpiralParticleGenerator.hpp" />
+    <ClInclude Include="prt\prtSpriteGroupParticleGenerator.hpp" />
+    <ClInclude Include="prt\prtStaticParticleGenerator.hpp" />
+    <ClInclude Include="prt\prtVertexAnimation.hpp" />
+    <ClInclude Include="prt\prtVertexAnimKeys.hpp" />
+    <ClInclude Include="prt\private\prtAnimationUtil.hpp" />
+    <ClInclude Include="prt\private\prtParticleManager.hpp" />
+    <ClInclude Include="rt\rtEngine.hpp" />
+    <ClInclude Include="rt\rtIntersections.hpp" />
+    <ClInclude Include="rt\rtStructures.hpp" />
+    <ClInclude Include="vtx\vtxCompressionUtil.hpp" />
+    <ClInclude Include="vtx\vtxDeltaEncoder.hpp" />
+    <ClInclude Include="vtx\vtxDeltaLosslessEncoder.hpp" />
+    <ClInclude Include="vtx\vtxDeltaToleranceEncoder.hpp" />
+    <ClInclude Include="vtx\vtxExceptionX.hpp" />
+    <ClInclude Include="vtx\vtxGeometryCacheWriter.hpp" />
+    <ClInclude Include="vtx\vtxNormal16BitEncoder.hpp" />
+    <ClInclude Include="vtx\vtxNormalLosslessEncoder.hpp" />
+    <ClInclude Include="vtx\vtxStreamCompression.hpp" />
+    <ClInclude Include="vtx\vtxVertexAnimBudget.hpp" />
+    <ClInclude Include="vtx\vtxVertexAnimImport.hpp" />
+    <ClInclude Include="vtx\vtxVertexAnimKeys.hpp" />
+    <ClInclude Include="vtx\vtxVertexAnimKeysCompressed.hpp" />
+    <ClInclude Include="vtx\vtxVertexAnimKeysDynamic.hpp" />
+    <ClInclude Include="vtx\vtxVertexAnimKeysStatic.hpp" />
+    <ClInclude Include="vtx\vtxVertexAnimWriter.hpp" />
+    <ClInclude Include="vtx\vtxVertexFrame.hpp" />
+    <ClInclude Include="vtx\vtxVertexFramesCompressed.hpp" />
+    <ClInclude Include="vtx\vtxVertexFramesDynamic.hpp" />
+    <ClInclude Include="vtx\private\vtxDeltaCompression.hpp" />
+    <ClInclude Include="vtx\private\vtxVertexFileSeeker.hpp" />
+    <ClInclude Include="vtx\private\vtxZLibCompress.hpp" />
+    <ClInclude Include="hair\hairFragmentCreate.hpp" />
+    <ClInclude Include="hair\hairImport.hpp" />
+    <ClInclude Include="hair\HairReader.h" />
+    <ClInclude Include="GraphicsLayer.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="G2d\private\g2dDepthStencilBuffer.cpp" />
+    <ClCompile Include="G2d\private\g2dExceptionX.cpp" />
+    <ClCompile Include="G2d\private\g2dFontUtil.cpp" />
+    <ClCompile Include="G2d\private\g2dHDRUtil.cpp" />
+    <ClCompile Include="G2d\private\g2dImageCreate.cpp" />
+    <ClCompile Include="G2d\private\g2dImageSave.cpp" />
+    <ClCompile Include="G2d\private\g2dOpenEXROutStream.cpp" />
+    <ClCompile Include="G2d\private\g2dPackage.cpp" />
+    <ClCompile Include="G2d\private\g2dPFD.cpp" />
+    <ClCompile Include="G2d\private\g2dRenderTarget.cpp" />
+    <ClCompile Include="G2d\private\g2dResetHandler.cpp" />
+    <ClCompile Include="G2d\private\g2dResourceCounter.cpp" />
+    <ClCompile Include="G2d\private\g2dScanlineOpenEXRUtil.cpp" />
+    <ClCompile Include="G2d\private\g2dScreenCaptureUtil.cpp" />
+    <ClCompile Include="G2d\private\g2dScreenUtil.cpp" />
+    <ClCompile Include="G2d\private\g2dSystem.cpp" />
+    <ClCompile Include="G2d\private\g2dTGAUtil.cpp" />
+    <ClCompile Include="G2d\private\g2dTiledOpenEXRUtil.cpp" />
+    <ClCompile Include="G2d\private\g2dWindow.cpp" />
+    <ClCompile Include="G2d\private\rgbe.cpp" />
+    <ClCompile Include="G2d\private\tga.cpp" />
+    <ClCompile Include="An\private\anAnimation.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="An\private\anFrameAnimation.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="An\private\anPackage.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</BasicRuntimeChecks>
+      <BrowseInformation Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BrowseInformation>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dBake.cpp" />
+    <ClCompile Include="G3d\private\g3dConstants.cpp" />
+    <ClCompile Include="G3d\private\g3dCubicReflectionTargetRenderer.cpp" />
+    <ClCompile Include="G3d\private\g3dDirectionalLight.cpp" />
+    <ClCompile Include="G3d\private\g3dExceptionX.cpp" />
+    <ClCompile Include="G3d\private\g3dFragment.cpp" />
+    <ClCompile Include="G3d\private\g3dFragmentCreate.cpp" />
+    <ClCompile Include="G3d\private\g3dIndexPtr.cpp" />
+    <ClCompile Include="G3d\private\g3dJitterSettings.cpp" />
+    <ClCompile Include="G3d\private\g3dLayer.cpp" />
+    <ClCompile Include="G3d\private\g3dLayerContainer.cpp" />
+    <ClCompile Include="G3d\private\g3dLight.cpp" />
+    <ClCompile Include="G3d\private\g3dLightMgr.cpp" />
+    <ClCompile Include="G3d\private\g3dMeshUtil.cpp" />
+    <ClCompile Include="G3d\private\g3dOcclusionTree.cpp" />
+    <ClCompile Include="G3d\private\g3dPackage.cpp" />
+    <ClCompile Include="G3d\private\g3dPassBuffers.cpp" />
+    <ClCompile Include="G3d\private\g3dPickInfo.cpp" />
+    <ClCompile Include="G3d\private\g3dPlanarReflectionTargetRenderer.cpp" />
+    <ClCompile Include="G3d\private\g3dPointLight.cpp" />
+    <ClCompile Include="G3d\private\g3dPostProcessing.cpp" />
+    <ClCompile Include="G3d\private\g3dPrefs.cpp" />
+    <ClCompile Include="G3d\private\g3dPrimitiveFragmentUtil.cpp" />
+    <ClCompile Include="G3d\private\g3dProjectedLight.cpp" />
+    <ClCompile Include="G3d\private\g3dRendererMgr.cpp" />
+    <ClCompile Include="G3d\private\g3dRenderingHints.cpp" />
+    <ClCompile Include="G3d\private\g3dScene.cpp" />
+    <ClCompile Include="G3d\private\g3dSceneNode.cpp" />
+    <ClCompile Include="G3d\private\g3dSceneRenderEngineCreate.cpp" />
+    <ClCompile Include="G3d\private\g3dSceneRendererCreate.cpp" />
+    <ClCompile Include="G3d\private\g3dSceneTraverse.cpp" />
+    <ClCompile Include="G3d\private\g3dSingleLightRendering.cpp" />
+    <ClCompile Include="G3d\private\g3dSpotLight.cpp" />
+    <ClCompile Include="G3d\private\g3dTargetRenderer.cpp" />
+    <ClCompile Include="G3d\private\g3dThreadControl.cpp" />
+    <ClCompile Include="G3d\private\g3dViewer.cpp" />
+    <ClCompile Include="Sc\private\scAnimatableLODObject.cpp" />
+    <ClCompile Include="Sc\private\scAnimatableObject.cpp" />
+    <ClCompile Include="Sc\private\scBillboard.cpp" />
+    <ClCompile Include="Sc\private\scCompoundObject.cpp" />
+    <ClCompile Include="Sc\private\scControlAnim.cpp" />
+    <ClCompile Include="Sc\private\scLODObject.cpp" />
+    <ClCompile Include="Sc\private\scObject.cpp" />
+    <ClCompile Include="Sc\private\scObjectMgr.cpp" />
+    <ClCompile Include="Sc\private\scParticleGenerator.cpp" />
+    <ClCompile Include="Sc\private\scParticleGeneratorTemplate.cpp" />
+    <ClCompile Include="Sc\private\scRotateControl.cpp" />
+    <ClCompile Include="Sc\private\scScene.cpp" />
+    <ClCompile Include="Sc\private\scSceneWorld.cpp" />
+    <ClCompile Include="Sc\private\scThreadGroup.cpp" />
+    <ClCompile Include="Sc\private\scTransformControl.cpp" />
+    <ClCompile Include="Mat\private\matExceptionX.cpp" />
+    <ClCompile Include="Mat\private\matMatAnim.cpp" />
+    <ClCompile Include="Mat\private\matMaterial.cpp" />
+    <ClCompile Include="Mat\private\matMaterialLayer.cpp" />
+    <ClCompile Include="Mat\private\matMetaFX.cpp" />
+    <ClCompile Include="Mat\private\matMetaFXParser.cpp" />
+    <ClCompile Include="Mat\private\matPackage.cpp" />
+    <ClCompile Include="Mat\private\matShaderEffect.cpp" />
+    <ClCompile Include="Mat\private\matShaderMgr.cpp" />
+    <ClCompile Include="Mat\private\matShaderParser.cpp" />
+    <ClCompile Include="Mat\private\matTexture.cpp" />
+    <ClCompile Include="Mat\private\matTextureMgr.cpp" />
+    <ClCompile Include="Mat\private\matTexturePathUtil.cpp" />
+    <ClCompile Include="Mat\private\matTextureTracking.cpp" />
+    <ClCompile Include="Mat\private\matThumbnailParser.cpp" />
+    <ClCompile Include="Mat\private\matUVATexture.cpp" />
+    <ClCompile Include="Mat\private\matUVATextureParseUtil.cpp" />
+    <ClCompile Include="Cam\private\camCamera.cpp" />
+    <ClCompile Include="Cam\private\camCameraManip.cpp" />
+    <ClCompile Include="Cam\private\camCameraManipOrbit.cpp" />
+    <ClCompile Include="Ent\private\entAnimation.cpp" />
+    <ClCompile Include="Ent\private\entAnimInstance.cpp" />
+    <ClCompile Include="Ent\private\entAnimTemplate.cpp" />
+    <ClCompile Include="Ent\private\entEntity.cpp" />
+    <ClCompile Include="Ent\private\entImport.cpp" />
+    <ClCompile Include="Ent\private\entModelInstance.cpp" />
+    <ClCompile Include="Ent\private\entModelTemplate.cpp" />
+    <ClCompile Include="Ent\private\entPackage.cpp" />
+    <ClCompile Include="Ent\private\entScene.cpp" />
+    <ClCompile Include="Ent\private\entSceneWorld.cpp" />
+    <ClCompile Include="Scr\private\scrCreator.cpp" />
+    <ClCompile Include="Scr\private\scrImage.cpp" />
+    <ClCompile Include="Scr\private\scrPrimitive.cpp" />
+    <ClCompile Include="Scr\private\scrText.cpp" />
+    <ClCompile Include="sprt\private\sprtSpriteGroupFrag.cpp" />
+    <ClCompile Include="Eff\private\effBakeData.cpp" />
+    <ClCompile Include="Eff\private\effBakeDataParser.cpp" />
+    <ClCompile Include="Eff\private\effBillboardData.cpp" />
+    <ClCompile Include="Eff\private\effBlinnData.cpp" />
+    <ClCompile Include="Eff\private\effBlinnDataParser.cpp" />
+    <ClCompile Include="Eff\private\effBlurData.cpp" />
+    <ClCompile Include="Eff\private\effDisplacementData.cpp" />
+    <ClCompile Include="Eff\private\effDisplacementDataParser.cpp" />
+    <ClCompile Include="Eff\private\effDOFData.cpp" />
+    <ClCompile Include="Eff\private\effFurData.cpp" />
+    <ClCompile Include="Eff\private\effFurDataParser.cpp" />
+    <ClCompile Include="Eff\private\effGlowData.cpp" />
+    <ClCompile Include="Eff\private\effGlowDataParser.cpp" />
+    <ClCompile Include="Eff\private\effHairData.cpp" />
+    <ClCompile Include="Eff\private\effHairDataParser.cpp" />
+    <ClCompile Include="Eff\private\effLambertData.cpp" />
+    <ClCompile Include="Eff\private\effLambertDataParser.cpp" />
+    <ClCompile Include="Eff\private\effLightGlowData.cpp" />
+    <ClCompile Include="Eff\private\effMaskAlphaData.cpp" />
+    <ClCompile Include="Eff\private\effNormalsData.cpp" />
+    <ClCompile Include="Eff\private\effNormalsDataParser.cpp" />
+    <ClCompile Include="Eff\private\effOcclusionData.cpp" />
+    <ClCompile Include="Eff\private\effOutlineData.cpp" />
+    <ClCompile Include="Eff\private\effOutlineDataParser.cpp" />
+    <ClCompile Include="Eff\private\effParticleData.cpp" />
+    <ClCompile Include="Eff\private\effPhongData.cpp" />
+    <ClCompile Include="Eff\private\effPhongDataParser.cpp" />
+    <ClCompile Include="Eff\private\effRampData.cpp" />
+    <ClCompile Include="Eff\private\effReflData.cpp" />
+    <ClCompile Include="Eff\private\effReflDataParser.cpp" />
+    <ClCompile Include="Eff\private\effRendermanOverrideData.cpp" />
+    <ClCompile Include="Eff\private\effRendermanOverrideDataParser.cpp" />
+    <ClCompile Include="Eff\private\effShaderParams.cpp" />
+    <ClCompile Include="Eff\private\effShaderSDK.cpp" />
+    <ClCompile Include="Eff\private\effSkinData.cpp" />
+    <ClCompile Include="Eff\private\effSkinDataParser.cpp" />
+    <ClCompile Include="Eff\private\effSolidData.cpp" />
+    <ClCompile Include="Eff\private\effStrandHairData.cpp" />
+    <ClCompile Include="Eff\private\effTexturedData.cpp" />
+    <ClCompile Include="Eff\private\effTextureFilterData.cpp" />
+    <ClCompile Include="Eff\private\effToonData.cpp" />
+    <ClCompile Include="Eff\private\effToonDataParser.cpp" />
+    <ClCompile Include="Eff\private\effUnlitData.cpp" />
+    <ClCompile Include="Eff\private\effWaterData.cpp" />
+    <ClCompile Include="Eff\private\effWaterDataParser.cpp" />
+    <ClCompile Include="mdl\private\mdlAnimImport.cpp" />
+    <ClCompile Include="mdl\private\mdlCameraAnimWriter.cpp" />
+    <ClCompile Include="mdl\private\mdlDefs.cpp" />
+    <ClCompile Include="mdl\private\mdlExceptionX.cpp" />
+    <ClCompile Include="mdl\private\mdlFragCreate.cpp" />
+    <ClCompile Include="mdl\private\mdlFragInfo.cpp" />
+    <ClCompile Include="mdl\private\mdlFragInfoSinkKDTree.cpp" />
+    <ClCompile Include="mdl\private\mdlFragUtil.cpp" />
+    <ClCompile Include="mdl\private\mdlHairParser.cpp" />
+    <ClCompile Include="mdl\private\mdlHierarchyImportParser.cpp" />
+    <ClCompile Include="mdl\private\mdlHierarchyNodeInfoParser.cpp" />
+    <ClCompile Include="mdl\private\mdlHierarchyParser.cpp" />
+    <ClCompile Include="mdl\private\mdlImport.cpp" />
+    <ClCompile Include="mdl\private\mdlImportUtil.cpp" />
+    <ClCompile Include="mdl\private\mdlIndexUtil.cpp" />
+    <ClCompile Include="mdl\private\mdlMaterialInfo.cpp" />
+    <ClCompile Include="mdl\private\mdlMaterialLegacyParser.cpp" />
+    <ClCompile Include="mdl\private\mdlMaterialMerge.cpp" />
+    <ClCompile Include="mdl\private\mdlMaterialParser.cpp" />
+    <ClCompile Include="mdl\private\mdlMatInfo.cpp" />
+    <ClCompile Include="mdl\private\mdlMeshMayaParser.cpp" />
+    <ClCompile Include="mdl\private\mdlMeshParser.cpp" />
+    <ClCompile Include="mdl\private\mdlModelingPackageListMgr.cpp" />
+    <ClCompile Include="mdl\private\mdlModelingPackageParser.cpp" />
+    <ClCompile Include="mdl\private\mdlModelingPackageWriter.cpp" />
+    <ClCompile Include="mdl\private\mdlNodeInfo.cpp" />
+    <ClCompile Include="mdl\private\mdlNodeUtil.cpp" />
+    <ClCompile Include="mdl\private\mdlPathReference.cpp" />
+    <ClCompile Include="mdl\private\mdlReader.cpp" />
+    <ClCompile Include="mdl\private\mdlRotationOrder.cpp" />
+    <ClCompile Include="mdl\private\mdlSkinParser.cpp" />
+    <ClCompile Include="mdl\private\mdlSkinUtil.cpp" />
+    <ClCompile Include="mdl\private\mdlSplitFragInfo.cpp" />
+    <ClCompile Include="mdl\private\mdlSubdivInfo.cpp" />
+    <ClCompile Include="mdl\private\mdlSubdivParser.cpp" />
+    <ClCompile Include="mdl\private\mdlWriter.cpp" />
+    <ClCompile Include="mtr\private\mtrMaterialSaver.cpp" />
+    <ClCompile Include="mtr\private\mtrMaterialUtil.cpp" />
+    <ClCompile Include="mtr\private\mtrTextureFinder.cpp" />
+    <ClCompile Include="mtr\private\mtrThumbnailData.cpp" />
+    <ClCompile Include="smdl\private\smdlBezierPatch.cpp" />
+    <ClCompile Include="smdl\private\smdlBoneDisplay.cpp" />
+    <ClCompile Include="smdl\private\smdlBoneFragment.cpp" />
+    <ClCompile Include="smdl\private\smdlCharacterAnimation.cpp" />
+    <ClCompile Include="smdl\private\smdlGeoAnimatableObject.cpp" />
+    <ClCompile Include="smdl\private\smdlGeoAnimKeys.cpp" />
+    <ClCompile Include="smdl\private\smdlGeoFrameAnimation.cpp" />
+    <ClCompile Include="smdl\private\smdlHairSurface.cpp" />
+    <ClCompile Include="smdl\private\smdlHierarchyObject.cpp" />
+    <ClCompile Include="smdl\private\smdlInfluenceSorter.cpp" />
+    <ClCompile Include="smdl\private\smdlMeshAutoLowRes.cpp" />
+    <ClCompile Include="smdl\private\smdlMeshGPUSkin.cpp" />
+    <ClCompile Include="smdl\private\smdlMeshSingleSkin.cpp" />
+    <ClCompile Include="smdl\private\smdlMeshSkinGroup.cpp" />
+    <ClCompile Include="smdl\private\smdlMeshStaticGroup.cpp" />
+    <ClCompile Include="smdl\private\smdlMorphAnimKeys.cpp" />
+    <ClCompile Include="smdl\private\smdlMorphFrameAnimation.cpp" />
+    <ClCompile Include="smdl\private\smdlPackage.cpp" />
+    <ClCompile Include="smdl\private\smdlSkeletonObject.cpp" />
+    <ClCompile Include="smdl\private\smdlSubAnimation.cpp" />
+    <ClCompile Include="smdl\private\smdlSubdivCharacter.cpp" />
+    <ClCompile Include="smdl\private\smdlSubdivNetwork.cpp" />
+    <ClCompile Include="smdl\private\smdlSubdivNetworkMgr.cpp" />
+    <ClCompile Include="smdl\private\smdlSubdivSurface.cpp" />
+    <ClCompile Include="smdl\private\smdlSubdivUtil.cpp" />
+    <ClCompile Include="smdl\private\smdlSurface.cpp" />
+    <ClCompile Include="smdl\private\smdlTessellatorBase.cpp" />
+    <ClCompile Include="smdl\private\smdlVertexAnimation.cpp" />
+    <ClCompile Include="smdl\private\smdlVertexAnimKeys.cpp" />
+    <ClCompile Include="smdl\private\smdlVertexObject.cpp" />
+    <ClCompile Include="emdl\private\emdlAnimKeys.cpp" />
+    <ClCompile Include="emdl\private\emdlCharacterAnimKeys.cpp" />
+    <ClCompile Include="emdl\private\emdlCharacterTemplate.cpp" />
+    <ClCompile Include="emdl\private\emdlHierTemplate.cpp" />
+    <ClCompile Include="emdl\private\emdlImport.cpp" />
+    <ClCompile Include="emdl\private\emdlPackage.cpp" />
+    <ClCompile Include="emdl\private\emdlStaticTemplate.cpp" />
+    <ClCompile Include="emdl\private\emdlVertexAnimKeys.cpp" />
+    <ClCompile Include="emdl\private\emdlVertexTemplate.cpp" />
+    <ClCompile Include="prt\private\prtBlockEmitter.cpp" />
+    <ClCompile Include="prt\private\prtCircleEmitter.cpp" />
+    <ClCompile Include="prt\private\prtConeParticleGenerator.cpp" />
+    <ClCompile Include="prt\private\prtEmitter.cpp" />
+    <ClCompile Include="prt\private\prtExceptionX.cpp" />
+    <ClCompile Include="prt\private\prtGeneratorEventHandler.cpp" />
+    <ClCompile Include="prt\private\prtGeneratorUtil.cpp" />
+    <ClCompile Include="prt\private\prtImport.cpp" />
+    <ClCompile Include="prt\private\prtParticleGenerator.cpp" />
+    <ClCompile Include="prt\private\prtParticleGeneratorTemplate.cpp" />
+    <ClCompile Include="prt\private\prtPointEmitter.cpp" />
+    <ClCompile Include="prt\private\prtSpiralParticleGenerator.cpp" />
+    <ClCompile Include="prt\private\prtSpriteGroupParticleGenerator.cpp" />
+    <ClCompile Include="prt\private\prtStaticParticleGenerator.cpp" />
+    <ClCompile Include="prt\private\prtVertexAnimation.cpp" />
+    <ClCompile Include="prt\private\prtVertexAnimKeys.cpp" />
+    <ClCompile Include="rt\private\rtEngine.cpp" />
+    <ClCompile Include="rt\private\rtIntersections.cpp" />
+    <ClCompile Include="vtx\private\vtxCompressionUtil.cpp" />
+    <ClCompile Include="vtx\private\vtxDeltaCompression.cpp" />
+    <ClCompile Include="vtx\private\vtxDeltaEncoder.cpp" />
+    <ClCompile Include="vtx\private\vtxDeltaLosslessEncoder.cpp" />
+    <ClCompile Include="vtx\private\vtxDeltaToleranceEncoder.cpp" />
+    <ClCompile Include="vtx\private\vtxExceptionX.cpp" />
+    <ClCompile Include="vtx\private\vtxGeometryCacheWriter.cpp" />
+    <ClCompile Include="vtx\private\vtxNormal16BitEncoder.cpp" />
+    <ClCompile Include="vtx\private\vtxNormalLosslessEncoder.cpp" />
+    <ClCompile Include="vtx\private\vtxStreamCompression.cpp" />
+    <ClCompile Include="vtx\private\vtxVertexAnimBudget.cpp" />
+    <ClCompile Include="vtx\private\vtxVertexAnimImport.cpp" />
+    <ClCompile Include="vtx\private\vtxVertexAnimKeysCompressed.cpp" />
+    <ClCompile Include="vtx\private\vtxVertexAnimKeysDynamic.cpp" />
+    <ClCompile Include="vtx\private\vtxVertexAnimKeysStatic.cpp" />
+    <ClCompile Include="vtx\private\vtxVertexAnimWriter.cpp" />
+    <ClCompile Include="vtx\private\vtxVertexFileSeeker.cpp" />
+    <ClCompile Include="vtx\private\vtxVertexFramesCompressed.cpp" />
+    <ClCompile Include="vtx\private\vtxVertexFramesDynamic.cpp" />
+    <ClCompile Include="vtx\private\vtxZLibCompress.cpp" />
+    <ClCompile Include="hair\private\hairFragmentCreate.cpp" />
+    <ClCompile Include="hair\private\hairImport.cpp" />
+    <ClCompile Include="hair\private\HairReader.cpp" />
+    <ClCompile Include="GraphicsLayer.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

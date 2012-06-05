@@ -1,0 +1,495 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Sound">
+      <UniqueIdentifier>{e82b2f6b-641b-4f87-a381-14507c94e33b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Spline">
+      <UniqueIdentifier>{dec9d777-8073-4a40-b589-bb313644baa7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Attach">
+      <UniqueIdentifier>{46b7a50e-ecca-400a-b0e7-9e3b40bd40a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Enable">
+      <UniqueIdentifier>{c3b0f4fc-7248-4cc5-a37f-c853c667b1ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Float">
+      <UniqueIdentifier>{4a0d2cba-237d-4cc3-886b-617260bf8398}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Color">
+      <UniqueIdentifier>{9fd8a4b0-5f4f-47de-8197-8edc35ffb4bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Position">
+      <UniqueIdentifier>{07275363-2eb4-4da8-9b11-db11c69bdf9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Orientation">
+      <UniqueIdentifier>{9e9fab13-98f2-4f40-8430-ffdb43e4b469}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ColorFlicker">
+      <UniqueIdentifier>{5ad26fad-6c98-467e-81f5-7c4a69c792c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ConnectChannel">
+      <UniqueIdentifier>{c9c3c73f-ba76-445a-96bb-39efd311eff7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Animation">
+      <UniqueIdentifier>{0cb7a565-392c-4b4d-a71c-c662916580ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FileName">
+      <UniqueIdentifier>{f4f2aa23-c531-4e75-ae9d-1bd16755f72b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FilePath">
+      <UniqueIdentifier>{3c40b344-f256-44e6-9f4e-e163ea4ecec4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UserScript">
+      <UniqueIdentifier>{6d4d3499-3fe5-41b1-88bd-952d2c053ab1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TextureFileName">
+      <UniqueIdentifier>{6488edf0-9520-4a53-aff3-dca9b6b2221f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Video">
+      <UniqueIdentifier>{4eb4103b-1d4a-4f6a-9161-1bc971c978db}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Sound\tmlnDriverSound.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\tmlnDriverSoundInfo.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\tmlnDriverSoundParser.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Spline\tmlnDriverSpline.cpp">
+      <Filter>Spline</Filter>
+    </ClCompile>
+    <ClCompile Include="Spline\tmlnDriverSplineInfo.cpp">
+      <Filter>Spline</Filter>
+    </ClCompile>
+    <ClCompile Include="Spline\tmlnDriverSplineOriented.cpp">
+      <Filter>Spline</Filter>
+    </ClCompile>
+    <ClCompile Include="Spline\tmlnDriverSplineParser.cpp">
+      <Filter>Spline</Filter>
+    </ClCompile>
+    <ClCompile Include="Attach\tmlnAdapterReference.cpp">
+      <Filter>Attach</Filter>
+    </ClCompile>
+    <ClCompile Include="Attach\tmlnDriverAttach.cpp">
+      <Filter>Attach</Filter>
+    </ClCompile>
+    <ClCompile Include="Attach\tmlnDriverAttachBase.cpp">
+      <Filter>Attach</Filter>
+    </ClCompile>
+    <ClCompile Include="Attach\tmlnDriverAttachInfo.cpp">
+      <Filter>Attach</Filter>
+    </ClCompile>
+    <ClCompile Include="Attach\tmlnDriverAttachOrient.cpp">
+      <Filter>Attach</Filter>
+    </ClCompile>
+    <ClCompile Include="Attach\tmlnDriverAttachOrientInfo.cpp">
+      <Filter>Attach</Filter>
+    </ClCompile>
+    <ClCompile Include="Attach\tmlnDriverAttachOrientParser.cpp">
+      <Filter>Attach</Filter>
+    </ClCompile>
+    <ClCompile Include="Attach\tmlnDriverAttachParser.cpp">
+      <Filter>Attach</Filter>
+    </ClCompile>
+    <ClCompile Include="Attach\tmlnDriverAttachUtil.cpp">
+      <Filter>Attach</Filter>
+    </ClCompile>
+    <ClCompile Include="Enable\tmlnDriverEnable.cpp">
+      <Filter>Enable</Filter>
+    </ClCompile>
+    <ClCompile Include="Enable\tmlnDriverEnableInfo.cpp">
+      <Filter>Enable</Filter>
+    </ClCompile>
+    <ClCompile Include="Enable\tmlnDriverEnableParser.cpp">
+      <Filter>Enable</Filter>
+    </ClCompile>
+    <ClCompile Include="Float\tmlnDriverFloat.cpp">
+      <Filter>Float</Filter>
+    </ClCompile>
+    <ClCompile Include="Float\tmlnDriverFloatInfo.cpp">
+      <Filter>Float</Filter>
+    </ClCompile>
+    <ClCompile Include="Float\tmlnDriverFloatParser.cpp">
+      <Filter>Float</Filter>
+    </ClCompile>
+    <ClCompile Include="Color\tmlnDriverColor.cpp">
+      <Filter>Color</Filter>
+    </ClCompile>
+    <ClCompile Include="Color\tmlnDriverColorInfo.cpp">
+      <Filter>Color</Filter>
+    </ClCompile>
+    <ClCompile Include="Color\tmlnDriverColorParser.cpp">
+      <Filter>Color</Filter>
+    </ClCompile>
+    <ClCompile Include="Position\tmlnDriverPosition.cpp">
+      <Filter>Position</Filter>
+    </ClCompile>
+    <ClCompile Include="Position\tmlnDriverPositionInfo.cpp">
+      <Filter>Position</Filter>
+    </ClCompile>
+    <ClCompile Include="Position\tmlnDriverPositionParser.cpp">
+      <Filter>Position</Filter>
+    </ClCompile>
+    <ClCompile Include="Orientation\tmlnDriverOrientation.cpp">
+      <Filter>Orientation</Filter>
+    </ClCompile>
+    <ClCompile Include="Orientation\tmlnDriverOrientationInfo.cpp">
+      <Filter>Orientation</Filter>
+    </ClCompile>
+    <ClCompile Include="Orientation\tmlnDriverOrientationParser.cpp">
+      <Filter>Orientation</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorFlicker\tmlnDriverColorFlicker.cpp">
+      <Filter>ColorFlicker</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorFlicker\tmlnDriverColorFlickerInfo.cpp">
+      <Filter>ColorFlicker</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorFlicker\tmlnDriverColorFlickerParser.cpp">
+      <Filter>ColorFlicker</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectChannel\tmlnDriverConnectChannelBoolean.cpp">
+      <Filter>ConnectChannel</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectChannel\tmlnDriverConnectChannelColor.cpp">
+      <Filter>ConnectChannel</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectChannel\tmlnDriverConnectChannelFloat.cpp">
+      <Filter>ConnectChannel</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectChannel\tmlnDriverConnectChannelInfo.cpp">
+      <Filter>ConnectChannel</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectChannel\tmlnDriverConnectChannelOrientation.cpp">
+      <Filter>ConnectChannel</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectChannel\tmlnDriverConnectChannelParser.cpp">
+      <Filter>ConnectChannel</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectChannel\tmlnDriverConnectChannelPosition.cpp">
+      <Filter>ConnectChannel</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\tmlnDriverAnimationFull.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\tmlnDriverAnimationFullInfo.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\tmlnDriverAnimationFullParser.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="FileName\tmlnDriverAnimatedFileName.cpp">
+      <Filter>FileName</Filter>
+    </ClCompile>
+    <ClCompile Include="FileName\tmlnDriverAnimatedFileNameInfo.cpp">
+      <Filter>FileName</Filter>
+    </ClCompile>
+    <ClCompile Include="FileName\tmlnDriverAnimatedFileNameParser.cpp">
+      <Filter>FileName</Filter>
+    </ClCompile>
+    <ClCompile Include="FileName\tmlnDriverFileName.cpp">
+      <Filter>FileName</Filter>
+    </ClCompile>
+    <ClCompile Include="FileName\tmlnDriverFileNameInfo.cpp">
+      <Filter>FileName</Filter>
+    </ClCompile>
+    <ClCompile Include="FileName\tmlnDriverFileNameParser.cpp">
+      <Filter>FileName</Filter>
+    </ClCompile>
+    <ClCompile Include="FilePath\tmlnDriverAnimatedFilePath.cpp">
+      <Filter>FilePath</Filter>
+    </ClCompile>
+    <ClCompile Include="FilePath\tmlnDriverAnimatedFilePathInfo.cpp">
+      <Filter>FilePath</Filter>
+    </ClCompile>
+    <ClCompile Include="FilePath\tmlnDriverAnimatedFilePathParser.cpp">
+      <Filter>FilePath</Filter>
+    </ClCompile>
+    <ClCompile Include="FilePath\tmlnDriverFilePath.cpp">
+      <Filter>FilePath</Filter>
+    </ClCompile>
+    <ClCompile Include="FilePath\tmlnDriverFilePathInfo.cpp">
+      <Filter>FilePath</Filter>
+    </ClCompile>
+    <ClCompile Include="FilePath\tmlnDriverFilePathParser.cpp">
+      <Filter>FilePath</Filter>
+    </ClCompile>
+    <ClCompile Include="UserScript\tmlnDriverUserScriptBoolean.cpp">
+      <Filter>UserScript</Filter>
+    </ClCompile>
+    <ClCompile Include="UserScript\tmlnDriverUserScriptColor.cpp">
+      <Filter>UserScript</Filter>
+    </ClCompile>
+    <ClCompile Include="UserScript\tmlnDriverUserScriptFloat.cpp">
+      <Filter>UserScript</Filter>
+    </ClCompile>
+    <ClCompile Include="UserScript\tmlnDriverUserScriptInfo.cpp">
+      <Filter>UserScript</Filter>
+    </ClCompile>
+    <ClCompile Include="UserScript\tmlnDriverUserScriptOrientation.cpp">
+      <Filter>UserScript</Filter>
+    </ClCompile>
+    <ClCompile Include="UserScript\tmlnDriverUserScriptParser.cpp">
+      <Filter>UserScript</Filter>
+    </ClCompile>
+    <ClCompile Include="UserScript\tmlnDriverUserScriptPosition.cpp">
+      <Filter>UserScript</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureFileName\tmlnDriverAnimatedTextureFileName.cpp">
+      <Filter>TextureFileName</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureFileName\tmlnDriverAnimatedTextureFileNameInfo.cpp">
+      <Filter>TextureFileName</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureFileName\tmlnDriverAnimatedTextureFileNameParser.cpp">
+      <Filter>TextureFileName</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureFileName\tmlnDriverTextureFileName.cpp">
+      <Filter>TextureFileName</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureFileName\tmlnDriverTextureFileNameInfo.cpp">
+      <Filter>TextureFileName</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureFileName\tmlnDriverTextureFileNameParser.cpp">
+      <Filter>TextureFileName</Filter>
+    </ClCompile>
+    <ClCompile Include="Video\tmlnDriverVideo.cpp">
+      <Filter>Video</Filter>
+    </ClCompile>
+    <ClCompile Include="Video\tmlnDriverVideoInfo.cpp">
+      <Filter>Video</Filter>
+    </ClCompile>
+    <ClCompile Include="Video\tmlnDriverVideoParser.cpp">
+      <Filter>Video</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Sound\tmlnDriverSound.hpp">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\tmlnDriverSoundInfo.hpp">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\tmlnDriverSoundParser.hpp">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Spline\tmlnDriverSpline.hpp">
+      <Filter>Spline</Filter>
+    </ClInclude>
+    <ClInclude Include="Spline\tmlnDriverSplineInfo.hpp">
+      <Filter>Spline</Filter>
+    </ClInclude>
+    <ClInclude Include="Spline\tmlnDriverSplineOriented.hpp">
+      <Filter>Spline</Filter>
+    </ClInclude>
+    <ClInclude Include="Spline\tmlnDriverSplineParser.hpp">
+      <Filter>Spline</Filter>
+    </ClInclude>
+    <ClInclude Include="Attach\tmlnAdapterReference.hpp">
+      <Filter>Attach</Filter>
+    </ClInclude>
+    <ClInclude Include="Attach\tmlnDriverAttach.hpp">
+      <Filter>Attach</Filter>
+    </ClInclude>
+    <ClInclude Include="Attach\tmlnDriverAttachBase.hpp">
+      <Filter>Attach</Filter>
+    </ClInclude>
+    <ClInclude Include="Attach\tmlnDriverAttachInfo.hpp">
+      <Filter>Attach</Filter>
+    </ClInclude>
+    <ClInclude Include="Attach\tmlnDriverAttachOrient.hpp">
+      <Filter>Attach</Filter>
+    </ClInclude>
+    <ClInclude Include="Attach\tmlnDriverAttachOrientInfo.hpp">
+      <Filter>Attach</Filter>
+    </ClInclude>
+    <ClInclude Include="Attach\tmlnDriverAttachOrientParser.hpp">
+      <Filter>Attach</Filter>
+    </ClInclude>
+    <ClInclude Include="Attach\tmlnDriverAttachParser.hpp">
+      <Filter>Attach</Filter>
+    </ClInclude>
+    <ClInclude Include="Attach\tmlnDriverAttachUtil.hpp">
+      <Filter>Attach</Filter>
+    </ClInclude>
+    <ClInclude Include="Enable\tmlnDriverEnable.hpp">
+      <Filter>Enable</Filter>
+    </ClInclude>
+    <ClInclude Include="Enable\tmlnDriverEnableInfo.hpp">
+      <Filter>Enable</Filter>
+    </ClInclude>
+    <ClInclude Include="Enable\tmlnDriverEnableParser.hpp">
+      <Filter>Enable</Filter>
+    </ClInclude>
+    <ClInclude Include="Float\tmlnDriverFloat.hpp">
+      <Filter>Float</Filter>
+    </ClInclude>
+    <ClInclude Include="Float\tmlnDriverFloatInfo.hpp">
+      <Filter>Float</Filter>
+    </ClInclude>
+    <ClInclude Include="Float\tmlnDriverFloatParser.hpp">
+      <Filter>Float</Filter>
+    </ClInclude>
+    <ClInclude Include="Color\tmlnDriverColor.hpp">
+      <Filter>Color</Filter>
+    </ClInclude>
+    <ClInclude Include="Color\tmlnDriverColorInfo.hpp">
+      <Filter>Color</Filter>
+    </ClInclude>
+    <ClInclude Include="Color\tmlnDriverColorParser.hpp">
+      <Filter>Color</Filter>
+    </ClInclude>
+    <ClInclude Include="Position\tmlnDriverPosition.hpp">
+      <Filter>Position</Filter>
+    </ClInclude>
+    <ClInclude Include="Position\tmlnDriverPositionInfo.hpp">
+      <Filter>Position</Filter>
+    </ClInclude>
+    <ClInclude Include="Position\tmlnDriverPositionParser.hpp">
+      <Filter>Position</Filter>
+    </ClInclude>
+    <ClInclude Include="Orientation\tmlnDriverOrientation.hpp">
+      <Filter>Orientation</Filter>
+    </ClInclude>
+    <ClInclude Include="Orientation\tmlnDriverOrientationInfo.hpp">
+      <Filter>Orientation</Filter>
+    </ClInclude>
+    <ClInclude Include="Orientation\tmlnDriverOrientationParser.hpp">
+      <Filter>Orientation</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorFlicker\tmlnDriverColorFlicker.hpp">
+      <Filter>ColorFlicker</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorFlicker\tmlnDriverColorFlickerInfo.hpp">
+      <Filter>ColorFlicker</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorFlicker\tmlnDriverColorFlickerParser.hpp">
+      <Filter>ColorFlicker</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectChannel\tmlnDriverConnectChannelBoolean.hpp">
+      <Filter>ConnectChannel</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectChannel\tmlnDriverConnectChannelColor.hpp">
+      <Filter>ConnectChannel</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectChannel\tmlnDriverConnectChannelFloat.hpp">
+      <Filter>ConnectChannel</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectChannel\tmlnDriverConnectChannelInfo.hpp">
+      <Filter>ConnectChannel</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectChannel\tmlnDriverConnectChannelOrientation.hpp">
+      <Filter>ConnectChannel</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectChannel\tmlnDriverConnectChannelParser.hpp">
+      <Filter>ConnectChannel</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectChannel\tmlnDriverConnectChannelPosition.hpp">
+      <Filter>ConnectChannel</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectChannel\tmlnDriverConnectChannelTemplate.hpp">
+      <Filter>ConnectChannel</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\tmlnDriverAnimationFull.hpp">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\tmlnDriverAnimationFullInfo.hpp">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\tmlnDriverAnimationFullParser.hpp">
+      <Filter>Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="FileName\tmlnDriverAnimatedFileName.hpp">
+      <Filter>FileName</Filter>
+    </ClInclude>
+    <ClInclude Include="FileName\tmlnDriverAnimatedFileNameInfo.hpp">
+      <Filter>FileName</Filter>
+    </ClInclude>
+    <ClInclude Include="FileName\tmlnDriverAnimatedFileNameParser.hpp">
+      <Filter>FileName</Filter>
+    </ClInclude>
+    <ClInclude Include="FileName\tmlnDriverFileName.hpp">
+      <Filter>FileName</Filter>
+    </ClInclude>
+    <ClInclude Include="FileName\tmlnDriverFileNameInfo.hpp">
+      <Filter>FileName</Filter>
+    </ClInclude>
+    <ClInclude Include="FileName\tmlnDriverFileNameParser.hpp">
+      <Filter>FileName</Filter>
+    </ClInclude>
+    <ClInclude Include="FilePath\tmlnDriverAnimatedFilePath.hpp">
+      <Filter>FilePath</Filter>
+    </ClInclude>
+    <ClInclude Include="FilePath\tmlnDriverAnimatedFilePathInfo.hpp">
+      <Filter>FilePath</Filter>
+    </ClInclude>
+    <ClInclude Include="FilePath\tmlnDriverAnimatedFilePathParser.hpp">
+      <Filter>FilePath</Filter>
+    </ClInclude>
+    <ClInclude Include="FilePath\tmlnDriverFilePath.hpp">
+      <Filter>FilePath</Filter>
+    </ClInclude>
+    <ClInclude Include="FilePath\tmlnDriverFilePathInfo.hpp">
+      <Filter>FilePath</Filter>
+    </ClInclude>
+    <ClInclude Include="FilePath\tmlnDriverFilePathParser.hpp">
+      <Filter>FilePath</Filter>
+    </ClInclude>
+    <ClInclude Include="UserScript\tmlnDriverUserScriptBoolean.hpp">
+      <Filter>UserScript</Filter>
+    </ClInclude>
+    <ClInclude Include="UserScript\tmlnDriverUserScriptColor.hpp">
+      <Filter>UserScript</Filter>
+    </ClInclude>
+    <ClInclude Include="UserScript\tmlnDriverUserScriptFloat.hpp">
+      <Filter>UserScript</Filter>
+    </ClInclude>
+    <ClInclude Include="UserScript\tmlnDriverUserScriptInfo.hpp">
+      <Filter>UserScript</Filter>
+    </ClInclude>
+    <ClInclude Include="UserScript\tmlnDriverUserScriptOrientation.hpp">
+      <Filter>UserScript</Filter>
+    </ClInclude>
+    <ClInclude Include="UserScript\tmlnDriverUserScriptParser.hpp">
+      <Filter>UserScript</Filter>
+    </ClInclude>
+    <ClInclude Include="UserScript\tmlnDriverUserScriptPosition.hpp">
+      <Filter>UserScript</Filter>
+    </ClInclude>
+    <ClInclude Include="UserScript\tmlnDriverUserScriptTemplate.hpp">
+      <Filter>UserScript</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureFileName\tmlnDriverAnimatedTextureFileName.hpp">
+      <Filter>TextureFileName</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureFileName\tmlnDriverAnimatedTextureFileNameInfo.hpp">
+      <Filter>TextureFileName</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureFileName\tmlnDriverAnimatedTextureFileNameParser.hpp">
+      <Filter>TextureFileName</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureFileName\tmlnDriverTextureFileName.hpp">
+      <Filter>TextureFileName</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureFileName\tmlnDriverTextureFileNameInfo.hpp">
+      <Filter>TextureFileName</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureFileName\tmlnDriverTextureFileNameParser.hpp">
+      <Filter>TextureFileName</Filter>
+    </ClInclude>
+    <ClInclude Include="Video\tmlnDriverVideo.hpp">
+      <Filter>Video</Filter>
+    </ClInclude>
+    <ClInclude Include="Video\tmlnDriverVideoInfo.hpp">
+      <Filter>Video</Filter>
+    </ClInclude>
+    <ClInclude Include="Video\tmlnDriverVideoParser.hpp">
+      <Filter>Video</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

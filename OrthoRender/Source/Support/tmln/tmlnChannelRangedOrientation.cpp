@@ -1,0 +1,1 @@
+#error tmlnChannelRangedOrientation.cpp is obsolete

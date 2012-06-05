@@ -1,0 +1,28 @@
+/**********************************************************************
+
+							STUDIOGPU ADDON
+
+ 	File:		StudioGPU.grc
+
+	Purpose:	Fixed resources for the StudioGPU Export addon
+
+	Target:		ArchiCAD 8-12
+
+	Copyright:	Encina Ltd 2009
+
+	Revision history:
+	07-05-2009	RW	Created
+
+ **********************************************************************/
+
+'STR#' 32500  "Reports Save" {
+	/*[ 1]*/	"StudioGPU File"
+	/*[ 2]*/	"StudioGPU File"
+}
+
+'STR#' 32510  "Reports Save" {
+	/*[ 1]*/	"Export to a StudioGPU file"
+	/*[ 2]*/	"Export to a StudioGPU file"
+}
+
+

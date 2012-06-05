@@ -1,0 +1,78 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "chTest", "chTest.vcproj", "{7EC7E020-2144-4F72-A935-CB084B328067}"
+	ProjectSection(ProjectDependencies) = postProject
+		{81727461-5C3A-48A1-B909-485E3AD2E627} = {81727461-5C3A-48A1-B909-485E3AD2E627}
+		{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC} = {2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Base", "..\..\..\Terawatt\Base\Base.vcproj", "{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App", "..\..\..\Terawatt\App\App.vcproj", "{81727461-5C3A-48A1-B909-485E3AD2E627}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SourceCodeControl) = preSolution
+		SccNumberOfProjects = 2
+		SccProjectUniqueName0 = ..\\..\\..\\Terawatt\\Base\\Base.vcproj
+		SccProjectName0 = \u0022$/Terawatt/Base\u0022,\u0020KJOAAAAA
+		SccLocalPath0 = ..\\..\\..\\Terawatt\\Base
+		SccProvider0 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		SccProjectUniqueName1 = ..\\..\\..\\Terawatt\\App\\App.vcproj
+		SccProjectName1 = \u0022$/Terawatt/App\u0022,\u0020LJOAAAAA
+		SccLocalPath1 = ..\\..\\..\\terawatt\\app
+		SccProvider1 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+	EndGlobalSection
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Debug Managed = Debug Managed
+		Gold = Gold
+		Release = Release
+		Release Managed = Release Managed
+		Release with debug info = Release with debug info
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{7EC7E020-2144-4F72-A935-CB084B328067}.Debug.ActiveCfg = Debug|Win32
+		{7EC7E020-2144-4F72-A935-CB084B328067}.Debug.Build.0 = Debug|Win32
+		{7EC7E020-2144-4F72-A935-CB084B328067}.Debug Managed.ActiveCfg = Debug|Win32
+		{7EC7E020-2144-4F72-A935-CB084B328067}.Debug Managed.Build.0 = Debug|Win32
+		{7EC7E020-2144-4F72-A935-CB084B328067}.Gold.ActiveCfg = Debug|Win32
+		{7EC7E020-2144-4F72-A935-CB084B328067}.Gold.Build.0 = Debug|Win32
+		{7EC7E020-2144-4F72-A935-CB084B328067}.Release.ActiveCfg = Release|Win32
+		{7EC7E020-2144-4F72-A935-CB084B328067}.Release.Build.0 = Release|Win32
+		{7EC7E020-2144-4F72-A935-CB084B328067}.Release Managed.ActiveCfg = Release|Win32
+		{7EC7E020-2144-4F72-A935-CB084B328067}.Release Managed.Build.0 = Release|Win32
+		{7EC7E020-2144-4F72-A935-CB084B328067}.Release with debug info.ActiveCfg = Release|Win32
+		{7EC7E020-2144-4F72-A935-CB084B328067}.Release with debug info.Build.0 = Release|Win32
+		{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}.Debug.ActiveCfg = Debug|Win32
+		{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}.Debug.Build.0 = Debug|Win32
+		{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}.Debug Managed.ActiveCfg = Debug Managed|Win32
+		{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}.Debug Managed.Build.0 = Debug Managed|Win32
+		{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}.Gold.ActiveCfg = Release Managed|Win32
+		{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}.Gold.Build.0 = Release Managed|Win32
+		{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}.Release.ActiveCfg = Release|Win32
+		{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}.Release.Build.0 = Release|Win32
+		{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}.Release Managed.ActiveCfg = Release Managed|Win32
+		{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}.Release Managed.Build.0 = Release Managed|Win32
+		{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}.Release with debug info.ActiveCfg = Release|Win32
+		{2FE43DF1-77C4-4EDE-973B-699DFB8E7CCC}.Release with debug info.Build.0 = Release|Win32
+		{81727461-5C3A-48A1-B909-485E3AD2E627}.Debug.ActiveCfg = Debug|Win32
+		{81727461-5C3A-48A1-B909-485E3AD2E627}.Debug.Build.0 = Debug|Win32
+		{81727461-5C3A-48A1-B909-485E3AD2E627}.Debug Managed.ActiveCfg = Debug|Win32
+		{81727461-5C3A-48A1-B909-485E3AD2E627}.Debug Managed.Build.0 = Debug|Win32
+		{81727461-5C3A-48A1-B909-485E3AD2E627}.Gold.ActiveCfg = Gold|Win32
+		{81727461-5C3A-48A1-B909-485E3AD2E627}.Gold.Build.0 = Gold|Win32
+		{81727461-5C3A-48A1-B909-485E3AD2E627}.Release.ActiveCfg = Release|Win32
+		{81727461-5C3A-48A1-B909-485E3AD2E627}.Release.Build.0 = Release|Win32
+		{81727461-5C3A-48A1-B909-485E3AD2E627}.Release Managed.ActiveCfg = Release|Win32
+		{81727461-5C3A-48A1-B909-485E3AD2E627}.Release Managed.Build.0 = Release|Win32
+		{81727461-5C3A-48A1-B909-485E3AD2E627}.Release with debug info.ActiveCfg = Release with debug info|Win32
+		{81727461-5C3A-48A1-B909-485E3AD2E627}.Release with debug info.Build.0 = Release with debug info|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

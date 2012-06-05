@@ -1,0 +1,167 @@
+/*****************************************************************************
+ * Test version of a base shader for sgpu test compiler.
+ *****************************************************************************/
+
+shader Illumination_sgpu_SpecularFresnel
+{
+  input:    
+  Color  baseColor = Color(1,1,1,1)
+  {	
+      display_name("Base Overall Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "The color used to tint the Diffuse Reflectance Color." );
+  };
+  Color diffuse_color = Color(1,1,1,1)
+  {	
+      display_name("Diffuse Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "The color used to tint the Diffuse Reflectance Color." );
+  };
+  float specular_shift_strand_offset = 0.5
+  {		
+      display_name("specular shift");
+      hard_range(float(0),float(1));
+      description( "shift specular along strands" );
+  };
+Color g_specularColor0
+  {	
+      display_name("Specular Color 0");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "specular color 0" );
+  };
+
+Color g_specularColor1
+  {	
+      display_name("Specular Color 1");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "specular color 1" );
+  };
+
+// 2 specular exponents (0..200)
+float g_specularExp0 = 100
+  {		
+      display_name("Specular Exponent 0");
+      hard_range(float(0),float(200));
+      description( "tightness of specular hilight 0" );
+  };
+float g_specularExp1 = 100
+  {		
+      display_name("Specular Exponent 1");
+      hard_range(float(0),float(200));
+      description( "tightness of specular hilight 1" );
+  };
+
+// 2 different specular shift values (-1..1)
+float g_specularShift0 = -.15
+  {		
+      display_name("Specular Shift 0");
+      hard_range(float(-1),float(1));
+      description( "shift for specular hilight 0" );
+  };
+float g_specularShift1 = .15
+  {		
+      display_name("Specular Shift 1");
+      hard_range(float(-1),float(1));
+      description( "shift for specular hilight 1" );
+  };
+	// approximate sparkles using texture
+float g_specularMask = 1
+  {		
+      display_name("Specular Mask");
+      hard_range(float(0),float(1));
+      description( "mask overall specular" );
+  };
+
+    
+  output:
+  Color result;
+  Color diffuse;
+  Color specular;
+
+// to shift the specular highlight along the length of the hair, 
+// we nudge the tangent along the direction of the normal.
+// assumes T pointing from root to tip.
+// positive nudge moves hilight toward root, negative - toward tip
+// get shift value from texture to break up uniform look over all hair patches.
+float3 ShiftTangent(float3 T, float3 N, float shift)
+{
+	float3 shiftedT = T + shift*N;
+	return normalize(shiftedT);
+}
+
+// uses half angle vector. could use refl vector, at cost of complexity.
+float StrandSpecular(float3 T, float3 H, float exponent)
+{
+	float dotTH = dot(T,H);
+	float sinTH = saturate(sqrt(1.0 - dotTH*dotTH));
+	float dirAtten = smoothstep(-1.0, 0.0, dotTH);
+//	return dirAtten * pow(max(0.001,sinTH), max(0.001,exponent));
+	return sinTH == 0 ? 0 : dirAtten * pow(sinTH, exponent);
+}
+
+Color HairDiffuseContrib(float3 i_normal, float3 i_lightVec,
+	Color lightColor)
+{
+	// diffuse lighting: the lerp shifts the shadow boundary for a softer look
+	float d = saturate(lerp(0.25,1.0, dot(i_normal, i_lightVec)));
+	return d * lightColor * diffuse_color;
+}
+Color HairSpecularContrib(float3 i_tangent, float3 i_normal, float3 halfVec)
+{
+	// shift tangents
+	float3 t1 = ShiftTangent(i_tangent, i_normal, g_specularShift0 + specular_shift_strand_offset);
+	float3 t2 = ShiftTangent(i_tangent, i_normal, g_specularShift1 + specular_shift_strand_offset);
+
+	// 2 hilights of different colors, specular exponents, and differently shifted tangents.
+
+	// add 2nd specular term, modulated with noise texture
+	
+	// specular lighting
+	Color ospecular = (g_specularColor0 * StrandSpecular(t1, halfVec, g_specularExp0) + 
+					   g_specularColor1 * StrandSpecular(t2, halfVec, g_specularExp1)) * g_specularMask;
+	
+	return ospecular;
+}
+
+  void main() 
+  {
+      diffuse = Color(0.0,0.0,0.0,0.0);
+      specular = Color(0.0,0.0,0.0,0.0);
+  
+      Color Rd = baseColor;
+      
+      	// enumerate lights
+		Light_iterator light;
+		foreach (light)
+		{
+			//float cosine = saturate(light.dot_nl);
+			//if (cosine > 0.0) 
+			{
+
+				// the (0,1,0) direction in tangent space:
+				float3 worldTan = texture_tangent[0];
+			
+				diffuse += HairDiffuseContrib(normal, light.direction, light.contribution);
+
+				// specular attenuation for hair facing away from light
+				float specularAttenuation = saturate(1.75 * light.dot_nl + 0.5);
+				specular += specularAttenuation * light.contribution * 
+					HairSpecularContrib(worldTan, normal, normalize(light.direction + -direction));
+				
+			}
+		}
+      
+      diffuse *= Rd;
+      diffuse.a = 1.0;
+      specular *= Rd;
+      specular.a = 1.0;
+      
+      // irradiance term skipped
+      
+      result = diffuse + specular;
+      result.a = 1.0;
+
+  }
+}
+;
+

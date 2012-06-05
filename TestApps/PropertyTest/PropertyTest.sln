@@ -1,0 +1,56 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PropertyTest", "PropertyTest.vcproj", "{C914EF0C-F22E-4622-A41F-BCEA9F35412C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{38EAC044-1412-45D9-9DC9-266582EA7DA7} = {38EAC044-1412-45D9-9DC9-266582EA7DA7}
+		{5F8A5356-A0B5-470B-AE47-8C35B4AF63E3} = {5F8A5356-A0B5-470B-AE47-8C35B4AF63E3}
+		{87736EE6-4C54-40CB-9889-F730337FCAED} = {87736EE6-4C54-40CB-9889-F730337FCAED}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUIProperties", "GUIProperties\GUIProperties.csproj", "{87736EE6-4C54-40CB-9889-F730337FCAED}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SystemXXX", "SystemXXX\SystemXXX.vcproj", "{5F8A5356-A0B5-470B-AE47-8C35B4AF63E3}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SystemZZZ", "SystemZZZ\SystemZZZ.vcproj", "{38EAC044-1412-45D9-9DC9-266582EA7DA7}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerawattManagedControls", "..\..\Controls\TerawattManagedControls\TerawattManagedControls\TerawattManagedControls.csproj", "{20480B9F-ACF2-4047-92CF-3F1E82088CA0}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{C914EF0C-F22E-4622-A41F-BCEA9F35412C}.Debug.ActiveCfg = Debug|Win32
+		{C914EF0C-F22E-4622-A41F-BCEA9F35412C}.Debug.Build.0 = Debug|Win32
+		{C914EF0C-F22E-4622-A41F-BCEA9F35412C}.Release.ActiveCfg = Release|Win32
+		{C914EF0C-F22E-4622-A41F-BCEA9F35412C}.Release.Build.0 = Release|Win32
+		{87736EE6-4C54-40CB-9889-F730337FCAED}.Debug.ActiveCfg = Debug|.NET
+		{87736EE6-4C54-40CB-9889-F730337FCAED}.Debug.Build.0 = Debug|.NET
+		{87736EE6-4C54-40CB-9889-F730337FCAED}.Release.ActiveCfg = Release|.NET
+		{87736EE6-4C54-40CB-9889-F730337FCAED}.Release.Build.0 = Release|.NET
+		{5F8A5356-A0B5-470B-AE47-8C35B4AF63E3}.Debug.ActiveCfg = Debug|Win32
+		{5F8A5356-A0B5-470B-AE47-8C35B4AF63E3}.Debug.Build.0 = Debug|Win32
+		{5F8A5356-A0B5-470B-AE47-8C35B4AF63E3}.Release.ActiveCfg = Release|Win32
+		{5F8A5356-A0B5-470B-AE47-8C35B4AF63E3}.Release.Build.0 = Release|Win32
+		{38EAC044-1412-45D9-9DC9-266582EA7DA7}.Debug.ActiveCfg = Debug|Win32
+		{38EAC044-1412-45D9-9DC9-266582EA7DA7}.Debug.Build.0 = Debug|Win32
+		{38EAC044-1412-45D9-9DC9-266582EA7DA7}.Release.ActiveCfg = Release|Win32
+		{38EAC044-1412-45D9-9DC9-266582EA7DA7}.Release.Build.0 = Release|Win32
+		{20480B9F-ACF2-4047-92CF-3F1E82088CA0}.Debug.ActiveCfg = Debug|.NET
+		{20480B9F-ACF2-4047-92CF-3F1E82088CA0}.Debug.Build.0 = Debug|.NET
+		{20480B9F-ACF2-4047-92CF-3F1E82088CA0}.Release.ActiveCfg = Release|.NET
+		{20480B9F-ACF2-4047-92CF-3F1E82088CA0}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

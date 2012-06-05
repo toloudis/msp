@@ -1,0 +1,1 @@
+/***	"API Headers.rph"****	General pre-include file for resource (.r) compilation*/#define	ALRT_RezTemplateVersion	0#define	DLOG_RezTemplateVersion	0#define	WIND_RezTemplateVersion	0#define	macintosh#define ACExtension

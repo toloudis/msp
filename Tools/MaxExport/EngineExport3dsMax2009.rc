@@ -1,0 +1,137 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_SGPU_EXPORT_OPTIONS DIALOGEX 0, 0, 403, 241
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Sgpu Export Options"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,17,208,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,189,208,50,14
+    CONTROL         "Model",IDC_MODEL_EXPORT,"Button",BS_AUTORADIOBUTTON,23,49,79,10
+    GROUPBOX        "Export Intent",IDC_INTENT,17,38,333,164
+    CONTROL         "Vertex Anim",IDC_VERT_ANIM_EXPORT,"Button",BS_AUTORADIOBUTTON,21,112,65,10
+    CONTROL         "Export Geom",IDC_SGPU_EXPORT_GEOM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,34,128,55,10
+    CONTROL         "Export Child under sel Parent",IDC_SGPU_EXPORT_CHILD_IF_PARENT_EXPORTS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,39,61,113,10
+    CONTROL         "Camera Anim",IDC_CAMERA_ANIM_EXPORT,"Button",BS_AUTORADIOBUTTON,24,183,62,10
+    EDITTEXT        IDC_EDIT_START_FRAME,185,163,40,16,ES_AUTOHSCROLL
+    LTEXT           "Start",IDC_STATIC,228,165,17,8
+    EDITTEXT        IDC_EDIT_END_FRAME,259,162,40,15,ES_AUTOHSCROLL
+    LTEXT           "End",IDC_STATIC,304,164,13,8
+    GROUPBOX        "Animation Limits",IDC_STATIC,182,122,152,72
+    CONTROL         "Merge Meshes based on Materials",IDC_SGPU_MERGE_BASED_ON_MTLS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,40,75,104,8
+    EDITTEXT        IDC_SGPU_MAX_NUM_TRI_IN_MERGED_MESH,61,88,51,12,ES_RIGHT | ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Max Num Tris in each Merged Mesh",IDC_STATIC,124,91,151,8
+    EDITTEXT        IDC_VERTEX_ANIM_COMP_TOLERANCE,33,162,64,14,ES_AUTOHSCROLL
+    CONTROL         "Use Compression for Vertex Anim",IDC_VERTEX_ANIM_COMPRESSION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,34,146,127,10
+    LTEXT           "Compression Tolerance",IDC_STATIC,103,163,74,8
+    LTEXT           "Export Dll Version:",IDC_SGPU_EXPORT_VERSION,19,17,130,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_SGPU_EXPORT_OPTIONS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 379
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 232
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_SGPU_EXPORT         "SgpuExporter"
+    IDS_SCENEEXPORT         "Scene Export"
+    IDS_SGPU_FILE           "Sgpu File"
+    IDS_SGPU_EXPORT_FP      "SgpuExport"
+    IDS_SGPU_AUTHOR         "Sgpu Export Programmer"
+    IDS_COPYRIGHT_SGPU      "CopyRight @ SGPU"
+    IDS_LIBDESCRIPTION      "Sgpu Exporter"
+    IDS_SGPU_EXPORT_FP_CATEGORY "SgpuExport"
+    IDS_SGPU_EXPORT_OPTIONS "SgpuExportOptions"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

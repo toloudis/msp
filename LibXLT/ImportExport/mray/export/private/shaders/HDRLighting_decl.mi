@@ -1,0 +1,11 @@
+declare shader
+    "sgpu_HDRLighting" (
+		boolean "g_bEnableTonemap",
+		boolean "g_bReflOnly",
+		boolean "g_bGIOnly",		
+		scalar "g_fixedLuminance",
+		scalar "g_fMiddleGray",
+		scalar "g_fWhiteCutoff"
+	)
+    version 1
+end declare

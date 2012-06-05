@@ -1,0 +1,6 @@
+; StudioGPUExport.def : Declares the module parameters for the DLL.
+
+; LIBRARY      "StudioGPUExport"
+
+EXPORTS
+    ; Explicit exports can go here

@@ -1,0 +1,77 @@
+/********************************************************************************************\
+**  billData.hpp
+**
+**
+**  Extra Large Technology
+**  Copyright(C) 2004 - All Rights Reserved
+\********************************************************************************************/
+#ifdef BILL_DATA_HPP
+#error billData.hpp multiply included
+#endif
+#define BILL_DATA_HPP
+
+#ifndef NAME_STRING_HPP
+#include "Core/name/nameString.hpp"
+#endif
+
+#ifndef PRTY_BOOLEAN_HPP
+#include "Core/prty/prtyBoolean.hpp"
+#endif
+#ifndef PRTY_COLOR_HPP
+#include "Core/prty/prtyColor.hpp"
+#endif
+#ifndef PRTY_FILENAME_HPP
+#include "Core/prty/prtyFileName.hpp"
+#endif
+#ifndef PRTY_FLOAT_HPP
+#include "Core/prty/prtyFloat.hpp"
+#endif
+#ifndef PRTY_NAME_HPP
+#include "Core/prty/prtyName.hpp"
+#endif
+#ifndef PRTY_POINT3D_HPP
+#include "Core/prty/prtyPoint3d.hpp"
+#endif
+#ifndef PRTY_ROTATION_HPP
+#include "Core/prty/prtyRotation.hpp"
+#endif
+
+
+//----------------------------------------------------------------------------
+//
+//----------------------------------------------------------------------------
+class billData
+{
+public:
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	billData();
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	billData(const itString& i_Filename );
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	billData(	const itString& i_Filename,
+				const maPoint3d& i_Position,
+				float i_Scale );
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	bool operator == (const billData& i_Item);
+
+	//------------------------------------------------------------------------
+	//	data
+	//------------------------------------------------------------------------
+	prtyBoolean		m_bEditorVisible;
+	prtyName		m_Name;
+	prtyFileName	m_Filename;
+	prtyPoint3d		m_Position;
+	prtyRotation	m_Orientation;
+	prtyFloat		m_Scale;
+	prtyBoolean		m_bOrientToCamera;
+	prtyBoolean		m_bAdditiveMaterial;
+	prtyColor		m_Color;
+};
+

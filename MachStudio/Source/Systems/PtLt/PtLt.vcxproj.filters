@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Data">
+      <UniqueIdentifier>{ec75106a-427f-4a61-b31b-5721c008b12e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{9cf54d48-1025-4d4e-90eb-695eb36a0d99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Undo">
+      <UniqueIdentifier>{7f5ac67e-50f5-4ee0-a46e-34d65226c9e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{e4900fe5-74da-4856-9ede-42115301ee65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Timeline">
+      <UniqueIdentifier>{dbd3490a-62d4-4f6e-8fa9-817549d32f35}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Data\ptltData.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\ptltDataParser.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\ptltDocumentChunk.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\ptltDocumentInterest.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\ptltScriptData.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\ptltCommands.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\ptltDialogDataUtil.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\ptltDialogInterest.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Undo\ptltActualOperations.cpp">
+      <Filter>Undo</Filter>
+    </ClCompile>
+    <ClCompile Include="Undo\ptltOperations.cpp">
+      <Filter>Undo</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ptltMRayExportInterest.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ptltObjectMgr.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ptltPointLightObject.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ptltRangeIcon.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ptltRendermanExportInterest.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ptltScriptObject.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\ptltSelectInterest.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Timeline\ptltDriverCreator.cpp">
+      <Filter>Timeline</Filter>
+    </ClCompile>
+    <ClCompile Include="ptltSystem.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Data\ptltData.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\ptltDataParser.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\ptltDocumentChunk.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\ptltDocumentInterest.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\ptltScriptData.hpp">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\ptltCommands.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\ptltDialogDataUtil.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\ptltDialogInterest.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Undo\ptltActualOperations.hpp">
+      <Filter>Undo</Filter>
+    </ClInclude>
+    <ClInclude Include="Undo\ptltOperations.hpp">
+      <Filter>Undo</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ptltMRayExportInterest.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ptltObjectMgr.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ptltPointLightObject.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ptltRangeIcon.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ptltRendermanExportInterest.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ptltScriptObject.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\ptltSelectInterest.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Timeline\ptltDriverCreator.hpp">
+      <Filter>Timeline</Filter>
+    </ClInclude>
+    <ClInclude Include="ptltSystem.hpp" />
+  </ItemGroup>
+</Project>

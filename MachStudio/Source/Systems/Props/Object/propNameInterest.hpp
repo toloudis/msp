@@ -1,0 +1,1 @@
+#error propNameInterest.hpp is obsolete

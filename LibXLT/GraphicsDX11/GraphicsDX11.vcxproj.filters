@@ -1,0 +1,1039 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="G2d">
+      <UniqueIdentifier>{72835c17-e867-449a-8a2c-558a434ef3f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="G2d\private">
+      <UniqueIdentifier>{484ee375-62be-4423-a4fa-f1500544e42a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="G3d">
+      <UniqueIdentifier>{44af8b16-2618-4fb0-94de-1c4a0cf4a1fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="G3d\private">
+      <UniqueIdentifier>{5471620c-1732-4d58-8f39-c735d34b8d6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Eff">
+      <UniqueIdentifier>{a4d342cf-10d9-4202-9a75-ce394ca7947d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Eff\private">
+      <UniqueIdentifier>{0b42b339-a869-4f92-9ff0-818921a173f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Eff\private\Wrappers">
+      <UniqueIdentifier>{8532641f-7d57-49c1-82e2-1b3ef7f2958f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mat">
+      <UniqueIdentifier>{ba84f1bb-8b3b-4562-a024-cdccc3fb76ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mat\private">
+      <UniqueIdentifier>{98eb287a-c127-4186-b179-99d9183e07ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Bump">
+      <UniqueIdentifier>{f0e96851-7909-42ff-a55b-58e3f2efef10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Bump\private">
+      <UniqueIdentifier>{fa52ec4a-77a0-4a9c-9649-ca970470f3a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tmesh">
+      <UniqueIdentifier>{a459f71e-e48f-49ff-abdd-5e6cc2736ff5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tmesh\private">
+      <UniqueIdentifier>{6a698f56-1ae3-450b-be05-54fe3742646e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shdw">
+      <UniqueIdentifier>{da1501a6-cba7-400a-8a2f-1b77266426dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shdw\private">
+      <UniqueIdentifier>{2e53ff3e-b7b7-431c-8f50-234ea32abfc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="may">
+      <UniqueIdentifier>{e285d82d-14b1-4226-b7d1-d6a43ab9f2d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="may\private">
+      <UniqueIdentifier>{e245286e-3e16-4fdf-b453-939dc5852cbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hair">
+      <UniqueIdentifier>{f916401d-c80d-424b-9152-e7748eb0667f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hair\private">
+      <UniqueIdentifier>{78a48e5c-b03e-4e9c-b2be-f352777b15c9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="G2d\g2dDebugDisplay.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dDepthStencilBufferDX11.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dDX11GlobalWin.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dDX11Types.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="g2d\g2dFullscreenQuad.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dImageDX11.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dRenderTargetDX11.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dRenderTargetTextureDX11.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dResourceCounterDX11.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dSystemDX11.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dTextureDX11.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dWindowDX11.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dWindowPrimaryDX11.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\private\g2dDX11SurfaceUtil.hpp">
+      <Filter>G2d\private</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\private\g2dFontUtilDX11.hpp">
+      <Filter>G2d\private</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\private\g2dImageCreateDX11.hpp">
+      <Filter>G2d\private</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\private\g2dImageDrawUtilDX11.hpp">
+      <Filter>G2d\private</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\private\g2dImageSaveDX11.hpp">
+      <Filter>G2d\private</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\private\g2dScreenCaptureUtilDX11.hpp">
+      <Filter>G2d\private</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\private\g2dSurfaceLoaderDX11.hpp">
+      <Filter>G2d\private</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\private\g2dWindowDrawUtilDX11.hpp">
+      <Filter>G2d\private</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dAmbientOcclusionRendererDX11.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dBlendStateMgr.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dCubeMapRendererDX11.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dDepthMapRendererDX11.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dDepthStencilStateMgr.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dDrawStyleUtilDX11.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dDX11BufferUtil.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dDX11GlobalWin.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dDX11TextureUtil.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dDX11Util.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dFogDX11.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dHelpersWin.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dLightMgrDX11.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dPickBufferRendererDX11.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dRasterizerStateMgr.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dRenderCameraSpace.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dRenderPass.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dRenderScreenSpace.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dRenderStateCache.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dRSMRendererDX11.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dSceneGlobal.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dSceneRendererDX11.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dSceneRendererDX11Create.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dSceneRenderUtil.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dStateMgr.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dSystemDX11.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dTextureRendererDX11.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dTransparencySortDX11.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dVSMRendererDX11.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effBake.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effBillboard.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effBlur.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effDOF.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effGlow.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effHDRLighting.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effLightGlow.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effMaskAlpha.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effOcclusion.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effOutline.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effParticle.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effPhong.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effRamp.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effShaderArray.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effShaderBaseDX11.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effShaderParamsDX11.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effShaderSDKDX11.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effShaderUtilWin.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effSolid.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effStrandHair.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effTextured.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matCubeRenderTargetTexture.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matDX11GlobalWin.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matMipTexture.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matPlainTexture.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matReflectiveShadowMap.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matRenderTargetTexture.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matShadowMap.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matStaticCubeTexture.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matTextureDX11.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matTextureMgrDX11.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matVolumeTexture.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\private\DDS.h">
+      <Filter>Mat\private</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\private\matTextureLoaderDDSWin.hpp">
+      <Filter>Mat\private</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\private\matTextureLoaderHDRWin.hpp">
+      <Filter>Mat\private</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\private\matTextureLoaderTGAWin.hpp">
+      <Filter>Mat\private</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\private\matTextureLoaderWin.hpp">
+      <Filter>Mat\private</Filter>
+    </ClInclude>
+    <ClInclude Include="bump\bumpBufferUtil.hpp">
+      <Filter>Bump</Filter>
+    </ClInclude>
+    <ClInclude Include="bump\bumpBumpRenderer.hpp">
+      <Filter>Bump</Filter>
+    </ClInclude>
+    <ClInclude Include="bump\bumpFragmentCreate.hpp">
+      <Filter>Bump</Filter>
+    </ClInclude>
+    <ClInclude Include="bump\bumpPackage.hpp">
+      <Filter>Bump</Filter>
+    </ClInclude>
+    <ClInclude Include="bump\bumpTriMeshBumpFrag.hpp">
+      <Filter>Bump</Filter>
+    </ClInclude>
+    <ClInclude Include="bump\bumpVertexBuffer.hpp">
+      <Filter>Bump</Filter>
+    </ClInclude>
+    <ClInclude Include="bump\private\bumpVertexDecl.hpp">
+      <Filter>Bump\private</Filter>
+    </ClInclude>
+    <ClInclude Include="tmesh\tmeshBVH.hpp">
+      <Filter>Tmesh</Filter>
+    </ClInclude>
+    <ClInclude Include="tmesh\tmeshFrag.hpp">
+      <Filter>Tmesh</Filter>
+    </ClInclude>
+    <ClInclude Include="tmesh\tmeshIndexBuffer.hpp">
+      <Filter>Tmesh</Filter>
+    </ClInclude>
+    <ClInclude Include="tmesh\tmeshOptimizedBVH.hpp">
+      <Filter>Tmesh</Filter>
+    </ClInclude>
+    <ClInclude Include="tmesh\tmeshPackage.hpp">
+      <Filter>Tmesh</Filter>
+    </ClInclude>
+    <ClInclude Include="tmesh\tmeshShape.hpp">
+      <Filter>Tmesh</Filter>
+    </ClInclude>
+    <ClInclude Include="tmesh\tmeshVertexBuffer.hpp">
+      <Filter>Tmesh</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwAOPreviewRendererDX11.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwAOVolumesRendererDX11.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwBakingRenderer.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwCubeMapRendererDX11.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwDepthRendererDX11.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwFrameBufferMgr.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwGIPreviewRendererDX11.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwGlowRendererDX11.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwHDRRendererDX11.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwMaterialsRendererDX11.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwNormalRendererDX11.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwOpacityMapRendererDX11.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPackage.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassAlphaFill.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassAmbient.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassAOVolumes.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassDepth.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassDOF.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassEnvBackground.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassEnvironment.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassFog.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassGIVolumes.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassGlow.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassHair.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassLit.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassLPVGI.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassMapNormalsToScreen.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassMaterials.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassNormals.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassOpacity.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassOutline.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassPostShader.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassSSAO.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassSSGI.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassToneMap.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassTransparent.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassTraversal.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassVelocity.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassZFill.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPlanarReflectionRendererDX11.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwRayTraceRenderer.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwReflectionsOnlyRendererDX11.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwSceneRendererCreate.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwSceneRendererDX11.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwShadowLayerRendererDX11.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwShadowsOnlyRendererDX11.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwSinglePassRendererDX11.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwTestRendererDX11.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwUVRendererDX11.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwVelocityMapRendererDX11.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwVelocityStateManager.hpp">
+      <Filter>Shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\private\GlareDefDX11.h">
+      <Filter>Shdw\private</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\private\rasterizerUtil.hpp">
+      <Filter>Shdw\private</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\private\rtUtil.hpp">
+      <Filter>Shdw\private</Filter>
+    </ClInclude>
+    <ClInclude Include="may\mayFragCreate.hpp">
+      <Filter>may</Filter>
+    </ClInclude>
+    <ClInclude Include="may\mayPackage.hpp">
+      <Filter>may</Filter>
+    </ClInclude>
+    <ClInclude Include="hair\hairModelFrag.hpp">
+      <Filter>Hair</Filter>
+    </ClInclude>
+    <ClInclude Include="hair\hairPackage.hpp">
+      <Filter>Hair</Filter>
+    </ClInclude>
+    <ClInclude Include="hair\HairRendererDX11.hpp">
+      <Filter>Hair</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsDX11Layer.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="G2d\private\g2dDebugDisplay.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dDepthStencilBufferDX11.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dDX11GlobalWin.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dDX11SurfaceUtil.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dFontUtilDX11.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="g2d\private\g2dFullscreenQuad.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dImageCreateDX11.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dImageDrawUtilDX11.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dImageDX11.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dImageSaveDX11.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dRenderTargetDX11.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dRenderTargetTextureDX11.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dResourceCounterDX11.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dScreenCaptureUtilDX11.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dSurfaceLoaderDX11.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dSystemDX11.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dTextureDX11.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dWindowDrawUtilDX11.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dWindowDX11.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dWindowPrimaryDX11.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dBlendStateMgr.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dCubeMapRendererDX11.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dDepthMapRendererDX11.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dDepthStencilStateMgr.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dDrawStyleUtilDX11.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dDX11BufferUtil.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dDX11GlobalWin.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dDX11TextureUtil.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dDX11Util.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dFogDX11.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dLightMgrDX11.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dPickBufferRendererDX11.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dRasterizerStateMgr.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dRenderCameraSpace.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dRenderPass.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dRenderScreenSpace.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dRenderStateCache.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dRSMRendererDX11.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dSceneGlobal.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dSceneRendererDX11.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dSceneRendererDX11Create.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dSceneRenderUtil.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dStateMgr.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dSystemDX11.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dTextureRendererDX11.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dTransparencySortDX11.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dVSMRendererDX11.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effBake.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effBillboard.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effBlur.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effDOF.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effGlow.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effHDRLighting.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effLightGlow.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effMaskAlpha.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effOcclusion.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effOutline.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effParticle.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effPhong.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effRamp.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effShaderArray.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effShaderBaseDX11.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effShaderParamsDX11.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effShaderSDKDX11.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effShaderUtilWin.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effSolid.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effStrandHair.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effTextured.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matCubeRenderTargetTexture.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matDX11GlobalWin.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matMipTexture.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matPlainTexture.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matReflectiveShadowMap.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matRenderTargetTexture.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matShadowMap.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matStaticCubeTexture.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matTextureDX11.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matTextureLoaderDDSWin.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matTextureLoaderHDRWin.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matTextureLoaderTGAWin.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matTextureLoaderWin.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matTextureMgrDX11.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matVolumeTexture.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
+    <ClCompile Include="bump\private\bumpBufferUtil.cpp">
+      <Filter>Bump\private</Filter>
+    </ClCompile>
+    <ClCompile Include="bump\private\bumpBumpRenderer.cpp">
+      <Filter>Bump\private</Filter>
+    </ClCompile>
+    <ClCompile Include="bump\private\bumpFragmentCreate.cpp">
+      <Filter>Bump\private</Filter>
+    </ClCompile>
+    <ClCompile Include="bump\private\bumpPackage.cpp">
+      <Filter>Bump\private</Filter>
+    </ClCompile>
+    <ClCompile Include="bump\private\bumpTriMeshBumpFrag.cpp">
+      <Filter>Bump\private</Filter>
+    </ClCompile>
+    <ClCompile Include="bump\private\bumpVertexBuffer.cpp">
+      <Filter>Bump\private</Filter>
+    </ClCompile>
+    <ClCompile Include="bump\private\bumpVertexDecl.cpp">
+      <Filter>Bump\private</Filter>
+    </ClCompile>
+    <ClCompile Include="tmesh\private\tmeshBVH.cpp">
+      <Filter>Tmesh\private</Filter>
+    </ClCompile>
+    <ClCompile Include="tmesh\private\tmeshFrag.cpp">
+      <Filter>Tmesh\private</Filter>
+    </ClCompile>
+    <ClCompile Include="tmesh\private\tmeshIndexBuffer.cpp">
+      <Filter>Tmesh\private</Filter>
+    </ClCompile>
+    <ClCompile Include="tmesh\private\tmeshOptimizedBVH.cpp">
+      <Filter>Tmesh\private</Filter>
+    </ClCompile>
+    <ClCompile Include="tmesh\private\tmeshPackage.cpp">
+      <Filter>Tmesh\private</Filter>
+    </ClCompile>
+    <ClCompile Include="tmesh\private\tmeshVertexBuffer.cpp">
+      <Filter>Tmesh\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\GlareDefDX11.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\rasterizerUtil.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\rtUtil.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwAOPreviewRendererDX11.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwAOVolumesRendererDX11.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwBakingRenderer.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwCubeMapRendererDX11.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwDepthRendererDX11.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwFrameBufferMgr.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwGIPreviewRendererDX11.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwGlowRendererDX11.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwHDRRendererDX11.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwMaterialsRendererDX11.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwNormalRendererDX11.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwOpacityMapRendererDX11.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPackage.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassAlphaFill.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassAmbient.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassAOVolumes.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassDepth.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassDOF.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassEnvBackground.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassEnvironment.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassFog.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassGIVolumes.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassGlow.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassHair.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassLit.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassLPVGI.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassMapNormalsToScreen.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassMaterials.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassNormals.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassOpacity.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassOutline.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassPostShader.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassSSAO.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassSSGI.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassToneMap.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassTransparent.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassTraversal.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassVelocity.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassZFill.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPlanarReflectionRendererDX11.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwRayTraceRenderer.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwReflectionsOnlyRendererDX11.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwSceneRendererCreate.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwSceneRendererDX11.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwShadowLayerRendererDX11.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwShadowsOnlyRendererDX11.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwSinglePassRendererDX11.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwTestRendererDX11.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwUVRendererDX11.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwVelocityMapRendererDX11.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwVelocityStateManager.cpp">
+      <Filter>Shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="may\private\mayFragCreate.cpp">
+      <Filter>may\private</Filter>
+    </ClCompile>
+    <ClCompile Include="may\private\mayPackage.cpp">
+      <Filter>may\private</Filter>
+    </ClCompile>
+    <ClCompile Include="hair\private\hairModelFrag.cpp">
+      <Filter>Hair\private</Filter>
+    </ClCompile>
+    <ClCompile Include="hair\private\hairPackage.cpp">
+      <Filter>Hair\private</Filter>
+    </ClCompile>
+    <ClCompile Include="hair\private\HairRendererDX11.cpp">
+      <Filter>Hair\private</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsDX11Layer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuildStep Include="Eff\private\Wrappers\Footer.hlsl">
+      <Filter>Eff\private\Wrappers</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="Eff\private\Wrappers\Footer_End.hpp">
+      <Filter>Eff\private\Wrappers</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="Eff\private\Wrappers\Footer_Start.hpp">
+      <Filter>Eff\private\Wrappers</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="Eff\private\Wrappers\Header.hlsl">
+      <Filter>Eff\private\Wrappers</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="Eff\private\Wrappers\Header_End.hpp">
+      <Filter>Eff\private\Wrappers</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="Eff\private\Wrappers\Header_Start.hpp">
+      <Filter>Eff\private\Wrappers</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="Eff\private\Wrappers\ShaderCompiler_Script.py">
+      <Filter>Eff\private\Wrappers</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="Eff\private\Wrappers\ShaderStrings.hpp">
+      <Filter>Eff\private\Wrappers</Filter>
+    </CustomBuildStep>
+  </ItemGroup>
+</Project>

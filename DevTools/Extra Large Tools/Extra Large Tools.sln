@@ -1,0 +1,60 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodePlugIn", "CodePlugIn\CodePlugIn.csproj", "{F1998F8C-26D3-4D4A-9882-C10008C0F8E8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AF5A91AB-5918-4FF5-BC65-07B554DADDC0} = {AF5A91AB-5918-4FF5-BC65-07B554DADDC0}
+	EndProjectSection
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "CodePlugInSetup", "CodePlugIn\CodePlugInSetup\CodePlugInSetup.vdproj", "{1F8DC5D3-A937-4F27-8053-73FAB2A314F8}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevEnvLib", "DevEnvLib\DevEnvLib.csproj", "{951A2732-AB71-4C70-A8EC-0A532D894A51}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommentBuilder", "CommentBuilder\CommentBuilder.csproj", "{9DD483EB-4130-430A-8797-E30BC0037141}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CodeModelLib", "CodeModelLib\CodeModelLib.vcproj", "{651EB4F1-94DB-4DB2-9769-57C1EB9DEDA8}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeExplorer", "CodeExplorer\CodeExplorer.csproj", "{AF5A91AB-5918-4FF5-BC65-07B554DADDC0}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{F1998F8C-26D3-4D4A-9882-C10008C0F8E8}.Debug.ActiveCfg = Debug|.NET
+		{F1998F8C-26D3-4D4A-9882-C10008C0F8E8}.Debug.Build.0 = Debug|.NET
+		{F1998F8C-26D3-4D4A-9882-C10008C0F8E8}.Release.ActiveCfg = Release|.NET
+		{F1998F8C-26D3-4D4A-9882-C10008C0F8E8}.Release.Build.0 = Release|.NET
+		{1F8DC5D3-A937-4F27-8053-73FAB2A314F8}.Debug.ActiveCfg = Debug
+		{1F8DC5D3-A937-4F27-8053-73FAB2A314F8}.Release.ActiveCfg = Release
+		{951A2732-AB71-4C70-A8EC-0A532D894A51}.Debug.ActiveCfg = Debug|.NET
+		{951A2732-AB71-4C70-A8EC-0A532D894A51}.Debug.Build.0 = Debug|.NET
+		{951A2732-AB71-4C70-A8EC-0A532D894A51}.Release.ActiveCfg = Release|.NET
+		{951A2732-AB71-4C70-A8EC-0A532D894A51}.Release.Build.0 = Release|.NET
+		{9DD483EB-4130-430A-8797-E30BC0037141}.Debug.ActiveCfg = Debug|.NET
+		{9DD483EB-4130-430A-8797-E30BC0037141}.Debug.Build.0 = Debug|.NET
+		{9DD483EB-4130-430A-8797-E30BC0037141}.Release.ActiveCfg = Release|.NET
+		{9DD483EB-4130-430A-8797-E30BC0037141}.Release.Build.0 = Release|.NET
+		{651EB4F1-94DB-4DB2-9769-57C1EB9DEDA8}.Debug.ActiveCfg = Debug|Win32
+		{651EB4F1-94DB-4DB2-9769-57C1EB9DEDA8}.Debug.Build.0 = Debug|Win32
+		{651EB4F1-94DB-4DB2-9769-57C1EB9DEDA8}.Release.ActiveCfg = Release|Win32
+		{651EB4F1-94DB-4DB2-9769-57C1EB9DEDA8}.Release.Build.0 = Release|Win32
+		{AF5A91AB-5918-4FF5-BC65-07B554DADDC0}.Debug.ActiveCfg = Debug|.NET
+		{AF5A91AB-5918-4FF5-BC65-07B554DADDC0}.Debug.Build.0 = Debug|.NET
+		{AF5A91AB-5918-4FF5-BC65-07B554DADDC0}.Release.ActiveCfg = Release|.NET
+		{AF5A91AB-5918-4FF5-BC65-07B554DADDC0}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

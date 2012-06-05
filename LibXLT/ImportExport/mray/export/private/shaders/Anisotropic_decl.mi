@@ -1,0 +1,78 @@
+#must match the struct in the cpp file for this shader!
+
+$ifndef "sgpu_illum_Anisotropic_mi"
+set "sgpu_illum_Anisotropic_mi" "true"
+
+declare shader
+	color "sgpu_illum_Anisotropic" (
+		boolean			"g_isPlanar",
+		color texture	"cubeMap",
+		color texture	"g_planarMap",
+		color			"g_diffuse",
+		color texture	"diffuseMap",
+		color			"g_emissive",
+		color texture	"emissiveMap",
+		scalar			"g_emissiveIntensity",
+		color			"g_specular",
+		color texture	"specularMap",
+		scalar			"SpecularColorPower",
+		color texture	"specularColorPowerMap",
+		scalar			"g_shininess",
+		color texture	"shininessMap",
+		scalar			"g_UPower",
+		scalar			"g_VPower",
+		color texture	"anisotropyMap",
+		scalar			"g_transparency",
+		color texture	"transparencyMap",
+		scalar			"g_reflectivity",
+		scalar			"fresnelPower",
+		scalar			"fresnelBias",
+		scalar			"reflScale",
+		scalar			"g_reflectionEnvAngle",
+		color texture	"CubeReflMap",
+		color texture	"reflectFactorMap",
+		scalar			"g_specularBias",
+		scalar			"g_specularBias2",
+	
+		color texture	"diffuseEnvMap",	
+		color texture	"specularEnvMap",		
+		color			"g_envDiffuseColor",
+		color			"g_envSpecularColor",
+		scalar			"g_diffuseFactor",
+		scalar			"g_diffuseEnvAngle",	
+		scalar			"g_specularFactor",
+		scalar			"g_specularEnvAngle",
+		
+		boolean			"reflEnable",
+		
+		scalar			"u_scale",
+		scalar			"v_scale",
+		scalar			"u_offset",
+		scalar			"v_offset",
+		scalar			"uv_rotation",
+	
+		color texture	"normalMap",
+		scalar			"normalMapScale",
+		
+		boolean			"bEnableAO",		
+		color			"aoColor",
+		scalar			"aoRadiusNear",
+		scalar			"aoRadiusFar",
+		scalar			"aoAngleBias",
+		scalar			"aoAttenuation",
+		scalar			"aoContrast",
+		scalar			"aoCamNear",
+		scalar			"aoCamFar",
+		scalar			"aoSamples",
+		
+		boolean			"bEnableGI",
+		boolean			"bEnableSWL",
+		
+		integer			"mode",      # light selection mode 0,1,2,4
+		array light		"lights"
+	)
+	version 1
+	apply material
+end declare
+
+$endif

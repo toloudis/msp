@@ -1,0 +1,220 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{b6b213dc-78e1-4cf0-9b04-9c7456592f57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Special">
+      <UniqueIdentifier>{f2b2925a-51da-4959-96b4-346dc8462563}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\PostEffect">
+      <UniqueIdentifier>{4872f2bf-223d-41a6-9e89-dee8b969e020}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Anisotropic.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Bake.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Blinn.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="BlinnReflection.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="CarPaint.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Cartoon.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Default.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="FC3DBlinn.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="FC3DPhong.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="FC3DPhongTransparent.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="FC3DSpecularFresnel.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="FC3DSubSurfaceScatter_wBlinnSpecular.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Hair_SH.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Lambert.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Phong.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Phong_wBump.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="PhongReflection.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Simple.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="SpecularFresnel.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="SubSurfaceScatter.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="SubSurfaceScatter_wBlinnSpecular.fx">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Special\AAEdgeFilter.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\AOVolumes.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Billboard.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Blur.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Brushstroke.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\DepthMap.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\DepthRender.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\DOF.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\EnvBackground.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Fog.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\GIVolumes.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Glow.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\HairDefault.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\HDRLighting.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\IlluminationOnly.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\LightGlow.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\LPV_GI.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\MaskAlpha.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\MotionBlur.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\NoiseVolume.dds">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\NormalMap.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\OpacityRender.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Outline.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Particle.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\PostAlphaMatte.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Ramp.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\ReflectiveShadowMap.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\ShadowsOnly.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Snow.dds">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Solid.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\ssaoBilateralBlurEngine.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\ssaoMultiHorizonBasedAO.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\ssgiMultiHorizonBasedGI.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\testtess.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\VelocityRender.fx">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="PostEffect\BlackAndWhite.fx">
+      <Filter>Shaders\PostEffect</Filter>
+    </None>
+    <None Include="PostEffect\GradientMap.fx">
+      <Filter>Shaders\PostEffect</Filter>
+    </None>
+    <None Include="PostEffect\Sepia.fx">
+      <Filter>Shaders\PostEffect</Filter>
+    </None>
+    <None Include="PostEffect\Sketch.fx">
+      <Filter>Shaders\PostEffect</Filter>
+    </None>
+    <None Include="shadersDX11.proj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Globals.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Lighting.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Skinning.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Support.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="SupportHair.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Tessellate.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="PostEffect\Helper.h">
+      <Filter>Shaders\PostEffect</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

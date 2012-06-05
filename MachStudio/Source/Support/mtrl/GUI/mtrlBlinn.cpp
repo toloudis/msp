@@ -1,0 +1,379 @@
+/********************************************************************************************\
+**  mtrlBlinn.cpp
+**
+**
+**  StudioGPU
+**  Copyright(C) 2007 - All Rights Reserved
+\********************************************************************************************/
+#include "Support/mtrl/GUI/mtrlBlinn.hpp"
+
+#include "Core/env/envSTLHelpers.hpp"
+#include "Core/fs/fsResourceTracker.hpp"
+#include "Core/it/itStringUtil.hpp"
+#include "Core/prty/prtyCheckBoxUIInfo.hpp"
+#include "Core/prty/prtyColorRGBAEditUIInfo.hpp"
+#include "Core/prty/prtyComboBoxUIInfo.hpp"
+#include "Core/prty/prtyFileChooserUIInfo.hpp"
+#include "Core/prty/prtyFloatEditUIInfo.hpp"
+#include "Core/prty/prtyNumericUpDownUIInfo.hpp"
+#include "Core/prty/prtyRangedFloatUIInfo.hpp"
+#include "Core/prty/prtyTextBoxUIInfo.hpp"
+#include "Core/prty/prtyVector3dEditUIInfo.hpp"
+#include "Core/prty/prtyVector3dEditUpDownUIInfo.hpp"
+#include "Graphics/eff/effBlinnData.hpp"
+#include "Graphics/mat/matMaterial.hpp"
+#include "Graphics/mdl/mdlMaterialInfo.hpp"
+
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+mtrlBlinn::mtrlBlinn(mdlMaterialInfo& i_MatData, 
+					 effBlinnData* i_pShaderData,
+					 const fsLocator& i_TextureDir)
+:	mtrlShaderObject(i_TextureDir),
+	m_Material(i_MatData),
+	m_pShaderData(i_pShaderData)
+{
+	// Set values into properties
+	m_Data.m_ColorAmbient.SetValue(m_pShaderData->m_ColorAmbient );
+	m_Data.m_ColorDiffuse.SetValue(m_pShaderData->m_ColorDiffuse );
+	m_Data.m_ColorSpecular.SetValue(m_pShaderData->m_ColorSpecular );
+	m_Data.m_ColorEmissive.SetValue(m_pShaderData->m_ColorEmissive );
+	m_Data.m_SpecularPower.SetValue(m_pShaderData->m_SpecularPower );
+	m_Data.m_BumpMapScale.SetValue(m_pShaderData->m_BumpMapScale );
+	m_Data.m_Reflectivity.SetValue(m_pShaderData->m_Reflectivity );
+	m_Data.m_IOR.SetValue(m_pShaderData->m_IOR );
+	m_Data.m_DiffuseRoughness.SetValue(m_pShaderData->m_DiffuseRoughness );
+	m_Data.m_Transparency.SetValue(m_pShaderData->m_Transparency );
+	m_Data.m_UScale.SetValue(m_pShaderData->m_UV.m_UScale );
+	m_Data.m_VScale.SetValue(m_pShaderData->m_UV.m_VScale );
+	m_Data.m_UTrans.SetValue(m_pShaderData->m_UV.m_UTrans );
+	m_Data.m_VTrans.SetValue(m_pShaderData->m_UV.m_VTrans );
+	m_Data.m_UVAngle.SetValue(m_pShaderData->m_UV.m_UVAngle );
+
+	m_Data.m_TextureDiffuse.SetValue(itString(m_pShaderData->m_NameDiffuse.c_str()));
+	m_Data.m_TextureSpecular.SetValue(itString(m_pShaderData->m_NameSpecular.c_str()));
+	m_Data.m_TextureGloss.SetValue(itString(m_pShaderData->m_NameGloss.c_str()));
+	m_Data.m_TextureEnvironment.SetValue(itString(m_pShaderData->m_NameEnvironment.c_str()));
+	m_Data.m_TextureNormalMap.SetValue(itString(m_pShaderData->m_NameNormalMap.c_str()));
+	m_Data.m_TextureReflectFactorMap.SetValue(itString(m_pShaderData->m_NameReflectFactorMap.c_str()));
+	m_Data.m_TextureIORMap.SetValue(itString(m_pShaderData->m_NameIORMap.c_str()));
+	m_Data.m_TextureTransparencyMap.SetValue(itString(m_pShaderData->m_NameTransparencyMap.c_str()));
+
+	// Create channels for the properties (this will set the "original value"
+	// for the channels to the value in the material data).
+	this->AddColorChannel(m_Material.GetMaterialName(), m_Data.m_ColorAmbient);
+	this->AddColorChannel(m_Material.GetMaterialName(), m_Data.m_ColorDiffuse);
+	this->AddColorChannel(m_Material.GetMaterialName(), m_Data.m_ColorSpecular);
+	this->AddColorChannel(m_Material.GetMaterialName(), m_Data.m_ColorEmissive);
+	this->AddFloatChannel(m_Material.GetMaterialName(), m_Data.m_SpecularPower);
+	this->AddFloatChannel(m_Material.GetMaterialName(), m_Data.m_BumpMapScale);
+	this->AddFloatChannel(m_Material.GetMaterialName(), m_Data.m_Reflectivity);
+	this->AddFloatChannel(m_Material.GetMaterialName(), m_Data.m_IOR);
+	this->AddFloatChannel(m_Material.GetMaterialName(), m_Data.m_DiffuseRoughness);
+	AddFloatChannel(m_Material.GetMaterialName(), m_Data.m_Transparency);
+	this->AddFloatChannel(m_Material.GetMaterialName(), m_Data.m_UScale);
+	this->AddFloatChannel(m_Material.GetMaterialName(), m_Data.m_VScale);
+	this->AddFloatChannel(m_Material.GetMaterialName(), m_Data.m_UTrans);
+	this->AddFloatChannel(m_Material.GetMaterialName(), m_Data.m_VTrans);
+	this->AddFloatChannel(m_Material.GetMaterialName(), m_Data.m_UVAngle);
+	this->AddTextureChannel(m_Material.GetMaterialName(), m_Data.m_TextureDiffuse);
+	this->AddTextureChannel(m_Material.GetMaterialName(), m_Data.m_TextureSpecular);
+	this->AddTextureChannel(m_Material.GetMaterialName(), m_Data.m_TextureGloss);
+	this->AddTextureChannel(m_Material.GetMaterialName(), m_Data.m_TextureEnvironment);
+	this->AddTextureChannel(m_Material.GetMaterialName(), m_Data.m_TextureNormalMap);
+	this->AddTextureChannel(m_Material.GetMaterialName(), m_Data.m_TextureReflectFactorMap);
+	AddTextureChannel(m_Material.GetMaterialName(), m_Data.m_TextureTransparencyMap);
+
+	RegisterData(i_TextureDir);
+}
+
+//------------------------------------------------------------------------
+// Set a new directory for the material in order to find the textures.
+// Called when the material has been exported to the material library.
+//------------------------------------------------------------------------
+//virtual 
+void mtrlBlinn::UpdateTextureDirectory(const fsLocator &i_TextureDir)
+{
+	mtrlShaderObject::UpdateTextureDirectory(i_TextureDir);
+
+	m_pDiffuseFileChooser->SetInitialDirectory( i_TextureDir );
+	m_pDiffuseFileChooser->UpdateControl();
+
+	m_pSpecularFileChooser->SetInitialDirectory( i_TextureDir );
+	m_pSpecularFileChooser->UpdateControl();
+
+	m_pGlossFileChooser->SetInitialDirectory( i_TextureDir );
+	m_pGlossFileChooser->UpdateControl();
+
+	m_pEnvironmentFileChooser->SetInitialDirectory( i_TextureDir );
+	m_pEnvironmentFileChooser->UpdateControl();
+
+	m_pNormalFileChooser->SetInitialDirectory( i_TextureDir );
+	m_pNormalFileChooser->UpdateControl();
+
+	m_pReflectFactorFileChooser->SetInitialDirectory( i_TextureDir );
+	m_pReflectFactorFileChooser->UpdateControl();
+
+	m_pIORFileChooser->SetInitialDirectory( i_TextureDir );
+	m_pIORFileChooser->UpdateControl();
+
+	m_pTransparencyFileChooser->SetInitialDirectory( i_TextureDir );
+	m_pTransparencyFileChooser->UpdateControl();
+}
+
+//--------------------------------------------------------------------
+// Get list of used textures in order to support copying them
+// to the material library when exporting.
+//--------------------------------------------------------------------
+//virtual 
+void mtrlBlinn::GetTextureList(std::vector<fsLocator>& o_TextureList)
+{
+	if (m_Data.m_TextureDiffuse.GetValue().GetLength() > 0)
+		o_TextureList.push_back(LocateTexture(m_Data.m_TextureDiffuse.GetValue()));
+	if (m_Data.m_TextureSpecular.GetValue().GetLength() > 0)
+		o_TextureList.push_back(LocateTexture(m_Data.m_TextureSpecular.GetValue()));
+	if (m_Data.m_TextureGloss.GetValue().GetLength() > 0)
+		o_TextureList.push_back(LocateTexture(m_Data.m_TextureGloss.GetValue()));
+	if (m_Data.m_TextureEnvironment.GetValue().GetLength() > 0)
+		o_TextureList.push_back(LocateTexture(m_Data.m_TextureEnvironment.GetValue()));
+	if (m_Data.m_TextureNormalMap.GetValue().GetLength() > 0)
+		o_TextureList.push_back(LocateTexture(m_Data.m_TextureNormalMap.GetValue()));
+	if (m_Data.m_TextureReflectFactorMap.GetValue().GetLength() > 0)
+		o_TextureList.push_back(LocateTexture(m_Data.m_TextureReflectFactorMap.GetValue()));
+	if (m_Data.m_TextureIORMap.GetValue().GetLength() > 0)
+		o_TextureList.push_back(LocateTexture(m_Data.m_TextureIORMap.GetValue()));
+	if (m_Data.m_TextureTransparencyMap.GetValue().GetLength() > 0)
+		o_TextureList.push_back(LocateTexture(m_Data.m_TextureTransparencyMap.GetValue()));
+}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+void mtrlBlinn::RegisterData(const fsLocator& i_TextureDir)
+{
+	prtyPropertyUIInfo* pPUII;
+	pPUII  = new prtyColorRGBAEditUIInfo(&(m_Data.m_ColorAmbient), "Color", "Ambient Color of the object");
+	AddProperty( pPUII );
+	pPUII  = new prtyColorRGBAEditUIInfo(&(m_Data.m_ColorDiffuse), "Color", "Diffuse Color of the object");
+	AddProperty( pPUII );
+	pPUII  = new prtyColorRGBAEditUIInfo(&(m_Data.m_ColorSpecular), "Color", "Specular Color of the object");
+	AddProperty( pPUII );
+	pPUII  = new prtyColorRGBAEditUIInfo(&(m_Data.m_ColorEmissive), "Color", "Emissive Color of the object");
+	AddProperty( pPUII );
+
+	m_pDiffuseFileChooser = new prtyFileChooserUIInfo(&(m_Data.m_TextureDiffuse), "Maps", "Diffuse Map");
+	m_pDiffuseFileChooser->SetInitialDirectory( i_TextureDir );
+	AddProperty( m_pDiffuseFileChooser );
+	m_pSpecularFileChooser = new prtyFileChooserUIInfo(&(m_Data.m_TextureSpecular), "Maps", "Specular Map");
+	m_pSpecularFileChooser->SetInitialDirectory( i_TextureDir );
+	AddProperty( m_pSpecularFileChooser );
+	m_pEnvironmentFileChooser = new prtyFileChooserUIInfo(&(m_Data.m_TextureEnvironment), "Maps", "Environment Map");
+	m_pEnvironmentFileChooser->SetInitialDirectory( i_TextureDir );
+	AddProperty( m_pEnvironmentFileChooser );
+	m_pReflectFactorFileChooser = new prtyFileChooserUIInfo(&(m_Data.m_TextureReflectFactorMap), "Maps", "Reflection Factor Map");
+	m_pReflectFactorFileChooser->SetInitialDirectory( i_TextureDir );
+	AddProperty( m_pReflectFactorFileChooser );
+	m_pNormalFileChooser = new prtyFileChooserUIInfo(&(m_Data.m_TextureNormalMap), "Maps", "Normal Map");
+	m_pNormalFileChooser->SetInitialDirectory( i_TextureDir );
+	AddProperty( m_pNormalFileChooser );
+	m_pTransparencyFileChooser = new prtyFileChooserUIInfo(&(m_Data.m_TextureTransparencyMap), "Maps", "Transparency Map");
+	m_pTransparencyFileChooser->SetInitialDirectory( i_TextureDir );
+	AddProperty( m_pTransparencyFileChooser );
+
+	prtyRangedFloatUIInfo* pRFUII = NULL;
+	pRFUII  = new prtyRangedFloatUIInfo(&(m_Data.m_DiffuseRoughness), "Diffuse", "Oren-Nayar Diffuse Roughness");
+	pRFUII->SetMinimum(0.0f);
+	pRFUII->SetMaximum(1.0f);
+	AddProperty( pRFUII );
+
+	pRFUII  = new prtyRangedFloatUIInfo(&(m_Data.m_SpecularPower), "Specular", "Blinn eccentricity factor");
+	pRFUII->SetMinimum(0.0f);
+	pRFUII->SetMaximum(1.0f);
+	AddProperty( pRFUII );
+	m_pGlossFileChooser = new prtyFileChooserUIInfo(&(m_Data.m_TextureGloss), "Specular", "Shininess Map");
+	m_pGlossFileChooser->SetInitialDirectory( i_TextureDir );
+	AddProperty( m_pGlossFileChooser );
+	pRFUII  = new prtyRangedFloatUIInfo(&(m_Data.m_IOR), "Specular", "Index Of Refraction");
+	pRFUII->SetMinimum(1.0f);
+	pRFUII->SetMaximum(100.0f);
+	AddProperty( pRFUII );
+	m_pIORFileChooser = new prtyFileChooserUIInfo(&(m_Data.m_TextureIORMap), "Specular", "IOR Map");
+	m_pIORFileChooser->SetInitialDirectory( i_TextureDir );
+	AddProperty( m_pIORFileChooser );
+
+	pRFUII  = new prtyRangedFloatUIInfo(&(m_Data.m_BumpMapScale), "Bump", "Bump map scale");
+	pRFUII->SetMinimum(0.0f);
+	pRFUII->SetMaximum(20.0f);
+	AddProperty( pRFUII );
+	pRFUII  = new prtyRangedFloatUIInfo(&(m_Data.m_Reflectivity), "Reflection", "Reflectivity");
+	pRFUII->SetMinimum(0.0f);
+	pRFUII->SetMaximum(1.0f);
+	AddProperty( pRFUII );
+	pRFUII  = new prtyRangedFloatUIInfo(&(m_Data.m_UScale), "Texture", "U Scale");
+	pRFUII->SetMinimum(-100.0f);
+	pRFUII->SetMaximum(100.0f);
+	AddProperty( pRFUII );
+	pRFUII  = new prtyRangedFloatUIInfo(&(m_Data.m_VScale), "Texture", "V Scale");
+	pRFUII->SetMinimum(-100.0f);
+	pRFUII->SetMaximum(100.0f);
+	AddProperty( pRFUII );
+	pRFUII  = new prtyRangedFloatUIInfo(&(m_Data.m_UTrans), "Texture", "U Translate");
+	pRFUII->SetMinimum(0.0f);
+	pRFUII->SetMaximum(1.0f);
+	AddProperty( pRFUII );
+	pRFUII  = new prtyRangedFloatUIInfo(&(m_Data.m_VTrans), "Texture", "V Translate");
+	pRFUII->SetMinimum(0.0f);
+	pRFUII->SetMaximum(1.0f);
+	AddProperty( pRFUII );
+	pRFUII  = new prtyRangedFloatUIInfo(&(m_Data.m_UVAngle), "Texture", "UV Rotation angle");
+	pRFUII->SetMinimum(-180.0f);
+	pRFUII->SetMaximum(180.0f);
+	AddProperty( pRFUII );
+	pRFUII  = new prtyRangedFloatUIInfo(&(m_Data.m_Transparency), "Transparency", "Transparency" );
+	pRFUII->SetMinimum(0.0f);
+	pRFUII->SetMaximum(1.0f);
+	AddProperty( pRFUII );
+
+	m_Data.m_ColorAmbient.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::Update));
+	m_Data.m_ColorDiffuse.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::Update));
+	m_Data.m_ColorSpecular.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::Update));
+	m_Data.m_ColorEmissive.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::Update));
+	m_Data.m_SpecularPower.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::Update));
+	m_Data.m_BumpMapScale.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::Update));
+	m_Data.m_Reflectivity.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::Update));
+	m_Data.m_IOR.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::Update));
+	m_Data.m_DiffuseRoughness.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::Update));
+	m_Data.m_Transparency.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::Update));
+	m_Data.m_UScale.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::Update));
+	m_Data.m_VScale.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::Update));
+	m_Data.m_UTrans.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::Update));
+	m_Data.m_VTrans.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::Update));
+	m_Data.m_UVAngle.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::Update));
+	m_Data.m_TextureDiffuse.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::UpdateTextureDiffuse));
+	m_Data.m_TextureSpecular.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::UpdateTextureSpecular));
+	m_Data.m_TextureGloss.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::UpdateTextureGloss));
+	m_Data.m_TextureEnvironment.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::UpdateTextureEnvironment));
+	m_Data.m_TextureNormalMap.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::UpdateTextureNormal));
+	m_Data.m_TextureReflectFactorMap.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::UpdateTextureReflectFactor));
+	m_Data.m_TextureIORMap.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::UpdateTextureIOR));
+	m_Data.m_TextureTransparencyMap.AddCallback(new prtyCallbackWrapper<mtrlBlinn>(this, &mtrlBlinn::UpdateTextureTransparency));
+}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+void mtrlBlinn::Update(prtyProperty *i_pProperty, bool i_bDirty)
+{
+	if (i_bDirty)
+	{
+		effBlinnData* pData = dynamic_cast<effBlinnData*>(m_Material.ShaderData());
+		DBG_ASSERT0(pData != NULL, "mtrlBlinn expected effBlinnData");
+		set_shader_data(pData);	// set into material template
+	}
+	set_shader_data(m_pShaderData);	// set into material's shader data directly
+}
+
+//----------------------------------------------------------------------------
+// Set shader data from material into shader data
+//----------------------------------------------------------------------------
+void mtrlBlinn::set_shader_data(effBlinnData* i_pData)
+{
+	i_pData->m_ColorAmbient = m_Data.m_ColorAmbient.GetValue();
+	i_pData->m_ColorDiffuse = m_Data.m_ColorDiffuse.GetValue();
+	i_pData->m_ColorSpecular = m_Data.m_ColorSpecular.GetValue();
+	i_pData->m_ColorEmissive = m_Data.m_ColorEmissive.GetValue();
+	i_pData->m_SpecularPower = m_Data.m_SpecularPower.GetValue();
+	i_pData->m_BumpMapScale = m_Data.m_BumpMapScale.GetValue();
+	i_pData->m_Reflectivity = m_Data.m_Reflectivity.GetValue();
+	i_pData->m_IOR = m_Data.m_IOR.GetValue();
+	i_pData->m_DiffuseRoughness = m_Data.m_DiffuseRoughness.GetValue();
+	i_pData->m_Transparency = m_Data.m_Transparency.GetValue();
+	i_pData->m_UV.m_UScale = m_Data.m_UScale.GetValue();
+	i_pData->m_UV.m_VScale = m_Data.m_VScale.GetValue();
+	i_pData->m_UV.m_UTrans = m_Data.m_UTrans.GetValue();
+	i_pData->m_UV.m_VTrans = m_Data.m_VTrans.GetValue();
+	i_pData->m_UV.m_UVAngle = m_Data.m_UVAngle.GetValue();
+}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+void mtrlBlinn::UpdateTextureDiffuse(prtyProperty *i_pProperty, bool i_bDirty)
+{
+	effBlinnData* pData = dynamic_cast<effBlinnData*>(m_Material.ShaderData());
+	DBG_ASSERT0(pData != NULL, "mtrlBlinn expected effBlinnData");
+	UpdateTexture(m_Data.m_TextureDiffuse, i_bDirty, 
+		m_pShaderData->m_NameDiffuse, m_pShaderData->m_TextureDiffuse,
+		pData->m_NameDiffuse, pData->m_TextureDiffuse);
+}
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+void mtrlBlinn::UpdateTextureSpecular(prtyProperty *i_pProperty, bool i_bDirty)
+{
+	effBlinnData* pData = dynamic_cast<effBlinnData*>(m_Material.ShaderData());
+	DBG_ASSERT0(pData != NULL, "mtrlBlinn expected effBlinnData");
+	UpdateTexture(m_Data.m_TextureSpecular, i_bDirty,
+		m_pShaderData->m_NameSpecular, m_pShaderData->m_TextureSpecular,
+		pData->m_NameSpecular, pData->m_TextureSpecular);
+}
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+void mtrlBlinn::UpdateTextureGloss(prtyProperty *i_pProperty, bool i_bDirty)
+{
+	effBlinnData* pData = dynamic_cast<effBlinnData*>(m_Material.ShaderData());
+	DBG_ASSERT0(pData != NULL, "mtrlBlinn expected effBlinnData");
+	UpdateTexture(m_Data.m_TextureGloss, i_bDirty, 
+		m_pShaderData->m_NameGloss, m_pShaderData->m_TextureGloss,
+		pData->m_NameGloss, pData->m_TextureGloss);
+}
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+void mtrlBlinn::UpdateTextureEnvironment(prtyProperty *i_pProperty, bool i_bDirty)
+{
+	effBlinnData* pData = dynamic_cast<effBlinnData*>(m_Material.ShaderData());
+	DBG_ASSERT0(pData != NULL, "mtrlBlinn expected effBlinnData");
+	UpdateTexture(m_Data.m_TextureEnvironment, i_bDirty, 
+		m_pShaderData->m_NameEnvironment, m_pShaderData->m_TextureEnvironment,
+		pData->m_NameEnvironment, pData->m_TextureEnvironment);
+}
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+void mtrlBlinn::UpdateTextureNormal(prtyProperty *i_pProperty, bool i_bDirty)
+{
+	effBlinnData* pData = dynamic_cast<effBlinnData*>(m_Material.ShaderData());
+	DBG_ASSERT0(pData != NULL, "mtrlBlinn expected effBlinnData");
+	UpdateTexture(m_Data.m_TextureNormalMap, i_bDirty,
+		m_pShaderData->m_NameNormalMap, m_pShaderData->m_TextureNormalMap,
+		pData->m_NameNormalMap, pData->m_TextureNormalMap);
+}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+void mtrlBlinn::UpdateTextureReflectFactor(prtyProperty *i_pProperty, bool i_bDirty)
+{
+	effBlinnData* pData = dynamic_cast<effBlinnData*>(m_Material.ShaderData());
+	DBG_ASSERT0(pData != NULL, "mtrlBlinn expected effBlinnData");
+	UpdateTexture(m_Data.m_TextureReflectFactorMap, i_bDirty,
+		m_pShaderData->m_NameReflectFactorMap, m_pShaderData->m_TextureReflectFactorMap,
+		pData->m_NameReflectFactorMap, pData->m_TextureReflectFactorMap);
+}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+void mtrlBlinn::UpdateTextureIOR(prtyProperty *i_pProperty, bool i_bDirty)
+{
+	effBlinnData* pData = dynamic_cast<effBlinnData*>(m_Material.ShaderData());
+	DBG_ASSERT0(pData != NULL, "mtrlBlinn expected effBlinnData");
+	UpdateTexture(m_Data.m_TextureIORMap, i_bDirty,
+		m_pShaderData->m_NameIORMap, m_pShaderData->m_TextureIORMap,
+		pData->m_NameIORMap, pData->m_TextureIORMap);
+}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+void mtrlBlinn::UpdateTextureTransparency(prtyProperty *i_pProperty, bool i_bDirty)
+{
+	effBlinnData* pData = dynamic_cast<effBlinnData*>(m_Material.ShaderData());
+	DBG_ASSERT0(pData != NULL, "mtrlBlinn expected effBlinnData");
+	UpdateTexture(m_Data.m_TextureTransparencyMap, i_bDirty,
+		m_pShaderData->m_NameTransparencyMap, m_pShaderData->m_TextureTransparencyMap,
+		pData->m_NameTransparencyMap, pData->m_TextureTransparencyMap);
+}

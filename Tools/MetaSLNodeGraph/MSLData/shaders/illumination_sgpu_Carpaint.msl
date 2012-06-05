@@ -1,0 +1,218 @@
+/*****************************************************************************
+ * Test version of a base shader for sgpu test compiler.
+ *****************************************************************************/
+
+shader Illumination_sgpu_Carpaint
+{
+  input:    
+  Color g_diffuse = Color(1,1,1,1)
+  {	
+      display_name("Diffuse Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "diffuse color of surface" );
+  };
+  Color g_edgeColor = Color(1,1,1,1)
+  {	
+      display_name("Edge Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "color at the edge" );
+  };
+  float3 g_flakeMapNormal = float3(0,0,1)
+  {		
+      display_name("Flake Map normals");
+      hard_range(float3(-1,-1,-1),float3(1,1,1));
+      description( "Tangent space normal map for flakes" );
+  };
+  Color  g_flakeColor = Color(1,1,1,1)
+  {	
+      display_name("Flake Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "flake color" );
+  };
+  float g_flakeTolerance = 0
+  {		
+      display_name("Flake Tolerance");
+      hard_range(float(0),float(1));
+      description( "Cutoff level for how flakey it looks." );
+  };
+float g_IOR = 0.5
+  {		
+      display_name("Specular Roll Off");
+      hard_range(float(0),float(1));
+      description( "blinn specular index of refraction" );
+  };
+float g_IOR2 = 0.5
+  {		
+      display_name("Specular Roll Off 2");
+      hard_range(float(0),float(1));
+      description( "blinn specular index of refraction" );
+  };
+  Color  g_specular = Color(1,1,1,1)
+  {	
+      display_name("Specular Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "Color of first specular highlight" );
+  };
+  Color  g_specular2 = Color(1,1,1,1)
+  {	
+      display_name("Specular Color 2");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "Color of second specular highlight" );
+  };
+float g_shininess = 0.5
+  {		
+      display_name("Shininess");
+      hard_range(float(0),float(1));
+      description( "Blinn specular exponent controls size of highlight" );
+  };
+float g_shininess2 = 0.5
+  {		
+      display_name("Shininess 2");
+      hard_range(float(0),float(1));
+      description( "Blinn specular exponent controls size of highlight" );
+  };
+float fresnelClrPower = 4
+  {		
+      display_name("Color Fresnel Power");
+      hard_range(float(0),float(5));
+      description( "color fresnel exponent" );
+  };
+float fresnelClrBias = 0.2
+  {		
+      display_name("Color Fresnel Bias");
+      hard_range(float(0),float(1));
+      description( "Color Fresnel Bias" );
+  };
+
+  output:
+  Color result;
+  Color diffuse;
+  Color specular;
+
+
+	// fresnel approximation
+	float fastFresnel(float NdotE, float R0, float power)
+	{
+		// R(theta) = (1/2) ((g-c)/(g+c))^2 (1 + [ (c(g+c)-(eta)^2)/(c(g-c)+ (eta)^2) ]2)
+		// approximate:
+		// R(theta) ~= Ra(theta) = R(0) + (1-R(0))*(1-cos(theta))^5
+	   return R0 + (1.0-R0)*pow(abs(1.0 - saturate(NdotE)), power);
+	} 
+
+	float fresnel(float NdotE, float eta)
+	{
+		// eta = ni/nt.
+		// ni is usually 1 for air, and nt would be the IOR of the material.
+		// that means we might want 1/IOR for eta.
+
+		// R(theta) = (1/2) ((g-c)/(g+c))^2 (1 + [ (c(g+c)-(eta)^2)/(c(g-c)+ (eta)^2) ]2)
+		// where:
+		// cos(theta) = NdotV
+		// c = eta*cos(theta)
+		// g = sqrt(1 + c^2 - eta^2)
+
+		// Note: compute R0 on the CPU and provide as a
+		// constant; it is more efficient than computing R0 in
+		// the shader. R0 is:
+		// when theta = 0, c = eta and g = 1
+		float R0 = (1.0-eta)*(1.0-eta)/((1.0+eta)*(1.0+eta));
+		//float R0 = pow(1.0-eta, 2.0) / pow(1.0+eta, 2.0);
+		
+		// eye and normal are assumed to be normalized
+		return fastFresnel(NdotE, R0, 5.0);
+	}
+Color BlinnSpecular(float3 normal, float3 lightDir, float3 eyeDir, 
+	Color lSpecColor, Color sSpecColor, float eccentricity, float IOR)
+{
+	// eyeDir is passed as dir FROM shade point TO eye
+	// lightDir is passed as dir FROM shade point TO light
+
+	float3 H = normalize(lightDir + eyeDir);
+	// NdotH = cos a
+	float NdotH = dot(normal, H);
+	float NdotE = dot(normal, eyeDir);
+	float EdotH = dot(eyeDir, H);
+	float NdotL = dot(normal, lightDir);
+	
+	float Gb = 2 * NdotH * NdotE / EdotH;
+	float Gc = 2 * NdotH * NdotL / EdotH; 
+	float G = min(Gb, Gc);
+	G = min(1, G);
+	
+	// eccentricity varies from 0 to 1. 
+	// D3 = [ c^2 / (1 + cos^2(a)(c^2 - 1)) ]^2
+	float c2 = eccentricity*eccentricity;
+	float D3 = ( c2 / ( 1 + (NdotH*NdotH*(c2-1)) ) );
+	float D = D3*D3;
+	
+	// eta = ni/nt. assume air-material is the interface
+	float F = fresnel(NdotE, 1/(IOR+0.0001)); 
+
+	float specComp = D * G * F / NdotE;
+	specComp = max(specComp, 0);
+	return specComp * (lSpecColor * sSpecColor);
+}
+
+Color PaintShaderSpecular(float3 worldNormal, float3 lightDir, 
+						   float3 worldEyeDir, Color i_light)
+{
+	Color specular = BlinnSpecular(worldNormal, lightDir, -worldEyeDir, 
+		              i_light, g_specular, g_shininess, g_IOR);
+	Color specular2 = BlinnSpecular(worldNormal, lightDir, -worldEyeDir, 
+				       i_light, g_specular2, g_shininess2, g_IOR2);
+	return specular + specular2;
+}
+
+Color doFlakes(float3 worldEyeDir, float3 lightDir, float3x3 worldTanSpace)
+{
+	float3 worldFlakeNormal = normalize(worldTanSpace * g_flakeMapNormal );
+//	normalize(float3(dot(flakeNormal,IN.V.WorldTan.X),
+//		dot(flakeNormal,IN.V.WorldTan.Y),
+//		dot(flakeNormal,IN.V.WorldTan.Z)));
+
+	float3 sparkRefl = reflect( worldEyeDir, worldFlakeNormal );
+	float val = dot( sparkRefl, lightDir );
+	return (g_flakeColor * (val > g_flakeTolerance ? val : 0));	
+}
+
+  void main() 
+  {
+      diffuse = Color(0.0,0.0,0.0,0.0);
+      specular = Color(0.0,0.0,0.0,0.0);
+  
+      	// enumerate lights
+		Light_iterator light;
+		foreach (light)
+		{
+			specular += PaintShaderSpecular( normal, light.direction, 
+				direction, light.contribution );
+
+		  //calculate car paint color
+			float ndv = dot(-direction,normal);
+			float Cfresnel = saturate(fastFresnel( ndv, fresnelClrBias, fresnelClrPower ));
+			Color Paint = lerp( g_diffuse, g_edgeColor, Cfresnel );
+
+			diffuse += Paint * light.contribution * saturate(light.dot_nl);
+
+			//calculate Speckle Color
+			//fetch flake normal
+			diffuse += doFlakes(direction, light.direction, tangent_space[0]);
+		}
+      
+      diffuse.a = 1.0;
+      specular.a = 1.0;
+      
+      // irradiance term skipped
+      
+      result = diffuse + specular;
+      result.a = 1.0;
+
+  }
+}
+{
+	//bga -  What does the brdf_type mean here? Should we have a new name?
+    brdf_type("Msl_phong");
+    description( "A simple shader for testing shader code generation." );
+}
+;
+

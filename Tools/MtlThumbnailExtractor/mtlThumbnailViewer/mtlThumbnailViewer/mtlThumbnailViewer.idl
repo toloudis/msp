@@ -1,0 +1,61 @@
+// mtlThumbnailViewer.idl : IDL source for mtlThumbnailViewer
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (mtlThumbnailViewer.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(a817e7a2-43fa-11d0-9e44-00aa00b6770a),
+	dual,
+	helpstring("IComponentRegistrar Interface"),
+	pointer_default(unique)
+]
+interface IComponentRegistrar : IDispatch
+{
+	[id(1)]	HRESULT Attach([in] BSTR bstrPath);
+	[id(2)]	HRESULT RegisterAll();
+	[id(3)]	HRESULT UnregisterAll();
+	[id(4)]	HRESULT GetComponents([out] SAFEARRAY(BSTR)* pbstrCLSIDs, [out] SAFEARRAY(BSTR)* pbstrDescriptions);
+	[id(5)]	HRESULT RegisterComponent([in] BSTR bstrCLSID);
+	[id(6)] HRESULT UnregisterComponent([in] BSTR bstrCLSID);
+};
+
+[
+	object,
+	uuid(AF0253A9-0281-4638-8BDC-3C8F850BC677),
+	helpstring("ImtlThumbnailViewerCOM Interface"),
+	pointer_default(unique)
+]
+interface ImtlThumbnailViewerCOM : IUnknown{
+};
+[
+	uuid(700D73A8-2F74-496B-B2DA-55BFDE96E2BE),
+	version(1.0),
+	helpstring("mtlThumbnailViewer 1.0 Type Library"),
+	custom(a817e7a1-43fa-11d0-9e44-00aa00b6770a,"{78B61071-0490-45AF-AC14-297BF431E538}")
+]
+library mtlThumbnailViewerLib
+{
+	importlib("stdole2.tlb");
+
+	[
+		uuid(78B61071-0490-45AF-AC14-297BF431E538),
+		helpstring("ComponentRegistrar Class")
+	]
+	coclass CompReg
+	{
+		[default] interface IComponentRegistrar;
+	};
+	[
+		uuid(2BB80AFB-3520-465C-9DED-85E518CDB2D6),
+		helpstring("mtlThumbnailViewerCOM Class")
+	]
+	coclass mtlThumbnailViewerCOM
+	{
+		[default] interface ImtlThumbnailViewerCOM;
+	};
+};

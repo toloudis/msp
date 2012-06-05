@@ -1,0 +1,56 @@
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sgpuExportLib", "src\sgpuExportLib.vcproj", "{EFAD7D65-EEDB-4F36-9B9A-3A3013E0243B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1D25A739-3967-4BAF-AA18-53690B00BD55} = {1D25A739-3967-4BAF-AA18-53690B00BD55}
+		{846C097D-3B0E-4A0A-B6D7-222ED73125F8} = {846C097D-3B0E-4A0A-B6D7-222ED73125F8}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Core", "..\..\..\..\LibXLT\Core\Core.vcproj", "{846C097D-3B0E-4A0A-B6D7-222ED73125F8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Graphics", "..\..\..\..\LibXLT\Graphics\Graphics.vcproj", "{1D25A739-3967-4BAF-AA18-53690B00BD55}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug Iterator|Win32 = Debug Iterator|Win32
+		Debug Managed|Win32 = Debug Managed|Win32
+		Debug|Win32 = Debug|Win32
+		Release Managed|Win32 = Release Managed|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EFAD7D65-EEDB-4F36-9B9A-3A3013E0243B}.Debug Iterator|Win32.ActiveCfg = Debug|Win32
+		{EFAD7D65-EEDB-4F36-9B9A-3A3013E0243B}.Debug Iterator|Win32.Build.0 = Debug|Win32
+		{EFAD7D65-EEDB-4F36-9B9A-3A3013E0243B}.Debug Managed|Win32.ActiveCfg = Debug|Win32
+		{EFAD7D65-EEDB-4F36-9B9A-3A3013E0243B}.Debug Managed|Win32.Build.0 = Debug|Win32
+		{EFAD7D65-EEDB-4F36-9B9A-3A3013E0243B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EFAD7D65-EEDB-4F36-9B9A-3A3013E0243B}.Debug|Win32.Build.0 = Debug|Win32
+		{EFAD7D65-EEDB-4F36-9B9A-3A3013E0243B}.Release Managed|Win32.ActiveCfg = Release|Win32
+		{EFAD7D65-EEDB-4F36-9B9A-3A3013E0243B}.Release Managed|Win32.Build.0 = Release|Win32
+		{EFAD7D65-EEDB-4F36-9B9A-3A3013E0243B}.Release|Win32.ActiveCfg = Release|Win32
+		{EFAD7D65-EEDB-4F36-9B9A-3A3013E0243B}.Release|Win32.Build.0 = Release|Win32
+		{846C097D-3B0E-4A0A-B6D7-222ED73125F8}.Debug Iterator|Win32.ActiveCfg = Debug Iterator|Win32
+		{846C097D-3B0E-4A0A-B6D7-222ED73125F8}.Debug Iterator|Win32.Build.0 = Debug Iterator|Win32
+		{846C097D-3B0E-4A0A-B6D7-222ED73125F8}.Debug Managed|Win32.ActiveCfg = Debug Managed|Win32
+		{846C097D-3B0E-4A0A-B6D7-222ED73125F8}.Debug Managed|Win32.Build.0 = Debug Managed|Win32
+		{846C097D-3B0E-4A0A-B6D7-222ED73125F8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{846C097D-3B0E-4A0A-B6D7-222ED73125F8}.Debug|Win32.Build.0 = Debug|Win32
+		{846C097D-3B0E-4A0A-B6D7-222ED73125F8}.Release Managed|Win32.ActiveCfg = Release Managed|Win32
+		{846C097D-3B0E-4A0A-B6D7-222ED73125F8}.Release Managed|Win32.Build.0 = Release Managed|Win32
+		{846C097D-3B0E-4A0A-B6D7-222ED73125F8}.Release|Win32.ActiveCfg = Release|Win32
+		{846C097D-3B0E-4A0A-B6D7-222ED73125F8}.Release|Win32.Build.0 = Release|Win32
+		{1D25A739-3967-4BAF-AA18-53690B00BD55}.Debug Iterator|Win32.ActiveCfg = Debug Iterator|Win32
+		{1D25A739-3967-4BAF-AA18-53690B00BD55}.Debug Iterator|Win32.Build.0 = Debug Iterator|Win32
+		{1D25A739-3967-4BAF-AA18-53690B00BD55}.Debug Managed|Win32.ActiveCfg = Debug Managed|Win32
+		{1D25A739-3967-4BAF-AA18-53690B00BD55}.Debug Managed|Win32.Build.0 = Debug Managed|Win32
+		{1D25A739-3967-4BAF-AA18-53690B00BD55}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1D25A739-3967-4BAF-AA18-53690B00BD55}.Debug|Win32.Build.0 = Debug|Win32
+		{1D25A739-3967-4BAF-AA18-53690B00BD55}.Release Managed|Win32.ActiveCfg = Release Managed|Win32
+		{1D25A739-3967-4BAF-AA18-53690B00BD55}.Release Managed|Win32.Build.0 = Release Managed|Win32
+		{1D25A739-3967-4BAF-AA18-53690B00BD55}.Release|Win32.ActiveCfg = Release|Win32
+		{1D25A739-3967-4BAF-AA18-53690B00BD55}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

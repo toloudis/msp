@@ -1,0 +1,1328 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Env">
+      <UniqueIdentifier>{d9fea3a6-7ae9-4ccf-bdc5-323f56306ff0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Env\EnvPrivate">
+      <UniqueIdentifier>{21fe61e9-8983-425d-9cd3-a09b4677288d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dbg">
+      <UniqueIdentifier>{2ac481a5-7bd6-4207-9a27-569997edfb6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dbg\DbgPrivate">
+      <UniqueIdentifier>{17d6ef19-4000-4262-ba66-b07362ac346d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ma">
+      <UniqueIdentifier>{fc6665e0-d7a7-48cf-8765-4bf4f30bdb43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ma\MaPrivate">
+      <UniqueIdentifier>{e62e1ebf-60c7-4553-ad54-84512fe9532a}</UniqueIdentifier>
+      <Extensions>.cpp</Extensions>
+    </Filter>
+    <Filter Include="Geo">
+      <UniqueIdentifier>{20a0e49c-240e-488e-b83e-c8f720ebb72b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Geo\GeoPrivate">
+      <UniqueIdentifier>{5fe8731f-23c5-4bc0-8a57-635067cb8fa0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="It">
+      <UniqueIdentifier>{4a78c454-c17f-41cf-9ece-de23fbc2121f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="It\ItPrivate">
+      <UniqueIdentifier>{f6015260-a791-4316-bf0c-08dd95d1a737}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fs">
+      <UniqueIdentifier>{fb264a63-0083-4e49-ab5d-a3813b65ac59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fs\FsPrivate">
+      <UniqueIdentifier>{747ae4cb-0bc5-4dcf-9b46-f67889f52a6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="App">
+      <UniqueIdentifier>{b088a039-b9d3-483e-8d01-9776b5cd4a4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="App\AppPrivate">
+      <UniqueIdentifier>{06354a83-f32d-442e-92ba-edbcbe9173b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Gf">
+      <UniqueIdentifier>{220aa98d-cdae-49fb-bd06-1797c5246f6c}</UniqueIdentifier>
+      <Extensions>*.hpp</Extensions>
+    </Filter>
+    <Filter Include="Gf\GfPrivate">
+      <UniqueIdentifier>{f39f9df9-c23c-4e8d-90c6-4f46541373b0}</UniqueIdentifier>
+      <Extensions>*.hpp,*.cpp</Extensions>
+    </Filter>
+    <Filter Include="Dm">
+      <UniqueIdentifier>{e1069bb6-72f3-4f11-acde-57ac6b50deda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dm\private">
+      <UniqueIdentifier>{33e889b7-c52a-4a49-beaa-40564e992c66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ch">
+      <UniqueIdentifier>{d0345b3f-76ec-4e7e-8791-e3d7fe5ae784}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ch\ChPrivate">
+      <UniqueIdentifier>{3748cc90-829a-413d-8e04-f43f6ce0e370}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Name">
+      <UniqueIdentifier>{95d3e847-3f39-48a9-85f8-8d7a773bf920}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Name\private">
+      <UniqueIdentifier>{9d1ffc8c-1088-4943-9f47-7296f30eff1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Prty">
+      <UniqueIdentifier>{776ffdf6-3382-4474-bfd3-0c3127d0bf0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Prty\Undo">
+      <UniqueIdentifier>{6ceda2dc-c022-4bcf-82e8-a701b08a5916}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Prty\UIInfo">
+      <UniqueIdentifier>{14e2cf9e-3e7a-4f87-923e-5495c65f903d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Prty\Property">
+      <UniqueIdentifier>{7a68466b-3beb-41f5-9b13-d8d44e27cb28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Prty\Data">
+      <UniqueIdentifier>{eaea0a34-7c22-4d4d-8822-c20141a83717}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Prty\Undo\private">
+      <UniqueIdentifier>{1b754346-280d-4d22-a1b3-578ce7584ae3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scrty">
+      <UniqueIdentifier>{d67e3822-9684-453e-a71f-dcdfa0a665dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scrty\private">
+      <UniqueIdentifier>{72d25f92-4723-4d43-8925-2ea31d74b329}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rel">
+      <UniqueIdentifier>{163d1881-f090-4ab0-8026-bcc5dd700756}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rel\private">
+      <UniqueIdentifier>{c25f014f-49a4-4186-a70b-62633657e683}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Env\envAbstraction.hpp">
+      <Filter>Env</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\envAppVersion.hpp">
+      <Filter>Env</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\envAuditor.hpp">
+      <Filter>Env</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\envBoost.hpp">
+      <Filter>Env</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\envExceptionX.hpp">
+      <Filter>Env</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\envInitX.hpp">
+      <Filter>Env</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\envPackage.hpp">
+      <Filter>Env</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\envPackageCleanUp.hpp">
+      <Filter>Env</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\envPlatform.hpp">
+      <Filter>Env</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\envPool.hpp">
+      <Filter>Env</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\envSharedAssetMgr.hpp">
+      <Filter>Env</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\envSTLHelpers.hpp">
+      <Filter>Env</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\envString.hpp">
+      <Filter>Env</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\envThread.hpp">
+      <Filter>Env</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\envThreadGroup.hpp">
+      <Filter>Env</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\envType.hpp">
+      <Filter>Env</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\envWaitCondition.hpp">
+      <Filter>Env</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\private\envStringPAC.hpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\private\envStringPACWin.hpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\private\envSystemData.hpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\private\envSystemDataPAC.hpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\private\envSystemDataPACWin.hpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Dbg\dbgMsg.hpp">
+      <Filter>Dbg</Filter>
+    </ClInclude>
+    <ClInclude Include="Dbg\dbgPackage.hpp">
+      <Filter>Dbg</Filter>
+    </ClInclude>
+    <ClInclude Include="Dbg\dbgStream.hpp">
+      <Filter>Dbg</Filter>
+    </ClInclude>
+    <ClInclude Include="Dbg\dbgStringStream.hpp">
+      <Filter>Dbg</Filter>
+    </ClInclude>
+    <ClInclude Include="Dbg\dbgSystemInfo.hpp">
+      <Filter>Dbg</Filter>
+    </ClInclude>
+    <ClInclude Include="Dbg\private\dbgAssertPAC.hpp">
+      <Filter>Dbg\DbgPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Dbg\private\dbgAssertPACWin.hpp">
+      <Filter>Dbg\DbgPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Dbg\private\dbgLogPAC.hpp">
+      <Filter>Dbg\DbgPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Dbg\private\dbgLogPACWin.hpp">
+      <Filter>Dbg\DbgPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Dbg\private\dbgSystemInfoPAC.hpp">
+      <Filter>Dbg\DbgPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Dbg\private\dbgSystemInfoPACINTRIN.hpp">
+      <Filter>Dbg\DbgPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Dbg\private\dbgSystemInfoPACWIN.hpp">
+      <Filter>Dbg\DbgPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maAxisBox.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maConstants.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maEigen.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maFloatRGBA.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maFunctions.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maGradient.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maIntPoint2d.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maIntRect.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maMatrix3x3.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maMatrix4x4.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maPackage.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maPlane.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maPoint2d.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maPoint3d.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maPoint4d.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maRand.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maRotation.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maRunningAverage.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maSampling.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maSTLHelpers.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maTime.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maTypes.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maVector2d.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maVector3d.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Ma\maVector4d.hpp">
+      <Filter>Ma</Filter>
+    </ClInclude>
+    <ClInclude Include="Geo\geoKDTree.hpp">
+      <Filter>Geo</Filter>
+    </ClInclude>
+    <ClInclude Include="Geo\GeoPackage.hpp">
+      <Filter>Geo</Filter>
+    </ClInclude>
+    <ClInclude Include="Geo\geoPickedPoint.hpp">
+      <Filter>Geo</Filter>
+    </ClInclude>
+    <ClInclude Include="Geo\geoPickRay.hpp">
+      <Filter>Geo</Filter>
+    </ClInclude>
+    <ClInclude Include="Geo\geoRayIntersection.hpp">
+      <Filter>Geo</Filter>
+    </ClInclude>
+    <ClInclude Include="Geo\geoTwinEdge.hpp">
+      <Filter>Geo</Filter>
+    </ClInclude>
+    <ClInclude Include="Geo\geoTwinMesh.hpp">
+      <Filter>Geo</Filter>
+    </ClInclude>
+    <ClInclude Include="Geo\geoTwinVertexEdgeIterator.hpp">
+      <Filter>Geo</Filter>
+    </ClInclude>
+    <ClInclude Include="It\itLocales.hpp">
+      <Filter>It</Filter>
+    </ClInclude>
+    <ClInclude Include="It\itLocaleUtil.hpp">
+      <Filter>It</Filter>
+    </ClInclude>
+    <ClInclude Include="It\itPackage.hpp">
+      <Filter>It</Filter>
+    </ClInclude>
+    <ClInclude Include="It\itString.hpp">
+      <Filter>It</Filter>
+    </ClInclude>
+    <ClInclude Include="It\itStringUtil.hpp">
+      <Filter>It</Filter>
+    </ClInclude>
+    <ClInclude Include="It\private\itLocaleUtilPAC.hpp">
+      <Filter>It\ItPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="It\private\itLocaleUtilPACWin.hpp">
+      <Filter>It\ItPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\fsAbsolutePathMgr.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\fsFileEnum.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\fsFilePosSaver.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\fsFileStream.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\fsFileTimeUtil.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\fsFileUtil.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\fsFileX.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\fsLocator.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\fsPackage.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\fsResourceFinder.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\fsResourceFinderDir.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\fsResourceFinderJoin.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\fsResourceTracker.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\fsResourceTrackerData.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\fsResourceTrackerInterest.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\fsXMLParser.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\fsXMLReader.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\fsXMLWriter.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\fsCategoryConfigFileUtil.hpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\private\fsFileEnumPAC.hpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\private\fsFileEnumPACWin.hpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\private\fsFileNotify.hpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\private\fsFileNotifyMgr.hpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\private\fsFileTimeUtilPAC.hpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\private\fsFileTimeUtilPACWin.hpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\private\fsFileUtilPAC.hpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\private\fsFileUtilPACWin.hpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="App\appApplication.hpp">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="App\appCharEvent.hpp">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="App\appCharEventHandler.hpp">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="App\appEvent.hpp">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="App\appFlowEvent.hpp">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="App\appFlowEventHandler.hpp">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="App\appMode.hpp">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="App\appModeList.hpp">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="App\appModeMgr.hpp">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="App\appMouseEvent.hpp">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="App\appMouseEventHandler.hpp">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="App\appPackage.hpp">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="App\appSimTime.hpp">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="App\appTime.hpp">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="App\appTimeUtils.hpp">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="App\private\appApplicationPAC.hpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="App\private\appApplicationPACWin.hpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="App\private\appEventHandlers.hpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="App\private\appInstanceUtilWin.hpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="App\private\appTimePAC.hpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="App\private\appTimePACWin.hpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Gf\gfDirectoryCategories.hpp">
+      <Filter>Gf</Filter>
+    </ClInclude>
+    <ClInclude Include="Gf\gfFile.hpp">
+      <Filter>Gf</Filter>
+    </ClInclude>
+    <ClInclude Include="Gf\gfFileBin.hpp">
+      <Filter>Gf</Filter>
+    </ClInclude>
+    <ClInclude Include="Gf\gfFileConstants.hpp">
+      <Filter>Gf</Filter>
+    </ClInclude>
+    <ClInclude Include="Gf\gfFileEnum.hpp">
+      <Filter>Gf</Filter>
+    </ClInclude>
+    <ClInclude Include="Gf\gfFileTranslationMgr.hpp">
+      <Filter>Gf</Filter>
+    </ClInclude>
+    <ClInclude Include="Gf\gfFileTxt.hpp">
+      <Filter>Gf</Filter>
+    </ClInclude>
+    <ClInclude Include="Gf\gfFileUtil.hpp">
+      <Filter>Gf</Filter>
+    </ClInclude>
+    <ClInclude Include="Gf\gfFileX.hpp">
+      <Filter>Gf</Filter>
+    </ClInclude>
+    <ClInclude Include="Gf\gfFileXML.hpp">
+      <Filter>Gf</Filter>
+    </ClInclude>
+    <ClInclude Include="Gf\gfPackage.hpp">
+      <Filter>Gf</Filter>
+    </ClInclude>
+    <ClInclude Include="Gf\gfPaths.hpp">
+      <Filter>Gf</Filter>
+    </ClInclude>
+    <ClInclude Include="Gf\private\gfPathsPAC.hpp">
+      <Filter>Gf\GfPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Gf\private\gfPathsPACWin.hpp">
+      <Filter>Gf\GfPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="dm\dmFSM.hpp">
+      <Filter>Dm</Filter>
+    </ClInclude>
+    <ClInclude Include="dm\dmState.hpp">
+      <Filter>Dm</Filter>
+    </ClInclude>
+    <ClInclude Include="Ch\chBinReader.hpp">
+      <Filter>Ch</Filter>
+    </ClInclude>
+    <ClInclude Include="Ch\chBinWriter.hpp">
+      <Filter>Ch</Filter>
+    </ClInclude>
+    <ClInclude Include="Ch\chChunkParserUtil.hpp">
+      <Filter>Ch</Filter>
+    </ClInclude>
+    <ClInclude Include="Ch\chDefs.hpp">
+      <Filter>Ch</Filter>
+    </ClInclude>
+    <ClInclude Include="Ch\chExceptionX.hpp">
+      <Filter>Ch</Filter>
+    </ClInclude>
+    <ClInclude Include="Ch\chPackage.hpp">
+      <Filter>Ch</Filter>
+    </ClInclude>
+    <ClInclude Include="Ch\chReader.hpp">
+      <Filter>Ch</Filter>
+    </ClInclude>
+    <ClInclude Include="Ch\chTxtReader.hpp">
+      <Filter>Ch</Filter>
+    </ClInclude>
+    <ClInclude Include="Ch\chTxtWriter.hpp">
+      <Filter>Ch</Filter>
+    </ClInclude>
+    <ClInclude Include="Ch\chWriter.hpp">
+      <Filter>Ch</Filter>
+    </ClInclude>
+    <ClInclude Include="Ch\chXMLReader.hpp">
+      <Filter>Ch</Filter>
+    </ClInclude>
+    <ClInclude Include="Ch\chXMLWriter.hpp">
+      <Filter>Ch</Filter>
+    </ClInclude>
+    <ClInclude Include="name\nameMgr.hpp">
+      <Filter>Name</Filter>
+    </ClInclude>
+    <ClInclude Include="name\nameNameInterest.hpp">
+      <Filter>Name</Filter>
+    </ClInclude>
+    <ClInclude Include="name\nameObject.hpp">
+      <Filter>Name</Filter>
+    </ClInclude>
+    <ClInclude Include="name\nameString.hpp">
+      <Filter>Name</Filter>
+    </ClInclude>
+    <ClInclude Include="name\nameTypes.hpp">
+      <Filter>Name</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyObject.hpp">
+      <Filter>Prty</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyPackage.hpp">
+      <Filter>Prty</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyPropertyReference.hpp">
+      <Filter>Prty</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyUnits.hpp">
+      <Filter>Prty</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\private\prtyRotationUndo.hpp">
+      <Filter>Prty\Undo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\private\prtyUndoTemplate.hpp">
+      <Filter>Prty\Undo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyButtonUIInfo.hpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyCheckBoxUIInfo.hpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyColorRGBAEditUIInfo.hpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyColorRGBEditUIInfo.hpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyComboBoxUIInfo.hpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyFileChooserUIInfo.hpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyFloatEditUIInfo.hpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyFolderChooserUIInfo.hpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyGradientEditUIInfo.hpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyKeyComboUIInfo.hpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyListBoxUIInfo.hpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyNumericUpDownUIInfo.hpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyPropertyUIInfo.hpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyPropertyUIInfoContainer.hpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyRangedFloatUIInfo.hpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyTextBoxUIInfo.hpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyTextureFileChooserUIInfo.hpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyVector3dEditRangedUIInfo.hpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyVector3dEditUIInfo.hpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyVector3dEditUpDownUIInfo.hpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyBoolean.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyColor.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyDirectory.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyEnum.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyFileName.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyFilePath.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyFloat.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyGradient.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyHotKey.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyInt32.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyInt8.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyIntCallbackMgr.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyInterest.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyInterestUtil.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyListChecked.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyName.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyPoint3d.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyPoint3dTransform.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyProperty.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyPropertyCallback.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyPropertyTemplate.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyRotation.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyText.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyTextureFileName.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyTime.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyTrigger.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyVector3d.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyVideo.hpp">
+      <Filter>Prty\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyTextureDataParser.hpp">
+      <Filter>Prty\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="undo\undoMultipleOperation.hpp">
+      <Filter>Prty\Undo</Filter>
+    </ClInclude>
+    <ClInclude Include="undo\undoMultipleOperationBlock.hpp">
+      <Filter>Prty\Undo</Filter>
+    </ClInclude>
+    <ClInclude Include="undo\undoUndoInterest.hpp">
+      <Filter>Prty\Undo</Filter>
+    </ClInclude>
+    <ClInclude Include="undo\undoUndoMgr.hpp">
+      <Filter>Prty\Undo</Filter>
+    </ClInclude>
+    <ClInclude Include="undo\undoUndoOperation.hpp">
+      <Filter>Prty\Undo</Filter>
+    </ClInclude>
+    <ClInclude Include="Scrty\scrtyMgr.hpp">
+      <Filter>Scrty</Filter>
+    </ClInclude>
+    <ClInclude Include="Scrty\scrtySecurityX.hpp">
+      <Filter>Scrty</Filter>
+    </ClInclude>
+    <ClInclude Include="rel\relHandle.hpp">
+      <Filter>Rel</Filter>
+    </ClInclude>
+    <ClInclude Include="rel\relObject.hpp">
+      <Filter>Rel</Filter>
+    </ClInclude>
+    <ClInclude Include="rel\relObjectReference.hpp">
+      <Filter>Rel</Filter>
+    </ClInclude>
+    <ClInclude Include="rel\relRelationship.hpp">
+      <Filter>Rel</Filter>
+    </ClInclude>
+    <ClInclude Include="rel\relRelationshipMultiple.hpp">
+      <Filter>Rel</Filter>
+    </ClInclude>
+    <ClInclude Include="rel\relRelationshipSingle.hpp">
+      <Filter>Rel</Filter>
+    </ClInclude>
+    <ClInclude Include="CoreLayer.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Env\private\envAppVersion.cpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\private\envAuditor.cpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\private\envExceptionX.cpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\private\envInitX.cpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\private\envPackage.cpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\private\envPool.cpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\private\envString.cpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\private\envStringPACWin.cpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\private\envSystemData.cpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\private\envSystemDataPACWin.cpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\private\envThreadGroup.cpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\private\envWaitCondition.cpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Dbg\private\dbgAssertPACWin.cpp">
+      <Filter>Dbg\DbgPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Dbg\private\dbgLogPACWin.cpp">
+      <Filter>Dbg\DbgPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Dbg\private\dbgMsg.cpp">
+      <Filter>Dbg\DbgPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Dbg\private\dbgPackage.cpp">
+      <Filter>Dbg\DbgPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Dbg\private\dbgStream.cpp">
+      <Filter>Dbg\DbgPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Dbg\private\dbgStringStream.cpp">
+      <Filter>Dbg\DbgPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Dbg\private\dbgSystemInfo.cpp">
+      <Filter>Dbg\DbgPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Dbg\private\dbgSystemInfoPACINTRIN.cpp">
+      <Filter>Dbg\DbgPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Dbg\private\dbgSystemInfoPACWIN.cpp">
+      <Filter>Dbg\DbgPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\private\maAxisBox.cpp">
+      <Filter>Ma\MaPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\private\maEigen.cpp">
+      <Filter>Ma\MaPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\private\maFunctions.cpp">
+      <Filter>Ma\MaPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\private\maGradient.cpp">
+      <Filter>Ma\MaPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\private\maIntPoint2d.cpp">
+      <Filter>Ma\MaPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\private\maIntRect.cpp">
+      <Filter>Ma\MaPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\private\maMatrix3x3.cpp">
+      <Filter>Ma\MaPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\private\maMatrix4x4.cpp">
+      <Filter>Ma\MaPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\private\maPackage.cpp">
+      <Filter>Ma\MaPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\private\maPlane.cpp">
+      <Filter>Ma\MaPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\private\maPoint2d.cpp">
+      <Filter>Ma\MaPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\private\maPoint3d.cpp">
+      <Filter>Ma\MaPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\private\maPoint4d.cpp">
+      <Filter>Ma\MaPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\private\maRotation.cpp">
+      <Filter>Ma\MaPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\private\maRunningAverage.cpp">
+      <Filter>Ma\MaPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\private\maSampling.cpp">
+      <Filter>Ma\MaPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\private\maTime.cpp">
+      <Filter>Ma\MaPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\private\maVector2d.cpp">
+      <Filter>Ma\MaPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\private\maVector3d.cpp">
+      <Filter>Ma\MaPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\private\maVector4d.cpp">
+      <Filter>Ma\MaPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Geo\private\geoKDTree.cpp">
+      <Filter>Geo\GeoPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Geo\private\geoPackage.cpp">
+      <Filter>Geo\GeoPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Geo\private\geoPickRay.cpp">
+      <Filter>Geo\GeoPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Geo\private\geoRayIntersection.cpp">
+      <Filter>Geo\GeoPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Geo\private\geoTwinEdge.cpp">
+      <Filter>Geo\GeoPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Geo\private\geoTwinMesh.cpp">
+      <Filter>Geo\GeoPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="It\private\itLocaleUtil.cpp">
+      <Filter>It\ItPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="It\private\itLocaleUtilPACWin.cpp">
+      <Filter>It\ItPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="It\private\itPackage.cpp">
+      <Filter>It\ItPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="It\private\itString.cpp">
+      <Filter>It\ItPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="It\private\itStringUtil.cpp">
+      <Filter>It\ItPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsAbsolutePathMgr.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsCategoryConfigFileUtil.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsFileEnum.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsFileEnumPACWin.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsFileNotify.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsFileNotifyMgr.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsFileStreamWin.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsFileTimeUtil.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsFileTimeUtilPACWin.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsFileUtil.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsFileUtilPACWin.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsFileX.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsLocator.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsPackage.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsResourceFinderDir.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsResourceFinderJoin.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsResourceTracker.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsResourceTrackerData.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsResourceTrackerInterest.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsXMLParser.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsXMLReader.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsXMLWriter.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="App\private\appApplication.cpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="App\private\appApplicationPACWin.cpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="App\private\appCharEvent.cpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="App\private\appCharEventHandler.cpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="App\private\appEvent.cpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="App\private\appEventHandlers.cpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="App\private\appFlowEvent.cpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="App\private\appFlowEventHandler.cpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="App\private\appInstanceUtilWin.cpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="App\private\appMode.cpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="App\private\appModeList.cpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="App\private\appModeMgr.cpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="App\private\appMouseEvent.cpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="App\private\appMouseEventHandler.cpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="App\private\appPackage.cpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="App\private\appSimTime.cpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="App\private\appTime.cpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="App\private\appTimePACWin.cpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="App\private\appTimeUtils.cpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Gf\private\gfDirectoryCategories.cpp">
+      <Filter>Gf\GfPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Gf\private\gfFile.cpp">
+      <Filter>Gf\GfPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Gf\private\gfFileBin.cpp">
+      <Filter>Gf\GfPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Gf\private\gfFileEnum.cpp">
+      <Filter>Gf\GfPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Gf\private\gfFileTranslationMgr.cpp">
+      <Filter>Gf\GfPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Gf\private\gfFileTxt.cpp">
+      <Filter>Gf\GfPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Gf\private\gfFileX.cpp">
+      <Filter>Gf\GfPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Gf\private\gfFileXML.cpp">
+      <Filter>Gf\GfPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Gf\private\gfPackage.cpp">
+      <Filter>Gf\GfPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Gf\private\gfPaths.cpp">
+      <Filter>Gf\GfPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Gf\private\gfPathsPACWin.cpp">
+      <Filter>Gf\GfPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="dm\private\dmFSM.cpp">
+      <Filter>Dm\private</Filter>
+    </ClCompile>
+    <ClCompile Include="dm\private\dmState.cpp">
+      <Filter>Dm\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Ch\private\chBinReader.cpp">
+      <Filter>Ch\ChPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ch\private\chBinWriter.cpp">
+      <Filter>Ch\ChPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ch\private\chChunkParserUtil.cpp">
+      <Filter>Ch\ChPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ch\private\chExceptionX.cpp">
+      <Filter>Ch\ChPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ch\private\chPackage.cpp">
+      <Filter>Ch\ChPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ch\private\chReader.cpp">
+      <Filter>Ch\ChPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ch\private\chTxtReader.cpp">
+      <Filter>Ch\ChPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ch\private\chTxtWriter.cpp">
+      <Filter>Ch\ChPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ch\private\chWriter.cpp">
+      <Filter>Ch\ChPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ch\private\chXMLReader.cpp">
+      <Filter>Ch\ChPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ch\private\chXMLWriter.cpp">
+      <Filter>Ch\ChPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="name\private\nameMgr.cpp">
+      <Filter>Name\private</Filter>
+    </ClCompile>
+    <ClCompile Include="name\private\nameNameInterest.cpp">
+      <Filter>Name\private</Filter>
+    </ClCompile>
+    <ClCompile Include="name\private\nameObject.cpp">
+      <Filter>Name\private</Filter>
+    </ClCompile>
+    <ClCompile Include="name\private\nameString.cpp">
+      <Filter>Name\private</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyObject.cpp">
+      <Filter>Prty</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\prtyPackage.cpp">
+      <Filter>Prty</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyPropertyReference.cpp">
+      <Filter>Prty</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyUnits.cpp">
+      <Filter>Prty</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyRotationUndo.cpp">
+      <Filter>Prty\Undo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyButtonUIInfo.cpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyCheckBoxUIInfo.cpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyColorRGBAEditUIInfo.cpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyColorRGBEditUIInfo.cpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyComboBoxUIInfo.cpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyFileChooserUIInfo.cpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyFloatEditUIInfo.cpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyFolderChooserUIInfo.cpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyGradientEditUIInfo.cpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyKeyComboUIInfo.cpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyListBoxUIInfo.cpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyNumericUpDownUIInfo.cpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyPropertyUIInfo.cpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyPropertyUIInfoContainer.cpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyRangedFloatUIInfo.cpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyTextBoxUIInfo.cpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyTextureFileChooserUIInfo.cpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyVector3dEditRangedUIInfo.cpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyVector3dEditUIInfo.cpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyVector3dEditUpDownUIInfo.cpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyBoolean.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyColor.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyDirectory.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyEnum.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyFileName.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyFilePath.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyFloat.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyGradient.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyHotKey.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyInt32.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyInt8.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyIntCalbackMgr.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyInterest.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyInterestUtil.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyListChecked.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyName.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyPoint3d.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyPoint3dTransform.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyProperty.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyRotation.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyText.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyTextureFileName.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyTime.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyTrigger.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyVector3d.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyVideo.cpp">
+      <Filter>Prty\Property</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyTextureDataParser.cpp">
+      <Filter>Prty\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="undo\private\undoMultipleOperation.cpp">
+      <Filter>Prty\Undo\private</Filter>
+    </ClCompile>
+    <ClCompile Include="undo\private\undoUndoInterest.cpp">
+      <Filter>Prty\Undo\private</Filter>
+    </ClCompile>
+    <ClCompile Include="undo\private\undoUndoMgr.cpp">
+      <Filter>Prty\Undo\private</Filter>
+    </ClCompile>
+    <ClCompile Include="undo\private\undoUndoOperation.cpp">
+      <Filter>Prty\Undo\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Scrty\private\scrtyMgr.cpp">
+      <Filter>Scrty\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Scrty\private\scrtySecurityX.cpp">
+      <Filter>Scrty\private</Filter>
+    </ClCompile>
+    <ClCompile Include="rel\private\relObject.cpp">
+      <Filter>Rel\private</Filter>
+    </ClCompile>
+    <ClCompile Include="rel\private\relRelationship.cpp">
+      <Filter>Rel\private</Filter>
+    </ClCompile>
+    <ClCompile Include="rel\private\relRelationshipMultiple.cpp">
+      <Filter>Rel\private</Filter>
+    </ClCompile>
+    <ClCompile Include="rel\private\relRelationshipSingle.cpp">
+      <Filter>Rel\private</Filter>
+    </ClCompile>
+    <ClCompile Include="CoreLayer.cpp" />
+  </ItemGroup>
+</Project>

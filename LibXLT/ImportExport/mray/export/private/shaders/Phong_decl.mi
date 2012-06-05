@@ -1,0 +1,68 @@
+#must match the struct in the cpp file for this shader!
+
+$ifndef "sgpu_illum_Phong_mi"
+set "sgpu_illum_Phong_mi" "true"
+
+declare shader
+	color "sgpu_illum_Phong" (
+		color texture	"cubeMap",
+		color texture	"reflectFactorMap",
+		color			"g_diffuse",
+		color texture	"diffuseMap",
+		color			"g_emissive",
+		color texture	"emissiveMap",
+		scalar			"g_emissiveIntensity",
+		color			"g_specular",
+		color texture	"specularMap",
+		color texture	"glossMap",
+		scalar			"g_specularPower",
+		scalar			"g_shininess",
+		scalar			"g_reflectivity",
+		scalar			"fresnelPower",
+		scalar			"fresnelBias",
+		scalar			"reflBlur",
+		color			"g_ambient",
+		scalar			"g_transparency",		
+		color texture	"transparencyMap",		
+		scalar			"g_reflMapAngle",
+		
+		color texture	"diffuseEnvMap",
+		color			"g_envDiffuseColor",
+		scalar			"g_diffuseFactor",
+		scalar			"g_diffuseEnvAngle",		
+		color texture	"specularEnvMap",		
+		color			"g_envSpecularColor",
+		scalar			"g_specularFactor",
+		scalar			"g_specularEnvAngle",
+		
+		scalar			"u_scale",
+		scalar			"v_scale",
+		scalar			"u_offset",
+		scalar			"v_offset",
+		scalar			"uv_rotation",
+	
+		color texture	"normalMap",
+		scalar			"normalMapScale",
+		
+		boolean			"bEnableAO",		
+		color			"aoColor",
+		scalar			"aoRadiusNear",
+		scalar			"aoRadiusFar",
+		scalar			"aoAngleBias",
+		scalar			"aoAttenuation",
+		scalar			"aoContrast",
+		scalar			"aoCamNear",
+		scalar			"aoCamFar",
+		scalar			"aoSamples",
+		
+		boolean			"bEnableGI",
+		boolean			"bEnableSWL",
+			
+		integer			"mode",      # light selection mode 0,1,2,4
+		array light		"lights"
+	)
+	version 1
+	apply material
+end declare
+
+$endif

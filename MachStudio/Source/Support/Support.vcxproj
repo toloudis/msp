@@ -1,0 +1,1326 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug Iterator|Win32">
+      <Configuration>Debug Iterator</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug Iterator|x64">
+      <Configuration>Debug Iterator</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug Managed|Win32">
+      <Configuration>Debug Managed</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug Managed|x64">
+      <Configuration>Debug Managed</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_RenderNode|Win32">
+      <Configuration>Debug_RenderNode</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_RenderNode|x64">
+      <Configuration>Debug_RenderNode</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Gold|Win32">
+      <Configuration>Gold</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Gold|x64">
+      <Configuration>Gold</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release Managed|Win32">
+      <Configuration>Release Managed</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release Managed|x64">
+      <Configuration>Release Managed</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RenderNode|Win32">
+      <Configuration>RenderNode</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RenderNode|x64">
+      <Configuration>RenderNode</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Template|Win32">
+      <Configuration>Template</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Template|x64">
+      <Configuration>Template</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D6ECABBD-1694-4423-8503-A493DFC008C9}</ProjectGuid>
+    <RootNamespace>SystemSupport</RootNamespace>
+    <Keyword>MachStudioLibProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Gold|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Gold|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">
+    <ClCompile>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>QTMLClient.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>QTMLClient.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;USE_FBX_IMPORTEXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>QTMLClient.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;USE_FBX_IMPORTEXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;USE_FBX_IMPORTEXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;USE_FBX_IMPORTEXPORT;ENV_BUILD=ENV_GOLDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>QTMLClient.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;USE_FBX_IMPORTEXPORT;ENV_BUILD=ENV_GOLDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\3rdParty\Qt\include\QtCore;.\..\..\..\3rdParty\Qt\include\QtGui;.\..\..\..\3rdParty\Qt\include;.\..\..\..\FusionCinema3D\Source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;ENV_BUILD=ENV_GOLDBUILD;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>QTMLClient.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;ENV_BUILD=ENV_GOLDBUILD;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\3rdParty\Qt\include\QtCore;.\..\..\..\3rdParty\Qt\include\QtGui;.\..\..\..\3rdParty\Qt\include;.\..\..\..\FusionCinema3D\Source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Data">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Xml">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="TerawattManagedControls, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\Controls\Lib\TerawattManagedControls.dll</HintPath>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="TimelineControls, Version=1.3.5.1, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\Controls\Lib\TimelineControls.dll</HintPath>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dyn\dynChannelControl.cpp" />
+    <ClCompile Include="dyn\dynControlData.cpp" />
+    <ClCompile Include="dyn\dynControlDataParser.cpp" />
+    <ClCompile Include="dyn\dynDriverCreator.cpp" />
+    <ClCompile Include="dyn\dynPackage.cpp" />
+    <ClCompile Include="dyn\dynScriptObject.cpp" />
+    <ClCompile Include="dyn\dynSelectInterest.cpp" />
+    <ClCompile Include="dyn\GUI\dynCreateOperation.cpp" />
+    <ClCompile Include="dyn\GUI\dynDeleteOperation.cpp" />
+    <ClCompile Include="dyn\Gui\dynDialogUtil.cpp" />
+    <ClCompile Include="dyn\GUI\dynOperations.cpp" />
+    <ClCompile Include="dyn\GUI\dynPropertyObject.cpp" />
+    <ClCompile Include="dyn\Drivers\dynDriverTransformKey.cpp" />
+    <ClCompile Include="dyn\Drivers\dynDriverTransformKeyInfo.cpp" />
+    <ClCompile Include="dyn\Drivers\dynDriverTransformKeyParser.cpp" />
+    <ClCompile Include="cmps\private\cmpsCompass.cpp" />
+    <ClCompile Include="cmps\private\cmpsCompassMgr.cpp" />
+    <ClCompile Include="cmps\private\cmpsCompassObject.cpp" />
+    <ClCompile Include="cmps\private\cmpsCompassObject3Axis.cpp" />
+    <ClCompile Include="cmps\private\cmpsCompassObjectRotate.cpp" />
+    <ClCompile Include="cmps\private\cmpsCompassObjectScale.cpp" />
+    <ClCompile Include="cmps\private\cmpsCompassObjectSelect.cpp" />
+    <ClCompile Include="cmps\private\cmpsCompassObjectSingle.cpp" />
+    <ClCompile Include="cmps\private\cmpsCompassObjectTranslate.cpp" />
+    <ClCompile Include="cmps\private\cmpsCompassRotate.cpp" />
+    <ClCompile Include="cmps\private\cmpsCompassScale.cpp" />
+    <ClCompile Include="cmps\private\cmpsCompassSelect.cpp" />
+    <ClCompile Include="cmps\private\cmpsCompassTranslate.cpp" />
+    <ClCompile Include="cmps\private\cmpsManipObject.cpp" />
+    <ClCompile Include="cmps\private\cmpsObjectSimple.cpp" />
+    <ClCompile Include="cmps\private\cmpsPackage.cpp" />
+    <ClCompile Include="cmps\private\cmpsPickInterest.cpp" />
+    <ClCompile Include="cmps\private\cmpsSelectMgr.cpp" />
+    <ClCompile Include="cmps\private\cmpsWorldAxis.cpp" />
+    <ClCompile Include="spln\splnCurveMgr.cpp" />
+    <ClCompile Include="spln\splnCurveModel.cpp" />
+    <ClCompile Include="spln\splnCurvePointObject.cpp" />
+    <ClCompile Include="spln\splnCurveSelect.cpp" />
+    <ClCompile Include="spln\splnPackage.cpp" />
+    <ClCompile Include="spln\splnPickInterest.cpp" />
+    <ClCompile Include="spln\splnSpline.cpp" />
+    <ClCompile Include="tmln\tmlnAdapterPosition.cpp" />
+    <ClCompile Include="tmln\tmlnBaseData.cpp" />
+    <ClCompile Include="tmln\tmlnBaseDataParser.cpp" />
+    <ClCompile Include="tmln\tmlnBlendDriver.cpp" />
+    <ClCompile Include="tmln\tmlnChannel.cpp" />
+    <ClCompile Include="tmln\tmlnChannelInfo.cpp" />
+    <ClCompile Include="tmln\tmlnChannelInfoParser.cpp" />
+    <ClCompile Include="tmln\tmlnChannelSet.cpp" />
+    <ClCompile Include="tmln\tmlnCreator.cpp" />
+    <ClCompile Include="tmln\tmlnDriver.cpp" />
+    <ClCompile Include="tmln\tmlnDriverClipboard.cpp" />
+    <ClCompile Include="tmln\tmlnDriverDialogUtil.cpp" />
+    <ClCompile Include="tmln\tmlnDriverIdMgr.cpp" />
+    <ClCompile Include="tmln\tmlnDriverInfo.cpp" />
+    <ClCompile Include="tmln\tmlnDriverInfoParser.cpp" />
+    <ClCompile Include="tmln\tmlnPackage.cpp" />
+    <ClCompile Include="tmln\tmlnParser.cpp" />
+    <ClCompile Include="tmln\tmlnScriptObject.cpp" />
+    <ClCompile Include="tmln\tmlnSelectionUtil.cpp" />
+    <ClCompile Include="tmln\tmlnTimeEditUIInfo.cpp" />
+    <ClCompile Include="tmln\tmlnTimeInOutData.cpp" />
+    <ClCompile Include="tmln\tmlnTimeInOutMgr.cpp" />
+    <ClCompile Include="tmln\tmlnTimeInterest.cpp" />
+    <ClCompile Include="tmln\tmlnTimeLine.cpp" />
+    <ClCompile Include="tmln\tmlnTimelineMgr.cpp" />
+    <ClCompile Include="tmln\tmlnTimeUtil.cpp" />
+    <ClCompile Include="tmln\tmlnChannelAnimationFull.cpp" />
+    <ClCompile Include="tmln\tmlnChannelAnimationSub.cpp" />
+    <ClCompile Include="tmln\tmlnChannelBoolean.cpp" />
+    <ClCompile Include="tmln\tmlnChannelColor.cpp" />
+    <ClCompile Include="tmln\tmlnChannelFileName.cpp" />
+    <ClCompile Include="tmln\tmlnChannelFilePath.cpp" />
+    <ClCompile Include="tmln\tmlnChannelFloat.cpp" />
+    <ClCompile Include="tmln\tmlnChannelOrientation.cpp" />
+    <ClCompile Include="tmln\tmlnChannelPosition.cpp" />
+    <ClCompile Include="tmln\tmlnChannelRenderPass.cpp" />
+    <ClCompile Include="tmln\tmlnChannelScale.cpp" />
+    <ClCompile Include="tmln\tmlnChannelTextureFileName.cpp" />
+    <ClCompile Include="tmln\tmlnChannelVideo.cpp" />
+    <ClCompile Include="vis\visMgr.cpp" />
+    <ClCompile Include="vis\visPackage.cpp" />
+    <ClCompile Include="vis\visVisibleInterest.cpp" />
+    <ClCompile Include="pnt\pntPackage.cpp" />
+    <ClCompile Include="pnt\pntPickInterest.cpp" />
+    <ClCompile Include="pnt\pntPoint.cpp" />
+    <ClCompile Include="pnt\pntPointMgr.cpp" />
+    <ClCompile Include="pnt\pntPointObject.cpp" />
+    <ClCompile Include="pnt\pntPointSelect.cpp" />
+    <ClCompile Include="mnm\mnmAppPackageMgr.cpp" />
+    <ClCompile Include="mnm\mnmAppUtil.cpp" />
+    <ClCompile Include="mnm\mnmAutoSaveMgr.cpp" />
+    <ClCompile Include="mnm\mnmAviUtil.cpp" />
+    <ClCompile Include="mnm\mnmBaseData.cpp" />
+    <ClCompile Include="mnm\mnmBaseDataParser.cpp" />
+    <ClCompile Include="mnm\mnmCompassUtil.cpp" />
+    <ClCompile Include="mnm\mnmDebugInfoWin.cpp" />
+    <ClCompile Include="mnm\mnmObject.cpp" />
+    <ClCompile Include="mnm\mnmPackage.cpp" />
+    <ClCompile Include="mnm\mnmPaths.cpp" />
+    <ClCompile Include="mnm\mnmQuickTimeSound.cpp" />
+    <ClCompile Include="mnm\mnmQuickTimeUtil.cpp" />
+    <ClCompile Include="mnm\mnmReference.cpp" />
+    <ClCompile Include="mnm\mnmReferencePosChannel.cpp" />
+    <ClCompile Include="mnm\mnmScreenCaptureUtil.cpp" />
+    <ClCompile Include="mnm\mnmSecurityMgr.cpp" />
+    <ClCompile Include="mnm\mnmThinkMgr.cpp" />
+    <ClCompile Include="mnm\mnmTimeCodeMgr.cpp" />
+    <ClCompile Include="mnm\mnmTimeCodeUtil.cpp" />
+    <ClCompile Include="mnm\mnmVJoystick.cpp" />
+    <ClCompile Include="mnm\Data\mnmAppPackageDocumentChunk.cpp" />
+    <ClCompile Include="mnm\Data\mnmAppPackageDocumentInterest.cpp" />
+    <ClCompile Include="mnm\Data\mnmAppPackageParser.cpp" />
+    <ClCompile Include="fsys\fsysDirListUtil.cpp" />
+    <ClCompile Include="fsys\fsysFileInfo.cpp" />
+    <ClCompile Include="fsys\fsysFileList.cpp" />
+    <ClCompile Include="fsys\fsysFileUtil.cpp" />
+    <ClCompile Include="mode\modeCommandSwitchMode.cpp" />
+    <ClCompile Include="mode\modeMode.cpp" />
+    <ClCompile Include="mode\modeModeMgr.cpp" />
+    <ClCompile Include="mode\modeModeTime.cpp" />
+    <ClCompile Include="gsup\gsupReAttachUtil.cpp" />
+    <ClCompile Include="gsup\gsupTreeCtrlUtil.cpp" />
+    <ClCompile Include="ltst\ltstInfluenceUtil.cpp" />
+    <ClCompile Include="ltst\ltstIsolatable.cpp" />
+    <ClCompile Include="ltst\ltstIsolateMgr.cpp" />
+    <ClCompile Include="ltst\ltstLightSet.cpp" />
+    <ClCompile Include="ltst\ltstLightSetInterest.cpp" />
+    <ClCompile Include="ltst\ltstLightSetMgr.cpp" />
+    <ClCompile Include="ltst\ltstLightSetsData.cpp" />
+    <ClCompile Include="ltst\private\ltstLightSetInterestMgr.cpp" />
+    <ClCompile Include="ltst\private\ltstLightSetNode.cpp" />
+    <ClCompile Include="ltst\private\ltstLightSetObject.cpp" />
+    <ClCompile Include="ltst\GUI\ltstReAttachUtil.cpp" />
+    <ClCompile Include="cams\camsCameraMgr.cpp" />
+    <ClCompile Include="cams\camsDirectorsCutMgr.cpp" />
+    <ClCompile Include="cams\camsFollowUtil.cpp" />
+    <ClCompile Include="lyer\lyerLayerData.cpp" />
+    <ClCompile Include="lyer\lyerLayerInterest.cpp" />
+    <ClCompile Include="lyer\lyerLayerMgr.cpp" />
+    <ClCompile Include="lyer\lyerObject.cpp" />
+    <ClCompile Include="mexp\mexpExportData.cpp" />
+    <ClCompile Include="mexp\mexpExporter.cpp" />
+    <ClCompile Include="mexp\mexpExporterUtil.cpp" />
+    <ClCompile Include="mexp\mexpExportInterest.cpp" />
+    <ClCompile Include="mexp\mexpMgr.cpp" />
+    <ClCompile Include="mexp\mexpRecorderCamera.cpp" />
+    <ClCompile Include="mexp\mexpRecorderDirectorsCut.cpp" />
+    <ClCompile Include="mexp\mexpRecorderNode.cpp" />
+    <ClCompile Include="mexp\mexpRecorderPosition.cpp" />
+    <ClCompile Include="mexp\mexpRecorderRotation.cpp" />
+    <ClCompile Include="grps\grpsGroupData.cpp" />
+    <ClCompile Include="grps\grpsGroupInterest.cpp" />
+    <ClCompile Include="grps\grpsGroupMgr.cpp" />
+    <ClCompile Include="evmt\evmtEnvironment.cpp" />
+    <ClCompile Include="evmt\evmtEnvironmentInterest.cpp" />
+    <ClCompile Include="evmt\evmtEnvironmentMgr.cpp" />
+    <ClCompile Include="evmt\evmtInfluenceUtil.cpp" />
+    <ClCompile Include="evmt\private\evmtEnvironmentObject.cpp" />
+    <ClCompile Include="evmt\GUI\evmtReAttachUtil.cpp" />
+    <ClCompile Include="mtrl\mtrlCommands.cpp" />
+    <ClCompile Include="mtrl\mtrlDriverCreator.cpp" />
+    <ClCompile Include="mtrl\mtrlHighlight.cpp" />
+    <ClCompile Include="mtrl\mtrlIconUtil.cpp" />
+    <ClCompile Include="mtrl\mtrlMaterialParser.cpp" />
+    <ClCompile Include="mtrl\mtrlPackage.cpp" />
+    <ClCompile Include="mtrl\mtrlScriptObject.cpp" />
+    <ClCompile Include="mtrl\mtrlSelectInterest.cpp" />
+    <ClCompile Include="mtrl\Gui\mtrlDialogUtil.cpp" />
+    <ClCompile Include="mtrl\GUI\mtrlDisplacement.cpp" />
+    <ClCompile Include="mtrl\GUI\mtrlDisplacementData.cpp" />
+    <ClCompile Include="mtrl\Gui\mtrlGlow.cpp" />
+    <ClCompile Include="mtrl\Gui\mtrlGlowData.cpp" />
+    <ClCompile Include="mtrl\GUI\mtrlNormals.cpp" />
+    <ClCompile Include="mtrl\GUI\mtrlNormalsData.cpp" />
+    <ClCompile Include="mtrl\Gui\mtrlOperations.cpp" />
+    <ClCompile Include="mtrl\GUI\mtrlOutline.cpp" />
+    <ClCompile Include="mtrl\GUI\mtrlOutlineData.cpp" />
+    <ClCompile Include="mtrl\GUI\mtrlPropertyObject.cpp" />
+    <ClCompile Include="mtrl\GUI\mtrlRefl.cpp" />
+    <ClCompile Include="mtrl\GUI\mtrlReflData.cpp" />
+    <ClCompile Include="mtrl\GUI\mtrlRendermanOverride.cpp" />
+    <ClCompile Include="mtrl\GUI\mtrlRendermanOverrideData.cpp" />
+    <ClCompile Include="mtrl\GUI\mtrlSetOperation.cpp" />
+    <ClCompile Include="mtrl\GUI\mtrlShaderObject.cpp" />
+    <ClCompile Include="mtrl\GUI\mtrlShaderUtil.cpp" />
+    <ClCompile Include="mtrl\GUI\mtrlSurfaceShader.cpp" />
+    <ClCompile Include="mtrl\GUI\mtrlTextureFilter.cpp" />
+    <ClCompile Include="mtrl\GUI\mtrlTextureFilterData.cpp" />
+    <ClCompile Include="mtrl\GUI\mtrlUVTransform.cpp" />
+    <ClCompile Include="mtrl\GUI\mtrlUVTransformData.cpp" />
+    <ClCompile Include="pyth\pythCaptureOptions.cpp" />
+    <ClCompile Include="pyth\pythCommands.cpp" />
+    <ClCompile Include="pyth\pythControlProperty.cpp" />
+    <ClCompile Include="pyth\pythDebug.cpp" />
+    <ClCompile Include="pyth\pythDialogs.cpp" />
+    <ClCompile Include="pyth\GUI\pythDialogUtil.cpp" />
+    <ClCompile Include="pyth\pythEnvironments.cpp" />
+    <ClCompile Include="pyth\pythEventCallbackMgr.cpp" />
+    <ClCompile Include="pyth\pythFgmtProperty.cpp" />
+    <ClCompile Include="pyth\pythFunctionUtil.cpp" />
+    <ClCompile Include="pyth\pythGroups.cpp" />
+    <ClCompile Include="pyth\pythLayers.cpp" />
+    <ClCompile Include="pyth\pythLightSets.cpp" />
+    <ClCompile Include="pyth\pythLog.cpp" />
+    <ClCompile Include="pyth\pythModules.cpp" />
+    <ClCompile Include="pyth\pythMtrlProperty.cpp" />
+    <ClCompile Include="pyth\pythPackage.cpp" />
+    <ClCompile Include="pyth\pythProperty.cpp" />
+    <ClCompile Include="pyth\pythPropertyUtil.cpp" />
+    <ClCompile Include="pyth\pythRenderLayers.cpp" />
+    <ClCompile Include="pyth\pythSelection.cpp" />
+    <ClCompile Include="pyth\pythThinkInterest.cpp" />
+    <ClCompile Include="pyth\pythTimeline.cpp" />
+    <ClCompile Include="pyth\pythUserScriptUtil.cpp" />
+    <ClCompile Include="pyth\pythUtil.cpp" />
+    <ClCompile Include="pyth\wxGUI\pythPythonDialog.cpp" />
+    <ClCompile Include="pyth\wxGUI\pythPythonDialogBase.cpp" />
+    <ClCompile Include="fgmt\fgmtCommands.cpp" />
+    <ClCompile Include="fgmt\fgmtFragmentParser.cpp" />
+    <ClCompile Include="fgmt\fgmtHighlight.cpp" />
+    <ClCompile Include="fgmt\fgmtPackage.cpp" />
+    <ClCompile Include="fgmt\fgmtScriptObject.cpp" />
+    <ClCompile Include="fgmt\fgmtSelectInterest.cpp" />
+    <ClCompile Include="fgmt\GUI\fgmtDialogUtil.cpp" />
+    <ClCompile Include="fgmt\GUI\fgmtOperations.cpp" />
+    <ClCompile Include="fgmt\GUI\fgmtPropertyObject.cpp" />
+    <ClCompile Include="fgmt\wxGUI\fgmtUVEditor.cpp" />
+    <ClCompile Include="ptm\ptmControlFactoryTimeline.cpp" />
+    <ClCompile Include="ptm\wxGUI\ptmTime_TimeEdit.cpp" />
+    <ClCompile Include="ptm\wxGUI\ptmTimeEdit.cpp" />
+    <ClCompile Include="rlyr\rlyrPackage.cpp" />
+    <ClCompile Include="rlyr\rlyrPassesObject.cpp" />
+    <ClCompile Include="rlyr\rlyrRenderCam.cpp" />
+    <ClCompile Include="rlyr\rlyrRenderLayer.cpp" />
+    <ClCompile Include="rlyr\rlyrRenderLayerInterest.cpp" />
+    <ClCompile Include="rlyr\rlyrRenderLayerMgr.cpp" />
+    <ClCompile Include="rlyr\private\rlyrRenderLayerNode.cpp" />
+    <ClCompile Include="rlyr\private\rlyrRenderLayerObject.cpp" />
+    <ClCompile Include="rlyr\data\rlyrLayersData.cpp" />
+    <ClCompile Include="rlyr\data\rlyrLayersDataParser.cpp" />
+    <ClCompile Include="rlyr\data\rlyrLayersDocumentChunk.cpp" />
+    <ClCompile Include="rlyr\data\rlyrLayersDocumentInterest.cpp" />
+    <ClCompile Include="rlyr\data\rlyrPassesData.cpp" />
+    <ClCompile Include="capt\captOutputDataDocumentChunk.cpp" />
+    <ClCompile Include="capt\captOutputDataDocumentInterest.cpp" />
+    <ClCompile Include="capt\captOutputDataParser.cpp" />
+    <ClCompile Include="capt\captOutputRenderProgressInterest.cpp" />
+    <ClCompile Include="capt\captRenderOutputData.cpp" />
+    <ClCompile Include="capt\captRenderOutputDataUtil.cpp" />
+    <ClCompile Include="capt\captRenderOutputObject.cpp" />
+    <ClCompile Include="capt\captRenderOutputTagsUtil.cpp" />
+    <ClCompile Include="capt\captRenderProgressData.cpp" />
+    <ClCompile Include="capt\captRenderProgressInterest.cpp" />
+    <ClCompile Include="capt\captRenderProgressMgr.cpp" />
+    <ClCompile Include="capt\captStereoUtil.cpp" />
+    <ClCompile Include="rprf\rprfPrefsCategory.cpp" />
+    <ClCompile Include="rprf\rprfPrefsData.cpp" />
+    <ClCompile Include="rprf\rprfPrefsDataParser.cpp" />
+    <ClCompile Include="rprf\rprfPrefsObject.cpp" />
+    <ClCompile Include="rprf\rprfPrefsUtil.cpp" />
+    <ClCompile Include="xtra\xtraDriverCreator.cpp" />
+    <ClCompile Include="xtra\xtraPackage.cpp" />
+    <ClCompile Include="xtra\xtraPropertyData.cpp" />
+    <ClCompile Include="xtra\xtraPropertyDataParser.cpp" />
+    <ClCompile Include="xtra\xtraPython.cpp" />
+    <ClCompile Include="xtra\xtraScriptObject.cpp" />
+    <ClCompile Include="xtra\xtraSelectInterest.cpp" />
+    <ClCompile Include="xtra\GUI\xtraCommands.cpp" />
+    <ClCompile Include="xtra\GUI\xtraOperations.cpp" />
+    <ClCompile Include="brsh\brshBrushStroke.cpp" />
+    <ClCompile Include="brsh\brshColorDialogUtil.cpp" />
+    <ClCompile Include="brsh\brshPaintBrushMgr.cpp" />
+    <ClCompile Include="brsh\wxGUI\brshColorDialog.cpp" />
+    <ClCompile Include="brsh\wxGUI\brshColorDialogBase.cpp" />
+    <ClCompile Include="brsh\data\brshData.cpp" />
+    <ClCompile Include="brsh\data\brshPropertyObject.cpp" />
+    <ClCompile Include="rmp\rmpData.cpp" />
+    <ClCompile Include="rmp\rmpDialogMgr.cpp" />
+    <ClCompile Include="rmp\rmpDialogUtil.cpp" />
+    <ClCompile Include="rmp\rmpObject.cpp" />
+    <ClCompile Include="rmp\rmpPackage.cpp" />
+    <ClCompile Include="rmp\rmpTextureMgr.cpp" />
+    <ClCompile Include="rmp\private\rmpDataParserUtil.cpp" />
+    <ClCompile Include="rmp\private\rmpTextureUtil.cpp" />
+    <ClCompile Include="cmpr\cmprCompressUtil.cpp" />
+    <ClCompile Include="cmpr\private\cmprZipUtil.cpp" />
+    <ClCompile Include="rman\rmanExporter.cpp" />
+    <ClCompile Include="rman\rmanExportInterest.cpp" />
+    <ClCompile Include="rman\rmanMgr.cpp" />
+    <ClCompile Include="xfrm\xfrmApplyTransformUtil.cpp" />
+    <ClCompile Include="xfrm\xfrmTransformGroup.cpp" />
+    <ClCompile Include="xfrm\xfrmTransformMgr.cpp" />
+    <ClCompile Include="xfrm\wxGUI\xfrmSurfaceTreeNode.cpp" />
+    <ClCompile Include="xfrm\wxGUI\xfrmSurfaceView.cpp" />
+    <ClCompile Include="fbx\fbxExporter.cpp" />
+    <ClCompile Include="fbx\fbxExportInterest.cpp" />
+    <ClCompile Include="fbx\fbxMgr.cpp" />
+    <ClCompile Include="mray\mrayExporter.cpp" />
+    <ClCompile Include="mray\mrayExportInterest.cpp" />
+    <ClCompile Include="mray\mrayMgr.cpp" />
+    <ClCompile Include="pfx\pfxData.cpp" />
+    <ClCompile Include="pfx\pfxDataParser.cpp" />
+    <ClCompile Include="pfx\pfxPackage.cpp" />
+    <ClCompile Include="pfx\pfxPostEffectMgr.cpp" />
+    <ClCompile Include="pfx\pfxPostEffectObject.cpp" />
+    <ClCompile Include="swl\swlDataParser.cpp" />
+    <ClCompile Include="swl\swlInterest.cpp" />
+    <ClCompile Include="swl\swlPackage.cpp" />
+    <ClCompile Include="swl\swlPropertyObject.cpp" />
+    <ClCompile Include="swl\swlScriptObject.cpp" />
+    <ClCompile Include="swl\swlSelectionUtil.cpp" />
+    <ClCompile Include="SupportLayer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="dyn\dynChannelControl.hpp" />
+    <ClInclude Include="dyn\dynControlData.hpp" />
+    <ClInclude Include="dyn\dynControlDataParser.hpp" />
+    <ClInclude Include="dyn\dynDriverCreator.hpp" />
+    <ClInclude Include="dyn\dynPackage.hpp" />
+    <ClInclude Include="dyn\dynScriptObject.hpp" />
+    <ClInclude Include="dyn\dynSelectInterest.hpp" />
+    <ClInclude Include="dyn\GUI\dynCreateOperation.hpp" />
+    <ClInclude Include="dyn\GUI\dynDeleteOperation.hpp" />
+    <ClInclude Include="dyn\Gui\dynDialogUtil.hpp" />
+    <ClInclude Include="dyn\GUI\dynOperations.hpp" />
+    <ClInclude Include="dyn\GUI\dynPropertyObject.hpp" />
+    <ClInclude Include="dyn\Drivers\dynDriverTransformKey.hpp" />
+    <ClInclude Include="dyn\Drivers\dynDriverTransformKeyInfo.hpp" />
+    <ClInclude Include="dyn\Drivers\dynDriverTransformKeyParser.hpp" />
+    <ClInclude Include="cmps\cmpsCompass.hpp" />
+    <ClInclude Include="cmps\cmpsCompassMgr.hpp" />
+    <ClInclude Include="cmps\cmpsManipObject.hpp" />
+    <ClInclude Include="cmps\cmpsPackage.hpp" />
+    <ClInclude Include="cmps\cmpsPickInterest.hpp" />
+    <ClInclude Include="cmps\cmpsRenderLayer.hpp" />
+    <ClInclude Include="cmps\cmpsSelectMgr.hpp" />
+    <ClInclude Include="cmps\cmpsWorldAxis.hpp" />
+    <ClInclude Include="cmps\private\cmpsCompassObject.hpp" />
+    <ClInclude Include="cmps\private\cmpsCompassObject3Axis.hpp" />
+    <ClInclude Include="cmps\private\cmpsCompassObjectRotate.hpp" />
+    <ClInclude Include="cmps\private\cmpsCompassObjectScale.hpp" />
+    <ClInclude Include="cmps\private\cmpsCompassObjectSelect.hpp" />
+    <ClInclude Include="cmps\private\cmpsCompassObjectSingle.hpp" />
+    <ClInclude Include="cmps\private\cmpsCompassObjectTranslate.hpp" />
+    <ClInclude Include="cmps\private\cmpsCompassRotate.hpp" />
+    <ClInclude Include="cmps\private\cmpsCompassScale.hpp" />
+    <ClInclude Include="cmps\private\cmpsCompassSelect.hpp" />
+    <ClInclude Include="cmps\private\cmpsCompassTranslate.hpp" />
+    <ClInclude Include="cmps\private\cmpsObjectSimple.hpp" />
+    <ClInclude Include="spln\splnCurveMgr.hpp" />
+    <ClInclude Include="spln\splnCurveModel.hpp" />
+    <ClInclude Include="spln\splnCurvePointObject.hpp" />
+    <ClInclude Include="spln\splnCurveSelect.hpp" />
+    <ClInclude Include="spln\splnPackage.hpp" />
+    <ClInclude Include="spln\splnPickInterest.hpp" />
+    <ClInclude Include="spln\splnSpline.hpp" />
+    <ClInclude Include="tmln\tmlnAdapterPosition.hpp" />
+    <ClInclude Include="tmln\tmlnBaseData.hpp" />
+    <ClInclude Include="tmln\tmlnBaseDataParser.hpp" />
+    <ClInclude Include="tmln\tmlnBlendDriver.hpp" />
+    <ClInclude Include="tmln\tmlnChannel.hpp" />
+    <ClInclude Include="tmln\tmlnChannelInfo.hpp" />
+    <ClInclude Include="tmln\tmlnChannelInfoParser.hpp" />
+    <ClInclude Include="tmln\tmlnChannelSet.hpp" />
+    <ClInclude Include="tmln\tmlnCreator.hpp" />
+    <ClInclude Include="tmln\tmlnDriver.hpp" />
+    <ClInclude Include="tmln\tmlnDriverClipboard.hpp" />
+    <ClInclude Include="tmln\tmlnDriverDialogUtil.hpp" />
+    <ClInclude Include="tmln\tmlnDriverIdMgr.hpp" />
+    <ClInclude Include="tmln\tmlnDriverInfo.hpp" />
+    <ClInclude Include="tmln\tmlnDriverInfoParser.hpp" />
+    <ClInclude Include="tmln\tmlnPackage.hpp" />
+    <ClInclude Include="tmln\tmlnParser.hpp" />
+    <ClInclude Include="tmln\tmlnScriptObject.hpp" />
+    <ClInclude Include="tmln\tmlnSelectionUtil.hpp" />
+    <ClInclude Include="tmln\tmlnTimeEditUIInfo.hpp" />
+    <ClInclude Include="tmln\tmlnTimeInOutData.hpp" />
+    <ClInclude Include="tmln\tmlnTimeInOutMgr.hpp" />
+    <ClInclude Include="tmln\tmlnTimeInterest.hpp" />
+    <ClInclude Include="tmln\tmlnTimeLine.hpp" />
+    <ClInclude Include="tmln\tmlnTimelineMgr.hpp" />
+    <ClInclude Include="tmln\tmlnTimeUtil.hpp" />
+    <ClInclude Include="tmln\tmlnChannelAnimationFull.hpp" />
+    <ClInclude Include="tmln\tmlnChannelAnimationSub.hpp" />
+    <ClInclude Include="tmln\tmlnChannelBoolean.hpp" />
+    <ClInclude Include="tmln\tmlnChannelColor.hpp" />
+    <ClInclude Include="tmln\tmlnChannelFileName.hpp" />
+    <ClInclude Include="tmln\tmlnChannelFilePath.hpp" />
+    <ClInclude Include="tmln\tmlnChannelFloat.hpp" />
+    <ClInclude Include="tmln\tmlnChannelOrientation.hpp" />
+    <ClInclude Include="tmln\tmlnChannelPosition.hpp" />
+    <ClInclude Include="tmln\tmlnChannelRenderPass.hpp" />
+    <ClInclude Include="tmln\tmlnChannelScale.hpp" />
+    <ClInclude Include="tmln\tmlnChannelTextureFileName.hpp" />
+    <ClInclude Include="tmln\tmlnChannelVideo.hpp" />
+    <ClInclude Include="vis\visMgr.hpp" />
+    <ClInclude Include="vis\visPackage.hpp" />
+    <ClInclude Include="vis\visVisibleInterest.hpp" />
+    <ClInclude Include="pnt\pntPackage.hpp" />
+    <ClInclude Include="pnt\pntPickInterest.hpp" />
+    <ClInclude Include="pnt\pntPoint.hpp" />
+    <ClInclude Include="pnt\pntPointMgr.hpp" />
+    <ClInclude Include="pnt\pntPointObject.hpp" />
+    <ClInclude Include="pnt\pntPointSelect.hpp" />
+    <ClInclude Include="mnm\mnmAppPackageMgr.hpp" />
+    <ClInclude Include="mnm\mnmAppUtil.hpp" />
+    <ClInclude Include="mnm\mnmAutoSaveMgr.hpp" />
+    <ClInclude Include="mnm\mnmAviUtil.hpp" />
+    <ClInclude Include="mnm\mnmBaseData.hpp" />
+    <ClInclude Include="mnm\mnmBaseDataParser.hpp" />
+    <ClInclude Include="mnm\mnmCompassUtil.hpp" />
+    <ClInclude Include="mnm\mnmConstants.hpp" />
+    <ClInclude Include="mnm\mnmDebugInfo.hpp" />
+    <ClInclude Include="mnm\mnmErrorCodes.hpp" />
+    <ClInclude Include="mnm\mnmObject.hpp" />
+    <ClInclude Include="mnm\mnmPackage.hpp" />
+    <ClInclude Include="mnm\mnmPaths.hpp" />
+    <ClInclude Include="mnm\mnmPickMask.hpp" />
+    <ClInclude Include="mnm\mnmQuickTimeSound.hpp" />
+    <ClInclude Include="mnm\mnmQuickTimeUtil.hpp" />
+    <ClInclude Include="mnm\mnmReference.hpp" />
+    <ClInclude Include="mnm\mnmReferencePosChannel.hpp" />
+    <ClInclude Include="mnm\mnmScreenCaptureUtil.hpp" />
+    <ClInclude Include="mnm\mnmSecurityMgr.hpp" />
+    <ClInclude Include="mnm\mnmThinkInterest.hpp" />
+    <ClInclude Include="mnm\mnmThinkMgr.hpp" />
+    <ClInclude Include="mnm\mnmTimeCodeMgr.hpp" />
+    <ClInclude Include="mnm\mnmTimeCodeUtil.hpp" />
+    <ClInclude Include="mnm\mnmVJoystick.hpp" />
+    <ClInclude Include="mnm\Data\mnmAppPackageData.hpp" />
+    <ClInclude Include="mnm\Data\mnmAppPackageDocumentChunk.hpp" />
+    <ClInclude Include="mnm\Data\mnmAppPackageDocumentInterest.hpp" />
+    <ClInclude Include="mnm\Data\mnmAppPackageParser.hpp" />
+    <ClInclude Include="fsys\fsysDirListUtil.hpp" />
+    <ClInclude Include="fsys\fsysFileInfo.hpp" />
+    <ClInclude Include="fsys\fsysFileList.hpp" />
+    <ClInclude Include="fsys\fsysFileUtil.hpp" />
+    <ClInclude Include="mode\modeCommandSwitchMode.hpp" />
+    <ClInclude Include="mode\modeConstants.hpp" />
+    <ClInclude Include="mode\modeMode.hpp" />
+    <ClInclude Include="mode\modeModeMgr.hpp" />
+    <ClInclude Include="mode\modeModeTime.hpp" />
+    <ClInclude Include="gsup\gsupReAttachUtil.hpp" />
+    <ClInclude Include="gsup\gsupTreeCtrlUtil.hpp" />
+    <ClInclude Include="ltst\ltstInfluenceUtil.hpp" />
+    <ClInclude Include="ltst\ltstIsolatable.hpp" />
+    <ClInclude Include="ltst\ltstIsolateMgr.hpp" />
+    <ClInclude Include="ltst\ltstLightSet.hpp" />
+    <ClInclude Include="ltst\ltstLightSetInterest.hpp" />
+    <ClInclude Include="ltst\ltstLightSetMgr.hpp" />
+    <ClInclude Include="ltst\ltstLightSetsData.hpp" />
+    <ClInclude Include="ltst\private\ltstLightSetInterestMgr.hpp" />
+    <ClInclude Include="ltst\private\ltstLightSetLight.hpp" />
+    <ClInclude Include="ltst\private\ltstLightSetNode.hpp" />
+    <ClInclude Include="ltst\private\ltstLightSetObject.hpp" />
+    <ClInclude Include="ltst\private\ltstLightSetUtil.hpp" />
+    <ClInclude Include="ltst\GUI\ltstReAttachUtil.hpp" />
+    <ClInclude Include="cams\camsCameraMgr.hpp" />
+    <ClInclude Include="cams\camsDirectorsCut.hpp" />
+    <ClInclude Include="cams\camsDirectorsCutMgr.hpp" />
+    <ClInclude Include="cams\camsFollowUtil.hpp" />
+    <ClInclude Include="lyer\lyerLayerData.hpp" />
+    <ClInclude Include="lyer\lyerLayerInterest.hpp" />
+    <ClInclude Include="lyer\lyerLayerMgr.hpp" />
+    <ClInclude Include="lyer\lyerLayerStyle.hpp" />
+    <ClInclude Include="lyer\lyerObject.hpp" />
+    <ClInclude Include="mexp\mexpChannelRecorder.hpp" />
+    <ClInclude Include="mexp\mexpExportData.hpp" />
+    <ClInclude Include="mexp\mexpExporter.hpp" />
+    <ClInclude Include="mexp\mexpExporterUtil.hpp" />
+    <ClInclude Include="mexp\mexpExportInterest.hpp" />
+    <ClInclude Include="mexp\mexpMgr.hpp" />
+    <ClInclude Include="mexp\mexpRecorderCamera.hpp" />
+    <ClInclude Include="mexp\mexpRecorderDirectorsCut.hpp" />
+    <ClInclude Include="mexp\mexpRecorderNode.hpp" />
+    <ClInclude Include="mexp\mexpRecorderPosition.hpp" />
+    <ClInclude Include="mexp\mexpRecorderRotation.hpp" />
+    <ClInclude Include="grps\grpsGroupData.hpp" />
+    <ClInclude Include="grps\grpsGroupInterest.hpp" />
+    <ClInclude Include="grps\grpsGroupMgr.hpp" />
+    <ClInclude Include="evmt\evmtEnvironment.hpp" />
+    <ClInclude Include="evmt\evmtEnvironmentInterest.hpp" />
+    <ClInclude Include="evmt\evmtEnvironmentMgr.hpp" />
+    <ClInclude Include="evmt\evmtInfluenceUtil.hpp" />
+    <ClInclude Include="evmt\private\evmtEnvironmentObject.hpp" />
+    <ClInclude Include="evmt\GUI\evmtReAttachUtil.hpp" />
+    <ClInclude Include="mtrl\mtrlCommands.hpp" />
+    <ClInclude Include="mtrl\mtrlDriverCreator.hpp" />
+    <ClInclude Include="mtrl\mtrlHighlight.hpp" />
+    <ClInclude Include="mtrl\mtrlIconUtil.hpp" />
+    <ClInclude Include="mtrl\mtrlMaterialParser.hpp" />
+    <ClInclude Include="mtrl\mtrlPackage.hpp" />
+    <ClInclude Include="mtrl\mtrlScriptObject.hpp" />
+    <ClInclude Include="mtrl\mtrlSelectInterest.hpp" />
+    <ClInclude Include="mtrl\Gui\mtrlDialogUtil.hpp" />
+    <ClInclude Include="mtrl\GUI\mtrlDisplacement.hpp" />
+    <ClInclude Include="mtrl\GUI\mtrlDisplacementData.hpp" />
+    <ClInclude Include="mtrl\Gui\mtrlGlow.hpp" />
+    <ClInclude Include="mtrl\Gui\mtrlGlowData.hpp" />
+    <ClInclude Include="mtrl\GUI\mtrlNormals.hpp" />
+    <ClInclude Include="mtrl\GUI\mtrlNormalsData.hpp" />
+    <ClInclude Include="mtrl\Gui\mtrlOperations.hpp" />
+    <ClInclude Include="mtrl\GUI\mtrlOutline.hpp" />
+    <ClInclude Include="mtrl\GUI\mtrlOutlineData.hpp" />
+    <ClInclude Include="mtrl\GUI\mtrlPropertyObject.hpp" />
+    <ClInclude Include="mtrl\GUI\mtrlRefl.hpp" />
+    <ClInclude Include="mtrl\GUI\mtrlReflData.hpp" />
+    <ClInclude Include="mtrl\GUI\mtrlRendermanOverride.hpp" />
+    <ClInclude Include="mtrl\GUI\mtrlRendermanOverrideData.hpp" />
+    <ClInclude Include="mtrl\GUI\mtrlSetOperation.hpp" />
+    <ClInclude Include="mtrl\GUI\mtrlShaderObject.hpp" />
+    <ClInclude Include="mtrl\GUI\mtrlShaderUtil.hpp" />
+    <ClInclude Include="mtrl\GUI\mtrlSurfaceShader.hpp" />
+    <ClInclude Include="mtrl\GUI\mtrlTextureFilter.hpp" />
+    <ClInclude Include="mtrl\GUI\mtrlTextureFilterData.hpp" />
+    <ClInclude Include="mtrl\GUI\mtrlUVTransform.hpp" />
+    <ClInclude Include="mtrl\GUI\mtrlUVTransformData.hpp" />
+    <ClInclude Include="pyth\pythCaptureOptions.hpp" />
+    <ClInclude Include="pyth\pythCommands.hpp" />
+    <ClInclude Include="pyth\pythControlProperty.hpp" />
+    <ClInclude Include="pyth\pythDebug.hpp" />
+    <ClInclude Include="pyth\pythDialogs.hpp" />
+    <ClInclude Include="pyth\GUI\pythDialogUtil.hpp" />
+    <ClInclude Include="pyth\pythEnvironments.hpp" />
+    <ClInclude Include="pyth\pythEventCallbackMgr.hpp" />
+    <ClInclude Include="pyth\pythFgmtProperty.hpp" />
+    <ClInclude Include="pyth\pythFunctionUtil.hpp" />
+    <ClInclude Include="pyth\pythGroups.hpp" />
+    <ClInclude Include="pyth\pythLayers.hpp" />
+    <ClInclude Include="pyth\pythLightSets.hpp" />
+    <ClInclude Include="pyth\pythLog.hpp" />
+    <ClInclude Include="pyth\pythModules.hpp" />
+    <ClInclude Include="pyth\pythMtrlProperty.hpp" />
+    <ClInclude Include="pyth\pythPackage.hpp" />
+    <ClInclude Include="pyth\pythProperty.hpp" />
+    <ClInclude Include="pyth\pythPropertyUtil.hpp" />
+    <ClInclude Include="pyth\pythPython.hpp" />
+    <ClInclude Include="pyth\pythRenderLayers.hpp" />
+    <ClInclude Include="pyth\pythSelection.hpp" />
+    <ClInclude Include="pyth\pythThinkInterest.hpp" />
+    <ClInclude Include="pyth\pythTimeline.hpp" />
+    <ClInclude Include="pyth\pythUserScriptUtil.hpp" />
+    <ClInclude Include="pyth\pythUtil.hpp" />
+    <ClInclude Include="pyth\wxGUI\pythPythonDialog.hpp" />
+    <ClInclude Include="pyth\wxGUI\pythPythonDialogBase.h" />
+    <ClInclude Include="fgmt\fgmtCommands.hpp" />
+    <ClInclude Include="fgmt\fgmtFragmentData.hpp" />
+    <ClInclude Include="fgmt\fgmtFragmentParser.hpp" />
+    <ClInclude Include="fgmt\fgmtFragmentsAOData.hpp" />
+    <ClInclude Include="fgmt\fgmtHighlight.hpp" />
+    <ClInclude Include="fgmt\fgmtPackage.hpp" />
+    <ClInclude Include="fgmt\fgmtScriptObject.hpp" />
+    <ClInclude Include="fgmt\fgmtSelectInterest.hpp" />
+    <ClInclude Include="fgmt\GUI\fgmtDialogUtil.hpp" />
+    <ClInclude Include="fgmt\GUI\fgmtOperations.hpp" />
+    <ClInclude Include="fgmt\GUI\fgmtPropertyObject.hpp" />
+    <ClInclude Include="fgmt\wxGUI\fgmtUVEditor.hpp" />
+    <ClInclude Include="ptm\ptmControlFactoryTimeline.hpp" />
+    <ClInclude Include="ptm\wxGUI\ptmTemplate_TimeEdit.hpp" />
+    <ClInclude Include="ptm\wxGUI\ptmTime_TimeEdit.hpp" />
+    <ClInclude Include="ptm\wxGUI\ptmTimeEdit.hpp" />
+    <ClInclude Include="rlyr\rlyrPackage.hpp" />
+    <ClInclude Include="rlyr\rlyrPassesObject.hpp" />
+    <ClInclude Include="rlyr\rlyrRenderCam.hpp" />
+    <ClInclude Include="rlyr\rlyrRenderLayer.hpp" />
+    <ClInclude Include="rlyr\rlyrRenderLayerInterest.hpp" />
+    <ClInclude Include="rlyr\rlyrRenderLayerMgr.hpp" />
+    <ClInclude Include="rlyr\private\rlyrRenderLayerNode.hpp" />
+    <ClInclude Include="rlyr\private\rlyrRenderLayerObject.hpp" />
+    <ClInclude Include="rlyr\data\rlyrLayersData.hpp" />
+    <ClInclude Include="rlyr\data\rlyrLayersDataParser.hpp" />
+    <ClInclude Include="rlyr\data\rlyrLayersDocumentChunk.hpp" />
+    <ClInclude Include="rlyr\data\rlyrLayersDocumentInterest.hpp" />
+    <ClInclude Include="rlyr\data\rlyrPassesData.hpp" />
+    <ClInclude Include="capt\captOutputDataDocumentChunk.hpp" />
+    <ClInclude Include="capt\captOutputDataDocumentInterest.hpp" />
+    <ClInclude Include="capt\captOutputDataParser.hpp" />
+    <ClInclude Include="capt\captOutputRenderProgressInterest.hpp" />
+    <ClInclude Include="capt\captRenderOutputData.hpp" />
+    <ClInclude Include="capt\captRenderOutputDataUtil.hpp" />
+    <ClInclude Include="capt\captRenderOutputObject.hpp" />
+    <ClInclude Include="capt\captRenderOutputTagsUtil.hpp" />
+    <ClInclude Include="capt\captRenderProgressData.hpp" />
+    <ClInclude Include="capt\captRenderProgressInterest.hpp" />
+    <ClInclude Include="capt\captRenderProgressMgr.hpp" />
+    <ClInclude Include="capt\captStereoUtil.hpp" />
+    <ClInclude Include="rprf\rprfPrefsCategory.hpp" />
+    <ClInclude Include="rprf\rprfPrefsData.hpp" />
+    <ClInclude Include="rprf\rprfPrefsDataParser.hpp" />
+    <ClInclude Include="rprf\rprfPrefsObject.hpp" />
+    <ClInclude Include="rprf\rprfPrefsUtil.hpp" />
+    <ClInclude Include="xtra\xtraDriverCreator.hpp" />
+    <ClInclude Include="xtra\xtraPackage.hpp" />
+    <ClInclude Include="xtra\xtraPropertyData.hpp" />
+    <ClInclude Include="xtra\xtraPropertyDataParser.hpp" />
+    <ClInclude Include="xtra\xtraPython.hpp" />
+    <ClInclude Include="xtra\xtraScriptObject.hpp" />
+    <ClInclude Include="xtra\xtraSelectInterest.hpp" />
+    <ClInclude Include="xtra\GUI\xtraCommands.hpp" />
+    <ClInclude Include="xtra\GUI\xtraOperations.hpp" />
+    <ClInclude Include="brsh\brshBrushStroke.hpp" />
+    <ClInclude Include="brsh\brshColorDialogUtil.hpp" />
+    <ClInclude Include="brsh\brshPaintBrushMgr.hpp" />
+    <ClInclude Include="brsh\wxGUI\brshColorDialog.hpp" />
+    <ClInclude Include="brsh\wxGUI\brshColorDialogBase.h" />
+    <ClInclude Include="brsh\data\brshData.hpp" />
+    <ClInclude Include="brsh\data\brshPropertyObject.hpp" />
+    <ClInclude Include="rmp\rmpData.hpp" />
+    <ClInclude Include="rmp\rmpDialogMgr.hpp" />
+    <ClInclude Include="rmp\rmpDialogUtil.hpp" />
+    <ClInclude Include="rmp\rmpObject.hpp" />
+    <ClInclude Include="rmp\rmpPackage.hpp" />
+    <ClInclude Include="rmp\rmpTextureMgr.hpp" />
+    <ClInclude Include="rmp\private\rmpDataParserUtil.hpp" />
+    <ClInclude Include="rmp\private\rmpTextureUtil.hpp" />
+    <ClInclude Include="cmpr\cmprCompressUtil.hpp" />
+    <ClInclude Include="cmpr\private\cmprZipUtil.hpp" />
+    <ClInclude Include="rman\rmanExporter.hpp" />
+    <ClInclude Include="rman\rmanExportInterest.hpp" />
+    <ClInclude Include="rman\rmanMgr.hpp" />
+    <ClInclude Include="xfrm\xfrmApplyTransformUtil.hpp" />
+    <ClInclude Include="xfrm\xfrmTransformGroup.hpp" />
+    <ClInclude Include="xfrm\xfrmTransformMgr.hpp" />
+    <ClInclude Include="xfrm\xfrmTransformNode.hpp" />
+    <ClInclude Include="xfrm\xfrmTransformNodeCallback.hpp" />
+    <ClInclude Include="xfrm\wxGUI\xfrmSurfaceTreeNode.hpp" />
+    <ClInclude Include="xfrm\wxGUI\xfrmSurfaceView.hpp" />
+    <ClInclude Include="fbx\fbxExporter.hpp" />
+    <ClInclude Include="fbx\fbxExportInterest.hpp" />
+    <ClInclude Include="fbx\fbxMgr.hpp" />
+    <ClInclude Include="mray\mrayExporter.hpp" />
+    <ClInclude Include="mray\mrayExportInterest.hpp" />
+    <ClInclude Include="mray\mrayMgr.hpp" />
+    <ClInclude Include="pfx\pfxData.hpp" />
+    <ClInclude Include="pfx\pfxDataParser.hpp" />
+    <ClInclude Include="pfx\pfxPackage.hpp" />
+    <ClInclude Include="pfx\pfxPostEffectMgr.hpp" />
+    <ClInclude Include="pfx\pfxPostEffectObject.hpp" />
+    <ClInclude Include="swl\swlData.hpp" />
+    <ClInclude Include="swl\swlDataParser.hpp" />
+    <ClInclude Include="swl\swlInterest.hpp" />
+    <ClInclude Include="swl\swlPackage.hpp" />
+    <ClInclude Include="swl\swlPropertyObject.hpp" />
+    <ClInclude Include="swl\swlScriptObject.hpp" />
+    <ClInclude Include="swl\swlSelectionUtil.hpp" />
+    <ClInclude Include="SupportLayer.hpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE=".\..\..\..\MachStudio\Source\app.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

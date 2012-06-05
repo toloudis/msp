@@ -1,0 +1,42 @@
+/*****************************************************************************
+ * Copyright 1986-2008 by mental images GmbH, Fasanenstr. 81, D-10623 Berlin,
+ * Germany. All rights reserved.
+ *****************************************************************************/
+
+shader Generator_checker
+{
+  input:
+		Color color1 = Color(1,1,1,1)
+		{			
+			display_name("Color 1");
+			soft_range(Color(0,0,0,0),Color(1,1,1,1));
+			description( "The first color in the signal." );
+		};
+		Color color2 = Color(0,0,0,1)
+		{		
+			display_name("Color 2");
+			soft_range(Color(0,0,0,0),Color(1,1,1,1));
+			description( "The second color in the signal." );
+		};
+		float checkerSize  = 0.2
+		{		
+			display_name("Checker Size");
+			soft_range(float(0),float(1));
+			description( "The size of each square within the valid range." );
+		};
+    
+  output:
+    Color result;
+    
+    void main()
+    {
+		float2 m = fmod(abs(texture_coordinate[0].xy), checkerSize)/
+						checkerSize;
+		result    = lerp(color1, color2,
+                                    (m.x < 0.5 == m.y < 0.5) ? 1.0 : 0.0);
+    }
+}
+{
+	description( "Generates a checker pattern based on the location of "
+	             "the input in the range [0-1] x [0-1]." );
+};

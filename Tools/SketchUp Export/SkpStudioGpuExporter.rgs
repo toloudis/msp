@@ -1,0 +1,25 @@
+HKCR
+{
+	SkpStudioGpuExport.SkpStudioGpuExport.1 = s 'SkpStudioGpuExporter Class'
+	{
+		CLSID = s '{6B828FF4-0676-4E35-A367-5DF780DBBCCA}'
+	}
+	SkpStudioGpuExport.SkpStudioGpuExporter = s 'SkpStudioGpuExporter Class'
+	{
+		CLSID = s '{6B828FF4-0676-4E35-A367-5DF780DBBCCA}'
+		CurVer = s 'SkpStudioGpuExport.SkpStudioGpuExport.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {6B828FF4-0676-4E35-A367-5DF780DBBCCA} = s 'SkpStudioGpuExporter Class'
+		{
+			ProgID = s 'SkpStudioGpuExport.SkpStudioGpuExport.1'
+			VersionIndependentProgID = s 'SkpStudioGpuExport.SkpStudioGpuExporter'
+			InprocServer32 = s '%MODULE%'
+			{
+			}
+			val AppID = s '%APPID%'
+			'TypeLib' = s '{C07A4395-54CB-43F7-A4E7-8C6CDC4EEAEA}'
+		}
+	}
+}

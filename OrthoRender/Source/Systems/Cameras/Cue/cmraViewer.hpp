@@ -1,0 +1,1 @@
+#error cmraViewer.hpp is obsolete

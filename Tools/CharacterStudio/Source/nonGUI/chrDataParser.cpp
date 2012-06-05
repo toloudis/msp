@@ -1,0 +1,207 @@
+/********************************************************************************************\
+**  chrDataParser.cpp
+**
+**
+**  Extra Large Technology
+**  Copyright(C) 2005 - All Rights Reserved
+\********************************************************************************************/
+
+#include "nonGUI/chrDataParser.hpp"
+
+#include "Core/ch/chBinReader.hpp"
+#include "Core/ch/chBinWriter.hpp"
+#include "Core/ch/chExceptionX.hpp"
+#include "Core/dbg/dbgLog.hpp"
+#include "Core/fs/fsFileUtil.hpp"
+#include "Core/fs/fsFileX.hpp"
+#include "Core/gf/gfFileBin.hpp"
+#include "Core/ch/chChunkParserUtil.hpp"
+
+namespace chrDataParser
+{
+
+namespace
+{
+//========================================================================
+//========================================================================
+const chDefs::Name c_CHRD = chDefs::MakeName('C', 'H', 'R', 'D');
+const chDefs::Name c_CHRB = chDefs::MakeName('C', 'H', 'R', 'B');
+const chDefs::Name c_EXPR = chDefs::MakeName('E', 'X', 'P', 'R');
+const chDefs::Name c_MLT2 = chDefs::MakeName('M', 'L', 'T', '2');
+const chDefs::Name c_MLT4 = chDefs::MakeName('M', 'L', 'T', '4');
+
+}
+
+
+//========================================================================
+//  returns chunk name for this data type
+//========================================================================
+chDefs::Name  GetChunkName()
+{
+	return c_CHRD;
+}
+
+
+//========================================================================
+//   ReadExpression
+//========================================================================
+void ReadExpression(	chReader& i_Reader,
+				chDefs::Version i_Version,
+				chDefs::Size i_Size,
+				chrExpression& o_Data )
+{
+	chChunkParserUtil::Read(i_Reader, o_Data.m_Name);
+	chChunkParserUtil::Read(i_Reader, o_Data.m_Filename);
+}
+
+//========================================================================
+//   WriteExpression
+//========================================================================
+void WriteExpression(	chWriter& o_Writer,
+				const chrExpression& i_Data )
+{
+
+	o_Writer.WriteChunkHeader( c_EXPR, 0, false );
+	chChunkParserUtil::Write(o_Writer, i_Data.m_Name);
+	chChunkParserUtil::Write(o_Writer, i_Data.m_Filename);
+	o_Writer.FinishChunk();
+}
+
+//========================================================================
+//   ReadData
+//========================================================================
+void ReadData(	chReader& i_Reader,
+				chDefs::Version i_Version,
+				chDefs::Size i_Size,
+				chrData& o_Data )
+{
+
+	chDefs::Name name;
+	chDefs::Version version;
+	chDefs::Size size;
+
+	while ( i_Reader.ReadChunkHeader(name, version, size) )
+	{
+		if ( name == c_CHRB )
+		{
+			// base data
+			chChunkParserUtil::Read(i_Reader, o_Data.m_ModelFilename);
+			chChunkParserUtil::Read(i_Reader, o_Data.m_RestAnimFilename);
+		}
+		else if ( name == c_EXPR )
+		{
+			// expression
+			chrExpression data;
+			ReadExpression(i_Reader, version, size, data);
+			o_Data.m_Expressions.push_back(data);
+		}
+		else if ( name == c_MLT2 )
+		{
+			// multi-expression pair
+			chrData::MultiPair data;
+			chChunkParserUtil::Read(i_Reader, data.m_Name);
+			chChunkParserUtil::Read(i_Reader, data.m_Left);
+			chChunkParserUtil::Read(i_Reader, data.m_Right);
+			o_Data.m_MultiPairs.push_back(data);
+		}
+		else if ( name == c_MLT4 )
+		{
+			// multi-expression four group
+			chrData::MultiFour data;
+			chChunkParserUtil::Read(i_Reader, data.m_Name);
+			chChunkParserUtil::Read(i_Reader, data.m_Left);
+			chChunkParserUtil::Read(i_Reader, data.m_Right);
+			chChunkParserUtil::Read(i_Reader, data.m_Down);
+			chChunkParserUtil::Read(i_Reader, data.m_Up);
+			o_Data.m_MultiFours.push_back(data);
+		}
+		i_Reader.FinishChunk();
+	}
+}
+
+//========================================================================
+// ReadData
+//========================================================================
+void ReadData(	const fsLocator &i_Locator,
+				chrData& o_Data )
+{
+	gfFileBin ifile(i_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	ifile.ReadHeader();
+	chBinReader reader(ifile);
+
+	chDefs::Name name;
+	chDefs::Version version;
+	chDefs::Size size;
+
+	while ( reader.ReadChunkHeader(name, version, size) )
+	{
+		if ( name == c_CHRD )
+		{
+			ReadData(reader, version, size, o_Data);
+		}
+	}
+}
+
+//========================================================================
+//   WriteData
+//========================================================================
+void WriteData(	chWriter& o_Writer,
+				const chrData& i_Data )
+{
+	o_Writer.WriteChunkHeader( c_CHRD, 0, true );
+
+	o_Writer.WriteChunkHeader( c_CHRB, 0, false );
+	chChunkParserUtil::Write(o_Writer, i_Data.m_ModelFilename);
+	chChunkParserUtil::Write(o_Writer, i_Data.m_RestAnimFilename);
+	o_Writer.FinishChunk();
+
+	for (int i=0; i<i_Data.m_Expressions.size(); i++)
+		WriteExpression(o_Writer, i_Data.m_Expressions[i]);
+
+	for (int i=0; i<i_Data.m_MultiPairs.size(); i++)
+	{
+		o_Writer.WriteChunkHeader( c_MLT2, 0, false );
+		chChunkParserUtil::Write(o_Writer, i_Data.m_MultiPairs[i].m_Name);
+		chChunkParserUtil::Write(o_Writer, i_Data.m_MultiPairs[i].m_Left);
+		chChunkParserUtil::Write(o_Writer, i_Data.m_MultiPairs[i].m_Right);
+		o_Writer.FinishChunk();
+	}
+
+	for (int i=0; i<i_Data.m_MultiFours.size(); i++)
+	{
+		o_Writer.WriteChunkHeader( c_MLT4, 0, false );
+		chChunkParserUtil::Write(o_Writer, i_Data.m_MultiFours[i].m_Name);
+		chChunkParserUtil::Write(o_Writer, i_Data.m_MultiFours[i].m_Left);
+		chChunkParserUtil::Write(o_Writer, i_Data.m_MultiFours[i].m_Right);
+		chChunkParserUtil::Write(o_Writer, i_Data.m_MultiFours[i].m_Down);
+		chChunkParserUtil::Write(o_Writer, i_Data.m_MultiFours[i].m_Up);
+		o_Writer.FinishChunk();
+	}
+
+
+	o_Writer.FinishChunk();
+}
+
+
+
+//========================================================================
+// WriteData
+//========================================================================
+void WriteData( const fsLocator &i_Locator,
+				const chrData& i_Data )
+{
+	// Create new file
+	if( fsFileUtil::FileExists(i_Locator) )
+		fsFileUtil::DeleteFile(i_Locator);
+	fsFileUtil::CreateFile(i_Locator);
+
+	gfFileBin ofile(i_Locator, fsFileStream::e_WriteOnly, gfFileBin::e_LittleEndian);
+	ofile.WriteHeader();
+	chBinWriter writer(ofile);
+
+	WriteData(writer, i_Data);
+}
+
+
+}	// end of namespace
+

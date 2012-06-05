@@ -1,0 +1,170 @@
+/****************************************************************************\
+**  g2dImageDrawUtilDX11.cpp
+**
+**      g2dImageDrawUtil.cpp supplies some primitive
+**	drawing operations for g2dImages.
+**
+**	StudioGPU
+**	Copyright(C) 2009 - All Rights Reserved
+\****************************************************************************/
+
+#include "Core/dbg/dbgMsg.hpp"
+#include "Graphics/g2d/g2dARGBColor.hpp"
+#include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
+#include "GraphicsDX11/g2d/private/g2dImageDrawUtilDX11.hpp"
+
+namespace g2dImageDrawUtilDX11
+{
+
+namespace
+{
+
+/*inline void maybe_restore_image(const g2dImage& o_Image)
+{
+	g2dImagePAC& pac = o_Image.GetPAC();
+	if( pac.GetSurface()->IsLost() )
+	{
+		pac.GetSurface()->Restore();
+
+		if( pac.GetLocator().GetNumNames() > 0 )
+			g2dImageLoadUtilPAC::Load(pac.GetLocator(), const_cast<g2dImage&>(o_Image));
+	}
+}
+*/
+}
+
+//------------------------------------------------------------------------
+//	This DrawImage blits a rectangular section of the source image to a
+//	location on the destination image.  The rectangle of the source image
+//	is defined by (i_SX1, i_SY1) - (i_SX2, i_SY2).  The point
+//	(i_SX1, i_SY1) will be located at (i_DX1, i_DY1).
+//------------------------------------------------------------------------
+void DrawImage(	g2dD3D11TexturePtr o_DestSurface,
+				int i_DX1,
+				int i_DY1,
+				int i_DestWidth,
+				int i_DestHeight,
+				int i_SX1,
+				int i_SY1,
+				int i_SX2,
+				int i_SY2,
+				g2dD3D11TexturePtr i_SrcSurface)
+{
+	DBG_ASSERT(o_DestSurface, "Image has no surface");
+	DBG_ASSERT(i_SrcSurface, "Image has no surface");
+
+//	maybe_restore_image(o_DestSurface);
+//	maybe_restore_image(i_SrcSurface);
+
+	int source_width = i_SX2 - i_SX1;
+	int source_height = i_SY2 - i_SY1;
+
+	// do some clipping and rejection
+	if( i_DX1 < 0 )
+	{
+		if( i_DX1 <= -source_width )
+			return; // off the left edge
+
+		i_SX1 -= i_DX1;
+		source_width += i_DX1;
+		i_DX1 = 0;
+	}
+
+	if ( i_DY1 < 0 )
+	{
+		if( i_DY1 <= -source_height )
+			return; // off the top edge
+
+		i_SY1 -= i_DY1;
+		source_height += i_DY1;
+		i_DY1 = 0;
+	}
+
+	int width_over_limit = i_DX1 + source_width - i_DestWidth;
+	if ( width_over_limit > 0 )
+	{
+		if( i_DX1 >= i_DestWidth )
+			return;	// off the right edge
+
+		i_SX2 -= width_over_limit;
+		source_width -= width_over_limit;
+	}
+
+	int height_over_limit = i_DY1 + source_height - i_DestHeight;
+	if ( height_over_limit > 0 )
+	{
+		if( i_DY1 >= i_DestHeight )
+			return;	// off the right edge
+
+		i_SY2 -= height_over_limit;
+		source_height -= height_over_limit;
+	}
+
+	DBG_ASSERT(source_width > 0, "Invalid image area");
+	DBG_ASSERT(source_height > 0, "Invalid image area");
+
+	RECT source_rect;
+	source_rect.left = i_SX1;
+	source_rect.top = i_SY1;
+	source_rect.right = i_SX2;
+	source_rect.bottom = i_SY2;
+
+	POINT dest_point;
+	dest_point.x = i_DX1;
+	dest_point.y = i_DY1;
+
+	HRESULT op_result = g2dImageDrawUtilDX11::UpdateSurface(	i_SrcSurface,
+															&source_rect,
+															o_DestSurface,
+															&dest_point );
+	if ( !SUCCEEDED(op_result) )
+	{
+		g2dDX11Global::PrintDXError(op_result);
+		DBG_ERROR("Couldn't copy to surface");
+		DBG_ASSERT(false, "DrawImage failed");
+	}
+}
+
+
+//------------------------------------------------------------------------
+//	UpdateSurface() - copy the source surface to the destination
+//------------------------------------------------------------------------
+HRESULT UpdateSurface(	g2dD3D11TexturePtr i_pSource,
+						CONST RECT* i_pSourceRect,
+						g2dD3D11TexturePtr i_pDest,
+						CONST POINT* i_pDestPoint )
+{
+	D3D11_BOX srcBox;
+	srcBox.top = i_pSourceRect->top;
+	srcBox.bottom = i_pSourceRect->bottom;
+	srcBox.left = i_pSourceRect->left;
+	srcBox.right = i_pSourceRect->right;
+	srcBox.front = 0;
+	srcBox.back = 1;
+	D3D11_BOX dstBox;
+	dstBox.left = i_pDestPoint->x;
+	dstBox.top = i_pDestPoint->y;
+	dstBox.right = dstBox.left + (i_pSourceRect->right - i_pSourceRect->left);
+	dstBox.bottom = dstBox.top + (i_pSourceRect->bottom - i_pSourceRect->top);
+	dstBox.front = 0;
+	dstBox.back = 1;
+
+	D3DX11_TEXTURE_LOAD_INFO loadInfo;
+	loadInfo.pSrcBox = &srcBox;
+	loadInfo.pDstBox = &dstBox;
+	loadInfo.SrcFirstMip = 0;
+	loadInfo.DstFirstMip = 0;
+	loadInfo.NumMips = 1;
+    loadInfo.SrcFirstElement = 0;
+    loadInfo.DstFirstElement = 0;
+    loadInfo.NumElements = 1;
+    loadInfo.Filter = D3DX11_FILTER_NONE;
+    loadInfo.MipFilter = D3DX11_FILTER_NONE;
+
+	// optimize, try CopyResource or CopyResourceSubregion??!?!?!!?
+	HRESULT op_result = D3DX11LoadTextureFromTexture(g2dDX11Global::g_pDeviceContext,
+		i_pSource, &loadInfo, i_pDest);
+	return op_result;
+}
+
+}

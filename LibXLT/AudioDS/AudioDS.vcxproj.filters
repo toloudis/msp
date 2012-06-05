@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Sn">
+      <UniqueIdentifier>{8c99cef4-dcec-4d42-b04d-2aefd98501e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sn\SnPrivate">
+      <UniqueIdentifier>{1ff1d0e9-b670-4449-b967-c83a6f799c8f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Sn\snExceptionX.hpp">
+      <Filter>Sn</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\snPackage.hpp">
+      <Filter>Sn</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\snPlatform.hpp">
+      <Filter>Sn</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\snPlayList.hpp">
+      <Filter>Sn</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\snPlaylistParser.hpp">
+      <Filter>Sn</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\snSoundJob.hpp">
+      <Filter>Sn</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\snSoundJob2D.hpp">
+      <Filter>Sn</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\snSoundJob2DStreamed.hpp">
+      <Filter>Sn</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\snSoundJobMP3.hpp">
+      <Filter>Sn</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\snSoundJobRedbook.hpp">
+      <Filter>Sn</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\snSoundManager.hpp">
+      <Filter>Sn</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\snSoundSystem.hpp">
+      <Filter>Sn</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\snSoundUtil.hpp">
+      <Filter>Sn</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\private\dstrwave.hpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\private\snDSoundGlobalWin.hpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\private\snSoundJob2DPAC.hpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\private\snSoundJob2DPACDSound.hpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\private\snSoundJob2DStreamedPAC.hpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\private\snSoundJob2DStreamedPACDSound.hpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\private\snSoundJobMP3PAC.hpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\private\snSoundJobMP3PACDShow.hpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\private\snSoundJobRedbookPAC.hpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\private\snSoundJobRedbookPACWin.hpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\private\snSoundManagerPAC.hpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\private\snSoundManagerPACWin.hpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\private\snSoundSystemPAC.hpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\private\snSoundSystemPACDSound.hpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\private\snSoundUtilPAC.hpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Sn\private\snSoundUtilPACDSound.hpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioDSLayer.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Sn\private\dstrwave.cpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sn\private\snDSoundGlobalWin.cpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sn\private\snExceptionX.cpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sn\private\snPackage.cpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sn\private\snPlayList.cpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sn\private\snPlaylistParser.cpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sn\private\snSoundJob.cpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sn\private\snSoundJob2D.cpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sn\private\snSoundJob2DPACDSound.cpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sn\private\snSoundJob2DStreamed.cpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sn\private\snSoundJob2DStreamedPACDSound.cpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sn\private\snSoundJobMP3.cpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sn\private\snSoundJobMP3PACDShow.cpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sn\private\snSoundJobRedbook.cpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sn\private\snSoundJobRedbookPACWin.cpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sn\private\snSoundManager.cpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sn\private\snSoundManagerPACWin.cpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sn\private\snSoundSystem.cpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sn\private\snSoundSystemPACDSound.cpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sn\private\snSoundUtil.cpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Sn\private\snSoundUtilPACDSound.cpp">
+      <Filter>Sn\SnPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioDSLayer.cpp" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Main">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Commands">
+      <UniqueIdentifier>{16d43650-834a-4d0d-87ba-480fc9d20582}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Data">
+      <UniqueIdentifier>{07bcc463-de48-4901-b692-e3789366eba4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\wxGUI">
+      <UniqueIdentifier>{9fcc4e21-69d0-4a23-9214-cf827474d645}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="mainCheckAppVersion.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="mainInitApplication.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="mainInitDocument.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="mainInitGraphics.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="mainInitLibrary.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="mainInitMainWindow.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="mainInitSecurity.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="mainPython.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="mainResolvePath.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="MemMgr.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="mnmApp.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="WinMain.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Commands\mainCommands.cpp">
+      <Filter>Source Files\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="Commands\mainCommandSetResolution.cpp">
+      <Filter>Source Files\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="Commands\mainOperations.cpp">
+      <Filter>Source Files\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\mainCommentDocumentChunk.cpp">
+      <Filter>Source Files\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\mainCommentDocumentInterest.cpp">
+      <Filter>Source Files\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\mainDocumentChunk.cpp">
+      <Filter>Source Files\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Data\mainDocumentInterest.cpp">
+      <Filter>Source Files\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="wxGUI\wxHelpUtil.cpp">
+      <Filter>Source Files\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="wxGUI\wxMainDropTarget.cpp">
+      <Filter>Source Files\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="wxGUI\wxMainForm.cpp">
+      <Filter>Source Files\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="wxGUI\wxMRUManager.cpp">
+      <Filter>Source Files\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="wxGUI\wxResolvePathDialog.cpp">
+      <Filter>Source Files\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="wxGUI\wxResolvePathDialogBase.cpp">
+      <Filter>Source Files\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="wxGUI\wxTimeSlider.cpp">
+      <Filter>Source Files\wxGUI</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="mainCheckAppVersion.hpp">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="mainConstants.hpp">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="mainInitApplication.hpp">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="mainInitDocument.hpp">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="mainInitGraphics.hpp">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="mainInitLibrary.hpp">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="mainInitMainWindow.hpp">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="mainInitSecurity.hpp">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="mainPython.hpp">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="mainResolvePath.hpp">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="mainVersionNumber.hpp">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="MemMgr.h">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="mnmApp.hpp">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Commands\mainCommands.hpp">
+      <Filter>Source Files\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Commands\mainCommandSetResolution.hpp">
+      <Filter>Source Files\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Commands\mainOperations.hpp">
+      <Filter>Source Files\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\mainCommentDocumentChunk.hpp">
+      <Filter>Source Files\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\mainCommentDocumentInterest.hpp">
+      <Filter>Source Files\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\mainDocumentChunk.hpp">
+      <Filter>Source Files\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\mainDocumentInterest.hpp">
+      <Filter>Source Files\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="wxGUI\wxHelpUtil.hpp">
+      <Filter>Source Files\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="wxGUI\wxMainDropTarget.hpp">
+      <Filter>Source Files\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="wxGUI\wxMainForm.hpp">
+      <Filter>Source Files\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="wxGUI\wxMRUManager.hpp">
+      <Filter>Source Files\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="wxGUI\wxResolvePathDialog.hpp">
+      <Filter>Source Files\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="wxGUI\wxResolvePathDialogBase.h">
+      <Filter>Source Files\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="wxGUI\wxTimeSlider.hpp">
+      <Filter>Source Files\wxGUI</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="bitmap1.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="rcdata1.bin">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="MSP_icon_256.png" />
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="app.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

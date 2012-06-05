@@ -1,0 +1,57 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mtlThumbnailViewer", "mtlThumbnailViewer\mtlThumbnailViewer.vcproj", "{58E3C4AC-E4B6-4FF3-8D52-79692B14E659}"
+	ProjectSection(ProjectDependencies) = postProject
+		{846C097D-3B0E-4A0A-B6D7-222ED73125F8} = {846C097D-3B0E-4A0A-B6D7-222ED73125F8}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mtlThumbnailViewerPS", "mtlThumbnailViewer\mtlThumbnailViewerPS.vcproj", "{FBB2243F-911A-4F12-BFF9-754186F65A17}"
+	ProjectSection(ProjectDependencies) = postProject
+		{58E3C4AC-E4B6-4FF3-8D52-79692B14E659} = {58E3C4AC-E4B6-4FF3-8D52-79692B14E659}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Core", "..\..\..\LibXLT\Core\Core.vcproj", "{846C097D-3B0E-4A0A-B6D7-222ED73125F8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug Iterator|Win32 = Debug Iterator|Win32
+		Debug Managed|Win32 = Debug Managed|Win32
+		Debug|Win32 = Debug|Win32
+		Release Managed|Win32 = Release Managed|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{58E3C4AC-E4B6-4FF3-8D52-79692B14E659}.Debug Iterator|Win32.ActiveCfg = Debug|Win32
+		{58E3C4AC-E4B6-4FF3-8D52-79692B14E659}.Debug Iterator|Win32.Build.0 = Debug|Win32
+		{58E3C4AC-E4B6-4FF3-8D52-79692B14E659}.Debug Managed|Win32.ActiveCfg = Debug|Win32
+		{58E3C4AC-E4B6-4FF3-8D52-79692B14E659}.Debug Managed|Win32.Build.0 = Debug|Win32
+		{58E3C4AC-E4B6-4FF3-8D52-79692B14E659}.Debug|Win32.ActiveCfg = Debug|Win32
+		{58E3C4AC-E4B6-4FF3-8D52-79692B14E659}.Debug|Win32.Build.0 = Debug|Win32
+		{58E3C4AC-E4B6-4FF3-8D52-79692B14E659}.Release Managed|Win32.ActiveCfg = Release|Win32
+		{58E3C4AC-E4B6-4FF3-8D52-79692B14E659}.Release Managed|Win32.Build.0 = Release|Win32
+		{58E3C4AC-E4B6-4FF3-8D52-79692B14E659}.Release|Win32.ActiveCfg = Release|Win32
+		{58E3C4AC-E4B6-4FF3-8D52-79692B14E659}.Release|Win32.Build.0 = Release|Win32
+		{FBB2243F-911A-4F12-BFF9-754186F65A17}.Debug Iterator|Win32.ActiveCfg = Debug|Win32
+		{FBB2243F-911A-4F12-BFF9-754186F65A17}.Debug Iterator|Win32.Build.0 = Debug|Win32
+		{FBB2243F-911A-4F12-BFF9-754186F65A17}.Debug Managed|Win32.ActiveCfg = Debug|Win32
+		{FBB2243F-911A-4F12-BFF9-754186F65A17}.Debug Managed|Win32.Build.0 = Debug|Win32
+		{FBB2243F-911A-4F12-BFF9-754186F65A17}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FBB2243F-911A-4F12-BFF9-754186F65A17}.Release Managed|Win32.ActiveCfg = Release|Win32
+		{FBB2243F-911A-4F12-BFF9-754186F65A17}.Release Managed|Win32.Build.0 = Release|Win32
+		{FBB2243F-911A-4F12-BFF9-754186F65A17}.Release|Win32.ActiveCfg = Release|Win32
+		{846C097D-3B0E-4A0A-B6D7-222ED73125F8}.Debug Iterator|Win32.ActiveCfg = Debug Iterator|Win32
+		{846C097D-3B0E-4A0A-B6D7-222ED73125F8}.Debug Iterator|Win32.Build.0 = Debug Iterator|Win32
+		{846C097D-3B0E-4A0A-B6D7-222ED73125F8}.Debug Managed|Win32.ActiveCfg = Debug Managed|Win32
+		{846C097D-3B0E-4A0A-B6D7-222ED73125F8}.Debug Managed|Win32.Build.0 = Debug Managed|Win32
+		{846C097D-3B0E-4A0A-B6D7-222ED73125F8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{846C097D-3B0E-4A0A-B6D7-222ED73125F8}.Debug|Win32.Build.0 = Debug|Win32
+		{846C097D-3B0E-4A0A-B6D7-222ED73125F8}.Release Managed|Win32.ActiveCfg = Release Managed|Win32
+		{846C097D-3B0E-4A0A-B6D7-222ED73125F8}.Release Managed|Win32.Build.0 = Release Managed|Win32
+		{846C097D-3B0E-4A0A-B6D7-222ED73125F8}.Release|Win32.ActiveCfg = Release|Win32
+		{846C097D-3B0E-4A0A-B6D7-222ED73125F8}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

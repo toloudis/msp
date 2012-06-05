@@ -1,0 +1,207 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{91B6113B-4DED-484F-93C1-719013247334}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>TimelineControls</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <RootNamespace>TimelineControls</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>..\..\Lib\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>..\..\Lib\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+    <Reference Include="TerawattManagedControls">
+      <Name>TerawattManagedControls</Name>
+      <HintPath>..\..\Lib\TerawattManagedControls.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ChannelClip.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ChannelControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ClipTimesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MarkerBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MarkerDisplayBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MarkerIcon.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MarkerDisplayIcon.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MarkerIconProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NoteIcon.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="NoteDisplayIcon.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="NoteIconProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TimeGuideLine.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TimeGuideLineMgr.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TimeLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TimeSlider.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Content Include="ChannelControl.bmp" />
+    <EmbeddedResource Include="ChannelControl.resx">
+      <DependentUpon>ChannelControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ClipTimesDialog.resx">
+      <DependentUpon>ClipTimesDialog.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MarkerBar.resx">
+      <DependentUpon>MarkerBar.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>    
+    <EmbeddedResource Include="MarkerDisplayBar.resx">
+      <DependentUpon>MarkerDisplayBar.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MarkerIcon.resx">
+      <DependentUpon>MarkerIcon.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>    
+    <EmbeddedResource Include="MarkerDisplayIcon.resx">
+      <DependentUpon>MarkerDisplayIcon.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MarkerIconProperties.resx">
+      <DependentUpon>MarkerIconProperties.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NoteIcon.resx">
+      <DependentUpon>NoteIcon.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>    
+    <EmbeddedResource Include="NoteDisplayIcon.resx">
+      <DependentUpon>NoteDisplayIcon.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NoteIconProperties.resx">
+      <DependentUpon>NoteIconProperties.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TimeGuideLine.resx">
+      <DependentUpon>TimeGuideLine.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TimeLabel.resx">
+      <DependentUpon>TimeLabel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TimeSlider.resx">
+      <DependentUpon>TimeSlider.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,1135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug Iterator|Win32">
+      <Configuration>Debug Iterator</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug Iterator|x64">
+      <Configuration>Debug Iterator</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug Managed|Win32">
+      <Configuration>Debug Managed</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug Managed|x64">
+      <Configuration>Debug Managed</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_RenderNode|Win32">
+      <Configuration>Debug_RenderNode</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_RenderNode|x64">
+      <Configuration>Debug_RenderNode</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Gold|Win32">
+      <Configuration>Gold</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Gold|x64">
+      <Configuration>Gold</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release Managed|Win32">
+      <Configuration>Release Managed</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release Managed|x64">
+      <Configuration>Release Managed</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RenderNode|Win32">
+      <Configuration>RenderNode</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RenderNode|x64">
+      <Configuration>RenderNode</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Template|Win32">
+      <Configuration>Template</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Template|x64">
+      <Configuration>Template</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{92519898-FBCF-4A22-9FDE-7E611A630599}</ProjectGuid>
+    <RootNamespace>FrameworkSupport</RootNamespace>
+    <Keyword>MachStudioLibProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Gold|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Gold|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">..\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">..\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\wxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>QTMLClient.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\wxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>QTMLClient.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">
+    <ClCompile>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\wxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\wxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\wxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>QTMLClient.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\wxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\wxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\wxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\wxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>QTMLClient.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\wxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\wxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;ENV_BUILD=ENV_GOLDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\wxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;ENV_BUILD=ENV_GOLDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\wxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\3rdParty\Qt\include;.\..\..\..\3rdParty\Qt\include\QtCore;.\..\..\..\3rdParty\Qt\include\QtGui;..\..\..\FusionCinema3D\Source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;ENV_BUILD=ENV_GOLDBUILD;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\wxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;ENV_BUILD=ENV_GOLDBUILD;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\wxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\3rdParty\Qt\include;.\..\..\..\3rdParty\Qt\include\QtCore;.\..\..\..\3rdParty\Qt\include\QtGui;..\..\..\FusionCinema3D\Source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>QTMLClient.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\wxWidgets\include;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Data">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="System.Xml">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="TerawattManagedControls, Version=1.4.2.3, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\Controls\Lib\TerawattManagedControls.dll</HintPath>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+    <Reference Include="TimelineControls, Version=1.3.5.1, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\Controls\Lib\TimelineControls.dll</HintPath>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Import\ImportData.cpp" />
+    <ClCompile Include="Import\ImportDialogUtil.cpp" />
+    <ClCompile Include="Import\ImportUtil.cpp" />
+    <ClCompile Include="Import\wxGUI\ImportDialog.cpp" />
+    <ClCompile Include="Import\wxGUI\ImportDialogBase.cpp" />
+    <ClCompile Include="ProjectSetup\prjPython.cpp" />
+    <ClCompile Include="ProjectSetup\ProjectSetupMgr.cpp" />
+    <ClCompile Include="ProjectSetup\Data\ProjectSetupData.cpp" />
+    <ClCompile Include="ProjectSetup\Data\ProjectSetupDataParser.cpp" />
+    <ClCompile Include="SceneSetup\SceneSetupMgr.cpp" />
+    <ClCompile Include="SceneSetup\Data\SceneSetupDataParser.cpp" />
+    <ClCompile Include="SceneSetup\Data\SceneSetupDocumentChunk.cpp" />
+    <ClCompile Include="SceneSetup\Data\SceneSetupDocumentInterest.cpp" />
+    <ClCompile Include="SceneSetup\Gui\SceneSetupDialogUtil.cpp" />
+    <ClCompile Include="SceneSetup\GUI\wxGUI\SceneSetupDialog.cpp" />
+    <ClCompile Include="SceneSetup\GUI\wxGUI\SceneSetupDialogBase.cpp" />
+    <ClCompile Include="Prefs\prefsCommands.cpp" />
+    <ClCompile Include="Prefs\PrefsData.cpp" />
+    <ClCompile Include="Prefs\prefsDataInterest.cpp" />
+    <ClCompile Include="Prefs\PrefsDialogUtil.cpp" />
+    <ClCompile Include="Prefs\PrefsMgr.cpp" />
+    <ClCompile Include="Prefs\PrefsPythLayouts.cpp" />
+    <ClCompile Include="Prefs\prefsQuickData.cpp" />
+    <ClCompile Include="Prefs\prefsQuickDataInterest.cpp" />
+    <ClCompile Include="Prefs\prefsQuickMgr.cpp" />
+    <ClCompile Include="Prefs\prefsRenderPrefsData.cpp" />
+    <ClCompile Include="Prefs\wxGUI\prefsLayoutChoice.cpp" />
+    <ClCompile Include="Prefs\wxGUI\prefsLayoutMgr.cpp" />
+    <ClCompile Include="Prefs\wxGUI\prefsQuickDialog.cpp" />
+    <ClCompile Include="Channels\chnlCommandCreateDriver.cpp" />
+    <ClCompile Include="Channels\chnlCommands.cpp" />
+    <ClCompile Include="Channels\chnlCommandUtil.cpp" />
+    <ClCompile Include="Channels\chnlDeleteDriverOperation.cpp" />
+    <ClCompile Include="Channels\chnlDialogUtil.cpp" />
+    <ClCompile Include="Channels\chnlOperations.cpp" />
+    <ClCompile Include="Channels\chnlPackage.cpp" />
+    <ClCompile Include="Channels\chnlPrefsInterest.cpp" />
+    <ClCompile Include="Channels\chnlPython.cpp" />
+    <ClCompile Include="Channels\chnlSelectInterest.cpp" />
+    <ClCompile Include="Channels\chnlSnapUtil.cpp" />
+    <ClCompile Include="Channels\chnlTimeTickMgr.cpp" />
+    <ClCompile Include="Channels\Data\chnlTimeData.cpp" />
+    <ClCompile Include="Channels\Data\chnlTimeDataParser.cpp" />
+    <ClCompile Include="Channels\Data\chnlTimeDocumentChunk.cpp" />
+    <ClCompile Include="Channels\Data\chnlTimeDocumentInterest.cpp" />
+    <ClCompile Include="Channels\wxGUI\chnlChannelClip.cpp" />
+    <ClCompile Include="Channels\wxGUI\chnlChannelControl.cpp" />
+    <ClCompile Include="Channels\wxGUI\chnlClipDriver.cpp" />
+    <ClCompile Include="Channels\wxGUI\chnlMarkerBar.cpp" />
+    <ClCompile Include="Channels\wxGUI\chnlMarkerIcon.cpp" />
+    <ClCompile Include="Channels\wxGUI\chnlNoteIcon.cpp" />
+    <ClCompile Include="Channels\wxGUI\chnlTimeCommon.cpp" />
+    <ClCompile Include="Channels\wxGUI\chnlTimeIcon.cpp" />
+    <ClCompile Include="Channels\wxGUI\chnlTimeLabel.cpp" />
+    <ClCompile Include="Channels\wxGUI\chnlTimelineGuideUtil.cpp" />
+    <ClCompile Include="Channels\wxGUI\chnlTimelineMarquee.cpp" />
+    <ClCompile Include="Channels\wxGUI\chnlTimelinePanel.cpp" />
+    <ClCompile Include="Channels\wxGUI\chnlTimeSlider.cpp" />
+    <ClCompile Include="Channels\wxGUI\chnlTraxDialog.cpp" />
+    <ClCompile Include="Channels\Notes\chnlNotesMgr.cpp" />
+    <ClCompile Include="Channels\Notes\chnlNotesOperations.cpp" />
+    <ClCompile Include="Channels\Notes\chnlPythonNotes.cpp" />
+    <ClCompile Include="Channels\Markers\chnlMarkerMgr.cpp" />
+    <ClCompile Include="Channels\Markers\chnlMarkerOperations.cpp" />
+    <ClCompile Include="Channels\Markers\chnlPythonMarkers.cpp" />
+    <ClCompile Include="Channels\Undo\chnlAddOperation.cpp" />
+    <ClCompile Include="Channels\Undo\chnlDataOperation.cpp" />
+    <ClCompile Include="Channels\Undo\chnlDeleteOperation.cpp" />
+    <ClCompile Include="Reports\rptPackage.cpp" />
+    <ClCompile Include="Reports\rptPython.cpp" />
+    <ClCompile Include="Reports\rptReport.cpp" />
+    <ClCompile Include="Reports\rptReportData.cpp" />
+    <ClCompile Include="Reports\rptReportMgr.cpp" />
+    <ClCompile Include="Reports\rptReportUtil.cpp" />
+    <ClCompile Include="Reports\ReportInv\rptReportInv.cpp" />
+    <ClCompile Include="Reports\ReportMem\rptReportMem.cpp" />
+    <ClCompile Include="Reports\ReportMem\rptReportMemInterest.cpp" />
+    <ClCompile Include="Reports\ReportMem\rptReportMemMgr.cpp" />
+    <ClCompile Include="Capture\cptrAccumulationBuffer.cpp" />
+    <ClCompile Include="Capture\cptrMBlurMotionSampler.cpp" />
+    <ClCompile Include="Capture\cptrModeRender.cpp" />
+    <ClCompile Include="Capture\cptrModeRenderBake.cpp" />
+    <ClCompile Include="Capture\cptrModeRenderBatch.cpp" />
+    <ClCompile Include="Capture\cptrModeRenderFrame.cpp" />
+    <ClCompile Include="Capture\cptrMotionSampler.cpp" />
+    <ClCompile Include="Capture\cptrPackage.cpp" />
+    <ClCompile Include="Capture\cptrPostRenderUtil.cpp" />
+    <ClCompile Include="Capture\cptrRenderBakeData.cpp" />
+    <ClCompile Include="Capture\cptrRenderBakeDataUtil.cpp" />
+    <ClCompile Include="Capture\cptrRenderBakeDialogUtil.cpp" />
+    <ClCompile Include="Capture\cptrRenderBatchData.cpp" />
+    <ClCompile Include="Capture\cptrRenderBatchDataParser.cpp" />
+    <ClCompile Include="Capture\cptrRenderBatchDataUtil.cpp" />
+    <ClCompile Include="Capture\cptrRenderBatchDialogUtil.cpp" />
+    <ClCompile Include="Capture\cptrRenderMrayLive.cpp" />
+    <ClCompile Include="Capture\cptrRenderMrayLiveData.cpp" />
+    <ClCompile Include="Capture\cptrRenderMrayLiveDataInterest.cpp" />
+    <ClCompile Include="Capture\cptrRenderMrayLiveMgr.cpp" />
+    <ClCompile Include="Capture\cptrRenderMrayLiveUtil.cpp" />
+    <ClCompile Include="Capture\cptrRenderOptionsDialogUtil.cpp" />
+    <ClCompile Include="Capture\cptrRenderProgressDialogUtil.cpp" />
+    <ClCompile Include="Capture\cptrRenderRmanLive.cpp" />
+    <ClCompile Include="Capture\cptrRenderRmanLiveData.cpp" />
+    <ClCompile Include="Capture\cptrRenderRmanLiveDataInterest.cpp" />
+    <ClCompile Include="Capture\cptrRenderRmanLiveMgr.cpp" />
+    <ClCompile Include="Capture\cptrRenderRmanLiveUtil.cpp" />
+    <ClCompile Include="Capture\cptrRenderStateDataParser.cpp" />
+    <ClCompile Include="Capture\cptrRenderStateUtil.cpp" />
+    <ClCompile Include="Capture\cptrRenderThread.cpp" />
+    <ClCompile Include="Capture\cptrRenderUtil.cpp" />
+    <ClCompile Include="Capture\cptrWatermarkObject.cpp" />
+    <ClCompile Include="Capture\cptrRenderStatsDataUtil.cpp" />
+    <ClCompile Include="Capture\cptrRenderStatsDialogUtil.cpp" />
+    <ClCompile Include="Capture\cptrCommands.cpp" />
+    <ClCompile Include="Capture\cptrPythonCommands.cpp" />
+    <ClCompile Include="Capture\cptrWriteAVI.cpp" />
+    <ClCompile Include="Capture\cptrWriteQuickTime.cpp" />
+    <ClCompile Include="Capture\cptrWriteUtil.cpp" />
+    <ClCompile Include="Capture\wxGUI\cptrDialogUtil.cpp" />
+    <ClCompile Include="Capture\wxGUI\cptrRenderBakeDialog.cpp" />
+    <ClCompile Include="Capture\wxGUI\cptrRenderBatchDialog.cpp" />
+    <ClCompile Include="Capture\wxGUI\cptrRenderBatchDialogBase.cpp" />
+    <ClCompile Include="Capture\wxGUI\cptrRenderOptionsDialog.cpp" />
+    <ClCompile Include="Capture\wxGUI\cptrRenderOptionsDialogBase.cpp" />
+    <ClCompile Include="Capture\wxGUI\cptrRenderProgressDialog.cpp" />
+    <ClCompile Include="Capture\wxGUI\cptrRenderProgressDialogBase.cpp" />
+    <ClCompile Include="Capture\wxGUI\cptrRenderStatsDialog.cpp" />
+    <ClCompile Include="Capture\wxGUI\cptrRenderStatsDialogBase.cpp" />
+    <ClCompile Include="Capture\wxGUI\cptrToPhotoshopDialog.cpp" />
+    <ClCompile Include="Playback\plbkModePlayback.cpp" />
+    <ClCompile Include="Playback\plbkPackage.cpp" />
+    <ClCompile Include="Playback\plbkPlaybackControlsDialogUtil.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">$(IntDir)%(Filename)2.obj</ObjectFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">$(IntDir)%(Filename)2.xdc</XMLDocumentationFileName>
+    </ClCompile>
+    <ClCompile Include="Playback\wxGUI\plbkPlaybackControlsDialog.cpp" />
+    <ClCompile Include="Playback\wxGUI\plbkPlaybackControlsDialogBase.cpp" />
+    <ClCompile Include="FilmGates\fgtCommandShowFrame.cpp" />
+    <ClCompile Include="FilmGates\fgtFrame.cpp" />
+    <ClCompile Include="FilmGates\fgtFrameMgr.cpp" />
+    <ClCompile Include="FilmGates\fgtPackage.cpp" />
+    <ClCompile Include="UndoHistory\UndoHistoryData.cpp" />
+    <ClCompile Include="UndoHistory\UndoHistoryDialogUtil.cpp" />
+    <ClCompile Include="UndoHistory\UndoHistoryUtil.cpp" />
+    <ClCompile Include="UndoHistory\wxGUI\UndoHistoryDialog.cpp" />
+    <ClCompile Include="UndoHistory\wxGUI\UndoHistoryDialogBase.cpp" />
+    <ClCompile Include="RenderPrefs\rndrPrefsDataInterest.cpp" />
+    <ClCompile Include="RenderPrefs\rndrPrefsDialogUtil.cpp" />
+    <ClCompile Include="RenderPrefs\rndrPrefsMgr.cpp" />
+    <ClCompile Include="RenderPrefs\rndrPrefsUtil.cpp" />
+    <ClCompile Include="Keyframing\keyfKeyCreator.cpp" />
+    <ClCompile Include="Keyframing\keyfKeyframeUtil.cpp" />
+    <ClCompile Include="Keyframing\keyfPackage.cpp" />
+    <ClCompile Include="Keyframing\keyfPython.cpp" />
+    <ClCompile Include="Keyframing\keyfThinkInterest.cpp" />
+    <ClCompile Include="RenderPanels\rpnCommandChangeLayout.cpp" />
+    <ClCompile Include="RenderPanels\rpnCommandFocusAllPanels.cpp" />
+    <ClCompile Include="RenderPanels\rpnCommandFocusCamera.cpp" />
+    <ClCompile Include="RenderPanels\rpnCommands.cpp" />
+    <ClCompile Include="RenderPanels\GUI\rpnDialogUtil.cpp" />
+    <ClCompile Include="RenderPanels\rpnDocumentChunk.cpp" />
+    <ClCompile Include="RenderPanels\rpnDocumentInterest.cpp" />
+    <ClCompile Include="RenderPanels\rpnOperations.cpp" />
+    <ClCompile Include="RenderPanels\rpnPackage.cpp" />
+    <ClCompile Include="RenderPanels\rpnPanelViewer.cpp" />
+    <ClCompile Include="RenderPanels\rpnRenderingPrefs.cpp" />
+    <ClCompile Include="RenderPanels\rpnRenderPane.cpp" />
+    <ClCompile Include="RenderPanels\wxGUI\rpnCameraChoice.cpp" />
+    <ClCompile Include="RenderPanels\wxGUI\rpnPanelGrid.cpp" />
+    <ClCompile Include="RenderPanels\wxGUI\rpnRenderPanel.cpp" />
+    <ClCompile Include="LoadPrefs\LoadPrefsData.cpp" />
+    <ClCompile Include="LoadPrefs\LoadPrefsDialogUtil.cpp" />
+    <ClCompile Include="LoadPrefs\LoadPrefsMgr.cpp" />
+    <ClCompile Include="LoadPrefs\wxGUI\LoadPreferencesDialog.cpp" />
+    <ClCompile Include="LoadPrefs\wxGUI\LoadPreferencesDialogBase.cpp" />
+    <ClCompile Include="PythonObject\pytDialogInterest.cpp" />
+    <ClCompile Include="PythonObject\pytFeature.cpp" />
+    <ClCompile Include="Debug\dbgConsoleDataUtil.cpp" />
+    <ClCompile Include="Debug\dbgConsoleDialogUtil.cpp" />
+    <ClCompile Include="Debug\dbgConsoleStream.cpp" />
+    <ClCompile Include="Debug\wxGUI\dbgConsoleDialog.cpp" />
+    <ClCompile Include="Debug\wxGUI\dbgConsoleDialogBase.cpp" />
+    <ClCompile Include="MaterialBrowse\mbrwDialogUtil.cpp" />
+    <ClCompile Include="MaterialBrowse\mbrwPackage.cpp" />
+    <ClCompile Include="MaterialBrowse\mbrwPaintUtil.cpp" />
+    <ClCompile Include="MaterialBrowse\wxGUI\mbrwMaterialSwatchDialog.cpp" />
+    <ClCompile Include="MaterialBrowse\wxGUI\mbrwMaterialSwatchDialogBase.cpp" />
+    <ClCompile Include="ObjectManip\mnpCommands.cpp" />
+    <ClCompile Include="ObjectManip\mnpFreeFormInteraction.cpp" />
+    <ClCompile Include="ObjectManip\mnpInteraction.cpp" />
+    <ClCompile Include="ObjectManip\mnpModeObjectManip.cpp" />
+    <ClCompile Include="ObjectManip\mnpPackage.cpp" />
+    <ClCompile Include="ObjectManip\mnpPlacementInteraction.cpp" />
+    <ClCompile Include="ObjectManip\mnpRotateInteraction.cpp" />
+    <ClCompile Include="ObjectManip\mnpScaleInteraction.cpp" />
+    <ClCompile Include="ObjectManip\mnpTranslateInteraction.cpp" />
+    <ClCompile Include="ObjectManip\mnpTranslatePlaneInteraction.cpp" />
+    <ClCompile Include="ObjectManip\mnpTranslateVectorInteraction.cpp" />
+    <ClCompile Include="ResourceTracker\ResourceTrackerDialogUtil.cpp" />
+    <ClCompile Include="ResourceTracker\ResourceTrackerPackage.cpp" />
+    <ClCompile Include="ResourceTracker\wxGUI\ResourceTrackerDialog.cpp" />
+    <ClCompile Include="ResourceTracker\wxGUI\ResourceTrackerDialogBase.cpp" />
+    <ClCompile Include="RenderLayers\rdrLayersDataUtil.cpp" />
+    <ClCompile Include="RenderLayers\rdrLayersDialogUtil.cpp" />
+    <ClCompile Include="RenderLayers\wxGUI\rdrLayersDialog.cpp" />
+    <ClCompile Include="RenderLayers\wxGUI\rdrLayersDialogBase.cpp" />
+    <ClCompile Include="RenderLayers\wxGUI\rdrLayersObjectsPage.cpp" />
+    <ClCompile Include="RenderLayers\wxGUI\rdrLayersObjectsPageBase.cpp" />
+    <ClCompile Include="Export\ExportUtil.cpp" />
+    <ClCompile Include="Export\FBXExportUtil.cpp" />
+    <ClCompile Include="FeaturesLayer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Import\ImportData.hpp" />
+    <ClInclude Include="Import\ImportDialogUtil.hpp" />
+    <ClInclude Include="Import\ImportUtil.hpp" />
+    <ClInclude Include="Import\wxGUI\ImportDialog.hpp" />
+    <ClInclude Include="Import\wxGUI\ImportDialogBase.h" />
+    <ClInclude Include="ProjectSetup\prjPython.hpp" />
+    <ClInclude Include="ProjectSetup\ProjectSetupMgr.hpp" />
+    <ClInclude Include="ProjectSetup\Data\ProjectSetupData.hpp" />
+    <ClInclude Include="ProjectSetup\Data\ProjectSetupDataParser.hpp" />
+    <ClInclude Include="SceneSetup\SceneSetupMgr.hpp" />
+    <ClInclude Include="SceneSetup\Data\SceneSetupData.hpp" />
+    <ClInclude Include="SceneSetup\Data\SceneSetupDataParser.hpp" />
+    <ClInclude Include="SceneSetup\Data\SceneSetupDocumentChunk.hpp" />
+    <ClInclude Include="SceneSetup\Data\SceneSetupDocumentInterest.hpp" />
+    <ClInclude Include="SceneSetup\Gui\SceneSetupDialogUtil.hpp" />
+    <ClInclude Include="SceneSetup\GUI\wxGUI\SceneSetupDialog.hpp" />
+    <ClInclude Include="SceneSetup\GUI\wxGUI\SceneSetupDialogBase.h" />
+    <ClInclude Include="Prefs\prefsCommands.hpp" />
+    <ClInclude Include="Prefs\PrefsData.hpp" />
+    <ClInclude Include="Prefs\prefsDataInterest.hpp" />
+    <ClInclude Include="Prefs\PrefsDialogUtil.hpp" />
+    <ClInclude Include="Prefs\PrefsMgr.hpp" />
+    <ClInclude Include="Prefs\PrefsPythLayouts.hpp" />
+    <ClInclude Include="Prefs\prefsQuickData.hpp" />
+    <ClInclude Include="Prefs\prefsQuickDataInterest.hpp" />
+    <ClInclude Include="Prefs\prefsQuickMgr.hpp" />
+    <ClInclude Include="Prefs\prefsRenderPrefsData.hpp" />
+    <ClInclude Include="Prefs\wxGUI\prefsLayoutChoice.hpp" />
+    <ClInclude Include="Prefs\wxGUI\prefsLayoutMgr.hpp" />
+    <ClInclude Include="Prefs\wxGUI\prefsQuickDialog.hpp" />
+    <ClInclude Include="Channels\chnlCommandCreateDriver.hpp" />
+    <ClInclude Include="Channels\chnlCommands.hpp" />
+    <ClInclude Include="Channels\chnlCommandUtil.hpp" />
+    <ClInclude Include="Channels\chnlDeleteDriverOperation.hpp" />
+    <ClInclude Include="Channels\chnlDialogUtil.hpp" />
+    <ClInclude Include="Channels\chnlOperations.hpp" />
+    <ClInclude Include="Channels\chnlPackage.hpp" />
+    <ClInclude Include="Channels\chnlPrefsInterest.hpp" />
+    <ClInclude Include="Channels\chnlPython.hpp" />
+    <ClInclude Include="Channels\chnlSelectInterest.hpp" />
+    <ClInclude Include="Channels\chnlSnapUtil.hpp" />
+    <ClInclude Include="Channels\chnlTimeTickMgr.hpp" />
+    <ClInclude Include="Channels\Data\chnlTimeData.hpp" />
+    <ClInclude Include="Channels\Data\chnlTimeDataParser.hpp" />
+    <ClInclude Include="Channels\Data\chnlTimeDocumentChunk.hpp" />
+    <ClInclude Include="Channels\Data\chnlTimeDocumentInterest.hpp" />
+    <ClInclude Include="Channels\wxGUI\chnlChannelClip.hpp" />
+    <ClInclude Include="Channels\wxGUI\chnlChannelControl.hpp" />
+    <ClInclude Include="Channels\wxGUI\chnlClipDriver.hpp" />
+    <ClInclude Include="Channels\wxGUI\chnlMarkerBar.hpp" />
+    <ClInclude Include="Channels\wxGUI\chnlMarkerIcon.hpp" />
+    <ClInclude Include="Channels\wxGUI\chnlNoteIcon.hpp" />
+    <ClInclude Include="Channels\wxGUI\chnlTimeCommon.hpp" />
+    <ClInclude Include="Channels\wxGUI\chnlTimeIcon.hpp" />
+    <ClInclude Include="Channels\wxGUI\chnlTimeLabel.hpp" />
+    <ClInclude Include="Channels\wxGUI\chnlTimelineGuideUtil.hpp" />
+    <ClInclude Include="Channels\wxGUI\chnlTimelineMarquee.hpp" />
+    <ClInclude Include="Channels\wxGUI\chnlTimelinePanel.hpp" />
+    <ClInclude Include="Channels\wxGUI\chnlTimeSlider.hpp" />
+    <ClInclude Include="Channels\wxGUI\chnlTraxDialog.hpp" />
+    <ClInclude Include="Channels\Notes\chnlNotesMgr.hpp" />
+    <ClInclude Include="Channels\Notes\chnlNotesOperations.hpp" />
+    <ClInclude Include="Channels\Notes\chnlPythonNotes.hpp" />
+    <ClInclude Include="Channels\Markers\chnlMarkerMgr.hpp" />
+    <ClInclude Include="Channels\Markers\chnlMarkerOperations.hpp" />
+    <ClInclude Include="Channels\Markers\chnlPythonMarkers.hpp" />
+    <ClInclude Include="Channels\Undo\chnlAddOperation.hpp" />
+    <ClInclude Include="Channels\Undo\chnlDataOperation.hpp" />
+    <ClInclude Include="Channels\Undo\chnlDeleteOperation.hpp" />
+    <ClInclude Include="Reports\rptPackage.hpp" />
+    <ClInclude Include="Reports\rptPython.hpp" />
+    <ClInclude Include="Reports\rptReport.hpp" />
+    <ClInclude Include="Reports\rptReportData.hpp" />
+    <ClInclude Include="Reports\rptReportMgr.hpp" />
+    <ClInclude Include="Reports\rptReportUtil.hpp" />
+    <ClInclude Include="Reports\ReportInv\rptReportInv.hpp" />
+    <ClInclude Include="Reports\ReportMem\rptReportMem.hpp" />
+    <ClInclude Include="Reports\ReportMem\rptReportMemInterest.hpp" />
+    <ClInclude Include="Reports\ReportMem\rptReportMemMgr.hpp" />
+    <ClInclude Include="Capture\cptrAccumulationBuffer.hpp" />
+    <ClInclude Include="Capture\cptrErrorCodes.hpp" />
+    <ClInclude Include="Capture\cptrMBlurMotionSampler.hpp" />
+    <ClInclude Include="Capture\cptrModeRender.hpp" />
+    <ClInclude Include="Capture\cptrModeRenderBake.hpp" />
+    <ClInclude Include="Capture\cptrModeRenderBatch.hpp" />
+    <ClInclude Include="Capture\cptrModeRenderFrame.hpp" />
+    <ClInclude Include="Capture\cptrMotionSampler.hpp" />
+    <ClInclude Include="Capture\cptrPackage.hpp" />
+    <ClInclude Include="Capture\cptrPostRenderUtil.hpp" />
+    <ClInclude Include="Capture\cptrRenderBakeData.hpp" />
+    <ClInclude Include="Capture\cptrRenderBakeDataUtil.hpp" />
+    <ClInclude Include="Capture\cptrRenderBakeDialogUtil.hpp" />
+    <ClInclude Include="Capture\cptrRenderBatchData.hpp" />
+    <ClInclude Include="Capture\cptrRenderBatchDataParser.hpp" />
+    <ClInclude Include="Capture\cptrRenderBatchDataUtil.hpp" />
+    <ClInclude Include="Capture\cptrRenderBatchDialogUtil.hpp" />
+    <ClInclude Include="Capture\cptrRenderMrayLive.hpp" />
+    <ClInclude Include="Capture\cptrRenderMrayLiveData.hpp" />
+    <ClInclude Include="Capture\cptrRenderMrayLiveDataInterest.hpp" />
+    <ClInclude Include="Capture\cptrRenderMrayLiveMgr.hpp" />
+    <ClInclude Include="Capture\cptrRenderMrayLiveUtil.hpp" />
+    <ClInclude Include="Capture\cptrRenderOptionsDialogUtil.hpp" />
+    <ClInclude Include="Capture\cptrRenderProgressDialogUtil.hpp" />
+    <ClInclude Include="Capture\cptrRenderRmanLive.hpp" />
+    <ClInclude Include="Capture\cptrRenderRmanLiveData.hpp" />
+    <ClInclude Include="Capture\cptrRenderRmanLiveDataInterest.hpp" />
+    <ClInclude Include="Capture\cptrRenderRmanLiveMgr.hpp" />
+    <ClInclude Include="Capture\cptrRenderRmanLiveUtil.hpp" />
+    <ClInclude Include="Capture\cptrRenderStateDataParser.hpp" />
+    <ClInclude Include="Capture\cptrRenderStateUtil.hpp" />
+    <ClInclude Include="Capture\cptrRenderThread.hpp" />
+    <ClInclude Include="Capture\cptrRenderUtil.hpp" />
+    <ClInclude Include="Capture\cptrWatermarkObject.hpp" />
+    <ClInclude Include="Capture\cptrRenderStatsData.hpp" />
+    <ClInclude Include="Capture\cptrRenderStatsDataUtil.hpp" />
+    <ClInclude Include="Capture\cptrRenderStatsDialogUtil.hpp" />
+    <ClInclude Include="Capture\cptrCommands.hpp" />
+    <ClInclude Include="Capture\cptrPythonCommands.hpp" />
+    <ClInclude Include="Capture\cptrWriteAVI.hpp" />
+    <ClInclude Include="Capture\cptrWriteQuickTime.hpp" />
+    <ClInclude Include="Capture\cptrWriteUtil.hpp" />
+    <ClInclude Include="Capture\wxGUI\cptrDialogUtil.hpp" />
+    <ClInclude Include="Capture\wxGUI\cptrRenderBakeDialog.hpp" />
+    <ClInclude Include="Capture\wxGUI\cptrRenderBatchDialog.hpp" />
+    <ClInclude Include="Capture\wxGUI\cptrRenderBatchDialogBase.h" />
+    <ClInclude Include="Capture\wxGUI\cptrRenderOptionsDialog.hpp" />
+    <ClInclude Include="Capture\wxGUI\cptrRenderOptionsDialogBase.h" />
+    <ClInclude Include="Capture\wxGUI\cptrRenderProgressDialog.hpp" />
+    <ClInclude Include="Capture\wxGUI\cptrRenderProgressDialogBase.h" />
+    <ClInclude Include="Capture\wxGUI\cptrRenderStatsDialog.hpp" />
+    <ClInclude Include="Capture\wxGUI\cptrRenderStatsDialogBase.h" />
+    <ClInclude Include="Capture\wxGUI\cptrToPhotoshopDialog.hpp" />
+    <ClInclude Include="Playback\plbkModePlayback.hpp" />
+    <ClInclude Include="Playback\plbkPackage.hpp" />
+    <ClInclude Include="Playback\plbkPlaybackControlsDialogUtil.hpp" />
+    <ClInclude Include="Playback\wxGUI\plbkPlaybackControlsDialog.hpp" />
+    <ClInclude Include="Playback\wxGUI\plbkPlaybackControlsDialogBase.h" />
+    <ClInclude Include="FilmGates\fgtCommandShowFrame.hpp" />
+    <ClInclude Include="FilmGates\fgtFrame.hpp" />
+    <ClInclude Include="FilmGates\fgtFrameMgr.hpp" />
+    <ClInclude Include="FilmGates\fgtPackage.hpp" />
+    <ClInclude Include="UndoHistory\UndoHistoryData.hpp" />
+    <ClInclude Include="UndoHistory\UndoHistoryDialogUtil.hpp" />
+    <ClInclude Include="UndoHistory\UndoHistoryUtil.hpp" />
+    <ClInclude Include="UndoHistory\wxGUI\UndoHistoryDialog.hpp" />
+    <ClInclude Include="UndoHistory\wxGUI\UndoHistoryDialogBase.h" />
+    <ClInclude Include="RenderPrefs\rndrPrefsDataInterest.hpp" />
+    <ClInclude Include="RenderPrefs\rndrPrefsDialogUtil.hpp" />
+    <ClInclude Include="RenderPrefs\rndrPrefsMgr.hpp" />
+    <ClInclude Include="RenderPrefs\rndrPrefsUtil.hpp" />
+    <ClInclude Include="Keyframing\keyfKeyCreator.hpp" />
+    <ClInclude Include="Keyframing\keyfKeyframeUtil.hpp" />
+    <ClInclude Include="Keyframing\keyfPackage.hpp" />
+    <ClInclude Include="Keyframing\keyfPython.hpp" />
+    <ClInclude Include="Keyframing\keyfThinkInterest.hpp" />
+    <ClInclude Include="RenderPanels\rpnCommandChangeLayout.hpp" />
+    <ClInclude Include="RenderPanels\rpnCommandFocusAllPanels.hpp" />
+    <ClInclude Include="RenderPanels\rpnCommandFocusCamera.hpp" />
+    <ClInclude Include="RenderPanels\rpnCommands.hpp" />
+    <ClInclude Include="RenderPanels\GUI\rpnDialogUtil.hpp" />
+    <ClInclude Include="RenderPanels\rpnDocumentChunk.hpp" />
+    <ClInclude Include="RenderPanels\rpnDocumentInterest.hpp" />
+    <ClInclude Include="RenderPanels\rpnOperations.hpp" />
+    <ClInclude Include="RenderPanels\rpnPackage.hpp" />
+    <ClInclude Include="RenderPanels\rpnPanelViewer.hpp" />
+    <ClInclude Include="RenderPanels\rpnRenderingPrefs.hpp" />
+    <ClInclude Include="RenderPanels\rpnRenderPane.hpp" />
+    <ClInclude Include="RenderPanels\wxGUI\rpnCameraChoice.hpp" />
+    <ClInclude Include="RenderPanels\wxGUI\rpnPanelGrid.hpp" />
+    <ClInclude Include="RenderPanels\wxGUI\rpnRenderPanel.hpp" />
+    <ClInclude Include="LoadPrefs\LoadPrefsData.hpp" />
+    <ClInclude Include="LoadPrefs\LoadPrefsDialogUtil.hpp" />
+    <ClInclude Include="LoadPrefs\LoadPrefsMgr.hpp" />
+    <ClInclude Include="LoadPrefs\wxGUI\LoadPreferencesDialog.hpp" />
+    <ClInclude Include="LoadPrefs\wxGUI\LoadPreferencesDialogBase.h" />
+    <ClInclude Include="PythonObject\pytDialogInterest.hpp" />
+    <ClInclude Include="PythonObject\pytFeature.hpp" />
+    <ClInclude Include="Debug\dbgConsoleDataUtil.hpp" />
+    <ClInclude Include="Debug\dbgConsoleDialogUtil.hpp" />
+    <ClInclude Include="Debug\dbgConsoleStream.hpp" />
+    <ClInclude Include="Debug\wxGUI\dbgConsoleDialog.hpp" />
+    <ClInclude Include="Debug\wxGUI\dbgConsoleDialogBase.h" />
+    <ClInclude Include="MaterialBrowse\mbrwDialogUtil.hpp" />
+    <ClInclude Include="MaterialBrowse\mbrwPackage.hpp" />
+    <ClInclude Include="MaterialBrowse\mbrwPaintUtil.hpp" />
+    <ClInclude Include="MaterialBrowse\wxGUI\mbrwMaterialSwatchDialog.hpp" />
+    <ClInclude Include="MaterialBrowse\wxGUI\mbrwMaterialSwatchDialogBase.h" />
+    <ClInclude Include="ObjectManip\mnpCommands.hpp" />
+    <ClInclude Include="ObjectManip\mnpConstants.hpp" />
+    <ClInclude Include="ObjectManip\mnpFreeFormInteraction.hpp" />
+    <ClInclude Include="ObjectManip\mnpInteraction.hpp" />
+    <ClInclude Include="ObjectManip\mnpModeObjectManip.hpp" />
+    <ClInclude Include="ObjectManip\mnpPackage.hpp" />
+    <ClInclude Include="ObjectManip\mnpPlacementInteraction.hpp" />
+    <ClInclude Include="ObjectManip\mnpRotateInteraction.hpp" />
+    <ClInclude Include="ObjectManip\mnpScaleInteraction.hpp" />
+    <ClInclude Include="ObjectManip\mnpTranslateInteraction.hpp" />
+    <ClInclude Include="ObjectManip\mnpTranslatePlaneInteraction.hpp" />
+    <ClInclude Include="ObjectManip\mnpTranslateVectorInteraction.hpp" />
+    <ClInclude Include="ResourceTracker\ResourceTrackerDialogUtil.hpp" />
+    <ClInclude Include="ResourceTracker\ResourceTrackerPackage.hpp" />
+    <ClInclude Include="ResourceTracker\wxGUI\ResourceTrackerDialog.hpp" />
+    <ClInclude Include="ResourceTracker\wxGUI\ResourceTrackerDialogBase.h" />
+    <ClInclude Include="RenderLayers\rdrLayersDataUtil.hpp" />
+    <ClInclude Include="RenderLayers\rdrLayersDialogUtil.hpp" />
+    <ClInclude Include="RenderLayers\wxGUI\rdrLayersDialog.hpp" />
+    <ClInclude Include="RenderLayers\wxGUI\rdrLayersDialogBase.h" />
+    <ClInclude Include="RenderLayers\wxGUI\rdrLayersObjectsPage.hpp" />
+    <ClInclude Include="RenderLayers\wxGUI\rdrLayersObjectsPageBase.h" />
+    <ClInclude Include="Capture\wxGUI\ExportConstants.hpp" />
+    <ClInclude Include="Export\ExportUtil.hpp" />
+    <ClInclude Include="Export\FBXExportUtil.hpp" />
+    <ClInclude Include="FeaturesLayer.hpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE=".\..\..\..\MachStudio\Source\app.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

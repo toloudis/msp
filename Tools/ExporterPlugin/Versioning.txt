@@ -1,0 +1,7 @@
+Changing the version of sgpuExportLib...
+
+The version is in three places right now, they all have to be coordinated.
+- spguScene.cpp
+- sgpuExportLib.rc
+- ReadMe.txt
+- Installer Properties window also has version info

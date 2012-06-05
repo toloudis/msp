@@ -1,0 +1,548 @@
+
+global float $g_msExport_VERSION;
+$g_msExport_VERSION = 1.01;
+
+global int $g_msExport_DEBUG;
+$g_msExport_DEBUG = 0;
+print ( "msExport.mel version: "+$g_msExport_VERSION+"\n" );
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+// UTILS
+global proc sgpuHair_DebugPrint( string $msg ){
+	global string $gMainProgressBar;
+	if( !`about -batch` ) {
+		progressBar -edit -status  $msg -step 1 $gMainProgressBar;
+	}
+	print ( "\n"+$msg+"\n\n" );
+}//END
+
+
+global proc sgpuHair_Assert( int $iVal, string $msg ){
+	global string $gMainProgressBar;
+	if ( $iVal )
+	{
+		return;
+	}
+	if( !`about -batch` ) {
+		progressBar -edit -status  $msg -step 1 $gMainProgressBar;
+	}
+	print ( "\n"+$msg+"\n\n" );
+}//END
+
+global proc sgpuHair_ErrorPrint( string $msg ){
+	global string $gMainProgressBar;
+	if( !`about -batch` ) {
+		progressBar -edit -status  $msg -step 1 $gMainProgressBar;
+	}
+	error ( $msg );
+}//END
+
+global proc sgpuHair_GetSelNodeType()
+{
+	string $sel[] = `ls -sl`;
+	if( size( $sel) > 0 )
+	{
+		string $sn = `nodeType $sel[0]`;
+		sgpuHair_DebugPrint( "selected node: " + $sel[0] + " is of type " + $sn );
+	}
+}//END
+
+
+//Note: Nurbs literaure says that the 'number of knots = degree + number of Cvs + 1'
+//But in maya, we are getting  'degree + number of Cvs-1'
+//which doesnt make sense
+//This function is not used
+global proc int sgpuHair_getNumKnots_accordigToNurbsLit( int $nDegree, int $nCvs )
+{
+	return $nDegree + $nCvs + 1;
+}//END
+
+//from the selection,
+//get the first transform object and its corresponding hairSystem shape object
+global proc string[] sgpuHair_GetSelectedHairSystem()
+{	
+	string $retVal[];
+	string $sel[] = `ls -sl`;
+	if( size( $sel ) <= 0)
+	{
+		sgpuHair_DebugPrint( "nothing selected!!" );
+		return $retVal;
+	}
+	string $singleSel = $sel[0];
+	//if the first selection is a hairSystem, get its tranform and the hair system
+	if ( `nodeType $singleSel` == "hairSystem" )
+	{
+		string $hairTransforms[] = `listTransforms $singleSel`;
+		if ( size($hairTransforms) > 1)
+		{
+			sgpuHair_DebugPrint("cannot handle multiple parents  for hair system : '" + $singleSel + "'" );
+			return $retVal;
+		} else if ( size($hairTransforms) == 0)
+		{
+			sgpuHair_DebugPrint("hair system '" + $singleSel + "' doesnt have  a transform parent" );
+			return $retVal;
+		} 
+		$retVal[0] = $hairTransforms[0];
+		$retVal[1] = $singleSel;
+		return $retVal;
+	}
+
+	//nodeType singleSel != hairSystem
+	if ( `nodeType $singleSel` == "transform" )
+	{
+		//if selected nod is a transform node
+		//get the single child it has whose type is "hairSystem"
+		string $kidHairs[] = `listRelatives -children -type "hairSystem" $singleSel`;
+		if ( size($kidHairs) > 1) 
+		{
+			sgpuHair_DebugPrint( "more than one children hair systems" );
+			return $retVal;
+		}  else if ( size($kidHairs) == 0)
+		{
+			sgpuHair_DebugPrint( "no hair sytems selected");
+			return $retVal;
+		} else 
+		{
+				$retVal[0] = $singleSel;
+				$retVal[1] = $kidHairs[0];
+				return $retVal;
+		}
+	} 
+	return $retVal;
+}//END
+
+
+global proc float[] sgpuHair_getFollicleUV( string $follicle )
+{
+	float $retVal[];
+
+	string $tfollicle = `nodeType $follicle`;
+	int $isArgFollicle = $tfollicle == "follicle" ;
+	sgpuHair_Assert( $isArgFollicle , ("argument: " + $follicle + " is not a follicle" ) );
+
+
+	float $pu = `getAttr ($follicle + ".parameterU")`;
+	float $pv = `getAttr ($follicle + ".parameterV")`;
+	$retVal[0] = $pu;
+	$retVal[1] = $pv;
+	
+
+	return $retVal;
+
+
+}
+
+global proc vector sgpuHair_getFollicleSurfaceNormal( string $follicle )
+{
+	vector $retVal;
+
+	string $tfollicle = `nodeType $follicle`;
+	int $isArgFollicle = $tfollicle == "follicle" ;
+	sgpuHair_Assert( $isArgFollicle , ("argument: " + $follicle + " is not a follicle" ) );
+
+
+	$retVal = `getAttr ($follicle + ".outNormal")`;	
+
+	return $retVal;
+}
+
+
+
+global proc vector sgpuHair_getFollicleColor( string $follicle )
+{
+	vector $retVal;
+
+	string $tfollicle = `nodeType $follicle`;
+	int $isArgFollicle = $tfollicle == "follicle" ;
+	sgpuHair_Assert( $isArgFollicle , ("argument: " + $follicle + " is not a follicle" ) );
+
+
+	$retVal = `getAttr ($follicle + ".color")`;	
+
+	return $retVal;
+}
+
+
+
+global proc string sgpuHair_getCurveInfo( string $crvName )
+{
+	string $retVal = "";
+	if ( `connectionInfo  -isSource ($crvName + ".local" )` )
+	{
+		string $dest[] = `connectionInfo -destinationFromSource ($crvName + ".local") `;
+		if( size( $dest  ) <= 0 )
+		{
+			return $retVal;
+		}
+		string $firstDest = $dest[0];
+		string $curveInfoTemp[];
+		tokenize( $firstDest, ".[]", $curveInfoTemp );
+		$retVal = $curveInfoTemp[0];		
+	}
+	return $retVal;
+}//END
+
+
+
+global proc string sgpuHair_createCurveInfo( string $crvName )
+{
+	$createdInfoNode = `createNode curveInfo`;
+    
+      // connect curve on to the info node.
+      //
+    	string $outAttr = $crvName + ".local" ;
+    	string $inAttr = $createdInfoNode + ".ic" ;
+    	connectAttr $outAttr $inAttr ;
+	return $createdInfoNode;
+}//END
+
+global proc float[] sgpuHair_getNurbsCurveKnots( string $crvName )
+{
+    float $knots[] ;
+    string $infoNode ;
+
+   	//If an inofo node exists get that,
+	//else create one
+    string $createdInfoNode;
+    $infoNode = `sgpuHair_getCurveInfo $crvName`;
+    if( $infoNode == "" )
+    {
+    	if( catch( $createdInfoNode = `sgpuHair_createCurveInfo $crvName` ) ) {
+        	return $knots ;
+    	}	
+	$infoNode = $createdInfoNode;
+    }
+    // read the knots.
+    //
+    $outAttr = $infoNode + ".knots" ;
+    $knots = `getAttr $outAttr` ;
+
+    // delete curve info node.
+    //
+    if ( $createdInfoNode != "" )
+    {
+    	delete $createdInfoNode ;
+    }
+
+    // return the knots.
+    //
+    return $knots;
+}//END
+
+
+global proc float[] sgpuHair_getNurbsCurveWeights( string $crvName )
+{
+    float $weights[] ;
+    string $infoNode ;
+
+    
+   	//If an inofo node exists get that,
+	//else create one
+
+    string $createdInfoNode;
+    $infoNode = `sgpuHair_getCurveInfo $crvName`;
+
+    string $createdInfoNode;
+    $infoNode = `sgpuHair_getCurveInfo $crvName`;
+    if( $infoNode == "" )
+    {
+    	if( catch( $createdInfoNode = `sgpuHair_createCurveInfo $crvName` ) ) {
+        	return $weights ;
+    	}	
+	$infoNode = $createdInfoNode;
+    }
+
+    // read the weights.
+    //
+    $outAttr = $infoNode + ".weights" ;
+    $weights = `getAttr $outAttr` ;
+
+    // delete curve info node.
+    //
+    if ( $createdInfoNode != "" )
+    {
+    	delete $createdInfoNode ;
+    }
+
+    // return the weights.
+    //
+    return $weights;
+}//END
+
+global proc vector[] sgpuHair_getNurbsCurveCPts( string $crvName )
+{
+    vector $cpts[] ;
+    string $infoNode ;
+
+   	//If an inofo node exists get that,
+	//else create one
+ 	string $createdInfoNode;
+    	$infoNode = `sgpuHair_getCurveInfo $crvName`;
+    	if( $infoNode == "" )
+    	{
+    		if( catch( $createdInfoNode = `sgpuHair_createCurveInfo $crvName` ) ) {
+        		return $cpts ;
+    		}	
+		$infoNode = $createdInfoNode;
+    	}
+
+    	// read the cpts.
+    	//
+   	 int $nCpts = `getAttr -size ( $infoNode + ".cp" )`;
+    	string $cpPrefix = $infoNode + ".cp[";
+    	int $icpt;
+    	for ( $icpt=0; $icpt < $nCpts; $icpt ++ )
+    	{
+		float $cpt[] = `getAttr ($cpPrefix + $icpt + "]")`;
+		$cpts[ size($cpts) ] = << $cpt[0], $cpt[1], $cpt[2] >>;
+    	} 
+    	// delete curve info node.
+   	 //
+    	delete $infoNode ;
+
+    	// return the cpts.
+    	//
+    	return $cpts;
+}//END
+
+
+global proc sgpuHair_DebugCurve( string $scurve )
+{
+	string $tcurve = `nodeType $scurve`;
+	int $isArgCurve = $tcurve == "nurbsCurve" ;
+	sgpuHair_Assert( $isArgCurve , ("argument: " + $scurve + " is not a nurbs curve" ) );
+
+	print ( "knots of : '" + $scurve + "'\n" );
+	float $knts[] = sgpuHair_getNurbsCurveKnots($scurve);
+	int $nknots = size( $knts );
+	int $ikn;
+	for( $ikn=0; $ikn < $nknots; $ikn++ )
+	{
+		print ($ikn + "=" + $knts[ $ikn ] + "\n");
+	}
+	
+	print ( "weights of : '" + $scurve + "'\n" );
+
+	float $weights [] = sgpuHair_getNurbsCurveWeights($scurve);
+	int $nweights = size( $weights );
+	int $iwt;
+	for( $iwt=0; $iwt < $nweights; $iwt++ )
+	{
+		print ($iwt + "=" + $weights[ $iwt ] + "\n");
+	}
+	
+	print ( "control points of : '" + $scurve + "'\n" );
+
+	vector $cpts [] = sgpuHair_getNurbsCurveCPts( $scurve );
+	
+	int $ncpts = size( $cpts );
+	int $icp;
+	for( $icp=0; $icp < $ncpts; $icp++ )
+	{	
+		vector $cp = $cpts[ $icp ];
+		print ($icp + "=" + $cp.x + "," + $cp.y + "," + $cp.z + "\n");
+	}
+
+
+}//END
+
+
+global proc int sgpuHair_MayaHairExportCore( int $fpOut, string $hSys, string $curves[], string $follicles[]  )
+{
+if( size( $curves ) <= 0 )
+{
+	sgpuHair_DebugPrint( "No Curves for exporting\n");
+	return 0;
+}
+fprint $fpOut ("File Objective: Maya Hair Export\n");
+fprint $fpOut ("File Version: 1.1\n");
+fprint $fpOut ("Name: " + $hSys + "\n" );
+//number of hairs == number of curves
+fprint $fpOut ("numHairs: " + size($curves) + "\n" );
+
+string $sampleCurve = $curves[0];
+string $curveType = `nodeType $sampleCurve`;
+if ($curveType != "nurbsCurve" )
+{
+	sgpuHair_DebugPrint( "Maya Hair Export, supports only nurbsCurve, found Curves of Type : " + $curveType + "\n");
+	return 0;
+}
+int $nDegree = `getAttr ($sampleCurve + ".degree" )`;
+vector $sampleCPts [] = `sgpuHair_getNurbsCurveCPts $sampleCurve`;
+float $sampleKnots[] = `sgpuHair_getNurbsCurveKnots $sampleCurve`;
+
+//number of vertices per strand == number of control points
+int $nVerticesPerStrand = size( $sampleCPts );
+int $numVertices = $nVerticesPerStrand * size( $curves );
+//nurbs curves need the number of knots
+//Nurbs literature says that the 'number of knots = degree + number of CVs + 1'
+//But in maya, we are getting 'degrees  + number of CVs - 1' which doesnt make sense 
+int $nKnotsPerStrand = size( $sampleKnots);
+fprint $fpOut ("numVertices: " + $numVertices + "\n" );
+fprint $fpOut ("numHairVertices: " + $numVertices + "\n" );
+fprint $fpOut ("numVerticesPerStrand: " + $nVerticesPerStrand + "\n");
+fprint $fpOut ("curveType: " + "nurbs" + "\n" );
+fprint $fpOut ("degree: " + $nDegree + "\n" );
+fprint $fpOut ("numWeightsPerStrand: " + $nVerticesPerStrand + "\n");
+fprint $fpOut ("numKnotsPerStrand: " + $nKnotsPerStrand + "\n" );
+
+
+int $ih;
+for( $ih =0; $ih < size( $curves ) ; $ih ++ )
+{
+	string $scurve = $curves[ $ih ];
+	string $follicle = $follicles [ $ih ];
+	float $baseUv[] = `sgpuHair_getFollicleUV $follicle`;
+	vector $baseNormal = `sgpuHair_getFollicleSurfaceNormal $follicle`;
+	vector $follicleColor = `sgpuHair_getFollicleColor $follicle`;
+	
+	//Most of the non-geometry hair paramters are now hard coded
+	//these are hard coded
+	fprint $fpOut ($ih + " rootRadii:  0.0305201\n" );
+	fprint $fpOut ($ih + " tipRadii: 0.00416267\n" );	
+	fprint $fpOut ($ih + " rootColor: 0.657994 0.617123 0.383442\n"); 	fprint $fpOut ($ih + " tipColor: 0.883536 0.904649 0.713199\n"); 
+
+
+	//these are not hard coded
+	fprint $fpOut ($ih + " surfaceNormal:  " + $baseNormal.x + " " + $baseNormal.y + " " + $baseNormal.z + "\n");
+	
+	//these are hard coded
+	fprint $fpOut ($ih + " opacity: 1\n");
+	fprint $fpOut ($ih + " specular: 0.9918\n");
+	fprint $fpOut ($ih + " gloss: 0.085124\n");
+	fprint $fpOut ($ih + " ambDiff: 0.59504\n");
+	int $in;
+
+	//output control vertices
+	vector $cpts [] = `sgpuHair_getNurbsCurveCPts $scurve`;
+	sgpuHair_Assert( (size($cpts) == $nVerticesPerStrand ), "inconsistency in the number of control vertices!\n" );
+	for ($in =0; $in < $nVerticesPerStrand; $in++ )
+	{
+		vector $cp = $cpts[ $in ];	
+		fprint $fpOut ($ih + " " + $in + " vertex: " + $cp.x + " " + $cp.y + " " + $cp.z + "\n" );
+	}
+
+
+	//output weights
+	float $wghts [] = `sgpuHair_getNurbsCurveWeights $scurve`;
+	sgpuHair_Assert( (size($wghts) == $nVerticesPerStrand ), "inconsistency in the number of weights!\n" );
+	for ($in =0; $in < $nVerticesPerStrand; $in++ )
+	{
+		float $w = $wghts[ $in ];	
+		fprint $fpOut ($ih + " " + $in + " weight: " + $w + "\n" );
+	}
+
+	
+	//output knots
+	float $knots [] = `sgpuHair_getNurbsCurveKnots $scurve`;	sgpuHair_Assert( (size($knots) == $nKnotsPerStrand ), "inconsistency in the number of knots!\n" );
+	for ($in =0; $in < size($knots); $in++ )
+	{
+		float $kn = $knots[ $in ];	
+		fprint $fpOut ($ih + " " + $in + " knot: " + $kn + "\n" );
+	}
+
+
+}
+
+return 1;
+}//END
+
+
+
+global proc sgpuHair_MayaHairExport( string $outFilepath )
+{
+	//get the first hair system that is selected
+	string $selHair[] = sgpuHair_GetSelectedHairSystem();
+	if ( size($selHair) == 0 )
+	{
+		sgpuHair_ErrorPrint( "no hair system selected" );
+	}
+	sgpuHair_DebugPrint( "selected Hair is " + $selHair[0] );
+	
+	//get the group under which the hair follicles reside
+	string $follicleGroup = $selHair[0] + "Follicles";
+	if ( !objExists( $follicleGroup ) )
+	{
+		sgpuHair_ErrorPrint( "Follicles doesnt exist for '" + $selHair[0] + "'" );
+		return;
+	}	
+	
+	string $follicleTransforms[] = `listRelatives -children -type "transform" $follicleGroup`;
+	int $nfollicles = size( $follicleTransforms );
+	if ( $nfollicles <= 0 )
+	{
+
+		sgpuHair_DebugPrint( "No Curves to export" );
+	}
+	
+	int $if;
+	string $follicles[];
+	//collect the corresponding follicle shapes from the transforms
+	for( $if=0; $if < $nfollicles; $if++ )
+	{
+		string $follicleTransformName = $follicleTransforms[ $if ];
+		string $follicleShape[] = `listRelatives -children -type "follicle" $follicleTransformName`;
+		if (size($follicleShape)>0)
+		{
+			$follicles[ size( $follicles ) ] = $follicleShape[0];
+		} 		
+	}
+	$nfollicles = size( $follicles );
+
+	
+	
+
+	//get the group under which curves reside
+	string $curveGroup = $selHair[0] + "OutputCurves";
+	if ( !objExists( $curveGroup ) )
+	{
+		sgpuHair_ErrorPrint( "OutputCurves doesnt exist for '" + $selHair[0] + "'" );
+		return;
+	}	
+	//get the children of the group, which are transforms for the curve
+	string $curveTransforms[] = `listRelatives -children -type "transform" $curveGroup`;
+	int $ncurves = size( $curveTransforms );
+	if ( $ncurves <= 0 )
+	{
+
+		sgpuHair_DebugPrint( "No Curves to export" );
+	}
+	int $ic;
+	string $curves[];
+	//collect the corresponding curve shapes from the transforms
+	for( $ic=0; $ic < $ncurves; $ic++ )
+	{
+		string $curveTransformName = $curveTransforms[ $ic ];
+		string $curveShape[] = `listRelatives -children -type "nurbsCurve" $curveTransformName`;
+		if (size($curveShape)>0)
+		{
+			$curves[ size( $curves ) ] = $curveShape[0];
+		} 		
+	}
+
+	$ncurves = size( $curves );
+	for( $ic=0; $ic < $ncurves; $ic++ )
+	{		
+		//sgpuHair_DebugCurve( $curves[0] );
+	}
+	//output stuff
+	int $fpOut = `fopen $outFilepath "w"`;
+	if ( $fpOut <= 0 )
+	{
+		sgpuHair_ErrorPrint( "Cannot open Output file : " + $outFilepath );
+	}
+	int $iResult;
+	if (	catch ($iResult = `sgpuHair_MayaHairExportCore  $fpOut$selHair[0] $curves $follicles` ) )
+	{
+
+		sgpuHair_ErrorPrint( "Export of " + $selHair[0] + "to " + $outFilepath + " failed" );
+
+	} else if ( $iResult <= 0 )
+	{
+
+		sgpuHair_ErrorPrint( "Export of " + $selHair[0] + "to " + $outFilepath + " failed" );
+	}
+	fclose $fpOut;
+}//END

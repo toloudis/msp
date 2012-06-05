@@ -1,0 +1,1 @@
+ShaderCompiler-Release.exe Custom.hlsl Custom.o

@@ -1,0 +1,36 @@
+ParticleSet
+{
+	TprFilename cone_splash2.tpr
+	MinSpeedMod 0.1
+	MaxSpeedMod 0.6
+	ParticleRateMod 0.5
+	MaxParticlesMod 1.0
+	Lifetime 0.1 
+}
+ParticleSet
+{
+	TprFilename cone_foam3.tpr
+	MinSpeedMod 0.3
+	MaxSpeedMod 0.9
+	ParticleRateMod 0.5
+	MaxParticlesMod 1.0
+	Lifetime 0.1 
+}
+ParticleSet
+{
+	TprFilename cone_foam4.tpr
+	MinSpeedMod 0.5
+	MaxSpeedMod 1.1
+	ParticleRateMod 0.5
+	MaxParticlesMod 1.2
+	Lifetime 0.1 
+}
+ParticleSet
+{
+	TprFilename cone_foam2.tpr
+	MinSpeedMod 1.0
+	MaxSpeedMod 1.5
+	ParticleRateMod 0.5
+	MaxParticlesMod 1.2
+	Lifetime 0.1 
+}

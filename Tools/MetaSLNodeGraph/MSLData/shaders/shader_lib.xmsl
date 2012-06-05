@@ -1,0 +1,29 @@
+<root>
+  <metasl_code file_name="constants.msl"/>
+  <metasl_code file_name="mi_msl_shared.msl"/>
+
+  <metasl_code file_name="generator_noise.msl"/>
+  <metasl_code file_name="illumination_sgpu.msl"/>
+  <metasl_code file_name="illumination_sgpu_Lambert.msl"/>
+  <metasl_code file_name="illumination_sgpu_Phong.msl"/>
+  <metasl_code file_name="illumination_sgpu_Blinn.msl"/>
+  <metasl_code file_name="illumination_sgpu_Anisotropic.msl"/>
+  <metasl_code file_name="illumination_sgpu_SpecularFresnel.msl"/>
+  <metasl_code file_name="illumination_sgpu_Subsurface.msl"/>
+  <metasl_code file_name="illumination_sgpu_Subsurface_BlinnSpecular.msl"/>
+  <metasl_code file_name="illumination_sgpu_Cartoon.msl"/>
+  <metasl_code file_name="illumination_sgpu_Carpaint.msl"/>
+  <metasl_code file_name="illumination_phong.msl"/>
+  <metasl_code file_name="component_phong.msl"/>
+  <metasl_code file_name="component_reflection.msl"/>
+  <metasl_code file_name="component_falloff.msl"/>
+
+  <metasl_code file_name="texture_lookup.msl"/>
+  <metasl_code file_name="normals_make_normal.msl"/>  
+
+  <metasl_code file_name="light_point.msl"/>
+  <metasl_code file_name="light_spot.msl"/>
+  <metasl_code file_name="environment_map_cubic.msl"/>
+  
+  <metasl_code intrinsic_nodes="true"/>
+</root>

@@ -1,0 +1,58 @@
+#must match the struct in the cpp file for this shader!
+
+$ifndef "sgpu_illum_Simple_mi"
+set "sgpu_illum_Simple_mi" "true"
+
+declare shader
+	color "sgpu_illum_Simple" (
+
+		color			"g_emissive",
+		color			"g_ambient",
+		color 			"g_diffuse",
+		color			"g_specular",
+		scalar			"g_shininess",
+		scalar			"g_reflectivity",
+		scalar			"g_transparency",
+		scalar			"g_emissiveIntensity",
+		color texture	"emissiveMap",
+		
+		color texture		"diffuseEnvMap",	
+		color texture		"specularEnvMap",		
+		color			"g_envDiffuseColor",
+		color			"g_envSpecularColor",
+		scalar			"g_diffuseFactor",
+		scalar			"g_diffuseEnvAngle",	
+		scalar			"g_specularFactor",
+		scalar			"g_specularEnvAngle",
+		
+		scalar			"u_scale",
+		scalar			"v_scale",
+		scalar			"u_offset",
+		scalar			"v_offset",
+		scalar			"uv_rotation",
+	
+		color texture	"normalMap",
+		scalar			"normalMapScale",
+		
+		boolean			"bEnableAO",		
+		color			"aoColor",
+		scalar			"aoRadiusNear",
+		scalar			"aoRadiusFar",
+		scalar			"aoAngleBias",
+		scalar			"aoAttenuation",
+		scalar			"aoContrast",
+		scalar			"aoCamNear",
+		scalar			"aoCamFar",
+		scalar			"aoSamples",
+		
+		boolean			"bEnableGI",
+		boolean			"bEnableSWL",
+		
+		integer			"mode",      # light selection mode 0,1,2,4
+		array light		"lights"
+	)
+	version 1
+	apply material
+end declare
+
+$endif

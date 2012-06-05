@@ -1,0 +1,14 @@
+; CookTorr.psh
+
+; Declare pixel shader version 1.0
+ps.1.1
+
+tex t0			
+texcoord t1
+
+
+mov r0,t1
+mul r0,r0,t0
+mul r0,r0,c2
+add r0,r0,v0
+add r0,r0,v1

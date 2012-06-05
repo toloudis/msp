@@ -1,0 +1,91 @@
+/*****************************************************************************
+ * Test version of a base shader for sgpu test compiler.
+ *****************************************************************************/
+
+shader Illumination_sgpu_Phong
+{
+  input:    
+  Color  diffuse_color = Color(1,1,1,1)
+  {	
+      display_name("Diffuse Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "The color used to tint the Diffuse Reflectance Color." );
+  };
+  float diffuse_scalar = 0.7
+  {		
+      display_name("Diffuse Float");
+      hard_range(float(0),float(1));
+      description( "The intensity of the light diffusely reflected from "
+      "this surface." );
+  };
+  Color  specular_color = Color(1,1,1,1)
+  {	
+      display_name("Specular Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "The color used to tint the Specular Reflectance Color." );
+  };
+  float specular_scalar = 0.7
+  {		
+      display_name("Specular Float");
+      hard_range(float(0),float(1));
+      description( "The intensity of the light specularly reflected from "
+      "this surface." );
+  };
+  float specular_power = 0.7
+  {		
+      display_name("Specular Power");
+      hard_range(float(0),float(50));
+      description( "The tightness of the specular highlight" );
+  };
+    
+  output:
+  Color result;
+  Color diffuse;
+  Color specular;
+
+  void main() 
+  {
+      diffuse = Color(0.0,0.0,0.0,0.0);
+      specular = Color(0.0,0.0,0.0,0.0);
+  
+      Color Rd = diffuse_color * diffuse_scalar;
+      Color Rs = specular_color * specular_scalar;
+      
+      	// enumerate lights
+		Light_iterator light;
+		foreach (light)
+		{
+			float cosine = saturate(light.dot_nl);
+			if (cosine > 0.0) {
+			
+				diffuse += cosine * light.contribution;
+
+				float specComp = saturate(dot(normal,normalize(light.direction - direction)));
+				specComp = (pow(specComp, max(0.001, specular_power)));
+				
+				// alpha in specular so it adds simply
+				specular += specComp * light.contribution;
+			}
+			
+			
+		}
+      
+      diffuse *= Rd;
+      specular *= Rs;
+      diffuse.a = 1.0;
+      specular.a = 1.0;
+      
+      // irradiance term skipped
+      
+      result = diffuse + specular;
+      result.a = 1.0;
+
+  }
+}
+{
+	//bga -  What does the brdf_type mean here? Should we have a new name?
+    brdf_type("Msl_phong");
+    description( "A simple shader for testing shader code generation." );
+}
+;
+

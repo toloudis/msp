@@ -1,0 +1,48 @@
+#must match the struct in the cpp file for this shader!
+
+$ifndef "sgpu_light_ProjectedLight_mi"
+set "sgpu_light_ProjectedLight_mi" "true"
+
+declare shader
+	color "sgpu_light_ProjectedLight" (
+		color			"color",
+		vector			"Pos",
+		scalar			"PosW",
+		boolean			"shadow",
+		scalar			"factor",
+		color			"ShadowColor",
+		scalar			"ShadowIntensity",
+		scalar			"FalloffX",
+		scalar			"FalloffY",
+		scalar			"FalloffZ",
+		scalar			"FalloffW",
+		scalar			"FalloffStart",
+		scalar			"Scale",
+		scalar			"Range",
+		scalar			"Aspect",
+		scalar			"OuterAngle",
+		scalar			"InnerAngle",
+		scalar			"DepthBias",
+		transform		"CameraMatrix",
+		transform		"ProjMatrix",
+		transform		"CamProjMatrix",
+		color texture	"Texture",
+		boolean			"AffectsDiffuse",
+		boolean			"AffectsSpecular",
+		boolean			"bDirectional",
+		boolean			"bPureDirectional",
+		boolean			"bConeLighting",	
+		boolean			"bShadowsOnly",	
+		boolean			"bEnabled",	
+		scalar			"bbox_min_x",
+		scalar			"bbox_min_y",
+		scalar			"bbox_min_z",		
+		scalar			"bbox_max_x",
+		scalar			"bbox_max_y",
+		scalar			"bbox_max_z"
+	)
+	version 1
+	apply light
+end declare
+
+$endif

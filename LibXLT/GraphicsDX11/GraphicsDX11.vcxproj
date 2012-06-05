@@ -1,0 +1,942 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug Iterator|Win32">
+      <Configuration>Debug Iterator</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug Iterator|x64">
+      <Configuration>Debug Iterator</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug Managed|Win32">
+      <Configuration>Debug Managed</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug Managed|x64">
+      <Configuration>Debug Managed</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_RenderNode|Win32">
+      <Configuration>Debug_RenderNode</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_RenderNode|x64">
+      <Configuration>Debug_RenderNode</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Gold|Win32">
+      <Configuration>Gold</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Gold|x64">
+      <Configuration>Gold</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release Managed|Win32">
+      <Configuration>Release Managed</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release Managed|x64">
+      <Configuration>Release Managed</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RenderNode|Win32">
+      <Configuration>RenderNode</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RenderNode|x64">
+      <Configuration>RenderNode</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{419458FF-14D9-40EC-A36E-0A72774BC100}</ProjectGuid>
+    <RootNamespace>GraphicsDX9</RootNamespace>
+    <Keyword>TerawattLibProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Gold|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Gold|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Png;$(ProjectDir)..\..\3rdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Png;$(ProjectDir)..\..\3rdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>libpng.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Png;$(ProjectDir)..\..\3rdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Png;$(ProjectDir)..\..\3rdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Png;$(ProjectDir)..\..\3rdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\..\..\terawatt\app;.\..\..\terawatt\app\app;.\..\..\terawatt\app\ch;.\..\..\terawatt\app\fs;.\..\..\terawatt\app\gf;.\..\..\terawatt\app\in;.\..\..\terawatt\app\it;.\..\..\terawatt\base;.\..\..\terawatt\base\dbg;.\..\..\terawatt\base\env;.\..\..\terawatt\graphics\an;.\..\..\terawatt\graphics\cam;.\..\..\terawatt\graphics\g2d;.\..\..\terawatt\graphics\g3d;.\..\..\terawatt\graphics\mat;.\..\..\terawatt\graphics\Sc;.\..\..\terawatt\graphics\Scr;.\..\..\terawatt\graphicsd3d\g2d;.\..\..\terawatt\graphicsd3d\g2d\private;.\..\..\Terawatt\GraphicsD3D\g3d;.\..\..\Terawatt\GraphicsD3D\g3d\private;.\..\..\terawatt\graphicsd3d\mat;.\..\..\terawatt\GraphicsD3D\mat\private;.\..\..\Terawatt\GraphicsD3D\Scr;.\..\..\Terawatt\GraphicsD3D\Scr\private;.\..\..\Terawatt\GraphicsD3D\Eff;.\..\..\Terawatt\GraphicsD3D\Eff\private;.\..\..\terawatt\math;.\..\..\terawatt\math\geo;.\..\..\terawatt\math\ma;.\..\..\3rdParty\zlib;.\..\..\3rdParty\Png;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">
+    <ClCompile>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Png;$(ProjectDir)..\..\3rdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>.\..\..\terawatt\app;.\..\..\terawatt\app\app;.\..\..\terawatt\app\ch;.\..\..\terawatt\app\fs;.\..\..\terawatt\app\gf;.\..\..\terawatt\app\in;.\..\..\terawatt\app\it;.\..\..\terawatt\base;.\..\..\terawatt\base\dbg;.\..\..\terawatt\base\env;.\..\..\terawatt\graphics\an;.\..\..\terawatt\graphics\cam;.\..\..\terawatt\graphics\g2d;.\..\..\terawatt\graphics\g3d;.\..\..\terawatt\graphics\mat;.\..\..\terawatt\graphics\Sc;.\..\..\terawatt\graphics\Scr;.\..\..\terawatt\graphicsd3d\g2d;.\..\..\terawatt\graphicsd3d\g2d\private;.\..\..\Terawatt\GraphicsD3D\g3d;.\..\..\Terawatt\GraphicsD3D\g3d\private;.\..\..\terawatt\graphicsd3d\mat;.\..\..\terawatt\GraphicsD3D\mat\private;.\..\..\Terawatt\GraphicsD3D\Scr;.\..\..\Terawatt\GraphicsD3D\Scr\private;.\..\..\Terawatt\GraphicsD3D\Eff;.\..\..\Terawatt\GraphicsD3D\Eff\private;.\..\..\terawatt\math;.\..\..\terawatt\math\geo;.\..\..\terawatt\math\ma;.\..\..\3rdParty\zlib;.\..\..\3rdParty\Png;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Png;$(ProjectDir)..\..\3rdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>ATITessellationD3D9_MTDLL_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Png;$(ProjectDir)..\..\3rdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>libpng.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Png;$(ProjectDir)..\..\3rdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;ENV_BUILD=ENV_GOLDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>ATITessellationD3D9_MTDLL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Png;$(ProjectDir)..\..\3rdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;ENV_BUILD=ENV_GOLDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">
+    <CustomBuildStep>
+      <Message>Performing Custom Build Step</Message>
+    </CustomBuildStep>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Png;$(ProjectDir)..\..\3rdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Png;$(ProjectDir)..\..\3rdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>libpng.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Png;$(ProjectDir)..\..\3rdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;ENV_BUILD=ENV_GOLDBUILD;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Png;$(ProjectDir)..\..\3rdParty\zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;ENV_BUILD=ENV_GOLDBUILD;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="G2d\g2dDebugDisplay.hpp" />
+    <ClInclude Include="G2d\g2dDepthStencilBufferDX11.hpp" />
+    <ClInclude Include="G2d\g2dDX11GlobalWin.hpp" />
+    <ClInclude Include="G2d\g2dDX11Types.hpp" />
+    <ClInclude Include="g2d\g2dFullscreenQuad.hpp" />
+    <ClInclude Include="G2d\g2dImageDX11.hpp" />
+    <ClInclude Include="G2d\g2dRenderTargetDX11.hpp" />
+    <ClInclude Include="G2d\g2dRenderTargetTextureDX11.hpp" />
+    <ClInclude Include="G2d\g2dResourceCounterDX11.hpp" />
+    <ClInclude Include="G2d\g2dSystemDX11.hpp" />
+    <ClInclude Include="G2d\g2dTextureDX11.hpp" />
+    <ClInclude Include="G2d\g2dWindowDX11.hpp" />
+    <ClInclude Include="G2d\g2dWindowPrimaryDX11.hpp" />
+    <ClInclude Include="G2d\private\g2dDX11SurfaceUtil.hpp" />
+    <ClInclude Include="G2d\private\g2dFontUtilDX11.hpp" />
+    <ClInclude Include="G2d\private\g2dImageCreateDX11.hpp" />
+    <ClInclude Include="G2d\private\g2dImageDrawUtilDX11.hpp" />
+    <ClInclude Include="G2d\private\g2dImageSaveDX11.hpp" />
+    <ClInclude Include="G2d\private\g2dScreenCaptureUtilDX11.hpp" />
+    <ClInclude Include="G2d\private\g2dSurfaceLoaderDX11.hpp" />
+    <ClInclude Include="G2d\private\g2dWindowDrawUtilDX11.hpp" />
+    <ClInclude Include="G3d\g3dAmbientOcclusionRendererDX11.hpp" />
+    <ClInclude Include="G3d\g3dBlendStateMgr.hpp" />
+    <ClInclude Include="G3d\g3dCubeMapRendererDX11.hpp" />
+    <ClInclude Include="G3d\g3dDepthMapRendererDX11.hpp" />
+    <ClInclude Include="G3d\g3dDepthStencilStateMgr.hpp" />
+    <ClInclude Include="G3d\g3dDrawStyleUtilDX11.hpp" />
+    <ClInclude Include="G3d\g3dDX11BufferUtil.hpp" />
+    <ClInclude Include="G3d\g3dDX11GlobalWin.hpp" />
+    <ClInclude Include="G3d\g3dDX11TextureUtil.hpp" />
+    <ClInclude Include="G3d\g3dDX11Util.hpp" />
+    <ClInclude Include="G3d\g3dFogDX11.hpp" />
+    <ClInclude Include="G3d\g3dHelpersWin.hpp" />
+    <ClInclude Include="G3d\g3dLightMgrDX11.hpp" />
+    <ClInclude Include="G3d\g3dPickBufferRendererDX11.hpp" />
+    <ClInclude Include="G3d\g3dRasterizerStateMgr.hpp" />
+    <ClInclude Include="G3d\g3dRenderCameraSpace.hpp" />
+    <ClInclude Include="G3d\g3dRenderPass.hpp" />
+    <ClInclude Include="G3d\g3dRenderScreenSpace.hpp" />
+    <ClInclude Include="G3d\g3dRenderStateCache.hpp" />
+    <ClInclude Include="G3d\g3dRSMRendererDX11.hpp" />
+    <ClInclude Include="G3d\g3dSceneGlobal.hpp" />
+    <ClInclude Include="G3d\g3dSceneRendererDX11.hpp" />
+    <ClInclude Include="G3d\g3dSceneRendererDX11Create.hpp" />
+    <ClInclude Include="G3d\g3dSceneRenderUtil.hpp" />
+    <ClInclude Include="G3d\g3dStateMgr.hpp" />
+    <ClInclude Include="G3d\g3dSystemDX11.hpp" />
+    <ClInclude Include="G3d\g3dTextureRendererDX11.hpp" />
+    <ClInclude Include="G3d\g3dTransparencySortDX11.hpp" />
+    <ClInclude Include="G3d\g3dVSMRendererDX11.hpp" />
+    <ClInclude Include="Eff\effBake.hpp" />
+    <ClInclude Include="Eff\effBillboard.hpp" />
+    <ClInclude Include="Eff\effBlur.hpp" />
+    <ClInclude Include="Eff\effDOF.hpp" />
+    <ClInclude Include="Eff\effGlow.hpp" />
+    <ClInclude Include="Eff\effHDRLighting.hpp" />
+    <ClInclude Include="Eff\effLightGlow.hpp" />
+    <ClInclude Include="Eff\effMaskAlpha.hpp" />
+    <ClInclude Include="Eff\effOcclusion.hpp" />
+    <ClInclude Include="Eff\effOutline.hpp" />
+    <ClInclude Include="Eff\effParticle.hpp" />
+    <ClInclude Include="Eff\effPhong.hpp" />
+    <ClInclude Include="Eff\effRamp.hpp" />
+    <ClInclude Include="Eff\effShaderArray.hpp" />
+    <ClInclude Include="Eff\effShaderBaseDX11.hpp" />
+    <ClInclude Include="Eff\effShaderParamsDX11.hpp" />
+    <ClInclude Include="Eff\effShaderSDKDX11.hpp" />
+    <ClInclude Include="Eff\effShaderUtilWin.hpp" />
+    <ClInclude Include="Eff\effSolid.hpp" />
+    <ClInclude Include="Eff\effStrandHair.hpp" />
+    <ClInclude Include="Eff\effTextured.hpp" />
+    <CustomBuildStep Include="Eff\private\Wrappers\Footer_End.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </CustomBuildStep>
+    <CustomBuildStep Include="Eff\private\Wrappers\Footer_Start.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </CustomBuildStep>
+    <CustomBuildStep Include="Eff\private\Wrappers\Header_End.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </CustomBuildStep>
+    <CustomBuildStep Include="Eff\private\Wrappers\Header_Start.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </CustomBuildStep>
+    <CustomBuildStep Include="Eff\private\Wrappers\ShaderStrings.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </CustomBuildStep>
+    <ClInclude Include="Mat\matCubeRenderTargetTexture.hpp" />
+    <ClInclude Include="Mat\matDX11GlobalWin.hpp" />
+    <ClInclude Include="Mat\matMipTexture.hpp" />
+    <ClInclude Include="Mat\matPlainTexture.hpp" />
+    <ClInclude Include="Mat\matReflectiveShadowMap.hpp" />
+    <ClInclude Include="Mat\matRenderTargetTexture.hpp" />
+    <ClInclude Include="Mat\matShadowMap.hpp" />
+    <ClInclude Include="Mat\matStaticCubeTexture.hpp" />
+    <ClInclude Include="Mat\matTextureDX11.hpp" />
+    <ClInclude Include="Mat\matTextureMgrDX11.hpp" />
+    <ClInclude Include="Mat\matVolumeTexture.hpp" />
+    <ClInclude Include="Mat\private\DDS.h" />
+    <ClInclude Include="Mat\private\matTextureLoaderDDSWin.hpp" />
+    <ClInclude Include="Mat\private\matTextureLoaderHDRWin.hpp" />
+    <ClInclude Include="Mat\private\matTextureLoaderTGAWin.hpp" />
+    <ClInclude Include="Mat\private\matTextureLoaderWin.hpp" />
+    <ClInclude Include="bump\bumpBufferUtil.hpp" />
+    <ClInclude Include="bump\bumpBumpRenderer.hpp" />
+    <ClInclude Include="bump\bumpFragmentCreate.hpp" />
+    <ClInclude Include="bump\bumpPackage.hpp" />
+    <ClInclude Include="bump\bumpTriMeshBumpFrag.hpp" />
+    <ClInclude Include="bump\bumpVertexBuffer.hpp" />
+    <ClInclude Include="bump\private\bumpVertexDecl.hpp" />
+    <ClInclude Include="tmesh\tmeshBVH.hpp" />
+    <ClInclude Include="tmesh\tmeshFrag.hpp" />
+    <ClInclude Include="tmesh\tmeshIndexBuffer.hpp" />
+    <ClInclude Include="tmesh\tmeshOptimizedBVH.hpp" />
+    <ClInclude Include="tmesh\tmeshPackage.hpp" />
+    <ClInclude Include="tmesh\tmeshShape.hpp" />
+    <ClInclude Include="tmesh\tmeshVertexBuffer.hpp" />
+    <ClInclude Include="shdw\shdwAOPreviewRendererDX11.hpp" />
+    <ClInclude Include="shdw\shdwAOVolumesRendererDX11.hpp" />
+    <ClInclude Include="shdw\shdwBakingRenderer.hpp" />
+    <ClInclude Include="shdw\shdwCubeMapRendererDX11.hpp" />
+    <ClInclude Include="shdw\shdwDepthRendererDX11.hpp" />
+    <ClInclude Include="shdw\shdwFrameBufferMgr.hpp" />
+    <ClInclude Include="shdw\shdwGIPreviewRendererDX11.hpp" />
+    <ClInclude Include="shdw\shdwGlowRendererDX11.hpp" />
+    <ClInclude Include="shdw\shdwHDRRendererDX11.hpp" />
+    <ClInclude Include="shdw\shdwMaterialsRendererDX11.hpp" />
+    <ClInclude Include="shdw\shdwNormalRendererDX11.hpp" />
+    <ClInclude Include="shdw\shdwOpacityMapRendererDX11.hpp" />
+    <ClInclude Include="shdw\shdwPackage.hpp" />
+    <ClInclude Include="shdw\shdwPassAlphaFill.hpp" />
+    <ClInclude Include="shdw\shdwPassAmbient.hpp" />
+    <ClInclude Include="shdw\shdwPassAOVolumes.hpp" />
+    <ClInclude Include="shdw\shdwPassDepth.hpp" />
+    <ClInclude Include="shdw\shdwPassDOF.hpp" />
+    <ClInclude Include="shdw\shdwPassEnvBackground.hpp" />
+    <ClInclude Include="shdw\shdwPassEnvironment.hpp" />
+    <ClInclude Include="shdw\shdwPassFog.hpp" />
+    <ClInclude Include="shdw\shdwPassGIVolumes.hpp" />
+    <ClInclude Include="shdw\shdwPassGlow.hpp" />
+    <ClInclude Include="shdw\shdwPassHair.hpp" />
+    <ClInclude Include="shdw\shdwPassLit.hpp" />
+    <ClInclude Include="shdw\shdwPassLPVGI.hpp" />
+    <ClInclude Include="shdw\shdwPassMapNormalsToScreen.hpp" />
+    <ClInclude Include="shdw\shdwPassMaterials.hpp" />
+    <ClInclude Include="shdw\shdwPassNormals.hpp" />
+    <ClInclude Include="shdw\shdwPassOpacity.hpp" />
+    <ClInclude Include="shdw\shdwPassOutline.hpp" />
+    <ClInclude Include="shdw\shdwPassPostShader.hpp" />
+    <ClInclude Include="shdw\shdwPassSSAO.hpp" />
+    <ClInclude Include="shdw\shdwPassSSGI.hpp" />
+    <ClInclude Include="shdw\shdwPassToneMap.hpp" />
+    <ClInclude Include="shdw\shdwPassTransparent.hpp" />
+    <ClInclude Include="shdw\shdwPassTraversal.hpp" />
+    <ClInclude Include="shdw\shdwPassVelocity.hpp" />
+    <ClInclude Include="shdw\shdwPassZFill.hpp" />
+    <ClInclude Include="shdw\shdwPlanarReflectionRendererDX11.hpp" />
+    <ClInclude Include="shdw\shdwRayTraceRenderer.hpp" />
+    <ClInclude Include="shdw\shdwReflectionsOnlyRendererDX11.hpp" />
+    <ClInclude Include="shdw\shdwSceneRendererCreate.hpp" />
+    <ClInclude Include="shdw\shdwSceneRendererDX11.hpp" />
+    <ClInclude Include="shdw\shdwShadowLayerRendererDX11.hpp" />
+    <ClInclude Include="shdw\shdwShadowsOnlyRendererDX11.hpp" />
+    <ClInclude Include="shdw\shdwSinglePassRendererDX11.hpp" />
+    <ClInclude Include="shdw\shdwTestRendererDX11.hpp" />
+    <ClInclude Include="shdw\shdwUVRendererDX11.hpp" />
+    <ClInclude Include="shdw\shdwVelocityMapRendererDX11.hpp" />
+    <ClInclude Include="shdw\shdwVelocityStateManager.hpp" />
+    <ClInclude Include="shdw\private\GlareDefDX11.h" />
+    <ClInclude Include="shdw\private\rasterizerUtil.hpp" />
+    <ClInclude Include="shdw\private\rtUtil.hpp" />
+    <ClInclude Include="may\mayFragCreate.hpp" />
+    <ClInclude Include="may\mayPackage.hpp" />
+    <ClInclude Include="hair\hairModelFrag.hpp" />
+    <ClInclude Include="hair\hairPackage.hpp" />
+    <ClInclude Include="hair\HairRendererDX11.hpp" />
+    <ClInclude Include="GraphicsDX11Layer.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="G2d\private\g2dDebugDisplay.cpp" />
+    <ClCompile Include="G2d\private\g2dDepthStencilBufferDX11.cpp" />
+    <ClCompile Include="G2d\private\g2dDX11GlobalWin.cpp" />
+    <ClCompile Include="G2d\private\g2dDX11SurfaceUtil.cpp" />
+    <ClCompile Include="G2d\private\g2dFontUtilDX11.cpp" />
+    <ClCompile Include="g2d\private\g2dFullscreenQuad.cpp" />
+    <ClCompile Include="G2d\private\g2dImageCreateDX11.cpp" />
+    <ClCompile Include="G2d\private\g2dImageDrawUtilDX11.cpp" />
+    <ClCompile Include="G2d\private\g2dImageDX11.cpp" />
+    <ClCompile Include="G2d\private\g2dImageSaveDX11.cpp" />
+    <ClCompile Include="G2d\private\g2dRenderTargetDX11.cpp" />
+    <ClCompile Include="G2d\private\g2dRenderTargetTextureDX11.cpp" />
+    <ClCompile Include="G2d\private\g2dResourceCounterDX11.cpp" />
+    <ClCompile Include="G2d\private\g2dScreenCaptureUtilDX11.cpp" />
+    <ClCompile Include="G2d\private\g2dSurfaceLoaderDX11.cpp" />
+    <ClCompile Include="G2d\private\g2dSystemDX11.cpp" />
+    <ClCompile Include="G2d\private\g2dTextureDX11.cpp" />
+    <ClCompile Include="G2d\private\g2dWindowDrawUtilDX11.cpp" />
+    <ClCompile Include="G2d\private\g2dWindowDX11.cpp" />
+    <ClCompile Include="G2d\private\g2dWindowPrimaryDX11.cpp" />
+    <ClCompile Include="G3d\private\g3dBlendStateMgr.cpp" />
+    <ClCompile Include="G3d\private\g3dCubeMapRendererDX11.cpp" />
+    <ClCompile Include="G3d\private\g3dDepthMapRendererDX11.cpp" />
+    <ClCompile Include="G3d\private\g3dDepthStencilStateMgr.cpp" />
+    <ClCompile Include="G3d\private\g3dDrawStyleUtilDX11.cpp" />
+    <ClCompile Include="G3d\private\g3dDX11BufferUtil.cpp" />
+    <ClCompile Include="G3d\private\g3dDX11GlobalWin.cpp" />
+    <ClCompile Include="G3d\private\g3dDX11TextureUtil.cpp" />
+    <ClCompile Include="G3d\private\g3dDX11Util.cpp" />
+    <ClCompile Include="G3d\private\g3dFogDX11.cpp" />
+    <ClCompile Include="G3d\private\g3dLightMgrDX11.cpp" />
+    <ClCompile Include="G3d\private\g3dPickBufferRendererDX11.cpp" />
+    <ClCompile Include="G3d\private\g3dRasterizerStateMgr.cpp" />
+    <ClCompile Include="G3d\private\g3dRenderCameraSpace.cpp" />
+    <ClCompile Include="G3d\private\g3dRenderPass.cpp" />
+    <ClCompile Include="G3d\private\g3dRenderScreenSpace.cpp" />
+    <ClCompile Include="G3d\private\g3dRenderStateCache.cpp" />
+    <ClCompile Include="G3d\private\g3dRSMRendererDX11.cpp" />
+    <ClCompile Include="G3d\private\g3dSceneGlobal.cpp" />
+    <ClCompile Include="G3d\private\g3dSceneRendererDX11.cpp" />
+    <ClCompile Include="G3d\private\g3dSceneRendererDX11Create.cpp" />
+    <ClCompile Include="G3d\private\g3dSceneRenderUtil.cpp" />
+    <ClCompile Include="G3d\private\g3dStateMgr.cpp" />
+    <ClCompile Include="G3d\private\g3dSystemDX11.cpp" />
+    <ClCompile Include="G3d\private\g3dTextureRendererDX11.cpp" />
+    <ClCompile Include="G3d\private\g3dTransparencySortDX11.cpp" />
+    <ClCompile Include="G3d\private\g3dVSMRendererDX11.cpp" />
+    <ClCompile Include="Eff\private\effBake.cpp" />
+    <ClCompile Include="Eff\private\effBillboard.cpp" />
+    <ClCompile Include="Eff\private\effBlur.cpp" />
+    <ClCompile Include="Eff\private\effDOF.cpp" />
+    <ClCompile Include="Eff\private\effGlow.cpp" />
+    <ClCompile Include="Eff\private\effHDRLighting.cpp" />
+    <ClCompile Include="Eff\private\effLightGlow.cpp" />
+    <ClCompile Include="Eff\private\effMaskAlpha.cpp" />
+    <ClCompile Include="Eff\private\effOcclusion.cpp" />
+    <ClCompile Include="Eff\private\effOutline.cpp" />
+    <ClCompile Include="Eff\private\effParticle.cpp" />
+    <ClCompile Include="Eff\private\effPhong.cpp" />
+    <ClCompile Include="Eff\private\effRamp.cpp" />
+    <ClCompile Include="Eff\private\effShaderArray.cpp" />
+    <ClCompile Include="Eff\private\effShaderBaseDX11.cpp" />
+    <ClCompile Include="Eff\private\effShaderParamsDX11.cpp" />
+    <ClCompile Include="Eff\private\effShaderSDKDX11.cpp" />
+    <ClCompile Include="Eff\private\effShaderUtilWin.cpp" />
+    <ClCompile Include="Eff\private\effSolid.cpp" />
+    <ClCompile Include="Eff\private\effStrandHair.cpp" />
+    <ClCompile Include="Eff\private\effTextured.cpp" />
+    <ClCompile Include="Mat\private\matCubeRenderTargetTexture.cpp" />
+    <ClCompile Include="Mat\private\matDX11GlobalWin.cpp" />
+    <ClCompile Include="Mat\private\matMipTexture.cpp" />
+    <ClCompile Include="Mat\private\matPlainTexture.cpp" />
+    <ClCompile Include="Mat\private\matReflectiveShadowMap.cpp" />
+    <ClCompile Include="Mat\private\matRenderTargetTexture.cpp" />
+    <ClCompile Include="Mat\private\matShadowMap.cpp" />
+    <ClCompile Include="Mat\private\matStaticCubeTexture.cpp" />
+    <ClCompile Include="Mat\private\matTextureDX11.cpp" />
+    <ClCompile Include="Mat\private\matTextureLoaderDDSWin.cpp" />
+    <ClCompile Include="Mat\private\matTextureLoaderHDRWin.cpp" />
+    <ClCompile Include="Mat\private\matTextureLoaderTGAWin.cpp" />
+    <ClCompile Include="Mat\private\matTextureLoaderWin.cpp" />
+    <ClCompile Include="Mat\private\matTextureMgrDX11.cpp" />
+    <ClCompile Include="Mat\private\matVolumeTexture.cpp" />
+    <ClCompile Include="bump\private\bumpBufferUtil.cpp" />
+    <ClCompile Include="bump\private\bumpBumpRenderer.cpp" />
+    <ClCompile Include="bump\private\bumpFragmentCreate.cpp" />
+    <ClCompile Include="bump\private\bumpPackage.cpp" />
+    <ClCompile Include="bump\private\bumpTriMeshBumpFrag.cpp" />
+    <ClCompile Include="bump\private\bumpVertexBuffer.cpp" />
+    <ClCompile Include="bump\private\bumpVertexDecl.cpp" />
+    <ClCompile Include="tmesh\private\tmeshBVH.cpp" />
+    <ClCompile Include="tmesh\private\tmeshFrag.cpp" />
+    <ClCompile Include="tmesh\private\tmeshIndexBuffer.cpp" />
+    <ClCompile Include="tmesh\private\tmeshOptimizedBVH.cpp" />
+    <ClCompile Include="tmesh\private\tmeshPackage.cpp" />
+    <ClCompile Include="tmesh\private\tmeshVertexBuffer.cpp" />
+    <ClCompile Include="shdw\private\GlareDefDX11.cpp" />
+    <ClCompile Include="shdw\private\rasterizerUtil.cpp" />
+    <ClCompile Include="shdw\private\rtUtil.cpp" />
+    <ClCompile Include="shdw\private\shdwAOPreviewRendererDX11.cpp" />
+    <ClCompile Include="shdw\private\shdwAOVolumesRendererDX11.cpp" />
+    <ClCompile Include="shdw\private\shdwBakingRenderer.cpp" />
+    <ClCompile Include="shdw\private\shdwCubeMapRendererDX11.cpp" />
+    <ClCompile Include="shdw\private\shdwDepthRendererDX11.cpp" />
+    <ClCompile Include="shdw\private\shdwFrameBufferMgr.cpp" />
+    <ClCompile Include="shdw\private\shdwGIPreviewRendererDX11.cpp" />
+    <ClCompile Include="shdw\private\shdwGlowRendererDX11.cpp" />
+    <ClCompile Include="shdw\private\shdwHDRRendererDX11.cpp" />
+    <ClCompile Include="shdw\private\shdwMaterialsRendererDX11.cpp" />
+    <ClCompile Include="shdw\private\shdwNormalRendererDX11.cpp" />
+    <ClCompile Include="shdw\private\shdwOpacityMapRendererDX11.cpp" />
+    <ClCompile Include="shdw\private\shdwPackage.cpp" />
+    <ClCompile Include="shdw\private\shdwPassAlphaFill.cpp" />
+    <ClCompile Include="shdw\private\shdwPassAmbient.cpp" />
+    <ClCompile Include="shdw\private\shdwPassAOVolumes.cpp" />
+    <ClCompile Include="shdw\private\shdwPassDepth.cpp" />
+    <ClCompile Include="shdw\private\shdwPassDOF.cpp" />
+    <ClCompile Include="shdw\private\shdwPassEnvBackground.cpp" />
+    <ClCompile Include="shdw\private\shdwPassEnvironment.cpp" />
+    <ClCompile Include="shdw\private\shdwPassFog.cpp" />
+    <ClCompile Include="shdw\private\shdwPassGIVolumes.cpp" />
+    <ClCompile Include="shdw\private\shdwPassGlow.cpp" />
+    <ClCompile Include="shdw\private\shdwPassHair.cpp" />
+    <ClCompile Include="shdw\private\shdwPassLit.cpp" />
+    <ClCompile Include="shdw\private\shdwPassLPVGI.cpp" />
+    <ClCompile Include="shdw\private\shdwPassMapNormalsToScreen.cpp" />
+    <ClCompile Include="shdw\private\shdwPassMaterials.cpp" />
+    <ClCompile Include="shdw\private\shdwPassNormals.cpp" />
+    <ClCompile Include="shdw\private\shdwPassOpacity.cpp" />
+    <ClCompile Include="shdw\private\shdwPassOutline.cpp" />
+    <ClCompile Include="shdw\private\shdwPassPostShader.cpp" />
+    <ClCompile Include="shdw\private\shdwPassSSAO.cpp" />
+    <ClCompile Include="shdw\private\shdwPassSSGI.cpp" />
+    <ClCompile Include="shdw\private\shdwPassToneMap.cpp" />
+    <ClCompile Include="shdw\private\shdwPassTransparent.cpp" />
+    <ClCompile Include="shdw\private\shdwPassTraversal.cpp" />
+    <ClCompile Include="shdw\private\shdwPassVelocity.cpp" />
+    <ClCompile Include="shdw\private\shdwPassZFill.cpp" />
+    <ClCompile Include="shdw\private\shdwPlanarReflectionRendererDX11.cpp" />
+    <ClCompile Include="shdw\private\shdwRayTraceRenderer.cpp" />
+    <ClCompile Include="shdw\private\shdwReflectionsOnlyRendererDX11.cpp" />
+    <ClCompile Include="shdw\private\shdwSceneRendererCreate.cpp" />
+    <ClCompile Include="shdw\private\shdwSceneRendererDX11.cpp" />
+    <ClCompile Include="shdw\private\shdwShadowLayerRendererDX11.cpp" />
+    <ClCompile Include="shdw\private\shdwShadowsOnlyRendererDX11.cpp" />
+    <ClCompile Include="shdw\private\shdwSinglePassRendererDX11.cpp" />
+    <ClCompile Include="shdw\private\shdwTestRendererDX11.cpp" />
+    <ClCompile Include="shdw\private\shdwUVRendererDX11.cpp" />
+    <ClCompile Include="shdw\private\shdwVelocityMapRendererDX11.cpp" />
+    <ClCompile Include="shdw\private\shdwVelocityStateManager.cpp" />
+    <ClCompile Include="may\private\mayFragCreate.cpp" />
+    <ClCompile Include="may\private\mayPackage.cpp" />
+    <ClCompile Include="hair\private\hairModelFrag.cpp" />
+    <ClCompile Include="hair\private\hairPackage.cpp" />
+    <ClCompile Include="hair\private\HairRendererDX11.cpp" />
+    <ClCompile Include="GraphicsDX11Layer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuildStep Include="Eff\private\Wrappers\Footer.hlsl">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </CustomBuildStep>
+    <CustomBuildStep Include="Eff\private\Wrappers\Header.hlsl">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </CustomBuildStep>
+    <CustomBuildStep Include="Eff\private\Wrappers\ShaderCompiler_Script.py">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </CustomBuildStep>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

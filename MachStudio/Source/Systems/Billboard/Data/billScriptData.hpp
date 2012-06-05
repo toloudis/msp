@@ -1,0 +1,125 @@
+/********************************************************************************************\
+**  billScriptData.hpp
+**
+**
+**  StudioGPU
+**  Copyright(C) 2004 - All Rights Reserved
+\********************************************************************************************/
+#ifdef BILL_SCRIPTDATA_HPP
+#error billScriptData.hpp multiply included
+#endif
+#define BILL_SCRIPTDATA_HPP
+
+#ifndef IT_STRING_HPP
+#include "Core/it/itString.hpp"
+#endif
+#ifndef MA_POINT3D_HPP
+#include "Core/ma/maPoint3d.hpp"
+#endif
+#ifndef BILL_DATA_HPP
+#include "Systems/Billboard/Data/billData.hpp"
+#endif
+#ifndef TMLN_CHANNELINFO_HPP
+#include "Support/tmln/tmlnChannelInfo.hpp"
+#endif
+#ifndef TMLN_DRIVERINFO_HPP
+#include "Support/tmln/tmlnDriverInfo.hpp"
+#endif
+#ifndef XTRA_PROPERTYDATA_HPP
+#include "Support/xtra/xtraPropertyData.hpp"
+#endif 
+
+#include <vector>
+#include <map>
+
+//============================================================================
+// Connection data is used to track connections during delete/restore
+//	and duplication. It is not written to file.
+//============================================================================
+struct billConnectionData
+{
+	nameString m_EnvironmentName;
+	nameString m_LayerName;
+	std::vector<nameString> m_GroupNames;
+};
+
+//============================================================================
+//============================================================================
+namespace billDataTypes
+{
+	typedef int BillboardID;
+}
+
+//----------------------------------------------------------------------------
+//
+//----------------------------------------------------------------------------
+class billScriptData
+{
+public:
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	billScriptData();
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	billScriptData(const billScriptData& i_Data );
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	explicit billScriptData(const billData& i_BaseData );
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	billScriptData(const itString& i_Filename );
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	billScriptData(	const itString& i_Filename,
+					const maPoint3d& i_Position,
+					float i_Scale );
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	~billScriptData();
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	bool operator == (const billScriptData& i_Item);
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	billScriptData& operator=(const billScriptData& i_Data);
+
+	//------------------------------------------------------------------------
+	//	data
+	//------------------------------------------------------------------------
+	billData		m_BaseData;
+	billConnectionData m_ConnectionData;
+
+	std::vector<tmlnDriverInfo*>	m_Drivers;
+	std::map<std::string, tmlnChannelInfo> m_ChannelInfo;
+	std::vector< shared_ptr<xtraPropertyData> > m_CustomProperties;
+};
+
+
+//
+//
+class billListData
+{
+public:
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	void Add(const itString& i_Filename,
+			 const maPoint3d& i_Position,
+			 float i_Scale);
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	void Clear();
+
+	//------------------------------------------------------------------------
+	//	data
+	//------------------------------------------------------------------------
+	std::vector<billScriptData> m_Items;
+};
+

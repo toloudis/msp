@@ -1,0 +1,122 @@
+/*****************************************************************************
+ * Test version of a base shader for sgpu test compiler.
+ *****************************************************************************/
+
+shader Illumination_sgpu_Cartoon
+{
+  input:    
+  Color  baseDiffuse = Color(1,1,1,1)
+  {	
+      display_name("Diffuse Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "The color used to tint the Diffuse Reflectance Color." );
+  };
+  Color  specular_color = Color(1,1,1,1)
+  {	
+      display_name("Specular Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "The color used to tint the Specular Reflectance Color." );
+  };
+  float specular_scalar = 0.06
+  {	
+      display_name("Specular Float");
+      hard_range(float(0),float(1));
+      description( "The intensity of the specular light reflections from "
+      "this surface." );
+  };
+Color g_ambient = Color(0.5,0.5,0.5,1) 
+  {	
+      display_name("Ambient Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "Ambient Color" );
+  };
+Color g_midtone = Color(0.5,0.5,0.5,1) 
+  {	
+      display_name("Midtone Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "Midtone Color" );
+  };
+Color g_diffuse = Color(1,1,1,1) 
+  {	
+      display_name("Diffuse Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "Diffuse Color" );
+  };
+  float g_colorTransition2 = 0.9
+  {	
+      display_name("Shininess");
+      hard_range(float(0),float(1));
+      description( "Amount of specular highlight" );
+  };
+  float g_colorTransition1 = 0.5
+  {	
+      display_name("Bias");
+      hard_range(float(0),float(1));
+      description( "Shift Midtone transition" );
+  };
+float g_smoothness = 0.5
+  {	
+      display_name("Smoothness");
+      hard_range(float(0),float(1));
+      description( "Controls how smooth the color band line is." );
+  };
+    
+  output:
+  Color result;
+  Color diffuse;
+  Color specular;
+
+  void main() 
+  {
+      diffuse = Color(0.0,0.0,0.0,0.0);
+      specular = Color(0.0,0.0,0.0,0.0);
+  
+      	// enumerate lights
+		Light_iterator light;
+		foreach (light)
+		{
+					   
+			float spec = saturate(dot(normal,normalize(light.direction - direction)));
+			Color specClr = specular_color * specular_scalar;
+			float specTrans = g_colorTransition2;
+			float interp = saturate( 1 - ((specTrans - spec) / g_smoothness) );
+			specular += specClr * interp * light.contribution;
+		   
+			Color diffColor = light.contribution * baseDiffuse;
+			float dif = saturate(light.dot_nl);
+			float trans0 = g_colorTransition1 * 0.25f;
+			if( dif > g_colorTransition1 )
+			{
+				float interp = saturate(((dif - g_colorTransition1) / ((1 - g_colorTransition1) * g_smoothness )));
+				diffColor *= lerp( g_midtone, g_diffuse, interp );
+			}
+			else if( dif > trans0 )
+			{
+				float interp = saturate(((dif - trans0) / ((g_colorTransition1 - trans0) * g_smoothness)));
+				diffColor *= lerp( g_ambient, g_midtone, interp );
+			}
+			else
+			{
+				diffColor *= g_ambient;
+			}
+
+			diffuse += diffColor;
+		}
+      
+      diffuse.a = 1.0;
+      specular.a = 1.0;
+      
+      // irradiance term skipped
+      
+      result = diffuse + specular;
+      result.a = 1.0;
+
+  }
+}
+{
+	//bga -  What does the brdf_type mean here? Should we have a new name?
+    brdf_type("Msl_phong");
+    description( "A simple shader for testing shader code generation." );
+}
+;
+

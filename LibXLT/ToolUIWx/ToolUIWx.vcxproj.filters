@@ -1,0 +1,660 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Twx">
+      <UniqueIdentifier>{ffcb7de1-5ac6-48e7-bf93-2c629aff5021}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Twx\private">
+      <UniqueIdentifier>{458850e7-5055-4508-b3ab-5ec008f4d158}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pwx">
+      <UniqueIdentifier>{3589771d-2428-4402-8839-0d73412a097d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pwx\private">
+      <UniqueIdentifier>{5d37eb19-531a-4324-b31d-988c83692343}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pwx\Controls">
+      <UniqueIdentifier>{c45ac522-f0ff-4137-95ab-49db2eb2dfeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Twc">
+      <UniqueIdentifier>{032c2ab6-b90e-4331-8b80-c3a8f8a5627c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Twc\private">
+      <UniqueIdentifier>{88d2b3fd-a97f-410d-8171-7095d673df00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Wui">
+      <UniqueIdentifier>{187eab63-edde-4ced-987f-46ce46237cd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Wui\private">
+      <UniqueIdentifier>{20f66678-5c87-4837-8a03-1221b49db4eb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="twx\twxAppUtil.hpp">
+      <Filter>Twx</Filter>
+    </ClInclude>
+    <ClInclude Include="twx\twxContextMenu.hpp">
+      <Filter>Twx</Filter>
+    </ClInclude>
+    <ClInclude Include="twx\twxCursor.hpp">
+      <Filter>Twx</Filter>
+    </ClInclude>
+    <ClInclude Include="twx\twxDialogTabbed.hpp">
+      <Filter>Twx</Filter>
+    </ClInclude>
+    <ClInclude Include="twx\twxDialogTabbedMgr.hpp">
+      <Filter>Twx</Filter>
+    </ClInclude>
+    <ClInclude Include="twx\twxMenuMgr.hpp">
+      <Filter>Twx</Filter>
+    </ClInclude>
+    <ClInclude Include="twx\twxMessageBox.hpp">
+      <Filter>Twx</Filter>
+    </ClInclude>
+    <ClInclude Include="twx\twxMessaging.hpp">
+      <Filter>Twx</Filter>
+    </ClInclude>
+    <ClInclude Include="twx\twxPaneMgr.hpp">
+      <Filter>Twx</Filter>
+    </ClInclude>
+    <ClInclude Include="twx\twxPropertyDialog.hpp">
+      <Filter>Twx</Filter>
+    </ClInclude>
+    <ClInclude Include="twx\twxSystem.hpp">
+      <Filter>Twx</Filter>
+    </ClInclude>
+    <ClInclude Include="twx\twxToolbarMgr.hpp">
+      <Filter>Twx</Filter>
+    </ClInclude>
+    <ClInclude Include="twx\twxWidgets.hpp">
+      <Filter>Twx</Filter>
+    </ClInclude>
+    <ClInclude Include="twx\private\twxPropertyDialogBase.h">
+      <Filter>Twx\private</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\pwxControl.hpp">
+      <Filter>Pwx</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\pwxControlFactory.hpp">
+      <Filter>Pwx</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\pwxControlFactoryBase.hpp">
+      <Filter>Pwx</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\pwxControlFactoryCustom.hpp">
+      <Filter>Pwx</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\pwxControlMgr.hpp">
+      <Filter>Pwx</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\pwxFormControlBuilder.hpp">
+      <Filter>Pwx</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\private\pwxCategoryLabel.hpp">
+      <Filter>Pwx\private</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\private\pwxKeyPropertyButton.hpp">
+      <Filter>Pwx\private</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxBoolean_CheckBox.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxColor_ColorRGBAEdit.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxColor_ColorRGBEdit.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxControlUtil.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxDirectory_DirPicker.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxEnum_ComboBox.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxFilename_ComboBox.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxFilename_FilePicker.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxFilename_TextBox.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxFilePath_FilePicker.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxFloat_ComboBox.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxFloat_FloatEdit.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxFloat_NumericUpDown.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxFloat_RangedFloat.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxFloatConverter.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxGradient_GradientColorEdit.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxHotKey_KeyCombo.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxInt32_ComboBox.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxInt32_FloatEdit.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxInt32_NumericUpDown.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxInt32_RangedFloat.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxInt32Converter.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxInt8_FloatEdit.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxInt8_NumericUpDown.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxInt8_RangedFloat.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxInt8Converter.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxListChecked_CheckListBox.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxName_ComboBox.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxName_ListBox.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxName_TextBox.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxRotation_Vector3Edit.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxRotation_Vector3EditUpDown.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxTemplate_CheckListBox.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxTemplate_ComboBox.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxTemplate_DirPicker.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxTemplate_FilePicker.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxTemplate_FloatEdit.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxTemplate_ListBox.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxTemplate_NumericUpDown.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxTemplate_RangedFloat.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxTemplate_TextBox.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxTemplate_TextureFilePicker.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxTemplate_Vector3Edit.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxTemplate_Vector3EditUpDown.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxText_ComboBox.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxText_TextBox.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxTextureFileName_TextureFilePicker.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxTrigger_Button.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxVector3d_Vector3Edit.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxVector3d_Vector3EditUpDown.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\twcColorPicker.hpp">
+      <Filter>Twc</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\twcColorRGBAEdit.hpp">
+      <Filter>Twc</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\twcColorRGBEdit.hpp">
+      <Filter>Twc</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\twcEvent.hpp">
+      <Filter>Twc</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\twcFilePicker.hpp">
+      <Filter>Twc</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\twcFloatEdit.hpp">
+      <Filter>Twc</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\twcGradientColorEdit.hpp">
+      <Filter>Twc</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\twcHotKeyCtrl.hpp">
+      <Filter>Twc</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\twcNumericUpDown.hpp">
+      <Filter>Twc</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\twcRangedFloat.hpp">
+      <Filter>Twc</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\twcRenderPanel.hpp">
+      <Filter>Twc</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\twcStatusBar.hpp">
+      <Filter>Twc</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\twcTextBox.hpp">
+      <Filter>Twc</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\twcTextureFilePicker.hpp">
+      <Filter>Twc</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\twcTreeNode.hpp">
+      <Filter>Twc</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\twcTreeView.hpp">
+      <Filter>Twc</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\twcVector3Edit.hpp">
+      <Filter>Twc</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\twcVector3EditUpDown.hpp">
+      <Filter>Twc</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\private\twcColorBoxCtrl.hpp">
+      <Filter>Twc\private</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\private\twcColorDialog.hpp">
+      <Filter>Twc\private</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\private\twcColorDialogBase.h">
+      <Filter>Twc\private</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\private\twcColorUtil.hpp">
+      <Filter>Twc\private</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\private\twcGradientColorBase.hpp">
+      <Filter>Twc\private</Filter>
+    </ClInclude>
+    <ClInclude Include="twc\private\twcMultiKnobSlider.hpp">
+      <Filter>Twc\private</Filter>
+    </ClInclude>
+    <ClInclude Include="wui\wuiCursor.hpp">
+      <Filter>Wui</Filter>
+    </ClInclude>
+    <ClInclude Include="wui\wuiDialogTabbedMgr.hpp">
+      <Filter>Wui</Filter>
+    </ClInclude>
+    <ClInclude Include="wui\wuiFileDialogUtils.hpp">
+      <Filter>Wui</Filter>
+    </ClInclude>
+    <ClInclude Include="wui\wuiMainWindow.hpp">
+      <Filter>Wui</Filter>
+    </ClInclude>
+    <ClInclude Include="wui\wuiMenuMgr.hpp">
+      <Filter>Wui</Filter>
+    </ClInclude>
+    <ClInclude Include="wui\wuiMessageBox.hpp">
+      <Filter>Wui</Filter>
+    </ClInclude>
+    <ClInclude Include="wui\wuiPackage.hpp">
+      <Filter>Wui</Filter>
+    </ClInclude>
+    <ClInclude Include="wui\wuiProgressDialog.hpp">
+      <Filter>Wui</Filter>
+    </ClInclude>
+    <ClInclude Include="wui\wuiPropertyDialog.hpp">
+      <Filter>Wui</Filter>
+    </ClInclude>
+    <ClInclude Include="wui\wuiPropertyGrid.hpp">
+      <Filter>Wui</Filter>
+    </ClInclude>
+    <ClInclude Include="wui\wuiSplashScreen.hpp">
+      <Filter>Wui</Filter>
+    </ClInclude>
+    <ClInclude Include="wui\wuiStatusBarMgr.hpp">
+      <Filter>Wui</Filter>
+    </ClInclude>
+    <ClInclude Include="wui\wuiToolbarMgr.hpp">
+      <Filter>Wui</Filter>
+    </ClInclude>
+    <ClInclude Include="wui\wuiXMLTextReader.hpp">
+      <Filter>Wui</Filter>
+    </ClInclude>
+    <ClInclude Include="wui\wuiXMLTextWriter.hpp">
+      <Filter>Wui</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="twx\private\twxAppUtil.cpp">
+      <Filter>Twx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twx\private\twxContextMenu.cpp">
+      <Filter>Twx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twx\private\twxCursor.cpp">
+      <Filter>Twx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twx\private\twxDialogTabbed.cpp">
+      <Filter>Twx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twx\private\twxDialogTabbedMgr.cpp">
+      <Filter>Twx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twx\private\twxMenuMgr.cpp">
+      <Filter>Twx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twx\private\twxMessageBox.cpp">
+      <Filter>Twx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twx\private\twxMessaging.cpp">
+      <Filter>Twx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twx\private\twxPaneMgr.cpp">
+      <Filter>Twx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twx\private\twxPropertyDialog.cpp">
+      <Filter>Twx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twx\private\twxPropertyDialogBase.cpp">
+      <Filter>Twx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twx\private\twxSystem.cpp">
+      <Filter>Twx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twx\private\twxToolbarMgr.cpp">
+      <Filter>Twx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\private\pwxCategoryLabel.cpp">
+      <Filter>Pwx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\private\pwxControl.cpp">
+      <Filter>Pwx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\private\pwxControlFactory.cpp">
+      <Filter>Pwx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\private\pwxControlFactoryBase.cpp">
+      <Filter>Pwx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\private\pwxControlFactoryCustom.cpp">
+      <Filter>Pwx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\private\pwxControlMgr.cpp">
+      <Filter>Pwx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\private\pwxFormControlBuilder.cpp">
+      <Filter>Pwx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\private\pwxKeyPropertyButton.cpp">
+      <Filter>Pwx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxBoolean_CheckBox.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxColor_ColorRGBAEdit.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxColor_ColorRGBEdit.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxControlUtil.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxDirectory_DirPicker.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxEnum_ComboBox.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxFilename_ComboBox.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxFilename_FilePicker.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxFilename_TextBox.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxFilePath_FilePicker.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxFloat_ComboBox.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxFloat_FloatEdit.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxFloat_NumericUpDown.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxFloat_RangedFloat.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxFloatConverter.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxGradient_GradientColorEdit.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxHotKey_KeyCombo.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxInt32_ComboBox.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxInt32_FloatEdit.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxInt32_NumericUpDown.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxInt32_RangedFloat.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxInt32Converter.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxInt8_FloatEdit.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxInt8_NumericUpDown.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxInt8_RangedFloat.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxInt8Converter.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxListChecked_CheckListBox.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxName_ComboBox.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxName_ListBox.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxName_TextBox.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxRotation_Vector3Edit.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxRotation_Vector3EditUpDown.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxText_ComboBox.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxText_TextBox.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxTextureFileName_TextureFilePicker.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxTrigger_Button.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxVector3d_Vector3Edit.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxVector3d_Vector3EditUpDown.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcColorBoxCtrl.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcColorDialog.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcColorDialogBase.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcColorPicker.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcColorRGBAEdit.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcColorRGBEdit.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcColorUtil.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcEvent.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcFilePicker.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcFloatEdit.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcGradientColorBase.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcGradientColorEdit.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcHotKeyCtrl.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcMultiKnobSlider.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcNumericUpDown.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcRangedFloat.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcRenderPanel.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcStatusBar.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcTextBox.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcTextureFilePicker.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcTreeView.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcVector3Edit.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twc\private\twcVector3EditUpDown.cpp">
+      <Filter>Twc\private</Filter>
+    </ClCompile>
+    <ClCompile Include="wui\private\wuiCursor.cpp">
+      <Filter>Wui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="wui\private\wuiDialogTabbedMgr.cpp">
+      <Filter>Wui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="wui\private\wuiFileDialogUtils.cpp">
+      <Filter>Wui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="wui\private\wuiMainWindow.cpp">
+      <Filter>Wui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="wui\private\wuiMenuMgr.cpp">
+      <Filter>Wui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="wui\private\wuiMessageBox.cpp">
+      <Filter>Wui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="wui\private\wuiPackage.cpp">
+      <Filter>Wui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="wui\private\wuiProgressDialog.cpp">
+      <Filter>Wui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="wui\private\wuiPropertyDialog.cpp">
+      <Filter>Wui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="wui\private\wuiPropertyGrid.cpp">
+      <Filter>Wui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="wui\private\wuiSplashScreen.cpp">
+      <Filter>Wui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="wui\private\wuiStatusBarMgr.cpp">
+      <Filter>Wui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="wui\private\wuiToolbarMgr.cpp">
+      <Filter>Wui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="wui\private\wuiXMLTextReader.cpp">
+      <Filter>Wui\private</Filter>
+    </ClCompile>
+    <ClCompile Include="wui\private\wuiXMLTextWriter.cpp">
+      <Filter>Wui\private</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

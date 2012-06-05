@@ -1,0 +1,15 @@
+/* HASP vendor code */
+
+unsigned char vendorCode[] =
+	"uIMfP1Uoe4rQEky4SV3+xF+HY4Xjm1h2rTWdhpOF0pStNUOppEgrUciy26ZHYf2XN4Kb45klXOMzITHC"
+	"kdeKpxlDhAo/xFhcm1Sos0LYTiqyLxpK73pqE1KyAWjDnto8M5+hJfhCI/zfST96Znlx83lT/iFzUyUL"
+	"sBYCYVWtT5P3DLYc3WrRXoBfOgvE/ZUI238vu8IhxgIubKlmqzuPCRODIijEv02fWhR1VeFo6fkJb864"
+	"cHZyV1A5I2jAEgqY4meS+JPYHMY6TkxFmcRwlTgB/9JeIY0sjG+soKG217WT49oAZsKOAipdlHpaKb4L"
+	"Mwkeqg/RKnVEwLp7roGqIRtnK5ykne5XpgqzMVUh+KUT543LZhWKMSD5KVi/04DUnLLi3tjVNf/KUtl7"
+	"Zhuw0TlYuA/FcTlT5X9PigbIaxCJA5hG0OWS1NC10cjxtTpMx0tw+r2njCO+q7sB19BM2TNA7HnP8F8S"
+	"EDw0bSGJaLUebi2AvuVmHzpG6hizXFeDsbI2AXoQb13gzCo0o+eCaeMPwCHFHVdlVMFFcS0AectNKZ3C"
+	"ohdCqo/NqPHK3Y+pR3DJrTtuUXZuPYOHReLSPnlijgnWdu6poKcU6lAuJ0qKdv1LK5hxTTgQWDHxtmnE"
+	"rN/gR+6/PLSDw60Pne0RiFZLIFIA0j4liyylrRmzQ+McYJrGZKij9X7+1qBqqBiR1km71TVRG0JiFSRO"
+	"pyIvAGf3d5wSdHrnVxXFtMOlyiz6X9NKJQRrtgqo00rHdwepmCWbCol6pR8QYk2E3rX6uV7c3PqM8Bro"
+	"jzsxtY1VGNjO1EoTIZrX197HTMu+L5bYsG2wpxv+mshpueb7kG5LFVas9RMnxbdQVmWCYz/o+5YkWuna"
+	"NOMvCaWb9j3R4grJOpWbk6mgZLUSAkatwnjxrzlyfHL9Qwqa0ou6yjNOxfc=";

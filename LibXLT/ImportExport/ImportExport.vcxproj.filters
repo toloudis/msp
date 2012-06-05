@@ -1,0 +1,423 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="fbx">
+      <UniqueIdentifier>{e923f29b-8536-4e7e-8cac-2d4a4ae443b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fbx\import">
+      <UniqueIdentifier>{f07f21c8-cb3f-40a2-b739-dae645766125}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fbx\import\private">
+      <UniqueIdentifier>{2419baa5-fdaf-4bb2-81b9-705be14391cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fbx\export">
+      <UniqueIdentifier>{a80739d2-dc52-43df-91df-f8567f5bfb97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fbx\export\private">
+      <UniqueIdentifier>{682f0f1b-59a3-42d6-9109-198dde19a091}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mray">
+      <UniqueIdentifier>{542172e0-6021-4b4f-825e-36781567e8fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mray\export">
+      <UniqueIdentifier>{50502a4c-b91f-4df9-8da6-fe3452cbb85c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mray\export\private">
+      <UniqueIdentifier>{95a94366-8c9f-4e3e-ad07-24f4df5a2310}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mray\export\private\shaders">
+      <UniqueIdentifier>{640f200e-82a3-4895-be6e-45ce397b4ed4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mray\export\private\shaders\mi">
+      <UniqueIdentifier>{550bb761-05af-49e5-9ff9-9a8f94e59c87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mray\export\private\shaders\batch">
+      <UniqueIdentifier>{d9b5785c-bcef-4811-8c5c-0796f6e85ed6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mray\live">
+      <UniqueIdentifier>{0d991303-35a7-4df7-ab30-bc0df4c19664}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rman">
+      <UniqueIdentifier>{821669f7-9616-48ba-a8ba-16b487751daf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rman\export">
+      <UniqueIdentifier>{27a367ea-d6de-4af8-a348-7632025aac4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rman\export\private">
+      <UniqueIdentifier>{0507501a-10d4-474c-be14-160fdf829d5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rman\export\private\shaders">
+      <UniqueIdentifier>{cee9be4b-33e5-4fec-8c9e-76a6c66595a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rman\export\private\shaders\special">
+      <UniqueIdentifier>{a91b3b9a-808f-45cb-aba0-264ba541703d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rman\live">
+      <UniqueIdentifier>{192bfc90-6945-42cf-aab5-2fffde7c67b9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="fbx\fbxPackage.cpp">
+      <Filter>fbx</Filter>
+    </ClCompile>
+    <ClCompile Include="fbx\fbxSdkManager.cpp">
+      <Filter>fbx</Filter>
+    </ClCompile>
+    <ClCompile Include="fbx\import\private\fbxImport.cpp">
+      <Filter>fbx\import\private</Filter>
+    </ClCompile>
+    <ClCompile Include="fbx\import\private\fbxLayerMapper.cpp">
+      <Filter>fbx\import\private</Filter>
+    </ClCompile>
+    <ClCompile Include="fbx\import\private\fbxMaterialImport.cpp">
+      <Filter>fbx\import\private</Filter>
+    </ClCompile>
+    <ClCompile Include="fbx\import\private\fbxMeshImport.cpp">
+      <Filter>fbx\import\private</Filter>
+    </ClCompile>
+    <ClCompile Include="fbx\import\private\fbxModelImport.cpp">
+      <Filter>fbx\import\private</Filter>
+    </ClCompile>
+    <ClCompile Include="fbx\export\private\fbxExport.cpp">
+      <Filter>fbx\export\private</Filter>
+    </ClCompile>
+    <ClCompile Include="fbx\export\private\fbxExportData.cpp">
+      <Filter>fbx\export\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\mrayExport.cpp">
+      <Filter>mray\export\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\mrayExportData.cpp">
+      <Filter>mray\export\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\mrayExportUtil.cpp">
+      <Filter>mray\export\private</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\shaders\Anisotropic.cpp">
+      <Filter>mray\export\private\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\shaders\AO.cpp">
+      <Filter>mray\export\private\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\shaders\Blinn.cpp">
+      <Filter>mray\export\private\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\shaders\BlinnReflection.cpp">
+      <Filter>mray\export\private\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\shaders\Carpaint.cpp">
+      <Filter>mray\export\private\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\shaders\Cartoon.cpp">
+      <Filter>mray\export\private\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\shaders\Displacement.cpp">
+      <Filter>mray\export\private\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\shaders\Environment.cpp">
+      <Filter>mray\export\private\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\shaders\HDRLighting.cpp">
+      <Filter>mray\export\private\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\shaders\Illumination.cpp">
+      <Filter>mray\export\private\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\shaders\Lambert.cpp">
+      <Filter>mray\export\private\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\shaders\Normals.cpp">
+      <Filter>mray\export\private\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\shaders\Phong.cpp">
+      <Filter>mray\export\private\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\shaders\PhongReflection.cpp">
+      <Filter>mray\export\private\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\shaders\PointLight.cpp">
+      <Filter>mray\export\private\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\shaders\ProjectedLight.cpp">
+      <Filter>mray\export\private\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\shaders\Shadows.cpp">
+      <Filter>mray\export\private\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\shaders\Simple.cpp">
+      <Filter>mray\export\private\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\shaders\SpecularFresnel.cpp">
+      <Filter>mray\export\private\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\shaders\SubSurfaceScatter.cpp">
+      <Filter>mray\export\private\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\shaders\SubSurfaceScatter_wBlinnSpecular.cpp">
+      <Filter>mray\export\private\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\export\private\shaders\Support.cpp">
+      <Filter>mray\export\private\shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="mray\live\mrayLive.cpp">
+      <Filter>mray\live</Filter>
+    </ClCompile>
+    <ClCompile Include="rman\export\private\rmanExport.cpp">
+      <Filter>rman\export\private</Filter>
+    </ClCompile>
+    <ClCompile Include="rman\export\private\rmanExportData.cpp">
+      <Filter>rman\export\private</Filter>
+    </ClCompile>
+    <ClCompile Include="rman\export\private\rmanUtil.cpp">
+      <Filter>rman\export\private</Filter>
+    </ClCompile>
+    <ClCompile Include="rman\live\rmanLive.cpp">
+      <Filter>rman\live</Filter>
+    </ClCompile>
+    <ClCompile Include="ImportExportLayer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="fbx\fbxPackage.hpp">
+      <Filter>fbx</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx\fbxSdk.hpp">
+      <Filter>fbx</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx\fbxSdkManager.hpp">
+      <Filter>fbx</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx\import\fbxImport.hpp">
+      <Filter>fbx\import</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx\import\private\fbxLayerMapper.hpp">
+      <Filter>fbx\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx\import\private\fbxMaterialImport.hpp">
+      <Filter>fbx\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx\import\private\fbxMeshImport.hpp">
+      <Filter>fbx\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx\import\private\fbxModelImport.hpp">
+      <Filter>fbx\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx\export\fbxExport.hpp">
+      <Filter>fbx\export</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx\export\fbxExportData.hpp">
+      <Filter>fbx\export</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx\export\private\EulerAngles.h">
+      <Filter>fbx\export\private</Filter>
+    </ClInclude>
+    <ClInclude Include="fbx\export\private\QuatTypes.h">
+      <Filter>fbx\export\private</Filter>
+    </ClInclude>
+    <ClInclude Include="mray\export\mrayExport.hpp">
+      <Filter>mray\export</Filter>
+    </ClInclude>
+    <ClInclude Include="mray\export\mrayExportData.hpp">
+      <Filter>mray\export</Filter>
+    </ClInclude>
+    <ClInclude Include="mray\export\private\mrayExportUtil.hpp">
+      <Filter>mray\export\private</Filter>
+    </ClInclude>
+    <ClInclude Include="mray\live\mrayLive.hpp">
+      <Filter>mray\live</Filter>
+    </ClInclude>
+    <ClInclude Include="rman\export\rmanExport.hpp">
+      <Filter>rman\export</Filter>
+    </ClInclude>
+    <ClInclude Include="rman\export\rmanExportData.hpp">
+      <Filter>rman\export</Filter>
+    </ClInclude>
+    <ClInclude Include="rman\export\rmanUtil.hpp">
+      <Filter>rman\export\private</Filter>
+    </ClInclude>
+    <ClInclude Include="rman\live\rmanLive.hpp">
+      <Filter>rman\live</Filter>
+    </ClInclude>
+    <ClInclude Include="ImportExportLayer.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="mray\export\private\shaders\Anisotropic_decl.mi">
+      <Filter>mray\export\private\shaders\mi</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\AO_decl.mi">
+      <Filter>mray\export\private\shaders\mi</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\Blinn_decl.mi">
+      <Filter>mray\export\private\shaders\mi</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\BlinnReflection_decl.mi">
+      <Filter>mray\export\private\shaders\mi</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\Carpaint_decl.mi">
+      <Filter>mray\export\private\shaders\mi</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\Cartoon_decl.mi">
+      <Filter>mray\export\private\shaders\mi</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\Displacement_decl.mi">
+      <Filter>mray\export\private\shaders\mi</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\Environment_decl.mi">
+      <Filter>mray\export\private\shaders\mi</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\HDRLighting_decl.mi">
+      <Filter>mray\export\private\shaders\mi</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\Illumination_decl.mi">
+      <Filter>mray\export\private\shaders\mi</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\Lambert_decl.mi">
+      <Filter>mray\export\private\shaders\mi</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\Normals_decl.mi">
+      <Filter>mray\export\private\shaders\mi</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\Phong_decl.mi">
+      <Filter>mray\export\private\shaders\mi</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\PhongReflection_decl.mi">
+      <Filter>mray\export\private\shaders\mi</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\PointLight_decl.mi">
+      <Filter>mray\export\private\shaders\mi</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\ProjectedLight_decl.mi">
+      <Filter>mray\export\private\shaders\mi</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\Shadows_decl.mi">
+      <Filter>mray\export\private\shaders\mi</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\Simple_decl.mi">
+      <Filter>mray\export\private\shaders\mi</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\SpecularFresnel_decl.mi">
+      <Filter>mray\export\private\shaders\mi</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\SubSurfaceScatter_decl.mi">
+      <Filter>mray\export\private\shaders\mi</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\SubSurfaceScatter_wBlinnSpecular_decl.mi">
+      <Filter>mray\export\private\shaders\mi</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\buildShaders_x64.bat">
+      <Filter>mray\export\private\shaders\batch</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\buildShaders_x86.bat">
+      <Filter>mray\export\private\shaders\batch</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\clean.bat">
+      <Filter>mray\export\private\shaders\batch</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\compileShaders_x64.bat">
+      <Filter>mray\export\private\shaders\batch</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\compileShaders_x86.bat">
+      <Filter>mray\export\private\shaders\batch</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\deployShaders.bat">
+      <Filter>mray\export\private\shaders\batch</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\setupVars_x64.bat">
+      <Filter>mray\export\private\shaders\batch</Filter>
+    </None>
+    <None Include="mray\export\private\shaders\setupVars_x86.bat">
+      <Filter>mray\export\private\shaders\batch</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\Anisotropic.sl">
+      <Filter>rman\export\private\shaders</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\Blinn.sl">
+      <Filter>rman\export\private\shaders</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\BlinnReflection.sl">
+      <Filter>rman\export\private\shaders</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\CarPaint.sl">
+      <Filter>rman\export\private\shaders</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\Cartoon.sl">
+      <Filter>rman\export\private\shaders</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\Lambert.sl">
+      <Filter>rman\export\private\shaders</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\Phong.sl">
+      <Filter>rman\export\private\shaders</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\Phong_wBump.sl">
+      <Filter>rman\export\private\shaders</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\PhongReflection.sl">
+      <Filter>rman\export\private\shaders</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\Simple.sl">
+      <Filter>rman\export\private\shaders</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\SpecularFresnel.sl">
+      <Filter>rman\export\private\shaders</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\SubSurfaceScatter.sl">
+      <Filter>rman\export\private\shaders</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\SubSurfaceScatter_wBlinnSpecular.sl">
+      <Filter>rman\export\private\shaders</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\Support.hsl">
+      <Filter>rman\export\private\shaders</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\AO.sl">
+      <Filter>rman\export\private\shaders\special</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\Debug.sl">
+      <Filter>rman\export\private\shaders\special</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\Depth.sl">
+      <Filter>rman\export\private\shaders\special</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\Fog.sl">
+      <Filter>rman\export\private\shaders\special</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\GI.sl">
+      <Filter>rman\export\private\shaders\special</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\HDRLighting.sl">
+      <Filter>rman\export\private\shaders\special</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\Illumination.sl">
+      <Filter>rman\export\private\shaders\special</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\Normals.sl">
+      <Filter>rman\export\private\shaders\special</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\PointLight.sl">
+      <Filter>rman\export\private\shaders\special</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\ProjLight.sl">
+      <Filter>rman\export\private\shaders\special</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\ShadowMap.sl">
+      <Filter>rman\export\private\shaders\special</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\Shadows.sl">
+      <Filter>rman\export\private\shaders\special</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\Solid.sl">
+      <Filter>rman\export\private\shaders\special</Filter>
+    </None>
+    <None Include="rman\export\private\shaders\Tessellate.sl">
+      <Filter>rman\export\private\shaders\special</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuildStep Include="mray\export\private\shaders\Arithmetic.h">
+      <Filter>mray\export\private\shaders</Filter>
+    </CustomBuildStep>
+    <CustomBuildStep Include="mray\export\private\shaders\Support.h">
+      <Filter>mray\export\private\shaders</Filter>
+    </CustomBuildStep>
+  </ItemGroup>
+</Project>

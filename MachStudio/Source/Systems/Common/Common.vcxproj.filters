@@ -1,0 +1,310 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{549c53a9-89a8-4d0d-b326-71fc4f30a3ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI\wxGUI">
+      <UniqueIdentifier>{98e08b8c-13f7-4e5d-bba6-7fac8620b1a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Spline">
+      <UniqueIdentifier>{a99b5623-89d0-409d-839a-5d23c4b73bb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Templates">
+      <UniqueIdentifier>{06b2448e-69ef-4038-ab49-146435aa88ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DriverCreator">
+      <UniqueIdentifier>{a9ee0453-657f-4101-9e6c-e70d14611774}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{0f3f062e-a864-4088-9f91-e7885bead6e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TimeData">
+      <UniqueIdentifier>{d94ea90f-aa96-49d2-b2d2-ad0109722ec1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Gui\cmmAddDriverOperation.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\cmmCommands.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\cmmDialogInterest.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\cmmDialogInterestMgr.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\cmmObjectDialogUtil.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\cmmPython.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\cmmSceneOperations.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\cmmSystemDialogInterest.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\cmmSystemDialogUtil.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\wxGUI\cmmObjectDialog.cpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\wxGUI\cmmObjectDialogBase.cpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\wxGUI\cmmPlacedPane.cpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\wxGUI\cmmPlacedPaneBase.cpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\wxGUI\cmmSceneDialog.cpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\wxGUI\cmmSceneDialogBase.cpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\wxGUI\cmmSceneTreeNode.cpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\wxGUI\cmmSceneView.cpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\wxGUI\cmmSceneViewCategory.cpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\wxGUI\cmmSceneViewGroup.cpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\wxGUI\cmmSceneViewLights.cpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Spline\cmmSplineCommands.cpp">
+      <Filter>Spline</Filter>
+    </ClCompile>
+    <ClCompile Include="Spline\cmmSplineDialogUtil.cpp">
+      <Filter>Spline</Filter>
+    </ClCompile>
+    <ClCompile Include="Spline\cmmSplineOperations.cpp">
+      <Filter>Spline</Filter>
+    </ClCompile>
+    <ClCompile Include="Spline\cmmSplineSelectInterest.cpp">
+      <Filter>Spline</Filter>
+    </ClCompile>
+    <ClCompile Include="DriverCreator\cmmDriverCreatorBoolean.cpp">
+      <Filter>DriverCreator</Filter>
+    </ClCompile>
+    <ClCompile Include="DriverCreator\cmmDriverCreatorColor.cpp">
+      <Filter>DriverCreator</Filter>
+    </ClCompile>
+    <ClCompile Include="DriverCreator\cmmDriverCreatorFloat.cpp">
+      <Filter>DriverCreator</Filter>
+    </ClCompile>
+    <ClCompile Include="DriverCreator\cmmDriverCreatorOrientation.cpp">
+      <Filter>DriverCreator</Filter>
+    </ClCompile>
+    <ClCompile Include="DriverCreator\cmmDriverCreatorPosition.cpp">
+      <Filter>DriverCreator</Filter>
+    </ClCompile>
+    <ClCompile Include="DriverCreator\cmmDriverCreatorTexture.cpp">
+      <Filter>DriverCreator</Filter>
+    </ClCompile>
+    <ClCompile Include="DriverCreator\cmmDriverCreatorVideo.cpp">
+      <Filter>DriverCreator</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\cmmFalloffAspect.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\cmmNamedPropertyObject.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\cmmScriptObject.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\cmmSelectablePropertyObject.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeData\cmmTimeData.cpp">
+      <Filter>TimeData</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeData\cmmTimeDataParser.cpp">
+      <Filter>TimeData</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeData\cmmTimeDocumentChunk.cpp">
+      <Filter>TimeData</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeData\cmmTimeDocumentInterest.cpp">
+      <Filter>TimeData</Filter>
+    </ClCompile>
+    <ClCompile Include="cmmSelectInterest.cpp" />
+    <ClCompile Include="cmmSystem.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Gui\cmmAddDriverOperation.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\cmmCommands.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\cmmDialogInterest.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\cmmDialogInterestMgr.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\cmmObjectDialogUtil.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\cmmPython.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\cmmSceneOperations.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\cmmSystemDialogInterest.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\cmmSystemDialogUtil.hpp">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\wxGUI\cmmObjectDialog.hpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\wxGUI\cmmObjectDialogBase.h">
+      <Filter>GUI\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\wxGUI\cmmPlacedImages.hpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\wxGUI\cmmPlacedPane.hpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\wxGUI\cmmPlacedPaneBase.h">
+      <Filter>GUI\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\wxGUI\cmmSceneDialog.hpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\wxGUI\cmmSceneDialogBase.h">
+      <Filter>GUI\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\wxGUI\cmmSceneTreeNode.hpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\wxGUI\cmmSceneView.hpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\wxGUI\cmmSceneViewCategory.hpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\wxGUI\cmmSceneViewGroup.hpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\wxGUI\cmmSceneViewLights.hpp">
+      <Filter>GUI\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Spline\cmmSplineCommands.hpp">
+      <Filter>Spline</Filter>
+    </ClInclude>
+    <ClInclude Include="Spline\cmmSplineDialogUtil.hpp">
+      <Filter>Spline</Filter>
+    </ClInclude>
+    <ClInclude Include="Spline\cmmSplineOperations.hpp">
+      <Filter>Spline</Filter>
+    </ClInclude>
+    <ClInclude Include="Spline\cmmSplineSelectInterest.hpp">
+      <Filter>Spline</Filter>
+    </ClInclude>
+    <ClInclude Include="Templates\cmmAddOperationTemplate.hpp">
+      <Filter>Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="Templates\cmmDeleteOperationTemplate.hpp">
+      <Filter>Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="Templates\cmmDocumentChunkSingleItemTemplate.hpp">
+      <Filter>Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="Templates\cmmDocumentChunkTemplate.hpp">
+      <Filter>Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="Templates\cmmFileListTemplate.hpp">
+      <Filter>Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="Templates\cmmNameInterestTemplate.hpp">
+      <Filter>Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="Templates\cmmObjectMgrTemplate.hpp">
+      <Filter>Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="Templates\cmmPickInterestTemplate.hpp">
+      <Filter>Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="Templates\cmmSetOperationTemplate.hpp">
+      <Filter>Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="Templates\cmmSimpleObjectMgrTemplate.hpp">
+      <Filter>Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="Templates\cmmSingleObjectMgrTemplate.hpp">
+      <Filter>Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="Templates\cmmVisibleInterestTemplate.hpp">
+      <Filter>Templates</Filter>
+    </ClInclude>
+    <ClInclude Include="DriverCreator\cmmDriverCreatorBoolean.hpp">
+      <Filter>DriverCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="DriverCreator\cmmDriverCreatorColor.hpp">
+      <Filter>DriverCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="DriverCreator\cmmDriverCreatorFloat.hpp">
+      <Filter>DriverCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="DriverCreator\cmmDriverCreatorOrientation.hpp">
+      <Filter>DriverCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="DriverCreator\cmmDriverCreatorPosition.hpp">
+      <Filter>DriverCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="DriverCreator\cmmDriverCreatorTexture.hpp">
+      <Filter>DriverCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="DriverCreator\cmmDriverCreatorVideo.hpp">
+      <Filter>DriverCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\cmmFalloffAspect.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\cmmNamedPropertyObject.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\cmmNamedScriptObjectReference.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\cmmScriptObject.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\cmmSelectablePropertyObject.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeData\cmmTimeData.hpp">
+      <Filter>TimeData</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeData\cmmTimeDataParser.hpp">
+      <Filter>TimeData</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeData\cmmTimeDocumentChunk.hpp">
+      <Filter>TimeData</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeData\cmmTimeDocumentInterest.hpp">
+      <Filter>TimeData</Filter>
+    </ClInclude>
+    <ClInclude Include="cmmSelectInterest.hpp" />
+    <ClInclude Include="cmmSystem.hpp" />
+  </ItemGroup>
+</Project>

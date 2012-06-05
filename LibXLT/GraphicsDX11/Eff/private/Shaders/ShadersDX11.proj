@@ -1,0 +1,157 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="all">
+	<PropertyGroup Condition="'$(Configuration)'=='MachStudio'">
+    <OutputPath>\projects\MachStudioPro\Shaders</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='FusionCinema3D'">
+    <OutputPath>\projects\FusionCinema3D\Shaders</OutputPath>
+  </PropertyGroup>
+  
+  <PropertyGroup >
+    <ShaderOutputExtension>.fx</ShaderOutputExtension>
+    <ShaderHeaderExtension>.hpp</ShaderHeaderExtension>
+  </PropertyGroup>
+
+  <PropertyGroup >
+    <HeadersOutputPath>..</HeadersOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Remove the "_X" to compile this project for Core -->
+    <AppVersion>MS_CORE_X</AppVersion>
+  </PropertyGroup>
+
+  
+  <Choose>
+    <When Condition="'$(AppVersion)'=='MS_CORE'">
+      <ItemGroup>
+          <Shaders Include="Blinn.fx"/>
+          <Shaders Include="BlinnReflection.fx"/>
+          <Shaders Include="SpecularFresnel.fx"/>
+          <Shaders Include="Lambert.fx"/>
+          <Shaders Include="Phong.fx"/>
+          <Shaders Include="Phong_wBump.fx"/>
+          <Shaders Include="PhongReflection.fx"/>
+          <Shaders Include="Simple.fx"/>
+          <Shaders Include="Anisotropic.fx"/>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <Shaders Include="Blinn.fx"/>
+        <Shaders Include="BlinnReflection.fx"/>
+        <Shaders Include="CarPaint.fx"/>
+        <Shaders Include="SpecularFresnel.fx"/>
+        <Shaders Include="Lambert.fx"/>
+        <Shaders Include="Phong.fx"/>
+        <Shaders Include="Phong_wBump.fx"/>
+        <Shaders Include="PhongReflection.fx"/>
+        <Shaders Include="Simple.fx"/>
+        <Shaders Include="SubSurfaceScatter.fx"/>
+        <Shaders Include="SubSurfaceScatter_wBlinnSpecular.fx"/>
+        <Shaders Include="Cartoon.fx"/>
+        <Shaders Include="Anisotropic.fx"/>
+        <Shaders Include="Hair_SH.fx"/>
+        <Shaders Include="PostEffect\BlackAndWhite.fx"/>
+        <Shaders Include="PostEffect\Sepia.fx"/>
+        <Shaders Include="PostEffect\GradientMap.fx"/>
+        <Shaders Include="PostEffect\Sketch.fx"/>
+        <Shaders Include="FC3DBlinn.fx"/>
+        <Shaders Include="FC3DPhong.fx"/>
+        <Shaders Include="FC3DSubSurfaceScatter_wBlinnSpecular.fx"/>
+        <Shaders Include="FC3DSpecularFresnel.fx"/>
+        <Shaders Include="FC3DPhongTransparent.fx"/>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  
+  <ItemGroup>
+    <DefaultShaders Include="Special/testtess.fx"/>
+    <DefaultShaders Include="Default.fx"/>
+    <DefaultShaders Include="Phong.fx"/>
+    <DefaultShaders Include="Phong_wBump.fx"/>
+    <DefaultShaders Include="Simple.fx"/>
+    <DefaultShaders Include="Special\HDRLighting.fx"/>
+    <DefaultShaders Include="Special\Blur.fx"/>
+    <DefaultShaders Include="Special\Glow.fx"/>
+    <DefaultShaders Include="Special\DOF.fx"/>
+    <DefaultShaders Include="Special\LightGlow.fx"/>
+    <DefaultShaders Include="Special\Particle.fx"/>
+    <DefaultShaders Include="Special\PostAlphaMatte.fx"/>
+    <DefaultShaders Include="Special\Fog.fx"/>
+    <DefaultShaders Include="Special\Solid.fx"/>
+    <DefaultShaders Include="Special\MaskAlpha.fx"/>
+    <DefaultShaders Include="Special\DepthMap.fx"/>
+    <DefaultShaders Include="Special\DepthRender.fx"/>
+    <DefaultShaders Include="Special\Outline.fx"/>
+    <DefaultShaders Include="Special\ssaoBilateralBlurEngine.fx"/>
+    <DefaultShaders Include="Special\ssaoMultiHorizonBasedAO.fx"/>
+    <DefaultShaders Include="Special\ssgiMultiHorizonBasedGI.fx"/>
+    <DefaultShaders Include="Special\Billboard.fx"/>
+    <DefaultShaders Include="Special\Brushstroke.fx"/>
+    <DefaultShaders Include="Special\IlluminationOnly.fx"/>
+    <DefaultShaders Include="Special\ShadowsOnly.fx"/>
+    <DefaultShaders Include="Special\VelocityRender.fx"/>
+    <DefaultShaders Include="Special\NormalMap.fx"/>
+    <DefaultShaders Include="Special\MotionBlur.fx"/>
+    <DefaultShaders Include="Special\AAEdgeFilter.fx"/>
+    <DefaultShaders Include="Special\Ramp.fx"/>
+    <DefaultShaders Include="Special\HairDefault.fx"/>
+    <DefaultShaders Include="Special\OpacityRender.fx"/>
+    <DefaultShaders Include="Special\AOVolumes.fx"/>
+    <DefaultShaders Include="Special\GIVolumes.fx"/>
+    <DefaultShaders Include="Special\ReflectiveShadowMap.fx"/>
+    <DefaultShaders Include="Special\LPV_GI.fx"/>
+    <DefaultShaders Include="Special\EnvBackground.fx"/>
+    <DefaultShaders Include="Bake.fx"/>
+    <DefaultShaders Include="PostEffect\BlackAndWhite.fx"/>
+    <DefaultShaders Include="PostEffect\Sepia.fx"/>
+    <DefaultShaders Include="PostEffect\GradientMap.fx"/>
+    <DefaultShaders Include="PostEffect\Sketch.fx"/>
+  </ItemGroup>
+  <ItemGroup>
+    <PostPixelShaders Include="Special\MapNormalsToScreen.hlsl"/>
+  </ItemGroup>
+  
+    <Target Name="defaultshaders"
+	    Inputs="@(DefaultShaders)"
+	    Outputs="@(DefaultShaders -> '$(HeadersOutputPath)\Shader%(Filename)$(ShaderHeaderExtension)')">
+    <Exec Command="fxc.exe -nologo -Tfx_5_0 /Fh$(HeadersOutputPath)\Shader%(DefaultShaders.Filename)$(ShaderHeaderExtension) /Vng_Shader%(DefaultShaders.Filename) %(DefaultShaders.Identity)"/>
+  </Target>
+
+  <Target Name="postpixelshaders"
+    Inputs="@(PostPixelShaders)"
+    Outputs="@(PostPixelShaders -> '$(HeadersOutputPath)\PS%(Filename)$(ShaderHeaderExtension)')">
+    <Exec Command="fxc.exe -nologo -Tps_5_0 /Fh$(HeadersOutputPath)\PS%(PostPixelShaders.Filename)$(ShaderHeaderExtension) /Vng_PS%(PostPixelShaders.Filename) %(PostPixelShaders.Identity)"/>
+  </Target>
+
+  <Target Name="shaders"
+	    Inputs="@(Shaders)"
+	    Outputs="@(Shaders -> '$(OutputPath)\%(RelativeDir)%(Filename)$(ShaderOutputExtension)')">
+
+    <MakeDir Directories="$(OutputPath)\%(Shaders.RelativeDir)"/>
+
+    <Exec Command="fxc.exe -nologo -Tfx_5_0 /Fo$(OutputPath)\%(Shaders.RelativeDir)%(Shaders.Filename)$(ShaderOutputExtension) %(Shaders.Identity)"/>
+    
+<!-- if this were a simple shader copy, I'd do this:
+    <Copy
+	        SourceFiles="@(Shaders)"
+	        DestinationFiles="@(Shaders -> '$(OutputPath)\%(RelativeDir)%(Filename)%(Extension)')"
+    />
+-->
+  </Target>
+
+  <!--Target Name="all" DependsOnTargets="defaultshaders;postpixelshaders;shaders"-->
+    <Target Name="all" DependsOnTargets="defaultshaders;postpixelshaders;shaders">
+    </Target>
+  
+  <Target Name="clean">
+    <Delete Files="@(DefaultShaders -> '$(HeadersOutputPath)\Shader%(Filename)$(ShaderHeaderExtension)')" />
+    <Delete Files="@(PostPixelShaders -> '$(HeadersOutputPath)\PS%(Filename)$(ShaderHeaderExtension)')" />
+    <Delete Files="@(Shaders -> '$(OutputPath)\%(RelativeDir)%(Filename)$(ShaderOutputExtension)')" />
+<!--    <Delete Files="@(Textures -> '$(OutputPath)\%(RelativeDir)%(Filename)%(Extension)')" /> -->
+  </Target>
+  
+  <Target Name="rebuild" DependsOnTargets="clean;all" />
+
+</Project>

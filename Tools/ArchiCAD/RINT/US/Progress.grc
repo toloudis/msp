@@ -1,0 +1,30 @@
+/**********************************************************************
+
+							STUDIOGPU ADDON
+
+ 	File:		Progress.grc
+
+	Purpose:	Dialog to display a progress meter
+
+	Target:		ArchiCAD 12
+
+	Copyright:	Encina Ltd 2009
+
+	Revision history:
+	07-05-2009	RW	Created
+
+ **********************************************************************/
+
+
+$ControlIDRange = [32510, 32600];
+
+/*--------------------------------------------------------------------
+	Dialog to display a progress meter
+  --------------------------------------------------------------------*/
+'GDLG'	32510	Palette	121	126	203	74	"Progress" {
+	/*[ 1]*/	LeftText		8	2	190	14	SmallPlain	"Phase 0"
+	/*[ 2]*/	Button			143	34	52	16	LargePlain	"Stop"
+	/*[ 3]*/	ProgressBar		8	37	128 8	0	128
+	/*[ 4]*/	LeftText		8	16	190	14	SmallPlain	"Initialising"
+	/*[ 5]*/	LeftText		8	56	190	14	SmallPlain	""
+} /* Progress  */

@@ -1,0 +1,64 @@
+/*****************************************************************************
+ * Test version of a base shader for sgpu test compiler.
+ *****************************************************************************/
+
+shader Illumination_sgpu
+{
+  input:    
+  Color  diffuse_color = Color(1,1,1,1)
+  {	
+      display_name("Diffuse Color");
+      hard_range(Color(0,0,0,0),Color(1,1,1,1));
+      description( "The color used to tint the Diffuse Reflectance Color." );
+  };
+  float diffuse_scalar = 0.7
+  {		
+      display_name("Diffuse Float");
+      hard_range(float(0),float(1));
+      description( "The intensity of the light diffusely reflected from "
+      "this surface." );
+  };
+    
+  output:
+  Color result;
+  Color diffuse;
+
+  void main() 
+  {
+      // Color diffuse;
+      
+      diffuse  = Color(0.0,0.0,0.0,0.0);
+  
+      Color Rd = diffuse_color * diffuse_scalar;
+      
+      // normalize components
+      Color temp = Rd;
+      float maxc = max(max(temp.r,temp.g),temp.b);
+      if (maxc>1.0) {
+          Rd /= maxc;
+      }
+      
+      	// enumerate lights
+		Light_iterator light;
+		foreach (light)
+		{
+			float cos = saturate(light.dot_nl);
+			if (cos > 0.0) {
+				diffuse += (cos / PI) * light.contribution;
+			}
+		}
+      
+      diffuse *= Rd;
+      
+      // irradiance term skipped
+      
+      diffuse.a = 1.0;
+      result = diffuse;
+  }
+}
+{
+	//bga -  What does the brdf_type mean here? Should we have a new name?
+    brdf_type("Msl_phong");
+    description( "A simple shader for testing shader code generation." );
+}
+;

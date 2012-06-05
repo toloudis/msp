@@ -1,0 +1,16 @@
+#must match the struct in the cpp file for this shader!
+
+$ifndef "sgpu_environment_mi"
+set "sgpu_environment_mi" "true"
+
+declare shader
+	color "sgpu_environment" (	
+		color			"diffColor",
+		color texture	"diffTexture",
+		scalar			"diffFactor",
+		scalar			"diffAngle"
+	)
+	version 1
+end declare
+
+$endif

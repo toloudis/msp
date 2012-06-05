@@ -1,0 +1,57 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StudioGPU", "StudioGPU.vcproj", "{C7300C02-8F70-4984-998D-F28184B6C645}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5E8F95D8-418E-4E24-9793-5243089E470A} = {5E8F95D8-418E-4E24-9793-5243089E470A}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EncinaCAD", "..\..\EncinaCAD2\Make.Win\EncinaCAD.vcproj", "{5E8F95D8-418E-4E24-9793-5243089E470A}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		DebugAC10 = DebugAC10
+		DebugAC10US = DebugAC10US
+		DebugAC11US = DebugAC11US
+		DebugAC9 = DebugAC9
+		ReleaseAC10US = ReleaseAC10US
+		ReleaseAC11US = ReleaseAC11US
+		ReleaseAC9US = ReleaseAC9US
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{C7300C02-8F70-4984-998D-F28184B6C645}.DebugAC10.ActiveCfg = DebugAC10|Win32
+		{C7300C02-8F70-4984-998D-F28184B6C645}.DebugAC10.Build.0 = DebugAC10|Win32
+		{C7300C02-8F70-4984-998D-F28184B6C645}.DebugAC10US.ActiveCfg = DebugAC10US|Win32
+		{C7300C02-8F70-4984-998D-F28184B6C645}.DebugAC10US.Build.0 = DebugAC10US|Win32
+		{C7300C02-8F70-4984-998D-F28184B6C645}.DebugAC11US.ActiveCfg = DebugAC11US|Win32
+		{C7300C02-8F70-4984-998D-F28184B6C645}.DebugAC11US.Build.0 = DebugAC11US|Win32
+		{C7300C02-8F70-4984-998D-F28184B6C645}.DebugAC9.ActiveCfg = DebugAC9|Win32
+		{C7300C02-8F70-4984-998D-F28184B6C645}.DebugAC9.Build.0 = DebugAC9|Win32
+		{C7300C02-8F70-4984-998D-F28184B6C645}.ReleaseAC10US.ActiveCfg = ReleaseAC10US|Win32
+		{C7300C02-8F70-4984-998D-F28184B6C645}.ReleaseAC10US.Build.0 = ReleaseAC10US|Win32
+		{C7300C02-8F70-4984-998D-F28184B6C645}.ReleaseAC11US.ActiveCfg = ReleaseAC11US|Win32
+		{C7300C02-8F70-4984-998D-F28184B6C645}.ReleaseAC11US.Build.0 = ReleaseAC11US|Win32
+		{C7300C02-8F70-4984-998D-F28184B6C645}.ReleaseAC9US.ActiveCfg = ReleaseAC10US|Win32
+		{C7300C02-8F70-4984-998D-F28184B6C645}.ReleaseAC9US.Build.0 = ReleaseAC10US|Win32
+		{5E8F95D8-418E-4E24-9793-5243089E470A}.DebugAC10.ActiveCfg = DebugAC10|Win32
+		{5E8F95D8-418E-4E24-9793-5243089E470A}.DebugAC10.Build.0 = DebugAC10|Win32
+		{5E8F95D8-418E-4E24-9793-5243089E470A}.DebugAC10US.ActiveCfg = DebugAC10|Win32
+		{5E8F95D8-418E-4E24-9793-5243089E470A}.DebugAC10US.Build.0 = DebugAC10|Win32
+		{5E8F95D8-418E-4E24-9793-5243089E470A}.DebugAC11US.ActiveCfg = DebugAC11|Win32
+		{5E8F95D8-418E-4E24-9793-5243089E470A}.DebugAC11US.Build.0 = DebugAC11|Win32
+		{5E8F95D8-418E-4E24-9793-5243089E470A}.DebugAC9.ActiveCfg = DebugAC9|Win32
+		{5E8F95D8-418E-4E24-9793-5243089E470A}.DebugAC9.Build.0 = DebugAC9|Win32
+		{5E8F95D8-418E-4E24-9793-5243089E470A}.ReleaseAC10US.ActiveCfg = ReleaseAC10|Win32
+		{5E8F95D8-418E-4E24-9793-5243089E470A}.ReleaseAC10US.Build.0 = ReleaseAC10|Win32
+		{5E8F95D8-418E-4E24-9793-5243089E470A}.ReleaseAC11US.ActiveCfg = ReleaseAC11|Win32
+		{5E8F95D8-418E-4E24-9793-5243089E470A}.ReleaseAC11US.Build.0 = ReleaseAC11|Win32
+		{5E8F95D8-418E-4E24-9793-5243089E470A}.ReleaseAC9US.ActiveCfg = ReleaseAC9|Win32
+		{5E8F95D8-418E-4E24-9793-5243089E470A}.ReleaseAC9US.Build.0 = ReleaseAC9|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

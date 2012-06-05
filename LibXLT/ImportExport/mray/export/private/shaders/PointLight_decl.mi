@@ -1,0 +1,24 @@
+#must match the struct in the cpp file for this shader!
+
+$ifndef "sgpu_light_PointLight_mi"
+set "sgpu_light_PointLight_mi" "true"
+
+declare shader
+	color "sgpu_light_PointLight" (
+		color		"color",
+		vector		"Pos",
+		scalar		"FalloffX",
+		scalar		"FalloffY",
+		scalar		"FalloffZ",
+		scalar		"FalloffW",
+		scalar		"FalloffStart",
+		boolean		"bShadowsOnly",	
+		boolean		"bEnabled",	
+		boolean		"AffectsDiffuse",
+		boolean		"AffectsSpecular",
+	)
+	version 1
+	apply light
+end declare
+
+$endif

@@ -1,0 +1,82 @@
+#must match the struct in the cpp file for this shader!
+
+$ifndef "sgpu_illum_BlinnReflection_mi"
+set "sgpu_illum_BlinnReflection_mi" "true"
+
+declare shader
+	color "sgpu_illum_BlinnReflection" (
+		boolean			"g_isPlanar",
+		color texture	"cubeMap",
+		color texture	"g_planarMap",
+		color			"g_diffuse",
+		color texture	"diffuseMap",
+		scalar			"g_roughness",
+		color			"g_emissive",
+		color texture	"emissiveMap",
+		scalar			"g_emissiveIntensity",
+		color			"g_specular",
+		color texture	"specularMap",
+		scalar			"g_specularPower",
+		scalar			"g_IOR",
+		color texture	"iorMap",
+		scalar			"g_shininess",
+		color texture	"glossMap",
+		scalar			"g_transparency",
+		color texture	"transparencyMap",
+		scalar			"g_reflectivity",
+		scalar			"fresnelPower",
+		scalar			"fresnelBias",
+		scalar			"reflLOD",
+		scalar			"reflFactor",
+		color texture	"reflectFactorMap",	
+		scalar			"IOR",
+		scalar			"refrFactor",
+		scalar			"refrLOD",
+		color texture	"reflectSmearMap",	
+		scalar			"smearMapScale",
+		scalar			"g_specularBias",
+		#color texture	"glowMask",
+		
+		color texture	"diffuseEnvMap",	
+		color texture	"specularEnvMap",		
+		color			"g_envDiffuseColor",
+		color			"g_envSpecularColor",
+		scalar			"g_diffuseFactor",
+		scalar			"g_diffuseEnvAngle",	
+		scalar			"g_specularFactor",
+		scalar			"g_specularEnvAngle",
+		
+		boolean			"reflEnable",
+		scalar			"reflSamples",
+		
+		scalar			"u_scale",
+		scalar			"v_scale",
+		scalar			"u_offset",
+		scalar			"v_offset",
+		scalar			"uv_rotation",
+	
+		color texture	"normalMap",
+		scalar			"normalMapScale",
+		
+		boolean			"bEnableAO",		
+		color			"aoColor",
+		scalar			"aoRadiusNear",
+		scalar			"aoRadiusFar",
+		scalar			"aoAngleBias",
+		scalar			"aoAttenuation",
+		scalar			"aoContrast",
+		scalar			"aoCamNear",
+		scalar			"aoCamFar",
+		scalar			"aoSamples",
+		
+		boolean			"bEnableGI",
+		boolean			"bEnableSWL",
+		
+		integer			"mode",      # light selection mode 0,1,2,4
+		array light		"lights"
+	)
+	version 1
+	apply material
+end declare
+
+$endif

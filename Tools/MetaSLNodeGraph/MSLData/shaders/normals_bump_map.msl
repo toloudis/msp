@@ -1,0 +1,98 @@
+/*****************************************************************************
+ * Copyright 1986-2008 by mental images GmbH, Fasanenstr. 81, D-10623 Berlin,
+ * Germany. All rights reserved.
+ *****************************************************************************/
+
+shader Normals_offset_uv
+{
+	input:
+		int texture_space = 0 
+		{ 
+			literal(); 
+		};
+		float u_offset = 0.0f
+		{			
+			display_name("U Offset");
+			soft_range(float(-1),float(1));
+			description( "Determines how far the current texture coordinates "
+						 "will be offset in the U direction." );
+		};
+		float v_offset = 0.0f
+		{		
+			display_name("V Offset");
+			soft_range(float(-1),float(1));
+			description( "Determines how far the current texture coordinates "
+						 "will be offset in the V direction." );
+		};
+
+	output:
+		float4 result;
+
+	void main()
+	{
+		result = texture_coordinate[texture_space];
+		result.x += u_offset;
+		result.y += v_offset;
+	}
+}
+{
+	description( "An operation that offsets the input texture coordinates "
+				 "based on the offset parameters." );
+}
+;
+
+shader Normals_perturb_normal
+{
+	input:
+		Color center_color = Color(0,0,0,1)
+		{		
+				display_name("Center Color");
+				soft_range(Color(0,0,0,1),Color(1,1,1,1));
+				description( "The center height map color." );
+		};
+		Color u_color = Color(0,0,0,1)
+		{		
+				display_name("U Color");
+				soft_range(Color(0,0,0,1),Color(1,1,1,1));
+				description( "The u height map color." );
+		};
+		Color v_color = Color(0,0,0,1)
+		{		
+				display_name("V Color");
+				soft_range(Color(0,0,0,1),Color(1,1,1,1));
+				description( "The v height map color." );
+		};
+		float amount = 1.0
+		{		
+				display_name("Amount");
+				soft_range(float(-1),float(1));
+				description( "The degree to which the normal will be "
+							 "perturbed." );
+		};
+
+	output:
+		float3 result;
+
+	void main()
+	{
+		// doting with this vector gives the average component value
+		float3 a  = float3(1./3, 1./3, 1./3);
+
+		// three values: center, offset u, and offset v
+		float c   = dot(a, center_color.xyz);	
+		float ddu = dot(a, u_color.xyz)-c;
+		float ddv = dot(a, v_color.xyz)-c;
+
+		// construct the normal in tangent space
+		float3 n  = normalize(float3(-ddu, -ddv, 1./amount));
+				
+		// transform the normal into camera space
+		result = n*tangent_space[0];
+	}
+}
+{
+	description( "Uses colors, often height map samples, to "
+	             "perturb the normal. Used as a bump map component." );
+}
+;
+

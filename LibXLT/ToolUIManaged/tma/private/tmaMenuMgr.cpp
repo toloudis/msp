@@ -1,0 +1,10 @@
+/*****************************************************************************
+**  tmaMenuMgr.cpp
+**
+**      see .hpp
+**
+**	StudioGPU
+**	Copyright(C) 2003 - All Rights Reserved
+\****************************************************************************/
+
+#include "ToolUIManaged/tma/tmaMenuMgr.hpp"

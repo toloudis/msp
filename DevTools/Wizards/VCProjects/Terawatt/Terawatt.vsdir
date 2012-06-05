@@ -1,0 +1,4 @@
+TerawattLibrary.vsz|{1B027A40-8F43-11D0-8D11-00A0C91BC942}|Terawatt Library|50|Creates library in Terawatt directory (..\bin)|{1B027A40-8F43-11D0-8D11-00A0C91BC942}|6777|4096|TerawattLib
+TerawattPackage.vsz|{1B027A40-8F43-11D0-8D11-00A0C91BC942}|Terawatt Package|50|Creates package like api3d (..\..\bin)|{1B027A40-8F43-11D0-8D11-00A0C91BC942}|6777|4096|TerawattPackage
+TeraAppStaticLib.vsz|{1B027A40-8F43-11D0-8D11-00A0C91BC942}|App Static Library|50|Creates library for application (..\..\bin)|{1B027A40-8F43-11D0-8D11-00A0C91BC942}|6777|4096|AppStaticLib
+TeraSystemLib.vsz|{1B027A40-8F43-11D0-8D11-00A0C91BC942}|System Library|50|Creates library for system (..\..\..\bin)|{1B027A40-8F43-11D0-8D11-00A0C91BC942}|6777|4096|SystemLib

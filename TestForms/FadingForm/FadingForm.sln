@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FadingForm", "FadingForm.csproj", "{6D220C84-9040-4E7D-B369-6A2E461C9189}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{6D220C84-9040-4E7D-B369-6A2E461C9189}.Debug.ActiveCfg = Debug|.NET
+		{6D220C84-9040-4E7D-B369-6A2E461C9189}.Debug.Build.0 = Debug|.NET
+		{6D220C84-9040-4E7D-B369-6A2E461C9189}.Release.ActiveCfg = Release|.NET
+		{6D220C84-9040-4E7D-B369-6A2E461C9189}.Release.Build.0 = Release|.NET
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

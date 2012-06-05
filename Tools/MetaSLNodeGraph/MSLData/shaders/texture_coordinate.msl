@@ -1,0 +1,224 @@
+/*****************************************************************************
+ * Copyright 1986-2009 by mental images GmbH, Fasanenstr. 81, D-10623 Berlin,
+ * Germany. All rights reserved.
+ *****************************************************************************/
+
+shader Texture_coordinate_2d_offset
+{
+  input:        
+	int texture_space = 0
+	{
+		literal(); 
+		description( "The texture coordinate set." );
+		hard_range(0, 3);
+	};
+	float2 texture_uv  = float2(texture_coordinate[texture_space].x,
+				    texture_coordinate[texture_space].y);
+
+    float offset_u = 0;
+    float offset_v = 0;
+    
+  output:
+    float2 result;
+    
+    void main()
+    {
+	result.x = texture_uv.x + offset_u;
+	result.y = texture_uv.y + offset_v;
+    }
+};
+
+shader Texture_coordinate_2d_rotate
+{
+  input:    
+	int texture_space = 0
+	{
+		literal(); 
+		description( "The texture coordinate set." );
+		hard_range(0, 3);
+	};
+    float2 texture_uv = float2(texture_coordinate[texture_space].x,
+			       texture_coordinate[texture_space].y);	
+    float angle = 0;
+    
+  output:
+    float2 result;
+    
+    void main()
+    {
+	float sa = sin(angle);
+	float ca = cos(angle);
+	
+	result = float2(
+		texture_uv.x*ca - texture_uv.y*sa,
+		texture_uv.x*sa + texture_uv.y*ca);
+	
+    }
+};
+  
+shader Texture_coordinate_2d_distort
+{
+  input:
+    int texture_space = 0
+	{
+		literal(); 
+		description( "The texture coordinate set." );
+		hard_range(0, 3);
+	};
+    float2 texture_uv = float2(texture_coordinate[texture_space].x,
+			       texture_coordinate[texture_space].y);	
+	
+    Texture2d distort_texture = "filtered_noise.dds";    
+	int distort_texture_space = 0 
+    { 
+		literal(); 
+		description("Texture coordinates to use when sampling "
+		            "the distort texture.");
+		hard_range(0, 3);
+    };
+	float2 distort_texture_uv = float2(texture_coordinate[texture_space].x,
+					   texture_coordinate[texture_space].y);	
+    float distortion_amount = 0;
+    
+  output:
+    float2 result;
+    
+    void main()
+    {
+	float2 d = tex2D(distort_texture, distort_texture_uv).xy 
+		* distortion_amount;
+	result = texture_uv.xy + d;
+    }
+};
+
+shader Texture_coordinate_2d_parallax
+{
+	input:    		
+		int texture_space    = 0 
+		{ 
+			literal(); 
+			description("The texture coordinate set.");
+			hard_range(0, 3);
+		};
+		float2 texture_uv = float2(texture_coordinate[texture_space].x,
+					   texture_coordinate[texture_space].y);		
+				
+		Color height         = Color(0,0,0,0)
+		{
+			display_name("Height");
+			description( "Specifies the height of the surface, "
+						 "relative to the base surface." );
+		};
+		
+		float amount        = 0.05
+		{				
+				display_name("Amount");
+				soft_range(float(-1),float(1));
+				description( "The degree to which the normals and texture "
+							 "coordinates will be perturbed." );
+		};
+
+	output:
+		float2 result;
+
+	void main()
+	{
+		// center on 0.0 and scale down
+		float h = height.x;
+		h = h*amount - amount*0.5;
+
+		// The view direction in tangent space. 
+		float3 vtan = tangent_space[0]*direction;
+
+		// perturb the vertex coords. Move the texture toward the eye when
+		// the height is negative and away when positive
+		float2 uv = texture_uv;
+		result.x = texture_uv.x - vtan.x*h;
+		result.y = texture_uv.y - vtan.y*h;
+	}
+}
+{
+	description( "Uses viewing direction to modify shading point texture "
+	             "coordinates." );
+}
+;
+
+
+shader State_texture_coordinate_1d
+{
+  input:
+    int texture_space = 0 
+    { 
+		literal(); 		
+		description("Texture coordinates to use when sampling the input "
+		            "texture." );
+		hard_range(0, 3);
+	};
+    
+  output:
+    float result;
+    
+    void main()
+    {
+	result = texture_coordinate[texture_space].x;
+    }
+};
+
+shader State_texture_coordinate_2d
+{
+  input:
+    int texture_space = 0 
+    { 
+		literal(); 
+		description("Texture coordinates to use when sampling the input "
+		            "texture." );
+		hard_range(0, 3);
+	};
+    
+  output:
+    float2 result;
+    
+    void main()
+    {
+		result = texture_coordinate[texture_space].xy;
+    }
+};
+
+shader State_texture_coordinate_3d
+{
+  input:
+    int texture_space = 0 
+    { 
+		literal(); 
+		description("Texture coordinates to use when sampling the input "
+		            "texture." );
+		hard_range(0, 3);
+	};
+    
+  output:
+    float3 result;
+    
+    void main()
+    {
+		result = texture_coordinate[texture_space].xyz;
+    }
+};
+
+shader State_texture_coordinate_4d
+{
+  input:
+    int texture_space = 0 
+    { 
+		literal(); 
+		description( "The texture coordinate set." );
+		hard_range(0, 3);
+	};
+    
+  output:
+    float4 result;
+    
+    void main()
+    {
+		result = texture_coordinate[texture_space];
+    }
+};

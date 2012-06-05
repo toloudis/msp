@@ -1,0 +1,107 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "inTest", "inTest.vcproj", "{A4B2ECEB-D507-4B7C-A299-69AA7387B2F4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{16D38A0B-2AB5-4F5B-871A-514699598F5B} = {16D38A0B-2AB5-4F5B-871A-514699598F5B}
+		{E604CF19-B6DA-4A03-A953-9FAD1AE64549} = {E604CF19-B6DA-4A03-A953-9FAD1AE64549}
+		{7FF0D825-3F79-4F79-95B7-B84EA0ABFAB2} = {7FF0D825-3F79-4F79-95B7-B84EA0ABFAB2}
+		{0DFF4A46-8A31-42BF-9B0C-4C422DDDD5B9} = {0DFF4A46-8A31-42BF-9B0C-4C422DDDD5B9}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App", "..\..\..\Terawatt\App\App.vcproj", "{E604CF19-B6DA-4A03-A953-9FAD1AE64549}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Base", "..\..\..\Terawatt\Base\Base.vcproj", "{7FF0D825-3F79-4F79-95B7-B84EA0ABFAB2}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Math", "..\..\..\Terawatt\Math\Math.vcproj", "{0DFF4A46-8A31-42BF-9B0C-4C422DDDD5B9}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Graphics", "..\..\..\Terawatt\Graphics\Graphics.vcproj", "{16D38A0B-2AB5-4F5B-871A-514699598F5B}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SourceCodeControl) = preSolution
+		SccNumberOfProjects = 5
+		SccProjectUniqueName0 = inTest.vcproj
+		SccProjectName0 = \u0022$/TestTerawatt/App/inTest\u0022,\u0020UKIBAAAA
+		SccLocalPath0 = .
+		SccProvider0 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		CanCheckoutShared = true
+		SccProjectUniqueName1 = ..\\..\\..\\Terawatt\\App\\App.vcproj
+		SccProjectName1 = \u0022$/Terawatt/App\u0022,\u0020LJOAAAAA
+		SccLocalPath1 = ..\\..\\..\\Terawatt\\App
+		SccProvider1 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		CanCheckoutShared = true
+		SccProjectUniqueName2 = ..\\..\\..\\Terawatt\\Base\\Base.vcproj
+		SccProjectName2 = \u0022$/Terawatt/Base\u0022,\u0020KJOAAAAA
+		SccLocalPath2 = ..\\..\\..\\Terawatt\\Base
+		SccProvider2 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		CanCheckoutShared = true
+		SccProjectUniqueName3 = ..\\..\\..\\Terawatt\\Math\\Math.vcproj
+		SccProjectName3 = \u0022$/Terawatt/Math\u0022,\u0020TOPAAAAA
+		SccLocalPath3 = ..\\..\\..\\Terawatt\\Math
+		SccProvider3 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		CanCheckoutShared = true
+		SccProjectUniqueName4 = ..\\..\\..\\Terawatt\\Graphics\\Graphics.vcproj
+		SccProjectName4 = \u0022$/Terawatt/Graphics\u0022,\u0020BNPAAAAA
+		SccLocalPath4 = ..\\..\\..\\Terawatt\\Graphics
+		SccProvider4 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
+		CanCheckoutShared = true
+	EndGlobalSection
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Gold = Gold
+		Release = Release
+		Release with debug info = Release with debug info
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{A4B2ECEB-D507-4B7C-A299-69AA7387B2F4}.Debug.ActiveCfg = Debug|Win32
+		{A4B2ECEB-D507-4B7C-A299-69AA7387B2F4}.Debug.Build.0 = Debug|Win32
+		{A4B2ECEB-D507-4B7C-A299-69AA7387B2F4}.Gold.ActiveCfg = Release|Win32
+		{A4B2ECEB-D507-4B7C-A299-69AA7387B2F4}.Gold.Build.0 = Release|Win32
+		{A4B2ECEB-D507-4B7C-A299-69AA7387B2F4}.Release.ActiveCfg = Release|Win32
+		{A4B2ECEB-D507-4B7C-A299-69AA7387B2F4}.Release.Build.0 = Release|Win32
+		{A4B2ECEB-D507-4B7C-A299-69AA7387B2F4}.Release with debug info.ActiveCfg = Release|Win32
+		{A4B2ECEB-D507-4B7C-A299-69AA7387B2F4}.Release with debug info.Build.0 = Release|Win32
+		{E604CF19-B6DA-4A03-A953-9FAD1AE64549}.Debug.ActiveCfg = Debug|Win32
+		{E604CF19-B6DA-4A03-A953-9FAD1AE64549}.Debug.Build.0 = Debug|Win32
+		{E604CF19-B6DA-4A03-A953-9FAD1AE64549}.Gold.ActiveCfg = Gold|Win32
+		{E604CF19-B6DA-4A03-A953-9FAD1AE64549}.Gold.Build.0 = Gold|Win32
+		{E604CF19-B6DA-4A03-A953-9FAD1AE64549}.Release.ActiveCfg = Release|Win32
+		{E604CF19-B6DA-4A03-A953-9FAD1AE64549}.Release.Build.0 = Release|Win32
+		{E604CF19-B6DA-4A03-A953-9FAD1AE64549}.Release with debug info.ActiveCfg = Release with debug info|Win32
+		{E604CF19-B6DA-4A03-A953-9FAD1AE64549}.Release with debug info.Build.0 = Release with debug info|Win32
+		{7FF0D825-3F79-4F79-95B7-B84EA0ABFAB2}.Debug.ActiveCfg = Debug|Win32
+		{7FF0D825-3F79-4F79-95B7-B84EA0ABFAB2}.Debug.Build.0 = Debug|Win32
+		{7FF0D825-3F79-4F79-95B7-B84EA0ABFAB2}.Gold.ActiveCfg = Gold|Win32
+		{7FF0D825-3F79-4F79-95B7-B84EA0ABFAB2}.Gold.Build.0 = Gold|Win32
+		{7FF0D825-3F79-4F79-95B7-B84EA0ABFAB2}.Release.ActiveCfg = Release|Win32
+		{7FF0D825-3F79-4F79-95B7-B84EA0ABFAB2}.Release.Build.0 = Release|Win32
+		{7FF0D825-3F79-4F79-95B7-B84EA0ABFAB2}.Release with debug info.ActiveCfg = Release with debug info|Win32
+		{7FF0D825-3F79-4F79-95B7-B84EA0ABFAB2}.Release with debug info.Build.0 = Release with debug info|Win32
+		{0DFF4A46-8A31-42BF-9B0C-4C422DDDD5B9}.Debug.ActiveCfg = Debug|Win32
+		{0DFF4A46-8A31-42BF-9B0C-4C422DDDD5B9}.Debug.Build.0 = Debug|Win32
+		{0DFF4A46-8A31-42BF-9B0C-4C422DDDD5B9}.Gold.ActiveCfg = Gold|Win32
+		{0DFF4A46-8A31-42BF-9B0C-4C422DDDD5B9}.Gold.Build.0 = Gold|Win32
+		{0DFF4A46-8A31-42BF-9B0C-4C422DDDD5B9}.Release.ActiveCfg = Release|Win32
+		{0DFF4A46-8A31-42BF-9B0C-4C422DDDD5B9}.Release.Build.0 = Release|Win32
+		{0DFF4A46-8A31-42BF-9B0C-4C422DDDD5B9}.Release with debug info.ActiveCfg = Release with debug info|Win32
+		{0DFF4A46-8A31-42BF-9B0C-4C422DDDD5B9}.Release with debug info.Build.0 = Release with debug info|Win32
+		{16D38A0B-2AB5-4F5B-871A-514699598F5B}.Debug.ActiveCfg = Debug|Win32
+		{16D38A0B-2AB5-4F5B-871A-514699598F5B}.Debug.Build.0 = Debug|Win32
+		{16D38A0B-2AB5-4F5B-871A-514699598F5B}.Gold.ActiveCfg = Gold|Win32
+		{16D38A0B-2AB5-4F5B-871A-514699598F5B}.Gold.Build.0 = Gold|Win32
+		{16D38A0B-2AB5-4F5B-871A-514699598F5B}.Release.ActiveCfg = Release|Win32
+		{16D38A0B-2AB5-4F5B-871A-514699598F5B}.Release.Build.0 = Release|Win32
+		{16D38A0B-2AB5-4F5B-871A-514699598F5B}.Release with debug info.ActiveCfg = Release with debug info|Win32
+		{16D38A0B-2AB5-4F5B-871A-514699598F5B}.Release with debug info.Build.0 = Release with debug info|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
