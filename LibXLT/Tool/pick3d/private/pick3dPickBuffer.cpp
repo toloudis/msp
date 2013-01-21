@@ -26,7 +26,12 @@ pick3dPickBuffer::pick3dPickBuffer(g3dViewer& i_Viewer)
 
 	g2dPFD pfd(g2dPFD::e_RGBA32f, 32*4);
 	m_pPickTexture = matTextureMgr::CreateRenderTargetTexture(1,1,false,&pfd,false,true,matTextureMgr::e_Framebuffer);
-	m_pPickTarget = m_pPickTexture->GetRenderTargetAPI();
+	if (m_pPickTexture != NULL) {
+		m_pPickTarget = m_pPickTexture->GetRenderTargetAPI();
+	}
+	else {
+		m_pPickTarget = NULL;
+	}
 
 	m_pTargetRenderer = new g3dTargetRenderer(m_pPickTarget, m_pPickRenderer, 
 		m_Viewer.GetScene(), &m_PickCamera );

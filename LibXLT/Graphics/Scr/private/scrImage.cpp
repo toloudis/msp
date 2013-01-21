@@ -75,7 +75,10 @@ void scrImage::SetRenderable(bool i_bRenderable)
 void scrImage::SetEmissive(const maFloatRGBA& i_Color)
 {
 	scrPrimitive::SetEmissive(i_Color);
-	m_pMaterial->TypedData<effTexturedData>()->m_Color = i_Color;
+	effTexturedData* d = m_pMaterial->TypedData<effTexturedData>();
+	if (d!= NULL) {
+		d->m_Color = i_Color;
+	}
 }
 
 //--------------------------------------------------------------------

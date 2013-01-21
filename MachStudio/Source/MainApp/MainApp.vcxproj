@@ -589,7 +589,7 @@
       <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
       <Version>2.0.0.0</Version>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);$(SolutionDir)..\..\3rdParty\WxWidgets\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);$(SolutionDir)..\..\3rdParty\WxWidgets\lib\$(Platform);C:/Program Files (x86)/AMD APP/lib/x86_64;C:/Program Files (x86)/NVIDIA Corporation/Cg/lib.x64;D:\FreeImage\Dist;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;libcmtd.lib;msvcrt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
@@ -600,6 +600,7 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX64</TargetMachine>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;cg.lib;OpenCL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DM-NoSys|Win32'">
@@ -1080,16 +1081,20 @@
     <ResourceCompile Include="app.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\LibXLT\Area18\Area18.vcxproj">
+      <Project>{f05bd011-50ed-473a-b895-fed684891ca5}</Project>
+      <Private>true</Private>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\LibXLT\AudioDS\AudioDS.vcxproj">
       <Project>{84d12fe8-19e7-4548-8d2e-2b2911a75274}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\..\..\LibXLT\Core\Core.vcxproj">
       <Project>{846c097d-3b0e-4a0a-b6d7-222ed73125f8}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\LibXLT\GraphicsDX11\GraphicsDX11.vcxproj">
-      <Project>{419458ff-14d9-40ec-a36e-0a72774bc100}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\..\..\LibXLT\Graphics\Graphics.vcxproj">

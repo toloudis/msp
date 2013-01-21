@@ -75,8 +75,12 @@ prjltIconProjected::prjltIconProjected()
 	matMaterial *mat = new matMaterial("Solid.fx");
 
 	effSolidData* pData = dynamic_cast<effSolidData*>(mat->GetEffectData());
-	DBG_ASSERT(pData != NULL, "prjltIconProjected not using effSolid");
-	pData->m_Color = maFloatRGBA(1.0f, 1.0f, 0.0f, 1.0f);
+	if (pData == NULL) {
+		DBG_WARNING("prjltIconProjected not using effSolid");
+	}
+	else {
+		pData->m_Color = maFloatRGBA(1.0f, 1.0f, 0.0f, 1.0f);
+	}
 
 	// create truncated pyramid shape with vert 0 as light position and the
 	// other eight vertices as the near and far planes of the light's frustrum
@@ -124,8 +128,12 @@ prjltIconProjected::prjltIconProjected()
 
 	matMaterial *texOutlineMat = new matMaterial("Solid.fx");
 	effSolidData* pOutlineData = dynamic_cast<effSolidData*>(texOutlineMat->GetEffectData());
-	DBG_ASSERT(pOutlineData != NULL, "prjltIconProjected not using effSolid");
-	pOutlineData->m_Color = maFloatRGBA(1.0f, 1.0f, 0.0f, 1.0f);
+	if (pOutlineData == NULL) {
+		DBG_WARNING("prjltIconProjected not using effSolid");
+	}
+	else {
+		pOutlineData->m_Color = maFloatRGBA(1.0f, 1.0f, 0.0f, 1.0f);
+	}
 
 	// use the first 4 verts of the icon
 	// a rectangle: 4 verts, 8 inds
@@ -155,9 +163,13 @@ prjltIconProjected::prjltIconProjected()
 	// Material
 	matMaterial *pTexMat = new matMaterial("Billboard.fx");
 	effTexturedData* pTexData = dynamic_cast<effTexturedData*>(pTexMat->GetEffectData());
-	DBG_ASSERT(pTexData != NULL, "prjltIconProjected not using effTextured");
-	pTexData->m_Color = maFloatRGBA(1.0f, 1.0f, 1.0f, 0.3f );
-	pTexMat->ForceTransparency( true );
+	if (pTexData == NULL) {
+		DBG_WARNING("prjltIconProjected not using effTextured");
+	}
+	else {
+		pTexData->m_Color = maFloatRGBA(1.0f, 1.0f, 1.0f, 0.3f );
+		pTexMat->ForceTransparency( true );
+	}
 
 	// Set up fragment in object
 	api3dObjectSimple *pTextureObjectBase = new api3dObjectSimple(m_pTextureFrag, pTexMat);

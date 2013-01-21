@@ -6,6 +6,7 @@
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
+#pragma once
 #ifdef MA_VECTOR3D_HPP
 #error maVector3d.hpp multiply included
 #endif

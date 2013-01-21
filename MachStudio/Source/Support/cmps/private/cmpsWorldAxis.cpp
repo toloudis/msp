@@ -46,9 +46,11 @@ namespace
 	{
 		matMaterial* pMaterial = new matMaterial("Solid.fx");
 		effSolidData* pData = dynamic_cast<effSolidData*>(pMaterial->GetEffectData());
-		DBG_ASSERT(pData != NULL, "cmpsWorldAxis not using effSolid");
+		if (pData != NULL) {
+			DBG_ASSERT(pData != NULL, "cmpsWorldAxis not using effSolid");
 
-		pData->m_Color = i_Color;
+			pData->m_Color = i_Color;
+		}
 		return pMaterial;
 	}
 	

@@ -156,13 +156,17 @@ prjltRangeIcon::prjltRangeIcon()
 	matMaterial *mat = new matMaterial("Solid.fx");
 
 	effSolidData* pData = dynamic_cast<effSolidData*>(mat->GetEffectData());
-	DBG_ASSERT(pData != NULL, "prjltRangeIcon not using effSolid");
+	if (pData == NULL) {
+		DBG_WARNING("prjltRangeIcon not using effSolid");
+	}
+	else {
+	//	pData->m_ColorDiffuse = maFloatRGBA(0.0f, 0.0f, 0.0f, 1.0f);
+	//	pData->m_ColorAmbient = maFloatRGBA(0.0f, 0.0f, 0.0f, 1.0f);
+		pData->m_Color = maFloatRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+	//	pData->m_ColorSpecular = maFloatRGBA(0.0f, 0.0f, 0.0f, 1.0f);
+	//	pData->m_Transparency = 1;
+	}
 
-//	pData->m_ColorDiffuse = maFloatRGBA(0.0f, 0.0f, 0.0f, 1.0f);
-//	pData->m_ColorAmbient = maFloatRGBA(0.0f, 0.0f, 0.0f, 1.0f);
-	pData->m_Color = maFloatRGBA(1.0f, 1.0f, 1.0f, 1.0f);
-//	pData->m_ColorSpecular = maFloatRGBA(0.0f, 0.0f, 0.0f, 1.0f);
-//	pData->m_Transparency = 1;
 
 	// Create fragment
 	m_pFragment = create_hemisphere(1.0f, 6, 6, mat);

@@ -292,6 +292,9 @@ matTexture* LoadTexture( const fsLocator& i_Locator, const TEXTURE_TYPE i_Type, 
 //--------------------------------------------------------------------
 matTexture* LoadTexture(const fsLocator& i_Directory, const itString& i_Name, const TEXTURE_TYPE i_Type/* = TEXTURE_TYPE_2D*/, const bool mipmap_if_2D /*= true*/, const bool i_bIgnoreTUVSuffix /*= false*/)
 {
+	if (l_pImpl == NULL)
+		return NULL;
+
 	//we want no extension information to remain in the name of the texture
 	itString tex_name(i_Name);
 	//tex_name.StripExtension();
@@ -483,7 +486,7 @@ matUVATexture* CreateUVATexture()
 //--------------------------------------------------------------------
 matTexture* CreateShadowMap(int i_nTextureWidth, int i_nTextureHeight)
 {
-	DBG_ASSERT(l_pImpl, "No texture manager implementation yet.");
+	DBG_WARNING("No texture manager implementation yet.");
 	if (!l_pImpl)
 		return NULL;
 	return l_pImpl->CreateShadowMap(i_nTextureWidth, i_nTextureHeight);
@@ -517,7 +520,7 @@ matTexture* CreateRenderTargetTexture(int i_nTextureWidth,
 										bool i_bFloatDepth,
 										bool i_bAntiAlias)
 {
-	DBG_ASSERT(l_pImpl, "No texture manager implementation yet.");
+//	DBG_ASSERT(l_pImpl, "No texture manager implementation yet.");
 	if (!l_pImpl)
 		return NULL;
 	return l_pImpl->CreateRenderTargetTexture(i_nTextureWidth, i_nTextureHeight, 
@@ -738,7 +741,7 @@ void FillTexture(matTexture* i_pTexture, const maFloatRGBA& i_Color)
 //------------------------------------------------------------------------
 void FillTexture(matTexture* i_pTexture, void* i_PixelData, int i_nByte)
 {
-	DBG_ASSERT(l_pImpl, "No texture manager implementation yet.");
+//	DBG_ASSERT(l_pImpl, "No texture manager implementation yet.");
 	if (!l_pImpl)
 		return;
 	l_pImpl->FillTexture(i_pTexture, i_PixelData, i_nByte);
@@ -764,7 +767,7 @@ matTexture* CreateTexture(int i_nTextureWidth,
 	bool i_bMipmap,
 	void* i_PixelData)
 {
-	DBG_ASSERT(l_pImpl, "No texture manager implementation yet.");
+//	DBG_ASSERT(l_pImpl, "No texture manager implementation yet.");
 	if (!l_pImpl)
 		return NULL;
 

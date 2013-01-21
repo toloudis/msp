@@ -10,6 +10,7 @@
 **	StudioGPU
 **	Copyright(C) 2007 - All Rights Reserved
 \****************************************************************************/
+#pragma once
 #ifdef ENV_BOOST_HPP
 #error envBoost.hpp multiply included
 #endif

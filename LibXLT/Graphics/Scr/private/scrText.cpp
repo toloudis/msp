@@ -116,7 +116,13 @@ void scrText::SetFontMapImage(const fsLocator& i_Locator, int i_Width/* = 0*/, i
 	m_pTexture = matTextureMgr::LoadTexture(i_Locator);
 	matTextureMgr::SetSkipAllTextures(bWasSkipTextures);
 
-	m_pMaterial->TypedData<effTexturedData>()->m_Texture = m_pTexture;
+	if (m_pTexture == NULL)
+		return;
+
+	effTexturedData* d = m_pMaterial->TypedData<effTexturedData>();
+	if (d!=NULL) {
+		d->m_Texture = m_pTexture;
+	}
 
 	if (!i_Width)
 	{

@@ -54,9 +54,11 @@ namespace api3dShape
 			matMaterial *mat = new matMaterial("Solid.fx");
 
 			effSolidData* pData = dynamic_cast<effSolidData*>(mat->GetEffectData());
-			DBG_ASSERT(pData != NULL, "object_for_fragment api3dobjectsimple not using effSolid");
+			if(pData != NULL) {
+				DBG_ASSERT(pData != NULL, "object_for_fragment api3dobjectsimple not using effSolid");
 
-			pData->m_Color = i_Color;
+				pData->m_Color = i_Color;
+			}
 			i_Frag->SetMaterial(mat);
 
 			return new api3dObjectSimple(i_Frag, mat);

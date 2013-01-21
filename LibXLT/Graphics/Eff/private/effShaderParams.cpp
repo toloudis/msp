@@ -331,9 +331,10 @@ matShaderEffect* effShaderParams::GetShader()
 			m_ShaderName = shaderLoc;
 
 		// Catastrophe. Couldnt even find Simple.fx
-		DBG_ASSERT(m_pShader != NULL, "No shader could be loaded for " << m_ShaderName);
-		if (!m_pShader)
+		if (!m_pShader) {
+			DBG_WARNING("No shader could be loaded for " << m_ShaderName);
 			return NULL;
+		}
 	}
 	return m_pShader;
 }

@@ -57,8 +57,12 @@ cmraIconObject::cmraIconObject()
 	// Material
 	matMaterial *mat = new matMaterial("Solid.fx");
 	effSolidData* pData = dynamic_cast<effSolidData*>(mat->GetEffectData());
-	DBG_ASSERT(pData != NULL, "cmraIconObject not using effSolid");
-	pData->m_Color = maFloatRGBA(0.38f, 0.65f, 0.95f, 1.0f);
+	if (pData == NULL) {
+		DBG_WARNING("cmraIconObject not using effSolid");
+	}
+	else {
+		pData->m_Color = maFloatRGBA(0.38f, 0.65f, 0.95f, 1.0f);
+	}
 
 	std::vector<maPoint3d> line_verts(c_NumIconVerts, maPoint3d(0,0,0));
 	std::vector<maPoint3d> line_normals(c_NumIconVerts, maPoint3d(0,1,0));

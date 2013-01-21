@@ -7,6 +7,7 @@
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
+#pragma once
 #ifdef G2D_PFD_HPP
 #error g2dPFD.hpp multiply included
 #endif

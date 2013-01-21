@@ -20,7 +20,7 @@ g2dResourceCounterImpl* g2dResourceCounter::sm_pImplementation = NULL;
 //--------------------------------------------------------------------
 float g2dResourceCounter::GetTotalVideoMemory()
 {
-	DBG_ASSERT(g2dResourceCounter::sm_pImplementation, "g2dResourceCounter: No implementation");
+//	DBG_ASSERT(g2dResourceCounter::sm_pImplementation, "g2dResourceCounter: No implementation");
 	if (!g2dResourceCounter::sm_pImplementation)
 		return 0.0f;
 	return sm_pImplementation->GetTotalVideoMemory();

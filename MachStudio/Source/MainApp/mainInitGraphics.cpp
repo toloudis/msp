@@ -39,7 +39,8 @@
 #include "ToolUIWx/pwx/pwxControlFactoryBase.hpp"
 #include "ToolUIWx/pwx/pwxControlFactoryCustom.hpp"
 #include "ToolUIWx/pwx/pwxControlMgr.hpp"
-#include "GraphicsDX11/GraphicsDX11Layer.hpp"
+#include "Area18/Area18Layer.hpp"
+//#include "GraphicsDX11/GraphicsDX11Layer.hpp"
 
 
 //============================================================================
@@ -74,12 +75,12 @@ mainInitGraphics::mainInitGraphics(int i_AppWidth,
 		GraphicsLayer::Init();
 
 #ifdef USE_WXWIDGETS
-		GraphicsDX11Layer::Init(i_pMainFrame->GetRenderWindow()->GetHandle());
+		Area18Layer::Init(i_pMainFrame->GetRenderWindow()->GetHandle());
 #else
-		GraphicsDX11Layer::Init(appApplication::GetMainWindowHandle());
+		Area18Layer::Init(appApplication::GetMainWindowHandle());
 #endif
-		GraphicsLayer::InitGraphics(GraphicsDX11Layer::GetSystem2D(), GraphicsDX11Layer::GetSystem3D());
-		GraphicsDX11Layer::InitGraphics();
+		GraphicsLayer::InitGraphics(Area18Layer::GetSystem2D(), Area18Layer::GetSystem3D());
+		Area18Layer::InitGraphics();
 
 		fsLocator font_loc;
 		font_loc.Push( gfPaths::GetPath(mnmPaths::e_ExeArt) ); 
@@ -227,9 +228,9 @@ mainInitGraphics::~mainInitGraphics()
 
 	ImportExportLayer::CleanUp();
 	AudioDSLayer::CleanUp();
-	GraphicsDX11Layer::CleanUpGraphics();
+	Area18Layer::CleanUpGraphics();
 	GraphicsLayer::CleanUpGraphics();
-	GraphicsDX11Layer::CleanUp();
+	Area18Layer::CleanUp();
 	GraphicsLayer::CleanUp();
 }
 

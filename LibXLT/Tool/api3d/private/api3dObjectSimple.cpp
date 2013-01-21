@@ -194,7 +194,7 @@ void api3dObjectSimple::SetColor(const maFloatRGBA &i_Color)
 		}
 		else
 		{
-			DBG_ASSERT(pData != NULL, "api3dobjectsimple::SetColor not using effSolid or effTextured");
+//			DBG_ASSERT(pData != NULL, "api3dobjectsimple::SetColor not using effSolid or effTextured");
 		}
 	}
 }

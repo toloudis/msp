@@ -28,7 +28,6 @@
 #include "Graphics/mat/matMaterial.hpp"
 #include "Graphics/mat/matShaderMgr.hpp"
 #include "Graphics/mdl/mdlMaterialInfo.hpp"
-//#include "GraphicsDX11/eff/effShaderUtilWin.hpp"
 #include "Tool/gpx/gpxRenderControl.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
 
@@ -190,7 +189,9 @@ void mtrlPropertyObject::SetShaders(mtrlShaderObject* i_pShaderData,
 		currentShaderName = (m_Data.GetShader());
 
 	// Gather the UI Properties from the shader objects all together
-	m_BaseLayerUI->Add(m_pShaderData->GetList());
+	if (m_pShaderData) {
+		m_BaseLayerUI->Add(m_pShaderData->GetList());
+	}
 	m_BaseLayerUI->Add(m_pUVTransform->GetList());
 	m_BaseLayerUI->Add(m_pNormalsData->GetList());
 	m_BaseLayerUI->Add(m_pTextureFilterData->GetList());

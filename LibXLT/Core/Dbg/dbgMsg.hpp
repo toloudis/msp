@@ -36,6 +36,7 @@
 //	StudioGPU
 //	Copyright(C) 2003 - All Rights Reserved
 //****************************************************************************
+#pragma once
 #ifdef DBG_MSG_HPP
 #error dbgMsg.hpp multiply included
 #endif

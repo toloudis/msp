@@ -174,7 +174,9 @@ void cmpsObjectSimple::ModifyColor(const maFloatRGBA &i_Color)
 	if( i_Color != m_ColorData.m_Color )
 	{
 		m_ColorData.m_Color = i_Color;
-		m_pMaterialProxy->SetEffectDataChanged();
+		if (m_pMaterialProxy != NULL) {
+			m_pMaterialProxy->SetEffectDataChanged();
+		}
 	}
 /*
 	if (i_Color != m_ColorData.m_ColorDiffuse)
@@ -245,7 +247,9 @@ void cmpsObjectSimple::DisplayActive(bool i_bActive)
 			m_ColorData.m_ColorEmissive = (m_Color*m_Factor);
 			m_ColorData.m_Transparency = m_Color.GetAlpha();
 */
-			m_pMaterialProxy->SetEffectDataChanged();
+			if (m_pMaterialProxy != NULL) {
+				m_pMaterialProxy->SetEffectDataChanged();
+			}
 		}
 		else
 		{
@@ -254,7 +258,9 @@ void cmpsObjectSimple::DisplayActive(bool i_bActive)
 			m_ColorData.m_ColorEmissive = (c_Black);
 			m_ColorData.m_Transparency = c_Grey.GetAlpha();
 */
-			m_pMaterialProxy->SetEffectDataChanged();
+			if (m_pMaterialProxy != NULL) {
+				m_pMaterialProxy->SetEffectDataChanged();
+			}
 		}
 	}
 }
@@ -302,6 +308,10 @@ void cmpsObjectSimple::Init(api3dObjectSimple *i_pBaseObj,
 			
 	// Also create a proxy for the phong data so we can set the color safely
 	effSolidData* pData = dynamic_cast<effSolidData*>(i_pMaterial->GetEffectData());
+	if (pData == NULL) {
+		m_pMaterialProxy = NULL;
+		return;
+	}
 	DBG_ASSERT(pData != NULL, "cmpsObjectSimple not using effSolid");
 	m_ColorData = *pData; // Make thread-safe copy of data 
 	m_pMaterialProxy = new gpxSolidData(m_ColorData, *pData); // proxy associates the two data structs

@@ -76,8 +76,12 @@ prjltIconSpot::prjltIconSpot()
 	matMaterial *cone_mat = new matMaterial("Solid.fx");
 
 	effSolidData* pData = dynamic_cast<effSolidData*>(cone_mat->GetEffectData());
-	DBG_ASSERT(pData != NULL, "prjltIconSpot not using effSolid");
-	pData->m_Color = maFloatRGBA(1.0f, 1.0f, 0.0f, 1.0f);
+	if (pData == NULL) {
+		DBG_WARNING("prjltIconSpot not using effSolid");
+	}
+	else {
+		pData->m_Color = maFloatRGBA(1.0f, 1.0f, 0.0f, 1.0f);
+	}
 
 #if SHOW_FRUSTRUM
 	matMaterial *mat = new matMaterial("Solid.fx");

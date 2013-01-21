@@ -54,36 +54,47 @@ tma3dRenderView::tma3dRenderView(g2dWindow* i_pWindow,
 	m_Renderers[e_Default] = g3dSceneRendererCreate::CreateDefaultRenderer();
 
 	m_Renderers[e_HDR] = g3dSceneRendererCreate::CreateHDRRenderer();
+	if (m_Renderers[e_Default])
 	m_Renderers[e_Default]->ShareBuffers(m_Renderers[e_HDR]);
 
 	m_Renderers[e_AmbientOcclusion] = g3dSceneRendererCreate::CreateAmbientOcclusionRenderer();
+	if (m_Renderers[e_Default])
 	m_Renderers[e_Default]->ShareBuffers(m_Renderers[e_AmbientOcclusion]);
 
 	m_Renderers[e_Depth] = g3dSceneRendererCreate::CreateDepthRenderer();
+	if (m_Renderers[e_Default])
 	m_Renderers[e_Default]->ShareBuffers(m_Renderers[e_Depth]);
 
 	m_Renderers[e_ShadowMask] = g3dSceneRendererCreate::CreateShadowMaskRenderer();
+	if (m_Renderers[e_Default])
 	m_Renderers[e_Default]->ShareBuffers(m_Renderers[e_ShadowMask]);
 
 	m_Renderers[e_Normals] = g3dSceneRendererCreate::CreateNormalRenderer();
+	if (m_Renderers[e_Default])
 	m_Renderers[e_Default]->ShareBuffers(m_Renderers[e_Normals]);
 
 	m_Renderers[e_IlluminationOnly] = g3dSceneRendererCreate::CreateIlluminationRenderer();
+	if (m_Renderers[e_Default])
 	m_Renderers[e_Default]->ShareBuffers(m_Renderers[e_IlluminationOnly]);
 
 	m_Renderers[e_Materials] = g3dSceneRendererCreate::CreateMaterialsRenderer();
+	if (m_Renderers[e_Default])
 	m_Renderers[e_Default]->ShareBuffers(m_Renderers[e_Materials]);
 
 	m_Renderers[e_ReflectionOnly] = g3dSceneRendererCreate::CreateReflectionOnlyRenderer();
+	if (m_Renderers[e_Default])
 	m_Renderers[e_Default]->ShareBuffers(m_Renderers[e_ReflectionOnly]);
 
 	m_Renderers[e_GlobalIllumination] = g3dSceneRendererCreate::CreateGlobalIlluminationRenderer();
+	if (m_Renderers[e_Default])
 	m_Renderers[e_Default]->ShareBuffers(m_Renderers[e_GlobalIllumination]);
 
 	m_Renderers[e_Glow] = g3dSceneRendererCreate::CreateGlowRenderer();
+	if (m_Renderers[e_Default])
 	m_Renderers[e_Default]->ShareBuffers(m_Renderers[e_Glow]);
 
 	m_Renderers[e_VelocityMap] = g3dSceneRendererCreate::CreateVelocityMapRenderer();
+	if (m_Renderers[e_Default])
 	m_Renderers[e_Default]->ShareBuffers(m_Renderers[e_VelocityMap]);
 
 	m_CurrentRenderer = e_Default;

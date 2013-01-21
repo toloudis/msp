@@ -49,7 +49,6 @@ namespace mtrlShaderUtil
 
 		// now, we need to get the shader.
 		matShaderEffect* eff = pParams->GetShader();
-		DBG_ASSERT(eff != NULL, "shader did not load!");
 
 		// now, if the current params have no shader bindings or gui, 
 		// we need to create them. from then on, they can be carried along.
@@ -59,6 +58,9 @@ namespace mtrlShaderUtil
 				eff->BuildPrtyObject(pParams.get());
 			i_pMaterial->SetShaderParams(i_MaterialLayerIndex, pParams);
 			pRetVal = new mtrlSurfaceShader(i_Data, i_pMaterial, pParams, i_TextureDir);
+		}
+		else {
+			DBG_WARNING("shader did not load!");
 		}
 	
 		if (pRetVal)

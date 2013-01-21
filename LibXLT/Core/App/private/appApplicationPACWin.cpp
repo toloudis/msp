@@ -558,6 +558,11 @@ LRESULT appApplicationPAC::WindowProc(	HWND hWnd,      // handle to window
 			ret_val = 0;*/
 		}
 		break;
+		case WM_ERASEBKGND:
+			// GL windows need this (not sure about DX11)
+			pass_to_def_proc = false;
+			ret_val = 1;
+			break;
 	
 		case WM_SETCURSOR:
 			if ( l_pSetCursorFunction )
@@ -1091,7 +1096,7 @@ HWND create_window(int i_Width, int i_Height, int i_X, int i_Y, const itString& 
 		WNDCLASSEXA wc;
 		memset(&wc, 0, sizeof(wc));
 		wc.cbSize = sizeof(wc);
-		wc.style = 0;
+		wc.style = CS_OWNDC;
 		wc.lpfnWndProc = LocalWindowProc;
 		wc.cbClsExtra = 0;
 		wc.cbWndExtra = 0;
@@ -1159,7 +1164,7 @@ HWND create_window(int i_Width, int i_Height, int i_X, int i_Y, const itString& 
 
 		memset(&wc, 0, sizeof(wc));
 		wc.cbSize = sizeof(wc);
-		wc.style = 0;
+		wc.style = CS_OWNDC;
 		wc.lpfnWndProc = LocalWindowProc;
 		wc.cbClsExtra = 0;
 		wc.cbWndExtra = 0;
