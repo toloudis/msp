@@ -104,6 +104,7 @@ class maVector2d
 		//------------------------------------------------------------------------
 		//------------------------------------------------------------------------
 		inline void operator /= ( float i_s );
+		inline void operator /= ( const maVector2d& i_s );
 
 		//------------------------------------------------------------------------
 		//------------------------------------------------------------------------
@@ -345,6 +346,12 @@ maVector2d::operator /= ( float i_s )				// ACCUMULATED SCALAR DIV (/=)
 {
 	m_X /= i_s;
 	m_Y /= i_s;
+}
+void 
+maVector2d::operator /= ( const maVector2d& i_s )				// ACCUMULATED SCALAR DIV (/=)
+{
+	m_X /= i_s.m_X;
+	m_Y /= i_s.m_Y;
 }
 
 

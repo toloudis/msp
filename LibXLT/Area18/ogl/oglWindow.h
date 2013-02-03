@@ -172,6 +172,8 @@ private:
 	g2dPFD m_PFD;
 	oglContext* mContext;
 
+	GLsizei mW, mH;
+
 	static int l_nPixelFormat;
 	static PIXELFORMATDESCRIPTOR l_PixelFormat;
 };

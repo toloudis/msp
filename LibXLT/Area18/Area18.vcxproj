@@ -161,6 +161,7 @@
     <ClCompile Include="ogl\oglSystem2D.cpp" />
     <ClCompile Include="ogl\oglSystem3D.cpp" />
     <ClCompile Include="ogl\oglTypes.cpp" />
+    <ClCompile Include="ogl\oglView.cpp" />
     <ClCompile Include="ogl\oglWindow.cpp" />
     <ClCompile Include="rndr\rndrDrawScene.cpp" />
     <ClCompile Include="rndr\rndrEngine.cpp" />
@@ -202,6 +203,7 @@
     <ClInclude Include="ogl\oglSystem2D.h" />
     <ClInclude Include="ogl\oglSystem3D.h" />
     <ClInclude Include="ogl\oglTypes.hpp" />
+    <ClInclude Include="ogl\oglView.h" />
     <ClInclude Include="ogl\oglWindow.h" />
     <ClInclude Include="rndr\rndrDrawScene.hpp" />
     <ClInclude Include="rndr\rndrEngine.h" />

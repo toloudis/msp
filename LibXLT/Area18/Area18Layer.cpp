@@ -231,14 +231,14 @@ g3dSystem* Area18Layer::GetSystem3D()
 testScene* Area18Layer::GetTestScene(TestScene t)
 {
 	testScene* ts = NULL;
-	switch(t) {
+//	switch(t) {
 //	case TS_CAMERA: ts = new testCamera; break;
 //	case 	TS_FBO: ts = new testFBO; break;
 //	case 	TS_TEXTURE: ts = new testTexture; break;
 //	case 	TS_PRIMITIVE: ts = new testPrimitive; break;
 //	case TS_TEXT: ts = new testText; break;
 //	case TS_DIRLT: ts = new testDirLt; break;
-	};
+//	};
 	if (ts != NULL) ts->Setup();
 	return ts;
 }

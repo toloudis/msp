@@ -6,7 +6,7 @@
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
-
+#pragma once
 #ifdef MA_AXISBOX_HPP
 #error maAxisBox.hpp multiply included
 #endif
@@ -68,6 +68,11 @@ class maAxisBox
 		//------------------------------------------------------------------------
 		bool IsEmpty() const;
 
+		// test if box has volume at all
+		bool HasVolume() const {return !IsEmpty() && (GetVolume() > 0);}
+
+		float GetVolume() const { return (m_MaxX-m_MinX)*(m_MaxY-m_MinY)*(m_MaxZ-m_MinZ); }
+		maVector3d GetSize() const { return maVector3d((m_MaxX-m_MinX),(m_MaxY-m_MinY),(m_MaxZ-m_MinZ)); }
 		//------------------------------------------------------------------------
 		//	GetBoxPoint returns a point of the box.  The order of the points
 		//	returned is:
@@ -119,6 +124,8 @@ class maAxisBox
 		inline float GetMinY() const;
 		inline float GetMaxZ() const;
 		inline float GetMinZ() const;
+		inline maVector3d GetMin() const {return maVector3d(GetMinX(), GetMinY(), GetMinZ());}
+		inline maVector3d GetMax() const {return maVector3d(GetMaxX(), GetMaxY(), GetMaxZ());}
 
 		//------------------------------------------------------------------------
 		//	These set the various extrema of the box
@@ -223,6 +230,7 @@ class maAxisBox
 		//	i_Radius amount.
 		//------------------------------------------------------------------------
 		inline void Swell(float i_Radius);
+		inline void Pad(const maVector3d& iRadius);
 
 		//------------------------------------------------------------------------
 		// return whether there is intersection or not, and calculate the intersection region
@@ -415,6 +423,16 @@ inline void maAxisBox::Swell(float i_Radius)
 	m_MinX -= i_Radius;
 	m_MinY -= i_Radius;
 	m_MinZ -= i_Radius;
+
+}
+inline void maAxisBox::Pad(const maVector3d& iRadius)
+{
+	m_MaxX += iRadius[0];
+	m_MaxY += iRadius[1];
+	m_MaxZ += iRadius[2];
+	m_MinX -= iRadius[0];
+	m_MinY -= iRadius[1];
+	m_MinZ -= iRadius[2];
 
 }
 	

@@ -131,6 +131,14 @@ class maVector3d
 		// returns false if this is a zero length vector
 		//------------------------------------------------------------------------
 		inline bool Normalize();
+		maVector3d Unit() const {
+			maVector3d a(*this);
+			if(a.Normalize()) {
+				return a;
+			} else {
+				return maVector3d();
+			}
+		}
 
 		//------------------------------------------------------------------------
 		//	Equal Value - are the values equal within a tolerance

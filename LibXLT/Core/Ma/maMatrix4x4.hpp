@@ -6,7 +6,7 @@
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
-
+#pragma once
 #ifdef MA_MATRIX4X4_HPP
 #error maMatrix4x4.hpp multiply included
 #endif
@@ -56,6 +56,10 @@ class maMatrix4x4
 		//	vector is pointing.
 		//------------------------------------------------------------------------
 	    void MakeRotate( float i_AngleRad, maVector3d i_AxisVec );
+
+		//	MakeRotate makes the matrix into a rotation from one vector to the other.
+		//  The rotation axis is the cross product of the two vectors.
+		void MakeRotate( const maVector3d& iFrom, const maVector3d& iTo);
 
 		//------------------------------------------------------------------------
 		//	RotateBy appends a rotation about the given axis to the matrix.
@@ -185,6 +189,8 @@ class maMatrix4x4
 		//	Transform - used for points, assumes w=1
 		//------------------------------------------------------------------------
 		inline void Transform(maVector3d& io_Vector) const;
+		// does a perspective w divide
+		inline maVector3d TransformH(const maVector3d& io_Vector) const;
 
 		//------------------------------------------------------------------------
 		//	TransformDir - multiplies vector times matrix using w=0
@@ -448,6 +454,15 @@ inline void maMatrix4x4::Transform(maVector3d& io_Vector) const
 					(m_Mat[1]*io_Vector.GetX() + m_Mat[5]*io_Vector.GetY() + m_Mat[9]*io_Vector.GetZ()  + m_Mat[13]),
 					(m_Mat[2]*io_Vector.GetX() + m_Mat[6]*io_Vector.GetY() + m_Mat[10]*io_Vector.GetZ() + m_Mat[14]) );
 
+}
+inline maVector3d maMatrix4x4::TransformH(const maVector3d& i_Vector) const
+{
+	maVector4d v;
+	v.Set(	(m_Mat[0]*i_Vector.GetX() + m_Mat[4]*i_Vector.GetY() + m_Mat[8]*i_Vector.GetZ()  + m_Mat[12]),
+			(m_Mat[1]*i_Vector.GetX() + m_Mat[5]*i_Vector.GetY() + m_Mat[9]*i_Vector.GetZ()  + m_Mat[13]),
+			(m_Mat[2]*i_Vector.GetX() + m_Mat[6]*i_Vector.GetY() + m_Mat[10]*i_Vector.GetZ() + m_Mat[14]),
+			(m_Mat[3]*i_Vector.GetX() + m_Mat[7]*i_Vector.GetY() + m_Mat[11]*i_Vector.GetZ() + m_Mat[15]) );
+	return maVector3d(v[0]/v[3], v[1]/v[3], v[2]/v[3]);
 }
 
 //------------------------------------------------------------------------

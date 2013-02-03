@@ -65,6 +65,15 @@ maMatrix4x4::RotateBy( float i_AngleRad, maVector3d i_AxisVec )
 	(*this) *= rotation_matrix;
 }
 
+void 
+maMatrix4x4::MakeRotate( const maVector3d& iFrom, const maVector3d& iTo)
+{
+	// create axis and angle to rotate:
+	maVector3d axis = iFrom.Cross(iTo);
+	float dp = iFrom.Dot(iTo);
+	float angle = acos(dp);
+	MakeRotate(angle, axis);
+}
 
 //------------------------------------------------------------------------
 //	Rotate()

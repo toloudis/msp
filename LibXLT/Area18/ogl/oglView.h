@@ -1,7 +1,4 @@
 #pragma once
-#if 0
-#ifndef DISP_VIEW_HAS_BEEN_INCLUDED
-#define DISP_VIEW_HAS_BEEN_INCLUDED
 
 #include "Core/ma/maAxisBox.hpp"
 #include "Core/ma/maMatrix4x4.hpp"
@@ -199,7 +196,7 @@ public:
 
 	/// returns left, right, bottom, top
 	maVector4d getOrthoExtents() const {
-		return maVector4d(mLeft, mRight, mBottom, mTop);
+		return maVector4d((float)mLeft, (float)mRight, (float)mBottom, (float)mTop);
 	}
 
 	/// returns which axis is pointing towards global X, Y, Z
@@ -297,7 +294,7 @@ public:
 	maMatrix4x4 modelView() const;
 
 	/// Get a gmath::Frustum for this View
-	gmath::Frustum<double> frustum() const;
+	//gmath::Frustum<double> frustum() const;
 
 	void center(maAxisBox const &bbox);
 
@@ -309,7 +306,7 @@ public:
 
 	/// @param aOffset The amount to offset, in viewport pixels
 	/// @param viewport The viewport in pixels (xoffset, yoffset, xwidth, yheight)
-	void affineOffset(const maVector2d &aOffset, const maVector4d& viewport) { mAffineOffset += aOffset/maVector2d(viewport[2], viewport[3]); }
+	void affineOffset(const maVector2d &aOffset, const maVector4d& viewport) { mAffineOffset += maVector2d(aOffset[0]/viewport[2], aOffset[1]/viewport[3]); }
 	maVector2d getAffineOffset() { return mAffineOffset; }
 
 	/// Rotate (in radians, clockwise) about the center of the affine transform
@@ -434,6 +431,3 @@ private:
 	/// Scale about the center of the view
 	double mAffineScale;
 };
-#endif // DISP_VIEW_HAS_BEEN_INCLUDED
-
-#endif

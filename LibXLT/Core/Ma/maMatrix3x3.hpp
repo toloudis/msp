@@ -39,6 +39,8 @@ class maMatrix3x3
 		maMatrix3x3(	float i_M0,  float i_M1,  float i_M2,
 						float i_M3,  float i_M4,  float i_M5,  
 						float i_M6,  float i_M7,  float i_M8);
+		maMatrix3x3(const maVector3d& iX, const maVector3d& iY,
+			const maVector3d& iZ);
 						 
 		//------------------------------------------------------------------------
 		//	MakeRotate makes the matrix into a rotation about the given axis.
@@ -178,6 +180,9 @@ class maMatrix3x3
 		//	operator: subtraction (-=)
 		//------------------------------------------------------------------------
 	    void operator -= (const maMatrix3x3& i_A);
+
+		// get row vector at index
+		maVector3d Row(int i);
 
 	public:
 

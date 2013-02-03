@@ -34,6 +34,8 @@ oglWindow::oglWindow(HWND i_Hwnd, bool i_bOwnHwnd,
 		width = rect.right - rect.left;
 		height = rect.bottom - rect.top;
 	}
+	mW = width;
+	mH = height;
 }
 
 oglWindow::~oglWindow(void)
@@ -143,6 +145,8 @@ void oglWindow::DrawImage(	int i_DX1,
 //------------------------------------------------------------------------
 void oglWindow::ResizeWindow(int i_Width, int i_Height)
 {
+	mW = i_Width;
+	mH = i_Height;
 }
 
 //------------------------------------------------------------------------
@@ -256,6 +260,8 @@ const g2dPFD& oglWindow::GetPixelFormat() const
 //------------------------------------------------------------------------
 void oglWindow::GetDimensions(int& o_Width, int& o_Height) const
 {
+	o_Width = mW;
+	o_Height = mH;
 }
 
 //------------------------------------------------------------------------

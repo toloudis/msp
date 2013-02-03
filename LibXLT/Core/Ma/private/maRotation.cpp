@@ -42,6 +42,11 @@ void maRotation::SetValue( const maVector3d &i_Axis, float i_Angle )
 	m_W = c;
 }
 
+maRotation::maRotation( const maMatrix3x3 &iRot )
+{
+	this->SetValue(iRot);
+}
+
 //------------------------------------------------------------------------
 //	SetValue()
 //

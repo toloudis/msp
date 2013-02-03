@@ -1,5 +1,11 @@
 #include "oglView.h"
-#if 0
+
+#include "oglTypes.hpp"
+#include "Core/Ma/maRotation.hpp"
+#include <assert.h>
+
+#define M_PI (3.14159265)
+
 /// This helper modifies an interval [a, b] such that the midpoint of the interval
 /// is maintained, and the length of the interval is multiplied by 'scale'.
 void centeredRescale(double& a, double& b, double scale)
@@ -18,9 +24,10 @@ static const maVector3d CARDINAL_AXES[oglView::NUM_AXIS_TYPES] = {
                                              maVector3d(0.0,  0.0,  1.0),
                                              maVector3d(-1.0,  0.0,  0.0),
                                              maVector3d(0.0, -1.0,  0.0),
-                                             maVector3d(0.0,  0.0, -1.0)};
+                                             maVector3d(0.0,  0.0, -1.0)
+};
 
-static const float FRAME_PADDING = 1.2;
+static const float FRAME_PADDING = 1.2f;
 
 oglView::oglView()
 : mProjectionType(PERSPECTIVE)
@@ -130,11 +137,14 @@ oglView::operator ==(const oglView& other) const
         mAffineScale == other.mAffineScale;
 }
 
+static float degToRad(double d) {return float((d) * 3.14159265 / 180.0); }
+static float radToDeg(double d) {return float((d) * 180.0 / 3.14159265); }
+
 void
 oglView::reset()
 {
     // the default setup frames a sphere of diameter 105
-    mPosition  = maVector3d(0, 0, 195.933);
+    mPosition  = maVector3d(0, 0, 195.933f);
     mReference = maVector3d(0, 0, 0);
     mUp        = maVector3d(0, 1, 0);
     mFov       = degToRad(30.0);
@@ -166,7 +176,7 @@ oglView::reset()
 void
 oglView::setPosition(maVector3d const &pos)
 {
-    if (mReference.eq(pos)) {
+    if (mReference == pos) {
         DBG_ERROR("View ref and pos cannot be coincident");
     }
     mPosition = pos;
@@ -182,7 +192,7 @@ oglView::position() const
 void
 oglView::setRefPoint(maVector3d const &ref)
 {
-    if (mPosition.eq(ref)) DBG_ERROR("View ref and pos cannot be coincident");
+    if (mPosition == ref) DBG_ERROR("View ref and pos cannot be coincident");
     mReference = ref;
     fixUpVector();
 }
@@ -196,25 +206,27 @@ oglView::refPoint() const
 void
 oglView::setPositionAndRef(maVector3d const &pos, maVector3d const &ref)
 {
-    if (pos.eq(ref)) DBG_ERROR("View ref and pos cannot be coincident");
+    if (pos == ref) DBG_ERROR("View ref and pos cannot be coincident");
     mPosition = pos;
     mReference = ref;
     fixUpVector();
 }
 
+#define SMALLVALUE (0.000001)
+#define REL_EQ_TOL(a, b, e) (fabs(a-b)<=e)
 void
 oglView::setPositionAndRefAndUp(const maVector3d& pos, const maVector3d& ref, const maVector3d& up)
 {
-    if (pos.eq(ref)) {
+    if (pos == ref) {
         DBG_ERROR("View ref and pos cannot be coincident");
     }
-    if (!REL_EQ_TOL(0, (ref - pos).dot(up), SMALLVALUE)) {
+    if (!REL_EQ_TOL(0, (ref - pos).Dot(up), SMALLVALUE)) {
         DBG_ERROR("View direction and up vector must be perpendicular");
     }
     mPosition = pos;
     mReference = ref;
 
-    mUp = up.unit();
+    mUp = up.Unit();
 }
 
 maVector3d const &
@@ -226,7 +238,7 @@ oglView::upVector() const
 void
 oglView::setFieldOfView(double fov)
 {
-    assert(mProjectionType == PERSPECTIVE);
+    DBG_ASSERT(mProjectionType == PERSPECTIVE, "setFov only supported on Perspective views");
 
     // (FOV>PI) arguably doesn't make sense, but we'll let that be for now and
     // just check for unarguably nonsensical values.
@@ -246,7 +258,7 @@ oglView::setOrthoProjection(double fov)
 {
     const maVector3d ray = mReference - mPosition;
     // thinking of the ray length and the radius of a circle
-    const double r = ray.length();
+    const double r = ray.Length();
     // theta is the half the FOV in radians
     const double theta = fov/2.0;
     // Think of a right triangle whose angle is theta
@@ -309,17 +321,17 @@ void
 oglView::updateOrthoAxes()
 {
     maVector3d v = mPosition - mReference;
-    v.normalize();
+    v.Normalize();
     maVector3d temp = mUp;
-    temp.normalize();
-    maVector3d right = temp.cross(v);
-    maVector3d up = v.cross(right);
+    temp.Normalize();
+    maVector3d right = temp.Cross(v);
+    maVector3d up = v.Cross(right);
 
     unsigned int xAxis = 0, yAxis = 0, zAxis = 0;
     double max_dot = 0.0;
     double dot = 0.0;
     for (unsigned int iAxis = 0; iAxis < NUM_AXIS_TYPES; ++iAxis) {
-        dot = v.dot(CARDINAL_AXES[iAxis]);
+        dot = v.Dot(CARDINAL_AXES[iAxis]);
         if (dot > max_dot) {
             zAxis = iAxis;
             max_dot = dot;
@@ -330,7 +342,7 @@ oglView::updateOrthoAxes()
     max_dot = 0.0;
     dot = 0.0;
     for (unsigned int iAxis = 0; iAxis < NUM_AXIS_TYPES; ++iAxis) {
-        dot = up.dot(CARDINAL_AXES[iAxis]);
+        dot = up.Dot(CARDINAL_AXES[iAxis]);
         if (dot > max_dot
             && iAxis != zAxis
             && iAxis != (zAxis + 3) % NUM_AXIS_TYPES) {
@@ -343,7 +355,7 @@ oglView::updateOrthoAxes()
     max_dot = 0.0;
     dot = 0.0;
     for (unsigned int iAxis = 0; iAxis < NUM_AXIS_TYPES; ++iAxis) {
-        dot = right.dot(CARDINAL_AXES[iAxis]);
+        dot = right.Dot(CARDINAL_AXES[iAxis]);
         if (dot > max_dot
             && iAxis != zAxis
             && iAxis != (zAxis + 3) % NUM_AXIS_TYPES
@@ -362,9 +374,9 @@ oglView::snapToNearestAxis()
     updateOrthoAxes();
 
     maVector3d v =  mPosition - mReference;
-    double len = v.length();
+    double len = v.Length();
 
-    v = CARDINAL_AXES[mOrthoZAxis] * len;
+    v = CARDINAL_AXES[mOrthoZAxis] * (float)len;
     mPosition = mReference + v;
     mUp = CARDINAL_AXES[mOrthoYAxis];
 }
@@ -414,8 +426,10 @@ oglView::setFarClipDistance(double d)
 static void
 rotate_around_axis(maVector3d &x, maVector3d const &axis, double angle)
 {
-    maMatrix4x4 R = gmath::rotation<maMatrix4x4>(axis, -angle);
-    x = x * R;
+    maMatrix4x4 R;
+	R.MakeRotate(-angle, axis);//= gmath::rotation<maMatrix4x4>(axis, -angle);
+	R.Transform(x);
+    //x = x * R;
 }
 
 void
@@ -430,7 +444,7 @@ oglView::orbit(double dTheta, double dPhi)
     const double fudge = 0.001;     // mmmm, double fudge.
 
     // math in here assumes this
-    assert(!mReference.eq(mPosition));
+    assert( mReference != mPosition);
 
     double dAzim = degToRad(dTheta);
     double dIncl = degToRad(dPhi);
@@ -441,9 +455,9 @@ oglView::orbit(double dTheta, double dPhi)
     maVector3d orbitAxis(0, 1, 0); // TODO make this not hard-coded
 
     // the current inclination
-    double incl = acos(orbitAxis.dot(mUp));
+    double incl = acos(orbitAxis.Dot(mUp));
 
-    if (orbitAxis.dot(lookAt) > 0.0) { // if the camera is facing down
+    if (orbitAxis.Dot(lookAt) > 0.0) { // if the camera is facing down
         if (incl + dIncl > M_PI/2.0)
             // the change in inclination takes us across the pole - clamp so
             // that we stop orbiting at the pole
@@ -472,8 +486,8 @@ oglView::rotate(const maMatrix4x4& rotation)
 {
     // Rotate our view direction and up vector by this rotation
     maVector3d forward = mReference - mPosition;
-    mUp = mUp * rotation;
-    forward = forward * rotation;
+	rotation.Transform(mUp);// mUp = mUp * rotation;
+    rotation.Transform(forward);//forward = forward * rotation;
     mReference = mPosition + forward;
 }
 
@@ -481,10 +495,10 @@ void
 oglView::getFrame(maVector3d &forward, maVector3d &right)
 {
     forward = mReference - mPosition;
-    forward.normalize();
+    forward.Normalize();
 
-    right = forward.cross(mUp);
-    right.normalize();
+    right = forward.Cross(mUp);
+    right.Normalize();
 }
 
 void
@@ -498,13 +512,14 @@ oglView::tumble(double x1, double y1, double x2, double y2, const maVector4d& vi
     maVector3d to = unproject(x1, y1, 0, viewport) - mPosition;
 
     // Want our 'from' and 'to' positions projected onto a unit sphere
-    from.normalize();
-    to.normalize();
+    from.Normalize();
+    to.Normalize();
 
     // Now we can directly construct the rotation we want
-    maMatrix4x4 rotation = gmath::rotation<maMatrix4x4>(from, to);
+    maMatrix4x4 rotation;
+	rotation.MakeRotate(from, to);//= gmath::rotation<maMatrix4x4>(from, to);
 
-    // Apply it
+	// Apply it
     rotate(rotation);
 }
 
@@ -513,13 +528,17 @@ oglView::pitch(double angle)
 {
     maVector3d forward, right;
     getFrame(forward, right);
-    rotate(gmath::rotation<maMatrix4x4>(right, angle));
+	maMatrix4x4 rotation;
+	rotation.MakeRotate(angle, right);
+    rotate(rotation);
 }
 
 void
 oglView::yaw(double angle)
 {
-    rotate(gmath::rotation<maMatrix4x4>(mUp, -angle));
+	maMatrix4x4 rotation;
+	rotation.MakeRotate(-angle, mUp);
+    rotate(rotation);
 }
 
 void
@@ -527,25 +546,27 @@ oglView::roll(double angle)
 {
     maVector3d forward, right;
     getFrame(forward, right);
-    rotate(gmath::rotation<maMatrix4x4>(forward, -angle));
+	maMatrix4x4 rotation;
+	rotation.MakeRotate(-angle, forward);
+    rotate(rotation);
 }
 
 void
 oglView::dolly(double r, double u, double f)
 {
     // math in here assumes this
-    assert(!mReference.eq(mPosition));
+    assert( mReference != mPosition);
 
     maVector3d lookAt, right;
     getFrame(lookAt, right);
 
-    if (!pdi::isZero(r) || !pdi::isZero(u)) {
+    if ((r!=0) || (u!=0)) {
         mReference += -right*r + mUp*u;
     }
 
     // make the camera always at least 0.0001 units from the reference point
-    double d = (mReference - mPosition).length();
-    d = std::max(d + f, 0.0001);
+    double d = (mReference - mPosition).Length();
+    d = max(d + f, 0.0001);
     mPosition = mReference - (lookAt * d);
 }
 
@@ -627,23 +648,23 @@ void
 oglView::fixUpVector()
 {
     // math in here assumes this
-    assert(!mReference.eq(mPosition));
+    assert(mReference != mPosition);
 
     // Have a go at calculating the up vector based on the assumption that we're not actually
     // looking directly up or down!
     maVector3d lookAt = mReference - mPosition;
-    lookAt.normalize();
-    maVector3d right = lookAt.cross(maVector3d(0, 1, 0));
-    right.normalize();
-    mUp = right.cross(lookAt);
+    lookAt.Normalize();
+    maVector3d right = lookAt.Cross(maVector3d(0, 1, 0));
+    right.Normalize();
+    mUp = right.Cross(lookAt);
 
     // Patch up the case where we are looking directly up or down.  In this case we arbitrarily choose
     // up direction of (0, 0, -1).  I'm not sure what happens here with perspective views.  The
     // motivation is to get an orthographic top/bottom view that works.
-    if (mUp.eq(maVector3d(0, 0, 0))) {
+    if (mUp == maVector3d(0, 0, 0)) {
         mUp = maVector3d(0, 0, -1);
     } else {
-        mUp.normalize();
+        mUp.Normalize();
     }
 }
 
@@ -657,16 +678,16 @@ void
 oglView::setupModelviewAndProjection() const
 {
     // set up projection matrix
-    glMatrixMode(GL_PROJECTION);
-    glLoadMatrixd(projection().asPointer());
+//    glMatrixMode(GL_PROJECTION);
+//    glLoadMatrixd(projection().asPointer());
 
     // set up modelView matrix
-    glMatrixMode(GL_MODELVIEW);
-    glLoadMatrixd(modelView().asPointer());
+//    glMatrixMode(GL_MODELVIEW);
+//    glLoadMatrixd(modelView().asPointer());
 }
 
 void
-oglView::frame(bbox::BBox3d const &bbox)
+oglView::frame(maAxisBox const &bbox)
 {
     if (mProjectionType == PERSPECTIVE) {
         // TODO: We need to actually project the bounding box extents into screen space and compute
@@ -682,7 +703,7 @@ oglView::frame(bbox::BBox3d const &bbox)
         framePerspective(bbox);
         framePerspective(bbox);
 #else
-        frame(bbox.getCenter(), (bbox.getMin() - bbox.getMax()).length()/2.0);
+        frame(bbox.GetCenter(), (bbox.GetMin() - bbox.GetMax()).Length()/2.0);
 #endif
     } else {
         frameOrtho(bbox);
@@ -693,75 +714,75 @@ void
 oglView::extendRect(const maVector3d& p, std::vector<maVector3d>& rect) const
 {
     // x
-    rect[0][0] = std::min(p[0], rect[0][0]);
+    rect[0][0] = min(p[0], rect[0][0]);
     rect[1][0] = rect[0][0];
-    rect[2][0] = std::max(p[0], rect[2][0]);
+    rect[2][0] = max(p[0], rect[2][0]);
     rect[3][0] = rect[2][0];
 
     // y
-    rect[0][1] = std::min(p[1], rect[0][1]);
+    rect[0][1] = min(p[1], rect[0][1]);
     rect[3][1] = rect[0][1];
-    rect[1][1] = std::max(p[1], rect[1][1]);
+    rect[1][1] = max(p[1], rect[1][1]);
     rect[2][1] = rect[1][1];
 
     // z
-    rect[0][2] = std::min(p[2], rect[0][2]);
+    rect[0][2] = min(p[2], rect[0][2]);
     rect[1][2] = rect[0][2];
-    rect[2][2] = std::max(p[2], rect[2][2]);
+    rect[2][2] = max(p[2], rect[2][2]);
     rect[3][2] = rect[2][2];
 }
 
 
 std::vector<maVector3d>
-oglView::bBoxToScreenRect(const bbox::BBox3d& bbox) const
+oglView::bBoxToScreenRect(const maAxisBox& bbox) const
 {
     maMatrix4x4 toScreen(modelView() * projection());
 
-    const maVector3d& bboxMin = bbox.getMin();
-    const maVector3d& bboxMax = bbox.getMax();
+    const maVector3d& bboxMin = bbox.GetMin();
+    const maVector3d& bboxMax = bbox.GetMax();
 
     // Transform each corner and create a new bounding box.
     maVector3d p;
 
-    p.init(bboxMin[0], bboxMin[1], bboxMin[2]);
-    p = toScreen.transformH(p);
+    p.Set(bboxMin[0], bboxMin[1], bboxMin[2]);
+    p = toScreen.TransformH(p);
     // initialize rect with first screen point
     std::vector<maVector3d> rect(4, p); // [bottomLeftFront, topLeftFront, topRightBack, bottomRightBack]
 
-    p.init(bboxMin[0], bboxMin[1], bboxMax[2]);
-    p = toScreen.transformH(p);
+    p.Set(bboxMin[0], bboxMin[1], bboxMax[2]);
+    p = toScreen.TransformH(p);
     // now extend rect
     extendRect(p, rect);
 
-    p.init(bboxMin[0], bboxMax[1], bboxMin[2]);
-    p = toScreen.transformH(p);
+    p.Set(bboxMin[0], bboxMax[1], bboxMin[2]);
+    p = toScreen.TransformH(p);
     extendRect(p, rect);
 
-    p.init(bboxMin[0], bboxMax[1], bboxMax[2]);
-    p = toScreen.transformH(p);
+    p.Set(bboxMin[0], bboxMax[1], bboxMax[2]);
+    p = toScreen.TransformH(p);
     extendRect(p, rect);
 
-    p.init(bboxMax[0], bboxMin[1], bboxMin[2]);
-    p = toScreen.transformH(p);
+    p.Set(bboxMax[0], bboxMin[1], bboxMin[2]);
+    p = toScreen.TransformH(p);
     extendRect(p, rect);
 
-    p.init(bboxMax[0], bboxMin[1], bboxMax[2]);
-    p = toScreen.transformH(p);
+    p.Set(bboxMax[0], bboxMin[1], bboxMax[2]);
+    p = toScreen.TransformH(p);
     extendRect(p, rect);
 
-    p.init(bboxMax[0], bboxMax[1], bboxMin[2]);
-    p = toScreen.transformH(p);
+    p.Set(bboxMax[0], bboxMax[1], bboxMin[2]);
+    p = toScreen.TransformH(p);
     extendRect(p, rect);
 
-    p.init(bboxMax[0], bboxMax[1], bboxMax[2]);
-    p = toScreen.transformH(p);
+    p.Set(bboxMax[0], bboxMax[1], bboxMax[2]);
+    p = toScreen.TransformH(p);
     extendRect(p, rect);
 
     return rect;
 }
 
 void
-oglView::framePerspective(const bbox::BBox3d& bbox)
+oglView::framePerspective(const maAxisBox& bbox)
 {
     std::vector<maVector3d> rect = bBoxToScreenRect(bbox);
 
@@ -774,13 +795,14 @@ oglView::framePerspective(const bbox::BBox3d& bbox)
     }
 
     const maMatrix4x4 toScreen(modelView() * projection());
-    const maMatrix4x4 toWorld(toScreen.inverse());
+    maMatrix4x4 toWorld(toScreen);
+	toWorld.Invert();//.inverse());
 
     const maVector3d screenCenter((rect[2][0] - rect[0][0])/ 2.0 + rect[0][0],
                                     (rect[1][1] - rect[0][1])/ 2.0 + rect[0][1],
                                     (rect[2][2] - rect[0][2])/ 2.0 + rect[0][2]);
     // back project screen center
-    const maVector3d worldCenter = toWorld.transformH(screenCenter);
+    const maVector3d worldCenter = toWorld.TransformH(screenCenter);
 
     // Pan the view
     mPosition = mPosition - mReference + worldCenter;
@@ -798,15 +820,15 @@ oglView::framePerspective(const bbox::BBox3d& bbox)
     // I've cut the next formula down to this. This basically is the back projection
     // of the object's screen width into world space and the resulting dolly amount.
     // But I reduce a lot of variables.
-    const double curD = (worldCenter - mPosition).length();
+    const double curD = (worldCenter - mPosition).Length();
     // take the bigger scale factor to dolly out
-    const double maxScaleFactor = std::max(widthScaleFactor, heightScaleFactor);
+    const double maxScaleFactor = max(widthScaleFactor, heightScaleFactor);
     const double newD = curD * maxScaleFactor;
 
     dolly(0, 0, newD - curD);
 
-    const double radius = (bbox.getMax() - bbox.getMin()).length() / 2.0;
-    mNear = std::max(newD - radius, 0.001);
+    const double radius = (bbox.GetMax() - bbox.GetMin()).Length() / 2.0;
+    mNear = max(newD - radius, 0.001);
     mFar = newD + (radius * 2);
     fixUpVector();
 }
@@ -817,7 +839,7 @@ oglView::frame(maVector3d const &center, double radius)
 {
     if (mProjectionType == PERSPECTIVE) {
         // math in here assumes this
-        assert(!mReference.eq(mPosition));
+        assert(mReference != mPosition);
 
         mPosition = mPosition - mReference + center;
 
@@ -825,7 +847,7 @@ oglView::frame(maVector3d const &center, double radius)
         mReference = center;
 
         double newD = 0.0;
-        double curD = (mPosition - center).length();
+        double curD = (mPosition - center).Length();
         double aspectRatio = 1.0;
 
         if (mHaveLetterboxAspectRatio) {
@@ -845,13 +867,13 @@ oglView::frame(maVector3d const &center, double radius)
         dolly(0, 0, newD - curD);
 
         // reset the clipping planes
-        mNear = std::max(newD - radius, 0.001);
+        mNear = max(newD - radius, 0.001);
         mFar = newD + (radius * 2);
         fixUpVector();
     } else {
         // Orthographic projection.
-        bbox::BBox3d box(center, center);
-        box.pad(maVector3d(radius, radius, radius));
+        maAxisBox box(center, center);
+        box.Pad(maVector3d(radius, radius, radius));
 
         frameOrtho(box);
     }
@@ -860,7 +882,7 @@ oglView::frame(maVector3d const &center, double radius)
 // Code in this function assumes that you have snapped to nearest
 // ortho axis. Free ortho is not supported at the moment
 void
-oglView::frameOrtho(bbox::BBox3d box)
+oglView::frameOrtho(maAxisBox box)
 {
     // this method currently assumes that viewing direction is an axis; doesn't
     // necessarily cope with freeform ortho views.
@@ -870,10 +892,10 @@ oglView::frameOrtho(bbox::BBox3d box)
     maVector3d dir, rightDir;
     getFrame(dir, rightDir);
 
-    if (!box.hasVolume()) {
-        const maVector3d size = box.getSize();
+    if (!box.HasVolume()) {
+        const maVector3d size = box.GetSize();
         maVector3d padding;
-        double length = size.length() * .5;
+        double length = size.Length() * .5;
         if (REL_EQ_TOL(0, size[0], SMALLVALUE)) {
             padding[0] = length;
         }
@@ -883,11 +905,11 @@ oglView::frameOrtho(bbox::BBox3d box)
         if (REL_EQ_TOL(0, size[2], SMALLVALUE)) {
             padding[2] = length;
         }
-        box.pad(padding);
+        box.Pad(padding);
     }
-    const maVector3d min = box.getMin();
-    const maVector3d max = box.getMax();
-    const maVector3d center = box.getCenter();
+    const maVector3d min = box.GetMin();
+    const maVector3d max = box.GetMax();
+    const maVector3d center = box.GetCenter();
 
     // I want to put mReference at the center of the bounds,
     // move the mPosition to a point just outside the bounds.
@@ -900,7 +922,7 @@ oglView::frameOrtho(bbox::BBox3d box)
     getOrthoAxisIndexAndScale(mOrthoZAxis, zIndex, zScale);
 
     static const double nearDist = 0.001;
-    double farDist = box.getSize()[zIndex] + nearDist;
+    double farDist = box.GetSize()[zIndex] + nearDist;
     mReference = center;
     mPosition = mReference - (dir * (farDist*0.5));
 
@@ -914,7 +936,7 @@ oglView::frameOrtho(bbox::BBox3d box)
     unsigned int yIndex;
     getOrthoAxisIndexAndScale(mOrthoYAxis, yIndex, yScale);
 
-    double maxSize = 0.5 * std::max(box.getSize()[xIndex], box.getSize()[yIndex]);
+    double maxSize = 0.5 * max(box.GetSize()[xIndex], box.GetSize()[yIndex]);
 
     double xDelta = xScale * maxSize * mAspectRatio;
     mLeft = - xDelta;
@@ -930,11 +952,11 @@ oglView::frameOrtho(bbox::BBox3d box)
 }
 
 void
-oglView::center(bbox::BBox3d const &bbox)
+oglView::center(maAxisBox const &bbox)
 {
     if (mProjectionType == PERSPECTIVE) {
-        maVector3d const & center = bbox.getCenter();
-        double radius = (bbox.getMax() - bbox.getMin()).length() / 2.0;
+        maVector3d const & center = bbox.GetCenter();
+        double radius = (bbox.GetMax() - bbox.GetMin()).Length() / 2.0;
 
         frame(center, radius);
     } else {
@@ -951,7 +973,7 @@ oglView::resetAffineTransformations()
 }
 
 void
-oglView::copyAffineTransformFrom(disp::View & aView)
+oglView::copyAffineTransformFrom(oglView & aView)
 {
     mAffineOffset = aView.getAffineOffset();
     mAffineRotation = aView.getAffineRotation();
@@ -1024,7 +1046,7 @@ maVector3d
 oglView::project(maVector3d const &p, const maVector4d& viewport) const
 {
     const maMatrix4x4 w2c = modelView() * projection();
-    const maVector3d c = w2c.transformH(p);
+    const maVector3d c = w2c.TransformH(p);
 
     return maVector3d(viewport[0] + viewport[2]*(c[0]+1)/2.0,
                         viewport[1] + viewport[3]*(c[1]+1)/2.0,
@@ -1054,8 +1076,9 @@ maVector3d
 oglView::clipToWorld(const maVector3d& clipPoint) const
 {
     maMatrix4x4 toScreen(modelView() * projection());
-    maMatrix4x4 toWorld(toScreen.inverse());
-    return toWorld.transformH(clipPoint);
+    maMatrix4x4 toWorld(toScreen);
+	toWorld.Invert();//.inverse());
+    return toWorld.TransformH(clipPoint);
 }
 
 maMatrix4x4
@@ -1063,15 +1086,15 @@ oglView::affineTransform() const
 {
     maMatrix4x4 offset;
     double offsetY = -mAffineOffset[1];   // Flip y coordinate
-    offset.setToTranslation(maVector3d(2.0*mAffineOffset[0], 2.0*offsetY, 0.0));
+	offset.MakeTranslate(maVector3d(2.0*mAffineOffset[0], 2.0*offsetY, 0.0));
 
     maMatrix4x4 invAspectScale, aspectScale, rot;
-    invAspectScale.setToScale(maVector3d(1.0/mAspectRatio, 1.0, 1.0));
-    aspectScale.setToScale(maVector3d(mAspectRatio, 1.0, 1.0));
-    rot.setToRotation(gmath::Z, -mAffineRotation);  // Rotate around negative Z axis, so clockwise is positive
+    invAspectScale.MakeScale(1.0/mAspectRatio, 1.0, 1.0);
+    aspectScale.MakeScale(mAspectRatio, 1.0, 1.0);
+    rot.MakeRotate(-mAffineRotation, maVector3d(0,0,1));  // Rotate around negative Z axis, so clockwise is positive
 
     maMatrix4x4 scale;
-    scale.setToScale(maVector3d(mAffineScale, mAffineScale, 1.0));
+    scale.MakeScale(mAffineScale, mAffineScale, 1.0);
 
     return scale * aspectScale * rot * invAspectScale * offset;
 }
@@ -1222,24 +1245,26 @@ maMatrix4x4
 oglView::modelView() const
 {
     // math in here assumes this
-    assert(!mReference.eq(mPosition));
+    assert(mReference != mPosition);
 
     maMatrix4x4 retval;
 
-    const maVector3d f = (mReference - mPosition).unit();
-    const maVector3d s = (f.cross(mUp)).unit();
-    const maVector3d u = s.cross(f);
+    const maVector3d f = (mReference - mPosition).Unit();
+    const maVector3d s = (f.Cross(mUp)).Unit();
+    const maVector3d u = s.Cross(f);
 
     // ROW major (opposite of GL)
     retval = maMatrix4x4( s[0] ,  u[0] , -f[0] ,  0.0 ,
                            s[1] ,  u[1] , -f[1] ,  0.0 ,
                            s[2] ,  u[2] , -f[2] ,  0.0 ,
                            0.0  ,   0.0 ,   0.0 ,  1.0 );
-    retval.accumTranslation(-mPosition);
+	// is this accurate??? or am I to just stuff the numbers in?
+    retval.TranslateBy(-mPosition);
 
     return retval;
 }
 
+#if 0
 gmath::Frustum<double>
 oglView::frustum() const
 {
@@ -1249,13 +1274,13 @@ oglView::frustum() const
     maVector3d direction(mReference);
 
     direction -= position;
-    direction.normalize();
+    direction.Normalize();
 
     maVector3d up(mUp);
-    maVector3d left = up.cross(direction);
+    maVector3d left = up.Cross(direction);
 
-    up.normalize();
-    left.normalize();
+    up.Normalize();
+    left.Normalize();
 
     // we assume a regular frustum centered on the viewing axis (none of this
     // skewed perspective nonsense)
@@ -1278,11 +1303,12 @@ oglView::frustum() const
         mNear, mFar,
         (mProjectionType == ORTHOGRAPHIC));
 }
+#endif
 
-View
-oglView::viewLinearInterpolator(const disp::View& start, const disp::View& end, double progress)
+oglView
+oglView::viewLinearInterpolator(const oglView& start, const oglView& end, double progress)
 {
-     disp::View toRet(end);
+     oglView toRet(end);
 
      // As a linear combination of start and end values
      double sw = 1.0 - progress; // start weight
@@ -1294,34 +1320,35 @@ oglView::viewLinearInterpolator(const disp::View& start, const disp::View& end, 
 
      maVector3d forwardStart = (start.refPoint() - start.position());
      maVector3d forwardEnd = (end.refPoint() - end.position());
-     double forwardLengthStart = forwardStart.length();
-     double forwardLengthEnd = forwardEnd.length();
-     forwardStart.normalize();
-     forwardEnd.normalize();
+     double forwardLengthStart = forwardStart.Length();
+     double forwardLengthEnd = forwardEnd.Length();
+     forwardStart.Normalize();
+     forwardEnd.Normalize();
 
-     maVector3d upStart = start.upVector().unit();
-     maVector3d upEnd = end.upVector().unit();
+     maVector3d upStart = start.upVector().Unit();
+     maVector3d upEnd = end.upVector().Unit();
 
-     maMatrix3x3 sourceBasis(forwardStart, upStart, forwardStart.cross(upStart));
-     maMatrix3x3 targetBasis(forwardEnd, upEnd, forwardEnd.cross(upEnd));
-     maRotation slerped = gmath::slerp(maRotation(sourceBasis), maRotation(targetBasis), progress);
-     maMatrix3x3 interp(slerped);
+     maMatrix3x3 sourceBasis(forwardStart, upStart, forwardStart.Cross(upStart));
+     maMatrix3x3 targetBasis(forwardEnd, upEnd, forwardEnd.Cross(upEnd));
+     maRotation slerped;
+	 slerped.Slerp(maRotation(sourceBasis), maRotation(targetBasis), progress);
+     maMatrix3x3 interp = slerped.GetMatrix3x3();
 
      maVector3d pos = sw * start.position() + ew * end.position();
-     maVector3d ref = pos + interp.row(0) * (sw * forwardLengthStart + ew * forwardLengthEnd);
-     maVector3d up = interp.row(1);
+     maVector3d ref = pos + interp.Row(0) * (sw * forwardLengthStart + ew * forwardLengthEnd);
+     maVector3d up = interp.Row(1);
 
-     double near = MIN(start.nearClipDistance(), end.nearClipDistance());
-     double far = MAX(start.farClipDistance(), end.farClipDistance());
+     double dnear = min(start.nearClipDistance(), end.nearClipDistance());
+     double dfar = max(start.farClipDistance(), end.farClipDistance());
 
      double fov = sw * start.fieldOfView() + ew * end.fieldOfView();
 
      try {
          toRet.setPositionAndRefAndUp(pos, ref, up);
      } catch (...) {}    // if we fail, we'll just use the end value
-     toRet.setNearClipDistance(near);
-     toRet.setFarClipDistance(far);
-     if (toRet.projectionType() == disp::oglView::PERSPECTIVE
+     toRet.setNearClipDistance(dnear);
+     toRet.setFarClipDistance(dfar);
+     if (toRet.projectionType() == oglView::PERSPECTIVE
          && fov > 0.0 && fov <= 2*M_PI ) {
          /// @todo Smooth transition from perspective to ortho
          toRet.setFieldOfView(fov);
@@ -1334,27 +1361,27 @@ oglView::viewLinearInterpolator(const disp::View& start, const disp::View& end, 
 void
 oglView::debugPrint() const
 {
-    std::cerr << "Position   = " << mPosition << std::endl;
-    std::cerr << "Reference  = " << mReference << std::endl;
-    std::cerr << "Up         = " << mUp << std::endl;
-    std::cerr << "Aspect     = " << mAspectRatio << std::endl;
-    std::cerr << "Near       = " << mNear << std::endl;
-    std::cerr << "Far        = " << mFar << std::endl;
-    std::cerr << "Projection = ";
+    DBG_LOG("Position   = " << mPosition);
+    DBG_LOG("Reference  = " << mReference);
+    DBG_LOG("Up         = " << mUp);
+    DBG_LOG("Aspect     = " << mAspectRatio);
+    DBG_LOG("Near       = " << mNear);
+    DBG_LOG("Far        = " << mFar);
+    DBG_LOG("Projection = ");
 
     switch (mProjectionType) {
     case PERSPECTIVE:
-        std::cerr << "Perspective" << std::endl;
-        std::cerr << "FOV (deg)  = " << radToDeg(mFov) << std::endl;
+        DBG_LOG("Perspective");
+        DBG_LOG("FOV (deg)  = " << radToDeg(mFov));
         break;
 
     case ORTHOGRAPHIC:
-        std::cerr << "Orthographic" << std::endl;
-        std::cerr << "Left       = " << mLeft << std::endl;
-        std::cerr << "Right      = " << mRight << std::endl;
-        std::cerr << "Bottom     = " << mBottom << std::endl;
-        std::cerr << "Top        = " << mTop << std::endl;
+        DBG_LOG("Orthographic");
+        DBG_LOG("Left       = " << mLeft);
+        DBG_LOG("Right      = " << mRight);
+        DBG_LOG("Bottom     = " << mBottom);
+        DBG_LOG("Top        = " << mTop);
         break;
     }
 }
-#endif
+

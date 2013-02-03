@@ -51,6 +51,8 @@ class maRotation
 		//------------------------------------------------------------------------
 		maRotation( const maVector3d &i_Axis, float i_Angle );
 		
+		maRotation( const maMatrix3x3 &iRot );
+
 		//------------------------------------------------------------------------
 		//	This constructor sets the quaternion values.  Make sure you call
 		//	Normalize if you are not sure that the values produce a unit

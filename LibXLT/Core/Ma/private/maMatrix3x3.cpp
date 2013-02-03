@@ -46,6 +46,20 @@ maMatrix3x3::maMatrix3x3(	float i_M0,  float i_M1,  float i_M2,
 	m_Mat[8]=i_M8;
 }
 
+maMatrix3x3::maMatrix3x3(const maVector3d& iX, const maVector3d& iY,
+			const maVector3d& iZ)
+{
+	m_Mat[0]=iX[0];
+	m_Mat[1]=iX[1];
+	m_Mat[2]=iX[2];
+	m_Mat[3]=iY[0];
+	m_Mat[4]=iY[1];
+	m_Mat[5]=iY[2];
+	m_Mat[6]=iZ[0];
+	m_Mat[7]=iZ[1];
+	m_Mat[8]=iZ[2];
+}
+
 //------------------------------------------------------------------------
 //	RotationDelta()
 //------------------------------------------------------------------------
