@@ -89,7 +89,7 @@ void rndrTiledRenderer::ReleaseResources()
 
 	glDeleteTextures(1, &mTileTexture);
 	// hopefully this releases the prior one 
-	mTileBuffer = cl::Image2DGL();
+	mTileBuffer = cl::ImageGL();
 
 	glDeleteRenderbuffers(1, &mTileDepthRenderbuffer);
 
@@ -98,7 +98,7 @@ void rndrTiledRenderer::ReleaseResources()
 
 	glDeleteTextures(1, &mFilteredTileTexture);
 	// hopefully this releases the prior one 
-	mFilteredBuffer = cl::Image2DGL();
+	mFilteredBuffer = cl::ImageGL();
 
 	glDeleteTextures(1, &mFinalImageTexture);
 }
@@ -421,12 +421,12 @@ bool rndrTiledRenderer::SetupRender(const rndrSampling& i_Params, oglDevice* i_p
 
 	cl_int result;
 	// hopefully this releases the prior one 
-	mTileBuffer = cl::Image2DGL();
-	mTileBuffer = cl::Image2DGL(m_pDevice->mContext->clContext(),
+	mTileBuffer = cl::ImageGL();
+	mTileBuffer = cl::ImageGL(m_pDevice->mContext->clContext(),
 		CL_MEM_READ_ONLY, GL_TEXTURE_2D, 0, mTileTexture, &result);
 	if (result != CL_SUCCESS) 
 	{
-		DBG_LOG("CL error creating Image2DGL read only " << result);
+		DBG_LOG("CL error creating ImageGLGL read only " << result);
 	}
 
 	// depth buffer for tile!
@@ -450,12 +450,12 @@ bool rndrTiledRenderer::SetupRender(const rndrSampling& i_Params, oglDevice* i_p
 	glTexImage2D(GL_TEXTURE_2D, 0, sampleFormat, m_TileFinalSizeX, m_TileFinalSizeY, 0, GL_RGBA, GL_FLOAT, NULL);
 
 	// result tile as Buffer
-	mFilteredBuffer = cl::Image2DGL();
-	mFilteredBuffer = cl::Image2DGL(m_pDevice->mContext->clContext(),
+	mFilteredBuffer = cl::ImageGL();
+	mFilteredBuffer = cl::ImageGL(m_pDevice->mContext->clContext(),
 		CL_MEM_WRITE_ONLY, GL_TEXTURE_2D, 0, mFilteredTileTexture, &result);
 	if (result != CL_SUCCESS) 
 	{
-		DBG_LOG("CL error creating Image2DGL write only " << result);
+		DBG_LOG("CL error creating ImageGLGL write only " << result);
 	}
 
 	// filtered tile as framebuffer:
@@ -575,7 +575,7 @@ void rndrTiledRenderer::compileConvolutionKernel()
     std::string  sourceStr = FileToString("D:/dev/CompletelyDifferent/LibXLT/Area18/rndr/Kernels.cl");
 
     cl::Program::Sources sources(1, std::make_pair(sourceStr.c_str(), sourceStr.length()));
-    mConvolutionProgram = cl::Program(m_pDevice->mContext->clContext()(), sources, &result);
+    mConvolutionProgram = cl::Program(m_pDevice->mContext->clContext(), sources, &result);
 	if (result != CL_SUCCESS) 
 	{
 		DBG_LOG("Error creating cl program " << result);

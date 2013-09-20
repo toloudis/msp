@@ -1,4 +1,4 @@
-﻿  Build started 1/20/2013 9:12:21 PM.
+﻿  Build started 2/17/2013 7:19:49 PM.
   Project "D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj" on node 1 (all target(s)).
   defaultshaders:
   Skipping target "defaultshaders" because all output files are up-to-date with respect to the input files.
@@ -12,4 +12,4 @@
       0 Warning(s)
       0 Error(s)
   
-  Time Elapsed 00:00:00.17
+  Time Elapsed 00:00:00.10

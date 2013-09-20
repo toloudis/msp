@@ -7,13 +7,19 @@
 shdrShader::shdrShader(void)
 {
 }
+shdrShader::shdrShader(GLuint iProgram)
+	: m_CompiledShader(iProgram),
+	m_pDevice(NULL)
+{
+}
+
 shdrShader::shdrShader(oglContext* i_pDevice, GLenum shaderType, std::vector<std::string>& i_ShaderStrings)
 {
-	std::ostringstream src;
+	std::vector<const char*> src;
 	for(size_t i = 0; i < i_ShaderStrings.size(); ++i) {
-		src << i_ShaderStrings[i];
+		src.push_back(i_ShaderStrings[i].c_str());
 	}
-	GLuint id = shdrUtil::CompileShaderFromString(src.str().c_str(), shaderType);
+	GLuint id = shdrUtil::CompileShaderFromStrings(src, shaderType);
 	if (id > 0)
 	{
 		GetShaderData(id);

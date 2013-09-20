@@ -182,11 +182,11 @@ int meshRenderer::Render( const meshTriMeshFrag* i_pFrag, const matMaterial* i_p
 	while (i <= numInds-drawCallSize)
 	{
 		glDrawRangeElements(primType, 
- 			i+startIndex, 
- 			i+startIndex+drawCallSize,
- 			drawCallSize,
- 			indType, 
- 			0);
+			i+startIndex, 
+			i+startIndex+drawCallSize,
+			drawCallSize,
+			indType, 
+			0);
 		//i_pDevice->m_pDeviceContext->DrawIndexed(drawCallSize, i+startIndex, 0);
 		CHECKGLERROR();
 		i += drawCallSize;
@@ -195,11 +195,11 @@ int meshRenderer::Render( const meshTriMeshFrag* i_pFrag, const matMaterial* i_p
 	if (i < numInds)
 	{
 		glDrawRangeElements((GLenum)i_pFrag->GetPrimitiveType(), 
- 			i+startIndex, 
- 			i+startIndex+numInds-i,
- 			numInds-i,
- 			indType, 
- 			0);
+			i+startIndex, 
+			i+startIndex+numInds-i,
+			numInds-i,
+			indType, 
+			0);
 		//i_pDevice->m_pDeviceContext->DrawIndexed(numInds-i, i+startIndex, 0);
 	}
 

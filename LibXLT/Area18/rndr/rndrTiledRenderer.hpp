@@ -68,7 +68,7 @@ private:
 	// rgba32f
 	GLuint mTileFramebuffer;
 	GLuint mTileTexture;
-	cl::Image2DGL mTileBuffer;
+	cl::ImageGL mTileBuffer;
 
 	GLuint mTileDepthRenderbuffer;
 
@@ -77,7 +77,7 @@ private:
 
 	// result of filtering goes here
 	GLuint mFilteredTileTexture;
-	cl::Image2DGL mFilteredBuffer;
+	cl::ImageGL mFilteredBuffer;
 	GLuint mFilteredTileFramebuffer;
 
 	// tiles will be placed into finalimage and into output window

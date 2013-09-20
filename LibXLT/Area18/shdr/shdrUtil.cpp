@@ -10,6 +10,7 @@
 #include "Area18/shdr/shdrUtil.hpp"
 
 #include "Core/fs/fsFileUtil.hpp"
+#include "Core/fs/fsLocator.hpp"
 #include "Core/fs/fsResourceTracker.hpp"
 #include "Core/gf/gfPaths.hpp"
 #include "Core/it/itStringUtil.hpp"
@@ -25,41 +26,6 @@ namespace shdrUtil
 		return l_ShaderPath;
 	}
 
-	//--------------------------------------------------------------------------------------
-	// Helper function to compile an hlsl shader from file, 
-	// its binary compiled code is returned
-	//--------------------------------------------------------------------------------------
-	GLuint CompileShaderFromFile( const fsLocator& i_Locator, GLenum i_ShaderType )
-	{
-		fsLocator locator;
-
-		// 1st try: use locator as full path.
-		locator = i_Locator;
-		if (!fsFileUtil::FileExists(locator))
-		{
-			// 2nd try: use ShaderPath
-			locator = l_ShaderPath;
-			locator.Push(i_Locator);
-			if (!fsFileUtil::FileExists(locator))
-			{
-				// 3rd try: use app path + "/Shaders"
-				locator = gfPaths::GetPath(gfPaths::e_ExePath);
-				locator.Push("Shaders");
-				locator.Push(i_Locator);
-				if (!fsFileUtil::FileExists(locator))
-				{
-					DBG_ERROR("Could not find shader " << i_Locator);
-					return E_FAIL;
-				}
-			}
-		}
-	
-		itString filename;
-		fsFileUtil::LocatorToUnicodeString(locator, filename);
-
-		return CompileShaderFromFile((WCHAR*)filename.GetString(), i_ShaderType);
-	}
-	
 	// caller must delete return value.
 	BYTE* readFileToByteArray(WCHAR* szFileName)
 	{
@@ -97,6 +63,88 @@ namespace shdrUtil
 	// Helper function to compile an hlsl shader from file, 
 	// its binary compiled code is returned
 	//--------------------------------------------------------------------------------------
+	GLuint CompileShaderFromFile( const fsLocator& i_Locator, GLenum i_ShaderType )
+	{
+		fsLocator locator;
+
+		// 1st try: use locator as full path.
+		locator = i_Locator;
+		if (!fsFileUtil::FileExists(locator))
+		{
+			// 2nd try: use ShaderPath
+			locator = l_ShaderPath;
+			locator.Push(i_Locator);
+			if (!fsFileUtil::FileExists(locator))
+			{
+				// 3rd try: use app path + "/Shaders"
+				locator = gfPaths::GetPath(gfPaths::e_ExePath);
+				locator.Push("Shaders");
+				locator.Push(i_Locator);
+				if (!fsFileUtil::FileExists(locator))
+				{
+					DBG_ERROR("Could not find shader " << i_Locator);
+					return E_FAIL;
+				}
+			}
+		}
+	
+		itString filename;
+		fsFileUtil::LocatorToUnicodeString(locator, filename);
+
+		return CompileShaderFromFile((WCHAR*)filename.GetString(), i_ShaderType);
+	}
+	
+	//--------------------------------------------------------------------------------------
+	// Helper function to compile an hlsl shader from file, 
+	// its binary compiled code is returned
+	//--------------------------------------------------------------------------------------
+	GLuint CompileShaderFromFiles( const std::vector<const fsLocator*>& i_Locator, GLenum i_ShaderType )
+	{
+		fsLocator locator;
+		std::vector<const char*> shaderStrings;
+
+		for (size_t i = 0; i < i_Locator.size(); ++i) {
+
+			// 1st try: use locator as full path.
+			locator = *(i_Locator[i]);
+			if (!fsFileUtil::FileExists(locator))
+			{
+				// 2nd try: use ShaderPath
+				locator = l_ShaderPath;
+				locator.Push(*(i_Locator[i]));
+				if (!fsFileUtil::FileExists(locator))
+				{
+					// 3rd try: use app path + "/Shaders"
+					locator = gfPaths::GetPath(gfPaths::e_ExePath);
+					locator.Push("Shaders");
+					locator.Push(*(i_Locator[i]));
+					if (!fsFileUtil::FileExists(locator))
+					{
+						DBG_ERROR("Could not find shader " << *(i_Locator[i]));
+						return E_FAIL;
+					}
+				}
+			}
+	
+			itString filename;
+			fsFileUtil::LocatorToUnicodeString(locator, filename);
+
+			BYTE* b = readFileToByteArray((WCHAR*)filename.GetString());
+			shaderStrings.push_back(reinterpret_cast<const char*>(b));
+		}
+		GLuint retval = CompileShaderFromStrings(shaderStrings, i_ShaderType);
+
+		for (int i = 0; i < shaderStrings.size(); ++i) {
+			delete [] shaderStrings[i];
+		}
+
+		return retval;
+	}
+
+	//--------------------------------------------------------------------------------------
+	// Helper function to compile an hlsl shader from file, 
+	// its binary compiled code is returned
+	//--------------------------------------------------------------------------------------
 	GLuint CompileShaderFromFile( WCHAR* szFileName, GLenum i_ShaderType )
 	{
 		// find the file
@@ -111,16 +159,18 @@ namespace shdrUtil
 
 		// Compile the shader
 		DBG_LOG("compiling shader " << std::string(pFilePathName));
-		GLuint shaderID = CompileShaderFromString((const char*)pFileData, i_ShaderType);
+		std::vector<const char*> src;
+		src.push_back(reinterpret_cast<const char*>(pFileData));
+		GLuint shaderID = CompileShaderFromStrings(src, i_ShaderType);
 
 		delete []pFileData;
 
 		return shaderID;
 	}
 
-	GLuint CompileShaderFromString(const char* i_Src, GLenum i_ShaderType)
+	GLuint CompileShaderFromStrings(std::vector<const char*>& i_Src, GLenum i_ShaderType)
 	{
-		GLuint programID = glCreateShaderProgramv( i_ShaderType, 1, &i_Src);
+		GLuint programID = glCreateShaderProgramv( i_ShaderType, i_Src.size(), &i_Src[0]);
 		char infoLog[8192];
 		glGetProgramInfoLog(programID, 8192, NULL, infoLog);
 		DBG_LOG("Shader Compile Log:\n" << infoLog);

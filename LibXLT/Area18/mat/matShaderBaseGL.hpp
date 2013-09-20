@@ -11,7 +11,6 @@
 #endif
 
 #include "Area18/ogl/oglTypes.hpp"
-#include <Cg/cg.h>
 
 #include <list>
 #include <map>
@@ -303,8 +302,6 @@ protected:
 	std::string m_Name;
 	shdrPipeline* m_pEffect;
 
-	mutable CGpass mCurrentPass;
-	mutable CGtechnique m_CurrentTechnique;
 private:
 
 	//====================================================================
@@ -317,123 +314,123 @@ private:
 	//====================================================================
 	void parse_techniques();
 
-	std::vector<CGparameter> m_params;
+	std::vector<GLint> m_params;
 	std::map<std::string, int> m_paramnamemap;
 
 	std::list<matTexture*> m_OwnedTextures;
 
 	// redundant storage... these are in m_params too
-	CGparameter m_stdMatrices[e_NumMatrices];
+	GLint m_stdMatrices[e_NumMatrices];
 
-	CGtechnique m_Techniques[matShaderEffect::e_NumTechniques];
+	GLint m_Techniques[matShaderEffect::e_NumTechniques];
 	int m_NumTechniquePasses[matShaderEffect::e_NumTechniques];
 
 protected:
-	CGparameter m_UVTransformHandle;
+	GLint m_UVTransformHandle;
 
-	CGparameter m_FirstLightHandle;
-	CGparameter m_LightInfoHandle;
-	CGparameter m_ProjLightInfoHandle;
-	CGparameter m_ProjLightTextureHandle;
-	CGparameter m_ProjShadowMapHandle;
-	CGparameter m_HasProjectedTextureHandle;
-	CGparameter m_HasShadowMapHandle;
+	GLint m_FirstLightHandle;
+	GLint m_LightInfoHandle;
+	GLint m_ProjLightInfoHandle;
+	GLint m_ProjLightTextureHandle;
+	GLint m_ProjShadowMapHandle;
+	GLint m_HasProjectedTextureHandle;
+	GLint m_HasShadowMapHandle;
 
-	void MapParameter(std::string i_Name, CGparameter& o_Handle);
+	void MapParameter(std::string i_Name, GLint& o_Handle);
 
-	CGparameter m_TessellatorMeshTextureHandle;
-	CGparameter m_hMeshDataTextureWidthHandle;
-	CGparameter m_hMeshDataTextureHeightHandle;
+	GLint m_TessellatorMeshTextureHandle;
+	GLint m_hMeshDataTextureWidthHandle;
+	GLint m_hMeshDataTextureHeightHandle;
 
 private:
-	CGparameter m_VecCameraPosHandle;
+	GLint m_VecCameraPosHandle;
 
-	CGparameter m_LightArrayHandle;
-	CGparameter m_LightArrayNumHandle;
+	GLint m_LightArrayHandle;
+	GLint m_LightArrayNumHandle;
 
-	CGparameter m_TimeHandle;
-	CGparameter m_IsProjLtHandle;
-	CGparameter m_IsDoubleSidedHandle;
+	GLint m_TimeHandle;
+	GLint m_IsProjLtHandle;
+	GLint m_IsDoubleSidedHandle;
 
 	// ambient environment pass
 //	ID3DX11EffectConstantBuffer* m_Env;
-	CGparameter m_EnvHasDiffuseMapHandle;
-	CGparameter m_EnvDiffuseMapHandle;
-	CGparameter m_EnvDiffuseAngleHandle;
-	CGparameter m_EnvDiffuseFactorHandle;
-	CGparameter m_EnvDiffuseColorHandle;
-	CGparameter m_EnvHasSpecularMapHandle;
-	CGparameter m_EnvSpecularMapHandle;
-	CGparameter m_EnvSpecularAngleHandle;
-	CGparameter m_EnvSpecularFactorHandle;
-	CGparameter m_EnvSpecularColorHandle;
+	GLint m_EnvHasDiffuseMapHandle;
+	GLint m_EnvDiffuseMapHandle;
+	GLint m_EnvDiffuseAngleHandle;
+	GLint m_EnvDiffuseFactorHandle;
+	GLint m_EnvDiffuseColorHandle;
+	GLint m_EnvHasSpecularMapHandle;
+	GLint m_EnvSpecularMapHandle;
+	GLint m_EnvSpecularAngleHandle;
+	GLint m_EnvSpecularFactorHandle;
+	GLint m_EnvSpecularColorHandle;
 
 	// depth of field
-	CGparameter m_DOFHandle;
-	CGparameter m_DOFBlurCutoffHandle;
+	GLint m_DOFHandle;
+	GLint m_DOFBlurCutoffHandle;
 	
 	// glow pass info
-	CGparameter m_hHasGlowMask;
-	CGparameter m_hGlowMask;
-	CGparameter m_hConstantGlow;
-	CGparameter m_hGlowSize;
+	GLint m_hHasGlowMask;
+	GLint m_hGlowMask;
+	GLint m_hConstantGlow;
+	GLint m_hGlowSize;
 
 	// outline pass info
-	CGparameter m_hOutlineDepthScale;
-	CGparameter m_hOutlineMinAngle;
-	CGparameter m_hOutlineMaxAngle;
-	CGparameter m_hOutlineThickness;
-	CGparameter m_hOutlineColor;
-	CGparameter m_hOutlineViewSize;
-	CGparameter m_hUseNormals;
-	CGparameter m_hOutlineMinWidth;
-	CGparameter m_hOutlineMaxWidth;
+	GLint m_hOutlineDepthScale;
+	GLint m_hOutlineMinAngle;
+	GLint m_hOutlineMaxAngle;
+	GLint m_hOutlineThickness;
+	GLint m_hOutlineColor;
+	GLint m_hOutlineViewSize;
+	GLint m_hUseNormals;
+	GLint m_hOutlineMinWidth;
+	GLint m_hOutlineMaxWidth;
 
 	// vertex uv bake mode
-	CGparameter m_hBake;
-	CGparameter m_hBakingTransform;
+	GLint m_hBake;
+	GLint m_hBakingTransform;
 
 	// reflection pass rendering
-	CGparameter m_hIsolateReflections;
-	CGparameter m_hCubeMapEnabled;
+	GLint m_hIsolateReflections;
+	GLint m_hCubeMapEnabled;
 
 	// reflection mapping
-	CGparameter m_ReflectionMapIsPlanarHandle;
-	CGparameter m_HasReflectionMapHandle;
-	CGparameter m_CubeReflectionMapHandle;
-	CGparameter m_PlanarReflectionMapHandle;
-	CGparameter m_IsReflectionGenHandle;
+	GLint m_ReflectionMapIsPlanarHandle;
+	GLint m_HasReflectionMapHandle;
+	GLint m_CubeReflectionMapHandle;
+	GLint m_PlanarReflectionMapHandle;
+	GLint m_IsReflectionGenHandle;
 
 	// skinning
-	CGparameter m_SkinningMatrixPaletteHandle;
+	GLint m_SkinningMatrixPaletteHandle;
 
 	// Hardware Tessellation
-	CGparameter m_hHardwareTessellationHandle;	//only valid if the shader supports hardware tessellation
-	CGparameter m_hTessValueHandle;
+	GLint m_hHardwareTessellationHandle;	//only valid if the shader supports hardware tessellation
+	GLint m_hTessValueHandle;
 
 	// Displacement Mapping
-	CGparameter m_hHasDisplacementMap;
-	CGparameter m_hDisplacementMap;
-	CGparameter m_hDisplacementScale;
-	CGparameter m_hDisplacementBias;
-	CGparameter m_hDisplacementBlur;
-	CGparameter m_hDisplacementObjUVScale;
+	GLint m_hHasDisplacementMap;
+	GLint m_hDisplacementMap;
+	GLint m_hDisplacementScale;
+	GLint m_hDisplacementBias;
+	GLint m_hDisplacementBlur;
+	GLint m_hDisplacementObjUVScale;
 
-	CGparameter m_hNormalMap;
-	CGparameter m_hBumpScale;
-	CGparameter m_hHasNormalMap;
+	GLint m_hNormalMap;
+	GLint m_hBumpScale;
+	GLint m_hHasNormalMap;
 
 	// Paint Overlay
-	CGparameter m_PaintOverlayMapHandle;
+	GLint m_PaintOverlayMapHandle;
 
 	// Alpha test Reference value
-	CGparameter m_AlphaTestRefHandle;
+	GLint m_AlphaTestRefHandle;
 
 	// User defined clip plane (world space) (0,0,0,1) = disabled
-	CGparameter m_ClipPlaneHandle;
+	GLint m_ClipPlaneHandle;
 
 	//Hair Tessellation
-//	CGparameter m_HairTessellationHandle;
+//	GLint m_HairTessellationHandle;
 
 	struct ShaderParamUIInfo
 	{
@@ -444,49 +441,49 @@ private:
 			return Index < i_Other.Index;
 		}
 	};
-	bool GetShaderParamInfo(CGparameter i_hParam, 
+	bool GetShaderParamInfo(GLint i_hParam, 
 		effShaderParams* o_pParams,
 		matShaderBindingsGL* o_pBindings,
 		std::list<ShaderParamUIInfo>& o_UIInfo) const;
 
 	effParamTexture* MapTextureParam(effShaderParams* o_pParams,
 		matShaderBindingsGL* o_pBindings,
-		CGparameter i_hParam, 
+		GLint i_hParam, 
 		const std::string& i_Name,
 		bool i_bCreateBinding,
 		bool i_bCreateUI,
 		std::list<ShaderParamUIInfo>& o_UIInfo) const;
 	effParamTextureManip* MapTextureManipParam(effShaderParams* o_pParams,
 		matShaderBindingsGL* o_pBindings,
-		CGparameter i_hParam, 
+		GLint i_hParam, 
 		const std::string& i_Name,
 		bool i_bCreateBinding,
 		bool i_bCreateUI,
 		std::list<ShaderParamUIInfo>& o_UIInfo) const;
 	effParamFloat* MapFloatParam(effShaderParams* o_pParams,
 		matShaderBindingsGL* o_pBindings,
-		CGparameter i_hParam, 
+		GLint i_hParam, 
 		const std::string& i_Name,
 		bool i_bCreateBinding,
 		bool i_bCreateUI,
 		std::list<ShaderParamUIInfo>& o_UIInfo) const;
 	effParamBool* MapBoolParam(effShaderParams* o_pParams,
 		matShaderBindingsGL* o_pBindings,
-		CGparameter i_hParam, 
+		GLint i_hParam, 
 		const std::string& i_Name,
 		bool i_bCreateBinding,
 		bool i_bCreateUI,
 		std::list<ShaderParamUIInfo>& o_UIInfo) const;
 	effParamInt* MapEnumParam(effShaderParams* o_pParams,
 		matShaderBindingsGL* o_pBindings,
-		CGparameter i_hParam, 
+		GLint i_hParam, 
 		const std::string& i_Name,
 		bool i_bCreateBinding,
 		bool i_bCreateUI,
 		std::list<ShaderParamUIInfo>& o_UIInfo) const;
 	effParamColor* MapColorParam(effShaderParams* o_pParams,
 		matShaderBindingsGL* o_pBindings,
-		CGparameter i_hParam, 
+		GLint i_hParam, 
 		const std::string& i_Name,
 		bool i_bCreateBinding,
 		bool i_bCreateUI,

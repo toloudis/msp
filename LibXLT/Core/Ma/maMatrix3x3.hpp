@@ -182,7 +182,7 @@ class maMatrix3x3
 	    void operator -= (const maMatrix3x3& i_A);
 
 		// get row vector at index
-		maVector3d Row(int i);
+		maVector3d Row(int i) const;
 
 	public:
 
@@ -231,5 +231,6 @@ maMatrix3x3::operator - () const
 						-m_Mat[3],	-m_Mat[4],  -m_Mat[5],  
 						-m_Mat[6],  -m_Mat[7],	-m_Mat[8]);
 }
+
 
 

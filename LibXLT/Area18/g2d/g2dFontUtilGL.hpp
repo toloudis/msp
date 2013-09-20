@@ -17,9 +17,9 @@
 #include "Graphics/g2d/g2dFontUtil.hpp"
 #endif
 
-#ifndef G2D_DX11TYPES_HPP
-#include "GraphicsDX11/g2d/g2dDX11Types.hpp"
-#endif
+//#ifndef G2D_DX11TYPES_HPP
+//#include "GraphicsDX11/g2d/g2dDX11Types.hpp"
+//#endif
 
 #include <string>
 #include <map>

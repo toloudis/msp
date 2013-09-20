@@ -9,8 +9,7 @@
 #include "Area18/shdr/shdrPipeline.hpp"
 
 #include "Area18/ogl/oglDevice.hpp"
-#include "Area18/shdr/shdrVS.hpp"
-#include "Area18/shdr/shdrPS.hpp"
+#include "Area18/shdr/shdrShader.hpp"
 
 #include "Core/fs/fsLocator.hpp"
 #include "Core/ma/maMatrix4x4.hpp"
@@ -32,11 +31,11 @@ shdrPipeline::~shdrPipeline()
 	glDeleteProgramPipelines(1, &m_PipelineID);
 }
 
-void shdrPipeline::Attach(shdrVS* i_pVS)
+void shdrPipeline::AttachVS(shdrShader* i_pVS)
 {
 	glUseProgramStages(m_PipelineID, GL_VERTEX_SHADER_BIT, i_pVS->GetShader());
 }
-void shdrPipeline::Attach(shdrPS* i_pPS)
+void shdrPipeline::AttachPS(shdrShader* i_pPS)
 {
 	glUseProgramStages(m_PipelineID, GL_FRAGMENT_SHADER_BIT, i_pPS->GetShader());
 }

@@ -436,3 +436,10 @@ maMatrix3x3::operator *= (float i_Val)
 	m_Mat[7] *= i_Val;
 	m_Mat[8] *= i_Val;
 }
+
+// get row vector at index
+maVector3d
+maMatrix3x3::Row(int i) const
+{
+	return maVector3d(m_Mat[i*3+0], m_Mat[i*3+1], m_Mat[i*3+2]);
+}

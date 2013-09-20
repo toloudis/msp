@@ -14,6 +14,7 @@ public:
 	shdrShader(void);
 	shdrShader(oglContext* i_pDevice, GLenum shaderType, std::vector<std::string>& i_ShaderStrings);
 	shdrShader(oglContext* i_pDevice, GLenum shaderType, std::string i_ShaderString);
+	shdrShader(GLuint iProgram);
 
 	virtual ~shdrShader(void);
 

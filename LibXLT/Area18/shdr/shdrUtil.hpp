@@ -11,6 +11,7 @@
 #include "Area18/ogl/oglTypes.hpp"
 
 #include <string>
+#include <vector>
 
 class fsLocator;
 class matShaderEffect;
@@ -37,6 +38,7 @@ namespace shdrUtil
 	//--------------------------------------------------------------------------------------
 	GLuint CompileShaderFromFile( const fsLocator& i_Locator, 
 		GLenum i_ShaderType );
+	GLuint CompileShaderFromFiles( const std::vector<const fsLocator*>& i_Locator, GLenum i_ShaderType );
 	GLuint CompileShaderFromFile( WCHAR* szFileName, 
 		GLenum i_ShaderType );
 
@@ -49,4 +51,5 @@ namespace shdrUtil
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	GLuint CompileShaderFromString(const char* i_Src, GLenum i_ShaderType );
+	GLuint CompileShaderFromStrings(std::vector<const char*>& i_Src, GLenum i_ShaderType);
 }

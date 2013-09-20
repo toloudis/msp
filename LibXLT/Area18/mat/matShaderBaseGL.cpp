@@ -293,7 +293,7 @@ namespace
 		return num_lights;
 	}
 #if 0
-	void GetUIStrings(shdrCgPipeline* i_pEffect, CGparameter i_hParam, const std::string& i_Name, 
+	void GetUIStrings(shdrCgPipeline* i_pEffect, GLint i_hParam, const std::string& i_Name, 
 										std::string& o_Category, std::string& o_Label, std::string& o_Desc)
 	{
 		LPCSTR pstr = NULL;
@@ -328,16 +328,16 @@ namespace
 		}
 	}
 
-	CGparameter FindTextureExistVar(shdrCgPipeline* i_pEffect, CGparameter i_hTextureVar)
+	GLint FindTextureExistVar(shdrCgPipeline* i_pEffect, GLint i_hTextureVar)
 	{
 		// conditional texture existence (null texture) flag
-		CGparameter hRetVal = NULL;
+		GLint hRetVal = NULL;
 		CGannotation hExistVarAnnot = cgGetNamedParameterAnnotation( i_hTextureVar, "ExistVar" );
 		if (hExistVarAnnot)
 		{
 			LPCSTR existVarName = NULL;
 			existVarName = cgGetStringAnnotationValue(hExistVarAnnot);
-			CGparameter hExistVar = NULL;
+			GLint hExistVar = NULL;
 			hExistVar = cgGetNamedEffectParameter(i_pEffect->Effect(), existVarName);
 			if (hExistVar)
 			{
@@ -361,7 +361,7 @@ namespace
 	}
 
 	// get resource filename from annotation for a parameter
-	bool get_resource_name(CGparameter i_hParam, fsLocator &o_ResourceName)
+	bool get_resource_name(GLint i_hParam, fsLocator &o_ResourceName)
 	{
 		// might also want to search for "resourceName" here (MetaSL backend does that)
 		CGannotation hAnnot = cgGetNamedParameterAnnotation( i_hParam, "name" );
@@ -437,7 +437,6 @@ matShaderBaseGL::matShaderBaseGL(const fsLocator& i_Directory,
 	m_hBumpScale(NULL),
 	m_hHasNormalMap(NULL),
 	m_hTessValueHandle(NULL),
-	m_CurrentTechnique(NULL),
 	m_AlphaTestRefHandle(NULL),
 	m_ClipPlaneHandle(NULL)
 //	m_HairTessellationHandle(NULL)
@@ -535,12 +534,12 @@ void matShaderBaseGL::SetTechnique(Technique i_Technique) const
 {
 	if (m_Techniques[i_Technique] != NULL)
 	{
-		m_CurrentTechnique = m_Techniques[i_Technique];
+//		m_CurrentTechnique = m_Techniques[i_Technique];
 	}
 	else
 	{
 //		DBG_WARNING2("Specified technique %d not found - using Default: %s", i_Technique, m_Name.c_str());
-		m_CurrentTechnique = m_Techniques[e_Default];
+//		m_CurrentTechnique = m_Techniques[e_Default];
 	}
 }
 void matShaderBaseGL::SetTechnique(const std::string& i_Technique) const
@@ -619,11 +618,11 @@ void matShaderBaseGL::parse_parameters(const fsLocator& i_Directory)
 	LPCSTR pstrType = NULL;
 
 #if 0
-	CGparameter hParam = cgGetFirstEffectParameter( m_pEffect->Effect() );
+	GLint hParam = cgGetFirstEffectParameter( m_pEffect->Effect() );
 	int iParam = 0;
 	while( hParam )
 	{
-		CGparameterclass paramClass = cgGetParameterClass(hParam);
+		GLintclass paramClass = cgGetParameterClass(hParam);
 		CGtype paramType = cgGetParameterType(hParam);
 
 		m_params.push_back(hParam);
@@ -833,6 +832,7 @@ void matShaderBaseGL::GetAllParamUIs(std::list<matShaderParamUI>& o_paramUI) con
 //--------------------------------------------------------------------
 bool matShaderBaseGL::GetParamUI(const std::string& i_name, matShaderParamUI& o_paramUI) const
 {
+#if 0
 
 	int index = -1;
 	std::map<std::string, int>::const_iterator found = m_paramnamemap.find(i_name);
@@ -845,12 +845,11 @@ bool matShaderBaseGL::GetParamUI(const std::string& i_name, matShaderParamUI& o_
 	}
 
 	o_paramUI.m_name = i_name;
-	CGparameter hParam = m_params[index];
+	GLint hParam = m_params[index];
 	CGannotation hAnnot = NULL;
     LPCSTR pstr = NULL;
 	float fval = 0;
 //	D3DXPARAMETER_DESC paramDesc;
-//	m_pEffect->GetParameterDesc(hParam, &paramDesc);
 	hAnnot = cgGetNamedParameterAnnotation(hParam, "SasUiVisible");
 	if (hAnnot)
 	{
@@ -1030,50 +1029,50 @@ bool matShaderBaseGL::GetParamUI(const std::string& i_name, matShaderParamUI& o_
 	{
 		o_paramUI.m_stride = 1;
 	}
+#endif
 	
 	return true;
 }
-
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 void matShaderBaseGL::SetMatrix(int i_param, const maMatrix4x4& i_matrix)
 {
-	CGparameter pVar = m_params[i_param];
+	GLint pVar = m_params[i_param];
 	// check this cast, maybe need to add operator for it.
-	cgSetMatrixParameterfr(pVar, i_matrix.Ptr());
+	glUniformMatrix4fv(pVar, 1, GL_FALSE, i_matrix.Ptr());
 }
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 void matShaderBaseGL::SetFloat(int i_param, float i_float)
 {
-	CGparameter pVar = m_params[i_param];
-	cgSetParameter1f(pVar, i_float);
+	GLint pVar = m_params[i_param];
+	glUniform1f(pVar, i_float);
 }
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 void matShaderBaseGL::SetBool(int i_param, bool i_bool)
 {
-	CGparameter pVar = m_params[i_param];
-	cgSetParameter1i(pVar, i_bool);
+	GLint pVar = m_params[i_param];
+	glUniform1i(pVar, i_bool ? 1 : 0);
 }
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 void matShaderBaseGL::SetString(int i_param, std::string i_string)
 {
-	CGparameter pVar = m_params[i_param];
-	cgSetStringParameterValue(pVar, i_string.c_str());
+//	GLint pVar = m_params[i_param];
+//	cgSetStringParameterValue(pVar, i_string.c_str());
 }
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 void matShaderBaseGL::SetVector(int i_param, const maVector4d& i_vector)
 {
-	CGparameter pVar = m_params[i_param];
-	cgSetParameter4fv(pVar, i_vector.Ptr());
+	GLint pVar = m_params[i_param];
+	glUniform4fv(pVar, 1, i_vector.Ptr());
 }
 
 //--------------------------------------------------------------------
@@ -1091,19 +1090,18 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
 									 const maMatrix4x4 &i_ProjMat,
 									 const maPoint3d &i_CameraPos) const
 {
-#if 0
 	// let's set the target resolution here, too. it's sort of related!
 //	CGeffect pEffect = m_pEffect->Effect();
 //	cgSetParameter4fv(cgGetNamedEffectParameter(pEffect, "g_targetRes"), g3dSceneGlobal::g_TargetRes.Ptr() );
 
-	CGparameter curHandle;
+	GLint curHandle;
 
 	curHandle = m_stdMatrices[e_ObjToWorld];
 	if( curHandle )
 	{
 		maMatrix4x4 mt = i_WorldMat;
 		mt.Transpose();
-		cgSetMatrixParameterfr(curHandle, mt.Ptr() );
+		glUniformMatrix4fv(curHandle, 1, GL_FALSE, mt.Ptr());
 	}
 
 	curHandle = m_stdMatrices[e_WorldToView];
@@ -1111,7 +1109,7 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
 	{
 		maMatrix4x4 mt = i_CameraMat;
 		mt.Transpose();
-		cgSetMatrixParameterfr(curHandle, mt.Ptr() );
+		glUniformMatrix4fv(curHandle, 1, GL_FALSE, mt.Ptr());
 	}
 
 	curHandle = m_stdMatrices[e_ObjToWorldIT];
@@ -1119,7 +1117,7 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
 	{
 		maMatrix4x4 mt = i_WorldMat;
 		mt.Transpose();
-		cgSetMatrixParameterfr(curHandle, mt.Ptr() );
+		glUniformMatrix4fv(curHandle, 1, GL_FALSE, mt.Ptr());
 	}
 
 	curHandle = m_stdMatrices[e_WorldToViewIT];
@@ -1127,7 +1125,7 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
 	{
 		maMatrix4x4 mt = i_CameraMat;
 		mt.Transpose();
-		cgSetMatrixParameterfr(curHandle, mt.Ptr() );
+		glUniformMatrix4fv(curHandle, 1, GL_FALSE, mt.Ptr());
 	}
 
 	curHandle = m_stdMatrices[e_ViewToProj];
@@ -1135,7 +1133,7 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
 	{
 		maMatrix4x4 mt = i_ProjMat;
 		mt.Transpose();
-		cgSetMatrixParameterfr(curHandle, mt.Ptr() );
+		glUniformMatrix4fv(curHandle, 1, GL_FALSE, mt.Ptr());
 	}
 
 	curHandle = m_stdMatrices[e_ObjToView];
@@ -1143,7 +1141,7 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
     {
 		maMatrix4x4 worldView = i_WorldMat * i_CameraMat;
 		worldView.Transpose();
-		cgSetMatrixParameterfr(curHandle, worldView.Ptr() );
+		glUniformMatrix4fv(curHandle, 1, GL_FALSE, worldView.Ptr());
     }
 
 	// assuming wvI == wvT therefore wvIT == wv.
@@ -1152,7 +1150,7 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
     {
 		maMatrix4x4 worldView = i_WorldMat * i_CameraMat;
 		worldView.Transpose();
-		cgSetMatrixParameterfr(curHandle, worldView.Ptr() );
+		glUniformMatrix4fv(curHandle, 1, GL_FALSE, worldView.Ptr());
     }
 
 	curHandle = m_stdMatrices[e_WorldToProj];
@@ -1162,7 +1160,7 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
 		// be already computed.
 		maMatrix4x4 viewProj = i_CameraMat * i_ProjMat;
 		viewProj.Transpose();
-		cgSetMatrixParameterfr(curHandle, viewProj.Ptr() );
+		glUniformMatrix4fv(curHandle, 1, GL_FALSE, viewProj.Ptr());
     }
 
 	curHandle = m_stdMatrices[e_ObjToProj];
@@ -1172,16 +1170,15 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
 		// be already computed.
 		maMatrix4x4 worldViewProj = i_WorldMat * i_CameraMat * i_ProjMat;
 		worldViewProj.Transpose();
-		cgSetMatrixParameterfr(curHandle, worldViewProj.Ptr() );
+		glUniformMatrix4fv(curHandle, 1, GL_FALSE, worldViewProj.Ptr());
     }
 
 
 	if( m_VecCameraPosHandle)
     {
 		float vecPosition[4] = { i_CameraPos.m_X, i_CameraPos.m_Y, i_CameraPos.m_Z, 1.0f };    
-		cgSetParameter4fv(m_VecCameraPosHandle, vecPosition );
+		glUniform4fv(m_VecCameraPosHandle, 1, vecPosition);
     }
-#endif
 }
 
 //====================================================================
@@ -1540,7 +1537,7 @@ void matShaderBaseGL::SetupSingleLight(const g3dLight* i_pLight,
 //	m_FirstLightHandle->AsScalar()->SetBool( g3dSingleLightRendering::IsFirstLight() );
 }
 
-void matShaderBaseGL::MapParameter(std::string i_Name, CGparameter& o_Handle)
+void matShaderBaseGL::MapParameter(std::string i_Name, GLint& o_Handle)
 {
 	o_Handle = 0;
 //	o_Handle = cgGetNamedEffectParameter(m_pEffect->Effect(), i_Name.c_str());
@@ -1586,7 +1583,7 @@ int matShaderBaseGL::BuildPrtyObject(effShaderParams* o_pParams) const
 
 	std::string name;
 	int index;
-	CGparameter hParam;
+	GLint hParam;
 
 	std::list<ShaderParamUIInfo> uiInfos;
 
@@ -1640,7 +1637,7 @@ void matShaderBaseGL::CreateBindings(effShaderParams* io_Params)
 		effShaderParam* p = io_Params->m_Params[i];
 
 		// get a matching effect param handle based on name
-		CGparameter h = m_pEffect->GetParameterByName(NULL, p->m_Name.c_str());
+		GLint h = m_pEffect->GetParameterByName(NULL, p->m_Name.c_str());
 		if (h != NULL)
 		{
 			// better validation: check types and ensure there is a match.
@@ -1658,7 +1655,7 @@ void matShaderBaseGL::CreateBindings(effShaderParams* io_Params)
 				effParamTexture* pTexture = dynamic_cast<effParamTexture*>(p);
 				if (pTexture)
 				{
-					CGparameter hExistVar = FindTextureExistVar(h);
+					GLint hExistVar = FindTextureExistVar(h);
 					bindings->m_BindableParams.push_back(new effTextureBindingDX11(*pTexture, h, hExistVar));
 				}
 				else
@@ -1685,7 +1682,7 @@ void matShaderBaseGL::CreateBindings(effShaderParams* io_Params)
 }
 #endif
 
-bool matShaderBaseGL::GetShaderParamInfo(CGparameter i_hParam, 
+bool matShaderBaseGL::GetShaderParamInfo(GLint i_hParam, 
 										  effShaderParams* o_pParams,
 										  matShaderBindingsGL* o_pBindings,
 										  std::list<ShaderParamUIInfo>& o_UIInfo) const
@@ -1695,7 +1692,7 @@ bool matShaderBaseGL::GetShaderParamInfo(CGparameter i_hParam,
 
 effParamTexture* matShaderBaseGL::MapTextureParam(effShaderParams* o_pParams,
 												   matShaderBindingsGL* o_pBindings,
-												   CGparameter i_hParam, 
+												   GLint i_hParam, 
 												   const std::string& i_Name,
 												   bool i_bCreateBinding,
 												   bool i_bCreateUI,
@@ -1706,7 +1703,7 @@ effParamTexture* matShaderBaseGL::MapTextureParam(effShaderParams* o_pParams,
 
 effParamFloat* matShaderBaseGL::MapFloatParam(effShaderParams* o_pParams,
 											   matShaderBindingsGL* o_pBindings,
-											   CGparameter i_hParam, 
+											   GLint i_hParam, 
 											   const std::string& i_Name,
 											   bool i_bCreateBinding,
 											   bool i_bCreateUI,
@@ -1717,7 +1714,7 @@ effParamFloat* matShaderBaseGL::MapFloatParam(effShaderParams* o_pParams,
 
 effParamBool* matShaderBaseGL::MapBoolParam(effShaderParams* o_pParams,
 	matShaderBindingsGL* o_pBindings,
-	CGparameter i_hParam, 
+	GLint i_hParam, 
 	const std::string& i_Name,
 	bool i_bCreateBinding,
 	bool i_bCreateUI,
@@ -1744,7 +1741,7 @@ void split(std::string & text, std::string & separators, std::vector<std::string
 
 effParamInt* matShaderBaseGL::MapEnumParam(effShaderParams* o_pParams,
 	matShaderBindingsGL* o_pBindings,
-	CGparameter i_hParam, 
+	GLint i_hParam, 
 	const std::string& i_Name,
 	bool i_bCreateBinding,
 	bool i_bCreateUI,
@@ -1755,7 +1752,7 @@ effParamInt* matShaderBaseGL::MapEnumParam(effShaderParams* o_pParams,
 
 effParamColor* matShaderBaseGL::MapColorParam(effShaderParams* o_pParams,
 	matShaderBindingsGL* o_pBindings,
-	CGparameter i_hParam, 
+	GLint i_hParam, 
 	const std::string& i_Name,
 	bool i_bCreateBinding,
 	bool i_bCreateUI,

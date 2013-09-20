@@ -146,6 +146,9 @@ meshTriMeshFrag::meshTriMeshFrag(shared_ptr<meshVertexBuffer> &i_VertexBuffer,
 {
 	this->SetRenderMode(meshTriMeshFrag::sm_RendererId);
 
+	glGenVertexArrays(1, &m_VAO); // Create our Vertex Array Object  
+	glBindVertexArray(m_VAO); // Bind our Vertex Array Object so we can use it
+
 	maAxisBox bounding_box = i_VertexBuffer->GetBoundingBox();
 	SetBoundingBox( bounding_box );
 	
@@ -177,6 +180,9 @@ meshTriMeshFrag::meshTriMeshFrag(shared_ptr<meshVertexBuffer> &i_VertexBuffer,
 	m_ePrimitiveType( e_TriangleList )
 {
 	this->SetRenderMode(meshTriMeshFrag::sm_RendererId);
+
+	glGenVertexArrays(1, &m_VAO); // Create our Vertex Array Object  
+	glBindVertexArray(m_VAO); // Bind our Vertex Array Object so we can use it
 
 	maAxisBox bounding_box = i_VertexBuffer->GetBoundingBox();
 	SetBoundingBox( bounding_box );

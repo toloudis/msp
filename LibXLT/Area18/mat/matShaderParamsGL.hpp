@@ -110,7 +110,7 @@ class matShaderBindingsGL : public effShaderBindings
 {
 public:
 	matShaderBindingsGL(shdrPipeline* i_pEffect)
-		: effShaderBindings(), m_pEffectD3D(i_pEffect)
+		: effShaderBindings(), mEffectGL(i_pEffect)
 	{
 	}
 	virtual ~matShaderBindingsGL();
@@ -122,7 +122,7 @@ public:
 		int n = m_BindableParams.size();
 		for (int i = 0; i < n; i++)
 		{
-			m_BindableParams[i]->Bind(m_pEffectD3D);
+			m_BindableParams[i]->Bind(mEffectGL);
 		}
 	};
 
@@ -138,6 +138,6 @@ public:
 	}
 
 	std::vector<matBindParamGL*> m_BindableParams;
-	shdrPipeline* m_pEffectD3D;
+	shdrPipeline* mEffectGL;
 };
 

@@ -10,8 +10,7 @@
 #include "Area18/ogl/oglTypes.hpp"
 
 class oglDevice;
-class shdrVS;
-class shdrPS;
+class shdrShader;
 
 class shdrPipeline
 {
@@ -28,11 +27,11 @@ public:
 	//------------------------------------------------------------------------
 	virtual void Bind(oglDevice* i_pDevice);
 
-	void Attach(shdrVS* i_pVS);
-	void Attach(shdrPS* i_pPS);
+	void AttachVS(shdrShader* i_pVS);
+	void AttachPS(shdrShader* i_pPS);
 protected:
 	GLuint m_PipelineID;
 
-	shdrVS* m_pVS;
-	shdrPS* m_pPS;
+	shdrShader* m_pVS;
+	shdrShader* m_pPS;
 };
