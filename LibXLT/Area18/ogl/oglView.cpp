@@ -1,5 +1,4 @@
 #include "oglView.h"
-#if 0
 
 #include "oglTypes.hpp"
 #include "Core/Ma/maRotation.hpp"
@@ -1386,4 +1385,3 @@ oglView::debugPrint() const
     }
 }
 
-#endif
