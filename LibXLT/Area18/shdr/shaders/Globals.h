@@ -1,11 +1,8 @@
 #version 420
 
-#ifndef _GLOBALS_
-#define _GLOBALS_
-
 out gl_PerVertex {
     vec4  gl_Position;
-    float gl_ClipDistance[];
+    float gl_ClipDistance[4];
 };
 
 //This structure is how the data is formatted from the application
@@ -52,7 +49,7 @@ struct DOFvertexOutput
 mat4 g_uvTransform = mat4(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1);
 
 //User defined clipping plane (world space defined)
-vec4 g_ClipPlane = vec4( 0, 0, 0, 1);	//set to no clipping
+uniform vec4 g_ClipPlane = vec4( 0, 0, 0, 1);	//set to no clipping
 
 float ClipWorldPos( in vec3 WorldPos )
 {
@@ -100,4 +97,3 @@ vec4 TransformVertex(in vec4 i_Po, in vec2 i_UV, in mat4 wvp)
 	return o_hPos;
 }
 
-#endif//_GLOBALS_
