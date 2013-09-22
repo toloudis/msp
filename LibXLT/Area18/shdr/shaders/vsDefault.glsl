@@ -16,8 +16,6 @@ uniform vec4 g_targetRes;
 uniform float g_AlphaTestRef = 0.0f;
 
 // material properties
-uniform float g_uScale = 1.0f;
-uniform float g_vScale = 1.0f;
 uniform bool g_bDoubleSided = false;
 
 /************* DATA STRUCTS **************/
@@ -35,7 +33,7 @@ TANGENT_VERTEX TangentVS( )
 
 	// decal and bump texture coords
 	OUT.UV = InUV;
-    OUT.TexCoord0 = InUV * vec2(g_uScale, g_vScale);
+    OUT.TexCoord0 = (g_uvTransform * vec4(InUV,0,1)).xy;
     
 	vec4 Po = vec4(InPosition, 1.0f);
     

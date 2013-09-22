@@ -34,10 +34,12 @@ shdrPipeline::~shdrPipeline()
 void shdrPipeline::AttachVS(shdrShader* i_pVS)
 {
 	glUseProgramStages(m_PipelineID, GL_VERTEX_SHADER_BIT, i_pVS->GetShader());
+	m_pVS = i_pVS;
 }
 void shdrPipeline::AttachPS(shdrShader* i_pPS)
 {
 	glUseProgramStages(m_PipelineID, GL_FRAGMENT_SHADER_BIT, i_pPS->GetShader());
+	m_pPS = i_pPS;
 }
 
 //------------------------------------------------------------------------

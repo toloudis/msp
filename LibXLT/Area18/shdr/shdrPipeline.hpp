@@ -29,6 +29,9 @@ public:
 
 	void AttachVS(shdrShader* i_pVS);
 	void AttachPS(shdrShader* i_pPS);
+
+	shdrShader* vs() {return m_pVS;}
+	shdrShader* ps() {return m_pPS;}
 protected:
 	GLuint m_PipelineID;
 

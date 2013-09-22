@@ -46,7 +46,7 @@ struct DOFvertexOutput
 	vec2 TexCoord0;//	: TEXCOORD1;	//transformed texture coordinates
 };
 
-mat4 g_uvTransform = mat4(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1);
+uniform mat4 g_uvTransform = mat4(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1);
 
 //User defined clipping plane (world space defined)
 uniform vec4 g_ClipPlane = vec4( 0, 0, 0, 1);	//set to no clipping
@@ -57,9 +57,9 @@ float ClipWorldPos( in vec3 WorldPos )
 }
 
 // uv * xy + zw
-vec4 g_bakeTransform = vec4(1,1,0,0);
+uniform vec4 g_bakeTransform = vec4(1,1,0,0);
 // should the vtx shaders run in bake mode or standard mode?
-bool g_bake = false;
+uniform bool g_bake = false;
 // convert vertex uv coordinate to clip space position for texture baking.
 vec4 BakeVertex(in vec2 i_UV, in mat4 wvp)
 {

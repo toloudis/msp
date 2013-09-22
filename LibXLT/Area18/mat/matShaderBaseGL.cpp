@@ -36,6 +36,7 @@
 #include "Area18/g3d/g3dLightMgrOGL.hpp"
 #include "Area18/mat/matShaderParamsGL.hpp"
 #include "Area18/shdr/shdrPipeline.hpp"
+#include "Area18/shdr/shdrShader.hpp"
 
 #include <algorithm>
 #include <string>
@@ -387,59 +388,59 @@ matShaderBaseGL::matShaderBaseGL(const fsLocator& i_Directory,
 								   shdrPipeline* i_pEffect,
                                    std::string i_Name)
 :	m_pEffect(NULL),
-	m_VecCameraPosHandle(NULL),
-	m_FirstLightHandle(NULL),
-	m_LightInfoHandle(NULL), 
-	m_LightArrayHandle(NULL),
-	m_LightArrayNumHandle(NULL),
-	m_ProjLightInfoHandle(NULL), m_ProjLightTextureHandle(NULL),
-	m_ProjShadowMapHandle(NULL), m_HasProjectedTextureHandle(NULL),
-	m_HasShadowMapHandle(NULL),
-	m_TessellatorMeshTextureHandle(NULL),
-	m_hMeshDataTextureWidthHandle(NULL),
-	m_hMeshDataTextureHeightHandle(NULL),
+	m_VecCameraPosHandle(-1),
+	m_FirstLightHandle(-1),
+	m_LightInfoHandle(-1), 
+	m_LightArrayHandle(-1),
+	m_LightArrayNumHandle(-1),
+	m_ProjLightInfoHandle(-1), m_ProjLightTextureHandle(-1),
+	m_ProjShadowMapHandle(-1), m_HasProjectedTextureHandle(-1),
+	m_HasShadowMapHandle(-1),
+	m_TessellatorMeshTextureHandle(-1),
+	m_hMeshDataTextureWidthHandle(-1),
+	m_hMeshDataTextureHeightHandle(-1),
 	m_Name(""),
-	m_TimeHandle(NULL),
-	m_IsProjLtHandle(NULL),
-	m_UVTransformHandle(NULL),
-	m_EnvHasDiffuseMapHandle(NULL),
-	m_EnvDiffuseMapHandle(NULL),
-	m_EnvDiffuseAngleHandle(NULL),
-	m_EnvDiffuseFactorHandle(NULL),
-	m_EnvDiffuseColorHandle(NULL),
-	m_EnvHasSpecularMapHandle(NULL),
-	m_EnvSpecularMapHandle(NULL),
-	m_EnvSpecularAngleHandle(NULL),
-	m_EnvSpecularFactorHandle(NULL),
-	m_EnvSpecularColorHandle(NULL),
-	m_DOFHandle(NULL),
-	m_DOFBlurCutoffHandle(NULL),
-	m_IsDoubleSidedHandle(NULL),
-	m_hBake(NULL),
-	m_hIsolateReflections(NULL),
-	m_hCubeMapEnabled(NULL),
-	m_hBakingTransform(NULL),
-	m_ReflectionMapIsPlanarHandle(NULL),
-	m_HasReflectionMapHandle(NULL),
-	m_CubeReflectionMapHandle(NULL),
-	m_PlanarReflectionMapHandle(NULL),
-	m_IsReflectionGenHandle(NULL),
+	m_TimeHandle(-1),
+	m_IsProjLtHandle(-1),
+	m_UVTransformHandle(-1),
+	m_EnvHasDiffuseMapHandle(-1),
+	m_EnvDiffuseMapHandle(-1),
+	m_EnvDiffuseAngleHandle(-1),
+	m_EnvDiffuseFactorHandle(-1),
+	m_EnvDiffuseColorHandle(-1),
+	m_EnvHasSpecularMapHandle(-1),
+	m_EnvSpecularMapHandle(-1),
+	m_EnvSpecularAngleHandle(-1),
+	m_EnvSpecularFactorHandle(-1),
+	m_EnvSpecularColorHandle(-1),
+	m_DOFHandle(-1),
+	m_DOFBlurCutoffHandle(-1),
+	m_IsDoubleSidedHandle(-1),
+	m_hBake(-1),
+	m_hIsolateReflections(-1),
+	m_hCubeMapEnabled(-1),
+	m_hBakingTransform(-1),
+	m_ReflectionMapIsPlanarHandle(-1),
+	m_HasReflectionMapHandle(-1),
+	m_CubeReflectionMapHandle(-1),
+	m_PlanarReflectionMapHandle(-1),
+	m_IsReflectionGenHandle(-1),
 	m_pDefaults(NULL),
-	m_SkinningMatrixPaletteHandle(NULL),
-	m_hHardwareTessellationHandle(NULL),
-	m_hHasDisplacementMap(NULL),
-	m_hDisplacementMap(NULL),
-	m_hDisplacementScale(NULL),
-	m_hDisplacementBias(NULL),
-	m_hDisplacementBlur(NULL),
-	m_hDisplacementObjUVScale(NULL),
-	m_hNormalMap(NULL),
-	m_hBumpScale(NULL),
-	m_hHasNormalMap(NULL),
-	m_hTessValueHandle(NULL),
-	m_AlphaTestRefHandle(NULL),
-	m_ClipPlaneHandle(NULL)
-//	m_HairTessellationHandle(NULL)
+	m_SkinningMatrixPaletteHandle(-1),
+	m_hHardwareTessellationHandle(-1),
+	m_hHasDisplacementMap(-1),
+	m_hDisplacementMap(-1),
+	m_hDisplacementScale(-1),
+	m_hDisplacementBias(-1),
+	m_hDisplacementBlur(-1),
+	m_hDisplacementObjUVScale(-1),
+	m_hNormalMap(-1),
+	m_hBumpScale(-1),
+	m_hHasNormalMap(-1),
+	m_hTessValueHandle(-1),
+	m_AlphaTestRefHandle(-1),
+	m_ClipPlaneHandle(-1)
+//	m_HairTessellationHandle(-1)
 {
 	m_pEffect = i_pEffect;
 	m_Name = i_Name;
@@ -613,6 +614,16 @@ void matShaderBaseGL::parse_parameters(const fsLocator& i_Directory)
 
 	MapParameter("g_vTessellationFactor", m_hTessValueHandle);
 //	MapParameter("g_HairTessellationValue", m_HairTessellationHandle );
+
+	MapParameter("g_world", m_stdMatrices[e_ObjToWorld]);
+	MapParameter("g_view", m_stdMatrices[e_WorldToView]);
+	MapParameter("g_worldIT", m_stdMatrices[e_ObjToWorldIT]);
+	MapParameter("g_viewIT", m_stdMatrices[e_WorldToViewIT]);
+	MapParameter("g_proj", m_stdMatrices[e_ViewToProj]);
+	MapParameter("g_wv", m_stdMatrices[e_ObjToView]);
+	MapParameter("g_wvIT", m_stdMatrices[e_ObjToViewIT]);
+	MapParameter("g_vp", m_stdMatrices[e_WorldToProj]);
+	MapParameter("g_wvp", m_stdMatrices[e_ObjToProj]);
 
     LPCSTR pstrName = NULL;
 	LPCSTR pstrType = NULL;
@@ -1539,7 +1550,12 @@ void matShaderBaseGL::SetupSingleLight(const g3dLight* i_pLight,
 
 void matShaderBaseGL::MapParameter(std::string i_Name, GLint& o_Handle)
 {
-	o_Handle = 0;
+	o_Handle = -1;
+	o_Handle = glGetUniformLocation(m_pEffect->vs()->GetShader(), i_Name.c_str());
+	if (o_Handle < 0) {
+		o_Handle = glGetUniformLocation(m_pEffect->ps()->GetShader(), i_Name.c_str());
+	}
+
 //	o_Handle = cgGetNamedEffectParameter(m_pEffect->Effect(), i_Name.c_str());
 //	DBG_ASSERT(o_Handle->IsValid(), "missing shader variable " << i_Name);
 }
