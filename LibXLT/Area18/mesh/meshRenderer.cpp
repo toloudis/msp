@@ -170,6 +170,7 @@ int meshRenderer::Render( const meshTriMeshFrag* i_pFrag, const matMaterial* i_p
 	GLenum indType = (i_pFrag->GetIndexBuffer()->GetSizeOfIndex() == 2) ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
 
 //	i_pEffect->Bind(i_pDevice);
+		CHECKGLERROR();
 
 	// ability to limit to a certain number of primitives per draw call:
 

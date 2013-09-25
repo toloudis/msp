@@ -25,17 +25,34 @@ class g3dSceneGlobal
 public:
 	g3dSceneGlobal();
 
+	bool g_AdditiveMode;
+	 bool g_CubeMode;
+	 int g_CubeStage;
+
+	 maMatrix4x4 g_Identity;
 	// used by animated materials
-	float m_FrameTime;
+	 float g_FrameTime;
+	 bool g_ScreenSpaceViewport;
+	 bool g_TextureTransformIsDisabled[8];
+	 int g_QuadrantDivision;
 
-	maVector4d m_ClipPlane;
+	// xres, yres, 1/xres, 1/yres
+	 maVector4d g_TargetRes;
 
-	maMatrix4x4 m_Camera;
-	maMatrix4x4 m_CameraInverse;
-	maMatrix4x4 m_CameraIT;
-	maMatrix4x4 m_Projection;
-	maMatrix4x4 m_CameraProjection;
-	maPoint3d m_CameraPos;
+	struct dofParams
+	{
+		float m_NearBlurDist;
+		float m_NearFocalDist;
+		float m_FarFocalDist;
+		float m_FarBlurDist;
+		float m_MaxFarBlur;
+		float m_MaxCoC;
+	};
+	 dofParams g_DOFParams;
+
+	 float g_AlphaTestRef;
+
+	 maVector4d g_ClipPlane;
 
 	void SetTransforms(const maPoint3d& i_CameraPos,
 		const maMatrix4x4& i_Camera,
@@ -46,5 +63,14 @@ public:
 	const maMatrix4x4& GetCameraITTransform() const;
 	const maMatrix4x4& GetProjectionTransform() const;
 	const maMatrix4x4& GetCameraProjectionTransform() const;
+
+private:
+	maMatrix4x4 g_Camera;
+	maMatrix4x4 g_CameraInverse;
+	maMatrix4x4 g_CameraIT;
+	maMatrix4x4 g_Projection;
+	maMatrix4x4 g_CameraProjection;
+	maPoint3d g_CameraPos;
+
 };
 

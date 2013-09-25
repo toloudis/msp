@@ -118,4 +118,11 @@ namespace matShaderMgr
 	void SetUseShaderArray(bool i_bEnable);
 
 	bool IsMachStudioShader(const fsLocator& i_ShaderName);
+
+	class matShaderMapVisitor {
+	public:
+		virtual void visit(const std::string& key, matShaderEffect* effect) = 0;
+	};
+	void visitShaders(matShaderMapVisitor* visitor);
+
 }

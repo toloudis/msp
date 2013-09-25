@@ -188,7 +188,7 @@ effShaderData* CreateData(const std::string& i_EffectID)
 	std::map<std::string, matShaderInfo>::iterator it = l_ShaderMap.find( i_EffectID );
 	if (it != l_ShaderMap.end())
 	{
-		DBG_ASSERT(it->second.m_DataTemplate != NULL, "bad shader info data template");
+//		DBG_ASSERT(it->second.m_DataTemplate != NULL, "bad shader info data template");
 		if (!it->second.m_DataTemplate)
 			return NULL;
 		return it->second.m_DataTemplate->Clone();
@@ -368,5 +368,13 @@ void SetUseShaderArray(bool i_bEnable)
 	l_bEnabled = i_bEnable;
 }
 
+void visitShaders(matShaderMapVisitor* visitor)
+{
+	std::map<std::string, matShaderInfo>::iterator it = l_ShaderMap.begin();
+	for (; it != l_ShaderMap.end(); ++it)
+	{
+		visitor->visit(it->first, it->second.m_pEffect);
+	}
+}
 
 }	// end of namespace

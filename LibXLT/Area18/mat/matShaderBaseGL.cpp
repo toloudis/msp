@@ -490,6 +490,7 @@ matShaderBaseGL::~matShaderBaseGL()
 //--------------------------------------------------------------------
 int matShaderBaseGL::Begin() const
 {
+	m_pEffect->Bind(NULL);
 //	mCurrentPass = cgGetFirstPass( m_CurrentTechnique );
 	return 0;
 }
@@ -515,6 +516,7 @@ void matShaderBaseGL::EndPass() const
 //--------------------------------------------------------------------
 void matShaderBaseGL::End() const
 {
+	m_pEffect->Unbind();
 }
 
 //--------------------------------------------------------------------
@@ -1104,11 +1106,11 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
 	// let's set the target resolution here, too. it's sort of related!
 //	CGeffect pEffect = m_pEffect->Effect();
 //	cgSetParameter4fv(cgGetNamedEffectParameter(pEffect, "g_targetRes"), g3dSceneGlobal::g_TargetRes.Ptr() );
-
+	CHECKGLERROR();
 	GLint curHandle;
 
 	curHandle = m_stdMatrices[e_ObjToWorld];
-	if( curHandle )
+	if( curHandle > -1)
 	{
 		maMatrix4x4 mt = i_WorldMat;
 		mt.Transpose();
@@ -1116,7 +1118,7 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
 	}
 
 	curHandle = m_stdMatrices[e_WorldToView];
-    if( curHandle )
+    if( curHandle > -1)
 	{
 		maMatrix4x4 mt = i_CameraMat;
 		mt.Transpose();
@@ -1124,7 +1126,7 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
 	}
 
 	curHandle = m_stdMatrices[e_ObjToWorldIT];
-	if( curHandle )
+	if( curHandle > -1)
 	{
 		maMatrix4x4 mt = i_WorldMat;
 		mt.Transpose();
@@ -1132,7 +1134,7 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
 	}
 
 	curHandle = m_stdMatrices[e_WorldToViewIT];
-    if( curHandle )
+    if( curHandle > -1)
 	{
 		maMatrix4x4 mt = i_CameraMat;
 		mt.Transpose();
@@ -1140,7 +1142,7 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
 	}
 
 	curHandle = m_stdMatrices[e_ViewToProj];
-    if( curHandle )
+    if( curHandle > -1)
 	{
 		maMatrix4x4 mt = i_ProjMat;
 		mt.Transpose();
@@ -1148,7 +1150,7 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
 	}
 
 	curHandle = m_stdMatrices[e_ObjToView];
-    if( curHandle )
+    if( curHandle > -1)
     {
 		maMatrix4x4 worldView = i_WorldMat * i_CameraMat;
 		worldView.Transpose();
@@ -1157,7 +1159,7 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
 
 	// assuming wvI == wvT therefore wvIT == wv.
 	curHandle = m_stdMatrices[e_ObjToViewIT];
-    if( curHandle )
+    if( curHandle > -1)
     {
 		maMatrix4x4 worldView = i_WorldMat * i_CameraMat;
 		worldView.Transpose();
@@ -1165,7 +1167,7 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
     }
 
 	curHandle = m_stdMatrices[e_WorldToProj];
-    if( curHandle )
+    if( curHandle > -1)
     {
 		// we could send in camera*proj in function parameters, it should
 		// be already computed.
@@ -1175,7 +1177,7 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
     }
 
 	curHandle = m_stdMatrices[e_ObjToProj];
-    if( curHandle )
+    if( curHandle > -1)
     {
 		// we could send in camera*proj in function parameters, it should
 		// be already computed.
@@ -1185,11 +1187,13 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
     }
 
 
-	if( m_VecCameraPosHandle)
+	if( m_VecCameraPosHandle > -1)
     {
 		float vecPosition[4] = { i_CameraPos.m_X, i_CameraPos.m_Y, i_CameraPos.m_Z, 1.0f };    
 		glUniform4fv(m_VecCameraPosHandle, 1, vecPosition);
     }
+
+	CHECKGLERROR();
 }
 
 //====================================================================
@@ -1197,7 +1201,7 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
 //====================================================================
 bool matShaderBaseGL::GetHasSkinning() const
 {
-	return (m_SkinningMatrixPaletteHandle != NULL); 
+	return (m_SkinningMatrixPaletteHandle != -1); 
 }
 void matShaderBaseGL::SetupSkinningMatrices(const std::vector<maMatrix4x4> &i_MatrixPalette) const
 {
@@ -1218,7 +1222,7 @@ void matShaderBaseGL::SetupSkinningMatrices(const std::vector<maMatrix4x4> &i_Ma
 //--------------------------------------------------------------------
 void matShaderBaseGL::SetupLighting(const maAxisBox& i_BBox) const
 {
-	if( m_LightInfoHandle )
+	if( m_LightInfoHandle > -1)
 	{	
 		const g3dLight* pLight = get_active_light();
 		LightInfo light_info;
@@ -1239,7 +1243,7 @@ void matShaderBaseGL::SetupLighting(const maAxisBox& i_BBox) const
 //--------------------------------------------------------------------
 void matShaderBaseGL::SetupAmbientLighting(const maAxisBox& i_BBox) const
 {
-	if( m_LightInfoHandle )
+	if( m_LightInfoHandle > -1)
 	{	
 		const g3dLight* pLight = get_head_light();
 		LightInfo light_info;
@@ -1273,7 +1277,7 @@ void matShaderBaseGL::SetupProjectedLight(const matTexture* i_pTexture,
 {
 #if 0
 	CGeffect pEffect = m_pEffect->Effect();
-	if( m_ProjLightInfoHandle )
+	if( m_ProjLightInfoHandle > -1)
 	{	
 		ProjLightInfo proj_light_info;
 		proj_light_info.m_Position.Set(i_Position.m_X, i_Position.m_Y, i_Position.m_Z, 1.0f);
@@ -1516,7 +1520,7 @@ void matShaderBaseGL::SetIsDoubleSided(bool i_IsDoubleSided) const
 void matShaderBaseGL::SetupSingleLight(const g3dLight* i_pLight,
 	const g3dProjectedLight* i_pProjLight, bool i_bAllowShadows) const
 {
-	if( m_LightInfoHandle )
+	if( m_LightInfoHandle > -1)
 	{	
 		LightInfo light_info;
 		if (i_pLight)

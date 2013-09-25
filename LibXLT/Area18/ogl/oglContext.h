@@ -1,10 +1,25 @@
 #pragma once
 
 #include "Area18/ogl/oglTypes.hpp"
-#include <Cg/cg.h>
+#include <map>
 
 class rndrEngine;
+class shdrPipeline;
 
+// GL objects that can NOT be shared:
+// Framebuffer Objects
+// Program Pipeline Objects
+// Transform Feedback Objects
+// Vertex Array Objects
+//
+// other types CAN be shared:
+// Buffer Objects
+// Query Objects
+// Renderbuffer Objects
+// Sampler Objects
+// Texture Objects
+// (*)Sync Objects
+// (*)GLSL Shader and Program Objects
 class oglContext
 {
 public:
@@ -25,7 +40,8 @@ public:
 	std::vector<cl::Device>& clDevices() {return devices;}
 	cl::CommandQueue& clCommandQueue() {return commandQueue;}
 
-	CGcontext cgContext() const { return mCgContext; }
+	void setupShaderPipelines();
+
 private:
 	HGLRC mHGLRC;
 	int mPixelFormat;
@@ -45,6 +61,6 @@ private:
 #define SDK_EXPECTED_FAILURE 2
 	int setupCL(HDC hDC);
 
-	CGcontext mCgContext;
+	std::map<std::string, shdrPipeline*> mShaderMap;
 };
 

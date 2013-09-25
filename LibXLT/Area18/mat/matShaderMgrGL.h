@@ -1,7 +1,7 @@
 #pragma once
 #include "graphics\mat\matshadermgr.hpp"
 
-class shdrCgPipeline;
+class shdrShader;
 
 class matShaderMgrGL :
 	public matShaderMgrImpl
@@ -22,9 +22,11 @@ public:
 		std::map<fsLocator, matShaderEffect*>& io_ShaderMap);
 
 private:
-	shdrCgPipeline* mBlinn;
+	shdrShader* mVsGeneric;
+	shdrShader* mFsTest;
 
 	matShaderInfo registerShader(const std::string& shaderName);
+
 
 };
 

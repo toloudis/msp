@@ -2,8 +2,11 @@
 
 #include "Core/Dbg/dbgMsg.hpp"
 #include "Area18/Area18Layer.hpp"
+#include "Area18/mat/matShaderBaseGL.hpp"
 #include "Area18/ogl/GL/wglext.h"
 #include "Area18/rndr/rndrEngine.h"
+#include "Area18/shdr/shdrPipeline.hpp"
+#include "Graphics/Mat/matShaderMgr.hpp"
 
 void getGLVersion(int& major, int& minor)
 {
@@ -28,17 +31,36 @@ oglContext::oglContext(HDC hDC, oglContext* shareContext)
 : mPixelFormat (0)
 , mRenderEngine(NULL)
 {
+	// context is current after this call
 	createContext(hDC, (shareContext != NULL) ? shareContext->mHGLRC : NULL);
+	setupShaderPipelines();
 	setupCL(hDC);
-	mCgContext = cgCreateContext();
-	if (mCgContext == NULL) {
-		DBG_LOG("Failed to create cg context.");
-	}
 }
 
 
 oglContext::~oglContext(void)
 {
+}
+
+// for all shaders in matShaderMgr, 
+// store a shdrPipeline here for use by renderers.
+void oglContext::setupShaderPipelines()
+{
+	class makePipelines : public matShaderMgr::matShaderMapVisitor
+	{
+	public:
+		oglContext* mContext;
+		virtual void visit(const std::string& key, matShaderEffect* effect) {
+			matShaderBaseGL* gleffect = (matShaderBaseGL*)effect;
+			shdrPipeline* pipeline = gleffect->GetEffect();
+			// make a pipeline object with the same shaders
+			// and store it in this context.
+			mContext->mShaderMap[key] = new shdrPipeline(*pipeline);
+		}
+	};
+	makePipelines visitor;
+	visitor.mContext = this;
+	matShaderMgr::visitShaders(&visitor);
 }
 
 void oglContext::createContext(HDC hDC, HGLRC hShareContext)

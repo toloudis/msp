@@ -1,4 +1,4 @@
-/****************************************************************************\
+﻿/****************************************************************************\
 **	shdrVS.cpp
 **
 **		see .hpp
@@ -22,6 +22,15 @@ shdrPipeline::shdrPipeline()
 {
 	glGenProgramPipelines(1, &m_PipelineID);
 	glBindProgramPipeline(m_PipelineID);
+	CHECKGLERROR();
+}
+
+shdrPipeline::shdrPipeline(const shdrPipeline& that)
+{
+	glGenProgramPipelines(1, &m_PipelineID);
+	glBindProgramPipeline(m_PipelineID);
+	this->AttachVS(that.vs());
+	this->AttachPS(that.ps());
 }
 
 //------------------------------------------------------------------------
@@ -34,11 +43,13 @@ shdrPipeline::~shdrPipeline()
 void shdrPipeline::AttachVS(shdrShader* i_pVS)
 {
 	glUseProgramStages(m_PipelineID, GL_VERTEX_SHADER_BIT, i_pVS->GetShader());
+	CHECKGLERROR();
 	m_pVS = i_pVS;
 }
 void shdrPipeline::AttachPS(shdrShader* i_pPS)
 {
 	glUseProgramStages(m_PipelineID, GL_FRAGMENT_SHADER_BIT, i_pPS->GetShader());
+	CHECKGLERROR();
 	m_pPS = i_pPS;
 }
 
@@ -46,7 +57,26 @@ void shdrPipeline::AttachPS(shdrShader* i_pPS)
 //------------------------------------------------------------------------
 void shdrPipeline::Bind(oglDevice* i_pDevice)
 {
+	glValidateProgramPipeline(m_PipelineID);
+	CHECKGLERROR();
 	glBindProgramPipeline(m_PipelineID);
+	CHECKGLERROR();
 	// set shader constants here too?
+}
+
+void shdrPipeline::Unbind()
+{
+	glBindProgramPipeline(0);
+}
+
+void shdrPipeline::activateVs() const
+{
+	glActiveShaderProgram(m_PipelineID, m_pVS->GetShader());
+	CHECKGLERROR();
+}
+void shdrPipeline::activatePs() const
+{
+	glActiveShaderProgram(m_PipelineID, m_pPS->GetShader());
+	CHECKGLERROR();
 }
 

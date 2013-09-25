@@ -20,10 +20,6 @@ class effNormalsData;
 class effOutlineData;
 class effOcclusionData;
 struct g3dAmbientEnvState;
-namespace g3dSceneGlobal
-{	
-	struct dofParams;
-};
 class effShaderBindings;
 class matShaderBindingsGL;
 class effShaderParams;
