@@ -1,6 +1,7 @@
 #include "rndrFullRenderer.h"
 
 #include "Area18/g3d/g3dSceneGlobal.hpp"
+#include "Area18/ogl/oglContext.h"
 #include "Area18/ogl/oglTypes.hpp"
 #include "Area18/ogl/oglView.h"
 #include "Area18/mat/matShaderBaseGL.hpp"
@@ -67,6 +68,8 @@ int rndrFullRenderer::Render( g2dRenderTarget* iWindow, const camCamera& i_Camer
 
 	// draw from list.
 
+	oglContext* ctx = oglContext::currentContext();
+
 	int n = 0;
 	for (size_t i = 0; i < mNodesToDraw.size(); ++i) {
 		g3dSceneNode* node = mNodesToDraw[i];
@@ -78,9 +81,11 @@ int rndrFullRenderer::Render( g2dRenderTarget* iWindow, const camCamera& i_Camer
 		matShaderEffect* pEffect = matShaderMgr::GetEffect(*m);
 		matShaderBaseGL* i_pEffect = (matShaderBaseGL*)pEffect;
 
+		// get the context's pipeline object
+		i_pEffect->Begin();
+
 		//// set shader globals
 		//g3dDX11Util::SetupShaderGlobals(pEffect);
-		i_pEffect->Begin();
 
 		i_pEffect->GetEffect()->activateVs();
 

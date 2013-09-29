@@ -63,6 +63,8 @@ void matShaderMgrGL::RegisterEffects(const fsLocator &i_ShaderDir,
 	if (i.m_pEffect != NULL) {
 		io_ShaderMap["Simple.fx"] = i;
 		io_ShaderMap["Solid.fx"] = i;
+		io_ShaderMap["Phong.fx"] = i;
+		io_ShaderMap["Blinn.fx"] = i;
 	}
 }
 void matShaderMgrGL::RegisterUserShaders(const fsLocator& i_ShaderDir, 

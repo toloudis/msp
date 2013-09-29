@@ -27,6 +27,7 @@ public:
 	virtual ~oglContext(void);
 
 	void makeCurrent(HDC hDC);
+	bool isCurrent();
 	void update();
 	void doneCurrent();
 	void resize(int w, int h);
@@ -41,7 +42,13 @@ public:
 	cl::CommandQueue& clCommandQueue() {return commandQueue;}
 
 	void setupShaderPipelines();
+	shdrPipeline* getShader(const std::string& s);
 
+	void setupVAOs();
+	GLuint getVAO();
+
+	// get the current (per-thread) context!
+	static oglContext* currentContext();
 private:
 	HGLRC mHGLRC;
 	int mPixelFormat;
@@ -62,5 +69,8 @@ private:
 	int setupCL(HDC hDC);
 
 	std::map<std::string, shdrPipeline*> mShaderMap;
+
+	GLuint mVAO;
+	GLuint mDummyBuffer;
 };
 

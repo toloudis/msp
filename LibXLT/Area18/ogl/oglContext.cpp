@@ -6,7 +6,10 @@
 #include "Area18/ogl/GL/wglext.h"
 #include "Area18/rndr/rndrEngine.h"
 #include "Area18/shdr/shdrPipeline.hpp"
+#include "Graphics/g3d/g3dType.hpp"
 #include "Graphics/Mat/matShaderMgr.hpp"
+
+static __declspec(thread) oglContext* gCurrentContext = NULL;
 
 void getGLVersion(int& major, int& minor)
 {
@@ -30,9 +33,12 @@ void getGLVersion(int& major, int& minor)
 oglContext::oglContext(HDC hDC, oglContext* shareContext)
 : mPixelFormat (0)
 , mRenderEngine(NULL)
+, mVAO(0)
+, mDummyBuffer(0)
 {
 	// context is current after this call
 	createContext(hDC, (shareContext != NULL) ? shareContext->mHGLRC : NULL);
+	setupVAOs();
 	setupShaderPipelines();
 	setupCL(hDC);
 }
@@ -40,6 +46,42 @@ oglContext::oglContext(HDC hDC, oglContext* shareContext)
 
 oglContext::~oglContext(void)
 {
+	if (isCurrent()) {
+		doneCurrent();
+	}
+
+	glDeleteBuffers(1, &mDummyBuffer);
+	glDeleteVertexArrays(1, &mVAO); 
+
+}
+
+void oglContext::setupVAOs()
+{
+	// create a dummy buffer
+	glGenBuffers(1, &mDummyBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, mDummyBuffer);
+	g3dType::BumpTex1Vertex vtx;
+	glBufferData(GL_ARRAY_BUFFER, sizeof(g3dType::BumpTex1Vertex), &vtx, GL_STATIC_DRAW);
+
+	// create a VAO
+	glGenVertexArrays(1, &mVAO); // Create our Vertex Array Object  
+	glBindVertexArray(mVAO); // Bind our Vertex Array Object so we can use it
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(g3dType::BumpTex1Vertex), 0); 
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(g3dType::BumpTex1Vertex), (GLvoid*)(sizeof(float)*3)); 
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(g3dType::BumpTex1Vertex), (GLvoid*)(sizeof(float)*6)); 
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(g3dType::BumpTex1Vertex), (GLvoid*)(sizeof(float)*8)); 
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(g3dType::BumpTex1Vertex), (GLvoid*)(sizeof(float)*11)); 
+}
+
+GLuint oglContext::getVAO()
+{
+	return mVAO;
 }
 
 // for all shaders in matShaderMgr, 
@@ -61,6 +103,12 @@ void oglContext::setupShaderPipelines()
 	makePipelines visitor;
 	visitor.mContext = this;
 	matShaderMgr::visitShaders(&visitor);
+}
+
+shdrPipeline* oglContext::getShader(const std::string& s)
+{
+	// TODO: error check
+	return mShaderMap[s];
 }
 
 void oglContext::createContext(HDC hDC, HGLRC hShareContext)
@@ -124,10 +172,18 @@ void oglContext::createContext(HDC hDC, HGLRC hShareContext)
 	glFrontFace(GL_CCW);
 }
 
+bool oglContext::isCurrent()
+{
+	return (mHGLRC == wglGetCurrentContext());
+}
+
 void oglContext::makeCurrent(HDC hDC)
 {
     if (mHGLRC == wglGetCurrentContext())
+	{
+		gCurrentContext = this;
         return;
+	}
 
 	BOOL b = wglMakeCurrent(hDC,mHGLRC);
 	if (!b) {
@@ -147,11 +203,20 @@ void oglContext::makeCurrent(HDC hDC)
 		DBG_LOG("makecurrent failed: " << lpMsgBuf); 
 		LocalFree(lpMsgBuf);
 	}
+	else {
+		gCurrentContext = this;
+	}
 }
 
 void oglContext::doneCurrent()
 {
 	wglMakeCurrent(NULL,NULL);
+	gCurrentContext = NULL;
+}
+
+oglContext* oglContext::currentContext() 
+{
+	return gCurrentContext;
 }
 
 void oglContext::update()

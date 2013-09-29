@@ -387,7 +387,7 @@ bool rndrTiledRenderer::SetupRender(const rndrSampling& i_Params, oglDevice* i_p
 
 		// get random sample positions
 		maSampling::GetSamples2D_Repeatable(m_KernelSamplesX, m_KernelSamplesY,
-			m_SamplePoints, 1, samplesPerPixelX, samplesPerPixelY);
+			m_SamplePoints, 1.0f, (float)samplesPerPixelX, (float)samplesPerPixelY);
 		maSampling::WeightSamples(m_SamplePoints, filter, filterWidthPixelsX, filterWidthPixelsY);
 		for (int i = 0; i < m_SamplePoints.size(); i++)
 		{

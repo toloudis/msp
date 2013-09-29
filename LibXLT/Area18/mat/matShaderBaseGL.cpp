@@ -35,6 +35,7 @@
 #include "Graphics/mat/matTexture.hpp"
 #include "Area18/g3d/g3dLightMgrOGL.hpp"
 #include "Area18/mat/matShaderParamsGL.hpp"
+#include "Area18/ogl/oglContext.h"
 #include "Area18/shdr/shdrPipeline.hpp"
 #include "Area18/shdr/shdrShader.hpp"
 
@@ -386,8 +387,9 @@ namespace
 //--------------------------------------------------------------------
 matShaderBaseGL::matShaderBaseGL(const fsLocator& i_Directory, 
 								   shdrPipeline* i_pEffect,
-                                   std::string i_Name)
+								   std::string i_Name)
 :	m_pEffect(NULL),
+	mContextPipeline(NULL),
 	m_VecCameraPosHandle(-1),
 	m_FirstLightHandle(-1),
 	m_LightInfoHandle(-1), 
@@ -484,13 +486,21 @@ matShaderBaseGL::~matShaderBaseGL()
 
 }
 
+shdrPipeline* matShaderBaseGL::GetEffect() const
+{
+	if (mContextPipeline)
+		return mContextPipeline;
+	else 
+		return m_pEffect;
+}
 
 //--------------------------------------------------------------------
 // Start effect, returns number of passes needed
 //--------------------------------------------------------------------
 int matShaderBaseGL::Begin() const
 {
-	m_pEffect->Bind(NULL);
+	mContextPipeline = oglContext::currentContext()->getShader(this->m_Name);
+	mContextPipeline->Bind(NULL);
 //	mCurrentPass = cgGetFirstPass( m_CurrentTechnique );
 	return 0;
 }
@@ -516,7 +526,7 @@ void matShaderBaseGL::EndPass() const
 //--------------------------------------------------------------------
 void matShaderBaseGL::End() const
 {
-	m_pEffect->Unbind();
+	mContextPipeline->Unbind();
 }
 
 //--------------------------------------------------------------------
@@ -555,7 +565,7 @@ void matShaderBaseGL::SetTechnique(const std::string& i_Technique) const
 //--------------------------------------------------------------------
 void matShaderBaseGL::parse_parameters(const fsLocator& i_Directory)
 {
-    // Look at parameters for semantics and annotations that we know how to interpret
+	// Look at parameters for semantics and annotations that we know how to interpret
 
 	MapParameter("g_ClipPlane", m_ClipPlaneHandle );
 	MapParameter("g_AlphaTestRef", m_AlphaTestRefHandle );
@@ -627,7 +637,7 @@ void matShaderBaseGL::parse_parameters(const fsLocator& i_Directory)
 	MapParameter("g_vp", m_stdMatrices[e_WorldToProj]);
 	MapParameter("g_wvp", m_stdMatrices[e_ObjToProj]);
 
-    LPCSTR pstrName = NULL;
+	LPCSTR pstrName = NULL;
 	LPCSTR pstrType = NULL;
 
 #if 0
@@ -647,34 +657,34 @@ void matShaderBaseGL::parse_parameters(const fsLocator& i_Directory)
 		if ( (paramSemantic != NULL) && 
 			((paramType == CG_FLOAT4x4)) )
 		{
-            if( _strcmpi( paramSemantic, "world" ) == 0 )
+			if( _strcmpi( paramSemantic, "world" ) == 0 )
 				m_stdMatrices[e_ObjToWorld] = hParam;
-            else if( _strcmpi( paramSemantic, "view" ) == 0 )
-                m_stdMatrices[e_WorldToView] = hParam;
-            else if( _strcmpi( paramSemantic, "worldit" ) == 0 )
-                m_stdMatrices[e_ObjToWorldIT] = hParam;
-            else if( _strcmpi( paramSemantic, "viewit" ) == 0 )
-                m_stdMatrices[e_WorldToViewIT] = hParam;
-            else if( _strcmpi( paramSemantic, "projection" ) == 0 )
-                m_stdMatrices[e_ViewToProj] = hParam;
-            else if( _strcmpi( paramSemantic, "worldview" ) == 0 )
-                m_stdMatrices[e_ObjToView] = hParam;
-            else if( _strcmpi( paramSemantic, "worldviewit" ) == 0 )
-                m_stdMatrices[e_ObjToViewIT] = hParam;
-            else if( _strcmpi( paramSemantic, "viewprojection" ) == 0 )
-                m_stdMatrices[e_WorldToProj] = hParam;
-            else if( _strcmpi( paramSemantic, "worldviewprojection" ) == 0 )
-                m_stdMatrices[e_ObjToProj] = hParam;
+			else if( _strcmpi( paramSemantic, "view" ) == 0 )
+				m_stdMatrices[e_WorldToView] = hParam;
+			else if( _strcmpi( paramSemantic, "worldit" ) == 0 )
+				m_stdMatrices[e_ObjToWorldIT] = hParam;
+			else if( _strcmpi( paramSemantic, "viewit" ) == 0 )
+				m_stdMatrices[e_WorldToViewIT] = hParam;
+			else if( _strcmpi( paramSemantic, "projection" ) == 0 )
+				m_stdMatrices[e_ViewToProj] = hParam;
+			else if( _strcmpi( paramSemantic, "worldview" ) == 0 )
+				m_stdMatrices[e_ObjToView] = hParam;
+			else if( _strcmpi( paramSemantic, "worldviewit" ) == 0 )
+				m_stdMatrices[e_ObjToViewIT] = hParam;
+			else if( _strcmpi( paramSemantic, "viewprojection" ) == 0 )
+				m_stdMatrices[e_WorldToProj] = hParam;
+			else if( _strcmpi( paramSemantic, "worldviewprojection" ) == 0 )
+				m_stdMatrices[e_ObjToProj] = hParam;
 			else if( _strcmpi( paramSemantic, "bones" ) == 0 )
 				m_SkinningMatrixPaletteHandle = hParam;
-        }
+		}
 		else if( paramSemantic != NULL && ( paramType == CG_FLOAT4 ))
-        {
-            if( _strcmpi( paramSemantic, "camerapos" ) == 0 )
-                m_VecCameraPosHandle = hParam;
-        }
+		{
+			if( _strcmpi( paramSemantic, "camerapos" ) == 0 )
+				m_VecCameraPosHandle = hParam;
+		}
 		else if( paramSemantic != NULL && ( paramClass == CG_PARAMETERCLASS_SCALAR ))
-        {
+		{
 			if (paramType == CG_BOOL)
 			{
 				if( _strcmpi( paramSemantic, "reflectionmapisplanar" ) == 0 )
@@ -695,13 +705,13 @@ void matShaderBaseGL::parse_parameters(const fsLocator& i_Directory)
 			}
 		}
 		else if( paramSemantic != NULL && ( paramClass == CG_PARAMETERCLASS_STRUCT ))
-        {
-            if( _strcmpi( paramSemantic, "lightarray" ) == 0 )
-                m_LightArrayHandle = hParam;
+		{
+			if( _strcmpi( paramSemantic, "lightarray" ) == 0 )
+				m_LightArrayHandle = hParam;
 			else if( _strcmpi( paramSemantic, "lightinfo" ) == 0 )
-                m_LightInfoHandle = hParam;
+				m_LightInfoHandle = hParam;
 			else if( _strcmpi( paramSemantic, "projlightinfo" ) == 0 )
-                m_ProjLightInfoHandle = hParam;
+				m_ProjLightInfoHandle = hParam;
 		}
 		else if( paramClass == CG_PARAMETERCLASS_SAMPLER &&
 			(paramType == CG_SAMPLER ||
@@ -779,7 +789,7 @@ void matShaderBaseGL::parse_techniques()
 		const char* name = cgGetTechniqueName(hTechnique);
 
 		// Do something with each technique
-        if( _strcmpi( name, "default" ) == 0 )
+		if( _strcmpi( name, "default" ) == 0 )
 			m_Techniques[e_Default] = hTechnique;
 		else if( _strcmpi( name, "singlelight" ) == 0 )
 			m_Techniques[e_SingleLight] = hTechnique;
@@ -807,7 +817,7 @@ void matShaderBaseGL::parse_techniques()
 
 	// If no default technique by name, get first valid technique
 	if (!m_Techniques[e_Default])
-        m_Techniques[e_Default] = first;
+		m_Techniques[e_Default] = first;
 #endif
 }
 
@@ -816,7 +826,7 @@ void matShaderBaseGL::parse_techniques()
 int matShaderBaseGL::GetParamIndex(const std::string& i_name) const 
 {
 	std::map<std::string, int>::const_iterator found = m_paramnamemap.find(i_name);
-    if (found != m_paramnamemap.end())
+	if (found != m_paramnamemap.end())
 		return found->second;
 	else
 	{
@@ -849,7 +859,7 @@ bool matShaderBaseGL::GetParamUI(const std::string& i_name, matShaderParamUI& o_
 
 	int index = -1;
 	std::map<std::string, int>::const_iterator found = m_paramnamemap.find(i_name);
-    if (found != m_paramnamemap.end())
+	if (found != m_paramnamemap.end())
 		index = found->second;
 	else
 	{
@@ -860,7 +870,7 @@ bool matShaderBaseGL::GetParamUI(const std::string& i_name, matShaderParamUI& o_
 	o_paramUI.m_name = i_name;
 	GLint hParam = m_params[index];
 	CGannotation hAnnot = NULL;
-    LPCSTR pstr = NULL;
+	LPCSTR pstr = NULL;
 	float fval = 0;
 //	D3DXPARAMETER_DESC paramDesc;
 	hAnnot = cgGetNamedParameterAnnotation(hParam, "SasUiVisible");
@@ -1109,20 +1119,22 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
 	CHECKGLERROR();
 	GLint curHandle;
 
+	GLboolean transpose = GL_TRUE;
+
 	curHandle = m_stdMatrices[e_ObjToWorld];
 	if( curHandle > -1)
 	{
 		maMatrix4x4 mt = i_WorldMat;
 		mt.Transpose();
-		glUniformMatrix4fv(curHandle, 1, GL_FALSE, mt.Ptr());
+		glUniformMatrix4fv(curHandle, 1, transpose, mt.Ptr());
 	}
 
 	curHandle = m_stdMatrices[e_WorldToView];
-    if( curHandle > -1)
+	if( curHandle > -1)
 	{
 		maMatrix4x4 mt = i_CameraMat;
 		mt.Transpose();
-		glUniformMatrix4fv(curHandle, 1, GL_FALSE, mt.Ptr());
+		glUniformMatrix4fv(curHandle, 1, transpose, mt.Ptr());
 	}
 
 	curHandle = m_stdMatrices[e_ObjToWorldIT];
@@ -1130,68 +1142,68 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
 	{
 		maMatrix4x4 mt = i_WorldMat;
 		mt.Transpose();
-		glUniformMatrix4fv(curHandle, 1, GL_FALSE, mt.Ptr());
+		glUniformMatrix4fv(curHandle, 1, transpose, mt.Ptr());
 	}
 
 	curHandle = m_stdMatrices[e_WorldToViewIT];
-    if( curHandle > -1)
+	if( curHandle > -1)
 	{
 		maMatrix4x4 mt = i_CameraMat;
 		mt.Transpose();
-		glUniformMatrix4fv(curHandle, 1, GL_FALSE, mt.Ptr());
+		glUniformMatrix4fv(curHandle, 1, transpose, mt.Ptr());
 	}
 
 	curHandle = m_stdMatrices[e_ViewToProj];
-    if( curHandle > -1)
+	if( curHandle > -1)
 	{
 		maMatrix4x4 mt = i_ProjMat;
 		mt.Transpose();
-		glUniformMatrix4fv(curHandle, 1, GL_FALSE, mt.Ptr());
+		glUniformMatrix4fv(curHandle, 1, transpose, mt.Ptr());
 	}
 
 	curHandle = m_stdMatrices[e_ObjToView];
-    if( curHandle > -1)
-    {
+	if( curHandle > -1)
+	{
 		maMatrix4x4 worldView = i_WorldMat * i_CameraMat;
 		worldView.Transpose();
-		glUniformMatrix4fv(curHandle, 1, GL_FALSE, worldView.Ptr());
-    }
+		glUniformMatrix4fv(curHandle, 1, transpose, worldView.Ptr());
+	}
 
 	// assuming wvI == wvT therefore wvIT == wv.
 	curHandle = m_stdMatrices[e_ObjToViewIT];
-    if( curHandle > -1)
-    {
+	if( curHandle > -1)
+	{
 		maMatrix4x4 worldView = i_WorldMat * i_CameraMat;
 		worldView.Transpose();
-		glUniformMatrix4fv(curHandle, 1, GL_FALSE, worldView.Ptr());
-    }
+		glUniformMatrix4fv(curHandle, 1, transpose, worldView.Ptr());
+	}
 
 	curHandle = m_stdMatrices[e_WorldToProj];
-    if( curHandle > -1)
-    {
+	if( curHandle > -1)
+	{
 		// we could send in camera*proj in function parameters, it should
 		// be already computed.
 		maMatrix4x4 viewProj = i_CameraMat * i_ProjMat;
 		viewProj.Transpose();
-		glUniformMatrix4fv(curHandle, 1, GL_FALSE, viewProj.Ptr());
-    }
+		glUniformMatrix4fv(curHandle, 1, transpose, viewProj.Ptr());
+	}
 
 	curHandle = m_stdMatrices[e_ObjToProj];
-    if( curHandle > -1)
-    {
+	if( curHandle > -1)
+	{
 		// we could send in camera*proj in function parameters, it should
 		// be already computed.
 		maMatrix4x4 worldViewProj = i_WorldMat * i_CameraMat * i_ProjMat;
 		worldViewProj.Transpose();
-		glUniformMatrix4fv(curHandle, 1, GL_FALSE, worldViewProj.Ptr());
-    }
+		glUniformMatrix4fv(curHandle, 1, transpose, worldViewProj.Ptr());
+	}
 
 
 	if( m_VecCameraPosHandle > -1)
-    {
+	{
 		float vecPosition[4] = { i_CameraPos.m_X, i_CameraPos.m_Y, i_CameraPos.m_Z, 1.0f };    
 		glUniform4fv(m_VecCameraPosHandle, 1, vecPosition);
-    }
+	}
 
 	CHECKGLERROR();
 }

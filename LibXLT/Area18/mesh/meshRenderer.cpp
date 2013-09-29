@@ -10,6 +10,7 @@
 #include "Area18/mesh/meshRenderer.hpp"
 
 #include "Area18/Area18Layer.hpp"
+#include "Area18/ogl/oglContext.h"
 #include "Area18/ogl/oglDevice.hpp"
 #include "Area18/ogl/oglBuffer.hpp"
 #include "Area18/ogl/oglSystem2D.h"
@@ -113,7 +114,7 @@ int meshRenderer::Render( const meshTriMeshFrag* i_pFrag, const matMaterial* i_p
 //	};
 //	UINT offsets[2] = {0,0};
 	
-	glBindVertexArray(i_pFrag->m_VAO);
+	glBindVertexArray(oglContext::currentContext()->getVAO());
 
 	glBindBuffer(GL_ARRAY_BUFFER, i_pFrag->GetVertexBuffer()->GetVertexBuffer()->GetBuffer());
 	

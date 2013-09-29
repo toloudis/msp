@@ -151,7 +151,7 @@ public:
 	virtual void SetName(std::string i_Name) {m_Name = i_Name;}
 
 	// let client see the effect if they know about cg/opengl.
-	shdrPipeline* GetEffect() const {return m_pEffect;}
+	shdrPipeline* GetEffect() const;
 	//const D3DX11_EFFECT_DESC& EffectDesc() const {return m_EffectDesc;}
 
 	enum EffStandardMatrices
@@ -298,6 +298,9 @@ protected:
 	std::string m_Name;
 	shdrPipeline* m_pEffect;
 
+	// context-specific pipeline object
+	// mutable for lazy init in Begin()
+	mutable shdrPipeline* mContextPipeline;
 private:
 
 	//====================================================================

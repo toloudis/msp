@@ -288,7 +288,6 @@ class meshTriMeshFrag : public g3dFragment
 		//----------------------------------------------------------------------------
 		inline int GetVertexStride() const;
 
-	GLuint m_VAO;
 private:
 		shared_ptr<meshVertexBuffer> m_pVertexBuffer;
 		shared_ptr<meshVertexBuffer> m_pVertexBuffer_Old;
