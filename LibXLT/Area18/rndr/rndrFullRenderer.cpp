@@ -72,7 +72,8 @@ int rndrFullRenderer::Render( g2dRenderTarget* iWindow, const camCamera& i_Camer
 
 	int n = 0;
 	for (size_t i = 0; i < mNodesToDraw.size(); ++i) {
-		g3dSceneNode* node = mNodesToDraw[i];
+		g3dSceneNode* node = mNodesToDraw[i].node;
+		g3dLayer::ModelSpace modelSpace = mNodesToDraw[i].modelSpace;
 		g3dFragment* f = node->GetFragment();
 		matMaterial* m = f->GetMaterial();//mNodesToDraw[i]->GetMaterial();
 		meshTriMeshFrag* mf = (meshTriMeshFrag*)f; 
@@ -104,8 +105,8 @@ int rndrFullRenderer::Render( g2dRenderTarget* iWindow, const camCamera& i_Camer
 		i_pEffect->SetBakingFactors(scale, trans);
 
 		i_pEffect->SetupMatrices(f->IsModelSpaceVertices() ? node->GetTotalTransform() : maMatrix4x4(),
-																			sceneGlobal.GetCameraTransform(), 
-																		sceneGlobal.GetProjectionTransform(), 
+																			modelSpace == g3dLayer::e_Screen ? maMatrix4x4() : sceneGlobal.GetCameraTransform(), 
+																		modelSpace == g3dLayer::e_Screen ? maMatrix4x4() : sceneGlobal.GetProjectionTransform(), 
 																				sceneGlobal.GetCameraPos() );
 
 		if (f->GetHasSkinning() && i_pEffect->GetHasSkinning())
@@ -186,7 +187,8 @@ void rndrFullRenderer::ReleaseResources()
 void rndrFullRenderer::Traverse( g3dSceneNode* i_pNode, 
 			  g3dSceneNode::DrawStyle i_DrawStyle,
 			  bool i_bRenderLowRes,
-			  bool i_bDoClip)
+			  bool i_bDoClip,
+			  const g3dLayer& ilayer)
 { 
 	const g3dFragment* pFrag = i_pNode->GetFragment();
 
@@ -194,7 +196,10 @@ void rndrFullRenderer::Traverse( g3dSceneNode* i_pNode,
 	if( pFrag && !pFrag->IsShadowHull())
 	{
 		matMaterial* pMatOverride = i_pNode->GetMaterial();
-		mNodesToDraw.push_back(i_pNode);
+		drawcall dc;
+		dc.modelSpace = ilayer.GetModelSpace();
+		dc.node = i_pNode;
+		mNodesToDraw.push_back(dc);
 	}
 
 	// Render the children
@@ -204,7 +209,8 @@ void rndrFullRenderer::Traverse( g3dSceneNode* i_pNode,
 		Traverse(children[i], 
 			i_DrawStyle,
 			i_bRenderLowRes,
-			i_bDoClip);
+			i_bDoClip,
+			ilayer);
 }
 
 void rndrFullRenderer::TraverseLayer(float i_time, const g3dLayer* i_pLayer,
@@ -216,7 +222,8 @@ void rndrFullRenderer::TraverseLayer(float i_time, const g3dLayer* i_pLayer,
 	Traverse(i_pLayer->GetRootNode(),
 		draw_style,
 		bLowRes,
-		i_bDoClipping);
+		i_bDoClipping,
+		*i_pLayer);
 }
 
 

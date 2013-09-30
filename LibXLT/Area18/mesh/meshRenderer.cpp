@@ -168,7 +168,11 @@ int meshRenderer::Render( const meshTriMeshFrag* i_pFrag, const matMaterial* i_p
 //		i_pDevice->m_pDeviceContext->IASetPrimitiveTopology( (GLenum)i_pFrag->GetPrimitiveType());
 //	}
 
-	GLenum indType = (i_pFrag->GetIndexBuffer()->GetSizeOfIndex() == 2) ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT;
+	GLenum indType = GL_UNSIGNED_SHORT;
+	if (i_pFrag->GetIndexBuffer()->GetSizeOfIndex() == sizeof(envType::UInt16)) 
+		indType = GL_UNSIGNED_SHORT;
+	else
+		indType = GL_UNSIGNED_INT;
 
 //	i_pEffect->Bind(i_pDevice);
 		CHECKGLERROR();

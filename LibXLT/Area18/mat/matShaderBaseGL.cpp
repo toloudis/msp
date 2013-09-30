@@ -42,6 +42,7 @@
 #include <algorithm>
 #include <string>
 
+#define GLTRANSPOSE GL_FALSE
 
 //============================================================================
 //============================================================================
@@ -1119,7 +1120,7 @@ void matShaderBaseGL::SetupMatrices(const maMatrix4x4 &i_WorldMat,
 	CHECKGLERROR();
 	GLint curHandle;
 
-	GLboolean transpose = GL_TRUE;
+	GLboolean transpose = GLTRANSPOSE;
 
 	curHandle = m_stdMatrices[e_ObjToWorld];
 	if( curHandle > -1)
@@ -1402,6 +1403,7 @@ void matShaderBaseGL::SetAlphaTestRef(float i_Value) const
 //--------------------------------------------------------------------
 void matShaderBaseGL::SetClipPlane( const maVector4d& i_Plane ) const
 {
+	glUniform4fv(m_ClipPlaneHandle, 1, i_Plane.GetPtr());
 }
 
 //--------------------------------------------------------------------
@@ -1870,7 +1872,7 @@ bool matShaderBaseGL::HasDisplacementMap() const
 
 void matShaderBaseGL::SetupUVTransform( const maMatrix4x4 &i_WorldMat )
 {
-//	m_UVTransformHandle->AsMatrix()->SetMatrix(i_WorldMat.Ptr());
+	glUniformMatrix4fv(m_UVTransformHandle, 1, GLTRANSPOSE, i_WorldMat.Ptr());
 }
 
 //------------------------------------------------------------------------

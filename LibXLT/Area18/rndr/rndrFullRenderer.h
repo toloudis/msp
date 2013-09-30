@@ -1,7 +1,9 @@
 #pragma once
 #include "Graphics\g3d\g3dscenerenderer.hpp"
 
+#include "Graphics/G3d/g3dLayer.hpp"
 #include "Graphics/G3d/g3dSceneNode.hpp"
+
 class g3dSceneNode;
 
 class rndrFullRenderer :
@@ -31,9 +33,14 @@ private:
 	void Traverse( g3dSceneNode* i_pNode, 
 			  g3dSceneNode::DrawStyle i_DrawStyle,
 			  bool i_bRenderLowRes,
-			  bool i_bDoClip);
+			  bool i_bDoClip,
+			  const g3dLayer& ilayer);
 
-	std::vector<g3dSceneNode*> mNodesToDraw;
+	struct drawcall {
+		g3dLayer::ModelSpace modelSpace;
+		g3dSceneNode* node;
+	};
+	std::vector<drawcall> mNodesToDraw;
 
 };
 

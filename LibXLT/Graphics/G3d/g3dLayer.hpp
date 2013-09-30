@@ -8,6 +8,7 @@
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
+#pragma once
 #ifdef G3D_LAYER_HPP
 #error g3dLayer.hpp already included
 #endif

@@ -197,24 +197,24 @@ namespace
 
 		// Calculate the SxT vector
 		maVector3d vecSxT;
-  		for(i = 0; i < i_nVertices; i++)
-  		{
-  			// Normalize the S, T vectors
+		for(i = 0; i < i_nVertices; i++)
+		{
+			// Normalize the S, T vectors
 			io_Vertices[i].m_S.Normalize();
 			io_Vertices[i].m_T.Normalize();
 
-  			// Get the cross of the S and T vectors
-  			//vecSxT = io_Vertices[i].m_S / io_Vertices[i].m_T;
+			// Get the cross of the S and T vectors
+			//vecSxT = io_Vertices[i].m_S / io_Vertices[i].m_T;
 
-  			// Get the direction of the SxT vector
-  			//if (vecSxT * io_Vertices[i].m_Normal < 0.0f)
-  			//{
-  			//	vecSxT *= -1.0f;
-  			//}
+			// Get the direction of the SxT vector
+			//if (vecSxT * io_Vertices[i].m_Normal < 0.0f)
+			//{
+			//	vecSxT *= -1.0f;
+			//}
 
 			// It seems like the SxT is the same as the normal now
 			//io_Vertices[i].m_SxT = vecSxT;
-  			// Need a normalized normal
+			// Need a normalized normal
 			//io_Vertices[i].m_SxT.Normalize();
 
 			//DBG_LOG("Vertex #" << i);
@@ -222,7 +222,7 @@ namespace
 			//DBG_LOG3("  m_S: %f %f %f", io_Vertices[i].m_S.m_X, io_Vertices[i].m_S.m_Y, io_Vertices[i].m_S.m_Z);
 			//DBG_LOG3("  m_T: %f %f %f", io_Vertices[i].m_T.m_X, io_Vertices[i].m_T.m_Y, io_Vertices[i].m_T.m_Z);
 			//DBG_LOG3("  m_SxT: %f %f %f", io_Vertices[i].m_SxT.m_X, io_Vertices[i].m_SxT.m_Y, io_Vertices[i].m_SxT.m_Z);
-  		} 
+		} 
 	}
 
 	// find a scale and translate to guarantee all uvs in [0..1]
