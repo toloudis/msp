@@ -112,12 +112,12 @@ shdrPipeline* oglContext::getShader(const std::string& s)
 }
 
 void APIENTRY openglCallbackFunction(GLenum source,
-										   GLenum type,
-										   GLuint id,
-										   GLenum severity,
-										   GLsizei length,
-										   const GLchar* message,
-										   void* userParam)
+									  GLenum type,
+									  GLuint id,
+									  GLenum severity,
+									  GLsizei length,
+									  const GLchar *message,
+									  const void *userParam)
 { 
 	DBG_LOG( "*** GL DEBUG MSG: "<< message );
 	//DBG_LOG( "type: ";
@@ -216,7 +216,7 @@ void oglContext::createContext(HDC hDC, HGLRC hShareContext)
 	getGLVersion(major,minor);
 
 	// TODO: rid of arb
-	glDebugMessageCallbackARB(openglCallbackFunction, this);
+	glDebugMessageCallback(openglCallbackFunction, this);
 
 	//glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);

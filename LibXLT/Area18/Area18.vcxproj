@@ -193,8 +193,8 @@
     <ClInclude Include="mesh\meshRenderer.hpp" />
     <ClInclude Include="mesh\meshTriMeshFrag.hpp" />
     <ClInclude Include="mesh\meshVertexBuffer.hpp" />
-    <ClInclude Include="ogl\GL\gl3.h" />
     <ClInclude Include="ogl\GL\gl3w.h" />
+    <ClInclude Include="ogl\GL\glcorearb.h" />
     <ClInclude Include="ogl\MemoryTracker.h" />
     <ClInclude Include="ogl\oglBuffer.hpp" />
     <ClInclude Include="ogl\oglBufferUtil.hpp" />
