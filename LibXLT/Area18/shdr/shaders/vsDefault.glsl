@@ -38,7 +38,7 @@ TANGENT_VERTEX TangentVS( )
 	vec4 Po = vec4(InPosition, 1.0f);
     
     // transform position to world space and get vector to light
-    vec3 Pw = mul(g_world, Po).xyz;
+    vec3 Pw = (g_world * Po).xyz;
     OUT.WorldPos = Pw;
 
 	OUT.WorldTan.X = mat3(g_world) * InT;
@@ -59,6 +59,6 @@ void main( )
 	gl_Position = OUT.HPosition;
 	OUT.ScreenPos = vec3(0,0,0);//not used
 
-	gl_ClipDistance[0] = ClipWorldPos( OUT.V.WorldPos );
+	//gl_ClipDistance[0] = ClipWorldPos( OUT.V.WorldPos );
 }
 

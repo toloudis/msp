@@ -185,6 +185,9 @@ class maMatrix4x4
 		//------------------------------------------------------------------------
 		inline float	operator ()( const int i_Row, const int i_Col ) const;
 
+		inline float& operator []( const int iElem );
+		inline float operator []( const int iElem ) const;
+
 		//------------------------------------------------------------------------
 		//	Transform - used for points, assumes w=1
 		//------------------------------------------------------------------------
@@ -396,6 +399,11 @@ maMatrix4x4::operator ()( const int i_Row, const int i_Col )
 {
 	return m_Mat[4*i_Row + i_Col];
 }
+float&	
+maMatrix4x4::operator []( const int iElem )
+{
+	return m_Mat[iElem];
+}
 
 //------------------------------------------------------------------------
 //	operator: ()()												
@@ -406,6 +414,11 @@ float
 maMatrix4x4::operator ()( const int i_Row, const int i_Col ) const
 {
 	return m_Mat[4*i_Row + i_Col];
+}
+float
+maMatrix4x4::operator []( const int iElem ) const
+{
+	return m_Mat[iElem];
 }
 
 //------------------------------------------------------------------------

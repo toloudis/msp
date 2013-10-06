@@ -73,34 +73,6 @@ void getGLVersion(int& major, int& minor)
 	ver = (char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
 }
 
-void InitOpenGL()
-{
-	// must create a context first!
-
-	int retval = gl3wInit();
-	if (retval != 0)
-		DBG_LOG("Error loading opengl 4.1");
-
-	// default rendering of polygons
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glFrontFace(GL_CCW);
-
-
-//	GLenum err = glewInit();
-//	if (GLEW_OK != err)
-//	{
-//		/* Problem: glewInit failed, something is seriously wrong. */
-//		DBG_LOG("Error: " << glewGetErrorString(err));
-//	}
-//	fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
-//	if (GLEW_VERSION_3_2)
-//	{
-//		/* Yay! OpenGL 3.2 is supported! */
-//		DBG_LOG("OpenGL 3.2 is supported.");
-//	}
-}
-
 }
 
 //----------------------------------------------------------------------------
@@ -123,12 +95,6 @@ void Area18Layer::Init(void* i_hWnd)
 		ReleaseDC( HWND_DESKTOP, desktopDC ) ;
 
 		gDefaultContext = new oglContext(hDC);
-
-		//		loadCoreFunctions();
-
-		//oglDevice* d = CreateDevice();
-		//// initialize packages in the layer
-		//InitOpenGL();
 
 		oglDevice* d = new oglDevice(gDefaultContext);
 		l_OpenGLDevices.push_back(d);

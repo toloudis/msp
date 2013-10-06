@@ -34,30 +34,36 @@ int rndrFullRenderer::Render( g2dRenderTarget* iWindow, const camCamera& i_Camer
 						const std::vector<g3dLayer*>& i_ViewerLayers,
 						float i_fSimTime )
 {
-	glClearColor(1,0,0,1);
+	glClearColor(0,0,0,0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	GLsizei w,h;
 	iWindow->GetDimensions(w,h);
 	glViewport(0,0,w,h);
 
 	// camera setup for gl:
-	oglView v;
-	v.setAspectRatio(i_Camera.GetAspect());
-	v.setFarClipDistance(i_Camera.GetFarClip());
-	v.setNearClipDistance(i_Camera.GetNearClip());
-	v.setFieldOfView(i_Camera.GetFOV()*3.14159265/180.0);
-	if (i_Camera.IsOrthographic()) {
-		// TODO: handle ortho conversion
-		//v.setOrthoProjection(i_Camera.GetLeft(), i_Camera.GetOrthoWidth()
-	}
-	else {
-		v.setPerspectiveProjection(i_Camera.GetFOV());// check units and x/y dimension
-	}
-	float t,b,l,r;
-	i_Camera.GetSubViewport(t,b,l,r);
-	v.setScreenWindow(l,r,b,t);
+	//oglView v;
+	//v.setAspectRatio(i_Camera.GetAspect());
+	//v.setFarClipDistance(i_Camera.GetFarClip());
+	//v.setNearClipDistance(i_Camera.GetNearClip());
+	//v.setFieldOfView(i_Camera.GetFOV()*3.14159265/180.0);
+	//if (i_Camera.IsOrthographic()) {
+	//	// TODO: handle ortho conversion
+	//	//v.setOrthoProjection(i_Camera.GetLeft(), i_Camera.GetOrthoWidth()
+	//}
+	//else {
+	//	v.setPerspectiveProjection(i_Camera.GetFOV());// check units and x/y dimension
+	//}
+	//float t,b,l,r;
+	//i_Camera.GetSubViewport(t,b,l,r);
+	//v.setScreenWindow(l,r,b,t);
 	g3dSceneGlobal sceneGlobal;
-	sceneGlobal.SetTransforms(v.position(), v.modelView(), v.projection());
+	maMatrix4x4 cameraMat, projectionMat;
+	i_Camera.GetCameraMatrix(cameraMat);
+	i_Camera.GetProjectionMatrix(projectionMat);
+	//	We must scale this here to correct for D3D's left handed coordinates
+	//projectionMat.ScaleBy(-1.0f, 1.0f, 1.0f);
+	sceneGlobal.SetTransforms(i_Camera.GetPosition(), cameraMat, projectionMat);
+	//sceneGlobal.SetTransforms(v.position(), v.modelView(), v.projection());
 	
 	// traverse scene
 	mNodesToDraw.clear();

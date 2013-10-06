@@ -2,17 +2,17 @@
 
 out gl_PerVertex {
     vec4  gl_Position;
-    float gl_ClipDistance[4];
+    //float gl_ClipDistance[4];
 };
 
 //This structure is how the data is formatted from the application
 //struct STANDARD_VERTEX
 //{
-	in vec3 InPosition;//	: SV_POSITION;
-	in vec3 InNormal;//	: NORMAL;
-	in vec2 InUV;//		: TEXCOORD0;
-	in vec3 InT;//		: TANGENT;
-	in vec3 InB;//		: BINORMAL;
+layout(location=0)	in vec3 InPosition;//	: SV_POSITION;
+layout(location=1)	in vec3 InNormal;//	: NORMAL;
+layout(location=2)	in vec2 InUV;//		: TEXCOORD0;
+layout(location=3)	in vec3 InT;//		: TANGENT;
+layout(location=4)	in vec3 InB;//		: BINORMAL;
 //};
 
 //These structures are used for multipass (single light)

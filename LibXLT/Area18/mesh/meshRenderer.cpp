@@ -117,6 +117,11 @@ int meshRenderer::Render( const meshTriMeshFrag* i_pFrag, const matMaterial* i_p
 	glBindVertexArray(oglContext::currentContext()->getVAO());
 
 	glBindBuffer(GL_ARRAY_BUFFER, i_pFrag->GetVertexBuffer()->GetVertexBuffer()->GetBuffer());
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(g3dType::BumpTex1Vertex), 0); 
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(g3dType::BumpTex1Vertex), (GLvoid*)(sizeof(float)*3)); 
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(g3dType::BumpTex1Vertex), (GLvoid*)(sizeof(float)*6)); 
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(g3dType::BumpTex1Vertex), (GLvoid*)(sizeof(float)*8)); 
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(g3dType::BumpTex1Vertex), (GLvoid*)(sizeof(float)*11)); 
 	
 	// vertex layout: g3dType::BumpTex1Vertex
 	// last value is a byte offset.
