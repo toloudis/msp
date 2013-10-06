@@ -147,7 +147,7 @@ namespace pythRenderLayers
 		//--------------------------------------------------------------------
 		PyObject* set_render_layer_pref(PyObject *self, PyObject *args)
 		{
-			int num_args = PyTuple_Size( args );
+			int num_args = (int)PyTuple_Size( args );
 			if (num_args != 3)
 			{
 				PyErr_SetString(PyExc_TypeError, "setRenderLayerPref needs 3 arguments: render layer name, property name, value (which can be a tuple)");
@@ -224,7 +224,7 @@ namespace pythRenderLayers
 		//--------------------------------------------------------------------
 		PyObject* set_render_layer_pass(PyObject *self, PyObject *args)
 		{
-			int num_args = PyTuple_Size( args );
+			int num_args = (int)PyTuple_Size( args );
 			if (num_args != 3)
 			{
 				PyErr_SetString(PyExc_TypeError, "setRenderLayerPref needs 3 arguments: render layer name, pass name, boolean value");
@@ -312,7 +312,7 @@ namespace pythRenderLayers
 		//--------------------------------------------------------------------
 		PyObject* set_render_layer_output(PyObject *self, PyObject *args)
 		{
-			int num_args = PyTuple_Size( args );
+			int num_args = (int)PyTuple_Size( args );
 			if (num_args != 3)
 			{
 				PyErr_SetString(PyExc_TypeError, "setRenderLayerOutput needs 3 arguments: render layer name, property name, value (which can be a tuple)");

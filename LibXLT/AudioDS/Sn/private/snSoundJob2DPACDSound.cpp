@@ -1750,7 +1750,7 @@ snSoundJob2DPAC::CreateBuffer()
 	HeaderSize += sizeof( m_DataSize );
 	SoundFile.Read( sizeof( m_DataSize ), &m_DataSize );
 
-	m_StartPos		= SoundFile.GetFilePos();
+	m_StartPos		= (unsigned long)SoundFile.GetFilePos();
 	m_BufferSize	= m_DataSize;
 
 	//	Create the Sound Buffer
@@ -1909,7 +1909,7 @@ int snSoundJob2DPAC::read_wav_header(gfFileBin& io_SoundFile)
 	HeaderSize += sizeof( m_DataSize );
 	io_SoundFile.Read( sizeof( m_DataSize ), &m_DataSize );
 
-	m_StartPos		= io_SoundFile.GetFilePos();
+	m_StartPos		= (unsigned long)io_SoundFile.GetFilePos();
 	m_BufferSize	= m_DataSize;
 
 //	//------------------------------------------------------------------------------

@@ -135,12 +135,12 @@ namespace fgtFrameMgr
 					{
 						pos = strvalue.find(":", 0);		//store the position of the delimiter
 						temp = strvalue.substr(0, pos);		//get the token
-						h = atof(temp.c_str());
+						h = (float)atof(temp.c_str());
 					}
 					if (strvalue.find(":", pos) != std::string::npos)
 					{
 						temp = strvalue.substr(pos+1, std::string::npos);		//get the token
-						v = atof(temp.c_str());
+						v = (float)atof(temp.c_str());
 					}
 					l_SafeFrameList[index].m_Ratio = (h / v);
 				}

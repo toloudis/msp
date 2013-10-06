@@ -218,7 +218,7 @@ namespace pythPropertyUtil
 		else if (prtyListChecked *pPropCast = dynamic_cast<prtyListChecked*>(pProperty))
 		{
 			int n;
-			n = PyList_Size(pValueArg);
+			n = (int)PyList_Size(pValueArg);
 			if (n < 0)
 				return NULL;		// Not a list
 

@@ -254,7 +254,7 @@ namespace pythFgmtProperty
 	//.......................................................
 	PyObject* set_fragment_value(PyObject *self, PyObject *args)
 	{
-		int num_args = PyTuple_Size( args );
+		int num_args = (int)PyTuple_Size( args );
 		if (num_args != 4)
 		{
 			PyErr_SetString(PyExc_TypeError, "setfragmentValue needs 4 arguments: object name, property name, value (which can be a tuple)");

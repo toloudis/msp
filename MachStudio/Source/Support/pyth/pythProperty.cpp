@@ -142,7 +142,7 @@ namespace pythProperty
 		//--------------------------------------------------------------------
 		PyObject* set_value(PyObject *self, PyObject *args)
 		{
-			int num_args = PyTuple_Size( args );
+			int num_args = (int)PyTuple_Size( args );
 			if (num_args != 3)
 			{
 				PyErr_SetString(PyExc_TypeError, "setValue needs 3 arguments: object name, property name, value (which can be a tuple)");
@@ -244,7 +244,7 @@ namespace pythProperty
 		//--------------------------------------------------------------------
 		PyObject* set_driver_value(PyObject *self, PyObject *args)
 		{
-			int num_args = PyTuple_Size( args );
+			int num_args = (int)PyTuple_Size( args );
 			if (num_args != 3)
 			{
 				PyErr_SetString(PyExc_TypeError, "setDriverValue needs 3 arguments: driver id, property name, value (which can be a tuple)");

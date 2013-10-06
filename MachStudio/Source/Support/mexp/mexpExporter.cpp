@@ -219,8 +219,8 @@ void mexpExporter::ExportTimeRange(const maTime& i_Minimum, const maTime& i_Maxi
 {
 	m_OutFile << "createNode script -n \"sceneConfigurationScriptNode\";" << endl;
 	m_OutFile << "\tsetAttr \".b\" -type \"string\" \"playbackOptions";
-	m_OutFile << " -min " << i_Minimum.AsFrame(c_FramesPerSecond) << " -max " << i_Maximum.AsFrame(c_FramesPerSecond);
-	m_OutFile << " -ast " << i_Minimum.AsFrame(c_FramesPerSecond) << " -aet " << i_Maximum.AsFrame(c_FramesPerSecond);
+	m_OutFile << " -min " << i_Minimum.AsFrame((int)c_FramesPerSecond) << " -max " << i_Maximum.AsFrame((int)c_FramesPerSecond);
+	m_OutFile << " -ast " << i_Minimum.AsFrame((int)c_FramesPerSecond) << " -aet " << i_Maximum.AsFrame((int)c_FramesPerSecond);
 	m_OutFile << "\";" << endl;
 	m_OutFile << "\tsetAttr \".st\" 6;" << endl;
 }

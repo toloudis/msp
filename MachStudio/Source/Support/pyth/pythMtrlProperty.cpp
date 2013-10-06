@@ -318,7 +318,7 @@ namespace pythMtrlProperty
 
 	PyObject* set_material_value(PyObject *self, PyObject *args)
 	{
-		int num_args = PyTuple_Size( args );
+		int num_args = (int)PyTuple_Size( args );
 		if (num_args != 4)
 		{
 			PyErr_SetString(PyExc_TypeError, "setMaterialValue needs 4 arguments: object name, material name, property name, value (which can be a tuple)");
@@ -421,7 +421,7 @@ namespace pythMtrlProperty
 	{
 		//allow using the selected material or allow using specific object, material names
 		const char *object_name, *material_name;
-		int num_args = PyTuple_Size( args );
+		int num_args = (int)PyTuple_Size( args );
 		if (num_args == 2)
 		{
 			if (!PyArg_ParseTuple(args, "ss", &object_name, &material_name))

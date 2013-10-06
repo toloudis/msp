@@ -59,7 +59,7 @@ void pick3dPickBuffer::DoPickRender(int i_X, int i_Y, float i_Time, envType::UIn
 	int width = 0, height = 0;
 	m_Viewer.GetWindow()->GetDimensions(width, height);
 
-	if (i_X >= 0 && i_Y >= 0 && i_X < width && i_Y < height)
+	if (m_pPickRenderer && i_X >= 0 && i_Y >= 0 && i_X < width && i_Y < height)
 	{
 		float left = -1.0f + 2.0f * (i_X / float (width));
 		float right = -1.0f + 2.0f * (i_X + 1) / float (width);

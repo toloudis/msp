@@ -95,7 +95,7 @@ std::string uppercase(std::string arg)
 {
    for (int x=0; x<arg.length(); x++)
    {
-       if (arg[x] >= 'a' && arg[x] <= 'z') arg[x]+= ('A'-'a');
+	   if (arg[x] >= 'a' && arg[x] <= 'z') arg[x]+= ('A'-'a');
    }
    return arg;
 }

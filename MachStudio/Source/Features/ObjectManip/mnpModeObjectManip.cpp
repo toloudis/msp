@@ -960,7 +960,7 @@ void mnpModeObjectManip::Think()
 	{
 		time_t epochTime;
 		epochTime = time(NULL);
-		fsFileNotifyMgr::Check( epochTime ); // This checks for revision/update of existing objects.
+		fsFileNotifyMgr::Check( (unsigned short)epochTime ); // This checks for revision/update of existing objects.
 //		fsFileNotifyMgr::CheckForNewObjects(); // This checks if new objects are added.
 	}
 		// Set up rendering preferences based on whether we are scrubbing the timeline
