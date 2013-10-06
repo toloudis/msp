@@ -8,9 +8,9 @@
 #pragma once
 
 #include "Area18/ogl/oglTypes.hpp"
+#include "Area18/shdr/shdrShader.hpp"
 
 class oglDevice;
-class shdrShader;
 
 class shdrPipeline
 {
@@ -30,11 +30,11 @@ public:
 	virtual void Bind(oglDevice* i_pDevice);
 	virtual void Unbind();
 
-	void AttachVS(shdrShader* i_pVS);
-	void AttachPS(shdrShader* i_pPS);
+	void AttachVS(shdrShaderPtr i_pVS);
+	void AttachPS(shdrShaderPtr i_pPS);
 
-	shdrShader* vs() const {return m_pVS;}
-	shdrShader* ps() const {return m_pPS;}
+	shdrShaderPtr vs() const {return m_pVS;}
+	shdrShaderPtr ps() const {return m_pPS;}
 
 	void activateVs() const;
 	void activatePs() const;
@@ -42,6 +42,6 @@ protected:
 	GLuint m_PipelineID;
 
 	// TODO: use shared_ptr here!!!
-	shdrShader* m_pVS;
-	shdrShader* m_pPS;
+	shdrShaderPtr m_pVS;
+	shdrShaderPtr m_pPS;
 };

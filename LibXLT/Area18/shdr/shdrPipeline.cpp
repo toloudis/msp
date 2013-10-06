@@ -17,8 +17,6 @@
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
 shdrPipeline::shdrPipeline()
-:	m_pVS(NULL),
-	m_pPS(NULL)
 {
 	glGenProgramPipelines(1, &m_PipelineID);
 	glBindProgramPipeline(m_PipelineID);
@@ -40,13 +38,13 @@ shdrPipeline::~shdrPipeline()
 	glDeleteProgramPipelines(1, &m_PipelineID);
 }
 
-void shdrPipeline::AttachVS(shdrShader* i_pVS)
+void shdrPipeline::AttachVS(shdrShaderPtr i_pVS)
 {
 	glUseProgramStages(m_PipelineID, GL_VERTEX_SHADER_BIT, i_pVS->GetShader());
 	CHECKGLERROR();
 	m_pVS = i_pVS;
 }
-void shdrPipeline::AttachPS(shdrShader* i_pPS)
+void shdrPipeline::AttachPS(shdrShaderPtr i_pPS)
 {
 	glUseProgramStages(m_PipelineID, GL_FRAGMENT_SHADER_BIT, i_pPS->GetShader());
 	CHECKGLERROR();

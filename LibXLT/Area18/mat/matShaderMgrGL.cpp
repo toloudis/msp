@@ -51,22 +51,20 @@ void matShaderMgrGL::RegisterEffects(const fsLocator &i_ShaderDir,
 	fsLocator loc2(itString("D:/Projects/SourceCode/LibXLT/Area18/shdr/shaders/vsDefault.glsl"));
 	vshaders.push_back(&loc2);
 	GLuint vsp = shdrUtil::CompileShaderFromFiles( vshaders, GL_VERTEX_SHADER);
-	mVsGeneric = new shdrShader(vsp);
+	mVsGeneric.reset(new shdrShader(vsp));
 
 	std::vector<const fsLocator*> fshaders;
 	fsLocator loc3(itString("D:/Projects/SourceCode/LibXLT/Area18/shdr/shaders/fsDefault.glsl"));
 	fshaders.push_back(&loc3);
 	GLuint fsp = shdrUtil::CompileShaderFromFiles( fshaders, GL_FRAGMENT_SHADER);
-	mFsTest = new shdrShader(fsp);
+	mFsTest.reset(new shdrShader(fsp));
 
-	matShaderInfo i = registerShader("Simple.fx");
-	if (i.m_pEffect != NULL) {
-		io_ShaderMap["Simple.fx"] = i;
-		io_ShaderMap["Solid.fx"] = i;
-		io_ShaderMap["Phong.fx"] = i;
-		io_ShaderMap["Blinn.fx"] = i;
-	}
+	io_ShaderMap["Simple.fx"] = registerShader("Simple.fx");
+	io_ShaderMap["Solid.fx"] = registerShader("Solid.fx");
+	io_ShaderMap["Phong.fx"] = registerShader("Phong.fx");
+	io_ShaderMap["Blinn.fx"] = registerShader("Blinn.fx");
 }
+
 void matShaderMgrGL::RegisterUserShaders(const fsLocator& i_ShaderDir, 
 			std::vector<matShaderInfo>& o_Shaders)
 {

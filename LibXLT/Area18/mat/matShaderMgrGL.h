@@ -1,7 +1,6 @@
 #pragma once
 #include "graphics\mat\matshadermgr.hpp"
-
-class shdrShader;
+#include "Area18/shdr/shdrShader.hpp"
 
 class matShaderMgrGL :
 	public matShaderMgrImpl
@@ -22,8 +21,8 @@ public:
 		std::map<fsLocator, matShaderEffect*>& io_ShaderMap);
 
 private:
-	shdrShader* mVsGeneric;
-	shdrShader* mFsTest;
+	shdrShaderPtr mVsGeneric;
+	shdrShaderPtr mFsTest;
 
 	matShaderInfo registerShader(const std::string& shaderName);
 

@@ -1,12 +1,16 @@
 #pragma once
 
 #include "Area18/ogl/oglTypes.hpp"
+#include "Core/Env/envBoost.hpp"
 
 #include <vector>
 
 class oglContext;
 
 class shdrParams {};
+
+class shdrShader;
+typedef boost::shared_ptr<shdrShader> shdrShaderPtr;
 
 class shdrShader
 {
