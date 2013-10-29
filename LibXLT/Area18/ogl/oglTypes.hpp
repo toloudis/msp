@@ -13,6 +13,8 @@
 
 #include "Core/Dbg/dbgMsg.hpp"
 
+class g2dPFD;
+
 std::string GetGLError(GLenum err);
 std::string GetGLFramebufferStatus(GLenum err);
 
@@ -35,4 +37,6 @@ std::string GetGLFramebufferStatus(GLenum err);
 namespace ogl 
 {
 int bitsPerPixel(GLenum gltype);
+void PFDFromGLFormat(GLenum i_Format, g2dPFD& o_PFD);
+GLenum GLFormatFromPFD(const g2dPFD& i_PFD);
 }

@@ -4,6 +4,7 @@
 #include <vector>
 
 class matShaderMgrGL;
+class matTextureMgrGL;
 
 class oglSystem3D :
 	public g3dSystem
@@ -26,4 +27,5 @@ public:
 
 private:
 	matShaderMgrGL* mShaderMgr;
+	matTextureMgrGL* mTextureMgr;
 };

@@ -182,6 +182,8 @@ fsLocator ResolveShaderPath(const fsLocator& i_ShaderName)
 
 effShaderData* CreateData(const std::string& i_EffectID)
 {
+	// maps a data type to a shader id name
+
 	if (!l_bEnabled) 
 		return NULL;
 

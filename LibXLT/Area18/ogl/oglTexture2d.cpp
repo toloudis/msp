@@ -8,7 +8,7 @@
 
 oglTexture2d::oglTexture2d(oglDevice* i_pDevice,
 	int w, int h, GLenum iFormat, 
-        void* i_pInitialData, GLenum dataFormat, GLenum dataType)
+		void* i_pInitialData, GLenum dataFormat, GLenum dataType)
 		: mBuffer(0)
 {
 	glGenTextures(1, &mBuffer);
@@ -44,6 +44,26 @@ size_t oglTexture2d::sizeBytes()
 {
 	// danger of overflow?
 	return mWidth*mHeight*bitsPerPixel(mFormat) / 8;
+}
+
+void oglTexture2d::saveToFile(oglTexture2d* t, const std::string& iFilePath, oglDevice* iDevice)
+{
+	// load with FreeImage
+	FreeImage_Initialise();
+
+	// assume rgba image
+	BYTE* pixels = new BYTE[4*t->width()*t->height()];
+	glGetTexImage(	GL_TEXTURE_2D,
+ 		0,
+ 		GL_RGBA,
+ 		GL_UNSIGNED_BYTE,
+ 		pixels);
+
+	FIBITMAP* Image = FreeImage_ConvertFromRawBits(pixels, t->width(), t->height(), t->width()*4, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, TRUE); 
+	// use file extension to determine save fmt?
+	FreeImage_Save(FIF_UNKNOWN, Image, iFilePath.c_str(), 0);
+	delete [] pixels;
+	FreeImage_DeInitialise();
 }
 
 oglTexture2d* oglTexture2d::createFromFile(const std::string& iFilePath, oglDevice* iDevice)
@@ -173,14 +193,20 @@ oglTexture2d* oglTexture2d::createFromFile(const std::string& iFilePath, oglDevi
 				glformat = GL_RGBA32F;
 				break;
 			default:
-				throw("Unknown image format from FreeImage");
+				DBG_LOG("Unknown image format from FreeImage");
+				break;
 		}
 
-		//retrieve the image data
-		BYTE* data = FreeImage_GetBits(dib);
+		if (dib) {
+			//retrieve the image data
+			BYTE* data = FreeImage_GetBits(dib);
 
-		texture = new oglTexture2d(iDevice,
-			width, height, glformat, data, gldataformat, gldatatype);
+			texture = new oglTexture2d(iDevice,
+				width, height, glformat, data, gldataformat, gldatatype);
+		}
+		else {
+			texture = NULL;
+		}
 	}
 	else
 	{

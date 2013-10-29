@@ -427,7 +427,7 @@ static void
 rotate_around_axis(maVector3d &x, maVector3d const &axis, double angle)
 {
     maMatrix4x4 R;
-	R.MakeRotate(-angle, axis);//= gmath::rotation<maMatrix4x4>(axis, -angle);
+	R.MakeRotate((float)-angle, axis);//= gmath::rotation<maMatrix4x4>(axis, -angle);
 	R.Transform(x);
     //x = x * R;
 }
@@ -529,7 +529,7 @@ oglView::pitch(double angle)
     maVector3d forward, right;
     getFrame(forward, right);
 	maMatrix4x4 rotation;
-	rotation.MakeRotate(angle, right);
+	rotation.MakeRotate((float)angle, right);
     rotate(rotation);
 }
 
@@ -537,7 +537,7 @@ void
 oglView::yaw(double angle)
 {
 	maMatrix4x4 rotation;
-	rotation.MakeRotate(-angle, mUp);
+	rotation.MakeRotate((float)-angle, mUp);
     rotate(rotation);
 }
 

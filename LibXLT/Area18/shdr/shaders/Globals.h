@@ -2,7 +2,7 @@
 
 out gl_PerVertex {
     vec4  gl_Position;
-    //float gl_ClipDistance[4];
+    float gl_ClipDistance[4];
 };
 
 //This structure is how the data is formatted from the application

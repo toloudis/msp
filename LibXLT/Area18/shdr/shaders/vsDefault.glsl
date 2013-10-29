@@ -59,6 +59,6 @@ void main( )
 	gl_Position = OUT.HPosition;
 	OUT.ScreenPos = vec3(0,0,0);//not used
 
-	//gl_ClipDistance[0] = ClipWorldPos( OUT.V.WorldPos );
+	gl_ClipDistance[0] = ClipWorldPos( OUT.V.WorldPos );
 }
 

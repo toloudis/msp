@@ -305,7 +305,9 @@ void scrText::make_geometry()
 		indices[(i * 6) + 5] = (i * 4) + 1;
 	}
 
-	m_pMaterial->TypedData<effTexturedData>()->m_Color = this->GetEmissive();
+	// todo: reinstate!!!!!
+//	m_pMaterial->TypedData<effTexturedData>()->m_Color = this->GetEmissive();
+
 //	m_pMaterial->TypedData<effTexturedData>()->m_ColorEmissive = this->GetEmissive();
 //	m_pMaterial->TypedData<effTexturedData>()->m_Transparency = this->GetDiffuse().GetAlpha();
 

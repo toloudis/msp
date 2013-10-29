@@ -16,12 +16,14 @@ public:
 	virtual ~oglTexture2d(void);
 
 	static oglTexture2d* createFromFile(const std::string& iFilePath, oglDevice* iDevice);
+	static void saveToFile(oglTexture2d*, const std::string& iFilePath, oglDevice* iDevice);
 
 	virtual GLuint GetResource() {return mBuffer;}
 	virtual GLuint GetBuffer() {return mBuffer;}
 
 	size_t sizeBytes();
-
+	size_t width() const {return mWidth;}
+	size_t height() const {return mHeight;}
 private:
 	GLuint mBuffer;
 	GLenum mFormat;
