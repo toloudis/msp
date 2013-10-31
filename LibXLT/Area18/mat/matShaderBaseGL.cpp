@@ -42,6 +42,8 @@
 #include <algorithm>
 #include <string>
 
+#include <boost/algorithm/string.hpp>
+
 #define GLTRANSPOSE GL_TRUE
 
 //============================================================================
@@ -295,65 +297,47 @@ namespace
 
 		return num_lights;
 	}
-#if 0
-	void GetUIStrings(shdrCgPipeline* i_pEffect, GLint i_hParam, const std::string& i_Name, 
-										std::string& o_Category, std::string& o_Label, std::string& o_Desc)
+
+	void GetUIStrings(XMLElement* param, const std::string& i_Name, 
+		std::string& o_Category, std::string& o_Label, std::string& o_Desc)
 	{
-		LPCSTR pstr = NULL;
-
-		CGannotation hAnnot = NULL;
-
 		// the label for the control
 		o_Label = i_Name;
-		hAnnot = cgGetNamedParameterAnnotation( i_hParam, "SasUiLabel" );
-		if (hAnnot)
+		const char* label = param->Attribute("uiLabel");
+		if (label)
 		{
-			pstr = cgGetStringAnnotationValue(hAnnot);
-			o_Label = pstr;
+			o_Label = label;
 		}
 
 		// the category header that the control will go under (see prtyUIInfo)
 		o_Category = o_Label;
-		hAnnot = cgGetNamedParameterAnnotation( i_hParam, "UiCategory" );
-		if (hAnnot)
+		const char* category = param->Attribute("uiCategory");
+		if (category)
 		{
-			pstr = cgGetStringAnnotationValue(hAnnot);
-			o_Category = pstr;
+			o_Category = category;
 		}
 
 		// the description string for the ui control
 		o_Desc = o_Label;
-		hAnnot = cgGetNamedParameterAnnotation( i_hParam, "SasUiDescription" );
-		if (hAnnot)
+		const char* desc = param->Attribute("uiDescription");
+		if (desc)
 		{
-			pstr = cgGetStringAnnotationValue(hAnnot);
-			o_Desc = pstr;
+			o_Desc = desc;
 		}
 	}
 
-	GLint FindTextureExistVar(shdrCgPipeline* i_pEffect, GLint i_hTextureVar)
+	GLint FindTextureExistVar(GLuint program, XMLElement* i_hTextureVar)
 	{
 		// conditional texture existence (null texture) flag
 		GLint hRetVal = NULL;
-		CGannotation hExistVarAnnot = cgGetNamedParameterAnnotation( i_hTextureVar, "ExistVar" );
+		const char* hExistVarAnnot = i_hTextureVar->Attribute("existVar");
 		if (hExistVarAnnot)
 		{
-			LPCSTR existVarName = NULL;
-			existVarName = cgGetStringAnnotationValue(hExistVarAnnot);
-			GLint hExistVar = NULL;
-			hExistVar = cgGetNamedEffectParameter(i_pEffect->Effect(), existVarName);
-			if (hExistVar)
+			GLint hExistVar = glGetUniformLocation(program, hExistVarAnnot);
+			if (hExistVar > -1)
 			{
 				hRetVal = hExistVar;
-				if (hRetVal != NULL)
-				{
-					// ensure that the var name points to a boolean.
-					if (cgGetParameterType(hExistVar) != CG_BOOL)
-					{
-						//DBG_WARNING1("ExistVar for texture %s is not bool", name.c_str());
-						//hExistVar = NULL;
-					}
-				}
+				// todo: ensure that the var name points to a boolean.
 			}
 		}
 		else
@@ -364,24 +348,19 @@ namespace
 	}
 
 	// get resource filename from annotation for a parameter
-	bool get_resource_name(GLint i_hParam, fsLocator &o_ResourceName)
+	bool get_resource_name(XMLElement* param, fsLocator &o_ResourceName)
 	{
 		// might also want to search for "resourceName" here (MetaSL backend does that)
-		CGannotation hAnnot = cgGetNamedParameterAnnotation( i_hParam, "name" );
-		if (hAnnot && cgIsAnnotation(hAnnot))
+		const char* hAnnot = param->Attribute("resource");
+		if (hAnnot)
 		{
-			LPCSTR pstrName = NULL;
-			pstrName = cgGetStringAnnotationValue(hAnnot);
-			if (pstrName != NULL)
-			{
-				o_ResourceName.Clear();
-				fsFileUtil::ANSIFilenameToLocator(pstrName, o_ResourceName);
-				return true;
-			}
+			o_ResourceName.Clear();
+			fsFileUtil::ANSIFilenameToLocator(hAnnot, o_ResourceName);
+			return true;
 		}
 		return false;
 	}
-#endif
+
 };
 
 //--------------------------------------------------------------------
@@ -840,6 +819,7 @@ int matShaderBaseGL::GetParamIndex(const std::string& i_name) const
 //--------------------------------------------------------------------
 void matShaderBaseGL::GetAllParamUIs(std::list<matShaderParamUI>& o_paramUI) const
 {
+	// parse xml metadata file.
 	std::map<std::string, int>::const_iterator iter = m_paramnamemap.begin();
 	while (iter != m_paramnamemap.end())
 	{
@@ -1616,24 +1596,33 @@ int matShaderBaseGL::BuildPrtyObject(effShaderParams* o_pParams) const
 	o_pParams->m_pPrtyUI = new prtyObject;
 
 	std::string name;
-	int index;
-	GLint hParam;
 
 	std::list<ShaderParamUIInfo> uiInfos;
 
 	// gather params.
-	std::map<std::string, int>::const_iterator iter = m_paramnamemap.begin();
-	while (iter != m_paramnamemap.end())
-	{
-		name = iter->first;
-		index = iter->second;
-		hParam = m_params[index];
-
-		if (GetShaderParamInfo(hParam, o_pParams, bindings, uiInfos))
+	// parse from xml file(s)!
+	// this has to store all the xml file paths for the shader meta data.
+	XMLDocument doc;
+    doc.LoadFile( "fsColorTexture.xml" );
+	XMLElement *parent = doc.RootElement();
+	XMLElement* param = NULL;
+	for( param = parent->FirstChildElement("param"); param; param = param->NextSiblingElement("param") ) {
+		if (GetShaderParamInfo(param, o_pParams, bindings, uiInfos))
 			numParamsFound++;
-
-		iter++;
 	}
+
+	//std::map<std::string, int>::const_iterator iter = m_paramnamemap.begin();
+	//while (iter != m_paramnamemap.end())
+	//{
+	//	name = iter->first;
+	//	index = iter->second;
+	//	hParam = m_params[index];
+
+	//	if (GetShaderParamInfo(hParam, o_pParams, bindings, uiInfos))
+	//		numParamsFound++;
+
+	//	iter++;
+	//}
 
 	// now sort the params by their index
 	uiInfos.sort();
@@ -1716,66 +1705,402 @@ void matShaderBaseGL::CreateBindings(effShaderParams* io_Params)
 }
 #endif
 
-bool matShaderBaseGL::GetShaderParamInfo(GLint i_hParam, 
+bool matShaderBaseGL::GetShaderParamInfo(XMLElement* iMetaData, 
 										  effShaderParams* o_pParams,
 										  matShaderBindingsGL* o_pBindings,
 										  std::list<ShaderParamUIInfo>& o_UIInfo) const
 {
-	return false;
+	bool foundParam = false;
+	float fval = 0;
+
+	effParamInt* pInt = NULL;
+	effParamBool* pBool = NULL;
+	effParamFloat* pFloat = NULL;
+	effParamTexture* pTexture = NULL;
+	effParamColor* pColor = NULL;
+
+
+	std::string name(iMetaData->Attribute("name"));
+
+	// this is the master annotation that defines that we have a user parameter that gets a prty entry.
+	std::string sControl;
+	const char* ui = iMetaData->Attribute("ui");
+	if (ui)
+	{
+		sControl = ui;
+	}
+	else
+	{
+		// early out
+		return false;
+	}
+
+	GLint program = this->m_pEffect->ps()->GetShader();
+	GLint loc = -1;
+	loc = glGetUniformLocation(program, name.c_str());
+
+	const char* semantic = iMetaData->Attribute("semantic");
+
+	if (sControl == "color")
+	{
+		// todo: confirm type match for color
+		if (loc != -1) 
+		{
+			foundParam = true;
+
+			effParamColor* effParam = MapColorParam(o_pParams, o_pBindings, loc, iMetaData,
+				name, true, true, o_UIInfo);
+
+			// check to see if this is a "special" color
+			if (semantic == "materialdiffuse" ) {
+				o_pParams->m_pDiffuseColor = effParam;
+			}
+		}
+	}
+	else if (sControl == "direction")
+	{
+//		float f[4];
+//		i_hParam->AsVector()->GetFloatVector(f);
+	}
+	else if (sControl == "numeric")
+	{
+		//float f;
+		//i_hParam->AsScalar()->GetFloat(&f);
+
+
+		//float fstride = 1;
+		//hAnnot = i_hParam->GetAnnotationByName("SasUiStride");
+		//if (hAnnot)
+		//{
+		//	hAnnot->AsScalar()->GetFloat(&fstride);
+		//}
+
+	}
+	else if (sControl == "slider")
+	{
+		// todo: confirm type match for slider
+		if (loc != -1)
+		{
+			foundParam = true;
+		
+			effParamFloat* effParam = MapFloatParam(o_pParams, o_pBindings, loc, iMetaData,
+				name, true, true, o_UIInfo);
+
+			// check to see if this is a "special" param:
+			if (semantic == "opacity")
+				o_pParams->m_pTransparency = effParam;
+		}
+		else
+		{
+			DBG_WARNING("Shader Slider can only be mapped to a float variable. Check " << name);
+		}
+	}
+	else if (sControl == "checkbox")
+	{
+		// todo: confirm type match for slider
+		if (loc != -1)
+		{
+			foundParam = true;
+
+			effParamBool* effParam = MapBoolParam(o_pParams, o_pBindings, loc,  iMetaData,
+				name, true, true, o_UIInfo);
+		}
+	}
+	else if (sControl == "texture")
+	{
+		// textures!!!!
+		// todo: confirm type match for slider
+		if (loc != -1)
+		{
+			foundParam = true;
+
+			effParamTexture* effParam = MapTextureParam(o_pParams, o_pBindings, loc,  iMetaData,
+				name, true, true, o_UIInfo);
+
+			// check to see if this is a "special" param:
+			if (semantic == "diffusetexture" )
+				o_pParams->m_pDiffuseMap = effParam;
+			else if(semantic == "opacitytexture" )
+				o_pParams->m_pTransparencyMap = effParam;
+
+			// look for a default value and store with property
+			fsLocator resource_name;
+			if (get_resource_name(iMetaData, resource_name))
+				effParam->SetShaderResourceName( resource_name );
+		}
+		else
+		{
+			DBG_WARNING("Shader FilePicker can only be mapped to a texture variable. Check " << name);
+		}
+	}
+	else if (sControl == "listPicker")
+	{
+		// todo: confirm type match for slider
+		if (loc != -1)
+		{
+			foundParam = true;
+	
+			effParamInt* effParam = MapEnumParam(o_pParams, o_pBindings, loc, iMetaData,
+				name, true, true, o_UIInfo);
+		}
+	}
+
+	return foundParam;
 }
 
 effParamTexture* matShaderBaseGL::MapTextureParam(effShaderParams* o_pParams,
 												   matShaderBindingsGL* o_pBindings,
 												   GLint i_hParam, 
+	XMLElement* param,
 												   const std::string& i_Name,
 												   bool i_bCreateBinding,
 												   bool i_bCreateUI,
 												   std::list<ShaderParamUIInfo>& o_UIInfo) const
 {
-	return NULL;
+	std::string uiCategory, uiLabel, uiDesc;
+	GetUIStrings(param, i_Name, uiCategory, uiLabel, uiDesc);
+
+	effParamTexture* effParam = o_pParams->FindTextureParam(i_Name);
+	if (effParam)
+	{
+		effParam->Property().SetPropertyName(uiLabel);
+	}
+	else
+	{
+		effParam = new effParamTexture(i_Name, uiLabel, itString(""));
+		o_pParams->AddParam(effParam);
+	}
+
+	//parse texture type
+	GLuint index = -1;
+	GLint program = this->m_pEffect->ps()->GetShader();
+	const char* n = i_Name.c_str();
+	glGetUniformIndices(program,
+ 		1,
+ 		&n,
+ 		&index);
+	GLenum utype;
+	glGetActiveUniform(program,
+ 		index,
+ 		0,
+ 		NULL,
+ 		NULL,
+ 		&utype,
+ 		NULL);
+
+	TEXTURE_TYPE type = TEXTURE_TYPE_UNKNOWN;
+
+	switch( utype )
+	{
+		case GL_SAMPLER_1D:{ type = TEXTURE_TYPE_1D; break;}
+		case GL_SAMPLER_2D:{ type = TEXTURE_TYPE_2D; break;}
+		case GL_SAMPLER_CUBE:{ type = TEXTURE_TYPE_CUBE; break;}
+		case GL_SAMPLER_3D:{ type = TEXTURE_TYPE_3D; break;}
+	}
+	effParam->SetType( type );
+
+	if (i_bCreateBinding)
+	{
+
+		// can we assume binding doesn't already exist here?
+		// do not add a binding twice!
+		DBG_ASSERT(!o_pBindings->HasBinding(effParam), "Binding already exists for " << i_Name);
+		GLint hExistVar = FindTextureExistVar(program, param);
+		o_pBindings->m_BindableParams.push_back(new matTextureBindingGL(*effParam, i_hParam, hExistVar));
+	}
+
+	if (i_bCreateUI)
+	{
+		prtyTextureFileChooserUIInfo* pPUII;
+		pPUII = new prtyTextureFileChooserUIInfo(effParam->GetBaseProperty(), uiCategory, uiDesc);
+		pPUII->SetDirectoryCategory("Textures");
+		pPUII->AddItem(pPUII->e_Ramp);
+		pPUII->AddItem(pPUII->e_Paint);
+		ShaderParamUIInfo info;
+		info.UIInfo = pPUII;
+		info.Index = 0;
+		const char* idxS = param->Attribute("uiIndex");
+		if (idxS)
+		{
+			info.Index = ::atoi(idxS);
+		}
+		o_UIInfo.push_back(info);
+//		o_pParams->m_pPrtyUI->AddProperty( pPUII );
+		// note file resource uiinfos for later usage
+		o_pParams->m_TextureParamUIs.push_back(effShaderParams::effTextureUI(pPUII, effParam));
+	}
+
+	return effParam;
 }
 
 effParamFloat* matShaderBaseGL::MapFloatParam(effShaderParams* o_pParams,
 											   matShaderBindingsGL* o_pBindings,
 											   GLint i_hParam, 
+	XMLElement* param,
 											   const std::string& i_Name,
 											   bool i_bCreateBinding,
 											   bool i_bCreateUI,
 											   std::list<ShaderParamUIInfo>& o_UIInfo) const
 {
-	return NULL;
+	std::string uiCategory, uiLabel, uiDesc;
+	GetUIStrings(param, i_Name, uiCategory, uiLabel, uiDesc);
+
+	effParamFloat* effParam = o_pParams->FindFloatParam(i_Name);
+	if (effParam)
+	{
+		effParam->Property().SetPropertyName(uiLabel);
+	}
+	else
+	{
+		float f;
+		const char* defaultVal = param->Attribute("default");
+		if (defaultVal) {
+			f = (float)::atof(defaultVal);
+		}
+		effParam = new effParamFloat(i_Name, uiLabel, f);
+		o_pParams->AddParam(effParam);
+	}
+
+	if (i_bCreateBinding)
+	{
+		// can we assume binding doesn't already exist here?
+		// do not add a binding twice!
+		DBG_ASSERT(!o_pBindings->HasBinding(effParam), "Binding already exists for " << i_Name);
+		o_pBindings->m_BindableParams.push_back(new matFloatBindingGL(*effParam, i_hParam));
+	}
+
+	if (i_bCreateUI)
+	{
+		// get the slider (ranged float) params
+		float fmax=1, fmin=0, fsteps=100, fstepspower=1;
+		const char* hAnnot;
+		hAnnot = param->Attribute("uiMax");
+		if (hAnnot)
+		{
+			fmax = (float)::atof(hAnnot);
+		}
+		hAnnot = param->Attribute("uiMin");
+		if (hAnnot)
+		{
+			fmin = (float)::atof(hAnnot);
+		}
+		hAnnot = param->Attribute("uiSteps");
+		if (hAnnot)
+		{
+			fsteps = (float)::atof(hAnnot);
+		}
+		hAnnot = param->Attribute("uiPower");
+		if (hAnnot)
+		{
+			fstepspower = (float)::atof(hAnnot);
+		}
+		prtyRangedFloatUIInfo* pRFUII = NULL;
+		pRFUII  = new prtyRangedFloatUIInfo(effParam->GetBaseProperty(), uiCategory, uiDesc);
+		pRFUII->SetMinimum(fmin);
+		pRFUII->SetMaximum(fmax);
+		pRFUII->SetNumTicks((short)fsteps);
+		pRFUII->SetExponent((short)fstepspower);
+		ShaderParamUIInfo info;
+		info.UIInfo = pRFUII;
+		info.Index = 0;
+		hAnnot = param->Attribute("uiIndex");
+		if (hAnnot)
+		{
+			info.Index = ::atoi(hAnnot);
+		}
+		o_UIInfo.push_back(info);
+//		o_pParams->m_pPrtyUI->AddProperty( pRFUII );
+	}
+
+	return effParam;
 }
 
 effParamBool* matShaderBaseGL::MapBoolParam(effShaderParams* o_pParams,
 	matShaderBindingsGL* o_pBindings,
 	GLint i_hParam, 
+	XMLElement* param,
 	const std::string& i_Name,
 	bool i_bCreateBinding,
 	bool i_bCreateUI,
 	std::list<ShaderParamUIInfo>& o_UIInfo) const
 {
-	return NULL;
+	std::string uiCategory, uiLabel, uiDesc;
+	GetUIStrings(param, i_Name, uiCategory, uiLabel, uiDesc);
+
+	effParamBool* effParam = o_pParams->FindBoolParam(i_Name);
+	if (effParam)
+	{
+		effParam->Property().SetPropertyName(uiLabel);
+	}
+	else
+	{
+		bool bval = false;
+		const char* defaultVal = param->Attribute("default");
+		if (defaultVal) {
+			std::string d(defaultVal);
+			bval = (d == "true");
+		}
+		effParam = new effParamBool(i_Name, uiLabel, bval);
+		o_pParams->AddParam(effParam);
+	}
+
+	if (i_bCreateBinding)
+	{
+		// can we assume binding doesn't already exist here?
+		// do not add a binding twice!
+		DBG_ASSERT(!o_pBindings->HasBinding(effParam), "Binding already exists for " << i_Name);
+		o_pBindings->m_BindableParams.push_back(new matBoolBindingGL(*effParam, i_hParam));
+	}
+
+	if (i_bCreateUI)
+	{
+		prtyCheckBoxUIInfo* pRFUII = NULL;
+		pRFUII  = new prtyCheckBoxUIInfo(effParam->GetBaseProperty(), uiCategory, uiDesc);
+		ShaderParamUIInfo info;
+		info.UIInfo = pRFUII;
+		info.Index = 0;
+		const char* hAnnot = param->Attribute("uiIndex");
+		if (hAnnot)
+		{
+			info.Index = ::atoi(hAnnot);
+		}
+		o_UIInfo.push_back(info);
+//		o_pParams->m_pPrtyUI->AddProperty( pPUII );
+	}
+
+	return effParam;
 }
 
+void parseVec4(std::string s, float* v) {
+	std::vector<std::string> strs;
+	std::string delims("\t ,");
+	boost::split(strs, s, boost::is_any_of(delims));
+	for (size_t i = 0; i < 4 && i < strs.size(); ++i) {
+		v[i] = (float)::atof(strs[i].c_str());
+	}
+}
 void split(std::string & text, std::string & separators, std::vector<std::string> & words)
 {
-	int n = text.length();
-	int start, stop;
-	start = text.find_first_not_of(separators);
-	while ((start >= 0) && (start < n))
-	{
-		stop = text.find_first_of(separators, start);
-		if ((stop < 0) || (stop > n)) 
-			stop = n;
-		words.push_back(text.substr(start, stop - start));
-		start = text.find_first_not_of(separators, stop+1);
-	}
+	boost::split(words, text, boost::is_any_of(separators));
+
+	//int n = text.length();
+	//int start, stop;
+	//start = text.find_first_not_of(separators);
+	//while ((start >= 0) && (start < n))
+	//{
+	//	stop = text.find_first_of(separators, start);
+	//	if ((stop < 0) || (stop > n)) 
+	//		stop = n;
+	//	words.push_back(text.substr(start, stop - start));
+	//	start = text.find_first_not_of(separators, stop+1);
+	//}
 }
 
 
 effParamInt* matShaderBaseGL::MapEnumParam(effShaderParams* o_pParams,
 	matShaderBindingsGL* o_pBindings,
 	GLint i_hParam, 
+	XMLElement* param,
 	const std::string& i_Name,
 	bool i_bCreateBinding,
 	bool i_bCreateUI,
@@ -1787,12 +2112,59 @@ effParamInt* matShaderBaseGL::MapEnumParam(effShaderParams* o_pParams,
 effParamColor* matShaderBaseGL::MapColorParam(effShaderParams* o_pParams,
 	matShaderBindingsGL* o_pBindings,
 	GLint i_hParam, 
+	XMLElement* param,
 	const std::string& i_Name,
 	bool i_bCreateBinding,
 	bool i_bCreateUI,
 	std::list<ShaderParamUIInfo>& o_UIInfo) const
 {
-	return NULL;
+	std::string uiCategory, uiLabel, uiDesc;
+	GetUIStrings(param, i_Name, uiCategory, uiLabel, uiDesc);
+
+	// make the param
+	effParamColor* effParam = o_pParams->FindColorParam(i_Name);
+	if (effParam)
+	{
+		effParam->Property().SetPropertyName(uiLabel);
+	}
+	else
+	{
+		float f[4] = {0,0,0,0};
+		const char* defaultVal = param->Attribute("default");
+		if (defaultVal) {
+			parseVec4(std::string(defaultVal), f);
+		}
+		effParam = new effParamColor(i_Name, uiLabel, maFloatRGBA(f[0],f[1],f[2],f[3]));
+		o_pParams->AddParam(effParam);
+	}
+
+	// make the binding
+	if (i_bCreateBinding)
+	{
+		// can we assume binding doesn't already exist here?
+		// do not add a binding twice!
+		DBG_ASSERT(!o_pBindings->HasBinding(effParam), "Binding already exists for " << i_Name);
+		o_pBindings->m_BindableParams.push_back(new matColorBindingGL(*effParam, i_hParam));
+	}
+
+	// make the uiinfo
+	if (i_bCreateUI)
+	{
+		prtyPropertyUIInfo* pPUII;
+		pPUII  = new prtyColorRGBEditUIInfo(effParam->GetBaseProperty(), uiCategory, uiDesc);
+		ShaderParamUIInfo info;
+		info.UIInfo = pPUII;
+		info.Index = 0;
+		const char* idxS = param->Attribute("uiIndex");
+		if (idxS)
+		{
+			info.Index = ::atoi(idxS);
+		}
+		o_UIInfo.push_back(info);
+//		o_pParams->m_pPrtyUI->AddProperty( pPUII );
+	}
+
+	return effParam;
 }
 
 void matShaderBaseGL::SetupReflectionMap(bool i_bIsPlanar, matTexture* i_pReflectionMap) const

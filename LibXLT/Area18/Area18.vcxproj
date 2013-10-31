@@ -91,6 +91,7 @@
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <AdditionalOptions>-D "_SCL_SECURE_NO_WARNINGS" %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -180,6 +181,7 @@
     <ClCompile Include="shdr\shdrShader.cpp" />
     <ClCompile Include="shdr\shdrUtil.cpp" />
     <ClCompile Include="test\testScene.cpp" />
+    <ClCompile Include="tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Area18Layer.hpp" />
@@ -228,6 +230,7 @@
     <ClInclude Include="shdr\shdrShader.hpp" />
     <ClInclude Include="shdr\shdrUtil.hpp" />
     <ClInclude Include="test\testScene.h" />
+    <ClInclude Include="tinyxml2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

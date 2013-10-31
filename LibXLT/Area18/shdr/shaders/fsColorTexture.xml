@@ -1,0 +1,4 @@
+<shader type="fs" name="fsColorTexture.glsl">
+	<param name="color" type="vec4" ui="color"></param>
+	<param name="tex" type="texture" ui="texture"></param>
+</shader>

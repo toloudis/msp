@@ -12,6 +12,9 @@
 
 #include "Area18/ogl/oglTypes.hpp"
 
+#include "Area18/tinyxml2.h"
+using namespace tinyxml2;
+
 #include <list>
 #include <map>
 
@@ -440,14 +443,16 @@ private:
 			return Index < i_Other.Index;
 		}
 	};
-	bool GetShaderParamInfo(GLint i_hParam, 
-		effShaderParams* o_pParams,
-		matShaderBindingsGL* o_pBindings,
-		std::list<ShaderParamUIInfo>& o_UIInfo) const;
+
+	bool GetShaderParamInfo(tinyxml2::XMLElement* iMetaData, 
+										  effShaderParams* o_pParams,
+										  matShaderBindingsGL* o_pBindings,
+										  std::list<ShaderParamUIInfo>& o_UIInfo) const;
 
 	effParamTexture* MapTextureParam(effShaderParams* o_pParams,
 		matShaderBindingsGL* o_pBindings,
 		GLint i_hParam, 
+		XMLElement* param,
 		const std::string& i_Name,
 		bool i_bCreateBinding,
 		bool i_bCreateUI,
@@ -455,6 +460,7 @@ private:
 	effParamTextureManip* MapTextureManipParam(effShaderParams* o_pParams,
 		matShaderBindingsGL* o_pBindings,
 		GLint i_hParam, 
+		XMLElement* param,
 		const std::string& i_Name,
 		bool i_bCreateBinding,
 		bool i_bCreateUI,
@@ -462,6 +468,7 @@ private:
 	effParamFloat* MapFloatParam(effShaderParams* o_pParams,
 		matShaderBindingsGL* o_pBindings,
 		GLint i_hParam, 
+		XMLElement* param,
 		const std::string& i_Name,
 		bool i_bCreateBinding,
 		bool i_bCreateUI,
@@ -469,6 +476,7 @@ private:
 	effParamBool* MapBoolParam(effShaderParams* o_pParams,
 		matShaderBindingsGL* o_pBindings,
 		GLint i_hParam, 
+		XMLElement* param,
 		const std::string& i_Name,
 		bool i_bCreateBinding,
 		bool i_bCreateUI,
@@ -476,6 +484,7 @@ private:
 	effParamInt* MapEnumParam(effShaderParams* o_pParams,
 		matShaderBindingsGL* o_pBindings,
 		GLint i_hParam, 
+		XMLElement* param,
 		const std::string& i_Name,
 		bool i_bCreateBinding,
 		bool i_bCreateUI,
@@ -483,6 +492,7 @@ private:
 	effParamColor* MapColorParam(effShaderParams* o_pParams,
 		matShaderBindingsGL* o_pBindings,
 		GLint i_hParam, 
+		XMLElement* param,
 		const std::string& i_Name,
 		bool i_bCreateBinding,
 		bool i_bCreateUI,

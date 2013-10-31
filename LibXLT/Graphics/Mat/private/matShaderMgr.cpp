@@ -244,9 +244,10 @@ matShaderEffect* GetSpecialEffect(const std::string& i_Name)
 
 	// assuming special effect shaders are already loaded.
 	std::map<std::string, matShaderInfo>::iterator it = l_ShaderMap.find( i_Name );
-	DBG_WARNING("Failed shader lookup due to missing entry for " << i_Name);
-	if (it == l_ShaderMap.end())
+	if (it == l_ShaderMap.end()) {
+		DBG_WARNING("Failed shader lookup due to missing entry for " << i_Name);
 		return NULL;
+	}
 	DBG_ASSERT(it->second.m_pEffect != NULL, "Failed shader lookup due to NULL shader entry for " << i_Name);
 	if (!it->second.m_pEffect)
 		return NULL;

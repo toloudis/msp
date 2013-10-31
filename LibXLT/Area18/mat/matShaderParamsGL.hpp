@@ -16,7 +16,7 @@
 #include "Graphics/eff/effShaderParams.hpp"
 #endif
 
-#include <Cg/cg.h>
+#include "Area18/ogl/oglTypes.hpp"
 
 class shdrPipeline;
 
@@ -31,7 +31,7 @@ public:
 class matFloatBindingGL : public matBindParamGL
 {
 public: 
-	matFloatBindingGL(const effParamFloat& i_Param, CGparameter i_Handle)
+	matFloatBindingGL(const effParamFloat& i_Param, GLint i_Handle)
 		: m_Param(i_Param), m_Handle(i_Handle)
 	{
 	}
@@ -41,12 +41,12 @@ public:
 	virtual const effShaderParam* GetParam() {return &m_Param;}
 
 	const effParamFloat& m_Param;
-	CGparameter m_Handle;
+	GLint m_Handle;
 };
 class matIntBindingGL : public matBindParamGL
 {
 public: 
-	matIntBindingGL(const effParamInt& i_Param, CGparameter i_Handle)
+	matIntBindingGL(const effParamInt& i_Param, GLint i_Handle)
 		: m_Param(i_Param), m_Handle(i_Handle)
 	{
 	}
@@ -56,12 +56,12 @@ public:
 	virtual const effShaderParam* GetParam() {return &m_Param;}
 
 	const effParamInt& m_Param;
-	CGparameter m_Handle;
+	GLint m_Handle;
 };
 class matBoolBindingGL : public matBindParamGL
 {
 public: 
-	matBoolBindingGL(const effParamBool& i_Param, CGparameter i_Handle)
+	matBoolBindingGL(const effParamBool& i_Param, GLint i_Handle)
 		: m_Param(i_Param), m_Handle(i_Handle)
 	{
 	}
@@ -71,12 +71,12 @@ public:
 	virtual const effShaderParam* GetParam() {return &m_Param;}
 
 	const effParamBool& m_Param;
-	CGparameter m_Handle;
+	GLint m_Handle;
 };
 class matColorBindingGL : public matBindParamGL
 {
 public: 
-	matColorBindingGL(const effParamColor& i_Param, CGparameter i_Handle)
+	matColorBindingGL(const effParamColor& i_Param, GLint i_Handle)
 		: m_Param(i_Param), m_Handle(i_Handle)
 	{
 	}
@@ -86,13 +86,13 @@ public:
 	virtual const effShaderParam* GetParam() {return &m_Param;}
 
 	const effParamColor& m_Param;
-	CGparameter m_Handle;
+	GLint m_Handle;
 };
 class matTextureBindingGL : public matBindParamGL
 {
 public: 
 	matTextureBindingGL(const effParamTexture& i_Param, 
-		CGparameter i_Handle, CGparameter i_ExistVarHandle )
+		GLint i_Handle, GLint i_ExistVarHandle )
 		: m_Param(i_Param), m_Handle(i_Handle), m_ExistVarHandle(i_ExistVarHandle)
 	{
 	}
@@ -102,8 +102,8 @@ public:
 	virtual const effShaderParam* GetParam() {return &m_Param;}
 
 	const effParamTexture& m_Param;
-	CGparameter m_Handle;
-	CGparameter m_ExistVarHandle;
+	GLint m_Handle;
+	GLint m_ExistVarHandle;
 };
 
 class matShaderBindingsGL : public effShaderBindings

@@ -22,9 +22,13 @@ public:
 
 private:
 	shdrShaderPtr mVsGeneric;
-	shdrShaderPtr mFsTest;
+	shdrShaderPtr mFsWhite;
+	shdrShaderPtr mFsColorTexture;
 
-	matShaderInfo registerShader(const std::string& shaderName);
+	matShaderInfo registerShader(const std::string& shaderName, 
+		effShaderData* i_pDataTemplate,
+		shdrShaderPtr iVs,
+		shdrShaderPtr iFs);
 
 
 };

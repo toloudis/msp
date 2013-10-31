@@ -316,6 +316,14 @@ matShaderEffect* effShaderParams::GetShader()
 			m_pShader = matShaderMgr::GetEffect( shaderLoc );
 		}		
 
+		// Failed again: check for built-in with same name.
+		if (m_pShader == NULL) {
+			m_pShader = matShaderMgr::GetSpecialEffect(shaderFileName);
+			if (m_pShader) {
+				DBG_WARNING("Material Shader = " <<  shaderFileName.c_str() << " loaded fallback with built-in");
+			}
+		}
+
 		// Total failure. Revert back to simple.
 		if (m_pShader == NULL)
 		{
