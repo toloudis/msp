@@ -17,7 +17,7 @@
 
 namespace shdrUtil
 {
-	fsLocator l_ShaderPath = itString("D:\\dev\\CompletelyDifferent\\LibXLT\\Area18\\shdr\\");
+	fsLocator l_ShaderPath = itString("D:/Projects/SourceCode/LibXLT/Area18/shdr/shaders/");
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -59,33 +59,40 @@ namespace shdrUtil
 		return pFileData;
 	}
 
+	fsLocator ResolveShaderPath(const fsLocator& shdr)
+	{
+		fsLocator locator = shdr;
+		if (!fsFileUtil::FileExists(locator))
+		{
+			// 2nd try: use ShaderPath
+			locator = l_ShaderPath;
+			locator.Push(shdr);
+			if (!fsFileUtil::FileExists(locator))
+			{
+				// 3rd try: use app path + "/Shaders"
+				locator = gfPaths::GetPath(gfPaths::e_ExePath);
+				locator.Push("Shaders");
+				locator.Push(shdr);
+				if (!fsFileUtil::FileExists(locator))
+				{
+					DBG_ERROR("Could not find shader " << shdr);
+					return fsLocator();
+				}
+			}
+		}
+		return locator;
+	}
+
 	//--------------------------------------------------------------------------------------
 	// Helper function to compile an hlsl shader from file, 
 	// its binary compiled code is returned
 	//--------------------------------------------------------------------------------------
 	GLuint CompileShaderFromFile( const fsLocator& i_Locator, GLenum i_ShaderType )
 	{
-		fsLocator locator;
-
-		// 1st try: use locator as full path.
-		locator = i_Locator;
-		if (!fsFileUtil::FileExists(locator))
+		fsLocator locator = ResolveShaderPath(i_Locator);
+		if (locator.GetNumNames() < 1) 
 		{
-			// 2nd try: use ShaderPath
-			locator = l_ShaderPath;
-			locator.Push(i_Locator);
-			if (!fsFileUtil::FileExists(locator))
-			{
-				// 3rd try: use app path + "/Shaders"
-				locator = gfPaths::GetPath(gfPaths::e_ExePath);
-				locator.Push("Shaders");
-				locator.Push(i_Locator);
-				if (!fsFileUtil::FileExists(locator))
-				{
-					DBG_ERROR("Could not find shader " << i_Locator);
-					return E_FAIL;
-				}
-			}
+			return 0;
 		}
 	
 		itString filename;
@@ -105,25 +112,10 @@ namespace shdrUtil
 
 		for (size_t i = 0; i < i_Locator.size(); ++i) {
 
-			// 1st try: use locator as full path.
-			locator = *(i_Locator[i]);
-			if (!fsFileUtil::FileExists(locator))
+			locator = ResolveShaderPath(*(i_Locator[i]));
+			if (locator.GetNumNames() < 1) 
 			{
-				// 2nd try: use ShaderPath
-				locator = l_ShaderPath;
-				locator.Push(*(i_Locator[i]));
-				if (!fsFileUtil::FileExists(locator))
-				{
-					// 3rd try: use app path + "/Shaders"
-					locator = gfPaths::GetPath(gfPaths::e_ExePath);
-					locator.Push("Shaders");
-					locator.Push(*(i_Locator[i]));
-					if (!fsFileUtil::FileExists(locator))
-					{
-						DBG_ERROR("Could not find shader " << *(i_Locator[i]));
-						return E_FAIL;
-					}
-				}
+				continue;
 			}
 	
 			itString filename;
@@ -156,9 +148,9 @@ namespace shdrUtil
 		// convert filename
 		char pFilePathName[MAX_PATH];        
 		WideCharToMultiByte(CP_ACP, 0, szFileName, -1, pFilePathName, MAX_PATH, NULL, NULL);
+		DBG_LOG("compiling shader " << std::string(pFilePathName));
 
 		// Compile the shader
-		DBG_LOG("compiling shader " << std::string(pFilePathName));
 		std::vector<const char*> src;
 		src.push_back(reinterpret_cast<const char*>(pFileData));
 		GLuint shaderID = CompileShaderFromStrings(src, i_ShaderType);

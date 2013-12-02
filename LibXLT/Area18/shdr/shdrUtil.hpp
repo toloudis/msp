@@ -31,6 +31,7 @@ namespace shdrUtil
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	fsLocator GetShaderPath();
+	fsLocator ResolveShaderPath(const fsLocator& shdr);
 
 	//--------------------------------------------------------------------------------------
 	// Helper function to compile an hlsl shader from file, 

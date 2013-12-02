@@ -2,6 +2,7 @@
 #include "Area18/shdr/shdrUtil.hpp"
 
 #include "Core/dbg/dbgMsg.hpp"
+#include "Core/Fs/fsFileUtil.hpp"
 #include "Core/Fs/fsLocator.hpp"
 
 shdrShader::shdrShader(void)
@@ -9,11 +10,13 @@ shdrShader::shdrShader(void)
 }
 shdrShader::shdrShader(GLuint iProgram)
 	: m_CompiledShader(iProgram),
-	m_pDevice(NULL)
+	m_pDevice(NULL),
+	mMetaData(NULL)
 {
 }
 
 shdrShader::shdrShader(oglContext* i_pDevice, GLenum shaderType, std::vector<std::string>& i_ShaderStrings)
+:	mMetaData(NULL)
 {
 	std::vector<const char*> src;
 	for(size_t i = 0; i < i_ShaderStrings.size(); ++i) {
@@ -27,6 +30,7 @@ shdrShader::shdrShader(oglContext* i_pDevice, GLenum shaderType, std::vector<std
 	}
 }
 shdrShader::shdrShader(oglContext* i_pDevice, GLenum shaderType, std::string i_ShaderString)
+:	mMetaData(NULL)
 {
 	GLuint id = 0;
 	fsLocator locator(itString(i_ShaderString.c_str()));
@@ -51,5 +55,13 @@ void shdrShader::GetShaderData(GLuint i_CompiledShader)
 int shdrShader::FindConstantBuffer(const std::string& i_Name)
 {
 	return -1;
+}
+
+void shdrShader::LoadMetadata(const fsLocator& file)
+{
+	mMetaData = new XMLDocument();
+	std::string filename;
+	fsFileUtil::LocatorToANSIFilename(shdrUtil::ResolveShaderPath(file), filename);
+	mMetaData->LoadFile( filename.c_str() );
 }
 

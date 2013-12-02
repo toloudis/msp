@@ -298,7 +298,7 @@ namespace
 		return num_lights;
 	}
 
-	void GetUIStrings(XMLElement* param, const std::string& i_Name, 
+	void GetUIStrings(const XMLElement* param, const std::string& i_Name, 
 		std::string& o_Category, std::string& o_Label, std::string& o_Desc)
 	{
 		// the label for the control
@@ -326,7 +326,7 @@ namespace
 		}
 	}
 
-	GLint FindTextureExistVar(GLuint program, XMLElement* i_hTextureVar)
+	GLint FindTextureExistVar(GLuint program, const XMLElement* i_hTextureVar)
 	{
 		// conditional texture existence (null texture) flag
 		GLint hRetVal = NULL;
@@ -348,7 +348,7 @@ namespace
 	}
 
 	// get resource filename from annotation for a parameter
-	bool get_resource_name(XMLElement* param, fsLocator &o_ResourceName)
+	bool get_resource_name(const XMLElement* param, fsLocator &o_ResourceName)
 	{
 		// might also want to search for "resourceName" here (MetaSL backend does that)
 		const char* hAnnot = param->Attribute("resource");
@@ -1602,13 +1602,14 @@ int matShaderBaseGL::BuildPrtyObject(effShaderParams* o_pParams) const
 	// gather params.
 	// parse from xml file(s)!
 	// this has to store all the xml file paths for the shader meta data.
-	XMLDocument doc;
-    doc.LoadFile( "fsColorTexture.xml" );
-	XMLElement *parent = doc.RootElement();
-	XMLElement* param = NULL;
-	for( param = parent->FirstChildElement("param"); param; param = param->NextSiblingElement("param") ) {
-		if (GetShaderParamInfo(param, o_pParams, bindings, uiInfos))
-			numParamsFound++;
+	const XMLDocument* doc = this->m_pEffect->ps()->Metadata();
+	if (doc) {
+		const XMLElement *parent = doc->RootElement();
+		const XMLElement* param = NULL;
+		for( param = parent->FirstChildElement("param"); param; param = param->NextSiblingElement("param") ) {
+			if (GetShaderParamInfo(param, o_pParams, bindings, uiInfos))
+				numParamsFound++;
+		}
 	}
 
 	//std::map<std::string, int>::const_iterator iter = m_paramnamemap.begin();
@@ -1705,7 +1706,7 @@ void matShaderBaseGL::CreateBindings(effShaderParams* io_Params)
 }
 #endif
 
-bool matShaderBaseGL::GetShaderParamInfo(XMLElement* iMetaData, 
+bool matShaderBaseGL::GetShaderParamInfo(const XMLElement* iMetaData, 
 										  effShaderParams* o_pParams,
 										  matShaderBindingsGL* o_pBindings,
 										  std::list<ShaderParamUIInfo>& o_UIInfo) const
@@ -1739,7 +1740,8 @@ bool matShaderBaseGL::GetShaderParamInfo(XMLElement* iMetaData,
 	GLint loc = -1;
 	loc = glGetUniformLocation(program, name.c_str());
 
-	const char* semantic = iMetaData->Attribute("semantic");
+	const char* csemantic = iMetaData->Attribute("semantic");
+	std::string semantic(csemantic);
 
 	if (sControl == "color")
 	{
@@ -1851,7 +1853,7 @@ bool matShaderBaseGL::GetShaderParamInfo(XMLElement* iMetaData,
 effParamTexture* matShaderBaseGL::MapTextureParam(effShaderParams* o_pParams,
 												   matShaderBindingsGL* o_pBindings,
 												   GLint i_hParam, 
-	XMLElement* param,
+	const XMLElement* param,
 												   const std::string& i_Name,
 												   bool i_bCreateBinding,
 												   bool i_bCreateUI,
@@ -1896,6 +1898,7 @@ effParamTexture* matShaderBaseGL::MapTextureParam(effShaderParams* o_pParams,
 		case GL_SAMPLER_2D:{ type = TEXTURE_TYPE_2D; break;}
 		case GL_SAMPLER_CUBE:{ type = TEXTURE_TYPE_CUBE; break;}
 		case GL_SAMPLER_3D:{ type = TEXTURE_TYPE_3D; break;}
+		default: {type = TEXTURE_TYPE_2D; break;}
 	}
 	effParam->SetType( type );
 
@@ -1936,7 +1939,7 @@ effParamTexture* matShaderBaseGL::MapTextureParam(effShaderParams* o_pParams,
 effParamFloat* matShaderBaseGL::MapFloatParam(effShaderParams* o_pParams,
 											   matShaderBindingsGL* o_pBindings,
 											   GLint i_hParam, 
-	XMLElement* param,
+	const XMLElement* param,
 											   const std::string& i_Name,
 											   bool i_bCreateBinding,
 											   bool i_bCreateUI,
@@ -2018,7 +2021,7 @@ effParamFloat* matShaderBaseGL::MapFloatParam(effShaderParams* o_pParams,
 effParamBool* matShaderBaseGL::MapBoolParam(effShaderParams* o_pParams,
 	matShaderBindingsGL* o_pBindings,
 	GLint i_hParam, 
-	XMLElement* param,
+	const XMLElement* param,
 	const std::string& i_Name,
 	bool i_bCreateBinding,
 	bool i_bCreateUI,
@@ -2100,7 +2103,7 @@ void split(std::string & text, std::string & separators, std::vector<std::string
 effParamInt* matShaderBaseGL::MapEnumParam(effShaderParams* o_pParams,
 	matShaderBindingsGL* o_pBindings,
 	GLint i_hParam, 
-	XMLElement* param,
+	const XMLElement* param,
 	const std::string& i_Name,
 	bool i_bCreateBinding,
 	bool i_bCreateUI,
@@ -2112,7 +2115,7 @@ effParamInt* matShaderBaseGL::MapEnumParam(effShaderParams* o_pParams,
 effParamColor* matShaderBaseGL::MapColorParam(effShaderParams* o_pParams,
 	matShaderBindingsGL* o_pBindings,
 	GLint i_hParam, 
-	XMLElement* param,
+	const XMLElement* param,
 	const std::string& i_Name,
 	bool i_bCreateBinding,
 	bool i_bCreateUI,

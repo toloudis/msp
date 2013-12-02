@@ -2,6 +2,16 @@
 
 //#include "Globals.h"
 
+//This structure is how the data is formatted from the application
+//struct STANDARD_VERTEX
+//{
+layout(location=0)	in vec3 InPosition;//	: SV_POSITION;
+layout(location=1)	in vec3 InNormal;//	: NORMAL;
+layout(location=2)	in vec2 InUV;//		: TEXCOORD0;
+layout(location=3)	in vec3 InT;//		: TANGENT;
+layout(location=4)	in vec3 InB;//		: BINORMAL;
+//};
+
 // transforms/viewing
 uniform mat4 g_worldIT;
 uniform mat4 g_wvp;
@@ -49,6 +59,10 @@ TANGENT_VERTEX TangentVS( )
 }
 
 out TANGENT_VERTEX_OUTPUT OUT;
+out gl_PerVertex {
+    vec4  gl_Position;
+    float gl_ClipDistance[4];
+};
 
 void main( ) 
 {

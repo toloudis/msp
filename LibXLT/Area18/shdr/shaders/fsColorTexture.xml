@@ -1,4 +1,4 @@
 <shader type="fs" name="fsColorTexture.glsl">
-	<param name="color" type="vec4" ui="color"></param>
-	<param name="tex" type="texture" ui="texture"></param>
+	<param name="color" type="vec4" ui="color" semantic="materialdiffuse" default="1.0 1.0 1.0 1.0"></param>
+	<param name="tex" type="texture" ui="texture" semantic="diffusetexture"></param>
 </shader>

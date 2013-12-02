@@ -31,12 +31,12 @@ bool matColorBindingGL::Bind(shdrPipeline* i_pShader)
 {
 	maFloatRGBA color = m_Param.GetProperty().GetValue();
 	float col[4] = {color.GetRed(),color.GetGreen(),color.GetBlue(),color.GetAlpha()};
-	glUniform4fv(m_Handle, col);
+	glUniform4fv(m_Handle, 1, col);
 	return true;
 }
 bool matTextureBindingGL::Bind(shdrPipeline* i_pShader)
 {
-	if (m_ExistVarHandle != NULL && cgIsParameter(m_ExistVarHandle))
+	if (m_ExistVarHandle > -1)
 	{
 		glUniform1i(m_ExistVarHandle, ((m_Param.GetTexture() == NULL)?0:1));
 	}

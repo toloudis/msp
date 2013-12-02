@@ -3,6 +3,9 @@
 #include "Area18/ogl/oglTypes.hpp"
 #include "Core/Env/envBoost.hpp"
 
+#include "Area18/tinyxml2.h"
+using namespace tinyxml2;
+
 #include <vector>
 
 class oglContext;
@@ -23,6 +26,9 @@ public:
 	virtual ~shdrShader(void);
 
 	GLuint GetShader() {return m_CompiledShader;}
+
+	void LoadMetadata(const fsLocator& file);
+	const XMLDocument* Metadata() {return mMetaData;}
 protected:
 	GLuint m_CompiledShader;
 	oglContext* m_pDevice;
@@ -30,4 +36,6 @@ protected:
 	void GetShaderData(GLuint i_CompiledShader);
 
 	int FindConstantBuffer(const std::string& i_Name);
+
+	XMLDocument* mMetaData;
 };

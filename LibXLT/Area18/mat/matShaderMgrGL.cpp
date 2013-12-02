@@ -52,25 +52,27 @@ void matShaderMgrGL::RegisterEffects(const fsLocator &i_ShaderDir,
 	// TODO: compile on a particular device?
 
 	std::vector<const fsLocator*> vshaders;
-	fsLocator loc1(itString("D:/Projects/SourceCode/LibXLT/Area18/shdr/shaders/Globals.h"));
+	fsLocator loc1(itString("Globals.h"));
 	vshaders.push_back(&loc1);
-	fsLocator loc2(itString("D:/Projects/SourceCode/LibXLT/Area18/shdr/shaders/vsDefault.glsl"));
+	fsLocator loc2(itString("vsDefault.glsl"));
 	vshaders.push_back(&loc2);
 	GLuint vsp = shdrUtil::CompileShaderFromFiles( vshaders, GL_VERTEX_SHADER);
 	mVsGeneric.reset(new shdrShader(vsp));
 
 	std::vector<const fsLocator*> fshaders;
-	fsLocator loc3(itString("D:/Projects/SourceCode/LibXLT/Area18/shdr/shaders/fsDefault.glsl"));
+	fsLocator loc3(itString("fsDefault.glsl"));
 	fshaders.push_back(&loc3);
 	GLuint fsp = shdrUtil::CompileShaderFromFiles( fshaders, GL_FRAGMENT_SHADER);
 	mFsWhite.reset(new shdrShader(fsp));
 
 	fshaders.clear();
 	fshaders.push_back(&loc1);
-	fsLocator loc4(itString("D:/Projects/SourceCode/LibXLT/Area18/shdr/shaders/fsColorTexture.glsl"));
+	fsLocator loc4(itString("fsColorTexture.glsl"));
 	fshaders.push_back(&loc4);
 	GLuint fspt = shdrUtil::CompileShaderFromFiles( fshaders, GL_FRAGMENT_SHADER);
-	mFsColorTexture.reset(new shdrShader(fspt));
+	shdrShader* s = new shdrShader(fspt);
+	s->LoadMetadata(fsLocator(itString("fsColorTexture.xml")));
+	mFsColorTexture.reset(s);
 
 	//// default effect uses effPhong and effPhongData
 	//RegisterShader<effPhong>("default", new effPhongData, (BYTE*)g_ShaderDefault, sizeof(g_ShaderDefault), io_ShaderMap);
@@ -134,9 +136,9 @@ void matShaderMgrGL::RegisterEffects(const fsLocator &i_ShaderDir,
 	shdrEntry names[] = {
 		{"Simple.fx", mVsGeneric, mFsWhite, new effPhongData},
 		{"Solid.fx", mVsGeneric, mFsWhite, new effSolidData},
-		{"Billboard.fx", mVsGeneric, mFsWhite, new effTexturedData},
-		{"Phong.fx", mVsGeneric, mFsWhite, new effPhongData},
-		{"Blinn.fx", mVsGeneric, mFsWhite, new effPhongData},
+		{"Billboard.fx", mVsGeneric, mFsColorTexture, new effTexturedData},
+		{"Phong.fx", mVsGeneric, mFsColorTexture, new effPhongData},
+		{"Blinn.fx", mVsGeneric, mFsColorTexture, new effPhongData},
 		{NULL, shdrShaderPtr(), shdrShaderPtr(), NULL}
 	};
 	
