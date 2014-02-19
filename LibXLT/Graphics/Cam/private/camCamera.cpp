@@ -318,38 +318,38 @@ void camCamera::ConstructMatrixRH(const maPoint3d &i_Pos,
 					   maMatrix4x4& o_Matrix,
 					   bool i_bTranslate)
 {
-	maVector3d dir = i_Target - i_Pos;
+	// compare with d3dxmatrixlookatRH
+
+	maVector3d dir = i_Pos - i_Target;
 	dir.Normalize();
-	maVector3d left = dir.Cross(i_Up);
-	left.Normalize();
-	maVector3d camera_up = left.Cross(dir);
+	maVector3d left = i_Up.Cross(dir);
+
+	if (!left.Normalize())
+		left.Set(1, 0, 0);
+
+	maVector3d camera_up = dir.Cross(left);
 	camera_up.Normalize();
 
-	o_Matrix[0] = left[0];
-	o_Matrix[4] = left[1];
-	o_Matrix[8] = left[2];
-	o_Matrix[12] = 0.0;
-	//------------------
-	o_Matrix[1] = camera_up[0];
-	o_Matrix[5] = camera_up[1];
-	o_Matrix[9] = camera_up[2];
-	o_Matrix[13] = 0.0;
-	//------------------
-	o_Matrix[2] = -dir[0];
-	o_Matrix[6] = -dir[1];
-	o_Matrix[10] = -dir[2];
-	o_Matrix[14] = 0.0;
-	//------------------
-	o_Matrix[3] = o_Matrix[7] = o_Matrix[11] = 0.0;
-	o_Matrix[15] = 1.0;
-	//------------------
-	float x = -i_Pos[0];
-	float y = -i_Pos[1];
-	float z = -i_Pos[2];
-	o_Matrix[12]=o_Matrix[0]*x+o_Matrix[4]*y+o_Matrix[8]*z+o_Matrix[12];
-	o_Matrix[13]=o_Matrix[1]*x+o_Matrix[5]*y+o_Matrix[9]*z+o_Matrix[13];
-	o_Matrix[14]=o_Matrix[2]*x+o_Matrix[6]*y+o_Matrix[10]*z+o_Matrix[14];
-	o_Matrix[15]=o_Matrix[3]*x+o_Matrix[7]*y+o_Matrix[11]*z+o_Matrix[15];
+	o_Matrix.Identity();
+
+	o_Matrix(0, 0) = left.m_X;
+	o_Matrix(1, 0) = left.m_Y;
+	o_Matrix(2, 0) = left.m_Z;
+
+	o_Matrix(0, 1) = camera_up.m_X;
+	o_Matrix(1, 1) = camera_up.m_Y;
+	o_Matrix(2, 1) = camera_up.m_Z;
+
+	o_Matrix(0, 2) = dir.m_X;
+	o_Matrix(1, 2) = dir.m_Y;
+	o_Matrix(2, 2) = dir.m_Z;
+
+	if (i_bTranslate)
+	{
+		maMatrix4x4 translate;
+		translate.MakeTranslate(-i_Pos.m_X, -i_Pos.m_Y, -i_Pos.m_Z);
+		o_Matrix = translate * o_Matrix;
+	}
 }
 
 //--------------------------------------------------------------------
@@ -358,7 +358,7 @@ void camCamera::ConstructMatrixRH(const maPoint3d &i_Pos,
 void camCamera::LookAt(const maPoint3d &i_Pos, const maPoint3d &i_Target,
 			 const maVector3d &i_Up)
 {
-	camCamera::ConstructMatrixRH(i_Pos, i_Target, i_Up, m_Camera);
+	camCamera::ConstructMatrixLH(i_Pos, i_Target, i_Up, m_Camera);
 	m_Position = i_Pos;
 	m_Target = i_Target;
 	m_Up = i_Up;
@@ -452,16 +452,16 @@ void camCamera::make_projection() const
 		// Depth buffer precision is affected by the values specified for zNear and zFar.
 		// The greater the ratio of zFar to zNear is, the less effective the depth buffer 
 		// will be at distinguishing between surfaces that are near each other.
-		// If r=zFar/zNear roughly log2(r) bits of depth buffer precision are lost.
+        // If r=zFar/zNear roughly log2(r) bits of depth buffer precision are lost.
 		// Because r approaches infinity as zNear approaches 0, zNear must never be set to 0.
-		
+        
 		m_Projection(0, 0) = 2.0f * m_Near / (right - left);
 		m_Projection(1, 1) = 2.0f * m_Near / (top - bottom);
 		m_Projection(2, 0) = (right + left) / (right - left);
 		m_Projection(2, 1) = (top + bottom) / (top - bottom);
-		m_Projection(2, 2) = -(m_Far + m_Near) / (m_Far - m_Near);
-		m_Projection(3, 2) = -2.0f * m_Far * m_Near / (m_Far - m_Near);
-		m_Projection(2, 3) = -1;
+		m_Projection(2, 2) = Q;
+		m_Projection(3, 2) = -Q * m_Near;
+		m_Projection(2, 3) = 1;
 		m_Projection(3, 3) = 0;
 	}
 
