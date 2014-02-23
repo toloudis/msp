@@ -23,7 +23,7 @@
 #include "GraphicsDX11/g2d/g2dDX11Types.hpp"
 #endif
 
-#include c_g2dD3DX11_H
+//#include c_g2dD3DX11_H
 
 #include c_g2dD3DX11Effect_H
 

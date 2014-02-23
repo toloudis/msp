@@ -121,7 +121,7 @@ bool mainResolvePath::ResolvePath(const fsLocator& i_OrigFilename,
 
 					if (file_dialog.ShowModal() == wxID_OK)
 					{
-						itString full_path(file_dialog.GetPath().c_str());
+						itString full_path((const char*)file_dialog.GetPath().c_str());
 						fsFileUtil::UnicodeStringToLocator(full_path, o_LocalFilename);
 						if (o_LocalFilename.GetNumNames() > 0)
 						{

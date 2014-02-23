@@ -39,7 +39,7 @@ bool wuiFileDialogUtils::GetOpenFileName(const std::string &i_Filter,
 
 	if (dialog.ShowModal() == wxID_OK)
 	{
-		fsFileUtil::UnicodeStringToLocator(itString(dialog.GetPath()), o_ChosenLocator);
+		fsFileUtil::UnicodeStringToLocator(itString(dialog.GetPath().wc_str()), o_ChosenLocator);
 		return true;
 	}
 #endif // USE_WXWIDGETS
@@ -79,7 +79,7 @@ bool wuiFileDialogUtils::GetOpenFileNames(const std::string &i_Filter,
 		o_ChosenLocators.resize(paths.size());
 		for (int i=0; i<paths.size(); ++i)
 		{
-			fsFileUtil::UnicodeStringToLocator(itString(paths[i]), o_ChosenLocators[i]);
+			fsFileUtil::UnicodeStringToLocator(itString(paths[i].wc_str()), o_ChosenLocators[i]);
 		}
 		return true;
 	}
@@ -114,7 +114,7 @@ bool wuiFileDialogUtils::GetSaveFileName(const std::string &i_Filter,
 
 	if (dialog.ShowModal() == wxID_OK)
 	{
-		fsFileUtil::UnicodeStringToLocator(itString(dialog.GetPath()), io_ChosenLocator);
+		fsFileUtil::UnicodeStringToLocator(itString(dialog.GetPath().wc_str()), io_ChosenLocator);
 		return true;
 	}
 #endif // USE_WXWIDGETS

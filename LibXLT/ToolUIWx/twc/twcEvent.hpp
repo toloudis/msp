@@ -23,6 +23,6 @@
 //	focus leaves the control. Users should register for this event, 
 //	not for the individual enter pressed and leave events.
 //============================================================================
-DECLARE_EVENT_TYPE(wxEVT_VALUE_CHANGED, -1)
+DECLARE_LOCAL_EVENT_TYPE(wxEVT_VALUE_CHANGED, -1)
 
 #endif // USE_WXWIDGETS

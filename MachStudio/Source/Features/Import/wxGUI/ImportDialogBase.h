@@ -8,6 +8,9 @@
 #ifndef __ImportDialogBase__
 #define __ImportDialogBase__
 
+#ifndef TWX_WIDGETS_HPP
+#include "ToolUIWx/twx/twxWidgets.hpp"
+#endif
 #include <wx/string.h>
 #include <wx/filepicker.h>
 #include <wx/gdicmn.h>

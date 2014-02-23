@@ -318,14 +318,14 @@ pixelOutput QuadPS( QuadVS_Output Input )\
 	ID3DBlob* shaderCode = NULL;
 	ID3DBlob* errors = NULL;
 	// Compile effect 
-	hr = D3DX11CompileFromMemory(fullscreenQuadVSSource, strlen(fullscreenQuadVSSource), "FontUtilVS",
-		NULL, NULL, "QuadVS", "vs_5_0", 
+    hr = ::D3DCompile(fullscreenQuadVSSource, strlen(fullscreenQuadVSSource),
+        "FontUtilVS", NULL, NULL, "QuadVS", "vs_5_0",
 #ifdef _DEBUG
-		D3D10_SHADER_OPTIMIZATION_LEVEL0 | D3D10_SHADER_DEBUG, 
+		D3D10_SHADER_OPTIMIZATION_LEVEL0 | D3D10_SHADER_DEBUG,
 #else
 		D3D10_SHADER_OPTIMIZATION_LEVEL0, 
 #endif
-		0, 0, &shaderCode, &errors, 0);
+        0, &shaderCode, &errors);
 
     if (FAILED(hr))
     { 
@@ -359,14 +359,14 @@ pixelOutput QuadPS( QuadVS_Output Input )\
 	// Create PS Shader
 	// Compile effect 
 	ID3DBlob* shaderCode2 = NULL;
-	hr = D3DX11CompileFromMemory(fullscreenQuadPSSource, strlen(fullscreenQuadPSSource), "FontUtilPS",
-		NULL, NULL, "QuadPS", "ps_5_0", 
+    hr = ::D3DCompile(fullscreenQuadPSSource, strlen(fullscreenQuadPSSource),
+        "FontUtilPS", NULL, NULL, "QuadPS", "ps_5_0",
 #ifdef _DEBUG
-		D3D10_SHADER_OPTIMIZATION_LEVEL0 | D3D10_SHADER_DEBUG, 
+		D3D10_SHADER_OPTIMIZATION_LEVEL0 | D3D10_SHADER_DEBUG,
 #else
 		D3D10_SHADER_OPTIMIZATION_LEVEL0, 
 #endif
-		0, 0, &shaderCode2, &errors, 0);
+        0, &shaderCode2, &errors);
 
     if (FAILED(hr))
     { 
@@ -718,7 +718,7 @@ ID3DX11Font* g2dFontUtilDX11::GetD3DFont(g2dFontHandle i_Handle)
 }
 #endif
 
-#include c_g2dD3DX11_H
+//#include c_g2dD3DX11_H
 //#include "Core/ma/maFloatRGBA.hpp"
 //#include "Core/ma/maVector3d.hpp"
 //#include "Core/ma/maVector2d.hpp"
@@ -753,6 +753,7 @@ UINT g_FontBufferBytes11 = 0;
 std::vector<DXUTSpriteVertex> g_FontVertices;
 ID3D11ShaderResourceView* g_pFont11 = NULL;
 ID3D11InputLayout* g_pInputLayout11 = NULL;
+/*
 HRESULT InitFont11( ID3D11Device* pd3d11Device, ID3D11InputLayout* pInputLayout )
 {
     HRESULT hr = S_OK;
@@ -764,7 +765,7 @@ HRESULT InitFont11( ID3D11Device* pd3d11Device, ID3D11InputLayout* pInputLayout 
 	g_pInputLayout11 = pInputLayout;
     return hr;
 }
-
+*/
 void EndFont11()
 {
     SAFE_RELEASE( g_pFontBuffer11 );

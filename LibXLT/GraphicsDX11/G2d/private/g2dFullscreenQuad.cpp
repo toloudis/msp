@@ -64,14 +64,14 @@ QuadVS_Output QuadVS( QuadVS_Input Input )\
 	ID3DBlob* shaderCode = NULL;
 	ID3DBlob* errors = NULL;
 	// Compile effect 
-	hr = D3DX11CompileFromMemory(fullscreenQuadVSSource, strlen(fullscreenQuadVSSource), "fullscreenQuadVS",
+	hr = D3DCompile(fullscreenQuadVSSource, strlen(fullscreenQuadVSSource), "fullscreenQuadVS",
 		NULL, NULL, "QuadVS", "vs_5_0", 
 #ifdef _DEBUG
 		D3D10_SHADER_OPTIMIZATION_LEVEL0 | D3D10_SHADER_DEBUG, 
 #else
 		D3D10_SHADER_OPTIMIZATION_LEVEL0, 
 #endif
-		0, 0, &shaderCode, &errors, 0);
+		0, &shaderCode, &errors);
 
     if (FAILED(hr))
     { 

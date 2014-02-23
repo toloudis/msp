@@ -27,7 +27,7 @@
 //==============================================================================
 #ifdef CURL_STATICLIB
 #ifdef _DEBUG
-	#pragma comment(lib,"libcurld.lib")		//static
+	#pragma comment(lib,"libcurl.lib")		//static
 #else//!_DEBUG
 	#pragma comment(lib,"libcurl.lib")		//static
 #endif//_DEBUG

@@ -229,7 +229,7 @@ namespace twxAppUtil
 		o_Argv = new wxChar *[o_Argc + 1];
 		for ( int i = 0; i < o_Argc; i++ )
 		{
-			o_Argv[i] = wxStrdup(args[i]);
+			o_Argv[i] = (wxChar*)wxStrdup(args[i]);
 		}
 
 		// o_Argv[] must be NULL-terminated

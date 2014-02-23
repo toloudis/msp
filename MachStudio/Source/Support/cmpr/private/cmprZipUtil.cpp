@@ -14,7 +14,7 @@
 #include "Core/fs/fsLocator.hpp"
 #include "Core/it/itStringUtil.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
-#include <zlib\contrib\minizip\zip.h>
+#include <png/zlib-1.2.5\contrib\minizip\zip.h>
 
 #define WRITEBUFFERSIZE (16384)
 

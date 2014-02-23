@@ -196,7 +196,15 @@ void fgmtUVEditor::OnClose(wxCloseEvent& i_Event)
 void fgmtUVEditor::OnResize(wxSizeEvent& i_Event)
 {
 	// this is necessary to resize the panel
-	this->OnSize(i_Event);
+    i_Event.Skip();
+	//this->OnSize(i_Event);
+    // Calling any event handlers defined in the base classes directly was never
+    //supported and was always a wrong thing to do so the code needs to be
+    //changed to do the right thing instead. What it is depends on how does the
+    //current code look exactly. If it calls base class OnSize() from its own
+    //EVT_SIZE handler, then you just need to remove this class and add
+    //"event.Skip()" instead. If it's something else you probably want to replace
+    //it with a call to Layout() or maybe SendSizeEvent().
 
 	// keep -1..1 centered in the view.
 	if (m_pCamera)

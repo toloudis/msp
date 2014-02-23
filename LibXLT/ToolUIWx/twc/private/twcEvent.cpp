@@ -11,6 +11,6 @@
 //============================================================================
 // Value Changed: value is different after ENTER is pressed, or control is left
 //============================================================================
-DEFINE_EVENT_TYPE(wxEVT_VALUE_CHANGED)
+DEFINE_LOCAL_EVENT_TYPE(wxEVT_VALUE_CHANGED)
 
 #endif

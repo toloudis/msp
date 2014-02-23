@@ -76,7 +76,7 @@ void g2dDepthStencilBufferDX11::Make(int i_Width, int i_Height, DXGI_FORMAT i_Fo
 		{
 			throw g2dOutOfSystemMemoryX();
 		}
-		else if ( hr == D3DERR_INVALIDCALL )
+		else //if ( hr == D3DERR_INVALIDCALL )
 		{
 			throw g2dGeneralX();
 		}
@@ -96,7 +96,7 @@ void g2dDepthStencilBufferDX11::Make(int i_Width, int i_Height, DXGI_FORMAT i_Fo
 		{
 			throw g2dOutOfSystemMemoryX();
 		}
-		else if ( hr == D3DERR_INVALIDCALL )
+		else// if ( hr == D3DERR_INVALIDCALL )
 		{
 			throw g2dGeneralX();
 		}
@@ -115,7 +115,7 @@ void g2dDepthStencilBufferDX11::Make(int i_Width, int i_Height, DXGI_FORMAT i_Fo
 		{
 			throw g2dOutOfSystemMemoryX();
 		}
-		else if ( hr == D3DERR_INVALIDCALL )
+		else// if ( hr == D3DERR_INVALIDCALL )
 		{
 			throw g2dGeneralX();
 		}

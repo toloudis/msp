@@ -14,7 +14,7 @@
 #include "Graphics/g2d/g2dPFD.hpp"
 
 #include <vector>
-#include c_g2dDXERR_H
+//#include c_g2dDXERR_H
 #include <sstream>
 
 //============================================================================
@@ -612,8 +612,19 @@ void PrintDXError( HRESULT hErr )
 //E_INVALIDARG	An invalid parameter was passed to the returning function.
 //E_OUTOFMEMORY	Direct3D could not allocate sufficient memory to complete the call.
 //S_FALSE	Alternate success value, indicating a successful but nonstandard completion (the precise meaning depends on context).
+		LPVOID lpMsgBuf;
 
-	std::wstringstream dderr;
+		FormatMessage(
+			FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+			FORMAT_MESSAGE_FROM_SYSTEM |
+			FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL,
+			hErr,
+			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+			(LPTSTR) &lpMsgBuf,
+			0, NULL );
+
+    std::wstringstream dderr;
     switch (hErr)
     {
 	case D3D11_ERROR_FILE_NOT_FOUND: 
@@ -628,11 +639,12 @@ void PrintDXError( HRESULT hErr )
 			dderr << L"E_OUTOFMEMORY";
 		break;
 		default:
-			dderr << L"[" << DXGetErrorString( hErr ) << L"] (" << std::hex << hErr << L")";
+			dderr << L"[" << ((LPCTSTR)lpMsgBuf) << L"] (" << std::hex << hErr << L")";
 		break;
 	}
 
 	DBG_WARNING("DirectX Error: " << itStringUtil::GetStdString(itString(dderr.str().c_str())));
+		LocalFree(lpMsgBuf);
 }
 
 //----------------------------------------------------------------------------

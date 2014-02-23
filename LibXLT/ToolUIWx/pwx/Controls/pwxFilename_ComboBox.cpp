@@ -38,7 +38,7 @@ void pwxFileName_ComboBox_Converter::SetValueIntoControl(wxChoice* i_pActualCont
 //----------------------------------------------------------------------------
 itString pwxFileName_ComboBox_Converter::GetValueFromControl(wxChoice* i_pActualControl)
 {
-	itString sel_text(i_pActualControl->GetStringSelection().c_str());
+	itString sel_text((const char*)(i_pActualControl->GetStringSelection().c_str()));
 	return sel_text;
 }
 

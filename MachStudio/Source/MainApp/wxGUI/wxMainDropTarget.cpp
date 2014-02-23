@@ -45,7 +45,7 @@ bool wxMainDropTarget::OnDropFiles(wxCoord x, wxCoord y,
 	if (filenames.size() == 1)
 	{
 		fsLocator file_loc;
-		fsFileUtil::UnicodeStringToLocator( itString(filenames[0].c_str()), file_loc );
+		fsFileUtil::UnicodeStringToLocator( itString((const char*)filenames[0].c_str()), file_loc );
 
 		itString filename = file_loc.GetLastName();
 		itString ext;

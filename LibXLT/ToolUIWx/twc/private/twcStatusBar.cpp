@@ -18,7 +18,7 @@ twcStatusBar::twcStatusBar(wxWindow* i_pParent,
 						   wxWindowID i_Id,
 						   long i_Style,
 						   const wxString& i_Name)
-: wxStatusBar(i_pParent, i_Id, i_Style, i_Name)
+: wxStatusBar(i_pParent, i_Id, i_Style & ~wxSTB_SHOW_TIPS, i_Name)
 {
 
 }

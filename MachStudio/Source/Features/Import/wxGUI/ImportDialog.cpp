@@ -251,7 +251,7 @@ void ImportDialog::clear_data()
 void ImportDialog::filePicker_FileChanged( wxFileDirPickerEvent& i_Event )
 {
 	fsLocator file_loc;
-	fsFileUtil::UnicodeStringToLocator(itString(i_Event.GetPath().c_str()), file_loc);
+	fsFileUtil::UnicodeStringToLocator(itString((const char*)i_Event.GetPath().c_str()), file_loc);
 	if ( file_loc.GetNumNames() > 0 )
 	{
 		load_document(file_loc);

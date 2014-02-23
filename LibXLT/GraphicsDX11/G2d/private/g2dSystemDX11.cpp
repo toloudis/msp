@@ -279,7 +279,7 @@ g2dSystemDX11::g2dSystemDX11(int i_Adapter /*= 0*/)
 		if( EnsureD3D11APIs() && s_DynamicD3D11CreateDevice != NULL )
 			hr = s_DynamicD3D11CreateDevice( pAdapter, ddt, (HMODULE)0, 
 #ifdef _DEBUG
-		D3D11_CREATE_DEVICE_DEBUG,
+		0,//D3D11_CREATE_DEVICE_DEBUG,
 #else
 		0,//D3D11_CREATE_DEVICE_SINGLETHREADED,
 #endif

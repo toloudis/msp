@@ -20,7 +20,7 @@
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
 #include "GraphicsDX11/g2d/g2dImageDX11.hpp"
 
-#include "png.h"
+#include "png/lpng162/png.h"
 
 
 //==============================================================================
@@ -28,9 +28,9 @@
 //==============================================================================
 //#pragma comment(lib,"libtiff.lib")
 //#pragma comment(lib,"libpng.lib")
-#pragma comment(lib,"zlib.lib")
+#pragma comment(lib,"zlibwapi.lib")
 #ifdef WIN64
-#pragma comment(lib,"jpeg.lib")
+//#pragma comment(lib,"jpeg.lib")
 #endif
 
 
@@ -48,7 +48,7 @@ void read_data_for_png(png_structp png_ptr, png_bytep data, unsigned int length)
 {
 	//	The png struct stores a user-defined pointer, which in our case
 	//	is just the address of our gfFileBin
-	voidp read_io_ptr = png_get_io_ptr(png_ptr);
+	png_voidp read_io_ptr = png_get_io_ptr(png_ptr);
 	gfFileBin* file_stream = reinterpret_cast<gfFileBin*>(read_io_ptr);
 	file_stream->Read(length, data);
 }

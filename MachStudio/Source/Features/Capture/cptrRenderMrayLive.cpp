@@ -49,10 +49,12 @@ mrayOptionsData GetMrayLiveOptions(cptrRenderMrayLiveData m_Data, int i_RenderPa
 {
 
 	bool allowReflections = false;
+#ifdef USE_MRAY_LIVE
 	if ( i_RenderPass == mrayLiveRenderPasses::e_Beauty || i_RenderPass == mrayLiveRenderPasses::e_Reflections )
 	{
 		allowReflections = true;
 	}
+#endif
 
 	mrayOptionsData options;
 	options.m_Verbosity = m_Data.m_MrayVerbosity.GetValue();
@@ -122,9 +124,11 @@ void SetupPasses( mrayGlobalData & io_GlobalData, int i_RenderPass)
 	io_GlobalData.m_bRenderingGIOnly = false;
 	io_GlobalData.m_bRenderingAOOnly = false;
 
+
 	switch(i_RenderPass)
 	{
-		case mrayLiveRenderPasses::e_Diffuse:
+#ifdef USE_MRAY_LIVE
+    case mrayLiveRenderPasses::e_Diffuse:
 			io_GlobalData.m_bRenderSpecular = false;
 			break;
 		case mrayLiveRenderPasses::e_DiffuseEnvironment:
@@ -176,6 +180,7 @@ void SetupPasses( mrayGlobalData & io_GlobalData, int i_RenderPass)
 		case mrayLiveRenderPasses::e_Beauty:
 			io_GlobalData.m_bRenderingBeautyOnly = true;
 			break;
+#endif // USE_MRAY_LIVE
 	};
 }
 
@@ -312,7 +317,9 @@ void cptrRenderMrayLive::Start(cptrRenderMrayLiveData i_Data)
 //------------------------------------------------------------------------
 void cptrRenderMrayLive::Stop()
 {
-	mrayLive::StopRender();
+#ifdef USE_MRAY_LIVE
+    mrayLive::StopRender();
+#endif
 }
 
 //------------------------------------------------------------------------
@@ -320,5 +327,7 @@ void cptrRenderMrayLive::Stop()
 //------------------------------------------------------------------------
 void cptrRenderMrayLive::CleanUp()
 {
-	mrayLive::CleanUp();
+#ifdef USE_MRAY_LIVE
+    mrayLive::CleanUp();
+#endif
 }

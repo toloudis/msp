@@ -128,7 +128,7 @@ g2dImageDX11::g2dImageDX11(int i_Width, int i_Height, const g2dPFD& i_PFD, g2dIm
 		{
 			throw g2dOutOfSystemMemoryX();
 		}
-		else if ( op_result == D3DERR_INVALIDCALL )
+		else //if ( op_result == D3DERR_INVALIDCALL )
 		{
 			throw g2dGeneralX();
 		}
@@ -309,6 +309,8 @@ void g2dImageDX11::CopyImage( const g2dImage& i_SrcImage,
 		loadInfo.Filter = D3DX11_FILTER_TRIANGLE; 
 		loadInfo.MipFilter = D3DX11_DEFAULT;
 
+    //HRESULT op_result = DirectXTex::CopyRectangle( _In_ const Image& srcImage, _In_ const Rect& srcRect, _In_ const Image& dstImage,
+    //                       _In_ DWORD filter, _In_ size_t xOffset, _In_ size_t yOffset );
 		HRESULT hr = ::D3DX11LoadTextureFromTexture(g2dDX11Global::g_pDeviceContext,
 			src_surface, &loadInfo, dest_surface);
 

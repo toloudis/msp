@@ -161,6 +161,9 @@ HRESULT UpdateSurface(	g2dD3D11TexturePtr i_pSource,
     loadInfo.Filter = D3DX11_FILTER_NONE;
     loadInfo.MipFilter = D3DX11_FILTER_NONE;
 
+    //HRESULT op_result = DirectXTex::CopyRectangle( _In_ const Image& srcImage, _In_ const Rect& srcRect, _In_ const Image& dstImage,
+    //                       _In_ DWORD filter, _In_ size_t xOffset, _In_ size_t yOffset );
+
 	// optimize, try CopyResource or CopyResourceSubregion??!?!?!!?
 	HRESULT op_result = D3DX11LoadTextureFromTexture(g2dDX11Global::g_pDeviceContext,
 		i_pSource, &loadInfo, i_pDest);

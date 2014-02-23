@@ -45,7 +45,7 @@ void twcHotKeyCtrl::OnKeyDown(wxKeyEvent& i_Event)
 	if (bHaveHotKey)
 	{		
 		wxString hot_key_value(hot_key_str.c_str(), wxConvUTF8);
-		wxString prev_key_value(this->GetValue(), wxConvUTF8);
+		wxString prev_key_value(this->GetValue().wc_str(), wxConvUTF8);
 		if (hot_key_value != this->GetValue())
 		{
 			cmaCommandMgr::ResetValidHotKey();

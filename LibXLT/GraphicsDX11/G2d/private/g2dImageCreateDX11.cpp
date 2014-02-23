@@ -18,7 +18,7 @@
 #include "Core/gf/gfFileBin.hpp"
 #include "Core/gf/gfFileTranslationMgr.hpp"
 
-#include "png.h"
+//#include "png/lpng162/png.h"
 
 namespace
 {

@@ -201,7 +201,7 @@ void twcFilePicker::notify_callback()
 void twcFilePicker::OnTextChange(wxCommandEvent& i_Event)
 {	
 	wxString lastvalue = m_pTextBox->last_value();
-	itString full_path(m_pTextBox->GetValue());
+	itString full_path(m_pTextBox->GetValue().wc_str());
 	fsFileUtil::UnicodeStringToLocator(full_path, m_Value);
 	if(full_path.GetLength() != 0 )
 	{
@@ -212,7 +212,7 @@ void twcFilePicker::OnTextChange(wxCommandEvent& i_Event)
 			std::string msg = "Cannot find file\n" + filename;
 			guiMessageBox::Show(msg.c_str(), "Error", guiMessageBox::e_OKOnly);
 			m_pTextBox->SetValue(lastvalue);
-			itString path(lastvalue);
+			itString path(lastvalue.wc_str());
 			fsFileUtil::UnicodeStringToLocator(path, m_Value);
 		}
 	}
@@ -237,7 +237,7 @@ void twcFilePicker::OnBrowseClick(wxCommandEvent& i_Event)
 
 	if (dialog.ShowModal() == wxID_OK)
 	{
-		itString full_path(dialog.GetPath());
+		itString full_path(dialog.GetPath().wc_str());
 		fsFileUtil::UnicodeStringToLocator(full_path, m_Value);
 
 		// maintain the current directory by category

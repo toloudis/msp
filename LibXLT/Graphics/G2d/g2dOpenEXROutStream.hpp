@@ -13,7 +13,7 @@
 #include "Core/Fs/fsLocator.hpp"
 #endif 
 
-#include "ImfIO.h"
+#include "Deploy/include/ImfIO.h"
 
 #include <fstream>
 #include <iostream>

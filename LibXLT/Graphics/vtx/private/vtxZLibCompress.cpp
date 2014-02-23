@@ -17,10 +17,10 @@
 
 #ifndef NO_ZLIB
 // Zip compression of delta buffers
-#include <zlib/zlib.h>
+#include <png/zlib-1.2.5/zlib.h>
 
 // Need the zlib library for this compression algorithm
-#pragma comment(lib,"zlib.lib")
+#pragma comment(lib,"zlibwapi.lib")
 #endif
 
 

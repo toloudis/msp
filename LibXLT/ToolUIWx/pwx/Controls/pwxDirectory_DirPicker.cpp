@@ -29,7 +29,7 @@ void pwxDirectory_DirPicker_Converter::SetValueIntoControl(wxDirPickerCtrl* i_pA
 //----------------------------------------------------------------------------
 fsLocator pwxDirectory_DirPicker_Converter::GetValueFromControl(wxDirPickerCtrl* i_pActualControl)
 {
-	itString fullpath(i_pActualControl->GetPath().c_str());
+	itString fullpath((const char*)(i_pActualControl->GetPath().c_str()));
 	fsLocator locator;
 	fsFileUtil::UnicodeStringToLocator(fullpath, locator);
 	return locator;

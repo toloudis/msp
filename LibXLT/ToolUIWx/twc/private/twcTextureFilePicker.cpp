@@ -313,7 +313,7 @@ void twcTextureFilePicker::OnTextChange(wxCommandEvent& i_Event)
 	wxString lastvalue = m_pTextBox->last_value();
 	if( m_CurrentMode == prtyTextureFileChooserUIInfo::GetType(prtyTextureFileChooserUIInfo::e_Texture) )
 	{
-		itString full_path(m_pTextBox->GetValue());
+		itString full_path(m_pTextBox->GetValue().wc_str());
 		fsFileUtil::UnicodeStringToLocator(full_path, m_Value);
 		if(full_path.GetLength() != 0 )
 		{
@@ -324,7 +324,7 @@ void twcTextureFilePicker::OnTextChange(wxCommandEvent& i_Event)
 				std::string msg = "Cannot find file\n" + filename;
 				guiMessageBox::Show(msg.c_str(), "Error", guiMessageBox::e_OKOnly);
 				m_pTextBox->SetValue(lastvalue);
-				itString path(lastvalue);
+				itString path(lastvalue.wc_str());
 				fsFileUtil::UnicodeStringToLocator(path, m_Value);
 			}
 		}
@@ -337,7 +337,7 @@ void twcTextureFilePicker::OnTextChange(wxCommandEvent& i_Event)
 void twcTextureFilePicker::OnChoiceSelected(wxCommandEvent& i_Event)
 {
 	m_CurrentSelection = m_pChoice->GetSelection();
-	itString choice_text(m_pChoice->GetStringSelection());
+	itString choice_text(m_pChoice->GetStringSelection().wc_str());
 	std::string selection = itStringUtil::GetStdString(choice_text);
 	if( m_CurrentMode == selection )
 		return;
@@ -418,7 +418,7 @@ void twcTextureFilePicker::OnInvokeClick(wxCommandEvent& i_Event)
 
 		if (dialog.ShowModal() == wxID_OK)
 		{
-			itString full_path(dialog.GetPath());
+			itString full_path(dialog.GetPath().wc_str());
 			fsFileUtil::UnicodeStringToLocator(full_path, m_Value);
 
 			// maintain the current directory by category

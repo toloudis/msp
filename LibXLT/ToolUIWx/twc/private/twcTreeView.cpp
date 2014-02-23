@@ -352,19 +352,19 @@ bool twcTreeView::get_item_checked(wxTreeItemId i_Node)
 {
 	// Using state image list now for checkboxes
 	//return (this->GetItemImage(i_Node) != e_Unchecked);
-	return (this->GetState(i_Node) != e_Unchecked);
+	return (this->GetItemState(i_Node) != e_Unchecked);
 }
 bool twcTreeView::is_mixed_checked(wxTreeItemId i_Node)
 {
 	// Using state image list now for checkboxes
 	//return (this->GetItemImage(i_Node) == e_MixChecked);
-	return (this->GetState(i_Node) == e_MixChecked);
+	return (this->GetItemState(i_Node) == e_MixChecked);
 }
 void twcTreeView::set_item_checked(wxTreeItemId i_Node, bool i_bChecked)
 {
 	// Using state image list now for checkboxes
 	//return (this->SetItemImage(i_Node, (i_bChecked) ? e_Checked : e_Unchecked));
-	return (this->SetState(i_Node, (i_bChecked) ? e_Checked : e_Unchecked));
+    return (this->SetItemState(i_Node, (i_bChecked) ? e_Checked : e_Unchecked));
 }
 
 //------------------------------------------------------------------------
@@ -384,8 +384,8 @@ void twcTreeView::update_parent_checked_state(wxTreeItemId i_Parent)
 		// See if this node has a custom image icon. If so, don't
 		// consider its checked state.
 		//if (this->GetItemImage(id) < e_NumCheckboxImageStates)
-		if ((this->GetState(id) != e_NoCheckbox) && 
-			(this->GetState(id) < e_NumCheckboxImageStates))
+		if ((this->GetItemState(id) != e_NoCheckbox) && 
+			(this->GetItemState(id) < e_NumCheckboxImageStates))
 		{
 			bHaveCheckableChildren = true;
 			if (is_mixed_checked(id)) 
@@ -412,11 +412,11 @@ void twcTreeView::update_parent_checked_state(wxTreeItemId i_Parent)
 		//else
 		//	this->SetItemImage(i_Parent, e_MixChecked);
 		if (bAllChecked)
-			this->SetState(i_Parent, e_Checked);
+			this->SetItemState(i_Parent, e_Checked);
 		else if (bAllUnchecked)
-			this->SetState(i_Parent, e_Unchecked);
+			this->SetItemState(i_Parent, e_Unchecked);
 		else
-			this->SetState(i_Parent, e_MixChecked);
+			this->SetItemState(i_Parent, e_MixChecked);
 	}
 }
 
@@ -491,7 +491,7 @@ void twcTreeView::find_or_create_tree_node(TreeItemIdSet& io_ItemsToDelete,
 	{
 		// Need to create the node 
 		node_item = this->AppendItem(i_Parent, text_str, image_index );
-		this->SetState( node_item, state_index );
+		this->SetItemState( node_item, state_index );
 
 		// Store reference to the twcTreeNode in the item data
 		this->SetItemData(node_item, new TreeNodeItemData(i_Node));
@@ -503,7 +503,7 @@ void twcTreeView::find_or_create_tree_node(TreeItemIdSet& io_ItemsToDelete,
 
 		// Update image in case it changed
 		this->SetItemImage( node_item, image_index );
-		this->SetState( node_item, state_index );
+		this->SetItemState( node_item, state_index );
 
 		// Assign new node to the item data
 		if (wxTreeItemData *pItemData = this->GetItemData(node_item))
@@ -544,7 +544,7 @@ void twcTreeView::create_tree_node(wxTreeItemId i_Parent,
 	image_index = i_Node->GetImageIndex();
 	wxTreeItemId node_item = this->AppendItem(i_Parent, 
 		i_Node->GetDisplayString(), image_index	);
-	this->SetState(node_item, state_index);
+	this->SetItemState(node_item, state_index);
 
 	// Store reference to the twcTreeNode in the item data
 	this->SetItemData(node_item, new TreeNodeItemData(i_Node));
@@ -1070,8 +1070,8 @@ void twcTreeView::treeCtrl_LeftMouseUp( wxMouseEvent& i_Event )
 //--------------------------------------------------------------------
 // code implementing the event type and the event class
 //--------------------------------------------------------------------
-DEFINE_EVENT_TYPE( wxEVT_CHECKED_TREE_VIEW )
-DEFINE_EVENT_TYPE( wxEVT_SELECTION_TREE_VIEW )
+DEFINE_LOCAL_EVENT_TYPE( wxEVT_CHECKED_TREE_VIEW )
+DEFINE_LOCAL_EVENT_TYPE( wxEVT_SELECTION_TREE_VIEW )
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------

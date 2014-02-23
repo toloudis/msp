@@ -8,6 +8,9 @@
 #ifndef __lyrsLayerObjectsPageBase__
 #define __lyrsLayerObjectsPageBase__
 
+#ifndef TWX_WIDGETS_HPP
+#include "ToolUIWx/twx/twxWidgets.hpp"
+#endif
 #include <wx/string.h>
 #include <wx/checklst.h>
 #include <wx/gdicmn.h>

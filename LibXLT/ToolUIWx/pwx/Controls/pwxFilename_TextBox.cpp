@@ -28,7 +28,7 @@ void pwxFileName_TextBox_Converter::SetValueIntoControl(twcTextBox* i_pActualCon
 //----------------------------------------------------------------------------
 itString pwxFileName_TextBox_Converter::GetValueFromControl(twcTextBox* i_pActualControl)
 {
-	itString sel_text(i_pActualControl->GetValue().c_str());
+	itString sel_text((const char*)(i_pActualControl->GetValue().c_str()));
 	return sel_text;
 }
 

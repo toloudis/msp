@@ -18,6 +18,8 @@
 #include "Tool/cam3d/cam3dMgr.hpp"
 #include "Tool/gpx/gpxRenderControl.hpp"
 
+#ifdef USE_MRAY_LIVE
+
 #include <windows.h>
 #include <string>
 #include <stdio.h>
@@ -126,3 +128,5 @@ void mrayLive::StopRender()
 {
 
 }
+
+#endif // USE_MRAY_LIVE

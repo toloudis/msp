@@ -38,7 +38,7 @@
 //#pragma comment(lib, "Iex.lib")
 //#pragma comment(lib, "IlmThread.lib")
 //#pragma comment(lib, "Imath.lib")
-//#pragma comment(lib, "zdll.lib")
+//#pragma comment(lib, "zlibwapi.lib")
 //
 //namespace 
 //{

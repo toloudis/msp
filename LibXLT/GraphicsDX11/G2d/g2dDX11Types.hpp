@@ -26,10 +26,12 @@
 //#ifdef ENV_DEBUG
 //	#define D3D_DEBUG_INFO
 //#endif
-
 #include <d3d11.h>
-#include <d3dx11.h>
+#include <dxgi.h>
 #include <D3Dcompiler.h>
+#include <d3dx11.h>
+
+//#include "DirectXTex.h"
 
 #define PIX_D3DPERF 0
 
@@ -94,10 +96,10 @@ typedef ID3D11PixelShader			g2dIDirect3DPixelShader10;
 
 #ifdef _DEBUG
 	#define	c_g2dD3D11LIBRARYX		"d3dx11d.lib"
-	#define	c_g2dD3D11LIBRARYEFFECT	"d3dx11Effectsd.lib"
+	#define	c_g2dD3D11LIBRARYEFFECT	"Effects11d.lib"
 #else
 	#define	c_g2dD3D11LIBRARYX		"d3dx11.lib"
-	#define	c_g2dD3D11LIBRARYEFFECT	"d3dx11Effects.lib"
+	#define	c_g2dD3D11LIBRARYEFFECT	"Effects11.lib"
 #endif
 #define c_g2dDX11LIBRARYERR			"dxerr.lib"
 #define c_g2dDXCOMPILER				"d3dcompiler.lib"
@@ -109,12 +111,11 @@ typedef ID3D11PixelShader			g2dIDirect3DPixelShader10;
 //d3dcompiler.lib dxerr.lib dxguid.lib dxgi.lib d3dx11d.lib d3d11.lib  winmm.lib comctl32.lib d3dx11.lib
 
 #define c_g2dD3D11_H			"d3d11.h"
-#define c_g2dD3DX11_H			"d3dx11.h"
 #define c_g2dDXERR_H			"dxerr.h"
 
 
 // 3rdParty for now
-#define c_g2dD3DX11Effect_H		"D3DX11Effects/d3dx11Effect.h"
+#define c_g2dD3DX11Effect_H		"Effects/inc/d3dx11Effect.h"
 
 #define D3D_RELEASE(ptr) {if (ptr)ptr->Release();ptr=NULL;}
 

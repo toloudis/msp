@@ -215,8 +215,8 @@ private:
 	SelectionChangeType m_SelectionType;
 };
 
-DECLARE_EVENT_TYPE( wxEVT_CHECKED_TREE_VIEW, -1 )
-DECLARE_EVENT_TYPE( wxEVT_SELECTION_TREE_VIEW, -1 )
+DECLARE_LOCAL_EVENT_TYPE( wxEVT_CHECKED_TREE_VIEW, -1 )
+DECLARE_LOCAL_EVENT_TYPE( wxEVT_SELECTION_TREE_VIEW, -1 )
 
 
 typedef void (wxEvtHandler::*twcTreeViewEventFunction)(twcTreeViewEvent&);

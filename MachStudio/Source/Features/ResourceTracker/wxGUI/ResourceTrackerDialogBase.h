@@ -8,6 +8,9 @@
 #ifndef __ResourceTrackerDialogBase__
 #define __ResourceTrackerDialogBase__
 
+#ifndef TWX_WIDGETS_HPP
+#include "ToolUIWx/twx/twxWidgets.hpp"
+#endif
 #include <wx/treectrl.h>
 #include <wx/gdicmn.h>
 #include <wx/font.h>

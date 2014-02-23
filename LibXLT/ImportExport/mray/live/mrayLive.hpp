@@ -10,6 +10,8 @@
 #endif
 #define MRAY_LIVE_HPP
 
+#ifdef USE_MRAY_LIVE
+
 class fsLocator;
 
 namespace mrayLiveRenderPasses
@@ -53,3 +55,5 @@ namespace mrayLive
 	void StopRender();
 
 };
+
+#endif // USE_MRAY_LIVE

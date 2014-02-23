@@ -936,7 +936,7 @@ bool effShaderBaseDX11::GetParamUI(const std::string& i_name, matShaderParamUI& 
 			o_paramUI.m_uiType = matShaderParamUI::e_Checkbox;
 			o_paramUI.m_dataType = matShaderParamUI::e_Bool;
 
-			BOOL bval;
+			bool bval;
 			hParam->AsScalar()->GetBool(&bval);
 			o_paramUI.m_fval[0] = bval?1.0f:0.0f;
 		}
@@ -2139,7 +2139,7 @@ effParamBool* effShaderBaseDX11::MapBoolParam(effShaderParams* o_pParams,
 	}
 	else
 	{
-		BOOL bval;
+		bool bval;
 		HRESULT hres = i_hParam->GetBool(&bval);
 		effParam = new effParamBool(i_Name, uiLabel, (bval)?true:false);
 		o_pParams->AddParam(effParam);

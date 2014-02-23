@@ -255,7 +255,7 @@ void mbrwMaterialSwatchDialog::buttonPaint_Click( wxCommandEvent& i_Event )
 			wxString file_str = m_listCtrl_Icons->GetItemText(item);
 
 			fsLocator mtl_loc = m_CurrentMaterialDir;
-			mtl_loc.Push(itString(file_str.c_str()));
+			mtl_loc.Push(itString((const char*)file_str.c_str()));
 			mbrwPaintUtil::AssignMaterialFile(mtl_loc);
 		}
     }
@@ -274,7 +274,7 @@ void mbrwMaterialSwatchDialog::buttonNewFolder_Click(wxCommandEvent& i_Event)
 	if(dialog.ShowModal() == wxID_OK)
 	{
 		fsLocator material_dir;
-		fsFileUtil::UnicodeStringToLocator(itString(dialog.GetPath()), material_dir);
+        fsFileUtil::UnicodeStringToLocator(itString(dialog.GetPath().wc_str()), material_dir);
 		fsFileUtil::CreateDirectory(material_dir);
 	}
 }
@@ -294,7 +294,7 @@ void mbrwMaterialSwatchDialog::buttonBrowse_Click( wxCommandEvent& i_Event )
 	if (dialog.ShowModal() == wxID_OK)
 	{
 		fsLocator material_dir;
-		fsFileUtil::UnicodeStringToLocator(itString(dialog.GetPath()), material_dir);
+        fsFileUtil::UnicodeStringToLocator(itString(dialog.GetPath().wc_str()), material_dir);
 		browse_directory( material_dir );
 
 		//bga - not sure about this, using the browse button to 
@@ -336,7 +336,7 @@ void mbrwMaterialSwatchDialog::listCtrl_beginDrag( wxListEvent& i_Event )
 			wxFileDataObject matFileObject;
 
 			fsLocator fullpath = m_CurrentMaterialDir;
-			fullpath.Push( itString(filename.c_str()) );
+			fullpath.Push( itString((const char*)filename.c_str()) );
 
 			itString itFilename;
 			fsFileUtil::LocatorToUnicodeString(fullpath, itFilename);
@@ -373,7 +373,7 @@ void mbrwMaterialSwatchDialog::listCtrl_doubleClick( wxListEvent& i_Event )
 		{
 			// Concatenate relative path to the root directory to get fullpath
 			fsLocator new_dir = m_CurrentMaterialDir;
-			new_dir.Push( itString(sub_dir_str.c_str()) );
+			new_dir.Push( itString((const char*)sub_dir_str.c_str()) );
 			browse_directory( new_dir );
 		}
 	}

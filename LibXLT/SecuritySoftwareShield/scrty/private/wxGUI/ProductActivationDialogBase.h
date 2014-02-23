@@ -8,6 +8,9 @@
 #ifndef __ProductActivationDialogBase__
 #define __ProductActivationDialogBase__
 
+#ifndef TWX_WIDGETS_HPP
+#include "ToolUIWx/twx/twxWidgets.hpp"
+#endif
 #include <wx/string.h>
 #include <wx/stattext.h>
 #include <wx/gdicmn.h>
