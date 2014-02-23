@@ -149,7 +149,7 @@ void SceneSetupDialog::update_project_index()
 	{
 		//	Read the Project File
 		//
-		ProjectSetupMgr::ReadProject( itString( m_listBox_Projects->GetStringSelection() ) );
+        ProjectSetupMgr::ReadProject( itString( m_listBox_Projects->GetStringSelection().wc_str() ) );
 		mark_project_data_dirty();
 	}
 	else
