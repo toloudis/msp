@@ -60,7 +60,15 @@ bool EnsureD3D11APIs( void )
 	if( s_hModD3D11 != NULL )
 	{
 		s_DynamicD3D11CreateDevice = ( LPD3D11CREATEDEVICE )GetProcAddress( s_hModD3D11, "D3D11CreateDevice" );
+        if (s_DynamicD3D11CreateDevice == NULL)
+        {
+            DBG_ERROR("Could not GetProcAddress of D3D11CreateDevice");
+        }
 	}
+    else 
+    {
+        DBG_ERROR("Could not load d3d11.dll");
+    }
 
 	if( !s_DynamicCreateDXGIFactory )
 	{
@@ -68,7 +76,15 @@ bool EnsureD3D11APIs( void )
 		if( s_hModDXGI )
 		{
 			s_DynamicCreateDXGIFactory = ( LPCREATEDXGIFACTORY )GetProcAddress( s_hModDXGI, "CreateDXGIFactory1" );
+            if (s_DynamicCreateDXGIFactory == NULL)
+            {
+                DBG_ERROR("Could not GetProcAddress of CreateDXGIFactory1");
+            }
 		}
+        else
+        {
+            DBG_ERROR("Could not load dxgi.dll");
+        }
 
 		return ( s_hModDXGI != NULL ) && ( s_hModD3D11 != NULL );
 	}
@@ -158,15 +174,24 @@ bool CheckHardwareCapability(g2dWindowDX11* i_AppWindow)
 	// doesn't support at least shader model 5 and the feature level 11.
 	D3D_FEATURE_LEVEL level = g2dDX11Global::g_pDevice->GetFeatureLevel();
 	if (level < D3D_FEATURE_LEVEL_11_0)
+    {
+        DBG_ERROR("DX11 device does not support feature level 11_0");
 		return false;
+    }
 	
 	DXGI_ADAPTER_DESC adapterDesc;
 	HRESULT hr = g2dDX11Global::g_pAdapter->GetDesc(&adapterDesc);
 	if (FAILED(hr))
+    {
+        DBG_ERROR("Could not GetDesc of DX11 adapter");
 		return false;
+    }
 	SIZE_T mem = adapterDesc.DedicatedVideoMemory;
 	if (mem < 512*1024*1024)
+    {
+        DBG_ERROR("Adapter DedicatedVideoMemory is reported as less than 512MB");
 		return false;
+    }
 
 	return true;
 }
@@ -220,6 +245,7 @@ g2dSystemDX11::g2dSystemDX11(int i_Adapter /*= 0*/)
 	bool ok = EnsureD3D11APIs();
 	if (!ok)
 	{
+        DBG_ERROR("Failed to discover necessary graphics initialization APIs");
 		throw g2dScreenInitX();
 	}
 
@@ -234,6 +260,7 @@ g2dSystemDX11::g2dSystemDX11(int i_Adapter /*= 0*/)
 
 	if (!SUCCEEDED(hr) || pFactory == NULL)
 	{
+        DBG_ERROR("Failed to create IDXGIFactory1");
 		throw g2dScreenInitX();
 	}
 	
@@ -251,6 +278,7 @@ g2dSystemDX11::g2dSystemDX11(int i_Adapter /*= 0*/)
 		if ( FAILED( hr) ) 
 		{
 			//throw g2dScreenInitX();
+            DBG_ERROR("EnumAdapters1 failed");
 			throw g2dHardwareCapabilityX();
 		}
 		ddt = D3D_DRIVER_TYPE_UNKNOWN;	
@@ -292,6 +320,7 @@ g2dSystemDX11::g2dSystemDX11(int i_Adapter /*= 0*/)
 		
 		if ( FAILED( hr ) ) 
 		{
+            DBG_ERROR("D3D11CreateDevice failed");
 			throw g2dScreenInitX();
 		}
 	}
@@ -309,14 +338,24 @@ g2dSystemDX11::g2dSystemDX11(int i_Adapter /*= 0*/)
 				pDXGIDev->GetAdapter( &pTempAdapter );
 				hr = ( pTempAdapter->QueryInterface( __uuidof( IDXGIAdapter1 ), (LPVOID*) &pAdapter ) );
 				if (FAILED(hr)) 
+                {
+                    DBG_ERROR("D3D adapter does not support IDXGIAdapter1");
 					throw g2dScreenInitX();
+                }
 				hr = ( pAdapter->GetParent( __uuidof( IDXGIFactory1 ), (LPVOID*) &pFactory ) );
 				if (FAILED(hr)) 
+                {
+                    DBG_ERROR("D3D adapter GetParent as IDXGIFactory1 failed");
 					throw g2dScreenInitX();
+                }
 				SAFE_RELEASE ( pTempAdapter );
 				g2dDX11Global::g_pDXGIFactory = pFactory;
 			}
 		}
+        else
+        {
+            DBG_ERROR("D3D device does not support IDXGIDevice1");
+        }
 		SAFE_RELEASE( pDXGIDev );
 		g2dDX11Global::g_pAdapter = pAdapter;
 	}
