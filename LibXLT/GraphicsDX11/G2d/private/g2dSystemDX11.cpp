@@ -305,6 +305,8 @@ g2dSystemDX11::g2dSystemDX11(int i_Adapter /*= 0*/)
 		D3D_FEATURE_LEVEL featureLevel;
 
 		if( EnsureD3D11APIs() && s_DynamicD3D11CreateDevice != NULL )
+        {
+            DBG_LOG("CreateDevice: feature level " << fLevel << " driver type " << ddt);
 			hr = s_DynamicD3D11CreateDevice( pAdapter, ddt, (HMODULE)0, 
 #ifdef _DEBUG
 		0,//D3D11_CREATE_DEVICE_DEBUG,
@@ -315,6 +317,7 @@ g2dSystemDX11::g2dSystemDX11(int i_Adapter /*= 0*/)
 			1,
 			D3D11_SDK_VERSION,
 			&pDevice, &featureLevel, &pDeviceContext );
+        }
 		else
 			hr = E_FAIL;
 		
