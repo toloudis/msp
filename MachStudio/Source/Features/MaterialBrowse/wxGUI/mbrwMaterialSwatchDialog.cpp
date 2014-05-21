@@ -501,10 +501,15 @@ void mbrwMaterialSwatchDialog::browse_directory(const fsLocator &i_Directory,
 	
 	// Load an icon for folders
 	wxString icon_dir = get_icon_directory();
-	wxBitmap noicon_bmp(icon_dir + wxT("\\matbrowse-noicon.PNG"), wxBITMAP_TYPE_ANY); 
-	int noicon_index = image_list->Add( noicon_bmp );
-	wxBitmap folder_bmp(icon_dir + wxT("\\matbrowse-folder.PNG"), wxBITMAP_TYPE_ANY); 
-	int folder_index = image_list->Add( folder_bmp );
+    wxBitmap noicon_bmp;
+    wxBitmap folder_bmp;
+    {
+        wxLogNull nullLog;
+    	noicon_bmp = wxBitmap(icon_dir + wxT("\\matbrowse-noicon.PNG"), wxBITMAP_TYPE_ANY); 
+	    folder_bmp = wxBitmap(icon_dir + wxT("\\matbrowse-folder.PNG"), wxBITMAP_TYPE_ANY); 
+    }
+    int noicon_index = image_list->Add( noicon_bmp );
+    int folder_index = image_list->Add( folder_bmp );
 
 	const int num_materials = material_list.m_FileList.size();
 	for (int i=0; i<num_materials; ++i)

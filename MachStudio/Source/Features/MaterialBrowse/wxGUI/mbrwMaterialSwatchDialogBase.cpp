@@ -14,7 +14,9 @@ mbrwMaterialSwatchDialogBase::mbrwMaterialSwatchDialogBase( wxWindow* parent,
 										const wxString& i_IconDirectory,
 										wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
 {
-	wxBoxSizer* bSizer1;
+    wxLogNull nullLog;
+
+    wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
 	
 	m_panel1 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );

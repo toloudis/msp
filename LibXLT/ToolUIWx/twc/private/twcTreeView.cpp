@@ -128,11 +128,14 @@ void twcTreeView::LoadImagesFromDirectory( const fsLocator& i_IconDirectory )
 
 	wxImageList *pCheckImages = new wxImageList(13, 13, false, e_NumCheckboxImageStates);
 	std::wstring image_dir( icon_dir.GetString() );
-	pCheckImages->Add(wxBitmap(image_dir + L"\\tree-unchecked.png", wxBITMAP_TYPE_PNG)); // need extra image to hold the zeroth slot
-	pCheckImages->Add(wxBitmap(image_dir + L"\\tree-unchecked.png", wxBITMAP_TYPE_PNG));
-	pCheckImages->Add(wxBitmap(image_dir + L"\\tree-checked.png", wxBITMAP_TYPE_PNG));
-	pCheckImages->Add(wxBitmap(image_dir + L"\\tree-mixchecked.png", wxBITMAP_TYPE_PNG));
-	this->AssignStateImageList(pCheckImages); // tree ctrl takes ownership
+    {
+        wxLogNull nullLog;
+	    pCheckImages->Add(wxBitmap(image_dir + L"\\tree-unchecked.png", wxBITMAP_TYPE_PNG)); // need extra image to hold the zeroth slot
+	    pCheckImages->Add(wxBitmap(image_dir + L"\\tree-unchecked.png", wxBITMAP_TYPE_PNG));
+	    pCheckImages->Add(wxBitmap(image_dir + L"\\tree-checked.png", wxBITMAP_TYPE_PNG));
+	    pCheckImages->Add(wxBitmap(image_dir + L"\\tree-mixchecked.png", wxBITMAP_TYPE_PNG));
+    }
+    this->AssignStateImageList(pCheckImages); // tree ctrl takes ownership
 	//this->AssignImageList(pCheckImages); // tree ctrl takes ownership
 }
 

@@ -356,9 +356,12 @@ rdrLayersDialog::rdrLayersDialog( wxWindow* parent, const std::string& i_Title,
 	fsFileUtil::LocatorToUnicodeString( guiMenuMgr::GetIconDirectory(), icon_dir );
 	std::wstring icondir = icon_dir.GetString();
 	wxImageList *pCheckImages = new wxImageList(13, 13, false, e_NumBoxStates);
-	pCheckImages->Add(wxBitmap(icondir + L"\\tree-unchecked.png", wxBITMAP_TYPE_PNG));
-	pCheckImages->Add(wxBitmap(icondir + L"\\tree-checked.png", wxBITMAP_TYPE_PNG));
-	pCheckImages->Add(wxBitmap(icondir + L"\\tree-mixchecked.png", wxBITMAP_TYPE_PNG));
+    {
+        wxLogNull nullLog;
+	    pCheckImages->Add(wxBitmap(icondir + L"\\tree-unchecked.png", wxBITMAP_TYPE_PNG));
+	    pCheckImages->Add(wxBitmap(icondir + L"\\tree-checked.png", wxBITMAP_TYPE_PNG));
+	    pCheckImages->Add(wxBitmap(icondir + L"\\tree-mixchecked.png", wxBITMAP_TYPE_PNG));
+    }
 	m_layerTree->AssignImageList(pCheckImages); 
 
 	// Add this panel to the AUI manager

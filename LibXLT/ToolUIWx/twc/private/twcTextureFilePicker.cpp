@@ -53,6 +53,9 @@ twcTextureFilePicker::twcTextureFilePicker(wxWindow* i_pParent)
 	itString icon_dir;
 	fsFileUtil::LocatorToUnicodeString( guiMenuMgr::GetIconDirectory(), icon_dir );
 	std::wstring icondir = icon_dir.GetString();
+
+    wxLogNull nullLog;
+
 	m_pInvokeButton = new wxBitmapButton(this, wxID_ANY, wxBitmap( icondir + L"\\texture-execute.png", wxBITMAP_TYPE_ANY), wxDefaultPosition, wxSize( 20,20 ), wxNO_BORDER);
 	m_pInvokeButton->SetBitmapSelected(wxBitmap( icondir + L"\\texture-execute_pressed.png", wxBITMAP_TYPE_ANY));
 	m_pInvokeButton->SetBitmapHover(wxBitmap( icondir + L"\\texture-execute_highlight.png", wxBITMAP_TYPE_ANY));

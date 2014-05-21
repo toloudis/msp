@@ -18,6 +18,8 @@ plbkPlaybackControlsDialogBase::plbkPlaybackControlsDialogBase( wxWindow* parent
 																long style ) 
 : wxPanel( parent, id, pos, size, style )
 {
+    wxLogNull nullLog;
+
 	wxBoxSizer* bSizer_panel;
 	bSizer_panel = new wxBoxSizer( wxVERTICAL );
 	

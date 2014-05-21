@@ -68,17 +68,23 @@ cmmSceneDialog::cmmSceneDialog( wxWindow* parent,
 	fsFileUtil::LocatorToUnicodeString( guiMenuMgr::GetIconDirectory(), icon_dir );
 	std::wstring icondir = icon_dir.GetString();
 	wxImageList *pIconImages = new wxImageList(13, 13, false, cmmPlacedImages::e_NumSystemImageIcons);
-	pIconImages->Add(wxBitmap(icondir + L"\\tree-parent.png", wxBITMAP_TYPE_PNG)); 
-	pIconImages->Add(wxBitmap(icondir + L"\\tree-geometry.png", wxBITMAP_TYPE_PNG));
-	pIconImages->Add(wxBitmap(icondir + L"\\tree-light.png", wxBITMAP_TYPE_PNG));
-	pIconImages->Add(wxBitmap(icondir + L"\\tree-camera.png", wxBITMAP_TYPE_PNG));
+    {
+        wxLogNull nullLog;
+	    pIconImages->Add(wxBitmap(icondir + L"\\tree-parent.png", wxBITMAP_TYPE_PNG)); 
+	    pIconImages->Add(wxBitmap(icondir + L"\\tree-geometry.png", wxBITMAP_TYPE_PNG));
+	    pIconImages->Add(wxBitmap(icondir + L"\\tree-light.png", wxBITMAP_TYPE_PNG));
+	    pIconImages->Add(wxBitmap(icondir + L"\\tree-camera.png", wxBITMAP_TYPE_PNG));
+    }
 	m_pGroupPane->AssignImageList(pIconImages); // tree ctrl takes ownership
 
 	// Icons for the lighting tree
 	pIconImages = new wxImageList(13, 13, false, 2);
-	pIconImages->Add(wxBitmap(icondir + L"\\tree-light.png", wxBITMAP_TYPE_PNG));
-	pIconImages->Add(wxBitmap(icondir + L"\\tree-set.png", wxBITMAP_TYPE_PNG));
-	m_pLightsPane->AssignImageList(pIconImages); // tree ctrl takes ownership
+    {
+        wxLogNull nullLog;
+	    pIconImages->Add(wxBitmap(icondir + L"\\tree-light.png", wxBITMAP_TYPE_PNG));
+	    pIconImages->Add(wxBitmap(icondir + L"\\tree-set.png", wxBITMAP_TYPE_PNG));
+    }
+    m_pLightsPane->AssignImageList(pIconImages); // tree ctrl takes ownership
 
 	// Select Category pane to display
 	m_notebook1->SetSelection(0);

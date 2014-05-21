@@ -1628,7 +1628,9 @@ chnlChannelControl* chnlTraxDialog::add_channel(tmlnChannel& i_Channel)
 	bSizer->Add( pLabel, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	
-	//wxBitmap *pBitmapUnlock = new wxBitmap(icon_dir + wxT("\\padlock_disabled.png"), wxBITMAP_TYPE_ANY);
+    wxLogNull nullLog;
+
+    //wxBitmap *pBitmapUnlock = new wxBitmap(icon_dir + wxT("\\padlock_disabled.png"), wxBITMAP_TYPE_ANY);
 	wxBitmap pBitmapUnlock(icon_dir + wxT("\\padlock_disabled.png"), wxBITMAP_TYPE_ANY);
 	wxBitmap pBitmapLock(icon_dir + wxT("\\padlock.png"), wxBITMAP_TYPE_ANY);
 	wxString name(wxT("Bitmap Button"));

@@ -279,9 +279,12 @@ rdrLayersObjectsPage::rdrLayersObjectsPage( wxWindow* parent )
 	fsFileUtil::LocatorToUnicodeString( guiMenuMgr::GetIconDirectory(), icon_dir );
 	wxImageList *pCheckImages = new wxImageList(13, 13, false, e_NumPlacedImageStates);
 	std::wstring image_dir( icon_dir.GetString() );
-	pCheckImages->Add(wxBitmap(image_dir + L"\\tree-unchecked.png", wxBITMAP_TYPE_PNG));
-	pCheckImages->Add(wxBitmap(image_dir + L"\\tree-checked.png", wxBITMAP_TYPE_PNG));
-	pCheckImages->Add(wxBitmap(image_dir + L"\\tree-mixchecked.png", wxBITMAP_TYPE_PNG));
+	{
+        wxLogNull nullLog;
+        pCheckImages->Add(wxBitmap(image_dir + L"\\tree-unchecked.png", wxBITMAP_TYPE_PNG));
+	    pCheckImages->Add(wxBitmap(image_dir + L"\\tree-checked.png", wxBITMAP_TYPE_PNG));
+	    pCheckImages->Add(wxBitmap(image_dir + L"\\tree-mixchecked.png", wxBITMAP_TYPE_PNG));
+    }
 	m_treeCtrl_Objects->AssignImageList(pCheckImages); // tree ctrl takes ownership
 }
 

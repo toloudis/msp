@@ -109,6 +109,7 @@ cmmPlacedPane::cmmPlacedPane( wxWindow* parent, ViewType i_Type )
 	wxImageList *pCheckImages = new wxImageList(13, 13, false, cmmPlacedImages::e_NumPlacedImageStates);
 	if (i_Type == e_LightsView)
 	{
+        wxLogNull nullLog;
 		pCheckImages->Add(wxBitmap(icondir + L"\\tree-disabled.png", wxBITMAP_TYPE_PNG)); // duplicate for the "no checkbox" state
 		pCheckImages->Add(wxBitmap(icondir + L"\\tree-disabled.png", wxBITMAP_TYPE_PNG));
 		pCheckImages->Add(wxBitmap(icondir + L"\\tree-enabled.png", wxBITMAP_TYPE_PNG));
@@ -116,15 +117,21 @@ cmmPlacedPane::cmmPlacedPane( wxWindow* parent, ViewType i_Type )
 	}
 	else
 	{
+        wxLogNull nullLog;
 		pCheckImages->Add(wxBitmap(icondir + L"\\tree-unchecked.png", wxBITMAP_TYPE_PNG)); // duplicate for the "no checkbox" state
 		pCheckImages->Add(wxBitmap(icondir + L"\\tree-unchecked.png", wxBITMAP_TYPE_PNG));
 		pCheckImages->Add(wxBitmap(icondir + L"\\tree-checked.png", wxBITMAP_TYPE_PNG));
 		pCheckImages->Add(wxBitmap(icondir + L"\\tree-mixchecked.png", wxBITMAP_TYPE_PNG));
 	}
-	pCheckImages->Add(wxBitmap(icondir + L"\\tree-controlpart.png", wxBITMAP_TYPE_PNG));
-	//pCheckImages->Add(wxBitmap(icondir + L"\\tree-expressionpart.png", wxBITMAP_TYPE_PNG));
-	pCheckImages->Add(wxBitmap(icondir + L"\\tree-materialpart.png", wxBITMAP_TYPE_PNG));
-	pCheckImages->Add(wxBitmap(icondir + L"\\tree-surfacepart.png", wxBITMAP_TYPE_PNG));
+
+    {
+        wxLogNull nullLog;
+    	pCheckImages->Add(wxBitmap(icondir + L"\\tree-controlpart.png", wxBITMAP_TYPE_PNG));
+	    //pCheckImages->Add(wxBitmap(icondir + L"\\tree-expressionpart.png", wxBITMAP_TYPE_PNG));
+	    pCheckImages->Add(wxBitmap(icondir + L"\\tree-materialpart.png", wxBITMAP_TYPE_PNG));
+	    pCheckImages->Add(wxBitmap(icondir + L"\\tree-surfacepart.png", wxBITMAP_TYPE_PNG));
+    }
+
 	m_treeCtrl_Placed->AssignStateImageList(pCheckImages); // tree ctrl takes ownership
 
 	

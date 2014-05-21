@@ -27,7 +27,9 @@ pwxKeyPropertyButton::pwxKeyPropertyButton(wxWindow* i_pParent,
 					wxDefaultPosition, wxDefaultSize, wxNO_BORDER ),
 	m_PropertyName(i_PropertyName),
 	m_KeyPropertyFunction(i_KeyPropertyFunction)
-{		
+{
+    wxLogNull nullLog;
+
 	itString icon_filename;
 	fsLocator icon_loc(guiMenuMgr::GetIconDirectory());
 	fsLocator default_loc, selected_loc, hover_loc;

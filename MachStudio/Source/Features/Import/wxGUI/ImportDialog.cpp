@@ -94,10 +94,13 @@ ImportDialog::ImportDialog( wxWindow* parent, ImportData& i_Data )
 	fsFileUtil::LocatorToUnicodeString( guiMenuMgr::GetIconDirectory(), icon_dir );
 	std::wstring icondir = icon_dir.GetString();
 	wxImageList *pCheckImages = new wxImageList(13, 13, false, e_NumImportImageStates);
-	pCheckImages->Add(wxBitmap(icondir + L"\\tree-unchecked.png", wxBITMAP_TYPE_PNG));
-	pCheckImages->Add(wxBitmap(icondir + L"\\tree-checked.png", wxBITMAP_TYPE_PNG));
-	pCheckImages->Add(wxBitmap(icondir + L"\\tree-mixchecked.png", wxBITMAP_TYPE_PNG));
-	m_treeCtrl_Import->AssignImageList(pCheckImages); // tree ctrl takes ownership
+    {
+        wxLogNull nullLog;
+	    pCheckImages->Add(wxBitmap(icondir + L"\\tree-unchecked.png", wxBITMAP_TYPE_PNG));
+	    pCheckImages->Add(wxBitmap(icondir + L"\\tree-checked.png", wxBITMAP_TYPE_PNG));
+	    pCheckImages->Add(wxBitmap(icondir + L"\\tree-mixchecked.png", wxBITMAP_TYPE_PNG));
+    }
+    m_treeCtrl_Import->AssignImageList(pCheckImages); // tree ctrl takes ownership
 
 	//
 	m_checkBox_AllowDupes->Enable(false);

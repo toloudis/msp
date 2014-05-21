@@ -19,6 +19,8 @@ cmmPlacedPaneBase::cmmPlacedPaneBase( wxWindow* parent,
 										wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) 
 : wxPanel( parent, id, pos, size, style )
 {
+    wxLogNull nullLog;
+
 	wxBoxSizer* sizer_Placed;
 	sizer_Placed = new wxBoxSizer( wxVERTICAL );
 	
