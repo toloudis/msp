@@ -323,7 +323,7 @@ g2dSystemDX11::g2dSystemDX11(int i_Adapter /*= 0*/)
 		
 		if ( FAILED( hr ) ) 
 		{
-            DBG_ERROR("D3D11CreateDevice failed");
+            DBG_ERROR("D3D11CreateDevice failed " << std::hex << hr);
 			throw g2dScreenInitX();
 		}
 	}

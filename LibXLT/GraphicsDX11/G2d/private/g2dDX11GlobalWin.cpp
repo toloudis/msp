@@ -639,7 +639,7 @@ void PrintDXError( HRESULT hErr )
 			dderr << L"E_OUTOFMEMORY";
 		break;
 		default:
-			dderr << L"[" << ((LPCTSTR)lpMsgBuf) << L"] (" << std::hex << hErr << L")";
+			dderr << L"[" << (lpMsgBuf ? ((LPCTSTR)lpMsgBuf) : L"") << L"] (" << std::hex << hErr << L")";
 		break;
 	}
 
