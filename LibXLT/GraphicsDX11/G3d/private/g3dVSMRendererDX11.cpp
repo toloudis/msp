@@ -349,7 +349,7 @@ int g3dVSMRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_C
 
 	//matTextureMgr::SaveTextureToFile(currentVSMSrc, fsLocator(itString("C:\\Projects\\SATDepth.dds")));
 
-	int VSMDepth = (int)((log2((double)w)));
+	int VSMDepth = (int)(::log2((double)(w)));
 	for (int i = 1; i <= VSMDepth; i++)
 	{
 		currentVSMTarget->MakeCurrent();
@@ -368,7 +368,7 @@ int g3dVSMRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_C
 		SwapVSMTarget(currentVSMTarget, currentVSMSrc);
 	}
 	
-	VSMDepth = (int)(log2((double)h));
+	VSMDepth = (int)(::log2((double)(h)));
 	for (int i = 1; i <= VSMDepth; i++)
 	{
 		currentVSMTarget->MakeCurrent();

@@ -12,6 +12,7 @@
 #include "Core/ma/maFunctions.hpp"
 #include "Core/ma/maVector3d.hpp"
 
+#include <algorithm>
 
 //------------------------------------------------------------------------
 // equivalent to RiBoxFilter (renderman)

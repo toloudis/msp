@@ -156,7 +156,7 @@ public:
 	//------------------------------------------------------------------------
 	//	Returns true if this object has allocated a depth buffer.
 	//------------------------------------------------------------------------
-	virtual bool GetHasDepthBuffer() const {return m_DepthStencil;}
+	virtual bool GetHasDepthBuffer() const {return m_DepthStencil != NULL;}
 
 	//------------------------------------------------------------------------
 	//	GetDepthStencilBuffer accesses the depth/stencil if the target has one.

@@ -415,7 +415,7 @@ void matReflectiveShadowMap::MakeDepthCurrent()
 //------------------------------------------------------------------------
 bool matReflectiveShadowMap::GetHasDepthBuffer() const 
 {
-	return m_DepthStencil;
+	return m_DepthStencil != NULL;
 }
 
 

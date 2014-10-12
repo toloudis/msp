@@ -10,4 +10,4 @@ png/lpng162 (http://sourceforge.net/projects/libpng/files/libpng16/older-release
 png/zlib-1.2.5 (http://sourceforge.net/projects/libpng/files/zlib/1.2.5/)
 Python (need include files here, libs in libs)
 Tiff (http://download.osgeo.org/libtiff/  v4.0.3)
-WxWidgets (http://sourceforge.net/projects/wxwindows/files/3.0.0/binaries/)
+WxWidgets (http://sourceforge.net/projects/wxwindows/files/3.0.2/binaries/)

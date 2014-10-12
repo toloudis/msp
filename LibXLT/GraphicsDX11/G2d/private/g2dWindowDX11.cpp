@@ -391,7 +391,7 @@ void g2dWindowDX11::mark_frame()
 //------------------------------------------------------------------------
 bool g2dWindowDX11::GetHasDepthBuffer() const
 {
-	return m_DepthStencil;
+	return m_DepthStencil != NULL;
 }
 
 shared_ptr<g2dDepthStencilBuffer> g2dWindowDX11::GetDepthStencilBuffer() const

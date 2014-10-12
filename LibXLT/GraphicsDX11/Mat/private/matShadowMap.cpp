@@ -277,7 +277,7 @@ void matShadowMap::MakeDepthCurrent()
 //------------------------------------------------------------------------
 bool matShadowMap::GetHasDepthBuffer() const 
 {
-	return m_DepthStencil;
+	return m_DepthStencil != NULL;
 }
 
 //--------------------------------------------------------------------

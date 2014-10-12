@@ -293,6 +293,6 @@ float g2dRenderTargetDX11::GetSize()
 //------------------------------------------------------------------------
 bool g2dRenderTargetDX11::GetHasDepthBuffer() const
 {
-	return m_DepthStencil;
+	return m_DepthStencil != NULL;
 }
 
