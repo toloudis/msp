@@ -22,10 +22,36 @@
 #include <wx/richtext/richtextctrl.h>
 #endif
 
-namespace 
+
+namespace
 {
 #ifdef USE_WXWIDGETS
-	wxSplashScreen *l_Splash = NULL;
+	class MySplashScreen;
+	MySplashScreen *l_Splash = NULL;
+
+	class MySplashScreen : public wxSplashScreen
+	{
+	public:
+		MySplashScreen(const wxBitmap& bitmap, long splashStyle, int milliseconds,
+			wxWindow* parent, wxWindowID id,
+			const wxPoint& pos = wxDefaultPosition,
+			const wxSize& size = wxDefaultSize,
+			long style = wxSIMPLE_BORDER | wxFRAME_NO_TASKBAR | wxSTAY_ON_TOP) 
+			: wxSplashScreen(bitmap, splashStyle, milliseconds, parent, id, pos, size, style)
+		{
+
+		}
+		virtual ~MySplashScreen() {
+			l_Splash = NULL;
+		}
+
+
+		virtual void OnCloseWindow(wxCloseEvent& event)
+		{
+			wxSplashScreen::OnCloseWindow(event);
+			l_Splash = NULL;
+		}
+	};
 #endif
 bool m_bisSplashOn = true;
 }
@@ -64,14 +90,14 @@ void  wuiSplashScreen::StartUp(const fsLocator &i_SplashImage,
 		
 			if (m_bSplashTimeout)
 			{
-				l_Splash = new wxSplashScreen(bmp,
+				l_Splash = new MySplashScreen(bmp,
 				wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
 				5000, twxSystem::g_pMainForm, -1, wxDefaultPosition, wxDefaultSize,
 				wxNO_BORDER|wxFRAME_NO_TASKBAR|wxFRAME_SHAPED|wxFRAME_FLOAT_ON_PARENT );
 			}
 			else
 			{
-				l_Splash = new wxSplashScreen(bmp,
+				l_Splash = new MySplashScreen(bmp,
 				wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_NO_TIMEOUT,
 				0, twxSystem::g_pMainForm, -1, wxDefaultPosition, wxDefaultSize,
 				wxNO_BORDER|wxFRAME_NO_TASKBAR|wxFRAME_SHAPED|wxFRAME_FLOAT_ON_PARENT );
