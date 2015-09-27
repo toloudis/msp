@@ -27,22 +27,26 @@ namespace
 	const wxColour determineColor(std::string& i_pString, bool &o_bErrorMessage)
 	{
 		o_bErrorMessage = false;
-		wxColour textColor;
+//		wxColour textColor;
 		if(i_pString.find("*WARNING*",0) != std::string::npos)
 		{
 			//return warning color
-			textColor = wxColour(130, 0, 0);
-			return textColor;
+			return wxColor(130, 0, 0);
+//			textColor.Set(130, 0, 0);
+//			return textColor;
 		}
 		if(i_pString.find("*ERROR*",0) != std::string::npos)
 		{
 			//return error color
 			o_bErrorMessage = true;
-			textColor = wxColour(255, 0, 0);
-			return textColor;
+			return wxColor(255, 0, 0);
+//			textColor.Set(255, 0, 0);
+//			return textColor;
 		}
-		textColor = wxColour(0, 0, 0);
-		return textColor;
+		return wxColor(0, 0, 0);
+
+//		textColor.Set(0, 0, 0);
+//		return textColor;
 	}
 }
 

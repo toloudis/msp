@@ -77,11 +77,9 @@ void  wuiSplashScreen::StartUp(const fsLocator &i_SplashImage,
 		fsFileUtil::LocatorToUnicodeString(i_SplashImage, img_location);
 		
 		//load the splash image and convert to bitmap type for splashscreen constructor
-        wxImage image;
-        {
-            wxLogNull nullLog;
-            image = wxImage(img_location.GetString(), wxBITMAP_TYPE_PNG);
-        }
+		//wxLogNull nullLog;
+		wxImage image(img_location.GetString(), wxBITMAP_TYPE_PNG);
+
 		wxBitmap bmp(image);
 
 		if( bmp.Ok())

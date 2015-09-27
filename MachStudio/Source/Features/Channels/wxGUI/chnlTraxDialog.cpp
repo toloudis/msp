@@ -1610,7 +1610,15 @@ chnlChannelControl* chnlTraxDialog::add_channel(tmlnChannel& i_Channel)
 	// Compute an alternating color for the channels
 	//bool channel_alt = (m_bSizer_names->GetItems().size() % 2 == 1);
 	bool channel_alt = (m_Channels.size() % 2 == 1);
-	wxColor bg_color = (channel_alt) ? wxColor(250,245,230) : wxColor(255,255,255);
+	wxColor bg_color;
+	if (channel_alt)
+	{
+		bg_color.Set(250, 245, 230);
+	}
+	else
+	{
+		bg_color.Set(255, 255, 255);
+	}
 
 
 	// Paenl holds spacer, channel name label, check box for locked

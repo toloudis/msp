@@ -158,11 +158,9 @@ void twxToolbarMgr::AddToolBarButton( int i_Id,
 
 		itString icon_filename;
 		fsFileUtil::LocatorToUnicodeString(icon_loc, icon_filename);
-        wxImage icon_image;
-        {
-            wxLogNull nullLog;
-		    icon_image = wxImage( icon_filename.GetString(), wxBITMAP_TYPE_PNG );
-        }
+        
+		wxImage icon_image( icon_filename.GetString(), wxBITMAP_TYPE_PNG );
+
 		icon_image.Rescale(24,24);
 		wxBitmap icon_bitmap( icon_image );
 
