@@ -233,7 +233,7 @@ MStatus WriteParticles::doScan()
 
 	// Open file
 	fsLocator locator;
-	if (!MayaUtil::CreateFile(path, (bDoGeom) ? ".ptx" : ".pta", locator))
+	if (!MayaUtil::MUCreateFile(path, (bDoGeom) ? ".ptx" : ".pta", locator))
 	{
 		MGlobal::displayWarning("file is READ-ONLY cannot save");
 		return MS::kFailure;

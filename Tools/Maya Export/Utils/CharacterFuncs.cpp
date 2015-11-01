@@ -76,7 +76,7 @@ namespace
 	//========================================================================
 	// Try to find out about deltas through plugs
 	//========================================================================
-	void GetMorphDeltas(MFnBlendShapeDeformer blendShape, 
+	void GetMorphDeltas(MFnBlendShapeDeformer& blendShape, 
 							int weight_index, 
 							MPointArray& o_SparseDeltas,
 							MIntArray& o_SparseIndices)
@@ -166,7 +166,7 @@ namespace
 
 	//========================================================================
 	//========================================================================
-	bool GetTargetsFromBlendShape(MFnBlendShapeDeformer blendShape,
+	bool GetTargetsFromBlendShape(MFnBlendShapeDeformer& blendShape,
 		MObjectArray &targets,
 		MStringArray &aliasedNames)
 	{
@@ -304,7 +304,7 @@ namespace
 
 	//========================================================================
 	//========================================================================
-	bool GetInputNodes(MFnGeometryFilter geomFilter,
+	bool GetInputNodes(MFnGeometryFilter& geomFilter,
 							MObjectArray &inputs)
 	{
 		MStatus status;
@@ -689,7 +689,7 @@ namespace
 	// See if the infos list already has a target with the given name
 	//========================================================================
 	bool have_morph_with_name(MString &aliasName, 
-		const std::vector< shared_ptr<CharacterFuncs::MorphTargetInfo> > &i_Infos)
+		const std::vector< boost::shared_ptr<CharacterFuncs::MorphTargetInfo> > &i_Infos)
 	{
 		const int num_infos = i_Infos.size();
 		for (int i=0; i<num_infos; ++i)
@@ -704,7 +704,7 @@ namespace
 	// Try to find out morph target info deltas through plugs
 	//========================================================================
 	bool GetMorphDeltaInfos(MFnBlendShapeDeformer &blendShape, 
-		std::vector< shared_ptr<CharacterFuncs::MorphTargetInfo> > &o_Infos,
+		std::vector< boost::shared_ptr<CharacterFuncs::MorphTargetInfo> > &o_Infos,
 		MString &o_Message)
 	{		
 		MStatus status;
@@ -753,7 +753,7 @@ namespace
 			}
 
 			// Try to find out about deltas through plugs
-			shared_ptr<CharacterFuncs::MorphTargetInfo> target_info(new CharacterFuncs::MorphTargetInfo);
+			boost::shared_ptr<CharacterFuncs::MorphTargetInfo> target_info(new CharacterFuncs::MorphTargetInfo);
 			GetMorphDeltas(blendShape, weight_index, 
 							target_info->m_PositionVecs, target_info->m_SparseIndices);
 			if (target_info->m_PositionVecs.length() > 0)
@@ -791,7 +791,7 @@ namespace
 
 	//========================================================================
 	//========================================================================
-	bool WriteMorphDeltasFromBlendShape(MFnBlendShapeDeformer blendShape, 
+	bool WriteMorphDeltasFromBlendShape(MFnBlendShapeDeformer& blendShape, 
 										chWriter &o_Writer)
 	{
 		MStatus status;
@@ -1081,7 +1081,7 @@ bool CharacterFuncs::IsDeformingGeometry(MFnMesh &mesh)
 // Get information about the blend shapes for this mesh.
 //========================================================================
 void CharacterFuncs::GetMorphTargets(MFnMesh &mesh, 
-									 std::vector< shared_ptr<MorphTargetInfo> >& o_MorphTargets,
+									 std::vector< boost::shared_ptr<MorphTargetInfo> >& o_MorphTargets,
 									 MString &o_Message)
 {
 	MStatus status;
@@ -1117,7 +1117,7 @@ void CharacterFuncs::GetMorphTargets(MFnMesh &mesh,
 					{
 						if (bWriteInputDetails)	
 							cout << "Morph target " << t << " name=" << morph.name() << " alias=" << aliases[t] << endl;
-						shared_ptr<MorphTargetInfo> target_info(new MorphTargetInfo);
+						boost::shared_ptr<MorphTargetInfo> target_info(new MorphTargetInfo);
 						target_info->m_BlendShapeName = morph.name();
 						target_info->m_AliasName = aliases[t];
 						if (GetMorphTargetInfo(morph, *target_info))

@@ -93,7 +93,7 @@ namespace JointFuncs
 	//========================================================================
 	//	FindSkinCluster - get skin cluster for given ik-joint.
 	//========================================================================
-	MFnSkinCluster FindSkinCluster(MFnIkJoint &joint, MStatus &status);
+	MFnSkinCluster* FindSkinCluster(MFnIkJoint &joint, MStatus &status);
 
 	//========================================================================
 	//	WriteJointBase - writes base pose of skeleton without influences

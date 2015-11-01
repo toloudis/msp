@@ -906,14 +906,15 @@ void JointFuncs::ParseSkinClusters(MFnMesh &mesh, ClusterTable& o_ClusterTable)
 bool JointFuncs::HasSkinCluster(MFnIkJoint &joint)
 {
 	MStatus status;
-	MFnSkinCluster cluster = JointFuncs::FindSkinCluster(joint, status);
+	MFnSkinCluster* cluster = JointFuncs::FindSkinCluster(joint, status);
+	delete cluster;
 	return (status == MS::kSuccess);
 }
 
 //========================================================================
 //	FindSkinCluster - get skin cluster for given ik-joint.
 //========================================================================
-MFnSkinCluster JointFuncs::FindSkinCluster(MFnIkJoint &joint, MStatus &status)
+MFnSkinCluster* JointFuncs::FindSkinCluster(MFnIkJoint &joint, MStatus &status)
 {
 	MPlug worldMatrixPlug = joint.findPlug("worldMatrix", &status);
 
@@ -932,10 +933,10 @@ MFnSkinCluster JointFuncs::FindSkinCluster(MFnIkJoint &joint, MStatus &status)
 				if (bWriteJointDetails) 
 					cout << "num connections to worldMatrix = " << connections.length() << endl;
 				for(int c = 0; c < connections.length(); c++) {
-					MFnSkinCluster skinCluster(connections[c].node(), &status);
+					MFnSkinCluster* skinCluster = new MFnSkinCluster(connections[c].node(), &status);
 					if(status == MS::kSuccess) {
 						if (bWriteJointDetails) 
-							cout << "Found cluster " << skinCluster.name() << endl;
+							cout << "Found cluster " << skinCluster->name() << endl;
 						status = MS::kSuccess;
 						return skinCluster;
 					}
@@ -956,7 +957,7 @@ MFnSkinCluster JointFuncs::FindSkinCluster(MFnIkJoint &joint, MStatus &status)
 
 	}
 	
-	MFnSkinCluster dummy;
+	MFnSkinCluster* dummy = new MFnSkinCluster();
 	status = MS::kFailure;
 	return dummy;
 }

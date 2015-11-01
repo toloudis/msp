@@ -229,7 +229,7 @@ MStatus ForceVerts::doScan()
 
 	// Open file
 	fsLocator locator;
-	if (!MayaUtil::CreateFile(path, (bDoGeom) ? ".vtx" : ".vta", locator))
+	if (!MayaUtil::MUCreateFile(path, (bDoGeom) ? ".vtx" : ".vta", locator))
 	{
 		MGlobal::displayWarning("file is READ-ONLY cannot save");
 		return MS::kFailure;

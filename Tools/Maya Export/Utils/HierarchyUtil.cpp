@@ -83,13 +83,14 @@ namespace HierarchyUtil
 			// for visibility based on animation channel
 			if (!MayaFlagUtil::EngineFlagExists(transform, "sgpuVisibleAnim"))
 			{
-				MFnAnimCurve visCurve = AnimFuncs::GetAnimCurve("visibility", transform, status);
+				MFnAnimCurve* visCurve = AnimFuncs::GetAnimCurve("visibility", transform, status);
 				if (status == MS::kSuccess)
 				{
 					bWriteVisible = true;
 					if (bWriteDetails)
 						cout << "Found animation channel on visibility, transform = " << transform.name() << endl;
 				}
+				delete visCurve;
 			}
 			return bWriteVisible;
 		}

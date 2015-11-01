@@ -31,6 +31,8 @@
 
 #include <string.h>
 
+#undef CreateFile
+#undef DeleteFile
 #include "Core/fs/fsFileUtil.hpp"
 
 namespace
@@ -146,7 +148,7 @@ const bool dagnode_visible_inclusive(MObject &obj)
 {
 	bool visible = true;
 	while(1) {
-		MFnDagNode node = MFnDagNode(obj);
+		MFnDagNode node(obj);
 		if(!MayaUtil::DagNodeVisible(node)) {
 			visible = false;
 			break;
@@ -823,7 +825,7 @@ void MayaUtil::ConvertSlashes(MString& io_Path)
 //	Create file with given path. Confirms extention. Fills o_Locator
 //	with locator for this file. Returns true if successful.
 //------------------------------------------------------------------------
-bool MayaUtil::CreateFile(const MString &path, 
+bool MayaUtil::MUCreateFile(const MString &path, 
 						  const char *pExtension,
 						  fsLocator &o_Locator)
 {

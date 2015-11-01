@@ -657,11 +657,14 @@ bool VertexFuncs::MeshHashVertexAnimation( MFnMesh& mesh )
 			if (elem.numChildren() == 3)
 			{
 				// The three children are X,Y,Z positions
-				MFnAnimCurve animx = AnimFuncs::GetAnimCurve(pntsPlug.child(0), status);
+				MFnAnimCurve* animx = AnimFuncs::GetAnimCurve(pntsPlug.child(0), status);
+				delete animx;
 				if (status == MS::kSuccess) return true;
-				MFnAnimCurve animy = AnimFuncs::GetAnimCurve(pntsPlug.child(1), status);
+				MFnAnimCurve* animy = AnimFuncs::GetAnimCurve(pntsPlug.child(1), status);
+				delete animy;
 				if (status == MS::kSuccess) return true;
-				MFnAnimCurve animz = AnimFuncs::GetAnimCurve(pntsPlug.child(2), status);
+				MFnAnimCurve* animz = AnimFuncs::GetAnimCurve(pntsPlug.child(2), status);
+				delete animz;
 				if (status == MS::kSuccess) return true;
 			}
 		}
@@ -701,16 +704,19 @@ void VertexFuncs::WriteMeshVertexAnimation(MDagPath& dagPath, chWriter &o_Writer
 				if (elem.numChildren() == 3)
 				{
 					// The three children are X,Y,Z positions
-					MFnAnimCurve animx = AnimFuncs::GetAnimCurve(pntsPlug.child(0), status);
-					MFnAnimCurve animy = AnimFuncs::GetAnimCurve(pntsPlug.child(1), status);
-					MFnAnimCurve animz = AnimFuncs::GetAnimCurve(pntsPlug.child(2), status);
+					MFnAnimCurve* animx = AnimFuncs::GetAnimCurve(pntsPlug.child(0), status);
+					MFnAnimCurve* animy = AnimFuncs::GetAnimCurve(pntsPlug.child(1), status);
+					MFnAnimCurve* animz = AnimFuncs::GetAnimCurve(pntsPlug.child(2), status);
 					if (status == MS::kSuccess)
 					{
 						//cout << "Got anim curves." << endl;
 						std::list<float> keys;
-						AnimFuncs::GatherKeys(keys, animx, animy, animz, i_MinTime, i_MaxTime);
+						AnimFuncs::GatherKeys(keys, *animx, *animy, *animz, i_MinTime, i_MaxTime);
 						WriteMeshVertexAnimation(dagPath, mesh.name(), o_Writer, keys, (float) i_MinTime);
 					}
+					delete animx;
+					delete animy;
+					delete animz;
 				}
 			}
 		}

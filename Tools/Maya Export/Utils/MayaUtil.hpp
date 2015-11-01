@@ -15,9 +15,9 @@
 
 // define this to make Maya not define bool again
 #define _BOOL
-#define REQUIRE_IOSTREAM
+//#define REQUIRE_IOSTREAM
 #include <iostream>
-using namespace std;
+//using namespace std;
 
 //#include <iostream.h>
 
@@ -173,7 +173,7 @@ namespace MayaUtil
 	//	Create file with given path. Confirms extention. Fills o_Locator
 	//	with locator for this file. Returns true if successful.
 	//------------------------------------------------------------------------
-	bool CreateFile(const MString &path, 
+	bool MUCreateFile(const MString &path, 
 					const char *pExtension,
 					fsLocator &o_Locator);
 }

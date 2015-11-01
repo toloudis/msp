@@ -48,10 +48,11 @@ namespace AnimFuncs
 					double i_MaxTime);
 
 	//========================================================================
-	// Gets animation curve by name using Maya's plug system
+	// Gets animation curve by name using Maya's plug system.  Caller must 
+	// delete returned curve.
 	//========================================================================
-	MFnAnimCurve GetAnimCurve(MString name, MFnDependencyNode &node, MStatus &status);
-	MFnAnimCurve GetAnimCurve(MPlug plug, MStatus &status);
+	MFnAnimCurve* GetAnimCurve(MString name, MFnDependencyNode &node, MStatus &status);
+	MFnAnimCurve* GetAnimCurve(MPlug plug, MStatus &status);
 
 	//========================================================================
 	//	WriteAnimation - get animation channels from given node and 

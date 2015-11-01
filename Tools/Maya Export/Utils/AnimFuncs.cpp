@@ -372,31 +372,37 @@ namespace AnimFuncs
 	{
 		MStatus status1, status2, status3;
 
-		MFnAnimCurve animx = AnimFuncs::GetAnimCurve(group_name + "X", node, status1);
-		MFnAnimCurve animy = AnimFuncs::GetAnimCurve(group_name + "Y", node, status2);
-		MFnAnimCurve animz = AnimFuncs::GetAnimCurve(group_name + "Z", node, status3);
+		MFnAnimCurve* animx = AnimFuncs::GetAnimCurve(group_name + "X", node, status1);
+		MFnAnimCurve* animy = AnimFuncs::GetAnimCurve(group_name + "Y", node, status2);
+		MFnAnimCurve* animz = AnimFuncs::GetAnimCurve(group_name + "Z", node, status3);
 
 		if (status1 == MS::kSuccess && status2 == MS::kSuccess && status3 == MS::kSuccess)
 		{
 			if (i_bSinglePose)
 			{
 				o_Writer.WriteChunkHeader(name, 0, false);
-				write_pose(o_Writer, animx, animy, animz, i_bWriteDeltas);
+				write_pose(o_Writer, *animx, *animy, *animz, i_bWriteDeltas);
 				o_Writer.FinishChunk();
+				delete animx;
+				delete animy;
+				delete animz;
 				return;
 			}
 			else
 			{
 				std::list<float> keys;
-				AnimFuncs::GatherKeys(keys, animx, animy, animz, i_MinTime, i_MaxTime);
+				AnimFuncs::GatherKeys(keys, *animx, *animy, *animz, i_MinTime, i_MaxTime);
 
 				if (!keys.empty())
 				{
 					if (bWriteAnimDetails)
 						cout << "found animation on " << group_name << endl;
 					o_Writer.WriteChunkHeader(name, 0, false);
-					write_channels(o_Writer, keys, i_MinTime, animx, animy, animz, i_bWriteDeltas);
+					write_channels(o_Writer, keys, i_MinTime, *animx, *animy, *animz, i_bWriteDeltas);
 					o_Writer.FinishChunk();
+					delete animx;
+					delete animy;
+					delete animz;
 					return;
 				}
 			}
@@ -405,6 +411,9 @@ namespace AnimFuncs
 		if (bWriteAnimDetails)
 			cout << "missing animation channels on " << group_name << endl;
 		
+		delete animx;
+		delete animy;
+		delete animz;
 	}
 
 	//========================================================================
@@ -562,17 +571,17 @@ namespace AnimFuncs
 	//========================================================================
 	// Gets animation curve by name using Maya's plug system
 	//========================================================================
-	MFnAnimCurve GetAnimCurve(MString name, MFnDependencyNode &node, MStatus &status)
+	MFnAnimCurve* GetAnimCurve(MString name, MFnDependencyNode &node, MStatus &status)
 	{
 		MPlug plug = node.findPlug(name, &status);
 		if(status == MS::kSuccess) {
 			return GetAnimCurve(plug, status);
 		}
 		status = MS::kFailure;
-		MFnAnimCurve dummy;  
+		MFnAnimCurve* dummy = new MFnAnimCurve();  
 		return dummy;
 	}
-	MFnAnimCurve GetAnimCurve(MPlug plug, MStatus &status)
+	MFnAnimCurve* GetAnimCurve(MPlug plug, MStatus &status)
 	{
 		MPlugArray connections;
 		
@@ -583,7 +592,7 @@ namespace AnimFuncs
 
 					//cout << "Plug connected to type: " << node.apiTypeStr() << endl;
 
-					MFnAnimCurve anim(node, &status);
+					MFnAnimCurve* anim = new MFnAnimCurve(node, &status);
 					if(status == MS::kSuccess) {
 						status = MS::kSuccess;
 						return anim;
@@ -593,7 +602,7 @@ namespace AnimFuncs
 		}
 
 		status = MS::kFailure;
-		MFnAnimCurve dummy;  
+		MFnAnimCurve* dummy = new MFnAnimCurve();
 		return dummy;
 	}
 
@@ -619,19 +628,20 @@ namespace AnimFuncs
 		if (!i_bSinglePose && !i_bWriteDeltas)
 		{
 			MStatus status;
-			MFnAnimCurve visCurve = AnimFuncs::GetAnimCurve("visibility", node, status);
+			MFnAnimCurve* visCurve = AnimFuncs::GetAnimCurve("visibility", node, status);
 			if (status == MS::kSuccess)
 			{
 				if (bWriteAnimDetails)
 					cout << "Found animation channel on visibility, node = " << node.name() << endl;
 			
 				std::list<float> keys;
-				AnimFuncs::GatherKeys(keys, visCurve, i_MinTime, i_MaxTime);
+				AnimFuncs::GatherKeys(keys, *visCurve, i_MinTime, i_MaxTime);
 
 				o_Writer.WriteChunkHeader(c_AVIS, 0, false);
-				write_channel<bool>(o_Writer, keys, i_MinTime, visCurve);
+				write_channel<bool>(o_Writer, keys, i_MinTime, *visCurve);
 				o_Writer.FinishChunk();
 			}
+			delete visCurve;
 		}
 	}
 							
@@ -653,14 +663,14 @@ namespace AnimFuncs
 			MFnTransform xform(obj, &status);
 			if (status == MS::kSuccess)
 			{
-				MFnAnimCurve visCurve = AnimFuncs::GetAnimCurve("visibility", xform, status);
+				MFnAnimCurve* visCurve = AnimFuncs::GetAnimCurve("visibility", xform, status);
 				if (status == MS::kSuccess)
 				{
 					if (bWriteAnimDetails)
 						cout << "Found animation channel on visibility, skin = " << skin_name << endl;
 				
 					std::list<float> keys;
-					AnimFuncs::GatherKeys(keys, visCurve, i_MinTime, i_MaxTime);
+					AnimFuncs::GatherKeys(keys, *visCurve, i_MinTime, i_MaxTime);
 
 					// Write skin animation, consists of skin name and visibility animation
 					o_Writer.WriteChunkHeader(c_ASKN, 0, true);
@@ -670,11 +680,12 @@ namespace AnimFuncs
 					o_Writer.FinishChunk();
 
 					o_Writer.WriteChunkHeader(c_AVIS, 0, false);
-					write_channel<bool>(o_Writer, keys, i_MinTime, visCurve);
+					write_channel<bool>(o_Writer, keys, i_MinTime, *visCurve);
 					o_Writer.FinishChunk();
 
 					o_Writer.FinishChunk();
 				}
+				delete visCurve;
 			}
 		}
 	}
@@ -805,63 +816,67 @@ namespace AnimFuncs
 
 		// then write focalLength curve
 		MStatus status;
-		MFnAnimCurve flCurve = AnimFuncs::GetAnimCurve("focalLength", camera, status);
+		MFnAnimCurve* flCurve = AnimFuncs::GetAnimCurve("focalLength", camera, status);
 		if (status == MS::kSuccess) 
 		{
 			if (bWriteAnimDetails)
 				cout << "found anim curve on focalLength" << endl;
 		
 			std::list<float> keys;
-			AnimFuncs::GatherKeys(keys, flCurve, i_MinTime, i_MaxTime);
+			AnimFuncs::GatherKeys(keys, *flCurve, i_MinTime, i_MaxTime);
 
 			o_Writer.WriteChunkHeader(c_AFCL, 0, false);
-			write_channel<float>(o_Writer, keys, i_MinTime, flCurve);
+			write_channel<float>(o_Writer, keys, i_MinTime, *flCurve);
 			o_Writer.FinishChunk();
 		}
+		delete flCurve;
 
 		// write center of interest distance
-		MFnAnimCurve coiCurve = AnimFuncs::GetAnimCurve("centerOfInterest", camera, status);
+		MFnAnimCurve* coiCurve = AnimFuncs::GetAnimCurve("centerOfInterest", camera, status);
 		if (status == MS::kSuccess) 
 		{
 			if (bWriteAnimDetails)
 				cout << "found anim curve on centerOfInterest" << endl;
 		
 			std::list<float> keys;
-			AnimFuncs::GatherKeys(keys, coiCurve, i_MinTime, i_MaxTime);
+			AnimFuncs::GatherKeys(keys, *coiCurve, i_MinTime, i_MaxTime);
 
 			o_Writer.WriteChunkHeader(c_ACOI, 0, false);
-			write_channel<float>(o_Writer, keys, i_MinTime, coiCurve);
+			write_channel<float>(o_Writer, keys, i_MinTime, *coiCurve);
 			o_Writer.FinishChunk();
 		}
+		delete coiCurve;
 
 
 		// Get anim curves related to film aspect ratio
-		MFnAnimCurve haptCurve = AnimFuncs::GetAnimCurve("horizontalFilmAperture", camera, status);
+		MFnAnimCurve* haptCurve = AnimFuncs::GetAnimCurve("horizontalFilmAperture", camera, status);
 		if (status == MS::kSuccess) 
 		{
 			if (bWriteAnimDetails)
 				cout << "found anim curve on horizontalFilmAperture" << endl;
 		
 			std::list<float> keys;
-			AnimFuncs::GatherKeys(keys, haptCurve, i_MinTime, i_MaxTime);
+			AnimFuncs::GatherKeys(keys, *haptCurve, i_MinTime, i_MaxTime);
 
 			o_Writer.WriteChunkHeader(c_HAPT, 0, false);
-			write_channel<float>(o_Writer, keys, i_MinTime, haptCurve);
+			write_channel<float>(o_Writer, keys, i_MinTime, *haptCurve);
 			o_Writer.FinishChunk();
-		}		
-		MFnAnimCurve vaptCurve = AnimFuncs::GetAnimCurve("verticalFilmAperture", camera, status);
+		}
+		delete haptCurve;
+		MFnAnimCurve* vaptCurve = AnimFuncs::GetAnimCurve("verticalFilmAperture", camera, status);
 		if (status == MS::kSuccess) 
 		{
 			if (bWriteAnimDetails)
 				cout << "found anim curve on verticalFilmAperture" << endl;
 		
 			std::list<float> keys;
-			AnimFuncs::GatherKeys(keys, vaptCurve, i_MinTime, i_MaxTime);
+			AnimFuncs::GatherKeys(keys, *vaptCurve, i_MinTime, i_MaxTime);
 
 			o_Writer.WriteChunkHeader(c_VAPT, 0, false);
-			write_channel<float>(o_Writer, keys, i_MinTime, vaptCurve);
+			write_channel<float>(o_Writer, keys, i_MinTime, *vaptCurve);
 			o_Writer.FinishChunk();
 		}
+		delete vaptCurve;
 
 		//// Get anim curves related to film aspect ratio
 		//MStatus hstatus, vstatus;
