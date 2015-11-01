@@ -249,13 +249,12 @@
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <AdditionalIncludeDirectories>.;.\Utils;..\..\LibXLT;.\..\..\3rdParty\Maya2015\include;.\..\..\3rdParty\Boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;WIN32;_CRT_SECURE_NO_DEPRECATE;_WINDOWS;NT_PLUGIN;REQUIRE_IOSTREAM;_USRDLL;MAYAPLUGIN1_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CRT_SECURE_NO_DEPRECATE;MAYAPLUGIN1_EXPORTS;WIN32;_WIN64;_WINDOWS;_USRDLL;NT_PLUGIN;REQUIRE_IOSTREAM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(IntDir)engineExportMaya2011.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>
       </AssemblerListingLocation>
@@ -264,6 +263,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
