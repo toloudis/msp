@@ -1,0 +1,1986 @@
+/*
+Location --> C:\Program Files\Autodesk\Maya2009\scripts\startup
+Location --> %USERPROFILE%\Documents\maya\2009-x64\scripts
+Location --> %USERPROFILE%\Documents\maya\scripts
+*/
+
+//***************************************************************
+// The MINIMUM and MAXIMIM plug-in version
+global string $g_plugin_MINIMUM_VERSION;
+$g_plugin_MINIMUM_VERSION =  "1.3.6.0";
+
+global string $g_plugin_MAXIMUM_VERSION;
+$g_plugin_MAXIMUM_VERSION = "1.5.0.0";
+//******************************************
+
+global string $g_plugin_CURRENT_VERSION;
+$g_plugin_CURRENT_VERSION = `pluginInfo -q -v "sgpuMachExport"`;
+//***************************************************************
+
+
+global string $g_msExport_VERSION;
+$g_msExport_VERSION = "1.4.0.2.2";
+
+global int $g_msExport_DEBUG;
+$g_msExport_DEBUG = 0;
+
+print( "\nsgpuMachExport plug-in version: "+$g_plugin_CURRENT_VERSION+"\n" );
+print( "msExport.mel version: "+$g_msExport_VERSION+"\n" );
+
+/* Changes
+
+1.4.0.2.2
+Only version number changes to match msExportUI.mel.  No code change in this script
+-zd
+
+*/
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+// UTILS
+
+global proc int msExport_versionValidate(){
+	global int $g_msExport_DEBUG;
+	global string $g_msExport_VERSION;
+	global string $g_msExportUI_VERSION;
+	global string $g_plugin_MINIMUM_VERSION;
+	global string $g_plugin_MAXIMUM_VERSION;
+	global string $g_plugin_CURRENT_VERSION;
+
+	int $batchMode = `about -batch`;
+	int $valid = 1;
+
+	// Make sure the two mel script versions match
+	if( $g_msExport_VERSION != $g_msExportUI_VERSION ){
+		string $msg = "The fastExport MEL script vesion do not match!!\n";
+		$msg += "The version numbers must be the same for both scripts!!\n";
+		$msg += "Unable to load \"MachStudio\" menu.\n\n";
+		$msg += ( "msExportUI.mel: Version "+$g_msExportUI_VERSION+"\n" );
+		$msg += ( "msExport.mel: Version "+$g_msExport_VERSION+"\n\n");
+		$msg += "Please install the correct versions and try again.\n";
+
+		print $msg;
+		if( !$batchMode )
+			confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+		return 0;
+	}
+
+	// Make sure the plug-in version falls between the MINIMUM and MAXIMUM version
+	string $plugin_toks[] = stringToStringArray($g_plugin_CURRENT_VERSION,".");
+
+	// make sure there are exactly 4 tokens
+	while( size($plugin_toks) < 4 )
+		$plugin_toks[size($plugin_toks)] = 0;
+
+	// The current plug-in version must be equal to or greater than the MINIMUM_VERSION
+	if($g_msExport_DEBUG)
+		print "\nChecking current plugin verison with the MINIMUM_VERSION\n";
+
+	string $minimum_toks[] = stringToStringArray($g_plugin_MINIMUM_VERSION,".");
+	for( $i=0; $i<4; $i++ ){
+		if($g_msExport_DEBUG)
+			print ( "checking plug-in ["+$plugin_toks[$i]+"] with required ["+$minimum_toks[$i]+"]\n" );
+
+		// quit test as soon as any token is greater
+		if( (int($plugin_toks[$i])) > (int($minimum_toks[$i])) )
+			break;
+
+		if( (int($plugin_toks[$i])) < (int($minimum_toks[$i])) ){
+			string $msg = "\nThe plug-in version is invalid!!\n";
+			$msg += "The plug-in version must be equal to or greater than \"Mimimum\" version.\n\n";
+			$msg += ( "sgpuMachExport plug-in: Version "+stringArrayToString($plugin_toks,".")+"\n");
+			$msg += ( "Minimum Version "+$g_plugin_MINIMUM_VERSION+"\n" );
+			$msg += ( "(Maximum Version "+$g_plugin_MAXIMUM_VERSION+")\n\n");
+			$msg += "Please load the correct version and try again.\n";
+
+			print $msg;
+			if( !$batchMode )
+				confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+			return 0;
+		}
+	}
+
+	// The current plug-in version must be less than the MAXIMUM_VERSION
+	if($g_msExport_DEBUG)
+		print "\nChecking current plugin verison with the MAXIMUM_VERSION\n";
+
+	int $max_fail;
+	if( $g_plugin_CURRENT_VERSION == $g_plugin_MAXIMUM_VERSION ){
+		$max_fail = 1;
+	}else{
+		string $maximum_toks[] = stringToStringArray($g_plugin_MAXIMUM_VERSION,".");
+		for( $i=0; $i<4; $i++ ){
+			if($g_msExport_DEBUG)
+				print ( "checking plug-in ["+$plugin_toks[$i]+"] with maximum ["+$maximum_toks[$i]+"]\n" );
+
+			if( (int($plugin_toks[$i])) < (int($maximum_toks[$i])) )
+				break;
+
+			if( (int($plugin_toks[$i])) > (int($maximum_toks[$i])) ){
+				$max_fail = 1;
+				break;
+			}
+		}
+	}
+
+	if( $max_fail ){
+			string $msg = "\nThe plug-in version is invalid!!\n";
+			$msg += "The plug-in version must be less than \"Maximum\" version.\n\n";
+			$msg += ( "sgpuMachExport plug-in: Version "+stringArrayToString($plugin_toks,".")+"\n");
+			$msg += ( "Maximum Version "+$g_plugin_MAXIMUM_VERSION+"\n");
+			$msg += ( "(Minimum Version "+$g_plugin_MINIMUM_VERSION+")\n\n" );
+			$msg += "Please load the correct version and try again.\n";
+
+			print $msg;
+			if( !$batchMode )
+				confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+			return 0;
+	}
+
+	return $valid;
+}//END
+
+global proc msExport_print( string $msg ){
+	global string $gMainProgressBar;
+	if( !`about -batch` )
+		progressBar -edit -status  $msg -step 1 $gMainProgressBar;
+	print ( "\n"+$msg+"\n" );
+}//END
+
+global proc msExport_debugMode( int $on ){
+	global int $g_msExport_DEBUG;
+	if( $on ) $g_msExport_DEBUG = 1;
+	else      $g_msExport_DEBUG = 0;
+	print( "Debug mode ["+$g_msExport_DEBUG+"]...\n" );
+}//END
+
+global proc string msExport_stackTraceProc(){
+	string $stack[] = `stackTrace -q -dump`;
+	string $toks[] = stringToStringArray($stack[1], " ");
+	return $toks[0];
+}//END
+
+global proc string msExport_argValueGet( string $args, string $flag ){
+	if( !gmatch($flag, "-[a-zA-Z]*") )
+		return "";
+
+	string $toks[] = stringToStringArray( $args, " " );
+	string $value = "";
+	for( $i=0; $i<size($toks); $i++ ){
+		if( $toks[$i] == $flag ){
+			for( $j=$i+1; $j<size($toks); $j++ ){
+				if( gmatch($toks[$j], "-[a-zA-Z]*") )
+					break;
+				else
+					$value += ( $toks[$j]+" " );
+
+			}
+		}
+	}
+	return strip($value);
+}//END
+
+global proc string msExport_argValueGetString( string $args, string $flag, string $default ){
+	string $value = msExport_argValueGet( $args, $flag );
+	if( !size( $value ) )
+		$value = $default;
+	return $value;
+}//END
+
+global proc int msExport_argValueGetInt( string $args, string $flag, int $default ){
+	string $value = msExport_argValueGet( $args, $flag );
+	int $result;
+	if( !size( $value ) )
+		$result = $default;
+	else
+		$result = int($value);
+	return $result;
+}//END
+
+global proc float msExport_argValueGetFloat( string $args, string $flag, float $default ){
+	string $value = msExport_argValueGet( $args, $flag );
+	float $result;
+	if( !size( $value ) )
+		$result = $default;
+	else
+		$result = float($value);
+	return $result;
+}//END
+
+global proc int msExport_argValueGetOpt( string $args, string $flag ){
+	int $result = 0;
+	if( gmatch( $args, "*"+$flag+"*" ) )
+		$result = 1;
+	return $result;
+}//END
+
+global proc string[] msExport_attrNamesMayaSpecificList(){
+	return { "doubleSided", "castsShadows", "receiveShadows" };
+}//END 
+
+// Returns a list of all available sgpu attributes and UI labels
+global proc string[] msExport_attrTypeLabelArgsList( string $export_type ){
+	string $vert_args[] = {
+		"-attr sgpuExportAsSubdiv   -type mesh       -label Export selected meshes as Subdiv",          // subdivide on export
+		"-attr sgpuLowRes           -type mesh       -label Tag meshes as low-res  (1=low, 0=high)",    // 3 state flag
+		"-attr sgpuTriangleSort     -type mesh       -label Sort mesh triangles (transparency sorting)" // sort triangles within the mesh in order to handle transparancy sorting
+	};
+	string $hierarchy_args[] = {
+		"-attr sgpuDeformGeom       -type mesh       -label Vert Cache selected mesh",                  // write baked vertex animation for this mesh
+		"-attr sgpuNoExport         -type transform  -label Exclude transform and it's children",       // do not export this node or it's children
+		"-attr sgpuForceExport      -type transform  -label Force export of invisible transform"        // make sure node exports even if invisible
+	};
+
+	string $list[];
+	switch( $export_type ){
+		case "verts":
+			$list = $vert_args;
+			break;
+		case "hierarchy":
+			$list = stringArrayCatenate( $vert_args, $hierarchy_args );
+			break;
+		case "transform":
+			$list = $hierarchy_args;
+			break;
+		default:
+			error ( "Unknown export type ["+$export_type+"]. Aborting...\n" );
+	};
+	return $list;
+}//END
+
+global proc string[] msExport_attrNamesList( string $export_type ){
+	string $argsList[] = msExport_attrTypeLabelArgsList( $export_type );
+	string $attrs[];
+	for( $args in $argsList )
+		$attrs[size($attrs)] = msExport_argValueGet( $args, "-attr" );
+
+	return $attrs;
+}//END
+
+// General proc to set attrs. Automatically accounts for known attr types
+global proc int msExport_nodeAttrValSet( string $node, string $attr, string $value ){
+	string $proc = msExport_stackTraceProc()+": ";
+	global int $g_msExport_DEBUG;
+
+	if ( $g_msExport_DEBUG )
+		print ( $proc+"node ["+$node+"], attr ["+$attr+"], val ["+$value+"]\n");
+
+	// most attrs go on the shape node
+	if( $attr != "sgpuNoExport" && $attr != "sgpuForceExport" ){
+		if( nodeType($node) == "transform" ){
+			string $shapes[] = `listRelatives -f -ni -s $node`;
+			$node = $shapes[0];
+		}
+	}
+
+	if( !size($node)){
+		print ( $proc+"Invalid node. Skipping\n" );
+		return 0;
+	}
+
+	// Check for maya version
+	// version  8.5 does not support "-nn" flag
+	int $maya85 = 0;
+	if( getApplicationVersionAsFloat() == 8.5 )
+		$maya85 = 1;
+
+	if( !gmatch( $attr, "sgpu*" ) )
+		$attr = ("sgpu"+capitalizeString($attr));
+
+	// by default all attrs are bool with the following exceptions
+	string $type = "bool";
+	if( $attr == msExport_nodeExportAttrNameGet() )
+		$type = "string";
+	if( $attr == "sgpuLowRes" )
+		$type = "int";
+
+	// Set the value
+	switch($type){
+		case "string":
+			if( !attributeExists( $attr, $node ) ){
+				if( $maya85 )
+					addAttr -ln $attr -dt $type  $node;
+				else
+					addAttr -ln $attr -nn $attr -dt $type  $node;
+			}
+
+			if( size($value) )
+				setAttr  -keyable  0 -type "string" ($node+"."+$attr) $value;
+			break;
+		case "bool":
+			if( !attributeExists( $attr, $node ) ){
+				if( $maya85 )
+					addAttr -ln $attr -at bool $node;
+				else
+					addAttr -ln $attr -nn $attr -at bool $node;
+			}
+
+			if(size($value) ){
+				int $val = int($value);
+				if( $val > 0  )
+					$val = 1;
+				else
+					$val = 0;
+				setAttr -keyable 0 ($node+"."+$attr ) $val;
+			}
+			break;
+		case "int":
+			if( !attributeExists( $attr, $node ) ){
+				if( $maya85 )
+					addAttr -ln $attr -at long $node;
+				else
+					addAttr -ln $attr -nn $attr -at long $node;
+			}
+
+			if(size($value) ){
+				int $val = int($value);
+				if( $val > 0  )
+					$val = 1;
+				else
+					$val = 0;
+				setAttr -keyable 0 ($node+"."+$attr ) $val;
+			}
+			break;
+	}
+	return 1;
+}//END
+
+global proc int msExport_nodeAttrDelete( string $node, string $attr ){
+	if( !objExists( $node+"."+$attr) )
+		return 1;
+
+	setAttr -lock 0 ($node+"."+$attr);
+	deleteAttr ( $node+"."+$attr );
+	return 1;
+}//END
+
+// List all "modifier" attributes on the node
+global proc string[] msExport_nodeAttrsList( string $node ){
+	string $attrs[] = `listAttr -ud $node`;
+	string $list[];
+	for( $attr in $attrs ){
+		if(gmatch($attr, "sgpu*" ))
+			$list[size($list)] = $attr;
+	}
+	return $list;
+}//END
+
+// Remove all "modifier" attributes from the specified node
+global proc msExport_nodeAttrsDelete( string $node ){
+	global int $g_msExport_DEBUG;
+
+	string $attrs[] = msExport_nodeAttrsList( $node );
+	if(!size($attrs))
+		return;
+
+	if( $g_msExport_DEBUG )
+		print ( "Deleting MachStudio attrs for ["+$node+"].\n" );
+
+	for( $attr in $attrs )
+		msExport_nodeAttrDelete( $node, $attr );
+}//END
+
+// The file path location can be configured by the user...
+global proc string msExport_directoryResolve( string $directory, int $addSceneName, int $create ){
+	string $proc = msExport_stackTraceProc()+": ";
+	if( !size($directory ) ){
+		// Get the directory based on the current project
+		$directory  = `workspace -q -rd`;
+		if( !size( $directory) )
+			// if the project has not been set, use the directory from the filename
+			$directory = ( dirname(`file -q -sn`)+"/" );
+	}
+
+	// make sure the directory ends with "/"
+	if( !endsWith( $directory, "/" ))
+		$directory += "/";
+
+	if( $addSceneName ){
+		string $sceneName = `file -q -sn -shn`;
+		$directory += ( substitute( ".m[ab]$", $sceneName, "" )+"/" );
+	}
+
+	if( $create ){
+		// create the directory if it does not exist
+		if( !`filetest -d $directory` ){
+			if( ! catch( `sysFile -md $directory` ) ){
+				print ( $proc+"Creating directory ["+$directory+"]...\n" );
+			}else{
+				error ( $proc+"Error creating directory ["+$directory+"]. Aborting..." );
+			}
+		}
+	}
+	return $directory;
+}//END
+
+// Resolved the directory path if not specified. Checks path if directory is specified.
+global proc string msExport_filepathResolve( string $directory, int $addSceneName, int $create, string $name, int $short_name ){
+	global int $g_msExport_DEBUG;
+	string $proc = msExport_stackTraceProc()+": ";
+	$directory = msExport_directoryResolve( $directory, $addSceneName, $create );
+
+	// Resolve the full path name
+	if( !$short_name ){
+		// append scene file name to object name
+		string $scene_name = `file -q -sn -shn`;
+		if( size( $scene_name ) ){
+			$scene_name = substitute( ".m[ab]$", $scene_name, "" );
+			$name = ( $scene_name+"_"+$name );
+		}
+	}
+
+	string $file_path = ( $directory+$name );
+	if( `file -q -ex $file_path` )
+		warning ( $proc+"The file ["+$file_path+"] already exists. Overwriting...\n" );
+
+	return $file_path;
+}//END
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+// EXPORT NODE PROCS
+
+global proc string msExport_nodeExportAttrNameGet(){
+	return "sgpuExport";
+}//END
+
+// Returns the export arg string for the specified node
+global proc string msExport_nodeExportArgsGet( string $node ){
+	string $attr = msExport_nodeExportAttrNameGet();
+	string $args;
+	if( objExists($node+"."+$attr) )
+		$args =`getAttr( $node+"."+$attr )`;
+
+	if( nodeType( $node ) == "network" ){
+		string $name = substitute( "msExport_", $node, "" );
+		if( gmatch( $name, "*:*" ) )
+			$name = substituteAllString( $name, ":", "_");
+
+		string $obj_name = msExport_argValueGet( $args, "-name" );
+
+		if( $name != $obj_name ){
+			print "updating object name in args...\n";
+			$args = substitute( "-name "+$obj_name, $args, "-name "+$name );
+			msExport_nodeExportArgsSet( $node, $args );
+		}
+	}
+
+	return  $args;
+}//END
+
+// Sets export args string to the specified node
+global proc int msExport_nodeExportArgsSet( string $node, string $args ){
+	// The "#" needed because of referenced objects
+	if( !startsWith( $args, "#" ) ) $args = ( "# "+$args );
+	string $attr = msExport_nodeExportAttrNameGet();
+	return msExport_nodeAttrValSet( $node, $attr, $args );
+}//END
+
+// Returns the value for the specified flag
+global proc string msExport_nodeExportArgValueGet( string $node, string $flag ){
+	string $value;
+	if( objExists($node)){
+		string $args = msExport_nodeExportArgsGet( $node );
+		$value = msExport_argValueGet( $args, $flag );
+	}
+	return $value;
+}//END
+
+// Set the value for the specified flag
+global proc int msExport_nodeExportArgValueSet( string $node, string $flag, string $value ){
+	string $args = msExport_nodeExportArgsGet( $node );
+	string $cur_val = msExport_argValueGet( $args, $flag );
+	if( $cur_val != $value ){
+		string $new_args = substitute( ( $flag+" "+$cur_val ), $args, ($flag+" "+$value ) );
+		msExport_nodeExportArgsSet( $node, $new_args );
+	}
+	return 1;
+}//END
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+// OBJECT PROCS
+
+// Converts to old object to new object (use source file to update referenced objects)
+global proc int msExport_objectOldConvertAll(){
+	string $proc = msExport_stackTraceProc()+": ";
+
+	// remember the current selection
+	string $cur_selection[] = `ls -sl`;
+
+	// Get nodes with the specified attribute
+	string $attr = msExport_nodeExportAttrNameGet();
+	string $shapes[] = `ls -ni -s`;
+	select -r $shapes;
+	string $all_nodes[] = `ls -o ( "."+$attr )`;
+	select $cur_selection;
+
+	if( !size( $all_nodes ) )
+		return -1;
+
+	// Sort the object names
+	string $obj_names[];
+	string $ref_names[];
+	for( $node in $all_nodes ){
+		string $name = msExport_nodeExportArgValueGet( $node, "-name" );
+		// Check if any of the nodes are referenced
+		if( size( $name ) ){
+			if( `referenceQuery -isNodeReferenced $node` )
+				$ref_names[size($ref_names)] = $name;
+			else
+				$obj_names[size($obj_names)] = $name;
+		}
+	}
+
+	$obj_names = stringArrayRemoveDuplicates($obj_names);
+	string $invalid_objs[];
+	for( $obj_name in $obj_names ){
+		// Get the nodes for each name
+		string $obj_nodes[] = {};
+		for( $node in $all_nodes ){
+			if( $obj_name == msExport_nodeExportArgValueGet( $node, "-name" ) )
+				$obj_nodes[size($obj_nodes)] = $node;
+		}
+
+		if( !size($obj_nodes) )
+			continue;
+
+		print( "\n"+$proc+"Converting ["+$obj_name+"] to latest convention...\n" );
+		string $args = msExport_nodeExportArgsGet( $obj_nodes[0] );
+
+		string $export_root = msExport_argValueGet( $args, "-export_root" );
+		$args = substitute( " -export_root "+$export_root, $args, "" );
+		$args = substitute( " -name "+$obj_name, $args, "" );
+
+		string $ntwk_node = msExport_objectCreate( $args, $obj_nodes, {} );
+
+		if( objExists( $ntwk_node ) ){
+			for( $obj_node in $obj_nodes )
+				 msExport_nodeAttrDelete( $obj_node, msExport_nodeExportAttrNameGet() );
+		}else{
+			$invalid_objs[size($invalid_objs)] = $obj_name;
+		}
+	}
+
+	if( size( $invalid_objs ) ){
+		string $msg = ( "The following objects could not be converted.\n" );
+		for( $invalid_obj in $invalid_objs )
+			$msg += ( $invalid_obj+"\n\n" );
+		$msg += "Check the ScriptEditor for details...\n";
+
+		if( !`about -batch` )
+			confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+		else
+			print ( $msg+"\n" );
+	}
+
+	if( size( $ref_names ) ){
+		$ref_names = stringArrayRemoveDuplicates($ref_names);
+
+		string $msg = ( "The following objects are referenced.\n" );
+		for( $ref_name in $ref_names )
+			$msg += ( $ref_name+"\n\n" );
+		$msg += "You can not convert referenced objects\n";
+		$msg += "Use the source file to update the objects.\n";
+		$msg += "Skipping...\n";
+
+		if( !`about -batch` )
+			confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+		else
+			print ( $msg+"\n" );
+	}
+	return 1;
+}//END
+
+global proc string msExport_objectNetworkConnectionNodePairGet( string $node ){
+	global int $g_msExport_DEBUG;
+	if( !objExists( $node ) )
+		return {};
+
+	// Check the parents - start with shape node if it exists
+	if( nodeType( $node ) == "transform" ){
+		string $children[] = `listRelatives -f -c -type "shape" $node`;
+
+		if( size($children) )
+			$node = $children[0];
+	}
+
+	// Check the long paths (because of potentinal duplicate nodes)
+	string $paths[] = `ls -l $node`;
+	string $long_name = $paths[0];
+	string $toks[] = stringToStringArray( $long_name, "|" );
+
+	string $ntwkConnectionPair;
+	for( $i=size($toks)-1; $i>-1; $i-- ){
+		if( !attributeExists( "message", $long_name ) )
+			continue;
+
+		string $ntwk_connections[] = `connectionInfo -dfs ( $long_name+".message" )`;
+		for( $ntwk_connection in $ntwk_connections ){
+			if( gmatch( $ntwk_connection, "*msExport*" ) ){
+				if( $g_msExport_DEBUG )
+					print ( "connection pairs get: got connection ["+$ntwk_connection+"], ["+$long_name+"]\n" );
+				$ntwkConnectionPair = ( $ntwk_connection+" "+$long_name );
+				return $ntwkConnectionPair;
+			}
+		}
+
+		$long_name =  substitute( "|"+$toks[$i], $long_name, "" );
+	}
+
+	return $ntwkConnectionPair;
+}//END
+
+global proc int msExport_objectNetworkNodeDisconnect( string $ntwk_node, string $nodes[], int $check_ntwk_node ){
+	global int $g_msExport_DEBUG;
+	string $proc = msExport_stackTraceProc()+": ";
+
+	if( !objExists( $ntwk_node ) )
+		return 0;
+
+	for( $node in $nodes ){
+		if( !objExists( $node ) )
+			continue;
+
+		string $ntwk_connections[] = `connectionInfo -dfs ( $node+".message" )`;
+		if( !size( $ntwk_connections ) ){
+			if( nodeType( $node ) == "transform" ){
+				// Check if there is a shape node
+				string $meshes[] = `listRelatives -c -type "mesh" $node`;
+				if( size($meshes) )
+					$node = $meshes[0];
+			}
+			$ntwk_connections = `connectionInfo -dfs ( $node+".message" )`;
+		}
+
+		for( $ntwk_connection in $ntwk_connections ){
+			if( gmatch( $ntwk_connection, $ntwk_node+"*" ) ){
+				disconnectAttr ( $node+".message" ) $ntwk_connection;
+
+				if( $g_msExport_DEBUG )
+					print ( $proc+"Disconnecting ["+$ntwk_connection+"] from ["+$node+"]\n" );
+			}
+		}
+	}
+
+	if( $check_ntwk_node ){
+		if( !size( `listConnections -sh true -s 1 -d 0 ( $ntwk_node+".mspExportNodes" )` ) ){
+			string $name = msExport_nodeExportArgValueGet( $ntwk_node, "-name" );
+			string $msg = ( "The object has no more connections.\n" );
+			$msg += (" deleteing  ["+$name+"]...\n" );
+
+			if( !`about -batch` )
+				confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+			else
+				warning ( $proc+$msg+"\n" );
+
+			delete $ntwk_node;
+			select -cl;
+		}
+	}
+	return 1;
+}//END
+
+global proc int msExport_objectNetworkNodesConnect( string $ntwk_node, string $nodes[] ){
+	global int $g_msExport_DEBUG;
+
+	if( !objExists( $ntwk_node ) )
+		return 1;
+
+	for( $node in $nodes ){
+		if( !objExists( $node ) )
+			continue;
+		// add message connections to the network node
+		connectAttr -na ( $node+".message" )( $ntwk_node+".mspExportNodes" );
+
+		if( $g_msExport_DEBUG )
+			print ( "Connecting ["+$ntwk_node+"] to ["+$node+"]...\n" );
+	}
+	return 1;
+}//END
+
+global proc string msExport_objectNetworkNodeGet( string $name ){
+	if( objExists($name) &&  nodeType($name) == "network" )
+		return $name;
+
+	string $nodes[] = `ls -type "network"`;
+	string $ntwk_node;
+	for( $node in $nodes ){
+		if( gmatch( $node, "*msExport*" ) ){
+
+			if( $name ==  msExport_nodeExportArgValueGet( $node, "-name" ) ){
+				$ntwk_node = $node;
+				break;
+			}
+		}
+	}
+	return $ntwk_node;
+}//END
+
+global proc string[] msExport_objectNetworkNodesList(){
+	return ( `ls -type "network"`);
+}//END
+
+// Returns the export arg string for the specified object
+global proc string msExport_objectExportArgsGet( string $name ){
+	string $ntwk_node = msExport_objectNetworkNodeGet( $name );
+
+	string $args;
+	if( size( $ntwk_node ) )
+		$args = msExport_nodeExportArgsGet( $ntwk_node );
+
+	return $args;
+}//END
+
+// Sets the export arg value for the specified object
+global proc int msExport_objectExportArgsSet( string $name, string $args ){
+	string $ntwk_node = msExport_objectNetworkNodeGet( $name );
+
+	int $ok = 0;
+	if( size( $ntwk_node ) )
+		$ok = msExport_nodeExportArgsSet( $ntwk_node, $args );
+
+	return $ok;
+}//END
+
+// Returns the value for the specified flag
+global proc string msExport_objectExportArgsValueGet( string $name, string $flag ){
+	string $ntwk_node = msExport_objectNetworkNodeGet( $name );
+
+	string $value;
+	if( size( $ntwk_node ) )
+		$value = msExport_nodeExportArgValueGet( $ntwk_node, $flag );
+
+	return $value;
+}//END
+
+// Sets the value for the specified flag
+global proc int msExport_objectExportArgValueSet( string $name, string $flag, string $value ){
+	string $ntwk_node = msExport_objectNetworkNodeGet( $name );
+
+	int $ok = 0;
+	if( size( $ntwk_node ) )
+		$ok = msExport_nodeExportArgValueSet( $ntwk_node, $flag, $value );
+
+	return $ok;
+}//END
+
+// Returns the export args for all tagged objects
+global proc string[] msExport_objectExportArgsList(){
+	// Convert old-style objects
+	msExport_objectOldConvertAll();
+
+	string $ntwk_nodes[] = msExport_objectNetworkNodesList();
+	string $list[];
+	for( $ntwk_node in $ntwk_nodes )
+		$list[size($list)] = msExport_nodeExportArgsGet( $ntwk_node );
+	return sort($list);
+}//END
+
+global proc int msExport_objectExists( string $name ){
+	string $names[] = msExport_objectNamesList();
+	int $exists = 0;
+	if( stringArrayContains($name, $names) )
+		$exists = 1;
+	return $exists;
+}//END
+
+// Returns the export args for all tagged objects
+global proc string[] msExport_objectNamesList(){
+	string $ntwk_nodes[] = msExport_objectNetworkNodesList();
+	string $list[];
+	for( $ntwk_node in $ntwk_nodes )
+		$list[size($list)] = msExport_nodeExportArgValueGet( $ntwk_node, "-name" );
+	return sort($list);
+}//END
+
+// Returns all the nodes tagged with the specified name
+global proc string[] msExport_objectNodesList( string $name ){
+	string $ntwk_node = msExport_objectNetworkNodeGet( $name );
+	if( !size( $ntwk_node ) )
+		return {};
+
+	string $conns[] = `listConnections -sh true -s 1 -d 0 ( $ntwk_node+".mspExportNodes" )`;
+	string $list[];
+	for( $conn in $conns ){
+		string $long_names[] = `ls -l $conn`;
+		$list[size($list)] = $long_names[0];
+	}
+
+	return $list;
+}//END
+
+// Select the tagged nodes for the specified name
+global proc msExport_objectNodesSelect( string $name ){
+	string $nodes[] = msExport_objectNodesList( $name );
+	if( size($nodes) )
+		select $nodes;
+}//END
+
+global proc msExport_objectNodesSelectAll(){
+	string $names[] = msExport_objectNamesList();
+	string $all_nodes[];
+	for( $name in $names ){
+		string $nodes[] = msExport_objectNodesList( $name );
+		if( size( $nodes ) )
+			$all_nodes = stringArrayCatenate($all_nodes, $nodes);
+	}
+
+	select -r $all_nodes;
+}//END
+
+global proc int msExport_objectAddSelected( string $name ){
+	string $proc = msExport_stackTraceProc()+": ";
+
+	string $nodes[] = `ls -sl -l`;
+	if( !size($nodes) ){
+		warning ($proc+"Nothing selected. Aborting...\n");
+		return 0;
+	}
+
+	// Make sure the name is valid
+	if( !msExport_objectExists( $name ) ){
+		warning ( $proc+"The specified object ["+$name+"] does not exist. Skipping" );
+		return 0;
+	}
+
+	string $export_type = msExport_objectExportArgsValueGet( $name, "-export_type" );
+	if( $export_type == "camera" ){
+		string $msg = ( $proc+"This option is not allowed for cameras. Aborting...\n" );
+		return 0;
+	}
+
+	$nodes = msExport_objectNodesByExportTypeResolve( $name, $export_type, $nodes );
+	if( !size($nodes) ){
+		warning ( $proc+"Unable to get valid nodes. Skipping..." );
+		return 0;
+	}
+
+	msExport_objectNodesSet( $name, $nodes );
+	msExport_objectNodesSelect( $name );
+	return 1;
+}//END
+
+global proc int msExport_objectRemoveSelected( string $name ){
+	global int $g_msExport_DEBUG;
+	string $proc = msExport_stackTraceProc()+": ";
+
+	string $nodes[] = `ls -sl -l`;
+	if( !size($nodes) ){
+		warning ($proc+"Nothing selected. Aborting...\n");
+		return 0;
+	}
+	int $ok;
+	string $ntwk_node = msExport_objectNetworkNodeGet( $name );	
+	if( msExport_nodeExportArgValueGet($ntwk_node, "-export_type" ) == "camera" ){
+		warning ( $proc+"This option is not allowed for cameras. Aborting...\n" );
+		return 0;
+	}
+
+	if( !size( $ntwk_node ) )
+		return $ok;
+
+	for( $node in $nodes ){
+		string $result = msExport_objectNetworkConnectionNodePairGet( $node );
+		if( size( $result ) ){
+			string $toks[] = stringToStringArray( $result, " " );
+			string $ntwk_connection = $toks[0];
+			string $conn_node  = $toks[1];
+			if( gmatch( $ntwk_connection, $ntwk_node+"*" ) ){
+				if( nodeType($conn_node) == "mesh" && nodeType($node) == "transform" ){
+					string $children[] = `listRelatives -f -c -type "mesh" $node`;
+					if( size($children) ) $node = $children[0];
+				}
+				if( nodeType($conn_node) == "transform" && nodeType($node) == "mesh" ){
+					string $children[] = `listRelatives -f -p -type "transform" $node`;
+					if( size($children) ) $node = $children[0];
+				}
+
+				if( $g_msExport_DEBUG )
+					print ( "node ["+$node+"], connected node ["+$conn_node+"]\n" );
+
+				if( $conn_node == $node ){
+					if( $g_msExport_DEBUG )
+						print ( "REMOVE SELECTED: got connection ["+$ntwk_connection+"], ["+$conn_node+"]\n" );
+					$ok = msExport_objectNetworkNodeDisconnect( $ntwk_node, {$conn_node}, 1 );
+				}else{
+					// check the export type
+					string $ntwk_node = match( "^[^\.]*",  $ntwk_connection );
+					string $export_type = msExport_nodeExportArgValueGet( $ntwk_node, "-export_type" );
+					if( $export_type == "hierarchy" ){
+						string $short_name = `match "[^|]*$" $node`;
+						string $name =  msExport_nodeExportArgValueGet( $ntwk_node, "-name" );
+
+						string $msg =  ( "The node ["+$short_name+"] is a child of tagged hierachy ["+$name+"].\n" );
+						$msg +=  ( "To remove node unparent it from ["+$conn_node +"].\n" );
+						$msg += "Aborting...\n";
+
+						if( !`about -batch` )
+							confirmDialog -t "MachStudio Export - Remove Selected"  -m $msg -ma "center" -button "OK";
+						else
+							warning $msg;
+					}else{
+						print ( "Unable to remove node ["+$node+"] from connected node ["+$conn_node+"]\n" );
+					}
+				}
+			}
+		}
+	}
+
+	msExport_objectNodesSelect( $name );
+	return $ok;
+}//END
+
+// Removes all MachStudio attributes from the specified object
+global proc int msExport_objectNodesClear( string $name ){
+	int $ok = 1;
+	string $ntwk_node = msExport_objectNetworkNodeGet( $name );
+	if( !objExists( $ntwk_node ) )
+		return 0;
+
+	string $args =  msExport_nodeExportArgsGet( $ntwk_node );
+	string $obj_nodes[] = msExport_objectNodesList( $name );
+	if( msExport_argValueGet( $args, "-export_type" ) == "hierarchy" ){
+		string $cur_selection[] = `ls -sl`;
+		select -r $obj_nodes;
+		$obj_nodes = `ls -dag -ni -et "mesh" -sl -l`;
+		select -r $cur_selection;
+	}
+
+	for( $obj_node in $obj_nodes )
+		msExport_nodeAttrsDelete( $obj_node );
+
+	if( size( $ntwk_node ) )
+		delete( $ntwk_node );
+
+	msExport_print( "MachStudio Export: Done clearing object tags for ["+$name+"]..." );
+	return $ok;
+}//END
+
+global proc int msExport_objectNodesClearAll(){
+	string $names[] = msExport_objectNamesList();
+	if( size( $names ) ){
+		if( !`about -batch` ){
+			string $msg = "You have requested to remove \n";
+			$msg += "the MachStudio Export tags for all tagged objects.\n";
+			for( $name in $names )
+				$msg += ( $name+"\n" );
+			$msg += "\nAre you sure you want to continue?";
+
+			string $answer = `confirmDialog -t "MachStudio Export - Clear All Tags"  -m $msg -ma "center" -button "Clear All" -button "Cancel"`;
+			if( $answer != "Clear All" )
+				return 0;
+		}
+
+		for( $name in $names )
+			msExport_objectNodesClear( $name );
+	}
+	return 1;
+}//END
+
+global proc string[] msExport_objectNamesByTypeList( string $object_type ){
+	string $meshes[];
+	string $cameras[];
+
+	if( !size($object_type) )
+		$object_type = "all";
+
+	string $ntwk_nodes[] = msExport_objectNetworkNodesList();
+	for( $ntwk_node in $ntwk_nodes ){
+		string $name =  msExport_nodeExportArgValueGet( $ntwk_node, "-name" );
+		string $export_type = msExport_nodeExportArgValueGet( $ntwk_node, "-export_type" );
+		if( $export_type == "camera" )
+			$cameras[size($cameras)] = $name;
+		else
+			$meshes[size($meshes)] = $name;
+	}
+
+	string $list[];
+	switch($object_type){
+		case "camera":
+		case "cameras":
+			$list = $cameras;
+			break;
+		case "mesh":
+		case "meshes":
+			$list = $meshes;
+			break;
+		case "all":
+			$list = stringArrayCatenate($cameras,$meshes);
+			break;
+		default:
+			error ( "Unknown object type ["+$object_type+"]. Aborting...\n" );
+	}
+
+	return sort($list);
+}//END
+
+global proc string[] msExport_objectNamesFromSelectedList( string $object_type ){
+	string $selected[] = `ls -sl -l`;
+
+	string $meshes[];
+	string $cameras[];
+
+	if( !size($object_type) )
+		$object_type = "all";
+
+	string $list[];
+	for( $sel in $selected ){
+		string $result = msExport_objectNetworkConnectionNodePairGet( $sel );
+		if( size( $result ) ){
+			string $toks[] = stringToStringArray( $result, " " );
+			string $ntwk_node = match( "^[^\.]*",  $toks[0] );
+
+			string $name = msExport_nodeExportArgValueGet( $ntwk_node, "-name" );
+			string $export_type = msExport_nodeExportArgValueGet( $ntwk_node, "-export_type" );
+			if( $export_type == "camera" )
+				$cameras[size($cameras)] = $name;
+			else
+				$meshes[size($meshes)] = $name;	
+		}
+	}
+
+	string $list[];
+	switch($object_type){
+		case "camera":
+		case "cameras":
+			$list = $cameras;
+			break;
+		case "mesh":
+		case "meshes":
+			$list = $meshes;
+			break;
+		case "all":
+			$list = stringArrayCatenate($cameras,$meshes);
+			break;
+		default:
+			error ( "Unknown object type ["+$object_type+"]. Aborting...\n" );
+	}
+
+	return  stringArrayRemoveDuplicates($list);
+}//END
+
+// Return the name for the first selected object
+global proc string msExport_objectNameFromSelected( string $object_type ){
+	string $selected[] = `ls -sl -l`;
+
+	string $name;
+	for( $sel in $selected ){
+		string $result = msExport_objectNetworkConnectionNodePairGet( $sel );
+		if( size( $result ) ){
+			string $toks[] = stringToStringArray( $result, " " );
+			string $ntwk_node = match( "^[^\.]*",  $toks[0] );
+			string $node = $toks[size($toks)-1];
+
+			if( $object_type == "camera" || $object_type == "cameras" ){
+				if( nodeType($node) != "camera" ){
+					continue;
+				}else{
+					$name = msExport_nodeExportArgValueGet( $ntwk_node, "-name" );
+					break;
+				}
+			}else{
+				$name = msExport_nodeExportArgValueGet( $ntwk_node, "-name" );
+				break;
+			}
+		}
+	}
+
+	return $name;
+}//END
+
+// Validates the selection with the command, returns the resolved nodes
+global proc string[] msExport_objectNodesByExportTypeResolve( string $name, string $export_type, string $nodes[] ){
+	int $batchMode = `about -batch`;
+
+	// Check if any of the nodes have been referenced
+	string $ref_nodes[], $old_nodes[];
+	for( $node in $nodes ){
+		if( `referenceQuery -isNodeReferenced $node` )
+			$ref_nodes[size($ref_nodes)] = $node;
+	}
+
+	if( size( $ref_nodes ) ){
+		string $msg =  "MachStudio: Found referenced nodes - excluding\n";
+		for( $ref_node in $ref_nodes )
+			$msg += ( "   "+$ref_node+"\n" );
+		print $msg;
+		return {};
+	}
+
+	select -r $nodes;
+
+	// Make sure the selection type is valid for the requested export type
+	string $valid_nodes[];
+	switch( $export_type ){
+		case "camera":
+			// make sure the selected node is a camera
+			if( `nodeType $nodes[0]` != "camera" && `nodeType $nodes[0]` != "stereoRigCamera" ){
+				string $children[] = `listRelatives -c -f $nodes[0]`;
+				if( !size($children) ){
+					string $msg = "No cameras selected.";
+					$msg += "\nPlease select a camera.\n";
+					if( !$batchMode )
+						confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+					else
+						print ( $msg+"\n" );
+					return {};
+				}
+				for( $child in $children ){
+					if( `nodeType $child` != "camera" && `nodeType $child` != "stereoRigCamera" ){
+						string $msg = "No cameras selected.";
+						$msg += "\nPlease select a camera.\n";
+						if( !$batchMode )
+							confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+						else
+							print ( $msg+"\n" );
+						return {};
+					}else{
+						$valid_nodes[size($valid_nodes)] = $child;
+						break;
+					}
+				}
+			}else{
+				$valid_nodes = $nodes;
+			}
+
+			if( size( $nodes ) > 1 ){
+				string $msg = ( "More than one node selected for ["+$name+"].\n" );
+				$msg +=(  "You can only select one node for cameras. Aborting...\n" );
+				if( !$batchMode )
+					confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+				print ( $msg+"\n" );
+				return {};
+			}
+			break;
+
+		case "hierarchy":
+			// Make sure the selected nodes are transforms
+			string $invalid_nodes[];
+			for( $node in $nodes ){
+				if( nodeType( $node ) != "transform" )
+					$invalid_nodes[size($invalid_nodes)] = $node;
+				else
+					$valid_nodes = $nodes;
+			}
+
+			if( size( $invalid_nodes ) ){
+				string $msg = "The selected node(s) for the \"Hierachy\" option must be transforms.\n";
+				$msg +=(  "Please select the transform node(s) to be tagged for ["+$name+"].\n" );
+				$msg += ( "(Note: nurbs surfaces are pruned out)\n" );
+				if( !$batchMode )
+					confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+				else
+					print ( $msg+"\n" );
+				return {};
+			}
+			// no break, continue to other checks
+
+		case "verts":
+			// Check for meshes
+			string $mesh_nodes[] = `ls -dag -ni -et "mesh" -sl -l`;
+			if( !size( $mesh_nodes ) ){
+				string $msg = ( "No \"mesh\" nodes found.\n" );
+				$msg +=(  "Please select the meshes to be tagged for ["+$name+"].\n" );
+				$msg += ( "(Note: nurbs surfaces are pruned out)\n" );
+				if( !$batchMode )
+					confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+				else
+					print ( $msg+"\n" );
+				return {};
+			}
+
+			if( $export_type == "verts" ) // hierarchy uses these checks too
+				$valid_nodes = $mesh_nodes;
+
+			// Check for instances (get the instanced transforms)
+			for( $valid_node in $valid_nodes ){
+				string $instances[] = `listRelatives -ap $valid_node`;
+				if( size( $instances ) > 1 )
+					$valid_nodes = stringArrayCatenate( $valid_nodes, $instances );
+			}
+
+			// check for nurbs
+			string $nurbs_nodes[] = `ls -dag -ni -et "nurbsSurface" -sl`;
+			if( size( $nurbs_nodes ) ){
+				string $msg = "\nNurbs surfaces not supported.\n";
+				$msg += "They must be converted to a mesh for export\n";
+				$msg += "otherwise, they will be pruned out of the list while exporting...\n";
+				for( $nurbs_node in $nurbs_nodes )
+					$msg += ( "Nurbs Surface: "+$nurbs_node+"\n" );
+				print ( $msg+"\n" );
+			}
+			break;
+		default:
+			error ( "Unknown export type ["+$export_type+"]. Aborting...\n" );
+	}
+
+	// check visibility
+	string $invisible_nodes[];
+	for( $valid_node in $valid_nodes ){
+		// make sure I have the long name
+		if( !gmatch( $valid_node, "|*") ){
+			string $long_name[] = `ls -l $valid_node`;
+			$valid_node = $long_name[0];
+		}
+
+		string $toks[] = {};
+		int $size = tokenize( $valid_node, "|", $toks );
+		for( $i=$size-1; $i!=-1; $i-- ){
+			if( !size( $valid_node ) || !objExists( $valid_node ))
+				continue;
+
+			// Check each level in the long path
+			if( getAttr( $valid_node+".visibility" ) == 0 ){
+				$invisible_nodes[size($invisible_nodes)] = $valid_node;
+				continue;
+			}else{
+				$valid_node = substitute( "|"+$toks[$i], $valid_node, "" );
+			}
+		}
+	}
+
+	if( size( $invisible_nodes ) ){
+		$invisible_nodes = stringArrayRemoveDuplicates( $invisible_nodes );
+		string $msg = "\nInvisible nodes are not supported...\n";
+		for( $invisible_node in $invisible_nodes )
+			$msg += ( "Pruning: "+$invisible_node+"\n" );
+		print ( $msg+"\n" );
+		$valid_nodes = stringArrayRemove( $invisible_nodes, $valid_nodes );
+	}
+
+	return $valid_nodes;
+}//END
+
+global proc string msExport_objectNodesSet( string $name, string $nodes[] ){
+	global int $g_msExport_DEBUG;
+	string $proc = msExport_stackTraceProc()+": ";
+
+	string $ntwk_node = msExport_objectNetworkNodeGet( $name );
+	if( !objExists($ntwk_node) ){
+		print ( $proc+"No network node found for ["+$name+"]. Aborting...\n" );
+		return "";
+	}
+	if( !size($nodes) ){
+		print ( $proc+"No nodes specified. Aborting...\n" );
+		return "";
+	}
+
+	// Check if the nodes have any pre-existing connections
+	string $valid_nodes[];
+	for( $node in $nodes ){
+		int $ok = 1;
+		string $result = msExport_objectNetworkConnectionNodePairGet( $node );
+		if( size( $result ) ){
+			string $toks[] = stringToStringArray( $result, " " );
+			string $ntwk_connection = $toks[0];
+			string $conn_node = $toks[1];
+			string $conn_ntwk_node = match( "^[^\.]*",  $ntwk_connection ); 
+
+			// if the node is already connected to the specified network node, skip it
+			if( $ntwk_node == $conn_ntwk_node ){
+				$ok = 0;
+				print ( $proc+"Node ["+$node+"] is already connected, skipping...\n" );
+				continue;
+			}
+
+			// Check if the node is part of an existing hierarchy
+			string $conn_export_type = msExport_nodeExportArgValueGet( $conn_ntwk_node, "-export_type" );
+			if( $conn_export_type == "hierarchy" ){
+				// make sure I have the transform node
+				string $trans_node;
+				if( nodeType($node) == "mesh" ){
+					string $children[] = `listRelatives -f -p -type "transform" $node`;
+					if( size($children) ) $trans_node = $children[0];
+				}
+
+				// Check if the node is an actual child of the connected network node
+				if( $conn_node != $trans_node ){
+					string $children[] = `listRelatives -ad -f $conn_node`;
+					if( stringArrayContains( $node, $children ) ){
+							string $short_name = `match "[^|]*$" $node`;
+							string $name =  msExport_nodeExportArgValueGet( $ntwk_node, "-name" );
+							string $msg =  ( "The node ["+$short_name+"] is a child of tagged hierachy ["+$name+"].\n" );
+							$msg +=  ( "To remove node unparent it from ["+$conn_node +"].\n" );
+							$msg += "Skipping...\n";
+
+						if( !`about -batch` )
+								confirmDialog -t "MachStudio Warning"  -m $msg -ma "center" -button "OK";
+						else
+								warning ( $proc+$msg+"\n" );
+						$ok = 0;
+					}
+				}
+			 }
+
+			 if( $ok ){
+			 	 $ok = msExport_objectNetworkNodeDisconnect( $conn_ntwk_node, {$conn_node}, 1 );
+			 	 if( $g_msExport_DEBUG )
+			 	 	 print ( "DISCONNECT network node ["+$ntwk_connection+"], node ["+$conn_node+"], ok ["+$ok+"]\n" );
+			 }
+		}
+
+		if( $ok )
+			$valid_nodes[size($valid_nodes)] = $node;
+	}
+
+	if( size( $valid_nodes ) )
+		msExport_objectNetworkNodesConnect( $ntwk_node, $valid_nodes );
+
+	return $ntwk_node;
+}//END
+
+// Create an object
+global proc string msExport_objectCreate( string $args, string $nodes[], string $attrs[] ){
+	// Make sure a node does not exist
+	string $name = msExport_argValueGet( $args, "-name" );
+	string	$ntwk_node = msExport_objectNetworkNodeGet( $name );
+	if( objExists( $ntwk_node ) ){
+		print ( "Object ["+$name+"] already exists. Nothing to do...\n" );
+		return "";
+	};
+
+	// create network node
+	string $attr = "mspExportNodes";
+	string $ntwk_node = `createNode -n ( "msExport_"+$name ) "network"`;
+	addAttr -at "message" -ln $attr -m -im 0 $ntwk_node;
+
+	// set the args to the network node, connect the nodes
+	msExport_nodeExportArgsSet( $ntwk_node, $args );
+	$ntwk_node = msExport_objectNodesSet( $ntwk_node, $nodes );
+
+	if( objExists($ntwk_node) ){
+		string $export_type = msExport_argValueGet( $args, "-export_type" );
+		if( $export_type == "hierarchy" ){
+			select $nodes;
+			$nodes = `ls -dag -ni -et "mesh" -sl -l`;
+		}
+
+		// add any attrs
+		for( $attr in $attrs ){
+			for( $node in $nodes ){
+				if(!`attributeExists $attr $node`)
+					// default is "on" if attr was added
+					msExport_nodeAttrValSet( $node, $attr, 1 );
+			}
+		}
+	}
+	return $ntwk_node;
+}//END
+
+global proc int msExport_objectNameValidate( string $name, int $unique ){
+	int $batchMode = `about -batch`;
+
+	// Make sure the name is unique
+	if( $unique ){
+		if( msExport_objectExists( $name ) ){
+			string $msg = ( "The name ["+$name+"] already exists.\n" );
+			$msg += "Enter a unique name for the object.\n";
+			if( !$batchMode )
+				confirmDialog -t "MSP Export Warning" -m $msg -ma "center" -button "OK";
+			else
+				print ( $msg+"\n" );
+			return 0;
+		}
+	}
+
+	// check for a valid name (names can not have any illegal characters
+	string $match = match( "[a-zA-Z0-9_]+", $name );
+	if( size( $match ) !=  size( $name ) ){
+		string $msg = ( "Illegal characters found in name ["+$name+"].\n" );
+		$msg += "Please only use 'letters', 'numbers' or '_'.\n";
+		if( !$batchMode )
+			confirmDialog -t "MSP Export Warning" -m $msg -ma "center" -button "OK";
+		else
+			print ( $msg+"\n" );
+		return 0;
+	}
+	return 1;
+}//END
+
+global proc int msExport_objectRename( string $old_name, string $new_name ){
+	string $proc = msExport_stackTraceProc()+": ";
+
+	if( !msExport_objectNameValidate( $new_name, 1 ) )
+		return 0;
+
+	// Set the new name, refresh the UI (this can be sped up)
+	string $ntwk_node = msExport_objectNetworkNodeGet( $old_name );
+	msExport_objectExportArgValueSet( $old_name, "-name", $new_name );
+
+	// check if it's a referenced node, if so do not allow rename
+	if( `referenceQuery -isNodeReferenced $ntwk_node`){
+		string $msg  = ( "The object ["+$old_name+"] is referenced\n" );
+		$msg += "and can not be modified. Skipping...\n";
+		if( !`about -batch`  ){
+			confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+		}
+		print $msg;
+		return 0;
+	}
+
+	$new_name = rename ( $ntwk_node, "msExport_"+$new_name );
+	msExport_objectNodesSelect( $new_name );
+	msExport_print( $proc+"Remaning ["+$old_name+"] to ["+$new_name+"]..." );
+	return 1;
+}//END
+
+global proc int[] msExportUI_objectTransformKeysGet( string $transform ){
+	string $keys[] = `keyframe -q -name $transform`;
+	if( !size( $keys ) )
+		return{0,0};
+
+	float $start_keys[], $end_keys[];
+	for( $key in $keys ){
+		float $keyTimes[] = `keyframe -q -tc $key`;
+		if( !size($keyTimes))
+			continue;
+
+		$start_keys[size($start_keys)] = $keyTimes[0];
+		$end_keys[size($end_keys)]  = $keyTimes[size($keyTimes)-1];
+	}
+
+	int $fs, $fe;
+	if( size($start_keys) && size($end_keys) ){
+		$start_keys = sort( $start_keys );
+		$end_keys = sort( $end_keys );
+
+		$fs = $start_keys[0];
+		$fe = $end_keys[size($end_keys)-1];
+	}
+	return {$fs, $fe};
+}//END
+
+// Return the animated frame range for hierarchy based objects
+global proc int[] msExport_objectAnimStartEndGet( string $name ){
+	string $obj_nodes[] = msExport_objectNodesList( $name );
+
+	if( !size($obj_nodes) )
+		return {};
+
+	string $nodes[];
+	for( $obj_node in $obj_nodes ){
+		if( objExists( $obj_node ) )
+			$nodes[size($nodes)] = $obj_node;
+	}
+
+	if( !size($nodes) )
+		return {};
+
+	select -hi $nodes;
+	string $transforms[] = `ls -type "transform" -sl -l`;
+
+	int $start_keys[], $end_keys[];
+	for( $transform in $transforms ){
+		int $keys[] = msExportUI_objectTransformKeysGet( $transform );
+		if( $keys[1] == 0 ) continue;
+
+		$start_keys[size($start_keys)] = $keys[0];
+		$end_keys[size($end_keys)] = $keys[1];
+	}
+
+	int $fs, $fe;
+	if( size($start_keys) && size($end_keys) ){
+		$fs = $start_keys[0];
+		$fe = $end_keys[size($end_keys)-1];
+	}
+
+	return {$fs, $fe};
+}//END
+
+global proc int msExport_objectValuesSave( string $name, string $file_path ){
+	string $proc  = msExport_stackTraceProc()+": ";
+	string $args = msExport_objectExportArgsGet( $name );
+
+	// More data can be described here
+	// for now only saving args
+	string $text = $args;
+
+	msExport_dataSave( {$text}, $file_path );
+
+	if( !`file -q -ex $file_path` )
+		error ( $proc+"Error writing file ["+$file_path+"]. Aborting...\n" );
+
+	return 1;
+}//END
+
+global proc string[] msExport_objectValuesRead( string $file_path ){
+	int $fileId=`fopen $file_path "r"`;
+	string $data[];
+	string $line = `fgetline $fileId`;
+	while ( size($line) > 0 ){
+		// drop the return carriage
+		$line = substitute( "\n", $line, "" );
+		$data[size($data)] = $line;
+		$line = `fgetline $fileId`;
+	}
+	fclose $fileId;
+	return $data;
+}//END
+
+global proc int msExport_objectValuesCopy( string $source, string $target_name, string $target_selected[], int $clear_export_attrs ){
+	string $proc  = msExport_stackTraceProc()+": ";
+
+	// Check if the source name is a file path
+	string $source_args, $source_name;
+	if( !msExport_objectExists( $source ) ){
+		// Check if the source is a file
+		if( `file -q -ex $source` ){
+			// get file and read values
+			string $data[] = msExport_objectValuesRead( $source );
+			$source_args = $data[0];
+			$source_name = msExport_argValueGet( $source_args, "-name" );
+		}else{
+			warning ( $proc+"The source object ["+$source+"] does not exist. Aborting...\n" );
+			return 0;
+		}
+	}else{
+		$source_args = msExport_objectExportArgsGet( $source );
+		$source_name = $source;
+	}
+
+	if( !size( $source_args ) && !size( $source_name ) )
+		return 0;
+
+	// Get the source export args
+	string $source_export_type = msExport_argValueGet( $source_args, "-export_type" );
+
+	// Check if the target already exists
+	if( msExport_objectExists( $target_name ) ){
+		// check the export type for the target
+		string $target_args = msExport_objectExportArgsGet( $target_name );
+		string $target_export_type = msExport_argValueGet( $target_args, "-export_type" );
+
+		if( $source_export_type != $target_export_type ){
+			print ( "source args: ["+$source_args+"], target args: ["+$target_args+"]\n" );
+
+			if( $target_export_type == "hierarchy" ){
+				string $valid_nodes[] = msExport_objectNodesByExportTypeResolve( $target_name, $source_export_type, $target_selected );
+				if( !size($valid_nodes) )
+					return 0;
+
+				// select original object nodes, disconnect
+				msExport_objectNodesSelect( $target_name );
+				string $orig_target_nodes[] = `ls -sl -l`;
+				string $target_ntwk_node = msExport_objectNetworkNodeGet( $target_name );
+				$target_args = substitute( "-name "+$source_name, $source_args, "-name "+$target_name );
+
+				msExport_objectNetworkNodeDisconnect( $target_ntwk_node, $orig_target_nodes, 0 );
+				msExport_nodeExportArgsSet( $target_ntwk_node, $target_args );
+				msExport_objectNodesSet( $target_name, $valid_nodes );
+				msExport_objectNodesSelect( $target_name );
+			}else{
+				string $msg = ( "The target object ["+$target_name+"] already exists.\n" );
+				$msg += ( "To change the export type from ["+$target_export_type+"] to ["+$source_export_type+"]\n" );
+				$msg += "You must first clear the existing tags. Aborting...\n";
+
+				if( !`about -batch` )
+					confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+				else
+					print( $proc+$msg+"\n" );
+				return 0;
+			}
+		}
+	}else{
+		string $valid_nodes[] = msExport_objectNodesByExportTypeResolve( $target_name, $source_export_type, $target_selected );
+		if( !size($valid_nodes) )
+			return 0;
+
+		string $target_args = substitute( "-name "+$source_name, $source_args, "-name "+$target_name );
+		print ( "Setting args from ["+$source+"] to ["+$target_name+"], ["+$target_args+"]\n" );
+		msExport_objectCreate( $target_args, $valid_nodes, {} );
+		msExport_objectNodesSelect( $target_name );
+	}
+
+	return 1;
+}//END
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Main procs
+
+// Run MachStudio Exort commands
+global proc int msExport_exportObject( string $args, string $selected[] ){
+	string $proc = msExport_stackTraceProc();
+
+	global string $g_plugin_CURRENT_VERSION;
+	global string $g_msExport_VERSION;
+	global string $g_msExportUI_VERSION;
+	global int $g_msExport_DEBUG;
+	global string $gMainProgressBar;
+
+	if( $args == "-h"||$args == "-help" ){
+		string $help[] = {
+			"Args for \"msExport_exportObject\":",
+			" ",
+			"-directory       use to specify the directory to save data in.",
+			"-name            use to specify the object (or camera) name.",
+			"-export_type     use to specify the export type. Valid types are \camera\", \"verts\", \"hierarchy\"",
+			"                 \"camera\"    --> use to write out camera animation (curves only).",
+			"                 \"verts\"     --> use to write out vert data. Use with \"-static\" for hierarchies with no anim (better performance)",
+			"                 \"hierarchy\" --> use to write out entire hierarchy. Use with \"-static\" for hierarchies with no anim (better performance)",
+			"                 \"static\"    --> OBSOLETE: use 'verts' with '-static' flag",
+			" ",
+			"-static          use when writing static geometry. Default 0. Use with \"-export_type\".",
+			"-geom            use when writing out deforming geometry. Default 1. Use with \"-export_type\".",
+			"-merge           use to merge materials. Only valid for \"static\" geometry.",
+			"-auto_detect     use to turn deforming geometry auto detection on. Default is on. For \"hierarchy\" only",
+			" ",
+			" ",
+			"Anim flags: only used if \"anim\" is '1'.",
+			" ",
+			"-anim            use to indicate that the animation should be written out. Default 0. Use with \"-export_type\".",
+			"-bake            use to indicate if animation should be baked on export. For \"hierarchy\" and \"camera\" only. Ignored for all others.",
+			"-compress        if '-compress' = 1. Use to specify the compression value. Percentage based tolerance.",
+			"-tolerance       if '-compress' = 1. Use to specify the compression value. Percentage based tolerance.",
+			"-fs              specify the frame start,",
+			"-fe              specify the frame end",
+			" ",
+			"-validate        used to check if objects are valid. Off by default.",
+			"-short_filename  If not used, the file name will include the scene name by default.",
+			"-suggest         use to turn on warning/suggestion messages from exporter. Default if off.",
+			"-confirm         use to turn off error messages from exporter. Default is errors messaging on.",
+			"-log_file        used to write out script editor details to a log file",
+			" ",
+			" ",
+			"Examples:",
+			"msExport_exportObject( \"-name C030 -export_type camera -bake 1 -fs 101 -fe 110 -directory D:/Maya/\", {} );",
+			"msExport_exportObject( \"-name nick -export_type hierarchy -geom 1 -anim 1 -bake 1 -fs 101 -fe 110 -directory D:/Maya/\", {} );",
+			"msExport_exportObject( \"-name Set_001 -export_type verts -static -merge -geom 1 -anim 0 -directory D:/Maya/\", {} );"
+		};
+		print $help;
+		return 0;
+	}
+
+	int $batchMode = `about -batch`;
+	if( $batchMode ){
+		print "\n------------------------------------------------------------------------------------\n";
+		print "------------------------------------------------------------------------------------\n";
+		print ( "sgpuMachExport plug-in: Version "+$g_plugin_CURRENT_VERSION+"\n" );
+		print ( "msExport.mel version: "+$g_msExport_VERSION+"\n" );
+		print ( "msExportUI.mel version: "+$g_msExportUI_VERSION+"\n\n" );
+		print ( "Command: "+$proc+"( \""+$args+"\" )\n\n\n" );
+	}
+	$proc += ": ";
+
+	// Get the arg values
+	string $directory     = msExport_argValueGetString( $args, "-directory", "" );
+	string $name          = msExport_argValueGetString( $args, "-name", "" );
+	string $export_type   = msExport_argValueGetString( $args, "-export_type", "verts" );
+	int    $static        = msExport_argValueGetOpt(    $args, "-static" );
+	int    $geom          = msExport_argValueGetInt(    $args, "-geom", 1 );
+	int    $merge         = msExport_argValueGetOpt(    $args, "-merge" );
+	int    $auto_detect   = msExport_argValueGetInt(    $args, "-auto_detect", 1 );
+	int    $anim          = msExport_argValueGetInt(    $args, "-anim", 0 );
+	int    $bake          = msExport_argValueGetInt(    $args, "-bake", 1 );
+	int    $compress      = msExport_argValueGetInt(    $args, "-compress", 0 );
+	float  $tolerance     = msExport_argValueGetFloat(  $args, "-tolerance", 0 );
+	int    $fs            = msExport_argValueGetInt(    $args, "-fs", 0 );
+	int    $fe            = msExport_argValueGetInt(    $args, "-fe", 0 );
+	int    $obj_validate  = msExport_argValueGetOpt(    $args, "-validate" );
+	int    $short_name    = msExport_argValueGetOpt(    $args, "-short_filename" );
+	int    $suggest       = msExport_argValueGetOpt(    $args, "-suggest" );
+	int    $confirm       = msExport_argValueGetOpt(    $args, "-confirm" );
+	string $log_file      = msExport_argValueGetString( $args, "-log_file", "" );
+	string $command, $cmd_name;
+	float $startTime = `timerX`;
+
+	// start the log file
+	int $file_id;
+	if( size($log_file) )
+		$file_id = `cmdFileOutput -o $log_file`;
+
+	// account for obsolete flags
+	if( $export_type == "static" ){
+		$export_type = "verts";
+		$static = 1;
+		$anim = 0;
+	}
+
+	if( !size( $name ) )
+		error( $proc+"No name specified. Aborting...\n" );
+
+	string $export_roots[] = msExport_objectNodesList( $name );
+	if( !size($selected)){
+		select $export_roots;
+		$selected = sort(`ls -sl -l`);
+	}
+
+	// Exit if no selection and object name
+	if( !size($selected) )
+		error( $proc+"Unable to get nodes for export ["+$name+"]. Aborting..." );
+
+	print ("Using selected node for export:\n");
+	for($sel in $selected)
+		print( "   "+$sel+"\n" );
+
+	// Validate the selection based on the export type
+	if( $obj_validate ){
+		if( !size( msExport_objectNodesByExportTypeResolve( $name, $export_type, $selected ) ) )
+			error ( $proc+"Invalid object. Aborting...\n" );
+	}
+
+	// Set the new args to the object nodes - only for geom
+	if( $geom == 1 ){
+		string $cur_args = msExport_objectExportArgsGet( $name );
+		if( $cur_args != $args ){
+			if($g_msExport_DEBUG){
+				print ("\n"+$proc+"orig args   ["+$cur_args+"].\n" );
+				print ( $proc+"export args ["+$args+"].\n" );
+			}
+			msExport_objectExportArgsSet( $name, $args );
+		}
+	}
+
+	// Resolve the directory path - create directories if needed.
+	if( !size( $directory ) )
+		$directory = msExport_directoryResolve( "", 0, 1 );	
+
+	string $file_path = msExport_filepathResolve( $directory, 0, 1, $name, $short_name );
+	if( !size($file_path) )
+		error( $proc+"Unable to resolve file name for ["+$name+"]. Aborting..." );
+
+	// Set to specified timeline (otherwise will use current timeline)
+	int $cur_fs = `playbackOptions -q -min`;
+	int $cur_fe = `playbackOptions -q -max`;
+	if( $fe == 0 || $fe < $fs ){
+		$fs = $cur_fs;
+		$fe = $cur_fe;
+	}
+
+	// Get the export commands
+	string $export_commands[];
+	switch($export_type){
+		case "camera":
+			string $export_cmd = "sgpuWriteCamera";
+			if( !$bake )
+				$export_cmd += " -noBake";
+			$export_cmd += ( " -fs "+$fs+" -fe "+$fe );
+			$export_cmd += ( " -file \""+$file_path+".cam\""  );
+			$export_commands[size($export_commands)] = $export_cmd;
+			break;
+
+		case "hierarchy":
+		case "verts":
+			string $sgpuCmd = "sgpuWriteModel";
+			if( $export_type == "verts" )
+				$sgpuCmd = "sgpuWriteVerts";
+
+			if( $geom ){ // gxb
+				string $export_cmd = ( $sgpuCmd +" -geom " );
+				if( $static ){
+					$export_cmd += " -static";
+					$anim = 0;   // force anim off
+
+					if( $merge )
+						$export_cmd += " -merge";
+				}
+				if( $export_type == "hierarchy" ){
+					if( !$auto_detect )
+						$export_cmd += " -noAutoDetect";
+				}
+				$export_cmd += ( " -file \""+$file_path+".gxb\"" );
+				$export_commands[size($export_commands)] = $export_cmd;
+			}
+
+			if( $anim ){ // gab
+				string $export_cmd = ( $sgpuCmd +" -anim " );
+				if( $export_type == "hierarchy" ){
+					if( !$bake )
+						$export_cmd += " -noBake";
+				}
+				if( $compress )
+					$export_cmd += ( " -compress " );
+				if( $tolerance )
+					$export_cmd += ( " -tolerance "+$tolerance );
+				$export_cmd += ( " -fs "+$fs+" -fe "+$fe );
+				$export_cmd += ( " -file \""+$file_path+".gab\"" );
+				$export_commands[size($export_commands)] = $export_cmd;
+			}
+
+			if( $suggest )
+				$export_cmd += " -suggest";
+			if( $confirm )
+				$export_cmd += " -confirm";
+			break;
+		default:
+			error ( "Unknown export type ["+$export_type+"]. Aborting...\n" );
+	};
+
+	// Run the commands
+	string $catch_errors[];
+	cycleCheck -e off;  // disable warnings
+	for($export_command in $export_commands){
+		// get the command type
+		string $command_type = "geometry for";
+		if( gmatch( $export_command, "*.gab*" ) )
+			$command_type = "animation for";
+		else if( gmatch( $export_command, "*.cam*" ) )
+			$command_type = "camera";
+
+		string $msg = ( "\n\nMachStudioPro: Exporting "+$command_type+" ["+$name+"]...\n\n" );
+		print $msg;
+
+		if($g_msExport_DEBUG){
+			print "<<<<<<<<<< MachStudio Export: DEBUG MODE = ON. Print commands only! >>>>>>>>>>\n\n";
+			print ( $export_command+"\n" );
+		}else{
+			if( !$batchMode ){
+				progressBar -e -bp -ii false -st $msg -max 100 $gMainProgressBar;
+				progressBar -e -s 50 $gMainProgressBar;
+			}
+
+			// Run the commands
+			if( catch( evalEcho( $export_command ) ) )
+				$catch_errors[size($catch_errors)] = $export_command;
+
+			if( !$batchMode ){
+				progressBar -e -s 50 $gMainProgressBar;
+				progressBar -e -ep $gMainProgressBar;
+			}
+		}
+	}
+	cycleCheck -e on; // enable warnings
+
+	// Report errors
+	int $ok = 1;
+	if( size($catch_errors)){
+		print "\n\n"; // formating
+		warning ($proc+"Caught error on the following command(s). Please check script editor for details." );
+		print $catch_errors;
+		print "\n\n"; // formating
+		$ok = 0;
+	}
+
+	msExport_print("     Total Time exporting ["+$name+"]: "+`timerX -startTime $startTime`+"\n\n");
+
+	// Close the log file
+	if( size( $log_file) ){
+		if( $file_id != -1 )
+			cmdFileOutput -close $file_id;
+		print ( $proc+"Writing log file: ["+$log_file+"]\n" );
+	}
+
+	return $ok;
+}//END
+
+global proc int msExport_exprortScene( string $argsList[] ){
+	float $startTime = `timerX`;
+	for( $args in $argsList )
+		msExport_exportObject( $args, {} );
+
+	print ("Total Time exporting scene ["+`file -q -sn`+"]: "+`timerX -startTime $startTime`+"\n\n");
+	return 1;
+}//END
+
+global proc string msExport_dataSave( string $data[], string $file_path ){
+	string $proc = msExport_stackTraceProc()+": ";
+
+	// Make sure the directory exists
+	string $directory = dirname( $file_path );
+	if( !`filetest -d $directory` ){
+		if( !catch( `sysFile -md $directory` ) ){
+			print ( $proc+"Creating directory ["+$directory+"]...\n" );
+		}else{
+			error ( $proc+"Error creating directory ["+$directory+"]. Aborting..." );
+		}
+	}
+
+	// write out the batch file
+	int $fileId = `fopen $file_path "w"`;
+	for($dat in $data)
+		fprint $fileId $dat;
+	fclose $fileId;
+
+	if( `file -q -ex $file_path` )
+		print ( $proc+"Writing file to disk ["+$file_path+"]...\n" );
+	else
+		error ( $proc+"Error writing file ["+$file_path+"]. Aborting...\n" );
+
+	return $file_path;
+}//END
+
+global proc string[] mayaBatchFileCreate( string $argsList[], string $source_file, int $single_process ){
+	string $proc = msExport_stackTraceProc()+": ";
+
+	// mayabatch  executable (this could be OS specific)
+	string $batch_command = ( "mayabatch.exe -batch -file \""+$source_file+"\"" );
+
+	// Get the directory
+	string $directory = msExport_argValueGet( $argsList[0], "-directory" );
+	string $batch_directory = ( $directory+"msp_batch/" );
+	$batch_directory = msExport_directoryResolve( $batch_directory, 0, 1 );
+
+	// Get the date stamp
+	string $date_stamp = `date -format "YYYYMMDD_hhmmss"`;
+
+	string $batch_files[];
+	if( $single_process ){
+		// Create one file with all the object commands
+		string $scene_name = match( "[^/\\]*$", $source_file );
+		$scene_name = substitute( ".m[ab]$", $scene_name, "" );
+		string $batch_file = ( $batch_directory+$scene_name+"_"+$date_stamp+".bat" );
+		string $log_file =( $batch_directory+$scene_name+"_"+$date_stamp+".log" );
+
+		string $maya_command;
+		for( $i=0; $i<size($argsList); $i++ ){
+			$maya_command += ( "\\\""+$argsList[$i]+"\\\"" );
+			if( $i != size($argsList)-1 ) $maya_command += ", ";
+		}
+		$maya_command = ( "msExport_exprortScene( {"+$maya_command+"} )" );
+
+		string $cmd_str = ( $batch_command );
+		$cmd_str += ( " -log  \""+$log_file+"\"" );
+		$cmd_str += ( " -command \""+$maya_command+"\""  );
+		$batch_files[0] = msExport_dataSave( {$cmd_str}, $batch_file );
+	}else{
+		// Create one file per object command
+		for( $args in $argsList ){
+			string $name = msExport_argValueGet( $args, "-name" );
+			string $batch_file = ( $batch_directory+$name+"_"+$date_stamp+".bat" );
+			string $log_file =( $batch_directory+$name+"_"+$date_stamp+".log" );
+
+			// start the command string
+			string $cmd_str = ( $batch_command );
+			$cmd_str += ( " -log  \""+$log_file+"\"" );
+			$cmd_str += ( " -command \"msExport_exportObject( \\\""+$args+"\\\", {} )\""  );
+			$batch_file = msExport_dataSave({$cmd_str}, $batch_file );
+			$batch_files[size($batch_files)] = $batch_file;
+		}
+	}
+	return $batch_files;
+}//END
+
+global proc int msExport_mayaBatch( string $argsList[], string $source_file, int $single_process, int $run, int $monitor ){
+	string $proc = msExport_stackTraceProc()+": ";
+	string $batch_files[] = mayaBatchFileCreate( $argsList, $source_file, $single_process );
+	if( $run ){
+		for( $batch_file in $batch_files ){
+			msExport_mayaBatchRun($batch_file, $monitor);
+		}
+	}
+	return 1;
+}//END
+
+global proc int msExport_mayaBatchRun( string $batch_file, int $monitor ){
+	string $proc = msExport_stackTraceProc();
+
+	// make sure the file exists
+	if( !`file -q -ex $batch_file` )
+		error ( $proc+"File does not exist ["+$batch_file+"]. Aborting...\n" );
+
+	// Run the command
+	if( $monitor )
+		system( "start "+$batch_file );
+	else
+		system( "shell "+$batch_file );
+	print ( $proc+"\nRunning batch file ["+$batch_file+"]...\n" );
+	return 1;
+}//END
+

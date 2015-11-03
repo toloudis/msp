@@ -1,0 +1,2813 @@
+/*
+Location --> C:\Program Files\Autodesk\Maya2011\scripts\startup
+Location --> %USERPROFILE%\Documents\maya\2011-x64\scripts
+Location --> %USERPROFILE%\Documents\maya\scripts
+*/
+
+// SCRIPT VERSION
+global string $g_msExportUI_VERSION;
+$g_msExportUI_VERSION = "1.4.0.2.2";
+
+source "msExport.mel";
+print ( "msExportUI.mel version: "+$g_msExportUI_VERSION+"\n" );
+
+// Automatically build the menu
+msExportUI_menuBuild();
+
+/* Changes
+
+1.4.0.2.1 changes 
+added a condition to allow batch exporting by network controllers, and the simpleExport scripts
+-zd
+1.4.0.2.2 changes 
+Maya 2011 has differnt line spacing formating for the UI fonts.  Because of this, the hardcoded frame sizes originally coded for previous versions of Maya
+were too small, and the UI printout was running out of room.  I've enlarged the frame windows to accomidate all versions of Maya now.
+-zd
+
+*/
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Exporter Menu
+
+global proc msExportUI_menuBuild(){
+	global int $g_msExport_DEBUG;
+
+	msExportUI_allWindowsClose();
+
+	// Check the MEL script and plug-in versions.
+	int $valid = msExport_versionValidate();
+
+	// For backwards compatibility - delete old menu
+	string $old_menu = "sgpuToolsMenu";
+	if(`menu -q -exists $old_menu`)
+		deleteUI -menu "sgpuToolsMenu";
+
+	// Rebuild the menu if it exists
+	string $menu_name = "msExportUIMenu";
+	if(`menu -q -exists $menu_name`)
+		deleteUI -menu $menu_name;
+
+	if( !$valid )
+		return;
+
+	menu -l "MachStudio" -tearOff 1 -allowOptionBoxes 1 -parent MayaWindow $menu_name;
+		// TAGGING UI
+		menuItem -l "TagObjectsUI"  -c "msExportUI_tagObject_windowBuild()";
+		menuItem -divider true;
+
+		// OBJECT UTILITIES
+		menuItem -l "List Objects"                -c "msExportUI_objectListCB()";
+		menuItem -l "Select All Objects"          -c "msExport_objectNodesSelectAll()";
+		menuItem -l "Select Object Nodes"         -c "msExportUI_objectSelectCB(\"\")";
+		menuItem -l "Rename Object"               -c "msExportUI_objectRenameWindow(\"\")";
+		menuItem -l "Add Selected to Object"      -c "msExportUI_objectAddSelectedCB(\"\")";
+		menuItem -l "Remove Selected from Object" -c "msExportUI_objectRemoveSelectedCB(\"\")";
+
+		menuItem -divider true;
+		menuItem -l "Clear All Objects"         -c "msExportUI_objectClearAllCB()";
+		menuItem -l "Clear Object Tags"         -c "msExportUI_objectTagsClearCB(\"\")";
+		menuItem -divider true;
+		menuItem -l "Object Export Attrs"       -c "msExportUI_exportAttrs_windowBuild(\"\")";
+		menuItem -divider true;
+
+		// OBJECT TEMPLATES
+		menuItem -l "Copy Object Values" 	-c "msExportUI_objectTemplateWindow(\"\",\"copy\")";
+		menuItem -l "Save Object Template"  -c "msExportUI_objectTemplateSaveCB(\"\")";
+		menuItem -l "Read Object Template"  -c "msExportUI_objectTemplateWindow(\"\",\"read\")";
+		menuItem -divider true;
+
+		// EXPORT SECTION
+		menuItem -subMenu true -label "Export Selected..." -tearOff 1;
+			menuItem -l "Hierarchy" -c "msExportUI_exportCommandCB(\"hierarchy\",0)" -ann "To export geometry below selected node(s)";
+			menuItem -l "Verts"     -c "msExportUI_exportCommandCB(\"verts\",0)"     -ann "To export the selected geometry";
+			menuItem -l "Camera"    -c "msExportUI_exportCommandCB(\"camera\",0)"     -ann "To export the selected camera";
+			setParent -menu ..;
+		menuItem -l "Export Scene"  -c "msExportUI_exportCommandCB(\"scene\",0)";
+			menuItem -optionBox true -c "msExportUI_windowBuild(0)";
+		menuItem -l "Export Scene (Batch Mode)" -c "msExportUI_exportCommandCB(\"scene\",2)";
+			menuItem -optionBox true -c "msExportUI_windowBuild(2)";
+		menuItem -l "Save Batch Files"          -c "msExportUI_exportCommandCB(\"scene\",1)";
+		menuItem -divider true;
+
+		// HELP MENU
+		menuItem -subMenu true -label "Help..." -tearOff 1;
+			menuItem -l "MachStudio Online Help" -c "showHelp -absolute \"http:\/\/www.studiogpu.com\/userguide\/\"";
+			menuItem -divider true;
+			menuItem -l "Quick Help"             -c "msExport_exportObject(\"-help\",{})";
+			menuItem -l "Debug Mode"             -c "msExportUI_debugModeCB()" -cb $g_msExport_DEBUG "msExportUI_debugMode";
+			menuItem -divider true;
+			menuItem -l "About MachStudio Exporter..." -c "msExportUI_aboutWindow()";
+}//END
+
+global proc msExportUI_aboutWindow(){
+	global string $g_msExportUI_VERSION;
+	global string $g_msExport_VERSION;
+	global string $g_plugin_CURRENT_VERSION;
+    string $text  = "Company: Studio GPU\n";
+           $text += "Product: MachStudio Exporter\n\n";
+           $text += ( "sgpuMachExport plug-in: Version "+$g_plugin_CURRENT_VERSION+"\n" );
+           $text += ( "msExportUI.mel: Version "+$g_msExportUI_VERSION+"\n" );
+           $text += ( "msExport.mel: Version "+$g_msExport_VERSION+"\n" );
+    confirmDialog -t "About MachStudio Exporter" -m $text -ma "left" -button "OK";
+    return;
+}//END
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// CALLBACKS
+
+global proc string msExportUI_formLayoutEdit( string $formLayout, string $controls[], int $formOffset, int $cntrlOffset, string $layout ){
+	if( !size( $controls  ) )
+		return "";
+
+	// Start building the command
+	string $cmd = "formLayout -edit\n";
+
+	switch( $layout ){
+		case "vertical":
+		case "vert":
+			for( $i=0; $i<size($controls); $i++ ){
+				if( $i == 0 )
+					$cmd += ( "-af "+$controls[$i]+" \"top\" "+ $formOffset+"\n" );
+				else
+					$cmd += ( "-ac "+$controls[$i]+" \"top\" "+$cntrlOffset+" "+$controls[$i-1]+"\n" );
+				$cmd += ( "-af "+$controls[$i]+" \"left\" " +  $formOffset+"\n" );
+				$cmd += ( "-af "+$controls[$i]+" \"right\" "+  $formOffset+"\n" );
+				$cmd += ( "-an "+$controls[$i]+" \"bottom\"\n\n" );
+			}
+			break;
+
+		case "horizontal":
+		case "horiz":
+			for( $i=0; $i<size($controls); $i++ ){
+				$cmd += ( "-af "+$controls[$i]+" \"top\" "+ $formOffset+"\n" );
+				if( $i == 0 )
+					$cmd += ( "-af "+$controls[$i]+" \"left\" " +  $formOffset+"\n" );
+				else
+					$cmd += ( "-ac "+$controls[$i]+" \"left\" "+$cntrlOffset+" "+$controls[$i-1]+"\n" );
+				$cmd += ( "-an "+$controls[$i]+" \"right\"\n" );
+				$cmd += ( "-an "+$controls[$i]+" \"bottom\"\n\n" );
+			}
+			break;
+	};
+
+	$cmd += ( $formLayout+"\n" );
+	eval $cmd;
+	return $formLayout;
+}//END
+
+global proc msExportUI_windowScriptJob_killWindowCB( string $window ){
+	// All windows with this scriptJob will be closed when a new scene opens
+	if( `window -ex $window` ) deleteUI $window;
+}//END
+
+global proc msExportUI_allWindowsClose(){
+	// Close all windows
+	string $windows[] = `lsUI -type "window"`;
+	for( $window in $windows ){
+		if( gmatch( $window, "msExportUI*" ) )
+			deleteUI $window;
+	}
+}//END
+
+global proc msExportUI_windowScriptJob_timeChangeCB(){
+	global string $g_msExportUI_namesList[];
+	global int $g_msExportUI_frameStart;
+	global int $g_msExportUI_frameEnd;
+
+	$g_msExportUI_frameStart = `playbackOptions -q -min`;
+	$g_msExportUI_frameEnd = `playbackOptions -q -max`;
+
+	for( $name in $g_msExportUI_namesList ){
+		int $value = `radioButtonGrp -q -sl ($name+"_msExportUIFramerangeType")`;
+		if( $value == 1 ){
+			intFieldGrp -e -v1 $g_msExportUI_frameStart -v2 $g_msExportUI_frameEnd ($name+"_msExportUIFramerange");
+		}
+	}
+}//END
+
+global proc msExportUI_directoryFileBrowserCB( string $directory_name, string $null ){
+	// two string are required for this callback - even if the second one is not used.
+	if( `window -q -ex "msExportUIExportSceneWindow"` ){
+		global string $g_msExportUI_directory;
+		$g_msExportUI_directory = $directory_name;
+		textFieldButtonGrp -e -tx $directory_name "msExportUIDirectory";
+	}
+}//END
+
+global proc msExportUI_sceneSaveCB( string $filename, string $fileType ){
+	// two string are required for this callback - even if the second one is not used.
+	file -rename $filename;
+	file -save;
+}//END
+
+global proc msExportUI_directoryTextFieldCB( string $textFieldButtonGrp, string $checkBox ){
+	global string $g_msExportUI_directory;
+	$g_msExportUI_directory = `textFieldButtonGrp -q -tx $textFieldButtonGrp`;
+	checkBox -e -v 0 $checkBox;
+}//END
+
+global proc msExportUI_directoryNameCB( string $checkBox, string $textFieldButtonGrp ){
+	global string $g_msExportUI_directory;
+	int $value = `checkBox -q -v $checkBox`;
+	string $directory = $g_msExportUI_directory;
+	if( $value )
+		$directory = msExport_directoryResolve( $g_msExportUI_directory, $value, 0 );
+	textFieldButtonGrp -e -tx $directory $textFieldButtonGrp;
+}//END
+
+global proc msExportUI_framerangeKeysGetCB( string $name ){
+	if( !`intFieldGrp -q -en ($name+"_msExportUIFramerange")` )
+		return;
+
+	int $frames[] = msExport_objectAnimStartEndGet( $name );
+	$fs = $frames[0];
+	$fe = $frames[1];
+	intFieldGrp -e -v1 $fs -v2 $fe($name+"_msExportUIFramerange");
+}//END
+
+global proc msExportUI_framerangeCB( string $name ){
+	global int $g_msExportUI_frameStart;
+	global int $g_msExportUI_frameEnd;
+
+	int $fs = $g_msExportUI_frameStart;
+	int $fe = $g_msExportUI_frameEnd;
+	int $enable;
+
+	int $value = `radioButtonGrp -q -sl ($name+"_msExportUIFramerangeType")`;
+	if( $value == 1 ){  // use time line
+		$enable = 0;
+	}else{
+		// Check if object has previous args
+		int $getFrames;
+		string $args = msExport_objectExportArgsGet( $name );
+		if( size( $args ) ){
+			int    $obj_fs = msExport_argValueGetInt( $args, "-fs", 0 );
+			int    $obj_fe = msExport_argValueGetInt( $args, "-fe", 0 );
+			if( $obj_fs && $obj_fe ){
+				$fs = $obj_fs;
+				$fe = $obj_fe;
+			}else{
+				$getFrames = 1;
+			}
+		}
+
+		// If not, then check for the objects anim range
+		if( $getFrames ){
+			int $frames[] = msExport_objectAnimStartEndGet( $name );
+			$fs = $frames[0];
+			$fe = $frames[1];
+		}
+		$enable = 1;
+	}
+
+	intFieldGrp -e -v1 $fs -v2 $fe -en $enable ($name+"_msExportUIFramerange");
+}//END
+
+global proc msExportUI_debugModeCB(){
+	int $on = `menuItem -q -cb "msExportUI_debugMode"`;
+	msExport_debugMode( $on );
+}//END
+
+global proc msExportUI_useSelectedCB( string $textFieldControl, int $validate ){
+	string $list[] = `ls -sl`;
+	if( size( $list ) ){
+		string $name = $list[0];
+		if( size( $list ) > 1 )
+			$name = stringArrayToString( $list," " );
+
+		if( $validate == 1 ){
+			if(!msExport_objectNameValidate( $name, 1 ) )
+				return;
+		}
+
+		// account for textFieldGrps and textFieldButtonGrps
+		if( `textFieldGrp -q -ex $textFieldControl` )
+			textFieldGrp -e -tx $name $textFieldControl;
+		else if( `textFieldButtonGrp -q -ex $textFieldControl` )
+			textFieldButtonGrp -e -tx $name $textFieldControl;
+	}
+}//END
+
+global proc msExportUI_objectCheckBoxCB( string $name, string $checkBox, string $frameLayout, string $popup, int $isCamera ){
+	global string $g_msExportUI_objectCheckBoxFramePairs[];
+	global string $g_msExportUI_cameraCheckBoxFramePairs[];
+
+	int $value = `checkBox -q -v $checkBox`;
+	int $mods = `getModifiers`;
+
+	string $controlPairs[] = {( $checkBox+" "+$frameLayout )};
+   	if ( $mods == 8 ){
+		if( $isCamera )
+			$controlPairs = $g_msExportUI_cameraCheckBoxFramePairs;
+		else
+			$controlPairs = $g_msExportUI_objectCheckBoxFramePairs;
+	}
+
+	for( $controlPair in $controlPairs ){
+		string $toks[] = stringToStringArray( $controlPair, " " );
+		checkBox -e -v $value $toks[0];
+		if( $value ){
+			frameLayout -e -cl 0 -vis 1 $toks[1];
+			msExportUI_objectMenuItemsBuild( $name, $popup, $isCamera  );
+		}else{
+			frameLayout -e -cl 1 -vis 0 $toks[1];
+			popupMenu -e -dai $popup;
+		}
+	}
+}//END
+
+global proc msExportUI_printExportArgsCB( string $name ){
+	print( "Export Args for ["+$name+"] --> \""+msExportUI_objectExportArgsGet( $name )+"\"" );
+}//END
+
+global proc msExportUI_objectListCB(){
+	string $names[] = msExport_objectNamesList();
+	string $msg;
+	if( !size($names) ){
+		$msg +=  "\nNo MachStudio objects found...\n";
+	}else{
+		$msg += "\nMachStudio objects:\n";
+		for( $name in $names )
+			$msg += ("   "+$name+"\n" );
+	}
+	confirmDialog -t "MachStudio" -m $msg -ma "center" -button "OK";
+}//END
+
+global proc msExportUI_objectAddSelectedCB( string $name ){
+	if( size($name) )
+		msExport_objectAddSelected( $name );
+	else
+		msExportUI_objectUpdateWindow( $name, "addToObject" );
+}//END
+
+global proc msExportUI_objectRemoveSelectedCB( string $name ){
+	if( size($name) )
+		msExport_objectRemoveSelected( $name );
+	else
+		msExportUI_objectUpdateWindow( $name, "removeFromObject" );
+}//END
+
+global proc msExportUI_objectSelectCB( string $name ){
+	if( size($name) )
+		msExport_objectNodesSelect( $name );
+	else
+		msExportUI_objectUpdateWindow( $name, "selectObjectNodes" );
+}//END
+
+global proc msExportUI_objectClearAllCB(){
+	// Clear all objects and close all windows
+	msExport_objectNodesClearAll();
+	msExportUI_allWindowsClose();
+}//END
+
+global proc msExportUI_objectTagsClearCB( string $name ){
+	if( size( $name ) ){
+		string $names[] = msExport_objectNamesList();
+		if( !stringArrayContains( $name, $names ) )
+			return;
+
+		// Clear object
+		msExport_objectNodesClear( $name );
+
+		// Refresh or close windows
+		if( !size( $names) )
+			msExportUI_allWindowsClose();
+		if( `window -ex "msExportUIExportSceneWindow"` )
+			msExportUI_windowRefresh();
+
+	}else{
+		msExportUI_objectUpdateWindow( $name, "clearObjectTags" );
+	}
+}//END
+
+global proc int msExportUI_objectExportArgsSet( string $name ){
+	string $args = msExportUI_objectExportArgsGet( $name );
+	string $nodes[] = msExport_objectNodesList( $name );
+	for( $node in $nodes )
+		msExport_nodeExportArgsSet( $node, $args );
+	return 1;
+}//END
+
+global proc msExportUI_objectExportArgValuesRefresh( string $name ){
+	string $orig_args = `checkBox -q -docTag ( $name+"_NameCheckBox")`;
+	msExportUI_objectRefreshCB( $orig_args );
+}//END
+
+global proc msExportUI_compressionToleranceRefresh( string $checkBox, string $floatSliderGrp ){
+	float $val = `floatSliderGrp -q -v $floatSliderGrp`;
+	if( $val != 0 )
+		checkBox -e -l "Compression: (Data loss)" $checkBox;
+	else
+		checkBox -e -l "Compression: (Lossless)" $checkBox;
+}//END
+
+global proc msExportUI_meshOptionsRefreshStateCB( string $name ){
+	int $export_selected = 0;
+	if( gmatch( $name, "exportSelected*" ) )
+		$export_selected = 1;
+
+	// Do not set any values - only update state based on values
+	int $export_type_val = `radioButtonGrp -q -sl ($name+"_msExportUIExportType")`;
+	int $anim_option_val = `radioButtonGrp -q -sl ($name+"_msExportUIAnimOpt")`;
+	int $static = `checkBox -q -v ($name+"_msExportUIStaticGeom")`;
+	int $compress_enable = `checkBox  -q -v ($name+"_msExportUICompress")`;
+
+	int $anim_options_visible = 1;
+	int $merge_enable = 0;
+	int $detect_enable = 0;
+	int $bake_enable = 0;
+	int $h = 175; //maya 2010 = 160
+
+	int $win_h, $collapsed;
+	if( $export_selected ){
+		$collapsed = `frameLayout -q -cl "msExportUIExportSelectedOptionsFrameLayout"`;
+		if( $collapsed )
+			$win_h = 145;
+		else
+			$win_h = 410;
+	}
+
+	if($static == 1){
+		// no anim options - hide/disable all anim related widgets
+		$anim_options_visible = 0;
+		$merge_enable = 1;
+		$detect_enable = 0;  // hierarchy only
+		$h = 70; // Maya 2010 = 60
+		if( $export_selected )
+			$win_h = 310;
+	}else{
+		switch( $export_type_val ){
+			case 1:    // Hierarchy
+				$detect_enable = 1;
+				$bake_enable = 1;
+				if( $anim_option_val == 1 )
+					$bake_enable = 0;
+				break;
+			case 2:   // Verts
+				$detect_enable = 0;
+				$bake_enable = 0;
+				break;
+		};
+
+		switch( $anim_option_val ){
+			case 1 : // Geom Only
+				$h = 100; // maya 2010 95;
+				if( $export_selected )
+					$win_h  = 342;
+				break;
+
+			case 2: // Anim Only
+				$merge_enable = 0;
+				break;
+		};
+	}
+
+	checkBox -e -en $merge_enable ($name+"_msExportUIMergeMaterials");
+	checkBox  -e -en $detect_enable ($name+"_msExportUIAutoDetect");
+	formLayout -e -vis $anim_options_visible ($name+"_msExportUI_meshOptionsFormLayout");
+	checkBox  -e -en $bake_enable ($name+"_msExportUIBakeAnimAnim");
+	floatSliderGrp -e -en $compress_enable ($name+"_msExportUIToleranceValue");
+	frameLayout -e -h $h ($name+"_msExportUIObjectFrameLayout");
+
+	if( $export_selected && !$collapsed )
+		window -e -h $win_h "msExportUIExportSelectedWindow";
+}//END
+
+global proc msExportUI_objectRefreshCB( string $input ){
+	// Set control values - do not change state
+	global int $g_msExportUI_frameStart;
+	global int $g_msExportUI_frameEnd;
+	int $cur_fs = $g_msExportUI_frameStart;
+	int $cur_fe = $g_msExportUI_frameEnd;
+
+	string $args, $name;
+	if( gmatch( $input, "exportSelected*" ) ){
+		$name = $input;
+		string $obj_name = `textFieldGrp -q -tx "msExportUIExportSelectedTextFieldGrp"`;
+
+		// Check for existing args
+		$args  = msExport_objectExportArgsGet($obj_name);
+
+		if( !size( $args ) )
+				return;
+	}else{
+		if( !gmatch( $input, "*-*" ) )
+			$args = msExport_objectExportArgsGet( $input );
+		else
+			$args = $input;
+
+		 $name = msExport_argValueGet( $args, "-name" );
+	}
+
+	// Get common values
+	string $export_type = msExport_argValueGet( $args,    "-export_type" );
+	int    $obj_fs      = msExport_argValueGetInt( $args, "-fs", 0 );
+	int    $obj_fe      = msExport_argValueGetInt( $args, "-fe", 0 );
+	int    $bake        = msExport_argValueGetInt( $args, "-bake", 1 );
+
+	// Set common values
+	checkBox -e -v $bake ($name+"_msExportUIBakeAnimAnim");
+	int $sl = 1;
+	if( $obj_fs && $obj_fe ){
+		$frame_enable = 0;
+		if( $cur_fs != $obj_fs || $cur_fe != $obj_fe ) $sl = 2;
+		if( $sl == 2 ) $frame_enable = 1;
+		radioButtonGrp -e -sl $sl ($name+"_msExportUIFramerangeType");
+		intFieldGrp    -e -v1 $obj_fs -v2 $obj_fe -en $frame_enable ($name+"_msExportUIFramerange");
+	}
+
+	if( $export_type != "camera" ){
+		// Get object-specific values
+		int $geom        = msExport_argValueGetInt(   $args, "-geom", 1 );
+		int $static      = msExport_argValueGetOpt(   $args, "-static"  );
+		int $merge       = msExport_argValueGetOpt(   $args, "-merge" );
+		int $auto_detect = msExport_argValueGetInt(   $args, "-auto_detect", 1 );
+		int $anim        = msExport_argValueGetInt(   $args, "-anim", 0  );
+		int $compress    = msExport_argValueGetInt(   $args, "-compress", 1 );
+		float $tolerance = msExport_argValueGetFloat( $args, "-tolerance", 0 );
+		int $tol_enable = 0;
+		if( $compress )
+			$tol_enable = 1;
+
+		// account for old args - update values.
+		if( $export_type == "static" ){
+			$export_type = "verts";
+			$static_val = "1";
+		}
+
+		int $eval;
+		switch( $export_type ){
+			case "hierarchy":
+				$eval = 1;
+				break;
+			case "verts":
+				$eval = 2;
+				break;
+		}
+
+		int $aval;
+		if( $geom == 1 && $anim == 0 )      $aval = 1;  // geom only
+		else if( $geom == 0 && $anim == 1 ) $aval = 2;  // anim only
+		else if( $geom == 1 && $anim == 1 ) $aval = 3;  // geom/anim
+
+		// Set the values
+		radioButtonGrp -e -sl $eval ($name+"_msExportUIExportType");
+		radioButtonGrp -e -sl $aval ($name+"_msExportUIAnimOpt");
+		checkBox -e -v $static ($name+"_msExportUIStaticGeom");
+		checkBox  -e -v $bake ($name+"_msExportUIBakeAnimAnim");
+		checkBox  -e -v $compress ($name+"_msExportUICompress");
+		floatSliderGrp -e -en $tol_enable -v $tolerance ($name+"_msExportUIToleranceValue");
+		checkBox  -e -v $merge ($name+"_msExportUIMergeMaterials");
+		checkBox  -e -v $auto_detect ($name+"_msExportUIAutoDetect");
+
+		// Refresh the control states
+		msExportUI_meshOptionsRefreshStateCB( $name );
+	}
+}//END
+
+global proc string msExportUI_objectExportArgsGet( string $name ){
+	global int $g_msExport_CANCEL_EXPORT;
+
+	// get the current args
+	string $obj_name = $name;
+
+	string $export_type;
+	if( gmatch( $name, "exportSelected*" ) ){
+		$obj_name = `textFieldGrp -q -tx "msExportUIExportSelectedTextFieldGrp"`;
+
+		string $selected[] = `ls -sl -l`;
+		if( $name == "exportSelectedCamera" ){
+			$export_type = "camera";
+		}else{
+			int $eval = `radioButtonGrp -q -sl ($name+"_msExportUIExportType")`;
+
+			switch($eval){
+				case 1: // hierarchy
+					$export_type = "hierarchy";
+					break;
+				case 2: // verts
+					$export_type = "verts";
+					break;
+			};
+		}
+
+		$directory = "";
+		$short_filename = 0;
+	}else{
+		string $cur_args  = msExport_objectExportArgsGet($obj_name);
+		$export_type = msExport_argValueGet( $cur_args, "-export_type" );
+	}
+
+	// common widgets
+	string $directory   = `textFieldGrp -q -tx "msExportUIDirectory"`;
+	int $short_filename = `checkBox -q  -v "msExportUIUseShortName"`;
+
+	// Check frame range...
+	int $fs    = `intFieldGrp  -q -v1 ($name+"_msExportUIFramerange")`;
+	int $fe    = `intFieldGrp  -q -v2 ($name+"_msExportUIFramerange")`;
+	// Add frame range check
+	if( !$fe || $fe <= $fs ){
+		string $msg = "WARNING!!!\n";
+		$msg += ( "Invalid frame range for ["+$name+"].\n" );
+		$msg += ( "Please specify a valid frame range to continue." );
+		confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+		$g_msExport_CANCEL_EXPORT = 1;
+		return "";
+	}
+
+	string $args = ( "-name "+$obj_name );
+	switch( $export_type ){
+		case "camera":
+			// camera export args
+			int $bake  = `checkBox -q -v ($name+"_msExportUIBakeAnimAnim")`;
+			$args += ( " -export_type camera -bake "+$bake+" -fs "+$fs+" -fe "+$fe );
+			break;
+
+		case "hierarchy":
+		case "verts":
+			$args += ( " -export_type "+$export_type );
+
+			int $static = `checkBox -q -v ($name+"_msExportUIStaticGeom")`;
+			if( $static ){
+				// same as geom only (no anim)
+				$args += " -static -geom 1 -anim 0";
+
+				if( `checkBox -q -en ($name+"_msExportUIMergeMaterials")` ){
+					if( `checkBox -q -v ($name+"_msExportUIMergeMaterials")` )
+						$args += " -merge";
+				}
+			}else{
+				int $anim_val = `radioButtonGrp -q -sl ($name+"_msExportUIAnimOpt" )`;
+
+				int $geom, $anim;
+				switch( $anim_val ){
+					case 1: $geom = 1; $anim = 0; break;     // geom only
+					case 2: $geom = 0; $anim = 1; break;     // anim only
+					case 3: $geom = 1; $anim = 1; break;     // geom/anim
+				}
+
+				$args += ( " -geom "+$geom );
+				if( $geom ){
+					// Check geometry options
+					// auto detect deforming geometry (hierarhcy only)
+					if( $export_type == "hierarchy" ){
+						if( `checkBox -q -en ($name+"_msExportUIAutoDetect")` ){
+							if( !`checkBox -q -v ($name+"_msExportUIAutoDetect")` )
+								$args += " -auto_detect 0";
+							else
+								$args += " -auto_detect 1";
+						}
+					}
+				}
+
+				$args += ( " -anim "+$anim );
+				if( $anim ){
+					// Check anim options
+					if( $export_type == "hierarchy" ){
+						// bake value (hierarchy only)
+						if( `checkBox -q -en ($name+"_msExportUIBakeAnimAnim")` ){
+							if( `checkBox -q -v ($name+"_msExportUIBakeAnimAnim")` )
+								$args += " -bake 1";
+							else
+								$args += " -bake 0";
+						}
+					}
+
+					// compression
+					int $compress =  `checkBox -q -v ($name+"_msExportUICompress")`;
+					if( $compress ){
+						$args += ( " -compress "+$compress );
+
+						float $tolerance = `floatSliderGrp -q -v ($name+"_msExportUIToleranceValue")`;
+						if( $tolerance > 0.0 )
+							$args += ( " -tolerance "+$tolerance );
+					}
+
+					// add frame range
+					$args += ( " -fs "+$fs+" -fe "+$fe );
+				}
+			}
+	};
+
+	// Common args
+	if( size( $directory ) )
+		$args += ( " -directory "+$directory );
+	if( $short_filename )
+		$args += " -short_filename";
+	$args += " -confirm";
+
+	$g_msExport_CANCEL_EXPORT = 0;
+	return $args;
+}//END
+
+global proc string[] msExportUI_objectExportArgValuesList(){
+	global int $g_msExport_CANCEL_EXPORT;
+	global string $g_msExportUI_namesList[];
+
+	string $list[]; clear $list;
+	for( $name in $g_msExportUI_namesList ){
+		// check if the check box is on
+		if( !`checkBox -q -v ($name+"_NameCheckBox")` )
+			continue;
+
+		string $args = msExportUI_objectExportArgsGet( $name );
+		if( $g_msExport_CANCEL_EXPORT ) // exit
+			return {};
+
+		if( size($args) )
+			$list[size($list)] = $args;
+	}
+	return $list;
+}//END
+
+global proc msExportUI_setValuesAndSaveFileCB(int $save){
+	string $names[] = msExport_objectNamesList();
+	for( $name in $names )
+		msExportUI_objectExportArgsSet( $name );
+
+	if( $save )
+		fileBrowserDialog -m 1 -fc "msExportUI_sceneSaveCB" -ft "mayaBinary" -an "Save As" -om "SaveAs" -ds 1;
+}//END
+
+global proc msExportUI_windowRefresh(){
+	global string $g_msExportUI_objectCheckBoxFramePairs[];
+	global string $g_msExportUI_cameraCheckBoxFramePairs[];
+	global string $g_msExportUI_directory;
+	global int $g_msExportUI_batchMode;
+	if(  !`window -ex "msExportUIExportSceneWindow"` )
+		return;
+
+	// Get the directory path and file checkbox values
+	string $directory = `textFieldButtonGrp -q -tx "msExportUIDirectory"`;
+	int $create_dir = `checkBox -q -v "msExportUICreateDirectory"`;
+	int $use_shortname = `checkBox -q -v "msExportUIUseShortName"`;
+
+	string $checkBoxFramePairs[] = stringArrayCatenate( $g_msExportUI_objectCheckBoxFramePairs, $g_msExportUI_cameraCheckBoxFramePairs );
+	string $off_checkBoxFramePairs[];
+	for( $checkFramePair in $checkBoxFramePairs ){
+		string $toks[] = stringToStringArray( $checkFramePair," " );
+		int $on = `checkBox -q -v $toks[0]`; 
+		if( !$on )
+			$off_checkBoxFramePairs[size($off_checkBoxFramePairs)] = $checkFramePair;
+	}
+
+	string $argsList[] = msExportUI_objectExportArgValuesList();
+	msExportUI_windowBuild( $g_msExportUI_batchMode );
+
+	// Refresh the UI values
+	for( $args in $argsList ){
+		$name = msExport_argValueGet( $args, "-name" );
+		if( !msExport_objectExists( $name ) )
+			continue;
+		msExportUI_objectRefreshCB( $args );
+	}
+
+	for( $off_checkBoxFramePair in $off_checkBoxFramePairs ){
+		string $toks[] = stringToStringArray( $off_checkBoxFramePair," " );
+		string $checkBox = $toks[0];
+		$checkBox = match( "[^|]*$", $checkBox );
+
+		string $frameLayout = $toks[1];
+		$frameLayout = match( "[^|]*$", $frameLayout );
+
+		string $name = match( "[^|]*$", $checkBox );
+		$name = substitute( "_NameCheckBox", $name, "" );
+
+		if( !msExport_objectExists( $name ) )
+			continue;
+
+		checkBox -e -v 0 $checkBox;
+		frameLayout -e -cl 1 -vis 0 $frameLayout;
+		popupMenu -e -dai ( $name+"_NameCheckBoxPopupMenu" );
+	}
+
+	// reset directory values
+	$g_msExportUI_directory = $directory;
+	textFieldButtonGrp -e -tx $directory "msExportUIDirectory";
+	checkBox -e -v $create_dir "msExportUICreateDirectory";
+	checkBox -e -v $use_shortname "msExportUIUseShortName";
+
+}//END
+
+// Main export command.
+global proc msExportUI_exportCommandCB( string $export_type, int $batchMode ){
+	global int $g_msExport_CANCEL_EXPORT;
+	global int $g_msExport_DEBUG;
+	global int $g_msExportUI_batchMode;
+
+	// "scene" is the only option that can run in maya batch mode.
+	if( $g_msExportUI_batchMode )  // force batch mode on (with run)
+		$batchMode = 2;
+	if( !$batchMode && `about -batch` == 1 )
+		$batchMode = 2;
+	if ( $batchMode == 3)
+		$batchMode = 0;
+	if( $batchMode && $export_type != "scene" ){
+		string $msg = "This command does not work in batch mode. Aborting\n";
+		$msg +=( "COMMAND: msExportUI_exportCommandCB( \""+$export_type+"\", "+$batchMode+" );\n" );
+		error $msg;
+	}
+
+	float $startTime = `timerX`;
+	switch($export_type){
+		case "scene":
+			int $windowExists = `window -ex "msExportUIExportSceneWindow"`;
+
+			string $argsList[];
+			if( $windowExists ){
+				// get args from UI
+				$argsList = msExportUI_objectExportArgValuesList();
+			}else{
+				// Export scene based on tags - no Export UI.
+				// get args from items in scene
+				$argsList =  msExport_objectExportArgsList();
+				if( !size( $argsList ) ){
+					string $msg = "No tagged cameras or objects found.";
+
+					if( !$batchMode ){
+						$msg += "\nDo you want to tag objects for export?\n\n";
+						string $answer = `confirmDialog -t "MachStudio"  -m $msg -ma "center" -button "Tag Objects" -button "Cancel"`;
+						if( gmatch( $answer, "Tag Objects") )
+							msExportUI_tagObject_windowBuild();
+					}else{
+						$msg += " Aborting...\n";
+						warning	$msg;
+					}
+					return ;
+				}
+			}
+
+			if( $g_msExport_CANCEL_EXPORT ){
+				warning "MachStudio Export CANCELLED!!!";
+				return;
+			}
+
+			// clear selection (use tagged nodes)
+			select -cl;
+
+			string $confirm_msg;
+			if( $batchMode ){
+				int $run = 0;
+				if( $batchMode == 2 )
+					$run = 1;
+
+				// prompt the user to save the file
+				string $msg = "Make sure your file is saved with the current export tags...\n";
+				string $answer = `confirmDialog -t "MachStudio Export"  -m $msg -ma "center" -button "Save" -button "Continue" -button "Cancel"`;
+				if( $answer != "Save" && $answer != "Continue" )
+					return;
+
+				if( $answer == "Save" )
+					fileBrowserDialog -m 1 -fc "msExportUI_sceneSaveCB" -ft "mayaBinary" -an "Save As" -om "SaveAs" -ds 1;  
+
+				// Write batch files to disk, run batch file if "batchMode"=2
+				int $monitor = 1;
+				int $single_process = 1;
+				if( $windowExists ){
+					$monitor = `menuItem -q -cb "msExportUI_windowBatchMonitorMenuItem"`;
+					$single_process = `menuItem -q -cb "msExportUI_windowBatchSingleProcessMenuItem"`;
+				}
+				msExport_mayaBatch( $argsList, `file -q -sn`, $single_process, $run, $monitor );
+			}else{
+				for( $args in $argsList ){
+					print "\n\n";  // formatting
+					evalEcho ( "msExport_exportObject( \""+$args+"\", {} )" );
+				}
+				print ("Total Time exporting scene ["+`file -q -sn`+"]: "+`timerX -startTime $startTime`+"\n\n");
+				$confirm_msg = ( "Done exporting scene.\nSee script editor for details...\n" );
+				if($g_msExport_DEBUG)
+					$confirm_msg = ( "IN DEBUG  MODE - NO EXPORT!!!\n\n" );
+				confirmDialog -t "MachStudio Export" -m $confirm_msg -ma "center" -button "OK";
+			}
+
+			select -cl;
+			if( $windowExists )
+				deleteUI "msExportUIExportSceneWindow";
+			break;
+
+		case "hierarchy": // export selected
+		case "verts":     // export selected
+		case "camera":    // export selected
+			msExportUI_exportSelectedWindow( $export_type );
+			break;
+		default:
+			error ( "MachStudio Export: Unknown export type ["+$export_type+"]. Aborting..." );
+	}
+	// reset batch mode
+	$g_msExportUI_batchMode = 0;
+}//END
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Main Window Layouts
+global proc msExportUI_objectNamePopupMenuItemsBuild( string $popup, string $textFieldGrp, string $object_type, string $command, string $command_input ){
+	if( size( `popupMenu -q -ia $popup` ) )
+		popupMenu -e -dai $popup;
+
+	string $names[] = msExport_objectNamesByTypeList( $object_type );
+	for( $name in $names ){
+		string $change_command = ( "textFieldGrp -e -tx "+$name+" "+$textFieldGrp );
+		if( size($command) ){
+			$change_command += ( "; "+$command );
+
+			if( size( $command_input ) )
+				$change_command += ( "( \""+$command_input+"\" );" );
+		}
+		menuItem -p $popup -l $name -c $change_command;
+	}
+}//END
+
+global proc string msExportUI_objectNamePopupTextFieldGrp( string $label, string $text, string $cntrlName, int $width, string $object_type, string $command, string $command_input ){
+	string $textFieldGrp = `textFieldGrp -l $label -cw2 $width 100 -ct2 "left" "left" -adj 2 -co2 0 0 -tx $text $cntrlName`;
+	if( size($command) ){
+		string $change_command = $command;
+		if( size( $command_input ) )
+			$change_command += ( "( \""+$command_input+"\" );" );
+
+		textFieldGrp -e -cc ( $change_command )$textFieldGrp;
+	}
+
+	if( size($object_type) ){
+		string $popup = `popupMenu`;
+		popupMenu -e -pmc ( "msExportUI_objectNamePopupMenuItemsBuild( \""+$popup+"\", \""+$textFieldGrp+"\", \""+$object_type+"\", \""+$command+"\", \""+$command_input+"\" )" ) $popup;
+	}
+	return $textFieldGrp;
+}//END
+
+global proc msExportUI_objectMenuItemsBuild( string $name, string $popup, int $isCamera  ){
+	menuItem -p $popup -l "Print Export Args"    -c ( "msExportUI_printExportArgsCB( \""+$name+"\" )" );
+	menuItem -p $popup -l "Select Object Nodes"  -c ( "msExportUI_objectSelectCB( \""+$name+"\" )" );
+	menuItem -p $popup -l "Rename Object"        -c ( "msExportUI_objectRenameWindow( \""+$name+"\" )" );
+	menuItem -p $popup -divider true;
+	menuItem -p $popup -l "Set Values to Object" -c ( "msExportUI_objectExportArgsSet( \""+$name+"\" )" );
+	menuItem -p $popup -l "Reset Object Values"  -c ( "msExportUI_objectExportArgValuesRefresh( \""+$name+"\" )" );
+	menuItem -p $popup -divider true;
+	menuItem -p $popup -l "Save Object Template" -c ( "msExportUI_objectTemplateSaveCB(\""+$name+"\")" );
+
+	if( !$isCamera ){
+		menuItem -p $popup -divider true;
+		menuItem -p $popup -l "Object Export Attrs" -c ( "msExportUI_exportAttrs_windowBuild( \""+$name+"\" )" );
+	}
+}//END
+
+global proc msExportUI_windowMenuItemsRefresh(){
+	global int $g_msExportUI_batchMode;
+	int $batchMode = `menuItem -q -cb "msExportUI_windowBatchModeMenuItem"`;
+
+	string $label = "Export";
+	$g_msExportUI_batchMode = 0;
+	int $batch_enable = 0;
+	int $single_process = 0;
+	int $monitor = 0;
+	if( $batchMode ){
+		$g_msExportUI_batchMode = 1;
+		$label = "Export in Batch Mode";
+		$batch_enable = 1;
+		$single_process = 1;
+		$monitor = 1;
+	}
+
+	menuItem -e -en $batch_enable "msExportUI_windowBatchSaveMenuItem";
+	menuItem -e -cb $monitor "msExportUI_windowBatchMonitorMenuItem";
+	menuItem -e -en $batch_enable "msExportUI_windowBatchMonitorMenuItem";
+	menuItem -e -cb $single_process "msExportUI_windowBatchSingleProcessMenuItem";
+	menuItem -e -en $batch_enable "msExportUI_windowBatchSingleProcessMenuItem";
+	button  -e -l $label "msExportUI_exportWindowExportButton";
+}//END
+
+global proc string msExportUI_framerangeLayout( string $name ){
+	global int $g_msExportUI_frameStart;
+	global int $g_msExportUI_frameEnd;
+	int $fs = $g_msExportUI_frameStart;
+	int $fe = $g_msExportUI_frameEnd;
+
+	string $formLayout = `formLayout ($name+"_msExportUIFramerangeFormLayout")`;
+	string $c1  = `radioButtonGrp -l "Framerange:" -nrb 2 -cl3 "left" "left" "left" -cw3 70 85 65 -la2 "Timeline" "Specify" -sl 1 ($name+"_msExportUIFramerangeType")`;
+	string $c2  = `intFieldGrp -nf 2 -v1 $fs -v2 $fe -cw2 50 50 -ct2 "left" "left" -en 0 ($name+"_msExportUIFramerange")`;
+
+	string $popup = `popupMenu -p $c2`;
+	menuItem -p $popup -l "Reset frames" -c ("msExportUI_framerangeKeysGetCB(\""+$name+"\" )");
+
+	radioButtonGrp -e -on1 ( "msExportUI_framerangeCB( \""+$name+"\" )" ) -on2 ( "msExportUI_framerangeCB( \""+$name+"\" )" )$c1;
+
+	formLayout -e
+		-af $c1 "top"    3
+		-af $c1 "left"   0
+		-an $c1 "right"
+		-an $c1 "bottom"
+
+		-af $c2 "top"    0
+		-ac $c2 "left"   0 $c1
+		-an $c2 "right"
+		-an $c2 "bottom"
+		$formLayout;
+
+		return $formLayout;
+}//END
+
+global proc string msExportUI_cameraOptionsLayout( string $name ){
+	string $frameLayout = `frameLayout -bs "etchedOut" -bv 1 -lv 0 -mw 10 -mh 10 -cll 1 -cl 0 ($name+"_msExportUIObjectFrameLayout")`;
+	string $formLayout  = `formLayout`;
+	string $c1 = `checkBox -l "Bake Animation" -v 1 ($name+"_msExportUIBakeAnimAnim")`;
+	string $c2 = msExportUI_framerangeLayout( $name );
+	setParent $formLayout;
+	formLayout -edit
+		-af $c1 "top"      0
+		-af $c1 "left"     0
+		-af $c1 "right"    0
+		-an $c1 "bottom"
+
+		-ac $c2 "top"      5 $c1
+		-af $c2 "left"     0
+		-af $c2 "right"    0
+		-an $c2 "bottom"
+		$formLayout;
+
+		setParent $frameLayout;
+		return $frameLayout;
+}//END
+
+global proc string  msExportUI_meshAnimOptionsLayout( string $name ){
+	string $formLayout  = `formLayout ($name+"_msExportUI_meshOptionsFormLayout")`;
+	string $radioButton  = `radioButtonGrp -l "Anim Options:" -nrb 3 -cl4 "left" "left" "left" "left" -cw4 80 85 85 85 -la3 "Geom Only" "Anim Only" "Geom/Anim" -sl 1 ($name+"_msExportUIAnimOpt")`;
+
+	// Anim specific options
+	string $animLayout = `formLayout($name+"_msExportUI_meshAnimOptionsFormLayout")`;
+		string $c1  = `checkBox  -l "Bake Animation" -v 1 -en 0 ($name+"_msExportUIBakeAnimAnim")`;
+		string $c2  = `checkBox  -l "Compression: (Lossless)" -v 1  -en 1 ($name+"_msExportUICompress")`;
+		string $c3 = `floatSliderGrp -f true -min 0.0 -max 1.0 -v 0 -pre 2 -cw2 55 125 -ct2 "left" "left" -adj 2 ($name+"_msExportUIToleranceValue")`;
+		string $c4 = msExportUI_framerangeLayout( $name );
+
+		// make connections
+		floatSliderGrp -e -cc ( "msExportUI_compressionToleranceRefresh( \""+$c2+"\", \""+$c3+"\" )" ) $c3;
+		setParent $animLayout;
+
+		formLayout -e
+			-af $c1 "top"      5      // Bake
+			-af $c1 "left"     0
+			-an $c1 "right"
+			-an $c1 "bottom"
+
+			-ac $c2 "top"      5 $c1  // Compress
+			-af $c2 "left"     0
+			-an $c2 "right"
+			-an $c2 "bottom"
+
+			-ac $c3 "top"      2 $c1  // Compress value
+			-ac $c3 "left"     5 $c2
+			-an $c3 "right"
+			-an $c3 "bottom"
+
+			-ac $c4 "top"      5 $c2  // Framerange
+			-af $c4 "left"     0
+			-an $c4 "right"
+			-an $c4 "bottom"
+			$animLayout;
+
+	formLayout -edit
+		-af $radioButton "top"      0  // anim options radio button
+		-af $radioButton "left"     0
+		-af $radioButton "right"    0
+		-an $radioButton "bottom"
+
+		-ac $animLayout  "top"      0 $radioButton
+		-af $animLayout  "left"    15
+		-af $animLayout  "right"    0
+		-an $animLayout  "bottom"
+		$formLayout;
+
+	// Add widget connections
+	checkBox -e -onc ( "floatSliderGrp -e -en 1 "+$c3 )
+   	     		-ofc ( "floatSliderGrp -e -en 0 "+$c3 ) $c2;
+
+   	// do it this way to avoid running callback twice (faster)
+	radioButtonGrp -e -on1 ( "msExportUI_meshOptionsRefreshStateCB( \""+$name+"\" )" )
+					  -on2 ( "msExportUI_meshOptionsRefreshStateCB( \""+$name+"\" )" )
+					  -on3 ( "msExportUI_meshOptionsRefreshStateCB( \""+$name+"\" )" ) $radioButton;
+
+	return  $formLayout;
+}//END
+
+global proc string msExportUI_meshOptionsLayout( string $name, string $export_type ){
+	int $select_option = 2;
+	if( size($export_type) ){
+		if( $export_type == "hierarchy" )
+			$select_option = 1;
+	}
+
+	string $frameLayout = `frameLayout -bs "etchedOut" -bv 1 -lv 0 -mw 10 -mh 10 -cll 1 -cl 0 ($name+"_msExportUIObjectFrameLayout")`;
+	string $formLayout  = `formLayout`;
+
+	string $c1  = `radioButtonGrp -l "Export Type:" -nrb 2 -cl3 "left" "left" "left" -cw3  80 85 85 -la2 "Hierarchy" "Verts" -sl $select_option ($name+"_msExportUIExportType")`;
+	string $c2 = `checkBox -l "Static Geom" ($name+"_msExportUIStaticGeom")`;
+	string $c3 = `checkBox -l "Merge Materials" -v 0 ($name+"_msExportUIMergeMaterials")`;
+	string $c4 = `checkBox -l "Auto-detect Deforming Geom" -v 1 -en 0 ($name+"_msExportUIAutoDetect")`;
+	string $c5 = msExportUI_meshAnimOptionsLayout( $name );
+    setParent $formLayout;
+
+    // Add widget connections
+    radioButtonGrp -e -on1 ( "msExportUI_objectExportTypeResolveCB( \""+$name+"\", \"hierarchy\" )" ) -on2 ( "msExportUI_objectExportTypeResolveCB( \""+$name+"\", \"verts\" )" ) $c1;
+    checkBox -e -cc ( "msExportUI_meshOptionsRefreshStateCB( \""+$name+"\" )" ) $c2;
+
+	formLayout -edit
+		-af $c1 "top"      0      // Export type
+		-af $c1 "left"     0
+		-an $c1 "right"
+		-an $c1 "bottom"
+
+		-af $c2 "top"      0      // Static Geom Checkbox
+		-ac $c2 "left"     0 $c1
+		-an $c2 "right"
+		-an $c2 "bottom"
+
+		-ac $c3 "top"      5 $c1  // Merge Materials
+		-af $c3 "left"    15
+		-an $c3 "right"
+		-an $c3 "bottom"
+
+		-ac $c4 "top"      5 $c1  // Auto-detect
+		-ac $c4 "left"    15 $c3
+		-an $c4 "right"
+		-an $c4 "bottom"
+
+		-ac $c5 "top"     15 $c4  // Anim Options
+		-af $c5 "left"     0
+		-af $c5 "right"    0
+		-af $c5 "bottom"   0
+		$formLayout;
+
+	return $frameLayout;
+}//END
+
+global proc string msExportUI_objectLayout( string $args, int $isCamera ){
+	global string $g_msExportUI_objectCheckBoxFramePairs[];
+	global string $g_msExportUI_cameraCheckBoxFramePairs[];
+	global string $g_msExportUI_namesList[];
+
+	string $name = msExport_argValueGet( $args, "-name" );
+	$g_msExportUI_namesList[size($g_msExportUI_namesList)] = $name;
+
+	string $formLayout = `formLayout`;
+	string $ann = "'Alt-click' to turn all mesh objects off.\n  Right-click for object menus.";
+	if( $isCamera )
+		$ann = "'Alt-click' to turn all cameras objects off";
+
+	string $c1 = `checkBox -l $name -align "left" -v 1 -ann $ann -docTag $args ($name+"_NameCheckBox")`;
+	string $c2;
+	if( $isCamera ){
+		$c2 = msExportUI_cameraOptionsLayout( $name );
+		$g_msExportUI_cameraCheckBoxFramePairs[size($g_msExportUI_cameraCheckBoxFramePairs)] = ($c1+" "+$c2);
+	}else{
+		$c2 = msExportUI_meshOptionsLayout( $name, "" );
+		$g_msExportUI_objectCheckBoxFramePairs[size($g_msExportUI_objectCheckBoxFramePairs)] = ($c1+" "+$c2);
+	}
+
+	// Create pop up menu
+	string $popup = `popupMenu -p $c1 ( $name+"_NameCheckBoxPopupMenu" )`;
+	 msExportUI_objectMenuItemsBuild( $name, $popup, $isCamera );
+	checkBox -e -cc ( "msExportUI_objectCheckBoxCB( \""+$name+"\", \""+$c1+"\", \""+$c2+"\", \""+$popup+"\", "+$isCamera+" )" ) $c1;
+	setParent $formLayout;
+
+	formLayout -edit
+		-af $c1 "top"     0
+		-af $c1 "left"    0
+		-an $c1 "right"
+		-an $c1 "bottom"
+
+		-ac $c2 "top"     0 $c1
+		-af $c2 "left"   18
+		-af $c2 "right"   0
+		-af $c2 "bottom"  0
+		$formLayout;
+	return $formLayout;
+}//END
+
+global proc string msExportUI_objectGroupsLayout( string $argsList[], int $isCamera ){
+	string $group_name = "Mesh Objects";
+	if( $isCamera )
+		$group_name = "Camera Objects";
+
+	if( !size( $argsList ) ){
+		// if there are no objects, we still need a place holder for the control
+		string $formLayout = `formLayout`;
+		return $formLayout;
+	}
+
+	string $frameLayout = `frameLayout -l $group_name -li 5 -la "center" -bs "etchedIn" -bv 1 -cll true -cl false -mw 12 -mh 12`;
+	string $formLayout = `formLayout`;
+
+	string $controls[];
+	for( $args in $argsList ){
+		$controls[size($controls)] = msExportUI_objectLayout( $args, $isCamera );
+		setParent $formLayout;
+	}
+
+	msExportUI_formLayoutEdit( $formLayout, $controls, 0, 10, "vert" );
+	return $frameLayout;
+}//END
+
+global proc string msExportUI_directoryLayout(){
+	string $formLayout = `formLayout`;
+	string $c1 = `textFieldButtonGrp -l "Directory" -tx "" -cw3 50 100 50 -ct3 "left" "left" "left" -co3 0 0 0 -adj 2 -bl "Browse"
+			-bc ( "fileBrowserDialog -m 4 -fc \"msExportUI_directoryFileBrowserCB\" -ft \"directory\" -an \"Select MachStudio Export Directory:\"" ) "msExportUIDirectory"`;
+
+	string $c2 = `checkBox -l "Create directory based on scene name" -v 0 "msExportUICreateDirectory"`;
+	string $c3 = `checkBox -l "Use Short Filenames" -v 0 "msExportUIUseShortName"`;
+
+	// Add widget connections
+	textFieldButtonGrp -e -cc ( "msExportUI_directoryTextFieldCB( \""+$c1+"\", \""+$c2+"\" )" ) $c1;
+	checkBox -e -cc ( "msExportUI_directoryNameCB( \""+$c2+"\", \""+$c1+"\" )" ) $c2;	
+
+	formLayout -e
+		-af $c1 "top"     0      //directory
+		-af $c1 "left"    0
+		-af $c1 "right"   0
+		-an $c1 "bottom"
+
+		-ac $c2 "top"     5 $c1  // create dir
+		-af $c2 "left"   50
+		-an $c2 "right"
+		-an $c2 "bottom"
+
+		-ac $c3 "top"     5 $c2  // short names
+		-af $c3 "left"   50
+		-an $c3 "right"
+		-an $c3 "bottom"
+		$formLayout;
+
+	return $formLayout;
+}//END
+
+global proc string msExportUI_sceneLayout( string $argsList[] ){
+	// sort by cameras and objects
+	string $camerasArgsList[], $objectsArgsList[];
+	for( $args in $argsList ){
+		string $export_type = msExport_argValueGet( $args, "-export_type" );
+		if( $export_type == "camera" )
+			$camerasArgsList[size($camerasArgsList)] = $args;
+		else
+			$objectsArgsList[size($objectsArgsList)] = $args;
+	}
+
+	string $frameLayout = `frameLayout -lv 0 -bs "in" -bv 1 -cll 0 -mw 10 -mh 10`;
+	string $tabLayout = `tabLayout -tv 0 -scr 1 -cr 1`;
+
+	string $formLayout = `formLayout`;
+	string $c1 = msExportUI_directoryLayout();
+	setParent $formLayout;
+
+	string $c2 = msExportUI_objectGroupsLayout( $camerasArgsList, 1 );
+	setParent $formLayout;
+
+	string $c3 = msExportUI_objectGroupsLayout( $objectsArgsList, 0 );
+	setParent $formLayout;
+
+	formLayout -edit
+		-af $c1 "top"    10      // directory layout
+		-af $c1 "left"    5
+		-af $c1 "right"   5
+		-an $c1 "bottom"
+
+		-ac $c2 "top"    15 $c1  // camera layout
+		-af $c2 "left"    5
+		-af $c2 "right"   5
+		-an $c2 "bottom"
+
+		-ac $c3 "top"    10 $c2  // mesh layout
+		-af $c3 "left"    5
+		-af $c3 "right"   5
+		-an $c3 "bottom"
+		$formLayout;
+
+	return $frameLayout;
+}//END
+
+global proc string msExportUI_twoButtonLayout( string $window, int $batchMode ){
+	string $formLayout = `formLayout`;
+
+	string $c1;
+	if( $batchMode )
+		$c1 = `button -h 22-l "Export in Batch Mode" -c ( "msExportUI_exportCommandCB( \"scene\", "+$batchMode+" )" ) "msExportUI_exportWindowExportButton"`;
+	else
+		$c1 = `button -h 22-l "Export" -c "msExportUI_exportCommandCB( \"scene\", 0 )" "msExportUI_exportWindowExportButton"`;
+
+	string $c2 = `button -h 22 -l "Cancel" -c ( "deleteUI "+$window )`;
+	setParent $formLayout;
+
+	formLayout -edit
+		-af $c1 "top"     0
+		-af $c1 "left"    0
+		-ap $c1 "right"   0 50
+		-af $c1 "bottom"  0
+
+		-af $c2 "top"     0
+		-ap $c2 "left"    0 50
+		-af $c2 "right"   0
+		-af $c2 "bottom"  0
+		$formLayout;
+
+	return $formLayout;
+}//END
+
+global proc string msExportUI_windowBuild( int $batchMode ){
+	// declare globals
+	global string $g_msExportUI_directory;
+	global string $g_msExportUI_objectCheckBoxFramePairs[];
+	global string $g_msExportUI_cameraCheckBoxFramePairs[];
+	global string $g_msExportUI_namesList[];
+	global int $g_msExportUI_frameStart;
+	global int $g_msExportUI_frameEnd;
+	global int $g_msExport_CANCEL_EXPORT;
+	global int $g_msExportUI_batchMode;
+
+	// initialize globals
+	$g_msExportUI_directory = "";
+	clear $g_msExportUI_objectCheckBoxFramePairs;
+	clear $g_msExportUI_cameraCheckBoxFramePairs;
+	clear $g_msExportUI_namesList;
+	$g_msExportUI_frameStart = `playbackOptions -q -min`;
+	$g_msExportUI_frameEnd = `playbackOptions -q -max`;
+	$g_msExport_CANCEL_EXPORT = 0;
+	$g_msExportUI_batchMode = $batchMode;
+
+	string $window = "msExportUIExportSelectedWindow";
+	if( `window -ex $window` )
+		deleteUI $window;
+
+	string $window = "msExportUIExportSceneWindow";
+	if( `window -ex $window` )
+		deleteUI $window;
+
+	// make sure there are tagged items
+	string $argsList[] =  msExport_objectExportArgsList();
+	if( !size( $argsList ) ){
+		string $msg = "No tagged cameras or objects found.\n";
+		$msg += "Do you want to tag objects for export?\n\n";
+		string $answer = `confirmDialog -t "MachStudio"  -m $msg -ma "center" -button "Tag Objects" -button "Cancel"`;
+		if( gmatch( $answer, "Tag Objects") )
+			msExportUI_tagObject_windowBuild();
+		return "";
+	}
+
+	string $title = "MachStudio Export Scene";
+	int $batch_enable = 0;
+	int $single_process = 0;
+	int $monitor = 0;
+	if( $batchMode ){
+		$title += " in Batch Mode";
+		$batch_enable = 1;
+		$single_process = 1;
+		$monitor = 1;
+	}
+
+	$window = `window -t $title -mb 1 -rtf 1 $window`;
+
+	menu -l "Option" -tearOff true;
+		menuItem -l "Set Object Values" -c "msExportUI_setValuesAndSaveFileCB(0)";
+		menuItem -l "Set Object Values and Save Scene" -c "msExportUI_setValuesAndSaveFileCB(1)";
+		menuItem -divider true;
+		menuItem -l "BatchMode" -cb $batchMode -c "msExportUI_windowMenuItemsRefresh()" "msExportUI_windowBatchModeMenuItem";
+		menuItem -l "Single Process" -en $batch_enable -cb $single_process "msExportUI_windowBatchSingleProcessMenuItem";
+		menuItem -l "Monitor Batch Process" -en $batch_enable -cb $monitor "msExportUI_windowBatchMonitorMenuItem";
+		menuItem -divider true;
+		menuItem -l "Save Batch Files" -en $batch_enable -c "msExportUI_exportCommandCB( \"scene\", 1 )" "msExportUI_windowBatchSaveMenuItem";
+
+	string $formLayout = `formLayout`;
+	string $l1 = msExportUI_sceneLayout( $argsList );
+	setParent $formLayout;
+
+	string $l2 = msExportUI_twoButtonLayout( $window, $batchMode );
+	setParent $formLayout;
+
+	formLayout -edit
+		-af $l1 "top"    15
+		-af $l1 "left"   10
+		-af $l1 "right"  10
+		-ac $l1 "bottom" 10 $l2
+
+		-an $l2 "top"
+		-af $l2 "left"   10
+		-af $l2 "right"  10
+		-af $l2 "bottom" 10
+		$formLayout;
+
+	window -e -w 475 $window;
+	showWindow $window;
+
+	// Refresh the UI values
+	for( $args in $argsList )
+		msExportUI_objectRefreshCB( $args );
+
+	// refresh the directory path, use first object values
+	string $directory  = msExport_argValueGet( $argsList[0],    "-directory" );
+	int $short_name = msExport_argValueGetOpt( $argsList[0], "-short_filename" );
+	if( !size($directory) )
+		$directory = msExport_directoryResolve( "", 0, 0 );
+
+	// Set the values
+	$g_msExportUI_directory = $directory;
+	textFieldButtonGrp -e -tx $directory "msExportUIDirectory";
+	checkBox -e -v $short_name "msExportUIUseShortName";
+
+	// add scriptJobs
+	scriptJob -p $window -e "playbackRangeChanged" "msExportUI_windowScriptJob_timeChangeCB()";
+	scriptJob -p $window -e "SceneOpened" ( "msExportUI_windowScriptJob_killWindowCB( \""+$window+"\" )" );
+	return $window;
+}//END
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+// Object Update Window
+global proc msExportUI_objectUpdateWindowCB( string $textFieldGrp, string $window_type ){
+	string $name = `textFieldGrp -q -tx $textFieldGrp`;
+	if( !size( $name ) ){
+		warning  "No name specified. Aborting...";
+		return;
+	}
+
+	// Run the appropriate command;
+	switch( $window_type ){
+		case "clearObjectTags":
+			select -cl;
+			string $msg = "You have requested to remove \n";
+			$msg += "the MachStudio Export tags for ["+$name+"].\n\n";
+			$msg += "Are you sure you want to continue?";
+
+			string $answer = `confirmDialog -t "MachStudio Export - Clear Tags"  -m $msg -ma "center" -button "Clear Object" -button "Cancel"`;
+			if( $answer != "Clear Object" )
+				return;
+
+			if( size($name) ){
+				msExportUI_objectTagsClearCB( $name );
+				textFieldGrp -e -tx "" "msExportUITagObjectUpdateTextFieldGrp";
+			}
+			break;
+		case "selectObjectNodes":
+			select -cl;
+			msExport_objectNodesSelect( $name );
+			break;
+		case "addToObject":
+			msExport_objectAddSelected( $name );
+			deleteUI "msExportUIObjectUpdateWindow";
+			break;
+		case "removeFromObject":
+			msExport_objectRemoveSelected( $name );
+			deleteUI "msExportUIObjectUpdateWindow";
+			break;
+		case "objectTemplateSave":
+			select -cl;
+			string $data[];
+			$data[0] = msExport_objectExportArgsGet( $name );
+			string $file_path  = `fileDialog -m 1 -dm "*.mst" -t "MachStudio: Save Object Template"`;
+			if( size($file_path) && size($data) ){
+				if( !endsWith( ".mst", $file_path ) )
+					$file_path += ".mst";
+				msExport_dataSave( $data, $file_path );
+				deleteUI "msExportUIObjectUpdateWindow";
+			}
+			break;
+	}
+}//END
+
+global proc msExportUI_objectUpdateWindow( string $name, string $window_type ){
+	if( !size( msExport_objectNamesList() ) ){
+		string $msg = "\nNo MachStudio objects found...\n";
+		confirmDialog -t "MachStudio Export" -m $msg -ma "center" -button "OK";
+		return;
+	}
+
+	string $title, $buttonLabel, $list_type;
+	int $get_sel_name = 1;
+	switch( $window_type ){
+		case "clearObjectTags":
+			$title = "Clear Object";
+			$buttonLabel = "Clear Object";
+			$list_type = "all";
+			break;
+		case "selectObjectNodes":
+			$title = "Select Object Nodes";
+			$buttonLabel = "Select Nodes";
+			$list_type = "all";
+			$get_sel_name = 0;
+			break;
+		case "addToObject":
+			$title = "Add Selected";
+			$buttonLabel = "Add Selected";
+			$list_type = "meshes";
+			break;
+		case "removeFromObject":
+			$title = "Remove Selected";
+			$buttonLabel = "Remove Selected";
+			$list_type = "meshes";
+			break;
+		case "objectTemplateSave":
+			$title = "Save Object Template";
+			$buttonLabel = "Save Values";
+			$list_type = "all";
+	}
+
+	if( $get_sel_name && !size($name) ){
+		$names = msExport_objectNamesFromSelectedList( $list_type );
+		$name = $names[0];
+	}
+
+	string $window = "msExportUIObjectUpdateWindow";
+	if( `window -ex $window` )
+		deleteUI $window;
+
+	$window = `window -t ("MachStudio Export - "+$title)  -s 0 $window`;
+	string $formLayout = `formLayout`;
+
+	string $c1 = msExportUI_objectNamePopupTextFieldGrp( "Object Name:", $name, "msExportUITagObjectUpdateTextFieldGrp", 80, $list_type, "","" );
+	string $c2 = `button -h 22 -l $buttonLabel -c ( "msExportUI_objectUpdateWindowCB( \""+$c1+"\", \""+$window_type+"\" )" )`;
+	string $c3 = `button -h 22 -l "Close" -c ( "deleteUI "+$window )`;
+
+	formLayout -edit
+		-af $c1 "top"     15
+		-af $c1 "left"    10
+		-af $c1 "right"   10
+		-ac $c1 "bottom"  10 $c2
+
+		-an $c2 "top"
+		-af $c2 "left"    10
+		-ap $c2 "right"    0 50
+		-af $c2 "bottom"  10
+
+		-an $c3 "top"
+		-ap $c3 "left"     0 50
+		-af $c3 "right"   10
+		-af $c3 "bottom"  10
+		$formLayout;
+
+	showWindow $window;
+	window -e -wh  325 115 $window;
+	scriptJob -p $window -e "SceneOpened" ( "msExportUI_windowScriptJob_killWindowCB( \""+$window+"\" )" );
+}//END
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+// Object Rename Widnow
+
+global proc msExportUI_objectRenameWindowCB(){
+	// get the new name
+	string $old_name = `textFieldGrp -q -tx "msExportUITagObjectOldName"`;
+	string $new_name = `textFieldGrp -q -tx "msExportUITagObjectNewName"`;
+
+	if( !size( $new_name ) ){
+		warning  "No name specified. Aborting...";
+		return;
+	}
+
+	if( !msExport_objectRename( $old_name, $new_name ) )
+		return;
+
+	// refresh the UI
+	msExportUI_windowRefresh();
+	if( `window -ex "msExportUIObjectRenameWindow"` )
+		deleteUI "msExportUIObjectRenameWindow";
+}//END
+
+global proc msExportUI_objectRenameWindow( string $name ){
+	if( !size( msExport_objectNamesList() ) ){
+		string $msg = "\nNo MachStudio objects found...\n";
+		confirmDialog -t "MachStudio Export" -m $msg -ma "center" -button "OK";
+		return;
+	}
+
+	if( !size($name) ){
+		string $names[] = msExport_objectNamesFromSelectedList( "all" );
+		if( size( $names ) == 1 )
+			$name = $names[0];
+	}
+
+	string $window = "msExportUIObjectRenameWindow";
+	if( `window -ex $window` )
+		deleteUI $window;
+
+	$window = `window -t "MachStudio Export - Object Rename" -s 0 $window`;
+
+	string $formLayout = `formLayout`;
+	string $c1 = msExportUI_objectNamePopupTextFieldGrp( "Object Name:", $name, "msExportUITagObjectOldName", 80, "all", "","" );
+
+	if( !size( $c1 ) ){
+		deleteUI $window;
+		return;
+	}
+
+	string $c2 = `textFieldGrp -l "New Name:" -cw2 80 100 -ct2 "left" "left" -adj 2 -co2 0 0 "msExportUITagObjectNewName"`;
+	string $c3 = `button -h 22 -l "Rename" -c "msExportUI_objectRenameWindowCB()"`;
+	string $c4 = `button -h 22 -l "Close"  -c ( "deleteUI "+$window )`;
+	setParent $formLayout;
+
+	formLayout -edit
+		-af $c1 "top"     20
+		-af $c1 "left"    10
+		-af $c1 "right"   10
+		-an $c1 "bottom"
+
+		-ac $c2 "top"      2 $c1
+		-af $c2 "left"    10
+		-af $c2 "right"   10
+		-ac $c2 "bottom"  10 $c3
+
+		-an $c3 "top"
+		-af $c3 "left"    10
+		-ap $c3 "right"    0 50
+		-af $c3 "bottom"  10
+
+		-an $c4 "top"
+		-ap $c4 "left"     0 50
+		-af $c4 "right"   10
+		-af $c4 "bottom"  10
+		$formLayout;
+
+	showWindow $window;
+	window -e -wh  325 140 $window;
+	scriptJob -p $window -e "SceneOpened" ( "msExportUI_windowScriptJob_killWindowCB( \""+$window+"\" )" );
+}//END
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+global proc int msExportUI_objectExportTypeResolveCB( string $name, string $export_type ){
+	string $cntrl_name = $name;
+	if( gmatch( $name, "exportSelected*" ) ){
+		$name = `textFieldGrp -q -tx "msExportUIExportSelectedTextFieldGrp"`;
+		if( !size($name) )
+			return 0;
+	}
+
+	// check if the object is referenced, if so, don't allow any changes.
+	string $ntwk_node = msExport_objectNetworkNodeGet( $name );
+	if( `referenceQuery -isNodeReferenced $ntwk_node` ){
+		string $msg = ( "The object ["+$name+"] is referenced.\n" );
+		$msg += "You can not change referenced objects\n";
+		$msg += "Use the source file to update the objects.\n";
+		$msg += "Aborting...\n";
+
+		if( !`about -batch` )
+			confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+		else
+			print ( $msg+"\n" );
+		return 0;
+	}
+
+	string $cur_export_type = msExport_objectExportArgsValueGet( $name, "-export_type" );
+	switch( $export_type ){
+		case "hierarchy":
+			if( $cur_export_type == "verts" ){
+				// keep verts setting until export root is selected
+				radioButtonGrp -e -sl 2 ($name+"_msExportUIExportType");
+				msExportUI_objectExportTypeWindow( $name, $cntrl_name, $export_type );
+			}
+			break;
+
+		case "verts":
+			if( $cur_export_type == "hierarchy" ){
+				// Get the export root nodes
+				string $current_nodes[] = msExport_objectNodesList( $name );
+				select -r $current_nodes;
+				string $valid_nodes[] = msExport_objectNodesByExportTypeResolve( $name, $export_type, `ls -sl -l` );
+
+				if( !size($valid_nodes) ){
+					string $msg = "No valid nodes found. Aborting...\n";
+					confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+					return 0;
+				}
+
+				//string $ntwk_node = msExport_objectNetworkNodeGet( $name );
+				msExport_objectNetworkNodeDisconnect( $ntwk_node, $current_nodes, 0 );
+				msExport_objectNetworkNodesConnect( $ntwk_node, $valid_nodes );
+				msExport_nodeExportArgValueSet( $ntwk_node, "-export_type", $export_type );
+				msExportUI_meshOptionsRefreshStateCB( $name );
+			}
+			break;
+	}
+	return 1;
+}//END
+
+// Object Export Root Window (for Hierarachy selection)
+global proc msExportUI_objectExportTypeWindowCB( string $obj_name, string $cntrl_name, string $export_type, string $textFieldButtonGrp ){
+	string $current_nodes[] = msExport_objectNodesList( $obj_name );
+
+	// Get the export root nodes
+	string $text = `textFieldButtonGrp -q -tx $textFieldButtonGrp`;
+	string $export_root_nodes[] = stringToStringArray( $text," " );
+
+	// Make sure the nodes exist
+	string $invalid_nodes[];
+	for( $export_root_node in $export_root_nodes ){
+		if( !objExists( $export_root_node ) )
+			$invalid_nodes[size($invalid_nodes)] = $export_root_node;
+	}
+	if( size($invalid_nodes) ){
+		string $msg = "The following nodes do not exist.\n";
+		$msg += "and can not be used as \"Export Root\" nodes\n";
+		for( $invalid_node in $invalid_nodes )
+			$msg += ( $invalid_node+"\n" );
+
+		confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+		textFieldButtonGrp -e -tx "" $textFieldButtonGrp;
+		return;
+	}
+
+	string $valid_nodes[] = msExport_objectNodesByExportTypeResolve( $obj_name, $export_type, $export_root_nodes );
+	if( !size($valid_nodes) ){
+		string $msg = "No valid nodes found. Aborting...\n";
+		confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+		textFieldButtonGrp -e -tx "" $textFieldButtonGrp;
+		return;
+	}
+
+	string $ntwk_node = msExport_objectNetworkNodeGet( $obj_name );
+	msExport_objectNetworkNodeDisconnect( $ntwk_node, $current_nodes, 0 );
+	msExport_objectNetworkNodesConnect( $ntwk_node, $valid_nodes );
+	msExport_nodeExportArgValueSet( $ntwk_node, "-export_type", $export_type );
+	msExportUI_meshOptionsRefreshStateCB( $obj_name );
+
+	// set the radion button to "hierarchy" and refresh state
+	radioButtonGrp -e -sl 1 ($cntrl_name+"_msExportUIExportType");
+	msExportUI_meshOptionsRefreshStateCB( $cntrl_name );
+
+	// close the window
+	deleteUI "msExportUIObjectExportTypeWindow";
+	//}
+}//END
+
+global proc msExportUI_objectExportTypeWindow( string $obj_name, string $cntrl_name, string $export_type ){
+	string $window = "msExportUIObjectExportTypeWindow";
+	if( `window -ex $window` )
+		deleteUI $window;
+
+	$window = `window -t "MachStudio Export - Export Roots"  -s 0 $window`;
+	string $formLayout = `formLayout`;
+
+	string $c0 = `text -l "Export Root Node:" -al "center"`;
+	string $c1 = `textFieldButtonGrp -l "Name:" -cw3 40 100 80 -ct3 "left" "left" "left" -adj 2 -co3 0 0 0 -bl "Use Selected"  "msExportUIExportRootTextField"`;
+	textFieldButtonGrp -e -bc ( "msExportUI_useSelectedCB( \""+$c1+"\", 0 )" ) $c1;
+
+	string $c2 = `button -h 22 -l "OK" -c ( "msExportUI_objectExportTypeWindowCB( \""+$obj_name+"\", \""+$cntrl_name+"\", \""+$export_type+"\", \""+$c1+"\" )" )`;
+	string $c3 = `button -h 22 -l "Cancel" -c ( "deleteUI "+$window )`;
+
+	formLayout -edit
+		-af $c0 "top"     15
+		-af $c0 "left"    10
+		-af $c0 "right"   10
+		-an $c0 "bottom"
+
+		-ac $c1 "top"     10 $c0
+		-af $c1 "left"    10
+		-af $c1 "right"   10
+		-ac $c1 "bottom"  15 $c2
+
+		-an $c2 "top"
+		-af $c2 "left"    10
+		-ap $c2 "right"   0 50
+		-af $c2 "bottom"  10
+
+		-an $c3 "top"
+		-ap $c3 "left"    0 50
+		-af $c3 "right"   10
+		-af $c3 "bottom"  10
+		$formLayout;
+
+	showWindow $window;
+	window -e -wh  330 135 $window;
+	scriptJob -p $window -e "SceneOpened" ( "msExportUI_windowScriptJob_killWindowCB( \""+$window+"\" )" );
+}//END
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+// Object Export Selected Widnow
+global proc msExportUI_exportSelectedObjectRefresh( string $cntrl_name ){
+	string $obj_name = `textFieldGrp -q -tx "msExportUIExportSelectedTextFieldGrp"`;
+
+	if( msExport_objectExists( $obj_name ) ){
+		msExportUI_objectRefreshCB( $cntrl_name );
+		msExport_objectNodesSelect( $obj_name );
+	}
+}//END
+
+global proc msExportUI_exportSelectedWindowCB( string $textFieldGrp, string $object_type ){
+	// Get the name
+	string $name = `textFieldGrp -q -tx $textFieldGrp`;
+	if( !size($name ) ){
+		string  $msg = "No name specified. Aborting...";
+		confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+		deleteUI "msExportUIExportSelectedWindow";
+		return;
+	}
+
+	// Select
+	string $selected[] = `ls -sl`;
+
+	string $cntrl_name, $export_type;
+	string $valid_nodes[];
+	switch( $object_type ){
+		case "camera":
+			$cntrl_name = "exportSelectedCamera";
+			$export_type = "camera";
+			$valid_nodes = msExport_objectNodesByExportTypeResolve( $name, $export_type, `ls -sl -l` );
+			select -r $valid_nodes;
+			break;
+
+		case "mesh":
+			$cntrl_name = "exportSelectedMesh";
+			string $eval = `radioButtonGrp -q -sl ($cntrl_name+"_msExportUIExportType")`;
+			$export_type = "hierarchy";
+			if( $eval == 2 )
+				$export_type = "verts";
+
+			$valid_nodes = msExport_objectNodesByExportTypeResolve( $name, $export_type, `ls -sl -l` );
+
+			if( $export_type == "verts" )
+				select -r $valid_nodes;
+			else
+				$valid_nodes =  $selected;
+			break;
+	}
+
+	if( !size( $valid_nodes ) ){
+		error "No valid nodes found. Aborting...\n";
+	}
+
+	// Get export_args from the UI
+	string $args = msExportUI_objectExportArgsGet($cntrl_name);
+
+	// Tag the shape nodes (only for geom)
+	if( msExport_argValueGet( $args, "-geom" ) ){
+		for( $valid_node in $valid_nodes ){
+			// clear any existng export attrs
+			msExport_nodeAttrsDelete( $valid_node );
+		}
+
+		msExport_objectNodesSet( $name, $valid_nodes );
+
+	}
+	select -r $valid_nodes;
+
+	// Run the command
+	if( size($args) ){
+		evalEcho ( "msExport_exportObject( \""+$args+"\", `ls -sl` )" );
+	}else{
+		error ( "Unable to resolve export args. Aborting...\n" );
+	}
+
+	// Close the window
+	deleteUI "msExportUIExportSelectedWindow";
+	string $msg = ( "Done exporting ["+$name+"].\nSee script editor for details...\n" );
+	confirmDialog -t "MachStudio Export" -m $msg -ma "center" -button "OK";
+	select -cl;
+}//END
+
+global proc string msExportUI_exportSelectedOptionsLayout( string $cntrl_name, string $export_type ){
+	global int $g_msExportUI_frameStart;
+	global int $g_msExportUI_frameEnd;
+	$g_msExportUI_frameStart = `playbackOptions -q -min`;
+	$g_msExportUI_frameEnd = `playbackOptions -q -max`;
+
+	string $frameLayout = `frameLayout -l "Advanced Options" -li 5 -la "center" -bs "etchedIn" -bv 1 -cll true -cl true -mw 12 -mh 12 "msExportUIExportSelectedOptionsFrameLayout"`;
+	frameLayout -e -cc ( "window -e -h 145 \"msExportUIExportSelectedWindow\"" )
+	               -ec ( "msExportUI_objectRefreshCB( \""+$cntrl_name+"\" )" ) $frameLayout;
+
+	string $formLayout = `formLayout`;
+
+	string $c1 = msExportUI_directoryLayout();
+	setParent $formLayout;
+
+	string $c2;
+	if( $export_type == "camera" )
+		$c2 = msExportUI_cameraOptionsLayout( $cntrl_name );
+	else
+		$c2 = msExportUI_meshOptionsLayout( $cntrl_name, $export_type );
+	setParent $formLayout;
+
+	formLayout -e
+		-af $c1 "top"      0
+		-af $c1 "left"     0
+		-af $c1 "right"    0
+		-an $c1 "bottom"
+
+		-ac $c2 "top"     15 $c1
+		-af $c2 "left"     0
+		-af $c2 "right"    0
+		-an $c2 "bottom"
+		$formLayout;
+
+	return $frameLayout;
+}//END
+
+global proc string msExportUI_exportSelectedWindow( string $export_type ){
+	global string $g_msExportUI_directory;
+
+	string $selected[] = `ls -sl -l`;
+	if( !size($selected) ){
+		string $msg =  "Nothing selected. Aborting...";
+		confirmDialog -t "MachStudio Warning"  -m $msg -ma "center" -button "OK";
+		return "";
+	}
+
+	string $object_type = "mesh";
+	if( $export_type == "camera" )
+		$object_type = "camera";
+
+	string $names[] = msExport_objectNamesFromSelectedList( $object_type );
+	string $name;
+	if( size( $names ) ){
+		// this object is already tagged,  change the export_type
+		$name = $names[0];
+
+		string $cur_export_type = msExport_objectExportArgsValueGet( $name, "-export_type" );
+		if( $cur_export_type != $export_type ){
+			string $msg =  "This object is already tagged as ["+$cur_export_type+"].\n";
+			$msg += "Using current values. \n\n";
+			$msg += "You can change the export type by using\n";
+			$msg += "the \"Advanced Options\"\n";
+			string $answer = `confirmDialog -t "MachStudio Warning"  -m $msg -ma "center" -button "OK" -button "Cancel"`;
+			if( $answer != "OK" )
+				return "";
+		}
+	}
+
+	string$export_title, $cntrl_name;
+	switch($export_type){
+		case "camera":
+			if( `nodeType $selected[0]` != "camera" && `nodeType $selected[0]` != "stereoRigCamera" ){
+				string $children[] = `listRelatives -c -f $selected[0]`;
+				if( !size($children) ){
+					string $msg = "No cameras selected.";
+					$msg += "\nPlease select the camera to be exported.\n";
+					confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+					return "";
+				}
+
+				for( $child in $children ){
+					if( `nodeType $child` != "camera" && `nodeType $child` != "stereoRigCamera" ){
+						string $msg = "No cameras selected.";
+						$msg += "\nPlease select the camera to be exported.\n";
+						confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+						return "";
+					}else{
+						break;
+					}
+				}
+			}
+
+			$cntrl_name = "exportSelectedCamera";
+			$export_title = "Camera";
+			break;
+		case "hierarchy":
+		case "verts":
+			if( !size( `ls -dag -ni -et "mesh" -sl -l` ) ){
+				string $msg =  "No meshes selected. Aborting...";
+				confirmDialog -t "MachStudio Warning"  -m $msg -ma "center" -button "OK";
+				return "";
+			}
+
+			$cntrl_name = "exportSelectedMesh";
+			$export_title = "Hierarachy";
+			if( $export_type == "verts" ){
+				$cntrl_name = "exportSelectedMesh";
+				$export_title = "Verts";
+			}
+			break;
+	};
+
+	// Close bacic export scene window
+	string $window = "msExportUIExportSceneWindow";
+	if( `window -ex $window` )
+		deleteUI $window;
+
+	string $window = "msExportUIExportSelectedWindow";
+	if( `window -ex $window` )
+		deleteUI $window;
+
+	$window = `window -t ( "MachStudio Export Selected - "+$export_title )  -rtf 1 $window`;
+	string $formLayout = `formLayout`;
+
+	string $command = "msExportUI_exportSelectedObjectRefresh";
+	string $command_input = $cntrl_name;
+	string $c1 = msExportUI_objectNamePopupTextFieldGrp( "Object Name:", $name, "msExportUIExportSelectedTextFieldGrp", 80, $object_type, $command, $command_input );
+	string $c2 = `button -l "Use Selected" -h 20 -c ( "msExportUI_useSelectedCB( \""+$c1+"\", 1 )" )`;
+
+	string $c3 = msExportUI_exportSelectedOptionsLayout( $cntrl_name, $export_type );
+	setParent $formLayout;
+
+	string $c4 = `button -h 22 -l "Export Selected" -c ( "msExportUI_exportSelectedWindowCB( \""+$c1+"\", \""+$object_type+"\" )" )`;
+	string $c5 = `button -h 22 -l "Close" -c ( "deleteUI "+$window )`;
+
+	formLayout -edit
+		-af $c1 "top"     15
+		-af $c1 "left"    10
+		-ac $c1 "right"    2 $c2
+		-an $c1 "bottom"
+
+		-af $c2 "top"     15
+		-an $c2 "left"
+		-af $c2 "right"   10
+		-an $c2 "bottom"
+
+		-ac $c3 "top"     10 $c1
+		-af $c3 "left"    10
+		-af $c3 "right"   10
+		-ac $c3 "bottom"  10 $c4
+
+		-an $c4 "top" 
+		-af $c4 "left"    10
+		-ap $c4 "right"   0 50
+		-af $c4 "bottom"  10
+
+		-an $c5 "top"
+		-ap $c5 "left"    0 50
+		-af $c5 "right"   10
+		-af $c5 "bottom"  10
+		$formLayout;
+
+	showWindow $window;
+	window -e -wh  415 145 $window;
+	scriptJob -p $window -e "SceneOpened" ( "msExportUI_windowScriptJob_killWindowCB( \""+$window+"\" )" );
+
+	if( size($name))
+		msExportUI_objectRefreshCB( $cntrl_name );
+
+	// best guess the directory
+	string $directory;
+	int $short_name;
+	if( msExport_objectExists( $name ) ){
+		$directory  = msExport_objectExportArgsValueGet( $name, "-directory" );
+		string $val =  msExport_objectExportArgsValueGet( $name, "-short_filename" );
+		if( size($val) ) $short_name = $val;
+	}else{
+		// check the selection for args
+		$directory  = msExport_nodeExportArgValueGet( $selected[0], "-directory" );
+		string $val =   msExport_nodeExportArgValueGet( $selected[0], "-short_filename" );
+		if( size($val) ) $short_name = $val;
+	}
+	if( !size($directory) )
+		$directory = msExport_directoryResolve( $g_msExportUI_directory, 0, 0 );
+
+	textFieldButtonGrp -e -tx $directory "msExportUIDirectory";
+	checkBox -e -v $short_name "msExportUIUseShortName";
+
+	return $window;
+}//END
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+// Object Tagging UI
+
+global proc msExportUI_tagObjectCommandCB(){
+	global string $g_msExportUI_tagObject_checkBoxes[];
+
+	// Make sure there's a name
+	string $name = `textFieldGrp -q -tx "msExportUITagObjectName"`;
+	if( !size( $name ) ){
+		string $msg = "No name specified.\n";
+		$msg += "Enter the name for the object.\n";
+		confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+		return;
+	}
+
+	// Make sure the name is unique
+	if(!msExport_objectNameValidate( $name, 1 ) )
+		return;
+
+	int $sel_type = `radioButtonGrp -q -sl "msExportUITagObjectType"`;
+	switch($sel_type){
+		case 1: // hierarhcy
+		case 2: // verts
+			string $selected[] = `ls -sl -l`;
+			string $export_type = "verts";
+			string $export_root = "per_node";
+
+			if( $sel_type == 1 ){
+				$export_type = "hierarchy";
+				$export_root = stringArrayToString( $selected, " ");
+			}
+
+			string $valid_nodes[] = msExport_objectNodesByExportTypeResolve( $name, $export_type, $selected );
+
+			// use default export type for camera
+			if( !size( $valid_nodes ) )
+				return;
+
+			// check for attributes to add
+			string $attrs[];
+			if( `checkBox -q -v "msExportUITagObjectExportAsSubdiv"` )
+				$attrs = { "sgpuExportAsSubdiv" };
+
+			int $static = `checkBox -q -v "msExportUITagObjectStaticGeom"`;
+
+			// clear any existng export attrs
+			for( $valid_node in $valid_nodes )
+				msExport_nodeAttrsDelete( $valid_node );
+
+			// use default export type for meshes (can be changed later)
+			string $args =  ( "-name "+$name+" -export_type "+$export_type+" -geom 1" );
+			if( $static )
+				$args += " -static";
+			msExport_objectCreate( $args, $valid_nodes, $attrs );
+			break;
+
+		case 3: // camera
+			string $selected[] = `ls -sl -l`;
+			string $export_type = "camera";
+
+			string $valid_nodes[] = msExport_objectNodesByExportTypeResolve( $name, $export_type, $selected );
+
+			// use default export type for camera
+			if( !size( $valid_nodes ) )
+				return;
+
+			string $args = ( "-name "+$name+" -export_type "+$export_type );
+			msExport_objectCreate( $args, $valid_nodes, {} );
+			break;
+	};
+
+	textFieldGrp -e -tx "" "msExportUITagObjectName";
+	msExportUI_windowRefresh();
+	print ( "MachStudio: Done tagging ["+$name+"]...\n" );
+}//END
+
+global proc string msExportUI_tagObject_nameLayout(){
+	string $frameLayout = `frameLayout -bs "etchedOut" -bv 1 -lv 0 -mw 10 -mh 10 -cll 1 -cl 0`;
+	string $formLayout = `formLayout "msExportUITagObjectFormLayout"`;
+
+	string $c1 = `textFieldButtonGrp -l "Object Name:" -cw3 80 100 80 -ct3 "left" "left" "left" -adj 2 -co3 0 0 0 -bl "Use Selected" "msExportUITagObjectName"`;
+	textFieldButtonGrp -e -bc ( "msExportUI_useSelectedCB( \""+$c1+"\", 1 )" ) $c1;
+
+	string $c2 = `radioButtonGrp -l "Export Type:" -nrb 3 -cl4 "left" "left" "left" "left" -cw4 70 80 80 80 -la3 "Hierarchy" "Verts" "Camera" -sl 2 "msExportUITagObjectType"`;
+	string $c3 = `checkBox -l "Export as Static Geom" "msExportUITagObjectStaticGeom"`;
+	string $c4 = `checkBox -l "Export meshes as Subdiv" "msExportUITagObjectExportAsSubdiv"`;
+
+	radioButtonGrp -e -on1 ( "checkBox -e -en 1 "+$c3+"; checkBox -e -en 1 "+$c4 )
+					  -on2 ( "checkBox -e -en 1 "+$c3+"; checkBox -e -en 1 "+$c4 )
+					  -on3 ( "checkBox -e -en 0 "+$c3+"; checkBox -e -en 0 "+$c4 ) $c2;
+
+	formLayout -edit
+		-af $c1 "top"     0
+		-af $c1 "left"    0
+		-af $c1 "right"   0
+		-an $c1 "bottom"
+
+		-ac $c2 "top"     5 $c1
+		-af $c2 "left"    0
+		-af $c2 "right"   0
+		-an $c2 "bottom"
+
+		-ac $c3 "top"    10 $c2
+		-af $c3 "left"    0
+		-an $c3 "right"
+		-an $c3 "bottom"
+
+		-ac $c4 "top"     2 $c3
+		-af $c4 "left"    0
+		-an $c4 "right"
+		-an $c4 "bottom"
+		$formLayout;
+	return $frameLayout;
+}//END
+
+global proc string msExportUI_tagObject_twoButtonLayout( string $window ){
+	string $formLayout = `formLayout`;
+	string $c1 = `button -h 22 -l "Tag Object" -c "msExportUI_tagObjectCommandCB()"`;
+	string $c2 = `button -h 22 -l "Close" -c ( "deleteUI "+$window )`;
+	setParent $formLayout;
+
+	formLayout -edit
+		-af $c1 "top"     0
+		-af $c1 "left"    0
+		-ap $c1 "right"   0 50
+		-af $c1 "bottom"  0
+
+		-af $c2 "top"     0
+		-ap $c2 "left"    0 50
+		-af $c2 "right"   0
+		-af $c2 "bottom"  0
+		$formLayout;
+
+	return $formLayout;
+}//END
+
+global proc string msExportUI_tagObject_windowBuild(){
+	string $window = "msExportUITagObjectsWindow";
+	if( `window -ex $window` )
+		deleteUI $window;
+
+	$window = `window -t "MachStudio Export - Tag Objects" -rtf 1 $window`;
+	string $formLayout = `formLayout`;
+
+	string $l1 = msExportUI_tagObject_nameLayout();
+	setParent $formLayout;
+
+	string $l2 = msExportUI_tagObject_twoButtonLayout( $window );
+	setParent $formLayout;
+
+	formLayout -edit
+		-af $l1 "top"    20
+		-af $l1 "left"   15
+		-af $l1 "right"  15
+		-ac $l1 "bottom" 15 $l2
+
+		-an $l2 "top"
+		-af $l2 "left"   15
+		-af $l2 "right"  15
+		-af $l2 "bottom" 15
+		$formLayout;
+
+	window -e -wh 360 220 $window;
+	showWindow $window;
+	scriptJob -p $window -e "SceneOpened" ( "msExportUI_windowScriptJob_killWindowCB( \""+$window+"\" )" );
+	return $window;
+}//END
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+// Add Object Attribute UI
+
+global proc string msExportUI_exportAttrs_objectNameGet(){
+	string $name;
+	if( `textFieldGrp -q -ex "msExportUITextFieldGrp"` )
+		$name = `textFieldGrp -q -tx "msExportUITextFieldGrp"`;
+	return $name;
+}//END
+
+global proc msExportUI_exportAttrs_windowSizeRefresh(){
+	global string $g_msExportUI_exportAttr_checkBoxes[];
+	int $collapsed = `frameLayout -q -cl "msExportUIExportAttrsSpreadSheetFrameLayout"`;
+
+	int $h = 270;
+	if( size($g_msExportUI_exportAttr_checkBoxes) == 6 ) $h = 333;
+	if( !size($g_msExportUI_exportAttr_checkBoxes) ) $h = 203;
+	if( !$collapsed ) $h = 500;
+	window -e -h $h "msExportUIExportAttrsWindow";
+}//END
+
+global proc msExportUI_exportAttrs_selectionTypeCB( string $radioButtonGrp ){
+	int $select_all  = `radioButtonGrp -q -sl $radioButtonGrp`;
+	if( $select_all != 1 )
+		return;
+
+	int $g_msExportUI_selectionChangedCB_ON;
+	$g_msExportUI_selectionChangedCB_ON = 0;
+
+	string $name = msExportUI_exportAttrs_objectNameGet();
+	if( msExport_objectExists( $name ) )
+		msExport_objectNodesSelect( $name );
+
+	$g_msExportUI_selectionChangedCB_ON = 1;
+}//END
+
+global proc msExportUI_exportAttrs_commandCB( string $commandType ){
+	global string $g_msExportUI_exportAttr_checkBoxes[];
+
+	string $name = msExportUI_exportAttrs_objectNameGet();
+	if( !size( $name ) || !msExport_objectExists( $name ) ){
+		string $msg = "Invalid Object";
+		$msg += "\nPlease select a valid object to be tagged.\n";
+		confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+		return;
+	}
+
+	// Get the selection type
+	int $sel = `radioButtonGrp -q -sl "msExportUIExportAttrsRadioButtonGrp"`;
+
+	// get the "on" checkboxes (sort)
+	string $mesh_attrs[], $transform_attrs[];
+	for( $checkBox in $g_msExportUI_exportAttr_checkBoxes ){
+		if( `checkBox -q -v $checkBox` ){
+			string $args = `checkBox -q -docTag $checkBox`;
+			string $type  = msExport_argValueGet( $args, "-type" );
+			string $attr  = msExport_argValueGet( $args, "-attr" );
+			if( $type == "mesh" )
+				$mesh_attrs[size($mesh_attrs)] = $attr;
+			else
+				$transform_attrs[size($transform_attrs)] = $attr;
+		}
+	}
+
+	int $refresh = 0;
+	if( size( $mesh_attrs ) ){
+		// Get the proper valid nodes
+		string $valid_nodes[];
+		if( $sel == 1 ){
+			msExport_objectNodesSelect( $name );
+			$valid_nodes = `ls -dag -ni -et "mesh" -sl -l`;
+		}else{
+			string $selected[] = `ls -sl -l`;
+
+			// Make sure the selected nodes belongs to the object
+			string $ntwk_node = msExport_objectNetworkNodeGet( $name );
+			for( $select in $selected ){
+				if( nodeType( $select ) != "mesh" ){
+					string $shapes[] = `listRelatives -f -ni -s $select`;
+					if( !size( $shapes ) )
+						continue;
+					else
+						$select = $shapes[0];
+				}
+
+				string $connPairs = msExport_objectNetworkConnectionNodePairGet( $select );
+				if( gmatch( $connPairs, $ntwk_node+".mspExportNodes*" ) ){
+					$valid_nodes[size($valid_nodes)] = $select;
+				}
+			}
+		}
+
+		if( !size($valid_nodes) ){
+			string $msg = "No valid mesh nodes selected. Skipping...";
+			print $msg;
+		}else{
+			$refresh = 1;
+			for( $mesh_attr in $mesh_attrs ){
+				for( $valid_node in $valid_nodes ){
+					switch($commandType){
+						case "add":
+							msExport_nodeAttrValSet( $valid_node, $mesh_attr, 1 );
+							print "Done adding \"mesh\" attributes...\n";
+
+							break;
+						case "delete":
+							msExport_nodeAttrDelete( $valid_node, $mesh_attr );
+							checkBox -e -v 0 $checkBox;
+							print "Done deleting \"mesh\" attributes...\n";
+							break;
+					}
+				}
+			}
+		}
+	}
+
+	if( size( $transform_attrs ) ){
+		// Get the proper valid nodes
+		string $valid_nodes[];
+		if( $sel == 1 ){
+			msExport_objectNodesSelect( $name );
+			$valid_nodes = `ls -dag -ni -et "transform" -sl -l`;
+		}else{
+			string $selected[] = `ls -sl -l`;
+
+			// Make sure the selected nodes belongs to the object
+			string $ntwk_node = msExport_objectNetworkNodeGet( $name );
+			for( $select in $selected ){
+				if( nodeType( $select ) != "transform" )
+					continue;
+
+				string $connPairs = msExport_objectNetworkConnectionNodePairGet( $select );
+				if( gmatch( $connPairs, $ntwk_node+".mspExportNodes*" ) ){
+					$valid_nodes[size($valid_nodes)] = $select;
+				}
+			}
+		}
+
+		if( !size($valid_nodes) ){
+			string $msg = "No valid mesh nodes selected. Skipping";
+			print $msg;
+		}else{
+			$refresh = 1;
+			for( $transform_attr in $transform_attrs ){
+				for( $valid_node in $valid_nodes ){
+					switch($commandType){
+						case "add":
+							msExport_nodeAttrValSet( $valid_node, $transform_attr, 1 );
+							print "Done adding \"transform\" attributes...\n";
+
+							break;
+						case "delete":
+							msExport_nodeAttrDelete( $valid_node, $transform_attr );
+							checkBox -e -v 0 $checkBox;
+							print "Done deleting \"transform\" attributes...\n";
+							break;
+					}
+				}
+			}
+		}
+	}
+
+	if( $refresh )
+		msExportUI_exportAttrs_attrSpreadSheetBuildCB( "", $name );
+}//END
+
+global proc msExportUI_exportAttrs_objectRefresh(){
+	global string $g_msExportUI_exportAttr_currentName;
+	string $name = msExportUI_exportAttrs_objectNameGet();
+
+	if( $name == $g_msExportUI_exportAttr_currentName )
+		return;
+
+	$g_msExportUI_exportAttr_currentName = $name;
+	if( msExport_objectExists( $name ) ){
+		msExport_objectNodesSelect( $name );
+
+		radioButtonGrp -e -sl 1 "msExportUIExportAttrsRadioButtonGrp";
+		msExportUI_exportAttrs_attrListBuild( $name );
+		msExportUI_exportAttrs_attrSpreadSheetBuildCB( "", $name );
+	}else{
+		select -cl;
+		textFieldGrp -e -tx "" "msExportUITextFieldGrp";
+		frameLayout -e -cl 1 "msExportUIExportAttrsSpreadSheetFrameLayout";  // force closed.
+	}
+
+	msExportUI_exportAttrs_windowSizeRefresh();
+}//END
+
+global proc string msExportUI_exportAttrs_attrSpreadSheetBuildCB( string $parent, string $name ){
+	// Exit if frameLayout is collapsed
+	if( `frameLayout -q -cl "msExportUIExportAttrsSpreadSheetFrameLayout"` )
+		return "";
+
+	if( !size($name) ){
+		$name = msExportUI_exportAttrs_objectNameGet();
+		if( !size( $name ) ){
+			string $msg = "You must specify an object name\n";
+			$msg += "to see the Export Attribute Values\n";
+			frameLayout -e -cl 1 "msExportUIExportAttrsSpreadSheetFrameLayout";
+			confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+			msExportUI_exportAttrs_windowSizeRefresh();
+			return "";
+		}
+	}
+
+	string $formLayoutName = "msExportUIExportAttrsSpreadSheetEditorFormLayout";
+	string $spreadsheetName = "msExportUIExportAttrsSpreadSheetEditor";
+	string $selConnectionName = "msExportUIExportAttrsSelectionConnection";
+
+	// Get the current selection
+	string $current_selection[] = `ls -sl`;
+
+	string $export_type = msExport_objectExportArgsValueGet( $name, "-export_type" );
+	string $transform_attrs[];
+	if( $export_type == "hierarchy" ){
+		select -hi (`msExport_objectNodesList($name)`);
+
+		// Get the meshes
+		string $meshes[] = `ls -dag -ni -et "mesh" -sl`;
+
+		// Get the tagged transforms (shorten the list - for speed)
+		string $transforms[] = sort( `ls -dag -ni -et "transform" -sl` );
+		string $exclude[]    = `ls -et "parentConstraint" -et "aimConstraint" -et "pointConstraint" -et "orientConstraint" -et "joint" -et "clusterHandle" -et "ikEffector" -et "nurbsCurve" -et "ikHandle" -et "nurbsSurface" -sl`;
+		$transforms = stringArrayRemove( $exclude, $transforms );
+
+		// Get the transform attrs
+		string $attrs[] = msExport_attrNamesList( "transform" );
+		string $tagged_transforms[];
+		for( $transform in $transforms ){
+			for( $attr in $attrs ){
+				if( attributeExists($attr, $transform) ){
+					$transform_attrs[size($transform_attrs)] = $attr;
+					$tagged_transforms[size($tagged_transforms)] = $transform;
+				}
+			}
+		}
+
+		select $meshes $tagged_transforms;
+	}else{
+		msExport_objectNodesSelect( $name );
+	}
+
+	// Get valid attrs and select nodes
+	string $vert_attrs[] = msExport_attrNamesList( "verts" );  // get common attrs.
+
+	string $valid_attrs[];
+	for( $vert_attr in $vert_attrs ){
+		if( size(`ls -o ( "."+$vert_attr )`) )
+			$valid_attrs[size($valid_attrs)] = $vert_attr;
+	}
+
+	if( size( $transform_attrs ) )
+		$valid_attrs = stringArrayCatenate( $valid_attrs, $transform_attrs );
+
+	string $attrs[] = stringArrayCatenate( msExport_attrNamesMayaSpecificList(), $valid_attrs );
+
+	string $result = "";
+	if( `spreadSheetEditor -ex $spreadsheetName` ){
+		if( `selectionConnection -ex $selConnectionName` )
+			deleteUI $selConnectionName;
+
+		string $activeList = `selectionConnection -p $formLayoutName -activeList -lock 1 $selConnectionName`;
+		spreadSheetEditor -e -p $formLayoutName -ko 0 -ss 0 -fal $attrs -mlc $activeList -slc $activeList -docTag $name -execute ( "select -r \"#P\"" ) $spreadsheetName;
+	}else{
+		string $formLayout = `formLayout -p $parent -bgc 50 50 50 $formLayoutName`;
+		string $activeList = `selectionConnection -p $formLayout -activeList -lock 1 $selConnectionName`;
+		string $c1 = `spreadSheetEditor -p $formLayout -ko 0 -ss 0 -fal $attrs -mlc $activeList -slc $activeList -docTag $name -execute ( "select -r \"#P\"" ) $spreadsheetName`;
+
+		formLayout -e
+			-af $c1 "top"    5
+			-af $c1 "left"   5
+			-af $c1 "right"  5
+			-af $c1 "bottom" 5
+			$formLayout;
+		$result = $formLayout;
+	}
+
+	// restore the current selection
+	select -r $current_selection;
+	return $result;
+}//END
+
+global proc msExportUI_exportAttrs_attrListBuild( string $name ){
+	global string $g_msExportUI_exportAttr_checkBoxes[];
+	clear $g_msExportUI_exportAttr_checkBoxes;
+
+	if( !size($name) ){
+		$name = msExportUI_exportAttrs_objectNameGet();
+		if( !size( $name ) )
+			return;
+	}
+
+	string $formLayout = "msExportUIAddAttrFormLayout";
+	string $children[] = `formLayout -q -ca $formLayout`;
+	for( $child in $children )
+		deleteUI -ctl $child;
+
+	string $export_type = msExport_objectExportArgsValueGet( $name, "-export_type" );
+	string $argsList[] = msExport_attrTypeLabelArgsList( $export_type );
+
+	for( $args in $argsList ){
+		string $type  = msExport_argValueGet( $args, "-type" );
+		string $attr  = msExport_argValueGet( $args, "-attr" );
+		string $label = msExport_argValueGet( $args, "-label" );
+		string $ann = ( $attr +" ("+$type+")" );
+		string $checkBox = `checkBox -p $formLayout -l $label -ann $ann -docTag $args $attr`;
+		$g_msExportUI_exportAttr_checkBoxes[size($g_msExportUI_exportAttr_checkBoxes)] = $checkBox;
+	}
+
+	setParent $formLayout;
+	msExportUI_formLayoutEdit( $formLayout, $g_msExportUI_exportAttr_checkBoxes, 10, 5, "vertical" );
+}//END
+
+global proc string msExportUI_exportAttrs_nameLayout( string $name ){
+	string $formLayout = `formLayout`;
+	string $textFieldGrp = "msExportUITextFieldGrp";
+	string $cmd = "msExportUI_exportAttrs_objectRefresh";
+	string $c1 = msExportUI_objectNamePopupTextFieldGrp( "Object Name:", $name, $textFieldGrp, 80, "meshes", $cmd, "" );
+
+	formLayout -edit
+		-af $c1 "top"    0
+		-af $c1 "left"   0
+		-af $c1 "right"  0
+		-an $c1 "bottom"
+		$formLayout;
+	return $formLayout;
+}//END
+
+global proc string msExportUI_exportAttrs_attrLayout( string $name ){
+	int $sel = 1;
+	string $nodes[] = `ls -sl`;
+	if( size($nodes) && msExport_objectExists($name) ){
+		// deselect non-related nodes
+		string $ntwk_node = msExport_objectNetworkNodeGet( $name );
+		for( $node in $nodes ){
+			string $connPairs = msExport_objectNetworkConnectionNodePairGet( $node );
+			if( !gmatch( $connPairs, $ntwk_node+".mspExportNodes*" ) ){
+				select -d $node;
+			}
+		}
+
+		// 
+		string $selected_nodes[] = sort(`ls -sl -l`);
+		string $obj_nodes[] = sort( msExport_objectNodesList( $name ) );
+		if( msExport_nodeExportArgValueGet($ntwk_node, "-export_type" ) == "hierarchy" ){
+			if( $selected_nodes[0] != $obj_nodes[0] )
+				$sel = 2;
+		}else{
+			if( size($selected_nodes) != size($obj_nodes) )
+				$sel = 2;
+		}
+	}
+
+	string $frameLayout = `frameLayout -bs "etchedOut" -bv 1 -lv 0 -mw 10 -mh 10 -cll 0 -cl 1 `;
+	string $formLayout = `formLayout`;
+
+	string $c1  = `radioButtonGrp -nrb 2 -cl2 "left" "left" -cw2 140 140 -la2 "Tag all object nodes" "Tag selected nodes only" -sl $sel "msExportUIExportAttrsRadioButtonGrp"`;
+	radioButtonGrp -e -on1 ( "msExportUI_exportAttrs_selectionTypeCB( \""+$c1+"\" )" ) -on2 ( "msExportUI_exportAttrs_selectionTypeCB( \""+$c1+"\" )" ) $c1;
+
+	string $c2 = `formLayout "msExportUIAddAttrFormLayout"`;
+	msExportUI_exportAttrs_attrListBuild( $name );
+	setParent $formLayout;
+
+	string $c3 = `button -l "Add Attrs" -c "msExportUI_exportAttrs_commandCB( \"add\" )"`;
+	string $c4 = `button -l "Delete Attrs" -c "msExportUI_exportAttrs_commandCB( \"delete\" )"`;
+
+	formLayout -edit
+		-af $c1 "top"    0
+		-af $c1 "left"   0
+		-af $c1 "right"  0
+		-an $c1 "bottom"
+
+		-ac $c2 "top"    5 $c1
+		-af $c2 "left"   0
+		-af $c2 "right"  0
+		-ac $c2 "bottom" 10 $c3
+
+		-an $c3 "top"
+		-af $c3 "left"    0
+		-ap $c3 "right"   0 50
+		-af $c3 "bottom"  0
+
+		-an $c4 "top"
+		-ap $c4 "left"    0 50
+		-af $c4 "right"   0
+		-af $c4 "bottom"  0
+		$formLayout;
+	return $frameLayout;
+}//END
+
+global proc string msExportUI_exportAttrs_windowBuild( string $name ){
+	global string $g_msExportUI_exportAttr_currentName;
+
+	global string $g_msExportUI_exportAttr_checkBoxes[];
+	clear $g_msExportUI_exportAttr_checkBoxes;
+
+	if( !size($name) )
+		$name = msExport_objectNameFromSelected( "mesh" );
+
+	$g_msExportUI_exportAttr_currentName = $name;
+
+	string $window = "msExportUIExportAttrsWindow";
+	if( `window -ex $window` )
+		deleteUI $window;
+
+	$window = `window -t "MachStudio Export - Export Attrs" -rtf 1 -s 1 $window`;
+	string $formLayout = `formLayout`;
+
+	string $l1 = msExportUI_exportAttrs_nameLayout( $name );
+	setParent $formLayout;
+
+	string $l2 = msExportUI_exportAttrs_attrLayout( $name );
+	setParent $formLayout;
+
+	string $l3 = `frameLayout -bs "etchedOut" -l "Edit Export Attribute Values" -bv 1 -lv 1 -mw 5 -mh 5 -cll 1 -cl 1 "msExportUIExportAttrsSpreadSheetFrameLayout"`;
+	frameLayout -e -cc ( "msExportUI_exportAttrs_windowSizeRefresh" ) -ec ( "msExportUI_exportAttrs_attrSpreadSheetBuildCB( \""+$l3+"\", \""+$name+"\" )" ) $l3;
+
+	setParent $formLayout;
+
+	formLayout -edit
+		-af $l1 "top"    20
+		-af $l1 "left"   15
+		-af $l1 "right"  15
+		-an $l1 "bottom"
+
+		-ac $l2 "top"     5 $l1
+		-af $l2 "left"   15
+		-af $l2 "right"  15
+		-an $l2 "bottom"
+
+		-ac $l3 "top"     5 $l2
+		-af $l3 "left"   15
+		-af $l3 "right"  15
+		-af $l3 "bottom" 15
+		$formLayout;
+
+	window -e -wh 350 307 $window;
+	showWindow $window;
+
+	msExportUI_exportAttrs_windowSizeRefresh();
+	scriptJob -p $window -e "SceneOpened" ( "msExportUI_windowScriptJob_killWindowCB( \""+$window+"\" )" );
+
+	return $window;
+}//END
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+// Object Template
+global proc msExportUI_objectTemplateSaveCB( string $name ){
+	msExportUI_objectUpdateWindow( $name, "objectTemplateSave" );
+}//END
+
+global proc msExportUI_objectTemplateFileBrowserCB(){
+	string $file_path  = `fileDialog -m 0 -dm "*.mst" -t "MachStudio: Read Object Template"`;
+	textFieldGrp -e -tx $file_path "msExportUIObjectTemplateSource";
+}//END
+
+global proc msExportUI_objectTemplateCB(){
+	// get the new name
+	string $source = `textFieldGrp -q -tx "msExportUIObjectTemplateSource"`;
+	string $target_name = `textFieldGrp -q -tx "msExportUIObjectTemplateTargetName"`;
+
+	if( !msExport_objectNameValidate( $target_name, 0 ) )
+		return;
+
+	// Make sure there is a selection
+	if( !size( `ls -sl`) ){
+		// Check if the target name is part of an existing object
+		if( msExport_objectExists( $target_name ) ){
+			msExport_objectNodesSelect( $target_name );
+		}else{
+			string $msg = "Nothing is selected.\n";
+			$msg += "To continue, select nodes to copy values to...\n";
+			confirmDialog -t "MachStudio Warning" -m $msg -ma "center" -button "OK";
+			return;
+		}
+	}
+
+	int $ok;
+	if( !msExport_objectValuesCopy( $source, $target_name, `ls -sl -l`, 1 ) )
+		return;
+
+	// refresh the UI
+	msExportUI_windowRefresh();
+	if( `window -ex "msExportUIObjectTemplateWindow"` )
+		deleteUI "msExportUIObjectTemplateWindow";
+}//END
+
+global proc msExportUI_objectTemplateWindow( string $name, string $op_type ){
+	if( !size($name) ){
+		string $names[] = msExport_objectNamesFromSelectedList( "all" );
+		if( size( $names ) == 1 )
+			$name = $names[0];
+	}
+
+	string $window = "msExportUIObjectTemplateWindow";
+	if( `window -ex $window` )
+		deleteUI $window;
+
+	string $title = "Object Copy";
+	string $label = "Source Name:";
+	string $source_name = $name;
+	string $target_name = "";
+
+	if( $op_type == "read" ){
+		$title = "Object Template Read";
+		$label = "Source File:";
+		$source_name = "";
+		$target_name = $name;
+	}
+
+	$window = `window -t ("MachStudio Export - "+$title) -s 0 $window`;
+
+	string $formLayout = `formLayout`;
+	string $c1 = msExportUI_objectNamePopupTextFieldGrp( $label, $source_name, "msExportUIObjectTemplateSource", 75, "all", "","" );
+	string $c2 = `button -h 20`;
+
+	string $c3 = `textFieldGrp -l "Target Name:" -tx $target_name -cw2 75 100 -ct2 "left" "left" -adj 2 -co2 0 0 "msExportUIObjectTemplateTargetName"`;
+	string $c4 = `button -h 22 -l "Apply Values" -c "msExportUI_objectTemplateCB"`;
+	string $c5 = `button -h 22 -l "Close"  -c ( "deleteUI "+$window )`;
+	setParent $formLayout;
+
+	// add button command
+	int $btn_w = 1;
+	int $btn_vis = 0;
+	int $btn_enable = 0;
+	string $btn_label = "";
+	string $btn_cmd = "";
+	if( $op_type == "read" ){
+		$btn_w = 60;
+		$btn_vis = 1;
+		$btn_enable = 1;
+		$btn_label = "Browse";
+		$btn_cmd = "msExportUI_objectTemplateFileBrowserCB()";
+	}
+	button -e -en $btn_enable -vis $btn_vis -w $btn_w -l $btn_label -c $btn_cmd $c2;
+
+	formLayout -edit
+		-af $c1 "top"     20
+		-af $c1 "left"    10
+		-ac $c1 "right"    0 $c2
+		-an $c1 "bottom"
+
+		-af $c2 "top"     20
+		-an $c2 "left"
+		-af $c2 "right"   10
+		-an $c2 "bottom"
+
+		-ac $c3 "top"      2 $c1
+		-af $c3 "left"    10
+		-af $c3 "right"   10
+		-ac $c3 "bottom"  10 $c4
+
+		-an $c4 "top"
+		-af $c4 "left"    10
+		-ap $c4 "right"    0 50
+		-af $c4 "bottom"  10
+
+		-an $c5 "top"
+		-ap $c5 "left"     0 50
+		-af $c5 "right"   10
+		-af $c5 "bottom"  10
+		$formLayout;
+
+	showWindow $window;
+	window -e -wh  325 140 $window;
+	scriptJob -p $window -e "SceneOpened" ( "msExportUI_windowScriptJob_killWindowCB( \""+$window+"\" )" );
+}//END
+
+
