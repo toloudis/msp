@@ -14,7 +14,7 @@ $g_plugin_MAXIMUM_VERSION = "1.5.0.0";
 //******************************************
 
 global string $g_plugin_CURRENT_VERSION;
-$g_plugin_CURRENT_VERSION = `pluginInfo -q -v "sgpuMachExport"`;
+$g_plugin_CURRENT_VERSION = `pluginInfo -q -v "sgpuMachExport-x64"`;
 //***************************************************************
 
 
