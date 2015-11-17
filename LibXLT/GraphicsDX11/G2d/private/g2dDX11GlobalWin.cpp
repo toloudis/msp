@@ -22,7 +22,6 @@
 //============================================================================
 #pragma comment(lib,c_g2dDXGILIBRARY)
 #pragma comment(lib,c_g2dD3D11LIBRARYMAIN)
-#pragma comment(lib,c_g2dD3D11LIBRARYX)
 #pragma comment(lib,c_g2dDX11LIBRARYERR)
 #pragma comment(lib,c_g2dDXCOMPILER)
 #pragma comment(lib,c_g2dD3D11LIBRARYEFFECT)

@@ -38,11 +38,4 @@ namespace g2dImageDrawUtilDX11
 					int i_SY2,
 					g2dD3D11TexturePtr i_SrcImage);
 
-	//------------------------------------------------------------------------
-	//	UpdateSurface() - copy the source surface to the destination
-	//------------------------------------------------------------------------
-	HRESULT UpdateSurface(	g2dD3D11TexturePtr i_pSource,
-							CONST RECT* pSourceRect,
-							g2dD3D11TexturePtr i_pDest,
-							CONST POINT* pDestPoint );
 }

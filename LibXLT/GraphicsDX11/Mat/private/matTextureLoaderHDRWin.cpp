@@ -20,8 +20,9 @@
 #include "GraphicsDX11/mat/matMipTexture.hpp"
 #include "GraphicsDX11/mat/matPlainTexture.hpp"
 
-#include <d3dx10math.h>
-#pragma comment(lib, "d3dx10.lib")
+//#include <d3dx10math.h>
+//#pragma comment(lib, "d3dx10.lib")
+#include <DirectXPackedVector.h>
 
 namespace 
 {
@@ -49,8 +50,15 @@ namespace
 		::fclose(fp);
 
 		// Convert the 32-bit floats into 16-bit floats and include the alpha component
-		D3DXFLOAT16* fHDR = new D3DXFLOAT16[4 * fileWidth * fileHeight];
+		DirectX::PackedVector::HALF* fHDR = new DirectX::PackedVector::HALF[4 * fileWidth * fileHeight];
 		int j = 0;
+		DirectX::PackedVector::HALF* XMConvertFloatToHalfStream(
+			fHDR,
+			4 * 2,
+			fHDRPixels,
+			4*4,
+			filewidth*fileHeight
+		);
 		for( int i = 0; i < 4 * fileWidth * fileHeight; i += 4 )
 		{
 			fHDR[i] = fHDRPixels[i - j];
@@ -62,7 +70,7 @@ namespace
 
 		D3D11_SUBRESOURCE_DATA initData;
 		initData.pSysMem = fHDR;
-		initData.SysMemPitch = fileWidth*4*sizeof(D3DXFLOAT16);
+		initData.SysMemPitch = fileWidth*4*sizeof(HALF);
 		initData.SysMemSlicePitch = 0;
 
 		// create a disposable staging texture to get the bits up into the real texture.

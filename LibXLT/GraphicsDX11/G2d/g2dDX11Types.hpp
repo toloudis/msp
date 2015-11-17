@@ -29,28 +29,19 @@
 #include <d3d11.h>
 #include <dxgi.h>
 #include <D3Dcompiler.h>
-#include <d3dx11.h>
 
 //#include "DirectXTex.h"
 
-#define PIX_D3DPERF 0
+#ifndef D3DPERF_BeginEvent
+#define	D3DPERF_BeginEvent( C, S )
+#endif
 
-#if PIX_D3DPERF
-	#include <d3d9.h>
-	#include <d3dx9.h>
-#else
-	#ifndef D3DPERF_BeginEvent
-	#define	D3DPERF_BeginEvent( C, S )
-	#endif
+#ifndef D3DPERF_EndEvent
+#define D3DPERF_EndEvent()
+#endif
 
-	#ifndef D3DPERF_EndEvent
-	#define D3DPERF_EndEvent()
-	#endif
-
-	#ifndef D3DPERF_SetMarker
-	#define D3DPERF_SetMarker( C, S )
-	#endif
-	
+#ifndef D3DPERF_SetMarker
+#define D3DPERF_SetMarker( C, S )
 #endif
 
 #undef DrawText
@@ -95,10 +86,8 @@ typedef ID3D11PixelShader			g2dIDirect3DPixelShader10;
 #define c_g2dDXGILIBRARY			"dxgi.lib"
 
 #ifdef _DEBUG
-	#define	c_g2dD3D11LIBRARYX		"d3dx11d.lib"
 	#define	c_g2dD3D11LIBRARYEFFECT	"Effects11d.lib"
 #else
-	#define	c_g2dD3D11LIBRARYX		"d3dx11.lib"
 	#define	c_g2dD3D11LIBRARYEFFECT	"Effects11.lib"
 #endif
 #define c_g2dDX11LIBRARYERR			"dxerr.lib"

@@ -103,71 +103,29 @@ void DrawImage(	g2dD3D11TexturePtr o_DestSurface,
 	DBG_ASSERT(source_width > 0, "Invalid image area");
 	DBG_ASSERT(source_height > 0, "Invalid image area");
 
-	RECT source_rect;
+	D3D11_BOX source_rect;
 	source_rect.left = i_SX1;
 	source_rect.top = i_SY1;
 	source_rect.right = i_SX2;
 	source_rect.bottom = i_SY2;
+	source_rect.front = 0;
+	source_rect.back = 1;
 
-	POINT dest_point;
-	dest_point.x = i_DX1;
-	dest_point.y = i_DY1;
+	g2dDX11Global::g_pDeviceContext->CopySubresourceRegion(o_DestSurface,
+		D3D11CalcSubresource(0, 0, 1),
+		i_DX1, i_DY1, 0,
+		i_SrcSurface,
+		D3D11CalcSubresource(0, 0, 1),
+		&source_rect
+		);
 
-	HRESULT op_result = g2dImageDrawUtilDX11::UpdateSurface(	i_SrcSurface,
-															&source_rect,
-															o_DestSurface,
-															&dest_point );
-	if ( !SUCCEEDED(op_result) )
-	{
-		g2dDX11Global::PrintDXError(op_result);
-		DBG_ERROR("Couldn't copy to surface");
-		DBG_ASSERT(false, "DrawImage failed");
-	}
+	//if ( !SUCCEEDED(op_result) )
+	//{
+	//	g2dDX11Global::PrintDXError(op_result);
+	//	DBG_ERROR("Couldn't copy to surface");
+	//	DBG_ASSERT(false, "DrawImage failed");
+	//}
 }
 
-
-//------------------------------------------------------------------------
-//	UpdateSurface() - copy the source surface to the destination
-//------------------------------------------------------------------------
-HRESULT UpdateSurface(	g2dD3D11TexturePtr i_pSource,
-						CONST RECT* i_pSourceRect,
-						g2dD3D11TexturePtr i_pDest,
-						CONST POINT* i_pDestPoint )
-{
-	D3D11_BOX srcBox;
-	srcBox.top = i_pSourceRect->top;
-	srcBox.bottom = i_pSourceRect->bottom;
-	srcBox.left = i_pSourceRect->left;
-	srcBox.right = i_pSourceRect->right;
-	srcBox.front = 0;
-	srcBox.back = 1;
-	D3D11_BOX dstBox;
-	dstBox.left = i_pDestPoint->x;
-	dstBox.top = i_pDestPoint->y;
-	dstBox.right = dstBox.left + (i_pSourceRect->right - i_pSourceRect->left);
-	dstBox.bottom = dstBox.top + (i_pSourceRect->bottom - i_pSourceRect->top);
-	dstBox.front = 0;
-	dstBox.back = 1;
-
-	D3DX11_TEXTURE_LOAD_INFO loadInfo;
-	loadInfo.pSrcBox = &srcBox;
-	loadInfo.pDstBox = &dstBox;
-	loadInfo.SrcFirstMip = 0;
-	loadInfo.DstFirstMip = 0;
-	loadInfo.NumMips = 1;
-    loadInfo.SrcFirstElement = 0;
-    loadInfo.DstFirstElement = 0;
-    loadInfo.NumElements = 1;
-    loadInfo.Filter = D3DX11_FILTER_NONE;
-    loadInfo.MipFilter = D3DX11_FILTER_NONE;
-
-    //HRESULT op_result = DirectXTex::CopyRectangle( _In_ const Image& srcImage, _In_ const Rect& srcRect, _In_ const Image& dstImage,
-    //                       _In_ DWORD filter, _In_ size_t xOffset, _In_ size_t yOffset );
-
-	// optimize, try CopyResource or CopyResourceSubregion??!?!?!!?
-	HRESULT op_result = D3DX11LoadTextureFromTexture(g2dDX11Global::g_pDeviceContext,
-		i_pSource, &loadInfo, i_pDest);
-	return op_result;
-}
 
 }

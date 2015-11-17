@@ -20,6 +20,9 @@
 #include "GraphicsDX11/mat/matDX11GlobalWin.hpp"
 
 #include "DDS.h"
+
+#include <DirectXTex/DirectXTex.h>
+
 #include <fstream>
 
 
@@ -302,31 +305,29 @@ namespace
 		HRESULT hr;
 
 		//DBG_LOG1( "loading DDS texture (%s)", filename.c_str() );
-		D3DX11_IMAGE_INFO srcInfo;
-		hr = D3DX11GetImageInfoFromFile(
-		  filename.GetString(),
-		  NULL,
-		  &srcInfo,
-		  NULL
-		);
+		DirectX::TexMetadata srcInfo;
+		hr = DirectX::GetMetadataFromDDSFile(filename.GetString(), 0,
+			srcInfo);
+
 		ID3D11Texture2D* pTex2D = NULL;
 
 		HRESULT hrLoadCxU8V8 = load_CxU8V8_format(filename, &pTex2D);
 		
-		if (srcInfo.ImageFileFormat != D3DX11_IFF_DDS && !SUCCEEDED(hrLoadCxU8V8))
-		{
-			DBG_WARNING("A non-DDS file made it into load_dds_data: " << filename);
-			fsResourceTracker::Remove(io_Info.s_Locator);
-			return NULL;
-		}
+		//if (srcInfo.ImageFileFormat != D3DX11_IFF_DDS && !SUCCEEDED(hrLoadCxU8V8))
+		//{
+		//	DBG_WARNING("A non-DDS file made it into load_dds_data: " << filename);
+		//	fsResourceTracker::Remove(io_Info.s_Locator);
+		//	return NULL;
+		//}
 
 		bool cm = false;
 		bool vol = false;
-		if ((srcInfo.ArraySize == 6) && 
-			(srcInfo.ResourceDimension == D3D11_RESOURCE_DIMENSION_TEXTURE2D) &&
-			(srcInfo.MiscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE))
+		// TODO: try srcInfo.isCubemap and srcInfo.isVolumemap
+		if ((srcInfo.arraySize == 6) && 
+			(srcInfo.dimension == D3D11_RESOURCE_DIMENSION_TEXTURE2D) &&
+			(srcInfo.miscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE))
 			cm = true;
-		else if (srcInfo.ResourceDimension == D3D11_RESOURCE_DIMENSION_TEXTURE3D)
+		else if (srcInfo.dimension == D3D11_RESOURCE_DIMENSION_TEXTURE3D)
 			vol = true;
 
 		ID3D11Resource* pTexture = NULL;
@@ -337,20 +338,16 @@ namespace
 		}
 		else
 		{
+			srcInfo.mipLevels = (mipmap_if_2D && !cm && !vol) ? 0 : 1; // 1 = top mip level only
+			//if (io_Info.s_nWidthReduce > 0) {
+			//	imageLoadInfo.FirstMipLevel = io_Info.s_nWidthReduce;
+			//}
 
-			D3DX11_IMAGE_LOAD_INFO imageLoadInfo; // initted to D3DX11_DEFAULT
-			imageLoadInfo.MipLevels = (mipmap_if_2D && !cm && !vol) ? D3DX11_DEFAULT : 1; // 1 = top mip level only
-			if (io_Info.s_nWidthReduce > 0)
-				imageLoadInfo.FirstMipLevel = io_Info.s_nWidthReduce;
-
-			hr = D3DX11CreateTextureFromFile(
-				g2dDX11Global::g_pDevice,
-				filename.GetString(),
-				&imageLoadInfo,
-				NULL,
-				&pTexture,
-				NULL
-				);		
+			DirectX::ScratchImage scratchImage;
+			hr = DirectX::LoadFromDDSFile(filename.GetString(), 0, &srcInfo, scratchImage);
+			if (SUCCEEDED(hr)) {
+				hr = DirectX::CreateTexture(g2dDX11Global::g_pDevice, scratchImage.GetImages(), scratchImage.GetImageCount(), srcInfo, &pTexture);
+			}
 
 			//	check for errors loading
 			if ( !SUCCEEDED(hr) )

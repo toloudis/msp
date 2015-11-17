@@ -16,6 +16,8 @@
 #include "Core/it/itStringUtil.hpp"
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
 
+#include c_g2dD3DX11Effect_H
+
 namespace effShaderUtilWin
 {
 

@@ -205,7 +205,7 @@ void SurfaceIterator::GetValue(	envType::Float32 &o_Red,
 		switch (nc)
 		{
 		case 4:
-			//::D3DXFloat16To32Array(tmp, (D3DXFLOAT16*)pHData, 4);
+			//::D3DXFloat16To32Array(tmp, (HALF*)pHData, 4);
 			//o_Red	 = tmp[0];
 			//o_Green	 = tmp[1];
 			//o_Blue	 = tmp[2];
@@ -216,7 +216,7 @@ void SurfaceIterator::GetValue(	envType::Float32 &o_Red,
 			o_Alpha		= maFunctions::HalfToFloat(*(pHData+3));
 			break;
 		case 2:
-			//::D3DXFloat16To32Array(tmp, (D3DXFLOAT16*)pHData, 2);
+			//::D3DXFloat16To32Array(tmp, (HALF*)pHData, 2);
 			//o_Red		= tmp[0];
 			//o_Green		= tmp[1];
 			o_Red		= maFunctions::HalfToFloat(*(pHData+0));
@@ -225,7 +225,7 @@ void SurfaceIterator::GetValue(	envType::Float32 &o_Red,
 			o_Alpha		= 1;
 			break;
 		case 1:
-			//::D3DXFloat16To32Array(&o_Red, (D3DXFLOAT16*)pHData, 1);
+			//::D3DXFloat16To32Array(&o_Red, (HALF*)pHData, 1);
 			o_Red		= maFunctions::HalfToFloat(*(pHData+0));
 			o_Green		= o_Red;
 			o_Blue		= o_Red;
@@ -295,7 +295,7 @@ void SurfaceIterator::SetValue(	float i_Red,
 		case 4:
 			{
 			//float tmp[4] = {i_Blue,i_Green,i_Red,i_Alpha};
-			//::D3DXFloat32To16Array((D3DXFLOAT16*)pHData, tmp, 4);
+			//::D3DXFloat32To16Array((HALF*)pHData, tmp, 4);
 			pHData[0] = maFunctions::FloatToHalf(i_Red);
 			pHData[1] = maFunctions::FloatToHalf(i_Green);
 			pHData[2] = maFunctions::FloatToHalf(i_Blue);
@@ -305,13 +305,13 @@ void SurfaceIterator::SetValue(	float i_Red,
 		case 2:
 			{
 			//float tmp[2] = {i_Green,i_Red};
-			//::D3DXFloat32To16Array((D3DXFLOAT16*)pHData, tmp, 2);
+			//::D3DXFloat32To16Array((HALF*)pHData, tmp, 2);
 			pHData[0] = maFunctions::FloatToHalf(i_Red);
 			pHData[1] = maFunctions::FloatToHalf(i_Green);
 			}
 			break;
 		case 1:
-			//::D3DXFloat32To16Array((D3DXFLOAT16*)pHData, &i_Red, 1);
+			//::D3DXFloat32To16Array((HALF*)pHData, &i_Red, 1);
 			pHData[0] = maFunctions::FloatToHalf(i_Red);
 			break;
 		}
@@ -500,7 +500,7 @@ void SurfaceIteratorRGBA16F::GetValue(	float &o_Red,
 	envType::UInt16* pHData = (envType::UInt16*)m_pData;
 
 	//float tmp[4];
-	//::D3DXFloat16To32Array(tmp, (D3DXFLOAT16*)pHData, 4);
+	//::D3DXFloat16To32Array(tmp, (HALF*)pHData, 4);
 	//o_Red		= tmp[0];
 	//o_Green	= tmp[1];
 	//o_Blue	= tmp[2];
@@ -521,7 +521,7 @@ void SurfaceIteratorRGBA16F::SetValue(	float i_Red,
 	envType::UInt16* pHData = (envType::UInt16*)m_pData;
 
 	//float tmp[4] = {i_Blue,i_Green,i_Red,i_Alpha};
-	//::D3DXFloat32To16Array((D3DXFLOAT16*)pHData, tmp, 4);
+	//::D3DXFloat32To16Array((HALF*)pHData, tmp, 4);
 	pHData[0] = maFunctions::FloatToHalf(i_Red);
 	pHData[1] = maFunctions::FloatToHalf(i_Green);
 	pHData[2] = maFunctions::FloatToHalf(i_Blue);
@@ -538,7 +538,7 @@ void SurfaceIteratorRG16F::GetValue( float &o_Red,
 	envType::UInt16* pHData = (envType::UInt16*)m_pData;
 
 	//float tmp[2];
-	//::D3DXFloat16To32Array(tmp, (D3DXFLOAT16*)pHData, 2);
+	//::D3DXFloat16To32Array(tmp, (HALF*)pHData, 2);
 	//o_Red		= tmp[0];
 	//o_Green		= tmp[1];
 	o_Red		= maFunctions::HalfToFloat(*(pHData+0));
@@ -557,7 +557,7 @@ void SurfaceIteratorRG16F::SetValue(	float i_Red,
 {
 	envType::UInt16* pHData = (envType::UInt16*)m_pData;
 	//float tmp[2] = {i_Green,i_Red};
-	//::D3DXFloat32To16Array((D3DXFLOAT16*)pHData, tmp, 2);
+	//::D3DXFloat32To16Array((HALF*)pHData, tmp, 2);
 	pHData[0] = maFunctions::FloatToHalf(i_Red);
 	pHData[1] = maFunctions::FloatToHalf(i_Green);
 }
@@ -570,7 +570,7 @@ void SurfaceIteratorR16F::GetValue(	float &o_Red,
 		float &o_Alpha) const
 {
 	envType::UInt16* pHData = (envType::UInt16*)m_pData;
-	//::D3DXFloat16To32Array(&o_Red, (D3DXFLOAT16*)pHData, 1);
+	//::D3DXFloat16To32Array(&o_Red, (HALF*)pHData, 1);
 	o_Red		= maFunctions::HalfToFloat(*(pHData+0));
 	o_Green		= 0;
 	o_Blue		= 0;
@@ -585,7 +585,7 @@ void SurfaceIteratorR16F::SetValue(	float i_Red,
 		float i_Alpha) const
 {
 	envType::UInt16* pHData = (envType::UInt16*)m_pData;
-	//::D3DXFloat32To16Array((D3DXFLOAT16*)pHData, &i_Red, 1);
+	//::D3DXFloat32To16Array((HALF*)pHData, &i_Red, 1);
 	pHData[0] = maFunctions::FloatToHalf(i_Red);
 }
 

@@ -16,6 +16,8 @@
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
 #include "Core/Dbg/dbgMsg.hpp"
 
+#include c_g2dD3DX11Effect_H
+
 namespace
 {
 	//============================================================================
