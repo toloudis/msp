@@ -115,7 +115,7 @@ typedef ID3D11PixelShader			g2dIDirect3DPixelShader10;
 
 
 // 3rdParty for now
-#define c_g2dD3DX11Effect_H		"Effects/inc/d3dx11Effect.h"
+#define c_g2dD3DX11Effect_H		"D3DX11Effects/inc/d3dx11Effect.h"
 
 #define D3D_RELEASE(ptr) {if (ptr)ptr->Release();ptr=NULL;}
 

@@ -276,8 +276,8 @@
     <LibraryPath>$(LibraryPath);$(DKSDK_DIR)lib\x64</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(IncludePath);$(DXSDK_DIR)include</IncludePath>
-    <LibraryPath>$(LibraryPath);$(DKSDK_DIR)lib\x64</LibraryPath>
+    <IncludePath>$(DXSDK_DIR)include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DKSDK_DIR)lib\x64;$(LibraryPath)</LibraryPath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
