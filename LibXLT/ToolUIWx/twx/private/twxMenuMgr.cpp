@@ -336,7 +336,7 @@ void twxMenuMgr::MenuObjectsCheck( int i_ObjectID, bool i_bChecked )
 			}
 			else
 			{
-				DBG_WARNING("Menu item " << it->second.m_pMenuItem->GetLabel().c_str() << " is not checkable.");
+				DBG_WARNING("Menu item " << it->second.m_pMenuItem->GetItemLabel().c_str() << " is not checkable.");
 			}
 		}
 

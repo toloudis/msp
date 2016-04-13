@@ -221,7 +221,7 @@ void twcGradientColorBase::PaintGradient(wxDC& dc)
 	wxBrush brush = dc.GetBrush();
 
 	dc.SetBrush(wxBrush(c));
-	dc.SetPen(wxPen(m_panel_gradientPanel->GetBackgroundColour(), 0, wxTRANSPARENT));
+	dc.SetPen(wxPen(m_panel_gradientPanel->GetBackgroundColour(), 0, wxPENSTYLE_TRANSPARENT));
 	dc.DrawRectangle(m_panel_gradientPanel->GetRect());
 	
 	dc.SetBrush(brush);

@@ -247,7 +247,7 @@ void twcColorBoxCtrl::OnPaint(wxPaintEvent &WXUNUSED(event))
 	int y_pos = (int)((1.0 - y_pct) * (height-1));
 
 	wxColor pen_col = (m_Value > 0.5) ? *wxBLACK : *wxWHITE;
-	dc.SetPen( wxPen(pen_col, 1, wxSOLID) );
+	dc.SetPen( wxPen(pen_col, 1, wxPENSTYLE_SOLID) );
 	dc.SetBrush(*wxTRANSPARENT_BRUSH); // turn off fill
 	dc.DrawCircle(x_pos, y_pos, c_MarkerRadius);
 }
@@ -413,7 +413,7 @@ void twcColorSliderCtrl::OnPaint(wxPaintEvent &WXUNUSED(event))
 			color.Set(red,green,(int)(255 * pct));
 			break;
 		}
-		dc.SetPen( wxPen( color, 1, wxSOLID ) );
+		dc.SetPen( wxPen( color, 1, wxPENSTYLE_SOLID ) );
 		dc.DrawLine(c_SliderEdgeSpace,i,size.GetWidth()-c_SliderEdgeSpace,i);
 	}
 
@@ -442,7 +442,7 @@ void twcColorSliderCtrl::OnPaint(wxPaintEvent &WXUNUSED(event))
 	}
 	
 	int marker_pos = (int)((1.0 - marker_pct) * (height-1));
-	dc.SetPen( wxPen(*wxBLACK, 1, wxSOLID) );
+	dc.SetPen( wxPen(*wxBLACK, 1, wxPENSTYLE_SOLID) );
 	dc.SetBrush(*wxTRANSPARENT_BRUSH); // turn off fill
 	const int edge_space = 2;
 	dc.DrawRectangle(edge_space, marker_pos-c_MarkerRadius, 

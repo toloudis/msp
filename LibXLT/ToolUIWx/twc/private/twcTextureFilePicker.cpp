@@ -44,7 +44,7 @@ twcTextureFilePicker::twcTextureFilePicker(wxWindow* i_pParent)
 
 	//Choice box
 	m_pChoice = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize(55,-1), 0, NULL);
-	m_pChoice->SetFont( wxFont( 7, 70, 90, 90, false, wxEmptyString ) );
+	m_pChoice->SetFont( wxFont( 7, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
 	this->Connect( m_pChoice->GetId(), wxEVT_COMMAND_CHOICE_SELECTED,
 					wxCommandEventHandler(twcTextureFilePicker::OnChoiceSelected) );
 	bSizer1->Add( m_pChoice, 0, wxALL, 0 );
