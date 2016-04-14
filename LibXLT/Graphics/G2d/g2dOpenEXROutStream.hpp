@@ -13,7 +13,7 @@
 #include "Core/Fs/fsLocator.hpp"
 #endif 
 
-#include "Deploy/include/ImfIO.h"
+#include "OpenEXR/build/include/OpenEXR/ImfIO.h"
 
 #include <fstream>
 #include <iostream>

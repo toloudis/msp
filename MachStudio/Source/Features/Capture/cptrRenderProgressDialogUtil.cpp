@@ -49,8 +49,7 @@ namespace cptrRenderProgressDialogUtil
 			cptrRenderProgressDialog::DialogInstance = new cptrRenderProgressDialog( twxSystem::g_pMainForm );
 			cptrRenderProgressDialog::DialogInstance->SetRenderBatchID( l_RenderBatchID );
 		}
-		cptrRenderProgressDialog::DialogInstance->MakeModal(true);
-		cptrRenderProgressDialog::DialogInstance->Show();
+		cptrRenderProgressDialog::DialogInstance->ShowModal();
 
 #endif
 	}
@@ -64,8 +63,7 @@ namespace cptrRenderProgressDialogUtil
 #ifdef USE_WXWIDGETS
 		if (cptrRenderProgressDialog::DialogInstance != NULL)
 		{
-			cptrRenderProgressDialog::DialogInstance->MakeModal(false);
-			cptrRenderProgressDialog::DialogInstance->Show(false);
+			cptrRenderProgressDialog::DialogInstance->EndModal(0);
 		}
 #endif
 	}

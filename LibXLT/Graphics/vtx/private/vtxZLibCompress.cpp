@@ -20,7 +20,7 @@
 #include <png/zlib-1.2.5/zlib.h>
 
 // Need the zlib library for this compression algorithm
-#pragma comment(lib,"zlibwapi.lib")
+#pragma comment(lib,"zdll.lib")
 #endif
 
 
