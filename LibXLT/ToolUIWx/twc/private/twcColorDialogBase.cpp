@@ -174,7 +174,7 @@ twcColorDialogBase::twcColorDialogBase( wxWindow* parent, wxWindowID id, const w
 	m_sdbSizer1Cancel = new wxButton( this, wxID_CANCEL );
 	m_sdbSizer1->AddButton( m_sdbSizer1Cancel );
 	m_sdbSizer1->Realize();
-	bSizer13->Add( m_sdbSizer1, 3, wxALIGN_CENTER|wxALL|wxEXPAND, 5 );
+	bSizer13->Add( m_sdbSizer1, 3, wxALL|wxEXPAND, 5 );
 	
 	bSizer1->Add( bSizer13, 0, wxALL|wxEXPAND, 2 );
 	
