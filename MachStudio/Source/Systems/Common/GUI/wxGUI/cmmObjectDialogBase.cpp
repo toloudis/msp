@@ -28,7 +28,7 @@ cmmObjectDialogBase::cmmObjectDialogBase( wxWindow* parent, wxWindowID id, const
 	m_label_Name->Wrap( -1 );
 	sizer_Name->Add( m_label_Name, 0, wxALL, 5 );
 	
-	sizer_Dialog->Add( sizer_Name, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT, 5 );
+	sizer_Dialog->Add( sizer_Name, 0, wxALIGN_LEFT, 5 );
 	
 	m_notebook1 = new wxAuiNotebook( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_TAB_MOVE|wxAUI_NB_TAB_SPLIT );
 	m_tabPage_Properties = new wxScrolledWindow( m_notebook1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );

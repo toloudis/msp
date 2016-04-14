@@ -95,9 +95,9 @@ cmmPlacedPaneBase::cmmPlacedPaneBase( wxWindow* parent,
 	
 	bSizer5->Add( m_bpButton_Delete, 0, wxTOP|wxRIGHT|wxLEFT|wxALIGN_CENTER_VERTICAL, 2 );
 	
-	sizer_Placed_ButtonBar->Add( bSizer5, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxLEFT, 1 );
+	sizer_Placed_ButtonBar->Add( bSizer5, 0, wxALIGN_CENTER_VERTICAL|wxLEFT, 1 );
 	
-	sizer_Placed->Add( sizer_Placed_ButtonBar, 0, wxALIGN_BOTTOM|wxEXPAND, 1 );
+	sizer_Placed->Add( sizer_Placed_ButtonBar, 0, wxEXPAND, 1 );
 		
 	this->SetSizer( sizer_Placed );
 	this->Layout();
