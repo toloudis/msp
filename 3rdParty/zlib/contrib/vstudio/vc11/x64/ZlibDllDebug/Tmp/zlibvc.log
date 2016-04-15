@@ -1,0 +1,10 @@
+﻿   Assembling: inffasx64.asm
+  Microsoft (R) Macro Assembler (x64) Version 11.00.60610.1
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+   Assembling: gvmat64.asm
+  Microsoft (R) Macro Assembler (x64) Version 11.00.60610.1
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+     Creating library x64\ZlibDllDebug\zlibwapi.lib and object x64\ZlibDllDebug\zlibwapi.exp
+  zlibvc.vcxproj -> D:\zlib-1.2.8\contrib\vstudio\vc11\x64\ZlibDllDebug\zlibwapi.dll
