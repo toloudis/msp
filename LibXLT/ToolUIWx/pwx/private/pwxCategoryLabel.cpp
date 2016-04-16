@@ -115,7 +115,7 @@ void pwxCategoryLabel::OnPaint(wxPaintEvent &i_Event)
 	// Expanded, compressed state
 	const int icon_size = 7;
 	int y = (client_rect.height - icon_size) / 2;
-	dc.SetPen( wxPen(this->GetForegroundColour(), 1, wxSOLID) );
+	dc.SetPen( wxPen(this->GetForegroundColour(), 1, wxPENSTYLE_SOLID) );
 	dc.SetBrush(*wxTRANSPARENT_BRUSH); // turn off fill
 	dc.DrawRectangle(2, y, icon_size, icon_size);
 

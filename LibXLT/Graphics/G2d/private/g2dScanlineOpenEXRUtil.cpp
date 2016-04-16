@@ -32,11 +32,11 @@
 #include <ImfArray.h>
 
 // OpenEXR Libs
-#pragma comment(lib, "IlmImf.lib")
+#pragma comment(lib, "IlmImf-2_2.lib")
 #pragma comment(lib, "Half.lib") 
-#pragma comment(lib, "Iex.lib")
-#pragma comment(lib, "IlmThread.lib")
-#pragma comment(lib, "Imath.lib")
+#pragma comment(lib, "Iex-2_2.lib")
+#pragma comment(lib, "IlmThread-2_2.lib")
+#pragma comment(lib, "Imath-2_2.lib")
 #pragma comment(lib, "zdll.lib")
 
 #include <stdio.h>

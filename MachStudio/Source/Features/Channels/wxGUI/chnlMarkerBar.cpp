@@ -197,7 +197,7 @@ void chnlMarkerBar::OnPaint(wxPaintEvent &WXUNUSED(event))
 
 	// Outline the client rectangle (instead of using a windows border)
 	wxSize size = this->GetSize();
-	dc.SetPen( wxPen( *wxLIGHT_GREY, 1, wxSOLID ) );
+	dc.SetPen( wxPen( *wxLIGHT_GREY, 1, wxPENSTYLE_SOLID ) );
 	dc.SetBrush(*wxTRANSPARENT_BRUSH); // turn off fill
 	dc.DrawRectangle(0, 0, size.GetWidth(), size.GetHeight());
 
