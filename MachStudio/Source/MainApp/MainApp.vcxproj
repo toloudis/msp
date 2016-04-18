@@ -859,9 +859,9 @@
       <Optimization>Full</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty\WxWidgets\include\msvc;.\..\..\..\3rdParty\curl\curl-7.35.0\include;.\..\..\..\3rdParty</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>.\..\..\..\MachStudio\bin\($PlatformName)\$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;ENV_BUILD=ENV_GOLDBUILD;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -876,10 +876,10 @@
     </ClCompile>
     <Link>
       <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
-      <Version>2.0.0.0</Version>
+      <Version>2.0</Version>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);$(SolutionDir)..\..\3rdParty\WxWidgets\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ManifestFile>$(IntDir)$(TargetFileName).intermediate.manifest</ManifestFile>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x64;$(SolutionDir)..\..\3rdParty\Boost\lib;$(SolutionDir)..\..\3rdParty\OpenEXR\zlib\lib;$(SolutionDir)..\..\3rdParty\OpenEXR\build\lib;$(SolutionDir)..\..\3rdParty\WxWidgets\lib\vc140_x64_dll;$(SolutionDir)..\..\3rdParty\Libs\$(Platform);D:\FreeImage\Dist;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ManifestFile>$(IntDir)$(TargetName)$(TargetExt).intermediate.manifest</ManifestFile>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
@@ -887,6 +887,7 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX64</TargetMachine>
+      <AdditionalDependencies>libpng16.lib;tiff.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">

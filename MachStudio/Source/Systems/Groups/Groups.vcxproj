@@ -519,7 +519,7 @@
       <Optimization>Full</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>.\..\..\..\..\machstudio\source;.\..\..\..\..\libxlt;.\..\..\..\..\3rdParty\Boost;.\..\..\..\..\3rdParty\wxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\..\..\..\machstudio\source;.\..\..\..\..\libxlt;.\..\..\..\..\3rdParty\Boost;.\..\..\..\..\3rdParty\wxWidgets\include;.\..\..\..\..\3rdParty\WxWidgets\include\msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;ENV_BUILD=ENV_GOLDBUILD;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>

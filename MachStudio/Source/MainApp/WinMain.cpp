@@ -104,7 +104,7 @@
 #endif
 
 #ifdef BATCH_MODE
-#pragma comment(lib,"libpng.lib")
+#pragma comment(lib,"libpng16.lib")
 #endif
 
 

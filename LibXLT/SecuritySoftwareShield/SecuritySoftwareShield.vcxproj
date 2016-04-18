@@ -300,7 +300,7 @@
     <ClCompile>
       <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;.\..\..\3rdParty\wxWidgets\include;.\..\..\3rdParty\wxWidgets\include\msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty\WxWidgets\include;$(ProjectDir)..\..\3rdParty\WxWidgets\include\msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;USE_SECURITYDONGLEX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -342,7 +342,7 @@
     </Midl>
     <ClCompile>
       <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;.\..\..\3rdParty\wxWidgets\include;.\..\..\3rdParty\wxWidgets\include\msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty\WxWidgets\include;$(ProjectDir)..\..\3rdParty\WxWidgets\include\msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;NDEBUG;USE_SECURITYDONGLEX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -623,8 +623,8 @@
       <Optimization>Full</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;.\..\..\3rdParty\wxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN64;NDEBUG;USE_SECURITYDONGLEX;ENV_BUILD=ENV_GOLDBUILD;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty\WxWidgets\include;$(ProjectDir)..\..\3rdParty\WxWidgets\include\msvc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;NDEBUG;USE_SECURITYDONGLEX;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>

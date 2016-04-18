@@ -280,6 +280,10 @@
     <LibraryPath>$(LibraryPath);$(DKSDK_DIR)lib\x64</LibraryPath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">
+    <IncludePath>$(IncludePath);$(DXSDK_DIR)include</IncludePath>
+    <LibraryPath>$(LibraryPath);$(DKSDK_DIR)lib\x64</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
