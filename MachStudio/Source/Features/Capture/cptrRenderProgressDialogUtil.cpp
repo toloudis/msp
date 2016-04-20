@@ -33,7 +33,9 @@
 namespace cptrRenderProgressDialogUtil
 {
 	static int l_RenderBatchID = 0;
+#ifdef USE_WXWIDGETS
     static wxWindowDisabler* l_WindowDisabler = nullptr;
+#endif
 
 	char* c_RENDERSTATE_EXTENSION = ".rst";	// Render STate save
 
