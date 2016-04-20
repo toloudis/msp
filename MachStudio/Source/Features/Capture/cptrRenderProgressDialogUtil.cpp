@@ -33,6 +33,7 @@
 namespace cptrRenderProgressDialogUtil
 {
 	static int l_RenderBatchID = 0;
+    static wxWindowDisabler* l_WindowDisabler = nullptr;
 
 	char* c_RENDERSTATE_EXTENSION = ".rst";	// Render STate save
 
@@ -49,7 +50,9 @@ namespace cptrRenderProgressDialogUtil
 			cptrRenderProgressDialog::DialogInstance = new cptrRenderProgressDialog( twxSystem::g_pMainForm );
 			cptrRenderProgressDialog::DialogInstance->SetRenderBatchID( l_RenderBatchID );
 		}
-		cptrRenderProgressDialog::DialogInstance->ShowModal();
+
+        l_WindowDisabler = new wxWindowDisabler(cptrRenderProgressDialog::DialogInstance);
+        cptrRenderProgressDialog::DialogInstance->Show();
 
 #endif
 	}
@@ -63,7 +66,9 @@ namespace cptrRenderProgressDialogUtil
 #ifdef USE_WXWIDGETS
 		if (cptrRenderProgressDialog::DialogInstance != NULL)
 		{
-			cptrRenderProgressDialog::DialogInstance->EndModal(0);
+            delete l_WindowDisabler;
+            l_WindowDisabler = nullptr;
+            cptrRenderProgressDialog::DialogInstance->Show(false);
 		}
 #endif
 	}
