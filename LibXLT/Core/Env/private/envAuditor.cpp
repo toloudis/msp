@@ -28,9 +28,9 @@ envAuditable::~envAuditable()
 	// for the auditors to call RemoveAuditor in the callback.
 	const size_t num_auditors = m_Auditors.size();
 	if (num_auditors > 0) {
-		for (size_t i=num_auditors-1; i>=0; i--)
+		for (size_t i=num_auditors; i>=1; i--)
 		{
-			m_Auditors[i]->AuditorNotify(this);
+			m_Auditors[i-1]->AuditorNotify(this);
 		}
 	}
 }
