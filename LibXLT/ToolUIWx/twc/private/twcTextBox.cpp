@@ -62,6 +62,7 @@ void twcTextBox::OnTextChange(wxCommandEvent& i_Event)
 void twcTextBox::OnTextLeave(wxFocusEvent& i_Event)
 {
 	text_changed();
+    i_Event.Skip();
 }
 
 //----------------------------------------------------------------------------

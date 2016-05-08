@@ -93,6 +93,7 @@ void ptmTimeEdit::OnTextChange(wxCommandEvent& i_Event)
 void ptmTimeEdit::OnTextLeave(wxFocusEvent& i_Event)
 {
 	text_changed();
+    i_Event.Skip();
 }
 
 //----------------------------------------------------------------------------

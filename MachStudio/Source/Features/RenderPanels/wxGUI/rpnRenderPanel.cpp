@@ -796,6 +796,7 @@ void rpnRenderPanel::OnLoseFocus(wxFocusEvent& i_Event)
 	{
 		m_pPanelViewer->SetTextColor(maFloatRGBA(1,1,1,1));
 	}
+    i_Event.Skip();
 }
 
 //------------------------------------------------------------------------
