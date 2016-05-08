@@ -1590,7 +1590,7 @@ void chnlTraxDialog::add_category(const itString& i_CategoryName)
 {
 	wxStaticText *pCategory = new wxStaticText( m_scrollwin_names, wxID_ANY, i_CategoryName.GetString(), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
 	pCategory->Wrap( -1 );
-	pCategory->SetFont(wxFont( 8, wxSWISS, wxNORMAL, wxFONTWEIGHT_BOLD ));
+	pCategory->SetFont(wxFont( 8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD ));
 	pCategory->SetMinSize(wxSize(-1, 20));
 	pCategory->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_CAPTIONTEXT ) );
 	pCategory->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_ACTIVECAPTION ) );
@@ -1631,7 +1631,7 @@ chnlChannelControl* chnlTraxDialog::add_channel(tmlnChannel& i_Channel)
 	// Channel name label
 	wxStaticText *pLabel = new wxStaticText( pNamePanel, wxID_ANY, 
 		wxString(i_Channel.GetName().c_str(), wxConvUTF8), wxDefaultPosition, wxDefaultSize, 0 );
-	pLabel->SetFont(wxFont( 8, wxSWISS, wxNORMAL, wxFONTWEIGHT_BOLD ));
+	pLabel->SetFont(wxFont( 8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD ));
 	pLabel->Wrap( -1 );
 	bSizer->Add( pLabel, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 

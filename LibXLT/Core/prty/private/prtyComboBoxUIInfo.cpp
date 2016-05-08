@@ -59,7 +59,7 @@ void prtyComboBoxUIInfo::ClearItems()
 //--------------------------------------------------------------------
 void prtyComboBoxUIInfo::AddItem(const std::string& i_Label, int i_Index )
 {
-	int add_index = i_Index;
+	size_t add_index = i_Index;
 	if (i_Index == -1)
 	{
 		add_index = m_List.size();

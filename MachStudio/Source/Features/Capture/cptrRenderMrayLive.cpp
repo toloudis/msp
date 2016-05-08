@@ -125,9 +125,9 @@ void SetupPasses( mrayGlobalData & io_GlobalData, int i_RenderPass)
 	io_GlobalData.m_bRenderingAOOnly = false;
 
 
-	switch(i_RenderPass)
-	{
 #ifdef USE_MRAY_LIVE
+    switch(i_RenderPass)
+	{
     case mrayLiveRenderPasses::e_Diffuse:
 			io_GlobalData.m_bRenderSpecular = false;
 			break;
@@ -180,8 +180,8 @@ void SetupPasses( mrayGlobalData & io_GlobalData, int i_RenderPass)
 		case mrayLiveRenderPasses::e_Beauty:
 			io_GlobalData.m_bRenderingBeautyOnly = true;
 			break;
-#endif // USE_MRAY_LIVE
 	};
+#endif // USE_MRAY_LIVE
 }
 
 //--------------------------------------------------------------------

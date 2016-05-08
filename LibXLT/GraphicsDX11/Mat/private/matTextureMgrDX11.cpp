@@ -596,7 +596,7 @@ void matTextureMgrDX11::UpdateSurface( matTexture* i_pTexture, unsigned char* i_
 
 	CD3D11_TEXTURE2D_DESC desc( fmt, width, height, 
 		1, 1, 0, D3D11_USAGE_STAGING, D3D11_CPU_ACCESS_WRITE  );
-	D3D11_SUBRESOURCE_DATA data = {i_Data,width*i_pTexture->GetPixelFormat().BitsPerPixel()/8,0};
+	D3D11_SUBRESOURCE_DATA data = {i_Data,(UINT)(width*i_pTexture->GetPixelFormat().BitsPerPixel()/8),0};
 	HRESULT hr = g2dDX11Global::g_pDevice->CreateTexture2D(&desc, &data, &l_LocalMemSurfaceRGBA32f);
 
 	/////////////////////////////////////////////////////

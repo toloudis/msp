@@ -55,6 +55,8 @@ namespace dbgSystemInfoPAC
 	//------------------------------------------------------------------------
 	std::wstring getOS()
 	{
+        // TODO : replace this code with calls from VersionHelpers
+
 		std::wstring _osVersion;
 		OSVERSIONINFOEX _osInfo;
 		_osInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);

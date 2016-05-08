@@ -381,10 +381,8 @@ class maMatrix4x4
 		//----------------------------------------------------------------------------
 		inline float* Ptr() const;
 		inline const float* GetPtr() const;
-	public:
 
-		static envPool m_Pool;
-
+    public:
 		float	m_Mat[ 16 ];
 };
 
@@ -488,29 +486,6 @@ inline void maMatrix4x4::TransformDir(maVector3d& io_Vector) const
 					(m_Mat[2]*io_Vector.GetX() + m_Mat[6]*io_Vector.GetY() + m_Mat[10]*io_Vector.GetZ()) );
 
 }
-
-//----------------------------------------------------------------------------
-//	The maMatrix4x4 uses a pool allocator for its new and delete
-//----------------------------------------------------------------------------
-//inline void* maMatrix4x4::operator new(size_t size)
-//{
-//	return m_Pool.Allocate();
-//}
-//
-//inline void maMatrix4x4::operator delete(void* i_Ptr)
-//{
-//	m_Pool.Deallocate(i_Ptr);
-//}
-//
-//inline void* maMatrix4x4::operator new(size_t i_Size, void* i_Ptr)
-//{
-//	((maMatrix4x4*)i_Ptr)->Identity();
-//	return i_Ptr;
-//}
-//
-//inline void maMatrix4x4::operator delete(void* i_Ptr, void* i_Mem)
-//{
-//}
 
 inline maVector3d maMatrix4x4::GetTranslation( void ) const
 

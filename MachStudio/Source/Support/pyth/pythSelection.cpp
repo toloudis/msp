@@ -118,7 +118,7 @@ namespace
 	set_selection_lock(PyObject *self, PyObject *args)
 	{
 		bool _bLockSelection;
-		int num_args = PyTuple_Size( args );
+		int num_args = (int)PyTuple_Size( args );
 		if (num_args != 1)
 		{
 			PyErr_SetString(PyExc_TypeError, "setSelectionLock only takes 1 value, True or False");

@@ -77,7 +77,7 @@ namespace swlSelectionUtil
 	int GetSelectedScriptObjectsCount()
 	{
 		const std::list<sel3dObject*> &selected_list = sel3dMgr::GetSelectedList();
-		return selected_list.size();
+		return (int)selected_list.size();
 	}
 
 

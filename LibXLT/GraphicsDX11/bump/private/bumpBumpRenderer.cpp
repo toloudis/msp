@@ -103,7 +103,7 @@ int bumpBumpRenderer::Render( const g3dSceneNode* i_pNode, const matMaterial* i_
 		bVelocityMaps ? pFrag->GetVertexBuffer_Old()->GetVertexBuffer() : NULL
 	};
 	UINT strides[2] = {
-		pFrag->GetVertexStride(), 
+		(UINT)pFrag->GetVertexStride(), 
 		//bDoSkinning ? sizeof(g3dType::SkinVertex) : 0
 		bVelocityMaps ? sizeof(g3dType::NonTexVertex) : 0
 	};

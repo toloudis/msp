@@ -469,7 +469,6 @@ class g3dSceneNode
 		//----------------------------------------------------------------------------
 		void debug_log_tree(int i_Tab) const;
 
-		static envPool m_Pool;
 		static int m_Count;
 
 		maMatrix4x4	m_Transform;
@@ -1009,15 +1008,3 @@ inline envType::UInt32 g3dSceneNode::GetPickMask() const
 	return m_PickMask;
 }
 
-//----------------------------------------------------------------------------
-//	The g3dSceneNode uses a pool allocator for its new and delete
-//----------------------------------------------------------------------------
-//inline void* g3dSceneNode::operator new(size_t size)
-//{
-//	return m_Pool.Allocate();
-//}
-//
-//inline void g3dSceneNode::operator delete(void* i_Ptr)
-//{
-//	m_Pool.Deallocate(i_Ptr);
-//}

@@ -162,7 +162,7 @@ void g2dFontObjectDX11::DrawText(const itString& i_Text, const maFloatRGBA& i_Co
 	const tmeshFrag* pFrag = dynamic_cast<const tmeshFrag*>( m_TextSprite->GetSceneNode()->GetFragment() );
 
 	ID3D11Buffer* buf[1] = { pFrag->GetVertexBuffer()->GetVertexBuffer() };
-	UINT strides[1] = { pFrag->GetVertexStride() };
+	UINT strides[1] = { (UINT)pFrag->GetVertexStride() };
 	UINT offsets[1] = {0};
 
 	int numInds = 0;

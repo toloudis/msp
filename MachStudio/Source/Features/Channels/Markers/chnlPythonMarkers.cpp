@@ -129,7 +129,7 @@ namespace
 	PyObject *
 	set_marker_value(PyObject *self, PyObject *args)
 	{
-		int num_args = PyTuple_Size( args );
+		int num_args = (int)PyTuple_Size( args );
 		if (num_args != 3)
 		{
 			PyErr_SetString(PyExc_TypeError, "setMarkerValue needs 3 arguments: marker index, property name, value");

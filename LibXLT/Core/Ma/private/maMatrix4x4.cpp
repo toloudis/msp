@@ -19,9 +19,6 @@ namespace
 	const float VIEWPORT_TOL	= 0.001f;
 }
 
-envPool maMatrix4x4::m_Pool(sizeof(maMatrix4x4), 32);
-
-
 //------------------------------------------------------------------------
 //	default constructor
 //------------------------------------------------------------------------

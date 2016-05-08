@@ -154,7 +154,7 @@ void CleanUp() throw()
 {
 	char date_string[64];
 	char time_string[64];
-	char total_string[256];
+//	char total_string[256];
 	_strdate(date_string);
 	_strtime(time_string);
 	std::ostringstream log_ss(std::ostringstream::out);

@@ -35,7 +35,7 @@ snSoundJobRedbookPAC::~snSoundJobRedbookPAC()
 	if ( m_MCIOpen.wDeviceID )
 	{
 		m_MCIClose.dwCallback = 0; 
-		mciSendCommand( m_MCIOpen.wDeviceID, MCI_CLOSE, MCI_OPEN_TYPE,(DWORD)(LPVOID) &m_MCIClose);
+		mciSendCommand( m_MCIOpen.wDeviceID, MCI_CLOSE, MCI_OPEN_TYPE,(DWORD_PTR) &m_MCIClose);
 	}
 
 	Free();
@@ -52,10 +52,10 @@ snSoundJobRedbookPAC::Load()
 	{
 		m_MCIOpen.dwCallback = 0; 
 		m_MCIOpen.lpstrDeviceType = TEXT( "cdaudio" );
-		mciSendCommand(NULL, MCI_OPEN, MCI_OPEN_TYPE,(DWORD)(LPVOID) &m_MCIOpen);
+		mciSendCommand(NULL, MCI_OPEN, MCI_OPEN_TYPE,(DWORD_PTR) &m_MCIOpen);
 
 		m_MCIStatus.dwItem = MCI_STATUS_NUMBER_OF_TRACKS;
-		if (mciSendCommand(m_MCIOpen.wDeviceID, MCI_STATUS, MCI_STATUS_ITEM|MCI_WAIT, (DWORD)(LPVOID)&m_MCIStatus))
+		if (mciSendCommand(m_MCIOpen.wDeviceID, MCI_STATUS, MCI_STATUS_ITEM|MCI_WAIT, (DWORD_PTR)&m_MCIStatus))
 		{
 			mciSendCommand(m_MCIOpen.wDeviceID, MCI_CLOSE, NULL, NULL);
 			return;
@@ -108,7 +108,7 @@ snSoundJobRedbookPAC::Start( const int i_TrackNum )
 		m_MCIPlay.dwCallback	= 0;
 		m_MCIPlay.dwFrom		= i_TrackNum;
 		//m_MCIPlay.dwTo		= i_TrackNum;
-		mciSendCommand( m_MCIOpen.wDeviceID, MCI_PLAY, MCI_NOTIFY | MCI_FROM, (DWORD)&m_MCIPlay);
+		mciSendCommand( m_MCIOpen.wDeviceID, MCI_PLAY, MCI_NOTIFY | MCI_FROM, (DWORD_PTR)&m_MCIPlay);
 	}
 }
 
@@ -122,7 +122,7 @@ snSoundJobRedbookPAC::Stop()
 	if ( IsLoaded() )
 	{
 		m_MCIStop.dwCallback = 0;
-		mciSendCommand( m_MCIOpen.wDeviceID, MCI_STOP, NULL, (DWORD)&m_MCIStop);
+		mciSendCommand( m_MCIOpen.wDeviceID, MCI_STOP, NULL, (DWORD_PTR)&m_MCIStop);
 	}
 }
 
@@ -151,7 +151,7 @@ snSoundJobRedbookPAC::Pause()
 	if ( IsLoaded() )
 	{
 		m_MCIStop.dwCallback = 0;
-		mciSendCommand( m_MCIOpen.wDeviceID, MCI_PAUSE, NULL, (DWORD)&m_MCIStop);
+		mciSendCommand( m_MCIOpen.wDeviceID, MCI_PAUSE, NULL, (DWORD_PTR)&m_MCIStop);
 		this->SetPaused( true );
 	}
 }
@@ -166,7 +166,7 @@ snSoundJobRedbookPAC::Resume()
 	if ( IsLoaded() )
 	{
 		m_MCIStop.dwCallback = 0;
-		mciSendCommand( m_MCIOpen.wDeviceID, MCI_RESUME, NULL, (DWORD)&m_MCIStop);
+		mciSendCommand( m_MCIOpen.wDeviceID, MCI_RESUME, NULL, (DWORD_PTR)&m_MCIStop);
 		this->SetPaused( false );
 	}
 }

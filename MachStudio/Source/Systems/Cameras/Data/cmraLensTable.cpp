@@ -43,7 +43,7 @@ namespace cmraLensTable
 	const float c_35mmFullApertureFilmDimension = 0.980f;
 	const float c_35mm185ProjectionFilmDimension = 0.825f;
 	const float c_35mmAnamorphicFilmDimension = 0.864f;
-	const float c_70mmProjectionFilmDimension = 2.066;
+	const float c_70mmProjectionFilmDimension = 2.066f;
 	const float c_VistaVisionFilmDimension = 1.485f;
 	const float c_IMaxFilmDimension = 2.772f;
 

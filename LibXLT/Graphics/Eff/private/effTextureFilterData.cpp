@@ -91,5 +91,5 @@ void effTextureFilterData::RemoveTextures()
 chDefs::Name effTextureFilterData::GetChunkName() const
 {
 	//return effTextureFilterDataParser::GetChunkName();
-	return chDefs::Name("");
+	return chDefs::Name('\0');
 }

@@ -133,7 +133,7 @@ bool tmlnScriptObject::RemoveDriver(tmlnDriver *i_pDriver,
 	std::vector<tmlnDriver*>::iterator it = std::find(m_Drivers.begin(), m_Drivers.end(), i_pDriver);
 	if (it != m_Drivers.end())
 	{
-		o_DriverIndex = (it - m_Drivers.begin());
+		o_DriverIndex = (int)(it - m_Drivers.begin());
 		m_Drivers.erase(it);
 		this->m_pChannelSet->UnhookDriver(i_pDriver);
 		return true;

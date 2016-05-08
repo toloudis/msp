@@ -196,7 +196,8 @@ ID3DX11Effect* LoadEffectDX11(const fsLocator& i_Locator)
 // assuming precompiled shader!
     // Create effect 
 	ID3DX11Effect* effect = NULL;
-	effect = LoadEffectData(pFileData, fileSize, sFileName);
+    // TODO: double check sizing of second param here.
+	effect = LoadEffectData(pFileData, (int)fileSize, sFileName);
 
 	// free up the file contents now
 	delete [] pFileData;

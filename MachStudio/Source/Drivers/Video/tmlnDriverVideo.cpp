@@ -268,7 +268,7 @@ int tmlnDriverVideo::compute_frame(const maTime& i_Time)
 
 	// should this round off, not clamp down?
 	//TIME - float frame rate given to AsFrame()
-	int frame = (i_Time - GetBeginTime()).AsFrame(m_FrameRate.GetValue());
+	int frame = (i_Time - GetBeginTime()).AsFrame((int)m_FrameRate.GetValue());
 	if (frame <= 0)
 	{
 		frame = 0;
@@ -391,7 +391,7 @@ maTime tmlnDriverVideo::calculate_duration()
 		if (m_FrameRate.GetValue() == 0)
 			return maTime::c_ZeroTime;
 		else
-			return maTime::FromFrame(num_frames, m_FrameRate.GetValue());
+			return maTime::FromFrame((int)num_frames, (int)m_FrameRate.GetValue());
 	}
 	else
 	{

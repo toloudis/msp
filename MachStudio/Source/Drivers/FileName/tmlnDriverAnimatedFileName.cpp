@@ -352,7 +352,7 @@ int tmlnDriverAnimatedFileName::compute_frame(const maTime& i_Time)
 {
 	// should this round off, not clamp down?
 	//int frame = (int)((i_Time - this->GetBeginTime()) * this->m_FrameRate.GetValue());
-	int frame = (i_Time - this->GetBeginTime()).AsFrame(this->m_FrameRate.GetValue());
+	int frame = (i_Time - this->GetBeginTime()).AsFrame((int)this->m_FrameRate.GetValue());
 	if (frame <= 0)
 	{
 		frame = 0;
@@ -429,7 +429,7 @@ void tmlnDriverAnimatedFileName::update_driver_length_from_anim_length()
 	if (   ( m_bDriverToAnimLength.GetValue() )
 		&& ( m_FrameRate.GetValue() > 0 ) )
 	{
-		maTime anim_duration = maTime::FromFrame(m_NumberOfFrames.GetValue(), m_FrameRate.GetValue());
+		maTime anim_duration = maTime::FromFrame(m_NumberOfFrames.GetValue(), (int)m_FrameRate.GetValue());
 		this->SetEndTime( this->GetBeginTime() + anim_duration );
 
 		// update gui

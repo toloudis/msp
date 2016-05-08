@@ -76,7 +76,7 @@ namespace pythCaptureOptions
 		//--------------------------------------------------------------------
 		PyObject* set_capture_value(PyObject *self, PyObject *args)
 		{
-			int num_args = PyTuple_Size( args );
+			int num_args = (int)PyTuple_Size( args );
 			if (num_args != 2)
 			{
 				PyErr_SetString(PyExc_TypeError, "setCaptureValue needs 2 arguments: property name, value (which can be a tuple)");
