@@ -80,7 +80,7 @@ void g2dTextureDX11::Make(int i_Width, int i_Height, DXGI_FORMAT i_Format, /*DXG
 		{
 			throw g2dOutOfSystemMemoryX();
 		}
-		else if ( hr == D3DERR_INVALIDCALL )
+		else if ( hr == DXGI_ERROR_INVALID_CALL)
 		{
 			throw g2dGeneralX();
 		}
@@ -96,7 +96,7 @@ void g2dTextureDX11::Make(int i_Width, int i_Height, DXGI_FORMAT i_Format, /*DXG
 		{
 			throw g2dOutOfSystemMemoryX();
 		}
-		else if ( hr == D3DERR_INVALIDCALL )
+		else if ( hr == DXGI_ERROR_INVALID_CALL)
 		{
 			throw g2dGeneralX();
 		}
@@ -141,7 +141,7 @@ void g2dTextureDX11::Make(g2dD3D11TexturePtr i_TextureResource,
 		{
 			throw g2dOutOfSystemMemoryX();
 		}
-		else if ( hr == D3DERR_INVALIDCALL )
+		else if ( hr == DXGI_ERROR_INVALID_CALL)
 		{
 			throw g2dGeneralX();
 		}

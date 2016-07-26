@@ -128,7 +128,7 @@ g2dImageDX11::g2dImageDX11(int i_Width, int i_Height, const g2dPFD& i_PFD, g2dIm
 		{
 			throw g2dOutOfSystemMemoryX();
 		}
-		else //if ( op_result == D3DERR_INVALIDCALL )
+		else //if ( op_result == DXGI_ERROR_INVALID_CALL )
 		{
 			throw g2dGeneralX();
 		}
@@ -321,7 +321,7 @@ void g2dImageDX11::CopyImage( const g2dImage& i_SrcImage,
 			{
 				throw g2dOutOfSystemMemoryX();
 			}
-			else if ( hr == D3DERR_INVALIDCALL )
+			else if ( hr == DXGI_ERROR_INVALID_CALL)
 			{
 				throw g2dGeneralX();
 			}

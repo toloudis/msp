@@ -134,7 +134,7 @@ void matCubeRenderTargetTexture::Make(int i_Width, int i_Height, const g2dPFD& i
 		{
 			throw g2dOutOfSystemMemoryX();
 		}
-		else if ( op_result == D3DERR_INVALIDCALL )
+		else if ( op_result == DXGI_ERROR_INVALID_CALL)
 		{
 			throw g2dGeneralX();
 		}
