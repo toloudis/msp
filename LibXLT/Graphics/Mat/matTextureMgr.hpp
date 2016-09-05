@@ -265,7 +265,7 @@ namespace matTextureMgr
 	//------------------------------------------------------------------------
 	void FillTexture(matTexture* i_pTexture, void* i_PixelData, int i_nByte);
 
-	void UpdateSurface( matTexture* i_pTexture, unsigned char* i_Data, int i_Size, int nMipLevel = 0 );
+	void UpdateTexture( matTexture* i_pTexture, unsigned char* i_Data, int i_Size, int nMipLevel = 0 );
 
 	//--------------------------------------------------------------------
 	//	CreateTexture creates a texture 
@@ -435,7 +435,7 @@ public:
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	virtual void UpdateSurface( matTexture* i_pTexture, unsigned char* i_Data, int i_Size, int nMipLevel = 0 ) = 0;
+	virtual void UpdateTexture( matTexture* i_pTexture, unsigned char* i_Data, int i_Size, int nMipLevel = 0 ) = 0;
 
 	//--------------------------------------------------------------------
 	//	CreateTexture creates a uninitialized texture 

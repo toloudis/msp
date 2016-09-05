@@ -122,22 +122,8 @@ void CopyCurrentTargetIntoTexture(matRenderTargetTexture* io_pDest)
 	ID3D11Resource* dstResource = NULL;
 	io_pDest->GetSurface()->GetResource(&dstResource);
 
-	// copy surface to surface
-	D3DX11_TEXTURE_LOAD_INFO loadInfo = D3DX11_TEXTURE_LOAD_INFO();
-	loadInfo.pSrcBox = NULL;
-	loadInfo.pDstBox = NULL;
-	loadInfo.SrcFirstMip = D3D11CalcSubresource(0,0,1);
-	loadInfo.DstFirstMip = D3D11CalcSubresource(0,0,1);
-	loadInfo.NumMips = D3DX11_DEFAULT;
-	loadInfo.SrcFirstElement = 0;
-	loadInfo.DstFirstElement = 0;
-	loadInfo.NumElements = D3DX11_DEFAULT;
-	loadInfo.Filter = D3DX11_DEFAULT; 
-	loadInfo.MipFilter = D3DX11_DEFAULT;
-
-	HRESULT op_result = ::D3DX11LoadTextureFromTexture(g2dDX11Global::g_pDeviceContext,
-		srcResource, &loadInfo, dstResource);
-	DBG_ASSERT(SUCCEEDED(op_result), "Failed to copy rendered surface");
+    // copy surface to surface
+    g2dDX11Global::g_pDeviceContext->CopyResource(dstResource, srcResource);
 
 	dstResource->Release();
 	srcResource->Release();

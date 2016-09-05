@@ -15,6 +15,7 @@
 #include "GraphicsDX11/g2d/g2dDepthStencilBufferDX11.hpp"
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
 #include "GraphicsDX11/g2d/private/g2dWindowDrawUtilDX11.hpp"
+#include "DirectXTex/DirectXTex/DirectXTex.h"
 
 #include <sstream>
 
@@ -202,16 +203,22 @@ void matCubeRenderTargetTexture::SetFaceTarget(int i_CubeFace)
 
 void matCubeRenderTargetTexture::SaveFaces()
 {
-	std::wstringstream fname;
 	for (int i = 0; i < 6; i++)
 	{
-		fname << L"face" << i << L".png";
+        std::wstringstream fname;
+        fname << L"face" << i << L".png";
 
 		ID3D11Resource* res = NULL;
 		m_pCubeFaces[i]->GetResource(&res);
-		HRESULT hr = D3DX11SaveTextureToFile(g2dDX11Global::g_pDeviceContext, 
-			res, D3DX11_IFF_PNG, fname.str().c_str());
-		res->Release();
+
+        DirectX::ScratchImage s;
+        HRESULT hr = DirectX::CaptureTexture(g2dDX11Global::g_pDevice, g2dDX11Global::g_pDeviceContext, res, s);
+        const DirectX::Image* img = s.GetImage(0, 0, 0);
+        assert(img);
+        hr = DirectX::SaveToWICFile(*img, DirectX::WIC_FLAGS::WIC_FLAGS_NONE,
+            DirectX::GetWICCodec(DirectX::WICCodecs::WIC_CODEC_PNG), fname.str().c_str());
+		
+        res->Release();
 	}
 }
 

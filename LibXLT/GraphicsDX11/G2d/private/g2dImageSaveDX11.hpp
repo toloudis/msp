@@ -45,7 +45,4 @@ public:
 	void Save(const fsLocator& i_FileName, g2dWindow* i_pWin);
 	void Save(const fsLocator& i_FileName, const g2dImage* i_pImage);
 	void Save(const itString& i_FileName, const g2dImage* i_pImage);
-
-private:
-	void Save(const itString& i_Filename, const g2dD3D11TexturePtr i_pSurface, D3DX11_IMAGE_FILE_FORMAT i_Format);
 };

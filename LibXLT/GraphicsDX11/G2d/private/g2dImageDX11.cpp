@@ -294,26 +294,15 @@ void g2dImageDX11::CopyImage( const g2dImage& i_SrcImage,
 
 	if (i_Filter == NULL)
 	{
-		g2dD3D11TexturePtr src_surface = src_image->GetSurface();
+        // assert same size and format?
+        DBG_ASSERT((src_image->GetWidth() == this->GetWidth()) && (src_image->GetHeight() == this->GetHeight()), "CopyImage images must match in size");
+
+        g2dD3D11TexturePtr src_surface = src_image->GetSurface();
 		g2dD3D11TexturePtr dest_surface = this->GetSurface();
 
-		D3DX11_TEXTURE_LOAD_INFO loadInfo = D3DX11_TEXTURE_LOAD_INFO();
-		loadInfo.pSrcBox = NULL;
-		loadInfo.pDstBox = NULL;
-		loadInfo.SrcFirstMip = D3D11CalcSubresource(0,0,1);
-		loadInfo.DstFirstMip = D3D11CalcSubresource(0,0,1);
-		loadInfo.NumMips = D3DX11_DEFAULT;
-		loadInfo.SrcFirstElement = 0;
-		loadInfo.DstFirstElement = 0;
-		loadInfo.NumElements = D3DX11_DEFAULT;
-		loadInfo.Filter = D3DX11_FILTER_TRIANGLE; 
-		loadInfo.MipFilter = D3DX11_DEFAULT;
+        g2dDX11Global::g_pDeviceContext->CopyResource(dest_surface, src_surface);
 
-    //HRESULT op_result = DirectXTex::CopyRectangle( _In_ const Image& srcImage, _In_ const Rect& srcRect, _In_ const Image& dstImage,
-    //                       _In_ DWORD filter, _In_ size_t xOffset, _In_ size_t yOffset );
-		HRESULT hr = ::D3DX11LoadTextureFromTexture(g2dDX11Global::g_pDeviceContext,
-			src_surface, &loadInfo, dest_surface);
-
+        HRESULT hr = S_OK;
 		if (!SUCCEEDED(hr))
 		{
 			g2dDX11Global::PrintDXError(hr);

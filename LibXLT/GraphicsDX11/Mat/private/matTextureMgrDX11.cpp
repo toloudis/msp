@@ -53,6 +53,7 @@
 #include "GraphicsDX11/mat/private/matTextureLoaderDDSWin.hpp"
 #include "GraphicsDX11/mat/private/matTextureLoaderHDRWin.hpp"
 #include "GraphicsDX11/mat/private/matTextureLoaderTGAWin.hpp"
+#include "DirectXTex/DirectXTex/DirectXTex.h"
 
 #include <map>
 #include <memory>
@@ -572,7 +573,7 @@ void FillTexture(matTextureDX11* io_pDestPlainTex, void* i_SrcBuffer, int i_nRow
 	g2dDX11Global::g_pDeviceContext->Unmap(i_SrcSurface, D3D11CalcSubresource(0,0,1));
 
 	/////////////////////////////////////////////////////
-	// done with temp surface. now use UpdateSurface to get the bits up to vidmem.
+	// done with temp surface. now use CopyResource to get the bits up to vidmem.
 	/////////////////////////////////////////////////////
 
 	g2dDX11Global::g_pDeviceContext->CopyResource(io_pDestPlainTex->GetResource(), i_SrcSurface);
@@ -584,7 +585,7 @@ void FillTexture(matTextureDX11* io_pDestPlainTex, void* i_SrcBuffer, int i_nRow
 //	matTextureMgr::SaveTextureToFile(io_pDestPlainTex, loc);
 }
 
-void matTextureMgrDX11::UpdateSurface( matTexture* i_pTexture, unsigned char* i_Data, int i_Size, int nMipLevel )
+void matTextureMgrDX11::UpdateTexture( matTexture* i_pTexture, unsigned char* i_Data, int i_Size, int nMipLevel )
 {
 	g2dD3D11TexturePtr l_LocalMemSurfaceRGBA32f = NULL;
 
@@ -600,7 +601,7 @@ void matTextureMgrDX11::UpdateSurface( matTexture* i_pTexture, unsigned char* i_
 	HRESULT hr = g2dDX11Global::g_pDevice->CreateTexture2D(&desc, &data, &l_LocalMemSurfaceRGBA32f);
 
 	/////////////////////////////////////////////////////
-	// done with temp surface. now use UpdateSurface to get the bits up to vidmem.
+	// done with temp surface. now use CopyResource to get the bits up to vidmem.
 	/////////////////////////////////////////////////////
 
 	// go from matPlainTexture to g2dD3DBaseTexturePtr (no need to release this one)
@@ -1815,18 +1816,7 @@ void matTextureMgrDX11::CopyTexture(matTexture* i_SrcTex, matTexture* i_DstTex)
 	if (!src->GetResource() || !dst->GetResource())
 		return;
 	
-	D3DX11_TEXTURE_LOAD_INFO load_info;
-	HRESULT op_result;
-	op_result = D3DX11LoadTextureFromTexture(g2dDX11Global::g_pDeviceContext,
-												src->GetResource(),
-												&load_info,
-												dst->GetResource());
-
-	if ( op_result != S_OK )
-	{
-		g2dDX11Global::PrintDXError(op_result);
-		DBG_ASSERT(op_result == S_OK, "Error creating temporary texture");
-	}
+    g2dDX11Global::g_pDeviceContext->CopyResource(dst->GetResource(), src->GetResource());
 }
 
 //--------------------------------------------------------------------
@@ -2312,37 +2302,18 @@ void matTextureMgrDX11::SaveTextureToRgbaTiff(matTexture* i_pTexture,
 	}
 	textured3d->GetSurface()->GetDesc(&srcDesc);
 
-	ID3D11Texture2D * tex = NULL;
-	D3D11_TEXTURE2D_DESC desc;
-	desc.Width = textured3d->GetWidth();
-	desc.Height = textured3d->GetHeight();
-	desc.MipLevels = 1;
-	desc.ArraySize = 1;
-	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	desc.SampleDesc.Count = 1;
-	desc.SampleDesc.Quality = 0;
-	desc.Usage = D3D11_USAGE_STAGING;
-	desc.BindFlags = 0;
-	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ;
-	desc.MiscFlags = 0;
-	hr = g2dDX11Global::g_pDevice->CreateTexture2D( &desc, NULL, &tex );
+    DirectX::ScratchImage scratchImage;
+    hr = DirectX::CaptureTexture(g2dDX11Global::g_pDevice, g2dDX11Global::g_pDeviceContext, textured3d->GetResource(), scratchImage);
+    if (!SUCCEEDED(hr))
+    {
+        DBG_TRACE("SaveTextureToRgbaTiff Return Error result:" << hr);
+        throw g2dImageSaveX();
+    }
 
-	D3DX11_TEXTURE_LOAD_INFO texInfo;
-	texInfo.pSrcBox = NULL;
-	texInfo.pDstBox = NULL;
-	texInfo.SrcFirstMip = 0;
-	texInfo.DstFirstMip = 0;
-	texInfo.NumMips = D3DX11_DEFAULT;
-	texInfo.SrcFirstElement = 0;
-	texInfo.DstFirstElement = 0;
-	texInfo.NumElements = D3DX11_DEFAULT;
-	texInfo.Filter = D3DX11_FILTER_TRIANGLE;
-	texInfo.MipFilter = D3DX11_DEFAULT;
-	hr = D3DX11LoadTextureFromTexture(g2dDX11Global::g_pDeviceContext,textured3d->GetResource(),&texInfo,tex);
-	hr = D3DX11SaveTextureToFile(g2dDX11Global::g_pDeviceContext, tex, D3DX11_IFF_TIFF, filename.GetString());
-
-	tex->Release();
-	tex = NULL;
+    const DirectX::Image* img = scratchImage.GetImage(0, 0, 0);
+    assert(img);
+    hr = DirectX::SaveToWICFile(*img, DirectX::WIC_FLAGS::WIC_FLAGS_NONE,
+        DirectX::GetWICCodec(DirectX::WIC_CODEC_TIFF), filename.GetString());
 
 	if (!SUCCEEDED(hr))
 	{
@@ -2373,41 +2344,22 @@ void matTextureMgrDX11::SaveTextureToRgbaPNG(matTexture* i_pTexture,
 	}
 	textured3d->GetSurface()->GetDesc(&srcDesc);
 
-	ID3D11Texture2D * tex = NULL;
-	D3D11_TEXTURE2D_DESC desc;
-	desc.Width = textured3d->GetWidth();
-	desc.Height = textured3d->GetHeight();
-	desc.MipLevels = 1;
-	desc.ArraySize = 1;
-	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	desc.SampleDesc.Count = 1;
-	desc.SampleDesc.Quality = 0;
-	desc.Usage = D3D11_USAGE_STAGING;
-	desc.BindFlags = 0;
-	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ;
-	desc.MiscFlags = 0;
-	hr = g2dDX11Global::g_pDevice->CreateTexture2D( &desc, NULL, &tex );
+    DirectX::ScratchImage scratchImage;
+    hr = DirectX::CaptureTexture(g2dDX11Global::g_pDevice, g2dDX11Global::g_pDeviceContext, textured3d->GetResource(), scratchImage);
+    if (!SUCCEEDED(hr))
+    {
+        DBG_TRACE("SaveTextureToRgbaPNG Return Error result:" << hr);
+        throw g2dImageSaveX();
+    }
 
-	D3DX11_TEXTURE_LOAD_INFO texInfo;
-	texInfo.pSrcBox = NULL;
-	texInfo.pDstBox = NULL;
-	texInfo.SrcFirstMip = 0;
-	texInfo.DstFirstMip = 0;
-	texInfo.NumMips = D3DX11_DEFAULT;
-	texInfo.SrcFirstElement = 0;
-	texInfo.DstFirstElement = 0;
-	texInfo.NumElements = D3DX11_DEFAULT;
-	texInfo.Filter = D3DX11_FILTER_TRIANGLE;
-	texInfo.MipFilter = D3DX11_DEFAULT;
-	hr = D3DX11LoadTextureFromTexture(g2dDX11Global::g_pDeviceContext,textured3d->GetResource(),&texInfo,tex);
-	hr = D3DX11SaveTextureToFile(g2dDX11Global::g_pDeviceContext, tex, D3DX11_IFF_PNG, filename.GetString());
-
-	tex->Release();
-	tex = NULL;
+    const DirectX::Image* img = scratchImage.GetImage(0, 0, 0);
+    assert(img);
+    hr = DirectX::SaveToWICFile(*img, DirectX::WIC_FLAGS::WIC_FLAGS_NONE,
+        DirectX::GetWICCodec(DirectX::WIC_CODEC_PNG), filename.GetString());
 
 	if (!SUCCEEDED(hr))
 	{
-		DBG_TRACE( "D3DX11SaveTextureToFile Return Error result: " << hr );
+		DBG_TRACE( "SaveTextureToRgbaPNG Return Error result: " << hr );
 		//throw g2dImageSaveX();
 	}
 
@@ -2422,78 +2374,47 @@ void matTextureMgrDX11::SaveTextureToFile(matTexture* i_pTexture,
 	matTextureDX11* textured3d = dynamic_cast<matTextureDX11*>(i_pTexture);
 	DBG_ASSERT(textured3d, "Bad source texture passed in to SaveTextureToFile");
 
-	//	decide what kind of file format to output
+    DirectX::ScratchImage scratchImage;
+    HRESULT hr = DirectX::CaptureTexture(g2dDX11Global::g_pDevice, g2dDX11Global::g_pDeviceContext, textured3d->GetResource(), scratchImage);
+    if (!SUCCEEDED(hr))
+    {
+        DBG_TRACE("SaveTextureToRgbaPNG Return Error result:" << hr);
+        throw g2dImageSaveX();
+    }
+    const DirectX::Image* img = scratchImage.GetImage(0, 0, 0);
+    assert(img);
+
+    itString filename;
+    fsFileUtil::LocatorToUnicodeString(i_FilePathLocator, filename);
+    
+    //	decide what kind of file format to output
 	itString fname = i_FilePathLocator.GetLastName();
 	itString ext;
 	fname.GetExtension(ext);
-	D3DX11_IMAGE_FILE_FORMAT format = D3DX11_IFF_DDS;
+
 	if ((ext == itString("bmp")) || (ext == itString("BMP")))
 	{
-		format = D3DX11_IFF_BMP;
+        hr = DirectX::SaveToWICFile(*img, DirectX::WIC_FLAGS::WIC_FLAGS_NONE,
+            DirectX::GetWICCodec(DirectX::WIC_CODEC_BMP), filename.GetString());
 	}
 	else if ((ext == itString("jpg")) || (ext == itString("JPG")) || (ext == itString("JPEG")) || (ext == itString("jpeg")))
 	{
-		format = D3DX11_IFF_JPG;
-	}
+        hr = DirectX::SaveToWICFile(*img, DirectX::WIC_FLAGS::WIC_FLAGS_NONE,
+            DirectX::GetWICCodec(DirectX::WIC_CODEC_JPEG), filename.GetString());
+    }
 	else if ((ext == itString("png")) || (ext == itString("PNG")))
 	{
-		format = D3DX11_IFF_PNG;
-	}
+        hr = DirectX::SaveToWICFile(*img, DirectX::WIC_FLAGS::WIC_FLAGS_NONE,
+            DirectX::GetWICCodec(DirectX::WIC_CODEC_PNG), filename.GetString());
+    }
 	else if ((ext == itString("dds")) || (ext == itString("DDS")))
 	{
-		format = D3DX11_IFF_DDS;
+        hr = DirectX::SaveToDDSFile(*img, DirectX::DDS_FLAGS::DDS_FLAGS_NONE, filename.GetString());
 	}
 	else if ((ext == itString("tif")) || (ext == itString("TIF")) || (ext == itString("TIFF")) || (ext == itString("tiff")))
 	{
-		format = D3DX11_IFF_TIFF;
 		SaveTextureToRgbaTiff(i_pTexture, i_FilePathLocator);
 		return;
-	}
-
-	itString filename;
-	fsFileUtil::LocatorToUnicodeString(i_FilePathLocator, filename);
-
-	HRESULT hr;
-	D3D11_SHADER_RESOURCE_VIEW_DESC srcDesc;
-	textured3d->GetSurface()->GetDesc(&srcDesc);
-
-	if ( g2dDX11Global::IsFormatCompressed( srcDesc.Format ) )
-	{
-		ID3D11Texture2D * tex = NULL;
-		D3D11_TEXTURE2D_DESC desc;
-		desc.Width = textured3d->GetWidth();
-		desc.Height = textured3d->GetHeight();
-		desc.MipLevels = 1;
-		desc.ArraySize = 1;
-		desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		desc.SampleDesc.Count = 1;
-		desc.SampleDesc.Quality = 0;
-		desc.Usage = D3D11_USAGE_STAGING;
-		desc.BindFlags = 0;
-		desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ;
-		desc.MiscFlags = 0;
-		hr = g2dDX11Global::g_pDevice->CreateTexture2D( &desc, NULL, &tex );
-
-		D3DX11_TEXTURE_LOAD_INFO texInfo;
-		texInfo.pSrcBox = NULL;
-		texInfo.pDstBox = NULL;
-		texInfo.SrcFirstMip = 0;
-		texInfo.DstFirstMip = 0;
-		texInfo.NumMips = D3DX11_DEFAULT;
-		texInfo.SrcFirstElement = 0;
-		texInfo.DstFirstElement = 0;
-		texInfo.NumElements = D3DX11_DEFAULT;
-		texInfo.Filter = D3DX11_DEFAULT;
-		texInfo.MipFilter = D3DX11_DEFAULT;
-		hr = D3DX11LoadTextureFromTexture(g2dDX11Global::g_pDeviceContext,textured3d->GetResource(),&texInfo,tex);
-		hr = D3DX11SaveTextureToFile(g2dDX11Global::g_pDeviceContext, tex, format, filename.GetString());
-
-		tex->Release();
-		tex = NULL;
-	}
-	else
-	{
-		hr = D3DX11SaveTextureToFile(g2dDX11Global::g_pDeviceContext, textured3d->GetResource(), format, filename.GetString());
 	}
 
 	if (!SUCCEEDED(hr))
@@ -2521,8 +2442,7 @@ void matTextureMgrDX11::FillTexture(matTexture* i_pTexture, const maFloatRGBA& i
 		pixels[i*4 + 3] = i_Color.GetAlpha();
 	}
 
-	// pass in number of bytes
-	this->UpdateSurface(i_pTexture, (unsigned char*)pixels, size * sizeof(float) );
+	this->UpdateTexture(i_pTexture, (unsigned char*)pixels, size * sizeof(float) );
 
 	delete [] pixels;
 }
@@ -2532,7 +2452,7 @@ void matTextureMgrDX11::FillTexture(matTexture* i_pTexture, const maFloatRGBA& i
 void matTextureMgrDX11::FillTexture(matTexture* i_pTexture, void* i_PixelData, int i_nByte)
 {
 	// pass in number of bytes
-	this->UpdateSurface(i_pTexture, (unsigned char*)i_PixelData, i_nByte );
+	this->UpdateTexture(i_pTexture, (unsigned char*)i_PixelData, i_nByte );
 }
 
 void matTextureMgrDX11::MergeTransparentTextures(matTexture* i_pTexO, matTexture* i_pTexI, g2dRenderTarget* io_pTarget)

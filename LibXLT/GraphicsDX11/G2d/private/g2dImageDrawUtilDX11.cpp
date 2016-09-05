@@ -149,25 +149,17 @@ HRESULT UpdateSurface(	g2dD3D11TexturePtr i_pSource,
 	dstBox.front = 0;
 	dstBox.back = 1;
 
-	D3DX11_TEXTURE_LOAD_INFO loadInfo;
-	loadInfo.pSrcBox = &srcBox;
-	loadInfo.pDstBox = &dstBox;
-	loadInfo.SrcFirstMip = 0;
-	loadInfo.DstFirstMip = 0;
-	loadInfo.NumMips = 1;
-    loadInfo.SrcFirstElement = 0;
-    loadInfo.DstFirstElement = 0;
-    loadInfo.NumElements = 1;
-    loadInfo.Filter = D3DX11_FILTER_NONE;
-    loadInfo.MipFilter = D3DX11_FILTER_NONE;
-
-    //HRESULT op_result = DirectXTex::CopyRectangle( _In_ const Image& srcImage, _In_ const Rect& srcRect, _In_ const Image& dstImage,
-    //                       _In_ DWORD filter, _In_ size_t xOffset, _In_ size_t yOffset );
-
-	// optimize, try CopyResource or CopyResourceSubregion??!?!?!!?
-	HRESULT op_result = D3DX11LoadTextureFromTexture(g2dDX11Global::g_pDeviceContext,
-		i_pSource, &loadInfo, i_pDest);
-	return op_result;
+    g2dDX11Global::g_pDeviceContext->CopySubresourceRegion(
+        i_pDest,
+        0,//[in]                 UINT           DstSubresource,
+        i_pDestPoint->x,//[in]                 UINT           DstX,
+        i_pDestPoint->y,//[in]                 UINT           DstY,
+        0,//[in]                 UINT           DstZ,
+        i_pSource,//[in]                 ID3D11Resource *pSrcResource,
+        0,//[in]                 UINT           SrcSubresource,
+        &srcBox//[in, optional] const D3D11_BOX      *pSrcBox
+    );
+    return S_OK;// op_result;
 }
 
 }

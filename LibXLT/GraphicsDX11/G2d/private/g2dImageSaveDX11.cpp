@@ -23,6 +23,7 @@
 #include "GraphicsDX11/g2d/g2dImageDX11.hpp"
 #include "GraphicsDX11/g2d/g2dWindowDX11.hpp"
 #include "Graphics/g3d/g3dPrefs.hpp"
+#include "DirectXTex/DirectXTex/DirectXTex.h"
 
 #include <string>
 
@@ -178,21 +179,20 @@ FileType pick_format(const std::string& i_FileName)
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-D3DX11_IMAGE_FILE_FORMAT get_d3d_file_format( FileType i_Type )
+DirectX::WICCodecs get_d3d_file_format( FileType i_Type )
 {
 	switch( i_Type )
 	{
 		case e_BMP:
-			return D3DX11_IFF_BMP;
+			return DirectX::WICCodecs::WIC_CODEC_BMP;
 		case e_JPG:
-			return D3DX11_IFF_JPG;
+			return DirectX::WICCodecs::WIC_CODEC_JPEG;
 		case e_PNG:
-			return D3DX11_IFF_PNG;
-		case e_DDS:
-			return D3DX11_IFF_DDS;
+			return DirectX::WICCodecs::WIC_CODEC_PNG;
 		case e_TIFF:
-			return D3DX11_IFF_TIFF;
-		case e_TGA:
+			return DirectX::WICCodecs::WIC_CODEC_TIFF;
+        case e_DDS:
+        case e_TGA:
 		case e_PPM:
 		case e_DIB:
 		case e_HDR:
@@ -201,6 +201,29 @@ D3DX11_IMAGE_FILE_FORMAT get_d3d_file_format( FileType i_Type )
 	}
 
 	throw g2dUnknownImageFileTypeX();
+}
+
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
+void SaveToFile(const itString& i_Filename, const g2dD3D11TexturePtr i_pSurface, DirectX::WICCodecs i_Format)
+{
+    DirectX::ScratchImage s;
+    HRESULT hr = DirectX::CaptureTexture(g2dDX11Global::g_pDevice, g2dDX11Global::g_pDeviceContext, i_pSurface, s);
+    if (!SUCCEEDED(hr))
+    {
+        DBG_TRACE("D3DX11SaveTextureToFile Return Error result:" << hr);
+        throw g2dImageSaveX();
+    }
+
+    const DirectX::Image* img = s.GetImage(0, 0, 0);
+    assert(img);
+    hr = DirectX::SaveToWICFile(*img, DirectX::WIC_FLAGS::WIC_FLAGS_NONE,
+        DirectX::GetWICCodec(i_Format), i_Filename.GetString());
+    if (!SUCCEEDED(hr))
+    {
+        DBG_TRACE("D3DX11SaveTextureToFile Return Error result:" << hr);
+        throw g2dImageSaveX();
+    }
 }
 
 
@@ -273,7 +296,7 @@ void g2dImageSaveDX11::Save(const fsLocator& i_FileName, g2dWindow* i_pWin)
 		itString filename;
 		fsFileUtil::LocatorToUnicodeString(i_FileName, filename);
 
-		Save( filename, pSurface, get_d3d_file_format( type ) );
+		SaveToFile( filename, pSurface, get_d3d_file_format( type ) );
 
 		pSurface->Release();
 	}
@@ -308,7 +331,7 @@ void g2dImageSaveDX11::Save(const fsLocator& i_FileName, const g2dImage* i_pImag
 	} else {
 		itString filename;
 		fsFileUtil::LocatorToUnicodeString(i_FileName, filename);
-		Save( filename, pD3DImage->GetSurface(), get_d3d_file_format( type ) );
+		SaveToFile( filename, pD3DImage->GetSurface(), get_d3d_file_format( type ) );
 	}
 }
 
@@ -321,18 +344,7 @@ void g2dImageSaveDX11::Save(const itString& i_FileName, const g2dImage* i_pImage
 
 	FileType type = pick_format( i_FileName );
 
-	Save( i_FileName, pD3DImage->GetSurface(), get_d3d_file_format( type ) );
+	SaveToFile( i_FileName, pD3DImage->GetSurface(), get_d3d_file_format( type ) );
 }
 
-//------------------------------------------------------------------------
-//------------------------------------------------------------------------
-void g2dImageSaveDX11::Save(const itString& i_Filename, const g2dD3D11TexturePtr i_pSurface, D3DX11_IMAGE_FILE_FORMAT i_Format)
-{
-	HRESULT hr = D3DX11SaveTextureToFile(g2dDX11Global::g_pDeviceContext, i_pSurface, i_Format, i_Filename.GetString());
-	if (!SUCCEEDED(hr))
-	{
-		DBG_TRACE( "D3DX11SaveTextureToFile Return Error result:" << hr );
-		throw g2dImageSaveX();
-	}
-}
 
