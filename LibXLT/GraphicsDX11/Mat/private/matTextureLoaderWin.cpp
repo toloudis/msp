@@ -31,7 +31,6 @@
 #include "GraphicsDX11/mat/matMipTexture.hpp"
 #include "GraphicsDX11/mat/matPlainTexture.hpp"
 #include "GraphicsDX11/mat/matStaticCubeTexture.hpp"
-#include "DirectXTex/DirectXTex/DirectXTex.h"
 
 //============================================================================
 //============================================================================
@@ -158,9 +157,8 @@ HRESULT do_load_texture(ID3D11Resource*& io_Texture, const fsLocator& i_Locator,
         *mipChain);
 
     // fill in d3d texture
-    ID3D11Resource* pTexture = NULL;
     hr = DirectX::CreateTexture(g2dDX11Global::g_pDevice, mipChain->GetImages(), mipChain->GetImageCount(),
-        mipChain->GetMetadata(), &pTexture);
+        mipChain->GetMetadata(), &io_Texture);
     return hr;
 }
 void load_mip_texture(matMipTexture* io_Texture, const fsLocator& i_Locator, bool i_TrueColor, bool i_PNG, int i_WidthReduce, int i_HeightReduce, bool i_bIsMipMap)

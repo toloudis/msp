@@ -31,28 +31,24 @@
 #include <D3Dcompiler.h>
 //#include <d3dx11.h>
 
-//#include "DirectXTex.h"
+// 3rdparty for now.
+// https://github.com/Microsoft/FX11
+// https://github.com/Microsoft/DirectXTex
+#include "DirectXTex/DirectXTex/DirectXTex.h"
+#include "FX11/inc/d3dx11effect.h"
 
-#define PIX_D3DPERF 0
-
-#if PIX_D3DPERF
-	#include <d3d9.h>
-	#include <d3dx9.h>
-#else
-	#ifndef D3DPERF_BeginEvent
-	#define	D3DPERF_BeginEvent( C, S )
-	#endif
-
-	#ifndef D3DPERF_EndEvent
-	#define D3DPERF_EndEvent()
-	#endif
-
-	#ifndef D3DPERF_SetMarker
-	#define D3DPERF_SetMarker( C, S )
-	#endif
-	
+#ifndef D3DPERF_BeginEvent
+#define	D3DPERF_BeginEvent( C, S )
 #endif
 
+#ifndef D3DPERF_EndEvent
+#define D3DPERF_EndEvent()
+#endif
+
+#ifndef D3DPERF_SetMarker
+#define D3DPERF_SetMarker( C, S )
+#endif
+	
 #undef DrawText
 
 #include <D2D1.h>
@@ -94,28 +90,17 @@ typedef ID3D11PixelShader			g2dIDirect3DPixelShader10;
 #define	c_g2dD3D11LIBRARYMAIN		"d3d11.lib"
 #define c_g2dDXGILIBRARY			"dxgi.lib"
 
-#ifdef _DEBUG
-	#define	c_g2dD3D11LIBRARYX		"d3dx11d.lib"
-	#define	c_g2dD3D11LIBRARYEFFECT	"Effects11d.lib"
-#else
-	#define	c_g2dD3D11LIBRARYX		"d3dx11.lib"
-	#define	c_g2dD3D11LIBRARYEFFECT	"Effects11.lib"
-#endif
-#define c_g2dDX11LIBRARYERR			"dxerr.lib"
 #define c_g2dDXCOMPILER				"d3dcompiler.lib"
 #define c_g2dD2D1LIBRARY			"d2d1.lib"
 #define c_g2dDWRITELIBRARY			"dwrite.lib"
 #define c_g2dDXGUIDLIBRARY_H		"dxguid.lib"
 
 
-//d3dcompiler.lib dxerr.lib dxguid.lib dxgi.lib d3dx11d.lib d3d11.lib  winmm.lib comctl32.lib d3dx11.lib
+//d3dcompiler.lib dxerr.lib dxguid.lib dxgi.lib d3d11.lib  winmm.lib comctl32.lib
 
 #define c_g2dD3D11_H			"d3d11.h"
 #define c_g2dDXERR_H			"dxerr.h"
 
-
-// 3rdParty for now
-#define c_g2dD3DX11Effect_H		"D3DX11Effects/inc/d3dx11Effect.h"
 
 #define D3D_RELEASE(ptr) {if (ptr)ptr->Release();ptr=NULL;}
 

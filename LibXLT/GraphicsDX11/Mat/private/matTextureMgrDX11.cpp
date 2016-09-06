@@ -53,7 +53,6 @@
 #include "GraphicsDX11/mat/private/matTextureLoaderDDSWin.hpp"
 #include "GraphicsDX11/mat/private/matTextureLoaderHDRWin.hpp"
 #include "GraphicsDX11/mat/private/matTextureLoaderTGAWin.hpp"
-#include "DirectXTex/DirectXTex/DirectXTex.h"
 
 #include <map>
 #include <memory>

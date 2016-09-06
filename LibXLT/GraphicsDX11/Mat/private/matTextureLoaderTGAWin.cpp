@@ -19,7 +19,6 @@
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
 #include "GraphicsDX11/mat/matMipTexture.hpp"
 #include "GraphicsDX11/mat/matPlainTexture.hpp"
-#include "DirectXTex/DirectXTex/DirectXTex.h"
 
 namespace 
 {

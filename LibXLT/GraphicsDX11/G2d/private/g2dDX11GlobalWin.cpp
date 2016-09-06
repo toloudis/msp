@@ -22,18 +22,16 @@
 //============================================================================
 #pragma comment(lib,c_g2dDXGILIBRARY)
 #pragma comment(lib,c_g2dD3D11LIBRARYMAIN)
-#pragma comment(lib,c_g2dD3D11LIBRARYX)
-#pragma comment(lib,c_g2dDX11LIBRARYERR)
 #pragma comment(lib,c_g2dDXCOMPILER)
-#pragma comment(lib,c_g2dD3D11LIBRARYEFFECT)
 #pragma comment(lib,c_g2dD2D1LIBRARY)
 #pragma comment(lib,c_g2dDWRITELIBRARY)
 #pragma comment(lib,c_g2dDXGUIDLIBRARY_H)
-
-#if PIX_D3DPERF
-#pragma comment(lib,"d3d9.lib")
+#pragma comment(lib,"DirectXTex.lib")
+#ifdef _DEBUG
+    #pragma comment(lib,"Effects11d.lib")
+#else
+    #pragma comment(lib,"Effects11.lib")
 #endif
-
 //============================================================================
 //============================================================================
 namespace g2dDX11Global

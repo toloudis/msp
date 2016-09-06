@@ -16,7 +16,6 @@
 #include "GraphicsDX11/g2d/g2dDX11Types.hpp"
 #endif
 
-#include c_g2dD3DX11Effect_H
 #include <string>
 
 class fsLocator;
@@ -40,9 +39,6 @@ namespace effShaderUtilWin
 	//------------------------------------------------------------------------
 	matShaderEffect* CompileEffect(const fsLocator &i_Locator);
 	matShaderEffect* CompileGenericEffect(const fsLocator &i_Locator);
-
-	ID3DX11Effect* CompileStringEffect(const char* eff);
-
 
 	//------------------------------------------------------------------------
 	// Create effect from compiled binary data array

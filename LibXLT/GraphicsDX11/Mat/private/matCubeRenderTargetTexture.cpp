@@ -15,7 +15,6 @@
 #include "GraphicsDX11/g2d/g2dDepthStencilBufferDX11.hpp"
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
 #include "GraphicsDX11/g2d/private/g2dWindowDrawUtilDX11.hpp"
-#include "DirectXTex/DirectXTex/DirectXTex.h"
 
 #include <sstream>
 

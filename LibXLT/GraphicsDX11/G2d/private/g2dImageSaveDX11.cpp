@@ -23,7 +23,6 @@
 #include "GraphicsDX11/g2d/g2dImageDX11.hpp"
 #include "GraphicsDX11/g2d/g2dWindowDX11.hpp"
 #include "Graphics/g3d/g3dPrefs.hpp"
-#include "DirectXTex/DirectXTex/DirectXTex.h"
 
 #include <string>
 

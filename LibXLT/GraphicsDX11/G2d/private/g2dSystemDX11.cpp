@@ -24,10 +24,6 @@
 #include "Graphics/g2d/g2dResetHandler.hpp"
 #include "GraphicsDX11/eff/effShaderSDKDX11.hpp"
 
-//this is to suppress the d3dx messages
-//#define FXDPF
-//#include "D3DX11Effects/d3dx11dbg.h"
-
 
 //============================================================================
 //	anonymous namespace for private data and functions

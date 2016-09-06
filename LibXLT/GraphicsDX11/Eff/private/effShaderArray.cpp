@@ -115,7 +115,6 @@
 //#include "Tool/gui/guiMessageBox.hpp"
 #include "GraphicsDX11/eff/private/PSMapNormalsToScreen.hpp"
 
-#include c_g2dD3DX11Effect_H
 #include <map>
 
 namespace
@@ -669,20 +668,6 @@ void effShaderArray::GetDefaultEffect(void** o_pShaderBytecode, unsigned long* o
 		hr = ( g2dDX11Global::g_pDevice->CreatePixelShader( pBytes, numBytes, NULL, &l_DefaultPSShader ) );
 		delete [] pBytes;
 
-/*
-
-		effShaderUtilWin::LoadShaderDX11(f,
-			"testPS",//"singleLightPS",
-			"ps_4_0",
-			&l_DefaultPS);
-
-		HRESULT hr = g2dDX11Global::g_pDevice->CreatePixelShader(
-			l_DefaultPS->GetBufferPointer(),
-			l_DefaultPS->GetBufferSize(),
-			NULL, 
-			&l_DefaultPSShader);
-
-*/
 	}
 
 	if (!l_DefaultPhongPS)
@@ -692,41 +677,12 @@ void effShaderArray::GetDefaultEffect(void** o_pShaderBytecode, unsigned long* o
 		HRESULT hr = effShaderUtilWin::LoadShaderFromFile( L"singleLightPS.o", &numBytes, &pBytes );
 		hr = ( g2dDX11Global::g_pDevice->CreatePixelShader( pBytes, numBytes, NULL, &l_DefaultPhongPS ) );
 		delete [] pBytes;
-		
-/*		
-		ID3DBlob* pBlob;
-		effShaderUtilWin::LoadShaderDX11(f,
-			"singleLightPS",
-			"ps_4_0",
-			&pBlob);
-
-		HRESULT hr = g2dDX11Global::g_pDevice->CreatePixelShader(
-			pBlob->GetBufferPointer(),
-			pBlob->GetBufferSize(),
-			NULL, 
-			&l_DefaultPhongPS);
-
-		pBlob->Release();
-*/
 	}
 
 	if (!l_DefaultVSShader)
 	{
 		HRESULT hr = effShaderUtilWin::LoadShaderFromFile( L"VS_Default.o", &l_DefaultVSSize, &l_DefaultVSData );
 		hr = ( g2dDX11Global::g_pDevice->CreateVertexShader( l_DefaultVSData, l_DefaultVSSize, NULL, &l_DefaultVSShader ) );
-
-		/*
-		effShaderUtilWin::LoadShaderDX11(f,
-			"VS_Default",
-			"vs_4_0",
-			&l_DefaultVS);
-
-		HRESULT hr = g2dDX11Global::g_pDevice->CreateVertexShader(
-			l_DefaultVS->GetBufferPointer(),
-			l_DefaultVS->GetBufferSize(),
-			NULL, 
-			&l_DefaultVSShader);
-*/
 	}
 	*o_pShaderBytecode = l_DefaultVSData;
 	*o_bytecodeLength = (unsigned long)l_DefaultVSSize;

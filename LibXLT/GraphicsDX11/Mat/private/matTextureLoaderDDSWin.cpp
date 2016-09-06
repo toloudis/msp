@@ -18,7 +18,6 @@
 #include "Graphics/mat/matExceptionX.hpp"
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
 #include "GraphicsDX11/mat/matDX11GlobalWin.hpp"
-#include "DirectXTex/DirectXTex/DirectXTex.h"
 
 #include "DDS.h"
 #include <fstream>

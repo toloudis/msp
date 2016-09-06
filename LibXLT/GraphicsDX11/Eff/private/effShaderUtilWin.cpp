@@ -127,19 +127,17 @@ namespace effShaderUtilWin
 		ID3DBlob* shader = NULL;
 		ID3DBlob* errors = NULL;
 
-		HRESULT op_result = D3DX11CompileFromFile(
-		  filename.GetString(),//LPCTSTR pSrcFile,
-		  NULL,//CONST D3D11_SHADER_MACRO *pDefines,
-		  NULL,//LPD3D10INCLUDE pInclude,
-		  i_Entrypoint.c_str(),//LPCSTR pFunctionName,
-		  i_Profile.c_str(),//LPCSTR pProfile,
-		  0,//UINT Flags1,
-		  0,//UINT Flags2,
-		  NULL,//ID3DX11ThreadPump *pPump,
-		  &shader,//ID3DBlob **ppShader,
-		  &errors,//ID3DBlob **ppErrorMsgs,
-		  NULL//HRESULT *pHResult
-		);
+        HRESULT op_result = D3DCompileFromFile(
+            filename.GetString(),//in      LPCWSTR pFileName,
+            NULL,//in_opt  const D3D_SHADER_MACRO pDefines,
+            NULL,//in_opt  ID3DInclude pInclude,
+            i_Entrypoint.c_str(),//in      LPCSTR pEntrypoint,
+            i_Profile.c_str(),//in      LPCSTR pTarget,
+            0,//in      UINT Flags1,
+            0,//in      UINT Flags2,
+            &shader,//out     ID3DBlob ppCode,
+            &errors//out_opt ID3DBlob ppErrorMsgs
+        );
 
 		if( !SUCCEEDED(op_result) )
 		{
@@ -280,41 +278,5 @@ matShaderEffect* CompileGenericEffect(const fsLocator &i_Locator)
 	return pEffect;
 }
 
-ID3DX11Effect* CompileStringEffect(const char* eff)
-{
-	ID3DBlob* shaderCode = NULL;
-	ID3DBlob* errors = NULL;
-
-	std::string s("unknown shader");
-
-	// Compile effect 
-	HRESULT hr;
-	hr = D3DX11CompileFromMemory((LPCSTR)eff, strlen(eff), s.c_str(), 
-		NULL, NULL, "", "fx_5_0", 
-#ifdef _DEBUG
-		D3D10_SHADER_OPTIMIZATION_LEVEL0 | D3D10_SHADER_ENABLE_BACKWARDS_COMPATIBILITY | D3D10_SHADER_DEBUG, 
-#else
-		D3D10_SHADER_OPTIMIZATION_LEVEL0 | D3D10_SHADER_ENABLE_BACKWARDS_COMPATIBILITY, 
-#endif
-		0, 0, &shaderCode, &errors, 0);
-
-
-    if (FAILED(hr))
-    { 
-		g2dDX11Global::PrintDXError(hr);
-        if(errors) 
-        { 
-			const char* err_msg = reinterpret_cast<const char*>(errors->GetBufferPointer());
-			DBG_WARNING(err_msg);
-        } 
-        return NULL; 
-    } 
- 
-    // Create effect 
-	ID3DX11Effect* effect = NULL;
-	effect = LoadEffectData(shaderCode->GetBufferPointer(), (int)shaderCode->GetBufferSize(), s);
-
-	return effect;
-}
 
 }	// end of namespace
