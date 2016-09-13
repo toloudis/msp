@@ -129,6 +129,72 @@ void CopyCurrentTargetIntoTexture(matRenderTargetTexture* io_pDest)
 	srcResource->Release();
 }
 
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+void CopyBackBufInto(matRenderTargetTexture* pTex)
+{
+    D3DPERF_BeginEvent(D3DCOLOR_RGBA(255, 0, 0, 255), L"shdwHDRRendererDX11::CopyToBackBuf");
+
+    g3dBlendStateMgr::SetBlendState(st_CopyToBackBuf1);
+
+    g3dDepthStencilStateMgr::SetDepthStencilState(ds_Disable_NS);
+
+    // Draw the high dynamic range scene texture to the low dynamic range
+    // back buffer. 
+    UINT uiPassCount, uiPass;
+
+    effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
+    ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
+
+    pEffBase->SetTechnique("SimpleCopy");
+
+    // source is whatever g_curRenderTarget is
+    g2dD3D11RenderTargetPtr pSrc = g2dDX11Global::GetColorTarget();
+    ID3D11Resource* pSrcResource = NULL;
+    pSrc->GetResource(&pSrcResource);
+    ID3D11ShaderResourceView* pSrcView = NULL;
+    HRESULT hr = g2dDX11Global::g_pDevice->CreateShaderResourceView(pSrcResource, NULL, &pSrcView);
+
+    ID3D11ShaderResourceView* inputTextures[1] = {
+        pSrcView
+    };
+
+    g3dRasterizerStateMgr::SetRasterizerState(D3D11_CULL_NONE, g3dDrawStyleUtilDX11::GetD3DDrawStyle());
+
+    // save current render target and depth buf to pop them back on when we are done?
+    g2dD3D11DepthStencilPtr pDepth = g2dDX11Global::GetDepthTarget();
+    pTex->MakeCurrent();
+    int w, h;
+    pTex->GetDimensions(w, h);
+
+    uiPassCount = pEffBase->Begin();
+    for (uiPass = 0; uiPass < uiPassCount; uiPass++)
+    {
+        pEffBase->BeginPass(uiPass);
+
+        g2dDX11Global::g_pDeviceContext->PSSetShaderResources(0, 1, inputTextures);
+        g3dDX11Util::DrawFullScreenQuad(w, h);
+
+        pEffBase->EndPass();
+    }
+    pEffBase->End();
+
+    g3dBlendStateMgr::SetBlendState(st_CopyToBackBuf2);
+
+    g3dDepthStencilStateMgr::SetDepthStencilState(ds_Test_Write_LessE_NS);
+
+    g3dRasterizerStateMgr::SetRasterizerState(g3dDX11Util::GetCullMode(), g3dDrawStyleUtilDX11::GetD3DDrawStyle());
+
+    ID3D11ShaderResourceView* nullTex[1] = { NULL };
+    g2dDX11Global::g_pDeviceContext->PSSetShaderResources(0, 1, nullTex);
+
+    pSrcView->Release();
+    g2dDX11Global::SetRenderTargets(pSrc, pDepth);
+
+    D3DPERF_EndEvent();
+}
+
+
 }
 
 void shdwHDRRendererDX11::InitStates()
@@ -874,8 +940,11 @@ void shdwHDRRendererDX11::PostProcessing( g2dRenderTarget* i_pWindow, const camC
 			//			g3dDepthStencilStateMgr::SetDepthStencilState( ds_Test_Write_LessE_NS );
 			g3dDepthStencilStateMgr::SetDepthStencilState( ds_Test_LessE_NS );
 
-			CopyCurrentTargetIntoTexture(m_pFrameBuffer->HDRScratchTex1());
-			if (g3dPostProcessing::GetActive())
+			//CopyCurrentTargetIntoTexture(m_pFrameBuffer->HDRScratchTex1());
+
+            CopyBackBufInto(m_pFrameBuffer->HDRScratchTex1());
+
+            if (g3dPostProcessing::GetActive())
 			{
 				shdwPassPostShader postPass(m_pFrameBuffer->HDRScratchTex0(), m_pFrameBuffer->HDRScratchTex1());
 				l_nNumTrianglesRendered += postPass.Render(i_fSimTime);
@@ -1245,7 +1314,8 @@ void shdwHDRRendererDX11::RenderDOF(float i_fSimTime, bool i_debug)
 
 	// Copy backbuffer to DOF Reserve Target. 
 	// This will be the source texture with color data.
-	CopyCurrentTargetIntoTexture(m_pFrameBuffer->DOFReserveTarget());
+//	CopyCurrentTargetIntoTexture(m_pFrameBuffer->DOFReserveTarget());
+    CopyBackBufInto(m_pFrameBuffer->DOFReserveTarget());
 
 	// now put alphas in m_pDOFReserveTarget.
 	m_pFrameBuffer->DOFReserveTarget()->MakeCurrent();
