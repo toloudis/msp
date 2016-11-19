@@ -393,7 +393,7 @@ chnlTraxDialog::chnlTraxDialog( wxWindow* parent,
 	this->Connect( m_slider_zoom->GetId(), wxEVT_VALUE_CHANGED,
 				wxCommandEventHandler(chnlTraxDialog::ZoomChanged) );
 	
-	m_button_ZoomCenter = new wxButton( this, wxID_ANY, wxT("Z"), wxDefaultPosition, wxSize( 20,20 ), 0 );
+	m_button_ZoomCenter = new wxButton( this, wxID_ANY, wxT("Z"), wxDefaultPosition, FromDIP(wxSize( 20,20 )), 0 );
 	m_button_ZoomCenter->SetToolTip( wxT("Fit time to Channel Editor size") );
 	bSizer_zoom->Add( m_button_ZoomCenter, 0, wxBOTTOM|wxTOP, 5 );
 	
@@ -404,7 +404,7 @@ chnlTraxDialog::chnlTraxDialog( wxWindow* parent,
 	m_choice_DisplayChoices.Add(wxT("Selected"));
 	m_choice_DisplayChoices.Add(wxT("Similar"));
 	m_choice_DisplayChoices.Add(wxT("All"));
-	m_choice_Display = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize( 120,-1 ), m_choice_DisplayChoices, 0 );
+	m_choice_Display = new wxChoice( this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize( 120,-1 )), m_choice_DisplayChoices, 0 );
 	m_choice_Display->SetSelection( 0 );
 	m_choice_Display->SetToolTip( wxT("Display Filter") );
 	this->Connect(m_choice_Display->GetId(), wxEVT_COMMAND_CHOICE_SELECTED,
@@ -434,11 +434,11 @@ chnlTraxDialog::chnlTraxDialog( wxWindow* parent,
 	wxBoxSizer* bSizer4;
 	bSizer4 = new wxBoxSizer( wxHORIZONTAL );
 	
-	m_button_RemoveNote = new wxButton( this, wxID_ANY, wxT("-"), wxDefaultPosition, wxSize( 16,16 ), 0 );
+	m_button_RemoveNote = new wxButton( this, wxID_ANY, wxT("-"), wxDefaultPosition, FromDIP(wxSize( 16,16 )), 0 );
 	m_button_RemoveNote->SetToolTip( wxT("Delete Note") );
 	bSizer4->Add( m_button_RemoveNote, 0, wxBOTTOM|wxTOP, 2 );
 	
-	m_button_AddNote = new wxButton( this, wxID_ANY, wxT("+"), wxDefaultPosition, wxSize( 16,16 ), 0 );
+	m_button_AddNote = new wxButton( this, wxID_ANY, wxT("+"), wxDefaultPosition, FromDIP(wxSize( 16,16 )), 0 );
 	m_button_AddNote->SetToolTip( wxT("Add Note at current time") );
 	bSizer4->Add( m_button_AddNote, 0, wxBOTTOM|wxTOP, 2 );
 	
@@ -447,11 +447,11 @@ chnlTraxDialog::chnlTraxDialog( wxWindow* parent,
 	wxBoxSizer* bSizer5;
 	bSizer5 = new wxBoxSizer( wxHORIZONTAL );
 	
-	m_button_PrevNote = new wxButton( this, wxID_ANY, wxT("<"), wxDefaultPosition, wxSize( 16,16 ), 0 );
+	m_button_PrevNote = new wxButton( this, wxID_ANY, wxT("<"), wxDefaultPosition, FromDIP(wxSize( 16,16 )), 0 );
 	m_button_PrevNote->SetToolTip( wxT("Previous Note") );
 	bSizer5->Add( m_button_PrevNote, 0, wxBOTTOM|wxTOP, 2 );
 	
-	m_button_NextNote = new wxButton( this, wxID_ANY, wxT(">"), wxDefaultPosition, wxSize( 16,16 ), 0 );
+	m_button_NextNote = new wxButton( this, wxID_ANY, wxT(">"), wxDefaultPosition, FromDIP(wxSize( 16,16 )), 0 );
 	m_button_NextNote->SetToolTip( wxT("Next Note") );
 	bSizer5->Add( m_button_NextNote, 0, wxBOTTOM|wxTOP, 2 );
 	
@@ -469,11 +469,11 @@ chnlTraxDialog::chnlTraxDialog( wxWindow* parent,
 	wxBoxSizer* bSizer41;
 	bSizer41 = new wxBoxSizer( wxHORIZONTAL );
 	
-	m_button_RemoveMarker = new wxButton( this, wxID_ANY, wxT("-"), wxDefaultPosition, wxSize( 16,16 ), 0 );
+	m_button_RemoveMarker = new wxButton( this, wxID_ANY, wxT("-"), wxDefaultPosition, FromDIP(wxSize( 16,16 )), 0 );
 	m_button_RemoveMarker->SetToolTip( wxT("Delete Marker") );
 	bSizer41->Add( m_button_RemoveMarker, 0, wxBOTTOM|wxTOP, 2 );
 	
-	m_button_AddMarker = new wxButton( this, wxID_ANY, wxT("+"), wxDefaultPosition, wxSize( 16,16 ), 0 );
+	m_button_AddMarker = new wxButton( this, wxID_ANY, wxT("+"), wxDefaultPosition, FromDIP(wxSize( 16,16 )), 0 );
 	m_button_AddMarker->SetToolTip( wxT("Add Marker") );
 	bSizer41->Add( m_button_AddMarker, 0, wxBOTTOM|wxTOP, 2 );
 	
@@ -482,11 +482,11 @@ chnlTraxDialog::chnlTraxDialog( wxWindow* parent,
 	wxBoxSizer* bSizer51;
 	bSizer51 = new wxBoxSizer( wxHORIZONTAL );
 	
-	m_button_PrevMarker = new wxButton( this, wxID_ANY, wxT("<"), wxDefaultPosition, wxSize( 16,16 ), 0 );
+	m_button_PrevMarker = new wxButton( this, wxID_ANY, wxT("<"), wxDefaultPosition, FromDIP(wxSize( 16,16 )), 0 );
 	m_button_PrevMarker->SetToolTip( wxT("Previous Marker") );
 	bSizer51->Add( m_button_PrevMarker, 0, wxBOTTOM|wxTOP, 2 );
 	
-	m_button_NextMarker = new wxButton( this, wxID_ANY, wxT(">"), wxDefaultPosition, wxSize( 16,16 ), 0 );
+	m_button_NextMarker = new wxButton( this, wxID_ANY, wxT(">"), wxDefaultPosition, FromDIP(wxSize( 16,16 )), 0 );
 	m_button_NextMarker->SetToolTip( wxT("Next Marker") );
 	bSizer51->Add( m_button_NextMarker, 0, wxBOTTOM|wxTOP, 2 );
 	
@@ -543,37 +543,37 @@ chnlTraxDialog::chnlTraxDialog( wxWindow* parent,
 	wxBoxSizer* bSizer16;
 	bSizer16 = new wxBoxSizer( wxHORIZONTAL );
 	
-	m_button_PrevTick = new wxButton( this, wxID_ANY, wxT("<-"), wxDefaultPosition, wxSize( 25,25 ), 0 );
+	m_button_PrevTick = new wxButton( this, wxID_ANY, wxT("<-"), wxDefaultPosition, FromDIP(wxSize( 25,25 )), 0 );
 	m_button_PrevTick->SetToolTip( wxT("Move time to the previous tick") );
 	bSizer16->Add( m_button_PrevTick, 0, wxLEFT, 5 );
 	
-	m_button_NextTick = new wxButton( this, wxID_ANY, wxT("->"), wxDefaultPosition, wxSize( 25,25 ), 0 );
+	m_button_NextTick = new wxButton( this, wxID_ANY, wxT("->"), wxDefaultPosition, FromDIP(wxSize( 25,25 )), 0 );
 	m_button_NextTick->SetToolTip( wxT("Move time to the next tick") );
 	bSizer16->Add( m_button_NextTick, 0, wxRIGHT, 5 );
 	
 	bSizer_buttons->Add( bSizer16, 0, wxEXPAND, 5 );
 	
-	m_button_Delete = new wxButton( this, wxID_ANY, wxT("Delete"), wxDefaultPosition, wxSize( 50,-1 ), 0 );
+	m_button_Delete = new wxButton( this, wxID_ANY, wxT("Delete"), wxDefaultPosition, FromDIP(wxSize( 50,-1 )), 0 );
 	m_button_Delete->SetToolTip( wxT("Delete selected driver") );
 	bSizer_buttons->Add( m_button_Delete, 0, wxLEFT|wxRIGHT, 5 );
 	
-	m_button_Copy = new wxButton( this, wxID_ANY, wxT("Copy"), wxDefaultPosition, wxSize( 50,-1 ), 0 );
+	m_button_Copy = new wxButton( this, wxID_ANY, wxT("Copy"), wxDefaultPosition, FromDIP(wxSize( 50,-1 )), 0 );
 	m_button_Copy->SetToolTip( wxT("Copy selected driver") );
 	bSizer_buttons->Add( m_button_Copy, 0, wxLEFT|wxRIGHT, 5 );
 	
-	m_button_Paste = new wxButton( this, wxID_ANY, wxT("Paste"), wxDefaultPosition, wxSize( 50,-1 ), 0 );
+	m_button_Paste = new wxButton( this, wxID_ANY, wxT("Paste"), wxDefaultPosition, FromDIP(wxSize( 50,-1 )), 0 );
 	m_button_Paste->SetToolTip( wxT("Paste copied driver at current time") );
 	bSizer_buttons->Add( m_button_Paste, 0, wxLEFT|wxRIGHT, 5 );
 	
-	m_button_Split = new wxButton( this, wxID_ANY, wxT("Split"), wxDefaultPosition, wxSize( 50,-1 ), 0 );
+	m_button_Split = new wxButton( this, wxID_ANY, wxT("Split"), wxDefaultPosition, FromDIP(wxSize( 50,-1 )), 0 );
 	m_button_Split->SetToolTip( wxT("Split selected driver at current time") );
 	bSizer_buttons->Add( m_button_Split, 0, wxLEFT|wxRIGHT, 5 );
 	
-	m_button_Move = new wxButton( this, wxID_ANY, wxT("Move"), wxDefaultPosition, wxSize( 50,-1 ), 0 );
+	m_button_Move = new wxButton( this, wxID_ANY, wxT("Move"), wxDefaultPosition, FromDIP(wxSize( 50,-1 )), 0 );
 	m_button_Move->SetToolTip( wxT("Move driver") );
 	bSizer_buttons->Add( m_button_Move, 0, wxLEFT|wxRIGHT, 5 );
 	
-	m_button_Sel = new wxButton( this, wxID_ANY, wxT("Sel->"), wxDefaultPosition, wxSize( 50,-1 ), 0 );
+	m_button_Sel = new wxButton( this, wxID_ANY, wxT("Sel->"), wxDefaultPosition, FromDIP(wxSize( 50,-1 )), 0 );
 	m_button_Sel->SetToolTip( wxT("Select all drivers later in time of currently selected driver") );
 	bSizer_buttons->Add( m_button_Sel, 0, wxLEFT|wxRIGHT, 5 );
 
@@ -1591,7 +1591,7 @@ void chnlTraxDialog::add_category(const itString& i_CategoryName)
 	wxStaticText *pCategory = new wxStaticText( m_scrollwin_names, wxID_ANY, i_CategoryName.GetString(), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
 	pCategory->Wrap( -1 );
 	pCategory->SetFont(wxFont( 8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD ));
-	pCategory->SetMinSize(wxSize(-1, 20));
+	pCategory->SetMinSize(FromDIP(wxSize(-1, 20)));
 	pCategory->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_CAPTIONTEXT ) );
 	pCategory->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_ACTIVECAPTION ) );
 	m_bSizer_names->Add( pCategory, 0, wxEXPAND, 5 );
@@ -1626,7 +1626,7 @@ chnlChannelControl* chnlTraxDialog::add_channel(tmlnChannel& i_Channel)
 	pNamePanel->SetBackgroundColour(bg_color);
 	wxBoxSizer* bSizer = new wxBoxSizer( wxHORIZONTAL );
 	//wxStaticBoxSizer* bSizer = new wxStaticBoxSizer( wxHORIZONTAL, m_scrollwin_names );
-	bSizer->SetMinSize( wxSize( -1, 32 ) ); 
+	bSizer->SetMinSize( FromDIP(wxSize( -1, 32 )) ); 
 	bSizer->Add( 10, 0, 0, wxEXPAND, 5 ); //spacer
 	// Channel name label
 	wxStaticText *pLabel = new wxStaticText( pNamePanel, wxID_ANY, 

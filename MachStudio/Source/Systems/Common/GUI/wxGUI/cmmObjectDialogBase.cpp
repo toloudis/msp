@@ -19,7 +19,7 @@ cmmObjectDialogBase::cmmObjectDialogBase( wxWindow* parent, wxWindowID id, const
 	wxBoxSizer* sizer_Name;
 	sizer_Name = new wxBoxSizer( wxHORIZONTAL );
 	
-	sizer_Name->SetMinSize( wxSize( -1,20 ) ); 
+	sizer_Name->SetMinSize( FromDIP(wxSize( -1,20 )) ); 
 	m_staticText1 = new wxStaticText( this, ID_DEFAULT, wxT("Object Name:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText1->Wrap( -1 );
 	sizer_Name->Add( m_staticText1, 0, wxALL, 5 );
@@ -42,7 +42,7 @@ cmmObjectDialogBase::cmmObjectDialogBase( wxWindow* parent, wxWindowID id, const
 	sizer_Drivers->Add( m_treeCtrl_Drivers, 1, wxEXPAND, 5 );
 	
 	m_button_AttachDriver = new wxButton( m_tabPage_Drivers, ID_DEFAULT, wxT("Attach Driver"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_button_AttachDriver->SetMinSize( wxSize( -1,30 ) );
+	m_button_AttachDriver->SetMinSize( FromDIP(wxSize( -1,30 )) );
 	
 	sizer_Drivers->Add( m_button_AttachDriver, 0, wxALIGN_CENTER|wxALL, 5 );
 	

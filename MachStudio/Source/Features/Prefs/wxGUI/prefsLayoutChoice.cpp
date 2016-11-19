@@ -23,7 +23,7 @@ prefsLayoutChoice* prefsLayoutChoice::Instance = NULL;
 // canvas constructor
 //--------------------------------------------------------------------
 prefsLayoutChoice::prefsLayoutChoice(wxWindow* parent)
-: wxChoice(parent, wxID_ANY, wxDefaultPosition, wxSize(160, -1)),
+: wxChoice(parent, wxID_ANY, wxDefaultPosition, FromDIP(wxSize(160, -1))),
 	m_bDisableNotify(false)
 {
 	this->Connect(this->GetId(), wxEVT_COMMAND_CHOICE_SELECTED,

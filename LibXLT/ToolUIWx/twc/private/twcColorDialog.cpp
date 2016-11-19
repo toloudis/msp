@@ -38,7 +38,7 @@ twcColorDialog::twcColorDialog( wxWindow* parent,
 
 	// Add custom controls to panels waiting for them
 	wxBoxSizer* bSizerBox = new wxBoxSizer( wxVERTICAL );
-	m_pColorBox = new twcColorBoxCtrl(m_panel_2dpicker, m_Value, wxID_ANY, wxDefaultPosition, wxSize( 256,256 ));
+	m_pColorBox = new twcColorBoxCtrl(m_panel_2dpicker, m_Value, wxID_ANY, wxDefaultPosition, FromDIP(wxSize( 256,256 )));
 	this->Connect( m_pColorBox->GetId(), wxEVT_VALUE_CHANGED,
 					wxCommandEventHandler(twcColorDialog::ColorBox_Changed) );
 	bSizerBox->Add( m_pColorBox, 1, wxEXPAND | wxALL, 0 );
@@ -46,7 +46,7 @@ twcColorDialog::twcColorDialog( wxWindow* parent,
 	m_panel_2dpicker->Layout();
 
 	wxBoxSizer* bSizerSlider = new wxBoxSizer( wxVERTICAL );
-	m_pColorSlider = new twcColorSliderCtrl(m_panel_vertSlider, m_Value, wxID_ANY, wxDefaultPosition, wxSize( 40,256 ));
+	m_pColorSlider = new twcColorSliderCtrl(m_panel_vertSlider, m_Value, wxID_ANY, wxDefaultPosition, FromDIP(wxSize( 40,256 )));
 	this->Connect( m_pColorSlider->GetId(), wxEVT_VALUE_CHANGED,
 					wxCommandEventHandler(twcColorDialog::ColorSlider_Changed) );
 	bSizerSlider->Add( m_pColorSlider, 1, wxEXPAND | wxALL, 0 );

@@ -32,10 +32,10 @@ m_gradientPanelHeightOffset(10)
 	bSizer2 = new wxBoxSizer( wxVERTICAL );
 
 	m_panel_gradientPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, 
-		wxSize(m_gradientPanelWidth, m_gradientPanelHeight + m_gradientPanelHeightOffset));
+		FromDIP(wxSize(m_gradientPanelWidth, m_gradientPanelHeight + m_gradientPanelHeightOffset)));
 	bSizer2->Add(m_panel_gradientPanel, 0, wxALL, 0);
 
-	m_slider_colorSlider = new twcMultiKnobSlider(this, wxPoint(0, 0), wxSize(m_gradientPanelWidth, m_knobSize), wxSize(m_knobSize, m_knobSize));
+	m_slider_colorSlider = new twcMultiKnobSlider(this, wxPoint(0, 0), FromDIP(wxSize(m_gradientPanelWidth, m_knobSize)), FromDIP(wxSize(m_knobSize, m_knobSize)));
 	bSizer2->Add(m_slider_colorSlider, 0, wxALL, 0);
 	bSizer1->Add(bSizer2, 0, wxEXPAND|wxALL, 0);
 

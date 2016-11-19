@@ -35,7 +35,7 @@ wxTimeSlider::wxTimeSlider( wxWindow* parent,
 	wxBoxSizer* bSizer4;
 	bSizer4 = new wxBoxSizer( wxVERTICAL );
 	
-	m_floatEdit_MinTime = new ptmTimeEdit( this, wxID_ANY, wxDefaultPosition, wxSize(80,-1), wxTE_CENTRE );
+	m_floatEdit_MinTime = new ptmTimeEdit( this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize(80,-1)), wxTE_CENTRE );
 	m_floatEdit_MinTime->SetTimeValue(tmlnTimeLine::GetMinimum());
 	this->Connect( m_floatEdit_MinTime->GetId(), wxEVT_VALUE_CHANGED,
 				wxCommandEventHandler(wxTimeSlider::MinTimeChanged) );
@@ -68,7 +68,7 @@ wxTimeSlider::wxTimeSlider( wxWindow* parent,
 	wxBoxSizer* bSizer2;
 	bSizer2 = new wxBoxSizer( wxVERTICAL );
 	
-	m_floatEdit_CurrentTime = new ptmTimeEdit( this, wxID_ANY, wxDefaultPosition, wxSize(80,-1), wxTE_CENTRE );
+	m_floatEdit_CurrentTime = new ptmTimeEdit( this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize(80,-1)), wxTE_CENTRE );
 
 	m_floatEdit_CurrentTime->SetTimeValue(tmlnTimeLine::GetValue());
 	this->Connect( m_floatEdit_CurrentTime->GetId(), wxEVT_VALUE_CHANGED,
@@ -85,7 +85,7 @@ wxTimeSlider::wxTimeSlider( wxWindow* parent,
 	wxBoxSizer* bSizer3;
 	bSizer3 = new wxBoxSizer( wxVERTICAL );
 	
-	m_floatEdit_MaxTime = new ptmTimeEdit( this, wxID_ANY, wxDefaultPosition, wxSize(80,-1), wxTE_CENTRE );
+	m_floatEdit_MaxTime = new ptmTimeEdit( this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize(80,-1)), wxTE_CENTRE );
 	m_floatEdit_MaxTime->SetTimeValue(tmlnTimeLine::GetMaximum());
 	this->Connect( m_floatEdit_MaxTime->GetId(), wxEVT_VALUE_CHANGED,
 				wxCommandEventHandler(wxTimeSlider::MaxTimeChanged) );

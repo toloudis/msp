@@ -20,17 +20,17 @@ twcVector3Edit::twcVector3Edit(wxWindow* i_pParent)
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxHORIZONTAL );
 	
-	m_pFloatEditX = new twcFloatEdit(this, wxID_ANY, wxDefaultPosition, wxSize( 40,20 ));
+	m_pFloatEditX = new twcFloatEdit(this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize( 40,20 )));
 	this->Connect( m_pFloatEditX->GetId(), wxEVT_VALUE_CHANGED,
 					wxCommandEventHandler(twcVector3Edit::OnTextChange) );
 	bSizer1->Add( m_pFloatEditX, 1, wxALL, 2 );
 
-	m_pFloatEditY = new twcFloatEdit(this, wxID_ANY, wxDefaultPosition, wxSize( 40,20 ));
+	m_pFloatEditY = new twcFloatEdit(this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize( 40,20 )));
 	this->Connect( m_pFloatEditY->GetId(), wxEVT_VALUE_CHANGED,
 					wxCommandEventHandler(twcVector3Edit::OnTextChange) );
 	bSizer1->Add( m_pFloatEditY, 1, wxALL, 2 );
 
-	m_pFloatEditZ = new twcFloatEdit(this, wxID_ANY, wxDefaultPosition, wxSize( 40,20 ));
+	m_pFloatEditZ = new twcFloatEdit(this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize( 40,20 )));
 	this->Connect( m_pFloatEditZ->GetId(), wxEVT_VALUE_CHANGED,
 					wxCommandEventHandler(twcVector3Edit::OnTextChange) );
 	bSizer1->Add( m_pFloatEditZ, 1, wxALL, 2 );

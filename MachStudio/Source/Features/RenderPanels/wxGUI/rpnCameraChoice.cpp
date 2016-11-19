@@ -28,7 +28,7 @@ rpnCameraChoice* rpnCameraChoice::Instance = NULL;
 // canvas constructor
 //--------------------------------------------------------------------
 rpnCameraChoice::rpnCameraChoice(wxWindow* parent)
-:	wxChoice(parent, wxID_ANY, wxDefaultPosition, wxSize(160, -1)),
+:	wxChoice(parent, wxID_ANY, wxDefaultPosition, FromDIP(wxSize(160, -1))),
 	m_CameraLastIndex(0),
 	m_bDisableNotify(false)
 {

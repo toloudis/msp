@@ -128,7 +128,7 @@ void wxHelpUtil::ShowHelpInfo()
 
 #ifdef USE_WXWIDGETS
 	wxDialog helpInfoDialog(twxSystem::g_pMainForm, wxID_ANY, L"Help Info", 
-		wxDefaultPosition, wxSize(300,400));
+		wxDefaultPosition, twxSystem::g_pMainForm->FromDIP(wxSize(300,400)));
 
 	wxBoxSizer* bSizer1 = new wxBoxSizer( wxVERTICAL );
 	

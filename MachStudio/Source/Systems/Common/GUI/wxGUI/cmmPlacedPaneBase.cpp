@@ -31,21 +31,21 @@ cmmPlacedPaneBase::cmmPlacedPaneBase( wxWindow* parent,
 	wxBoxSizer* sizer_Placed_ButtonBar;
 	sizer_Placed_ButtonBar = new wxBoxSizer( wxHORIZONTAL );
 	
-	sizer_Placed_ButtonBar->SetMinSize( wxSize( -1,20 ) ); 
+	sizer_Placed_ButtonBar->SetMinSize( FromDIP(wxSize( -1,20 )) ); 
 	wxBoxSizer* bSizer10;
 	bSizer10 = new wxBoxSizer( wxHORIZONTAL );
 	
-	m_button_Placed_OpenAll = new wxButton( this, ID_DEFAULT, wxT("+"), wxDefaultPosition, wxSize( 16,16 ), wxBU_EXACTFIT );
+	m_button_Placed_OpenAll = new wxButton( this, ID_DEFAULT, wxT("+"), wxDefaultPosition, FromDIP(wxSize( 16,16 )), wxBU_EXACTFIT );
 	m_button_Placed_OpenAll->SetToolTip( wxT("Expand the List") );
 	
 	bSizer10->Add( m_button_Placed_OpenAll, 0, wxALIGN_LEFT|wxALL, 1 );
 	
-	m_button_Placed_CollapseAll = new wxButton( this, ID_DEFAULT, wxT("-"), wxDefaultPosition, wxSize( 16,16 ), wxBU_EXACTFIT );
+	m_button_Placed_CollapseAll = new wxButton( this, ID_DEFAULT, wxT("-"), wxDefaultPosition, FromDIP(wxSize( 16,16 )), wxBU_EXACTFIT );
 	m_button_Placed_CollapseAll->SetToolTip( wxT("Contract the List") );
 	
 	bSizer10->Add( m_button_Placed_CollapseAll, 0, wxALL, 1 );
 	
-	m_button_Placed_OpenPartial = new wxButton( this, ID_DEFAULT, wxT(":"), wxDefaultPosition, wxSize( 16,16 ), wxBU_EXACTFIT );
+	m_button_Placed_OpenPartial = new wxButton( this, ID_DEFAULT, wxT(":"), wxDefaultPosition, FromDIP(wxSize( 16,16 )), wxBU_EXACTFIT );
 	m_button_Placed_OpenPartial->SetToolTip( wxT("Expand only the selected item") );
 	
 	bSizer10->Add( m_button_Placed_OpenPartial, 0, wxALL, 1 );
@@ -58,7 +58,7 @@ cmmPlacedPaneBase::cmmPlacedPaneBase( wxWindow* parent,
 	wxBoxSizer* bSizer5;
 	bSizer5 = new wxBoxSizer( wxHORIZONTAL );
 	
-	bSizer5->SetMinSize( wxSize( -1,40 ) ); 
+	bSizer5->SetMinSize( FromDIP(wxSize( -1,40 )) ); 
 	m_bpButton_Edit = new wxBitmapButton( this, wxID_ANY, wxBitmap( i_IconDirectory + wxT("\\placed-edit.PNG"), wxBITMAP_TYPE_ANY ), wxDefaultPosition, wxDefaultSize, wxNO_BORDER );
 	m_bpButton_Edit->SetDefault(); 
 	m_bpButton_Edit->SetToolTip( wxT("Edit properties of selected objects") );

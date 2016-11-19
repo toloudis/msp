@@ -106,7 +106,7 @@ cmmPlacedPane::cmmPlacedPane( wxWindow* parent, ViewType i_Type )
 	itString icon_dir;
 	fsFileUtil::LocatorToUnicodeString( guiMenuMgr::GetIconDirectory(), icon_dir );
 	std::wstring icondir = icon_dir.GetString();
-	wxImageList *pCheckImages = new wxImageList(13, 13, false, cmmPlacedImages::e_NumPlacedImageStates);
+	wxImageList *pCheckImages = new wxImageList(FromDIP(13), FromDIP(13), false, cmmPlacedImages::e_NumPlacedImageStates);
 	if (i_Type == e_LightsView)
 	{
         wxLogNull nullLog;

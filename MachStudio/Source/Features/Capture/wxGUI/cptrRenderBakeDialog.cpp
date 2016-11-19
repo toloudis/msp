@@ -206,7 +206,7 @@ cptrRenderBakeDialog* cptrRenderBakeDialog::Instance = NULL;
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 cptrRenderBakeDialog::cptrRenderBakeDialog(cptrRenderBakeData& i_Data, wxWindow* parent)
-: wxDialog( parent, wxID_ANY, wxT("Bake Textures"), wxDefaultPosition, wxSize(l_dialogWidth, l_dialogHeight), wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER ),
+: wxDialog( parent, wxID_ANY, wxT("Bake Textures"), wxDefaultPosition, FromDIP(wxSize(l_dialogWidth, l_dialogHeight)), wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER ),
   m_Data(i_Data),
   m_bakeAborted(true)
 {
@@ -218,7 +218,7 @@ cptrRenderBakeDialog::cptrRenderBakeDialog(cptrRenderBakeData& i_Data, wxWindow*
 	wxBoxSizer* fgSizer;
 	fgSizer = new wxBoxSizer(wxVERTICAL);
 
-	m_layerTabPages = new wxAuiNotebook( m_panel_Dialog, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxAUI_NB_SCROLL_BUTTONS );
+	m_layerTabPages = new wxAuiNotebook( m_panel_Dialog, wxID_ANY, wxDefaultPosition, FromDIP(wxSize( -1,-1 )), wxAUI_NB_SCROLL_BUTTONS );
 	fgSizer->Add(m_layerTabPages, 1, wxALL|wxEXPAND, 5);
 
 	// Create objects list tab

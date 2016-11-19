@@ -31,7 +31,7 @@ twxDialogTabbed::twxDialogTabbed( wxWindow* parent,
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxVERTICAL );
 	
-	m_Notebook = new wxAuiNotebook( this, wxID_ANY, wxDefaultPosition, wxSize(450,300), 0 );
+	m_Notebook = new wxAuiNotebook( this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize(450,300)), 0 );
 	
 	bSizer1->Add( m_Notebook, 1, wxEXPAND | wxALL, 5 );
 	
@@ -57,7 +57,7 @@ void twxDialogTabbed::AddTabPage(const std::string& i_Title)
 	wxScrolledWindow *pTabPage = new wxScrolledWindow( m_Notebook, 
 				wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL );
 	pTabPage->SetScrollRate( 0, 5 );
-	pTabPage->SetMinSize(wxSize(100,200));
+	pTabPage->SetMinSize(FromDIP(wxSize(100,200)));
 	m_Notebook->AddPage( pTabPage, wxString(i_Title.c_str(), wxConvUTF8), false );
 }
 

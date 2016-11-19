@@ -55,7 +55,7 @@ namespace
 		{
 			DBG_ASSERT(twxSystem::g_pMainForm, "MainForm not yet initialized.");
 			MyToolbar* pToolbar = new MyToolbar(twxSystem::g_pMainForm, wxID_ANY);
-	//		pToolbar->SetToolBitmapSize(wxSize(16,16));
+	//		pToolbar->SetToolBitmapSize(FromDIP(wxSize(16,16)));
 
 			//twxPaneMgr::AddPane(pToolbar, wxAuiPaneInfo().
    //               Name(i_Name).Caption(i_Name).

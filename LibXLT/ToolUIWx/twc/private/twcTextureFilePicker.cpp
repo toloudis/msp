@@ -34,16 +34,16 @@ twcTextureFilePicker::twcTextureFilePicker(wxWindow* i_pParent)
 	// Create text control with a good size width so that more of the
 	// original text is shown when it is resized bigger. (It seemed like
 	// a width of 100 was being used when not specifically specified).
-	//m_pComboBox = new twcComboBox( this, wxID_ANY, L"", wxSize(180,-1));
+	//m_pComboBox = new twcComboBox( this, wxID_ANY, L"", FromDIP(wxSize(180,-1)));
 	
 	//Text box
-	m_pTextBox = new twcTextBox( this, wxID_ANY, L"", false, false, wxSize(150,-1) );
+	m_pTextBox = new twcTextBox( this, wxID_ANY, L"", false, false, FromDIP(wxSize(150,-1)) );
 	this->Connect( m_pTextBox->GetId(), wxEVT_VALUE_CHANGED,
 					wxCommandEventHandler(twcTextureFilePicker::OnTextChange) );
 	bSizer1->Add( m_pTextBox, 1, wxALL, 0 );
 
 	//Choice box
-	m_pChoice = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize(55,-1), 0, NULL);
+	m_pChoice = new wxChoice( this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize(55,-1)), 0, NULL);
 	m_pChoice->SetFont( wxFont( 7, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
 	this->Connect( m_pChoice->GetId(), wxEVT_COMMAND_CHOICE_SELECTED,
 					wxCommandEventHandler(twcTextureFilePicker::OnChoiceSelected) );
@@ -56,7 +56,7 @@ twcTextureFilePicker::twcTextureFilePicker(wxWindow* i_pParent)
 
     wxLogNull nullLog;
 
-	m_pInvokeButton = new wxBitmapButton(this, wxID_ANY, wxBitmap( icondir + L"\\texture-execute.png", wxBITMAP_TYPE_ANY), wxDefaultPosition, wxSize( 20,20 ), wxNO_BORDER);
+	m_pInvokeButton = new wxBitmapButton(this, wxID_ANY, wxBitmap( icondir + L"\\texture-execute.png", wxBITMAP_TYPE_ANY), wxDefaultPosition, FromDIP(wxSize( 20,20 )), wxNO_BORDER);
 	m_pInvokeButton->SetBitmapSelected(wxBitmap( icondir + L"\\texture-execute_pressed.png", wxBITMAP_TYPE_ANY));
 	m_pInvokeButton->SetBitmapHover(wxBitmap( icondir + L"\\texture-execute_highlight.png", wxBITMAP_TYPE_ANY));
 	

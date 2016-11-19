@@ -29,12 +29,12 @@ twcFilePicker::twcFilePicker(wxWindow* i_pParent)
 	// Create text control with a good size width so that more of the
 	// original text is shown when it is resized bigger. (It seemed like
 	// a width of 100 was being used when not specifically specified).
-	m_pTextBox = new twcTextBox( this, wxID_ANY, L"", false, false, wxSize(180,-1) );
+	m_pTextBox = new twcTextBox( this, wxID_ANY, L"", false, false, FromDIP(wxSize(180,-1)) );
 	this->Connect( m_pTextBox->GetId(), wxEVT_VALUE_CHANGED,
 					wxCommandEventHandler(twcFilePicker::OnTextChange) );
 	bSizer1->Add( m_pTextBox, 1, wxALL, 0 );
 	
-	m_pBrowseButton = new wxButton(this, wxID_ANY, L"...", wxDefaultPosition, wxSize( 30,20 ));
+	m_pBrowseButton = new wxButton(this, wxID_ANY, L"...", wxDefaultPosition, FromDIP(wxSize( 30,20 )));
 	this->Connect( m_pBrowseButton->GetId(), wxEVT_COMMAND_BUTTON_CLICKED,
 					wxCommandEventHandler(twcFilePicker::OnBrowseClick) );
 	bSizer1->Add( m_pBrowseButton, 0, wxALL, 0 );

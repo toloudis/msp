@@ -314,7 +314,7 @@ HRESULT g2dWindowPrimaryDX11::InitRenderTargetInfo()
 	m_pBackBuffer = pRTV;
 
 
-
+#if 0
 	// Get a surface in the swap chain
 	IDXGISurface* pBackBufferSurf = NULL;
 	hr = m_pSwapChain->GetBuffer( 0, IID_PPV_ARGS(&pBackBufferSurf));
@@ -349,7 +349,7 @@ HRESULT g2dWindowPrimaryDX11::InitRenderTargetInfo()
 
 		pBackBufferSurf->Release();
     }
-
+#endif
 	return hr;
 }
 

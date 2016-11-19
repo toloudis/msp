@@ -277,7 +277,7 @@ rdrLayersObjectsPage::rdrLayersObjectsPage( wxWindow* parent )
 	// Create state images to represent checked state
 	itString icon_dir;
 	fsFileUtil::LocatorToUnicodeString( guiMenuMgr::GetIconDirectory(), icon_dir );
-	wxImageList *pCheckImages = new wxImageList(13, 13, false, e_NumPlacedImageStates);
+	wxImageList *pCheckImages = new wxImageList(FromDIP(13), FromDIP(13), false, e_NumPlacedImageStates);
 	std::wstring image_dir( icon_dir.GetString() );
 	{
         wxLogNull nullLog;

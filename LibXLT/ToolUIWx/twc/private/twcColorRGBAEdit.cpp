@@ -20,31 +20,31 @@ twcColorRGBAEdit::twcColorRGBAEdit(wxWindow* i_pParent)
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxHORIZONTAL );
 	
-	m_pFloatEditR = new twcFloatEdit(this, wxID_ANY, wxDefaultPosition, wxSize( 16,20 ));
+	m_pFloatEditR = new twcFloatEdit(this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize( 16,20 )));
 	this->Connect( m_pFloatEditR->GetId(), wxEVT_VALUE_CHANGED,
 					wxCommandEventHandler(twcColorRGBAEdit::OnTextChange) );
 	bSizer1->Add( m_pFloatEditR, 1, wxALL, 5 );
 
-	m_pFloatEditG = new twcFloatEdit(this, wxID_ANY, wxDefaultPosition, wxSize( 16,20 ));
+	m_pFloatEditG = new twcFloatEdit(this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize( 16,20 )));
 	this->Connect( m_pFloatEditG->GetId(), wxEVT_VALUE_CHANGED,
 					wxCommandEventHandler(twcColorRGBAEdit::OnTextChange) );
 	bSizer1->Add( m_pFloatEditG, 1, wxALL, 5 );
 
-	m_pFloatEditB = new twcFloatEdit(this, wxID_ANY, wxDefaultPosition, wxSize( 16,20 ));
+	m_pFloatEditB = new twcFloatEdit(this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize( 16,20 )));
 	this->Connect( m_pFloatEditB->GetId(), wxEVT_VALUE_CHANGED,
 					wxCommandEventHandler(twcColorRGBAEdit::OnTextChange) );
 	bSizer1->Add( m_pFloatEditB, 1, wxALL, 5 );
 
-	m_pFloatEditA = new twcFloatEdit(this, wxID_ANY, wxDefaultPosition, wxSize( 16,20 ));
+	m_pFloatEditA = new twcFloatEdit(this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize( 16,20 )));
 	m_pFloatEditA->SetFloatValue(255);
 	this->Connect( m_pFloatEditA->GetId(), wxEVT_VALUE_CHANGED,
 					wxCommandEventHandler(twcColorRGBAEdit::OnTextChange) );
 	bSizer1->Add( m_pFloatEditA, 1, wxALL, 5 );
 
-	//m_pColorPicker = new wxColourPickerCtrl(this, wxID_ANY, *wxBLACK, wxDefaultPosition, wxSize( 16,20 ));
+	//m_pColorPicker = new wxColourPickerCtrl(this, wxID_ANY, *wxBLACK, wxDefaultPosition, FromDIP(wxSize( 16,20 )));
 	//this->Connect( m_pColorPicker->GetId(), wxEVT_COMMAND_COLOURPICKER_CHANGED,
 	//				wxCommandEventHandler(twcColorRGBAEdit::OnColorChange) );
-	m_pColorPicker = new twcColorPicker(this, wxID_ANY, wxDefaultPosition, wxSize( 20,20 ));
+	m_pColorPicker = new twcColorPicker(this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize( 20,20 )));
 	this->Connect( m_pColorPicker->GetId(), wxEVT_VALUE_CHANGED,
 					wxCommandEventHandler(twcColorRGBAEdit::OnColorChange) );
 	bSizer1->Add( m_pColorPicker, 1, wxALL , 5 );
