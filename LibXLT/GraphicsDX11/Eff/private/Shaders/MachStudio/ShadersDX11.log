@@ -1,301 +1,426 @@
-﻿Build started 2/10/2014 6:49:07 PM.
-     1>Project "D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\ShadersDX11.vcxproj" on node 2 (Rebuild target(s)).
-     1>Rebuild:
-         msbuild /nologo /target:rebuild /property:OutputPath=D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders shadersDX11.proj
-         Build started 2/10/2014 6:49:07 PM.
-         Project "D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj" on node 1 (rebuild target(s)).
-         clean:
-           Deleting file "..\Shadertesttess.hpp".
-           del "..\Shadertesttess.hpp"
-           Deleting file "..\ShaderDefault.hpp".
-           del "..\ShaderDefault.hpp"
-           Deleting file "..\ShaderPhong.hpp".
-           del "..\ShaderPhong.hpp"
-           Deleting file "..\ShaderPhong_wBump.hpp".
-           del "..\ShaderPhong_wBump.hpp"
-           Deleting file "..\ShaderSimple.hpp".
-           del "..\ShaderSimple.hpp"
-           Deleting file "..\ShaderHDRLighting.hpp".
-           del "..\ShaderHDRLighting.hpp"
-           Deleting file "..\ShaderBlur.hpp".
-           del "..\ShaderBlur.hpp"
-           Deleting file "..\ShaderGlow.hpp".
-           del "..\ShaderGlow.hpp"
-           Deleting file "..\ShaderDOF.hpp".
-           del "..\ShaderDOF.hpp"
-           Deleting file "..\ShaderLightGlow.hpp".
-           del "..\ShaderLightGlow.hpp"
-           Deleting file "..\ShaderParticle.hpp".
-           del "..\ShaderParticle.hpp"
-           Deleting file "..\ShaderPostAlphaMatte.hpp".
-           del "..\ShaderPostAlphaMatte.hpp"
-           Deleting file "..\ShaderFog.hpp".
-           del "..\ShaderFog.hpp"
-           Deleting file "..\ShaderSolid.hpp".
-           del "..\ShaderSolid.hpp"
-           Deleting file "..\ShaderMaskAlpha.hpp".
-           del "..\ShaderMaskAlpha.hpp"
-           Deleting file "..\ShaderDepthMap.hpp".
-           del "..\ShaderDepthMap.hpp"
-           Deleting file "..\ShaderDepthRender.hpp".
-           del "..\ShaderDepthRender.hpp"
-           Deleting file "..\ShaderOutline.hpp".
-           del "..\ShaderOutline.hpp"
-           Deleting file "..\ShaderssaoBilateralBlurEngine.hpp".
-           del "..\ShaderssaoBilateralBlurEngine.hpp"
-           Deleting file "..\ShaderssaoMultiHorizonBasedAO.hpp".
-           del "..\ShaderssaoMultiHorizonBasedAO.hpp"
-           Deleting file "..\ShaderssgiMultiHorizonBasedGI.hpp".
-           del "..\ShaderssgiMultiHorizonBasedGI.hpp"
-           Deleting file "..\ShaderBillboard.hpp".
-           del "..\ShaderBillboard.hpp"
-           Deleting file "..\ShaderBrushstroke.hpp".
-           del "..\ShaderBrushstroke.hpp"
-           Deleting file "..\ShaderIlluminationOnly.hpp".
-           del "..\ShaderIlluminationOnly.hpp"
-           Deleting file "..\ShaderShadowsOnly.hpp".
-           del "..\ShaderShadowsOnly.hpp"
-           Deleting file "..\ShaderVelocityRender.hpp".
-           del "..\ShaderVelocityRender.hpp"
-           Deleting file "..\ShaderNormalMap.hpp".
-           del "..\ShaderNormalMap.hpp"
-           Deleting file "..\ShaderMotionBlur.hpp".
-           del "..\ShaderMotionBlur.hpp"
-           Deleting file "..\ShaderAAEdgeFilter.hpp".
-           del "..\ShaderAAEdgeFilter.hpp"
-           Deleting file "..\ShaderRamp.hpp".
-           del "..\ShaderRamp.hpp"
-           Deleting file "..\ShaderHairDefault.hpp".
-           del "..\ShaderHairDefault.hpp"
-           Deleting file "..\ShaderOpacityRender.hpp".
-           del "..\ShaderOpacityRender.hpp"
-           Deleting file "..\ShaderAOVolumes.hpp".
-           del "..\ShaderAOVolumes.hpp"
-           Deleting file "..\ShaderGIVolumes.hpp".
-           del "..\ShaderGIVolumes.hpp"
-           Deleting file "..\ShaderReflectiveShadowMap.hpp".
-           del "..\ShaderReflectiveShadowMap.hpp"
-           Deleting file "..\ShaderLPV_GI.hpp".
-           del "..\ShaderLPV_GI.hpp"
-           Deleting file "..\ShaderEnvBackground.hpp".
-           del "..\ShaderEnvBackground.hpp"
-           Deleting file "..\ShaderBake.hpp".
-           del "..\ShaderBake.hpp"
-           Deleting file "..\ShaderBlackAndWhite.hpp".
-           del "..\ShaderBlackAndWhite.hpp"
-           Deleting file "..\ShaderSepia.hpp".
-           del "..\ShaderSepia.hpp"
-           Deleting file "..\ShaderGradientMap.hpp".
-           del "..\ShaderGradientMap.hpp"
-           Deleting file "..\ShaderSketch.hpp".
-           del "..\ShaderSketch.hpp"
-           Deleting file "..\PSMapNormalsToScreen.hpp".
-           del "..\PSMapNormalsToScreen.hpp"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Blinn.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Blinn.fx"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\BlinnReflection.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\BlinnReflection.fx"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\CarPaint.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\CarPaint.fx"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\SpecularFresnel.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\SpecularFresnel.fx"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Lambert.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Lambert.fx"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Phong.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Phong.fx"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Phong_wBump.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Phong_wBump.fx"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PhongReflection.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PhongReflection.fx"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Simple.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Simple.fx"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\SubSurfaceScatter.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\SubSurfaceScatter.fx"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\SubSurfaceScatter_wBlinnSpecular.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\SubSurfaceScatter_wBlinnSpecular.fx"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Cartoon.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Cartoon.fx"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Anisotropic.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Anisotropic.fx"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Hair_SH.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Hair_SH.fx"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PostEffect\BlackAndWhite.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PostEffect\BlackAndWhite.fx"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PostEffect\Sepia.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PostEffect\Sepia.fx"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PostEffect\GradientMap.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PostEffect\GradientMap.fx"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PostEffect\Sketch.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PostEffect\Sketch.fx"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DBlinn.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DBlinn.fx"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DPhong.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DPhong.fx"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DSubSurfaceScatter_wBlinnSpecular.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DSubSurfaceScatter_wBlinnSpecular.fx"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DSpecularFresnel.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DSpecularFresnel.fx"
-           Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DPhongTransparent.fx".
-           del "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DPhongTransparent.fx"
-         defaultshaders:
-           fxc.exe -nologo -Tfx_5_0 /Fh..\Shadertesttess.hpp /Vng_Shadertesttess Special/testtess.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shadertesttess.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderDefault.hpp /Vng_ShaderDefault Default.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderDefault.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderPhong.hpp /Vng_ShaderPhong Phong.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderPhong.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderPhong_wBump.hpp /Vng_ShaderPhong_wBump Phong_wBump.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderPhong_wBump.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderSimple.hpp /Vng_ShaderSimple Simple.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderSimple.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderHDRLighting.hpp /Vng_ShaderHDRLighting Special\HDRLighting.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderHDRLighting.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderBlur.hpp /Vng_ShaderBlur Special\Blur.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderBlur.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderGlow.hpp /Vng_ShaderGlow Special\Glow.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderGlow.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderDOF.hpp /Vng_ShaderDOF Special\DOF.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderDOF.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderLightGlow.hpp /Vng_ShaderLightGlow Special\LightGlow.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderLightGlow.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderParticle.hpp /Vng_ShaderParticle Special\Particle.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderParticle.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderPostAlphaMatte.hpp /Vng_ShaderPostAlphaMatte Special\PostAlphaMatte.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderPostAlphaMatte.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderFog.hpp /Vng_ShaderFog Special\Fog.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderFog.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderSolid.hpp /Vng_ShaderSolid Special\Solid.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderSolid.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderMaskAlpha.hpp /Vng_ShaderMaskAlpha Special\MaskAlpha.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderMaskAlpha.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderDepthMap.hpp /Vng_ShaderDepthMap Special\DepthMap.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderDepthMap.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderDepthRender.hpp /Vng_ShaderDepthRender Special\DepthRender.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderDepthRender.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderOutline.hpp /Vng_ShaderOutline Special\Outline.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderOutline.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderssaoBilateralBlurEngine.hpp /Vng_ShaderssaoBilateralBlurEngine Special\ssaoBilateralBlurEngine.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderssaoBilateralBlurEngine.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderssaoMultiHorizonBasedAO.hpp /Vng_ShaderssaoMultiHorizonBasedAO Special\ssaoMultiHorizonBasedAO.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderssaoMultiHorizonBasedAO.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderssgiMultiHorizonBasedGI.hpp /Vng_ShaderssgiMultiHorizonBasedGI Special\ssgiMultiHorizonBasedGI.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderssgiMultiHorizonBasedGI.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderBillboard.hpp /Vng_ShaderBillboard Special\Billboard.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderBillboard.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderBrushstroke.hpp /Vng_ShaderBrushstroke Special\Brushstroke.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderBrushstroke.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderIlluminationOnly.hpp /Vng_ShaderIlluminationOnly Special\IlluminationOnly.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderIlluminationOnly.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderShadowsOnly.hpp /Vng_ShaderShadowsOnly Special\ShadowsOnly.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderShadowsOnly.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderVelocityRender.hpp /Vng_ShaderVelocityRender Special\VelocityRender.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderVelocityRender.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderNormalMap.hpp /Vng_ShaderNormalMap Special\NormalMap.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderNormalMap.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderMotionBlur.hpp /Vng_ShaderMotionBlur Special\MotionBlur.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderMotionBlur.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderAAEdgeFilter.hpp /Vng_ShaderAAEdgeFilter Special\AAEdgeFilter.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderAAEdgeFilter.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderRamp.hpp /Vng_ShaderRamp Special\Ramp.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderRamp.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderHairDefault.hpp /Vng_ShaderHairDefault Special\HairDefault.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderHairDefault.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderOpacityRender.hpp /Vng_ShaderOpacityRender Special\OpacityRender.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderOpacityRender.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderAOVolumes.hpp /Vng_ShaderAOVolumes Special\AOVolumes.fx
-     1>D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\Special\AOVolumes.fx(377,5): warning X4000: use of potentially uninitialized variable (v3) [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
-     1>D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\Special\AOVolumes.fx(377,5): warning X4000: use of potentially uninitialized variable (v3) [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
-           
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderAOVolumes.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderGIVolumes.hpp /Vng_ShaderGIVolumes Special\GIVolumes.fx
-     1>EXEC : Stage linkage warning : Semantic TEXCOORD has been inconsistently defined in the two stages.
-     1>EXEC : Stage linkage warning : Semantic TEXCOORD has been inconsistently defined in the two stages.
-           
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderGIVolumes.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderReflectiveShadowMap.hpp /Vng_ShaderReflectiveShadowMap Special\ReflectiveShadowMap.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderReflectiveShadowMap.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderLPV_GI.hpp /Vng_ShaderLPV_GI Special\LPV_GI.fx
-     1>EXEC : Stage linkage warning : Semantic TEXCOORD has been inconsistently defined in the two stages.
-     1>EXEC : Stage linkage warning : Semantic TEXCOORD has been inconsistently defined in the two stages.
-           
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderLPV_GI.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderEnvBackground.hpp /Vng_ShaderEnvBackground Special\EnvBackground.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderEnvBackground.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderBake.hpp /Vng_ShaderBake Bake.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderBake.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderBlackAndWhite.hpp /Vng_ShaderBlackAndWhite PostEffect\BlackAndWhite.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderBlackAndWhite.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderSepia.hpp /Vng_ShaderSepia PostEffect\Sepia.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderSepia.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderGradientMap.hpp /Vng_ShaderGradientMap PostEffect\GradientMap.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderGradientMap.hpp
-           fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderSketch.hpp /Vng_ShaderSketch PostEffect\Sketch.fx
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderSketch.hpp
-         postpixelshaders:
-           fxc.exe -nologo -Tps_5_0 /Fh..\PSMapNormalsToScreen.hpp /Vng_PSMapNormalsToScreen Special\MapNormalsToScreen.hlsl
-           compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\PSMapNormalsToScreen.hpp
-         shaders:
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Blinn.fx Blinn.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\Blinn.fx
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\BlinnReflection.fx BlinnReflection.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\BlinnReflection.fx
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\CarPaint.fx CarPaint.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\CarPaint.fx
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\SpecularFresnel.fx SpecularFresnel.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\SpecularFresnel.fx
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Lambert.fx Lambert.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\Lambert.fx
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Phong.fx Phong.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\Phong.fx
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Phong_wBump.fx Phong_wBump.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\Phong_wBump.fx
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PhongReflection.fx PhongReflection.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\PhongReflection.fx
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Simple.fx Simple.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\Simple.fx
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\SubSurfaceScatter.fx SubSurfaceScatter.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\SubSurfaceScatter.fx
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\SubSurfaceScatter_wBlinnSpecular.fx SubSurfaceScatter_wBlinnSpecular.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\SubSurfaceScatter_wBlinnSpecular.fx
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Cartoon.fx Cartoon.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\Cartoon.fx
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Anisotropic.fx Anisotropic.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\Anisotropic.fx
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Hair_SH.fx Hair_SH.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\Hair_SH.fx
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PostEffect\BlackAndWhite.fx PostEffect\BlackAndWhite.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\PostEffect\BlackAndWhite.fx
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PostEffect\Sepia.fx PostEffect\Sepia.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\PostEffect\Sepia.fx
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PostEffect\GradientMap.fx PostEffect\GradientMap.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\PostEffect\GradientMap.fx
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PostEffect\Sketch.fx PostEffect\Sketch.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\PostEffect\Sketch.fx
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DBlinn.fx FC3DBlinn.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\FC3DBlinn.fx
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DPhong.fx FC3DPhong.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\FC3DPhong.fx
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DSubSurfaceScatter_wBlinnSpecular.fx FC3DSubSurfaceScatter_wBlinnSpecular.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\FC3DSubSurfaceScatter_wBlinnSpecular.fx
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DSpecularFresnel.fx FC3DSpecularFresnel.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\FC3DSpecularFresnel.fx
-           fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DPhongTransparent.fx FC3DPhongTransparent.fx
-           compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\FC3DPhongTransparent.fx
-         Done Building Project "D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj" (rebuild target(s)).
-         
-         Build succeeded.
-         
-         "D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj" (rebuild target) (1) ->
-         (defaultshaders target) -> 
-     1>D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\Special\AOVolumes.fx(377,5): warning X4000: use of potentially uninitialized variable (v3) [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
-     1>D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\Special\AOVolumes.fx(377,5): warning X4000: use of potentially uninitialized variable (v3) [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
-         
-             2 Warning(s)
-             0 Error(s)
-         
-         Time Elapsed 00:02:22.74
-     1>Done Building Project "D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\ShadersDX11.vcxproj" (Rebuild target(s)).
-
-Build succeeded.
-
-Time Elapsed 00:02:22.83
+﻿  Build started 9/5/2016 8:27:43 PM.
+  Project "D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj" on node 1 (rebuild target(s)).
+  clean:
+    Deleting file "..\Shadertesttess.hpp".
+    Deleting file "..\ShaderDefault.hpp".
+    Deleting file "..\ShaderPhong.hpp".
+    Deleting file "..\ShaderPhong_wBump.hpp".
+    Deleting file "..\ShaderSimple.hpp".
+    Deleting file "..\ShaderHDRLighting.hpp".
+    Deleting file "..\ShaderBlur.hpp".
+    Deleting file "..\ShaderGlow.hpp".
+    Deleting file "..\ShaderDOF.hpp".
+    Deleting file "..\ShaderLightGlow.hpp".
+    Deleting file "..\ShaderParticle.hpp".
+    Deleting file "..\ShaderPostAlphaMatte.hpp".
+    Deleting file "..\ShaderFog.hpp".
+    Deleting file "..\ShaderSolid.hpp".
+    Deleting file "..\ShaderMaskAlpha.hpp".
+    Deleting file "..\ShaderDepthMap.hpp".
+    Deleting file "..\ShaderDepthRender.hpp".
+    Deleting file "..\ShaderOutline.hpp".
+    Deleting file "..\ShaderssaoBilateralBlurEngine.hpp".
+    Deleting file "..\ShaderssaoMultiHorizonBasedAO.hpp".
+    Deleting file "..\ShaderssgiMultiHorizonBasedGI.hpp".
+    Deleting file "..\ShaderBillboard.hpp".
+    Deleting file "..\ShaderBrushstroke.hpp".
+    Deleting file "..\ShaderIlluminationOnly.hpp".
+    Deleting file "..\ShaderShadowsOnly.hpp".
+    Deleting file "..\ShaderVelocityRender.hpp".
+    Deleting file "..\ShaderNormalMap.hpp".
+    Deleting file "..\ShaderMotionBlur.hpp".
+    Deleting file "..\ShaderAAEdgeFilter.hpp".
+    Deleting file "..\ShaderRamp.hpp".
+    Deleting file "..\ShaderHairDefault.hpp".
+    Deleting file "..\ShaderOpacityRender.hpp".
+    Deleting file "..\ShaderAOVolumes.hpp".
+    Deleting file "..\ShaderGIVolumes.hpp".
+    Deleting file "..\ShaderReflectiveShadowMap.hpp".
+    Deleting file "..\ShaderLPV_GI.hpp".
+    Deleting file "..\ShaderEnvBackground.hpp".
+    Deleting file "..\ShaderBake.hpp".
+    Deleting file "..\ShaderBlackAndWhite.hpp".
+    Deleting file "..\ShaderSepia.hpp".
+    Deleting file "..\ShaderGradientMap.hpp".
+    Deleting file "..\ShaderSketch.hpp".
+    Deleting file "..\PSMapNormalsToScreen.hpp".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Blinn.fx".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\BlinnReflection.fx".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\CarPaint.fx".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\SpecularFresnel.fx".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Lambert.fx".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Phong.fx".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Phong_wBump.fx".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PhongReflection.fx".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Simple.fx".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\SubSurfaceScatter.fx".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\SubSurfaceScatter_wBlinnSpecular.fx".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Cartoon.fx".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Anisotropic.fx".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Hair_SH.fx".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PostEffect\BlackAndWhite.fx".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PostEffect\Sepia.fx".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PostEffect\GradientMap.fx".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PostEffect\Sketch.fx".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DBlinn.fx".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DPhong.fx".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DSubSurfaceScatter_wBlinnSpecular.fx".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DSpecularFresnel.fx".
+    Deleting file "D:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DPhongTransparent.fx".
+  defaultshaders:
+    fxc.exe -nologo -Tfx_5_0 /Fh..\Shadertesttess.hpp /Vng_Shadertesttess Special/testtess.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shadertesttess.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderDefault.hpp /Vng_ShaderDefault Default.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderDefault.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderPhong.hpp /Vng_ShaderPhong Phong.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderPhong.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderPhong_wBump.hpp /Vng_ShaderPhong_wBump Phong_wBump.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderPhong_wBump.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderSimple.hpp /Vng_ShaderSimple Simple.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderSimple.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderHDRLighting.hpp /Vng_ShaderHDRLighting Special\HDRLighting.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderHDRLighting.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderBlur.hpp /Vng_ShaderBlur Special\Blur.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderBlur.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderGlow.hpp /Vng_ShaderGlow Special\Glow.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderGlow.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderDOF.hpp /Vng_ShaderDOF Special\DOF.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderDOF.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderLightGlow.hpp /Vng_ShaderLightGlow Special\LightGlow.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderLightGlow.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderParticle.hpp /Vng_ShaderParticle Special\Particle.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderParticle.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderPostAlphaMatte.hpp /Vng_ShaderPostAlphaMatte Special\PostAlphaMatte.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderPostAlphaMatte.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderFog.hpp /Vng_ShaderFog Special\Fog.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderFog.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderSolid.hpp /Vng_ShaderSolid Special\Solid.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderSolid.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderMaskAlpha.hpp /Vng_ShaderMaskAlpha Special\MaskAlpha.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderMaskAlpha.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderDepthMap.hpp /Vng_ShaderDepthMap Special\DepthMap.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderDepthMap.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderDepthRender.hpp /Vng_ShaderDepthRender Special\DepthRender.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderDepthRender.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderOutline.hpp /Vng_ShaderOutline Special\Outline.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderOutline.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderssaoBilateralBlurEngine.hpp /Vng_ShaderssaoBilateralBlurEngine Special\ssaoBilateralBlurEngine.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderssaoBilateralBlurEngine.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderssaoMultiHorizonBasedAO.hpp /Vng_ShaderssaoMultiHorizonBasedAO Special\ssaoMultiHorizonBasedAO.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderssaoMultiHorizonBasedAO.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderssgiMultiHorizonBasedGI.hpp /Vng_ShaderssgiMultiHorizonBasedGI Special\ssgiMultiHorizonBasedGI.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderssgiMultiHorizonBasedGI.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderBillboard.hpp /Vng_ShaderBillboard Special\Billboard.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderBillboard.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderBrushstroke.hpp /Vng_ShaderBrushstroke Special\Brushstroke.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderBrushstroke.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderIlluminationOnly.hpp /Vng_ShaderIlluminationOnly Special\IlluminationOnly.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderIlluminationOnly.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderShadowsOnly.hpp /Vng_ShaderShadowsOnly Special\ShadowsOnly.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderShadowsOnly.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderVelocityRender.hpp /Vng_ShaderVelocityRender Special\VelocityRender.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderVelocityRender.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderNormalMap.hpp /Vng_ShaderNormalMap Special\NormalMap.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderNormalMap.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderMotionBlur.hpp /Vng_ShaderMotionBlur Special\MotionBlur.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderMotionBlur.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderAAEdgeFilter.hpp /Vng_ShaderAAEdgeFilter Special\AAEdgeFilter.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderAAEdgeFilter.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderRamp.hpp /Vng_ShaderRamp Special\Ramp.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderRamp.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderHairDefault.hpp /Vng_ShaderHairDefault Special\HairDefault.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderHairDefault.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderOpacityRender.hpp /Vng_ShaderOpacityRender Special\OpacityRender.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderOpacityRender.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderAOVolumes.hpp /Vng_ShaderAOVolumes Special\AOVolumes.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\Special\AOVolumes.fx(377,5): warning X4000: use of potentially uninitialized variable (v3) [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\Special\AOVolumes.fx(377,5): warning X4000: use of potentially uninitialized variable (v3) [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderAOVolumes.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderGIVolumes.hpp /Vng_ShaderGIVolumes Special\GIVolumes.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : Stage linkage warning : Semantic TEXCOORD has been inconsistently defined in the two stages. [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : Stage linkage warning : Semantic TEXCOORD has been inconsistently defined in the two stages. [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderGIVolumes.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderReflectiveShadowMap.hpp /Vng_ShaderReflectiveShadowMap Special\ReflectiveShadowMap.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderReflectiveShadowMap.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderLPV_GI.hpp /Vng_ShaderLPV_GI Special\LPV_GI.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : Stage linkage warning : Semantic TEXCOORD has been inconsistently defined in the two stages. [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : Stage linkage warning : Semantic TEXCOORD has been inconsistently defined in the two stages. [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderLPV_GI.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderEnvBackground.hpp /Vng_ShaderEnvBackground Special\EnvBackground.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderEnvBackground.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderBake.hpp /Vng_ShaderBake Bake.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderBake.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderBlackAndWhite.hpp /Vng_ShaderBlackAndWhite PostEffect\BlackAndWhite.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderBlackAndWhite.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderSepia.hpp /Vng_ShaderSepia PostEffect\Sepia.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderSepia.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderGradientMap.hpp /Vng_ShaderGradientMap PostEffect\GradientMap.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderGradientMap.hpp
+    fxc.exe -nologo -Tfx_5_0 /Fh..\ShaderSketch.hpp /Vng_ShaderSketch PostEffect\Sketch.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\ShaderSketch.hpp
+  postpixelshaders:
+    fxc.exe -nologo -Tps_5_0 /Fh..\PSMapNormalsToScreen.hpp /Vng_PSMapNormalsToScreen Special\MapNormalsToScreen.hlsl
+    compilation header save succeeded; see D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\PSMapNormalsToScreen.hpp
+  shaders:
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Blinn.fx Blinn.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\Blinn.fx
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\BlinnReflection.fx BlinnReflection.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\BlinnReflection.fx
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\CarPaint.fx CarPaint.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\CarPaint.fx
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\SpecularFresnel.fx SpecularFresnel.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\SpecularFresnel.fx
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Lambert.fx Lambert.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\Lambert.fx
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Phong.fx Phong.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\Phong.fx
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Phong_wBump.fx Phong_wBump.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\Phong_wBump.fx
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PhongReflection.fx PhongReflection.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\PhongReflection.fx
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Simple.fx Simple.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\Simple.fx
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\SubSurfaceScatter.fx SubSurfaceScatter.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\SubSurfaceScatter.fx
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\SubSurfaceScatter_wBlinnSpecular.fx SubSurfaceScatter_wBlinnSpecular.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\SubSurfaceScatter_wBlinnSpecular.fx
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Cartoon.fx Cartoon.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\Cartoon.fx
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Anisotropic.fx Anisotropic.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\Anisotropic.fx
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\Hair_SH.fx Hair_SH.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\Hair_SH.fx
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PostEffect\BlackAndWhite.fx PostEffect\BlackAndWhite.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\PostEffect\BlackAndWhite.fx
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PostEffect\Sepia.fx PostEffect\Sepia.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\PostEffect\Sepia.fx
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PostEffect\GradientMap.fx PostEffect\GradientMap.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\PostEffect\GradientMap.fx
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\PostEffect\Sketch.fx PostEffect\Sketch.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\PostEffect\Sketch.fx
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DBlinn.fx FC3DBlinn.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\FC3DBlinn.fx
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DPhong.fx FC3DPhong.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\FC3DPhong.fx
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DSubSurfaceScatter_wBlinnSpecular.fx FC3DSubSurfaceScatter_wBlinnSpecular.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\FC3DSubSurfaceScatter_wBlinnSpecular.fx
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DSpecularFresnel.fx FC3DSpecularFresnel.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\FC3DSpecularFresnel.fx
+    fxc.exe -nologo -Tfx_5_0 /FoD:\Projects\SourceCode\MachStudio\Source\..\MachStudio-x64\Shaders\FC3DPhongTransparent.fx FC3DPhongTransparent.fx
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+    
+    compilation object save succeeded; see D:\Projects\SourceCode\MachStudio\MachStudio-x64\Shaders\FC3DPhongTransparent.fx
+  Done Building Project "D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj" (rebuild target(s)).
+  
+  Build succeeded.
+  
+  "D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj" (rebuild target) (1) ->
+  (defaultshaders target) -> 
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\Special\AOVolumes.fx(377,5): warning X4000: use of potentially uninitialized variable (v3) [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\Special\AOVolumes.fx(377,5): warning X4000: use of potentially uninitialized variable (v3) [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : Stage linkage warning : Semantic TEXCOORD has been inconsistently defined in the two stages. [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : Stage linkage warning : Semantic TEXCOORD has been inconsistently defined in the two stages. [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : Stage linkage warning : Semantic TEXCOORD has been inconsistently defined in the two stages. [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : Stage linkage warning : Semantic TEXCOORD has been inconsistently defined in the two stages. [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+  
+  
+  "D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj" (rebuild target) (1) ->
+  (shaders target) -> 
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+EXEC : warning X4717: Effects deprecated for D3DCompiler_47 [D:\Projects\SourceCode\LibXLT\GraphicsDX11\Eff\private\Shaders\shadersDX11.proj]
+  
+      71 Warning(s)
+      0 Error(s)
+  
+  Time Elapsed 00:02:50.76
