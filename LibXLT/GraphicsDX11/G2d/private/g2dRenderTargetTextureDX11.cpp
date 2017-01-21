@@ -75,7 +75,7 @@ void g2dRenderTargetTextureDX11::Make(int i_Width, int i_Height, DXGI_FORMAT i_F
 		{
 			throw g2dOutOfSystemMemoryX();
 		}
-		else if ( hr == D3DERR_INVALIDCALL )
+		else if ( hr == DXGI_ERROR_INVALID_CALL)
 		{
 			throw g2dGeneralX();
 		}
@@ -91,7 +91,7 @@ void g2dRenderTargetTextureDX11::Make(int i_Width, int i_Height, DXGI_FORMAT i_F
 		{
 			throw g2dOutOfSystemMemoryX();
 		}
-		else if ( hr == D3DERR_INVALIDCALL )
+		else if ( hr == DXGI_ERROR_INVALID_CALL)
 		{
 			throw g2dGeneralX();
 		}
@@ -106,7 +106,7 @@ void g2dRenderTargetTextureDX11::Make(int i_Width, int i_Height, DXGI_FORMAT i_F
 		{
 			throw g2dOutOfSystemMemoryX();
 		}
-		else if ( hr == D3DERR_INVALIDCALL )
+		else if ( hr == DXGI_ERROR_INVALID_CALL)
 		{
 			throw g2dGeneralX();
 		}

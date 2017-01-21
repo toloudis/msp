@@ -148,7 +148,7 @@ void matStaticCubeTexture::SetSurface(g2dD3D11ResourcePtr i_Surface)
 			{
 				throw g2dOutOfSystemMemoryX();
 			}
-			else if ( hr == D3DERR_INVALIDCALL )
+			else if ( hr == DXGI_ERROR_INVALID_CALL)
 			{
 				throw g2dGeneralX();
 			}

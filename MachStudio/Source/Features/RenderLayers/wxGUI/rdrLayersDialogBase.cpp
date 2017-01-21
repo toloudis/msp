@@ -26,30 +26,30 @@ rdrLayersDialogBase::rdrLayersDialogBase( wxWindow* parent, wxWindowID id, const
 	wxBoxSizer* sizer_rdrLayer_Tree1;
 	sizer_rdrLayer_Tree1 = new wxBoxSizer( wxVERTICAL );
 	
-	m_layerTree = new wxTreeCtrl( panel_Dialog, wxID_ANY, wxDefaultPosition, wxSize( 180,-1 ), wxTR_DEFAULT_STYLE|wxTR_EDIT_LABELS );
+	m_layerTree = new wxTreeCtrl( panel_Dialog, wxID_ANY, wxDefaultPosition, FromDIP(wxSize( 180,-1 )), wxTR_DEFAULT_STYLE|wxTR_EDIT_LABELS );
 	sizer_rdrLayer_Tree1->Add( m_layerTree, 1, wxEXPAND, 5 );
 	
 	wxGridSizer* gSizer5;
 	gSizer5 = new wxGridSizer( 1, 4, 0, 0 );
 	
-	m_addButton = new wxButton( panel_Dialog, wxID_ANY, wxT("Add"), wxDefaultPosition, wxSize( 45,-1 ), 0 );
+	m_addButton = new wxButton( panel_Dialog, wxID_ANY, wxT("Add"), wxDefaultPosition, FromDIP(wxSize( 45,-1 )), 0 );
 	m_addButton->SetToolTip( wxT("Add New Render Layer") );
 	
 	gSizer5->Add( m_addButton, 0, wxALL, 5 );
 	
-	m_duplicateButton = new wxButton( panel_Dialog, wxID_ANY, wxT("Duplicate"), wxDefaultPosition, wxSize( 45,-1 ), 0 );
-	m_duplicateButton->SetFont( wxFont( 7, 70, 90, 90, false, wxEmptyString ) );
+	m_duplicateButton = new wxButton( panel_Dialog, wxID_ANY, wxT("Duplicate"), wxDefaultPosition, FromDIP(wxSize( 45,-1 )), 0 );
+	m_duplicateButton->SetFont( wxFont( 7, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
 	m_duplicateButton->SetToolTip( wxT("Duplicate Render Layer") );
 	
 	gSizer5->Add( m_duplicateButton, 0, wxALL, 5 );
 	
-	m_deleteButton = new wxButton( panel_Dialog, wxID_ANY, wxT("Delete"), wxDefaultPosition, wxSize( 45,-1 ), 0 );
+	m_deleteButton = new wxButton( panel_Dialog, wxID_ANY, wxT("Delete"), wxDefaultPosition, FromDIP(wxSize( 45,-1 )), 0 );
 	m_deleteButton->SetToolTip( wxT("Delete Render Layer") );
 	
 	gSizer5->Add( m_deleteButton, 0, wxALL, 5 );
 	
-	m_renameButton = new wxButton( panel_Dialog, wxID_ANY, wxT("Rename"), wxDefaultPosition, wxSize( 45,-1 ), 0 );
-	m_renameButton->SetFont( wxFont( 8, 70, 90, 90, false, wxEmptyString ) );
+	m_renameButton = new wxButton( panel_Dialog, wxID_ANY, wxT("Rename"), wxDefaultPosition, FromDIP(wxSize( 45,-1 )), 0 );
+	m_renameButton->SetFont( wxFont( 8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxEmptyString ) );
 	m_renameButton->SetToolTip( wxT("Rename Render Layer") );
 	
 	gSizer5->Add( m_renameButton, 0, wxALL, 5 );

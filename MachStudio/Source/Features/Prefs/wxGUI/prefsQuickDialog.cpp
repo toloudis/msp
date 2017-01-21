@@ -90,7 +90,7 @@ void prefsQuickDialog::BuildButtons(const prefsQuickData& i_Data, const int i_Sc
 	{
 		if (i_Data.m_Commands.GetValueFlag(j) == true)
 		{
-			wxButton* pButton = new wxButton( this, wxID_ANY, wxT("button"), wxDefaultPosition, wxSize( lc_BUTTON_WIDTH, lc_BUTTON_HEIGHT ), 0 );
+			wxButton* pButton = new wxButton( this, wxID_ANY, wxT("button"), wxDefaultPosition, FromDIP(wxSize( lc_BUTTON_WIDTH, lc_BUTTON_HEIGHT )), 0 );
 
 			pButton->SetName( wxString(i_Data.m_Commands.GetValueText(j).c_str(), wxConvUTF8) );
 			pButton->SetLabel( wxString(i_Data.m_Commands.GetValueText(j).c_str(), wxConvUTF8) );
@@ -111,8 +111,8 @@ void prefsQuickDialog::BuildButtons(const prefsQuickData& i_Data, const int i_Sc
 		//int formlocy = i_ScreenY - (formsizey/2);
 		//DBG_LOG5("client size(%d,%d) loc(%d,%d) buttons=%d", formsizex, formsizey, formlocx, formlocy, btncnt);
 
-		SetPosition( wxPoint(i_ScreenX - (formsizex/2),i_ScreenY - (formsizey/2)) );
-		SetSize( wxSize(formsizex, formsizey) );
+		SetPosition( FromDIP(wxPoint(i_ScreenX - (formsizex/2),i_ScreenY - (formsizey/2))) );
+		SetSize( FromDIP(wxSize(formsizex, formsizey)) );
 	}
 
 	this->Thaw();

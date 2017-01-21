@@ -1,0 +1,20 @@
+﻿  png.c
+  pngerror.c
+  pngget.c
+  pngmem.c
+  pngpread.c
+  pngread.c
+  pngrio.c
+  pngrtran.c
+  pngrutil.c
+  pngset.c
+  pngtrans.c
+  pngwio.c
+  pngwrite.c
+  pngwtran.c
+  pngwutil.c
+     Creating library D:\Projects\SourceCode\3rdParty\Png\lpng162\projects\vstudio\x64\Debug\libpng16.lib and object D:\Projects\SourceCode\3rdParty\Png\lpng162\projects\vstudio\x64\Debug\libpng16.exp
+  Generating code
+  All 499 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  libpng.vcxproj -> D:\Projects\SourceCode\3rdParty\Png\lpng162\projects\vstudio\x64\Debug\libpng16.dll

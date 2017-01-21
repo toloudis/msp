@@ -143,8 +143,8 @@ void GetTimeInHMSMAndFrames(const maTime& i_Time,
 //--------------------------------------------------------------------
 bool ParseTimeString(const std::string& i_TimeString, maTime &o_TimeValue)
 {
-	int num_colons = std::count(i_TimeString.begin(), i_TimeString.end(), ':');
-	int num_periods = std::count(i_TimeString.begin(), i_TimeString.end(), '.');
+	int num_colons = (int)std::count(i_TimeString.begin(), i_TimeString.end(), ':');
+	int num_periods = (int)std::count(i_TimeString.begin(), i_TimeString.end(), '.');
 
 	std::istringstream str(i_TimeString);
 	bool bParsed = false;

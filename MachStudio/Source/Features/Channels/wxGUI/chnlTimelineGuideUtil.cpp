@@ -75,14 +75,14 @@ void chnlTimelineGuideUtil::PaintGuides(wxDC &i_DC,
 	// Draw guide for current time
 	//i_DC.SetPen( wxPen( *wxLIGHT_GREY, 1, wxSOLID ) );
 	//i_DC.SetPen( *wxMEDIUM_GREY_PEN );
-	i_DC.SetPen( wxPen( wxColor(30,80,130), 1, wxSOLID ) );
+	i_DC.SetPen( wxPen( wxColor(30,80,130), 1, wxPENSTYLE_SOLID ) );
 
 	int pos = (int)((l_CurrentTime-l_MinTime).AsSeconds() * l_TimeScale + c_EdgeOffset);
 	i_DC.DrawLine(pos, 0, pos, i_Height);
 
 	if (l_bMarkerVisible)
 	{
-		i_DC.SetPen( wxPen( l_MarkerColor, 1, wxSOLID ) );
+		i_DC.SetPen( wxPen( l_MarkerColor, 1, wxPENSTYLE_SOLID ) );
 		int pos = (int)((l_MarkerTime-l_MinTime).AsSeconds() * l_TimeScale + c_EdgeOffset);
 		i_DC.DrawLine(pos, 0, pos, i_Height);
 	}

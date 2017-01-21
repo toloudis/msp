@@ -45,7 +45,7 @@ void cptrDialogUtil::ShowTagsInfo()
 
 #ifdef USE_WXWIDGETS
 	wxDialog renderTagInfoDialog(twxSystem::g_pMainForm, wxID_ANY, L"Render Tag Info", 
-		wxDefaultPosition, wxSize(300,400));
+		wxDefaultPosition, twxSystem::g_pMainForm->FromDIP(wxSize(300,400)));
 
 	wxBoxSizer* bSizer1 = new wxBoxSizer( wxVERTICAL );
 	

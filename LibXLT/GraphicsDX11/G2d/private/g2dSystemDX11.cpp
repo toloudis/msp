@@ -24,10 +24,6 @@
 #include "Graphics/g2d/g2dResetHandler.hpp"
 #include "GraphicsDX11/eff/effShaderSDKDX11.hpp"
 
-//this is to suppress the d3dx messages
-//#define FXDPF
-//#include "D3DX11Effects/d3dx11dbg.h"
-
 
 //============================================================================
 //	anonymous namespace for private data and functions
@@ -228,19 +224,19 @@ g2dSystemDX11::g2dSystemDX11(int i_Adapter /*= 0*/)
 	//_CrtSetBreakAlloc( 52 );
 #endif
 	
-	// Declare this process to be high DPI aware, and prevent automatic scaling 
-	HINSTANCE hUser32 = LoadLibrary( L"user32.dll" );
-	if( hUser32 )
-	{
-		typedef BOOL ( WINAPI* LPSetProcessDPIAware )( void );
-		LPSetProcessDPIAware pSetProcessDPIAware = ( LPSetProcessDPIAware )GetProcAddress( hUser32,
-																						   "SetProcessDPIAware" );
-		if( pSetProcessDPIAware )
-		{
-			pSetProcessDPIAware();
-		}
-		FreeLibrary( hUser32 );
-	}
+	//// Declare this process to be high DPI aware, and prevent automatic scaling 
+	//HINSTANCE hUser32 = LoadLibrary( L"user32.dll" );
+	//if( hUser32 )
+	//{
+	//	typedef BOOL ( WINAPI* LPSetProcessDPIAware )( void );
+	//	LPSetProcessDPIAware pSetProcessDPIAware = ( LPSetProcessDPIAware )GetProcAddress( hUser32,
+	//																					   "SetProcessDPIAware" );
+	//	if( pSetProcessDPIAware )
+	//	{
+	//		pSetProcessDPIAware();
+	//	}
+	//	FreeLibrary( hUser32 );
+	//}
 
 	bool ok = EnsureD3D11APIs();
 	if (!ok)

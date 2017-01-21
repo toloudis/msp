@@ -119,7 +119,7 @@ public:
 	//--------------------------------------------------------------------
 	// Resize back buffer of window
 	//--------------------------------------------------------------------
-	void ResizeWindow(int i_Width, int i_Height);
+	void ResizeWindow(int i_Width, int i_Height, int iWidthDIP=0, int iHeightDIP=0);
 
 	//--------------------------------------------------------------------
 	// Render objects at given pixel with color encodings.

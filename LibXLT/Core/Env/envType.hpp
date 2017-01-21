@@ -44,6 +44,7 @@ namespace envType
 	typedef unsigned __int64 UInt64;
 	typedef float Float32;
 	typedef double Float64;
+    typedef uintptr_t UIntPtr;
 
 	// On Windows systems wchar_t is 16 bits (2 bytes), 
 	// this define is used in binary file formats where the size of the character is important.

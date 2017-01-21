@@ -88,27 +88,22 @@ namespace matTextureLoaderTGA
 	//------------------------------------------------------------------------
 	void LoadPlainTexture(matPlainTexture* io_Texture, const fsLocator& i_Locator, int i_WidthReduce, int i_HeightReduce)
 	{
-		ID3D11Texture2D* pStagingTexture = load_tga_data(i_Locator);
+        itString filename;
+        fsFileUtil::LocatorToUnicodeString(i_Locator, filename);
 
-		D3D11_TEXTURE2D_DESC desc;
-		pStagingTexture->GetDesc(&desc);
+        DirectX::TexMetadata info;
+        std::unique_ptr<DirectX::ScratchImage> image(new DirectX::ScratchImage);
+        HRESULT hr = DirectX::LoadFromTGAFile(filename.GetString(), &info, *image);
+        std::unique_ptr<DirectX::ScratchImage> imageResult(new DirectX::ScratchImage);
+        hr = DirectX::Resize(image->GetImages(), image->GetImageCount(),
+            info,
+            info.width >> i_WidthReduce, info.height >> i_HeightReduce, DirectX::TEX_FILTER_FLAGS::TEX_FILTER_DEFAULT,
+            *imageResult);
 
-		desc.Width = desc.Width >> i_WidthReduce;
-		desc.Height = desc.Height >> i_HeightReduce;
-	//	desc.Width = maFunctions::Lowest(desc.Width, int(g2dDX11Global::g_Caps.MaxTextureWidth));
-	//	desc.Height = maFunctions::Lowest(desc.Height, int(g2dDX11Global::g_Caps.MaxTextureHeight));
-		desc.MipLevels = 1;
-		desc.ArraySize = 1;
-//		desc.Format = desc.Format;
-		desc.SampleDesc.Count = 1;
-		desc.SampleDesc.Quality = 0;
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-		desc.CPUAccessFlags = 0; // no cpu access
-		desc.MiscFlags = 0;
-
-		g2dD3D11TexturePtr new_texture = NULL;
-		HRESULT op_result = g2dDX11Global::g_pDevice->CreateTexture2D(&desc, NULL, &new_texture);
+        info.mipLevels = 1;
+//        g2dD3D11TexturePtr new_texture = NULL;
+        ID3D11Resource* new_texture = NULL;
+        HRESULT op_result = DirectX::CreateTexture(g2dDX11Global::g_pDevice, imageResult->GetImages(), imageResult->GetImageCount(), info, &new_texture);
 		if( !SUCCEEDED(op_result) )
 		{
 			g2dDX11Global::PrintDXError(op_result);
@@ -118,22 +113,12 @@ namespace matTextureLoaderTGA
 			DBG_ASSERT(SUCCEEDED(op_result), "Unhandled error creating texture");
 		}
 
-		D3DX11_TEXTURE_LOAD_INFO loadInfo;
-		op_result = ::D3DX11LoadTextureFromTexture(g2dDX11Global::g_pDeviceContext, 
-			pStagingTexture,
-			&loadInfo,
-			new_texture
-		);
-
 		// Set the new surface
 		io_Texture->SetSurface( new_texture );
 
 		// set size info into the texture
 		io_Texture->ReloadInfo();
 
-		// discard staging texture
-		pStagingTexture->Release();
-		pStagingTexture = NULL;
 	}
 
 	//------------------------------------------------------------------------
@@ -141,54 +126,46 @@ namespace matTextureLoaderTGA
 	//------------------------------------------------------------------------
 	void LoadTGA(matMipTexture* io_Texture, const fsLocator& i_Locator, bool i_TrueColor, int i_WidthReduce, int i_HeightReduce, bool i_bIsMipMap)
 	{
-		ID3D11Texture2D* pStagingTexture = load_tga_data(i_Locator);
+        itString filename;
+        fsFileUtil::LocatorToUnicodeString(i_Locator, filename);
 
-		D3D11_TEXTURE2D_DESC desc;
-		pStagingTexture->GetDesc(&desc);
+        DirectX::TexMetadata info;
+        std::unique_ptr<DirectX::ScratchImage> image(new DirectX::ScratchImage);
+        
+        // load from file
+        HRESULT hr = DirectX::LoadFromTGAFile(filename.GetString(), &info, *image);
 
-		desc.Width = desc.Width >> i_WidthReduce;
-		desc.Height = desc.Height >> i_HeightReduce;
-	//	desc.Width = maFunctions::Lowest(desc.Width, int(g2dDX11Global::g_Caps.MaxTextureWidth));
-	//	desc.Height = maFunctions::Lowest(desc.Height, int(g2dDX11Global::g_Caps.MaxTextureHeight));
-		desc.MipLevels = i_bIsMipMap ? 0 : 1; // complete set of mip levels!
-		desc.ArraySize = 1;
-//		desc.Format = desc.Format;
-		desc.SampleDesc.Count = 1;
-		desc.SampleDesc.Quality = 0;
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-		desc.CPUAccessFlags = 0; // no cpu access
-		desc.MiscFlags = 0;
+        std::unique_ptr<DirectX::ScratchImage> imageResult(new DirectX::ScratchImage);
+        
+        // resize to width/height reduce
+        hr = DirectX::Resize(image->GetImages(), image->GetImageCount(),
+            info,
+            info.width >> i_WidthReduce, info.height >> i_HeightReduce, DirectX::TEX_FILTER_FLAGS::TEX_FILTER_DEFAULT,
+            *imageResult);
 
-		g2dD3D11TexturePtr new_texture = NULL;
-		HRESULT op_result = g2dDX11Global::g_pDevice->CreateTexture2D(&desc, NULL, &new_texture);
-		if( !SUCCEEDED(op_result) )
-		{
-			g2dDX11Global::PrintDXError(op_result);
-			if ( E_OUTOFMEMORY == op_result )
-				throw g2dOutOfVideoMemoryX();
+        // generate mipmaps
+        std::unique_ptr<DirectX::ScratchImage> mipChain(new DirectX::ScratchImage);
+        HRESULT h = DirectX::GenerateMipMaps(*(imageResult->GetImage(0, 0, 0)), DirectX::TEX_FILTER_FLAGS::TEX_FILTER_FANT,
+            i_bIsMipMap ? 0 : 1,
+            *mipChain);
 
-			DBG_ASSERT(SUCCEEDED(op_result), "Unhandled error creating texture");
-		}
+        // fill in d3d texture
+        ID3D11Resource* new_texture = NULL;
+        HRESULT op_result = DirectX::CreateTexture(g2dDX11Global::g_pDevice, mipChain->GetImages(), mipChain->GetImageCount(), mipChain->GetMetadata(), &new_texture);
+        if (!SUCCEEDED(op_result))
+        {
+            g2dDX11Global::PrintDXError(op_result);
+            if (E_OUTOFMEMORY == op_result)
+                throw g2dOutOfVideoMemoryX();
 
-		D3DX11_TEXTURE_LOAD_INFO loadInfo;
-		loadInfo.NumMips = i_bIsMipMap ? 0 : 1;
-		op_result = D3DX11LoadTextureFromTexture(g2dDX11Global::g_pDeviceContext, 
-			pStagingTexture,
-			&loadInfo,
-			new_texture
-		);
-		op_result = ::D3DX11FilterTexture(g2dDX11Global::g_pDeviceContext, new_texture, 0, D3DX11_DEFAULT);
+            DBG_ASSERT(SUCCEEDED(op_result), "Unhandled error creating texture");
+        }
 
-		// Set the new surface
-		io_Texture->SetSurface( new_texture );
+        // Set the new surface
+        io_Texture->SetSurface(new_texture);
 
-		// set size info into the texture
-		io_Texture->ReloadInfo();
-
-		// discard staging texture
-		pStagingTexture->Release();
-		pStagingTexture = NULL;
+        // set size info into the texture
+        io_Texture->ReloadInfo();
 	}
 
 }// namespace matTextureLoaderTGA

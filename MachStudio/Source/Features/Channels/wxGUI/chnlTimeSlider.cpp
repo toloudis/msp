@@ -156,7 +156,7 @@ void chnlTimeSlider::OnPaint(wxPaintEvent &WXUNUSED(event))
 	int ht = size.GetHeight() - 4;
 
 	// Outline the client rectangle (instead of using a windows border)
-	dc.SetPen( wxPen( *wxLIGHT_GREY, 1, wxSOLID ) );
+	dc.SetPen( wxPen( *wxLIGHT_GREY, 1, wxPENSTYLE_SOLID ) );
 	dc.SetBrush(*wxTRANSPARENT_BRUSH); // turn off fill
 	dc.DrawRectangle(0, 0, size.GetWidth(), size.GetHeight());
 
@@ -182,8 +182,8 @@ void chnlTimeSlider::OnPaint(wxPaintEvent &WXUNUSED(event))
 	points[2].x = pos+off; points[2].y = ht;
 
 	// Fill color is firebrick red
-	dc.SetPen( wxPen(*wxBLACK, 1, wxSOLID) );
-	dc.SetBrush(wxBrush(wxColour(178, 34, 34), wxSOLID));
+	dc.SetPen( wxPen(*wxBLACK, 1, wxPENSTYLE_SOLID) );
+	dc.SetBrush(wxBrush(wxColour(178, 34, 34), wxBRUSHSTYLE_SOLID));
 	dc.DrawPolygon(3, points);
 }
 

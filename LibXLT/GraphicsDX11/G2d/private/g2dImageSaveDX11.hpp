@@ -45,22 +45,4 @@ public:
 	void Save(const fsLocator& i_FileName, g2dWindow* i_pWin);
 	void Save(const fsLocator& i_FileName, const g2dImage* i_pImage);
 	void Save(const itString& i_FileName, const g2dImage* i_pImage);
-
-	enum FileType
-	{
-		e_BMP,
-		e_JPG,
-		e_TGA,
-		e_PNG,
-		e_DDS,
-		e_PPM,
-		e_DIB,
-		e_HDR,
-		e_PFM,
-		e_TIFF,
-		e_EXR
-	};
-
-private:
-	void Save(const itString& i_Filename, const g2dD3D11TexturePtr i_pSurface, FileType i_Format);
 };

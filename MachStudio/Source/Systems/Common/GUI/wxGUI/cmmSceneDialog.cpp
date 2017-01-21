@@ -67,7 +67,7 @@ cmmSceneDialog::cmmSceneDialog( wxWindow* parent,
 	itString icon_dir;
 	fsFileUtil::LocatorToUnicodeString( guiMenuMgr::GetIconDirectory(), icon_dir );
 	std::wstring icondir = icon_dir.GetString();
-	wxImageList *pIconImages = new wxImageList(13, 13, false, cmmPlacedImages::e_NumSystemImageIcons);
+	wxImageList *pIconImages = new wxImageList(FromDIP(13), FromDIP(13), false, cmmPlacedImages::e_NumSystemImageIcons);
     {
         wxLogNull nullLog;
 	    pIconImages->Add(wxBitmap(icondir + L"\\tree-parent.png", wxBITMAP_TYPE_PNG)); 
@@ -78,7 +78,7 @@ cmmSceneDialog::cmmSceneDialog( wxWindow* parent,
 	m_pGroupPane->AssignImageList(pIconImages); // tree ctrl takes ownership
 
 	// Icons for the lighting tree
-	pIconImages = new wxImageList(13, 13, false, 2);
+	pIconImages = new wxImageList(FromDIP(13), FromDIP(13), false, 2);
     {
         wxLogNull nullLog;
 	    pIconImages->Add(wxBitmap(icondir + L"\\tree-light.png", wxBITMAP_TYPE_PNG));

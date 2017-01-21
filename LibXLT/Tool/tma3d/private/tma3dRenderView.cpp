@@ -226,18 +226,24 @@ void tma3dRenderView::SetRenderer(RendererType i_Type,
 //--------------------------------------------------------------------
 // Resize back buffer of window
 //--------------------------------------------------------------------
-void tma3dRenderView::ResizeWindow(int i_Width, int i_Height)
+void tma3dRenderView::ResizeWindow(int i_Width, int i_Height, int iWidthDIP, int iHeightDIP)
 {
 	if (i_Width > 0 && i_Height > 0)
 	{
 		//DBG_LOG2("Setting render window size: %d %d", i_Width, i_Height);
 
-		m_pWindow->ResizeWindow(i_Width, i_Height);
+		m_pWindow->ResizeWindow((i_Width), (i_Height));
 
-		// Setting virtual resolution will keep text the same size 
+        if (iWidthDIP == 0) {
+            iWidthDIP = i_Width;
+        }
+        if (iHeightDIP == 0) {
+            iHeightDIP = i_Height;
+        }
+        // Setting virtual resolution will keep text the same size 
 		// when the window resizes and will avoid stretching when 
 		// aspect ratio changes
-		m_pWindow->SetVirtualResolution(i_Width, i_Height);
+        m_pWindow->SetVirtualResolution(iWidthDIP, iHeightDIP);
 	}
 }
 

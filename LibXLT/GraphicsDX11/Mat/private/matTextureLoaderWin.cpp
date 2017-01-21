@@ -40,7 +40,7 @@ namespace matTextureLoaderWin
 namespace
 {
 
-const DWORD l_FilterType = D3DX11_FILTER_TRIANGLE;
+const DWORD l_FilterType = DirectX::TEX_FILTER_FLAGS::TEX_FILTER_TRIANGLE;
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
@@ -59,54 +59,125 @@ int choose_num_mip_levels(int i_Width, int i_Height)
 	return power_of_2 + 1;
 }
 
+enum FileType
+{
+    e_DDS,
+    e_TGA,
+    e_BMP,
+    e_JPG,
+    e_PNG,
+    e_TIFF,
+    e_GIF,
+    e_WMP
+};
+
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
+FileType pick_format(const fsLocator& i_FileName)
+{
+    //	decide what kind of file we have
+    itString fname = i_FileName.GetLastName();
+    itString ext;
+    fname.GetExtension(ext);
+
+    if ((ext == itString("bmp")) || (ext == itString("BMP")))
+    {
+        return e_BMP;
+    }
+    else if ((ext == itString("jpg")) || (ext == itString("JPG")) || (ext == itString("JPEG")) || (ext == itString("jpeg")))
+    {
+        return e_JPG;
+    }
+    else if ((ext == itString("tga")) || (ext == itString("TGA")))
+    {
+        return e_TGA;
+    }
+    else if ((ext == itString("png")) || (ext == itString("PNG")))
+    {
+        return e_PNG;
+    }
+    else if ((ext == itString("dds")) || (ext == itString("DDS")))
+    {
+        return e_DDS;
+    }
+    else if ((ext == itString("tif")) || (ext == itString("TIF")) || (ext == itString("Tif")))
+    {
+        return e_TIFF;
+    }
+    else if ((ext == itString("tiff")) || (ext == itString("TIFF")) || (ext == itString("Tiff")))
+    {
+        return e_TIFF;
+    }
+    throw g2dUnknownImageFileTypeX();
+}
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
+HRESULT do_load_texture(ID3D11Resource*& io_Texture, const fsLocator& i_Locator, int i_WidthReduce, int i_HeightReduce, bool i_bIsMipMap)
+{
+    itString filename;
+    fsFileUtil::LocatorToUnicodeString(i_Locator, filename);
+
+    DirectX::TexMetadata info;
+    std::unique_ptr<DirectX::ScratchImage> image(new DirectX::ScratchImage);
+    HRESULT hr = E_FAIL;
+
+    FileType file_type = pick_format(i_Locator);
+    switch (file_type) {
+    case e_DDS:
+        hr = DirectX::LoadFromDDSFile(filename.GetString(), DirectX::DDS_FLAGS::DDS_FLAGS_NONE, &info, *image);
+        break;
+    case e_TGA:
+        hr = DirectX::LoadFromTGAFile(filename.GetString(), &info, *image);
+        break;
+    case e_BMP:
+    case e_JPG:
+    case e_PNG:
+    case e_TIFF:
+    case e_GIF:
+    case e_WMP:
+        hr = DirectX::LoadFromWICFile(filename.GetString(), DirectX::WIC_FLAGS::WIC_FLAGS_NONE, &info, *image);
+        break;
+    default:
+        break;
+    }
+
+    std::unique_ptr<DirectX::ScratchImage> imageResult(new DirectX::ScratchImage);
+
+    // resize to width/height reduce
+    hr = DirectX::Resize(image->GetImages(), image->GetImageCount(),
+        info,
+        info.width >> i_WidthReduce, info.height >> i_HeightReduce, DirectX::TEX_FILTER_FLAGS::TEX_FILTER_DEFAULT,
+        *imageResult);
+
+    // generate mipmaps
+    std::unique_ptr<DirectX::ScratchImage> mipChain(new DirectX::ScratchImage);
+    HRESULT h = DirectX::GenerateMipMaps(*(imageResult->GetImage(0, 0, 0)), l_FilterType,
+        i_bIsMipMap ? 0 : 1,
+        *mipChain);
+
+    // fill in d3d texture
+    hr = DirectX::CreateTexture(g2dDX11Global::g_pDevice, mipChain->GetImages(), mipChain->GetImageCount(),
+        mipChain->GetMetadata(), &io_Texture);
+    return hr;
+}
 void load_mip_texture(matMipTexture* io_Texture, const fsLocator& i_Locator, bool i_TrueColor, bool i_PNG, int i_WidthReduce, int i_HeightReduce, bool i_bIsMipMap)
 {
 	fsResourceTracker::MarkBegin(i_Locator);
 
-	itString filename;
-	fsFileUtil::LocatorToUnicodeString(i_Locator, filename);
-
-	D3DX11_IMAGE_INFO srcInfo;
-	HRESULT hr = D3DX11GetImageInfoFromFile(
-	  filename.GetString(),
-	  NULL,
-	  &srcInfo,
-	  NULL
-	);
-
-	int width = srcInfo.Width >> i_WidthReduce;
-	int height = srcInfo.Height >> i_HeightReduce;
-//	width = maFunctions::Lowest(width, int(g2dDX11Global::g_Caps.MaxTextureWidth));
-//	height = maFunctions::Lowest(height, int(g2dDX11Global::g_Caps.MaxTextureHeight));
-
-	D3DX11_IMAGE_LOAD_INFO loadInfo;
-	loadInfo.Width = width;
-	loadInfo.Height = height;
-	loadInfo.Filter = l_FilterType;
-	loadInfo.MipLevels = (i_bIsMipMap) ? 0 : 1;
-
-	ID3D11Resource* pTexture = NULL;
-	hr = D3DX11CreateTextureFromFile(
-		g2dDX11Global::g_pDevice,
-		filename.GetString(),
-		&loadInfo,
-		NULL,
-		&pTexture,
-		NULL
-	);
-
-	if ( !SUCCEEDED(hr) )
+    ID3D11Resource* pTexture = NULL;
+    HRESULT hr = do_load_texture(pTexture, i_Locator, i_WidthReduce, i_HeightReduce, i_bIsMipMap);
+    if ( !SUCCEEDED(hr) )
 	{
 		fsResourceTracker::Remove(i_Locator);
 
 		g2dDX11Global::PrintDXError(hr);
 
-		if (matTextureMgr::IsAllowNullTextures())
+        itString filename;
+        fsFileUtil::LocatorToUnicodeString(i_Locator, filename);
+        if (matTextureMgr::IsAllowNullTextures())
 		{
-			DBG_WARNING("Error in loading texture: " << filename);
+            DBG_WARNING("Error in loading texture: " << filename);
 			matTextureTracking::AddMissingTexture(i_Locator);
 			if (pTexture)
 			{
@@ -131,69 +202,40 @@ void load_mip_texture(matMipTexture* io_Texture, const fsLocator& i_Locator, boo
 //----------------------------------------------------------------------------
 void load_plain_texture(matPlainTexture* io_Texture, const fsLocator& i_Locator, bool i_TrueColor, bool i_PNG, int i_WidthReduce, int i_HeightReduce)
 {
-	fsResourceTracker::MarkBegin(i_Locator);
+    fsResourceTracker::MarkBegin(i_Locator);
 
-	itString filename;
-	fsFileUtil::LocatorToUnicodeString( i_Locator, filename );
+    ID3D11Resource* pTexture = NULL;
+    HRESULT hr = do_load_texture(pTexture, i_Locator, i_WidthReduce, i_HeightReduce, false);
+    if (!SUCCEEDED(hr))
+    {
+        fsResourceTracker::Remove(i_Locator);
 
-	D3DX11_IMAGE_INFO srcInfo;
-	HRESULT hr = D3DX11GetImageInfoFromFile(
-	  filename.GetString(),
-	  NULL,
-	  &srcInfo,
-	  NULL
-	);
+        g2dDX11Global::PrintDXError(hr);
 
-	int width = srcInfo.Width >> i_WidthReduce;
-	int height = srcInfo.Height >> i_HeightReduce;
-//	width = maFunctions::Lowest(width, int(g2dDX11Global::g_Caps.MaxTextureWidth));
-//	height = maFunctions::Lowest(height, int(g2dDX11Global::g_Caps.MaxTextureHeight));
+        itString filename;
+        fsFileUtil::LocatorToUnicodeString(i_Locator, filename);
+        if (matTextureMgr::IsAllowNullTextures())
+        {
+            DBG_WARNING("Error in loading texture: " << filename);
+            matTextureTracking::AddMissingTexture(i_Locator);
+            if (pTexture)
+            {
+                pTexture->Release();
+                pTexture = NULL;
+            }
+            return;
+        }
+        else
+        {
+            DBG_ERROR("Error in loading texture: " << filename);
+            throw fsUnknownX(i_Locator);
+        }
+    }
 
-	D3DX11_IMAGE_LOAD_INFO loadInfo;
-	loadInfo.Width = width;
-	loadInfo.Height = height;
-	loadInfo.MipLevels = 1;
-
-	ID3D11Resource* pTexture = NULL;
-	hr = D3DX11CreateTextureFromFile(
-		g2dDX11Global::g_pDevice,
-		filename.GetString(),
-		&loadInfo,
-		NULL,
-		&pTexture,
-		NULL
-	);
-	if ( !SUCCEEDED(hr) )
-	{
-		fsResourceTracker::Remove(i_Locator);
-
-		g2dDX11Global::PrintDXError(hr);
-
-		if (matTextureMgr::IsAllowNullTextures())
-		{
-			DBG_WARNING("Error in loading texture: " << filename);
-			matTextureTracking::AddMissingTexture(i_Locator);
-			if (pTexture)
-			{
-				pTexture->Release();
-				pTexture = NULL;
-			}
-			return;
-		}
-		else
-		{
-			DBG_ERROR("Error in loading texture: " << filename);
-			throw fsUnknownX(i_Locator);
-		}
-	}
-
-	// Set the new surface
-	io_Texture->SetSurface( pTexture );
-
-	// set size info into the texture
-	io_Texture->ReloadInfo();
-
-	fsResourceTracker::MarkEnd(i_Locator);
+    // clear out current io_Texture, and replace with pTexture
+    io_Texture->SetSurface(pTexture);
+    io_Texture->ReloadInfo();
+    fsResourceTracker::MarkEnd(i_Locator);
 }
 
 
@@ -206,21 +248,9 @@ void load_plain_texture(matPlainTexture* io_Texture, const fsLocator& i_Locator,
 //------------------------------------------------------------------------
 void LoadPlainTexture(matPlainTexture* io_Texture, const fsLocator& i_Locator)
 {
-	itString filename;
-	fsFileUtil::LocatorToUnicodeString( i_Locator, filename );
+    ID3D11Resource* pTexture = NULL;
+    HRESULT hr = do_load_texture(pTexture, i_Locator, 0, 0, false);
 
-	D3DX11_IMAGE_LOAD_INFO loadInfo;
-	loadInfo.MipLevels = 1;
-
-	ID3D11Resource* pTexture = NULL;
-	HRESULT hr = D3DX11CreateTextureFromFile(
-		g2dDX11Global::g_pDevice,
-		filename.GetString(),
-		&loadInfo,
-		NULL,
-		&pTexture,
-		NULL
-	);
 	if ( !SUCCEEDED(hr) )
 	{
 		g2dDX11Global::PrintDXError(hr);
@@ -300,54 +330,7 @@ void ReloadBMP(matMipTexture& io_Texture, const fsLocator& i_Locator, bool i_Tru
 //------------------------------------------------------------------------
 void LoadTIFF(matPlainTexture* io_Texture, const fsLocator& i_Locator, bool i_TrueColor, int i_WidthReduce, int i_HeightReduce)
 {
-	// D3DX11CreateTextureFromFile is loading all kind of tiff file into A8R8G8B8 format,
-	// this causes losing precision for some cases and we have to bring back old DX9 code
-	//load_plain_texture(io_Texture, i_Locator, i_TrueColor, false, i_WidthReduce, i_HeightReduce);
-
-	//	choose a texture image format
-	g2dImageDX11 temp_image;
-	HRESULT op_result;
-	if ( i_TrueColor )
-	{
-		g2dSurfaceLoader::LoadTIFF(	&temp_image,
-									i_Locator,
-									matD3DGlobal::TrueAlphaTextureFormat(),
-									matD3DGlobal::TrueNonAlphaTextureFormat());
-	}
-	else
-	{
-		g2dSurfaceLoader::LoadTIFF(	&temp_image,
-									i_Locator,
-									matD3DGlobal::AlphaTextureFormat(),
-									matD3DGlobal::NonAlphaTextureFormat());
-	}
-
-	int dest_width = temp_image.GetWidth() >> i_WidthReduce;
-	int dest_height = temp_image.GetHeight() >> i_HeightReduce;
-
-	/*dest_width = maFunctions::Lowest(dest_width, int(g2dDX11Global::g_Caps.MaxTextureWidth));
-	dest_height = maFunctions::Lowest(dest_height, int(g2dDX11Global::g_Caps.MaxTextureHeight));*/
-
-	if ( NULL == io_Texture->GetSurface() )
-	{
-		io_Texture->Make(	dest_width,
-							dest_height,
-							temp_image.GetPixelFormat());
-		io_Texture->ReloadInfo();
-	}
-
-	D3DX11_TEXTURE_LOAD_INFO load_info;
-	op_result = D3DX11LoadTextureFromTexture(g2dDX11Global::g_pDeviceContext,
-												temp_image.GetSurface(),
-												&load_info,
-												io_Texture->GetResource());
-	//dest_level->Release();
-
-	if ( op_result != S_OK )
-	{
-		g2dDX11Global::PrintDXError(op_result);
-		DBG_ASSERT(op_result == S_OK, "Error creating temporary texture");
-	}
+    load_plain_texture(io_Texture, i_Locator, i_TrueColor, false, i_WidthReduce, i_HeightReduce);
 }
 
 void ReloadTIFF(matPlainTexture& io_Texture, const fsLocator& i_Locator, bool i_TrueColor, int i_WidthReduce, int i_HeightReduce)
@@ -361,57 +344,7 @@ void ReloadTIFF(matPlainTexture& io_Texture, const fsLocator& i_Locator, bool i_
 //------------------------------------------------------------------------
 void LoadTIFF(matMipTexture* io_Texture, const fsLocator& i_Locator, bool i_TrueColor, int i_WidthReduce, int i_HeightReduce, bool i_bIsMipMap)
 {
-	
-	//load_mip_texture(io_Texture, i_Locator, i_TrueColor, false, i_WidthReduce, i_HeightReduce);
-
-	g2dImageDX11 temp_image;
-	HRESULT op_result;
-	if ( i_TrueColor )
-	{
-		g2dSurfaceLoader::LoadTIFF(	&temp_image,
-									i_Locator,
-									matD3DGlobal::TrueAlphaTextureFormat(),
-									matD3DGlobal::TrueNonAlphaTextureFormat());
-	}
-	else
-	{
-		g2dSurfaceLoader::LoadTIFF(	&temp_image,
-									i_Locator,
-									matD3DGlobal::AlphaTextureFormat(),
-									matD3DGlobal::NonAlphaTextureFormat());
-	}
-
-	int dest_width = temp_image.GetWidth() >> i_WidthReduce;
-	int dest_height = temp_image.GetHeight() >> i_HeightReduce;
-
-	/*dest_width = maFunctions::Lowest(dest_width, int(g2dDX11Global::g_Caps.MaxTextureWidth));
-	dest_height = maFunctions::Lowest(dest_height, int(g2dDX11Global::g_Caps.MaxTextureHeight));*/
-	int mipLevels = (i_bIsMipMap) ? 0 : 1;
-
-	if ( NULL == io_Texture->GetSurface() || mipLevels != io_Texture->GetMipLevels())
-	{
-		io_Texture->Make(	dest_width,
-							dest_height,
-							temp_image.GetPixelFormat(),
-							mipLevels);
-		io_Texture->ReloadInfo();
-	}
-
-	//	copy the g2dImageDX11 to the temp texture
-
-	D3DX11_TEXTURE_LOAD_INFO load_info;
-	load_info.NumMips = (i_bIsMipMap) ? 0 : 1;;
-	op_result = D3DX11LoadTextureFromTexture(g2dDX11Global::g_pDeviceContext,
-												temp_image.GetSurface(),
-												&load_info,
-												io_Texture->GetResource());
-	//dest_level->Release();
-
-	if ( op_result != S_OK )
-	{
-		g2dDX11Global::PrintDXError(op_result);
-		DBG_ASSERT(op_result == S_OK, "Error creating temporary texture");
-	}
+    load_mip_texture(io_Texture, i_Locator, i_TrueColor, false, i_WidthReduce, i_HeightReduce, i_bIsMipMap);
 }
 void ReloadTIFF(matMipTexture& io_Texture, const fsLocator& i_Locator, bool i_TrueColor, int i_WidthReduce, int i_HeightReduce, bool i_bIsMipMap)
 {
@@ -424,27 +357,28 @@ void ReloadTIFF(matMipTexture& io_Texture, const fsLocator& i_Locator, bool i_Tr
 //------------------------------------------------------------------------
 void LoadResource(matPlainTexture* io_Texture, const fsLocator& i_Locator, int i_WidthReduce, int i_HeightReduce)
 {
-	itString file_name;
-	fsFileUtil::LocatorToUnicodeString( i_Locator, file_name );
-	DBG_LOG("loading resource " << i_Locator << " (" << file_name << ")");
+    // LOAD RESOURCE DATA INTO MEMORY PTR
+    itString file_name;
+    fsFileUtil::LocatorToUnicodeString(i_Locator, file_name);
+    DBG_LOG("loading resource " << i_Locator << " (" << file_name << ")");
 
-	D3DX11_IMAGE_LOAD_INFO loadInfo = D3DX11_IMAGE_LOAD_INFO();
-	loadInfo.FirstMipLevel = max(i_WidthReduce, i_HeightReduce);
-	loadInfo.MipLevels = 1;
+    HRSRC myResource = ::FindResource(NULL, MAKEINTRESOURCE(itStringUtil::GetInt(file_name)), RT_RCDATA);
+    unsigned int size = ::SizeofResource(NULL, myResource);
+    HGLOBAL myResourceData = ::LoadResource(NULL, myResource);
+    void* pSource = ::LockResource(myResourceData);
 
-	HRESULT hr;
-	ID3D11Resource* pTexture = NULL;
+    // THEN CALL DirectX::LoadFromXXXMemory
+    // NEED TO KNOW TYPE FIRST... ASSUME WIC.
+    DirectX::TexMetadata metadata;
+    std::unique_ptr<DirectX::ScratchImage> image(new DirectX::ScratchImage);
+    HRESULT hr = DirectX::LoadFromWICMemory(pSource, size, DirectX::WIC_FLAGS::WIC_FLAGS_NONE, &metadata, *image);
+    // mip levels 1 only.
+    metadata.mipLevels = 1;
 
-	hr = D3DX11CreateTextureFromResource(
-	  g2dDX11Global::g_pDevice,
-	  GetModuleHandle( NULL ),
-	  MAKEINTRESOURCE(itStringUtil::GetInt(file_name)),
-	  &loadInfo,
-	  NULL,
-	  &pTexture,
-	  NULL
-	);
-
+    // fill in d3d texture
+    ID3D11Resource* pTexture = NULL;
+    hr = DirectX::CreateTexture(g2dDX11Global::g_pDevice, image->GetImages(), image->GetImageCount(),
+        metadata, &pTexture);
 	if ( !SUCCEEDED(hr) )
 	{
 		g2dDX11Global::PrintDXError(hr);

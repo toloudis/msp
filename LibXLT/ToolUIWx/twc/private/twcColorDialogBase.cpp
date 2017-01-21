@@ -10,7 +10,8 @@
 
 ///////////////////////////////////////////////////////////////////////////
 
-twcColorDialogBase::twcColorDialogBase( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+twcColorDialogBase::twcColorDialogBase( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) 
+    : wxDialog( parent, id, title, pos, size, style )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 	
@@ -23,15 +24,15 @@ twcColorDialogBase::twcColorDialogBase( wxWindow* parent, wxWindowID id, const w
 	wxBoxSizer* bSizer3;
 	bSizer3 = new wxBoxSizer( wxHORIZONTAL );
 	
-	m_panel_2dpicker = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxSize( 256,256 ), wxTAB_TRAVERSAL );
+	m_panel_2dpicker = new wxPanel( this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize( 256,256 )), wxTAB_TRAVERSAL );
 	m_panel_2dpicker->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_BACKGROUND ) );
-	m_panel_2dpicker->SetMinSize( wxSize( 256,256 ) );
+	m_panel_2dpicker->SetMinSize( FromDIP(wxSize( 256,256 )) );
 	
 	bSizer3->Add( m_panel_2dpicker, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 	
-	m_panel_vertSlider = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxSize( 40,256 ), wxNO_BORDER|wxTAB_TRAVERSAL );
+	m_panel_vertSlider = new wxPanel( this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize( 40,256 )), wxNO_BORDER|wxTAB_TRAVERSAL );
 	m_panel_vertSlider->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_BACKGROUND ) );
-	m_panel_vertSlider->SetMinSize( wxSize( 40,256 ) );
+	m_panel_vertSlider->SetMinSize( FromDIP(wxSize( 40,256 )) );
 	
 	bSizer3->Add( m_panel_vertSlider, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 	
@@ -46,7 +47,7 @@ twcColorDialogBase::twcColorDialogBase( wxWindow* parent, wxWindowID id, const w
 	wxBoxSizer* bSizer5;
 	bSizer5 = new wxBoxSizer( wxVERTICAL );
 	
-	bSizer5->SetMinSize( wxSize( 40,-1 ) ); 
+	bSizer5->SetMinSize( FromDIP(wxSize( 40,-1 )) ); 
 	m_staticText1 = new wxStaticText( this, wxID_ANY, wxT("New"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText1->Wrap( -1 );
 	bSizer5->Add( m_staticText1, 1, wxALL, 5 );
@@ -60,12 +61,12 @@ twcColorDialogBase::twcColorDialogBase( wxWindow* parent, wxWindowID id, const w
 	wxBoxSizer* bSizer6;
 	bSizer6 = new wxBoxSizer( wxVERTICAL );
 	
-	m_panel_NewColor = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxSize( 60,30 ), wxTAB_TRAVERSAL );
+	m_panel_NewColor = new wxPanel( this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize( 60,30 )), wxTAB_TRAVERSAL );
 	m_panel_NewColor->SetBackgroundColour( wxColour( 234, 239, 44 ) );
 	
 	bSizer6->Add( m_panel_NewColor, 1, wxEXPAND | wxALL, 0 );
 	
-	m_panel_OldColor = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxSize( 60,30 ), wxTAB_TRAVERSAL );
+	m_panel_OldColor = new wxPanel( this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize( 60,30 )), wxTAB_TRAVERSAL );
 	m_panel_OldColor->SetBackgroundColour( wxColour( 239, 63, 44 ) );
 	
 	bSizer6->Add( m_panel_OldColor, 1, wxEXPAND | wxALL, 0 );
@@ -174,7 +175,7 @@ twcColorDialogBase::twcColorDialogBase( wxWindow* parent, wxWindowID id, const w
 	m_sdbSizer1Cancel = new wxButton( this, wxID_CANCEL );
 	m_sdbSizer1->AddButton( m_sdbSizer1Cancel );
 	m_sdbSizer1->Realize();
-	bSizer13->Add( m_sdbSizer1, 3, wxALIGN_CENTER|wxALL|wxEXPAND, 5 );
+	bSizer13->Add( m_sdbSizer1, 3, wxALL|wxEXPAND, 5 );
 	
 	bSizer1->Add( bSizer13, 0, wxALL|wxEXPAND, 2 );
 	

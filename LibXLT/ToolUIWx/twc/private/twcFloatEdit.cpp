@@ -84,6 +84,7 @@ void twcFloatEdit::OnTextChange(wxCommandEvent& i_Event)
 void twcFloatEdit::OnTextLeave(wxFocusEvent& i_Event)
 {
 	text_changed();
+    i_Event.Skip();
 }
 
 //----------------------------------------------------------------------------

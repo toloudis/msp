@@ -562,7 +562,7 @@ void captRenderOutputObject::SetToDefault(fsLocator& i_CurrentScene,
 #endif
 	o_Data.m_fCaptureFPS.SetValue( g3dConstants::c_fDefaultFrameRate );
 	o_Data.m_nMotionSamplesPerFrame.SetValue( 1 );
-	o_Data.m_nCaptureMax.SetValue( tmlnTimeLine::GetMaximum().AsFrame(tmlnTimeLine::GetFPS()) );
+	o_Data.m_nCaptureMax.SetValue( tmlnTimeLine::GetMaximum().AsFrame((int)tmlnTimeLine::GetFPS()) );
 	o_Data.m_nCaptureSampling.SetValue( 1 );
 	o_Data.m_bJitteredSampling.SetValue( true );
 	o_Data.m_PixelAspect.SetValue(0);

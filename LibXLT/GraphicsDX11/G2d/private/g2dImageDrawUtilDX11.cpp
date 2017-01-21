@@ -128,4 +128,40 @@ void DrawImage(	g2dD3D11TexturePtr o_DestSurface,
 }
 
 
+//------------------------------------------------------------------------
+//	UpdateSurface() - copy the source surface to the destination
+//------------------------------------------------------------------------
+HRESULT UpdateSurface(	g2dD3D11TexturePtr i_pSource,
+						CONST RECT* i_pSourceRect,
+						g2dD3D11TexturePtr i_pDest,
+						CONST POINT* i_pDestPoint )
+{
+	D3D11_BOX srcBox;
+	srcBox.top = i_pSourceRect->top;
+	srcBox.bottom = i_pSourceRect->bottom;
+	srcBox.left = i_pSourceRect->left;
+	srcBox.right = i_pSourceRect->right;
+	srcBox.front = 0;
+	srcBox.back = 1;
+	D3D11_BOX dstBox;
+	dstBox.left = i_pDestPoint->x;
+	dstBox.top = i_pDestPoint->y;
+	dstBox.right = dstBox.left + (i_pSourceRect->right - i_pSourceRect->left);
+	dstBox.bottom = dstBox.top + (i_pSourceRect->bottom - i_pSourceRect->top);
+	dstBox.front = 0;
+	dstBox.back = 1;
+
+    g2dDX11Global::g_pDeviceContext->CopySubresourceRegion(
+        i_pDest,
+        0,//[in]                 UINT           DstSubresource,
+        i_pDestPoint->x,//[in]                 UINT           DstX,
+        i_pDestPoint->y,//[in]                 UINT           DstY,
+        0,//[in]                 UINT           DstZ,
+        i_pSource,//[in]                 ID3D11Resource *pSrcResource,
+        0,//[in]                 UINT           SrcSubresource,
+        &srcBox//[in, optional] const D3D11_BOX      *pSrcBox
+    );
+    return S_OK;// op_result;
+}
+
 }

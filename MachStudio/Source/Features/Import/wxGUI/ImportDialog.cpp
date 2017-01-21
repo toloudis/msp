@@ -93,7 +93,7 @@ ImportDialog::ImportDialog( wxWindow* parent, ImportData& i_Data )
 	itString icon_dir;
 	fsFileUtil::LocatorToUnicodeString( guiMenuMgr::GetIconDirectory(), icon_dir );
 	std::wstring icondir = icon_dir.GetString();
-	wxImageList *pCheckImages = new wxImageList(13, 13, false, e_NumImportImageStates);
+	wxImageList *pCheckImages = new wxImageList(FromDIP(13), FromDIP(13), false, e_NumImportImageStates);
     {
         wxLogNull nullLog;
 	    pCheckImages->Add(wxBitmap(icondir + L"\\tree-unchecked.png", wxBITMAP_TYPE_PNG));

@@ -329,6 +329,10 @@ wxMainForm::~wxMainForm()
 	if (m_pMRUManager)
 		PopEventHandler();
 	delete m_pMRUManager;
+
+    // see twxMenuMgr ctor.
+    // we must pop the twxMenuMgr event handler now during dtor time!
+    PopEventHandler();
 }
 
 //--------------------------------------------------------------------

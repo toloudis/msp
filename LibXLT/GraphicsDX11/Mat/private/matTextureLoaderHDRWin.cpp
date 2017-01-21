@@ -19,14 +19,13 @@
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
 #include "GraphicsDX11/mat/matMipTexture.hpp"
 #include "GraphicsDX11/mat/matPlainTexture.hpp"
-
+#include <DirectXPackedVector.h>
 //#include <d3dx10math.h>
 //#pragma comment(lib, "d3dx10.lib")
-#include <DirectXPackedVector.h>
 
 namespace 
 {
-	ID3D11Texture2D* load_hdr_data(const fsLocator& i_Locator)
+    std::unique_ptr<DirectX::ScratchImage> load_hdr_data(const fsLocator& i_Locator)
 	{
 		itString filename;
 		fsFileUtil::LocatorToUnicodeString(i_Locator, filename);
@@ -52,54 +51,28 @@ namespace
 		// Convert the 32-bit floats into 16-bit floats and include the alpha component
 		DirectX::PackedVector::HALF* fHDR = new DirectX::PackedVector::HALF[4 * fileWidth * fileHeight];
 		int j = 0;
-		DirectX::PackedVector::HALF* XMConvertFloatToHalfStream(
-			fHDR,
+
+        DirectX::PackedVector::XMConvertFloatToHalfStream(
+            fHDR,
 			4 * 2,
 			fHDRPixels,
 			4*4,
-			filewidth*fileHeight
+			fileWidth*fileHeight
 		);
 		for( int i = 0; i < 4 * fileWidth * fileHeight; i += 4 )
 		{
-			fHDR[i] = fHDRPixels[i - j];
-			fHDR[i + 1] = fHDRPixels[i + 1 - j];
-			fHDR[i + 2] = fHDRPixels[i + 2 - j];
-			fHDR[i + 3] = 1.0f;
+			fHDR[i] = DirectX::PackedVector::XMConvertFloatToHalf(fHDRPixels[i - j]);
+			fHDR[i + 1] = DirectX::PackedVector::XMConvertFloatToHalf(fHDRPixels[i + 1 - j]);
+			fHDR[i + 2] = DirectX::PackedVector::XMConvertFloatToHalf(fHDRPixels[i + 2 - j]);
+			fHDR[i + 3] = DirectX::PackedVector::XMConvertFloatToHalf(1.0f);
 			j++;
 		}
 
-		D3D11_SUBRESOURCE_DATA initData;
-		initData.pSysMem = fHDR;
-		initData.SysMemPitch = fileWidth*4*sizeof(HALF);
-		initData.SysMemSlicePitch = 0;
+        std::unique_ptr<DirectX::ScratchImage> pStagingTexture(new DirectX::ScratchImage);
+        HRESULT hr = pStagingTexture->Initialize2D(DXGI_FORMAT_R16G16B16A16_FLOAT, fileWidth, fileHeight, 1, 1);
+        uint8_t* p = pStagingTexture->GetPixels();
+        memcpy(p, fHDR, pStagingTexture->GetPixelsSize());
 
-		// create a disposable staging texture to get the bits up into the real texture.
-		D3D11_TEXTURE2D_DESC desc;
-		desc.Width = fileWidth;
-		desc.Height = fileHeight;
-		desc.MipLevels = 1;
-		desc.ArraySize = 1;
-		desc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
-		desc.SampleDesc.Count = 1;
-		desc.SampleDesc.Quality = 0;
-		desc.Usage = D3D11_USAGE_STAGING;
-		desc.BindFlags = 0;
-		desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ;
-		desc.MiscFlags = 0;
-
-		//	create the surface
-		ID3D11Texture2D* pStagingTexture = NULL;
-		HRESULT op_result = g2dDX11Global::g_pDevice->CreateTexture2D(
-		  &desc,
-		  &initData,
-		  &pStagingTexture
-		);
-	//	HRESULT op_result = g2dDX11Global::g_pDevice->CreateOffscreenPlainSurface( i_Width, i_Height, format, pool, &m_pSurface, NULL );
-		if( !SUCCEEDED(op_result) )
-		{
-			g2dDX11Global::PrintDXError(op_result);
-			DBG_ASSERT( SUCCEEDED(op_result), "Error allocating offscreen surface (w" << fileWidth << "-h" << fileHeight << "-f" << desc.Format << ")");
-		}
 
 		delete[] fHDRPixels;
 		delete[] fHDR;
@@ -117,52 +90,40 @@ namespace matTextureLoaderHDR
 	//------------------------------------------------------------------------
 	void LoadPlainTexture(matPlainTexture* io_Texture, const fsLocator& i_Locator, int i_WidthReduce, int i_HeightReduce)
 	{
-		ID3D11Texture2D* pStagingTexture = load_hdr_data(i_Locator);
+        std::unique_ptr<DirectX::ScratchImage> scratchImage = load_hdr_data(i_Locator);
 
-		D3D11_TEXTURE2D_DESC desc;
-		pStagingTexture->GetDesc(&desc);
+        std::unique_ptr<DirectX::ScratchImage> imageResult(new DirectX::ScratchImage);
 
-		desc.Width = desc.Width >> i_WidthReduce;
-		desc.Height = desc.Height >> i_HeightReduce;
-	//	desc.Width = maFunctions::Lowest(desc.Width, int(g2dDX11Global::g_Caps.MaxTextureWidth));
-	//	desc.Height = maFunctions::Lowest(desc.Height, int(g2dDX11Global::g_Caps.MaxTextureHeight));
-		desc.MipLevels = 1;
-		desc.ArraySize = 1;
-//		desc.Format = desc.Format;
-		desc.SampleDesc.Count = 1;
-		desc.SampleDesc.Quality = 0;
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-		desc.CPUAccessFlags = 0; // no cpu access
-		desc.MiscFlags = 0;
+        // resize to width/height reduce
+        HRESULT hr = DirectX::Resize(scratchImage->GetImages(), scratchImage->GetImageCount(),
+            scratchImage->GetMetadata(),
+            scratchImage->GetMetadata().width >> i_WidthReduce, scratchImage->GetMetadata().height >> i_HeightReduce, 
+            DirectX::TEX_FILTER_FLAGS::TEX_FILTER_DEFAULT,
+            *imageResult);
 
-		g2dD3D11TexturePtr new_texture = NULL;
-		HRESULT op_result = g2dDX11Global::g_pDevice->CreateTexture2D(&desc, NULL, &new_texture);
-		if( !SUCCEEDED(op_result) )
-		{
-			g2dDX11Global::PrintDXError(op_result);
-			if ( E_OUTOFMEMORY == op_result )
-				throw g2dOutOfVideoMemoryX();
+        // generate mipmaps
+        std::unique_ptr<DirectX::ScratchImage> mipChain(new DirectX::ScratchImage);
+        HRESULT h = DirectX::GenerateMipMaps(*(imageResult->GetImage(0, 0, 0)), DirectX::TEX_FILTER_FLAGS::TEX_FILTER_FANT,
+            1,
+            *mipChain);
 
-			DBG_ASSERT(SUCCEEDED(op_result), "Unhandled error creating texture");
-		}
+        // fill in d3d texture
+        ID3D11Resource* new_texture = NULL;
+        HRESULT op_result = DirectX::CreateTexture(g2dDX11Global::g_pDevice, mipChain->GetImages(), mipChain->GetImageCount(), mipChain->GetMetadata(), &new_texture);
+        if (!SUCCEEDED(op_result))
+        {
+            g2dDX11Global::PrintDXError(op_result);
+            if (E_OUTOFMEMORY == op_result)
+                throw g2dOutOfVideoMemoryX();
 
-		D3DX11_TEXTURE_LOAD_INFO loadInfo;
-		op_result = D3DX11LoadTextureFromTexture(g2dDX11Global::g_pDeviceContext, 
-			pStagingTexture,
-			&loadInfo,
-			new_texture
-		);
+            DBG_ASSERT(SUCCEEDED(op_result), "Unhandled error creating texture");
+        }
 
-		// Set the new surface
-		io_Texture->SetSurface( new_texture );
+        // Set the new surface
+        io_Texture->SetSurface(new_texture);
 
-		// set size info into the texture
-		io_Texture->ReloadInfo();
-
-		// discard staging texture
-		pStagingTexture->Release();
-		pStagingTexture = NULL;
+        // set size info into the texture
+        io_Texture->ReloadInfo();
 	}
 
 	//------------------------------------------------------------------------
@@ -170,54 +131,40 @@ namespace matTextureLoaderHDR
 	//------------------------------------------------------------------------
 	void LoadHDR(matMipTexture* io_Texture, const fsLocator& i_Locator, bool i_TrueColor, int i_WidthReduce, int i_HeightReduce, bool i_bIsMipMap)
 	{
-		ID3D11Texture2D* pStagingTexture = load_hdr_data(i_Locator);
+        std::unique_ptr<DirectX::ScratchImage> scratchImage = load_hdr_data(i_Locator);
 
-		D3D11_TEXTURE2D_DESC desc;
-		pStagingTexture->GetDesc(&desc);
+        std::unique_ptr<DirectX::ScratchImage> imageResult(new DirectX::ScratchImage);
 
-		desc.Width = desc.Width >> i_WidthReduce;
-		desc.Height = desc.Height >> i_HeightReduce;
-	//	desc.Width = maFunctions::Lowest(desc.Width, int(g2dDX11Global::g_Caps.MaxTextureWidth));
-	//	desc.Height = maFunctions::Lowest(desc.Height, int(g2dDX11Global::g_Caps.MaxTextureHeight));
-		desc.MipLevels = i_bIsMipMap ? 0 : 1; // complete set of mip levels!
-		desc.ArraySize = 1;
-//		desc.Format = desc.Format;
-		desc.SampleDesc.Count = 1;
-		desc.SampleDesc.Quality = 0;
-		desc.Usage = D3D11_USAGE_DEFAULT;
-		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-		desc.CPUAccessFlags = 0; // no cpu access
-		desc.MiscFlags = 0;
+        // resize to width/height reduce
+        HRESULT hr = DirectX::Resize(scratchImage->GetImages(), scratchImage->GetImageCount(),
+            scratchImage->GetMetadata(),
+            scratchImage->GetMetadata().width >> i_WidthReduce, scratchImage->GetMetadata().height >> i_HeightReduce,
+            DirectX::TEX_FILTER_FLAGS::TEX_FILTER_DEFAULT,
+            *imageResult);
 
-		g2dD3D11TexturePtr new_texture = NULL;
-		HRESULT op_result = g2dDX11Global::g_pDevice->CreateTexture2D(&desc, NULL, &new_texture);
-		if( !SUCCEEDED(op_result) )
-		{
-			g2dDX11Global::PrintDXError(op_result);
-			if ( E_OUTOFMEMORY == op_result )
-				throw g2dOutOfVideoMemoryX();
+        // generate mipmaps
+        std::unique_ptr<DirectX::ScratchImage> mipChain(new DirectX::ScratchImage);
+        HRESULT h = DirectX::GenerateMipMaps(*(imageResult->GetImage(0, 0, 0)), DirectX::TEX_FILTER_FLAGS::TEX_FILTER_FANT,
+            i_bIsMipMap ? 0 : 1,
+            *mipChain);
 
-			DBG_ASSERT(SUCCEEDED(op_result), "Unhandled error creating texture");
-		}
+        // fill in d3d texture
+        ID3D11Resource* new_texture = NULL;
+        HRESULT op_result = DirectX::CreateTexture(g2dDX11Global::g_pDevice, mipChain->GetImages(), mipChain->GetImageCount(), mipChain->GetMetadata(), &new_texture);
+        if (!SUCCEEDED(op_result))
+        {
+            g2dDX11Global::PrintDXError(op_result);
+            if (E_OUTOFMEMORY == op_result)
+                throw g2dOutOfVideoMemoryX();
 
-		D3DX11_TEXTURE_LOAD_INFO loadInfo;
-		loadInfo.NumMips = i_bIsMipMap ? 0 : 1;
-		op_result = D3DX11LoadTextureFromTexture(g2dDX11Global::g_pDeviceContext, 
-			pStagingTexture,
-			&loadInfo,
-			new_texture
-		);
-		op_result = ::D3DX11FilterTexture(g2dDX11Global::g_pDeviceContext, new_texture, 0, D3DX11_DEFAULT);
+            DBG_ASSERT(SUCCEEDED(op_result), "Unhandled error creating texture");
+        }
 
-		// Set the new surface
-		io_Texture->SetSurface( new_texture );
+        // Set the new surface
+        io_Texture->SetSurface(new_texture);
 
-		// set size info into the texture
-		io_Texture->ReloadInfo();
-
-		// discard staging texture
-		pStagingTexture->Release();
-		pStagingTexture = NULL;
+        // set size info into the texture
+        io_Texture->ReloadInfo();
 	}
 
 }// namespace matTextureLoaderHDR

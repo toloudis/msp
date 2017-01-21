@@ -31,10 +31,22 @@
 
 namespace
 {
-
+    enum FileType {
+        e_BMP,
+        e_JPG,
+        e_TGA,
+        e_PNG,
+        e_DDS,
+        e_PPM,
+        e_DIB,
+        e_HDR,
+        e_PFM,
+        e_EXR,
+        e_TIFF
+    };
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-g2dImageSaveDX11::FileType pick_format(const fsLocator& i_FileName)
+FileType pick_format(const fsLocator& i_FileName)
 {
 	//	decide what kind of file we have
 	itString fname = i_FileName.GetLastName();
@@ -43,58 +55,58 @@ g2dImageSaveDX11::FileType pick_format(const fsLocator& i_FileName)
 
 	if ((ext == itString("bmp")) || (ext == itString("BMP")))
 	{
-		return g2dImageSaveDX11::e_BMP;
+		return e_BMP;
 	}
 	else if ((ext == itString("jpg")) || (ext == itString("JPG")) || (ext == itString("JPEG")) || (ext == itString("jpeg")))
 	{
-		return g2dImageSaveDX11::e_JPG;
+		return e_JPG;
 	}
 	else if ((ext == itString("tga")) || (ext == itString("TGA")))
 	{
-		return g2dImageSaveDX11::e_TGA;
+		return e_TGA;
 	}
 	else if ((ext == itString("png")) || (ext == itString("PNG")))
 	{
-		return g2dImageSaveDX11::e_PNG;
+		return e_PNG;
 	}
 	else if ((ext == itString("dds")) || (ext == itString("DDS")))
 	{
-		return g2dImageSaveDX11::e_DDS;
+		return e_DDS;
 	}
 	else if ((ext == itString("ppm")) || (ext == itString("PPM")))
 	{
-		return g2dImageSaveDX11::e_PPM;
+		return e_PPM;
 	}
 	else if ((ext == itString("dib")) || (ext == itString("DIB")))
 	{
-		return g2dImageSaveDX11::e_DIB;
+		return e_DIB;
 	}
 	else if ((ext == itString("hdr")) || (ext == itString("HDR")))
 	{
-		return g2dImageSaveDX11::e_HDR;
+		return e_HDR;
 	}
 	else if ((ext == itString("pfm")) || (ext == itString("PFM")))
 	{
-		return g2dImageSaveDX11::e_PFM;
+		return e_PFM;
 	}
 	else if ((ext == itString("exr")) || (ext == itString("EXR")))
 	{
-		return g2dImageSaveDX11::e_EXR;
+		return e_EXR;
 	}
 	else if ((ext == itString("tif")) || (ext == itString("TIF")) || (ext == itString("Tif")))
 	{
-		return g2dImageSaveDX11::e_TIFF;
+		return e_TIFF;
 	}
 	else if ((ext == itString("tiff")) || (ext == itString("TIFF")) || (ext == itString("Tiff")))
 	{
-		return g2dImageSaveDX11::e_TIFF;
+		return e_TIFF;
 	}
 	throw g2dUnknownImageFileTypeX();
 }
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-g2dImageSaveDX11::FileType pick_format(const std::string& i_FileName)
+FileType pick_format(const std::string& i_FileName)
 {
 	//	decide what kind of file we have
 	//
@@ -106,84 +118,106 @@ g2dImageSaveDX11::FileType pick_format(const std::string& i_FileName)
 
 	if ((ext == std::string("bmp")) || (ext == std::string("BMP")))
 	{
-		return g2dImageSaveDX11::e_BMP;
+		return e_BMP;
 	}
 	else if ((ext == std::string("jpg")) || (ext == std::string("JPG")) || (ext == std::string("JPEG")) || (ext == std::string("jpeg")))
 	{
-		return g2dImageSaveDX11::e_JPG;
+		return e_JPG;
 	}
 	else if ((ext == std::string("tif")) || (ext == std::string("TIF")) || (ext == std::string("TIFF")) || (ext == std::string("tiff")))
 	{
-		return g2dImageSaveDX11::e_TIFF;
+		return e_TIFF;
 	}
 	else if ((ext == std::string("tga")) || (ext == std::string("TGA")))
 	{
-		return g2dImageSaveDX11::e_TGA;
+		return e_TGA;
 	}
 	else if ((ext == std::string("png")) || (ext == std::string("PNG")))
 	{
-		return g2dImageSaveDX11::e_PNG;
+		return e_PNG;
 	}
 	else if ((ext == std::string("dds")) || (ext == std::string("DDS")))
 	{
-		return g2dImageSaveDX11::e_DDS;
+		return e_DDS;
 	}
 	else if ((ext == std::string("ppm")) || (ext == std::string("PPM")))
 	{
-		return g2dImageSaveDX11::e_PPM;
+		return e_PPM;
 	}
 	else if ((ext == std::string("dib")) || (ext == std::string("DIB")))
 	{
-		return g2dImageSaveDX11::e_DIB;
+		return e_DIB;
 	}
 	else if ((ext == std::string("hdr")) || (ext == std::string("HDR")))
 	{
-		return g2dImageSaveDX11::e_HDR;
+		return e_HDR;
 	}
 	else if ((ext == std::string("pfm")) || (ext == std::string("PFM")))
 	{
-		return g2dImageSaveDX11::e_PFM;
+		return e_PFM;
 	}
 	else if ((ext == std::string("exr")) || (ext == std::string("EXR")))
 	{
-		return g2dImageSaveDX11::e_EXR;
+		return e_EXR;
 	}
 	else if ((ext == std::string("tif")) || (ext == std::string("TIF")) || (ext == std::string("Tif")))
 	{
-		return g2dImageSaveDX11::e_TIFF;
+		return e_TIFF;
 	}
 	else if ((ext == std::string("tiff")) || (ext == std::string("TIFF")) || (ext == std::string("Tiff")))
 	{
-		return g2dImageSaveDX11::e_TIFF;
+		return e_TIFF;
 	}
 	throw g2dUnknownImageFileTypeX();
 }
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-REFGUID get_wic_file_format(g2dImageSaveDX11::FileType i_Type )
+DirectX::WICCodecs get_d3d_file_format( FileType i_Type )
 {
 	switch( i_Type )
 	{
-		case g2dImageSaveDX11::e_BMP:
-			return GUID_ContainerFormatBmp;
-		case g2dImageSaveDX11::e_JPG:
-			return GUID_ContainerFormatJpeg;
-		case g2dImageSaveDX11::e_PNG:
-			return GUID_ContainerFormatPng;
-		case g2dImageSaveDX11::e_DDS:
-			return GUID_ContainerFormatDds;
-		case g2dImageSaveDX11::e_TIFF:
-			return GUID_ContainerFormatTiff;
-		case g2dImageSaveDX11::e_TGA:
-		case g2dImageSaveDX11::e_PPM:
-		case g2dImageSaveDX11::e_DIB:
-		case g2dImageSaveDX11::e_HDR:
-		case g2dImageSaveDX11::e_PFM:
+		case e_BMP:
+			return DirectX::WICCodecs::WIC_CODEC_BMP;
+		case e_JPG:
+			return DirectX::WICCodecs::WIC_CODEC_JPEG;
+		case e_PNG:
+			return DirectX::WICCodecs::WIC_CODEC_PNG;
+		case e_TIFF:
+			return DirectX::WICCodecs::WIC_CODEC_TIFF;
+        case e_DDS:
+        case e_TGA:
+		case e_PPM:
+		case e_DIB:
+		case e_HDR:
+		case e_PFM:
 			throw g2dUnknownImageFileTypeX();
 	}
 
 	throw g2dUnknownImageFileTypeX();
+}
+
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
+void SaveToFile(const itString& i_Filename, const g2dD3D11TexturePtr i_pSurface, DirectX::WICCodecs i_Format)
+{
+    DirectX::ScratchImage s;
+    HRESULT hr = DirectX::CaptureTexture(g2dDX11Global::g_pDevice, g2dDX11Global::g_pDeviceContext, i_pSurface, s);
+    if (!SUCCEEDED(hr))
+    {
+        DBG_TRACE("D3DX11SaveTextureToFile Return Error result:" << hr);
+        throw g2dImageSaveX();
+    }
+
+    const DirectX::Image* img = s.GetImage(0, 0, 0);
+    assert(img);
+    hr = DirectX::SaveToWICFile(*img, DirectX::WIC_FLAGS::WIC_FLAGS_NONE,
+        DirectX::GetWICCodec(i_Format), i_Filename.GetString());
+    if (!SUCCEEDED(hr))
+    {
+        DBG_TRACE("D3DX11SaveTextureToFile Return Error result:" << hr);
+        throw g2dImageSaveX();
+    }
 }
 
 
@@ -256,7 +290,7 @@ void g2dImageSaveDX11::Save(const fsLocator& i_FileName, g2dWindow* i_pWin)
 		itString filename;
 		fsFileUtil::LocatorToUnicodeString(i_FileName, filename);
 
-		Save( filename, pSurface, type );
+		SaveToFile( filename, pSurface, get_d3d_file_format( type ) );
 
 		pSurface->Release();
 	}
@@ -291,7 +325,7 @@ void g2dImageSaveDX11::Save(const fsLocator& i_FileName, const g2dImage* i_pImag
 	} else {
 		itString filename;
 		fsFileUtil::LocatorToUnicodeString(i_FileName, filename);
-		Save( filename, pD3DImage->GetSurface(), type );
+		SaveToFile( filename, pD3DImage->GetSurface(), get_d3d_file_format( type ) );
 	}
 }
 
@@ -304,23 +338,7 @@ void g2dImageSaveDX11::Save(const itString& i_FileName, const g2dImage* i_pImage
 
 	FileType type = pick_format( i_FileName );
 
-	Save( i_FileName, pD3DImage->GetSurface(), type );
+	SaveToFile( i_FileName, pD3DImage->GetSurface(), get_d3d_file_format( type ) );
 }
 
-//------------------------------------------------------------------------
-//------------------------------------------------------------------------
-void g2dImageSaveDX11::Save(const itString& i_Filename, const g2dD3D11TexturePtr i_pSurface, FileType i_Format)
-{
-	REFGUID f = get_wic_file_format(i_Format);
-	HRESULT hr = DirectX::SaveWICTextureToFile(g2dDX11Global::g_pDeviceContext,
-		i_pSurface,
-		f,
-		i_Filename.GetString());
-
-	if (!SUCCEEDED(hr))
-	{
-		DBG_TRACE( "D3DX11SaveTextureToFile Return Error result:" << hr );
-		throw g2dImageSaveX();
-	}
-}
 

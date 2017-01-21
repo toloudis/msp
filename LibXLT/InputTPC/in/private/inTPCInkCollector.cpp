@@ -80,7 +80,7 @@ HRESULT inTPCInkCollector::Init(HWND i_Hwnd)
 		return hr;
 
     // Attach Ink Collector to window
-    hr = m_pInkCollector->put_hWnd((long) i_Hwnd);
+    hr = m_pInkCollector->put_hWnd((LONG_PTR) i_Hwnd);
     if (FAILED(hr))
 		return hr;
     

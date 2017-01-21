@@ -15,9 +15,6 @@
 
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
 #include "Core/Dbg/dbgMsg.hpp"
-
-#include c_g2dD3DX11Effect_H
-
 namespace
 {
 	//============================================================================
@@ -160,14 +157,14 @@ bool effShaderSDKDX11::CompileCustomShader(const char* i_CustomShaderSrc,
 
 	// Compile effect 
 	HRESULT hr;
-	hr = D3DX11CompileFromMemory((LPCSTR)i_CustomShaderSrc, strlen(i_CustomShaderSrc), i_CustomShaderName.c_str(), 
+	hr = D3DCompile((LPCSTR)i_CustomShaderSrc, strlen(i_CustomShaderSrc), i_CustomShaderName.c_str(), 
 		NULL, NULL, "", "fx_5_0", 
 #ifdef _DEBUG
-		D3D10_SHADER_OPTIMIZATION_LEVEL0 | D3D10_SHADER_ENABLE_BACKWARDS_COMPATIBILITY | D3D10_SHADER_DEBUG, 
+		D3DCOMPILE_OPTIMIZATION_LEVEL0 | D3DCOMPILE_ENABLE_BACKWARDS_COMPATIBILITY | D3DCOMPILE_DEBUG, 
 #else
-		D3D10_SHADER_OPTIMIZATION_LEVEL0 | D3D10_SHADER_ENABLE_BACKWARDS_COMPATIBILITY, 
+        D3DCOMPILE_OPTIMIZATION_LEVEL0 | D3DCOMPILE_ENABLE_BACKWARDS_COMPATIBILITY,
 #endif
-		0, 0, &shaderCode, &errors, 0);
+		0, &shaderCode, &errors);
 
     if (FAILED(hr))
     { 

@@ -29,7 +29,7 @@ twxPropertyDialog::twxPropertyDialog( wxWindow* parent,
 	// or all of them if just a few.
 	int scw_w=0, scw_h=0;
 	m_panel_Properties->GetVirtualSize(&scw_w,&scw_h);
-	m_panel_Properties->SetMinSize(wxSize(-1, (scw_h < 400) ? scw_h : 400));
+	m_panel_Properties->SetMinSize(FromDIP(wxSize(-1, (scw_h < 400) ? scw_h : 400)));
 
 	// Redo layout and try to get the dialog to resize based
 	// on the new size of the property panel
@@ -55,7 +55,7 @@ twxPropertyDialog::twxPropertyDialog( wxWindow* parent,
 	// or all of them if just a few.
 	int scw_w=0, scw_h=0;
 	m_panel_Properties->GetVirtualSize(&scw_w,&scw_h);
-	m_panel_Properties->SetMinSize(wxSize(-1, (scw_h < 400) ? scw_h : 400));
+	m_panel_Properties->SetMinSize(FromDIP(wxSize(-1, (scw_h < 400) ? scw_h : 400)));
 
 	// Redo layout and try to get the dialog to resize based
 	// on the new size of the property panel

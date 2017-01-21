@@ -25,8 +25,6 @@
 
 //#include c_g2dD3DX11_H
 
-#include c_g2dD3DX11Effect_H
-
 #include <list>
 #include <map>
 

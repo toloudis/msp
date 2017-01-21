@@ -1064,7 +1064,7 @@ HRESULT shdwPassToneMap::RenderStar(matRenderTargetTexture* i_pSrcTex, matRender
 			g3dRasterizerStateMgr::SetRasterizerState( g3dDX11Util::GetCullMode(), g3dDrawStyleUtilDX11::GetD3DDrawStyle() );
 
             // Setup next expansion
-            vtStepUV *= nSamples ;
+            vtStepUV *= (float)nSamples ;
             attnPowScale *= nSamples ;
 
             // Set the work drawn just before to next texture source.

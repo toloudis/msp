@@ -747,12 +747,12 @@ void FillTexture(matTexture* i_pTexture, void* i_PixelData, int i_nByte)
 	l_pImpl->FillTexture(i_pTexture, i_PixelData, i_nByte);
 }
 
-void UpdateSurface( matTexture* i_pTexture, unsigned char* i_data, int size, int nMipLevel )
+void UpdateTexture( matTexture* i_pTexture, unsigned char* i_data, int size, int nMipLevel )
 {
 	DBG_ASSERT(l_pImpl, "No texture manager implementation yet.");
 	if (!l_pImpl)
 		return;
-	l_pImpl->UpdateSurface( i_pTexture, i_data, size, nMipLevel );
+	l_pImpl->UpdateTexture( i_pTexture, i_data, size, nMipLevel );
 }
 
 

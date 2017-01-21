@@ -226,13 +226,13 @@ HRESULT AppendAvi(HAVI avi1, HAVI avi2, const itString i_SavePath)
 		LastError=AVIFileCreateStream(au2->pfile, &au2->ps, &strhdr);
 		if (LastError!=AVIERR_OK) {au2->iserr=true; return LastError;}
 	}
-	LastError = EditStreamPaste(pEditableStream, &Length, &Buf, au1->ps, 1.0, -1);
+	LastError = EditStreamPaste(pEditableStream, &Length, &Buf, au1->ps, 1, -1);
 	
 	if (LastError!=AVIERR_OK) {au1->iserr=true; return LastError;}
-	Length = GetAviLength(avi1) ;
+	Length = (long)GetAviLength(avi1) ;
 	long buf1;
 	
-	LastError = EditStreamPaste(pEditableStream, &Length, &buf1, au2->ps, 1.0, -1);
+	LastError = EditStreamPaste(pEditableStream, &Length, &buf1, au2->ps, 1, -1);
 	if (LastError!=AVIERR_OK) {au1->iserr=true; return LastError;}
 
 	ZeroMemory(&aco, sizeof(AVICOMPRESSOPTIONS));

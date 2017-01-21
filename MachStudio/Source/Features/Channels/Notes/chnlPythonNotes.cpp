@@ -129,7 +129,7 @@ namespace
 	PyObject *
 	set_note_value(PyObject *self, PyObject *args)
 	{
-		int num_args = PyTuple_Size( args );
+		int num_args = (int)PyTuple_Size( args );
 		if (num_args != 3)
 		{
 			PyErr_SetString(PyExc_TypeError, "setNoteValue needs 3 arguments: note index, property name, value");

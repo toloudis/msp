@@ -305,30 +305,31 @@ namespace
 		HRESULT hr;
 
 		//DBG_LOG1( "loading DDS texture (%s)", filename.c_str() );
-		DirectX::TexMetadata srcInfo;
-		hr = DirectX::GetMetadataFromDDSFile(filename.GetString(), 0,
-			srcInfo);
+        DirectX::TexMetadata srcInfo;
+        hr = DirectX::GetMetadataFromDDSFile(filename.GetString(), DirectX::DDS_FLAGS::DDS_FLAGS_NONE,
+            srcInfo);
 
 		ID3D11Texture2D* pTex2D = NULL;
 
 		HRESULT hrLoadCxU8V8 = load_CxU8V8_format(filename, &pTex2D);
 		
-		//if (srcInfo.ImageFileFormat != D3DX11_IFF_DDS && !SUCCEEDED(hrLoadCxU8V8))
-		//{
-		//	DBG_WARNING("A non-DDS file made it into load_dds_data: " << filename);
-		//	fsResourceTracker::Remove(io_Info.s_Locator);
-		//	return NULL;
-		//}
+		if (!SUCCEEDED(hr) && !SUCCEEDED(hrLoadCxU8V8))
+		{
+			DBG_WARNING("A non-DDS file made it into load_dds_data: " << filename);
+			fsResourceTracker::Remove(io_Info.s_Locator);
+			return NULL;
+		}
 
 		bool cm = false;
 		bool vol = false;
-		// TODO: try srcInfo.isCubemap and srcInfo.isVolumemap
-		if ((srcInfo.arraySize == 6) && 
-			(srcInfo.dimension == D3D11_RESOURCE_DIMENSION_TEXTURE2D) &&
-			(srcInfo.miscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE))
-			cm = true;
-		else if (srcInfo.dimension == D3D11_RESOURCE_DIMENSION_TEXTURE3D)
-			vol = true;
+        cm = srcInfo.IsCubemap();
+        vol = srcInfo.IsVolumemap();
+		//if ((srcInfo.arraySize == 6) && 
+		//	(srcInfo.dimension == DirectX::TEX_DIMENSION::TEX_DIMENSION_TEXTURE2D) &&
+		//	(srcInfo.miscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE))
+		//	cm = true;
+		//else if (srcInfo.dimension == DirectX::TEX_DIMENSION::TEX_DIMENSION_TEXTURE3D)
+		//	vol = true;
 
 		ID3D11Resource* pTexture = NULL;
 
@@ -338,16 +339,16 @@ namespace
 		}
 		else
 		{
-			srcInfo.mipLevels = (mipmap_if_2D && !cm && !vol) ? 0 : 1; // 1 = top mip level only
-			//if (io_Info.s_nWidthReduce > 0) {
+            //TODO: OBEY MIPMAP HINTS mipmap_if_2D and io_info.s_nWidthReduce 
+            //DirectX::TexMetadata imageLoadInfo;
+			//imageLoadInfo.mipLevels = (mipmap_if_2D && !cm && !vol) ? 0 : 1; // 1 = top mip level only
+			//if (io_Info.s_nWidthReduce > 0)
 			//	imageLoadInfo.FirstMipLevel = io_Info.s_nWidthReduce;
-			//}
 
-			DirectX::ScratchImage scratchImage;
-			hr = DirectX::LoadFromDDSFile(filename.GetString(), 0, &srcInfo, scratchImage);
-			if (SUCCEEDED(hr)) {
-				hr = DirectX::CreateTexture(g2dDX11Global::g_pDevice, scratchImage.GetImages(), scratchImage.GetImageCount(), srcInfo, &pTexture);
-			}
+            DirectX::TexMetadata info;
+            std::unique_ptr<DirectX::ScratchImage> image(new DirectX::ScratchImage);
+            HRESULT hr = DirectX::LoadFromDDSFile(filename.GetString(), DirectX::DDS_FLAGS::DDS_FLAGS_NONE, &info, *image);
+            hr = DirectX::CreateTexture(g2dDX11Global::g_pDevice, image->GetImages(), image->GetImageCount(), info, &pTexture);
 
 			//	check for errors loading
 			if ( !SUCCEEDED(hr) )

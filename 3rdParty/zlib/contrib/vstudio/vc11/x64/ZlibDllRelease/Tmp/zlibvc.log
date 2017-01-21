@@ -1,0 +1,34 @@
+﻿  Microsoft (R) Macro Assembler (x64) Version 14.00.23506.0
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+   Assembling: inffasx64.asm
+  Microsoft (R) Macro Assembler (x64) Version 14.00.23506.0
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+   Assembling: gvmat64.asm
+  adler32.c
+  compress.c
+  crc32.c
+  deflate.c
+  gzclose.c
+  gzlib.c
+  gzread.c
+  gzwrite.c
+  infback.c
+  inffas8664.c
+  inffast.c
+  inflate.c
+  inftrees.c
+  ioapi.c
+  iowin32.c
+  trees.c
+  uncompr.c
+  zutil.c
+  unzip.c
+  zip.c
+     Creating library x64\ZlibDllRelease\zlibwapi.lib and object x64\ZlibDllRelease\zlibwapi.exp
+  Generating code
+  All 254 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  zlibvc.vcxproj -> D:\zlib-1.2.8\contrib\vstudio\vc11\x64\ZlibDllRelease\zlibwapi.dll
+  zlibvc.vcxproj -> x64\ZlibDllRelease\zlibwapi.pdb (Full PDB)

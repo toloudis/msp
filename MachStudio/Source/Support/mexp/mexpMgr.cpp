@@ -92,7 +92,7 @@ void mexpMgr::DoExport( fsLocator &i_Locator, const mexpExportData &i_Data )
 		
 		// Simulate at the requested frame rate
 		//TIME - float frame rate passed to FromFrame
-		maTime frame_time_delta = maTime::FromFrame(1, i_Data.m_SimulationFrameRate);
+		maTime frame_time_delta = maTime::FromFrame(1, (int)i_Data.m_SimulationFrameRate);
 
 		const maTime end = tmlnTimeLine::GetMaximum();
 		for (maTime time = tmlnTimeLine::GetMinimum(); time <= end; time += frame_time_delta)

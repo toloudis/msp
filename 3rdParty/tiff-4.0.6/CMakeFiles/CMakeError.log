@@ -1,0 +1,1030 @@
+Performing C SOURCE FILE Test HAVE_LD_VERSION_SCRIPT failed with the following output:
+Change Dir: D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/14.0/bin/MSBuild.exe" "cmTC_d2409.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=14.0"
+Microsoft (R) Build Engine version 14.0.24730.2
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 4/14/2016 9:40:23 AM.
+The target "BeforeGenerateProjectPriFile" listed in a BeforeTargets attribute at "C:\Program Files (x86)\MSBuild\Microsoft\NuGet\Microsoft.NuGet.targets (186,61)" does not exist in the project, and will be ignored.
+Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_d2409.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTC_d2409.dir\Debug\".
+  Creating directory "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTC_d2409.dir\Debug\cmTC_d2409.tlog\".
+InitializeBuildStatus:
+  Creating "cmTC_d2409.dir\Debug\cmTC_d2409.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D HAVE_LD_VERSION_SCRIPT /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_d2409.dir\Debug\\" /Fd"cmTC_d2409.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue  -Wl,--version-script=D:/Projects/SourceCode/3rdParty/tiff-4.0.6/conftest.map "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\src.c"
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.00.23506 for x64
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D HAVE_LD_VERSION_SCRIPT /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_d2409.dir\Debug\\" /Fd"cmTC_d2409.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue  -Wl,--version-script=D:/Projects/SourceCode/3rdParty/tiff-4.0.6/conftest.map "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\src.c"
+cl : Command line error D8021: invalid numeric argument '/Wl,--version-script=D:/Projects/SourceCode/3rdParty/tiff-4.0.6/conftest.map' [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_d2409.vcxproj]
+Done Building Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_d2409.vcxproj" (default targets) -- FAILED.
+
+Build FAILED.
+
+"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_d2409.vcxproj" (default target) (1) ->
+(ClCompile target) -> 
+  cl : Command line error D8021: invalid numeric argument '/Wl,--version-script=D:/Projects/SourceCode/3rdParty/tiff-4.0.6/conftest.map' [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_d2409.vcxproj]
+
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:01.94
+
+Source file was:
+int main(void){return 0;}
+Determining if the include file dlfcn.h exists failed with the following output:
+Change Dir: D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/14.0/bin/MSBuild.exe" "cmTC_c721b.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=14.0"
+Microsoft (R) Build Engine version 14.0.24730.2
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 4/14/2016 9:40:36 AM.
+The target "BeforeGenerateProjectPriFile" listed in a BeforeTargets attribute at "C:\Program Files (x86)\MSBuild\Microsoft\NuGet\Microsoft.NuGet.targets (186,61)" does not exist in the project, and will be ignored.
+Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_c721b.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTC_c721b.dir\Debug\".
+  Creating directory "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTC_c721b.dir\Debug\cmTC_c721b.tlog\".
+InitializeBuildStatus:
+  Creating "cmTC_c721b.dir\Debug\cmTC_c721b.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_c721b.dir\Debug\\" /Fd"cmTC_c721b.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.00.23506 for x64
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_c721b.dir\Debug\\" /Fd"cmTC_c721b.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+  
+  CheckIncludeFile.c
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1): fatal error C1083: Cannot open include file: 'dlfcn.h': No such file or directory [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_c721b.vcxproj]
+Done Building Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_c721b.vcxproj" (default targets) -- FAILED.
+
+Build FAILED.
+
+"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_c721b.vcxproj" (default target) (1) ->
+(ClCompile target) -> 
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1): fatal error C1083: Cannot open include file: 'dlfcn.h': No such file or directory [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_c721b.vcxproj]
+
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:02.19
+
+
+Determining if the include file strings.h exists failed with the following output:
+Change Dir: D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/14.0/bin/MSBuild.exe" "cmTC_26955.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=14.0"
+Microsoft (R) Build Engine version 14.0.24730.2
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 4/14/2016 9:41:29 AM.
+The target "BeforeGenerateProjectPriFile" listed in a BeforeTargets attribute at "C:\Program Files (x86)\MSBuild\Microsoft\NuGet\Microsoft.NuGet.targets (186,61)" does not exist in the project, and will be ignored.
+Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_26955.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTC_26955.dir\Debug\".
+  Creating directory "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTC_26955.dir\Debug\cmTC_26955.tlog\".
+InitializeBuildStatus:
+  Creating "cmTC_26955.dir\Debug\cmTC_26955.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_26955.dir\Debug\\" /Fd"cmTC_26955.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.00.23506 for x64
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_26955.dir\Debug\\" /Fd"cmTC_26955.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+  
+  CheckIncludeFile.c
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1): fatal error C1083: Cannot open include file: 'strings.h': No such file or directory [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_26955.vcxproj]
+Done Building Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_26955.vcxproj" (default targets) -- FAILED.
+
+Build FAILED.
+
+"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_26955.vcxproj" (default target) (1) ->
+(ClCompile target) -> 
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1): fatal error C1083: Cannot open include file: 'strings.h': No such file or directory [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_26955.vcxproj]
+
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:03.57
+
+
+Determining if the include file sys/time.h exists failed with the following output:
+Change Dir: D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/14.0/bin/MSBuild.exe" "cmTC_8c417.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=14.0"
+Microsoft (R) Build Engine version 14.0.24730.2
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 4/14/2016 9:41:33 AM.
+The target "BeforeGenerateProjectPriFile" listed in a BeforeTargets attribute at "C:\Program Files (x86)\MSBuild\Microsoft\NuGet\Microsoft.NuGet.targets (186,61)" does not exist in the project, and will be ignored.
+Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_8c417.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTC_8c417.dir\Debug\".
+  Creating directory "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTC_8c417.dir\Debug\cmTC_8c417.tlog\".
+InitializeBuildStatus:
+  Creating "cmTC_8c417.dir\Debug\cmTC_8c417.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_8c417.dir\Debug\\" /Fd"cmTC_8c417.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.00.23506 for x64
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_8c417.dir\Debug\\" /Fd"cmTC_8c417.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+  
+  CheckIncludeFile.c
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1): fatal error C1083: Cannot open include file: 'sys/time.h': No such file or directory [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_8c417.vcxproj]
+Done Building Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_8c417.vcxproj" (default targets) -- FAILED.
+
+Build FAILED.
+
+"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_8c417.vcxproj" (default target) (1) ->
+(ClCompile target) -> 
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1): fatal error C1083: Cannot open include file: 'sys/time.h': No such file or directory [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_8c417.vcxproj]
+
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:03.65
+
+
+Determining if the include file unistd.h exists failed with the following output:
+Change Dir: D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/14.0/bin/MSBuild.exe" "cmTC_73c71.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=14.0"
+Microsoft (R) Build Engine version 14.0.24730.2
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 4/14/2016 9:41:44 AM.
+The target "BeforeGenerateProjectPriFile" listed in a BeforeTargets attribute at "C:\Program Files (x86)\MSBuild\Microsoft\NuGet\Microsoft.NuGet.targets (186,61)" does not exist in the project, and will be ignored.
+Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_73c71.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTC_73c71.dir\Debug\".
+  Creating directory "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTC_73c71.dir\Debug\cmTC_73c71.tlog\".
+InitializeBuildStatus:
+  Creating "cmTC_73c71.dir\Debug\cmTC_73c71.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_73c71.dir\Debug\\" /Fd"cmTC_73c71.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.00.23506 for x64
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_73c71.dir\Debug\\" /Fd"cmTC_73c71.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+  
+  CheckIncludeFile.c
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1): fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_73c71.vcxproj]
+Done Building Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_73c71.vcxproj" (default targets) -- FAILED.
+
+Build FAILED.
+
+"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_73c71.vcxproj" (default target) (1) ->
+(ClCompile target) -> 
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1): fatal error C1083: Cannot open include file: 'unistd.h': No such file or directory [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_73c71.vcxproj]
+
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:02.19
+
+
+Performing C SOURCE FILE Test TIME_WITH_SYS_TIME failed with the following output:
+Change Dir: D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/14.0/bin/MSBuild.exe" "cmTC_469c5.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=14.0"
+Microsoft (R) Build Engine version 14.0.24730.2
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 4/14/2016 9:41:51 AM.
+The target "BeforeGenerateProjectPriFile" listed in a BeforeTargets attribute at "C:\Program Files (x86)\MSBuild\Microsoft\NuGet\Microsoft.NuGet.targets (186,61)" does not exist in the project, and will be ignored.
+Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_469c5.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTC_469c5.dir\Debug\".
+  Creating directory "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTC_469c5.dir\Debug\cmTC_469c5.tlog\".
+InitializeBuildStatus:
+  Creating "cmTC_469c5.dir\Debug\cmTC_469c5.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D TIME_WITH_SYS_TIME /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_469c5.dir\Debug\\" /Fd"cmTC_469c5.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\src.c"
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.00.23506 for x64
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D TIME_WITH_SYS_TIME /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_469c5.dir\Debug\\" /Fd"cmTC_469c5.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\src.c"
+  
+  src.c
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\src.c(2): fatal error C1083: Cannot open include file: 'sys/time.h': No such file or directory [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_469c5.vcxproj]
+Done Building Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_469c5.vcxproj" (default targets) -- FAILED.
+
+Build FAILED.
+
+"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_469c5.vcxproj" (default target) (1) ->
+(ClCompile target) -> 
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\src.c(2): fatal error C1083: Cannot open include file: 'sys/time.h': No such file or directory [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_469c5.vcxproj]
+
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:02.26
+
+Source file was:
+
+#include <sys/time.h>
+#include <time.h>
+int main(void){return 0;}
+Determining size of INT8 failed with the following output:
+Change Dir: D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/14.0/bin/MSBuild.exe" "cmTC_5113c.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=14.0"
+Microsoft (R) Build Engine version 14.0.24730.2
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 4/14/2016 9:43:00 AM.
+The target "BeforeGenerateProjectPriFile" listed in a BeforeTargets attribute at "C:\Program Files (x86)\MSBuild\Microsoft\NuGet\Microsoft.NuGet.targets (186,61)" does not exist in the project, and will be ignored.
+Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_5113c.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTC_5113c.dir\Debug\".
+  Creating directory "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTC_5113c.dir\Debug\cmTC_5113c.tlog\".
+InitializeBuildStatus:
+  Creating "cmTC_5113c.dir\Debug\cmTC_5113c.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_5113c.dir\Debug\\" /Fd"cmTC_5113c.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int8.c"
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.00.23506 for x64
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_5113c.dir\Debug\\" /Fd"cmTC_5113c.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int8.c"
+  
+  int8.c
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int8.c(19): error C2065: 'INT8': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_5113c.vcxproj]
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int8.c(20): error C2065: 'INT8': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_5113c.vcxproj]
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int8.c(21): error C2065: 'INT8': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_5113c.vcxproj]
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int8.c(22): error C2065: 'INT8': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_5113c.vcxproj]
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int8.c(23): error C2065: 'INT8': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_5113c.vcxproj]
+Done Building Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_5113c.vcxproj" (default targets) -- FAILED.
+
+Build FAILED.
+
+"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_5113c.vcxproj" (default target) (1) ->
+(ClCompile target) -> 
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int8.c(19): error C2065: 'INT8': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_5113c.vcxproj]
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int8.c(20): error C2065: 'INT8': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_5113c.vcxproj]
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int8.c(21): error C2065: 'INT8': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_5113c.vcxproj]
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int8.c(22): error C2065: 'INT8': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_5113c.vcxproj]
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int8.c(23): error C2065: 'INT8': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_5113c.vcxproj]
+
+    0 Warning(s)
+    5 Error(s)
+
+Time Elapsed 00:00:03.00
+
+D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CheckTypeSize/int8.c:
+#include <sys/types.h>
+#include <stdint.h>
+#include <stddef.h>
+
+
+#undef KEY
+#if defined(__i386)
+# define KEY '_','_','i','3','8','6'
+#elif defined(__x86_64)
+# define KEY '_','_','x','8','6','_','6','4'
+#elif defined(__ppc__)
+# define KEY '_','_','p','p','c','_','_'
+#elif defined(__ppc64__)
+# define KEY '_','_','p','p','c','6','4','_','_'
+#endif
+
+#define SIZE (sizeof(INT8))
+char info_size[] =  {'I', 'N', 'F', 'O', ':', 's','i','z','e','[',
+  ('0' + ((SIZE / 10000)%10)),
+  ('0' + ((SIZE / 1000)%10)),
+  ('0' + ((SIZE / 100)%10)),
+  ('0' + ((SIZE / 10)%10)),
+  ('0' +  (SIZE    % 10)),
+  ']',
+#ifdef KEY
+  ' ','k','e','y','[', KEY, ']',
+#endif
+  '\0'};
+
+#ifdef __CLASSIC_C__
+int main(argc, argv) int argc; char *argv[];
+#else
+int main(int argc, char *argv[])
+#endif
+{
+  int require = 0;
+  require += info_size[argc];
+  (void)argv;
+  return require;
+}
+
+
+Determining size of INT16 failed with the following output:
+Change Dir: D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/14.0/bin/MSBuild.exe" "cmTC_98890.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=14.0"
+Microsoft (R) Build Engine version 14.0.24730.2
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 4/14/2016 9:43:03 AM.
+The target "BeforeGenerateProjectPriFile" listed in a BeforeTargets attribute at "C:\Program Files (x86)\MSBuild\Microsoft\NuGet\Microsoft.NuGet.targets (186,61)" does not exist in the project, and will be ignored.
+Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_98890.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTC_98890.dir\Debug\".
+  Creating directory "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTC_98890.dir\Debug\cmTC_98890.tlog\".
+InitializeBuildStatus:
+  Creating "cmTC_98890.dir\Debug\cmTC_98890.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_98890.dir\Debug\\" /Fd"cmTC_98890.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int16.c"
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.00.23506 for x64
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_98890.dir\Debug\\" /Fd"cmTC_98890.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int16.c"
+  
+  int16.c
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int16.c(19): error C2065: 'INT16': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_98890.vcxproj]
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int16.c(20): error C2065: 'INT16': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_98890.vcxproj]
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int16.c(21): error C2065: 'INT16': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_98890.vcxproj]
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int16.c(22): error C2065: 'INT16': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_98890.vcxproj]
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int16.c(23): error C2065: 'INT16': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_98890.vcxproj]
+Done Building Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_98890.vcxproj" (default targets) -- FAILED.
+
+Build FAILED.
+
+"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_98890.vcxproj" (default target) (1) ->
+(ClCompile target) -> 
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int16.c(19): error C2065: 'INT16': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_98890.vcxproj]
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int16.c(20): error C2065: 'INT16': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_98890.vcxproj]
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int16.c(21): error C2065: 'INT16': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_98890.vcxproj]
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int16.c(22): error C2065: 'INT16': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_98890.vcxproj]
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int16.c(23): error C2065: 'INT16': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_98890.vcxproj]
+
+    0 Warning(s)
+    5 Error(s)
+
+Time Elapsed 00:00:01.93
+
+D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CheckTypeSize/int16.c:
+#include <sys/types.h>
+#include <stdint.h>
+#include <stddef.h>
+
+
+#undef KEY
+#if defined(__i386)
+# define KEY '_','_','i','3','8','6'
+#elif defined(__x86_64)
+# define KEY '_','_','x','8','6','_','6','4'
+#elif defined(__ppc__)
+# define KEY '_','_','p','p','c','_','_'
+#elif defined(__ppc64__)
+# define KEY '_','_','p','p','c','6','4','_','_'
+#endif
+
+#define SIZE (sizeof(INT16))
+char info_size[] =  {'I', 'N', 'F', 'O', ':', 's','i','z','e','[',
+  ('0' + ((SIZE / 10000)%10)),
+  ('0' + ((SIZE / 1000)%10)),
+  ('0' + ((SIZE / 100)%10)),
+  ('0' + ((SIZE / 10)%10)),
+  ('0' +  (SIZE    % 10)),
+  ']',
+#ifdef KEY
+  ' ','k','e','y','[', KEY, ']',
+#endif
+  '\0'};
+
+#ifdef __CLASSIC_C__
+int main(argc, argv) int argc; char *argv[];
+#else
+int main(int argc, char *argv[])
+#endif
+{
+  int require = 0;
+  require += info_size[argc];
+  (void)argv;
+  return require;
+}
+
+
+Determining size of INT32 failed with the following output:
+Change Dir: D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/14.0/bin/MSBuild.exe" "cmTC_d18b0.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=14.0"
+Microsoft (R) Build Engine version 14.0.24730.2
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 4/14/2016 9:43:06 AM.
+The target "BeforeGenerateProjectPriFile" listed in a BeforeTargets attribute at "C:\Program Files (x86)\MSBuild\Microsoft\NuGet\Microsoft.NuGet.targets (186,61)" does not exist in the project, and will be ignored.
+Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_d18b0.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTC_d18b0.dir\Debug\".
+  Creating directory "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTC_d18b0.dir\Debug\cmTC_d18b0.tlog\".
+InitializeBuildStatus:
+  Creating "cmTC_d18b0.dir\Debug\cmTC_d18b0.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_d18b0.dir\Debug\\" /Fd"cmTC_d18b0.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int32.c"
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.00.23506 for x64
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_d18b0.dir\Debug\\" /Fd"cmTC_d18b0.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int32.c"
+  
+  int32.c
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int32.c(19): error C2065: 'INT32': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_d18b0.vcxproj]
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int32.c(20): error C2065: 'INT32': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_d18b0.vcxproj]
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int32.c(21): error C2065: 'INT32': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_d18b0.vcxproj]
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int32.c(22): error C2065: 'INT32': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_d18b0.vcxproj]
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int32.c(23): error C2065: 'INT32': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_d18b0.vcxproj]
+Done Building Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_d18b0.vcxproj" (default targets) -- FAILED.
+
+Build FAILED.
+
+"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_d18b0.vcxproj" (default target) (1) ->
+(ClCompile target) -> 
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int32.c(19): error C2065: 'INT32': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_d18b0.vcxproj]
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int32.c(20): error C2065: 'INT32': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_d18b0.vcxproj]
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int32.c(21): error C2065: 'INT32': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_d18b0.vcxproj]
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int32.c(22): error C2065: 'INT32': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_d18b0.vcxproj]
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CheckTypeSize\int32.c(23): error C2065: 'INT32': undeclared identifier [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_d18b0.vcxproj]
+
+    0 Warning(s)
+    5 Error(s)
+
+Time Elapsed 00:00:01.88
+
+D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CheckTypeSize/int32.c:
+#include <sys/types.h>
+#include <stdint.h>
+#include <stddef.h>
+
+
+#undef KEY
+#if defined(__i386)
+# define KEY '_','_','i','3','8','6'
+#elif defined(__x86_64)
+# define KEY '_','_','x','8','6','_','6','4'
+#elif defined(__ppc__)
+# define KEY '_','_','p','p','c','_','_'
+#elif defined(__ppc64__)
+# define KEY '_','_','p','p','c','6','4','_','_'
+#endif
+
+#define SIZE (sizeof(INT32))
+char info_size[] =  {'I', 'N', 'F', 'O', ':', 's','i','z','e','[',
+  ('0' + ((SIZE / 10000)%10)),
+  ('0' + ((SIZE / 1000)%10)),
+  ('0' + ((SIZE / 100)%10)),
+  ('0' + ((SIZE / 10)%10)),
+  ('0' +  (SIZE    % 10)),
+  ']',
+#ifdef KEY
+  ' ','k','e','y','[', KEY, ']',
+#endif
+  '\0'};
+
+#ifdef __CLASSIC_C__
+int main(argc, argv) int argc; char *argv[];
+#else
+int main(int argc, char *argv[])
+#endif
+{
+  int require = 0;
+  require += info_size[argc];
+  (void)argv;
+  return require;
+}
+
+
+Determining if the function isascii exists failed with the following output:
+Change Dir: D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/14.0/bin/MSBuild.exe" "cmTC_3ff6c.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=14.0"
+Microsoft (R) Build Engine version 14.0.24730.2
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 4/14/2016 9:43:18 AM.
+The target "BeforeGenerateProjectPriFile" listed in a BeforeTargets attribute at "C:\Program Files (x86)\MSBuild\Microsoft\NuGet\Microsoft.NuGet.targets (186,61)" does not exist in the project, and will be ignored.
+Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_3ff6c.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTC_3ff6c.dir\Debug\".
+  Creating directory "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTC_3ff6c.dir\Debug\cmTC_3ff6c.tlog\".
+InitializeBuildStatus:
+  Creating "cmTC_3ff6c.dir\Debug\cmTC_3ff6c.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=isascii /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_3ff6c.dir\Debug\\" /Fd"cmTC_3ff6c.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "C:\Program Files (x86)\CMake\share\cmake-3.5\Modules\CheckFunctionExists.c"
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.00.23506 for x64
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=isascii /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_3ff6c.dir\Debug\\" /Fd"cmTC_3ff6c.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "C:\Program Files (x86)\CMake\share\cmake-3.5\Modules\CheckFunctionExists.c"
+  
+  CheckFunctionExists.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:QUEUE /OUT:"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\cmTC_3ff6c.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp/Debug/cmTC_3ff6c.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp/Debug/cmTC_3ff6c.lib" /MACHINE:X64  /machine:x64 cmTC_3ff6c.dir\Debug\CheckFunctionExists.obj
+CheckFunctionExists.obj : error LNK2019: unresolved external symbol isascii referenced in function main [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_3ff6c.vcxproj]
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\cmTC_3ff6c.exe : fatal error LNK1120: 1 unresolved externals [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_3ff6c.vcxproj]
+Done Building Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_3ff6c.vcxproj" (default targets) -- FAILED.
+
+Build FAILED.
+
+"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_3ff6c.vcxproj" (default target) (1) ->
+(Link target) -> 
+  CheckFunctionExists.obj : error LNK2019: unresolved external symbol isascii referenced in function main [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_3ff6c.vcxproj]
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\cmTC_3ff6c.exe : fatal error LNK1120: 1 unresolved externals [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_3ff6c.vcxproj]
+
+    0 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:02.47
+
+
+Determining if the function mmap exists failed with the following output:
+Change Dir: D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/14.0/bin/MSBuild.exe" "cmTC_75133.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=14.0"
+Microsoft (R) Build Engine version 14.0.24730.2
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 4/14/2016 9:43:28 AM.
+The target "BeforeGenerateProjectPriFile" listed in a BeforeTargets attribute at "C:\Program Files (x86)\MSBuild\Microsoft\NuGet\Microsoft.NuGet.targets (186,61)" does not exist in the project, and will be ignored.
+Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_75133.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTC_75133.dir\Debug\".
+  Creating directory "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTC_75133.dir\Debug\cmTC_75133.tlog\".
+InitializeBuildStatus:
+  Creating "cmTC_75133.dir\Debug\cmTC_75133.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=mmap /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_75133.dir\Debug\\" /Fd"cmTC_75133.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "C:\Program Files (x86)\CMake\share\cmake-3.5\Modules\CheckFunctionExists.c"
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.00.23506 for x64
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=mmap /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_75133.dir\Debug\\" /Fd"cmTC_75133.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "C:\Program Files (x86)\CMake\share\cmake-3.5\Modules\CheckFunctionExists.c"
+  
+  CheckFunctionExists.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:QUEUE /OUT:"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\cmTC_75133.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp/Debug/cmTC_75133.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp/Debug/cmTC_75133.lib" /MACHINE:X64  /machine:x64 cmTC_75133.dir\Debug\CheckFunctionExists.obj
+CheckFunctionExists.obj : error LNK2019: unresolved external symbol mmap referenced in function main [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_75133.vcxproj]
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\cmTC_75133.exe : fatal error LNK1120: 1 unresolved externals [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_75133.vcxproj]
+Done Building Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_75133.vcxproj" (default targets) -- FAILED.
+
+Build FAILED.
+
+"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_75133.vcxproj" (default target) (1) ->
+(Link target) -> 
+  CheckFunctionExists.obj : error LNK2019: unresolved external symbol mmap referenced in function main [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_75133.vcxproj]
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\cmTC_75133.exe : fatal error LNK1120: 1 unresolved externals [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_75133.vcxproj]
+
+    0 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:02.38
+
+
+Determining if the function strcasecmp exists failed with the following output:
+Change Dir: D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/14.0/bin/MSBuild.exe" "cmTC_59a60.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=14.0"
+Microsoft (R) Build Engine version 14.0.24730.2
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 4/14/2016 9:43:34 AM.
+The target "BeforeGenerateProjectPriFile" listed in a BeforeTargets attribute at "C:\Program Files (x86)\MSBuild\Microsoft\NuGet\Microsoft.NuGet.targets (186,61)" does not exist in the project, and will be ignored.
+Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_59a60.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTC_59a60.dir\Debug\".
+  Creating directory "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTC_59a60.dir\Debug\cmTC_59a60.tlog\".
+InitializeBuildStatus:
+  Creating "cmTC_59a60.dir\Debug\cmTC_59a60.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=strcasecmp /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_59a60.dir\Debug\\" /Fd"cmTC_59a60.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "C:\Program Files (x86)\CMake\share\cmake-3.5\Modules\CheckFunctionExists.c"
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.00.23506 for x64
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=strcasecmp /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_59a60.dir\Debug\\" /Fd"cmTC_59a60.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "C:\Program Files (x86)\CMake\share\cmake-3.5\Modules\CheckFunctionExists.c"
+  
+  CheckFunctionExists.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:QUEUE /OUT:"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\cmTC_59a60.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp/Debug/cmTC_59a60.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp/Debug/cmTC_59a60.lib" /MACHINE:X64  /machine:x64 cmTC_59a60.dir\Debug\CheckFunctionExists.obj
+CheckFunctionExists.obj : error LNK2019: unresolved external symbol strcasecmp referenced in function main [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_59a60.vcxproj]
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\cmTC_59a60.exe : fatal error LNK1120: 1 unresolved externals [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_59a60.vcxproj]
+Done Building Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_59a60.vcxproj" (default targets) -- FAILED.
+
+Build FAILED.
+
+"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_59a60.vcxproj" (default target) (1) ->
+(Link target) -> 
+  CheckFunctionExists.obj : error LNK2019: unresolved external symbol strcasecmp referenced in function main [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_59a60.vcxproj]
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\cmTC_59a60.exe : fatal error LNK1120: 1 unresolved externals [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_59a60.vcxproj]
+
+    0 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:02.47
+
+
+Determining if the function getopt exists failed with the following output:
+Change Dir: D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/14.0/bin/MSBuild.exe" "cmTC_49fa8.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=14.0"
+Microsoft (R) Build Engine version 14.0.24730.2
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 4/14/2016 9:43:57 AM.
+The target "BeforeGenerateProjectPriFile" listed in a BeforeTargets attribute at "C:\Program Files (x86)\MSBuild\Microsoft\NuGet\Microsoft.NuGet.targets (186,61)" does not exist in the project, and will be ignored.
+Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_49fa8.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTC_49fa8.dir\Debug\".
+  Creating directory "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTC_49fa8.dir\Debug\cmTC_49fa8.tlog\".
+InitializeBuildStatus:
+  Creating "cmTC_49fa8.dir\Debug\cmTC_49fa8.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=getopt /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_49fa8.dir\Debug\\" /Fd"cmTC_49fa8.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "C:\Program Files (x86)\CMake\share\cmake-3.5\Modules\CheckFunctionExists.c"
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.00.23506 for x64
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=getopt /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_49fa8.dir\Debug\\" /Fd"cmTC_49fa8.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "C:\Program Files (x86)\CMake\share\cmake-3.5\Modules\CheckFunctionExists.c"
+  
+  CheckFunctionExists.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:QUEUE /OUT:"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\cmTC_49fa8.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp/Debug/cmTC_49fa8.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp/Debug/cmTC_49fa8.lib" /MACHINE:X64  /machine:x64 cmTC_49fa8.dir\Debug\CheckFunctionExists.obj
+CheckFunctionExists.obj : error LNK2019: unresolved external symbol getopt referenced in function main [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_49fa8.vcxproj]
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\cmTC_49fa8.exe : fatal error LNK1120: 1 unresolved externals [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_49fa8.vcxproj]
+Done Building Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_49fa8.vcxproj" (default targets) -- FAILED.
+
+Build FAILED.
+
+"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_49fa8.vcxproj" (default target) (1) ->
+(Link target) -> 
+  CheckFunctionExists.obj : error LNK2019: unresolved external symbol getopt referenced in function main [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_49fa8.vcxproj]
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\cmTC_49fa8.exe : fatal error LNK1120: 1 unresolved externals [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_49fa8.vcxproj]
+
+    0 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:02.76
+
+
+Determining if the system is big endian passed with the following output:
+Change Dir: D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/14.0/bin/MSBuild.exe" "cmTC_0a979.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=14.0"
+Microsoft (R) Build Engine version 14.0.24730.2
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 4/14/2016 9:44:12 AM.
+The target "BeforeGenerateProjectPriFile" listed in a BeforeTargets attribute at "C:\Program Files (x86)\MSBuild\Microsoft\NuGet\Microsoft.NuGet.targets (186,61)" does not exist in the project, and will be ignored.
+Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_0a979.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTC_0a979.dir\Debug\".
+  Creating directory "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTC_0a979.dir\Debug\cmTC_0a979.tlog\".
+InitializeBuildStatus:
+  Creating "cmTC_0a979.dir\Debug\cmTC_0a979.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_0a979.dir\Debug\\" /Fd"cmTC_0a979.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\TestEndianess.c"
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.00.23506 for x64
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_0a979.dir\Debug\\" /Fd"cmTC_0a979.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\TestEndianess.c"
+  
+  TestEndianess.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:QUEUE /OUT:"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\cmTC_0a979.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp/Debug/cmTC_0a979.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp/Debug/cmTC_0a979.lib" /MACHINE:X64  /machine:x64 cmTC_0a979.dir\Debug\TestEndianess.obj
+  cmTC_0a979.vcxproj -> D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\cmTC_0a979.exe
+  cmTC_0a979.vcxproj -> D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp/Debug/cmTC_0a979.pdb (Full PDB)
+FinalizeBuildStatus:
+  Deleting file "cmTC_0a979.dir\Debug\cmTC_0a979.tlog\unsuccessfulbuild".
+  Touching "cmTC_0a979.dir\Debug\cmTC_0a979.tlog\cmTC_0a979.lastbuildstate".
+Done Building Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_0a979.vcxproj" (default targets).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.68
+
+TestEndianess.c:
+/* A 16 bit integer is required. */
+typedef unsigned short cmakeint16;
+
+/* On a little endian machine, these 16bit ints will give "THIS IS LITTLE ENDIAN."
+   On a big endian machine the characters will be exchanged pairwise. */
+const cmakeint16 info_little[] =  {0x4854, 0x5349, 0x4920, 0x2053, 0x494c, 0x5454, 0x454c, 0x4520, 0x444e, 0x4149, 0x2e4e, 0x0000};
+
+/* on a big endian machine, these 16bit ints will give "THIS IS BIG ENDIAN."
+   On a little endian machine the characters will be exchanged pairwise. */
+const cmakeint16 info_big[] =     {0x5448, 0x4953, 0x2049, 0x5320, 0x4249, 0x4720, 0x454e, 0x4449, 0x414e, 0x2e2e, 0x0000};
+
+#ifdef __CLASSIC_C__
+int main(argc, argv) int argc; char *argv[];
+#else
+int main(int argc, char *argv[])
+#endif
+{
+  int require = 0;
+  require += info_little[argc];
+  require += info_big[argc];
+  (void)argv;
+  return require;
+}
+
+
+Determining if the function jbg_newlen exists failed with the following output:
+Change Dir: D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/14.0/bin/MSBuild.exe" "cmTC_6431f.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=14.0"
+Microsoft (R) Build Engine version 14.0.24730.2
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 4/14/2016 9:44:17 AM.
+The target "BeforeGenerateProjectPriFile" listed in a BeforeTargets attribute at "C:\Program Files (x86)\MSBuild\Microsoft\NuGet\Microsoft.NuGet.targets (186,61)" does not exist in the project, and will be ignored.
+Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_6431f.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTC_6431f.dir\Debug\".
+  Creating directory "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTC_6431f.dir\Debug\cmTC_6431f.tlog\".
+InitializeBuildStatus:
+  Creating "cmTC_6431f.dir\Debug\cmTC_6431f.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=jbg_newlen /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_6431f.dir\Debug\\" /Fd"cmTC_6431f.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "C:\Program Files (x86)\CMake\share\cmake-3.5\Modules\CheckFunctionExists.c"
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.00.23506 for x64
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=jbg_newlen /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_6431f.dir\Debug\\" /Fd"cmTC_6431f.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "C:\Program Files (x86)\CMake\share\cmake-3.5\Modules\CheckFunctionExists.c"
+  
+  CheckFunctionExists.c
+Link:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:QUEUE /OUT:"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\cmTC_6431f.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp/Debug/cmTC_6431f.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp/Debug/cmTC_6431f.lib" /MACHINE:X64  /machine:x64 cmTC_6431f.dir\Debug\CheckFunctionExists.obj
+CheckFunctionExists.obj : error LNK2019: unresolved external symbol jbg_newlen referenced in function main [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_6431f.vcxproj]
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\cmTC_6431f.exe : fatal error LNK1120: 1 unresolved externals [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_6431f.vcxproj]
+Done Building Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_6431f.vcxproj" (default targets) -- FAILED.
+
+Build FAILED.
+
+"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_6431f.vcxproj" (default target) (1) ->
+(Link target) -> 
+  CheckFunctionExists.obj : error LNK2019: unresolved external symbol jbg_newlen referenced in function main [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_6431f.vcxproj]
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\cmTC_6431f.exe : fatal error LNK1120: 1 unresolved externals [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_6431f.vcxproj]
+
+    0 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:02.31
+
+
+Determining if the include file GL/gl.h exists failed with the following output:
+Change Dir: D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/14.0/bin/MSBuild.exe" "cmTC_7e631.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=14.0"
+Microsoft (R) Build Engine version 14.0.24730.2
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 4/14/2016 9:44:36 AM.
+The target "BeforeGenerateProjectPriFile" listed in a BeforeTargets attribute at "C:\Program Files (x86)\MSBuild\Microsoft\NuGet\Microsoft.NuGet.targets (186,61)" does not exist in the project, and will be ignored.
+Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_7e631.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTC_7e631.dir\Debug\".
+  Creating directory "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTC_7e631.dir\Debug\cmTC_7e631.tlog\".
+InitializeBuildStatus:
+  Creating "cmTC_7e631.dir\Debug\cmTC_7e631.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_7e631.dir\Debug\\" /Fd"cmTC_7e631.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.00.23506 for x64
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_7e631.dir\Debug\\" /Fd"cmTC_7e631.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+  
+  CheckIncludeFile.c
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10586.0\um\GL/gl.h(1157): error C2054: expected '(' to follow 'WINGDIAPI' [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_7e631.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10586.0\um\GL/gl.h(1157): error C2085: 'APIENTRY': not in formal parameter list [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_7e631.vcxproj]
+  Internal Compiler Error in C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe.  You will be prompted to send an error report to Microsoft later.
+  INTERNAL COMPILER ERROR in 'C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe'
+      Please choose the Technical Support command on the Visual C++
+      Help menu, or open the Technical Support help file for more information
+Done Building Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_7e631.vcxproj" (default targets) -- FAILED.
+
+Build FAILED.
+
+"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_7e631.vcxproj" (default target) (1) ->
+(ClCompile target) -> 
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10586.0\um\GL/gl.h(1157): error C2054: expected '(' to follow 'WINGDIAPI' [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_7e631.vcxproj]
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10586.0\um\GL/gl.h(1157): error C2085: 'APIENTRY': not in formal parameter list [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_7e631.vcxproj]
+
+    0 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:00.97
+
+
+Determining if the include file GL/glu.h exists failed with the following output:
+Change Dir: D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/14.0/bin/MSBuild.exe" "cmTC_58426.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=14.0"
+Microsoft (R) Build Engine version 14.0.24730.2
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 4/14/2016 9:44:37 AM.
+The target "BeforeGenerateProjectPriFile" listed in a BeforeTargets attribute at "C:\Program Files (x86)\MSBuild\Microsoft\NuGet\Microsoft.NuGet.targets (186,61)" does not exist in the project, and will be ignored.
+Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_58426.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTC_58426.dir\Debug\".
+  Creating directory "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTC_58426.dir\Debug\cmTC_58426.tlog\".
+InitializeBuildStatus:
+  Creating "cmTC_58426.dir\Debug\cmTC_58426.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_58426.dir\Debug\\" /Fd"cmTC_58426.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.00.23506 for x64
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_58426.dir\Debug\\" /Fd"cmTC_58426.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+  
+  CheckIncludeFile.c
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10586.0\um\GL/gl.h(1157): error C2054: expected '(' to follow 'WINGDIAPI' [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_58426.vcxproj]
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.10586.0\um\GL/gl.h(1157): error C2085: 'APIENTRY': not in formal parameter list [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_58426.vcxproj]
+  Internal Compiler Error in C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe.  You will be prompted to send an error report to Microsoft later.
+  INTERNAL COMPILER ERROR in 'C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe'
+      Please choose the Technical Support command on the Visual C++
+      Help menu, or open the Technical Support help file for more information
+Done Building Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_58426.vcxproj" (default targets) -- FAILED.
+
+Build FAILED.
+
+"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_58426.vcxproj" (default target) (1) ->
+(ClCompile target) -> 
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10586.0\um\GL/gl.h(1157): error C2054: expected '(' to follow 'WINGDIAPI' [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_58426.vcxproj]
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10586.0\um\GL/gl.h(1157): error C2085: 'APIENTRY': not in formal parameter list [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_58426.vcxproj]
+
+    0 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:00.86
+
+
+Determining if the include file GL/glut.h exists failed with the following output:
+Change Dir: D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/14.0/bin/MSBuild.exe" "cmTC_07f12.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=14.0"
+Microsoft (R) Build Engine version 14.0.24730.2
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 4/14/2016 9:44:38 AM.
+The target "BeforeGenerateProjectPriFile" listed in a BeforeTargets attribute at "C:\Program Files (x86)\MSBuild\Microsoft\NuGet\Microsoft.NuGet.targets (186,61)" does not exist in the project, and will be ignored.
+Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_07f12.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTC_07f12.dir\Debug\".
+  Creating directory "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTC_07f12.dir\Debug\cmTC_07f12.tlog\".
+InitializeBuildStatus:
+  Creating "cmTC_07f12.dir\Debug\cmTC_07f12.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_07f12.dir\Debug\\" /Fd"cmTC_07f12.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.00.23506 for x64
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_07f12.dir\Debug\\" /Fd"cmTC_07f12.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+  
+  CheckIncludeFile.c
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1): fatal error C1083: Cannot open include file: 'GL/glut.h': No such file or directory [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_07f12.vcxproj]
+Done Building Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_07f12.vcxproj" (default targets) -- FAILED.
+
+Build FAILED.
+
+"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_07f12.vcxproj" (default target) (1) ->
+(ClCompile target) -> 
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1): fatal error C1083: Cannot open include file: 'GL/glut.h': No such file or directory [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_07f12.vcxproj]
+
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:00.91
+
+
+Determining if the include file GLUT/glut.h exists failed with the following output:
+Change Dir: D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/14.0/bin/MSBuild.exe" "cmTC_19717.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=14.0"
+Microsoft (R) Build Engine version 14.0.24730.2
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 4/14/2016 9:44:40 AM.
+The target "BeforeGenerateProjectPriFile" listed in a BeforeTargets attribute at "C:\Program Files (x86)\MSBuild\Microsoft\NuGet\Microsoft.NuGet.targets (186,61)" does not exist in the project, and will be ignored.
+Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_19717.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTC_19717.dir\Debug\".
+  Creating directory "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTC_19717.dir\Debug\cmTC_19717.tlog\".
+InitializeBuildStatus:
+  Creating "cmTC_19717.dir\Debug\cmTC_19717.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_19717.dir\Debug\\" /Fd"cmTC_19717.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.00.23506 for x64
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_19717.dir\Debug\\" /Fd"cmTC_19717.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+  
+  CheckIncludeFile.c
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1): fatal error C1083: Cannot open include file: 'GLUT/glut.h': No such file or directory [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_19717.vcxproj]
+Done Building Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_19717.vcxproj" (default targets) -- FAILED.
+
+Build FAILED.
+
+"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_19717.vcxproj" (default target) (1) ->
+(ClCompile target) -> 
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1): fatal error C1083: Cannot open include file: 'GLUT/glut.h': No such file or directory [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_19717.vcxproj]
+
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:00.99
+
+
+Determining if the include file OpenGL/gl.h exists failed with the following output:
+Change Dir: D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/14.0/bin/MSBuild.exe" "cmTC_21475.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=14.0"
+Microsoft (R) Build Engine version 14.0.24730.2
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 4/14/2016 9:44:41 AM.
+The target "BeforeGenerateProjectPriFile" listed in a BeforeTargets attribute at "C:\Program Files (x86)\MSBuild\Microsoft\NuGet\Microsoft.NuGet.targets (186,61)" does not exist in the project, and will be ignored.
+Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_21475.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTC_21475.dir\Debug\".
+  Creating directory "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTC_21475.dir\Debug\cmTC_21475.tlog\".
+InitializeBuildStatus:
+  Creating "cmTC_21475.dir\Debug\cmTC_21475.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_21475.dir\Debug\\" /Fd"cmTC_21475.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.00.23506 for x64
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_21475.dir\Debug\\" /Fd"cmTC_21475.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+  
+  CheckIncludeFile.c
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1): fatal error C1083: Cannot open include file: 'OpenGL/gl.h': No such file or directory [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_21475.vcxproj]
+Done Building Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_21475.vcxproj" (default targets) -- FAILED.
+
+Build FAILED.
+
+"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_21475.vcxproj" (default target) (1) ->
+(ClCompile target) -> 
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1): fatal error C1083: Cannot open include file: 'OpenGL/gl.h': No such file or directory [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_21475.vcxproj]
+
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:00.89
+
+
+Determining if the include file OpenGL/glu.h exists failed with the following output:
+Change Dir: D:/Projects/SourceCode/3rdParty/tiff-4.0.6/CMakeFiles/CMakeTmp
+
+Run Build Command:"C:/Program Files (x86)/MSBuild/14.0/bin/MSBuild.exe" "cmTC_19b53.vcxproj" "/p:Configuration=Debug" "/p:VisualStudioVersion=14.0"
+Microsoft (R) Build Engine version 14.0.24730.2
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Build started 4/14/2016 9:44:42 AM.
+The target "BeforeGenerateProjectPriFile" listed in a BeforeTargets attribute at "C:\Program Files (x86)\MSBuild\Microsoft\NuGet\Microsoft.NuGet.targets (186,61)" does not exist in the project, and will be ignored.
+Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_19b53.vcxproj" on node 1 (default targets).
+PrepareForBuild:
+  Creating directory "cmTC_19b53.dir\Debug\".
+  Creating directory "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\Debug\".
+  Creating directory "cmTC_19b53.dir\Debug\cmTC_19b53.tlog\".
+InitializeBuildStatus:
+  Creating "cmTC_19b53.dir\Debug\cmTC_19b53.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+ClCompile:
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_19b53.dir\Debug\\" /Fd"cmTC_19b53.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+  Microsoft (R) C/C++ Optimizing Compiler Version 19.00.23506 for x64
+  Copyright (C) Microsoft Corporation.  All rights reserved.
+  
+  cl /c /Zi /W3 /WX- /Od /Ob0 /D WIN32 /D _WINDOWS /D _DEBUG /D "CMAKE_INTDIR=\"Debug\"" /D _MBCS /Gm- /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_19b53.dir\Debug\\" /Fd"cmTC_19b53.dir\Debug\vc140.pdb" /Gd /TC /errorReport:queue "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c"
+  
+  CheckIncludeFile.c
+D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1): fatal error C1083: Cannot open include file: 'OpenGL/glu.h': No such file or directory [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_19b53.vcxproj]
+Done Building Project "D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_19b53.vcxproj" (default targets) -- FAILED.
+
+Build FAILED.
+
+"D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_19b53.vcxproj" (default target) (1) ->
+(ClCompile target) -> 
+  D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\CheckIncludeFile.c(1): fatal error C1083: Cannot open include file: 'OpenGL/glu.h': No such file or directory [D:\Projects\SourceCode\3rdParty\tiff-4.0.6\CMakeFiles\CMakeTmp\cmTC_19b53.vcxproj]
+
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:00.81
+
+

@@ -23,13 +23,13 @@
 namespace
 {
 	const float lc_fDirN = 0;
-	const float lc_fDirNE = maConstants::c_dPI / 4;
-	const float lc_fDirE = maConstants::c_dPI / 2;
-	const float lc_fDirSE = maConstants::c_dPI * 3 / 4;
-	const float lc_fDirS = maConstants::c_dPI;
-	const float lc_fDirSW = maConstants::c_dPI * 5 / 4;
-	const float lc_fDirW = maConstants::c_dPI * 3 / 2;
-	const float lc_fDirNW = maConstants::c_dPI * 7 / 4;
+	const float lc_fDirNE = float(maConstants::c_dPI / 4.0);
+	const float lc_fDirE = float(maConstants::c_dPI / 2.0);
+	const float lc_fDirSE = float(maConstants::c_dPI * 3.0 / 4.0);
+	const float lc_fDirS = float(maConstants::c_dPI);
+	const float lc_fDirSW = float(maConstants::c_dPI * 5.0 / 4.0);
+	const float lc_fDirW = float(maConstants::c_dPI * 3.0 / 2.0);
+	const float lc_fDirNW = float(maConstants::c_dPI * 7.0 / 4.0);
 	const int lc_nInvalidDir = -1;
 
 	int l_NumSticks = 5;

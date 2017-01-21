@@ -19,13 +19,13 @@
 #define USE_WXWIDGETS 1
 #endif
 
+#define WXUSINGDLL
+#define wxMSVC_VERSION_AUTO
 #ifdef USE_WXWIDGETS
 
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
-#define WXUSINGDLL
-#define wxMSVC_VERSION_AUTO
 #include <wx/wx.h>
 #include <wx/progdlg.h>
 

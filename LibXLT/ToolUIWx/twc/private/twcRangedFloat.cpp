@@ -29,10 +29,10 @@ twcRangedFloat::twcRangedFloat(wxWindow* i_pParent)
 	wxBoxSizer* bSizer1;
 	bSizer1 = new wxBoxSizer( wxHORIZONTAL );
 	
-	m_pSlider = new wxSlider( this, wxID_ANY, 0, 0, 100, wxDefaultPosition, wxSize( 100,20 ), wxSL_HORIZONTAL );
+	m_pSlider = new wxSlider( this, wxID_ANY, 0, 0, 100, wxDefaultPosition, FromDIP(wxSize( 100,20 )), wxSL_HORIZONTAL );
 	bSizer1->Add( m_pSlider, 1, wxALL, 0 );
 	
-	m_pFloatEdit = new twcFloatEdit(this, wxID_ANY, wxDefaultPosition, wxSize( 54,20 ));
+	m_pFloatEdit = new twcFloatEdit(this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize( 54,20 )));
 	this->Connect( m_pFloatEdit->GetId(), wxEVT_VALUE_CHANGED,
 					wxCommandEventHandler(twcRangedFloat::OnTextChange) );
 	bSizer1->Add( m_pFloatEdit, 0, wxALL, 0 );

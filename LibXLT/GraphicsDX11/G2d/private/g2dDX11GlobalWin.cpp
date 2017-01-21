@@ -22,17 +22,16 @@
 //============================================================================
 #pragma comment(lib,c_g2dDXGILIBRARY)
 #pragma comment(lib,c_g2dD3D11LIBRARYMAIN)
-#pragma comment(lib,c_g2dDX11LIBRARYERR)
 #pragma comment(lib,c_g2dDXCOMPILER)
-#pragma comment(lib,c_g2dD3D11LIBRARYEFFECT)
 #pragma comment(lib,c_g2dD2D1LIBRARY)
 #pragma comment(lib,c_g2dDWRITELIBRARY)
 #pragma comment(lib,c_g2dDXGUIDLIBRARY_H)
-
-#if PIX_D3DPERF
-#pragma comment(lib,"d3d9.lib")
+#pragma comment(lib,"DirectXTex.lib")
+#ifdef _DEBUG
+    #pragma comment(lib,"Effects11d.lib")
+#else
+    #pragma comment(lib,"Effects11.lib")
 #endif
-
 //============================================================================
 //============================================================================
 namespace g2dDX11Global
@@ -603,14 +602,18 @@ DXGI_FORMAT D3DFormatFromPFD(const g2dPFD& i_PFD)
 //----------------------------------------------------------------------------
 void PrintDXError( HRESULT hErr )
 {
-//D3D11_ERROR_FILE_NOT_FOUND	The file was not found.
-//D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS	There are too many unique instances of a particular type of state object.
-//D3DERR_INVALIDCALL	The method call is invalid. For example, a method's parameter may not be a valid pointer.
-//D3DERR_WASSTILLDRAWING	The previous blit operation that is transferring information to or from this surface is incomplete.
-//E_FAIL	Attempted to create a device with the debug layer enabled and the layer is not installed.
-//E_INVALIDARG	An invalid parameter was passed to the returning function.
-//E_OUTOFMEMORY	Direct3D could not allocate sufficient memory to complete the call.
-//S_FALSE	Alternate success value, indicating a successful but nonstandard completion (the precise meaning depends on context).
+//    D3D11_ERROR_FILE_NOT_FOUND	The file was not found.
+//    D3D11_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS	There are too many unique instances of a particular type of state object.
+//    D3D11_ERROR_TOO_MANY_UNIQUE_VIEW_OBJECTS	There are too many unique instances of a particular type of view object.
+//    D3D11_ERROR_DEFERRED_CONTEXT_MAP_WITHOUT_INITIAL_DISCARD	The first call to ID3D11DeviceContext::Map after either ID3D11Device::CreateDeferredContext or ID3D11DeviceContext::FinishCommandList per Resource was not D3D11_MAP_WRITE_DISCARD.
+//    D3DERR_INVALIDCALL(replaced with DXGI_ERROR_INVALID_CALL)	The method call is invalid.For example, a method's parameter may not be a valid pointer.
+//    D3DERR_WASSTILLDRAWING(replaced with DXGI_ERROR_WAS_STILL_DRAWING)	The previous blit operation that is transferring information to or from this surface is incomplete.
+//    E_FAIL	Attempted to create a device with the debug layer enabled and the layer is not installed.
+//    E_INVALIDARG	An invalid parameter was passed to the returning function.
+//    E_OUTOFMEMORY	Direct3D could not allocate sufficient memory to complete the call.
+//    E_NOTIMPL	The method call isn't implemented with the passed parameter combination.
+//    S_FALSE	Alternate success value, indicating a successful but nonstandard completion(the precise meaning depends on context).
+
 		LPVOID lpMsgBuf;
 
 		FormatMessage(

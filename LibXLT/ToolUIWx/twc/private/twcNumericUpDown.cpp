@@ -36,13 +36,13 @@ twcNumericUpDown::twcNumericUpDown(wxWindow* i_pParent)
 	m_fValue = 0.0;
 	m_Minimum = 0.0;
 	m_bspinButtonClicked = false;
-	m_pFloatEdit = new twcFloatEdit(this, wxID_ANY, wxDefaultPosition, wxSize( 40,20 ));
+	m_pFloatEdit = new twcFloatEdit(this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize( 40,20 )));
 	this->Connect( m_pFloatEdit->GetId(), wxEVT_VALUE_CHANGED,
 					wxCommandEventHandler(twcNumericUpDown::OnTextChange) );
 	
 	bSizer1->Add( m_pFloatEdit, 1, wxALL, 0 );
 	
-	m_pSpinner = new wxSpinButton( this, wxID_ANY, wxDefaultPosition, wxSize( -1,20 ), wxSL_VERTICAL );
+	m_pSpinner = new wxSpinButton( this, wxID_ANY, wxDefaultPosition, FromDIP(wxSize( -1,20 )), wxSL_VERTICAL );
 	m_pSpinner->Connect( wxEVT_LEFT_DOWN, wxMouseEventHandler(twcNumericUpDown::OnMouseClick), NULL, this );
 	m_pSpinner->Connect(wxEVT_MOTION, wxMouseEventHandler(twcNumericUpDown::OnMouseDrag), NULL, this );
 	m_pSpinner->Connect(wxEVT_LEFT_UP, wxMouseEventHandler(twcNumericUpDown::OnMouseUp), NULL, this );

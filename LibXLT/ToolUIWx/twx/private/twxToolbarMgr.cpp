@@ -55,7 +55,7 @@ namespace
 		{
 			DBG_ASSERT(twxSystem::g_pMainForm, "MainForm not yet initialized.");
 			MyToolbar* pToolbar = new MyToolbar(twxSystem::g_pMainForm, wxID_ANY);
-	//		pToolbar->SetToolBitmapSize(wxSize(16,16));
+	//		pToolbar->SetToolBitmapSize(FromDIP(wxSize(16,16)));
 
 			//twxPaneMgr::AddPane(pToolbar, wxAuiPaneInfo().
    //               Name(i_Name).Caption(i_Name).
@@ -159,6 +159,7 @@ void twxToolbarMgr::AddToolBarButton( int i_Id,
 		itString icon_filename;
 		fsFileUtil::LocatorToUnicodeString(icon_loc, icon_filename);
         
+		wxLogNull nullLog;
 		wxImage icon_image( icon_filename.GetString(), wxBITMAP_TYPE_PNG );
 
 		icon_image.Rescale(24,24);

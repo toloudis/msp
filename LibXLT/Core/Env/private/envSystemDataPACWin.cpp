@@ -39,6 +39,8 @@ WindowsOS GetWindowsOSType()
 //========================================================================
 void Init()
 {
+    // TODO replace with VersionHelper api functions
+
 	// Deduce os version.  This code was copied from the platform SDK documentation
 	//
 	OSVERSIONINFOEXA os_info_ex;

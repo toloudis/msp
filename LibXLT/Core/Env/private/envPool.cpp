@@ -99,9 +99,9 @@ void envPool::test_valid_ptr(void* i_Ptr)
 	Block* cur_block = m_BlockHead;
 	while( cur_block )
 	{
-		if( envType::UInt32(i_Ptr) > envType::UInt32(cur_block) )
+		if( envType::UIntPtr(i_Ptr) > envType::UIntPtr(cur_block) )
 		{
-			if( (envType::UInt32(i_Ptr) - envType::UInt32(cur_block)) < envType::UInt32(m_BlockSize) )
+			if( (envType::UIntPtr(i_Ptr) - envType::UIntPtr(cur_block)) < envType::UIntPtr(m_BlockSize) )
 			{
 				found = true;
 				break;

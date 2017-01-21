@@ -160,6 +160,7 @@ namespace fsResourceTracker
 			first_it	= m_ResourceData.m_Resources.begin() + i_Index;
 			it			= last_it;
 			int index = i_Index;
+            std::vector<int> indicesToRemove;
 			while (it != first_it)
 			{
 				--it;
@@ -174,12 +175,20 @@ namespace fsResourceTracker
 					
 					notify_interests_remove( (*it).GetFilePath());
 					//FIXME erasing during list iteration; verify the correctness here
-					it = m_ResourceData.m_Resources.erase(it);
-					// if we erased the iterator corresponding to first_it, then first_it is invalidated!
-					if (m_ResourceData.m_Resources.size() == 0) break; 
+                    // erase returns the next item.
+                    indicesToRemove.push_back(it - m_ResourceData.m_Resources.begin());
+//					it = m_ResourceData.m_Resources.erase(it);
+                    
+                    // if we erased the iterator corresponding to first_it, then first_it is invalidated!
+//                    if (m_ResourceData.m_Resources.size() == 0) {
+//                        break;
+//                    }
 				}
 				
 			};
+            for (int i = 0; i < indicesToRemove.size(); ++i) {
+                m_ResourceData.m_Resources.erase(m_ResourceData.m_Resources.begin() + indicesToRemove[i]);
+            }
 
 			//m_ResourceData.m_Resources.erase( m_ResourceData.m_Resources.begin()+(i_Index), last_it );
 		}

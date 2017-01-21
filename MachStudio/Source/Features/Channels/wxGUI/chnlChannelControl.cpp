@@ -546,7 +546,7 @@ void chnlChannelControl::OnPaint(wxPaintEvent &WXUNUSED(event))
 	PrepareDC(dc);
 	dc.Clear();
 
-	dc.SetPen( wxPen( wxColor(130,130,150), 1, wxSOLID ) );
+	dc.SetPen( wxPen( wxColor(130,130,150), 1, wxPENSTYLE_SOLID ) );
 	//dc.SetPen( wxPen(*wxLIGHT_GREY, 1, wxSOLID) );
 	dc.SetBrush(*wxTRANSPARENT_BRUSH); // turn off fill
 
@@ -598,7 +598,7 @@ void chnlChannelControl::OnPaint(wxPaintEvent &WXUNUSED(event))
 					break;
 				case chnlChannelClip::e_NoBlend:
 				{
-					dc.SetBrush(wxBrush(blend_color, wxSOLID));
+					dc.SetBrush(wxBrush(blend_color, wxBRUSHSTYLE_SOLID));
 					dc.DrawRectangle(x-2, icon_center-2, 4, 4);
 					break;
 				}
@@ -611,7 +611,7 @@ void chnlChannelControl::OnPaint(wxPaintEvent &WXUNUSED(event))
 					points[1].x = x; points[1].y = icon_center-10;
 					points[2].x = x; points[2].y = icon_center+10;
 
-					dc.SetBrush(wxBrush(blend_color, wxSOLID));
+					dc.SetBrush(wxBrush(blend_color, wxBRUSHSTYLE_SOLID));
 					dc.DrawPolygon(3, points);
 					break;
 				}
@@ -622,13 +622,13 @@ void chnlChannelControl::OnPaint(wxPaintEvent &WXUNUSED(event))
 					points[1].x = x; points[1].y = icon_center-10;
 					points[2].x = x; points[2].y = icon_center+10;
 
-					dc.SetBrush(wxBrush(blend_color, wxSOLID));
+					dc.SetBrush(wxBrush(blend_color, wxBRUSHSTYLE_SOLID));
 					dc.DrawPolygon(3, points);
 					break;
 				}
 				case chnlChannelClip::e_Overwrite:
 				{
-					dc.SetBrush(wxBrush(blend_color, wxSOLID));
+					dc.SetBrush(wxBrush(blend_color, wxBRUSHSTYLE_SOLID));
 					dc.DrawRectangle(prev_end+2, icon_center-11, x-prev_end-2, height-2);
 					break;
 				}
@@ -643,7 +643,7 @@ void chnlChannelControl::OnPaint(wxPaintEvent &WXUNUSED(event))
 					points[2].x = x-weight; points[2].y = icon_center-4;
 					points[3].x = x-2; points[3].y = icon_center-4;
 
-					dc.SetPen(wxPen(blend_color, 4, wxSOLID));
+					dc.SetPen(wxPen(blend_color, 4, wxPENSTYLE_SOLID));
 					dc.DrawSpline(4, points);
 					break;
 				}

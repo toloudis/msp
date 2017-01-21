@@ -127,7 +127,7 @@ void twcRenderPanel::do_resize()
 			// Setting virtual resolution will keep text the same size 
 			// when the window resizes and will avoid stretching when 
 			// aspect ratio changes
-			m_pViewer->GetWindow()->SetVirtualResolution(rect.GetWidth(), rect.GetHeight());
+			m_pViewer->GetWindow()->SetVirtualResolution(ToDIP(rect.GetWidth()), ToDIP(rect.GetHeight()));
 		}
 	}
 }

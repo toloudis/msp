@@ -355,7 +355,7 @@ rdrLayersDialog::rdrLayersDialog( wxWindow* parent, const std::string& i_Title,
 	itString icon_dir;
 	fsFileUtil::LocatorToUnicodeString( guiMenuMgr::GetIconDirectory(), icon_dir );
 	std::wstring icondir = icon_dir.GetString();
-	wxImageList *pCheckImages = new wxImageList(13, 13, false, e_NumBoxStates);
+	wxImageList *pCheckImages = new wxImageList(FromDIP(13), FromDIP(13), false, e_NumBoxStates);
     {
         wxLogNull nullLog;
 	    pCheckImages->Add(wxBitmap(icondir + L"\\tree-unchecked.png", wxBITMAP_TYPE_PNG));

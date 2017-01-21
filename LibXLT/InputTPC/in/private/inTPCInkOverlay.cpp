@@ -44,7 +44,7 @@ HRESULT inTPCInkOverlay::Init(HWND i_Hwnd)
         return hr;
 
     // Attach Ink Overlay to window
-    hr = m_pInkOverlay->put_hWnd((long) i_Hwnd);
+    hr = m_pInkOverlay->put_hWnd((LONG_PTR) i_Hwnd);
     if (FAILED(hr))
 		return hr;
     

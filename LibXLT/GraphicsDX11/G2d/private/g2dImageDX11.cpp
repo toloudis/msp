@@ -130,7 +130,7 @@ g2dImageDX11::g2dImageDX11(int i_Width, int i_Height, const g2dPFD& i_PFD, g2dIm
 		{
 			throw g2dOutOfSystemMemoryX();
 		}
-		else //if ( op_result == D3DERR_INVALIDCALL )
+		else //if ( op_result == DXGI_ERROR_INVALID_CALL )
 		{
 			throw g2dGeneralX();
 		}
@@ -296,36 +296,28 @@ void g2dImageDX11::CopyImage( const g2dImage& i_SrcImage,
 
 	if (i_Filter == NULL)
 	{
-		g2dD3D11TexturePtr src_surface = src_image->GetSurface();
+        // assert same size and format?
+        DBG_ASSERT((src_image->GetWidth() == this->GetWidth()) && (src_image->GetHeight() == this->GetHeight()), "CopyImage images must match in size");
+
+        g2dD3D11TexturePtr src_surface = src_image->GetSurface();
 		g2dD3D11TexturePtr dest_surface = this->GetSurface();
 
-		DirectX::ScratchImage ssimg, dsimg;
-		// Get bits from src
-		HRESULT hr = DirectX::CaptureTexture(g2dDX11Global::g_pDevice, g2dDX11Global::g_pDeviceContext, src_surface, ssimg);
-		// resize to dest size
-		const DirectX::Image* simg = ssimg.GetImages();
-		hr = DirectX::Resize(*simg, (size_t)this->GetWidth(), (size_t)this->GetHeight(), DirectX::TEX_FILTER_TRIANGLE, dsimg);
-		// update "this"
-		g2dDX11Global::g_pDeviceContext->UpdateSubresource(
-			this->GetSurface(), D3D11CalcSubresource(0, 0, 1),
-			NULL,
-			dsimg.GetImages()->pixels,
-			dsimg.GetImages()->rowPitch,
-			dsimg.GetImages()->slicePitch);
+        g2dDX11Global::g_pDeviceContext->CopyResource(dest_surface, src_surface);
 
-		//if (!SUCCEEDED(hr))
-		//{
-		//	g2dDX11Global::PrintDXError(hr);
-		//	if (hr == E_OUTOFMEMORY)
-		//	{
-		//		throw g2dOutOfSystemMemoryX();
-		//	}
-		//	else if ( hr == D3DERR_INVALIDCALL )
-		//	{
-		//		throw g2dGeneralX();
-		//	}
-		//	DBG_ASSERT( SUCCEEDED(hr), "Error copying surface" );
-		//}
+        HRESULT hr = S_OK;
+		if (!SUCCEEDED(hr))
+		{
+			g2dDX11Global::PrintDXError(hr);
+			if (hr == E_OUTOFMEMORY)
+			{
+				throw g2dOutOfSystemMemoryX();
+			}
+			else if ( hr == DXGI_ERROR_INVALID_CALL)
+			{
+				throw g2dGeneralX();
+			}
+			DBG_ASSERT( SUCCEEDED(hr), "Error copying surface" );
+		}
 	}
 	else
 	{

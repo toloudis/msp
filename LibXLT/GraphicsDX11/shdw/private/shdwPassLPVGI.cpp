@@ -151,7 +151,7 @@ namespace
 				{
 					throw g2dOutOfSystemMemoryX();
 				}
-				else if ( op_result == D3DERR_INVALIDCALL )
+				else if ( op_result == DXGI_ERROR_INVALID_CALL)
 				{
 					throw g2dGeneralX();
 				}
@@ -167,7 +167,7 @@ namespace
 				{
 					throw g2dOutOfSystemMemoryX();
 				}
-				else if ( op_result == D3DERR_INVALIDCALL )
+				else if ( op_result == DXGI_ERROR_INVALID_CALL)
 				{
 					throw g2dGeneralX();
 				}
@@ -189,7 +189,7 @@ namespace
 				{
 					throw g2dOutOfSystemMemoryX();
 				}
-				else if ( op_result == D3DERR_INVALIDCALL )
+				else if ( op_result == DXGI_ERROR_INVALID_CALL)
 				{
 					throw g2dGeneralX();
 				}
@@ -205,7 +205,7 @@ namespace
 				{
 					throw g2dOutOfSystemMemoryX();
 				}
-				else if ( op_result == D3DERR_INVALIDCALL )
+				else if ( op_result == DXGI_ERROR_INVALID_CALL)
 				{
 					throw g2dGeneralX();
 				}

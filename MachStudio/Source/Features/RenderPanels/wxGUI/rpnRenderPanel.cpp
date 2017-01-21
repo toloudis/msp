@@ -452,7 +452,7 @@ void rpnRenderPanel::DoSetSize(int x, int y,
 	if (m_MaxHeight > 0 && height > m_MaxHeight) 
 		height = m_MaxHeight;
 
-	wxControl::DoSetSize(x, y, width, height, sizeFlags);
+	wxControl::DoSetSize(x, y, (width), (height), sizeFlags);
 }
 
 
@@ -471,7 +471,7 @@ void rpnRenderPanel::do_resize()
 		if (rect.GetWidth() > 0 && rect.GetHeight() > 0)
 		{
 			// Resize the underlying window
-			this->m_pRenderView->ResizeWindow(rect.GetWidth(), rect.GetHeight());
+			this->m_pRenderView->ResizeWindow((rect.GetWidth()), (rect.GetHeight()), ToDIP(rect.GetWidth()), ToDIP(rect.GetHeight()));
 
 			// Update the ScreenUtil function if we are the active render view
 			if (tma3dRenderView::GetActiveRenderView() == this->m_pRenderView)
@@ -480,7 +480,7 @@ void rpnRenderPanel::do_resize()
 				// screen position, so we don't need to give those offsets
 				// to the screen util.
 				tma3dScreenUtil::SetWindowSize( maPoint2d( 0, 0 ),
-					maPoint2d( rect.GetWidth(), rect.GetHeight() ) );
+					maPoint2d( (rect.GetWidth()), (rect.GetHeight()) ) );
 				//tma3dScreenUtil::SetWindowSize( maPoint2d( rect.GetLeft(), rect.GetTop() ),
 				//	maPoint2d( rect.GetWidth(), rect.GetHeight() ) );
 
@@ -730,7 +730,7 @@ void rpnRenderPanel::OnFocus(wxFocusEvent& i_Event)
 			// screen position, so we don't need to give those offsets
 			// to the screen util.
 			tma3dScreenUtil::SetWindowSize( maPoint2d( 0, 0 ),
-				maPoint2d( rect.GetWidth(), rect.GetHeight() ) );
+				maPoint2d( (rect.GetWidth()), (rect.GetHeight()) ) );
 			//tma3dScreenUtil::SetWindowSize( maPoint2d( (float)rect.GetLeft(), (float)rect.GetTop() ),
 			//	maPoint2d( (float)rect.GetWidth(), (float)rect.GetHeight() ) );
 
@@ -796,6 +796,7 @@ void rpnRenderPanel::OnLoseFocus(wxFocusEvent& i_Event)
 	{
 		m_pPanelViewer->SetTextColor(maFloatRGBA(1,1,1,1));
 	}
+    i_Event.Skip();
 }
 
 //------------------------------------------------------------------------

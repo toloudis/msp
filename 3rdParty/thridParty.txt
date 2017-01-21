@@ -1,13 +1,37 @@
 3rdParty/
 
-Boost (see http://boost.teeks99.com/)
-curl (http://curl.haxx.se/download.html "Win32 - MSVC" to build from source)
-Deploy (exr build result)
-Effects (https://fx11.codeplex.com/)
+Boost
+https://sourceforge.net/projects/boost/files/boost-binaries/
+boost_1_60_0-msvc-14.0-64.exe
+
+curl 7.48 (http://curl.haxx.se/download.html "Win32 - MSVC" to build from source)
+cd winbuild
+set RTLIBCFG=static
+nmake /f Makefile.vc mode=static VC=14 MACHINE=x64 DEBUG=no
+nmake /f Makefile.vc mode=static VC=14 MACHINE=x64 DEBUG=yes
+
+D3DX11Effects (https://github.com/Microsoft/FX11)
+
 libs/x64 (drop various .lib files in here)
+
 OpenEXR (http://www.openexr.com/)
+cmake -DCMAKE_INSTALL_PREFIX="../build" -G "Visual Studio 14 2015 Win64" ..\ilmbase-2.2.0
+msbuild ilmbase.sln /t:Build /p:Configuration=Release /p:Platform=x64
+cmake -DZLIB_ROOT="../zlib/" -DILMBASE_PACKAGE_PREFIX="../build" -DCMAKE_INSTALL_PREFIX="../build" -G "Visual Studio 14 2015 Win64" ../openexr-2.2.0
+(basically use the instructions provided in openexr source package)
+
 png/lpng162 (http://sourceforge.net/projects/libpng/files/libpng16/older-releases/)
 png/zlib-1.2.5 (http://sourceforge.net/projects/libpng/files/zlib/1.2.5/)
+
 Python (need include files here, libs in libs)
-Tiff (http://download.osgeo.org/libtiff/  v4.0.3)
-WxWidgets (http://sourceforge.net/projects/wxwindows/files/3.0.2/binaries/)
+
+Tiff (http://download.osgeo.org/libtiff/  v4.0.6)
+
+WxWidgets 
+https://github.com/wxWidgets/wxWidgets/releases/tag/v3.1.0
+wxMSW-3.1.0_vc140_x64_ReleaseDLL.7z
+wxMSW-3.1.0_vc140_x64_ReleasePDB.7z
+wxWidgets-3.1.0-headers.7z
+
+zlib 1.2.8 x64
+nmake -f win32/Makefile.msc AS=ml64 LOC="-DASMV -DASMINF -I." OBJA="inffasx64.obj gvmat64.obj inffas8664.obj"

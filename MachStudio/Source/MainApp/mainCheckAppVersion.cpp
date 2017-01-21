@@ -16,7 +16,7 @@
 #include <iostream>
 
 //uncomment this to use statically linked libraries of curl (must be defined before the include!)
-//#define CURL_STATICLIB
+#define CURL_STATICLIB
 
 // http://curl.haxx.se/download.html
 #include "curl/curl.h"
@@ -27,9 +27,9 @@
 //==============================================================================
 #ifdef CURL_STATICLIB
 #ifdef _DEBUG
-	#pragma comment(lib,"libcurl.lib")		//static
+	#pragma comment(lib,"libcurl_a_debug.lib")		//static
 #else//!_DEBUG
-	#pragma comment(lib,"libcurl.lib")		//static
+	#pragma comment(lib,"libcurl_a.lib")		//static
 #endif//_DEBUG
 
 #pragma comment(lib,"ws2_32.lib")		//link with dependent libraries when statically linking

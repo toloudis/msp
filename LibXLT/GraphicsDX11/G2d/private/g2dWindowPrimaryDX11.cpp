@@ -65,7 +65,7 @@ void setup_present_params(	HWND i_Hwnd,
 	o_Params.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 	o_Params.SampleDesc.Count = 1;
 	o_Params.SampleDesc.Quality = 0;
-	o_Params.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	o_Params.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_SHADER_INPUT;
 	o_Params.BufferCount = 1;//2;//(l_TripleBuffer) ? 3 : 2;
 	o_Params.OutputWindow = i_Hwnd;
 	o_Params.Windowed = TRUE;
@@ -314,7 +314,7 @@ HRESULT g2dWindowPrimaryDX11::InitRenderTargetInfo()
 	m_pBackBuffer = pRTV;
 
 
-
+#if 0
 	// Get a surface in the swap chain
 	IDXGISurface* pBackBufferSurf = NULL;
 	hr = m_pSwapChain->GetBuffer( 0, IID_PPV_ARGS(&pBackBufferSurf));
@@ -349,7 +349,7 @@ HRESULT g2dWindowPrimaryDX11::InitRenderTargetInfo()
 
 		pBackBufferSurf->Release();
     }
-
+#endif
 	return hr;
 }
 

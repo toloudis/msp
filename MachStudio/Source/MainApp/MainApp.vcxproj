@@ -86,6 +86,7 @@
     <ProjectGuid>{40B9B342-DFBE-4DF2-AB99-BD3BE4219392}</ProjectGuid>
     <RootNamespace>StudioFramework</RootNamespace>
     <Keyword>ManagedCProj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'" Label="Configuration">
@@ -302,7 +303,7 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</GenerateManifest>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)..\$(SolutionName)-$(Platform)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='DM-NoSys|Win32'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
@@ -336,7 +337,11 @@
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LibraryPath>$(LibraryPath);$(DKSDK_DIR)lib\x64</LibraryPath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <TargetName>MachStudio-$(Platform)-$(Configuration)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">
     <ClCompile>
@@ -539,7 +544,7 @@
       <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
       <Version>2.0</Version>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);$(SolutionDir)..\..\3rdParty\WxWidgets\lib\vc120_x64_dll;$(DXSDK_DIR)Lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Boost\lib;$(SolutionDir)..\..\3rdParty\OpenEXR\zlib\lib;$(SolutionDir)..\..\3rdParty\OpenEXR\build\lib;$(SolutionDir)..\..\3rdParty\WxWidgets\lib\vc140_x64_dll;$(SolutionDir)..\..\3rdParty\Libs\$(Platform);D:\FreeImage\Dist;$(SolutionDir)..\..\3rdParty\DirectXTex\DirectXTex\Bin\Desktop_2015_Win10\x64\Release;$(SolutionDir)..\..\3rdParty\FX11\Bin\Desktop_2015_Win10\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -547,8 +552,11 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX64</TargetMachine>
-      <AdditionalDependencies>libpng16.lib;libtiff.lib;C:\Program Files (x86)\Windows Kits\8.0\Lib\win8\um\x64\d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng16.lib;tiff.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Manifest>
+      <AdditionalManifestFiles>DeclareDPIAware.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -612,10 +620,10 @@
       <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
-      <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
+      <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(TargetName).exe</OutputFile>
       <Version>2.0</Version>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);$(SolutionDir)..\..\3rdParty\WxWidgets\lib\vc140_x64_dll;C:/Program Files (x86)/AMD APP/lib/x86_64;C:/Program Files (x86)/NVIDIA Corporation/Cg/lib.x64;D:\FreeImage\Dist;$(DXSDK_DIR)Lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Boost\lib;$(SolutionDir)..\..\3rdParty\OpenEXR\zlib\lib;$(SolutionDir)..\..\3rdParty\OpenEXR\build\lib;$(SolutionDir)..\..\3rdParty\WxWidgets\lib\vc140_x64_dll;$(SolutionDir)..\..\3rdParty\Libs\$(Platform);D:\FreeImage\Dist;$(SolutionDir)..\..\3rdParty\DirectXTex\DirectXTex\Bin\Desktop_2015_Win10\x64\Debug;$(SolutionDir)..\..\3rdParty\FX11\Bin\Desktop_2015_Win10\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
@@ -626,8 +634,11 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX64</TargetMachine>
-      <AdditionalDependencies>libpng16.lib;libtiff.lib;C:\Program Files (x86)\Windows Kits\8.0\Lib\win8\um\x64\d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng16.lib;tiff.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Manifest>
+      <AdditionalManifestFiles>DeclareDPIAware.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DM-NoSys|Win32'">
     <ClCompile>
@@ -856,9 +867,9 @@
       <Optimization>Full</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty\WxWidgets\include\msvc;.\..\..\..\3rdParty\curl\curl-7.35.0\include;.\..\..\..\3rdParty</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>.\..\..\..\MachStudio\bin\($PlatformName)\$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;ENV_BUILD=ENV_GOLDBUILD;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -873,10 +884,10 @@
     </ClCompile>
     <Link>
       <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
-      <Version>2.0.0.0</Version>
+      <Version>2.0</Version>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);$(SolutionDir)..\..\3rdParty\WxWidgets\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ManifestFile>$(IntDir)$(TargetFileName).intermediate.manifest</ManifestFile>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x64;$(SolutionDir)..\..\3rdParty\Boost\lib;$(SolutionDir)..\..\3rdParty\OpenEXR\zlib\lib;$(SolutionDir)..\..\3rdParty\OpenEXR\build\lib;$(SolutionDir)..\..\3rdParty\WxWidgets\lib\vc140_x64_dll;$(SolutionDir)..\..\3rdParty\Libs\$(Platform);D:\FreeImage\Dist;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ManifestFile>$(IntDir)$(TargetName)$(TargetExt).intermediate.manifest</ManifestFile>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
@@ -884,6 +895,7 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX64</TargetMachine>
+      <AdditionalDependencies>libpng16.lib;tiff.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">
@@ -1182,6 +1194,9 @@
       <Project>{af3be210-1625-4482-abac-8bf82ab70840}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="DeclareDPIAware.manifest" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

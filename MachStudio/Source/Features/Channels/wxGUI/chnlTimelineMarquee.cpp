@@ -51,7 +51,7 @@ void chnlTimelineMarquee::DrawAllMarquee(int x, int y)
 	wxScreenDC DC;
 	wxBitmap OLD(rect.GetWidth() , rect.GetHeight() );
 wxMemoryDC tDC( OLD );
-//tDC.Blit( wxPoint( 0, 0 ), wxSize( OLD.GetWidth(), OLD.GetHeight() ), &DC, wxPoint( 0, 0 ) );
+//tDC.Blit( wxPoint( 0, 0 ), FromDIP(wxSize( OLD.GetWidth(), OLD.GetHeight() )), &DC, wxPoint( 0, 0 ) );
 tDC.SelectObject( wxNullBitmap );
 tDC.DrawRectangle(x,y, x-initX, y-initY);
 

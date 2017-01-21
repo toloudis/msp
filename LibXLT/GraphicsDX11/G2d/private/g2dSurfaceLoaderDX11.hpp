@@ -23,7 +23,7 @@
 #include "Graphics/g2d/g2dImage.hpp"
 #endif
 
-#include "Tiff/tiffio.h"
+#include "tiff-4.0.6/libtiff/tiffio.h"
 #include <vector>
 
 
