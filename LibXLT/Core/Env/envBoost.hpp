@@ -19,7 +19,6 @@
 // Turn off managed compiler complaints about boost library
 
 // Exposing just the shared and weak pointers for now.
-#include <boost/shared_ptr.hpp>
-#include <boost/weak_ptr.hpp>
-using boost::shared_ptr;
-using boost::weak_ptr;
+#include <memory>
+using std::shared_ptr;
+using std::weak_ptr;

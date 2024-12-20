@@ -111,7 +111,7 @@ void  undoMultipleOperation::Undo()
 //--------------------------------------------------------------------
 void  undoMultipleOperation::Redo()
 {
-	envSTLHelpers::ForAll(m_Operations, envSTLHelpers::MemFun(&undoUndoOperation::Redo));
+	envSTLHelpers::ForAll(m_Operations, std::mem_fn(&undoUndoOperation::Redo));
 }
 
 //--------------------------------------------------------------------
@@ -122,7 +122,7 @@ void  undoMultipleOperation::Redo()
 //--------------------------------------------------------------------
 void  undoMultipleOperation::Commit()
 {
-	envSTLHelpers::ForAll(m_Operations, envSTLHelpers::MemFun(&undoUndoOperation::Commit));
+	envSTLHelpers::ForAll(m_Operations, std::mem_fn(&undoUndoOperation::Commit));
 }
 
 //--------------------------------------------------------------------
@@ -133,5 +133,5 @@ void  undoMultipleOperation::Commit()
 //--------------------------------------------------------------------
 void  undoMultipleOperation::Destroy()
 {
-	envSTLHelpers::ForAll(m_Operations, envSTLHelpers::MemFun(&undoUndoOperation::Destroy));
+	envSTLHelpers::ForAll(m_Operations, std::mem_fn(&undoUndoOperation::Destroy));
 }

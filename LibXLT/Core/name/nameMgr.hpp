@@ -16,7 +16,7 @@
 #include "Core/name/nameTypes.hpp"
 #endif
 
-#include <boost/function.hpp>
+#include <functional>
 #include <vector>
 
 
@@ -84,7 +84,7 @@ namespace nameMgr
 	//--------------------------------------------------------------------
 	//	Create Default Name For an Object
 	//--------------------------------------------------------------------
-	typedef boost::function<bool (char*)> VerifyNoDupNameFunc;
+	typedef std::function<bool (char*)> VerifyNoDupNameFunc;
 	void CreateDefaultName( const nameString& i_Filename, 
 		const VerifyNoDupNameFunc& i_VerifyFunc,
 		nameString& o_NameString,

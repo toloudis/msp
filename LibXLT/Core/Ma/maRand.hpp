@@ -394,8 +394,8 @@ void maRand<ALPHA,T>::Isaac()
 	// use register variables, as this call is made fequently during operation
 
 	// x, y -- intermediate variables for indirection calculation
-	register T x, y;
-	register envType::UInt32 i;
+	T x, y;
+	envType::UInt32 i;
 
 	// Jenkins:  [Counter] "just gets incremented once per 256 results then combined with" previous result.
 	m_PreviousResult += (++m_Counter);

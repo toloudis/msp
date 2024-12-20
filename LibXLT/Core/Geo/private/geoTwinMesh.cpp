@@ -959,7 +959,7 @@ void geoTwinMesh::ConstructMesh(const envType::UInt32* i_Indices, int i_NumIndic
 //--------------------------------------------------------------------
 void geoTwinMesh::UnmarkAll()
 {
-	envSTLHelpers::ForAll(m_TwinEdges, envSTLHelpers::MemFun(&geoTwinEdge::UnmarkFace));
+	envSTLHelpers::ForAll(m_TwinEdges, std::mem_fn(&geoTwinEdge::UnmarkFace));
 }
 
 //--------------------------------------------------------------------

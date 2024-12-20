@@ -25,18 +25,16 @@
 
 #ifdef ENV_USE_THREADS
 
-	#define BOOST_THREAD_USE_DLL 1
+	#include <thread>
+	#include <mutex>
 
-	#include <boost/thread/thread.hpp>
-	#include <boost/thread/mutex.hpp>
-
-	typedef boost::thread envThread;
-	typedef boost::mutex envMutex;
-	typedef boost::mutex::scoped_lock envScopedLock;
+	typedef std::thread envThread;
+	typedef std::mutex envMutex;
+	typedef std::scoped_lock<envMutex> envScopedLock;
 
 #else
 
-	#include <boost/function.hpp>
+	#include <functional>
 
 	//========================================================================
 	//	The single threaded version of envThread just executes
@@ -46,7 +44,7 @@
 	{
 	public:
 		envThread() {}
-		explicit envThread(const boost::function0<void>& i_ThreadFunc)
+		explicit envThread(const std::function>void()>& i_ThreadFunc)
 		{
 			// Execute function immediately
 			i_ThreadFunc();

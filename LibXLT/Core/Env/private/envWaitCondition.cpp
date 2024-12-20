@@ -25,7 +25,7 @@ envWaitCondition::envWaitCondition()
 void envWaitCondition::WaitForNotify(bool i_bResetFlag)
 {
 #ifdef ENV_USE_THREADS
-    boost::unique_lock<boost::mutex> lock(m_Mutex);
+    std::unique_lock<std::mutex> lock(m_Mutex);
     while (!m_bTaskFinished)
     {
         m_Condition.wait(lock);
@@ -43,7 +43,7 @@ void envWaitCondition::NotifyFinished()
 {
 #ifdef ENV_USE_THREADS
 	{
-        boost::lock_guard<boost::mutex> lock(m_Mutex);
+        std::lock_guard<std::mutex> lock(m_Mutex);
 		m_bTaskFinished = true;
     }
     m_Condition.notify_one();

@@ -31,7 +31,7 @@ public:
 	//--------------------------------------------------------------------
 	// constructor takes old to be restored if undone
 	//--------------------------------------------------------------------
-	prtyUndoTemplate(boost::shared_ptr<prtyPropertyReference> i_pPropertyRef,
+	prtyUndoTemplate(std::shared_ptr<prtyPropertyReference> i_pPropertyRef,
 					 const BackupType&	i_PropertyBackup)
 	:	m_pPropertyRef(i_pPropertyRef),
 		m_PropertyBackup(i_PropertyBackup)
@@ -126,6 +126,6 @@ private:
 		return NULL;
 	}
 
-	boost::shared_ptr<prtyPropertyReference>	m_pPropertyRef;
+	std::shared_ptr<prtyPropertyReference>	m_pPropertyRef;
 	BackupType		m_PropertyBackup;
 };

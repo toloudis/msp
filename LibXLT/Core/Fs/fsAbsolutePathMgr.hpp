@@ -13,7 +13,7 @@
 #endif
 #define FS_ABSOLUTEPATHMGR_HPP
 
-#include <boost/function.hpp>
+#include <functional>
 #include <string>
 
 

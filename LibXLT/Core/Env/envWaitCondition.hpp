@@ -17,7 +17,7 @@
 #endif
 
 #ifdef ENV_USE_THREADS
-#include <boost/thread/condition_variable.hpp>
+#include <condition_variable>
 #endif
 
 
@@ -47,7 +47,7 @@ private:
 
 #ifdef ENV_USE_THREADS
 	envMutex m_Mutex;
-	boost::condition_variable m_Condition;
+	std::condition_variable m_Condition;
 #endif
 
 };

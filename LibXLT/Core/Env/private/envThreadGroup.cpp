@@ -41,7 +41,8 @@ void envThreadGroup::AddThread(const ThreadFunc& i_ThreadFunc)
 {
 #ifdef ENV_USE_THREADS
 	if (envThreadGroup::sm_bEnableThreading)
-		m_ThreadGroup.create_thread(i_ThreadFunc);
+		m_ThreadGroup.emplace_back(i_ThreadFunc);
+		//m_ThreadGroup.create_thread(i_ThreadFunc);
 	else
 		i_ThreadFunc();
 #else
@@ -56,7 +57,8 @@ void envThreadGroup::AddThread(const ThreadFunc& i_ThreadFunc)
 void envThreadGroup::WaitForAll()
 {
 #ifdef ENV_USE_THREADS
-	m_ThreadGroup.join_all();
+	for (auto& thread : m_ThreadGroup)
+		thread.join();
 #endif
 }
 

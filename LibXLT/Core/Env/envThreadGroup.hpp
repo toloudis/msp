@@ -18,7 +18,9 @@
 #include "Core/env/envThread.hpp"
 #endif
 
-#include <boost/function/function0.hpp>
+#include <functional>
+#include <thread>
+#include <vector>
 
 //========================================================================
 // envThreadGroup is a manager for a set of tasks that can be 
@@ -27,7 +29,7 @@
 class envThreadGroup
 {
 public:
-	typedef boost::function0<void> ThreadFunc;
+	typedef std::function<void()> ThreadFunc;
 
 	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------
@@ -52,7 +54,7 @@ public:
 private:
 
 #ifdef ENV_USE_THREADS
-	boost::thread_group m_ThreadGroup;
+	std::vector<std::thread> m_ThreadGroup;
 #endif
 	static bool sm_bEnableThreading;
 };
