@@ -43,7 +43,7 @@ namespace pythCaptureOptions
 			{
 				prop_name = (*it)->GetProperty(0)->GetPropertyName();
 				PyList_SetItem(PropList, i, 
-								PyString_FromString(prop_name.c_str()));
+					PyUnicode_FromString(prop_name.c_str()));
 				++it;
 			}
 
@@ -84,7 +84,7 @@ namespace pythCaptureOptions
 			}
 
 			const char *capture_property;
-			capture_property = PyString_AsString( PyTuple_GetItem( args, 0 ) );
+			capture_property = PyUnicode_AsUTF8( PyTuple_GetItem( args, 0 ) );
 
 			prtyObject* capt_prop = captRenderOutputDataUtil::GetDataObject();
 			if(!capt_prop)

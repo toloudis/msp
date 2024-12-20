@@ -67,9 +67,9 @@ namespace
 		if (NameList != NULL)
 		{
 			// Type, Time and Note
-			PyList_SetItem(NameList, 0, PyString_FromString("status"));
-			PyList_SetItem(NameList, 1, PyString_FromString("time"));
-			PyList_SetItem(NameList, 2, PyString_FromString("note"));
+			PyList_SetItem(NameList, 0, PyUnicode_FromString("status"));
+			PyList_SetItem(NameList, 1, PyUnicode_FromString("time"));
+			PyList_SetItem(NameList, 2, PyUnicode_FromString("note"));
 
 		//? Py_DECREF(NameList);
 		}
@@ -136,7 +136,7 @@ namespace
 			return NULL;
 		}
 
-		int index = PyInt_AsLong( PyTuple_GetItem( args, 0 ) );
+		int index = PyLong_AsLong( PyTuple_GetItem( args, 0 ) );
 		if (index < 0 || index >= chnlNotesMgr::GetNumNotes())
 		{
 			PyErr_SetString(PyExc_TypeError, "getNoteValue first argument should be index of note, starting at 0");
@@ -144,11 +144,11 @@ namespace
 		}
 		chnlNoteDataItem data = chnlNotesMgr::GetNoteData(index);
 
-		char *propertyName = PyString_AsString( PyTuple_GetItem( args, 1 ) );
+		char *propertyName = PyUnicode_AsUTF8( PyTuple_GetItem( args, 1 ) );
 		PyObject *pValueArg = PyTuple_GetItem( args, 2 );
 		if (!::strcmp(propertyName, "status"))
 		{
-			char *status = PyString_AsString( pValueArg );
+			char *status = PyUnicode_AsUTF8( pValueArg );
 			int conv_status;
 			if ((status != NULL) && (convert_status(status, conv_status)))
 			{
@@ -168,7 +168,7 @@ namespace
 		}
 		else if (!::strcmp(propertyName, "note"))
 		{
-			data.m_Note = PyString_AsString( pValueArg );
+			data.m_Note = PyUnicode_AsUTF8( pValueArg );
 			chnlNotesOperations::SetNoteData(index, data);
 		}
 		else

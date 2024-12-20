@@ -12,6 +12,7 @@
 #endif
 #define RLYR_RENDERLAYERNODE_HPP
 
+#include <string>
 #include <vector>
 
 //--------------------------------------------------------------------

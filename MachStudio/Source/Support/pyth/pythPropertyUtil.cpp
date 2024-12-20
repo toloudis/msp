@@ -86,7 +86,7 @@ namespace pythPropertyUtil
 			{
 				// Convert property into a single token
 				std::string prty_name = pythUtil::MakeToken(properties[i]->GetPropertyName());
-				PyList_SetItem(PrtyList, i, PyString_FromString(prty_name.c_str()));
+				PyList_SetItem(PrtyList, i, PyUnicode_FromString(prty_name.c_str()));
 			}
 
 		//? Py_DECREF(MyList);
@@ -132,7 +132,7 @@ namespace pythPropertyUtil
 		}
 		else if (prtyDirectory *pPropCast = dynamic_cast<prtyDirectory*>(pProperty))
 		{
-			const char *pFilename = PyString_AsString( pValueArg );
+			const char *pFilename = PyUnicode_AsUTF8( pValueArg );
 			if (!pFilename)
 				return NULL;
 			fsLocator locator;
@@ -141,7 +141,7 @@ namespace pythPropertyUtil
 		}
 		else if (prtyEnum *pPropCast = dynamic_cast<prtyEnum*>(pProperty))
 		{
-			const char *pTag = PyString_AsString( pValueArg );
+			const char *pTag = PyUnicode_AsUTF8( pValueArg );
 			if (!pTag)
 				return NULL;
 
@@ -165,14 +165,14 @@ namespace pythPropertyUtil
 		}
 		else if (prtyFileName *pPropCast = dynamic_cast<prtyFileName*>(pProperty))
 		{
-			const char *pFilename = PyString_AsString( pValueArg );
+			const char *pFilename = PyUnicode_AsUTF8( pValueArg );
 			if (!pFilename)
 				return NULL;
 			pPropCast->SetValue(itString(pFilename), bSetDirty);
 		}
 		else if (prtyFilePath *pPropCast = dynamic_cast<prtyFilePath*>(pProperty))
 		{
-			const char *pFilename = PyString_AsString( pValueArg );
+			const char *pFilename = PyUnicode_AsUTF8( pValueArg );
 			if (!pFilename)
 				return NULL;
 			fsLocator locator;
@@ -181,7 +181,7 @@ namespace pythPropertyUtil
 		}
 		else if (prtyTextureFileName *pPropCast = dynamic_cast<prtyTextureFileName*>(pProperty))
 		{
-			const char *pFilename = PyString_AsString( pValueArg );
+			const char *pFilename = PyUnicode_AsUTF8( pValueArg );
 			if (!pFilename)
 				return NULL;
 			prtyTextureFileData val = pPropCast->GetFullValue();
@@ -200,7 +200,7 @@ namespace pythPropertyUtil
 		}
 		else if (prtyInt32 *pPropCast = dynamic_cast<prtyInt32*>(pProperty))
 		{
-			int value = PyInt_AsLong( pValueArg );
+			int value = PyLong_AsLong( pValueArg );
 			//DBG_LOG2("setting property int32 %s = %d", pProperty->GetPropertyName().c_str(), value );
 			if (!PyErr_Occurred())
 				pPropCast->SetValue(value, bSetDirty);
@@ -209,7 +209,7 @@ namespace pythPropertyUtil
 		}
 		else if (prtyInt8 *pPropCast = dynamic_cast<prtyInt8*>(pProperty))
 		{
-			envType::Int8 value = (envType::Int8)PyInt_AsLong( pValueArg ); // only integer type in python is Long?
+			envType::Int8 value = (envType::Int8)PyLong_AsLong( pValueArg ); // only integer type in python is Long?
 			if (!PyErr_Occurred())
 				pPropCast->SetValue(value, bSetDirty);
 			else
@@ -242,7 +242,7 @@ namespace pythPropertyUtil
 		}
 		else if (prtyName *pPropCast = dynamic_cast<prtyName*>(pProperty))
 		{
-			const char *pName = PyString_AsString( pValueArg );
+			const char *pName = PyUnicode_AsUTF8( pValueArg );
 			if (!pName)
 				return NULL;
 
@@ -279,7 +279,7 @@ namespace pythPropertyUtil
 		}
 		else if (prtyText *pPropCast = dynamic_cast<prtyText*>(pProperty))
 		{
-			const char *pString = PyString_AsString( pValueArg );
+			const char *pString = PyUnicode_AsUTF8( pValueArg );
 			if (!pString)
 				return NULL;
 			pPropCast->SetValue(pString, bSetDirty);
@@ -314,7 +314,7 @@ namespace pythPropertyUtil
 	//--------------------------------------------------------------------
 	PyObject* set_property(prtyObject *pPrtyObj, PyObject *args, bool i_bPreserveNameUID)
 	{
-		char *propertyName = PyString_AsString( PyTuple_GetItem( args, 1 ) );
+		char *propertyName = PyUnicode_AsUTF8( PyTuple_GetItem( args, 1 ) );
 
 		prtyProperty *pProperty = get_property(pPrtyObj, propertyName);
 		if (!pProperty)

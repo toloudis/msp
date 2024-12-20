@@ -115,7 +115,7 @@ namespace pythFgmtProperty
 		{
 			std::string prop_name = (*it)->GetProperty(0)->GetPropertyName();
 			PyList_SetItem(PropList, i, 
-					PyString_FromString(prop_name.c_str()));
+					PyUnicode_FromString(prop_name.c_str()));
 			++it;
 		}
 	}
@@ -135,7 +135,7 @@ namespace pythFgmtProperty
 			//DBG_WARNING1( "     *****Property Name: %s *******", prop_name.c_str()  );
 			PyObject* fgmtValue = pythPropertyUtil::get_value( (*it)->GetProperty(0) );    
 			//DBG_WARNING0( "     *****Got the value of the fragment*******"  );
-			combine_and_display( PyString_FromString(prop_name.c_str()), fgmtValue );
+			combine_and_display( PyUnicode_FromString(prop_name.c_str()), fgmtValue );
 			PyRun_SimpleString("fgmt = mach.displayFgmtProperty()");
 			PyRun_SimpleString("print fgmt[0], '     ', fgmt[1]");	
 		}
@@ -261,9 +261,9 @@ namespace pythFgmtProperty
 			return NULL;
 		}
 		const char *object_name, *fragment_name, *fragment_property;
-		object_name = PyString_AsString( PyTuple_GetItem( args, 0 ) );
-		fragment_name = PyString_AsString( PyTuple_GetItem( args, 1 ) );
-		fragment_property = PyString_AsString( PyTuple_GetItem( args, 2 ) );
+		object_name = PyUnicode_AsUTF8( PyTuple_GetItem( args, 0 ) );
+		fragment_name = PyUnicode_AsUTF8( PyTuple_GetItem( args, 1 ) );
+		fragment_property = PyUnicode_AsUTF8( PyTuple_GetItem( args, 2 ) );
 
 		//get the script object
 		fgmtScriptObject* script_obj = get_fgmt_script_object(object_name);
@@ -306,7 +306,7 @@ namespace pythFgmtProperty
 		for( unsigned int i = 0; i < numFgmt; ++i )
 		{
 			next_fgmt = script_obj->GetFragmentName(i);
-			PyList_SetItem(NameValue, i, PyString_FromString(next_fgmt.c_str()));
+			PyList_SetItem(NameValue, i, PyUnicode_FromString(next_fgmt.c_str()));
 		}
 		return NameValue;
 	}

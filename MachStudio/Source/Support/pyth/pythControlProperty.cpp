@@ -108,7 +108,7 @@ namespace pythControlProperty
 		{
 			std::string prop_name = (*it)->GetProperty(0)->GetPropertyName();
 			PyList_SetItem(PropList, i, 
-					PyString_FromString(prop_name.c_str()));
+					PyUnicode_FromString(prop_name.c_str()));
 			++it;
 		}
 	}
@@ -133,7 +133,7 @@ namespace pythControlProperty
 		for( int i = 0; i < i_RefNames.size(); ++i )
 		{
 			std::string jointName = i_RefNames[i];
-			PyList_SetItem(controlPyObject, i, PyString_FromString(jointName.c_str()));
+			PyList_SetItem(controlPyObject, i, PyUnicode_FromString(jointName.c_str()));
 		}
 	}
 	//--------------------------------------------------------------------
@@ -145,7 +145,7 @@ namespace pythControlProperty
 		for( int i = 0; i < i_ControlData.size(); ++i )
 		{
 			std::string controlName = i_ControlData[i].m_Name.GetValue();
-			PyList_SetItem(controlPyObject, i, PyString_FromString(controlName.c_str()));
+			PyList_SetItem(controlPyObject, i, PyUnicode_FromString(controlName.c_str()));
 		}
 
 	}
@@ -280,9 +280,9 @@ namespace pythControlProperty
 			return NULL;
 		}
 		const char *objectName, *controlName, *controlProperty;
-		objectName = PyString_AsString( PyTuple_GetItem( args, 0 ) );
-		controlName = PyString_AsString( PyTuple_GetItem( args, 1 ) );
-		controlProperty = PyString_AsString( PyTuple_GetItem( args, 2 ) );
+		objectName = PyUnicode_AsUTF8( PyTuple_GetItem( args, 0 ) );
+		controlName = PyUnicode_AsUTF8( PyTuple_GetItem( args, 1 ) );
+		controlProperty = PyUnicode_AsUTF8( PyTuple_GetItem( args, 2 ) );
 
 		dynScriptObject* script_obj = get_script_object( objectName );
 		if( !script_obj )

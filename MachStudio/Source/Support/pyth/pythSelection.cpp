@@ -63,7 +63,7 @@ namespace
 		{
 			for (int i=0; i<num_names; ++i)
 			{
-				PyList_SetItem(SelList, i, PyString_FromString(name_list[i]->GetName().GetString().c_str()));
+				PyList_SetItem(SelList, i, PyUnicode_FromString(name_list[i]->GetName().GetString().c_str()));
 			}
 
 		//? Py_DECREF(MyList);

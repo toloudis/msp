@@ -8,8 +8,8 @@
 //#include "Area18/ogl/GL/wglew.h"
 #include "Area18/ogl/GL/gl3w.h"
 
-#include <CL/cl.hpp>
-#include <CL/opencl.h>
+//#include <CL/cl.hpp>
+//#include <CL/opencl.h>
 
 #include "Core/Dbg/dbgMsg.hpp"
 

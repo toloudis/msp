@@ -149,7 +149,7 @@ namespace pythProperty
 				return NULL;
 			}
 
-			char *objectName = PyString_AsString( PyTuple_GetItem( args, 0 ) );
+			char *objectName = PyUnicode_AsUTF8( PyTuple_GetItem( args, 0 ) );
 
 			prtyObject *pPrtyObj = get_prty_object(objectName);
 			if (!pPrtyObj)
@@ -197,7 +197,7 @@ namespace pythProperty
 			}
 
 			const std::string driverName = dDriverObj->GetName();
-			return PyString_FromString( driverName.c_str() );
+			return PyUnicode_FromString( driverName.c_str() );
 
 		}
 		//--------------------------------------------------------------------

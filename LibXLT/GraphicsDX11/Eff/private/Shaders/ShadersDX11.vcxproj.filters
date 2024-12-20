@@ -193,6 +193,7 @@
       <Filter>Shaders\PostEffect</Filter>
     </None>
     <None Include="shadersDX11.proj" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h">

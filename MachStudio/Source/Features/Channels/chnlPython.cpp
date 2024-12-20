@@ -97,7 +97,7 @@ namespace
 			{
 				const tmlnChannel& channel = channel_set.GetChannel(i);
 				std::string tokenName = pythUtil::MakeToken(channel.GetName());
-				PyList_SetItem(NameList, i, PyString_FromString(tokenName.c_str()));
+				PyList_SetItem(NameList, i, PyUnicode_FromString(tokenName.c_str()));
 			}
 
 		//? Py_DECREF(NameList);

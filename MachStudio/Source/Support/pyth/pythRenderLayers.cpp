@@ -156,8 +156,8 @@ namespace pythRenderLayers
 
 			rlyrRenderLayerMgr::Update();
 			const char *layer_name,*pref_property;
-			layer_name = PyString_AsString( PyTuple_GetItem( args, 0 ) );
-			pref_property = PyString_AsString( PyTuple_GetItem( args, 1 ) );
+			layer_name = PyUnicode_AsUTF8( PyTuple_GetItem( args, 0 ) );
+			pref_property = PyUnicode_AsUTF8( PyTuple_GetItem( args, 1 ) );
 
 			rprfPrefsObject* layer_prefs = rlyrRenderLayerMgr::GetLayerRenderPrefs(nameString(std::string(layer_name)));
 			if(!layer_prefs)
@@ -212,7 +212,7 @@ namespace pythRenderLayers
 			{
 				prop_name = (*it)->GetProperty(0)->GetPropertyName();
 				PyList_SetItem(PropList, i, 
-								PyString_FromString(prop_name.c_str()));
+								PyUnicode_FromString(prop_name.c_str()));
 				++it;
 			}
 
@@ -233,8 +233,8 @@ namespace pythRenderLayers
 
 			rlyrRenderLayerMgr::Update();
 			const char *layer_name,*pass_property;
-			layer_name = PyString_AsString( PyTuple_GetItem( args, 0 ) );
-			pass_property = PyString_AsString( PyTuple_GetItem( args, 1 ) );
+			layer_name = PyUnicode_AsUTF8( PyTuple_GetItem( args, 0 ) );
+			pass_property = PyUnicode_AsUTF8( PyTuple_GetItem( args, 1 ) );
 
 			rlyrPassesObject* layer_passes = rlyrRenderLayerMgr::GetLayerRenderPasses(nameString(std::string(layer_name)));
 			if(!layer_passes)
@@ -300,7 +300,7 @@ namespace pythRenderLayers
 			{
 				pass_name = (*it)->GetProperty(0)->GetPropertyName();
 				PyList_SetItem(PropList, i, 
-								PyString_FromString(pass_name.c_str()));
+								PyUnicode_FromString(pass_name.c_str()));
 				++it;
 			}
 
@@ -321,8 +321,8 @@ namespace pythRenderLayers
 			
 			rlyrRenderLayerMgr::Update();
 			const char *layer_name,*output_property;
-			layer_name = PyString_AsString( PyTuple_GetItem( args, 0 ) );
-			output_property = PyString_AsString( PyTuple_GetItem( args, 1 ) );
+			layer_name = PyUnicode_AsUTF8( PyTuple_GetItem( args, 0 ) );
+			output_property = PyUnicode_AsUTF8( PyTuple_GetItem( args, 1 ) );
 
 			if(std::string(layer_name) != "Master" && std::string(output_property) == "Sound File")
 			{
@@ -385,7 +385,7 @@ namespace pythRenderLayers
 			{
 				prop_name = (*it)->GetProperty(0)->GetPropertyName();
 				PyList_SetItem(PropList, i, 
-								PyString_FromString(prop_name.c_str()));
+								PyUnicode_FromString(prop_name.c_str()));
 				++it;
 			}
 

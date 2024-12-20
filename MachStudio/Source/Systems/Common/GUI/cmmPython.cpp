@@ -200,7 +200,7 @@ namespace
 		{
 			for (int i=0; i<num_names; ++i)
 			{
-				PyList_SetItem(NameList, i, PyString_FromString(name_list[i]->GetString().c_str()));
+				PyList_SetItem(NameList, i, PyUnicode_FromString(name_list[i]->GetString().c_str()));
 			}
 
 		//? Py_DECREF(NameList);
@@ -249,7 +249,7 @@ namespace
 		{
 			for (int i=0; i<num_names; ++i)
 			{
-				PyList_SetItem(NameList, i, PyString_FromString(name_list[i].GetString().c_str()));
+				PyList_SetItem(NameList, i, PyUnicode_FromString(name_list[i].GetString().c_str()));
 			}
 
 		//? Py_DECREF(NameList);

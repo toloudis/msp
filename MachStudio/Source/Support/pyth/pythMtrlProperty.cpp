@@ -118,7 +118,7 @@ namespace pythMtrlProperty
 		{
 			std::string prop_name = (*it)->GetProperty(0)->GetPropertyName();
 			PyList_SetItem(PropList, i, 
-					PyString_FromString(prop_name.c_str()));
+					PyUnicode_FromString(prop_name.c_str()));
 			++it;
 		}
 	}
@@ -135,7 +135,7 @@ namespace pythMtrlProperty
 		{
 			std::string prop_name = (*it)->GetProperty(0)->GetPropertyName();
 			PyObject* mtrlValue = pythPropertyUtil::get_value( (*it)->GetProperty(0) );
-			combine_and_display( PyString_FromString(prop_name.c_str()), mtrlValue );
+			combine_and_display( PyUnicode_FromString(prop_name.c_str()), mtrlValue );
 
 			PyRun_SimpleString("mtrl = mach.displayMtrlProperty()");
 			PyRun_SimpleString("print mtrl[0], '     ', mtrl[1]");					
@@ -325,9 +325,9 @@ namespace pythMtrlProperty
 			return NULL;
 		}
 		const char *object_name, *material_name, *material_property;
-		object_name = PyString_AsString( PyTuple_GetItem( args, 0 ) );
-		material_name = PyString_AsString( PyTuple_GetItem( args, 1 ) );
-		material_property = PyString_AsString( PyTuple_GetItem( args, 2 ) );
+		object_name = PyUnicode_AsUTF8( PyTuple_GetItem( args, 0 ) );
+		material_name = PyUnicode_AsUTF8( PyTuple_GetItem( args, 1 ) );
+		material_property = PyUnicode_AsUTF8( PyTuple_GetItem( args, 2 ) );
 
 		//get the script object
 		mtrlScriptObject* script_obj = get_mtrl_script_object(object_name);
@@ -371,7 +371,7 @@ namespace pythMtrlProperty
 		for( unsigned int i = 0; i < numMtrl; ++i )
 		{
 			next_mtrl = script_obj->GetMaterialName(i);
-			PyList_SetItem(NameValue, i, PyString_FromString(next_mtrl.c_str()));
+			PyList_SetItem(NameValue, i, PyUnicode_FromString(next_mtrl.c_str()));
 		}
 		return NameValue;
 	}

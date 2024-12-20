@@ -16,6 +16,7 @@
 #include "Core/ch/chDefs.hpp"
 #endif
 
+#include <string>
 #include <vector>
 #include <map>
 

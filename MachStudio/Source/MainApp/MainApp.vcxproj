@@ -1083,6 +1083,9 @@
     <ResourceCompile Include="app.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\LibXLT\Area18\Area18.vcxproj">
+      <Project>{f05bd011-50ed-473a-b895-fed684891ca5}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\LibXLT\AudioDS\AudioDS.vcxproj">
       <Project>{84d12fe8-19e7-4548-8d2e-2b2911a75274}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
@@ -1090,9 +1093,6 @@
     <ProjectReference Include="..\..\..\LibXLT\Core\Core.vcxproj">
       <Project>{846c097d-3b0e-4a0a-b6d7-222ed73125f8}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\LibXLT\GraphicsDX11\GraphicsDX11.vcxproj">
-      <Project>{419458ff-14d9-40ec-a36e-0a72774bc100}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\..\LibXLT\Graphics\Graphics.vcxproj">
       <Project>{1d25a739-3967-4baf-aa18-53690b00bd55}</Project>

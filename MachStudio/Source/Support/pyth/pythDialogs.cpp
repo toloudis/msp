@@ -107,7 +107,7 @@ namespace
 			{
 				std::string filename;
 				fsFileUtil::LocatorToANSIFilename(file_locs[i], filename);
-				PyList_SetItem(FileList, i, PyString_FromString(filename.c_str()));
+				PyList_SetItem(FileList, i, PyUnicode_FromString(filename.c_str()));
 			}
 		}
 		

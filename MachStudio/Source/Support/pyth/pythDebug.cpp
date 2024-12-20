@@ -37,9 +37,9 @@ namespace pythDebug
 			PyObject* cur_object;
 			
 			std::string type;
-			char* msg_string;
-			float msg_float;
-			int msg_int;
+			//char* msg_string;
+			//float msg_float;
+			//int msg_int;
 
 			//we need to check each entry's type and write it to the stringstream
 			for( int i = 0; i < num_args; ++i)
@@ -48,17 +48,17 @@ namespace pythDebug
 				type = std::string(cur_object->ob_type->tp_name);
 				if(type == "str")
 				{	
-					msg_string = PyString_AsString(cur_object);
+					const char* msg_string = PyUnicode_AsUTF8(cur_object);
 					log_ss << msg_string;
 				}	
 				else if (type == "float")
 				{	
-					msg_float = (float)PyFloat_AsDouble(cur_object);
+					float msg_float = (float)PyFloat_AsDouble(cur_object);
 					log_ss << msg_float;
 				}	
 				else if (type == "int")
 				{	
-					msg_int = (int)PyInt_AsLong(cur_object);
+					int msg_int = (int)PyLong_AsLong(cur_object);
 					log_ss << msg_int;
 				}	
 				else

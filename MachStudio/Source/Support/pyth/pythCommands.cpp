@@ -42,7 +42,7 @@ namespace
 			{
 				std::string cmd_name = pythUtil::MakeToken(cmd_list[i]->GetTag());
 				PyList_SetItem(CmdList, i, 
-					PyString_FromString(cmd_name.c_str()));
+					PyUnicode_FromString(cmd_name.c_str()));
 			}
 
 		//? Py_DECREF(CmdList);
@@ -67,7 +67,7 @@ namespace
 				std::string cmd_descr = cmd_list[i]->GetDescription();
 				std::string cmd_full = cmd_name + " - " + cmd_descr;
 				PyList_SetItem(CmdList, i, 
-					PyString_FromString(cmd_full.c_str()));
+					PyUnicode_FromString(cmd_full.c_str()));
 				
 			}
 
