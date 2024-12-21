@@ -17,7 +17,7 @@
 #include "GraphicsDX11/g2d/private/g2dDX11SurfaceUtil.hpp"
 #include "GraphicsDX11/g2d/private/g2dImageDrawUtilDX11.hpp"
 
-#include <DirectXTex/DirectXTex.h>
+#include <DirectXTex.h>
 
 namespace
 {

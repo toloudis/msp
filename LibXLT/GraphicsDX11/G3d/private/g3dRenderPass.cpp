@@ -33,7 +33,7 @@
 #include "GraphicsDX11/mat/matRenderTargetTexture.hpp"
 #include "Graphics/Mat/matMaterial.hpp"
 
-
+#include <algorithm>
 
 namespace
 {

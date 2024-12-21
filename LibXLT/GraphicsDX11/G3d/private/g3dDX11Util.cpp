@@ -776,7 +776,7 @@ bool g3dDX11Util::CopyTextureToDepth( matTexture* src, g2dRenderTarget* tgt, flo
 bool g3dDX11Util::CopyDepth( matRenderTargetTexture* src, g2dRenderTarget* tgt, float pixOffsetX/*=0*/, float pixOffsetY/*=0*/)
 {
 	UINT uiPass;
-	shared_ptr<g2dDepthStencilBufferDX11> pDS = boost::dynamic_pointer_cast<g2dDepthStencilBufferDX11>(src->GetDepthStencilBuffer());
+	shared_ptr<g2dDepthStencilBufferDX11> pDS = std::dynamic_pointer_cast<g2dDepthStencilBufferDX11>(src->GetDepthStencilBuffer());
 
 	if( !pDS ) return false;	//source has no depth stencil
 

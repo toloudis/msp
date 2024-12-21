@@ -477,5 +477,5 @@ shared_ptr<g2dDepthStencilBuffer> matReflectiveShadowMap::GetDepthStencilBuffer(
 
 void matReflectiveShadowMap::SetDepthBuffer( shared_ptr<g2dDepthStencilBuffer> i_DepthStencil )
 {
-	m_DepthStencil = boost::dynamic_pointer_cast<g2dDepthStencilBufferDX11>(i_DepthStencil);
+	m_DepthStencil = std::dynamic_pointer_cast<g2dDepthStencilBufferDX11>(i_DepthStencil);
 }

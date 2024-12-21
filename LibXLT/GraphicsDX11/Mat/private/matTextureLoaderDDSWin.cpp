@@ -21,7 +21,7 @@
 
 #include "DDS.h"
 
-#include <DirectXTex/DirectXTex.h>
+#include <DirectXTex.h>
 
 #include <fstream>
 

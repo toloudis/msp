@@ -40,7 +40,7 @@ namespace matTextureLoaderWin
 namespace
 {
 
-const DWORD l_FilterType = DirectX::TEX_FILTER_FLAGS::TEX_FILTER_TRIANGLE;
+const DirectX::TEX_FILTER_FLAGS l_FilterType = DirectX::TEX_FILTER_FLAGS::TEX_FILTER_TRIANGLE;
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------

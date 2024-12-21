@@ -254,7 +254,7 @@ g3dVertexBuffer* mayFragCreate::CreateFragmentGroup(const mdlFragInfo &i_FragInf
 											i_FragInfo.m_Flags.m_bTriangleSort,
 											bCreateBasisVectors);
 
-	std::auto_ptr<bumpVertexBuffer> pBumpBuffer( new bumpVertexBuffer(shared_vertex_buffer) );
+	std::unique_ptr<bumpVertexBuffer> pBumpBuffer( new bumpVertexBuffer(shared_vertex_buffer) );
 
 	o_Fragments.resize( num_materials, NULL );
 	for (int mi=0; mi<num_materials; mi++)
@@ -272,7 +272,7 @@ g3dVertexBuffer* mayFragCreate::CreateFragmentGroup(const mdlFragInfo &i_FragInf
 
 
 		// Create fragment that uses the buffers we just created
-		std::auto_ptr<tmeshFrag> pFragment( new bumpTriMeshBumpFrag(	shared_vertex_buffer,
+		std::unique_ptr<tmeshFrag> pFragment( new bumpTriMeshBumpFrag(	shared_vertex_buffer,
 														pBumpBuffer->GetVertexBuffer_Old(),
 														individual_index_buffer,
 														i_FragInfo.m_Materials[mi]->m_pMaterial) );

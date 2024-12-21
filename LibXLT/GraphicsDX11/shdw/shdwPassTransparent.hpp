@@ -7,8 +7,6 @@
 #include "GraphicsDX11/g3d/g3dRenderPass.hpp"
 #endif
 
-#include <boost/function.hpp>
-
 class shdwPassTraversal;
 
 class camCamera;
@@ -48,7 +46,7 @@ public:
 
 	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------
-	typedef boost::function0<int> ColorPeeledFunction;
+	typedef std::function<int()> ColorPeeledFunction;
 
 	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------

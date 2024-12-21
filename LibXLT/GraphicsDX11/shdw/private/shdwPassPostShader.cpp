@@ -21,7 +21,6 @@
 #include "GraphicsDX11/eff/effShaderBaseDX11.hpp"
 #include "GraphicsDX11/g3d/g3dDX11TextureUtil.hpp"
 
-#include <boost/lexical_cast.hpp>
 
 namespace
 {

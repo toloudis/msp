@@ -403,6 +403,6 @@ shared_ptr<g2dDepthStencilBuffer> g2dWindowDX11::GetDepthStencilBuffer() const
 //------------------------------------------------------------------------
 void g2dWindowDX11::SetDepthBuffer(shared_ptr<g2dDepthStencilBuffer> i_DepthStencil)
 {
-	m_DepthStencil = boost::dynamic_pointer_cast<g2dDepthStencilBufferDX11>(i_DepthStencil);
+	m_DepthStencil = std::dynamic_pointer_cast<g2dDepthStencilBufferDX11>(i_DepthStencil);
 }
 

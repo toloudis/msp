@@ -33,8 +33,6 @@
 #include "GraphicsDX11/G3d/g3dSceneGlobal.hpp"
 
 
-#include <boost/bind.hpp>
-
 namespace
 {
 	matMaterial l_AlphaFillMat;

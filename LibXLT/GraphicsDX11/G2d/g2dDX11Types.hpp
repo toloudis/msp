@@ -34,8 +34,9 @@
 // 3rdparty for now.
 // https://github.com/Microsoft/FX11
 // https://github.com/Microsoft/DirectXTex
-#include "DirectXTex/DirectXTex/DirectXTex.h"
-#include "FX11/inc/d3dx11effect.h"
+#include "Effects11/d3dx11effect.h"
+#include <DirectXTex.h>
+//#include <d3dx11.h>
 
 #ifndef D3DPERF_BeginEvent
 #define	D3DPERF_BeginEvent( C, S )

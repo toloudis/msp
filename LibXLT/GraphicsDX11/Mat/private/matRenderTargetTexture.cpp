@@ -422,7 +422,7 @@ shared_ptr<g2dDepthStencilBuffer> matRenderTargetTexture::GetDepthStencilBuffer(
 
 void matRenderTargetTexture::SetDepthBuffer( shared_ptr<g2dDepthStencilBuffer> i_DepthStencil )
 {
-	m_DepthStencil = boost::dynamic_pointer_cast<g2dDepthStencilBufferDX11>(i_DepthStencil);
+	m_DepthStencil = std::dynamic_pointer_cast<g2dDepthStencilBufferDX11>(i_DepthStencil);
 }
 //--------------------------------------------------------------------
 //	SetSurface sets the DirectDraw surface pointer

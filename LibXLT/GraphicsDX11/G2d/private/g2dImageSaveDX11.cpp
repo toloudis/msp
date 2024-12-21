@@ -24,7 +24,7 @@
 #include "GraphicsDX11/g2d/g2dWindowDX11.hpp"
 #include "Graphics/g3d/g3dPrefs.hpp"
 
-#include <DirectXTex/ScreenGrab/ScreenGrab.h>
+#include <DirectXTex.h>
 #include <wincodec.h>
 
 #include <string>

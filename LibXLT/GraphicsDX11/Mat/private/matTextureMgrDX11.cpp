@@ -1192,7 +1192,7 @@ matMipTexture* matTextureMgrDX11::LoadMipTexture(	const fsLocator& i_Locator,
 
 	//	Setup the matMipTexture
 	//
-	std::auto_ptr<matMipTexture> ret_val(new matMipTexture);
+	std::unique_ptr<matMipTexture> ret_val(new matMipTexture);
 
 	load_mip_texture(ret_val.get(), file_info, true);
 
@@ -1734,7 +1734,7 @@ matTexture* matTextureMgrDX11::CreateTexture(int i_nTextureWidth,
 	// use auto_ptr to clean up in case of exception thrown from Make()
 	if (i_bMipmap)
 	{
-		std::auto_ptr<matMipTexture> pTexture(new matMipTexture);
+		std::unique_ptr<matMipTexture> pTexture(new matMipTexture);
 		pTexture->Make( i_nTextureWidth, i_nTextureHeight, image_format, 0, i_PixelData );
 		pTexture->ReloadInfo();
 		matMipTexture* pRaw = pTexture.release();
@@ -1743,7 +1743,7 @@ matTexture* matTextureMgrDX11::CreateTexture(int i_nTextureWidth,
 	}
 	else
 	{
-		std::auto_ptr<matPlainTexture> pTexture(new matPlainTexture);
+		std::unique_ptr<matPlainTexture> pTexture(new matPlainTexture);
 		pTexture->Make( i_nTextureWidth, i_nTextureHeight, image_format, i_PixelData );
 		pTexture->ReloadInfo();
 		matPlainTexture* pRaw = pTexture.release(); 
@@ -1789,7 +1789,7 @@ matTexture* matTextureMgrDX11::CreateTexture3D(int i_nTextureWidth,
 
 	matTexture* retval = NULL;
 
-	std::auto_ptr<matVolumeTexture> pTexture(new matVolumeTexture);
+	std::unique_ptr<matVolumeTexture> pTexture(new matVolumeTexture);
 	pTexture->Make( i_nTextureWidth, i_nTextureHeight, i_nTextureDepth, image_format, i_Bindings, i_PixelData );
 	pTexture->ReloadInfo();
 	matVolumeTexture* pRaw = pTexture.release(); 
@@ -2491,7 +2491,7 @@ matPlainTexture* matTextureMgrDX11::LoadPlainTexture(	const fsLocator& i_Locator
 
 	//	Setup the matPlainTexture
 	//
-	std::auto_ptr<matPlainTexture> ret_val(new matPlainTexture);
+	std::unique_ptr<matPlainTexture> ret_val(new matPlainTexture);
 
 	load_plain_texture(ret_val.get(), file_info);
 
@@ -2545,7 +2545,7 @@ matPlainTexture* matTextureMgrDX11::LoadResourceTexture(const fsLocator& i_Locat
 
 	//	Setup the matPlainTexture
 	//
-	std::auto_ptr<matPlainTexture> ret_val(new matPlainTexture);
+	std::unique_ptr<matPlainTexture> ret_val(new matPlainTexture);
 
 	load_plain_texture(ret_val.get(), file_info);
 
