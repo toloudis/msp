@@ -12,7 +12,6 @@
 #include "ToolUIWx/twc/twcEvent.hpp"
 #include "ToolUIWx/twx/twxSystem.hpp"
 
-#include <boost/bind.hpp>
 
 #ifdef USE_WXWIDGETS
 
@@ -200,7 +199,7 @@ void twcKnob::OnMouseRightClick(wxMouseEvent& i_event)
 	twcColorDialog::Instance = m_pColorDialog;
 	//this->Connect( m_pColorDialog->GetId(), wxEVT_VALUE_CHANGED,
 	//				wxCommandEventHandler(twcColorPicker::OnColorDialogChange) );
-	m_pColorDialog->SetColorChangedCallback(boost::bind(
+	m_pColorDialog->SetColorChangedCallback(std::bind(
 		&twcKnob::OnColorChanged, this));
 	m_pColorDialog->Show();
 

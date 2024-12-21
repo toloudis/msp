@@ -15,7 +15,7 @@
 #include "ToolUIWx/twc/twcTreeNode.hpp"
 #endif 
 
-#include <boost/function.hpp>
+#include <functional>
 #include <list>
 
 #ifdef USE_WXWIDGETS
@@ -79,7 +79,7 @@ class twcTreeView : public wxTreeCtrl
 		// Find function finds node that satisfies the given predicate
 		// or returns a node with IsOk()==false.
 		//--------------------------------------------------------------------
-		typedef boost::function<bool (const shared_ptr<twcTreeNode>&)> NodeFilterFunction;
+		typedef std::function<bool (const shared_ptr<twcTreeNode>&)> NodeFilterFunction;
 		wxTreeItemId FindNode(NodeFilterFunction i_Function);
 
 		//--------------------------------------------------------------------

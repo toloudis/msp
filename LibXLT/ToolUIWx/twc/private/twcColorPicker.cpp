@@ -11,8 +11,6 @@
 #include "ToolUIWx/twx/twxSystem.hpp"
 
 
-#include <boost/bind.hpp>
-
 #ifdef USE_WXWIDGETS
 
 BEGIN_EVENT_TABLE(twcColorPicker, wxButton)
@@ -79,7 +77,7 @@ void twcColorPicker::OnButtonClick(wxCommandEvent& i_Event)
 	twcColorDialog::Instance = m_pColorDialog;
 	//this->Connect( m_pColorDialog->GetId(), wxEVT_VALUE_CHANGED,
 	//				wxCommandEventHandler(twcColorPicker::OnColorDialogChange) );
-	m_pColorDialog->SetColorChangedCallback(boost::bind(
+	m_pColorDialog->SetColorChangedCallback(std::bind(
 							&twcColorPicker::OnColorDialogChange, this));
 	m_pColorDialog->Show();
 }

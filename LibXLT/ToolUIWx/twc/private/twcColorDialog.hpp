@@ -18,7 +18,7 @@
 #include "Core/env/envBoost.hpp"
 #endif
 
-#include <boost/function.hpp>
+#include <functional>
 
 #ifdef USE_WXWIDGETS
 //----------------------------------------------------------------------------
