@@ -63,7 +63,7 @@ class twcColorDialog : public twcColorDialogBase
 		// (wxDialog is not a wxControl), so use boost functions
 		//	to implement the callback.
 		//--------------------------------------------------------------------
-		typedef boost::function0<void> ColorChangedFunction;
+		typedef std::function<void()> ColorChangedFunction;
 		void SetColorChangedCallback(const ColorChangedFunction& i_FuncPtr);
 
 	private:

@@ -89,7 +89,7 @@ namespace pwxControlUtil
 
 		const int num_properties = io_pControl->GetNumberOfProperties();
 		undoUndoOperation *pSubmitUndoOp = NULL;
-		std::auto_ptr<undoMultipleOperation> pMultipleBlock;
+		std::unique_ptr<undoMultipleOperation> pMultipleBlock;
 		if (num_properties > 1)
 			pMultipleBlock.reset( new undoMultipleOperation(io_pControl->GetName().c_str()) );
 
@@ -135,7 +135,7 @@ namespace pwxControlUtil
 
 		const int num_properties = io_pControl->GetNumberOfProperties();
 		undoUndoOperation *pSubmitUndoOp = NULL;
-		std::auto_ptr<undoMultipleOperation> pMultipleBlock;
+		std::unique_ptr<undoMultipleOperation> pMultipleBlock;
 		if (num_properties > 1)
 			pMultipleBlock.reset( new undoMultipleOperation(io_pControl->GetName().c_str()) );
 
