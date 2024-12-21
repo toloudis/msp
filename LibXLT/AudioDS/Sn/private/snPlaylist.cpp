@@ -13,6 +13,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <random>
 
 // return an integral random number in the range 0 - (n - 1)
 int Rand(int n)
@@ -83,15 +84,17 @@ void snPlaylist::SetShuffle( bool i_bShuffle )
 			m_ShuffledPlaylist[i] = i;
 		}
 
+		std::random_device rd;
+		std::mt19937 g(rd());
 		//mix it up a few times
-		std::random_shuffle(m_ShuffledPlaylist.begin(),
+		std::shuffle(m_ShuffledPlaylist.begin(),
 							m_ShuffledPlaylist.end(),
-							std::pointer_to_unary_function<int, int>(Rand));
-		std::random_shuffle(m_ShuffledPlaylist.begin(),
-							m_ShuffledPlaylist.end());
-		std::random_shuffle(m_ShuffledPlaylist.begin(),
+							g);
+		std::shuffle(m_ShuffledPlaylist.begin(),
+							m_ShuffledPlaylist.end(), g);
+		std::shuffle(m_ShuffledPlaylist.begin(),
 							m_ShuffledPlaylist.end(),
-							std::pointer_to_unary_function<int, int>(Rand));
+							g);
 	}
 	else
 	{
