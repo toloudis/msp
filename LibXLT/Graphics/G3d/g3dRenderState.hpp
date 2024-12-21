@@ -18,6 +18,7 @@
 #include "Core/ma/maFloatRGBA.hpp"
 #endif
 
+#include <string>
 #include <vector>
 
 
