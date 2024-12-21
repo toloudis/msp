@@ -54,11 +54,11 @@ namespace api3dImport
 			//DBG_LOG( "api3d texture path (" << tempstring.c_str() << ")" );
 
 			fsResourceFinderDir finder(texture_path);
-			std::auto_ptr<entModelTemplate> ent_template(
+			std::unique_ptr<entModelTemplate> ent_template(
 						//entImport::LoadGeometry(i_Locator) );
 						api3dSharedModelMgr::LoadModelTemplate(i_Locator) );
 
-			std::auto_ptr<entModelInstance> ent_instance( new entModelInstance() );
+			std::unique_ptr<entModelInstance> ent_instance( new entModelInstance() );
 
 			if (ent_template.get() != NULL)
 			{

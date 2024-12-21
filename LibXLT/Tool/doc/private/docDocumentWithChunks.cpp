@@ -131,7 +131,7 @@ bool docDocumentWithChunks::Load(const fsLocator &i_Locator, LoadFlags i_LoadMet
 	}
 
 	// Notify all chunks that the load finished successfully
-	std::for_each(m_DocChunks.begin(), m_DocChunks.end(), std::mem_fun(&docDocumentChunk::NotifyLoadFinished));
+	std::for_each(m_DocChunks.begin(), m_DocChunks.end(), std::mem_fn(&docDocumentChunk::NotifyLoadFinished));
 
 	return bNewerVersion;
 }

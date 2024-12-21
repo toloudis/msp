@@ -11,7 +11,7 @@
 #endif
 #define GUI_CONTEXTMENU_HPP
 
-#include <boost/function.hpp>
+#include <functional>
 
 //============================================================================
 // forward declaration
@@ -37,7 +37,7 @@ public:
 	//		add a menu item to the Menu Tree which will call the given 
 	//	callback function when clicked.
 	//---------------------------------------------------------------------------
-	typedef boost::function0<void> CallbackFunction;
+	typedef std::function<void()> CallbackFunction;
 	virtual int AddMenuItem( const char * i_ParentName,
 							 const char * i_ChildName,
 							 CallbackFunction i_Callback ) = 0;

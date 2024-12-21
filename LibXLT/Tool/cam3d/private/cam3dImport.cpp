@@ -127,13 +127,13 @@ namespace
 		envType::UInt16 i;
 
 		RotationOrder rotation_order = e_XYZ;
-		std::auto_ptr< anKeyData<maPoint3d> > pTranslationChannel;
-		std::auto_ptr< anKeyData<maRotation> > pRotationChannel;
-		std::auto_ptr< anKeyData<float> > pFocalLengthChannel;
-		std::auto_ptr< anKeyData<float> > pCenterOfInterestChannel;
-		std::auto_ptr< anKeyData<float> > pHorizApertChannel;
-		std::auto_ptr< anKeyData<float> > pInterSepChannel;
-		std::auto_ptr< anKeyData<float> > pZeroParallaxChannel;
+		std::unique_ptr< anKeyData<maPoint3d> > pTranslationChannel;
+		std::unique_ptr< anKeyData<maRotation> > pRotationChannel;
+		std::unique_ptr< anKeyData<float> > pFocalLengthChannel;
+		std::unique_ptr< anKeyData<float> > pCenterOfInterestChannel;
+		std::unique_ptr< anKeyData<float> > pHorizApertChannel;
+		std::unique_ptr< anKeyData<float> > pInterSepChannel;
+		std::unique_ptr< anKeyData<float> > pZeroParallaxChannel;
 
 		try
 		{
@@ -381,7 +381,7 @@ namespace
 		chDefs::Size size;
 		chDefs::Version version;
 
-		std::auto_ptr<cam3dAnimKeys> cam_anim_keys;
+		std::unique_ptr<cam3dAnimKeys> cam_anim_keys;
 		try
 		{
 			while( reader.ReadChunkHeader(name, version, size) )

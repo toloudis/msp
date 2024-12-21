@@ -50,7 +50,7 @@ namespace
 	void notify_append(sel3dObject* i_pObject)
 	{
 		envSTLHelpers::ForAll(l_SelectInterestList,
-			std::bind2nd(std::mem_fun(&sel3dSelectInterest::AddedToSelection),i_pObject));
+			std::bind(std::mem_fn(&sel3dSelectInterest::AddedToSelection),std::placeholders::_1,i_pObject));
 	}
 
 	//--------------------------------------------------------------------
@@ -59,7 +59,7 @@ namespace
 	void notify_remove(sel3dObject* i_pObject)
 	{
 		envSTLHelpers::ForAll(l_SelectInterestList,
-			std::bind2nd(std::mem_fun(&sel3dSelectInterest::RemovedFromSelection),i_pObject));
+			std::bind(std::mem_fn(&sel3dSelectInterest::RemovedFromSelection), std::placeholders::_1, i_pObject));
 	}
 
 	//--------------------------------------------------------------------
@@ -68,7 +68,7 @@ namespace
 	void notify_selection_changed()
 	{
 		envSTLHelpers::ForAll(l_SelectInterestList,
-			std::mem_fun(&sel3dSelectInterest::SelectionChanged));
+			std::mem_fn(&sel3dSelectInterest::SelectionChanged));
 	}
 
 	//--------------------------------------------------------------------
