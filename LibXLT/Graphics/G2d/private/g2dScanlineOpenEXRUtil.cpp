@@ -25,19 +25,20 @@
 // Using openexr from a dll and not static libs.
 #define OPENEXR_DLL
 
-#include <ImfRgbaFile.h>
-#include <ImfChannelList.h>
-#include <ImfOutputFile.h>
-#include <ImfStringAttribute.h>
-#include <ImfArray.h>
+#undef min
+#undef max
+#include <OpenEXR/ImfRgbaFile.h>
+#include <OpenEXR/ImfChannelList.h>
+#include <OpenEXR/ImfOutputFile.h>
+#include <OpenEXR/ImfStringAttribute.h>
 
 // OpenEXR Libs
-#pragma comment(lib, "IlmImf-2_2.lib")
-#pragma comment(lib, "Half.lib") 
-#pragma comment(lib, "Iex-2_2.lib")
-#pragma comment(lib, "IlmThread-2_2.lib")
-#pragma comment(lib, "Imath-2_2.lib")
-#pragma comment(lib, "zdll.lib")
+//#pragma comment(lib, "IlmImf-2_2.lib")
+//#pragma comment(lib, "Half.lib") 
+//#pragma comment(lib, "Iex-2_2.lib")
+//#pragma comment(lib, "IlmThread-2_2.lib")
+//#pragma comment(lib, "Imath-2_2.lib")
+//#pragma comment(lib, "zdll.lib")
 
 #include <stdio.h>
 

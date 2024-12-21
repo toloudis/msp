@@ -1907,4 +1907,7 @@
     </ClCompile>
     <ClCompile Include="GraphicsLayer.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="vcpkg.json" />
+  </ItemGroup>
 </Project>

@@ -125,7 +125,7 @@ void smdlBoneDisplay::SetVisible(bool i_bVisible)
 {
 	m_bVisible = i_bVisible;
 	std::for_each(m_InsertedNodes.begin(), m_InsertedNodes.end(), 
-		std::bind2nd(std::mem_fun(&g3dSceneNode::SetRenderable), i_bVisible));
+		std::bind(std::mem_fn(&g3dSceneNode::SetRenderable), std::placeholders::_1, i_bVisible));
 }
 
 //----------------------------------------------------------------------------

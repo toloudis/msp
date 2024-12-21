@@ -48,7 +48,7 @@ namespace
 		//--------------------------------------------------------------------
 		virtual smdlSubdivNetworkSet* LoadAsset(const SubdivAssetInfo& i_SubdivInfo)
 		{
-			std::auto_ptr<smdlSubdivNetworkSet> pNetworkSet(new smdlSubdivNetworkSet());
+			std::unique_ptr<smdlSubdivNetworkSet> pNetworkSet(new smdlSubdivNetworkSet());
 
 			// Create shared networks for subdivisions
 			const int num_subdivs = i_SubdivInfo.m_SubdivInfos.size();

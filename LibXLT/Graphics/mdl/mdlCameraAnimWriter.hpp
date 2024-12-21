@@ -80,7 +80,7 @@ namespace mdlCameraAnimWriter
 	//	A call back structure that can be operated on each frame of camera animation
 	//	Eg: We could use this to update a progress bar, as we write the camera animation data.
 	//----------------------------------------------------------------------------
-	struct WriteCameraAnimCallback : public std::unary_function< float , void >
+	struct WriteCameraAnimCallback
 	{
 		virtual void operator()( float updateProgress ) const {}
 	};

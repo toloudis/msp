@@ -42,7 +42,7 @@ void g2dOpenEXROutStream::write(const char c[/*n*/], int n)
 //--------------------------------------------------------------------
 // tellp()
 //--------------------------------------------------------------------
-Imf::Int64 g2dOpenEXROutStream::tellp()
+uint64_t g2dOpenEXROutStream::tellp()
 {
 	return m_OutStream->tellp();
 }
@@ -50,7 +50,7 @@ Imf::Int64 g2dOpenEXROutStream::tellp()
 //--------------------------------------------------------------------
 // seekp()
 //--------------------------------------------------------------------
-void g2dOpenEXROutStream::seekp(Imf::Int64 pos)
+void g2dOpenEXROutStream::seekp(uint64_t pos)
 {
 	m_OutStream->seekp(pos);
 }

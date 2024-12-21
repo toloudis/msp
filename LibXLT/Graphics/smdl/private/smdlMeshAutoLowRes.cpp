@@ -100,7 +100,7 @@ void smdlMeshAutoLowRes::SetVisible(bool i_bVisible)
 {
 	m_bVisible = i_bVisible;
 	std::for_each(m_ParentNodes.begin(), m_ParentNodes.end(), 
-		std::bind2nd(std::mem_fun(&g3dSceneNode::SetRenderable), i_bVisible));
+		std::bind(std::mem_fn(&g3dSceneNode::SetRenderable), std::placeholders::_1, i_bVisible));
 }
 //virtual 
 bool smdlMeshAutoLowRes::GetVisible() const

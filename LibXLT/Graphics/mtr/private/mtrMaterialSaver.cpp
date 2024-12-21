@@ -505,7 +505,7 @@ void copy_chunks( chReader& i_Reader,
 
 			// copy whole size of chunk from input file to
 			// 
-			std::auto_ptr<char> buffer(new char [size]);
+			std::unique_ptr<char> buffer(new char [size]);
 
 			o_Writer.WriteChunkHeader(name, version, false);
 			i_File.Read(size, buffer.get());

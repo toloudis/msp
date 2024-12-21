@@ -194,7 +194,7 @@ void vtxCompressedDeltasSet::FullyLoadData()
 		m_FullBuffer.resize( num_frames, NULL );
 		for (int i=0; i<num_frames; i++)
 		{
-			std::auto_ptr<DeltaBlock> new_deltas(new DeltaBlock());
+			std::unique_ptr<DeltaBlock> new_deltas(new DeltaBlock());
 			load_deltas(i, *new_deltas);
 			m_FullBuffer[i] = new_deltas.release();
 		}

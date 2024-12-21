@@ -110,7 +110,7 @@ bool effParamTexture::Load(const fsResourceFinder& i_Finder)
 		// Only use ResourceFinder if we only have single filename, otherwise
 		// interpret locator as full path.
 		// if exception thrown, delete texture. use auto_ptr for this.
-		std::auto_ptr<matTexture> tex;
+		std::unique_ptr<matTexture> tex;
 		if (newName.GetNumNames() == 1)
 		{
 			//tex.reset(matTextureMgr::LoadTexture(i_Finder, newName.GetLastName()));

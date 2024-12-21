@@ -53,7 +53,7 @@ void LoadHair( const fsLocator& i_Locator,
 		DBG_WARNING("LoadHair had errors!" );
 	}
 
-	boost::shared_ptr<mdlMatInfo> new_mat_info(new mdlMatInfo());
+	std::shared_ptr<mdlMatInfo> new_mat_info(new mdlMatInfo());
 	new_mat_info->m_Info.SetMaterialName("Hair_Mat");
 	o_MaterialTable[new_mat_info->m_Info.GetMaterialName()] = new_mat_info;
 	new_mat_info->CreateMaterial();
@@ -63,7 +63,7 @@ void LoadHair( const fsLocator& i_Locator,
 	matShaderEffect* eff = matShaderMgr::GetEffect(hair_shader_loc);
 	if (eff)
 	{
-		boost::shared_ptr<effShaderParams> hair_params(new effShaderParams());
+		std::shared_ptr<effShaderParams> hair_params(new effShaderParams());
 		hair_params->SetShaderName(hair_shader_loc, eff);
 		eff->BuildPrtyObject(hair_params.get());
 		new_mat_info->m_Info.SetShaderParams(hair_params);

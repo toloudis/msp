@@ -305,7 +305,6 @@ public:
 	//------------------------------------------------------------------------
 	// insert externally specified ramp texture 
 	//------------------------------------------------------------------------
-	void SetRampProperty(std::auto_ptr<prtyObject> i_RampObject) { m_RampObject = i_RampObject; }
 	void SetRampProperty(shared_ptr<prtyObject> i_RampObject) { m_RampObject = i_RampObject; }
 
 	//------------------------------------------------------------------------

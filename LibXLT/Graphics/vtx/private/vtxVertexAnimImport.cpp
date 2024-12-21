@@ -434,7 +434,7 @@ namespace vtxVertexAnimImport
 					if (vertex_set->IsFullyLoaded())
 					{
 						// Read full frame data and give it to vertex set
-						std::auto_ptr<vtxVertexFrame> pVertexFrame(new vtxVertexFrame);
+						std::unique_ptr<vtxVertexFrame> pVertexFrame(new vtxVertexFrame);
 						ReadVertexFrame(i_Reader, time, pVertexFrame.get(), &bbox);
 						vertex_set->AddVertexFrame(pVertexFrame.release());	
 					}

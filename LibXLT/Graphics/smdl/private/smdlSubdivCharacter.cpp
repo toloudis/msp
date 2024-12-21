@@ -1095,11 +1095,11 @@ void smdlSubdivCharacter::SetJointDisplay(JointDisplay i_Display)
 		m_pAutoLowRes->SetVisible( bShowModel );
 	
 	std::for_each( m_SubdivSurfaces.begin(), m_SubdivSurfaces.end(),
-		std::bind2nd( std::mem_fun( &smdlSurface::SetVisible ), bShowModel ) );
+		std::bind( std::mem_fn( &smdlSurface::SetVisible ), std::placeholders::_1, bShowModel ) );
 	std::for_each( m_SingleSkins.begin(), m_SingleSkins.end(),
-		std::bind2nd( std::mem_fun( &smdlSurface::SetVisible ), bShowModel ) );
+		std::bind( std::mem_fn( &smdlSurface::SetVisible ), std::placeholders::_1, bShowModel ) );
 	std::for_each( m_MeshGroups.begin(), m_MeshGroups.end(),
-		std::bind2nd( std::mem_fun( &smdlSurface::SetVisible ), bShowModel ) );
+		std::bind( std::mem_fn( &smdlSurface::SetVisible ), std::placeholders::_1, bShowModel ) );
 }
 smdlSubdivCharacter::JointDisplay smdlSubdivCharacter::GetJointDisplay() const
 {

@@ -101,7 +101,7 @@ namespace
 			}
 			if (mat_info.get())
 			{
-				std::auto_ptr<matMaterial> new_material(new matMaterial());
+				std::unique_ptr<matMaterial> new_material(new matMaterial());
 				mat_info->LoadTextures(new_material.get(), i_TextureFinder, o_Instance.Textures());
 				o_MaterialRemapping[pTemplateMaterial] = new_material.get();
 				o_Instance.Materials().push_back( new_material.release() );
@@ -157,7 +157,7 @@ entModelTemplate* emdlImport::LoadGeometry( const fsLocator&	i_ModelLocator,
 	{
 		fsResourceTracker::MarkBegin(i_ModelLocator);
 
-		std::auto_ptr<emdlStaticTemplate> mdl_template(new emdlStaticTemplate());
+		std::unique_ptr<emdlStaticTemplate> mdl_template(new emdlStaticTemplate());
 
 		//	it's a static geometry model
 		std::vector<g3dFragment*> low_res_fragments, high_res_fragments;
@@ -201,7 +201,7 @@ entModelTemplate* emdlImport::LoadGeometry( const fsLocator&	i_ModelLocator,
 		fsResourceTracker::MarkBegin(i_ModelLocator);
 
 		//	Use character template for all generalized hierarchical models now.
-		std::auto_ptr<emdlCharacterTemplate> mdl_template(new emdlCharacterTemplate());
+		std::unique_ptr<emdlCharacterTemplate> mdl_template(new emdlCharacterTemplate());
 
 		g3dSceneNode* pBase;
 		//std::vector<smdlJoint*> joint_roots;
@@ -287,7 +287,7 @@ entModelTemplate* emdlImport::LoadGeometry( const fsLocator&	i_ModelLocator,
 
 		// routing all old single skin files into the more general
 		// character model type.
-		std::auto_ptr<emdlCharacterTemplate> mdl_template( new emdlCharacterTemplate() );
+		std::unique_ptr<emdlCharacterTemplate> mdl_template( new emdlCharacterTemplate() );
 		// create one skin to hold the single skin model
 		mdl_template->SkinnedSurfaces().resize( 1 );
 		mdlSkinInfo &single_skin_info = mdl_template->SkinnedSurfaces()[0];
@@ -320,7 +320,7 @@ entModelTemplate* emdlImport::LoadGeometry( const fsLocator&	i_ModelLocator,
 	{
 		fsResourceTracker::MarkBegin(i_ModelLocator);
 
-		std::auto_ptr<emdlVertexTemplate> mdl_template(new emdlVertexTemplate());
+		std::unique_ptr<emdlVertexTemplate> mdl_template(new emdlVertexTemplate());
 
 		//	multiple fragments, load just infos
 		mdlImport::LoadFragInfos(	i_ModelLocator,
@@ -338,7 +338,7 @@ entModelTemplate* emdlImport::LoadGeometry( const fsLocator&	i_ModelLocator,
 	{
 		fsResourceTracker::MarkBegin(i_ModelLocator);
 
-		std::auto_ptr<emdlCharacterTemplate> mdl_template(new emdlCharacterTemplate());
+		std::unique_ptr<emdlCharacterTemplate> mdl_template(new emdlCharacterTemplate());
 
 		shared_ptr<mdlHairInfo> hair_info(new mdlHairInfo);
 		hairImport::LoadHair( i_ModelLocator,
@@ -378,7 +378,7 @@ scObject* emdlImport::CreateObject( const entModelTemplate& i_Template,
 	const emdlHierTemplate *hier_template = dynamic_cast<const emdlHierTemplate*>(&i_Template);
 	if ( hier_template )
 	{
-		std::auto_ptr<g3dSceneNode> new_root(hier_template->GetModel()->Clone(o_Instance.Fragments()));
+		std::unique_ptr<g3dSceneNode> new_root(hier_template->GetModel()->Clone(o_Instance.Fragments()));
 		switch_fragment_materials(o_Instance.Fragments(), material_remapping);
 		return new smdlHierarchyObject( new_root.release() );
 	}
@@ -516,7 +516,7 @@ entAnimKeys* emdlImport::LoadAnimKeys(const fsLocator& i_AnimLocator)
 		 i_AnimLocator.GetLastName().HasSubString(itString(".mha")))
 	{
 		// Hierarchical animation
-		std::auto_ptr< emdlAnimKeys > keys(new emdlAnimKeys);
+		std::unique_ptr< emdlAnimKeys > keys(new emdlAnimKeys);
 		//std::string root_name;
 		float fps = g3dConstants::c_fDefaultFrameRate;
 		fsResourceTracker::MarkBegin(i_AnimLocator);
@@ -536,7 +536,7 @@ entAnimKeys* emdlImport::LoadAnimKeys(const fsLocator& i_AnimLocator)
 			  i_AnimLocator.GetLastName().HasSubString(itString(".cha")))
 	{
 		// Characters animation
-		std::auto_ptr< emdlCharacterAnimKeys > keys(new emdlCharacterAnimKeys);
+		std::unique_ptr< emdlCharacterAnimKeys > keys(new emdlCharacterAnimKeys);
 		//std::string root_name;
 		bool delta_animation = false;
 		float fps = g3dConstants::c_fDefaultFrameRate;
@@ -575,7 +575,7 @@ entAnimKeys* emdlImport::LoadAnimKeys(const fsLocator& i_AnimLocator)
 	else if ( i_AnimLocator.GetLastName().HasSubString(itString(".vta")) )
 	{
 		// Baked vertex animation
-		std::auto_ptr< emdlVertexAnimKeys > keys(new emdlVertexAnimKeys);
+		std::unique_ptr< emdlVertexAnimKeys > keys(new emdlVertexAnimKeys);
 		float fps = g3dConstants::c_fDefaultFrameRate;
 		fsResourceTracker::MarkBegin(i_AnimLocator);
 		mdlAnimImport::LoadVertexAnimation(	i_AnimLocator,

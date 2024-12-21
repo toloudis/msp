@@ -374,12 +374,12 @@ void mdlFragInfo::AddGeometry(const mdlFragInfo& i_ToAdd,
 
 //Embedded functor  class used for std::transform call below in
 //ApplyTransformation.
-struct mdlFragInfo::TransformVec: std::unary_function< maPoint3d, maPoint3d >
+struct mdlFragInfo::TransformVec
 {
 	TransformVec( const maMatrix4x4 &trans ):
 	m_Transform(trans)
 	{}
-	result_type operator() ( argument_type &i_Point )
+	maPoint3d operator() ( maPoint3d &i_Point )
 	{
 		return  m_Transform * i_Point;
 	}

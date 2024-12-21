@@ -38,7 +38,7 @@ namespace vtxVertexAnimWriter
 	//A call back structure that can be operated on each vtxVertexFrame
 	//Eg: We could use this to update a progress bar, as we write the vertex data.
 	//------------------------------------------------------------------------
-	struct WriteVertexAnimForMeshCallback : public std::unary_function< vtxVertexFrame *, void >
+	struct WriteVertexAnimForMeshCallback
 	{
 		virtual void operator()( vtxVertexFrame *i_pVertexFrame ) const {}
 	};

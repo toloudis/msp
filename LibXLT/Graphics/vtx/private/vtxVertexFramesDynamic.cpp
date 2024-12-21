@@ -232,7 +232,7 @@ void vtxDynamicVertexSet::FullyLoadData()
 			m_FileSeeker->SetFilePos(m_FilePositions[i]);
 
 			// Read the frame data
-			std::auto_ptr<vtxVertexFrame> pVertexFrame(new vtxVertexFrame);
+			std::unique_ptr<vtxVertexFrame> pVertexFrame(new vtxVertexFrame);
 			vtxVertexAnimImport::ReadSingleVertexFrameData(m_FileSeeker->GetReader(), *pVertexFrame);
 			m_FullBuffer[i] = pVertexFrame.release();
 		}

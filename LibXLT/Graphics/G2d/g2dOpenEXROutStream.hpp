@@ -13,7 +13,7 @@
 #include "Core/Fs/fsLocator.hpp"
 #endif 
 
-#include "OpenEXR/build/include/OpenEXR/ImfIO.h"
+#include "OpenExr/ImfIO.h"
 
 #include <fstream>
 #include <iostream>
@@ -43,12 +43,12 @@ class g2dOpenEXROutStream : public Imf::OStream
 		//--------------------------------------------------------------------
 		// tellp()
 		//--------------------------------------------------------------------
-		virtual Imf::Int64 tellp();
+		virtual uint64_t tellp();
 
 		//--------------------------------------------------------------------
 		// seekp()
 		//--------------------------------------------------------------------
-		virtual void seekp(Imf::Int64 pos);
+		virtual void seekp(uint64_t pos);
 
 	private:
 		
