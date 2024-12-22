@@ -19,7 +19,6 @@
 #include "Core/prty/prtyButtonUIInfo.hpp"
 #include "Tool/sel3d/sel3dMgr.hpp"
 
-#include <boost/bind.hpp>
 
 //============================================================================
 //============================================================================
@@ -388,6 +387,6 @@ void tmlnDriverSpline::append_at_channel_value()
 //}
 void tmlnDriverSpline::AppendAtObjectPositionClicked(prtyProperty *i_pProperty, bool i_bDirty)
 {
-		mnmThinkMgr::CallFunctionDelayed( boost::bind(
+		mnmThinkMgr::CallFunctionDelayed( std::bind(
 						&tmlnDriverSpline::append_at_channel_value, this) );
 }

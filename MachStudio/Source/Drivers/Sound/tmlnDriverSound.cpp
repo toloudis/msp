@@ -435,7 +435,7 @@ void tmlnDriverSound::load_sound(const tmlnDriverSoundInfo& i_Info)
 	}
 
 	// Create sound
-	std::auto_ptr<snSoundJob2D> sound( new snSoundJob2D );
+	std::unique_ptr<snSoundJob2D> sound( new snSoundJob2D );
 	fsLocator s_locator;
 	if (i_Info.m_SoundName.GetNumNames() == 1)
 	{
