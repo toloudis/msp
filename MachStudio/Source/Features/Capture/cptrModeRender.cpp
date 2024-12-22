@@ -2020,7 +2020,7 @@ void cptrModeRender::try_render_capture()
 	if (c_MULTITHREADED_CAPTURE && cptrModeRender::sm_bThreadingEnabled)
 	{
 		// Start capture render in a thread
-		envThread render_thread( boost::bind(&cptrRenderThread::ThreadedRenderCapture, &m_CaptureRenderThread) );
+		envThread render_thread( std::bind(&cptrRenderThread::ThreadedRenderCapture, &m_CaptureRenderThread) );
 		g3dThreadControl::WaitForRenderThreadStart();
 	}
 	else

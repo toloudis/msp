@@ -29,7 +29,6 @@
 #include "Tool/gui/guiFileDialogUtils.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
 
-#include <boost/foreach.hpp>
 #include <wx/dynarray.h>
 #include <wx/ctrlsub.h>
 
@@ -344,9 +343,9 @@ void cptrRenderBatchDialog::button_DeleteScene_OnButtonClick( wxCommandEvent& ev
 	wxArrayInt selections;
 
 	m_checkList_Scenes->GetSelections(selections);
-	BOOST_FOREACH(int i, selections)
+	for (int i = 0; i < selections.size(); ++i)
 	{
-		m_checkList_Scenes->Delete(i);
+		m_checkList_Scenes->Delete(selections[i]);
 	}
 
 	set_continue_button();

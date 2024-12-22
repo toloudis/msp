@@ -11,16 +11,15 @@
 #endif
 #define CPTR_RENDERUTIL_HPP
 
-#ifndef CAPT_RENDEROUTPUTDATA_HPP
-#include "Support/capt/captRenderOutputData.hpp"
-#endif
 #ifndef MA_VECTOR3D_HPP
 #include "Core/ma/maVector3d.hpp"
 #endif
 #ifndef G2D_PFD_HPP
 #include "Graphics/g2d/g2dPFD.hpp"
 #endif
-
+#ifndef MA_TIME_HPP
+#include "Core/Ma/maTime.hpp"
+#endif
 
 //============================================================================
 //	forward references

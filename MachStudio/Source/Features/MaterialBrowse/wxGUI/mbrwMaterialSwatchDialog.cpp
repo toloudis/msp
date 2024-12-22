@@ -497,7 +497,7 @@ void mbrwMaterialSwatchDialog::browse_directory(const fsLocator &i_Directory,
 	};
 
 	std::vector<sThumbnailInfo> thumbnail_items;
-	std::auto_ptr<wxImageList> image_list(new wxImageList(c_IconWidth,c_IconWidth));
+	std::unique_ptr<wxImageList> image_list(new wxImageList(c_IconWidth,c_IconWidth));
 	
 	// Load an icon for folders
 	wxString icon_dir = get_icon_directory();

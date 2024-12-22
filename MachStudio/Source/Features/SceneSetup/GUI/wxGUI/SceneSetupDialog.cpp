@@ -18,8 +18,6 @@
 #include "Tool/gui/guiMessageBox.hpp"
 #include "Tool/gui/guiSingleDocHandler.hpp"
 
-#include <boost/algorithm/string.hpp>
-
 #ifdef USE_WXWIDGETS
 
 namespace
@@ -70,6 +68,14 @@ SceneSetupDialog::~SceneSetupDialog()
 	
 }
 
+void replace_last(std::wstring& str, const std::wstring& from, const std::wstring& to) {
+	std::size_t pos = str.rfind(from);
+	if (pos == std::string::npos) {
+		return;
+	}
+	str.replace(pos, from.length(), to);
+}
+
 //------------------------------------------------------------------------
 // Fill the project list box
 //------------------------------------------------------------------------
@@ -91,7 +97,7 @@ void SceneSetupDialog::build_project_list()
 	{
 		std::wstring project_name(filelist[i].GetLastName().GetString());
 		// strip off the extension
-		boost::replace_last(project_name, ".mpj", "");
+		replace_last(project_name, L".mpj", L"");
 		m_listBox_Projects->Append( project_name );
 
 		//DBG_LOG3( "build project list %d of %d (%s)", i, filenum, itStringUtil::GetStdString(name).c_str() );

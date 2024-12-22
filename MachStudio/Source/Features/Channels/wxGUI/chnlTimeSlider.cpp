@@ -161,7 +161,7 @@ void chnlTimeSlider::OnPaint(wxPaintEvent &WXUNUSED(event))
 	dc.DrawRectangle(0, 0, size.GetWidth(), size.GetHeight());
 
 	// Draw time ticks
-	wxPen tick_pen( *wxLIGHT_GREY, 1, wxSOLID);
+	wxPen tick_pen( *wxLIGHT_GREY, 1, wxPENSTYLE_SOLID);
 	dc.SetPen(tick_pen);
 	std::set<float>::const_iterator it;
 	for (it = m_TimeTicks.begin(); it != m_TimeTicks.end(); ++it)

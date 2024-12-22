@@ -75,7 +75,7 @@ void chnlTimelineMarquee::PaintRectangle(wxDC &i_DC, int m_CurX, int m_CurY)
 {
 	if(IsMarquee())
 	{
-		wxPen pen(*wxRED,3,wxDOT);
+		wxPen pen(*wxRED,3,wxPENSTYLE_DOT);
 		i_DC.SetBrush(*wxBLUE_BRUSH);
 		i_DC.SetPen(pen);
 		width = savePoint.x - initX ;

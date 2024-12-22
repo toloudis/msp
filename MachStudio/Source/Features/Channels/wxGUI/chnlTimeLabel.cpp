@@ -149,8 +149,8 @@ void chnlTimeLabel::OnPaint(wxPaintEvent &i_Event)
     dc.Clear();
 
 	// Draw time hashes
-	wxPen line_pen( *wxBLACK, 1, wxSOLID);
-	wxPen thick_pen( *wxBLACK, 3, wxSOLID);
+	wxPen line_pen( *wxBLACK, 1, wxPENSTYLE_SOLID);
+	wxPen thick_pen( *wxBLACK, 3, wxPENSTYLE_SOLID);
 
 	int num_ticks = m_MaxTime-m_MinTime;	// how many ticks to draw
 	int tick_group = 10;			// how often to have a bolder, larger tick
@@ -192,7 +192,7 @@ void chnlTimeLabel::OnPaint(wxPaintEvent &i_Event)
 
 	// Label time numbers
 	bool bDisplayMinutes = (m_bDisplayMinutes && !m_bDisplayFrames);
-	wxFont text_font( 8, wxSWISS, wxNORMAL, wxNORMAL );
+	wxFont text_font( 8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
 	dc.SetFont(text_font);
 	int skip = (m_TimeScale > 25) ? 1 : 10;
 	int mod = (m_bDisplayFrames) ? m_FramesPerSecond : 1;

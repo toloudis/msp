@@ -565,9 +565,9 @@ void chnlChannelControl::OnPaint(wxPaintEvent &WXUNUSED(event))
 
 		// Draw each clip
 		//
-		wxPen border_pen( *wxBLACK, 1, wxSOLID);
-		wxPen highlight_pen( *wxRED, 2, wxSOLID);
-		wxFont text_font( 8, wxSWISS, wxNORMAL, wxFONTWEIGHT_BOLD );
+		wxPen border_pen( *wxBLACK, 1, wxPENSTYLE_SOLID);
+		wxPen highlight_pen( *wxRED, 2, wxPENSTYLE_SOLID);
+		wxFont text_font( 8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD );
 		dc.SetFont(text_font);
 
 		const chnlChannelClip *prev_clip = NULL;
@@ -650,7 +650,7 @@ void chnlChannelControl::OnPaint(wxPaintEvent &WXUNUSED(event))
 			}
 
 			// Then draw actual icon for the driver
-			wxBrush fill_brush(pClip->GetFillColor(), wxSOLID);
+			wxBrush fill_brush(pClip->GetFillColor(), wxBRUSHSTYLE_SOLID);
 			dc.SetPen( border_pen );
 			dc.SetBrush( fill_brush );
 
@@ -696,7 +696,7 @@ void chnlChannelControl::OnPaint(wxPaintEvent &WXUNUSED(event))
 			}
 
 			// Draw icon for end blending (restore or remain)
-			wxBrush restore_brush((pClip->GetRestore() ? *wxBLACK : *wxLIGHT_GREY), wxSOLID);
+			wxBrush restore_brush((pClip->GetRestore() ? *wxBLACK : *wxLIGHT_GREY), wxBRUSHSTYLE_SOLID);
 			dc.SetPen( border_pen );
 			dc.SetBrush(restore_brush);
 			dc.DrawRectangle(x+width-2, 16+y, 4, 6);

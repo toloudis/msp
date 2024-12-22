@@ -803,8 +803,8 @@ void chnlTraxDialog::SetTimeScale(float i_Scale)
 
 		// Set time scale for channels also
 		std::for_each(m_Channels.begin(), m_Channels.end(),
-			std::bind2nd(std::mem_fun(&chnlChannelControl::SetTimeScale),
-						 new_scale));
+			std::bind(std::mem_fn(&chnlChannelControl::SetTimeScale),
+						 std::placeholders::_1, new_scale));
 
 		chnlTimelineGuideUtil::SetTimeScale( new_scale );
 		m_scrollwin_channels->Refresh();
@@ -824,8 +824,8 @@ void chnlTraxDialog::SetSnapInterval(int i_Interval)
 {
 	m_SnapInterval = i_Interval;
 	std::for_each(m_Channels.begin(), m_Channels.end(),
-		std::bind2nd(std::mem_fun(&chnlChannelControl::SetSnapInterval),
-					 i_Interval));
+		std::bind(std::mem_fn(&chnlChannelControl::SetSnapInterval),
+					 std::placeholders::_1, i_Interval));
 }
 //--------------------------------------------------------------------
 //  This driver has changed its properties related to the
@@ -985,7 +985,7 @@ void chnlTraxDialog::GetSelectedDrivers(std::set<tmlnDriver*> &o_Drivers,
 void chnlTraxDialog::ClearSelection()
 {
 	std::for_each(m_Channels.begin(), m_Channels.end(), 
-		std::mem_fun(&chnlChannelControl::ClearSelection));
+		std::mem_fn(&chnlChannelControl::ClearSelection));
 }
 
 //------------------------------------------------------------------------
@@ -1073,7 +1073,7 @@ void chnlTraxDialog::ClipSelected(chnlChannelControl* i_pChannel, chnlChannelCli
 
 	// Prepare all selected clips in all channels for the interaction
 	std::for_each(m_Channels.begin(), m_Channels.end(), 
-					std::mem_fun(&chnlChannelControl::BeginInteraction));
+					std::mem_fn(&chnlChannelControl::BeginInteraction));
 
 	// Update the properties dialog for the selected driver
 	// (Should this merge all driver properties together like with objects?)
@@ -1163,8 +1163,8 @@ void chnlTraxDialog::ClipMoved(chnlChannelControl*, float i_TimeDelta)
 	}
 	// Slide all selected clips in all channels for the interaction
 	std::for_each( m_Channels.begin(), m_Channels.end(), 
-		std::bind2nd(std::mem_fun(&chnlChannelControl::InteractMoveSelectedClips),
-					 i_TimeDelta));
+		std::bind(std::mem_fn(&chnlChannelControl::InteractMoveSelectedClips),
+					 std::placeholders::_1, i_TimeDelta));
 	
 
 	// Adjust the selected clips to align with time ticks and markers
@@ -1182,7 +1182,7 @@ void chnlTraxDialog::ClipMoveFinished(chnlChannelControl*)
 	
 	// End interaction in all channels
 	std::for_each(m_Channels.begin(), m_Channels.end(), 
-					std::mem_fun(&chnlChannelControl::FinishInteraction));
+					std::mem_fn(&chnlChannelControl::FinishInteraction));
 	chnlTimelineGuideUtil::HideMarkerGuide();
 	m_scrollwin_channels->Refresh();
 
@@ -1350,7 +1350,7 @@ void chnlTraxDialog::button_Move_Click( wxCommandEvent& i_Event )
 
 		// Start interaction, preparing the selected drivers to move delta amounts
 		std::for_each(m_Channels.begin(), m_Channels.end(), 
-			std::mem_fun(&chnlChannelControl::BeginInteraction));
+			std::mem_fn(&chnlChannelControl::BeginInteraction));
 
 		if (guiPropertyDialog::ShowModal("Move Drivers", 
 										 moveInfo, 
@@ -1364,7 +1364,7 @@ void chnlTraxDialog::button_Move_Click( wxCommandEvent& i_Event )
 		
 		// Finish interaction, setting deltas into drivers
 		std::for_each(m_Channels.begin(), m_Channels.end(), 
-			std::mem_fun(&chnlChannelControl::FinishInteraction));
+			std::mem_fn(&chnlChannelControl::FinishInteraction));
 	}
 }
 //--------------------------------------------------------------------
@@ -1377,8 +1377,8 @@ void chnlTraxDialog::MoveAmountChanged(prtyProperty *i_pProperty, bool i_bDirty)
 	DBG_ASSERT(pMoveAmount, "Move amount callback should be a float property");
 	 
 	std::for_each(m_Channels.begin(), m_Channels.end(),
-		std::bind2nd(std::mem_fun(&chnlChannelControl::InteractMoveSelectedClips),
-					 pMoveAmount->GetValue()));
+		std::bind(std::mem_fn(&chnlChannelControl::InteractMoveSelectedClips),
+					 std::placeholders::_1, pMoveAmount->GetValue()));
 }
 
 //--------------------------------------------------------------------
@@ -1386,7 +1386,7 @@ void chnlTraxDialog::MoveAmountChanged(prtyProperty *i_pProperty, bool i_bDirty)
 void chnlTraxDialog::button_Sel_Click( wxCommandEvent& i_Event )
 {
 	std::for_each(m_Channels.begin(), m_Channels.end(), 
-		std::mem_fun(&chnlChannelControl::SelectClipsAfter));
+		std::mem_fn(&chnlChannelControl::SelectClipsAfter));
 }
 void chnlTraxDialog::button_AddMarker_Click( wxCommandEvent& i_Event )
 {

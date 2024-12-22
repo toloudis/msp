@@ -8,45 +8,36 @@
 \****************************************************************************/
 #include "Features/Capture/cptrRenderUtil.hpp"
 
+#include "MainApp/mnmApp.hpp"
+
 #include "Features/Capture/cptrModeRenderBake.hpp"
 #include "Features/Capture/cptrWriteAVI.hpp"
 #include "Features/Capture/cptrWriteQuickTime.hpp"
-#include "Features/Capture/cptrWriteUtil.hpp"
 #include "Features/RenderPrefs/rndrPrefsMgr.hpp"
 #include "Features/RenderPrefs/rndrPrefsUtil.hpp"
-#include "MainApp/mnmApp.hpp"
+
+#include "Support/capt/captRenderOutputData.hpp"
 #include "Support/capt/captRenderOutputDataUtil.hpp"
 #include "Support/capt/captRenderOutputTagsUtil.hpp"
 #include "Support/capt/captStereoUtil.hpp"
-#include "Support/mnm/mnmPaths.hpp"
 #include "Support/mode/modeModeMgr.hpp"
 #include "Support/mtrl/mtrlScriptObject.hpp"
 #include "Support/pfx/pfxPostEffectMgr.hpp"
 #include "Support/tmln/tmlnTimeLine.hpp"
 #include "Support/tmln/tmlnTimeUtil.hpp"
 
-#include <windows.h>
-
-#undef CreateFile
-#undef DeleteFile
-
-#include "Core/app/appSimTime.hpp"
-#include "Core/app/appTime.hpp"
-#include "Core/ch/chBinWriter.hpp"
-#include "Core/fs/fsFileUtil.hpp"
-//#include "Core/ma/maFloatRGBA.hpp"
-#include "Core/ma/maSampling.hpp"
 #include "Graphics/g2d/g2dImageCreate.hpp"
 #include "Graphics/g2d/g2dImageSave.hpp"
 #include "Graphics/g2d/g2dScreenCaptureUtil.hpp"
-#include "Graphics/g2d/g2dSystem.hpp"
 #include "Graphics/g2d/g2dWindow.hpp"
 #include "Graphics/g3d/g3dSceneRenderer.hpp"
-#include "Graphics/g3d/g3dSingleLightRendering.hpp"
-#include "Graphics/mat/matTextureMgr.hpp"
-#include "Tool/gui/guiMenuMgr.hpp"
-#include "ToolUIWx/twx/twxSystem.hpp"
 
+#include "Tool/gui/guiMenuMgr.hpp"
+
+#include "Core/app/appSimTime.hpp"
+#include "Core/app/appTime.hpp"
+#include "Core/Fs/fsFileUtil.hpp"
+#include "Core/Ma/maSampling.hpp"
 
 //============================================================================
 //============================================================================

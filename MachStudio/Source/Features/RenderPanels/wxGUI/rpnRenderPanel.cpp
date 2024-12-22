@@ -40,7 +40,6 @@
 #include "ToolUIWx/twx/twxContextMenu.hpp"
 #include "ToolUIWx/twx/twxMessaging.hpp"
 
-#include <boost/bind.hpp>
 #include <sstream>
 
 
@@ -513,7 +512,7 @@ void rpnRenderPanel::add_cameras_to_context_menu(twxContextMenu &io_ContextMenu)
 	for (int i=0; i<num_cameras; ++i)
 	{
 		io_ContextMenu.AddMenuItem(c_MenuName, camera_names[i].GetString().c_str(),
-			boost::bind(&rpnRenderPanel::cameraScripted_Click, this, i));
+			std::bind(&rpnRenderPanel::cameraScripted_Click, this, i));
 	}
 	//if (!camera_names.empty())
 	//	io_ContextMenu.AppendSeparator(c_MenuName);
@@ -524,20 +523,20 @@ void rpnRenderPanel::add_cameras_to_context_menu(twxContextMenu &io_ContextMenu)
 	for (int i=0; i<num_dircuts; ++i)
 	{
 		io_ContextMenu.AddMenuItem(c_MenuName, dircut_names[i].GetString().c_str(),
-			boost::bind(&rpnRenderPanel::directorsCut_Click, this, i));
+			std::bind(&rpnRenderPanel::directorsCut_Click, this, i));
 	}
 	//if (!dircut_names.empty())
 	//	io_ContextMenu.AppendSeparator(c_MenuName);
 
 	// Editor cameras at end
 	io_ContextMenu.AddMenuItem(c_MenuName, "Editor", 
-		boost::bind(&rpnRenderPanel::OnEditorPersp, this));
+		std::bind(&rpnRenderPanel::OnEditorPersp, this));
 	io_ContextMenu.AddMenuItem(c_MenuName, "Top", 
-		boost::bind(&rpnRenderPanel::OnEditorTop, this));
+		std::bind(&rpnRenderPanel::OnEditorTop, this));
 	io_ContextMenu.AddMenuItem(c_MenuName, "Front", 
-		boost::bind(&rpnRenderPanel::OnEditorFront, this));
+		std::bind(&rpnRenderPanel::OnEditorFront, this));
 	io_ContextMenu.AddMenuItem(c_MenuName, "Side", 
-		boost::bind(&rpnRenderPanel::OnEditorSide, this));
+		std::bind(&rpnRenderPanel::OnEditorSide, this));
 }
 
 //--------------------------------------------------------------------
@@ -557,7 +556,7 @@ void rpnRenderPanel::add_renderpasses_to_context_menu(twxContextMenu &io_Context
 	for (int i=0; i<num_elems; ++i)
 	{
 		io_ContextMenu.AddMenuItem(c_Context_Menu_Name, rp_prty.GetEnumTag(i).c_str(), 
-			boost::bind(&Set_Render_Pass, i));
+			std::bind(&Set_Render_Pass, i));
 	}
 
 }
@@ -632,11 +631,11 @@ void rpnRenderPanel::OnMouseDown(wxMouseEvent& i_Event)
 
 		// Add selection items at end of menu
 		menu.AddMenuItem("", "Clear Selection", 
-			boost::bind(&rpnRenderPanel::clear_selection, this));
+			std::bind(&rpnRenderPanel::clear_selection, this));
 		menu.AddMenuItem("View", "Select Camera", 
-			boost::bind(&rpnRenderPanel::select_camera, this));
+			std::bind(&rpnRenderPanel::select_camera, this));
 		menu.AddMenuItem("", "Focus",
-			boost::bind(&rpnRenderPanel::focus_camera, this, depth));
+			std::bind(&rpnRenderPanel::focus_camera, this, depth));
 
 		// The render pass only changes in the main panel, 
 		// so only show onctext menu in that panel.

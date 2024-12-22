@@ -24,25 +24,46 @@
 #include "Tool/gui/guiFileDialogUtils.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
 
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/algorithm/string/trim.hpp>
-
 
 //============================================================================
 //============================================================================
 namespace ProjectSetupMgr
 {
+	bool ichar_equals(char a, char b)
+	{
+		return std::tolower(static_cast<unsigned char>(a)) ==
+			std::tolower(static_cast<unsigned char>(b));
+	}
+
+
 	namespace
 	{
 		ProjectSetupData l_Data;
 
 		const char* lc_ProjectFileExt = ".mpj";
 
+		using Predicate = std::function<int(int)>;
+		static inline void ltrim(std::string& str, Predicate const& pred) {
+			str.erase(str.begin(), std::find_if_not(str.begin(), str.end(), pred));
+		}
+		static inline void rtrim(std::string& str, Predicate const& pred) {
+			str.erase((std::find_if_not(str.rbegin(), str.rend(), pred)).base(), str.end());
+		}
+		static inline void trim(std::string& str, Predicate const& pred = std::isspace) {
+			ltrim(str, pred);
+			rtrim(str, pred);
+		}
+		bool ichar_equals(char a, char b)
+		{
+			return std::tolower(static_cast<unsigned char>(a)) ==
+				std::tolower(static_cast<unsigned char>(b));
+		}
 		// Case-independent comparison of names within scene data
 		bool scene_name_compare(const ProjectSetupSceneData& i_A, 
 								const ProjectSetupSceneData& i_B)
 		{
-			return boost::ilexicographical_compare(i_A.m_SceneName, i_B.m_SceneName);
+			return std::equal(i_A.m_SceneName.begin(), i_A.m_SceneName.end(), i_B.m_SceneName.begin(), i_B.m_SceneName.end(), ichar_equals);
+//			return boost::ilexicographical_compare(i_A.m_SceneName, i_B.m_SceneName);
 		}
 
 		// Function operator for finding scene data by name
@@ -53,7 +74,7 @@ namespace ProjectSetupMgr
 				: m_SceneName(i_SceneName) {}
 			bool operator()(const ProjectSetupSceneData& i_Data) const
 			{
-				return boost::iequals(m_SceneName, i_Data.m_SceneName);
+				return std::equal(m_SceneName.begin(), m_SceneName.end(), i_Data.m_SceneName.begin(), i_Data.m_SceneName.end(), ichar_equals);
 			}
 		};
 	}
@@ -382,7 +403,7 @@ namespace ProjectSetupMgr
 
 					//	add the scene if it doesn't already exist
 					//
-					boost::trim(one_line);
+					trim(one_line);
 					if (!one_line.empty())
 						AddSceneToProject( one_line, "" );
 				}
