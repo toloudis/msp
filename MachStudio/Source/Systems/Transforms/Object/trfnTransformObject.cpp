@@ -27,8 +27,6 @@
 #include "Tool/gpx/gpxRenderControl.hpp"
 #include "Tool/gpx/gpxSceneObject.hpp"
 
-#include <boost/bind.hpp>
-
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 trfnTransformObject::trfnTransformObject()

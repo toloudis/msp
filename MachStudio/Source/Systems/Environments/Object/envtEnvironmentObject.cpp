@@ -363,7 +363,7 @@ void envtEnvironmentObject::NotifyRampUI()
 {
 	rmpDialogMgr::SetRampChangedCallback(NULL);
 	rmpDialogMgr::SetData(m_Data.m_RampData);
-	rmpDialogMgr::SetRampChangedCallback(std::bind1st(std::mem_fun(&envtEnvironmentObject::RampChangedFromUI), this));
+	rmpDialogMgr::SetRampChangedCallback(std::bind(std::mem_fn(&envtEnvironmentObject::RampChangedFromUI), this, std::placeholders::_1));
 }
 
 //----------------------------------------------------------------------------

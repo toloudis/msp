@@ -16,8 +16,6 @@
 #include "Tool/gui/guiContextMenu.hpp"
 #include "Tool/sel3d/sel3dCastUtil.hpp"
 
-#include <boost/bind.hpp>
-
 namespace
 {
 	// What are the maximum number of items we can put into a context menu?
@@ -64,7 +62,7 @@ void trfnContextMenuInterest::AddToContextMenu(guiContextMenu &io_ContextMenu,
 				{
 					// Add Selected to Parent
 					io_ContextMenu.AddMenuItem(c_AddMenuName, parent_names[i].GetString().c_str(), 
-						boost::bind(&trfnOperations::AddSelectedToTransform, parent_names[i]));
+						std::bind(&trfnOperations::AddSelectedToTransform, parent_names[i]));
 				}
 			}
 		}

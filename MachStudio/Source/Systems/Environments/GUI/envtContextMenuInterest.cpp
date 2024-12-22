@@ -19,8 +19,6 @@
 #include "Tool/gui/guiContextMenu.hpp"
 #include "Tool/sel3d/sel3dCastUtil.hpp"
 
-#include <boost/bind.hpp>
-
 namespace
 {
 	const char* c_Environment_MenuName = "Environments";
@@ -68,7 +66,7 @@ void envtContextMenuInterest::AddToContextMenu(guiContextMenu &io_ContextMenu,
 				for (it = environment_names.begin(); it != environment_names.end(); ++it)
 				{
 					io_ContextMenu.AddMenuItem(c_Environment_MenuName, it->GetString().c_str(), 
-						boost::bind(&envtOperations::SelectObject,*it, false) );
+						std::bind(&envtOperations::SelectObject, (const nameString&)*it, false) );
 				}
 			}
 
