@@ -80,10 +80,6 @@
 \****************************************************************************/
 #include "SecuritySoftwareShield/scrty/scrtysMgr.hpp"
 
-#include "Core/app/appTimeUtils.hpp"
-#include "Core/scrty/scrtySecurityX.hpp"
-#include "ToolUIWx/twx/twxSystem.hpp"
-
 //#define USE_SECURITYSYSTEM
 #ifdef USE_SECURITYSYSTEM
 #ifdef USE_WXWIDGETS
