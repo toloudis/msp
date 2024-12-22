@@ -66,7 +66,7 @@ void envtContextMenuInterest::AddToContextMenu(guiContextMenu &io_ContextMenu,
 				for (it = environment_names.begin(); it != environment_names.end(); ++it)
 				{
 					io_ContextMenu.AddMenuItem(c_Environment_MenuName, it->GetString().c_str(), 
-						std::bind(&envtOperations::SelectObject, (const nameString&)*it, false) );
+						std::bind(static_cast<void(*)(const nameString&, bool)>(&envtOperations::SelectObject), *it, false));
 				}
 			}
 
