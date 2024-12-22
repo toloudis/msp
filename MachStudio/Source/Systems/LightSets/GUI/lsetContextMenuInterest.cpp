@@ -20,8 +20,6 @@
 #include "Tool/gui/guiContextMenu.hpp"
 #include "Tool/sel3d/sel3dCastUtil.hpp"
 
-#include <boost/bind.hpp>
-
 namespace
 {
 	// What are the maximum number of items we can put into a context menu?
@@ -84,11 +82,11 @@ void lsetContextMenuInterest::AddToContextMenu(guiContextMenu &io_ContextMenu,
 				{
 					// Add Selected to Light Set
 					io_ContextMenu.AddMenuItem(c_AddMenuName, lset_names[i].GetString().c_str(), 
-						boost::bind(&lsetOperations::AddSelectionToLightSet, i));
+						std::bind(&lsetOperations::AddSelectionToLightSet, i));
 
 					// Remove Selected from Light Set
 					io_ContextMenu.AddMenuItem(c_RemoveMenuName, lset_names[i].GetString().c_str(), 
-						boost::bind(&lsetOperations::RemoveSelectionFromLightSet, i));
+						std::bind(&lsetOperations::RemoveSelectionFromLightSet, i));
 				}
 			}
 		}
@@ -129,7 +127,7 @@ void lsetContextMenuInterest::AddToContextMenu(guiContextMenu &io_ContextMenu,
 					for (int i=0; i<num_lights; ++i)
 					{
 						io_ContextMenu.AddMenuItem("Unassigned", light_names[i].GetString().c_str(), 
-							boost::bind(&ltstLightSetMgr::SelectLight,light_names[i]) );
+							std::bind(&ltstLightSetMgr::SelectLight,light_names[i]) );
 					}
 				}
 			}
@@ -148,7 +146,7 @@ void lsetContextMenuInterest::AddToContextMenu(guiContextMenu &io_ContextMenu,
 				for (int i=0; i<num_lights; ++i)
 				{
 					io_ContextMenu.AddMenuItem(lset_name.c_str(), light_names[i].GetString().c_str(), 
-						boost::bind(&ltstLightSetMgr::SelectLight,light_names[i]) );
+						std::bind(&ltstLightSetMgr::SelectLight,light_names[i]) );
 				}
 			}
 		}
