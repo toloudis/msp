@@ -72,7 +72,7 @@ namespace
 		}
 
 	};
-		typedef boost::function<bool (const shared_ptr<twcTreeNode>&)> NodeFilterFunction;
+		typedef std::function<bool (const shared_ptr<twcTreeNode>&)> NodeFilterFunction;
 
 }	// end of namespace
 
