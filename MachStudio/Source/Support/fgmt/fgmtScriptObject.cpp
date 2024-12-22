@@ -50,7 +50,6 @@
 
 #include <map>
 #include <sstream>
-#include <boost/lexical_cast.hpp>
 
 
 //============================================================================
@@ -158,7 +157,7 @@ namespace
 		{
 			if (!i_Data.GetFragmentName().empty())
 			{
-				*o_FragmentName = i_Data.GetFragmentName() + std::string("_Frag") + boost::lexical_cast<std::string>(i_Index);
+				*o_FragmentName = i_Data.GetFragmentName() + std::string("_Frag") + std::to_string(i_Index);
 			}
 			else
 			{
@@ -171,7 +170,7 @@ namespace
 				//oss<<"Fragment #"<<i_Index;
 				//static std::string local_buffer(oss.str());
 				//*o_FragmentName = local_buffer.c_str();
-				*o_FragmentName = std::string("_Frag") + boost::lexical_cast<std::string>(i_Index);
+				*o_FragmentName = std::string("_Frag") + std::to_string(i_Index);
 			}
 		}
 
@@ -186,7 +185,7 @@ namespace
 			oss<<"F#"<<i_Index;
 			static std::string local_buffer(oss.str());				
 			*o_FragmentIndex = local_buffer.c_str();*/
-			*o_FragmentIndex = std::string("F#") + boost::lexical_cast<std::string>(i_Index);
+			*o_FragmentIndex = std::string("F#") + std::to_string(i_Index);
 		}
 
 	}

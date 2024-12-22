@@ -11,6 +11,7 @@
 #endif
 #define LTST_LIGHTSETOBJECT_HPP
 
+#include <string>
 #include <vector>
 
 //--------------------------------------------------------------------

@@ -18,7 +18,6 @@
 #include "Core/ma/maFunctions.hpp"
 #include "Core/name/nameObject.hpp"
 
-#include <boost/bind.hpp>
 #include <list>
 
 

@@ -20,7 +20,7 @@
 #include "Support/xfrm/xfrmTransformNodeCallback.hpp"
 #endif 
 
-#include <boost/function.hpp>
+#include <functional>
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------

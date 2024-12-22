@@ -12,6 +12,7 @@
 #endif
 #define LTST_LIGHTSETNODE_HPP
 
+#include <string>
 #include <vector>
 
 //--------------------------------------------------------------------

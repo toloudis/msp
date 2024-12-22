@@ -282,7 +282,7 @@ bool mtrlShaderObject::LoadTexture(const fsLocator& i_NewName,
 	{
 		try
 		{
-			std::auto_ptr<matTexture> tex;
+			std::unique_ptr<matTexture> tex;
 			if (i_NewName.GetNumNames() == 1)
 			{
 				// Construct a fsResourceFinder to use to locate the textures in the object directory

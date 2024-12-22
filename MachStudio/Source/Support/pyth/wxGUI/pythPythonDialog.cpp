@@ -12,7 +12,6 @@
 #include "ToolUIWx/twx/twxPaneMgr.hpp"
 #endif
 
-#include <boost/algorithm/string.hpp>
 #include <vector>
 
 
@@ -80,16 +79,39 @@ void pythPythonDialog::AddToLog(const itString& i_String)
 	}
 }
 
+using Predicate = std::function<int(int)>;
+static inline void ltrim(std::wstring& str, Predicate const& pred) {
+	str.erase(str.begin(), std::find_if_not(str.begin(), str.end(), pred));
+}
+static inline void rtrim(std::wstring& str, Predicate const& pred) {
+	str.erase((std::find_if_not(str.rbegin(), str.rend(), pred)).base(), str.end());
+}
+static inline void trim(std::wstring& str, Predicate const& pred = std::isspace) {
+	ltrim(str, pred);
+	rtrim(str, pred);
+}
+void replace_all(std::wstring& str, const std::wstring& from, const std::wstring& to) {
+	size_t start_pos = 0;
+	while ((start_pos = str.find(from, start_pos)) != std::wstring::npos) {
+		str.replace(start_pos, from.length(), to);
+		start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'xx'
+	}
+}
+std::wstring replace_all_copy(const std::wstring& str, const std::wstring& from, const std::wstring& to) {
+	std::wstring retval = str;
+	replace_all(retval, from, to);
+	return retval;
+}
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 void pythPythonDialog::ExecuteCommand()
 {
 	std::wstring command_str = this->m_textCtrl_PythCommand->GetValue();
-	boost::trim(command_str);
+	trim(command_str);
 
 	std::wstring log_string = L">> ";
-	log_string += boost::replace_all_copy(command_str, L"\n", L"\n> ");
+	log_string += replace_all_copy(command_str, L"\n", L"\n> ");
 	log_string += L"\n";
 	this->AddToLogTextbox(itString(log_string.c_str()));
 

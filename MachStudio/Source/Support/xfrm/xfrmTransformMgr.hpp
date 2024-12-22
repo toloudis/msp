@@ -19,7 +19,7 @@
 #include "Core/Ma/maMatrix4x4.hpp"
 #endif 
 
-#include <boost/function.hpp>
+#include <functional>
 #include <vector>
 
 

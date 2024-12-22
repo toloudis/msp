@@ -23,7 +23,7 @@
 #include "Core/prty/prtyButtonUIInfo.hpp"
 #endif
 
-#include <boost/function.hpp>
+#include <functional>
 
 //----------------------------------------------------------------------------
 // forward declarations
@@ -35,7 +35,7 @@ class rmpData;
 class rmpObject : public prtyObject
 {
 public:
-	typedef boost::function<void (bool)> RampChangedFunction;
+	typedef std::function<void (bool)> RampChangedFunction;
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------

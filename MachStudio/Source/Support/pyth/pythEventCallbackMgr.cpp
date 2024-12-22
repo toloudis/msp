@@ -146,7 +146,7 @@ namespace pythEventCallbackMgr
 	//------------------------------------------------------------------------
 	void DeInitialize()
 	{
-		envSTLHelpers::ForAll(l_Events, std::mem_fun(&pythPythonEvent::DeRef));
+		envSTLHelpers::ForAll(l_Events, std::mem_fn(&pythPythonEvent::DeRef));
 		envSTLHelpers::DeleteContainer(l_Events);
 	}
 

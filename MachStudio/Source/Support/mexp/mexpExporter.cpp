@@ -454,7 +454,7 @@ bool mexpExporter::HasChannelRecorders()
 void mexpExporter::RecordFrame(float i_CurrentTime)
 {
 	std::for_each(m_Recorders.begin(), m_Recorders.end(), 
-		std::bind2nd(std::mem_fun(&mexpChannelRecorder::RecordFrame),i_CurrentTime));
+		std::bind(std::mem_fn(&mexpChannelRecorder::RecordFrame),std::placeholders::_1,i_CurrentTime));
 }
 
 //--------------------------------------------------------------------
@@ -463,7 +463,7 @@ void mexpExporter::RecordFrame(float i_CurrentTime)
 void mexpExporter::FinishRecording()
 {
 	std::for_each(m_Recorders.begin(), m_Recorders.end(), 
-		std::mem_fun(&mexpChannelRecorder::FinishRecording));
+		std::mem_fn(&mexpChannelRecorder::FinishRecording));
 }
 
 //--------------------------------------------------------------------

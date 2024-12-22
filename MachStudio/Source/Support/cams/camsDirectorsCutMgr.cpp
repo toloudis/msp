@@ -32,7 +32,7 @@ namespace camsDirectorsCutMgr
 		void notify_callbacks()
 		{
 			std::for_each(l_Callbacks.begin(), l_Callbacks.end(), 
-				std::mem_fun(&DirectorsCutListChangedCallback::DirectorsCutListChanged));
+				std::mem_fn(&DirectorsCutListChangedCallback::DirectorsCutListChanged));
 		}
 
 	}	// end of namespace

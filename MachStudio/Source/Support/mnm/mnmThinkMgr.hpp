@@ -16,7 +16,7 @@
 #include "Core/env/envBoost.hpp"
 #endif
 
-#include <boost/function.hpp>
+#include <functional>
 
 //============================================================================
 //	Forward References
@@ -41,7 +41,7 @@ namespace mnmThinkMgr
 	//--------------------------------------------------------------------
 	//typedef void (*DelayedFunction)();
 	//void CallFunctionDelayed(DelayedFunction i_FuncPtr);
-	typedef boost::function0<void> DelayedFunction;
+	typedef std::function<void()> DelayedFunction;
 	void CallFunctionDelayed(const DelayedFunction& i_FuncPtr);
 
 	//--------------------------------------------------------------------

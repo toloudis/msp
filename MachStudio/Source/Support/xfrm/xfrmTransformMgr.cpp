@@ -16,7 +16,6 @@
 #include "Graphics/g3d/g3dSceneNode.hpp"
 #include "Tool/api3d/api3dScene.hpp"
 
-#include <boost/bind.hpp>
 #include <list>
 #include <set>
 

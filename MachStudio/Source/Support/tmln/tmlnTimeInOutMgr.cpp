@@ -116,7 +116,7 @@ namespace tmlnTimeInOutMgr
 	void BuildTimeInOutLists()
 	{
 		std::for_each(TIOD::l_Callbacks.begin(), TIOD::l_Callbacks.end(), 
-			std::mem_fun(&TimeInOutInterest::BuildTimeInOutLists));
+			std::mem_fn(&TimeInOutInterest::BuildTimeInOutLists));
 	}
 
 	//--------------------------------------------------------------------

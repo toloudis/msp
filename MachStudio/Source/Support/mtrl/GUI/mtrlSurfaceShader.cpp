@@ -40,7 +40,6 @@
 #include "Tool/gui/guiMessageBox.hpp"
 
 #include <string>
-#include <boost/bind.hpp>
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
@@ -234,8 +233,8 @@ void mtrlSurfaceShader::UpdateTexturePrty(prtyProperty *i_pProperty, bool i_bDir
 			//set up the data for the ramp managers
 			if(pParam->GetRampProperty() == NULL && pParam->GetProperty().GetFullValue().m_RampObject.get() == NULL)
 			{
-				std::auto_ptr<rmpObject> newRamp(new rmpObject);
-				pParam->SetRampProperty((std::auto_ptr<prtyObject>)newRamp);
+				std::unique_ptr<rmpObject> newRamp(new rmpObject);
+				pParam->SetRampProperty((std::shared_ptr<prtyObject>)newRamp.release());
 			}
 			else if(pParam->GetProperty().GetFullValue().m_RampObject.get() != NULL)
 			{
@@ -302,7 +301,7 @@ void mtrlSurfaceShader::NotifyRampUI()
 	{
 		rmpDialogMgr::SetRampChangedCallback(NULL);
 		rmpDialogMgr::SetData(pRampObject->m_Data);
-		rmpDialogMgr::SetRampChangedCallback(std::bind1st(std::mem_fun(&mtrlSurfaceShader::RampChangedFromUI), this));
+		rmpDialogMgr::SetRampChangedCallback(std::bind(std::mem_fn(&mtrlSurfaceShader::RampChangedFromUI), this, std::placeholders::_1));
 	}
 }
 

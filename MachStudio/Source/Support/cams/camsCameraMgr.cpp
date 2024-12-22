@@ -32,7 +32,7 @@ namespace camsCameraMgr
 		void notify_callbacks()
 		{
 			std::for_each(l_Callbacks.begin(), l_Callbacks.end(), 
-				std::mem_fun(&CameraListChangedCallback::CameraListChanged));
+				std::mem_fn(&CameraListChangedCallback::CameraListChanged));
 		}
 
 	}	// end of namespace

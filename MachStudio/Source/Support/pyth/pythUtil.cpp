@@ -11,7 +11,7 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Support/pyth/pythPython.hpp"
 
-#include <boost/algorithm/string/replace.hpp>
+#include <algorithm>
 #include <string>
 
 //--------------------------------------------------------------------
@@ -34,6 +34,14 @@ bool pythUtil::ExecuteCommand(const char *i_Command)
 		return false;
 }
 
+void replace_all(std::string& str, const std::string& from, const std::string& to) {
+	size_t start_pos = 0;
+	while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
+		str.replace(start_pos, from.length(), to);
+		start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'xx'
+	}
+}
+
 //--------------------------------------------------------------------
 // Execute the following python script file with a list of arguments
 //--------------------------------------------------------------------
@@ -47,10 +55,10 @@ void pythUtil::ScriptFile(fsLocator &i_ScriptLoc, std::string& i_Arguments)
 	
 	//quote_tok = strtok( i_Arguments.c_str(), quote );
 
-	boost::replace_all(i_Arguments, "\\", "\\\\");
-	boost::replace_all(i_Arguments, "\"", "\\\"");
-	boost::replace_all(i_Arguments, "[", "\\\"");
-	boost::replace_all(i_Arguments, "]", "\\\"");
+	replace_all(i_Arguments, "\\", "\\\\");
+	replace_all(i_Arguments, "\"", "\\\"");
+	replace_all(i_Arguments, "[", "\\\"");
+	replace_all(i_Arguments, "]", "\\\"");
 
 	std::string arguments = std::string("arg_string = \"") + i_Arguments + std::string("\"\n");
 	//arguments += std::string("arg_string = arg_string.strip(\"\\\"\")") + std::string("\n");
@@ -84,7 +92,7 @@ void pythUtil::ScriptFile(fsLocator &i_ScriptLoc)
 
 	// Cheating, just using python's execfile() command instead of API
 	std::string command = std::string("execfile(\"") + filename.c_str() + std::string("\")");
-	boost::replace_all( command, "\\", "/" );
+	replace_all( command, "\\", "/" );
 	DBG_TRACE("Executing Python command (" << command << ")");
 	pythUtil::ExecuteCommand(command);
 

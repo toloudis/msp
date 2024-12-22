@@ -116,7 +116,7 @@ namespace
 cmpsWorldAxis::cmpsWorldAxis()
 :	m_pObject(NULL)
 {
-	std::auto_ptr<entModelTemplate> model_template(new entModelTemplate());
+	std::unique_ptr<entModelTemplate> model_template(new entModelTemplate());
 
 	// Create pure color materials
 	matMaterial *pRedMaterial = create_material(maFloatRGBA( 1.0f, 0.0f, 0.0f, 1.0f ));

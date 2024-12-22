@@ -347,7 +347,7 @@ void pythCommands::Initialize()
 //----------------------------------------------------------------------------
 void pythCommands::DeInitialize()
 {
-	envSTLHelpers::ForAll(l_Commands, std::mem_fun(&pythPythonCommand::DeRef));
+	envSTLHelpers::ForAll(l_Commands, std::mem_fn(&pythPythonCommand::DeRef));
 }
 
 //----------------------------------------------------------------------------

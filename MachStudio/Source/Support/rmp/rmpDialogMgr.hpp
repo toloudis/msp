@@ -15,7 +15,7 @@
 #include "Support/rmp/rmpData.hpp"
 #endif
 
-#include <boost/function.hpp>
+#include <functional>
 
 
 //----------------------------------------------------------------------------
@@ -68,7 +68,7 @@ namespace rmpDialogMgr
 	//------------------------------------------------------------------------
 	// Set callback for property changes
 	//------------------------------------------------------------------------
-	typedef boost::function<void (bool)> RampChangedFunction;
+	typedef std::function<void (bool)> RampChangedFunction;
 	void SetRampChangedCallback(const RampChangedFunction& i_FuncPtr);
 
 	//------------------------------------------------------------------------

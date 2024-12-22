@@ -17,7 +17,7 @@
 #endif
 
 
-#define PYTHON_ENABLED
+//#define PYTHON_ENABLED
 
 #if defined(PYTHON_ENABLED)
 #define HAVE_ROUND // fixes "warning C4273: 'round': inconsistent dll linkage" in pymath.h
