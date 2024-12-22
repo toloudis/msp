@@ -115,7 +115,7 @@ namespace chtrOperations
 				pCharacter->AddDriver( pDriver );
 
 				// GetDriverInfo returns a copy that we need to delete
-				std::auto_ptr<tmlnDriverInfo> pInfo( pDriver->GetDriverInfo() );
+				std::unique_ptr<tmlnDriverInfo> pInfo( pDriver->GetDriverInfo() );
 				if (tmlnDriverAnimationFullInfo *pAnimInfo = dynamic_cast<tmlnDriverAnimationFullInfo*>(pInfo.get()))
 				{
 					pAnimInfo->m_Info.m_AnimFilename = i_AnimLocator;

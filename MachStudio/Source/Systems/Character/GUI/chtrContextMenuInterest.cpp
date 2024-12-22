@@ -18,8 +18,6 @@
 #include "Tool/gui/guiContextMenu.hpp"
 #include "Tool/sel3d/sel3dCastUtil.hpp"
 
-#include <boost/bind.hpp>
-
 namespace
 {
 	// What are the maximum number of items we can put into a context menu?
@@ -63,7 +61,7 @@ namespace
 				std::string menu_item_name =  "Select " + pMat->GetName();
 				io_ContextMenu.AddMenu(c_Context_Menu_Name, "");
 				io_ContextMenu.AddMenuItem(c_Context_Menu_Name, menu_item_name.c_str(), 
-					boost::bind(&SelectMaterialByName, mat_name));
+					std::bind(&SelectMaterialByName, mat_name));
 			}
 		}
 		else
@@ -78,7 +76,7 @@ namespace
 				{
 					std::string mat_name = i_pCharacter->GetMaterialName(i);
 					io_ContextMenu.AddMenuItem(c_Context_Select_SubMenu_Name, mat_name.c_str(), 
-						boost::bind(&SelectMaterialByName, mat_name));
+						std::bind(&SelectMaterialByName, mat_name));
 				}
 			}
 		}

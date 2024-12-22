@@ -47,8 +47,6 @@
 #include "Tool/icn/icnIconLayer.hpp"
 #include "Tool/icn/icnIconSet.hpp"
 
-#include <boost/bind.hpp>
-
 //============================================================================
 //============================================================================
 namespace
@@ -1914,7 +1912,7 @@ matTexture* cmraCameraObject::CameraPassBuffersTexChanged(matTexture* i_Mat, con
 	{
 		try
 		{
-			std::auto_ptr<matTexture> tex;
+			std::unique_ptr<matTexture> tex;
 			tex.reset(matTextureMgr::LoadTexture(texLoc));
 
 			if (tex.get() != NULL)

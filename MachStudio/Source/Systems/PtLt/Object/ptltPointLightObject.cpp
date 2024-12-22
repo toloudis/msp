@@ -39,8 +39,6 @@
 #include "Tool/icn/icnIconLayer.hpp"
 #include "Tool/icn/icnIconSet.hpp"
 
-#include <boost/bind.hpp>
-
 namespace
 {
 	//============================================================================

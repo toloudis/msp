@@ -75,7 +75,6 @@
 #include "Graphics/G3d/g3dConditionalCompile.hpp"
 
 #include <assert.h>
-#include <boost/bind.hpp>
 #include <sstream>
 
 #undef ReplaceFile
@@ -2602,7 +2601,7 @@ void prjltProjectedLightObject::NotifyRampUI()
 {
 	rmpDialogMgr::SetRampChangedCallback(NULL);
 	rmpDialogMgr::SetData(m_Data.m_RampData);
-	rmpDialogMgr::SetRampChangedCallback(std::bind1st(std::mem_fun(&prjltProjectedLightObject::RampChangedFromUI), this));
+	rmpDialogMgr::SetRampChangedCallback(std::bind(std::mem_fn(&prjltProjectedLightObject::RampChangedFromUI), this, std::placeholders::_1));
 }
 
 //----------------------------------------------------------------------------
@@ -2708,7 +2707,7 @@ void prjltProjectedLightObject::NotifyShaftRampUI()
 {
 	rmpDialogMgr::SetRampChangedCallback(NULL);
 	rmpDialogMgr::SetData(m_Data.m_ShaftRampData);
-	rmpDialogMgr::SetRampChangedCallback(std::bind1st(std::mem_fun(&prjltProjectedLightObject::ShaftRampChangedFromUI), this));
+	rmpDialogMgr::SetRampChangedCallback(std::bind(std::mem_fn(&prjltProjectedLightObject::ShaftRampChangedFromUI), this, std::placeholders::_1));
 }
 
 //--------------------------------------------------------------------

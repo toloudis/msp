@@ -44,7 +44,6 @@
 #include "Tool/gpx/gpxRenderControl.hpp"
 #include "Tool/gpx/gpxSceneObject.hpp"
 
-#include <boost/bind.hpp>
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
@@ -714,7 +713,7 @@ void chtrObject::FilenameChanged(prtyProperty *i_pProperty, bool i_bDirty)
 		// deleted while still in the callback
 		fsLocator new_filename = m_Data.m_Filename.GetValue();
 		DBG_LOG("Changing filename to: " << new_filename);
-		mnmThinkMgr::CallFunctionDelayed( boost::bind(
+		mnmThinkMgr::CallFunctionDelayed( std::bind(
 					chtrOperations::ChangeFilename, this->GetName(), new_filename) );
 
 		// In case the load fails, reset our filename property back to old filename.

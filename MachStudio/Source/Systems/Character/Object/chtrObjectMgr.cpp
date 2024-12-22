@@ -120,22 +120,22 @@ namespace
 			ResolveFlagRestorer save_resolve_state;
 			if (!i_MaterialOverrides.empty())
 				matShaderParser::SetResolveAbsolutePaths(false);
-			std::auto_ptr<entModelTemplate> mdl_template(
+			std::unique_ptr<entModelTemplate> mdl_template(
 							api3dSharedModelMgr::LoadModelTemplate(i_Locator) );
 							//entImport::LoadGeometry(i_Locator));
 			if (mdl_template.get())
 			{
 				// Can make characters from static models now also	
-				std::auto_ptr<entModelInstance> mdl_instance(new entModelInstance());
+				std::unique_ptr<entModelInstance> mdl_instance(new entModelInstance());
 				
-				std::auto_ptr<scObject> pObject(entImport::CreateObject( *mdl_template, *mdl_instance, finder, i_MaterialOverrides ));
+				std::unique_ptr<scObject> pObject(entImport::CreateObject( *mdl_template, *mdl_instance, finder, i_MaterialOverrides ));
 				
 				if (pObject.get())
 				{
-					std::auto_ptr<entEntity> pEnt( new entEntity( pObject.release() ) );
+					std::unique_ptr<entEntity> pEnt( new entEntity( pObject.release() ) );
 
 					// pass ownership of pointers to new object
-					 std::auto_ptr<api3dObjectEntity> obj_ent(new api3dObjectEntity(mdl_template.release(), mdl_instance.release(), pEnt.release()));
+					 std::unique_ptr<api3dObjectEntity> obj_ent(new api3dObjectEntity(mdl_template.release(), mdl_instance.release(), pEnt.release()));
 					 return obj_ent.release();
 
 					//entEntityTemplate* ent_template = dynamic_cast<entEntityTemplate*>(mdl_template);
@@ -321,7 +321,7 @@ namespace
 		api3dScene::AddObject(i_pEntObject);
 
 		// create script object for 3d object
-		std::auto_ptr<chtrScriptObject> pCharacter( new chtrScriptObject(i_pEntObject, i_pExpressionObj, 
+		std::unique_ptr<chtrScriptObject> pCharacter( new chtrScriptObject(i_pEntObject, i_pExpressionObj, 
 			i_GeomLoc, i_CharDir, i_Data.m_BaseData.m_Name.GetString()) );
 		pCharacter->SetScriptData( i_Data );
 

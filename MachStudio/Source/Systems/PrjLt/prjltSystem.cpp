@@ -37,8 +37,6 @@
 #include "Tool/gui/guiContextMenu.hpp"
 #include "Tool/pick3d/pick3dMgr.hpp"
 
-#include <boost/bind.hpp>
-
 //============================================================================
 //============================================================================
 namespace prjltSystem
@@ -75,7 +73,7 @@ namespace prjltSystem
 					io_ContextMenu.AddMenu("Lighting", "");
 					io_ContextMenu.AddMenuItem("Lighting", 
 						"Create Projected Light at Camera Position", 
-						boost::bind(&prjltOperations::AddLightAtCameraPosition,
+						std::bind(&prjltOperations::AddLightAtCameraPosition,
 									prjltData::e_ProjectedLight));
 				}
 		};

@@ -121,7 +121,7 @@ namespace cmraOperations
 				pCamera->AddDriver( pDriver );
 
 				// GetDriverInfo returns a copy that we need to delete
-				std::auto_ptr<tmlnDriverInfo> pInfo( pDriver->GetDriverInfo() );
+				std::unique_ptr<tmlnDriverInfo> pInfo( pDriver->GetDriverInfo() );
 				if (cmraDriverMayaScriptInfo *pAnimInfo = dynamic_cast<cmraDriverMayaScriptInfo*>(pInfo.get()))
 				{
 					pAnimInfo->m_AnimFilename = i_AnimLocator;
