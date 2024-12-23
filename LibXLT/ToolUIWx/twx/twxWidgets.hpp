@@ -19,8 +19,8 @@
 #define USE_WXWIDGETS 1
 #endif
 
-#define WXUSINGDLL
-#define wxMSVC_VERSION_AUTO
+//#define WXUSINGDLL
+//#define wxMSVC_VERSION_AUTO
 #ifdef USE_WXWIDGETS
 
 // ----------------------------------------------------------------------------

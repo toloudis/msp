@@ -1,6 +1,7 @@
 {
-  "name": "tooluiwx",
+  "name": "mainapp",
   "version": "1.0",
   "dependencies": [
+    "curl"
   ]
 }

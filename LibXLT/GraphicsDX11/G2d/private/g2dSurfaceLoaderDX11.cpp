@@ -28,7 +28,7 @@
 //==============================================================================
 //#pragma comment(lib,"libtiff.lib")
 //#pragma comment(lib,"libpng.lib")
-#pragma comment(lib,"zdll.lib")
+//#pragma comment(lib,"zdll.lib")
 #ifdef WIN64
 //#pragma comment(lib,"jpeg.lib")
 #endif
