@@ -248,8 +248,8 @@ g2dSystemDX11::g2dSystemDX11(int i_Adapter /*= 0*/)
 //	IDXGIFactory * pFactory = NULL;
 //	HRESULT hr = ::CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)(&pFactory) );
 
-	IDXGIFactory1 * pFactory = NULL;
-	HRESULT hr = s_DynamicCreateDXGIFactory( __uuidof( IDXGIFactory1 ), (void**)(&pFactory) );
+	IDXGIFactory6 * pFactory = NULL;
+	HRESULT hr = s_DynamicCreateDXGIFactory( __uuidof( IDXGIFactory6), (void**)(&pFactory) );
 	//HRESULT hr = ::CreateDXGIFactory1(__uuidof(IDXGIFactory1), (void**)(&pFactory) );
 
 	g2dDX11Global::g_pDXGIFactory = pFactory;
@@ -270,7 +270,13 @@ g2dSystemDX11::g2dSystemDX11(int i_Adapter /*= 0*/)
 	D3D_DRIVER_TYPE ddt = SGPU_D3D_DRIVER;
 	if( SGPU_D3D_DRIVER == D3D_DRIVER_TYPE_HARDWARE ) 
 	{
-		hr = pFactory->EnumAdapters1( i_Adapter, &pAdapter );
+		hr = pFactory->EnumAdapterByGpuPreference(
+			0,
+			DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE,
+			IID_IDXGIAdapter1,
+			(void**) & pAdapter
+		);
+		//hr = pFactory->EnumAdapters1( i_Adapter, &pAdapter );
 		if ( FAILED( hr) ) 
 		{
 			//throw g2dScreenInitX();

@@ -212,7 +212,7 @@ void writeOutMap(std::string i_Exclude, std::map<std::string,std::string> i_Map,
 //--------------------------------------------------------------------
 // replace_all() - replace all occurences of a char with another char
 //--------------------------------------------------------------------
-void replace_all(std::string& context, const std::string& from, const std::string& to) {
+static void replace_all(std::string& context, const std::string& from, const std::string& to) {
 	size_t lookHere = 0;
 	size_t foundHere;
 	while( (foundHere = context.find(from, lookHere)) != std::string::npos ) {
