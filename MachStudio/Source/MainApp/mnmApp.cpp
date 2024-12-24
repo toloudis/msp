@@ -1153,6 +1153,7 @@ void mnmApp::Render()
 
 						envThread render_thread(DoRenderThread);
 						g3dThreadControl::WaitForRenderThreadStart();
+						render_thread.detach();//?
 					}
 					else
 					{
