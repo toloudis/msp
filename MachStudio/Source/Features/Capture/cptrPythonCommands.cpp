@@ -239,4 +239,9 @@ namespace cptrPythonCommands
 	}
 };
 
+#else 
+namespace cptrPythonCommands
+{
+	void AddCommands(const std::string& i_ModuleName) {}
+}
 #endif

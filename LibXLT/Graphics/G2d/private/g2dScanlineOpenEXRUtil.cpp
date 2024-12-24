@@ -33,12 +33,12 @@
 #include <OpenEXR/ImfStringAttribute.h>
 
 // OpenEXR Libs
-//#pragma comment(lib, "IlmImf-2_2.lib")
-//#pragma comment(lib, "Half.lib") 
-//#pragma comment(lib, "Iex-2_2.lib")
-//#pragma comment(lib, "IlmThread-2_2.lib")
-//#pragma comment(lib, "Imath-2_2.lib")
-//#pragma comment(lib, "zdll.lib")
+#pragma comment(lib, "Iex-3_2_d.lib")
+#pragma comment(lib, "IlmThread-3_2_d.lib")
+#pragma comment(lib, "Imath-3_1_d.lib")
+#pragma comment(lib, "deflate.lib")
+#pragma comment(lib, "OpenEXR-3_2_d.lib")
+#pragma comment(lib, "OpenEXRCore-3_2_d.lib")
 
 #include <stdio.h>
 

@@ -175,4 +175,8 @@ void trfnPython::AddCommands(const std::string &i_ModuleName)
 
 }
 
+#else 
+void trfnPython::AddCommands(const std::string& i_ModuleName)
+{
+}
 #endif

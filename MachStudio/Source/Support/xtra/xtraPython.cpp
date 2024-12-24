@@ -180,6 +180,10 @@ namespace xtraPython
 			" typeOfProperty can be one of: boolean, color, number, orientation, position, string, texture",
 			(pythModules::CommandFunctionPtr)add_custom_property, c_bKeywordsArgs);
 	}
+#else 
+	void AddCommands(const std::string& i_ModuleName)
+	{
+	}
 #endif
 
 }	// end of namespace

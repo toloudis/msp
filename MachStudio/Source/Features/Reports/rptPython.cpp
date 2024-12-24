@@ -21,4 +21,8 @@ void rptPython::AddCommands(const std::string &i_ModuleName)
 		"Write the Video statistics to a log file ", 
 		log_video_stats);
 }
+#else 
+void rptPython::AddCommands(const std::string& i_ModuleName)
+{
+}
 #endif
