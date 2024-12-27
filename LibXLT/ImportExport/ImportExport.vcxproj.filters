@@ -55,6 +55,15 @@
     <Filter Include="rman\live">
       <UniqueIdentifier>{192bfc90-6945-42cf-aab5-2fffde7c67b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="gltf">
+      <UniqueIdentifier>{ef2e0f39-1fbb-4af6-ab21-56d75eaba2c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gltf\import">
+      <UniqueIdentifier>{dcb63c6c-fd38-4c57-9c57-ababb7da7734}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gltf\import\private">
+      <UniqueIdentifier>{cfaba4af-3223-49cb-b169-94a61e2b9639}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="fbx\fbxPackage.cpp">
@@ -175,6 +184,27 @@
       <Filter>rman\live</Filter>
     </ClCompile>
     <ClCompile Include="ImportExportLayer.cpp" />
+    <ClCompile Include="gltf\gltfPackage.cpp">
+      <Filter>gltf</Filter>
+    </ClCompile>
+    <ClCompile Include="gltf\import\private\gltfImport.cpp">
+      <Filter>gltf\import\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gltf\import\private\gltfLayerMapper.cpp">
+      <Filter>gltf\import\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gltf\import\private\gltfMaterialImport.cpp">
+      <Filter>gltf\import\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gltf\import\private\gltfMeshImport.cpp">
+      <Filter>gltf\import\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gltf\import\private\gltfModelImport.cpp">
+      <Filter>gltf\import\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gltf\import\private\gltfSdkManager.cpp">
+      <Filter>gltf\import\private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fbx\fbxPackage.hpp">
@@ -238,6 +268,39 @@
       <Filter>rman\live</Filter>
     </ClInclude>
     <ClInclude Include="ImportExportLayer.hpp" />
+    <ClInclude Include="gltf\gltfPackage.hpp">
+      <Filter>gltf</Filter>
+    </ClInclude>
+    <ClInclude Include="gltf\import\gltfImport.hpp">
+      <Filter>gltf\import</Filter>
+    </ClInclude>
+    <ClInclude Include="gltf\import\private\json.hpp">
+      <Filter>gltf\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="gltf\import\private\stb_image.h">
+      <Filter>gltf\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="gltf\import\private\stb_image_write.h">
+      <Filter>gltf\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="gltf\import\private\tiny_gltf.h">
+      <Filter>gltf\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="gltf\import\private\gltfLayerMapper.hpp">
+      <Filter>gltf\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="gltf\import\private\gltfMaterialImport.hpp">
+      <Filter>gltf\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="gltf\import\private\gltfMeshImport.hpp">
+      <Filter>gltf\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="gltf\import\private\gltfModelImport.hpp">
+      <Filter>gltf\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="gltf\import\private\gltfSdkManager.hpp">
+      <Filter>gltf\import\private</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="mray\export\private\shaders\Anisotropic_decl.mi">
