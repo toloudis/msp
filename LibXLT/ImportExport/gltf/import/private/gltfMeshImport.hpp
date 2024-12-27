@@ -39,7 +39,7 @@ namespace gltfMeshImport
 	//	ConvertMesh converts the geometry in the mesh from the FBX SDK 
 	//	into our fragment type.
 	//------------------------------------------------------------------------
-	void ConvertMesh( tinygltf::Mesh& i_Mesh,
+	void ConvertMesh( tinygltf::Model* i_pModel, tinygltf::Mesh* i_Mesh,
 					  g3dSceneNode*& io_pSceneNode,
 					  //const fsResourceFinder& i_TextureFinder,
 					  mdlMatInfoTable& io_MaterialTable,

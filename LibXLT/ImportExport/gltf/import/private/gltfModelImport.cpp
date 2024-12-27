@@ -61,7 +61,7 @@ namespace gltfModelImport
 
 		//------------------------------------------------------------------------
 		//------------------------------------------------------------------------
-		void ConvertNode(tinygltf::Node* i_pNode,
+		void ConvertNode(tinygltf::Model* i_pModel, tinygltf::Node* i_pNode,
 						 g3dSceneNode*& o_pSceneNode,
 						 //const fsResourceFinder& i_TextureFinder,
 						 mdlMatInfoTable& io_MaterialTable,
@@ -85,10 +85,10 @@ namespace gltfModelImport
 			if (i_pNode->mesh != -1) 
 			{
 					//DBG_LOG("Got FBX mesh ");     
-				tinygltf::Mesh* pMesh = i_pNode->GetMesh();
+				tinygltf::Mesh* pMesh = &i_pModel->meshes[i_pNode->mesh];
 					if (pMesh)
 					{
-						gltfMeshImport::ConvertMesh(*pMesh, o_pSceneNode, io_MaterialTable, o_Fragments, o_Materials, i_ContainingFile);
+						gltfMeshImport::ConvertMesh(i_pModel, pMesh, o_pSceneNode, io_MaterialTable, o_Fragments, o_Materials, i_ContainingFile);
 					}
 			}
 
@@ -98,9 +98,7 @@ namespace gltfModelImport
 			{
 				g3dSceneNode* new_node = NULL;
 
-				//ConvertNode(i_pNode->GetChild(i), new_node, i_TextureFinder, io_MaterialTable,
-				//			o_Fragments, o_Materials, o_Textures);
-				ConvertNode(i_pNode->GetChild(i), new_node, io_MaterialTable,
+				ConvertNode(i_pModel, &i_pModel->nodes[i_pNode->children[i]], new_node, io_MaterialTable,
 							o_Fragments, o_Materials, i_ContainingFile);
 
 				if (new_node)
@@ -130,14 +128,16 @@ namespace gltfModelImport
 		// unit is cm
 		// 
 
-		const tinygltf::Scene& scene = model.scenes[model.defaultScene];
+		// TODO : maybe use first node of default scene instead of creating an initial fake root node?
+
+		const tinygltf::Scene& scene = pScene->scenes[pScene->defaultScene];
 		// we shall treat Scene as a root node to begin:
 		tinygltf::Node rootNode;
 		rootNode.children = scene.nodes;
 		rootNode.name = scene.name;
 
 		// Use material table in order to share materials with the same name
-			ConvertNode(&rootNode, o_pSceneNode, o_MaterialTable,
+			ConvertNode(pScene, &rootNode, o_pSceneNode, o_MaterialTable,
 						o_Fragments, o_Materials, i_Locator);
 			//ConvertNode(pRootNode, o_pSceneNode, i_TextureFinder, material_table,
 			//			o_Fragments, o_Materials, o_Textures);
