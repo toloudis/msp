@@ -59,7 +59,7 @@ namespace gltfMeshImport
 		//--------------------------------------------------------------------
 		// Get material mapping per polygon from FBX Mesh object
 		//--------------------------------------------------------------------
-		void process_poly_materials(tinygltf::Mesh& i_Mesh,
+		void process_poly_materials(const tinygltf::Model* i_pModel, const tinygltf::Mesh& i_Mesh,
 							        std::vector<MaterialPolyGroup> &o_PolyGroups)
 		{
 			// materials are in the containing node
@@ -157,13 +157,10 @@ namespace gltfMeshImport
 		//--------------------------------------------------------------------
 		// Get fragment information from FBX Mesh object
 		//--------------------------------------------------------------------
-		void get_frag_info(tinygltf::Mesh& i_Mesh, 
+		void get_frag_info(const tinygltf::Model* i_pModel, tinygltf::Mesh& i_Mesh, 
 						   mdlFragInfo& o_MeshInfo,
 						   mdlMatInfoTable& io_MaterialTable)
 		{
-			std::vector<MaterialPolyGroup> poly_groups;
-			process_poly_materials(i_Mesh, poly_groups);
-
 			int num_points = i_Mesh.GetControlPointsCount();
 			KFbxVector4* pControlPoints = i_Mesh.GetControlPoints();
 
@@ -336,7 +333,7 @@ namespace gltfMeshImport
 	//	ConvertMesh converts the geometry in the mesh from the FBX SDK 
 	//	into our fragment type.
 	//------------------------------------------------------------------------
-	void ConvertMesh(tinygltf::Model* i_pModel, tinygltf::Mesh* i_Mesh,
+	void ConvertMesh(const tinygltf::Model* i_pModel, tinygltf::Mesh* i_Mesh,
 					  g3dSceneNode*& io_pSceneNode,
 					  //const fsResourceFinder& i_TextureFinder,
 					  mdlMatInfoTable& io_MaterialTable,
@@ -348,11 +345,51 @@ namespace gltfMeshImport
 		const bool bCreateMaterials = true;
 		//fbxMaterialImport::GetNodeMaterials(*i_Mesh.GetNode(),
 		//		io_MaterialTable, i_TextureFinder, o_Materials, o_Textures, bLoadTextures);
-		fbxMaterialImport::GetNodeMaterials(*i_Mesh.GetNode(),
+		gltfMaterialImport::GetNodeMaterials(i_pModel, i_Mesh,
 				io_MaterialTable, o_Materials, bCreateMaterials, i_ContainingFile);
 
+		if (i_Mesh->primitives.size() < 1) {
+			return;
+		}
+
+		for (int i = 0; i < i_Mesh->primitives.size(); ++i) {
+			const tinygltf::Primitive& p = i_Mesh->primitives[i];
+			// find attributes for position, normal, and uv
+			//  POSITION, NORMAL, TANGENT, TEXCOORD_n, COLOR_n, JOINTS_n, and WEIGHTS_n
+			// attributes is map of string to accessor index
+			// if POSITION is missing then just skip.
+			auto ia = p.attributes.find("POSITION");
+			if (ia == p.attributes.end())
+			{
+				continue;
+			}
+			int posAccessor = ia->second;
+
+			const tinygltf::Accessor& a = i_pModel->accessors[posAccessor];
+			int bufferViewIndex = a.bufferView;
+			int componentType = a.componentType;
+			int type = a.type;
+			const tinygltf::BufferView& bv = i_pModel->bufferViews[bufferViewIndex];
+			if (bv.target == 0) {  // TODO impl drawarrays
+				DBG_LOG("WARN: bufferView.target is zero");
+				continue;
+			}
+
+
+			const tinygltf::Buffer& buffer = i_pModel->buffers[bv.buffer];
+
+
+			// find accessor for indices:
+			int indicesAccessor = p.indices;
+			if (indicesAccessor == -1) {
+				// no indices: skip?
+				continue;
+			}
+
+		}
+
 		mdlFragInfo frag_info;
-		get_frag_info(i_Mesh, frag_info, io_MaterialTable);
+		get_frag_info(i_pModel, *i_Mesh, frag_info, io_MaterialTable);
 
 		std::vector<mdlSplitFragInfo> split_frags;
 		mdlFragUtil::SplitFragments(frag_info, split_frags);

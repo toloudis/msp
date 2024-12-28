@@ -9,6 +9,7 @@
 #include "Graphics/eff/effBlinnData.hpp"
 
 #include "Graphics/eff/effBlinnDataParser.hpp"
+#include "Graphics/eff/effShaderParams.hpp"
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsResourceFinder.hpp"
@@ -235,4 +236,28 @@ void effBlinnData::RemoveTextures()
 chDefs::Name effBlinnData::GetChunkName() const 
 {
 	return effBlinnDataParser::GetChunkName();
+}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+void effBlinnData::AddToParams(effShaderParams& o_Params)
+{
+	o_Params.SetVersion(1);
+	o_Params.AddParam(new effParamFloat("g_shininess", "g_shininess", m_SpecularPower));
+	o_Params.AddParam(new effParamFloat("g_bumpMapScale", "g_bumpMapScale", m_BumpMapScale));
+	o_Params.AddParam(new effParamFloat("g_reflectivity", "g_reflectivity", m_Reflectivity));
+	float alpha = (m_Transparency < 1) ? m_Transparency : m_ColorDiffuse.GetAlpha();
+	o_Params.AddParam(new effParamFloat("g_transparency", "g_transparency", alpha));
+	o_Params.AddParam(new effParamColor("g_emissive", "g_emissive", m_ColorEmissive));
+	o_Params.AddParam(new effParamColor("g_ambient", "g_ambient", m_ColorAmbient));
+	o_Params.AddParam(new effParamColor("g_diffuse", "g_diffuse", m_ColorDiffuse));
+	o_Params.AddParam(new effParamColor("g_specular", "g_specular", m_ColorSpecular));
+
+	o_Params.AddParam(new effParamTexture("diffuseMap", "diffuseMap", itString(m_NameDiffuse.c_str())));
+	o_Params.AddParam(new effParamTexture("normalMap", "normalMap", itString(m_NameNormalMap.c_str())));
+	o_Params.AddParam(new effParamTexture("cubeMap", "cubeMap", itString(m_NameEnvironment.c_str())));
+	o_Params.AddParam(new effParamTexture("specularMap", "specularMap", itString(m_NameSpecular.c_str())));
+	o_Params.AddParam(new effParamTexture("glossMap", "glossMap", itString(m_NameGloss.c_str())));
+	o_Params.AddParam(new effParamTexture("reflectFactorMap", "reflectFactorMap", itString(m_NameReflectFactorMap.c_str())));
+	o_Params.AddParam(new effParamTexture("transparencyMap", "transparencyMap", itString(m_NameTransparencyMap.c_str())));
 }

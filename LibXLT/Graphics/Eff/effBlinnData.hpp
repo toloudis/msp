@@ -75,4 +75,6 @@ public:
 	matTexture* m_TextureReflectFactorMap;
 	matTexture* m_TextureIORMap;
 	matTexture* m_TextureTransparencyMap;
+
+	void AddToParams(effShaderParams& o_Params);
 };
