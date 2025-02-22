@@ -62,6 +62,7 @@ namespace gltfMeshImport
 		void process_poly_materials(const tinygltf::Model* i_pModel, const tinygltf::Mesh& i_Mesh,
 							        std::vector<MaterialPolyGroup> &o_PolyGroups)
 		{
+#if 0
 			// materials are in the containing node
 			const int num_materials = i_Mesh.GetNode()->GetMaterialCount();
 			o_PolyGroups.resize(num_materials);
@@ -104,7 +105,7 @@ namespace gltfMeshImport
 					 }
 				}
 			}
-
+#endif
 			// Now check for error cases: if material name is empty or the polygon list is empty,
 			// remove this material group
 			o_PolyGroups.erase(std::remove_if(o_PolyGroups.begin(), o_PolyGroups.end(), bad_poly_group),
@@ -161,6 +162,7 @@ namespace gltfMeshImport
 						   mdlFragInfo& o_MeshInfo,
 						   mdlMatInfoTable& io_MaterialTable)
 		{
+#if 0
 			int num_points = i_Mesh.GetControlPointsCount();
 			KFbxVector4* pControlPoints = i_Mesh.GetControlPoints();
 
@@ -321,7 +323,7 @@ namespace gltfMeshImport
 			// So, make everything double-sided until we can
 			// figure out the CW vs. CCW winding?
 			//o_MeshInfo.m_Flags.m_bDoubleSided = true;  (didn't help)
-
+#endif
 			DBG_LOG("Total expanded vertices: " << o_MeshInfo.m_Vertices.size());
 			DBG_LOG("Total expanded indices: " << o_MeshInfo.m_Indices.size() << "(" << (o_MeshInfo.m_Indices.size() / 3) << " tris)");
 			DBG_LOG("avg vertices per tri: " << std::setprecision(4) << (3.0f * float(o_MeshInfo.m_Vertices.size()) / float(o_MeshInfo.m_Indices.size())) );

@@ -13,7 +13,6 @@
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsResourceFinder.hpp"
-#include "Core/it/itString.hpp"
 #include "Graphics/mat/matTexture.hpp"
 #include "Graphics/mat/matTextureMgr.hpp"
 
