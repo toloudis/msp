@@ -63,7 +63,7 @@ namespace
 
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		void Init();	
+		void Init();
 
 	private:
 		void AddCallbacks();
@@ -206,7 +206,7 @@ cptrRenderBakeDialog* cptrRenderBakeDialog::Instance = NULL;
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 cptrRenderBakeDialog::cptrRenderBakeDialog(cptrRenderBakeData& i_Data, wxWindow* parent)
-: wxDialog( parent, wxID_ANY, wxT("Bake Textures"), wxDefaultPosition, FromDIP(wxSize(l_dialogWidth, l_dialogHeight)), wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER ),
+: wxDialog( parent, wxID_ANY, wxT("Bake Textures"), wxDefaultPosition, FromDIP(wxSize(l_dialogWidth, l_dialogHeight), parent), wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER ),
   m_Data(i_Data),
   m_bakeAborted(true)
 {
@@ -225,9 +225,9 @@ cptrRenderBakeDialog::cptrRenderBakeDialog(cptrRenderBakeData& i_Data, wxWindow*
 	/*wxPanel* panel1 = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* sizer1;
 	sizer1 = new wxBoxSizer( wxVERTICAL );
-	m_treeCtrl_Objects = new wxTreeCtrl( panel1, wxID_ANY, wxDefaultPosition, wxDefaultSize, 
+	m_treeCtrl_Objects = new wxTreeCtrl( panel1, wxID_ANY, wxDefaultPosition, wxDefaultSize,
 											wxTR_DEFAULT_STYLE|wxTR_HIDE_ROOT );
-	sizer1->Add( m_treeCtrl_Objects, 1, wxALL|wxEXPAND, 5 ); 
+	sizer1->Add( m_treeCtrl_Objects, 1, wxALL|wxEXPAND, 5 );
 	panel1->SetSizer(sizer1);
 	m_layerTabPages->AddPage(panel1, wxT("Objects"), true);*/
 
@@ -237,7 +237,7 @@ cptrRenderBakeDialog::cptrRenderBakeDialog(cptrRenderBakeData& i_Data, wxWindow*
 
 	m_panel_Dialog->SetSizer(fgSizer);
 	sizer_Dialog->Add( m_panel_Dialog, 1, wxEXPAND | wxALL, 5 );
-	
+
 	wxBoxSizer* sizer3;
 	sizer3 = new wxBoxSizer(wxVERTICAL);
 
@@ -254,7 +254,7 @@ cptrRenderBakeDialog::cptrRenderBakeDialog(cptrRenderBakeData& i_Data, wxWindow*
 	{
 		l_pBakePrefsObject = new BakePrefsObject(cptrRenderBakeDataUtil::Data());
 	}
-	
+
 	this->Layout();
 	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( cptrRenderBakeDialog::OnClose ) );
 	button1->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( cptrRenderBakeDialog::button_bake_OnButtonClick ), NULL, this );
@@ -326,9 +326,9 @@ void cptrRenderBakeDialog::RegisterRenderPrefs()
 	//	Add the Render tab page
 	m_scrolledWindow_Prefs = new wxScrolledWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize);
 	m_layerTabPages->AddPage(m_scrolledWindow_Prefs, wxT("Bake Prefs"), false);
-	
+
 	m_scrolledWindow_Prefs->SetScrollRate( 0, 5 );
-	
+
 	wxBoxSizer* sizer_Render = new wxBoxSizer( wxVERTICAL );
 	m_scrolledWindow_Prefs->SetSizer( sizer_Render );
 	m_scrolledWindow_Prefs->Layout();
