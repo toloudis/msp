@@ -22,7 +22,7 @@ twcTextBox::twcTextBox(wxWindow* i_pParent,
 					   bool i_bMultilineFixed,
 					   const wxSize& i_Size)
 :	wxTextCtrl(i_pParent, i_Id, i_Value, wxDefaultPosition,
-			   i_bMultilineFixed ?  FromDIP(wxSize(123,123)) : i_Size, 
+			   i_bMultilineFixed ?  FromDIP(wxSize(123,123), i_pParent) : i_Size, 
 			   i_bMultiline ? wxTE_MULTILINE : wxTE_PROCESS_ENTER),
 	m_LastValue(i_Value),
 	m_bMultiline(i_bMultiline)
