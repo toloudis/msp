@@ -1,3 +1,5 @@
 MachStudio/bin/
+MachStudio/source/packages
+MachStudio/Source/.vs
 LibXLT/bin/
 vcpkg_installed/
