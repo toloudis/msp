@@ -16,7 +16,7 @@
 
 #ifndef ENV_BOOST_HPP
 #include "Core/Env/envBoost.hpp"
-#endif 
+#endif
 
 
 //============================================================================
@@ -39,7 +39,7 @@ class prtyPropertyReference
 
 		//--------------------------------------------------------------------
 		//	GetProperty - return a pointer to a property that is usable
-		//	for a short period of time. 
+		//	for a short period of time.
 		//--------------------------------------------------------------------
 		virtual prtyProperty* GetProperty() = 0;
 };
