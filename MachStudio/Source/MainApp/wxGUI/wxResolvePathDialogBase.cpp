@@ -54,6 +54,10 @@ wxResolvePathDialogBase::wxResolvePathDialogBase( wxWindow* parent,
 	
 	this->SetSizer( bSizer1 );
 	//this->Layout();
+	// The default size is in DIPs: scale it for the display's DPI, and
+	// never let the window be smaller than its contents.
+	this->SetSize( FromDIP( size ) );
+	this->SetMinClientSize( this->GetSizer()->GetMinSize() );
 	
 	// Connect Events
 	m_button_Locate->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( wxResolvePathDialogBase::buttonLocateClick ), NULL, this );
