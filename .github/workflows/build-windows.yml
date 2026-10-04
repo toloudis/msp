@@ -36,6 +36,12 @@ jobs:
           New-Item -ItemType Directory -Force -Path $env:VCPKG_DEFAULT_BINARY_CACHE | Out-Null
           & "$env:VCPKG_ROOT\vcpkg.exe" integrate install
 
+      # GraphicsDX11 uses packages.config NuGet packages (e.g. D3DX),
+      # restored into MachStudio/Source/packages
+      - name: Restore NuGet packages
+        working-directory: MachStudio/Source
+        run: nuget restore MachStudio.sln
+
       # /m builds independent projects in parallel. UseMultiToolTask also
       # compiles the source files within each project in parallel (none of
       # the projects set /MP), and EnforceProcessCountAcrossBuilds keeps the
