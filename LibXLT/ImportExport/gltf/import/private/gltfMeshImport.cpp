@@ -76,7 +76,7 @@ namespace gltfMeshImport
 				int mat_id = prim.material;
 				if (mat_id >= (int)i_pModel->materials.size())
 					mat_id = -1;
-				const std::string mat_key = gltfMaterialImport::GetMaterialKey(mat_id);
+				const std::string mat_key = gltfMaterialImport::GetMaterialKey(i_pModel, mat_id);
 
 				std::vector<MaterialPolyGroup>::iterator group = o_PolyGroups.begin();
 				for (; group != o_PolyGroups.end(); ++group)

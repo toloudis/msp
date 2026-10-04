@@ -42,12 +42,13 @@ namespace gltfMaterialImport
 	void CreateSimpleMaterial(mdlMaterialInfo& o_MatInfo);
 
 	//--------------------------------------------------------------------
-	// GetMaterialKey - key into the material table for a glTF material
-	// index. Index -1 (a primitive with no material) maps to the glTF
-	// default material. Keys are per index so that distinct materials
-	// sharing a name (or having no name) are not merged.
+	// GetMaterialKey - unique material name for a glTF material index,
+	// used both as the material's name and its material table key (the
+	// app looks materials up in the table by name). Index -1 (a primitive
+	// with no material) maps to the glTF default material. Unnamed or
+	// repeated names are made unique with the material index.
 	//--------------------------------------------------------------------
-	std::string GetMaterialKey(int i_MaterialIndex);
+	std::string GetMaterialKey(const tinygltf::Model* i_pModel, int i_MaterialIndex);
 
 	//--------------------------------------------------------------------
 	// Get materials from node containing a mesh
