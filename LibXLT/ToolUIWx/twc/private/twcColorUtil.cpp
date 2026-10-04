@@ -9,7 +9,7 @@
 #include "Core/dbg/dbgMsg.hpp"
 #include "Core/ma/maConstants.hpp"
 
-#include <math.h>
+#include <math.h>	// fabs; abs() here resolves to int abs(int)
 
 namespace twcColorUtil
 {
@@ -50,7 +50,7 @@ namespace twcColorUtil
 
 		double hue = 0.0, saturation;
 		const double deltaRGB = maximumRGB - minimumRGB;
-		if ( abs(deltaRGB) < maConstants::c_dEpsilon )
+		if ( fabs(deltaRGB) < maConstants::c_dEpsilon )
 		{
 			// Gray has no color
 			hue = 0.0;
