@@ -1,0 +1,48 @@
+name: Windows build
+
+on:
+  push:
+    branches: [ dev/update2024 ]
+  pull_request:
+    branches: [ dev/update2024 ]
+  workflow_dispatch:
+
+jobs:
+  build-mainapp:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [ Release ]
+    env:
+      VCPKG_ROOT: C:\vcpkg
+      VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}\vcpkg-binary-cache
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Restore vcpkg binary cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
+          key: vcpkg-${{ runner.os }}-${{ hashFiles('**/vcpkg.json', '**/vcpkg-configuration.json') }}
+          restore-keys: vcpkg-${{ runner.os }}-
+
+      - name: Integrate vcpkg with MSBuild
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path $env:VCPKG_DEFAULT_BINARY_CACHE | Out-Null
+          & "$env:VCPKG_ROOT\vcpkg.exe" integrate install
+
+      - name: Build MainApp (${{ matrix.configuration }}|x64)
+        working-directory: MachStudio/Source
+        run: >
+          msbuild MachStudio.sln
+          /t:MainApp
+          /p:Configuration=${{ matrix.configuration }}
+          /p:Platform=x64
+          /m
+          /nologo
+          /v:minimal
