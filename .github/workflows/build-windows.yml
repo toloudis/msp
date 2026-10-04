@@ -12,7 +12,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        configuration: [ Release ]
+        # Debug|x64 is the configuration the project files keep linkable (its
+        # library paths point at the per-library vcpkg installs); Release|x64
+        # still points at old prebuilt DirectXTex/FX11 folders.
+        configuration: [ Debug ]
     env:
       VCPKG_ROOT: C:\vcpkg
       VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}\vcpkg-binary-cache
