@@ -181,6 +181,9 @@ twcColorDialogBase::twcColorDialogBase( wxWindow* parent, wxWindowID id, const w
 
 	this->SetSizer( bSizer1 );
 	this->Layout();
+	// The default size is in pixels; size to the DPI-scaled contents instead
+	// so the hue slider isn't clipped off the right edge on high DPI displays.
+	bSizer1->Fit( this );
 
 	// Connect Events
 	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( twcColorDialogBase::OnClose ) );
