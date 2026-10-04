@@ -30,11 +30,18 @@ namespace gltfModelImport
 		//------------------------------------------------------------------------
 		void get_xform_matrix(tinygltf::Node& i_Node, maMatrix4x4& o_OutMatx)
 		{
+			// glTF matrices are column-major with column vectors, which has the
+			// same memory layout as our row-major, row-vector matrices.
+			// Translations are scaled from meters to centimeters to match
+			// the scaled vertex positions.
 			if (i_Node.matrix.size() == 16)
 			{
 				for (int i = 0; i < 16; ++i) {
 					o_OutMatx.Ptr()[i] = (float)i_Node.matrix[i];
 				}
+				o_OutMatx.Ptr()[12] *= gltfMeshImport::c_UnitScale;
+				o_OutMatx.Ptr()[13] *= gltfMeshImport::c_UnitScale;
+				o_OutMatx.Ptr()[14] *= gltfMeshImport::c_UnitScale;
 				return;
 			}
 
@@ -51,7 +58,7 @@ namespace gltfModelImport
 			}
 			maVector3d trans;
 			if (i_Node.translation.size() == 3){
-				trans = maVector3d(i_Node.translation[0], i_Node.translation[1], i_Node.translation[2]);
+				trans = maVector3d(i_Node.translation[0], i_Node.translation[1], i_Node.translation[2]) * gltfMeshImport::c_UnitScale;
 			}
 
 			o_OutMatx.MakeScale( sx, sy, sz );
@@ -82,7 +89,7 @@ namespace gltfModelImport
 			get_xform_matrix(*i_pNode, matx);
 			o_pSceneNode->SetTransform(matx);
 
-			if (i_pNode->mesh != -1) 
+			if (i_pNode->mesh >= 0 && i_pNode->mesh < (int)i_pModel->meshes.size()) 
 			{
 					//DBG_LOG("Got FBX mesh ");     
 				tinygltf::Mesh* pMesh = &i_pModel->meshes[i_pNode->mesh];
@@ -94,11 +101,15 @@ namespace gltfModelImport
 
 
 			// Recurse on children
-			for (int i = 0; i < i_pNode->children.size(); i++)
+			for (int i = 0; i < (int)i_pNode->children.size(); i++)
 			{
+				const int child = i_pNode->children[i];
+				if (child < 0 || child >= (int)i_pModel->nodes.size())
+					continue;
+
 				g3dSceneNode* new_node = NULL;
 
-				ConvertNode(i_pModel, &i_pModel->nodes[i_pNode->children[i]], new_node, io_MaterialTable,
+				ConvertNode(i_pModel, &i_pModel->nodes[child], new_node, io_MaterialTable,
 							o_Fragments, o_Materials, i_ContainingFile);
 
 				if (new_node)
@@ -130,11 +141,20 @@ namespace gltfModelImport
 
 		// TODO : maybe use first node of default scene instead of creating an initial fake root node?
 
-		const tinygltf::Scene& scene = pScene->scenes[pScene->defaultScene];
 		// we shall treat Scene as a root node to begin:
 		tinygltf::Node rootNode;
-		rootNode.children = scene.nodes;
-		rootNode.name = scene.name;
+
+		// The default scene is optional; fall back to the first scene.
+		// A file with no scenes at all just has an empty root.
+		int scene_index = pScene->defaultScene;
+		if (scene_index < 0 || scene_index >= (int)pScene->scenes.size())
+			scene_index = 0;
+		if (scene_index < (int)pScene->scenes.size())
+		{
+			const tinygltf::Scene& scene = pScene->scenes[scene_index];
+			rootNode.children = scene.nodes;
+			rootNode.name = scene.name;
+		}
 
 		// Use material table in order to share materials with the same name
 			ConvertNode(pScene, &rootNode, o_pSceneNode, o_MaterialTable,

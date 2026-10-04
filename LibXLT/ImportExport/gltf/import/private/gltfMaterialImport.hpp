@@ -19,6 +19,7 @@
 
 #include "tiny_gltf.h"
 
+#include <string>
 #include <vector>
 
 class fsLocator;
@@ -39,6 +40,14 @@ namespace gltfMaterialImport
 	// CreateSimpleMaterial - create simple grey phong material
 	//--------------------------------------------------------------------
 	void CreateSimpleMaterial(mdlMaterialInfo& o_MatInfo);
+
+	//--------------------------------------------------------------------
+	// GetMaterialKey - key into the material table for a glTF material
+	// index. Index -1 (a primitive with no material) maps to the glTF
+	// default material. Keys are per index so that distinct materials
+	// sharing a name (or having no name) are not merged.
+	//--------------------------------------------------------------------
+	std::string GetMaterialKey(int i_MaterialIndex);
 
 	//--------------------------------------------------------------------
 	// Get materials from node containing a mesh

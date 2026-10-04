@@ -1,8 +1,8 @@
 /****************************************************************************\
 **  gltfMeshImport.hpp
 **
-**      gltfMeshImport.hpp converts meshes loaded with the FBX SDK
-**	importer into our format fragments.
+**      gltfMeshImport.hpp converts meshes loaded with tinygltf
+**	into our format fragments.
 **
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
@@ -36,7 +36,12 @@ struct mdlSkinInfo;
 namespace gltfMeshImport
 {
 	//------------------------------------------------------------------------
-	//	ConvertMesh converts the geometry in the mesh from the FBX SDK 
+	//	glTF units are meters, MSP works in centimeters
+	//------------------------------------------------------------------------
+	const float c_UnitScale = 100.0f;
+
+	//------------------------------------------------------------------------
+	//	ConvertMesh converts the geometry in the glTF mesh 
 	//	into our fragment type.
 	//------------------------------------------------------------------------
 	void ConvertMesh( const tinygltf::Model* i_pModel, tinygltf::Mesh* i_Mesh,

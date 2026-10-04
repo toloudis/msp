@@ -286,6 +286,9 @@
     <ClInclude Include="gltf\import\private\tiny_gltf.h">
       <Filter>gltf\import\private</Filter>
     </ClInclude>
+    <ClInclude Include="gltf\import\private\gltfAccessorUtil.hpp">
+      <Filter>gltf\import\private</Filter>
+    </ClInclude>
     <ClInclude Include="gltf\import\private\gltfLayerMapper.hpp">
       <Filter>gltf\import\private</Filter>
     </ClInclude>

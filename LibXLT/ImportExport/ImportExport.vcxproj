@@ -1177,6 +1177,7 @@
     <ClInclude Include="fbx\export\private\QuatTypes.h" />
     <ClInclude Include="gltf\gltfPackage.hpp" />
     <ClInclude Include="gltf\import\gltfImport.hpp" />
+    <ClInclude Include="gltf\import\private\gltfAccessorUtil.hpp" />
     <ClInclude Include="gltf\import\private\gltfLayerMapper.hpp" />
     <ClInclude Include="gltf\import\private\gltfMaterialImport.hpp" />
     <ClInclude Include="gltf\import\private\gltfMeshImport.hpp" />
