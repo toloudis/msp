@@ -2,9 +2,8 @@ name: Windows build
 
 on:
   push:
-    branches: [ dev/update2024, dev/update_VS2026 ]
+    branches: [ main, master, dev/update2024, dev/update_VS2026 ]
   pull_request:
-    branches: [ dev/update2024, dev/update_VS2026 ]
   workflow_dispatch:
 
 jobs:
