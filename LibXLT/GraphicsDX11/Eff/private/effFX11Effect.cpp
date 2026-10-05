@@ -156,13 +156,21 @@ private:
 
 //============================================================================
 //============================================================================
-effFX11Effect::effFX11Effect(ID3DX11Effect* i_pEffect)
-:	m_pEffect(i_pEffect)
+effFX11Effect::effFX11Effect(ID3DX11Effect* i_pEffect, bool i_bOwn)
+:	m_pEffect(i_pEffect),
+	m_bOwn(i_bOwn)
 {
 }
 
 effFX11Effect::~effFX11Effect()
 {
+	// wrappers go before the effect they wrap
+	m_Types.clear();
+	m_Passes.clear();
+	m_Techniques.clear();
+	m_Variables.clear();
+	if (m_bOwn && m_pEffect)
+		m_pEffect->Release();
 }
 
 HRESULT effFX11Effect::GetDesc(fxEffectDesc_* o_pDesc)

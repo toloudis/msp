@@ -103,6 +103,14 @@ public:
 		bool IsValid() const { return m_Index >= 0; }
 	};
 
+	// Handle to an unordered-access (UAV) slot; bound for the pixel stage,
+	// next to the render targets, as Effects did.
+	struct UnorderedAccess
+	{
+		int m_Index = -1;
+		bool IsValid() const { return m_Index >= 0; }
+	};
+
 	// Builds every pass's pipeline. Returns nullptr and sets o_Error on failure.
 	static std::unique_ptr<fxEffectDX11> Create(ID3D11Device* i_pDevice,
 		const fxEffectDesc& i_Desc, const fxBytecodeSource& i_Bytecode,
@@ -120,11 +128,13 @@ public:
 	// Parameter handles; invalid if no entry point uses the name.
 	Constant FindConstant(const std::string& i_Name) const;
 	Resource FindResource(const std::string& i_Name) const;
+	UnorderedAccess FindUnorderedAccess(const std::string& i_Name) const;
 	// The reflected type of a constant; nullptr if no entry point uses it.
 	const Type* FindConstantType(const std::string& i_Name) const;
 	// Names of every constant and resource some entry point uses.
 	std::vector<std::string> GetConstantNames() const;
 	std::vector<std::string> GetResourceNames() const;
+	std::vector<std::string> GetUnorderedAccessNames() const;
 
 	// Writes go to CPU-side storage; Apply() uploads and binds them.
 	void SetConstant(const Constant& i_Constant, const void* i_pData, uint32_t i_Bytes);
@@ -147,6 +157,7 @@ public:
 	// on the way in when the shader stores it column-major.
 	void SetMatrix(const Constant& i_Constant, const float* i_pRowMajor4x4);
 	void SetResource(const Resource& i_Resource, ID3D11ShaderResourceView* i_pView);
+	void SetUnorderedAccess(const UnorderedAccess& i_UAV, ID3D11UnorderedAccessView* i_pView);
 
 	// Read back what was written (or the default), for the material UI.
 	void GetConstant(const Constant& i_Constant, void* o_pData, uint32_t i_Bytes) const;
@@ -185,6 +196,7 @@ private:
 		std::vector<Binding> m_ConstantBuffers;
 		std::vector<Binding> m_Resources;
 		std::vector<Binding> m_Samplers;
+		std::vector<Binding> m_UnorderedAccess;
 	};
 
 	// One pass: a shader (or none) per graphics stage. Immutable after Create.
@@ -224,6 +236,8 @@ private:
 	std::map<std::string, Variable> m_Variables;
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>> m_Resources;
 	std::map<std::string, int> m_ResourceNames;
+	std::vector<Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView>> m_UnorderedAccess;
+	std::map<std::string, int> m_UnorderedAccessNames;
 	std::vector<Microsoft::WRL::ComPtr<ID3D11SamplerState>> m_Samplers;
 	std::map<std::string, int> m_SamplerNames;
 };

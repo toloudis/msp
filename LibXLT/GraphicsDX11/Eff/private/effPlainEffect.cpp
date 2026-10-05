@@ -158,7 +158,7 @@ private:
 class effPlainEffect::Variable : public fxEffectVariable
 {
 public:
-	enum Kind { e_Invalid, e_Constant, e_Resource, e_Shadow, e_Annotation };
+	enum Kind { e_Invalid, e_Constant, e_Resource, e_UnorderedAccess, e_Shadow, e_Annotation };
 
 	Variable(effPlainEffect* i_pOwner, Kind i_Kind, const TypeInfo& i_Type)
 	:	m_pOwner(i_pOwner), m_Kind(i_Kind), m_TypeInfo(i_Type), m_Type(m_TypeInfo)
@@ -373,9 +373,12 @@ public:
 		*o_ppView = view;
 		return S_OK;
 	}
-	virtual HRESULT SetUnorderedAccessView(ID3D11UnorderedAccessView*)
+	virtual HRESULT SetUnorderedAccessView(ID3D11UnorderedAccessView* i_pView)
 	{
-		return E_NOTIMPL;	// no material reads a UAV
+		if (m_Kind != e_UnorderedAccess)
+			return E_FAIL;
+		Effect()->SetUnorderedAccess(m_UnorderedAccess, i_pView);
+		return S_OK;
 	}
 
 private:
@@ -475,7 +478,8 @@ private:
 
 	HRESULT set_components(const double* i_pValues, UINT i_Count)
 	{
-		if (m_Kind == e_Annotation || m_Kind == e_Invalid || m_Kind == e_Resource || is_resource(m_TypeInfo))
+		if (m_Kind == e_Annotation || m_Kind == e_Invalid || m_Kind == e_Resource ||
+			m_Kind == e_UnorderedAccess || is_resource(m_TypeInfo))
 			return E_FAIL;
 		uint32_t room = storage_size() / 4;
 		if (m_Kind == e_Shadow && room == 0)
@@ -547,6 +551,7 @@ private:
 	const fxAnnotationDesc* m_pAnnotation = nullptr;
 	fxEffectDX11::Constant m_Constant;
 	fxEffectDX11::Resource m_Resource;
+	fxEffectDX11::UnorderedAccess m_UnorderedAccess;
 	std::vector<uint8_t> m_Shadow;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pShadowView;
 	std::map<std::string, std::unique_ptr<Variable>> m_Children;	// members, elements, @annotations
@@ -571,10 +576,16 @@ std::unique_ptr<effPlainEffect::Variable> effPlainEffect::Variable::MakeGlobal(e
 		if (!i_Array.empty())
 			type.m_Elements = (uint32_t)strtoul(i_Array.c_str(), nullptr, 10);
 		fxEffectDX11::Resource resource = effect->FindResource(i_Desc.m_Name);
+		fxEffectDX11::UnorderedAccess uav = effect->FindUnorderedAccess(i_Desc.m_Name);
 		if (resource.IsValid())
 		{
 			v.reset(new Variable(i_pOwner, e_Resource, type));
 			v->m_Resource = resource;
+		}
+		else if (uav.IsValid())
+		{
+			v.reset(new Variable(i_pOwner, e_UnorderedAccess, type));
+			v->m_UnorderedAccess = uav;
 		}
 		else
 		{
@@ -612,6 +623,11 @@ std::unique_ptr<effPlainEffect::Variable> effPlainEffect::Variable::MakeReflecte
 	{
 		v.reset(new Variable(i_pOwner, e_Constant, *reflected));
 		v->m_Constant = effect->FindConstant(i_Name);
+	}
+	else if (effect->FindUnorderedAccess(i_Name).IsValid())
+	{
+		v.reset(new Variable(i_pOwner, e_UnorderedAccess, parse_type("texture")));
+		v->m_UnorderedAccess = effect->FindUnorderedAccess(i_Name);
 	}
 	else
 	{
@@ -735,6 +751,8 @@ effPlainEffect::effPlainEffect(std::unique_ptr<fxEffectDX11> i_pEffect)
 	std::vector<std::string> names = m_pEffect->GetConstantNames();
 	std::vector<std::string> resources = m_pEffect->GetResourceNames();
 	names.insert(names.end(), resources.begin(), resources.end());
+	std::vector<std::string> uavs = m_pEffect->GetUnorderedAccessNames();
+	names.insert(names.end(), uavs.begin(), uavs.end());
 	for (const std::string& name : names)
 	{
 		if (m_VariableNames.count(name))
