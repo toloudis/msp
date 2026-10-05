@@ -12,12 +12,13 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsResourceTracker.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/gf/gfFileEnum.hpp"
 #include "Core/it/itStringUtil.hpp"
 #include "Graphics/eff/effShaderParams.hpp"
 #include "Graphics/mat/matMaterial.hpp"
 
+#include <algorithm>
 #include <map>
+#include <string.h>
 
 
 //============================================================================
@@ -41,6 +42,10 @@ namespace
 
 	// cache of loaded user shaders
 	std::map<fsLocator, matShaderEffect*> l_LoadedShaders;
+
+	// the built-in shaders offered in the shader pickers
+	std::vector<matShaderInfo> l_MaterialShaders;
+	std::vector<matShaderInfo> l_PostEffectShaders;
 
 	const int c_NumBitsPerLayer = 3; // holds 8 types (Nothing, Error, plus 6 others)
 	const int c_MaxNumLayers = 4; // could be 8 later
@@ -77,6 +82,17 @@ namespace
 			delete it2->second;
 		}
 		l_LoadedShaders.clear();
+
+		l_MaterialShaders.clear();
+		l_PostEffectShaders.clear();
+	}
+
+	//----------------------------------------------------------------------------
+	//----------------------------------------------------------------------------
+	bool shader_name_less(const matShaderInfo& i_A, const matShaderInfo& i_B)
+	{
+		return _stricmp(itStringUtil::GetStdString(i_A.m_Name).c_str(),
+						itStringUtil::GetStdString(i_B.m_Name).c_str()) < 0;
 	}
 
 	//----------------------------------------------------------------------------
@@ -152,8 +168,9 @@ void Initialize()
 
 		clear_map();
 		l_pImpl->RegisterEffects(fx_dir, l_ShaderMap);
-		//l_pImpl->RegisterUserShaders(fx_dir, l_UserShaders);
-		
+		l_pImpl->RegisterSelectableShaders(l_MaterialShaders, l_PostEffectShaders);
+		std::sort(l_MaterialShaders.begin(), l_MaterialShaders.end(), shader_name_less);
+		std::sort(l_PostEffectShaders.begin(), l_PostEffectShaders.end(), shader_name_less);
 	}
 }
 
@@ -359,23 +376,33 @@ void ReloadShader( matMaterial * i_pMaterial )
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-bool IsMachStudioShader(const fsLocator& i_ShaderName)
-{	
-	fsFileEnum::fsFileList flist;
-	std::vector<itString> searchStrings;
-	searchStrings.push_back(itString(".fx"));
-	fsFileEnum::EnumerateFiles(matShaderMgr::GetDefaultShaderPath(), flist, searchStrings);
-	
-	int i;
-	for ( i = 0 ; i < flist.size() ; i++ )
-	{
-		// Filenames match
-		if ( flist[i] == i_ShaderName )
-		{
-			return true;
-		}
-	}
+const std::vector<matShaderInfo>& GetMaterialShaders()
+{
+	return l_MaterialShaders;
+}
 
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
+const std::vector<matShaderInfo>& GetPostEffectShaders()
+{
+	return l_PostEffectShaders;
+}
+
+//------------------------------------------------------------------------
+// The built-in material shaders are compiled into the library, so this
+//	checks the registered list rather than the files in the shader folder.
+//------------------------------------------------------------------------
+bool IsMachStudioShader(const fsLocator& i_ShaderName)
+{
+	if (i_ShaderName.GetNumNames() == 0)
+		return false;
+
+	const std::string name = itStringUtil::GetStdString(i_ShaderName.GetLastName());
+	for (size_t i = 0; i < l_MaterialShaders.size(); i++)
+	{
+		if (_stricmp(itStringUtil::GetStdString(l_MaterialShaders[i].m_Name).c_str(), name.c_str()) == 0)
+			return true;
+	}
 	return false;
 }
 

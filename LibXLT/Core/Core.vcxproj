@@ -867,6 +867,7 @@
     <ClInclude Include="prty\prtyColorRGBEditUIInfo.hpp" />
     <ClInclude Include="prty\prtyComboBoxUIInfo.hpp" />
     <ClInclude Include="prty\prtyFileChooserUIInfo.hpp" />
+    <ClInclude Include="prty\prtyFilePathComboBoxUIInfo.hpp" />
     <ClInclude Include="prty\prtyFloatEditUIInfo.hpp" />
     <ClInclude Include="prty\prtyFolderChooserUIInfo.hpp" />
     <ClInclude Include="prty\prtyGradientEditUIInfo.hpp" />
@@ -5008,6 +5009,7 @@
     <ClCompile Include="prty\private\prtyColorRGBEditUIInfo.cpp" />
     <ClCompile Include="prty\private\prtyComboBoxUIInfo.cpp" />
     <ClCompile Include="prty\private\prtyFileChooserUIInfo.cpp" />
+    <ClCompile Include="prty\private\prtyFilePathComboBoxUIInfo.cpp" />
     <ClCompile Include="prty\private\prtyFloatEditUIInfo.cpp" />
     <ClCompile Include="prty\private\prtyFolderChooserUIInfo.cpp" />
     <ClCompile Include="prty\private\prtyGradientEditUIInfo.cpp" />

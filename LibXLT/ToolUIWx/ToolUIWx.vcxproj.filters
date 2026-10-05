@@ -126,6 +126,9 @@
     <ClInclude Include="pwx\Controls\pwxFilePath_FilePicker.hpp">
       <Filter>Pwx\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxFilePath_ComboBox.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
     <ClInclude Include="pwx\Controls\pwxFloat_ComboBox.hpp">
       <Filter>Pwx\Controls</Filter>
     </ClInclude>
@@ -456,6 +459,9 @@
       <Filter>Pwx\Controls</Filter>
     </ClCompile>
     <ClCompile Include="pwx\Controls\pwxFilePath_FilePicker.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxFilePath_ComboBox.cpp">
       <Filter>Pwx\Controls</Filter>
     </ClCompile>
     <ClCompile Include="pwx\Controls\pwxFloat_ComboBox.cpp">

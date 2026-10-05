@@ -154,8 +154,6 @@ namespace
 
 	ID3D11PixelShader* l_PSMapNormalsToScreen = NULL;
 
-	fsLocator l_ShaderDir;
-
 	//------------------------------------------------------------------------
 	// class ShaderLoader
 	//------------------------------------------------------------------------
@@ -368,87 +366,89 @@ template<class EFF_TYPE> void RegisterPlainShader(std::string i_Name,
 }
 
 //------------------------------------------------------------------------
-// RegisterSingleUserShader()
+// get_sas_string() - a string annotation on the effect's SasGlobal
+//	variable ("SasEffectDescription" etc.); empty if there is none.
 //------------------------------------------------------------------------
-void RegisterSingleUserShader(fsLocator i_ShaderName, std::vector<matShaderInfo>& o_Shaders)
+static std::string get_sas_string(const fxEffectDesc& i_Desc, const char* i_Annotation)
 {
-	ID3DX11Effect* effect = effShaderUtilWin::LoadEffectDX11(i_ShaderName);
-	if (effect)
+	for (size_t v = 0; v < i_Desc.m_Variables.size(); v++)
 	{
-		ID3DX11EffectVariable* hGlobal = effect->GetVariableBySemantic("SasGlobal");
-		if (hGlobal != NULL)
+		const fxVariableDesc& var = i_Desc.m_Variables[v];
+		if (var.m_Semantic != "SasGlobal")
+			continue;
+		for (size_t a = 0; a < var.m_Annotations.size(); a++)
 		{
-			matShaderInfo info;
-			info.m_Name = i_ShaderName.GetLastName();
-
-			ID3DX11EffectVariable* hAnnot = NULL;
-			hAnnot = hGlobal->GetAnnotationByName("SasEffectDescription");
-			if (hAnnot)
-			{
-			    LPCSTR pstrName = NULL;
-				ID3DX11EffectStringVariable* hString = hAnnot->AsString();
-				if (hString)
-					hString->GetString( &pstrName );
-				info.m_UIName = pstrName;
-			}
-			hAnnot = hGlobal->GetAnnotationByName("SasEffectHelp");
-			if (hAnnot)
-			{
-			    LPCSTR pstrName = NULL;
-				ID3DX11EffectStringVariable* hString = hAnnot->AsString();
-				if (hString)
-					hString->GetString( &pstrName );
-				info.m_HelpString = pstrName;
-			}
-			hAnnot = hGlobal->GetAnnotationByName("SupportsOutline");
-			if (hAnnot)
-			{
-			    LPCSTR pstrName = NULL;
-				ID3DX11EffectStringVariable* hString = hAnnot->AsString();
-				if (hString)
-					hString->GetString( &pstrName );
-				info.m_bSupportsOutline = _stricmp( pstrName, "true" ) == 0 ? true : false;
-			}
-
-			info.m_DataTemplate = NULL;
-			info.m_pEffect = NULL;
-
-			o_Shaders.push_back(info);
-			//DBG_LOG("Found User Shader: " << info.m_Name << " ; " << info.m_UIName);
+			if (var.m_Annotations[a].m_Name == i_Annotation)
+				return var.m_Annotations[a].m_String;
 		}
-		effect->Release();
-		effect = NULL;
 	}
-	else
-	{
-		DBG_WARNING("Error trying to load " << i_ShaderName << " as a shader.");
-	}
+	return std::string();
 }
 
 //------------------------------------------------------------------------
-// RegisterUserShaders()
+// make_shader_info() - picker entry for an embedded effect, named by its
+//	old file name ("Phong.fx"), which is what materials store.
 //------------------------------------------------------------------------
-void effShaderArray::RegisterUserShaders(const fsLocator& i_ShaderDir, std::vector<matShaderInfo>& o_Shaders)
+static matShaderInfo make_shader_info(const fxEmbeddedEffect& i_Effect, const fxEffectDesc& i_Desc)
 {
-	DBG_LOG( "Loading user shaders from directory " << i_ShaderDir );
-	l_ShaderDir = i_ShaderDir;
+	matShaderInfo info;
+	info.m_Name = (std::string(i_Effect.m_Name) + ".fx").c_str();
+	info.m_UIName = get_sas_string(i_Desc, "SasEffectDescription");
+	info.m_HelpString = get_sas_string(i_Desc, "SasEffectHelp");
+	info.m_bSupportsOutline = _stricmp(get_sas_string(i_Desc, "SupportsOutline").c_str(), "true") == 0;
+	info.m_DataTemplate = NULL;
+	info.m_pEffect = NULL;
+	return info;
+}
 
-	// flist is a list of locators.
-	fsFileEnum::fsFileList flist;
-	std::vector<itString> searchStrings;
+//------------------------------------------------------------------------
+// RegisterSelectableShaders() - the embedded material shaders
+//	(Materials/*, category "/material") and post effects (PostEffect/*)
+//------------------------------------------------------------------------
+void effShaderArray::RegisterSelectableShaders(std::vector<matShaderInfo>& o_Materials,
+											   std::vector<matShaderInfo>& o_PostEffects)
+{
+	// material manifests that are not offered: Bake is used by the baking
+	// pass only, Skin and BlinnSkin are old names the material parser
+	// renames, Default and testtess are not user materials.
+	static const char* const c_Hidden[] = { "Bake", "Skin", "BlinnSkin", "Default", "testtess" };
 
-	searchStrings.push_back(itString(".fx"));
-	bool ok = fsFileEnum::EnumerateFiles(i_ShaderDir, flist, searchStrings);
-
-	for (int i = 0; i < flist.size(); i++)
+	for (int i = 0; i < fxEmbeddedShaders::k_NumEffects; i++)
 	{
-		DBG_LOG( "Loading user shader " << flist[i] );
-		RegisterSingleUserShader( flist[i] , o_Shaders );		
+		const fxEmbeddedEffect& effect = fxEmbeddedShaders::k_Effects[i];
+		const bool bMaterial = strncmp(effect.m_Source, "Materials/", 10) == 0;
+		const bool bPostEffect = strncmp(effect.m_Source, "PostEffect/", 11) == 0;
+		if (!bMaterial && !bPostEffect)
+			continue;
+
+		bool bHidden = false;
+		for (size_t h = 0; h < sizeof(c_Hidden) / sizeof(c_Hidden[0]); h++)
+		{
+			if (_stricmp(effect.m_Name, c_Hidden[h]) == 0)
+				bHidden = true;
+		}
+		if (bHidden)
+			continue;
+
+		fxEffectDesc desc;
+		std::string error;
+		if (!fxEffectDesc::Parse(effect.m_Manifest, desc, error))
+		{
+			DBG_ERROR("Built in shader " << effect.m_Source << " has a bad manifest: " << error.c_str());
+			continue;
+		}
+
+		if (bMaterial)
+		{
+			if (get_sas_string(desc, "SasEffectCategory") == "/material")
+				o_Materials.push_back(make_shader_info(effect, desc));
+		}
+		else
+		{
+			o_PostEffects.push_back(make_shader_info(effect, desc));
+		}
 	}
-	//	o_Shaders.sort();
-
-//	LoadAllShaders(o_Shaders);
-
+	DBG_LOG("Found " << (int)o_Materials.size() << " material shaders and " << (int)o_PostEffects.size() << " post effects");
 }
 
 //------------------------------------------------------------------------
