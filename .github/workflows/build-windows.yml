@@ -8,19 +8,31 @@ on:
 
 jobs:
   # Compiles every entry point of the shaders converted from Effects (.fx)
-  # to plain HLSL with fxc, one entry point and profile at a time.
+  # to plain HLSL, one entry point at a time: as SM 5 with fxc (what the DX11
+  # renderer uses) and as SM 6 with dxc (for a future DX12 port).
   converted-shaders:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Compile converted shaders with fxc
+      - name: Find shader compilers and converted shaders
         shell: pwsh
         run: |
-          $fxc = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\fxc.exe" |
-            Sort-Object FullName -Descending | Select-Object -First 1
-          $manifests = Get-ChildItem -Recurse -Filter *.effect.json LibXLT | ForEach-Object FullName
-          python Tools/fx2hlsl/compile_check.py --compiler fxc --exe $fxc.FullName --verbose $manifests
+          $bin = "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64"
+          foreach ($tool in "fxc", "dxc") {
+            $exe = Get-ChildItem "$bin\$tool.exe" | Sort-Object FullName -Descending | Select-Object -First 1
+            if (-not $exe) { throw "$tool.exe not found in the Windows SDK" }
+            "$($tool.ToUpper())=$($exe.FullName)" >> $env:GITHUB_ENV
+          }
+
+      - name: Compile converted shaders as SM 5 (fxc)
+        shell: pwsh
+        run: python Tools/fx2hlsl/compile_check.py --compiler fxc --exe $env:FXC --verbose (Get-ChildItem -Recurse -Filter *.effect.json LibXLT).FullName
+
+      - name: Compile converted shaders as SM 6 (dxc)
+        if: ${{ !cancelled() }}
+        shell: pwsh
+        run: python Tools/fx2hlsl/compile_check.py --compiler dxc --exe $env:DXC --verbose (Get-ChildItem -Recurse -Filter *.effect.json LibXLT).FullName
 
   build-mainapp:
     runs-on: windows-latest

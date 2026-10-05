@@ -43,7 +43,7 @@ python Tools/fx2hlsl/compile_check.py --compiler dxc Special/Blur.effect.json   
 python Tools/fx2hlsl/compile_check.py --compiler dxc --spirv Special/Blur.effect.json    # Vulkan
 ```
 
-CI runs it with fxc on every `*.effect.json` under `LibXLT`.
+CI compiles every `*.effect.json` under `LibXLT` as SM 5 (fxc) and as SM 6 (dxc), both from the Windows SDK. A converted file is not done until it passes both.
 
 ## Current coverage (dry run on all 60 `.fx` files)
 

@@ -62,7 +62,8 @@ def main():
                     if not ok or args.verbose:
                         print("%s %s %s %s" % ("FAIL" if not ok else "ok  ", manifest["hlsl"],
                                                 profile, stage["entry"]))
-                        msg = (r.stderr + r.stdout).strip()
+                        msg = "\n".join(l for l in (r.stderr + r.stdout).strip().splitlines()
+                                         if "compilation object save succeeded" not in l)
                         if msg:
                             print("    " + msg.replace("\n", "\n    "))
     print("%d of %d entry point(s) compiled" % (total - failed, total))
