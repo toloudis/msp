@@ -76,10 +76,8 @@
 #include "GraphicsDX11/eff/private/ShaderPhong_wBump.hpp"
 #include "GraphicsDX11/eff/private/ShaderHDRLighting.hpp"
 #include "GraphicsDX11/eff/private/ShaderGlow.hpp"
-#include "GraphicsDX11/eff/private/ShaderDOF.hpp"
 #include "GraphicsDX11/eff/private/ShaderLightGlow.hpp"
 #include "GraphicsDX11/eff/private/ShaderParticle.hpp"
-#include "GraphicsDX11/eff/private/ShaderPostAlphaMatte.hpp"
 #include "GraphicsDX11/eff/private/ShaderFog.hpp"
 #include "GraphicsDX11/eff/private/ShaderSolid.hpp"
 #include "GraphicsDX11/eff/private/ShaderMaskAlpha.hpp"
@@ -440,10 +438,10 @@ void effShaderArray::RegisterEffects(const fsLocator &i_ShaderDir,
 	RegisterShader<effHDRLighting>	("HDRLighting.fx",	NULL,			 g_ShaderHDRLighting, sizeof(g_ShaderHDRLighting), io_ShaderMap);
 	RegisterPlainShader<effBlur>	("Blur",				new effBlurData, io_ShaderMap);
 	RegisterShader<effGlow>			("Glow.fx",			new effGlowData, g_ShaderGlow, sizeof(g_ShaderGlow), io_ShaderMap);
-	RegisterShader<effDOF>			("DOF.fx",			new effDOFData, g_ShaderDOF, sizeof(g_ShaderDOF), io_ShaderMap);
+	RegisterPlainShader<effDOF>		("DOF",				new effDOFData, io_ShaderMap);
 	RegisterShader<effLightGlow>	("LightGlow.fx",	new effLightGlowData, g_ShaderLightGlow, sizeof(g_ShaderLightGlow), io_ShaderMap);
 	RegisterShader<effParticle>		("Particle.fx",		new effParticleData, g_ShaderParticle, sizeof(g_ShaderParticle), io_ShaderMap);
-	RegisterShader<effPostMatte>	("PostAlphaMatte.fx",	NULL,			 g_ShaderPostAlphaMatte, sizeof(g_ShaderPostAlphaMatte), io_ShaderMap);
+	RegisterPlainShader<effPlainShaderDX11>	("PostAlphaMatte",	NULL,		io_ShaderMap);
 	RegisterShader<effHDRLighting>	("Fog.fx",			NULL,			 g_ShaderFog, sizeof(g_ShaderFog), io_ShaderMap);
 
 	// Constant solid color

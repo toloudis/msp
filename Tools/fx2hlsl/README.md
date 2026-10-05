@@ -45,6 +45,23 @@ python Tools/fx2hlsl/compile_check.py --compiler dxc --spirv Special/Blur.effect
 
 CI compiles every `*.effect.json` under `LibXLT` as SM 5 (fxc) and as SM 6 (dxc), both from the Windows SDK. A converted file is not done until it passes both.
 
+## Converted so far
+
+These run on the plain-HLSL runtime (`GraphicsDX11/Fx`) and are looked up by
+effect name (`"DOF"`); a lookup by the old file name (`"DOF.fx"`) falls back to
+the effect name.
+
+| Effect | Used by |
+| --- | --- |
+| `Special/Blur` | DOF blur (HDR renderer), VSM/SAT shadow blur |
+| `Special/DOF` | DOF composite (`g3dRenderDOF`) |
+| `Special/PostAlphaMatte` | alpha-channel view (`g3dRenderAlpha`) |
+
+After running the converter, each file was edited by hand: explicit
+`register()`s on every texture, sampler and constant buffer, globals moved into
+one `cbuffer`, and constant tables (`poisson[]`, blur offsets) made
+`static const` and removed from the manifest.
+
 ## Current coverage (dry run on all 60 `.fx` files)
 
 - All 60 files parse and convert, covering every technique and pass.

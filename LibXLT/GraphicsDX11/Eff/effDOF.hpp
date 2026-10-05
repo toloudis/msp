@@ -12,25 +12,25 @@
 #endif
 #define EFF_DOF_HPP
 
-#ifndef EFF_SHADERBASEDX11_HPP
-#include "GraphicsDX11/eff/effShaderBaseDX11.hpp"
+#ifndef EFF_PLAINSHADERDX11_HPP
+#include "GraphicsDX11/eff/effPlainShaderDX11.hpp"
 #endif
 
 class matMaterial;
 
-class effDOF : public effShaderBaseDX11 
+class effDOF : public effPlainShaderDX11
 {
 public:
-	effDOF(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, std::string i_name);
+	effDOF(std::unique_ptr<fxEffectDX11> i_pEffect, std::string i_name);
 
 	virtual effShaderData* CreateData(const matMaterial* i_Mat);
 
 	virtual void SetupParams(const effShaderData* i_Data) const;
 
 protected:
-	ID3DX11EffectShaderResourceVariable* m_hSharpTexture;
-	ID3DX11EffectShaderResourceVariable* m_hBlurryTexture;
-	ID3DX11EffectVectorVariable* m_hSharpResolutionData; 
-	ID3DX11EffectVectorVariable* m_hBlurryResolutionData;
-	ID3DX11EffectScalarVariable* m_hMaxCoC;
+	fxEffectDX11::Resource m_hSharpTexture;
+	fxEffectDX11::Resource m_hBlurryTexture;
+	fxEffectDX11::Constant m_hSharpResolutionData;
+	fxEffectDX11::Constant m_hBlurryResolutionData;
+	fxEffectDX11::Constant m_hMaxCoC;
 };

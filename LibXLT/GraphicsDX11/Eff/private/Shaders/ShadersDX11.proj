@@ -73,10 +73,8 @@
     <DefaultShaders Include="Simple.fx"/>
     <DefaultShaders Include="Special\HDRLighting.fx"/>
     <DefaultShaders Include="Special\Glow.fx"/>
-    <DefaultShaders Include="Special\DOF.fx"/>
     <DefaultShaders Include="Special\LightGlow.fx"/>
     <DefaultShaders Include="Special\Particle.fx"/>
-    <DefaultShaders Include="Special\PostAlphaMatte.fx"/>
     <DefaultShaders Include="Special\Fog.fx"/>
     <DefaultShaders Include="Special\Solid.fx"/>
     <DefaultShaders Include="Special\MaskAlpha.fx"/>

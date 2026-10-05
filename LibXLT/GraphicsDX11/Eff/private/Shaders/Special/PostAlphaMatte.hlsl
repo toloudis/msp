@@ -1,3 +1,9 @@
+//////////////////////////////////////////////////////////////////////////////
+// Converted from PostAlphaMatte.fx by Tools/fx2hlsl/fx2hlsl.py (one-time conversion).
+// Techniques, sampler states, annotations and variable defaults now live in
+// PostAlphaMatte.effect.json. This file is the source of truth from here on.
+//////////////////////////////////////////////////////////////////////////////
+
 /*****************************************************************************
 **  PostAlphaMatte.fx
 **
@@ -10,16 +16,20 @@
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 
-// full scene image
-Texture2D tSource;
-SamplerState g_SourceSampler
-{
-    AddressU = Mirror;
-    AddressV = Mirror;
-};
+// Explicit registers keep the binding layout identical for every entry point
+// (and map directly onto a DX12 root signature / Vulkan descriptor set).
 
-// 1/image resolution of full size image
-float2 pixelSize; 
+// full scene image
+Texture2D tSource : register(t0);
+
+// sampler state is described in PostAlphaMatte.effect.json
+SamplerState g_SourceSampler : register(s0);
+
+cbuffer AlphaPostParams : register(b0)
+{
+	// 1/image resolution of full size image
+	float2 pixelSize;
+};
 
 struct VS_OUTPUT
 {
@@ -50,14 +60,7 @@ float4 AlphaPost_PS(VS_OUTPUT v_in)  : SV_TARGET
 	return float4(cOut.a,cOut.a,cOut.a,cOut.a);
 }
 
-technique11 AlphaPost
-{
-	pass p0 
-	{		
-		VertexShader = compile vs_5_0 AlphaPost_VS();//NULL;
-		PixelShader = compile ps_5_0 AlphaPost_PS();
-	}
-}
+
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 

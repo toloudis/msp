@@ -146,7 +146,7 @@ g3dRenderDOF::g3dRenderDOF(matTextureDX11* i_Tex, matTextureDX11* i_Blurry,
 	m_Blurry(i_Blurry)
 {
 	// get the shader effect
-	m_Effect = g3dDX11Util::GetEffect("DOF.fx");
+	m_Effect = g3dDX11Util::GetEffect("DOF");
 }
 
 g3dRenderDOF::~g3dRenderDOF(void)
@@ -174,7 +174,7 @@ g3dRenderAlpha::g3dRenderAlpha(matTextureDX11* i_tex, g2dRenderTarget* i_target)
 :	g3dRenderFullScreenQuad(i_tex, i_target)
 {
 	// get the shader effect
-	m_effect = g3dDX11Util::GetEffect("PostAlphaMatte.fx");
+	m_effect = g3dDX11Util::GetEffect("PostAlphaMatte");
 }
 
 g3dRenderAlpha::~g3dRenderAlpha(void)
