@@ -34,13 +34,13 @@ public:
 	virtual bool DoesLighting() const;
 
 protected:
-	ID3DX11EffectScalarVariable* m_hHasDiffuseMap;
-	ID3DX11EffectShaderResourceVariable* m_hDiffuseMap;
+	fxEffectVariable* m_hHasDiffuseMap;
+	fxEffectVariable* m_hDiffuseMap;
 
-	ID3DX11EffectScalarVariable* m_hEdgeFuzzCutoff;
-	ID3DX11EffectScalarVariable* m_hDistFalloffStart;
-	ID3DX11EffectScalarVariable* m_hDistFalloffEnd;
-	ID3DX11EffectScalarVariable* m_hGlowAlpha;
-	ID3DX11EffectScalarVariable* m_hUseShadow;
+	fxEffectVariable* m_hEdgeFuzzCutoff;
+	fxEffectVariable* m_hDistFalloffStart;
+	fxEffectVariable* m_hDistFalloffEnd;
+	fxEffectVariable* m_hGlowAlpha;
+	fxEffectVariable* m_hUseShadow;
 };
 

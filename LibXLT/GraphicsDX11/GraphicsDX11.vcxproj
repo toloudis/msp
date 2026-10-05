@@ -683,8 +683,10 @@
     <ClInclude Include="Eff\effBake.hpp" />
     <ClInclude Include="Eff\effBillboard.hpp" />
     <ClInclude Include="Eff\effBlur.hpp" />
+    <ClInclude Include="Eff\effFX11Effect.hpp" />
     <ClInclude Include="Eff\effPlainShaderDX11.hpp" />
     <ClInclude Include="Fx\fxEffectDesc.hpp" />
+    <ClInclude Include="Fx\fxEffectApi.hpp" />
     <ClInclude Include="Fx\fxEffectDX11.hpp" />
     <ClInclude Include="Fx\fxEmbeddedShaders.hpp" />
     <ClInclude Include="Eff\effDOF.hpp" />
@@ -861,6 +863,7 @@
     <ClCompile Include="Eff\private\effBake.cpp" />
     <ClCompile Include="Eff\private\effBillboard.cpp" />
     <ClCompile Include="Eff\private\effBlur.cpp" />
+    <ClCompile Include="Eff\private\effFX11Effect.cpp" />
     <ClCompile Include="Eff\private\effPlainShaderDX11.cpp" />
     <ClCompile Include="Fx\private\fxEffectDesc.cpp" />
     <ClCompile Include="Fx\private\fxEffectDX11.cpp" />

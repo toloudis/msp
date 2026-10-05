@@ -276,7 +276,7 @@ int shdwPassAOVolumes::Render(float i_time)
 	// setup effect params that apply to all objects
 	effShaderBaseDX11* pEffect = (effShaderBaseDX11*)matShaderMgr::GetEffect(l_AOMat);
 	pEffect->SetTechnique("Default");
-	ID3DX11Effect* pD3DXEffect = pEffect->GetD3DXEffect();
+	fxEffect* pD3DXEffect = pEffect->GetFxEffect();
 
 	// acos lookup texture
 	ID3D11ShaderResourceView* acosView = g3dDX11TextureUtil::GetD3DTexture(l_pACosTexture);
@@ -444,7 +444,7 @@ int shdwPassAOVolumes::RenderNode(const sNodePlusState& i_Node)
 	// note that we still want backface culling here regardless of fragment flag.
 	g3dRasterizerStateMgr::SetRasterizerState( g3dDX11Util::GetCullMode(), g3dDrawStyleUtilDX11::GetD3DDrawStyle() );
 
-	ID3DX11Effect* pDXEffect = ((effShaderBaseDX11*)pEffect)->GetD3DXEffect();
+	fxEffect* pDXEffect = ((effShaderBaseDX11*)pEffect)->GetFxEffect();
 	pDXEffect->GetVariableByName("g_DblSide")->AsScalar()->SetFloat( 1 );
 
 	nTriangles += g3dRendererMgr::Render( i_Node.m_pNode, pMaterial, pEffect );
@@ -502,7 +502,7 @@ void shdwPassAOVolumes::BlendAO(g2dRenderTarget* i_pRenderTarget, matRenderTarge
 	const g3dPrefs::g3dRenderPrefs& p = g3dPrefs::CurrentPrefs();
 
 	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)matShaderMgr::GetSpecialEffect(("AOVolumes.fx"));
-	ID3DX11Effect* pEffect = i_pEffect->GetD3DXEffect();
+	fxEffect* pEffect = i_pEffect->GetFxEffect();
 
 	i_pEffect->SetTechnique("FinalPass");
 
@@ -689,9 +689,9 @@ void shdwPassAOVolumes::BlurAO(g2dRenderTarget* i_pRenderTarget)
 	const g3dPrefs::g3dRenderPrefs& p = g3dPrefs::CurrentPrefs();
 
 	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)matShaderMgr::GetSpecialEffect(("AOVolumes.fx"));
-	ID3DX11Effect* pEffect = i_pEffect->GetD3DXEffect();
+	fxEffect* pEffect = i_pEffect->GetFxEffect();
 
-	ID3DX11EffectTechnique* pTechnique = pEffect->GetTechniqueByName("FinalPassUpsample");
+	fxEffectTechnique* pTechnique = pEffect->GetTechniqueByName("FinalPassUpsample");
 
     // Update shader variables g_Resolution and g_InvResolution
 	int width, height;
@@ -766,7 +766,7 @@ void shdwPassAOVolumes::BlurAO(g2dRenderTarget* i_pRenderTarget)
 	ID3D11ShaderResourceView* posView = g3dDX11TextureUtil::GetD3DTexture(m_PositionBuffer);
 	pEffect->GetVariableByName("g_Positions")->AsShaderResource()->SetResource(posView);
 
-	ID3DX11EffectPass* pPass0 = pTechnique->GetPassByIndex(0);
+	fxEffectPass* pPass0 = pTechnique->GetPassByIndex(0);
 	pPass0->Apply(0, g2dDX11Global::g_pDeviceContext);
 	g3dDX11Util::DrawFullScreenQuad( w,h );
 
@@ -790,7 +790,7 @@ void shdwPassAOVolumes::BlurAO(g2dRenderTarget* i_pRenderTarget)
 	posView = g3dDX11TextureUtil::GetD3DTexture(m_PositionBuffer);
 	pEffect->GetVariableByName("g_Positions")->AsShaderResource()->SetResource(posView);
 
-	ID3DX11EffectPass* pPass1 = pTechnique->GetPassByIndex(1);
+	fxEffectPass* pPass1 = pTechnique->GetPassByIndex(1);
 	pPass1->Apply(0, g2dDX11Global::g_pDeviceContext);
 	g3dDX11Util::DrawFullScreenQuad( w,h );
 

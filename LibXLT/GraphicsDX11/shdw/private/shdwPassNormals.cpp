@@ -229,7 +229,7 @@ int shdwPassNormals::RenderNode(const sNodePlusState& i_Node, bool i_isTanSpace,
 	const matMaterial* pMaterial = &l_DrawNormalMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)pEffect;
-	ID3DX11Effect* pD3DEffect = i_pEffect->GetD3DXEffect();
+	fxEffect* pD3DEffect = i_pEffect->GetFxEffect();
 
 	if (i_bRenderPositions)
 	{

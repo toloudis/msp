@@ -456,7 +456,7 @@ int g3dRSMRendererDX11::DrawNode(const g3dSceneNode* i_pNode)
 	// resolve material/effect
 	const matMaterial* pMaterial = g3dDX11Util::GetMaterial(i_pNode);//m_pAlphaMaskMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
-	ID3DX11Effect* pEffectDX = dynamic_cast<effShaderBaseDX11*>(pEffect)->GetD3DXEffect();
+	fxEffect* pEffectDX = dynamic_cast<effShaderBaseDX11*>(pEffect)->GetFxEffect();
 
 	const matMaterial* pMaterialOveride = i_pNode->GetMaterial();
 	const g3dFragment* pFrag = i_pNode->GetFragment();
@@ -551,7 +551,7 @@ int g3dRSMRendererDX11::DrawHairNode(const g3dSceneNode* i_pNode)
 	const matMaterial* pMaterial = &l_HairMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 	//	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)pEffect;
-	//	ID3DXEffect* pD3DEffect = i_pEffect->GetD3DXEffect();
+	//	ID3DXEffect* pD3DEffect = i_pEffect->GetFxEffect();
 
 //	effStrandHairData HairData;
 	effStrandHairData& HairData = pMaterial->StrandHairData();

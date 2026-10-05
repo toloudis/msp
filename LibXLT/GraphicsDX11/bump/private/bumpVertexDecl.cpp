@@ -92,8 +92,8 @@ void Initialize()
 	matShaderMgr::SetUseShaderArray(true);
 	effShaderBaseDX11* pDefaultEffect = (effShaderBaseDX11*)matShaderMgr::GetSpecialEffect("default");//effShaderArray::GetDefaultEffect();
 	DBG_ASSERT(pDefaultEffect, "effects not initialized yet.");
-	D3DX11_PASS_DESC passDesc;
-	pDefaultEffect->GetD3DXEffect()->GetTechniqueByIndex(0)->GetPassByIndex(0)->GetDesc(&passDesc);
+	fxEffectPassDesc passDesc;
+	pDefaultEffect->GetFxEffect()->GetTechniqueByIndex(0)->GetPassByIndex(0)->GetDesc(&passDesc);
 	pShaderBytecode = passDesc.pIAInputSignature;
 	bytecodeLength = (unsigned long)passDesc.IAInputSignatureSize;
  
@@ -110,7 +110,7 @@ void Initialize()
 
 	effShaderBaseDX11* pVelocityEffect = (effShaderBaseDX11*)matShaderMgr::GetSpecialEffect("VelocityRender.fx");//effShaderArray::GetDefaultEffect();
 	DBG_ASSERT(pVelocityEffect, "effects not initialized yet.");
-	pVelocityEffect->GetD3DXEffect()->GetTechniqueByIndex(0)->GetPassByIndex(0)->GetDesc(&passDesc);
+	pVelocityEffect->GetFxEffect()->GetTechniqueByIndex(0)->GetPassByIndex(0)->GetDesc(&passDesc);
 	pShaderBytecode = passDesc.pIAInputSignature;
 	bytecodeLength = (unsigned long)passDesc.IAInputSignatureSize;
 

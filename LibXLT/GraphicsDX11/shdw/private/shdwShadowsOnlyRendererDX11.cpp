@@ -374,7 +374,7 @@ int shdwShadowsOnlyRendererDX11::DrawNode(const g3dSceneNode* i_pNode,
 	// resolve material/effect
 	matShaderEffect* pEffect = matShaderMgr::GetEffect( m_bMasking ? *m_pShadowMat : *m_pIlluminationMat );
 	effShaderBaseDX11* pEffDX11 = dynamic_cast<effShaderBaseDX11*>(pEffect);
-	ID3DX11Effect* pID3DXEffect = pEffDX11->GetD3DXEffect();
+	fxEffect* pID3DXEffect = pEffDX11->GetFxEffect();
 
 	pID3DXEffect->GetVariableByName("g_UseCosine")->AsScalar()->SetBool((!m_bMasking && g3dPrefs::CurrentPrefs().m_bIlluminationUsesNormals) ? TRUE : FALSE);
 
@@ -455,10 +455,10 @@ int shdwShadowsOnlyRendererDX11::DrawHairNode(const g3dSceneNode* i_pNode,
 	matShaderEffect* pEffect = matShaderMgr::GetEffect( *m_pHairMat );
 	effStrandHair* pHairEffect = dynamic_cast<effStrandHair*>(pEffect);
 	DBG_ASSERT( pHairEffect, "Non hair effect used." );
-	ID3DX11Effect* pID3DXEffect = pHairEffect->GetD3DXEffect();
+	fxEffect* pID3DXEffect = pHairEffect->GetFxEffect();
 
 //	effShaderBaseDX11* pEffDX11 = dynamic_cast<effShaderBaseDX11*>(pEffect);
-//	ID3DXEffect* pID3DXEffect = pEffDX11->GetD3DXEffect();
+//	ID3DXEffect* pID3DXEffect = pEffDX11->GetFxEffect();
 	pID3DXEffect->GetVariableByName("g_UseCosine")->AsScalar()->SetBool((!m_bMasking && g3dPrefs::CurrentPrefs().m_bIlluminationUsesNormals) ? TRUE : FALSE);
 
 	DBG_ASSERT(i_pLight != NULL, "null light in shadows only drawnode");

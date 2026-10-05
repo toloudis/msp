@@ -29,29 +29,29 @@ public:
 							   int i_MaterialLayerIndex = 0) const;
 
 protected:
-	ID3DX11EffectScalarVariable* m_hHasDiffuse;
-	ID3DX11EffectShaderResourceVariable* m_hDiffuseMap;
-	ID3DX11EffectScalarVariable* m_hHasSpecular;
-	ID3DX11EffectShaderResourceVariable* m_hSpecularMap;
-	ID3DX11EffectScalarVariable* m_hHasCube;
-	ID3DX11EffectShaderResourceVariable* m_hCubeMap;
-	ID3DX11EffectScalarVariable* m_hHasNormal;
-	ID3DX11EffectShaderResourceVariable* m_hNormalMap;
-	ID3DX11EffectScalarVariable* m_hHasGloss;
-	ID3DX11EffectShaderResourceVariable* m_hGlossMap;
-	ID3DX11EffectScalarVariable* m_hHasReflectFactor;
-	ID3DX11EffectShaderResourceVariable* m_hReflectFactorMap;
-	ID3DX11EffectScalarVariable* m_hHasTransparencyMap;
-	ID3DX11EffectShaderResourceVariable* m_hTransparencyMap;
+	fxEffectVariable* m_hHasDiffuse;
+	fxEffectVariable* m_hDiffuseMap;
+	fxEffectVariable* m_hHasSpecular;
+	fxEffectVariable* m_hSpecularMap;
+	fxEffectVariable* m_hHasCube;
+	fxEffectVariable* m_hCubeMap;
+	fxEffectVariable* m_hHasNormal;
+	fxEffectVariable* m_hNormalMap;
+	fxEffectVariable* m_hHasGloss;
+	fxEffectVariable* m_hGlossMap;
+	fxEffectVariable* m_hHasReflectFactor;
+	fxEffectVariable* m_hReflectFactorMap;
+	fxEffectVariable* m_hHasTransparencyMap;
+	fxEffectVariable* m_hTransparencyMap;
 
-	ID3DX11EffectVectorVariable* m_MaterialEmissiveHandle;
-	ID3DX11EffectVectorVariable* m_MaterialAmbientHandle;
-	ID3DX11EffectVectorVariable* m_MaterialDiffuseHandle;
-	ID3DX11EffectVectorVariable* m_MaterialSpecularHandle;
+	fxEffectVariable* m_MaterialEmissiveHandle;
+	fxEffectVariable* m_MaterialAmbientHandle;
+	fxEffectVariable* m_MaterialDiffuseHandle;
+	fxEffectVariable* m_MaterialSpecularHandle;
 	
-	ID3DX11EffectScalarVariable* m_MaterialSpecularPowerHandle;
-	ID3DX11EffectScalarVariable* m_MaterialBumpMapScaleHandle;
-	ID3DX11EffectScalarVariable* m_MaterialReflectivityHandle;
-	ID3DX11EffectScalarVariable* m_MaterialTransparencyHandle;
+	fxEffectVariable* m_MaterialSpecularPowerHandle;
+	fxEffectVariable* m_MaterialBumpMapScaleHandle;
+	fxEffectVariable* m_MaterialReflectivityHandle;
+	fxEffectVariable* m_MaterialTransparencyHandle;
 
 };

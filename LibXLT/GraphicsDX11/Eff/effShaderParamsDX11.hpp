@@ -31,7 +31,7 @@
 class effBindParamDX11
 {
 public:
-	virtual bool Bind(ID3DX11Effect* i_pShader) = 0;
+	virtual bool Bind(fxEffect* i_pShader) = 0;
 
 	virtual const effShaderParam* GetParam() = 0;
 };
@@ -39,85 +39,85 @@ public:
 class effFloatBindingDX11 : public effBindParamDX11
 {
 public: 
-	effFloatBindingDX11(const effParamFloat& i_Param, ID3DX11EffectScalarVariable* i_Handle)
+	effFloatBindingDX11(const effParamFloat& i_Param, fxEffectVariable* i_Handle)
 		: m_Param(i_Param), m_Handle(i_Handle)
 	{
 	}
 
-	virtual bool Bind(ID3DX11Effect* i_pShader);
+	virtual bool Bind(fxEffect* i_pShader);
 
 	virtual const effShaderParam* GetParam() {return &m_Param;}
 
 	const effParamFloat& m_Param;
-	ID3DX11EffectScalarVariable* m_Handle;
+	fxEffectVariable* m_Handle;
 };
 class effIntBindingDX11 : public effBindParamDX11
 {
 public: 
-	effIntBindingDX11(const effParamInt& i_Param, ID3DX11EffectScalarVariable* i_Handle)
+	effIntBindingDX11(const effParamInt& i_Param, fxEffectVariable* i_Handle)
 		: m_Param(i_Param), m_Handle(i_Handle)
 	{
 	}
 
-	virtual bool Bind(ID3DX11Effect* i_pShader);
+	virtual bool Bind(fxEffect* i_pShader);
 
 	virtual const effShaderParam* GetParam() {return &m_Param;}
 
 	const effParamInt& m_Param;
-	ID3DX11EffectScalarVariable* m_Handle;
+	fxEffectVariable* m_Handle;
 };
 class effBoolBindingDX11 : public effBindParamDX11
 {
 public: 
-	effBoolBindingDX11(const effParamBool& i_Param, ID3DX11EffectScalarVariable* i_Handle)
+	effBoolBindingDX11(const effParamBool& i_Param, fxEffectVariable* i_Handle)
 		: m_Param(i_Param), m_Handle(i_Handle)
 	{
 	}
 
-	virtual bool Bind(ID3DX11Effect* i_pShader);
+	virtual bool Bind(fxEffect* i_pShader);
 
 	virtual const effShaderParam* GetParam() {return &m_Param;}
 
 	const effParamBool& m_Param;
-	ID3DX11EffectScalarVariable* m_Handle;
+	fxEffectVariable* m_Handle;
 };
 class effColorBindingDX11 : public effBindParamDX11
 {
 public: 
-	effColorBindingDX11(const effParamColor& i_Param, ID3DX11EffectVectorVariable* i_Handle)
+	effColorBindingDX11(const effParamColor& i_Param, fxEffectVariable* i_Handle)
 		: m_Param(i_Param), m_Handle(i_Handle)
 	{
 	}
 
-	virtual bool Bind(ID3DX11Effect* i_pShader);
+	virtual bool Bind(fxEffect* i_pShader);
 
 	virtual const effShaderParam* GetParam() {return &m_Param;}
 
 	const effParamColor& m_Param;
-	ID3DX11EffectVectorVariable* m_Handle;
+	fxEffectVariable* m_Handle;
 };
 class effTextureBindingDX11 : public effBindParamDX11
 {
 public: 
 	effTextureBindingDX11(const effParamTexture& i_Param, 
-		ID3DX11EffectShaderResourceVariable* i_Handle, ID3DX11EffectScalarVariable* i_ExistVarHandle )
+		fxEffectVariable* i_Handle, fxEffectVariable* i_ExistVarHandle )
 		: m_Param(i_Param), m_Handle(i_Handle), m_ExistVarHandle(i_ExistVarHandle)
 	{
 	}
 
-	virtual bool Bind(ID3DX11Effect* i_pShader);
+	virtual bool Bind(fxEffect* i_pShader);
 
 	virtual const effShaderParam* GetParam() {return &m_Param;}
 
 	const effParamTexture& m_Param;
-	ID3DX11EffectShaderResourceVariable* m_Handle;
-	ID3DX11EffectScalarVariable* m_ExistVarHandle;
+	fxEffectVariable* m_Handle;
+	fxEffectVariable* m_ExistVarHandle;
 };
 
 class effShaderBindingsDX11 : public effShaderBindings
 {
 public:
-	effShaderBindingsDX11(ID3DX11Effect* i_pEffect)
+	effShaderBindingsDX11(fxEffect* i_pEffect)
 		: effShaderBindings(), m_pEffectD3D(i_pEffect)
 	{
 	}
@@ -146,6 +146,6 @@ public:
 	}
 
 	std::vector<effBindParamDX11*> m_BindableParams;
-	ID3DX11Effect* m_pEffectD3D;
+	fxEffect* m_pEffectD3D;
 };
 
