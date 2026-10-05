@@ -32,13 +32,21 @@
 #include <OpenEXR/ImfOutputFile.h>
 #include <OpenEXR/ImfStringAttribute.h>
 
-// OpenEXR Libs
+// OpenEXR Libs (vcpkg names its debug builds with a _d suffix)
+#ifdef _DEBUG
 #pragma comment(lib, "Iex-3_2_d.lib")
 #pragma comment(lib, "IlmThread-3_2_d.lib")
 #pragma comment(lib, "Imath-3_1_d.lib")
-#pragma comment(lib, "deflate.lib")
 #pragma comment(lib, "OpenEXR-3_2_d.lib")
 #pragma comment(lib, "OpenEXRCore-3_2_d.lib")
+#else
+#pragma comment(lib, "Iex-3_2.lib")
+#pragma comment(lib, "IlmThread-3_2.lib")
+#pragma comment(lib, "Imath-3_1.lib")
+#pragma comment(lib, "OpenEXR-3_2.lib")
+#pragma comment(lib, "OpenEXRCore-3_2.lib")
+#endif
+#pragma comment(lib, "deflate.lib")
 
 #include <stdio.h>
 
