@@ -228,6 +228,9 @@
     <ClInclude Include="Eff\effFX11Effect.hpp">
       <Filter>Eff</Filter>
     </ClInclude>
+    <ClInclude Include="Eff\effPlainEffect.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
     <ClInclude Include="Eff\effPlainShaderDX11.hpp">
       <Filter>Eff</Filter>
     </ClInclude>
@@ -715,6 +718,9 @@
       <Filter>Eff\private</Filter>
     </ClCompile>
     <ClCompile Include="Eff\private\effFX11Effect.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effPlainEffect.cpp">
       <Filter>Eff\private</Filter>
     </ClCompile>
     <ClCompile Include="Eff\private\effPlainShaderDX11.cpp">

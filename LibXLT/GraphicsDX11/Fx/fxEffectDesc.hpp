@@ -75,6 +75,18 @@ struct fxSamplerDesc
 };
 
 //============================================================================
+// An annotation on a variable (the SAS material-UI metadata): a string, or
+// numbers with the type the .fx gave them (e.g. "float", "int3", "bool").
+//============================================================================
+struct fxAnnotationDesc
+{
+	std::string m_Name;
+	std::string m_Type;
+	std::string m_String;				// when m_Type is "string"
+	std::vector<double> m_Values;		// flattened components otherwise
+};
+
+//============================================================================
 // A global variable. Plain HLSL ignores initializers on constant-buffer
 // variables, so the default value the .fx declared is applied by the runtime.
 //============================================================================
@@ -85,6 +97,7 @@ struct fxVariableDesc
 	std::string m_Semantic;
 	std::vector<double> m_Default;		// flattened components; empty = none
 	int m_DefaultComponentsPerElement = 0;	// > 0 for array defaults
+	std::vector<fxAnnotationDesc> m_Annotations;	// in declaration order
 };
 
 //============================================================================
@@ -95,7 +108,7 @@ struct fxEffectDesc
 	std::string m_Hlsl;			// converted .hlsl file name
 	std::vector<fxTechniqueDesc> m_Techniques;
 	std::vector<fxSamplerDesc> m_Samplers;
-	std::vector<fxVariableDesc> m_Variables;
+	std::vector<fxVariableDesc> m_Variables;	// in declaration order
 
 	// Parse an .effect.json manifest. Returns false and sets o_Error on failure.
 	static bool Parse(const char* i_Json, fxEffectDesc& o_Desc, std::string& o_Error);

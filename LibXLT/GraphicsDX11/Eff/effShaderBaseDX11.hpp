@@ -60,7 +60,11 @@ public:
 
 	//====================================================================
 	//====================================================================
+	// An Effects (.fx) effect; takes over the caller's reference.
 	effShaderBaseDX11(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, 
+		std::string i_name);
+	// Any fxEffect, e.g. a converted plain-HLSL effect (effPlainEffect).
+	effShaderBaseDX11(const fsLocator& i_Directory, std::unique_ptr<fxEffect> i_pEffect,
 		std::string i_name);
 
 	//====================================================================
@@ -318,6 +322,9 @@ public:
 
 protected:
 	std::string m_Name;
+	effShaderBaseDX11(const fsLocator& i_Directory, std::unique_ptr<fxEffect> i_pEffect,
+		ID3DX11Effect* i_pD3DXEffect, std::string i_name);
+
 	std::unique_ptr<fxEffect> m_pEffect;
 	ID3DX11Effect* m_pD3DXEffect;	// owned; wrapped by m_pEffect
     fxEffectDesc_ m_EffectDesc;

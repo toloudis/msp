@@ -391,7 +391,25 @@ namespace
 effShaderBaseDX11::effShaderBaseDX11(const fsLocator& i_Directory, 
 								   ID3DX11Effect* i_pEffect,
                                    std::string i_Name)
-:	m_pD3DXEffect(i_pEffect),
+:	effShaderBaseDX11(i_Directory,
+		std::unique_ptr<fxEffect>(i_pEffect ? new effFX11Effect(i_pEffect) : nullptr),
+		i_pEffect, i_Name)
+{
+}
+
+effShaderBaseDX11::effShaderBaseDX11(const fsLocator& i_Directory,
+								   std::unique_ptr<fxEffect> i_pEffect,
+                                   std::string i_Name)
+:	effShaderBaseDX11(i_Directory, std::move(i_pEffect), nullptr, i_Name)
+{
+}
+
+effShaderBaseDX11::effShaderBaseDX11(const fsLocator& i_Directory,
+								   std::unique_ptr<fxEffect> i_pEffect,
+								   ID3DX11Effect* i_pD3DXEffect,
+                                   std::string i_Name)
+:	m_pEffect(std::move(i_pEffect)),
+	m_pD3DXEffect(i_pD3DXEffect),
 	m_VecCameraPosHandle(NULL),
 	m_FirstLightHandle(NULL),
 	m_LightInfoHandle(NULL), 
@@ -447,13 +465,11 @@ effShaderBaseDX11::effShaderBaseDX11(const fsLocator& i_Directory,
 	m_ClipPlaneHandle(NULL)
 //	m_HairTessellationHandle(NULL)
 {
-	if (i_pEffect)
-		m_pEffect.reset(new effFX11Effect(i_pEffect));
 	m_Name = i_Name;
 
 	std::string dirstr;
 	fsFileUtil::LocatorToANSIFilename(i_Directory, dirstr);
-	DBG_ASSERT(i_pEffect, "Effect pointer is NULL: " << dirstr.c_str() << "\\" << m_Name.c_str() );
+	DBG_ASSERT(m_pEffect, "Effect pointer is NULL: " << dirstr.c_str() << "\\" << m_Name.c_str() );
 
 	int i;
 	for (i = 0; i < e_NumTechniques; i++)

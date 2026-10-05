@@ -13,7 +13,8 @@
 
 namespace
 {
-	using json = nlohmann::json;
+	// ordered, so variables and annotations keep the order the .fx declared them in
+	using json = nlohmann::ordered_json;
 
 	const char* k_StageKeys[fx_NumStages] = { "vs", "hs", "ds", "gs", "ps", "cs" };
 
@@ -140,6 +141,22 @@ bool fxEffectDesc::Parse(const char* i_Json, fxEffectDesc& o_Desc, std::string& 
 					flatten(def, var.m_Default);
 					if (def.is_array() && !def.empty() && def[0].is_array())
 						var.m_DefaultComponentsPerElement = (int)def[0].size();
+				}
+				if (it.value().contains("annotations"))
+				{
+					const json& annotations = it.value().at("annotations");
+					for (auto a = annotations.begin(); a != annotations.end(); ++a)
+					{
+						fxAnnotationDesc annotation;
+						annotation.m_Name = a.key();
+						annotation.m_Type = a.value().value("type", "");
+						const json& value = a.value().contains("value") ? a.value().at("value") : json();
+						if (value.is_string())
+							annotation.m_String = value.get<std::string>();
+						else if (!value.is_null())
+							flatten(value, annotation.m_Values);
+						var.m_Annotations.push_back(annotation);
+					}
 				}
 				desc.m_Variables.push_back(var);
 			}
