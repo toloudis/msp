@@ -7,6 +7,21 @@ on:
   workflow_dispatch:
 
 jobs:
+  # Compiles every entry point of the shaders converted from Effects (.fx)
+  # to plain HLSL with fxc, one entry point and profile at a time.
+  converted-shaders:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile converted shaders with fxc
+        shell: pwsh
+        run: |
+          $fxc = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\fxc.exe" |
+            Sort-Object FullName -Descending | Select-Object -First 1
+          $manifests = Get-ChildItem -Recurse -Filter *.effect.json LibXLT | ForEach-Object FullName
+          python Tools/fx2hlsl/compile_check.py --compiler fxc --exe $fxc.FullName --verbose $manifests
+
   build-mainapp:
     runs-on: windows-latest
     strategy:
