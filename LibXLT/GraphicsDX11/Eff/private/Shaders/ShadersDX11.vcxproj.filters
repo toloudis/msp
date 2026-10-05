@@ -108,7 +108,10 @@
     <None Include="Special\EnvBackground.fx">
       <Filter>Shaders\Special</Filter>
     </None>
-    <None Include="Special\Fog.fx">
+    <None Include="Special\Fog.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Fog.effect.json">
       <Filter>Shaders\Special</Filter>
     </None>
     <None Include="Special\GIVolumes.fx">

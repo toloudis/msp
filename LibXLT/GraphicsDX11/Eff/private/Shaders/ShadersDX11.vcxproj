@@ -229,9 +229,8 @@
     <None Include="Special\DOF.hlsl" />
     <None Include="Special\DOF.effect.json" />
     <None Include="Special\EnvBackground.fx" />
-    <None Include="Special\Fog.fx">
-      <FileType>CppCode</FileType>
-    </None>
+    <None Include="Special\Fog.hlsl" />
+    <None Include="Special\Fog.effect.json" />
     <None Include="Special\GIVolumes.fx" />
     <None Include="Special\Glow.fx">
       <FileType>CppCode</FileType>

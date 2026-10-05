@@ -78,7 +78,6 @@
 #include "GraphicsDX11/eff/private/ShaderGlow.hpp"
 #include "GraphicsDX11/eff/private/ShaderLightGlow.hpp"
 #include "GraphicsDX11/eff/private/ShaderParticle.hpp"
-#include "GraphicsDX11/eff/private/ShaderFog.hpp"
 #include "GraphicsDX11/eff/private/ShaderSolid.hpp"
 #include "GraphicsDX11/eff/private/ShaderMaskAlpha.hpp"
 #include "GraphicsDX11/eff/private/ShaderDepthMap.hpp"
@@ -442,7 +441,7 @@ void effShaderArray::RegisterEffects(const fsLocator &i_ShaderDir,
 	RegisterShader<effLightGlow>	("LightGlow.fx",	new effLightGlowData, g_ShaderLightGlow, sizeof(g_ShaderLightGlow), io_ShaderMap);
 	RegisterShader<effParticle>		("Particle.fx",		new effParticleData, g_ShaderParticle, sizeof(g_ShaderParticle), io_ShaderMap);
 	RegisterPlainShader<effPlainShaderDX11>	("PostAlphaMatte",	NULL,		io_ShaderMap);
-	RegisterShader<effHDRLighting>	("Fog.fx",			NULL,			 g_ShaderFog, sizeof(g_ShaderFog), io_ShaderMap);
+	RegisterPlainShader<effPlainShaderDX11>	("Fog",				NULL,		io_ShaderMap);
 
 	// Constant solid color
 	RegisterShader<effSolid>("Solid.fx", new effSolidData, g_ShaderSolid, sizeof(g_ShaderSolid), io_ShaderMap);

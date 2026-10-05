@@ -56,6 +56,7 @@ the effect name.
 | `Special/Blur` | DOF blur (HDR renderer), VSM/SAT shadow blur |
 | `Special/DOF` | DOF composite (`g3dRenderDOF`) |
 | `Special/PostAlphaMatte` | alpha-channel view (`g3dRenderAlpha`) |
+| `Special/Fog` | fog pass (`shdwPassFog`) |
 
 After running the converter, each file was edited by hand: explicit
 `register()`s on every texture, sampler and constant buffer, globals moved into
