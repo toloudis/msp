@@ -55,6 +55,7 @@ $out = New-Object System.Text.StringBuilder
 [void]$out.Append("namespace`r`n{`r`n")
 
 $effects = @()
+$shaderRoot = (Resolve-Path $ShaderDir).Path
 $manifests = Get-ChildItem -Path $ShaderDir -Filter *.effect.json -Recurse | Sort-Object FullName
 $e = 0
 try {
@@ -95,8 +96,10 @@ try {
         }
         [void]$out.Append("const fxEmbeddedBytecode ${prefix}_bytecode[] = {`r`n").Append(($table -join "`r`n")).Append("`r`n};`r`n`r`n")
 
-        $source = $manifest.source -replace '\\', '/'
-        $effects += "`t{ `"$(Split-Path $source -Leaf)`", `"$source`", (const char*)${prefix}_manifest, ${prefix}_bytecode, $($table.Count) },"
+        # looked up by effect name: Special/Blur.effect.json is "Blur"
+        $effectName = $file.Name -replace '\.effect\.json$', ''
+        $source = $file.FullName.Substring($shaderRoot.Length).TrimStart('\', '/') -replace '\\', '/'
+        $effects += "`t{ `"$effectName`", `"$source`", (const char*)${prefix}_manifest, ${prefix}_bytecode, $($table.Count) },"
         $e++
     }
 }

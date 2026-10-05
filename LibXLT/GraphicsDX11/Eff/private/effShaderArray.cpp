@@ -438,7 +438,7 @@ void effShaderArray::RegisterEffects(const fsLocator &i_ShaderDir,
 	RegisterShader<effPhong>("Phong_wBump.fx",	new effPhongData, g_ShaderPhong_wBump, sizeof(g_ShaderPhong_wBump), io_ShaderMap);
 
 	RegisterShader<effHDRLighting>	("HDRLighting.fx",	NULL,			 g_ShaderHDRLighting, sizeof(g_ShaderHDRLighting), io_ShaderMap);
-	RegisterPlainShader<effBlur>	("Blur.fx",			new effBlurData, io_ShaderMap);
+	RegisterPlainShader<effBlur>	("Blur",				new effBlurData, io_ShaderMap);
 	RegisterShader<effGlow>			("Glow.fx",			new effGlowData, g_ShaderGlow, sizeof(g_ShaderGlow), io_ShaderMap);
 	RegisterShader<effDOF>			("DOF.fx",			new effDOFData, g_ShaderDOF, sizeof(g_ShaderDOF), io_ShaderMap);
 	RegisterShader<effLightGlow>	("LightGlow.fx",	new effLightGlowData, g_ShaderLightGlow, sizeof(g_ShaderLightGlow), io_ShaderMap);

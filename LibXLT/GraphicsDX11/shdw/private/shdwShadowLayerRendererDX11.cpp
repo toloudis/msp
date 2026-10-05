@@ -339,7 +339,7 @@ int shdwShadowLayerRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCa
 //
 //
 //// run the Blur effect on this data
-//		matShaderEffect* effBlur = matShaderMgr::GetSpecialEffect("Blur.fx");
+//		matShaderEffect* effBlur = matShaderMgr::GetSpecialEffect("Blur");
 //		effBlurData blurData;
 //		blurData.m_pSceneTexture = m_renderTargetTex;
 //		blurData.m_pDownsampledTexture = m_blurredTex;

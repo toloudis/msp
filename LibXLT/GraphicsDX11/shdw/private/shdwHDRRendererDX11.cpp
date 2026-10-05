@@ -1363,7 +1363,7 @@ void shdwHDRRendererDX11::RenderDOF(float i_fSimTime, bool i_debug)
 	else
 	{
 	// run the Blur effect on this data
-		matShaderEffect* effBlur = matShaderMgr::GetSpecialEffect("Blur.fx");
+		matShaderEffect* effBlur = matShaderMgr::GetSpecialEffect("Blur");
 		effBlurData blurData;
 		blurData.m_pSceneTexture = m_pFrameBuffer->DOFReserveTarget();
 		blurData.m_pDownsampledTexture = m_pFrameBuffer->DOFBlurTarget();

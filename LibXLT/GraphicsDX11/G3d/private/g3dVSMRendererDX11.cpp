@@ -293,7 +293,7 @@ int g3dVSMRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_C
 	g3dBlendStateMgr::SetBlendState(st_BlurBlend);
 	g3dDepthStencilStateMgr::SetDepthStencilState(ds_Disable_NS);
 
-	matShaderEffect* effBlur = matShaderMgr::GetSpecialEffect("Blur.fx");
+	matShaderEffect* effBlur = matShaderMgr::GetSpecialEffect("Blur");
 	effBlurData blurData;
 	blurData.m_pSceneTexture = m_tempWTarget;
 	blurData.m_pDownsampledTexture = m_tempWTarget;
@@ -335,7 +335,7 @@ int g3dVSMRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_C
 	g3dBlendStateMgr::SetBlendState(st_NoBlend);
 	g3dDepthStencilStateMgr::SetDepthStencilState(ds_Disable_NS);
 
-	effPlainShaderDX11* pBlur = dynamic_cast<effPlainShaderDX11*>(g3dDX11Util::GetEffect("Blur.fx"));
+	effPlainShaderDX11* pBlur = dynamic_cast<effPlainShaderDX11*>(g3dDX11Util::GetEffect("Blur"));
 	fxEffectDX11* pEffect = pBlur->GetEffect();
 	int scanTechnique = pEffect->FindTechnique("SummedParallelScan");
 	fxEffectDX11::Constant hVSMDepth = pEffect->FindConstant("VSMDepth");

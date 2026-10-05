@@ -4,7 +4,8 @@
 **      The plain-HLSL effects built into the library. At build time
 **      EmbedShaders.ps1 compiles every *.effect.json under
 **      Eff/private/Shaders with fxc and embeds the manifests and bytecode;
-**      this looks them up by the original effect name (e.g. "Blur.fx").
+**      this looks them up by effect name, the manifest file name without
+**      .effect.json (e.g. "Blur").
 \****************************************************************************/
 
 #ifdef FX_EMBEDDEDSHADERS_HPP
@@ -30,8 +31,8 @@ struct fxEmbeddedBytecode
 
 struct fxEmbeddedEffect
 {
-	const char* m_Name;			// file name of the original effect, e.g. "Blur.fx"
-	const char* m_Source;		// path relative to the shader root
+	const char* m_Name;			// effect name, e.g. "Blur"
+	const char* m_Source;		// manifest path relative to the shader root
 	const char* m_Manifest;		// .effect.json text
 	const fxEmbeddedBytecode* m_pBytecode;
 	int m_NumBytecode;
