@@ -729,6 +729,7 @@
     <ClInclude Include="pwx\Controls\pwxFilename_FilePicker.hpp" />
     <ClInclude Include="pwx\Controls\pwxFilename_TextBox.hpp" />
     <ClInclude Include="pwx\Controls\pwxFilePath_FilePicker.hpp" />
+    <ClInclude Include="pwx\Controls\pwxFilePath_ComboBox.hpp" />
     <ClInclude Include="pwx\Controls\pwxFloat_ComboBox.hpp" />
     <ClInclude Include="pwx\Controls\pwxFloat_FloatEdit.hpp" />
     <ClInclude Include="pwx\Controls\pwxFloat_NumericUpDown.hpp" />
@@ -841,6 +842,7 @@
     <ClCompile Include="pwx\Controls\pwxFilename_FilePicker.cpp" />
     <ClCompile Include="pwx\Controls\pwxFilename_TextBox.cpp" />
     <ClCompile Include="pwx\Controls\pwxFilePath_FilePicker.cpp" />
+    <ClCompile Include="pwx\Controls\pwxFilePath_ComboBox.cpp" />
     <ClCompile Include="pwx\Controls\pwxFloat_ComboBox.cpp" />
     <ClCompile Include="pwx\Controls\pwxFloat_FloatEdit.cpp" />
     <ClCompile Include="pwx\Controls\pwxFloat_NumericUpDown.cpp" />

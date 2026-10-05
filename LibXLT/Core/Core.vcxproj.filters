@@ -603,6 +603,9 @@
     <ClInclude Include="prty\prtyFileChooserUIInfo.hpp">
       <Filter>Prty\UIInfo</Filter>
     </ClInclude>
+    <ClInclude Include="prty\prtyFilePathComboBoxUIInfo.hpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClInclude>
     <ClInclude Include="prty\prtyFloatEditUIInfo.hpp">
       <Filter>Prty\UIInfo</Filter>
     </ClInclude>
@@ -1168,6 +1171,9 @@
       <Filter>Prty\UIInfo</Filter>
     </ClCompile>
     <ClCompile Include="prty\private\prtyFileChooserUIInfo.cpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyFilePathComboBoxUIInfo.cpp">
       <Filter>Prty\UIInfo</Filter>
     </ClCompile>
     <ClCompile Include="prty\private\prtyFloatEditUIInfo.cpp">

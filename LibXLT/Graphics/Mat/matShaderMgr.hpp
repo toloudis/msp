@@ -53,8 +53,14 @@ public:
 	//------------------------------------------------------------------------
 	virtual void RegisterEffects(const fsLocator &i_ShaderDir,
 			std::map<std::string, matShaderInfo>& io_ShaderMap) = 0;
-	virtual void RegisterUserShaders(const fsLocator& i_ShaderDir, 
-			std::vector<matShaderInfo>& o_Shaders) = 0;
+	//------------------------------------------------------------------------
+	// List the built-in shaders a user can pick: material shaders, named
+	//	"Phong.fx", and post effects, named "Sepia.fx" (they live in the
+	//	GetPostShaderFolder() folder). Only the info is filled in; nothing
+	//	is loaded (m_pEffect and m_DataTemplate stay NULL).
+	//------------------------------------------------------------------------
+	virtual void RegisterSelectableShaders(std::vector<matShaderInfo>& o_Materials,
+			std::vector<matShaderInfo>& o_PostEffects) = 0;
 
 	virtual void UnloadEffect(const fsLocator& i_PathToShader,
 		std::map<fsLocator, matShaderEffect*>& io_ShaderMap) = 0;
@@ -106,7 +112,13 @@ namespace matShaderMgr
 
 	effShaderData* CreateData(const std::string& i_EffectID);
 
-	const std::vector<matShaderInfo>& GetUserShaders();
+	//------------------------------------------------------------------------
+	// The built-in shaders offered in the shader pickers, sorted by name.
+	//	A material is chosen by its m_Name ("Phong.fx"); a post effect by
+	//	GetPostShaderFolder() followed by its m_Name ("PostEffect\\Sepia.fx").
+	//------------------------------------------------------------------------
+	const std::vector<matShaderInfo>& GetMaterialShaders();
+	const std::vector<matShaderInfo>& GetPostEffectShaders();
 
 	void ReloadShader( matMaterial * i_pMaterial );
 
@@ -117,6 +129,10 @@ namespace matShaderMgr
 	bool GetUseShaderArray();
 	void SetUseShaderArray(bool i_bEnable);
 
+	//------------------------------------------------------------------------
+	// True if the last name of the locator names a built-in material
+	//	shader ("Phong.fx"), whatever folder precedes it.
+	//------------------------------------------------------------------------
 	bool IsMachStudioShader(const fsLocator& i_ShaderName);
 
 	class matShaderMapVisitor {
