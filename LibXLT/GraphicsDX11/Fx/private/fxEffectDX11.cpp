@@ -271,6 +271,7 @@ bool fxEffectDX11::build(ID3D11Device* i_pDevice, const fxBytecodeSource& i_Byte
 
 	for (ConstantBuffer& cb : m_ConstantBuffers)
 	{
+		cb.m_Defaults = cb.m_Data;
 		D3D11_BUFFER_DESC desc = {};
 		desc.ByteWidth = (cb.m_Size + 15) & ~15u;
 		desc.Usage = D3D11_USAGE_DYNAMIC;
@@ -752,6 +753,13 @@ const void* fxEffectDX11::GetConstantBufferData(int i_Buffer) const
 	if (i_Buffer < 0 || i_Buffer >= (int)m_ConstantBuffers.size())
 		return nullptr;
 	return m_ConstantBuffers[i_Buffer].m_Data.data();
+}
+
+const void* fxEffectDX11::GetConstantBufferDefaults(int i_Buffer) const
+{
+	if (i_Buffer < 0 || i_Buffer >= (int)m_ConstantBuffers.size())
+		return nullptr;
+	return m_ConstantBuffers[i_Buffer].m_Defaults.data();
 }
 
 void fxEffectDX11::SetConstantBufferData(int i_Buffer, const void* i_pData, uint32_t i_Bytes)

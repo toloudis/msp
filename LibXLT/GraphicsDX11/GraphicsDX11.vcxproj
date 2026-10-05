@@ -689,6 +689,7 @@
     <ClInclude Include="Fx\fxEffectDesc.hpp" />
     <ClInclude Include="Fx\fxEffectApi.hpp" />
     <ClInclude Include="Fx\fxEffectDX11.hpp" />
+    <ClInclude Include="Fx\fxMaterialInstance.hpp" />
     <ClInclude Include="Fx\fxEmbeddedShaders.hpp" />
     <ClInclude Include="Eff\effDOF.hpp" />
     <ClInclude Include="Eff\effGlow.hpp" />
@@ -869,6 +870,7 @@
     <ClCompile Include="Eff\private\effPlainShaderDX11.cpp" />
     <ClCompile Include="Fx\private\fxEffectDesc.cpp" />
     <ClCompile Include="Fx\private\fxEffectDX11.cpp" />
+    <ClCompile Include="Fx\private\fxMaterialInstance.cpp" />
     <ClCompile Include="Fx\private\fxEmbeddedShaders.cpp" />
     <ClCompile Include="Eff\private\effDOF.cpp" />
     <ClCompile Include="Eff\private\effGlow.cpp" />

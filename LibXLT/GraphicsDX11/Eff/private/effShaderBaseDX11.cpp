@@ -33,6 +33,7 @@
 #include "Graphics/mat/matMaterial.hpp"
 #include "Graphics/mat/matTextureMgr.hpp"
 #include "GraphicsDX11/eff/effFX11Effect.hpp"
+#include "GraphicsDX11/eff/effPlainEffect.hpp"
 #include "GraphicsDX11/eff/effShaderParamsDX11.hpp"
 #include "GraphicsDX11/g3d/g3dLightMgrDX11.hpp"
 #include "GraphicsDX11/g3d/g3dSceneGlobal.hpp"
@@ -1675,6 +1676,12 @@ int effShaderBaseDX11::BuildPrtyObject(effShaderParams* o_pParams) const
 	DBG_ASSERT(o_pParams->m_pShaderBindings == NULL, "bindings already set");
 	DBG_ASSERT(o_pParams->m_pPrtyUI == NULL, "prtyUI already set");
 	effShaderBindingsDX11* bindings = new effShaderBindingsDX11(this->m_pEffect.get());
+	if (effPlainEffect* plain = dynamic_cast<effPlainEffect*>(m_pEffect.get()))
+	{
+		bindings->m_pMaterial.reset(new fxMaterialInstance(plain->GetEffectDX11()));
+		if (!bindings->m_pMaterial->IsValid())
+			bindings->m_pMaterial.reset();
+	}
 	o_pParams->m_pShaderBindings = bindings;
 	o_pParams->m_pPrtyUI = new prtyObject;
 

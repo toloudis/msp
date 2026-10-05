@@ -65,12 +65,42 @@ the effect name.
 | `Special/ssaoMultiHorizonBasedAO` | SSAO (`shdwPassSSAO`) |
 | `Special/ssgiMultiHorizonBasedGI` | SSGI (`shdwPassSSGI`) |
 | `Special/ssaoBilateralBlurEngine` | SSAO/SSGI blur |
+| `Materials/Lambert` | the Lambert material; loading `Lambert.fx` uses it |
 
 After running the converter, each file was edited by hand: explicit
 `register()`s on every texture, sampler and constant buffer, globals moved into
 one `cbuffer`, and constant tables (`poisson[]`, blur offsets) made
 `static const` and removed from the manifest. Unused legacy `sampler2D`
 declarations and the `gp : SasGlobal` marker variable were deleted.
+
+## Material shaders
+
+Converted materials live in `Materials/` with their shared includes
+(`Globals.hlsli`, `Support.hlsli`, `Lighting.hlsli`, `Tessellate.hlsli`,
+`Skinning.hlsli`). Loading `Foo.fx` uses the embedded `Materials/Foo` when it
+exists. They drive `effShaderBaseDX11` through `fxEffect`
+(`GraphicsDX11/Fx/fxEffectApi.hpp`), the same interface the Effects materials
+use, so the material classes do not change.
+
+Every material shares one binding model, laid out by update rate so it maps
+onto a D3D12 root signature or Vulkan descriptor sets (full map at the top of
+`Materials/Globals.hlsli`):
+
+| Register | Contents |
+| --- | --- |
+| `b0` FrameParams | view, projection, camera, time, view-wide toggles |
+| `b1` ObjectParams | world matrices, clip plane, bake, skinning palette, tessellation |
+| `b2` LightParams | light info, projected light, light array, shadow flags |
+| `b3` MaterialCommon | material inputs the shared includes declare |
+| `b4` MaterialParams | the material's own parameters |
+| `t0`-`t15` | material textures |
+| `t16`+ | textures the renderer supplies (shadow maps, projected light, mesh data) |
+| `s0`-`s9`, `s10`+ | shared, then the material's own immutable samplers |
+
+Each material instance keeps its own copy of `MaterialParams`
+(`fxMaterialInstance`) and puts it in place before drawing, so materials
+sharing an effect do not see each other's values. In D3D12/Vulkan that copy
+becomes the instance's own constant buffer view.
 
 ## Current coverage (dry run on all 60 `.fx` files)
 

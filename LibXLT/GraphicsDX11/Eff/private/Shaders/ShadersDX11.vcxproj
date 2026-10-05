@@ -206,6 +206,13 @@
     <None Include="SubSurfaceScatter_wBlinnSpecular.fx">
       <FileType>CppCode</FileType>
     </None>
+    <None Include="Materials\Globals.hlsli" />
+    <None Include="Materials\Lambert.effect.json" />
+    <None Include="Materials\Lambert.hlsl" />
+    <None Include="Materials\Lighting.hlsli" />
+    <None Include="Materials\Skinning.hlsli" />
+    <None Include="Materials\Support.hlsli" />
+    <None Include="Materials\Tessellate.hlsli" />
     <None Include="Special\AAEdgeFilter.hlsl" />
     <None Include="Special\AAEdgeFilter.effect.json" />
     <None Include="Special\AOVolumes.fx">

@@ -159,6 +159,7 @@ public:
 	int FindConstantBuffer(const std::string& i_Name) const;		// -1 if missing
 	uint32_t GetConstantBufferSize(int i_Buffer) const;
 	const void* GetConstantBufferData(int i_Buffer) const;
+	const void* GetConstantBufferDefaults(int i_Buffer) const;	// as created
 	void SetConstantBufferData(int i_Buffer, const void* i_pData, uint32_t i_Bytes);
 
 	// Binds the pass's shaders on every graphics stage (unused stages get
@@ -198,6 +199,7 @@ private:
 		std::string m_Name;
 		uint32_t m_Size = 0;
 		std::vector<uint8_t> m_Data;
+		std::vector<uint8_t> m_Defaults;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> m_pBuffer;
 		bool m_bDirty = true;
 	};

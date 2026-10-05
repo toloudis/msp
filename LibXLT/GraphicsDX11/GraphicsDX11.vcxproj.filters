@@ -243,6 +243,9 @@
     <ClInclude Include="Fx\fxEffectDX11.hpp">
       <Filter>Fx</Filter>
     </ClInclude>
+    <ClInclude Include="Fx\fxMaterialInstance.hpp">
+      <Filter>Fx</Filter>
+    </ClInclude>
     <ClInclude Include="Fx\fxEmbeddedShaders.hpp">
       <Filter>Fx</Filter>
     </ClInclude>
@@ -730,6 +733,9 @@
       <Filter>Fx\private</Filter>
     </ClCompile>
     <ClCompile Include="Fx\private\fxEffectDX11.cpp">
+      <Filter>Fx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Fx\private\fxMaterialInstance.cpp">
       <Filter>Fx\private</Filter>
     </ClCompile>
     <ClCompile Include="Fx\private\fxEmbeddedShaders.cpp">

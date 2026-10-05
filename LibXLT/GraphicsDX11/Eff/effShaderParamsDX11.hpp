@@ -28,6 +28,12 @@
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
 #endif
 
+#ifndef FX_MATERIALINSTANCE_HPP
+#include "GraphicsDX11/Fx/fxMaterialInstance.hpp"
+#endif
+
+#include <memory>
+
 class effBindParamDX11
 {
 public:
@@ -127,11 +133,15 @@ public:
 	// actually set all variables to shader.
 	virtual void Bind()
 	{
+		if (m_pMaterial)
+			m_pMaterial->Restore();
 		int n = m_BindableParams.size();
 		for (int i = 0; i < n; i++)
 		{
 			m_BindableParams[i]->Bind(m_pEffectD3D);
 		}
+		if (m_pMaterial)
+			m_pMaterial->Capture();
 	};
 
 	effBindParamDX11* HasBinding(effShaderParam* i_Param)
@@ -147,5 +157,8 @@ public:
 
 	std::vector<effBindParamDX11*> m_BindableParams;
 	fxEffect* m_pEffectD3D;
+	// This material's own parameter block, for a converted (plain-HLSL)
+	// material; null for an Effects one, which writes into the effect.
+	std::unique_ptr<fxMaterialInstance> m_pMaterial;
 };
 
