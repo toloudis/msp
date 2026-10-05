@@ -99,6 +99,108 @@
     <None Include="Materials\Lambert.hlsl">
       <Filter>Shaders\Materials</Filter>
     </None>
+    <None Include="Materials\Anisotropic.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Anisotropic.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Blinn.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Blinn.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\BlinnReflection.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\BlinnReflection.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\CarPaint.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\CarPaint.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Cartoon.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Cartoon.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\FC3DBlinn.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\FC3DBlinn.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\FC3DPhong.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\FC3DPhong.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\FC3DPhongTransparent.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\FC3DPhongTransparent.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\FC3DSpecularFresnel.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\FC3DSpecularFresnel.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\FC3DSubSurfaceScatter_wBlinnSpecular.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\FC3DSubSurfaceScatter_wBlinnSpecular.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Phong.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Phong.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\PhongReflection.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\PhongReflection.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Phong_wBump.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Phong_wBump.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Simple.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Simple.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\SpecularFresnel.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\SpecularFresnel.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\SubSurfaceScatter.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\SubSurfaceScatter.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\SubSurfaceScatter_wBlinnSpecular.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\SubSurfaceScatter_wBlinnSpecular.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
     <None Include="Materials\Lighting.hlsli">
       <Filter>Shaders\Materials</Filter>
     </None>

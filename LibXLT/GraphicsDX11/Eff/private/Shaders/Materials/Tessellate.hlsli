@@ -47,7 +47,7 @@
 // ObjectParams; hasHardwareTessellation is in MaterialCommon (Globals.hlsli).
 
 //stores 16 float4 control points in sequence to define a bi-cubic Bezier patch mesh
-Texture2D meshDataTexture : register(t19);		// : meshdatamap
+Texture2D meshDataTexture : register(t25);		// : meshdatamap
 
 SamplerState bumpMapSampler : register(s2);
 
