@@ -49,4 +49,4 @@ CI compiles every `*.effect.json` under `LibXLT` as SM 5 (fxc) and as SM 6 (dxc)
 
 - All 60 files parse and convert, covering every technique and pass.
 - Under dxc (SM 6.0), 20 of the 60 files compile cleanly as converted.
-- Most of the rest stop on legacy D3D9 keywords that fxc accepts but dxc does not, mainly `sampler2D` in `Tessellate.h` and `texture2D` in a few effects. Fixing those is a later DX12/Vulkan cleanup, not part of the conversion.
+- Most of the rest stop on legacy D3D9 keywords that fxc accepts but dxc does not, mainly `sampler2D` in `Tessellate.h` and `texture2D` in a few effects. Those get fixed when each file is converted, since every converted file has to pass both SM 5 and SM 6.
