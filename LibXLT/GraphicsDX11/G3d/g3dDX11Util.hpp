@@ -36,6 +36,7 @@ class maMatrix4x4;
 class matMaterial;
 class matRenderTargetTexture;
 class matShaderEffect;
+class fxEffectDX11;
 class matTexture;
 
 namespace g3dDX11Util
@@ -66,6 +67,12 @@ namespace g3dDX11Util
 	// cached list of preloaded effects. Null if not found.
 	//------------------------------------------------------------------------
 	matShaderEffect* GetEffect(const std::string& i_effectName);
+
+	//------------------------------------------------------------------------
+	// GetPlainEffect - the plain-HLSL runtime effect behind a built-in effect
+	// that has been converted from .fx. Null if not found or not converted.
+	//------------------------------------------------------------------------
+	fxEffectDX11* GetPlainEffect(const std::string& i_effectName);
 
 	//------------------------------------------------------------------------
 	// Sometimes the shader doesn't need to be rendered at the given time.

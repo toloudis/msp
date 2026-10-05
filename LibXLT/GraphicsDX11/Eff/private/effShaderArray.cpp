@@ -51,7 +51,6 @@
 #include "GraphicsDX11/eff/effDOF.hpp"
 #include "GraphicsDX11/eff/effGlow.hpp"
 //#include "GraphicsDX11/eff/effHair.hpp"
-#include "GraphicsDX11/eff/effHDRLighting.hpp"
 #include "GraphicsDX11/eff/effStrandHair.hpp"
 //#include "GraphicsDX11/eff/effLambert.hpp"
 #include "GraphicsDX11/eff/effLightGlow.hpp"
@@ -74,7 +73,6 @@
 #include "GraphicsDX11/eff/private/ShaderPhong.hpp"
 #include "GraphicsDX11/eff/private/ShaderSimple.hpp"
 #include "GraphicsDX11/eff/private/ShaderPhong_wBump.hpp"
-#include "GraphicsDX11/eff/private/ShaderHDRLighting.hpp"
 #include "GraphicsDX11/eff/private/ShaderGlow.hpp"
 #include "GraphicsDX11/eff/private/ShaderLightGlow.hpp"
 #include "GraphicsDX11/eff/private/ShaderParticle.hpp"
@@ -434,7 +432,7 @@ void effShaderArray::RegisterEffects(const fsLocator &i_ShaderDir,
 	RegisterShader<effPhong>("Phong.fx",		new effPhongData, g_ShaderPhong, sizeof(g_ShaderPhong), io_ShaderMap);
 	RegisterShader<effPhong>("Phong_wBump.fx",	new effPhongData, g_ShaderPhong_wBump, sizeof(g_ShaderPhong_wBump), io_ShaderMap);
 
-	RegisterShader<effHDRLighting>	("HDRLighting.fx",	NULL,			 g_ShaderHDRLighting, sizeof(g_ShaderHDRLighting), io_ShaderMap);
+	RegisterPlainShader<effPlainShaderDX11>	("HDRLighting",	NULL,		io_ShaderMap);
 	RegisterPlainShader<effBlur>	("Blur",				new effBlurData, io_ShaderMap);
 	RegisterShader<effGlow>			("Glow.fx",			new effGlowData, g_ShaderGlow, sizeof(g_ShaderGlow), io_ShaderMap);
 	RegisterPlainShader<effDOF>		("DOF",				new effDOFData, io_ShaderMap);

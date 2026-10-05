@@ -688,7 +688,6 @@
     <ClInclude Include="Fx\fxEmbeddedShaders.hpp" />
     <ClInclude Include="Eff\effDOF.hpp" />
     <ClInclude Include="Eff\effGlow.hpp" />
-    <ClInclude Include="Eff\effHDRLighting.hpp" />
     <ClInclude Include="Eff\effLightGlow.hpp" />
     <ClInclude Include="Eff\effMaskAlpha.hpp" />
     <ClInclude Include="Eff\effOcclusion.hpp" />
@@ -867,7 +866,6 @@
     <ClCompile Include="Fx\private\fxEmbeddedShaders.cpp" />
     <ClCompile Include="Eff\private\effDOF.cpp" />
     <ClCompile Include="Eff\private\effGlow.cpp" />
-    <ClCompile Include="Eff\private\effHDRLighting.cpp" />
     <ClCompile Include="Eff\private\effLightGlow.cpp" />
     <ClCompile Include="Eff\private\effMaskAlpha.cpp" />
     <ClCompile Include="Eff\private\effOcclusion.cpp" />

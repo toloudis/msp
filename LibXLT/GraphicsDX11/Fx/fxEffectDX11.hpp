@@ -66,6 +66,8 @@ public:
 		uint32_t m_Offset = 0;
 		uint32_t m_Size = 0;
 		bool m_bColumnMajor = false;	// a matrix stored column-major (the HLSL default)
+		uint16_t m_Columns = 0;			// components per vector
+		uint16_t m_Elements = 0;		// array length; 0 if not an array
 		bool IsValid() const { return m_Buffer >= 0; }
 	};
 
@@ -100,6 +102,17 @@ public:
 	{
 		SetConstant(i_Constant, &i_Value, (uint32_t)sizeof(T));
 	}
+	// A vector: writes as many floats as the variable has components, as
+	// Effects' SetFloatVector did.
+	void SetFloatVector(const Constant& i_Constant, const float* i_pVector)
+	{
+		SetConstant(i_Constant, i_pVector, i_Constant.m_Columns * (uint32_t)sizeof(float));
+	}
+	// An array of vectors given packed (a float2[] as 2 floats per element), as
+	// Effects' SetFloatVectorArray took it. Constant buffers store every array
+	// element on its own 16-byte register, so the elements are spread out.
+	void SetVectorArray(const Constant& i_Constant, const float* i_pPacked,
+		uint32_t i_FirstElement, uint32_t i_Count);
 	// A 4x4 matrix given row-major, as Effects' SetMatrix took it; transposed
 	// on the way in when the shader stores it column-major.
 	void SetMatrix(const Constant& i_Constant, const float* i_pRowMajor4x4);

@@ -407,6 +407,8 @@ bool fxEffectDX11::reflect(ID3D11Device* i_pDevice, Shader& io_Shader, std::stri
 					entry.m_Constant.m_Offset = varDesc.StartOffset;
 					entry.m_Constant.m_Size = varDesc.Size;
 					entry.m_Constant.m_bColumnMajor = (typeDesc.Class == D3D_SVC_MATRIX_COLUMNS);
+					entry.m_Constant.m_Columns = (uint16_t)typeDesc.Columns;
+					entry.m_Constant.m_Elements = (uint16_t)typeDesc.Elements;
 					entry.m_Type = typeDesc.Type;
 					entry.m_Columns = typeDesc.Columns;
 					entry.m_Rows = typeDesc.Rows;
@@ -589,6 +591,26 @@ void fxEffectDX11::SetConstant(const Constant& i_Constant, const void* i_pData, 
 	{
 		memcpy(&cb.m_Data[i_Constant.m_Offset], i_pData, bytes);
 		cb.m_bDirty = true;
+	}
+}
+
+void fxEffectDX11::SetVectorArray(const Constant& i_Constant, const float* i_pPacked,
+	uint32_t i_FirstElement, uint32_t i_Count)
+{
+	if (!i_Constant.IsValid())
+		return;
+	const uint32_t elements = (i_Constant.m_Elements > 0) ? i_Constant.m_Elements : 1;
+	const uint32_t columns = i_Constant.m_Columns;
+	ConstantBuffer& cb = m_ConstantBuffers[i_Constant.m_Buffer];
+	for (uint32_t i = 0; i < i_Count && i_FirstElement + i < elements; i++)
+	{
+		uint32_t offset = i_Constant.m_Offset + (i_FirstElement + i) * 16;
+		const float* src = i_pPacked + i * columns;
+		if (memcmp(&cb.m_Data[offset], src, columns * sizeof(float)) != 0)
+		{
+			memcpy(&cb.m_Data[offset], src, columns * sizeof(float));
+			cb.m_bDirty = true;
+		}
 	}
 }
 

@@ -57,6 +57,7 @@ the effect name.
 | `Special/DOF` | DOF composite (`g3dRenderDOF`) |
 | `Special/PostAlphaMatte` | alpha-channel view (`g3dRenderAlpha`) |
 | `Special/Fog` | fog pass (`shdwPassFog`) |
+| `Special/HDRLighting` | tone mapping, bloom, star, and the copy/blit helpers in `g3dDX11Util` and the `shdw` passes |
 
 After running the converter, each file was edited by hand: explicit
 `register()`s on every texture, sampler and constant buffer, globals moved into

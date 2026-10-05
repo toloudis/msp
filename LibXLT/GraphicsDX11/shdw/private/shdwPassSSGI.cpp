@@ -34,6 +34,9 @@
 #include "GraphicsDX11/mat/matRenderTargetTexture.hpp"
 #include "GraphicsDX11/shdw/shdwPassDepth.hpp"
 #include "GraphicsDX11/G3d/g3dTransparencySortDX11.hpp"
+#ifndef FX_EFFECTDX11_HPP
+#include "GraphicsDX11/Fx/fxEffectDX11.hpp"
+#endif
 
 //	The reason a macro is used here (instead of a function, an inline function, or a template inline function)
 //	is that I need the __FILE__ and __LINE__ macros to resolve to useful values
@@ -811,10 +814,9 @@ void shdwPassSSGI::BlendGI(g2dRenderTarget* i_pRenderTarget, matRenderTargetText
 
 	const g3dPrefs::g3dRenderPrefs& p = g3dPrefs::CurrentPrefs();
 
-	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)matShaderMgr::GetSpecialEffect(("HDRLighting.fx"));
-	ID3DX11Effect* pEffect = i_pEffect->GetD3DXEffect();
+	fxEffectDX11* pEffect = g3dDX11Util::GetPlainEffect("HDRLighting");
 
-	ID3DX11EffectTechnique* pTechnique = pEffect->GetTechniqueByName("SimpleCopy");
+	int technique = pEffect->FindTechnique("SimpleCopy");
 
 	g3dRasterizerStateMgr::SetRasterizerState( D3D11_CULL_NONE, g3dDrawStyleUtilDX11::GetD3DDrawStyle() );
 
@@ -829,8 +831,7 @@ void shdwPassSSGI::BlendGI(g2dRenderTarget* i_pRenderTarget, matRenderTargetText
 
 	g3dBlendStateMgr::SetBlendState(st_BlendNoAlpha);
 
-	ID3DX11EffectPass* pPass = pTechnique->GetPassByIndex(0);
-	pPass->Apply(0, g2dDX11Global::g_pDeviceContext);
+	pEffect->Apply(technique, 0, g2dDX11Global::g_pDeviceContext);
 	g2dDX11Global::g_pDeviceContext->PSSetShaderResources( 0, 1, &pResView );
 	g3dDX11Util::DrawFullScreenQuad( w,h );
 

@@ -238,9 +238,8 @@
     <None Include="Special\HairDefault.fx">
       <FileType>CppCode</FileType>
     </None>
-    <None Include="Special\HDRLighting.fx">
-      <FileType>CppCode</FileType>
-    </None>
+    <None Include="Special\HDRLighting.hlsl" />
+    <None Include="Special\HDRLighting.effect.json" />
     <None Include="Special\IlluminationOnly.fx">
       <FileType>CppCode</FileType>
     </None>

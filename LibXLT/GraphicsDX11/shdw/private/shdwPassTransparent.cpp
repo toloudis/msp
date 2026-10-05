@@ -25,6 +25,9 @@
 #include "GraphicsDX11/shdw/shdwPassDepth.hpp"
 #include "GraphicsDX11/Eff/effShaderBaseDX11.hpp"
 #include "GraphicsDX11/G3d/g3dDX11TextureUtil.hpp"
+#ifndef FX_EFFECTDX11_HPP
+#include "GraphicsDX11/Fx/fxEffectDX11.hpp"
+#endif
 
 bool l_bHaveShadowCastingLights = false;
 
@@ -532,9 +535,8 @@ void shdwPassTransparent::CompositeTextureInverse(matTexture* src, g2dRenderTarg
 	UINT uiPass;
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassTransparent::CompositeTextureInverse" );
 
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
-	ID3DX11EffectTechnique* pEffectTechnique = pEffect->GetTechniqueByName("SimpleCopyInvAlpha");
+	fxEffectDX11* pEffect = g3dDX11Util::GetPlainEffect("HDRLighting");
+	int technique = pEffect->FindTechnique("SimpleCopyInvAlpha");
 
 	tgt->MakeCurrent();
 	int w,h;
@@ -544,11 +546,10 @@ void shdwPassTransparent::CompositeTextureInverse(matTexture* src, g2dRenderTarg
 	g3dRasterizerStateMgr::SetRasterizerState( D3D11_CULL_NONE, g3dDrawStyleUtilDX11::GetD3DDrawStyle() );
 	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Disable_NS );
 
-	D3DX11_TECHNIQUE_DESC techDesc;
-	pEffectTechnique->GetDesc( &techDesc );
-	for (uiPass = 0; uiPass < techDesc.Passes; ++uiPass)
+	UINT nTechPasses = (UINT)pEffect->GetPassCount(technique);
+	for (uiPass = 0; uiPass < nTechPasses; ++uiPass)
 	{
-		pEffectTechnique->GetPassByIndex(uiPass)->Apply(0, g2dDX11Global::g_pDeviceContext);
+		pEffect->Apply(technique, uiPass, g2dDX11Global::g_pDeviceContext);
 
 		// alpha blending/z writing control by callar
 		ID3D11ShaderResourceView* aRes = g3dDX11TextureUtil::GetD3DTexture(src);

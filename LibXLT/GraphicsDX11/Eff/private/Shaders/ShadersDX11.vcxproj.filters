@@ -123,7 +123,10 @@
     <None Include="Special\HairDefault.fx">
       <Filter>Shaders\Special</Filter>
     </None>
-    <None Include="Special\HDRLighting.fx">
+    <None Include="Special\HDRLighting.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\HDRLighting.effect.json">
       <Filter>Shaders\Special</Filter>
     </None>
     <None Include="Special\IlluminationOnly.fx">

@@ -243,9 +243,6 @@
     <ClInclude Include="Eff\effGlow.hpp">
       <Filter>Eff</Filter>
     </ClInclude>
-    <ClInclude Include="Eff\effHDRLighting.hpp">
-      <Filter>Eff</Filter>
-    </ClInclude>
     <ClInclude Include="Eff\effLightGlow.hpp">
       <Filter>Eff</Filter>
     </ClInclude>
@@ -727,9 +724,6 @@
       <Filter>Eff\private</Filter>
     </ClCompile>
     <ClCompile Include="Eff\private\effGlow.cpp">
-      <Filter>Eff\private</Filter>
-    </ClCompile>
-    <ClCompile Include="Eff\private\effHDRLighting.cpp">
       <Filter>Eff\private</Filter>
     </ClCompile>
     <ClCompile Include="Eff\private\effLightGlow.cpp">
