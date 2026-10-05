@@ -20,6 +20,7 @@
 #include "Tool/pick3d/pick3dPickBuffer.hpp"
 #include "Tool/tma3d/tma3dViewerMgr.hpp"
 
+#include <algorithm>
 #include <math.h>
 
 
@@ -261,14 +262,28 @@ void tma3dRenderView::ResizeWindowToFit(int i_PanelWidth, int i_PanelHeight,
 {
 	if (i_PanelWidth > 0 && i_PanelHeight > 0 && i_RenderWidth > 0 && i_RenderHeight > 0)
 	{
-		m_pWindow->SetRenderResolution(i_RenderWidth, i_RenderHeight);
-		m_pWindow->ResizeWindow(i_PanelWidth, i_PanelHeight);
-
 		if (i_RenderWidthDIP <= 0 || i_RenderHeightDIP <= 0)
 		{
 			i_RenderWidthDIP = i_RenderWidth;
 			i_RenderHeightDIP = i_RenderHeight;
 		}
+
+		// A resolution bigger than the panel would only be scaled down
+		// again, so render at the largest size of the same aspect that
+		// fits. (Captures render in their own window at the exact size.)
+		double scale = (std::min)((double)i_PanelWidth / i_RenderWidth,
+								  (double)i_PanelHeight / i_RenderHeight);
+		if (scale < 1.0)
+		{
+			i_RenderWidth = (std::max)(1, (int)(i_RenderWidth * scale + 0.5));
+			i_RenderHeight = (std::max)(1, (int)(i_RenderHeight * scale + 0.5));
+			i_RenderWidthDIP = (std::max)(1, (int)(i_RenderWidthDIP * scale + 0.5));
+			i_RenderHeightDIP = (std::max)(1, (int)(i_RenderHeightDIP * scale + 0.5));
+		}
+
+		m_pWindow->SetRenderResolution(i_RenderWidth, i_RenderHeight);
+		m_pWindow->ResizeWindow(i_PanelWidth, i_PanelHeight);
+
 		// Text is laid out in the rendered image, so base the virtual
 		// resolution on the render size
 		m_pWindow->SetVirtualResolution(i_RenderWidthDIP, i_RenderHeightDIP);
