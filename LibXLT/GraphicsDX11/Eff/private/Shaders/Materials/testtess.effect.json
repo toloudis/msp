@@ -1,0 +1,262 @@
+{
+  "source": "testtess.fx",
+  "hlsl": "testtess.hlsl",
+  "techniques": [
+    {
+      "name": "Default",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "PS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VS_Tess"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "DS"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "PS"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "samplers": {},
+  "variables": {
+    "g_vTessellationFactor": {
+      "type": "float4"
+    },
+    "g_world": {
+      "type": "float4x4",
+      "semantic": "World"
+    },
+    "g_vp": {
+      "type": "float4x4",
+      "semantic": "ViewProjection"
+    },
+    "g_wvp": {
+      "type": "float4x4",
+      "semantic": "WorldViewProjection"
+    },
+    "g_uvTransform": {
+      "type": "float4x4",
+      "default": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    },
+    "g_glowSize": {
+      "type": "float",
+      "default": 0
+    },
+    "g_bumpMapScale": {
+      "type": "float",
+      "semantic": "BumpMapScale",
+      "default": 1
+    },
+    "g_proj": {
+      "type": "float4x4",
+      "semantic": "Projection"
+    },
+    "g_view": {
+      "type": "float4x4",
+      "semantic": "View"
+    },
+    "g_eyePos": {
+      "type": "float4",
+      "semantic": "CameraPos"
+    },
+    "g_targetRes": {
+      "type": "float4"
+    },
+    "g_vDofParams": {
+      "type": "float4",
+      "default": [30, 60, 80, 120]
+    },
+    "g_fDofBlurCutoff": {
+      "type": "float",
+      "default": 1
+    },
+    "g_time_0_X": {
+      "type": "float"
+    },
+    "g_IsReflectionGen": {
+      "type": "bool",
+      "semantic": "IsReflectionGen",
+      "default": false
+    },
+    "g_IsolateReflection": {
+      "type": "bool",
+      "default": false
+    },
+    "g_bCubeMapEnabled": {
+      "type": "bool",
+      "default": false
+    },
+    "g_worldIT": {
+      "type": "float4x4",
+      "semantic": "WorldIT"
+    },
+    "g_wv": {
+      "type": "float4x4",
+      "semantic": "WorldView"
+    },
+    "g_ClipPlane": {
+      "type": "float4",
+      "default": [0, 0, 0, 1]
+    },
+    "g_bakeTransform": {
+      "type": "float4",
+      "default": [1, 1, 0, 0]
+    },
+    "g_DisplacementMapSize": {
+      "type": "float2"
+    },
+    "g_ObjectUVScale": {
+      "type": "float2"
+    },
+    "g_DisplacementScale": {
+      "type": "float"
+    },
+    "g_DisplacementBias": {
+      "type": "float"
+    },
+    "g_DisplacementBlur": {
+      "type": "float"
+    },
+    "g_hasDisplacementMap": {
+      "type": "bool",
+      "default": false
+    },
+    "g_MeshDataTextureWidth": {
+      "type": "float",
+      "default": 256.0
+    },
+    "g_MeshDataTextureHeight": {
+      "type": "float",
+      "default": 64.0
+    },
+    "g_bake": {
+      "type": "bool",
+      "default": false
+    },
+    "g_BonePalette": {
+      "type": "float4x4",
+      "array": "[50]",
+      "semantic": "BONES"
+    },
+    "g_lightInfo": {
+      "type": "LightInfo",
+      "semantic": "LightInfo"
+    },
+    "g_projLight": {
+      "type": "ProjLightInfo",
+      "semantic": "ProjLightInfo"
+    },
+    "g_lightArray": {
+      "type": "LightInfo",
+      "array": "[8]",
+      "semantic": "LightArray"
+    },
+    "g_lightArrayNum": {
+      "type": "int",
+      "semantic": "LightArrayNum",
+      "default": 0
+    },
+    "g_FirstLight": {
+      "type": "bool",
+      "default": false
+    },
+    "g_bProjLt": {
+      "type": "bool",
+      "default": false
+    },
+    "g_bHasProjMap": {
+      "type": "bool",
+      "semantic": "HasProjectedTexture",
+      "default": false
+    },
+    "g_bHasShadowMap": {
+      "type": "bool",
+      "semantic": "HasShadowMap",
+      "default": false
+    },
+    "g_DistributeFactor": {
+      "type": "float",
+      "default": 256
+    },
+    "g_envDiffuseColor": {
+      "type": "float4",
+      "default": [1, 1, 1, 1]
+    },
+    "g_envSpecularColor": {
+      "type": "float4",
+      "default": [1, 1, 1, 1]
+    },
+    "g_diffuseFactor": {
+      "type": "float",
+      "default": 0.1
+    },
+    "g_bHasDiffuseEnvMap": {
+      "type": "bool"
+    },
+    "g_diffuseEnvAngle": {
+      "type": "float",
+      "default": 0
+    },
+    "g_specularFactor": {
+      "type": "float",
+      "default": 0.1
+    },
+    "g_bHasSpecularEnvMap": {
+      "type": "bool"
+    },
+    "g_specularEnvAngle": {
+      "type": "float",
+      "default": 0
+    },
+    "hasNormalMap": {
+      "type": "bool",
+      "default": false
+    },
+    "g_AlphaTestRef": {
+      "type": "float",
+      "default": 0.0
+    },
+    "g_bDoubleSided": {
+      "type": "bool",
+      "semantic": "DoubleSided",
+      "default": false
+    },
+    "g_bHasMask": {
+      "type": "bool",
+      "default": false
+    },
+    "g_bConstGlow": {
+      "type": "bool",
+      "default": false
+    },
+    "hasHardwareTessellation": {
+      "type": "bool",
+      "default": true
+    }
+  }
+}

@@ -1,0 +1,437 @@
+{
+  "source": "LightGlow.fx",
+  "hlsl": "LightGlow.hlsl",
+  "techniques": [
+    {
+      "name": "ProjectedLight",
+      "passes": [
+        {
+          "name": "p0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "ProjectedLight_p0_VS"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ProjectedLight_p0_PS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProjectedLightSuperSample",
+      "passes": [
+        {
+          "name": "p0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "ProjectedLight_p0_VS"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ProjectedLightSuperSample_p0_PS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProjectedLightSuperSample2",
+      "passes": [
+        {
+          "name": "p0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "ProjectedLight_p0_VS"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ProjectedLightSuperSample2_p0_PS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProjectedLightSuperSample3",
+      "passes": [
+        {
+          "name": "p0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "ProjectedLight_p0_VS"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ProjectedLightSuperSample3_p0_PS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "DOFPrep",
+      "passes": [
+        {
+          "name": "p0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "DOFPrep_p0_VS"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "DOFPrep_LightCone_PS"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "samplers": {
+    "g_DefaultSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "ANISOTROPIC",
+        "MaxAnisotropy": 16,
+        "AddressU": "Wrap",
+        "AddressV": "Wrap"
+      }
+    },
+    "g_CubeSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_LINEAR",
+        "AddressU": "Wrap",
+        "AddressV": "Clamp"
+      }
+    },
+    "projSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_LINEAR_MIP_POINT",
+        "AddressU": "Border",
+        "AddressV": "Border",
+        "AddressW": "Border",
+        "BorderColor": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "shadowMapSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_LINEAR",
+        "AddressU": "Border",
+        "AddressV": "Border",
+        "AddressW": "Border",
+        "BorderColor": [
+          1,
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    "shdwSampler": {
+      "type": "SamplerState",
+      "state": {
+        "FILTER": "MIN_MAG_MIP_LINEAR",
+        "AddressU": "Border",
+        "AddressV": "Border",
+        "BorderColor": [
+          1,
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    "SATSampler": {
+      "type": "SamplerState",
+      "state": {
+        "FILTER": "MIN_MAG_MIP_LINEAR",
+        "MaxAnisotropy": 16,
+        "AddressU": "Border",
+        "AddressV": "Border",
+        "BorderColor": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "CubeSampler": {
+      "type": "SamplerState",
+      "state": {
+        "FILTER": "MIN_MAG_MIP_LINEAR",
+        "AddressU": "Wrap",
+        "AddressV": "Wrap",
+        "AddressW": "Wrap"
+      }
+    },
+    "decalSampler": {
+      "type": "SamplerState",
+      "state": {
+        "FILTER": "ANISOTROPIC"
+      }
+    }
+  },
+  "variables": {
+    "g_uvTransform": {
+      "type": "float4x4",
+      "default": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    "g_ClipPlane": {
+      "type": "float4",
+      "default": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    "g_bakeTransform": {
+      "type": "float4",
+      "default": [
+        1,
+        1,
+        0,
+        0
+      ]
+    },
+    "g_bake": {
+      "type": "bool",
+      "default": false
+    },
+    "g_FirstLight": {
+      "type": "bool",
+      "default": false
+    },
+    "g_worldIT": {
+      "type": "float4x4",
+      "semantic": "WorldIT"
+    },
+    "g_wvp": {
+      "type": "float4x4",
+      "semantic": "WorldViewProjection"
+    },
+    "g_wv": {
+      "type": "float4x4",
+      "semantic": "WorldView"
+    },
+    "g_world": {
+      "type": "float4x4",
+      "semantic": "World"
+    },
+    "g_vp": {
+      "type": "float4x4",
+      "semantic": "ViewProjection"
+    },
+    "g_proj": {
+      "type": "float4x4",
+      "semantic": "Projection"
+    },
+    "g_eyePos": {
+      "type": "float4",
+      "semantic": "CameraPos"
+    },
+    "g_targetRes": {
+      "type": "float4"
+    },
+    "g_bumpMapScale": {
+      "type": "float",
+      "semantic": "BumpMapScale",
+      "default": 0.0
+    },
+    "hasNormalMap": {
+      "type": "bool",
+      "default": false
+    },
+    "normalMap": {
+      "type": "Texture2D",
+      "semantic": "NormalMap"
+    },
+    "g_time_0_X": {
+      "type": "float"
+    },
+    "g_AlphaTestRef": {
+      "type": "float",
+      "default": 0.0
+    },
+    "g_bDoubleSided": {
+      "type": "bool",
+      "semantic": "DoubleSided",
+      "default": false
+    },
+    "g_IsolateReflection": {
+      "type": "bool",
+      "default": false
+    },
+    "g_bCubeMapEnabled": {
+      "type": "bool",
+      "default": false
+    },
+    "g_diffuseFactor": {
+      "type": "float",
+      "default": 0.1
+    },
+    "g_bHasDiffuseEnvMap": {
+      "type": "bool"
+    },
+    "g_diffuseEnvAngle": {
+      "type": "float",
+      "default": 0
+    },
+    "g_envDiffuseColor": {
+      "type": "float4",
+      "default": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "diffuseEnvMap": {
+      "type": "Texture2D"
+    },
+    "g_specularFactor": {
+      "type": "float",
+      "default": 0.1
+    },
+    "g_bHasSpecularEnvMap": {
+      "type": "bool"
+    },
+    "g_specularEnvAngle": {
+      "type": "float",
+      "default": 0
+    },
+    "g_envSpecularColor": {
+      "type": "float4",
+      "default": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "specularEnvMap": {
+      "type": "Texture2D"
+    },
+    "g_glowSize": {
+      "type": "float",
+      "default": 0
+    },
+    "g_bHasMask": {
+      "type": "bool",
+      "default": false
+    },
+    "g_bConstGlow": {
+      "type": "bool",
+      "default": false
+    },
+    "g_fDofBlurCutoff": {
+      "type": "float",
+      "default": 1
+    },
+    "g_vDofParams": {
+      "type": "float4",
+      "default": [
+        30,
+        60,
+        80,
+        120
+      ]
+    },
+    "g_lightInfo": {
+      "type": "LightInfo",
+      "semantic": "LightInfo"
+    },
+    "g_projLight": {
+      "type": "ProjLightInfo",
+      "semantic": "ProjLightInfo"
+    },
+    "g_bProjLt": {
+      "type": "bool",
+      "default": false
+    },
+    "g_bHasProjMap": {
+      "type": "bool",
+      "semantic": "HasProjectedTexture",
+      "default": false
+    },
+    "g_bHasShadowMap": {
+      "type": "bool",
+      "semantic": "HasShadowMap",
+      "default": false
+    },
+    "projLightMap": {
+      "type": "Texture2D",
+      "semantic": "ProjLightTexture"
+    },
+    "projShadowMap": {
+      "type": "Texture2D",
+      "semantic": "ProjShadowMap"
+    },
+    "g_Poisson": {
+      "type": "Texture2D"
+    },
+    "g_DistributeFactor": {
+      "type": "float",
+      "default": 256
+    },
+    "hasDiffuseTexture": {
+      "type": "bool",
+      "default": false
+    },
+    "diffuseTexture": {
+      "type": "Texture2D"
+    },
+    "edgeFuzzCutoff": {
+      "type": "float",
+      "default": 0.3
+    },
+    "distFalloffStart": {
+      "type": "float",
+      "default": 20.0
+    },
+    "distFalloffEnd": {
+      "type": "float",
+      "default": 50.0
+    },
+    "glowAlpha": {
+      "type": "float",
+      "default": 0.35
+    },
+    "useShadow": {
+      "type": "bool",
+      "default": false
+    }
+  }
+}

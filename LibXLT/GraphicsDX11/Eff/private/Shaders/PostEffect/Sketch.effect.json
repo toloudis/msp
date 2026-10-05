@@ -1,0 +1,82 @@
+{
+  "source": "PostEffect/Sketch.fx",
+  "hlsl": "Sketch.hlsl",
+  "techniques": [
+    {
+      "name": "Default",
+      "passes": [
+        {
+          "name": "p0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "PS"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "samplers": {
+    "defaultSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "ANISOTROPIC",
+        "MaxAnisotropy": 16,
+        "AddressU": "MIRROR",
+        "AddressV": "MIRROR"
+      }
+    }
+  },
+  "variables": {
+    "screenTexture": {
+      "type": "Texture2D"
+    },
+    "g_ImageWidth": {
+      "type": "float",
+      "default": 1
+    },
+    "g_ImageHeight": {
+      "type": "float",
+      "default": 1
+    },
+    "g_width": {
+      "type": "float",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "Slider"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Blur Width"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "Blur Width"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Properties"
+        },
+        "SasUiMin": {
+          "type": "float",
+          "value": 0.0
+        },
+        "SasUiMax": {
+          "type": "float",
+          "value": 7.0
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 1
+        }
+      },
+      "default": 1.0
+    }
+  }
+}

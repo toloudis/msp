@@ -99,6 +99,192 @@
     <None Include="Materials\Lambert.hlsl">
       <Filter>Shaders\Materials</Filter>
     </None>
+    <None Include="Materials\Bake.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Bake.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\BlinnSkin.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\BlinnSkin.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Default.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Default.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Hair_SH.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Hair_SH.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Skin.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Skin.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\SupportHair.hlsli">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\testtess.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\testtess.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="PostEffect\BlackAndWhite.effect.json">
+      <Filter>Shaders\PostEffect</Filter>
+    </None>
+    <None Include="PostEffect\BlackAndWhite.hlsl">
+      <Filter>Shaders\PostEffect</Filter>
+    </None>
+    <None Include="PostEffect\GradientMap.effect.json">
+      <Filter>Shaders\PostEffect</Filter>
+    </None>
+    <None Include="PostEffect\GradientMap.hlsl">
+      <Filter>Shaders\PostEffect</Filter>
+    </None>
+    <None Include="PostEffect\Helper.hlsli">
+      <Filter>Shaders\PostEffect</Filter>
+    </None>
+    <None Include="PostEffect\Sepia.effect.json">
+      <Filter>Shaders\PostEffect</Filter>
+    </None>
+    <None Include="PostEffect\Sepia.hlsl">
+      <Filter>Shaders\PostEffect</Filter>
+    </None>
+    <None Include="PostEffect\Sketch.effect.json">
+      <Filter>Shaders\PostEffect</Filter>
+    </None>
+    <None Include="PostEffect\Sketch.hlsl">
+      <Filter>Shaders\PostEffect</Filter>
+    </None>
+    <None Include="Special\AOVolumes.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\AOVolumes.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Billboard.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Billboard.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Brushstroke.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Brushstroke.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\DepthMap.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\DepthMap.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\DepthRender.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\DepthRender.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\EnvBackground.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\EnvBackground.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\GIVolumes.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\GIVolumes.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\HairDefault.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\HairDefault.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\IlluminationOnly.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\IlluminationOnly.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\LPV_GI.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\LPV_GI.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\LightGlow.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\LightGlow.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\MaskAlpha.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\MaskAlpha.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\NormalMap.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\NormalMap.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\OpacityRender.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\OpacityRender.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Particle.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Particle.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Ramp.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Ramp.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\ReflectiveShadowMap.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\ReflectiveShadowMap.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\ShadowsOnly.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\ShadowsOnly.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Solid.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Solid.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\VelocityRender.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\VelocityRender.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
     <None Include="Materials\Anisotropic.effect.json">
       <Filter>Shaders\Materials</Filter>
     </None>
