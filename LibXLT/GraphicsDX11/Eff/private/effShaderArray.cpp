@@ -73,7 +73,6 @@
 #include "GraphicsDX11/eff/private/ShaderPhong.hpp"
 #include "GraphicsDX11/eff/private/ShaderSimple.hpp"
 #include "GraphicsDX11/eff/private/ShaderPhong_wBump.hpp"
-#include "GraphicsDX11/eff/private/ShaderGlow.hpp"
 #include "GraphicsDX11/eff/private/ShaderLightGlow.hpp"
 #include "GraphicsDX11/eff/private/ShaderParticle.hpp"
 #include "GraphicsDX11/eff/private/ShaderSolid.hpp"
@@ -85,13 +84,10 @@
 #include "GraphicsDX11/eff/private/ShaderssgiMultiHorizonBasedGI.hpp"
 #include "GraphicsDX11/eff/private/ShaderBillboard.hpp"
 #include "GraphicsDX11/eff/private/ShaderBrushstroke.hpp"
-#include "GraphicsDX11/eff/private/ShaderOutline.hpp"
 #include "GraphicsDX11/eff/private/ShaderVelocityRender.hpp"
 #include "GraphicsDX11/eff/private/ShaderIlluminationOnly.hpp"
 #include "GraphicsDX11/eff/private/ShaderShadowsOnly.hpp"
 #include "GraphicsDX11/eff/private/ShaderNormalMap.hpp"
-#include "GraphicsDX11/eff/private/ShaderMotionBlur.hpp"
-#include "GraphicsDX11/eff/private/ShaderAAEdgeFilter.hpp"
 #include "GraphicsDX11/eff/private/ShaderRamp.hpp"
 #include "GraphicsDX11/eff/private/ShaderReflectiveShadowMap.hpp"
 //#include "GraphicsDX11/eff/private/ShaderRSMGI.hpp"
@@ -434,7 +430,7 @@ void effShaderArray::RegisterEffects(const fsLocator &i_ShaderDir,
 
 	RegisterPlainShader<effPlainShaderDX11>	("HDRLighting",	NULL,		io_ShaderMap);
 	RegisterPlainShader<effBlur>	("Blur",				new effBlurData, io_ShaderMap);
-	RegisterShader<effGlow>			("Glow.fx",			new effGlowData, g_ShaderGlow, sizeof(g_ShaderGlow), io_ShaderMap);
+	RegisterPlainShader<effGlow>		("Glow",				new effGlowData, io_ShaderMap);
 	RegisterPlainShader<effDOF>		("DOF",				new effDOFData, io_ShaderMap);
 	RegisterShader<effLightGlow>	("LightGlow.fx",	new effLightGlowData, g_ShaderLightGlow, sizeof(g_ShaderLightGlow), io_ShaderMap);
 	RegisterShader<effParticle>		("Particle.fx",		new effParticleData, g_ShaderParticle, sizeof(g_ShaderParticle), io_ShaderMap);
@@ -452,7 +448,7 @@ void effShaderArray::RegisterEffects(const fsLocator &i_ShaderDir,
 	// reflective shadow map shader
 	RegisterShader<effMaskAlpha>("ReflectiveShadowMap.fx", new effMaskAlphaData, g_ShaderReflectiveShadowMap, sizeof(g_ShaderReflectiveShadowMap), io_ShaderMap);
 
-	RegisterShader<effOutline>("Outline.fx",	new effOutlineData, g_ShaderOutline, sizeof(g_ShaderOutline), io_ShaderMap);
+	RegisterPlainShader<effOutline>("Outline",	new effOutlineData, io_ShaderMap);
 
 	RegisterShader<effOcclusion>("ssaoBilateralBlurEngine.fx", new effOcclusionData, g_ShaderssaoBilateralBlurEngine, sizeof(g_ShaderssaoBilateralBlurEngine), io_ShaderMap);
 	RegisterShader<effOcclusion>("ssaoMultiHorizonBasedAO.fx", new effOcclusionData, g_ShaderssaoMultiHorizonBasedAO, sizeof(g_ShaderssaoMultiHorizonBasedAO), io_ShaderMap);
@@ -474,9 +470,9 @@ void effShaderArray::RegisterEffects(const fsLocator &i_ShaderDir,
 
 	//RegisterShader<effTextured>("RSMGI.fx", new effTexturedData, g_ShaderRSMGI, sizeof(g_ShaderRSMGI), io_ShaderMap);
 
-	RegisterShader<effTextured>("MotionBlur.fx", new effTexturedData, g_ShaderMotionBlur, sizeof(g_ShaderMotionBlur), io_ShaderMap);
+	RegisterPlainShader<effPlainShaderDX11>("MotionBlur", new effTexturedData, io_ShaderMap);
 
-	RegisterShader<effTextured>("AAEdgeFilter.fx", new effTexturedData, g_ShaderAAEdgeFilter, sizeof(g_ShaderAAEdgeFilter), io_ShaderMap);
+	RegisterPlainShader<effPlainShaderDX11>("AAEdgeFilter", new effTexturedData, io_ShaderMap);
 
 	RegisterShader<effTextured>("LPV_GI.fx", new effTexturedData, g_ShaderLPV_GI, sizeof(g_ShaderLPV_GI), io_ShaderMap);
 

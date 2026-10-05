@@ -12,16 +12,16 @@
 #endif
 #define EFF_OUTLINE_HPP
 
-#ifndef EFF_SHADERBASEDX11_HPP
-#include "GraphicsDX11/eff/effShaderBaseDX11.hpp"
+#ifndef EFF_PLAINSHADERDX11_HPP
+#include "GraphicsDX11/eff/effPlainShaderDX11.hpp"
 #endif
 
 class matMaterial;
 
-class effOutline : public effShaderBaseDX11 
+class effOutline : public effPlainShaderDX11
 {
 public:
-	effOutline(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, std::string i_name);
+	effOutline(std::unique_ptr<fxEffectDX11> i_pEffect, std::string i_name);
 
 	virtual effShaderData* CreateData(const matMaterial* i_Mat);
 
@@ -29,13 +29,13 @@ public:
 							   int i_MaterialLayerIndex = 0) const;
 
 protected:
-	ID3DX11EffectShaderResourceVariable* m_hTexture;
-	ID3DX11EffectScalarVariable* m_hDepthScale;
-	ID3DX11EffectScalarVariable* m_hMinAngle;
-	ID3DX11EffectScalarVariable* m_hMaxAngle;
-	ID3DX11EffectScalarVariable* m_hThickness;
-	ID3DX11EffectVectorVariable* m_hColor;
-	ID3DX11EffectVectorVariable* m_hViewSize;
-	ID3DX11EffectScalarVariable* m_hMinWidth;
-	ID3DX11EffectScalarVariable* m_hMaxWidth;
+	fxEffectDX11::Resource m_hTexture;
+	fxEffectDX11::Constant m_hDepthScale;
+	fxEffectDX11::Constant m_hMinAngle;
+	fxEffectDX11::Constant m_hMaxAngle;
+	fxEffectDX11::Constant m_hThickness;
+	fxEffectDX11::Constant m_hColor;
+	fxEffectDX11::Constant m_hViewSize;
+	fxEffectDX11::Constant m_hMinWidth;
+	fxEffectDX11::Constant m_hMaxWidth;
 };

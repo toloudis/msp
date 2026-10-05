@@ -1,3 +1,9 @@
+//////////////////////////////////////////////////////////////////////////////
+// Converted from Glow.fx by Tools/fx2hlsl/fx2hlsl.py (one-time conversion).
+// Techniques, sampler states, annotations and variable defaults now live in
+// Glow.effect.json. This file is the source of truth from here on.
+//////////////////////////////////////////////////////////////////////////////
+
 /*****************************************************************************
 **  Glow.fx
 **
@@ -6,70 +12,29 @@
 **	Extra Large Technology
 **	Copyright(C) 2006 - All Rights Reserved
 \****************************************************************************/
-int gp : SasGlobal
-<
-  int3 SasVersion = {1,0,0};
-  string SasEffectAuthor			= "Daniel Toloudis";
-  string SasEffectAuthoringSoftware = "Visual Studio .NET 2003";
-  string SasEffectCategory			= "special/glow";
-  string SasEffectCompany			= "studio|gpu";
-  string SasEffectDescription		= "Blend a glow texture on top of the current render target.";
-  string SasEffectHelp				= "Good luck.";    
-  string SasEffectRevision			= "$Revision$";  
->;
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////
+// Explicit registers keep the binding layout identical for every entry point
+// (and map directly onto a DX12 root signature / Vulkan descriptor set).
 
 // full sized source image
-Texture2D glowTexture;
-SamplerState glowSampler
+Texture2D glowTexture : register(t0);
+
+// sampler state is described in Glow.effect.json
+SamplerState glowSampler : register(s0);
+
+// defaults are in Glow.effect.json
+cbuffer GlowParams : register(b0)
 {
-    Filter = MIN_MAG_LINEAR_MIP_POINT;
-    AddressU = Clamp;
-    AddressV = Clamp;
+	float glowAmount;
+	float4 glowScale;
+	float glowSize;
+	bool bConstantGlow;
+
+	// (wid, ht, 1/width, 1/ht) of source texture ( = pixel size)
+	float4 srcSizeInfo;
 };
-
-float glowAmount
-<
-	string SasUiControl = "Slider";
-	string SasUiDescription = "how much should glow contribute";
-	string SasUiLabel = "Glow Amount";
-	float SasUiMin = 0;
-	float SasUiMax = 20;
-	float SasUiSteps = 200;
->
-= 1.0;
-
-float4 glowScale
-<
-	string SasUiControl = "Direction";
-	string SasUiDescription = "glow filter size in pixels";
-	string SasUiLabel = "Blur Filter Size(X,Y)(pixels)";
->
-= float4(1,1,0,1);
-
-float glowSize
-<
-	string SasUiControl = "Slider";
-	string SasUiDescription = "how big is the glow";
-	string SasUiLabel = "Glow Extrusion";
-	float SasUiMin = 0;
-	float SasUiMax = 2;
-	float SasUiSteps = 200;
->
-= 0.0;
-
-bool bConstantGlow
-<
-	string SasUiControl = "Checkbox";
-	string SasUiDescription = "use a constant glow effect, rather than specular";
-	string SasUiLabel = "Ignore Specular";
->
-= false;
-
-// (wid, ht, 1/width, 1/ht) of source texture ( = pixel size)
-float4 srcSizeInfo;
 
 static const int nSamples = 27;
 static const float2 offsets[nSamples] = {
@@ -186,18 +151,7 @@ float4 PS_Glow(VS_OUTPUT v_in) : SV_TARGET
 	return glowAmount * sum / cumWeight;
 }
 
-technique11 Default
-{
-	pass blurPass 
-	{		
-//		AlphaBlendEnable = true;
-//		BlendOp = ADD;
-//		SrcBlend = srcalpha;
-//		DestBlend = one;
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 PS_Glow();
-	}
-}
+
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 

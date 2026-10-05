@@ -75,7 +75,10 @@
     <None Include="SubSurfaceScatter_wBlinnSpecular.fx">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Special\AAEdgeFilter.fx">
+    <None Include="Special\AAEdgeFilter.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\AAEdgeFilter.effect.json">
       <Filter>Shaders\Special</Filter>
     </None>
     <None Include="Special\AOVolumes.fx">
@@ -117,7 +120,10 @@
     <None Include="Special\GIVolumes.fx">
       <Filter>Shaders\Special</Filter>
     </None>
-    <None Include="Special\Glow.fx">
+    <None Include="Special\Glow.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Glow.effect.json">
       <Filter>Shaders\Special</Filter>
     </None>
     <None Include="Special\HairDefault.fx">
@@ -141,7 +147,10 @@
     <None Include="Special\MaskAlpha.fx">
       <Filter>Shaders\Special</Filter>
     </None>
-    <None Include="Special\MotionBlur.fx">
+    <None Include="Special\MotionBlur.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\MotionBlur.effect.json">
       <Filter>Shaders\Special</Filter>
     </None>
     <None Include="Special\NoiseVolume.dds">
@@ -153,7 +162,10 @@
     <None Include="Special\OpacityRender.fx">
       <Filter>Shaders\Special</Filter>
     </None>
-    <None Include="Special\Outline.fx">
+    <None Include="Special\Outline.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Outline.effect.json">
       <Filter>Shaders\Special</Filter>
     </None>
     <None Include="Special\Particle.fx">

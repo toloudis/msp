@@ -1,3 +1,9 @@
+//////////////////////////////////////////////////////////////////////////////
+// Converted from AAEdgeFilter.fx by Tools/fx2hlsl/fx2hlsl.py (one-time conversion).
+// Techniques, sampler states, annotations and variable defaults now live in
+// AAEdgeFilter.effect.json. This file is the source of truth from here on.
+//////////////////////////////////////////////////////////////////////////////
+
 /*****************************************************************************
 **  AAEdgeFilter.fx
 **
@@ -10,29 +16,22 @@
 **	Copyright(C) 2009 - All Rights Reserved
 \****************************************************************************/
 
-int gp : SasGlobal
-<
-  int3 SasVersion = {1,0,0};
-  string SasEffectAuthor			= "John Schwab";
-  string SasEffectCategory			= "special/AAEdgeFilter";
-  string SasEffectCompany			= "studio|gpu";
-  string SasEffectRevision			= "$Revision$";  
->;
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////
+// Explicit registers keep the binding layout identical for every entry point
+// (and map directly onto a DX12 root signature / Vulkan descriptor set).
 
 // full sized source image
-Texture2D colorTexture;
-SamplerState g_ColorSampler
-{
-    Filter = MIN_MAG_MIP_POINT;
-    AddressU = Border;
-    AddressV = Border;
-	BorderColor = float4(0,0,0,0);	//must use this to terminate edge walk!
-};
+Texture2D colorTexture : register(t0);
 
-float4 g_ViewportDimensions; //(width,height,1/width,1/height)
+// sampler state is described in AAEdgeFilter.effect.json
+SamplerState g_ColorSampler : register(s0);
+
+cbuffer AAEdgeFilterParams : register(b0)
+{
+	float4 g_ViewportDimensions; //(width,height,1/width,1/height)
+};
 
 float4 Samp( float2 UV )
 {
@@ -128,14 +127,7 @@ float4 PS_AAEdgeFilter(VS_OUTPUT v_in) : SV_TARGET
 	return AAEdgeFilter( v_in.img );
 }
 
-technique11 Default
-{
-	pass p0 
-	{
-		VertexShader = compile vs_5_0 VSMain();		
-		PixelShader = compile ps_5_0 PS_AAEdgeFilter();
-	}
-}
+
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 
