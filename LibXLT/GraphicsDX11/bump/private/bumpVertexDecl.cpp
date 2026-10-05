@@ -84,7 +84,7 @@ void Initialize()
     };
 
 	// there needs to exist at least 1 compiled shader with this input layout
-	void* pShaderBytecode = NULL;
+	const void* pShaderBytecode = NULL;
 	unsigned long bytecodeLength = 0;
 //	ID3D11VertexShader* pVS = NULL;
 //	ID3D11PixelShader* pPS = NULL;

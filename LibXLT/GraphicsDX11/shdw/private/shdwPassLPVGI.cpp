@@ -231,7 +231,7 @@ namespace
 				{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0}
 			};
 
-			void* pShaderBytecode = NULL;
+			const void* pShaderBytecode = NULL;
 			unsigned long bytecodeLength = 0;
 			matShaderMgr::SetUseShaderArray(true);
 			effShaderBaseDX11* pDefaultEffect = (effShaderBaseDX11*)matShaderMgr::GetSpecialEffect("LPV_GI.fx");//effShaderArray::GetDefaultEffect();
