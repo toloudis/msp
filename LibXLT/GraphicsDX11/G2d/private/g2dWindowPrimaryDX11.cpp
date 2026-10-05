@@ -24,6 +24,7 @@
 #include "Graphics/g2d/g2dResetHandler.hpp"
 #include "GraphicsDX11/g2d/g2dDepthStencilBufferDX11.hpp"
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
+#include "GraphicsDX11/g2d/g2dFullscreenQuad.hpp"
 #include "GraphicsDX11/g3d/g3dStateMgr.hpp"
 
 
@@ -99,6 +100,11 @@ g2dWindowPrimaryDX11::g2dWindowPrimaryDX11(HWND i_Hwnd, bool i_bOwnHwnd,
 	int i_Width /*= -1*/, int i_Height /*= -1*/)
 {
 	m_bOwnHwnd = i_bOwnHwnd;
+	m_RenderWidth = 0;
+	m_RenderHeight = 0;
+	m_pSwapChainBuffer = NULL;
+	m_pOffscreenTexture = NULL;
+	m_pOffscreenTextureView = NULL;
 
 	int width = i_Width;
 	int height = i_Height;
@@ -109,6 +115,8 @@ g2dWindowPrimaryDX11::g2dWindowPrimaryDX11(HWND i_Hwnd, bool i_bOwnHwnd,
 		width = rect.right - rect.left;
 		height = rect.bottom - rect.top;
 	}
+	m_WindowWidth = width;
+	m_WindowHeight = height;
 
 	g2dPFD pixel_format;
 	initialize_window(i_Hwnd, width, height, pixel_format);
@@ -132,7 +140,7 @@ g2dWindowPrimaryDX11::~g2dWindowPrimaryDX11()
 	if (m_pBackBuffer2D)
 		m_pBackBuffer2D->Release();
 
-	m_pBackBuffer->Release();
+	release_color_buffers();
 	m_pSwapChain->Release();
 
 	if (m_bOwnHwnd)
@@ -171,6 +179,25 @@ void g2dWindowPrimaryDX11::EndScene()
 //------------------------------------------------------------------------
 void g2dWindowPrimaryDX11::Present()
 {
+	// When rendering offscreen, draw the image scaled to fit the window,
+	// centered, with black bars where the aspect ratios differ
+	if (is_offscreen())
+	{
+		g2dDX11Global::SetRenderTargets(m_pSwapChainBuffer, NULL);
+		const FLOAT black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+		g2dDX11Global::g_pDeviceContext->ClearRenderTargetView(m_pSwapChainBuffer, black);
+
+		int x, y, width, height;
+		GetPresentRect(x, y, width, height);
+		g2dFullscreenQuad::DrawTexturedQuad11(m_pOffscreenTextureView,
+			(UINT)width, (UINT)height, (float)x, (float)y);
+
+		// put back the default states and our offscreen target
+		g3dStateMgrDX11::SetDefault();
+		g2dDX11Global::SetRenderTargets(m_pBackBuffer,
+			m_DepthStencil ? m_DepthStencil->GetDepthView() : NULL);
+	}
+
 	//	do we need to reset the d3d device?
 	HRESULT reset_result = m_pSwapChain->Present(0, 0);
 
@@ -240,9 +267,12 @@ bool g2dWindowPrimaryDX11::IsOpen() const
 //------------------------------------------------------------------------
 void g2dWindowPrimaryDX11::ResizeWindow(int i_Width, int i_Height)
 {
+	m_WindowWidth = i_Width;
+	m_WindowHeight = i_Height;
+
 	// Release old buffers
 	this->FreeBuffers();//this releases the depth buffer!!
-	this->m_pBackBuffer->Release();
+	release_color_buffers();
 
 	DXGI_SWAP_CHAIN_DESC desc;
 	HRESULT hr = m_pSwapChain->GetDesc(&desc);
@@ -250,14 +280,72 @@ void g2dWindowPrimaryDX11::ResizeWindow(int i_Width, int i_Height)
 	hr = m_pSwapChain->ResizeBuffers(desc.BufferCount, i_Width, i_Height, desc.BufferDesc.Format, desc.Flags);
 
 	InitRenderTargetInfo();
-	CreateDepthBuffer(i_Width, i_Height);
+
+	// Render offscreen at the render resolution if one is set
+	int width = i_Width;
+	int height = i_Height;
+	if (m_RenderWidth > 0 && m_RenderHeight > 0 &&
+		SUCCEEDED(create_offscreen_buffer(m_RenderWidth, m_RenderHeight)))
+	{
+		width = m_RenderWidth;
+		height = m_RenderHeight;
+	}
+	CreateDepthBuffer(width, height);
 
 	// Give window properties to Window base
 	bool windowed = true;
 	g2dPFD backPFD;
 	g2dDX11Global::PFDFromD3DFormat(m_BackBufferDesc.Format, backPFD);
 	g2dWindow::SetWindowProperties(windowed, backPFD, backPFD,
-		i_Width, i_Height, backPFD.BitsPerPixel());
+		width, height, backPFD.BitsPerPixel());
+}
+
+//------------------------------------------------------------------------
+//	Render offscreen at the given size and scale the image to fit the
+//	window, centered with black bars, in Present.  0, 0 turns this off.
+//------------------------------------------------------------------------
+void g2dWindowPrimaryDX11::SetRenderResolution(int i_Width, int i_Height)
+{
+	if (i_Width <= 0 || i_Height <= 0)
+	{
+		i_Width = 0;
+		i_Height = 0;
+	}
+	if (i_Width == m_RenderWidth && i_Height == m_RenderHeight)
+		return;
+
+	m_RenderWidth = i_Width;
+	m_RenderHeight = i_Height;
+	if (m_WindowWidth > 0 && m_WindowHeight > 0)
+		ResizeWindow(m_WindowWidth, m_WindowHeight);
+}
+
+//------------------------------------------------------------------------
+//	Where the rendered image is drawn in the window, in window pixels
+//------------------------------------------------------------------------
+void g2dWindowPrimaryDX11::GetPresentRect(int& o_X, int& o_Y, int& o_Width, int& o_Height) const
+{
+	if (!is_offscreen() || m_Width <= 0 || m_Height <= 0)
+	{
+		g2dWindow::GetPresentRect(o_X, o_Y, o_Width, o_Height);
+		return;
+	}
+
+	// largest rect with the render aspect ratio that fits in the window
+	if (m_WindowWidth * m_Height <= m_WindowHeight * m_Width)
+	{
+		o_Width = m_WindowWidth;
+		o_Height = (m_WindowWidth * m_Height + m_Width / 2) / m_Width;
+	}
+	else
+	{
+		o_Height = m_WindowHeight;
+		o_Width = (m_WindowHeight * m_Width + m_Height / 2) / m_Height;
+	}
+	o_Width = (std::max)(o_Width, 1);
+	o_Height = (std::max)(o_Height, 1);
+	o_X = (m_WindowWidth - o_Width) / 2;
+	o_Y = (m_WindowHeight - o_Height) / 2;
 }
 
 //----------------------------------------------------------------------------
@@ -363,6 +451,66 @@ HRESULT g2dWindowPrimaryDX11::CreateDepthBuffer(int i_Width, int i_Height)
 	return S_OK;
 }
 
+//------------------------------------------------------------------------
+//	Create the offscreen target and make it the window's back buffer.
+//	The swap chain's target is kept in m_pSwapChainBuffer for Present.
+//------------------------------------------------------------------------
+HRESULT g2dWindowPrimaryDX11::create_offscreen_buffer(int i_Width, int i_Height)
+{
+	D3D11_TEXTURE2D_DESC texDesc;
+	::ZeroMemory(&texDesc, sizeof(texDesc));
+	texDesc.Width = i_Width;
+	texDesc.Height = i_Height;
+	texDesc.MipLevels = 1;
+	texDesc.ArraySize = 1;
+	texDesc.Format = m_BackBufferDesc.Format;
+	texDesc.SampleDesc = g2dDX11Global::DefaultSampleDesc();
+	texDesc.Usage = D3D11_USAGE_DEFAULT;
+	texDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
 
+	g2dD3D11TexturePtr pTexture = NULL;
+	g2dD3D11RenderTargetPtr pRTV = NULL;
+	g2dD3D11ShaderResourcePtr pSRV = NULL;
 
+	HRESULT hr = g2dDX11Global::g_pDevice->CreateTexture2D( &texDesc, NULL, &pTexture );
+	if (SUCCEEDED(hr))
+		hr = g2dDX11Global::g_pDevice->CreateRenderTargetView( pTexture, NULL, &pRTV );
+	if (SUCCEEDED(hr))
+		hr = g2dDX11Global::g_pDevice->CreateShaderResourceView( pTexture, NULL, &pSRV );
 
+	if (FAILED(hr))
+	{
+		D3D_RELEASE( pSRV );
+		D3D_RELEASE( pRTV );
+		D3D_RELEASE( pTexture );
+		DBG_ERROR("Failed to create offscreen render target for window.");
+		return hr;
+	}
+
+	m_pSwapChainBuffer = m_pBackBuffer;
+	m_pBackBuffer = pRTV;
+	m_pOffscreenTexture = pTexture;
+	m_pOffscreenTextureView = pSRV;
+	m_BackBufferDesc = texDesc;
+
+	return S_OK;
+}
+
+//------------------------------------------------------------------------
+//	Release the back buffer, and the swap chain and offscreen targets
+//------------------------------------------------------------------------
+void g2dWindowPrimaryDX11::release_color_buffers()
+{
+	D3D_RELEASE( m_pOffscreenTextureView );
+	D3D_RELEASE( m_pOffscreenTexture );
+	D3D_RELEASE( m_pSwapChainBuffer );
+	D3D_RELEASE( m_pBackBuffer );
+}
+
+//------------------------------------------------------------------------
+//	true when rendering to an offscreen target at the render resolution
+//------------------------------------------------------------------------
+bool g2dWindowPrimaryDX11::is_offscreen() const
+{
+	return (m_pSwapChainBuffer != NULL);
+}

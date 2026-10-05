@@ -20,6 +20,8 @@
 #include "Tool/pick3d/pick3dPickBuffer.hpp"
 #include "Tool/tma3d/tma3dViewerMgr.hpp"
 
+#include <math.h>
+
 
 //============================================================================
 // Static variables
@@ -232,6 +234,8 @@ void tma3dRenderView::ResizeWindow(int i_Width, int i_Height, int iWidthDIP, int
 	{
 		//DBG_LOG2("Setting render window size: %d %d", i_Width, i_Height);
 
+		// render at the window size
+		m_pWindow->SetRenderResolution(0, 0);
 		m_pWindow->ResizeWindow((i_Width), (i_Height));
 
         if (iWidthDIP == 0) {
@@ -245,6 +249,57 @@ void tma3dRenderView::ResizeWindow(int i_Width, int i_Height, int iWidthDIP, int
 		// aspect ratio changes
         m_pWindow->SetVirtualResolution(iWidthDIP, iHeightDIP);
 	}
+}
+
+//--------------------------------------------------------------------
+// Resize back buffer of window to the panel size, render at the
+//	given render size, and scale the image to fit the panel.
+//--------------------------------------------------------------------
+void tma3dRenderView::ResizeWindowToFit(int i_PanelWidth, int i_PanelHeight,
+										int i_RenderWidth, int i_RenderHeight,
+										int i_RenderWidthDIP, int i_RenderHeightDIP)
+{
+	if (i_PanelWidth > 0 && i_PanelHeight > 0 && i_RenderWidth > 0 && i_RenderHeight > 0)
+	{
+		m_pWindow->SetRenderResolution(i_RenderWidth, i_RenderHeight);
+		m_pWindow->ResizeWindow(i_PanelWidth, i_PanelHeight);
+
+		if (i_RenderWidthDIP <= 0 || i_RenderHeightDIP <= 0)
+		{
+			i_RenderWidthDIP = i_RenderWidth;
+			i_RenderHeightDIP = i_RenderHeight;
+		}
+		// Text is laid out in the rendered image, so base the virtual
+		// resolution on the render size
+		m_pWindow->SetVirtualResolution(i_RenderWidthDIP, i_RenderHeightDIP);
+	}
+}
+
+//--------------------------------------------------------------------
+// Convert a position in panel pixels to a pixel in the rendered
+//	image. The result is outside the image in the black bars.
+//--------------------------------------------------------------------
+void tma3dRenderView::PanelToRenderPixel(int& io_X, int& io_Y) const
+{
+	int x, y, width, height;
+	m_pWindow->GetPresentRect(x, y, width, height);
+	int render_width, render_height;
+	m_pWindow->GetDimensions(render_width, render_height);
+
+	if (width > 0 && height > 0)
+	{
+		// map pixel centers so a 1:1 rect leaves positions unchanged
+		io_X = (int)floor((io_X - x + 0.5) * render_width / width);
+		io_Y = (int)floor((io_Y - y + 0.5) * render_height / height);
+	}
+}
+
+//--------------------------------------------------------------------
+// Size of the rendered image in pixels
+//--------------------------------------------------------------------
+void tma3dRenderView::GetRenderSize(int& o_Width, int& o_Height) const
+{
+	m_pWindow->GetDimensions(o_Width, o_Height);
 }
 
 //--------------------------------------------------------------------

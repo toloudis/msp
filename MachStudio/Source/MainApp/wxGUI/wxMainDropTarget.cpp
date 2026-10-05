@@ -15,6 +15,7 @@
 #include "Core/Fs/fsFileUtil.hpp"
 #include "Core/Fs/fsLocator.hpp"
 #include "Core/It/itStringUtil.hpp"
+#include "Tool/tma3d/tma3dRenderView.hpp"
 #include "Tool/gui/guiSingleDocHandler.hpp"
 #include "Systems/Character/Undo/chtrOperations.hpp"
 #ifdef USE_WXWIDGETS
@@ -53,7 +54,11 @@ bool wxMainDropTarget::OnDropFiles(wxCoord x, wxCoord y,
 
 		if (itStringUtil::Equal(ext, itString("mtl")))
 		{
-			mbrwPaintUtil::PasteMaterialFile( m_pRenderView, x, y, file_loc);
+			// convert the panel position to a pixel in the rendered image
+			int render_x = x;
+			int render_y = y;
+			m_pRenderView->PanelToRenderPixel(render_x, render_y);
+			mbrwPaintUtil::PasteMaterialFile( m_pRenderView, render_x, render_y, file_loc);
 		}
 		if(itStringUtil::Equal(ext, itString("mab")))
 		{

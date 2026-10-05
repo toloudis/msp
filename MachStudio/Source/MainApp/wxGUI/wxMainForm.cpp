@@ -378,30 +378,14 @@ void wxMainForm::ResizeRenderWindow(int i_Width, int i_Height)
 		wxMainForm *pMainForm = dynamic_cast<wxMainForm*>(twxSystem::g_pMainForm);
 		if (pMainForm)
 		{
-			wxSize form_size = pMainForm->GetSize();
-
-			// Because the render panel sits in the panel grid with a 1 pixel border,
-			// the actual render window client size is still 2 pixels smaller
-			// than what is returned here. Offset it in the math.
+			// The grid stores the size with the 1 pixel border around the
+			// render area, so add 2 (GetRenderWindowSize subtracts it again).
 			int grid_width = i_Width + 2;
 			int grid_height = i_Height + 2;
-			wxSize current_size = pMainForm->m_pContentPane->GetClientSize();
-			//wxSize current_size = pMainForm->m_pRenderGrid->GetClientSize();
 
-			// Setup maximum size and aspect ratio in the sizers first,
-			// then apply the new size
+			// The render panels fill the space the layout gives them and the
+			// rendered image is scaled to fit, so the frame is not resized.
 			pMainForm->m_pRenderGrid->SetMaxRenderSize(grid_width, grid_height);
-			//pMainForm->m_pContentPaneSizer->GetItem((size_t)0)->SetRatio(grid_width, grid_height);
-
-			// Resize main window if not maximized 
-			if (!pMainForm->IsMaximized())
-			{
-				int delta_width = grid_width - current_size.GetWidth();
-				int delta_height = grid_height - current_size.GetHeight();
-
-				pMainForm->SetSize(form_size.GetWidth() + delta_width,
-								   form_size.GetHeight() + delta_height);
-			}
 		}
 	}
 }

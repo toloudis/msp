@@ -68,6 +68,26 @@ void g2dWindow::GetBitDepth(int& o_BitDepth) const
 }
 
 //------------------------------------------------------------------------
+//	SetRenderResolution is not supported by default
+//------------------------------------------------------------------------
+//virtual
+void g2dWindow::SetRenderResolution(int i_Width, int i_Height)
+{
+}
+
+//------------------------------------------------------------------------
+//	GetPresentRect returns where the rendered image is drawn in the window
+//------------------------------------------------------------------------
+//virtual
+void g2dWindow::GetPresentRect(int& o_X, int& o_Y, int& o_Width, int& o_Height) const
+{
+	o_X = 0;
+	o_Y = 0;
+	o_Width = m_Width;
+	o_Height = m_Height;
+}
+
+//------------------------------------------------------------------------
 //	SetVirtualResolution sets the resolution that the gui scales itself to
 //------------------------------------------------------------------------
 void g2dWindow::SetVirtualResolution( int i_nWidth, int i_nHeight )
