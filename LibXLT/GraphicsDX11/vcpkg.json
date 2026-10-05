@@ -2,7 +2,6 @@
   "name": "graphicsdx11",
   "version": "1.0",
   "dependencies": [
-    "effects11",
     "directxtex",
     "nlohmann-json"
   ]

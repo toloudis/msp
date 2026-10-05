@@ -32,7 +32,6 @@
 #include "Graphics/g3d/g3dSingleLightRendering.hpp"
 #include "Graphics/mat/matMaterial.hpp"
 #include "Graphics/mat/matTextureMgr.hpp"
-#include "GraphicsDX11/eff/effFX11Effect.hpp"
 #include "GraphicsDX11/eff/effPlainEffect.hpp"
 #include "GraphicsDX11/eff/effShaderParamsDX11.hpp"
 #include "GraphicsDX11/g3d/g3dLightMgrDX11.hpp"
@@ -389,28 +388,10 @@ namespace
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-effShaderBaseDX11::effShaderBaseDX11(const fsLocator& i_Directory, 
-								   ID3DX11Effect* i_pEffect,
-                                   std::string i_Name)
-:	effShaderBaseDX11(i_Directory,
-		std::unique_ptr<fxEffect>(i_pEffect ? new effFX11Effect(i_pEffect) : nullptr),
-		i_pEffect, i_Name)
-{
-}
-
 effShaderBaseDX11::effShaderBaseDX11(const fsLocator& i_Directory,
 								   std::unique_ptr<fxEffect> i_pEffect,
-                                   std::string i_Name)
-:	effShaderBaseDX11(i_Directory, std::move(i_pEffect), nullptr, i_Name)
-{
-}
-
-effShaderBaseDX11::effShaderBaseDX11(const fsLocator& i_Directory,
-								   std::unique_ptr<fxEffect> i_pEffect,
-								   ID3DX11Effect* i_pD3DXEffect,
                                    std::string i_Name)
 :	m_pEffect(std::move(i_pEffect)),
-	m_pD3DXEffect(i_pD3DXEffect),
 	m_VecCameraPosHandle(NULL),
 	m_FirstLightHandle(NULL),
 	m_LightInfoHandle(NULL), 
@@ -497,9 +478,7 @@ effShaderBaseDX11::~effShaderBaseDX11()
 {
 	delete m_pDefaults;
 
-	m_pEffect.reset();		// wrappers go before the effect they wrap
-	if (m_pD3DXEffect)
-		m_pD3DXEffect->Release();
+	m_pEffect.reset();
 	std::list<matTexture*>::iterator it = m_OwnedTextures.begin();
 	while (it != m_OwnedTextures.end())
 	{

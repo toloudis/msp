@@ -61,11 +61,4 @@ public:
 
 	// postproc fullscreen quad shaders:
 	static ID3D11PixelShader* GetMapNormalsToScreen();
-
-private:
-	//------------------------------------------------------------------------
-	// Load registered (internally known) shaders
-	//------------------------------------------------------------------------
-	void LoadAllShaders(std::map<std::string, matShaderInfo>& io_ShaderMap);
-
 };

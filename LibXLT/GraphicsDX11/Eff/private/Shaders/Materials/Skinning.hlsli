@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////////
 // Converted from Skinning.h (one-time conversion, by hand).
 // Source of truth for the plain-HLSL material shaders from here on; the
-// original Skinning.h is still used by the Effects (.fx) shaders.
+// original Skinning.h was deleted along with the Effects (.fx) shaders.
 // Register layout: see Globals.hlsli.
 //////////////////////////////////////////////////////////////////////////////
 

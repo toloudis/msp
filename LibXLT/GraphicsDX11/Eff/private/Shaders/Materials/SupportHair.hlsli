@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////////
 // Converted from SupportHair.h by Tools/fx2hlsl/fx2hlsl.py (one-time conversion).
 // This file is the source of truth for the hair shaders from here on; the
-// original SupportHair.h is still used by the Effects (.fx) shaders.
+// original SupportHair.h was deleted along with the Effects (.fx) shaders.
 //
 // Included by Materials/Hair_SH.hlsl, Special/HairDefault.hlsl and
 // Special/OpacityRender.hlsl. It follows the binding model of Globals.hlsli

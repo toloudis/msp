@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////////
 // Converted from Lighting.h by Tools/fx2hlsl/fx2hlsl.py (one-time conversion).
 // Source of truth for the plain-HLSL material shaders from here on; the
-// original Lighting.h is still used by the Effects (.fx) shaders.
+// original Lighting.h was deleted along with the Effects (.fx) shaders.
 // Register layout: see Globals.hlsli.
 //////////////////////////////////////////////////////////////////////////////
 
