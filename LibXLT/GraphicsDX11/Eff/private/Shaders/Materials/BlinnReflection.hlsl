@@ -73,7 +73,7 @@ Texture2D glowMask : register(t12);	// : GlowMask
 TextureCube g_cubeMap : register(t20);	// : CubeReflectionMap
 Texture2D g_planarMap : register(t21);	// : PlanarReflectionMap
 
-SamplerState g_cubeSampler : register(s10);
+SamplerState g_reflCubeSampler : register(s10);
 SamplerState planarSampler : register(s11);
 SamplerState AnisoWrapSampler : register(s12);
 
@@ -208,8 +208,8 @@ float4 GetReflection(float3 bumpNormal, float3 worldNormal, float3 ScreenPos, fl
 		);
 //		refl = texCUBEbias(g_cubeMap, float4(reflVect, reflLOD)) *  fresnelRefl * reflColorFactor;
 //		refr = texCUBEbias(g_cubeMap, float4(refrVect, refrLOD)) *  fresnelRefr * refrColorFactor;
-		refl = g_cubeMap.SampleBias( g_cubeSampler, reflVect, reflLOD ) * fresnelRefl * reflColorFactor;
-		refr = g_cubeMap.SampleBias( g_cubeSampler, refrVect, refrLOD ) * fresnelRefr * refrColorFactor;
+		refl = g_cubeMap.SampleBias( g_reflCubeSampler, reflVect, reflLOD ) * fresnelRefl * reflColorFactor;
+		refr = g_cubeMap.SampleBias( g_reflCubeSampler, refrVect, refrLOD ) * fresnelRefr * refrColorFactor;
 	}
 	rr = refl + refr;
 	return rr;

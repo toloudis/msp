@@ -76,7 +76,7 @@ Texture2D glowMask : register(t11);	// : GlowMask
 TextureCube g_cubeMap : register(t20);	// : CubeReflectionMap
 Texture2D g_planarMap : register(t21);	// : PlanarReflectionMap
 
-SamplerState g_cubeSampler : register(s10);
+SamplerState g_reflCubeSampler : register(s10);
 SamplerState planarSampler : register(s11);
 SamplerState AnisoWrapSampler : register(s12);
 SamplerState AnisoClampSampler : register(s13);
@@ -434,7 +434,7 @@ pixelOutput iblPS(TANGENT_VERTEX_OUTPUT IN, bool vFace : SV_ISFRONTFACE)
 	if( g_useDynamicCubeMap )
 	{
 //		if( g_hasCubeMap ) refl = texCUBEbias( dynCubeMap, float4(reflVect, reflScale*fresnel)) * g_reflectivity;
-		if( g_hasCubeMap && g_bCubeMapEnabled ) refl = g_cubeMap.SampleBias( g_cubeSampler, reflVect, reflScale*fresnel ) * g_reflectivity;
+		if( g_hasCubeMap && g_bCubeMapEnabled ) refl = g_cubeMap.SampleBias( g_reflCubeSampler, reflVect, reflScale*fresnel ) * g_reflectivity;
 	}
 	else
 	{

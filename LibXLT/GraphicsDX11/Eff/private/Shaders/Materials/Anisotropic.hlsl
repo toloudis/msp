@@ -72,7 +72,7 @@ Texture2D glowMask : register(t13);	// : GlowMask
 TextureCube g_cubeMap : register(t20);	// : CubeReflectionMap
 Texture2D g_planarMap : register(t21);	// : PlanarReflectionMap
 
-SamplerState g_cubeSampler : register(s10);
+SamplerState g_reflCubeSampler : register(s10);
 SamplerState planarSampler : register(s11);
 SamplerState AnisoWrapSampler : register(s12);
 SamplerState AnisoClampSampler : register(s13);

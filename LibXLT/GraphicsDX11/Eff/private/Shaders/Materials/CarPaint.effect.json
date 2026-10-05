@@ -503,7 +503,7 @@
         "AddressW": "Wrap"
       }
     },
-    "g_cubeSampler": {
+    "g_reflCubeSampler": {
       "type": "SamplerState",
       "state": {
         "FILTER": "MIN_MAG_MIP_LINEAR",
