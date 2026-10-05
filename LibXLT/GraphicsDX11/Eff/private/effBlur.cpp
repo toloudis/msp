@@ -14,32 +14,32 @@
 #include "Graphics/mat/matMaterial.hpp"
 #include "Graphics/mat/matTexture.hpp"
 
-effBlur::effBlur(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, std::string i_name)
-:	effShaderBaseDX11(i_Directory, i_pEffect, i_name)
+effBlur::effBlur(std::unique_ptr<fxEffectDX11> i_pEffect, std::string i_name)
+:	effPlainShaderDX11(std::move(i_pEffect), i_name)
 {
-	MapParameter("srcSizeInfo", m_hSrcSize );
-	MapParameter("downsampledSizeInfo", m_hDownsampledSize );
-	MapParameter("sceneTexture", m_hSceneTexture );
-	MapParameter("downsampledTexture", m_hDownsampledTexture );
-	MapParameter("horizontalBlurTexture", m_hHorizontalBlurTexture );
+	m_hSrcSize = m_pEffect->FindConstant("srcSizeInfo");
+	m_hDownsampledSize = m_pEffect->FindConstant("downsampledSizeInfo");
+	m_hSceneTexture = m_pEffect->FindResource("sceneTexture");
+	m_hDownsampledTexture = m_pEffect->FindResource("downsampledTexture");
+	m_hHorizontalBlurTexture = m_pEffect->FindResource("horizontalBlurTexture");
 }
 void effBlur::SetupParams(const effShaderData* i_Data) const
 {
 	const effBlurData* pData = dynamic_cast<const effBlurData*>(i_Data);
 	DBG_ASSERT(pData != NULL, "Bad effect data type matched with effBlur");
 
-	m_hSceneTexture->SetResource(g3dDX11TextureUtil::GetD3DTexture(pData->m_pSceneTexture));
-	m_hDownsampledTexture->SetResource(g3dDX11TextureUtil::GetD3DTexture(pData->m_pDownsampledTexture));
-	m_hHorizontalBlurTexture->SetResource(g3dDX11TextureUtil::GetD3DTexture(pData->m_pHorizontalBlurTexture));
+	m_pEffect->SetResource(m_hSceneTexture, g3dDX11TextureUtil::GetD3DTexture(pData->m_pSceneTexture));
+	m_pEffect->SetResource(m_hDownsampledTexture, g3dDX11TextureUtil::GetD3DTexture(pData->m_pDownsampledTexture));
+	m_pEffect->SetResource(m_hHorizontalBlurTexture, g3dDX11TextureUtil::GetD3DTexture(pData->m_pHorizontalBlurTexture));
 
 	float vec[4] = {(float)pData->m_pSceneTexture->GetWidth(), (float)pData->m_pSceneTexture->GetHeight(),
 			pData->m_FilterWidthX,
 			pData->m_FilterWidthY};
-	m_hSrcSize->SetFloatVector(vec);
+	m_pEffect->SetConstant(m_hSrcSize, vec);
 	float vecLow[4] = {(float)pData->m_pDownsampledTexture->GetWidth(), (float)pData->m_pDownsampledTexture->GetHeight(),
 			pData->m_FilterWidthX,
 			pData->m_FilterWidthY};
-	m_hDownsampledSize->SetFloatVector(vecLow);
+	m_pEffect->SetConstant(m_hDownsampledSize, vecLow);
 }
 
 effShaderData* effBlur::CreateData(const matMaterial* i_Mat)

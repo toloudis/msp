@@ -12,26 +12,26 @@
 #endif
 #define EFF_BLUR_HPP
 
-#ifndef EFF_SHADERBASEDX11_HPP
-#include "GraphicsDX11/eff/effShaderBaseDX11.hpp"
+#ifndef EFF_PLAINSHADERDX11_HPP
+#include "GraphicsDX11/eff/effPlainShaderDX11.hpp"
 #endif
 
 class matMaterial;
 
-class effBlur : public effShaderBaseDX11 
+class effBlur : public effPlainShaderDX11
 {
 public:
-	effBlur(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, std::string i_name);
+	effBlur(std::unique_ptr<fxEffectDX11> i_pEffect, std::string i_name);
 
 	virtual effShaderData* CreateData(const matMaterial* i_Mat);
 
 	virtual void SetupParams(const effShaderData* i_Data) const;
 
 protected:
-	ID3DX11EffectShaderResourceVariable* m_hSceneTexture;
-	ID3DX11EffectShaderResourceVariable* m_hDownsampledTexture;
-	ID3DX11EffectShaderResourceVariable* m_hHorizontalBlurTexture;
+	fxEffectDX11::Resource m_hSceneTexture;
+	fxEffectDX11::Resource m_hDownsampledTexture;
+	fxEffectDX11::Resource m_hHorizontalBlurTexture;
 
-	ID3DX11EffectVectorVariable* m_hSrcSize;
-	ID3DX11EffectVectorVariable* m_hDownsampledSize;
+	fxEffectDX11::Constant m_hSrcSize;
+	fxEffectDX11::Constant m_hDownsampledSize;
 };

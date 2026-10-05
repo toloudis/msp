@@ -682,6 +682,10 @@
     <ClInclude Include="Eff\effBake.hpp" />
     <ClInclude Include="Eff\effBillboard.hpp" />
     <ClInclude Include="Eff\effBlur.hpp" />
+    <ClInclude Include="Eff\effPlainShaderDX11.hpp" />
+    <ClInclude Include="Fx\fxEffectDesc.hpp" />
+    <ClInclude Include="Fx\fxEffectDX11.hpp" />
+    <ClInclude Include="Fx\fxEmbeddedShaders.hpp" />
     <ClInclude Include="Eff\effDOF.hpp" />
     <ClInclude Include="Eff\effGlow.hpp" />
     <ClInclude Include="Eff\effHDRLighting.hpp" />
@@ -857,6 +861,10 @@
     <ClCompile Include="Eff\private\effBake.cpp" />
     <ClCompile Include="Eff\private\effBillboard.cpp" />
     <ClCompile Include="Eff\private\effBlur.cpp" />
+    <ClCompile Include="Eff\private\effPlainShaderDX11.cpp" />
+    <ClCompile Include="Fx\private\fxEffectDesc.cpp" />
+    <ClCompile Include="Fx\private\fxEffectDX11.cpp" />
+    <ClCompile Include="Fx\private\fxEmbeddedShaders.cpp" />
     <ClCompile Include="Eff\private\effDOF.cpp" />
     <ClCompile Include="Eff\private\effGlow.cpp" />
     <ClCompile Include="Eff\private\effHDRLighting.cpp" />
@@ -982,6 +990,19 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <!-- Shaders converted from Effects (.fx) to plain HLSL: compile every entry point listed in
+       Eff\private\Shaders\**\*.effect.json with fxc and embed the bytecode and manifests
+       (included by Fx\private\fxEmbeddedShaders.cpp). -->
+  <PropertyGroup>
+    <PlainShaderDir>$(MSBuildThisFileDirectory)Eff\private\Shaders</PlainShaderDir>
+    <PlainShaderOutput>$(MSBuildThisFileDirectory)Fx\private\Generated\fxEmbeddedShaders.inc</PlainShaderOutput>
+  </PropertyGroup>
+  <ItemGroup>
+    <PlainShaderInput Include="$(PlainShaderDir)\**\*.hlsl;$(PlainShaderDir)\**\*.hlsli;$(PlainShaderDir)\**\*.effect.json;$(PlainShaderDir)\EmbedShaders.ps1" />
+  </ItemGroup>
+  <Target Name="EmbedPlainShaders" BeforeTargets="ClCompile" Inputs="@(PlainShaderInput)" Outputs="$(PlainShaderOutput)">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(PlainShaderDir)\EmbedShaders.ps1&quot; -ShaderDir &quot;$(PlainShaderDir)&quot; -OutFile &quot;$(PlainShaderOutput)&quot; -Fxc &quot;$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\fxc.exe&quot;" />
+  </Target>
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\..\MachStudio\Source\packages\Microsoft.DXSDK.D3DX.9.29.952.8\build\native\Microsoft.DXSDK.D3DX.targets" Condition="Exists('..\..\MachStudio\Source\packages\Microsoft.DXSDK.D3DX.9.29.952.8\build\native\Microsoft.DXSDK.D3DX.targets')" />
   </ImportGroup>

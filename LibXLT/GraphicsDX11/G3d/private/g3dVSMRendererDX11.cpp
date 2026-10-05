@@ -36,6 +36,7 @@
 #include "GraphicsDX11/mat/matRenderTargetTexture.hpp"
 #include "GraphicsDX11/mat/matShadowMap.hpp"
 #include "GraphicsDX11/Eff/effShaderBaseDX11.hpp"
+#include "GraphicsDX11/eff/effPlainShaderDX11.hpp"
 #include "GraphicsDX11/hair/hairModelFrag.hpp"
 #include "GraphicsDX11/G3d/g3dDrawStyleUtilDX11.hpp"
 
@@ -297,7 +298,7 @@ int g3dVSMRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_C
 	blurData.m_pSceneTexture = m_tempWTarget;
 	blurData.m_pDownsampledTexture = m_tempWTarget;
 	blurData.m_pHorizontalBlurTexture = m_tempHTarget;
-	((effShaderBaseDX11*)effBlur)->SetupParams(&blurData);
+	effBlur->SetupParams(&blurData);
 
 	ID3D11ShaderResourceView* nullTex[1] = {NULL};
 
@@ -334,14 +335,13 @@ int g3dVSMRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_C
 	g3dBlendStateMgr::SetBlendState(st_NoBlend);
 	g3dDepthStencilStateMgr::SetDepthStencilState(ds_Disable_NS);
 
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("Blur.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
-	ID3DX11EffectTechnique* pEffectTechnique = pEffect->GetTechniqueByName("SummedParallelScan");
+	effPlainShaderDX11* pBlur = dynamic_cast<effPlainShaderDX11*>(g3dDX11Util::GetEffect("Blur.fx"));
+	fxEffectDX11* pEffect = pBlur->GetEffect();
+	int scanTechnique = pEffect->FindTechnique("SummedParallelScan");
+	fxEffectDX11::Constant hVSMDepth = pEffect->FindConstant("VSMDepth");
+	fxEffectDX11::Resource hSceneTexture = pEffect->FindResource("sceneTexture");
 
 	ID3D11ShaderResourceView* nullTex[1] = {NULL};
-
-	D3DX11_TECHNIQUE_DESC techDesc;
-    pEffectTechnique->GetDesc( &techDesc );
 
 	matShadowMap* currentVSMSrc = m_tempWTarget;
 	matShadowMap* currentVSMTarget = m_tempHTarget;
@@ -354,11 +354,11 @@ int g3dVSMRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_C
 	{
 		currentVSMTarget->MakeCurrent();
 
-		pEffect->GetVariableByName("VSMDepth")->AsScalar()->SetInt(i);
+		pEffect->SetConstant(hVSMDepth, i);
 		ID3D11ShaderResourceView* aRes = g3dDX11TextureUtil::GetD3DTexture(currentVSMSrc);
-		pEffect->GetVariableByName("sceneTexture")->AsShaderResource()->SetResource(aRes);
+		pEffect->SetResource(hSceneTexture, aRes);
 
-		pEffectTechnique->GetPassByIndex(0)->Apply(0, g2dDX11Global::g_pDeviceContext);
+		pEffect->Apply(scanTechnique, 0, g2dDX11Global::g_pDeviceContext);
 
 		g3dRenderFullScreenQuad fsq0(currentVSMSrc, currentVSMTarget);
 		l_nNumTriangles += fsq0.Render(i_fSimTime);
@@ -373,11 +373,11 @@ int g3dVSMRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_C
 	{
 		currentVSMTarget->MakeCurrent();
 	
-		pEffect->GetVariableByName("VSMDepth")->AsScalar()->SetInt(i);
+		pEffect->SetConstant(hVSMDepth, i);
 		ID3D11ShaderResourceView* aRes = g3dDX11TextureUtil::GetD3DTexture(currentVSMSrc);
-		pEffect->GetVariableByName("sceneTexture")->AsShaderResource()->SetResource(aRes);
+		pEffect->SetResource(hSceneTexture, aRes);
 
-		pEffectTechnique->GetPassByIndex(1)->Apply(0, g2dDX11Global::g_pDeviceContext);
+		pEffect->Apply(scanTechnique, 1, g2dDX11Global::g_pDeviceContext);
 
 		g3dRenderFullScreenQuad fsq0(currentVSMSrc, currentVSMTarget);
 		l_nNumTriangles += fsq0.Render(i_fSimTime);

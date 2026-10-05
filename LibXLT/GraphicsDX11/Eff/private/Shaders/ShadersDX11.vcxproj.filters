@@ -84,7 +84,10 @@
     <None Include="Special\Billboard.fx">
       <Filter>Shaders\Special</Filter>
     </None>
-    <None Include="Special\Blur.fx">
+    <None Include="Special\Blur.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Blur.effect.json">
       <Filter>Shaders\Special</Filter>
     </None>
     <None Include="Special\Brushstroke.fx">

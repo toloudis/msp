@@ -143,8 +143,7 @@
   },
   "variables": {
     "sceneTexture": {
-      "type": "Texture2D",
-      "semantic": "SCENE_TEXTURE"
+      "type": "Texture2D"
     },
     "downsampledTexture": {
       "type": "Texture2D"
@@ -161,24 +160,6 @@
     "VSMDepth": {
       "type": "int",
       "default": 1
-    },
-    "HPixelOffsets": {
-      "type": "float2",
-      "array": "[g_KernelSize]",
-      "default": [
-        [-2, 0],
-        [0, 0],
-        [2, 0]
-      ]
-    },
-    "VPixelOffsets": {
-      "type": "float2",
-      "array": "[g_KernelSize]",
-      "default": [
-        [0, -2],
-        [0, 0],
-        [0, 2]
-      ]
     }
   }
 }

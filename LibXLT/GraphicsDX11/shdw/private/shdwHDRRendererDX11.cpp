@@ -1368,7 +1368,7 @@ void shdwHDRRendererDX11::RenderDOF(float i_fSimTime, bool i_debug)
 		blurData.m_pSceneTexture = m_pFrameBuffer->DOFReserveTarget();
 		blurData.m_pDownsampledTexture = m_pFrameBuffer->DOFBlurTarget();
 		blurData.m_pHorizontalBlurTexture = m_pFrameBuffer->DOFHBlurTarget();
-		((effShaderBaseDX11*)effBlur)->SetupParams(&blurData);
+		effBlur->SetupParams(&blurData);
 
 		ID3D11ShaderResourceView* nullTex[1] = {NULL};
 

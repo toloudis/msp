@@ -72,7 +72,6 @@
     <DefaultShaders Include="Phong_wBump.fx"/>
     <DefaultShaders Include="Simple.fx"/>
     <DefaultShaders Include="Special\HDRLighting.fx"/>
-    <DefaultShaders Include="Special\Blur.fx"/>
     <DefaultShaders Include="Special\Glow.fx"/>
     <DefaultShaders Include="Special\DOF.fx"/>
     <DefaultShaders Include="Special\LightGlow.fx"/>

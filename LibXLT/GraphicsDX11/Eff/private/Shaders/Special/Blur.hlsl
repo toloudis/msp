@@ -16,26 +16,34 @@
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 
+// Explicit registers keep the binding layout identical for every entry point
+// (and map directly onto a DX12 root signature / Vulkan descriptor set).
+
 // full sized source image
-Texture2D sceneTexture : SCENE_TEXTURE;
-SamplerState sceneSampler;
+Texture2D sceneTexture : register(t0);
 
 // down-sampled image of the source
-Texture2D downsampledTexture;
-SamplerState downsampledSampler;
-
-SamplerState BlurSampler;
+Texture2D downsampledTexture : register(t1);
 
 // texture that will store the intermediate results of the blur
-Texture2D horizontalBlurTexture;
+Texture2D horizontalBlurTexture : register(t2);
 
-// (wid, ht, 1/width, 1/ht) of source texture ( = pixel size)
-float4 srcSizeInfo;
+// sampler states are described in Blur.effect.json
+SamplerState sceneSampler : register(s0);
+SamplerState downsampledSampler : register(s1);
+SamplerState BlurSampler : register(s2);
 
-// (wid, ht, 1/width, 1/ht) of downsampled texture
-float4 downsampledSizeInfo;
+cbuffer BlurParams : register(b0)
+{
+	// (wid, ht, 1/width, 1/ht) of source texture ( = pixel size)
+	float4 srcSizeInfo;
 
-int VSMDepth = 1;
+	// (wid, ht, 1/width, 1/ht) of downsampled texture
+	float4 downsampledSizeInfo;
+
+	// summed-area-table scan step; default (1) is in Blur.effect.json
+	int VSMDepth;
+};
 
 //#ifndef SEPERABLE_BLUR_KERNEL_SIZE
 #define SEPERABLE_BLUR_KERNEL_SIZE 7
@@ -92,8 +100,8 @@ float4 DownSamplePS(VS_OUTPUT px) : SV_TARGET
 
 // pixel kernels for Gaussian Blur
 static const int g_KernelSize = 3;
-float2 HPixelOffsets[g_KernelSize] = {{-2,0}, {0,0}, {2,0}};
-float2 VPixelOffsets[g_KernelSize] = {{0,-2}, {0,0}, {0,2}};
+static const float2 HPixelOffsets[g_KernelSize] = {{-2,0}, {0,0}, {2,0}};
+static const float2 VPixelOffsets[g_KernelSize] = {{0,-2}, {0,0}, {0,2}};
 static const float BlurWeights[g_KernelSize] = {0.25, 0.5, 0.25};
 
 // Separable Gaussian Blur Shader

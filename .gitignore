@@ -3,3 +3,4 @@ MachStudio/source/packages
 MachStudio/Source/.vs
 LibXLT/bin/
 vcpkg_installed/
+LibXLT/GraphicsDX11/Fx/private/Generated/

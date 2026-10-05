@@ -215,9 +215,8 @@
     <None Include="Special\Billboard.fx">
       <FileType>CppCode</FileType>
     </None>
-    <None Include="Special\Blur.fx">
-      <FileType>CppCode</FileType>
-    </None>
+    <None Include="Special\Blur.hlsl" />
+    <None Include="Special\Blur.effect.json" />
     <None Include="Special\Brushstroke.fx">
       <FileType>CppCode</FileType>
     </None>
