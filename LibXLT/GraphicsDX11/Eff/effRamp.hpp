@@ -44,18 +44,18 @@ public:
 							   int i_MaterialLayerIndex = 0) const;
 
 protected:
-	ID3DX11EffectScalarVariable* m_hHasGradient;
-	ID3DX11EffectShaderResourceVariable* m_hGradientTexture;
+	fxEffectVariable* m_hHasGradient;
+	fxEffectVariable* m_hGradientTexture;
 
-	ID3DX11EffectScalarVariable* m_hHasNoise;
-	ID3DX11EffectShaderResourceVariable* m_hNoiseTexture;
+	fxEffectVariable* m_hHasNoise;
+	fxEffectVariable* m_hNoiseTexture;
 
-	ID3DX11EffectScalarVariable* m_hShape;
-	ID3DX11EffectScalarVariable* m_hInterpolation;
-	ID3DX11EffectScalarVariable* m_hUWave;
-	ID3DX11EffectScalarVariable* m_hUWaveFreq;
-	ID3DX11EffectScalarVariable* m_hVWave;
-	ID3DX11EffectScalarVariable* m_hVWaveFreq;
-	ID3DX11EffectScalarVariable* m_hNoise;
-	ID3DX11EffectScalarVariable* m_hNoiseFreq;
+	fxEffectVariable* m_hShape;
+	fxEffectVariable* m_hInterpolation;
+	fxEffectVariable* m_hUWave;
+	fxEffectVariable* m_hUWaveFreq;
+	fxEffectVariable* m_hVWave;
+	fxEffectVariable* m_hVWaveFreq;
+	fxEffectVariable* m_hNoise;
+	fxEffectVariable* m_hNoiseFreq;
 };

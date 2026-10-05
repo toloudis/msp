@@ -231,13 +231,13 @@ namespace
 				{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0}
 			};
 
-			void* pShaderBytecode = NULL;
+			const void* pShaderBytecode = NULL;
 			unsigned long bytecodeLength = 0;
 			matShaderMgr::SetUseShaderArray(true);
 			effShaderBaseDX11* pDefaultEffect = (effShaderBaseDX11*)matShaderMgr::GetSpecialEffect("LPV_GI.fx");//effShaderArray::GetDefaultEffect();
 			DBG_ASSERT(pDefaultEffect, "effects not initialized yet.");
-			D3DX11_PASS_DESC passDesc;
-			pDefaultEffect->GetD3DXEffect()->GetTechniqueByIndex(0)->GetPassByIndex(0)->GetDesc(&passDesc);
+			fxEffectPassDesc passDesc;
+			pDefaultEffect->GetFxEffect()->GetTechniqueByIndex(0)->GetPassByIndex(0)->GetDesc(&passDesc);
 			pShaderBytecode = passDesc.pIAInputSignature;
 			bytecodeLength = (unsigned long)passDesc.IAInputSignatureSize;
 
@@ -940,7 +940,7 @@ int shdwPassLPVGI::RenderNode(const sNodePlusState& i_Node)
 	// resolve material/effect
 	const matMaterial* pMaterial = &l_InjectionMat;//g3dDX11Util::GetMaterial(i_pNode);
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
-	ID3DX11Effect* pDXEffect = ((effShaderBaseDX11*)pEffect)->GetD3DXEffect();
+	fxEffect* pDXEffect = ((effShaderBaseDX11*)pEffect)->GetFxEffect();
 
 	pEffect->SetTechnique("GI");
 
@@ -1022,8 +1022,8 @@ void shdwPassLPVGI::InjectRSM(const g3dSceneNode* i_rootNode, const g3dProjected
 	// Setup shader variables
 	const matMaterial* pMaterial = &l_InjectionMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
-	ID3DX11Effect* pDXEffect = ((effShaderBaseDX11*)pEffect)->GetD3DXEffect();
-	ID3DX11EffectTechnique* pEffectTechnique = pDXEffect->GetTechniqueByName("Default");
+	fxEffect* pDXEffect = ((effShaderBaseDX11*)pEffect)->GetFxEffect();
+	fxEffectTechnique* pEffectTechnique = pDXEffect->GetTechniqueByName("Default");
 
 	maAxisBox worldBox = i_rootNode->GetWorldBox();
 	float volumeOrigin[4] = {worldBox.GetMinX(), worldBox.GetMinY(), worldBox.GetMinZ(), 1.0f};
@@ -1080,9 +1080,9 @@ void shdwPassLPVGI::LightPropogation(int i_NumIteration, const g3dSceneNode* i_r
 
 	const matMaterial* pMaterial = &l_InjectionMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
-	ID3DX11Effect* pDXEffect = ((effShaderBaseDX11*)pEffect)->GetD3DXEffect();
-	ID3DX11EffectTechnique* pEffectTechnique = pDXEffect->GetTechniqueByName("RVPropagation");
-	ID3DX11EffectTechnique* pEffectTechniqueAccum = pDXEffect->GetTechniqueByName("AccumRV");
+	fxEffect* pDXEffect = ((effShaderBaseDX11*)pEffect)->GetFxEffect();
+	fxEffectTechnique* pEffectTechnique = pDXEffect->GetTechniqueByName("RVPropagation");
+	fxEffectTechnique* pEffectTechniqueAccum = pDXEffect->GetTechniqueByName("AccumRV");
 
 	maAxisBox worldBox = i_rootNode->GetWorldBox();
 	float CellWidth[3] = {worldBox.GetDiffX() / l_LPVCellNum, 
@@ -1176,7 +1176,7 @@ void shdwPassLPVGI::ApplyLPV(const g3dSceneNode* i_rootNode)
 
 	const matMaterial* pMaterial = &l_InjectionMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
-	ID3DX11Effect* pDXEffect = ((effShaderBaseDX11*)pEffect)->GetD3DXEffect();
+	fxEffect* pDXEffect = ((effShaderBaseDX11*)pEffect)->GetFxEffect();
 
 	ID3D11ShaderResourceView** currentSRV = NULL;
 	if (m_bSwapedBuffer)
@@ -1227,7 +1227,7 @@ void shdwPassLPVGI::ApplyLPVOneNode(const g3dSceneNode* i_rootNode, const sNodeP
 
 	const matMaterial* pMaterial = &l_InjectionMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
-	ID3DX11Effect* pDXEffect = ((effShaderBaseDX11*)pEffect)->GetD3DXEffect();
+	fxEffect* pDXEffect = ((effShaderBaseDX11*)pEffect)->GetFxEffect();
 
 	ID3D11ShaderResourceView** currentSRV = NULL;
 	if (m_bSwapedBuffer)

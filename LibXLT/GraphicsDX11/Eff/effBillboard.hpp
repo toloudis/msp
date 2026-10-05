@@ -33,16 +33,16 @@ public:
 							   int i_MaterialLayerIndex = 0) const;
 
 protected:
-	ID3DX11EffectScalarVariable* m_hCKActive;
-	ID3DX11EffectVectorVariable* m_hCKColor;
-	ID3DX11EffectScalarVariable* m_hCKTolerance;
-	ID3DX11EffectScalarVariable* m_hCKRemoveSpill;
-	ID3DX11EffectScalarVariable* m_hCKSpillType;
-	ID3DX11EffectScalarVariable* m_hCKSpillBias;
-	ID3DX11EffectScalarVariable* m_hCKEdgeBlur;
+	fxEffectVariable* m_hCKActive;
+	fxEffectVariable* m_hCKColor;
+	fxEffectVariable* m_hCKTolerance;
+	fxEffectVariable* m_hCKRemoveSpill;
+	fxEffectVariable* m_hCKSpillType;
+	fxEffectVariable* m_hCKSpillBias;
+	fxEffectVariable* m_hCKEdgeBlur;
 
-	ID3DX11EffectScalarVariable* m_hTexWidth;
-	ID3DX11EffectScalarVariable* m_hTexHeight;
+	fxEffectVariable* m_hTexWidth;
+	fxEffectVariable* m_hTexHeight;
 
-	ID3DX11EffectScalarVariable* m_hBrightness;
+	fxEffectVariable* m_hBrightness;
 };

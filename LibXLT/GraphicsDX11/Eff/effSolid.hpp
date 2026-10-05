@@ -40,5 +40,5 @@ public:
 							   int i_MaterialLayerIndex = 0) const;
 
 protected:
-	ID3DX11EffectVectorVariable* m_hSolidColor;
+	fxEffectVariable* m_hSolidColor;
 };

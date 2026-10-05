@@ -4,6 +4,9 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{b6b213dc-78e1-4cf0-9b04-9c7456592f57}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders\Materials">
+      <UniqueIdentifier>{202561ca-c3f7-4448-a528-076d91c9f75e}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Shaders\Special">
       <UniqueIdentifier>{f2b2925a-51da-4959-96b4-346dc8462563}</UniqueIdentifier>
     </Filter>
@@ -86,6 +89,27 @@
     </None>
     <None Include="Special\Billboard.fx">
       <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Materials\Globals.hlsli">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Lambert.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Lambert.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Lighting.hlsli">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Skinning.hlsli">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Support.hlsli">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Materials\Tessellate.hlsli">
+      <Filter>Shaders\Materials</Filter>
     </None>
     <None Include="Special\Blur.hlsl">
       <Filter>Shaders\Special</Filter>

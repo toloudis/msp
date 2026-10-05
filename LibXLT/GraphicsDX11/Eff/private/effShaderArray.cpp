@@ -66,6 +66,7 @@
 //#include "GraphicsDX11/eff/effToon.hpp"
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
 #include "GraphicsDX11/Fx/fxEmbeddedShaders.hpp"
+#include "GraphicsDX11/eff/effPlainEffect.hpp"
 
 // built-in shaders:
 #include "GraphicsDX11/eff/private/ShaderBake.hpp"
@@ -514,6 +515,39 @@ void effShaderArray::UnloadEffect(const fsLocator& i_PathToShader,
 }
 
 //------------------------------------------------------------------------
+// LoadPlainMaterial() - a material shader converted to plain HLSL is built
+//	in, and replaces the .fx of the same name: Lambert.fx loads the
+//	embedded Materials/Lambert.effect.json. NULL if there is none (or it
+//	fails to build), so the .fx is loaded instead.
+//------------------------------------------------------------------------
+static matShaderEffect* LoadPlainMaterial(const fsLocator& i_ShaderLoc, const std::string& i_FileName)
+{
+	std::string name = i_FileName;
+	size_t dot = name.rfind('.');
+	if (dot == std::string::npos || _stricmp(name.c_str() + dot, ".fx") != 0)
+		return NULL;
+	name.erase(dot);
+
+	const fxEmbeddedEffect* embedded = fxEmbeddedShaders::Find(name);
+	if (!embedded || strncmp(embedded->m_Source, "Materials/", 10) != 0)
+		return NULL;
+
+	std::string error;
+	std::unique_ptr<fxEffectDX11> effect = fxEmbeddedShaders::CreateDX11(*embedded, g2dDX11Global::g_pDevice, error);
+	if (!effect)
+	{
+		DBG_ERROR("Built in material " << name.c_str() << " failed to load, using " << i_FileName.c_str() << ": " << error.c_str());
+		return NULL;
+	}
+
+	DBG_LOG("Material " << i_FileName.c_str() << " loaded as plain HLSL (" << embedded->m_Source << ")");
+	fsLocator folder = i_ShaderLoc;
+	folder.Pop();
+	std::unique_ptr<fxEffect> plain(new effPlainEffect(std::move(effect)));
+	return new effShaderBaseDX11(folder, std::move(plain), i_FileName);
+}
+
+//------------------------------------------------------------------------
 // LoadEffect()
 //------------------------------------------------------------------------
 matShaderEffect* effShaderArray::LoadEffect(const fsLocator& i_PathToShader,
@@ -526,6 +560,13 @@ matShaderEffect* effShaderArray::LoadEffect(const fsLocator& i_PathToShader,
 
 	// Get the shader name
 	std::string shaderFileName = itStringUtil::GetStdString(shaderLoc.GetLastName());
+
+	pEffect = LoadPlainMaterial(shaderLoc, shaderFileName);
+	if (pEffect)
+	{
+		io_ShaderMap[i_PathToShader] = pEffect;
+		return pEffect;
+	}
 
 	ID3DX11Effect* effect = NULL;
 

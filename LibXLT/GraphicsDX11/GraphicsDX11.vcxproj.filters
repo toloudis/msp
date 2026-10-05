@@ -225,13 +225,25 @@
     <ClInclude Include="Eff\effBlur.hpp">
       <Filter>Eff</Filter>
     </ClInclude>
+    <ClInclude Include="Eff\effFX11Effect.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effPlainEffect.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
     <ClInclude Include="Eff\effPlainShaderDX11.hpp">
       <Filter>Eff</Filter>
     </ClInclude>
     <ClInclude Include="Fx\fxEffectDesc.hpp">
       <Filter>Fx</Filter>
     </ClInclude>
+    <ClInclude Include="Fx\fxEffectApi.hpp">
+      <Filter>Fx</Filter>
+    </ClInclude>
     <ClInclude Include="Fx\fxEffectDX11.hpp">
+      <Filter>Fx</Filter>
+    </ClInclude>
+    <ClInclude Include="Fx\fxMaterialInstance.hpp">
       <Filter>Fx</Filter>
     </ClInclude>
     <ClInclude Include="Fx\fxEmbeddedShaders.hpp">
@@ -708,6 +720,12 @@
     <ClCompile Include="Eff\private\effBlur.cpp">
       <Filter>Eff\private</Filter>
     </ClCompile>
+    <ClCompile Include="Eff\private\effFX11Effect.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effPlainEffect.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
     <ClCompile Include="Eff\private\effPlainShaderDX11.cpp">
       <Filter>Eff\private</Filter>
     </ClCompile>
@@ -715,6 +733,9 @@
       <Filter>Fx\private</Filter>
     </ClCompile>
     <ClCompile Include="Fx\private\fxEffectDX11.cpp">
+      <Filter>Fx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Fx\private\fxMaterialInstance.cpp">
       <Filter>Fx\private</Filter>
     </ClCompile>
     <ClCompile Include="Fx\private\fxEmbeddedShaders.cpp">

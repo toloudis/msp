@@ -89,7 +89,7 @@ int HairRendererDX11::Render( const g3dSceneNode* i_pNode, const matMaterial* i_
 	bool bTessellate = pFrag->IsHardwareTessellated() && i_pEffect->HasHardwareTessellation() && g3dPrefs::CurrentPrefs().m_bUseHardwareTessellation;
 	bool bLines = g3dPrefs::CurrentPrefs().m_bHairLines;
 
-	ID3DX11Effect* pD3DEffect = pEffect->GetD3DXEffect();
+	fxEffect* pD3DEffect = pEffect->GetFxEffect();
 	pD3DEffect->GetVariableByName("g_HairMaterials")->AsShaderResource()->SetResource( pFrag->GetHairMaterialsView() );
 	pD3DEffect->GetVariableByName("g_HairGeometry")->AsShaderResource()->SetResource( pFrag->GetHairGeometryView() );
 	pD3DEffect->GetVariableByName("g_nStrandCPs")->AsScalar()->SetInt( pFrag->GetVertsPerStrand() );

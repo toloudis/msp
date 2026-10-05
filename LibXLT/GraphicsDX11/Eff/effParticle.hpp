@@ -29,8 +29,8 @@ public:
 							   int i_MaterialLayerIndex = 0) const;
 
 protected:
-	ID3DX11EffectShaderResourceVariable* m_hDiffuseMap;
-	ID3DX11EffectVectorVariable* m_MaterialAmbientHandle;
-	ID3DX11EffectVectorVariable* m_MaterialEmissiveHandle;
-	ID3DX11EffectScalarVariable* m_MaterialSpecularPowerHandle;
+	fxEffectVariable* m_hDiffuseMap;
+	fxEffectVariable* m_MaterialAmbientHandle;
+	fxEffectVariable* m_MaterialEmissiveHandle;
+	fxEffectVariable* m_MaterialSpecularPowerHandle;
 };

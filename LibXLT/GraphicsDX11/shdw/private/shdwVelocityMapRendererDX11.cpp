@@ -106,7 +106,7 @@ int shdwVelocityMapRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCa
 	
 	// Assign shader
 	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)matShaderMgr::GetSpecialEffect(("VelocityRender.fx"));
-	ID3DX11Effect* pEffect = i_pEffect->GetD3DXEffect();
+	fxEffect* pEffect = i_pEffect->GetFxEffect();
 
 	// Initialize the triangle count
 	l_nNumTrianglesRendered = 0;
@@ -129,7 +129,7 @@ int shdwVelocityMapRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCa
 	int w,h;
 	i_pWindow->GetDimensions(w,h);
 
-	ID3DX11EffectTechnique* pTechnique = pEffect->GetTechniqueByName("DisplayVelocity");
+	fxEffectTechnique* pTechnique = pEffect->GetTechniqueByName("DisplayVelocity");
 
 	//	pEffect->SetTexture("velocityBuffer", m_pFrameBuffer->VelocityBuffer()->GetSurface());
 	pEffect->GetVariableByName("velocityBuffer")->AsShaderResource()->SetResource( m_pFrameBuffer->VelocityBuffer()->GetSurface() );
@@ -143,7 +143,7 @@ int shdwVelocityMapRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCa
 
 	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Disable_NS );
 
-	ID3DX11EffectPass* pPass = pTechnique->GetPassByIndex(0);
+	fxEffectPass* pPass = pTechnique->GetPassByIndex(0);
 	pPass->Apply(0, g2dDX11Global::g_pDeviceContext);
 	g3dDX11Util::DrawFullScreenQuad( w,h );
 

@@ -71,6 +71,31 @@ public:
 		bool IsValid() const { return m_Buffer >= 0; }
 	};
 
+	// The shape of a constant, from shader reflection: D3D_SHADER_VARIABLE_CLASS
+	// and D3D_SHADER_VARIABLE_TYPE values, and the members of a struct with
+	// their byte offsets from the start of the struct.
+	struct Type
+	{
+		struct Member;
+		std::string m_Name;			// e.g. "float4", or the struct's name
+		int m_Class = 0;
+		int m_Type = 0;
+		uint32_t m_Rows = 0;
+		uint32_t m_Columns = 0;
+		uint32_t m_Elements = 0;	// 0 if not an array
+		std::vector<Member> m_Members;
+
+		// Bytes one element takes in a constant buffer, before padding to
+		// the next 16-byte register; array elements are 16-byte aligned.
+		uint32_t GetElementSize() const;
+	};
+	struct Type::Member
+	{
+		std::string m_Name;
+		uint32_t m_Offset = 0;
+		Type m_Type;
+	};
+
 	// Handle to a texture/buffer (SRV) slot in the effect's resource table.
 	struct Resource
 	{
@@ -95,6 +120,11 @@ public:
 	// Parameter handles; invalid if no entry point uses the name.
 	Constant FindConstant(const std::string& i_Name) const;
 	Resource FindResource(const std::string& i_Name) const;
+	// The reflected type of a constant; nullptr if no entry point uses it.
+	const Type* FindConstantType(const std::string& i_Name) const;
+	// Names of every constant and resource some entry point uses.
+	std::vector<std::string> GetConstantNames() const;
+	std::vector<std::string> GetResourceNames() const;
 
 	// Writes go to CPU-side storage; Apply() uploads and binds them.
 	void SetConstant(const Constant& i_Constant, const void* i_pData, uint32_t i_Bytes);
@@ -117,6 +147,20 @@ public:
 	// on the way in when the shader stores it column-major.
 	void SetMatrix(const Constant& i_Constant, const float* i_pRowMajor4x4);
 	void SetResource(const Resource& i_Resource, ID3D11ShaderResourceView* i_pView);
+
+	// Read back what was written (or the default), for the material UI.
+	void GetConstant(const Constant& i_Constant, void* o_pData, uint32_t i_Bytes) const;
+	ID3D11ShaderResourceView* GetResource(const Resource& i_Resource) const;
+
+	// Whole constant buffers, by the cbuffer's name in the .hlsl. A material
+	// instance keeps its own copy of the buffers that hold material
+	// parameters and swaps them in before drawing; in D3D12/Vulkan that
+	// copy becomes the instance's own constant buffer view.
+	int FindConstantBuffer(const std::string& i_Name) const;		// -1 if missing
+	uint32_t GetConstantBufferSize(int i_Buffer) const;
+	const void* GetConstantBufferData(int i_Buffer) const;
+	const void* GetConstantBufferDefaults(int i_Buffer) const;	// as created
+	void SetConstantBufferData(int i_Buffer, const void* i_pData, uint32_t i_Bytes);
 
 	// Binds the pass's shaders on every graphics stage (unused stages get
 	// none), then the constant buffers, textures and samplers it reads.
@@ -155,6 +199,7 @@ private:
 		std::string m_Name;
 		uint32_t m_Size = 0;
 		std::vector<uint8_t> m_Data;
+		std::vector<uint8_t> m_Defaults;
 		Microsoft::WRL::ComPtr<ID3D11Buffer> m_pBuffer;
 		bool m_bDirty = true;
 	};
@@ -162,10 +207,7 @@ private:
 	struct Variable
 	{
 		Constant m_Constant;
-		int m_Type = 0;			// D3D_SHADER_VARIABLE_TYPE
-		uint32_t m_Columns = 0;
-		uint32_t m_Rows = 0;
-		uint32_t m_Elements = 0;
+		Type m_Type;
 	};
 
 	bool build(ID3D11Device* i_pDevice, const fxBytecodeSource& i_Bytecode, std::string& o_Error);

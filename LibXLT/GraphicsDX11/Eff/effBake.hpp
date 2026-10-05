@@ -34,11 +34,11 @@ public:
 
 
 protected:
-	ID3DX11EffectScalarVariable* m_hHasEmissive;
-	ID3DX11EffectShaderResourceVariable* m_hEmissiveMap;
-	ID3DX11EffectScalarVariable* m_hHasNormal;
-	ID3DX11EffectShaderResourceVariable* m_hNormalMap;
+	fxEffectVariable* m_hHasEmissive;
+	fxEffectVariable* m_hEmissiveMap;
+	fxEffectVariable* m_hHasNormal;
+	fxEffectVariable* m_hNormalMap;
 	
-	ID3DX11EffectVectorVariable* m_MaterialEmissiveHandle;
+	fxEffectVariable* m_MaterialEmissiveHandle;
 
 };

@@ -34,31 +34,31 @@ public:
 
 protected:
 
-	ID3DX11EffectScalarVariable* m_hHasHairSupport;
-	ID3DX11EffectScalarVariable* m_hHasOSM;
-	ID3DX11EffectScalarVariable* m_hHasOSMMulti;
-	ID3DX11EffectScalarVariable* m_hHasOSMMulti32;
-	ID3DX11EffectScalarVariable* m_hHasDepthMap;
-	ID3DX11EffectScalarVariable* m_hHasOpacityVolume;
+	fxEffectVariable* m_hHasHairSupport;
+	fxEffectVariable* m_hHasOSM;
+	fxEffectVariable* m_hHasOSMMulti;
+	fxEffectVariable* m_hHasOSMMulti32;
+	fxEffectVariable* m_hHasDepthMap;
+	fxEffectVariable* m_hHasOpacityVolume;
 
-	ID3DX11EffectShaderResourceVariable* m_hOSM[8];//Opacity Shadow Maps
-	ID3DX11EffectShaderResourceVariable* m_hDepthMap;//the depth map (R32f actual depths)
-	ID3DX11EffectShaderResourceVariable* m_hOpacityVolume;
+	fxEffectVariable* m_hOSM[8];//Opacity Shadow Maps
+	fxEffectVariable* m_hDepthMap;//the depth map (R32f actual depths)
+	fxEffectVariable* m_hOpacityVolume;
 
 	//these will be around the object, except if the light planes cross the bounds
 	//then these will be reduced by the lights bounds
-	ID3DX11EffectScalarVariable* m_hZNear;
-	ID3DX11EffectScalarVariable* m_hZFar;
-	ID3DX11EffectVectorVariable* m_hInvScreenSize;
+	fxEffectVariable* m_hZNear;
+	fxEffectVariable* m_hZFar;
+	fxEffectVariable* m_hInvScreenSize;
 
-	ID3DX11EffectVectorVariable* m_hLightViewPlane;	//plane that intersects the light perpendicularly
+	fxEffectVariable* m_hLightViewPlane;	//plane that intersects the light perpendicularly
 //	D3DXHANDLE m_hAspect;			//Projection X,Y scales
-	ID3DX11EffectScalarVariable* m_hSubPixelPower;	//0 = none, 1 = linear, 2 = squared, etc..
+	fxEffectVariable* m_hSubPixelPower;	//0 = none, 1 = linear, 2 = squared, etc..
 
 	///for tessellation
-	ID3DX11EffectVectorVariable* m_hTessellation;
-	ID3DX11EffectShaderResourceVariable* m_hDataTexture;	//Vertex texture of strand control points
+	fxEffectVariable* m_hTessellation;
+	fxEffectVariable* m_hDataTexture;	//Vertex texture of strand control points
 
 	//for interpolation
-	ID3DX11EffectScalarVariable* m_hClumpRadius;
+	fxEffectVariable* m_hClumpRadius;
 };

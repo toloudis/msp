@@ -279,7 +279,7 @@ void shdwAOVolumesRendererDX11::DrawHairNode(const sNodePlusState& i_Node)
 	const matMaterial* pMaterial = m_pHairMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)pEffect;
-	ID3DXEffect* pD3DEffect = i_pEffect->GetD3DXEffect();
+	ID3DXEffect* pD3DEffect = i_pEffect->GetFxEffect();
 
 	g3dDrawStyleUtilDX11::SetDrawStyle(i_Node.m_drawStyle);
 

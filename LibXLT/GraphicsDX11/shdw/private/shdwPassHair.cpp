@@ -161,7 +161,7 @@ namespace
 		const matMaterial* pMaterial = g3dDX11Util::GetMaterial(i_pSceneNode);
 		matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 		//	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)pEffect;
-		//	ID3DXEffect* pD3DEffect = i_pEffect->GetD3DXEffect();
+		//	ID3DXEffect* pD3DEffect = i_pEffect->GetFxEffect();
 
 		//	effStrandHair* i_pHairEffect = dynamic_cast<effStrandHair*>(pEffect);
 		effStrandHairData& HairData = pMaterial->StrandHairData();

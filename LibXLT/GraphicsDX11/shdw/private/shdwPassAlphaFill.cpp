@@ -411,7 +411,7 @@ int shdwPassAlphaFill::RenderNode(const sNodePlusState& i_Node, g3dRenderStateTr
 	const matMaterial* pMaterial = &l_AlphaFillMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 	
-	ID3DX11Effect* pEffectDX = dynamic_cast<effShaderBaseDX11*>(pEffect)->GetD3DXEffect();
+	fxEffect* pEffectDX = dynamic_cast<effShaderBaseDX11*>(pEffect)->GetFxEffect();
 
 	// e_Environment is a different type of ambient pass that is ambient-only.
 	pEffect->SetTechnique(m_bAA ? "ZFillRGBA" : "ZFill");
@@ -452,7 +452,7 @@ int shdwPassAlphaFill::RenderTransparentNode(const g3dSceneNode* i_pNode, g3dRen
 	const matMaterial* pAlphaMaterial = &l_AlphaFillMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pAlphaMaterial);
 	
-	ID3DX11Effect* pEffectDX = dynamic_cast<effShaderBaseDX11*>(pEffect)->GetD3DXEffect();
+	fxEffect* pEffectDX = dynamic_cast<effShaderBaseDX11*>(pEffect)->GetFxEffect();
 
 	const matMaterial* pMaterial = g3dDX11Util::GetMaterial(i_pNode);
 

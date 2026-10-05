@@ -23,6 +23,12 @@
 #include "GraphicsDX11/g2d/g2dDX11Types.hpp"
 #endif
 
+#ifndef FX_EFFECTAPI_HPP
+#include "GraphicsDX11/Fx/fxEffectApi.hpp"
+#endif
+
+#include <memory>
+
 //#include c_g2dD3DX11_H
 
 #include <list>
@@ -54,7 +60,11 @@ public:
 
 	//====================================================================
 	//====================================================================
+	// An Effects (.fx) effect; takes over the caller's reference.
 	effShaderBaseDX11(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, 
+		std::string i_name);
+	// Any fxEffect, e.g. a converted plain-HLSL effect (effPlainEffect).
+	effShaderBaseDX11(const fsLocator& i_Directory, std::unique_ptr<fxEffect> i_pEffect,
 		std::string i_name);
 
 	//====================================================================
@@ -167,8 +177,8 @@ public:
 	virtual void SetName(std::string i_Name) {m_Name = i_Name;}
 
 	// let client see the effect if they know about d3d.
-	ID3DX11Effect* GetD3DXEffect() const {return m_pEffect;}
-	const D3DX11_EFFECT_DESC& EffectDesc() const {return m_EffectDesc;}
+	fxEffect* GetFxEffect() const {return m_pEffect.get();}
+	const fxEffectDesc_& EffectDesc() const {return m_EffectDesc;}
 
 	enum EffStandardMatrices
 	{
@@ -312,10 +322,14 @@ public:
 
 protected:
 	std::string m_Name;
-	ID3DX11Effect* m_pEffect;
-    D3DX11_EFFECT_DESC m_EffectDesc;
+	effShaderBaseDX11(const fsLocator& i_Directory, std::unique_ptr<fxEffect> i_pEffect,
+		ID3DX11Effect* i_pD3DXEffect, std::string i_name);
 
-	mutable ID3DX11EffectTechnique* m_CurrentTechnique;
+	std::unique_ptr<fxEffect> m_pEffect;
+	ID3DX11Effect* m_pD3DXEffect;	// owned; wrapped by m_pEffect
+    fxEffectDesc_ m_EffectDesc;
+
+	mutable fxEffectTechnique* m_CurrentTechnique;
 private:
 
 	//====================================================================
@@ -329,127 +343,123 @@ private:
 	void parse_techniques();
 
 
-	std::vector<ID3DX11EffectVariable*> m_params;
+	std::vector<fxEffectVariable*> m_params;
 	std::map<std::string, int> m_paramnamemap;
 
 	std::list<matTexture*> m_OwnedTextures;
 
 	// redundant storage... these are in m_params too
-	ID3DX11EffectVariable* m_stdMatrices[e_NumMatrices];
+	fxEffectVariable* m_stdMatrices[e_NumMatrices];
 
-	ID3DX11EffectTechnique* m_Techniques[matShaderEffect::e_NumTechniques];
+	fxEffectTechnique* m_Techniques[matShaderEffect::e_NumTechniques];
 	int m_NumTechniquePasses[matShaderEffect::e_NumTechniques];
 
 protected:
-	ID3DX11EffectMatrixVariable* m_UVTransformHandle;
+	fxEffectVariable* m_UVTransformHandle;
 
-	ID3DX11EffectVariable* m_FirstLightHandle;
-	ID3DX11EffectVariable* m_LightInfoHandle;
-	ID3DX11EffectVariable* m_ProjLightInfoHandle;
-	ID3DX11EffectVariable* m_ProjLightTextureHandle;
-	ID3DX11EffectVariable* m_ProjShadowMapHandle;
-	ID3DX11EffectVariable* m_HasProjectedTextureHandle;
-	ID3DX11EffectVariable* m_HasShadowMapHandle;
+	fxEffectVariable* m_FirstLightHandle;
+	fxEffectVariable* m_LightInfoHandle;
+	fxEffectVariable* m_ProjLightInfoHandle;
+	fxEffectVariable* m_ProjLightTextureHandle;
+	fxEffectVariable* m_ProjShadowMapHandle;
+	fxEffectVariable* m_HasProjectedTextureHandle;
+	fxEffectVariable* m_HasShadowMapHandle;
 
-	void MapParameter(std::string i_Name, ID3DX11EffectVariable*& o_Handle);
-	void MapParameter(std::string i_Name, ID3DX11EffectScalarVariable*& o_Handle);
-	void MapParameter(std::string i_Name, ID3DX11EffectVectorVariable*& o_Handle);
-	void MapParameter(std::string i_Name, ID3DX11EffectMatrixVariable*& o_Handle);
-	void MapParameter(std::string i_Name, ID3DX11EffectShaderResourceVariable*& o_Handle);
+	void MapParameter(std::string i_Name, fxEffectVariable*& o_Handle);
 
-	ID3DX11EffectVariable* m_TessellatorMeshTextureHandle;
-	ID3DX11EffectVariable* m_hMeshDataTextureWidthHandle;
-	ID3DX11EffectVariable* m_hMeshDataTextureHeightHandle;
+	fxEffectVariable* m_TessellatorMeshTextureHandle;
+	fxEffectVariable* m_hMeshDataTextureWidthHandle;
+	fxEffectVariable* m_hMeshDataTextureHeightHandle;
 
 private:
-	ID3DX11EffectVariable* m_VecCameraPosHandle;
+	fxEffectVariable* m_VecCameraPosHandle;
 
-	ID3DX11EffectVariable* m_LightArrayHandle;
-	ID3DX11EffectVariable* m_LightArrayNumHandle;
+	fxEffectVariable* m_LightArrayHandle;
+	fxEffectVariable* m_LightArrayNumHandle;
 
-	ID3DX11EffectVariable* m_TimeHandle;
-	ID3DX11EffectVariable* m_IsProjLtHandle;
-	ID3DX11EffectVariable* m_IsDoubleSidedHandle;
+	fxEffectVariable* m_TimeHandle;
+	fxEffectVariable* m_IsProjLtHandle;
+	fxEffectVariable* m_IsDoubleSidedHandle;
 
 	// ambient environment pass
 //	ID3DX11EffectConstantBuffer* m_Env;
-	ID3DX11EffectVariable* m_EnvHasDiffuseMapHandle;
-	ID3DX11EffectVariable* m_EnvDiffuseMapHandle;
-	ID3DX11EffectVariable* m_EnvDiffuseAngleHandle;
-	ID3DX11EffectVariable* m_EnvDiffuseFactorHandle;
-	ID3DX11EffectVariable* m_EnvDiffuseColorHandle;
-	ID3DX11EffectVariable* m_EnvHasSpecularMapHandle;
-	ID3DX11EffectVariable* m_EnvSpecularMapHandle;
-	ID3DX11EffectVariable* m_EnvSpecularAngleHandle;
-	ID3DX11EffectVariable* m_EnvSpecularFactorHandle;
-	ID3DX11EffectVariable* m_EnvSpecularColorHandle;
+	fxEffectVariable* m_EnvHasDiffuseMapHandle;
+	fxEffectVariable* m_EnvDiffuseMapHandle;
+	fxEffectVariable* m_EnvDiffuseAngleHandle;
+	fxEffectVariable* m_EnvDiffuseFactorHandle;
+	fxEffectVariable* m_EnvDiffuseColorHandle;
+	fxEffectVariable* m_EnvHasSpecularMapHandle;
+	fxEffectVariable* m_EnvSpecularMapHandle;
+	fxEffectVariable* m_EnvSpecularAngleHandle;
+	fxEffectVariable* m_EnvSpecularFactorHandle;
+	fxEffectVariable* m_EnvSpecularColorHandle;
 
 	// depth of field
-	ID3DX11EffectVariable* m_DOFHandle;
-	ID3DX11EffectVariable* m_DOFBlurCutoffHandle;
+	fxEffectVariable* m_DOFHandle;
+	fxEffectVariable* m_DOFBlurCutoffHandle;
 	
 	// glow pass info
-	ID3DX11EffectVariable* m_hHasGlowMask;
-	ID3DX11EffectVariable* m_hGlowMask;
-	ID3DX11EffectVariable* m_hConstantGlow;
-	ID3DX11EffectVariable* m_hGlowSize;
+	fxEffectVariable* m_hHasGlowMask;
+	fxEffectVariable* m_hGlowMask;
+	fxEffectVariable* m_hConstantGlow;
+	fxEffectVariable* m_hGlowSize;
 
 	// outline pass info
-	ID3DX11EffectVariable* m_hOutlineDepthScale;
-	ID3DX11EffectVariable* m_hOutlineMinAngle;
-	ID3DX11EffectVariable* m_hOutlineMaxAngle;
-	ID3DX11EffectVariable* m_hOutlineThickness;
-	ID3DX11EffectVariable* m_hOutlineColor;
-	ID3DX11EffectVariable* m_hOutlineViewSize;
-	ID3DX11EffectVariable* m_hUseNormals;
-	ID3DX11EffectVariable* m_hOutlineMinWidth;
-	ID3DX11EffectVariable* m_hOutlineMaxWidth;
+	fxEffectVariable* m_hOutlineDepthScale;
+	fxEffectVariable* m_hOutlineMinAngle;
+	fxEffectVariable* m_hOutlineMaxAngle;
+	fxEffectVariable* m_hOutlineThickness;
+	fxEffectVariable* m_hOutlineColor;
+	fxEffectVariable* m_hOutlineViewSize;
+	fxEffectVariable* m_hUseNormals;
+	fxEffectVariable* m_hOutlineMinWidth;
+	fxEffectVariable* m_hOutlineMaxWidth;
 
 	// vertex uv bake mode
-	ID3DX11EffectVariable* m_hBake;
-	ID3DX11EffectVariable* m_hBakingTransform;
+	fxEffectVariable* m_hBake;
+	fxEffectVariable* m_hBakingTransform;
 
 	// reflection pass rendering
-	ID3DX11EffectVariable* m_hIsolateReflections;
-	ID3DX11EffectVariable* m_hCubeMapEnabled;
+	fxEffectVariable* m_hIsolateReflections;
+	fxEffectVariable* m_hCubeMapEnabled;
 
 	// reflection mapping
-	ID3DX11EffectVariable* m_ReflectionMapIsPlanarHandle;
-	ID3DX11EffectVariable* m_HasReflectionMapHandle;
-	ID3DX11EffectVariable* m_CubeReflectionMapHandle;
-	ID3DX11EffectVariable* m_PlanarReflectionMapHandle;
-	ID3DX11EffectVariable* m_IsReflectionGenHandle;
+	fxEffectVariable* m_ReflectionMapIsPlanarHandle;
+	fxEffectVariable* m_HasReflectionMapHandle;
+	fxEffectVariable* m_CubeReflectionMapHandle;
+	fxEffectVariable* m_PlanarReflectionMapHandle;
+	fxEffectVariable* m_IsReflectionGenHandle;
 
 	// skinning
-	ID3DX11EffectVariable* m_SkinningMatrixPaletteHandle;
+	fxEffectVariable* m_SkinningMatrixPaletteHandle;
 
 	// Hardware Tessellation
-	ID3DX11EffectVariable* m_hHardwareTessellationHandle;	//only valid if the shader supports hardware tessellation
-	ID3DX11EffectVariable* m_hTessValueHandle;
+	fxEffectVariable* m_hHardwareTessellationHandle;	//only valid if the shader supports hardware tessellation
+	fxEffectVariable* m_hTessValueHandle;
 
 	// Displacement Mapping
-	ID3DX11EffectVariable* m_hHasDisplacementMap;
-	ID3DX11EffectVariable* m_hDisplacementMap;
-	ID3DX11EffectVariable* m_hDisplacementScale;
-	ID3DX11EffectVariable* m_hDisplacementBias;
-	ID3DX11EffectVariable* m_hDisplacementBlur;
-	ID3DX11EffectVariable* m_hDisplacementObjUVScale;
+	fxEffectVariable* m_hHasDisplacementMap;
+	fxEffectVariable* m_hDisplacementMap;
+	fxEffectVariable* m_hDisplacementScale;
+	fxEffectVariable* m_hDisplacementBias;
+	fxEffectVariable* m_hDisplacementBlur;
+	fxEffectVariable* m_hDisplacementObjUVScale;
 
-	ID3DX11EffectVariable* m_hNormalMap;
-	ID3DX11EffectVariable* m_hBumpScale;
-	ID3DX11EffectVariable* m_hHasNormalMap;
+	fxEffectVariable* m_hNormalMap;
+	fxEffectVariable* m_hBumpScale;
+	fxEffectVariable* m_hHasNormalMap;
 
 	// Paint Overlay
-	ID3DX11EffectVariable* m_PaintOverlayMapHandle;
+	fxEffectVariable* m_PaintOverlayMapHandle;
 
 	// Alpha test Reference value
-	ID3DX11EffectVariable* m_AlphaTestRefHandle;
+	fxEffectVariable* m_AlphaTestRefHandle;
 
 	// User defined clip plane (world space) (0,0,0,1) = disabled
-	ID3DX11EffectVariable* m_ClipPlaneHandle;
+	fxEffectVariable* m_ClipPlaneHandle;
 
 	//Hair Tessellation
-//	ID3DX11EffectVariable* m_HairTessellationHandle;
+//	fxEffectVariable* m_HairTessellationHandle;
 
 	struct ShaderParamUIInfo
 	{
@@ -460,49 +470,49 @@ private:
 			return Index < i_Other.Index;
 		}
 	};
-	bool GetShaderParamInfo(ID3DX11EffectVariable* i_hParam, 
+	bool GetShaderParamInfo(fxEffectVariable* i_hParam, 
 		effShaderParams* o_pParams,
 		effShaderBindingsDX11* o_pBindings,
 		std::list<ShaderParamUIInfo>& o_UIInfo) const;
 
 	effParamTexture* MapTextureParam(effShaderParams* o_pParams,
 		effShaderBindingsDX11* o_pBindings,
-		ID3DX11EffectShaderResourceVariable* i_hParam, 
+		fxEffectVariable* i_hParam, 
 		const std::string& i_Name,
 		bool i_bCreateBinding,
 		bool i_bCreateUI,
 		std::list<ShaderParamUIInfo>& o_UIInfo) const;
 	effParamTextureManip* MapTextureManipParam(effShaderParams* o_pParams,
 		effShaderBindingsDX11* o_pBindings,
-		ID3DX11EffectShaderResourceVariable* i_hParam, 
+		fxEffectVariable* i_hParam, 
 		const std::string& i_Name,
 		bool i_bCreateBinding,
 		bool i_bCreateUI,
 		std::list<ShaderParamUIInfo>& o_UIInfo) const;
 	effParamFloat* MapFloatParam(effShaderParams* o_pParams,
 		effShaderBindingsDX11* o_pBindings,
-		ID3DX11EffectScalarVariable* i_hParam, 
+		fxEffectVariable* i_hParam, 
 		const std::string& i_Name,
 		bool i_bCreateBinding,
 		bool i_bCreateUI,
 		std::list<ShaderParamUIInfo>& o_UIInfo) const;
 	effParamBool* MapBoolParam(effShaderParams* o_pParams,
 		effShaderBindingsDX11* o_pBindings,
-		ID3DX11EffectScalarVariable* i_hParam, 
+		fxEffectVariable* i_hParam, 
 		const std::string& i_Name,
 		bool i_bCreateBinding,
 		bool i_bCreateUI,
 		std::list<ShaderParamUIInfo>& o_UIInfo) const;
 	effParamInt* MapEnumParam(effShaderParams* o_pParams,
 		effShaderBindingsDX11* o_pBindings,
-		ID3DX11EffectScalarVariable* i_hParam, 
+		fxEffectVariable* i_hParam, 
 		const std::string& i_Name,
 		bool i_bCreateBinding,
 		bool i_bCreateUI,
 		std::list<ShaderParamUIInfo>& o_UIInfo) const;
 	effParamColor* MapColorParam(effShaderParams* o_pParams,
 		effShaderBindingsDX11* o_pBindings,
-		ID3DX11EffectVectorVariable* i_hParam, 
+		fxEffectVariable* i_hParam, 
 		const std::string& i_Name,
 		bool i_bCreateBinding,
 		bool i_bCreateUI,
