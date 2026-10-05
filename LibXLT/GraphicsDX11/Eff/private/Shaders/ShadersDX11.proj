@@ -77,9 +77,6 @@
     <DefaultShaders Include="Special\MaskAlpha.fx"/>
     <DefaultShaders Include="Special\DepthMap.fx"/>
     <DefaultShaders Include="Special\DepthRender.fx"/>
-    <DefaultShaders Include="Special\ssaoBilateralBlurEngine.fx"/>
-    <DefaultShaders Include="Special\ssaoMultiHorizonBasedAO.fx"/>
-    <DefaultShaders Include="Special\ssgiMultiHorizonBasedGI.fx"/>
     <DefaultShaders Include="Special\Billboard.fx"/>
     <DefaultShaders Include="Special\Brushstroke.fx"/>
     <DefaultShaders Include="Special\IlluminationOnly.fx"/>

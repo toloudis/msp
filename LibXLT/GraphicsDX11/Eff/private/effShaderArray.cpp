@@ -79,9 +79,6 @@
 #include "GraphicsDX11/eff/private/ShaderMaskAlpha.hpp"
 #include "GraphicsDX11/eff/private/ShaderDepthMap.hpp"
 #include "GraphicsDX11/eff/private/ShaderDepthRender.hpp"
-#include "GraphicsDX11/eff/private/ShaderssaoBilateralBlurEngine.hpp"
-#include "GraphicsDX11/eff/private/ShaderssaoMultiHorizonBasedAO.hpp"
-#include "GraphicsDX11/eff/private/ShaderssgiMultiHorizonBasedGI.hpp"
 #include "GraphicsDX11/eff/private/ShaderBillboard.hpp"
 #include "GraphicsDX11/eff/private/ShaderBrushstroke.hpp"
 #include "GraphicsDX11/eff/private/ShaderVelocityRender.hpp"
@@ -450,9 +447,9 @@ void effShaderArray::RegisterEffects(const fsLocator &i_ShaderDir,
 
 	RegisterPlainShader<effOutline>("Outline",	new effOutlineData, io_ShaderMap);
 
-	RegisterShader<effOcclusion>("ssaoBilateralBlurEngine.fx", new effOcclusionData, g_ShaderssaoBilateralBlurEngine, sizeof(g_ShaderssaoBilateralBlurEngine), io_ShaderMap);
-	RegisterShader<effOcclusion>("ssaoMultiHorizonBasedAO.fx", new effOcclusionData, g_ShaderssaoMultiHorizonBasedAO, sizeof(g_ShaderssaoMultiHorizonBasedAO), io_ShaderMap);
-	RegisterShader<effOcclusion>("ssgiMultiHorizonBasedGI.fx", new effOcclusionData, g_ShaderssgiMultiHorizonBasedGI, sizeof(g_ShaderssgiMultiHorizonBasedGI), io_ShaderMap);
+	RegisterPlainShader<effPlainShaderDX11>("ssaoBilateralBlurEngine", new effOcclusionData, io_ShaderMap);
+	RegisterPlainShader<effPlainShaderDX11>("ssaoMultiHorizonBasedAO", new effOcclusionData, io_ShaderMap);
+	RegisterPlainShader<effPlainShaderDX11>("ssgiMultiHorizonBasedGI", new effOcclusionData, io_ShaderMap);
 	RegisterShader<effOcclusion>("AOVolumes.fx", new effOcclusionData, g_ShaderAOVolumes, sizeof(g_ShaderAOVolumes), io_ShaderMap);
 
 	RegisterShader<effOcclusion>("GIVolumes.fx", new effOcclusionData, g_ShaderGIVolumes, sizeof(g_ShaderGIVolumes), io_ShaderMap);

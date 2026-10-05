@@ -275,15 +275,12 @@
     <None Include="Special\Solid.fx">
       <FileType>CppCode</FileType>
     </None>
-    <None Include="Special\ssaoBilateralBlurEngine.fx">
-      <FileType>CppCode</FileType>
-    </None>
-    <None Include="Special\ssaoMultiHorizonBasedAO.fx">
-      <FileType>CppCode</FileType>
-    </None>
-    <None Include="Special\ssgiMultiHorizonBasedGI.fx">
-      <FileType>CppCode</FileType>
-    </None>
+    <None Include="Special\ssaoBilateralBlurEngine.hlsl" />
+    <None Include="Special\ssaoBilateralBlurEngine.effect.json" />
+    <None Include="Special\ssaoMultiHorizonBasedAO.hlsl" />
+    <None Include="Special\ssaoMultiHorizonBasedAO.effect.json" />
+    <None Include="Special\ssgiMultiHorizonBasedGI.hlsl" />
+    <None Include="Special\ssgiMultiHorizonBasedGI.effect.json" />
     <None Include="Special\testtess.fx">
       <FileType>CppCode</FileType>
     </None>

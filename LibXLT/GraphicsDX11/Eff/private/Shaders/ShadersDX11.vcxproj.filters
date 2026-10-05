@@ -192,13 +192,22 @@
     <None Include="Special\Solid.fx">
       <Filter>Shaders\Special</Filter>
     </None>
-    <None Include="Special\ssaoBilateralBlurEngine.fx">
+    <None Include="Special\ssaoBilateralBlurEngine.hlsl">
       <Filter>Shaders\Special</Filter>
     </None>
-    <None Include="Special\ssaoMultiHorizonBasedAO.fx">
+    <None Include="Special\ssaoBilateralBlurEngine.effect.json">
       <Filter>Shaders\Special</Filter>
     </None>
-    <None Include="Special\ssgiMultiHorizonBasedGI.fx">
+    <None Include="Special\ssaoMultiHorizonBasedAO.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\ssaoMultiHorizonBasedAO.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\ssgiMultiHorizonBasedGI.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\ssgiMultiHorizonBasedGI.effect.json">
       <Filter>Shaders\Special</Filter>
     </None>
     <None Include="Special\testtess.fx">
