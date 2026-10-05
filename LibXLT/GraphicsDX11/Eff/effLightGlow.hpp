@@ -21,7 +21,7 @@ class matMaterial;
 class effLightGlow : public effShaderBaseDX11 
 {
 public:
-	effLightGlow(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, std::string i_name);
+	effLightGlow(const fsLocator& i_Directory, std::unique_ptr<fxEffect> i_pEffect, std::string i_name);
 
 	virtual effShaderData* CreateData(const matMaterial* i_Mat);
 

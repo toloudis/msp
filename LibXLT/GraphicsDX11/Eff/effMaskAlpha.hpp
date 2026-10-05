@@ -23,7 +23,7 @@ class effMaskAlpha : public effShaderBaseDX11
 public:
 	//====================================================================
 	//====================================================================
-	effMaskAlpha(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, std::string i_name);
+	effMaskAlpha(const fsLocator& i_Directory, std::unique_ptr<fxEffect> i_pEffect, std::string i_name);
 
 	//====================================================================
 	//====================================================================

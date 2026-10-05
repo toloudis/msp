@@ -27,8 +27,9 @@ struct ID3DX11EffectType;
 class effFX11Effect : public fxEffect
 {
 public:
-	// Takes no reference; the caller keeps owning i_pEffect.
-	explicit effFX11Effect(ID3DX11Effect* i_pEffect);
+	// Takes no reference unless i_bOwn, in which case the effect is
+	// released with this wrapper.
+	explicit effFX11Effect(ID3DX11Effect* i_pEffect, bool i_bOwn = false);
 	virtual ~effFX11Effect();
 
 	ID3DX11Effect* GetD3DXEffect() const { return m_pEffect; }
@@ -53,6 +54,7 @@ private:
 	class Type;
 
 	ID3DX11Effect* m_pEffect;
+	bool m_bOwn;
 	std::map<ID3DX11EffectVariable*, std::unique_ptr<Variable>> m_Variables;
 	std::map<ID3DX11EffectTechnique*, std::unique_ptr<Technique>> m_Techniques;
 	std::map<ID3DX11EffectPass*, std::unique_ptr<Pass>> m_Passes;

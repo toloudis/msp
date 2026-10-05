@@ -31,10 +31,15 @@ class fxEffectDX11;
 class effPlainEffect : public fxEffect
 {
 public:
-	explicit effPlainEffect(std::unique_ptr<fxEffectDX11> i_pEffect);
+	// i_Source: where the effect came from, e.g. "Materials/Phong.effect.json"
+	explicit effPlainEffect(std::unique_ptr<fxEffectDX11> i_pEffect,
+		const std::string& i_Source = std::string());
 	virtual ~effPlainEffect();
 
 	fxEffectDX11* GetEffectDX11() const { return m_pEffect.get(); }
+	// A material (from Materials/), as opposed to a special or post effect
+	// the renderer drives directly.
+	bool IsMaterial() const { return m_Source.compare(0, 10, "Materials/") == 0; }
 
 	virtual HRESULT GetDesc(fxEffectDesc_* o_pDesc);
 	virtual fxEffectVariable* GetVariableByIndex(UINT i_Index);
@@ -53,6 +58,7 @@ public:
 
 private:
 	std::unique_ptr<fxEffectDX11> m_pEffect;
+	std::string m_Source;
 	std::vector<std::unique_ptr<Variable>> m_Variables;
 	std::map<std::string, Variable*> m_VariableNames;
 	std::vector<std::unique_ptr<Technique>> m_Techniques;

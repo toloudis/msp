@@ -66,6 +66,7 @@
 //#include "GraphicsDX11/eff/effToon.hpp"
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
 #include "GraphicsDX11/Fx/fxEmbeddedShaders.hpp"
+#include "GraphicsDX11/eff/effFX11Effect.hpp"
 #include "GraphicsDX11/eff/effPlainEffect.hpp"
 
 // built-in shaders:
@@ -105,6 +106,41 @@
 #include "GraphicsDX11/eff/private/PSMapNormalsToScreen.hpp"
 
 #include <map>
+
+//------------------------------------------------------------------------
+// OwnedFX11() - an Effects (.fx) effect behind the fxEffect interface; the
+//	wrapper takes over the caller's reference.
+//------------------------------------------------------------------------
+static std::unique_ptr<fxEffect> OwnedFX11(ID3DX11Effect* i_pEffect)
+{
+	return std::unique_ptr<fxEffect>(new effFX11Effect(i_pEffect, true));
+}
+
+//------------------------------------------------------------------------
+// LoadPlainBuiltIn() - the embedded plain-HLSL conversion of a built-in
+//	effect: "Phong.fx" or "Phong" loads the embedded "Phong". NULL if there
+//	is none or it fails to build, so the caller falls back to the .fx.
+//------------------------------------------------------------------------
+static std::unique_ptr<fxEffect> LoadPlainBuiltIn(const std::string& i_Name)
+{
+	std::string name = i_Name;
+	size_t dot = name.rfind('.');
+	if (dot != std::string::npos && _stricmp(name.c_str() + dot, ".fx") == 0)
+		name.erase(dot);
+
+	const fxEmbeddedEffect* embedded = fxEmbeddedShaders::Find(name);
+	if (!embedded)
+		return nullptr;
+
+	std::string error;
+	std::unique_ptr<fxEffectDX11> effect = fxEmbeddedShaders::CreateDX11(*embedded, g2dDX11Global::g_pDevice, error);
+	if (!effect)
+	{
+		DBG_ERROR("Built in shader " << name.c_str() << " failed to load as plain HLSL, using the .fx: " << error.c_str());
+		return nullptr;
+	}
+	return std::unique_ptr<fxEffect>(new effPlainEffect(std::move(effect), embedded->m_Source));
+}
 
 namespace
 {
@@ -162,7 +198,7 @@ namespace
 			matShaderEffect* pEffect = NULL;
 			if (effect != NULL)
 			{
-				pEffect = new EFF_TYPE(m_Locator, effect, i_Name);
+				pEffect = new EFF_TYPE(m_Locator, OwnedFX11(effect), i_Name);
 				//DBG_LOG( "Built in shader = " << i_Name.c_str());
 				io_ShaderMap[i_Name].m_pEffect = pEffect;
 			}
@@ -201,7 +237,7 @@ namespace
 			matShaderEffect* pEffect = NULL;
 			if (effect != NULL)
 			{
-				pEffect = new EFF_TYPE(fsLocator(), effect, i_Name);
+				pEffect = new EFF_TYPE(fsLocator(), OwnedFX11(effect), i_Name);
 				//DBG_LOG( "Built in shader = " << i_Name.c_str());
 				io_ShaderMap[i_Name].m_pEffect = pEffect;
 			}
@@ -277,11 +313,20 @@ template<class EFF_TYPE> void RegisterShader(std::string i_Name,
 //	loader->LoadShader(i_Name, io_ShaderMap);
 //	delete loader;
 
-	ID3DX11Effect* effect = effShaderUtilWin::LoadEffectData((void*)i_ShaderBits, i_ShaderSizeBytes, i_Name );
-	matShaderEffect* pEffect = NULL;
-	if (effect != NULL)
+	// prefer the plain-HLSL conversion when one is built in
+	std::unique_ptr<fxEffect> effect = LoadPlainBuiltIn(i_Name);
+	if (effect)
+		DBG_LOG("Built in shader " << i_Name.c_str() << " loaded as plain HLSL");
+	else
 	{
-		pEffect = new EFF_TYPE(fsLocator(), effect, i_Name);
+		ID3DX11Effect* pD3DXEffect = effShaderUtilWin::LoadEffectData((void*)i_ShaderBits, i_ShaderSizeBytes, i_Name );
+		if (pD3DXEffect != NULL)
+			effect = OwnedFX11(pD3DXEffect);
+	}
+	matShaderEffect* pEffect = NULL;
+	if (effect)
+	{
+		pEffect = new EFF_TYPE(fsLocator(), std::move(effect), i_Name);
 		//DBG_LOG( "Built in shader = " << i_Name.c_str());
 		info.m_pEffect = pEffect;
 
@@ -543,7 +588,9 @@ static matShaderEffect* LoadPlainMaterial(const fsLocator& i_ShaderLoc, const st
 	DBG_LOG("Material " << i_FileName.c_str() << " loaded as plain HLSL (" << embedded->m_Source << ")");
 	fsLocator folder = i_ShaderLoc;
 	folder.Pop();
-	std::unique_ptr<fxEffect> plain(new effPlainEffect(std::move(effect)));
+	std::unique_ptr<fxEffect> plain(new effPlainEffect(std::move(effect), embedded->m_Source));
+	if (plain->GetVariableByName("hasHairSupport")->IsValid())	//this is a hair effect
+		return new effStrandHair(folder, std::move(plain), i_FileName);
 	return new effShaderBaseDX11(folder, std::move(plain), i_FileName);
 }
 
@@ -663,7 +710,7 @@ matShaderEffect* effShaderArray::LoadEffect(const fsLocator& i_PathToShader,
 		ID3DX11EffectVariable* hParm = effect->GetVariableByName( "hasHairSupport" );
 		if( hParm->IsValid())	//this is a hair effect 
 		{
-			pEffect = new effStrandHair(folder, effect, shaderFileName);
+			pEffect = new effStrandHair(folder, OwnedFX11(effect), shaderFileName);
 		}
 		else
 		{

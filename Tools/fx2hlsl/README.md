@@ -70,6 +70,11 @@ the effect name.
 | `Materials/Blinn`, `BlinnReflection`, `Anisotropic`, `CarPaint` | Blinn family |
 | `Materials/SpecularFresnel`, `SubSurfaceScatter`, `SubSurfaceScatter_wBlinnSpecular`, `Cartoon` | fresnel, subsurface and toon materials |
 | `Materials/FC3DBlinn`, `FC3DPhong`, `FC3DPhongTransparent`, `FC3DSpecularFresnel`, `FC3DSubSurfaceScatter_wBlinnSpecular` | FC3D materials |
+| `Materials/Default`, `testtess`, `Bake`, `Skin`, `BlinnSkin`, `Hair_SH` | the remaining built-in materials (`Hair_SH` uses `Materials/SupportHair.hlsli`) |
+| `Special/Solid`, `MaskAlpha`, `DepthMap`, `DepthRender`, `ReflectiveShadowMap`, `NormalMap`, `Billboard`, `Particle`, `LightGlow` | special-purpose geometry passes |
+| `Special/AOVolumes`, `GIVolumes`, `LPV_GI`, `Ramp`, `Brushstroke`, `VelocityRender`, `IlluminationOnly`, `ShadowsOnly`, `EnvBackground` | occlusion, GI, velocity, shadow-only and background passes |
+| `Special/HairDefault`, `OpacityRender` | hair rendering and opacity shadow maps |
+| `PostEffect/BlackAndWhite`, `GradientMap`, `Sepia`, `Sketch` | post effects |
 
 After running the converter, each file was edited by hand: explicit
 `register()`s on every texture, sampler and constant buffer, globals moved into
@@ -99,6 +104,7 @@ onto a D3D12 root signature or Vulkan descriptor sets (full map at the top of
 | `b4` MaterialParams | the material's own parameters |
 | `t0`-`t19` | material textures (`t4`-`t19` the material's own) |
 | `t20`+ | textures the renderer supplies (reflection maps, shadow maps, projected light, mesh data) |
+| `b5` HairParams, `t26`+ | hair renderer inputs (`SupportHair.hlsli`) |
 | `s0`-`s9`, `s10`+ | shared, then the material's own immutable samplers |
 
 Each material instance keeps its own copy of `MaterialParams`

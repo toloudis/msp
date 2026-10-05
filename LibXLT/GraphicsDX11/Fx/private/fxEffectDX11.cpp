@@ -491,8 +491,29 @@ bool fxEffectDX11::reflect(ID3D11Device* i_pDevice, Shader& io_Shader, std::stri
 			}
 			break;
 
+		case D3D_SIT_UAV_RWTYPED:
+		case D3D_SIT_UAV_RWSTRUCTURED:
+		case D3D_SIT_UAV_RWBYTEADDRESS:
+		case D3D_SIT_UAV_APPEND_STRUCTURED:
+		case D3D_SIT_UAV_CONSUME_STRUCTURED:
+		case D3D_SIT_UAV_RWSTRUCTURED_WITH_COUNTER:
+			{
+				auto it = m_UnorderedAccessNames.find(name);
+				int index;
+				if (it == m_UnorderedAccessNames.end())
+				{
+					index = (int)m_UnorderedAccess.size();
+					m_UnorderedAccess.push_back(nullptr);
+					m_UnorderedAccessNames[name] = index;
+				}
+				else
+					index = it->second;
+				io_Shader.m_UnorderedAccess.push_back({ bind.BindPoint, index });
+			}
+			break;
+
 		default:
-			o_Error = name + ": UAVs are not supported yet";
+			o_Error = name + ": unsupported resource type";
 			return false;
 		}
 	}
@@ -553,21 +574,25 @@ void fxEffectDX11::apply_defaults()
 		const uint32_t perElement = t.m_Columns * t.m_Rows;
 		const uint32_t stride = (t.m_Elements > 0) ? 16 : perElement * 4;
 		ConstantBuffer& cb = m_ConstantBuffers[v.m_Constant.m_Buffer];
-		for (size_t i = 0; i < var.m_Default.size(); i++)
+		// one value for a vector fills every component, as HLSL does
+		const bool broadcast = (var.m_Default.size() == 1 && t.m_Elements == 0 && perElement > 1);
+		const size_t count = broadcast ? perElement : var.m_Default.size();
+		for (size_t i = 0; i < count; i++)
 		{
 			uint32_t element = (uint32_t)(i / perElement);
 			uint32_t component = (uint32_t)(i % perElement);
+			const double def = var.m_Default[broadcast ? 0 : i];
 			uint32_t offset = v.m_Constant.m_Offset + element * stride + component * 4;
 			if (offset + 4 > v.m_Constant.m_Offset + v.m_Constant.m_Size || offset + 4 > cb.m_Size)
 				break;
 			if (isInt)
 			{
-				int32_t value = (int32_t)var.m_Default[i];
+				int32_t value = (int32_t)def;
 				memcpy(&cb.m_Data[offset], &value, 4);
 			}
 			else
 			{
-				float value = (float)var.m_Default[i];
+				float value = (float)def;
 				memcpy(&cb.m_Data[offset], &value, 4);
 			}
 		}
@@ -617,6 +642,23 @@ std::vector<std::string> fxEffectDX11::GetConstantNames() const
 	std::vector<std::string> names;
 	for (const auto& v : m_Variables)
 		names.push_back(v.first);
+	return names;
+}
+
+fxEffectDX11::UnorderedAccess fxEffectDX11::FindUnorderedAccess(const std::string& i_Name) const
+{
+	UnorderedAccess u;
+	auto it = m_UnorderedAccessNames.find(i_Name);
+	if (it != m_UnorderedAccessNames.end())
+		u.m_Index = it->second;
+	return u;
+}
+
+std::vector<std::string> fxEffectDX11::GetUnorderedAccessNames() const
+{
+	std::vector<std::string> names;
+	for (const auto& u : m_UnorderedAccessNames)
+		names.push_back(u.first);
 	return names;
 }
 
@@ -716,6 +758,12 @@ void fxEffectDX11::SetResource(const Resource& i_Resource, ID3D11ShaderResourceV
 		m_Resources[i_Resource.m_Index] = i_pView;
 }
 
+void fxEffectDX11::SetUnorderedAccess(const UnorderedAccess& i_UAV, ID3D11UnorderedAccessView* i_pView)
+{
+	if (i_UAV.IsValid())
+		m_UnorderedAccess[i_UAV.m_Index] = i_pView;
+}
+
 void fxEffectDX11::GetConstant(const Constant& i_Constant, void* o_pData, uint32_t i_Bytes) const
 {
 	if (!i_Constant.IsValid())
@@ -810,6 +858,15 @@ void fxEffectDX11::Apply(int i_Technique, int i_Pass, ID3D11DeviceContext* i_pCo
 			set_resource(i_pContext, s, b.m_Slot, m_Resources[b.m_Index].Get());
 		for (const Binding& b : shader->m_Samplers)
 			set_sampler(i_pContext, s, b.m_Slot, m_Samplers[b.m_Index].Get());
+		// pixel-shader UAVs share slots with the render targets, which stay bound
+		if (s == fx_PS)
+			for (const Binding& b : shader->m_UnorderedAccess)
+			{
+				ID3D11UnorderedAccessView* uav = m_UnorderedAccess[b.m_Index].Get();
+				i_pContext->OMSetRenderTargetsAndUnorderedAccessViews(
+					D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL, NULL, NULL,
+					b.m_Slot, 1, &uav, NULL);
+			}
 	}
 }
 

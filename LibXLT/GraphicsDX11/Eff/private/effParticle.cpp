@@ -18,8 +18,8 @@
 #include "Graphics/mat/matMaterial.hpp"
 #include "GraphicsDX11/mat/matRenderTargetTexture.hpp"
 
-effParticle::effParticle(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, std::string i_name)
-:	effShaderBaseDX11(i_Directory, i_pEffect, i_name)
+effParticle::effParticle(const fsLocator& i_Directory, std::unique_ptr<fxEffect> i_pEffect, std::string i_name)
+:	effShaderBaseDX11(i_Directory, std::move(i_pEffect), i_name)
 {
 	MapParameter("diffuseMap", m_hDiffuseMap );
 	MapParameter("g_emissive", m_MaterialEmissiveHandle);

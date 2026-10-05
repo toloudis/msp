@@ -17,8 +17,8 @@
 
 //====================================================================
 //====================================================================
-effSolid::effSolid(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, std::string i_name)
-:	effShaderBaseDX11(i_Directory, i_pEffect, i_name)
+effSolid::effSolid(const fsLocator& i_Directory, std::unique_ptr<fxEffect> i_pEffect, std::string i_name)
+:	effShaderBaseDX11(i_Directory, std::move(i_pEffect), i_name)
 {
 	MapParameter("solidColor", m_hSolidColor );
 }
