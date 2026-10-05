@@ -31,6 +31,9 @@
 #include "GraphicsDX11/g3d/g3dDX11TextureUtil.hpp"
 #include "GraphicsDX11/eff/effShaderBaseDX11.hpp"
 #include "GraphicsDX11/G3d/g3dTransparencySortDX11.hpp"
+#ifndef FX_EFFECTDX11_HPP
+#include "GraphicsDX11/Fx/fxEffectDX11.hpp"
+#endif
 
 namespace
 {
@@ -687,9 +690,8 @@ void shdwPassDepth::ColorTexture(g2dRenderTarget* i_pRenderTarget, maFloatRGBA& 
 {
 	const g3dPrefs::g3dRenderPrefs& p = g3dPrefs::CurrentPrefs();
 
-	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)matShaderMgr::GetSpecialEffect(("HDRLighting.fx"));
-	ID3DX11Effect* pEffect = i_pEffect->GetD3DXEffect();
-	ID3DX11EffectTechnique* pEffectTechnique = pEffect->GetTechniqueByName("SimpleColor");
+	fxEffectDX11* pEffect = g3dDX11Util::GetPlainEffect("HDRLighting");
+	int technique = pEffect->FindTechnique("SimpleColor");
 
 	g3dBlendStateMgr::BlendState st_OldBlend;
 	g3dBlendStateMgr::GetCurrentBlendState( st_OldBlend );
@@ -704,9 +706,9 @@ void shdwPassDepth::ColorTexture(g2dRenderTarget* i_pRenderTarget, maFloatRGBA& 
 	int w,h;
 	i_pRenderTarget->GetDimensions(w,h);
 
-	pEffect->GetVariableByName("g_ColorTint")->AsVector()->SetFloatVector( i_Color.Ptr() );
+	pEffect->SetFloatVector(pEffect->FindConstant("g_ColorTint"), i_Color.Ptr());
 
-	pEffectTechnique->GetPassByIndex(0)->Apply(0, g2dDX11Global::g_pDeviceContext);
+	pEffect->Apply(technique, 0, g2dDX11Global::g_pDeviceContext);
 	g3dDX11Util::DrawFullScreenQuad( w,h );
 	
 

@@ -143,8 +143,7 @@ void CopyBackBufInto(matRenderTargetTexture* pTex)
     // back buffer. 
     UINT uiPassCount, uiPass;
 
-    effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-    ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
+    matShaderEffect* pEffBase = g3dDX11Util::GetEffect("HDRLighting");
 
     pEffBase->SetTechnique("SimpleCopy");
 
@@ -1088,8 +1087,7 @@ void shdwHDRRendererDX11::IncludeAlphas(float i_fSimTime)
 
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwHDRRendererDX11::CopyToBackBuf" );
     
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
+	matShaderEffect* pEffBase = g3dDX11Util::GetEffect("HDRLighting");
 
 	pEffBase->SetTechnique("SimpleCopyLDR");
 
@@ -1166,8 +1164,7 @@ void shdwHDRRendererDX11::CopyToBackBuf(matRenderTargetTexture* pTex, bool bDoBl
     // back buffer. 
     UINT uiPassCount, uiPass;
     
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
+	matShaderEffect* pEffBase = g3dDX11Util::GetEffect("HDRLighting");
 
 	pEffBase->SetTechnique(isRGB?"SimpleCopyLDR":"SimpleCopyLumLDR");
     
@@ -1221,8 +1218,7 @@ void shdwHDRRendererDX11::LuminanceToGrayscale(matRenderTargetTexture* pTex, D3D
     // back buffer. 
     UINT uiPassCount, uiPass;
     
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
+	matShaderEffect* pEffBase = g3dDX11Util::GetEffect("HDRLighting");
 
 	pEffBase->SetTechnique("DrawLuminance");
     
@@ -1326,8 +1322,7 @@ void shdwHDRRendererDX11::RenderDOF(float i_fSimTime, bool i_debug)
 //	g2dDX11Global::g_pDevice->SetVertexShader(NULL);
 //	g2dDX11Global::g_pDevice->SetPixelShader(NULL);
 	
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
+	matShaderEffect* pEffBase = g3dDX11Util::GetEffect("HDRLighting");
 	pEffBase->SetTechnique("SimpleCopyLDR");
 	ID3D11ShaderResourceView* inputTextures[1] = {
 		m_pFrameBuffer->HDRRenderTargetTex()->GetSurface()
@@ -1363,12 +1358,12 @@ void shdwHDRRendererDX11::RenderDOF(float i_fSimTime, bool i_debug)
 	else
 	{
 	// run the Blur effect on this data
-		matShaderEffect* effBlur = matShaderMgr::GetSpecialEffect("Blur.fx");
+		matShaderEffect* effBlur = matShaderMgr::GetSpecialEffect("Blur");
 		effBlurData blurData;
 		blurData.m_pSceneTexture = m_pFrameBuffer->DOFReserveTarget();
 		blurData.m_pDownsampledTexture = m_pFrameBuffer->DOFBlurTarget();
 		blurData.m_pHorizontalBlurTexture = m_pFrameBuffer->DOFHBlurTarget();
-		((effShaderBaseDX11*)effBlur)->SetupParams(&blurData);
+		effBlur->SetupParams(&blurData);
 
 		ID3D11ShaderResourceView* nullTex[1] = {NULL};
 
@@ -1779,8 +1774,7 @@ void shdwHDRRendererDX11::DrawAlpha(matRenderTargetTexture* i_src, g2dRenderTarg
 
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwHDRRendererDX11::DrawAlpha" );
     
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
+	matShaderEffect* pEffBase = g3dDX11Util::GetEffect("HDRLighting");
 
 	pEffBase->SetTechnique("DrawAlpha");
 

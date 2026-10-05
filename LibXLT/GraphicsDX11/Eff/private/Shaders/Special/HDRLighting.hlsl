@@ -1,3 +1,9 @@
+//////////////////////////////////////////////////////////////////////////////
+// Converted from HDRLighting.fx by Tools/fx2hlsl/fx2hlsl.py (one-time conversion).
+// Techniques, sampler states, annotations and variable defaults now live in
+// HDRLighting.effect.json. This file is the source of truth from here on.
+//////////////////////////////////////////////////////////////////////////////
+
 /*****************************************************************************
 **  HDRLighting.fx
 **
@@ -32,8 +38,6 @@
 // Global constants
 //-----------------------------------------------------------------------------
 static const int    MAX_SAMPLES            = 25;    // Maximum texture grabs
-/*static const*/ float  BRIGHT_PASS_THRESHOLD  = 5.0f;  // Threshold for BrightPass filter
-/*static const*/ float  BRIGHT_PASS_OFFSET     = 10.0f; // Offset for BrightPass filter
 
 // The per-color weighting to be used for luminance calculations in RGB order.
 // oops! this is the more accepted value, and it is commented out! why?
@@ -59,35 +63,48 @@ static const float3 BLUE_SHIFT_VECTOR = float3(1.05f, 0.97f, 1.27f);
 
 //-----------------------------------------------------------------------------
 // Global variables
+//
+// Explicit registers keep the binding layout identical for every entry point
+// (and map directly onto a DX12 root signature / Vulkan descriptor set).
+// The initial values these had in HDRLighting.fx are in HDRLighting.effect.json.
 //-----------------------------------------------------------------------------
+cbuffer HDRParams : register(b0)
+{
+	// Contains sampling offsets used by the techniques
+	float2 g_avSampleOffsets[MAX_SAMPLES];
+	float4 g_avSampleWeights[MAX_SAMPLES];
 
-// Contains sampling offsets used by the techniques
-float2 g_avSampleOffsets[MAX_SAMPLES];
-float4 g_avSampleWeights[MAX_SAMPLES];
+	float4 g_ColorTint;
+	float4 g_scaledCopyUVs; // top, bottom, left, right
 
-// Tone mapping variables
-float  g_fMiddleGray = 1.0;	// The middle gray key value (0.18 in Reinhard paper)
-float  g_fWhiteCutoff = 1.0;	// Lowest luminance which is mapped to white
-//float  g_fElapsedTime = 0.0;	// Time in seconds since the last calculation
+	float  BRIGHT_PASS_THRESHOLD;	// Threshold for BrightPass filter
+	float  BRIGHT_PASS_OFFSET;		// Offset for BrightPass filter
 
-//bool  g_bEnableBlueShift = false;   // Flag indicates if blue shift is performed
-bool  g_bEnableToneMap = true;     // Flag indicates if tone mapping is performed
+	// Tone mapping variables
+	float  g_fMiddleGray;	// The middle gray key value (0.18 in Reinhard paper)
+	float  g_fWhiteCutoff;	// Lowest luminance which is mapped to white
+	//float  g_fElapsedTime;	// Time in seconds since the last calculation
 
-float  g_fBloomScale = 1.0;       // Bloom process multiplier
-float  g_fStarScale = 0.5;        // Star process multiplier
+	//bool  g_bEnableBlueShift;   // Flag indicates if blue shift is performed
+	bool  g_bEnableToneMap;     // Flag indicates if tone mapping is performed
 
-float g_fixedLuminance = 1;
+	float  g_fBloomScale;       // Bloom process multiplier
+	float  g_fStarScale;        // Star process multiplier
 
-float4 g_ColorTint = float4( 1, 1, 1, 1 );
+	float g_fixedLuminance;
 
-int g_nSrcComponent = 0;
-int g_nDstComponent = 0;
+	int g_nSrcComponent;
+	int g_nDstComponent;
 
-bool g_bIsRefOn = false;
-float g_fRef = 0.0f;
+	bool g_bIsRefOn;
+	float g_fRef;
 
-float g_scaledCopyFactor = 1.0f;
-float4 g_scaledCopyUVs = float4( 1, -1, -1, 1 ); // top, bottom, left, right
+	float g_scaledCopyFactor;
+
+	// LinearMapping range
+	float g_RangeMax;
+	float g_RangeMin;
+};
 
 //-----------------------------------------------------------------------------
 // Texture samplers
@@ -105,38 +122,13 @@ Texture2DMS<float> TexMS : register(t8);
 
 // this is for pixel processing of quad textures.  
 // filter should be either linear or point
-SamplerState g_DefaultSampler
-{
-//    Filter = MIN_MAG_LINEAR_MIP_POINT;
-    Filter = MIN_MAG_MIP_POINT;
-    AddressU = Wrap;
-    AddressV = Wrap;
-};
+// (sampler states are described in HDRLighting.effect.json)
+SamplerState g_DefaultSampler : register(s0);
 
-SamplerState g_PointSampler
-{
-    Filter = MIN_MAG_MIP_POINT;
-    AddressU = Wrap;
-    AddressV = Wrap;
-};
-SamplerState g_PointClampSampler
-{
-    Filter = MIN_MAG_MIP_POINT;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
-SamplerState g_LinearSampler
-{
-    Filter = MIN_MAG_LINEAR_MIP_POINT;
-    AddressU = Wrap;
-    AddressV = Wrap;
-};
-SamplerState g_LinearClampSampler
-{
-    Filter = MIN_MAG_LINEAR_MIP_POINT;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
+SamplerState g_PointSampler : register(s1);
+SamplerState g_PointClampSampler : register(s2);
+SamplerState g_LinearSampler : register(s3);
+SamplerState g_LinearClampSampler : register(s4);
 
 float CheckNan(float color)
 {
@@ -270,7 +262,6 @@ float4 LuminanceToGray
 }
 
 
-
 //-----------------------------------------------------------------------------
 // Name: SampleLumIterative
 // Type: Pixel shader                                      
@@ -295,8 +286,6 @@ float4 SampleLumIterative
 
     return float4(fResampleSum, fResampleSum, fResampleSum, 1.0f);
 }
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -325,8 +314,6 @@ float4 SampleLumFinal
     
     return float4(fResampleSum, fResampleSum, fResampleSum, 1.0f);
 }
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -640,8 +627,6 @@ float4 DownScale4x4PS
 }
 
 
-
-
 //-----------------------------------------------------------------------------
 // Name: DownScale2x2
 // Type: Pixel shader                                      
@@ -663,8 +648,6 @@ float4 DownScale2x2PS
     
 	return sample / 4;
 }
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -689,8 +672,6 @@ float4 GaussBlur5x5PS
 
 	return sample;
 }
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -770,7 +751,6 @@ float4 BrightPassFilter_Reinhard
 }
 
 
-
 //-----------------------------------------------------------------------------
 // Name: Bloom
 // Type: Pixel shader
@@ -800,8 +780,6 @@ float4 BloomPS
     
     return vSample;
 }
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -834,8 +812,6 @@ float4 StarPS
 }
 
 
-
-
 //-----------------------------------------------------------------------------
 // Name: MergeTextures_N
 // Type: Pixel shader                                      
@@ -853,8 +829,6 @@ float4 MergeTextures_1PS
 		
 	return vColor;
 }
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -877,8 +851,6 @@ float4 MergeTextures_2PS
 }
 
 
-
-
 //-----------------------------------------------------------------------------
 // Name: MergeTextures_N
 // Type: Pixel shader                                      
@@ -898,8 +870,6 @@ float4 MergeTextures_3PS
 		
 	return vColor;
 }
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -924,8 +894,6 @@ float4 MergeTextures_4PS
 }
 
 
-
-
 //-----------------------------------------------------------------------------
 // Name: MergeTextures_N
 // Type: Pixel shader                                      
@@ -947,8 +915,6 @@ float4 MergeTextures_5PS
 		
 	return vColor;
 }
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -975,8 +941,6 @@ float4 MergeTextures_6PS
 }
 
 
-
-
 //-----------------------------------------------------------------------------
 // Name: MergeTextures_N
 // Type: Pixel shader                                      
@@ -1000,8 +964,6 @@ float4 MergeTextures_7PS
 		
 	return vColor;
 }
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -1035,7 +997,7 @@ float4 MergeTextures_8PS
 // Type: Pixel shader                                      
 // Desc: Map values as a percentage of a range
 //-----------------------------------------------------------------------------
-float g_RangeMax=1, g_RangeMin=0;
+// g_RangeMax and g_RangeMin are in the HDRParams cbuffer
 float4 LinearMappingPS
 	(
     in float4 vPos : SV_POSITION,
@@ -1063,16 +1025,6 @@ float4 LinearMappingPS
 // Type: Technique                                     
 // Desc: Performs a single horizontal or vertical pass of the blooming filter
 //-----------------------------------------------------------------------------
-technique11 Bloom
-{
-    pass P0
-    {        
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 BloomPS();
-    }
-
-}
-
 
 
 //-----------------------------------------------------------------------------
@@ -1080,18 +1032,6 @@ technique11 Bloom
 // Type: Technique                                     
 // Desc: Perform one of up to three passes composing the current star line
 //-----------------------------------------------------------------------------
-technique11 Star
-{
-    pass P0
-    {        
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 StarPS();
-    }
-
-}
-
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -1102,16 +1042,6 @@ technique11 Star
 //       the log(), and scaling the image to a single pixel by averaging sample 
 //       points.
 //-----------------------------------------------------------------------------
-technique11 SampleAvgLum
-{
-    pass P0
-    {
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 SampleLumInitial();
-    }
-}
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -1119,16 +1049,6 @@ technique11 SampleAvgLum
 // Type: Technique                                     
 // Desc: Continue to scale down the luminance texture
 //-----------------------------------------------------------------------------
-technique11 ResampleAvgLum
-{
-    pass P0
-    {
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 SampleLumIterative();
-    }
-}
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -1137,16 +1057,6 @@ technique11 ResampleAvgLum
 // Desc: Sample the texture to a single pixel and perform an exp() to complete
 //       the evalutation
 //-----------------------------------------------------------------------------
-technique11 ResampleAvgLumExp
-{
-    pass P0
-    {
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 SampleLumFinal();
-    }
-}
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -1156,16 +1066,6 @@ technique11 ResampleAvgLumExp
 //       using the last adapted level, the current scene luminance, and the
 //       time since last calculation
 //-----------------------------------------------------------------------------
-technique11 CalculateAdaptedLum
-{
-    pass P0
-    {
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 CalculateAdaptedLumPS();
-    }
-}
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -1173,16 +1073,6 @@ technique11 CalculateAdaptedLum
 // Type: Technique                                     
 // Desc: Scale the source texture down to 1/16 scale
 //-----------------------------------------------------------------------------
-technique11 DownScale4x4
-{
-    pass P0
-    {
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 DownScale4x4PS();
-    }
-}
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -1190,16 +1080,6 @@ technique11 DownScale4x4
 // Type: Technique                                     
 // Desc: Scale the source texture down to 1/4 scale
 //-----------------------------------------------------------------------------
-technique11 DownScale2x2
-{
-    pass P0
-    {
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 DownScale2x2PS();
-    }
-}
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -1208,16 +1088,6 @@ technique11 DownScale2x2
 // Desc: Simulate a 5x5 kernel gaussian blur by sampling the 12 points closest
 //       to the center point.
 //-----------------------------------------------------------------------------
-technique11 GaussBlur5x5
-{
-    pass P0
-    {
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 GaussBlur5x5PS();
-    }
-}
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -1225,17 +1095,6 @@ technique11 GaussBlur5x5
 // Type: Technique                                     
 // Desc: Perform a high-pass filter on the source texture
 //-----------------------------------------------------------------------------
-technique11 BrightPassFilter
-{
-    pass P0
-    {
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 BrightPassFilter_Reinhard();
-    }
-}
-
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -1243,110 +1102,7 @@ technique11 BrightPassFilter
 // Type: Technique                                     
 // Desc: Minimally transform and texture the incoming geometry
 //-----------------------------------------------------------------------------
-technique11 FinalScenePass
-{
-    pass P0
-    {
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 FinalScenePassPS();
-    }
-}
-technique11 FinalScenePass_Fast
-{
-    pass P0
-    {
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 FinalScenePass_FastPS();
-    }
-}
-technique11 SimpleCopy
-{
-	pass P0
-	{
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 SimpleCopyPS();
-	}
-}
-technique11 ScaledCopy
-{
-	pass P0
-	{
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 ScaledCopyPS();
-	}
-}
-technique11 SimpleCopyInvAlpha
-{
-	pass P0
-	{
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 SimpleCopyInvAlphaPS();
-	}
-}
-technique11 SimpleCopyInvGAlpha
-{
-	pass P0
-	{
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 SimpleCopyInvGAlphaPS();
-	}
-}
-technique11 SimpleCopyLDR
-{
-	pass P0
-	{
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 SimpleCopyLDRPS();
-	}
-}
-technique11 SimpleCopyInvSat
-{
-	pass P0
-	{
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 SimpleCopyInvSatPS();
-	}
-}
-technique11 SimpleCopyLum
-{
-	pass P0
-	{
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 SimpleCopyLumPS();
-	}
-}
-technique11 SimpleCopyLumLDR
-{
-	pass P0
-	{
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 SimpleCopyLumLDRPS();
-	}
-}
-technique11 SimpleCopyAlphaSat
-{
-	pass P0
-	{
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 SimpleCopyAlphaSatPS();
-	}
-}
-technique11 DrawLuminance
-{
-	pass P0
-	{
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 LuminanceToGray();
-	}
-}
-technique11 DrawAlpha
-{
-	pass P0
-	{
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 SimpleDrawAlpha();
-	}
-}
+
 
 //-----------------------------------------------------------------------------
 // Name: DepthCopy
@@ -1355,97 +1111,36 @@ technique11 DrawAlpha
 // Note: Must have Color Writes Disabled
 //-----------------------------------------------------------------------------
 
-technique11 DepthCopy
-{
-	pass P0
-	{
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 DepthCopyPS();
-	}
-}
 
 //multisample version
-technique11 DepthCopyMS
-{
-	pass P0
-	{
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 DepthCopyMSPS();
-	}
-}
+
 
 //-----------------------------------------------------------------------------
 // Name: ColorTint
 // Type: Technique                                     
 // Desc: returns the modulation of the source texture with the tint value
 //-----------------------------------------------------------------------------
-technique11 ColorTint
-{
-	pass P0
-	{
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 ColorTintPS();
-	}
-}
+
 
 //-----------------------------------------------------------------------------
 // Name: ColorTintLum
 // Type: Technique                                     
 // Desc: Return the modulation of the source texture luminance with the tint value
 //-----------------------------------------------------------------------------
-technique11 ColorTintLum
-{
-	pass P0
-	{
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 ColorTintLumPS();
-	}
-}
+
 
 //-----------------------------------------------------------------------------
 // Name: CopyComponent
 // Type: Technique                                     
 // Desc: returns the copy of the src component into the dest component
 //-----------------------------------------------------------------------------
-technique11 CopyComponent
-{
-	pass P0
-	{
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 CopyComponentPS();
-	}
-}
+
 
 //-----------------------------------------------------------------------------
 // Name: SimpleColor
 // Type: Technique                                     
 // Desc: returns the color specified in g_ColorTint, used to fill the target with a color
 //-----------------------------------------------------------------------------
-technique11 SimpleColor
-{
-	pass P0
-	{
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 SimpleColorPS();
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Name: MergeTextures_N
-// Type: Technique                                     
-// Desc: Return the average of N input textures
-//-----------------------------------------------------------------------------
-technique11 MergeTextures_1
-{
-    pass P0
-    {        
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 MergeTextures_1PS();
-    }
-
-}
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -1453,17 +1148,6 @@ technique11 MergeTextures_1
 // Type: Technique                                     
 // Desc: Return the average of N input textures
 //-----------------------------------------------------------------------------
-technique11 MergeTextures_2
-{
-    pass P0
-    {        
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 MergeTextures_2PS();
-    }
-
-}
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -1471,17 +1155,6 @@ technique11 MergeTextures_2
 // Type: Technique                                     
 // Desc: Return the average of N input textures
 //-----------------------------------------------------------------------------
-technique11 MergeTextures_3
-{
-    pass P0
-    {        
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 MergeTextures_3PS();
-    }
-
-}
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -1489,17 +1162,6 @@ technique11 MergeTextures_3
 // Type: Technique                                     
 // Desc: Return the average of N input textures
 //-----------------------------------------------------------------------------
-technique11 MergeTextures_4
-{
-    pass P0
-    {        
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 MergeTextures_4PS();
-    }
-
-}
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -1507,17 +1169,6 @@ technique11 MergeTextures_4
 // Type: Technique                                     
 // Desc: Return the average of N input textures
 //-----------------------------------------------------------------------------
-technique11 MergeTextures_5
-{
-    pass P0
-    {        
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 MergeTextures_5PS();
-    }
-
-}
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -1525,17 +1176,6 @@ technique11 MergeTextures_5
 // Type: Technique                                     
 // Desc: Return the average of N input textures
 //-----------------------------------------------------------------------------
-technique11 MergeTextures_6
-{
-    pass P0
-    {        
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 MergeTextures_6PS();
-    }
-
-}
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -1543,17 +1183,6 @@ technique11 MergeTextures_6
 // Type: Technique                                     
 // Desc: Return the average of N input textures
 //-----------------------------------------------------------------------------
-technique11 MergeTextures_7
-{
-    pass P0
-    {        
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 MergeTextures_7PS();
-    }
-
-}
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -1561,53 +1190,10 @@ technique11 MergeTextures_7
 // Type: Technique                                     
 // Desc: Return the average of N input textures
 //-----------------------------------------------------------------------------
-technique11 MergeTextures_8
-{
-    pass P0
-    {        
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 MergeTextures_8PS();
-    }
 
-}
 
-technique11 LinearMapping
-{
-	pass P0
-	{
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 LinearMappingPS();
-	}
-}
-technique11 RedChannel
-{
-	pass P0
-	{
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 RedChannelPS();
-	}
-}
-technique11 GreenChannel
-{
-	pass P0
-	{
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 GreenChannelPS();
-	}
-}
-technique11 BlueChannel
-{
-	pass P0
-	{
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 BlueChannelPS();
-	}
-}
-technique11 AlphaChannel
-{
-	pass P0
-	{
-		VertexShader = compile vs_5_0 VSMain();
-        PixelShader  = compile ps_5_0 AlphaChannelPS();
-	}
-}
+//-----------------------------------------------------------------------------
+// Name: MergeTextures_N
+// Type: Technique                                     
+// Desc: Return the average of N input textures
+//-----------------------------------------------------------------------------

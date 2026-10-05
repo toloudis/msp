@@ -51,7 +51,6 @@
 #include "GraphicsDX11/eff/effDOF.hpp"
 #include "GraphicsDX11/eff/effGlow.hpp"
 //#include "GraphicsDX11/eff/effHair.hpp"
-#include "GraphicsDX11/eff/effHDRLighting.hpp"
 #include "GraphicsDX11/eff/effStrandHair.hpp"
 //#include "GraphicsDX11/eff/effLambert.hpp"
 #include "GraphicsDX11/eff/effLightGlow.hpp"
@@ -66,6 +65,7 @@
 //#include "GraphicsDX11/eff/effTextured.hpp"
 //#include "GraphicsDX11/eff/effToon.hpp"
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
+#include "GraphicsDX11/Fx/fxEmbeddedShaders.hpp"
 
 // built-in shaders:
 #include "GraphicsDX11/eff/private/ShaderBake.hpp"
@@ -73,14 +73,9 @@
 #include "GraphicsDX11/eff/private/ShaderPhong.hpp"
 #include "GraphicsDX11/eff/private/ShaderSimple.hpp"
 #include "GraphicsDX11/eff/private/ShaderPhong_wBump.hpp"
-#include "GraphicsDX11/eff/private/ShaderHDRLighting.hpp"
-#include "GraphicsDX11/eff/private/ShaderBlur.hpp"
 #include "GraphicsDX11/eff/private/ShaderGlow.hpp"
-#include "GraphicsDX11/eff/private/ShaderDOF.hpp"
 #include "GraphicsDX11/eff/private/ShaderLightGlow.hpp"
 #include "GraphicsDX11/eff/private/ShaderParticle.hpp"
-#include "GraphicsDX11/eff/private/ShaderPostAlphaMatte.hpp"
-#include "GraphicsDX11/eff/private/ShaderFog.hpp"
 #include "GraphicsDX11/eff/private/ShaderSolid.hpp"
 #include "GraphicsDX11/eff/private/ShaderMaskAlpha.hpp"
 #include "GraphicsDX11/eff/private/ShaderDepthMap.hpp"
@@ -308,6 +303,32 @@ template<class EFF_TYPE> void RegisterShader(std::string i_Name,
 }
 
 //------------------------------------------------------------------------
+// RegisterPlainShader() - built-in effect converted from .fx to plain HLSL,
+//	embedded at build time (see fxEmbeddedShaders)
+//------------------------------------------------------------------------
+template<class EFF_TYPE> void RegisterPlainShader(std::string i_Name,
+											 effShaderData* i_pDataTemplate,
+											 std::map<std::string, matShaderInfo>& io_ShaderMap)
+{
+	const fxEmbeddedEffect* embedded = fxEmbeddedShaders::Find(i_Name);
+	std::string error = "not embedded";
+	std::unique_ptr<fxEffectDX11> effect;
+	if (embedded)
+		effect = fxEmbeddedShaders::CreateDX11(*embedded, g2dDX11Global::g_pDevice, error);
+	if (!effect)
+	{
+		DBG_ERROR("Built in shader " << i_Name.c_str() << " load FAILED: " << error.c_str());
+		throw g3dShaderLoadX(i_Name);
+	}
+
+	matShaderInfo info;
+	info.m_Name = i_Name.c_str();
+	info.m_DataTemplate = i_pDataTemplate;
+	info.m_pEffect = new EFF_TYPE(std::move(effect), i_Name);
+	io_ShaderMap[i_Name] = info;
+}
+
+//------------------------------------------------------------------------
 // RegisterSingleUserShader()
 //------------------------------------------------------------------------
 void RegisterSingleUserShader(fsLocator i_ShaderName, std::vector<matShaderInfo>& o_Shaders)
@@ -411,14 +432,14 @@ void effShaderArray::RegisterEffects(const fsLocator &i_ShaderDir,
 	RegisterShader<effPhong>("Phong.fx",		new effPhongData, g_ShaderPhong, sizeof(g_ShaderPhong), io_ShaderMap);
 	RegisterShader<effPhong>("Phong_wBump.fx",	new effPhongData, g_ShaderPhong_wBump, sizeof(g_ShaderPhong_wBump), io_ShaderMap);
 
-	RegisterShader<effHDRLighting>	("HDRLighting.fx",	NULL,			 g_ShaderHDRLighting, sizeof(g_ShaderHDRLighting), io_ShaderMap);
-	RegisterShader<effBlur>			("Blur.fx",			new effBlurData, g_ShaderBlur, sizeof(g_ShaderBlur), io_ShaderMap);
+	RegisterPlainShader<effPlainShaderDX11>	("HDRLighting",	NULL,		io_ShaderMap);
+	RegisterPlainShader<effBlur>	("Blur",				new effBlurData, io_ShaderMap);
 	RegisterShader<effGlow>			("Glow.fx",			new effGlowData, g_ShaderGlow, sizeof(g_ShaderGlow), io_ShaderMap);
-	RegisterShader<effDOF>			("DOF.fx",			new effDOFData, g_ShaderDOF, sizeof(g_ShaderDOF), io_ShaderMap);
+	RegisterPlainShader<effDOF>		("DOF",				new effDOFData, io_ShaderMap);
 	RegisterShader<effLightGlow>	("LightGlow.fx",	new effLightGlowData, g_ShaderLightGlow, sizeof(g_ShaderLightGlow), io_ShaderMap);
 	RegisterShader<effParticle>		("Particle.fx",		new effParticleData, g_ShaderParticle, sizeof(g_ShaderParticle), io_ShaderMap);
-	RegisterShader<effPostMatte>	("PostAlphaMatte.fx",	NULL,			 g_ShaderPostAlphaMatte, sizeof(g_ShaderPostAlphaMatte), io_ShaderMap);
-	RegisterShader<effHDRLighting>	("Fog.fx",			NULL,			 g_ShaderFog, sizeof(g_ShaderFog), io_ShaderMap);
+	RegisterPlainShader<effPlainShaderDX11>	("PostAlphaMatte",	NULL,		io_ShaderMap);
+	RegisterPlainShader<effPlainShaderDX11>	("Fog",				NULL,		io_ShaderMap);
 
 	// Constant solid color
 	RegisterShader<effSolid>("Solid.fx", new effSolidData, g_ShaderSolid, sizeof(g_ShaderSolid), io_ShaderMap);

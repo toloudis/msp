@@ -12,7 +12,7 @@
 #include "Graphics/mat/matShaderEffect.hpp"
 #include "Graphics/mat/matShaderMgr.hpp"
 #include "Graphics/mat/matTextureMgr.hpp"
-#include "GraphicsDX11/eff/effShaderBaseDX11.hpp"
+#include "GraphicsDX11/eff/effPlainShaderDX11.hpp"
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
 #include "GraphicsDX11/g3d/g3dBlendStateMgr.hpp"
 #include "GraphicsDX11/G3d/g3dDepthStencilStateMgr.hpp"
@@ -104,89 +104,61 @@ int shdwPassFog::Render(float i_time)
 	fogParams fog_params;
 	m_Scene->GetFogSettings(fog_params);
 
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("Fog.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
-	ID3DX11EffectTechnique* pEffectTechnique = NULL;
+	effPlainShaderDX11* pFog = dynamic_cast<effPlainShaderDX11*>(g3dDX11Util::GetEffect("Fog"));
+	if (!pFog)
+		return 0;
+	fxEffectDX11* pEffect = pFog->GetEffect();
 
+	int technique = -1;
 	switch (fog_params.m_nMode)
 	{
 	case g3dType::e_FogModeLinear:
-		pEffectTechnique = pEffect->GetTechniqueByName("LinearFog");
-//		pEffect->SetTechnique("LinearFog");
+		technique = pEffect->FindTechnique("LinearFog");
 		break;
 	case g3dType::e_FogModeExp:
-		 pEffectTechnique = pEffect->GetTechniqueByName("ExponentialFog");
-//		pEffect->SetTechnique("ExponentialFog");
+		technique = pEffect->FindTechnique("ExponentialFog");
 		break;
 	case g3dType::e_FogModeExp2:
-		pEffectTechnique = pEffect->GetTechniqueByName("ExponentialSquaredFog");
-//		pEffect->SetTechnique("ExponentialSquaredFog");
+		technique = pEffect->FindTechnique("ExponentialSquaredFog");
 		break;
 	default:
 		// no fog!!!
 		return 0;
 	}
 
-
-/*
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("Fog.fx");
-	ID3DXEffect* pEffect = pEffBase->GetD3DXEffect();
-	switch (fog_params.m_nMode)
-	{
-	case g3dType::e_FogModeLinear:
-		pEffect->SetTechnique("LinearFog");
-		break;
-	case g3dType::e_FogModeExp:
-		pEffect->SetTechnique("ExponentialFog");
-		break;
-	case g3dType::e_FogModeExp2:
-		pEffect->SetTechnique("ExponentialSquaredFog");
-		break;
-	default:
-		// no fog!!!
-		return 0;
-	}
-*/
-
-//	pEffect->SetFloat("g_FogDepthStart", fog_params.m_fStart);
-	pEffect->GetVariableByName("g_FogDepthStart")->AsScalar()->SetFloat(fog_params.m_fStart);
+	pEffect->SetConstant(pEffect->FindConstant("g_FogDepthStart"), fog_params.m_fStart);
 
 	float tmpRange = fog_params.m_fEnd - fog_params.m_fStart;
 	if (tmpRange == 0)
 		tmpRange = 1000.0f;
-//	pEffect->SetFloat("g_FogDepthRange", tmpRange);
-	pEffect->GetVariableByName("g_FogDepthRange")->AsScalar()->SetFloat(tmpRange);
-//	pEffect->SetFloat("g_FogAltitudeStart", fog_params.m_fAltitudeStart);
-	pEffect->GetVariableByName("g_FogAltitudeStart")->AsScalar()->SetFloat(fog_params.m_fAltitudeStart);
+	pEffect->SetConstant(pEffect->FindConstant("g_FogDepthRange"), tmpRange);
+	pEffect->SetConstant(pEffect->FindConstant("g_FogAltitudeStart"), fog_params.m_fAltitudeStart);
 	tmpRange = fog_params.m_fAltitudeEnd - fog_params.m_fAltitudeStart;
 	if (tmpRange == 0)
 		tmpRange = 10.0f;
-//	pEffect->SetFloat("g_FogAltitudeRange", tmpRange);
-	pEffect->GetVariableByName("g_FogAltitudeRange")->AsScalar()->SetFloat(tmpRange);
-//	pEffect->SetFloat("g_FogDensity", fog_params.m_fDensity);
-	pEffect->GetVariableByName("g_FogDensity")->AsScalar()->SetFloat(fog_params.m_fDensity);
-//	pEffect->SetFloat("g_FogAltitudeDensity", fog_params.m_fAltitudeDensity);
-	pEffect->GetVariableByName("g_FogAltitudeDensity")->AsScalar()->SetFloat(fog_params.m_fAltitudeDensity);
-	
-//	D3DXVECTOR4 col(fog_params.m_Color.GetRed(),fog_params.m_Color.GetGreen(),fog_params.m_Color.GetBlue(),fog_params.m_Color.GetAlpha());
-//	pEffect->SetVector("g_FogColor", &col );
-	pEffect->GetVariableByName("g_FogColor")->AsVector()->SetFloatVector( fog_params.m_Color.Ptr() );
+	pEffect->SetConstant(pEffect->FindConstant("g_FogAltitudeRange"), tmpRange);
+	pEffect->SetConstant(pEffect->FindConstant("g_FogDensity"), fog_params.m_fDensity);
+	pEffect->SetConstant(pEffect->FindConstant("g_FogAltitudeDensity"), fog_params.m_fAltitudeDensity);
+
+	pEffect->SetConstant(pEffect->FindConstant("g_FogColor"), fog_params.m_Color.Ptr(), 4 * sizeof(float));
 
 	GetFogOrientation(fog_params);
 	float orientation[3] = {0};
 	orientation[0] = fog_params.m_Orientation.GetX();
 	orientation[1] = fog_params.m_Orientation.GetY();
 	orientation[2] = fog_params.m_Orientation.GetZ();
-	pEffect->GetVariableByName("g_FogOrientation")->AsVector()->SetFloatVector( orientation );
+	pEffect->SetConstant(pEffect->FindConstant("g_FogOrientation"), orientation);
 	
 	float fovx = m_Camera->GetFOV() * maConstants::c_fAngleToRad;
 	float m_InvFocalLen[2];
 	m_InvFocalLen[0]   = tanf(fovx * 0.5f);
 	m_InvFocalLen[1]   = tanf(fovx * 0.5f)/m_Camera->GetAspect();
-	pEffect->GetVariableByName("g_InvFocalLen")->AsVector()->SetFloatVector( orientation );
+	// NOTE: this has always passed the orientation, not m_InvFocalLen; kept as is
+	// so fog looks the same as before the conversion.
+	pEffect->SetConstant(pEffect->FindConstant("g_InvFocalLen"), orientation, 2 * sizeof(float));
 
 	// transform to get world space position.
-	pEffect->GetVariableByName("g_CameraToWorldSpace")->AsMatrix()->SetMatrix( g3dSceneGlobal::GetCameraInverseTransform().Ptr() );
+	pEffect->SetMatrix(pEffect->FindConstant("g_CameraToWorldSpace"), g3dSceneGlobal::GetCameraInverseTransform().Ptr());
 
 	// 1. Put color to temp for use as an input texture.
 	m_ColorBuffer->MakeCurrent();
@@ -194,11 +166,8 @@ int shdwPassFog::Render(float i_time)
 	m_ColorBuffer->GetDimensions(w,h);
 	g3dDX11Util::CopyBackBufferToRenderTargetTex(m_TempBuffer);
 	// 2. Use temp to read, and write result into color.
-//	pEffect->SetTexture("tLinDepth", m_DepthBuffer->GetSurface());
-//	pEffect->SetTexture("tColors", m_TempBuffer->GetSurface());
-
-	pEffect->GetVariableByName("tLinDepth")->AsShaderResource()->SetResource( m_DepthBuffer->GetSurface() );
-	pEffect->GetVariableByName("tColors")->AsShaderResource()->SetResource( m_TempBuffer->GetSurface() );
+	pEffect->SetResource(pEffect->FindResource("tLinDepth"), m_DepthBuffer->GetSurface());
+	pEffect->SetResource(pEffect->FindResource("tColors"), m_TempBuffer->GetSurface());
 
 	g3dBlendStateMgr::SetBlendState(st_NoBlend);
 
@@ -206,28 +175,17 @@ int shdwPassFog::Render(float i_time)
 
 	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Disable_NS );
 
-	D3DX11_TECHNIQUE_DESC techDesc;
-	pEffectTechnique->GetDesc( &techDesc );
-	for( UINT uiPass = 0; uiPass < techDesc.Passes; ++uiPass)
+	int nPasses = pEffect->GetPassCount(technique);
+	for (int pass = 0; pass < nPasses; ++pass)
 	{
-		pEffectTechnique->GetPassByIndex(uiPass)->Apply(0, g2dDX11Global::g_pDeviceContext);
+		pEffect->Apply(technique, pass, g2dDX11Global::g_pDeviceContext);
 
 		g3dDX11Util::DrawFullScreenQuad( w,h );
 	}
 
-/*
-	UINT uiPassCount = 1;
-	pEffect->Begin(&uiPassCount, 0);
-    for (UINT uiPass = 0; uiPass < uiPassCount; uiPass++)
-    {
-        pEffect->BeginPass(uiPass);
-        
-        g3dDX11Util::DrawFullScreenQuad( w,h );
-        
-        pEffect->EndPass();
-    }
-    pEffect->End();
-*/
+	// unbind the inputs; tColors is about to be rendered into again
+	ID3D11ShaderResourceView* nullTex[2] = {NULL, NULL};
+	g2dDX11Global::g_pDeviceContext->PSSetShaderResources(0, 2, nullTex);
 
 	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Test_Write_LessE_NS );
 

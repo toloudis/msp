@@ -1,6 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Fx">
+      <UniqueIdentifier>{aff16938-98cf-4c02-9927-363eae84cd7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fx\private">
+      <UniqueIdentifier>{ff39598a-91ac-48c4-8a0f-776072f762a2}</UniqueIdentifier>
+    </Filter>
     <Filter Include="G2d">
       <UniqueIdentifier>{72835c17-e867-449a-8a2c-558a434ef3f8}</UniqueIdentifier>
     </Filter>
@@ -219,13 +225,22 @@
     <ClInclude Include="Eff\effBlur.hpp">
       <Filter>Eff</Filter>
     </ClInclude>
+    <ClInclude Include="Eff\effPlainShaderDX11.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Fx\fxEffectDesc.hpp">
+      <Filter>Fx</Filter>
+    </ClInclude>
+    <ClInclude Include="Fx\fxEffectDX11.hpp">
+      <Filter>Fx</Filter>
+    </ClInclude>
+    <ClInclude Include="Fx\fxEmbeddedShaders.hpp">
+      <Filter>Fx</Filter>
+    </ClInclude>
     <ClInclude Include="Eff\effDOF.hpp">
       <Filter>Eff</Filter>
     </ClInclude>
     <ClInclude Include="Eff\effGlow.hpp">
-      <Filter>Eff</Filter>
-    </ClInclude>
-    <ClInclude Include="Eff\effHDRLighting.hpp">
       <Filter>Eff</Filter>
     </ClInclude>
     <ClInclude Include="Eff\effLightGlow.hpp">
@@ -693,13 +708,22 @@
     <ClCompile Include="Eff\private\effBlur.cpp">
       <Filter>Eff\private</Filter>
     </ClCompile>
+    <ClCompile Include="Eff\private\effPlainShaderDX11.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Fx\private\fxEffectDesc.cpp">
+      <Filter>Fx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Fx\private\fxEffectDX11.cpp">
+      <Filter>Fx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Fx\private\fxEmbeddedShaders.cpp">
+      <Filter>Fx\private</Filter>
+    </ClCompile>
     <ClCompile Include="Eff\private\effDOF.cpp">
       <Filter>Eff\private</Filter>
     </ClCompile>
     <ClCompile Include="Eff\private\effGlow.cpp">
-      <Filter>Eff\private</Filter>
-    </ClCompile>
-    <ClCompile Include="Eff\private\effHDRLighting.cpp">
       <Filter>Eff\private</Filter>
     </ClCompile>
     <ClCompile Include="Eff\private\effLightGlow.cpp">

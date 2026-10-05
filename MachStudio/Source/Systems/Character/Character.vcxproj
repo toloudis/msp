@@ -431,7 +431,7 @@
     <ClCompile>
       <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>.\..\..\..\..\machstudio\source;.\..\..\..\..\libxlt;.\..\..\..\..\3rdParty\Boost;.\..\..\..\..\3rdParty\wxWidgets\include;.\..\..\..\..\3rdParty\WxWidgets\include\msvc;$(ProjectDir)Expressions;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\..\..\..\machstudio\source;.\..\..\..\..\libxlt;.\..\..\..\..\3rdParty\Boost;.\..\..\..\..\3rdParty\wxWidgets\include;.\..\..\..\..\3rdParty\WxWidgets\include\msvc;$(ProjectDir)Expressions;.\..\..\..\..\LibXLT\ToolUIWx\vcpkg_installed\x64-windows\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>

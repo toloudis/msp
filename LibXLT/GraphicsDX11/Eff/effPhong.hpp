@@ -18,13 +18,6 @@
 
 class matMaterial;
 
-class effPostMatte : public effShaderBaseDX11 
-{
-public:
-	effPostMatte(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, std::string i_name)
-	:	effShaderBaseDX11(i_Directory, i_pEffect, i_name) {}
-};
-
 class effPhong : public effShaderBaseDX11
 {
 public:

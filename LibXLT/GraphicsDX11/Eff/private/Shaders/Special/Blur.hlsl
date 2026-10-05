@@ -1,3 +1,9 @@
+//////////////////////////////////////////////////////////////////////////////
+// Converted from Blur.fx by Tools/fx2hlsl/fx2hlsl.py (one-time conversion).
+// Techniques, sampler states, annotations and variable defaults now live in
+// Blur.effect.json. This file is the source of truth from here on.
+//////////////////////////////////////////////////////////////////////////////
+
 /*****************************************************************************
 **  Blur.fx
 **
@@ -10,48 +16,34 @@
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 
+// Explicit registers keep the binding layout identical for every entry point
+// (and map directly onto a DX12 root signature / Vulkan descriptor set).
+
 // full sized source image
-Texture2D sceneTexture : SCENE_TEXTURE;
-SamplerState sceneSampler
-{
-    Filter = MIN_MAG_LINEAR_MIP_POINT;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
+Texture2D sceneTexture : register(t0);
 
 // down-sampled image of the source
-Texture2D downsampledTexture;
-SamplerState downsampledSampler
-{
-//    Filter = MIN_MAG_LINEAR_MIP_POINT;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
-
-SamplerState BlurSampler
-{
-    Filter = ANISOTROPIC;
-    AddressU = Clamp;
-    AddressV = Clamp;
-    AddressW = BORDER;
-    MipLODBias = 0;
-    MaxAnisotropy = 16;
-    ComparisonFunc = NEVER;
-    BorderColor = float4(0, 0, 0, 0);
-    MinLOD = 0;
-    MaxLOD = 0;
-};
+Texture2D downsampledTexture : register(t1);
 
 // texture that will store the intermediate results of the blur
-Texture2D horizontalBlurTexture;
+Texture2D horizontalBlurTexture : register(t2);
 
-// (wid, ht, 1/width, 1/ht) of source texture ( = pixel size)
-float4 srcSizeInfo;
+// sampler states are described in Blur.effect.json
+SamplerState sceneSampler : register(s0);
+SamplerState downsampledSampler : register(s1);
+SamplerState BlurSampler : register(s2);
 
-// (wid, ht, 1/width, 1/ht) of downsampled texture
-float4 downsampledSizeInfo;
+cbuffer BlurParams : register(b0)
+{
+	// (wid, ht, 1/width, 1/ht) of source texture ( = pixel size)
+	float4 srcSizeInfo;
 
-int VSMDepth = 1;
+	// (wid, ht, 1/width, 1/ht) of downsampled texture
+	float4 downsampledSizeInfo;
+
+	// summed-area-table scan step; default (1) is in Blur.effect.json
+	int VSMDepth;
+};
 
 //#ifndef SEPERABLE_BLUR_KERNEL_SIZE
 #define SEPERABLE_BLUR_KERNEL_SIZE 7
@@ -108,8 +100,8 @@ float4 DownSamplePS(VS_OUTPUT px) : SV_TARGET
 
 // pixel kernels for Gaussian Blur
 static const int g_KernelSize = 3;
-float2 HPixelOffsets[g_KernelSize] = {{-2,0}, {0,0}, {2,0}};
-float2 VPixelOffsets[g_KernelSize] = {{0,-2}, {0,0}, {0,2}};
+static const float2 HPixelOffsets[g_KernelSize] = {{-2,0}, {0,0}, {2,0}};
+static const float2 VPixelOffsets[g_KernelSize] = {{0,-2}, {0,0}, {0,2}};
 static const float BlurWeights[g_KernelSize] = {0.25, 0.5, 0.25};
 
 // Separable Gaussian Blur Shader
@@ -191,66 +183,43 @@ float4 PSVScan(VS_OUTPUT px, uniform Texture2D passSampler) : SV_Target
     return summed;
 }
 
-technique11 SimpleGaussianBlur
-{
-	// render target is downsampledTexture
-	pass downSamplePass 
-	{		
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 DownSamplePS();
-	}
-	
-	// render target is horizontalBlurTexture
-	pass horizontalBlurPass 
-	{		
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 Blur(HPixelOffsets,
-			downsampledTexture, downsampledSizeInfo.z);
-	}
-	
-	// last pass: render target is result rendertarget of choice!
-	pass verticalBlurPass 
-	{		
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 Blur(VPixelOffsets,
-			horizontalBlurTexture, downsampledSizeInfo.w);
-	}
-}
 
-technique11 SimpleBlur
-{
-	// render target is horizontalBlurTexture
-	pass BlurXPass 
-	{		
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 PSBlurX(downsampledTexture);
-	}
-	
-	// last pass: render target is result rendertarget of choice!
-	pass BlurYPass 
-	{		
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 PSBlurY(horizontalBlurTexture);
-	}
-}
-
-technique11 SummedParallelScan
-{
-	// render target is horizontalBlurTexture
-	pass HorizontalScan
-	{		
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 PSHScan(sceneTexture);
-	}
-	
-	// last pass: render target is result rendertarget of choice!
-	pass VerticalScan
-	{		
-		VertexShader = compile vs_5_0 VSMain();
-		PixelShader = compile ps_5_0 PSVScan(sceneTexture);
-	}
-}
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 
 /***************************** eof ***/
+
+//////////////////////////////////////////////////////////////////////////////
+// Entry points generated from the technique/pass compile statements.
+// Each one binds the uniform arguments the .fx passed in its compile call.
+//////////////////////////////////////////////////////////////////////////////
+
+float4 SimpleGaussianBlur_horizontalBlurPass_PS(VS_OUTPUT px) : SV_TARGET
+{
+    return Blur(px, HPixelOffsets, downsampledTexture, downsampledSizeInfo.z);
+}
+
+float4 SimpleGaussianBlur_verticalBlurPass_PS(VS_OUTPUT px) : SV_TARGET
+{
+    return Blur(px, VPixelOffsets, horizontalBlurTexture, downsampledSizeInfo.w);
+}
+
+float4 SimpleBlur_BlurXPass_PS(VS_OUTPUT px) : SV_Target
+{
+    return PSBlurX(px, downsampledTexture);
+}
+
+float4 SimpleBlur_BlurYPass_PS(VS_OUTPUT px) : SV_Target
+{
+    return PSBlurY(px, horizontalBlurTexture);
+}
+
+float4 SummedParallelScan_HorizontalScan_PS(VS_OUTPUT px) : SV_Target
+{
+    return PSHScan(px, sceneTexture);
+}
+
+float4 SummedParallelScan_VerticalScan_PS(VS_OUTPUT px) : SV_Target
+{
+    return PSVScan(px, sceneTexture);
+}

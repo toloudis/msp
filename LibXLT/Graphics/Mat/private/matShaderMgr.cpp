@@ -79,6 +79,27 @@ namespace
 		l_LoadedShaders.clear();
 	}
 
+	//----------------------------------------------------------------------------
+	// Effects converted to plain HLSL are registered by effect name ("Blur")
+	// rather than by their old file name ("Blur.fx"). Materials, scenes and
+	// code may still ask for the old name, so a missing "X.fx" falls back to "X".
+	//----------------------------------------------------------------------------
+	std::map<std::string, matShaderInfo>::iterator find_shader(const std::string& i_Name)
+	{
+		std::map<std::string, matShaderInfo>::iterator it = l_ShaderMap.find(i_Name);
+		if (it != l_ShaderMap.end())
+			return it;
+
+		const size_t n = i_Name.size();
+		if (n > 3 && i_Name[n - 3] == '.' &&
+			(i_Name[n - 2] == 'f' || i_Name[n - 2] == 'F') &&
+			(i_Name[n - 1] == 'x' || i_Name[n - 1] == 'X'))
+		{
+			return l_ShaderMap.find(i_Name.substr(0, n - 3));
+		}
+		return l_ShaderMap.end();
+	}
+
 }	// end of namespace
 
 //------------------------------------------------------------------------
@@ -187,7 +208,7 @@ effShaderData* CreateData(const std::string& i_EffectID)
 	if (!l_bEnabled) 
 		return NULL;
 
-	std::map<std::string, matShaderInfo>::iterator it = l_ShaderMap.find( i_EffectID );
+	std::map<std::string, matShaderInfo>::iterator it = find_shader( i_EffectID );
 	if (it != l_ShaderMap.end())
 	{
 //		DBG_ASSERT(it->second.m_DataTemplate != NULL, "bad shader info data template");
@@ -243,7 +264,7 @@ matShaderEffect* GetSpecialEffect(const std::string& i_Name)
 		return NULL;
 
 	// assuming special effect shaders are already loaded.
-	std::map<std::string, matShaderInfo>::iterator it = l_ShaderMap.find( i_Name );
+	std::map<std::string, matShaderInfo>::iterator it = find_shader( i_Name );
 	if (it == l_ShaderMap.end()) {
 		DBG_WARNING("Failed shader lookup due to missing entry for " << i_Name);
 		return NULL;
@@ -287,7 +308,7 @@ matShaderEffect* GetPostEffect(const fsLocator& i_PathToShader)
 	fsLocator path = i_PathToShader;
 	std::string lastName = itStringUtil::GetStdString(path.GetLastName());
 
-	std::map<std::string, matShaderInfo>::iterator it = l_ShaderMap.find( lastName );
+	std::map<std::string, matShaderInfo>::iterator it = find_shader( lastName );
 	if (it == l_ShaderMap.end() || it->second.m_pEffect == NULL)
 	{	
 		// dealing with naming of post effect

@@ -7,15 +7,41 @@ on:
   workflow_dispatch:
 
 jobs:
+  # Compiles every entry point of the shaders converted from Effects (.fx)
+  # to plain HLSL, one entry point at a time: as SM 5 with fxc (what the DX11
+  # renderer uses) and as SM 6 with dxc (for a future DX12 port).
+  converted-shaders:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Find shader compilers and converted shaders
+        shell: pwsh
+        run: |
+          $bin = "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64"
+          foreach ($tool in "fxc", "dxc") {
+            $exe = Get-ChildItem "$bin\$tool.exe" | Sort-Object FullName -Descending | Select-Object -First 1
+            if (-not $exe) { throw "$tool.exe not found in the Windows SDK" }
+            "$($tool.ToUpper())=$($exe.FullName)" >> $env:GITHUB_ENV
+          }
+
+      - name: Compile converted shaders as SM 5 (fxc)
+        shell: pwsh
+        run: python Tools/fx2hlsl/compile_check.py --compiler fxc --exe $env:FXC --verbose (Get-ChildItem -Recurse -Filter *.effect.json LibXLT).FullName
+
+      - name: Compile converted shaders as SM 6 (dxc)
+        if: ${{ !cancelled() }}
+        shell: pwsh
+        run: python Tools/fx2hlsl/compile_check.py --compiler dxc --exe $env:DXC --verbose (Get-ChildItem -Recurse -Filter *.effect.json LibXLT).FullName
+
   build-mainapp:
     runs-on: windows-latest
     strategy:
       fail-fast: false
       matrix:
-        # Debug|x64 is the configuration the project files keep linkable (its
-        # library paths point at the per-library vcpkg installs); Release|x64
-        # still points at old prebuilt DirectXTex/FX11 folders.
-        configuration: [ Debug ]
+        # Both configurations link the vcpkg packages from the per-library
+        # manifest installs (LibXLT/Graphics, LibXLT/GraphicsDX11).
+        configuration: [ Debug, Release ]
     env:
       VCPKG_ROOT: C:\vcpkg
       VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}\vcpkg-binary-cache
@@ -60,3 +86,13 @@ jobs:
           /p:EnforceProcessCountAcrossBuilds=true
           /nologo
           /v:minimal
+
+      # The exe loads OpenEXR from its own folder; fail if a build would not
+      # start because the DLL is missing.
+      - name: Check OpenEXR DLL is next to the exe
+        shell: pwsh
+        run: |
+          $suffix = if ("${{ matrix.configuration }}" -eq "Debug") { "_d" } else { "" }
+          $dll = "MachStudio/MachStudio-x64/OpenEXR-3_2$suffix.dll"
+          if (-not (Test-Path $dll)) { throw "$dll is missing" }
+          Get-ChildItem MachStudio/MachStudio-x64/*.dll | Select-Object -ExpandProperty Name

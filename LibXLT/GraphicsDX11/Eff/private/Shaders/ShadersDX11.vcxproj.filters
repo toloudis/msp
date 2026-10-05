@@ -84,7 +84,10 @@
     <None Include="Special\Billboard.fx">
       <Filter>Shaders\Special</Filter>
     </None>
-    <None Include="Special\Blur.fx">
+    <None Include="Special\Blur.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Blur.effect.json">
       <Filter>Shaders\Special</Filter>
     </None>
     <None Include="Special\Brushstroke.fx">
@@ -96,13 +99,19 @@
     <None Include="Special\DepthRender.fx">
       <Filter>Shaders\Special</Filter>
     </None>
-    <None Include="Special\DOF.fx">
+    <None Include="Special\DOF.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\DOF.effect.json">
       <Filter>Shaders\Special</Filter>
     </None>
     <None Include="Special\EnvBackground.fx">
       <Filter>Shaders\Special</Filter>
     </None>
-    <None Include="Special\Fog.fx">
+    <None Include="Special\Fog.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\Fog.effect.json">
       <Filter>Shaders\Special</Filter>
     </None>
     <None Include="Special\GIVolumes.fx">
@@ -114,7 +123,10 @@
     <None Include="Special\HairDefault.fx">
       <Filter>Shaders\Special</Filter>
     </None>
-    <None Include="Special\HDRLighting.fx">
+    <None Include="Special\HDRLighting.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\HDRLighting.effect.json">
       <Filter>Shaders\Special</Filter>
     </None>
     <None Include="Special\IlluminationOnly.fx">
@@ -147,7 +159,10 @@
     <None Include="Special\Particle.fx">
       <Filter>Shaders\Special</Filter>
     </None>
-    <None Include="Special\PostAlphaMatte.fx">
+    <None Include="Special\PostAlphaMatte.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Special\PostAlphaMatte.effect.json">
       <Filter>Shaders\Special</Filter>
     </None>
     <None Include="Special\Ramp.fx">

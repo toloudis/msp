@@ -385,7 +385,7 @@
     </Midl>
     <ClCompile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>.\..\..\..\..\machstudio\source;.\..\..\..\..\libxlt;.\..\..\..\..\3rdParty\Python\include;.\..\..\..\..\3rdParty\WxWidgets\Include\msvc;.\..\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\..\3rdParty\Boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\..\..\..\machstudio\source;.\..\..\..\..\libxlt;.\..\..\..\..\3rdParty\Python\include;.\..\..\..\..\3rdParty\WxWidgets\Include\msvc;.\..\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\..\3rdParty\Boost;.\..\..\..\..\LibXLT\ToolUIWx\vcpkg_installed\x64-windows\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>

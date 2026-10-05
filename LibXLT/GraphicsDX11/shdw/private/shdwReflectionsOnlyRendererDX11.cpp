@@ -38,6 +38,9 @@
 #include "GraphicsDX11/shdw/shdwPassNormals.hpp"
 #include "GraphicsDX11/shdw/shdwPassZFill.hpp"
 #include "GraphicsDX11/G2d/g2dWindowDX11.hpp"
+#ifndef FX_EFFECTDX11_HPP
+#include "GraphicsDX11/Fx/fxEffectDX11.hpp"
+#endif
 
 //	The reason a macro is used here (instead of a function, an inline function, or a template inline function)
 //	is that I need the __FILE__ and __LINE__ macros to resolve to useful values
@@ -321,10 +324,9 @@ void shdwReflectionsOnlyRendererDX11::CopyToBackBuf(matRenderTargetTexture* pTex
 
 // Draw the high dynamic range scene texture to the low dynamic range
     // back buffer. 
-	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)matShaderMgr::GetSpecialEffect(("HDRLighting.fx"));
-	ID3DX11Effect* pEffect = i_pEffect->GetD3DXEffect();
+	fxEffectDX11* pEffect = g3dDX11Util::GetPlainEffect("HDRLighting");
 
-	ID3DX11EffectTechnique* pTechnique = pEffect->GetTechniqueByName(isRGB?"SimpleCopyLDR":"SimpleCopyLumLDR");
+	int technique = pEffect->FindTechnique(isRGB?"SimpleCopyLDR":"SimpleCopyLumLDR");
     
 	m_pWindow->MakeCurrent();
 	int w,h;
@@ -334,11 +336,10 @@ void shdwReflectionsOnlyRendererDX11::CopyToBackBuf(matRenderTargetTexture* pTex
 
 	g3dRasterizerStateMgr::SetRasterizerState( D3D11_CULL_NONE, g3dDrawStyleUtilDX11::GetD3DDrawStyle() );
 
-	D3DX11_TECHNIQUE_DESC techDesc;
-	pTechnique->GetDesc( &techDesc );
-	for( UINT uiPass = 0; uiPass < techDesc.Passes; ++uiPass)
+	UINT nTechPasses = (UINT)pEffect->GetPassCount(technique);
+	for( UINT uiPass = 0; uiPass < nTechPasses; ++uiPass)
 	{
-		pTechnique->GetPassByIndex(uiPass)->Apply(0, g2dDX11Global::g_pDeviceContext);
+		pEffect->Apply(technique, uiPass, g2dDX11Global::g_pDeviceContext);
 		g2dDX11Global::g_pDeviceContext->PSSetShaderResources(0, 1, &aRes);
 		g3dDX11Util::DrawFullScreenQuad( w,h );
 	}

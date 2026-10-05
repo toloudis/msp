@@ -427,7 +427,7 @@
     </Midl>
     <ClCompile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\WxWidgets\include\msvc;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty\png\zlib-1.2.5;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\WxWidgets\include\msvc;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty\png\zlib-1.2.5;.\..\..\..\machstudio\source;.\..\..\..\LibXLT\ToolUIWx\vcpkg_installed\x64-windows\x64-windows\include;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>

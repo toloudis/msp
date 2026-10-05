@@ -1,3 +1,9 @@
+//////////////////////////////////////////////////////////////////////////////
+// Converted from Fog.fx by Tools/fx2hlsl/fx2hlsl.py (one-time conversion).
+// Techniques, sampler states, annotations and variable defaults now live in
+// Fog.effect.json. This file is the source of truth from here on.
+//////////////////////////////////////////////////////////////////////////////
+
 /*****************************************************************************
 **  DepthRender.fx
 **
@@ -7,34 +13,34 @@
 **	Copyright(C) 2007 - All Rights Reserved
 \****************************************************************************/
 
-/*********** support data and functions ******/
+// Explicit registers keep the binding layout identical for every entry point
+// (and map directly onto a DX12 root signature / Vulkan descriptor set).
+// Support.h is no longer included: nothing here used it.
+// Defaults for the cbuffer variables are in Fog.effect.json.
 
-#include "..\Support.h"
-
-float g_FogDepthStart;	// dist from camera
-float g_FogDepthRange;	// camera space distance
-float g_FogDensity = 1;
-float4 g_FogColor;
-float3 g_FogOrientation; // orientation vector 
-
-// transform to get view space position.
-float2 g_InvFocalLen;
-// transform to get world space position.
-float4x4 g_CameraToWorldSpace;
-
-float g_FogAltitudeStart = 100; // for world space height of fog.
-float g_FogAltitudeRange = 100; // for world space height of fog.
-float g_FogAltitudeDensity = 1;
-float g_FogThinning = 0.1; 
-
-Texture2D tLinDepth; // floats (R32F)
-SamplerState samNearest
+cbuffer FogParams : register(b0)
 {
-    Filter = MIN_MAG_MIP_POINT;
-    AddressU = Clamp;
-    AddressV = Clamp;
+	// transform to get world space position.
+	float4x4 g_CameraToWorldSpace;
+	float4 g_FogColor;
+	float3 g_FogOrientation; // orientation vector
+	float g_FogDepthStart;	// dist from camera
+	// transform to get view space position.
+	float2 g_InvFocalLen;
+	float g_FogDepthRange;	// camera space distance
+	float g_FogDensity;
+
+	float g_FogAltitudeStart; // for world space height of fog.
+	float g_FogAltitudeRange; // for world space height of fog.
+	float g_FogAltitudeDensity;
+	float g_FogThinning;
 };
-Texture2D tColors; 
+
+Texture2D tLinDepth : register(t0); // floats (R32F)
+Texture2D tColors : register(t1);
+
+// sampler state is described in Fog.effect.json
+SamplerState samNearest : register(s0);
 
 /************* DATA STRUCTS **************/
 struct PostProc_VSOut
@@ -130,28 +136,6 @@ float4 ExponentialSquaredFogPS(float4 pos   : SV_POSITION,
 }
 
 //----------------------------------------------------------------------------------
-technique11 LinearFog
-{
-    pass p0
-    {
-        VertexShader	= compile vs_5_0 FullScreenQuadVS();
-        PixelShader		= compile ps_5_0 LinearFogPS();
-    }
-}
-technique11 ExponentialFog
-{
-    pass p0
-    {
-        VertexShader	= compile vs_5_0 FullScreenQuadVS();
-        PixelShader		= compile ps_5_0 ExponentialFogPS();
-    }
-}
-technique11 ExponentialSquaredFog
-{
-    pass p0
-    {
-        VertexShader	= compile vs_5_0 FullScreenQuadVS();
-        PixelShader		= compile ps_5_0 ExponentialSquaredFogPS();
-    }
-}
+
+
 /***************************** eof ***/

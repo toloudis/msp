@@ -1,3 +1,9 @@
+//////////////////////////////////////////////////////////////////////////////
+// Converted from DOF.fx by Tools/fx2hlsl/fx2hlsl.py (one-time conversion).
+// Techniques, sampler states, annotations and variable defaults now live in
+// DOF.effect.json. This file is the source of truth from here on.
+//////////////////////////////////////////////////////////////////////////////
+
 /*****************************************************************************
 **  DOF.fx
 **
@@ -11,16 +17,18 @@
 //////////////////////////////////////////////////////////////
 
 #define NUM_DOF_TAPS 64
+
+// Explicit registers keep the binding layout identical for every entry point
+// (and map directly onto a DX12 root signature / Vulkan descriptor set).
+
 // full scene image
-Texture2D tSource;
-SamplerState tSourceSampler
-{
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
+Texture2D tSource : register(t0);
 
 // blurred full scene image (downsampled and filtered)
-Texture2D tSourceLow;
+Texture2D tSourceLow : register(t1);
+
+// sampler state is described in DOF.effect.json
+SamplerState tSourceSampler : register(s0);
 
 // poisson distributed positions in unit disc
 /*
@@ -35,7 +43,7 @@ float2 poisson[NUM_DOF_TAPS] = {
   float2( 0.574619, 0.685879)
 };
 */
-float2 poisson[82] = {
+static const float2 poisson[82] = {
 	float2(0,0),
 	float2(-0.304967, -0.058754),
 	float2(-0.043598, -0.452767),
@@ -120,16 +128,19 @@ float2 poisson[82] = {
 	float2(0.731807, -0.986733)
 };
 
-// 1/image resolution of full size image
-float2 pixelSizeHigh; 
-// 1/image resolution of downsampled image
-float2 pixelSizeLow;
+cbuffer DOFParams : register(b0)
+{
+	// 1/image resolution of full size image
+	float2 pixelSizeHigh;
+	// 1/image resolution of downsampled image
+	float2 pixelSizeLow;
 
-// maximum circle of confusion radius in pixels
-float maxCoC = 5.0;
+	// maximum circle of confusion radius in pixels; default (5) is in DOF.effect.json
+	float maxCoC;
 
-// scale factor for maximum CoC on smaller image
-float radiusScale = 0.4; 
+	// scale factor for maximum CoC on smaller image; default (0.4) is in DOF.effect.json
+	float radiusScale;
+};
 
 float4 PoissonDOFFilter(float2 texCoord /* screen space tex coord */)
 {
@@ -201,14 +212,7 @@ float4 DOFPost_PS(VS_OUTPUT v_in)  : SV_TARGET
 {
     return PoissonDOFFilter(v_in.img);
 }
-technique11 DOFPost
-{
-	pass p0 
-	{		
-		VertexShader = compile vs_5_0 VSMain();//NULL;
-		PixelShader = compile ps_5_0 DOFPost_PS();
-	}
-}
+
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 
