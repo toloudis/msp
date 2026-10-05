@@ -66,14 +66,14 @@ struct IncidentLight
 
 #endif//SIMPLE_SHADOWS
 
-Texture2D projLightMap : register(t16);		// : ProjLightTexture
+Texture2D projLightMap : register(t22);		// : ProjLightTexture
 SamplerState projSampler : register(s5);
 
-Texture2D projShadowMap : register(t17);		// : ProjShadowMap
+Texture2D projShadowMap : register(t23);		// : ProjShadowMap
 SamplerState shadowMapSampler : register(s6);
 
 // Poisson disk table, read with Load (no sampler)
-Texture2D g_Poisson : register(t18);
+Texture2D g_Poisson : register(t24);
 
 /*********** support functions ******/
 //--------------------------------------------------------------------

@@ -1,0 +1,1711 @@
+{
+  "source": "BlinnReflection.fx",
+  "hlsl": "BlinnReflection.hlsl",
+  "techniques": [
+    {
+      "name": "Default",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "Default_PDefault_PS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "Default_PTess_PS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Tangent_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Tangent_DS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SingleLight",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SingleLight_PDefault_PS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SingleLight_PTess_PS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Tangent_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Tangent_DS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProjectedLight",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ProjectedLight_PDefault_PS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ProjectedLight_PTess_PS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Tangent_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Tangent_DS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProjectedLightSuperSample",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ProjectedLightSuperSample_PDefault_PS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ProjectedLightSuperSample_PTess_PS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Tangent_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Tangent_DS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProjectedLightSuperSample2",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ProjectedLightSuperSample2_PDefault_PS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ProjectedLightSuperSample2_PTess_PS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Tangent_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Tangent_DS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProjectedLightSuperSample3",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ProjectedLightSuperSample3_PDefault_PS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ProjectedLightSuperSample3_PTess_PS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Tangent_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Tangent_DS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Glow",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "Glow_PDefault_PS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "Glow_PTess_PS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Tangent_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Tangent_DS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "DOFPrep",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "DOFPrep_PDefault_PS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "DOFPrep_PDefault_PS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Tangent_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Tangent_DS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Matte",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "simpleMattePS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "simpleMattePS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Tangent_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Tangent_DS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Environment",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "iblPS_Default"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "iblPS_Tess"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Tangent_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Tangent_DS"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "samplers": {
+    "g_DefaultSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "ANISOTROPIC",
+        "MaxAnisotropy": 16,
+        "AddressU": "Wrap",
+        "AddressV": "Wrap"
+      }
+    },
+    "g_CubeSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_LINEAR",
+        "AddressU": "Wrap",
+        "AddressV": "Clamp"
+      }
+    },
+    "bumpMapSampler": {
+      "type": "SamplerState",
+      "state": {
+        "FILTER": "ANISOTROPIC",
+        "AddressU": "WRAP",
+        "AddressV": "WRAP"
+      }
+    },
+    "displacementSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_LINEAR",
+        "AddressU": "Wrap",
+        "AddressV": "Wrap"
+      }
+    },
+    "displacementTapSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_POINT",
+        "AddressU": "Wrap",
+        "AddressV": "Wrap"
+      }
+    },
+    "projSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_LINEAR_MIP_POINT",
+        "AddressU": "Border",
+        "AddressV": "Border",
+        "AddressW": "Border",
+        "BorderColor": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "shadowMapSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_LINEAR",
+        "AddressU": "Border",
+        "AddressV": "Border",
+        "AddressW": "Border",
+        "BorderColor": [
+          1,
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    "shdwSampler": {
+      "type": "SamplerState",
+      "state": {
+        "FILTER": "MIN_MAG_MIP_LINEAR",
+        "AddressU": "Border",
+        "AddressV": "Border",
+        "BorderColor": [
+          1,
+          1,
+          1,
+          1
+        ]
+      }
+    },
+    "SATSampler": {
+      "type": "SamplerState",
+      "state": {
+        "FILTER": "MIN_MAG_MIP_LINEAR",
+        "MaxAnisotropy": 16,
+        "AddressU": "Border",
+        "AddressV": "Border",
+        "BorderColor": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "CubeSampler": {
+      "type": "SamplerState",
+      "state": {
+        "FILTER": "MIN_MAG_MIP_LINEAR",
+        "AddressU": "Wrap",
+        "AddressV": "Wrap",
+        "AddressW": "Wrap"
+      }
+    },
+    "g_cubeSampler": {
+      "type": "SamplerState",
+      "state": {
+        "FILTER": "MIN_MAG_MIP_LINEAR",
+        "AddressU": "CLAMP",
+        "AddressV": "CLAMP",
+        "AddressW": "CLAMP"
+      }
+    },
+    "planarSampler": {
+      "type": "SamplerState",
+      "state": {
+        "FILTER": "MIN_MAG_MIP_LINEAR",
+        "AddressU": "CLAMP",
+        "AddressV": "CLAMP"
+      }
+    },
+    "AnisoWrapSampler": {
+      "type": "SamplerState",
+      "state": {
+        "FILTER": "ANISOTROPIC",
+        "AddressU": "WRAP",
+        "AddressV": "WRAP"
+      }
+    }
+  },
+  "variables": {
+    "gp": {
+      "type": "int",
+      "semantic": "SasGlobal",
+      "annotations": {
+        "SasVersion": {
+          "type": "int3",
+          "value": [
+            1,
+            0,
+            0
+          ]
+        },
+        "SasEffectAuthor": {
+          "type": "string",
+          "value": "Daniel Toloudis"
+        },
+        "SasEffectAuthoringSoftware": {
+          "type": "string",
+          "value": "MachStudio"
+        },
+        "SasEffectCategory": {
+          "type": "string",
+          "value": "/material"
+        },
+        "SasEffectCompany": {
+          "type": "string",
+          "value": "studio|gpu"
+        },
+        "SasEffectDescription": {
+          "type": "string",
+          "value": "Blinn Reflection"
+        },
+        "SasEffectHelp": {
+          "type": "string",
+          "value": "This is a blinn shader with oren nayar diffuse roughness and dynamic reflections."
+        },
+        "SasEffectRevision": {
+          "type": "string",
+          "value": "2"
+        }
+      }
+    },
+    "g_uvTransform": {
+      "type": "float4x4",
+      "default": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    "g_ClipPlane": {
+      "type": "float4",
+      "default": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    "g_bakeTransform": {
+      "type": "float4",
+      "default": [
+        1,
+        1,
+        0,
+        0
+      ]
+    },
+    "g_bake": {
+      "type": "bool",
+      "default": false
+    },
+    "g_FirstLight": {
+      "type": "bool",
+      "default": false
+    },
+    "g_worldIT": {
+      "type": "float4x4",
+      "semantic": "WorldIT"
+    },
+    "g_wvp": {
+      "type": "float4x4",
+      "semantic": "WorldViewProjection"
+    },
+    "g_wv": {
+      "type": "float4x4",
+      "semantic": "WorldView"
+    },
+    "g_world": {
+      "type": "float4x4",
+      "semantic": "World"
+    },
+    "g_vp": {
+      "type": "float4x4",
+      "semantic": "ViewProjection"
+    },
+    "g_proj": {
+      "type": "float4x4",
+      "semantic": "Projection"
+    },
+    "g_eyePos": {
+      "type": "float4",
+      "semantic": "CameraPos"
+    },
+    "g_targetRes": {
+      "type": "float4"
+    },
+    "g_bumpMapScale": {
+      "type": "float",
+      "semantic": "BumpMapScale",
+      "default": 0.0
+    },
+    "hasNormalMap": {
+      "type": "bool",
+      "default": false
+    },
+    "normalMap": {
+      "type": "Texture2D",
+      "semantic": "NormalMap"
+    },
+    "g_time_0_X": {
+      "type": "float"
+    },
+    "g_AlphaTestRef": {
+      "type": "float",
+      "default": 0.0
+    },
+    "g_bDoubleSided": {
+      "type": "bool",
+      "semantic": "DoubleSided",
+      "default": false
+    },
+    "g_IsolateReflection": {
+      "type": "bool",
+      "default": false
+    },
+    "g_bCubeMapEnabled": {
+      "type": "bool",
+      "default": false
+    },
+    "g_diffuseFactor": {
+      "type": "float",
+      "default": 0.1
+    },
+    "g_bHasDiffuseEnvMap": {
+      "type": "bool"
+    },
+    "g_diffuseEnvAngle": {
+      "type": "float",
+      "default": 0
+    },
+    "g_envDiffuseColor": {
+      "type": "float4",
+      "default": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "diffuseEnvMap": {
+      "type": "Texture2D"
+    },
+    "g_specularFactor": {
+      "type": "float",
+      "default": 0.1
+    },
+    "g_bHasSpecularEnvMap": {
+      "type": "bool"
+    },
+    "g_specularEnvAngle": {
+      "type": "float",
+      "default": 0
+    },
+    "g_envSpecularColor": {
+      "type": "float4",
+      "default": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "specularEnvMap": {
+      "type": "Texture2D"
+    },
+    "g_glowSize": {
+      "type": "float",
+      "default": 0
+    },
+    "g_bHasMask": {
+      "type": "bool",
+      "default": false
+    },
+    "g_bConstGlow": {
+      "type": "bool",
+      "default": false
+    },
+    "g_fDofBlurCutoff": {
+      "type": "float",
+      "default": 1
+    },
+    "g_vDofParams": {
+      "type": "float4",
+      "default": [
+        30,
+        60,
+        80,
+        120
+      ]
+    },
+    "g_IsReflectionGen": {
+      "type": "bool",
+      "semantic": "IsReflectionGen",
+      "default": false
+    },
+    "g_vTessellationFactor": {
+      "type": "float4"
+    },
+    "meshDataTexture": {
+      "type": "Texture2D",
+      "semantic": "meshdatamap"
+    },
+    "g_MeshDataTextureWidth": {
+      "type": "float",
+      "default": 256.0
+    },
+    "g_MeshDataTextureHeight": {
+      "type": "float",
+      "default": 64.0
+    },
+    "g_view": {
+      "type": "float4x4",
+      "semantic": "View"
+    },
+    "g_hasDisplacementMap": {
+      "type": "bool",
+      "default": false
+    },
+    "g_DisplacementScale": {
+      "type": "float"
+    },
+    "g_DisplacementBias": {
+      "type": "float"
+    },
+    "g_DisplacementBlur": {
+      "type": "float"
+    },
+    "g_DisplacementMapSize": {
+      "type": "float2"
+    },
+    "g_ObjectUVScale": {
+      "type": "float2"
+    },
+    "g_DisplacementMap": {
+      "type": "Texture2D"
+    },
+    "hasHardwareTessellation": {
+      "type": "bool",
+      "default": true
+    },
+    "g_lightInfo": {
+      "type": "LightInfo",
+      "semantic": "LightInfo"
+    },
+    "g_projLight": {
+      "type": "ProjLightInfo",
+      "semantic": "ProjLightInfo"
+    },
+    "g_bProjLt": {
+      "type": "bool",
+      "default": false
+    },
+    "g_bHasProjMap": {
+      "type": "bool",
+      "semantic": "HasProjectedTexture",
+      "default": false
+    },
+    "g_bHasShadowMap": {
+      "type": "bool",
+      "semantic": "HasShadowMap",
+      "default": false
+    },
+    "projLightMap": {
+      "type": "Texture2D",
+      "semantic": "ProjLightTexture"
+    },
+    "projShadowMap": {
+      "type": "Texture2D",
+      "semantic": "ProjShadowMap"
+    },
+    "g_Poisson": {
+      "type": "Texture2D"
+    },
+    "g_DistributeFactor": {
+      "type": "float",
+      "default": 256
+    },
+    "g_isPlanar": {
+      "type": "bool",
+      "semantic": "ReflectionMapIsPlanar",
+      "default": false
+    },
+    "g_hasCubeMap": {
+      "type": "bool",
+      "semantic": "HasReflectionMap",
+      "default": false
+    },
+    "g_cubeMap": {
+      "type": "TextureCube",
+      "semantic": "CubeReflectionMap"
+    },
+    "g_planarMap": {
+      "type": "Texture2D",
+      "semantic": "PlanarReflectionMap"
+    },
+    "g_diffuse": {
+      "type": "float4",
+      "semantic": "MaterialDiffuse",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "ColorPicker"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Diffuse Color"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "diffuse color of surface"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Diffuse"
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 1
+        }
+      },
+      "default": [
+        0.5,
+        0.5,
+        0.5,
+        1.0
+      ]
+    },
+    "hasDiffuseMap": {
+      "type": "bool",
+      "default": false
+    },
+    "diffuseMap": {
+      "type": "Texture2D",
+      "semantic": "DiffuseTexture",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "FilePicker"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Diffuse Map"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "diffuse color"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Diffuse"
+        },
+        "ExistVar": {
+          "type": "string",
+          "value": "hasDiffuseMap"
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 2
+        }
+      }
+    },
+    "g_roughness": {
+      "type": "float",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "Slider"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Roughness"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "diffuse roughness"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Diffuse"
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 3
+        }
+      },
+      "default": 0
+    },
+    "g_emissive": {
+      "type": "float4",
+      "semantic": "MaterialEmissive",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "ColorPicker"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Emissive Color"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "emissive color"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Diffuse"
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 4
+        }
+      },
+      "default": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "hasEmissiveMap": {
+      "type": "bool",
+      "default": false
+    },
+    "emissiveMap": {
+      "type": "Texture2D",
+      "semantic": "EmissiveTexture",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "FilePicker"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Emissive Map"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "emissive color"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Diffuse"
+        },
+        "ExistVar": {
+          "type": "string",
+          "value": "hasEmissiveMap"
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 5
+        }
+      }
+    },
+    "g_emissiveIntensity": {
+      "type": "float",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "Slider"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Intensity"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "Emissive Intensity"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Diffuse"
+        },
+        "SasUiMin": {
+          "type": "float",
+          "value": 0.0
+        },
+        "SasUiMax": {
+          "type": "float",
+          "value": 10.0
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 6
+        }
+      },
+      "default": 1.0
+    },
+    "g_specular": {
+      "type": "float4",
+      "semantic": "MaterialSpecular",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "ColorPicker"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Specular Color"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "color of specular hilight"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Specular"
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 7
+        }
+      },
+      "default": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "hasSpecularMap": {
+      "type": "bool",
+      "default": false
+    },
+    "specularMap": {
+      "type": "Texture2D",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "FilePicker"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Specular Color Map"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "specular color"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Specular"
+        },
+        "ExistVar": {
+          "type": "string",
+          "value": "hasSpecularMap"
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 8
+        }
+      }
+    },
+    "g_specularPower": {
+      "type": "float",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "Slider"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Specular Power"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "Specular power controls intensity of highlight"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Specular"
+        },
+        "SasUiMin": {
+          "type": "float",
+          "value": 0.0
+        },
+        "SasUiMax": {
+          "type": "float",
+          "value": 10.0
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 9
+        }
+      },
+      "default": 1.0
+    },
+    "g_IOR": {
+      "type": "float",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "Slider"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Specular Roll Off"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "index of refraction"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Specular"
+        },
+        "SasUiMin": {
+          "type": "float",
+          "value": 0.0
+        },
+        "SasUiMax": {
+          "type": "float",
+          "value": 1.0
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 10
+        }
+      },
+      "default": 1
+    },
+    "hasIORMap": {
+      "type": "bool",
+      "default": false
+    },
+    "iorMap": {
+      "type": "Texture2D",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "FilePicker"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Specular Roll Off Map"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "index of refraction texture"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Specular"
+        },
+        "ExistVar": {
+          "type": "string",
+          "value": "hasIORMap"
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 11
+        }
+      }
+    },
+    "g_shininess": {
+      "type": "float",
+      "semantic": "MaterialPower",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "Slider"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Shininess"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "specular exponent controls size of highlight"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Specular"
+        },
+        "SasUiMin": {
+          "type": "float",
+          "value": 0.0
+        },
+        "SasUiMax": {
+          "type": "float",
+          "value": 1.0
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 12
+        }
+      },
+      "default": 0.5
+    },
+    "hasGlossMap": {
+      "type": "bool",
+      "default": false
+    },
+    "glossMap": {
+      "type": "Texture2D",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "FilePicker"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Shininess Map"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "specular exponent multiplier"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Specular"
+        },
+        "ExistVar": {
+          "type": "string",
+          "value": "hasGlossMap"
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 13
+        }
+      }
+    },
+    "g_transparency": {
+      "type": "float",
+      "semantic": "Opacity",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "Slider"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Opacity"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "opacity value, 0 transparent, 1 for opaque"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Opacity"
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 14
+        }
+      },
+      "default": 1.0
+    },
+    "hasTransparencyMap": {
+      "type": "bool",
+      "default": false
+    },
+    "transparencyMap": {
+      "type": "Texture2D",
+      "semantic": "OpacityTexture",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "FilePicker"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Opacity Texture"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "opacity texture"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Opacity"
+        },
+        "ExistVar": {
+          "type": "string",
+          "value": "hasTransparencyMap"
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 15
+        }
+      }
+    },
+    "g_reflectivity": {
+      "type": "float",
+      "semantic": "Reflectivity",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "Slider"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Environment Contribution"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "multiplier for reflection map"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Reflection"
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 16
+        }
+      },
+      "default": 1.0
+    },
+    "fresnelPower": {
+      "type": "float",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "Slider"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Fresnel Power"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "fresnel exponent"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Reflection"
+        },
+        "SasUiMin": {
+          "type": "float",
+          "value": 0.0
+        },
+        "SasUiMax": {
+          "type": "float",
+          "value": 5.0
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 17
+        }
+      },
+      "default": 4.0
+    },
+    "fresnelBias": {
+      "type": "float",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "Slider"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Fresnel Bias"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "fresnel bias"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Reflection"
+        },
+        "SasUiMin": {
+          "type": "float",
+          "value": 0.0
+        },
+        "SasUiMax": {
+          "type": "float",
+          "value": 1.0
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 18
+        }
+      },
+      "default": 0.2
+    },
+    "reflLOD": {
+      "type": "float",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "Slider"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Reflection Blur"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "reflection blurriness"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Reflection"
+        },
+        "SasUiMin": {
+          "type": "float",
+          "value": 0.0
+        },
+        "SasUiMax": {
+          "type": "float",
+          "value": 10.0
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 19
+        }
+      },
+      "default": 0
+    },
+    "reflFactor": {
+      "type": "float",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "Slider"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Reflection Factor"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "reflection contribution"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Reflection"
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 20
+        }
+      },
+      "default": 1
+    },
+    "hasReflectFactorMap": {
+      "type": "bool",
+      "default": false
+    },
+    "reflectFactorMap": {
+      "type": "Texture2D",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "FilePicker"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Reflection Mask Map"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "reflection mask"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Reflection"
+        },
+        "ExistVar": {
+          "type": "string",
+          "value": "hasReflectFactorMap"
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 21
+        }
+      }
+    },
+    "IOR": {
+      "type": "float",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "Slider"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Index of Refraction"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "index of refraction"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Reflection"
+        },
+        "SasUiMin": {
+          "type": "float",
+          "value": 0.3
+        },
+        "SasUiMax": {
+          "type": "float",
+          "value": 3.0
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 22
+        }
+      },
+      "default": 1.0
+    },
+    "refrFactor": {
+      "type": "float",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "Slider"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Refraction Factor"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "refraction contribution"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Reflection"
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 23
+        }
+      },
+      "default": 0
+    },
+    "refrLOD": {
+      "type": "float",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "Slider"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Refraction Blur"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "refraction blurriness"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Reflection"
+        },
+        "SasUiMin": {
+          "type": "float",
+          "value": 0.0
+        },
+        "SasUiMax": {
+          "type": "float",
+          "value": 10.0
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 24
+        }
+      },
+      "default": 0
+    },
+    "hasSmearMap": {
+      "type": "bool",
+      "default": false
+    },
+    "reflectSmearMap": {
+      "type": "Texture2D",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "FilePicker"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Reflection Smear Map"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "reflection smear map"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Reflection"
+        },
+        "ExistVar": {
+          "type": "string",
+          "value": "hasSmearMap"
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 25
+        }
+      }
+    },
+    "smearMapScale": {
+      "type": "float",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "Slider"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Smear Scale"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "smear map scale"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Reflection"
+        },
+        "SasUiMin": {
+          "type": "float",
+          "value": 0
+        },
+        "SasUiMax": {
+          "type": "float",
+          "value": 20.0
+        },
+        "SasUiSteps": {
+          "type": "float",
+          "value": 20.0
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 26
+        }
+      },
+      "default": 0
+    },
+    "g_specularBias": {
+      "type": "float",
+      "default": 0
+    },
+    "glowMask": {
+      "type": "Texture2D",
+      "semantic": "GlowMask"
+    }
+  }
+}

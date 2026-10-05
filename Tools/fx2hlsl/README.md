@@ -66,6 +66,10 @@ the effect name.
 | `Special/ssgiMultiHorizonBasedGI` | SSGI (`shdwPassSSGI`) |
 | `Special/ssaoBilateralBlurEngine` | SSAO/SSGI blur |
 | `Materials/Lambert` | the Lambert material; loading `Lambert.fx` uses it |
+| `Materials/Phong`, `Phong_wBump`, `PhongReflection`, `Simple` | Phong family; loading the `.fx` of the same name uses them |
+| `Materials/Blinn`, `BlinnReflection`, `Anisotropic`, `CarPaint` | Blinn family |
+| `Materials/SpecularFresnel`, `SubSurfaceScatter`, `SubSurfaceScatter_wBlinnSpecular`, `Cartoon` | fresnel, subsurface and toon materials |
+| `Materials/FC3DBlinn`, `FC3DPhong`, `FC3DPhongTransparent`, `FC3DSpecularFresnel`, `FC3DSubSurfaceScatter_wBlinnSpecular` | FC3D materials |
 
 After running the converter, each file was edited by hand: explicit
 `register()`s on every texture, sampler and constant buffer, globals moved into
@@ -93,8 +97,8 @@ onto a D3D12 root signature or Vulkan descriptor sets (full map at the top of
 | `b2` LightParams | light info, projected light, light array, shadow flags |
 | `b3` MaterialCommon | material inputs the shared includes declare |
 | `b4` MaterialParams | the material's own parameters |
-| `t0`-`t15` | material textures |
-| `t16`+ | textures the renderer supplies (shadow maps, projected light, mesh data) |
+| `t0`-`t19` | material textures (`t4`-`t19` the material's own) |
+| `t20`+ | textures the renderer supplies (reflection maps, shadow maps, projected light, mesh data) |
 | `s0`-`s9`, `s10`+ | shared, then the material's own immutable samplers |
 
 Each material instance keeps its own copy of `MaterialParams`

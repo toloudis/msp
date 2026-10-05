@@ -17,18 +17,19 @@
 //                         material .hlsl, never by a shared include)
 //
 //   Textures
-//     t0-t15   material textures
+//     t0-t19   material textures
 //                t0 normalMap          (Support.hlsli)
 //                t1 diffuseEnvMap      (Support.hlsli)
 //                t2 specularEnvMap     (Support.hlsli)
 //                t3 g_DisplacementMap  (Tessellate.hlsli)
-//                t4-t15 the material's own textures
-//     t16+     renderer-provided textures
-//                t16 projLightMap      (Lighting.hlsli)
-//                t17 projShadowMap     (Lighting.hlsli)
-//                t18 g_Poisson         (Lighting.hlsli)
-//                t19 meshDataTexture   (Tessellate.hlsli)
-//                t20+ reserved (reflection maps, ...)
+//                t4-t19 the material's own textures
+//     t20+     renderer-provided textures
+//                t20 g_cubeMap         (reflection cube map, declared by
+//                t21 g_planarMap        the reflective materials)
+//                t22 projLightMap      (Lighting.hlsli)
+//                t23 projShadowMap     (Lighting.hlsli)
+//                t24 g_Poisson         (Lighting.hlsli)
+//                t25 meshDataTexture   (Tessellate.hlsli)
 //
 //   Samplers (immutable; states are described in each .effect.json)
 //     s0-s9    shared
