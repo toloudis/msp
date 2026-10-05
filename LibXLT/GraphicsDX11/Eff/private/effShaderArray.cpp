@@ -540,6 +540,7 @@ static matShaderEffect* LoadPlainMaterial(const fsLocator& i_ShaderLoc, const st
 		return NULL;
 	}
 
+	DBG_LOG("Material " << i_FileName.c_str() << " loaded as plain HLSL (" << embedded->m_Source << ")");
 	fsLocator folder = i_ShaderLoc;
 	folder.Pop();
 	std::unique_ptr<fxEffect> plain(new effPlainEffect(std::move(effect)));
