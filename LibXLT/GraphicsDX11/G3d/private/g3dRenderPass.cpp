@@ -340,7 +340,7 @@ g3dRenderGlow::g3dRenderGlow(matTextureDX11* i_src, g2dRenderTarget* i_dest, con
 :	g3dRenderFullScreenQuad(i_src, i_dest, false)
 {
 	// get the shader effect
-	m_effect = g3dDX11Util::GetEffect("Glow.fx");
+	m_effect = g3dDX11Util::GetEffect("Glow");
 	m_pNode = i_node;
 	m_depth = i_depth;
 }
@@ -385,7 +385,7 @@ g3dRenderOutline::g3dRenderOutline(matTextureDX11* i_src, g2dRenderTarget* i_des
 :	g3dRenderFullScreenQuad(i_src, i_dest, false)
 {
 	// get the shader effect
-	m_effect = g3dDX11Util::GetEffect("Outline.fx");
+	m_effect = g3dDX11Util::GetEffect("Outline");
 	m_mtl = pMtl;
 	m_bUseNormals = i_useNormals;
 }
@@ -506,7 +506,7 @@ g3dRenderAA::g3dRenderAA(matTextureDX11* i_src, g2dRenderTarget* i_dest )
 :	g3dRenderFullScreenQuad(i_src, i_dest, false)
 {
 	// get the shader effect
-	m_effect = g3dDX11Util::GetEffect("AAEdgeFilter.fx");
+	m_effect = g3dDX11Util::GetEffect("AAEdgeFilter");
 }
 g3dRenderAA::~g3dRenderAA(void)
 {

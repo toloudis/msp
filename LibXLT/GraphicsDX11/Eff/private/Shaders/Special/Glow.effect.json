@@ -1,0 +1,138 @@
+{
+  "source": "Special/Glow.fx",
+  "hlsl": "Glow.hlsl",
+  "techniques": [
+    {
+      "name": "Default",
+      "passes": [
+        {
+          "name": "blurPass",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "PS_Glow"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "samplers": {
+    "glowSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_LINEAR_MIP_POINT",
+        "AddressU": "Clamp",
+        "AddressV": "Clamp"
+      }
+    }
+  },
+  "variables": {
+    "glowTexture": {
+      "type": "Texture2D"
+    },
+    "glowAmount": {
+      "type": "float",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "Slider"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "how much should glow contribute"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Glow Amount"
+        },
+        "SasUiMin": {
+          "type": "float",
+          "value": 0
+        },
+        "SasUiMax": {
+          "type": "float",
+          "value": 20
+        },
+        "SasUiSteps": {
+          "type": "float",
+          "value": 200
+        }
+      },
+      "default": 1.0
+    },
+    "glowScale": {
+      "type": "float4",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "Direction"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "glow filter size in pixels"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Blur Filter Size(X,Y)(pixels)"
+        }
+      },
+      "default": [1, 1, 0, 1]
+    },
+    "glowSize": {
+      "type": "float",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "Slider"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "how big is the glow"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Glow Extrusion"
+        },
+        "SasUiMin": {
+          "type": "float",
+          "value": 0
+        },
+        "SasUiMax": {
+          "type": "float",
+          "value": 2
+        },
+        "SasUiSteps": {
+          "type": "float",
+          "value": 200
+        }
+      },
+      "default": 0.0
+    },
+    "bConstantGlow": {
+      "type": "bool",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "Checkbox"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "use a constant glow effect, rather than specular"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Ignore Specular"
+        }
+      },
+      "default": false
+    },
+    "srcSizeInfo": {
+      "type": "float4"
+    }
+  }
+}

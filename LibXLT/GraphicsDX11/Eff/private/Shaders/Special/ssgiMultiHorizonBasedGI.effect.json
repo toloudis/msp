@@ -1,0 +1,95 @@
+{
+  "source": "Special/ssgiMultiHorizonBasedGI.fx",
+  "hlsl": "ssgiMultiHorizonBasedGI.hlsl",
+  "techniques": [
+    {
+      "name": "HORIZON_BASED_GI_MULTI_QUALITY_Pass",
+      "passes": [
+        {
+          "name": "p0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "FullScreenQuadVS"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "HORIZON_BASED_GI_PS"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "samplers": {
+    "samNearest": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_POINT",
+        "AddressU": "Clamp",
+        "AddressV": "Clamp"
+      }
+    }
+  },
+  "variables": {
+    "tRandom": {
+      "type": "Texture2D"
+    },
+    "tDepths": {
+      "type": "Texture2D"
+    },
+    "tColors": {
+      "type": "Texture2D"
+    },
+    "g_Dirs": {
+      "type": "float2",
+      "array": "[32]"
+    },
+    "g_NumSteps": {
+      "type": "float"
+    },
+    "g_NumDir": {
+      "type": "float"
+    },
+    "g_R": {
+      "type": "float2"
+    },
+    "g_AngleBias": {
+      "type": "float"
+    },
+    "g_TanAngleBias": {
+      "type": "float"
+    },
+    "g_Attenuation": {
+      "type": "float"
+    },
+    "g_Contrast": {
+      "type": "float"
+    },
+    "g_FocalLen": {
+      "type": "float2"
+    },
+    "g_InvFocalLen": {
+      "type": "float2"
+    },
+    "g_InvResolution": {
+      "type": "float2"
+    },
+    "g_Resolution": {
+      "type": "float2"
+    },
+    "g_OverscanRatio": {
+      "type": "float2"
+    },
+    "g_nLayers": {
+      "type": "int"
+    },
+    "g_NearFar": {
+      "type": "float2"
+    },
+    "g_SSGITint": {
+      "type": "float4",
+      "default": [1.0, 1.0, 1.0, 1.0]
+    }
+  }
+}

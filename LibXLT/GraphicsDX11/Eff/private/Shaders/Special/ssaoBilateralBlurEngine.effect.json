@@ -1,0 +1,154 @@
+{
+  "source": "Special/ssaoBilateralBlurEngine.fx",
+  "hlsl": "ssaoBilateralBlurEngine.hlsl",
+  "techniques": [
+    {
+      "name": "BlurPass",
+      "passes": [
+        {
+          "name": "pX",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "FullScreenQuadVS"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "BlurX"
+            }
+          }
+        },
+        {
+          "name": "pY",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "FullScreenQuadVS"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "BlurPass_pY_PS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "BlurPassWithDiffuse",
+      "passes": [
+        {
+          "name": "pX",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "FullScreenQuadVS"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "BlurX"
+            }
+          }
+        },
+        {
+          "name": "pY",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "FullScreenQuadVS"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "BlurPassWithDiffuse_pY_PS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "BlurPassthrough",
+      "passes": [
+        {
+          "name": "p0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "FullScreenQuadVS"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "Passthrough_PS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "BlurEdgeDetection",
+      "passes": [
+        {
+          "name": "p0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "FullScreenQuadVS"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "BlurEdgeDetection_p0_PS"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "samplers": {
+    "samNearest": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_POINT",
+        "AddressU": "Clamp",
+        "AddressV": "Clamp"
+      }
+    },
+    "samLinear": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_LINEAR",
+        "AddressU": "Clamp",
+        "AddressV": "Clamp"
+      }
+    }
+  },
+  "variables": {
+    "tColor": {
+      "type": "Texture2D"
+    },
+    "tSource": {
+      "type": "Texture2D"
+    },
+    "tDepth": {
+      "type": "Texture2D"
+    },
+    "g_Resolution": {
+      "type": "float2"
+    },
+    "g_InvResolution": {
+      "type": "float2"
+    },
+    "g_BlurRadius": {
+      "type": "float"
+    },
+    "g_BlurFalloff": {
+      "type": "float"
+    },
+    "g_Sharpness": {
+      "type": "float"
+    },
+    "g_EdgeThreshold": {
+      "type": "float"
+    },
+    "g_OverscanRatio": {
+      "type": "float2"
+    }
+  }
+}

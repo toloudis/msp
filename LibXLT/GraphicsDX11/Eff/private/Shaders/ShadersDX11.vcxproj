@@ -206,9 +206,8 @@
     <None Include="SubSurfaceScatter_wBlinnSpecular.fx">
       <FileType>CppCode</FileType>
     </None>
-    <None Include="Special\AAEdgeFilter.fx">
-      <FileType>CppCode</FileType>
-    </None>
+    <None Include="Special\AAEdgeFilter.hlsl" />
+    <None Include="Special\AAEdgeFilter.effect.json" />
     <None Include="Special\AOVolumes.fx">
       <FileType>CppCode</FileType>
     </None>
@@ -232,9 +231,8 @@
     <None Include="Special\Fog.hlsl" />
     <None Include="Special\Fog.effect.json" />
     <None Include="Special\GIVolumes.fx" />
-    <None Include="Special\Glow.fx">
-      <FileType>CppCode</FileType>
-    </None>
+    <None Include="Special\Glow.hlsl" />
+    <None Include="Special\Glow.effect.json" />
     <None Include="Special\HairDefault.fx">
       <FileType>CppCode</FileType>
     </None>
@@ -250,9 +248,8 @@
     <None Include="Special\MaskAlpha.fx">
       <FileType>CppCode</FileType>
     </None>
-    <None Include="Special\MotionBlur.fx">
-      <FileType>CppCode</FileType>
-    </None>
+    <None Include="Special\MotionBlur.hlsl" />
+    <None Include="Special\MotionBlur.effect.json" />
     <None Include="Special\NoiseVolume.dds" />
     <None Include="Special\NormalMap.fx">
       <FileType>CppCode</FileType>
@@ -260,9 +257,8 @@
     <None Include="Special\OpacityRender.fx">
       <FileType>CppCode</FileType>
     </None>
-    <None Include="Special\Outline.fx">
-      <FileType>CppCode</FileType>
-    </None>
+    <None Include="Special\Outline.hlsl" />
+    <None Include="Special\Outline.effect.json" />
     <None Include="Special\Particle.fx">
       <FileType>CppCode</FileType>
     </None>
@@ -279,15 +275,12 @@
     <None Include="Special\Solid.fx">
       <FileType>CppCode</FileType>
     </None>
-    <None Include="Special\ssaoBilateralBlurEngine.fx">
-      <FileType>CppCode</FileType>
-    </None>
-    <None Include="Special\ssaoMultiHorizonBasedAO.fx">
-      <FileType>CppCode</FileType>
-    </None>
-    <None Include="Special\ssgiMultiHorizonBasedGI.fx">
-      <FileType>CppCode</FileType>
-    </None>
+    <None Include="Special\ssaoBilateralBlurEngine.hlsl" />
+    <None Include="Special\ssaoBilateralBlurEngine.effect.json" />
+    <None Include="Special\ssaoMultiHorizonBasedAO.hlsl" />
+    <None Include="Special\ssaoMultiHorizonBasedAO.effect.json" />
+    <None Include="Special\ssgiMultiHorizonBasedGI.hlsl" />
+    <None Include="Special\ssgiMultiHorizonBasedGI.effect.json" />
     <None Include="Special\testtess.fx">
       <FileType>CppCode</FileType>
     </None>

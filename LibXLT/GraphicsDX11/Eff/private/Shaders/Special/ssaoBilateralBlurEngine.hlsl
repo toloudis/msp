@@ -1,3 +1,9 @@
+//////////////////////////////////////////////////////////////////////////////
+// Converted from ssaoBilateralBlurEngine.fx by Tools/fx2hlsl/fx2hlsl.py (one-time conversion).
+// Techniques, sampler states, annotations and variable defaults now live in
+// ssaoBilateralBlurEngine.effect.json. This file is the source of truth from here on.
+//////////////////////////////////////////////////////////////////////////////
+
 //--------------------------------------------------------------------------------------
 // ported from nvidia sample.
 //--------------------------------------------------------------------------------------
@@ -6,72 +12,35 @@
 //#define NUM_MSAA_SAMPLES 2
 //#endif
 
-Texture2D tColor;
+Texture2D tColor : register(t0);
 //Texture2D<float4> tColor;
-sampler2D samNearestColor = sampler_state
-{
-    Texture   = <tColor>;
-    FILTER = MIN_MAG_MIP_POINT;
-    //MipFilter = POINT;
-    //MinFilter = POINT;
-    //MagFilter = POINT;
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-};
 
-Texture2D tSource;
+Texture2D tSource : register(t1);
 //Texture2D<float>  tSource;
-sampler2D samNearestSource = sampler_state
-{
-    Texture   = <tSource>;
-    FILTER = MIN_MAG_MIP_POINT;
-    //MipFilter = POINT;
-    //MinFilter = POINT;
-    //MagFilter = POINT;
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-};
 
 // this is the rgba normals and depths from the prior pass. 
 // depth in x.
-Texture2D tDepth;
+Texture2D tDepth : register(t2);
 //Texture2D<float>  tDepth;
-sampler2D samNearestDepth = sampler_state
-{
-    Texture   = <tDepth>;
-    FILTER = MIN_MAG_MIP_POINT;
-    //MipFilter = POINT;
-    //MinFilter = POINT;
-    //MagFilter = POINT;
-    AddressU = CLAMP;
-    AddressV = CLAMP;
-};
 
 //texture tDepthBuffer;
 //Texture2D<float>  tDepthBuffer;
 //texture tMSAADepth;
 //Texture2DMS<float, NUM_MSAA_SAMPLES> tMSAADepth;
-SamplerState samNearest
+SamplerState samNearest : register(s0);
+SamplerState samLinear : register(s1);
+
+cbuffer SSAOBlurParams : register(b0)
 {
-    Filter   = MIN_MAG_MIP_POINT;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
-SamplerState samLinear
-{
-    Filter   = MIN_MAG_MIP_LINEAR;
-    AddressU = Clamp;
-    AddressV = Clamp;
+	float2 g_Resolution;
+	float2 g_InvResolution;
+	float g_BlurRadius;
+	float g_BlurFalloff;
+	float g_Sharpness;
+	float g_EdgeThreshold;
+	float2 g_OverscanRatio;
 };
 
-float2 g_Resolution;
-float2 g_InvResolution;
-float g_BlurRadius;
-float g_BlurFalloff;
-float g_Sharpness;
-float g_EdgeThreshold;
-
-float2 g_OverscanRatio;
 
 //--------------------------------------------------------------------------------------
 struct PostProc_VSOut
@@ -204,35 +173,7 @@ float4 Passthrough_PS( PostProc_VSOut IN ): SV_TARGET
 }
 
 //-------------------------------------------------------------------------
-technique11 BlurPass
-{
-    pass pX
-    {
-        VertexShader	= compile vs_5_0 FullScreenQuadVS();
-        PixelShader		= compile ps_5_0 BlurX();
-    }
 
-    pass pY
-    {
-        VertexShader	= compile vs_5_0 FullScreenQuadVS();
-        PixelShader		= compile ps_5_0 BlurY(false);
-    }
-}
-
-technique11 BlurPassWithDiffuse
-{
-    pass pX
-    {
-        VertexShader	= compile vs_5_0 FullScreenQuadVS();
-        PixelShader		= compile ps_5_0 BlurX();
-    }
-
-    pass pY
-    {
-        VertexShader	= compile vs_5_0 FullScreenQuadVS();
-        PixelShader		= compile ps_5_0 BlurY(true);
-    }
-}
 
 //technique11 BlurPassSupersampling
 //{
@@ -265,14 +206,7 @@ technique11 BlurPassWithDiffuse
 //}
 
 //-------------------------------------------------------------------------
-technique11 BlurPassthrough
-{
-    pass p0
-    {
-        VertexShader	= compile vs_5_0 FullScreenQuadVS();
-        PixelShader		= compile ps_5_0 Passthrough_PS();
-    }
-}
+
 
 //--------------------------------------------------------------------------
 float edgeDetectScalar(float sx, float sy, float threshold)
@@ -331,11 +265,23 @@ float4 edgeDetectPS( uniform bool combine, PostProc_VSOut IN ): SV_TARGET
 }
 
 //-------------------------------------------------------------------------
-technique11 BlurEdgeDetection
+
+//////////////////////////////////////////////////////////////////////////////
+// Entry points generated from the technique/pass compile statements.
+// Each one binds the uniform arguments the .fx passed in its compile call.
+//////////////////////////////////////////////////////////////////////////////
+
+float4 BlurPass_pY_PS(PostProc_VSOut IN) : SV_TARGET
 {
-    pass p0
-    {
-        VertexShader	= compile vs_5_0 FullScreenQuadVS();
-        PixelShader		= compile ps_5_0 edgeDetectPS(false);
-    }
+    return BlurY(false, IN);
+}
+
+float4 BlurPassWithDiffuse_pY_PS(PostProc_VSOut IN) : SV_TARGET
+{
+    return BlurY(true, IN);
+}
+
+float4 BlurEdgeDetection_p0_PS(PostProc_VSOut IN) : SV_TARGET
+{
+    return edgeDetectPS(false, IN);
 }

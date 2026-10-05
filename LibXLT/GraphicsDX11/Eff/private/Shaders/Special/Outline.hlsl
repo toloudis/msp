@@ -1,3 +1,9 @@
+//////////////////////////////////////////////////////////////////////////////
+// Converted from Outline.fx by Tools/fx2hlsl/fx2hlsl.py (one-time conversion).
+// Techniques, sampler states, annotations and variable defaults now live in
+// Outline.effect.json. This file is the source of truth from here on.
+//////////////////////////////////////////////////////////////////////////////
+
 /*****************************************************************************
 **  Outline.fx
 **
@@ -6,35 +12,29 @@
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 
-int gp : SasGlobal
-<
-  int3 SasVersion = {1,0,0};
-  string SasEffectAuthor			= "John Schwab";
-  string SasEffectCategory			= "special/outline";
-  string SasEffectCompany			= "studio|gpu";
-  string SasEffectRevision			= "$Revision$";  
->;
+//////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////
+// Explicit registers keep the binding layout identical for every entry point
+// (and map directly onto a DX12 root signature / Vulkan descriptor set).
 
 // full sized source image
-Texture2D colorTexture;
-SamplerState g_Sampler
-{
-    Filter = MIN_MAG_MIP_POINT;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
+Texture2D colorTexture : register(t0);
 
-float g_depthScale;
-float g_minAngle;
-float g_maxAngle;
-float g_thickness;
-float4 g_outlineClr;
-float2 g_ViewportDimensions;
-float g_minWidth;
-float g_maxWidth;
+// sampler state is described in Outline.effect.json
+SamplerState g_Sampler : register(s0);
+
+cbuffer OutlineParams : register(b0)
+{
+	float g_depthScale;
+	float g_minAngle;
+	float g_maxAngle;
+	float g_thickness;
+	float4 g_outlineClr;
+	float2 g_ViewportDimensions;
+	float g_minWidth;
+	float g_maxWidth;
+};
 
 //------------------------------------------------------------------
 // This function applies a Sobel filter to the alpha channel to detect edges in the image.
@@ -146,19 +146,7 @@ float4 PS_OutlineN(VS_OUTPUT v_in) : SV_TARGET
 	return OUT;
 }
 
-technique11 Default
-{
-	pass p0 
-	{
-		VertexShader = compile vs_5_0 VSMain();		
-		PixelShader = compile ps_5_0 PS_OutlineD();
-	}
-	pass p1
-	{
-		VertexShader = compile vs_5_0 VSMain();		
-		PixelShader = compile ps_5_0 PS_OutlineN();
-	}
-}
+
 //////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////
 /***************************** eof ***/

@@ -58,11 +58,19 @@ the effect name.
 | `Special/PostAlphaMatte` | alpha-channel view (`g3dRenderAlpha`) |
 | `Special/Fog` | fog pass (`shdwPassFog`) |
 | `Special/HDRLighting` | tone mapping, bloom, star, and the copy/blit helpers in `g3dDX11Util` and the `shdw` passes |
+| `Special/AAEdgeFilter` | edge anti-aliasing (`g3dRenderAA`) |
+| `Special/Glow` | material glow (`g3dRenderGlow`) |
+| `Special/Outline` | material outline (`g3dRenderOutline`) |
+| `Special/MotionBlur` | registered, but no renderer uses it |
+| `Special/ssaoMultiHorizonBasedAO` | SSAO (`shdwPassSSAO`) |
+| `Special/ssgiMultiHorizonBasedGI` | SSGI (`shdwPassSSGI`) |
+| `Special/ssaoBilateralBlurEngine` | SSAO/SSGI blur |
 
 After running the converter, each file was edited by hand: explicit
 `register()`s on every texture, sampler and constant buffer, globals moved into
 one `cbuffer`, and constant tables (`poisson[]`, blur offsets) made
-`static const` and removed from the manifest.
+`static const` and removed from the manifest. Unused legacy `sampler2D`
+declarations and the `gp : SasGlobal` marker variable were deleted.
 
 ## Current coverage (dry run on all 60 `.fx` files)
 

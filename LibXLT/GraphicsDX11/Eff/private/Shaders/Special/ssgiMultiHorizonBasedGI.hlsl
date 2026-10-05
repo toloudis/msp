@@ -1,39 +1,42 @@
+//////////////////////////////////////////////////////////////////////////////
+// Converted from ssgiMultiHorizonBasedGI.fx by Tools/fx2hlsl/fx2hlsl.py (one-time conversion).
+// Techniques, sampler states, annotations and variable defaults now live in
+// ssgiMultiHorizonBasedGI.effect.json. This file is the source of truth from here on.
+//////////////////////////////////////////////////////////////////////////////
+
 //----------------------------------------------------------------------------------
 // ported from nvidia sample
 //----------------------------------------------------------------------------------
 
 static const float3 LUMINANCE_VECTOR  = float3(0.265068,  0.67023428, 0.06409157);
 
-Texture2D tRandom; // float3s
-Texture2D tDepths; // floats (RGBA32F) (nearest in R)
-Texture2D tColors;
+Texture2D tRandom : register(t0); // float3s
+Texture2D tDepths : register(t1); // floats (RGBA32F) (nearest in R)
+Texture2D tColors : register(t2);
 
-SamplerState samNearest
-{
-    Filter   = MIN_MAG_MIP_POINT;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
+SamplerState samNearest : register(s0);
 
 #define M_PI 3.14159265f
 
-float2 g_Dirs[32];
-
-float  g_NumSteps;
-float  g_NumDir;
-float2  g_R;
-float  g_AngleBias;
-float  g_TanAngleBias;
-float  g_Attenuation;
-float  g_Contrast;
-float2 g_FocalLen;
-float2 g_InvFocalLen;
-float2 g_InvResolution;
-float2 g_Resolution;
-float2 g_OverscanRatio;
-int    g_nLayers;
-float2 g_NearFar;
-float4 g_SSGITint = float4(1.0f, 1.0f, 1.0f, 1.0f);
+cbuffer SSGIParams : register(b0)
+{
+	float2 g_Dirs[32];
+	float  g_NumSteps;
+	float  g_NumDir;
+	float2  g_R;
+	float  g_AngleBias;
+	float  g_TanAngleBias;
+	float  g_Attenuation;
+	float  g_Contrast;
+	float2 g_FocalLen;
+	float2 g_InvFocalLen;
+	float2 g_InvResolution;
+	float2 g_Resolution;
+	float2 g_OverscanRatio;
+	int    g_nLayers;
+	float2 g_NearFar;
+	float4 g_SSGITint;	// default (1,1,1,1) is in the manifest
+};
 
 //----------------------------------------------------------------------------------
 struct PostProc_VSOut
@@ -290,7 +293,7 @@ float2 GetTile64TexCoord(float2 pixelpos)
 	return frac(pixelpos*g_Resolution/64.0);
 }
 
-float luminanceThreshold = 254.0f/255.0f;
+static const float luminanceThreshold = 254.0f/255.0f;
 
 //----------------------------------------------------------------------------------
 float4 HORIZON_BASED_GI_PS( PostProc_VSOut IN ) : SV_TARGET
@@ -358,11 +361,3 @@ float4 HORIZON_BASED_GI_PS( PostProc_VSOut IN ) : SV_TARGET
 }
 
 //----------------------------------------------------------------------------------
-technique11 HORIZON_BASED_GI_MULTI_QUALITY_Pass
-{
-    pass p0
-    {
-        VertexShader	= compile vs_5_0 FullScreenQuadVS();
-        PixelShader		= compile ps_5_0 HORIZON_BASED_GI_PS();
-    }
-}

@@ -1,3 +1,9 @@
+//////////////////////////////////////////////////////////////////////////////
+// Converted from MotionBlur.fx by Tools/fx2hlsl/fx2hlsl.py (one-time conversion).
+// Techniques, sampler states, annotations and variable defaults now live in
+// MotionBlur.effect.json. This file is the source of truth from here on.
+//////////////////////////////////////////////////////////////////////////////
+
 /////////////////////////////////////////////////
 //  MotionBlur.fx                              //
 //                                             //
@@ -5,15 +11,6 @@
 //	Studio GPU                                 //
 //	Copyright(C) 2009 - All Rights Reserved    //
 /////////////////////////////////////////////////
-
-int gp : SasGlobal
-<
-  int3 SasVersion = {1,0,0};
-  string SasEffectAuthor			= "John Schwab";
-  string SasEffectCategory			= "special/MotionBlur";
-  string SasEffectCompany			= "studio|gpu";
-  string SasEffectRevision			= "$Revision$";  
->;
 
 struct PostProc_VSOut
 {
@@ -33,19 +30,21 @@ PostProc_VSOut MotionBlurVS(float4 Pos:SV_POSITION, float2 UV:TEXCOORD0 )
 
 /////////////////////////////////////////////////
 
+// Explicit registers keep the binding layout identical for every entry point
+// (and map directly onto a DX12 root signature / Vulkan descriptor set).
+
 // full screen source images
+Texture2D SceneTexture : register(t0);
+Texture2D VelocityTexture : register(t1);
 
-Texture2D SceneTexture;
-Texture2D VelocityTexture;
-SamplerState g_Sampler
+// sampler state is described in MotionBlur.effect.json
+SamplerState g_Sampler : register(s0);
+
+cbuffer MotionBlurParams : register(b0)
 {
-    Filter = MIN_MAG_MIP_POINT;
-    AddressU = Clamp;
-    AddressV = Clamp;
+	int g_nSamples;
+	float g_Scale;
 };
-
-int g_nSamples;
-float g_Scale;
 
 //Performs a Line Integral Convolution on the scene using the pixel velocity
 float4 PS_LIC(    float4 pos   : SV_POSITION,
@@ -63,14 +62,6 @@ float4 PS_LIC(    float4 pos   : SV_POSITION,
    return Color;
 }
 
-technique11 Default
-{
-	pass SceneBlur
-	{
-		VertexShader = compile vs_5_0 MotionBlurVS();
-		PixelShader =  compile ps_5_0 PS_LIC();
-	}
-}
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////

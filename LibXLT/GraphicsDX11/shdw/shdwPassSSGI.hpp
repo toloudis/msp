@@ -82,7 +82,6 @@ protected:
 	matRenderTargetTexture* m_GITargetTex;
 	matRenderTargetTexture* m_TempTargetTex;
 	
-	void DrawGIPass(g2dRenderTarget* i_pRenderTarget, matRenderTargetTexture* i_pCurDepth );
 	void AccumulateGIPass( g2dRenderTarget* i_pGITarget, int i_nLayers );
 	void DrawStencilPass(g2dRenderTarget* i_pTarget);
 	void ClearStencil(g2dRenderTarget* i_pTarget);

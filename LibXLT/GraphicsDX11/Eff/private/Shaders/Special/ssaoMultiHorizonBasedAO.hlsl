@@ -1,36 +1,40 @@
+//////////////////////////////////////////////////////////////////////////////
+// Converted from ssaoMultiHorizonBasedAO.fx by Tools/fx2hlsl/fx2hlsl.py (one-time conversion).
+// Techniques, sampler states, annotations and variable defaults now live in
+// ssaoMultiHorizonBasedAO.effect.json. This file is the source of truth from here on.
+//////////////////////////////////////////////////////////////////////////////
+
 //----------------------------------------------------------------------------------
 // ported from nvidia sample
 //----------------------------------------------------------------------------------
 
-Texture2D tRandom; // float3s
-Texture2D tDepths; // floats (RGBA32F) (nearest in R)
+Texture2D tRandom : register(t0); // float3s
+Texture2D tDepths : register(t1); // floats (RGBA32F) (nearest in R)
 
-SamplerState samNearest
-{
-    Filter   = MIN_MAG_MIP_POINT;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
+SamplerState samNearest : register(s0);
 
 #define M_PI 3.14159265f
 
-float2 g_Dirs[32];
+cbuffer SSAOParams : register(b0)
+{
+	float2 g_Dirs[32];
+	float  g_NumSteps;
+	float  g_NumDir;
+	float2  g_R;
+	float  g_AngleBias;
+	float  g_TanAngleBias;
+	float  g_Attenuation;
+	float  g_Contrast;
+	float2 g_FocalLen;
+	float2 g_InvFocalLen;
+	float2 g_InvResolution;
+	float2 g_Resolution;
+	float2 g_OverscanRatio;
+	int    g_nLayers;
+	float2 g_NearFar;
+	float4 g_SSAOTint;
+};
 
-float  g_NumSteps;
-float  g_NumDir;
-float2  g_R;
-float  g_AngleBias;
-float  g_TanAngleBias;
-float  g_Attenuation;
-float  g_Contrast;
-float2 g_FocalLen;
-float2 g_InvFocalLen;
-float2 g_InvResolution;
-float2 g_Resolution;
-float2 g_OverscanRatio;
-int    g_nLayers;
-float2 g_NearFar;
-float4 g_SSAOTint;
 
 //----------------------------------------------------------------------------------
 struct PostProc_VSOut
@@ -583,12 +587,3 @@ float4 HORIZON_BASED_AO_PS( PostProc_VSOut IN ) : SV_TARGET
 }
 
 //----------------------------------------------------------------------------------
-technique11 HORIZON_BASED_AO_MULTI_QUALITY_Pass
-{
-    pass p0
-    {
-        VertexShader	= compile vs_5_0 FullScreenQuadVS();
-        PixelShader		= compile ps_5_0 HORIZON_BASED_AO_PS();
-    }
-}
-

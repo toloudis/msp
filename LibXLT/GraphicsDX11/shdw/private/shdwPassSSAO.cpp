@@ -73,7 +73,7 @@ namespace
 	#define randExc() (maFunctions::FloatRand(0,1))
 	//#define randExc() ((float)rand() / ((float)(RAND_MAX)+(float)(1)))
 
-	void MakeRandTex(effShaderBaseDX11* i_pEffect, int numDirs)
+	void MakeRandTex(fxEffectDX11* pEffect, int numDirs)
 	{
 //		srand(::timeGetTime());
 		// directions
@@ -89,11 +89,8 @@ namespace
 		}
 
 		// shader vars
-		ID3DX11Effect* pEffect = i_pEffect->GetD3DXEffect();
-		ID3DX11EffectVariable* pNumDir = pEffect->GetVariableByName("g_NumDir");
-		pNumDir->AsScalar()->SetFloat((float)numDirs );
-		ID3DX11EffectVariable* pDirs = pEffect->GetVariableByName("g_Dirs");
-		pDirs->AsVector()->SetFloatVectorArray((float*)dirs, 0, 32);
+		pEffect->SetConstant(pEffect->FindConstant("g_NumDir"), (float)numDirs);
+		pEffect->SetVectorArray(pEffect->FindConstant("g_Dirs"), (float*)dirs, 0, 32);
 
 		maVector4d f[64*64];
 		for(int i=0; i<64*64; i++)
@@ -110,8 +107,7 @@ namespace
 		l_RndTexture = dynamic_cast<matPlainTexture*>(matTextureMgr::CreateTexture(64,64,&l_pfdRGBA32f,false, f));
 
 		ID3D11ShaderResourceView* pTex = g3dDX11TextureUtil::GetD3DTexture(l_RndTexture);
-		ID3DX11EffectVariable* pTexVar = pEffect->GetVariableByName("tRandom");
-		pTexVar->AsShaderResource()->SetResource(pTex);
+		pEffect->SetResource(pEffect->FindResource("tRandom"), pTex);
 	}
 
 	g3dDepthStencilStateMgr::DepthStencilState* ds_Test_Write_LessE_NS = NULL;
@@ -384,145 +380,13 @@ int shdwPassSSAO::Render( float i_fSimTime )
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-void shdwPassSSAO::DrawAOPass(g2dRenderTarget* i_pRenderTarget, matRenderTargetTexture* i_pCurDepth )
-{
-	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassSSAO::DrawAOPass" );
-
-//	shared_ptr<effShaderParams> p(new effShaderParams());
-//	p->SetShaderName(itString("AO/ssaoHorizonBasedAOEngine.fx"));
-	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)matShaderMgr::GetSpecialEffect(("ssaoHorizonBasedAOEngine.fx"));
-	ID3DX11Effect* pEffect = i_pEffect->GetD3DXEffect();
-
-	//pEffect->SetTechnique("HORIZON_BASED_AO_LD_LOWQUALITY_Pass");
-	//pEffect->SetTechnique("HORIZON_BASED_AO_NLD_LOWQUALITY_Pass");
-	//pEffect->SetTechnique("HORIZON_BASED_AO_NLD_Pass");
-	//pEffect->SetTechnique("HORIZON_BASED_AO_LD_Pass");
-	//pEffect->SetTechnique("HORIZON_BASED_AO_NLD_QUALITY_Pass");
-	ID3DX11EffectTechnique* pTechnique = pEffect->GetTechniqueByName("HORIZON_BASED_AO_LD_QUALITY_Pass");
-
-	const g3dPrefs::g3dRenderPrefs& p = g3dPrefs::CurrentPrefs();
-
-	// distance cutoff
-//	float m_AORadius = 0.35f;
-//	float m_RadiusMultiplier  = 1.0f;
-	float R[2] = {m_Params.m_AORadius, m_Params.m_AORadiusFar};
-	float invR[2] = {1.0f/R[0], 1.0f/R[1]};
-	float sqrR[2] = {R[0]*R[0], R[1]*R[1]};
-	pEffect->GetVariableByName("g_R")->AsVector()->SetFloatVector( R );
-
-	// angle cutoff
-//    float m_AngleBias         = 30.0f;
-    float angle = m_Params.m_AngleBias * maConstants::c_fAngleToRad;
-	pEffect->GetVariableByName("g_AngleBias")->AsScalar()->SetFloat( angle );
-	pEffect->GetVariableByName("g_TanAngleBias")->AsScalar()->SetFloat( tan(angle) );
-
-//    float m_Contrast          = 1.4f;
-    float contrast = m_Params.m_Contrast / (1.0f - sin(m_Params.m_AngleBias * maConstants::c_fAngleToRad));
-//    float contrast = m_Params.m_Contrast / (1.0f - sin(m_Params.m_AngleBias * maConstants::c_fAngleToRad));
-	pEffect->GetVariableByName("g_Contrast")->AsScalar()->SetFloat( contrast );
-
-//    float m_NumSteps		    = 8;
-	pEffect->GetVariableByName("g_NumSteps")->AsScalar()->SetFloat( (float)p.m_SSAONumSteps );
-//    float m_Attenuation       = 1.0f;
-	pEffect->GetVariableByName("g_Attenuation")->AsScalar()->SetFloat( m_Params.m_Attenuation );
-
-	static int oldNumDirs = -1;
-	if ((l_RndTexture == NULL) || (p.m_SSAONumDirs != oldNumDirs))
-	{
-		// rebuild random sampling texture
-		MakeRandTex(i_pEffect, p.m_SSAONumDirs);
-		oldNumDirs = p.m_SSAONumDirs;
-	}
-
-	// Recalculate buffer sizes
-    int DBWidth    = i_pCurDepth->GetWidth();
-    int DBHeight   = i_pCurDepth->GetHeight();
-	int TargetWidth, TargetHeight;
-	m_pRenderTarget->GetDimensions( TargetWidth, TargetHeight );
-
-//	DBG_ASSERT(m_pCamera->GetAspect() == m_BBWidth/m_BBHeight, "bad aspect ratio");
-	// divide by aspect since camera fov is fovx, not fovy.
-	float fovx = m_pCamera->GetFOV() * maConstants::c_fAngleToRad;
-//	float fovy = m_pCamera->GetFOV() * maConstants::c_fAngleToRad / m_pCamera->GetAspect();
-	float FocalLen[2];
-	float InvFocalLen[2];
-//	FocalLen[0]      = 1.0f / tanf(fovy * 0.5f) *  (m_BBHeight / m_BBWidth);
-//	FocalLen[1]      = 1.0f / tanf(fovy * 0.5f);
-//	InvFocalLen[0]   = 1.0f / FocalLen[0];
-//	InvFocalLen[1]   = 1.0f / FocalLen[1];
-	InvFocalLen[0]   = tanf(fovx * 0.5f);
-	InvFocalLen[1]   = tanf(fovx * 0.5f)/m_pCamera->GetAspect();
-	FocalLen[0]      = 1.0f / InvFocalLen[0];
-	FocalLen[1]      = 1.0f / InvFocalLen[1];
-
-	float InvResolution[2];
-    InvResolution[0] = 1.0f / TargetWidth;
-    InvResolution[1] = 1.0f / TargetHeight;
-	float Resolution[2];
-    Resolution[0]    = (float)TargetWidth;
-    Resolution[1]    = (float)TargetHeight;
-	float OverscanRatio[2];
-	OverscanRatio[0] = TargetWidth / (float)DBWidth;
-	OverscanRatio[1] = TargetHeight / (float)DBHeight;
-	
-//	D3DXVECTOR4 v0(m_FocalLen[0],m_FocalLen[1],0,0);
-//	D3DXVECTOR4 v1(m_InvFocalLen[0],m_InvFocalLen[1],0,0);
-//	D3DXVECTOR4 v2(m_InvResolution[0],m_InvResolution[1],0,0);
-//	D3DXVECTOR4 v3(m_Resolution[0],m_Resolution[1],0,0);
-//	pEffect->SetVector("g_FocalLen", &v0);
-//	pEffect->SetVector("g_InvFocalLen", &v1);
-//	pEffect->SetVector("g_InvResolution", &v2);
-//	pEffect->SetVector("g_Resolution", &v3);
-
-	float nearFar[2] = {m_pCamera->GetNearClip(), m_pCamera->GetFarClip()};
-
-	pEffect->GetVariableByName("g_NearFar")->AsVector()->SetFloatVector( nearFar );
-	pEffect->GetVariableByName("g_FocalLen")->AsVector()->SetFloatVector( FocalLen );
-	pEffect->GetVariableByName("g_InvFocalLen")->AsVector()->SetFloatVector( InvFocalLen );
-	pEffect->GetVariableByName("g_InvResolution")->AsVector()->SetFloatVector( InvResolution );
-	pEffect->GetVariableByName("g_Resolution")->AsVector()->SetFloatVector( Resolution );
-	pEffect->GetVariableByName("g_OverscanRatio")->AsVector()->SetFloatVector( OverscanRatio );
-	pEffect->GetVariableByName("g_SSAOTint")->AsVector()->SetFloatVector( m_Params.m_Color.Ptr() );
-
-	pEffect->GetVariableByName("tLinDepth")->AsShaderResource()->SetResource(g3dDX11TextureUtil::GetD3DTexture(i_pCurDepth));
-//	pEffect->SetTexture("tNormal", g3dDX11TextureUtil::GetD3DTexture(m_pNormalsBuffer));
-
-//	if (p.m_SSAOParams.m_EnableBlur)
-		m_AOTargetTex->MakeCurrent();
-		int w,h;
-		m_AOTargetTex->GetDimensions(w,h);
-//	else
-//		i_pRenderTarget->MakeCurrent();
-
-
-		// This function is never used
-		g3dBlendStateMgr::SetBlendState(st_NoBlend);
-
-	g3dRasterizerStateMgr::SetRasterizerState( D3D11_CULL_NONE, g3dDrawStyleUtilDX11::GetD3DDrawStyle() );
-
-	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Disable_NS );
-
-	ID3DX11EffectPass* pPass = pTechnique->GetPassByIndex(0);
-	pPass->Apply(0, g2dDX11Global::g_pDeviceContext);
-    g3dDX11Util::DrawFullScreenQuad( w,h );
-
-	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Test_Write_LessE_NS );
-
-	g3dRasterizerStateMgr::SetRasterizerState( g3dDX11Util::GetCullMode(), g3dDrawStyleUtilDX11::GetD3DDrawStyle() );
-
-	D3DPERF_EndEvent();
-}
-
-//--------------------------------------------------------------------
-//--------------------------------------------------------------------
 void shdwPassSSAO::AccumulateAOPass( g2dRenderTarget* i_pAOTarget, int i_nLayers )
 {
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassSSAO::AccumulateAOPass" );
 
-	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)matShaderMgr::GetSpecialEffect(("ssaoMultiHorizonBasedAO.fx"));
-	ID3DX11Effect* pEffect = i_pEffect->GetD3DXEffect();
+	fxEffectDX11* pEffect = g3dDX11Util::GetPlainEffect("ssaoMultiHorizonBasedAO");
 
-	ID3DX11EffectTechnique* pTechnique = pEffect->GetTechniqueByName("HORIZON_BASED_AO_MULTI_QUALITY_Pass");
+	int pTechnique = pEffect->FindTechnique("HORIZON_BASED_AO_MULTI_QUALITY_Pass");
 
 	const g3dPrefs::g3dRenderPrefs& p = g3dPrefs::CurrentPrefs();
 
@@ -530,24 +394,24 @@ void shdwPassSSAO::AccumulateAOPass( g2dRenderTarget* i_pAOTarget, int i_nLayers
 	float R[2] = {m_Params.m_AORadius, m_Params.m_AORadiusFar};
 	float invR[2] = {1.0f/R[0], 1.0f/R[1]};
 	float sqrR[2] = {R[0]*R[0], R[1]*R[1]};
-	pEffect->GetVariableByName("g_R")->AsVector()->SetFloatVector( R );
+	pEffect->SetFloatVector(pEffect->FindConstant("g_R"), R);
 
 	// angle cutoff
 	float angle = m_Params.m_AngleBias * maConstants::c_fAngleToRad;
-	pEffect->GetVariableByName("g_AngleBias")->AsScalar()->SetFloat( angle );
-	pEffect->GetVariableByName("g_TanAngleBias")->AsScalar()->SetFloat( tan(angle) );
+	pEffect->SetConstant(pEffect->FindConstant("g_AngleBias"), (float)(angle));
+	pEffect->SetConstant(pEffect->FindConstant("g_TanAngleBias"), (float)(tan(angle)));
 
 	float contrast = m_Params.m_Contrast / (1.0f - sin(m_Params.m_AngleBias * maConstants::c_fAngleToRad));
-	pEffect->GetVariableByName("g_Contrast")->AsScalar()->SetFloat( contrast );
+	pEffect->SetConstant(pEffect->FindConstant("g_Contrast"), (float)(contrast));
 
-	pEffect->GetVariableByName("g_NumSteps")->AsScalar()->SetFloat( (float)p.m_SSAONumSteps );
-	pEffect->GetVariableByName("g_Attenuation")->AsScalar()->SetFloat( m_Params.m_Attenuation );
+	pEffect->SetConstant(pEffect->FindConstant("g_NumSteps"), (float)((float)p.m_SSAONumSteps));
+	pEffect->SetConstant(pEffect->FindConstant("g_Attenuation"), (float)(m_Params.m_Attenuation));
 
 	static int oldNumDirs = -1;
 	if ((l_RndTexture == NULL) || (p.m_SSAONumDirs != oldNumDirs))
 	{
 		// rebuild random sampling texture
-		MakeRandTex(i_pEffect, p.m_SSAONumDirs);
+		MakeRandTex(pEffect, p.m_SSAONumDirs);
 		oldNumDirs = p.m_SSAONumDirs;
 	}
 
@@ -567,16 +431,16 @@ void shdwPassSSAO::AccumulateAOPass( g2dRenderTarget* i_pAOTarget, int i_nLayers
 	float OverscanRatio[4] = {TargetWidth / (float)DBWidth, TargetHeight / (float)DBHeight};
 	float nearFar[4] = {m_pCamera->GetNearClip(), m_pCamera->GetFarClip()};
 
-	pEffect->GetVariableByName("g_NearFar")->AsVector()->SetFloatVector( nearFar );
-	pEffect->GetVariableByName("g_FocalLen")->AsVector()->SetFloatVector( FocalLen );
-	pEffect->GetVariableByName("g_InvFocalLen")->AsVector()->SetFloatVector( InvFocalLen );
-	pEffect->GetVariableByName("g_InvResolution")->AsVector()->SetFloatVector( InvResolution );
-	pEffect->GetVariableByName("g_Resolution")->AsVector()->SetFloatVector( Resolution );
-	pEffect->GetVariableByName("g_OverscanRatio")->AsVector()->SetFloatVector( OverscanRatio );
-	pEffect->GetVariableByName("g_nLayers")->AsScalar()->SetInt( i_nLayers );
-	pEffect->GetVariableByName("g_SSAOTint")->AsVector()->SetFloatVector( m_Params.m_Color.Ptr() );
+	pEffect->SetFloatVector(pEffect->FindConstant("g_NearFar"), nearFar);
+	pEffect->SetFloatVector(pEffect->FindConstant("g_FocalLen"), FocalLen);
+	pEffect->SetFloatVector(pEffect->FindConstant("g_InvFocalLen"), InvFocalLen);
+	pEffect->SetFloatVector(pEffect->FindConstant("g_InvResolution"), InvResolution);
+	pEffect->SetFloatVector(pEffect->FindConstant("g_Resolution"), Resolution);
+	pEffect->SetFloatVector(pEffect->FindConstant("g_OverscanRatio"), OverscanRatio);
+	pEffect->SetConstant(pEffect->FindConstant("g_nLayers"), (int)(i_nLayers));
+	pEffect->SetFloatVector(pEffect->FindConstant("g_SSAOTint"), m_Params.m_Color.Ptr());
 
-	pEffect->GetVariableByName("tDepths")->AsShaderResource()->SetResource( g3dDX11TextureUtil::GetD3DTexture(m_pNearDepthBuffer) );
+	pEffect->SetResource(pEffect->FindResource("tDepths"), g3dDX11TextureUtil::GetD3DTexture(m_pNearDepthBuffer));
 
 	g2dDX11Global::SetDepthTarget(NULL);
 	i_pAOTarget->MakeCurrent();
@@ -591,8 +455,7 @@ void shdwPassSSAO::AccumulateAOPass( g2dRenderTarget* i_pAOTarget, int i_nLayers
 
 	g3dRasterizerStateMgr::SetRasterizerState( D3D11_CULL_NONE, g3dDrawStyleUtilDX11::GetD3DDrawStyle() );
 
-	ID3DX11EffectPass* pPass = pTechnique->GetPassByIndex(0);
-	pPass->Apply(0, g2dDX11Global::g_pDeviceContext);
+	pEffect->Apply(pTechnique, 0, g2dDX11Global::g_pDeviceContext);
 	g3dDX11Util::DrawFullScreenQuad( w,h );
 
 	g3dDepthStencilStateMgr::SetDepthStencilState( &ds_Saved );
@@ -737,10 +600,9 @@ void shdwPassSSAO::BlurAO(g2dRenderTarget* i_pRenderTarget)
 
 	const g3dPrefs::g3dRenderPrefs& p = g3dPrefs::CurrentPrefs();
 
-	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)matShaderMgr::GetSpecialEffect(("ssaoBilateralBlurEngine.fx"));
-	ID3DX11Effect* pEffect = i_pEffect->GetD3DXEffect();
+	fxEffectDX11* pEffect = g3dDX11Util::GetPlainEffect("ssaoBilateralBlurEngine");
 
-	ID3DX11EffectTechnique* pTechnique = pEffect->GetTechniqueByName("BlurPass");
+	int pTechnique = pEffect->FindTechnique("BlurPass");
 
     // Update shader variables g_Resolution and g_InvResolution
 	int width, height;
@@ -757,9 +619,9 @@ void shdwPassSSAO::BlurAO(g2dRenderTarget* i_pRenderTarget)
 	OverscanRatio[0] = width / (float)DBWidth;
 	OverscanRatio[1] = height / (float)DBHeight;
 
-	pEffect->GetVariableByName("g_InvResolution")->AsVector()->SetFloatVector( invResolution );
-	pEffect->GetVariableByName("g_Resolution")->AsVector()->SetFloatVector( resolution );
-	pEffect->GetVariableByName("g_OverscanRatio")->AsVector()->SetFloatVector( OverscanRatio );
+	pEffect->SetFloatVector(pEffect->FindConstant("g_InvResolution"), invResolution);
+	pEffect->SetFloatVector(pEffect->FindConstant("g_Resolution"), resolution);
+	pEffect->SetFloatVector(pEffect->FindConstant("g_OverscanRatio"), OverscanRatio);
 
     float m_EdgeThreshold  = 0.1f;
 
@@ -779,15 +641,15 @@ void shdwPassSSAO::BlurAO(g2dRenderTarget* i_pRenderTarget)
 	int w,h;
 	m_TempTargetTex->GetDimensions(w,h);
     
-	pEffect->GetVariableByName("g_BlurFalloff")->AsScalar()->SetFloat( inv_sigma2 );
-	pEffect->GetVariableByName("g_BlurRadius")->AsScalar()->SetFloat( radius );
+	pEffect->SetConstant(pEffect->FindConstant("g_BlurFalloff"), (float)(inv_sigma2));
+	pEffect->SetConstant(pEffect->FindConstant("g_BlurRadius"), (float)(radius));
 
-	pEffect->GetVariableByName("g_EdgeThreshold")->AsScalar()->SetFloat( m_EdgeThreshold );
+	pEffect->SetConstant(pEffect->FindConstant("g_EdgeThreshold"), (float)(m_EdgeThreshold));
     float sharpness = (m_Params.m_BlurSharpness) * (m_Params.m_BlurSharpness);
-	pEffect->GetVariableByName("g_Sharpness")->AsScalar()->SetFloat( sharpness );
+	pEffect->SetConstant(pEffect->FindConstant("g_Sharpness"), (float)(sharpness));
 
-	pEffect->GetVariableByName("tDepth")->AsShaderResource()->SetResource( g3dDX11TextureUtil::GetD3DTexture(m_pNearDepthBuffer) );
-	pEffect->GetVariableByName("tColor")->AsShaderResource()->SetResource( NULL );
+	pEffect->SetResource(pEffect->FindResource("tDepth"), g3dDX11TextureUtil::GetD3DTexture(m_pNearDepthBuffer));
+	pEffect->SetResource(pEffect->FindResource("tColor"), NULL);
 
 	g3dBlendStateMgr::SetBlendState(st_NoBlend);
 
@@ -795,10 +657,9 @@ void shdwPassSSAO::BlurAO(g2dRenderTarget* i_pRenderTarget)
 
 	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Disable_NS );
 
-	pEffect->GetVariableByName("tSource")->AsShaderResource()->SetResource( g3dDX11TextureUtil::GetD3DTexture(m_AOTargetTex) );
+	pEffect->SetResource(pEffect->FindResource("tSource"), g3dDX11TextureUtil::GetD3DTexture(m_AOTargetTex));
 
-	ID3DX11EffectPass* pPass0 = pTechnique->GetPassByIndex(0);
-	pPass0->Apply(0, g2dDX11Global::g_pDeviceContext);
+	pEffect->Apply(pTechnique, 0, g2dDX11Global::g_pDeviceContext);
 	g3dDX11Util::DrawFullScreenQuad( w,h );
 
 	g3dBlendStateMgr::SetBlendState(st_AOBlend);
@@ -809,10 +670,9 @@ void shdwPassSSAO::BlurAO(g2dRenderTarget* i_pRenderTarget)
     // Blur Pass Y : render from temp target into main render target
 	i_pRenderTarget->MakeCurrent();
 	i_pRenderTarget->GetDimensions(w,h);
-	pEffect->GetVariableByName("tSource")->AsShaderResource()->SetResource( g3dDX11TextureUtil::GetD3DTexture(m_TempTargetTex) );
+	pEffect->SetResource(pEffect->FindResource("tSource"), g3dDX11TextureUtil::GetD3DTexture(m_TempTargetTex));
 
-	ID3DX11EffectPass* pPass1 = pTechnique->GetPassByIndex(1);
-	pPass1->Apply(0, g2dDX11Global::g_pDeviceContext);
+	pEffect->Apply(pTechnique, 1, g2dDX11Global::g_pDeviceContext);
 	g3dDX11Util::DrawFullScreenQuad( w,h );
 
 	// restore stencil state
