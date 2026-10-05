@@ -86,3 +86,13 @@ jobs:
           /p:EnforceProcessCountAcrossBuilds=true
           /nologo
           /v:minimal
+
+      # The exe loads OpenEXR from its own folder; fail if a build would not
+      # start because the DLL is missing.
+      - name: Check OpenEXR DLL is next to the exe
+        shell: pwsh
+        run: |
+          $suffix = if ("${{ matrix.configuration }}" -eq "Debug") { "_d" } else { "" }
+          $dll = "MachStudio/MachStudio-x64/OpenEXR-3_2$suffix.dll"
+          if (-not (Test-Path $dll)) { throw "$dll is missing" }
+          Get-ChildItem MachStudio/MachStudio-x64/*.dll | Select-Object -ExpandProperty Name
