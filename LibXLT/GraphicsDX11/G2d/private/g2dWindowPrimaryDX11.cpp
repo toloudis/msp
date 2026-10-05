@@ -342,6 +342,13 @@ void g2dWindowPrimaryDX11::GetPresentRect(int& o_X, int& o_Y, int& o_Width, int&
 		o_Height = m_WindowHeight;
 		o_Width = (m_WindowHeight * m_Width + m_Height / 2) / m_Height;
 	}
+	// the panel is shaped to the image, so a gap of a pixel or two is only
+	// rounding: fill the window rather than leave a sliver of border
+	if (m_WindowWidth - o_Width <= 2 && m_WindowHeight - o_Height <= 2)
+	{
+		o_Width = m_WindowWidth;
+		o_Height = m_WindowHeight;
+	}
 	o_Width = (std::max)(o_Width, 1);
 	o_Height = (std::max)(o_Height, 1);
 	o_X = (m_WindowWidth - o_Width) / 2;

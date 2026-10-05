@@ -61,11 +61,11 @@ rpnPanelGrid::rpnPanelGrid(wxWindow* parent)
 		//m_RenderPanes[i] = new rpnRenderPanel(this);
 		m_RenderPanes[i] = new rpnRenderPanel(m_pLayoutPane);
 
-		// this setting fills the window with the render area; the rendered
-		// image is scaled to fit inside the panel keeping its aspect ratio
-		const int c_RenderAreaSizerFlags = wxEXPAND;
-		// this setting fixes the aspect ratio and centers the window in that space
-		//const int c_RenderAreaSizerFlags = wxALIGN_CENTER|wxSHAPED;
+		// this setting fills the window with the render area
+		//const int c_RenderAreaSizerFlags = wxEXPAND|wxALL;
+		// this setting fixes the aspect ratio and centers the window in that
+		// space; the rendered image is scaled to fit the panel
+		const int c_RenderAreaSizerFlags = wxALIGN_CENTER|wxSHAPED;
 		// this setting fixes the aspect ratio and keeps the window in the upper left
 		//const int c_RenderAreaSizerFlags = wxSHAPED;
 		if (i % 2 == 0)
@@ -78,7 +78,7 @@ rpnPanelGrid::rpnPanelGrid(wxWindow* parent)
 	m_RenderPanes[0]->SetCanChangeRenderPass(true); 
 
 	m_pLayoutPane->SetSizer( m_pGridSizer );
-	m_pLayoutSizer->Add( m_pLayoutPane, 1, wxEXPAND, 0 ); 
+	m_pLayoutSizer->Add( m_pLayoutPane, 1, wxALIGN_CENTER|wxSHAPED, 0 ); 
 	this->SetSizer(m_pLayoutSizer);
 	//this->SetSizer(m_pGridSizer);
 	this->Layout();
@@ -169,12 +169,18 @@ void rpnPanelGrid::SetMaxRenderSize(int i_Width, int i_Height)
 	m_MaxWidth = i_Width;
 	m_MaxHeight = i_Height;
 
-	// Every render area renders at the same resolution no matter which
-	// layout, scaled to fit its panel. The grid size includes a one pixel
-	// border around the render area, so subtract 2 for the render size.
+	// Set aspect ratio for all render areas to keep them the
+	// same proportion as the main render window no matter which layout.
+	// Each renders at the chosen resolution, scaled to fit its panel. The
+	// grid size includes a one pixel border around the render area, so
+	// subtract 2 for the render size.
 	//
 	for (int i=0; i<4; i++)
 	{
+		bool bRecursive = true;
+		wxSizerItem *pItem = m_pGridSizer->GetItem(m_RenderPanes[i], bRecursive);
+		if (i_Width > 0 && i_Height > 0)
+			pItem->SetRatio(i_Width, i_Height);
 		if (i_Width > 2 && i_Height > 2)
 			m_RenderPanes[i]->SetRenderResolution(i_Width - 2, i_Height - 2);
 		else
@@ -234,7 +240,18 @@ void rpnPanelGrid::DoSetSize(int x, int y,
 //----------------------------------------------------------------------------
 void rpnPanelGrid::adjust_layout_sizer()
 {
-	// The panes fill the grid, so there is no aspect ratio to set here
+	// If we are given a resolution to match, then set our aspect ratio
+	// based on the layout style
+	if (m_MaxWidth > 0 && m_MaxHeight > 0)
+	{
+		int grid_width = m_MaxWidth;
+		int grid_height = m_MaxHeight;
+		if (m_Layout == e_TwoStacked)
+			grid_height *= 2;
+		else if (m_Layout == e_TwoSideBySide)
+			grid_width *= 2;
+		m_pLayoutSizer->GetItem((size_t)0)->SetRatio(grid_width, grid_height);
+	}
 	m_pLayoutSizer->Layout();
 	m_pGridSizer->Layout();
 }
