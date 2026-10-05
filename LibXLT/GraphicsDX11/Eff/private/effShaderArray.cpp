@@ -139,7 +139,7 @@ static std::unique_ptr<fxEffect> LoadPlainBuiltIn(const std::string& i_Name)
 		DBG_ERROR("Built in shader " << name.c_str() << " failed to load as plain HLSL, using the .fx: " << error.c_str());
 		return nullptr;
 	}
-	return std::unique_ptr<fxEffect>(new effPlainEffect(std::move(effect)));
+	return std::unique_ptr<fxEffect>(new effPlainEffect(std::move(effect), embedded->m_Source));
 }
 
 namespace
@@ -588,7 +588,7 @@ static matShaderEffect* LoadPlainMaterial(const fsLocator& i_ShaderLoc, const st
 	DBG_LOG("Material " << i_FileName.c_str() << " loaded as plain HLSL (" << embedded->m_Source << ")");
 	fsLocator folder = i_ShaderLoc;
 	folder.Pop();
-	std::unique_ptr<fxEffect> plain(new effPlainEffect(std::move(effect)));
+	std::unique_ptr<fxEffect> plain(new effPlainEffect(std::move(effect), embedded->m_Source));
 	if (plain->GetVariableByName("hasHairSupport")->IsValid())	//this is a hair effect
 		return new effStrandHair(folder, std::move(plain), i_FileName);
 	return new effShaderBaseDX11(folder, std::move(plain), i_FileName);

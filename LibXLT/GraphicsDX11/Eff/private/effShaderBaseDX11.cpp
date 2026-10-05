@@ -1676,7 +1676,11 @@ int effShaderBaseDX11::BuildPrtyObject(effShaderParams* o_pParams) const
 	DBG_ASSERT(o_pParams->m_pShaderBindings == NULL, "bindings already set");
 	DBG_ASSERT(o_pParams->m_pPrtyUI == NULL, "prtyUI already set");
 	effShaderBindingsDX11* bindings = new effShaderBindingsDX11(this->m_pEffect.get());
-	if (effPlainEffect* plain = dynamic_cast<effPlainEffect*>(m_pEffect.get()))
+	// Each material keeps its own parameters. Special effects (depth, AO,
+	// hair...) are set up by the renderer right before drawing, so they keep
+	// one shared set, as Effects did; restoring a copy would undo that.
+	effPlainEffect* plain = dynamic_cast<effPlainEffect*>(m_pEffect.get());
+	if (plain && plain->IsMaterial())
 	{
 		bindings->m_pMaterial.reset(new fxMaterialInstance(plain->GetEffectDX11()));
 		if (!bindings->m_pMaterial->IsValid())
