@@ -726,8 +726,9 @@ private:
 
 //============================================================================
 //============================================================================
-effPlainEffect::effPlainEffect(std::unique_ptr<fxEffectDX11> i_pEffect)
-:	m_pEffect(std::move(i_pEffect))
+effPlainEffect::effPlainEffect(std::unique_ptr<fxEffectDX11> i_pEffect, const std::string& i_Source)
+:	m_pEffect(std::move(i_pEffect)),
+	m_Source(i_Source)
 {
 	static const TypeInfo k_Invalid;
 	m_pInvalidVariable.reset(new Variable(this, Variable::e_Invalid, k_Invalid));
