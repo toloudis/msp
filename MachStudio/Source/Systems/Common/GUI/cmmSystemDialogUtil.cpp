@@ -11,12 +11,24 @@
 #include "Systems/Common/GUI/cmmAddDriverOperation.hpp"
 #include "Systems/Common/GUI/cmmSystemDialogInterest.hpp"
 #include "Systems/Common/GUI/mGUI/cmmSystemForm.h"
+#ifdef MSP_GUI_QT
+#include "Systems/Common/GUI/qtGUI/cmmSceneDialog.hpp"
+#else
 #include "Systems/Common/GUI/wxGUI/cmmSceneDialog.hpp"
+#endif
 #include "Systems/Common/GUI/cmmSceneOperations.hpp"
 
 #include "Core/env/envSTLHelpers.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtPaneMgr.hpp"
+#else
 #include "ToolUIWx/twx/twxPaneMgr.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtSystem.hpp"
+#else
 #include "ToolUIWx/twx/twxSystem.hpp"
+#endif
 
 
 //============================================================================
@@ -40,6 +52,9 @@ namespace cmmSystemDialogUtil
 #ifdef USE_WXWIDGETS
 		DBG_ASSERT(twxSystem::g_pMainForm, "MainForm not yet initialized.");
 		cmmSceneDialog::FormInstance = new cmmSceneDialog(twxSystem::g_pMainForm);
+#elif defined(USE_QT)
+		DBG_ASSERT(tqtSystem::g_pMainForm, "MainForm not yet initialized.");
+		cmmSceneDialog::FormInstance = new cmmSceneDialog(tqtSystem::g_pMainForm);
 #endif
 	}
 
@@ -47,7 +62,7 @@ namespace cmmSystemDialogUtil
 	//--------------------------------------------------------------------
 	void CleanUp()
 	{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		// It looks like wxWidgets deletes the dialogs attached to the main form 
 		// so we don'thave to do it.
 		//if (cmmSceneDialog::FormInstance)
@@ -78,6 +93,13 @@ namespace cmmSystemDialogUtil
 		}
 		cmmSceneDialog::FormInstance->Update();
 		twxPaneMgr::Show(cmmSceneDialog::FormInstance);
+#elif defined(USE_QT)
+		if (!cmmSceneDialog::FormInstance)
+		{
+			Init();
+		}
+		cmmSceneDialog::FormInstance->update();
+		tqtPaneMgr::Show(cmmSceneDialog::FormInstance);
 #endif
 	}
 
@@ -91,6 +113,11 @@ namespace cmmSystemDialogUtil
 		if (cmmSceneDialog::FormInstance)
 		{
 			twxPaneMgr::Show(cmmSceneDialog::FormInstance, false);
+		}
+#elif defined(USE_QT)
+		if (cmmSceneDialog::FormInstance)
+		{
+			tqtPaneMgr::Show(cmmSceneDialog::FormInstance, false);
 		}
 #endif
 	}
@@ -123,7 +150,7 @@ namespace cmmSystemDialogUtil
 	void UpdateDialog()
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cmmSceneDialog::FormInstance)
 		{
 			cmmSceneDialog::FormInstance->Clear();
@@ -159,7 +186,7 @@ namespace cmmSystemDialogUtil
 	void SelectObjectOnPlacedList(sel3dObject* i_pPickObject)
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cmmSceneDialog::FormInstance)
 		{
 			cmmSceneDialog::FormInstance->SelectObjectOnPlacedList(i_pPickObject);
@@ -173,7 +200,7 @@ namespace cmmSystemDialogUtil
 	void AddToSelectedObjectsOnPlacedList(sel3dObject* i_pPickObject)
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cmmSceneDialog::FormInstance)
 		{
 			cmmSceneDialog::FormInstance->AddToSelectedObjectsOnPlacedList(i_pPickObject);
@@ -187,7 +214,7 @@ namespace cmmSystemDialogUtil
 	void RemoveFromSelectedObjectsOnPlacedList(sel3dObject* i_pPickObject)
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cmmSceneDialog::FormInstance)
 		{
 			cmmSceneDialog::FormInstance->RemoveFromSelectedObjectsOnPlacedList(i_pPickObject);
@@ -201,7 +228,7 @@ namespace cmmSystemDialogUtil
 	void UpdatePlacedList(const std::string& i_SystemName, cmmDialogDataList& i_DataList)
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cmmSceneDialog::FormInstance)
 		{
 			cmmSceneDialog::FormInstance->UpdatePlacedList(i_SystemName, i_DataList);
@@ -215,7 +242,7 @@ namespace cmmSystemDialogUtil
 	void UpdateSceneHierarchy()
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cmmSceneDialog::FormInstance)
 		{
 			cmmSceneDialog::FormInstance->UpdateSceneHierarchy();
@@ -229,7 +256,7 @@ namespace cmmSystemDialogUtil
 	void  UpdateSetRelationships()
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cmmSceneDialog::FormInstance)
 		{
 			cmmSceneDialog::FormInstance->UpdateSetRelationships();
@@ -243,7 +270,7 @@ namespace cmmSystemDialogUtil
 	void UpdateAvailableList()
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cmmSceneDialog::FormInstance)
 		{
 			cmmSceneDialog::FormInstance->UpdateAvailableList();

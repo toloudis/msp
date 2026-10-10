@@ -22,6 +22,8 @@
 #ifdef USE_QT
 
 #include <windows.h>
+// windows.h renames GetObject, which the object managers use as a name
+#undef GetObject
 
 //============================================================================
 //============================================================================

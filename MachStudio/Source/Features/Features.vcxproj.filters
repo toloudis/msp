@@ -139,6 +139,45 @@
     <Filter Include="Export">
       <UniqueIdentifier>{dc5da48b-a5cd-43ed-8a80-d5dc83df286d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Prefs\qtGUI">
+      <UniqueIdentifier>{004e7828-5220-45a9-8f96-b528986a0143}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UndoHistory\qtGUI">
+      <UniqueIdentifier>{ed301dd7-5bb1-4c52-8184-b937a5beadb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderPanels\qtGUI">
+      <UniqueIdentifier>{7d7f636c-8be5-4ba3-9080-586d6b71b34a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LoadPrefs\qtGUI">
+      <UniqueIdentifier>{38fea068-2938-4a81-80a2-7823edab4b10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Debug\qtGUI">
+      <UniqueIdentifier>{64b261e5-739e-4352-a073-0b1c8ced388e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ResourceTracker\qtGUI">
+      <UniqueIdentifier>{a740bba1-f53e-46aa-8568-00a255b3b65a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Import\qtGUI">
+      <UniqueIdentifier>{2cffe6a3-ca6a-418d-a9f8-9d4cfc0629bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SceneSetup\GUI\qtGUI">
+      <UniqueIdentifier>{3c06b0a9-14f1-417c-8c3a-a0f73ccbc20f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Capture\qtGUI">
+      <UniqueIdentifier>{ca92ef54-9fb1-43c1-b1fb-c6c8e7d5a36e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Playback\qtGUI">
+      <UniqueIdentifier>{fa00b6d9-790c-49db-85dc-27092d8f8f03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MaterialBrowse\qtGUI">
+      <UniqueIdentifier>{dc416dbc-f6fa-4ca0-b403-f20e24328fa9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderLayers\qtGUI">
+      <UniqueIdentifier>{3a001c4f-9fc4-4ec0-9cc1-41a0d39dd40d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Channels\qtGUI">
+      <UniqueIdentifier>{2202d461-948e-4f9c-b47a-9f039c914d1b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Import\ImportData.cpp">
@@ -763,6 +802,114 @@
       <Filter>Export</Filter>
     </ClCompile>
     <ClCompile Include="FeaturesLayer.cpp" />
+    <ClCompile Include="Prefs\qtGUI\prefsLayoutChoice.cpp">
+      <Filter>Prefs\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Prefs\qtGUI\prefsLayoutMgr.cpp">
+      <Filter>Prefs\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Prefs\qtGUI\prefsQuickDialog.cpp">
+      <Filter>Prefs\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="UndoHistory\qtGUI\UndoHistoryDialog.cpp">
+      <Filter>UndoHistory\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPanels\qtGUI\rpnCameraChoice.cpp">
+      <Filter>RenderPanels\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPanels\qtGUI\rpnPanelGrid.cpp">
+      <Filter>RenderPanels\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPanels\qtGUI\rpnRenderPanel.cpp">
+      <Filter>RenderPanels\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadPrefs\qtGUI\LoadPreferencesDialog.cpp">
+      <Filter>LoadPrefs\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\qtGUI\dbgConsoleDialog.cpp">
+      <Filter>Debug\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceTracker\qtGUI\ResourceTrackerDialog.cpp">
+      <Filter>ResourceTracker\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Import\qtGUI\ImportDialog.cpp">
+      <Filter>Import\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneSetup\GUI\qtGUI\SceneSetupDialog.cpp">
+      <Filter>SceneSetup\GUI\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\qtGUI\cptrDialogUtil.cpp">
+      <Filter>Capture\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\qtGUI\cptrRenderBakeDialog.cpp">
+      <Filter>Capture\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\qtGUI\cptrRenderBatchDialog.cpp">
+      <Filter>Capture\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\qtGUI\cptrRenderOptionsDialog.cpp">
+      <Filter>Capture\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\qtGUI\cptrRenderProgressDialog.cpp">
+      <Filter>Capture\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\qtGUI\cptrRenderStatsDialog.cpp">
+      <Filter>Capture\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Capture\qtGUI\cptrToPhotoshopDialog.cpp">
+      <Filter>Capture\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Playback\qtGUI\plbkPlaybackControlsDialog.cpp">
+      <Filter>Playback\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialBrowse\qtGUI\mbrwMaterialSwatchDialog.cpp">
+      <Filter>MaterialBrowse\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderLayers\qtGUI\rdrLayersDialog.cpp">
+      <Filter>RenderLayers\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderLayers\qtGUI\rdrLayersObjectsPage.cpp">
+      <Filter>RenderLayers\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\qtGUI\chnlChannelClip.cpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\qtGUI\chnlChannelControl.cpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\qtGUI\chnlClipDriver.cpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\qtGUI\chnlMarkerBar.cpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\qtGUI\chnlMarkerIcon.cpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\qtGUI\chnlNoteIcon.cpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\qtGUI\chnlTimeCommon.cpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\qtGUI\chnlTimeIcon.cpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\qtGUI\chnlTimeLabel.cpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\qtGUI\chnlTimeSlider.cpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\qtGUI\chnlTimelineGuideUtil.cpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\qtGUI\chnlTimelinePanel.cpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Channels\qtGUI\chnlTraxDialog.cpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Import\ImportData.hpp">
@@ -1402,5 +1549,116 @@
       <Filter>Export</Filter>
     </ClInclude>
     <ClInclude Include="FeaturesLayer.hpp" />
+    <ClInclude Include="Prefs\qtGUI\prefsLayoutChoice.hpp">
+      <Filter>Prefs\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Prefs\qtGUI\prefsLayoutMgr.hpp">
+      <Filter>Prefs\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Prefs\qtGUI\prefsQuickDialog.hpp">
+      <Filter>Prefs\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="UndoHistory\qtGUI\UndoHistoryDialog.hpp">
+      <Filter>UndoHistory\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPanels\qtGUI\rpnCameraChoice.hpp">
+      <Filter>RenderPanels\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPanels\qtGUI\rpnPanelGrid.hpp">
+      <Filter>RenderPanels\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderPanels\qtGUI\rpnRenderPanel.hpp">
+      <Filter>RenderPanels\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadPrefs\qtGUI\LoadPreferencesDialog.hpp">
+      <Filter>LoadPrefs\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug\qtGUI\dbgConsoleDialog.hpp">
+      <Filter>Debug\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceTracker\qtGUI\ResourceTrackerDialog.hpp">
+      <Filter>ResourceTracker\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Import\qtGUI\ImportDialog.hpp">
+      <Filter>Import\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneSetup\GUI\qtGUI\SceneSetupDialog.hpp">
+      <Filter>SceneSetup\GUI\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\qtGUI\ExportConstants.hpp">
+      <Filter>Capture\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\qtGUI\cptrDialogUtil.hpp">
+      <Filter>Capture\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\qtGUI\cptrRenderBakeDialog.hpp">
+      <Filter>Capture\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\qtGUI\cptrRenderBatchDialog.hpp">
+      <Filter>Capture\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\qtGUI\cptrRenderOptionsDialog.hpp">
+      <Filter>Capture\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\qtGUI\cptrRenderProgressDialog.hpp">
+      <Filter>Capture\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\qtGUI\cptrRenderStatsDialog.hpp">
+      <Filter>Capture\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Capture\qtGUI\cptrToPhotoshopDialog.hpp">
+      <Filter>Capture\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Playback\qtGUI\plbkPlaybackControlsDialog.hpp">
+      <Filter>Playback\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialBrowse\qtGUI\mbrwMaterialSwatchDialog.hpp">
+      <Filter>MaterialBrowse\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderLayers\qtGUI\rdrLayersDialog.hpp">
+      <Filter>RenderLayers\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderLayers\qtGUI\rdrLayersObjectsPage.hpp">
+      <Filter>RenderLayers\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\qtGUI\chnlChannelClip.hpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\qtGUI\chnlChannelControl.hpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\qtGUI\chnlClipDriver.hpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\qtGUI\chnlMarkerBar.hpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\qtGUI\chnlMarkerIcon.hpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\qtGUI\chnlNoteIcon.hpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\qtGUI\chnlTimeCommon.hpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\qtGUI\chnlTimeIcon.hpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\qtGUI\chnlTimeLabel.hpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\qtGUI\chnlTimeSlider.hpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\qtGUI\chnlTimelineGuideUtil.hpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\qtGUI\chnlTimelinePanel.hpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Channels\qtGUI\chnlTraxDialog.hpp">
+      <Filter>Channels\qtGUI</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

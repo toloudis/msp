@@ -9,7 +9,11 @@
 #include "Features/Capture/cptrRenderOptionsDialogUtil.hpp"
 
 #include "Features/Capture/cptrRenderUtil.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/Capture/qtGUI/cptrRenderOptionsDialog.hpp"
+#else
 #include "Features/Capture/wxGUI/cptrRenderOptionsDialog.hpp"
+#endif
 #include "Features/Channels/Markers/chnlMarkerMgr.hpp"
 #include "Features/RenderPrefs/rndrPrefsMgr.hpp"
 #include "Support/cams/camsCameraMgr.hpp"
@@ -18,8 +22,16 @@
 #include "Support/capt/captRenderOutputDataUtil.hpp"
 
 #include "Tool/doc/docSingleDocumentMgr.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtPaneMgr.hpp"
+#else
 #include "ToolUIWx/twx/twxPaneMgr.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtSystem.hpp"
+#else
 #include "ToolUIWx/twx/twxSystem.hpp"
+#endif
 
 
 //============================================================================
@@ -29,7 +41,7 @@ namespace cptrRenderOptionsDialogUtil
 	bool l_bExitting;
 	bool l_bVisible = false;
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	cptrRenderOptionsDialog* l_pRODialog = NULL;
 #endif
 
@@ -53,6 +65,15 @@ namespace cptrRenderOptionsDialogUtil
 		if (!l_bVisible)
 		{
 			pDialog->Show();
+			l_bVisible = true;
+		}
+
+		l_pRODialog = pDialog;
+#elif defined(USE_QT)
+		cptrRenderOptionsDialog* pDialog = new cptrRenderOptionsDialog( tqtSystem::g_pMainForm );
+		if (!l_bVisible)
+		{
+			pDialog->show();
 			l_bVisible = true;
 		}
 
@@ -101,6 +122,8 @@ namespace cptrRenderOptionsDialogUtil
 		cptrRenderUtil::SetCapture( true );
 #ifdef USE_WXWIDGETS
 		l_pRODialog->Hide();
+#elif defined(USE_QT)
+		l_pRODialog->hide();
 #endif
 		l_bVisible = false;
 		//l_pRODialog->EndModal(l_bVisible);

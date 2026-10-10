@@ -19,6 +19,9 @@
     <Filter Include="Timeline">
       <UniqueIdentifier>{85eab729-e91e-4e70-89ce-7a914dd270c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GUI\qtGUI">
+      <UniqueIdentifier>{456c9515-4734-4fe0-a787-fc4721717cdb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Undo\envtActualOperations.cpp">
@@ -106,6 +109,12 @@
       <Filter>Timeline</Filter>
     </ClCompile>
     <ClCompile Include="envtSystem.cpp" />
+    <ClCompile Include="GUI\qtGUI\envtEnvironmentObjectsPage.cpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\qtGUI\envtEnvironmentSwlPage.cpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Undo\envtActualOperations.hpp">
@@ -193,5 +202,11 @@
       <Filter>Timeline</Filter>
     </ClInclude>
     <ClInclude Include="envtSystem.hpp" />
+    <ClInclude Include="GUI\qtGUI\envtEnvironmentObjectsPage.hpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\qtGUI\envtEnvironmentSwlPage.hpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

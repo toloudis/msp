@@ -9,18 +9,29 @@
 #include "Support/ptm/ptmControlFactoryTimeline.hpp"
 
 #ifdef USE_WXWIDGETS
+#ifdef MSP_GUI_QT
+#include "Support/ptm/qtGUI/ptmTime_TimeEdit.hpp"
+#else
 #include "Support/ptm/wxGUI/ptmTime_TimeEdit.hpp"
+#endif
+#elif defined(USE_QT)
+#include "Support/ptm/qtGUI/ptmTime_TimeEdit.hpp"
 #endif
 
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 
 //----------------------------------------------------------------------------
 //	Check for Control + Property pairing
 //----------------------------------------------------------------------------
 //virtual 
+#ifdef USE_WXWIDGETS
 pwxControl* ptmControlFactoryTimeline::CreateControl(shared_ptr<prtyPropertyUIInfo>& i_pUIInfo,
 													wxWindow* i_pParent)
+#else
+pqtControl* ptmControlFactoryTimeline::CreateControl(shared_ptr<prtyPropertyUIInfo>& i_pUIInfo,
+													QWidget* i_pParent)
+#endif
 {
 	const std::string& control_name		= i_pUIInfo->GetControlName();
 

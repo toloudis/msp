@@ -92,6 +92,11 @@ class tqcRangedFloat : public QWidget, public tqcValueChangedNotifier
 		//--------------------------------------------------------------------
 		void AllowExpandRange(bool i_bExpand);
 
+		//--------------------------------------------------------------------
+		// The slider, for users that also want its press and release
+		//--------------------------------------------------------------------
+		QSlider* GetSlider() const { return m_pSlider; }
+
 	private:
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------

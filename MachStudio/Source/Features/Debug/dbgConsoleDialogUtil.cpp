@@ -9,21 +9,33 @@
 #include "Features/Debug/dbgConsoleDialogUtil.hpp"
 
 #include "Features/Debug/dbgConsoleDataUtil.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/Debug/qtGUI/dbgConsoleDialog.hpp"
+#else
 #include "Features/Debug/wxGUI/dbgConsoleDialog.hpp"
+#endif
 #include "Support/mnm/mnmThinkInterest.hpp"
 #include "Support/mnm/mnmThinkMgr.hpp"
 
 #include "Core/Dbg/dbgMsg.hpp"
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/Env/envThread.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtPaneMgr.hpp"
+#else
 #include "ToolUIWx/twx/twxPaneMgr.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtSystem.hpp"
+#else
 #include "ToolUIWx/twx/twxSystem.hpp"
+#endif
 
 //============================================================================
 //============================================================================
 namespace dbgConsoleDialogUtil
 {
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	// Buffer debug messages into list and wait for 
 	// gui thread to pick off the messages from the buffer
 	bool l_bHasNewMessages = false;
@@ -71,6 +83,12 @@ namespace dbgConsoleDialogUtil
 			dbgConsoleDialog::Instance = new dbgConsoleDialog( twxSystem::g_pMainForm );
 		}
 		mnmThinkMgr::RegisterThinkInterest(&l_ThinkInterest);
+#elif defined(USE_QT)
+		if (dbgConsoleDialog::Instance == NULL)
+		{
+			dbgConsoleDialog::Instance = new dbgConsoleDialog( tqtSystem::g_pMainForm );
+		}
+		mnmThinkMgr::RegisterThinkInterest(&l_ThinkInterest);
 #endif
 	}
 
@@ -80,6 +98,8 @@ namespace dbgConsoleDialogUtil
 	{
 #ifdef USE_WXWIDGETS
 		twxPaneMgr::Show(dbgConsoleDialog::Instance);
+#elif defined(USE_QT)
+		tqtPaneMgr::Show(dbgConsoleDialog::Instance);
 #endif
 	}
 
@@ -88,7 +108,7 @@ namespace dbgConsoleDialogUtil
 	//--------------------------------------------------------------------
 	void  CleanUp()
 	{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		mnmThinkMgr::UnRegisterThinkInterest(&l_ThinkInterest);
 #endif
 	}
@@ -97,7 +117,7 @@ namespace dbgConsoleDialogUtil
 	//--------------------------------------------------------------------
 	void UpdateConsoleDialog(std::string& i_String)
 	{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		// Put messages into a buffer and let the think interest
 		// pick them off and give them to wxWidgets later from the gui thread.
 		//

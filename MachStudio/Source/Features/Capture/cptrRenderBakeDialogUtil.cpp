@@ -9,18 +9,26 @@
 #include "Features/Capture/cptrRenderBakeDialogUtil.hpp"
 
 #include "Features/Capture/cptrRenderBakeDataUtil.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/Capture/qtGUI/cptrRenderBakeDialog.hpp"
+#else
 #include "Features/Capture/wxGUI/cptrRenderBakeDialog.hpp"
+#endif
 #include "Tool/doc/docSingleDocumentMgr.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
 
 //	Library
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtSystem.hpp"
+#else
 #include "ToolUIWx/twx/twxSystem.hpp"
+#endif
 
 
 //
 namespace cptrRenderBakeDialogUtil
 {
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	cptrRenderBakeDialog* l_pRBDialog;
 #endif
 
@@ -55,6 +63,20 @@ namespace cptrRenderBakeDialogUtil
 			l_bClosing = true;
 			l_bExitting = true;
 		}
+#elif defined(USE_QT)
+		if (docSingleDocumentMgr::GetFilename().GetNumNames() > 0)
+		{
+			cptrRenderBakeDialog* pDialog = new cptrRenderBakeDialog(l_Data, tqtSystem::g_pMainForm );
+			pDialog->show();
+			l_pRBDialog = pDialog;
+		}
+		else
+		{
+			guiMessageBox::Show("Please load a scene first.", "Bake Error");
+
+			l_bClosing = true;
+			l_bExitting = true;
+		}
 #endif
 	}
 
@@ -72,6 +94,8 @@ namespace cptrRenderBakeDialogUtil
 	
 #ifdef USE_WXWIDGETS
 		l_pRBDialog->Hide();
+#elif defined(USE_QT)
+		l_pRBDialog->hide();
 #endif
 	}
 

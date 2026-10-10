@@ -22,6 +22,12 @@
 #define USE_WXWIDGETS 1
 #endif
 
+// Code that tests USE_WXWIDGETS for a GUI being present can also test
+// USE_QT (see ToolUIQt/tqt/tqtWidgets.hpp, which defines it the same way).
+#if !defined(BATCH_MODE) && defined(MSP_GUI_QT) && !defined(USE_QT)
+#define USE_QT 1
+#endif
+
 //#define WXUSINGDLL
 //#define wxMSVC_VERSION_AUTO
 #ifdef USE_WXWIDGETS

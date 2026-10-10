@@ -1080,6 +1080,13 @@
     <ClCompile Include="wxGUI\wxResolvePathDialog.cpp" />
     <ClCompile Include="wxGUI\wxResolvePathDialogBase.cpp" />
     <ClCompile Include="wxGUI\wxTimeSlider.cpp" />
+    <ClCompile Include="qtGUI\qtHelpUtil.cpp" />
+    <ClCompile Include="qtGUI\qtMRUManager.cpp" />
+    <ClCompile Include="qtGUI\qtMainDropTarget.cpp" />
+    <ClCompile Include="qtGUI\qtMainForm.cpp" />
+    <ClCompile Include="qtGUI\qtResolvePathDialog.cpp" />
+    <ClCompile Include="qtGUI\qtResolvePathDialogBase.cpp" />
+    <ClCompile Include="qtGUI\qtTimeSlider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mainCheckAppVersion.hpp" />
@@ -1111,6 +1118,13 @@
     <ClInclude Include="wxGUI\wxResolvePathDialog.hpp" />
     <ClInclude Include="wxGUI\wxResolvePathDialogBase.h" />
     <ClInclude Include="wxGUI\wxTimeSlider.hpp" />
+    <ClInclude Include="qtGUI\qtHelpUtil.hpp" />
+    <ClInclude Include="qtGUI\qtMRUManager.hpp" />
+    <ClInclude Include="qtGUI\qtMainDropTarget.hpp" />
+    <ClInclude Include="qtGUI\qtMainForm.hpp" />
+    <ClInclude Include="qtGUI\qtResolvePathDialog.hpp" />
+    <ClInclude Include="qtGUI\qtResolvePathDialogBase.h" />
+    <ClInclude Include="qtGUI\qtTimeSlider.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.ico" />
@@ -1158,8 +1172,12 @@
       <Project>{4f086e7b-e7e0-4358-9c37-964ae63e31d6}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\LibXLT\ToolUIWx\ToolUIWx.vcxproj">
+    <ProjectReference Include="..\..\..\LibXLT\ToolUIWx\ToolUIWx.vcxproj" Condition="'$(MspGuiToolkit)' != 'Qt'">
       <Project>{7d34475e-30da-48f0-831c-76cf42035352}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\LibXLT\ToolUIQt\ToolUIQt.vcxproj" Condition="'$(MspGuiToolkit)' == 'Qt'">
+      <Project>{3b0f4c6e-8e0a-4f4b-9c55-2d7a1e6c9a41}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\..\..\LibXLT\Tool\Tool.vcxproj">

@@ -656,6 +656,8 @@
     <ClCompile Include="Object\lsetSelectInterest.cpp" />
     <ClCompile Include="Timeline\lsetDriverCreator.cpp" />
     <ClCompile Include="lsetSystem.cpp" />
+    <ClCompile Include="GUI\qtGUI\lsetLightSetLightsPage.cpp" />
+    <ClCompile Include="GUI\qtGUI\lsetLightSetObjectsPage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Undo\lsetActualOperations.hpp" />
@@ -685,6 +687,8 @@
     <ClInclude Include="Object\lsetSelectInterest.hpp" />
     <ClInclude Include="Timeline\lsetDriverCreator.hpp" />
     <ClInclude Include="lsetSystem.hpp" />
+    <ClInclude Include="GUI\qtGUI\lsetLightSetLightsPage.hpp" />
+    <ClInclude Include="GUI\qtGUI\lsetLightSetObjectsPage.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

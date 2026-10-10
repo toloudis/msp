@@ -1034,6 +1034,13 @@
     <ClCompile Include="swl\swlScriptObject.cpp" />
     <ClCompile Include="swl\swlSelectionUtil.cpp" />
     <ClCompile Include="SupportLayer.cpp" />
+    <ClCompile Include="pyth\qtGUI\pythPythonDialog.cpp" />
+    <ClCompile Include="fgmt\qtGUI\fgmtUVEditor.cpp" />
+    <ClCompile Include="ptm\qtGUI\ptmTimeEdit.cpp" />
+    <ClCompile Include="ptm\qtGUI\ptmTime_TimeEdit.cpp" />
+    <ClCompile Include="brsh\qtGUI\brshColorDialog.cpp" />
+    <ClCompile Include="xfrm\qtGUI\xfrmSurfaceTreeNode.cpp" />
+    <ClCompile Include="xfrm\qtGUI\xfrmSurfaceView.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dyn\dynChannelControl.hpp" />
@@ -1368,6 +1375,14 @@
     <ClInclude Include="swl\swlScriptObject.hpp" />
     <ClInclude Include="swl\swlSelectionUtil.hpp" />
     <ClInclude Include="SupportLayer.hpp" />
+    <ClInclude Include="pyth\qtGUI\pythPythonDialog.hpp" />
+    <ClInclude Include="fgmt\qtGUI\fgmtUVEditor.hpp" />
+    <ClInclude Include="ptm\qtGUI\ptmTemplate_TimeEdit.hpp" />
+    <ClInclude Include="ptm\qtGUI\ptmTimeEdit.hpp" />
+    <ClInclude Include="ptm\qtGUI\ptmTime_TimeEdit.hpp" />
+    <ClInclude Include="brsh\qtGUI\brshColorDialog.hpp" />
+    <ClInclude Include="xfrm\qtGUI\xfrmSurfaceTreeNode.hpp" />
+    <ClInclude Include="xfrm\qtGUI\xfrmSurfaceView.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

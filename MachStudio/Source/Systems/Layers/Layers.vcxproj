@@ -647,6 +647,7 @@
     <ClCompile Include="Object\lyrsObjectMgr.cpp" />
     <ClCompile Include="Object\lyrsSelectInterest.cpp" />
     <ClCompile Include="lyrsSystem.cpp" />
+    <ClCompile Include="GUI\qtGUI\lyrsLayerObjectsPage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Undo\lyrsActualOperations.hpp" />
@@ -667,6 +668,7 @@
     <ClInclude Include="Object\lyrsObjectMgr.hpp" />
     <ClInclude Include="Object\lyrsSelectInterest.hpp" />
     <ClInclude Include="lyrsSystem.hpp" />
+    <ClInclude Include="GUI\qtGUI\lyrsLayerObjectsPage.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

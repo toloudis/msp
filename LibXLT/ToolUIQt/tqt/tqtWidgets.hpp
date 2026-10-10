@@ -17,7 +17,7 @@
 #define TQT_WIDGETS_HPP
 
 
-#if defined(MSP_GUI_QT) && !defined(BATCH_MODE)
+#if defined(MSP_GUI_QT) && !defined(BATCH_MODE) && !defined(USE_QT)
 // This define activates Library usage of Qt
 #define USE_QT 1
 #endif

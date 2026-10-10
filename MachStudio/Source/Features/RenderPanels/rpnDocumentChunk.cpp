@@ -7,7 +7,11 @@
 **	Copyright(C) 2007 - All Rights Reserved
 \****************************************************************************/
 #include "Features/RenderPanels/rpnDocumentChunk.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/RenderPanels/qtGUI/rpnPanelGrid.hpp"
+#else
 #include "Features/RenderPanels/wxGUI/rpnPanelGrid.hpp"
+#endif
 
 #include "Core/ch/chReader.hpp"
 #include "Core/ch/chWriter.hpp"
@@ -127,7 +131,7 @@ void  rpnDocumentChunk::SetActive()
 	sm_pActiveChunk = this;
 
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (rpnPanelGrid::Instance != NULL)
 	{
 		rpnPanelGrid::Instance->SetLayoutStyle( rpnPanelGrid::e_SinglePane );

@@ -61,7 +61,7 @@
 #include <string>
 #include <vector>
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 #include <wx/tooltip.h>
 #endif
 

@@ -658,6 +658,8 @@
     <ClCompile Include="Object\envtSwlInterest.cpp" />
     <ClCompile Include="Timeline\envtDriverCreator.cpp" />
     <ClCompile Include="envtSystem.cpp" />
+    <ClCompile Include="GUI\qtGUI\envtEnvironmentObjectsPage.cpp" />
+    <ClCompile Include="GUI\qtGUI\envtEnvironmentSwlPage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Undo\envtActualOperations.hpp" />
@@ -689,6 +691,8 @@
     <ClInclude Include="Object\envtSwlInterest.hpp" />
     <ClInclude Include="Timeline\envtDriverCreator.hpp" />
     <ClInclude Include="envtSystem.hpp" />
+    <ClInclude Include="GUI\qtGUI\envtEnvironmentObjectsPage.hpp" />
+    <ClInclude Include="GUI\qtGUI\envtEnvironmentSwlPage.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

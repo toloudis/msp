@@ -675,6 +675,14 @@
     <ClCompile Include="TimeData\cmmTimeDocumentInterest.cpp" />
     <ClCompile Include="cmmSelectInterest.cpp" />
     <ClCompile Include="cmmSystem.cpp" />
+    <ClCompile Include="Gui\qtGUI\cmmObjectDialog.cpp" />
+    <ClCompile Include="Gui\qtGUI\cmmPlacedPane.cpp" />
+    <ClCompile Include="Gui\qtGUI\cmmSceneDialog.cpp" />
+    <ClCompile Include="Gui\qtGUI\cmmSceneTreeNode.cpp" />
+    <ClCompile Include="Gui\qtGUI\cmmSceneView.cpp" />
+    <ClCompile Include="Gui\qtGUI\cmmSceneViewCategory.cpp" />
+    <ClCompile Include="Gui\qtGUI\cmmSceneViewGroup.cpp" />
+    <ClCompile Include="Gui\qtGUI\cmmSceneViewLights.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Gui\cmmAddDriverOperation.hpp" />
@@ -732,6 +740,15 @@
     <ClInclude Include="TimeData\cmmTimeDocumentInterest.hpp" />
     <ClInclude Include="cmmSelectInterest.hpp" />
     <ClInclude Include="cmmSystem.hpp" />
+    <ClInclude Include="Gui\qtGUI\cmmObjectDialog.hpp" />
+    <ClInclude Include="Gui\qtGUI\cmmPlacedImages.hpp" />
+    <ClInclude Include="Gui\qtGUI\cmmPlacedPane.hpp" />
+    <ClInclude Include="Gui\qtGUI\cmmSceneDialog.hpp" />
+    <ClInclude Include="Gui\qtGUI\cmmSceneTreeNode.hpp" />
+    <ClInclude Include="Gui\qtGUI\cmmSceneView.hpp" />
+    <ClInclude Include="Gui\qtGUI\cmmSceneViewCategory.hpp" />
+    <ClInclude Include="Gui\qtGUI\cmmSceneViewGroup.hpp" />
+    <ClInclude Include="Gui\qtGUI\cmmSceneViewLights.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

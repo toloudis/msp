@@ -646,6 +646,7 @@
     <ClCompile Include="Object\grupObjectMgr.cpp" />
     <ClCompile Include="Object\grupSelectInterest.cpp" />
     <ClCompile Include="grupSystem.cpp" />
+    <ClCompile Include="GUI\qtGUI\grupGroupObjectsPage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Undo\grupActualOperations.hpp" />
@@ -665,6 +666,7 @@
     <ClInclude Include="Object\grupObjectMgr.hpp" />
     <ClInclude Include="Object\grupSelectInterest.hpp" />
     <ClInclude Include="grupSystem.hpp" />
+    <ClInclude Include="GUI\qtGUI\grupGroupObjectsPage.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

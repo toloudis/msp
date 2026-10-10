@@ -12,8 +12,14 @@
 #endif
 #define GSUP_TREECTRLUTIL_HPP
 
+#ifdef MSP_GUI_QT
+#ifndef TQT_WIDGETS_HPP
+#include "ToolUIQt/tqt/tqtWidgets.hpp"
+#endif
+#else
 #ifndef TWX_WIDGETS_HPP
 #include "ToolUIWx/twx/twxWidgets.hpp"
+#endif
 #endif
 
 #ifndef FSYS_FILELIST_HPP
@@ -23,6 +29,9 @@
 
 #ifdef USE_WXWIDGETS
 #include <wx/treectrl.h>
+#elif defined(USE_QT)
+class QTreeWidget;
+class QTreeWidgetItem;
 #endif
 
 
@@ -62,5 +71,34 @@ namespace gsupTreeCtrlUtil
 	void ExpandRoot(wxTreeCtrl* io_pTreeCtrl, bool i_bAllChildren = true);
 	void CollapseAll(wxTreeCtrl* io_pTreeCtrl);
 
+#elif defined(USE_QT)
+	//--------------------------------------------------------------------
+	//	Populate the TreeView with the FileList hierarchy.  Directories
+	//	will be branches in the tree and files will be the leaves.
+	//	The invisible root item of the tree widget plays the hidden root.
+	//--------------------------------------------------------------------
+	void PopulateTreeView( QTreeWidget* io_pTreeCtrl,
+						   const fsysFileList& i_FileList,
+						   bool i_bExpandAll );
+
+	//--------------------------------------------------------------------
+	// Find node with given text as child of parent node.
+	// Returns NULL if not found.
+	//--------------------------------------------------------------------
+	QTreeWidgetItem* FindNode(QTreeWidgetItem* i_pParent,
+							  const QString &i_Text);
+
+	//--------------------------------------------------------------------
+	// Find node with given text within whole tree control.
+	// Returns NULL if not found.
+	//--------------------------------------------------------------------
+	QTreeWidgetItem* FindNode(QTreeWidget* io_pTreeCtrl,
+							  const QString &i_Text);
+
+	//--------------------------------------------------------------------
+	// Expand or collapse the children of the (hidden) root node
+	//--------------------------------------------------------------------
+	void ExpandRoot(QTreeWidget* io_pTreeCtrl, bool i_bAllChildren = true);
+	void CollapseAll(QTreeWidget* io_pTreeCtrl);
 #endif // USE_WXWIDGETS
 }

@@ -28,10 +28,11 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions);MSP_GUI_QT;QT_NO_KEYWORDS;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB</PreprocessorDefinitions>
       <!-- Qt 6 refuses to compile unless __cplusplus reports the real standard
            and the compiler follows the standard's rules (/permissive-).
-           The older code still relies on two of the relaxed rules, which
-           Qt doesn't need: string literals initializing char*, and
-           temporaries binding to non-const references. -->
-      <AdditionalOptions>%(AdditionalOptions) /Zc:__cplusplus /permissive- /Zc:strictStrings- /Zc:referenceBinding-</AdditionalOptions>
+           The older code still relies on some of the relaxed rules, which
+           Qt doesn't need: string literals initializing char*, temporaries
+           binding to non-const references, and the old template name
+           lookup (no two-phase lookup). -->
+      <AdditionalOptions>%(AdditionalOptions) /Zc:__cplusplus /permissive- /Zc:strictStrings- /Zc:referenceBinding- /Zc:twoPhase-</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(MspQtDir)lib</AdditionalLibraryDirectories>
