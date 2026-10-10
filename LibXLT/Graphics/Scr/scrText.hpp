@@ -47,6 +47,12 @@ class scrText : public scrImage
 		void SetSize(int i_Width, int i_Height);
 
 		//--------------------------------------------------------------------
+		//	SetPosition sets the current screen coordinates (the center of
+		//	the text when it is centered)
+		//--------------------------------------------------------------------
+		virtual void SetPosition(const maPoint3d& i_Position);
+
+		//--------------------------------------------------------------------
 		//	GetText returns the text string to be displayed
 		//--------------------------------------------------------------------
 		const itString& GetText() const;
