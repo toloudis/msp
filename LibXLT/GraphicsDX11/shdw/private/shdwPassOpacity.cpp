@@ -261,7 +261,7 @@ int shdwPassOpacity::RenderNode(const sNodePlusState& i_Node)
 	const matMaterial* pMaterial = &l_OpacityMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)pEffect;
-	ID3DX11Effect* pD3DEffect = i_pEffect->GetD3DXEffect();
+	fxEffect* pD3DEffect = i_pEffect->GetFxEffect();
 
 	effStrandHairData& HairData = pMaterial->StrandHairData();
 	HairData.Default();
@@ -389,7 +389,7 @@ int shdwPassOpacity::RenderHairNode(const sNodePlusState& i_Node)
 	const matMaterial* pMaterial = &l_OpacityMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)pEffect;
-	ID3DX11Effect* pD3DEffect = i_pEffect->GetD3DXEffect();
+	fxEffect* pD3DEffect = i_pEffect->GetFxEffect();
 
 //	effStrandHairData HairData;
 	effStrandHairData& HairData = pMaterial->StrandHairData();

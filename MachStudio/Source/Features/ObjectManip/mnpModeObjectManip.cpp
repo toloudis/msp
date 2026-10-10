@@ -237,7 +237,11 @@ namespace
 		if(!i_bTablet)
 			tma3dCursorMgr::GetCursorPos(x,y);
 		else
+		{
+			// the tablet gives panel pixels, convert to the rendered image
 			get_tablet_position(x,y);
+			pRenderView->PanelToRenderPixel(x,y);
+		}
 		//DBG_TRACE("pick at (" << x << "," << y << ")  " << i_bTablet);
 
 		pRenderView->DoPickRender(x,y, tmlnTimeLine::GetTimeInSeconds(), o_PickInfo, i_PickMask);

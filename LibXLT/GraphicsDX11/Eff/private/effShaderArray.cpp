@@ -13,7 +13,6 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
 #include "Core/fs/fsResourceTracker.hpp"
-#include "Core/gf/gfFileEnum.hpp"
 #include "Core/gf/gfPaths.hpp"
 #include "Core/it/itStringUtil.hpp"
 #include "Graphics/eff/effBakeData.hpp"
@@ -34,7 +33,6 @@
 #include "Graphics/eff/effPhongData.hpp"
 #include "Graphics/eff/effRampData.hpp"
 #include "Graphics/eff/effReflData.hpp"
-#include "Graphics/Eff/effShaderSDK.hpp"
 #include "Graphics/eff/effSkinData.hpp"
 #include "Graphics/eff/effSolidData.hpp"
 //#include "Graphics/eff/effTexturedData.hpp"
@@ -43,8 +41,6 @@
 #include "Graphics/g3d/g3dExceptionX.hpp"
 #include "Graphics/mat/matExceptionX.hpp"
 #include "Graphics/mat/matMaterial.hpp"
-#include "Graphics/Mat/matMetaFX.hpp"
-#include "Graphics/Mat/matMetaFXParser.hpp"
 #include "GraphicsDX11/eff/effBake.hpp"
 #include "GraphicsDX11/eff/effBillboard.hpp"
 #include "GraphicsDX11/eff/effBlur.hpp"
@@ -66,44 +62,38 @@
 //#include "GraphicsDX11/eff/effToon.hpp"
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
 #include "GraphicsDX11/Fx/fxEmbeddedShaders.hpp"
-
-// built-in shaders:
-#include "GraphicsDX11/eff/private/ShaderBake.hpp"
-#include "GraphicsDX11/eff/private/ShaderDefault.hpp"
-#include "GraphicsDX11/eff/private/ShaderPhong.hpp"
-#include "GraphicsDX11/eff/private/ShaderSimple.hpp"
-#include "GraphicsDX11/eff/private/ShaderPhong_wBump.hpp"
-#include "GraphicsDX11/eff/private/ShaderLightGlow.hpp"
-#include "GraphicsDX11/eff/private/ShaderParticle.hpp"
-#include "GraphicsDX11/eff/private/ShaderSolid.hpp"
-#include "GraphicsDX11/eff/private/ShaderMaskAlpha.hpp"
-#include "GraphicsDX11/eff/private/ShaderDepthMap.hpp"
-#include "GraphicsDX11/eff/private/ShaderDepthRender.hpp"
-#include "GraphicsDX11/eff/private/ShaderBillboard.hpp"
-#include "GraphicsDX11/eff/private/ShaderBrushstroke.hpp"
-#include "GraphicsDX11/eff/private/ShaderVelocityRender.hpp"
-#include "GraphicsDX11/eff/private/ShaderIlluminationOnly.hpp"
-#include "GraphicsDX11/eff/private/ShaderShadowsOnly.hpp"
-#include "GraphicsDX11/eff/private/ShaderNormalMap.hpp"
-#include "GraphicsDX11/eff/private/ShaderRamp.hpp"
-#include "GraphicsDX11/eff/private/ShaderReflectiveShadowMap.hpp"
-//#include "GraphicsDX11/eff/private/ShaderRSMGI.hpp"
-#include "GraphicsDX11/eff/private/ShaderOpacityRender.hpp"
-#include "GraphicsDX11/eff/private/ShaderHairDefault.hpp"
-#include "GraphicsDX11/eff/private/Shadertesttess.hpp"
-#include "GraphicsDX11/eff/private/ShaderAOVolumes.hpp"
-#include "GraphicsDX11/eff/private/ShaderGIVolumes.hpp"
-#include "GraphicsDX11/eff/private/ShaderLPV_GI.hpp"
-#include "GraphicsDX11/eff/private/ShaderBlackAndWhite.hpp"
-#include "GraphicsDX11/eff/private/ShaderSepia.hpp"
-#include "GraphicsDX11/eff/private/ShaderGradientMap.hpp"
-#include "GraphicsDX11/eff/private/ShaderSketch.hpp"
-#include "GraphicsDX11/eff/private/ShaderEnvBackground.hpp"
+#include "GraphicsDX11/eff/effPlainEffect.hpp"
 
 //#include "Tool/gui/guiMessageBox.hpp"
 #include "GraphicsDX11/eff/private/PSMapNormalsToScreen.hpp"
 
 #include <map>
+
+//------------------------------------------------------------------------
+// LoadPlainBuiltIn() - the embedded plain-HLSL effect of a built-in
+//	shader: "Phong.fx" or "Phong" loads the embedded "Phong". NULL if there
+//	is none or it fails to build.
+//------------------------------------------------------------------------
+static std::unique_ptr<fxEffect> LoadPlainBuiltIn(const std::string& i_Name)
+{
+	std::string name = i_Name;
+	size_t dot = name.rfind('.');
+	if (dot != std::string::npos && _stricmp(name.c_str() + dot, ".fx") == 0)
+		name.erase(dot);
+
+	const fxEmbeddedEffect* embedded = fxEmbeddedShaders::Find(name);
+	if (!embedded)
+		return nullptr;
+
+	std::string error;
+	std::unique_ptr<fxEffectDX11> effect = fxEmbeddedShaders::CreateDX11(*embedded, g2dDX11Global::g_pDevice, error);
+	if (!effect)
+	{
+		DBG_ERROR("Built in shader " << name.c_str() << " failed to load: " << error.c_str());
+		return nullptr;
+	}
+	return std::unique_ptr<fxEffect>(new effPlainEffect(std::move(effect), embedded->m_Source));
+}
 
 namespace
 {
@@ -117,103 +107,6 @@ namespace
 
 	ID3D11PixelShader* l_PSMapNormalsToScreen = NULL;
 
-	fsLocator l_ShaderDir;
-
-	//------------------------------------------------------------------------
-	// class ShaderLoader
-	//------------------------------------------------------------------------
-	class ShaderLoader 
-	{
-	public:
-		virtual matShaderEffect* LoadShader(const std::string& i_Name,
-			std::map<std::string, matShaderInfo>& io_ShaderMap) = 0;
-
-		virtual ~ShaderLoader() {}
-	};
-
-	//------------------------------------------------------------------------
-	// class TypedShaderLoader
-	//------------------------------------------------------------------------
-	template <class EFF_TYPE> class TypedShaderLoader : public ShaderLoader
-	{
-	public:
-		TypedShaderLoader(const fsLocator& i_Locator)
-		{
-			m_Locator = i_Locator;
-		}
-		fsLocator m_Locator;
-
-		//------------------------------------------------------------------------
-		// LoadShader()
-		//------------------------------------------------------------------------
-		matShaderEffect* LoadShader(const std::string& i_Name,
-			std::map<std::string, matShaderInfo>& io_ShaderMap)
-		{
-			m_Locator.Push(i_Name.c_str());
-
-			fsResourceTracker::MarkBegin(m_Locator);
-
-			LPD3DXEFFECT effect = effShaderUtilWin::LoadEffectDX11(m_Locator);
-
-			fsResourceTracker::MarkEnd(m_Locator);
-			m_Locator.Pop();
-
-			matShaderEffect* pEffect = NULL;
-			if (effect != NULL)
-			{
-				pEffect = new EFF_TYPE(m_Locator, effect, i_Name);
-				//DBG_LOG( "Built in shader = " << i_Name.c_str());
-				io_ShaderMap[i_Name].m_pEffect = pEffect;
-			}
-			else
-			{
-				DBG_ERROR("Built in shader " <<  i_Name.c_str() << " load FAILED using path: " << m_Locator);
-				throw g3dShaderLoadX(i_Name);
-			}
-			return pEffect;
-		}
-	};
-
-	//------------------------------------------------------------------------
-	// class BinaryShaderLoader
-	//------------------------------------------------------------------------
-	template <class EFF_TYPE> class BinaryShaderLoader : public ShaderLoader
-	{
-	public:
-		BinaryShaderLoader(const BYTE* i_Bits, DWORD i_Size)
-		{
-			m_Bits = i_Bits;
-			m_Size = i_Size;
-		}
-		const BYTE* m_Bits;
-		DWORD m_Size;
-
-		//------------------------------------------------------------------------
-		// LoadShader()
-		//------------------------------------------------------------------------
-		matShaderEffect* LoadShader(const std::string& i_Name,
-			std::map<std::string, matShaderInfo>& io_ShaderMap)
-		{
-
-			LPD3DXEFFECT effect = effShaderUtilWin::LoadEffectData((void*)m_Bits, m_Size);
-
-			matShaderEffect* pEffect = NULL;
-			if (effect != NULL)
-			{
-				pEffect = new EFF_TYPE(fsLocator(), effect, i_Name);
-				//DBG_LOG( "Built in shader = " << i_Name.c_str());
-				io_ShaderMap[i_Name].m_pEffect = pEffect;
-			}
-			else
-			{
-				DBG_ERROR("Built in shader " <<  i_Name.c_str() << " load FAILED");
-				throw g3dShaderLoadX(i_Name);
-			}
-			return pEffect;
-		}
-	};
-	std::map<std::string, ShaderLoader*> l_ShaderRegistry;
-
 	effShaderBaseDX11* l_pDefaultEffect = NULL;
 }	// end of namespace
 
@@ -222,15 +115,6 @@ namespace
 //------------------------------------------------------------------------
 effShaderArray::~effShaderArray()
 {
-	// Note: the l_ShaderRegistry variable really should be a member of the class
-	std::map<std::string, ShaderLoader*>::iterator it = l_ShaderRegistry.begin();
-	while (it != l_ShaderRegistry.end())
-	{
-		delete it->second;
-		++it;
-	}
-	l_ShaderRegistry.clear();
-
 	// assumes singleton.
 	l_pDefaultEffect = NULL;
 
@@ -260,44 +144,30 @@ effShaderArray::~effShaderArray()
 
 }
 //------------------------------------------------------------------------
-// RegisterShader()
+// RegisterShader() - built-in shader registered under its old file name
+//	("Phong.fx"), built from the embedded effect of the same name
 //------------------------------------------------------------------------
-template<class EFF_TYPE> void RegisterShader(std::string i_Name, 
-											 effShaderData* i_pDataTemplate, const BYTE* i_ShaderBits,
-											 int i_ShaderSizeBytes,
+template<class EFF_TYPE> void RegisterShader(std::string i_Name,
+											 effShaderData* i_pDataTemplate,
 											 std::map<std::string, matShaderInfo>& io_ShaderMap)
 {
-	matShaderInfo info;
-	info.m_Name = i_Name.c_str();
-	info.m_DataTemplate = i_pDataTemplate;
-	info.m_pEffect = NULL;
-
-//	BinaryShaderLoader<EFF_TYPE>* loader = new BinaryShaderLoader<EFF_TYPE>(i_ShaderBits, i_ShaderSizeBytes);
-//	loader->LoadShader(i_Name, io_ShaderMap);
-//	delete loader;
-
-	ID3DX11Effect* effect = effShaderUtilWin::LoadEffectData((void*)i_ShaderBits, i_ShaderSizeBytes, i_Name );
-	matShaderEffect* pEffect = NULL;
-	if (effect != NULL)
-	{
-		pEffect = new EFF_TYPE(fsLocator(), effect, i_Name);
-		//DBG_LOG( "Built in shader = " << i_Name.c_str());
-		info.m_pEffect = pEffect;
-
-		// successful load:
-		// add to shader map
-		io_ShaderMap[i_Name] = info;
-	}
-	else
+	std::unique_ptr<fxEffect> effect = LoadPlainBuiltIn(i_Name);
+	if (!effect)
 	{
 		DBG_ERROR("Built in shader " <<  i_Name.c_str() << " load FAILED");
 		throw g3dShaderLoadX(i_Name);
 	}
+
+	matShaderInfo info;
+	info.m_Name = i_Name.c_str();
+	info.m_DataTemplate = i_pDataTemplate;
+	info.m_pEffect = new EFF_TYPE(fsLocator(), std::move(effect), i_Name);
+	io_ShaderMap[i_Name] = info;
 }
 
 //------------------------------------------------------------------------
-// RegisterPlainShader() - built-in effect converted from .fx to plain HLSL,
-//	embedded at build time (see fxEmbeddedShaders)
+// RegisterPlainShader() - built-in effect registered under its effect name
+//	("Blur"), embedded at build time (see fxEmbeddedShaders)
 //------------------------------------------------------------------------
 template<class EFF_TYPE> void RegisterPlainShader(std::string i_Name,
 											 effShaderData* i_pDataTemplate,
@@ -322,87 +192,89 @@ template<class EFF_TYPE> void RegisterPlainShader(std::string i_Name,
 }
 
 //------------------------------------------------------------------------
-// RegisterSingleUserShader()
+// get_sas_string() - a string annotation on the effect's SasGlobal
+//	variable ("SasEffectDescription" etc.); empty if there is none.
 //------------------------------------------------------------------------
-void RegisterSingleUserShader(fsLocator i_ShaderName, std::vector<matShaderInfo>& o_Shaders)
+static std::string get_sas_string(const fxEffectDesc& i_Desc, const char* i_Annotation)
 {
-	ID3DX11Effect* effect = effShaderUtilWin::LoadEffectDX11(i_ShaderName);
-	if (effect)
+	for (size_t v = 0; v < i_Desc.m_Variables.size(); v++)
 	{
-		ID3DX11EffectVariable* hGlobal = effect->GetVariableBySemantic("SasGlobal");
-		if (hGlobal != NULL)
+		const fxVariableDesc& var = i_Desc.m_Variables[v];
+		if (var.m_Semantic != "SasGlobal")
+			continue;
+		for (size_t a = 0; a < var.m_Annotations.size(); a++)
 		{
-			matShaderInfo info;
-			info.m_Name = i_ShaderName.GetLastName();
-
-			ID3DX11EffectVariable* hAnnot = NULL;
-			hAnnot = hGlobal->GetAnnotationByName("SasEffectDescription");
-			if (hAnnot)
-			{
-			    LPCSTR pstrName = NULL;
-				ID3DX11EffectStringVariable* hString = hAnnot->AsString();
-				if (hString)
-					hString->GetString( &pstrName );
-				info.m_UIName = pstrName;
-			}
-			hAnnot = hGlobal->GetAnnotationByName("SasEffectHelp");
-			if (hAnnot)
-			{
-			    LPCSTR pstrName = NULL;
-				ID3DX11EffectStringVariable* hString = hAnnot->AsString();
-				if (hString)
-					hString->GetString( &pstrName );
-				info.m_HelpString = pstrName;
-			}
-			hAnnot = hGlobal->GetAnnotationByName("SupportsOutline");
-			if (hAnnot)
-			{
-			    LPCSTR pstrName = NULL;
-				ID3DX11EffectStringVariable* hString = hAnnot->AsString();
-				if (hString)
-					hString->GetString( &pstrName );
-				info.m_bSupportsOutline = _stricmp( pstrName, "true" ) == 0 ? true : false;
-			}
-
-			info.m_DataTemplate = NULL;
-			info.m_pEffect = NULL;
-
-			o_Shaders.push_back(info);
-			//DBG_LOG("Found User Shader: " << info.m_Name << " ; " << info.m_UIName);
+			if (var.m_Annotations[a].m_Name == i_Annotation)
+				return var.m_Annotations[a].m_String;
 		}
-		effect->Release();
-		effect = NULL;
 	}
-	else
-	{
-		DBG_WARNING("Error trying to load " << i_ShaderName << " as a shader.");
-	}
+	return std::string();
 }
 
 //------------------------------------------------------------------------
-// RegisterUserShaders()
+// make_shader_info() - picker entry for an embedded effect, named by its
+//	old file name ("Phong.fx"), which is what materials store.
 //------------------------------------------------------------------------
-void effShaderArray::RegisterUserShaders(const fsLocator& i_ShaderDir, std::vector<matShaderInfo>& o_Shaders)
+static matShaderInfo make_shader_info(const fxEmbeddedEffect& i_Effect, const fxEffectDesc& i_Desc)
 {
-	DBG_LOG( "Loading user shaders from directory " << i_ShaderDir );
-	l_ShaderDir = i_ShaderDir;
+	matShaderInfo info;
+	info.m_Name = (std::string(i_Effect.m_Name) + ".fx").c_str();
+	info.m_UIName = get_sas_string(i_Desc, "SasEffectDescription");
+	info.m_HelpString = get_sas_string(i_Desc, "SasEffectHelp");
+	info.m_bSupportsOutline = _stricmp(get_sas_string(i_Desc, "SupportsOutline").c_str(), "true") == 0;
+	info.m_DataTemplate = NULL;
+	info.m_pEffect = NULL;
+	return info;
+}
 
-	// flist is a list of locators.
-	fsFileEnum::fsFileList flist;
-	std::vector<itString> searchStrings;
+//------------------------------------------------------------------------
+// RegisterSelectableShaders() - the embedded material shaders
+//	(Materials/*, category "/material") and post effects (PostEffect/*)
+//------------------------------------------------------------------------
+void effShaderArray::RegisterSelectableShaders(std::vector<matShaderInfo>& o_Materials,
+											   std::vector<matShaderInfo>& o_PostEffects)
+{
+	// material manifests that are not offered: Bake is used by the baking
+	// pass only, Skin and BlinnSkin are old names the material parser
+	// renames, Default and testtess are not user materials.
+	static const char* const c_Hidden[] = { "Bake", "Skin", "BlinnSkin", "Default", "testtess" };
 
-	searchStrings.push_back(itString(".fx"));
-	bool ok = fsFileEnum::EnumerateFiles(i_ShaderDir, flist, searchStrings);
-
-	for (int i = 0; i < flist.size(); i++)
+	for (int i = 0; i < fxEmbeddedShaders::k_NumEffects; i++)
 	{
-		DBG_LOG( "Loading user shader " << flist[i] );
-		RegisterSingleUserShader( flist[i] , o_Shaders );		
+		const fxEmbeddedEffect& effect = fxEmbeddedShaders::k_Effects[i];
+		const bool bMaterial = strncmp(effect.m_Source, "Materials/", 10) == 0;
+		const bool bPostEffect = strncmp(effect.m_Source, "PostEffect/", 11) == 0;
+		if (!bMaterial && !bPostEffect)
+			continue;
+
+		bool bHidden = false;
+		for (size_t h = 0; h < sizeof(c_Hidden) / sizeof(c_Hidden[0]); h++)
+		{
+			if (_stricmp(effect.m_Name, c_Hidden[h]) == 0)
+				bHidden = true;
+		}
+		if (bHidden)
+			continue;
+
+		fxEffectDesc desc;
+		std::string error;
+		if (!fxEffectDesc::Parse(effect.m_Manifest, desc, error))
+		{
+			DBG_ERROR("Built in shader " << effect.m_Source << " has a bad manifest: " << error.c_str());
+			continue;
+		}
+
+		if (bMaterial)
+		{
+			if (get_sas_string(desc, "SasEffectCategory") == "/material")
+				o_Materials.push_back(make_shader_info(effect, desc));
+		}
+		else
+		{
+			o_PostEffects.push_back(make_shader_info(effect, desc));
+		}
 	}
-	//	o_Shaders.sort();
-
-//	LoadAllShaders(o_Shaders);
-
+	DBG_LOG("Found " << (int)o_Materials.size() << " material shaders and " << (int)o_PostEffects.size() << " post effects");
 }
 
 //------------------------------------------------------------------------
@@ -415,80 +287,80 @@ void effShaderArray::RegisterEffects(const fsLocator &i_ShaderDir,
 	// a shader's CreateData could then be creating a effShaderParams derived object.
 	
 	// default effect uses effPhong and effPhongData
-	RegisterShader<effPhong>("default", new effPhongData, (BYTE*)g_ShaderDefault, sizeof(g_ShaderDefault), io_ShaderMap);
-	RegisterShader<effPhong>("testtess.fx", new effPhongData, (BYTE*)g_Shadertesttess, sizeof(g_Shadertesttess), io_ShaderMap);
+	RegisterShader<effPhong>("default", new effPhongData, io_ShaderMap);
+	RegisterShader<effPhong>("testtess.fx", new effPhongData, io_ShaderMap);
 
-	RegisterShader<effBake>("Bake.fx",		new effBakeData, g_ShaderBake, sizeof(g_ShaderBake), io_ShaderMap);
+	RegisterShader<effBake>("Bake.fx",		new effBakeData, io_ShaderMap);
 
 	// simple.fx could have a simplified shader class but phong works too...
-	RegisterShader<effPhong>("Simple.fx",		new effPhongData, g_ShaderSimple, sizeof(g_ShaderSimple), io_ShaderMap);
-	RegisterShader<effPhong>("Phong.fx",		new effPhongData, g_ShaderPhong, sizeof(g_ShaderPhong), io_ShaderMap);
-	RegisterShader<effPhong>("Phong_wBump.fx",	new effPhongData, g_ShaderPhong_wBump, sizeof(g_ShaderPhong_wBump), io_ShaderMap);
+	RegisterShader<effPhong>("Simple.fx",		new effPhongData, io_ShaderMap);
+	RegisterShader<effPhong>("Phong.fx",		new effPhongData, io_ShaderMap);
+	RegisterShader<effPhong>("Phong_wBump.fx",	new effPhongData, io_ShaderMap);
 
 	RegisterPlainShader<effPlainShaderDX11>	("HDRLighting",	NULL,		io_ShaderMap);
 	RegisterPlainShader<effBlur>	("Blur",				new effBlurData, io_ShaderMap);
 	RegisterPlainShader<effGlow>		("Glow",				new effGlowData, io_ShaderMap);
 	RegisterPlainShader<effDOF>		("DOF",				new effDOFData, io_ShaderMap);
-	RegisterShader<effLightGlow>	("LightGlow.fx",	new effLightGlowData, g_ShaderLightGlow, sizeof(g_ShaderLightGlow), io_ShaderMap);
-	RegisterShader<effParticle>		("Particle.fx",		new effParticleData, g_ShaderParticle, sizeof(g_ShaderParticle), io_ShaderMap);
+	RegisterShader<effLightGlow>	("LightGlow.fx",	new effLightGlowData, io_ShaderMap);
+	RegisterShader<effParticle>		("Particle.fx",		new effParticleData, io_ShaderMap);
 	RegisterPlainShader<effPlainShaderDX11>	("PostAlphaMatte",	NULL,		io_ShaderMap);
 	RegisterPlainShader<effPlainShaderDX11>	("Fog",				NULL,		io_ShaderMap);
 
 	// Constant solid color
-	RegisterShader<effSolid>("Solid.fx", new effSolidData, g_ShaderSolid, sizeof(g_ShaderSolid), io_ShaderMap);
+	RegisterShader<effSolid>("Solid.fx", new effSolidData, io_ShaderMap);
 	// Constant solid color, but skips values where texture's alpha is below threshold
-	RegisterShader<effMaskAlpha>("MaskAlpha.fx", new effMaskAlphaData, g_ShaderMaskAlpha, sizeof(g_ShaderMaskAlpha), io_ShaderMap);
+	RegisterShader<effMaskAlpha>("MaskAlpha.fx", new effMaskAlphaData, io_ShaderMap);
 	// depth map shader, pseudorandomly dithers values where texture's alpha is below threshold
-	RegisterShader<effMaskAlpha>("DepthMap.fx", new effMaskAlphaData, g_ShaderDepthMap, sizeof(g_ShaderDepthMap), io_ShaderMap);
+	RegisterShader<effMaskAlpha>("DepthMap.fx", new effMaskAlphaData, io_ShaderMap);
 	// depth only renderer
-	RegisterShader<effMaskAlpha>("DepthRender.fx", new effMaskAlphaData, g_ShaderDepthRender, sizeof(g_ShaderDepthRender), io_ShaderMap);
+	RegisterShader<effMaskAlpha>("DepthRender.fx", new effMaskAlphaData, io_ShaderMap);
 	// reflective shadow map shader
-	RegisterShader<effMaskAlpha>("ReflectiveShadowMap.fx", new effMaskAlphaData, g_ShaderReflectiveShadowMap, sizeof(g_ShaderReflectiveShadowMap), io_ShaderMap);
+	RegisterShader<effMaskAlpha>("ReflectiveShadowMap.fx", new effMaskAlphaData, io_ShaderMap);
 
 	RegisterPlainShader<effOutline>("Outline",	new effOutlineData, io_ShaderMap);
 
 	RegisterPlainShader<effPlainShaderDX11>("ssaoBilateralBlurEngine", new effOcclusionData, io_ShaderMap);
 	RegisterPlainShader<effPlainShaderDX11>("ssaoMultiHorizonBasedAO", new effOcclusionData, io_ShaderMap);
 	RegisterPlainShader<effPlainShaderDX11>("ssgiMultiHorizonBasedGI", new effOcclusionData, io_ShaderMap);
-	RegisterShader<effOcclusion>("AOVolumes.fx", new effOcclusionData, g_ShaderAOVolumes, sizeof(g_ShaderAOVolumes), io_ShaderMap);
+	RegisterShader<effOcclusion>("AOVolumes.fx", new effOcclusionData, io_ShaderMap);
 
-	RegisterShader<effOcclusion>("GIVolumes.fx", new effOcclusionData, g_ShaderGIVolumes, sizeof(g_ShaderGIVolumes), io_ShaderMap);
+	RegisterShader<effOcclusion>("GIVolumes.fx", new effOcclusionData, io_ShaderMap);
 
-	RegisterShader<effBillboard>("Billboard.fx", new effBillboardData, g_ShaderBillboard, sizeof(g_ShaderBillboard), io_ShaderMap);
+	RegisterShader<effBillboard>("Billboard.fx", new effBillboardData, io_ShaderMap);
 	
-	RegisterShader<effTextured>("Brushstroke.fx", new effTexturedData, g_ShaderBrushstroke, sizeof(g_ShaderBrushstroke), io_ShaderMap);
+	RegisterShader<effTextured>("Brushstroke.fx", new effTexturedData, io_ShaderMap);
 
-	RegisterShader<effTextured>("VelocityRender.fx", new effTexturedData, g_ShaderVelocityRender, sizeof(g_ShaderVelocityRender), io_ShaderMap);
+	RegisterShader<effTextured>("VelocityRender.fx", new effTexturedData, io_ShaderMap);
 
-	RegisterShader<effTextured>("IlluminationOnly.fx", new effTexturedData, g_ShaderIlluminationOnly, sizeof(g_ShaderIlluminationOnly), io_ShaderMap);
-	RegisterShader<effTextured>("ShadowsOnly.fx", new effTexturedData, g_ShaderShadowsOnly, sizeof(g_ShaderShadowsOnly), io_ShaderMap);
+	RegisterShader<effTextured>("IlluminationOnly.fx", new effTexturedData, io_ShaderMap);
+	RegisterShader<effTextured>("ShadowsOnly.fx", new effTexturedData, io_ShaderMap);
 
-	RegisterShader<effMaskAlpha>("NormalMap.fx", new effMaskAlphaData, g_ShaderNormalMap, sizeof(g_ShaderNormalMap), io_ShaderMap);
+	RegisterShader<effMaskAlpha>("NormalMap.fx", new effMaskAlphaData, io_ShaderMap);
 
-	//RegisterShader<effTextured>("RSMGI.fx", new effTexturedData, g_ShaderRSMGI, sizeof(g_ShaderRSMGI), io_ShaderMap);
+	//RegisterShader<effTextured>("RSMGI.fx", new effTexturedData, io_ShaderMap);
 
 	RegisterPlainShader<effPlainShaderDX11>("MotionBlur", new effTexturedData, io_ShaderMap);
 
 	RegisterPlainShader<effPlainShaderDX11>("AAEdgeFilter", new effTexturedData, io_ShaderMap);
 
-	RegisterShader<effTextured>("LPV_GI.fx", new effTexturedData, g_ShaderLPV_GI, sizeof(g_ShaderLPV_GI), io_ShaderMap);
+	RegisterShader<effTextured>("LPV_GI.fx", new effTexturedData, io_ShaderMap);
 
-	RegisterShader<effRamp>("Ramp.fx", new effRampData, g_ShaderRamp, sizeof(g_ShaderRamp), io_ShaderMap);
+	RegisterShader<effRamp>("Ramp.fx", new effRampData, io_ShaderMap);
 
-	RegisterShader<effStrandHair>("HairDefault.fx", new effStrandHairData, g_ShaderHairDefault, sizeof(g_ShaderHairDefault), io_ShaderMap);
+	RegisterShader<effStrandHair>("HairDefault.fx", new effStrandHairData, io_ShaderMap);
 
 	// opacity renderer
-	RegisterShader<effStrandHair>("OpacityRender.fx", new effStrandHairData, g_ShaderOpacityRender, sizeof(g_ShaderOpacityRender), io_ShaderMap);
+	RegisterShader<effStrandHair>("OpacityRender.fx", new effStrandHairData, io_ShaderMap);
 
-	RegisterShader<effTextured>("BlackAndWhite.fx", new effTexturedData, g_ShaderBlackAndWhite, sizeof(g_ShaderBlackAndWhite), io_ShaderMap);
+	RegisterShader<effTextured>("BlackAndWhite.fx", new effTexturedData, io_ShaderMap);
 
-	RegisterShader<effTextured>("Sepia.fx", new effTexturedData, g_ShaderSepia, sizeof(g_ShaderSepia), io_ShaderMap);
+	RegisterShader<effTextured>("Sepia.fx", new effTexturedData, io_ShaderMap);
 
-	RegisterShader<effTextured>("GradientMap.fx", new effTexturedData, g_ShaderGradientMap, sizeof(g_ShaderGradientMap), io_ShaderMap);
+	RegisterShader<effTextured>("GradientMap.fx", new effTexturedData, io_ShaderMap);
 
-	RegisterShader<effTextured>("Sketch.fx", new effTexturedData, g_ShaderSketch, sizeof(g_ShaderSketch), io_ShaderMap);
+	RegisterShader<effTextured>("Sketch.fx", new effTexturedData, io_ShaderMap);
 
-	RegisterShader<effTextured>("EnvBackground.fx", new effTexturedData, g_ShaderEnvBackground, sizeof(g_ShaderEnvBackground), io_ShaderMap);
+	RegisterShader<effTextured>("EnvBackground.fx", new effTexturedData, io_ShaderMap);
 }
 
 //------------------------------------------------------------------------
@@ -514,6 +386,41 @@ void effShaderArray::UnloadEffect(const fsLocator& i_PathToShader,
 }
 
 //------------------------------------------------------------------------
+// LoadPlainMaterial() - the built-in material shader named by an old .fx
+//	file name: Lambert.fx loads the embedded Materials/Lambert.effect.json,
+//	whatever folder the name is in. NULL if there is none (or it fails to
+//	build).
+//------------------------------------------------------------------------
+static matShaderEffect* LoadPlainMaterial(const fsLocator& i_ShaderLoc, const std::string& i_FileName)
+{
+	std::string name = i_FileName;
+	size_t dot = name.rfind('.');
+	if (dot == std::string::npos || _stricmp(name.c_str() + dot, ".fx") != 0)
+		return NULL;
+	name.erase(dot);
+
+	const fxEmbeddedEffect* embedded = fxEmbeddedShaders::Find(name);
+	if (!embedded || strncmp(embedded->m_Source, "Materials/", 10) != 0)
+		return NULL;
+
+	std::string error;
+	std::unique_ptr<fxEffectDX11> effect = fxEmbeddedShaders::CreateDX11(*embedded, g2dDX11Global::g_pDevice, error);
+	if (!effect)
+	{
+		DBG_ERROR("Built in material " << name.c_str() << " failed to load: " << error.c_str());
+		return NULL;
+	}
+
+	DBG_LOG("Material " << i_FileName.c_str() << " loaded (" << embedded->m_Source << ")");
+	fsLocator folder = i_ShaderLoc;
+	folder.Pop();
+	std::unique_ptr<fxEffect> plain(new effPlainEffect(std::move(effect), embedded->m_Source));
+	if (plain->GetVariableByName("hasHairSupport")->IsValid())	//this is a hair effect
+		return new effStrandHair(folder, std::move(plain), i_FileName);
+	return new effShaderBaseDX11(folder, std::move(plain), i_FileName);
+}
+
+//------------------------------------------------------------------------
 // LoadEffect()
 //------------------------------------------------------------------------
 matShaderEffect* effShaderArray::LoadEffect(const fsLocator& i_PathToShader,
@@ -527,141 +434,17 @@ matShaderEffect* effShaderArray::LoadEffect(const fsLocator& i_PathToShader,
 	// Get the shader name
 	std::string shaderFileName = itStringUtil::GetStdString(shaderLoc.GetLastName());
 
-	ID3DX11Effect* effect = NULL;
-
-	itString ext;
-	shaderLoc.GetLastName().GetExtension(ext);
-	itStringUtil::ToLower(ext);
-	if (ext == itString("mfx"))
-	{
-		// Load shader from multiple format effect file (MFX)
-		matMetaFX shader_data;
-		try
-		{
-			matMetaFXParser::ReadMetaFX( shaderLoc, shader_data );
-		}
-		catch (fsFileExceptionX& i_Ex)
-		{
-			DBG_ERROR(i_Ex.GetErrorMessage());
-			// continue with unloaded shader which will return NULL.
-		}
-		//DBG_LOG("MFX Shader name: " << shader_data.m_ShaderName);
-
-		// If we have compiiled FX data (have to check for correct version),
-		// then load that data as the shader.
-		bool bUseCompiledFX = (shader_data.m_CompiledFX.m_bHasData &&
-			matMetaFX::CompareVersion(shader_data.m_CompiledFX.m_Version, matMetaFX::GetCurrentFXVersion()));
-		if (bUseCompiledFX)
-		{
-			// Load shader from binary data
-			effect =  effShaderUtilWin::LoadEffectData(&shader_data.m_CompiledFX.m_Data[0], 
-														shader_data.m_CompiledFX.m_Data.size(), 
-														shaderFileName);
-		}
-		else
-		{
-			bool bUseHLSLSource = (shader_data.m_HLSLSource.m_bHasData &&
-				matMetaFX::CompareVersion(shader_data.m_HLSLSource.m_Version, matMetaFX::GetCurrentHLSLVersion()));
-			if (bUseHLSLSource)
-			{	
-				// Try to compile shader from HLSL source, adding in the most recent
-				// header and footer.
-				shared_ptr<effShaderSDKData> compiledShaderData;
-				std::vector<std::string> errors;
-
-				// Compile stitched shader in memory.
-				// In this case, the string we are giving is a section of HLSL code that does not
-				// contain fragment and pixel shader hooks. This code has a function with the
-				// signature "float4 sgpu_shader_main(State state, Light_iterator light)"
-				// that will be called from the header and footer code.
-				bool success = effShaderSDK::CompileCustomShadeFunction( shader_data.m_HLSLSource.m_Data.c_str(), 
-												 compiledShaderData, 
-												 errors, shaderFileName );
-
-				if (success && compiledShaderData)
-				{
-					DBG_LOG("Recompiled user shader " << shaderLoc << ", load time could be improved by generating a new shader file with the latest version.");
-
-					// Get shader data as pointer. Ownership maintained by effShaderSDKData class above.
-					int shaderSize = 0;
-					BYTE * pCompiledShader = NULL;
-					compiledShaderData->GetData(&pCompiledShader, &shaderSize);
-
-					// Compile as DX11 effect
-					effect =  effShaderUtilWin::LoadEffectData(pCompiledShader, shaderSize, shaderFileName);
-				}
-				else
-				{
-					DBG_ERROR("Could not compile user shader " << shaderLoc << " with current lighting engine.");
-				}
-			}
-			else
-			{
-				// If we had MetaSL linked with MSP, then we could recompile the MetaSL code 
-				// into a new FX shader. But since we don't have that now, throw an exception
-				// about not being able to load the shader.
-				//throw matIncorrectShaderVersionX(shaderLoc);
-				// Or maybe we should log an error and then return NULL?
-				DBG_ERROR("Shader file: " << shaderLoc << " is from an unsupported version.");
-
-			}
-		}
-	}
+	pEffect = LoadPlainMaterial(shaderLoc, shaderFileName);
+	if (pEffect)
+		io_ShaderMap[i_PathToShader] = pEffect;
 	else
 	{
-		// Load shader as compiled FX
-		effect = effShaderUtilWin::LoadEffectDX11(shaderLoc);
-	}
-
-	// If shader loaded successfully
-	if ( effect != NULL )
-	{
-		fsLocator folder = shaderLoc;
-		folder.Pop();
-
-		ID3DX11EffectVariable* hParm = effect->GetVariableByName( "hasHairSupport" );
-		if( hParm->IsValid())	//this is a hair effect 
-		{
-			pEffect = new effStrandHair(folder, effect, shaderFileName);
-		}
-		else
-		{
-			pEffect = new effShaderBaseDX11(folder, effect, shaderFileName);
-		}
-		io_ShaderMap[i_PathToShader] = pEffect;		
+		// Only the built-in shaders can be loaded; .fx and .mfx files
+		// (Effects 11 format) are not supported any more.
+		DBG_WARNING("Shader " << shaderLoc << " is not a built-in shader and cannot be loaded.");
 	}
 
 	return pEffect;
-}
-
-//------------------------------------------------------------------------
-// Load registered (internally known) shaders
-//------------------------------------------------------------------------
-void effShaderArray::LoadAllShaders(std::map<std::string, matShaderInfo>& io_ShaderMap)
-{
-	std::map<std::string, ShaderLoader*>::iterator it = l_ShaderRegistry.begin();
-	while (it != l_ShaderRegistry.end())
-	{
-		it->second->LoadShader(it->first, io_ShaderMap);
-		++it;
-	}
-	std::map<fsLocator, matShaderEffect*> o_Map;
-	LoadEffect(itString("PhongReflection.fx"), o_Map);
-	LoadEffect(itString("SpecularFresnel.fx"), o_Map);
-	LoadEffect(itString("SubSurfaceScatter.fx"), o_Map);
-	LoadEffect(itString("Water.fx"), o_Map);
-	LoadEffect(itString("Lambert.fx"), o_Map);
-	LoadEffect(itString("Blinn.fx"), o_Map);
-	LoadEffect(itString("Cartoon.fx"), o_Map);
-	std::map<fsLocator, matShaderEffect*>::iterator it2 = o_Map.begin();
-	while (it2 != o_Map.end())
-	{
-		delete it2->second;
-		++it2;
-	}
-	o_Map.clear();
-
-
 }
 
 //effShaderBaseDX11* effShaderArray::GetDefaultEffect()

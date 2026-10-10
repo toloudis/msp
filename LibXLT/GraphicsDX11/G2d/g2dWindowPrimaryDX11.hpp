@@ -59,6 +59,17 @@ public:
 	virtual void ResizeWindow(int i_Width, int i_Height);
 
 	//------------------------------------------------------------------------
+	//	Render offscreen at the given size and scale the image to fit the
+	//	window, centered with black bars, in Present.  0, 0 turns this off.
+	//------------------------------------------------------------------------
+	virtual void SetRenderResolution(int i_Width, int i_Height);
+
+	//------------------------------------------------------------------------
+	//	Where the rendered image is drawn in the window, in window pixels
+	//------------------------------------------------------------------------
+	virtual void GetPresentRect(int& o_X, int& o_Y, int& o_Width, int& o_Height) const;
+
+	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	virtual void Present();
 
@@ -89,9 +100,26 @@ private:
 	void initialize_fullscreen(int i_Width, int i_Height, int i_BitDepth, g2dPFD& o_PixelFormat);
 	HRESULT InitRenderTargetInfo();
 	HRESULT CreateDepthBuffer(int i_Width, int i_Height);
+	HRESULT create_offscreen_buffer(int i_Width, int i_Height);
+	void release_color_buffers();
+	bool is_offscreen() const;
 
 private:
 
 	HWND m_Hwnd;
 	bool m_bOwnHwnd;
+
+	// size of the swap chain (the window's client area)
+	int m_WindowWidth;
+	int m_WindowHeight;
+
+	// requested render resolution, 0 when rendering at the window size
+	int m_RenderWidth;
+	int m_RenderHeight;
+
+	// when rendering offscreen, m_pBackBuffer is the offscreen target and
+	// these hold the swap chain's target and the offscreen texture
+	g2dD3D11RenderTargetPtr m_pSwapChainBuffer;
+	g2dD3D11TexturePtr m_pOffscreenTexture;
+	g2dD3D11ShaderResourcePtr m_pOffscreenTextureView;
 };

@@ -153,6 +153,21 @@ public:
 	virtual void ResizeWindow(int i_Width, int i_Height) = 0;
 
 	//------------------------------------------------------------------------
+	//	SetRenderResolution makes the window render offscreen at the given
+	//	size and scale that image to fit the window when presented.
+	//	GetDimensions then returns the render size.  Pass 0, 0 to render
+	//	at the window size again.  Windows that don't support this ignore it.
+	//------------------------------------------------------------------------
+	virtual void SetRenderResolution(int i_Width, int i_Height);
+
+	//------------------------------------------------------------------------
+	//	GetPresentRect returns where the rendered image is drawn in the
+	//	window, in window pixels.  Without a render resolution this is
+	//	(0, 0) and the window size.
+	//------------------------------------------------------------------------
+	virtual void GetPresentRect(int& o_X, int& o_Y, int& o_Width, int& o_Height) const;
+
+	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	virtual void Present() = 0;
 

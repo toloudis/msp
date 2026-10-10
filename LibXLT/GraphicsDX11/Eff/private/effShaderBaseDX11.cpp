@@ -32,6 +32,7 @@
 #include "Graphics/g3d/g3dSingleLightRendering.hpp"
 #include "Graphics/mat/matMaterial.hpp"
 #include "Graphics/mat/matTextureMgr.hpp"
+#include "GraphicsDX11/eff/effPlainEffect.hpp"
 #include "GraphicsDX11/eff/effShaderParamsDX11.hpp"
 #include "GraphicsDX11/g3d/g3dLightMgrDX11.hpp"
 #include "GraphicsDX11/g3d/g3dSceneGlobal.hpp"
@@ -296,11 +297,11 @@ namespace
 		return num_lights;
 	}
 
-	void GetUIStrings(ID3DX11Effect* i_pEffect, ID3DX11EffectVariable* i_hParam, const std::string& i_Name, 
+	void GetUIStrings(fxEffect* i_pEffect, fxEffectVariable* i_hParam, const std::string& i_Name, 
 										std::string& o_Category, std::string& o_Label, std::string& o_Desc)
 	{
 		LPCSTR pstr = NULL;
-		ID3DX11EffectVariable* hAnnot = NULL;
+		fxEffectVariable* hAnnot = NULL;
 
 		// the label for the control
 		o_Label = i_Name;
@@ -330,16 +331,16 @@ namespace
 		}
 	}
 
-	ID3DX11EffectScalarVariable* FindTextureExistVar(ID3DX11Effect* i_pEffect, ID3DX11EffectVariable* i_hTextureVar)
+	fxEffectVariable* FindTextureExistVar(fxEffect* i_pEffect, fxEffectVariable* i_hTextureVar)
 	{
 		// conditional texture existence (null texture) flag
-		ID3DX11EffectScalarVariable* hRetVal = NULL;
-		ID3DX11EffectVariable* hExistVarAnnot = i_hTextureVar->GetAnnotationByName("ExistVar");
+		fxEffectVariable* hRetVal = NULL;
+		fxEffectVariable* hExistVarAnnot = i_hTextureVar->GetAnnotationByName("ExistVar");
 		if (hExistVarAnnot)
 		{
 			LPCSTR existVarName = NULL;
 			hExistVarAnnot->AsString()->GetString(&existVarName);
-			ID3DX11EffectVariable* hExistVar = NULL;
+			fxEffectVariable* hExistVar = NULL;
 			hExistVar = i_pEffect->GetVariableByName(existVarName);
 			if (hExistVar)
 			{
@@ -347,8 +348,8 @@ namespace
 				if (hRetVal != NULL)
 				{
 					// ensure that the var name points to a boolean.
-					D3DX11_EFFECT_TYPE_DESC existVarDesc;
-					ID3DX11EffectType* evType = hRetVal->GetType();
+					fxEffectTypeDesc existVarDesc;
+					fxEffectType* evType = hRetVal->GetType();
 					evType->GetDesc(&existVarDesc);
 					if (existVarDesc.Type != D3D10_SVT_BOOL)
 					{
@@ -366,10 +367,10 @@ namespace
 	}
 
 	// get resource filename from annotation for a parameter
-	bool get_resource_name(ID3DX11EffectVariable* i_hParam, fsLocator &o_ResourceName)
+	bool get_resource_name(fxEffectVariable* i_hParam, fsLocator &o_ResourceName)
 	{
 		// might also want to search for "resourceName" here (MetaSL backend does that)
-		ID3DX11EffectVariable* hAnnot = i_hParam->GetAnnotationByName( "name" );
+		fxEffectVariable* hAnnot = i_hParam->GetAnnotationByName( "name" );
 		if (hAnnot && hAnnot->IsValid())
 		{
 			LPCSTR pstrName = NULL;
@@ -387,10 +388,10 @@ namespace
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-effShaderBaseDX11::effShaderBaseDX11(const fsLocator& i_Directory, 
-								   ID3DX11Effect* i_pEffect,
+effShaderBaseDX11::effShaderBaseDX11(const fsLocator& i_Directory,
+								   std::unique_ptr<fxEffect> i_pEffect,
                                    std::string i_Name)
-:	m_pEffect(NULL),
+:	m_pEffect(std::move(i_pEffect)),
 	m_VecCameraPosHandle(NULL),
 	m_FirstLightHandle(NULL),
 	m_LightInfoHandle(NULL), 
@@ -446,12 +447,11 @@ effShaderBaseDX11::effShaderBaseDX11(const fsLocator& i_Directory,
 	m_ClipPlaneHandle(NULL)
 //	m_HairTessellationHandle(NULL)
 {
-	m_pEffect = i_pEffect;
 	m_Name = i_Name;
 
 	std::string dirstr;
 	fsFileUtil::LocatorToANSIFilename(i_Directory, dirstr);
-	DBG_ASSERT(i_pEffect, "Effect pointer is NULL: " << dirstr.c_str() << "\\" << m_Name.c_str() );
+	DBG_ASSERT(m_pEffect, "Effect pointer is NULL: " << dirstr.c_str() << "\\" << m_Name.c_str() );
 
 	int i;
 	for (i = 0; i < e_NumTechniques; i++)
@@ -478,7 +478,7 @@ effShaderBaseDX11::~effShaderBaseDX11()
 {
 	delete m_pDefaults;
 
-	m_pEffect->Release();
+	m_pEffect.reset();
 	std::list<matTexture*>::iterator it = m_OwnedTextures.begin();
 	while (it != m_OwnedTextures.end())
 	{
@@ -494,7 +494,7 @@ effShaderBaseDX11::~effShaderBaseDX11()
 //--------------------------------------------------------------------
 int effShaderBaseDX11::Begin() const
 {
-	static D3DX11_TECHNIQUE_DESC techDesc;
+	static fxEffectTechniqueDesc techDesc;
 
 	HRESULT op_result = m_CurrentTechnique->GetDesc( &techDesc );
 	if( !SUCCEEDED(op_result) )
@@ -511,7 +511,7 @@ int effShaderBaseDX11::Begin() const
 //--------------------------------------------------------------------
 void effShaderBaseDX11::BeginPass(int i_Pass) const
 {
-	ID3DX11EffectPass* pass = m_CurrentTechnique->GetPassByIndex(i_Pass);
+	fxEffectPass* pass = m_CurrentTechnique->GetPassByIndex(i_Pass);
 	HRESULT op_result = pass->Apply(0, g2dDX11Global::g_pDeviceContext);
 	if( !SUCCEEDED(op_result) )
 	{
@@ -541,7 +541,7 @@ void effShaderBaseDX11::SetTexture(int i_param, const matTexture* i_pTexture) co
 {
 	ID3D11ShaderResourceView* texture = g3dDX11TextureUtil::GetD3DTexture(i_pTexture);
 
-	ID3DX11EffectShaderResourceVariable* pVar = m_params[i_param]->AsShaderResource();
+	fxEffectVariable* pVar = m_params[i_param]->AsShaderResource();
 	pVar->SetResource(texture);
 }
 
@@ -571,11 +571,11 @@ void effShaderBaseDX11::SetTechnique(const std::string& i_Technique) const
 void effShaderBaseDX11::parse_parameters(const fsLocator& i_Directory)
 {
     // Look at parameters for semantics and annotations that we know how to interpret
-    D3DX11_EFFECT_VARIABLE_DESC ParamDesc;
+    fxEffectVariableDesc ParamDesc;
     //D3DXPARAMETER_DESC AnnotDesc;
-    ID3DX11EffectVariable* hParam;
-    ID3DX11EffectType* pType;
-	D3DX11_EFFECT_TYPE_DESC typeDesc;
+    fxEffectVariable* hParam;
+    fxEffectType* pType;
+	fxEffectTypeDesc typeDesc;
 
     LPCSTR pstrName = NULL;
 	LPCSTR pstrType = NULL;
@@ -741,7 +741,7 @@ void effShaderBaseDX11::parse_parameters(const fsLocator& i_Directory)
 			else
 			{
 				// if hard coded texture file name then load it and set it
-				ID3DX11EffectVariable* hAnnot = hParam->GetAnnotationByName( "name" );
+				fxEffectVariable* hAnnot = hParam->GetAnnotationByName( "name" );
 				if (hAnnot && hAnnot->IsValid())
 				{
 					hAnnot->AsString()->GetString( &pstrName );
@@ -776,8 +776,8 @@ void effShaderBaseDX11::parse_parameters(const fsLocator& i_Directory)
 //--------------------------------------------------------------------
 void effShaderBaseDX11::parse_techniques()
 {
-    ID3DX11EffectTechnique* hTechnique;
-    D3DX11_TECHNIQUE_DESC TechniqueDesc;
+    fxEffectTechnique* hTechnique;
+    fxEffectTechniqueDesc TechniqueDesc;
 
 	// Get techniques based on name
     for( UINT iTech = 0; iTech < m_EffectDesc.Techniques; iTech++ )
@@ -858,8 +858,8 @@ bool effShaderBaseDX11::GetParamUI(const std::string& i_name, matShaderParamUI& 
 	}
 
 	o_paramUI.m_name = i_name;
-	ID3DX11EffectVariable* hParam = m_params[index];
-	ID3DX11EffectVariable* hAnnot = NULL;
+	fxEffectVariable* hParam = m_params[index];
+	fxEffectVariable* hAnnot = NULL;
     LPCSTR pstr = NULL;
 	float fval = 0;
 //	D3DXPARAMETER_DESC paramDesc;
@@ -1044,7 +1044,7 @@ bool effShaderBaseDX11::GetParamUI(const std::string& i_name, matShaderParamUI& 
 //--------------------------------------------------------------------
 void effShaderBaseDX11::SetMatrix(int i_param, const maMatrix4x4& i_matrix)
 {
-	ID3DX11EffectMatrixVariable* pVar = m_params[i_param]->AsMatrix();
+	fxEffectVariable* pVar = m_params[i_param]->AsMatrix();
 	// check this cast, maybe need to add operator for it.
 	pVar->SetMatrix(i_matrix.Ptr());
 }
@@ -1053,7 +1053,7 @@ void effShaderBaseDX11::SetMatrix(int i_param, const maMatrix4x4& i_matrix)
 //--------------------------------------------------------------------
 void effShaderBaseDX11::SetFloat(int i_param, float i_float)
 {
-	ID3DX11EffectScalarVariable* pVar = m_params[i_param]->AsScalar();
+	fxEffectVariable* pVar = m_params[i_param]->AsScalar();
 	pVar->SetFloat(i_float);
 }
 
@@ -1061,7 +1061,7 @@ void effShaderBaseDX11::SetFloat(int i_param, float i_float)
 //--------------------------------------------------------------------
 void effShaderBaseDX11::SetBool(int i_param, bool i_bool)
 {
-	ID3DX11EffectScalarVariable* pVar = m_params[i_param]->AsScalar();
+	fxEffectVariable* pVar = m_params[i_param]->AsScalar();
 	pVar->SetBool(i_bool);
 }
 
@@ -1069,7 +1069,7 @@ void effShaderBaseDX11::SetBool(int i_param, bool i_bool)
 //--------------------------------------------------------------------
 void effShaderBaseDX11::SetString(int i_param, std::string i_string)
 {
-	ID3DX11EffectStringVariable* pVar = m_params[i_param]->AsString();
+	fxEffectVariable* pVar = m_params[i_param]->AsString();
 	pVar->SetRawValue((void*)i_string.c_str(), 0, i_string.length());
 }
 
@@ -1077,7 +1077,7 @@ void effShaderBaseDX11::SetString(int i_param, std::string i_string)
 //--------------------------------------------------------------------
 void effShaderBaseDX11::SetVector(int i_param, const maVector4d& i_vector)
 {
-	ID3DX11EffectVectorVariable* pVar = m_params[i_param]->AsVector();
+	fxEffectVariable* pVar = m_params[i_param]->AsVector();
 	pVar->SetFloatVector(i_vector.Ptr());
 }
 
@@ -1097,10 +1097,10 @@ void effShaderBaseDX11::SetupMatrices(const maMatrix4x4 &i_WorldMat,
 									 const maPoint3d &i_CameraPos) const
 {
 	// let's set the target resolution here, too. it's sort of related!
-	ID3DX11Effect* pEffect = GetD3DXEffect();
+	fxEffect* pEffect = GetFxEffect();
 	pEffect->GetVariableByName("g_targetRes")->AsVector()->SetFloatVector( g3dSceneGlobal::g_TargetRes.Ptr() );
 
-	ID3DX11EffectVariable* curHandle;
+	fxEffectVariable* curHandle;
 
 	curHandle = m_stdMatrices[e_ObjToWorld];
 	if( curHandle != NULL && curHandle->IsValid() )
@@ -1198,7 +1198,7 @@ void effShaderBaseDX11::SetupSkinningMatrices(const std::vector<maMatrix4x4> &i_
 {
 	// all this input checking could probably be optimized! 
 	DBG_ASSERT(m_SkinningMatrixPaletteHandle != NULL, "setupskinning on effect that doesn't support skinning");
-	D3DX11_EFFECT_TYPE_DESC desc;
+	fxEffectTypeDesc desc;
 	m_SkinningMatrixPaletteHandle->GetType()->GetDesc(&desc);
 	DBG_ASSERT(desc.Elements >= i_MatrixPalette.size(), "too many bones in palette");
 
@@ -1256,7 +1256,7 @@ void effShaderBaseDX11::SetupAmbientLighting(const maAxisBox& i_BBox) const
 //		{
 //			LightInfo lights_info[8];
 //			get_some_lights(lights_info, i_BBox);
-//			ID3DX11Effect* pEffect = GetD3DXEffect();
+//			fxEffect* pEffect = GetFxEffect();
 //			m_LightArrayHandle->SetRawValue(lights_info, 0, sizeof(lights_info));
 //		}
 //	}
@@ -1281,7 +1281,7 @@ void effShaderBaseDX11::SetupProjectedLight(const matTexture* i_pTexture,
 									float i_Aspect) const
 {
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"effShaderBaseDX11::SetupProjectedLight" );
-	ID3DX11Effect* pEffect = GetD3DXEffect();
+	fxEffect* pEffect = GetFxEffect();
 	if( m_ProjLightInfoHandle != NULL && m_ProjLightInfoHandle->IsValid())
 	{	
 		ProjLightInfo proj_light_info;
@@ -1360,7 +1360,7 @@ void effShaderBaseDX11::SetupProjectedLight(const matTexture* i_pTexture,
 //====================================================================
 void effShaderBaseDX11::SetupTessellatorMeshTexture( const matTexture* i_pTexture )
 {
-	ID3DX11Effect* pEffect = GetD3DXEffect();
+	fxEffect* pEffect = GetFxEffect();
 	if( i_pTexture && pEffect )
 	{
 		if( m_TessellatorMeshTextureHandle != NULL && m_TessellatorMeshTextureHandle->IsValid())
@@ -1589,7 +1589,7 @@ void effShaderBaseDX11::SetupSingleLight(const g3dLight* i_pLight,
 			// Put active light into info structure
 			get_light_info(i_pLight, light_info);
 		}
-		ID3DX11Effect* pEffect = GetD3DXEffect();
+		fxEffect* pEffect = GetFxEffect();
 		m_LightInfoHandle->SetRawValue(&light_info, 0, sizeof(light_info));
 	}
 	SetIsProjLight(i_pProjLight != NULL);
@@ -1614,30 +1614,10 @@ void effShaderBaseDX11::SetupSingleLight(const g3dLight* i_pLight,
 	D3DPERF_EndEvent();
 }
 
-void effShaderBaseDX11::MapParameter(std::string i_Name, ID3DX11EffectVariable*& o_Handle)
+void effShaderBaseDX11::MapParameter(std::string i_Name, fxEffectVariable*& o_Handle)
 {
 	o_Handle = m_pEffect->GetVariableByName(i_Name.c_str());
 //	DBG_ASSERT(o_Handle->IsValid(), "missing shader variable " << i_Name);
-}
-void effShaderBaseDX11::MapParameter(std::string i_Name, ID3DX11EffectScalarVariable*& o_Handle)
-{
-	o_Handle = m_pEffect->GetVariableByName(i_Name.c_str())->AsScalar();
-//	DBG_ASSERT(o_Handle->IsValid(), "missing shader scalar variable " << i_Name);
-}
-void effShaderBaseDX11::MapParameter(std::string i_Name, ID3DX11EffectVectorVariable*& o_Handle)
-{
-	o_Handle = m_pEffect->GetVariableByName(i_Name.c_str())->AsVector();
-//	DBG_ASSERT(o_Handle->IsValid(), "missing shader vector variable " << i_Name);
-}
-void effShaderBaseDX11::MapParameter(std::string i_Name, ID3DX11EffectMatrixVariable*& o_Handle)
-{
-	o_Handle = m_pEffect->GetVariableByName(i_Name.c_str())->AsMatrix();
-//	DBG_ASSERT(o_Handle->IsValid(), "missing shader matrix variable " << i_Name);
-}
-void effShaderBaseDX11::MapParameter(std::string i_Name, ID3DX11EffectShaderResourceVariable*& o_Handle)
-{
-	o_Handle = m_pEffect->GetVariableByName(i_Name.c_str())->AsShaderResource();
-//	DBG_ASSERT(o_Handle->IsValid(), "missing shader resource variable " << i_Name);
 }
 
 //--------------------------------------------------------------------
@@ -1674,13 +1654,23 @@ int effShaderBaseDX11::BuildPrtyObject(effShaderParams* o_pParams) const
 
 	DBG_ASSERT(o_pParams->m_pShaderBindings == NULL, "bindings already set");
 	DBG_ASSERT(o_pParams->m_pPrtyUI == NULL, "prtyUI already set");
-	effShaderBindingsDX11* bindings = new effShaderBindingsDX11(this->m_pEffect);
+	effShaderBindingsDX11* bindings = new effShaderBindingsDX11(this->m_pEffect.get());
+	// Each material keeps its own parameters. Special effects (depth, AO,
+	// hair...) are set up by the renderer right before drawing, so they keep
+	// one shared set, as Effects did; restoring a copy would undo that.
+	effPlainEffect* plain = dynamic_cast<effPlainEffect*>(m_pEffect.get());
+	if (plain && plain->IsMaterial())
+	{
+		bindings->m_pMaterial.reset(new fxMaterialInstance(plain->GetEffectDX11()));
+		if (!bindings->m_pMaterial->IsValid())
+			bindings->m_pMaterial.reset();
+	}
 	o_pParams->m_pShaderBindings = bindings;
 	o_pParams->m_pPrtyUI = new prtyObject;
 
 	std::string name;
 	int index;
-	ID3DX11EffectVariable* hParam;
+	fxEffectVariable* hParam;
 
 	std::list<ShaderParamUIInfo> uiInfos;
 
@@ -1725,7 +1715,7 @@ void effShaderBaseDX11::CreateBindings(effShaderParams* io_Params)
 	if (n < 1)
 		return;
 
-	effShaderBindingsDX11* bindings = new effShaderBindingsDX11(this->m_pEffect);
+	effShaderBindingsDX11* bindings = new effShaderBindingsDX11(this->m_pEffect.get());
 	io_Params->m_pShaderBindings = bindings;
 
 	for (int i = 0; i < n; i++)
@@ -1734,7 +1724,7 @@ void effShaderBaseDX11::CreateBindings(effShaderParams* io_Params)
 		effShaderParam* p = io_Params->m_Params[i];
 
 		// get a matching effect param handle based on name
-		ID3DX11EffectVariable* h = m_pEffect->GetParameterByName(NULL, p->m_Name.c_str());
+		fxEffectVariable* h = m_pEffect->GetParameterByName(NULL, p->m_Name.c_str());
 		if (h != NULL)
 		{
 			// better validation: check types and ensure there is a match.
@@ -1752,7 +1742,7 @@ void effShaderBaseDX11::CreateBindings(effShaderParams* io_Params)
 				effParamTexture* pTexture = dynamic_cast<effParamTexture*>(p);
 				if (pTexture)
 				{
-					ID3DX11EffectVariable* hExistVar = FindTextureExistVar(h);
+					fxEffectVariable* hExistVar = FindTextureExistVar(h);
 					bindings->m_BindableParams.push_back(new effTextureBindingDX11(*pTexture, h, hExistVar));
 				}
 				else
@@ -1779,7 +1769,7 @@ void effShaderBaseDX11::CreateBindings(effShaderParams* io_Params)
 }
 #endif
 
-bool effShaderBaseDX11::GetShaderParamInfo(ID3DX11EffectVariable* i_hParam, 
+bool effShaderBaseDX11::GetShaderParamInfo(fxEffectVariable* i_hParam, 
 										  effShaderParams* o_pParams,
 										  effShaderBindingsDX11* o_pBindings,
 										  std::list<ShaderParamUIInfo>& o_UIInfo) const
@@ -1793,11 +1783,11 @@ bool effShaderBaseDX11::GetShaderParamInfo(ID3DX11EffectVariable* i_hParam,
 	effParamTexture* pTexture = NULL;
 	effParamColor* pColor = NULL;
 
-	D3DX11_EFFECT_VARIABLE_DESC paramDesc;
+	fxEffectVariableDesc paramDesc;
 	i_hParam->GetDesc(&paramDesc);
 	std::string name(paramDesc.Name);
 
-	ID3DX11EffectVariable* hAnnot = NULL;
+	fxEffectVariable* hAnnot = NULL;
 /*		
 	bool bVisible = true;
 	hAnnot = hParam->GetAnnotationByName("SasUiVisible");
@@ -1837,7 +1827,7 @@ bool effShaderBaseDX11::GetShaderParamInfo(ID3DX11EffectVariable* i_hParam,
 
 	if (sControl == "ColorPicker")
 	{
-		ID3DX11EffectVectorVariable* pColorVar = i_hParam->AsVector();
+		fxEffectVariable* pColorVar = i_hParam->AsVector();
 		if (pColorVar)
 		{
 			foundParam = true;
@@ -1870,7 +1860,7 @@ bool effShaderBaseDX11::GetShaderParamInfo(ID3DX11EffectVariable* i_hParam,
 	}
 	else if (sControl == "Slider")
 	{
-		ID3DX11EffectScalarVariable* pFloatVar = i_hParam->AsScalar();
+		fxEffectVariable* pFloatVar = i_hParam->AsScalar();
 		if (pFloatVar)
 		{
 			foundParam = true;
@@ -1889,7 +1879,7 @@ bool effShaderBaseDX11::GetShaderParamInfo(ID3DX11EffectVariable* i_hParam,
 	}
 	else if (sControl == "CheckBox")
 	{
-		ID3DX11EffectScalarVariable* pBoolVar = i_hParam->AsScalar();
+		fxEffectVariable* pBoolVar = i_hParam->AsScalar();
 		if (pBoolVar)
 		{
 			foundParam = true;
@@ -1900,7 +1890,7 @@ bool effShaderBaseDX11::GetShaderParamInfo(ID3DX11EffectVariable* i_hParam,
 	else if (sControl == "FilePicker")
 	{
 		// textures!!!!
-		ID3DX11EffectShaderResourceVariable* pTextureVar = i_hParam->AsShaderResource();
+		fxEffectVariable* pTextureVar = i_hParam->AsShaderResource();
 		if (pTextureVar)
 		{
 			foundParam = true;
@@ -1926,7 +1916,7 @@ bool effShaderBaseDX11::GetShaderParamInfo(ID3DX11EffectVariable* i_hParam,
 	else if (sControl == "TextureFilePicker")
 	{
 		// textures!!!!
-		ID3DX11EffectShaderResourceVariable* pTextureVar = i_hParam->AsShaderResource();
+		fxEffectVariable* pTextureVar = i_hParam->AsShaderResource();
 		if (pTextureVar)
 		{
 			foundParam = true;
@@ -1951,7 +1941,7 @@ bool effShaderBaseDX11::GetShaderParamInfo(ID3DX11EffectVariable* i_hParam,
 	}
 	else if (sControl == "ListPicker")
 	{
-		ID3DX11EffectScalarVariable* pEnumVar = i_hParam->AsScalar();
+		fxEffectVariable* pEnumVar = i_hParam->AsScalar();
 		if (pEnumVar)
 		{
 			foundParam = true;
@@ -1971,14 +1961,14 @@ bool effShaderBaseDX11::GetShaderParamInfo(ID3DX11EffectVariable* i_hParam,
 
 effParamTexture* effShaderBaseDX11::MapTextureParam(effShaderParams* o_pParams,
 												   effShaderBindingsDX11* o_pBindings,
-												   ID3DX11EffectShaderResourceVariable* i_hParam, 
+												   fxEffectVariable* i_hParam, 
 												   const std::string& i_Name,
 												   bool i_bCreateBinding,
 												   bool i_bCreateUI,
 												   std::list<ShaderParamUIInfo>& o_UIInfo) const
 {
 	std::string uiCategory, uiLabel, uiDesc;
-	GetUIStrings(m_pEffect, i_hParam, i_Name, uiCategory, uiLabel, uiDesc);
+	GetUIStrings(m_pEffect.get(), i_hParam, i_Name, uiCategory, uiLabel, uiDesc);
 
 	effParamTexture* effParam = o_pParams->FindTextureParam(i_Name);
 	if (effParam)
@@ -1992,7 +1982,7 @@ effParamTexture* effShaderBaseDX11::MapTextureParam(effShaderParams* o_pParams,
 	}
 
 	//parse texture type
-	D3DX11_EFFECT_TYPE_DESC desc;
+	fxEffectTypeDesc desc;
 	i_hParam->GetType()->GetDesc(&desc );
 
 	TEXTURE_TYPE type = TEXTURE_TYPE_UNKNOWN;
@@ -2012,13 +2002,13 @@ effParamTexture* effShaderBaseDX11::MapTextureParam(effShaderParams* o_pParams,
 		// can we assume binding doesn't already exist here?
 		// do not add a binding twice!
 		DBG_ASSERT(!o_pBindings->HasBinding(effParam), "Binding already exists for " << i_Name);
-		ID3DX11EffectScalarVariable* hExistVar = FindTextureExistVar(m_pEffect, i_hParam);
+		fxEffectVariable* hExistVar = FindTextureExistVar(m_pEffect.get(), i_hParam);
 		o_pBindings->m_BindableParams.push_back(new effTextureBindingDX11(*effParam, i_hParam, hExistVar));
 	}
 
 	if (i_bCreateUI)
 	{
-		ID3DX11EffectVariable* hAnnot = NULL;
+		fxEffectVariable* hAnnot = NULL;
 
 		prtyTextureFileChooserUIInfo* pPUII;
 		pPUII = new prtyTextureFileChooserUIInfo(effParam->GetBaseProperty(), uiCategory, uiDesc);
@@ -2044,14 +2034,14 @@ effParamTexture* effShaderBaseDX11::MapTextureParam(effShaderParams* o_pParams,
 
 effParamFloat* effShaderBaseDX11::MapFloatParam(effShaderParams* o_pParams,
 											   effShaderBindingsDX11* o_pBindings,
-											   ID3DX11EffectScalarVariable* i_hParam, 
+											   fxEffectVariable* i_hParam, 
 											   const std::string& i_Name,
 											   bool i_bCreateBinding,
 											   bool i_bCreateUI,
 											   std::list<ShaderParamUIInfo>& o_UIInfo) const
 {
 	std::string uiCategory, uiLabel, uiDesc;
-	GetUIStrings(m_pEffect, i_hParam, i_Name, uiCategory, uiLabel, uiDesc);
+	GetUIStrings(m_pEffect.get(), i_hParam, i_Name, uiCategory, uiLabel, uiDesc);
 
 	effParamFloat* effParam = o_pParams->FindFloatParam(i_Name);
 	if (effParam)
@@ -2076,7 +2066,7 @@ effParamFloat* effShaderBaseDX11::MapFloatParam(effShaderParams* o_pParams,
 
 	if (i_bCreateUI)
 	{
-		ID3DX11EffectVariable* hAnnot = NULL;
+		fxEffectVariable* hAnnot = NULL;
 
 		// get the slider (ranged float) params
 		float fmax=1, fmin=0, fsteps=100, fstepspower=1;
@@ -2123,14 +2113,14 @@ effParamFloat* effShaderBaseDX11::MapFloatParam(effShaderParams* o_pParams,
 
 effParamBool* effShaderBaseDX11::MapBoolParam(effShaderParams* o_pParams,
 	effShaderBindingsDX11* o_pBindings,
-	ID3DX11EffectScalarVariable* i_hParam, 
+	fxEffectVariable* i_hParam, 
 	const std::string& i_Name,
 	bool i_bCreateBinding,
 	bool i_bCreateUI,
 	std::list<ShaderParamUIInfo>& o_UIInfo) const
 {
 	std::string uiCategory, uiLabel, uiDesc;
-	GetUIStrings(m_pEffect, i_hParam, i_Name, uiCategory, uiLabel, uiDesc);
+	GetUIStrings(m_pEffect.get(), i_hParam, i_Name, uiCategory, uiLabel, uiDesc);
 
 	effParamBool* effParam = o_pParams->FindBoolParam(i_Name);
 	if (effParam)
@@ -2155,7 +2145,7 @@ effParamBool* effShaderBaseDX11::MapBoolParam(effShaderParams* o_pParams,
 
 	if (i_bCreateUI)
 	{
-		ID3DX11EffectVariable* hAnnot = NULL;
+		fxEffectVariable* hAnnot = NULL;
 
 		prtyCheckBoxUIInfo* pRFUII = NULL;
 		pRFUII  = new prtyCheckBoxUIInfo(effParam->GetBaseProperty(), uiCategory, uiDesc);
@@ -2192,14 +2182,14 @@ void split(std::string & text, std::string & separators, std::vector<std::string
 
 effParamInt* effShaderBaseDX11::MapEnumParam(effShaderParams* o_pParams,
 	effShaderBindingsDX11* o_pBindings,
-	ID3DX11EffectScalarVariable* i_hParam, 
+	fxEffectVariable* i_hParam, 
 	const std::string& i_Name,
 	bool i_bCreateBinding,
 	bool i_bCreateUI,
 	std::list<ShaderParamUIInfo>& o_UIInfo) const
 {
 	std::string uiCategory, uiLabel, uiDesc;
-	GetUIStrings(m_pEffect, i_hParam, i_Name, uiCategory, uiLabel, uiDesc);
+	GetUIStrings(m_pEffect.get(), i_hParam, i_Name, uiCategory, uiLabel, uiDesc);
 
 	effParamInt* effParam = o_pParams->FindIntParam(i_Name);
 	if (effParam)
@@ -2224,7 +2214,7 @@ effParamInt* effShaderBaseDX11::MapEnumParam(effShaderParams* o_pParams,
 
 	if (i_bCreateUI)
 	{
-		ID3DX11EffectVariable* hAnnot = NULL;
+		fxEffectVariable* hAnnot = NULL;
 
 		std::vector<std::string> entries;
 		hAnnot = i_hParam->GetAnnotationByName("SasUiEnum");
@@ -2262,14 +2252,14 @@ effParamInt* effShaderBaseDX11::MapEnumParam(effShaderParams* o_pParams,
 
 effParamColor* effShaderBaseDX11::MapColorParam(effShaderParams* o_pParams,
 	effShaderBindingsDX11* o_pBindings,
-	ID3DX11EffectVectorVariable* i_hParam, 
+	fxEffectVariable* i_hParam, 
 	const std::string& i_Name,
 	bool i_bCreateBinding,
 	bool i_bCreateUI,
 	std::list<ShaderParamUIInfo>& o_UIInfo) const
 {
 	std::string uiCategory, uiLabel, uiDesc;
-	GetUIStrings(m_pEffect, i_hParam, i_Name, uiCategory, uiLabel, uiDesc);
+	GetUIStrings(m_pEffect.get(), i_hParam, i_Name, uiCategory, uiLabel, uiDesc);
 
 	// make the param
 	effParamColor* effParam = o_pParams->FindColorParam(i_Name);
@@ -2297,7 +2287,7 @@ effParamColor* effShaderBaseDX11::MapColorParam(effShaderParams* o_pParams,
 	// make the uiinfo
 	if (i_bCreateUI)
 	{
-		ID3DX11EffectVariable* hAnnot = NULL;
+		fxEffectVariable* hAnnot = NULL;
 
 		prtyPropertyUIInfo* pPUII;
 		pPUII  = new prtyColorRGBEditUIInfo(effParam->GetBaseProperty(), uiCategory, uiDesc);
@@ -2404,10 +2394,10 @@ bool effShaderBaseDX11::HasHardwareTessellation() const
 int effShaderBaseDX11::FindShaderVersion()
 {
 	// get the shader revision param.
-	ID3DX11EffectVariable* hGlobal = m_pEffect->GetVariableBySemantic("SasGlobal");
+	fxEffectVariable* hGlobal = m_pEffect->GetVariableBySemantic("SasGlobal");
 	if (hGlobal && hGlobal->IsValid())
 	{
-		ID3DX11EffectVariable* hAnnot = hGlobal->GetAnnotationByName("SasEffectRevision");
+		fxEffectVariable* hAnnot = hGlobal->GetAnnotationByName("SasEffectRevision");
 		if (hAnnot && hAnnot->IsValid())
 		{
 		    LPCSTR pstrRev = NULL;
@@ -2432,7 +2422,7 @@ int effShaderBaseDX11::FindShaderVersion()
 effParamTexture* effShaderBaseDX11::MapTextureParam(effShaderParams* o_pParams,
 	const std::string& i_Name) const
 {
-	ID3DX11EffectShaderResourceVariable* hParam = m_pEffect->GetVariableByName(i_Name.c_str())->AsShaderResource();
+	fxEffectVariable* hParam = m_pEffect->GetVariableByName(i_Name.c_str())->AsShaderResource();
 	if (!hParam->IsValid())
 		return NULL;
 
@@ -2444,7 +2434,7 @@ effParamTexture* effShaderBaseDX11::MapTextureParam(effShaderParams* o_pParams,
 	o_pParams->AddParam(effParam);
 
 	//parse texture type
-	D3DX11_EFFECT_TYPE_DESC desc;
+	fxEffectTypeDesc desc;
 	hParam->GetType()->GetDesc(&desc );
 	TEXTURE_TYPE type = TEXTURE_TYPE_UNKNOWN;
 
@@ -2457,7 +2447,7 @@ effParamTexture* effShaderBaseDX11::MapTextureParam(effShaderParams* o_pParams,
 	}
 	effParam->SetType( type );
 
-	ID3DX11EffectScalarVariable* hExistVar = FindTextureExistVar(m_pEffect, hParam);
+	fxEffectVariable* hExistVar = FindTextureExistVar(m_pEffect.get(), hParam);
 
 	effShaderBindingsDX11* pBindings = dynamic_cast<effShaderBindingsDX11*>(o_pParams->m_pShaderBindings);
 	pBindings->m_BindableParams.push_back(new effTextureBindingDX11(*effParam, hParam, hExistVar));
@@ -2478,7 +2468,7 @@ void effShaderBaseDX11::SetupDisplacementMap( const matTexture* i_pTexture, floa
 		if( i_pTexture )
 		{
 			float displSize[2] = { (float)i_pTexture->GetWidth(), (float)i_pTexture->GetHeight() };
-			ID3DX11EffectVariable* dms = m_pEffect->GetVariableByName("g_DisplacementMapSize");
+			fxEffectVariable* dms = m_pEffect->GetVariableByName("g_DisplacementMapSize");
 			dms->AsVector()->SetFloatVector(displSize);
 		}
 	}
@@ -2547,15 +2537,15 @@ bool effShaderBaseDX11::GetSupportOutline() const
 
 	if (m_pEffect)
 	{
-		ID3DX11EffectVariable* hGlobal = m_pEffect->GetVariableBySemantic("SasGlobal");
+		fxEffectVariable* hGlobal = m_pEffect->GetVariableBySemantic("SasGlobal");
 		if (hGlobal != NULL)
 		{
-			ID3DX11EffectVariable* hAnnot = NULL;
+			fxEffectVariable* hAnnot = NULL;
 			hAnnot = hGlobal->GetAnnotationByName("SupportsOutline");
 			if (hAnnot)
 			{
 			    LPCSTR pstrName = NULL;
-				ID3DX11EffectStringVariable* hString = hAnnot->AsString();
+				fxEffectVariable* hString = hAnnot->AsString();
 				if (hString)
 					hString->GetString( &pstrName );
 				if (pstrName)

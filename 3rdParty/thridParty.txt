@@ -10,8 +10,6 @@ set RTLIBCFG=static
 nmake /f Makefile.vc mode=static VC=14 MACHINE=x64 DEBUG=no
 nmake /f Makefile.vc mode=static VC=14 MACHINE=x64 DEBUG=yes
 
-D3DX11Effects (https://github.com/Microsoft/FX11)
-
 libs/x64 (drop various .lib files in here)
 
 OpenEXR (http://www.openexr.com/)

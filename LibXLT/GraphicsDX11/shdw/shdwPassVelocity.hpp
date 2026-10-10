@@ -30,7 +30,7 @@
 class effShaderBaseDX11;
 class shdwPassTraversal;
 class g3dScene;
-struct ID3DX11Effect;
+class fxEffect;
 
 class shdwPassVelocity : public g3dRenderPass
 {
@@ -64,7 +64,7 @@ public:
 
 	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------
-	void SetupOldMatrix( const g3dSceneNode* pNode, ID3DX11Effect* pEffect  );
+	void SetupOldMatrix( const g3dSceneNode* pNode, fxEffect* pEffect  );
 
 	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------

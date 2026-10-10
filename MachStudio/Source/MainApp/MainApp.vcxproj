@@ -653,7 +653,7 @@
       <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(TargetName).exe</OutputFile>
       <Version>2.0</Version>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\LibXLT\ToolUIWx\vcpkg_installed\x64-windows\x64-windows\debug\lib;$(SolutionDir)..\..\LibXLT\Graphics\vcpkg_installed\x64-windows\x64-windows\debug\lib;$(SolutionDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\debug\lib;$(SolutionDir)..\..\3rdParty\Boost\lib;$(SolutionDir)..\..\3rdParty\OpenEXR\zlib\lib;$(SolutionDir)..\..\3rdParty\OpenEXR\build\lib;$(SolutionDir)..\..\3rdParty\WxWidgets\lib\vc140_x64_dll;$(SolutionDir)..\..\3rdParty\Libs\$(Platform);D:\FreeImage\Dist;$(SolutionDir)..\..\3rdParty\DirectXTex\DirectXTex\Bin\Desktop_2015_Win10\x64\Debug;$(SolutionDir)..\..\3rdParty\FX11\Bin\Desktop_2015_Win10\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\LibXLT\ToolUIWx\vcpkg_installed\x64-windows\x64-windows\debug\lib;$(SolutionDir)..\..\LibXLT\Graphics\vcpkg_installed\x64-windows\x64-windows\debug\lib;$(SolutionDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\debug\lib;$(SolutionDir)..\..\3rdParty\Boost\lib;$(SolutionDir)..\..\3rdParty\OpenEXR\zlib\lib;$(SolutionDir)..\..\3rdParty\OpenEXR\build\lib;$(SolutionDir)..\..\3rdParty\WxWidgets\lib\vc140_x64_dll;$(SolutionDir)..\..\3rdParty\Libs\$(Platform);D:\FreeImage\Dist;$(SolutionDir)..\..\3rdParty\DirectXTex\DirectXTex\Bin\Desktop_2015_Win10\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
@@ -1240,7 +1240,7 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <!-- The libraries' vcpkg packages (OpenEXR from LibXLT/Graphics; DirectXTex
-       and Effects11 from LibXLT/GraphicsDX11) are installed next to those
+       from LibXLT/GraphicsDX11) are installed next to those
        projects, so vcpkg does not copy their DLLs next to the exe. Copy any
        that are missing; the Debug ones are already checked in. -->
   <Target Name="CopyLibraryVcpkgDlls" AfterTargets="Build" Condition="'$(Platform)'=='x64' And ('$(Configuration)'=='Debug' Or '$(Configuration)'=='Release')">

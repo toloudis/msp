@@ -73,8 +73,8 @@ public:
 	LayoutStyle GetLayoutStyle() const;
 
 	//----------------------------------------------------------------------------
-	// SetMaxRenderSize - set maximum size allowed for the render area.
-	//	Use -1 -1 in order to remove the constraints and allow any resizing.
+	// SetMaxRenderSize - set the render resolution of the render areas, plus
+	//	the 2 pixel border. Use -1 -1 in order to render at the panel size.
 	//----------------------------------------------------------------------------
 	void SetMaxRenderSize(int i_Width, int i_Height);
 	void GetMaxRenderSize(int &o_Width, int &o_Height);

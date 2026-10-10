@@ -117,8 +117,8 @@ END_EVENT_TABLE()
 rpnRenderPanel::rpnRenderPanel(wxWindow* parent)
 : wxControl(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER),
 	m_pRenderView(NULL),
-	m_MaxWidth(-1), 
-	m_MaxHeight(-1),
+	m_RenderWidth(-1), 
+	m_RenderHeight(-1),
 	m_PassName("Beauty"),
 	m_CameraName(""),
 	m_bHasFocus(false),
@@ -428,30 +428,15 @@ void rpnRenderPanel::SelectCamera()
 }
 
 //----------------------------------------------------------------------------
-// SetMaxRenderSize - set maximum size allowed for the render area.
-//	Use -1 -1 in order to remove the constraints and allow any resizing.
+// SetRenderResolution - set the size of the rendered image in pixels.
+//	The image is scaled to fit the panel, keeping its aspect ratio.
+//	Use -1 -1 in order to render at the panel size.
 //----------------------------------------------------------------------------
-void rpnRenderPanel::SetMaxRenderSize(int i_Width, int i_Height)
+void rpnRenderPanel::SetRenderResolution(int i_Width, int i_Height)
 {
-	m_MaxWidth = i_Width;
-	m_MaxHeight = i_Height;
-}
-
-//------------------------------------------------------------------------
-// Override the wxWidgets SetSize function in order to enforce a
-//	maximum size for the render area.
-//------------------------------------------------------------------------
-//virtual 
-void rpnRenderPanel::DoSetSize(int x, int y,
-                       int width, int height,
-                       int sizeFlags)
-{
-	if (m_MaxWidth > 0 && width > m_MaxWidth) 
-		width = m_MaxWidth;
-	if (m_MaxHeight > 0 && height > m_MaxHeight) 
-		height = m_MaxHeight;
-
-	wxControl::DoSetSize(x, y, (width), (height), sizeFlags);
+	m_RenderWidth = i_Width;
+	m_RenderHeight = i_Height;
+	this->do_resize();
 }
 
 
@@ -469,17 +454,23 @@ void rpnRenderPanel::do_resize()
 	{		
 		if (rect.GetWidth() > 0 && rect.GetHeight() > 0)
 		{
-			// Resize the underlying window
-			this->m_pRenderView->ResizeWindow((rect.GetWidth()), (rect.GetHeight()), ToDIP(rect.GetWidth()), ToDIP(rect.GetHeight()));
+			// Resize the underlying window to fill the panel. With a render
+			// resolution, render at that size and scale it to fit the panel.
+			if (m_RenderWidth > 0 && m_RenderHeight > 0)
+				this->m_pRenderView->ResizeWindowToFit(rect.GetWidth(), rect.GetHeight(),
+					m_RenderWidth, m_RenderHeight, ToDIP(m_RenderWidth), ToDIP(m_RenderHeight));
+			else
+				this->m_pRenderView->ResizeWindow((rect.GetWidth()), (rect.GetHeight()), ToDIP(rect.GetWidth()), ToDIP(rect.GetHeight()));
 
 			// Update the ScreenUtil function if we are the active render view
 			if (tma3dRenderView::GetActiveRenderView() == this->m_pRenderView)
 			{
-				// The mouse move events later are going to be relative to our
-				// screen position, so we don't need to give those offsets
-				// to the screen util.
+				// The mouse positions are converted to render pixels, so the
+				// screen util uses the render size at (0, 0).
+				int render_width, render_height;
+				this->m_pRenderView->GetRenderSize(render_width, render_height);
 				tma3dScreenUtil::SetWindowSize( maPoint2d( 0, 0 ),
-					maPoint2d( (rect.GetWidth()), (rect.GetHeight()) ) );
+					maPoint2d( render_width, render_height ) );
 				//tma3dScreenUtil::SetWindowSize( maPoint2d( rect.GetLeft(), rect.GetTop() ),
 				//	maPoint2d( rect.GetWidth(), rect.GetHeight() ) );
 
@@ -562,6 +553,15 @@ void rpnRenderPanel::add_renderpasses_to_context_menu(twxContextMenu &io_Context
 }
 
 //----------------------------------------------------------------------------
+//	convert a mouse position in the panel to a pixel in the rendered image
+//----------------------------------------------------------------------------
+void rpnRenderPanel::panel_to_render_pixel(int& io_X, int& io_Y) const
+{
+	if (this->m_pRenderView)
+		this->m_pRenderView->PanelToRenderPixel(io_X, io_Y);
+}
+
+//----------------------------------------------------------------------------
 //	run a pick operation at the current cursor pos in current render view
 //----------------------------------------------------------------------------
 void rpnRenderPanel::do_pick_at_cursor(int i_X, int i_Y, g3dPickInfo& o_PickInfo)
@@ -611,7 +611,10 @@ void rpnRenderPanel::OnMouseDown(wxMouseEvent& i_Event)
 	if (!i_Event.LeftDown()) // Left mouse takes focus anyway when the event is skipped.
 		this->SetFocus();
 	tma3dCursorMgr::CursorOverViewCallback(true);		
-	tma3dCursorMgr::CursorPosChangedCallback( i_Event.GetX(), i_Event.GetY() );
+	int render_x = i_Event.GetX();
+	int render_y = i_Event.GetY();
+	panel_to_render_pixel(render_x, render_y);
+	tma3dCursorMgr::CursorPosChangedCallback( render_x, render_y );
 
 	if (i_Event.RightDown() && !i_Event.AltDown())
 	{
@@ -621,7 +624,7 @@ void rpnRenderPanel::OnMouseDown(wxMouseEvent& i_Event)
 
 		// Get context info about mouse position
 		g3dPickInfo pick_info;
-		do_pick_at_cursor(i_Event.GetX(), i_Event.GetY(), pick_info);
+		do_pick_at_cursor(render_x, render_y, pick_info);
 		envType::UInt32 pick_code = pick_info.m_ObjectID;
 		pick3dPickObject *pPickedObject = pick3dMgr::MatchPickCode(pick_code);
 		sel3dObject *pChosenObject = sel3dCastUtil::ConvertPickToSelection(pPickedObject);
@@ -675,7 +678,10 @@ void rpnRenderPanel::OnMouseMove(wxMouseEvent& i_Event)
 	if (this->IsActiveView())
 	{
 		//DBG_LOG3("OnMouseMove: %s (%d, %d)", m_pPanelViewer->GetTextString().c_str(), i_Event.GetX(), i_Event.GetY());
-		tma3dCursorMgr::CursorPosChangedCallback( i_Event.GetX(), i_Event.GetY() );
+		int render_x = i_Event.GetX();
+		int render_y = i_Event.GetY();
+		panel_to_render_pixel(render_x, render_y);
+		tma3dCursorMgr::CursorPosChangedCallback( render_x, render_y );
 	}
 }
 
@@ -722,14 +728,14 @@ void rpnRenderPanel::OnFocus(wxFocusEvent& i_Event)
 		//DBG_LOG("Focus: " << m_pPanelViewer->GetTextString().c_str());
 		tma3dRenderView::SetActiveRenderView(this->m_pRenderView);	
 
-		wxRect rect = this->GetRect();
-		if (rect.GetWidth() > 0 && rect.GetHeight() > 0)
+		int render_width, render_height;
+		this->m_pRenderView->GetRenderSize(render_width, render_height);
+		if (render_width > 0 && render_height > 0)
 		{
-			// The mouse move events later are going to be relative to our
-			// screen position, so we don't need to give those offsets
-			// to the screen util.
+			// The mouse positions are converted to render pixels, so the
+			// screen util uses the render size at (0, 0).
 			tma3dScreenUtil::SetWindowSize( maPoint2d( 0, 0 ),
-				maPoint2d( (rect.GetWidth()), (rect.GetHeight()) ) );
+				maPoint2d( render_width, render_height ) );
 			//tma3dScreenUtil::SetWindowSize( maPoint2d( (float)rect.GetLeft(), (float)rect.GetTop() ),
 			//	maPoint2d( (float)rect.GetWidth(), (float)rect.GetHeight() ) );
 

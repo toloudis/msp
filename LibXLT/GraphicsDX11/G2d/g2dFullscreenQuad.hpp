@@ -39,4 +39,10 @@ namespace g2dFullscreenQuad
 	void DrawFullScreenQuad11( UINT Width, UINT Height,
 		float offsetPixelsX = 0, float offsetPixelsY = 0,
 		SCREEN_VERTEX* i_InputVtxData = NULL );
+
+	// Draws i_pTexture stretched over the given viewport rect of the current
+	// render target with linear filtering. Binds its own shaders and states.
+	void DrawTexturedQuad11( ID3D11ShaderResourceView* i_pTexture,
+		UINT Width, UINT Height,
+		float offsetPixelsX = 0, float offsetPixelsY = 0 );
 };

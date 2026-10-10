@@ -23,7 +23,7 @@ class effTextured : public effShaderBaseDX11
 public:
 	//====================================================================
 	//====================================================================
-	effTextured(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, std::string i_name);
+	effTextured(const fsLocator& i_Directory, std::unique_ptr<fxEffect> i_pEffect, std::string i_name);
 
 	//====================================================================
 	//====================================================================
@@ -40,7 +40,7 @@ public:
 							   int i_MaterialLayerIndex = 0) const;
 
 protected:
-	ID3DX11EffectScalarVariable* m_hHasTexture;
-	ID3DX11EffectShaderResourceVariable* m_hTexture;
-	ID3DX11EffectVectorVariable* m_hColor;
+	fxEffectVariable* m_hHasTexture;
+	fxEffectVariable* m_hTexture;
+	fxEffectVariable* m_hColor;
 };

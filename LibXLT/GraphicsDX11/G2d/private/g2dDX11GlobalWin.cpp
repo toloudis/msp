@@ -27,11 +27,6 @@
 #pragma comment(lib,c_g2dDWRITELIBRARY)
 #pragma comment(lib,c_g2dDXGUIDLIBRARY_H)
 #pragma comment(lib,"DirectXTex.lib")
-#ifdef _DEBUG
-    #pragma comment(lib,"Effects11.lib")
-#else
-    #pragma comment(lib,"Effects11.lib")
-#endif
 //============================================================================
 //============================================================================
 namespace g2dDX11Global

@@ -202,7 +202,7 @@ int shdwPassZFill::RenderNode(const sNodePlusState& i_Node, g3dRenderStateTraver
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 	
 	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("DepthMap.fx");
-	ID3DX11Effect* pEffectDX = pEffBase->GetD3DXEffect();
+	fxEffect* pEffectDX = pEffBase->GetFxEffect();
 	pEffectDX->GetVariableByName("alphaValue")->AsScalar()->SetFloat(i_OverWriteAlpha);
 
 	// e_Environment is a different type of ambient pass that is ambient-only.
@@ -266,7 +266,7 @@ int shdwPassZFill::RenderHairNode(const sNodePlusState& i_Node)
 	const matMaterial* pMaterial = &l_HairMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)pEffect;
-	ID3DX11Effect* pD3DEffect = i_pEffect->GetD3DXEffect();
+	fxEffect* pD3DEffect = i_pEffect->GetFxEffect();
 
 	g3dDrawStyleUtilDX11::SetDrawStyle(i_Node.m_drawStyle);
 
