@@ -22,12 +22,12 @@
 #include "Core/prty/prtyInt8.hpp"
 #endif
 
+#ifdef USE_QT
 
 //===================================================================================
 //===================================================================================
 class pqtInt8_RangedFloat_Converter  : public pqtInt8Converter
 {
-#ifdef QT_FINISH_PORT
 public:
 	//----------------------------------------------------------------------------
 	// Set value into control
@@ -39,10 +39,10 @@ public:
 	// Get value from control
 	//----------------------------------------------------------------------------
 	static envType::Int8 GetValueFromControl(tqcRangedFloat* i_pActualControl);
-#endif // USE_QT
 };
 
 //============================================================================
 //============================================================================
 typedef pqtTemplate_RangedFloat<prtyInt8, envType::Int8, pqtInt8_RangedFloat_Converter> pqtInt8_RangedFloat;
 
+#endif // USE_QT

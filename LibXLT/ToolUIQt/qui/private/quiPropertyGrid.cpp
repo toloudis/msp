@@ -22,15 +22,15 @@ guiPropertyGrid::ReturnValue quiPropertyGrid::ShowModal(const char* i_DialogTitl
 		std::vector<std::string>& i_ColumnNames,
 		std::vector<prtyObject*>& i_Rows)
 {
-#ifdef QT_FINISH_PORT
-	wxString title(i_DialogTitle, wxConvUTF8);
+#ifdef USE_QT
+	QString title = tqtQString(i_DialogTitle);
 	tqtPropertyDialog dialog(tqtSystem::g_pMainForm, title, i_RowNames, i_ColumnNames, i_Rows);
-	int result = dialog.ShowModal();
-	if (result == QMessageBox::Ok)
+	int result = dialog.exec();
+	if (result == QDialog::Accepted)
 		return guiPropertyGrid::e_OK;
 	else
 		return guiPropertyGrid::e_Cancel;
-#else // USE_WXWIDGETS
+#else // USE_QT
 	return guiPropertyGrid::e_Cancel;
 #endif // USE_QT
 }

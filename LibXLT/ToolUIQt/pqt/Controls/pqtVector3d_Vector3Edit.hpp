@@ -22,13 +22,13 @@
 #include "Core/prty/prtyPoint3d.hpp"
 #endif 
 
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
 template <class PropertyType>
 class pqtVector3d_Vector3Edit_Converter
 {
-#ifdef QT_FINISH_PORT
 public:
 	//----------------------------------------------------------------------------
 	// Set value into control
@@ -69,7 +69,6 @@ public:
 	{
 		pqtControlUtil::SetScaledCommonValue<maVector3d, PropertyType>(io_pControl, i_NewValue);
 	}
-#endif // USE_QT
 };
 
 //============================================================================
@@ -77,3 +76,4 @@ public:
 typedef pqtTemplate_Vector3Edit<prtyVector3d, maVector3d, pqtVector3d_Vector3Edit_Converter<prtyVector3d> > pqtVector3d_Vector3Edit;
 typedef pqtTemplate_Vector3Edit<prtyPoint3d, maVector3d, pqtVector3d_Vector3Edit_Converter<prtyPoint3d> > pqtPoint3d_Vector3Edit;
 
+#endif // USE_QT

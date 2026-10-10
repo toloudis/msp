@@ -1,11 +1,12 @@
 /*****************************************************************************
 **  tqtAppUtil.hpp
 **
-**     Help for integrating our WinMain functions with wxWidgets
+**     Help for integrating our WinMain functions with Qt
 **
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
+
 #ifdef TQT_APPUTIL_HPP
 #error tqtAppUtil.hpp multiply included
 #endif
@@ -15,33 +16,18 @@
 #include "ToolUIQt/tqt/tqtWidgets.hpp"
 #endif
 
+#ifdef USE_QT
 
-#ifdef QT_FINISH_PORT
 //============================================================================
 //============================================================================
 namespace tqtAppUtil
 {
 	//--------------------------------------------------------------------
-	// Pass in a few variables from WinMain into wxWidgets
+	// Initializes Qt (creates the QApplication), returns true if
+	//	successful. i_pAppName is the executable name given to Qt as
+	//	argv[0]; our own command line is parsed separately.
 	//--------------------------------------------------------------------
-	void SetInstance( HINSTANCE i_hInstance,
-					  int       i_nCmdShow );
-
-	//--------------------------------------------------------------------
-	//	ParseCommandLine fills in the argc and argv variables needed
-	//	by wxWidgets setup
-	//--------------------------------------------------------------------
-	void ParseCommandLine(int &o_Argc, wxChar **&o_Argv);
-
-	//--------------------------------------------------------------------
-	// Frees the arguments allocated in ParseCommandLine
-	//--------------------------------------------------------------------
-	void FreeArgs(int &o_Argc, wxChar **&o_Argv);
-
-	//--------------------------------------------------------------------
-	// Initializes wxWidgets, returns true if successful.
-	//--------------------------------------------------------------------
-	bool Init(int i_Argc, wxChar **i_Argv);
+	bool Init(const char* i_pAppName);
 
 	//--------------------------------------------------------------------
 	// Runs the application loop
@@ -49,9 +35,9 @@ namespace tqtAppUtil
 	void Run();
 
 	//--------------------------------------------------------------------
-	// DeInitializes wxWidgets
+	// DeInitializes Qt
 	//--------------------------------------------------------------------
 	void CleanUp();
 }
 
-#endif // QT_FINISH_PORT
+#endif // USE_QT

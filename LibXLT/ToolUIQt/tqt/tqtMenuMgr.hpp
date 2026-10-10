@@ -1,36 +1,35 @@
 /*****************************************************************************
-**	tqtMenuMgr.hpp
+**  tqtMenuMgr.hpp
 **
-**		The main application menu manager
+**      Qt menu manager. Menu items are QActions; a toolbar button for a
+**	menu item reuses the same QAction, so enabling or checking the item
+**	updates both.
 **
 **	StudioGPU
-**	Copyright(C) 2010 - All Rights Reserved
+**	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
 #ifdef TQT_MENUMGR_HPP
 #error tqtMenuMgr.hpp multiply included
 #endif
 #define TQT_MENUMGR_HPP
 
-#ifndef GUI_CONSTANTS_HPP
-#include "Tool/gui/guiConstants.hpp"
-#endif
 #ifndef TQT_WIDGETS_HPP
 #include "ToolUIQt/tqt/tqtWidgets.hpp"
 #endif
 
-#include <QtGui/QAction>
+#ifndef GUI_CONSTANTS_HPP
+#include "Tool/gui/guiConstants.hpp"
+#endif
 
 #include <map>
-
+#include <set>
+#include <vector>
 
 #ifdef USE_QT
 
 //============================================================================
 //============================================================================
-class tqtMenuMgr 
-#ifdef QT_FINISH_PORT
-	: public wxEvtHandler
-#endif
+class tqtMenuMgr
 {
 public:
 	//---------------------------------------------------------------------------
@@ -52,20 +51,21 @@ public:
 	//---------------------------------------------------------------------------
 	//	AddMenuItem()
 	//		add a menu item to the Menu Tree.
+	//		set the toolbar name to "" to not add a toolbar button
 	//	the function returns a unique ObjectID for the GUI object.
 	//---------------------------------------------------------------------------
 	int AddMenuItem( const char * i_ParentName,
-					const char * i_ChildName,
-					const char * i_ToolbarName = NULL,
-					const char * i_ToolbarButton_ImageFilename = NULL,
-					bool i_bCheckable = false );
+					 const char * i_ChildName,
+				     const char * i_ToolbarName = NULL,
+					 const char * i_ToolbarButton_ImageFilename = NULL,
+					 bool i_bCheckable = false );
 
 	//---------------------------------------------------------------------------
 	//	RemoveMenuItem()
 	//		remove a menu item from the Menu Tree
 	//---------------------------------------------------------------------------
 	void RemoveMenuItem( const char * i_ParentName,
-						const char * i_ChildName  );
+						 const char * i_ChildName  );
 
 	//---------------------------------------------------------------------------
 	//	FindMenuItem()
@@ -83,56 +83,49 @@ public:
 	//---------------------------------------------------------------------------
 	//	AttachEventToMenuObjects()
 	//---------------------------------------------------------------------------
-	void AttachEventToMenuObjects( int i_ObjectID, 
-								   ControlCallback i_pFunction, 
+	void AttachEventToMenuObjects( int i_ObjectID,
+								   ControlCallback i_pFunction,
 								   ControlCallback i_pUpdate );
 
 	//---------------------------------------------------------------------------
 	//	MenuObjectsExist()
 	//		based on the menu item ID.
-	//
-	//		returns true if the ID refers to a valid tmaMenuObjects
+	//		returns true if the ID refers to a valid menu item
 	//---------------------------------------------------------------------------
 	bool MenuObjectsExist( int i_ObjectID );
 
 	//---------------------------------------------------------------------------
-	//	MenuObjectsEnable()
+	//	MenuObjectsEnable() / MenuObjectsCheck()
 	//---------------------------------------------------------------------------
 	void MenuObjectsEnable( int i_ObjectID, bool i_bEnabled );
-
-	//---------------------------------------------------------------------------
-	//	MenuObjectsCheck()
-	//---------------------------------------------------------------------------
 	void MenuObjectsCheck( int i_ObjectID, bool i_bChecked );
 
 	//---------------------------------------------------------------------------
 	//	EnableMenuItem()
-	//		enable or disable a menu item from the Menu Tree
+	//		enable/disable a menu item
 	//---------------------------------------------------------------------------
 	void EnableMenuItem( const char * i_ParentName,
-						const char * i_ChildName,
-						bool i_bEnable );
+						 const char * i_ChildName,
+						 bool i_bEnable );
 
 	//---------------------------------------------------------------------------
 	//	GetMenuItemID()
-	//		get the menu item ID
+	//		the function returns an ID, or -1 if not found
 	//---------------------------------------------------------------------------
 	int GetMenuItemID( const char * i_ParentName,
-					const char * i_ChildName );
-		
+					   const char * i_ChildName );
+
 	//---------------------------------------------------------------------------
 	//	GetMenuItemName()
 	//		give the name of the menu item with the given ID.
 	//---------------------------------------------------------------------------
 	std::string GetMenuItemName(int i_ObjectID);
-	
+
 	//---------------------------------------------------------------------------
 	//	GetMenuItem()
 	//		return the menu item with the given ID.
 	//---------------------------------------------------------------------------
-#ifdef QT_FINISH_PORT
-	wxMenuItem* tqtMenuMgr::GetMenuItem(int i_ObjectID);
-#endif
+	QAction* GetMenuItem(int i_ObjectID);
 
 	//---------------------------------------------------------------------------
 	// Set Help string to display when mouse is over given menu item
@@ -140,94 +133,37 @@ public:
 	void SetMenuItemHelpString( int i_ObjectID, const char * i_HelpString );
 
 	//---------------------------------------------------------------------------
+	// Change the text associated to a menu item to show a shortcut string.
+	//	The hot key itself is handled by tqtMessaging, not by Qt.
 	//---------------------------------------------------------------------------
 	void SetMenuItemShortcut(int i_ObjectID, const char* i_pShortcutString);
 
-/*
-
-	//---------------------------------------------------------------------------
-	//---------------------------------------------------------------------------
-	tmaMenuObjects^ GetMenuObjects( int i_ObjectID );
-
-	//---------------------------------------------------------------------------
-	//	AttachCallbacks()
-	//---------------------------------------------------------------------------
-	void AttachCallbacks( int i_ObjectID );
-
-	//---------------------------------------------------------------------------
-	//	GetMenuObjectsList()
-	//---------------------------------------------------------------------------
-	ArrayList^ GetMenuObjectsList();
-
-	//---------------------------------------------------------------------------
-	//	AddDesignerMenu()
-	//---------------------------------------------------------------------------
-	void AddDesignerMenu(System::Windows::Forms::ToolStripMenuItem ^pMenu);
-
-	//---------------------------------------------------------------------------
-	//---------------------------------------------------------------------------
-	void SetIconDirectory( const char * i_IconDirectory );
-
-	//---------------------------------------------------------------------------
-	//---------------------------------------------------------------------------
-	void SetMenuItemShortcut(int i_ObjectID, String^ i_pShortcutString);
-
-	//---------------------------------------------------------------------------
-	//---------------------------------------------------------------------------
-	bool IsValidShortcut( String^ i_ShortcutString );
-
 private:
 	//---------------------------------------------------------------------------
+	// Callbacks for menu items
 	//---------------------------------------------------------------------------
-	void GetDropDownItemShortcut(MenuItem^ i_pMenuItem, String^ o_pShortcutString);
+	void menuItem_Click(int i_ObjectID);
+	void menuItem_Update(int i_ObjectID);
 
 	//---------------------------------------------------------------------------
-	//	generate a menu item
+	// Run the update callbacks of the items in the menu (before it shows)
+	// or on toolbars (periodically, as wxWidgets did in idle time).
 	//---------------------------------------------------------------------------
-	tmaMenuObjects^ generate_menuitem(ToolStripItem^ i_pTSI);
+	void watch_menu(QMenu* i_pMenu);
+	void update_menu_items(QMenu* i_pMenu);
+	void update_toolbar_items();
 
-
-	//===========================================================================
-	//	tqtMenuMgr functions
-	//===========================================================================
-
-	//---------------------------------------------------------------------------
-	// Execution event handler
-	//---------------------------------------------------------------------------
-	void menuItem_Click( Object^ Sender, System::EventArgs^ e );
-	//---------------------------------------------------------------------------
-	// Popup event handler
-	//---------------------------------------------------------------------------
-	void menuItem_Popup(System::Object ^  Sender, System::EventArgs ^  e);
-
-private:
-	ArrayList^ l_pMenuObjects;	// tmaMenuObjects
-
-	System::String^	m_IconDir;
-	*/
-
-#ifdef QT_FINISH_PORT
-	//---------------------------------------------------------------------------
-	// Callback for when the menu item is chosen
-	//---------------------------------------------------------------------------
-	void menuItem_Click(wxCommandEvent& i_Event);
-
-	//---------------------------------------------------------------------------
-	// Callback for when the menu item needs to update state
-	//---------------------------------------------------------------------------
-	void menuItem_Update(wxUpdateUIEvent& i_Event);
-#endif
-
-private:
-	//	structure for menu item
-	//
 	struct sMenuItemInfo
 	{
 		QAction*	m_pMenuItem;
 		ControlCallback m_ExecuteCallback;
 		ControlCallback m_UpdateCallback;
+		bool		m_bOnToolbar;
 	};
 	std::map<int, sMenuItemInfo> m_MenuItemMap;
+	std::set<QMenu*> m_WatchedMenus;
+	std::vector<QMetaObject::Connection> m_Connections;
+	QTimer* m_pToolbarUpdateTimer;
 };
 
 #endif // USE_QT

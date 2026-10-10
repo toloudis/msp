@@ -1,10 +1,16 @@
 /*****************************************************************************
 **	tqcTreeView.hpp
 **
-**	Tree view with check boxes in wxWidgets
+**		Tree control showing tqcTreeNode data, with check box images and
+**	multiple selection.
+**
+**	Each item shows a "state" image (unchecked / checked / mixed, or a
+**	custom state image) followed by an optional image from the image list.
+**	Clicking the state image toggles the check, for all selected items if
+**	the clicked item is selected.
 **
 **	StudioGPU
-**	Copyright(C) 2010 - All Rights Reserved
+**	Copyright(C) 2009 - All Rights Reserved
 \****************************************************************************/
 #ifdef TQC_TREEVIEW_HPP
 #error tqcTreeView.hpp multiply included
@@ -13,49 +19,94 @@
 
 #ifndef TQC_TREENODE_HPP
 #include "ToolUIQt/tqc/tqcTreeNode.hpp"
-#endif 
+#endif
 
-#include <boost/function.hpp>
+#include <functional>
 #include <list>
+#include <map>
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-#include <wx/treectrl.h>
-
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
 class fsLocator;
 
-//----------------------------------------------------------------------------
-// Class tqcTreeView
-//----------------------------------------------------------------------------
-class tqcTreeView : public wxTreeCtrl
+//============================================================================
+// Item of the tree control. NULL means "no item" (like !wxTreeItemId::IsOk)
+//============================================================================
+typedef QTreeWidgetItem* tqcTreeItemId;
+
+//============================================================================
+// Information passed to the checked and selection callbacks
+//============================================================================
+class tqcTreeViewEvent
+{
+public:
+	//--------------------------------------------------------------------
+	// Type of selection change
+	//--------------------------------------------------------------------
+	enum SelectionChangeType
+	{
+		e_Select = 0,			// select nodes, removing old selection
+		e_AppendToSelection,	// add nodes to selection
+		e_RemoveFromSelection	// remove nodes from selection
+	};
+
+	tqcTreeViewEvent() : m_bCheckedState(false), m_SelectionType(e_Select) {}
+
+	std::vector< shared_ptr<tqcTreeNode> >& GetNodes()
+        { return m_Nodes; }
+	void SetNodes(const std::vector< shared_ptr<tqcTreeNode> >& i_Nodes)
+        { m_Nodes = i_Nodes; }
+	void SetNode(shared_ptr<tqcTreeNode> i_Node)
+        { m_Nodes.clear(); if (i_Node) m_Nodes.push_back(i_Node); }
+
+	bool GetCheckedState() const { return m_bCheckedState; }
+	void SetCheckedState(bool i_bState) { m_bCheckedState = i_bState; }
+
+	SelectionChangeType GetSelectionType() const { return m_SelectionType; }
+	void SetSelectionType(SelectionChangeType i_Type) { m_SelectionType = i_Type; }
+
+private:
+	std::vector< shared_ptr<tqcTreeNode> >  m_Nodes;
+	bool m_bCheckedState;
+	SelectionChangeType m_SelectionType;
+};
+
+//============================================================================
+//============================================================================
+class tqcTreeView : public QTreeWidget
 {
 	public:
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
 		tqcTreeView( QWidget* parent);
-
-		//--------------------------------------------------------------------
-		//--------------------------------------------------------------------
 		~tqcTreeView();
 
 		//--------------------------------------------------------------------
-		// Give directory where the tree view should find the icons it needs.
-		// It will load from this directory:
-		//		tree-unchecked.png 
-		//		tree-checked.png
-		//		tree-mixchecked.png
-		// The alternative is to call AssignStateImageList with images such that
-		// the first 3 images should be for the checked state...
-		//		NoCheckbox = 0
-		//		Unchecked = 1
-		//		Checked = 2
-		//		MixChecked = 3
+		// Callbacks for checking and selecting by the user
+		//--------------------------------------------------------------------
+		typedef std::function<void (tqcTreeViewEvent&)> TreeViewEventFunction;
+		void SetCheckedCallback(TreeViewEventFunction i_Callback) { m_CheckedCallback = i_Callback; }
+		void SetSelectionCallback(TreeViewEventFunction i_Callback) { m_SelectionCallback = i_Callback; }
+
+		//--------------------------------------------------------------------
+		// Dragging items: CanDrag says whether a node may be dragged, and
+		// DragReleased is called with the node under the mouse when the
+		// drag ends (NULL when released over no item).
+		//--------------------------------------------------------------------
+		typedef std::function<bool (const shared_ptr<tqcTreeNode>&)> CanDragFunction;
+		typedef std::function<void (const shared_ptr<tqcTreeNode>&)> DragReleasedFunction;
+		void SetDragCallbacks(CanDragFunction i_CanDrag, DragReleasedFunction i_Released)
+			{ m_CanDrag = i_CanDrag; m_DragReleased = i_Released; }
+
+		//--------------------------------------------------------------------
+		// Images: the state images (index 0 none, 1 unchecked, 2 checked,
+		// 3 mixed, then custom states) and the item images.
+		// LoadImagesFromDirectory loads tree-unchecked.png, tree-checked.png
+		// and tree-mixchecked.png as the state images.
 		//--------------------------------------------------------------------
 		void LoadImagesFromDirectory( const fsLocator& i_IconDirectory );
+		void SetStateImageList(const std::vector<QPixmap>& i_Images);
+		void SetImageList(const std::vector<QPixmap>& i_Images);
 
 		//--------------------------------------------------------------------
 		// By default, clicks on the check box will also act as a selection
@@ -64,172 +115,104 @@ class tqcTreeView : public wxTreeCtrl
 		void SetSelectOnCheckChange(bool i_bSelect);
 
 		//--------------------------------------------------------------------
-		// Clear tree data 
-		//--------------------------------------------------------------------	
+		// Clear object data from form
+		//--------------------------------------------------------------------
 		void Clear();
 
 		//--------------------------------------------------------------------
 		// Set/Update tree data, this control will maintain a reference
 		//	to the tree data and will pass the nodes to the callbacks.
-		//--------------------------------------------------------------------	
+		//--------------------------------------------------------------------
 		void UpdateTreeData(const shared_ptr<tqcTreeNode>& i_RootNode);
 		void UpdateTreeData(const std::vector< shared_ptr<tqcTreeNode> >& i_RootNodes);
 
 		//--------------------------------------------------------------------
-		// Find function finds node that satisfies the given predicate
-		// or returns a node with IsOk()==false.
+		// Find function finds node that satisfies the given predicate.
 		//--------------------------------------------------------------------
-		typedef boost::function<bool (const shared_ptr<tqcTreeNode>&)> NodeFilterFunction;
-		wxTreeItemId FindNode(NodeFilterFunction i_Function);
+		typedef std::function<bool (const shared_ptr<tqcTreeNode>&)> NodeFilterFunction;
+		tqcTreeItemId FindNode(NodeFilterFunction i_Function);
 
 		//--------------------------------------------------------------------
 		// Get user data associated with tree item id
 		//--------------------------------------------------------------------
-		shared_ptr<tqcTreeNode> GetNodeData(wxTreeItemId i_Node);
-		
-		//--------------------------------------------------------------------
-		//	Find the item on the placed tree and highlight it. 
-		//	This is a notfication of what is already selected,
-		//	so the tree control should not cause an event to trigger.
-		//--------------------------------------------------------------------
-		void SelectNode(wxTreeItemId i_Node);
+		shared_ptr<tqcTreeNode> GetNodeData(tqcTreeItemId i_Node);
 
 		//--------------------------------------------------------------------
-		// Handle multiple selection by highlighting other tree nodes
+		//	Make the item the only selected one, without calling the
+		//	selection callback (it reflects a selection made elsewhere).
 		//--------------------------------------------------------------------
-		void AddToSelectedNodes(wxTreeItemId i_Node);
-		void RemoveFromSelectedNodes(wxTreeItemId i_Node);
+		void SelectNode(tqcTreeItemId i_Node);
+
+		//--------------------------------------------------------------------
+		// Add or remove items from the selection, without callbacks
+		//--------------------------------------------------------------------
+		void AddToSelectedNodes(tqcTreeItemId i_Node);
+		void RemoveFromSelectedNodes(tqcTreeItemId i_Node);
+
+		//--------------------------------------------------------------------
+		// The current item, and selecting an item as the user would
+		//--------------------------------------------------------------------
+		tqcTreeItemId GetSelection() const;
+		void SelectItem(tqcTreeItemId i_Node);
+
+	protected:
+		//--------------------------------------------------------------------
+		// Qt event handlers
+		//--------------------------------------------------------------------
+		virtual void mousePressEvent(QMouseEvent* i_pEvent);
+		virtual void mouseMoveEvent(QMouseEvent* i_pEvent);
+		virtual void mouseReleaseEvent(QMouseEvent* i_pEvent);
 
 	private:
-		//------------------------------------------------------------------------
-		// TreeItemIdSet is used to track which nodes are reused and 
-		//	which can be deleted
-		//------------------------------------------------------------------------
-		//typedef std::set<wxTreeItemId> TreeItemIdSet;
-		typedef std::list<wxTreeItemIdValue> TreeItemIdSet;
-
 		//--------------------------------------------------------------------
 		// private functions
 		//--------------------------------------------------------------------
-		wxTreeItemId find_child_node(wxTreeItemId i_Parent, NodeFilterFunction i_Function);
-		bool get_item_checked(wxTreeItemId i_Node);
-		bool is_mixed_checked(wxTreeItemId i_Node);
-		void set_item_checked(wxTreeItemId i_Node, bool i_bChecked);
-		void check_all_children(wxTreeItemId i_Item, bool i_bNewCheckState);
-		void get_all_tree_items(wxTreeItemId i_Parent, TreeItemIdSet& o_TreeIds);
+		typedef std::list<tqcTreeItemId> TreeItemIdSet;
+
+		tqcTreeItemId find_child_node(QTreeWidgetItem* i_Parent, NodeFilterFunction i_Function);
+		int get_item_state(tqcTreeItemId i_Node);
+		void set_item_state(tqcTreeItemId i_Node, int i_State);
+		void set_item_image(tqcTreeItemId i_Node, int i_Image);
+		void update_item_icon(tqcTreeItemId i_Node);
+		bool get_item_checked(tqcTreeItemId i_Node);
+		bool is_mixed_checked(tqcTreeItemId i_Node);
+		void set_item_checked(tqcTreeItemId i_Node, bool i_bChecked);
+		void check_all_children(tqcTreeItemId i_Item, bool i_bNewCheckState);
+		void get_all_tree_items(QTreeWidgetItem* i_Parent, TreeItemIdSet& o_TreeIds);
 		void find_or_create_tree_node(TreeItemIdSet& io_ItemsToDelete,
-									   wxTreeItemId i_Parent,
-									   const shared_ptr<tqcTreeNode>& i_Node,
-									   bool i_bCreateAlways = false);
-		void create_tree_node(wxTreeItemId i_Parent, const shared_ptr<tqcTreeNode>& i_Node);
-		int get_item_index(wxTreeItemId i_Node);
-		void update_parent_checked_state(wxTreeItemId i_Parent);
-		void set_checked_state(wxTreeItemId i_Item, bool i_bNewCheckState);
-		void highlight_item(wxTreeItemId i_ChildItem, bool i_bHighlight);
-		void remove_all_highlight();
-		void clear_selection();
-		void update_highlights();
-		bool is_node_selected(wxTreeItemId i_Item);
-		bool is_node_checkable(wxTreeItemId i_Item);
-		shared_ptr<tqcTreeNode> get_tree_node(wxTreeItemId i_Node);
-		void select_item(wxTreeItemId i_Item, bool i_bSendEvent = true);
-		void toggle_selection(wxTreeItemId i_Item, bool i_bSendEvent = true);
-		void append_selection(const std::vector<wxTreeItemId>& i_NodeList, bool i_bSendEvent = true);
-		void get_items_in_range(wxTreeItemId i_Id1, wxTreeItemId i_Id2,
-								std::vector<wxTreeItemId>& o_NodeList);
+									  QTreeWidgetItem* i_Parent,
+									  const shared_ptr<tqcTreeNode>& i_Node);
+		void update_parent_checked_state(tqcTreeItemId i_Parent);
+		void set_checked_state(tqcTreeItemId i_Item, bool i_bNewCheckState);
+		bool is_node_checkable(tqcTreeItemId i_Item);
+		bool is_on_state_image(tqcTreeItemId i_Item, const QPoint& i_Pos);
+		void get_items_in_range(tqcTreeItemId i_Id1, tqcTreeItemId i_Id2,
+								std::vector<tqcTreeItemId>& o_NodeList);
+		void delete_item(tqcTreeItemId i_Item);
+		void selection_changed();
 
-		//--------------------------------------------------------------------
-		// event handling
-		//--------------------------------------------------------------------
-		virtual void treeCtrl_Selection(wxTreeEvent& i_Event);
-		virtual void treeCtrl_LeftMouseDown( wxMouseEvent& i_Event);
-		virtual void treeCtrl_LeftMouseUp( wxMouseEvent& i_Event);
-		//virtual void OnSetFocus(wxFocusEvent& i_Event);
-		//virtual void OnLostFocus(wxFocusEvent& i_Event);
+		std::map<QTreeWidgetItem*, shared_ptr<tqcTreeNode> > m_NodeData;
+		std::map<QTreeWidgetItem*, int> m_ItemState;
+		std::map<QTreeWidgetItem*, int> m_ItemImage;
+		std::vector<QPixmap> m_StateImages;
+		std::vector<QPixmap> m_Images;
+		std::map<std::pair<int,int>, QIcon> m_IconCache;
 
-		//std::vector< shared_ptr<tqcTreeNode> > m_RootNodes;
-		std::vector<wxTreeItemId> m_SelectedList;
-		bool m_bCtrlPressed, m_bShiftPressed, m_bAltPressed;
-		wxTreeItemId m_FirstShift;
+		std::vector<tqcTreeItemId> m_SelectedList;	// last selection reported
+		tqcTreeItemId m_FirstShift;
 		bool m_bSelectOnCheckChange;
-		//bool m_bHasFocus;
 		bool m_bOurChange;
 		bool m_bUpdating;
 
-		// Our internal events
-		DECLARE_EVENT_TABLE()
+		// dragging
+		QPoint m_DragStart;
+		tqcTreeItemId m_DragItem;
+		bool m_bDragging;
+
+		TreeViewEventFunction m_CheckedCallback;
+		TreeViewEventFunction m_SelectionCallback;
+		CanDragFunction m_CanDrag;
+		DragReleasedFunction m_DragReleased;
 };
-
-
-//----------------------------------------------------------------------------
-// Event class used for check state or selection changes in tree view,
-// passes the tqcTreeNodes to the callback.
-//----------------------------------------------------------------------------
-class tqcTreeViewEvent: public wxCommandEvent
-{
-public:
-	//--------------------------------------------------------------------
-	// Type of selection change being reported by this event
-	//--------------------------------------------------------------------
-	enum SelectionChangeType
-	{
-		e_Select = 0,		
-		e_AppendToSelection,
-		e_RemoveFromSelection
-	};
-
-	//--------------------------------------------------------------------
-	//--------------------------------------------------------------------
-    tqcTreeViewEvent( wxEventType i_CommandType = wxEVT_NULL, int i_Id = 0);
-
-	//--------------------------------------------------------------------
-    // List of nodes that this event applies to
-	//--------------------------------------------------------------------
-	std::vector< shared_ptr<tqcTreeNode> >& GetNodes()
-        { return m_Nodes; }
-	void SetNodes(const std::vector< shared_ptr<tqcTreeNode> >& i_Nodes)
-        { m_Nodes = i_Nodes; }
-	void SetNode(shared_ptr<tqcTreeNode> i_Node)
-        { m_Nodes.clear(); m_Nodes.push_back(i_Node); }
-
-	//--------------------------------------------------------------------
-	// Checked state for when event is a check box change
-	//--------------------------------------------------------------------
-	bool GetCheckedState() const { return m_bCheckedState; }
-	void SetCheckedState(bool i_bState) { m_bCheckedState = i_bState; }
-
-	//--------------------------------------------------------------------
-	// Selection type for when event is a selection change
-	//--------------------------------------------------------------------
-	SelectionChangeType GetSelectionType() const { return m_SelectionType; }
-	void SetSelectionType(SelectionChangeType i_Type) { m_SelectionType = i_Type; }
-
-	//--------------------------------------------------------------------
-    // required for sending with wxPostEvent()
-	//--------------------------------------------------------------------
-    wxEvent* Clone();
-
-private:
-	std::vector< shared_ptr<tqcTreeNode> >  m_Nodes;
-	bool m_bCheckedState;
-	SelectionChangeType m_SelectionType;
-};
-
-DECLARE_EVENT_TYPE( wxEVT_CHECKED_TREE_VIEW, -1 )
-DECLARE_EVENT_TYPE( wxEVT_SELECTION_TREE_VIEW, -1 )
-
-
-typedef void (wxEvtHandler::*tqcTreeViewEventFunction)(tqcTreeViewEvent&);
-
-#define EVT_TQC_TREE_VIEW_FUNC(fn) \
-    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)  \
-    wxStaticCastEvent( tqcTreeViewEventFunction, & fn )
-
-//#define EVT_CHECKED_TREE_VIEW(id, fn) \
-//    DECLARE_EVENT_TABLE_ENTRY( wxEVT_CHECKED_TREE_VIEW_ACTION, id, -1, \
-//    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)  \
-//    wxStaticCastEvent( tqcTreeViewEventFunction, & fn ), (wxObject *) NULL ),
-
-
 
 #endif // USE_QT

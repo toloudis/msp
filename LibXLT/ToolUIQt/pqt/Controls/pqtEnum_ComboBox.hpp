@@ -19,13 +19,13 @@
 #include "Core/prty/prtyEnum.hpp"
 #endif
 
+#ifdef USE_QT
 
 
 //============================================================================
 //============================================================================
 class pqtEnum_ComboBox_Converter
 {
-#ifdef QT_FINISH_PORT
 public:
 	//----------------------------------------------------------------------------
 	// Get list of string choices for combo box
@@ -36,18 +36,18 @@ public:
 	//----------------------------------------------------------------------------
 	// Set value into control
 	//----------------------------------------------------------------------------
-	static void SetValueIntoControl(wxChoice* i_pActualControl,
+	static void SetValueIntoControl(QComboBox* i_pActualControl,
 									 short i_Value);
 
 	//----------------------------------------------------------------------------
 	// Get value from control
 	//----------------------------------------------------------------------------
-	static short GetValueFromControl(wxChoice* i_pActualControl);
+	static short GetValueFromControl(QComboBox* i_pActualControl);
 
-#endif // USE_QT
 };
 
 //============================================================================
 //============================================================================
 typedef pqtTemplate_ComboBox<prtyEnum, short, pqtEnum_ComboBox_Converter> pqtEnum_ComboBox;
 
+#endif // USE_QT

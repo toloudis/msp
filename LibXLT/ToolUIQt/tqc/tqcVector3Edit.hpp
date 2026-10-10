@@ -18,18 +18,18 @@
 #include "Core/ma/maVector3d.hpp"
 #endif
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //============================================================================
-// wxEVT_VALUE_CHANGED event : this control throws this event type when the
+// Value changed callback (tqcEvent.hpp): this control calls it when the
 //	value in the control has changed aftere ENTER is pressed, or the
-//	focus leaves the text box. Users should register for this event, 
-//	not for the individual enter pressed and leave events.
+//	focus leaves the text box. Users should set this callback, 
+//	not watch for the individual enter pressed and leave events.
 //============================================================================
 
 //============================================================================
 //============================================================================
-class tqcVector3Edit : public wxPanel
+class tqcVector3Edit : public QWidget, public tqcValueChangedNotifier
 {
 	public:
 		//--------------------------------------------------------------------
@@ -51,7 +51,7 @@ class tqcVector3Edit : public wxPanel
 	private:
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		void OnTextChange(wxCommandEvent& i_Event);
+		void OnTextChange();
 
 		tqcFloatEdit* m_pFloatEditX;
 		tqcFloatEdit* m_pFloatEditY;

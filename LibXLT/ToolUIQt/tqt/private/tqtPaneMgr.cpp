@@ -4,7 +4,7 @@
 **		see .hpp
 **
 **	StudioGPU
-**	Copyright(C) 2010 - All Rights Reserved
+**	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "ToolUIQt/tqt/tqtPaneMgr.hpp"
 
@@ -12,16 +12,57 @@
 
 #include "Core/dbg/dbgMsg.hpp"
 
+#include <map>
 
 #ifdef USE_QT
 
-//============================================================================
-//============================================================================
 namespace
 {
-#ifdef QT_FINISH_PORT
-	wxAuiManager *l_pAuiMgr = NULL;
-#endif
+	// Saved perspectives start with this, so layouts saved by the
+	// wxWidgets build are recognized and ignored.
+	const char* c_PerspectivePrefix = "qt6:";
+
+	bool l_bInitialized = false;
+	std::map<QWidget*, QDockWidget*> l_PaneMap;
+
+	//---------------------------------------------------------------------------
+	//---------------------------------------------------------------------------
+	Qt::DockWidgetArea dock_area(tqtPaneInfo::Dock i_Dock)
+	{
+		switch (i_Dock)
+		{
+			case tqtPaneInfo::e_Right:	return Qt::RightDockWidgetArea;
+			case tqtPaneInfo::e_Top:	return Qt::TopDockWidgetArea;
+			case tqtPaneInfo::e_Bottom:	return Qt::BottomDockWidgetArea;
+			default:					return Qt::LeftDockWidgetArea;
+		}
+	}
+
+	//---------------------------------------------------------------------------
+	//---------------------------------------------------------------------------
+	QDockWidget* find_dock(QWidget* i_pWindow)
+	{
+		std::map<QWidget*, QDockWidget*>::iterator it = l_PaneMap.find(i_pWindow);
+		return (it != l_PaneMap.end()) ? it->second : NULL;
+	}
+
+	//---------------------------------------------------------------------------
+	//---------------------------------------------------------------------------
+	QDockWidget* find_dock(const char* i_PaneName)
+	{
+		if (!tqtSystem::g_pMainForm)
+			return NULL;
+		return tqtSystem::g_pMainForm->findChild<QDockWidget*>(tqtQString(i_PaneName));
+	}
+
+	//---------------------------------------------------------------------------
+	//---------------------------------------------------------------------------
+	void show_dock(QDockWidget* i_pDock, bool i_bShow)
+	{
+		i_pDock->setVisible(i_bShow);
+		if (i_bShow)
+			i_pDock->raise();	// bring forward if tabbed with other panes
+	}
 } // end of namespace
 
 
@@ -31,11 +72,13 @@ namespace
 void tqtPaneMgr::Init()
 {
 	DBG_ASSERT(tqtSystem::g_pMainForm, "MainForm not yet initialized.");
-#ifdef QT_FINISH_PORT
-	//l_pAuiMgr = new wxAuiManager(tqtSystem::g_pMainForm);
-	l_pAuiMgr = new wxAuiManager(tqtSystem::g_pMainForm,
-					wxAUI_MGR_DEFAULT | wxAUI_MGR_ALLOW_ACTIVE_PANE);
-#endif
+	if (tqtSystem::g_pMainForm)
+	{
+		tqtSystem::g_pMainForm->setDockOptions(QMainWindow::AnimatedDocks |
+											   QMainWindow::AllowTabbedDocks |
+											   QMainWindow::AllowNestedDocks);
+	}
+	l_bInitialized = true;
 }
 
 //---------------------------------------------------------------------------
@@ -43,31 +86,63 @@ void tqtPaneMgr::Init()
 //---------------------------------------------------------------------------
 void tqtPaneMgr::CleanUp()
 {
-	// Not sure if we need to delete it
-	//bga - Yes, the sample code use a member variable (not pointer) for AUI manager, so
-	// it is safe to delete the manager
-#ifdef QT_FINISH_PORT
-	if (l_pAuiMgr != NULL)
-		delete l_pAuiMgr;
-
-	l_pAuiMgr = NULL;
-#endif
+	// the main window owns the dock widgets
+	l_PaneMap.clear();
+	l_bInitialized = false;
 }
 
 //---------------------------------------------------------------------------
 // Add new pane with given info
 //---------------------------------------------------------------------------
-#ifdef QT_FINISH_PORT
-void tqtPaneMgr::AddPane(QWidget *i_pWindow, const wxAuiPaneInfo &i_PaneInfo)
+void tqtPaneMgr::AddPane(QWidget *i_pWindow, const tqtPaneInfo &i_PaneInfo)
 {
-	DBG_ASSERT(l_pAuiMgr, "tqtPaneMgr not yet initialized.");
-	if (l_pAuiMgr != NULL)
+	DBG_ASSERT(l_bInitialized, "tqtPaneMgr not yet initialized.");
+	QMainWindow* pMainForm = tqtSystem::g_pMainForm;
+	if (!pMainForm || !i_pWindow)
+		return;
+
+	if (i_PaneInfo.m_Dock == tqtPaneInfo::e_Center)
 	{
-		l_pAuiMgr->AddPane(i_pWindow, i_PaneInfo);
-		l_pAuiMgr->Update();
+		pMainForm->setCentralWidget(i_pWindow);
+		return;
 	}
+
+	QDockWidget* pDock = new QDockWidget(i_PaneInfo.m_Caption, pMainForm);
+	pDock->setObjectName(i_PaneInfo.m_Name);	// needed to save the layout
+	pDock->setWidget(i_pWindow);
+	if (i_PaneInfo.m_bDestroyOnClose)
+		pDock->setAttribute(Qt::WA_DeleteOnClose);
+	if (i_PaneInfo.m_MinSize.isValid())
+		pDock->setMinimumSize(i_PaneInfo.m_MinSize);
+
+	Qt::DockWidgetArea area = dock_area(i_PaneInfo.m_Dock);
+	pMainForm->addDockWidget(area, pDock);
+	if (i_PaneInfo.m_bFloat)
+		pDock->setFloating(true);
+
+	if (i_PaneInfo.m_BestSize.isValid())
+	{
+		if (area == Qt::LeftDockWidgetArea || area == Qt::RightDockWidgetArea)
+			pMainForm->resizeDocks(QList<QDockWidget*>() << pDock, QList<int>() << i_PaneInfo.m_BestSize.width(), Qt::Horizontal);
+		else
+			pMainForm->resizeDocks(QList<QDockWidget*>() << pDock, QList<int>() << i_PaneInfo.m_BestSize.height(), Qt::Vertical);
+	}
+
+	if (!i_PaneInfo.m_bShown)
+		pDock->hide();
+
+	l_PaneMap[i_pWindow] = pDock;
+
+	// Keep the map in step when either one goes away
+	QObject::connect(pDock, &QObject::destroyed, [i_pWindow]()
+	{
+		l_PaneMap.erase(i_pWindow);
+	});
+	QObject::connect(i_pWindow, &QObject::destroyed, [i_pWindow]()
+	{
+		l_PaneMap.erase(i_pWindow);
+	});
 }
-#endif
 
 //---------------------------------------------------------------------------
 // Refresh panes in situations where the frame size changed without
@@ -75,10 +150,6 @@ void tqtPaneMgr::AddPane(QWidget *i_pWindow, const wxAuiPaneInfo &i_PaneInfo)
 //---------------------------------------------------------------------------
 void tqtPaneMgr::Update()
 {
-#ifdef QT_FINISH_PORT
-	if (l_pAuiMgr != NULL)
-		l_pAuiMgr->Update();
-#endif
 }
 
 //---------------------------------------------------------------------------
@@ -87,63 +158,30 @@ void tqtPaneMgr::Update()
 //---------------------------------------------------------------------------
 void tqtPaneMgr::Show(const char* i_PaneName, bool i_bShow)
 {
-#ifdef QT_FINISH_PORT
-	if (l_pAuiMgr != NULL)
-	{
-		wxAuiPaneInfo &pane_info = l_pAuiMgr->GetPane(wxString(i_PaneName, wxConvUTF8));
-		if (pane_info.IsOk())
-		{
-			pane_info.Show(i_bShow);
-			l_pAuiMgr->Update();
-		}
-	}
-#endif
+	if (QDockWidget* pDock = find_dock(i_PaneName))
+		show_dock(pDock, i_bShow);
 }
 void tqtPaneMgr::Show(QWidget *i_pWindow, bool i_bShow)
 {
-#ifdef QT_FINISH_PORT
-	if (l_pAuiMgr != NULL)
-	{
-		wxAuiPaneInfo &pane_info = l_pAuiMgr->GetPane(i_pWindow);
-		if (pane_info.IsOk())
-		{
-			pane_info.Show(i_bShow);
-			l_pAuiMgr->Update();
-		}
-	}
-#endif
+	if (QDockWidget* pDock = find_dock(i_pWindow))
+		show_dock(pDock, i_bShow);
+	else if (i_pWindow && tqtSystem::g_pMainForm && i_pWindow == tqtSystem::g_pMainForm->centralWidget())
+		i_pWindow->setVisible(i_bShow);
 }
 
 //---------------------------------------------------------------------------
-// Return true if theis pane is visible currently
+// Return true if the pane is visible currently. A pane that is not
+// hidden counts as visible even before the main window is shown.
 //---------------------------------------------------------------------------
 bool tqtPaneMgr::IsVisible(const char* i_PaneName)
 {
-#ifdef QT_FINISH_PORT
-	if (l_pAuiMgr != NULL)
-	{
-		wxAuiPaneInfo &pane_info = l_pAuiMgr->GetPane(wxString(i_PaneName, wxConvUTF8));
-		if (pane_info.IsOk())
-		{
-			return pane_info.IsShown();
-		}
-	}
-#endif
-	return false;
+	QDockWidget* pDock = find_dock(i_PaneName);
+	return pDock && !pDock->isHidden();
 }
 bool tqtPaneMgr::IsVisible(QWidget *i_pWindow)
 {
-#ifdef QT_FINISH_PORT
-	if (l_pAuiMgr != NULL)
-	{
-		wxAuiPaneInfo &pane_info = l_pAuiMgr->GetPane(i_pWindow);
-		if (pane_info.IsOk())
-		{
-			return pane_info.IsShown();
-		}
-	}
-#endif
-	return false;
+	QDockWidget* pDock = find_dock(i_pWindow);
+	return pDock && !pDock->isHidden();
 }
 
 //---------------------------------------------------------------------------
@@ -151,17 +189,8 @@ bool tqtPaneMgr::IsVisible(QWidget *i_pWindow)
 //---------------------------------------------------------------------------
 void tqtPaneMgr::SetCaption(QWidget *i_pWindow, const std::string& i_Caption)
 {
-#ifdef QT_FINISH_PORT
-	if (l_pAuiMgr != NULL)
-	{
-		wxAuiPaneInfo &pane_info = l_pAuiMgr->GetPane(i_pWindow);
-		if (pane_info.IsOk())
-		{
-			pane_info.Caption(wxString(i_Caption.c_str(), wxConvUTF8));
-			l_pAuiMgr->Update();
-		}
-	}
-#endif
+	if (QDockWidget* pDock = find_dock(i_pWindow))
+		pDock->setWindowTitle(tqtQString(i_Caption));
 }
 
 //---------------------------------------------------------------------------
@@ -169,19 +198,31 @@ void tqtPaneMgr::SetCaption(QWidget *i_pWindow, const std::string& i_Caption)
 //---------------------------------------------------------------------------
 void tqtPaneMgr::ResizePane(QWidget *i_pWindow, int i_Width, int i_Height)
 {
-#ifdef QT_FINISH_PORT
-	if (l_pAuiMgr != NULL)
+	QDockWidget* pDock = find_dock(i_pWindow);
+	QMainWindow* pMainForm = tqtSystem::g_pMainForm;
+	if (pDock && pMainForm)
 	{
-		wxAuiPaneInfo &pane_info = l_pAuiMgr->GetPane(i_pWindow);
-		if (pane_info.IsOk())
+		if (pDock->isFloating())
 		{
-			wxSize s(i_Width, i_Height);
-			//pane_info.MinSize(s).BestSize(s);
-			pane_info.BestSize(s);
-			l_pAuiMgr->Update();
+			pDock->resize(i_Width, i_Height);
+		}
+		else
+		{
+			Qt::DockWidgetArea area = pMainForm->dockWidgetArea(pDock);
+			if (area == Qt::LeftDockWidgetArea || area == Qt::RightDockWidgetArea)
+				pMainForm->resizeDocks(QList<QDockWidget*>() << pDock, QList<int>() << i_Width, Qt::Horizontal);
+			else
+				pMainForm->resizeDocks(QList<QDockWidget*>() << pDock, QList<int>() << i_Height, Qt::Vertical);
 		}
 	}
-#endif
+}
+
+//---------------------------------------------------------------------------
+// Dock widget holding the given pane window
+//---------------------------------------------------------------------------
+QDockWidget* tqtPaneMgr::GetDockWidget(QWidget *i_pWindow)
+{
+	return find_dock(i_pWindow);
 }
 
 //---------------------------------------------------------------------------
@@ -190,25 +231,31 @@ void tqtPaneMgr::ResizePane(QWidget *i_pWindow, int i_Width, int i_Height)
 //---------------------------------------------------------------------------
 bool tqtPaneMgr::GetCurrentPerspective(std::string& o_Perspective)
 {
-#ifdef QT_FINISH_PORT
-	if (l_pAuiMgr != NULL)
+	if (tqtSystem::g_pMainForm)
 	{
-		wxString persp = l_pAuiMgr->SavePerspective();
-		o_Perspective = persp.utf8_str();
+		QByteArray state = tqtSystem::g_pMainForm->saveState();
+		o_Perspective = c_PerspectivePrefix;
+		o_Perspective += state.toBase64().constData();
 		return true;
 	}
-#endif
 	return false;
 }
 
 void tqtPaneMgr::SetCurrentPerspective(const std::string& i_Perspective)
 {
-#ifdef QT_FINISH_PORT
-	if (l_pAuiMgr != NULL)
+	if (tqtSystem::g_pMainForm)
 	{
-		l_pAuiMgr->LoadPerspective(wxString(i_Perspective.c_str(), wxConvUTF8));
+		const size_t prefix_len = strlen(c_PerspectivePrefix);
+		if (i_Perspective.compare(0, prefix_len, c_PerspectivePrefix) == 0)
+		{
+			QByteArray state = QByteArray::fromBase64(QByteArray(i_Perspective.c_str() + prefix_len));
+			tqtSystem::g_pMainForm->restoreState(state);
+		}
+		else
+		{
+			DBG_LOG("Ignoring a pane layout that was not saved by the Qt interface.");
+		}
 	}
-#endif
 }
 
 #endif // USE_QT

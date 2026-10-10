@@ -15,18 +15,18 @@
 #include "ToolUIQt/tqc/tqcFloatEdit.hpp"
 #endif
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //============================================================================
-// wxEVT_VALUE_CHANGED event : this control throws this event type when the
+// Value changed callback (tqcEvent.hpp): this control calls it when the
 //	value in the control has changed aftere ENTER is pressed, or the
-//	focus leaves the text box. Users should register for this event, 
-//	not for the individual enter pressed and leave events.
+//	focus leaves the text box. Users should set this callback, 
+//	not watch for the individual enter pressed and leave events.
 //============================================================================
 
 //============================================================================
 //============================================================================
-class tqcRangedFloat : public wxPanel
+class tqcRangedFloat : public QWidget, public tqcValueChangedNotifier
 {
 	public:
 		//--------------------------------------------------------------------
@@ -95,15 +95,15 @@ class tqcRangedFloat : public wxPanel
 	private:
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		void OnTextChange(wxCommandEvent& i_Event);
-		void OnScrollChanged(wxScrollEvent& i_Event);
+		void OnTextChange();
+		void OnScrollChanged(int i_Position);
 
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
 		void update_slider();
 		void notify_callback();
 
-		wxSlider* m_pSlider;
+		QSlider* m_pSlider;
 		tqcFloatEdit* m_pFloatEdit;
 		
 		float m_Value;
@@ -112,8 +112,8 @@ class tqcRangedFloat : public wxPanel
 		short m_Exponent;
 		bool m_bExpandRange;
 		bool m_bRestrictValue;
+		bool m_bUpdatingSlider;
 
-    DECLARE_EVENT_TABLE()
 };
 
 #endif // USE_QT

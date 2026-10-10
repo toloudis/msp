@@ -1,0 +1,302 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{3B0F4C6E-8E0A-4F4B-9C55-2D7A1E6C9A41}</ProjectGuid>
+    <RootNamespace>ToolUIQt</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup>
+    <OutDir>.\..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir>.\..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Python\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>kernel32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalOptions>/Zl %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\3rdParty\Boost;$(ProjectDir)..\..\3rdParty\Python\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;NDEBUG;QT_NO_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Lib>
+      <AdditionalDependencies>kernel32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <Import Project="qt6.props" />
+  <ItemGroup>
+    <ClCompile Include="pqt\Controls\pqtBoolean_CheckBox.cpp" />
+    <ClCompile Include="pqt\Controls\pqtColor_ColorRGBAEdit.cpp" />
+    <ClCompile Include="pqt\Controls\pqtColor_ColorRGBEdit.cpp" />
+    <ClCompile Include="pqt\Controls\pqtControlUtil.cpp" />
+    <ClCompile Include="pqt\Controls\pqtDirectory_DirPicker.cpp" />
+    <ClCompile Include="pqt\Controls\pqtEnum_ComboBox.cpp" />
+    <ClCompile Include="pqt\Controls\pqtFilePath_ComboBox.cpp" />
+    <ClCompile Include="pqt\Controls\pqtFilePath_FilePicker.cpp" />
+    <ClCompile Include="pqt\Controls\pqtFilename_ComboBox.cpp" />
+    <ClCompile Include="pqt\Controls\pqtFilename_FilePicker.cpp" />
+    <ClCompile Include="pqt\Controls\pqtFilename_TextBox.cpp" />
+    <ClCompile Include="pqt\Controls\pqtFloatConverter.cpp" />
+    <ClCompile Include="pqt\Controls\pqtFloat_ComboBox.cpp" />
+    <ClCompile Include="pqt\Controls\pqtFloat_FloatEdit.cpp" />
+    <ClCompile Include="pqt\Controls\pqtFloat_NumericUpDown.cpp" />
+    <ClCompile Include="pqt\Controls\pqtFloat_RangedFloat.cpp" />
+    <ClCompile Include="pqt\Controls\pqtGradient_GradientColorEdit.cpp" />
+    <ClCompile Include="pqt\Controls\pqtHotKey_KeyCombo.cpp" />
+    <ClCompile Include="pqt\Controls\pqtInt32Converter.cpp" />
+    <ClCompile Include="pqt\Controls\pqtInt32_ComboBox.cpp" />
+    <ClCompile Include="pqt\Controls\pqtInt32_FloatEdit.cpp" />
+    <ClCompile Include="pqt\Controls\pqtInt32_NumericUpDown.cpp" />
+    <ClCompile Include="pqt\Controls\pqtInt32_RangedFloat.cpp" />
+    <ClCompile Include="pqt\Controls\pqtInt8Converter.cpp" />
+    <ClCompile Include="pqt\Controls\pqtInt8_FloatEdit.cpp" />
+    <ClCompile Include="pqt\Controls\pqtInt8_NumericUpDown.cpp" />
+    <ClCompile Include="pqt\Controls\pqtInt8_RangedFloat.cpp" />
+    <ClCompile Include="pqt\Controls\pqtListChecked_CheckListBox.cpp" />
+    <ClCompile Include="pqt\Controls\pqtName_ComboBox.cpp" />
+    <ClCompile Include="pqt\Controls\pqtName_ListBox.cpp" />
+    <ClCompile Include="pqt\Controls\pqtName_TextBox.cpp" />
+    <ClCompile Include="pqt\Controls\pqtRotation_Vector3Edit.cpp" />
+    <ClCompile Include="pqt\Controls\pqtRotation_Vector3EditUpDown.cpp" />
+    <ClCompile Include="pqt\Controls\pqtText_ComboBox.cpp" />
+    <ClCompile Include="pqt\Controls\pqtText_TextBox.cpp" />
+    <ClCompile Include="pqt\Controls\pqtTextureFileName_TextureFilePicker.cpp" />
+    <ClCompile Include="pqt\Controls\pqtTrigger_Button.cpp" />
+    <ClCompile Include="pqt\Controls\pqtVector3d_Vector3Edit.cpp" />
+    <ClCompile Include="pqt\Controls\pqtVector3d_Vector3EditUpDown.cpp" />
+    <ClCompile Include="pqt\private\pqtCategoryLabel.cpp" />
+    <ClCompile Include="pqt\private\pqtControl.cpp" />
+    <ClCompile Include="pqt\private\pqtControlFactory.cpp" />
+    <ClCompile Include="pqt\private\pqtControlFactoryBase.cpp" />
+    <ClCompile Include="pqt\private\pqtControlFactoryCustom.cpp" />
+    <ClCompile Include="pqt\private\pqtControlMgr.cpp" />
+    <ClCompile Include="pqt\private\pqtFormControlBuilder.cpp" />
+    <ClCompile Include="pqt\private\pqtKeyPropertyButton.cpp" />
+    <ClCompile Include="qui\private\quiCursor.cpp" />
+    <ClCompile Include="qui\private\quiDialogTabbedMgr.cpp" />
+    <ClCompile Include="qui\private\quiFileDialogUtils.cpp" />
+    <ClCompile Include="qui\private\quiMainWindow.cpp" />
+    <ClCompile Include="qui\private\quiMenuMgr.cpp" />
+    <ClCompile Include="qui\private\quiMessageBox.cpp" />
+    <ClCompile Include="qui\private\quiPackage.cpp" />
+    <ClCompile Include="qui\private\quiProgressDialog.cpp" />
+    <ClCompile Include="qui\private\quiPropertyDialog.cpp" />
+    <ClCompile Include="qui\private\quiPropertyGrid.cpp" />
+    <ClCompile Include="qui\private\quiSplashScreen.cpp" />
+    <ClCompile Include="qui\private\quiStatusBarMgr.cpp" />
+    <ClCompile Include="qui\private\quiToolbarMgr.cpp" />
+    <ClCompile Include="qui\private\quiXMLTextReader.cpp" />
+    <ClCompile Include="qui\private\quiXMLTextWriter.cpp" />
+    <ClCompile Include="tqc\private\tqcColorDialog.cpp" />
+    <ClCompile Include="tqc\private\tqcColorPicker.cpp" />
+    <ClCompile Include="tqc\private\tqcColorRGBAEdit.cpp" />
+    <ClCompile Include="tqc\private\tqcColorRGBEdit.cpp" />
+    <ClCompile Include="tqc\private\tqcColorUtil.cpp" />
+    <ClCompile Include="tqc\private\tqcDirPicker.cpp" />
+    <ClCompile Include="tqc\private\tqcEvent.cpp" />
+    <ClCompile Include="tqc\private\tqcFilePicker.cpp" />
+    <ClCompile Include="tqc\private\tqcFloatEdit.cpp" />
+    <ClCompile Include="tqc\private\tqcGradientColorBase.cpp" />
+    <ClCompile Include="tqc\private\tqcGradientColorEdit.cpp" />
+    <ClCompile Include="tqc\private\tqcHotKeyCtrl.cpp" />
+    <ClCompile Include="tqc\private\tqcMultiKnobSlider.cpp" />
+    <ClCompile Include="tqc\private\tqcNumericUpDown.cpp" />
+    <ClCompile Include="tqc\private\tqcPictureBox.cpp" />
+    <ClCompile Include="tqc\private\tqcRangedFloat.cpp" />
+    <ClCompile Include="tqc\private\tqcRenderPanel.cpp" />
+    <ClCompile Include="tqc\private\tqcStatusBar.cpp" />
+    <ClCompile Include="tqc\private\tqcTextBox.cpp" />
+    <ClCompile Include="tqc\private\tqcTextureFilePicker.cpp" />
+    <ClCompile Include="tqc\private\tqcTreeView.cpp" />
+    <ClCompile Include="tqc\private\tqcVector3Edit.cpp" />
+    <ClCompile Include="tqc\private\tqcVector3EditUpDown.cpp" />
+    <ClCompile Include="tqt\private\tqtAppUtil.cpp" />
+    <ClCompile Include="tqt\private\tqtContextMenu.cpp" />
+    <ClCompile Include="tqt\private\tqtCursor.cpp" />
+    <ClCompile Include="tqt\private\tqtDialogTabbed.cpp" />
+    <ClCompile Include="tqt\private\tqtDialogTabbedMgr.cpp" />
+    <ClCompile Include="tqt\private\tqtMenuMgr.cpp" />
+    <ClCompile Include="tqt\private\tqtMessageBox.cpp" />
+    <ClCompile Include="tqt\private\tqtMessaging.cpp" />
+    <ClCompile Include="tqt\private\tqtPaneMgr.cpp" />
+    <ClCompile Include="tqt\private\tqtPropertyDialog.cpp" />
+    <ClCompile Include="tqt\private\tqtPropertyDialogBase.cpp" />
+    <ClCompile Include="tqt\private\tqtSystem.cpp" />
+    <ClCompile Include="tqt\private\tqtToolbarMgr.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pqt\Controls\pqtBoolean_CheckBox.hpp" />
+    <ClInclude Include="pqt\Controls\pqtColor_ColorRGBAEdit.hpp" />
+    <ClInclude Include="pqt\Controls\pqtColor_ColorRGBEdit.hpp" />
+    <ClInclude Include="pqt\Controls\pqtControlUtil.hpp" />
+    <ClInclude Include="pqt\Controls\pqtDirectory_DirPicker.hpp" />
+    <ClInclude Include="pqt\Controls\pqtEnum_ComboBox.hpp" />
+    <ClInclude Include="pqt\Controls\pqtFilePath_ComboBox.hpp" />
+    <ClInclude Include="pqt\Controls\pqtFilePath_FilePicker.hpp" />
+    <ClInclude Include="pqt\Controls\pqtFilename_ComboBox.hpp" />
+    <ClInclude Include="pqt\Controls\pqtFilename_FilePicker.hpp" />
+    <ClInclude Include="pqt\Controls\pqtFilename_TextBox.hpp" />
+    <ClInclude Include="pqt\Controls\pqtFloatConverter.hpp" />
+    <ClInclude Include="pqt\Controls\pqtFloat_ComboBox.hpp" />
+    <ClInclude Include="pqt\Controls\pqtFloat_FloatEdit.hpp" />
+    <ClInclude Include="pqt\Controls\pqtFloat_NumericUpDown.hpp" />
+    <ClInclude Include="pqt\Controls\pqtFloat_RangedFloat.hpp" />
+    <ClInclude Include="pqt\Controls\pqtGradient_GradientColorEdit.hpp" />
+    <ClInclude Include="pqt\Controls\pqtHotKey_KeyCombo.hpp" />
+    <ClInclude Include="pqt\Controls\pqtInt32Converter.hpp" />
+    <ClInclude Include="pqt\Controls\pqtInt32_ComboBox.hpp" />
+    <ClInclude Include="pqt\Controls\pqtInt32_FloatEdit.hpp" />
+    <ClInclude Include="pqt\Controls\pqtInt32_NumericUpDown.hpp" />
+    <ClInclude Include="pqt\Controls\pqtInt32_RangedFloat.hpp" />
+    <ClInclude Include="pqt\Controls\pqtInt8Converter.hpp" />
+    <ClInclude Include="pqt\Controls\pqtInt8_FloatEdit.hpp" />
+    <ClInclude Include="pqt\Controls\pqtInt8_NumericUpDown.hpp" />
+    <ClInclude Include="pqt\Controls\pqtInt8_RangedFloat.hpp" />
+    <ClInclude Include="pqt\Controls\pqtListChecked_CheckListBox.hpp" />
+    <ClInclude Include="pqt\Controls\pqtName_ComboBox.hpp" />
+    <ClInclude Include="pqt\Controls\pqtName_ListBox.hpp" />
+    <ClInclude Include="pqt\Controls\pqtName_TextBox.hpp" />
+    <ClInclude Include="pqt\Controls\pqtRotation_Vector3Edit.hpp" />
+    <ClInclude Include="pqt\Controls\pqtRotation_Vector3EditUpDown.hpp" />
+    <ClInclude Include="pqt\Controls\pqtTemplate_CheckListBox.hpp" />
+    <ClInclude Include="pqt\Controls\pqtTemplate_ComboBox.hpp" />
+    <ClInclude Include="pqt\Controls\pqtTemplate_DirPicker.hpp" />
+    <ClInclude Include="pqt\Controls\pqtTemplate_FilePicker.hpp" />
+    <ClInclude Include="pqt\Controls\pqtTemplate_FloatEdit.hpp" />
+    <ClInclude Include="pqt\Controls\pqtTemplate_ListBox.hpp" />
+    <ClInclude Include="pqt\Controls\pqtTemplate_NumericUpDown.hpp" />
+    <ClInclude Include="pqt\Controls\pqtTemplate_RangedFloat.hpp" />
+    <ClInclude Include="pqt\Controls\pqtTemplate_TextBox.hpp" />
+    <ClInclude Include="pqt\Controls\pqtTemplate_TextureFilePicker.hpp" />
+    <ClInclude Include="pqt\Controls\pqtTemplate_Vector3Edit.hpp" />
+    <ClInclude Include="pqt\Controls\pqtTemplate_Vector3EditUpDown.hpp" />
+    <ClInclude Include="pqt\Controls\pqtText_ComboBox.hpp" />
+    <ClInclude Include="pqt\Controls\pqtText_TextBox.hpp" />
+    <ClInclude Include="pqt\Controls\pqtTextureFileName_TextureFilePicker.hpp" />
+    <ClInclude Include="pqt\Controls\pqtTrigger_Button.hpp" />
+    <ClInclude Include="pqt\Controls\pqtVector3d_Vector3Edit.hpp" />
+    <ClInclude Include="pqt\Controls\pqtVector3d_Vector3EditUpDown.hpp" />
+    <ClInclude Include="pqt\pqtControl.hpp" />
+    <ClInclude Include="pqt\pqtControlFactory.hpp" />
+    <ClInclude Include="pqt\pqtControlFactoryBase.hpp" />
+    <ClInclude Include="pqt\pqtControlFactoryCustom.hpp" />
+    <ClInclude Include="pqt\pqtControlMgr.hpp" />
+    <ClInclude Include="pqt\pqtFormControlBuilder.hpp" />
+    <ClInclude Include="pqt\private\pqtCategoryLabel.hpp" />
+    <ClInclude Include="pqt\private\pqtKeyPropertyButton.hpp" />
+    <ClInclude Include="qui\quiCursor.hpp" />
+    <ClInclude Include="qui\quiDialogTabbedMgr.hpp" />
+    <ClInclude Include="qui\quiFileDialogUtils.hpp" />
+    <ClInclude Include="qui\quiMainWindow.hpp" />
+    <ClInclude Include="qui\quiMenuMgr.hpp" />
+    <ClInclude Include="qui\quiMessageBox.hpp" />
+    <ClInclude Include="qui\quiPackage.hpp" />
+    <ClInclude Include="qui\quiProgressDialog.hpp" />
+    <ClInclude Include="qui\quiPropertyDialog.hpp" />
+    <ClInclude Include="qui\quiPropertyGrid.hpp" />
+    <ClInclude Include="qui\quiSplashScreen.hpp" />
+    <ClInclude Include="qui\quiStatusBarMgr.hpp" />
+    <ClInclude Include="qui\quiToolbarMgr.hpp" />
+    <ClInclude Include="qui\quiXMLTextReader.hpp" />
+    <ClInclude Include="qui\quiXMLTextWriter.hpp" />
+    <ClInclude Include="tqc\private\tqcColorDialog.hpp" />
+    <ClInclude Include="tqc\private\tqcColorUtil.hpp" />
+    <ClInclude Include="tqc\private\tqcGradientColorBase.hpp" />
+    <ClInclude Include="tqc\private\tqcMultiKnobSlider.hpp" />
+    <ClInclude Include="tqc\private\tqcPictureBox.hpp" />
+    <ClInclude Include="tqc\tqcColorPicker.hpp" />
+    <ClInclude Include="tqc\tqcColorRGBAEdit.hpp" />
+    <ClInclude Include="tqc\tqcColorRGBEdit.hpp" />
+    <ClInclude Include="tqc\tqcDirPicker.hpp" />
+    <ClInclude Include="tqc\tqcEvent.hpp" />
+    <ClInclude Include="tqc\tqcFilePicker.hpp" />
+    <ClInclude Include="tqc\tqcFloatEdit.hpp" />
+    <ClInclude Include="tqc\tqcGradientColorEdit.hpp" />
+    <ClInclude Include="tqc\tqcHotKeyCtrl.hpp" />
+    <ClInclude Include="tqc\tqcNativeWindow.hpp" />
+    <ClInclude Include="tqc\tqcNumericUpDown.hpp" />
+    <ClInclude Include="tqc\tqcRangedFloat.hpp" />
+    <ClInclude Include="tqc\tqcRenderPanel.hpp" />
+    <ClInclude Include="tqc\tqcStatusBar.hpp" />
+    <ClInclude Include="tqc\tqcTextBox.hpp" />
+    <ClInclude Include="tqc\tqcTextureFilePicker.hpp" />
+    <ClInclude Include="tqc\tqcTreeNode.hpp" />
+    <ClInclude Include="tqc\tqcTreeView.hpp" />
+    <ClInclude Include="tqc\tqcVector3Edit.hpp" />
+    <ClInclude Include="tqc\tqcVector3EditUpDown.hpp" />
+    <ClInclude Include="tqt\private\tqtPropertyDialogBase.h" />
+    <ClInclude Include="tqt\tqtAppUtil.hpp" />
+    <ClInclude Include="tqt\tqtContextMenu.hpp" />
+    <ClInclude Include="tqt\tqtCursor.hpp" />
+    <ClInclude Include="tqt\tqtDialogTabbed.hpp" />
+    <ClInclude Include="tqt\tqtDialogTabbedMgr.hpp" />
+    <ClInclude Include="tqt\tqtMenuMgr.hpp" />
+    <ClInclude Include="tqt\tqtMessageBox.hpp" />
+    <ClInclude Include="tqt\tqtMessaging.hpp" />
+    <ClInclude Include="tqt\tqtPaneMgr.hpp" />
+    <ClInclude Include="tqt\tqtPropertyDialog.hpp" />
+    <ClInclude Include="tqt\tqtSystem.hpp" />
+    <ClInclude Include="tqt\tqtToolbarMgr.hpp" />
+    <ClInclude Include="tqt\tqtWidgets.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="qt6.props" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

@@ -25,6 +25,7 @@
 #include "Core/dbg/dbgMsg.hpp"
 #endif
 
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
@@ -59,13 +60,9 @@ class pqtTemplate_FloatEdit : public pqtControl, public prtyUnitsInterest
 			// watch for units changes
 			prtyUnits::RegisterUnitsInterest(this);
 
-#ifdef QT_FINISH_PORT
 			//	hook up events
 			//
-			this->Connect( m_pActualControl->GetId(), wxEVT_VALUE_CHANGED,
-							wxCommandEventHandler(pqtTemplate_FloatEdit::FloatEdit_ValueChanged) );
-			m_pActualControl->PushEventHandler(this);
-#endif
+			m_pActualControl->SetValueChangedCallback([this]() { FloatEdit_ValueChanged(); });
 		}
 
 		//----------------------------------------------------------------------------
@@ -74,9 +71,6 @@ class pqtTemplate_FloatEdit : public pqtControl, public prtyUnitsInterest
 		virtual ~pqtTemplate_FloatEdit()
 		{
 			prtyUnits::UnRegisterUnitsInterest(this);
-#ifdef QT_FINISH_PORT
-			m_pActualControl->RemoveEventHandler(this);
-#endif
 		}
 
 		//----------------------------------------------------------------------------
@@ -86,7 +80,6 @@ class pqtTemplate_FloatEdit : public pqtControl, public prtyUnitsInterest
 			return m_pActualControl;
 		}
 
-#ifdef QT_FINISH_PORT
 		//----------------------------------------------------------------------------
 		//	Note: right now, PropertyChanged will not create a circular update because
 		//	of the m_bLocalChangeNoUpdate flag.  This IS NOT true the other way
@@ -115,9 +108,8 @@ class pqtTemplate_FloatEdit : public pqtControl, public prtyUnitsInterest
 		//----------------------------------------------------------------------------
 		void UpdateControl(prtyPropertyUIInfo* i_pUIInfo)
 		{
-			m_pActualControl->Enable(!i_pUIInfo->GetReadOnly());
+			m_pActualControl->setEnabled(!i_pUIInfo->GetReadOnly());
 		}
-#endif // USE_QT
 
 		//--------------------------------------------------------------------
 		//	UnitsChanged - notification that the units for the
@@ -132,8 +124,7 @@ class pqtTemplate_FloatEdit : public pqtControl, public prtyUnitsInterest
 	private:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
-#ifdef QT_FINISH_PORT
-		void FloatEdit_ValueChanged(wxCommandEvent& i_Event)
+		void FloatEdit_ValueChanged()
 		{
 			if (m_bLocalChangeNoUpdate) return;
 
@@ -146,8 +137,8 @@ class pqtTemplate_FloatEdit : public pqtControl, public prtyUnitsInterest
 			}
 			m_bLocalChangeNoUpdate = false;
 		}
-#endif
 
 		tqcFloatEdit* m_pActualControl;
 };
 
+#endif // USE_QT

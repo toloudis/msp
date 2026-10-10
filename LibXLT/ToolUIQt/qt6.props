@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Qt 6 settings for projects that build the Qt GUI (ToolUIQt and the
+    MachStudio projects when MspGuiToolkit is Qt).
+
+    Import this AFTER the project's own ItemDefinitionGroups: it appends to
+    the compile settings instead of replacing them, because some projects
+    do not inherit %(AdditionalIncludeDirectories).
+
+    The Qt install is taken from MspQtDir, then the QTDIR environment
+    variable, then the default below. The Qt import libraries are linked
+    with #pragma comment(lib) in ToolUIQt/tqt/tqtWidgets.hpp.
+
+    No moc, uic or rcc step is needed: the Qt code connects signals to
+    lambdas and builds its layouts in C++.
+  -->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="UserMacros">
+    <MspQtDir Condition="'$(MspQtDir)' == '' and '$(QTDIR)' != ''">$(QTDIR)</MspQtDir>
+    <MspQtDir Condition="'$(MspQtDir)' == ''">C:\Qt\6.9.3\msvc2022_64</MspQtDir>
+    <MspQtDir>$([MSBuild]::EnsureTrailingSlash('$(MspQtDir)'))</MspQtDir>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MspQtDir)include;$(MspQtDir)include\QtCore;$(MspQtDir)include\QtGui;$(MspQtDir)include\QtWidgets</AdditionalIncludeDirectories>
+      <!-- QT_NO_KEYWORDS: keep signals/slots/emit out of the global namespace -->
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);MSP_GUI_QT;QT_NO_KEYWORDS;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB</PreprocessorDefinitions>
+      <!-- Qt 6 refuses to compile unless __cplusplus reports the real standard
+           and the compiler follows the standard's rules (/permissive-).
+           The older code still relies on two of the relaxed rules, which
+           Qt doesn't need: string literals initializing char*, and
+           temporaries binding to non-const references. -->
+      <AdditionalOptions>%(AdditionalOptions) /Zc:__cplusplus /permissive- /Zc:strictStrings- /Zc:referenceBinding-</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(MspQtDir)lib</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+
+  <Target Name="MspCheckQt" BeforeTargets="PrepareForBuild">
+    <Error Condition="!Exists('$(MspQtDir)include\QtWidgets\QWidget')"
+           Text="Qt 6 was not found at &quot;$(MspQtDir)&quot;. Set the QTDIR environment variable (or the MspQtDir property) to your Qt msvc2022_64 directory." />
+  </Target>
+</Project>

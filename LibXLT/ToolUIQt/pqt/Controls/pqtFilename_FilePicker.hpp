@@ -19,12 +19,12 @@
 #include "Core/prty/prtyFileName.hpp"
 #endif
 
+#ifdef USE_QT
 
 //===================================================================================
 //===================================================================================
 class pqtFileName_FilePicker_Converter 
 {
-#ifdef QT_FINISH_PORT
 public:
 	//----------------------------------------------------------------------------
 	// Set value into control
@@ -36,10 +36,10 @@ public:
 	// Get value from control
 	//----------------------------------------------------------------------------
 	static itString GetValueFromControl(tqcFilePicker* i_pActualControl);
-#endif // USE_QT
 };
 
 //============================================================================
 //============================================================================
 typedef pqtTemplate_FilePicker<prtyFileName, itString, pqtFileName_FilePicker_Converter> pqtFileName_FilePicker;
 
+#endif // USE_QT

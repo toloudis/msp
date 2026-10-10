@@ -19,26 +19,27 @@
 #include "Core/prty/prtyDirectory.hpp"
 #endif
 
+#ifdef USE_QT
 
 //===================================================================================
 //===================================================================================
 class pqtDirectory_DirPicker_Converter 
 {
-#ifdef QT_FINISH_PORT
 public:
 	//----------------------------------------------------------------------------
 	// Set value into control
 	//----------------------------------------------------------------------------
-	static void SetValueIntoControl(wxDirPickerCtrl* i_pActualControl,
+	static void SetValueIntoControl(tqcDirPicker* i_pActualControl,
 									 fsLocator i_Value);
 
 	//----------------------------------------------------------------------------
 	// Get value from control
 	//----------------------------------------------------------------------------
-	static fsLocator GetValueFromControl(wxDirPickerCtrl* i_pActualControl);
-#endif
+	static fsLocator GetValueFromControl(tqcDirPicker* i_pActualControl);
 };
 
 //============================================================================
 //============================================================================
 typedef pqtTemplate_DirPicker<prtyDirectory, fsLocator, pqtDirectory_DirPicker_Converter> pqtDirectory_DirPicker;
+
+#endif // USE_QT

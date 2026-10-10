@@ -13,7 +13,7 @@
 
 #include <sstream>
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 // Get list of string choices for combo box
@@ -28,21 +28,20 @@ void pqtFloat_ComboBox_Converter::GetChoices(prtyPropertyUIInfo* i_pUIInfo,
 //----------------------------------------------------------------------------
 // Set value into control
 //----------------------------------------------------------------------------
-void pqtFloat_ComboBox_Converter::SetValueIntoControl(wxChoice* i_pActualControl,
+void pqtFloat_ComboBox_Converter::SetValueIntoControl(QComboBox* i_pActualControl,
 													 float i_Value)
 {
-	std::wostringstream str;
+	std::ostringstream str;
 	str << i_Value;
-	i_pActualControl->SetStringSelection(str.str());
+	pqtControlUtil::SelectString(i_pActualControl, tqtQString(str.str()));
 }
 
 //----------------------------------------------------------------------------
 // Get value from control
 //----------------------------------------------------------------------------
-float pqtFloat_ComboBox_Converter::GetValueFromControl(wxChoice* i_pActualControl)
+float pqtFloat_ComboBox_Converter::GetValueFromControl(QComboBox* i_pActualControl)
 {
-	std::wstring text = i_pActualControl->GetStringSelection();
-	std::wistringstream str(text);
+	std::istringstream str(tqtStdString(i_pActualControl->currentText()));
 	float value = 0;
 	str >> value;
 	return value;
