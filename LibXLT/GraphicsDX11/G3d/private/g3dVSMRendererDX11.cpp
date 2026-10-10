@@ -695,7 +695,7 @@ int g3dVSMRendererDX11::DrawHairNode(const g3dSceneNode* i_pNode)
 	const matMaterial* pMaterial = &l_HairMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 	//	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)pEffect;
-	//	ID3DXEffect* pD3DEffect = i_pEffect->GetD3DXEffect();
+	//	ID3DXEffect* pD3DEffect = i_pEffect->GetFxEffect();
 
 //	effStrandHairData HairData;
 	effStrandHairData& HairData = pMaterial->StrandHairData();

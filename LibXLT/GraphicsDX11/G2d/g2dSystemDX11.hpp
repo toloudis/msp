@@ -29,7 +29,6 @@ class g2dFontUtilDX11;
 class g2dImageCreateDX11;
 class g2dImageSaveDX11;
 class g2dResourceCounterDX11;
-class effShaderSDKDX11;
 
 //============================================================================
 //============================================================================
@@ -101,7 +100,6 @@ private:
 	g2dFontUtilDX11* m_pFontImpl;
 	g2dImageCreateDX11* m_pImageCreator;
 	g2dImageSaveDX11* m_pImageSaver;
-	effShaderSDKDX11* m_pShaderSDK;
 
 	void CreateDevice(void* i_Hwnd, int i_Adapter);
 

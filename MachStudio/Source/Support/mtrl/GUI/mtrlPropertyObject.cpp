@@ -21,7 +21,7 @@
 #include "Core/It/itStringUtil.hpp"
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
 #include "Core/prty/prtyComboBoxUIInfo.hpp"
-#include "Core/prty/prtyFileChooserUIInfo.hpp"
+#include "Core/prty/prtyFilePathComboBoxUIInfo.hpp"
 #include "Graphics/eff/effShaderParams.hpp"
 #include "Graphics/g3d/g3dExceptionX.hpp"
 #include "Graphics/g3d/g3dPrefs.hpp"
@@ -36,22 +36,26 @@
 //============================================================================
 namespace
 {
-	prtyFileChooserUIInfo* create_file_chooser(mdlMaterialInfo& i_Data,
-											   int i_MaterialLayer,
-											   prtyFilePath& io_ShaderType)
+	//------------------------------------------------------------------------
+	// Dropdown of the built-in material shaders, labelled by effect name
+	//	("Phong") and storing the shader name ("Phong.fx"). A shader that is
+	//	not in the list (an old or custom one) is added by the control.
+	//------------------------------------------------------------------------
+	prtyFilePathComboBoxUIInfo* create_shader_picker(prtyFilePath& io_ShaderType)
 	{
-		fsLocator currentShaderName;
-		if (i_Data.GetShaderParams())
-			currentShaderName = (i_Data.GetShaderParams(i_MaterialLayer)->GetShaderName());
-		else
-			currentShaderName = (i_Data.GetShader(i_MaterialLayer));
-		//io_ShaderType.SetValue(currentShaderName);
+		prtyFilePathComboBoxUIInfo *pShaderPickerUI = new prtyFilePathComboBoxUIInfo(&io_ShaderType, "Shader", "Material shader");
+		pShaderPickerUI->SetConfirmationString("Changing shader may lose all old shader parameters. Continue?");
 
-		prtyFileChooserUIInfo *pShaderFilePickerUI = new prtyFileChooserUIInfo(&io_ShaderType, "Shader", "Location of shader");
-		pShaderFilePickerUI->SetConfirmationString("Changing shader may lose all old shader parameters. Continue?");
-		pShaderFilePickerUI->SetDirectoryCategory("Shaders");
-		pShaderFilePickerUI->SetInitialDirectory( matShaderMgr::GetDefaultShaderPath() );
-		return pShaderFilePickerUI;
+		const std::vector<matShaderInfo>& shaders = matShaderMgr::GetMaterialShaders();
+		for (size_t i = 0; i < shaders.size(); i++)
+		{
+			std::string label = itStringUtil::GetStdString(shaders[i].m_Name);
+			const size_t dot = label.rfind('.');
+			if (dot != std::string::npos)
+				label.erase(dot);
+			pShaderPickerUI->AddChoice(label, fsLocator(shaders[i].m_Name));
+		}
+		return pShaderPickerUI;
 	}
 
 }	// end of namespace
@@ -114,9 +118,7 @@ mtrlPropertyObject::mtrlPropertyObject(const std::string& i_Name,
 	//m_GlobalUI.reset(new prtyPropertyUIInfoContainer);
 	//this->GetListContainer().AddSubCategory("Global", m_GlobalUI);
 
-	prtyFileChooserUIInfo* pShaderFilePickerUI = create_file_chooser(m_Data, 0, m_ShaderType);
-	pShaderFilePickerUI->SetFileFilter("Shader files (*.*fx)|*.*fx|All files (*.*)|*.*");
-	m_pShaderFilePicker.reset(pShaderFilePickerUI);
+	m_pShaderFilePicker.reset(create_shader_picker(m_ShaderType));
 	m_BaseLayerUI->Add( m_pShaderFilePicker );
 
 	// These property controls must be added later to ensure correct ordering of UI elements.
@@ -253,9 +255,9 @@ void mtrlPropertyObject::SetMaterialLayerShaders(int i_LayerIndex,
 	layer.m_LayerUI.reset(new prtyPropertyUIInfoContainer());
 	this->GetListContainer().AddSubCategory("Material Layer", layer.m_LayerUI);
 
-	// Create a new shader type filepicker for this layer
+	// Create a new shader picker for this layer
 	layer.m_pLayerShaderType = new prtyFilePath();
-	layer.m_LayerUI->Add( create_file_chooser(m_Data, i_LayerIndex, *layer.m_pLayerShaderType) );
+	layer.m_LayerUI->Add( create_shader_picker(*layer.m_pLayerShaderType) );
 	layer.m_pLayerShaderType->AddCallback(new prtyCallbackWrapper<mtrlPropertyObject>(this, &mtrlPropertyObject::UpdateShader));
 
 	//layer.m_pShaderData = NULL;

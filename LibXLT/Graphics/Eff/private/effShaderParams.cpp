@@ -308,13 +308,8 @@ matShaderEffect* effShaderParams::GetShader()
 
 		}
 
-		// Shader failed to load again, try to find using locate dialog
-		if (m_pShader == NULL)
-		{
-			//DBG_TRACE("Loading shader " << shaderFileName << " from user-located directory.");
-			fsAbsolutePathMgr::ResolvePath(shaderLoc, "Shaders");
-			m_pShader = matShaderMgr::GetEffect( shaderLoc );
-		}		
+		// Shaders are built in and found by name, not read from a file, so
+		// there is no point asking the user to locate a missing shader file.
 
 		// Failed again: check for built-in with same name.
 		if (m_pShader == NULL) {

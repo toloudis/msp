@@ -27,7 +27,7 @@ namespace
 	g3dBlendStateMgr::BlendState* st_NoBlend = NULL;
 	g3dDepthStencilStateMgr::DepthStencilState* ds_Disable_NS = NULL;
 
-	void setupPfxGlobal(ID3DX11Effect* i_pD3DEffect, matRenderTargetTexture* i_pTex)
+	void setupPfxGlobal(fxEffect* i_pD3DEffect, matRenderTargetTexture* i_pTex)
 	{
 		i_pD3DEffect->GetVariableByName("g_ImageWidth")->AsScalar()->SetFloat((float)(i_pTex->GetWidth()));
 		i_pD3DEffect->GetVariableByName("g_ImageHeight")->AsScalar()->SetFloat((float)(i_pTex->GetHeight()));
@@ -64,7 +64,7 @@ int shdwPassPostShader::Render(float i_time)
 	effShaderParams* pShaderParam = g3dPostProcessing::GetPostEffect().get();
 	const matShaderEffect* pMatEffect = pShaderParam->GetShader();
 	effShaderBaseDX11* pEffect = (effShaderBaseDX11*)pMatEffect;
-	ID3DX11Effect* pD3DEffect = pEffect->GetD3DXEffect();
+	fxEffect* pD3DEffect = pEffect->GetFxEffect();
 	setupPfxGlobal(pD3DEffect, m_pScratchTex);
 	pEffect->SetTechnique("Default");
 

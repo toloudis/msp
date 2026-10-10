@@ -1,8 +1,15 @@
 # fx2hlsl
 
-One-time conversion of the DX11 Effects (`.fx`) shaders in
-`LibXLT/GraphicsDX11/Eff/private/Shaders` to plain HLSL, as the first step in
-removing the Effects (FX11) dependency. Each `Foo.fx` becomes:
+**Historical.** This converted the DX11 Effects (`.fx`) shaders in
+`LibXLT/GraphicsDX11/Eff/private/Shaders` to plain HLSL. The conversion is
+finished: the Effects (FX11) runtime has been removed from MachStudio, and the
+`.fx` sources, their `.h` includes and the compiled `.fx` files in
+`MachStudio/MachStudio-x64/Shaders` have been deleted. They are still in the git
+history if the converter ever needs to be run again. The `.hlsl`, `.hlsli` and
+`.effect.json` files are now the only shader sources; `compile_check.py` is
+still used by CI.
+
+Each `Foo.fx` became:
 
 - **`Foo.hlsl`**: the original source with only Effects-only syntax removed.
   - `technique11`/`pass` blocks are deleted.
@@ -28,6 +35,8 @@ of truth and is edited by hand; the tool is not part of the build.
 
 ## Usage
 
+`fx2hlsl.py` needs the `.fx` sources, which are only in the git history now:
+
 ```
 python -m pip install pcpp
 cd LibXLT/GraphicsDX11/Eff/private/Shaders
@@ -45,11 +54,11 @@ python Tools/fx2hlsl/compile_check.py --compiler dxc --spirv Special/Blur.effect
 
 CI compiles every `*.effect.json` under `LibXLT` as SM 5 (fxc) and as SM 6 (dxc), both from the Windows SDK. A converted file is not done until it passes both.
 
-## Converted so far
+## Converted effects
 
-These run on the plain-HLSL runtime (`GraphicsDX11/Fx`) and are looked up by
-effect name (`"DOF"`); a lookup by the old file name (`"DOF.fx"`) falls back to
-the effect name.
+All built-in effects run on the plain-HLSL runtime (`GraphicsDX11/Fx`) and are
+looked up by effect name (`"DOF"`); a lookup by the old file name (`"DOF.fx"`)
+falls back to the effect name.
 
 | Effect | Used by |
 | --- | --- |
@@ -65,6 +74,16 @@ the effect name.
 | `Special/ssaoMultiHorizonBasedAO` | SSAO (`shdwPassSSAO`) |
 | `Special/ssgiMultiHorizonBasedGI` | SSGI (`shdwPassSSGI`) |
 | `Special/ssaoBilateralBlurEngine` | SSAO/SSGI blur |
+| `Materials/Lambert` | the Lambert material; loading `Lambert.fx` uses it |
+| `Materials/Phong`, `Phong_wBump`, `PhongReflection`, `Simple` | Phong family; loading the `.fx` of the same name uses them |
+| `Materials/Blinn`, `BlinnReflection`, `Anisotropic`, `CarPaint` | Blinn family |
+| `Materials/SpecularFresnel`, `SubSurfaceScatter`, `SubSurfaceScatter_wBlinnSpecular`, `Cartoon` | fresnel, subsurface and toon materials |
+| `Materials/FC3DBlinn`, `FC3DPhong`, `FC3DPhongTransparent`, `FC3DSpecularFresnel`, `FC3DSubSurfaceScatter_wBlinnSpecular` | FC3D materials |
+| `Materials/Default`, `testtess`, `Bake`, `Skin`, `BlinnSkin`, `Hair_SH` | the remaining built-in materials (`Hair_SH` uses `Materials/SupportHair.hlsli`) |
+| `Special/Solid`, `MaskAlpha`, `DepthMap`, `DepthRender`, `ReflectiveShadowMap`, `NormalMap`, `Billboard`, `Particle`, `LightGlow` | special-purpose geometry passes |
+| `Special/AOVolumes`, `GIVolumes`, `LPV_GI`, `Ramp`, `Brushstroke`, `VelocityRender`, `IlluminationOnly`, `ShadowsOnly`, `EnvBackground` | occlusion, GI, velocity, shadow-only and background passes |
+| `Special/HairDefault`, `OpacityRender` | hair rendering and opacity shadow maps |
+| `PostEffect/BlackAndWhite`, `GradientMap`, `Sepia`, `Sketch` | post effects |
 
 After running the converter, each file was edited by hand: explicit
 `register()`s on every texture, sampler and constant buffer, globals moved into
@@ -72,7 +91,38 @@ one `cbuffer`, and constant tables (`poisson[]`, blur offsets) made
 `static const` and removed from the manifest. Unused legacy `sampler2D`
 declarations and the `gp : SasGlobal` marker variable were deleted.
 
-## Current coverage (dry run on all 60 `.fx` files)
+## Material shaders
+
+Converted materials live in `Materials/` with their shared includes
+(`Globals.hlsli`, `Support.hlsli`, `Lighting.hlsli`, `Tessellate.hlsli`,
+`Skinning.hlsli`). Materials still store the old file name, and loading `Foo.fx`
+(from any folder) uses the embedded `Materials/Foo`; a name with no embedded
+material cannot be loaded and falls back to `Simple.fx`. They drive
+`effShaderBaseDX11` through `fxEffect` (`GraphicsDX11/Fx/fxEffectApi.hpp`), the
+interface the Effects materials used, so the material classes did not change.
+
+Every material shares one binding model, laid out by update rate so it maps
+onto a D3D12 root signature or Vulkan descriptor sets (full map at the top of
+`Materials/Globals.hlsli`):
+
+| Register | Contents |
+| --- | --- |
+| `b0` FrameParams | view, projection, camera, time, view-wide toggles |
+| `b1` ObjectParams | world matrices, clip plane, bake, skinning palette, tessellation |
+| `b2` LightParams | light info, projected light, light array, shadow flags |
+| `b3` MaterialCommon | material inputs the shared includes declare |
+| `b4` MaterialParams | the material's own parameters |
+| `t0`-`t19` | material textures (`t4`-`t19` the material's own) |
+| `t20`+ | textures the renderer supplies (reflection maps, shadow maps, projected light, mesh data) |
+| `b5` HairParams, `t26`+ | hair renderer inputs (`SupportHair.hlsli`) |
+| `s0`-`s9`, `s10`+ | shared, then the material's own immutable samplers |
+
+Each material instance keeps its own copy of `MaterialParams`
+(`fxMaterialInstance`) and puts it in place before drawing, so materials
+sharing an effect do not see each other's values. In D3D12/Vulkan that copy
+becomes the instance's own constant buffer view.
+
+## Coverage at the time of conversion (dry run on all 60 `.fx` files)
 
 - All 60 files parse and convert, covering every technique and pass.
 - Under dxc (SM 6.0), 20 of the 60 files compile cleanly as converted.

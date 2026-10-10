@@ -30,7 +30,7 @@ namespace
 	g3dBlendStateMgr::BlendState* st_NoBlend = NULL;
 	g3dDepthStencilStateMgr::DepthStencilState* ds_Disable_NS = NULL;
 
-	void setupEnvGlobal(ID3DX11Effect* i_pD3DEffect, 
+	void setupEnvGlobal(fxEffect* i_pD3DEffect, 
 						const g3dAmbientEnvState& i_EnvState,
 						const camCamera* i_pCam)
 	{
@@ -92,7 +92,7 @@ int shdwPassEnvBackground::Render(float i_time)
 
 	const matMaterial* pMaterial = &l_EnvBgMat;
 	effShaderBaseDX11* pEffect = (effShaderBaseDX11*)(matShaderMgr::GetEffect(*pMaterial));
-	ID3DX11Effect* pD3DEffect = pEffect->GetD3DXEffect();
+	fxEffect* pD3DEffect = pEffect->GetFxEffect();
 	setupEnvGlobal(pD3DEffect, m_AmbientState, m_pCamera);
 	pEffect->SetTechnique("Default");
 

@@ -305,7 +305,7 @@ void shdwDepthRendererDX11::DrawNode(const g3dSceneNode* i_pNode)
 	const matMaterial* pMaterial = g3dDX11Util::GetMaterial(i_pNode);
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)pEffect;
-	ID3DX11Effect* pD3DEffect = i_pEffect->GetD3DXEffect();
+	fxEffect* pD3DEffect = i_pEffect->GetFxEffect();
 
 	pEffect->SetTechnique(matShaderEffect::e_Default);
 
@@ -360,7 +360,7 @@ void shdwDepthRendererDX11::DrawHairNode(const sNodePlusState& i_Node)
 	const matMaterial* pMaterial = m_pHairMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)pEffect;
-	ID3DX11Effect* pD3DEffect = i_pEffect->GetD3DXEffect();
+	fxEffect* pD3DEffect = i_pEffect->GetFxEffect();
 
 	g3dDrawStyleUtilDX11::SetDrawStyle(i_Node.m_drawStyle);
 

@@ -9,11 +9,12 @@
 #include "Support/pfx/pfxPostEffectObject.hpp"
 
 #include "Core/fs/fsResourceFinderDir.hpp"
+#include "Core/it/itStringUtil.hpp"
 #include "Core/prty/prtyButtonUIInfo.hpp"
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
 #include "Core/prty/prtyTextBoxUIInfo.hpp"
 #include "Core/prty/prtyTextureFileChooserUIInfo.hpp"
-#include "Core/prty/prtyFileChooserUIInfo.hpp"
+#include "Core/prty/prtyFilePathComboBoxUIInfo.hpp"
 #include "Features/RenderLayers/rdrLayersDialogUtil.hpp"
 #include "Features/RenderPrefs/rndrPrefsDialogUtil.hpp"
 #include "Graphics/eff/effShaderParams.hpp"
@@ -35,18 +36,30 @@
 
 namespace
 {
-	prtyFileChooserUIInfo* create_file_chooser(shared_ptr<effShaderParams> i_ShaderParams,
-											   prtyFilePath& io_ShaderType)
+	//------------------------------------------------------------------------
+	// Dropdown of the built-in post effects, labelled by effect name
+	//	("Sepia") and storing the path pfxData uses ("PostEffect\\Sepia.fx").
+	//	A shader that is not in the list (an old or custom one) is added by
+	//	the control.
+	//------------------------------------------------------------------------
+	prtyFilePathComboBoxUIInfo* create_shader_picker(prtyFilePath& io_ShaderType)
 	{
-		fsLocator currentShaderName;
-		if (i_ShaderParams.get())
-			currentShaderName = i_ShaderParams->GetShaderName();
+		prtyFilePathComboBoxUIInfo *pShaderPickerUI = new prtyFilePathComboBoxUIInfo(&io_ShaderType, "Shader", "Post effect shader");
+		pShaderPickerUI->SetConfirmationString("Changing shader may lose all old shader parameters. Continue?");
 
-		prtyFileChooserUIInfo *pShaderFilePickerUI = new prtyFileChooserUIInfo(&io_ShaderType, "Shader", "Location of shader");
-		pShaderFilePickerUI->SetConfirmationString("Changing shader may lose all old shader parameters. Continue?");
-		pShaderFilePickerUI->SetDirectoryCategory("Shaders");
-		pShaderFilePickerUI->SetInitialDirectory( matShaderMgr::GetDefaultShaderPath() );
-		return pShaderFilePickerUI;
+		const std::vector<matShaderInfo>& shaders = matShaderMgr::GetPostEffectShaders();
+		for (size_t i = 0; i < shaders.size(); i++)
+		{
+			std::string label = itStringUtil::GetStdString(shaders[i].m_Name);
+			const size_t dot = label.rfind('.');
+			if (dot != std::string::npos)
+				label.erase(dot);
+
+			fsLocator path(itString(matShaderMgr::GetPostShaderFolder().c_str()));
+			path.Push(shaders[i].m_Name);
+			pShaderPickerUI->AddChoice(label, path);
+		}
+		return pShaderPickerUI;
 	}
 }
 
@@ -147,8 +160,7 @@ void pfxPostEffectObject::Init()
 	pPUII = new prtyCheckBoxUIInfo(&(m_Data.m_bActive), "Post Effect", "Active");
 	m_BaseUI->Add( pPUII );
 
-	prtyFileChooserUIInfo* pShaderFilePickerUI = create_file_chooser(m_Data.m_pShaderParams, m_Data.m_Name);
-	m_BaseUI->Add( pShaderFilePickerUI );
+	m_BaseUI->Add( create_shader_picker(m_Data.m_Name) );
 
 	m_Data.m_bActive.AddCallback(new prtyCallbackWrapper<pfxPostEffectObject>(this, &pfxPostEffectObject::Update));
 	m_Data.m_Name.AddCallback(new prtyCallbackWrapper<pfxPostEffectObject>(this, &pfxPostEffectObject::UpdateShader));

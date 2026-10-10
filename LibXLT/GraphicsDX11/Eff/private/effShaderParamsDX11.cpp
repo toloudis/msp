@@ -11,7 +11,7 @@
 
 #include "Core/env/envSTLHelpers.hpp"
 
-bool effFloatBindingDX11::Bind(ID3DX11Effect* i_pShader)
+bool effFloatBindingDX11::Bind(fxEffect* i_pShader)
 {
 	HRESULT hr = m_Handle->SetFloat(m_Param.GetProperty().GetValue());
 	if (!SUCCEEDED(hr))
@@ -21,7 +21,7 @@ bool effFloatBindingDX11::Bind(ID3DX11Effect* i_pShader)
 	return (SUCCEEDED(hr));
 }
 
-bool effIntBindingDX11::Bind(ID3DX11Effect* i_pShader)
+bool effIntBindingDX11::Bind(fxEffect* i_pShader)
 {
 	HRESULT hr = m_Handle->SetInt(m_Param.GetProperty().GetValue());
 	if (!SUCCEEDED(hr))
@@ -30,7 +30,7 @@ bool effIntBindingDX11::Bind(ID3DX11Effect* i_pShader)
 	}
 	return (SUCCEEDED(hr));
 }
-bool effBoolBindingDX11::Bind(ID3DX11Effect* i_pShader)
+bool effBoolBindingDX11::Bind(fxEffect* i_pShader)
 {
 	HRESULT hr = m_Handle->SetBool(m_Param.GetProperty().GetValue()?TRUE:FALSE);
 	if (!SUCCEEDED(hr))
@@ -39,7 +39,7 @@ bool effBoolBindingDX11::Bind(ID3DX11Effect* i_pShader)
 	}
 	return (SUCCEEDED(hr));
 }
-bool effColorBindingDX11::Bind(ID3DX11Effect* i_pShader)
+bool effColorBindingDX11::Bind(fxEffect* i_pShader)
 {
 	maFloatRGBA color = m_Param.GetProperty().GetValue();
 	float col[4] = {color.GetRed(),color.GetGreen(),color.GetBlue(),color.GetAlpha()};
@@ -50,7 +50,7 @@ bool effColorBindingDX11::Bind(ID3DX11Effect* i_pShader)
 	}
 	return (SUCCEEDED(hr));
 }
-bool effTextureBindingDX11::Bind(ID3DX11Effect* i_pShader)
+bool effTextureBindingDX11::Bind(fxEffect* i_pShader)
 {
 	ID3D11ShaderResourceView* pTex = g3dDX11TextureUtil::GetD3DTexture(m_Param.GetTexture());
 	if (m_ExistVarHandle != NULL && m_ExistVarHandle->IsValid())

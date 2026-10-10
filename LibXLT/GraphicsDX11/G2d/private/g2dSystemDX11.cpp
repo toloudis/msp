@@ -22,7 +22,6 @@
 #include "Core/app/appApplication.hpp"
 #include "Graphics/g2d/g2dExceptionX.hpp"
 #include "Graphics/g2d/g2dResetHandler.hpp"
-#include "GraphicsDX11/eff/effShaderSDKDX11.hpp"
 
 
 //============================================================================
@@ -403,9 +402,6 @@ g2dSystemDX11::g2dSystemDX11(int i_Adapter /*= 0*/)
 	m_pResourceCounterImpl = new g2dResourceCounterDX11();
 	g2dResourceCounter::SetImplementation(m_pResourceCounterImpl);
 
-	m_pShaderSDK = new effShaderSDKDX11();
-	effShaderSDK::SetImplementation(m_pShaderSDK);
-
 	m_pFontImpl = new g2dFontUtilDX11();
 	g2dFontUtil::SetImplementation(m_pFontImpl);
 
@@ -445,7 +441,6 @@ g2dSystemDX11::~g2dSystemDX11()
 
 	// Delete implementations
 	delete m_pResourceCounterImpl;
-	delete m_pShaderSDK;
 	delete m_pFontImpl;
 	delete m_pImageCreator;
 	delete m_pImageSaver;

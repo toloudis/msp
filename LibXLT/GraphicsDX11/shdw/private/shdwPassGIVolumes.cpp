@@ -276,7 +276,7 @@ int shdwPassGIVolumes::Render(float i_time)
 	// setup effect params that apply to all objects
 	effShaderBaseDX11* pEffect = (effShaderBaseDX11*)matShaderMgr::GetEffect(l_GIMat);
 	pEffect->SetTechnique("Default");
-	ID3DX11Effect* pD3DXEffect = pEffect->GetD3DXEffect();
+	fxEffect* pD3DXEffect = pEffect->GetFxEffect();
 
 	// acos lookup texture
 	ID3D11ShaderResourceView* acosView = g3dDX11TextureUtil::GetD3DTexture(l_pACosTexture);
@@ -477,7 +477,7 @@ void shdwPassGIVolumes::BlendGI(g2dRenderTarget* i_pRenderTarget,
 	const g3dPrefs::g3dRenderPrefs& p = g3dPrefs::CurrentPrefs();
 
 	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)matShaderMgr::GetSpecialEffect(("GIVolumes.fx"));
-	ID3DX11Effect* pEffect = i_pEffect->GetD3DXEffect();
+	fxEffect* pEffect = i_pEffect->GetFxEffect();
 
 	i_pEffect->SetTechnique("FinalPass");
 
@@ -676,7 +676,7 @@ void shdwPassGIVolumes::SetupNodeColor(const sNodePlusState& i_Node, matShaderEf
 	if (!i_pEffect)
 		return;
 
-	ID3DX11Effect* pEffectDX = dynamic_cast<effShaderBaseDX11*>(i_pEffect)->GetD3DXEffect();
+	fxEffect* pEffectDX = dynamic_cast<effShaderBaseDX11*>(i_pEffect)->GetFxEffect();
 
 	const matMaterial* pMaterialOveride = pNode->GetMaterial();
 	const g3dFragment* pFrag = pNode->GetFragment();
@@ -746,9 +746,9 @@ void shdwPassGIVolumes::BlurGI(g2dRenderTarget* i_pRenderTarget)
 	const g3dPrefs::g3dRenderPrefs& p = g3dPrefs::CurrentPrefs();
 
 	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)matShaderMgr::GetSpecialEffect(("GIVolumes.fx"));
-	ID3DX11Effect* pEffect = i_pEffect->GetD3DXEffect();
+	fxEffect* pEffect = i_pEffect->GetFxEffect();
 
-	ID3DX11EffectTechnique* pTechnique = pEffect->GetTechniqueByName("FinalPassUpsample");
+	fxEffectTechnique* pTechnique = pEffect->GetTechniqueByName("FinalPassUpsample");
 
     // Update shader variables g_Resolution and g_InvResolution
 	int width, height;
@@ -823,7 +823,7 @@ void shdwPassGIVolumes::BlurGI(g2dRenderTarget* i_pRenderTarget)
 	ID3D11ShaderResourceView* posView = g3dDX11TextureUtil::GetD3DTexture(m_PositionBuffer);
 	pEffect->GetVariableByName("g_Positions")->AsShaderResource()->SetResource(posView);
 
-	ID3DX11EffectPass* pPass0 = pTechnique->GetPassByIndex(0);
+	fxEffectPass* pPass0 = pTechnique->GetPassByIndex(0);
 	pPass0->Apply(0, g2dDX11Global::g_pDeviceContext);
 	g3dDX11Util::DrawFullScreenQuad( w,h );
 
@@ -847,7 +847,7 @@ void shdwPassGIVolumes::BlurGI(g2dRenderTarget* i_pRenderTarget)
 	posView = g3dDX11TextureUtil::GetD3DTexture(m_PositionBuffer);
 	pEffect->GetVariableByName("g_Positions")->AsShaderResource()->SetResource(posView);
 
-	ID3DX11EffectPass* pPass1 = pTechnique->GetPassByIndex(1);
+	fxEffectPass* pPass1 = pTechnique->GetPassByIndex(1);
 	pPass1->Apply(0, g2dDX11Global::g_pDeviceContext);
 	g3dDX11Util::DrawFullScreenQuad( w,h );
 

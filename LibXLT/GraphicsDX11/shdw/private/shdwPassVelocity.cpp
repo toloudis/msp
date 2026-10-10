@@ -113,7 +113,7 @@ int shdwPassVelocity::Render(float i_time)
 	
 	// Assign shader
 	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("VelocityRender.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
+	fxEffect* pEffect = pEffBase->GetFxEffect();
 
 	// Set our global / local frame time value
 	g3dSceneGlobal::g_FrameTime = i_time;
@@ -283,7 +283,7 @@ void shdwPassVelocity::ClearObjects()
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-void shdwPassVelocity::SetupOldMatrix( const g3dSceneNode* pNode, ID3DX11Effect* pEffect ) 
+void shdwPassVelocity::SetupOldMatrix( const g3dSceneNode* pNode, fxEffect* pEffect ) 
 {
 	std::string key = get_key_str((g3dSceneNode*)pNode);
 	
