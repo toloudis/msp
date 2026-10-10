@@ -144,6 +144,9 @@ void Initialize()
 {
 	if (l_pImpl)
 	{
+		// The shader folder is optional: the built-in shaders are compiled
+		// into the library. The mental ray and RenderMan exporters look for
+		// their own shaders under it (mray, rman).
 		fsLocator fx_dir = gfPaths::GetPath(gfPaths::e_ExePath);
 		fx_dir.Push("Shaders");
 
@@ -324,6 +327,11 @@ matShaderEffect* GetPostEffect(const fsLocator& i_PathToShader)
 
 	fsLocator path = i_PathToShader;
 	std::string lastName = itStringUtil::GetStdString(path.GetLastName());
+
+	// a single name can hold a folder too ("PostEffect/Sepia.fx")
+	const size_t sep = lastName.find_last_of("/\\");
+	if (sep != std::string::npos)
+		lastName.erase(0, sep + 1);
 
 	std::map<std::string, matShaderInfo>::iterator it = find_shader( lastName );
 	if (it == l_ShaderMap.end() || it->second.m_pEffect == NULL)

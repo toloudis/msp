@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////////
 // Converted from Globals.h by Tools/fx2hlsl/fx2hlsl.py (one-time conversion).
 // This file is the source of truth for the material shaders from here on;
-// the original Globals.h is still used by the Effects (.fx) shaders.
+// the original Globals.h was deleted along with the Effects (.fx) shaders.
 //
 // Binding model shared by ALL material shaders (plain HLSL, SM5 and SM6).
 // Every resource has an explicit register so the layout is identical for

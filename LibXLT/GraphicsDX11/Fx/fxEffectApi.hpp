@@ -1,13 +1,13 @@
 /*****************************************************************************
 **  fxEffectApi.hpp
 **
-**      An Effects-shaped interface over a loaded effect, so that the material
-**      shader classes and the renderers that drive them can work with either
-**      a D3DX11 Effects (.fx) effect or a converted plain-HLSL one
-**      (fxEffectDX11) while shaders move over one at a time.
+**      An Effects-shaped interface over a loaded plain-HLSL effect
+**      (fxEffectDX11, through effPlainEffect), used by the material shader
+**      classes and the renderers that drive them. It was introduced so they
+**      could move off D3DX11 Effects (FX11, now removed) one shader at a time.
 **
-**      The names and call shapes follow ID3DX11Effect and friends, so code
-**      written against Effects ports by changing types only:
+**      The names and call shapes follow the old ID3DX11Effect interfaces, so
+**      code written against Effects ported by changing types only:
 **
 **          pEffect->GetVariableByName("g_Foo")->AsScalar()->SetFloat(1.0f);
 **          pEffect->GetTechniqueByName("Default")->GetPassByIndex(0)->Apply(0, ctx);
@@ -16,8 +16,8 @@
 **      technique or pass is an object whose IsValid() is false and whose
 **      setters do nothing. Objects are owned by the effect.
 **
-**      Once every shader is converted, the Effects backend goes away and this
-**      interface can be narrowed to what the renderers actually use.
+**      Now that every shader is converted, this interface can be narrowed to
+**      what the renderers actually use.
 \****************************************************************************/
 
 #ifdef FX_EFFECTAPI_HPP
