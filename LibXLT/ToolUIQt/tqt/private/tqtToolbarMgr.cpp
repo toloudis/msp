@@ -27,9 +27,6 @@ namespace
 	std::vector<fsLocator> l_IconPathList;
 	std::map<std::string, QPointer<QToolBar> > l_ToolbarMap;
 
-	// Set by CleanUp, when the main window (and its toolbars) is destroyed
-	bool l_bCleanedUp = false;
-
 	//---------------------------------------------------------------------------
 	//---------------------------------------------------------------------------
 	QToolBar* get_or_create_toolbar(const std::string& i_Name)
@@ -42,7 +39,6 @@ namespace
 		{
 			// The application still updates toolbars while it shuts down,
 			// after the main window is gone; those updates are dropped.
-			DBG_ASSERT(l_bCleanedUp, "MainForm not yet initialized.");
 			DBG_LOG("Ignoring toolbar " << i_Name << ", the main window is gone.");
 			return NULL;
 		}
@@ -190,7 +186,6 @@ void tqtToolbarMgr::AddControlToToolBar(const char* i_ToolbarName,
 void tqtToolbarMgr::CleanUp()
 {
 	l_ToolbarMap.clear();
-	l_bCleanedUp = true;
 }
 
 #endif // USE_QT
