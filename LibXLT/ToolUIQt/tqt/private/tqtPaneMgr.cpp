@@ -13,6 +13,7 @@
 #include "Core/dbg/dbgMsg.hpp"
 
 #include <algorithm>
+#include <functional>
 #include <map>
 #include <vector>
 
@@ -340,14 +341,16 @@ namespace
 	}
 
 	//---------------------------------------------------------------------------
-	// Sets the dock sizes whenever the main window is resized, until a
-	// moment after it is first shown, then deletes itself.
+	// Applies a layout to the main window whenever it is resized, until a
+	// moment after it is first shown, then deletes itself. Dock sizes only
+	// stick once the window has its final size (maximized, for instance),
+	// which it gets after it is shown.
 	//---------------------------------------------------------------------------
-	class DockSizeApplier : public QObject
+	class LayoutApplier : public QObject
 	{
 	public:
-		DockSizeApplier(QMainWindow* i_pMainForm, const std::vector<DockSizes>& i_Sizes)
-			: QObject(i_pMainForm), m_pMainForm(i_pMainForm), m_Sizes(i_Sizes), m_bTimerStarted(false)
+		LayoutApplier(QMainWindow* i_pMainForm, const std::function<void()>& i_Apply)
+			: QObject(i_pMainForm), m_pMainForm(i_pMainForm), m_Apply(i_Apply), m_bTimerStarted(false)
 		{
 			i_pMainForm->installEventFilter(this);
 			if (i_pMainForm->isVisible())
@@ -361,7 +364,7 @@ namespace
 				if (i_pEvent->type() == QEvent::Show)
 					start();
 				else if (i_pEvent->type() == QEvent::Resize && m_pMainForm->isVisible())
-					QTimer::singleShot(0, this, [this]() { apply(); });
+					QTimer::singleShot(0, this, [this]() { m_Apply(); });
 			}
 			return QObject::eventFilter(i_pWatched, i_pEvent);
 		}
@@ -369,7 +372,7 @@ namespace
 	private:
 		void start()
 		{
-			QTimer::singleShot(0, this, [this]() { apply(); });
+			QTimer::singleShot(0, this, [this]() { m_Apply(); });
 			if (!m_bTimerStarted)
 			{
 				m_bTimerStarted = true;
@@ -377,14 +380,8 @@ namespace
 			}
 		}
 
-		void apply()
-		{
-			for (const DockSizes& dock_sizes : m_Sizes)
-				m_pMainForm->resizeDocks(dock_sizes.m_Docks, dock_sizes.m_Sizes, dock_sizes.m_Orientation);
-		}
-
 		QMainWindow* m_pMainForm;
-		std::vector<DockSizes> m_Sizes;
+		std::function<void()> m_Apply;
 		bool m_bTimerStarted;
 	};
 
@@ -432,10 +429,11 @@ namespace
 		for (int dir : sides)
 			apply_wx_side(i_pMainForm, i_Perspective, dir, sizes);
 
-		// Sizes only stick once the window has its final size, which it
-		// gets after it is shown (maximized, for instance), so they are set
-		// on each resize until shortly after the window first shows.
-		new DockSizeApplier(i_pMainForm, sizes);
+		new LayoutApplier(i_pMainForm, [i_pMainForm, sizes]()
+		{
+			for (const DockSizes& dock_sizes : sizes)
+				i_pMainForm->resizeDocks(dock_sizes.m_Docks, dock_sizes.m_Sizes, dock_sizes.m_Orientation);
+		});
 	}
 } // end of namespace
 
@@ -623,7 +621,9 @@ void tqtPaneMgr::SetCurrentPerspective(const std::string& i_Perspective)
 		if (i_Perspective.compare(0, prefix_len, c_PerspectivePrefix) == 0)
 		{
 			QByteArray state = QByteArray::fromBase64(QByteArray(i_Perspective.c_str() + prefix_len));
-			tqtSystem::g_pMainForm->restoreState(state);
+			QMainWindow* pMainForm = tqtSystem::g_pMainForm;
+			pMainForm->restoreState(state);
+			new LayoutApplier(pMainForm, [pMainForm, state]() { pMainForm->restoreState(state); });
 		}
 		else
 		{

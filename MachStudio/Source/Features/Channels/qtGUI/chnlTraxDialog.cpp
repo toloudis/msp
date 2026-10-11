@@ -273,7 +273,9 @@ chnlTraxDialog::chnlTraxDialog( QWidget* parent,
 	m_nFilterState(0),
 	m_SnapInterval(c_DefaultSnapInterval),
 	m_bDriverSelectStart(false),
-	m_DriverSelectStartTime(0.0f)
+	m_DriverSelectStartTime(0.0f),
+	m_bFitZoomToWidth(true),
+	m_bFittingZoom(false)
 {
 	QGridLayout* fgSizer_dialog = new QGridLayout( this );
 	fgSizer_dialog->setColumnStretch( 1, 1 );
@@ -427,7 +429,12 @@ chnlTraxDialog::chnlTraxDialog( QWidget* parent,
 		[this](QMouseEvent* i_pEvent) { ChannelPanel_MouseDown(i_pEvent); },
 		[this](QMouseEvent* i_pEvent) { ChannelPanel_MouseMove(i_pEvent); },
 		[this](QMouseEvent* i_pEvent) { ChannelPanel_MouseUp(i_pEvent); } );
-	m_slider_zoom->SetValueChangedCallback( [this]() { this->SetTimeScale( m_slider_zoom->GetValue() ); } );
+	m_slider_zoom->SetValueChangedCallback( [this]()
+	{
+		if (!m_bFittingZoom)
+			m_bFitZoomToWidth = false;	// the user zoomed
+		this->SetTimeScale( m_slider_zoom->GetValue() );
+	} );
 	m_timeSlider->SetValueChangedCallback( [this]() { current_time_changed(); } );
 	QObject::connect( m_choice_Display, QOverload<int>::of(&QComboBox::activated), [this](int) { FilterIndexChanged(); } );
 	QObject::connect( m_checkBox_Snap, &QCheckBox::clicked, [this]() { checkBox_Snap_Clicked(); } );
@@ -558,8 +565,29 @@ void chnlTraxDialog::CalculateMaxZoom()
 	
 	float zoom = panel_width / totaltime;
 	maFunctions::Clamp(zoom, m_slider_zoom->GetMinimum(), m_slider_zoom->GetMaximum());
+	m_bFittingZoom = true;
 	this->m_slider_zoom->SetValue( zoom );
 	this->SetTimeScale( zoom );
+	m_bFittingZoom = false;
+	m_bFitZoomToWidth = true;
+}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//virtual
+void chnlTraxDialog::resizeEvent(QResizeEvent* i_pEvent)
+{
+	QWidget::resizeEvent(i_pEvent);
+
+	// the timeline gets its new width once the layout has run
+	if (m_bFitZoomToWidth && i_pEvent->size().width() != i_pEvent->oldSize().width())
+	{
+		QTimer::singleShot(0, this, [this]()
+		{
+			if (m_bFitZoomToWidth)
+				this->CalculateMaxZoom();
+		});
+	}
 }
 
 //--------------------------------------------------------------------

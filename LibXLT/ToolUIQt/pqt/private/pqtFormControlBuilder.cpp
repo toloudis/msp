@@ -221,7 +221,7 @@ namespace
 			//	create a label for that control
 			//
 			QLabel *pStaticText = new QLabel( tqtQString(pProperty->GetPropertyName()), i_pParentControl );
-			pStaticText->setContentsMargins(5, 0, 5, 0);
+			pStaticText->setContentsMargins(5, 3, 5, 3);	// rows spaced like the wx ones
 			int width = pStaticText->sizeHint().width();
 			if (width > o_MaxTextWidth)
 				o_MaxTextWidth = width;

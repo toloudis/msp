@@ -164,6 +164,12 @@ class chnlTraxDialog : public QWidget,
 		void ChannelPanel_MouseUp( QMouseEvent* i_pEvent );
 		void ChannelPanel_MouseMove( QMouseEvent* i_pEvent );
 
+	protected:
+		//--------------------------------------------------------------------
+		// Fit the time scale to the new width, unless the user has zoomed
+		//--------------------------------------------------------------------
+		virtual void resizeEvent(QResizeEvent* i_pEvent);
+
 	private:
 		//--------------------------------------------------------------------
 		// event handling
@@ -200,6 +206,12 @@ class chnlTraxDialog : public QWidget,
 
 		bool m_bDriverSelectStart;
 		float m_DriverSelectStartTime;
+
+		// The time scale follows the width of the panel (as CalculateMaxZoom
+		// sets it) until the user zooms. The panel only gets its width once
+		// the main window is laid out, after the time range was first set.
+		bool m_bFitZoomToWidth;
+		bool m_bFittingZoom;
 
 		tqcRangedFloat* m_slider_zoom;
 		QComboBox* m_choice_Display;
