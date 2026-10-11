@@ -218,24 +218,24 @@ bool app_instance_exists()
 	bAppRunning |= app_instance_exists( exe.c_str() );
 	//bAppRunning |= app_instance_exists(L"Global\\MachStudio.exe");
 
-	//EnumWindows((WNDENUMPROC)Report, 0); 
+	//EnumWindows(Report, 0);
 
 	return bAppRunning;
 }
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-bool CALLBACK Report(int hwnd, int lParam)
+BOOL CALLBACK Report(HWND hwnd, LPARAM lParam)
 {
 	LPTSTR lpString = new TCHAR[128];
-	GetWindowText((HWND)hwnd, lpString, 128);
+	GetWindowText(hwnd, lpString, 128);
 
 	LPTSTR lpStringF = new TCHAR[256];
-	GetWindowModuleFileName((HWND)hwnd,lpStringF,256);
+	GetWindowModuleFileName(hwnd,lpStringF,256);
 
 	DBG_LOG("Window title " << lpString << " filename " << lpStringF);
 
-	return true;
+	return TRUE;
 }
 
 //----------------------------------------------------------------------------
