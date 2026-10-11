@@ -12,6 +12,9 @@
 
 #ifdef USE_QT
 
+#include <UIAutomation.h>
+#pragma comment(lib,"uiautomationcore.lib")
+
 namespace tqtAppUtil
 {
 	namespace
@@ -151,6 +154,12 @@ namespace tqtAppUtil
 			l_pApplication->removeEventFilter(l_pHotKeyFilter);
 			delete l_pHotKeyFilter;
 			l_pHotKeyFilter = NULL;
+
+			// Qt answers UI Automation clients (screen readers, the touch
+			// keyboard) with providers that live until every client lets
+			// go of them. Make UI Automation let go now, so Qt can delete
+			// them before the application goes away.
+			UiaDisconnectAllProviders();
 
 			delete l_pApplication;
 			l_pApplication = NULL;
