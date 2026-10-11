@@ -118,6 +118,10 @@ namespace tqtAppUtil
 		l_pApplication = new QApplication(l_Argc, l_Argv);
 		QApplication::setQuitOnLastWindowClosed(false);
 
+		// Light colors even when Windows is in dark mode, like the
+		// wxWidgets interface
+		QGuiApplication::styleHints()->setColorScheme(Qt::ColorScheme::Light);
+
 		l_pHotKeyFilter = new HotKeyFilter;
 		l_pApplication->installEventFilter(l_pHotKeyFilter);
 
