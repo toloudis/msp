@@ -27,6 +27,9 @@ namespace
 	std::vector<fsLocator> l_IconPathList;
 	std::map<std::string, QPointer<QToolBar> > l_ToolbarMap;
 
+	// Set by CleanUp, when the main window (and its toolbars) is destroyed
+	bool l_bCleanedUp = false;
+
 	//---------------------------------------------------------------------------
 	//---------------------------------------------------------------------------
 	QToolBar* get_or_create_toolbar(const std::string& i_Name)
@@ -35,14 +38,21 @@ namespace
 		if (it != l_ToolbarMap.end() && it->second)
 			return it->second;
 
-		DBG_ASSERT(tqtSystem::g_pMainForm, "MainForm not yet initialized.");
+		if (!tqtSystem::g_pMainForm)
+		{
+			// The application still updates toolbars while it shuts down,
+			// after the main window is gone; those updates are dropped.
+			DBG_ASSERT(l_bCleanedUp, "MainForm not yet initialized.");
+			DBG_LOG("Ignoring toolbar " << i_Name << ", the main window is gone.");
+			return NULL;
+		}
+
 		QString name = tqtQString(i_Name);
 		QToolBar* pToolbar = new QToolBar(name, tqtSystem::g_pMainForm);
 		pToolbar->setObjectName(name);	// needed to save the layout
 		pToolbar->setIconSize(QSize(c_IconSize, c_IconSize));
 		pToolbar->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
-		if (tqtSystem::g_pMainForm)
-			tqtSystem::g_pMainForm->addToolBar(Qt::TopToolBarArea, pToolbar);
+		tqtSystem::g_pMainForm->addToolBar(Qt::TopToolBarArea, pToolbar);
 		l_ToolbarMap[i_Name] = pToolbar;
 		return pToolbar;
 	}
@@ -72,8 +82,8 @@ void tqtToolbarMgr::AddToolBar(const char* i_ToolbarName)
 //---------------------------------------------------------------------------
 void tqtToolbarMgr::Show(const char* i_ToolbarName, bool i_bVisible)
 {
-	QToolBar* pToolbar = get_or_create_toolbar(i_ToolbarName);
-	pToolbar->setVisible(i_bVisible);
+	if (QToolBar* pToolbar = get_or_create_toolbar(i_ToolbarName))
+		pToolbar->setVisible(i_bVisible);
 }
 
 //---------------------------------------------------------------------------
@@ -125,6 +135,8 @@ bool tqtToolbarMgr::AddToolBarButton( QAction* i_pAction,
 			continue;
 
 		QToolBar* pToolbar = get_or_create_toolbar(i_ToolBarName);
+		if (!pToolbar)
+			return false;
 
 		// The action is shared with the menu item, which doesn't show the icon
 		i_pAction->setIcon(icon);
@@ -169,8 +181,8 @@ QToolBar* tqtToolbarMgr::GetToolbarByName(const char* i_ToolbarName)
 void tqtToolbarMgr::AddControlToToolBar(const char* i_ToolbarName,
 										QWidget* i_pControl)
 {
-	QToolBar* pToolbar = get_or_create_toolbar(i_ToolbarName);
-	pToolbar->addWidget(i_pControl);
+	if (QToolBar* pToolbar = get_or_create_toolbar(i_ToolbarName))
+		pToolbar->addWidget(i_pControl);
 }
 
 //---------------------------------------------------------------------------
@@ -178,6 +190,7 @@ void tqtToolbarMgr::AddControlToToolBar(const char* i_ToolbarName,
 void tqtToolbarMgr::CleanUp()
 {
 	l_ToolbarMap.clear();
+	l_bCleanedUp = true;
 }
 
 #endif // USE_QT

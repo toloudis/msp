@@ -155,7 +155,9 @@ private:
 
 	struct sMenuItemInfo
 	{
-		QAction*	m_pMenuItem;
+		// Null once the main window (and its menus) is destroyed, which
+		// happens before the application stops sending menu updates
+		QPointer<QAction>	m_pMenuItem;
 		ControlCallback m_ExecuteCallback;
 		ControlCallback m_UpdateCallback;
 		bool		m_bOnToolbar;

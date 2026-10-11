@@ -344,12 +344,12 @@ bool tqtMenuMgr::MenuObjectsExist( int i_ObjectID )
 //---------------------------------------------------------------------------
 void tqtMenuMgr::MenuObjectsEnable( int i_ObjectID, bool i_bEnabled )
 {
-	std::map<int, sMenuItemInfo>::iterator it = m_MenuItemMap.find(i_ObjectID);
-	if (it != m_MenuItemMap.end())
+	QAction* pItem = GetMenuItem( i_ObjectID );
+	if (pItem)
 	{
 		// The toolbar button shares the action
-		if (it->second.m_pMenuItem->isEnabled() != i_bEnabled)
-			it->second.m_pMenuItem->setEnabled( i_bEnabled );
+		if (pItem->isEnabled() != i_bEnabled)
+			pItem->setEnabled( i_bEnabled );
 	}
 }
 
@@ -358,10 +358,9 @@ void tqtMenuMgr::MenuObjectsEnable( int i_ObjectID, bool i_bEnabled )
 //---------------------------------------------------------------------------
 void tqtMenuMgr::MenuObjectsCheck( int i_ObjectID, bool i_bChecked )
 {
-	std::map<int, sMenuItemInfo>::iterator it = m_MenuItemMap.find(i_ObjectID);
-	if (it != m_MenuItemMap.end())
+	QAction* pItem = GetMenuItem( i_ObjectID );
+	if (pItem)
 	{
-		QAction* pItem = it->second.m_pMenuItem;
 		if (pItem->isCheckable())
 		{
 			if (pItem->isChecked() != i_bChecked)
@@ -417,10 +416,10 @@ int tqtMenuMgr::GetMenuItemID( const char * i_ParentName,
 //---------------------------------------------------------------------------
 std::string tqtMenuMgr::GetMenuItemName(int i_ObjectID)
 {
-	std::map<int, sMenuItemInfo>::iterator it = m_MenuItemMap.find(i_ObjectID);
-	if (it != m_MenuItemMap.end())
+	QAction* pItem = GetMenuItem( i_ObjectID );
+	if (pItem)
 	{
-		return tqtStdString(plain_text(it->second.m_pMenuItem->text()));
+		return tqtStdString(plain_text(pItem->text()));
 	}
 	return "";
 }
@@ -444,11 +443,11 @@ QAction* tqtMenuMgr::GetMenuItem(int i_ObjectID)
 //---------------------------------------------------------------------------
 void tqtMenuMgr::SetMenuItemHelpString( int i_ObjectID, const char * i_HelpString )
 {
-	std::map<int, sMenuItemInfo>::iterator it = m_MenuItemMap.find(i_ObjectID);
-	if (it != m_MenuItemMap.end())
+	QAction* pItem = GetMenuItem( i_ObjectID );
+	if (pItem)
 	{
 		// shared with the toolbar button, if there is one
-		it->second.m_pMenuItem->setStatusTip( tqtQString(i_HelpString) );
+		pItem->setStatusTip( tqtQString(i_HelpString) );
 	}
 }
 
