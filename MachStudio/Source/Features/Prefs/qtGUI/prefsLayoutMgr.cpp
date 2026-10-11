@@ -35,11 +35,16 @@
 //============================================================================
 namespace
 {
-	// The Qt pane layouts are not interchangeable with the wxWidgets ones,
-	// so they are stored under their own keys and in their own file.
+	// The Qt build saves its pane layouts under its own keys and in its own
+	// file (the wxWidgets build can't read them). It can read the wxWidgets
+	// ones, so it starts from the last wxWidgets layout until it has saved
+	// one of its own.
 	const char * lc_Pane_Keyname			= "LastPerspectiveQt/Panes";
 	const char * lc_MainForm_Size_Keyname	= "LastPerspectiveQt/MainForm/Size";
 	const char * lc_MainForm_Max_Keyname	= "LastPerspectiveQt/MainForm/Maximized";
+	const char * lc_WxPane_Keyname			= "LastPerspective/Panes";
+	const char * lc_WxMainForm_Size_Keyname	= "LastPerspective/MainForm/Size";
+	const char * lc_WxMainForm_Max_Keyname	= "LastPerspective/MainForm/Maximized";
 
 	const itString lc_LayoutsFileName(L"Layouts-Qt.cfg");
 	const itString lc_LayoutsFileName_Default(L"Layouts-Default.cfg");
@@ -123,17 +128,27 @@ namespace
 void prefsLayoutMgr::LoadLastLayout()
 {
 	QSettings reg_config(QString::fromUtf8(mnmConstants::c_COMPANY), QString::fromUtf8(mnmConstants::c_PRODUCT));
-	if (reg_config.contains(lc_Pane_Keyname))
+	const char * pane_key = lc_Pane_Keyname;
+	const char * size_key = lc_MainForm_Size_Keyname;
+	const char * max_key = lc_MainForm_Max_Keyname;
+	if (!reg_config.contains(pane_key) && reg_config.contains(lc_WxPane_Keyname))
+	{
+		pane_key = lc_WxPane_Keyname;
+		size_key = lc_WxMainForm_Size_Keyname;
+		max_key = lc_WxMainForm_Max_Keyname;
+	}
+
+	if (reg_config.contains(pane_key))
 	{
 		// Read last layout from registry
-		QString perspective = reg_config.value(lc_Pane_Keyname).toString();
+		QString perspective = reg_config.value(pane_key).toString();
 		if ( !perspective.isEmpty() )
 		{
 			tqtPaneMgr::SetCurrentPerspective(perspective.toStdString());
 			tqtToolbarMgr::ResizeToolbars(); // confirm toolbars are big enough
 		}
 
-		QString main_form = reg_config.value(lc_MainForm_Size_Keyname).toString();
+		QString main_form = reg_config.value(size_key).toString();
 		if ( !main_form.isEmpty() )
 		{
 			std::string main_form_buffer(main_form.toStdString());
@@ -146,9 +161,9 @@ void prefsLayoutMgr::LoadLastLayout()
 			}
 		}
 
-		if ( reg_config.contains(lc_MainForm_Max_Keyname) )
+		if ( reg_config.contains(max_key) )
 		{
-			bool bMaximized = reg_config.value(lc_MainForm_Max_Keyname).toBool();
+			bool bMaximized = reg_config.value(max_key).toBool();
 			if (bMaximized != tqtSystem::g_pMainForm->isMaximized())
 				set_maximized(bMaximized);
 		}
