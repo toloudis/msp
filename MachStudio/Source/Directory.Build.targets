@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    GUI toolkit selection for the MachStudio projects (see
-    Directory.Build.props for MspGuiToolkit).
+    GUI toolkit selection for the MachStudio projects (see the
+    Directory.Build.props at the top of the repository for MspGuiToolkit).
 
     Qt: the Qt 6 settings from ToolUIQt/qt6.props are added (they define
         MSP_GUI_QT, which keeps wxWidgets off), sources in wxGUI folders
