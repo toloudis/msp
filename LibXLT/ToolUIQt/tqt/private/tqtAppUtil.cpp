@@ -62,15 +62,21 @@ namespace tqtAppUtil
 			return false;
 		}
 
+		bool l_bToolTipsEnabled = true;
+
 		// ----------------------------------------------------------------------------
 		// Watches every key press in the application in order to process
-		// hot keys, the way wxApp::FilterEvent did.
+		// hot keys, the way wxApp::FilterEvent did. Also holds back
+		// tooltips while they are turned off.
 		// ----------------------------------------------------------------------------
 		class HotKeyFilter : public QObject
 		{
 		public:
 			virtual bool eventFilter(QObject* i_pWatched, QEvent* i_pEvent)
 			{
+				if (i_pEvent->type() == QEvent::ToolTip && !l_bToolTipsEnabled)
+					return true;
+
 				if ( i_pEvent->type() == QEvent::KeyPress &&
 					 i_pWatched == QApplication::focusWidget() )
 				{
@@ -123,6 +129,16 @@ namespace tqtAppUtil
 		// app execution
 		if (l_pApplication)
 			l_pApplication->exec();
+	}
+
+	//--------------------------------------------------------------------
+	// Turns tooltips on or off for the whole application
+	//--------------------------------------------------------------------
+	void EnableToolTips(bool i_bEnable)
+	{
+		l_bToolTipsEnabled = i_bEnable;
+		if (!i_bEnable)
+			QToolTip::hideText();
 	}
 
 	//--------------------------------------------------------------------

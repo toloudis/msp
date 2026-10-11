@@ -14,7 +14,7 @@
 
 #include "Core/prty/prtyTextureDataParser.hpp"
 
-#if defined(USE_WXWIDGETS) || defined(USE_QT)
+#ifdef USE_WXWIDGETS
 #include <wx/tooltip.h>
 #endif
 

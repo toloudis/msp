@@ -59,8 +59,10 @@
 #include <string>
 #include <vector>
 
-#if defined(USE_WXWIDGETS) || defined(USE_QT)
+#ifdef USE_WXWIDGETS
 #include <wx/tooltip.h>
+#elif defined(USE_QT)
+#include "ToolUIQt/tqt/tqtAppUtil.hpp"
 #endif
 
 #undef CreateDirectory
@@ -861,8 +863,10 @@ namespace PrefsMgr
 	//--------------------------------------------------------------------
 	void PrefsObject::ShowToolTipsPropertyChanged(prtyProperty *i_pProperty, bool i_bDirty)
 	{
-#if defined(USE_WXWIDGETS) || defined(USE_QT)
+#ifdef USE_WXWIDGETS
 		wxToolTip::Enable( m_Data.m_bShowToolTips.GetValue() );
+#elif defined(USE_QT)
+		tqtAppUtil::EnableToolTips( m_Data.m_bShowToolTips.GetValue() );
 #endif
 	}
 
