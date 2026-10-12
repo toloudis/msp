@@ -26,6 +26,7 @@
 
 #include "Core/Ma/maFunctions.hpp"
 #include "Graphics/G3d/g3dPickInfo.hpp"
+#include "Input/in/inDeviceMgr.hpp"
 #include "Tool/cam3d/cam3dMgr.hpp"
 #include "Tool/ctxm/ctxmContextMenu.hpp"
 //#include "Tool/gpx/gpxCamera.hpp"
@@ -621,6 +622,20 @@ void rpnRenderPanel::mouseMoveEvent(QMouseEvent* i_pEvent)
 		panel_to_render_pixel(render_x, render_y);
 		tma3dCursorMgr::CursorPosChangedCallback( render_x, render_y );
 	}
+}
+
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+void rpnRenderPanel::wheelEvent(QWheelEvent* i_pEvent)
+{
+	if (this->IsActiveView() && inDeviceMgr::GetNumMouses() > 0)
+	{
+		// Qt on Windows reports Alt+wheel as horizontal
+		const QPoint delta = i_pEvent->angleDelta();
+		const int notch_delta = (delta.y() != 0) ? delta.y() : delta.x();
+		inDeviceMgr::GetMouse()->AddWheelDelta(notch_delta / float(QWheelEvent::DefaultDeltasPerStep));
+	}
+	i_pEvent->accept();
 }
 
 //--------------------------------------------------------------------

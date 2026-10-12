@@ -243,6 +243,11 @@ mainInitGraphics::mainInitGraphics(int i_AppWidth,
 
 		inPackage::Init();
 		mnmVJoystick::Init();		//this will properly configure the inDeviceMgr's VirtualJoystick
+#if defined(USE_QT)
+		// rpnRenderPanel::wheelEvent feeds the wheel, so only the view under the cursor zooms
+		if (inDeviceMgr::GetNumMouses() > 0)
+			inDeviceMgr::GetMouse()->SetWheelFromWindowEvents(true);
+#endif
 		DBG_TRACE("Input Init complete.");
 
 		try

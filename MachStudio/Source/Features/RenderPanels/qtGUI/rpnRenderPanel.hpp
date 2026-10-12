@@ -150,6 +150,7 @@ protected:
 	virtual void paintEvent(QPaintEvent* i_pEvent);
 	virtual void mousePressEvent(QMouseEvent* i_pEvent);
 	virtual void mouseMoveEvent(QMouseEvent* i_pEvent);
+	virtual void wheelEvent(QWheelEvent* i_pEvent);
 	virtual void enterEvent(QEnterEvent* i_pEvent);
 	virtual void leaveEvent(QEvent* i_pEvent);
 	virtual void resizeEvent(QResizeEvent* i_pEvent);
