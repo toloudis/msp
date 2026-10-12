@@ -2028,6 +2028,7 @@ void cptrModeRender::try_render_capture()
 		// Start capture render in a thread
 		envThread render_thread( std::bind(&cptrRenderThread::ThreadedRenderCapture, &m_CaptureRenderThread) );
 		g3dThreadControl::WaitForRenderThreadStart();
+		render_thread.detach();
 	}
 	else
 	{
