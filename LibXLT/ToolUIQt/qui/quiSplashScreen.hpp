@@ -36,6 +36,9 @@ namespace splashscreen
 //============================================================================
 class quiSplashScreen : public guiSplashScreenImpl
 {
+public:
+	quiSplashScreen() : m_bSplashTimeout(false) {}
+
 	//--------------------------------------------------------------------
 	// StartUp - display splash screen
 	//--------------------------------------------------------------------

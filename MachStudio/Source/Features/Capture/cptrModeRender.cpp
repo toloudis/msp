@@ -25,7 +25,11 @@
 #include "Features/RenderPrefs/rndrPrefsUtil.hpp"
 #include "MainApp/mnmApp.hpp"
 #include "MainApp/resource.h"
+#ifdef MSP_GUI_QT
+#include "MainApp/qtGUI/qtMainForm.hpp"
+#else
 #include "MainApp/wxGUI/wxMainForm.hpp"
+#endif
 #include "Support/cams/camsCameraMgr.hpp"
 #include "Support/cams/camsFollowUtil.hpp"
 #include "Support/capt/captRenderOutputData.hpp"
@@ -508,6 +512,8 @@ void cptrModeRender::ExitMode()
 	{
 		#ifdef USE_WXWIDGETS
 			wxMainForm::Exit();
+#elif defined(USE_QT)
+			qtMainForm::Exit();
 		#endif
 	}
 	DBG_TRACE("ExitMode: bottom");
@@ -2022,6 +2028,7 @@ void cptrModeRender::try_render_capture()
 		// Start capture render in a thread
 		envThread render_thread( std::bind(&cptrRenderThread::ThreadedRenderCapture, &m_CaptureRenderThread) );
 		g3dThreadControl::WaitForRenderThreadStart();
+		render_thread.detach();
 	}
 	else
 	{

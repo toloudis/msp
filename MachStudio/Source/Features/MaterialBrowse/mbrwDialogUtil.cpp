@@ -7,12 +7,24 @@
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
 #include "Features/MaterialBrowse/mbrwDialogUtil.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/MaterialBrowse/qtGUI/mbrwMaterialSwatchDialog.hpp"
+#else
 #include "Features/MaterialBrowse/wxGUI/mbrwMaterialSwatchDialog.hpp"
+#endif
 
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/Gf/gfPaths.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtPaneMgr.hpp"
+#else
 #include "ToolUIWx/twx/twxPaneMgr.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtSystem.hpp"
+#else
 #include "ToolUIWx/twx/twxSystem.hpp"
+#endif
 
 
 namespace mbrwDialogUtil
@@ -35,6 +47,13 @@ namespace mbrwDialogUtil
 			DBG_ASSERT(twxSystem::g_pMainForm, "MainForm not yet initialized.");
 			mbrwMaterialSwatchDialog::Instance = new mbrwMaterialSwatchDialog(twxSystem::g_pMainForm);
 		}
+#elif defined(USE_QT)
+		// Create dialog
+		if (!mbrwMaterialSwatchDialog::Instance)
+		{
+			DBG_ASSERT(tqtSystem::g_pMainForm, "MainForm not yet initialized.");
+			mbrwMaterialSwatchDialog::Instance = new mbrwMaterialSwatchDialog(tqtSystem::g_pMainForm);
+		}
 #endif // USE_WXWIDGETS
 	}
 
@@ -52,6 +71,8 @@ namespace mbrwDialogUtil
 	{
 #ifdef USE_WXWIDGETS
 		twxPaneMgr::Show(mbrwMaterialSwatchDialog::Instance);
+#elif defined(USE_QT)
+		tqtPaneMgr::Show(mbrwMaterialSwatchDialog::Instance);
 #endif // USE_WXWIDGETS
 	}
 
@@ -77,7 +98,7 @@ namespace mbrwDialogUtil
 	//--------------------------------------------------------------------
 	void RefreshIcons()
 	{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (mbrwMaterialSwatchDialog::Instance)
 		{
 			mbrwMaterialSwatchDialog::Instance->RefreshIcons();

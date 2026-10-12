@@ -1,100 +1,51 @@
 /****************************************************************************\
-**	twcColorRGBAEdit.hpp
+**	tqcPictureBox.cpp
+**
+**	see .hpp
 **
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
-#include "ToolUIWx/twc/private/twcPictureBox.hpp"
+#include "ToolUIQt/tqc/private/tqcPictureBox.hpp"
 
-#include <wx/dcclient.h>
-
-#ifdef USE_WXWIDGETS
-
-BEGIN_EVENT_TABLE(twcPictureBox, wxPanel)
-
-// catch paint events
-EVT_PAINT(twcPictureBox::paintEvent)
- 
-END_EVENT_TABLE()
-
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-twcPictureBox::twcPictureBox(wxWindow *parent,
-            wxWindowID winid,
-            const wxPoint& pos,
-            const wxSize& size,
-            long style,
-            const wxString& name)
-:	wxPanel(parent, winid, pos, size, style, name)
-{		
-	m_texture = new wxBitmap(size.x, size.y);
-	this->Layout();
+tqcPictureBox::tqcPictureBox(QWidget *parent, const QSize& size)
+:	QWidget(parent)
+{
+	if (size.isValid())
+		this->resize(size);
 }
 
-twcPictureBox::~twcPictureBox()
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+void tqcPictureBox::LoadImage(const QString& i_file, bool i_changePanelSize)
 {
-	delete m_texture;
-	m_texture = NULL;
+	if (!i_file.isEmpty())
+		SetImage(QPixmap(i_file), i_changePanelSize);
 }
 
-void twcPictureBox::LoadImage(wxString i_file, bool i_changePanelSize, wxBitmapType in_format)
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+void tqcPictureBox::SetImage(const QPixmap& i_tex, bool i_changePanelSize)
 {
-	if (i_file.size() != 0)
-	{
-		if (!m_texture)
-		{
-			m_texture = new wxBitmap();
-		}
-
-		m_texture->LoadFile(i_file, in_format);
-
-		if (i_changePanelSize)
-		{
-			this->SetSize(m_texture->GetWidth(), m_texture->GetHeight());
-		}
-	}
-}
-
-void twcPictureBox::SetImage(wxBitmap *i_tex, bool i_changePanelSize)
-{
-	if(m_texture)
-	{
-		delete m_texture;
-		m_texture = NULL;
-	}
-
 	m_texture = i_tex;
+	if (!m_texture.isNull() && i_changePanelSize)
+		this->setFixedSize(m_texture.size());
+	this->update();
+}
 
-	if (m_texture && i_changePanelSize)
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+void tqcPictureBox::paintEvent(QPaintEvent*)
+{
+	if (!m_texture.isNull())
 	{
-		this->SetSize(m_texture->GetWidth(), m_texture->GetHeight());
+		QPainter painter(this);
+		painter.drawPixmap(0, 0, m_texture);
 	}
 }
 
-void twcPictureBox::paintEvent(wxPaintEvent &evt)
-{
-	if (m_texture)
-	{
-		wxPaintDC dc(this);
-		render(dc);
-	}
-}
-
-
-void twcPictureBox::paintNow()
-{
-	if (m_texture)
-	{
-		wxClientDC dc(this);
-		render(dc);
-	}
-}
-
-void twcPictureBox::render(wxDC& i_dc)
-{
-	i_dc.DrawBitmap(*m_texture, 0, 0, false );
-}
-
-
-#endif // USE_WXWIDGETS
+#endif // USE_QT

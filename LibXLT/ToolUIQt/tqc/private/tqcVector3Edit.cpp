@@ -1,42 +1,32 @@
 /****************************************************************************\
-**	tqcVector3Edit.hpp
+**	tqcVector3Edit.cpp
+**
+**	see .hpp
 **
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "ToolUIQt/tqc/tqcVector3Edit.hpp"
 
-#include "ToolUIQt/tqc/tqcEvent.hpp"
-
-
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 tqcVector3Edit::tqcVector3Edit(QWidget* i_pParent)
-:	wxPanel(i_pParent),
+:	QWidget(i_pParent),
 	m_Value(0,0,0)
-{		
-	wxBoxSizer* bSizer1;
-	bSizer1 = new wxBoxSizer( wxHORIZONTAL );
-	
-	m_pFloatEditX = new tqcFloatEdit(this, wxID_ANY, wxDefaultPosition, wxSize( 40,20 ));
-	this->Connect( m_pFloatEditX->GetId(), wxEVT_VALUE_CHANGED,
-					wxCommandEventHandler(tqcVector3Edit::OnTextChange) );
-	bSizer1->Add( m_pFloatEditX, 1, wxALL, 2 );
+{
+	QHBoxLayout* bSizer1 = new QHBoxLayout(this);
+	bSizer1->setContentsMargins(0, 0, 0, 0);
+	bSizer1->setSpacing(2);
 
-	m_pFloatEditY = new tqcFloatEdit(this, wxID_ANY, wxDefaultPosition, wxSize( 40,20 ));
-	this->Connect( m_pFloatEditY->GetId(), wxEVT_VALUE_CHANGED,
-					wxCommandEventHandler(tqcVector3Edit::OnTextChange) );
-	bSizer1->Add( m_pFloatEditY, 1, wxALL, 2 );
-
-	m_pFloatEditZ = new tqcFloatEdit(this, wxID_ANY, wxDefaultPosition, wxSize( 40,20 ));
-	this->Connect( m_pFloatEditZ->GetId(), wxEVT_VALUE_CHANGED,
-					wxCommandEventHandler(tqcVector3Edit::OnTextChange) );
-	bSizer1->Add( m_pFloatEditZ, 1, wxALL, 2 );
-	
-	this->SetSizer( bSizer1 );
-	this->Layout();
+	tqcFloatEdit** edits[3] = { &m_pFloatEditX, &m_pFloatEditY, &m_pFloatEditZ };
+	for (int i = 0; i < 3; ++i)
+	{
+		*edits[i] = new tqcFloatEdit(this);
+		(*edits[i])->SetValueChangedCallback([this]() { OnTextChange(); });
+		bSizer1->addWidget( *edits[i], 1 );
+	}
 }
 
 //--------------------------------------------------------------------
@@ -49,8 +39,7 @@ const maVector3d& tqcVector3Edit::GetValue() const
 void tqcVector3Edit::SetValue(const maVector3d& i_Value)
 {
 	m_Value = i_Value;
-
-	m_pFloatEditX->SetFloatValue(m_Value.m_X); 
+	m_pFloatEditX->SetFloatValue(m_Value.m_X);
 	m_pFloatEditY->SetFloatValue(m_Value.m_Y);
 	m_pFloatEditZ->SetFloatValue(m_Value.m_Z);
 }
@@ -69,24 +58,18 @@ void tqcVector3Edit::SetDecimalPlaces(const short i_DecimalPlaces)
 	m_pFloatEditZ->SetDecimalPlaces(i_DecimalPlaces);
 }
 
-
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void tqcVector3Edit::OnTextChange(wxCommandEvent& i_Event)
+void tqcVector3Edit::OnTextChange()
 {
-	maVector3d new_value( m_pFloatEditX->GetFloatValue(), 
-					  m_pFloatEditY->GetFloatValue(), 
-					  m_pFloatEditZ->GetFloatValue() );
-
+	maVector3d new_value( m_pFloatEditX->GetFloatValue(),
+						  m_pFloatEditY->GetFloatValue(),
+						  m_pFloatEditZ->GetFloatValue() );
 	if (m_Value != new_value)
 	{
 		m_Value = new_value;
-
-		// Use one of the float edit fields to trigger the callback
-		wxCommandEvent changed_event(wxEVT_VALUE_CHANGED, this->GetId());
-		m_pFloatEditX->ProcessCommand(changed_event);
+		NotifyValueChanged();
 	}
 }
-
 
 #endif // USE_QT

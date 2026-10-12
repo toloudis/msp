@@ -19,12 +19,12 @@
 #include "Core/prty/prtyName.hpp"
 #endif
 
+#ifdef USE_QT
 
 //===================================================================================
 //===================================================================================
 class pqtName_ListBox_Converter 
 {
-#ifdef QT_FINISH_PORT
 public:
 	//----------------------------------------------------------------------------
 	// Get list of string choices for combo box
@@ -35,17 +35,17 @@ public:
 	//----------------------------------------------------------------------------
 	// Set value into control
 	//----------------------------------------------------------------------------
-	static void SetValueIntoControl(wxListBox* i_pActualControl,
+	static void SetValueIntoControl(QListWidget* i_pActualControl,
 									 nameString i_Value);
 
 	//----------------------------------------------------------------------------
 	// Get value from control
 	//----------------------------------------------------------------------------
-	static nameString GetValueFromControl(wxListBox* i_pActualControl);
-#endif // USE_QT
+	static nameString GetValueFromControl(QListWidget* i_pActualControl);
 };
 
 //============================================================================
 //============================================================================
 typedef pqtTemplate_ListBox<prtyName, nameString, pqtName_ListBox_Converter> pqtName_ListBox;
 
+#endif // USE_QT

@@ -9,6 +9,9 @@
 #include "Features/Capture/cptrRenderUtil.hpp"
 
 #include "MainApp/mnmApp.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtSystem.hpp"
+#endif
 
 #include "Features/Capture/cptrModeRenderBake.hpp"
 #include "Features/Capture/cptrWriteAVI.hpp"
@@ -1032,6 +1035,21 @@ void cptrRenderUtil::ToggleMenuItems(bool i_bToggle)
 	mid = twxSystem::g_pMainMenu->FindMenuItem(wxT("File"), wxT("Recent Files") );
 	if (mid != -1)
 		twxSystem::g_pMainMenu->Enable(mid, i_bToggle);
+#elif defined(USE_QT)
+	DBG_ASSERT((tqtSystem::g_pMainMenu != NULL), "MainMenu not yet initialized.");
+	const QList<QAction*> top_actions = tqtSystem::g_pMainMenu->actions();
+	for (QAction* pTop : top_actions)
+	{
+		if (pTop->menu() && pTop->text().remove(QLatin1Char('&')) == "File")
+		{
+			const QList<QAction*> file_actions = pTop->menu()->actions();
+			for (QAction* pItem : file_actions)
+			{
+				if (pItem->text().remove(QLatin1Char('&')) == "Recent Files")
+					pItem->setEnabled(i_bToggle);
+			}
+		}
+	}
 #endif
 }
 

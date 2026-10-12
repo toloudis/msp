@@ -26,52 +26,52 @@
   <PropertyGroup Label="UserMacros" Condition="'$(Platform)'=='Itanium'">
     <wxArchSuffix>_ia64</wxArchSuffix>
   </PropertyGroup>
-  <PropertyGroup Label="UserMacros" Condition="('$(Configuration)'=='Debug' or '$(Configuration)'=='DLL Debug') and '$(CharacterSet)'=='Unicode'">
+  <PropertyGroup Label="UserMacros" Condition="('$(MspBaseConfiguration)'=='Debug' or '$(MspBaseConfiguration)'=='DLL Debug') and '$(CharacterSet)'=='Unicode'">
     <wxSuffix>ud</wxSuffix>
     <wxSuffixDebug>d</wxSuffixDebug>
   </PropertyGroup>
-  <PropertyGroup Label="UserMacros" Condition="('$(Configuration)'=='Debug' or '$(Configuration)'=='DLL Debug') and '$(CharacterSet)'!='Unicode'">
+  <PropertyGroup Label="UserMacros" Condition="('$(MspBaseConfiguration)'=='Debug' or '$(MspBaseConfiguration)'=='DLL Debug') and '$(CharacterSet)'!='Unicode'">
     <wxSuffix>d</wxSuffix>
     <wxSuffixDebug>d</wxSuffixDebug>
   </PropertyGroup>
-  <PropertyGroup Label="UserMacros" Condition="('$(Configuration)'=='Release' or '$(Configuration)'=='DLL Release') and '$(CharacterSet)'=='Unicode'">
+  <PropertyGroup Label="UserMacros" Condition="('$(MspBaseConfiguration)'=='Release' or '$(MspBaseConfiguration)'=='DLL Release') and '$(CharacterSet)'=='Unicode'">
     <wxSuffix>u</wxSuffix>
     <wxSuffixDebug>
     </wxSuffixDebug>
   </PropertyGroup>
-  <PropertyGroup Label="UserMacros" Condition="('$(Configuration)'=='Release' or '$(Configuration)'=='DLL Release') and '$(CharacterSet)'!='Unicode'">
+  <PropertyGroup Label="UserMacros" Condition="('$(MspBaseConfiguration)'=='Release' or '$(MspBaseConfiguration)'=='DLL Release') and '$(CharacterSet)'!='Unicode'">
     <wxSuffix>
     </wxSuffix>
     <wxSuffixDebug>
     </wxSuffixDebug>
   </PropertyGroup>
-  <PropertyGroup Label="UserMacros" Condition="'$(Configuration)'=='Debug' or '$(Configuration)'=='DLL Debug'">
+  <PropertyGroup Label="UserMacros" Condition="'$(MspBaseConfiguration)'=='Debug' or '$(MspBaseConfiguration)'=='DLL Debug'">
     <wxSuffixDebug>d</wxSuffixDebug>
   </PropertyGroup>
-  <PropertyGroup Label="UserMacros" Condition="'$(Configuration)'!='Debug' and '$(Configuration)'!='DLL Debug'">
+  <PropertyGroup Label="UserMacros" Condition="'$(MspBaseConfiguration)'!='Debug' and '$(MspBaseConfiguration)'!='DLL Debug'">
     <wxSuffixDebug>
     </wxSuffixDebug>
   </PropertyGroup>
-  <PropertyGroup Label="UserMacros" Condition="'$(Configuration)'=='DLL Debug' or '$(Configuration)'=='DLL Release'">
+  <PropertyGroup Label="UserMacros" Condition="'$(MspBaseConfiguration)'=='DLL Debug' or '$(MspBaseConfiguration)'=='DLL Release'">
     <wxLibTypeSuffix>dll</wxLibTypeSuffix>
   </PropertyGroup>
-  <PropertyGroup Label="UserMacros" Condition="'$(Configuration)'!='DLL Debug' and '$(Configuration)'!='DLL Release'">
+  <PropertyGroup Label="UserMacros" Condition="'$(MspBaseConfiguration)'!='DLL Debug' and '$(MspBaseConfiguration)'!='DLL Release'">
     <wxLibTypeSuffix>lib</wxLibTypeSuffix>
   </PropertyGroup>
   <PropertyGroup Label="UserMacros">
     <wxOutDirName>$(wxCompilerPrefix)$(wxArchSuffix)_$(wxLibTypeSuffix)$(wxCfg)</wxOutDirName>
     <wxOutDir>..\..\lib\$(wxOutDirName)\</wxOutDir>
   </PropertyGroup>
-  <PropertyGroup Label="UserMacros" Condition="'$(Configuration)'=='DLL Debug'">
+  <PropertyGroup Label="UserMacros" Condition="'$(MspBaseConfiguration)'=='DLL Debug'">
     <wxIntRootDir>$(wxCompilerPrefix)$(wxArchSuffix)_$(wxToolkitPrefix)$(wxSuffix)dll\</wxIntRootDir>
   </PropertyGroup>
-  <PropertyGroup Label="UserMacros" Condition="'$(Configuration)'=='DLL Release'">
+  <PropertyGroup Label="UserMacros" Condition="'$(MspBaseConfiguration)'=='DLL Release'">
     <wxIntRootDir>$(wxCompilerPrefix)$(wxArchSuffix)_$(wxToolkitPrefix)$(wxSuffix)dll\</wxIntRootDir>
   </PropertyGroup>
-  <PropertyGroup Label="UserMacros" Condition="'$(Configuration)'=='Debug'">
+  <PropertyGroup Label="UserMacros" Condition="'$(MspBaseConfiguration)'=='Debug'">
     <wxIntRootDir>$(wxCompilerPrefix)$(wxArchSuffix)_$(wxToolkitPrefix)$(wxSuffix)\</wxIntRootDir>
   </PropertyGroup>
-  <PropertyGroup Label="UserMacros" Condition="'$(Configuration)'=='Release'">
+  <PropertyGroup Label="UserMacros" Condition="'$(MspBaseConfiguration)'=='Release'">
     <wxIntRootDir>$(wxCompilerPrefix)$(wxArchSuffix)_$(wxToolkitPrefix)$(wxSuffix)\</wxIntRootDir>
   </PropertyGroup>
   <PropertyGroup Label="UserMacros">
@@ -85,7 +85,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalOptions Condition="'$(PlatformToolset)' == 'v140_xp'">/Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalOptions Condition="('$(Configuration)'=='Release' or '$(Configuration)'=='DLL Release') and '$(VisualStudioVersion)' >= '14.0'">/Zc:throwingNew %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="('$(MspBaseConfiguration)'=='Release' or '$(MspBaseConfiguration)'=='DLL Release') and '$(VisualStudioVersion)' >= '14.0'">/Zc:throwingNew %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;comdlg32.lib;winspool.lib;shell32.lib;shlwapi.lib;ole32.lib;oleaut32.lib;uuid.lib;advapi32.lib;version.lib;comctl32.lib;rpcrt4.lib;ws2_32.lib;wininet.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>

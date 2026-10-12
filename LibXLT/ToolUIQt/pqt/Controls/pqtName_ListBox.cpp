@@ -11,7 +11,7 @@
 
 #include "Core/prty/prtyListBoxUIInfo.hpp"
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 // Get list of string choices for combo box
@@ -26,19 +26,19 @@ void pqtName_ListBox_Converter::GetChoices(prtyPropertyUIInfo* i_pUIInfo,
 //----------------------------------------------------------------------------
 // Set value into control
 //----------------------------------------------------------------------------
-void pqtName_ListBox_Converter::SetValueIntoControl(wxListBox* i_pActualControl,
+void pqtName_ListBox_Converter::SetValueIntoControl(QListWidget* i_pActualControl,
 													nameString i_Value)
 {
-	wxString name_str(i_Value.GetString().c_str(), wxConvUTF8);
-	i_pActualControl->SetStringSelection(name_str);
+	pqtControlUtil::SelectString(i_pActualControl, tqtQString(i_Value.GetString()));
 }
 
 //----------------------------------------------------------------------------
 // Get value from control
 //----------------------------------------------------------------------------
-nameString pqtName_ListBox_Converter::GetValueFromControl(wxListBox* i_pActualControl)
+nameString pqtName_ListBox_Converter::GetValueFromControl(QListWidget* i_pActualControl)
 {
-	std::string sel_text = i_pActualControl->GetStringSelection().utf8_str();
+	QListWidgetItem* pItem = i_pActualControl->currentItem();
+	std::string sel_text = pItem ? tqtStdString(pItem->text()) : std::string();
 	return nameString(sel_text);
 }
 

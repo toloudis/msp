@@ -8,15 +8,27 @@
 \****************************************************************************/
 #include "Features/RenderPanels/GUI/rpnDialogUtil.hpp"
 
+#ifdef MSP_GUI_QT
+#include "Features/RenderPanels/qtGUI/rpnCameraChoice.hpp"
+#else
 #include "Features/RenderPanels/wxGUI/rpnCameraChoice.hpp"
+#endif
 //#include "Systems/Cameras/GUI/cmraDialogDataUtil.hpp"
 //#include "Systems/Cameras/Object/cmraObjectMgr.hpp"
 
 #include "Systems/Common/GUI/cmmSystemDialogInterest.hpp"
 #include "Systems/Common/GUI/cmmSystemDialogUtil.hpp"
 #include "Tool/gui/guiToolbarMgr.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtSystem.hpp"
+#else
 #include "ToolUIWx/twx/twxSystem.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtToolbarMgr.hpp"
+#else
 #include "ToolUIWx/twx/twxToolbarMgr.hpp"
+#endif
 
 // Includes from old managed file
 #ifndef CAM_CAMERA_HPP
@@ -56,7 +68,7 @@ namespace
 		virtual void CameraListChanged()
 		{
 	
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 			if (rpnCameraChoice::Instance != NULL)
 			{
 				rpnCameraChoice::Instance->Update();
@@ -72,7 +84,7 @@ namespace
 		virtual void DirectorsCutListChanged()
 		{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 			if (rpnCameraChoice::Instance != NULL)
 			{
 				rpnCameraChoice::Instance->Update();
@@ -96,7 +108,7 @@ namespace
 		void SceneDialogOpen()
 		{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 			if (rpnCameraChoice::Instance == NULL)
 			{
 				rpnDialogUtil::SetupCameraDialog();
@@ -158,6 +170,13 @@ void rpnDialogUtil::SetupCameraDialog()
 		rpnCameraChoice::Instance->Update();
 		twxToolbarMgr::AddControlToToolBar(c_CamerasToolbarName, rpnCameraChoice::Instance);
 	}
+#elif defined(USE_QT)
+	if (rpnCameraChoice::Instance == NULL)
+	{
+		rpnCameraChoice::Instance = new rpnCameraChoice(tqtToolbarMgr::GetToolbarByName(c_CamerasToolbarName)); 
+		rpnCameraChoice::Instance->Update();
+		tqtToolbarMgr::AddControlToToolBar(c_CamerasToolbarName, rpnCameraChoice::Instance);
+	}
 #endif
 }
 
@@ -189,7 +208,7 @@ void rpnDialogUtil::HighlightCamera(camCamera *i_pCamera)
 			cam_index = -1;
 	}
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (rpnCameraChoice::Instance)
 		rpnCameraChoice::Instance->SetSelectedIndex( cam_index );
 #endif
@@ -209,7 +228,7 @@ void rpnDialogUtil::HighlightDirectorsCut(camsDirectorsCut *i_pDirectorsCut)
 		cam_index = (index+1+camsCameraMgr::GetNumCameras());
 
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (rpnCameraChoice::Instance)
 		rpnCameraChoice::Instance->SetSelectedIndex( cam_index );
 #endif
@@ -222,7 +241,7 @@ void rpnDialogUtil::HighlightDirectorsCut(camsDirectorsCut *i_pDirectorsCut)
 void rpnDialogUtil::DoSwapCam()
 {
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (rpnCameraChoice::Instance)
 		rpnCameraChoice::Instance->DoSwapCam();
 #endif

@@ -50,22 +50,33 @@ namespace
 
 		// Convert the 32-bit floats into 16-bit floats and include the alpha component
 		DirectX::PackedVector::HALF* fHDR = new DirectX::PackedVector::HALF[4 * fileWidth * fileHeight];
-		int j = 0;
+        const size_t pixelCount = static_cast<size_t>(fileWidth) * static_cast<size_t>(fileHeight);
 
         DirectX::PackedVector::XMConvertFloatToHalfStream(
             fHDR,
-			4 * 2,
-			fHDRPixels,
-			4*4,
-			fileWidth*fileHeight
-		);
-		for( int i = 0; i < 4 * fileWidth * fileHeight; i += 4 )
+            4 * sizeof(DirectX::PackedVector::HALF),
+            fHDRPixels,
+            3 * sizeof(float),
+            pixelCount
+        );
+        DirectX::PackedVector::XMConvertFloatToHalfStream(
+            fHDR + 1,
+            4 * sizeof(DirectX::PackedVector::HALF),
+            fHDRPixels + 1,
+            3 * sizeof(float),
+            pixelCount
+        );
+        DirectX::PackedVector::XMConvertFloatToHalfStream(
+            fHDR + 2,
+            4 * sizeof(DirectX::PackedVector::HALF),
+            fHDRPixels + 2,
+            3 * sizeof(float),
+            pixelCount
+        );
+
+        for( size_t i = 0; i < pixelCount; ++i )
 		{
-			fHDR[i] = DirectX::PackedVector::XMConvertFloatToHalf(fHDRPixels[i - j]);
-			fHDR[i + 1] = DirectX::PackedVector::XMConvertFloatToHalf(fHDRPixels[i + 1 - j]);
-			fHDR[i + 2] = DirectX::PackedVector::XMConvertFloatToHalf(fHDRPixels[i + 2 - j]);
-			fHDR[i + 3] = DirectX::PackedVector::XMConvertFloatToHalf(1.0f);
-			j++;
+            fHDR[i * 4 + 3] = DirectX::PackedVector::XMConvertFloatToHalf(1.0f);
 		}
 
         std::unique_ptr<DirectX::ScratchImage> pStagingTexture(new DirectX::ScratchImage);

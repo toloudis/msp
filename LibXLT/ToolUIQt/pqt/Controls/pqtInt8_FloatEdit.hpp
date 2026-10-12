@@ -22,12 +22,12 @@
 #include "Core/prty/prtyInt8.hpp"
 #endif
 
+#ifdef USE_QT
 
 //===================================================================================
 //===================================================================================
 class pqtInt8_FloatEdit_Converter  : public pqtInt8Converter
 {
-#ifdef USE_QT
 public:
 	//----------------------------------------------------------------------------
 	// Set value into control
@@ -39,10 +39,10 @@ public:
 	// Get value from control
 	//----------------------------------------------------------------------------
 	static envType::Int8 GetValueFromControl(tqcFloatEdit* i_pActualControl);
-#endif // USE_QT
 };
 
 //============================================================================
 //============================================================================
 typedef pqtTemplate_FloatEdit<prtyInt8, envType::Int8, pqtInt8_FloatEdit_Converter> pqtInt8_FloatEdit;
 
+#endif // USE_QT

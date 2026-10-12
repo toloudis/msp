@@ -17,8 +17,16 @@
 #include "Features/Capture/cptrRenderBakeDataUtil.hpp"
 #include "Features/Capture/cptrRenderBatchDataUtil.hpp"
 #include "Features/Capture/cptrRenderProgressDialogUtil.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/Capture/qtGUI/cptrDialogUtil.hpp"
+#else
 #include "Features/Capture/wxGUI/cptrDialogUtil.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "Features/Capture/qtGUI/cptrToPhotoshopdialog.hpp"
+#else
 #include "Features/Capture/wxGUI/cptrToPhotoshopdialog.hpp"
+#endif
 #include "Support/capt/captOutputDataDocumentInterest.hpp"
 #include "Support/capt/captRenderOutputDataUtil.hpp"
 #include "Support/capt/captRenderProgressMgr.hpp"

@@ -1,7 +1,7 @@
 /*****************************************************************************
 **  quiToolbarMgr.hpp
 **
-**      wxWidgets implementation of toolbar manager
+**      Qt implementation of toolbar manager
 **
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved

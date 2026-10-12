@@ -18,27 +18,23 @@
 #include "Core/Env/envBoost.hpp"
 #endif 
 
-#ifdef USE_QT
-#include <QtGui/QWidget>
-#endif
 
+#ifdef USE_QT 
 
 //============================================================================
 //============================================================================
 class prtyPropertyUIInfo;
 class pqtControl;
 
-
 //============================================================================
 //============================================================================
 class pqtControlFactory
 {
 	public:
-#ifdef USE_QT
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
 		virtual pqtControl* CreateControl(shared_ptr<prtyPropertyUIInfo>& i_pUIInfo,
 										  QWidget* i_pParent) = 0;
-#endif	// USE_QT
 };
 
+#endif	// USE_QT

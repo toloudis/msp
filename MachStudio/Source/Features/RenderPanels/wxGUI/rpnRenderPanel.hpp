@@ -126,25 +126,18 @@ public:
 	void SelectCamera();
 
 	//----------------------------------------------------------------------------
-	// SetMaxRenderSize - set maximum size allowed for the render area.
-	//	Use -1 -1 in order to remove the constraints and allow any resizing.
+	// SetRenderResolution - set the size of the rendered image in pixels.
+	//	The image is scaled to fit the panel, keeping its aspect ratio.
+	//	Use -1 -1 in order to render at the panel size.
 	//----------------------------------------------------------------------------
-	void SetMaxRenderSize(int i_Width, int i_Height);
-
-protected:
-	//------------------------------------------------------------------------
-	// Override the wxWidgets SetSize function in order to enforce a
-	//	maximum size for the render area.
-	//------------------------------------------------------------------------
-	virtual void DoSetSize(int x, int y,
-						   int width, int height,
-						   int sizeFlags);
+	void SetRenderResolution(int i_Width, int i_Height);
 
 private:
 	//------------------------------------------------------------------------
 	// private functions
 	//------------------------------------------------------------------------
 	void do_resize();
+	void panel_to_render_pixel(int& io_X, int& io_Y) const;
 	void add_cameras_to_context_menu(twxContextMenu &i_Menu);
 	void add_renderpasses_to_context_menu(twxContextMenu &io_ContextMenu);
 	void do_pick_at_cursor(int i_X, int i_Y, g3dPickInfo& o_PickInfo);
@@ -179,7 +172,7 @@ private:
 private:
 	tma3dRenderView* m_pRenderView;
 	rpnPanelViewer *m_pPanelViewer; // just a cast of the viewer owned by m_pRenderView
-	int m_MaxWidth, m_MaxHeight;
+	int m_RenderWidth, m_RenderHeight;
 	bool m_bHasFocus;
 	bool m_bCanChangeRenderPass;
 	std::string	m_CameraName;

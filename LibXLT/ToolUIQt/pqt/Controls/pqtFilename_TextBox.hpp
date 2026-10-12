@@ -19,12 +19,12 @@
 #include "Core/prty/prtyFileName.hpp"
 #endif
 
+#ifdef USE_QT
 
 //===================================================================================
 //===================================================================================
 class pqtFileName_TextBox_Converter 
 {
-#ifdef QT_FINISH_PORT
 public:
 	//----------------------------------------------------------------------------
 	// Set value into control
@@ -36,10 +36,10 @@ public:
 	// Get value from control
 	//----------------------------------------------------------------------------
 	static itString GetValueFromControl(tqcTextBox* i_pActualControl);
-#endif // USE_QT
 };
 
 //============================================================================
 //============================================================================
 typedef pqtTemplate_TextBox<prtyFileName, itString, pqtFileName_TextBox_Converter> pqtFileName_TextBox;
 
+#endif // USE_QT

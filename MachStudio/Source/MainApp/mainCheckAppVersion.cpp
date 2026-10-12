@@ -16,7 +16,10 @@
 #include <iostream>
 
 //uncomment this to use statically linked libraries of curl (must be defined before the include!)
+//(some project configurations already define it)
+#ifndef CURL_STATICLIB
 #define CURL_STATICLIB
+#endif
 
 // http://curl.haxx.se/download.html
 #include "curl/curl.h"

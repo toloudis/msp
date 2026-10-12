@@ -14,15 +14,31 @@
 #include "MainApp/mainCheckAppVersion.hpp"
 #include "MainApp/mainConstants.hpp"
 #include "MainApp/MainForm.h"
+#ifdef MSP_GUI_QT
+#include "MainApp/qtGUI/qtHelpUtil.hpp"
+#else
 #include "MainApp/wxGUI/wxHelpUtil.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "MainApp/qtGUI/qtMainForm.hpp"
+#else
 #include "MainApp/wxGUI/wxMainForm.hpp"
+#endif
 
 #include "Features/Capture/cptrRenderUtil.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/Capture/qtGUI/ExportConstants.hpp"
+#else
 #include "Features/Capture/wxGUI/ExportConstants.hpp"
+#endif
 #include "Features/Channels/chnlDialogUtil.hpp"
 #include "Features/ObjectManip/mnpConstants.hpp"
 #include "Features/Prefs/prefsMgr.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/Prefs/qtGUI/prefsLayoutMgr.hpp"
+#else
 #include "Features/Prefs/wxGUI/prefsLayoutMgr.hpp"
+#endif
 #include "Features/ProjectSetup/Data/ProjectSetupData.hpp"
 #include "Features/ProjectSetup/ProjectSetupMgr.hpp"
 #include "Features/RenderPrefs/rndrPrefsMgr.hpp"
@@ -55,11 +71,18 @@
 #include "Tool/gui/guiSingleDocHandler.hpp"
 #include "Tool/gui/guiStatusBarMgr.hpp"
 #include "Tool/gui/guiToolbarMgr.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtPaneMgr.hpp"
+#else
 #include "ToolUIWx/twx/twxPaneMgr.hpp"
+#endif
 
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 #include <assert.h>
+#ifdef MSP_GUI_QT
+#include <windows.h>	// included by wxWidgets otherwise
+#endif
 #include <shellapi.h>
 #endif
 
@@ -95,6 +118,8 @@ namespace
 	{
 #ifdef USE_WXWIDGETS
 		wxHelpUtil::ShowHelpInfo();
+#elif defined(USE_QT)
+		qtHelpUtil::ShowHelpInfo();
 #endif
 	}
 
@@ -102,7 +127,7 @@ namespace
 	//--------------------------------------------------------------------
 	void Execute_Online_CheckLatestVersion()
 	{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		// TODO - Please read the docs for ShellExecute closely. To really bulletproof your code, they recommend initializing COM. See the docs here, and look for the part that says "COM should be initialized as shown here". The short answer is to do this (if you haven't already init'd COM):
 		//CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE)
 
@@ -155,7 +180,7 @@ namespace
 	//--------------------------------------------------------------------
 	void Execute_Online_Support()
 	{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		// TODO - Please read the docs for ShellExecute closely. To really bulletproof your code, they recommend initializing COM. See the docs here, and look for the part that says "COM should be initialized as shown here". The short answer is to do this (if you haven't already init'd COM):
 		//CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE)
 
@@ -168,7 +193,7 @@ namespace
 	//--------------------------------------------------------------------
 	void Execute_Online_Manual()
 	{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		ShellExecute(NULL, L"open", L"http://studiogpu.com/userguide",
 				NULL, NULL, SW_SHOWNORMAL);
 #endif
@@ -178,7 +203,7 @@ namespace
 	//--------------------------------------------------------------------
 	void Execute_Online_Tutorials()
 	{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		ShellExecute(NULL, L"open", L"http://www.studiogpu.com/support/tutorials",
 				NULL, NULL, SW_SHOWNORMAL);
 #endif
@@ -188,7 +213,7 @@ namespace
 	//--------------------------------------------------------------------
 	void Execute_Online_StudioGPU()
 	{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		ShellExecute(NULL, L"open", L"http://studiogpu.com",
 				NULL, NULL, SW_SHOWNORMAL);
 #endif
@@ -200,6 +225,8 @@ namespace
 	{
 #ifdef USE_WXWIDGETS
 		wxHelpUtil::ShowHelpAbout();
+#elif defined(USE_QT)
+		qtHelpUtil::ShowHelpAbout();
 #endif
 	}
 
@@ -312,7 +339,7 @@ namespace
 
 		DBG_LOG( docSingleDocumentMgr::GetFilename() << " saved." );
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		// We can use this as an opportunity to save preferences also
 		prefsLayoutMgr::SaveLastLayout();
 #endif
@@ -336,7 +363,7 @@ namespace
 
 		DBG_LOG( docSingleDocumentMgr::GetFilename() << " saved." );
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		// We can use this as an opportunity to save preferences also	
 		prefsLayoutMgr::SaveLastLayout();
 #endif
@@ -353,6 +380,8 @@ namespace
 
 #ifdef USE_WXWIDGETS
 		wxMainForm::Exit();
+#elif defined(USE_QT)
+		qtMainForm::Exit();
 #endif
 	}
 
@@ -428,6 +457,8 @@ namespace
 	{
 #ifdef USE_WXWIDGETS
 		twxPaneMgr::Show("Time Slider");
+#elif defined(USE_QT)
+		tqtPaneMgr::Show("Time Slider");
 #endif
 	}
 
@@ -437,6 +468,8 @@ namespace
 	{
 #ifdef USE_WXWIDGETS
 		//twxPaneMgr::Show("Tags");
+#elif defined(USE_QT)
+		//tqtPaneMgr::Show("Tags");
 #endif
 	}
 
@@ -475,6 +508,8 @@ namespace
 			twxSystem::g_pStatusBar->Show(i_bChecked);
 			twxPaneMgr::Update();
 		}
+#elif defined(USE_QT)
+		qtMainForm::SetStatusBarVisible(i_bChecked);
 #endif
 	}
 	bool Get_StatusBar()
@@ -482,6 +517,8 @@ namespace
 
 	#ifdef USE_WXWIDGETS
 		return (twxSystem::g_pStatusBar) ? twxSystem::g_pStatusBar->IsShown() : false;
+#elif defined(USE_QT)
+		return qtMainForm::GetStatusBarVisible();
 	#else
 		return false;
 	#endif

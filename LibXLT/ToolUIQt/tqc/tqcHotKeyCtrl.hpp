@@ -1,8 +1,7 @@
 /****************************************************************************\
 **	tqcHotKeyCtrl.hpp
 **
-**		Textbox that handles key press events, mapping them to
-**	hotkey strings.
+**	Read-only text box that shows the hot key typed into it
 **
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
@@ -16,34 +15,27 @@
 #include "ToolUIQt/tqc/tqcEvent.hpp"
 #endif
 
-
-#ifdef QT_FINISH_PORT
-
-//============================================================================
-// wxEVT_VALUE_CHANGED event : this control throws this event type when the
-//	value in the control has changed aftere ENTER is pressed, or the
-//	focus leaves the text box. Users should register for this event, 
-//	not for the individual enter pressed and leave events.
-//============================================================================
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
-class tqcHotKeyCtrl : public wxTextCtrl
+class tqcHotKeyCtrl : public QLineEdit, public tqcValueChangedNotifier
 {
 	public:
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		tqcHotKeyCtrl(QWidget* i_pParent, 
-				   QWidgetID i_Id = wxID_ANY);
+		tqcHotKeyCtrl(QWidget* i_pParent);
 
-	private:
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		void OnKeyDown(wxKeyEvent& i_Event);
+		QString GetValue() const { return this->text(); }
+		void SetValue(const QString& i_Value) { this->setText(i_Value); }
 
-		std::string m_LastValue;
-
-    DECLARE_EVENT_TABLE()
+	protected:
+		//--------------------------------------------------------------------
+		//--------------------------------------------------------------------
+		virtual void keyPressEvent(QKeyEvent* i_pEvent);
+		virtual bool event(QEvent* i_pEvent);
 };
 
 #endif // USE_QT

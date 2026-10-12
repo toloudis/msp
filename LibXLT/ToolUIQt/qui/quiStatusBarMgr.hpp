@@ -34,7 +34,7 @@ public:
 	//	SetToolTip() - set help text for an individual panel
 	//---------------------------------------------------------------------------
 	virtual void SetToolTip( int i_PanelIndex, const char * i_Text );
-
+		
 	//---------------------------------------------------------------------------
 	// Set which pane to use for error messages
 	//---------------------------------------------------------------------------

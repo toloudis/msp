@@ -22,6 +22,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx</Extensions>
     </Filter>
+    <Filter Include="Source Files\qtGUI">
+      <UniqueIdentifier>{5394720b-65e5-4f14-a60d-9376ed5fb410}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mainCheckAppVersion.cpp">
@@ -104,6 +107,27 @@
     </ClCompile>
     <ClCompile Include="wxGUI\wxTimeSlider.cpp">
       <Filter>Source Files\wxGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="qtGUI\qtHelpUtil.cpp">
+      <Filter>Source Files\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="qtGUI\qtMRUManager.cpp">
+      <Filter>Source Files\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="qtGUI\qtMainDropTarget.cpp">
+      <Filter>Source Files\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="qtGUI\qtMainForm.cpp">
+      <Filter>Source Files\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="qtGUI\qtResolvePathDialog.cpp">
+      <Filter>Source Files\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="qtGUI\qtResolvePathDialogBase.cpp">
+      <Filter>Source Files\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="qtGUI\qtTimeSlider.cpp">
+      <Filter>Source Files\qtGUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -193,6 +217,27 @@
     </ClInclude>
     <ClInclude Include="wxGUI\wxTimeSlider.hpp">
       <Filter>Source Files\wxGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="qtGUI\qtHelpUtil.hpp">
+      <Filter>Source Files\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="qtGUI\qtMRUManager.hpp">
+      <Filter>Source Files\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="qtGUI\qtMainDropTarget.hpp">
+      <Filter>Source Files\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="qtGUI\qtMainForm.hpp">
+      <Filter>Source Files\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="qtGUI\qtResolvePathDialog.hpp">
+      <Filter>Source Files\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="qtGUI\qtResolvePathDialogBase.h">
+      <Filter>Source Files\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="qtGUI\qtTimeSlider.hpp">
+      <Filter>Source Files\qtGUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

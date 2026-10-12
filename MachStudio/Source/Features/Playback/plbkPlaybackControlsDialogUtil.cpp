@@ -8,10 +8,22 @@
 \****************************************************************************/
 #include "Features/Playback/plbkPlaybackControlsDialogUtil.hpp"
 
+#ifdef MSP_GUI_QT
+#include "Features/Playback/qtGUI/plbkPlaybackControlsDialog.hpp"
+#else
 #include "Features/Playback/wxGUI/plbkPlaybackControlsDialog.hpp"
+#endif
 
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtPaneMgr.hpp"
+#else
 #include "ToolUIWx/twx/twxPaneMgr.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtSystem.hpp"
+#else
 #include "ToolUIWx/twx/twxSystem.hpp"
+#endif
 
 
 //============================================================================
@@ -31,6 +43,13 @@ namespace plbkPlaybackControlsDialogUtil
 
 			plbkPlaybackControlsDialog::DialogInstance = new plbkPlaybackControlsDialog( twxSystem::g_pMainForm );
 		}	
+#elif defined(USE_QT)
+		if (plbkPlaybackControlsDialog::DialogInstance == NULL)
+		{
+			DBG_ASSERT((tqtSystem::g_pMainForm != NULL), "MainForm not yet initialized.");
+
+			plbkPlaybackControlsDialog::DialogInstance = new plbkPlaybackControlsDialog( tqtSystem::g_pMainForm );
+		}	
 #endif // USE_WXWIDGETS		
 	}
 
@@ -43,6 +62,13 @@ namespace plbkPlaybackControlsDialogUtil
 		if (plbkPlaybackControlsDialog::DialogInstance != NULL)
 		{
 			twxPaneMgr::Show( plbkPlaybackControlsDialog::DialogInstance, false );
+			//plbkPlaybackControlsDialog::DialogInstance->Show(false);
+			plbkPlaybackControlsDialog::DialogInstance = NULL;
+		}
+#elif defined(USE_QT)
+		if (plbkPlaybackControlsDialog::DialogInstance != NULL)
+		{
+			tqtPaneMgr::Show( plbkPlaybackControlsDialog::DialogInstance, false );
 			//plbkPlaybackControlsDialog::DialogInstance->Show(false);
 			plbkPlaybackControlsDialog::DialogInstance = NULL;
 		}
@@ -59,6 +85,11 @@ namespace plbkPlaybackControlsDialogUtil
 
 		twxPaneMgr::Show( plbkPlaybackControlsDialog::DialogInstance );
 		//plbkPlaybackControlsDialog::DialogInstance->Show(true);
+#elif defined(USE_QT)
+		Init();
+
+		tqtPaneMgr::Show( plbkPlaybackControlsDialog::DialogInstance );
+		//plbkPlaybackControlsDialog::DialogInstance->Show(true);
 #endif
 	}
 
@@ -68,7 +99,7 @@ namespace plbkPlaybackControlsDialogUtil
 	void  Hide()
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		//CleanUp();
 #endif
 	}

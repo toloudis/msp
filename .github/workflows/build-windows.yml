@@ -41,7 +41,9 @@ jobs:
       matrix:
         # Both configurations link the vcpkg packages from the per-library
         # manifest installs (LibXLT/Graphics, LibXLT/GraphicsDX11).
-        configuration: [ Debug, Release ]
+        # The Wx configurations build the wxWidgets interface; the Qt ones
+        # (Debug Qt, Release Qt) would also need Qt 6 installed.
+        configuration: [ Debug Wx, Release Wx ]
     env:
       VCPKG_ROOT: C:\vcpkg
       VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}\vcpkg-binary-cache
@@ -79,7 +81,7 @@ jobs:
         run: >
           msbuild MachStudio.sln
           /t:MainApp
-          /p:Configuration=${{ matrix.configuration }}
+          "/p:Configuration=${{ matrix.configuration }}"
           /p:Platform=x64
           /m
           /p:UseMultiToolTask=true
@@ -92,7 +94,7 @@ jobs:
       - name: Check OpenEXR DLL is next to the exe
         shell: pwsh
         run: |
-          $suffix = if ("${{ matrix.configuration }}" -eq "Debug") { "_d" } else { "" }
+          $suffix = if ("${{ matrix.configuration }}".StartsWith("Debug")) { "_d" } else { "" }
           $dll = "MachStudio/MachStudio-x64/OpenEXR-3_2$suffix.dll"
           if (-not (Test-Path $dll)) { throw "$dll is missing" }
           Get-ChildItem MachStudio/MachStudio-x64/*.dll | Select-Object -ExpandProperty Name

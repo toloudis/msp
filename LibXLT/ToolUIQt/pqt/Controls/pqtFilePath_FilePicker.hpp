@@ -19,12 +19,12 @@
 #include "Core/prty/prtyFilePath.hpp"
 #endif
 
+#ifdef USE_QT
 
 //===================================================================================
 //===================================================================================
 class pqtFilePath_FilePicker_Converter 
 {
-#ifdef QT_FINISH_PORT
 public:
 	//----------------------------------------------------------------------------
 	// Set value into control
@@ -36,10 +36,10 @@ public:
 	// Get value from control
 	//----------------------------------------------------------------------------
 	static fsLocator GetValueFromControl(tqcFilePicker* i_pActualControl);
-#endif // USE_QT
 };
 
 //============================================================================
 //============================================================================
 typedef pqtTemplate_FilePicker<prtyFilePath, fsLocator, pqtFilePath_FilePicker_Converter> pqtFilePath_FilePicker;
 
+#endif // USE_QT

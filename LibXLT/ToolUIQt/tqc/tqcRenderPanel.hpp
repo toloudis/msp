@@ -1,7 +1,8 @@
 /*****************************************************************************
 **  tqcRenderPanel.hpp
 **
-**     Window using wxWidgets for doing MachStudio rendering
+**     Window using Qt for doing simple rendering of a scene through its
+**	own viewer (used by tool windows such as the UV editor).
 **
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
@@ -11,11 +12,11 @@
 #endif
 #define TQC_RENDERPANEL_HPP
 
-#ifndef TQT_WIDGETS_HPP
-#include "ToolUIQt/tqt/tqtWidgets.hpp"
+#ifndef TQC_NATIVEWINDOW_HPP
+#include "ToolUIQt/tqc/tqcNativeWindow.hpp"
 #endif
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
@@ -27,11 +28,9 @@ class g3dScene;
 class g3dSceneRenderer;
 class g3dViewer;
 
-
 //============================================================================
-// Define a new frame type: this is going to be our main frame
 //============================================================================
-class tqcRenderPanel : public wxControl
+class tqcRenderPanel : public tqcNativeWindow
 {
 public:
 	//------------------------------------------------------------------------
@@ -42,52 +41,45 @@ public:
 	//------------------------------------------------------------------------
     ~tqcRenderPanel();
 
-	//----------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	// The renderer is not owned by the viewer, just pointed to
-	//----------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	g3dSceneRenderer* GetRenderer() const;
 	void SetRenderer(g3dSceneRenderer* i_pRenderer);
 
-	//----------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	// The scene is not owned by the viewer, just pointed to
-	//----------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	g3dScene* GetScene() const;
 	void SetScene(g3dScene* i_pScene);
 
-	//----------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	// The camera is not owned by the viewer, just pointed to
-	//----------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	camCamera* GetCamera() const;
 	void SetCamera(camCamera* i_pCamera);
 
-	//----------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	// Set background color
-	//----------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	void SetBackgroundColor(const g2dRGBColor& i_Color);
+
+protected:
+	//------------------------------------------------------------------------
+	// Qt event handlers
+	//------------------------------------------------------------------------
+	virtual void resizeEvent(QResizeEvent* i_pEvent);
+	virtual void paintEvent(QPaintEvent* i_pEvent);
+
 private:
 	//------------------------------------------------------------------------
 	// private functions
 	//------------------------------------------------------------------------
 	void do_resize();
 
-	//------------------------------------------------------------------------
-    // event handlers (these functions should _not_ be virtual)
-	//------------------------------------------------------------------------
-	void OnMouseDown(wxMouseEvent& i_Event);
-	void OnMouseMove(wxMouseEvent& i_Event);
-	void OnEnter(wxMouseEvent& i_Event);
-	void OnLeave(wxMouseEvent& i_Event);
-	void OnSize(wxSizeEvent& i_Event);
-	void OnKeyUp(wxKeyEvent& i_Event);
-	void OnFocus(wxFocusEvent& i_Event);
-	void OnEraseBackground(wxEraseEvent& i_Event);
-	void OnPaint(wxPaintEvent& i_Event);
-
 	g2dSystem* m_pSystem;
 	g2dWindow* m_pWindow;
 	g3dViewer* m_pViewer;
-
-    DECLARE_EVENT_TABLE()
 };
 
 #endif // USE_QT

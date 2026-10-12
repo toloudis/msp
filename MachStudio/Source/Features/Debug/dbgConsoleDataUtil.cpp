@@ -10,13 +10,21 @@
 
 #include "Features/Debug/dbgConsoleDialogUtil.hpp"
 
+#ifdef MSP_GUI_QT
+#include "Features/Debug/qtGUI/dbgConsoleDialog.hpp"
+#else
 #include "Features/Debug/wxGUI/dbgConsoleDialog.hpp"
+#endif
 
 
 #include "Tool/cma/cmaCommandSimple.hpp"
 #include "Tool/gui/guiCommandMgr.hpp"
 #include "Tool/gui/guiMenuMgr.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtSystem.hpp"
+#else
 #include "ToolUIWx/twx/twxSystem.hpp"
+#endif
 #include "Systems/Common/GUI/cmmSystemDialogUtil.hpp"
 
 //============================================================================

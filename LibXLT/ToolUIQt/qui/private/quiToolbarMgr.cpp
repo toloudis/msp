@@ -35,7 +35,7 @@ quiToolbarMgr::~quiToolbarMgr()
 //virtual 
 void quiToolbarMgr::Create(const char* i_ToolbarName)
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	tqtToolbarMgr::AddToolBar(i_ToolbarName);
 #endif // USE_QT
 }
@@ -46,7 +46,7 @@ void quiToolbarMgr::Create(const char* i_ToolbarName)
 //virtual 
 void quiToolbarMgr::Show(const char* i_ToolbarName, bool i_bVisible)
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	tqtToolbarMgr::Show(i_ToolbarName, i_bVisible);
 #endif // USE_QT
 }
@@ -57,7 +57,7 @@ void quiToolbarMgr::Show(const char* i_ToolbarName, bool i_bVisible)
 //virtual 
 bool quiToolbarMgr::IsVisible(const char* i_ToolbarName)
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	return tqtToolbarMgr::IsVisible(i_ToolbarName);
 #endif // USE_QT
 	return false;
@@ -69,7 +69,7 @@ bool quiToolbarMgr::IsVisible(const char* i_ToolbarName)
 //virtual 
 void quiToolbarMgr::Refresh(const char* i_ToolbarName)
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	tqtToolbarMgr::Refresh(i_ToolbarName);
 #endif // USE_QT
 }

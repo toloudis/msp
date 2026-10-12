@@ -15,7 +15,6 @@
 
 #include <vector>
 
-
 #ifdef USE_QT
 
 //============================================================================
@@ -60,6 +59,7 @@ void pqtControlMgr::DeInitialize()
 void pqtControlMgr::AddControlFactory(pqtControlFactory* i_pControlFactory)
 {
 	l_Factories.push_back(i_pControlFactory);
+
 }
 
 //----------------------------------------------------------------------------
@@ -96,7 +96,7 @@ pqtControl* pqtControlMgr::CreateControl(shared_ptr<prtyPropertyUIInfo>& i_pUIIn
 		pqtControlFactory *pFactory = (*it);
 
 		pqtControl *pControl = pFactory->CreateControl(i_pUIInfo, i_pParent);
-		if (pControl != NULL)
+		if (pControl)
 		{
 			l_Controls.push_back(pControl);
 			return pControl;
@@ -156,7 +156,7 @@ void pqtControlMgr::UpdateControl( prtyPropertyUIInfo* i_pUII )
 //virtual 
 void pqtIntCallbackMgr::PropertyChanged(prtyProperty* i_pProperty, int i_Index)
 {
-	// nothing to do here in wxWidgets
+	// nothing to do here in Qt
 }
 
 //----------------------------------------------------------------------------
