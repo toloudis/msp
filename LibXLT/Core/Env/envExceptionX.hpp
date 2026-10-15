@@ -57,7 +57,7 @@ private:
 		void RecordStackTrace();
 
 		static const size_t cnMaxStackFrames = 32;
-		unsigned __int64 nPC[cnMaxStackFrames];
+		envType::UInt64 nPC[cnMaxStackFrames];
 #endif
 };
 

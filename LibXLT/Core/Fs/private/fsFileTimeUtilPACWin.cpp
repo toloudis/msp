@@ -12,6 +12,7 @@
 #include "Core/fs/private/fsFileUtilPACWin.hpp"
 
 #include <stdio.h>
+#include <sys/stat.h>
 #include <windows.h>
 
 // Windows unfortunately defines several functions as macros to conditionally
@@ -223,6 +224,21 @@ double GetLastAccessTime(const fsLocator& i_Locator)
 	qwResult /= 10000000;
 
 	return (double) qwResult;
+}
+
+//------------------------------------------------------------------------
+//	GetLastModifiedTimeT returns the file's last modified time as a
+//	time_t, or -1 if the file can't be read.
+//------------------------------------------------------------------------
+time_t GetLastModifiedTimeT(const fsLocator& i_Locator)
+{
+	itString filename;
+	fsFileUtilPAC::LocatorToUnicodeFilename(i_Locator, filename);
+
+	struct _stat64 st;
+	if (_wstat64(filename.GetString(), &st) != 0)
+		return -1;
+	return st.st_mtime;
 }
 
 //------------------------------------------------------------------------

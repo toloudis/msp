@@ -1,22 +1,22 @@
 /********************************************************************
-**  appInstanceUtilWin.hpp
+**  appInstanceUtilPACWin.hpp
 **
-**      appInstanceUtilWin contains functions for detecting and
+**      appInstanceUtilPACWin contains functions for detecting and
 **	dealing with previously running instances of the application.
 **
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved
 \*******************************************************************/
 
-#ifdef APP_INSTANCEUTILWIN_HPP
-#error appInstanceUtilWin.hpp multiply included
+#ifdef APP_INSTANCEUTILPACWIN_HPP
+#error appInstanceUtilPACWin.hpp multiply included
 #endif
-#define APP_INSTANCEUTILWIN_HPP
+#define APP_INSTANCEUTILPACWIN_HPP
 
 
 //============================================================================
 //============================================================================
-namespace appInstanceUtilWin
+namespace appInstanceUtilPAC
 {
 
 //------------------------------------------------------------------------

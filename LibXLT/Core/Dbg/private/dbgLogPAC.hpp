@@ -25,6 +25,7 @@
 //namespace dbgLogPAC
 //{
 //	void WriteLog(const char* i_Text);
+//	void WriteDebugOutput(const std::string& i_UTF8Text);
 //
 //	void Init();
 //	void CleanUp();

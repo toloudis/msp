@@ -40,6 +40,15 @@ namespace dbgLogPAC
 	void WriteLog(const char* i_Text);
 
 	//------------------------------------------------------------------------
+	//	WriteDebugOutput sends UTF-8 text to the debugger's output window.
+	//
+	// \param i_UTF8Text text to send, without any line ending added
+	//
+	// \return void
+	//------------------------------------------------------------------------
+	void WriteDebugOutput(const std::string& i_UTF8Text);
+
+	//------------------------------------------------------------------------
 	//	UnicodetoANSI is a convenience function for debug logging that will turn an
 	//	itString into a std::string.
 	//

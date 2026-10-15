@@ -15,6 +15,8 @@
 #endif
 #define ENV_SYSTEMDATAPACWIN_HPP
 
+#include <string>
+
 
 //============================================================================
 //============================================================================
@@ -39,6 +41,11 @@ namespace envSystemDataPAC
 	//	is being used.  The version is cached so it's reasonably fast.
 	//------------------------------------------------------------------------
 	WindowsOS GetWindowsOSType();
+
+	//------------------------------------------------------------------------
+	//	GetExecutablePath returns the full path of the running executable.
+	//------------------------------------------------------------------------
+	std::wstring GetExecutablePath();
 
 	//------------------------------------------------------------------------
 	//	Don't call Init() yourself; it is called by the package Init().

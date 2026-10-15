@@ -507,6 +507,8 @@
     <ClInclude Include="Env\envThreadGroup.hpp" />
     <ClInclude Include="Env\envType.hpp" />
     <ClInclude Include="Env\envWaitCondition.hpp" />
+    <ClInclude Include="Env\private\envExceptionXPAC.hpp" />
+    <ClInclude Include="Env\private\envExceptionXPACWin.hpp" />
     <ClInclude Include="Env\private\envStringPAC.hpp" />
     <ClInclude Include="Env\private\envStringPACWin.hpp" />
     <ClInclude Include="Env\private\envSystemData.hpp" />
@@ -589,6 +591,8 @@
     <ClInclude Include="Fs\private\fsFileNotifyMgr.hpp" />
     <ClInclude Include="Fs\private\fsFileTimeUtilPAC.hpp" />
     <ClInclude Include="Fs\private\fsFileTimeUtilPACWin.hpp" />
+    <ClInclude Include="Fs\private\fsAbsolutePathMgrPAC.hpp" />
+    <ClInclude Include="Fs\private\fsAbsolutePathMgrPACWin.hpp" />
     <ClInclude Include="Fs\private\fsFileUtilPAC.hpp" />
     <ClInclude Include="Fs\private\fsFileUtilPACWin.hpp" />
     <ClInclude Include="App\appApplication.hpp" />
@@ -609,7 +613,8 @@
     <ClInclude Include="App\private\appApplicationPAC.hpp" />
     <ClInclude Include="App\private\appApplicationPACWin.hpp" />
     <ClInclude Include="App\private\appEventHandlers.hpp" />
-    <ClInclude Include="App\private\appInstanceUtilWin.hpp" />
+    <ClInclude Include="App\private\appInstanceUtilPAC.hpp" />
+    <ClInclude Include="App\private\appInstanceUtilPACWin.hpp" />
     <ClInclude Include="App\private\appTimePAC.hpp" />
     <ClInclude Include="App\private\appTimePACWin.hpp" />
     <ClInclude Include="Gf\gfDirectoryCategories.hpp" />
@@ -868,6 +873,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="Env\private\envString.cpp" />
+    <ClCompile Include="Env\private\envExceptionXPACWin.cpp" />
     <ClCompile Include="Env\private\envStringPACWin.cpp" />
     <ClCompile Include="Env\private\envSystemData.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">Disabled</Optimization>
@@ -1994,6 +2000,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="Fs\private\fsAbsolutePathMgr.cpp" />
+    <ClCompile Include="Fs\private\fsAbsolutePathMgrPACWin.cpp" />
     <ClCompile Include="Fs\private\fsCategoryConfigFileUtil.cpp" />
     <ClCompile Include="Fs\private\fsFileEnum.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">Disabled</Optimization>
@@ -2071,7 +2078,7 @@
     </ClCompile>
     <ClCompile Include="Fs\private\fsFileNotify.cpp" />
     <ClCompile Include="Fs\private\fsFileNotifyMgr.cpp" />
-    <ClCompile Include="Fs\private\fsFileStreamWin.cpp">
+    <ClCompile Include="Fs\private\fsFileStreamPACWin.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">Disabled</Optimization>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -2671,7 +2678,7 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <ClCompile Include="App\private\appInstanceUtilWin.cpp">
+    <ClCompile Include="App\private\appInstanceUtilPACWin.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">Disabled</Optimization>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>

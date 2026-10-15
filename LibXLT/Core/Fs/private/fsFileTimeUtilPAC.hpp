@@ -24,6 +24,7 @@
 	double GetCreationTime(const fsLocator& i_Locator);
 	double GetLastAccessTime(const fsLocator& i_Locator);
 	double GetLastModifiedTime(const fsLocator& i_Locator);
+	time_t GetLastModifiedTimeT(const fsLocator& i_Locator);
 	itString GetCreationString(const fsLocator& i_Locator);
 	itString GetLastAccessString(const fsLocator& i_Locator);
 	itString GetLastModifiedString(const fsLocator& i_Locator);

@@ -35,6 +35,16 @@ WindowsOS GetWindowsOSType()
 }
 
 //========================================================================
+//	GetExecutablePath returns the full path of the running executable.
+//========================================================================
+std::wstring GetExecutablePath()
+{
+	wchar_t exepath[MAX_PATH];
+	DWORD length = ::GetModuleFileNameW(NULL, exepath, MAX_PATH);
+	return std::wstring(exepath, length);
+}
+
+//========================================================================
 //	Don't call Init() yourself; it is called by the package Init().
 //========================================================================
 void Init()

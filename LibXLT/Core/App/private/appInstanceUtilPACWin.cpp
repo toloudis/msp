@@ -1,12 +1,12 @@
 /********************************************************************
-**  appInstanceUtilWin.cpp
+**  appInstanceUtilPACWin.cpp
 **
 **      see .hpp
 **
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved
 \*******************************************************************/
-#include "Core/app/private/appInstanceUtilWin.hpp"
+#include "Core/app/private/appInstanceUtilPACWin.hpp"
 
 #include "Core/app/private/appApplicationPACWin.hpp"
 #include "Core/env/private/envSystemDataPACWin.hpp"
@@ -17,7 +17,7 @@
 
 //============================================================================
 //============================================================================
-namespace appInstanceUtilWin
+namespace appInstanceUtilPAC
 {
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------

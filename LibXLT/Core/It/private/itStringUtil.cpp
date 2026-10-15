@@ -14,7 +14,6 @@
 #include <string>
 #include <algorithm>
 #include <stdio.h>
-#include <windows.h>
 #include <iomanip>
 #include <sstream>
 

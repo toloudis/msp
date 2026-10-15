@@ -10,7 +10,6 @@
 
 #include "Core/fs/private/fsFileNotify.hpp"
 
-#include "windows.h"
 #include <sys/stat.h>
 #include "Core/fs/fsFileUtil.hpp"
 

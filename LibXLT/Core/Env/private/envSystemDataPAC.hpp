@@ -22,6 +22,7 @@
 
 //namespace envSystemDataPAC
 //{
+//	std::wstring GetExecutablePath();
 //	void Init();
 //	void CleanUp();
 //}
