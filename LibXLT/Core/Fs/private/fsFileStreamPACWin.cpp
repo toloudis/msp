@@ -255,45 +255,23 @@ fsFileStream::fsFileStream(const fsLocator& i_Locator, AccessType i_DesiredAcces
 	{
 		//	Create a file
 		//
-		if ( fsFileUtilPAC::MustUseANSIFilenames() )
+		itString filename;
+		fsFileUtilPAC::LocatorToUnicodeFilename(i_Locator, filename);
+		//DBG_LOG("Creating/Opening UNICODE stream  " << filename);
+	
+		if ( filename.GetLength() == 0 )
 		{
-			std::string filename;
-			fsFileUtilPAC::LocatorToANSIFilename(i_Locator, filename);
-
-			if ( filename.size() == 0 )
-			{
-				fsResourceTracker::Remove(i_Locator);		// shouldn't be here?  put where throw is CAUGHT
-				throw fsInvalidLocatorX(i_Locator);
-			}
-
-			new_file = ::CreateFileA(	filename.c_str(),
-										access,
-										share_mode,
-										NULL,
-										open_flag,
-										FILE_ATTRIBUTE_NORMAL,
-										NULL);
+			fsResourceTracker::Remove(i_Locator);		// shouldn't be here?  put where throw is CAUGHT
+			throw fsInvalidLocatorX(i_Locator);
 		}
-		else
-		{
-			itString filename;
-			fsFileUtilPAC::LocatorToUnicodeFilename(i_Locator, filename);
-			//DBG_LOG("Creating/Opening UNICODE stream  " << filename);
-		
-			if ( filename.GetLength() == 0 )
-			{
-				fsResourceTracker::Remove(i_Locator);		// shouldn't be here?  put where throw is CAUGHT
-				throw fsInvalidLocatorX(i_Locator);
-			}
 
-			new_file = ::CreateFileW(	filename.GetString(),
-										access,
-										share_mode,
-										NULL,
-										open_flag,
-										FILE_ATTRIBUTE_NORMAL,
-										NULL);
-		}
+		new_file = ::CreateFileW(	filename.GetString(),
+									access,
+									share_mode,
+									NULL,
+									open_flag,
+									FILE_ATTRIBUTE_NORMAL,
+									NULL);
 
 		//	file couldn't be created
 		//

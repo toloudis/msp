@@ -53,7 +53,7 @@ void prefsLayoutChoice::Update()
 	prefsLayoutMgr::GetLayoutNames(layout_names);
 
 	// Add names of layouts
-	const int num_layouts = layout_names.size();
+	const int num_layouts = static_cast<int>(layout_names.size());
 	for (int i=0; i<num_layouts; i++)
 	{
 		this->addItem( tqtQString(layout_names[i]) );

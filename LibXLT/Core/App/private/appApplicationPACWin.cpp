@@ -38,7 +38,6 @@ const char *c_WindowClassName = "App Window";
 appApplicationPAC* l_App = NULL;
 HINSTANCE l_HINSTANCE = NULL;
 HICON l_HICON = NULL;
-bool l_MustUseANSI = false;
 bool l_PostedStartEvent = false;
 HWND l_HWND = NULL;
 bool l_Suspended = false;
@@ -322,8 +321,7 @@ appApplicationPAC::appApplicationPAC()
 	m_Width(640),
 	m_Height(480),
 	m_bQuit(false),
-	m_Title("Extra Large Window"),
-	m_bHasLeadByte(false)
+	m_Title("Extra Large Window")
 {
 	DBG_ASSERT(l_App == NULL, "Tried to create two simultaneous applications");
 	DBG_ASSERT(l_HINSTANCE != NULL, "The HINSTANCE (from WinMain) was never set (with appApplicationPACWin::SetHINSTANCE)");
@@ -442,28 +440,7 @@ void appApplicationPAC::SetWindowTitle(const itString& i_Title)
 
 	if ( l_HWND == NULL ) return; // no window yet
 
-	if ( l_MustUseANSI )
-	{
-		char work_string[512];
-		int num_chars = ::WideCharToMultiByte(	::GetACP(),		// ANSI code page
-												0,			// no "lo-performance" flags
-												m_Title.GetString(),
-												m_Title.GetLength(),
-												work_string,
-												512,	// size of target buffer
-												NULL,
-												NULL);
-
-		// for some reason, this function doesn't seem to terminate the 
-		// work_string
-		work_string[num_chars] = 0;
-
-		::SetWindowTextA(l_HWND, work_string);
-	}
-	else
-	{
-		::SetWindowTextW(l_HWND, m_Title.GetString());
-	}
+	::SetWindowTextW(l_HWND, m_Title.GetString());
 }
 
 //--------------------------------------------------------------------
@@ -689,72 +666,9 @@ LRESULT appApplicationPAC::WindowProc(	HWND hWnd,      // handle to window
 
 		case WM_CHAR:
 		{
-			if ( l_MustUseANSI )
-			{
-				// check to see if this is a leadbyte
-				char cur_byte = char(wParam);
-				itString::CharType unicode_form[8];
-
-				if ( m_bHasLeadByte )
-				{
-					// we must compound the next byte onto the multi-byte character
-					char double_byte_char[2];
-					double_byte_char[0] = m_LeadByte;
-					double_byte_char[1] = char(wParam);
-
-					// now translate it to Unicode and emit it
-					// we are assuming here that it will only be translated to a couple of
-					// unicode characters
-					int num_chars = ::MultiByteToWideChar(	::GetACP(),
-															MB_PRECOMPOSED,
-															double_byte_char,
-															2,
-															unicode_form,
-															8);
-
-					int i;
-					for ( i = 0 ; i < num_chars ; i++ )
-					{
-						// send a unicode char
-						PostCharEvent(unicode_form[i]);
-					}
-				}
-				else
-				{
-					if ( ::isleadbyte(cur_byte) )
-					{
-						m_LeadByte = cur_byte;
-						m_bHasLeadByte = true;
-					}
-					else
-					{
-						m_bHasLeadByte = false;
-						char ansi_char = char(wParam);
-						// Translate it to Unicode and emit it
-						// we are assuming here that it will only be translated to a couple of
-						// unicode characters
-						int num_chars = ::MultiByteToWideChar(	::GetACP(),
-																MB_PRECOMPOSED,
-																&ansi_char,
-																1,
-																unicode_form,
-																8);
-
-						int i;
-						for ( i = 0 ; i < num_chars ; i++ )
-						{
-							// send a unicode char
-							PostCharEvent(unicode_form[i]);
-						}
-					}
-				}
-			}
-			else
-			{
-				// Unicode
-				itString::CharType unichar = itString::CharType(wParam);
-				PostCharEvent(unichar);
-			}
+			// Unicode
+			itString::CharType unichar = itString::CharType(wParam);
+			PostCharEvent(unichar);
 		}
 		break;
 		case WM_KEYDOWN:
@@ -944,10 +858,7 @@ LRESULT appApplicationPAC::WindowProc(	HWND hWnd,      // handle to window
 	
 	if ( pass_to_def_proc )
 	{
-		if ( l_MustUseANSI )
-			return ::DefWindowProcA(hWnd, uMsg, wParam, lParam);
-		else
-			return ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
+		return ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
 	}
 	else
 		return ret_val;
@@ -967,18 +878,6 @@ bool appApplicationPAC::IsSuspended()
 //------------------------------------------------------------------------
 void appApplicationPAC::Init()
 {
-	envSystemDataPAC::WindowsOS os_type = envSystemDataPAC::GetWindowsOSType();
-
-	if (		(os_type == envSystemDataPAC::e_Windows95)
-			||	(os_type == envSystemDataPAC::e_Windows98)
-			||	(os_type == envSystemDataPAC::e_WindowsME) )
-	{
-		l_MustUseANSI = true;
-	}
-	else
-	{
-		l_MustUseANSI = false;
-	}
 }
 
 void appApplicationPAC::CleanUp() throw()
@@ -1094,112 +993,54 @@ HWND create_window(int i_Width, int i_Height, int i_X, int i_Y, const itString& 
 
 	// Register a window class
 	//
-	if ( l_MustUseANSI )
-	{
-		WNDCLASSEXA wc;
-		memset(&wc, 0, sizeof(wc));
-		wc.cbSize = sizeof(wc);
-		wc.style = CS_OWNDC;
-		wc.lpfnWndProc = LocalWindowProc;
-		wc.cbClsExtra = 0;
-		wc.cbWndExtra = 0;
-		wc.hInstance = l_HINSTANCE;
-		wc.hIcon = l_HICON;
-		wc.hCursor = NULL;
-		wc.hbrBackground = NULL;
-		wc.lpszMenuName = NULL;
-		wc.lpszClassName = c_WindowClassName;
-		wc.hIconSm = l_HICON;
-
-		if (l_RegisterResult == 0)
-		{
-			// we'll just always use the ANSI version here, and let the system
-			// do the conversion of the class name on NT/2000.
-			l_RegisterResult = ::RegisterClassExA(&wc);
-			DBG_ASSERT(l_RegisterResult != 0, "Couldn't register windows class, ExA GetLastError = " << std::setw(8) << std::hex << ::GetLastError());
-		}
-
-		// Create a window
-		//	
-		char work_string[512];
-		int num_chars = ::WideCharToMultiByte(	::GetACP(),		// ANSI code page
-												0,			// no "lo-performance" flags
-												i_Title.GetString(),
-												i_Title.GetLength(),
-												work_string,
-												512,	// size of target buffer
-												NULL,
-												NULL);
-
-		// for some reason, this function doesn't seem to terminate the 
-		// work_string
-		work_string[num_chars] = 0;
-
-
-		hwnd = ::CreateWindowExA(	l_ExStyle,
-									c_WindowClassName,
-									work_string,
-									l_Style,
-									clipRect.left,
-									clipRect.top,
-									clipRect.right - clipRect.left,
-									clipRect.bottom - clipRect.top,
-									i_Parent,
-									NULL,
-									l_HINSTANCE,
-									NULL);
-	}
-	else
-	{
-		WNDCLASSEXW wc;
+	WNDCLASSEXW wc;
 
 /*		unsigned int wSize = (strlen(c_WindowClassName) * sizeof(wchar_t)) + sizeof(wchar_t); 
-		unsigned int wLength = strlen(c_WindowClassName); 
-		// The sizes calculated above should be for wide strings. Note that we can't simply 
-		// add a 1 for the null character, instead we have to add sizeof(wchar_t). 
-		wchar_t* wClassName = (wchar_t*)malloc(wSize); 
-		// Convert the char*s to wide strings. 
-		::MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, c_WindowClassName, wLength + 1, wClassName, wLength + 1); 
-		// dont' forget to free wClassName!
+	unsigned int wLength = strlen(c_WindowClassName); 
+	// The sizes calculated above should be for wide strings. Note that we can't simply 
+	// add a 1 for the null character, instead we have to add sizeof(wchar_t). 
+	wchar_t* wClassName = (wchar_t*)malloc(wSize); 
+	// Convert the char*s to wide strings. 
+	::MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, c_WindowClassName, wLength + 1, wClassName, wLength + 1); 
+	// dont' forget to free wClassName!
 */
-		itString class_name(c_WindowClassName);
-		class_name += (itString::CharType)0;
+	itString class_name(c_WindowClassName);
+	class_name += (itString::CharType)0;
 
-		memset(&wc, 0, sizeof(wc));
-		wc.cbSize = sizeof(wc);
-		wc.style = CS_OWNDC;
-		wc.lpfnWndProc = LocalWindowProc;
-		wc.cbClsExtra = 0;
-		wc.cbWndExtra = 0;
-		wc.hInstance = l_HINSTANCE;
-		wc.hIcon = l_HICON;
-		wc.hCursor = NULL;
-		wc.hbrBackground = NULL;
-		wc.lpszMenuName = NULL;
-		wc.lpszClassName = class_name.GetString();
-		wc.hIconSm = l_HICON;
+	memset(&wc, 0, sizeof(wc));
+	wc.cbSize = sizeof(wc);
+	wc.style = CS_OWNDC;
+	wc.lpfnWndProc = LocalWindowProc;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = 0;
+	wc.hInstance = l_HINSTANCE;
+	wc.hIcon = l_HICON;
+	wc.hCursor = NULL;
+	wc.hbrBackground = NULL;
+	wc.lpszMenuName = NULL;
+	wc.lpszClassName = class_name.GetString();
+	wc.hIconSm = l_HICON;
 
-		if (l_RegisterResult == 0)
-		{
-			// we'll just always use the ANSI version here, and let the system
-			// do the conversion of the class name on NT/2000.
-			l_RegisterResult = ::RegisterClassExW(&wc);
-			DBG_ASSERT(l_RegisterResult != 0, "Couldn't register windows class, ExA GetLastError = " << std::setw(8) << std::hex << ::GetLastError());
-		}
-
-		hwnd = ::CreateWindowExW(	l_ExStyle,
-									class_name.GetString(),
-									i_Title.GetString(),
-									l_Style,
-									clipRect.left,
-									clipRect.top,
-									clipRect.right - clipRect.left,
-									clipRect.bottom - clipRect.top,
-									i_Parent,
-									NULL,
-									l_HINSTANCE,
-									NULL);
+	if (l_RegisterResult == 0)
+	{
+		// we'll just always use the ANSI version here, and let the system
+		// do the conversion of the class name on NT/2000.
+		l_RegisterResult = ::RegisterClassExW(&wc);
+		DBG_ASSERT(l_RegisterResult != 0, "Couldn't register windows class, ExA GetLastError = " << std::setw(8) << std::hex << ::GetLastError());
 	}
+
+	hwnd = ::CreateWindowExW(	l_ExStyle,
+								class_name.GetString(),
+								i_Title.GetString(),
+								l_Style,
+								clipRect.left,
+								clipRect.top,
+								clipRect.right - clipRect.left,
+								clipRect.bottom - clipRect.top,
+								i_Parent,
+								NULL,
+								l_HINSTANCE,
+								NULL);
 
 	return hwnd;
 }
@@ -1220,62 +1061,30 @@ void appApplicationPAC::message_loop(appApplication* i_App)
 {
 	// Run message loop
 	//
-	if ( l_MustUseANSI )
-	{			
-		while ( !m_bQuit )
-		{
-			MSG msg;
-			BOOL got_msg = 0;
-
-			// if we are suspended we'll use GetMessage to not consume idle time
-			// otherwise use PeekMessage so we can do idle processing.
-			if ( l_Suspended )
-				//got_msg = ::GetMessageA( &msg, l_HWND, 0, 0 );
-				got_msg = ::GetMessageA( &msg, NULL, 0, 0 );
-			else
-				//got_msg = ::PeekMessageA( &msg, l_HWND, 0, 0, PM_REMOVE );
-				got_msg = ::PeekMessageA( &msg, NULL, 0, 0, PM_REMOVE );
-
-			if ( got_msg )
-			{
-				::TranslateMessage(&msg);
-				::DispatchMessageA(&msg);
-			}
-			else
-			{
-				// no messages, so do some idle processing
-				if ( !l_Suspended )
-					i_App->Think();
-			}
-		}
-	}
-	else
+	while ( !m_bQuit )
 	{
-		while ( !m_bQuit )
+		MSG msg;
+		BOOL got_msg = 0;
+
+		// if we are suspended we'll use GetMessage to not consume idle time
+		// otherwise use PeekMessage so we can do idle processing.
+		if ( l_Suspended )
+			//got_msg = ::GetMessageW( &msg, l_HWND, 0, 0 );
+			got_msg = ::GetMessageW( &msg, NULL, 0, 0 );
+		else
+			//got_msg = ::PeekMessageW( &msg, l_HWND, 0, 0, PM_REMOVE );
+			got_msg = ::PeekMessageW( &msg, NULL, 0, 0, PM_REMOVE );
+
+		if ( got_msg )
 		{
-			MSG msg;
-			BOOL got_msg = 0;
-
-			// if we are suspended we'll use GetMessage to not consume idle time
-			// otherwise use PeekMessage so we can do idle processing.
-			if ( l_Suspended )
-				//got_msg = ::GetMessageW( &msg, l_HWND, 0, 0 );
-				got_msg = ::GetMessageW( &msg, NULL, 0, 0 );
-			else
-				//got_msg = ::PeekMessageW( &msg, l_HWND, 0, 0, PM_REMOVE );
-				got_msg = ::PeekMessageW( &msg, NULL, 0, 0, PM_REMOVE );
-
-			if ( got_msg )
-			{
-				::TranslateMessage(&msg);
-				::DispatchMessageW(&msg);
-			}
-			else
-			{
-				// no messages, so do some idle processing
-				if ( !l_Suspended )
-					i_App->Think();
-			}
+			::TranslateMessage(&msg);
+			::DispatchMessageW(&msg);
+		}
+		else
+		{
+			// no messages, so do some idle processing
+			if ( !l_Suspended )
+				i_App->Think();
 		}
 	}
 }
@@ -1335,37 +1144,17 @@ void appApplicationPAC::DialogLoopTasks()
 	while ( got_msg )
 	{
 		MSG msg;
-		if ( l_MustUseANSI )
-		{			
-			// if we are suspended we'll use GetMessage to not consume idle time
-			// otherwise use PeekMessage so we can do idle processing.
-			if ( l_Suspended )
-				//got_msg = ::GetMessageA( &msg, l_HWND, 0, 0 );
-				got_msg = ::GetMessageA( &msg, NULL, 0, 0 );
-			else
-				//got_msg = ::PeekMessageA( &msg, l_HWND, 0, 0, PM_REMOVE );
-				got_msg = ::PeekMessageA( &msg, NULL, 0, 0, PM_REMOVE );
-
-			if ( got_msg )
-			{
-				::TranslateMessage(&msg);
-				::DispatchMessageA(&msg);
-			}
-		}
+		if ( l_Suspended )
+			//got_msg = ::GetMessageW( &msg, l_HWND, 0, 0 );
+			got_msg = ::GetMessageW( &msg, NULL, 0, 0 );
 		else
-		{
-			if ( l_Suspended )
-				//got_msg = ::GetMessageW( &msg, l_HWND, 0, 0 );
-				got_msg = ::GetMessageW( &msg, NULL, 0, 0 );
-			else
-				//got_msg = ::PeekMessageW( &msg, l_HWND, 0, 0, PM_REMOVE );
-				got_msg = ::PeekMessageW( &msg, NULL, 0, 0, PM_REMOVE );
+			//got_msg = ::PeekMessageW( &msg, l_HWND, 0, 0, PM_REMOVE );
+			got_msg = ::PeekMessageW( &msg, NULL, 0, 0, PM_REMOVE );
 
-			if ( got_msg )
-			{
-				::TranslateMessage(&msg);
-				::DispatchMessageW(&msg);
-			}
+		if ( got_msg )
+		{
+			::TranslateMessage(&msg);
+			::DispatchMessageW(&msg);
 		}
 	}
 }

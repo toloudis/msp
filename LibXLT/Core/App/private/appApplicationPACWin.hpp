@@ -242,8 +242,6 @@ class appApplicationPAC
 		int m_X, m_Y, m_Width, m_Height;
 		bool m_bQuit;
 		itString m_Title;
-		char m_LeadByte;	// lead byte for multi-byte characters
-		bool m_bHasLeadByte;
 };
 
 

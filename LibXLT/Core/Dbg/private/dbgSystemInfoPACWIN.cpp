@@ -15,6 +15,7 @@
 
 #include "dbgSystemInfoPACWin.hpp"
 #include "Core/Env/envInitX.hpp"
+#include "Core/Env/private/envSystemDataPACWin.hpp"
 #include "Core/Dbg/dbgMsg.hpp"
 
 
@@ -55,62 +56,61 @@ namespace dbgSystemInfoPAC
 	//------------------------------------------------------------------------
 	std::wstring getOS()
 	{
-        // TODO : replace this code with calls from VersionHelpers
-
 		std::wstring _osVersion;
-		OSVERSIONINFOEX _osInfo;
-		_osInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
-		GetVersionEx ((OSVERSIONINFO *) &_osInfo);
-		switch(_osInfo.dwMajorVersion)
+		envSystemDataPAC::OSVersion _osInfo;
+		if ( !envSystemDataPAC::GetOSVersion(_osInfo) )
+			return L"Windows (unknown version)";
+
+		switch(_osInfo.m_Major)
 		{
 			case 6:
-				if( _osInfo.dwMinorVersion == 1 )
+				if( _osInfo.m_Minor == 1 )
 				{
-					if(	_osInfo.wProductType == VER_NT_WORKSTATION)
+					if(	_osInfo.m_bWorkstation)
 					{
 						_osVersion = L"Windows 7, ";
-						_osVersion += _osInfo.szCSDVersion;
+						_osVersion += _osInfo.m_ServicePack;
 					}
 					else
 					{
 						_osVersion = L"Windows Server 2008 R2, ";
-						_osVersion += _osInfo.szCSDVersion;
+						_osVersion += _osInfo.m_ServicePack;
 					}
 				}
-				else if( _osInfo.dwMinorVersion == 0 )
+				else if( _osInfo.m_Minor == 0 )
 				{
-					if(	_osInfo.wProductType == VER_NT_WORKSTATION)
+					if(	_osInfo.m_bWorkstation)
 					{
 						_osVersion = L"Windows Vista, ";
-						_osVersion += _osInfo.szCSDVersion;
+						_osVersion += _osInfo.m_ServicePack;
 					}
 					else
 					{
 						_osVersion = L"Windows Server 2008, ";
-						_osVersion += _osInfo.szCSDVersion;
+						_osVersion += _osInfo.m_ServicePack;
 					}
 				}
 				break;
 			case 5:
-				if( _osInfo.dwMinorVersion == 2 )
+				if( _osInfo.m_Minor == 2 )
 				{
 					_osVersion = L"Windows Server 2003, ";
-					_osVersion += _osInfo.szCSDVersion;
+					_osVersion += _osInfo.m_ServicePack;
 				}
-				if( _osInfo.dwMinorVersion == 1 )
+				if( _osInfo.m_Minor == 1 )
 				{
 					_osVersion = L"Windows XP, ";
-					_osVersion += _osInfo.szCSDVersion;
+					_osVersion += _osInfo.m_ServicePack;
 				}
-				if( _osInfo.dwMinorVersion == 0 )
+				if( _osInfo.m_Minor == 0 )
 				{
 					_osVersion = L"Windows 2000, ";
-					_osVersion += _osInfo.szCSDVersion;
+					_osVersion += _osInfo.m_ServicePack;
 				}
 				break;
 			default:
-				_osVersion = L"Operation System, "; 
-				_osVersion += _osInfo.dwMajorVersion + L"." + _osInfo.dwMinorVersion;
+				_osVersion = L"Windows " + std::to_wstring(_osInfo.m_Major) + L"." +
+					std::to_wstring(_osInfo.m_Minor) + L"." + std::to_wstring(_osInfo.m_Build);
 				break;
 		}
 		return  _osVersion;

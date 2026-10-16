@@ -46,12 +46,6 @@ struct FileCloser
 	HANDLE m_Handle;
 };
 
-//	This is initialized in the Init() function
-//	It is true if we are running on 95 or 98 and have to
-//	convert our Unicode strings to ANSI strings before
-//	passing them to the Win32 functions
-bool l_ANSIFilenames = false;
-
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
@@ -119,38 +113,19 @@ HANDLE GetHandle(const fsLocator& i_Filename)
 {
 	HANDLE new_file = INVALID_HANDLE_VALUE;
 
-	if ( l_ANSIFilenames )
-	{
-		std::string filename;
-		fsFileUtilPAC::LocatorToANSIFilename(i_Filename, filename);
+	itString filename;
+	fsFileUtilPAC::LocatorToUnicodeFilename(i_Filename, filename);
 
-		if( filename.size() == 0 )
-			throw fsInvalidLocatorX(i_Filename);
+	if( filename.GetLength() == 0 )
+		throw fsInvalidLocatorX(i_Filename);
 
-		new_file = ::CreateFileA(	filename.c_str(),
-									GENERIC_READ,
-									0,
-									NULL,
-									OPEN_EXISTING,
-									FILE_ATTRIBUTE_NORMAL,
-									NULL);
-	}
-	else
-	{
-		itString filename;
-		fsFileUtilPAC::LocatorToUnicodeFilename(i_Filename, filename);
-	
-		if( filename.GetLength() == 0 )
-			throw fsInvalidLocatorX(i_Filename);
-	
-		new_file = ::CreateFileW(	filename.GetString(),
-									GENERIC_READ,
-									0,
-									NULL,
-									OPEN_EXISTING,
-									FILE_ATTRIBUTE_NORMAL,
-									NULL);
-	}
+	new_file = ::CreateFileW(	filename.GetString(),
+								GENERIC_READ,
+								0,
+								NULL,
+								OPEN_EXISTING,
+								FILE_ATTRIBUTE_NORMAL,
+								NULL);
 
 	if ( new_file == INVALID_HANDLE_VALUE )
 		handle_windows_error(i_Filename);		// probably throws
@@ -512,7 +487,6 @@ itString GetLastModifiedStringWithTime(const fsLocator& i_Locator)
 //------------------------------------------------------------------------
 void Init()
 {
-	l_ANSIFilenames = fsFileUtilPAC::MustUseANSIFilenames();
 }
 
 void CleanUp() throw()

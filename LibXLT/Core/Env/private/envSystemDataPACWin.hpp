@@ -24,11 +24,8 @@ namespace envSystemDataPAC
 {
 	enum WindowsOS
 	{
-		e_Windows95,
-		e_Windows98,
 		e_WindowsNT40,
 		e_Windows2000,
-		e_WindowsME,
 		e_WindowsCE,
 		e_WindowsXP,
 		e_WindowsVista,
@@ -41,6 +38,24 @@ namespace envSystemDataPAC
 	//	is being used.  The version is cached so it's reasonably fast.
 	//------------------------------------------------------------------------
 	WindowsOS GetWindowsOSType();
+
+	//------------------------------------------------------------------------
+	//	OSVersion is the version information returned by GetOSVersion.
+	//------------------------------------------------------------------------
+	struct OSVersion
+	{
+		unsigned long	m_Major;
+		unsigned long	m_Minor;
+		unsigned long	m_Build;
+		bool			m_bWorkstation;		// false for the server editions
+		std::wstring	m_ServicePack;		// empty if none is installed
+	};
+
+	//------------------------------------------------------------------------
+	//	GetOSVersion fills in the real version of Windows that is running.
+	//	It returns false if the version could not be determined.
+	//------------------------------------------------------------------------
+	bool GetOSVersion(OSVersion& o_Version);
 
 	//------------------------------------------------------------------------
 	//	GetExecutablePath returns the full path of the running executable.

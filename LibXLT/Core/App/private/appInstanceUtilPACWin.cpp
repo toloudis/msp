@@ -63,10 +63,7 @@ bool IsAppRunning(const char* i_IDString)
 
 	switch( envSystemDataPAC::GetWindowsOSType() )
 	{
-		case envSystemDataPAC::e_Windows95:
-		case envSystemDataPAC::e_Windows98:
 		case envSystemDataPAC::e_WindowsNT40:
-		case envSystemDataPAC::e_WindowsME:
 		case envSystemDataPAC::e_WindowsCE:
 			global_mutex = false;
 		break;
@@ -107,23 +104,9 @@ bool HandleAppRunning(const char* i_IDString, const char* i_WindowName)
 	{
 		HWND my_window = NULL;
 
-		envSystemDataPAC::WindowsOS os_type = envSystemDataPAC::GetWindowsOSType();
-
-		if (		(os_type == envSystemDataPAC::e_Windows95)
-				||	(os_type == envSystemDataPAC::e_Windows98)
-				||	(os_type == envSystemDataPAC::e_WindowsME) )
-		{
-			my_window = ::FindWindowA(appApplicationPAC::GetWindowClassName(), i_WindowName);
-		}
-		else
-		{
-			itString class_name(appApplicationPAC::GetWindowClassName());
-			itString window_name(i_WindowName);
-			// null-terminating not needed anymore
-			//class_name += 0;
-			//window_name += 0;
-			my_window = ::FindWindowW(class_name.GetString(), window_name.GetString());
-		}
+		itString class_name(appApplicationPAC::GetWindowClassName());
+		itString window_name(i_WindowName);
+		my_window = ::FindWindowW(class_name.GetString(), window_name.GetString());
 
 		if( my_window != NULL )
 		{

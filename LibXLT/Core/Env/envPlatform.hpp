@@ -59,8 +59,6 @@
 //========================================================================
 // OS Type (ENV_OS) possible values:
 //========================================================================
-#define		ENV_WINDOWS95		10
-#define		ENV_WINDOWS98		11
 #define		ENV_WINDOWSNT40		12
 #define		ENV_WINDOWS2000		13
 #define		ENV_WINDOWSXP		14
@@ -88,9 +86,7 @@
 	#endif
 #endif
 
-#if	(ENV_OS != ENV_WINDOWS95) &&	\
-	(ENV_OS != ENV_WINDOWS98) &&	\
-	(ENV_OS != ENV_WINDOWSNT40) &&	\
+#if	(ENV_OS != ENV_WINDOWSNT40) &&	\
 	(ENV_OS != ENV_WINDOWS2000) &&	\
 	(ENV_OS != ENV_WINDOWSXP) &&    \
 	(ENV_OS != ENV_MACOS	) &&	\
@@ -197,9 +193,7 @@
 //========================================================================
 //	ENV_WINDOWS can be either 1 or 0 (true or false)
 //========================================================================
-#if	(ENV_OS == ENV_WINDOWS95) ||		\
-	(ENV_OS == ENV_WINDOWS98) ||		\
-	(ENV_OS == ENV_WINDOWSNT40) ||		\
+#if	(ENV_OS == ENV_WINDOWSNT40) ||		\
 	(ENV_OS == ENV_WINDOWS2000) ||		\
 	(ENV_OS == ENV_WINDOWSXP) ||    \
 	(ENV_OS == ENV_WINDOWSVISTA) ||    \

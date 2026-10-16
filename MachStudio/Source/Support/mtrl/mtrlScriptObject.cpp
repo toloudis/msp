@@ -1090,13 +1090,13 @@ void mtrlScriptObject::GetMaterialResources( fsResourceTrackerData& io_List )
 	std::vector<fsLocator>::iterator it;
 
 	std::sort( texture_list.begin(), texture_list.end() );
-	std::unique( texture_list.begin(), texture_list.end() );
+	texture_list.erase( std::unique( texture_list.begin(), texture_list.end() ), texture_list.end() );
 	
 	for (it = texture_list.begin(); it != texture_list.end(); ++it)
 		io_List.Add( *it );
 
 	std::sort( shader_list.begin(), shader_list.end() );
-	std::unique( shader_list.begin(), shader_list.end() );
+	shader_list.erase( std::unique( shader_list.begin(), shader_list.end() ), shader_list.end() );
 
 	for (it = shader_list.begin(); it != shader_list.end(); ++it)
 		io_List.Add( *it );

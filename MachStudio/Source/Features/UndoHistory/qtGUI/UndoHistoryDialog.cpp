@@ -78,7 +78,7 @@ void UndoHistoryDialog::UpdateList()
 	UndoHistoryUtil::BuildDataList( data );
 
 	m_listBox_UndoList->clear();
-	for (int i = data.m_HistoryList.size() - 1; i >= 0; --i)
+	for (int i = static_cast<int>(data.m_HistoryList.size()) - 1; i >= 0; --i)
 	{
 		m_listBox_UndoList->addItem( tqtQString(data.m_HistoryList[i].m_Name) );
 
