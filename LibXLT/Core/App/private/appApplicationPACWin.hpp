@@ -201,7 +201,12 @@ class appApplicationPAC
 		//	Destory secondary window created by previous call to 
 		//		CreateSubWindow()
 		//--------------------------------------------------------------------
-		static void DestroySubWindow(HWND i_Hwnd);
+		static void DestroySubWindow(void* i_Hwnd);
+
+		//--------------------------------------------------------------------
+		//	Make UI Automation let go of the application's windows
+		//--------------------------------------------------------------------
+		static void ReleaseAccessibilityClients();
 
 		//--------------------------------------------------------------------
 		//	Used for creating an application that doesn't use Run()

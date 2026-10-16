@@ -206,7 +206,7 @@ void cptrWriteAVI::Write( g2dWindow* i_pWindow, const fsLocator& i_Locator, cons
 
 	g2dImage* pImg = NULL;
 	g2dScreenCaptureUtil::CaptureWindowToImage(*i_pWindow, pImg);
-	HBITMAP hbm = pImg->GetHBMP(l_Data.m_nCaptureSampling.GetValue());
+	HBITMAP hbm = (HBITMAP)pImg->GetHBMP(l_Data.m_nCaptureSampling.GetValue());
 	delete pImg;
 
 	//float save_time = appTime::GetTime();
@@ -263,7 +263,7 @@ void cptrWriteAVI::Write( g2dWindow* i_pWindow, const fsLocator& i_Locator, cons
 //------------------------------------------------------------------------
 void cptrWriteAVI::Write( g2dImage* i_pSurface, const fsLocator& i_Locator, const int i_Sampling )
 {
-	HBITMAP hbm = i_pSurface->GetHBMP( i_Sampling );
+	HBITMAP hbm = (HBITMAP)i_pSurface->GetHBMP( i_Sampling );
 	//int s =	i_pSurface->GetStride();
 	//int w = i_pSurface->GetWidth();
 	//int h = i_pSurface->GetHeight();

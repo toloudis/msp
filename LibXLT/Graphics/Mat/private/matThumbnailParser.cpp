@@ -14,7 +14,7 @@
 
 #include "Core/ch/chChunkParserUtil.hpp"
 #include "Core/ch/chReader.hpp"
-#include <wtypes.h>
+#include "Graphics/g2d/g2dBMPFormat.hpp"
 
 namespace
 {
@@ -36,7 +36,7 @@ void matThumbnailParser::Read(	chReader& i_Reader,
 						int &o_BufferSize,
 						int &o_BitmapSize) 
 {
-	int image_offset = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+	int image_offset = sizeof(g2dBMPFormat::FileHeader) + sizeof(g2dBMPFormat::InfoHeader);
 	int image_size = i_Size - image_offset;
 
 	char* header_info = new char[image_offset];
@@ -67,35 +67,35 @@ void matThumbnailParser::Write( chWriter& o_Writer,
 	int height = l_BitmapSize;
 	int bitsPerPixel = 24;
 
-	BITMAPINFOHEADER bmpInfoHeader = {0};
+	g2dBMPFormat::InfoHeader bmpInfoHeader = {0};
     // Set the size
-    bmpInfoHeader.biSize = sizeof(BITMAPINFOHEADER);
+    bmpInfoHeader.m_Size = sizeof(g2dBMPFormat::InfoHeader);
     // Bit count
-    bmpInfoHeader.biBitCount = bitsPerPixel;
+    bmpInfoHeader.m_BitCount = bitsPerPixel;
     // Use all colors
-    bmpInfoHeader.biClrImportant = 0;
+    bmpInfoHeader.m_ClrImportant = 0;
     // Use as many colors according to bits per pixel
-    bmpInfoHeader.biClrUsed = 0;
+    bmpInfoHeader.m_ClrUsed = 0;
     // Store as un Compressed
-    bmpInfoHeader.biCompression = BI_RGB;
+    bmpInfoHeader.m_Compression = g2dBMPFormat::c_CompressionRGB;
     // Set the height in pixels
-    bmpInfoHeader.biHeight = height;
+    bmpInfoHeader.m_Height = height;
     // Width of the Image in pixels
-    bmpInfoHeader.biWidth = width;
+    bmpInfoHeader.m_Width = width;
     // Default number of planes
-    bmpInfoHeader.biPlanes = 1;
+    bmpInfoHeader.m_Planes = 1;
     // Calculate the image size in bytes
-    bmpInfoHeader.biSizeImage = width* height * (bitsPerPixel/8);
+    bmpInfoHeader.m_SizeImage = width* height * (bitsPerPixel/8);
 
-	BITMAPFILEHEADER bfh = {0};
+	g2dBMPFormat::FileHeader bfh = {0};
     // This value should be values of BM letters i.e 0×4D42
     // 0x4D = M 0x42 = B storing in reverse order to match with endian
-    bfh.bfType = 0x4D42;
+    bfh.m_Type = g2dBMPFormat::c_FileType;
 
     // Offset to the RGBQUAD
-    bfh.bfOffBits = sizeof(BITMAPINFOHEADER) + sizeof(BITMAPFILEHEADER);
+    bfh.m_OffBits = sizeof(g2dBMPFormat::InfoHeader) + sizeof(g2dBMPFormat::FileHeader);
     // Total size of image including size of headers
-    bfh.bfSize = bfh.bfOffBits + bmpInfoHeader.biSizeImage;
+    bfh.m_Size = bfh.m_OffBits + bmpInfoHeader.m_SizeImage;
 
 	//write bitmap header
 	o_Writer.Write( &bfh, sizeof( bfh ) );

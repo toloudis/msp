@@ -101,6 +101,13 @@ class appApplication
 		static void DestroySubWindow(void* i_Hwnd);
 
 		//--------------------------------------------------------------------
+		//	Make the OS accessibility services (screen readers and the like)
+		//	let go of the application's windows, so that the GUI toolkit can
+		//	destroy them.  Call before shutting down the GUI.
+		//--------------------------------------------------------------------
+		static void ReleaseAccessibilityClients();
+
+		//--------------------------------------------------------------------
 		//	Used for creating an application that doesn't use Run()
 		//--------------------------------------------------------------------
 		static void CreateMainWindow(int i_Width, int i_Height, 

@@ -8,6 +8,8 @@
 \****************************************************************************/
 #include "Features/Capture/cptrRenderThread.hpp"
 
+#include <windows.h>
+
 #include "Features/Capture/cptrAccumulationBuffer.hpp"
 #include "Features/Capture/cptrMBlurMotionSampler.hpp"
 #include "Features/Capture/cptrRenderUtil.hpp"

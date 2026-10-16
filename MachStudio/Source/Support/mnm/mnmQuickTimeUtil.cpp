@@ -504,7 +504,7 @@ HRESULT CQTMovieFile::AppendFrameUsual(g2dImage* i_pSurface)
 	if (i_pSurface == NULL)
 	{
 		g2dScreenCaptureUtil::CaptureWindowToImage(*m_pWindow, pImg);
-		ihbm = pImg->GetHBMP(1);	// sampling
+		ihbm = (HBITMAP)pImg->GetHBMP(1);	// sampling
 		delete pImg;
 
 		int w=0,h=0;
@@ -515,7 +515,7 @@ HRESULT CQTMovieFile::AppendFrameUsual(g2dImage* i_pSurface)
 	}
 	else
 	{
-		ihbm = i_pSurface->GetHBMP(1);
+		ihbm = (HBITMAP)i_pSurface->GetHBMP(1);
 
 		rect.top = 0;
 		rect.left = 0;

@@ -22,7 +22,10 @@
 #include <iomanip>
 #include <algorithm>
 
+#include <UIAutomation.h>
+
 #pragma comment(lib, "version.lib")
+#pragma comment(lib, "uiautomationcore.lib")
 
 
 //============================================================================
@@ -1414,9 +1417,18 @@ HWND appApplicationPAC::CreateSubWindow(int i_Width, int i_Height, int i_X, int 
 //	Destory secondary window created by previous call to 
 //		CreateSubWindow()
 //--------------------------------------------------------------------
-void appApplicationPAC::DestroySubWindow(HWND i_Hwnd)
+void appApplicationPAC::DestroySubWindow(void* i_Hwnd)
 {
-	::DestroyWindow(i_Hwnd);
+	::DestroyWindow((HWND)i_Hwnd);
+}
+
+//--------------------------------------------------------------------
+//	Make UI Automation let go of the application's windows
+//--------------------------------------------------------------------
+//static
+void appApplicationPAC::ReleaseAccessibilityClients()
+{
+	::UiaDisconnectAllProviders();
 }
 
 //--------------------------------------------------------------------

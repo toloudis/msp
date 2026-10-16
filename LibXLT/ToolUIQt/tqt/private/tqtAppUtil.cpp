@@ -10,10 +10,11 @@
 
 #include "ToolUIQt/tqt/tqtMessaging.hpp"
 
-#ifdef USE_QT
+#include "Core/app/appApplication.hpp"
 
-#include <UIAutomation.h>
-#pragma comment(lib,"uiautomationcore.lib")
+#include <cstdio>
+
+#ifdef USE_QT
 
 namespace tqtAppUtil
 {
@@ -108,7 +109,7 @@ namespace tqtAppUtil
 		if (l_pApplication)
 			return true;
 
-		strncpy_s(l_AppName, i_pAppName ? i_pAppName : "", _TRUNCATE);
+		snprintf(l_AppName, sizeof(l_AppName), "%s", i_pAppName ? i_pAppName : "");
 		l_Argc = 1;
 
 		// Each panel draws with DirectX into its own native child window
@@ -159,11 +160,11 @@ namespace tqtAppUtil
 			delete l_pHotKeyFilter;
 			l_pHotKeyFilter = NULL;
 
-			// Qt answers UI Automation clients (screen readers, the touch
+			// Qt answers accessibility clients (screen readers, the touch
 			// keyboard) with providers that live until every client lets
-			// go of them. Make UI Automation let go now, so Qt can delete
+			// go of them. Make the clients let go now, so Qt can delete
 			// them before the application goes away.
-			UiaDisconnectAllProviders();
+			appApplication::ReleaseAccessibilityClients();
 
 			delete l_pApplication;
 			l_pApplication = NULL;

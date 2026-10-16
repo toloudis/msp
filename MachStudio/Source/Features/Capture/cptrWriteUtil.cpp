@@ -9,6 +9,7 @@
 #include "Features/Capture/cptrWriteUtil.hpp"
 
 #include "Core/ch/chBinWriter.hpp"
+#include "Core/ma/maIntRect.hpp"
 #include "Graphics/g2d/g2dImage.hpp"
 
 //
@@ -95,13 +96,13 @@ void write_bmp_header(	FileStream &i_File,
 						g2dImage* i_pSurface,
 						bool	i_bGreyscale /*= false*/,
 						int		i_Sampling /*= 1*/,
-						RECT*	i_pRect /*= NULL*/ )
+						const maIntRect*	i_pRect /*= NULL*/ )
 {
 	//--------------------------------------------------------------//
 	// Get width and height from rect or surface
 	//
-	int Width	= (i_pRect) ? (i_pRect->right - i_pRect->left) : i_pSurface->GetWidth();
-	int Height	= (i_pRect) ? (i_pRect->bottom - i_pRect->top) : i_pSurface->GetHeight();
+	int Width	= (i_pRect) ? i_pRect->GetWidth() : i_pSurface->GetWidth();
+	int Height	= (i_pRect) ? i_pRect->GetHeight() : i_pSurface->GetHeight();
 
 	if (i_Sampling > 1)
 	{
@@ -153,7 +154,7 @@ void write_bmp_data(FileStream &i_File,
 					g2dImage* i_pSurface,
 					bool	i_bGreyscale /*= false*/,
 					int		i_Sampling /*= 1*/,
-					RECT* i_pRect /*= NULL*/)
+					const maIntRect* i_pRect /*= NULL*/)
 {
 	int wid=0,ht=0,bpp=0,bufSize=0;
 	envType::UInt8* pBuffer = NULL;

@@ -132,6 +132,9 @@
     <ClInclude Include="G2d\g2dHDRUtil.hpp">
       <Filter>G2d</Filter>
     </ClInclude>
+    <ClInclude Include="G2d\g2dBMPFormat.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
     <ClInclude Include="G2d\g2dImage.hpp">
       <Filter>G2d</Filter>
     </ClInclude>

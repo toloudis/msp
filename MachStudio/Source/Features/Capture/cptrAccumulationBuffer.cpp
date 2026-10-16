@@ -13,6 +13,8 @@
 #include "Graphics/g2d/g2dExceptionX.hpp"
 #include "Graphics/g2d/g2dImageCreate.hpp"
 
+#include <windows.h>
+
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 cptrAccumulationBuffer::cptrAccumulationBuffer()

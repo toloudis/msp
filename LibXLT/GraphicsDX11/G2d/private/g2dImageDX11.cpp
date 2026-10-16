@@ -9,6 +9,7 @@
 
 #include "Core/dbg/dbgMsg.hpp"
 #include "Core/ma/maFloatRGBA.hpp"
+#include "Core/ma/maIntRect.hpp"
 #include "Core/ma/maSampling.hpp"
 #include "Core/ma/maVector3d.hpp"
 #include "Graphics/g2d/g2dExceptionX.hpp"
@@ -21,6 +22,21 @@
 
 namespace
 {
+	//------------------------------------------------------------------------
+	// Convert the portable rectangle to the Windows one the surface
+	// utilities take.  Returns NULL if there is no rectangle.
+	//------------------------------------------------------------------------
+	RECT* to_win_rect(const maIntRect* i_pRect, RECT& o_Rect)
+	{
+		if (!i_pRect)
+			return NULL;
+		o_Rect.left = i_pRect->GetLeft();
+		o_Rect.top = i_pRect->GetUpper();
+		o_Rect.right = i_pRect->GetRight();
+		o_Rect.bottom = i_pRect->GetLower();
+		return &o_Rect;
+	}
+
 	inline DWORD make_mask(int i_FirstBit, int i_BitCount)
 	{
 		DWORD ret_val;
@@ -497,10 +513,11 @@ void g2dImageDX11::GetPixels(envType::UInt8** o_pBuffer,
 							int* o_bpp,
 							int i_sampling /*= 1*/,
 							bool i_bGreyscale /*= false*/,
-							RECT* i_pRect /*= NULL*/)
+							const maIntRect* i_pRect /*= NULL*/)
 {
+	RECT rect;
 	g2dDX11SurfaceUtil::GetSurfacePixels(m_pSurface, o_pBuffer, 
-		o_bufSize, o_width, o_height, o_bpp, i_sampling, i_bGreyscale, i_pRect);
+		o_bufSize, o_width, o_height, o_bpp, i_sampling, i_bGreyscale, to_win_rect(i_pRect, rect));
 }
 void g2dImageDX11::GetPixelsTGA(envType::UInt8 **o_pBuffer,
 	int *o_bufSize,
@@ -509,10 +526,11 @@ void g2dImageDX11::GetPixelsTGA(envType::UInt8 **o_pBuffer,
 	int *o_bpp,
 	int	i_Sampling /*= 1*/,
 	const std::string& i_CompressionCode /*= std::string("None")*/,
-	const RECT* i_pRect /*= NULL*/)
+	const maIntRect* i_pRect /*= NULL*/)
 {
+	RECT rect;
 	g2dDX11SurfaceUtil::GetSurfacePixelsTGA(m_pSurface, o_pBuffer, 
-		o_bufSize, o_width, o_height, o_bpp, i_Sampling, i_CompressionCode, i_pRect);
+		o_bufSize, o_width, o_height, o_bpp, i_Sampling, i_CompressionCode, to_win_rect(i_pRect, rect));
 }
 
 //----------------------------------------------------------------------------
@@ -658,7 +676,7 @@ void get_bitmap_info(	BITMAPINFO &i_Info,
 //--------------------------------------------------------------------------------
 //	CaptureHBMP writes screen data into HBITMAP
 //--------------------------------------------------------------------------------
-HBITMAP g2dImageDX11::GetHBMP(const int i_Sampling )
+void* g2dImageDX11::GetHBMP(const int i_Sampling )
 {
 	bool bGreyScale = false;
 	RECT* pRect = NULL;

@@ -25,6 +25,7 @@ class fsFileStream;
 class g2dImage;
 class chBinWriter;
 class g2dWindow;
+class maIntRect;
 
 //============================================================================
 //	FileStream - encapsulates fsFileStream or chBinWriter.
@@ -68,12 +69,12 @@ namespace cptrWriteUtil
 						g2dImage* i_pSurface,
 						bool	i_bGreyscale = false,
 						int		i_Sampling = 1,
-						RECT*	i_pRect = NULL );
+						const maIntRect*	i_pRect = NULL );
 
 	void write_bmp_data(FileStream &i_File,
 					g2dImage* i_pSurface,
 					bool	i_bGreyscale = false,
 					int		i_Sampling = 1,
-					RECT *i_pRect = NULL);
+					const maIntRect *i_pRect = NULL);
 
 }

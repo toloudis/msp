@@ -517,6 +517,7 @@
     <ClInclude Include="G2d\g2dFontHandle.hpp" />
     <ClInclude Include="G2d\g2dFontUtil.hpp" />
     <ClInclude Include="G2d\g2dHDRUtil.hpp" />
+    <ClInclude Include="G2d\g2dBMPFormat.hpp" />
     <ClInclude Include="G2d\g2dImage.hpp" />
     <ClInclude Include="G2d\g2dImageCreate.hpp" />
     <ClInclude Include="G2d\g2dImageSave.hpp" />

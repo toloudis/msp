@@ -21,9 +21,6 @@
 
 #ifdef USE_QT
 
-#include <windows.h>
-// windows.h renames GetObject, which the object managers use as a name
-#undef GetObject
 
 //============================================================================
 //============================================================================
@@ -45,11 +42,11 @@ public:
 	}
 
 	//------------------------------------------------------------------------
-	// The native window handle for DirectX
+	// The native window handle for DirectX (an HWND on Windows)
 	//------------------------------------------------------------------------
-	HWND GetHandle() const
+	void* GetHandle() const
 	{
-		return (HWND)this->winId();
+		return reinterpret_cast<void*>(this->winId());
 	}
 
 	//------------------------------------------------------------------------

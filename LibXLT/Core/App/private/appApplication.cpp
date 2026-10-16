@@ -148,7 +148,16 @@ void* appApplication::CreateSubWindow(int i_Width, int i_Height,
 //--------------------------------------------------------------------
 void appApplication::DestroySubWindow(void* i_Hwnd)
 {
-	appApplicationPAC::DestroySubWindow((HWND)i_Hwnd);
+	appApplicationPAC::DestroySubWindow(i_Hwnd);
+}
+
+//--------------------------------------------------------------------
+//	Make the OS accessibility services let go of the application's
+//	windows.
+//--------------------------------------------------------------------
+void appApplication::ReleaseAccessibilityClients()
+{
+	appApplicationPAC::ReleaseAccessibilityClients();
 }
 
 //--------------------------------------------------------------------

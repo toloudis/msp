@@ -15,6 +15,8 @@
 #include "Graphics/g2d/g2dImage.hpp"
 #include "Graphics/g3d/g3dPrefs.hpp"
 
+#include <windows.h>
+
 
 //--------------------------------------------------------------------
 // GetPixelType()
