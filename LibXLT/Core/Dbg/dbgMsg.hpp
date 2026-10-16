@@ -175,6 +175,22 @@ namespace dbgMsg
 	std::stringstream& GetAssertStream();
 
 	//------------------------------------------------------------------------
+	//  An AssertHandler receives the full text of a failed assertion
+	//  (file, line and message).
+	//
+	//------------------------------------------------------------------------
+	typedef void (*AssertHandler)(const std::string& i_Message);
+
+	//------------------------------------------------------------------------
+	//  SetAssertHandler sends failed DBG_ASSERTs to i_Handler instead of
+	//  the abort/continue dialog; the unit tests use it to turn assertions
+	//  into test failures. Pass nullptr to restore the dialog. Returns the
+	//  previous handler.
+	//
+	//------------------------------------------------------------------------
+	AssertHandler SetAssertHandler(AssertHandler i_Handler);
+
+	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	void enableTimeStamp(std::wstring& i_StreamName, bool doTimeStamp);
 

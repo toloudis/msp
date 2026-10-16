@@ -41,6 +41,7 @@ namespace dbgMsg
 		//vector that will hold all of the streams this logging system will write to.
 		std::vector<dbgStream*> m_StreamList;
 		std::stringstream		m_AssertStream;
+		AssertHandler			l_AssertHandler = nullptr;
 
 		//hacks to remove memory leaks
 		std::ofstream*		l_ofs = NULL;
@@ -341,6 +342,7 @@ namespace dbgMsg
 	{
 		std::ostringstream dbg_line(std::ostringstream::out);
 		std::string assert_msg = m_AssertStream.str();
+		m_AssertStream.str(std::string());
 
 		dbg_line << "assertion failure in " << envString::WideCharToUTF8( i_File.c_str() ) << "(" << i_Line << "):\n" << assert_msg;
 
@@ -350,6 +352,12 @@ namespace dbgMsg
 			if (_osList[i]->isStreamActive())
 				if (_osList[i]->logEnabled())
 					*(dbgMsg::WriteLog( i_File, i_Line , _osList[i])) << dbg_line.str() << std::endl;
+		}
+
+		if ( l_AssertHandler )
+		{
+			l_AssertHandler(dbg_line.str());
+			return;
 		}
 
 		if ( dbgAssertPAC::AbortContinueMessage(dbg_line.str().c_str()) )
@@ -366,6 +374,17 @@ namespace dbgMsg
 	std::stringstream& GetAssertStream()
 	{
 		return m_AssertStream;
+	}
+
+	//------------------------------------------------------------------------
+	//  Send failed assertions to i_Handler instead of the dialog
+	//
+	//------------------------------------------------------------------------
+	AssertHandler SetAssertHandler(AssertHandler i_Handler)
+	{
+		AssertHandler previous = l_AssertHandler;
+		l_AssertHandler = i_Handler;
+		return previous;
 	}
 
 	//------------------------------------------------------------------------
