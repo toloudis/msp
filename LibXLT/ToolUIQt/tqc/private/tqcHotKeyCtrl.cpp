@@ -1,5 +1,7 @@
 /****************************************************************************\
-**	tqcHotKeyCtrl.hpp
+**	tqcHotKeyCtrl.cpp
+**
+**	see .hpp
 **
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
@@ -9,59 +11,68 @@
 #include "Tool/cma/cmaCommandMgr.hpp"
 #include "ToolUIQt/tqt/tqtMessaging.hpp"
 
-
-#ifdef QT_FINISH_PORT
-
-BEGIN_EVENT_TABLE(tqcHotKeyCtrl, wxTextCtrl)
-    EVT_KEY_DOWN(tqcHotKeyCtrl::OnKeyDown)
-END_EVENT_TABLE()
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-tqcHotKeyCtrl::tqcHotKeyCtrl(QWidget* i_pParent, 
-					   QWidgetID i_Id)
-:	wxTextCtrl(i_pParent, i_Id, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER|wxTE_READONLY),
-	m_LastValue("")
-{		
+tqcHotKeyCtrl::tqcHotKeyCtrl(QWidget* i_pParent)
+:	QLineEdit(i_pParent)
+{
+	this->setReadOnly(true);
+	this->setProperty(tqtMessaging::c_NoHotKeysProperty, true);
+}
+
+//----------------------------------------------------------------------------
+// Take Tab and shortcut keys too, so that they can become hot keys
+//----------------------------------------------------------------------------
+bool tqcHotKeyCtrl::event(QEvent* i_pEvent)
+{
+	if (i_pEvent->type() == QEvent::ShortcutOverride)
+	{
+		i_pEvent->accept();
+		return true;
+	}
+	return QLineEdit::event(i_pEvent);
 }
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void tqcHotKeyCtrl::OnKeyDown(wxKeyEvent& i_Event)
+void tqcHotKeyCtrl::keyPressEvent(QKeyEvent* i_pEvent)
 {
 	bool bHaveHotKey = false;
 	std::string hot_key_str;
-	if (i_Event.GetKeyCode() == WXK_BACK)
+	if (i_pEvent->key() == Qt::Key_Backspace)
 	{
 		// Backspace clears the control
 		hot_key_str = "";
 		bHaveHotKey = true;
 	}
-	else if (tqtMessaging::ConvertKeyEventToString(i_Event, hot_key_str))
+	else if (tqtMessaging::ConvertKeyEventToString(*i_pEvent, hot_key_str))
 	{
 		bHaveHotKey = true;
 	}
 
 	if (bHaveHotKey)
-	{		
-		wxString hot_key_value(hot_key_str.c_str(), wxConvUTF8);
-		wxString prev_key_value(this->GetValue(), wxConvUTF8);
-		if (hot_key_value != this->GetValue())
+	{
+		QString hot_key_value = tqtQString(hot_key_str);
+		QString prev_key_value = this->text();
+		if (hot_key_value != prev_key_value)
 		{
 			cmaCommandMgr::ResetValidHotKey();
-			this->SetValue( hot_key_value );
+			this->setText( hot_key_value );
 
 			// trigger the callback
-			wxCommandEvent changed_event(wxEVT_VALUE_CHANGED, this->GetId());
-			this->ProcessCommand(changed_event);
+			NotifyValueChanged();
+
 			//if the hot key is not valid, the text field will be empty
 			if(!cmaCommandMgr::IsValidHotKey())
 			{
-				this->SetValue(prev_key_value);
-				this->ProcessCommand(changed_event);
+				this->setText(prev_key_value);
+				NotifyValueChanged();
 			}
 		}
 	}
+	i_pEvent->accept();
 }
 
 #endif // USE_QT

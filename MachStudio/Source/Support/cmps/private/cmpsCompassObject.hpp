@@ -101,7 +101,7 @@ class cmpsCompassObject : public pick3dPickObject
 		//--------------------------------------------------------------------
 		//	GetOrientation returns the Orientation
 		//--------------------------------------------------------------------
-		inline const maRotation& cmpsCompassObject::GetOrientation() const;
+		inline const maRotation& GetOrientation() const;
 
 		//----------------------------------------------------------------------------
 		//	AdjustCompassToBounds updates the compass to the position

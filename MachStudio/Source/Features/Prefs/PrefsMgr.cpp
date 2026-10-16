@@ -11,7 +11,6 @@
 
 #include "Drivers/Sound/tmlnDriverSound.hpp"
 #include "Features/Capture/cptrModeRender.hpp"
-#include "Features/Capture/cptrRenderMrayLive.hpp"
 #include "Features/Capture/cptrRenderRmanLive.hpp"
 #include "Features/Keyframing/keyfKeyframeUtil.hpp"
 #include "Features/MaterialBrowse/mbrwDialogUtil.hpp"
@@ -23,7 +22,6 @@
 #include "Support/mnm/mnmPaths.hpp"
 #include "Support/pyth/pythProperty.hpp"
 #include "Support/rman/rmanMgr.hpp"
-#include "Support/mray/mrayMgr.hpp"
 #include "Support/tmln/tmlnTimeLine.hpp"
 #include "Systems/Common/GUI/cmmObjectDialogUtil.hpp"
 #include "Systems/Common/GUI/cmmSystemDialogUtil.hpp"
@@ -61,6 +59,8 @@
 
 #ifdef USE_WXWIDGETS
 #include <wx/tooltip.h>
+#elif defined(USE_QT)
+#include "ToolUIQt/tqt/tqtAppUtil.hpp"
 #endif
 
 #undef CreateDirectory
@@ -149,8 +149,6 @@ namespace PrefsMgr
 		const char * lc_PrefsFileName_Default	= "Prefs-Default.cfg";
 		const char * lc_Key_PRmanLoc			= "PrmanLocation";
 		const char * lc_Key_PixieLoc			= "PixieLocation";
-		const char * lc_Key_MRayLoc				= "MentalRayLocation";
-		const char * lc_Key_MRayViewerLoc		= "MentalRayViewerLocation";
 		const char * lc_Key_ActionSafeFrameVisible	= "ActionSafeFrameVisible";
 		const char * lc_Key_TitleSafeFrameVisible	= "TitleSafeFrameVisible";
 		
@@ -221,7 +219,7 @@ namespace PrefsMgr
 				void UpdateSkipSounds(prtyProperty *i_pProperty, bool i_bDirty);
 				void UpdateAutoSave(prtyProperty *i_pProperty, bool i_bDirty);
 				void UpdateUndo(prtyProperty *i_pProperty, bool i_bDirty);
-				void PrefsObject::AllChannelsWithDriversPropertyChanged(prtyProperty *i_pProperty, bool i_bDirty);
+				void AllChannelsWithDriversPropertyChanged(prtyProperty *i_pProperty, bool i_bDirty);
 				void UpdateManipFastRender(prtyProperty* i_pProperty, bool i_bDirty);
 				void FrameratePropertyChanged(prtyProperty* i_pProperty, bool i_bDirty);
 				void RenderManRendererChanged(prtyProperty* i_pProperty, bool i_bDirty);
@@ -427,10 +425,6 @@ namespace PrefsMgr
 					{fsLocator value; fsFileUtil::ANSIFilenameToLocator(strvalue, value); m_Data.m_PRmanLocation.SetValue(value);};
 				if (keyname == lc_Key_PixieLoc)
 					{fsLocator value; fsFileUtil::ANSIFilenameToLocator(strvalue, value); m_Data.m_PixieLocation.SetValue(value);};
-				if (keyname == lc_Key_MRayLoc)
-					{fsLocator value; fsFileUtil::ANSIFilenameToLocator(strvalue, value); m_Data.m_MRayLocation.SetValue(value);};
-				if (keyname == lc_Key_MRayViewerLoc)
-					{fsLocator value; fsFileUtil::ANSIFilenameToLocator(strvalue, value); m_Data.m_MRayViewerLocation.SetValue(value);};
 				if (keyname == lc_Key_ActionSafeFrameVisible)
 					{bool value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_bActionSafeFrameVisible.SetValue(value);};
 				if (keyname == lc_Key_TitleSafeFrameVisible)
@@ -635,11 +629,6 @@ namespace PrefsMgr
 		pPUII = new prtyFileChooserUIInfo(&(m_Data.m_PRmanLocation), "RenderMan", "Location of PRMan renderer");
 		AddProperty( pPUII );
 
-		pPUII = new prtyFileChooserUIInfo(&(m_Data.m_MRayLocation), "mental ray", "Location of Mental Ray renderer");
-		AddProperty( pPUII );
-
-		pPUII = new prtyFileChooserUIInfo(&(m_Data.m_MRayViewerLocation), "mental ray", "Location of Mental Ray viewer");
-		AddProperty( pPUII );
 
 		//pPUII = new prtyFileChooserUIInfo(&(m_Data.m_PixieLocation), "RenderMan Renderer", "Location of Pixie renderer");
 		//AddProperty( pPUII );
@@ -678,8 +667,6 @@ namespace PrefsMgr
 		m_Data.m_FrameRate.AddCallback(new prtyCallbackWrapper<PrefsObject>(this, &PrefsObject::FrameratePropertyChanged));
 		m_Data.m_PRmanLocation.AddCallback(new prtyCallbackWrapper<PrefsObject>(this, &PrefsObject::RenderManRendererChanged));
 		m_Data.m_PixieLocation.AddCallback(new prtyCallbackWrapper<PrefsObject>(this, &PrefsObject::RenderManRendererChanged));
-		m_Data.m_MRayLocation.AddCallback(new prtyCallbackWrapper<PrefsObject>(this, &PrefsObject::RenderManRendererChanged));
-		m_Data.m_MRayViewerLocation.AddCallback(new prtyCallbackWrapper<PrefsObject>(this, &PrefsObject::RenderManRendererChanged));
 		m_Data.m_bEnableAutoUpdate.AddCallback(new prtyCallbackWrapper<PrefsObject>(this, &PrefsObject::UpdateAutoUpdate));
 		m_Data.m_bEnableRevision.AddCallback(new prtyCallbackWrapper<PrefsObject>(this, &PrefsObject::EnableRevision));
 	}
@@ -793,8 +780,6 @@ namespace PrefsMgr
 		guiXMLTextWriter::WriteElement(lc_Key_FrameRate, m_Data.m_FrameRate.GetValue());
 		guiXMLTextWriter::WriteElement(lc_Key_PRmanLoc, m_Data.m_PRmanLocation.GetValue());
 		guiXMLTextWriter::WriteElement(lc_Key_PixieLoc, m_Data.m_PixieLocation.GetValue());
-		guiXMLTextWriter::WriteElement(lc_Key_MRayLoc, m_Data.m_MRayLocation.GetValue());
-		guiXMLTextWriter::WriteElement(lc_Key_MRayViewerLoc, m_Data.m_MRayViewerLocation.GetValue());
 		guiXMLTextWriter::WriteElement(lc_Key_ActionSafeFrameVisible, m_Data.m_bActionSafeFrameVisible.GetValue());
 		guiXMLTextWriter::WriteElement(lc_Key_TitleSafeFrameVisible, m_Data.m_bTitleSafeFrameVisible.GetValue());
 
@@ -863,6 +848,8 @@ namespace PrefsMgr
 	{
 #ifdef USE_WXWIDGETS
 		wxToolTip::Enable( m_Data.m_bShowToolTips.GetValue() );
+#elif defined(USE_QT)
+		tqtAppUtil::EnableToolTips( m_Data.m_bShowToolTips.GetValue() );
 #endif
 	}
 
@@ -1007,12 +994,6 @@ namespace PrefsMgr
 	void PrefsObject::RenderManRendererChanged(prtyProperty* i_pProperty, bool i_bDirty)
 	{
 		rmanMgr::SetPrmanLoc( m_Data.m_PRmanLocation.GetValue() );
-
-		mrayMgr::SetMRayLoc( m_Data.m_MRayLocation.GetValue() );
-		cptrRenderMrayLive::SetMRayLoc( m_Data.m_MRayLocation.GetValue() );
-
-		mrayMgr::SetMRayViewerLoc( m_Data.m_MRayViewerLocation.GetValue() );
-		cptrRenderMrayLive::SetMRayViewerLoc( m_Data.m_MRayViewerLocation.GetValue() );
 
 		//rmanMgr::SetPixieLoc( m_Data.m_PixieLocation.GetValue() );
 	}

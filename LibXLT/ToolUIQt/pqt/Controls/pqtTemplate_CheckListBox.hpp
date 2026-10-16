@@ -19,13 +19,13 @@
 #include "Core/dbg/dbgMsg.hpp"
 #endif
 
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
 template<class PropertyType, class ValueType, class Converter>
 class pqtTemplate_CheckListBox : public pqtControl
 {
-#ifdef QT_FINISH_PORT
 	public:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
@@ -39,7 +39,7 @@ class pqtTemplate_CheckListBox : public pqtControl
 			bool bSameValue = pqtControlUtil::GetCommonValue<ValueType, PropertyType>(i_pUIInfo, newvalue);
 
 			// create the actual control
-			m_pActualControl = new pqtControlUtil::CleanUpWidget<wxCheckListBox>(i_pParent, wxID_ANY);
+			m_pActualControl = new pqtControlUtil::CleanUpWidget<QListWidget>(i_pParent);
 			//m_pActualControl = new wxCheckListBox(i_pParent, wxID_ANY);
 
 			//	set the control values
@@ -52,9 +52,7 @@ class pqtTemplate_CheckListBox : public pqtControl
 
 			//	hook up events
 			//
-			this->Connect( m_pActualControl->GetId(), wxEVT_COMMAND_CHECKLISTBOX_TOGGLED,
-							wxCommandEventHandler(pqtTemplate_CheckListBox::CheckListBox_ValueChanged) );
-			m_pActualControl->PushEventHandler(this);
+			QObject::connect(m_pActualControl, &QListWidget::itemChanged, [this](QListWidgetItem*) { CheckListBox_ValueChanged(); });
 		}
 
 		//----------------------------------------------------------------------------
@@ -62,7 +60,6 @@ class pqtTemplate_CheckListBox : public pqtControl
 		//----------------------------------------------------------------------------
 		virtual ~pqtTemplate_CheckListBox()
 		{
-			m_pActualControl->RemoveEventHandler(this);
 		}
 
 		//----------------------------------------------------------------------------
@@ -99,25 +96,28 @@ class pqtTemplate_CheckListBox : public pqtControl
 		//----------------------------------------------------------------------------
 		void UpdateControl(prtyPropertyUIInfo* i_pUIInfo)
 		{
-			m_pActualControl->Enable(!i_pUIInfo->GetReadOnly());
+			m_pActualControl->setEnabled(!i_pUIInfo->GetReadOnly());
 			
 			// Get list of string choices for combo box
 			std::vector<std::string> choices;
 			Converter::GetChoices(i_pUIInfo, choices);
 
 			// Add choices to control
-			m_pActualControl->Clear();
+			QSignalBlocker blocker(m_pActualControl);
+			m_pActualControl->clear();
 			int num_choices = choices.size();
 			for (int i = 0; i < num_choices; ++i)
 			{
-				m_pActualControl->Append(wxString(choices[i].c_str(), wxConvUTF8));
+				QListWidgetItem* pItem = new QListWidgetItem(tqtQString(choices[i]), m_pActualControl);
+				pItem->setFlags(pItem->flags() | Qt::ItemIsUserCheckable);
+				pItem->setCheckState(Qt::Unchecked);
 			}
 		}
 
 	private:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
-		void CheckListBox_ValueChanged(wxCommandEvent& i_Event)
+		void CheckListBox_ValueChanged()
 		{
 			if (m_bLocalChangeNoUpdate) return;
 
@@ -130,7 +130,7 @@ class pqtTemplate_CheckListBox : public pqtControl
 			m_bLocalChangeNoUpdate = false;
 		}
 
-		wxCheckListBox* m_pActualControl;
-#endif // USE_QT
+		QListWidget* m_pActualControl;
 };
 
+#endif // USE_QT

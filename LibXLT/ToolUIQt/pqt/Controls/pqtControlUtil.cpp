@@ -12,8 +12,6 @@
 
 #ifdef USE_QT
 
-//============================================================================
-//============================================================================
 namespace
 {
 	undoUndoOperation *l_pLastOperation = NULL;
@@ -23,9 +21,8 @@ namespace
 	const float c_TimeDiffThreshold = 1.0f; // Time difference in seconds to represent a new undo operation
 }
 
-
 //----------------------------------------------------------------------------
-//	Checks if a new undo operation is needed, or if an old one can be
+// Checks if a new undo operation is needed, or if an old one can be
 //	continued. It will either submit the undo operation or delete it.
 //----------------------------------------------------------------------------
 void pqtControlUtil::SubmitOrContinueUndo(pqtControl* i_pControl,
@@ -68,5 +65,6 @@ void pqtControlUtil::SubmitOrContinueUndo(pqtControl* i_pControl,
 	l_pLastControl = i_pControl;
 	l_LastTime = cur_time;
 }
-#endif
 
+
+#endif

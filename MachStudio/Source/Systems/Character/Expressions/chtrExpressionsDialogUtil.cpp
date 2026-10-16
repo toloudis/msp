@@ -49,7 +49,7 @@ namespace chtrExpressionsDialogUtil
 	void UpdateExpressions(prtyObject* i_pObject)
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 
 #endif
 

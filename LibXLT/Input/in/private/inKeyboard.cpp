@@ -16,11 +16,12 @@
 //========================================================================
 //	Constructor
 //========================================================================
-inKeyboard::inKeyboard() : m_pPAC(new inKeyboardPAC)
+inKeyboard::inKeyboard()
 {
-	memset(&m_PastState, 0, sizeof(m_PastState));
-	memset(&m_CurState, 0, sizeof(m_CurState));
-
+	memset(m_PastState, 0, sizeof(m_PastState));
+	memset(m_CurState, 0, sizeof(m_CurState));
+	memset(m_LiveState, 0, sizeof(m_LiveState));
+	memset(m_PressedSinceThink, 0, sizeof(m_PressedSinceThink));
 }
 
 //========================================================================
@@ -28,7 +29,6 @@ inKeyboard::inKeyboard() : m_pPAC(new inKeyboardPAC)
 //========================================================================
 inKeyboard::~inKeyboard()
 {
-	delete m_pPAC;
 }
 
 //========================================================================
@@ -42,8 +42,49 @@ void inKeyboard::Think()
 	}
 
 	memcpy(m_PastState, m_CurState, sizeof(m_PastState));
-	memset(m_CurState, 0, sizeof(m_CurState));
-	m_pPAC->Think(m_CurState);
+	for (int i = 0; i < e_KEYBUFSIZE; ++i)
+	{
+		m_CurState[i] = m_LiveState[i] || m_PressedSinceThink[i];
+	}
+	memset(m_PressedSinceThink, 0, sizeof(m_PressedSinceThink));
+}
+
+//========================================================================
+//	SetKeyState records a key going down or up
+//========================================================================
+void inKeyboard::SetKeyState(inKeys::Keys i_Key, bool i_bDown)
+{
+	if (0 > i_Key || i_Key >= e_KEYBUFSIZE)
+	{
+		return;
+	}
+
+	m_LiveState[i_Key] = i_bDown;
+	if (i_bDown)
+	{
+		m_PressedSinceThink[i_Key] = true;
+	}
+}
+
+//========================================================================
+//	SetNativeKeyState records a key going down or up, given the
+//	platform's scan code for it
+//========================================================================
+void inKeyboard::SetNativeKeyState(unsigned int i_NativeScanCode, bool i_bDown)
+{
+	inKeys::Keys key;
+	if (inKeyboardPAC::NativeScanCodeToKey(i_NativeScanCode, key))
+	{
+		this->SetKeyState(key, i_bDown);
+	}
+}
+
+//========================================================================
+//	ReleaseAll marks every key as up
+//========================================================================
+void inKeyboard::ReleaseAll()
+{
+	memset(m_LiveState, 0, sizeof(m_LiveState));
 }
 
 //========================================================================

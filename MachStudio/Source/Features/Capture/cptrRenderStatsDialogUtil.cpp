@@ -9,9 +9,17 @@
 #include "Features/Capture/cptrRenderStatsDialogUtil.hpp"
 
 #include "Features/Capture/cptrRenderStatsDataUtil.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/Capture/qtGUI/cptrRenderStatsDialog.hpp"
+#else
 #include "Features/Capture/wxGUI/cptrRenderStatsDialog.hpp"
+#endif
 
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtSystem.hpp"
+#else
 #include "ToolUIWx/twx/twxSystem.hpp"
+#endif
 
 
 //============================================================================
@@ -19,7 +27,7 @@
 namespace cptrRenderStatsDialogUtil
 {
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	static cptrRenderStatsDialog* l_pRenderStatsDialog = NULL;
 #endif
 
@@ -39,6 +47,17 @@ namespace cptrRenderStatsDialogUtil
 
 		UpdateStatsDialog();
 		l_pRenderStatsDialog->Show();
+#elif defined(USE_QT)
+		if (l_pRenderStatsDialog == NULL)
+		{
+			cptrRenderStatsDataUtil::ReadRenderStats( cptrRenderStatsDataUtil::Data() );
+			cptrRenderStatsDataUtil::SetRenderStatsVisible(true);
+
+			l_pRenderStatsDialog = new cptrRenderStatsDialog( tqtSystem::g_pMainForm );
+		}
+
+		UpdateStatsDialog();
+		l_pRenderStatsDialog->show();
 #endif
 	}
 
@@ -52,6 +71,9 @@ namespace cptrRenderStatsDialogUtil
 #ifdef USE_WXWIDGETS
 		l_pRenderStatsDialog->Hide();
 		l_pRenderStatsDialog = NULL;
+#elif defined(USE_QT)
+		l_pRenderStatsDialog->hide();
+		l_pRenderStatsDialog = NULL;
 #endif
 	}
 
@@ -60,7 +82,7 @@ namespace cptrRenderStatsDialogUtil
 	void UpdateStatsDialog()
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		std::string outstring;
 		cptrRenderStatsDataUtil::BuildOutputString(outstring);
 		if (l_pRenderStatsDialog != NULL)
@@ -78,7 +100,7 @@ namespace cptrRenderStatsDialogUtil
 		if (i_Message.GetLength() > 0)
 			DBG_LOG(i_Message);
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (l_pRenderStatsDialog != NULL)
 		{
 			l_pRenderStatsDialog->AddStatString( i_Message );
@@ -91,7 +113,7 @@ namespace cptrRenderStatsDialogUtil
 	//--------------------------------------------------------------------
 	void Newline()
 	{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (l_pRenderStatsDialog != NULL)
 		{
 			l_pRenderStatsDialog->AddStatString(itString());
@@ -104,7 +126,7 @@ namespace cptrRenderStatsDialogUtil
 	//------------------------------------------------------------------------
 	void Clear()
 	{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (l_pRenderStatsDialog != NULL)
 		{
 			l_pRenderStatsDialog->Clear();

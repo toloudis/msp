@@ -17,8 +17,14 @@
 #ifndef TMLN_CHANNEL_HPP
 #include "Support/tmln/tmlnChannel.hpp"
 #endif
+#ifdef MSP_GUI_QT
+#ifndef TQT_WIDGETS_HPP
+#include "ToolUIQt/tqt/tqtWidgets.hpp"
+#endif
+#else
 #ifndef TWX_WIDGETS_HPP
 #include "ToolUIWx/twx/twxWidgets.hpp"
+#endif
 #endif
 
 
@@ -78,16 +84,22 @@ namespace cmmObjectDialogUtil
 	void CreateDriver(std::string& i_DriverName);
 
 #ifdef USE_WXWIDGETS
+	typedef wxPanel TabPage;
+#elif defined(USE_QT)
+	typedef QWidget TabPage;
+#endif
+
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	//--------------------------------------------------------------------
 	// Add/Remove Tab Pages
 	//--------------------------------------------------------------------
-	void AddTabPage(wxPanel* i_pTabPage, const std::string i_Title, bool i_bSelectTab = false);
-	void RemoveTabPage(wxPanel* i_pTabPage);
+	void AddTabPage(TabPage* i_pTabPage, const std::string i_Title, bool i_bSelectTab = false);
+	void RemoveTabPage(TabPage* i_pTabPage);
 
 	//--------------------------------------------------------------------
 	// Returns true if the given tab page is attached.
 	//--------------------------------------------------------------------
-	bool HasTabPage(wxPanel* i_pTabPage);
+	bool HasTabPage(TabPage* i_pTabPage);
 #endif
 
 }	// end of namespace

@@ -7,12 +7,12 @@
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
-#ifdef QT_FINISH_PORT
-
 #include "pqtFileName_FilePicker.hpp"
 
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/it/itStringUtil.hpp"
+
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 // Set value into control

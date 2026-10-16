@@ -15,6 +15,7 @@
 
 #include "dbgLogPACWin.hpp"
 #include "Core/Env/envInitX.hpp"
+#include "Core/Env/envString.hpp"
 #include "Core/Dbg/dbgMsg.hpp"
 
 #include <sstream>
@@ -63,6 +64,21 @@ void WriteLog(const char* i_Text)
 
 
 	::OutputDebugStringA(line.c_str());
+}
+
+//------------------------------------------------------------------------
+//	WriteDebugOutput sends UTF-8 text to the debugger's output window.
+//
+// \param i_UTF8Text text to send, without any line ending added
+//
+// \return void
+//------------------------------------------------------------------------
+void WriteDebugOutput(const std::string& i_UTF8Text)
+{
+	// The stream text is UTF-8, so promote it to a wide string and use the
+	// "W" variation, even in ANSI builds.
+	std::wstring wide_str = envString::UTF8ToWideChar( i_UTF8Text );
+	::OutputDebugStringW( wide_str.c_str() );
 }
 
 //------------------------------------------------------------------------

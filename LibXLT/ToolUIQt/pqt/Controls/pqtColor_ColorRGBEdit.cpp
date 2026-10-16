@@ -1,25 +1,26 @@
 /****************************************************************************\
-**	pqtColor_ColorRGBEdit.cpp
+**	pqtColor_ColorRGBEdit.hpp
 **
-**		see .hpp
+**		Intermediate class between the property (prtyColor) and 
+**	the control (ColorRGBEdit).
 **
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "ToolUIQt/pqt/Controls/pqtColor_ColorRGBEdit.hpp"
-
 #include "ToolUIQt/pqt/Controls/pqtControlUtil.hpp"
+#ifndef TQC_EVENT_HPP
 #include "ToolUIQt/tqc/tqcEvent.hpp"
+#endif
 
 #include "Core/prty/prtyColor.hpp"
 
-
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 pqtColor_ColorRGBEdit::pqtColor_ColorRGBEdit(shared_ptr<prtyPropertyUIInfo>& i_pUIInfo,
-											 QWidget* i_pParent)
+										 QWidget* i_pParent)
 :	pqtControl(i_pUIInfo)
 {
 	DBG_ASSERT( i_pUIInfo != 0, "UI Info cannot be NULL");
@@ -41,9 +42,7 @@ pqtColor_ColorRGBEdit::pqtColor_ColorRGBEdit(shared_ptr<prtyPropertyUIInfo>& i_p
 
 	//	hook up events
 	//
-	this->Connect( m_pActualControl->GetId(), wxEVT_VALUE_CHANGED,
-					wxCommandEventHandler(pqtColor_ColorRGBEdit::ColorRGBEdit_ValueChanged) );
-	m_pActualControl->PushEventHandler(this);
+	m_pActualControl->SetValueChangedCallback([this]() { ColorRGBEdit_ValueChanged(); });
 };
 
 //----------------------------------------------------------------------------
@@ -51,7 +50,6 @@ pqtColor_ColorRGBEdit::pqtColor_ColorRGBEdit(shared_ptr<prtyPropertyUIInfo>& i_p
 //----------------------------------------------------------------------------
 pqtColor_ColorRGBEdit::~pqtColor_ColorRGBEdit()
 {
-	m_pActualControl->RemoveEventHandler(this);
 }
 
 //----------------------------------------------------------------------------
@@ -89,12 +87,12 @@ void pqtColor_ColorRGBEdit::PropertyChanged(prtyProperty* i_pProperty, bool i_bD
 //----------------------------------------------------------------------------
 void pqtColor_ColorRGBEdit::UpdateControl(prtyPropertyUIInfo* i_pUIInfo)
 {
-	m_pActualControl->Enable(!i_pUIInfo->GetReadOnly());
+	m_pActualControl->setEnabled(!i_pUIInfo->GetReadOnly());
 }
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void pqtColor_ColorRGBEdit::ColorRGBEdit_ValueChanged(wxCommandEvent& i_Event)
+void pqtColor_ColorRGBEdit::ColorRGBEdit_ValueChanged()
 {
 	if (m_bLocalChangeNoUpdate) return;
 
@@ -105,6 +103,4 @@ void pqtColor_ColorRGBEdit::ColorRGBEdit_ValueChanged(wxCommandEvent& i_Event)
 	}
 	m_bLocalChangeNoUpdate = false;
 }
-
-#endif	// USE_QT
-
+#endif

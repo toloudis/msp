@@ -23,7 +23,11 @@
 #include "MainApp/mainPython.hpp"
 #include "MainApp/mainResolvePath.hpp"
 #include "MainApp/mnmApp.hpp"
+#ifdef MSP_GUI_QT
+#include "MainApp/qtGUI/qtMainForm.hpp"
+#else
 #include "MainApp/wxGUI/wxMainForm.hpp"
+#endif
 #include "Support/mnm/mnmConstants.hpp"
 
 // Local Project includes
@@ -36,7 +40,11 @@
 #include "Features/Prefs/PrefsData.hpp"
 #include "Features/Prefs/PrefsMgr.hpp"
 #include "Features/RenderPanels/rpnRenderPane.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/RenderPanels/qtGUI/rpnRenderPanel.hpp"
+#else
 #include "Features/RenderPanels/wxGUI/rpnRenderPanel.hpp"
+#endif
 #include "Features/RenderPrefs/rndrPrefsMgr.hpp"
 #include "Support/mode/modeModeMgr.hpp"
 #include "Support/mnm/mnmAppPackageMgr.hpp"
@@ -78,10 +86,26 @@
 #include "Tool/gui/guiSingleDocHandler.hpp"
 #include "Tool/gui/guiSplashScreen.hpp"
 #include "Tool/rstk/rstkDocumentInterest.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/pqt/pqtControlMgr.hpp"
+#else
 #include "ToolUIWx/pwx/pwxControlMgr.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtAppUtil.hpp"
+#else
 #include "ToolUIWx/twx/twxAppUtil.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtToolbarMgr.hpp"
+#else
 #include "ToolUIWx/twx/twxToolbarMgr.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/qui/quiPackage.hpp"
+#else
 #include "ToolUIWx/wui/wuiPackage.hpp"
+#endif
 
 #include "Core/app/private/appApplicationPAC.hpp"	// FIX - if this is sorted with includes, it compiles with errors.
 
@@ -194,24 +218,24 @@ bool app_instance_exists()
 	bAppRunning |= app_instance_exists( exe.c_str() );
 	//bAppRunning |= app_instance_exists(L"Global\\MachStudio.exe");
 
-	//EnumWindows((WNDENUMPROC)Report, 0); 
+	//EnumWindows(Report, 0);
 
 	return bAppRunning;
 }
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-bool CALLBACK Report(int hwnd, int lParam)
+BOOL CALLBACK Report(HWND hwnd, LPARAM lParam)
 {
 	LPTSTR lpString = new TCHAR[128];
-	GetWindowText((HWND)hwnd, lpString, 128);
+	GetWindowText(hwnd, lpString, 128);
 
 	LPTSTR lpStringF = new TCHAR[256];
-	GetWindowModuleFileName((HWND)hwnd,lpStringF,256);
+	GetWindowModuleFileName(hwnd,lpStringF,256);
 
 	DBG_LOG("Window title " << lpString << " filename " << lpStringF);
 
-	return true;
+	return TRUE;
 }
 
 //----------------------------------------------------------------------------
@@ -305,7 +329,7 @@ int DoWinMain(HINSTANCE hInstance,
 			  LPTSTR lpCmdLine,
 			  int nCmdShow)
 {
-#ifndef USE_WXWIDGETS
+#if !defined(USE_WXWIDGETS) && !defined(USE_QT)
 	// MOVED TO TOP SO SUSPENDED IS TURNED OFF FOR RENDERNODE EARLY ENOUGH
 	//
 	// Don't want to have suspend messages so that we can render in the background in batch mode
@@ -408,12 +432,14 @@ int DoWinMain(HINSTANCE hInstance,
 		#endif
 	#endif	// MSAPP == MS_CORE
 
+#elif defined(USE_QT)
+			qtMainForm *main_frame = mainWindow.GetMainFrame();
 #endif // USE_WXWIDGETS
 			// Begin mainInitGraphics scope
 			{
 				// Initialize graphics systems here, if exception is thrown after, 
 				// those systems will be closed automatically.
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 				mainInitGraphics mainGraphics(main_frame);
 #else
 #ifdef FUSION //#if(SGPU_APP == MS_FUSION)
@@ -691,6 +717,34 @@ int DoWinMain(HINSTANCE hInstance,
 							int retval = guiMessageBox::Show( theText.c_str(), msg.c_str(), guiMessageBox::e_OKOnly );
 						}
 						#endif
+
+					#elif defined(USE_QT)
+						// Add toolbars should be full of buttons by now,
+						// so create the toolbars and set their size
+						tqtToolbarMgr::RealizeAllToolbars();
+
+						// Read in the preferences
+						main_frame->prefs_ReadAndApply();
+
+						// Show the main window
+						main_frame->show();
+
+						// Update interface
+						cmmSystemDialogUtil::UpdateDialog();
+						chnlDialogUtil::UpdateZoom();
+
+						// Think and render whenever there are no events to handle
+						main_frame->StartIdleProcessing();
+
+						tqtAppUtil::Run();
+
+						// Write out the preferences
+						main_frame->prefs_UpdateAndWrite();
+
+						// The panes and dialogs go away with the window, before
+						// the rest of the application shuts down.
+						mainWindow.DestroyMainFrame();
+						main_frame = NULL;
 
 					#else // USE_WXWIDGETS	
 						// Want to have a click on the "X" button close the application

@@ -8,6 +8,8 @@
 \****************************************************************************/
 #include "Support/tmln/tmlnDriver.hpp"
 
+#include "Core/it/itStringUtil.hpp"
+
 #include "Support/tmln/tmlnDriverDialogUtil.hpp"
 #include "Support/tmln/tmlnDriverInfo.hpp"
 #include "Support/tmln/tmlnTimeEditUIInfo.hpp"
@@ -158,7 +160,7 @@ tmlnDriver::~tmlnDriver()
 //--------------------------------------------------------------------
 void tmlnDriver::SetName(const char* i_Name)
 {
-	if (_stricmp(i_Name, m_Name.GetValue().c_str()) != 0)
+	if (itStringUtil::CompareNoCase(i_Name, m_Name.GetValue()) != 0)
 		m_Name.SetValue(i_Name);
 }
 

@@ -205,12 +205,12 @@ class smdlSubdivCharacter : public smdlSkeletonObject
 		//--------------------------------------------------------------------
 		// GetMeshGroups()
 		//--------------------------------------------------------------------
-		const std::vector<smdlMeshSkinGroup*>& smdlSubdivCharacter::GetMeshGroups();
+		const std::vector<smdlMeshSkinGroup*>& GetMeshGroups();
 
 		//--------------------------------------------------------------------
 		// GetNumMeshGroups()
 		//--------------------------------------------------------------------
-		int smdlSubdivCharacter::GetNumMeshGroups();
+		int GetNumMeshGroups();
 
 	private:
 		//--------------------------------------------------------------------

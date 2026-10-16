@@ -271,9 +271,8 @@ void ANSIFilenameToLocator(const std::string& i_String, fsLocator& o_Locator)
 }
 
 //----------------------------------------------------------------------------
-//	LocatorToANSIFilename is used internally by the win32 PACs in the fs
-//	package.  It converts a fsLocator to a ANSI win32 filename (for use in
-//	Windows 95 or 98).  It is provided here to assist in error reporting.
+//	LocatorToANSIFilename converts a fsLocator to a narrow (UTF-8) filename
+//	string, for APIs that take char filenames.  It is provided here to assist in error reporting.
 //----------------------------------------------------------------------------
 void LocatorToANSIFilename(const fsLocator& i_Locator, std::string& o_String, bool i_bUseDoubleSlashes)
 {

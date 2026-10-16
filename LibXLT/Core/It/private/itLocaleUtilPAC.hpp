@@ -27,13 +27,5 @@
 #if ENV_WINDOWS
 #include "Core/it/private/itLocaleUtilPACWin.hpp"
 #else
-	#if ENV_OS == ENV_PS2OS
-		#include "Core/it/private/itLocaleUtilPACPS2.hpp"
-	#else
-		#if ENV_OS == ENV_XBOXOS
-			#include "Core/it/private/itLocaleUtilPACXbox.hpp"
-		#else
-			#error itLocaleUtilPACWin not defined for this platform
-		#endif
-	#endif
+	#error itLocaleUtilPACWin not defined for this platform
 #endif

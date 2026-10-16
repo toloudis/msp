@@ -15,7 +15,11 @@
 #include "Tool/cma/cmaCommandToggle.hpp"
 #include "Tool/gui/guiMenuMgr.hpp"
 #include "Tool/gui/guiToolbarMgr.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtWidgets.hpp"
+#else
 #include "ToolUIWx/twx/twxWidgets.hpp"
+#endif
 
 
 //============================================================================
@@ -54,7 +58,7 @@ namespace cmmSplineCommands
 			cmmSplineOperations::SelectPreviousControlPoint);
 		guiMenuMgr::AddMenu("Actions", "Splines");
 		menu_id = guiMenuMgr::AddMenuItem( "Splines", pCmd->GetTag().c_str() 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 			, c_SplineToolbarName, "spline-prevpoint.png"
 #endif
 			); 
@@ -68,7 +72,7 @@ namespace cmmSplineCommands
 			cmmSplineOperations::SelectNextControlPoint);
 		guiMenuMgr::AddMenu("Actions", "Splines");
 		menu_id = guiMenuMgr::AddMenuItem( "Splines", pCmd->GetTag().c_str() 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 			, c_SplineToolbarName, "spline-nextpoint.png"
 #endif
 			); 
@@ -82,7 +86,7 @@ namespace cmmSplineCommands
 			cmmSplineOperations::SelectAllControlPoints);
 		guiMenuMgr::AddMenu("Actions", "Splines");
 		menu_id = guiMenuMgr::AddMenuItem( "Splines", pCmd->GetTag().c_str() 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 			, c_SplineToolbarName, "spline-allpoints.png"
 #endif
 			); 
@@ -95,7 +99,7 @@ namespace cmmSplineCommands
 			cmmSplineOperations::InsertControlPoint);
 		guiMenuMgr::AddMenu("Actions", "Splines");
 		menu_id = guiMenuMgr::AddMenuItem( "Splines", pCmd->GetTag().c_str() 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 			, c_SplineToolbarName, "spline-insertpoint.png"
 #endif
 			); 
@@ -108,7 +112,7 @@ namespace cmmSplineCommands
 			cmmSplineOperations::DeleteControlPoint);
 		guiMenuMgr::AddMenu("Actions", "Splines");
 		menu_id = guiMenuMgr::AddMenuItem( "Splines", pCmd->GetTag().c_str() 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 			, c_SplineToolbarName, "spline-deletepoint.png"
 #endif
 			); 
@@ -121,7 +125,7 @@ namespace cmmSplineCommands
 			cmmSplineOperations::SetEditCamToPoint);
 		guiMenuMgr::AddMenu("Actions", "Splines");
 		menu_id = guiMenuMgr::AddMenuItem( "Splines", pCmd->GetTag().c_str() 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 			, c_SplineToolbarName, "spline-edittopoint.png"
 #endif
 			); 
@@ -134,7 +138,7 @@ namespace cmmSplineCommands
 			cmmSplineOperations::SetPointToEditCam);
 		guiMenuMgr::AddMenu("Actions", "Splines");
 		menu_id = guiMenuMgr::AddMenuItem( "Splines", pCmd->GetTag().c_str() 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 			, c_SplineToolbarName, "spline-pointtoedit.png"
 #endif
 			); 
@@ -159,7 +163,7 @@ namespace cmmSplineCommands
 	//--------------------------------------------------------------------
 	void ShowSplineToolbar(bool i_bShow)
 	{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		guiToolbarMgr::Show(c_SplineToolbarName, i_bShow);
 #endif
 	}

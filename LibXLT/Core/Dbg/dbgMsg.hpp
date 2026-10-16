@@ -52,15 +52,16 @@
 
 #include <sstream>
 #include <vector>
-#include <tchar.h>
 
 //Macros that get the unicode (wchar_t) version of a string
 //always, irrespective of whether UNICODE is defined.
 //as opposed to the _T( ) macro in tchar.h.
 //A double layer of macro-s is needed,
 //because some of the arguments are macro-s itself (eg: __FILE__)
+#ifndef SGPU_L
 #define SGPU_L_TEMP(a) L ## a
 #define SGPU_L(a) SGPU_L_TEMP(a)
+#endif
 
 //============================================================================
 //============================================================================

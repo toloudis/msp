@@ -15,33 +15,10 @@
 
 #include <iostream>
 
-//uncomment this to use statically linked libraries of curl (must be defined before the include!)
-#define CURL_STATICLIB
-
-// http://curl.haxx.se/download.html
+// libcurl comes from vcpkg (MainApp/vcpkg.json) as a DLL; vcpkg's MSBuild
+// integration supplies the include path and links libcurl.lib, and copies
+// libcurl.dll next to the exe.
 #include "curl/curl.h"
-
-
-//==============================================================================
-//	library pragmas
-//==============================================================================
-#ifdef CURL_STATICLIB
-#ifdef _DEBUG
-	#pragma comment(lib,"libcurl_a_debug.lib")		//static
-#else//!_DEBUG
-	#pragma comment(lib,"libcurl_a.lib")		//static
-#endif//_DEBUG
-
-#pragma comment(lib,"ws2_32.lib")		//link with dependent libraries when statically linking
-#pragma comment(lib,"wldap32.lib")
-
-#else//!CURL_STATICLIB
-#ifdef _DEBUG
-	#pragma comment(lib,"libcurld_imp.lib")	//dynamic
-#else//!_DEBUG
-	#pragma comment(lib,"libcurl_imp.lib")	//dynamic
-#endif//_DEBUG
-#endif//CURL_STATICLIB
 
 //============================================================================
 //

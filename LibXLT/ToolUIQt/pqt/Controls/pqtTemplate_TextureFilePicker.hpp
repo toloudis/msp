@@ -31,13 +31,17 @@
 
 #include <vector>
 
+#ifndef PRTY_TEXTUREFILECHOOSERUIINFO_HPP
+#include "Core/prty/prtyTextureFileChooserUIInfo.hpp"
+#endif
+
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
 template<class PropertyType, class ValueType, class Converter>
 class pqtTemplate_TextureFilePicker : public pqtControl
 {
-#ifdef QT_FINISH_PORT
 	public:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
@@ -69,9 +73,7 @@ class pqtTemplate_TextureFilePicker : public pqtControl
 			
 			//	hook up events
 			//
-			this->Connect( m_pActualControl->GetId(), wxEVT_VALUE_CHANGED,
-							wxCommandEventHandler(pqtTemplate_TextureFilePicker::TextureFilePicker_ValueChanged) );
-			m_pActualControl->PushEventHandler(this);
+			m_pActualControl->SetValueChangedCallback([this]() { TextureFilePicker_ValueChanged(); });
 		}
 
 		//----------------------------------------------------------------------------
@@ -79,7 +81,6 @@ class pqtTemplate_TextureFilePicker : public pqtControl
 		//----------------------------------------------------------------------------
 		virtual ~pqtTemplate_TextureFilePicker()
 		{
-			m_pActualControl->RemoveEventHandler(this);
 		}
 
 		//----------------------------------------------------------------------------
@@ -116,7 +117,7 @@ class pqtTemplate_TextureFilePicker : public pqtControl
 		//----------------------------------------------------------------------------
 		void UpdateControl(prtyPropertyUIInfo* i_pUIInfo)
 		{
-			m_pActualControl->Enable(!i_pUIInfo->GetReadOnly());
+			m_pActualControl->setEnabled(!i_pUIInfo->GetReadOnly());
 
 			prtyTextureFileChooserUIInfo* pUII = static_cast<prtyTextureFileChooserUIInfo*>(i_pUIInfo);
 			m_pActualControl->SetFilter( pUII->GetFileFilter() );
@@ -143,7 +144,7 @@ class pqtTemplate_TextureFilePicker : public pqtControl
 	private:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
-		void TextureFilePicker_ValueChanged(wxCommandEvent& i_Event)
+		void TextureFilePicker_ValueChanged()
 		{
 			if (m_bLocalChangeNoUpdate) return;
 
@@ -232,6 +233,6 @@ class pqtTemplate_TextureFilePicker : public pqtControl
 		}
 
 		tqcTextureFilePicker* m_pActualControl;
-#endif // USE_QT
 };
 
+#endif // USE_QT

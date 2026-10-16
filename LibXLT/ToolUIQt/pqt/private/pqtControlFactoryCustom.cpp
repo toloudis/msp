@@ -31,6 +31,8 @@
 #include "ToolUIQt/pqt/Controls/pqtVector3d_Vector3EditUpDown.hpp"
 
 
+#ifdef USE_QT
+
 //----------------------------------------------------------------------------
 //	Check for Control + Property pairing
 //----------------------------------------------------------------------------
@@ -83,7 +85,6 @@ pqtControl* pqtControlFactoryCustom::CreateControl(shared_ptr<prtyPropertyUIInfo
 			return new pqtInt32_NumericUpDown(i_pUIInfo, i_pParent);
 		}
 	}
-#ifdef QT_FINISH_PORT
 	else if ( strcmp(control_name.c_str(),"RangedFloat") == 0)
 	{
 //		if ( strcmp(property_type.c_str(),"Angle") == 0)
@@ -217,8 +218,9 @@ pqtControl* pqtControlFactoryCustom::CreateControl(shared_ptr<prtyPropertyUIInfo
 	//		
 	//	}
 	//}
-#endif
+
 
 	return NULL;
 }
 
+#endif // USE_QT

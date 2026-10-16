@@ -1,7 +1,7 @@
 /*****************************************************************************
-**  tqtContextMenu.cpp
+**	tqtContextMenu.cpp
 **
-**      see .hpp
+**		see .hpp
 **
 **	StudioGPU
 **	Copyright(C) 2010 - All Rights Reserved
@@ -13,86 +13,69 @@
 #include "Tool/gui/guiMessageBox.hpp"
 #include "Tool/gui/guiStatusBarMgr.hpp"
 
-
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 namespace
 {
 	//-----------------------------------------------------------------------
-	// Find menu item within the given menu
+	// Menu text without the mnemonic markers, for comparing names
 	//-----------------------------------------------------------------------
-	wxMenuItem* find_menu_item(wxMenu* i_pParent, const wxString& i_MenuName)
+	QString plain_text(const QString& i_Text)
 	{
-		int index = i_pParent->FindItem(i_MenuName);
-		if (index != wxNOT_FOUND)
+		QString text = i_Text;
+		text.remove(QLatin1Char('&'));
+		int tab = text.indexOf(QLatin1Char('\t'));
+		if (tab >= 0)
+			text.truncate(tab);
+		return text;
+	}
+
+	//-----------------------------------------------------------------------
+	// Find menu item (not submenu) somewhere within the given menu
+	//-----------------------------------------------------------------------
+	QAction* find_menu_item(QMenu* i_pParent, const QString& i_MenuName)
+	{
+		const QList<QAction*> actions = i_pParent->actions();
+		for (QAction* pAction : actions)
 		{
-			//DBG_LOG("Found menu item index: " << index);
-			wxMenuItem* pMenuItem = i_pParent->FindItem(index);
-			if (pMenuItem)
+			if (pAction->menu())
 			{
-				return pMenuItem;
+				if (QAction* pFound = find_menu_item(pAction->menu(), i_MenuName))
+					return pFound;
+			}
+			else if (!pAction->isSeparator() && plain_text(pAction->text()) == i_MenuName)
+			{
+				return pAction;
 			}
 		}
 		return NULL;
 	}
 
 	//-----------------------------------------------------------------------
-	// Find menu somewhere within the given menu
+	// Find submenu somewhere within the given menu
 	//-----------------------------------------------------------------------
-	wxMenu* find_menu(wxMenu* i_pParent, const wxString& i_MenuName)
+	QMenu* find_menu(QMenu* i_pParent, const QString& i_MenuName)
 	{
 		// we actually want to find the last occurrence of the menu,
 		// not the first. This helps sort out issues when two submenus
 		// has the same name.
-		wxMenu *ret_val = NULL;
-
-		int index = i_pParent->FindItem(i_MenuName);
-		if (index != wxNOT_FOUND)
+		QMenu *ret_val = NULL;
+		const QList<QAction*> actions = i_pParent->actions();
+		for (QAction* pAction : actions)
 		{
-			//DBG_LOG("Found menu item index: " << index);
-			wxMenuItem* pMenuItem = i_pParent->FindItem(index);
-			if (pMenuItem && pMenuItem->GetSubMenu())
+			if (QMenu* pSubMenu = pAction->menu())
 			{
-				ret_val = pMenuItem->GetSubMenu();
-			}
-		}
+				if (plain_text(pAction->text()) == i_MenuName)
+					ret_val = pSubMenu;
 
-		// Look through submenus
-		wxMenuItemList &list = i_pParent->GetMenuItems(); 
-		wxMenuItemList::iterator iter;
-		for (iter = list.begin(); iter != list.end(); ++iter)
-		{
-			if ((*iter)->GetSubMenu())
-			{
-				wxMenu* pMenu = find_menu((*iter)->GetSubMenu(), i_MenuName);
-				if (pMenu)
-				{
-					ret_val = pMenu;
-				}
+				if (QMenu* pFound = find_menu(pSubMenu, i_MenuName))
+					ret_val = pFound;
 			}
 		}
 		return ret_val;
 	}
-	//-----------------------------------------------------------------------
-	// Find menu with given name within the menu bar and its submenus
-	//-----------------------------------------------------------------------
-	wxMenu* find_menu(wxMenuBar* i_pParent, const wxString& i_MenuName)
-	{
-		int index = i_pParent->FindMenu(i_MenuName);
-		if (index != wxNOT_FOUND)
-		{
-			wxMenu* pMenu = i_pParent->GetMenu(index);
-			return pMenu;
-		}
-		for (int i=0; i<i_pParent->GetMenuCount(); i++)
-		{
-			wxMenu* pMenu = find_menu(i_pParent->GetMenu(i), i_MenuName);
-			if (pMenu)
-				return pMenu;
-		}
-		return NULL;
-	}
-}	
+}
+
 
 //===========================================================================
 //	tqtContextMenu functions
@@ -101,6 +84,7 @@ namespace
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 tqtContextMenu::tqtContextMenu()
+:	m_NextId(1)
 {
 }
 
@@ -110,7 +94,6 @@ tqtContextMenu::~tqtContextMenu()
 {
 }
 
-
 //---------------------------------------------------------------------------
 //	AddMenu()
 //		add a menu or submenu to the Menu Tree.
@@ -119,41 +102,40 @@ tqtContextMenu::~tqtContextMenu()
 void tqtContextMenu::AddMenu( const char * i_ParentName,
 							  const char * i_ChildName )
 {
-	//wxString menu_name(i_ParentName, wxConvUTF8);
-	//this->Append(wxID_ANY,  menu_name);
-
-	wxString parent_name(i_ParentName, wxConvUTF8);
+	QString parent_name = tqtQString(i_ParentName);
 
 	// If child name is empty, create top-level menu
 	if (!i_ChildName || !(*i_ChildName))
 	{
-		int index = this->FindItem(parent_name);
-		if (index == wxNOT_FOUND)
+		if (!find_menu(this, parent_name))
 		{
-			wxMenu *pNewMenu = new wxMenu;
-			this->AppendSubMenu(pNewMenu, parent_name);
+			this->addMenu(parent_name);
 		}
-	}	
+	}
 	else
 	{
-		wxString child_name(i_ChildName, wxConvUTF8);
-		wxMenu* pMenu = find_menu(this, parent_name);
+		QString child_name = tqtQString(i_ChildName);
+		QMenu* pMenu = find_menu(this, parent_name);
 		if (pMenu)
 		{
 			// Need to make sure the same menu isn't added more than once
-			if (!find_menu_item(pMenu, child_name))
+			bool bExists = false;
+			for (QAction* pAction : pMenu->actions())
 			{
-				wxMenu *pSubMenu = new wxMenu();
-				pMenu->AppendSubMenu(pSubMenu, child_name);
+				if (pAction->menu() && plain_text(pAction->text()) == child_name)
+					bExists = true;
+			}
+			if (!bExists)
+			{
+				pMenu->addMenu(child_name);
 			}
 		}
 	}
-
 }
 
 //---------------------------------------------------------------------------
 //	AddMenuItem()
-//		add a menu item to the Menu Tree which will call the given 
+//		add a menu item to the Menu Tree which will call the given
 //	callback function when clicked.
 //---------------------------------------------------------------------------
 int tqtContextMenu::AddMenuItem( const char * i_ParentName,
@@ -162,34 +144,24 @@ int tqtContextMenu::AddMenuItem( const char * i_ParentName,
 {
 	DBG_ASSERT( (i_ChildName && (*i_ChildName)), "MenuItems need to include a child name.");
 
-	//DBG_LOG2("AddMenuItem: parent %s child %s", i_ParentName, i_ChildName);
-
-	wxMenu* pMenu = this;
+	QMenu* pMenu = this;
 	if (i_ParentName && (*i_ParentName))
 	{
-		wxString parent_name(i_ParentName, wxConvUTF8);
-		pMenu = find_menu(this, parent_name);
+		pMenu = find_menu(this, tqtQString(i_ParentName));
 	}
+
 	if (pMenu)
 	{
 		// See if the menu item was already created (when laying out menus earlier)
-		wxString child_name(i_ChildName, wxConvUTF8);
-		wxMenuItem *pItem = find_menu_item(pMenu, child_name);
+		QString child_name = tqtQString(i_ChildName);
+		QAction *pItem = find_menu_item(pMenu, child_name);
 		if (!pItem)
 		{
-			//pItem = (i_bCheckable) ? pMenu->AppendCheckItem(-1, child_name) 
-			//								: pMenu->Append(-1, child_name);
-			pItem = pMenu->Append(wxID_ANY, child_name);
+			pItem = pMenu->addAction(child_name);
 		}
-		int id = pItem->GetId();
-		m_MenuItemMap[id] = i_Callback;
 
-		// Connect our callback to the menu item we just created
-		this->Connect( id,
-					wxEVT_COMMAND_MENU_SELECTED,
-					wxCommandEventHandler(tqtContextMenu::menuItem_Click) );
-
-		return id;
+		m_MenuItemMap[pItem] = i_Callback;
+		return m_NextId++;
 	}
 
 	DBG_LOG("Could not add menu item " << i_ChildName << ", parent=" << i_ParentName);
@@ -202,7 +174,7 @@ int tqtContextMenu::AddMenuItem( const char * i_ParentName,
 //---------------------------------------------------------------------------
 void tqtContextMenu::AddSeparator( const char * i_MenuName )
 {
-	this->AppendSeparator();
+	this->addSeparator();
 }
 
 //---------------------------------------------------------------------------
@@ -210,18 +182,32 @@ void tqtContextMenu::AddSeparator( const char * i_MenuName )
 //---------------------------------------------------------------------------
 bool tqtContextMenu::IsEmpty()
 {
-	// If no menu items are registered, then return true. 
+	// If no menu items are registered, then return true.
 	// This will skip the Popup of the menu when empty.
 	return m_MenuItemMap.empty();
 }
 
 //---------------------------------------------------------------------------
+// Show the menu and run the chosen item's callback once it has closed
+//---------------------------------------------------------------------------
+bool tqtContextMenu::Popup(QWidget* i_pWidget, const QPoint& i_Pos)
+{
+	QPoint global_pos = i_pWidget ? i_pWidget->mapToGlobal(i_Pos) : i_Pos;
+	QAction* pChosen = this->exec(global_pos);
+	if (pChosen)
+	{
+		menuItem_Click(pChosen);
+		return true;
+	}
+	return false;
+}
+
+//---------------------------------------------------------------------------
 // Callback for when the menu item is chosen
 //---------------------------------------------------------------------------
-void tqtContextMenu::menuItem_Click(wxCommandEvent& i_Event)
+void tqtContextMenu::menuItem_Click(QAction* i_pAction)
 {
-	int id = i_Event.GetId();
-	std::map<int, guiContextMenu::CallbackFunction>::iterator it = m_MenuItemMap.find(id);
+	std::map<QAction*, guiContextMenu::CallbackFunction>::iterator it = m_MenuItemMap.find(i_pAction);
 	if (it != m_MenuItemMap.end())
 	{
 		guiContextMenu::CallbackFunction callback = it->second;

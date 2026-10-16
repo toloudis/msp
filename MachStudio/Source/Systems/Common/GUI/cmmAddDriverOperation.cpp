@@ -57,7 +57,7 @@ std::string  cmmAddDriverOperation::GetDisplayName()
 
 	std::ostringstream oss;
 	oss.setf(0, std::ios::floatfield);
-	oss << c_AddOperationDisplayName << " - " << m_pInfo ? m_pInfo->m_Name.c_str() : m_pDriver->GetName().c_str();
+	oss << c_AddOperationDisplayName << " - " << (m_pInfo ? m_pInfo->m_Name.c_str() : m_pDriver->GetName().c_str());
 	std::string displaytext(oss.str());
 	return displaytext;
 }

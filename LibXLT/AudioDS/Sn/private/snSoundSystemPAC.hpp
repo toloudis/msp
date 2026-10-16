@@ -57,9 +57,5 @@
 		#error snSoundSystemPAC not defined for this platform
 	#endif
 #else
-	#if ENV_OS == ENV_XBOXOS
-		#include "AudioDS/sn/private/snSoundSystemPACXbox.hpp"
-	#else
-		#error snSoundSystemPAC not defined for this platform
-	#endif
+	#error snSoundSystemPAC not defined for this platform
 #endif

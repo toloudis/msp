@@ -30,13 +30,13 @@
 
 #include <limits>
 
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
 template<class PropertyType, class ValueType, class Converter>
 class pqtTemplate_NumericUpDown : public pqtControl, public prtyUnitsInterest
 {
-#ifdef USE_QT
 	public:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
@@ -65,13 +65,9 @@ class pqtTemplate_NumericUpDown : public pqtControl, public prtyUnitsInterest
 			// watch for units changes
 			prtyUnits::RegisterUnitsInterest(this);
 
-#ifdef QT_FINISH_PORT
 			//	hook up events
 			//
-			this->Connect( m_pActualControl->GetId(), wxEVT_VALUE_CHANGED,
-							wxCommandEventHandler(pqtTemplate_NumericUpDown::NumericUpDown_ValueChanged) );
-			m_pActualControl->PushEventHandler(this);
-#endif
+			m_pActualControl->SetValueChangedCallback([this]() { NumericUpDown_ValueChanged(); });
 		}
 
 		//----------------------------------------------------------------------------
@@ -80,9 +76,6 @@ class pqtTemplate_NumericUpDown : public pqtControl, public prtyUnitsInterest
 		virtual ~pqtTemplate_NumericUpDown()
 		{
 			prtyUnits::UnRegisterUnitsInterest(this);
-#ifdef QT_FINISH_PORT
-			m_pActualControl->RemoveEventHandler(this);
-#endif
 		}
 
 		//----------------------------------------------------------------------------
@@ -120,12 +113,11 @@ class pqtTemplate_NumericUpDown : public pqtControl, public prtyUnitsInterest
 		//----------------------------------------------------------------------------
 		void UpdateControl(prtyPropertyUIInfo* i_pUIInfo)
 		{
-#ifdef QT_FINISH_PORT
-			m_pActualControl->Enable(!i_pUIInfo->GetReadOnly());
-#endif
+			m_pActualControl->setEnabled(!i_pUIInfo->GetReadOnly());
+
 			prtyNumericUpDownUIInfo* pUII = static_cast<prtyNumericUpDownUIInfo*>(i_pUIInfo);
 			//m_pActualControl->Width = 64;
-			m_pActualControl->SetDecimalPlaces(pUII->GetDecimalPlaces());
+			m_pActualControl->SetDecimalPlaces(pUII->GetDecimalPlaces());	
 			m_pActualControl->SetIncrement(pUII->GetIncrement());
 			m_pActualControl->SetRestrictFlag(pUII->GetRestrictFlag());
 			if ( pUII->GetMinimum() == pUII->GetMaximum() )
@@ -153,8 +145,7 @@ class pqtTemplate_NumericUpDown : public pqtControl, public prtyUnitsInterest
 	private:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
-#ifdef QT_FINISH_PORT
-		void NumericUpDown_ValueChanged(wxCommandEvent& i_Event)
+		void NumericUpDown_ValueChanged()
 		{
 			if (m_bLocalChangeNoUpdate) return;
 
@@ -167,9 +158,8 @@ class pqtTemplate_NumericUpDown : public pqtControl, public prtyUnitsInterest
 			}
 			m_bLocalChangeNoUpdate = false;
 		}
-#endif
 
 		tqcNumericUpDown* m_pActualControl;
-#endif // USE_QT
 };
 
+#endif // USE_QT

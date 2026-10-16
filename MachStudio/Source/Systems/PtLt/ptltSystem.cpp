@@ -12,7 +12,6 @@
 //#include "Core/name/nameMgr.hpp"
 
 #include "Support/rman/rmanMgr.hpp"
-#include "Support/mray/mrayMgr.hpp"
 #include "Support/vis/visMgr.hpp"
 
 #include "Systems/PtLt/GUI/ptltCommands.hpp"
@@ -24,7 +23,6 @@
 #include "Systems/PtLt/Object/ptltObjectMgr.hpp"
 #include "Systems/PtLt/Object/ptltSelectInterest.hpp"
 #include "Systems/PtLt/Object/ptltRendermanExportInterest.hpp"
-#include "Systems/PtLt/Object/ptltMRayExportInterest.hpp"
 #include "Systems/PtLt/Undo/ptltOperations.hpp"
 
 #include "Systems/Common/GUI/cmmDialogInterestMgr.hpp"
@@ -54,7 +52,6 @@ namespace ptltSystem
 		ptltVisibleInterest*			l_pPointLightsVI = 0;
 		ptltDialogInterest*				l_pPointLightsDI = 0;
 		ptltRendermanExportInterest*	l_pPointLightsREI = 0;
-		ptltMRayExportInterest*			l_pPointLightsMRayEI = 0;
 		
 		//============================================================================
 		//============================================================================
@@ -131,12 +128,6 @@ namespace ptltSystem
 			rmanMgr::RegisterExportInterest( l_pPointLightsREI );
 		}
 
-		// register the mray interest
-		if ( l_pPointLightsMRayEI == 0 )
-		{
-			l_pPointLightsMRayEI = new ptltMRayExportInterest();
-			mrayMgr::RegisterExportInterest( l_pPointLightsMRayEI );
-		}
 
 		// register the context menu interest
 		if ( l_pPointLightsCMI == 0 )
@@ -204,13 +195,6 @@ namespace ptltSystem
 			l_pPointLightsREI = 0;
 		}
 
-		//	Unregister the mray Interest
-		if ( l_pPointLightsMRayEI != 0 )
-		{
-			mrayMgr::UnRegisterExportInterest( l_pPointLightsMRayEI );
-			delete l_pPointLightsMRayEI;
-			l_pPointLightsMRayEI = 0;
-		}
 
 		//	Unregister the context menu Interest
 		if ( l_pPointLightsCMI != 0 )

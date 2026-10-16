@@ -88,17 +88,15 @@ namespace fsFileUtilPAC
 	void ANSIFilenameToLocator(const std::string& i_String, fsLocator& o_Locator);
 
 	//----------------------------------------------------------------------------
-	//	LocatorToANSIFilename is used internally by the win32 PACs in the fs
-	//	package.  It converts a fsLocator to a ANSI win32 filename (for use in
-	//	Windows 95 or 98).  It is provided here to assist in error reporting.
+	//	LocatorToANSIFilename converts a fsLocator to a narrow (UTF-8) filename
+	//	string, for APIs that take char filenames.  It is provided here to assist in error reporting.
 	// API Change: This now returns the std::string as UTF8.
 	//----------------------------------------------------------------------------
 	void LocatorToANSIFilename(const fsLocator& i_Locator, std::string& o_String, bool i_bUseDoubleSlashes = false);
 
 	//----------------------------------------------------------------------------
-	//	LocatorToANSIFilename is used internally by the win32 PACs in the fs
-	//	package.  It converts a fsLocator to a ANSI win32 filename (for use in
-	//	Windows 95 or 98).  It is provided here to assist in error reporting.
+	//	LocatorToANSIFilename converts a fsLocator to a narrow (UTF-8) filename
+	//	string, for APIs that take char filenames.  It is provided here to assist in error reporting.
 	// API Change: This now returns the std::string as UTF8.
 	//----------------------------------------------------------------------------
 	void LocatorToANSIFilename(const fsLocator& i_Locator, std::string& o_String, const int i_StartNum, const int i_EndNum );
@@ -125,13 +123,6 @@ namespace fsFileUtilPAC
 	//----------------------------------------------------------------------------
 	void GenerateFileName(const fsLocator& i_PathLocator, std::string& i_Prefix, std::string& i_Extension, std::string& o_Name);
 
-	//----------------------------------------------------------------------------
-	//	MustUseANSIFilenames() returns true for Windows OSs that don't have
-	//	full Unicode support.  This function is not part of the fsFileUtil 
-	//	interface.
-	//----------------------------------------------------------------------------
-	bool MustUseANSIFilenames();
-	
 	//----------------------------------------------------------------------------
 	//  Check whether filename is absolute or not
 	//----------------------------------------------------------------------------	

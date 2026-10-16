@@ -14,7 +14,6 @@
 #include <string>
 #include <algorithm>
 #include <stdio.h>
-#include <windows.h>
 #include <iomanip>
 #include <sstream>
 
@@ -157,6 +156,36 @@ bool Equal(const itString& i_String1, const itString& i_String2)
 	ToLower(s2);
 	return (s1 == s2);
 }
+
+//------------------------------------------------------------------------
+//	Compare the two strings ignoring case, like strcmp: returns less than,
+//	equal to, or greater than zero.
+//------------------------------------------------------------------------
+int CompareNoCase(const std::string& i_String1, const std::string& i_String2)
+{
+	const size_t count = std::min(i_String1.size(), i_String2.size());
+	for (size_t i = 0; i < count; ++i)
+	{
+		const int c1 = std::tolower(static_cast<unsigned char>(i_String1[i]));
+		const int c2 = std::tolower(static_cast<unsigned char>(i_String2[i]));
+		if (c1 != c2)
+			return c1 - c2;
+	}
+	if (i_String1.size() == i_String2.size())
+		return 0;
+	return (i_String1.size() < i_String2.size()) ? -1 : 1;
+}
+
+//------------------------------------------------------------------------
+//	Returns true if i_String starts with i_Prefix, ignoring case.
+//------------------------------------------------------------------------
+bool StartsWithNoCase(const std::string& i_String, const std::string& i_Prefix)
+{
+	if (i_String.size() < i_Prefix.size())
+		return false;
+	return CompareNoCase(i_String.substr(0, i_Prefix.size()), i_Prefix) == 0;
+}
+
 bool LessThan(const itString& i_String1, const itString& i_String2)
 {
 	itString s1 = i_String1;

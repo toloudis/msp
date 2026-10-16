@@ -144,10 +144,6 @@ namespace cptrRenderUtil
 	void CloseOutput();
 
 	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	void CaptureTimeCode(const maTime& i_fStartTime, const maTime& i_fEndTime);
-
-	//------------------------------------------------------------------------
 	// These functions are used to do a high resolution capture by 
 	//	splitting it into 4 separate renders of the 4 quadrants.
 	// New: Although still called "quadrants", this code can do more
@@ -209,11 +205,6 @@ namespace cptrRenderUtil
 	//	GetRibFilename()
 	//----------------------------------------------------------------------------
 	fsLocator GetRibFilename();
-
-	//----------------------------------------------------------------------------
-	//	GetMiFilename()
-	//----------------------------------------------------------------------------
-	fsLocator GetMiFilename();
 
 
 }

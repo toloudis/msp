@@ -1,5 +1,5 @@
 /*****************************************************************************
-**  tqtMessaging.hpp
+**  tqtMessaging.cpp
 **
 **     Handles keypresses, converting into commands
 **
@@ -16,211 +16,149 @@
 
 #include <set>
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 namespace tqtMessaging
 {
-	std::set<QWidget*> l_HotKeyWindows;
+	namespace
+	{
+		std::set<QWidget*> l_HotKeyWindows;
+	}
 
 	//--------------------------------------------------------------------
-	// Convert just the wxWidgets key code to a string,
+	// Convert just the Qt key code to a string,
 	//	this will not include the modifier keys.
 	//--------------------------------------------------------------------
-	bool ConvertKeyCodeToString(int i_KeyCode, 
-								 std::string& o_HotKeyString)
+	bool ConvertKeyCodeToString(int i_KeyCode,
+								bool i_bKeypad,
+								std::string& o_HotKeyString)
 	{
 		std::string hot_key_str;
-
 		bool bHotKeyOkay = true;
-		if (i_KeyCode >= 'A' && i_KeyCode <= 'Z')
+
+		if (i_bKeypad && i_KeyCode >= Qt::Key_0 && i_KeyCode <= Qt::Key_9)
+		{
+			hot_key_str = "NumPad";
+			hot_key_str += (char)(i_KeyCode);
+		}
+		else if (i_bKeypad && i_KeyCode == Qt::Key_Asterisk)
+			hot_key_str = "Multiply";
+		else if (i_bKeypad && i_KeyCode == Qt::Key_Plus)
+			hot_key_str = "Add";
+		else if (i_bKeypad && i_KeyCode == Qt::Key_Minus)
+			hot_key_str = "Subtract";
+		else if (i_bKeypad && i_KeyCode == Qt::Key_Period)
+			hot_key_str = "Decimal";
+		else if (i_bKeypad && i_KeyCode == Qt::Key_Slash)
+			hot_key_str = "Divide";
+		else if (i_KeyCode >= Qt::Key_A && i_KeyCode <= Qt::Key_Z)
 			hot_key_str = (char)(i_KeyCode);
-		else if (i_KeyCode >= '0' && i_KeyCode <= '9')
+		else if (i_KeyCode >= Qt::Key_0 && i_KeyCode <= Qt::Key_9)
 			hot_key_str = (char)(i_KeyCode);
+		else if (i_KeyCode >= Qt::Key_F1 && i_KeyCode <= Qt::Key_F12)
+			hot_key_str = "F" + std::to_string(i_KeyCode - Qt::Key_F1 + 1);
 		else
 		{
 			switch(i_KeyCode)
-			{   
-			case WXK_BACK:
-			case WXK_TAB:
+			{
+			case Qt::Key_Backspace:
+			case Qt::Key_Tab:
 			default:
 				bHotKeyOkay = false;
 				break;
-			case WXK_RETURN:
+			case Qt::Key_Return:
+			case Qt::Key_Enter:
 				hot_key_str = "Enter";
 				break;
-			case WXK_ESCAPE:
+			case Qt::Key_Escape:
 				hot_key_str = "Escape";
 				break;
-			case WXK_SPACE:
+			case Qt::Key_Space:
 				hot_key_str = "Space";
 				break;
-			case WXK_DELETE:
+			case Qt::Key_Delete:
 				hot_key_str = "Del";
 				break;
-			case WXK_END:
+			case Qt::Key_End:
 				hot_key_str = "End";
 				break;
-			case WXK_HOME:
+			case Qt::Key_Home:
 				hot_key_str = "Home";
 				break;
-			case WXK_LEFT:
+			case Qt::Key_Left:
 				hot_key_str = "Left";
 				break;
-			case WXK_UP:
+			case Qt::Key_Up:
 				hot_key_str = "Up";
 				break;
-			case WXK_RIGHT:
+			case Qt::Key_Right:
 				hot_key_str = "Right";
 				break;
-			case WXK_DOWN:
+			case Qt::Key_Down:
 				hot_key_str = "Down";
 				break;
-
-			case WXK_F1:
-				hot_key_str = "F1";
-				break;
-			case WXK_F2:
-				hot_key_str = "F2";
-				break;
-			case WXK_F3:
-				hot_key_str = "F3";
-				break;
-			case WXK_F4:
-				hot_key_str = "F4";
-				break;
-			case WXK_F5:
-				hot_key_str = "F5";
-				break;
-			case WXK_F6:
-				hot_key_str = "F6";
-				break;
-			case WXK_F7:
-				hot_key_str = "F7";
-				break;
-			case WXK_F8:
-				hot_key_str = "F8";
-				break;
-			case WXK_F9:
-				hot_key_str = "F9";
-				break;
-			case WXK_F10:
-				hot_key_str = "F10";
-				break;
-			case WXK_F11:
-				hot_key_str = "F11";
-				break;
-			case WXK_F12:
-				hot_key_str = "F12";
-				break;
-
-			case WXK_NUMPAD0:
-				hot_key_str = "NumPad0";
-				break;
-			case WXK_NUMPAD1:
-				hot_key_str = "NumPad1";
-				break;
-			case WXK_NUMPAD2:
-				hot_key_str = "NumPad2";
-				break;
-			case WXK_NUMPAD3:
-				hot_key_str = "NumPad3";
-				break;
-			case WXK_NUMPAD4:
-				hot_key_str = "NumPad4";
-				break;
-			case WXK_NUMPAD5:
-				hot_key_str = "NumPad5";
-				break;
-			case WXK_NUMPAD6:
-				hot_key_str = "NumPad6";
-				break;
-			case WXK_NUMPAD7:
-				hot_key_str = "NumPad7";
-				break;
-			case WXK_NUMPAD8:
-				hot_key_str = "NumPad8";
-				break;
-			case WXK_NUMPAD9:
-				hot_key_str = "NumPad9";
-				break;
-
-			case WXK_MULTIPLY:
-				hot_key_str = "Multiply";
-				break;
-			case WXK_ADD:
-				hot_key_str = "Add";
-				break;
-			case WXK_SEPARATOR:
-				hot_key_str = "Separator";
-				break;
-			case WXK_SUBTRACT:
-				hot_key_str = "Subtract";
-				break;
-			case WXK_DECIMAL:
-				hot_key_str = "Decimal";
-				break;
-			case WXK_DIVIDE:
-				hot_key_str = "Divide";
-				break;
-			
-			case WXK_NUMLOCK:
+			case Qt::Key_NumLock:
 				hot_key_str = "NumLock";
 				break;
-			case WXK_SCROLL:
+			case Qt::Key_ScrollLock:
 				hot_key_str = "Scroll";
 				break;
-			case WXK_PAGEUP:
+			case Qt::Key_PageUp:
 				hot_key_str = "PageUp";
 				break;
-			case WXK_PAGEDOWN:
+			case Qt::Key_PageDown:
 				hot_key_str = "PageDown";
 				break;
-
 			// The capitalization really is messed up here on purpose.
-			// This is based on the .NET strings for these keys.
-			// After we switch to wxWidgets completely, maybe we can
-			// change these?
-			case ',':
+			// This is based on the .NET strings for these keys, which
+			// are what the hot key files store.
+			case Qt::Key_Comma:
 				hot_key_str = "Oemcomma";
 				break;
-			case '.':
+			case Qt::Key_Period:
 				hot_key_str = "OemPeriod";
 				break;
-			case '+':
+			case Qt::Key_Plus:
+			case Qt::Key_Equal:
 				hot_key_str = "Oemplus";
 				break;
-			case '-':
+			case Qt::Key_Minus:
+			case Qt::Key_Underscore:
 				hot_key_str = "OemMinus";
 				break;
-			case '?':
+			case Qt::Key_Question:
+			case Qt::Key_Slash:
 				hot_key_str = "OemQuestion";
 				break;
-			case ';':
+			case Qt::Key_Semicolon:
+			case Qt::Key_Colon:
 				hot_key_str = "OemSemicolon";
 				break;
-			case '~':
+			case Qt::Key_AsciiTilde:
+			case Qt::Key_QuoteLeft:
 				hot_key_str = "Oemtilde";
 				break;
-			case '[':
-				hot_key_str = "OemOpenBrackets";	// not sure of this one, '{'?
+			case Qt::Key_BracketLeft:
+			case Qt::Key_BraceLeft:
+				hot_key_str = "OemOpenBrackets";
 				break;
-			case ']':
-				hot_key_str = "OemCloseBrackets"; // not sure of this one, '}'?
+			case Qt::Key_BracketRight:
+			case Qt::Key_BraceRight:
+				hot_key_str = "OemCloseBrackets";
 				break;
-
-			case '\\':
-				hot_key_str = "OemBackslash"; 
+			case Qt::Key_Backslash:
+			case Qt::Key_Bar:
+				hot_key_str = "OemBackslash";
 				break;
-			case '\"':
-				hot_key_str = "OemQuotes"; // not sure of this one, '\''?
+			case Qt::Key_QuoteDbl:
+			case Qt::Key_Apostrophe:
+				hot_key_str = "OemQuotes";
 				break;
-				
 			}
 		}
 
 		if (bHotKeyOkay)
 		{
-			//DBG_LOG("Hot Key: " << hot_key_str.c_str());
 			o_HotKeyString = hot_key_str;
 		}
 		return bHotKeyOkay;
@@ -229,21 +167,21 @@ namespace tqtMessaging
 	//--------------------------------------------------------------------
 	// Convert a key event to a string representing a hot key
 	//--------------------------------------------------------------------
-	bool ConvertKeyEventToString(wxKeyEvent& i_Event, 
+	bool ConvertKeyEventToString(const QKeyEvent& i_Event,
 								 std::string& o_HotKeyString)
 	{
+		const Qt::KeyboardModifiers modifiers = i_Event.modifiers();
 		std::string mod_key_str;
-
-		if (i_Event.ControlDown())
+		if (modifiers & Qt::ControlModifier)
 			mod_key_str += "Ctrl+";
-		if (i_Event.AltDown())
+		if (modifiers & Qt::AltModifier)
 			mod_key_str += "Alt+";
-		if (i_Event.ShiftDown())
+		if (modifiers & Qt::ShiftModifier)
 			mod_key_str += "Shift+";
 
-		int key_code = i_Event.GetKeyCode();
 		std::string key_codestr;
-		if (ConvertKeyCodeToString(key_code, key_codestr))
+		const bool bKeypad = (modifiers & Qt::KeypadModifier) != 0;
+		if (ConvertKeyCodeToString(i_Event.key(), bKeypad, key_codestr))
 		{
 			o_HotKeyString = mod_key_str + key_codestr;
 			return true;
@@ -255,8 +193,8 @@ namespace tqtMessaging
 	// Pass in a key event to check to see if it can be converted
 	//	to a command
 	//--------------------------------------------------------------------
-	bool ProcessKeyEvent(wxKeyEvent& i_Event)
-	{	
+	bool ProcessKeyEvent(const QKeyEvent& i_Event)
+	{
 		// Handle hot keys here
 		std::string hot_key_str;
 		bool bHandled = false;
@@ -264,7 +202,6 @@ namespace tqtMessaging
 		{
 			try
 			{
-				//DBG_LOG("Hot Key: " << hot_key_str.c_str());
 				guiStatusBarMgr::ClearErrorMessage();
 				bHandled = cmaCommandMgr::ExecuteCommand(hot_key_str);
 			}
@@ -286,23 +223,28 @@ namespace tqtMessaging
 				guiMessageBox::Show(msg.c_str(), "Error");
 			}
 		}
-		if (!bHandled)
-			i_Event.Skip();
-
 		return bHandled;
 	}
 
 	//--------------------------------------------------------------------
-	// Add a QWidget to list of windows that want to handle 
+	// Add a widget to list of widgets that want to handle
 	//	hot key events.
 	//--------------------------------------------------------------------
 	void WindowWantsHotKeys(QWidget* i_pWindow)
 	{
-		l_HotKeyWindows.insert(i_pWindow);
+		if (i_pWindow && l_HotKeyWindows.insert(i_pWindow).second)
+		{
+			// forget the widget when it goes away so a new widget at the
+			// same address doesn't inherit the setting
+			QObject::connect(i_pWindow, &QObject::destroyed, [i_pWindow]()
+			{
+				l_HotKeyWindows.erase(i_pWindow);
+			});
+		}
 	}
 
 	//--------------------------------------------------------------------
-	// Return true if window wants to receive hot keys.
+	// Return true if widget wants to receive hot keys.
 	//--------------------------------------------------------------------
 	bool WantsHotKeys(QWidget* i_pWindow)
 	{
@@ -310,7 +252,7 @@ namespace tqtMessaging
 	}
 
 	//--------------------------------------------------------------------
-	// Return true if there are any windows that want to process hot keys.
+	// Return true if there are any widgets that want to process hot keys.
 	//--------------------------------------------------------------------
 	bool ShouldProcessHotKeys()
 	{
@@ -319,4 +261,3 @@ namespace tqtMessaging
 }
 
 #endif // USE_QT
-

@@ -9,7 +9,7 @@
 \****************************************************************************/
 #include "ToolUIQt/pqt/Controls/pqtVector3d_Vector3Edit.hpp"
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 //
 ////----------------------------------------------------------------------------
 //// Set value into control

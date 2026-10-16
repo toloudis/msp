@@ -19,12 +19,12 @@
 #include "Core/prty/prtyRotation.hpp"
 #endif
 
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
 class pqtRotation_Vector3EditUpDown_Converter
 {
-#ifdef QT_FINISH_PORT
 public:
 	//----------------------------------------------------------------------------
 	// Set value into control
@@ -50,10 +50,10 @@ public:
 	// Set value into properties for control
 	//----------------------------------------------------------------------------
 	static void SetCommonValue(pqtControl* io_pControl, maRotation i_NewValue);
-#endif // USE_QT
 };
 
 //============================================================================
 //============================================================================
 typedef pqtTemplate_Vector3EditUpDown<prtyRotation, maRotation, pqtRotation_Vector3EditUpDown_Converter> pqtRotation_Vector3EditUpDown;
 
+#endif // USE_QT

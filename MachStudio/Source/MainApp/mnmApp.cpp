@@ -10,7 +10,11 @@
 #include "MainApp/mnmApp.hpp"
 
 #include "MainApp/mainConstants.hpp"
+#ifdef MSP_GUI_QT
+#include "MainApp/qtGUI/qtMainForm.hpp"
+#else
 #include "MainApp/wxGUI/wxMainForm.hpp"
+#endif
 
 #ifdef FUSION
 #include "FCSupport/fcmd/fcmdModeMgr.hpp"
@@ -22,8 +26,16 @@
 #include "Features/Prefs/PrefsData.hpp"
 #include "Features/Prefs/PrefsMgr.hpp"
 #include "Features/RenderPanels/rpnPanelViewer.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/RenderPanels/qtGUI/rpnRenderPanel.hpp"
+#else
 #include "Features/RenderPanels/wxGUI/rpnRenderPanel.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "Features/RenderPanels/qtGUI/rpnPanelGrid.hpp"
+#else
 #include "Features/RenderPanels/wxGUI/rpnPanelGrid.hpp"
+#endif
 #include "Features/SceneSetup/Data/SceneSetupData.hpp"
 #include "Support/capt/captRenderOutputDataUtil.hpp"
 #include "Support/fgmt/fgmtHighlight.hpp"
@@ -98,9 +110,14 @@
 #include "Tool/tma3d/tma3dRenderView.hpp"
 #include "Tool/tma3d/tma3dScreenUtil.hpp"
 #include "Tool/tma3d/tma3dViewerMgr.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/qui/quiSplashScreen.hpp"
+#else
 #include "ToolUIWx/wui/wuiSplashScreen.hpp"
+#endif
 
 #include <assert.h>
+#include <iostream>
 #include <vector>
 
 
@@ -1336,7 +1353,7 @@ void mnmApp::SetRenderPass(int i_RenderPassType, std::string& i_RenderPassName)
 
 		// set the pass string.
 		//
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		rpnRenderPanel *pRenderPane = rpnPanelGrid::Instance->GetRenderPanel(0);
 		if (pRenderPane != NULL && pRenderPane->IsActiveView())
 		{
@@ -1393,6 +1410,8 @@ void mnmApp::Exit()
 
 #ifdef USE_WXWIDGETS
 	wxMainForm::Exit();
+#elif defined(USE_QT)
+	qtMainForm::Exit();
 #else
 	appApplication::Exit();
 #endif

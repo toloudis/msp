@@ -8,6 +8,8 @@
 \****************************************************************************/
 #include "Systems/DirectorsCut/Drivers/dcutDriverCreator.hpp"
 
+#include "Core/it/itStringUtil.hpp"
+
 #include "Systems/DirectorsCut/Timeline/dcutChannelCamera.hpp"
 #include "Systems/DirectorsCut/Data/dcutDataParser.hpp"
 #include "Systems/DirectorsCut/Drivers/dcutDriverCamera.hpp"
@@ -74,7 +76,7 @@ tmlnDriver* dcutDriverCreator::CreateDriverByName( const char* i_DriverName,
 	float driverlength, time;
 	std::vector<tmlnDriver*> active_drivers;
 
-	if (!::_stricmp(i_DriverName, CAMDRIVERNAME_CAMERA))
+	if (itStringUtil::CompareNoCase(i_DriverName, CAMDRIVERNAME_CAMERA) == 0)
 	{
 		dcutDriverCamera * pDriver = new dcutDriverCamera( dcut_obj->CameraChannel() );
 		pDriver->SetName(CAMDRIVERNAME_CAMERA);
@@ -97,7 +99,7 @@ tmlnDriver* dcutDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channel.AddDriver( pDriver );
 		return pDriver;
 	}	
-	else if (!::_stricmp(i_DriverName, CAMDRIVERNAME_CAPTURE))
+	else if (itStringUtil::CompareNoCase(i_DriverName, CAMDRIVERNAME_CAPTURE) == 0)
 	{
 		dcutDriverCapture * pDriver = new dcutDriverCapture( dcut_obj->CaptureChannel() );
 		pDriver->SetName(CAMDRIVERNAME_CAPTURE);

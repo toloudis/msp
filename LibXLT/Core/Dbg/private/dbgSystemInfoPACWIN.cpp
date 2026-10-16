@@ -15,6 +15,7 @@
 
 #include "dbgSystemInfoPACWin.hpp"
 #include "Core/Env/envInitX.hpp"
+#include "Core/Env/private/envSystemDataPACWin.hpp"
 #include "Core/Dbg/dbgMsg.hpp"
 
 
@@ -55,64 +56,21 @@ namespace dbgSystemInfoPAC
 	//------------------------------------------------------------------------
 	std::wstring getOS()
 	{
-        // TODO : replace this code with calls from VersionHelpers
+		envSystemDataPAC::OSVersion _osInfo;
+		if ( !envSystemDataPAC::GetOSVersion(_osInfo) )
+			return L"Windows (unknown version)";
 
+		// Windows 11 still reports itself as 10.0; it starts at build 22000.
 		std::wstring _osVersion;
-		OSVERSIONINFOEX _osInfo;
-		_osInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
-		GetVersionEx ((OSVERSIONINFO *) &_osInfo);
-		switch(_osInfo.dwMajorVersion)
-		{
-			case 6:
-				if( _osInfo.dwMinorVersion == 1 )
-				{
-					if(	_osInfo.wProductType == VER_NT_WORKSTATION)
-					{
-						_osVersion = L"Windows 7, ";
-						_osVersion += _osInfo.szCSDVersion;
-					}
-					else
-					{
-						_osVersion = L"Windows Server 2008 R2, ";
-						_osVersion += _osInfo.szCSDVersion;
-					}
-				}
-				else if( _osInfo.dwMinorVersion == 0 )
-				{
-					if(	_osInfo.wProductType == VER_NT_WORKSTATION)
-					{
-						_osVersion = L"Windows Vista, ";
-						_osVersion += _osInfo.szCSDVersion;
-					}
-					else
-					{
-						_osVersion = L"Windows Server 2008, ";
-						_osVersion += _osInfo.szCSDVersion;
-					}
-				}
-				break;
-			case 5:
-				if( _osInfo.dwMinorVersion == 2 )
-				{
-					_osVersion = L"Windows Server 2003, ";
-					_osVersion += _osInfo.szCSDVersion;
-				}
-				if( _osInfo.dwMinorVersion == 1 )
-				{
-					_osVersion = L"Windows XP, ";
-					_osVersion += _osInfo.szCSDVersion;
-				}
-				if( _osInfo.dwMinorVersion == 0 )
-				{
-					_osVersion = L"Windows 2000, ";
-					_osVersion += _osInfo.szCSDVersion;
-				}
-				break;
-			default:
-				_osVersion = L"Operation System, "; 
-				_osVersion += _osInfo.dwMajorVersion + L"." + _osInfo.dwMinorVersion;
-				break;
-		}
+		if ( !_osInfo.m_bWorkstation )
+			_osVersion = L"Windows Server";
+		else if ( _osInfo.m_Major == 10 && _osInfo.m_Build >= 22000 )
+			_osVersion = L"Windows 11";
+		else
+			_osVersion = L"Windows " + std::to_wstring(_osInfo.m_Major);
+
+		_osVersion += L" (" + std::to_wstring(_osInfo.m_Major) + L"." +
+			std::to_wstring(_osInfo.m_Minor) + L"." + std::to_wstring(_osInfo.m_Build) + L")";
 		return  _osVersion;
 	}
 }

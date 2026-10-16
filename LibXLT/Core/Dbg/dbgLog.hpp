@@ -22,8 +22,13 @@
 #include "Core/env/envType.hpp"
 #endif
 
-#include <tchar.h>
 #include <string>
+
+//Macros that get the unicode (wchar_t) version of a string; see dbgMsg.hpp
+#ifndef SGPU_L
+#define SGPU_L_TEMP(a) L ## a
+#define SGPU_L(a) SGPU_L_TEMP(a)
+#endif
 
 
 //============================================================================
@@ -115,45 +120,45 @@ namespace dbgLog
 #define DBG_LOG( msg ) \
 do{ \
 	std::vector<dbgStream*> _osList = dbgMsg::GetStreamList(); \
-	std::wstring _dbgsrcfile(_T(__FILE__)); \
+	std::wstring _dbgsrcfile(SGPU_L(__FILE__)); \
 	for(int debug_iterator = 0; debug_iterator < _osList.size(); ++debug_iterator){if(_osList[debug_iterator]->isStreamActive())if(_osList[debug_iterator]->logEnabled())*(dbgMsg::WriteLog( _dbgsrcfile, __LINE__ , _osList[debug_iterator])) << msg << std::endl;} \
 }while(false)
 
-#define	DBG_WARNING0( a )							dbgLog::WriteWarning( std::wstring(_T(__FILE__)), __LINE__, a )
-#define	DBG_WARNING1( a,b )							dbgLog::WriteWarning( std::wstring(_T(__FILE__)), __LINE__, a,b )
-#define	DBG_WARNING2( a,b,c )						dbgLog::WriteWarning( std::wstring(_T(__FILE__)), __LINE__, a,b,c )
-#define	DBG_WARNING3( a,b,c,d )						dbgLog::WriteWarning( std::wstring(_T(__FILE__)), __LINE__, a,b,c,d )
-#define	DBG_WARNING4( a,b,c,d,e )					dbgLog::WriteWarning( std::wstring(_T(__FILE__)), __LINE__, a,b,c,d,e )
-#define	DBG_WARNING5( a,b,c,d,e,f )					dbgLog::WriteWarning( std::wstring(_T(__FILE__)), __LINE__, a,b,c,d,e,f )
-#define	DBG_WARNING6( a,b,c,d,e,f,g )				dbgLog::WriteWarning( std::wstring(_T(__FILE__)), __LINE__, a,b,c,d,e,f,g )
-#define	DBG_WARNING7( a,b,c,d,e,f,g,h )				dbgLog::WriteWarning( std::wstring(_T(__FILE__)), __LINE__, a,b,c,d,e,f,g,h )
-#define	DBG_WARNING8( a,b,c,d,e,f,g,h,i )			dbgLog::WriteWarning( std::wstring(_T(__FILE__)), __LINE__, a,b,c,d,e,f,g,h,i )
-#define	DBG_WARNING9( a,b,c,d,e,f,g,h,i,j )			dbgLog::WriteWarning( std::wstring(_T(__FILE__)), __LINE__, a,b,c,d,e,f,g,h,i,j )
+#define	DBG_WARNING0( a )							dbgLog::WriteWarning( std::wstring(SGPU_L(__FILE__)), __LINE__, a )
+#define	DBG_WARNING1( a,b )							dbgLog::WriteWarning( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b )
+#define	DBG_WARNING2( a,b,c )						dbgLog::WriteWarning( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c )
+#define	DBG_WARNING3( a,b,c,d )						dbgLog::WriteWarning( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c,d )
+#define	DBG_WARNING4( a,b,c,d,e )					dbgLog::WriteWarning( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c,d,e )
+#define	DBG_WARNING5( a,b,c,d,e,f )					dbgLog::WriteWarning( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c,d,e,f )
+#define	DBG_WARNING6( a,b,c,d,e,f,g )				dbgLog::WriteWarning( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c,d,e,f,g )
+#define	DBG_WARNING7( a,b,c,d,e,f,g,h )				dbgLog::WriteWarning( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c,d,e,f,g,h )
+#define	DBG_WARNING8( a,b,c,d,e,f,g,h,i )			dbgLog::WriteWarning( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c,d,e,f,g,h,i )
+#define	DBG_WARNING9( a,b,c,d,e,f,g,h,i,j )			dbgLog::WriteWarning( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c,d,e,f,g,h,i,j )
 
-#define	DBG_ERROR0( a )								dbgLog::WriteError( std::wstring(_T(__FILE__)), __LINE__, a )
-#define	DBG_ERROR1( a,b )							dbgLog::WriteError( std::wstring(_T(__FILE__)), __LINE__, a,b )
-#define	DBG_ERROR2( a,b,c )							dbgLog::WriteError( std::wstring(_T(__FILE__)), __LINE__, a,b,c )
-#define	DBG_ERROR3( a,b,c,d )						dbgLog::WriteError( std::wstring(_T(__FILE__)), __LINE__, a,b,c,d )
-#define	DBG_ERROR4( a,b,c,d,e )						dbgLog::WriteError( std::wstring(_T(__FILE__)), __LINE__, a,b,c,d,e )
-#define	DBG_ERROR5( a,b,c,d,e,f )					dbgLog::WriteError( std::wstring(_T(__FILE__)), __LINE__, a,b,c,d,e,f )
-#define	DBG_ERROR6( a,b,c,d,e,f,g )					dbgLog::WriteError( std::wstring(_T(__FILE__)), __LINE__, a,b,c,d,e,f,g )
-#define	DBG_ERROR7( a,b,c,d,e,f,g,h )				dbgLog::WriteError( std::wstring(_T(__FILE__)), __LINE__, a,b,c,d,e,f,g,h )
-#define	DBG_ERROR8( a,b,c,d,e,f,g,h,i )				dbgLog::WriteError( std::wstring(_T(__FILE__)), __LINE__, a,b,c,d,e,f,g,h,i )
-#define	DBG_ERROR9( a,b,c,d,e,f,g,h,i,j )			dbgLog::WriteError( std::wstring(_T(__FILE__)), __LINE__, a,b,c,d,e,f,g,h,i,j )
+#define	DBG_ERROR0( a )								dbgLog::WriteError( std::wstring(SGPU_L(__FILE__)), __LINE__, a )
+#define	DBG_ERROR1( a,b )							dbgLog::WriteError( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b )
+#define	DBG_ERROR2( a,b,c )							dbgLog::WriteError( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c )
+#define	DBG_ERROR3( a,b,c,d )						dbgLog::WriteError( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c,d )
+#define	DBG_ERROR4( a,b,c,d,e )						dbgLog::WriteError( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c,d,e )
+#define	DBG_ERROR5( a,b,c,d,e,f )					dbgLog::WriteError( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c,d,e,f )
+#define	DBG_ERROR6( a,b,c,d,e,f,g )					dbgLog::WriteError( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c,d,e,f,g )
+#define	DBG_ERROR7( a,b,c,d,e,f,g,h )				dbgLog::WriteError( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c,d,e,f,g,h )
+#define	DBG_ERROR8( a,b,c,d,e,f,g,h,i )				dbgLog::WriteError( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c,d,e,f,g,h,i )
+#define	DBG_ERROR9( a,b,c,d,e,f,g,h,i,j )			dbgLog::WriteError( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c,d,e,f,g,h,i,j )
 
 #if ENV_BUILD == ENV_DEBUGBUILD
 
-#define	DBG_LOG0( a )							dbgLog::WriteLog( std::wstring(_T(__FILE__)), __LINE__, a )
-#define	DBG_LOG1( a,b )							dbgLog::WriteLog( std::wstring(_T(__FILE__)), __LINE__, a,b )
-#define	DBG_LOG2( a,b,c )						dbgLog::WriteLog( std::wstring(_T(__FILE__)), __LINE__, a,b,c )
-#define	DBG_LOG3( a,b,c,d )						dbgLog::WriteLog( std::wstring(_T(__FILE__)), __LINE__, a,b,c,d )
-#define	DBG_LOG4( a,b,c,d,e )					dbgLog::WriteLog( std::wstring(_T(__FILE__)), __LINE__, a,b,c,d,e )
-#define	DBG_LOG5( a,b,c,d,e,f )					dbgLog::WriteLog( std::wstring(_T(__FILE__)), __LINE__, a,b,c,d,e,f )
-#define	DBG_LOG6( a,b,c,d,e,f,g )				dbgLog::WriteLog( std::wstring(_T(__FILE__)), __LINE__, a,b,c,d,e,f,g )
-#define	DBG_LOG7( a,b,c,d,e,f,g,h )				dbgLog::WriteLog( std::wstring(_T(__FILE__)), __LINE__, a,b,c,d,e,f,g,h )
-#define	DBG_LOG8( a,b,c,d,e,f,g,h,i )			dbgLog::WriteLog( std::wstring(_T(__FILE__)), __LINE__, a,b,c,d,e,f,g,h,i )
-#define	DBG_LOG9( a,b,c,d,e,f,g,h,i,j )			dbgLog::WriteLog( std::wstring(_T(__FILE__)), __LINE__, a,b,c,d,e,f,g,h,i,j )
-#define	DBG_LOG10( a,b,c,d,e,f,g,h,i,j,k )		dbgLog::WriteLog( std::wstring(_T(__FILE__)), __LINE__, a,b,c,d,e,f,g,h,i,j,k )
+#define	DBG_LOG0( a )							dbgLog::WriteLog( std::wstring(SGPU_L(__FILE__)), __LINE__, a )
+#define	DBG_LOG1( a,b )							dbgLog::WriteLog( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b )
+#define	DBG_LOG2( a,b,c )						dbgLog::WriteLog( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c )
+#define	DBG_LOG3( a,b,c,d )						dbgLog::WriteLog( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c,d )
+#define	DBG_LOG4( a,b,c,d,e )					dbgLog::WriteLog( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c,d,e )
+#define	DBG_LOG5( a,b,c,d,e,f )					dbgLog::WriteLog( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c,d,e,f )
+#define	DBG_LOG6( a,b,c,d,e,f,g )				dbgLog::WriteLog( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c,d,e,f,g )
+#define	DBG_LOG7( a,b,c,d,e,f,g,h )				dbgLog::WriteLog( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c,d,e,f,g,h )
+#define	DBG_LOG8( a,b,c,d,e,f,g,h,i )			dbgLog::WriteLog( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c,d,e,f,g,h,i )
+#define	DBG_LOG9( a,b,c,d,e,f,g,h,i,j )			dbgLog::WriteLog( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c,d,e,f,g,h,i,j )
+#define	DBG_LOG10( a,b,c,d,e,f,g,h,i,j,k )		dbgLog::WriteLog( std::wstring(SGPU_L(__FILE__)), __LINE__, a,b,c,d,e,f,g,h,i,j,k )
 
 #endif
 

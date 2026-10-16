@@ -64,39 +64,10 @@ WaveOpenFile(
 	nError		= 0;
 	hmmioIn		= NULL;
 
-	if ( fsFileUtilPAC::MustUseANSIFilenames() )
+	if ((hmmioIn = mmioOpenW(pszFileName, NULL, MMIO_ALLOCBUF | MMIO_READ)) == NULL)
 	{
-		char work_string[128];
-		int num_chars;
-
-		num_chars = sizeof( pszFileName );
-		num_chars = ::WideCharToMultiByte(	::GetACP(),		// ANSI code page
-											0,			// no "lo-performance" flags
-											pszFileName, // Source
-											-1,			// assumes \0 terminated string
-											work_string, // Destination
-											127,		// size of target buffer
-											NULL,
-											NULL);
-
-		// for some reason, this function doesn't seem to terminate the work_string
-		//
-		work_string[num_chars] = 0;
-
-		if ((hmmioIn = mmioOpenA(work_string, NULL, MMIO_ALLOCBUF | MMIO_READ)) == NULL)
-		{
-			//nError = GetLastError();
-			nError = ER_CANNOTOPEN;
-			goto ERROR_READING_WAVE;
-		}
-	}
-	else
-	{
-		if ((hmmioIn = mmioOpenW(pszFileName, NULL, MMIO_ALLOCBUF | MMIO_READ)) == NULL)
-		{
-			nError = ER_CANNOTOPEN;
-			goto ERROR_READING_WAVE;
-		}
+		nError = ER_CANNOTOPEN;
+		goto ERROR_READING_WAVE;
 	}
 
 	if ((nError = (int)mmioDescend(hmmioIn, pckInRIFF, NULL, 0)) != 0)
@@ -363,33 +334,8 @@ int WaveCreateFile(
 	dwFactChunk = (DWORD)-1;
 	nError = 0;
 
-	if ( fsFileUtilPAC::MustUseANSIFilenames() )
-	{
-		char work_string[128];
-		int num_chars;
-
-		num_chars = sizeof( pszFileName );
-		num_chars = ::WideCharToMultiByte(	::GetACP(),		// ANSI code page
-											0,			// no "lo-performance" flags
-											pszFileName, // Source
-											-1,			// assumes \0 terminated string
-											work_string, // Destination
-											127,		// size of target buffer
-											NULL,
-											NULL);
-
-		// for some reason, this function doesn't seem to terminate the work_string
-		//
-		work_string[num_chars] = 0;
-
-		*phmmioOut = mmioOpenA(work_string, NULL,
-				MMIO_ALLOCBUF | MMIO_READWRITE|MMIO_CREATE);
-	}
-	else
-	{
-		*phmmioOut = mmioOpenW(pszFileName, NULL,
-				MMIO_ALLOCBUF | MMIO_READWRITE|MMIO_CREATE);
-	}
+	*phmmioOut = mmioOpenW(pszFileName, NULL,
+			MMIO_ALLOCBUF | MMIO_READWRITE|MMIO_CREATE);
 
     if (*phmmioOut == NULL)
 	{

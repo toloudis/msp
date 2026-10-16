@@ -14,7 +14,6 @@
 #include <vector>
 
 #include "Core/env/envSTLHelpers.hpp"
-#include "Input/in/private/inDeviceMgrPAC.hpp"
 #include "Input/in/inPCVJoy.hpp"
 
 //#include "Profiler/profile.h"
@@ -38,6 +37,7 @@ int l_NumGamepads = 0;
 int l_Range = 1000;
 float l_DeadZone = 0.05f;
 float l_Saturation = 0.95f;
+void* l_pWindowHandle = NULL;
 }
 
 //========================================================================
@@ -54,9 +54,21 @@ float l_Saturation = 0.95f;
 //========================================================================
 void Init(int i_NumSticksOnVJoystick)
 {
-	inDeviceMgrPAC::Init(l_Range, l_DeadZone, l_Saturation, 
-							l_Keyboards, l_Mouses, l_Gamepads, //l_Joysticks, 
-							l_NumKeyboards, l_NumMouses, l_NumGamepads);//, l_NumJoysticks);
+	// One keyboard and one mouse, fed by the GUI toolkit's events. No
+	// gamepads, since there is no gamepad source.
+	inKeyboard* keyboard = new inKeyboard;
+	itString keyboard_name("Keyboard");
+	keyboard->SetDeviceName(keyboard_name);
+	l_Keyboards.push_back(keyboard);
+	l_NumKeyboards = l_Keyboards.size();
+
+	inMouse* mouse = new inMouse;
+	itString mouse_name("Mouse");
+	mouse->SetDeviceName(mouse_name);
+	l_Mouses.push_back(mouse);
+	l_NumMouses = l_Mouses.size();
+
+	l_NumGamepads = l_Gamepads.size();
 
 	l_PCVJoy = new inPCVJoy(i_NumSticksOnVJoystick);
 	l_pTablet = new inTablet();
@@ -102,8 +114,6 @@ void Init(int i_Range, float i_DeadZone, float i_Saturation, int i_NumSticksOnVJ
 //========================================================================
 void CleanUp() throw()
 {
-	inDeviceMgrPAC::CleanUp();
-
 	envSTLHelpers::DeleteContainer(l_Keyboards);
 	envSTLHelpers::DeleteContainer(l_Mouses);
 	envSTLHelpers::DeleteContainer(l_Gamepads);
@@ -199,25 +209,18 @@ inTablet *GetTablet()
 //========================================================================
 inKeyboard *GetKeyboard(int i_Index)
 {
-#if ENV_WINDOWS
 	if (l_Keyboards.empty()) return NULL;
 	DBG_ASSERT(0 <= i_Index && i_Index < l_Keyboards.size(), "Invalid index #" << i_Index);
 
 	return l_Keyboards[i_Index];
-#else
-	return NULL;
-#endif
 }
 
 inMouse *GetMouse(int i_Index)
 {
-#if ENV_WINDOWS
+	if (l_Mouses.empty()) return NULL;
 	DBG_ASSERT(0 <= i_Index && i_Index < l_Mouses.size(), "Invalid index #" << i_Index);
 
 	return l_Mouses[i_Index];
-#else
-	return NULL;
-#endif
 }
 
 inGamepad *GetGamepad(int i_Index)
@@ -285,7 +288,7 @@ void DeleteKeyboard(int i_Index)
 
 	if (l_Keyboards[i_Index])
 	{
-		inDeviceMgrPAC::UpdateNumOnDelete(l_NumKeyboards);
+		--l_NumKeyboards;
 	}
 
 	delete l_Keyboards[i_Index];
@@ -298,7 +301,7 @@ void DeleteMouse(int i_Index)
 
 	if (l_Mouses[i_Index])
 	{
-		inDeviceMgrPAC::UpdateNumOnDelete(l_NumMouses);
+		--l_NumMouses;
 	}
 
 	delete l_Mouses[i_Index];
@@ -311,7 +314,7 @@ void DeleteGamepad(int i_Index)
 
 	if (l_Gamepads[i_Index])
 	{
-		inDeviceMgrPAC::UpdateNumOnDelete(l_NumGamepads);
+		--l_NumGamepads;
 	}
 
 	delete l_Gamepads[i_Index];
@@ -332,11 +335,11 @@ void DeleteUserDefinedDevice( int i_Index )
 //============================================================================
 void SetWindowHandle(void* i_Hwnd)
 {
-	inDeviceMgrPAC::SetWindowHandle(i_Hwnd);
+	l_pWindowHandle = i_Hwnd;
 }
 void* GetWindowHandle()
 {
-	return inDeviceMgrPAC::GetWindowHandle();
+	return l_pWindowHandle;
 }
 
 }

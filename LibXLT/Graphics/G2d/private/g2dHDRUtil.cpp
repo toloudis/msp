@@ -20,6 +20,9 @@
 #include "Graphics/g3d/g3dPrefs.hpp"
 #include "Graphics/g2d/private/rgbe.h"
 
+#include <filesystem>
+#include <fstream>
+
 //#include "half.h"
 
 //============================================================================
@@ -69,16 +72,20 @@ void WriteToHDR( const fsLocator& i_Locator, const g2dImage* pImg )
 
 	try
 	{
-		FILE* fp = ::_wfopen(filename.GetString(), L"wb");
-		RGBE_WriteHeader(fp, width, height, NULL);
+		std::ofstream file(std::filesystem::path(filename.GetString()), std::ios::binary);
+		if (!file)
+		{
+			DBG_ERROR("Unable to open HDR file for writing");
+			return;
+		}
+		RGBE_WriteHeader(file, width, height, NULL);
 		
 		float* buffer = new float[width * height * 3];
 		memset(buffer, 0, sizeof(float) * width * height * 3);
 
 		g2dImageToRGBFloatArray(const_cast<g2dImage*>(pImg), buffer);
 		
-		RGBE_WritePixels(fp, buffer,width * height);
-		::fclose(fp);
+		RGBE_WritePixels(file, buffer,width * height);
 
 		delete [] buffer;
 	}catch(...)

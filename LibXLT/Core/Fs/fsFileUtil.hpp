@@ -33,9 +33,7 @@ namespace fsFileUtil
 
 	//----------------------------------------------------------------------------
 	//	RenameFile renames a file or directory.  This can be used to move a 
-	//	file to different directories, etc.  Known bug: it will not correctly 
-	//	handle moving a directory to a different volume on Windows 98 or 95
-	//	systems.
+	//	file to different directories, etc.
 	//----------------------------------------------------------------------------
 	void RenameFile(const fsLocator& i_From, const fsLocator& i_To);
 
@@ -108,17 +106,15 @@ namespace fsFileUtil
 	void ANSIFilenameToLocator(const std::string& i_String, fsLocator& o_Locator);
 
 	//----------------------------------------------------------------------------
-	//	LocatorToANSIFilename is used internally by the win32 PACs in the fs
-	//	package.  It converts a fsLocator to a ANSI win32 filename (for use in
-	//	Windows 95 or 98).  It is provided here to assist in error reporting.
+	//	LocatorToANSIFilename converts a fsLocator to a narrow (UTF-8) filename
+	//	string, for APIs that take char filenames.  It is provided here to assist in error reporting.
 	// API Change: This now returns the std::string as UTF8.
 	//----------------------------------------------------------------------------
 	void LocatorToANSIFilename(const fsLocator& i_Locator, std::string& o_String, bool i_bUseDoubleSlashes = false);
 
 	//----------------------------------------------------------------------------
-	//	LocatorToANSIFilename is used internally by the win32 PACs in the fs
-	//	package.  It converts a fsLocator to a ANSI win32 filename (for use in
-	//	Windows 95 or 98).  It is provided here to assist in error reporting.
+	//	LocatorToANSIFilename converts a fsLocator to a narrow (UTF-8) filename
+	//	string, for APIs that take char filenames.  It is provided here to assist in error reporting.
 	// API Change: This now returns the std::string as UTF8.
 	//----------------------------------------------------------------------------
 	void LocatorToANSIFilename(const fsLocator& i_Locator, std::string& o_String, const int i_StartNum, const int i_EndNum );

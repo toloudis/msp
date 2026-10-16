@@ -194,7 +194,5 @@ public:
 	//---------------------------------------------------------------------------
 	prtyFilePath	m_PRmanLocation;
 	prtyFilePath	m_PixieLocation;
-	prtyFilePath	m_MRayLocation;
-	prtyFilePath	m_MRayViewerLocation;
 };
 

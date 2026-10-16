@@ -1,10 +1,9 @@
 /****************************************************************************\
 **	tqcTextBox.hpp
 **
-**		Textbox that handles value changed events like we like it.
-**	ValueChanged fires when the text box's value is different
-**	and either ENTER has been pressed, or the focus leaves the 
-**	text box.
+**	Text box that calls the value changed callback after ENTER is pressed
+**	(single line) or the control is left with different text.
+**	Multiline boxes use a plain text editor inside the same wrapper.
 **
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
@@ -18,90 +17,72 @@
 #include "ToolUIQt/tqc/tqcEvent.hpp"
 #endif
 
-#ifdef QT_FINISH_PORT
-
-//============================================================================
-// wxEVT_VALUE_CHANGED event : this control throws this event type when the
-//	value in the control has changed aftere ENTER is pressed, or the
-//	focus leaves the text box. Users should register for this event, 
-//	not for the individual enter pressed and leave events.
-//============================================================================
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
-class tqcTextBox : public wxTextCtrl
+class tqcTextBox : public QWidget, public tqcValueChangedNotifier
 {
 	public:
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		tqcTextBox(QWidget* i_pParent, 
-				   QWidgetID i_Id = wxID_ANY, 
-				   const wxString& i_Value = wxT(""),
+		tqcTextBox(QWidget* i_pParent,
+				   const QString& i_Value = QString(),
 				   bool i_bMultiline = false,
-				   bool i_bMultilineFixed = false,
-				   const wxSize& i_Size = wxDefaultSize);
+				   bool i_bMultilineFixed = false);
 
 		//--------------------------------------------------------------------
-		// Override SetValue so that we can track the current value
-		//	in order to know when it changes.
+		// Text of the control. SetValue also remembers it as the current
+		//	value, so the callback only comes for changes by the user.
 		//--------------------------------------------------------------------
-		virtual void SetValue(const wxString& value);
+		QString GetValue() const;
+		virtual void SetValue(const QString& value);
+		void ChangeValue(const QString& value);
+		void Clear();
+		void AppendText(const QString& i_Text);
 
 		//--------------------------------------------------------------------
-		// This function is used in tqcFilePicker in order to restore the old 
-		// value when a user partially deletes the file.
 		//--------------------------------------------------------------------
-		wxString last_value();
+		void SetEditable(bool i_bEditable);
+		bool IsMultiline() const { return m_bMultiline; }
+
+		//--------------------------------------------------------------------
+		// The value before the last change by the user
+		//--------------------------------------------------------------------
+		QString last_value();
+
+		//--------------------------------------------------------------------
+		// The text editing widget inside the wrapper
+		//--------------------------------------------------------------------
+		QLineEdit* GetLineEdit() const { return m_pLineEdit; }
+		QPlainTextEdit* GetTextEdit() const { return m_pTextEdit; }
 
 	private:
-		//--------------------------------------------------------------------
-		//--------------------------------------------------------------------
-		void OnTextChange(wxCommandEvent& i_Event);
-		void OnTextLeave(wxFocusEvent& i_Event);
-
-		//--------------------------------------------------------------------
-		//--------------------------------------------------------------------
 		void text_changed();
 
+		QLineEdit* m_pLineEdit;			// single line
+		QPlainTextEdit* m_pTextEdit;	// multiline
 		bool m_bMultiline;
-		
-
-		wxString m_LastValue;
-		wxString m_PrevValue;
-
-    DECLARE_EVENT_TABLE()
+		QString m_LastValue;
+		QString m_PrevValue;
 };
 
 //============================================================================
-// Convenience class name in order to get a multiline text box without
-// needing to pass in extra arguments.
 //============================================================================
 class tqcMultilineTextBox : public tqcTextBox
 {
 	public:
-		//--------------------------------------------------------------------
-		// Passes true for i_bMultiline to base class constructor.
-		//--------------------------------------------------------------------
-		tqcMultilineTextBox(QWidget* i_pParent, 
-						   QWidgetID i_Id = wxID_ANY)
-			:	tqcTextBox(i_pParent, i_Id, wxT(""), true, false) {}
-}
-;
+		tqcMultilineTextBox(QWidget* i_pParent)
+			:	tqcTextBox(i_pParent, QString(), true, false) {}
+};
 
 //============================================================================
-// Convenience class name in order to get a multiline text box without
-// needing to pass in extra arguments.
 //============================================================================
 class tqcMultilineFixedTextBox : public tqcTextBox
 {
 	public:
-		//--------------------------------------------------------------------
-		// Passes true for i_bMultiline to base class constructor.
-		//--------------------------------------------------------------------
-		tqcMultilineFixedTextBox(QWidget* i_pParent, 
-								QWidgetID i_Id = wxID_ANY)
-			:	tqcTextBox(i_pParent, i_Id, wxT(""), true, true) {}
-}
-;
+		tqcMultilineFixedTextBox(QWidget* i_pParent)
+			:	tqcTextBox(i_pParent, QString(), true, true) {}
+};
 
 #endif // USE_QT

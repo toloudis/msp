@@ -1,18 +1,15 @@
 /*****************************************************************************
-**	quiMainWindow.cpp
+**  quiMainWindow.cpp
 **
-**		see .hpp
+**      see .hpp
 **
 **	StudioGPU
 **	Copyright(C) 2004 - All Rights Reserved
 \****************************************************************************/
 #include "ToolUIQt/qui/quiMainWindow.hpp"
 
-#include "Core/env/envString.hpp"
 #include "Core/fs/fsLocator.hpp"
 #include "ToolUIQt/tqt/tqtSystem.hpp"
-
-#include <QtGui/QMainWindow>
 
 #include <string>
 
@@ -36,10 +33,9 @@ void quiMainWindow::SetAppTitle( const itString& i_Text )
 {
 	l_AppTitle = i_Text;
 #ifdef USE_QT
-	if (tqtSystem::g_pMainForm != NULL)
+	if (tqtSystem::g_pMainForm)
 	{
-		std::string title_utf8 = envString::WideCharToUTF8( i_Text.GetString(), i_Text.GetLength() );
-		tqtSystem::g_pMainForm->setWindowTitle(title_utf8.c_str());
+		tqtSystem::g_pMainForm->setWindowTitle(QString::fromWCharArray(i_Text.GetString()));
 	}
 #endif
 }
@@ -58,4 +54,3 @@ itString quiMainWindow::GetAppTitle()
 void quiMainWindow::Focus()
 {
 }
-

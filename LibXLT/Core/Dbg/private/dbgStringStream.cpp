@@ -7,8 +7,7 @@
 //	Copyright(C) 2003 - All Rights Reserved
 //****************************************************************************
 #include "Core/dbg/dbgStringStream.hpp"
-
-#include <Windows.h>
+#include "Core/dbg/private/dbgLogPAC.hpp"
 
 
 //============================================================================
@@ -36,13 +35,17 @@ dbgStreamBuf::~dbgStreamBuf()
 //----------------------------------------------------------------------------
 int dbgStreamBuf::sync()
 {
-	//bga - no need to check for UNICODE here. We have a UTF 8-bit char stream here
-	// so we can only use the "W" variation, even in ANSI builds. But, we have to
-	// promote the multi-byte string to a wide string to output.
-	std::wstring wide_str = envString::UTF8ToWideChar( str() );
-	::OutputDebugStringW( wide_str.c_str() );
+	Output( str() );
 
 	str(std::basic_string<char>());    // Clear the string buffer
 	
     return 0;
+}
+
+//----------------------------------------------------------------------------
+// Output sends UTF-8 text to the debug window
+//----------------------------------------------------------------------------
+void dbgStreamBuf::Output(const std::string& i_UTF8Text)
+{
+	dbgLogPAC::WriteDebugOutput( i_UTF8Text );
 }

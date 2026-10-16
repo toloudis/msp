@@ -9,10 +9,22 @@
 #include "stdafx.h"
 #include "MainApp/mainInitGraphics.hpp"
 #include "MainApp/mnmApp.hpp"
+#ifdef MSP_GUI_QT
+#include "MainApp/qtGUI/qtMainForm.hpp"
+#else
 #include "MainApp/wxGUI/wxMainForm.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "MainApp/qtGUI/qtMainDropTarget.hpp"
+#else
 #include "MainApp/wxGUI/wxMainDropTarget.hpp"
+#endif
 
+#ifdef MSP_GUI_QT
+#include "Features/RenderPanels/qtGUI/rpnRenderPanel.hpp"
+#else
 #include "Features/RenderPanels/wxGUI/rpnRenderPanel.hpp"
+#endif
 #include "Features/RenderPrefs/rndrPrefsMgr.hpp"
 #include "Features/Capture/cptrRenderUtil.hpp"
 #include "Support/tmln/tmlnTimeLine.hpp"
@@ -36,9 +48,26 @@
 #include "Support/mnm/mnmVJoystick.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
 #include "Tool/tma3d/tma3dScreenUtil.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/pqt/pqtControlFactoryBase.hpp"
+#else
 #include "ToolUIWx/pwx/pwxControlFactoryBase.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/pqt/pqtControlFactoryCustom.hpp"
+#else
 #include "ToolUIWx/pwx/pwxControlFactoryCustom.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/pqt/pqtControlMgr.hpp"
+#else
 #include "ToolUIWx/pwx/pwxControlMgr.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtInputFeed.hpp"
+#else
+#include "ToolUIWx/twx/twxInputFeed.hpp"
+#endif
 #include "GraphicsDX11/GraphicsDX11Layer.hpp"
 
 
@@ -54,6 +83,8 @@ namespace
 //--------------------------------------------------------------------
 #ifdef USE_WXWIDGETS
 mainInitGraphics::mainInitGraphics(wxMainForm *i_pMainFrame)
+#elif defined(USE_QT)
+mainInitGraphics::mainInitGraphics(qtMainForm *i_pMainFrame)
 #else
 mainInitGraphics::mainInitGraphics(int i_AppWidth,
 								   int i_AppHeight,
@@ -74,6 +105,8 @@ mainInitGraphics::mainInitGraphics(int i_AppWidth,
 		GraphicsLayer::Init();
 
 #ifdef USE_WXWIDGETS
+		GraphicsDX11Layer::Init(i_pMainFrame->GetRenderWindow()->GetHandle());
+#elif defined(USE_QT)
 		GraphicsDX11Layer::Init(i_pMainFrame->GetRenderWindow()->GetHandle());
 #else
 		GraphicsDX11Layer::Init(appApplication::GetMainWindowHandle());
@@ -115,6 +148,27 @@ mainInitGraphics::mainInitGraphics(int i_AppWidth,
 			i_pMainFrame->GetRenderWindow()->SetDropTarget(new wxMainDropTarget(m_pApp->GetRenderView(0))); // for drag & drop
 			inDeviceMgr::SetWindowHandle( i_pMainFrame->GetRenderPane(0)->GetHandle() );
 		}
+#elif defined(USE_QT)
+		// The render panels have their own native windows, sized in
+		// physical pixels
+		rpnRenderPanel* pRenderWindow = i_pMainFrame->GetRenderWindow();
+		const int render_width = pRenderWindow->PhysicalWidth();
+		const int render_height = pRenderWindow->PhysicalHeight();
+		m_pApp->InitializeRender( (void*)pRenderWindow->GetHandle(),
+			(void*)pRenderWindow->GetHandle(),
+			render_width, render_height);
+
+		tma3dScreenUtil::SetWindowSize( maPoint2d( 0, 0 ),
+			maPoint2d( render_width, render_height ) );
+
+		//	if InitializeRender didn't work, there will be no render views.
+		//
+		if (m_pApp->GetNumberOfRenderViews() > 0)
+		{
+			pRenderWindow->SetRenderView(m_pApp->GetRenderView(0));
+			new qtMainDropTarget(pRenderWindow, m_pApp->GetRenderView(0)); // for drag & drop
+			inDeviceMgr::SetWindowHandle( i_pMainFrame->GetRenderPane(0)->GetHandle() );
+		}
 #else // USE_WXWIDGETS
 		m_pApp->InitializeRender( 0, 0, i_AppWidth, i_AppHeight );
 		//	if InitializeRender didn't work, there will be no render views.
@@ -137,6 +191,19 @@ mainInitGraphics::mainInitGraphics(int i_AppWidth,
 				m_pApp->CreateRenderView( i_pMainFrame->GetRenderPane(i)->GetHandle() );
 				i_pMainFrame->GetRenderPane(i)->SetRenderView(m_pApp->GetRenderView(i));
 				i_pMainFrame->GetRenderPane(i)->SetDropTarget(new wxMainDropTarget(m_pApp->GetRenderView(i))); // for drag & drop
+			}
+		}
+#elif defined(USE_QT)
+		//	if InitializeRender didn't work, there will be no render views.
+		//
+		if (m_pApp->GetNumberOfRenderViews() > 0)
+		{
+			// Create other render views and hook up the render panes to the render views
+			for (int i=1; i<4; ++i)
+			{
+				m_pApp->CreateRenderView( i_pMainFrame->GetRenderPane(i)->GetHandle() );
+				i_pMainFrame->GetRenderPane(i)->SetRenderView(m_pApp->GetRenderView(i));
+				new qtMainDropTarget(i_pMainFrame->GetRenderPane(i), m_pApp->GetRenderView(i)); // for drag & drop
 			}
 		}
 #endif // USE_WXWIDGETS
@@ -168,6 +235,11 @@ mainInitGraphics::mainInitGraphics(int i_AppWidth,
 		pwxControlMgr::AddControlFactory( new pwxControlFactoryBase() );
 		pwxControlMgr::AddControlFactory( new pwxControlFactoryCustom() );
 		pwxControlMgr::AddControlFactory( new ptmControlFactoryTimeline() );
+#elif defined(USE_QT)
+		pqtControlMgr::Initialize();
+		pqtControlMgr::AddControlFactory( new pqtControlFactoryBase() );
+		pqtControlMgr::AddControlFactory( new pqtControlFactoryCustom() );
+		pqtControlMgr::AddControlFactory( new ptmControlFactoryTimeline() );
 #endif // USE_WXWIDGETS
 		DBG_TRACE("Property controls Init complete.");
 
@@ -175,6 +247,13 @@ mainInitGraphics::mainInitGraphics(int i_AppWidth,
 		//guiMessageBox::Show("Test Test", "Critical Test");
 
 		inPackage::Init();
+		// The keyboard and mouse get their input from the GUI toolkit. The
+		// render panels feed the wheel, so only the view under the cursor zooms.
+#if defined(USE_QT)
+		tqtInputFeed::Init();
+#elif defined(USE_WXWIDGETS)
+		twxInputFeed::Init();
+#endif
 		mnmVJoystick::Init();		//this will properly configure the inDeviceMgr's VirtualJoystick
 		DBG_TRACE("Input Init complete.");
 
@@ -213,11 +292,18 @@ mainInitGraphics::~mainInitGraphics()
 	//
 	snSoundManager::DeInitialize();
 	snSoundSystem::DeInitialize();
+#if defined(USE_QT)
+	tqtInputFeed::CleanUp();
+#elif defined(USE_WXWIDGETS)
+	twxInputFeed::CleanUp();
+#endif
 	inPackage::CleanUp();
 
 #ifdef USE_WXWIDGETS
 //	pwxCallbackMgr::DeInitialize();
 	pwxControlMgr::DeInitialize();
+#elif defined(USE_QT)
+	pqtControlMgr::DeInitialize();
 #endif // USE_WXWIDGETS
 
 	m_pApp->DeInitializeRender();

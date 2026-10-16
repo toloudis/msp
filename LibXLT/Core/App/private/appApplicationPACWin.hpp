@@ -14,6 +14,7 @@
 #define APP_APPLICATIONPACWIN_HPP
 
 #include <windows.h>
+#include <string>
 
 #ifndef IT_STRING_HPP
 #include "Core/it/itString.hpp"
@@ -201,7 +202,17 @@ class appApplicationPAC
 		//	Destory secondary window created by previous call to 
 		//		CreateSubWindow()
 		//--------------------------------------------------------------------
-		static void DestroySubWindow(HWND i_Hwnd);
+		static void DestroySubWindow(void* i_Hwnd);
+
+		//--------------------------------------------------------------------
+		//	Make UI Automation let go of the application's windows
+		//--------------------------------------------------------------------
+		static void ReleaseAccessibilityClients();
+
+		//--------------------------------------------------------------------
+		//	Start a program without waiting for it
+		//--------------------------------------------------------------------
+		static bool LaunchProgram(const std::string& i_CommandLine, bool i_ShowWindow);
 
 		//--------------------------------------------------------------------
 		//	Used for creating an application that doesn't use Run()
@@ -231,8 +242,6 @@ class appApplicationPAC
 		int m_X, m_Y, m_Width, m_Height;
 		bool m_bQuit;
 		itString m_Title;
-		char m_LeadByte;	// lead byte for multi-byte characters
-		bool m_bHasLeadByte;
 };
 
 

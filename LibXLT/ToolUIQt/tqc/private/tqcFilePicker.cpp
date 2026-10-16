@@ -1,5 +1,7 @@
 /****************************************************************************\
-**	tqcFilePicker.hpp
+**	tqcFilePicker.cpp
+**
+**	see .hpp
 **
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
@@ -9,43 +11,32 @@
 #include "Core/Gf/gfDirectoryCategories.hpp"
 #include "Core/Fs/fsFileUtil.hpp"
 #include "Core/It/itStringUtil.hpp"
-
 #include "Tool/gui/guiMessageBox.hpp"
 
-#ifdef QT_FINISH_PORT
-
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 tqcFilePicker::tqcFilePicker(QWidget* i_pParent)
-:	wxPanel(i_pParent, wxID_ANY),
+:	QWidget(i_pParent),
 	m_Filter("All files (*.*)|*.*"),
 	m_bShowFileNameOnly(false)
-{		
-	wxBoxSizer* bSizer1;
-	bSizer1 = new wxBoxSizer( wxHORIZONTAL );
+{
+	QHBoxLayout* bSizer1 = new QHBoxLayout(this);
+	bSizer1->setContentsMargins(0, 0, 0, 0);
+	bSizer1->setSpacing(0);
 
-	//m_pTextBox = new tqcTextBox( this );
 	// Create text control with a good size width so that more of the
-	// original text is shown when it is resized bigger. (It seemed like
-	// a width of 100 was being used when not specifically specified).
-	m_pTextBox = new tqcTextBox( this, wxID_ANY, L"", false, false, wxSize(180,-1) );
-	this->Connect( m_pTextBox->GetId(), wxEVT_VALUE_CHANGED,
-					wxCommandEventHandler(tqcFilePicker::OnTextChange) );
-	bSizer1->Add( m_pTextBox, 1, wxALL, 0 );
-	
-	m_pBrowseButton = new wxButton(this, wxID_ANY, L"...", wxDefaultPosition, wxSize( 30,20 ));
-	this->Connect( m_pBrowseButton->GetId(), wxEVT_COMMAND_BUTTON_CLICKED,
-					wxCommandEventHandler(tqcFilePicker::OnBrowseClick) );
-	bSizer1->Add( m_pBrowseButton, 0, wxALL, 0 );
+	// original text is shown when it is resized bigger.
+	m_pTextBox = new tqcTextBox( this );
+	m_pTextBox->setMinimumWidth(180);
+	m_pTextBox->SetValueChangedCallback([this]() { OnTextChange(); });
+	bSizer1->addWidget( m_pTextBox, 1 );
 
-	// Set up font and colors
-	this->InheritAttributes();
-	
-	this->SetSizer( bSizer1 );
-	this->Layout();
-
-	//update_slider();
+	m_pBrowseButton = new QPushButton("...", this);
+	m_pBrowseButton->setFixedWidth(30);
+	QObject::connect(m_pBrowseButton, &QPushButton::clicked, [this]() { OnBrowseClick(); });
+	bSizer1->addWidget( m_pBrowseButton, 0 );
 }
 
 //--------------------------------------------------------------------
@@ -139,7 +130,7 @@ fsLocator tqcFilePicker::get_initial_directory()
     {
         // If the file exists, we can set the initial
         // directory to be the filename, otherwise try
-        // to get the intended directory from the 
+        // to get the intended directory from the
         // rest of the fullpath.
 		if (fsFileUtil::DirectoryExists(m_Value))
             return m_Value;
@@ -174,16 +165,18 @@ void tqcFilePicker::update_textbox()
 	if (this->m_bShowFileNameOnly)
 	{
 		if (m_Value.GetNumNames() > 0)
-			this->m_pTextBox->SetValue(m_Value.GetLastName().GetString());
+			this->m_pTextBox->SetValue(QString::fromWCharArray(m_Value.GetLastName().GetString()));
 		else
-			this->m_pTextBox->SetValue(L"");
+			this->m_pTextBox->SetValue(QString());
 	}
 	else
 	{
 		itString full_path;
 		fsFileUtil::LocatorToUnicodeString( m_Value, full_path );
-		this->m_pTextBox->SetValue(full_path.GetString());
-		this->m_pTextBox->SetInsertionPointEnd(); // show end of fullpath, not beginning
+		this->m_pTextBox->SetValue(QString::fromWCharArray(full_path.GetString()));
+		// show end of fullpath, not beginning
+		if (QLineEdit* pLineEdit = this->m_pTextBox->GetLineEdit())
+			pLineEdit->end(false);
 	}
 }
 
@@ -191,17 +184,15 @@ void tqcFilePicker::update_textbox()
 //----------------------------------------------------------------------------
 void tqcFilePicker::notify_callback()
 {
-	// trigger the callback
-	wxCommandEvent changed_event(wxEVT_VALUE_CHANGED, this->GetId());
-	m_pTextBox->ProcessCommand(changed_event);
+	NotifyValueChanged();
 }
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void tqcFilePicker::OnTextChange(wxCommandEvent& i_Event)
-{	
-	wxString lastvalue = m_pTextBox->last_value();
-	itString full_path(m_pTextBox->GetValue());
+void tqcFilePicker::OnTextChange()
+{
+	QString lastvalue = m_pTextBox->last_value();
+	itString full_path(m_pTextBox->GetValue().toStdWString().c_str());
 	fsFileUtil::UnicodeStringToLocator(full_path, m_Value);
 	if(full_path.GetLength() != 0 )
 	{
@@ -212,7 +203,7 @@ void tqcFilePicker::OnTextChange(wxCommandEvent& i_Event)
 			std::string msg = "Cannot find file\n" + filename;
 			guiMessageBox::Show(msg.c_str(), "Error", guiMessageBox::e_OKOnly);
 			m_pTextBox->SetValue(lastvalue);
-			itString path(lastvalue);
+			itString path(lastvalue.toStdWString().c_str());
 			fsFileUtil::UnicodeStringToLocator(path, m_Value);
 		}
 	}
@@ -221,23 +212,17 @@ void tqcFilePicker::OnTextChange(wxCommandEvent& i_Event)
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void tqcFilePicker::OnBrowseClick(wxCommandEvent& i_Event)
-{	
+void tqcFilePicker::OnBrowseClick()
+{
 	itString init_dir;
 	fsFileUtil::LocatorToUnicodeString( get_initial_directory(), init_dir );
-
-	wxFileDialog dialog( this,
-					_T("Open File"),
-					init_dir.GetString(),
-					wxEmptyString,
-					m_Filter.GetString()
-				 );
-
-	//dialog.CentreOnParent();
-
-	if (dialog.ShowModal() == QMessageBox::Ok)
+	QString path = QFileDialog::getOpenFileName( this,
+												 "Open File",
+												 QString::fromWCharArray(init_dir.GetString()),
+												 tqtFileDialogFilter(QString::fromWCharArray(m_Filter.GetString())) );
+	if (!path.isEmpty())
 	{
-		itString full_path(dialog.GetPath());
+		itString full_path(QDir::toNativeSeparators(path).toStdWString().c_str());
 		fsFileUtil::UnicodeStringToLocator(full_path, m_Value);
 
 		// maintain the current directory by category
@@ -247,7 +232,6 @@ void tqcFilePicker::OnBrowseClick(wxCommandEvent& i_Event)
 			cur_dir.Pop();
 			gfDirectoryCategories::SetCurDirectory(m_DirectoryCategory, cur_dir);
 		}
-
 		update_textbox();
 		notify_callback();
 	}

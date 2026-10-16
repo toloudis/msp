@@ -253,7 +253,6 @@ public:
 	prtyFileName	m_PreviewPassName;
 	prtyFileName	m_GIPassName;
 	prtyFileName	m_GlowPassName;
-	prtyFileName	m_MrayFinalGatherPassName;
 	prtyFileName	m_RmanColorBleedPassName;
 
 	//

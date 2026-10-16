@@ -25,13 +25,13 @@
 #include "Core/dbg/dbgMsg.hpp"
 #endif
 
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
 template<class PropertyType, class ValueType, class Converter>
 class pqtTemplate_FilePicker : public pqtControl
 {
-#ifdef QT_FINISH_PORT
 	public:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
@@ -58,9 +58,7 @@ class pqtTemplate_FilePicker : public pqtControl
 
 			//	hook up events
 			//
-			this->Connect( m_pActualControl->GetId(), wxEVT_VALUE_CHANGED,
-							wxCommandEventHandler(pqtTemplate_FilePicker::FilePicker_ValueChanged) );
-			m_pActualControl->PushEventHandler(this);
+			m_pActualControl->SetValueChangedCallback([this]() { FilePicker_ValueChanged(); });
 		}
 
 		//----------------------------------------------------------------------------
@@ -68,7 +66,6 @@ class pqtTemplate_FilePicker : public pqtControl
 		//----------------------------------------------------------------------------
 		virtual ~pqtTemplate_FilePicker()
 		{
-			m_pActualControl->RemoveEventHandler(this);
 		}
 
 		//----------------------------------------------------------------------------
@@ -105,7 +102,7 @@ class pqtTemplate_FilePicker : public pqtControl
 		//----------------------------------------------------------------------------
 		void UpdateControl(prtyPropertyUIInfo* i_pUIInfo)
 		{
-			m_pActualControl->Enable(!i_pUIInfo->GetReadOnly());
+			m_pActualControl->setEnabled(!i_pUIInfo->GetReadOnly());
 
 			prtyFileChooserUIInfo* pUII = static_cast<prtyFileChooserUIInfo*>(i_pUIInfo);
 			m_pActualControl->SetFilter( pUII->GetFileFilter() );
@@ -117,7 +114,7 @@ class pqtTemplate_FilePicker : public pqtControl
 	private:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
-		void FilePicker_ValueChanged(wxCommandEvent& i_Event)
+		void FilePicker_ValueChanged()
 		{
 			if (m_bLocalChangeNoUpdate) return;
 
@@ -131,6 +128,6 @@ class pqtTemplate_FilePicker : public pqtControl
 		}
 
 		tqcFilePicker* m_pActualControl;
-#endif // USE_QT
 };
 
+#endif // USE_QT

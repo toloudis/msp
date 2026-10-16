@@ -5,6 +5,10 @@
 **		for its current state, as well as appropriate accessors for retrieving
 **		info about the state.
 **
+**		The keyboard has no device of its own: the GUI toolkit reports key
+**		events with SetKeyState or SetNativeKeyState as they arrive, and
+**		Think turns them into the per-frame state.
+**
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
@@ -21,8 +25,6 @@
 #ifndef IN_KEYS_HPP
 #include "Input/in/inKeys.hpp"
 #endif
-
-class inKeyboardPAC;
 
 class inKeyboard : public inDevice
 {
@@ -67,10 +69,30 @@ public:
 	//========================================================================
 	bool IsReleased(inKeys::Keys i_Key);
 
+	//========================================================================
+	//	SetKeyState records a key going down or up. A key that goes down
+	//	and back up between two Thinks still shows as pressed for a frame.
+	//========================================================================
+	void SetKeyState(inKeys::Keys i_Key, bool i_bDown);
+
+	//========================================================================
+	//	SetNativeKeyState records a key going down or up, given the
+	//	platform's scan code for it (on Windows, the scan code from the
+	//	key message, plus 0x100 for extended keys). Keys we don't know
+	//	are ignored.
+	//========================================================================
+	void SetNativeKeyState(unsigned int i_NativeScanCode, bool i_bDown);
+
+	//========================================================================
+	//	ReleaseAll marks every key as up. Call it when the application loses
+	//	the keyboard, since the key-up events will go elsewhere.
+	//========================================================================
+	void ReleaseAll();
 
 private:
 	enum { e_KEYBUFSIZE = 256 };
 	bool m_PastState[e_KEYBUFSIZE];
 	bool m_CurState[e_KEYBUFSIZE];
-	inKeyboardPAC *m_pPAC;
+	bool m_LiveState[e_KEYBUFSIZE];			// as of the latest event
+	bool m_PressedSinceThink[e_KEYBUFSIZE];	// went down since the last Think
 };

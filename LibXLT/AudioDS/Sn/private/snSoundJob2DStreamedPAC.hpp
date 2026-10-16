@@ -43,9 +43,5 @@ class snSoundJob2DStreamedPAC
 		#error snSoundJob2DStreamedPAC not defined for this platform
 	#endif
 #else
-	#if ENV_OS == ENV_XBOXOS
-		#include "AudioDS/sn/private/snSoundJob2DStreamedPACXbox.hpp"
-	#else
-		#error snSoundJob2DStreamedPAC not defined for this platform
-	#endif
+	#error snSoundJob2DStreamedPAC not defined for this platform
 #endif

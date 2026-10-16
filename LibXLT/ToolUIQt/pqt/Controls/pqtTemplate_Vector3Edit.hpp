@@ -25,13 +25,17 @@
 #include "Core/dbg/dbgMsg.hpp"
 #endif
 
+#ifndef PRTY_VECTOR3DEDITUIINFO_HPP
+#include "Core/prty/prtyVector3dEditUIInfo.hpp"
+#endif
+
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
 template<class PropertyType, class ValueType, class Converter>
 class pqtTemplate_Vector3Edit : public pqtControl, public prtyUnitsInterest
 {
-#ifdef QT_FINISH_PORT
 	public:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
@@ -62,9 +66,7 @@ class pqtTemplate_Vector3Edit : public pqtControl, public prtyUnitsInterest
 
 			//	hook up events
 			//
-			this->Connect( m_pActualControl->GetId(), wxEVT_VALUE_CHANGED,
-							wxCommandEventHandler(pqtTemplate_Vector3Edit::Vector3Edit_ValueChanged) );
-			m_pActualControl->PushEventHandler(this);
+			m_pActualControl->SetValueChangedCallback([this]() { Vector3Edit_ValueChanged(); });
 		}
 
 		//----------------------------------------------------------------------------
@@ -73,7 +75,6 @@ class pqtTemplate_Vector3Edit : public pqtControl, public prtyUnitsInterest
 		virtual ~pqtTemplate_Vector3Edit()
 		{
 			prtyUnits::UnRegisterUnitsInterest(this);
-			m_pActualControl->RemoveEventHandler(this);
 		}
 
 		//----------------------------------------------------------------------------
@@ -111,7 +112,7 @@ class pqtTemplate_Vector3Edit : public pqtControl, public prtyUnitsInterest
 		//----------------------------------------------------------------------------
 		void UpdateControl(prtyPropertyUIInfo* i_pUIInfo)
 		{
-			m_pActualControl->Enable(!i_pUIInfo->GetReadOnly());
+			m_pActualControl->setEnabled(!i_pUIInfo->GetReadOnly());
 
 			prtyVector3dEditUIInfo* pUII = static_cast<prtyVector3dEditUIInfo*>(i_pUIInfo);
 			m_pActualControl->SetDecimalPlaces( pUII->GetDecimalPlaces() );
@@ -130,7 +131,7 @@ class pqtTemplate_Vector3Edit : public pqtControl, public prtyUnitsInterest
 	private:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
-		void Vector3Edit_ValueChanged(wxCommandEvent& i_Event)
+		void Vector3Edit_ValueChanged()
 		{
 			if (m_bLocalChangeNoUpdate) return;
 
@@ -145,6 +146,6 @@ class pqtTemplate_Vector3Edit : public pqtControl, public prtyUnitsInterest
 		}
 
 		tqcVector3Edit* m_pActualControl;
-#endif // USE_QT
 };
 
+#endif // USE_QT

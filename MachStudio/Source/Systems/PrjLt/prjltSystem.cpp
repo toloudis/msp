@@ -16,14 +16,12 @@
 #include "Systems/PrjLt/Object/prjltObjectMgr.hpp"
 #include "Systems/PrjLt/Object/prjltReportMemInterest.hpp"
 #include "Systems/PrjLt/Object/prjltRendermanExportInterest.hpp"
-#include "Systems/PrjLt/Object/prjltMRayExportInterest.hpp"
 #include "Systems/PrjLt/Object/prjltSelectInterest.hpp"
 #include "Systems/PrjLt/GUI/prjltTextureList.hpp"
 #include "Systems/PrjLt/Undo/prjltOperations.hpp"
 
 #include "Features/Reports/ReportMem/rptReportMemMgr.hpp"
 #include "Support/rman/rmanMgr.hpp"
-#include "Support/mray/mrayMgr.hpp"
 #include "Support/vis/visMgr.hpp"
 #include "Systems/Common/GUI/cmmDialogInterestMgr.hpp"
 #include "Systems/Common/Templates/cmmNameInterestTemplate.hpp"
@@ -55,7 +53,6 @@ namespace prjltSystem
 		prjltDialogInterest*			l_pProjectedLightsDI = 0;
 		prjltReportMemInterest*			l_pProjectedLightsMI = 0;
 		prjltRendermanExportInterest*	l_pProjectedLightsREI = 0;
-		prjltMRayExportInterest*		l_pProjectedLightsMRayEI = 0;
 		
 		//============================================================================
 		//============================================================================
@@ -146,12 +143,6 @@ namespace prjltSystem
 			rmanMgr::RegisterExportInterest( l_pProjectedLightsREI );
 		}
 
-		// register the mray interest
-		if ( l_pProjectedLightsMRayEI == 0 )
-		{
-			l_pProjectedLightsMRayEI = new prjltMRayExportInterest();
-			mrayMgr::RegisterExportInterest( l_pProjectedLightsMRayEI );
-		}
 
 		// register the context menu interest
 		if ( l_pProjectedLightsCMI == 0 )
@@ -227,13 +218,6 @@ namespace prjltSystem
 			l_pProjectedLightsREI = 0;
 		}
 
-		//	Unregister the mray Export Interest
-		if ( l_pProjectedLightsMRayEI != 0 )
-		{
-			mrayMgr::UnRegisterExportInterest( l_pProjectedLightsMRayEI );
-			delete l_pProjectedLightsMRayEI;
-			l_pProjectedLightsMRayEI = 0;
-		}
 
 		//	Unregister the context menu Interest
 		if ( l_pProjectedLightsCMI != 0 )

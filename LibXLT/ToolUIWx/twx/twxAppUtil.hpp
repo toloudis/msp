@@ -23,21 +23,11 @@
 namespace twxAppUtil
 {
 	//--------------------------------------------------------------------
-	// Pass in a few variables from WinMain into wxWidgets
+	// Pass in a few variables from WinMain into wxWidgets.  i_hInstance
+	// is the native application instance (an HINSTANCE on Windows).
 	//--------------------------------------------------------------------
-	void SetInstance( HINSTANCE i_hInstance,
+	void SetInstance( void*     i_hInstance,
 					  int       i_nCmdShow );
-
-	//--------------------------------------------------------------------
-	//	ParseCommandLine fills in the argc and argv variables needed
-	//	by wxWidgets setup
-	//--------------------------------------------------------------------
-	void ParseCommandLine(int &o_Argc, wxChar **&o_Argv);
-
-	//--------------------------------------------------------------------
-	// Frees the arguments allocated in ParseCommandLine
-	//--------------------------------------------------------------------
-	void FreeArgs(int &o_Argc, wxChar **&o_Argv);
 
 	//--------------------------------------------------------------------
 	// Initializes wxWidgets, returns true if successful.

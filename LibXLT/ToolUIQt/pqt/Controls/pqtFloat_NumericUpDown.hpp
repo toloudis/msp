@@ -22,12 +22,12 @@
 #include "Core/prty/prtyFloat.hpp"
 #endif
 
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
 class pqtFloat_NumericUpDown_Converter : public pqtFloatConverter
 {
-#ifdef USE_QT
 public:
 	//----------------------------------------------------------------------------
 	// Set value into control
@@ -39,10 +39,11 @@ public:
 	// Get value from control
 	//----------------------------------------------------------------------------
 	static float GetValueFromControl(tqcNumericUpDown* i_pActualControl);
-#endif // USE_QT
+
 };
 
 //============================================================================
 //============================================================================
 typedef pqtTemplate_NumericUpDown<prtyFloat, float, pqtFloat_NumericUpDown_Converter> pqtFloat_NumericUpDown;
 
+#endif // USE_QT

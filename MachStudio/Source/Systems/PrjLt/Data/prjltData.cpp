@@ -69,19 +69,12 @@ prjltData::prjltData()
 	m_HairMaxBound("Max Bounds", 1000000.0f ),
 	m_HairShadowType("Hair Shadow Type"),
 	m_GISource("GI Source", false),
-	m_ReflectiveMapSize("GI Map Size", 256),
-	m_bMRayAreaLight("Enable Area Light", false),
-	m_MRayAreaLightType("Area Light Type", 0),
-	m_MRayAreaLightSampling("Area Light Sampling", 8),
-	m_bMRayAreaLightVisible("Visible", false)
+	m_ReflectiveMapSize("GI Map Size", 256)
 {
 	m_ShadowQuality.SetEnumTag(0, "Low");
 	m_ShadowQuality.SetEnumTag(1, "Medium");
 	m_ShadowQuality.SetEnumTag(2, "High");
 	m_ShadowQuality.SetEnumTag(3, "Very High");
-
-	m_MRayAreaLightType.SetEnumTag(0, "Rectangle");
-	m_MRayAreaLightType.SetEnumTag(1, "Disc");
 
 	/*m_RampShape.SetEnumTag(0, "Linear X");
 	m_RampShape.SetEnumTag(1, "Linear Y");
@@ -143,11 +136,7 @@ prjltData::prjltData(const prjltData& i_Data)
 	m_bEnabledRamp("Enable Ramp Texture", false),
 	m_RampTrigger("Ramp Edit"),
 	m_GISource("GI Source", false),
-	m_ReflectiveMapSize("GI Map Size", 256),
-	m_bMRayAreaLight("Enable Area Light", false),
-	m_MRayAreaLightSampling("Area Light Sampling", 8),
-	m_MRayAreaLightType("Area Light Type", 0),
-	m_bMRayAreaLightVisible("Visible", false)
+	m_ReflectiveMapSize("GI Map Size", 256)
 	/*m_RampGradient("Ramp", maGradient()),
 	m_RampShape("Ramp Shape", 0),
 	m_RampInterpolation("Ramp Interpolation", 0),
@@ -261,11 +250,6 @@ prjltData& prjltData::operator=(const prjltData& i_Data)
 	this->m_HairMaxBound	= i_Data.m_HairMaxBound;
 
 	this->m_GISource			= i_Data.m_GISource;
-
-	this->m_bMRayAreaLight			= i_Data.m_bMRayAreaLight;
-	this->m_MRayAreaLightSampling	= i_Data.m_MRayAreaLightSampling;
-	this->m_MRayAreaLightType		= i_Data.m_MRayAreaLightType;
-	this->m_bMRayAreaLightVisible	= i_Data.m_bMRayAreaLightVisible;
 
 	return *this;
 }

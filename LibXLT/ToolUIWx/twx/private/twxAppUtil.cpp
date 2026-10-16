@@ -8,14 +8,16 @@
 \****************************************************************************/
 #include "ToolUIWx/twx/twxAppUtil.hpp"
 
+#include "ToolUIWx/twx/twxInputFeed.hpp"
 #include "ToolUIWx/twx/twxMessaging.hpp"
 
 #ifdef USE_WXWIDGETS
 
-#include <wx/cmdline.h>
 //#include <wx/init.h>
 
+#ifdef __WXMSW__
 extern void wxSetInstance(HINSTANCE hInst);
+#endif
 
 namespace twxAppUtil
 {
@@ -53,10 +55,13 @@ namespace twxAppUtil
 			virtual bool OnInit();
 
 			//----------------------------------------------------------------------------
-			// Catch events in order to process hot keys
+			// Catch events in order to feed the input package and process hot keys
 			//----------------------------------------------------------------------------
 			virtual int FilterEvent(wxEvent& i_Event)
 			{
+				// First, so it sees the keys that the hot keys use up
+				twxInputFeed::FilterEvent(i_Event);
+
 				if ( i_Event.GetEventType() == wxEVT_KEY_DOWN )
 				{
 					if (twxMessaging::ShouldProcessHotKeys())
@@ -117,138 +122,19 @@ namespace twxAppUtil
 			return true;
 		}
 
-		// ----------------------------------------------------------------------------
-		// ----------------------------------------------------------------------------
-		wxArrayString ConvertStringToArgs(const wxChar *p)
-		{
-			wxArrayString args;
-
-			wxString arg;
-//			arg.reserve(1024);
-
-			bool isInsideQuotes = false;
-			for ( ;; )
-			{
-				// skip white space
-				while ( *p == _T(' ') || *p == _T('\t') )
-					p++;
-
-				// anything left?
-				if ( *p == _T('\0') )
-					break;
-
-				// parse this parameter
-				bool endParam = false;
-				bool lastBS = false;
-				for ( arg.clear(); !endParam; p++ )
-				{
-					switch ( *p )
-					{
-						case _T('"'):
-							if ( !lastBS )
-							{
-								isInsideQuotes = !isInsideQuotes;
-
-								// don't put quote in arg
-								continue;
-							}
-							//else: quote has no special meaning but the backslash
-							//      still remains -- makes no sense but this is what
-							//      Windows does
-							break;
-
-						case _T(' '):
-						case _T('\t'):
-							// backslash does *not* quote the space, only quotes do
-							if ( isInsideQuotes )
-							{
-								// skip assignment below
-								break;
-							}
-							// fall through
-
-						case _T('\0'):
-							endParam = true;
-
-							break;
-					}
-
-					if ( endParam )
-					{
-						break;
-					}
-
-					lastBS = *p == _T('\\');
-
-					arg += *p;
-				}
-
-				args.push_back(arg);
-			}
-
-			return args;
-		}
-
 	} // local namespace
 
 	//--------------------------------------------------------------------
 	// Pass in a few variables from WinMain into wxWidgets
 	//--------------------------------------------------------------------
-	void SetInstance( HINSTANCE i_hInstance,
+	void SetInstance( void*     i_hInstance,
 					  int       i_nCmdShow )
 	{
+#ifdef __WXMSW__
 		// remember the parameters Windows gave us
-		wxSetInstance(i_hInstance);
+		wxSetInstance(static_cast<HINSTANCE>(i_hInstance));
 		wxApp::m_nCmdShow = i_nCmdShow;
-	}
-
-	//--------------------------------------------------------------------
-	//	ParseCommandLine fills in the o_Argc and o_Argv variables needed
-	//	by wxWidgets setup
-	//--------------------------------------------------------------------
-	void ParseCommandLine(int &o_Argc,
-						  wxChar **&o_Argv)
-	{
-		// parse the command line: we can't use pCmdLine in Unicode build so it is
-		// simpler to never use it at all (this also results in a more correct
-		// o_Argv[0])
-
-		// break the command line in words
-		wxArrayString args;
-
-		const wxChar *cmdLine = ::GetCommandLine();
-		if ( cmdLine )
-		{
-			//args = wxCmdLineParser::ConvertStringToArgs(cmdLine);
-			args = ConvertStringToArgs(cmdLine);
-		}
-
-		o_Argc = args.GetCount();
-
-		// +1 here for the terminating NULL
-		o_Argv = new wxChar *[o_Argc + 1];
-		for ( int i = 0; i < o_Argc; i++ )
-		{
-			o_Argv[i] = (wxChar*)wxStrdup(args[i]);
-		}
-
-		// o_Argv[] must be NULL-terminated
-		o_Argv[o_Argc] = NULL;
-	}
-
-	//--------------------------------------------------------------------
-	// Frees the arguments allocated in ParseCommandLine
-	//--------------------------------------------------------------------
-	void FreeArgs(int &o_Argc, wxChar **&o_Argv)
-	{
-		// notice that o_Argv elements are supposed to be allocated using malloc() while
-		// o_Argv array itself is allocated with new
-		for ( int i = 0; i < o_Argc; i++ )
-		{
-			free(o_Argv[i]);
-		}
-
-		delete [] o_Argv;
+#endif
 	}
 
 	//--------------------------------------------------------------------

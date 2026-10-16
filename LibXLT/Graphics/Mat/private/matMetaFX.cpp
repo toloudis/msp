@@ -37,15 +37,8 @@ envAppVersion matMetaFX::GetCurrentHLSLVersion()
 {
 	// This version should be incremented if the interface between the
 	// header and footer and the HLSL shade function changes. If the HLSL code
-	// comes from an older version, then this would force a recompile from 
-	// the MetaSL version of code or an exception to be thrown.
+	// comes from an older version, then an exception would be thrown.
 	// This version should not have to be incremented often.
-	return envAppVersion(1,0,0,0);
-}
-envAppVersion matMetaFX::GetCurrentMetaSLVersion()
-{
-	// This version marks the version of MetaSL code and 
-	// is not currently used.
 	return envAppVersion(1,0,0,0);
 }
 
@@ -91,20 +84,6 @@ void matMetaFX::SetHLSLSource(const std::string& i_ShaderSource)
 		m_HLSLSource.m_Data = i_ShaderSource;
 		m_HLSLSource.m_Version = matMetaFX::GetCurrentHLSLVersion();
 		m_HLSLSource.m_bHasData = true;
-	}
-}
-
-//====================================================================
-// Set MetaSL shader source from string.
-// This class will make a copy of the data,
-//====================================================================
-void matMetaFX::SetMetaSLSource(const std::string& i_ShaderSource)
-{
-	if (!i_ShaderSource.empty())
-	{
-		m_MetaSLSource.m_Data = i_ShaderSource;
-		m_MetaSLSource.m_Version = matMetaFX::GetCurrentMetaSLVersion();
-		m_MetaSLSource.m_bHasData = true;
 	}
 }
 

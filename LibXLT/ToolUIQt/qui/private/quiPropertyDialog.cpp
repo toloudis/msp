@@ -21,15 +21,15 @@ guiPropertyDialog::ReturnValue quiPropertyDialog::ShowModal(const char* i_Dialog
 															const prtyPropertyUIInfoContainer& i_PropertyContainer,
 															const char* i_Message)
 {
-#ifdef QT_FINISH_PORT
-	wxString title(i_DialogTitle, wxConvUTF8);
+#ifdef USE_QT
+	QString title = tqtQString(i_DialogTitle);
 	tqtPropertyDialog dialog(tqtSystem::g_pMainForm, title, i_PropertyContainer, i_Message);
-	int result = dialog.ShowModal();
-	if (result == QMessageBox::Ok)
+	int result = dialog.exec();
+	if (result == QDialog::Accepted)
 		return guiPropertyDialog::e_OK;
 	else
 		return guiPropertyDialog::e_Cancel;
-#else // USE_WXWIDGETS
+#else // USE_QT
 	return guiPropertyDialog::e_Cancel;
 #endif // USE_QT
 }

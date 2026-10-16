@@ -1,7 +1,7 @@
 /*****************************************************************************
-**	quiProgressDialog.hpp
+**  quiProgressDialog.hpp
 **
-**	An interface to a progress dialog.
+**      A non-managed interface to a message box.
 **
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved
@@ -14,7 +14,6 @@
 #ifndef GUI_PROGRESSDIALOG_HPP
 #include "Tool/gui/guiProgressDialog.hpp"
 #endif
-
 
 //============================================================================
 //============================================================================

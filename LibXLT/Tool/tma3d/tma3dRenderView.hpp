@@ -122,6 +122,26 @@ public:
 	void ResizeWindow(int i_Width, int i_Height, int iWidthDIP=0, int iHeightDIP=0);
 
 	//--------------------------------------------------------------------
+	// Resize back buffer of window to the panel size, render at the
+	//	given render size, and scale the image to fit the panel.
+	//	The virtual resolution is set from the given DIP size.
+	//--------------------------------------------------------------------
+	void ResizeWindowToFit(int i_PanelWidth, int i_PanelHeight,
+						   int i_RenderWidth, int i_RenderHeight,
+						   int i_RenderWidthDIP, int i_RenderHeightDIP);
+
+	//--------------------------------------------------------------------
+	// Convert a position in panel pixels to a pixel in the rendered
+	//	image. The result is outside the image in the black bars.
+	//--------------------------------------------------------------------
+	void PanelToRenderPixel(int& io_X, int& io_Y) const;
+
+	//--------------------------------------------------------------------
+	// Size of the rendered image in pixels
+	//--------------------------------------------------------------------
+	void GetRenderSize(int& o_Width, int& o_Height) const;
+
+	//--------------------------------------------------------------------
 	// Render objects at given pixel with color encodings.
 	// Returns pick code that can be used to search for the picked
 	// g3dSceneNode in the scene graph. A returned value of 0

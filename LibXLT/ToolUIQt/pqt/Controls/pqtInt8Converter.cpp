@@ -8,7 +8,6 @@
 #include "ToolUIQt/pqt/Controls/pqtInt8Converter.hpp"
 #include "ToolUIQt/pqt/Controls/pqtControlUtil.hpp"
 
-
 #ifdef USE_QT
 
 //----------------------------------------------------------------------------

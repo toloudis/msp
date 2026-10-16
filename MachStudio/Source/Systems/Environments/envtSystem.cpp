@@ -19,7 +19,6 @@
 #include "Systems/Environments/Object/envtSelectInterest.hpp"
 #include "Systems/Environments/Object/envtReportMemInterest.hpp"
 #include "Systems/Environments/Object/envtRendermanExportInterest.hpp"
-#include "Systems/Environments/Object/envtMRayExportInterest.hpp"
 #include "Systems/Environments/GUI/envtTextureList.hpp"
 
 #include "Features/Reports/ReportMem/rptReportMemMgr.hpp"
@@ -34,7 +33,6 @@
 #include "Tool/ctxm/ctxmContextMenu.hpp"
 #include "Tool/pick3d/pick3dMgr.hpp"
 #include "Support/rman/rmanMgr.hpp"
-#include "Support/mray/mrayMgr.hpp"
 #include "Support/vis/visMgr.hpp"
 
 namespace envtSystem
@@ -54,7 +52,6 @@ namespace envtSystem
 		envtReportMemInterest*			l_pEnvironmentsMI = 0;
 		envtContextMenuInterest*		l_pEnvironmentsCMI = NULL;
 		envtRendermanExportInterest*	l_pEnvironmentsREI = 0;
-		envtMRayExportInterest*			l_pEnvironmentsMRayEI = 0;
 	}
 
 	//--------------------------------------------------------------------
@@ -124,12 +121,6 @@ namespace envtSystem
 		{
 			l_pEnvironmentsREI = new envtRendermanExportInterest();
 			rmanMgr::RegisterExportInterest( l_pEnvironmentsREI );
-		}
-		// register the mray export interest
-		if ( l_pEnvironmentsMRayEI == 0 )
-		{
-			l_pEnvironmentsMRayEI = new envtMRayExportInterest();
-			mrayMgr::RegisterExportInterest( l_pEnvironmentsMRayEI );
 		}
 
 		// Timeline related creators
@@ -214,14 +205,6 @@ namespace envtSystem
 			rmanMgr::UnRegisterExportInterest( l_pEnvironmentsREI );
 			delete l_pEnvironmentsREI;
 			l_pEnvironmentsREI = 0;
-		}
-
-		//	Unregister the Renderman Export Interest
-		if ( l_pEnvironmentsMRayEI != 0 )
-		{
-			mrayMgr::UnRegisterExportInterest( l_pEnvironmentsMRayEI );
-			delete l_pEnvironmentsMRayEI;
-			l_pEnvironmentsMRayEI = 0;
 		}
 
 		// Clean up namespaces

@@ -411,7 +411,7 @@ void twcTextureFilePicker::OnInvokeClick(wxCommandEvent& i_Event)
 		fsFileUtil::LocatorToUnicodeString( get_initial_directory(), init_dir );
 
 		wxFileDialog dialog( this,
-						_T("Open File"),
+						wxT("Open File"),
 						init_dir.GetString(),
 						wxEmptyString,
 						m_Filter.GetString()

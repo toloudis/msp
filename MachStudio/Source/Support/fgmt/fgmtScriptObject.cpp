@@ -12,7 +12,11 @@
 #include "Support/fgmt/fgmtFragmentData.hpp"
 #include "Support/fgmt/GUI/fgmtOperations.hpp"
 #include "Support/fgmt/GUI/fgmtPropertyObject.hpp"
+#ifdef MSP_GUI_QT
+#include "Support/fgmt/qtGUI/fgmtUVEditor.hpp"
+#else
 #include "Support/fgmt/wxGUI/fgmtUVEditor.hpp"
+#endif
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/Fs/fsFileEnum.hpp"

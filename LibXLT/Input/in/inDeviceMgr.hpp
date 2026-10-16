@@ -124,7 +124,8 @@ namespace inDeviceMgr
 	void DeleteUserDefinedDevice( int i_Index );
 
 	//========================================================================
-	// We need to store the hwnd of the viewport window for later use
+	// We need to store the native handle of the viewport window for later
+	// use (the tablet collects ink in it)
 	//========================================================================
 	void SetWindowHandle(void* i_Hwnd);
 	void* GetWindowHandle();

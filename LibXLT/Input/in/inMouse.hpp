@@ -5,6 +5,11 @@
 **		for its current state, as well as appropriate accessors for retrieving
 **		info about the state.
 **
+**		The mouse has no device of its own. The GUI toolkit supplies an
+**		inMouseSource that Think samples for the cursor position and
+**		buttons, and reports button presses (NotifyButtonPressed) and wheel
+**		rotation (AddWheelDelta) from its events as they arrive.
+**
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
@@ -23,14 +28,27 @@
 #endif
 
 //========================================================================
-//	Forward References
+//	inMouseSource is how inMouse reads the cursor and buttons
 //========================================================================
-class inMousePAC;
+class inMouseSource
+{
+public:
+	virtual ~inMouseSource() {}
+
+	//========================================================================
+	//	Sample returns false when the application doesn't have the mouse
+	//	(it isn't the active application). Otherwise it returns the
+	//	cursor position in screen pixels and the buttons held down, as a
+	//	bit mask: bit 0 left, 1 right, 2 middle, 3 and 4 the extra buttons.
+	//========================================================================
+	virtual bool Sample(int& o_ScreenX, int& o_ScreenY, unsigned int& o_Buttons) = 0;
+};
 
 class inMouse : public inDevice
 {
 public:
 	enum { e_ANYBUTTON = -1 };
+	enum { e_LEFT = 0, e_RIGHT = 1, e_MIDDLE = 2, e_EXTRA1 = 3, e_EXTRA2 = 4 };
 
 	//========================================================================
 	//	Constructor
@@ -98,6 +116,32 @@ public:
 	void GetAnalogDir(int i_Stick, int& o_X, int& o_Y) const;
 	void GetAnalogDir(int i_Stick, int& o_X, int& o_Y, int& o_Z) const;
 
+	//========================================================================
+	//	SetSource sets where Think reads the cursor and buttons from. The
+	//	mouse doesn't own it. Pass NULL before deleting the source.
+	//========================================================================
+	void SetSource(inMouseSource* i_pSource);
+
+	//========================================================================
+	//	ResetMotion forgets the last cursor position, so the next Think
+	//	reports no motion. Call it when the application gets or loses the
+	//	mouse, so motion made while away doesn't arrive all at once.
+	//========================================================================
+	void ResetMotion();
+
+	//========================================================================
+	//	NotifyButtonPressed reports a button press event, so that a click
+	//	that goes down and back up between two Thinks still shows as
+	//	pressed for a frame.
+	//========================================================================
+	void NotifyButtonPressed(int i_Button);
+
+	//========================================================================
+	//	AddWheelDelta reports wheel rotation, in notches, from the window
+	//	under the cursor. It is applied on the next Think.
+	//========================================================================
+	void AddWheelDelta(float i_Notches);
+
 private:
 	enum { e_MOUSEBUFSIZE = 8 };
 	//we'll arbitrarily set this at 50, it seems around the limit of motion when not trying too hard
@@ -106,10 +150,15 @@ private:
 	int m_dX;
 	int m_dY;
 	float m_dZ;
+	float m_PendingWheel;
 	float m_Dir;
 	float m_Pressure;
 	inDigitalDir::DigitalDir m_DigitalDir;
 	bool m_PastState[e_MOUSEBUFSIZE];
 	bool m_CurState[e_MOUSEBUFSIZE];
-	inMousePAC *m_pPAC;
+	bool m_PressedSinceThink[e_MOUSEBUFSIZE];
+	inMouseSource *m_pSource;
+	bool m_bHaveLastPos;	// false until the first sample, and after losing the mouse
+	int m_LastX;
+	int m_LastY;
 };

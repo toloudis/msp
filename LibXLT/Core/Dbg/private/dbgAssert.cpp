@@ -18,18 +18,6 @@
 #include <sstream>
 #include <string>
 
-// Platform specific define
-//
-#if ENV_COMPILER == ENV_MSVCPP
-	#define print_function _vsnprintf
-#else
-	#if ENV_COMPILER == ENV_PRODGPS2
-		#define print_function vsnprintf
-	#else
-		#define print_function vsnprintf
-	#endif
-#endif
-
 
 //============================================================================
 //============================================================================

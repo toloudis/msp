@@ -9,10 +9,12 @@
 #include "Features/Capture/cptrRenderUtil.hpp"
 
 #include "MainApp/mnmApp.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtSystem.hpp"
+#endif
 
 #include "Features/Capture/cptrModeRenderBake.hpp"
 #include "Features/Capture/cptrWriteAVI.hpp"
-#include "Features/Capture/cptrWriteQuickTime.hpp"
 #include "Features/RenderPrefs/rndrPrefsMgr.hpp"
 #include "Features/RenderPrefs/rndrPrefsUtil.hpp"
 
@@ -445,28 +447,6 @@ fsLocator cptrRenderUtil::GetRibFilename()
 	return finalPath;
 }
 
-//----------------------------------------------------------------------------
-//	GetMiFilename() - get mental ray filename
-//----------------------------------------------------------------------------
-fsLocator cptrRenderUtil::GetMiFilename()
-{
-	captRenderOutputData& data = captRenderOutputDataUtil::Data();
-
-	// Write bitmap to file
-	int current_frame;
-	itString pureFileName;
-	tmlnTimeUtil::GetTimeInFrames( l_fSimTime, current_frame );
-	captRenderOutputDataUtil::SetCurrentFrame( current_frame );
-	captRenderOutputDataUtil::GenerateFilename( pureFileName, true );
-	pureFileName += '.';
-	pureFileName += 'm';
-	pureFileName += 'i';
-
-	fsLocator finalPath = data.m_OutputDirectory.GetValue();
-	finalPath.Push( pureFileName );
-
-	return finalPath;
-}
 
 //----------------------------------------------------------------------------
 //	CaptureFrame() - capture the frame
@@ -568,11 +548,6 @@ void cptrRenderUtil::CaptureFrame()
 			cptrWriteAVI::Write( pDownSampledImg, data.m_OutputDirectory.GetValue(), 1 );
 			data.m_bCaptureMovie.SetValue(true);
 		}
-		else if ( strcmp(data.m_CaptureFormat.GetValue().c_str(),"MOV")==0 )
-		{
-			cptrWriteQuickTime::Write( pDownSampledImg, data.m_OutputDirectory.GetValue(), l_fSimTime.AsSeconds(), 1 );
-			data.m_bCaptureMovie.SetValue(true);
-		}
 		else
 		{
 			DBG_ASSERT(false,"Invalid file format selected - " << data.m_CaptureFormat.GetValue().c_str());
@@ -671,16 +646,6 @@ void cptrRenderUtil::OpenOutput()
 		l_OutputFilenameFull.Push(l_OutputFilename);
 		l_OutputFilenameFull.Push(itString(L".avi"));
 	}
-	else if ( strcmp(data.m_CaptureFormat.GetValue().c_str(),"MOV")==0 )
-	{
-		cptrWriteQuickTime::BeginCapture(l_pWindow, data);
-
-		captRenderOutputDataUtil::GenerateFilename( l_OutputFilename );
-		
-		l_OutputFilenameFull = data.m_OutputDirectory.GetValue();
-		l_OutputFilenameFull.Push(l_OutputFilename);
-		l_OutputFilenameFull.Push(itString(L".mov"));
-	}
 }
 
 void cptrRenderUtil::CloseOutput()
@@ -702,29 +667,6 @@ void cptrRenderUtil::CloseOutput()
 		cptrWriteAVI::EndCapture();
 
 		capture_file_finished();
-	}
-	else if ( strcmp(data.m_CaptureFormat.GetValue().c_str(),"MOV")==0 )
-	{
-		if (data.m_SoundFile.GetValue().GetNumNames() > 0)
-		{
-			cptrWriteQuickTime::WriteAudio( data.m_SoundFile.GetValue() );
-		}
-		cptrWriteQuickTime::EndCapture();
-
-		capture_file_finished();
-	}
-}
-
-//------------------------------------------------------------------------
-//------------------------------------------------------------------------
-void cptrRenderUtil::CaptureTimeCode(const maTime& i_fStartTime, const maTime& i_fEndTime)
-{
-	//	if the current time is valid, but the last frame wasn't then write out a time code
-	//
-	captRenderOutputData& data = captRenderOutputDataUtil::Data();
-	if ( strcmp(data.m_CaptureFormat.GetValue().c_str(),"MOV")==0 )
-	{
-		cptrWriteQuickTime::WriteTimeCode( i_fStartTime.AsSeconds(), i_fEndTime.AsSeconds() );
 	}
 }
 
@@ -821,17 +763,16 @@ void cptrRenderUtil::CaptureQuadrant(int i_Index)
 	int width, height;
 	l_pWindow->GetDimensions(width, height);
 
-	POINT dest_point;
 	int quad_div = get_quadrant_div();
-	dest_point.x = (i_Index % quad_div) * width;
-	dest_point.y = (i_Index / quad_div) * height;
+	int dest_x = (i_Index % quad_div) * width;
+	int dest_y = (i_Index / quad_div) * height;
 	
 	g2dImage* qimage = NULL;
 	CaptureFrameToImage(qimage);
 	DBG_ASSERT(qimage != NULL, "CaptureWindowToImage failed");
 
 	// blit qimage to l_pQuadImage
-	l_pQuadImage->DrawImage(dest_point.x, dest_point.y, *qimage);
+	l_pQuadImage->DrawImage(dest_x, dest_y, *qimage);
 	delete qimage;
 }
 
@@ -985,12 +926,6 @@ void cptrRenderUtil::CaptureImage(g2dImage* i_pImage)
 
 		data.m_bCaptureMovie.SetValue(true);
 	}
-	else if ( strcmp(data.m_CaptureFormat.GetValue().c_str(),"MOV")==0 )
-	{
-		cptrWriteQuickTime::Write( pDownSampledImg, data.m_OutputDirectory.GetValue(), l_fSimTime.AsSeconds(), 1 );
-
-		data.m_bCaptureMovie.SetValue(true);
-	}
 	else
 	{
 		DBG_ASSERT(false,"Invalid file format selected - " << data.m_CaptureFormat.GetValue().c_str());
@@ -1032,6 +967,21 @@ void cptrRenderUtil::ToggleMenuItems(bool i_bToggle)
 	mid = twxSystem::g_pMainMenu->FindMenuItem(wxT("File"), wxT("Recent Files") );
 	if (mid != -1)
 		twxSystem::g_pMainMenu->Enable(mid, i_bToggle);
+#elif defined(USE_QT)
+	DBG_ASSERT((tqtSystem::g_pMainMenu != NULL), "MainMenu not yet initialized.");
+	const QList<QAction*> top_actions = tqtSystem::g_pMainMenu->actions();
+	for (QAction* pTop : top_actions)
+	{
+		if (pTop->menu() && pTop->text().remove(QLatin1Char('&')) == "File")
+		{
+			const QList<QAction*> file_actions = pTop->menu()->actions();
+			for (QAction* pItem : file_actions)
+			{
+				if (pItem->text().remove(QLatin1Char('&')) == "Recent Files")
+					pItem->setEnabled(i_bToggle);
+			}
+		}
+	}
 #endif
 }
 

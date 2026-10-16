@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Settings shared by every project in the repository (imported
+    automatically by MSBuild for every project under this directory).
+
+    The solution configuration chooses the GUI toolkit:
+      Debug Qt, Release Qt  - the Qt 6 interface (qtGUI folders,
+                              LibXLT/ToolUIQt)
+      Debug Wx, Release Wx  - the wxWidgets interface (wxGUI folders,
+                              LibXLT/ToolUIWx)
+    Every other configuration builds the wxWidgets interface.
+
+    MspGuiToolkit (Qt or Wx) is the toolkit, and MspBaseConfiguration is
+    the configuration without the toolkit (Debug or Release), for the
+    settings that only care about that.
+
+    A build sees only its own toolkit: the projects take the wxWidgets
+    include directories from MspWxIncludeDirs (empty for Qt) and import
+    wxwidgets.props (the wx libraries) only for Wx; the Qt include
+    directories and libraries come from LibXLT/ToolUIQt/qt6.props, which
+    is imported only for Qt. The solution leaves ToolUIWx out of the Qt
+    configurations and ToolUIQt out of the Wx ones (and each of them
+    builds nothing for the other toolkit). See
+    MachStudio/Source/Directory.Build.targets for the rest of what the
+    toolkit changes.
+  -->
+<Project>
+  <PropertyGroup>
+    <MspGuiToolkit Condition="$(Configuration.EndsWith(' Qt'))">Qt</MspGuiToolkit>
+    <MspGuiToolkit Condition="'$(MspGuiToolkit)' == ''">Wx</MspGuiToolkit>
+    <MspBaseConfiguration>$(Configuration)</MspBaseConfiguration>
+    <MspBaseConfiguration Condition="$(Configuration.EndsWith(' Qt')) or $(Configuration.EndsWith(' Wx'))">$(Configuration.Substring(0, $([MSBuild]::Subtract($(Configuration.Length), 3))))</MspBaseConfiguration>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(MspGuiToolkit)' == 'Wx'">
+    <MspWxIncludeDirs>$(MSBuildThisFileDirectory)3rdParty\wxWidgets\include;$(MSBuildThisFileDirectory)3rdParty\wxWidgets\include\msvc</MspWxIncludeDirs>
+  </PropertyGroup>
+</Project>

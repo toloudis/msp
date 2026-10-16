@@ -29,7 +29,7 @@ bool wuiFileDialogUtils::GetOpenFileName(const std::string &i_Filter,
 	itString init_dir;
 	fsFileUtil::LocatorToUnicodeString( i_InitialDir, init_dir );
 	wxFileDialog dialog( pParent,
-					_T("Open File"),
+					wxT("Open File"),
 					init_dir.GetString(),
 					wxEmptyString,
 					filter_str.GetString()
@@ -63,7 +63,7 @@ bool wuiFileDialogUtils::GetOpenFileNames(const std::string &i_Filter,
 	itString init_dir;
 	fsFileUtil::LocatorToUnicodeString( i_InitialDir, init_dir );
 	wxFileDialog dialog( pParent,
-					_T("Open Files"),
+					wxT("Open Files"),
 					init_dir.GetString(),
 					wxEmptyString,
 					filter_str.GetString(),
@@ -103,7 +103,7 @@ bool wuiFileDialogUtils::GetSaveFileName(const std::string &i_Filter,
 	itString filename;
 	fsFileUtil::LocatorToUnicodeString( io_ChosenLocator, filename );
 	wxFileDialog dialog( pParent,
-					_T("Save File"),
+					wxT("Save File"),
 					wxEmptyString,
 					filename.GetString(),
 					filter_str.GetString(),

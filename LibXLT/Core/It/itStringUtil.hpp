@@ -75,6 +75,17 @@ bool Equal(itString& i_String1, itString& i_String2);
 //	Compare the two strings ignoring case.
 //------------------------------------------------------------------------
 bool Equal(const itString& i_String1, const itString& i_String2);
+
+//------------------------------------------------------------------------
+//	Compare the two strings ignoring case, like strcmp: returns less than,
+//	equal to, or greater than zero.
+//------------------------------------------------------------------------
+int CompareNoCase(const std::string& i_String1, const std::string& i_String2);
+
+//------------------------------------------------------------------------
+//	Returns true if i_String starts with i_Prefix, ignoring case.
+//------------------------------------------------------------------------
+bool StartsWithNoCase(const std::string& i_String, const std::string& i_Prefix);
 bool LessThan(const itString& i_String1, const itString& i_String2);
 bool LessThanOrEqual(const itString& i_String1, const itString& i_String2);
 bool GreaterThan(const itString& i_String1, const itString& i_String2);

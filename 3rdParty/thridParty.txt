@@ -4,11 +4,8 @@ Boost
 https://sourceforge.net/projects/boost/files/boost-binaries/
 boost_1_60_0-msvc-14.0-64.exe
 
-curl 7.48 (http://curl.haxx.se/download.html "Win32 - MSVC" to build from source)
-cd winbuild
-set RTLIBCFG=static
-nmake /f Makefile.vc mode=static VC=14 MACHINE=x64 DEBUG=no
-nmake /f Makefile.vc mode=static VC=14 MACHINE=x64 DEBUG=yes
+curl
+now comes from vcpkg (MachStudio/Source/MainApp/vcpkg.json), linked as libcurl.dll
 
 libs/x64 (drop various .lib files in here)
 
