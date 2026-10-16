@@ -18,14 +18,15 @@
 #include "Features/Capture/cptrRenderBakeData.hpp"
 #endif
 
-#include <wx/aui/auibook.h>
-#include <wx/panel.h>
-#include <wx/sizer.h>
-#include <wx/treectrl.h>
 #include <string>
 
 
 #ifdef USE_WXWIDGETS
+
+#include <wx/aui/auibook.h>
+#include <wx/panel.h>
+#include <wx/sizer.h>
+#include <wx/treectrl.h>
 //----------------------------------------------------------------------------
 // Forward References
 //----------------------------------------------------------------------------

@@ -75,7 +75,9 @@ namespace cptrPackage
 		//--------------------------------------------------------------------
 		void Execute_RenderTagsInfo()
 		{
+#ifndef BATCH_MODE	// no dialogs in batch mode
 			cptrDialogUtil::ShowTagsInfo();
+#endif
 		}
 	}
 
@@ -125,9 +127,11 @@ namespace cptrPackage
 
 		//	set-up the menus + commands
 		cptrCommands::SetupMenu();
+#ifndef BATCH_MODE	// the Photoshop export is a dialog; there are none in batch mode
 		Photoshop::SetupMenu();
 		Photoshop::EnableMenus();
 		Photoshop::SetFrameID(l_ModeIDFrame);
+#endif
 
 		docSingleTypeMgr::AddDocumentInterest(new captOutputDataDocumentInterest());
 		if(l_pRenderPI == NULL)

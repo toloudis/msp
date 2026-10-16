@@ -31,9 +31,10 @@
 #include "ToolUIWx/twx/twxWidgets.hpp"
 #endif
 
-#include <wx/choice.h>
 
 #ifdef USE_WXWIDGETS
+
+#include <wx/choice.h>
 
 //============================================================================
 // wxEVT_VALUE_CHANGED event : this control throws this event type when the
