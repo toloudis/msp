@@ -67,8 +67,8 @@ its own `vcpkg_installed/`):
 The library packages live under the library projects, so MainApp adds their
 `vcpkg_installed\...\lib` dirs to its link paths and its
 `CopyLibraryVcpkgDlls` target copies their DLLs into `MachStudio-x64/`.
-Some projects still reference folders that no longer exist
-(`3rdParty\FBX`, `D:\FreeImage`); these paths are stale.
+`ImportExport` still has an include path to `3rdParty\FBX`, which no longer
+exists (FBX support is compiled out; see the leftovers note above).
 
 **Qt 6** is a separate install (see the toolkit notes above), not in
 `3rdParty/` or vcpkg.

@@ -343,7 +343,7 @@
       <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(TargetName).exe</OutputFile>
       <Version>2.0</Version>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\LibXLT\Graphics\vcpkg_installed\x64-windows\x64-windows\lib;$(SolutionDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\lib;$(SolutionDir)..\..\3rdParty\Libs\$(Platform);D:\FreeImage\Dist;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\LibXLT\Graphics\vcpkg_installed\x64-windows\x64-windows\lib;$(SolutionDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\lib;$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -382,7 +382,7 @@
       <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(TargetName).exe</OutputFile>
       <Version>2.0</Version>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\LibXLT\Graphics\vcpkg_installed\x64-windows\x64-windows\lib;$(SolutionDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\lib;$(SolutionDir)..\..\3rdParty\Libs\$(Platform);D:\FreeImage\Dist;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\LibXLT\Graphics\vcpkg_installed\x64-windows\x64-windows\lib;$(SolutionDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\lib;$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -425,7 +425,7 @@
       <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(TargetName).exe</OutputFile>
       <Version>2.0</Version>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\LibXLT\Graphics\vcpkg_installed\x64-windows\x64-windows\debug\lib;$(SolutionDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\debug\lib;$(SolutionDir)..\..\3rdParty\Libs\$(Platform);D:\FreeImage\Dist;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\LibXLT\Graphics\vcpkg_installed\x64-windows\x64-windows\debug\lib;$(SolutionDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\debug\lib;$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
@@ -471,7 +471,7 @@
       <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(TargetName).exe</OutputFile>
       <Version>2.0</Version>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\LibXLT\Graphics\vcpkg_installed\x64-windows\x64-windows\debug\lib;$(SolutionDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\debug\lib;$(SolutionDir)..\..\3rdParty\Libs\$(Platform);D:\FreeImage\Dist;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\LibXLT\Graphics\vcpkg_installed\x64-windows\x64-windows\debug\lib;$(SolutionDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\debug\lib;$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
@@ -618,7 +618,7 @@
       <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
       <Version>2.0</Version>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x64;$(SolutionDir)..\..\3rdParty\Libs\$(Platform);D:\FreeImage\Dist;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x64;$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ManifestFile>$(IntDir)$(TargetName)$(TargetExt).intermediate.manifest</ManifestFile>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
