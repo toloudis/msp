@@ -1,170 +1,94 @@
-# Unit tests: work-in-progress status
+# Unit tests branch: status
 
-Handoff note for resuming this work on another machine. Delete it once the
-branch is merged.
+Handoff note for continuing this work on another machine: what is left to
+do, and what is currently known about the state of the code. Delete it once
+the branch is merged. How the unit tests and the build fit together is in
+CLAUDE.md ("Building", "Build files", "Unit tests").
 
 Branch: `claude/unit-tests` (based on `claude/toolkit-input` at `a12c4b6f`).
 
-## Done
+## To do
 
-Commits on the branch:
-
-1. `e40b73fb` Add an assert handler hook to dbgMsg
-   (`dbgMsg::SetAssertHandler`; the assert stream is also cleared after each assert)
-2. `3cdab3df` Fix Int8/UInt8 round trips in text chunk and XML files
-   (`chTxtWriter::Write(Int8/UInt8)`, `fsXMLReader::Convert(Int8/UInt8)`).
-   Kept separate so it can be reviewed or dropped on its own.
-3. `2c69c51e` Add GoogleTest unit tests for LibXLT Core
-   (`UnitTests/`, solution entry, CI steps, `.gitignore`, `CLAUDE.md`)
-4. `9eb24341` Add unit test work status note for handoff (this file)
-5. `e537ba82` Fix number reading and writing in text and XML files (see
-   "Number reading and writing" below)
-6. Run the unit tests in the build before MachStudio (see "Tests run before
-   MachStudio" below; also updates this file)
-
-All pushed to `origin/claude/unit-tests`.
-
-What exists (details are in CLAUDE.md under "Unit tests"):
-
-- `UnitTests/CoreTests/CoreTests.vcxproj`: 128 gtest tests for `LibXLT/Core`,
-  gtest from `UnitTests/CoreTests/vcpkg.json`. In `MachStudio.sln`; built in
-  Debug/Release x Qt/Wx. Self-contained (no shared props/targets); its
-  Post-Build Event runs the tests.
-- `MainApp.vcxproj` has a ProjectReference to CoreTests (nothing linked;
-  Qt/Wx configurations only), so MachStudio isn't built until the tests
-  pass.
-- CI (`.github/workflows/build-windows.yml`): builds `"MainApp;CoreTests"`
-  (which runs the tests) and uploads the XML reports.
-
-### Tests run before MachStudio in every build
-
-- CoreTests' Post-Build Event (Project Properties → Build Events) runs the
-  tests after every link and writes `CoreTests.xml` next to the exe; a
-  failing test fails the build. There is no opt-out. CI's separate "Run
-  unit tests" step is gone; the upload step picks up that XML.
-- `MainApp.vcxproj` references CoreTests, so MachStudio waits for the tests
-  and isn't built if they fail. The libraries still build in parallel
-  with the tests. Test projects may reference whatever libraries they
-  test; a new one gets the same reference from MainApp.
-- `UnitTests.props` and `UnitTests.targets` are gone: their settings are in
-  `CoreTests.vcxproj` (a new test project can start as a copy). An
-  earlier version made every project wait for the tests through a props
-  file imported from `Directory.Build.props`; it was dropped in favour of
-  the one visible ProjectReference. CLAUDE.md has a "Build files" table
-  listing what each remaining shared MSBuild file does.
-- Checked in Debug Wx: with a deliberately failing test, a MainApp build
-  stopped at CoreTests (the libraries finished in parallel; MainApp never
-  compiled), and a CoreTests build failed in the Post-Build Event with the
-  failure reported at the test's file and line. With it removed, Debug Wx
-  and Release Wx CoreTests builds ran and passed the tests.
-- The first build of CoreTests on a machine installs gtest through vcpkg.
-
-Ported from the old harnesses: `TestTerawatt/App/chTest`,
-`TestTerawatt/Math/geo/geotest`, `TestTerawatt/Math/ma`, and
-`TestLibXLT/Core/{Dbg,Env,Fs,Gf,It,Rel}`. The ones that only printed
-results now have expected values.
-
-### Number reading and writing
-
-Every number type now reads back exactly from every text and XML format.
-Before this, the following were broken:
-
-| Where | Bug |
-|---|---|
-| `chXMLWriter` (scene documents, materials) | Int8/UInt8 written as the raw byte, so flags such as double-sided read back as 0 |
-| `chTxtReader`, `chXMLReader` | integers read with `atoi`: UInt32 above 2^31 and 64-bit values came back wrong |
-| `chTxtReader`, `chXMLReader` | Float64 read through a `float` |
-| `chTxtWriter`, `chXMLWriter`, `fsXMLWriter` | floats written with an ostream's 6 significant digits |
-| `gfFileTxt::ReadToken` | split `1e-05` into `1e` and `-05` (and `-inf`), shifting every later value |
-| `fsXMLParser::Convert(Int8/UInt8)` | read one character, not the number |
-| `gfFileTxt`, `gfFileXML` | plain `char` passed to `isspace` etc. (undefined for non-ASCII; debug CRT asserts) |
-
-Changes:
-
-- New `Core/Env/envNumberText.hpp`: `ToText`/`FromText` for all ten envType
-  number types. Floats are written with `std::to_chars` (the fewest digits
-  that read back exactly, so `0.1` stays `0.1`) and read with
-  `std::from_chars` (locale-independent). Integers are read through
-  `strtoll`/`strtoull`, so out-of-range values still wrap the way
-  `atoi` + cast did. All the text/XML readers and writers above, and
-  `guiXMLTextReader` (Tool), now use it.
-- `chTxtReader`/`chXMLReader` read a one-character, non-numeric Int8/UInt8
-  token as the raw byte, so most files saved with the old writers still
-  load. Bytes that are whitespace, digits, `"` or `#` can't be recovered.
-- `gfFileTxt` tokenizer: keeps an exponent's sign (`1e-05`, `1e+38`) and
-  `-inf`/`-nan` in one token; both tokenizers take `unsigned char`.
-- `fsXMLData` (the node-type enum) moved into its own `Core/Fs/fsXMLData.hpp`;
-  `fsXMLReader.hpp` and `fsXMLParser.hpp` each defined it, so they couldn't
-  be included together.
-- Tests: `ctNumbers.hpp` (limits, signed zero, denormals, infinities, NaNs
-  and full-precision values for each type), `Env/envNumberTextTest.cpp`,
-  `Ch/chNumberTest.cpp` (binary, text and XML chunk files, plus the raw-byte
-  fallback and exponent tokens), and a typed round trip in
-  `Fs/fsXMLTest.cpp` (fsXMLWriter → fsXMLReader and fsXMLParser). With the
-  old `chXMLWriter` and `gfFileTxt`, the Int8, UInt8, Float32, Float64 and
-  exponent tests fail.
-
-## Verified
-
-- Debug Wx: 128/128 pass (run by the Post-Build Event).
-- Release Wx: 127 pass, 1 skipped (`dbgMsgAssert.HandlerReceivesEachFailure`;
-  DBG_ASSERT is compiled out of release builds). Tool and ToolUIWx also
-  built in Release Wx. MainApp didn't build here (see `afxres.h` below), so
-  its use of `fsXMLParser` (`mainCheckAppVersion.cpp`) hasn't been
-  compiled.
-- Earlier (79 tests, before the number work): Debug Wx 79/79; Release Wx
-  78 pass, 1 skipped (`dbgMsgAssert.HandlerReceivesEachFailure`; DBG_ASSERT
-  is compiled out of release builds).
+1. Run CI on the latest commit and open a PR against `dev/update2024`. The
+   workflow doesn't run on pushes to this branch: start it by hand (Actions
+   → "Windows build" → Run workflow, or
+   `gh workflow run build-windows.yml --ref claude/unit-tests`).
+2. Finish moving off the hand-made shared MSBuild files: make the toolkit
+   choice explicit per configuration in each `.vcxproj`, then delete the root
+   `Directory.Build.props` and `MachStudio/Source/Directory.Build.targets`.
+   - `wxGUI/`/`qtGUI/` sources: per-file Excluded From Build in the other
+     toolkit's configurations (and RenderNode), instead of the targets file
+     removing them.
+   - Qt settings: an explicit `qt6.props` import in each MachStudio
+     project's Qt configurations; `windeployqt` as MainApp's Post-Build
+     Event in Qt.
+   - `$(MspWxIncludeDirs)`, the `$(MspGuiToolkit)` conditions and
+     `$(MspBaseConfiguration)`: literal per-configuration values.
+   - `3rdParty/WxWidgets/build/msw/wx_setup.props` reads
+     `$(MspBaseConfiguration)` (a local edit to the wxWidgets file), so wx
+     depends on the root props file. Switching those conditions to VS's
+     own `$(UseDebugLibraries)` would remove that dependency; decide
+     whether editing this 3rdParty file is acceptable.
+   - Check the result by comparing what MSBuild evaluates for every project
+     and configuration (compile items with their settings, project
+     references, target names, output dirs) before and after.
+3. Add Debug/Release RenderNode to the CI matrix.
+4. Delete the old test code (`MachStudio/TestSource/`, `TestLibXLT/`,
+   `TestTerawatt/`). Everything worth keeping has been ported to
+   `UnitTests/`.
+5. Decide on the known issues below.
+6. Next test targets: `MachStudio/Source/Support/tmln` (channel blending,
+   smooth-blend easing, driver evaluation order) and the `...DataParser` chunk
+   parsers. That needs a second test project (e.g. `UnitTests/MachStudioTests`,
+   starting from a copy of `CoreTests.vcxproj`) that links more libraries,
+   with a ProjectReference to it from MainApp. `guiXMLTextReader::Convert`
+   (Tool) is only covered through `envNumberText` until then.
 
 ## Not verified yet
 
-- Debug Qt / Release Qt builds of CoreTests (not built locally; CI will be
-  the first).
-- The CI workflow itself (not pushed yet). Watch the build step (which now
-  runs the tests) and the "Upload unit test results" step.
+- A local MainApp build in the Qt and Wx configurations (it has only been
+  linked here in RenderNode; CI builds it in Qt and Wx). Qt 6.9.3 is
+  installed on this machine.
+- RenderNode rendering a scene from the command line. Only the no-argument
+  start-up has been run: it prints "MachStudio Pro in batch mode", creates
+  the D3D11 device, loads the shaders and exits with code 0.
 - Visual Studio Test Explorer discovering the tests.
-- Building in the Visual Studio IDE (checked with msbuild only).
-- Loading real scene/material XML files saved by older versions (the
-  raw-byte fallback is tested only on generated files).
+- Building in the Visual Studio IDE (only msbuild has been used).
+- Loading real scene/material XML files saved by older versions. The
+  chunk readers' fallback for Int8/UInt8 values the old writers stored as
+  raw characters is only tested on generated files.
 
-## Next steps
-
-1. Check CI on all four configurations (the first run with these commits),
-   then open a PR against `dev/update2024`.
-2. Delete the old test code (`MachStudio/TestSource/`, `TestLibXLT/`,
-   `TestTerawatt/`). Everything worth keeping has been ported.
-3. Decide on the unfixed bugs below.
-4. Next test targets: `MachStudio/Source/Support/tmln` (channel blending,
-   smooth-blend easing, driver evaluation order) and the `...DataParser` chunk
-   parsers. That needs a second test project (e.g. `UnitTests/MachStudioTests`)
-   (start from a copy of `CoreTests.vcxproj`) that links more libraries,
-   with a ProjectReference to it from MainApp.
-   `guiXMLTextReader::Convert` (Tool) is only covered through
-   envNumberText until then.
-
-## Found but not fixed
+## Known issues
 
 - `chWriter::Write(const itString&)` (`Core/Ch/private/chWriter.cpp`) asserts on
   an explicit trailing NUL, which itStrings no longer have, and indexes `[-1]`
   on an empty string. Callers use `Write(str.GetString())` instead.
 - `Core/Dbg/dbgAssert.hpp`/`.cpp` are dead code (the header starts with
-  `#error`, and neither file is in `Core.vcxproj`), so the old
-  `DBG_ASSERT0`..`9` macros no longer exist.
+  `#error`, and neither file is in `Core.vcxproj`).
 - Big-endian support (`ENV_ENDIAN` in `envPlatform.hpp`, the byte swapping
   in `gfFileUtil.hpp`, `gfFileBin::e_BigEndian`, the
   `gfFileUtil.EndianRoundTrip` test) can go: only little-endian platforms
-  need supporting. `envPlatform.hpp` still maps `ENV_MAC` to big-endian (a
+  need supporting. `envPlatform.hpp` maps `ENV_MAC` to big-endian (a
   PowerPC-era leftover; Macs have been little-endian since 2006). Nothing
   selects `ENV_MAC` today, but a macOS port that did would byte-swap
   every binary file.
 - `mainCheckAppVersion.cpp` frees a `new[]` buffer with `delete`.
 - The dbgMsg tests print `(1) ****ERROR**** : ...` lines (the error stream
-  echoing to stdout), which now appear in every build that runs the tests.
+  echoing to stdout), which appear in every build that runs the tests.
   Harmless, but noisy; the tests could redirect that stream.
 - Files saved by pre-2015 MSVC runtimes may hold floats as `1.#INF` or
-  `1.#QNAN`; these read as 1 (as they did with `atof`).
+  `1.#QNAN`; these read as 1.
+- `MachStudio/MachStudio-x64/libcurl.dll` and `zlib1.dll` are committed, but
+  every MainApp build overwrites them with the vcpkg copies, so they show as
+  modified. The Debug OpenEXR DLLs (`*_d.dll`) are committed and the Release
+  ones aren't. Probably none of the vcpkg DLLs MainApp copies in should be
+  tracked.
+- CI warns that its actions (`checkout`, `cache`, `upload-artifact`,
+  `setup-msbuild`) target the deprecated Node.js 20; they still run.
+- `cptrRenderBakeDialog.hpp`'s include guard checks `CPTR_RENDERBAKEDIALOG_HPP`
+  but defines `CPTR_RENDERBAKE_HPP`, so it doesn't guard.
 
-## Things that bit during this work
+## Working notes
 
 - Core headers use `#error` "multiply included" guards, so test files must
   guard their includes (`#ifndef MA_PLANE_HPP` ...).
@@ -174,11 +98,12 @@ Changes:
   CRLF.
 - The projects use the v145 toolset: build with the Visual Studio 18
   MSBuild (`C:\Program Files\Microsoft Visual Studio\18\...`), not 2022's.
-  On this machine VS 18 has no MFC headers, so MainApp's `app.rc` fails
-  (`afxres.h` not found); the libraries and CoreTests build fine.
-- The CI shell is PowerShell, so an msbuild `/t:A;B` argument must be quoted.
-  From Git Bash, msbuild's `/p:` and `/t:` arguments get mangled into paths;
-  run msbuild from PowerShell.
+  VS 18 on this machine has no MFC component (nothing needs it).
+- From Git Bash, msbuild's `/p:` and `/t:` arguments get mangled into paths;
+  run msbuild from PowerShell. The CI shell is PowerShell too, so an
+  msbuild `/t:A;B` argument must be quoted.
+- Scripts in Git Bash heredocs lose backslashes (`\\` becomes `\`); write
+  Python that handles Windows paths to a file first.
 - vcpkg's x64-windows gtest is a DLL (`GTEST_LINKED_AS_SHARED_LIBRARY=1`), and
   the exe resolves gtest from `gmock.dll`, which is copied next to it.
 - `maRotation`'s `a * b` applies `b` first; `maMatrix4x4`'s `A * B` applies `A`

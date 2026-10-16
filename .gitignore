@@ -6,3 +6,9 @@ UnitTests/bin/
 UnitTests/**/*.vcxproj.user
 vcpkg_installed/
 LibXLT/GraphicsDX11/Fx/private/Generated/
+# MainApp build output in the run directory (the vcpkg DLLs are copied in
+# by MainApp's CopyLibraryVcpkgDlls target)
+MachStudio/MachStudio-x64/MachStudio-x64-*.exe
+MachStudio/MachStudio-x64/MachStudio-x64-*.pdb
+MachStudio/MachStudio-x64/*.map
+MachStudio/MachStudio-x64/*-3_[0-9].dll

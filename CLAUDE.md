@@ -15,19 +15,34 @@ cameras/lights/objects on a timeline, and render frames or sequences on the GPU
 
 - Visual Studio, **x64 only**. Main solution: `MachStudio/Source/MachStudio.sln`
   (contains the MachStudio projects plus the LibXLT projects it uses).
-- The **solution configuration selects the GUI toolkit** (see the comments in
+- There are six configurations, Debug/Release × **Qt / Wx / RenderNode**; the
+  **configuration selects the GUI toolkit** (see the comments in
   `Directory.Build.props` and `MachStudio/Source/Directory.Build.targets`):
   - `Debug Qt` / `Release Qt` — Qt 6 UI (`LibXLT/ToolUIQt`, `qtGUI/` folders).
     Qt is found via `MspQtDir`, then `QTDIR`, else `C:\Qt\6.9.3\msvc2022_64`
     (`LibXLT/ToolUIQt/qt6.props`). `windeployqt` runs after linking.
   - `Debug Wx` / `Release Wx` — wxWidgets UI (`LibXLT/ToolUIWx`, `wxGUI/`
-    folders, `3rdParty/WxWidgets`). Every other configuration also builds Wx.
-  - A build sees only its own toolkit: `wxGUI/**` sources are removed from Qt
-    builds and `qtGUI/**` sources from Wx builds. Any toolkit-specific UI code
-    must live in a matching `qtGUI/` or `wxGUI/` folder, and both variants
-    should be kept in step.
+    folders, `3rdParty/WxWidgets`).
+  - `Debug RenderNode` / `Release RenderNode` — headless command-line renderer
+    (e.g. for a render farm) with **no GUI toolkit**: everything is compiled
+    with `BATCH_MODE`, which turns off `USE_WXWIDGETS`/`USE_QT`; MainApp is a
+    console exe (`_tmain` in `WinMain.cpp`) that hides the native window it
+    creates, doesn't render the viewport, and exits unless the command line
+    starts a capture. ToolUIWx still builds (its `wui` package supplies the
+    `Tool/gui` implementations, with wx compiled out); neither wx nor Qt is
+    linked. Its settings are the Wx configuration's plus `BATCH_MODE`, minus
+    the wx property sheet; keep them in step when changing Wx settings.
+  - A build sees only its own toolkit: `wxGUI/**` sources are compiled only in
+    Wx builds and `qtGUI/**` sources only in Qt builds (RenderNode compiles
+    neither). Any toolkit-specific UI code must live in a matching `qtGUI/` or
+    `wxGUI/` folder, and both variants should be kept in step. Code outside
+    those folders reaches dialog code only under `#ifndef BATCH_MODE` (or
+    `USE_WXWIDGETS`/`USE_QT`), and a `wxGUI/` header keeps its
+    `#include <wx/...>` lines inside `#ifdef USE_WXWIDGETS` so toolkit-neutral
+    code can include it in any build.
 - Executables land in `MachStudio/MachStudio-x64/` (e.g.
-  `MachStudio-x64-Qt-Release.exe`), alongside runtime data and DLLs.
+  `MachStudio-x64-Qt-Release.exe`, `MachStudio-x64-RenderNode-Release.exe`),
+  alongside runtime data and DLLs.
 - Third-party libraries come from `3rdParty/`, from vcpkg, or (Qt) from a
   separate install; see Dependencies below.
 - Many directories still contain obsolete `.vcproj` (VS2005/2008), `.vspscc`
@@ -47,7 +62,7 @@ hold settings:
 
 | File | Applies to | What it does |
 |---|---|---|
-| `Directory.Build.props` (repo root) | every project, automatically | Works out `MspGuiToolkit` (Qt/Wx) and `MspBaseConfiguration` (Debug/Release) from the configuration name; wx include dirs |
+| `Directory.Build.props` (repo root) | every project, automatically | Works out `MspGuiToolkit` (Qt/Wx/None) and `MspBaseConfiguration` (Debug/Release) from the configuration name; wx include dirs. `3rdParty/WxWidgets/build/msw/wx_setup.props` reads `MspBaseConfiguration` |
 | `MachStudio/Source/Directory.Build.targets` | MachStudio projects, automatically | Drops `wxGUI/` or `qtGUI/` sources for the other toolkit; imports `qt6.props` and runs `windeployqt` for Qt |
 | `LibXLT/ToolUIQt/qt6.props` | Qt builds (ToolUIQt, and MachStudio projects through the targets above) | Qt include dirs, defines and libraries (no moc/uic step) |
 | `3rdParty/WxWidgets/wxwidgets.props` | Wx builds of the projects that import it (ToolUIWx, Support, Features, MainApp, ...) | wx libraries |
@@ -65,9 +80,9 @@ hold settings:
   runtime, output in `UnitTests/bin/<Platform>/<Configuration>/`) are in the
   project file, not a shared props file. A new test project can start as a
   copy of it.
-- The test projects have the four Qt/Wx configurations only so the libraries
-  they reference build in the same configuration as MainApp; the tests don't
-  use a GUI toolkit.
+- The test projects have the solution's six configurations only so the
+  libraries they reference build in the same configuration as MainApp; the
+  tests don't use a GUI toolkit.
 - `CoreTestsMain.cpp` initializes `CoreLayer` once and installs a
   `dbgMsg::SetAssertHandler` hook so a failed `DBG_ASSERT` becomes a test
   failure instead of the abort/continue dialog. `ctPlatform` turns CRT
@@ -100,8 +115,8 @@ build notes):
 | Python 3.9 | `Python/include` (headers only, not in git) | embedded Python; compiled out unless `PYTHON_ENABLED` is defined, which no live configuration does |
 
 Unused leftovers in `Libs/x64`: `jpeg.lib`, the 2011
-`fbxsdk` libs (FBX import/export needs `USE_FBX_IMPORTEXPORT`, which only the
-dead `Gold` config defines), `python26/27`, `ATITessellation*`.
+`fbxsdk` libs (FBX import/export needs `USE_FBX_IMPORTEXPORT`, which no
+configuration defines), `python26/27`, `ATITessellation*`.
 
 **From vcpkg** (manifest mode, `VcpkgEnableManifest`; each project installs into
 its own `vcpkg_installed/`):

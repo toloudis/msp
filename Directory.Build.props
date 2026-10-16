@@ -8,14 +8,16 @@
                               LibXLT/ToolUIQt)
       Debug Wx, Release Wx  - the wxWidgets interface (wxGUI folders,
                               LibXLT/ToolUIWx)
-    Every other configuration builds the wxWidgets interface.
+      Debug RenderNode,     - the headless batch renderer: no GUI toolkit
+      Release RenderNode      (BATCH_MODE; see CLAUDE.md)
 
-    MspGuiToolkit (Qt or Wx) is the toolkit, and MspBaseConfiguration is
-    the configuration without the toolkit (Debug or Release), for the
-    settings that only care about that.
+    MspGuiToolkit (Qt, Wx or None) is the toolkit, and MspBaseConfiguration
+    is the configuration without the toolkit (Debug or Release), for the
+    settings that only care about that (3rdParty/WxWidgets/build/msw/
+    wx_setup.props reads it too).
 
     A build sees only its own toolkit: the projects take the wxWidgets
-    include directories from MspWxIncludeDirs (empty for Qt) and import
+    include directories from MspWxIncludeDirs (empty unless Wx) and import
     wxwidgets.props (the wx libraries) only for Wx; the Qt include
     directories and libraries come from LibXLT/ToolUIQt/qt6.props, which
     is imported only for Qt. The solution leaves ToolUIWx out of the Qt
@@ -27,9 +29,11 @@
 <Project>
   <PropertyGroup>
     <MspGuiToolkit Condition="$(Configuration.EndsWith(' Qt'))">Qt</MspGuiToolkit>
+    <MspGuiToolkit Condition="$(Configuration.EndsWith(' RenderNode'))">None</MspGuiToolkit>
     <MspGuiToolkit Condition="'$(MspGuiToolkit)' == ''">Wx</MspGuiToolkit>
     <MspBaseConfiguration>$(Configuration)</MspBaseConfiguration>
     <MspBaseConfiguration Condition="$(Configuration.EndsWith(' Qt')) or $(Configuration.EndsWith(' Wx'))">$(Configuration.Substring(0, $([MSBuild]::Subtract($(Configuration.Length), 3))))</MspBaseConfiguration>
+    <MspBaseConfiguration Condition="$(Configuration.EndsWith(' RenderNode'))">$(Configuration.Substring(0, $([MSBuild]::Subtract($(Configuration.Length), 11))))</MspBaseConfiguration>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(MspGuiToolkit)' == 'Wx'">

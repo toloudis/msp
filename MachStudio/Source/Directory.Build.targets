@@ -12,7 +12,7 @@
 <Project>
   <Import Project="$(MSBuildThisFileDirectory)..\..\LibXLT\ToolUIQt\qt6.props" Condition="'$(MspGuiToolkit)' == 'Qt'" />
 
-  <ItemGroup Condition="'$(MspGuiToolkit)' == 'Qt'">
+  <ItemGroup Condition="'$(MspGuiToolkit)' != 'Wx'">
     <ClCompile Remove="$(MSBuildThisFileDirectory)**\wxGUI\**\*.cpp" />
   </ItemGroup>
   <ItemGroup Condition="'$(MspGuiToolkit)' != 'Qt'">

@@ -10,9 +10,9 @@
     isn't built until the tests pass. The run also writes CoreTests.xml
     next to the exe (CI uploads it).
 
-    The project has the four solution configurations (Debug/Release x
-    Qt/Wx) only so that Core builds in the same configuration as MainApp;
-    the tests don't use a GUI toolkit. Output goes to
+    The project has the solution's configurations (Debug/Release x
+    Qt/Wx/RenderNode) only so that Core builds in the same configuration
+    as MainApp; the tests don't use a GUI toolkit. Output goes to
     UnitTests/bin/<Platform>/<Configuration>/.
   -->
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
@@ -31,6 +31,14 @@
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release Wx|x64">
       <Configuration>Release Wx</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug RenderNode|x64">
+      <Configuration>Debug RenderNode</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release RenderNode|x64">
+      <Configuration>Release RenderNode</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
