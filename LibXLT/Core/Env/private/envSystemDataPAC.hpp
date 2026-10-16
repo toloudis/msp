@@ -22,6 +22,7 @@
 
 //namespace envSystemDataPAC
 //{
+//	std::wstring GetExecutablePath();
 //	void Init();
 //	void CleanUp();
 //}
@@ -29,14 +30,6 @@
 #if ENV_WINDOWS
 	#include "Core/env/private/envSystemDataPACWin.hpp"
 #else
-	#if ENV_OS == ENV_PS2OS
-		#include "Core/env/private/envSystemDataPACPS2.hpp"
-	#else
-		#if ENV_OS == ENV_XBOXOS
-			#include "Core/env/private/envSystemDataPACXbox.hpp"
-		#else
-			#error envSystemDataPAC not defined for this platform
-		#endif
-	#endif
+	#error envSystemDataPAC not defined for this platform
 #endif
 

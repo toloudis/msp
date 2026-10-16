@@ -15,6 +15,8 @@
 #endif
 #define APP_APPLICATION_HPP
 
+#include <string>
+
 
 //============================================================================
 //============================================================================
@@ -99,6 +101,20 @@ class appApplication
 		//		from the CreateSubWindow() call.
 		//--------------------------------------------------------------------
 		static void DestroySubWindow(void* i_Hwnd);
+
+		//--------------------------------------------------------------------
+		//	Make the OS accessibility services (screen readers and the like)
+		//	let go of the application's windows, so that the GUI toolkit can
+		//	destroy them.  Call before shutting down the GUI.
+		//--------------------------------------------------------------------
+		static void ReleaseAccessibilityClients();
+
+		//--------------------------------------------------------------------
+		//	Start the program on the given command line and return without
+		//	waiting for it.  i_ShowWindow shows or hides its window.
+		//	Returns false if the program couldn't be started.
+		//--------------------------------------------------------------------
+		static bool LaunchProgram(const std::string& i_CommandLine, bool i_ShowWindow);
 
 		//--------------------------------------------------------------------
 		//	Used for creating an application that doesn't use Run()

@@ -84,30 +84,30 @@ public:
 
 	//----------------------------------------------------------------------------
 	//----------------------------------------------------------------------------
-	static void envtObjectMgr::CreateSwlEnvironment();
+	static void CreateSwlEnvironment();
 
 	//----------------------------------------------------------------------------
 	//----------------------------------------------------------------------------
-	static void envtObjectMgr::DestroySwlEnvironment();
+	static void DestroySwlEnvironment();
 
 	//----------------------------------------------------------------------------
 	//----------------------------------------------------------------------------
-	static envtSwlEnvironment* envtObjectMgr::GetSwlEnvironment();
+	static envtSwlEnvironment* GetSwlEnvironment();
 
 	//----------------------------------------------------------------------------
 	//----------------------------------------------------------------------------
-	static void envtObjectMgr::SelectDefaultEnvironment(bool i_bAppend = false);
+	static void SelectDefaultEnvironment(bool i_bAppend = false);
 
 	//----------------------------------------------------------------------------
 	//----------------------------------------------------------------------------
-	static void envtObjectMgr::DeselectDefaultEnvironment();
+	static void DeselectDefaultEnvironment();
 
 	//----------------------------------------------------------------------------
 	//----------------------------------------------------------------------------
-	static void envtObjectMgr::SelectSwlEnvironment(bool i_bAppend = false);
+	static void SelectSwlEnvironment(bool i_bAppend = false);
 
 	//----------------------------------------------------------------------------
 	//----------------------------------------------------------------------------
-	static void envtObjectMgr::DeselectSwlEnvironment();
+	static void DeselectSwlEnvironment();
 };	// end of static class
 

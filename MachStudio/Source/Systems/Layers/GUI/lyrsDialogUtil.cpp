@@ -10,10 +10,18 @@
 
 #include "Systems/Layers/GUI/lyrsDialogDataUtil.hpp"
 #include "Systems/Layers/Data/lyrsDocumentChunk.hpp"
+#ifdef MSP_GUI_QT
+#include "Systems/Layers/GUI/qtGUI/lyrsLayerObjectsPage.hpp"
+#else
 #include "Systems/Layers/GUI/wxGUI/lyrsLayerObjectsPage.hpp"
+#endif
 #include "Support/lyer/lyerLayerInterest.hpp"
 
+#ifdef MSP_GUI_QT
+#include "Systems/Common/GUI/qtGUI/cmmObjectDialog.hpp"
+#else
 #include "Systems/Common/GUI/wxGUI/cmmObjectDialog.hpp"
+#endif
 #include "Systems/Common/GUI/cmmObjectDialogUtil.hpp"
 #include "Systems/Common/GUI/cmmSystemDialogInterest.hpp"
 #include "Systems/Common/GUI/cmmSystemDialogUtil.hpp"
@@ -114,7 +122,7 @@ void lyrsDialogUtil::UpdateListDialog()
 void lyrsDialogUtil::UpdateDialog(lyrsLayerObject *i_pObject)
 {
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (i_pObject)
 	{
 		if (lyrsLayerObjectsPage::Instance)
@@ -134,7 +142,7 @@ void lyrsDialogUtil::UpdateDialog(lyrsLayerObject *i_pObject)
 //--------------------------------------------------------------------
 void lyrsDialogUtil::UpdateObjectsPage()
 {
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (lyrsLayerObjectsPage::Instance)
 	{
 		if (cmmObjectDialogUtil::HasTabPage(lyrsLayerObjectsPage::Instance))
@@ -151,7 +159,7 @@ void lyrsDialogUtil::UpdateObjectsPage()
 void  lyrsDialogUtil::AddDataPage()
 {
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (cmmObjectDialog::FormInstance)
 	{
 		if (!lyrsLayerObjectsPage::Instance)
@@ -167,13 +175,17 @@ void  lyrsDialogUtil::AddDataPage()
 void  lyrsDialogUtil::RemoveDataPage()
 {
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (lyrsLayerObjectsPage::Instance)
 	{
 		if (cmmObjectDialogUtil::HasTabPage(lyrsLayerObjectsPage::Instance))
 		{
 			cmmObjectDialogUtil::RemoveTabPage( lyrsLayerObjectsPage::Instance );
+#ifdef USE_QT
+			lyrsLayerObjectsPage::Instance->hide();
+#else
 			lyrsLayerObjectsPage::Instance->Show(false);
+#endif
 		}
 	}
 #endif

@@ -8,6 +8,8 @@
 \****************************************************************************/
 #include "Systems/Common/DriverCreator/cmmDriverCreatorBoolean.hpp"
 
+#include "Core/it/itStringUtil.hpp"
+
 #include "Support/tmln/tmlnChannelBoolean.hpp"
 #include "Support/tmln/tmlnCreator.hpp"
 #include "Drivers/Enable/tmlnDriverEnable.hpp"
@@ -150,7 +152,7 @@ tmlnDriver* cmmDriverCreatorBoolean::CreateDriverByName( const char* i_DriverNam
 	std::string connectchannel_name = get_connectchannel_name(i_ChannelName);
 	std::string userscript_name = get_userscript_name(i_ChannelName);
 
-	if (!::_stricmp(i_DriverName, key_name.c_str()))
+	if (itStringUtil::CompareNoCase(i_DriverName, key_name) == 0)
 	{
 		const chDefs::Name c_XXBK = make_key_chunk_name( i_Code );
 		tmlnDriverEnable * pDriver = new tmlnDriverEnable( io_Channel, c_XXBK );
@@ -160,7 +162,7 @@ tmlnDriver* cmmDriverCreatorBoolean::CreateDriverByName( const char* i_DriverNam
 		io_Channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (!::_stricmp(i_DriverName, connectchannel_name.c_str()))
+	else if (itStringUtil::CompareNoCase(i_DriverName, connectchannel_name) == 0)
 	{
 		const chDefs::Name c_XXCZ = make_connectchannel_chunk_name( i_Code );
 		tmlnDriverConnectChannelBoolean * pDriver = new tmlnDriverConnectChannelBoolean( io_Channel, c_XXCZ );
@@ -173,7 +175,7 @@ tmlnDriver* cmmDriverCreatorBoolean::CreateDriverByName( const char* i_DriverNam
 		io_Channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (!::_stricmp(i_DriverName, userscript_name.c_str()))
+	else if (itStringUtil::CompareNoCase(i_DriverName, userscript_name) == 0)
 	{
 		const chDefs::Name c_XXUS = make_userscript_chunk_name( i_Code );
 		tmlnDriverUserScriptBoolean * pDriver = new tmlnDriverUserScriptBoolean( io_Channel, c_XXUS );

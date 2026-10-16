@@ -14,7 +14,11 @@
 #include "Core/undo/undoUndoMgr.hpp"
 
 #include "MainApp/MainForm.h"
+#ifdef MSP_GUI_QT
+#include "MainApp/qtGUI/qtMainForm.hpp"
+#else
 #include "MainApp/wxGUI/wxMainForm.hpp"
+#endif
 
 #include <sstream>
 
@@ -34,6 +38,8 @@ namespace mainCommandSetResolutionNS
 
 #ifdef USE_WXWIDGETS
 		wxMainForm::ResizeRenderWindow(pCom->GetWidth(),pCom->GetHeight());
+#elif defined(USE_QT)
+		qtMainForm::ResizeRenderWindow(pCom->GetWidth(),pCom->GetHeight());
 #endif
 	}
 }

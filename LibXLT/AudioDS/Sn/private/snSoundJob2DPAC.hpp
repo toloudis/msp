@@ -139,9 +139,5 @@ class snSoundJob2DPAC
 		#error snSoundJob2DPAC not defined for this platform
 	#endif
 #else
-	#if ENV_OS == ENV_XBOXOS
-		#include "AudioDS/sn/private/snSoundJob2DPACXbox.hpp"
-	#else
-		#error snSoundJob2DPAC not defined for this platform
-	#endif
+	#error snSoundJob2DPAC not defined for this platform
 #endif

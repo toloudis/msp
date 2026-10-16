@@ -17,12 +17,12 @@
 #endif
 
 #include <string>
-#include <windows.h> // for RECT
 
 
 //============================================================================
 //============================================================================
 class maFilter;
+class maIntRect;
 
 
 //============================================================================
@@ -135,7 +135,7 @@ class g2dImage
 			int* o_bpp,
 			int i_sampling = 1,
 			bool i_bGreyscale = false,
-			RECT* i_pRect = NULL) = 0;
+			const maIntRect* i_pRect = NULL) = 0;
 		virtual void GetPixelsTGA(envType::UInt8 **o_pBuffer,
 			int *o_bufSize,
 			int *o_width,
@@ -143,7 +143,7 @@ class g2dImage
 			int *o_bpp,
 			int	i_Sampling = 1,
 			const std::string& i_CompressionCode = std::string("None"),
-			const RECT* i_pRect = NULL) = 0;
+			const maIntRect* i_pRect = NULL) = 0;
 		// straight copy, no downsampling. caller must delete.
 		virtual void GetPixels(g2dPixelR16G16B16A16** o_pBuffer,
 			int* o_width,
@@ -161,12 +161,6 @@ class g2dImage
 		virtual void GetPixels(g2dPixelRGBA32F* o_pBuffer,
 			int i_Width,
 			int i_Height) = 0;
-
-		//----------------------------------------------------------------------------
-		// Copy pixels into HBITMAP. this call allocates a GDI Object (the HBITMAP)!
-		// caller must destroy the HBITMAP!!!
-		//----------------------------------------------------------------------------
-		virtual HBITMAP GetHBMP(const int i_Sampling ) = 0;
 
 		//----------------------------------------------------------------------------
 		// SwapChannels() - assumes 4 bytes per pixel and non-floats

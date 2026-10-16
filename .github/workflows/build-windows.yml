@@ -39,17 +39,49 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Both configurations link the vcpkg packages from the per-library
+        # All configurations link the vcpkg packages from the per-library
         # manifest installs (LibXLT/Graphics, LibXLT/GraphicsDX11).
-        configuration: [ Debug, Release ]
+        # The Wx configurations build the wxWidgets interface (from
+        # 3rdParty/WxWidgets); the Qt ones build the Qt 6 interface, with Qt
+        # installed on the runner by aqtinstall.
+        configuration: [ Debug Wx, Release Wx, Debug Qt, Release Qt ]
     env:
       VCPKG_ROOT: C:\vcpkg
       VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}\vcpkg-binary-cache
+      # Keep in step with the default in LibXLT/ToolUIQt/qt6.props
+      QT_VERSION: 6.9.3
+      QT_ARCH: win64_msvc2022_64
+      QT_ROOT: C:\Qt
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up MSBuild
         uses: microsoft/setup-msbuild@v2
+
+      - name: Restore Qt install cache
+        if: ${{ endsWith(matrix.configuration, 'Qt') }}
+        id: qt-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.QT_ROOT }}\${{ env.QT_VERSION }}
+          key: qt-${{ runner.os }}-${{ env.QT_VERSION }}-${{ env.QT_ARCH }}
+
+      # Installs into C:\Qt\<version>\msvc2022_64. qt6.props finds it through
+      # QTDIR; windeployqt from the same install runs after MainApp links.
+      - name: Install Qt ${{ env.QT_VERSION }} (aqtinstall)
+        if: ${{ endsWith(matrix.configuration, 'Qt') && steps.qt-cache.outputs.cache-hit != 'true' }}
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade "aqtinstall==3.*"
+          python -m aqt install-qt windows desktop $env:QT_VERSION $env:QT_ARCH --outputdir $env:QT_ROOT
+
+      - name: Set QTDIR
+        if: ${{ endsWith(matrix.configuration, 'Qt') }}
+        shell: pwsh
+        run: |
+          $qtdir = Join-Path $env:QT_ROOT "$env:QT_VERSION\msvc2022_64"
+          if (-not (Test-Path "$qtdir\include\QtWidgets\QWidget")) { throw "Qt not found at $qtdir" }
+          "QTDIR=$qtdir" >> $env:GITHUB_ENV
 
       - name: Restore vcpkg binary cache
         uses: actions/cache@v4
@@ -79,7 +111,7 @@ jobs:
         run: >
           msbuild MachStudio.sln
           /t:MainApp
-          /p:Configuration=${{ matrix.configuration }}
+          "/p:Configuration=${{ matrix.configuration }}"
           /p:Platform=x64
           /m
           /p:UseMultiToolTask=true
@@ -92,7 +124,18 @@ jobs:
       - name: Check OpenEXR DLL is next to the exe
         shell: pwsh
         run: |
-          $suffix = if ("${{ matrix.configuration }}" -eq "Debug") { "_d" } else { "" }
+          $suffix = if ("${{ matrix.configuration }}".StartsWith("Debug")) { "_d" } else { "" }
           $dll = "MachStudio/MachStudio-x64/OpenEXR-3_2$suffix.dll"
           if (-not (Test-Path $dll)) { throw "$dll is missing" }
           Get-ChildItem MachStudio/MachStudio-x64/*.dll | Select-Object -ExpandProperty Name
+
+      # windeployqt copies the Qt DLLs and the platform plugin next to the
+      # exe; without them a Qt build would not start.
+      - name: Check Qt deployment is next to the exe
+        if: ${{ endsWith(matrix.configuration, 'Qt') }}
+        shell: pwsh
+        run: |
+          $suffix = if ("${{ matrix.configuration }}".StartsWith("Debug")) { "d" } else { "" }
+          foreach ($f in "Qt6Core$suffix.dll", "Qt6Gui$suffix.dll", "Qt6Widgets$suffix.dll", "platforms/qwindows$suffix.dll") {
+            if (-not (Test-Path "MachStudio/MachStudio-x64/$f")) { throw "$f is missing" }
+          }

@@ -34,12 +34,6 @@ namespace fsFileUtilPAC
 
 namespace
 {
-//	This is initialized in the Init() function
-//	It is true if we are running on 95 or 98 and have to
-//	convert our Unicode strings to ANSI strings before
-//	passing them to the Win32 functions
-bool l_ANSIFilenames = false;
-
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 void handle_windows_error(const fsLocator& i_Locator)
@@ -174,42 +168,21 @@ void CreateFile(const fsLocator& i_Filename)
 {
 	HANDLE new_file = INVALID_HANDLE_VALUE;
 
-	if ( l_ANSIFilenames )
-	{
-		//DBG_LOG("Creating ANSI file");
+	//DBG_LOG("Creating/Opening UNICODE file  " << i_Filename);
 
-		std::string filename;
-		LocatorToANSIFilename(i_Filename, filename);
+	itString filename;
+	LocatorToUnicodeFilename(i_Filename, filename);
 
-		if( filename.size() == 0 )
-			throw fsInvalidLocatorX(i_Filename);
+	if( filename.GetLength() == 0 )
+		throw fsInvalidLocatorX(i_Filename);
 
-		new_file = ::CreateFileA(	filename.c_str(),
-									GENERIC_WRITE,
-									0,
-									NULL,
-									CREATE_NEW,
-									FILE_ATTRIBUTE_NORMAL,
-									NULL);
-	}
-	else
-	{
-		//DBG_LOG("Creating/Opening UNICODE file  " << i_Filename);
-
-		itString filename;
-		LocatorToUnicodeFilename(i_Filename, filename);
-	
-		if( filename.GetLength() == 0 )
-			throw fsInvalidLocatorX(i_Filename);
-	
-		new_file = ::CreateFileW(	filename.GetString(),
-									GENERIC_WRITE,
-									0,
-									NULL,
-									CREATE_NEW,
-									FILE_ATTRIBUTE_NORMAL,
-									NULL);
-	}
+	new_file = ::CreateFileW(	filename.GetString(),
+								GENERIC_WRITE,
+								0,
+								NULL,
+								CREATE_NEW,
+								FILE_ATTRIBUTE_NORMAL,
+								NULL);
 
 	if ( new_file == INVALID_HANDLE_VALUE )
 		handle_windows_error(i_Filename);		// probably throws
@@ -225,49 +198,18 @@ void RenameFile(const fsLocator& i_From, const fsLocator& i_To)
 {
 	BOOL ret_val = 0;
 
-	envSystemDataPAC::WindowsOS os_type = envSystemDataPAC::GetWindowsOSType();
+	itString from_filename, to_filename;
 
-	bool has_move_file_ex = (os_type == envSystemDataPAC::e_Windows2000)	||
-							(os_type == envSystemDataPAC::e_WindowsXP)		||
-							(os_type == envSystemDataPAC::e_WindowsVista)	||
-							(os_type == envSystemDataPAC::e_Windows7);
+	LocatorToUnicodeFilename(i_From, from_filename);
+	LocatorToUnicodeFilename(i_To, to_filename);
 
-	if ( l_ANSIFilenames )
-	{
-		std::string from_filename, to_filename;
+	if( from_filename.GetLength() == 0 )
+		throw fsInvalidLocatorX(i_From);
 
-		LocatorToANSIFilename(i_From, from_filename);
-		LocatorToANSIFilename(i_To, to_filename);
+	if( to_filename.GetLength() == 0 )
+		throw fsInvalidLocatorX(i_To);
 
-		if( from_filename.size() == 0 )
-			throw fsInvalidLocatorX(i_From);
-
-		if( to_filename.size() == 0 )
-			throw fsInvalidLocatorX(i_To);
-
-		if( has_move_file_ex )
-			ret_val = ::MoveFileExA(from_filename.c_str(), to_filename.c_str(), MOVEFILE_COPY_ALLOWED);
-		else
-			ret_val = ::MoveFileA(from_filename.c_str(), to_filename.c_str());
-	}
-	else
-	{
-		itString from_filename, to_filename;
-
-		LocatorToUnicodeFilename(i_From, from_filename);
-		LocatorToUnicodeFilename(i_To, to_filename);
-
-		if( from_filename.GetLength() == 0 )
-			throw fsInvalidLocatorX(i_From);
-
-		if( to_filename.GetLength() == 0 )
-			throw fsInvalidLocatorX(i_To);
-
-		if( has_move_file_ex )
-			ret_val = ::MoveFileExW(from_filename.GetString(), to_filename.GetString(), MOVEFILE_COPY_ALLOWED);
-		else
-			ret_val = ::MoveFileW(from_filename.GetString(), to_filename.GetString());
-	}
+	ret_val = ::MoveFileExW(from_filename.GetString(), to_filename.GetString(), MOVEFILE_COPY_ALLOWED);
 
 	if( ret_val == 0 )
 		handle_windows_multifile_error(i_From, i_To);
@@ -281,28 +223,14 @@ void DeleteFile(const fsLocator& i_Filename)
 {
 	BOOL ret_val = 0;
 
-	if ( l_ANSIFilenames )
-	{
-		std::string filename;
+	itString filename;
 
-		LocatorToANSIFilename(i_Filename, filename);
+	LocatorToUnicodeFilename(i_Filename, filename);
 
-		if( filename.size() == 0 )
-			throw fsInvalidLocatorX(i_Filename);
+	if( filename.GetLength() == 0 )
+		throw fsInvalidLocatorX(i_Filename);
 
-		ret_val = ::DeleteFileA(filename.c_str());
-	}
-	else
-	{
-		itString filename;
-
-		LocatorToUnicodeFilename(i_Filename, filename);
-
-		if( filename.GetLength() == 0 )
-			throw fsInvalidLocatorX(i_Filename);
-
-		ret_val = ::DeleteFileW(filename.GetString());
-	}
+	ret_val = ::DeleteFileW(filename.GetString());
 
 	if( ret_val == 0 )
 		handle_windows_error(i_Filename);
@@ -316,36 +244,18 @@ void CopyFile(const fsLocator& i_From, const fsLocator& i_To)
 {
 	BOOL ret_val = 0;
 
-	if ( l_ANSIFilenames )
-	{
-		std::string from_filename, to_filename;
+	itString from_filename, to_filename;
 
-		LocatorToANSIFilename(i_From, from_filename);
-		LocatorToANSIFilename(i_To, to_filename);
+	LocatorToUnicodeFilename(i_From, from_filename);
+	LocatorToUnicodeFilename(i_To, to_filename);
 
-		if( from_filename.size() == 0 )
-			throw fsInvalidLocatorX(i_From);
+	if( from_filename.GetLength() == 0 )
+		throw fsInvalidLocatorX(i_From);
 
-		if( to_filename.size() == 0 )
-			throw fsInvalidLocatorX(i_To);
+	if( to_filename.GetLength() == 0 )
+		throw fsInvalidLocatorX(i_To);
 
-		ret_val = ::CopyFileA(from_filename.c_str(), to_filename.c_str(), true);
-	}
-	else
-	{
-		itString from_filename, to_filename;
-
-		LocatorToUnicodeFilename(i_From, from_filename);
-		LocatorToUnicodeFilename(i_To, to_filename);
-
-		if( from_filename.GetLength() == 0 )
-			throw fsInvalidLocatorX(i_From);
-
-		if( to_filename.GetLength() == 0 )
-			throw fsInvalidLocatorX(i_To);
-
-		ret_val = ::CopyFileW(from_filename.GetString(), to_filename.GetString(), true);
-	}
+	ret_val = ::CopyFileW(from_filename.GetString(), to_filename.GetString(), true);
 
 	if( ret_val == 0 )
 		handle_windows_multifile_error(i_From, i_To);
@@ -368,31 +278,15 @@ void CreateDirectoryOneDir(const fsLocator& i_DirectoryName)
 
 	//DBG_LOG("Create One Dir= " << i_DirectoryName);
 
-	if ( l_ANSIFilenames )
-	{
-		std::string filename;
+	itString filename;
 
-		LocatorToANSIFilename(i_DirectoryName, filename);
+	LocatorToUnicodeFilename(i_DirectoryName, filename);
 
-		if( filename.size() == 0 )
-			throw fsInvalidLocatorX(i_DirectoryName);
+	if( filename.GetLength() == 0 )
+		throw fsInvalidLocatorX(i_DirectoryName);
 
-		itStringUtil::TrimSpaces(filename);
-		ret_val = ::CreateDirectoryA(filename.c_str(), NULL);
-		//	return errors ERROR_PATH_NOT_FOUND or ERROR_ALREADY_EXISTS
-	}
-	else
-	{
-		itString filename;
-
-		LocatorToUnicodeFilename(i_DirectoryName, filename);
-
-		if( filename.GetLength() == 0 )
-			throw fsInvalidLocatorX(i_DirectoryName);
-
-		itStringUtil::TrimSpaces(filename);
-		ret_val = ::CreateDirectoryW(filename.GetString(), NULL);
-	}
+	itStringUtil::TrimSpaces(filename);
+	ret_val = ::CreateDirectoryW(filename.GetString(), NULL);
 
 	if( ret_val == 0 )
 		handle_windows_error(i_DirectoryName);
@@ -435,28 +329,14 @@ void DeleteDirectory(const fsLocator& i_DirectoryName)
 {
 	BOOL ret_val = 0;
 
-	if ( l_ANSIFilenames )
-	{
-		std::string filename;
+	itString filename;
 
-		LocatorToANSIFilename(i_DirectoryName, filename);
+	LocatorToUnicodeFilename(i_DirectoryName, filename);
 
-		if( filename.size() == 0 )
-			throw fsInvalidLocatorX(i_DirectoryName);
+	if( filename.GetLength() == 0 )
+		throw fsInvalidLocatorX(i_DirectoryName);
 
-		ret_val = ::RemoveDirectoryA(filename.c_str());
-	}
-	else
-	{
-		itString filename;
-
-		LocatorToUnicodeFilename(i_DirectoryName, filename);
-
-		if( filename.GetLength() == 0 )
-			throw fsInvalidLocatorX(i_DirectoryName);
-
-		ret_val = ::RemoveDirectoryW(filename.GetString());
-	}
+	ret_val = ::RemoveDirectoryW(filename.GetString());
 
 	if( ret_val == 0 )
 		handle_windows_error(i_DirectoryName);
@@ -470,26 +350,13 @@ bool FileExists(const fsLocator& i_Filename)
 {
 	DWORD ret_val = -1;
 
-	if ( l_ANSIFilenames )
-	{
-		std::string filename;
-		LocatorToANSIFilename(i_Filename, filename);
+	itString filename;
+	LocatorToUnicodeFilename(i_Filename, filename);
 
-		if( filename.size() == 0 )
-			return false;
+	if( filename.GetLength() == 0 )
+		return false;
 
-		ret_val = ::GetFileAttributesA(filename.c_str());
-	}
-	else
-	{
-		itString filename;
-		LocatorToUnicodeFilename(i_Filename, filename);
-
-		if( filename.GetLength() == 0 )
-			return false;
-
-		ret_val = ::GetFileAttributesW(filename.GetString());
-	}
+	ret_val = ::GetFileAttributesW(filename.GetString());
 
 	if( (ret_val == -1) || (ret_val & FILE_ATTRIBUTE_DIRECTORY) )
 		return false;
@@ -505,26 +372,13 @@ bool DirectoryExists(const fsLocator& i_Filename)
 {
 	DWORD ret_val = -1;
 
-	if ( l_ANSIFilenames )
-	{
-		std::string filename;
-		LocatorToANSIFilename(i_Filename, filename);
+	itString filename;
+	LocatorToUnicodeFilename(i_Filename, filename);
 
-		if( filename.size() == 0 )
-			return false;
+	if( filename.GetLength() == 0 )
+		return false;
 
-		ret_val = ::GetFileAttributesA(filename.c_str());
-	}
-	else
-	{
-		itString filename;
-		LocatorToUnicodeFilename(i_Filename, filename);
-
-		if( filename.GetLength() == 0 )
-			return false;
-
-		ret_val = ::GetFileAttributesW(filename.GetString());
-	}
+	ret_val = ::GetFileAttributesW(filename.GetString());
 
 	if( (ret_val == -1) || ((ret_val & FILE_ATTRIBUTE_DIRECTORY) == 0) )
 		return false;
@@ -575,9 +429,8 @@ void ANSIFilenameToLocator(const std::string& i_String, fsLocator& o_Locator)
 }
 
 //----------------------------------------------------------------------------
-//	LocatorToANSIFilename is used internally by the win32 PACs in the fs
-//	package.  It converts a fsLocator to a ANSI win32 filename (for use in
-//	Windows 95 or 98).
+//	LocatorToANSIFilename converts a fsLocator to a narrow (UTF-8) filename
+//	string, for APIs that take char filenames.
 // API Change: This now returns the std::string as UTF8.
 //----------------------------------------------------------------------------
 void LocatorToANSIFilename(const fsLocator& i_Locator, std::string& o_String, bool i_bUseDoubleSlashes)
@@ -660,9 +513,8 @@ void LocatorToANSIFilename(const fsLocator& i_Locator, std::string& o_String, bo
 
 
 //----------------------------------------------------------------------------
-//	LocatorToANSIFilename is used internally by the win32 PACs in the fs
-//	package.  It converts a fsLocator to a ANSI win32 filename (for use in
-//	Windows 95 or 98).
+//	LocatorToANSIFilename converts a fsLocator to a narrow (UTF-8) filename
+//	string, for APIs that take char filenames.
 // API Change: This now returns the std::string as UTF8.
 //----------------------------------------------------------------------------
 void 
@@ -834,16 +686,6 @@ LocatorToUnicodeFilename(const fsLocator& i_Locator, itString& o_String, const i
 }
 
 
-//----------------------------------------------------------------------------
-//	MustUseANSIFilenames() returns true for Windows OSs that don't have
-//	full Unicode support.
-//----------------------------------------------------------------------------
-bool MustUseANSIFilenames()
-{
-	return l_ANSIFilenames;
-}
-
-
 //=============================================================================
 //  Check whether filename is absolute or not
 //=============================================================================
@@ -873,26 +715,13 @@ bool IsReadOnly(const fsLocator& i_Locator)
 {
 	DWORD attribute = -1;
 
-	if ( l_ANSIFilenames )
-	{
-		std::string filename;
-		LocatorToANSIFilename(i_Locator, filename);
+	itString filename;
+	LocatorToUnicodeFilename(i_Locator, filename);
 
-		if( filename.size() == 0 )
-			return false;
+	if( filename.GetLength() == 0 )
+		return false;
 
-		attribute = ::GetFileAttributesA(filename.c_str());
-	}
-	else
-	{
-		itString filename;
-		LocatorToUnicodeFilename(i_Locator, filename);
-
-		if( filename.GetLength() == 0 )
-			return false;
-
-		attribute = ::GetFileAttributesW(filename.GetString());
-	}
+	attribute = ::GetFileAttributesW(filename.GetString());
 
 	if( (attribute == -1) || ((attribute & FILE_ATTRIBUTE_DIRECTORY) != 0) )
 		throw fsFileDoesntExistX(i_Locator);
@@ -980,18 +809,6 @@ void GenerateFileName(const fsLocator& i_PathLocator, std::string& i_Prefix, std
 //------------------------------------------------------------------------
 void Init()
 {
-	envSystemDataPAC::WindowsOS os_type = envSystemDataPAC::GetWindowsOSType();
-
-	if (		(os_type == envSystemDataPAC::e_Windows95)
-			||	(os_type == envSystemDataPAC::e_Windows98)
-			||	(os_type == envSystemDataPAC::e_WindowsME) )
-	{
-		l_ANSIFilenames = true;
-	}
-	else
-	{
-		l_ANSIFilenames = false;
-	}
 }
 
 //----------------------------------------------------------------------------

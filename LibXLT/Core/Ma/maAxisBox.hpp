@@ -210,9 +210,9 @@ class maAxisBox
 		//------------------------------------------------------------------------
 		// intersect ray with bounding box
 		//------------------------------------------------------------------------
-		inline bool maAxisBox::IntersectRay_Branchless(maPoint3d o, maPoint3d d, float* t_near, float* t_far) const;
-		inline bool maAxisBox::IntersectRay_Suffern(maPoint3d o, maPoint3d d, float* t_near, float* t_far) const;
-		inline bool maAxisBox::IntersectRay_Pharr(maPoint3d o, maPoint3d d, float* t_near, float* t_far) const;
+		inline bool IntersectRay_Branchless(maPoint3d o, maPoint3d d, float* t_near, float* t_far) const;
+		inline bool IntersectRay_Suffern(maPoint3d o, maPoint3d d, float* t_near, float* t_far) const;
+		inline bool IntersectRay_Pharr(maPoint3d o, maPoint3d d, float* t_near, float* t_far) const;
 
 		//------------------------------------------------------------------------
 		//	Overlaps returns true if the intersection of the points shared by

@@ -27,10 +27,9 @@ namespace matMetaFXParser
 		const chDefs::Name c_SHNM = chDefs::MakeName('S', 'H', 'N', 'M');	// SHader NaMe
 		const chDefs::Name c_CMFX = chDefs::MakeName('C', 'M', 'F', 'X');	// CoMpiled FX (DX11)
 		const chDefs::Name c_HLSL = chDefs::MakeName('H', 'L', 'S', 'L');	// HLSL code without header or footer (DX11)
-		const chDefs::Name c_MTSL = chDefs::MakeName('M', 'T', 'S', 'L');	// MetaSL code for recompiling
 		const chDefs::Name c_SHDV = chDefs::MakeName('S', 'H', 'D', 'V');	// Shader version
 		const chDefs::Name c_DTBK = chDefs::MakeName('D', 'T', 'B', 'K');	// DaTa BlocK of raw data within chunk
-		const chDefs::Name c_SRCS = chDefs::MakeName('S', 'R', 'C', 'S');	// SouRCe String in HLSL or MetaSL within chunk
+		const chDefs::Name c_SRCS = chDefs::MakeName('S', 'R', 'C', 'S');	// SouRCe String in HLSL within chunk
 
 		
 		void write_shader_version( chWriter& io_Writer,
@@ -133,10 +132,8 @@ namespace matMetaFXParser
 			{
 				read_string_block( reader, o_ShaderData.m_HLSLSource );
 			}
-			else if (name == c_MTSL)
-			{
-				read_string_block( reader, o_ShaderData.m_MetaSLSource );
-			}
+			// older files may also hold an 'MTSL' chunk of MetaSL source
+			// (for the removed mental ray exporter); it is skipped here.
 			reader.FinishChunk();
 		}
 	}
@@ -184,18 +181,6 @@ namespace matMetaFXParser
 
 			write_shader_version( writer, i_ShaderData.m_HLSLSource.m_Version );
 			write_string_data( writer, i_ShaderData.m_HLSLSource.m_Data );
-	
-			writer.FinishChunk();	
-		}
-
-		// MetaSL source code for recompiling when needed or for use in mental ray export
-		if (i_ShaderData.m_MetaSLSource.m_bHasData)
-		{
-			const int c_MTSL_VERSION = 0;
-			writer.WriteChunkHeader( c_MTSL, c_MTSL_VERSION, true );
-
-			write_shader_version( writer, i_ShaderData.m_MetaSLSource.m_Version );
-			write_string_data( writer, i_ShaderData.m_MetaSLSource.m_Data );
 	
 			writer.FinishChunk();	
 		}

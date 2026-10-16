@@ -8,6 +8,9 @@
 \****************************************************************************/
 #include "ToolUIQt/qui/quiSplashScreen.hpp"
 
+#ifndef TQT_WIDGETS_HPP
+#include "ToolUIQt/tqt/tqtWidgets.hpp"
+#endif
 #include "ToolUIQt/tqt/tqtSystem.hpp"
 
 #include "Core/dbg/dbgMsg.hpp"
@@ -16,21 +19,18 @@
 
 #include <string>
 
-#ifdef QT_FINISH_PORT
-#include "wx/image.h"
-#include "wx/splash.h" 
-#include <wx/richtext/richtextctrl.h>
-#endif
 
-namespace 
+namespace
 {
-#ifdef QT_FINISH_PORT
-	wxSplashScreen *l_Splash = NULL;
+#ifdef USE_QT
+	// How long the splash screen stays up when it times out
+	const int c_SplashTimeoutMS = 5000;
+
+	QPointer<QSplashScreen> l_Splash;
 #endif
-bool m_bisSplashOn = true;
+
+	bool m_bisSplashOn = true;
 }
-
-
 
 //----------------------------------------------------------------------------
 // StartUp - display splash screen
@@ -41,51 +41,39 @@ void  quiSplashScreen::StartUp(const fsLocator &i_SplashImage,
 	// Check if Splash Screen loading is disabled
 	if(!splashscreen::GetSplashFlag()) return;
 
-
-#ifdef QT_FINISH_PORT
-	wxInitAllImageHandlers();
+#ifdef USE_QT
 	if (fsFileUtil::FileExists(i_SplashImage))
 	{
 		//grab the splash image location
 		itString img_location;
 		fsFileUtil::LocatorToUnicodeString(i_SplashImage, img_location);
-		
-		//load the splash image and convert to bitmap type for splashscreen constructor
-		wxImage image(img_location.GetString(), wxBITMAP_TYPE_PNG);
-		wxBitmap bmp(image);
 
-		if( bmp.Ok())
+		QPixmap pixmap(QString::fromWCharArray(img_location.GetString()));
+		if (!pixmap.isNull())
 		{
-			//wxSplashScreen *splash;
-		
+			delete l_Splash;
+			l_Splash = new QSplashScreen(pixmap, Qt::WindowStaysOnTopHint);
+			l_Splash->setAttribute(Qt::WA_DeleteOnClose);
+
+			//for images with transparent edges, shape the window to the image
+			if (pixmap.hasAlphaChannel())
+				l_Splash->setMask(pixmap.mask());
+
+			QLabel* pMessage = new QLabel(tqtQString(i_Message), l_Splash);
+			pMessage->move(198, 134);
+			pMessage->setStyleSheet("QLabel { color: rgb(206,206,206); background: transparent; }");
+			pMessage->adjustSize();
+
+			l_Splash->show();
+
 			if (m_bSplashTimeout)
 			{
-				l_Splash = new wxSplashScreen(bmp,
-				wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_TIMEOUT,
-				5000, tqtSystem::g_pMainForm, -1, wxDefaultPosition, wxDefaultSize,
-				wxNO_BORDER|wxFRAME_NO_TASKBAR|wxFRAME_SHAPED|wxFRAME_FLOAT_ON_PARENT );
+				QSplashScreen* pSplash = l_Splash;
+				QTimer::singleShot(c_SplashTimeoutMS, pSplash, &QWidget::close);
 			}
-			else
-			{
-				l_Splash = new wxSplashScreen(bmp,
-				wxSPLASH_CENTRE_ON_SCREEN|wxSPLASH_NO_TIMEOUT,
-				0, tqtSystem::g_pMainForm, -1, wxDefaultPosition, wxDefaultSize,
-				wxNO_BORDER|wxFRAME_NO_TASKBAR|wxFRAME_SHAPED|wxFRAME_FLOAT_ON_PARENT );
-			}
-			
-			wxStaticText* m_staticText1;
-			itString msg(i_Message.c_str());
-			m_staticText1 = new wxStaticText( l_Splash,wxID_ANY, msg.GetString(), wxPoint(198,134), wxDefaultSize, 0 );
-			m_staticText1->Wrap( -1 );
-			m_staticText1->SetForegroundColour( wxColour(206,206,206,0));
-			m_staticText1->SetBackgroundColour( wxColour(97,97,97,0) );
-			
-			//for images with transparent edges, we need to define a new shape for the frame
-			wxRegion region(bmp);
-			l_Splash->SetShape(region);
 		}
 	}
-	wxYield();
+	QApplication::processEvents();
 #endif
 }
 
@@ -94,13 +82,11 @@ void  quiSplashScreen::StartUp(const fsLocator &i_SplashImage,
 //----------------------------------------------------------------------------
 void  quiSplashScreen::ShutDown()
 {
-if(!splashscreen::GetSplashFlag()) return;
-#ifdef QT_FINISH_PORT
-	if(l_Splash != NULL && !m_bSplashTimeout)
-		if(l_Splash->IsShown())
-			l_Splash->Show(false);
-	
-	l_Splash = NULL;
+	if(!splashscreen::GetSplashFlag()) return;
+
+#ifdef USE_QT
+	if (l_Splash && !m_bSplashTimeout)
+		l_Splash->close();
 #endif
 }
 
@@ -119,11 +105,11 @@ bool splashscreen::GetSplashFlag()
 {
 	return m_bisSplashOn;
 }
+
 //--------------------------------------------------------------------------------
 // Set the flag for splash screen. This is currently being set only by '/NoSplash'
 // command line option.
 //---------------------------------------------------------------------------------
-	
 void splashscreen::SetSplashFlag(bool i_bisSplashOn)
 {
 	m_bisSplashOn = i_bisSplashOn;

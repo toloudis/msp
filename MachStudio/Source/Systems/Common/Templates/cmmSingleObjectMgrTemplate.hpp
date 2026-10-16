@@ -281,6 +281,10 @@ class cmmSingleObjectMgrTemplateBase:
 	public cmmSingleObjectMgrTemplateNoIcon<xxxScriptObject,xxxPickObject,xxxScriptData,xxxBaseData>
 {
 public:
+	typedef cmmSingleObjectMgrTemplateNoIcon<xxxScriptObject,xxxPickObject,xxxScriptData,xxxBaseData> BaseType;
+	using BaseType::sm_Object;
+	using BaseType::sm_bShowIcons;
+
 
 	//----------------------------------------------------------------------------
 	// Find the object that matches the pick code from an earlier pick render.
@@ -352,6 +356,9 @@ class cmmSingleObjectMgrTemplate :
 	public cmmSingleObjectMgrTemplateBase<xxxScriptObject,xxxPickObject,xxxScriptData,xxxBaseData>
 {
 public:
+	typedef cmmSingleObjectMgrTemplateBase<xxxScriptObject,xxxPickObject,xxxScriptData,xxxBaseData> BaseType;
+	using BaseType::SetDataUnthreaded;
+
 	//--------------------------------------------------------------------
 	// Set data as a whole
 	//--------------------------------------------------------------------
@@ -378,6 +385,9 @@ class cmmSingleObjectMgrGeomTemplate :
 	public cmmSingleObjectMgrTemplate<xxxScriptObject,xxxPickObject,xxxScriptData,xxxBaseData>
 {
 public:
+	typedef cmmSingleObjectMgrTemplate<xxxScriptObject,xxxPickObject,xxxScriptData,xxxBaseData> BaseType;
+	using BaseType::sm_Object;
+
 	//--------------------------------------------------------------------
 	// Make sure that all geometry is visible for rendering
 	//--------------------------------------------------------------------
@@ -394,7 +404,7 @@ public:
 // Initialiazing static members
 //============================================================================
 template<class xxxScriptObject, class xxxPickObject, class xxxScriptData, class xxxBaseData>
-xxxScriptObject* cmmSingleObjectMgrTemplateBase<xxxScriptObject,xxxPickObject,xxxScriptData,xxxBaseData>::sm_Object = NULL;
+xxxScriptObject* cmmSingleObjectMgrTemplateNoIcon<xxxScriptObject,xxxPickObject,xxxScriptData,xxxBaseData>::sm_Object = NULL;
 
 template<class xxxScriptObject, class xxxPickObject, class xxxScriptData, class xxxBaseData>
-bool cmmSingleObjectMgrTemplateBase<xxxScriptObject,xxxPickObject,xxxScriptData,xxxBaseData>::sm_bShowIcons = true;
+bool cmmSingleObjectMgrTemplateNoIcon<xxxScriptObject,xxxPickObject,xxxScriptData,xxxBaseData>::sm_bShowIcons = true;

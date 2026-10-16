@@ -30,7 +30,7 @@ namespace
 	g3dBlendStateMgr::BlendState* st_NoBlend = NULL;
 	g3dDepthStencilStateMgr::DepthStencilState* ds_Disable_NS = NULL;
 
-	void setupEnvGlobal(fxEffect* i_pD3DEffect, 
+	void setupEnvGlobal(fxEffect* i_pD3DEffect,
 						const g3dAmbientEnvState& i_EnvState,
 						const camCamera* i_pCam)
 	{
@@ -56,7 +56,7 @@ namespace
 
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
-shdwPassEnvBackground::shdwPassEnvBackground(g2dRenderTarget* i_pRenderTarget, 
+shdwPassEnvBackground::shdwPassEnvBackground(g2dRenderTarget* i_pRenderTarget,
 											 const camCamera* i_pCamera,
 											 const g3dAmbientEnvState& i_AmbientState)
 	: m_pCamera(i_pCamera), m_AmbientState(i_AmbientState)
@@ -117,9 +117,9 @@ void shdwPassEnvBackground::InitStates()
 {
 	st_NoBlend = new g3dBlendStateMgr::BlendState( false, FALSE,
 		D3D11_BLEND_ONE,D3D11_BLEND_ONE,D3D11_BLEND_OP_ADD,
-		D3D11_BLEND_ONE,D3D11_BLEND_ONE,D3D11_BLEND_OP_ADD, 
+		D3D11_BLEND_ONE,D3D11_BLEND_ONE,D3D11_BLEND_OP_ADD,
 		D3D11_COLOR_WRITE_ENABLE_RED | D3D11_COLOR_WRITE_ENABLE_GREEN | D3D11_COLOR_WRITE_ENABLE_BLUE);
-	
+
 	g3dDepthStencilStateMgr::DepthStencilOp_Desc OP_DEFAULT( D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_COMPARISON_ALWAYS );
 	ds_Disable_NS = new g3dDepthStencilStateMgr::DepthStencilState( FALSE, FALSE, D3D11_COMPARISON_NEVER, FALSE, /*0,*/ 0xff, 0xff, OP_DEFAULT, OP_DEFAULT );
 }

@@ -89,7 +89,7 @@ tmlnDriverVideo::~tmlnDriverVideo()
 	
 	if( m_pPlayingVideo )
 	{
-		mnmAviUtil::CloseAvi( m_pPlayingVideo );
+		fsAviFile::Close( m_pPlayingVideo );
 		m_pPlayingVideo = NULL;
 	}
 }
@@ -262,7 +262,7 @@ void tmlnDriverVideo::SetDriverToAnimLengthFlag( bool i_bSetFlag )
 //--------------------------------------------------------------------
 int tmlnDriverVideo::compute_frame(const maTime& i_Time)
 {
-	int num_frames = (int)mnmAviUtil::GetAviLength(m_pPlayingVideo);
+	int num_frames = (int)fsAviFile::GetLength(m_pPlayingVideo);
 	if (num_frames == 0)
 		return 0;
 
@@ -386,7 +386,7 @@ maTime tmlnDriverVideo::calculate_duration()
 	maTime video_length;
 	if (m_bDriverToVideoLength.GetValue())
 	{
-		float num_frames = mnmAviUtil::GetAviLength(m_pPlayingVideo);
+		float num_frames = fsAviFile::GetLength(m_pPlayingVideo);
 
 		if (m_FrameRate.GetValue() == 0)
 			return maTime::c_ZeroTime;
@@ -401,8 +401,8 @@ maTime tmlnDriverVideo::calculate_duration()
 	//video_length -= m_fVideoStartTime.GetValue();
 	//video_length -= m_fVideoEndTime.GetValue();
 	//if (video_length < 0) video_length = 1;
-	//if (video_length > mnmAviUtil::GetAviLength(m_pPlayingVideo)) 
-	//	video_length = mnmAviUtil::GetAviLength(m_pPlayingVideo);
+	//if (video_length > fsAviFile::GetLength(m_pPlayingVideo)) 
+	//	video_length = fsAviFile::GetLength(m_pPlayingVideo);
 
 
 	return video_length;
@@ -423,7 +423,7 @@ bool tmlnDriverVideo::load_video( const tmlnDriverVideoInfo& i_Info )
 	// Clean up before setting
 	if (m_pPlayingVideo != 0)
 	{
-		mnmAviUtil::CloseAvi(m_pPlayingVideo);
+		fsAviFile::Close(m_pPlayingVideo);
 		m_pPlayingVideo = NULL;
 	}
 
@@ -434,15 +434,10 @@ bool tmlnDriverVideo::load_video( const tmlnDriverVideoInfo& i_Info )
 
 	// Load sound
 	//
-	itString filename;
-	fsFileUtil::LocatorToUnicodeString( i_Info.m_FileName, filename );
-	m_pPlayingVideo = mnmAviUtil::OpenAVI( filename.GetString() );
+	m_pPlayingVideo = fsAviFile::Open( i_Info.m_FileName );
 	if( !m_pPlayingVideo )
 	{
-		static char errBuf[128];
-		errBuf[0] = 0;
-		mnmAviUtil::FormatAviMessage( mnmAviUtil::LastError, errBuf, 128 );
-		std::string msg = "Problem loading video, " + std::string( errBuf );
+		std::string msg = "Problem loading video, " + fsAviFile::GetLastErrorMessage();
 		DBG_ERROR(msg);
 		guiMessageBox::Show(msg.c_str(), "Video Failure", guiMessageBox::e_OKOnly);
 		return false;
@@ -454,7 +449,7 @@ void tmlnDriverVideo::GetVideoDimensions( int& o_Width, int& o_Height )
 {
 	if( m_pPlayingVideo )
 	{
-		mnmAviUtil::GetAviDimensions( m_pPlayingVideo, o_Width, o_Height );
+		fsAviFile::GetDimensions( m_pPlayingVideo, o_Width, o_Height );
 	}
 	else
 	{

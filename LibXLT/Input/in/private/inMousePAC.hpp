@@ -20,13 +20,5 @@
 #if ENV_WINDOWS
 	#include "InputDI/in/private/inMousePACWin.hpp"
 #else
-	#if ENV_OS == ENV_PS2OS
-		#include "InputDI/in/private/inMousePACPS2.hpp"
-	#else
-		#if ENV_OS == ENV_XBOXOS
-			#include "InputDI/in/private/inMousePACXbox.hpp"
-		#else
-			#error inMousePAC not defined for this platform
-		#endif
-	#endif
+	#error inMousePAC not defined for this platform
 #endif

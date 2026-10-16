@@ -15,7 +15,6 @@
 #include "Support/capt/captRenderOutputTagsUtil.hpp"
 #include "Support/mnm/mnmConstants.hpp"
 #include "Support/mnm/mnmPaths.hpp"
-#include "Support/mnm/mnmQuickTimeUtil.hpp"		// for the USE_QUICKTIME define
 #include "Support/pyth/pythProperty.hpp"
 #include "Support/tmln/tmlnTimeEditUIInfo.hpp"
 #include "Support/tmln/tmlnTimeline.hpp"
@@ -321,7 +320,6 @@ void captRenderOutputObject::ConvertQuickTime()
 		supported.  Currently we have converted all MOVs to AVIs in this case.
 	*/
 
-	#ifndef USE_QUICKTIME
 	bool bRawCodec = (m_Data.m_CompressCode.GetValue() == "raw ");
 
 	if(m_Data.m_CaptureFormat.GetValue() == "MOV")
@@ -329,8 +327,6 @@ void captRenderOutputObject::ConvertQuickTime()
 
 	if(!bRawCodec)
 		m_Data.m_CompressCode.SetValue("RGB");
-		
-	#endif
 }
 
 
@@ -542,13 +538,8 @@ void captRenderOutputObject::SetToDefault(fsLocator& i_CurrentScene,
 	o_Data.m_CaptureFormat.SetValue( "JPG" );				// frame or movie format
 	o_Data.m_CompressCode.SetValue( "None" );
 #else
-#ifdef USE_QUICKTIME
-	o_Data.m_CaptureFormat.SetValue( "MOV" );				// frame or movie format
-	o_Data.m_CompressCode.SetValue( "jpeg" );
-#else
 	o_Data.m_CaptureFormat.SetValue( "AVI" );				// frame or movie format
 	o_Data.m_CompressCode.SetValue( "RAW" );
-#endif
 #endif
 
 	// This needs to match the window size set in WinMain.cpp
@@ -650,10 +641,6 @@ void captRenderOutputObject::RegisterProperties()
 #ifdef DEMO_VERSION
 		pCBUII->AddItem(std::string("JPG")); 
 #else
-// compiler flag to turn off quicktime
-#ifdef USE_QUICKTIME
-		pCBUII->AddItem(std::string("MOV"));
-#endif
 		pCBUII->AddItem(std::string("AVI"));
 		pCBUII->AddItem(std::string("BMP"));
 		pCBUII->AddItem(std::string("JPG")); 

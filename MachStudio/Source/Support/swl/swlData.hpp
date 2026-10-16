@@ -1,7 +1,7 @@
 /*****************************************************************************
 **  swlData.h
 **
-**      The swlData stores all mray/rman environmental lighting information
+**      The swlData stores the global environment lighting settings
 **
 **	StudioGPU
 **	Copyright(C) 2010 - All Rights Reserved

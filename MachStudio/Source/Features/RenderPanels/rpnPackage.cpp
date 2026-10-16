@@ -11,8 +11,16 @@
 #include "Features/RenderPanels/rpnCommands.hpp"
 #include "Features/RenderPanels/GUI/rpnDialogUtil.hpp"
 #include "Features/RenderPanels/rpnDocumentInterest.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/RenderPanels/qtGUI/rpnPanelGrid.hpp"
+#else
 #include "Features/RenderPanels/wxGUI/rpnPanelGrid.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "Features/RenderPanels/qtGUI/rpnRenderPanel.hpp"
+#else
 #include "Features/RenderPanels/wxGUI/rpnRenderPanel.hpp"
+#endif
 //#include "Features/RenderPanels/rpnThinkInterest.hpp"
 
 //	tools
@@ -43,7 +51,7 @@ namespace
 			{
 				// Make sure all render panels have a valid camera
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 				if (rpnPanelGrid::Instance != NULL)
 					rpnPanelGrid::Instance->GetRenderPanel(i)->ConfirmCamera();
 #endif
@@ -56,7 +64,7 @@ namespace
 				// Make sure all render panels aren't pointing 
 				// at bad directors cut object
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 				if (rpnPanelGrid::Instance != NULL)
 					rpnPanelGrid::Instance->GetRenderPanel(i)->ConfirmCamera();
 #endif
@@ -86,7 +94,7 @@ namespace rpnPackage
 		camsDirectorsCutMgr::AddCallback(&l_CameraCallback);
 
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (rpnPanelGrid::Instance != NULL)
 			rpnPanelGrid::Instance->SetLayoutStyle( rpnPanelGrid::e_SinglePane );
 #endif

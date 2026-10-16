@@ -31,10 +31,6 @@
 //========================================================================
 #define		ENV_PC			1
 #define		ENV_MAC			2
-#define		ENV_PS2			3
-#define		ENV_XBOX		4
-#define		ENV_PS3			5
-#define		ENV_XBOX2		6
 
 //========================================================================
 //	Test to make sure user has picked one
@@ -48,59 +44,32 @@
 #endif
 
 #if	(ENV_MACHINE != ENV_PC)			&& \
-	(ENV_MACHINE != ENV_MAC)		&& \
-	(ENV_MACHINE != ENV_PS2)		&& \
-	(ENV_MACHINE != ENV_XBOX)		&& \
-	(ENV_MACHINE != ENV_PS3)		&& \
-	(ENV_MACHINE != ENV_XBOX2)
+	(ENV_MACHINE != ENV_MAC)
 #error ENV_MACHINE not defined! (value not valid)
 #endif
 
 //========================================================================
-// OS Type (ENV_OS) possible values:
+// OS Type (ENV_OS) possible values.  Windows means Windows 10 or later.
+// macOS and Linux are placeholders for future PAC implementations.
 //========================================================================
-#define		ENV_WINDOWS95		10
-#define		ENV_WINDOWS98		11
-#define		ENV_WINDOWSNT40		12
-#define		ENV_WINDOWS2000		13
-#define		ENV_WINDOWSXP		14
-#define		ENV_WINDOWSVISTA	15
-#define		ENV_WINDOWS7		16
-#define		ENV_MACOS				20
-#define		ENV_MACOS_SNOWLEOPARD	21
+#define		ENV_WINDOWSOS		10
+#define		ENV_MACOS			20
 #define		ENV_LINUXOS			30
-#define		ENV_LINUXOS_REDHAT	31
-#define		ENV_PS2OS			40
-#define		ENV_PS3OS			41
-#define		ENV_XBOXOS			50
-#define		ENV_XBOX360OS		51
-#define		ENV_GAMECUBEOS		60
-#define		ENV_WIIOS			61
 
 //========================================================================
 //	Test to make sure user has picked one
 //========================================================================
 #if !defined(ENV_OS)
 	#if defined(WIN32) || defined(WIN64)
-		#define ENV_OS ENV_WINDOWSXP
+		#define ENV_OS ENV_WINDOWSOS
 	#else
 		#error ENV_OS not defined!
 	#endif
 #endif
 
-#if	(ENV_OS != ENV_WINDOWS95) &&	\
-	(ENV_OS != ENV_WINDOWS98) &&	\
-	(ENV_OS != ENV_WINDOWSNT40) &&	\
-	(ENV_OS != ENV_WINDOWS2000) &&	\
-	(ENV_OS != ENV_WINDOWSXP) &&    \
+#if	(ENV_OS != ENV_WINDOWSOS) &&	\
 	(ENV_OS != ENV_MACOS	) &&	\
-	(ENV_OS != ENV_LINUXOS	) &&	\
-	(ENV_OS != ENV_PS2OS	) &&	\
-	(ENV_OS != ENV_PS3OS	) &&	\
-	(ENV_OS != ENV_XBOXOS	) &&	\
-	(ENV_OS != ENV_XBOX2OS	) &&	\
-	(ENV_OS != ENV_GAMECUBE	) &&	\
-	(ENV_OS != ENV_GAMECUBE	)
+	(ENV_OS != ENV_LINUXOS	)
 	#error ENV_OS not defined!
 #endif
 
@@ -108,8 +77,6 @@
 //	Compiler (ENV_COMPILER) possible values:
 //========================================================================
 #define		ENV_MSVCPP			30
-#define		ENV_CODEWARRIOR		31
-#define		ENV_PRODGPS2		32
 
 //========================================================================
 //	Test to make sure user has picked one
@@ -122,9 +89,7 @@
 	#endif
 #endif
 
-#if	(ENV_COMPILER != ENV_MSVCPP) &&		\
-	(ENV_COMPILER != ENV_CODEWARRIOR) &&	\
-	(ENV_COMPILER != ENV_PRODGPS2)
+#if	(ENV_COMPILER != ENV_MSVCPP)
 	#error ENV_COMPILER not defined!
 #endif
 
@@ -174,22 +139,6 @@
 	#define ENV_ENDIAN	ENV_BIGENDIAN
 #endif
 
-#if (ENV_MACHINE == ENV_PS2)
-	#define ENV_ENDIAN  ENV_LITTLEENDIAN
-#endif
-
-#if (ENV_MACHINE == ENV_PS3)
-	#define ENV_ENDIAN  ENV_LITTLEENDIAN
-#endif
-
-#if (ENV_MACHINE == ENV_XBOX)
-	#define ENV_ENDIAN	ENV_LITTLEENDIAN
-#endif
-
-#if (ENV_MACHINE == ENV_XBOX2)
-	#define ENV_ENDIAN	ENV_LITTLEENDIAN
-#endif
-
 #ifndef ENV_ENDIAN
 	#error Couldn''t decide on ENV_ENDIAN
 #endif
@@ -197,13 +146,7 @@
 //========================================================================
 //	ENV_WINDOWS can be either 1 or 0 (true or false)
 //========================================================================
-#if	(ENV_OS == ENV_WINDOWS95) ||		\
-	(ENV_OS == ENV_WINDOWS98) ||		\
-	(ENV_OS == ENV_WINDOWSNT40) ||		\
-	(ENV_OS == ENV_WINDOWS2000) ||		\
-	(ENV_OS == ENV_WINDOWSXP) ||    \
-	(ENV_OS == ENV_WINDOWSVISTA) ||    \
-	(ENV_OS == ENV_WINDOWS7)
+#if	(ENV_OS == ENV_WINDOWSOS)
 	#define ENV_WINDOWS 1
 #else
 	#define ENV_WINDOWS 0
@@ -259,16 +202,3 @@
 #pragma warning( error: 4150  )		//  warning C4150: deletion of pointer to incomplete type 'type'; no destructor called (report as error)
 
 #endif  // visual studio
-
-#if (ENV_COMPILER == ENV_CODEWARRIOR)
-
-#include <stdlib.h>	 // for NULL
-
-#endif
-
-#if (ENV_COMPILER == ENV_PRODGPS2)
-
-#include <stdlib.h>	 // for NULL
-
-
-#endif

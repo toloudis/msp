@@ -1,7 +1,9 @@
 /****************************************************************************\
 **	tqcFloatEdit.hpp
 **
-**		Custom text control for floating point values.
+**	Text box for editing a floating point value. The value changed
+**	callback is called after ENTER is pressed or the control is left
+**	with a different value.
 **
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
@@ -11,35 +13,20 @@
 #endif
 #define TQC_FLOATEDIT_HPP
 
-#ifndef TQT_WIDGETS_HPP
-#include "ToolUIQt/tqt/tqtWidgets.hpp"
+#ifndef TQC_EVENT_HPP
+#include "ToolUIQt/tqc/tqcEvent.hpp"
 #endif
 
 #ifdef USE_QT
-#include <QtGui/QLineEdit>
-
-
-//============================================================================
-// wxEVT_VALUE_CHANGED event : this control throws this event type when the
-//	value in the control has changed after ENTER is pressed, or the
-//	focus leaves the text box. Users should register for this event, 
-//	not for the individual enter pressed and leave events.
-//============================================================================
 
 //============================================================================
 //============================================================================
-class tqcFloatEdit : public QLineEdit
+class tqcFloatEdit : public QLineEdit, public tqcValueChangedNotifier
 {
 	public:
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
 		tqcFloatEdit(QWidget* i_pParent);
-#ifdef QT_FINISH_PORT
-			, 
-					 QWidgetID i_Id = wxID_ANY,
-					 const wxPoint& i_Pos = wxDefaultPosition, 
-					 const wxSize& i_Size = wxDefaultSize);
-#endif;
 
 		//--------------------------------------------------------------------
 		//	Value
@@ -48,29 +35,21 @@ class tqcFloatEdit : public QLineEdit
 		void SetFloatValue(const float i_Value);
 
 		//--------------------------------------------------------------------
-		//	DecimalPlaces
+		//	DecimalPlaces, -1 for the natural format with 6 digits
 		//--------------------------------------------------------------------
 		const short GetDecimalPlaces() const;
 		void SetDecimalPlaces(const short i_DecimalPlaces);
 
-	private:
-#ifdef QT_FINISH_PORT
 		//--------------------------------------------------------------------
+		// Change the text without notifying (like wxTextCtrl::ChangeValue)
 		//--------------------------------------------------------------------
-		void OnTextChange(wxCommandEvent& i_Event);
-		void OnTextLeave(wxFocusEvent& i_Event);
-#endif
+		void ChangeValue(const QString& i_Text);
 
-		//--------------------------------------------------------------------
-		//--------------------------------------------------------------------
+	private:
 		void text_changed();
 
 		float m_FloatValue;
 		short m_DecimalPlaces;
-
-#ifdef QT_FINISH_PORT
-DECLARE_EVENT_TABLE()
-#endif
 };
 
 #endif // USE_QT

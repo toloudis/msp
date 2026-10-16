@@ -1,7 +1,7 @@
 /*****************************************************************************
-**	quiMessageBox.hpp
+**  quiMessageBox.hpp
 **
-**		An interface to a message box.
+**      A non-managed interface to a message box.
 **
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved
@@ -14,7 +14,6 @@
 #ifndef GUI_MESSAGEBOX_HPP
 #include "Tool/gui/guiMessageBox.hpp"
 #endif
-
 
 //============================================================================
 //============================================================================

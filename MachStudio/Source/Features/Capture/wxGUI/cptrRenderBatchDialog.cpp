@@ -243,7 +243,7 @@ void cptrRenderBatchDialog::button_AddScene_OnButtonClick( wxCommandEvent& event
 	itString init_dir;
 	itString filter_str(filter.c_str());
 	fsFileUtil::LocatorToUnicodeString( initial_dir, init_dir );
-	wxFileDialog dialog(NULL,_T("Open File"), init_dir.GetString(),wxEmptyString,
+	wxFileDialog dialog(NULL,wxT("Open File"), init_dir.GetString(),wxEmptyString,
 						filter_str.GetString(),wxFD_MULTIPLE);
 
 	if(dialog.ShowModal() == wxID_OK)

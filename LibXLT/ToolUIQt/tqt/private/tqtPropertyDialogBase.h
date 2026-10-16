@@ -1,45 +1,37 @@
-///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Apr 16 2008)
-// http://www.wxformbuilder.org/
-//
-// PLEASE DO "NOT" EDIT THIS FILE!
-///////////////////////////////////////////////////////////////////////////
+/*****************************************************************************
+**	tqtPropertyDialogBase.h
+**
+**		Layout of the property dialog: a message, a scrolling panel of
+**	property controls, and OK / Cancel buttons.
+**
+**	StudioGPU
+**	Copyright(C) 2008 - All Rights Reserved
+\****************************************************************************/
+#ifndef __tqtPropertyDialogBase__
+#define __tqtPropertyDialogBase__
 
-#ifndef __twxPropertyDialogBase__
-#define __twxPropertyDialogBase__
+#ifndef TQT_WIDGETS_HPP
+#include "ToolUIQt/tqt/tqtWidgets.hpp"
+#endif
 
-#include <wx/string.h>
-#include <wx/stattext.h>
-#include <wx/gdicmn.h>
-#include <wx/font.h>
-#include <wx/colour.h>
-#include <wx/settings.h>
-#include <wx/scrolwin.h>
-#include <wx/sizer.h>
-#include <wx/button.h>
-#include <wx/dialog.h>
-
-///////////////////////////////////////////////////////////////////////////
-
+#ifdef USE_QT
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Class twxPropertyDialogBase
+/// Class tqtPropertyDialogBase
 ///////////////////////////////////////////////////////////////////////////////
-class twxPropertyDialogBase : public wxDialog 
+class tqtPropertyDialogBase : public QDialog
 {
-	private:
-	
 	protected:
-		wxStaticText* m_staticText_Message;
-		wxScrolledWindow* m_panel_Properties;
-		wxStdDialogButtonSizer* m_sdbSizer1;
-		wxButton* m_sdbSizer1OK;
-		wxButton* m_sdbSizer1Cancel;
-	
+		QLabel* m_staticText_Message;
+		QScrollArea* m_scroll_Properties;
+		QWidget* m_panel_Properties;	// holds the property controls
+		QDialogButtonBox* m_sdbSizer1;
+
 	public:
-		twxPropertyDialogBase( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
-		~twxPropertyDialogBase();
-	
+		tqtPropertyDialogBase( QWidget* parent, const QString& title = QString() );
+		~tqtPropertyDialogBase();
 };
 
-#endif //__twxPropertyDialogBase__
+#endif // USE_QT
+
+#endif //__tqtPropertyDialogBase__

@@ -8,6 +8,8 @@
 \****************************************************************************/
 #include "Support/mtrl/GUI/mtrlOperations.hpp"
 
+#include "Core/it/itStringUtil.hpp"
+
 #include "Features/MaterialBrowse/mbrwDialogUtil.hpp"	// unfortunate include
 #include "Support/brsh/brshPaintBrushMgr.hpp"
 
@@ -620,7 +622,7 @@ namespace mtrlOperations
 			// To do directory comparison, need to do case insensitive comparison
 			gfFileTranslationMgr::ExpandLocator(dir);
 			fsFileUtil::LocatorToANSIFilename(dir, dir_str2);
-			if (::_stricmp(dir_str1.c_str(), dir_str2.c_str()))
+			if (itStringUtil::CompareNoCase(dir_str1, dir_str2))
 			//if (i_DestDir != dir)
 			{
 				if (!envSTLHelpers::Contains(textures, i_Textures[i]))

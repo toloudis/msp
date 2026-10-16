@@ -110,7 +110,7 @@ namespace
 
 void CopyCurrentTargetIntoTexture(matRenderTargetTexture* io_pDest)
 {
-	// Copy backbuffer to DOF Reserve Target. 
+	// Copy backbuffer to DOF Reserve Target.
 	// This will be the source texture with color data.
 	g2dD3D11RenderTargetPtr pBackBuffer = NULL;
 	pBackBuffer = g2dDX11Global::GetColorTarget();
@@ -140,7 +140,7 @@ void CopyBackBufInto(matRenderTargetTexture* pTex)
     g3dDepthStencilStateMgr::SetDepthStencilState(ds_Disable_NS);
 
     // Draw the high dynamic range scene texture to the low dynamic range
-    // back buffer. 
+    // back buffer.
     UINT uiPassCount, uiPass;
 
     matShaderEffect* pEffBase = g3dDX11Util::GetEffect("HDRLighting");
@@ -200,42 +200,42 @@ void shdwHDRRendererDX11::InitStates()
 {
 	st_NoBlend = new g3dBlendStateMgr::BlendState( false, FALSE,
 		D3D11_BLEND_ONE,D3D11_BLEND_ONE,D3D11_BLEND_OP_ADD,
-	    D3D11_BLEND_ONE,D3D11_BLEND_ONE,D3D11_BLEND_OP_ADD, 
+	    D3D11_BLEND_ONE,D3D11_BLEND_ONE,D3D11_BLEND_OP_ADD,
 		D3D11_COLOR_WRITE_ENABLE_ALL);
 	st_Blend = new g3dBlendStateMgr::BlendState( false, TRUE,
 		D3D11_BLEND_ONE,D3D11_BLEND_ONE,D3D11_BLEND_OP_ADD,
-	    D3D11_BLEND_ONE,D3D11_BLEND_ONE,D3D11_BLEND_OP_ADD, 
+	    D3D11_BLEND_ONE,D3D11_BLEND_ONE,D3D11_BLEND_OP_ADD,
 		D3D11_COLOR_WRITE_ENABLE_ALL);
 
 	st_IncludeAlpha1 = new g3dBlendStateMgr::BlendState( false, FALSE,
 		D3D11_BLEND_SRC_ALPHA,D3D11_BLEND_ONE,D3D11_BLEND_OP_ADD,
-	    D3D11_BLEND_SRC_ALPHA,D3D11_BLEND_ONE,D3D11_BLEND_OP_ADD, 
+	    D3D11_BLEND_SRC_ALPHA,D3D11_BLEND_ONE,D3D11_BLEND_OP_ADD,
 		D3D11_COLOR_WRITE_ENABLE_ALPHA);
 	st_IncludeAlpha2 = new g3dBlendStateMgr::BlendState( false, TRUE,
 		D3D11_BLEND_SRC_ALPHA,D3D11_BLEND_ONE,D3D11_BLEND_OP_ADD,
-	    D3D11_BLEND_SRC_ALPHA,D3D11_BLEND_ONE,D3D11_BLEND_OP_ADD, 
+	    D3D11_BLEND_SRC_ALPHA,D3D11_BLEND_ONE,D3D11_BLEND_OP_ADD,
 		D3D11_COLOR_WRITE_ENABLE_ALL);
 
 	st_CopyToBackBuf1 = new g3dBlendStateMgr::BlendState( false, FALSE,
 		D3D11_BLEND_SRC_ALPHA,D3D11_BLEND_INV_SRC_ALPHA,D3D11_BLEND_OP_ADD,
-	    D3D11_BLEND_SRC_ALPHA,D3D11_BLEND_INV_SRC_ALPHA,D3D11_BLEND_OP_ADD, 
+	    D3D11_BLEND_SRC_ALPHA,D3D11_BLEND_INV_SRC_ALPHA,D3D11_BLEND_OP_ADD,
 		D3D11_COLOR_WRITE_ENABLE_ALL);
 	st_CopyToBackBuf2 = new g3dBlendStateMgr::BlendState( false, TRUE,
 		D3D11_BLEND_SRC_ALPHA,D3D11_BLEND_INV_SRC_ALPHA,D3D11_BLEND_OP_ADD,
-	    D3D11_BLEND_SRC_ALPHA,D3D11_BLEND_INV_SRC_ALPHA,D3D11_BLEND_OP_ADD, 
+	    D3D11_BLEND_SRC_ALPHA,D3D11_BLEND_INV_SRC_ALPHA,D3D11_BLEND_OP_ADD,
 		D3D11_COLOR_WRITE_ENABLE_ALL);
 
 	st_DOF1 = new g3dBlendStateMgr::BlendState( false, TRUE,
 		D3D11_BLEND_ONE,D3D11_BLEND_ZERO,D3D11_BLEND_OP_ADD,
-	    D3D11_BLEND_ONE,D3D11_BLEND_ZERO,D3D11_BLEND_OP_ADD, 
+	    D3D11_BLEND_ONE,D3D11_BLEND_ZERO,D3D11_BLEND_OP_ADD,
 		D3D11_COLOR_WRITE_ENABLE_ALPHA);
 	st_DOF2 = new g3dBlendStateMgr::BlendState( false, FALSE,
 		D3D11_BLEND_SRC_ALPHA,D3D11_BLEND_INV_SRC_ALPHA,D3D11_BLEND_OP_ADD,
-	    D3D11_BLEND_SRC_ALPHA,D3D11_BLEND_INV_SRC_ALPHA,D3D11_BLEND_OP_ADD, 
+	    D3D11_BLEND_SRC_ALPHA,D3D11_BLEND_INV_SRC_ALPHA,D3D11_BLEND_OP_ADD,
 		D3D11_COLOR_WRITE_ENABLE_ALL);
 	st_DOFRestore = new g3dBlendStateMgr::BlendState( false, TRUE,
 		D3D11_BLEND_SRC_ALPHA,D3D11_BLEND_INV_SRC_ALPHA,D3D11_BLEND_OP_ADD,
-	    D3D11_BLEND_SRC_ALPHA,D3D11_BLEND_INV_SRC_ALPHA,D3D11_BLEND_OP_ADD, 
+	    D3D11_BLEND_SRC_ALPHA,D3D11_BLEND_INV_SRC_ALPHA,D3D11_BLEND_OP_ADD,
 		D3D11_COLOR_WRITE_ENABLE_ALL);
 
 	g3dDepthStencilStateMgr::DepthStencilOp_Desc OP_DEFAULT( D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_COMPARISON_ALWAYS );
@@ -301,7 +301,7 @@ shdwHDRRendererDX11::~shdwHDRRendererDX11()
 //--------------------------------------------------------------------
 void shdwHDRRendererDX11::ReleaseResources()
 {
-	// force updates on next render call 
+	// force updates on next render call
 	m_pWindow = NULL;
 	m_nHairShadowMapRes = -1;	//force initial update
 	m_nHairShadowMapType = -1;
@@ -334,7 +334,7 @@ int shdwHDRRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_
 	ssaoParams p;
 	i_Scene.GetSSAOSettings(p);
 	if (g3dPrefs::CurrentPrefs().m_bAOInvalid)
-		m_OverscanSize = 0;	
+		m_OverscanSize = 0;
 	else
 		m_OverscanSize = p.m_OverscanPixels;	//acquire border overscan for depth buffers before surface creation
 
@@ -344,7 +344,7 @@ int shdwHDRRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_
 	ssgi_p.m_OverscanPixels = p.m_OverscanPixels;
 	//if (ssgi_p.m_OverscanPixels > p.m_OverscanPixels)
 	//	m_OverscanSize = ssgi_p.m_OverscanPixels; //acquire border overscan for depth buffers before surface creation
-	
+
 	// make sure temp surfaces are up-to-date
 	CreateSurfaces(i_pWindow);
 	// init and clear main render surface
@@ -414,7 +414,7 @@ int shdwHDRRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_
 		EnvPrePass.Render(i_fSimTime);
 	}
 
-	// fill Z with opaques. 
+	// fill Z with opaques.
 	// also fill alpha = 1 with opaques
 	// this allows for all passes to do correct blending.
 	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Test_Write_LessE_NS );
@@ -437,11 +437,11 @@ int shdwHDRRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_
 
 		if (g3dPrefs::CurrentPrefs().m_bEnableTransparent)
 		{
-			shdwPassTransparent transparentPass(layers[0], &i_Camera, 
-				m_pFrameBuffer->TransDepthBuffer1(), 
-				m_pFrameBuffer->TransDepthBuffer2(), 
-				m_pFrameBuffer->TransDepthAux(), 
-				m_pFrameBuffer->HDRScratchTex0(), 
+			shdwPassTransparent transparentPass(layers[0], &i_Camera,
+				m_pFrameBuffer->TransDepthBuffer1(),
+				m_pFrameBuffer->TransDepthBuffer2(),
+				m_pFrameBuffer->TransDepthAux(),
+				m_pFrameBuffer->HDRScratchTex0(),
 				m_pFrameBuffer->HDRScratchTex1(),
 				currentHDRTarget);
 			transparentPass.SetSceneInfo(&m_SceneDatabase);
@@ -486,11 +486,11 @@ int shdwHDRRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_
 #ifdef HAIR_SUPPORTED
 		if (g3dPrefs::CurrentPrefs().m_bEnableHair)
 		{
-			shdwPassHair hairPass( &i_Camera, m_pFrameBuffer->OSM().m_pOSM, currentHDRTarget, i_pWindow, 
-				m_pFrameBuffer->DepthBuffer(), 
-				m_pFrameBuffer->TransDepthBuffer1(), m_pFrameBuffer->TransDepthBuffer2(), 
-				m_pFrameBuffer->TransDepthAux(), 
-				m_pFrameBuffer->HDRScratchTex0(), 
+			shdwPassHair hairPass( &i_Camera, m_pFrameBuffer->OSM().m_pOSM, currentHDRTarget, i_pWindow,
+				m_pFrameBuffer->DepthBuffer(),
+				m_pFrameBuffer->TransDepthBuffer1(), m_pFrameBuffer->TransDepthBuffer2(),
+				m_pFrameBuffer->TransDepthAux(),
+				m_pFrameBuffer->HDRScratchTex0(),
 				m_pFrameBuffer->HDRScratchTex1());
 			hairPass.SetSceneInfo(&m_SceneDatabase);
 			if( g3dPrefs::CurrentPrefs().m_HairTransparencyMode < 2)
@@ -513,9 +513,9 @@ int shdwHDRRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_
 		{
 			if (g3dPrefs::CurrentPrefs().m_bAOInvalid)
 			{
-				shdwPassAOVolumes aoPass(currentHDRTarget, m_pFrameBuffer->HDRScratchTex2(), m_pFrameBuffer->HDRScratchTex1(), 
-					m_pFrameBuffer->HDRScratchTex0(), 
-					m_pFrameBuffer->DepthBuffer(), 
+				shdwPassAOVolumes aoPass(currentHDRTarget, m_pFrameBuffer->HDRScratchTex2(), m_pFrameBuffer->HDRScratchTex1(),
+					m_pFrameBuffer->HDRScratchTex0(),
+					m_pFrameBuffer->DepthBuffer(),
 					&i_Camera, p);
 				aoPass.SetSceneInfo(&m_SceneDatabase);
 				l_nNumTrianglesRendered += aoPass.Render(i_fSimTime);
@@ -524,11 +524,11 @@ int shdwHDRRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_
 			{
 				m_pFrameBuffer->DepthBuffer2()->Clear(maFloatRGBA(1,1,1,1), true, 1.0, false);
 				m_pFrameBuffer->MultiDepthBuffer()->Clear(maFloatRGBA(1,1,1,1), true, 1.0, false);
-				shdwPassSSAO ssaoPass(m_pFrameBuffer->MultiDepthBuffer(), 
-					m_pFrameBuffer->DepthBuffer(), 
-					m_pFrameBuffer->DepthBuffer2(), 
-					currentHDRTarget, 
-					m_pFrameBuffer->HDRScratchTex0(), 
+				shdwPassSSAO ssaoPass(m_pFrameBuffer->MultiDepthBuffer(),
+					m_pFrameBuffer->DepthBuffer(),
+					m_pFrameBuffer->DepthBuffer2(),
+					currentHDRTarget,
+					m_pFrameBuffer->HDRScratchTex0(),
 					m_pFrameBuffer->HDRScratchTex1(), p);
 				ssaoPass.SetSceneInfo(&m_SceneDatabase);
 				ssaoPass.SetCamera(&i_Camera);
@@ -564,9 +564,9 @@ int shdwHDRRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_
 			// TODO: the mutiplication only works when AO volume is enabled. Also it has
 			// the problem that AO/GI texture might have differen size!
 			bool bReuseBuff = (g3dPrefs::CurrentPrefs().m_bEnableSSAO && g3dPrefs::CurrentPrefs().m_bAOInvalid);
-			shdwPassGIVolumes giPass(currentHDRTarget, m_pFrameBuffer->HDRBufferBackup(), m_pFrameBuffer->HDRScratchTex1(), 
-					m_pFrameBuffer->HDRScratchTex0(), 
-					m_pFrameBuffer->DepthBuffer(), 
+			shdwPassGIVolumes giPass(currentHDRTarget, m_pFrameBuffer->HDRBufferBackup(), m_pFrameBuffer->HDRScratchTex1(),
+					m_pFrameBuffer->HDRScratchTex0(),
+					m_pFrameBuffer->DepthBuffer(),
 					&i_Camera, ssgi_p, bReuseBuff,
 					m_pFrameBuffer->HDRScratchTex2());
 				giPass.SetSceneInfo(&m_SceneDatabase);
@@ -590,13 +590,13 @@ int shdwHDRRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_
 				m_pFrameBuffer->DepthBuffer2()->Clear(maFloatRGBA(1,1,1,1), true, 1.0, false);
 				m_pFrameBuffer->MultiDepthBuffer()->Clear(maFloatRGBA(1,1,1,1), true, 1.0, false);
 				m_pFrameBuffer->MultiDepthBuffer()->MakeCurrent();
-				shdwPassSSGI ssgiPass(m_pFrameBuffer->MultiDepthBuffer(), 
-					m_pFrameBuffer->DepthBuffer(), 
-					m_pFrameBuffer->DepthBuffer2(), 
-					currentHDRTarget, 
+				shdwPassSSGI ssgiPass(m_pFrameBuffer->MultiDepthBuffer(),
+					m_pFrameBuffer->DepthBuffer(),
+					m_pFrameBuffer->DepthBuffer2(),
+					currentHDRTarget,
 					m_pFrameBuffer->HDRScratchTex0(),
-					m_pFrameBuffer->HDRScratchTex1(), 
-					ssgi_p, 
+					m_pFrameBuffer->HDRScratchTex1(),
+					ssgi_p,
 					m_pFrameBuffer->HDRRenderTargetTex());
 				ssgiPass.SetSceneInfo(&m_SceneDatabase);
 				ssgiPass.SetCamera(&i_Camera);
@@ -614,11 +614,11 @@ int shdwHDRRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_
 
 	if (g3dPrefs::CurrentPrefs().m_bEnableTransparent)
 	{
-		shdwPassTransparent transparentPass(layers[0], &i_Camera, 
-			m_pFrameBuffer->TransDepthBuffer1(), 
-			m_pFrameBuffer->TransDepthBuffer2(), 
-			m_pFrameBuffer->TransDepthAux(), 
-			m_pFrameBuffer->HDRScratchTex0(), 
+		shdwPassTransparent transparentPass(layers[0], &i_Camera,
+			m_pFrameBuffer->TransDepthBuffer1(),
+			m_pFrameBuffer->TransDepthBuffer2(),
+			m_pFrameBuffer->TransDepthAux(),
+			m_pFrameBuffer->HDRScratchTex0(),
 			m_pFrameBuffer->HDRScratchTex1(),
 			currentHDRTarget);
 		transparentPass.SetSceneInfo(&m_SceneDatabase);
@@ -639,15 +639,15 @@ int shdwHDRRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_
 
 	// alpha fill pass (this is responsible for the final alpha mask)
 	// Fill alpha with additive alpha blending mode
-	shdwPassAlphaFill alphaFillPass(currentHDRTarget); 
+	shdwPassAlphaFill alphaFillPass(currentHDRTarget);
 	alphaFillPass.SetSceneInfo(&m_SceneDatabase);
 	// must set the transparent pass info if rendering actual alpha
-	alphaFillPass.SetTransparentPassInfo(layers[0], &i_Camera, 
+	alphaFillPass.SetTransparentPassInfo(layers[0], &i_Camera,
 		m_pFrameBuffer->TransDepthBuffer1(), // not anti-aliased!
 		m_pFrameBuffer->HDRScratchTex0(), // not anti-aliased!
 		m_pFrameBuffer->HDRScratchTex1(), // not anti-aliased!
 		m_pFrameBuffer->HDRScratchTex2(), // not anti-aliased!
-		m_pFrameBuffer->HDRAAScratchTarget(), 
+		m_pFrameBuffer->HDRAAScratchTarget(),
 		m_pFrameBuffer->IsAntiAliased());
 	l_nNumTrianglesRendered += alphaFillPass.Render(i_fSimTime);
 
@@ -681,11 +681,11 @@ int shdwHDRRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_
 
 	if (g3dPrefs::CurrentPrefs().m_bEnableTransparent && g3dPrefs::CurrentPrefs().m_bEnableDeferredTransparency)
 	{
-		shdwPassTransparent transparentPass(layers[0], &i_Camera, 
-			m_pFrameBuffer->TransDepthBuffer1(), 
-			m_pFrameBuffer->TransDepthBuffer2(), 
-			m_pFrameBuffer->TransDepthAux(), 
-			m_pFrameBuffer->HDRScratchTex0(), 
+		shdwPassTransparent transparentPass(layers[0], &i_Camera,
+			m_pFrameBuffer->TransDepthBuffer1(),
+			m_pFrameBuffer->TransDepthBuffer2(),
+			m_pFrameBuffer->TransDepthAux(),
+			m_pFrameBuffer->HDRScratchTex0(),
 			m_pFrameBuffer->HDRScratchTex1(),
 			currentHDRTarget);
 		transparentPass.SetSceneInfo(&m_SceneDatabase);
@@ -695,9 +695,9 @@ int shdwHDRRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_
 	}
 
 	// Done drawing: resolve hdr multisamples to the texture.
-	// This should be done AFTER tone mapping but it is impossible 
+	// This should be done AFTER tone mapping but it is impossible
 	// in DX11 to tone map the subpixel msaa samples.
-	
+
 	// Restore depth for non AA target
 #ifndef NEW_AA_CODE
 	i_pWindow->MakeCurrent();
@@ -728,12 +728,12 @@ int shdwHDRRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_
 
 	// glow will not contribute to matte pass
 	if (g3dSingleLightRendering::GetDoSingleLightRendering() &&
-		!g3dSingleLightRendering::GetDoDOFPrepPass() && 
+		!g3dSingleLightRendering::GetDoDOFPrepPass() &&
 		g3dPrefs::CurrentPrefs().m_bEnableGlow &&
 		!g3dPrefs::CurrentPrefs().m_bRenderMatte)
-	{	
-		shdwPassGlow glowPass(layers[0], &i_Camera, 
-			m_pFrameBuffer->HDRRenderTargetTex(), 
+	{
+		shdwPassGlow glowPass(layers[0], &i_Camera,
+			m_pFrameBuffer->HDRRenderTargetTex(),
 			m_pFrameBuffer->HDRScratchTex0());
 		glowPass.SetSceneInfo(&m_SceneDatabase);
 		l_nNumTrianglesRendered += glowPass.Render(i_fSimTime);
@@ -741,11 +741,11 @@ int shdwHDRRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_
 
 	// outline will not contribute to matte pass
 	if (g3dSingleLightRendering::GetDoSingleLightRendering() &&
-		!g3dSingleLightRendering::GetDoDOFPrepPass() && 
+		!g3dSingleLightRendering::GetDoDOFPrepPass() &&
 		g3dPrefs::CurrentPrefs().m_bEnableOutline &&
 		!g3dPrefs::CurrentPrefs().m_bRenderMatte)
 	{
-		shdwPassOutline outlinePass(m_pFrameBuffer->HDRScratchTex0(), 
+		shdwPassOutline outlinePass(m_pFrameBuffer->HDRScratchTex0(),
 			m_pFrameBuffer->HDRScratchTex1(), m_pFrameBuffer->HDRRenderTargetTex(), &m_SceneDatabase );
 		l_nNumTrianglesRendered += outlinePass.Render(i_fSimTime);
 	}
@@ -753,11 +753,11 @@ int shdwHDRRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_
 	// should this happen after tone map?  HDR colors will be mapped toward the fog color which is not HDR.
 	// only do fog if not computing a reflection map.
 	if (
-		!g3dSingleLightRendering::GetDoReflectionGen() && 
+		!g3dSingleLightRendering::GetDoReflectionGen() &&
 		i_Scene.IsFogEnabled())
 	{
 		m_pFrameBuffer->DepthBuffer()->Clear(maFloatRGBA(1,1,1,1), true, 1.0, false);
-		shdwPassFog fogPass(m_pFrameBuffer->HDRRenderTargetTex(), m_pFrameBuffer->DepthBuffer(), 
+		shdwPassFog fogPass(m_pFrameBuffer->HDRRenderTargetTex(), m_pFrameBuffer->DepthBuffer(),
 			m_pFrameBuffer->HDRScratchTex0(), &i_Scene, &i_Camera);
 		fogPass.SetSceneInfo(&m_SceneDatabase);
 		fogPass.Render(i_fSimTime);
@@ -805,7 +805,7 @@ int shdwHDRRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_
 
 	//------------------------------------------------------------------------
 	// Convert HDR to LDR and copy to frame buffer
-	// all post processing effects should write to the framebuffer and read 
+	// all post processing effects should write to the framebuffer and read
 	// from previous non MSAA HDR textures.
 	// Bring along the depths for depth effects
 
@@ -833,7 +833,7 @@ int shdwHDRRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_
 //	char num[64];
 //	sprintf(num, "tris: %d", l_nNumTriangles);
 //	i_pWindow->SetDebugInfo(2, num);
-	
+
 	D3DPERF_EndEvent();
 	return l_nNumTrianglesRendered;
 }
@@ -899,9 +899,9 @@ void shdwHDRRendererDX11::PostProcessing( g2dRenderTarget* i_pWindow, const camC
 			else
 			{
 				// main render just does tonemap and be done with it
-				m_pToneMapper->ToneMap(m_pWindow, m_pFrameBuffer->HDRRenderTargetTex(), 
-					m_pFrameBuffer->TexBloom().m_apTexBloom[0], 
-					m_pFrameBuffer->TexStar().m_apTexStar[0], 
+				m_pToneMapper->ToneMap(m_pWindow, m_pFrameBuffer->HDRRenderTargetTex(),
+					m_pFrameBuffer->TexBloom().m_apTexBloom[0],
+					m_pFrameBuffer->TexStar().m_apTexStar[0],
 					m_pFrameBuffer->TexToneMap().m_apTexToneMap[0]);
 			}
 
@@ -928,7 +928,7 @@ void shdwHDRRendererDX11::PostProcessing( g2dRenderTarget* i_pWindow, const camC
 			// in non-msaa, i have the window's zbuf.
 			// in msaa mode, the zbuf is msaa'd so i should use the depth buffer z buffer!
 
-			// note this will not antialias the layers.  
+			// note this will not antialias the layers.
 			// to antialias, clear the msaa buffer, make current,
 			// render to it, then resolve to hdrrendertarget and blend onto i_pWindow
 			i_pWindow->MakeCurrent();
@@ -1044,9 +1044,9 @@ void shdwHDRRendererDX11::Slideshow()
 	switch( ((iView++)/nFramesToHold) % nSlides)
 	{
 	case 0:
-		m_pToneMapper->ToneMap(m_pWindow, m_pFrameBuffer->HDRRenderTargetTex(), 
-				m_pFrameBuffer->TexBloom().m_apTexBloom[0], 
-				m_pFrameBuffer->TexStar().m_apTexStar[0], 
+		m_pToneMapper->ToneMap(m_pWindow, m_pFrameBuffer->HDRRenderTargetTex(),
+				m_pFrameBuffer->TexBloom().m_apTexBloom[0],
+				m_pFrameBuffer->TexStar().m_apTexStar[0],
 				m_pFrameBuffer->TexToneMap().m_apTexToneMap[0]);
 		break;
 	case 1:
@@ -1057,10 +1057,10 @@ void shdwHDRRendererDX11::Slideshow()
 		break;
 	case 3:
 		g3dBlendStateMgr::SetBlendState(st_NoBlend);
-		
+
 		LuminanceToGrayscale(m_pFrameBuffer->HDRRenderTargetTex());
 		g3dBlendStateMgr::SetBlendState(st_Blend);
-		
+
 		break;
 	case 4:
 		CopyToBackBuf(m_pFrameBuffer->TexToneMap().m_apTexToneMap[NUM_TONEMAP_TEXTURES-1], false);
@@ -1086,7 +1086,7 @@ void shdwHDRRendererDX11::IncludeAlphas(float i_fSimTime)
 //	mattePass.Render(i_fSimTime);
 
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwHDRRendererDX11::CopyToBackBuf" );
-    
+
 	matShaderEffect* pEffBase = g3dDX11Util::GetEffect("HDRLighting");
 
 	pEffBase->SetTechnique("SimpleCopyLDR");
@@ -1101,7 +1101,7 @@ void shdwHDRRendererDX11::IncludeAlphas(float i_fSimTime)
 
 	g3dBlendStateMgr::SetBlendState(st_IncludeAlpha1);
 
-//    g2dDX11Global::g_pDevice->SetTexture( 0, m_pMatteTarget->GetSurface() );   
+//    g2dDX11Global::g_pDevice->SetTexture( 0, m_pMatteTarget->GetSurface() );
 	ID3D11ShaderResourceView* inputTextures[1] = {
 		m_pFrameBuffer->HDRBufferBackup()->GetSurface()
 	};
@@ -1113,9 +1113,9 @@ void shdwHDRRendererDX11::IncludeAlphas(float i_fSimTime)
     uiPassCount = pEffBase->Begin();
     for (uiPass = 0; uiPass < uiPassCount; uiPass++)
     {
-        pEffBase->BeginPass(uiPass);        
+        pEffBase->BeginPass(uiPass);
 		g2dDX11Global::g_pDeviceContext->PSSetShaderResources(0, 1, inputTextures);
-        g3dDX11Util::DrawFullScreenQuad( w,h );        
+        g3dDX11Util::DrawFullScreenQuad( w,h );
         pEffBase->EndPass();
     }
     pEffBase->End();
@@ -1127,9 +1127,9 @@ void shdwHDRRendererDX11::IncludeAlphas(float i_fSimTime)
 	uiPassCount = pEffBase->Begin();
     for (uiPass = 0; uiPass < uiPassCount; uiPass++)
     {
-        pEffBase->BeginPass(uiPass);        
+        pEffBase->BeginPass(uiPass);
 		g2dDX11Global::g_pDeviceContext->PSSetShaderResources(0, 1, inputTextures);
-        g3dDX11Util::DrawFullScreenQuad( w,h );        
+        g3dDX11Util::DrawFullScreenQuad( w,h );
         pEffBase->EndPass();
     }
     pEffBase->End();
@@ -1161,13 +1161,13 @@ void shdwHDRRendererDX11::CopyToBackBuf(matRenderTargetTexture* pTex, bool bDoBl
 
 
 // Draw the high dynamic range scene texture to the low dynamic range
-    // back buffer. 
+    // back buffer.
     UINT uiPassCount, uiPass;
-    
+
 	matShaderEffect* pEffBase = g3dDX11Util::GetEffect("HDRLighting");
 
 	pEffBase->SetTechnique(isRGB?"SimpleCopyLDR":"SimpleCopyLumLDR");
-    
+
 	m_pWindow->MakeCurrent();
 	int w,h;
 	m_pWindow->GetDimensions(w,h);
@@ -1186,10 +1186,10 @@ void shdwHDRRendererDX11::CopyToBackBuf(matRenderTargetTexture* pTex, bool bDoBl
     for (uiPass = 0; uiPass < uiPassCount; uiPass++)
     {
         pEffBase->BeginPass(uiPass);
-        
+
 		g2dDX11Global::g_pDeviceContext->PSSetShaderResources(0, 1, inputTextures);
         g3dDX11Util::DrawFullScreenQuad( w,h );
-        
+
         pEffBase->EndPass();
     }
     pEffBase->End();
@@ -1215,13 +1215,13 @@ void shdwHDRRendererDX11::LuminanceToGrayscale(matRenderTargetTexture* pTex, D3D
 	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Disable_NS );
 
 // Draw the high dynamic range scene texture to the low dynamic range
-    // back buffer. 
+    // back buffer.
     UINT uiPassCount, uiPass;
-    
+
 	matShaderEffect* pEffBase = g3dDX11Util::GetEffect("HDRLighting");
 
 	pEffBase->SetTechnique("DrawLuminance");
-    
+
 	m_pWindow->MakeCurrent();
 	int w,h;
 	m_pWindow->GetDimensions(w,h);
@@ -1242,10 +1242,10 @@ void shdwHDRRendererDX11::LuminanceToGrayscale(matRenderTargetTexture* pTex, D3D
     for (uiPass = 0; uiPass < uiPassCount; uiPass++)
     {
         pEffBase->BeginPass(uiPass);
-        
+
 		g2dDX11Global::g_pDeviceContext->PSSetShaderResources(0, 1, inputTextures);
         g3dDX11Util::DrawFullScreenQuad( w,h );
-        
+
         pEffBase->EndPass();
     }
     pEffBase->End();
@@ -1308,7 +1308,7 @@ void shdwHDRRendererDX11::RenderDOF(float i_fSimTime, bool i_debug)
 
 	m_pWindow->MakeCurrent();
 
-	// Copy backbuffer to DOF Reserve Target. 
+	// Copy backbuffer to DOF Reserve Target.
 	// This will be the source texture with color data.
 //	CopyCurrentTargetIntoTexture(m_pFrameBuffer->DOFReserveTarget());
     CopyBackBufInto(m_pFrameBuffer->DOFReserveTarget());
@@ -1318,10 +1318,10 @@ void shdwHDRRendererDX11::RenderDOF(float i_fSimTime, bool i_debug)
 	int w,h;
 	m_pFrameBuffer->DOFReserveTarget()->GetDimensions(w,h);
 	g3dBlendStateMgr::SetBlendState(st_DOF1);
-	
+
 //	g2dDX11Global::g_pDevice->SetVertexShader(NULL);
 //	g2dDX11Global::g_pDevice->SetPixelShader(NULL);
-	
+
 	matShaderEffect* pEffBase = g3dDX11Util::GetEffect("HDRLighting");
 	pEffBase->SetTechnique("SimpleCopyLDR");
 	ID3D11ShaderResourceView* inputTextures[1] = {
@@ -1349,7 +1349,7 @@ void shdwHDRRendererDX11::RenderDOF(float i_fSimTime, bool i_debug)
 //	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Test_Write_LessE_NS );
 
 	g3dBlendStateMgr::SetBlendState(st_DOF2);
-	
+
 	g3dRasterizerStateMgr::SetRasterizerState( g3dDX11Util::GetCullMode(), g3dDrawStyleUtilDX11::GetD3DDrawStyle() );
 
 	m_pWindow->MakeCurrent();
@@ -1380,7 +1380,7 @@ void shdwHDRRendererDX11::RenderDOF(float i_fSimTime, bool i_debug)
 		effBlur->EndPass();
 
 		g2dDX11Global::g_pDeviceContext->PSSetShaderResources(0, 1, nullTex);
-		
+
 		m_pFrameBuffer->DOFHBlurTarget()->MakeCurrent();
 		effBlur->BeginPass(1);
 		g3dRenderFullScreenQuad fsq1(m_pFrameBuffer->DOFBlurTarget(), m_pFrameBuffer->DOFHBlurTarget());
@@ -1404,7 +1404,7 @@ void shdwHDRRendererDX11::RenderDOF(float i_fSimTime, bool i_debug)
 		/////////////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////////////
-		
+
 		// post process full screen quad
 		g3dRenderDOF rpass_DOF(m_pFrameBuffer->DOFReserveTarget(), m_pFrameBuffer->DOFBlurTarget(), m_pWindow);
 		l_nNumTrianglesRendered += rpass_DOF.Render(i_fSimTime);
@@ -1773,7 +1773,7 @@ void shdwHDRRendererDX11::DrawAlpha(matRenderTargetTexture* i_src, g2dRenderTarg
     UINT uiPassCount, uiPass;
 
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwHDRRendererDX11::DrawAlpha" );
-    
+
 	matShaderEffect* pEffBase = g3dDX11Util::GetEffect("HDRLighting");
 
 	pEffBase->SetTechnique("DrawAlpha");
@@ -1799,7 +1799,7 @@ void shdwHDRRendererDX11::DrawAlpha(matRenderTargetTexture* i_src, g2dRenderTarg
         pEffBase->BeginPass(uiPass);
         g2dDX11Global::g_pDeviceContext->PSSetShaderResources(0,1,inputTextures);
         g3dDX11Util::DrawFullScreenQuad( w,h );
-        
+
         pEffBase->EndPass();
     }
     pEffBase->End();

@@ -19,9 +19,6 @@
 #ifndef TMLN_TIMEINOUTDATA_HPP
 #include "Support/tmln/tmlnTimeInOutData.hpp"
 #endif
-#ifndef DM_FSM_HPP
-#include "Core/dm/dmFSM.hpp"
-#endif
 #ifndef MA_POINT3D_HPP
 #include "Core/ma/maPoint3d.hpp"
 #endif
@@ -34,7 +31,6 @@
 
 //============================================================================
 //============================================================================
-struct mrayOptionsData;
 struct rmanOptionsData;
 class camCamera;
 class cptrAccumulationBuffer;
@@ -77,7 +73,7 @@ public:
 	void ResetRenderCaptureIteration();
 
 	//--------------------------------------------------------------------
-	// SetDoneFirstPass 
+	// SetDoneFirstPass
 	//--------------------------------------------------------------------
 	void SetDoneFirstPass(bool i_bDoneFirstPass);
 
@@ -85,7 +81,7 @@ public:
 	// Free the motion sampler and accumlation buffers
 	//--------------------------------------------------------------------
 	void FreeInternalBuffers();
-	
+
 	//--------------------------------------------------------------------
 	// Returns true if the last attempt at TryRenderCapture
 	//	returned an error.
@@ -98,7 +94,7 @@ public:
 	void ClearErrorState();
 
 	//--------------------------------------------------------------------
-	// Returns true if the error is irrecoverable and the 
+	// Returns true if the error is irrecoverable and the
 	//	application must exit.
 	//--------------------------------------------------------------------
 	bool ShouldAppExit() const;
@@ -159,11 +155,6 @@ private:
 	// GetRmanOptions()
 	//----------------------------------------------------------------------------
 	rmanOptionsData GetRmanOptions(rprfPrefsObject* prefsObject);
-
-	//----------------------------------------------------------------------------
-	// GetMRayOptions()
-	//----------------------------------------------------------------------------
-	mrayOptionsData GetMRayOptions(rprfPrefsObject* prefsObject);
 
 	//--------------------------------------------------------------------
 	//	get the next render layer index

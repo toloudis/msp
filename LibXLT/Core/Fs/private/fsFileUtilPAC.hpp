@@ -40,13 +40,5 @@
 #if ENV_WINDOWS
 	#include "Core/fs/private/fsFileUtilPACWin.hpp"
 #else
-	#if ENV_OS == ENV_PS2OS
-		#include "Core/fs/private/fsFileUtilPACPS2.hpp"
-	#else
-		#if ENV_OS == ENV_XBOXOS
-			#include "Core/fs/private/fsFileUtilPACXbox.hpp"
-		#else
-			#error fsFileUtilPAC not defined for this platform
-		#endif
-	#endif
+	#error fsFileUtilPAC not defined for this platform
 #endif

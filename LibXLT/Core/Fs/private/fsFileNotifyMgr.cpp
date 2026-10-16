@@ -18,6 +18,7 @@
 #include "Core/it/itStringUtil.hpp"
 #include "Core/fs/fsXMLReader.hpp"
 #include "Core/fs/fsXMLWriter.hpp"
+#include "Core/fs/private/fsFileTimeUtilPAC.hpp"
 #include "Core/gf/gfPaths.hpp"
 #include "Core/name/nameMgr.hpp"
 #include "Core/name/nameObject.hpp"
@@ -27,8 +28,6 @@
 #include <string>
 #include <vector>
 #include <fstream>
-#include <sys/types.h>
-#include <sys/stat.h>
 
 namespace FileUpdated
 {
@@ -84,11 +83,9 @@ namespace
 				return;
 		}
 		fsFileUtil::LocatorToANSIFilename(i_FileToCheck, fileNameStr);
-		struct stat st;
-		stat(fileNameStr.c_str(), &st);
 		fileNames.push_back(i_FileToCheck);
 		DBG_TRACE(" Object "<<fileNameStr<<" has been added");
-		initTimes.push_back(st.st_mtime);
+		initTimes.push_back(fsFileTimeUtilPAC::GetLastModifiedTimeT(i_FileToCheck));
 		need_update.push_back(true);
 	}
 
@@ -154,10 +151,7 @@ namespace
 			fsFileUtil::LocatorToANSIFilename(fileNames[i], fileName);
 			fsFileUtil::LocatorToANSIFilename(fileNames[i].GetLastName(), i_fileName);
 
-			struct _stat64i32 st;
-			//_wstat(t_FileName, &st);
-			_wstat(t_FileName.GetString(),&st);
-			newTime = st.st_mtime;
+			newTime = fsFileTimeUtilPAC::GetLastModifiedTimeT(fileNames[i]);
 			// Check whether the object has been updated 
 			if(newTime != initTimes[i] && newTime!= -1 && need_update[i])
 			{

@@ -175,7 +175,7 @@ namespace evmtEnvironmentMgr
 	}
 	std::string GetSwlEnvironmentName()
 	{
-		return "mental ray IBL";
+		return "Global Environment";
 	}
 
 	//--------------------------------------------------------------------

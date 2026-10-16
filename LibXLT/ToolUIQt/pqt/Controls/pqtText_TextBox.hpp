@@ -19,12 +19,12 @@
 #include "Core/prty/prtyText.hpp"
 #endif
 
+#ifdef USE_QT
 
 //===================================================================================
 //===================================================================================
 class pqtText_TextBox_Converter 
 {
-#ifdef QT_FINISH_PORT
 public:
 	//----------------------------------------------------------------------------
 	// Set value into control
@@ -36,10 +36,10 @@ public:
 	// Get value from control
 	//----------------------------------------------------------------------------
 	static std::string GetValueFromControl(tqcTextBox* i_pActualControl);
-#endif // USE_QT
 };
 
 //============================================================================
 //============================================================================
 typedef pqtTemplate_TextBox<prtyText, std::string, pqtText_TextBox_Converter> pqtText_TextBox;
 
+#endif // USE_QT

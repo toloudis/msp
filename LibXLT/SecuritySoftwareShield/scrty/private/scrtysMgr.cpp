@@ -199,14 +199,16 @@ void scrtysMgr::CleanUp()
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-long scrtysMgr::ValidateLicense(BSTR& i_LicenseStr)
+long scrtysMgr::ValidateLicense(const std::wstring& i_LicenseStr)
 {
 	long return_code = 0;
 #ifdef USE_SECURITYSYSTEM
 	long AutoActivateReturn;
 
 	//Attempts to Activate the Serial Number
-	return_code = spSSCProt->AutoActivateSerialNumber(i_LicenseStr, &AutoActivateReturn);
+	BSTR license_bstr = SysAllocString( i_LicenseStr.c_str() );
+	return_code = spSSCProt->AutoActivateSerialNumber(license_bstr, &AutoActivateReturn);
+	SysFreeString( license_bstr );
 	if (AutoActivateReturn == TRUE_NON_EXPIRY)
 	{
 		// run the software

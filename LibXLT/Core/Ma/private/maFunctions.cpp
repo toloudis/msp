@@ -24,7 +24,7 @@ namespace
 	// we did not do that here, knowing the implementation of maRand32
 
 	//	As soon as you can notice that this is not random enough, go ahead and implement
-	//	a more complicated system.  Just remember you can't use time on the PS2.
+	//	a more complicated system.
 	const int l_ThisIsRandomEnough = 1355;
 
 	//----------------------------------------------------------------------------

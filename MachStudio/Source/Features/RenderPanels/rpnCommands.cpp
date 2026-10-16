@@ -13,7 +13,11 @@
 #include "Features/RenderPanels/rpnCommandFocusAllPanels.hpp"
 #include "Features/RenderPanels/GUI/rpnDialogUtil.hpp"
 #include "Features/RenderPanels/rpnOperations.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/RenderPanels/qtGUI/rpnPanelGrid.hpp"
+#else
 #include "Features/RenderPanels/wxGUI/rpnPanelGrid.hpp"
+#endif
 
 #include "Systems/Common/GUI/cmmSystemDialogUtil.hpp"
 
@@ -69,7 +73,7 @@ namespace rpnCommands
 			"Cameras",
 			"Move editor camera to current view",
 			rpnOperations::SetEditCam);
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		guiMenuMgr::AddMenu("Actions", "Cameras");
 		menu_id = guiMenuMgr::AddMenuItem( "Cameras", pCmd->GetTag().c_str(), 
 			rpnDialogUtil::GetCamerasToolbarName(), "camera-seteditcam.png" ); 
@@ -81,7 +85,7 @@ namespace rpnCommands
 			"Cameras",
 			"Switch between editor camera and last selected scripted camera",
 			rpnDialogUtil::DoSwapCam);
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		menu_id = guiMenuMgr::AddMenuItem( "Cameras", pCmd->GetTag().c_str(), 
 			rpnDialogUtil::GetCamerasToolbarName(), "camera-swapcamera.png" ); 
 		guiCommandMgr::Add( pCmd, pCmd->GetTag().c_str(), menu_id );

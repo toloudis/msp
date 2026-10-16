@@ -8,13 +8,21 @@
 \****************************************************************************/
 #include "stdafx.h"
 #include "MainApp/mainResolvePath.hpp"
+#ifdef MSP_GUI_QT
+#include "MainApp/qtGUI/qtResolvePathDialog.hpp"
+#else
 #include "MainApp/wxGUI/wxResolvePathDialog.hpp"
+#endif
 
 #include "Core/Fs/fsAbsolutePathMgr.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/Fs/fsFileX.hpp"
 #include "Tool/gui/guiFileDialogUtils.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtSystem.hpp"
+#else
 #include "ToolUIWx/twx/twxSystem.hpp"
+#endif
 
 #include <set>
 
@@ -137,6 +145,79 @@ bool mainResolvePath::ResolvePath(const fsLocator& i_OrigFilename,
 				}
 				break;
 			case wxResolvePathDialog::e_Abort:
+				// Throw exception to stop the load completely
+				throw fsFileDoesntExistX(i_OrigFilename);
+				break;
+			}
+		}
+	}
+#elif defined(USE_QT)
+	DBG_WARNING("Cannot find file: " << i_OrigFilename);
+	if (tqtSystem::g_pMainForm)
+	{
+		// If we already skipped this file, or if we are skipping all files, then
+		// don't bother asking again.
+		bool bAskUser = ((l_SkippedCategories.find(i_Category) == l_SkippedCategories.end()) && 
+						 (l_SkippedFiles.find(i_OrigFilename) == l_SkippedFiles.end()));
+		while (bAskUser)
+		{
+			qtResolvePathDialog dialog(tqtSystem::g_pMainForm, i_OrigFilename,i_Category);
+			dialog.exec();
+			switch (dialog.GetResolveChoice())
+			{
+			default:
+			case qtResolvePathDialog::e_Retry:
+				// Retry implies that the user put the asset into place and is ready to 
+				// try reloading it. If this is true, then return true. Otherwise,
+				// ask user again.
+				if (fsFileUtil::FileExists(i_OrigFilename))
+				{
+					o_LocalFilename = i_OrigFilename;
+					return true;
+				}
+				break;
+			case qtResolvePathDialog::e_SkipAll:
+				// Set flag such that next file that is not found returns false without
+				// asking the user anymore.
+				//l_bSkipAll = true;
+				l_SkippedCategories.insert(i_Category);
+				return false;
+			case qtResolvePathDialog::e_Skip:
+				l_SkippedFiles.insert(i_OrigFilename);
+				return false;
+			case qtResolvePathDialog::e_Locate:
+				{
+					//fsLocator init_dir = i_OrigFilename;
+					//if (init_dir.GetNumNames() > 0)
+					//	init_dir.Pop();
+					//if (guiFileDialogUtils::GetOpenFileName("All files (*.*)|*.*", init_dir, o_LocalFilename))
+					itString fullpath;
+					fsFileUtil::LocatorToUnicodeString( i_OrigFilename, fullpath );
+					itString title("Locate File: ");
+					title += i_OrigFilename.GetLastName();
+					QString path = QFileDialog::getOpenFileName( tqtSystem::g_pMainForm,
+									QString::fromWCharArray(title.GetString()),
+									QString::fromWCharArray(fullpath.GetString()),
+									"All files (*.*)" );
+
+					if (!path.isEmpty())
+					{
+						itString full_path(QDir::toNativeSeparators(path).toStdWString().c_str());
+						fsFileUtil::UnicodeStringToLocator(full_path, o_LocalFilename);
+						if (o_LocalFilename.GetNumNames() > 0)
+						{
+							// Add file mapping so that we can use the user's choice to find other files
+							fsAbsolutePathMgr::AddFileMapping(i_OrigFilename, o_LocalFilename);
+							DBG_LOG("Replacing file: " << i_OrigFilename << " with: " << o_LocalFilename);
+							return true;
+						}
+					}
+					// If user chooses "Cancel" from file selection dialog,
+					// continue around in while loop so that the qtResolvePathDialog
+					// is shown again.
+				}
+				break;
+			case qtResolvePathDialog::e_Abort:
 				// Throw exception to stop the load completely
 				throw fsFileDoesntExistX(i_OrigFilename);
 				break;

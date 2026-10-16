@@ -153,6 +153,12 @@
     <ClInclude Include="Env\envWaitCondition.hpp">
       <Filter>Env</Filter>
     </ClInclude>
+    <ClInclude Include="Env\private\envExceptionXPAC.hpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\private\envExceptionXPACWin.hpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClInclude>
     <ClInclude Include="Env\private\envStringPAC.hpp">
       <Filter>Env\EnvPrivate</Filter>
     </ClInclude>
@@ -327,6 +333,9 @@
     <ClInclude Include="Fs\fsAbsolutePathMgr.hpp">
       <Filter>Fs</Filter>
     </ClInclude>
+    <ClInclude Include="Fs\fsAviFile.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
     <ClInclude Include="Fs\fsFileEnum.hpp">
       <Filter>Fs</Filter>
     </ClInclude>
@@ -399,6 +408,18 @@
     <ClInclude Include="Fs\private\fsFileTimeUtilPACWin.hpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClInclude>
+    <ClInclude Include="Fs\private\fsAbsolutePathMgrPAC.hpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\private\fsAbsolutePathMgrPACWin.hpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\private\fsAviFilePAC.hpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\private\fsAviFilePACWin.hpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClInclude>
     <ClInclude Include="Fs\private\fsFileUtilPAC.hpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClInclude>
@@ -459,7 +480,10 @@
     <ClInclude Include="App\private\appEventHandlers.hpp">
       <Filter>App\AppPrivate</Filter>
     </ClInclude>
-    <ClInclude Include="App\private\appInstanceUtilWin.hpp">
+    <ClInclude Include="App\private\appInstanceUtilPAC.hpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="App\private\appInstanceUtilPACWin.hpp">
       <Filter>App\AppPrivate</Filter>
     </ClInclude>
     <ClInclude Include="App\private\appTimePAC.hpp">
@@ -798,6 +822,9 @@
     <ClCompile Include="Env\private\envString.cpp">
       <Filter>Env\EnvPrivate</Filter>
     </ClCompile>
+    <ClCompile Include="Env\private\envExceptionXPACWin.cpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClCompile>
     <ClCompile Include="Env\private\envStringPACWin.cpp">
       <Filter>Env\EnvPrivate</Filter>
     </ClCompile>
@@ -936,6 +963,15 @@
     <ClCompile Include="Fs\private\fsAbsolutePathMgr.cpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClCompile>
+    <ClCompile Include="Fs\private\fsAbsolutePathMgrPACWin.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsAviFile.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsAviFilePACWin.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
     <ClCompile Include="Fs\private\fsCategoryConfigFileUtil.cpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClCompile>
@@ -951,7 +987,7 @@
     <ClCompile Include="Fs\private\fsFileNotifyMgr.cpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClCompile>
-    <ClCompile Include="Fs\private\fsFileStreamWin.cpp">
+    <ClCompile Include="Fs\private\fsFileStreamPACWin.cpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Fs\private\fsFileTimeUtil.cpp">
@@ -1023,7 +1059,7 @@
     <ClCompile Include="App\private\appFlowEventHandler.cpp">
       <Filter>App\AppPrivate</Filter>
     </ClCompile>
-    <ClCompile Include="App\private\appInstanceUtilWin.cpp">
+    <ClCompile Include="App\private\appInstanceUtilPACWin.cpp">
       <Filter>App\AppPrivate</Filter>
     </ClCompile>
     <ClCompile Include="App\private\appMode.cpp">

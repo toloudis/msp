@@ -566,7 +566,7 @@ void mtrlScriptObject::SaveMaterials(const fsLocator& i_Locator,
 
 	//bga -  No clearing of materials when saving to material files anymore...
 	//if (i_Locator != m_ModelLocator)
-	//if (_stricmp(save_name.c_str(), cur_name.c_str()))
+	//if (itStringUtil::CompareNoCase(save_name, cur_name))
 	//{
 	//	DBG_LOG("Saved to new name, not clearing out materials");
 
@@ -1090,13 +1090,13 @@ void mtrlScriptObject::GetMaterialResources( fsResourceTrackerData& io_List )
 	std::vector<fsLocator>::iterator it;
 
 	std::sort( texture_list.begin(), texture_list.end() );
-	std::unique( texture_list.begin(), texture_list.end() );
+	texture_list.erase( std::unique( texture_list.begin(), texture_list.end() ), texture_list.end() );
 	
 	for (it = texture_list.begin(); it != texture_list.end(); ++it)
 		io_List.Add( *it );
 
 	std::sort( shader_list.begin(), shader_list.end() );
-	std::unique( shader_list.begin(), shader_list.end() );
+	shader_list.erase( std::unique( shader_list.begin(), shader_list.end() ), shader_list.end() );
 
 	for (it = shader_list.begin(); it != shader_list.end(); ++it)
 		io_List.Add( *it );

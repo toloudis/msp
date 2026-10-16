@@ -9,11 +9,13 @@
 \****************************************************************************/
 #include "ToolUIQt/pqt/Controls/pqtColor_ColorRGBAEdit.hpp"
 #include "ToolUIQt/pqt/Controls/pqtControlUtil.hpp"
+#ifndef TQC_EVENT_HPP
 #include "ToolUIQt/tqc/tqcEvent.hpp"
+#endif
 
 #include "Core/prty/prtyColor.hpp"
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
@@ -40,9 +42,7 @@ pqtColor_ColorRGBAEdit::pqtColor_ColorRGBAEdit(shared_ptr<prtyPropertyUIInfo>& i
 
 	//	hook up events
 	//
-	this->Connect( m_pActualControl->GetId(), wxEVT_VALUE_CHANGED,
-					wxCommandEventHandler(pqtColor_ColorRGBAEdit::ColorRGBAEdit_ValueChanged) );
-	m_pActualControl->PushEventHandler(this);
+	m_pActualControl->SetValueChangedCallback([this]() { ColorRGBAEdit_ValueChanged(); });
 };
 
 //----------------------------------------------------------------------------
@@ -50,7 +50,6 @@ pqtColor_ColorRGBAEdit::pqtColor_ColorRGBAEdit(shared_ptr<prtyPropertyUIInfo>& i
 //----------------------------------------------------------------------------
 pqtColor_ColorRGBAEdit::~pqtColor_ColorRGBAEdit()
 {
-	m_pActualControl->RemoveEventHandler(this);
 }
 
 //----------------------------------------------------------------------------
@@ -88,12 +87,12 @@ void pqtColor_ColorRGBAEdit::PropertyChanged(prtyProperty* i_pProperty, bool i_b
 //----------------------------------------------------------------------------
 void pqtColor_ColorRGBAEdit::UpdateControl(prtyPropertyUIInfo* i_pUIInfo)
 {
-	m_pActualControl->Enable(!i_pUIInfo->GetReadOnly());
+	m_pActualControl->setEnabled(!i_pUIInfo->GetReadOnly());
 }
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void pqtColor_ColorRGBAEdit::ColorRGBAEdit_ValueChanged(wxCommandEvent& i_Event)
+void pqtColor_ColorRGBAEdit::ColorRGBAEdit_ValueChanged()
 {
 	if (m_bLocalChangeNoUpdate) return;
 

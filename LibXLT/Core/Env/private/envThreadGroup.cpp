@@ -33,6 +33,12 @@ envThreadGroup::envThreadGroup()
 {
 }
 
+// std::thread terminates if destroyed while joinable
+envThreadGroup::~envThreadGroup()
+{
+	WaitForAll();
+}
+
 //--------------------------------------------------------------------
 // Add a task to the group to be managed. The argument could be
 //	a function pointer or a function object.
@@ -58,7 +64,11 @@ void envThreadGroup::WaitForAll()
 {
 #ifdef ENV_USE_THREADS
 	for (auto& thread : m_ThreadGroup)
-		thread.join();
+	{
+		if (thread.joinable())
+			thread.join();
+	}
+	m_ThreadGroup.clear();
 #endif
 }
 

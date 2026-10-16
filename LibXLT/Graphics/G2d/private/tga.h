@@ -6,6 +6,7 @@
 #endif
 
 #include <stdio.h>
+#include <iosfwd>
 
 class itString;
 
@@ -61,7 +62,7 @@ int TGA_Read(const itString& filePath, FILE *fp, int *width, int *height, envTyp
 
 /* write 32bits rgba uncompressed tga file */
 /* input data is a 32bits rgba array */
-void TGA_Write_RGBA(FILE *fp, int width, int height, envType::UInt32** data);
+void TGA_Write_RGBA(std::ostream &os, int width, int height, envType::UInt32** data);
 
 #endif /* _H_TGA */
 

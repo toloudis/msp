@@ -1,7 +1,9 @@
 /****************************************************************************\
 **	tqcGradientColorBase.hpp
 **
-**		Custom control with gradient image and multiknobslider
+**		Gradient editor: a preview of the gradient, a slider with a knob
+**	for each color node, and controls for the selected node's color and
+**	position. Clicking the preview adds a node there.
 **
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
@@ -11,38 +13,33 @@
 #endif
 #define TQC_GRADIENTCOLORBASE_HPP
 
-
 #ifndef MA_FLOATRGBA_HPP
 #include "Core/ma/maFloatRGBA.hpp"
 #endif
+
 #ifndef MA_GRADIENT_HPP
 #include "Core/ma/maGradient.hpp"
 #endif
+
 #ifndef TQC_MULTIKNOBSLIDER_HPP
 #include "ToolUIQt/tqc/private/tqcMultiKnobSlider.hpp"
 #endif
-#ifndef TQC_PICTUREBOX_HPP
-#include "ToolUIQt/tqc/private/tqcPictureBox.hpp"
-#endif
-#ifndef TQC_COLORRGBEDIT_HPP
+
+#ifndef TQC_COLORRGBAEDIT_HPP
 #include "ToolUIQt/tqc/tqcColorRGBAEdit.hpp"
 #endif
+
 #ifndef TQC_RANGEDFLOAT_HPP
 #include "ToolUIQt/tqc/tqcRangedFloat.hpp"
 #endif
-#ifndef TQT_WIDGETS_HPP
-#include "ToolUIQt/tqt/tqtWidgets.hpp"
-#endif
 
-#include <vector>
-#include <wx/choice.h>
+#ifdef USE_QT
 
-#ifdef QT_FINISH_PORT
-
+class tqcGradientPreview;
 
 //============================================================================
 //============================================================================
-class tqcGradientColorBase : public wxPanel
+class tqcGradientColorBase : public QWidget, public tqcValueChangedNotifier
 {
 	public:
 		//--------------------------------------------------------------------
@@ -57,101 +54,41 @@ class tqcGradientColorBase : public wxPanel
 		void SetValue(const maGradient& i_value);
 
 	private:
-		//--------------------------------------------------------------------
-		// callback when adds knob
-		//--------------------------------------------------------------------
-		void OnAddKnob(wxMouseEvent& i_Event);
+		friend class tqcGradientPreview;
 
-		//--------------------------------------------------------------------
-		// callback any property of knob changes
-		//--------------------------------------------------------------------
-		void KnobValueChange(wxCommandEvent& i_Event);
-
-		//--------------------------------------------------------------------
+		// callback when the preview is clicked, to add a knob
+		void OnAddKnob(int i_X);
+		// callback any property of a knob changes
+		void KnobValueChange(tqcKnob* i_knob);
+		// callback the color edit changes
+		void ColorEditChange();
 		// modify m_value according to the knob position/color
-		//--------------------------------------------------------------------
 		void WriteIntoValue();
-
-		//--------------------------------------------------------------------
 		// callback when position slider changes in knob property window
-		//--------------------------------------------------------------------
-		void OnPositionSliderChange(wxCommandEvent& i_Event);
-
-		//--------------------------------------------------------------------
-		// callback when deletes button press in knob property window
-		//--------------------------------------------------------------------
-		void OnDeleteKnobClick(wxMouseEvent& i_Event);
-
-		//--------------------------------------------------------------------
-		// callback function when paints gradient panel
-		//--------------------------------------------------------------------
-		void OnPaint(wxPaintEvent& i_Event);
-
-		//--------------------------------------------------------------------
-		// force to paint gradient panel
-		//--------------------------------------------------------------------
-		void PaintNow();
-
-		//--------------------------------------------------------------------
+		void OnPositionSliderChange();
+		// callback when delete button pressed in knob property window
+		void OnDeleteKnobClick();
 		// paint gradient panel
-		//--------------------------------------------------------------------
-		void PaintGradient(wxDC& dc);
-		
-		//--------------------------------------------------------------------
-		// Initialize
-		//--------------------------------------------------------------------
-		void Initialize();
-
-		//--------------------------------------------------------------------
-		// Initialize knobs
-		//--------------------------------------------------------------------
-		void InitializeKnobs(tqcMultiKnobSlider* i_slider);
-
-		//--------------------------------------------------------------------
-		// Initialize knobs
-		//--------------------------------------------------------------------
+		void PaintGradient(QPainter& i_Painter);
+		// show the properties of the knob
 		void ShowKnobProperty(tqcKnob* knob);
-
-		//--------------------------------------------------------------------
 		// Get drawable rect of gradient panel
-		//--------------------------------------------------------------------
-		wxRect GetGradientPanelDrawable();
+		QRect GetGradientPanelDrawable();
 
-		//--------------------------------------------------------------------
-		// Draw knob indicator
-		//--------------------------------------------------------------------
-		void DrawKnobIndicator(tqcKnob* knob);
-
-
-		//--------------------------------------------------------------------
-		// Custom event handler for erase background event
-		// Note: this function does nothing. It is used to achieve 
-		// double buffering when painting gradient panel
-		//--------------------------------------------------------------------
-		void OnEraseBackground(wxPaintEvent& i_event);
-
-
-		wxPanel* m_panel_gradientPanel;
-		wxStaticText* m_text_colorPosition;
-		//wxSlider* m_slider_colorPosition;
+		tqcGradientPreview* m_panel_gradientPanel;
 		tqcRangedFloat* m_colorPosition;
 		tqcColorRGBAEdit* m_knobColorEdit;
-		wxButton* m_button_colorDelete;
+		QPushButton* m_button_colorDelete;
 		tqcMultiKnobSlider* m_slider_colorSlider;
 
 		maGradient m_value;
-		//std::vector<tqcKnob*> m_colorKnobs;
-		//tqcKnob* m_CurrentKnob;
+		bool m_bSettingValue;
 
 		// Constant panel properties
 		const int m_knobSize;
 		const int m_gradientPanelWidth;
 		const int m_gradientPanelHeight;
 		const int m_gradientPanelHeightOffset;
-
-		// variables for double buffering
-		wxBitmap m_buffer;
-
 };
 
 #endif // USE_QT

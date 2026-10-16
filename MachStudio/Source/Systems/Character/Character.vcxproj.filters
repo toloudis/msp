@@ -78,9 +78,6 @@
     <ClCompile Include="Object\chtrFBXExportInterest.cpp">
       <Filter>Object</Filter>
     </ClCompile>
-    <ClCompile Include="Object\chtrMRayExportInterest.cpp">
-      <Filter>Object</Filter>
-    </ClCompile>
     <ClCompile Include="Object\chtrObject.cpp">
       <Filter>Object</Filter>
     </ClCompile>
@@ -184,9 +181,6 @@
       <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="Object\chtrFBXExportInterest.hpp">
-      <Filter>Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\chtrMRayExportInterest.hpp">
       <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="Object\chtrObject.hpp">

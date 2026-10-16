@@ -13,8 +13,6 @@
 #include "Features/Channels/chnlPackage.hpp"
 #include "Features/Capture/cptrRenderStatsDataUtil.hpp"
 #include "Features/Capture/cptrPackage.hpp"
-#include "Features/Capture/cptrRenderMrayLiveUtil.hpp"
-#include "Features/Capture/cptrRenderMrayLiveMgr.hpp"
 #include "Features/Capture/cptrRenderRmanLiveUtil.hpp"
 #include "Features/Capture/cptrRenderRmanLiveMgr.hpp"
 #include "Features/Debug/dbgConsoleDataUtil.hpp"
@@ -29,7 +27,11 @@
 #include "Features/ObjectManip/mnpPackage.hpp"
 #include "Features/Playback/plbkPackage.hpp"
 #include "Features/Prefs/prefsCommands.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/Prefs/qtGUI/prefsLayoutMgr.hpp"
+#else
 #include "Features/Prefs/wxGUI/prefsLayoutMgr.hpp"
+#endif
 #include "Features/Prefs/PrefsMgr.hpp"
 //#include "Features/Prefs/prefsQuickMgr.hpp"
 #include "Features/ProjectSetup/ProjectSetupMgr.hpp"
@@ -81,7 +83,7 @@ void FeaturesLayer::Init(g2dSystem *i_pSystem)
 		//LoadPrefsMgr::Init();
 		pytFeature::Init();
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		// Read in layout configurations
 		prefsLayoutMgr::ReadLayouts();
 #endif
@@ -108,7 +110,6 @@ void FeaturesLayer::CleanUp() throw()
 		//LoadPrefsMgr::CleanUp();
 		PrefsMgr::CleanUp();
 		rndrPrefsMgr::CleanUp();
-		cptrRenderMrayLiveMgr::CleanUp();
 		cptrRenderRmanLiveMgr::CleanUp();
 		ResourceTrackerPackage::CleanUp();
 		UndoHistoryDialogUtil::CleanUp();
@@ -137,7 +138,6 @@ void FeaturesLayer::AddToMenu()
 	rndrPrefsMgr::AddToMenu();
 	UndoHistoryUtil::AddToMenu();
 	cptrRenderStatsDataUtil::AddToMenu();
-	cptrRenderMrayLiveUtil::AddToMenu();
 	cptrRenderRmanLiveUtil::AddToMenu();
 	//MayaExportUtil::AddToMenu();
 	//eonCommands::AddToMenu();

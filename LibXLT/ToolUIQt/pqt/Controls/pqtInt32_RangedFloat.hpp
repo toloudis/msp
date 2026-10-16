@@ -22,12 +22,12 @@
 #include "Core/prty/prtyInt32.hpp"
 #endif
 
+#ifdef USE_QT
 
 //===================================================================================
 //===================================================================================
 class pqtInt32_RangedFloat_Converter  : public pqtInt32Converter
 {
-#ifdef QT_FINISH_PORT
 public:
 	//----------------------------------------------------------------------------
 	// Set value into control
@@ -39,10 +39,10 @@ public:
 	// Get value from control
 	//----------------------------------------------------------------------------
 	static int GetValueFromControl(tqcRangedFloat* i_pActualControl);
-#endif // USE_QT
 };
 
 //============================================================================
 //============================================================================
 typedef pqtTemplate_RangedFloat<prtyInt32, int, pqtInt32_RangedFloat_Converter> pqtInt32_RangedFloat;
 
+#endif // USE_QT

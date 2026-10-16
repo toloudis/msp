@@ -102,7 +102,7 @@ void WritePfxData(chWriter& o_Writer,
 void WritePassesData(chWriter& o_Writer,
 					const rlyrPassesData& i_PassesData)
 {
-	const int l_cPASD_VERSION = 7;
+	const int l_cPASD_VERSION = 8;
 	o_Writer.WriteChunkHeader( c_PASD, l_cPASD_VERSION, false );
 
 	i_PassesData.m_Beauty.Write(o_Writer);
@@ -140,9 +140,8 @@ void WritePassesData(chWriter& o_Writer,
 	// v6 new pass
 	i_PassesData.m_Glow.Write(o_Writer);
 
-	// v7 new passes
+	// v7 new passes (v8 removed the mental ray final gather pass)
 	i_PassesData.m_RmanColorBleed.Write(o_Writer);
-	i_PassesData.m_MrayFinalGather.Write(o_Writer);
 
 	o_Writer.FinishChunk();
 }
@@ -196,7 +195,13 @@ void ReadPassesData(chReader& io_Reader,
 						if (i_Version >= 7)
 						{
 							i_PassesData.m_RmanColorBleed.Read(io_Reader);
-							i_PassesData.m_MrayFinalGather.Read(io_Reader);
+
+							if (i_Version < 8)
+							{
+								// mental ray final gather pass, removed in v8
+								prtyBoolean dummyFinalGather;
+								dummyFinalGather.Read(io_Reader);
+							}
 						}
 					}
 

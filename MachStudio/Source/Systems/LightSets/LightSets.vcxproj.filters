@@ -19,6 +19,9 @@
     <Filter Include="Timeline">
       <UniqueIdentifier>{de9ac7bd-6ddc-4541-8b5d-07e0048a445a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GUI\qtGUI">
+      <UniqueIdentifier>{bb9c6554-5527-45bf-b741-4ba9fb90290f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Undo\lsetActualOperations.cpp">
@@ -81,9 +84,6 @@
     <ClCompile Include="Object\lsetLightSetObject.cpp">
       <Filter>Object</Filter>
     </ClCompile>
-    <ClCompile Include="Object\lsetMRayExportInterest.cpp">
-      <Filter>Object</Filter>
-    </ClCompile>
     <ClCompile Include="Object\lsetObjectMgr.cpp">
       <Filter>Object</Filter>
     </ClCompile>
@@ -100,6 +100,12 @@
       <Filter>Timeline</Filter>
     </ClCompile>
     <ClCompile Include="lsetSystem.cpp" />
+    <ClCompile Include="GUI\qtGUI\lsetLightSetLightsPage.cpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\qtGUI\lsetLightSetObjectsPage.cpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Undo\lsetActualOperations.hpp">
@@ -162,9 +168,6 @@
     <ClInclude Include="Object\lsetLightSetObject.hpp">
       <Filter>Object</Filter>
     </ClInclude>
-    <ClInclude Include="Object\lsetMRayExportInterest.hpp">
-      <Filter>Object</Filter>
-    </ClInclude>
     <ClInclude Include="Object\lsetObjectMgr.hpp">
       <Filter>Object</Filter>
     </ClInclude>
@@ -181,5 +184,11 @@
       <Filter>Timeline</Filter>
     </ClInclude>
     <ClInclude Include="lsetSystem.hpp" />
+    <ClInclude Include="GUI\qtGUI\lsetLightSetLightsPage.hpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\qtGUI\lsetLightSetObjectsPage.hpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

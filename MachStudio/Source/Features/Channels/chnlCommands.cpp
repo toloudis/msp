@@ -16,7 +16,11 @@
 #include "Features/Channels/Markers/chnlMarkerOperations.hpp"
 #include "Features/Channels/Notes/chnlNotesMgr.hpp"
 #include "Features/Channels/Notes/chnlNotesOperations.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/Channels/qtGUI/chnlTraxDialog.hpp"
+#else
 #include "Features/Channels/wxGUI/chnlTraxDialog.hpp"
+#endif
 
 #include "Features/Prefs/prefsMgr.hpp"
 #include "Support/mnm/mnmPaths.hpp"
@@ -247,7 +251,7 @@ namespace
 	void Execute_TimelineZoomIn()
 	{
 	
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		// We get the zoom value and convert it to slider value. Increment this value and 
 		// get the next zoom value. 
 		if (chnlTraxDialog::FormInstance)
@@ -270,7 +274,7 @@ namespace
 	//--------------------------------------------------------------------
 	void Execute_TimelineZoomOut()
 	{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (chnlTraxDialog::FormInstance)
 		{
 			float val = chnlTraxDialog::FormInstance->GetSliderZoom()/100;

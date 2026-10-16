@@ -45,7 +45,7 @@ namespace rmanLive
 	//--------------------------------------------------------------------
 	// StartRender()
 	//--------------------------------------------------------------------
-	void StartRender(fsLocator i_MiFile, int i_RenderPass);
+	void StartRender(fsLocator i_SceneFile, int i_RenderPass);
 
 	//--------------------------------------------------------------------
 	// StopRender()

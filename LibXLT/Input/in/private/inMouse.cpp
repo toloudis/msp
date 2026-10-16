@@ -29,6 +29,8 @@ inMouse::inMouse() : m_pPAC(new inMousePAC)
 	m_dX = 0;
 	m_dY = 0;
 	m_dZ = 0;
+	m_bWheelFromWindowEvents = false;
+	m_PendingWheel = 0;
 }
 
 //========================================================================
@@ -44,6 +46,9 @@ inMouse::~inMouse()
 //========================================================================
 void inMouse::Think()
 {
+	const float window_wheel = m_PendingWheel;
+	m_PendingWheel = 0;
+
 	if (!this->IsEnabled())
 	{
 		return;
@@ -56,6 +61,11 @@ void inMouse::Think()
 	memcpy(m_PastState, m_CurState, sizeof(m_PastState));
 	memset(m_CurState, 0, sizeof(m_CurState));
 	m_pPAC->Think(m_dX, m_dY, m_dZ, m_CurState);
+
+	if (m_bWheelFromWindowEvents)
+	{
+		m_dZ = window_wheel;
+	}
 
 	//we have to fix the radians so that 0 is North and it goes clockwise areound to 2pi
 	m_Dir = atan2f(m_dX, -m_dY);//-y to flip the y axis for this calc
@@ -356,4 +366,18 @@ void inMouse::GetAnalogDir(int i_Stick, int& o_X, int& o_Y, int& o_Z) const
 	o_X = m_dX;
 	o_Y = m_dY;
 	o_Z = m_dZ;
+}
+
+//========================================================================
+//	Wheel rotation from window events, applied on the next Think
+//========================================================================
+void inMouse::SetWheelFromWindowEvents(bool i_bEnable)
+{
+	m_bWheelFromWindowEvents = i_bEnable;
+	m_PendingWheel = 0;
+}
+
+void inMouse::AddWheelDelta(float i_Notches)
+{
+	m_PendingWheel += i_Notches;
 }

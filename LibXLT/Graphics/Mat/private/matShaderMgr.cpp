@@ -91,8 +91,8 @@ namespace
 	//----------------------------------------------------------------------------
 	bool shader_name_less(const matShaderInfo& i_A, const matShaderInfo& i_B)
 	{
-		return _stricmp(itStringUtil::GetStdString(i_A.m_Name).c_str(),
-						itStringUtil::GetStdString(i_B.m_Name).c_str()) < 0;
+		return itStringUtil::CompareNoCase(itStringUtil::GetStdString(i_A.m_Name),
+										   itStringUtil::GetStdString(i_B.m_Name)) < 0;
 	}
 
 	//----------------------------------------------------------------------------
@@ -145,8 +145,8 @@ void Initialize()
 	if (l_pImpl)
 	{
 		// The shader folder is optional: the built-in shaders are compiled
-		// into the library. The mental ray and RenderMan exporters look for
-		// their own shaders under it (mray, rman).
+		// into the library. The RenderMan exporter looks for its own
+		// shaders under it (rman).
 		fsLocator fx_dir = gfPaths::GetPath(gfPaths::e_ExePath);
 		fx_dir.Push("Shaders");
 
@@ -408,7 +408,7 @@ bool IsMachStudioShader(const fsLocator& i_ShaderName)
 	const std::string name = itStringUtil::GetStdString(i_ShaderName.GetLastName());
 	for (size_t i = 0; i < l_MaterialShaders.size(); i++)
 	{
-		if (_stricmp(itStringUtil::GetStdString(l_MaterialShaders[i].m_Name).c_str(), name.c_str()) == 0)
+		if (itStringUtil::CompareNoCase(itStringUtil::GetStdString(l_MaterialShaders[i].m_Name), name) == 0)
 			return true;
 	}
 	return false;

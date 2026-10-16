@@ -14,7 +14,6 @@
 
 #include "Core/ch/chChunkParserUtil.hpp"
 #include "Core/ch/chReader.hpp"
-#include <wtypes.h>
 
 namespace
 {
@@ -22,6 +21,10 @@ namespace
 	//--------------------------------------------------------------------
 	//const chDefs::Name c_REFL = chDefs::MakeName('T', 'H', 'M', 'B');
 	const int l_BitmapSize = 128;
+
+	// The pixels are preceded by 54 bytes that used to hold a BMP file
+	// header.  They are ignored, and kept so the chunk layout doesn't change.
+	const int c_ReservedHeaderSize = 54;
 }
 
 //----------------------------------------------------------------------------
@@ -36,7 +39,7 @@ void matThumbnailParser::Read(	chReader& i_Reader,
 						int &o_BufferSize,
 						int &o_BitmapSize) 
 {
-	int image_offset = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+	int image_offset = c_ReservedHeaderSize;
 	int image_size = i_Size - image_offset;
 
 	char* header_info = new char[image_offset];
@@ -61,47 +64,9 @@ void matThumbnailParser::Write( chWriter& o_Writer,
 	//write chunk header
 	//o_Writer.WriteChunkHeader( GetChunkName(), s_Version, false );
 
-	//version 0
-	// write BitmapFileHeader
-	int width = l_BitmapSize;
-	int height = l_BitmapSize;
-	int bitsPerPixel = 24;
-
-	BITMAPINFOHEADER bmpInfoHeader = {0};
-    // Set the size
-    bmpInfoHeader.biSize = sizeof(BITMAPINFOHEADER);
-    // Bit count
-    bmpInfoHeader.biBitCount = bitsPerPixel;
-    // Use all colors
-    bmpInfoHeader.biClrImportant = 0;
-    // Use as many colors according to bits per pixel
-    bmpInfoHeader.biClrUsed = 0;
-    // Store as un Compressed
-    bmpInfoHeader.biCompression = BI_RGB;
-    // Set the height in pixels
-    bmpInfoHeader.biHeight = height;
-    // Width of the Image in pixels
-    bmpInfoHeader.biWidth = width;
-    // Default number of planes
-    bmpInfoHeader.biPlanes = 1;
-    // Calculate the image size in bytes
-    bmpInfoHeader.biSizeImage = width* height * (bitsPerPixel/8);
-
-	BITMAPFILEHEADER bfh = {0};
-    // This value should be values of BM letters i.e 0×4D42
-    // 0x4D = M 0x42 = B storing in reverse order to match with endian
-    bfh.bfType = 0x4D42;
-
-    // Offset to the RGBQUAD
-    bfh.bfOffBits = sizeof(BITMAPINFOHEADER) + sizeof(BITMAPFILEHEADER);
-    // Total size of image including size of headers
-    bfh.bfSize = bfh.bfOffBits + bmpInfoHeader.biSizeImage;
-
-	//write bitmap header
-	o_Writer.Write( &bfh, sizeof( bfh ) );
-
-	//write bitmap info
-	o_Writer.Write( &bmpInfoHeader, sizeof( bmpInfoHeader ) );
+	//write the reserved header bytes
+	const envType::UInt8 reserved[c_ReservedHeaderSize] = {0};
+	o_Writer.Write( reserved, sizeof( reserved ) );
 
 	//write image data
 	o_Writer.Write(i_PixelBuffer, i_BufferSize);

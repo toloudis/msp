@@ -173,12 +173,5 @@ public:
 	// RSM GI parameters
 	prtyBoolean				m_GISource;
 	prtyInt32				m_ReflectiveMapSize;
-
-	// Mental Ray parameters
-	prtyBoolean				m_bMRayAreaLight;
-	prtyEnum				m_MRayAreaLightType;
-	prtyInt32				m_MRayAreaLightSampling;
-	prtyBoolean				m_bMRayAreaLightVisible;
-
 };
 

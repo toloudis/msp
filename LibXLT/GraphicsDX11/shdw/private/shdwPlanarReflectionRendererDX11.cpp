@@ -201,7 +201,7 @@ int shdwPlanarReflectionRendererDX11::Render( g2dRenderTarget* i_pWindow, const 
 	{
 		fsLocator loc;
 		char fname[256];
-		sprintf(fname, "rt_%08x.dds", i_pWindow);
+		sprintf(fname, "rt_%p.dds", static_cast<void*>(i_pWindow));
 		loc.Push(fname);
 
 		matRenderTargetTexture* pMap = dynamic_cast<matRenderTargetTexture*>(i_pWindow);

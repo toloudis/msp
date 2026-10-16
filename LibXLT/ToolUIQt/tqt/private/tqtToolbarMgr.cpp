@@ -1,67 +1,66 @@
 /*****************************************************************************
 **  tqtToolbarMgr.cpp
 **
-**      see .hpp
+**     see .hpp
 **
 **	StudioGPU
-**	Copyright(C) 2004 - All Rights Reserved
+**	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "ToolUIQt/tqt/tqtToolbarMgr.hpp"
 
-#include "ToolUIQt/tqt/tqtPaneMgr.hpp"
 #include "ToolUIQt/tqt/tqtSystem.hpp"
 
+#include "Core/Dbg/dbgMsg.hpp"
 #include "Core/Fs/fsFileUtil.hpp"
 
 #include <map>
 
-#ifdef QT_FINISH_PORT
-#include <wx/artprov.h>
-#endif
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
 namespace
 {
-	class MyToolbar : public QToolBar
-	{
-	public:
-#ifdef QT_FINISH_PORT
-		MyToolbar(QWidget *i_pParent, QWidgetID i_Id)
-			: wxAuiToolBar(i_pParent, i_Id), m_bInitialVisible(true) 
-		{
-			// Since we are drawing the background ourself, we can set the custom flag
-			// to prevent flickering:
-			this->SetBackgroundStyle(wxBG_STYLE_CUSTOM);
-		}
-		wxBoxSizer* GetToolbarSizer()
-		{
-			return m_sizer;
-		}
-#endif
-		bool m_bInitialVisible;
-	};
+	// Size of the toolbar icons
+	const int c_IconSize = 24;
 
-	bool l_bRealized = false;
 	std::vector<fsLocator> l_IconPathList;
-	std::map<std::string, MyToolbar*> m_ToolbarMap;
+	std::map<std::string, QPointer<QToolBar> > l_ToolbarMap;
 
-	MyToolbar* get_or_create_toolbar(const std::string& i_Name)
+	//---------------------------------------------------------------------------
+	//---------------------------------------------------------------------------
+	QToolBar* get_or_create_toolbar(const std::string& i_Name)
 	{
-		std::map<std::string, MyToolbar*>::iterator it = m_ToolbarMap.find(i_Name);
-		if (it == m_ToolbarMap.end())
+		std::map<std::string, QPointer<QToolBar> >::iterator it = l_ToolbarMap.find(i_Name);
+		if (it != l_ToolbarMap.end() && it->second)
+			return it->second;
+
+		if (!tqtSystem::g_pMainForm)
 		{
-#ifdef USE_QT
-			DBG_ASSERT(tqtSystem::g_pMainForm, "MainForm not yet initialized.");
-#endif
-			MyToolbar* pToolbar = NULL;
-#ifdef QT_FINISH_PORT
-			pToolbar = new MyToolbar(tqtSystem::g_pMainForm, wxID_ANY);
-#endif
-			m_ToolbarMap[i_Name] = pToolbar;
-			return pToolbar;
+			// The application still updates toolbars while it shuts down,
+			// after the main window is gone; those updates are dropped.
+			DBG_LOG("Ignoring toolbar " << i_Name << ", the main window is gone.");
+			return NULL;
 		}
-		return it->second;
+
+		QString name = tqtQString(i_Name);
+		QToolBar* pToolbar = new QToolBar(name, tqtSystem::g_pMainForm);
+		pToolbar->setObjectName(name);	// needed to save the layout
+		pToolbar->setIconSize(QSize(c_IconSize, c_IconSize));
+		pToolbar->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
+		tqtSystem::g_pMainForm->addToolBar(Qt::TopToolBarArea, pToolbar);
+		l_ToolbarMap[i_Name] = pToolbar;
+		return pToolbar;
+	}
+
+	//---------------------------------------------------------------------------
+	//---------------------------------------------------------------------------
+	QToolBar* find_toolbar(const char* i_ToolbarName)
+	{
+		std::map<std::string, QPointer<QToolBar> >::iterator it = l_ToolbarMap.find(i_ToolbarName);
+		if (it != l_ToolbarMap.end())
+			return it->second;
+		return NULL;
 	}
 } // end of namespace
 
@@ -71,7 +70,7 @@ namespace
 //---------------------------------------------------------------------------
 void tqtToolbarMgr::AddToolBar(const char* i_ToolbarName)
 {
-	MyToolbar* pToolbar = get_or_create_toolbar(i_ToolbarName);	
+	get_or_create_toolbar(i_ToolbarName);
 }
 
 //---------------------------------------------------------------------------
@@ -79,35 +78,18 @@ void tqtToolbarMgr::AddToolBar(const char* i_ToolbarName)
 //---------------------------------------------------------------------------
 void tqtToolbarMgr::Show(const char* i_ToolbarName, bool i_bVisible)
 {
-	MyToolbar* pToolbar = get_or_create_toolbar(i_ToolbarName);
-	
-	// If we have not realized the toolbars, then the pane manager 
-	// doesn't know about them yet. So, set a boolean in order to
-	// set that initial state later when realizing.
-	if (l_bRealized)
-		tqtPaneMgr::Show(pToolbar, i_bVisible);
-	else
-		pToolbar->m_bInitialVisible = i_bVisible;
+	if (QToolBar* pToolbar = get_or_create_toolbar(i_ToolbarName))
+		pToolbar->setVisible(i_bVisible);
 }
 
 //---------------------------------------------------------------------------
 // Returns true if the toolbar is currently visible
 //---------------------------------------------------------------------------
-bool tqtToolbarMgr::IsVisible(const char* i_ToolbarName) 
+bool tqtToolbarMgr::IsVisible(const char* i_ToolbarName)
 {
-	if (tqtSystem::g_pMainForm != NULL)
-	{
-		std::map<std::string, MyToolbar*>::iterator it = m_ToolbarMap.find(i_ToolbarName);
-		if (it != m_ToolbarMap.end())
-		{
-			MyToolbar* pToolbar = it->second;
-			if (l_bRealized)
-				return tqtPaneMgr::IsVisible(pToolbar);
-			else
-				return pToolbar->m_bInitialVisible;
-		}
-	}
-	return false;
+	QToolBar* pToolbar = find_toolbar(i_ToolbarName);
+	// Not hidden, even if the main window isn't showing yet
+	return pToolbar && !pToolbar->isHidden();
 }
 
 //---------------------------------------------------------------------------
@@ -115,17 +97,8 @@ bool tqtToolbarMgr::IsVisible(const char* i_ToolbarName)
 //---------------------------------------------------------------------------
 void tqtToolbarMgr::Refresh(const char* i_ToolbarName)
 {
-	if (tqtSystem::g_pMainForm && l_bRealized)
-	{
-		std::map<std::string, MyToolbar*>::iterator it = m_ToolbarMap.find(i_ToolbarName);
-		if (it != m_ToolbarMap.end())
-		{
-			MyToolbar* pToolbar = it->second;
-#ifdef QT_FINISH_PORT
-			pToolbar->Refresh();
-#endif
-		}
-	}
+	if (QToolBar* pToolbar = find_toolbar(i_ToolbarName))
+		pToolbar->update();
 }
 
 //---------------------------------------------------------------------------
@@ -138,15 +111,13 @@ void tqtToolbarMgr::SetIconDirectory( std::vector<fsLocator>& i_IconPathList )
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-void tqtToolbarMgr::AddToolBarButton( int i_Id,
-									  const char * i_ToolBarName, 
-									  const char * i_ToolStripButton_Image, 
+bool tqtToolbarMgr::AddToolBarButton( QAction* i_pAction,
+									  const char * i_ToolBarName,
+									  const char * i_ToolStripButton_Image,
 									  const char * i_ToolStripButton_Name,
 									  bool i_bCheckable )
 {
-	MyToolbar* pToolbar = get_or_create_toolbar(i_ToolBarName);
-
-	for( int i = 0; i < l_IconPathList.size(); ++i )
+	for( size_t i = 0; i < l_IconPathList.size(); ++i )
 	{
 		fsLocator icon_loc = l_IconPathList[i];
 		icon_loc.Push(i_ToolStripButton_Image);
@@ -155,143 +126,42 @@ void tqtToolbarMgr::AddToolBarButton( int i_Id,
 
 		itString icon_filename;
 		fsFileUtil::LocatorToUnicodeString(icon_loc, icon_filename);
-#ifdef QT_FINISH_PORT
-		wxImage icon_image( icon_filename.GetString(), wxBITMAP_TYPE_PNG );
-		icon_image.Rescale(24,24);
-		wxBitmap icon_bitmap( icon_image );
+		QIcon icon(QString::fromWCharArray(icon_filename.GetString()));
+		if (icon.isNull())
+			continue;
 
-		wxString button_name(i_ToolStripButton_Name, wxConvUTF8);
-		if (i_bCheckable)
-			pToolbar->AddTool(i_Id, button_name, icon_bitmap, wxNullBitmap, wxITEM_CHECK, 
-				button_name, button_name, NULL);
-		else
-			pToolbar->AddTool(i_Id, button_name, icon_bitmap, button_name);
-		//pToolbar->Realize();
-#endif
+		QToolBar* pToolbar = get_or_create_toolbar(i_ToolBarName);
+		if (!pToolbar)
+			return false;
+
+		// The action is shared with the menu item, which doesn't show the icon
+		i_pAction->setIcon(icon);
+		i_pAction->setIconVisibleInMenu(false);
+		i_pAction->setCheckable(i_bCheckable);
+		i_pAction->setToolTip(tqtQString(i_ToolStripButton_Name));
+		pToolbar->addAction(i_pAction);
 
 		//stop traversing path list now that have set our image
-		break;
+		return true;
 	}
+	return false;
 }
 
 //---------------------------------------------------------------------------
-// Set enabled state of toolbar button
-//---------------------------------------------------------------------------
-void tqtToolbarMgr::EnableButton( int i_Id, bool i_bEnabled )
-{
-	if (tqtSystem::g_pMainForm != NULL)
-	{
-		std::map<std::string, MyToolbar*>::iterator it;
-		for (it = m_ToolbarMap.begin(); it != m_ToolbarMap.end(); ++it)
-		{
-			MyToolbar* pToolbar = it->second;
-#ifdef QT_FINISH_PORT
-			if (pToolbar->FindTool(i_Id))
-			{
-				pToolbar->EnableTool(i_Id, i_bEnabled);
-			}
-#endif
-		}
-	}
-}
-
-//---------------------------------------------------------------------------
-// Set toggled state of toolbar button
-//---------------------------------------------------------------------------
-void tqtToolbarMgr::CheckButton( int i_Id, bool i_bChecked )
-{
-	if (tqtSystem::g_pMainForm != NULL)
-	{
-		std::map<std::string, MyToolbar*>::iterator it;
-		for (it = m_ToolbarMap.begin(); it != m_ToolbarMap.end(); ++it)
-		{
-			MyToolbar* pToolbar = it->second;
-#ifdef QT_FINISH_PORT
-			if (pToolbar->FindTool(i_Id))
-			{
-				pToolbar->ToggleTool(i_Id, i_bChecked);
-			}
-#endif
-		}
-	}
-}
-
-//---------------------------------------------------------------------------
-// Set Help string to display when mouse is over given tool item
-//---------------------------------------------------------------------------
-void tqtToolbarMgr::SetToolItemHelpString( int i_ObjectID, const char * i_HelpString )
-{
-	if (tqtSystem::g_pMainForm != NULL)
-	{
-		std::map<std::string, MyToolbar*>::iterator it;
-		for (it = m_ToolbarMap.begin(); it != m_ToolbarMap.end(); ++it)
-		{
-			MyToolbar* pToolbar = it->second;
-#ifdef QT_FINISH_PORT
-			if (pToolbar->FindTool(i_ObjectID))
-			{
-				pToolbar->SetToolLongHelp(i_ObjectID, wxString(i_HelpString, wxConvUTF8));
-			}
-#endif
-		}
-	}
-}
-
-
-//---------------------------------------------------------------------------
-// Creates the actual toolbars. Should be called once all toolbar buttons
-//	have been added during application startup.
+// Creates the actual toolbars. Qt toolbars are live as soon as they are
+//	created, so there is nothing left to do here.
 //---------------------------------------------------------------------------
 void tqtToolbarMgr::RealizeAllToolbars()
 {
-	if (!l_bRealized)
-	{
-		std::map<std::string, MyToolbar*>::iterator it;
-		for (it = m_ToolbarMap.begin(); it != m_ToolbarMap.end(); ++it)
-		{
-#ifdef QT_FINISH_PORT
-			it->second->Realize();
-			wxString pane_name(it->first.c_str(), wxConvUTF8);
-			tqtPaneMgr::AddPane(it->second, wxAuiPaneInfo().
-				  Name(pane_name).Caption(pane_name).
-				  ToolbarPane().Top(). //Row(1). //MinSize(32,-1).
-				  LeftDockable(false).RightDockable(false).
-				  Show(it->second->m_bInitialVisible));
-#endif
-		}
-		l_bRealized = true;
-	}
 }
 
 //---------------------------------------------------------------------------
-// Perspectives save the size of toolbars, but when new buttons are added,
-// we need to make sure that the toolbars are big enough to show all of
-// their buttons.
+// Qt sizes toolbars to their buttons itself.
 //---------------------------------------------------------------------------
 void tqtToolbarMgr::ResizeToolbars()
 {
-	if (l_bRealized)
-	{
-		std::map<std::string, MyToolbar*>::iterator it;
-		for (it = m_ToolbarMap.begin(); it != m_ToolbarMap.end(); ++it)
-		{
-#ifdef QT_FINISH_PORT
-			//it->second->Fit(); // Resize the toolbar to fit the buttons
-			//wxSize s = it->second->GetMinSize();
-			wxSizer *pToolSizer = it->second->GetToolbarSizer();
-			if (pToolSizer)
-			{
-				wxSize s = pToolSizer->GetMinSize();
-				// Have to add in some extra width because of the gripper on the left.
-				//tqtPaneMgr::ResizePane(it->second, s.GetWidth()+20, s.GetHeight());
-				tqtPaneMgr::ResizePane(it->second, s.GetWidth(), s.GetHeight());
-			}
-#endif
-		}
-	}
 }
 
-#ifdef USE_QT
 //---------------------------------------------------------------------------
 // Access to toolbar control, can be used as parent for controls that
 //	will be added to the toolbar.
@@ -299,7 +169,7 @@ void tqtToolbarMgr::ResizeToolbars()
 QToolBar* tqtToolbarMgr::GetToolbarByName(const char* i_ToolbarName)
 {
 	return get_or_create_toolbar(i_ToolbarName);
-}	
+}
 
 //---------------------------------------------------------------------------
 // Add a custom control to the toolbar with the given name
@@ -307,9 +177,15 @@ QToolBar* tqtToolbarMgr::GetToolbarByName(const char* i_ToolbarName)
 void tqtToolbarMgr::AddControlToToolBar(const char* i_ToolbarName,
 										QWidget* i_pControl)
 {
-	MyToolbar* pToolbar = get_or_create_toolbar(i_ToolbarName);
-#ifdef QT_FINISH_PORT
-	pToolbar->AddControl(i_pControl);
-#endif
+	if (QToolBar* pToolbar = get_or_create_toolbar(i_ToolbarName))
+		pToolbar->addWidget(i_pControl);
 }
+
+//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
+void tqtToolbarMgr::CleanUp()
+{
+	l_ToolbarMap.clear();
+}
+
 #endif // USE_QT

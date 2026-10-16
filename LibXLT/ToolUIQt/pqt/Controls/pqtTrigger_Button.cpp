@@ -13,13 +13,8 @@
 #include "Core/prty/prtyTrigger.hpp"
 #include "Core/prty/prtyButtonUIInfo.hpp"
 
-#include <QtGui/QPushButton>
-
-
 #ifdef USE_QT
 
-//============================================================================
-//============================================================================
 namespace
 {
 	// Create derivation of widget that notifies the control manager
@@ -28,8 +23,7 @@ namespace
 	{
 	public:
 		CleanUpButton(QWidget* i_pParent)
-			:	QPushButton(i_pParent) {}
-
+			: QPushButton(i_pParent) {}
 		~CleanUpButton()
 		{
 			pqtControlMgr::DeleteControl(this);
@@ -40,7 +34,7 @@ namespace
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 pqtTrigger_Button::pqtTrigger_Button(shared_ptr<prtyPropertyUIInfo>& i_pUIInfo,
-									 QWidget* i_pParent)
+										 QWidget* i_pParent)
 :	pqtControl(i_pUIInfo)
 {
 	DBG_ASSERT( i_pUIInfo != 0, "UI Info cannot be NULL");
@@ -53,11 +47,7 @@ pqtTrigger_Button::pqtTrigger_Button(shared_ptr<prtyPropertyUIInfo>& i_pUIInfo,
 
 	//	hook up events
 	//
-#ifdef QT_FINISH_PORT
-	this->Connect( m_pActualControl->GetId(), wxEVT_COMMAND_BUTTON_CLICKED,
-					wxCommandEventHandler(pqtTrigger_Button::button_Clicked) );
-	m_pActualControl->PushEventHandler(this);
-#endif
+	QObject::connect(m_pActualControl, &QPushButton::clicked, [this](bool) { button_Clicked(); });
 };
 
 //----------------------------------------------------------------------------
@@ -65,9 +55,6 @@ pqtTrigger_Button::pqtTrigger_Button(shared_ptr<prtyPropertyUIInfo>& i_pUIInfo,
 //----------------------------------------------------------------------------
 pqtTrigger_Button::~pqtTrigger_Button()
 {
-#ifdef QT_FINISH_PORT
-	m_pActualControl->RemoveEventHandler(this);
-#endif
 }
 
 //----------------------------------------------------------------------------
@@ -106,20 +93,15 @@ void pqtTrigger_Button::PropertyChanged(prtyProperty* i_pProperty, bool i_bDirty
 //----------------------------------------------------------------------------
 void pqtTrigger_Button::UpdateControl(prtyPropertyUIInfo* i_pUIInfo)
 {
-#if QT_FINISH_PORT
-	m_pActualControl->Enable(!i_pUIInfo->GetReadOnly());
-#endif
+	m_pActualControl->setEnabled(!i_pUIInfo->GetReadOnly());
 
 	prtyButtonUIInfo* pBUII = static_cast<prtyButtonUIInfo*>(i_pUIInfo);
-#if QT_FINISH_PORT
-	m_pActualControl->SetLabel( wxString(pBUII->m_ButtonText.c_str(), wxConvUTF8) );
-#endif
+	m_pActualControl->setText( tqtQString(pBUII->m_ButtonText) );
 }
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-#ifdef QT_FINISH_PORT
-void pqtTrigger_Button::button_Clicked(wxCommandEvent& i_Event)
+void pqtTrigger_Button::button_Clicked()
 {
 	if (m_bLocalChangeNoUpdate) return;
 
@@ -143,5 +125,3 @@ void pqtTrigger_Button::button_Clicked(wxCommandEvent& i_Event)
 	m_bLocalChangeNoUpdate = false;
 }
 #endif
-
-#endif	// USE_QT

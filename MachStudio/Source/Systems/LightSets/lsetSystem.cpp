@@ -10,7 +10,6 @@
 #include "Systems/LightSets/lsetSystem.hpp"
 
 #include "Support/rman/rmanMgr.hpp"
-#include "Support/mray/mrayMgr.hpp"
 
 #include "Systems/LightSets/GUI/lsetCommands.hpp"
 #include "Systems/LightSets/GUI/lsetContextMenuInterest.hpp"
@@ -21,7 +20,6 @@
 #include "Systems/LightSets/Object/lsetObjectMgr.hpp"
 #include "Systems/LightSets/Object/lsetSelectInterest.hpp"
 #include "Systems/LightSets/Object/lsetRendermanExportInterest.hpp"
-#include "Systems/LightSets/Object/lsetMRayExportInterest.hpp"
 
 #include "Systems/Common/GUI/cmmDialogInterestMgr.hpp"
 #include "Systems/Common/Templates/cmmNameInterestTemplate.hpp"
@@ -43,7 +41,6 @@ namespace lsetSystem
 		lsetDialogInterest*				l_pLightSetsDI = NULL;
 		lsetContextMenuInterest*		l_pLightSetsCMI = NULL;
 		lsetRendermanExportInterest*	l_pLightSetsREI = NULL;
-		lsetMRayExportInterest*			l_pLightSetsMRayEI = NULL;
 	}
 
 	//--------------------------------------------------------------------
@@ -91,14 +88,6 @@ namespace lsetSystem
 			l_pLightSetsREI = new lsetRendermanExportInterest();
 			rmanMgr::RegisterExportInterest( l_pLightSetsREI );
 		}
-
-		// register the mray export interest
-		if ( l_pLightSetsMRayEI == 0 )
-		{
-			l_pLightSetsMRayEI = new lsetMRayExportInterest();
-			mrayMgr::RegisterExportInterest( l_pLightSetsMRayEI );
-		}
-		
 
 		// Timeline related creators
 		tmlnDriverCreator* pDriverCreator = new lsetDriverCreator;
@@ -149,14 +138,6 @@ namespace lsetSystem
 			rmanMgr::UnRegisterExportInterest( l_pLightSetsREI );
 			delete l_pLightSetsREI;
 			l_pLightSetsREI = 0;
-		}
-
-		//	Unregister the mray Export Interest
-		if ( l_pLightSetsMRayEI != 0 )
-		{
-			mrayMgr::UnRegisterExportInterest( l_pLightSetsMRayEI );
-			delete l_pLightSetsMRayEI;
-			l_pLightSetsMRayEI = 0;
 		}
 
 		// Clean up namespaces

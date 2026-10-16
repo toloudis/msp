@@ -13,7 +13,8 @@
 #include "Core/Env/envWaitCondition.hpp"
 
 #ifdef ENV_USE_THREADS
-#include <Windows.h>  // for Sleep()
+#include <chrono>
+#include <thread>
 #endif
 
 //============================================================================
@@ -51,7 +52,7 @@ void g3dThreadControl::AbortRenderThread()
 	// flag to change, or we could join the thread if we had the thread id.
 	while (l_bRenderThreadActive)
 	{
-		::Sleep(1);
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 #endif
 

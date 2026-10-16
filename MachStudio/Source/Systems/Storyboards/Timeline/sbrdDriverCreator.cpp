@@ -8,6 +8,8 @@
 \****************************************************************************/
 #include "Systems/Storyboards/Timeline/sbrdDriverCreator.hpp"
 
+#include "Core/it/itStringUtil.hpp"
+
 #include "Systems/Storyboards/Timeline/sbrdAdapterGetPosition.hpp"
 #include "Systems/Storyboards/Data/sbrdDataParser.hpp"
 #include "Systems/Storyboards/GUI/sbrdGeomList.hpp"
@@ -190,7 +192,7 @@ tmlnDriver* sbrdDriverCreator::CreateDriverByName( const char* i_DriverName,
 	//	return pDriver;
 
 	//
-	if (!::_stricmp(i_DriverName, "Static Orientation"))
+	if (itStringUtil::CompareNoCase(i_DriverName, "Static Orientation") == 0)
 	{
 		tmlnDriverOrientation * pDriver = new tmlnDriverOrientation( sbrd_obj->ChannelOrientation(), c_SORI );
 		pDriver->SetName("Orientation");
@@ -202,7 +204,7 @@ tmlnDriver* sbrdDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	//else if ( !::_stricmp(i_DriverName, "Animated Texture") )
+	//else if ( itStringUtil::CompareNoCase(i_DriverName, "Animated Texture") == 0 )
 	//{
 	//	sbrdDriverAnimatedTexture* pDriver = new sbrdDriverAnimatedTexture( sbrd_obj->ChannelTexture() );
 	//	pDriver->SetName( "Animated Texture" );
@@ -214,7 +216,7 @@ tmlnDriver* sbrdDriverCreator::CreateDriverByName( const char* i_DriverName,
 	//	channel.AddDriver( pDriver );
 	//	return pDriver;
 	//}
-	else if ( !::_stricmp(i_DriverName, c_SOUND_DRIVERNAME) )
+	else if ( itStringUtil::CompareNoCase(i_DriverName, c_SOUND_DRIVERNAME) == 0 )
 	{
 		fsLocator snddir = gfPaths::GetPath(mnmPaths::e_DataScene);
 		//snddir.Push( sbrdGeomList::GetSystemDirName() );

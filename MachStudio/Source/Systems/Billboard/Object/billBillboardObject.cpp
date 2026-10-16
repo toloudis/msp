@@ -14,7 +14,6 @@
 #include "Systems/Billboard/Undo/billOperations.hpp"
 
 #include "Support/evmt/evmtEnvironmentMgr.hpp"
-#include "Support/mnm/mnmAviUtil.hpp"
 #include "Support/mnm/mnmReference.hpp"
 #include "Support/mnm/mnmReferencePosChannel.hpp"
 #include "Support/rlyr/rlyrRenderLayerMgr.hpp"
@@ -22,6 +21,7 @@
 #include "Support/tmln/tmlnTimelineMgr.hpp"
 
 // library
+#include "Core/fs/fsAviFile.hpp"
 #include "Core/geo/geoRayIntersection.hpp"
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
 #include "Core/prty/prtyColorRGBAEditUIInfo.hpp"
@@ -727,7 +727,7 @@ void billBillboardObject::VideoChanged(prtyProperty *i_pProperty, bool i_bDirty)
 		m_Frame = data.m_Frame;
 		unsigned char* pData = NULL;
 		int dSize = 0;
-		mnmAviUtil::GetAviFrame( (mnmAviUtil::HAVI)data.m_pVideo, m_Frame, pData, dSize );
+		fsAviFile::GetFrame( (fsAviFile::Handle)data.m_pVideo, m_Frame, pData, dSize );
 		//matTextureMgr::FillTexture( m_pVideoTexture, pData, dSize );
 		matTextureMgr::FillTexture( m_pVideoTextureTemp, pData, dSize );
 		matTextureMgr::CopyTexture( m_pVideoTextureTemp, m_pVideoTexture);

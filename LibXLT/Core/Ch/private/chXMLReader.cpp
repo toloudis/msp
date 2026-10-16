@@ -10,6 +10,7 @@
 
 #include "Core/ch/chExceptionX.hpp"
 #include "Core/gf/gfFileXML.hpp"
+#include "Core/it/itStringUtil.hpp"
 
 
 //============================================================================
@@ -305,7 +306,8 @@ void chXMLReader::Read(bool& o_Val)
 	Read(BoolString);
 
 	// Convert the string into a bool and return.
-	o_Val = ( !_stricmp( BoolString.c_str(), "TRUE" ) ) ? true : false;
+	itStringUtil::ToLower( BoolString );
+	o_Val = ( BoolString == "true" );
 }
 
 //----------------------------------------------------------------------------
