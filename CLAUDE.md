@@ -33,9 +33,39 @@ cameras/lights/objects on a timeline, and render frames or sequences on the GPU
 - Many directories still contain obsolete `.vcproj` (VS2005/2008), `.vspscc`
   and `.8.00.old` files. Only `.vcxproj` files are live; a `System` folder
   with only a `.vcproj` is not built by the current solution.
-- Tests: there is no automated test suite. `MachStudio/TestSource/` holds a few
-  old standalone harnesses (`chnlTest`, `ltstTest`, `splnTest`) that use the
-  obsolete `.vcproj` format.
+- Tests: GoogleTest unit tests live in `UnitTests/` (see Unit tests below).
+  The older harnesses in `MachStudio/TestSource/`, `TestLibXLT/` and
+  `TestTerawatt/` (obsolete `.vcproj`s; mostly interactive demos or
+  print-and-eyeball programs) are not built; what was worth keeping has been
+  ported to `UnitTests/`, and they are due to be deleted.
+
+### Unit tests
+
+- `UnitTests/CoreTests/CoreTests.vcxproj` is a console exe of GoogleTest tests
+  for `LibXLT/Core`, in `MachStudio.sln`. It links `Core` through a
+  ProjectReference and gets gtest from its own vcpkg manifest. Tests sit in
+  folders named after the package they test (`Ch/chChunkTest.cpp`,
+  `Ma/maMatrixTest.cpp`, ...); helpers use the `ct` prefix (`ctTempDir` for a
+  per-test temp directory, `ctMath` for approximate vector/matrix checks).
+- `UnitTests/UnitTests.props` / `.targets` hold the settings shared by test
+  projects (include paths, runtime, output in `UnitTests/bin/<Platform>/<Configuration>/`).
+  A future test project for other libraries should import them the same way.
+- The test projects have the four Qt/Wx configurations only so the libraries
+  they reference build in the same configuration as MainApp; the tests don't
+  use a GUI toolkit.
+- `CoreTestsMain.cpp` initializes `CoreLayer` once and installs a
+  `dbgMsg::SetAssertHandler` hook so a failed `DBG_ASSERT` becomes a test
+  failure instead of the abort/continue dialog. `ctPlatform` turns CRT
+  assert and crash dialogs off, so runs never wait for input.
+- Run: `UnitTests/bin/x64/<Configuration>/CoreTests.exe` (gtest flags such as
+  `--gtest_filter=ma*` work); Visual Studio's Google Test adapter should also
+  list them in Test Explorer. Set
+  `MspRunUnitTests=true` (`/p:`, environment variable, or a git-ignored
+  `CoreTests.vcxproj.user`) to run the tests after every build; a failure then
+  fails the build. CI builds `CoreTests` with MainApp and runs it in every
+  configuration.
+- Core headers have `#error` "multiply included" guards, so guard their
+  includes in test files as everywhere else (`#ifndef MA_PLANE_HPP ...`).
 
 ### Dependencies
 
@@ -63,6 +93,7 @@ its own `vcpkg_installed/`):
 | `LibXLT/GraphicsDX11/vcpkg.json` | DirectXTex, nlohmann-json | DDS/texture loading and image saving; parsing `*.effect.json` effect descriptions (`fxEffectDesc`). glTF import bundles its own `json.hpp`/`tiny_gltf.h` |
 | `MachStudio/Source/MainApp/vcpkg.json` | curl (+ zlib) | version check (`mainCheckAppVersion`). Linked dynamically: `libcurl.dll` (and its `zlib1.dll`) ships next to the exe |
 | `LibXLT/ToolUIWx/vcpkg.json` | (none) | |
+| `UnitTests/CoreTests/vcpkg.json` | gtest | unit tests (`gmock.dll`, which includes gtest, is copied next to the test exe) |
 
 The library packages live under the library projects, so MainApp adds their
 `vcpkg_installed\...\lib` dirs to its link paths and its
@@ -404,7 +435,7 @@ Everything animated on the timeline goes through `Support/tmln`:
 - `wxFormBuilder/` — `.fbp` sources for the generated wx dialog base classes
   (`...DialogBase.h`); regenerate rather than hand-edit those.
 - `Qt Dialogs/` — Qt Designer `.ui` sources.
-- `TestSource/` — old standalone test harnesses (see Building).
+- `TestSource/` — old standalone test harnesses, not built (see Building).
 
 ## Dead applications (reference only)
 

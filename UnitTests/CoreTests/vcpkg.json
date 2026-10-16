@@ -1,0 +1,7 @@
+{
+  "name": "coretests",
+  "version": "1.0",
+  "dependencies": [
+    "gtest"
+  ]
+}

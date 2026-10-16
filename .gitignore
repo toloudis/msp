@@ -2,5 +2,7 @@ MachStudio/bin/
 MachStudio/source/packages
 MachStudio/Source/.vs
 LibXLT/bin/
+UnitTests/bin/
+UnitTests/**/*.vcxproj.user
 vcpkg_installed/
 LibXLT/GraphicsDX11/Fx/private/Generated/

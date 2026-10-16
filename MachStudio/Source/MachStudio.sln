@@ -62,6 +62,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SoftwareShield", "..\..\Lib
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Area18", "..\..\LibXLT\Area18\Area18.vcxproj", "{F05BD011-50ED-473A-B895-FED684891CA5}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CoreTests", "..\..\UnitTests\CoreTests\CoreTests.vcxproj", "{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Iterator|x64 = Debug Iterator|x64
@@ -758,6 +760,22 @@ Global
 		{F05BD011-50ED-473A-B895-FED684891CA5}.Release Qt|x64.ActiveCfg = Release Wx|x64
 		{F05BD011-50ED-473A-B895-FED684891CA5}.Release Wx|x64.ActiveCfg = Release Wx|x64
 		{F05BD011-50ED-473A-B895-FED684891CA5}.RenderNode|x64.ActiveCfg = Release Wx|x64
+		{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}.Debug Iterator|x64.ActiveCfg = Debug Wx|x64
+		{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}.Debug Managed|x64.ActiveCfg = Debug Wx|x64
+		{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}.Debug_RenderNode|x64.ActiveCfg = Debug Wx|x64
+		{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}.Debug Qt|x64.ActiveCfg = Debug Qt|x64
+		{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}.Debug Qt|x64.Build.0 = Debug Qt|x64
+		{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}.Debug Wx|x64.ActiveCfg = Debug Wx|x64
+		{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}.Debug Wx|x64.Build.0 = Debug Wx|x64
+		{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}.Gold|x64.ActiveCfg = Release Wx|x64
+		{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}.MachStudio|x64.ActiveCfg = Release Wx|x64
+		{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}.Profile|x64.ActiveCfg = Release Wx|x64
+		{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}.Release Managed|x64.ActiveCfg = Release Wx|x64
+		{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}.Release Qt|x64.ActiveCfg = Release Qt|x64
+		{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}.Release Qt|x64.Build.0 = Release Qt|x64
+		{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}.Release Wx|x64.ActiveCfg = Release Wx|x64
+		{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}.Release Wx|x64.Build.0 = Release Wx|x64
+		{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}.RenderNode|x64.ActiveCfg = Release Wx|x64
 		{3B0F4C6E-8E0A-4F4B-9C55-2D7A1E6C9A41}.Debug Iterator|x64.ActiveCfg = Debug Wx|x64
 		{3B0F4C6E-8E0A-4F4B-9C55-2D7A1E6C9A41}.Debug Iterator|x64.Build.0 = Debug Wx|x64
 		{3B0F4C6E-8E0A-4F4B-9C55-2D7A1E6C9A41}.Debug Managed|x64.ActiveCfg = Debug Wx|x64

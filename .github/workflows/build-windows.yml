@@ -106,11 +106,11 @@ jobs:
       # compiles the source files within each project in parallel (none of
       # the projects set /MP), and EnforceProcessCountAcrossBuilds keeps the
       # total number of cl.exe processes at the core count.
-      - name: Build MainApp (${{ matrix.configuration }}|x64)
+      - name: Build MainApp and unit tests (${{ matrix.configuration }}|x64)
         working-directory: MachStudio/Source
         run: >
           msbuild MachStudio.sln
-          /t:MainApp
+          "/t:MainApp;CoreTests"
           "/p:Configuration=${{ matrix.configuration }}"
           /p:Platform=x64
           /m
@@ -118,6 +118,23 @@ jobs:
           /p:EnforceProcessCountAcrossBuilds=true
           /nologo
           /v:minimal
+
+      # GoogleTest unit tests (UnitTests/); a failing test fails the job.
+      # The XML report is uploaded even when tests fail.
+      - name: Run unit tests
+        shell: pwsh
+        run: |
+          $bin = "UnitTests/bin/x64/${{ matrix.configuration }}"
+          & "$bin/CoreTests.exe" "--gtest_output=xml:$bin/CoreTests.xml"
+          if ($LASTEXITCODE -ne 0) { throw "CoreTests failed (exit code $LASTEXITCODE)" }
+
+      - name: Upload unit test results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-tests-${{ matrix.configuration }}
+          path: UnitTests/bin/x64/${{ matrix.configuration }}/*.xml
+          if-no-files-found: ignore
 
       # The exe loads OpenEXR from its own folder; fail if a build would not
       # start because the DLL is missing.

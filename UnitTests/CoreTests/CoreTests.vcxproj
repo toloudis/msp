@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug Qt|x64">
+      <Configuration>Debug Qt</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug Wx|x64">
+      <Configuration>Debug Wx</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release Qt|x64">
+      <Configuration>Release Qt</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release Wx|x64">
+      <Configuration>Release Wx</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}</ProjectGuid>
+    <RootNamespace>CoreTests</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(MspBaseConfiguration)' == 'Debug'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(MspBaseConfiguration)' == 'Release'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\UnitTests.props" />
+  </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="CoreTestsMain.cpp" />
+    <ClCompile Include="ctPlatformWin.cpp" />
+    <ClCompile Include="Ch\chChunkTest.cpp" />
+    <ClCompile Include="Dbg\dbgMsgTest.cpp" />
+    <ClCompile Include="Env\envSTLHelpersTest.cpp" />
+    <ClCompile Include="Env\envThreadGroupTest.cpp" />
+    <ClCompile Include="Fs\fsFileTest.cpp" />
+    <ClCompile Include="Fs\fsXMLTest.cpp" />
+    <ClCompile Include="Geo\geoKDTreeTest.cpp" />
+    <ClCompile Include="Gf\gfFileBinTest.cpp" />
+    <ClCompile Include="It\itStringTest.cpp" />
+    <ClCompile Include="Ma\maAxisBoxTest.cpp" />
+    <ClCompile Include="Ma\maFunctionsTest.cpp" />
+    <ClCompile Include="Ma\maMatrixTest.cpp" />
+    <ClCompile Include="Ma\maPlaneTest.cpp" />
+    <ClCompile Include="Ma\maRotationTest.cpp" />
+    <ClCompile Include="Ma\maVectorTest.cpp" />
+    <ClCompile Include="Rel\relReferenceTest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ctMath.hpp" />
+    <ClInclude Include="ctPlatform.hpp" />
+    <ClInclude Include="ctTempDir.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vcpkg.json" />
+    <None Include="vcpkg-configuration.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\LibXLT\Core\Core.vcxproj">
+      <Project>{846C097D-3B0E-4A0A-B6D7-222ED73125F8}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Import Project="..\UnitTests.targets" />
+</Project>

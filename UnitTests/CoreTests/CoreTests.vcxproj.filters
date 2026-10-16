@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Support">
+      <UniqueIdentifier>{84170c16-3394-4775-a52f-5c1fedcb5085}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ch">
+      <UniqueIdentifier>{2de0216a-0a6e-4cb9-84d9-5771104eef07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dbg">
+      <UniqueIdentifier>{13b9e07a-632d-4481-936b-fc362432bcca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Env">
+      <UniqueIdentifier>{d852dbfd-0349-4985-9102-955e539e6ab1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fs">
+      <UniqueIdentifier>{900f58d3-bd2a-4cb7-8a57-8fbe9fa1aa0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Geo">
+      <UniqueIdentifier>{a85a265f-f1b1-4d33-b411-a12a6f0f5268}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Gf">
+      <UniqueIdentifier>{c31b29d1-0778-4a62-aac2-97ca4ea6d638}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="It">
+      <UniqueIdentifier>{37c065b4-92b4-45a1-839d-1ea4dc17456f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ma">
+      <UniqueIdentifier>{c5ad39dd-4534-4739-9ad8-540fec20e936}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rel">
+      <UniqueIdentifier>{51d893f3-3007-4c85-8147-ab204725b3cf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CoreTestsMain.cpp">
+      <Filter>Support</Filter>
+    </ClCompile>
+    <ClCompile Include="ctPlatformWin.cpp">
+      <Filter>Support</Filter>
+    </ClCompile>
+    <ClCompile Include="Ch\chChunkTest.cpp">
+      <Filter>Ch</Filter>
+    </ClCompile>
+    <ClCompile Include="Dbg\dbgMsgTest.cpp">
+      <Filter>Dbg</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\envSTLHelpersTest.cpp">
+      <Filter>Env</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\envThreadGroupTest.cpp">
+      <Filter>Env</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\fsFileTest.cpp">
+      <Filter>Fs</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\fsXMLTest.cpp">
+      <Filter>Fs</Filter>
+    </ClCompile>
+    <ClCompile Include="Geo\geoKDTreeTest.cpp">
+      <Filter>Geo</Filter>
+    </ClCompile>
+    <ClCompile Include="Gf\gfFileBinTest.cpp">
+      <Filter>Gf</Filter>
+    </ClCompile>
+    <ClCompile Include="It\itStringTest.cpp">
+      <Filter>It</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\maAxisBoxTest.cpp">
+      <Filter>Ma</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\maFunctionsTest.cpp">
+      <Filter>Ma</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\maMatrixTest.cpp">
+      <Filter>Ma</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\maPlaneTest.cpp">
+      <Filter>Ma</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\maRotationTest.cpp">
+      <Filter>Ma</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\maVectorTest.cpp">
+      <Filter>Ma</Filter>
+    </ClCompile>
+    <ClCompile Include="Rel\relReferenceTest.cpp">
+      <Filter>Rel</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ctMath.hpp">
+      <Filter>Support</Filter>
+    </ClInclude>
+    <ClInclude Include="ctPlatform.hpp">
+      <Filter>Support</Filter>
+    </ClInclude>
+    <ClInclude Include="ctTempDir.hpp">
+      <Filter>Support</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vcpkg.json">
+      <Filter>Support</Filter>
+    </None>
+    <None Include="vcpkg-configuration.json">
+      <Filter>Support</Filter>
+    </None>
+  </ItemGroup>
+</Project>
