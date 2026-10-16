@@ -68,8 +68,7 @@ The library packages live under the library projects, so MainApp adds their
 `vcpkg_installed\...\lib` dirs to its link paths and its
 `CopyLibraryVcpkgDlls` target copies their DLLs into `MachStudio-x64/`.
 Some projects still reference folders that no longer exist
-(`3rdParty\OpenEXR`, `3rdParty\DirectXTex`, `3rdParty\FBX`,
-`D:\FreeImage`); these paths are stale.
+(`3rdParty\FBX`, `D:\FreeImage`); these paths are stale.
 
 **Qt 6** is a separate install (see the toolkit notes above), not in
 `3rdParty/` or vcpkg.
