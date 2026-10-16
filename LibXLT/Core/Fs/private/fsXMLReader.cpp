@@ -198,7 +198,9 @@ void fsXMLReader::Convert(const std::string& i_Text, envType::Int8& o_Value)
 	if (i_Text.length() > 0)
 	{
 		std::stringstream ss(i_Text);
-		ss >> o_Value;
+		envType::Int32 val32 = 0;	// the writer promotes int8 so it isn't a character; read it the same way
+		ss >> val32;
+		o_Value = envType::Int8(val32);
 	}
 }
 void fsXMLReader::Convert(const std::string& i_Text, envType::UInt8& o_Value)
@@ -206,7 +208,9 @@ void fsXMLReader::Convert(const std::string& i_Text, envType::UInt8& o_Value)
 	if (i_Text.length() > 0)
 	{
 		std::stringstream ss(i_Text);
-		ss >> o_Value;
+		envType::Int32 val32 = 0;
+		ss >> val32;
+		o_Value = envType::UInt8(val32);
 	}
 }
 //void fsXMLReader::Convert(const std::string& i_Text, envType::Int16& o_Value)
