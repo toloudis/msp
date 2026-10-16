@@ -7,6 +7,7 @@
 **	Copyright(C) 2006 - All Rights Reserved
 \****************************************************************************/
 #include "Support/mray/mrayMgr.hpp"
+#include "Core/app/appApplication.hpp"
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsFileUtil.hpp"
@@ -25,7 +26,6 @@
 #include "ImportExport/mray/export/mrayExport.hpp"
 
 #include <vector>
-#include <windows.h>
 
 #undef CreateDirectory
 #undef CreateFile
@@ -347,8 +347,8 @@ void mrayMgr::LaunchStandaloneMray( mrayGlobalData & io_GlobalData, fsLocator i_
 		}
 	}
 
-	WinExec(mray_exec.c_str(),i_ShowConsole);
-	if ( launchWindowsViewer ) WinExec(viewer_exec.c_str(),i_ShowConsole);
+	appApplication::LaunchProgram(mray_exec.c_str(),i_ShowConsole);
+	if ( launchWindowsViewer ) appApplication::LaunchProgram(viewer_exec.c_str(),i_ShowConsole);
 }
 
 //----------------------------------------------------------------------------
@@ -377,7 +377,7 @@ void mrayMgr::ResetCapture()
 //----------------------------------------------------------------------------
 void mrayMgr::LaunchMRayMasterBatch(std::string i_MasterBatchPath)
 {
-	WinExec(i_MasterBatchPath.c_str(),true);
+	appApplication::LaunchProgram(i_MasterBatchPath.c_str(),true);
 }
 
 //----------------------------------------------------------------------------

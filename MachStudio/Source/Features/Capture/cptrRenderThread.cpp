@@ -56,8 +56,6 @@
 
 #undef CreateDirectory
 
-#include <windows.h>
-
 #include <fstream>
 #include <iostream>
 #include <ostream>

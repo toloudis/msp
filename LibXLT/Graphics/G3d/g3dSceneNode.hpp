@@ -254,11 +254,11 @@ class g3dSceneNode
 		//  follow the path from this node through the hierarchy.
 		//  return the descendent g3dSceneNode that matches the path
 		//--------------------------------------------------------------------
-		const g3dSceneNode* g3dSceneNode::GetNamedNodeFromPath( 
+		const g3dSceneNode* GetNamedNodeFromPath( 
 					std::deque< std::string >::const_iterator b, 
 					std::deque< std::string>::const_iterator e) const;
 		
-		g3dSceneNode* g3dSceneNode::GetNamedNodeFromPath( 
+		g3dSceneNode* GetNamedNodeFromPath( 
 					std::deque< std::string >::const_iterator b, 
 					std::deque< std::string>::const_iterator e);
 		//actual implementation

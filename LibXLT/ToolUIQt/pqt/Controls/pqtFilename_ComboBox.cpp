@@ -7,12 +7,12 @@
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
-#ifdef QT_FINISH_PORT
-
 #include "pqtFileName_ComboBox.hpp"
 
 #include "Core/it/itStringUtil.hpp"
 #include "Core/prty/prtyComboBoxUIInfo.hpp"
+
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 // Get list of string choices for combo box
@@ -27,18 +27,18 @@ void pqtFileName_ComboBox_Converter::GetChoices(prtyPropertyUIInfo* i_pUIInfo,
 //----------------------------------------------------------------------------
 // Set value into control
 //----------------------------------------------------------------------------
-void pqtFileName_ComboBox_Converter::SetValueIntoControl(wxChoice* i_pActualControl,
+void pqtFileName_ComboBox_Converter::SetValueIntoControl(QComboBox* i_pActualControl,
 											   itString i_Value)
 {
-	i_pActualControl->SetStringSelection(i_Value.GetString());
+	pqtControlUtil::SelectString(i_pActualControl, QString::fromWCharArray(i_Value.GetString()));
 }
 
 //----------------------------------------------------------------------------
 // Get value from control
 //----------------------------------------------------------------------------
-itString pqtFileName_ComboBox_Converter::GetValueFromControl(wxChoice* i_pActualControl)
+itString pqtFileName_ComboBox_Converter::GetValueFromControl(QComboBox* i_pActualControl)
 {
-	itString sel_text(i_pActualControl->GetStringSelection().c_str());
+	itString sel_text(i_pActualControl->currentText().toStdWString().c_str());
 	return sel_text;
 }
 

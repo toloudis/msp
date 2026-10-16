@@ -19,12 +19,12 @@
 #include "Core/prty/prtyFileName.hpp"
 #endif
 
+#ifdef USE_QT
 
 //===================================================================================
 //===================================================================================
 class pqtFileName_ComboBox_Converter 
 {
-#ifdef QT_FINISH_PORT
 public:
 	//----------------------------------------------------------------------------
 	// Get list of string choices for combo box
@@ -35,17 +35,17 @@ public:
 	//----------------------------------------------------------------------------
 	// Set value into control
 	//----------------------------------------------------------------------------
-	static void SetValueIntoControl(wxChoice* i_pActualControl,
+	static void SetValueIntoControl(QComboBox* i_pActualControl,
 									 itString i_Value);
 
 	//----------------------------------------------------------------------------
 	// Get value from control
 	//----------------------------------------------------------------------------
-	static itString GetValueFromControl(wxChoice* i_pActualControl);
-#endif // USE_QT
+	static itString GetValueFromControl(QComboBox* i_pActualControl);
 };
 
 //============================================================================
 //============================================================================
 typedef pqtTemplate_ComboBox<prtyFileName, itString, pqtFileName_ComboBox_Converter> pqtFileName_ComboBox;
 
+#endif // USE_QT

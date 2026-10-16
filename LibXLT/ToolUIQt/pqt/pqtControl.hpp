@@ -11,18 +11,16 @@
 #endif
 #define PQT_CONTROL_HPP
 
-#ifndef ENV_BOOST_HPP
-#include "Core/Env/envBoost.hpp"
-#endif 
 #ifndef TQT_WIDGETS_HPP
 #include "ToolUIQt/tqt/tqtWidgets.hpp"
 #endif
+#ifndef ENV_BOOST_HPP
+#include "Core/Env/envBoost.hpp"
+#endif 
 
 #include <vector>
 
-#ifdef USE_QT
-#include <QtGui/QWidget>
-
+#ifdef USE_QT 
 
 //============================================================================
 //============================================================================
@@ -32,13 +30,9 @@ class prtyPropertyCallback;
 class prtyReferenceCreator;
 class prtyPropertyReference;
 
-
 //============================================================================
 //============================================================================
 class pqtControl
-#ifdef QT_FINISH_PORT 
-: public wxEvtHandler
-#endif
 {
 	public:
 		//----------------------------------------------------------------------------

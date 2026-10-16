@@ -1,7 +1,12 @@
 /****************************************************************************\
 **	tqcEvent.hpp
 **
-**		Defines common event types for our custom TQC controls
+**	Value Changed notification for the custom controls: the value is
+**	different after ENTER is pressed, or the control is left, or the
+**	user changed it some other way (slider, spinner, picker...).
+**
+**	This replaces the wxEVT_VALUE_CHANGED event of the wxWidgets controls.
+**	It is a plain callback so the controls don't need Qt's moc.
 **
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
@@ -15,14 +20,36 @@
 #include "ToolUIQt/tqt/tqtWidgets.hpp"
 #endif
 
-#ifdef QT_FINISH_PORT
+#include <functional>
+
+#ifdef USE_QT
 
 //============================================================================
-// ValueChanged event : TQC controls throw this event type when the
-//	value in the control has changed after ENTER is pressed, or the
-//	focus leaves the control. Users should register for this event, 
-//	not for the individual enter pressed and leave events.
 //============================================================================
-DECLARE_EVENT_TYPE(wxEVT_VALUE_CHANGED, -1)
+class tqcValueChangedNotifier
+{
+public:
+	typedef std::function<void()> ValueChangedFunction;
+
+	//--------------------------------------------------------------------
+	// Set the function to call when the user changes the value
+	//--------------------------------------------------------------------
+	void SetValueChangedCallback(ValueChangedFunction i_Callback)
+	{
+		m_ValueChanged = i_Callback;
+	}
+
+	//--------------------------------------------------------------------
+	// Call the value changed callback, if there is one
+	//--------------------------------------------------------------------
+	void NotifyValueChanged()
+	{
+		if (m_ValueChanged)
+			m_ValueChanged();
+	}
+
+private:
+	ValueChangedFunction m_ValueChanged;
+};
 
 #endif // USE_QT

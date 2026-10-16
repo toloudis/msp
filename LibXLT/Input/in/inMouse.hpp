@@ -98,6 +98,13 @@ public:
 	void GetAnalogDir(int i_Stick, int& o_X, int& o_Y) const;
 	void GetAnalogDir(int i_Stick, int& o_X, int& o_Y, int& o_Z) const;
 
+	//========================================================================
+	//	Take wheel rotation from window events (AddWheelDelta) instead of the
+	//	device, so only the window under the cursor sees it. Delta is in notches.
+	//========================================================================
+	void SetWheelFromWindowEvents(bool i_bEnable);
+	void AddWheelDelta(float i_Notches);
+
 private:
 	enum { e_MOUSEBUFSIZE = 8 };
 	//we'll arbitrarily set this at 50, it seems around the limit of motion when not trying too hard
@@ -106,6 +113,8 @@ private:
 	int m_dX;
 	int m_dY;
 	float m_dZ;
+	bool m_bWheelFromWindowEvents;
+	float m_PendingWheel;
 	float m_Dir;
 	float m_Pressure;
 	inDigitalDir::DigitalDir m_DigitalDir;

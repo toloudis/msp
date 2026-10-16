@@ -21,7 +21,7 @@ namespace
 //---------------------------------------------------------------------------
 void quiDialogTabbedMgr::Create(const char* i_DialogName, const char* i_Title)
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	tqtDialogTabbedMgr::Create( i_DialogName, i_Title );
 #endif
 }
@@ -31,7 +31,7 @@ void quiDialogTabbedMgr::Create(const char* i_DialogName, const char* i_Title)
 //---------------------------------------------------------------------------
 void quiDialogTabbedMgr::Show(const char* i_DialogName)
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	tqtDialogTabbedMgr::Show( i_DialogName );
 #endif
 }
@@ -41,7 +41,7 @@ void quiDialogTabbedMgr::Show(const char* i_DialogName)
 //---------------------------------------------------------------------------
 void quiDialogTabbedMgr::Hide(const char* i_DialogName)
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	tqtDialogTabbedMgr::Hide( i_DialogName );
 #endif
 }
@@ -51,7 +51,7 @@ void quiDialogTabbedMgr::Hide(const char* i_DialogName)
 //---------------------------------------------------------------------------
 bool quiDialogTabbedMgr::IsVisible(const char* i_DialogName) 
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	return tqtDialogTabbedMgr::IsVisible( i_DialogName );
 #endif
 	return false;
@@ -62,7 +62,7 @@ bool quiDialogTabbedMgr::IsVisible(const char* i_DialogName)
 //---------------------------------------------------------------------------
 bool quiDialogTabbedMgr::IsExisted(const char* i_DialogName)
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	return tqtDialogTabbedMgr::IsExisted( i_DialogName );
 #endif
 	return false;
@@ -73,7 +73,7 @@ bool quiDialogTabbedMgr::IsExisted(const char* i_DialogName)
 //---------------------------------------------------------------------------
 void quiDialogTabbedMgr::AddTabPage(const char* i_DialogName, const char* i_TabName)
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	tqtDialogTabbedMgr::AddTabPage( i_DialogName, i_TabName );
 #endif
 }
@@ -83,7 +83,7 @@ void quiDialogTabbedMgr::AddTabPage(const char* i_DialogName, const char* i_TabN
 //---------------------------------------------------------------------------
 void quiDialogTabbedMgr::RemoveTabPage(const char* i_DialogName, const char* i_TabName)
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	tqtDialogTabbedMgr::RemoveTabPage( i_DialogName, i_TabName );
 #endif
 }
@@ -93,7 +93,7 @@ void quiDialogTabbedMgr::RemoveTabPage(const char* i_DialogName, const char* i_T
 //---------------------------------------------------------------------------
 void quiDialogTabbedMgr::DeleteTabPage(const char* i_DialogName, const char* i_TabName)
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	tqtDialogTabbedMgr::DeleteTabPage( i_DialogName, i_TabName );
 #endif
 }
@@ -103,7 +103,7 @@ void quiDialogTabbedMgr::DeleteTabPage(const char* i_DialogName, const char* i_T
 //---------------------------------------------------------------------------
 void quiDialogTabbedMgr::RemoveTabPages(const char* i_DialogName)
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	tqtDialogTabbedMgr::RemoveTabPages( i_DialogName );
 #endif
 }
@@ -119,8 +119,8 @@ void quiDialogTabbedMgr::BuildForm(	const char* i_DialogName,
 									bool i_bShowCategory,
 									bool i_bAutoCollapse)
 {
-#ifdef QT_FINISH_PORT	
-	wxPanel* pTabPage = tqtDialogTabbedMgr::GetTabPage( i_DialogName,  i_TabName );
+#ifdef USE_QT	
+	QWidget* pTabPage = tqtDialogTabbedMgr::GetTabPage( i_DialogName,  i_TabName );
 	if (pTabPage)
 	{
 
@@ -134,7 +134,7 @@ void quiDialogTabbedMgr::BuildForm(	const char* i_DialogName,
 //---------------------------------------------------------------------------
 void quiDialogTabbedMgr::Freeze(const char* i_DialogName) 
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	tqtDialogTabbedMgr::Freeze(i_DialogName);
 #endif
 }
@@ -144,7 +144,7 @@ void quiDialogTabbedMgr::Freeze(const char* i_DialogName)
 //---------------------------------------------------------------------------
 void quiDialogTabbedMgr::Thaw(const char* i_DialogName) 
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	tqtDialogTabbedMgr::Thaw(i_DialogName);
 #endif
 }

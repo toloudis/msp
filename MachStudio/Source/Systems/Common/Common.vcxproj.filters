@@ -22,6 +22,9 @@
     <Filter Include="TimeData">
       <UniqueIdentifier>{d94ea90f-aa96-49d2-b2d2-ad0109722ec1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GUI\qtGUI">
+      <UniqueIdentifier>{4297e4e2-bac3-4377-941f-5ee4607135b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Gui\cmmAddDriverOperation.cpp">
@@ -143,6 +146,30 @@
     </ClCompile>
     <ClCompile Include="cmmSelectInterest.cpp" />
     <ClCompile Include="cmmSystem.cpp" />
+    <ClCompile Include="Gui\qtGUI\cmmObjectDialog.cpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\qtGUI\cmmPlacedPane.cpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\qtGUI\cmmSceneDialog.cpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\qtGUI\cmmSceneTreeNode.cpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\qtGUI\cmmSceneView.cpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\qtGUI\cmmSceneViewCategory.cpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\qtGUI\cmmSceneViewGroup.cpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Gui\qtGUI\cmmSceneViewLights.cpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Gui\cmmAddDriverOperation.hpp">
@@ -306,5 +333,32 @@
     </ClInclude>
     <ClInclude Include="cmmSelectInterest.hpp" />
     <ClInclude Include="cmmSystem.hpp" />
+    <ClInclude Include="Gui\qtGUI\cmmObjectDialog.hpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\qtGUI\cmmPlacedImages.hpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\qtGUI\cmmPlacedPane.hpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\qtGUI\cmmSceneDialog.hpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\qtGUI\cmmSceneTreeNode.hpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\qtGUI\cmmSceneView.hpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\qtGUI\cmmSceneViewCategory.hpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\qtGUI\cmmSceneViewGroup.hpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gui\qtGUI\cmmSceneViewLights.hpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

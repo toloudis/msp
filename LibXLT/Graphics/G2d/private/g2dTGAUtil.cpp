@@ -20,6 +20,9 @@
 #include "Graphics/g3d/g3dPrefs.hpp"
 #include "Graphics/g2d/private/tga.h"
 
+#include <filesystem>
+#include <fstream>
+
 
 //============================================================================
 //============================================================================
@@ -45,13 +48,16 @@ void WriteToTGA( const fsLocator& i_Locator, const g2dImage* pImg )
 
 	try
 	{
-		FILE* fp = ::_wfopen(filename.GetString(), L"wb");
+		std::ofstream file(std::filesystem::path(filename.GetString()), std::ios::binary);
+		if (!file)
+		{
+			DBG_ERROR("Unable to open TGA file for writing");
+			return;
+		}
 		
 		g2dPixelR8G8B8A8* buffer = NULL;
 		(const_cast<g2dImage*>(pImg))->GetPixels(&buffer, &width, &height);
-		TGA_Write_RGBA(fp, width, height, (envType::UInt32**)(&buffer));
-		
-		::fclose(fp);
+		TGA_Write_RGBA(file, width, height, (envType::UInt32**)(&buffer));
 
 		delete [] buffer;
 	}catch(...)

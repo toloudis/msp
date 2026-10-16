@@ -20,13 +20,5 @@
 #if ENV_WINDOWS
 	#include "InputDI/in/private/inDeviceMgrPACWin.hpp"
 #else
-	#if ENV_OS == ENV_PS2OS
-		#include "InputDI/in/private/inDeviceMgrPACPS2.hpp"
-	#else
-		#if ENV_OS == ENV_XBOXOS
-			#include "InputDI/in/private/inDeviceMgrPACXbox.hpp"
-		#else
-			#error inDeviceMgrPAC not defined for this platform
-		#endif
-	#endif
+	#error inDeviceMgrPAC not defined for this platform
 #endif

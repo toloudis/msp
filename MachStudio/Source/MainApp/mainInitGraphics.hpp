@@ -12,9 +12,15 @@
 #endif
 #define MAIN_INITGRAPHICS_HPP
 
+#ifdef MSP_GUI_QT
+#ifndef TQT_WIDGETS_HPP
+#include "ToolUIQt/tqt/tqtWidgets.hpp"
+#endif
+#else
 #ifndef TWX_WIDGETS_HPP
 #include "ToolUIWx/twx/twxWidgets.hpp"
 #endif 
+#endif
 
 
 //============================================================================
@@ -23,6 +29,7 @@
 class g2dSystem;
 class mnmApp;
 class wxMainForm;
+class qtMainForm;
 
 
 //============================================================================
@@ -35,6 +42,8 @@ public:
 	//--------------------------------------------------------------------
 #ifdef USE_WXWIDGETS
 	mainInitGraphics(wxMainForm *i_pMainFrame);
+#elif defined(USE_QT)
+	mainInitGraphics(qtMainForm *i_pMainFrame);
 #else // USE_WXWIDGETS
 	mainInitGraphics(int i_AppWidth = 800,
 					 int i_AppHeight = 600,

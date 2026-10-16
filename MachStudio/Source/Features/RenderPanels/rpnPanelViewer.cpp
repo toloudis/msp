@@ -249,7 +249,7 @@ void rpnPanelViewer::CreateTextLabel(const fsLocator &i_FontPath)
 	DBG_LOG( "RenderPanel, loading font file " << filename.c_str() );*/
 
 	m_pTextLabel = scrCreator::MakeText( i_FontPath, this->GetWindow(), 320, 256 );
-	m_pTextLabel->SetForegroundColor( maFloatRGBA(1,1,1,0) );
+	m_pTextLabel->SetForegroundColor( maFloatRGBA(1,1,1,1) );	// opaque white, as when the panel loses focus
 	m_pTextLabel->SetBackgroundColor( maFloatRGBA(0,0,0,1) );
 	m_pTextLabel->SetPosition( maPoint3d( 10, 100, 0 ) );
 	m_pTextLabel->SetCentered( true );

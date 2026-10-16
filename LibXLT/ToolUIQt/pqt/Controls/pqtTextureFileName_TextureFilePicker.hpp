@@ -22,12 +22,12 @@
 #include "Core/prty/prtyTextureFileChooserUIInfo.hpp"
 #endif
 
+#ifdef USE_QT
 
 //===================================================================================
 //===================================================================================
 class pqtTextureFileName_TextureFilePicker_Converter 
 {
-#ifdef QT_FINISH_PORT
 public:
 	//----------------------------------------------------------------------------
 	// Get list of string choices for choice box
@@ -45,10 +45,10 @@ public:
 	// Get value from control
 	//----------------------------------------------------------------------------
 	static fsLocator GetValueFromControl(tqcTextureFilePicker* i_pActualControl);
-#endif // USE_QT
 };
 
 //============================================================================
 //============================================================================
 typedef pqtTemplate_TextureFilePicker<prtyTextureFileName, fsLocator, pqtTextureFileName_TextureFilePicker_Converter> pqtTextureFileName_TextureFilePicker;
 
+#endif // USE_QT

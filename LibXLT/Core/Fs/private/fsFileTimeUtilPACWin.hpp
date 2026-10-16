@@ -12,6 +12,7 @@
 #endif
 #define FS_FILETIMEUTILPACWIN_HPP
 
+#include <ctime>
 #include <string>
 
 class itString;
@@ -39,6 +40,13 @@ namespace fsFileTimeUtilPAC
 	//	represents the file's last modified time
 	//========================================================================
 	double GetLastModifiedTime(const fsLocator& i_Locator);
+
+	//========================================================================
+	//	GetLastModifiedTimeT returns the file's last modified time as a
+	//	time_t, or -1 if the file can't be read.  Unlike GetLastModifiedTime
+	//	it doesn't throw if the file doesn't exist.
+	//========================================================================
+	time_t GetLastModifiedTimeT(const fsLocator& i_Locator);
 
 	//========================================================================
 	//	GetCreationString returns the in an itstring of the form 

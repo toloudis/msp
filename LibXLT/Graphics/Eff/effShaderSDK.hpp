@@ -16,9 +16,12 @@
 #endif 
 
 
+#ifndef ENV_TYPE_HPP
+#include "Core/env/envType.hpp"
+#endif
+
 #include <string>
 #include <vector>
-#include <windows.h>
 
 
 //============================================================================
@@ -42,7 +45,7 @@ public:
 	// GetData() - returns pointer to internal data. 
 	//	Ownership remains with this class.
 	//------------------------------------------------------------------------
-	virtual void GetData(BYTE ** o_CompiledShader, 
+	virtual void GetData(envType::UInt8 ** o_CompiledShader, 
 						 int * o_CompiledShaderSize) = 0;
 };
 

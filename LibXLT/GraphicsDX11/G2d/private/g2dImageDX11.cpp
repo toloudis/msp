@@ -9,6 +9,7 @@
 
 #include "Core/dbg/dbgMsg.hpp"
 #include "Core/ma/maFloatRGBA.hpp"
+#include "Core/ma/maIntRect.hpp"
 #include "Core/ma/maSampling.hpp"
 #include "Core/ma/maVector3d.hpp"
 #include "Graphics/g2d/g2dExceptionX.hpp"
@@ -21,6 +22,21 @@
 
 namespace
 {
+	//------------------------------------------------------------------------
+	// Convert the portable rectangle to the Windows one the surface
+	// utilities take.  Returns NULL if there is no rectangle.
+	//------------------------------------------------------------------------
+	RECT* to_win_rect(const maIntRect* i_pRect, RECT& o_Rect)
+	{
+		if (!i_pRect)
+			return NULL;
+		o_Rect.left = i_pRect->GetLeft();
+		o_Rect.top = i_pRect->GetUpper();
+		o_Rect.right = i_pRect->GetRight();
+		o_Rect.bottom = i_pRect->GetLower();
+		return &o_Rect;
+	}
+
 	inline DWORD make_mask(int i_FirstBit, int i_BitCount)
 	{
 		DWORD ret_val;
@@ -497,10 +513,11 @@ void g2dImageDX11::GetPixels(envType::UInt8** o_pBuffer,
 							int* o_bpp,
 							int i_sampling /*= 1*/,
 							bool i_bGreyscale /*= false*/,
-							RECT* i_pRect /*= NULL*/)
+							const maIntRect* i_pRect /*= NULL*/)
 {
+	RECT rect;
 	g2dDX11SurfaceUtil::GetSurfacePixels(m_pSurface, o_pBuffer, 
-		o_bufSize, o_width, o_height, o_bpp, i_sampling, i_bGreyscale, i_pRect);
+		o_bufSize, o_width, o_height, o_bpp, i_sampling, i_bGreyscale, to_win_rect(i_pRect, rect));
 }
 void g2dImageDX11::GetPixelsTGA(envType::UInt8 **o_pBuffer,
 	int *o_bufSize,
@@ -509,10 +526,11 @@ void g2dImageDX11::GetPixelsTGA(envType::UInt8 **o_pBuffer,
 	int *o_bpp,
 	int	i_Sampling /*= 1*/,
 	const std::string& i_CompressionCode /*= std::string("None")*/,
-	const RECT* i_pRect /*= NULL*/)
+	const maIntRect* i_pRect /*= NULL*/)
 {
+	RECT rect;
 	g2dDX11SurfaceUtil::GetSurfacePixelsTGA(m_pSurface, o_pBuffer, 
-		o_bufSize, o_width, o_height, o_bpp, i_Sampling, i_CompressionCode, i_pRect);
+		o_bufSize, o_width, o_height, o_bpp, i_Sampling, i_CompressionCode, to_win_rect(i_pRect, rect));
 }
 
 //----------------------------------------------------------------------------
@@ -580,122 +598,6 @@ void g2dImageDX11::GetPixelColor(int i_X,
 								envType::Float32 &o_Alpha)
 {
 	g2dDX11SurfaceUtil::GetPixelColor(m_pSurface, i_X, i_Y, o_Red, o_Green, o_Blue, o_Alpha);
-}
-
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-void fill_bmp_header(BITMAPINFOHEADER &i_Header, int i_Width, int i_Height,
-					  int i_DestBitsPerPixel, int i_DestImageSize)
-{
-	//--------------------------------------------------------------//
-	// BitmapInfoHeader
-	//
-	i_Header.biSize				= sizeof( BITMAPINFOHEADER );
-	i_Header.biWidth			= i_Width;
-	i_Header.biHeight			= i_Height;
-	i_Header.biPlanes			= 1;
-	i_Header.biBitCount			= (unsigned short)i_DestBitsPerPixel;
-	i_Header.biCompression		= BI_RGB;
-	i_Header.biSizeImage		= i_DestImageSize;
-	i_Header.biXPelsPerMeter	= i_Width;
-	i_Header.biYPelsPerMeter	= i_Height;
-	i_Header.biClrUsed			= 0;
-	i_Header.biClrImportant		= 0;
-}
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-void get_bitmap_info(	BITMAPINFO &i_Info,
-						g2dD3D11TexturePtr i_pSurface,
-						bool	i_bGreyscale /*= false*/,
-						int		i_Sampling /*= 1*/,
-						RECT*	i_pRect /*= NULL*/ )
-{
-	ZeroMemory(&i_Info,sizeof(i_Info));
-
-	BITMAPINFOHEADER &bih = i_Info.bmiHeader;
-
-	D3D11_TEXTURE2D_DESC SDesc;
-	i_pSurface->GetDesc( &SDesc );
-
-	//--------------------------------------------------------------//
-	// Get width and height from rect or surface
-	//
-	int Width	= (i_pRect) ? (i_pRect->right - i_pRect->left) : SDesc.Width;
-	int Height	= (i_pRect) ? (i_pRect->bottom - i_pRect->top) : SDesc.Height;
-
-	if (i_Sampling > 1)
-	{
-		Width /= i_Sampling;
-		Height /= i_Sampling;
-	}
-
-	if (i_bGreyscale)
-	{
-		//--------------------------------------------------------------//
-		// 8-bit format
-		//
-		int DestBitsPerPixel = 8;
-		//int PaletteSize = 256;
-		int DestImageSize	= Width * Height;
-
-		fill_bmp_header(bih, Width, Height,
-					DestBitsPerPixel,DestImageSize);
-	}
-	else
-	{
-		//--------------------------------------------------------------//
-		// 24-bit format
-		//
-		int DestBitsPerPixel = 24;
-		//int PaletteSize = 0;
-		int DestImageSize	= 3 * Width * Height;
-
-		fill_bmp_header(bih, Width, Height,
-					DestBitsPerPixel,DestImageSize);
-	}
-}
-
-//--------------------------------------------------------------------------------
-//	CaptureHBMP writes screen data into HBITMAP
-//--------------------------------------------------------------------------------
-HBITMAP g2dImageDX11::GetHBMP(const int i_Sampling )
-{
-	bool bGreyScale = false;
-	RECT* pRect = NULL;
-
-	HBITMAP hbm = NULL;
-
-	// Start bitmap info struct
-	BITMAPINFO bi;
-	get_bitmap_info(bi, m_pSurface, bGreyScale, i_Sampling, pRect);
-
-	int wid=0, ht=0, bpp=0, bufSize=0;
-	envType::UInt8* pBuffer = NULL;
-	g2dDX11SurfaceUtil::GetSurfacePixels(m_pSurface,
-		&pBuffer, &bufSize, &wid, &ht, &bpp, 
-		i_Sampling, bGreyScale, pRect);
-
-	if (pBuffer)
-	{
-		void* bits = NULL;
-		HDC hdc = ::CreateCompatibleDC(NULL);
-		hbm = ::CreateDIBSection(hdc,( BITMAPINFO*)&bi, DIB_RGB_COLORS, &bits, NULL, NULL);
-		if (hbm == 0)
-		{
-			DWORD error = ::GetLastError();
-			
-			DBG_ASSERT( hbm != NULL, "Failed to create Bitmap from surface (error code = " << error << " [" << ((error == ERROR_INVALID_PARAMETER) ? "invalid parameter":".") << "])" );
-		}
-
-		//l_FrameSize = BufferWidth / 1000000.0f;	// convert bytes to megabytes
-		//DBG_LOG2( "    size(%d)  framesize(%6.3f)", bi.bmiHeader.biSize, l_FrameSize );
-
-		::SetDIBits(hdc, hbm, 0, ht, pBuffer, &bi, DIB_RGB_COLORS);
-
-		delete [] pBuffer;
-		::DeleteDC(hdc);
-	}
-	return hbm;
 }
 
 //----------------------------------------------------------------------------

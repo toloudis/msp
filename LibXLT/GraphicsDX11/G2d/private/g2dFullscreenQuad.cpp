@@ -24,6 +24,92 @@ namespace
 	ID3D11InputLayout*          g_pQuadLayout = NULL;
 	ID3D11VertexShader*         g_pQuadVS = NULL;
 
+	// Stuff used for drawing a texture with the quad
+	ID3D11PixelShader*          g_pTexturedQuadPS = NULL;
+	ID3D11SamplerState*         g_pLinearClampSampler = NULL;
+	ID3D11RasterizerState*      g_pNoCullRasterizerState = NULL;
+	bool                        g_bTexturedQuadFailed = false;
+
+	//------------------------------------------------------------------------
+	// Create the pixel shader and states used by DrawTexturedQuad11 the
+	// first time they are needed. Returns false if they can't be created.
+	//------------------------------------------------------------------------
+	bool init_textured_quad()
+	{
+		if (g_pTexturedQuadPS && g_pLinearClampSampler && g_pNoCullRasterizerState)
+			return true;
+		if (g_bTexturedQuadFailed)
+			return false;
+
+		const char* texturedQuadPSSource = "\
+Texture2D g_Texture : register(t0);\
+SamplerState g_Sampler : register(s0);\
+\
+float4 TexturedQuadPS( float4 Pos : SV_POSITION, float2 Tex : TEXCOORD0 ) : SV_TARGET\
+{\
+    return float4(g_Texture.Sample(g_Sampler, Tex).rgb, 1.0f);\
+}\
+";
+
+		ID3DBlob* shaderCode = NULL;
+		ID3DBlob* errors = NULL;
+		HRESULT hr = D3DCompile(texturedQuadPSSource, strlen(texturedQuadPSSource), "texturedQuadPS",
+			NULL, NULL, "TexturedQuadPS", "ps_5_0", 
+#ifdef _DEBUG
+			D3D10_SHADER_OPTIMIZATION_LEVEL0 | D3D10_SHADER_DEBUG, 
+#else
+			D3D10_SHADER_OPTIMIZATION_LEVEL0, 
+#endif
+			0, &shaderCode, &errors);
+
+		if (SUCCEEDED(hr))
+		{
+			hr = g2dDX11Global::g_pDevice->CreatePixelShader( shaderCode->GetBufferPointer(),
+				shaderCode->GetBufferSize(), NULL, &g_pTexturedQuadPS );
+		}
+		else if (errors)
+		{
+			const char* err_msg = reinterpret_cast<const char*>(errors->GetBufferPointer());
+			DBG_ERROR(err_msg);
+		}
+		SAFE_RELEASE( shaderCode );
+		SAFE_RELEASE( errors );
+
+		if (SUCCEEDED(hr))
+		{
+			D3D11_SAMPLER_DESC sampDesc;
+			ZeroMemory(&sampDesc, sizeof(sampDesc));
+			sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+			sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+			sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+			sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+			sampDesc.MaxAnisotropy = 1;
+			sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+			sampDesc.MinLOD = 0;
+			sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+			hr = g2dDX11Global::g_pDevice->CreateSamplerState( &sampDesc, &g_pLinearClampSampler );
+		}
+
+		if (SUCCEEDED(hr))
+		{
+			D3D11_RASTERIZER_DESC rsDesc;
+			ZeroMemory(&rsDesc, sizeof(rsDesc));
+			rsDesc.FillMode = D3D11_FILL_SOLID;
+			rsDesc.CullMode = D3D11_CULL_NONE;
+			rsDesc.DepthClipEnable = TRUE;
+			hr = g2dDX11Global::g_pDevice->CreateRasterizerState( &rsDesc, &g_pNoCullRasterizerState );
+		}
+
+		if (FAILED(hr))
+		{
+			g2dDX11Global::PrintDXError(hr);
+			DBG_ERROR("Failed to create textured quad shader or states.");
+			g_bTexturedQuadFailed = true;
+			return false;
+		}
+		return true;
+	}
+
 }; //namespace
 
 void g2dFullscreenQuad::InitFullscreenQuad()
@@ -139,6 +225,10 @@ void g2dFullscreenQuad::CleanUpFullscreenQuad()
 	SAFE_RELEASE( g_pScreenQuadVB );
 	SAFE_RELEASE( g_pQuadLayout );
 	SAFE_RELEASE( g_pQuadVS );
+	SAFE_RELEASE( g_pTexturedQuadPS );
+	SAFE_RELEASE( g_pLinearClampSampler );
+	SAFE_RELEASE( g_pNoCullRasterizerState );
+	g_bTexturedQuadFailed = false;
 }
 /*
 void g2dFullscreenQuad::DrawFullScreenQuad11( ID3D11PixelShader* pPS,
@@ -260,3 +350,28 @@ void g2dFullscreenQuad::DrawFullScreenQuad11( UINT Width, UINT Height,
 	g2dDX11Global::g_pDeviceContext->RSSetViewports( nViewPorts, vpOld );
 }
 
+void g2dFullscreenQuad::DrawTexturedQuad11( ID3D11ShaderResourceView* i_pTexture,
+										   UINT Width, UINT Height,
+										   float offsetPixelsX, float offsetPixelsY )
+{
+	if (!i_pTexture || !g_pQuadVS || !init_textured_quad())
+		return;
+
+	g2dD3D11DeviceContextPtr pContext = g2dDX11Global::g_pDeviceContext;
+
+	pContext->VSSetShader( g_pQuadVS, NULL, 0 );
+	pContext->HSSetShader( NULL, NULL, 0 );
+	pContext->DSSetShader( NULL, NULL, 0 );
+	pContext->GSSetShader( NULL, NULL, 0 );
+	pContext->PSSetShader( g_pTexturedQuadPS, NULL, 0 );
+	pContext->PSSetShaderResources( 0, 1, &i_pTexture );
+	pContext->PSSetSamplers( 0, 1, &g_pLinearClampSampler );
+	pContext->RSSetState( g_pNoCullRasterizerState );
+	pContext->OMSetBlendState( NULL, NULL, 0xFFFFFFFF );
+
+	DrawFullScreenQuad11( Width, Height, offsetPixelsX, offsetPixelsY );
+
+	// unbind the texture so it can be used as a render target again
+	ID3D11ShaderResourceView* pNullSRV = NULL;
+	pContext->PSSetShaderResources( 0, 1, &pNullSRV );
+}

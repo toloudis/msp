@@ -8,6 +8,8 @@
 \****************************************************************************/
 #include "Systems/Billboard/Timeline/billDriverCreator.hpp"
 
+#include "Core/it/itStringUtil.hpp"
+
 #include "Systems/Billboard/Data/billDataParser.hpp"
 #include "Systems/Billboard/Object/billScriptObject.hpp"
 #include "Systems/Billboard/Object/billObjectMgr.hpp"
@@ -209,7 +211,7 @@ tmlnDriver* billDriverCreator::CreateDriverByName( const char* i_DriverName,
 	if (pDriver != NULL)
 		return pDriver;
 
-	if (!::_stricmp(i_DriverName, "Static Orientation"))
+	if (itStringUtil::CompareNoCase(i_DriverName, "Static Orientation") == 0)
 	{
 		tmlnDriverOrientation * pDriver = new tmlnDriverOrientation( bill_obj->ChannelOrientation(), c_BORI );
 		pDriver->SetName("Orientation");

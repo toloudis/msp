@@ -10,7 +10,6 @@
 
 #include "Features/Capture/cptrAccumulationBuffer.hpp"
 #include "Features/Capture/cptrRenderUtil.hpp"
-#include "Features/Capture/cptrWriteUtil.hpp"
 #include "Support/capt/captRenderOutputDataUtil.hpp"
 #include "Support/capt/captStereoUtil.hpp"
 #include "Support/mnm/mnmTimeCodeMgr.hpp"

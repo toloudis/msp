@@ -201,10 +201,10 @@ namespace tma3dCursorMgr
 	}
 
 	//====================================================================
-	// LineIntersection finds closest point between cursor ray and 
+	// LineIntersection finds closest point between cursor ray and
 	//	the given line
 	//====================================================================
-	bool LineIntersection(const maPoint3d &i_LinePoint, 
+	bool LineIntersection(const maPoint3d &i_LinePoint,
 						  const maVector3d &i_LineDir,
 						  maPoint3d& o_PickPos)
 	{
@@ -216,11 +216,11 @@ namespace tma3dCursorMgr
 
 		bool intersect = geoRayIntersection::ProjectLineToLine(	camera_position,
 																ray_dir,
-																i_LinePoint, 
+																i_LinePoint,
 																i_LineDir,
 																ray_t,
 																line_t);
-		
+
 		if( intersect )
 		{
 			DBG_LOG("Line t: " << line_t << " ray_t " << ray_t);

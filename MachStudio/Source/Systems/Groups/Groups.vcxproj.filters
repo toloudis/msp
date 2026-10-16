@@ -16,6 +16,9 @@
     <Filter Include="Object">
       <UniqueIdentifier>{c227414a-9c1f-4a6b-b23b-bc2ba39bee3e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GUI\qtGUI">
+      <UniqueIdentifier>{8786933a-9489-4c68-9199-0d8c73c1b67d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Undo\grupActualOperations.cpp">
@@ -67,6 +70,9 @@
       <Filter>Object</Filter>
     </ClCompile>
     <ClCompile Include="grupSystem.cpp" />
+    <ClCompile Include="GUI\qtGUI\grupGroupObjectsPage.cpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Undo\grupActualOperations.hpp">
@@ -118,5 +124,8 @@
       <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="grupSystem.hpp" />
+    <ClInclude Include="GUI\qtGUI\grupGroupObjectsPage.hpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

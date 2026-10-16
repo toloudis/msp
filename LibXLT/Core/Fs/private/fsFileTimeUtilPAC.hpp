@@ -24,6 +24,7 @@
 	double GetCreationTime(const fsLocator& i_Locator);
 	double GetLastAccessTime(const fsLocator& i_Locator);
 	double GetLastModifiedTime(const fsLocator& i_Locator);
+	time_t GetLastModifiedTimeT(const fsLocator& i_Locator);
 	itString GetCreationString(const fsLocator& i_Locator);
 	itString GetLastAccessString(const fsLocator& i_Locator);
 	itString GetLastModifiedString(const fsLocator& i_Locator);
@@ -37,13 +38,5 @@
 #if ENV_WINDOWS
 	#include "Core/fs/private/fsFileTimeUtilPACWin.hpp"
 #else
-	#if ENV_OS == ENV_PS2OS
-		#include "Core/fs/private/fsFileTimeUtilPACPS2.hpp"
-	#else
-		#if ENV_OS == ENV_XBOXOS
-			#include "Core/fs/private/fsFileTimeUtilPACXbox.hpp"
-		#else
-			#error fsFileTimeUtilPAC not defined for this platform
-		#endif
-	#endif
+	#error fsFileTimeUtilPAC not defined for this platform
 #endif

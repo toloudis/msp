@@ -8,6 +8,8 @@
 \****************************************************************************/
 #include "Systems/Common/GUI/cmmObjectDialogUtil.hpp"
 
+#include "Core/it/itStringUtil.hpp"
+
 #include "Features/Channels/chnlDialogUtil.hpp"
 #include "Features/Prefs/PrefsData.hpp"
 #include "Features/Prefs/PrefsMgr.hpp"
@@ -16,13 +18,25 @@
 #include "Support/tmln/tmlnSelectionUtil.hpp"
 #include "Systems/Common/GUI/cmmAddDriverOperation.hpp"
 #include "Systems/Common/GUI/mGUI/cmmObjectForm.h"
+#ifdef MSP_GUI_QT
+#include "Systems/Common/GUI/qtGUI/cmmObjectDialog.hpp"
+#else
 #include "Systems/Common/GUI/wxGUI/cmmObjectDialog.hpp"
+#endif
 
 #include "Core/prty/prtyName.hpp"
 #include "Core/undo/undoUndoMgr.hpp"
 #include "Tool/sel3d/sel3dMgr.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtPaneMgr.hpp"
+#else
 #include "ToolUIWx/twx/twxPaneMgr.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtSystem.hpp"
+#else
 #include "ToolUIWx/twx/twxSystem.hpp"
+#endif
 
 
 //============================================================================
@@ -48,6 +62,12 @@ namespace cmmObjectDialogUtil
 			DBG_ASSERT(twxSystem::g_pMainForm, "MainForm not yet initialized.");
 			cmmObjectDialog::FormInstance = new cmmObjectDialog(twxSystem::g_pMainForm);
 		}
+#elif defined(USE_QT)
+		if (cmmObjectDialog::FormInstance == NULL)
+		{
+			DBG_ASSERT(tqtSystem::g_pMainForm, "MainForm not yet initialized.");
+			cmmObjectDialog::FormInstance = new cmmObjectDialog(tqtSystem::g_pMainForm);
+		}
 #endif
 	}
 
@@ -56,7 +76,7 @@ namespace cmmObjectDialogUtil
 	void CleanUp()
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		// wxWidgets deletes the dialogs attached to the main form 
 		// so we don't have to do it.
 #endif
@@ -92,6 +112,9 @@ namespace cmmObjectDialogUtil
 #ifdef USE_WXWIDGETS
 		//cmmObjectDialog::FormInstance->Show();
 		twxPaneMgr::Show(cmmObjectDialog::FormInstance);
+#elif defined(USE_QT)
+		//cmmObjectDialog::FormInstance->Show();
+		tqtPaneMgr::Show(cmmObjectDialog::FormInstance);
 #endif
 	}
 
@@ -114,6 +137,11 @@ namespace cmmObjectDialogUtil
 		{
 			cmmObjectDialog::FormInstance->Hide();
 		}
+#elif defined(USE_QT)
+		if (cmmObjectDialog::FormInstance)
+		{
+			tqtPaneMgr::Show(cmmObjectDialog::FormInstance, false);
+		}
 #endif
 	}
 
@@ -123,7 +151,7 @@ namespace cmmObjectDialogUtil
 	void UpdateDialog()
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cmmObjectDialog::FormInstance)
 		{
 			cmmObjectDialog::FormInstance->UpdateDialog();
@@ -138,7 +166,7 @@ namespace cmmObjectDialogUtil
 	void ClearDialog()
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cmmObjectDialog::FormInstance)
 		{
 			cmmObjectDialog::FormInstance->Clear();
@@ -166,7 +194,7 @@ namespace cmmObjectDialogUtil
 				int i;
 				for (i=0; i< driver_names.m_DriverNames.size(); i++)
 				{
-					if (_stricmp(driver_names.m_DriverNames[i].m_Name.c_str(),i_DriverName.c_str()) == 0)
+					if (itStringUtil::CompareNoCase(driver_names.m_DriverNames[i].m_Name, i_DriverName) == 0)
 					{
 						break;
 					}
@@ -203,17 +231,17 @@ namespace cmmObjectDialogUtil
 	}
 
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------
-	void AddTabPage(wxPanel* i_pTabPage, const std::string i_Title, bool i_bSelectTab)
+	void AddTabPage(TabPage* i_pTabPage, const std::string i_Title, bool i_bSelectTab)
 	{
 		if (cmmObjectDialog::FormInstance)
 		{
 			cmmObjectDialog::FormInstance->AddTabPage(i_pTabPage, i_Title, i_bSelectTab);
 		}
 	}
-	void RemoveTabPage(wxPanel* i_pTabPage)
+	void RemoveTabPage(TabPage* i_pTabPage)
 	{
 		if (cmmObjectDialog::FormInstance)
 		{
@@ -224,7 +252,7 @@ namespace cmmObjectDialogUtil
 	//--------------------------------------------------------------------
 	// Returns true if the given tab page is attached.
 	//--------------------------------------------------------------------
-	bool HasTabPage(wxPanel* i_pTabPage)
+	bool HasTabPage(TabPage* i_pTabPage)
 	{
 		if (cmmObjectDialog::FormInstance)
 		{

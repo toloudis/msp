@@ -1,7 +1,7 @@
 /****************************************************************************\
 **	quiCursor.hpp
 **
-**	class to invloke wxCursor
+**	class to invoke the Qt wait cursor
 **	
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved

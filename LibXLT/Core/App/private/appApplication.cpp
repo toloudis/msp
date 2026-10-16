@@ -148,7 +148,25 @@ void* appApplication::CreateSubWindow(int i_Width, int i_Height,
 //--------------------------------------------------------------------
 void appApplication::DestroySubWindow(void* i_Hwnd)
 {
-	appApplicationPAC::DestroySubWindow((HWND)i_Hwnd);
+	appApplicationPAC::DestroySubWindow(i_Hwnd);
+}
+
+//--------------------------------------------------------------------
+//	Make the OS accessibility services let go of the application's
+//	windows.
+//--------------------------------------------------------------------
+void appApplication::ReleaseAccessibilityClients()
+{
+	appApplicationPAC::ReleaseAccessibilityClients();
+}
+
+//--------------------------------------------------------------------
+//	Start the program on the given command line and return without
+//	waiting for it.
+//--------------------------------------------------------------------
+bool appApplication::LaunchProgram(const std::string& i_CommandLine, bool i_ShowWindow)
+{
+	return appApplicationPAC::LaunchProgram(i_CommandLine, i_ShowWindow);
 }
 
 //--------------------------------------------------------------------

@@ -9,6 +9,7 @@
 #include "Graphics/ent/entAnimTemplate.hpp"
 
 #include "Core/env/envSTLHelpers.hpp"
+#include "Core/it/itStringUtil.hpp"
 #include "Graphics/ent/entAnimation.hpp"
 
 #include <algorithm>
@@ -87,7 +88,7 @@ int entAnimTemplate::GetAnimIndex(const char* i_AnimName) const
 {
 	for (int i = 0 ; i < m_Animations.size() ; i++ )
 	{
-		if (_stricmp(m_AnimNames[i].c_str(), i_AnimName) == 0)
+		if (itStringUtil::CompareNoCase(m_AnimNames[i], i_AnimName) == 0)
 		{
 			return i;
 		}

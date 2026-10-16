@@ -8,6 +8,8 @@
 \****************************************************************************/
 #include "Support/mtrl/mtrlDriverCreator.hpp"
 
+#include "Core/it/itStringUtil.hpp"
+
 #include "Support/mtrl/mtrlScriptObject.hpp"
 #include "Support/mtrl/GUI/mtrlShaderObject.hpp"
 
@@ -200,7 +202,7 @@ tmlnDriver* mtrlDriverCreator::CreateDriverByName( const char* i_DriverName,
 	mtrlScriptObject* mtrl_obj = dynamic_cast<mtrlScriptObject*>(i_pObject);
 	if (!mtrl_obj) return NULL;
 
-	if (!::_strnicmp(i_DriverName, "Material ", ::strlen("Material ")))
+	if (itStringUtil::StartsWithNoCase(i_DriverName, "Material "))
 	{
 		std::string material_name = i_DriverName + ::strlen("Material ");
 		int index = mtrl_obj->GetIndexForName(material_name);

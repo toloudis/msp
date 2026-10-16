@@ -2,9 +2,8 @@
 
 #include "Core/it/itString.hpp"
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <string.h>
+#include <ostream>
 
 inline void writeRGBA (envType::UInt32 *p, envType::UInt8 r, envType::UInt8 g, envType::UInt8 b, envType::UInt8 a)
 {
@@ -126,9 +125,11 @@ int TGA_Read(const itString& filePath, FILE *fp, int *width, int *height, envTyp
     // find out how much data must be read from the file 
     // (this is NOT simply width*height*4, due to compression) 
 
-	struct ::_stat64i32 ss;
-	::_wstat(filePath.GetString(), &ss);
-	int datasize = ss.st_size - sizeof(TgaHeader) - header.idLength -
+	long data_start = ftell(fp);
+	fseek(fp, 0, SEEK_END);
+	long file_size = ftell(fp);
+	fseek(fp, data_start, SEEK_SET);
+	int datasize = file_size - sizeof(TgaHeader) - header.idLength -
 		(hasFooter ? TGA_FOOTER_LEN : 0);
 	
 	unsigned char* buf = new unsigned char[datasize]; 
@@ -342,7 +343,7 @@ int TGA_Read(const itString& filePath, FILE *fp, int *width, int *height, envTyp
 	  return 1;
 }
 
-void TGA_Write_RGBA(FILE *fp, int width, int height, envType::UInt32** data)
+void TGA_Write_RGBA(std::ostream &os, int width, int height, envType::UInt32** data)
 {
 	TgaHeader tgah;
 	memset(&tgah,0,sizeof(TgaHeader));
@@ -365,7 +366,7 @@ void TGA_Write_RGBA(FILE *fp, int width, int height, envType::UInt32** data)
 	tgah.heightHi=(height & 0xFF00) / 256;
 	tgah.bpp=(unsigned char)32;
 	tgah.descriptor=0;
-	fwrite(&tgah,1,sizeof(TgaHeader),fp);
+	os.write((const char*)&tgah, sizeof(TgaHeader));
 
 	long slsize = width * sizeof(envType::UInt32);
 	unsigned char *scanline = new unsigned char[slsize];
@@ -388,7 +389,7 @@ void TGA_Write_RGBA(FILE *fp, int width, int height, envType::UInt32** data)
 			scanline[x*4 + 2] = r;
 			scanline[x*4 + 3] = a;
 		}
-		fwrite(scanline, 1, slsize, fp);
+		os.write((const char*)scanline, slsize);
 	}
 
 	delete [] scanline;

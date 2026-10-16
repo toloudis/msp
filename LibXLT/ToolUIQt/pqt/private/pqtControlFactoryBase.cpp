@@ -12,6 +12,7 @@
 #include "ToolUIQt/pqt/Controls/pqtEnum_ComboBox.hpp"
 #include "ToolUIQt/pqt/Controls/pqtFileName_ComboBox.hpp"
 #include "ToolUIQt/pqt/Controls/pqtFileName_TextBox.hpp"
+#include "ToolUIQt/pqt/Controls/pqtFilePath_ComboBox.hpp"
 #include "ToolUIQt/pqt/Controls/pqtFloat_ComboBox.hpp"
 #include "ToolUIQt/pqt/Controls/pqtInt32_ComboBox.hpp"
 #include "ToolUIQt/pqt/Controls/pqtListChecked_CheckListBox.hpp"
@@ -23,8 +24,8 @@
 #include "ToolUIQt/pqt/Controls/pqtTrigger_Button.hpp"
 
 
-
 #ifdef USE_QT
+
 //----------------------------------------------------------------------------
 //	Check for Control + Property pairing
 //----------------------------------------------------------------------------
@@ -37,22 +38,21 @@ pqtControl* pqtControlFactoryBase::CreateControl(shared_ptr<prtyPropertyUIInfo>&
 
 	// only need first one (since the rest should be the same at this point)
 	const std::string& property_type	= i_pUIInfo->GetProperty(0)->GetType();
-
-	if ( strcmp(control_name.c_str(),"CheckBox") == 0)
-	{
-		if ( strcmp(property_type.c_str(),"Boolean") == 0)
-		{
-			return new pqtBoolean_CheckBox(i_pUIInfo, i_pParent);
-		}
-	}
-	else if ( strcmp(control_name.c_str(),"Button") == 0)
+	
+	if ( strcmp(control_name.c_str(),"Button") == 0)
 	{
 		if ( strcmp(property_type.c_str(),"Trigger") == 0)
 		{
 			return new pqtTrigger_Button(i_pUIInfo, i_pParent);
 		}
 	}
-#ifdef QT_FINISH_PORT
+	else if ( strcmp(control_name.c_str(),"CheckBox") == 0)
+	{
+		if ( strcmp(property_type.c_str(),"Boolean") == 0)
+		{
+			return new pqtBoolean_CheckBox(i_pUIInfo, i_pParent);
+		}
+	}
 	else if ( strcmp(control_name.c_str(),"ComboBox") == 0)
 	{
 		if ( strcmp(property_type.c_str(),"Enum") == 0)
@@ -62,6 +62,10 @@ pqtControl* pqtControlFactoryBase::CreateControl(shared_ptr<prtyPropertyUIInfo>&
 		else if ( strcmp(property_type.c_str(),"FileName") == 0)
 		{
 			return new pqtFileName_ComboBox(i_pUIInfo, i_pParent);
+		}
+		else if ( strcmp(property_type.c_str(),"File Path") == 0)
+		{
+			return new pqtFilePath_ComboBox(i_pUIInfo, i_pParent);
 		}
 		else if ( strcmp(property_type.c_str(),"Float") == 0)
 		{
@@ -92,8 +96,6 @@ pqtControl* pqtControlFactoryBase::CreateControl(shared_ptr<prtyPropertyUIInfo>&
 			return new pqtListChecked_CheckListBox(i_pUIInfo, i_pParent);
 		}
 	}
-#endif
-#ifdef QT_FINISH_PORT
 	else if ( strcmp(control_name.c_str(),"TextBox") == 0)
 	{
 		if ( strcmp(property_type.c_str(),"FileName") == 0)
@@ -109,7 +111,6 @@ pqtControl* pqtControlFactoryBase::CreateControl(shared_ptr<prtyPropertyUIInfo>&
 			return new pqtText_TextBox(i_pUIInfo, i_pParent);
 		}
 	}
-#endif
 
 	return NULL;
 }

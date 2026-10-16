@@ -29,7 +29,11 @@
 #include "Features/ObjectManip/mnpPackage.hpp"
 #include "Features/Playback/plbkPackage.hpp"
 #include "Features/Prefs/prefsCommands.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/Prefs/qtGUI/prefsLayoutMgr.hpp"
+#else
 #include "Features/Prefs/wxGUI/prefsLayoutMgr.hpp"
+#endif
 #include "Features/Prefs/PrefsMgr.hpp"
 //#include "Features/Prefs/prefsQuickMgr.hpp"
 #include "Features/ProjectSetup/ProjectSetupMgr.hpp"
@@ -81,7 +85,7 @@ void FeaturesLayer::Init(g2dSystem *i_pSystem)
 		//LoadPrefsMgr::Init();
 		pytFeature::Init();
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		// Read in layout configurations
 		prefsLayoutMgr::ReadLayouts();
 #endif

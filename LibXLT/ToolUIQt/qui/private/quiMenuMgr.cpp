@@ -14,7 +14,7 @@
 
 namespace
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	tqtMenuMgr *l_pMenuMgr = NULL;
 #endif
 }	
@@ -27,7 +27,7 @@ namespace
 //---------------------------------------------------------------------------
 quiMenuMgr::quiMenuMgr()
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	l_pMenuMgr = new tqtMenuMgr();
 #endif
 }
@@ -36,7 +36,7 @@ quiMenuMgr::quiMenuMgr()
 //---------------------------------------------------------------------------
 quiMenuMgr::~quiMenuMgr()
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	delete l_pMenuMgr;
 	l_pMenuMgr = NULL;
 #endif
@@ -49,7 +49,7 @@ void quiMenuMgr::AttachEventToMenuObjects( int i_ObjectID,
 										  ControlCallback i_pFunction, 
 										  ControlCallback i_pUpdate )
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	l_pMenuMgr->AttachEventToMenuObjects( i_ObjectID, i_pFunction, i_pUpdate );
 #endif
 }
@@ -62,7 +62,7 @@ void quiMenuMgr::AttachEventToMenuObjects( int i_ObjectID,
 void quiMenuMgr::AddMenu( const char * i_ParentName,
 			  const char * i_ChildName )
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	l_pMenuMgr->AddMenu( i_ParentName, i_ChildName );
 #endif // USE_QT
 }
@@ -79,14 +79,14 @@ int quiMenuMgr::AddMenuItem( const char * i_ParentName,
 							  const char * i_ToolbarButton_ImageFilename )
 {
 	
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	const bool bCheckable = false;
 	return l_pMenuMgr->AddMenuItem( i_ParentName, 
 									i_ChildName, 
 									i_ToolbarName, 
 									i_ToolbarButton_ImageFilename, 
 									bCheckable );
-#else // USE_WXWIDGETS
+#else // USE_QT
 	return -1;
 #endif // USE_QT
 
@@ -104,10 +104,10 @@ int quiMenuMgr::AddCheckableMenuItem( const char * i_ParentName,
 									  const char * i_ToolbarButton_ImageFilename )
 {
 	
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	const bool bCheckable = true;
 	return l_pMenuMgr->AddMenuItem( i_ParentName, i_ChildName, i_ToolbarName, i_ToolbarButton_ImageFilename, bCheckable );
-#else // USE_WXWIDGETS
+#else // USE_QT
 	return -1;
 #endif // USE_QT
 
@@ -120,7 +120,7 @@ int quiMenuMgr::AddCheckableMenuItem( const char * i_ParentName,
 void quiMenuMgr::RemoveMenuItem( const char * i_ParentName,
 								 const char * i_ChildName  )
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	l_pMenuMgr->RemoveMenuItem( i_ParentName, i_ChildName );
 #endif
 }
@@ -132,7 +132,7 @@ void quiMenuMgr::RemoveMenuItem( const char * i_ParentName,
 bool quiMenuMgr::FindMenuItem( const char * i_ParentName,
 							   const char * i_ChildName  )
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	return l_pMenuMgr->FindMenuItem( i_ParentName, i_ChildName );
 #endif
 	return false;
@@ -144,7 +144,7 @@ bool quiMenuMgr::FindMenuItem( const char * i_ParentName,
 //---------------------------------------------------------------------------
 void quiMenuMgr::AddSeparator( const char * i_MenuName )
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	l_pMenuMgr->AddSeparator( i_MenuName );
 #endif
 }
@@ -157,7 +157,7 @@ void quiMenuMgr::EnableMenuItem( const char * i_ParentName,
 								 const char * i_ChildName,
 								 bool i_bEnable )
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	l_pMenuMgr->EnableMenuItem( i_ParentName, i_ChildName, i_bEnable );
 #endif
 }
@@ -169,7 +169,7 @@ void quiMenuMgr::EnableMenuItem( const char * i_ParentName,
 int quiMenuMgr::GetMenuItemID( const char * i_ParentName,
 							   const char * i_ChildName )
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	return l_pMenuMgr->GetMenuItemID(i_ParentName, i_ChildName);
 #else
 	return 0;
@@ -182,7 +182,7 @@ int quiMenuMgr::GetMenuItemID( const char * i_ParentName,
 //---------------------------------------------------------------------------
 std::string quiMenuMgr::GetMenuItemName(int i_ObjectID)
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	return l_pMenuMgr->GetMenuItemName(i_ObjectID);
 #else
 	return std::string("");
@@ -193,7 +193,7 @@ std::string quiMenuMgr::GetMenuItemName(int i_ObjectID)
 //---------------------------------------------------------------------------
 void quiMenuMgr::SetMenuItemShortcut( int i_ObjectID, const char * i_ShortcutString )
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	l_pMenuMgr->SetMenuItemShortcut(i_ObjectID, i_ShortcutString);
 #endif
 }
@@ -210,7 +210,7 @@ bool quiMenuMgr::IsValidShortcut( const char * i_ShortcutString )
 //---------------------------------------------------------------------------
 void quiMenuMgr::SetMenuItemHelpString( int i_ObjectID, const char * i_HelpString )
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	l_pMenuMgr->SetMenuItemHelpString( i_ObjectID, i_HelpString );
 #endif
 }
@@ -230,7 +230,7 @@ void quiMenuMgr::SetMenuItemHelpString( int i_ObjectID, const char * i_HelpStrin
 //---------------------------------------------------------------------------
 bool quiMenuMgr::MenuObjectsExist( int i_ObjectID )
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	return l_pMenuMgr->MenuObjectsExist( i_ObjectID );
 #else
 	return false;
@@ -242,7 +242,7 @@ bool quiMenuMgr::MenuObjectsExist( int i_ObjectID )
 //---------------------------------------------------------------------------
 void quiMenuMgr::MenuObjectsEnable( int i_ObjectID, bool i_bEnabled )
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	l_pMenuMgr->MenuObjectsEnable( i_ObjectID, i_bEnabled );
 #endif
 }
@@ -252,7 +252,7 @@ void quiMenuMgr::MenuObjectsEnable( int i_ObjectID, bool i_bEnabled )
 //---------------------------------------------------------------------------
 void quiMenuMgr::MenuObjectsCheck( int i_ObjectID, bool i_bCheckd )
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	l_pMenuMgr->MenuObjectsCheck( i_ObjectID, i_bCheckd );
 #endif
 }
@@ -262,7 +262,7 @@ void quiMenuMgr::MenuObjectsCheck( int i_ObjectID, bool i_bCheckd )
 //---------------------------------------------------------------------------
 void quiMenuMgr::SetIconDirectory( std::vector<fsLocator>& i_IconPathList )
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	tqtToolbarMgr::SetIconDirectory(i_IconPathList);
 #endif
 }

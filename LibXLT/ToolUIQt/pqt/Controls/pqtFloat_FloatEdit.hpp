@@ -22,12 +22,12 @@
 #include "Core/prty/prtyFloat.hpp"
 #endif
 
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
 class pqtFloat_FloatEdit_Converter : public pqtFloatConverter
 {
-#ifdef USE_QT
 public:
 	//----------------------------------------------------------------------------
 	// Set value into control
@@ -39,10 +39,11 @@ public:
 	// Get value from control
 	//----------------------------------------------------------------------------
 	static float GetValueFromControl(tqcFloatEdit* i_pActualControl);
-#endif // USE_QT
+
 };
 
 //============================================================================
 //============================================================================
 typedef pqtTemplate_FloatEdit<prtyFloat, float, pqtFloat_FloatEdit_Converter> pqtFloat_FloatEdit;
 
+#endif // USE_QT

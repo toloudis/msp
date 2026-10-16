@@ -775,7 +775,7 @@ bool mtrMaterialSaver::Write( const fsLocator &i_NewLocator,
 	std::string old_fname, new_fname;
 	fsFileUtil::LocatorToANSIFilename(i_OldLocator, old_fname);
 	fsFileUtil::LocatorToANSIFilename(i_NewLocator, new_fname);
-	bool bSame = !::_stricmp(old_fname.c_str(), new_fname.c_str());
+	bool bSame = (itStringUtil::CompareNoCase(old_fname, new_fname) == 0);
 
 	fsLocator input_locator = i_OldLocator;
 	if (bSame)

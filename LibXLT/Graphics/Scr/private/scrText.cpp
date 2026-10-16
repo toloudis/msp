@@ -68,6 +68,17 @@ void scrText::SetSize(int i_Width, int i_Height)
 }
 
 //--------------------------------------------------------------------
+//	SetPosition sets the current screen coordinates. scrImage's version
+//	would build the transform without the centering offset.
+//--------------------------------------------------------------------
+void scrText::SetPosition(const maPoint3d& i_Position)
+{
+	scrPrimitive::SetPosition(i_Position);
+
+	update_transform();
+}
+
+//--------------------------------------------------------------------
 //	GetText returns the text string to be displayed
 //--------------------------------------------------------------------
 const itString& scrText::GetText() const
@@ -438,5 +449,7 @@ void scrText::center_text()
 
 	int width, height;
 	GetSize(width, height);
-	m_CenterOffsetX = (static_cast<float>(m_Text.GetLength()) / 2.0f) * width;
+	// update_transform scales each character to (2 * width + 1) / 2
+	// window units wide
+	m_CenterOffsetX = (static_cast<float>(m_Text.GetLength()) / 2.0f) * (width + 0.5f);
 }

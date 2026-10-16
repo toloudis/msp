@@ -237,32 +237,12 @@ snSoundJobMP3PAC::Start( float i_SimulationTime )
 	// null-terminating not needed anymore
 	//UnicodeFilename += 0;
 
-	if ( fsFileUtilPAC::MustUseANSIFilenames() )
+	// Make sure that this file exists
+	//
+	DWORD dwAttr = GetFileAttributesW(UnicodeFilename.GetString());
+	if (dwAttr == (DWORD) -1)
 	{
-		// Make sure that this file exists
-		//
-		std::string filename;
-		fsFileUtilPAC::LocatorToANSIFilename( ExpandedLoc, filename );
-		if ( filename.size() == 0 )
-		{
-			return;
-		}
-
-		DWORD dwAttr = ::GetFileAttributesA(filename.c_str());
-		if (dwAttr == (DWORD) -1)
-		{
-			return;
-		} 
-	}
-	else
-	{
-		// Make sure that this file exists
-		//
-		DWORD dwAttr = GetFileAttributesW(UnicodeFilename.GetString());
-		if (dwAttr == (DWORD) -1)
-		{
-			return;
-		}
+		return;
 	}
 
 	// OPTIMIZATION OPPORTUNITY

@@ -20,13 +20,5 @@
 #if ENV_WINDOWS
 	#include "InputDI/in/private/inGamepadPACWin.hpp"
 #else
-	#if ENV_OS == ENV_PS2OS
-		#include "InputDI/in/private/inGamepadPACPS2.hpp"
-	#else
-		#if ENV_OS == ENV_XBOXOS
-			#include "InputDI/in/private/inGamepadPACXbox.hpp"
-		#else
-			#error inGamepadPAC not defined for this platform
-		#endif
-	#endif
+	#error inGamepadPAC not defined for this platform
 #endif

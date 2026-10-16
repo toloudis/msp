@@ -12,14 +12,14 @@
 #include "Core/Dbg/private/dbgLogPAC.hpp"
 #include "Core/Env/envSTLHelpers.hpp"
 #include "Core/Env/envThreadGroup.hpp"
+#include "Core/Env/private/envSystemDataPAC.hpp"
 #include "Core/fs/fsLocator.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/gf/gfPaths.hpp"
 
 #include <stdarg.h>
 #include <stdio.h>
-#include <time.h>
-#include <windows.h>
+#include <ctime>
 #include <fstream>
 #include <iostream>
 #include <ostream>
@@ -54,12 +54,10 @@ namespace dbgMsg
 		//--------------------------------------------------------------------
 		std::wstring getDefaultStreamName()
 		{
-			TCHAR exepath[MAX_PATH];
-			GetModuleFileName(0, exepath, MAX_PATH);
-			std::wstring fileString(exepath);
+			std::wstring fileString = envSystemDataPAC::GetExecutablePath();
 		
 			//get just the exe file
-			int fileIndex = fileString.rfind(L"\\");
+			int fileIndex = fileString.find_last_of(L"/\\");
 			std::wstring exeFile = fileString.substr(fileIndex + 1);
 
 			//extract the .exe to get only the name
@@ -132,6 +130,17 @@ namespace dbgMsg
 		}
 
 		//--------------------------------------------------------------------
+		// Format the current local time with a strftime format string
+		//--------------------------------------------------------------------
+		std::string CurrentTimeString(const char* i_Format)
+		{
+			std::time_t now = std::time(NULL);
+			char buffer[64];
+			std::strftime(buffer, sizeof(buffer), i_Format, std::localtime(&now));
+			return buffer;
+		}
+
+		//--------------------------------------------------------------------
 		// Remove a specified stream from our stream list
 		//--------------------------------------------------------------------
 		void RemoveStreamByName( std::wstring& i_StreamName )
@@ -185,13 +194,8 @@ namespace dbgMsg
 		char* sep = " ";
 		if (stream_data->m_WriteTime_Date)
 		{
-			//	date + time wide because in some languages things like "AM" and "PM" are multi-byte
-			wchar_t date_string[64];
-			_wstrdate_s(date_string);
-			*(cur_os) << envString::WideCharToUTF8(date_string) << sep;
-			wchar_t time_string[64];
-			_wstrtime_s(time_string);
-			*(cur_os) << envString::WideCharToUTF8(time_string) << sep;
+			*(cur_os) << CurrentTimeString("%m/%d/%y") << sep;
+			*(cur_os) << CurrentTimeString("%H:%M:%S") << sep;
 			doMsgColon = true;
 		}
 
@@ -237,9 +241,7 @@ namespace dbgMsg
 		//first write the date
 		if (stream_data->m_WriteTime_Date)
 		{
-			wchar_t date_string[64];
-			_wstrdate_s(date_string);
-			*(cur_os) << date_string;
+			*(cur_os) << CurrentTimeString("%m/%d/%y");
 		}
 		//add seperator after every entry to still have an empty cell if 
 		//that information wasn't written
@@ -248,9 +250,7 @@ namespace dbgMsg
 		//now write the time
 		if (stream_data->m_WriteTime_Date)
 		{
-			wchar_t time_string[64];
-			_wstrtime_s(time_string);
-			*(cur_os) << time_string;
+			*(cur_os) << CurrentTimeString("%H:%M:%S");
 		}
 		*(cur_os) << sep;
 

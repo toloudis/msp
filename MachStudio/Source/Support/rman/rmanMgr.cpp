@@ -7,6 +7,7 @@
 **	Copyright(C) 2006 - All Rights Reserved
 \****************************************************************************/
 #include "Support/rman/rmanMgr.hpp"
+#include "Core/app/appApplication.hpp"
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsFileUtil.hpp"
@@ -29,7 +30,6 @@
 #include "Tool/gui/guiProgressDialog.hpp"
 
 #include <vector>
-#include <windows.h>
 
 #undef CreateDirectory
 
@@ -791,7 +791,7 @@ void rmanMgr::LaunchRendermanBatch( fsLocator i_Batch, bool i_ShowConsole )
 	fsFileUtil::LocatorToANSIFilename(i_Batch,fileName);
 	std::string execStart = "\"";
 	execStart.append(fileName).append("\"");
-	WinExec(execStart.c_str(),i_ShowConsole);
+	appApplication::LaunchProgram(execStart.c_str(),i_ShowConsole);
 }
 
 //----------------------------------------------------------------------------

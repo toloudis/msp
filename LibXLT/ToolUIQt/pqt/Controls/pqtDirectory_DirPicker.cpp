@@ -11,25 +11,25 @@
 
 #include "Core/fs/fsFileUtil.hpp"
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 // Set value into control
 //----------------------------------------------------------------------------
-void pqtDirectory_DirPicker_Converter::SetValueIntoControl(wxDirPickerCtrl* i_pActualControl,
+void pqtDirectory_DirPicker_Converter::SetValueIntoControl(tqcDirPicker* i_pActualControl,
 											   fsLocator i_Value)
 {
 	itString file_path;
 	fsFileUtil::LocatorToUnicodeString(i_Value, file_path);
-	i_pActualControl->SetPath(file_path.GetString());
+	i_pActualControl->SetPath(QString::fromWCharArray(file_path.GetString()));
 }
 
 //----------------------------------------------------------------------------
 // Get value from control
 //----------------------------------------------------------------------------
-fsLocator pqtDirectory_DirPicker_Converter::GetValueFromControl(wxDirPickerCtrl* i_pActualControl)
+fsLocator pqtDirectory_DirPicker_Converter::GetValueFromControl(tqcDirPicker* i_pActualControl)
 {
-	itString fullpath(i_pActualControl->GetPath().c_str());
+	itString fullpath(i_pActualControl->GetPath().toStdWString().c_str());
 	fsLocator locator;
 	fsFileUtil::UnicodeStringToLocator(fullpath, locator);
 	return locator;

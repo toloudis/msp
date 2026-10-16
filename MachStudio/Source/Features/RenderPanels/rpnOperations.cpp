@@ -9,8 +9,16 @@
 
 #include "Features/RenderPanels/rpnOperations.hpp"
 #include "Features/RenderPanels/GUI/rpnDialogUtil.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/RenderPanels/qtGUI/rpnPanelGrid.hpp"
+#else
 #include "Features/RenderPanels/wxGUI/rpnPanelGrid.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "Features/RenderPanels/qtGUI/rpnRenderPanel.hpp"
+#else
 #include "Features/RenderPanels/wxGUI/rpnRenderPanel.hpp"
+#endif
 
 #include "Systems/Cameras/Object/cmraObjectMgr.hpp"
 #include "Systems/Cameras/Object/cmraCameraObject.hpp"
@@ -35,7 +43,7 @@ namespace rpnOperations
 	void  SelectActiveCamera()
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (rpnPanelGrid::Instance)
 		{
 			for (int i=0; i<4; i++)
@@ -72,7 +80,7 @@ namespace rpnOperations
 	{
 
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (rpnPanelGrid::Instance)
 		{
 			for (int i=0; i<4; i++)
@@ -215,7 +223,7 @@ namespace rpnOperations
 	void  ChangeDirectorsCut(camsDirectorsCut *i_pDirectorsCut, const std::string& i_Label)
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (rpnPanelGrid::Instance)
 		{
 			for (int i=0; i<4; i++)

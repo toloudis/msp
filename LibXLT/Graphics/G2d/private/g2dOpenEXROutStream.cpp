@@ -9,6 +9,8 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/it/itStringUtil.hpp"
 
+#include <filesystem>
+
 //--------------------------------------------------------------------
 // g2dOpenEXROutStream()
 //--------------------------------------------------------------------
@@ -18,7 +20,7 @@ g2dOpenEXROutStream::g2dOpenEXROutStream(const char fileName[],const fsLocator& 
 {
 	itString itFileName;
 	fsFileUtil::LocatorToUnicodeString( i_Locator, itFileName );
-	m_OutStream = new std::ofstream( itFileName.GetString() , std::ios::binary );
+	m_OutStream = new std::ofstream( std::filesystem::path( itFileName.GetString() ), std::ios::binary );
 }
 
 //--------------------------------------------------------------------

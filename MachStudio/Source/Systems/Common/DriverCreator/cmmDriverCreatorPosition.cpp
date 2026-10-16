@@ -8,6 +8,8 @@
 \****************************************************************************/
 #include "Systems/Common/DriverCreator/cmmDriverCreatorPosition.hpp"
 
+#include "Core/it/itStringUtil.hpp"
+
 #include "Support/tmln/tmlnChannelPosition.hpp"
 #include "Support/tmln/tmlnCreator.hpp"
 #include "Drivers/Attach/tmlnDriverAttach.hpp"
@@ -199,7 +201,7 @@ tmlnDriver* cmmDriverCreatorPosition::CreateDriverByName( const char* i_DriverNa
 	std::string connectchannel_name = get_connectchannel_name(i_ChannelName);
 	std::string userscript_name = get_userscript_name(i_ChannelName);
 
-	if (!::_stricmp(i_DriverName, key_name.c_str()))
+	if (itStringUtil::CompareNoCase(i_DriverName, key_name) == 0)
 	{
 		const chDefs::Name c_XXPK = make_key_chunk_name( i_Code );
 		tmlnDriverPosition * pDriver = new tmlnDriverPosition( io_Channel, c_XXPK );
@@ -209,7 +211,7 @@ tmlnDriver* cmmDriverCreatorPosition::CreateDriverByName( const char* i_DriverNa
 		io_Channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (!::_stricmp(i_DriverName, spline_name.c_str()))
+	else if (itStringUtil::CompareNoCase(i_DriverName, spline_name) == 0)
 	{
 		const chDefs::Name c_XXSP = make_spline_chunk_name( i_Code );
 		tmlnDriverSpline * pDriver = new tmlnDriverSpline( io_Channel, c_XXSP );
@@ -228,7 +230,7 @@ tmlnDriver* cmmDriverCreatorPosition::CreateDriverByName( const char* i_DriverNa
 		io_Channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (!::_stricmp(i_DriverName, attach_name.c_str()))
+	else if (itStringUtil::CompareNoCase(i_DriverName, attach_name) == 0)
 	{
 		const chDefs::Name c_XXAT = make_attach_chunk_name( i_Code );
 		tmlnDriverAttach * pDriver = new tmlnDriverAttach( io_Channel, c_XXAT );
@@ -238,7 +240,7 @@ tmlnDriver* cmmDriverCreatorPosition::CreateDriverByName( const char* i_DriverNa
 		io_Channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (!::_stricmp(i_DriverName, connectchannel_name.c_str()))
+	else if (itStringUtil::CompareNoCase(i_DriverName, connectchannel_name) == 0)
 	{
 		const chDefs::Name c_XXCZ = make_connectchannel_chunk_name( i_Code );
 		tmlnDriverConnectChannelPosition * pDriver = new tmlnDriverConnectChannelPosition( io_Channel, c_XXCZ );
@@ -255,7 +257,7 @@ tmlnDriver* cmmDriverCreatorPosition::CreateDriverByName( const char* i_DriverNa
 		io_Channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (!::_stricmp(i_DriverName, userscript_name.c_str()))
+	else if (itStringUtil::CompareNoCase(i_DriverName, userscript_name) == 0)
 	{
 		const chDefs::Name c_XXUS = make_userscript_chunk_name( i_Code );
 		tmlnDriverUserScriptPosition * pDriver = new tmlnDriverUserScriptPosition( io_Channel, c_XXUS );

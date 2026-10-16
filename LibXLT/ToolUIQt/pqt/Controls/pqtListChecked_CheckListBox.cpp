@@ -11,7 +11,7 @@
 
 #include "Core/prty/prtyListBoxUIInfo.hpp"
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 // Get list of string choices for combo box
@@ -26,27 +26,27 @@ void pqtListChecked_CheckListBox_Converter::GetChoices(prtyPropertyUIInfo* i_pUI
 //----------------------------------------------------------------------------
 // Set value into control
 //----------------------------------------------------------------------------
-void pqtListChecked_CheckListBox_Converter::SetValueIntoControl(wxCheckListBox* i_pActualControl,
+void pqtListChecked_CheckListBox_Converter::SetValueIntoControl(QListWidget* i_pActualControl,
 											   const checked_list_type& i_Value)
 {
-	if (i_Value.size() == i_pActualControl->GetCount())
+	if ((int)i_Value.size() == i_pActualControl->count())
 	{
-		for (int i=0; i<i_Value.size(); i++)
-			i_pActualControl->Check(i, i_Value[i].m_bChecked);
+		for (int i=0; i<(int)i_Value.size(); i++)
+			i_pActualControl->item(i)->setCheckState(i_Value[i].m_bChecked ? Qt::Checked : Qt::Unchecked);
 	}
 }
 
 //----------------------------------------------------------------------------
 // Get value from control
 //----------------------------------------------------------------------------
-checked_list_type pqtListChecked_CheckListBox_Converter::GetValueFromControl(wxCheckListBox* i_pActualControl)
+checked_list_type pqtListChecked_CheckListBox_Converter::GetValueFromControl(QListWidget* i_pActualControl)
 {
-	int num_items = i_pActualControl->GetCount();
+	int num_items = i_pActualControl->count();
 	checked_list_type items(num_items);
 	for (int i=0; i<num_items; i++)
 	{
-		items[i].m_Text = i_pActualControl->GetString(i).utf8_str();
-		items[i].m_bChecked = i_pActualControl->IsChecked(i);
+		items[i].m_Text = tqtStdString(i_pActualControl->item(i)->text());
+		items[i].m_bChecked = (i_pActualControl->item(i)->checkState() == Qt::Checked);
 	}
 
 	return items;

@@ -1,5 +1,7 @@
 /****************************************************************************\
-**	tqcTextureFilePicker.hpp
+**	tqcTextureFilePicker.cpp
+**
+**	see .hpp
 **
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
@@ -11,66 +13,57 @@
 #include "Core/It/itStringUtil.hpp"
 #include "Core/prty/prtyInterestUtil.hpp"
 #include "Core/prty/prtyTextureFileChooserUIInfo.hpp"
-
 #include "Tool/gui/guiMessageBox.hpp"
 #include "Tool/gui/guiMenuMgr.hpp"
 
 #include <string>
 
-#ifdef QT_FINISH_PORT
-
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 tqcTextureFilePicker::tqcTextureFilePicker(QWidget* i_pParent)
-:	wxPanel(i_pParent, wxID_ANY),
+:	QWidget(i_pParent),
 	m_Filter("All files (*.*)|*.*"),
 	m_bShowFileNameOnly(false),
 	m_pUIInfo(NULL)
-{		
-	wxBoxSizer* bSizer1;
-	bSizer1 = new wxBoxSizer( wxHORIZONTAL );
+{
+	QHBoxLayout* bSizer1 = new QHBoxLayout(this);
+	bSizer1->setContentsMargins(0, 0, 0, 0);
+	bSizer1->setSpacing(0);
 
-	// Create text control with a good size width so that more of the
-	// original text is shown when it is resized bigger. (It seemed like
-	// a width of 100 was being used when not specifically specified).
-	//m_pComboBox = new tqcComboBox( this, wxID_ANY, L"", wxSize(180,-1));
-	
 	//Text box
-	m_pTextBox = new tqcTextBox( this, wxID_ANY, L"", false, false, wxSize(150,-1) );
-	this->Connect( m_pTextBox->GetId(), wxEVT_VALUE_CHANGED,
-					wxCommandEventHandler(tqcTextureFilePicker::OnTextChange) );
-	bSizer1->Add( m_pTextBox, 1, wxALL, 0 );
+	m_pTextBox = new tqcTextBox( this );
+	m_pTextBox->setMinimumWidth(150);
+	m_pTextBox->SetValueChangedCallback([this]() { OnTextChange(); });
+	bSizer1->addWidget( m_pTextBox, 1 );
 
 	//Choice box
-	m_pChoice = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxSize(55,-1), 0, NULL);
-	m_pChoice->SetFont( wxFont( 7, 70, 90, 90, false, wxEmptyString ) );
-	this->Connect( m_pChoice->GetId(), wxEVT_COMMAND_CHOICE_SELECTED,
-					wxCommandEventHandler(tqcTextureFilePicker::OnChoiceSelected) );
-	bSizer1->Add( m_pChoice, 0, wxALL, 0 );
-	
+	m_pChoice = new QComboBox( this );
+	m_pChoice->setFixedWidth(55);
+	QFont small_font = m_pChoice->font();
+	small_font.setPointSize(7);
+	m_pChoice->setFont(small_font);
+	QObject::connect(m_pChoice, QOverload<int>::of(&QComboBox::activated), [this](int) { OnChoiceSelected(); });
+	bSizer1->addWidget( m_pChoice, 0 );
+
 	//function button
 	itString icon_dir;
 	fsFileUtil::LocatorToUnicodeString( guiMenuMgr::GetIconDirectory(), icon_dir );
-	std::wstring icondir = icon_dir.GetString();
-	m_pInvokeButton = new wxBitmapButton(this, wxID_ANY, wxBitmap( icondir + L"\\texture-execute.png", wxBITMAP_TYPE_ANY), wxDefaultPosition, wxSize( 20,20 ), wxNO_BORDER);
-	m_pInvokeButton->SetBitmapSelected(wxBitmap( icondir + L"\\texture-execute_pressed.png", wxBITMAP_TYPE_ANY));
-	m_pInvokeButton->SetBitmapHover(wxBitmap( icondir + L"\\texture-execute_highlight.png", wxBITMAP_TYPE_ANY));
-	
-	this->Connect( m_pInvokeButton->GetId(), wxEVT_COMMAND_BUTTON_CLICKED,
-					wxCommandEventHandler(tqcTextureFilePicker::OnInvokeClick) );
-	bSizer1->Add( m_pInvokeButton, 0, wxALL, 0 );
-
-	// Set up font and colors
-	this->InheritAttributes();
-	
-	this->SetSizer( bSizer1 );
-	this->Layout();
+	QString icondir = QString::fromWCharArray(icon_dir.GetString());
+	QIcon icon(icondir + "\\texture-execute.png");
+	icon.addFile(icondir + "\\texture-execute_highlight.png", QSize(), QIcon::Active);
+	icon.addFile(icondir + "\\texture-execute_pressed.png", QSize(), QIcon::Selected);
+	m_pInvokeButton = new QToolButton(this);
+	m_pInvokeButton->setIcon(icon);
+	m_pInvokeButton->setIconSize(QSize(16, 16));
+	m_pInvokeButton->setFixedSize(20, 20);
+	m_pInvokeButton->setAutoRaise(true);
+	QObject::connect(m_pInvokeButton, &QToolButton::clicked, [this]() { OnInvokeClick(); });
+	bSizer1->addWidget( m_pInvokeButton, 0 );
 
 	m_bButtonPress = false;
 	m_CurrentMode = prtyTextureFileChooserUIInfo::GetType(prtyTextureFileChooserUIInfo::e_Texture);
-	//update_slider();
-
 	m_CurrentSelection = 0;
 }
 
@@ -87,9 +80,9 @@ void tqcTextureFilePicker::SetFullpath(const fsLocator& i_Value)
 	update_textbox();
 }
 
-//----------------------------------------------------------------------------
+//--------------------------------------------------------------------
 // uiinfo
-//----------------------------------------------------------------------------
+//--------------------------------------------------------------------
 void tqcTextureFilePicker::SetUIInfo(prtyPropertyUIInfo* i_pUIInfo)
 {
 	m_pUIInfo = i_pUIInfo;
@@ -173,7 +166,7 @@ void tqcTextureFilePicker::SetDirectoryCategory(const std::string& i_DirectoryCa
 //--------------------------------------------------------------------
 void tqcTextureFilePicker::ClearChoices() const
 {
-	m_pChoice->Clear();
+	m_pChoice->clear();
 }
 
 //--------------------------------------------------------------------
@@ -181,25 +174,29 @@ void tqcTextureFilePicker::ClearChoices() const
 //--------------------------------------------------------------------
 void tqcTextureFilePicker::AppendChoice(const std::string& i_Choice) const
 {
-	m_pChoice->Append(wxString(i_Choice.c_str(), wxConvUTF8));
+	m_pChoice->addItem(tqtQString(i_Choice));
 }
+
 //--------------------------------------------------------------------
 // Select the desired item
 //--------------------------------------------------------------------
 void tqcTextureFilePicker::SelectChoice(unsigned int i_Index)
 {
-	wxCommandEvent false_event;
-	m_pChoice->SetSelection(i_Index);
-	OnChoiceSelected(false_event);
+	m_pChoice->setCurrentIndex((int)i_Index);
+	OnChoiceSelected();
 }
+
 //--------------------------------------------------------------------
 // Select the desired item
 //--------------------------------------------------------------------
 void tqcTextureFilePicker::SelectChoice(const std::string& i_Choice)
 {
-	wxCommandEvent false_event;
-	if(m_pChoice->SetStringSelection(wxString(i_Choice.c_str(), wxConvUTF8)))
-		OnChoiceSelected(false_event);
+	int index = m_pChoice->findText(tqtQString(i_Choice));
+	if (index >= 0)
+	{
+		m_pChoice->setCurrentIndex(index);
+		OnChoiceSelected();
+	}
 }
 
 //--------------------------------------------------------------------
@@ -237,7 +234,7 @@ void tqcTextureFilePicker::ResetButtonPress()
 //--------------------------------------------------------------------
 void tqcTextureFilePicker::SetTextEnabled(bool i_bEnabled)
 {
-	m_pTextBox->Enable(i_bEnabled);
+	m_pTextBox->setEnabled(i_bEnabled);
 }
 
 //----------------------------------------------------------------------------
@@ -249,7 +246,7 @@ fsLocator tqcTextureFilePicker::get_initial_directory()
     {
         // If the file exists, we can set the initial
         // directory to be the filename, otherwise try
-        // to get the intended directory from the 
+        // to get the intended directory from the
         // rest of the fullpath.
 		if (fsFileUtil::DirectoryExists(m_Value))
             return m_Value;
@@ -284,16 +281,18 @@ void tqcTextureFilePicker::update_textbox()
 	if (this->m_bShowFileNameOnly)
 	{
 		if (m_Value.GetNumNames() > 0)
-			this->m_pTextBox->SetValue(m_Value.GetLastName().GetString());
+			this->m_pTextBox->SetValue(QString::fromWCharArray(m_Value.GetLastName().GetString()));
 		else
-			this->m_pTextBox->SetValue(L"");
+			this->m_pTextBox->SetValue(QString());
 	}
 	else
 	{
 		itString full_path;
 		fsFileUtil::LocatorToUnicodeString( m_Value, full_path );
-		this->m_pTextBox->SetValue(full_path.GetString());
-		this->m_pTextBox->SetInsertionPointEnd(); // show end of fullpath, not beginning
+		this->m_pTextBox->SetValue(QString::fromWCharArray(full_path.GetString()));
+		// show end of fullpath, not beginning
+		if (QLineEdit* pLineEdit = this->m_pTextBox->GetLineEdit())
+			pLineEdit->end(false);
 	}
 }
 
@@ -301,19 +300,17 @@ void tqcTextureFilePicker::update_textbox()
 //----------------------------------------------------------------------------
 void tqcTextureFilePicker::notify_callback()
 {
-	// trigger the callback
-	wxCommandEvent changed_event(wxEVT_VALUE_CHANGED, this->GetId());
-	m_pTextBox->ProcessCommand(changed_event);
+	NotifyValueChanged();
 }
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void tqcTextureFilePicker::OnTextChange(wxCommandEvent& i_Event)
-{	
-	wxString lastvalue = m_pTextBox->last_value();
+void tqcTextureFilePicker::OnTextChange()
+{
+	QString lastvalue = m_pTextBox->last_value();
 	if( m_CurrentMode == prtyTextureFileChooserUIInfo::GetType(prtyTextureFileChooserUIInfo::e_Texture) )
 	{
-		itString full_path(m_pTextBox->GetValue());
+		itString full_path(m_pTextBox->GetValue().toStdWString().c_str());
 		fsFileUtil::UnicodeStringToLocator(full_path, m_Value);
 		if(full_path.GetLength() != 0 )
 		{
@@ -324,7 +321,7 @@ void tqcTextureFilePicker::OnTextChange(wxCommandEvent& i_Event)
 				std::string msg = "Cannot find file\n" + filename;
 				guiMessageBox::Show(msg.c_str(), "Error", guiMessageBox::e_OKOnly);
 				m_pTextBox->SetValue(lastvalue);
-				itString path(lastvalue);
+				itString path(lastvalue.toStdWString().c_str());
 				fsFileUtil::UnicodeStringToLocator(path, m_Value);
 			}
 		}
@@ -334,19 +331,19 @@ void tqcTextureFilePicker::OnTextChange(wxCommandEvent& i_Event)
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void tqcTextureFilePicker::OnChoiceSelected(wxCommandEvent& i_Event)
+void tqcTextureFilePicker::OnChoiceSelected()
 {
-	m_CurrentSelection = m_pChoice->GetSelection();
-	itString choice_text(m_pChoice->GetStringSelection());
-	std::string selection = itStringUtil::GetStdString(choice_text);
+	m_CurrentSelection = m_pChoice->currentIndex();
+	std::string selection = tqtStdString(m_pChoice->currentText());
 	if( m_CurrentMode == selection )
 		return;
 
 	m_CurrentMode = selection;
 	update_textbox();
+
 	std::vector<prtyInterest*> interests;
 	prtyInterestUtil::GetInterestList(interests);
-	for( int i = 0; i < interests.size(); ++i )
+	for( size_t i = 0; i < interests.size(); ++i )
 	{
 		if( m_CurrentMode == interests[i]->GetName() )
 		{
@@ -354,8 +351,7 @@ void tqcTextureFilePicker::OnChoiceSelected(wxCommandEvent& i_Event)
 			return;
 		}
 	}
-	m_pTextBox->Enable(true);
-	i_Event.Skip();
+	m_pTextBox->setEnabled(true);
 }
 
 //----------------------------------------------------------------------------
@@ -366,30 +362,28 @@ prtyInterest* tqcTextureFilePicker::CheckInterestInvoke()
 {
 	std::vector<prtyInterest*> interests;
 	prtyInterestUtil::GetInterestList(interests);
-	wxString new_text; 
-	for( int i = 0; i < interests.size(); ++i )
+	QString new_text;
+	for( size_t i = 0; i < interests.size(); ++i )
 	{
 		if( m_CurrentMode == interests[i]->GetName() )
 		{
 			//determine if the new selection should remove the texture name field
 			if( interests[i]->IsProcedural() )
 			{
-				new_text = m_pChoice->GetStringSelection();
-
+				new_text = m_pChoice->currentText();
 				//remove the texture value if the new mode is a procedural texture
 				m_Value.Clear();
 			}
 			else
 			{
-				new_text = m_pChoice->GetStringSelection() + wxString(L": ") + this->m_pTextBox->GetValue();
+				new_text = m_pChoice->currentText() + ": " + this->m_pTextBox->GetValue();
 			}
 
 			//set the new text field value and whether or not the text field is readonly
 			this->m_pTextBox->SetValue( new_text );
 			if( !interests[i]->IsEditable() )
 			{
-				m_pTextBox->Enable(false);
-				//notify_callback();
+				m_pTextBox->setEnabled(false);
 			}
 			return interests[i];
 		}
@@ -399,26 +393,20 @@ prtyInterest* tqcTextureFilePicker::CheckInterestInvoke()
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void tqcTextureFilePicker::OnInvokeClick(wxCommandEvent& i_Event)
-{	
+void tqcTextureFilePicker::OnInvokeClick()
+{
 	m_bButtonPress = false;
 	if( m_CurrentMode == prtyTextureFileChooserUIInfo::GetType(prtyTextureFileChooserUIInfo::e_Texture) )
 	{
 		itString init_dir;
 		fsFileUtil::LocatorToUnicodeString( get_initial_directory(), init_dir );
-
-		wxFileDialog dialog( this,
-						_T("Open File"),
-						init_dir.GetString(),
-						wxEmptyString,
-						m_Filter.GetString()
-					 );
-
-		//dialog.CentreOnParent();
-
-		if (dialog.ShowModal() == QMessageBox::Ok)
+		QString path = QFileDialog::getOpenFileName( this,
+													 "Open File",
+													 QString::fromWCharArray(init_dir.GetString()),
+													 tqtFileDialogFilter(QString::fromWCharArray(m_Filter.GetString())) );
+		if (!path.isEmpty())
 		{
-			itString full_path(dialog.GetPath());
+			itString full_path(QDir::toNativeSeparators(path).toStdWString().c_str());
 			fsFileUtil::UnicodeStringToLocator(full_path, m_Value);
 
 			// maintain the current directory by category
@@ -428,15 +416,13 @@ void tqcTextureFilePicker::OnInvokeClick(wxCommandEvent& i_Event)
 				cur_dir.Pop();
 				gfDirectoryCategories::SetCurDirectory(m_DirectoryCategory, cur_dir);
 			}
-
 			update_textbox();
 			notify_callback();
 		}
 	}
 	else if( m_CurrentMode == prtyTextureFileChooserUIInfo::GetType(prtyTextureFileChooserUIInfo::e_Reset) )
 	{
-		//m_pChoice->SetSelection(0);
-		this->m_pTextBox->SetValue(L"");
+		this->m_pTextBox->SetValue(QString());
 		m_Value.Clear();
 		update_textbox();
 		m_bButtonPress = true;

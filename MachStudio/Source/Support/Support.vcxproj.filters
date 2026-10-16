@@ -166,6 +166,21 @@
     <Filter Include="swl">
       <UniqueIdentifier>{62dcf1c1-e98e-4ab9-95ac-574a818af3db}</UniqueIdentifier>
     </Filter>
+    <Filter Include="pyth\qtGUI">
+      <UniqueIdentifier>{e4f0d66e-84b5-4751-9ccf-ee602acbeda9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fgmt\qtGUI">
+      <UniqueIdentifier>{6ff7c1c7-3893-42f8-bca6-fa1bb13cf6d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ptm\qtGUI">
+      <UniqueIdentifier>{98cbd67d-afd7-4d1b-a125-8ce8435bbd88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="brsh\qtGUI">
+      <UniqueIdentifier>{dd91dab2-5e8c-41a1-a108-a00eab384fee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="xfrm\qtGUI">
+      <UniqueIdentifier>{ea90090b-f12e-47c9-8e91-6675b63a41e0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dyn\dynChannelControl.cpp">
@@ -444,9 +459,6 @@
     <ClCompile Include="mnm\mnmAutoSaveMgr.cpp">
       <Filter>mnm</Filter>
     </ClCompile>
-    <ClCompile Include="mnm\mnmAviUtil.cpp">
-      <Filter>mnm</Filter>
-    </ClCompile>
     <ClCompile Include="mnm\mnmBaseData.cpp">
       <Filter>mnm</Filter>
     </ClCompile>
@@ -466,12 +478,6 @@
       <Filter>mnm</Filter>
     </ClCompile>
     <ClCompile Include="mnm\mnmPaths.cpp">
-      <Filter>mnm</Filter>
-    </ClCompile>
-    <ClCompile Include="mnm\mnmQuickTimeSound.cpp">
-      <Filter>mnm</Filter>
-    </ClCompile>
-    <ClCompile Include="mnm\mnmQuickTimeUtil.cpp">
       <Filter>mnm</Filter>
     </ClCompile>
     <ClCompile Include="mnm\mnmReference.cpp">
@@ -1105,6 +1111,27 @@
       <Filter>swl</Filter>
     </ClCompile>
     <ClCompile Include="SupportLayer.cpp" />
+    <ClCompile Include="pyth\qtGUI\pythPythonDialog.cpp">
+      <Filter>pyth\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="fgmt\qtGUI\fgmtUVEditor.cpp">
+      <Filter>fgmt\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ptm\qtGUI\ptmTimeEdit.cpp">
+      <Filter>ptm\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ptm\qtGUI\ptmTime_TimeEdit.cpp">
+      <Filter>ptm\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="brsh\qtGUI\brshColorDialog.cpp">
+      <Filter>brsh\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="xfrm\qtGUI\xfrmSurfaceTreeNode.cpp">
+      <Filter>xfrm\qtGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="xfrm\qtGUI\xfrmSurfaceView.cpp">
+      <Filter>xfrm\qtGUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dyn\dynChannelControl.hpp">
@@ -1386,9 +1413,6 @@
     <ClInclude Include="mnm\mnmAutoSaveMgr.hpp">
       <Filter>mnm</Filter>
     </ClInclude>
-    <ClInclude Include="mnm\mnmAviUtil.hpp">
-      <Filter>mnm</Filter>
-    </ClInclude>
     <ClInclude Include="mnm\mnmBaseData.hpp">
       <Filter>mnm</Filter>
     </ClInclude>
@@ -1417,12 +1441,6 @@
       <Filter>mnm</Filter>
     </ClInclude>
     <ClInclude Include="mnm\mnmPickMask.hpp">
-      <Filter>mnm</Filter>
-    </ClInclude>
-    <ClInclude Include="mnm\mnmQuickTimeSound.hpp">
-      <Filter>mnm</Filter>
-    </ClInclude>
-    <ClInclude Include="mnm\mnmQuickTimeUtil.hpp">
       <Filter>mnm</Filter>
     </ClInclude>
     <ClInclude Include="mnm\mnmReference.hpp">
@@ -2101,5 +2119,29 @@
       <Filter>swl</Filter>
     </ClInclude>
     <ClInclude Include="SupportLayer.hpp" />
+    <ClInclude Include="pyth\qtGUI\pythPythonDialog.hpp">
+      <Filter>pyth\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="fgmt\qtGUI\fgmtUVEditor.hpp">
+      <Filter>fgmt\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ptm\qtGUI\ptmTemplate_TimeEdit.hpp">
+      <Filter>ptm\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ptm\qtGUI\ptmTimeEdit.hpp">
+      <Filter>ptm\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ptm\qtGUI\ptmTime_TimeEdit.hpp">
+      <Filter>ptm\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="brsh\qtGUI\brshColorDialog.hpp">
+      <Filter>brsh\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="xfrm\qtGUI\xfrmSurfaceTreeNode.hpp">
+      <Filter>xfrm\qtGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="xfrm\qtGUI\xfrmSurfaceView.hpp">
+      <Filter>xfrm\qtGUI</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

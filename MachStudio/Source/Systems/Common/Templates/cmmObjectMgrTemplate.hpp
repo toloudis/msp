@@ -417,6 +417,10 @@ class cmmObjectMgrTemplateBase:
 	public cmmObjectMgrTemplateNoIcon<xxxScriptObject,xxxPickObject,xxxListData,xxxScriptData,xxxBaseData,xxxObjectCreator>
 {
 public:
+	typedef cmmObjectMgrTemplateNoIcon<xxxScriptObject,xxxPickObject,xxxListData,xxxScriptData,xxxBaseData,xxxObjectCreator> BaseType;
+	using BaseType::sm_Objects;
+	using BaseType::sm_bShowIcons;
+
 	//----------------------------------------------------------------------------
 	// Find the object that matches the pick code from an earlier pick render.
 	//----------------------------------------------------------------------------
@@ -494,6 +498,9 @@ class cmmObjectMgrTemplate :
 	public cmmObjectMgrTemplateBase<xxxScriptObject,xxxPickObject,xxxListData,xxxScriptData,xxxBaseData,xxxObjectCreator>
 {
 public:
+	typedef cmmObjectMgrTemplateBase<xxxScriptObject,xxxPickObject,xxxListData,xxxScriptData,xxxBaseData,xxxObjectCreator> BaseType;
+	using BaseType::SetDataUnthreaded;
+
 	//--------------------------------------------------------------------
 	// Set data as a whole
 	//--------------------------------------------------------------------
@@ -525,6 +532,9 @@ class cmmObjectMgrGeomTemplate :
 	public cmmObjectMgrTemplate<xxxScriptObject,xxxPickObject,xxxListData,xxxScriptData,xxxBaseData,xxxObjectCreator>
 {
 public:
+	typedef cmmObjectMgrTemplate<xxxScriptObject,xxxPickObject,xxxListData,xxxScriptData,xxxBaseData,xxxObjectCreator> BaseType;
+	using BaseType::sm_Objects;
+
 	//--------------------------------------------------------------------
 	// Make sure that all geometry is visible for rendering
 	//--------------------------------------------------------------------
@@ -544,8 +554,8 @@ public:
 // Initialiazing static members
 //============================================================================
 template<class xxxScriptObject, class xxxPickObject, class xxxListData, class xxxScriptData, class xxxBaseData,	 class xxxObjectCreator>
-std::vector<xxxScriptObject*> cmmObjectMgrTemplateBase<xxxScriptObject,xxxPickObject,xxxListData,xxxScriptData,xxxBaseData,xxxObjectCreator>::sm_Objects;
+std::vector<xxxScriptObject*> cmmObjectMgrTemplateNoIcon<xxxScriptObject,xxxPickObject,xxxListData,xxxScriptData,xxxBaseData,xxxObjectCreator>::sm_Objects;
 
 template<class xxxScriptObject, class xxxPickObject, class xxxListData, class xxxScriptData, class xxxBaseData,	 class xxxObjectCreator>
-bool cmmObjectMgrTemplateBase<xxxScriptObject,xxxPickObject,xxxListData,xxxScriptData,xxxBaseData,xxxObjectCreator>::sm_bShowIcons = true;
+bool cmmObjectMgrTemplateNoIcon<xxxScriptObject,xxxPickObject,xxxListData,xxxScriptData,xxxBaseData,xxxObjectCreator>::sm_bShowIcons = true;
 

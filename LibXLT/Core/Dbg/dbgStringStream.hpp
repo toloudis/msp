@@ -46,6 +46,11 @@ public:
 	// streams buffer and places it into the debug window
 	//--------------------------------------------------
 	virtual int sync();
+
+	//--------------------------------------------------
+	// Output sends UTF-8 text to the debug window
+	//--------------------------------------------------
+	static void Output(const std::string& i_UTF8Text);
 };
 
 
@@ -90,7 +95,7 @@ public:
 		std::string msg;
 		ss << i_Msg;
 		msg = ss.str();
-		::OutputDebugStringW(envString::UTF8ToWideChar( msg.c_str() ));
+		dbgStreamBuf::Output( msg );
         return *this;
     }
 

@@ -8,7 +8,11 @@
 \****************************************************************************/
 #include "Features/Prefs/prefsQuickMgr.hpp"
 
+#ifdef MSP_GUI_QT
+#include "Features/Prefs/qtGUI/prefsQuickDialog.hpp"
+#else
 #include "Features/Prefs/wxGUI/prefsQuickDialog.hpp"
+#endif
 
 #include "Support/mnm/mnmPaths.hpp"
 #include "Support/pyth/pythProperty.hpp"
@@ -22,7 +26,11 @@
 #include "Tool/gui/guiMenuMgr.hpp"
 #include "Tool/gui/guiXMLTextReader.hpp"
 #include "Tool/gui/guiXMLTextWriter.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtSystem.hpp"
+#else
 #include "ToolUIWx/twx/twxSystem.hpp"
+#endif
 
 #include <string>
 #include <vector>
@@ -339,6 +347,10 @@ namespace prefsQuickMgr
 		pQuickDlg->BuildButtons( l_pPrefsQuickObject->m_Data, i_ScreenX, i_ScreenY );
 		pQuickDlg->ShowModal();
 		delete pQuickDlg;
+#elif defined(USE_QT)
+		prefsQuickDialog quick_dlg(tqtSystem::g_pMainForm);
+		quick_dlg.BuildButtons( l_pPrefsQuickObject->m_Data, i_ScreenX, i_ScreenY );
+		quick_dlg.exec();
 #endif
 	}
 
@@ -365,7 +377,7 @@ namespace prefsQuickMgr
 */
 	}
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 #endif
 
 	//------------------------------------------------------------------------
