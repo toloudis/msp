@@ -8,8 +8,6 @@
 \****************************************************************************/
 #include "Features/Capture/cptrWriteAVI.hpp"
 
-#include "Features/Capture/cptrWriteUtil.hpp"
-
 #include "Support/capt/captRenderOutputDataUtil.hpp"
 #include "Support/mnm/mnmPaths.hpp"
 #include "Support/tmln/tmlnTimeLine.hpp"
@@ -26,10 +24,6 @@
 #include "Graphics/g2d/g2dSystem.hpp"
 #include "Graphics/g2d/g2dWindow.hpp"
 
-
-//
-// TODO: [rjk] clean up the code by removing duplicate BMP code from here.
-//
 
 //============================================================================
 //============================================================================

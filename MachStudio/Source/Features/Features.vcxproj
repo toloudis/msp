@@ -601,7 +601,6 @@
     <ClCompile Include="Capture\cptrCommands.cpp" />
     <ClCompile Include="Capture\cptrPythonCommands.cpp" />
     <ClCompile Include="Capture\cptrWriteAVI.cpp" />
-    <ClCompile Include="Capture\cptrWriteUtil.cpp" />
     <ClCompile Include="Capture\wxGUI\cptrDialogUtil.cpp" />
     <ClCompile Include="Capture\wxGUI\cptrRenderBakeDialog.cpp" />
     <ClCompile Include="Capture\wxGUI\cptrRenderBatchDialog.cpp" />
@@ -870,7 +869,6 @@
     <ClInclude Include="Capture\cptrCommands.hpp" />
     <ClInclude Include="Capture\cptrPythonCommands.hpp" />
     <ClInclude Include="Capture\cptrWriteAVI.hpp" />
-    <ClInclude Include="Capture\cptrWriteUtil.hpp" />
     <ClInclude Include="Capture\wxGUI\cptrDialogUtil.hpp" />
     <ClInclude Include="Capture\wxGUI\cptrRenderBakeDialog.hpp" />
     <ClInclude Include="Capture\wxGUI\cptrRenderBatchDialog.hpp" />

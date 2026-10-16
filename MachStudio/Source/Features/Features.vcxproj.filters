@@ -528,9 +528,6 @@
     <ClCompile Include="Capture\cptrWriteAVI.cpp">
       <Filter>Capture\Outputs</Filter>
     </ClCompile>
-    <ClCompile Include="Capture\cptrWriteUtil.cpp">
-      <Filter>Capture\Outputs</Filter>
-    </ClCompile>
     <ClCompile Include="Capture\wxGUI\cptrDialogUtil.cpp">
       <Filter>Capture\wxGUI</Filter>
     </ClCompile>
@@ -1264,9 +1261,6 @@
       <Filter>Capture\Commands</Filter>
     </ClInclude>
     <ClInclude Include="Capture\cptrWriteAVI.hpp">
-      <Filter>Capture\Outputs</Filter>
-    </ClInclude>
-    <ClInclude Include="Capture\cptrWriteUtil.hpp">
       <Filter>Capture\Outputs</Filter>
     </ClInclude>
     <ClInclude Include="Capture\wxGUI\cptrDialogUtil.hpp">
