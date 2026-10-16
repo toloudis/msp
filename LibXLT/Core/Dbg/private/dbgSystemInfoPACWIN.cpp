@@ -56,63 +56,21 @@ namespace dbgSystemInfoPAC
 	//------------------------------------------------------------------------
 	std::wstring getOS()
 	{
-		std::wstring _osVersion;
 		envSystemDataPAC::OSVersion _osInfo;
 		if ( !envSystemDataPAC::GetOSVersion(_osInfo) )
 			return L"Windows (unknown version)";
 
-		switch(_osInfo.m_Major)
-		{
-			case 6:
-				if( _osInfo.m_Minor == 1 )
-				{
-					if(	_osInfo.m_bWorkstation)
-					{
-						_osVersion = L"Windows 7, ";
-						_osVersion += _osInfo.m_ServicePack;
-					}
-					else
-					{
-						_osVersion = L"Windows Server 2008 R2, ";
-						_osVersion += _osInfo.m_ServicePack;
-					}
-				}
-				else if( _osInfo.m_Minor == 0 )
-				{
-					if(	_osInfo.m_bWorkstation)
-					{
-						_osVersion = L"Windows Vista, ";
-						_osVersion += _osInfo.m_ServicePack;
-					}
-					else
-					{
-						_osVersion = L"Windows Server 2008, ";
-						_osVersion += _osInfo.m_ServicePack;
-					}
-				}
-				break;
-			case 5:
-				if( _osInfo.m_Minor == 2 )
-				{
-					_osVersion = L"Windows Server 2003, ";
-					_osVersion += _osInfo.m_ServicePack;
-				}
-				if( _osInfo.m_Minor == 1 )
-				{
-					_osVersion = L"Windows XP, ";
-					_osVersion += _osInfo.m_ServicePack;
-				}
-				if( _osInfo.m_Minor == 0 )
-				{
-					_osVersion = L"Windows 2000, ";
-					_osVersion += _osInfo.m_ServicePack;
-				}
-				break;
-			default:
-				_osVersion = L"Windows " + std::to_wstring(_osInfo.m_Major) + L"." +
-					std::to_wstring(_osInfo.m_Minor) + L"." + std::to_wstring(_osInfo.m_Build);
-				break;
-		}
+		// Windows 11 still reports itself as 10.0; it starts at build 22000.
+		std::wstring _osVersion;
+		if ( !_osInfo.m_bWorkstation )
+			_osVersion = L"Windows Server";
+		else if ( _osInfo.m_Major == 10 && _osInfo.m_Build >= 22000 )
+			_osVersion = L"Windows 11";
+		else
+			_osVersion = L"Windows " + std::to_wstring(_osInfo.m_Major);
+
+		_osVersion += L" (" + std::to_wstring(_osInfo.m_Major) + L"." +
+			std::to_wstring(_osInfo.m_Minor) + L"." + std::to_wstring(_osInfo.m_Build) + L")";
 		return  _osVersion;
 	}
 }

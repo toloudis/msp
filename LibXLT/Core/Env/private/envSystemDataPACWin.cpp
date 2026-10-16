@@ -12,27 +12,8 @@
 
 #include "Core/env/private/envSystemDataPACWin.hpp"
 
-#include "Core/env/envInitX.hpp"
-
 namespace envSystemDataPAC
 {
-
-namespace
-{
-
-WindowsOS l_CurWindowsVersion = e_Unknown;
-
-}
-
-
-//========================================================================
-//	As you might expect, this function finds which version of windows
-//	is being used.  The version is cached so it's reasonably fast.
-//========================================================================
-WindowsOS GetWindowsOSType()
-{
-	return l_CurWindowsVersion;
-}
 
 //========================================================================
 //	GetOSVersion fills in the real version of Windows that is running.
@@ -59,7 +40,6 @@ bool GetOSVersion(OSVersion& o_Version)
 	o_Version.m_Minor = info.dwMinorVersion;
 	o_Version.m_Build = info.dwBuildNumber;
 	o_Version.m_bWorkstation = (info.wProductType == VER_NT_WORKSTATION);
-	o_Version.m_ServicePack = info.szCSDVersion;
 	return true;
 }
 
@@ -78,19 +58,6 @@ std::wstring GetExecutablePath()
 //========================================================================
 void Init()
 {
-	// Deduce os version.
-	OSVersion version;
-	if ( !GetOSVersion(version) )
-		throw envInitX("env");
-
-	if ( version.m_Major <= 4 )
-		l_CurWindowsVersion = e_WindowsNT40;
-	else if ( version.m_Major == 5 )
-		l_CurWindowsVersion = e_Windows2000;
-	else if ( version.m_Major == 6 )
-		l_CurWindowsVersion = e_WindowsXP;		// windows7 shows up as 6 also
-	else
-		l_CurWindowsVersion = e_Windows7;
 }
 
 //========================================================================

@@ -9,7 +9,6 @@
 #include "Core/app/private/appInstanceUtilPACWin.hpp"
 
 #include "Core/app/private/appApplicationPACWin.hpp"
-#include "Core/env/private/envSystemDataPACWin.hpp"
 
 #include <string>
 #include <windows.h>
@@ -55,30 +54,7 @@ void CleanUp()
 //------------------------------------------------------------------------
 bool IsAppRunning(const char* i_IDString)
 {
-	bool global_mutex = false;
-	OSVERSIONINFO version_info;
-	std::string mutex_name;
-
-	version_info.dwOSVersionInfoSize = sizeof(version_info);
-
-	switch( envSystemDataPAC::GetWindowsOSType() )
-	{
-		case envSystemDataPAC::e_WindowsNT40:
-		case envSystemDataPAC::e_WindowsCE:
-			global_mutex = false;
-		break;
-
-		case envSystemDataPAC::e_Windows2000:
-		case envSystemDataPAC::e_WindowsXP:
-		case envSystemDataPAC::e_WindowsVista:
-		case envSystemDataPAC::e_Windows7:
-			global_mutex = true;
-		break;
-	}
-
-	if( global_mutex )
-		mutex_name = "Global\\";
-
+	std::string mutex_name = "Global\\";
 	mutex_name += i_IDString;
 
 	l_Mutex = ::CreateMutexA(NULL, FALSE, mutex_name.c_str());

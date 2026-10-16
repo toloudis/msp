@@ -45,10 +45,6 @@ namespace snSoundUtilPAC
 		#error snSoundUtilPAC not defined for this platform
 	#endif
 #else
-	#if ENV_OS == ENV_XBOXOS
-		#include "AudioDS/sn/private/snSoundUtilPACXbox.hpp"
-	#else
-		#error snSoundUtilPAC not defined for this platform
-	#endif
+	#error snSoundUtilPAC not defined for this platform
 #endif
 

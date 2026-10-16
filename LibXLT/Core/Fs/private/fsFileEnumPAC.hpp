@@ -32,13 +32,5 @@ void EnumerateDirectories(	const fsLocator& i_Locator,
 #if ENV_WINDOWS
 	#include "Core/fs/private/fsFileEnumPACWin.hpp"
 #else
-	#if ENV_OS == ENV_PS2OS
-		#include "Core/fs/private/fsFileEnumPACPS2.hpp"
-	#else
-		#if ENV_OS == ENV_XBOXOS
-			#include "Core/fs/private/fsFileEnumPACXbox.hpp"
-		#else
-			#error fsFileEnumPAC not defined for this platform
-		#endif
-	#endif
+	#error fsFileEnumPAC not defined for this platform
 #endif

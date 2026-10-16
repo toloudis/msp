@@ -23,13 +23,5 @@
 #if ENV_WINDOWS
 	#include "InputDI/in/private/inKeyboardPACWin.hpp"
 #else
-	#if ENV_OS == ENV_PS2OS
-		#include "InputDI/in/private/inKeyboardPACPS2.hpp"
-	#else
-		#if ENV_OS == ENV_XBOXOS
-			#include "InputDI/in/private/inKeyboardPACXbox.hpp"
-		#else
-			#error inKeyboardPAC not defined for this platform
-		#endif
-	#endif
+	#error inKeyboardPAC not defined for this platform
 #endif

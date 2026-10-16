@@ -68,10 +68,11 @@ cameras/lights/objects on a timeline, and render frames or sequences on the GPU
   behind `xxxPAC.hpp` headers that document the required interface and
   `#include` the per-platform implementation, selected by `ENV_WINDOWS` etc.
   from `Core/Env/envPlatform.hpp`:
-  `appTimePAC.hpp` → `appTimePACWin.hpp`. Old `PS2`/`Xbox` variants still
-  exist but are dead. **Windows headers and APIs belong only in `*PACWin*` (or
-  other `*Win*`) files**; ongoing work is moving the remaining Windows-specific
-  code behind PACs.
+  `appTimePAC.hpp` → `appTimePACWin.hpp`. Windows (10 and later) is the only
+  implemented platform; the PAC layer is kept so macOS or Linux could be added
+  later (`ENV_MACOS`/`ENV_LINUXOS` exist as placeholders). Don't add code for
+  older Windows versions. **Windows headers and APIs belong only in `*PACWin*`
+  (or other `*Win*`) files**; all OS-specific code should be behind PACs.
 - **Common suffixes / patterns** (especially in MachStudio):
   - `...Interest` — observer/listener interface (e.g. `docDocumentInterest`,
     `sel3dSelectInterest`) registered with a manager to receive notifications.
@@ -154,7 +155,7 @@ The live Direct3D 11 renderer.
 | `bump` | Bump/normal-mapped tri-mesh fragments and renderer |
 | `hair` | DX11 hair renderer |
 | `may` | Maya import fragment creation |
-| `shdw` | Multi-pass "shader world" renderers: depth, HDR, glow, materials, baking, AO and GI previews, frame buffer manager |
+| `shdw` | Multi-pass "shadow" renderers: depth, HDR, glow, materials, baking, AO and GI previews, frame buffer manager |
 | `tmesh` | Triangle mesh fragments, vertex/index buffers, BVH |
 
 ### Other LibXLT libraries

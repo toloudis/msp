@@ -17,7 +17,6 @@
 #include "Core/app/appFlowEvent.hpp"
 #include "Core/app/appMouseEvent.hpp"
 #include "Core/env/envAppVersion.hpp"
-#include "Core/env/private/envSystemDataPAC.hpp"
 
 #include <iomanip>
 #include <algorithm>
@@ -956,19 +955,8 @@ HWND create_window(int i_Width, int i_Height, int i_X, int i_Y, const itString& 
 	HWND hwnd = NULL;
 	BOOL ret_val;
 
-	//WS_CAPTION causes misbehavior on XP (minimiing when clicking the upper left and right corners
-	//however, it is needed for windowed mode to function properly
-	//this means that hotspots are slightly off in windowed mode on XP
-	if ((envSystemDataPAC::e_WindowsXP == envSystemDataPAC::GetWindowsOSType())
-		|| (envSystemDataPAC::e_WindowsVista == envSystemDataPAC::GetWindowsOSType())
-		|| (envSystemDataPAC::e_Windows7 == envSystemDataPAC::GetWindowsOSType()))
-	{
-		l_Style = WS_SYSMENU | WS_THICKFRAME;
-	}
-	else
-	{
-		l_Style = WS_SYSMENU | WS_CAPTION | WS_THICKFRAME;
-	}
+	//WS_CAPTION causes misbehavior (minimizing when clicking the upper left and right corners)
+	l_Style = WS_SYSMENU | WS_THICKFRAME;
 
 	// If not showing the windows, create all windows without WS_VISIBLE.
 	// This can be used in batch mode so that all rendering is done in the background.

@@ -36,13 +36,5 @@
 #if ENV_WINDOWS
 	#include "Core/app/private/appApplicationPACWin.hpp"
 #else
-	#if ENV_OS == ENV_PS2OS
-		#include "Core/app/private/appApplicationPACPS2.hpp"
-	#else
-		#if ENV_OS == ENV_XBOXOS
-			#include "Core/app/private/appApplicationPACXbox.hpp"
-		#else
-			#error appApplicationPAC not defined for this platform
-		#endif
-	#endif
+	#error appApplicationPAC not defined for this platform
 #endif

@@ -35,13 +35,5 @@
 #if ENV_WINDOWS
 	#include "Core/dbg/private/dbgLogPACWin.hpp"
 #else
-	#if ENV_OS == ENV_PS2OS
-		#include "Core/dbg/private/dbgLogPACPS2.hpp"
-	#else
-		#if ENV_OS == ENV_XBOXOS
-			#include "Core/dbg/private/dbgLogPACXbox.hpp"
-		#else
-			#error dbgLogPAC not defined for this platform
-		#endif
-	#endif
+	#error dbgLogPAC not defined for this platform
 #endif
