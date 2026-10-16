@@ -42,8 +42,14 @@
     <ClCompile Include="Ch\chChunkTest.cpp">
       <Filter>Ch</Filter>
     </ClCompile>
+    <ClCompile Include="Ch\chNumberTest.cpp">
+      <Filter>Ch</Filter>
+    </ClCompile>
     <ClCompile Include="Dbg\dbgMsgTest.cpp">
       <Filter>Dbg</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\envNumberTextTest.cpp">
+      <Filter>Env</Filter>
     </ClCompile>
     <ClCompile Include="Env\envSTLHelpersTest.cpp">
       <Filter>Env</Filter>
@@ -90,6 +96,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ctMath.hpp">
+      <Filter>Support</Filter>
+    </ClInclude>
+    <ClInclude Include="ctNumbers.hpp">
       <Filter>Support</Filter>
     </ClInclude>
     <ClInclude Include="ctPlatform.hpp">

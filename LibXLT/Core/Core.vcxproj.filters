@@ -138,6 +138,9 @@
     <ClInclude Include="Env\envSTLHelpers.hpp">
       <Filter>Env</Filter>
     </ClInclude>
+    <ClInclude Include="Env\envNumberText.hpp">
+      <Filter>Env</Filter>
+    </ClInclude>
     <ClInclude Include="Env\envString.hpp">
       <Filter>Env</Filter>
     </ClInclude>
@@ -376,6 +379,9 @@
       <Filter>Fs</Filter>
     </ClInclude>
     <ClInclude Include="Fs\fsResourceTrackerInterest.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\fsXMLData.hpp">
       <Filter>Fs</Filter>
     </ClInclude>
     <ClInclude Include="Fs\fsXMLParser.hpp">
@@ -817,6 +823,9 @@
       <Filter>Env\EnvPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Env\private\envPool.cpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\private\envNumberText.cpp">
       <Filter>Env\EnvPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Env\private\envString.cpp">

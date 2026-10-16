@@ -5,12 +5,17 @@
 **      with fsXMLReader.
 **
 **      Ported from TestLibXLT/Core/Fs/fsTestMain.cpp (TestXMLWrite and
-**      TestXMLRead, which wrote and read unrelated files).
+**      TestXMLRead, which wrote and read unrelated files). The number
+**      tests also read the file through fsXMLParser.
 **
 **	Extra Large Technology
 \****************************************************************************/
+#include "ctNumbers.hpp"
 #include "ctTempDir.hpp"
 
+#ifndef FS_XMLPARSER_HPP
+#include "Core/fs/fsXMLParser.hpp"
+#endif
 #ifndef FS_XMLREADER_HPP
 #include "Core/fs/fsXMLReader.hpp"
 #endif
@@ -20,6 +25,9 @@
 
 #include <gtest/gtest.h>
 
+#include <filesystem>
+#include <fstream>
+#include <iterator>
 #include <map>
 #include <string>
 #include <vector>
@@ -48,6 +56,30 @@ std::map<std::string, std::string> ReadAll(const fsLocator& i_File, std::vector<
 	}
 
 	reader.Close();
+	return text;
+}
+
+//	ParseAll is ReadAll through fsXMLParser, from the file's contents.
+//
+std::map<std::string, std::string> ParseAll(const std::filesystem::path& i_File)
+{
+	std::ifstream in(i_File, std::ios::binary);
+	std::string contents((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
+
+	std::map<std::string, std::string> text;
+
+	fsXMLParser parser(contents.c_str());
+	parser.Open();
+
+	std::string key, value;
+	fsXMLData::fs_Node_Type node_type;
+	while( (node_type = parser.ReadNode(key, value)) != fsXMLData::e_EOF )
+	{
+		if( node_type == fsXMLData::e_Text )
+			text[key] = value;
+	}
+
+	parser.Close();
 	return text;
 }
 
@@ -136,4 +168,55 @@ TEST(fsXML, WriteThenRead)
 	envType::Float64 v_float64 = 0;
 	convert.Convert(text["var_Float64"], v_float64);
 	EXPECT_NEAR(123.456, v_float64, 1e-9);
+}
+
+template<class T>
+class fsXMLNumber : public testing::Test
+{
+};
+TYPED_TEST_SUITE(fsXMLNumber, ctNumberTypes);
+
+//	Every number type, including its limits, infinities and NaNs, reads
+//	back exactly through fsXMLReader and fsXMLParser. (fsXMLWriter takes
+//	Int16, Int32 and Float32 as short, int and float.)
+//
+TYPED_TEST(fsXMLNumber, RoundTrip)
+{
+	const std::vector<TypeParam> written = ctNumberValues<TypeParam>();
+
+	ctTempDir dir;
+	fsLocator file = dir.GetLocator("numbers.xml");
+	{
+		fsXMLWriter writer(file);
+		writer.Open();
+		std::string root("Root");
+		writer.WriteStartElement(root);
+		for( size_t i = 0 ; i < written.size() ; i++ )
+		{
+			std::string key = "v" + std::to_string(i);
+			writer.WriteElement(key, written[i]);
+		}
+		writer.WriteEndElement();
+		writer.Close();
+	}
+
+	std::vector<std::string> elements;
+	std::map<std::string, std::string> read_text = ReadAll(file, elements);
+	std::map<std::string, std::string> parsed_text = ParseAll(dir.GetPath() / "numbers.xml");
+
+	fsXMLReader reader(file);
+	fsXMLParser parser("");
+	for( size_t i = 0 ; i < written.size() ; i++ )
+	{
+		std::string key = "v" + std::to_string(i);
+		SCOPED_TRACE(key + " = " + read_text[key]);
+
+		TypeParam read = TypeParam(42);
+		reader.Convert(read_text[key], read);
+		EXPECT_TRUE(ctSameNumber(written[i], read)) << "fsXMLReader";
+
+		TypeParam parsed = TypeParam(42);
+		parser.Convert(parsed_text[key], parsed);
+		EXPECT_TRUE(ctSameNumber(written[i], parsed)) << "fsXMLParser";
+	}
 }

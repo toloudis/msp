@@ -8,6 +8,7 @@
 \****************************************************************************/
 
 #include "Core/ch/chXMLWriter.hpp"
+#include "Core/env/envNumberText.hpp"
 
 #include "Core/fs/fsFilePosSaver.hpp"
 #include "Core/gf/gfFileUtil.hpp"
@@ -220,91 +221,80 @@ void chXMLWriter::FinishChunk()
 //--------------------------------------------------------------------
 void chXMLWriter::Write(envType::Int8 i_Val)
 {
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
 
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
-	
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 	l_bLastWriteHeader = false;
 }
 
 void chXMLWriter::Write(envType::UInt8 i_Val)
 {
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
-	
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
+
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 	l_bLastWriteHeader = false;
 }
 
 void chXMLWriter::Write(envType::Int16 i_Val)
 {
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
-	
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
+
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 	l_bLastWriteHeader = false;
 }
 
 void chXMLWriter::Write(envType::UInt16 i_Val)
 {
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
-	
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
+
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 	l_bLastWriteHeader = false;
 }
 
 void chXMLWriter::Write(envType::Int32 i_Val)
 {
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
-	
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
+
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 	l_bLastWriteHeader = false;
 }
 
 void chXMLWriter::Write(envType::UInt32 i_Val)
 {
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
-	
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
+
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 	l_bLastWriteHeader = false;
 }
 
 void chXMLWriter::Write(envType::Int64 i_Val)
 {
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
-	
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
+
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 	l_bLastWriteHeader = false;
 }
 
 void chXMLWriter::Write(envType::UInt64 i_Val)
 {
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
-	
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
+
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 	l_bLastWriteHeader = false;
 }
 
 void chXMLWriter::Write(envType::Float32 i_Val)
 {
-	buf_ss.str("");
-	buf_ss.setf( 0, std::ios::floatfield );
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
 
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 	l_bLastWriteHeader = false;
@@ -312,10 +302,8 @@ void chXMLWriter::Write(envType::Float32 i_Val)
 
 void chXMLWriter::Write(envType::Float64 i_Val)
 {
-	buf_ss.str("");
-	buf_ss.setf( 0, std::ios::floatfield );
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
 
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 	l_bLastWriteHeader = false;

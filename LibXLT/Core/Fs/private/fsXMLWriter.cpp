@@ -7,6 +7,7 @@
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "Core/fs/fsXMLWriter.hpp"
+#include "Core/env/envNumberText.hpp"
 
 #include "Core/it/itStringUtil.hpp"
 
@@ -148,7 +149,7 @@ void fsXMLWriter::WriteElement(std::string& i_KeyName, int i_Value)
 //	sprintf(buffer, "%s", i_KeyName.c_str());
 //	m_pFileStream->Write(sizeof(buffer), buffer);
 	std::stringstream ss;
-	ss << i_Value;
+	ss << envNumberText::ToText(i_Value);
 	m_pFileStream->Write(ss.str().size(), ss.str().c_str());
 
 #ifdef FSXMLWRITER_DEBUG_OUTPUT 
@@ -186,7 +187,7 @@ void fsXMLWriter::WriteElement(std::string& i_KeyName, short i_Value)
 	write_start_element(i_KeyName);
 
 	std::stringstream ss;
-	ss << i_Value;
+	ss << envNumberText::ToText(i_Value);
 	m_pFileStream->Write(ss.str().size(), ss.str().c_str());
 
 #ifdef FSXMLWRITER_DEBUG_OUTPUT 
@@ -205,7 +206,7 @@ void fsXMLWriter::WriteElement(std::string& i_KeyName, float i_Value)
 	write_start_element(i_KeyName);
 
 	std::stringstream ss;
-	ss << i_Value;
+	ss << envNumberText::ToText(i_Value);
 	m_pFileStream->Write(ss.str().size(), ss.str().c_str());
 
 #ifdef FSXMLWRITER_DEBUG_OUTPUT 
@@ -224,8 +225,7 @@ void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::Int8 i_Value)
 	write_start_element(i_KeyName);
 
 	std::stringstream ss;
-	envType::Int32 val32 = i_Value;	// bga - promote the int8 so it doesn't write as a character
-	ss << val32;
+	ss << envNumberText::ToText(i_Value);
 	m_pFileStream->Write(ss.str().size(), ss.str().c_str());
 
 #ifdef FSXMLWRITER_DEBUG_OUTPUT 
@@ -244,8 +244,7 @@ void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::UInt8 i_Value)
 	write_start_element(i_KeyName);
 
 	std::stringstream ss;
-	envType::UInt32 val32 = i_Value;	// bga - promote the uint8 so it doesn't write as a character
-	ss << val32;
+	ss << envNumberText::ToText(i_Value);
 	m_pFileStream->Write(ss.str().size(), ss.str().c_str());
 
 #ifdef FSXMLWRITER_DEBUG_OUTPUT 
@@ -270,7 +269,7 @@ void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::UInt16 i_Value)
 	write_start_element(i_KeyName);
 
 	std::stringstream ss;
-	ss << i_Value;
+	ss << envNumberText::ToText(i_Value);
 	m_pFileStream->Write(ss.str().size(), ss.str().c_str());
 
 #ifdef FSXMLWRITER_DEBUG_OUTPUT 
@@ -295,7 +294,7 @@ void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::UInt32 i_Value)
 	write_start_element(i_KeyName);
 
 	std::stringstream ss;
-	ss << i_Value;
+	ss << envNumberText::ToText(i_Value);
 	m_pFileStream->Write(ss.str().size(), ss.str().c_str());
 
 #ifdef FSXMLWRITER_DEBUG_OUTPUT 
@@ -314,7 +313,7 @@ void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::Int64 i_Value)
 	write_start_element(i_KeyName);
 
 	std::stringstream ss;
-	ss << i_Value;
+	ss << envNumberText::ToText(i_Value);
 	m_pFileStream->Write(ss.str().size(), ss.str().c_str());
 
 #ifdef FSXMLWRITER_DEBUG_OUTPUT 
@@ -333,7 +332,7 @@ void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::UInt64 i_Value)
 	write_start_element(i_KeyName);
 
 	std::stringstream ss;
-	ss << i_Value;
+	ss << envNumberText::ToText(i_Value);
 	m_pFileStream->Write(ss.str().size(), ss.str().c_str());
 
 #ifdef FSXMLWRITER_DEBUG_OUTPUT 
@@ -358,7 +357,7 @@ void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::Float64 i_Value)
 	write_start_element(i_KeyName);
 
 	std::stringstream ss;
-	ss << i_Value;
+	ss << envNumberText::ToText(i_Value);
 	m_pFileStream->Write(ss.str().size(), ss.str().c_str());
 
 #ifdef FSXMLWRITER_DEBUG_OUTPUT 
@@ -477,13 +476,13 @@ void fsXMLWriter::WriteElement(std::string& i_KeyName, const maFloatRGBA& i_Valu
 	write_start_element(i_KeyName);
 
 	std::stringstream ss;
-	ss << i_Value.GetRed();
+	ss << envNumberText::ToText(i_Value.GetRed());
 	ss << ',';
-	ss << i_Value.GetGreen();
+	ss << envNumberText::ToText(i_Value.GetGreen());
 	ss << ',';
-	ss << i_Value.GetBlue();
+	ss << envNumberText::ToText(i_Value.GetBlue());
 	ss << ',';
-	ss << i_Value.GetAlpha();
+	ss << envNumberText::ToText(i_Value.GetAlpha());
 	m_pFileStream->Write(ss.str().size(), ss.str().c_str());
 
 #ifdef FSXMLWRITER_DEBUG_OUTPUT 

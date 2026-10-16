@@ -22,8 +22,10 @@ namespace
 {
 
 //----------------------------------------------------------------------------
+//	The characters are unsigned: the ctype functions are undefined for
+//	negative values other than EOF (and assert on them in debug builds).
 //----------------------------------------------------------------------------
-inline bool is_whitespace(char i_Ch)
+inline bool is_whitespace(unsigned char i_Ch)
 {
 	// make colon whitespace to make "name:value" pairs easier
 	return (isspace(i_Ch) || (i_Ch == ':'));
@@ -31,7 +33,7 @@ inline bool is_whitespace(char i_Ch)
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-bool should_break(char i_LastChar, char i_ThisChar, char i_NextChar)
+bool should_break(unsigned char i_LastChar, unsigned char i_ThisChar, unsigned char i_NextChar)
 {
 	// alpha breaks unless last char was alpha or period or underscore
 	//if( isalpha(i_ThisChar) || (i_ThisChar == '_') )
@@ -340,7 +342,7 @@ gfFileXML::WriteToken( std::string &i_Token )
 	{
 		for (int i=0; i<len; i++)
 		{
-			if (isspace(i_Token[i]) || (i_Token[i] == '\"') || (i_Token[i] == '\\'))
+			if (isspace(static_cast<unsigned char>(i_Token[i])) || (i_Token[i] == '\"') || (i_Token[i] == '\\'))
 			{
 				bNeedsQuotes = true;
 				break;

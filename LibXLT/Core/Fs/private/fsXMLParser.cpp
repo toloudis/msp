@@ -7,6 +7,7 @@
 **	Copyright(C) 2009 - All Rights Reserved
 \****************************************************************************/
 #include "Core/fs/fsXMLParser.hpp"
+#include "Core/env/envNumberText.hpp"
 
 #include "Core/fs/fsFileUtil.hpp"
 
@@ -119,11 +120,7 @@ fsXMLData::fs_Node_Type fsXMLParser::ReadNode(std::string& o_KeyName, std::strin
 //------------------------------------------------------------------------
 void fsXMLParser::Convert(const std::string& i_Text, int& o_Value)
 {
-	if (i_Text.length() > 0)
-	{
-		std::stringstream ss(i_Text);
-		ss >> o_Value;
-	}
+	envNumberText::FromText(i_Text, o_Value);
 }
 void fsXMLParser::Convert(const std::string& i_Text, bool& o_Value)
 {
@@ -142,35 +139,19 @@ void fsXMLParser::Convert(const std::string& i_Text, bool& o_Value)
 }
 void fsXMLParser::Convert(const std::string& i_Text, short& o_Value)
 {
-	if (i_Text.length() > 0)
-	{
-		std::stringstream ss(i_Text);
-		ss >> o_Value;
-	}
+	envNumberText::FromText(i_Text, o_Value);
 }
 void fsXMLParser::Convert(const std::string& i_Text, float& o_Value)
 {
-	if (i_Text.length() > 0)
-	{
-		std::stringstream ss(i_Text);
-		ss >> o_Value;
-	}
+	envNumberText::FromText(i_Text, o_Value);
 }
 void fsXMLParser::Convert(const std::string& i_Text, envType::Int8& o_Value)
 {
-	if (i_Text.length() > 0)
-	{
-		std::stringstream ss(i_Text);
-		ss >> o_Value;
-	}
+	envNumberText::FromText(i_Text, o_Value);
 }
 void fsXMLParser::Convert(const std::string& i_Text, envType::UInt8& o_Value)
 {
-	if (i_Text.length() > 0)
-	{
-		std::stringstream ss(i_Text);
-		ss >> o_Value;
-	}
+	envNumberText::FromText(i_Text, o_Value);
 }
 //void fsXMLParser::Convert(const std::string& i_Text, envType::Int16& o_Value)
 //{
@@ -178,11 +159,7 @@ void fsXMLParser::Convert(const std::string& i_Text, envType::UInt8& o_Value)
 //}
 void fsXMLParser::Convert(const std::string& i_Text, envType::UInt16& o_Value)
 {
-	if (i_Text.length() > 0)
-	{
-		std::stringstream ss(i_Text);
-		ss >> o_Value;
-	}
+	envNumberText::FromText(i_Text, o_Value);
 }
 //void fsXMLParser::Convert(const std::string& i_Text, envType::Int32& o_Value)
 //{
@@ -190,27 +167,15 @@ void fsXMLParser::Convert(const std::string& i_Text, envType::UInt16& o_Value)
 //}
 void fsXMLParser::Convert(const std::string& i_Text, envType::UInt32& o_Value)
 {
-	if (i_Text.length() > 0)
-	{
-		std::stringstream ss(i_Text);
-		ss >> o_Value;
-	}
+	envNumberText::FromText(i_Text, o_Value);
 }
 void fsXMLParser::Convert(const std::string& i_Text, envType::Int64& o_Value)
 {
-	if (i_Text.length() > 0)
-	{
-		std::stringstream ss(i_Text);
-		ss >> o_Value;
-	}
+	envNumberText::FromText(i_Text, o_Value);
 }
 void fsXMLParser::Convert(const std::string& i_Text, envType::UInt64& o_Value)
 {
-	if (i_Text.length() > 0)
-	{
-		std::stringstream ss(i_Text);
-		ss >> o_Value;
-	}
+	envNumberText::FromText(i_Text, o_Value);
 }
 //void fsXMLParser::Convert(const std::string& i_Text, envType::Float32& o_Value)
 //{
@@ -218,11 +183,7 @@ void fsXMLParser::Convert(const std::string& i_Text, envType::UInt64& o_Value)
 //}
 void fsXMLParser::Convert(const std::string& i_Text, envType::Float64& o_Value)
 {
-	if (i_Text.length() > 0)
-	{
-		std::stringstream ss(i_Text);
-		ss >> o_Value;
-	}
+	envNumberText::FromText(i_Text, o_Value);
 }
 void fsXMLParser::Convert(const std::string& i_Text, char * o_Value)
 {

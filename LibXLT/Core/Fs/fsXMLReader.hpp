@@ -17,26 +17,14 @@
 #ifndef FS_FILESTREAM_HPP
 #include "Core/fs/fsFileStream.hpp"
 #endif
+#ifndef FS_XMLDATA_HPP
+#include "Core/fs/fsXMLData.hpp"
+#endif
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
 #endif
 
 #include <string>
-
-
-//============================================================================
-//============================================================================
-namespace fsXMLData
-{
-	enum fs_Node_Type
-	{
-		e_Element = 0,
-		e_Text,
-		e_EndElement,
-		e_None,
-		e_EOF
-	};
-}
 
 
 //============================================================================

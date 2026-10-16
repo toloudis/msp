@@ -502,6 +502,7 @@
     <ClInclude Include="Env\envPool.hpp" />
     <ClInclude Include="Env\envSharedAssetMgr.hpp" />
     <ClInclude Include="Env\envSTLHelpers.hpp" />
+    <ClInclude Include="Env\envNumberText.hpp" />
     <ClInclude Include="Env\envString.hpp" />
     <ClInclude Include="Env\envThread.hpp" />
     <ClInclude Include="Env\envThreadGroup.hpp" />
@@ -582,6 +583,7 @@
     <ClInclude Include="Fs\fsResourceTracker.hpp" />
     <ClInclude Include="Fs\fsResourceTrackerData.hpp" />
     <ClInclude Include="Fs\fsResourceTrackerInterest.hpp" />
+    <ClInclude Include="Fs\fsXMLData.hpp" />
     <ClInclude Include="Fs\fsXMLParser.hpp" />
     <ClInclude Include="Fs\fsXMLReader.hpp" />
     <ClInclude Include="Fs\fsXMLWriter.hpp" />
@@ -875,6 +877,7 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="Env\private\envNumberText.cpp" />
     <ClCompile Include="Env\private\envString.cpp" />
     <ClCompile Include="Env\private\envExceptionXPACWin.cpp" />
     <ClCompile Include="Env\private\envStringPACWin.cpp" />

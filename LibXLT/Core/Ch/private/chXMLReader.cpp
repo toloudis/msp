@@ -7,6 +7,7 @@
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "Core/ch/chXMLReader.hpp"
+#include "Core/env/envNumberText.hpp"
 
 #include "Core/ch/chExceptionX.hpp"
 #include "Core/gf/gfFileXML.hpp"
@@ -20,7 +21,7 @@ namespace
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 template<class T>
-bool read_int(gfFileXML &i_File, T &o_Val)
+bool read_number(gfFileXML &i_File, T &o_Val)
 {
 	std::string tag;
 	if (!i_File.ReadToken(tag))
@@ -29,14 +30,18 @@ bool read_int(gfFileXML &i_File, T &o_Val)
 		return false;
 	}
 
-	o_Val = atoi(tag.c_str());
+	if (!envNumberText::FromText(tag, o_Val))
+		o_Val = 0;
 	return true;
 }
 
 //----------------------------------------------------------------------------
+//	Int8 and UInt8 were once written as raw characters (by chXMLWriter until 2026),
+//	so a one-character token that isn't a number is taken as that byte.
+//	Bytes that are whitespace, digits, '"' or '#' can't be recovered.
 //----------------------------------------------------------------------------
 template<class T>
-bool read_float(gfFileXML &i_File, T &o_Val)
+bool read_byte(gfFileXML &i_File, T &o_Val)
 {
 	std::string tag;
 	if (!i_File.ReadToken(tag))
@@ -45,7 +50,8 @@ bool read_float(gfFileXML &i_File, T &o_Val)
 		return false;
 	}
 
-	o_Val = (float) atof(tag.c_str());
+	if (!envNumberText::FromText(tag, o_Val))
+		o_Val = (tag.length() == 1) ? T(tag[0]) : 0;
 	return true;
 }
 
@@ -247,52 +253,52 @@ void chXMLReader::FinishChunk()
 //----------------------------------------------------------------------------
 void chXMLReader::Read(envType::Int8& o_Val)
 {
-	read_int<envType::Int8>(m_File, o_Val);
+	read_byte<envType::Int8>(m_File, o_Val);
 }
 
 void chXMLReader::Read(envType::UInt8& o_Val)
 {
-	read_int<envType::UInt8>(m_File, o_Val);
+	read_byte<envType::UInt8>(m_File, o_Val);
 }
 
 void chXMLReader::Read(envType::Int16& o_Val)
 {
-	read_int<envType::Int16>(m_File, o_Val);
+	read_number<envType::Int16>(m_File, o_Val);
 }
 
 void chXMLReader::Read(envType::UInt16& o_Val)
 {
-	read_int<envType::UInt16>(m_File, o_Val);
+	read_number<envType::UInt16>(m_File, o_Val);
 }
 
 void chXMLReader::Read(envType::Int32& o_Val)
 {
-	read_int<envType::Int32>(m_File, o_Val);
+	read_number<envType::Int32>(m_File, o_Val);
 }
 
 void chXMLReader::Read(envType::UInt32& o_Val)
 {
-	read_int<envType::UInt32>(m_File, o_Val);
+	read_number<envType::UInt32>(m_File, o_Val);
 }
 
 void chXMLReader::Read(envType::Int64& o_Val)
 {
-	read_int<envType::Int64>(m_File, o_Val);
+	read_number<envType::Int64>(m_File, o_Val);
 }
 
 void chXMLReader::Read(envType::UInt64& o_Val)
 {
-	read_int<envType::UInt64>(m_File, o_Val);
+	read_number<envType::UInt64>(m_File, o_Val);
 }
 
 void chXMLReader::Read(envType::Float32& o_Val)
 {
-	read_float<envType::Float32>(m_File, o_Val);
+	read_number<envType::Float32>(m_File, o_Val);
 }
 
 void chXMLReader::Read(envType::Float64& o_Val)
 {
-	read_float<envType::Float64>(m_File, o_Val);
+	read_number<envType::Float64>(m_File, o_Val);
 }
 
 //----------------------------------------------------------------------------
