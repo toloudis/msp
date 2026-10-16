@@ -9,6 +9,8 @@
 \****************************************************************************/
 #include "Support/tmln/tmlnChannelSet.hpp"
 
+#include "Core/it/itStringUtil.hpp"
+
 #include "Support/tmln/tmlnChannel.hpp"
 #include "Support/tmln/tmlnDriver.hpp"
 
@@ -170,7 +172,7 @@ int tmlnChannelSet::GetChannel(const char *i_Name) const
 	int num = m_Channels.size();
 	for (int i=0; i<num; i++)
 	{
-		if (_stricmp(m_Channels[i]->GetName().c_str(), i_Name) == 0)
+		if (itStringUtil::CompareNoCase(m_Channels[i]->GetName(), i_Name) == 0)
 			return i;
 	}
 	return -1;

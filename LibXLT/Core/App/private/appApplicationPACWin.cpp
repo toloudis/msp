@@ -1432,6 +1432,16 @@ void appApplicationPAC::ReleaseAccessibilityClients()
 }
 
 //--------------------------------------------------------------------
+//	Start a program without waiting for it
+//--------------------------------------------------------------------
+//static
+bool appApplicationPAC::LaunchProgram(const std::string& i_CommandLine, bool i_ShowWindow)
+{
+	// WinExec returns a value greater than 31 if it succeeds
+	return ::WinExec(i_CommandLine.c_str(), i_ShowWindow ? SW_SHOWNORMAL : SW_HIDE) > 31;
+}
+
+//--------------------------------------------------------------------
 //	Used for creating an application that doesn't use Run()
 //--------------------------------------------------------------------
 //static 

@@ -15,7 +15,9 @@
 #include "Core/Env/envType.hpp"
 #endif 
 
-#include <windows.h> // for BITMAPINFOHEADER structs
+#ifndef G2D_BMPFORMAT_HPP
+#include "Graphics/g2d/g2dBMPFormat.hpp"
+#endif
 
 //============================================================================
 //	forward references
@@ -58,7 +60,7 @@ private:
 // shared utility functions
 namespace cptrWriteUtil
 {
-	void fill_bmp_header(BITMAPINFOHEADER &i_Header, int i_Width, int i_Height,
+	void fill_bmp_header(g2dBMPFormat::InfoHeader &i_Header, int i_Width, int i_Height,
 					  int i_DestBitsPerPixel, int i_DestImageSize);
 
 	void write_bmp_header(FileStream &i_File, int i_Width, int i_Height,

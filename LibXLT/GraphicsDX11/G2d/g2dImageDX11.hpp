@@ -189,11 +189,6 @@ class g2dImageDX11 : public g2dImage
 							envType::Float32 &o_Alpha);
 
 		//----------------------------------------------------------------------------
-		// caller must destroy the HBITMAP!!!
-		//----------------------------------------------------------------------------
-		virtual void* GetHBMP(const int i_Sampling );
-
-		//----------------------------------------------------------------------------
 		// SwapChannels() - assumes 4 bytes per pixel and non-floats
 		//----------------------------------------------------------------------------
 		virtual void SwapChannels( int i_ChannelOne, int i_ChannelTwo );

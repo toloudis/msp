@@ -15,8 +15,6 @@
 #include "Graphics/g2d/g2dImage.hpp"
 #include "Graphics/g3d/g3dPrefs.hpp"
 
-#include <windows.h>
-
 
 //--------------------------------------------------------------------
 // GetPixelType()
@@ -136,9 +134,9 @@ void captStereoUtil::MergeLeftRight(g2dImage* ana, g2dImage* left, g2dImage* rig
 	void* leftBits = left->Lock();
 	void* rightBits = right->Lock();
 	void* anaBits = ana->Lock();
-	BYTE* pLeftBits = (BYTE*)leftBits;
-	BYTE* pRightBits = (BYTE*)rightBits;
-	BYTE* pAnaBits = (BYTE*)anaBits;
+	envType::UInt8* pLeftBits = (envType::UInt8*)leftBits;
+	envType::UInt8* pRightBits = (envType::UInt8*)rightBits;
+	envType::UInt8* pAnaBits = (envType::UInt8*)anaBits;
 
 	int r_offset = offsets[0];
 	int g_offset = offsets[1];
@@ -215,7 +213,7 @@ void captStereoUtil::ApplyAnaglyphColorFilter(g2dImage* orig, const maFloatRGBA&
 
 	// Access bits in pImg and pAnaglyph
 	void* imgBits = orig->Lock();
-	BYTE* pImgBits = (BYTE*)imgBits;
+	envType::UInt8* pImgBits = (envType::UInt8*)imgBits;
 
 	int r_offset = offsets[0];
 	int g_offset = offsets[1];
@@ -236,10 +234,10 @@ void captStereoUtil::ApplyAnaglyphColorFilter(g2dImage* orig, const maFloatRGBA&
 			if ( rendererPFD == g2dPFD::e_Color )
 			{
 				// Apply color filter
-				pImgBits[idx+r_offset] *= (BYTE)(filter.GetRed());
-				pImgBits[idx+g_offset] *= (BYTE)(filter.GetGreen());
-				pImgBits[idx+b_offset] *= (BYTE)(filter.GetBlue());
-				pImgBits[idx+a_offset] *= (BYTE)(filter.GetAlpha());
+				pImgBits[idx+r_offset] *= (envType::UInt8)(filter.GetRed());
+				pImgBits[idx+g_offset] *= (envType::UInt8)(filter.GetGreen());
+				pImgBits[idx+b_offset] *= (envType::UInt8)(filter.GetBlue());
+				pImgBits[idx+a_offset] *= (envType::UInt8)(filter.GetAlpha());
 			} 
 			else if ( rendererPFD == g2dPFD::e_RGBA32f )
 			{

@@ -8,8 +8,6 @@
 \****************************************************************************/
 #include "Features/Capture/cptrRenderThread.hpp"
 
-#include <windows.h>
-
 #include "Features/Capture/cptrAccumulationBuffer.hpp"
 #include "Features/Capture/cptrMBlurMotionSampler.hpp"
 #include "Features/Capture/cptrRenderUtil.hpp"
@@ -57,8 +55,6 @@
 //#include "Tool/gpx/gpxProxyMgr.hpp"
 
 #undef CreateDirectory
-
-#include <windows.h>
 
 #include <fstream>
 #include <iostream>

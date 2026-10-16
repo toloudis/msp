@@ -10,22 +10,15 @@
 
 #include "Features/Capture/cptrWriteUtil.hpp"
 
-#undef STRICT
 #include "Support/capt/captRenderOutputDataUtil.hpp"
-#include "Support/mnm/mnmAviUtil.hpp"
 #include "Support/mnm/mnmPaths.hpp"
 #include "Support/tmln/tmlnTimeLine.hpp"
-
-#include <windows.h>
-
-#undef CreateDirectory
-#undef CreateFile
-#undef DeleteFile
 
 #include "Core/app/appApplication.hpp"
 #include "Core/app/appSimTime.hpp"
 #include "Core/app/appTime.hpp"
 #include "Core/ch/chWriter.hpp"
+#include "Core/fs/fsAviFile.hpp"
 #include "Core/fs/fsFileStream.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Graphics/g2d/g2dImage.hpp"
@@ -56,7 +49,7 @@ namespace
 
 	itString l_OutputFilename;
 
-	mnmAviUtil::HAVI l_hAvi;				// AVI file handle
+	fsAviFile::Handle l_hAvi;				// AVI file handle
 
 
 //----------------------------------------------------------------------------
@@ -110,9 +103,7 @@ void create_avi_file(const fsLocator& i_OutputDirectory)
 		DBG_WARNING("Overwritting file during render: " << avi_loc);
 	}
 
-	itString path;
-	fsFileUtil::LocatorToUnicodeString(avi_loc, path);
-	l_hAvi = mnmAviUtil::CreateAvi(path.GetString(), (int)(1000.0f / tmlnTimeLine::GetFPS()), NULL);
+	l_hAvi = fsAviFile::Create(avi_loc, (int)(1000.0f / tmlnTimeLine::GetFPS()));
 	
 	DBG_LOG( "saving AVI " << avi_loc );
 	DBG_ASSERT( l_hAvi != NULL, "could not create AVI " << avi_loc );
@@ -124,19 +115,21 @@ void create_avi_file(const fsLocator& i_OutputDirectory)
 //----------------------------------------------------------------------------
 void append_avi_file(const itString i_origmovie, const itString i_countdown, const itString i_tempPath)
 {
-	mnmAviUtil::HAVI l_hAvi2;
-	mnmAviUtil::HAVI l_hAvi1;// AVI file handle
-	
-	l_hAvi1 = mnmAviUtil::OpenAVI(i_countdown.GetString());
-	l_hAvi2 = mnmAviUtil::OpenAVI(i_origmovie.GetString());
-	
-	int ret_val = mnmAviUtil::AppendAvi(l_hAvi1,l_hAvi2, i_tempPath);
-	DBG_ASSERT(ret_val == 0, "Error Appending AVI frame, code " << ret_val);
+	fsLocator countdown_loc, origmovie_loc, temp_loc;
+	fsFileUtil::UnicodeStringToLocator(i_countdown, countdown_loc);
+	fsFileUtil::UnicodeStringToLocator(i_origmovie, origmovie_loc);
+	fsFileUtil::UnicodeStringToLocator(i_tempPath, temp_loc);
 
-	int ret_val1 = mnmAviUtil::CloseAvi(l_hAvi1);
-	DBG_ASSERT(ret_val1 == 0, "Error closing AVI1 , code " << ret_val1);
-	int ret_val2 = mnmAviUtil::CloseAvi(l_hAvi2);
-	DBG_ASSERT(ret_val2 == 0, "Error closing AVI2 , code " << ret_val2);
+	fsAviFile::Handle l_hAvi1 = fsAviFile::Open(countdown_loc);
+	fsAviFile::Handle l_hAvi2 = fsAviFile::Open(origmovie_loc);
+	
+	bool ok = fsAviFile::Append(l_hAvi1,l_hAvi2, temp_loc);
+	DBG_ASSERT(ok, "Error Appending AVI frame: " << fsAviFile::GetLastErrorMessage());
+
+	bool ok1 = fsAviFile::Close(l_hAvi1);
+	DBG_ASSERT(ok1, "Error closing AVI1: " << fsAviFile::GetLastErrorMessage());
+	bool ok2 = fsAviFile::Close(l_hAvi2);
+	DBG_ASSERT(ok2, "Error closing AVI2: " << fsAviFile::GetLastErrorMessage());
 	
 }
 
@@ -144,7 +137,7 @@ void append_avi_file(const itString i_origmovie, const itString i_countdown, con
 //----------------------------------------------------------------------------
 void close_avi_file()
 {
-	mnmAviUtil::CloseAvi(l_hAvi);
+	fsAviFile::Close(l_hAvi);
 }
 
 } // end of anonymous namespace
@@ -206,7 +199,9 @@ void cptrWriteAVI::Write( g2dWindow* i_pWindow, const fsLocator& i_Locator, cons
 
 	g2dImage* pImg = NULL;
 	g2dScreenCaptureUtil::CaptureWindowToImage(*i_pWindow, pImg);
-	HBITMAP hbm = (HBITMAP)pImg->GetHBMP(l_Data.m_nCaptureSampling.GetValue());
+	int width = 0, height = 0, bpp = 0, size = 0;
+	envType::UInt8* pixels = NULL;
+	pImg->GetPixels(&pixels, &size, &width, &height, &bpp, l_Data.m_nCaptureSampling.GetValue());
 	delete pImg;
 
 	//float save_time = appTime::GetTime();
@@ -237,17 +232,16 @@ void cptrWriteAVI::Write( g2dWindow* i_pWindow, const fsLocator& i_Locator, cons
 
 		//DBG_LOG("AVI Compression Code: " << l_Data.m_CompressCode.GetValue().c_str());
 
-		AVICOMPRESSOPTIONS opts; ZeroMemory(&opts,sizeof(opts));
-		opts.fccHandler=mmioFOURCC( l_Data.m_CompressCode.GetValue()[0], l_Data.m_CompressCode.GetValue()[1], l_Data.m_CompressCode.GetValue()[2], l_Data.m_CompressCode.GetValue()[3] );
 		bool dialog = (l_Data.m_CompressCode.GetValue().length() > 4); // say "dialog" to get dialog
-		mnmAviUtil::SetAviVideoCompression(l_hAvi, hbm, &opts, dialog, (HWND) appApplication::GetMainWindowHandle());
+		fsAviFile::SetVideoCompression(l_hAvi, l_Data.m_CompressCode.GetValue().c_str(), dialog,
+			appApplication::GetMainWindowHandle(), width, height, bpp, size);
 	}
 
 	// Add Frame to AVI
 	//DBG_LOG("Adding frame to AVI");
-	int ret_val = mnmAviUtil::AddAviFrame(l_hAvi,hbm);
-	DBG_ASSERT(ret_val == 0, "Error Adding AVI frame, code " << ret_val);
-	::DeleteObject(hbm);
+	bool ok = fsAviFile::AddFrame(l_hAvi, pixels, size, width, height, bpp);
+	DBG_ASSERT(ok, "Error Adding AVI frame: " << fsAviFile::GetLastErrorMessage());
+	delete [] pixels;
 
 	//DBG_WARNING1("Save capture time: %f", save_time - begin_time);
 }
@@ -263,7 +257,9 @@ void cptrWriteAVI::Write( g2dWindow* i_pWindow, const fsLocator& i_Locator, cons
 //------------------------------------------------------------------------
 void cptrWriteAVI::Write( g2dImage* i_pSurface, const fsLocator& i_Locator, const int i_Sampling )
 {
-	HBITMAP hbm = (HBITMAP)i_pSurface->GetHBMP( i_Sampling );
+	int width = 0, height = 0, bpp = 0, size = 0;
+	envType::UInt8* pixels = NULL;
+	i_pSurface->GetPixels(&pixels, &size, &width, &height, &bpp, i_Sampling);
 	//int s =	i_pSurface->GetStride();
 	//int w = i_pSurface->GetWidth();
 	//int h = i_pSurface->GetHeight();
@@ -276,15 +272,14 @@ void cptrWriteAVI::Write( g2dImage* i_pSurface, const fsLocator& i_Locator, cons
 
 		//DBG_LOG("AVI Compression Code: " << l_Data.m_CompressCode.c_str());
 
-		AVICOMPRESSOPTIONS opts; ZeroMemory(&opts,sizeof(opts));
-		opts.fccHandler=mmioFOURCC( l_Data.m_CompressCode.GetValue()[0], l_Data.m_CompressCode.GetValue()[1], l_Data.m_CompressCode.GetValue()[2], l_Data.m_CompressCode.GetValue()[3] );
 		bool dialog = (l_Data.m_CompressCode.GetValue().length() > 4); // say "dialog" to get dialog
-		mnmAviUtil::SetAviVideoCompression(l_hAvi, hbm, &opts, dialog, (HWND) appApplication::GetMainWindowHandle());
+		fsAviFile::SetVideoCompression(l_hAvi, l_Data.m_CompressCode.GetValue().c_str(), dialog,
+			appApplication::GetMainWindowHandle(), width, height, bpp, size);
 	}
 
 	// Add Frame to AVI
-	mnmAviUtil::AddAviFrame(l_hAvi,hbm);
-	::DeleteObject(hbm);
+	fsAviFile::AddFrame(l_hAvi, pixels, size, width, height, bpp);
+	delete [] pixels;
 }
 
 
@@ -294,13 +289,6 @@ void cptrWriteAVI::Write( g2dImage* i_pSurface, const fsLocator& i_Locator, cons
 //------------------------------------------------------------------------
 void cptrWriteAVI::WriteAudio(const fsLocator& i_AudioFile)
 {
-	itString snd;
-	fsFileUtil::LocatorToUnicodeString(i_AudioFile, snd);
-
-	HRESULT	op_result;
-	op_result = mnmAviUtil::AddAviWav(l_hAvi, snd.GetString(), SND_FILENAME);
-	if ( op_result != S_OK )
-	{
-		DBG_ASSERT(op_result == S_OK, "wav write in AVI failed");
-	}
+	bool ok = fsAviFile::AddWav(l_hAvi, i_AudioFile);
+	DBG_ASSERT(ok, "wav write in AVI failed: " << fsAviFile::GetLastErrorMessage());
 }

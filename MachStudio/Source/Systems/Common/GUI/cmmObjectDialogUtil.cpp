@@ -8,6 +8,8 @@
 \****************************************************************************/
 #include "Systems/Common/GUI/cmmObjectDialogUtil.hpp"
 
+#include "Core/it/itStringUtil.hpp"
+
 #include "Features/Channels/chnlDialogUtil.hpp"
 #include "Features/Prefs/PrefsData.hpp"
 #include "Features/Prefs/PrefsMgr.hpp"
@@ -192,7 +194,7 @@ namespace cmmObjectDialogUtil
 				int i;
 				for (i=0; i< driver_names.m_DriverNames.size(); i++)
 				{
-					if (_stricmp(driver_names.m_DriverNames[i].m_Name.c_str(),i_DriverName.c_str()) == 0)
+					if (itStringUtil::CompareNoCase(driver_names.m_DriverNames[i].m_Name, i_DriverName) == 0)
 					{
 						break;
 					}

@@ -7,6 +7,7 @@
 **	Copyright(C) 2010 - All Rights Reserved
 \****************************************************************************/
 #include "Features/Capture/cptrRenderRmanLive.hpp"
+#include "Core/app/appApplication.hpp"
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsFileUtil.hpp"
@@ -30,8 +31,6 @@
 #include "Tool/gui/guiSplashScreen.hpp"
 #include "Tool/gui/guiCursor.hpp"
 #include "Tool/tma3d/tma3dScreenUtil.hpp"
-
-#include <windows.h>
 
 //----------------------------------------------------------------------------
 // anonymous namespace
@@ -266,7 +265,7 @@ void cptrRenderRmanLive::Start(cptrRenderRmanLiveData i_Data)
 	std::string batchFile;
 	fsFileUtil::LocatorToANSIFilename(batchFileLoc,batchFile);
 
-	WinExec(batchFile.c_str(),true);
+	appApplication::LaunchProgram(batchFile.c_str(),true);
 }
 
 //------------------------------------------------------------------------

@@ -60,7 +60,6 @@
 #include "Support/xfrm/xfrmTransformMgr.hpp"
 #include "Support/vis/visMgr.hpp"
 
-#include <windows.h>
 #undef CreateDirectory
 
 //	library
@@ -1515,9 +1514,6 @@ void cptrModeRender::OnStateCapture()
 					cptrRenderUtil::OpenOutput();
 				}
 			}
-
-			//	write a timecode at the beginning of the file
-			cptrRenderUtil::CaptureTimeCode( start_time, end_time );
 		}
 
 

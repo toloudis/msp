@@ -71,7 +71,6 @@
 #include "FCSupport/fcui/fcuiFormMgr.hpp"
 #endif
 
-#include <windows.h>
 #include <time.h>
 
 

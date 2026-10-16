@@ -459,9 +459,6 @@
     <ClCompile Include="mnm\mnmAutoSaveMgr.cpp">
       <Filter>mnm</Filter>
     </ClCompile>
-    <ClCompile Include="mnm\mnmAviUtil.cpp">
-      <Filter>mnm</Filter>
-    </ClCompile>
     <ClCompile Include="mnm\mnmBaseData.cpp">
       <Filter>mnm</Filter>
     </ClCompile>
@@ -481,12 +478,6 @@
       <Filter>mnm</Filter>
     </ClCompile>
     <ClCompile Include="mnm\mnmPaths.cpp">
-      <Filter>mnm</Filter>
-    </ClCompile>
-    <ClCompile Include="mnm\mnmQuickTimeSound.cpp">
-      <Filter>mnm</Filter>
-    </ClCompile>
-    <ClCompile Include="mnm\mnmQuickTimeUtil.cpp">
       <Filter>mnm</Filter>
     </ClCompile>
     <ClCompile Include="mnm\mnmReference.cpp">
@@ -1422,9 +1413,6 @@
     <ClInclude Include="mnm\mnmAutoSaveMgr.hpp">
       <Filter>mnm</Filter>
     </ClInclude>
-    <ClInclude Include="mnm\mnmAviUtil.hpp">
-      <Filter>mnm</Filter>
-    </ClInclude>
     <ClInclude Include="mnm\mnmBaseData.hpp">
       <Filter>mnm</Filter>
     </ClInclude>
@@ -1453,12 +1441,6 @@
       <Filter>mnm</Filter>
     </ClInclude>
     <ClInclude Include="mnm\mnmPickMask.hpp">
-      <Filter>mnm</Filter>
-    </ClInclude>
-    <ClInclude Include="mnm\mnmQuickTimeSound.hpp">
-      <Filter>mnm</Filter>
-    </ClInclude>
-    <ClInclude Include="mnm\mnmQuickTimeUtil.hpp">
       <Filter>mnm</Filter>
     </ClInclude>
     <ClInclude Include="mnm\mnmReference.hpp">

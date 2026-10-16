@@ -202,7 +202,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -226,7 +226,7 @@
     </Midl>
     <ClCompile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
@@ -240,7 +240,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>QTMLClient.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Lib>
@@ -251,7 +251,7 @@
     </Midl>
     <ClCompile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\3rdParty\png\zlib-1.2.5;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\3rdParty\png\zlib-1.2.5;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
@@ -275,7 +275,7 @@
     </Midl>
     <ClCompile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\3rdParty\png\zlib-1.2.5;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\3rdParty\png\zlib-1.2.5;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
@@ -299,7 +299,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\3rdParty\png\zlib-1.2.5;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\3rdParty\png\zlib-1.2.5;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -323,7 +323,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\3rdParty\png\zlib-1.2.5;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\3rdParty\png\zlib-1.2.5;.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -347,7 +347,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -373,7 +373,7 @@
       <Optimization>Full</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;USE_FBX_IMPORTEXPORT;ENV_BUILD=ENV_GOLDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
@@ -399,7 +399,7 @@
       <Optimization>Full</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;ENV_BUILD=ENV_GOLDBUILD;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
@@ -424,7 +424,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Apple QuickTime\CIncludes;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\..\..\3rdParty;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\machstudio\source;.\..\..\..\libxlt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -577,7 +577,6 @@
     <ClCompile Include="mnm\mnmAppPackageMgr.cpp" />
     <ClCompile Include="mnm\mnmAppUtil.cpp" />
     <ClCompile Include="mnm\mnmAutoSaveMgr.cpp" />
-    <ClCompile Include="mnm\mnmAviUtil.cpp" />
     <ClCompile Include="mnm\mnmBaseData.cpp" />
     <ClCompile Include="mnm\mnmBaseDataParser.cpp" />
     <ClCompile Include="mnm\mnmCompassUtil.cpp" />
@@ -585,8 +584,6 @@
     <ClCompile Include="mnm\mnmObject.cpp" />
     <ClCompile Include="mnm\mnmPackage.cpp" />
     <ClCompile Include="mnm\mnmPaths.cpp" />
-    <ClCompile Include="mnm\mnmQuickTimeSound.cpp" />
-    <ClCompile Include="mnm\mnmQuickTimeUtil.cpp" />
     <ClCompile Include="mnm\mnmReference.cpp" />
     <ClCompile Include="mnm\mnmReferencePosChannel.cpp" />
     <ClCompile Include="mnm\mnmScreenCaptureUtil.cpp" />
@@ -900,7 +897,6 @@
     <ClInclude Include="mnm\mnmAppPackageMgr.hpp" />
     <ClInclude Include="mnm\mnmAppUtil.hpp" />
     <ClInclude Include="mnm\mnmAutoSaveMgr.hpp" />
-    <ClInclude Include="mnm\mnmAviUtil.hpp" />
     <ClInclude Include="mnm\mnmBaseData.hpp" />
     <ClInclude Include="mnm\mnmBaseDataParser.hpp" />
     <ClInclude Include="mnm\mnmCompassUtil.hpp" />
@@ -911,8 +907,6 @@
     <ClInclude Include="mnm\mnmPackage.hpp" />
     <ClInclude Include="mnm\mnmPaths.hpp" />
     <ClInclude Include="mnm\mnmPickMask.hpp" />
-    <ClInclude Include="mnm\mnmQuickTimeSound.hpp" />
-    <ClInclude Include="mnm\mnmQuickTimeUtil.hpp" />
     <ClInclude Include="mnm\mnmReference.hpp" />
     <ClInclude Include="mnm\mnmReferencePosChannel.hpp" />
     <ClInclude Include="mnm\mnmScreenCaptureUtil.hpp" />

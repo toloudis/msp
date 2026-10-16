@@ -163,12 +163,6 @@ class g2dImage
 			int i_Height) = 0;
 
 		//----------------------------------------------------------------------------
-		// Copy pixels into a native bitmap (an HBITMAP on Windows). this call
-		// allocates a GDI Object (the HBITMAP)! caller must destroy the HBITMAP!!!
-		//----------------------------------------------------------------------------
-		virtual void* GetHBMP(const int i_Sampling ) = 0;
-
-		//----------------------------------------------------------------------------
 		// SwapChannels() - assumes 4 bytes per pixel and non-floats
 		//----------------------------------------------------------------------------
 		virtual void SwapChannels( int i_ChannelOne, int i_ChannelTwo ) = 0;

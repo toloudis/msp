@@ -567,6 +567,7 @@
     <ClInclude Include="It\private\itLocaleUtilPAC.hpp" />
     <ClInclude Include="It\private\itLocaleUtilPACWin.hpp" />
     <ClInclude Include="Fs\fsAbsolutePathMgr.hpp" />
+    <ClInclude Include="Fs\fsAviFile.hpp" />
     <ClInclude Include="Fs\fsFileEnum.hpp" />
     <ClInclude Include="Fs\fsFilePosSaver.hpp" />
     <ClInclude Include="Fs\fsFileStream.hpp" />
@@ -593,6 +594,8 @@
     <ClInclude Include="Fs\private\fsFileTimeUtilPACWin.hpp" />
     <ClInclude Include="Fs\private\fsAbsolutePathMgrPAC.hpp" />
     <ClInclude Include="Fs\private\fsAbsolutePathMgrPACWin.hpp" />
+    <ClInclude Include="Fs\private\fsAviFilePAC.hpp" />
+    <ClInclude Include="Fs\private\fsAviFilePACWin.hpp" />
     <ClInclude Include="Fs\private\fsFileUtilPAC.hpp" />
     <ClInclude Include="Fs\private\fsFileUtilPACWin.hpp" />
     <ClInclude Include="App\appApplication.hpp" />
@@ -2001,6 +2004,8 @@
     </ClCompile>
     <ClCompile Include="Fs\private\fsAbsolutePathMgr.cpp" />
     <ClCompile Include="Fs\private\fsAbsolutePathMgrPACWin.cpp" />
+    <ClCompile Include="Fs\private\fsAviFile.cpp" />
+    <ClCompile Include="Fs\private\fsAviFilePACWin.cpp" />
     <ClCompile Include="Fs\private\fsCategoryConfigFileUtil.cpp" />
     <ClCompile Include="Fs\private\fsFileEnum.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">Disabled</Optimization>

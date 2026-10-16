@@ -7,6 +7,8 @@
 **	Copyright(C) 2007 - All Rights Reserved
 \****************************************************************************/
 #include "Features/Channels/chnlPython.hpp"
+
+#include "Core/it/itStringUtil.hpp"
 #include "Features/Channels/chnlDialogUtil.hpp"
 
 #include "Support/pyth/pythFunctionUtil.hpp"
@@ -137,7 +139,7 @@ namespace
 		for (int i=0; i< driver_names.m_DriverNames.size(); i++)
 		{
 			//const tmlnDriverNameList::DriverName &driver_info = driver_names.m_DriverNames[i];
-			//if (_stricmp(driver_info.m_Name.c_str(), driverName) == 0)
+			//if (itStringUtil::CompareNoCase(driver_info.m_Name, driverName) == 0)
 			{
 				// Create Driver
 				tmlnDriver* pDriver = tmlnCreator::CreateDriverByName( 

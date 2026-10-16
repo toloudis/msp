@@ -333,6 +333,9 @@
     <ClInclude Include="Fs\fsAbsolutePathMgr.hpp">
       <Filter>Fs</Filter>
     </ClInclude>
+    <ClInclude Include="Fs\fsAviFile.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
     <ClInclude Include="Fs\fsFileEnum.hpp">
       <Filter>Fs</Filter>
     </ClInclude>
@@ -409,6 +412,12 @@
       <Filter>Fs\FsPrivate</Filter>
     </ClInclude>
     <ClInclude Include="Fs\private\fsAbsolutePathMgrPACWin.hpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\private\fsAviFilePAC.hpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\private\fsAviFilePACWin.hpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClInclude>
     <ClInclude Include="Fs\private\fsFileUtilPAC.hpp">
@@ -955,6 +964,12 @@
       <Filter>Fs\FsPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Fs\private\fsAbsolutePathMgrPACWin.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsAviFile.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsAviFilePACWin.cpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Fs\private\fsCategoryConfigFileUtil.cpp">

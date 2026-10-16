@@ -63,11 +63,7 @@ PrefsData::PrefsData()
 	m_bMultithreadViewer("Viewer Thread", true),
 	m_bDuplicateObjectsName("Duplicate Objects Keep Name", false),
 	//m_CameraPanRate("Camera Pan Rate", 1.0f),
-#ifdef WIN64
-	m_VertexAnimationBudget("Vertex Anim Budget", 2000), // in MBs
-#else
-	m_VertexAnimationBudget("Vertex Anim Budget", 200), // in MBs
-#endif
+	m_VertexAnimationBudget("Vertex Anim Budget", (sizeof(void*) == 8) ? 2000 : 200), // in MBs
 //	m_bUseHardwareTessellation("Use Hardware Tessellation", false),
 //	m_HardwareTessellationValue("Tessellation Value", 1.0f ),
 //	m_bFlatTessellation("Disable PN Smoothing", false),

@@ -40,23 +40,23 @@ namespace cptrWriteUtil
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void fill_bmp_header(BITMAPINFOHEADER &i_Header, int i_Width, int i_Height,
+void fill_bmp_header(g2dBMPFormat::InfoHeader &i_Header, int i_Width, int i_Height,
 					  int i_DestBitsPerPixel, int i_DestImageSize)
 {
 	//--------------------------------------------------------------//
 	// BitmapInfoHeader
 	//
-	i_Header.biSize				= sizeof( BITMAPINFOHEADER );
-	i_Header.biWidth			= i_Width;
-	i_Header.biHeight			= i_Height;
-	i_Header.biPlanes			= 1;
-	i_Header.biBitCount			= (unsigned short)i_DestBitsPerPixel;
-	i_Header.biCompression		= BI_RGB;
-	i_Header.biSizeImage		= i_DestImageSize;
-	i_Header.biXPelsPerMeter	= i_Width;
-	i_Header.biYPelsPerMeter	= i_Height;
-	i_Header.biClrUsed			= 0;
-	i_Header.biClrImportant		= 0;
+	i_Header.m_Size				= sizeof( g2dBMPFormat::InfoHeader );
+	i_Header.m_Width			= i_Width;
+	i_Header.m_Height			= i_Height;
+	i_Header.m_Planes			= 1;
+	i_Header.m_BitCount			= (unsigned short)i_DestBitsPerPixel;
+	i_Header.m_Compression		= g2dBMPFormat::c_CompressionRGB;
+	i_Header.m_SizeImage		= i_DestImageSize;
+	i_Header.m_XPelsPerMeter	= i_Width;
+	i_Header.m_YPelsPerMeter	= i_Height;
+	i_Header.m_ClrUsed			= 0;
+	i_Header.m_ClrImportant		= 0;
 }
 
 //----------------------------------------------------------------------------
@@ -68,15 +68,15 @@ void write_bmp_header(FileStream &i_File, int i_Width, int i_Height,
 	//--------------------------------------------------------------//
 	// BitmapFileHeader
 	//
-	BITMAPINFOHEADER	bih;
-	BITMAPFILEHEADER	bfh;
+	g2dBMPFormat::InfoHeader	bih;
+	g2dBMPFormat::FileHeader	bfh;
 
-	bfh.bfType		= 0x4d42;
-	bfh.bfSize		= sizeof( BITMAPFILEHEADER ) + sizeof( bih ) +
+	bfh.m_Type		= g2dBMPFormat::c_FileType;
+	bfh.m_Size		= sizeof( g2dBMPFormat::FileHeader ) + sizeof( bih ) +
 					  i_PaletteSize + i_DestImageSize;
-	bfh.bfReserved1	= 0;
-	bfh.bfReserved2	= 0;
-	bfh.bfOffBits	= sizeof( BITMAPFILEHEADER ) + sizeof( bih ) +
+	bfh.m_Reserved1	= 0;
+	bfh.m_Reserved2	= 0;
+	bfh.m_OffBits	= sizeof( g2dBMPFormat::FileHeader ) + sizeof( bih ) +
 					  i_PaletteSize;
 
 	i_File.Write( sizeof( bfh ), &bfh );
@@ -125,13 +125,11 @@ void write_bmp_header(	FileStream &i_File,
 		//--------------------------------------------------------------//
 		// Palette
 		//
-		PALETTEENTRY TempColor;
 		for ( int loop = 0; loop < 256; ++loop )
 		{
-			TempColor.peBlue = (envType::UInt8) loop;
-			TempColor.peRed = (envType::UInt8) loop;
-			TempColor.peGreen = (envType::UInt8) loop;
-			i_File.Write( sizeof(PALETTEENTRY), &TempColor );
+			// grey: blue, green, red, reserved
+			envType::UInt8 TempColor[4] = { (envType::UInt8) loop, (envType::UInt8) loop, (envType::UInt8) loop, 0 };
+			i_File.Write( sizeof(TempColor), TempColor );
 		}
 	}
 	else

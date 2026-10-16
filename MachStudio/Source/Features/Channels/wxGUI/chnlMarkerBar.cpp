@@ -230,7 +230,7 @@ void chnlMarkerBar::OnContextMenu(wxContextMenuEvent& i_Event)
 		if (m_pContextIcon)
 		{
 			wxMenu menu;
-			menu.Append(MENU_SHOW_PROPERTIES, _T("Show &Properties"));
+			menu.Append(MENU_SHOW_PROPERTIES, wxT("Show &Properties"));
 			PopupMenu(&menu, point.x, point.y);
 		}
 	}

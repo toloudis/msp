@@ -566,7 +566,7 @@ void mtrlScriptObject::SaveMaterials(const fsLocator& i_Locator,
 
 	//bga -  No clearing of materials when saving to material files anymore...
 	//if (i_Locator != m_ModelLocator)
-	//if (_stricmp(save_name.c_str(), cur_name.c_str()))
+	//if (itStringUtil::CompareNoCase(save_name, cur_name))
 	//{
 	//	DBG_LOG("Saved to new name, not clearing out materials");
 

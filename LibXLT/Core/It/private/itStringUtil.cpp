@@ -176,6 +176,16 @@ int CompareNoCase(const std::string& i_String1, const std::string& i_String2)
 	return (i_String1.size() < i_String2.size()) ? -1 : 1;
 }
 
+//------------------------------------------------------------------------
+//	Returns true if i_String starts with i_Prefix, ignoring case.
+//------------------------------------------------------------------------
+bool StartsWithNoCase(const std::string& i_String, const std::string& i_Prefix)
+{
+	if (i_String.size() < i_Prefix.size())
+		return false;
+	return CompareNoCase(i_String.substr(0, i_Prefix.size()), i_Prefix) == 0;
+}
+
 bool LessThan(const itString& i_String1, const itString& i_String2)
 {
 	itString s1 = i_String1;

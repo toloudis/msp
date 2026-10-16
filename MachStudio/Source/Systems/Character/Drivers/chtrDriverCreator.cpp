@@ -7,6 +7,8 @@
 **	Copyright(C) 2004 - All Rights Reserved
 \****************************************************************************/
 #include "Systems/Character/Drivers/chtrDriverCreator.hpp"
+
+#include "Core/it/itStringUtil.hpp"
 #include "Systems/Character/Data/chtrDataParser.hpp"
 #include "Systems/Character/Drivers/chtrDriverAnimationFull.hpp"
 #include "Systems/Character/GUI/chtrAnimList.hpp"
@@ -230,7 +232,7 @@ tmlnDriver* chtrDriverCreator::CreateDriverByName( const char* i_DriverName,
 	if (pDriver != NULL) 
 		return pDriver;
 
-	//if ( !::_stricmp(i_DriverName,CHTRDRIVERNAME_AIMOVEBASE) )
+	//if ( itStringUtil::CompareNoCase(i_DriverName, CHTRDRIVERNAME_AIMOVEBASE) == 0 )
 	//{
 	//	chtrDriverAIMoveBase* pDriver = new chtrDriverAIMoveBase( chtr_obj );
 	//	pDriver->SetName( CHTRDRIVERNAME_AIMOVEBASE );
@@ -245,7 +247,7 @@ tmlnDriver* chtrDriverCreator::CreateDriverByName( const char* i_DriverName,
 	//	channelAF.AddDriver( pDriver );
 	//	return pDriver;
 	//}
-	if ( !::_stricmp(i_DriverName,CHTRDRIVERNAME_ANIMATIONFULL) )
+	if ( itStringUtil::CompareNoCase(i_DriverName, CHTRDRIVERNAME_ANIMATIONFULL) == 0 )
 	{
 		chtrDriverAnimationFull* pDriver = new chtrDriverAnimationFull( chtr_obj->ChannelAnimationFull(),
 			c_CDAF, chtr_obj->GetDirectory() );
@@ -258,7 +260,7 @@ tmlnDriver* chtrDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	//else if ( !::_stricmp(i_DriverName,CHTRDRIVERNAME_ANIMATIONSUB) )
+	//else if ( itStringUtil::CompareNoCase(i_DriverName, CHTRDRIVERNAME_ANIMATIONSUB) == 0 )
 	//{
 	//	chtrDriverAnimationSub* pDriver = new chtrDriverAnimationSub( chtr_obj->ChannelAnimationSub(),
 	//		chtr_obj->GetDirectory() );
@@ -271,7 +273,7 @@ tmlnDriver* chtrDriverCreator::CreateDriverByName( const char* i_DriverName,
 	//	channel.AddDriver( pDriver );
 	//	return pDriver;
 	//}
-	else if (!::_stricmp(i_DriverName,CHTRDRIVERNAME_SPLINEORI))
+	else if (itStringUtil::CompareNoCase(i_DriverName, CHTRDRIVERNAME_SPLINEORI) == 0)
 	{
 		tmlnDriverSplineOriented * pDriver = new tmlnDriverSplineOriented( chtr_obj->ChannelPosition(), 
 			chtr_obj->ChannelOrientation(), c_COSP );
@@ -294,7 +296,7 @@ tmlnDriver* chtrDriverCreator::CreateDriverByName( const char* i_DriverName,
 		Ochannel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (!::_stricmp(i_DriverName, CHTRDRIVERNAME_ATTACHORIENT))
+	else if (itStringUtil::CompareNoCase(i_DriverName, CHTRDRIVERNAME_ATTACHORIENT) == 0)
 	{
 		tmlnDriverAttachOrient * pDriver = new tmlnDriverAttachOrient( chtr_obj->ChannelPosition(), chtr_obj->ChannelOrientation(), c_CATO );
 		pDriver->SetName(CHTRDRIVERNAME_ATTACHORIENT);
@@ -309,7 +311,7 @@ tmlnDriver* chtrDriverCreator::CreateDriverByName( const char* i_DriverName,
 		Ochannel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if ( !::_stricmp(i_DriverName, CHTRDRIVERNAME_SOUND) )
+	else if ( itStringUtil::CompareNoCase(i_DriverName, CHTRDRIVERNAME_SOUND) == 0 )
 	{
 		fsLocator snddir = chtr_obj->GetDirectory();
 		snddir.Pop();

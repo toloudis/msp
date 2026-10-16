@@ -217,7 +217,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>QTMLClient.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -601,7 +601,6 @@
     <ClCompile Include="Capture\cptrCommands.cpp" />
     <ClCompile Include="Capture\cptrPythonCommands.cpp" />
     <ClCompile Include="Capture\cptrWriteAVI.cpp" />
-    <ClCompile Include="Capture\cptrWriteQuickTime.cpp" />
     <ClCompile Include="Capture\cptrWriteUtil.cpp" />
     <ClCompile Include="Capture\wxGUI\cptrDialogUtil.cpp" />
     <ClCompile Include="Capture\wxGUI\cptrRenderBakeDialog.cpp" />
@@ -871,7 +870,6 @@
     <ClInclude Include="Capture\cptrCommands.hpp" />
     <ClInclude Include="Capture\cptrPythonCommands.hpp" />
     <ClInclude Include="Capture\cptrWriteAVI.hpp" />
-    <ClInclude Include="Capture\cptrWriteQuickTime.hpp" />
     <ClInclude Include="Capture\cptrWriteUtil.hpp" />
     <ClInclude Include="Capture\wxGUI\cptrDialogUtil.hpp" />
     <ClInclude Include="Capture\wxGUI\cptrRenderBakeDialog.hpp" />

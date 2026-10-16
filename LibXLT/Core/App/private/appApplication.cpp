@@ -161,6 +161,15 @@ void appApplication::ReleaseAccessibilityClients()
 }
 
 //--------------------------------------------------------------------
+//	Start the program on the given command line and return without
+//	waiting for it.
+//--------------------------------------------------------------------
+bool appApplication::LaunchProgram(const std::string& i_CommandLine, bool i_ShowWindow)
+{
+	return appApplicationPAC::LaunchProgram(i_CommandLine, i_ShowWindow);
+}
+
+//--------------------------------------------------------------------
 //	Used for creating an application that doesn't use Run()
 //--------------------------------------------------------------------
 void appApplication::CreateMainWindow(int i_Width, int i_Height, 

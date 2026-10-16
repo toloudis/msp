@@ -8,6 +8,8 @@
 \****************************************************************************/
 #include "dirltDriverCreator.hpp"
 
+#include "Core/it/itStringUtil.hpp"
+
 #include "dirltScriptObject.hpp"
 
 #include "tmlnChannelBoolean.hpp"
@@ -87,7 +89,7 @@ tmlnDriver* dirltDriverCreator::CreateDriverByName( const char* i_DriverName,
 	float driverlength, time;
 	std::vector<tmlnDriver*> active_drivers;
 
-	if (!::stricmp(i_DriverName,"Spline"))
+	if (itStringUtil::CompareNoCase(i_DriverName, "Spline") == 0)
 	{
 		tmlnDriverSpline * pDriver = new tmlnDriverSpline( dirlt_obj->PositionChannel(), c_LPSP, dirlt_obj );
 		pDriver->SetName("Spline");
@@ -116,7 +118,7 @@ tmlnDriver* dirltDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (!::stricmp(i_DriverName, "Attach"))
+	else if (itStringUtil::CompareNoCase(i_DriverName, "Attach") == 0)
 	{
 		tmlnDriverAttach * pDriver = new tmlnDriverAttach( dirlt_obj->PositionChannel(), c_LATC );
 		pDriver->SetName("Attach");
@@ -139,7 +141,7 @@ tmlnDriver* dirltDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (!::stricmp(i_DriverName, "Enabled"))
+	else if (itStringUtil::CompareNoCase(i_DriverName, "Enabled") == 0)
 	{
 		tmlnDriverEnable * pDriver = new tmlnDriverEnable( dirlt_obj->EnabledChannel() );
 		pDriver->SetName("Enable/Disable");
@@ -162,7 +164,7 @@ tmlnDriver* dirltDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (!::stricmp(i_DriverName, "Color"))
+	else if (itStringUtil::CompareNoCase(i_DriverName, "Color") == 0)
 	{
 		tmlnDriverColor * pDriver = new tmlnDriverColor( dirlt_obj->ColorChannel(), c_LCLR );
 		pDriver->SetName("Color");
@@ -185,7 +187,7 @@ tmlnDriver* dirltDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (!::stricmp(i_DriverName, "Static Position"))
+	else if (itStringUtil::CompareNoCase(i_DriverName, "Static Position") == 0)
 	{
 		tmlnDriverPosition * pDriver = new tmlnDriverPosition( dirlt_obj->PositionChannel(), c_LPOS, dirlt_obj );
 		pDriver->SetName("Static Pos");

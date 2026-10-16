@@ -14,7 +14,7 @@
 #include "Core/fs/fsLocator.hpp"
 #include "Core/it/itStringUtil.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
-#include <tchar.h>
+#include <string>
 #include <png/zlib-1.2.5\contrib\minizip\zip.h>
 
 #define WRITEBUFFERSIZE (16384)
@@ -74,9 +74,9 @@ namespace cmprZipUtil
 			//get the current part number
 			int length = dest_file.GetLength();
 			itString::CharType counter_char = dest_file[length - 1];
-			int counter = _ttoi(&counter_char);
+			int counter = counter_char - L'0';
 			counter++;
-			::_itot(counter, &counter_char, 10);
+			counter_char = (itString::CharType)std::to_wstring(counter)[0];
 			dest_file[length - 1] = counter_char;
 			new_dest.ReplaceLastName(dest_file);
 			new_dest.ReplaceExtension(ext);
