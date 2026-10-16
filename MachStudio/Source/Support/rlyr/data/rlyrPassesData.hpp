@@ -48,6 +48,5 @@ public:
 	prtyBoolean m_GI;
 	prtyBoolean m_Glow;
 	prtyBoolean m_RmanColorBleed;
-	prtyBoolean m_MrayFinalGather;
 
 };

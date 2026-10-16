@@ -448,7 +448,6 @@
     <ClCompile Include="GUI\wxGUI\lsetLightSetObjectsPage.cpp" />
     <ClCompile Include="GUI\wxGUI\lsetLightSetObjectsPageBase.cpp" />
     <ClCompile Include="Object\lsetLightSetObject.cpp" />
-    <ClCompile Include="Object\lsetMRayExportInterest.cpp" />
     <ClCompile Include="Object\lsetObjectMgr.cpp" />
     <ClCompile Include="Object\lsetRendermanExportInterest.cpp" />
     <ClCompile Include="Object\lsetScriptObject.cpp" />
@@ -479,7 +478,6 @@
     <ClInclude Include="GUI\wxGUI\lsetLightSetObjectsPage.hpp" />
     <ClInclude Include="GUI\wxGUI\lsetLightSetObjectsPageBase.h" />
     <ClInclude Include="Object\lsetLightSetObject.hpp" />
-    <ClInclude Include="Object\lsetMRayExportInterest.hpp" />
     <ClInclude Include="Object\lsetObjectMgr.hpp" />
     <ClInclude Include="Object\lsetRendermanExportInterest.hpp" />
     <ClInclude Include="Object\lsetScriptObject.hpp" />

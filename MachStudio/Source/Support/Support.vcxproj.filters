@@ -157,9 +157,6 @@
     <Filter Include="fbx">
       <UniqueIdentifier>{e87853fc-fb2c-43fe-b11d-922f5a3cfe23}</UniqueIdentifier>
     </Filter>
-    <Filter Include="mray">
-      <UniqueIdentifier>{bd230409-c51d-4c19-8a3d-ee9baf71143a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="pfx">
       <UniqueIdentifier>{4761b2f3-d851-49cf-a036-0aad65de69d6}</UniqueIdentifier>
     </Filter>
@@ -1067,15 +1064,6 @@
     </ClCompile>
     <ClCompile Include="fbx\fbxMgr.cpp">
       <Filter>fbx</Filter>
-    </ClCompile>
-    <ClCompile Include="mray\mrayExporter.cpp">
-      <Filter>mray</Filter>
-    </ClCompile>
-    <ClCompile Include="mray\mrayExportInterest.cpp">
-      <Filter>mray</Filter>
-    </ClCompile>
-    <ClCompile Include="mray\mrayMgr.cpp">
-      <Filter>mray</Filter>
     </ClCompile>
     <ClCompile Include="pfx\pfxData.cpp">
       <Filter>pfx</Filter>
@@ -2072,15 +2060,6 @@
     </ClInclude>
     <ClInclude Include="fbx\fbxMgr.hpp">
       <Filter>fbx</Filter>
-    </ClInclude>
-    <ClInclude Include="mray\mrayExporter.hpp">
-      <Filter>mray</Filter>
-    </ClInclude>
-    <ClInclude Include="mray\mrayExportInterest.hpp">
-      <Filter>mray</Filter>
-    </ClInclude>
-    <ClInclude Include="mray\mrayMgr.hpp">
-      <Filter>mray</Filter>
     </ClInclude>
     <ClInclude Include="pfx\pfxData.hpp">
       <Filter>pfx</Filter>

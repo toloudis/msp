@@ -126,7 +126,6 @@ captRenderOutputData::captRenderOutputData()
 	m_PreviewPassName("Preview",itString("PREV")),
 	m_GIPassName("Global Illumination",itString("GI")),
 	m_GlowPassName("Glow",itString("GLOW")),
-	m_MrayFinalGatherPassName("MrayFinalGather",itString("FG")),
 	m_RmanColorBleedPassName("RmanColorBleed",itString("COLBL"))
 
 {

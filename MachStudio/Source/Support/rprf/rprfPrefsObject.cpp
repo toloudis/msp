@@ -283,8 +283,6 @@ g3dSceneRenderEngineCreate::RenderEngine rprfPrefsObject::GetRenderEngine(int i_
 		return g3dSceneRenderEngineCreate::e_Default;
 	case 1:
 		return g3dSceneRenderEngineCreate::e_RmanPrman;
-	case 2:
-		return g3dSceneRenderEngineCreate::e_MentalRay;
 	default:
 		return g3dSceneRenderEngineCreate::e_Default;
 	}

@@ -326,12 +326,24 @@ namespace
 
 																						if (i_Version > 28)
 																						{
-																							o_Data.m_bMRayAreaLight.Read(i_Reader);
-																							o_Data.m_MRayAreaLightType.Read(i_Reader);
-																							o_Data.m_bMRayAreaLightVisible.Read(i_Reader);
+																							if (i_Version < 32)
+																							{
+																								// mental ray area light params (v29), removed in v32
+																								prtyBoolean dummyAreaLight;
+																								prtyEnum dummyAreaLightType;
+																								prtyBoolean dummyAreaLightVisible;
+																								dummyAreaLight.Read(i_Reader);
+																								dummyAreaLightType.Read(i_Reader);
+																								dummyAreaLightVisible.Read(i_Reader);
+																							}
 																							if (i_Version > 29)
 																							{
-																								o_Data.m_MRayAreaLightSampling.Read(i_Reader);
+																								if (i_Version < 32)
+																								{
+																									// mental ray area light sampling (v30), removed in v32
+																									prtyInt32 dummyAreaLightSampling;
+																									dummyAreaLightSampling.Read(i_Reader);
+																								}
 
 																								if (i_Version > 30) 
 																								{
@@ -497,7 +509,7 @@ void prjltDataParser::WriteProjectedLightData(	chWriter& o_Writer,
 	o_Writer.WriteChunkHeader( c_PRJC, l_PRJCCHNK_VERSION, true );
 
 	// Write base info
-	const int l_PRJTITEM_VERSION = 31; 
+	const int l_PRJTITEM_VERSION = 32; 
 	o_Writer.WriteChunkHeader( c_PRJT, l_PRJTITEM_VERSION, false );
 
 	i_Data.m_BaseData.m_Enabled.Write(o_Writer);
@@ -609,13 +621,7 @@ void prjltDataParser::WriteProjectedLightData(	chWriter& o_Writer,
 	i_Data.m_BaseData.m_bConeLighting.Write(o_Writer);
 	i_Data.m_BaseData.m_Penumbra.Write(o_Writer);
 
-	// version 29 adds mental ray area light params
-	i_Data.m_BaseData.m_bMRayAreaLight.Write(o_Writer);
-	i_Data.m_BaseData.m_MRayAreaLightType.Write(o_Writer);
-	i_Data.m_BaseData.m_bMRayAreaLightVisible.Write(o_Writer);
-
-	// version 30
-	i_Data.m_BaseData.m_MRayAreaLightSampling.Write(o_Writer);
+	// versions 29 and 30 wrote mental ray area light params here; removed in v32
 
 	// version 31
 	i_Data.m_BaseData.m_GISource.Write(o_Writer);

@@ -429,7 +429,6 @@
     <ClCompile Include="Gui\aoDialogInterest.cpp" />
     <ClCompile Include="Gui\aoDialogUtil.cpp" />
     <ClCompile Include="Object\aoAOObject.cpp" />
-    <ClCompile Include="Object\aoMRayExportInterest.cpp" />
     <ClCompile Include="Object\aoObjectMgr.cpp" />
     <ClCompile Include="Object\aoRendermanExportInterest.cpp" />
     <ClCompile Include="Object\aoScriptObject.cpp" />
@@ -448,7 +447,6 @@
     <ClInclude Include="Gui\aoDialogInterest.hpp" />
     <ClInclude Include="Gui\aoDialogUtil.hpp" />
     <ClInclude Include="Object\aoAOObject.hpp" />
-    <ClInclude Include="Object\aoMRayExportInterest.hpp" />
     <ClInclude Include="Object\aoObjectMgr.hpp" />
     <ClInclude Include="Object\aoRendermanExportInterest.hpp" />
     <ClInclude Include="Object\aoScriptObject.hpp" />

@@ -141,107 +141,11 @@ rprfPrefsData::rprfPrefsData()
 	m_RmanRayDepth("Renderman Ray Tracing Depth", 10 ),
 	m_bRmanTonemapEnable("Renderman Capture Tonemapped Pixels",true),
 
-	// Mental Ray
-	m_bMrayAO("mental ray Enable AO", false),
-	m_MrayAOSamples("mental ray Num AO Samples", 64),
-	m_bMrayFinalGather("mental ray Enable Final Gather", false),
-	//m_bMrayFGBlur("Enable Blur", true),
-	m_MrayFGNDiffuse("mental ray Num Diffuse Bounces", 0),
-	m_MrayFGNRefl("mental ray Num Reflection Bounces", 1),
-	m_MrayFGNRefr("mental ray Num Refraction Bounces", 1),
-	m_MrayFGNRays("mental ray Num Rays", 100),
-	m_MrayFGColor("mental ray Color Tint", maFloatRGBA(0.2f, 0.2f, 0.2f, 1)),
-	m_MrayNumReflBounces("mental ray Num Reflection Bounces", 2),
-	m_MrayNumRefrBounces("mental ray Num Refraction Bounces", 2),
-	m_MrayMaxTraceDepth("mental ray Max Trace Depth", 4),
-	m_MrayVerbosity("mental ray Verbosity Level", 3),
-	m_MrayOutputFormat("mental ray Output Format", 0),
-	m_MrayNumThreads("mental ray Num Render Threads", 4),
-	m_MrayMemoryLimit("mental ray Memory Limit (MB)", 2048),
-	m_bMrayEnableReflections("mental ray Enable Reflections", true),
-	m_bMrayEnableShadows("mental ray Enable Shadows", true),
-	m_MrayShadowType("mental ray Shadow Type", 0 ),
-	m_bMrayRewriteAssets("mental ray Rewrite All Assets", false),
-	m_MrayVerbosityLevel("mental ray Verbosity Level", 4),
-	m_bMrayFGMapEnable("mental ray Enable Map",false),
-	m_MrayFGMapRebuild("mental ray Map Rebuilding", 0),
-	m_MrayFGMapPath("mental ray Map Location"),
-	m_MrayReflSamples("mental ray Num Glossy Samples", 8),
-	m_bMrayIgnoreBadTex("mental ray Ignore Unsupported Textures", true),
-	m_bMrayDisplayPreview("mental ray Display Render Result", true),
-	m_bMrayOverrideMSPSampling("mental ray Override MSP Sampling", true),
-	m_MrayMinCaptureSamples("mental ray Min Samples", 0),
-	m_MrayMaxCaptureSamples("mental ray Max Samples", 2),
-	m_MRayAAContrast("mental ray Antialiasing Contrast",0.1f),
-	m_bMRayTonemapEnable("mental ray Capture Tonemapped Pixels",true),
-	m_bEnableIBL("Enable IBL", false),
-	m_IBLQuality("IBL Quality", 0.2f),
-	m_IBLMapRes("IBL Resolution", 0),
-	m_IBLScale("IBL Scale", 1.0f),
-	m_IBLSampleNum("Num IBL Samples", 2),
-	m_bMrayProgressive("mental ray Enable", false),
-	m_MrayProgSubsamplingSize("mental ray Subsampling Size", 1),
-	m_MrayProgSubsamplingMode("mental ray Subsampling Mode", 1),
-	m_MrayProgSubsamplingPattern("mental ray Subsampling Pattern", 1),
-	m_MrayProgMinSamples("mental ray Min Prog Samples", 4),
-	m_MrayProgMaxSamples("mental ray Max Prog Samples", 100),
-	m_MrayProgMaxTime("mental ray Max Subsampling Time (secs)", 0),
-	m_MrayProgErrorThreshold("mental ray Error Threshold", 0.05f),
-
 	m_bUseAOVolumes("Use AO Volumes", false),
 	m_bUseLPVGI("Use LPV GI", false)
 {
 	m_RendererEngine.SetEnumTag(0, "MachStudio Rasterizer");
 	m_RendererEngine.SetEnumTag(1, "RenderMan (PRMan)");
-
-//#ifdef _DEBUG
-	m_RendererEngine.SetEnumTag(2, "mental ray");
-//#endif
-
-	m_MrayShadowType.SetEnumTag(0,"Shadow map based");
-	m_MrayShadowType.SetEnumTag(1,"Ray traced");
-
-	m_MrayVerbosityLevel.SetEnumTag(0, "Fatal Errors");
-	m_MrayVerbosityLevel.SetEnumTag(1, "Errors");
-	m_MrayVerbosityLevel.SetEnumTag(2, "Warnings");
-	m_MrayVerbosityLevel.SetEnumTag(3, "Informational Messages");
-	m_MrayVerbosityLevel.SetEnumTag(4, "Progress Reports");
-	m_MrayVerbosityLevel.SetEnumTag(5, "Debug Messages");
-	m_MrayVerbosityLevel.SetEnumTag(6, "Verbose Debug Messages");
-
-	m_MrayFGMapRebuild.SetEnumTag(0, "Off");
-	m_MrayFGMapRebuild.SetEnumTag(1, "On");
-	m_MrayFGMapRebuild.SetEnumTag(2, "Freeze");
-
-	m_MrayOutputFormat.SetEnumTag(0, "BMP");
-	m_MrayOutputFormat.SetEnumTag(1, "JPG");
-	m_MrayOutputFormat.SetEnumTag(2, "TGA");
-	m_MrayOutputFormat.SetEnumTag(3, "PNG");
-	m_MrayOutputFormat.SetEnumTag(4, "PPM");
-	m_MrayOutputFormat.SetEnumTag(5, "HDR");
-	m_MrayOutputFormat.SetEnumTag(6, "TIFF");
-	m_MrayOutputFormat.SetEnumTag(7, "TIFU");
-	m_MrayOutputFormat.SetEnumTag(8, "OpenEXR");
-	m_MrayOutputFormat.SetEnumTag(9, "Softimage");
-	m_MrayOutputFormat.SetEnumTag(10, "Alias");
-	m_MrayOutputFormat.SetEnumTag(11, "SGIF");
-	m_MrayOutputFormat.SetEnumTag(12, "MayaIFF");
-	m_MrayOutputFormat.SetEnumTag(13, "RLA");
-	m_MrayOutputFormat.SetEnumTag(14, "RLB");
-	m_MrayOutputFormat.SetEnumTag(15, "CatiaPicture");
-
-	m_MrayProgSubsamplingMode.SetEnumTag(0, "Sparse");
-	m_MrayProgSubsamplingMode.SetEnumTag(1, "Detail");
-
-	m_MrayProgSubsamplingPattern.SetEnumTag(0, "Linear");
-	m_MrayProgSubsamplingPattern.SetEnumTag(1, "Scatter");
-
-	m_IBLMapRes.SetEnumTag(0, "512");
-	m_IBLMapRes.SetEnumTag(1, "1024");
-	m_IBLMapRes.SetEnumTag(2, "2048");
-	m_IBLMapRes.SetEnumTag(3, "4096");
-	m_IBLMapRes.SetEnumTag(4, "8192");
-
 
 	m_RmanOutType.SetEnumTag(0, "Display Window");
 	m_RmanOutType.SetEnumTag(1, "TIFF");

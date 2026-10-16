@@ -51,7 +51,6 @@
 #include "Support/pfx/pfxPostEffectObject.hpp"
 #include "Support/rlyr/rlyrRenderLayerMgr.hpp"
 #include "Support/rman/rmanMgr.hpp"
-#include "Support/mray/mrayMgr.hpp"
 #include "Support/rprf/rprfPrefsObject.hpp"
 #include "Support/rprf/rprfPrefsUtil.hpp"
 #include "Support/tmln/tmlnTimeInOutMgr.hpp"
@@ -1653,7 +1652,6 @@ void cptrModeRender::BeginStateDeInitCaptures()
 	if ( m_bAborted )
 	{
 		ResetRendermanCapture();
-		ResetMRayCapture();
 		g3dPassBuffers::SetDoingFileRefl(false);
 		ExitMode();
 		return;
@@ -1744,7 +1742,6 @@ void cptrModeRender::OnStatePostCapture()
 	//	decide where to go
 	captRenderOutputData& data = captRenderOutputDataUtil::Data();
 
-	MRayPostCapture();
 	RenderManPostCapture();
 	g3dPassBuffers::SetDoingFileRefl(false);
 
@@ -1766,20 +1763,6 @@ void cptrModeRender::EndStatePostCapture()
 	tmlnTimeLine::SetFPS(g3dConstants::c_fDefaultFrameRate);	// set to a default value again.
 }
 
-//----------------------------------------------------------------------------
-//	MRayPostCapture()
-//----------------------------------------------------------------------------
-void cptrModeRender::MRayPostCapture()
-{
-	if ( mrayMgr::GetMRayExportActive() )
-	{
-		captRenderOutputData& data = captRenderOutputDataUtil::Data();
-		fsLocator rootPath = data.m_OutputDirectory.GetValue();
-		std::string masterBatchPath = mrayMgr::WriteMasterBatch(rootPath);
-		mrayMgr::LaunchMRayMasterBatch(masterBatchPath);
-		ResetMRayCapture();
-	}
-}
 
 //----------------------------------------------------------------------------
 //	RenderManPostCapture()
@@ -1794,13 +1777,6 @@ void cptrModeRender::RenderManPostCapture()
 	}
 }
 
-//----------------------------------------------------------------------------
-//	ResetMRayCapture()
-//----------------------------------------------------------------------------
-void cptrModeRender::ResetMRayCapture()
-{
-	mrayMgr::ResetCapture();
-}
 
 //----------------------------------------------------------------------------
 //	ResetRendermanCapture()
@@ -1947,7 +1923,6 @@ void cptrModeRender::check_for_render_thread_error()
 	if (m_CaptureRenderThread.IsErrorState())
 	{
 		ResetRendermanCapture();
-		ResetMRayCapture();
 		g3dPassBuffers::SetDoingFileRefl(false);
 
 		captRenderOutputData& data = captRenderOutputDataUtil::Data();

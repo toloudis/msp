@@ -554,9 +554,6 @@ namespace captRenderOutputDataUtil
 		case rlyrPassesObject::e_Glow:
 			pass_name = l_DataObject->m_Data.m_GlowPassName.GetValue();
 			break;
-		case rlyrPassesObject::e_MrayFinalGather:
-			pass_name = l_DataObject->m_Data.m_MrayFinalGatherPassName.GetValue();
-			break;
 		case rlyrPassesObject::e_RmanColorBleed:
 			pass_name = l_DataObject->m_Data.m_RmanColorBleedPassName.GetValue();
 			break;

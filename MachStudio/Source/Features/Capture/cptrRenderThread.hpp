@@ -31,7 +31,6 @@
 
 //============================================================================
 //============================================================================
-struct mrayOptionsData;
 struct rmanOptionsData;
 class camCamera;
 class cptrAccumulationBuffer;
@@ -156,11 +155,6 @@ private:
 	// GetRmanOptions()
 	//----------------------------------------------------------------------------
 	rmanOptionsData GetRmanOptions(rprfPrefsObject* prefsObject);
-
-	//----------------------------------------------------------------------------
-	// GetMRayOptions()
-	//----------------------------------------------------------------------------
-	mrayOptionsData GetMRayOptions(rprfPrefsObject* prefsObject);
 
 	//--------------------------------------------------------------------
 	//	get the next render layer index

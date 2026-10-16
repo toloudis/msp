@@ -447,7 +447,6 @@
     <ClCompile Include="GUI\wxGUI\envtEnvironmentSwlPage.cpp" />
     <ClCompile Include="Object\envtDefaultEnvironment.cpp" />
     <ClCompile Include="Object\envtEnvironmentObject.cpp" />
-    <ClCompile Include="Object\envtMRayExportInterest.cpp" />
     <ClCompile Include="Object\envtObjectMgr.cpp" />
     <ClCompile Include="Object\envtRendermanExportInterest.cpp" />
     <ClCompile Include="Object\envtReportMemInterest.cpp" />
@@ -480,7 +479,6 @@
     <ClInclude Include="GUI\wxGUI\envtEnvironmentSwlPage.hpp" />
     <ClInclude Include="Object\envtDefaultEnvironment.hpp" />
     <ClInclude Include="Object\envtEnvironmentObject.hpp" />
-    <ClInclude Include="Object\envtMRayExportInterest.hpp" />
     <ClInclude Include="Object\envtObjectMgr.hpp" />
     <ClInclude Include="Object\envtRendermanExportInterest.hpp" />
     <ClInclude Include="Object\envtReportMemInterest.hpp" />

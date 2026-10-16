@@ -456,7 +456,6 @@
     <ClCompile Include="Data\chtrScriptData.cpp" />
     <ClCompile Include="Object\chtrExportInterest.cpp" />
     <ClCompile Include="Object\chtrFBXExportInterest.cpp" />
-    <ClCompile Include="Object\chtrMRayExportInterest.cpp" />
     <ClCompile Include="Object\chtrObject.cpp" />
     <ClCompile Include="Object\chtrObjectMgr.cpp" />
     <ClCompile Include="Object\chtrRendermanExportInterest.cpp" />
@@ -505,7 +504,6 @@
     <ClInclude Include="Data\chtrScriptData.hpp" />
     <ClInclude Include="Object\chtrExportInterest.hpp" />
     <ClInclude Include="Object\chtrFBXExportInterest.hpp" />
-    <ClInclude Include="Object\chtrMRayExportInterest.hpp" />
     <ClInclude Include="Object\chtrObject.hpp" />
     <ClInclude Include="Object\chtrObjectMgr.hpp" />
     <ClInclude Include="Object\chtrRendermanExportInterest.hpp" />

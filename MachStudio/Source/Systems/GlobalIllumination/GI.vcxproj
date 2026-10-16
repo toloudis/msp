@@ -429,7 +429,6 @@
     <ClCompile Include="Gui\giDialogInterest.cpp" />
     <ClCompile Include="Gui\giDialogUtil.cpp" />
     <ClCompile Include="Object\giGIObject.cpp" />
-    <ClCompile Include="Object\giMRayExportInterest.cpp" />
     <ClCompile Include="Object\giObjectMgr.cpp" />
     <ClCompile Include="Object\giRendermanExportInterest.cpp" />
     <ClCompile Include="Object\giScriptObject.cpp" />
@@ -448,7 +447,6 @@
     <ClInclude Include="Gui\giDialogInterest.hpp" />
     <ClInclude Include="Gui\giDialogUtil.hpp" />
     <ClInclude Include="Object\giGIObject.hpp" />
-    <ClInclude Include="Object\giMRayExportInterest.hpp" />
     <ClInclude Include="Object\giObjectMgr.hpp" />
     <ClInclude Include="Object\giRendermanExportInterest.hpp" />
     <ClInclude Include="Object\giScriptObject.hpp" />

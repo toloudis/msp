@@ -81,9 +81,6 @@
     <ClCompile Include="Object\envtEnvironmentObject.cpp">
       <Filter>Object</Filter>
     </ClCompile>
-    <ClCompile Include="Object\envtMRayExportInterest.cpp">
-      <Filter>Object</Filter>
-    </ClCompile>
     <ClCompile Include="Object\envtObjectMgr.cpp">
       <Filter>Object</Filter>
     </ClCompile>
@@ -172,9 +169,6 @@
       <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="Object\envtEnvironmentObject.hpp">
-      <Filter>Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\envtMRayExportInterest.hpp">
       <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="Object\envtObjectMgr.hpp">

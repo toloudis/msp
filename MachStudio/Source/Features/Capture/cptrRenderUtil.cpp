@@ -447,28 +447,6 @@ fsLocator cptrRenderUtil::GetRibFilename()
 	return finalPath;
 }
 
-//----------------------------------------------------------------------------
-//	GetMiFilename() - get mental ray filename
-//----------------------------------------------------------------------------
-fsLocator cptrRenderUtil::GetMiFilename()
-{
-	captRenderOutputData& data = captRenderOutputDataUtil::Data();
-
-	// Write bitmap to file
-	int current_frame;
-	itString pureFileName;
-	tmlnTimeUtil::GetTimeInFrames( l_fSimTime, current_frame );
-	captRenderOutputDataUtil::SetCurrentFrame( current_frame );
-	captRenderOutputDataUtil::GenerateFilename( pureFileName, true );
-	pureFileName += '.';
-	pureFileName += 'm';
-	pureFileName += 'i';
-
-	fsLocator finalPath = data.m_OutputDirectory.GetValue();
-	finalPath.Push( pureFileName );
-
-	return finalPath;
-}
 
 //----------------------------------------------------------------------------
 //	CaptureFrame() - capture the frame

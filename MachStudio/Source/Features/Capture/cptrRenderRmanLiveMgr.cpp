@@ -676,7 +676,7 @@ namespace cptrRenderRmanLiveMgr
 	{
 		if ( !(docSingleDocumentMgr::GetFilename().GetNumNames() > 0) )
 		{
-			guiMessageBox::Show("Please load a scene first.", "mental ray Live Error");
+			guiMessageBox::Show("Please load a scene first.", "RenderMan Live Error");
 			return;
 		}
 

@@ -579,11 +579,6 @@
     <ClCompile Include="Capture\cptrRenderBatchDataParser.cpp" />
     <ClCompile Include="Capture\cptrRenderBatchDataUtil.cpp" />
     <ClCompile Include="Capture\cptrRenderBatchDialogUtil.cpp" />
-    <ClCompile Include="Capture\cptrRenderMrayLive.cpp" />
-    <ClCompile Include="Capture\cptrRenderMrayLiveData.cpp" />
-    <ClCompile Include="Capture\cptrRenderMrayLiveDataInterest.cpp" />
-    <ClCompile Include="Capture\cptrRenderMrayLiveMgr.cpp" />
-    <ClCompile Include="Capture\cptrRenderMrayLiveUtil.cpp" />
     <ClCompile Include="Capture\cptrRenderOptionsDialogUtil.cpp" />
     <ClCompile Include="Capture\cptrRenderProgressDialogUtil.cpp" />
     <ClCompile Include="Capture\cptrRenderRmanLive.cpp" />
@@ -846,11 +841,6 @@
     <ClInclude Include="Capture\cptrRenderBatchDataParser.hpp" />
     <ClInclude Include="Capture\cptrRenderBatchDataUtil.hpp" />
     <ClInclude Include="Capture\cptrRenderBatchDialogUtil.hpp" />
-    <ClInclude Include="Capture\cptrRenderMrayLive.hpp" />
-    <ClInclude Include="Capture\cptrRenderMrayLiveData.hpp" />
-    <ClInclude Include="Capture\cptrRenderMrayLiveDataInterest.hpp" />
-    <ClInclude Include="Capture\cptrRenderMrayLiveMgr.hpp" />
-    <ClInclude Include="Capture\cptrRenderMrayLiveUtil.hpp" />
     <ClInclude Include="Capture\cptrRenderOptionsDialogUtil.hpp" />
     <ClInclude Include="Capture\cptrRenderProgressDialogUtil.hpp" />
     <ClInclude Include="Capture\cptrRenderRmanLive.hpp" />

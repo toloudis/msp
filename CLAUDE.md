@@ -9,7 +9,7 @@ MachStudio Pro is a Windows real-time 3D lighting, rendering and cinematography
 application (originally StudioGPU / Extra Large Technology, 2003–2010). Users
 load scenes exported from DCC tools (Maya, Max, FBX, glTF), light them, animate
 cameras/lights/objects on a timeline, and render frames or sequences on the GPU
-(Direct3D 11), with export to mental ray and RenderMan.
+(Direct3D 11), with export to RenderMan.
 
 ## Building
 
@@ -28,15 +28,51 @@ cameras/lights/objects on a timeline, and render frames or sequences on the GPU
     should be kept in step.
 - Executables land in `MachStudio/MachStudio-x64/` (e.g.
   `MachStudio-x64-Qt-Release.exe`), alongside runtime data and DLLs.
-- Some projects use vcpkg manifests (`vcpkg.json` in `MachStudio/Source/MainApp`
-  and `LibXLT/ToolUIWx`; e.g. curl, zlib). Python is embedded from
-  `3rdParty/Python`.
+- Third-party libraries come from `3rdParty/`, from vcpkg, or (Qt) from a
+  separate install; see Dependencies below.
 - Many directories still contain obsolete `.vcproj` (VS2005/2008), `.vspscc`
   and `.8.00.old` files. Only `.vcxproj` files are live; a `System` folder
   with only a `.vcproj` is not built by the current solution.
 - Tests: there is no automated test suite. `MachStudio/TestSource/` holds a few
   old standalone harnesses (`chnlTest`, `ltstTest`, `splnTest`) that use the
   obsolete `.vcproj` format.
+
+### Dependencies
+
+**From `3rdParty/`** (checked in, prebuilt; `3rdParty/thridParty.txt` has old
+build notes):
+
+| Library | Location | Used for |
+|---|---|---|
+| wxWidgets 3.2 | `WxWidgets/` (headers, import libs; `wxwidgets.props`) | Wx UI builds only (DLLs in `MachStudio-x64/`) |
+| libpng 1.6 | headers `Png/lpng162`, lib/DLL `Libs/x64/libpng16` | image loading (`g2dSurfaceLoaderDX11`) |
+| libtiff 4.0.6 | headers `tiff-4.0.6/`, lib/DLL `Libs/x64/tiff` | image loading |
+| zlib + minizip | headers `Png/zlib-1.2.5`, lib/DLL `Libs/x64/zlibwapi` (zlib 1.2.8 sources in `zlib/`) | vertex-animation compression (`vtx`), zip (`cmpr`) |
+| Python 3.9 | `Python/include` (headers only, not in git) | embedded Python; compiled out unless `PYTHON_ENABLED` is defined, which no live configuration does |
+
+Unused leftovers in `Libs/x64`: `jpeg.lib`, the 2011
+`fbxsdk` libs (FBX import/export needs `USE_FBX_IMPORTEXPORT`, which only the
+dead `Gold` config defines), `python26/27`, `ATITessellation*`.
+
+**From vcpkg** (manifest mode, `VcpkgEnableManifest`; each project installs into
+its own `vcpkg_installed/`):
+
+| Manifest | Packages | Used for |
+|---|---|---|
+| `LibXLT/Graphics/vcpkg.json` | OpenEXR (+ Imath, libdeflate) | writing `.exr` render output (`g2dScanlineOpenEXRUtil`, `g2dOpenEXROutStream`, `g2dHDRUtil`) |
+| `LibXLT/GraphicsDX11/vcpkg.json` | DirectXTex, nlohmann-json | DDS/texture loading and image saving; parsing `*.effect.json` effect descriptions (`fxEffectDesc`). glTF import bundles its own `json.hpp`/`tiny_gltf.h` |
+| `MachStudio/Source/MainApp/vcpkg.json` | curl (+ zlib) | version check (`mainCheckAppVersion`). Linked dynamically: `libcurl.dll` (and its `zlib1.dll`) ships next to the exe |
+| `LibXLT/ToolUIWx/vcpkg.json` | (none) | |
+
+The library packages live under the library projects, so MainApp adds their
+`vcpkg_installed\...\lib` dirs to its link paths and its
+`CopyLibraryVcpkgDlls` target copies their DLLs into `MachStudio-x64/`.
+Some projects still reference folders that no longer exist
+(`3rdParty\OpenEXR`, `3rdParty\DirectXTex`, `3rdParty\FBX`,
+`D:\FreeImage`); these paths are stale.
+
+**Qt 6** is a separate install (see the toolkit notes above), not in
+`3rdParty/` or vcpkg.
 
 ## Code conventions
 
@@ -164,7 +200,7 @@ The live Direct3D 11 renderer.
 |---|---|
 | `Area18` | Experimental OpenGL (gl3w/GLEW) renderer from 2009: GL device/context, shaders, meshes, a render-graph engine (`rndr`), fontstash text, test scenes. In the solution but not linked into MachStudio. |
 | `AudioDS` (`sn`) | Sound: DirectSound 2D/streamed playback, MP3 via DirectShow, Redbook audio; used by sound timeline drivers |
-| `ImportExport` | Scene import/export: `fbx` (FBX SDK import/export), `gltf` (glTF import), `mray` (mental ray export/live), `rman` (RenderMan export/live) |
+| `ImportExport` | Scene import/export: `fbx` (FBX SDK import/export), `gltf` (glTF import), `rman` (RenderMan export/live) |
 | `Input` (`in`) | Device-independent input: device manager, keyboard, mouse, gamepad, joystick, tablet, virtual joystick |
 | `InputDI` | DirectInput PAC implementations of keyboard/mouse/gamepad for `Input` |
 | `InputTPC` | Tablet PC (pen/ink) PAC implementation for `Input` |
@@ -234,7 +270,7 @@ Shared application services used by Features and Systems.
 | `mexp` | Maya ASCII exporter and channel recorders |
 | `mnm` | Application package/project data, paths, autosave, base document data |
 | `mode` | Application modes and mode manager |
-| `mray` / `rman` | mental ray and RenderMan export managers |
+| `rman` | RenderMan export manager |
 | `mtrl` | Material types (Blinn, Lambert, glow, fur, hair, displacement, ...) and their dialogs |
 | `pfx` | Post-processing effects |
 | `pnt` | Point objects and selection |
@@ -244,7 +280,7 @@ Shared application services used by Features and Systems.
 | `rmp` | Ramp textures |
 | `rprf` | Render preference categories |
 | `spln` | Splines/curves and curve point editing |
-| `swl` | Environment lighting data for mental ray/RenderMan export |
+| `swl` | "Global Environment" settings: lights every object with one environment (overriding per-object environments) and can draw it as the viewport background |
 | `tmln` | The timeline: channels (float, color, boolean, filename, ...), blending, driver base classes |
 | `vis` | Visibility manager |
 | `xfrm` | Transform nodes/groups and the surface tree view |
@@ -281,8 +317,8 @@ User-facing features, each a package with commands, dialogs and modes.
 Each System is its own project and owns one kind of scene element end to end:
 data + parser + document chunk (`Data/`), scene objects and managers
 (`Object/`), dialogs (`GUI/`), timeline drivers (`Timeline/`), undo
-operations (`Undo/`), Python bindings, and mental ray / RenderMan export
-interests. Entry point is `xxxSystem.hpp`.
+operations (`Undo/`), Python bindings, and RenderMan/FBX export interests.
+Entry point is `xxxSystem.hpp`.
 
 | Folder (project) | Prefix | Purpose |
 |---|---|---|
@@ -314,6 +350,52 @@ Concrete timeline drivers (`tmlnDriver*`) that animate channels: `Animation`,
 `FilePath`, `TextureFileName` (static and animated), `Float`, `Orientation`,
 `Position`, `Sound`, `Spline` (move along a path), `UserScript` (Python
 expression drivers), `Video`.
+
+### How animation works: script objects, channels, drivers, keys
+Everything animated on the timeline goes through `Support/tmln`:
+
+- **Script object** (`tmlnScriptObject`) — any animatable scene thing (light,
+  camera, character, transform, ...). It **owns** its drivers and a
+  `tmlnChannelSet` of channels, and registers with `tmlnTimelineMgr`.
+- **Channel** (`tmlnChannel` and typed subclasses `tmlnChannelFloat`,
+  `Color`, `Boolean`, `Position`, `Orientation`, `FileName`, ...) — one
+  animatable property, usually wrapping a `prty` property
+  (`tmlnChannelFloatProperty` wraps a `prtyFloat`). It holds an *original*
+  value used when no driver is active (`Reset()`) and lists, without owning,
+  the drivers that write to it. Channels have a priority (evaluation order)
+  and can be locked.
+- **Driver** (`tmlnDriver`) — a clip on a channel with begin/end time that
+  writes the channel's value in `Operate(time)`. Concrete drivers are in
+  `Drivers/` (constant value, flicker, animation clip, spline path, attach,
+  Python expression, sound, video, ...). The gap before a driver is filled by
+  its **blend type** (`e_NoBlending`, `e_Previous`, `e_BlendTime`,
+  `e_Overwrite`, `e_SmoothBlend`), blending from the previous driver's value;
+  smooth blending uses the `tmlnBlendDriver<V>` begin/end values and
+  gradients for a cubic Hermite ease with ease-in/out weights.
+- **Keyframes are just drivers.** There is no separate key/curve type: a key
+  is a short (zero-length) static-value driver, e.g. `tmlnDriverFloat` or
+  `dynDriverTransformKey`, and interpolation between keys is the blending
+  above. `Features/Keyframing` (`keyfKeyframeUtil`, `keyfKeyCreator`) sets
+  keys: for each channel whose value differs from what the drivers produce
+  (`HasValueVariation()`), it calls `AlterKey()` on a driver at the current
+  time, or creates a new key via the creator's `CreateKeyForChannel()`.
+  Auto Key does this every frame from `keyfThinkInterest`.
+- **Creation and persistence.** `tmlnDriverCreator`s (registered with
+  `tmlnCreator`; per-channel-type ones in `Systems/Common/DriverCreator`
+  (`cmm`), transforms in `Support/dyn`) list which drivers an object
+  supports, create them by name, as keys or from saved data. Each driver
+  type saves as a `...Info` struct (times, blend, ease, channel name, plus
+  its own values) written by its `...Parser` chunk parser.
+- **Evaluation.** When time changes (`modeModeTime`, playback, capture,
+  Python), `tmlnTimelineMgr::Update(t)` calls each script object's
+  `tmlnChannelSet::Update`, which gathers the drivers active at `t` per
+  channel, resets channels where needed and calls `Operate`. Drivers that
+  depend on other animated results (e.g. Attach) report
+  `NeedsDelayedOperate()` and run last, after transforms are flushed.
+  `tmlnTimeLine` holds the current time, range, FPS and time format.
+- **UI.** `Features/Channels` (`chnl`) is the channel/trax editor for
+  creating, moving and deleting drivers; driver edits go through undoable
+  operations.
 
 ### Record (not built)
 `rcd` — live recording of float channels from input devices into keys.

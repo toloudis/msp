@@ -352,6 +352,10 @@ void ReadPrefsData(	chReader& io_Reader, chDefs::Version i_Version,
 		if( i_Version > 13 )
 		{
 			o_PrefsData.m_RendererEngine.Read( io_Reader );
+
+			// engine 2 was mental ray, removed in v52 of this struct
+			if ( o_PrefsData.m_RendererEngine.GetValue() > 1 )
+				o_PrefsData.m_RendererEngine.SetValue(0);
 		}
 
 		if( i_Version > 14 )
@@ -463,92 +467,106 @@ void ReadPrefsData(	chReader& io_Reader, chDefs::Version i_Version,
 			dummyTransparencyAlphaMode.Read( io_Reader );
 		}
 
-		if( i_Version > 35 )
+		if( i_Version > 35 && i_Version < 52 )
 		{
-			o_PrefsData.m_MrayVerbosity.Read( io_Reader );
-			o_PrefsData.m_MrayNumReflBounces.Read( io_Reader );
-			o_PrefsData.m_MrayNumRefrBounces.Read( io_Reader );
-			o_PrefsData.m_bMrayFinalGather.Read( io_Reader );
-			o_PrefsData.m_MrayFGNDiffuse.Read( io_Reader );
-			o_PrefsData.m_MrayFGNRefl.Read( io_Reader );
-			o_PrefsData.m_MrayFGNRefr.Read( io_Reader );
-			o_PrefsData.m_MrayFGNRays.Read( io_Reader );
-			o_PrefsData.m_MrayFGColor.Read( io_Reader );
-			o_PrefsData.m_MrayOutputFormat.Read( io_Reader );
-			o_PrefsData.m_MrayNumThreads.Read( io_Reader );
-			o_PrefsData.m_MrayMemoryLimit.Read( io_Reader );
-			o_PrefsData.m_bMrayEnableReflections.Read( io_Reader );
-			o_PrefsData.m_bMrayEnableShadows.Read( io_Reader );
-		}
+			// v36-v51 stored mental ray settings here (removed in v52); read and
+			// discard them. Only the RenderMan tonemap flag (v47) is kept.
+			prtyBoolean dummyBool;
+			prtyInt32 dummyInt;
+			prtyFloat dummyFloat;
+			prtyEnum dummyEnum;
+			prtyColor dummyColor;
+			prtyFilePath dummyPath;
 
-		if ( i_Version > 36 )
-		{
-			o_PrefsData.m_bMrayAO.Read( io_Reader );
+			// v36
+			dummyInt.Read( io_Reader );		// verbosity
+			dummyInt.Read( io_Reader );		// num reflection bounces
+			dummyInt.Read( io_Reader );		// num refraction bounces
+			dummyBool.Read( io_Reader );	// final gather
+			dummyInt.Read( io_Reader );		// FG num diffuse
+			dummyInt.Read( io_Reader );		// FG num refl
+			dummyInt.Read( io_Reader );		// FG num refr
+			dummyInt.Read( io_Reader );		// FG num rays
+			dummyColor.Read( io_Reader );	// FG color
+			dummyEnum.Read( io_Reader );	// output format
+			dummyInt.Read( io_Reader );		// num threads
+			dummyInt.Read( io_Reader );		// memory limit
+			dummyBool.Read( io_Reader );	// enable reflections
+			dummyBool.Read( io_Reader );	// enable shadows
+
+			if ( i_Version > 36 )
+			{
+				dummyBool.Read( io_Reader );	// AO
+			}
+			if ( i_Version > 37 )
+			{
+				dummyInt.Read( io_Reader );		// AO samples
+			}
+			if ( i_Version > 38 )
+			{
+				dummyInt.Read( io_Reader );		// max trace depth
+			}
+			if ( i_Version > 39 )
+			{
+				dummyBool.Read( io_Reader );	// FG blur
+			}
+			if ( i_Version > 40 )
+			{
+				dummyBool.Read( io_Reader );	// rewrite assets
+				dummyEnum.Read( io_Reader );	// verbosity level
+			}
+			if ( i_Version > 41 )
+			{
+				dummyEnum.Read( io_Reader );	// shadow type
+			}
+			if ( i_Version > 42 )
+			{
+				dummyBool.Read( io_Reader );	// FG map enable
+				dummyEnum.Read( io_Reader );	// FG map rebuild
+				dummyPath.Read( io_Reader );	// FG map path
+			}
+			if ( i_Version > 43 )
+			{
+				dummyInt.Read( io_Reader );		// glossy samples
+			}
+			if ( i_Version > 44 )
+			{
+				dummyBool.Read( io_Reader );	// override MSP sampling
+				dummyInt.Read( io_Reader );		// min capture samples
+				dummyInt.Read( io_Reader );		// max capture samples
+				dummyFloat.Read( io_Reader );	// AA contrast
+			}
+			if ( i_Version > 45 )
+			{
+				dummyBool.Read( io_Reader );	// progressive
+			}
+			if ( i_Version > 46 )
+			{
+				o_PrefsData.m_bRmanTonemapEnable.Read( io_Reader );
+				dummyBool.Read( io_Reader );	// tonemap enable
+			}
+			if ( i_Version > 47 )
+			{
+				dummyBool.Read( io_Reader );	// ignore bad textures
+			}
+			if ( i_Version > 48 )
+			{
+				dummyBool.Read( io_Reader );	// display preview
+			}
+			if ( i_Version > 49 )
+			{
+				dummyInt.Read( io_Reader );		// prog subsampling size
+				dummyEnum.Read( io_Reader );	// prog subsampling mode
+				dummyEnum.Read( io_Reader );	// prog subsampling pattern
+				dummyInt.Read( io_Reader );		// prog min samples
+				dummyInt.Read( io_Reader );		// prog max samples
+				dummyInt.Read( io_Reader );		// prog max time
+				dummyFloat.Read( io_Reader );	// prog error threshold
+			}
 		}
-		if ( i_Version > 37 )
-		{
-			o_PrefsData.m_MrayAOSamples.Read( io_Reader );
-		}
-		if ( i_Version > 38 )
-		{
-			o_PrefsData.m_MrayMaxTraceDepth.Read( io_Reader );
-		}
-		if ( i_Version > 39 )
-		{
-			o_PrefsData.m_bMrayFGBlur.Read( io_Reader );
-		}
-		if ( i_Version > 40 )
-		{
-			o_PrefsData.m_bMrayRewriteAssets.Read( io_Reader );
-			o_PrefsData.m_MrayVerbosityLevel.Read( io_Reader );			
-		}
-		if ( i_Version > 41 )
-		{
-			o_PrefsData.m_MrayShadowType.Read( io_Reader );
-		}
-		if ( i_Version > 42 )
-		{
-			o_PrefsData.m_bMrayFGMapEnable.Read( io_Reader );
-			o_PrefsData.m_MrayFGMapRebuild.Read( io_Reader );
-			o_PrefsData.m_MrayFGMapPath.Read( io_Reader );
-		}
-		if ( i_Version > 43 )
-		{
-			o_PrefsData.m_MrayReflSamples.Read( io_Reader );
-		}
-		if ( i_Version > 44 )
-		{
-			o_PrefsData.m_bMrayOverrideMSPSampling.Read( io_Reader );
-			o_PrefsData.m_MrayMinCaptureSamples.Read( io_Reader );
-			o_PrefsData.m_MrayMaxCaptureSamples.Read( io_Reader );
-			o_PrefsData.m_MRayAAContrast.Read( io_Reader );
-		}
-		if ( i_Version > 45 )
-		{
-			o_PrefsData.m_bMrayProgressive.Read( io_Reader );
-		}
-		if ( i_Version > 46 )
+		if ( i_Version > 51 )
 		{
 			o_PrefsData.m_bRmanTonemapEnable.Read( io_Reader );
-			o_PrefsData.m_bMRayTonemapEnable.Read( io_Reader );
-		}
-		if ( i_Version > 47 )
-		{
-			o_PrefsData.m_bMrayIgnoreBadTex.Read( io_Reader );
-		}
-		if ( i_Version > 48 )
-		{
-			o_PrefsData.m_bMrayDisplayPreview.Read( io_Reader );
-		}
-		if ( i_Version > 49 )
-		{
-			o_PrefsData.m_MrayProgSubsamplingSize.Read( io_Reader );
-			o_PrefsData.m_MrayProgSubsamplingMode.Read( io_Reader );
-			o_PrefsData.m_MrayProgSubsamplingPattern.Read( io_Reader );
-			o_PrefsData.m_MrayProgMinSamples.Read( io_Reader );
-			o_PrefsData.m_MrayProgMaxSamples.Read( io_Reader );
-			o_PrefsData.m_MrayProgMaxTime.Read( io_Reader );
-			o_PrefsData.m_MrayProgErrorThreshold.Read( io_Reader );
 		}
 		if (i_Version > 50)
 		{
@@ -570,9 +588,17 @@ void ReadPrefsData(	chReader& io_Reader, chDefs::Version i_Version,
 			o_PrefsData.m_bEnableSSGIDepthPeeling.Read( io_Reader );
 			o_PrefsData.m_SSGINumLayers.Read( io_Reader );
 			o_PrefsData.m_bUseLPVGI.Read( io_Reader );
-			o_PrefsData.m_IBLQuality.Read( io_Reader );
-			o_PrefsData.m_IBLMapRes.Read( io_Reader );
-			o_PrefsData.m_IBLSampleNum.Read( io_Reader );
+
+			if ( i_Version < 52 )
+			{
+				// mental ray IBL settings, removed in v52
+				prtyFloat dummyIBLQuality;
+				prtyEnum dummyIBLMapRes;
+				prtyInt32 dummyIBLSampleNum;
+				dummyIBLQuality.Read( io_Reader );
+				dummyIBLMapRes.Read( io_Reader );
+				dummyIBLSampleNum.Read( io_Reader );
+			}
 		}
 	}
 }
@@ -583,7 +609,7 @@ void ReadPrefsData(	chReader& io_Reader, chDefs::Version i_Version,
 void WritePrefsData(chWriter& o_Writer,
 					const rprfPrefsData& i_PrefsData )
 {
-	const int l_cPRFD_VERSION = 51;
+	const int l_cPRFD_VERSION = 52;
 	o_Writer.WriteChunkHeader( c_PRFD, l_cPRFD_VERSION, false );
 
 	i_PrefsData.m_bMultipassOn.Write( o_Writer );
@@ -752,76 +778,9 @@ void WritePrefsData(chWriter& o_Writer,
 	prtyEnum dummyTransparencyAlphaMode;
 	dummyTransparencyAlphaMode.Write( o_Writer );
 
-	//added v36
-	i_PrefsData.m_MrayVerbosity.Write( o_Writer );
-	i_PrefsData.m_MrayNumReflBounces.Write( o_Writer );
-	i_PrefsData.m_MrayNumRefrBounces.Write( o_Writer );
-	i_PrefsData.m_bMrayFinalGather.Write( o_Writer );
-	i_PrefsData.m_MrayFGNDiffuse.Write( o_Writer );
-	i_PrefsData.m_MrayFGNRefl.Write( o_Writer );
-	i_PrefsData.m_MrayFGNRefr.Write( o_Writer );
-	i_PrefsData.m_MrayFGNRays.Write( o_Writer );
-	i_PrefsData.m_MrayFGColor.Write( o_Writer );
-	i_PrefsData.m_MrayOutputFormat.Write( o_Writer );
-	i_PrefsData.m_MrayNumThreads.Write( o_Writer );
-	i_PrefsData.m_MrayMemoryLimit.Write( o_Writer );
-	i_PrefsData.m_bMrayEnableReflections.Write( o_Writer );
-	i_PrefsData.m_bMrayEnableShadows.Write( o_Writer );
-
-	//added v37	
-	i_PrefsData.m_bMrayAO.Write( o_Writer );
-
-	//added v38	
-	i_PrefsData.m_MrayAOSamples.Write( o_Writer );
-
-	//added v39
-	i_PrefsData.m_MrayMaxTraceDepth.Write( o_Writer );
-
-	//added v40
-	i_PrefsData.m_bMrayFGBlur.Write( o_Writer );	
-
-	//added v41
-	i_PrefsData.m_bMrayRewriteAssets.Write( o_Writer );	
-	i_PrefsData.m_MrayVerbosityLevel.Write( o_Writer );	
-
-	//added v42
-	i_PrefsData.m_MrayShadowType.Write( o_Writer );
-
-	//added v43
-	i_PrefsData.m_bMrayFGMapEnable.Write( o_Writer );
-	i_PrefsData.m_MrayFGMapRebuild.Write( o_Writer );
-	i_PrefsData.m_MrayFGMapPath.Write( o_Writer );
-
-	//added v44
-	i_PrefsData.m_MrayReflSamples.Write( o_Writer );
-
-	//added v45
-	i_PrefsData.m_bMrayOverrideMSPSampling.Write( o_Writer );
-	i_PrefsData.m_MrayMinCaptureSamples.Write( o_Writer );
-	i_PrefsData.m_MrayMaxCaptureSamples.Write( o_Writer );
-	i_PrefsData.m_MRayAAContrast.Write( o_Writer );
-
-	//added v46
-	i_PrefsData.m_bMrayProgressive.Write( o_Writer );
-
-	//added v47
+	//v36-v51 wrote mental ray settings here; v52 removed them and moved
+	//the RenderMan tonemap flag (added v47) up to this position
 	i_PrefsData.m_bRmanTonemapEnable.Write( o_Writer );
-	i_PrefsData.m_bMRayTonemapEnable.Write( o_Writer );
-
-	//added v48
-	i_PrefsData.m_bMrayIgnoreBadTex.Write( o_Writer );
-
-	//added v49
-	i_PrefsData.m_bMrayDisplayPreview.Write( o_Writer );
-
-	//added v50
-	i_PrefsData.m_MrayProgSubsamplingSize.Write( o_Writer );
-	i_PrefsData.m_MrayProgSubsamplingMode.Write( o_Writer );
-	i_PrefsData.m_MrayProgSubsamplingPattern.Write( o_Writer );
-	i_PrefsData.m_MrayProgMinSamples.Write( o_Writer );
-	i_PrefsData.m_MrayProgMaxSamples.Write( o_Writer );
-	i_PrefsData.m_MrayProgMaxTime.Write( o_Writer );
-	i_PrefsData.m_MrayProgErrorThreshold.Write( o_Writer );
 
 	//added v51 - missing properties in MSP 2.0 release
 	i_PrefsData.m_bUseAOVolumes.Write( o_Writer );
@@ -842,9 +801,6 @@ void WritePrefsData(chWriter& o_Writer,
 	i_PrefsData.m_bEnableSSGIDepthPeeling.Write( o_Writer );
 	i_PrefsData.m_SSGINumLayers.Write( o_Writer );
 	i_PrefsData.m_bUseLPVGI.Write( o_Writer );
-	i_PrefsData.m_IBLQuality.Write( o_Writer );
-	i_PrefsData.m_IBLMapRes.Write( o_Writer );
-	i_PrefsData.m_IBLSampleNum.Write( o_Writer );
 
 	o_Writer.FinishChunk();
 }

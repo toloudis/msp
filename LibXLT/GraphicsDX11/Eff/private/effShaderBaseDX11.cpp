@@ -369,7 +369,7 @@ namespace
 	// get resource filename from annotation for a parameter
 	bool get_resource_name(fxEffectVariable* i_hParam, fsLocator &o_ResourceName)
 	{
-		// might also want to search for "resourceName" here (MetaSL backend does that)
+		// might also want to search for "resourceName" here
 		fxEffectVariable* hAnnot = i_hParam->GetAnnotationByName( "name" );
 		if (hAnnot && hAnnot->IsValid())
 		{

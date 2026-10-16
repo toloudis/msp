@@ -13,8 +13,6 @@
 #include "Features/Channels/chnlPackage.hpp"
 #include "Features/Capture/cptrRenderStatsDataUtil.hpp"
 #include "Features/Capture/cptrPackage.hpp"
-#include "Features/Capture/cptrRenderMrayLiveUtil.hpp"
-#include "Features/Capture/cptrRenderMrayLiveMgr.hpp"
 #include "Features/Capture/cptrRenderRmanLiveUtil.hpp"
 #include "Features/Capture/cptrRenderRmanLiveMgr.hpp"
 #include "Features/Debug/dbgConsoleDataUtil.hpp"
@@ -112,7 +110,6 @@ void FeaturesLayer::CleanUp() throw()
 		//LoadPrefsMgr::CleanUp();
 		PrefsMgr::CleanUp();
 		rndrPrefsMgr::CleanUp();
-		cptrRenderMrayLiveMgr::CleanUp();
 		cptrRenderRmanLiveMgr::CleanUp();
 		ResourceTrackerPackage::CleanUp();
 		UndoHistoryDialogUtil::CleanUp();
@@ -141,7 +138,6 @@ void FeaturesLayer::AddToMenu()
 	rndrPrefsMgr::AddToMenu();
 	UndoHistoryUtil::AddToMenu();
 	cptrRenderStatsDataUtil::AddToMenu();
-	cptrRenderMrayLiveUtil::AddToMenu();
 	cptrRenderRmanLiveUtil::AddToMenu();
 	//MayaExportUtil::AddToMenu();
 	//eonCommands::AddToMenu();

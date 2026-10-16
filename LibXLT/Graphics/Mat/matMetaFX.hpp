@@ -2,8 +2,7 @@
 **  matMetaFX.hpp
 **
 **    This object contains the data for an effects file in multiple
-**	formats. Some portions may be compiled to a specific language and
-**	some parts may be in a Meta language (like MetaSL).
+**	formats: compiled FX and HLSL source.
 **
 **	StudioGPU
 **	Copyright(C) 2010 - All Rights Reserved
@@ -51,7 +50,6 @@ public:
 	//====================================================================
 	static envAppVersion GetCurrentFXVersion();
 	static envAppVersion GetCurrentHLSLVersion();
-	static envAppVersion GetCurrentMetaSLVersion();
 
 	//====================================================================
 	// Compare given version against reference version, returning true
@@ -73,14 +71,7 @@ public:
 	//====================================================================
 	void SetHLSLSource(const std::string& i_ShaderSource);
 
-	//====================================================================
-	// Set MetaSL shader source from string.
-	// This class will make a copy of the data,
-	//====================================================================
-	void SetMetaSLSource(const std::string& i_ShaderSource);
-
 	std::string m_ShaderName;
 	matMetaFXBlock< std::vector<envType::UInt8> > m_CompiledFX;
 	matMetaFXBlock< std::string > m_HLSLSource;
-	matMetaFXBlock< std::string > m_MetaSLSource;
 };

@@ -15,9 +15,6 @@
 #include "Features/Capture/cptrModeRender.hpp"
 #include "Features/Capture/cptrModeRenderBatch.hpp"
 #include "Features/Capture/cptrModeRenderBake.hpp"
-#include "Features/Capture/cptrRenderMrayLiveData.hpp"
-#include "Features/Capture/cptrRenderMrayLiveUtil.hpp"
-#include "Features/Capture/cptrRenderMrayLiveMgr.hpp"
 #include "Features/Capture/cptrRenderRmanLiveData.hpp"
 #include "Features/Capture/cptrRenderRmanLiveUtil.hpp"
 #include "Features/Capture/cptrRenderRmanLiveMgr.hpp"
@@ -244,7 +241,6 @@ wxMainForm::wxMainForm(const wxString& title)
 	m_pMRUManager = new wxMRUManager(recentFilesMenu, numItems, fileMenu);
 	PushEventHandler(m_pMRUManager);
 
-	cptrRenderMrayLiveMgr::Data();
 	cptrRenderRmanLiveMgr::Data();
 	
 	// Create file menu items in order to control order
@@ -453,7 +449,6 @@ void wxMainForm::prefs_ReadAndApply()
 
 	rndrPrefsDialogUtil::CreateDialog();
 	PrefsDialogUtil::CreateDialog();
-	cptrRenderMrayLiveUtil::CreateDialog();
 	cptrRenderRmanLiveUtil::CreateDialog();
 
 	//
@@ -538,7 +533,6 @@ void wxMainForm::prefs_UpdateAndWrite()
 	// write hot keys also
 	PrefsMgr::WriteHotKeys();
 
-	cptrRenderMrayLiveMgr::WritePrefs();
 	cptrRenderRmanLiveMgr::WritePrefs();
 }
 

@@ -42,7 +42,6 @@
 #include "Core/prty/prtyFileChooserUIInfo.hpp"
 #include "Core/prty/prtyFloatEditUIInfo.hpp"
 #include "Core/prty/prtyGradientEditUIInfo.hpp"
-#include "Core/prty/prtyNumericUpDownUIInfo.hpp"
 #include "Core/prty/prtyRangedFloatUIInfo.hpp"
 #include "Core/prty/prtyTextureFileChooserUIInfo.hpp"
 #include "Core/prty/prtyTextBoxUIInfo.hpp"
@@ -300,7 +299,6 @@ prjltProjectedLightObject::prjltProjectedLightObject(prjltData::LightType i_Ligh
 	prtyPropertyUIInfo* pPUII;
 	prtyRangedFloatUIInfo* pRFUII;
 	prtyComboBoxUIInfo* pCBUII;
-	prtyNumericUpDownUIInfo* pNUDUII;
 	pPUII = new prtyTextBoxUIInfo(&(m_Data.m_Name), "Asset", "Name of the object");
 	AddProperty( pPUII );
 
@@ -592,16 +590,6 @@ prjltProjectedLightObject::prjltProjectedLightObject(prjltData::LightType i_Ligh
 		pTFCI->SetDirectoryCategory("Gels");
 		AddProperty( pTFCI );
 	}
-
-	AddProperty( new prtyCheckBoxUIInfo(&(m_Data.m_bMRayAreaLight), "mental ray", "Enable Area Light") );
-	AddProperty( new prtyComboBoxUIInfo(&(m_Data.m_MRayAreaLightType), "mental ray", "Area Light Type") );
-	pNUDUII = new prtyNumericUpDownUIInfo(&(m_Data.m_MRayAreaLightSampling), "mental ray", "Number of Samples");
-	pNUDUII->SetDecimalPlaces(0);
-	pNUDUII->SetMinimum(1);
-	pNUDUII->SetMaximum(256);
-	pNUDUII->SetRestrictFlag(true);
-	AddProperty( pNUDUII );
-	//AddProperty( new prtyCheckBoxUIInfo(&(m_Data.m_bMRayAreaLightVisible), "Mental Ray", "Visible") );
 
 	// Register callbacks to update particle generator and icons
 	// when properties change

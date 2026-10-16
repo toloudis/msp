@@ -437,7 +437,6 @@
     <ClCompile Include="Gui\ptltDialogInterest.cpp" />
     <ClCompile Include="Undo\ptltActualOperations.cpp" />
     <ClCompile Include="Undo\ptltOperations.cpp" />
-    <ClCompile Include="Object\ptltMRayExportInterest.cpp" />
     <ClCompile Include="Object\ptltObjectMgr.cpp" />
     <ClCompile Include="Object\ptltPointLightObject.cpp" />
     <ClCompile Include="Object\ptltRangeIcon.cpp" />
@@ -458,7 +457,6 @@
     <ClInclude Include="Gui\ptltDialogInterest.hpp" />
     <ClInclude Include="Undo\ptltActualOperations.hpp" />
     <ClInclude Include="Undo\ptltOperations.hpp" />
-    <ClInclude Include="Object\ptltMRayExportInterest.hpp" />
     <ClInclude Include="Object\ptltObjectMgr.hpp" />
     <ClInclude Include="Object\ptltPointLightObject.hpp" />
     <ClInclude Include="Object\ptltRangeIcon.hpp" />

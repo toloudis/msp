@@ -462,21 +462,6 @@
     <ClCompile Include="Capture\cptrRenderBatchDialogUtil.cpp">
       <Filter>Capture</Filter>
     </ClCompile>
-    <ClCompile Include="Capture\cptrRenderMrayLive.cpp">
-      <Filter>Capture</Filter>
-    </ClCompile>
-    <ClCompile Include="Capture\cptrRenderMrayLiveData.cpp">
-      <Filter>Capture</Filter>
-    </ClCompile>
-    <ClCompile Include="Capture\cptrRenderMrayLiveDataInterest.cpp">
-      <Filter>Capture</Filter>
-    </ClCompile>
-    <ClCompile Include="Capture\cptrRenderMrayLiveMgr.cpp">
-      <Filter>Capture</Filter>
-    </ClCompile>
-    <ClCompile Include="Capture\cptrRenderMrayLiveUtil.cpp">
-      <Filter>Capture</Filter>
-    </ClCompile>
     <ClCompile Include="Capture\cptrRenderOptionsDialogUtil.cpp">
       <Filter>Capture</Filter>
     </ClCompile>
@@ -1192,21 +1177,6 @@
       <Filter>Capture</Filter>
     </ClInclude>
     <ClInclude Include="Capture\cptrRenderBatchDialogUtil.hpp">
-      <Filter>Capture</Filter>
-    </ClInclude>
-    <ClInclude Include="Capture\cptrRenderMrayLive.hpp">
-      <Filter>Capture</Filter>
-    </ClInclude>
-    <ClInclude Include="Capture\cptrRenderMrayLiveData.hpp">
-      <Filter>Capture</Filter>
-    </ClInclude>
-    <ClInclude Include="Capture\cptrRenderMrayLiveDataInterest.hpp">
-      <Filter>Capture</Filter>
-    </ClInclude>
-    <ClInclude Include="Capture\cptrRenderMrayLiveMgr.hpp">
-      <Filter>Capture</Filter>
-    </ClInclude>
-    <ClInclude Include="Capture\cptrRenderMrayLiveUtil.hpp">
       <Filter>Capture</Filter>
     </ClInclude>
     <ClInclude Include="Capture\cptrRenderOptionsDialogUtil.hpp">

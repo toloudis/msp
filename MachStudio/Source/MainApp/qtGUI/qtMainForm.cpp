@@ -15,9 +15,6 @@
 #include "Features/Capture/cptrModeRender.hpp"
 #include "Features/Capture/cptrModeRenderBatch.hpp"
 #include "Features/Capture/cptrModeRenderBake.hpp"
-#include "Features/Capture/cptrRenderMrayLiveData.hpp"
-#include "Features/Capture/cptrRenderMrayLiveUtil.hpp"
-#include "Features/Capture/cptrRenderMrayLiveMgr.hpp"
 #include "Features/Capture/cptrRenderRmanLiveData.hpp"
 #include "Features/Capture/cptrRenderRmanLiveUtil.hpp"
 #include "Features/Capture/cptrRenderRmanLiveMgr.hpp"
@@ -147,7 +144,6 @@ qtMainForm::qtMainForm(const QString& title)
 	int numItems = data.m_MRUHistory.GetValue();
 	m_pMRUManager = new qtMRUManager(recentFilesMenu, numItems, fileMenu);
 
-	cptrRenderMrayLiveMgr::Data();
 	cptrRenderRmanLiveMgr::Data();
 
 	// Create file menu items in order to control order
@@ -334,7 +330,6 @@ void qtMainForm::prefs_ReadAndApply()
 
 	rndrPrefsDialogUtil::CreateDialog();
 	PrefsDialogUtil::CreateDialog();
-	cptrRenderMrayLiveUtil::CreateDialog();
 	cptrRenderRmanLiveUtil::CreateDialog();
 
 	//
@@ -367,7 +362,6 @@ void qtMainForm::prefs_UpdateAndWrite()
 	// write hot keys also
 	PrefsMgr::WriteHotKeys();
 
-	cptrRenderMrayLiveMgr::WritePrefs();
 	cptrRenderRmanLiveMgr::WritePrefs();
 }
 

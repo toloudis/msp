@@ -80,8 +80,6 @@ PrefsData::PrefsData()
 	m_FrameRate("Frames per Second", 24.0f),
 	m_PRmanLocation("Renderer Location (prman.exe)"),
 	m_PixieLocation("Pixie Location (rndr.exe)"),
-	m_MRayLocation("Renderer Location (ray.exe)"),
-	m_MRayViewerLocation("Viewer v1.19 Location (imf_disp.exe)"),
 	m_bEnableAutoUpdate("Prompt Before Asset Update", false),
 	m_bEnableRevision("Enable Asset Update", false)
 {

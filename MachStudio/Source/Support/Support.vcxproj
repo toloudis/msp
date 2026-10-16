@@ -780,9 +780,6 @@
     <ClCompile Include="fbx\fbxExporter.cpp" />
     <ClCompile Include="fbx\fbxExportInterest.cpp" />
     <ClCompile Include="fbx\fbxMgr.cpp" />
-    <ClCompile Include="mray\mrayExporter.cpp" />
-    <ClCompile Include="mray\mrayExportInterest.cpp" />
-    <ClCompile Include="mray\mrayMgr.cpp" />
     <ClCompile Include="pfx\pfxData.cpp" />
     <ClCompile Include="pfx\pfxDataParser.cpp" />
     <ClCompile Include="pfx\pfxPackage.cpp" />
@@ -1117,9 +1114,6 @@
     <ClInclude Include="fbx\fbxExporter.hpp" />
     <ClInclude Include="fbx\fbxExportInterest.hpp" />
     <ClInclude Include="fbx\fbxMgr.hpp" />
-    <ClInclude Include="mray\mrayExporter.hpp" />
-    <ClInclude Include="mray\mrayExportInterest.hpp" />
-    <ClInclude Include="mray\mrayMgr.hpp" />
     <ClInclude Include="pfx\pfxData.hpp" />
     <ClInclude Include="pfx\pfxDataParser.hpp" />
     <ClInclude Include="pfx\pfxPackage.hpp" />

@@ -64,8 +64,7 @@ public:
 		e_DiffLit,
 		e_GlobalIllumination,
 		e_Glow,
-		e_RmanColorBleed,
-		e_MrayFinalGather
+		e_RmanColorBleed
 	};
 
 	//--------------------------------------------------------------------

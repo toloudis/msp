@@ -443,7 +443,6 @@
     <ClCompile Include="Object\prjltIconObject.cpp" />
     <ClCompile Include="Object\prjltIconProjected.cpp" />
     <ClCompile Include="Object\prjltIconSpot.cpp" />
-    <ClCompile Include="Object\prjltMRayExportInterest.cpp" />
     <ClCompile Include="Object\prjltObjectMgr.cpp" />
     <ClCompile Include="Object\prjltProjectedLightObject.cpp" />
     <ClCompile Include="Object\prjltRangeIcon.cpp" />
@@ -471,7 +470,6 @@
     <ClInclude Include="Object\prjltIconObject.hpp" />
     <ClInclude Include="Object\prjltIconProjected.hpp" />
     <ClInclude Include="Object\prjltIconSpot.hpp" />
-    <ClInclude Include="Object\prjltMRayExportInterest.hpp" />
     <ClInclude Include="Object\prjltObjectMgr.hpp" />
     <ClInclude Include="Object\prjltProjectedLightObject.hpp" />
     <ClInclude Include="Object\prjltRangeIcon.hpp" />

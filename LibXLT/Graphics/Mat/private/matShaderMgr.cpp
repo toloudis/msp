@@ -145,8 +145,8 @@ void Initialize()
 	if (l_pImpl)
 	{
 		// The shader folder is optional: the built-in shaders are compiled
-		// into the library. The mental ray and RenderMan exporters look for
-		// their own shaders under it (mray, rman).
+		// into the library. The RenderMan exporter looks for its own
+		// shaders under it (rman).
 		fsLocator fx_dir = gfPaths::GetPath(gfPaths::e_ExePath);
 		fx_dir.Push("Shaders");
 

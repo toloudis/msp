@@ -105,9 +105,6 @@ void rlyrPassesObject::Init()
 
 	pPUII = new prtyCheckBoxUIInfo(&(m_Data.m_RmanColorBleed), "Passes", "Color Bleed pass");
 	AddProperty( pPUII );
-
-	pPUII = new prtyCheckBoxUIInfo(&(m_Data.m_MrayFinalGather), "Passes", "Final Gather pass");
-	AddProperty( pPUII );
 }
 
 //--------------------------------------------------------------------
@@ -164,8 +161,6 @@ void rlyrPassesObject::CollectPasses(std::vector<rlyrPassesObject::ePassType>& o
 		o_Passes.push_back(e_Glow);
 	if (m_Data.m_RmanColorBleed.GetValue())
 		o_Passes.push_back(e_RmanColorBleed);
-	if (m_Data.m_MrayFinalGather.GetValue())
-		o_Passes.push_back(e_MrayFinalGather);
 }
 
 //--------------------------------------------------------------------
@@ -355,9 +350,6 @@ void rlyrPassesObject::AdjustPrefs(ePassType i_Pass, g3dPrefs::g3dRenderPrefs& o
 	case e_RmanColorBleed:
 		o_Prefs.m_RendererType = g3dSceneRendererTypes::e_RmanColorBleed;
 		break;
-	case e_MrayFinalGather:
-		o_Prefs.m_RendererType = g3dSceneRendererTypes::e_MrayFinalGather;
-		break;
 	default:
 		break;
 	}
@@ -400,12 +392,9 @@ void rlyrPassesObject::UpdateVisibility(int i_RenderEngine)
 	m_Data.m_GI.SetVisible(true);
 	m_Data.m_Glow.SetVisible(true);
 	m_Data.m_RmanColorBleed.SetVisible(false);
-	m_Data.m_MrayFinalGather.SetVisible(false);
 
 	bool origColorBleedVal = m_Data.m_RmanColorBleed.GetValue();
-	bool origFinalGatherVal = m_Data.m_MrayFinalGather.GetValue();
 	m_Data.m_RmanColorBleed.SetValue(false);
-	m_Data.m_MrayFinalGather.SetValue(false);
 
 
 	// Mask out if rman chosen
@@ -422,7 +411,6 @@ void rlyrPassesObject::UpdateVisibility(int i_RenderEngine)
 		m_Data.m_Depth.SetValue(false);
 		m_Data.m_Glow.SetValue(false);
 		m_Data.m_GI.SetValue(false);
-		m_Data.m_MrayFinalGather.SetValue(false);
 		m_Data.m_RmanColorBleed.SetValue(origColorBleedVal);
 
 		m_Data.m_DirtyMatte.SetVisible(false);
@@ -437,38 +425,5 @@ void rlyrPassesObject::UpdateVisibility(int i_RenderEngine)
 		m_Data.m_Glow.SetVisible(false);		
 		m_Data.m_GI.SetVisible(false);
 		m_Data.m_RmanColorBleed.SetVisible(true);
-		m_Data.m_MrayFinalGather.SetVisible(false);
-	}
-
-	// Mask out if mray chosen
-	else if ( i_RenderEngine == g3dSceneRenderEngineCreate::e_MentalRay )
-	{
-		m_Data.m_Depth.SetValue(false);
-		m_Data.m_DirtyMatte.SetValue(false);
-		m_Data.m_Wireframe.SetValue(false);
-		m_Data.m_Materials.SetValue(false);
-		m_Data.m_Velocity.SetValue(false);
-		m_Data.m_Bloom.SetValue(false);
-		m_Data.m_Star.SetValue(false);
-		m_Data.m_CameraDOF.SetValue(false);
-		m_Data.m_Preview.SetValue(false);
-		m_Data.m_Glow.SetValue(false);
-		m_Data.m_GI.SetValue(false);
-		m_Data.m_MrayFinalGather.SetValue(origFinalGatherVal);
-		m_Data.m_RmanColorBleed.SetValue(false);
-
-		m_Data.m_Depth.SetVisible(false);
-		m_Data.m_DirtyMatte.SetVisible(false);
-		m_Data.m_Wireframe.SetVisible(false);
-		m_Data.m_Materials.SetVisible(false);
-		m_Data.m_Velocity.SetVisible(false);
-		m_Data.m_Bloom.SetVisible(false);
-		m_Data.m_Star.SetVisible(false);
-		m_Data.m_CameraDOF.SetVisible(false);
-		m_Data.m_Preview.SetVisible(false);
-		m_Data.m_Glow.SetVisible(false);		
-		m_Data.m_GI.SetVisible(false);
-		m_Data.m_RmanColorBleed.SetVisible(false);
-		m_Data.m_MrayFinalGather.SetVisible(true);
 	}
 }

@@ -2,7 +2,7 @@
 **	envtSwlInterest.hpp
 **
 **		A Software Lighting Interest is registered by a system that has data
-**	to be exported to Mray/Rman environmental light setting.
+**	to be applied as the global environment light setting.
 **
 **	StudioGPU
 **	Copyright(C) 2006 - All Rights Reserved
