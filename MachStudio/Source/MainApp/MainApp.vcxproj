@@ -815,6 +815,14 @@
       <Project>{4f086e7b-e7e0-4358-9c37-964ae63e31d6}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+    <!-- MachStudio isn't built until the unit tests have built and passed
+         (their Post-Build Event runs them). Nothing is linked from
+         them. The test projects exist only in the Qt/Wx configurations. -->
+    <ProjectReference Include="..\..\..\UnitTests\CoreTests\CoreTests.vcxproj" Condition="$(Configuration.EndsWith(' Qt')) or $(Configuration.EndsWith(' Wx'))">
+      <Project>{a47f6ef0-4e08-4c1a-a930-cc4af2bbe402}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\LibXLT\ToolUIWx\ToolUIWx.vcxproj" Condition="'$(MspGuiToolkit)' != 'Qt'">
       <Project>{7d34475e-30da-48f0-831c-76cf42035352}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

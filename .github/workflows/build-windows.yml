@@ -106,6 +106,10 @@ jobs:
       # compiles the source files within each project in parallel (none of
       # the projects set /MP), and EnforceProcessCountAcrossBuilds keeps the
       # total number of cl.exe processes at the core count.
+      #
+      # The GoogleTest unit tests (UnitTests/) run as soon as they are
+      # built, and MainApp references them, so a failing test fails this
+      # step before MachStudio is built.
       - name: Build MainApp and unit tests (${{ matrix.configuration }}|x64)
         working-directory: MachStudio/Source
         run: >
@@ -119,15 +123,8 @@ jobs:
           /nologo
           /v:minimal
 
-      # GoogleTest unit tests (UnitTests/); a failing test fails the job.
-      # The XML report is uploaded even when tests fail.
-      - name: Run unit tests
-        shell: pwsh
-        run: |
-          $bin = "UnitTests/bin/x64/${{ matrix.configuration }}"
-          & "$bin/CoreTests.exe" "--gtest_output=xml:$bin/CoreTests.xml"
-          if ($LASTEXITCODE -ne 0) { throw "CoreTests failed (exit code $LASTEXITCODE)" }
-
+      # The XML reports the test runs in the build wrote, uploaded even when
+      # a test failed.
       - name: Upload unit test results
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4

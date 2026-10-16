@@ -39,6 +39,20 @@ cameras/lights/objects on a timeline, and render frames or sequences on the GPU
   print-and-eyeball programs) are not built; what was worth keeping has been
   ported to `UnitTests/`, and they are due to be deleted.
 
+### Build files
+
+Dependencies between projects are plain ProjectReferences in the
+`.vcxproj` files (visible in Visual Studio). The shared MSBuild files only
+hold settings:
+
+| File | Applies to | What it does |
+|---|---|---|
+| `Directory.Build.props` (repo root) | every project, automatically | Works out `MspGuiToolkit` (Qt/Wx) and `MspBaseConfiguration` (Debug/Release) from the configuration name; wx include dirs |
+| `MachStudio/Source/Directory.Build.targets` | MachStudio projects, automatically | Drops `wxGUI/` or `qtGUI/` sources for the other toolkit; imports `qt6.props` and runs `windeployqt` for Qt |
+| `LibXLT/ToolUIQt/qt6.props` | Qt builds (ToolUIQt, and MachStudio projects through the targets above) | Qt include dirs, defines and libraries (no moc/uic step) |
+| `3rdParty/WxWidgets/wxwidgets.props` | Wx builds of the projects that import it (ToolUIWx, Support, Features, MainApp, ...) | wx libraries |
+| `vcpkg.json` next to a project | that project | Its vcpkg packages (see Dependencies) |
+
 ### Unit tests
 
 - `UnitTests/CoreTests/CoreTests.vcxproj` is a console exe of GoogleTest tests
@@ -47,9 +61,10 @@ cameras/lights/objects on a timeline, and render frames or sequences on the GPU
   folders named after the package they test (`Ch/chChunkTest.cpp`,
   `Ma/maMatrixTest.cpp`, ...); helpers use the `ct` prefix (`ctTempDir` for a
   per-test temp directory, `ctMath` for approximate vector/matrix checks).
-- `UnitTests/UnitTests.props` / `.targets` hold the settings shared by test
-  projects (include paths, runtime, output in `UnitTests/bin/<Platform>/<Configuration>/`).
-  A future test project for other libraries should import them the same way.
+- `CoreTests.vcxproj` is self-contained: its build settings (include paths,
+  runtime, output in `UnitTests/bin/<Platform>/<Configuration>/`) are in the
+  project file, not a shared props file. A new test project can start as a
+  copy of it.
 - The test projects have the four Qt/Wx configurations only so the libraries
   they reference build in the same configuration as MainApp; the tests don't
   use a GUI toolkit.
@@ -59,11 +74,15 @@ cameras/lights/objects on a timeline, and render frames or sequences on the GPU
   assert and crash dialogs off, so runs never wait for input.
 - Run: `UnitTests/bin/x64/<Configuration>/CoreTests.exe` (gtest flags such as
   `--gtest_filter=ma*` work); Visual Studio's Google Test adapter should also
-  list them in Test Explorer. Set
-  `MspRunUnitTests=true` (`/p:`, environment variable, or a git-ignored
-  `CoreTests.vcxproj.user`) to run the tests after every build; a failure then
-  fails the build. CI builds `CoreTests` with MainApp and runs it in every
-  configuration.
+  list them in Test Explorer.
+- The tests run as part of the build: the test project's Post-Build Event
+  (Project Properties → Build Events) runs the exe after linking and writes
+  `<TargetName>.xml` next to it; a failing test fails the build. MainApp
+  has an ordinary ProjectReference to each test project (nothing linked),
+  so MachStudio isn't built until the tests pass. A new test project gets
+  the same reference in `MainApp.vcxproj`, and may reference whatever
+  libraries it tests. CI builds `MainApp;CoreTests` in every configuration
+  and uploads the XML reports.
 - Core headers have `#error` "multiply included" guards, so guard their
   includes in test files as everywhere else (`#ifndef MA_PLANE_HPP ...`).
 
