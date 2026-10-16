@@ -803,10 +803,6 @@
       <Project>{1ec94900-3482-471b-b642-af82738a9cff}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\LibXLT\InputDI\InputDI.vcxproj">
-      <Project>{f3bd86cb-9337-4ddd-9bfe-7e4b9ec1b411}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\LibXLT\InputTPC\InputTPC.vcxproj">
       <Project>{c6aef849-c14a-474e-9539-6a299a26265d}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

@@ -26,6 +26,7 @@
 
 #include "Core/Ma/maFunctions.hpp"
 #include "Graphics/G3d/g3dPickInfo.hpp"
+#include "Input/in/inDeviceMgr.hpp"
 #include "Tool/cam3d/cam3dMgr.hpp"
 #include "Tool/ctxm/ctxmContextMenu.hpp"
 //#include "Tool/gpx/gpxCamera.hpp"
@@ -95,6 +96,7 @@ BEGIN_EVENT_TABLE(rpnRenderPanel, wxControl)
 	EVT_MIDDLE_DOWN(rpnRenderPanel::OnMouseDown)
 	EVT_RIGHT_DOWN(rpnRenderPanel::OnMouseDown)
 	EVT_MOTION(rpnRenderPanel::OnMouseMove)
+	EVT_MOUSEWHEEL(rpnRenderPanel::OnMouseWheel)
 	EVT_ENTER_WINDOW(rpnRenderPanel::OnEnter)
 	EVT_LEAVE_WINDOW(rpnRenderPanel::OnLeave)
     EVT_SIZE(rpnRenderPanel::OnSize)
@@ -682,6 +684,16 @@ void rpnRenderPanel::OnMouseMove(wxMouseEvent& i_Event)
 		int render_y = i_Event.GetY();
 		panel_to_render_pixel(render_x, render_y);
 		tma3dCursorMgr::CursorPosChangedCallback( render_x, render_y );
+	}
+}
+
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+void rpnRenderPanel::OnMouseWheel(wxMouseEvent& i_Event)
+{
+	if (this->IsActiveView() && inDeviceMgr::GetNumMouses() > 0 && i_Event.GetWheelDelta() != 0)
+	{
+		inDeviceMgr::GetMouse()->AddWheelDelta(i_Event.GetWheelRotation() / float(i_Event.GetWheelDelta()));
 	}
 }
 

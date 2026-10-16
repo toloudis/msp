@@ -47,16 +47,10 @@
     <ClInclude Include="In\inVirtualJoystick.hpp">
       <Filter>In</Filter>
     </ClInclude>
-    <ClInclude Include="In\private\inDeviceMgrPAC.hpp">
-      <Filter>In\Inprivate</Filter>
-    </ClInclude>
-    <ClInclude Include="In\private\inGamepadPAC.hpp">
-      <Filter>In\Inprivate</Filter>
-    </ClInclude>
     <ClInclude Include="In\private\inKeyboardPAC.hpp">
       <Filter>In\Inprivate</Filter>
     </ClInclude>
-    <ClInclude Include="In\private\inMousePAC.hpp">
+    <ClInclude Include="In\private\inKeyboardPACWin.hpp">
       <Filter>In\Inprivate</Filter>
     </ClInclude>
     <ClInclude Include="In\private\inTabletPAC.hpp">
@@ -74,6 +68,9 @@
       <Filter>In\Inprivate</Filter>
     </ClCompile>
     <ClCompile Include="In\private\inKeyboard.cpp">
+      <Filter>In\Inprivate</Filter>
+    </ClCompile>
+    <ClCompile Include="In\private\inKeyboardPACWin.cpp">
       <Filter>In\Inprivate</Filter>
     </ClCompile>
     <ClCompile Include="In\private\inKeys.cpp">

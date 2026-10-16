@@ -44,7 +44,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C6AEF849-C14A-474E-9539-6A299A26265D}</ProjectGuid>
-    <RootNamespace>InputDI</RootNamespace>
+    <RootNamespace>InputTPC</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -198,7 +198,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\InputDI\InputDI.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\InputTPC\InputTPC.pch</PrecompiledHeaderOutputFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
@@ -227,7 +227,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\InputDI\InputDI.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\InputTPC\InputTPC.pch</PrecompiledHeaderOutputFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
@@ -254,7 +254,7 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\InputDI\InputDI.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\InputTPC\InputTPC.pch</PrecompiledHeaderOutputFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -282,7 +282,7 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\InputDI\InputDI.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\InputTPC\InputTPC.pch</PrecompiledHeaderOutputFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -311,7 +311,7 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\InputDI\InputDI.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\InputTPC\InputTPC.pch</PrecompiledHeaderOutputFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -341,7 +341,7 @@
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\InputDI\InputDI.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\InputTPC\InputTPC.pch</PrecompiledHeaderOutputFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
@@ -368,7 +368,7 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\InputDI\InputDI.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\InputTPC\InputTPC.pch</PrecompiledHeaderOutputFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -400,7 +400,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\InputDI\InputDI.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\InputTPC\InputTPC.pch</PrecompiledHeaderOutputFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
@@ -432,7 +432,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\InputDI\InputDI.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\InputTPC\InputTPC.pch</PrecompiledHeaderOutputFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
@@ -460,7 +460,7 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\InputDI\InputDI.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\..\bin\$(Configuration)\obj\InputTPC\InputTPC.pch</PrecompiledHeaderOutputFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>

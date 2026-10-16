@@ -236,6 +236,7 @@
     <ClCompile Include="tqt\private\tqtAppUtil.cpp" />
     <ClCompile Include="tqt\private\tqtContextMenu.cpp" />
     <ClCompile Include="tqt\private\tqtCursor.cpp" />
+    <ClCompile Include="tqt\private\tqtInputFeed.cpp" />
     <ClCompile Include="tqt\private\tqtDialogTabbed.cpp" />
     <ClCompile Include="tqt\private\tqtDialogTabbedMgr.cpp" />
     <ClCompile Include="tqt\private\tqtMenuMgr.cpp" />
@@ -351,6 +352,7 @@
     <ClInclude Include="tqt\tqtAppUtil.hpp" />
     <ClInclude Include="tqt\tqtContextMenu.hpp" />
     <ClInclude Include="tqt\tqtCursor.hpp" />
+    <ClInclude Include="tqt\tqtInputFeed.hpp" />
     <ClInclude Include="tqt\tqtDialogTabbed.hpp" />
     <ClInclude Include="tqt\tqtDialogTabbedMgr.hpp" />
     <ClInclude Include="tqt\tqtMenuMgr.hpp" />

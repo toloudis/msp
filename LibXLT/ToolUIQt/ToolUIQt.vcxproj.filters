@@ -294,6 +294,9 @@
     <ClCompile Include="tqt\private\tqtCursor.cpp">
       <Filter>tqt\private</Filter>
     </ClCompile>
+    <ClCompile Include="tqt\private\tqtInputFeed.cpp">
+      <Filter>tqt\private</Filter>
+    </ClCompile>
     <ClCompile Include="tqt\private\tqtDialogTabbed.cpp">
       <Filter>tqt\private</Filter>
     </ClCompile>
@@ -633,6 +636,9 @@
       <Filter>tqt</Filter>
     </ClInclude>
     <ClInclude Include="tqt\tqtCursor.hpp">
+      <Filter>tqt</Filter>
+    </ClInclude>
+    <ClInclude Include="tqt\tqtInputFeed.hpp">
       <Filter>tqt</Filter>
     </ClInclude>
     <ClInclude Include="tqt\tqtDialogTabbed.hpp">

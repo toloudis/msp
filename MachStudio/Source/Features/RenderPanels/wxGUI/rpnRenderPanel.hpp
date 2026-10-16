@@ -149,6 +149,7 @@ private:
 	void OnPaint(wxPaintEvent& i_Event);
 	void OnMouseDown(wxMouseEvent& i_Event);
 	void OnMouseMove(wxMouseEvent& i_Event);
+	void OnMouseWheel(wxMouseEvent& i_Event);
 	void OnEnter(wxMouseEvent& i_Event);
 	void OnLeave(wxMouseEvent& i_Event);
 	void OnSize(wxSizeEvent& i_Event);

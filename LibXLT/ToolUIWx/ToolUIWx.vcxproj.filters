@@ -39,6 +39,9 @@
     <ClInclude Include="twx\twxCursor.hpp">
       <Filter>Twx</Filter>
     </ClInclude>
+    <ClInclude Include="twx\twxInputFeed.hpp">
+      <Filter>Twx</Filter>
+    </ClInclude>
     <ClInclude Include="twx\twxDialogTabbed.hpp">
       <Filter>Twx</Filter>
     </ClInclude>
@@ -375,6 +378,9 @@
       <Filter>Twx\private</Filter>
     </ClCompile>
     <ClCompile Include="twx\private\twxCursor.cpp">
+      <Filter>Twx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="twx\private\twxInputFeed.cpp">
       <Filter>Twx\private</Filter>
     </ClCompile>
     <ClCompile Include="twx\private\twxDialogTabbed.cpp">

@@ -8,6 +8,7 @@
 \****************************************************************************/
 #include "ToolUIWx/twx/twxAppUtil.hpp"
 
+#include "ToolUIWx/twx/twxInputFeed.hpp"
 #include "ToolUIWx/twx/twxMessaging.hpp"
 
 #ifdef USE_WXWIDGETS
@@ -54,10 +55,13 @@ namespace twxAppUtil
 			virtual bool OnInit();
 
 			//----------------------------------------------------------------------------
-			// Catch events in order to process hot keys
+			// Catch events in order to feed the input package and process hot keys
 			//----------------------------------------------------------------------------
 			virtual int FilterEvent(wxEvent& i_Event)
 			{
+				// First, so it sees the keys that the hot keys use up
+				twxInputFeed::FilterEvent(i_Event);
+
 				if ( i_Event.GetEventType() == wxEVT_KEY_DOWN )
 				{
 					if (twxMessaging::ShouldProcessHotKeys())

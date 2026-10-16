@@ -36,8 +36,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Audio", "..\..\LibXLT\Audio
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Graphics", "..\..\LibXLT\Graphics\Graphics.vcxproj", "{1D25A739-3967-4BAF-AA18-53690B00BD55}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InputDI", "..\..\LibXLT\InputDI\InputDI.vcxproj", "{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tool", "..\..\LibXLT\Tool\Tool.vcxproj", "{C4C1C648-7CC8-48E6-AA4B-9E34F0C8AB1D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ToolUIWx", "..\..\LibXLT\ToolUIWx\ToolUIWx.vcxproj", "{7D34475E-30DA-48F0-831C-76CF42035352}"
@@ -488,30 +486,6 @@ Global
 		{1D25A739-3967-4BAF-AA18-53690B00BD55}.Release Wx|x64.Build.0 = Release Wx|x64
 		{1D25A739-3967-4BAF-AA18-53690B00BD55}.RenderNode|x64.ActiveCfg = RenderNode|x64
 		{1D25A739-3967-4BAF-AA18-53690B00BD55}.RenderNode|x64.Build.0 = RenderNode|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.Debug Iterator|x64.ActiveCfg = Debug Iterator|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.Debug Iterator|x64.Build.0 = Debug Iterator|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.Debug Managed|x64.ActiveCfg = Debug Managed|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.Debug Managed|x64.Build.0 = Debug Managed|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.Debug_RenderNode|x64.ActiveCfg = Debug_RenderNode|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.Debug_RenderNode|x64.Build.0 = Debug_RenderNode|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.Debug Qt|x64.ActiveCfg = Debug Qt|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.Debug Wx|x64.ActiveCfg = Debug Wx|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.Debug Qt|x64.Build.0 = Debug Qt|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.Debug Wx|x64.Build.0 = Debug Wx|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.Gold|x64.ActiveCfg = Gold|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.Gold|x64.Build.0 = Gold|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.MachStudio|x64.ActiveCfg = Gold|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.MachStudio|x64.Build.0 = Gold|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.Profile|x64.ActiveCfg = RenderNode|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.Profile|x64.Build.0 = RenderNode|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.Release Managed|x64.ActiveCfg = Release Managed|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.Release Managed|x64.Build.0 = Release Managed|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.Release Qt|x64.ActiveCfg = Release Qt|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.Release Wx|x64.ActiveCfg = Release Wx|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.Release Qt|x64.Build.0 = Release Qt|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.Release Wx|x64.Build.0 = Release Wx|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.RenderNode|x64.ActiveCfg = RenderNode|x64
-		{F3BD86CB-9337-4DDD-9BFE-7E4B9EC1B411}.RenderNode|x64.Build.0 = RenderNode|x64
 		{C4C1C648-7CC8-48E6-AA4B-9E34F0C8AB1D}.Debug Iterator|x64.ActiveCfg = Debug Iterator|x64
 		{C4C1C648-7CC8-48E6-AA4B-9E34F0C8AB1D}.Debug Iterator|x64.Build.0 = Debug Iterator|x64
 		{C4C1C648-7CC8-48E6-AA4B-9E34F0C8AB1D}.Debug Managed|x64.ActiveCfg = Debug Managed|x64

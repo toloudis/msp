@@ -63,6 +63,11 @@
 #else
 #include "ToolUIWx/pwx/pwxControlMgr.hpp"
 #endif
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtInputFeed.hpp"
+#else
+#include "ToolUIWx/twx/twxInputFeed.hpp"
+#endif
 #include "GraphicsDX11/GraphicsDX11Layer.hpp"
 
 
@@ -242,12 +247,14 @@ mainInitGraphics::mainInitGraphics(int i_AppWidth,
 		//guiMessageBox::Show("Test Test", "Critical Test");
 
 		inPackage::Init();
-		mnmVJoystick::Init();		//this will properly configure the inDeviceMgr's VirtualJoystick
+		// The keyboard and mouse get their input from the GUI toolkit. The
+		// render panels feed the wheel, so only the view under the cursor zooms.
 #if defined(USE_QT)
-		// rpnRenderPanel::wheelEvent feeds the wheel, so only the view under the cursor zooms
-		if (inDeviceMgr::GetNumMouses() > 0)
-			inDeviceMgr::GetMouse()->SetWheelFromWindowEvents(true);
+		tqtInputFeed::Init();
+#elif defined(USE_WXWIDGETS)
+		twxInputFeed::Init();
 #endif
+		mnmVJoystick::Init();		//this will properly configure the inDeviceMgr's VirtualJoystick
 		DBG_TRACE("Input Init complete.");
 
 		try
@@ -285,6 +292,11 @@ mainInitGraphics::~mainInitGraphics()
 	//
 	snSoundManager::DeInitialize();
 	snSoundSystem::DeInitialize();
+#if defined(USE_QT)
+	tqtInputFeed::CleanUp();
+#elif defined(USE_WXWIDGETS)
+	twxInputFeed::CleanUp();
+#endif
 	inPackage::CleanUp();
 
 #ifdef USE_WXWIDGETS

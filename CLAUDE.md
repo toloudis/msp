@@ -200,8 +200,7 @@ The live Direct3D 11 renderer.
 | `Area18` | Experimental OpenGL (gl3w/GLEW) renderer from 2009: GL device/context, shaders, meshes, a render-graph engine (`rndr`), fontstash text, test scenes. In the solution but not built in any solution configuration, and not linked into MachStudio. |
 | `AudioDS` (`sn`) | Sound: DirectSound 2D/streamed playback, MP3 via DirectShow, Redbook audio; used by sound timeline drivers |
 | `ImportExport` | Scene import/export: `fbx` (FBX SDK import/export), `gltf` (glTF import), `rman` (RenderMan export/live) |
-| `Input` (`in`) | Device-independent input: device manager, keyboard, mouse, gamepad, joystick, tablet, virtual joystick |
-| `InputDI` | DirectInput PAC implementations of keyboard/mouse/gamepad for `Input` |
+| `Input` (`in`) | Device-independent input: device manager, keyboard, mouse, gamepad, joystick, tablet, virtual joystick. The keyboard and mouse are fed by the GUI toolkit (`tqtInputFeed` / `twxInputFeed`: key and button events plus a per-frame cursor/button sample); no gamepad backend exists |
 | `InputTPC` | Tablet PC (pen/ink) PAC implementation for `Input` |
 | `SecuritySoftwareShield` (`scrtys`) | Licensing via SoftwareShield; the one linked into MachStudio |
 | `SecurityAladdin` (`scrtya`) | Licensing via Aladdin HASP dongles (obsolete) |

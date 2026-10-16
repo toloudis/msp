@@ -478,6 +478,7 @@
     <ClInclude Include="twx\twxAppUtil.hpp" />
     <ClInclude Include="twx\twxContextMenu.hpp" />
     <ClInclude Include="twx\twxCursor.hpp" />
+    <ClInclude Include="twx\twxInputFeed.hpp" />
     <ClInclude Include="twx\twxDialogTabbed.hpp" />
     <ClInclude Include="twx\twxDialogTabbedMgr.hpp" />
     <ClInclude Include="twx\twxMenuMgr.hpp" />
@@ -592,6 +593,7 @@
     <ClCompile Include="twx\private\twxAppUtil.cpp" />
     <ClCompile Include="twx\private\twxContextMenu.cpp" />
     <ClCompile Include="twx\private\twxCursor.cpp" />
+    <ClCompile Include="twx\private\twxInputFeed.cpp" />
     <ClCompile Include="twx\private\twxDialogTabbed.cpp" />
     <ClCompile Include="twx\private\twxDialogTabbedMgr.cpp" />
     <ClCompile Include="twx\private\twxMenuMgr.cpp" />

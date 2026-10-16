@@ -14,23 +14,29 @@
 #include <math.h>
 
 #include "Input/in/inDeviceMgr.hpp"
-#include "Input/in/private/inMousePAC.hpp"
 #include "Core/ma/maConstants.hpp"
 #include "Core/ma/maVector2d.hpp"
 
 //========================================================================
 //	Constructor
 //========================================================================
-inMouse::inMouse() : m_pPAC(new inMousePAC)
+inMouse::inMouse()
 {
-	memset(&m_PastState, 0, sizeof(m_PastState));
-	memset(&m_CurState, 0, sizeof(m_CurState));
+	memset(m_PastState, 0, sizeof(m_PastState));
+	memset(m_CurState, 0, sizeof(m_CurState));
+	memset(m_PressedSinceThink, 0, sizeof(m_PressedSinceThink));
 
 	m_dX = 0;
 	m_dY = 0;
 	m_dZ = 0;
-	m_bWheelFromWindowEvents = false;
 	m_PendingWheel = 0;
+	m_Dir = 0;
+	m_Pressure = 0;
+	m_DigitalDir = inDigitalDir::e_NONE;
+	m_pSource = NULL;
+	m_bHaveLastPos = false;
+	m_LastX = 0;
+	m_LastY = 0;
 }
 
 //========================================================================
@@ -38,7 +44,6 @@ inMouse::inMouse() : m_pPAC(new inMousePAC)
 //========================================================================
 inMouse::~inMouse()
 {
-	delete m_pPAC;
 }
 
 //========================================================================
@@ -56,16 +61,37 @@ void inMouse::Think()
 
 	m_dX = 0;
 	m_dY = 0;
-	m_dZ = 0;
+	m_dZ = window_wheel;
 
 	memcpy(m_PastState, m_CurState, sizeof(m_PastState));
 	memset(m_CurState, 0, sizeof(m_CurState));
-	m_pPAC->Think(m_dX, m_dY, m_dZ, m_CurState);
 
-	if (m_bWheelFromWindowEvents)
+	int x = 0;
+	int y = 0;
+	unsigned int buttons = 0;
+	if (m_pSource && m_pSource->Sample(x, y, buttons))
 	{
-		m_dZ = window_wheel;
+		if (m_bHaveLastPos)
+		{
+			m_dX = x - m_LastX;
+			m_dY = y - m_LastY;
+		}
+		m_LastX = x;
+		m_LastY = y;
+		m_bHaveLastPos = true;
+
+		for (int i = 0; i < e_MOUSEBUFSIZE; ++i)
+		{
+			m_CurState[i] = ((buttons >> i) & 1) || m_PressedSinceThink[i];
+		}
 	}
+	else
+	{
+		// Without the mouse, report everything as released
+		m_bHaveLastPos = false;
+		m_dZ = 0;
+	}
+	memset(m_PressedSinceThink, 0, sizeof(m_PressedSinceThink));
 
 	//we have to fix the radians so that 0 is North and it goes clockwise areound to 2pi
 	m_Dir = atan2f(m_dX, -m_dY);//-y to flip the y axis for this calc
@@ -369,14 +395,36 @@ void inMouse::GetAnalogDir(int i_Stick, int& o_X, int& o_Y, int& o_Z) const
 }
 
 //========================================================================
-//	Wheel rotation from window events, applied on the next Think
+//	SetSource sets where Think reads the cursor and buttons from
 //========================================================================
-void inMouse::SetWheelFromWindowEvents(bool i_bEnable)
+void inMouse::SetSource(inMouseSource* i_pSource)
 {
-	m_bWheelFromWindowEvents = i_bEnable;
-	m_PendingWheel = 0;
+	m_pSource = i_pSource;
+	m_bHaveLastPos = false;
 }
 
+//========================================================================
+//	ResetMotion forgets the last cursor position
+//========================================================================
+void inMouse::ResetMotion()
+{
+	m_bHaveLastPos = false;
+}
+
+//========================================================================
+//	NotifyButtonPressed reports a button press event
+//========================================================================
+void inMouse::NotifyButtonPressed(int i_Button)
+{
+	if (0 <= i_Button && i_Button < e_MOUSEBUFSIZE)
+	{
+		m_PressedSinceThink[i_Button] = true;
+	}
+}
+
+//========================================================================
+//	Wheel rotation from window events, applied on the next Think
+//========================================================================
 void inMouse::AddWheelDelta(float i_Notches)
 {
 	m_PendingWheel += i_Notches;
