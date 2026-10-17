@@ -142,7 +142,8 @@ These were decided with the project owner:
 7. **Modern Vulkan, as needed.** Use the most modern Vulkan practices this
    hardware supports (for example dynamic rendering and modern descriptor
    handling) where they make sense. They never take priority over image
-   quality, functionality or performance. The C++ API is **Vulkan-Hpp**.
+   quality, functionality or performance. The API is the **Vulkan C API**,
+   loaded with **volk**, with small simplifying wrappers in `vkd`.
    The target is the owner's current hardware: no fallback code paths for
    older GPUs.
 8. **Measurement from day one, on both backends.** DX11 measurement code is
@@ -199,11 +200,18 @@ These were decided with the project owner:
   matching the DXGI adapter's LUID (`VkPhysicalDeviceIDProperties`), so
   both backends are always compared on the same hardware. On this machine
   that must be the Quadro, not the Intel GPU. The chosen device is logged.
-- **API and loading:** Vulkan-Hpp (`vulkan.hpp`; the `vk::raii` wrappers
-  where they keep ownership clear) with the dynamic dispatch loader
-  (`VULKAN_HPP_DISPATCH_LOADER_DYNAMIC`). Nothing links `vulkan-1.lib`, so
-  the executable runs on a machine without a Vulkan driver as long as DX11
-  is selected. Vulkan-Hpp's `vk` namespace doesn't clash with `gvk`.
+- **API and loading:** the Vulkan C API, loaded with **volk** (instance
+  and device function tables). Nothing links `vulkan-1.lib`, so the
+  executable runs on a machine without a Vulkan driver as long as DX11 is
+  selected. Vulkan-Hpp is not used.
+- **Simplifying wrappers in `vkd`.** Thin helpers keep ported code short
+  and readable without hiding Vulkan: functions or small builders that
+  fill the common structs with sensible defaults (`sType`, `pNext` chains,
+  image/buffer create info, barriers, rendering info, pipeline state
+  pieces), a `VK_CHECK`-style result check that reports through `dbg`, and
+  simple RAII owners only where ownership would otherwise be unclear.
+  Wrappers that cost anything per draw are avoided. *(Builder's call on the
+  exact set; grow it as ported code shows what repeats.)*
 
 ### Modern Vulkan
 
@@ -357,9 +365,8 @@ exists:
 
 ### Build and dependencies
 
-- vcpkg manifest `LibXLT/GraphicsVulkan/vcpkg.json`: `vulkan-headers`
-  (includes Vulkan-Hpp), `vulkan-memory-allocator` (plus its Vulkan-Hpp
-  bindings if they are current), `spirv-reflect`, and `directx-dxc` (the
+- vcpkg manifest `LibXLT/GraphicsVulkan/vcpkg.json`: `vulkan-headers`,
+  `volk`, `vulkan-memory-allocator`, `spirv-reflect`, and `directx-dxc` (the
   build-time SPIR-V compiler, and `dxcompiler.dll` if run-time compilation
   is needed). This keeps CI free of a Vulkan SDK install. The headers must
   be new enough for every extension the design uses (`VK_EXT_descriptor_heap`
