@@ -36,6 +36,9 @@
     <ClCompile Include="mainInitDocument.cpp">
       <Filter>Source Files\Main</Filter>
     </ClCompile>
+    <ClCompile Include="mainCommandLine.cpp">
+      <Filter>Source Files\Main</Filter>
+    </ClCompile>
     <ClCompile Include="mainInitGraphics.cpp">
       <Filter>Source Files\Main</Filter>
     </ClCompile>
@@ -141,6 +144,9 @@
       <Filter>Source Files\Main</Filter>
     </ClInclude>
     <ClInclude Include="mainInitDocument.hpp">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="mainCommandLine.hpp">
       <Filter>Source Files\Main</Filter>
     </ClInclude>
     <ClInclude Include="mainInitGraphics.hpp">

@@ -377,6 +377,7 @@
     <ClInclude Include="G3d\g3dPlanarReflectionTargetRenderer.hpp" />
     <ClInclude Include="G3d\g3dPointLight.hpp" />
     <ClInclude Include="G3d\g3dPostProcessing.hpp" />
+    <ClInclude Include="G3d\g3dGfxOptions.hpp" />
     <ClInclude Include="G3d\g3dPrefs.hpp" />
     <ClInclude Include="G3d\g3dPrimitiveFragmentUtil.hpp" />
     <ClInclude Include="G3d\g3dProjectedLight.hpp" />

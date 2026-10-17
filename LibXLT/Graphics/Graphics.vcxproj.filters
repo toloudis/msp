@@ -297,6 +297,9 @@
     <ClInclude Include="G3d\g3dPostProcessing.hpp">
       <Filter>G3d</Filter>
     </ClInclude>
+    <ClInclude Include="G3d\g3dGfxOptions.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
     <ClInclude Include="G3d\g3dPrefs.hpp">
       <Filter>G3d</Filter>
     </ClInclude>

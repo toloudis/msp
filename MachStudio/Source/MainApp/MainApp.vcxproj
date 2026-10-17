@@ -406,6 +406,10 @@
     <ClCompile Include="mainCheckAppVersion.cpp" />
     <ClCompile Include="mainInitApplication.cpp" />
     <ClCompile Include="mainInitDocument.cpp" />
+    <ClCompile Include="mainCommandLine.cpp">
+      <!-- also compiled by UnitTests/MainAppTests, which has no stdafx.h -->
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="mainInitGraphics.cpp" />
     <ClCompile Include="mainInitLibrary.cpp" />
     <ClCompile Include="mainInitMainWindow.cpp" />
@@ -456,6 +460,7 @@
     <ClInclude Include="mainConstants.hpp" />
     <ClInclude Include="mainInitApplication.hpp" />
     <ClInclude Include="mainInitDocument.hpp" />
+    <ClInclude Include="mainCommandLine.hpp" />
     <ClInclude Include="mainInitGraphics.hpp" />
     <ClInclude Include="mainInitLibrary.hpp" />
     <ClInclude Include="mainInitMainWindow.hpp" />
@@ -536,6 +541,11 @@
          them. -->
     <ProjectReference Include="..\..\..\UnitTests\CoreTests\CoreTests.vcxproj">
       <Project>{a47f6ef0-4e08-4c1a-a930-cc4af2bbe402}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\UnitTests\MainAppTests\MainAppTests.vcxproj">
+      <Project>{673eb3cc-c4ae-421f-9644-cae53f4e7fa0}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
