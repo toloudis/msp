@@ -98,6 +98,8 @@ TEST(mainCommandLine, UnknownTokenAfterActionIsIgnored)
 {
 	mainCommandLine line = mainCommandLine::Parse("-render a.mab -bogus");
 	expect_actions({act(mainCommandLine::e_Render, "a.mab")}, line);
+	ASSERT_EQ(1u, line.m_Warnings.size());
+	EXPECT_NE(std::string::npos, line.m_Warnings[0].find("-bogus"));
 }
 
 TEST(mainCommandLine, ScriptTakesRestOfLine)
@@ -128,6 +130,13 @@ TEST(mainCommandLine, ValueFlagAtEndIsIgnored)
 {
 	mainCommandLine line = mainCommandLine::Parse("-render");
 	EXPECT_TRUE(line.m_Actions.empty());
+	ASSERT_EQ(1u, line.m_Warnings.size());
+	EXPECT_NE(std::string::npos, line.m_Warnings[0].find("-render"));
+}
+
+TEST(mainCommandLine, NoWarningsForAWellFormedLine)
+{
+	EXPECT_TRUE(mainCommandLine::Parse("-NoSplash -render a.mab").m_Warnings.empty());
 }
 
 TEST(mainCommandLine, SlashPrefixWorks)

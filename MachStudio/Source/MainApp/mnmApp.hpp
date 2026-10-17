@@ -38,6 +38,7 @@ class g2dWindow;
 class cptrModeCapture;
 class tma3dRenderView;
 class rpnPanelViewer;
+struct mainCommandLine;
 
 
 //============================================================================
@@ -104,9 +105,10 @@ class mnmApp :	public appApplication,
 		//static int GetManipulatorsLayerIndex();
 
 		//--------------------------------------------------------------------
-		//	parse the command line and configure the app accordingly
+		//	run the command line's actions, in order (the command line is
+		//	parsed before start-up by mainCommandLine::Parse)
 		//--------------------------------------------------------------------
-		static void ParseCommandLine(std::string& i_lpCmdLine);
+		static void RunCommandLine(const mainCommandLine& i_CommandLine);
 
 		//--------------------------------------------------------------------
 		// return value in KB

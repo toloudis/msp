@@ -8,6 +8,7 @@
 \****************************************************************************/
 #include "stdafx.h"
 #include "MainApp/mnmApp.hpp"
+#include "MainApp/mainCommandLine.hpp"
 
 #include "MainApp/mainConstants.hpp"
 #ifdef MSP_GUI_QT
@@ -313,43 +314,33 @@ int mnmApp::GetScreenSpaceIndex()
 //}
 
 //--------------------------------------------------------------------
-//	parse the command line and configure the app accordingly
+//	run the command line's actions, in order (it was parsed before
+//	start-up by mainCommandLine::Parse)
 //--------------------------------------------------------------------
 //static
-void mnmApp::ParseCommandLine(std::string& i_lpCmdLine)
+void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 {
-	if ( i_lpCmdLine.length() == 0 )
-		return;
-
-	DBG_TRACE("Command Line: " << i_lpCmdLine.c_str());
-
-	bool bParsedAnyData	= false;
-	char seps[]		= " \t\n";
-	char seps_tok1[]	= "\"";
-	char seps_tok2[]	= " \"";
-	char seps3[]	= "\n";
-	char *token;
-
-	char pLine[1024];
-	strcpy( pLine, i_lpCmdLine.c_str() );
-	token = strtok( pLine, seps );
-	while( token != NULL )
+	std::vector<std::string>::const_iterator warning, warnings_end = i_CommandLine.m_Warnings.end();
+	for ( warning = i_CommandLine.m_Warnings.begin(); warning != warnings_end; ++warning )
 	{
-		//DBG_TRACE( "   " << token );
+		DBG_LOG( "   " << *warning );
+	}
 
-		if (   ( strcmp(token,"-file") == 0 )
-			|| ( strcmp(token,"/file") == 0 ))
+	std::vector<mainCommandLine::Action>::const_iterator it, end = i_CommandLine.m_Actions.end();
+	for ( it = i_CommandLine.m_Actions.begin(); it != end; ++it )
+	{
+		const std::string& value = it->m_Value;
+		switch ( it->m_Kind )
 		{
-			token = strtok( NULL, seps_tok1 );
-			DBG_LOG( "   Command-line FILE " << token );
+		case mainCommandLine::e_File:
+		{
+			DBG_LOG( "   Command-line FILE " << value );
 			fsLocator scenefile;
-			fsFileUtil::ANSIFilenameToLocator(std::string(token), scenefile );
-
+			fsFileUtil::ANSIFilenameToLocator(value, scenefile );
 			mnpPackage::LaunchFile( scenefile );
-			bParsedAnyData	= true;
+			break;
 		}
-		else if (   ( strcmp(token, "-lastfile") == 0 )
-				 || ( strcmp(token, "/lastfile") == 0 ))
+		case mainCommandLine::e_LastFile:
 		{
 			std::vector<fsLocator>	mru_list;
 			docSingleTypeMgr::GetMRUList( mru_list );
@@ -358,86 +349,67 @@ void mnmApp::ParseCommandLine(std::string& i_lpCmdLine)
 				fsLocator lastfile = mru_list[0];
 				mnpPackage::LaunchFile( lastfile );
 			}
-			bParsedAnyData	= true;
+			break;
 		}
-		else if (   ( strcmp(token,"-help") == 0 )
-				 || ( strcmp(token,"/help") == 0 ))
+		case mainCommandLine::e_Help:
 		{
-			// TODO - Implement a list of available commands on the command line
-			std::cout << "Command Line Parameters";
-			std::cout << "-----------------------";
-			std::cout << "-file";
-			std::cout << "-lastfile";
+			std::cout << "Command line parameters" << std::endl;
+			std::cout << "-----------------------" << std::endl;
+			std::cout << "-file <scene>             open a scene" << std::endl;
+			std::cout << "-lastfile                 open the most recent scene" << std::endl;
+			std::cout << "-new                      start a new scene" << std::endl;
+			std::cout << "-render <scene>           render a scene with its capture settings" << std::endl;
+			std::cout << "-batch <scene>            batch-render a scene" << std::endl;
+			std::cout << "-script <file.py> [args]  run a Python script" << std::endl;
+			std::cout << "-capFormat <format>       capture format (PNG, EXR, ...)" << std::endl;
+			std::cout << "-capCompress <code>       capture compression code" << std::endl;
+			std::cout << "-capCamera <camera>       capture camera" << std::endl;
+			std::cout << "-capWidth <pixels>        capture width" << std::endl;
+			std::cout << "-capHeight <pixels>       capture height" << std::endl;
+			std::cout << "-capOutputFile <file>     capture output file name" << std::endl;
+			std::cout << "-capOutputPath <dir>      capture output directory" << std::endl;
+			std::cout << "-capOutputPathRoot <dir>  capture output root directory" << std::endl;
+			std::cout << "-license <key>            validate a license key" << std::endl;
+			std::cout << "-NoSplash                 don't show the splash screen" << std::endl;
+			std::cout << "-show                     show windows in batch mode" << std::endl;
+			std::cout << "-version                  print the version" << std::endl;
+			std::cout << "-gfxProfile <file.csv>    write per-pass graphics timings (profiling builds)" << std::endl;
+			std::cout << "-help                     print this list" << std::endl;
+			break;
 		}
-		else if (   ( strcmp(token,"-show") == 0 )
-				 || ( strcmp(token,"/show") == 0 ))
+		case mainCommandLine::e_Batch:
 		{
-			// Batch mode usually hides render windows, use /show
-			// to display them.
-			appApplicationPAC::SetShowWindows(true);
-		}
-		else if (   ( strcmp(token,"-batch") == 0 )
-				 || ( strcmp(token,"/batch") == 0 ))
-		{
-			token = strtok( NULL, seps_tok1 );
-			DBG_LOG( "   Command-line BATCH-RENDER " << token );
-
+			DBG_LOG( "   Command-line BATCH-RENDER " << value );
 			fsLocator scenefile;
-			fsFileUtil::ANSIFilenameToLocator(std::string(token), scenefile );
-
+			fsFileUtil::ANSIFilenameToLocator(value, scenefile );
 			cptrPackage::LaunchBatchRender( scenefile );
-			bParsedAnyData	= true;
+			break;
 		}
-		else if (   ( strcmp(token,"-render") == 0 )
-				 || ( strcmp(token,"/render") == 0 ))
+		case mainCommandLine::e_Render:
 		{
-			token = strtok( NULL, seps_tok1 );
-			DBG_LOG( "   Command-line RENDER " << token );
-
+			DBG_LOG( "   Command-line RENDER " << value );
 			fsLocator scenefile;
-			fsFileUtil::ANSIFilenameToLocator(std::string(token), scenefile );
-
+			fsFileUtil::ANSIFilenameToLocator(value, scenefile );
 			cptrPackage::LaunchRender( scenefile );
-			bParsedAnyData	= true;
+			break;
 		}
-		else if (   ( strcmp(token,"-script") == 0 )
-				 || ( strcmp(token,"/script") == 0 ))
+		case mainCommandLine::e_Script:
 		{
-			size_t startpos = i_lpCmdLine.find("script");
-			DBG_ASSERT( startpos != std::string::npos, "SCRIPT command not found when accessing script prompt" );
-			
-			std::string command_line_string = i_lpCmdLine.substr(startpos);
-
-			startpos = command_line_string.find_first_not_of("script");
-			size_t endpos = command_line_string.find_last_not_of("\"");
-			size_t endpos2 = command_line_string.find_last_of("\"");
-			if( endpos2 != std::string::npos &&
-				endpos2 < endpos &&
-				endpos2 > startpos )
-				endpos = endpos2;
-			if( endpos == std::string::npos )
-				endpos = command_line_string.length();
-
-			std::string script_command = command_line_string.substr( startpos+1, endpos-startpos );
-			startpos = script_command.find_first_not_of(" ");
-			if( startpos != std::string::npos )
-				script_command = script_command.substr( startpos );
-
-			DBG_LOG( "   Script Line " << script_command );
+			DBG_LOG( "   Script Line " << value );
 
 			std::string command_string;
 			std::string script_string;
 			std::string args_string;
 
 			//grab just the .py
-			startpos = script_command.find_first_not_of("\"");
-			endpos = script_command.find_last_not_of("\"");
+			size_t startpos = value.find_first_not_of("\"");
+			size_t endpos = value.find_last_not_of("\"");
 			if( startpos == std::string::npos )
 				startpos = 0;
 			if( endpos == std::string::npos )
-				endpos = script_command.length();
+				endpos = value.length();
 
-			command_string = script_command.substr(startpos, endpos+1);
+			command_string = value.substr(startpos, endpos+1);
 			std::string::size_type ext = command_string.find(".py", 0);
 			ext += 3;
 			if ( ext != std::string::npos)
@@ -459,106 +431,70 @@ void mnmApp::ParseCommandLine(std::string& i_lpCmdLine)
 				else
 					pythUtil::ScriptFile( script_file );
 			}
-			bParsedAnyData	= true;
+			break;
 		}
-		else if (   ( strcmp(token,"-capFormat") == 0 )
-				 || ( strcmp(token,"/capFormat") == 0 ))
+		case mainCommandLine::e_CapFormat:
 		{
-			token = strtok( NULL, seps_tok2 );
-			DBG_LOG( "   Command-line CAPTURE-FORMAT " << token );
-			itString format(token);
-			captRenderOutputDataUtil::SetCaptureFormat( format );
-			bParsedAnyData	= true;
+			DBG_LOG( "   Command-line CAPTURE-FORMAT " << value );
+			captRenderOutputDataUtil::SetCaptureFormat( itString(value.c_str()) );
+			break;
 		}
-		else if (   ( strcmp(token,"-capCompress") == 0 )
-				 || ( strcmp(token,"/capCompress") == 0 ))
+		case mainCommandLine::e_CapCompress:
 		{
-			token = strtok( NULL, seps_tok2 );
-			DBG_LOG( "   Command-line CAPTURE-COMPRESS " << token );
-			itString code(token);
-			captRenderOutputDataUtil::SetCompressCode( code );
-			bParsedAnyData	= true;
+			DBG_LOG( "   Command-line CAPTURE-COMPRESS " << value );
+			captRenderOutputDataUtil::SetCompressCode( itString(value.c_str()) );
+			break;
 		}
-		else if (   ( strcmp(token,"-capCamera") == 0 )
-				 || ( strcmp(token,"/capCamera") == 0 ))
+		case mainCommandLine::e_CapCamera:
 		{
-			token = strtok( NULL, seps_tok1 );
-			DBG_LOG( "   Command-line CAPTURE-CAMERA " << token );
-			itString cam(token);
-			captRenderOutputDataUtil::SetActiveCamera( cam );
-			bParsedAnyData	= true;
+			DBG_LOG( "   Command-line CAPTURE-CAMERA " << value );
+			captRenderOutputDataUtil::SetActiveCamera( itString(value.c_str()) );
+			break;
 		}
-		else if (   ( strcmp(token,"-capWidth") == 0 )
-				 || ( strcmp(token,"/capWidth") == 0 ))
+		case mainCommandLine::e_CapWidth:
 		{
-			token = strtok( NULL, seps_tok2 );
-			DBG_LOG( "   Command-line CAPTURE-WIDTH " << token );
-			itString width(token);
-			captRenderOutputDataUtil::SetCaptureWidth(itStringUtil::GetInt(width));
-			bParsedAnyData	= true;
+			DBG_LOG( "   Command-line CAPTURE-WIDTH " << value );
+			captRenderOutputDataUtil::SetCaptureWidth(itStringUtil::GetInt(itString(value.c_str())));
+			break;
 		}
-		else if (   ( strcmp(token,"-capHeight") == 0 )
-				 || ( strcmp(token,"/capHeight") == 0 ))
+		case mainCommandLine::e_CapHeight:
 		{
-			token = strtok( NULL, seps_tok2 );
-			DBG_LOG( "   Command-line CAPTURE-HEIGHT " << token );
-			itString height(token);
-			captRenderOutputDataUtil::SetCaptureHeight(itStringUtil::GetInt(height));
-			bParsedAnyData	= true;
+			DBG_LOG( "   Command-line CAPTURE-HEIGHT " << value );
+			captRenderOutputDataUtil::SetCaptureHeight(itStringUtil::GetInt(itString(value.c_str())));
+			break;
 		}
-		else if (   ( strcmp(token,"-capOutputFile") == 0 )
-				 || ( strcmp(token,"/capOutputFile") == 0 ))
+		case mainCommandLine::e_CapOutputFile:
 		{
-			token = strtok( NULL, seps_tok1 );
-			DBG_LOG( "   Command-line CAPTURE-OUTPUTFILE " << token );
-			itString file(token);
-			captRenderOutputDataUtil::SetCaptureOutputFile( file );
-			bParsedAnyData	= true;
+			DBG_LOG( "   Command-line CAPTURE-OUTPUTFILE " << value );
+			captRenderOutputDataUtil::SetCaptureOutputFile( itString(value.c_str()) );
+			break;
 		}
-		else if (   ( strcmp(token,"-capOutputPath") == 0 )
-				 || ( strcmp(token,"/capOutputPath") == 0 ))
+		case mainCommandLine::e_CapOutputPath:
 		{
-			token = strtok( NULL, seps_tok1 );
-			DBG_LOG( "   Command-line CAPTURE-OUTPUTPATH " << token );
-			itString path(token);
-			captRenderOutputDataUtil::SetCaptureOutputDirectory( path );
-			bParsedAnyData	= true;
+			DBG_LOG( "   Command-line CAPTURE-OUTPUTPATH " << value );
+			captRenderOutputDataUtil::SetCaptureOutputDirectory( itString(value.c_str()) );
+			break;
 		}
-		else if (   ( strcmp(token,"-capOutputPathRoot") == 0 )
-				 || ( strcmp(token,"/capOutputPathRoot") == 0 ))
+		case mainCommandLine::e_CapOutputPathRoot:
 		{
-			token = strtok( NULL, seps_tok1 );
-			DBG_LOG( "   Command-line CAPTURE-OUTPUTPATHROOT " << token );
-			itString path(token);
-			captRenderOutputDataUtil::SetCaptureOutputDirectoryRoot( path );
-			bParsedAnyData	= true;
+			DBG_LOG( "   Command-line CAPTURE-OUTPUTPATHROOT " << value );
+			captRenderOutputDataUtil::SetCaptureOutputDirectoryRoot( itString(value.c_str()) );
+			break;
 		}
-		else if (   ( strcmp(token,"-NoSplash") == 0 )
-				 || ( strcmp(token,"/NoSplash") == 0 ))
-		{
-			splashscreen::SetSplashFlag(false);
-			bParsedAnyData = true;
-		}
-		else if (   ( strcmp(token,"-new") == 0 )
-				 || ( strcmp(token,"/new") == 0 ))
+		case mainCommandLine::e_New:
 		{
 			DBG_LOG( "   Command-line NEW" );
-
 			mnpPackage::LaunchNew();
-			bParsedAnyData	= true;
+			break;
 		}
-		else if (   ( strcmp(token,"-license") == 0 )
-				 || ( strcmp(token,"/license") == 0 ))
+		case mainCommandLine::e_License:
 		{
-			token = strtok( NULL, seps_tok1 );
-			DBG_LOG( "   Command-line license " << token );
-
-			std::string license_str(token);
+			DBG_LOG( "   Command-line license " << value );
+			std::string license_str(value);
 			mnmSecurityMgr::ValidateLicense(license_str);
-			bParsedAnyData	= true;
+			break;
 		}
-		else if (   ( strcmp(token,"-version") == 0 )
-				 || ( strcmp(token,"/version") == 0 ))
+		case mainCommandLine::e_Version:
 		{
 			itString helpMessage = itString(mnmConstants::c_PRODUCT_FOR_DISPLAY);
 			helpMessage += L" ";
@@ -580,83 +516,70 @@ void mnmApp::ParseCommandLine(std::string& i_lpCmdLine)
 			helpMessage += L"\r\n";
 			std::string outputstr = itStringUtil::GetStdString(helpMessage);
 			std::cout << outputstr.c_str();
+			break;
 		}
-		else
+		case mainCommandLine::e_OpenPath:
 		{
-			if (!bParsedAnyData)
-			{
-				//	If the code gets to this case then we assume the user
-				//	has double-clicked on an MAB and launched the app via
-				//	file type association.
-				//
-				//	Ignore the token and use the whole line.
-				//
-				size_t startpos = i_lpCmdLine.find_first_not_of("\"");
-				size_t endpos = i_lpCmdLine.find_last_not_of("\"");
-				i_lpCmdLine = i_lpCmdLine.substr( startpos, endpos-startpos+1 );
-				DBG_LOG( "   Open File from command line = " << i_lpCmdLine.c_str() );
+			DBG_LOG( "   Open File from command line = " << value.c_str() );
 
-				fsLocator scenefile;
-				std::string typeCheck;
-				fsFileUtil::ANSIFilenameToLocator(i_lpCmdLine, scenefile );
-				if ( fsFileUtil::FileExists( scenefile ) )
-				{	
-					fsFileUtil::LocatorToANSIFilename(scenefile, typeCheck);
-					if (typeCheck.find(".mab") != std::string::npos)
-					{
-						//DBG_TRACE( "   Opening Scene " << token );
-						mnpPackage::LaunchFile( scenefile );
-					}
-					else if ((typeCheck.find(".chx") != std::string::npos)
-						  || (typeCheck.find(".gxb") != std::string::npos) )
-					{
-						SceneSetupData SceneData;
-						std::string chtrFileName;
-
-						//get the project directory for this character file
-						fsLocator tempLocator = scenefile;
-						tempLocator.RemoveAfter(itString("Data"));
-						tempLocator.Pop();
-						std::string tempString;
-						fsFileUtil::LocatorToANSIFilename(tempLocator, tempString);
-						//DBG_TRACE( "   projectDirectory " << tempString.c_str());
-
-						SceneData.m_Data.m_ProjectDirectory = tempString;
-
-						//Get the project name
-						tempString = itStringUtil::GetStdString(tempLocator.GetLastName());
-						//DBG_TRACE( "   projectName " << tempString.c_str());
-						SceneData.m_Data.m_ProjectName = tempString;
-
-						//Create a new scene file name with tempScene appended after the character's file name
-						tempString = itStringUtil::GetStdString(scenefile.GetLastName());
-						chtrFileName = tempString;
-						tempString = tempString.substr(0, tempString.find("."));
-						tempString += "_tempScene";
-						//DBG_TRACE( "   New Scene File name " << tempString.c_str() );
-						SceneData.m_Data.m_SceneName = tempString;
-
-						//scene info is complete
-						SceneData.m_Data.m_bFinished = true;
-
-						//	prepare the initial scene directory based on project settings
-						//
-						itString scene_name(SceneData.m_Data.m_SceneName.c_str());
-						fsLocator project_dir;
-						fsFileUtil::ANSIFilenameToLocator( SceneData.m_Data.m_ProjectDirectory, project_dir );
-						mnmPaths::SetupPaths( project_dir, scene_name );
-						guiSingleDocHandler::SetInitialDirectory( gfPaths::GetPath( mnmPaths::e_SaveShots ) );
-
-						chtrDialogInterest newCharacter;
-						newCharacter.AddObject(itString(chtrFileName.c_str()), scenefile);
-					}
+			fsLocator scenefile;
+			std::string typeCheck;
+			fsFileUtil::ANSIFilenameToLocator(value, scenefile );
+			if ( fsFileUtil::FileExists( scenefile ) )
+			{	
+				fsFileUtil::LocatorToANSIFilename(scenefile, typeCheck);
+				if (typeCheck.find(".mab") != std::string::npos)
+				{
+					//DBG_TRACE( "   Opening Scene " << token );
+					mnpPackage::LaunchFile( scenefile );
 				}
+				else if ((typeCheck.find(".chx") != std::string::npos)
+					  || (typeCheck.find(".gxb") != std::string::npos) )
+				{
+					SceneSetupData SceneData;
+					std::string chtrFileName;
 
-				return;
+					//get the project directory for this character file
+					fsLocator tempLocator = scenefile;
+					tempLocator.RemoveAfter(itString("Data"));
+					tempLocator.Pop();
+					std::string tempString;
+					fsFileUtil::LocatorToANSIFilename(tempLocator, tempString);
+					//DBG_TRACE( "   projectDirectory " << tempString.c_str());
+
+					SceneData.m_Data.m_ProjectDirectory = tempString;
+
+					//Get the project name
+					tempString = itStringUtil::GetStdString(tempLocator.GetLastName());
+					//DBG_TRACE( "   projectName " << tempString.c_str());
+					SceneData.m_Data.m_ProjectName = tempString;
+
+					//Create a new scene file name with tempScene appended after the character's file name
+					tempString = itStringUtil::GetStdString(scenefile.GetLastName());
+					chtrFileName = tempString;
+					tempString = tempString.substr(0, tempString.find("."));
+					tempString += "_tempScene";
+					//DBG_TRACE( "   New Scene File name " << tempString.c_str() );
+					SceneData.m_Data.m_SceneName = tempString;
+
+					//scene info is complete
+					SceneData.m_Data.m_bFinished = true;
+
+					//	prepare the initial scene directory based on project settings
+					//
+					itString scene_name(SceneData.m_Data.m_SceneName.c_str());
+					fsLocator project_dir;
+					fsFileUtil::ANSIFilenameToLocator( SceneData.m_Data.m_ProjectDirectory, project_dir );
+					mnmPaths::SetupPaths( project_dir, scene_name );
+					guiSingleDocHandler::SetInitialDirectory( gfPaths::GetPath( mnmPaths::e_SaveShots ) );
+
+					chtrDialogInterest newCharacter;
+					newCharacter.AddObject(itString(chtrFileName.c_str()), scenefile);
+				}
 			}
+			break;
 		}
-
-		token = strtok( NULL, seps );
+		}
 	}
 }
 

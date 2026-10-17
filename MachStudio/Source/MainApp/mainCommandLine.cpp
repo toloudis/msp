@@ -12,9 +12,6 @@
 #ifndef APP_COMMANDLINE_HPP
 #include "Core/App/appCommandLine.hpp"
 #endif
-#ifndef DBG_MSG_HPP
-#include "Core/dbg/dbgMsg.hpp"
-#endif
 
 namespace
 {
@@ -148,7 +145,7 @@ mainCommandLine mainCommandLine::Parse(const std::string& i_Line)
 				}
 				else
 				{
-					DBG_LOG("   Command-line " << token << " has no value; ignored");
+					result.m_Warnings.push_back("Command-line " + token + " has no value; ignored");
 				}
 				break;
 			}
@@ -167,7 +164,7 @@ mainCommandLine mainCommandLine::Parse(const std::string& i_Line)
 			}
 			else
 			{
-				DBG_LOG("   Command-line " << token << " has no value; ignored");
+				result.m_Warnings.push_back("Command-line " + token + " has no value; ignored");
 			}
 		}
 		else if (appCommandLine::IsFlag(token, "script"))
@@ -211,7 +208,7 @@ mainCommandLine mainCommandLine::Parse(const std::string& i_Line)
 		}
 		else
 		{
-			DBG_LOG("   Command-line token ignored: " << token);
+			result.m_Warnings.push_back("Command-line token ignored: " + token);
 		}
 	}
 	return result;

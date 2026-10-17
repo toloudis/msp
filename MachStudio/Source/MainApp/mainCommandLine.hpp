@@ -60,6 +60,7 @@ struct mainCommandLine
 	bool				m_bNoSplash = false;		// -NoSplash
 	bool				m_bShowWindows = false;		// -show
 	std::vector<Action>	m_Actions;					// in command-line order
+	std::vector<std::string> m_Warnings;			// ignored tokens etc., logged once Core is up
 
 	//------------------------------------------------------------------------
 	//	Parse - flags take '-' or '/'. A flag's value is the next token (a

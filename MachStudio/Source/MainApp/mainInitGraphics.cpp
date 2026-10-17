@@ -38,6 +38,7 @@
 #include "Graphics/G2d/g2dExceptionX.hpp"
 #include "Graphics/G2d/g2dFontUtil.hpp"
 #include "Graphics/G3d/g3dExceptionX.hpp"
+#include "Graphics/G3d/g3dGfxOptions.hpp"
 #include "Graphics/GraphicsLayer.hpp"
 #include "ImportExport/ImportExportLayer.hpp"
 #include "Input/in/inDeviceMgr.hpp"
@@ -75,7 +76,20 @@
 //============================================================================
 namespace
 {
+	g3dGfxOptions l_GfxOptions;
 }	// end of namespace
+
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+void mainInitGraphics::SetGfxOptions(const g3dGfxOptions& i_Options)
+{
+	l_GfxOptions = i_Options;
+}
+
+const g3dGfxOptions& mainInitGraphics::GetGfxOptions()
+{
+	return l_GfxOptions;
+}
 
 
 //--------------------------------------------------------------------

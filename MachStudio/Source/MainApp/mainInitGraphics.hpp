@@ -27,6 +27,7 @@
 //	Forward References
 //============================================================================
 class g2dSystem;
+struct g3dGfxOptions;
 class mnmApp;
 class wxMainForm;
 class qtMainForm;
@@ -67,6 +68,13 @@ public:
 	// insufficient graphics power.
 	//--------------------------------------------------------------------
 	bool InitSuccessful() { return m_bSuccessInit; }
+
+	//--------------------------------------------------------------------
+	// Graphics options from the command line; set before the object is
+	// constructed (DoWinMain parses the command line first).
+	//--------------------------------------------------------------------
+	static void SetGfxOptions(const g3dGfxOptions& i_Options);
+	static const g3dGfxOptions& GetGfxOptions();
 
 private:
 	mnmApp *m_pApp;

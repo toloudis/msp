@@ -8,6 +8,7 @@
 \********************************************************************************************/
 #include "stdafx.h"
 
+#include "MainApp/mainCommandLine.hpp"
 #include "MainApp/mainInitApplication.hpp"
 #include "MainApp/mainInitDocument.hpp"
 #include "MainApp/mainInitGraphics.hpp"
@@ -85,6 +86,11 @@
 #include "Tool/gui/guiMessageBox.hpp"
 #include "Tool/gui/guiSingleDocHandler.hpp"
 #include "Tool/gui/guiSplashScreen.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/qui/quiSplashScreen.hpp"
+#else
+#include "ToolUIWx/wui/wuiSplashScreen.hpp"
+#endif
 #include "Tool/rstk/rstkDocumentInterest.hpp"
 #ifdef MSP_GUI_QT
 #include "ToolUIQt/pqt/pqtControlMgr.hpp"
@@ -329,6 +335,23 @@ int DoWinMain(HINSTANCE hInstance,
 			  LPTSTR lpCmdLine,
 			  int nCmdShow)
 {
+	//	Parse the whole command line before anything starts: the graphics
+	//	options are needed to initialize graphics, -NoSplash and -show
+	//	before the splash screen and windows appear. The actions run once
+	//	the application is up (mnmApp::RunCommandLine below).
+	//
+	const std::string raw_command_line( envString::WideCharToUTF8(lpCmdLine) );
+	const mainCommandLine command_line = mainCommandLine::Parse( raw_command_line );
+	if ( command_line.m_bNoSplash )
+	{
+		splashscreen::SetSplashFlag(false);
+	}
+	if ( command_line.m_bShowWindows )
+	{
+		appApplicationPAC::SetShowWindows(true);
+	}
+	mainInitGraphics::SetGfxOptions( command_line.m_Gfx );
+
 #if !defined(USE_WXWIDGETS) && !defined(USE_QT)
 	// MOVED TO TOP SO SUSPENDED IS TURNED OFF FOR RENDERNODE EARLY ENOUGH
 	//
@@ -500,11 +523,9 @@ int DoWinMain(HINSTANCE hInstance,
 						mainInitSecurity mainSecurity;
 
 						//
-						//	parse the command line and configure the app accordingly
+						//	run the command line's actions (parsed at the top)
 						//
-						//bga - This is not good...
-						std::string cmdline( envString::WideCharToUTF8(lpCmdLine) );
-						mnmApp::ParseCommandLine( cmdline );
+						mnmApp::RunCommandLine( command_line );
 
 #ifdef FUSION //#if(SGPU_APP == MS_FUSION)
 						//	don't show the 3D icons
@@ -512,7 +533,7 @@ int DoWinMain(HINSTANCE hInstance,
 						sel3dMgr::ClearSelection();
 
 						//	Automatically open an empty application if no command line options
-						if (cmdline.size() == 0)
+						if (raw_command_line.size() == 0)
 							mnpPackage::LaunchNew();
 #endif
 						// valid the license initially
