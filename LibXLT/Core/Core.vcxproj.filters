@@ -156,6 +156,9 @@
     <ClInclude Include="Env\envWaitCondition.hpp">
       <Filter>Env</Filter>
     </ClInclude>
+    <ClInclude Include="Env\envWorkerThread.hpp">
+      <Filter>Env</Filter>
+    </ClInclude>
     <ClInclude Include="Env\private\envExceptionXPAC.hpp">
       <Filter>Env\EnvPrivate</Filter>
     </ClInclude>
@@ -847,6 +850,9 @@
       <Filter>Env\EnvPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Env\private\envWaitCondition.cpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\private\envWorkerThread.cpp">
       <Filter>Env\EnvPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Dbg\private\dbgAssertPACWin.cpp">

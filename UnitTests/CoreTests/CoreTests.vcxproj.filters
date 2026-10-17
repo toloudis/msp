@@ -57,6 +57,9 @@
     <ClCompile Include="Env\envThreadGroupTest.cpp">
       <Filter>Env</Filter>
     </ClCompile>
+    <ClCompile Include="Env\envWorkerThreadTest.cpp">
+      <Filter>Env</Filter>
+    </ClCompile>
     <ClCompile Include="Fs\fsFileTest.cpp">
       <Filter>Fs</Filter>
     </ClCompile>

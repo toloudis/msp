@@ -39,10 +39,10 @@ namespace
 		}
 	};
 
-	bool get_dirty(const std::set<tmlnDriver*> &i_Set)
+	bool get_dirty(const std::vector<tmlnDriver*> &i_Drivers)
 	{
-		std::set<tmlnDriver*>::const_iterator it, end = i_Set.end();
-		for (it = i_Set.begin(); it != end; ++it)
+		std::vector<tmlnDriver*>::const_iterator it, end = i_Drivers.end();
+		for (it = i_Drivers.begin(); it != end; ++it)
 		{
 			if ((*it)->IsDirty())
 				return true;
@@ -54,10 +54,10 @@ namespace
 	// be able to preserve the order of the drivers based on the
 	// priorities of the channels
 	void merge(std::vector<sSortableDriver> &o_Dest, 
-			   const std::set<tmlnDriver*> &i_Src,
+			   const std::vector<tmlnDriver*> &i_Src,
 			   int i_Priority)
 	{
-		std::set<tmlnDriver*>::const_iterator it, end = i_Src.end();
+		std::vector<tmlnDriver*>::const_iterator it, end = i_Src.end();
 		for (it = i_Src.begin(); it != end; ++it)
 		{
 			// Only insert if driver does not already exist
@@ -202,12 +202,23 @@ void  tmlnChannelSet::Update(const maTime& i_Time,
 	std::vector<sSortableDriver> init_drivers;
 	std::vector<sSortableDriver> active_drivers;
 	{
+		// Reused for each channel, to avoid allocating per channel
+		std::vector<tmlnDriver*> preset, active;
+
 		// Iterate through channels
 		std::vector<tmlnChannel*>::iterator it, end = m_Channels.end();
 		for (it = m_Channels.begin(); it != end; ++it)
 		{
-			std::set<tmlnDriver*> preset, active;
 			tmlnChannel *pChannel = (*it);
+
+			// Most channels have nothing to do when the time hasn't
+			// changed; the app's idle loop updates the timeline far
+			// more often than the time changes.
+			if (pChannel->IsUpToDate(i_Time))
+				continue;
+
+			preset.clear();
+			active.clear();
 			bool bResetChannel = pChannel->GatherDriversToEvaluate(i_Time, preset, active);
 
 			// Find out if channel needs its drivers to evaluate...

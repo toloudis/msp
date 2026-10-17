@@ -66,6 +66,7 @@
 #include "Core/env/envPackage.hpp"
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/Env/envThread.hpp"
+#include "Core/Env/envWorkerThread.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
 #include "Core/fs/fsPackage.hpp"
@@ -118,6 +119,7 @@
 
 #include <assert.h>
 #include <iostream>
+#include <memory>
 #include <vector>
 
 
@@ -158,6 +160,9 @@ namespace
 	int		l_nScreenSpaceIndex = 0;
 	//int		l_nIconsLayerIndex = 0;
 	//int		l_nManipulatorsLayerIndex = 0;
+
+	// The thread that renders each frame, kept for the next frame
+	std::unique_ptr<envWorkerThread> l_pRenderWorker;
 
 #if ENV_BUILD == ENV_DEBUGBUILD
 	const int	lc_SECURITY_CHECK_DELAY_NORMAL	= 60.0f * 0.5f;		// 30 seconds (for testing only)
@@ -913,6 +918,9 @@ int mnmApp::GetNumberOfRenderViews()
 //--------------------------------------------------------------------
 void mnmApp::DeInitializeRender()
 {
+	// Waits for a render still in progress, then stops the render thread
+	l_pRenderWorker.reset();
+
 	envSTLHelpers::DeleteContainer(m_RenderViews);
 
 	//api3dBakeScene::DeInitialize();
@@ -1168,9 +1176,10 @@ void mnmApp::Render()
 						guiStatusBarMgr::SetText( mnmConstants::e_SBPanel_RenderThread, "*" );
 						guiStatusBarMgr::SetToolTip( mnmConstants::e_SBPanel_RenderThread, "Render thread active");
 
-						envThread render_thread(DoRenderThread);
+						if (!l_pRenderWorker)
+							l_pRenderWorker = std::make_unique<envWorkerThread>();
+						l_pRenderWorker->Post(DoRenderThread);
 						g3dThreadControl::WaitForRenderThreadStart();
-						render_thread.detach();//?
 					}
 					else
 					{

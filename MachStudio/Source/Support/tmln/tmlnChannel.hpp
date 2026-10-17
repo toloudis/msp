@@ -78,16 +78,26 @@ public:
 	void ChannelLocked(bool i_lock);
 
 	//--------------------------------------------------------------------
-	//  Get active drivers at a given time.  The set is appended to.
+	//  Get active drivers at a given time.  The lists are appended to,
+	//	each driver appearing at most once.
 	//	This is used in the process of updating drivers that are
-	//	active and will cause changes to happen to the channel 
+	//	active and will cause changes to happen to the channel
 	//	and drivers, so it should not be used outside of that process.
 	//	Returns true if the channel should be Reset() before
 	//	evaluating drivers.
 	//--------------------------------------------------------------------
 	bool  GatherDriversToEvaluate(const maTime& i_Time,
-							  std::set<tmlnDriver*> &io_Preset,
-							  std::set<tmlnDriver*> &io_Active);
+							  std::vector<tmlnDriver*> &io_Preset,
+							  std::vector<tmlnDriver*> &io_Active);
+
+	//--------------------------------------------------------------------
+	// Returns true if evaluating the channel at the given time would
+	//	do nothing: it was last evaluated at this time, it isn't marked
+	//	dirty, none of its drivers is dirty, and the timeline isn't
+	//	looping back to the beginning. The ChannelSet uses this to skip
+	//	the channel without gathering its drivers.
+	//--------------------------------------------------------------------
+	bool  IsUpToDate(const maTime& i_Time) const;
 
 	//--------------------------------------------------------------------
 	//  Get active drivers within a given time range.  

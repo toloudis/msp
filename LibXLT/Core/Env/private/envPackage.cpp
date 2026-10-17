@@ -8,6 +8,7 @@
 \*********************************************************/
 #include "Core/env/envPackage.hpp"
 
+#include "Core/env/envThreadGroup.hpp"
 #include "Core/env/private/envSystemData.hpp"
 
 
@@ -45,6 +46,7 @@ void envPackage::CleanUp() throw()
 
 	if ( l_RefCount == 0 )
 	{
+		envThreadGroup::ShutDownWorkers();
 		envSystemData::CleanUp();
 	}
 }

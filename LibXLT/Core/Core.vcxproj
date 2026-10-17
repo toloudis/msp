@@ -314,6 +314,7 @@
     <ClInclude Include="Env\envThreadGroup.hpp" />
     <ClInclude Include="Env\envType.hpp" />
     <ClInclude Include="Env\envWaitCondition.hpp" />
+    <ClInclude Include="Env\envWorkerThread.hpp" />
     <ClInclude Include="Env\private\envExceptionXPAC.hpp" />
     <ClInclude Include="Env\private\envExceptionXPACWin.hpp" />
     <ClInclude Include="Env\private\envStringPAC.hpp" />
@@ -679,6 +680,7 @@
     </ClCompile>
     <ClCompile Include="Env\private\envThreadGroup.cpp" />
     <ClCompile Include="Env\private\envWaitCondition.cpp" />
+    <ClCompile Include="Env\private\envWorkerThread.cpp" />
     <ClCompile Include="Dbg\private\dbgAssertPACWin.cpp" />
     <ClCompile Include="Dbg\private\dbgLogPACWin.cpp" />
     <ClCompile Include="Dbg\private\dbgMsg.cpp" />

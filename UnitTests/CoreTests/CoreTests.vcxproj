@@ -123,6 +123,7 @@
     <ClCompile Include="Env\envNumberTextTest.cpp" />
     <ClCompile Include="Env\envSTLHelpersTest.cpp" />
     <ClCompile Include="Env\envThreadGroupTest.cpp" />
+    <ClCompile Include="Env\envWorkerThreadTest.cpp" />
     <ClCompile Include="Fs\fsFileTest.cpp" />
     <ClCompile Include="Fs\fsXMLTest.cpp" />
     <ClCompile Include="Geo\geoKDTreeTest.cpp" />
