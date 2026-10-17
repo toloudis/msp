@@ -189,7 +189,7 @@ void LoadVertexAnimation( const fsLocator& i_Locator,
 
 	fsResourceTracker::MarkBegin(i_Locator);
 
-	gfFileBin file(i_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin file(i_Locator, fsFileStream::e_ReadOnly);
 
 	//	If this isn't a real Terawatt/XLT binary file this will throw
 	file.ReadHeader();

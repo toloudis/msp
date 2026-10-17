@@ -1121,7 +1121,7 @@ matTexture* matTextureMgrDX11::LoadTexture(const fsLocator& i_Directory,
 			{
 				if (!i_bIgnoreTUVSuffix) // do we need this check anymore?
 				{
-					gfFileBin texture_file(tex_locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+					gfFileBin texture_file(tex_locator, fsFileStream::e_ReadOnly);
 					texture_file.ReadHeader();
 					chBinReader reader(texture_file);
 

@@ -199,7 +199,7 @@ void count_nodes(chReader& i_Reader,
 //------------------------------------------------------------------------
 int count_materials_binary(const fsLocator &i_Locator)
 {
-	gfFileBin file(i_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin file(i_Locator, fsFileStream::e_ReadOnly);
 
 	//	If this isn't a real Terawatt/XLT binary file this will throw
 	file.ReadHeader();
@@ -692,11 +692,11 @@ bool Write_Binary( const fsLocator &i_NewLocator,
 {
 	// Set up input and output files
 	gfFileBin::Header header;
-	gfFileBin ifile(i_OldLocator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin ifile(i_OldLocator, fsFileStream::e_ReadOnly);
 	ifile.ReadHeader(&header);
 	chBinReader reader(ifile);
 
-	gfFileBin ofile(i_NewLocator, fsFileStream::e_WriteOnly, gfFileBin::e_LittleEndian);
+	gfFileBin ofile(i_NewLocator, fsFileStream::e_WriteOnly);
 	ofile.WriteHeader(header);
 	chBinWriter writer(ofile);
 
@@ -740,7 +740,7 @@ void mtrMaterialSaver::WriteMaterialSet( const fsLocator &i_Locator,
 		fsFileUtil::DeleteFile(i_Locator);
 	fsFileUtil::CreateFile(i_Locator);
 
-	gfFileBin ofile(i_Locator, fsFileStream::e_WriteOnly, gfFileBin::e_LittleEndian);
+	gfFileBin ofile(i_Locator, fsFileStream::e_WriteOnly);
 	ofile.WriteHeader();
 	chBinWriter writer(ofile);
 
@@ -829,7 +829,7 @@ bool mtrMaterialSaver::Write( const fsLocator &i_NewLocator,
 void Read_Binary( const fsLocator &i_Locator,
 					std::vector< shared_ptr<mdlMaterialInfo> > &o_Materials)
 {
-	gfFileBin ifile(i_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin ifile(i_Locator, fsFileStream::e_ReadOnly);
 	ifile.ReadHeader();
 	chBinReader reader(ifile);
 
@@ -905,7 +905,7 @@ bool mtrMaterialSaver::ReadSingleMaterial( const fsLocator &i_Locator,
 							mdlMaterialInfo &o_Material)
 {
 
-	gfFileBin ifile(i_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin ifile(i_Locator, fsFileStream::e_ReadOnly);
 	ifile.ReadHeader();
 	chBinReader reader(ifile);
 
@@ -947,7 +947,7 @@ bool mtrMaterialSaver::ReadThumbnail( const fsLocator &i_Locator,
 									 //int &o_BufferSize,
 									 //int &o_BitmapSize)
 {
-	gfFileBin ifile(i_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin ifile(i_Locator, fsFileStream::e_ReadOnly);
 	ifile.ReadHeader();
 	chBinReader reader(ifile);
 
@@ -990,7 +990,7 @@ void WriteSingleMaterial_Binary(const fsLocator &i_Locator,
 								const mdlMaterialInfo &i_Material,
 								const mtrThumbnailData &i_Thumbnail)
 {
-	gfFileBin ofile(i_Locator, fsFileStream::e_WriteOnly, gfFileBin::e_LittleEndian);
+	gfFileBin ofile(i_Locator, fsFileStream::e_WriteOnly);
 	ofile.WriteHeader();
 	chBinWriter writer(ofile);
 

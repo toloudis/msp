@@ -496,7 +496,7 @@ namespace
 //----------------------------------------------------------------------------
 void prtGeneratorUtil::Read(const fsLocator& i_Locator, prtParticleGeneratorTemplate& o_Template)
 {
-	gfFileBin particle_file(i_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin particle_file(i_Locator, fsFileStream::e_ReadOnly);
 	particle_file.ReadHeader();
 	chBinReader reader(particle_file);
 
@@ -513,7 +513,7 @@ void prtGeneratorUtil::Write(const fsLocator& i_Locator, const prtParticleGenera
 	if ( !fsFileUtil::FileExists(i_Locator) )
 		fsFileUtil::CreateFile(i_Locator);
 
-	gfFileBin particle_file(i_Locator, fsFileStream::e_WriteOnly, gfFileBin::e_LittleEndian);
+	gfFileBin particle_file(i_Locator, fsFileStream::e_WriteOnly);
 	const int c_TPARFILE_VERSION = 0;
 	particle_file.WriteHeader(0, c_TPARFILE_VERSION, 0);
 	chBinWriter writer(particle_file);

@@ -371,7 +371,7 @@ void docDocumentWithChunks::LoadFile(chReader& i_Reader, LoadFlags i_LoadMethod)
 //virtual 
 bool docDocumentWithChunks::LoadFile_Binary( const fsLocator &i_Locator, LoadFlags i_LoadMethod )
 {
-	gfFileBin doc_file(i_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin doc_file(i_Locator, fsFileStream::e_ReadOnly);
 	gfFileBin::Header header;
 	doc_file.ReadHeader(&header);
 	// could check version here?
@@ -505,7 +505,7 @@ void docDocumentWithChunks::SaveFile_Binary( const fsLocator &i_Locator, bool i_
 
 	fsFileUtil::CreateFile(save_file);
 
-	gfFileBin doc_file(save_file, fsFileStream::e_WriteOnly, gfFileBin::e_LittleEndian);
+	gfFileBin doc_file(save_file, fsFileStream::e_WriteOnly);
 	doc_file.WriteHeader(0, 0, 0);
 
 	chBinWriter writer(doc_file);

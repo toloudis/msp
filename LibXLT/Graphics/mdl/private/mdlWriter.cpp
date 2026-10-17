@@ -156,7 +156,7 @@ namespace mdlWriter
 			fsFileUtil::DeleteFile(i_Locator);
 		fsFileUtil::CreateFile(i_Locator);
 
-		gfFileBin file(i_Locator, fsFileStream::e_WriteOnly, gfFileBin::e_LittleEndian);
+		gfFileBin file(i_Locator, fsFileStream::e_WriteOnly);
 		file.WriteHeader();
 	
 		chBinWriter writer(file);
@@ -220,7 +220,7 @@ namespace mdlWriter
 			fsFileUtil::DeleteFile(i_Locator);
 		fsFileUtil::CreateFile(i_Locator);
 
-		gfFileBin file(i_Locator, fsFileStream::e_WriteOnly, gfFileBin::e_LittleEndian);
+		gfFileBin file(i_Locator, fsFileStream::e_WriteOnly);
 		file.WriteHeader();
 	
 		chBinWriter writer(file);

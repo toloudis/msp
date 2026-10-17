@@ -436,7 +436,7 @@ void LoadAnimation(	const fsLocator& i_Locator,
 					std::vector<anKeyDataBase<bool>*>& o_VisibleChannels,
 					float &o_FramesPerSecond)
 {
-	gfFileBin file(i_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin file(i_Locator, fsFileStream::e_ReadOnly);
 
 	//o_Animation.SetHead(smdlGeoAnimKeys());
 	//o_NameOfRoot = "";
@@ -534,7 +534,7 @@ void LoadCharacterAnimation( const fsLocator& i_Locator,
 					smdlVertexFrames& o_VertexFrames,
 					std::map<std::string, smdlGeoAnimKeys>& o_SkinKeys)
 {
-	gfFileBin file(i_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin file(i_Locator, fsFileStream::e_ReadOnly);
 
 	//o_JointKeys.SetHead(smdlGeoAnimKeys());
 	o_FramesPerSecond = g3dConstants::c_fDefaultFrameRate;
@@ -691,7 +691,7 @@ void LoadVertexAnimation( const fsLocator& i_Locator,
 {
 	o_FramesPerSecond = g3dConstants::c_fDefaultFrameRate;
 
-	gfFileBin file(i_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin file(i_Locator, fsFileStream::e_ReadOnly);
 
 	//	If this isn't a real Terawatt/XLT binary file this will throw
 	file.ReadHeader();

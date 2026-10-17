@@ -3,7 +3,7 @@
 **
 **      envPlatform.hpp manages platform definitions.  Some definitions, like
 **	ENV_MACHINE and ENV_COMPILER, must be defined by the user in his
-**	preprocessor defines sections.  Others, like ENV_ENDIAN and ENV_WINDOWS,
+**	preprocessor defines sections.  Others, like ENV_WINDOWS,
 **	are deduced in this file based on other values.
 **
 **	StudioGPU
@@ -120,27 +120,6 @@
 	(ENV_BUILD != ENV_RELEASEBUILD) &&	\
 	(ENV_BUILD != ENV_GOLDBUILD)
 	#error ENV_BUILD not defined!
-#endif
-
-//========================================================================
-//	ENV_ENDIAN possible values:
-//========================================================================
-#define		ENV_LITTLEENDIAN	61
-#define		ENV_BIGENDIAN		62
-
-//========================================================================
-//	Deduce endian value (ENV_ENDIAN)
-//========================================================================
-#if	(ENV_MACHINE == ENV_PC)
-	#define ENV_ENDIAN	ENV_LITTLEENDIAN
-#endif
-
-#if (ENV_MACHINE == ENV_MAC)
-	#define ENV_ENDIAN	ENV_BIGENDIAN
-#endif
-
-#ifndef ENV_ENDIAN
-	#error Couldn''t decide on ENV_ENDIAN
 #endif
 
 //========================================================================

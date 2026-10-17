@@ -289,7 +289,7 @@ namespace ProjectSetupMgr
 
 		fsFileUtil::CreateFile(locator);
 
-		gfFileBin file(locator, fsFileStream::e_WriteOnly, gfFileBin::e_LittleEndian);
+		gfFileBin file(locator, fsFileStream::e_WriteOnly);
 		file.WriteHeader();
 
 		chBinWriter writer(file);
@@ -333,7 +333,7 @@ namespace ProjectSetupMgr
 			return;
 		}
 
-		gfFileBin file(locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+		gfFileBin file(locator, fsFileStream::e_ReadOnly);
 		file.ReadHeader();
 
 		chBinReader reader(file);

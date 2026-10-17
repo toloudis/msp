@@ -110,7 +110,7 @@ namespace matMetaFXParser
 						matMetaFX &o_ShaderData)
 	{
 
-		gfFileBin ifile(i_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+		gfFileBin ifile(i_Locator, fsFileStream::e_ReadOnly);
 		ifile.ReadHeader();
 		chBinReader reader(ifile);
 
@@ -149,7 +149,7 @@ namespace matMetaFXParser
 			fsFileUtil::DeleteFile(i_Locator);
 		fsFileUtil::CreateFile(i_Locator);
 
-		gfFileBin ofile(i_Locator, fsFileStream::e_WriteOnly, gfFileBin::e_LittleEndian);
+		gfFileBin ofile(i_Locator, fsFileStream::e_WriteOnly);
 		ofile.WriteHeader();
 		chBinWriter writer(ofile);
 

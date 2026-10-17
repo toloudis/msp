@@ -429,7 +429,7 @@ void WriteUVATexture(	const matUVATexture& i_Texture,
 						const fsLocator& i_Locator,
 						const itString* i_Textures)
 {
-	gfFileBin file(i_Locator, fsFileStream::e_WriteOnly, gfFileBin::e_LittleEndian);
+	gfFileBin file(i_Locator, fsFileStream::e_WriteOnly);
 	file.WriteHeader(0, 0, 1);
 	chBinWriter writer(file);
 	matUVATextureParseUtil::WriteUVATexture(writer, i_Texture, i_Textures);
@@ -454,7 +454,7 @@ void WriteUVATexture(	const matUVATexture& i_Texture,
 matUVATexture* ReadUVATexture(const fsLocator& i_Locator,
 							  std::vector<itString>& o_Textures)
 {
-	gfFileBin file(i_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin file(i_Locator, fsFileStream::e_ReadOnly);
 	gfFileBin::Header header;
 	file.ReadHeader(&header);
 

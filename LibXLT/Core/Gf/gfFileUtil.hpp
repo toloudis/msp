@@ -28,67 +28,22 @@ namespace gfFileUtil
 {
 	//--------------------------------------------------------------------------------
 	//	Read is a template function that receives a simple primtive value such as
-	//	uint16_t and returns it byteswapped if the EndianMode is different than
-	//	the platform the game was compiled for.
+	//	uint16_t and reads it from the file.  Files are little endian, like the
+	//	platforms we build for, so no byte swapping is needed.
 	//--------------------------------------------------------------------------------
 	template <class T>
 	inline void Read(gfFile& i_File, T& i_Val)
 	{
 		i_File.Read(sizeof(i_Val), &i_Val);
-
-		if (dynamic_cast<gfFileBin*>(&i_File) != NULL)
-		{
-#if ENV_ENDIAN == ENV_LITTLEENDIAN
-			if (gfFileBin::e_BigEndian == (dynamic_cast<gfFileBin*>(&i_File))->GetEndianMode())
-			{
-#else
-			if (gfFileBin::e_LittleEndian == (dynamic_cast<gfFileBin*>(&i_File))->GetEndianMode())
-			{
-#endif
-				int Len = sizeof(i_Val);
-				int LoopLen = Len / 2;//loop times half the # of bytes
-				char *Swap = (char *)&i_Val;
-				char TempByte;
-				for (int i = 0; i < LoopLen; i++)
-				{
-					TempByte = Swap[i];
-					Swap[i] = Swap[Len - 1 - i];
-					Swap[Len - 1 - i] = TempByte;
-				}
-			}
-		}
 	}
 
 	//--------------------------------------------------------------------------------
 	//	Write is a template function that receives a simple primtive value such as
-	//	uint16_t and byteswaps it before writing it if the EndianMode is 
-	//	different than the platform the game was compiled for.
+	//	uint16_t and writes it to the file (little endian, see Read).
 	//--------------------------------------------------------------------------------
 	template <class T>
 	inline void Write(gfFile& i_File, T i_Val)
 	{
-		if ((dynamic_cast<gfFileBin*>(&i_File)) != NULL)
-		{
-#if ENV_ENDIAN == ENV_LITTLEENDIAN
-			if (gfFileBin::e_BigEndian == (dynamic_cast<gfFileBin*>(&i_File))->GetEndianMode())
-			{
-#else
-			if (gfFileBin::e_LittleEndian == (dynamic_cast<gfFileBin*>(&i_File))->GetEndianMode())
-			{
-#endif
-				int Len = sizeof(i_Val);
-				int LoopLen = Len / 2;//loop times half the # of bytes
-				char *Swap = (char *)&i_Val;
-				char TempByte;
-				for (int i = 0; i < LoopLen; i++)
-				{
-					TempByte = Swap[i];
-					Swap[i] = Swap[Len - 1 - i];
-					Swap[Len - 1 - i] = TempByte;
-				}
-			}
-		}
-
 		i_File.Write(sizeof(i_Val), &i_Val);
 	}
 

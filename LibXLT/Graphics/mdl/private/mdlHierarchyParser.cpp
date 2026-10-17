@@ -344,7 +344,7 @@ namespace
 void mdlHierarchyParser::LoadModel(	const fsLocator& i_File,
 									mdlHierarchyParser& io_Parser )
 {
-	gfFileBin file(i_File, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin file(i_File, fsFileStream::e_ReadOnly);
 
 	//	If this isn't a real Terawatt/XLT binary file this will throw
 	file.ReadHeader();

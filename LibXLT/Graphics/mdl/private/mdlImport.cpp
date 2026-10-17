@@ -418,7 +418,7 @@ void LoadWorldFragments(const fsLocator& i_File,
 						//std::vector<matTexture*>& o_Textures,
 						entFragInfoSink* o_Sink)
 {
-	gfFileBin file(i_File, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin file(i_File, fsFileStream::e_ReadOnly);
 
 	//	If this isn't a real Terawatt/XLT binary file this will throw
 	file.ReadHeader();
@@ -500,7 +500,7 @@ void LoadFragInfos(	const fsLocator& i_File,
 {
 	DBG_LOG("In LoadFragInfos" );
 
-	gfFileBin file(i_File, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin file(i_File, fsFileStream::e_ReadOnly);
 
 	//	If this isn't a real Terawatt/XLT binary file this will throw
 	file.ReadHeader();
@@ -619,7 +619,7 @@ void LoadSingleSkinModel(	const fsLocator& i_File,
 {
 	DBG_LOG("In LoadSingleSkinModel" );
 
-	gfFileBin file(i_File, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin file(i_File, fsFileStream::e_ReadOnly);
 
 	//	If this isn't a real Terawatt/XLT binary file this will throw
 	file.ReadHeader();
@@ -771,7 +771,7 @@ void LoadCharacterModel(	const fsLocator& i_File,
 {
 //	DBG_LOG("In LoadCharacterModel" );
 
-	gfFileBin file(i_File, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin file(i_File, fsFileStream::e_ReadOnly);
 
 	//	If this isn't a real Terawatt/XLT binary file this will throw
 	file.ReadHeader();

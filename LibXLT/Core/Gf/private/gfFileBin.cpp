@@ -17,9 +17,8 @@
 //------------------------------------------------------------------------
 //	Constructor
 //------------------------------------------------------------------------
-gfFileBin::gfFileBin(const fsLocator& i_Locator, fsFileStream::AccessType i_DesiredAccess, EndianMode i_Mode)
-:	gfFile(i_Locator, i_DesiredAccess),
-	m_Mode(i_Mode)
+gfFileBin::gfFileBin(const fsLocator& i_Locator, fsFileStream::AccessType i_DesiredAccess)
+:	gfFile(i_Locator, i_DesiredAccess)
 {
 }
 
@@ -83,19 +82,21 @@ void gfFileBin::ReadHeader(gfFileBin::Header *o_Header)
 }
 
 //------------------------------------------------------------------------
-//	WriteHeader writes the given i_Header to the file. gfFileBin::m_Mode
-//	is used instead of the value passed in i_Header::m_Mode since a 
-//	gfFileBin's mode can't altered after construction. The second version of
-//	this function is an inline convenience.
+//	WriteHeader writes the given i_Header to the file. i_Header::m_Mode
+//	is ignored; the deprecated endian mode byte is always written as
+//	little endian. The second version of this function is an inline
+//	convenience.
 //------------------------------------------------------------------------
 void gfFileBin::WriteHeader(const gfFileBin::Header& i_Header)
 {
 	//write signature
 	this->Write(4, "TWFB");
 
-	//set header's mode to this filebin's mode
+	//	m_Mode is a deprecated endian mode (0 native, 1 big, 2 little endian).
+	//	Files are always little endian and nothing reads this byte any more;
+	//	2 is written so files keep the same bytes as before.
 	gfFileBin::Header Header = i_Header;
-	Header.m_Mode = m_Mode;
+	Header.m_Mode = 2;
 
 	//write header
 	this->Write(sizeof(gfFileBin::Header), &Header);
