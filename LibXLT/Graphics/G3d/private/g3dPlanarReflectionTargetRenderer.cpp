@@ -14,6 +14,7 @@
 #include "Graphics/g3d/g3dPrefs.hpp"
 #include "Graphics/g3d/g3dScene.hpp"
 #include "Graphics/g3d/g3dSceneRenderer.hpp"
+#include "Graphics/G3d/g3dProfiler.hpp"
 
 
 //----------------------------------------------------------------------------
@@ -35,6 +36,8 @@ void g3dPlanarReflectionTargetRenderer::Render( float i_fSimTime,
 {
 	if (!m_pRenderer->IsEnabled())
 		return;
+
+	G3D_PROFILE_SCOPE("PlanarReflection");
 
 	m_NumPrimitivesRendered = 0;
 

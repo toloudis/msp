@@ -39,6 +39,9 @@
 #include "Graphics/G2d/g2dFontUtil.hpp"
 #include "Graphics/G3d/g3dExceptionX.hpp"
 #include "Graphics/G3d/g3dGfxOptions.hpp"
+#include "Graphics/G3d/g3dProfiler.hpp"
+
+#include <iostream>
 #include "Graphics/GraphicsLayer.hpp"
 #include "ImportExport/ImportExportLayer.hpp"
 #include "Input/in/inDeviceMgr.hpp"
@@ -77,6 +80,27 @@
 namespace
 {
 	g3dGfxOptions l_GfxOptions;
+
+	//--------------------------------------------------------------------
+	// start_profiler - -gfxProfile <file.csv> starts the graphics
+	// profiler, if this build has the profiling markers.
+	//--------------------------------------------------------------------
+	void start_profiler(const char* i_Backend)
+	{
+		if (l_GfxOptions.m_ProfileFile.empty())
+		{
+			return;
+		}
+#ifdef MSP_GFX_PROFILING
+		g3dProfiler::Start(l_GfxOptions.m_ProfileFile, i_Backend);
+		DBG_LOG("Graphics profiling to " << l_GfxOptions.m_ProfileFile.c_str());
+#else
+		DBG_LOG("-gfxProfile ignored: this build has no profiling markers (build with MspGfxProfiling=true)");
+	#ifdef BATCH_MODE
+		std::cerr << "-gfxProfile ignored: this build has no profiling markers (build with MspGfxProfiling=true)" << std::endl;
+	#endif
+#endif
+	}
 }	// end of namespace
 
 //--------------------------------------------------------------------
@@ -127,6 +151,7 @@ mainInitGraphics::mainInitGraphics(int i_AppWidth,
 #endif
 		GraphicsLayer::InitGraphics(GraphicsDX11Layer::GetSystem2D(), GraphicsDX11Layer::GetSystem3D());
 		GraphicsDX11Layer::InitGraphics();
+		start_profiler("dx11");
 
 		fsLocator font_loc;
 		font_loc.Push( gfPaths::GetPath(mnmPaths::e_ExeArt) ); 
@@ -327,6 +352,7 @@ mainInitGraphics::~mainInitGraphics()
 
 	ImportExportLayer::CleanUp();
 	AudioDSLayer::CleanUp();
+	g3dProfiler::Stop();
 	GraphicsDX11Layer::CleanUpGraphics();
 	GraphicsLayer::CleanUpGraphics();
 	GraphicsDX11Layer::CleanUp();

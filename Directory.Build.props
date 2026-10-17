@@ -25,6 +25,12 @@
     builds nothing for the other toolkit). See
     MachStudio/Source/Directory.Build.targets for the rest of what the
     toolkit changes.
+
+    MSP_GFX_PROFILING turns on the graphics profiling markers
+    (G3D_PROFILE_* in Graphics/G3d/g3dProfiler.hpp) and the GPU timers;
+    without it they compile to nothing. It is defined in Debug builds, and
+    in Release when built with /p:MspGfxProfiling=true. MachStudio's
+    -gfxProfile <file.csv> then writes per-pass timings.
   -->
 <Project>
   <PropertyGroup>
@@ -35,6 +41,12 @@
     <MspBaseConfiguration Condition="$(Configuration.EndsWith(' Qt')) or $(Configuration.EndsWith(' Wx'))">$(Configuration.Substring(0, $([MSBuild]::Subtract($(Configuration.Length), 3))))</MspBaseConfiguration>
     <MspBaseConfiguration Condition="$(Configuration.EndsWith(' RenderNode'))">$(Configuration.Substring(0, $([MSBuild]::Subtract($(Configuration.Length), 11))))</MspBaseConfiguration>
   </PropertyGroup>
+
+  <ItemDefinitionGroup Condition="'$(MspBaseConfiguration)' == 'Debug' or '$(MspGfxProfiling)' == 'true'">
+    <ClCompile>
+      <PreprocessorDefinitions>MSP_GFX_PROFILING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
 
   <PropertyGroup Condition="'$(MspGuiToolkit)' == 'Wx'">
     <MspWxIncludeDirs>$(MSBuildThisFileDirectory)3rdParty\wxWidgets\include;$(MSBuildThisFileDirectory)3rdParty\wxWidgets\include\msvc</MspWxIncludeDirs>

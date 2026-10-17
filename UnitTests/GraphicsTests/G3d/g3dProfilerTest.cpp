@@ -327,3 +327,28 @@ TEST(g3dProfiler, SimTimeAndBackendWritten)
 	EXPECT_EQ("dx11", rows[0].backend);
 	EXPECT_EQ("1.5000", rows[0].sim_time);
 }
+
+TEST(g3dProfiler, MarkersAreOnInDebugBuilds)
+{
+	//	Directory.Build.props defines MSP_GFX_PROFILING in Debug (and in
+	//	Release when built with MspGfxProfiling=true).
+#if defined(_DEBUG) && !defined(MSP_GFX_PROFILING)
+	FAIL() << "MSP_GFX_PROFILING is not defined in a Debug build";
+#endif
+	gtTempDir dir;
+	g3dProfiler::Start(csv_path(dir), "dx11");
+	{
+		G3D_PROFILE_FRAME_SCOPE("Target", 0.0f);
+		G3D_PROFILE_SCOPE("Pass");
+		G3D_PROFILE_DRAWS(4);
+	}
+	g3dProfiler::Stop();
+	std::vector<Row> rows = read_rows(dir);
+#ifdef MSP_GFX_PROFILING
+	ASSERT_EQ(2u, rows.size());
+	EXPECT_EQ("Target/Pass", rows[1].path);
+	EXPECT_EQ("4", rows[1].draws);
+#else
+	EXPECT_TRUE(rows.empty());
+#endif
+}

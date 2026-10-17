@@ -14,6 +14,7 @@
 #include "Graphics/g3d/g3dPrefs.hpp"
 #include "Graphics/g3d/g3dScene.hpp"
 #include "Graphics/g3d/g3dSceneRenderer.hpp"
+#include "Graphics/G3d/g3dProfiler.hpp"
 
 
 //----------------------------------------------------------------------------
@@ -176,6 +177,8 @@ void g3dTargetRenderer::Render( float i_fSimTime, const std::vector<g3dLayer*>& 
 {
 	if (!m_pRenderer->IsEnabled())
 		return;
+
+	G3D_PROFILE_FRAME_SCOPE("Target", i_fSimTime);
 
 	m_NumPrimitivesRendered = 0;
 
