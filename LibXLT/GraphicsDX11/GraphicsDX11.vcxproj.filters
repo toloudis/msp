@@ -1053,9 +1053,6 @@
     <ClCompile Include="GraphicsDX11Layer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Eff\private\Shaders\DumpToTexture.hlsl">
       <Filter>Shaders</Filter>
     </None>
