@@ -1,1 +1,0 @@
-#error cmraViewer.cpp is obsolete

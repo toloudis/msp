@@ -1,1 +1,0 @@
-#error propPickInterest.hpp is obsolete

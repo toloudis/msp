@@ -1,1 +1,0 @@
-#error chtrChannelVisible.hpp is obsolete
