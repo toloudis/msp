@@ -100,7 +100,10 @@ This document specifies Phase 1 in full and Phase 2 only as direction.
 - **Rendering runs on a render thread** (`g3dThreadControl`). Several
   windows (render panels) each have their own swap chain.
 - **Startup order.** `mnmApp::ParseCommandLine` runs *after* graphics are
-  initialized (`WinMain.cpp`), so the backend flag must be read earlier.
+  initialized (`WinMain.cpp`), and it both reads flags and acts on them
+  (opens scenes, starts renders, runs scripts). It is split: all parsing
+  moves before graphics init, and the actions still run afterwards (see
+  Backend switch).
 - **Environment.** The Vulkan SDK 1.4.350 (with SPIR-V-capable DXC) is
   installed on the development machine. It has two GPUs: a Quadro RTX 5000
   (driver 596.59, Vulkan 1.4.329), the target, and an Intel UHD P630
@@ -149,8 +152,9 @@ These were decided with the project owner:
 8. **Measurement from day one, on both backends.** DX11 measurement code is
    allowed if it compiles out (or has no measurable cost) in release builds.
 9. **Phase 1 exit:** every renderer's images match within tolerance, the
-   timing report exists for both backends, and DX11 still works exactly as
-   before. Vulkan may be somewhat slower at the end of Phase 1. Vulkan does
+   timing report exists for both backends, Vulkan validation reports
+   nothing (see Validation), and DX11 still works exactly as before.
+   Vulkan may be somewhat slower at the end of Phase 1. Vulkan does
    not become the default backend until Phase 2 makes it at least as fast
    as DX11 on the test scene, on both CPU and GPU.
 10. **Proof of parity:**
@@ -292,10 +296,15 @@ exists:
 ### Backend switch
 
 - Flag: `-gfx dx11` or `-gfx vulkan`, default `dx11`.
-- Because `ParseCommandLine` runs after graphics start, the flag is read by
-  a small pre-scan of the command line before `mainInitGraphics` is
-  constructed, in all three variants (Qt, Wx, RenderNode). It is also
-  listed in `-help`.
+- **The whole command line is parsed first.** At the start of `DoWinMain`
+  (shared by the Qt, Wx and RenderNode variants), before the main window
+  or graphics exist, the command line is parsed into one struct: graphics
+  options (backend, profiling, validation), early settings (`-NoSplash`,
+  `-show`), and an ordered list of actions (open file, render, batch,
+  script, capture settings, license, ...). The actions run after
+  initialization in the same order as today. `-NoSplash` and `-show` now
+  take effect before the splash screen and windows appear (today they are
+  read too late). Every flag is listed in `-help`.
 - `mainInitGraphics.cpp` calls `GraphicsDX11Layer` or
   `GraphicsVulkanLayer` through a small backend selector.
 - If Vulkan can't start (no driver, missing features), MachStudio reports
@@ -375,9 +384,36 @@ exists:
   SDK version in CI. *(Builder's call.)*
 - MainApp adds the library's `vcpkg_installed` paths and copies its DLLs,
   as it does for GraphicsDX11.
-- Validation layers are enabled in Debug builds when present
-  (`-gfxValidation` forces them on in any build).
 - `CLAUDE.md` gains a GraphicsVulkan section and the new flags.
+
+### Validation
+
+A successful Vulkan port means **no validation bugs**.
+
+- **Debug builds always run with `VK_LAYER_KHRONOS_validation`**, with
+  synchronization validation turned on. If the layer isn't installed, a
+  Debug build with `-gfx vulkan` reports that, names the layer and the SDK,
+  and exits. It never runs unvalidated without saying so. Release builds
+  enable it with `-gfxValidation`.
+- Messages go through `VK_EXT_debug_utils` to the `dbg` log, with the
+  object names that `vkd` gives every buffer, image, pipeline and pass
+  (`vkSetDebugUtilsObjectNameEXT`, plus command-buffer labels per pass), so
+  each message points at the code that caused it.
+- **Errors** raise `DBG_ASSERT` in Debug. In GraphicsTests this is a test
+  failure (through the assert hook, as in CoreTests); interactively it is
+  the usual assert dialog. **Warnings** are logged and counted.
+- At exit, the counts of validation errors and warnings are written to the
+  log, and to stderr in RenderNode. `gfxcompare` reads them and fails a
+  Vulkan run that has any.
+- **The bar for each plan, and for Phase 1:** zero errors and zero
+  warnings from core and synchronization validation across the
+  GraphicsTests suite and a Debug RenderNode run of the test scene. A
+  GPU-assisted validation run (shader-side bounds and descriptor checks;
+  slow) is part of the Plan 2 descriptor-model decision and of the Phase 1
+  sign-off, also at zero. Best-practices output (including the NVIDIA
+  checks) goes in the report and is reviewed, but doesn't fail the gate.
+- Suppressing a message is allowed only for a confirmed false positive in
+  the layer, with a comment that names the message ID and the reason.
 
 ### Order of work (suggested)
 
