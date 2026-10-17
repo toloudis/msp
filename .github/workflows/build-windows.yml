@@ -34,6 +34,21 @@ jobs:
         shell: pwsh
         run: python Tools/fx2hlsl/compile_check.py --compiler dxc --exe $env:DXC --verbose (Get-ChildItem -Recurse -Filter *.effect.json LibXLT).FullName
 
+  # Unit tests of Tools/gfxcompare, the tool that renders a scene twice
+  # with RenderNode and compares frames and timings (no GPU needed here).
+  gfxcompare-tests:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install gfxcompare requirements
+        shell: pwsh
+        run: python -m pip install -r Tools/gfxcompare/requirements.txt
+
+      - name: Run gfxcompare tests
+        shell: pwsh
+        run: python -m pytest Tools/gfxcompare/tests -q
+
   build-mainapp:
     runs-on: windows-latest
     strategy:
@@ -110,7 +125,7 @@ jobs:
         working-directory: MachStudio/Source
         run: >
           msbuild MachStudio.sln
-          "/t:MainApp;CoreTests"
+          "/t:MainApp;CoreTests;MainAppTests;GraphicsTests"
           "/p:Configuration=${{ matrix.configuration }}"
           /p:Platform=x64
           /m

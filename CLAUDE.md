@@ -52,6 +52,13 @@ cameras/lights/objects on a timeline, and render frames or sequences on the GPU
   mostly interactive demos or print-and-eyeball programs) are not built;
   what was worth keeping has been ported to `UnitTests/`, and they are due
   to be deleted.
+- Graphics profiling: `MSP_GFX_PROFILING` (defined in Debug, and in Release
+  when built with `/p:MspGfxProfiling=true`; see `Directory.Build.props`)
+  turns on the `G3D_PROFILE_*` markers (`Graphics/G3d/g3dProfiler.hpp`) in
+  the renderers and passes and the GPU timers; without it they compile to
+  nothing. MachStudio's `-gfxProfile <file.csv>` then writes CPU/GPU time
+  and draw count per scope per frame. Markers are named after the class
+  without its package prefix and `DX11` suffix (`shdwPassLit` → `PassLit`).
 
 ### Build files
 
@@ -61,7 +68,7 @@ hold settings:
 
 | File | Applies to | What it does |
 |---|---|---|
-| `Directory.Build.props` (repo root) | every project, automatically | Works out `MspGuiToolkit` (Qt/Wx/None) and `MspBaseConfiguration` (Debug/Release) from the configuration name; wx include dirs. `3rdParty/WxWidgets/build/msw/wx_setup.props` reads `MspBaseConfiguration` |
+| `Directory.Build.props` (repo root) | every project, automatically | Works out `MspGuiToolkit` (Qt/Wx/None) and `MspBaseConfiguration` (Debug/Release) from the configuration name; wx include dirs; defines `MSP_GFX_PROFILING` in Debug or with `MspGfxProfiling=true`. `3rdParty/WxWidgets/build/msw/wx_setup.props` reads `MspBaseConfiguration` |
 | `MachStudio/Source/Directory.Build.targets` | MachStudio projects, automatically | Drops `wxGUI/` or `qtGUI/` sources for the other toolkit; imports `qt6.props` and runs `windeployqt` for Qt |
 | `LibXLT/ToolUIQt/qt6.props` | Qt builds (ToolUIQt, and MachStudio projects through the targets above) | Qt include dirs, defines and libraries (no moc/uic step) |
 | `3rdParty/WxWidgets/wxwidgets.props` | Wx builds of the projects that import it (ToolUIWx, Support, Features, MainApp, ...) | wx libraries |
@@ -75,6 +82,12 @@ hold settings:
   folders named after the package they test (`Ch/chChunkTest.cpp`,
   `Ma/maMatrixTest.cpp`, ...); helpers use the `ct` prefix (`ctTempDir` for a
   per-test temp directory, `ctMath` for approximate vector/matrix checks).
+- `UnitTests/MainAppTests` tests toolkit-neutral MainApp code
+  (`mainCommandLine`); MainApp is an exe, so the sources under test are
+  compiled straight into the test exe (and marked `NotUsing` for MainApp's
+  precompiled header). Helpers use the `mat` prefix.
+- `UnitTests/GraphicsTests` tests `LibXLT/Graphics` code that needs no GPU
+  (`g3dProfiler`); it links Core and Graphics. Helpers use the `gt` prefix.
 - `CoreTests.vcxproj` is self-contained: its build settings (include paths,
   runtime, output in `UnitTests/bin/<Platform>/<Configuration>/`) are in the
   project file, not a shared props file. A new test project can start as a
@@ -95,8 +108,8 @@ hold settings:
   has an ordinary ProjectReference to each test project (nothing linked),
   so MachStudio isn't built until the tests pass. A new test project gets
   the same reference in `MainApp.vcxproj`, and may reference whatever
-  libraries it tests. CI builds `MainApp;CoreTests` in every configuration
-  and uploads the XML reports.
+  libraries it tests. CI builds `MainApp;CoreTests;MainAppTests;GraphicsTests`
+  in every configuration and uploads the XML reports.
 - Core headers have `#error` "multiply included" guards, so guard their
   includes in test files as everywhere else (`#ifndef MA_PLANE_HPP ...`).
 
@@ -126,7 +139,7 @@ its own `vcpkg_installed/`):
 | `LibXLT/GraphicsDX11/vcpkg.json` | DirectXTex, nlohmann-json | DDS/texture loading and image saving; parsing `*.effect.json` effect descriptions (`fxEffectDesc`). glTF import bundles its own `json.hpp`/`tiny_gltf.h` |
 | `MachStudio/Source/MainApp/vcpkg.json` | curl (+ zlib) | version check (`mainCheckAppVersion`). Linked dynamically: `libcurl.dll` (and its `zlib1.dll`) ships next to the exe |
 | `LibXLT/ToolUIWx/vcpkg.json` | (none) | |
-| `UnitTests/CoreTests/vcpkg.json` | gtest | unit tests (`gmock.dll`, which includes gtest, is copied next to the test exe) |
+| `UnitTests/CoreTests/vcpkg.json`, `UnitTests/MainAppTests/vcpkg.json`, `UnitTests/GraphicsTests/vcpkg.json` | gtest | unit tests (`gmock.dll`, which includes gtest, is copied next to the test exe) |
 
 The library packages live under the library projects, so MainApp adds their
 `vcpkg_installed\...\lib` dirs to its link paths and its
@@ -309,6 +322,15 @@ slider, drop target and resolve-path dialog for each toolkit. `Commands/` and
 `Data/` hold app-level commands and document chunks. `MainForm.*`,
 `AssemblyInfo.cpp` and `*.resX` are leftovers of the WinForms UI.
 
+The command line is parsed first thing in `DoWinMain`, before the main
+window and graphics exist, by `mainCommandLine::Parse` (all flags; tested in
+`UnitTests/MainAppTests`): graphics options go to `mainInitGraphics`,
+`-NoSplash`/`-show` are applied at once, and the actions (`-file`,
+`-render`, `-cap*`, `-script`, ...) run after start-up, in order, in
+`mnmApp::RunCommandLine`. `-render <scene>` loads the scene, which replaces
+the capture settings, so `-cap*` flags go after `-render`. `-help` lists
+every flag.
+
 ### Support
 Shared application services used by Features and Systems.
 
@@ -473,6 +495,8 @@ Everything animated on the timeline goes through `Support/tmln`:
 - `3rdParty/` — vendored libraries (wxWidgets, Python, png, zlib, tiff, ...).
 - `Tools/` — standalone tools and DCC exporters (Max/Maya/Softimage/Rhino/
   SketchUp/FBX exporters, MatStudio, LODStudio, ParticleStudio, shader
-  compiler, ...). Mostly legacy.
+  compiler, ...). Mostly legacy. Live: `Tools/fx2hlsl` (shader compile
+  checks) and `Tools/gfxcompare` (renders a scene twice with RenderNode and
+  compares frames and `-gfxProfile` timings; see its README).
 - `Controls/`, `TestQt/`, `DevTools/` — legacy .NET controls, experiments and
   project wizards.
