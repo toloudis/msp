@@ -117,6 +117,7 @@
   <ItemGroup>
     <ClCompile Include="CoreTestsMain.cpp" />
     <ClCompile Include="ctPlatformWin.cpp" />
+    <ClCompile Include="App\appCommandLineTest.cpp" />
     <ClCompile Include="Ch\chChunkTest.cpp" />
     <ClCompile Include="Ch\chNumberTest.cpp" />
     <ClCompile Include="Dbg\dbgMsgTest.cpp" />

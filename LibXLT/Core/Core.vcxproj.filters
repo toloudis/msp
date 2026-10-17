@@ -480,6 +480,9 @@
     <ClInclude Include="App\appTimeUtils.hpp">
       <Filter>App</Filter>
     </ClInclude>
+    <ClInclude Include="App\appCommandLine.hpp">
+      <Filter>App</Filter>
+    </ClInclude>
     <ClInclude Include="App\private\appApplicationPAC.hpp">
       <Filter>App\AppPrivate</Filter>
     </ClInclude>
@@ -1105,6 +1108,9 @@
       <Filter>App\AppPrivate</Filter>
     </ClCompile>
     <ClCompile Include="App\private\appTimeUtils.cpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="App\private\appCommandLine.cpp">
       <Filter>App\AppPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Gf\private\gfDirectoryCategories.cpp">

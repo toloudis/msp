@@ -420,6 +420,7 @@
     <ClInclude Include="App\appMouseEventHandler.hpp" />
     <ClInclude Include="App\appPackage.hpp" />
     <ClInclude Include="App\appSimTime.hpp" />
+    <ClInclude Include="App\appCommandLine.hpp" />
     <ClInclude Include="App\appTime.hpp" />
     <ClInclude Include="App\appTimeUtils.hpp" />
     <ClInclude Include="App\private\appApplicationPAC.hpp" />
@@ -1996,6 +1997,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release Wx|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release RenderNode|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="App\private\appCommandLine.cpp" />
     <ClCompile Include="App\private\appTimeUtils.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Qt|x64'">Disabled</Optimization>
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug Wx|x64'">Disabled</Optimization>

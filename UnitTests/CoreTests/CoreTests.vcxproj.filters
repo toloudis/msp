@@ -4,6 +4,9 @@
     <Filter Include="Support">
       <UniqueIdentifier>{84170c16-3394-4775-a52f-5c1fedcb5085}</UniqueIdentifier>
     </Filter>
+    <Filter Include="App">
+      <UniqueIdentifier>{5b0e3f7c-2a41-4c8e-9d1f-7e6a3c2b9f10}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Ch">
       <UniqueIdentifier>{2de0216a-0a6e-4cb9-84d9-5771104eef07}</UniqueIdentifier>
     </Filter>
@@ -38,6 +41,9 @@
     </ClCompile>
     <ClCompile Include="ctPlatformWin.cpp">
       <Filter>Support</Filter>
+    </ClCompile>
+    <ClCompile Include="App\appCommandLineTest.cpp">
+      <Filter>App</Filter>
     </ClCompile>
     <ClCompile Include="Ch\chChunkTest.cpp">
       <Filter>Ch</Filter>
