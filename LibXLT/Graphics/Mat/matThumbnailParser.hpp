@@ -43,7 +43,7 @@ public:
 	static void Read(	chReader& i_Reader,
 						chDefs::Version i_Version,
 						chDefs::Size i_Size,
-						envType::UInt8* &o_PixelBuffer, 
+						uint8_t* &o_PixelBuffer, 
 						int &o_BufferSize,
 						int &o_BitmapSize);
 
@@ -52,14 +52,14 @@ public:
 	//	chWriter.  i_Shader is the object being written.
 	//--------------------------------------------------------------------
 	static void Write( chWriter& i_Writer,
-						envType::UInt8* i_PixelBuffer, int i_BufferSize );
+						uint8_t* i_PixelBuffer, int i_BufferSize );
 
 	//--------------------------------------------------------------------
 	// Create should be overridden to create the user specific parsable object.
 	// Users of parsers should call create to create the object that is then
 	// passed to Read.
 	//--------------------------------------------------------------------
-	//virtual envType::UInt8* Create() const;
+	//virtual uint8_t* Create() const;
 
 	//--------------------------------------------------------------------
 	// Return the chunk name used for thumbnails

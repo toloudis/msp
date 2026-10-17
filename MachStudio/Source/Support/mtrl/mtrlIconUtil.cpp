@@ -100,7 +100,7 @@ namespace mtrlIconUtil
 		scObject *l_pSphereObject = NULL;
 		entModelInstance *l_pModelInstance = NULL;
 
-		//envType::UInt8* l_Buffer;
+		//uint8_t* l_Buffer;
 		//int l_BufSize;
 		//mtrlScriptObject* l_mtrlObject = NULL;
 		//int l_mtrlIndex;
@@ -486,7 +486,7 @@ namespace mtrlIconUtil
 			if (image != NULL)
 			{
 				int w=0,h=0,bpp=0;
-				envType::UInt8* buffer = NULL;
+				uint8_t* buffer = NULL;
 				int bufSize = 0;
 
 				image->GetPixels(&buffer, &bufSize, &w, &h, &bpp);

@@ -23,7 +23,7 @@ envAppVersion::envAppVersion()
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-envAppVersion::envAppVersion(envType::Int32 i_vMaj,envType::Int32 i_vMin,envType::Int32 i_vRevision,envType::Int32 i_vBuild)
+envAppVersion::envAppVersion(int32_t i_vMaj,int32_t i_vMin,int32_t i_vRevision,int32_t i_vBuild)
 :	m_Major(i_vMaj),
 	m_Minor(i_vMin),
 	m_Revision(i_vRevision),
@@ -56,7 +56,7 @@ envAppVersion::envAppVersion(const char* i_VerString)
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-void envAppVersion::Set(envType::Int32 i_vMaj,envType::Int32 i_vMin,envType::Int32 i_vRevision,envType::Int32 i_vBuild)
+void envAppVersion::Set(int32_t i_vMaj,int32_t i_vMin,int32_t i_vRevision,int32_t i_vBuild)
 {
 	m_Major = i_vMaj;
 	m_Minor = i_vMin;
@@ -66,26 +66,26 @@ void envAppVersion::Set(envType::Int32 i_vMaj,envType::Int32 i_vMin,envType::Int
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-void envAppVersion::Get(envType::Int32& o_vMaj, envType::Int32& o_vMin, envType::Int32& o_vRevision, envType::Int32& o_vBuild) const
+void envAppVersion::Get(int32_t& o_vMaj, int32_t& o_vMin, int32_t& o_vRevision, int32_t& o_vBuild) const
 {
 	o_vMaj = m_Major;
 	o_vMin = m_Minor;
 	o_vRevision = m_Revision;
 	o_vBuild = m_Build;
 }
-envType::Int32 envAppVersion::GetMajor() const
+int32_t envAppVersion::GetMajor() const
 {
 	return m_Major;
 }
-envType::Int32 envAppVersion::GetMinor() const
+int32_t envAppVersion::GetMinor() const
 {
 	return m_Minor;
 }
-envType::Int32 envAppVersion::GetRevision() const
+int32_t envAppVersion::GetRevision() const
 {
 	return m_Revision;
 }
-envType::Int32 envAppVersion::GetBuild() const
+int32_t envAppVersion::GetBuild() const
 {
 	return m_Build;
 }

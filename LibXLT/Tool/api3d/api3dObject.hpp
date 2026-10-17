@@ -120,7 +120,7 @@ public:
 	// PickMask is a user defined bit mask that can be used to filter
 	// the pickable objects. The default value of "0" means "do not filter".
 	//----------------------------------------------------------------------------
-	virtual void SetPickMask(envType::UInt32 i_PickMask) = 0;
+	virtual void SetPickMask(uint32_t i_PickMask) = 0;
 
 	//--------------------------------------------------------------------
 	// Inherits Transform controls if the given object uses the 
@@ -162,10 +162,10 @@ public:
 	// Is the pick code given within the high and low pick codes assigned
 	// to this node?
 	//----------------------------------------------------------------------------
-	virtual bool ContainsPickCode(envType::UInt32 i_PickCode) const;
+	virtual bool ContainsPickCode(uint32_t i_PickCode) const;
 
 	//--------------------------------------------------------------------
 	//	Returns the node with a fragment with the given pick code
 	//--------------------------------------------------------------------
-	virtual const g3dSceneNode* GetPickedNode(envType::UInt32 i_PickCode) const;
+	virtual const g3dSceneNode* GetPickedNode(uint32_t i_PickCode) const;
 };

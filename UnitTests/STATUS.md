@@ -72,7 +72,6 @@ Branch: `claude/unit-tests` (based on `claude/toolkit-input` at `a12c4b6f`).
   PowerPC-era leftover; Macs have been little-endian since 2006). Nothing
   selects `ENV_MAC` today, but a macOS port that did would byte-swap
   every binary file.
-- `mainCheckAppVersion.cpp` frees a `new[]` buffer with `delete`.
 - The dbgMsg tests print `(1) ****ERROR**** : ...` lines (the error stream
   echoing to stdout), which appear in every build that runs the tests.
   Harmless, but noisy; the tests could redirect that stream.
@@ -85,8 +84,6 @@ Branch: `claude/unit-tests` (based on `claude/toolkit-input` at `a12c4b6f`).
   tracked.
 - CI warns that its actions (`checkout`, `cache`, `upload-artifact`,
   `setup-msbuild`) target the deprecated Node.js 20; they still run.
-- `cptrRenderBakeDialog.hpp`'s include guard checks `CPTR_RENDERBAKEDIALOG_HPP`
-  but defines `CPTR_RENDERBAKE_HPP`, so it doesn't guard.
 
 ## Working notes
 

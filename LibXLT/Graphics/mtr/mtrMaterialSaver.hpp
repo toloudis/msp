@@ -104,7 +104,7 @@ namespace mtrMaterialSaver
 	//------------------------------------------------------------------------
 	bool ReadThumbnail( const fsLocator &i_Locator, 
 						mtrThumbnailData &o_Thumbnail);
-						 //envType::UInt8* &o_PixelBuffer, 
+						 //uint8_t* &o_PixelBuffer, 
 						 //int &o_BufferSize,
 						 //int &o_BitmapSize);
 

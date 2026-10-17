@@ -28,7 +28,7 @@ mdlSubdivInfo::mdlSubdivInfo()
 //--------------------------------------------------------------------
 // Expand the indices for the faces into triangle indices
 //--------------------------------------------------------------------
-void mdlSubdivInfo::GenerateTriangleIndices(std::vector<envType::UInt32> &o_Indices) const
+void mdlSubdivInfo::GenerateTriangleIndices(std::vector<uint32_t> &o_Indices) const
 {
 	o_Indices.clear();
 	o_Indices.reserve(m_Indices.size()); // rough estimate
@@ -87,7 +87,7 @@ const std::vector< shared_ptr<mdlMatInfo> >& mdlSubdivInfo::GetMaterials()
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-std::vector< envType::UInt32 >* mdlSubdivInfo::GetIndices()
+std::vector< uint32_t >* mdlSubdivInfo::GetIndices()
 {
 	return &m_Indices;
 }

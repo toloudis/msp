@@ -22,8 +22,8 @@
 #ifndef MA_MATRIX4X4_HPP
 #include "Core/ma/maMatrix4x4.hpp"
 #endif
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 #ifndef FS_LOCATOR_HPP
 #include "Core/Fs/fsLocator.hpp"
@@ -182,7 +182,7 @@ struct rmanGlobalData
 // Data for geometry subdivisions
 struct rmanSubdivData
 {
-	std::vector< std::vector<envType::UInt32>* > m_Indices;
+	std::vector< std::vector<uint32_t>* > m_Indices;
 	std::vector< std::vector<maPoint3d>* > m_Vertices;
 	std::vector< std::vector<maPoint2d>* > m_UVs;
 	std::vector< std::string > m_SubdivName;

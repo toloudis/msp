@@ -90,7 +90,7 @@ namespace mdlSkinParser
 		// remapping to the vertex/normal used in the fragment.
 		//------------------------------------------------------------------------
 		void build_morph_target(const std::vector<maPoint3d> &i_Vertices,
-								const std::vector<envType::UInt32>& i_SparseIndices,
+								const std::vector<uint32_t>& i_SparseIndices,
 								const mdlSubdivInfo& i_SubdivInfo,
 								smdlMorphTarget& o_MorphTarget)
 		{
@@ -127,7 +127,7 @@ namespace mdlSkinParser
 		// remapping to the vertex/normal used in the fragment.
 		//------------------------------------------------------------------------
 		void build_morph_target(const std::vector<maPoint3d> &i_Vertices,
-								const std::vector<envType::UInt32>& i_SparseIndices,
+								const std::vector<uint32_t>& i_SparseIndices,
 								const mdlFragInfo& i_FragInfo,
 								smdlMorphTarget& o_MorphTarget)
 		{
@@ -174,7 +174,7 @@ namespace mdlSkinParser
 						chDefs::Version i_Version,
 						chDefs::Size i_Size,
 						std::vector<maPoint3d> &o_Vertices,
-						std::vector<envType::UInt32> &o_SparseIndices,
+						std::vector<uint32_t> &o_SparseIndices,
 						bool &o_bReadDeltas,
 						std::string &o_TargetName,
 						std::string &o_AliasName)
@@ -202,7 +202,7 @@ namespace mdlSkinParser
 						// MVER is newer version, adds boolean flag for whether vectors
 						// are deltas or absolute positions.
 						i_Reader.Read(o_bReadDeltas);
-						envType::UInt32 num;
+						uint32_t num;
 						i_Reader.Read(num);
 						chChunkParserUtil::ReadArray(i_Reader, o_Vertices, num);
 					}
@@ -210,17 +210,17 @@ namespace mdlSkinParser
 					{
 						// GVER are always absolute
 						o_bReadDeltas = false;
-						envType::UInt16 num;
+						uint16_t num;
 						i_Reader.Read(num);
 						chChunkParserUtil::ReadArray(i_Reader, o_Vertices, num);
 					}
 					//else if( name == c_NVER )
 					//{
 					//	did_read_NVER = true;
-					//	envType::UInt16 num;
+					//	uint16_t num;
 					//	i_Reader.Read(num);
 					//	o_Normals.resize(num);
-					//	envType::UInt16 cur;
+					//	uint16_t cur;
 					//	for( cur = 0 ; cur < num ; cur++ )
 					//	{
 					//		chChunkParserUtil::Read(i_Reader, o_Normals[cur]);
@@ -232,7 +232,7 @@ namespace mdlSkinParser
 						// Sparse Indices assign delta to a vertex index. If the delta is zero,
 						// then the delta and index is not included.
 						o_bReadDeltas = true;
-						envType::UInt16 num;
+						uint16_t num;
 						i_Reader.Read(num);
 						chChunkParserUtil::ReadArray(i_Reader, o_Vertices, num);
 						chChunkParserUtil::ReadArray(i_Reader, o_SparseIndices, num);
@@ -262,7 +262,7 @@ namespace mdlSkinParser
 					smdlMorphTarget& o_MorphTarget)
 	{
 		std::vector<maPoint3d> orig_vertices;
-		std::vector<envType::UInt32> sparse_indices;
+		std::vector<uint32_t> sparse_indices;
 
 		o_MorphTarget.m_bOffsetsAreDeltas = false;
 		
@@ -306,7 +306,7 @@ namespace mdlSkinParser
 					smdlMorphTarget& o_MorphTarget)
 	{
 		std::vector<maPoint3d> orig_vertices;
-		std::vector<envType::UInt32> sparse_indices;
+		std::vector<uint32_t> sparse_indices;
 
 		o_MorphTarget.m_bOffsetsAreDeltas = false;
 		// With i_Version==0, the morph target was based on the old indices from Maya.
@@ -358,7 +358,7 @@ namespace mdlSkinParser
 			{
 				if( name == c_JINF )
 				{
-					envType::UInt16 i, num_influences;
+					uint16_t i, num_influences;
 					num_influences = mdlIndexUtil::ReadNumber(i_Reader, (version>=1));
 					//DBG_LOG2("Read joint index %d num influences: %d", io_nJointIndex, num_influences);
 
@@ -401,11 +401,11 @@ namespace mdlSkinParser
 		if (i_Version < 1)
 			throw mdlInvalidModelFileX(i_Reader.GetLocator());
 
-		envType::UInt32 numVerts = 0;
+		uint32_t numVerts = 0;
 		i_Reader.Read( numVerts );
 		o_BoneVertices.resize( numVerts );
 
-		envType::UInt16 numInfls;
+		uint16_t numInfls;
 		for(int i = 0; i < numVerts; i++) 
 		{
 			i_Reader.Read( numInfls );
@@ -415,11 +415,11 @@ namespace mdlSkinParser
 		//bga - I would prefer to read this into one large array and then
 		// leave it in that array. That is why the file format is organized
 		// this way. But, I will make that optimization later.
-		envType::UInt32 totalNumInfluences = 0;
+		uint32_t totalNumInfluences = 0;
 		i_Reader.Read( totalNumInfluences ); // not using this right now
 		for(int i = 0; i < numVerts; i++) 
 		{
-			envType::UInt16 numInfls = o_BoneVertices[i].m_Influences.size();
+			uint16_t numInfls = o_BoneVertices[i].m_Influences.size();
 			//DBG_LOG2("Vertex #%d : NumInfls: %d", i, numInfls);
 			for(int j = 0; j < numInfls; j++) 
 			{
@@ -591,7 +591,7 @@ namespace mdlSkinParser
 	//	o_Writer.Write(i_SkinInfo.m_NumVertices); 
 
 	//	// Write array of joint indices that influence this surface
-	//	envType::UInt32 numBones = i_SkinInfo.m_BoneIndices.size();
+	//	uint32_t numBones = i_SkinInfo.m_BoneIndices.size();
 	//	o_Writer.Write(numBones); 
 	//	for(int i = 0; i < numBones; i++) 
 	//	{
@@ -599,7 +599,7 @@ namespace mdlSkinParser
 	//	}
 
 	//	// Write large array of float weights data (m_NumVertices * numBones)
-	//	envType::UInt32 numWeights = i_SkinInfo.m_NumVertices*numBones;
+	//	uint32_t numWeights = i_SkinInfo.m_NumVertices*numBones;
 	//	DBG_ASSERT(i_SkinInfo.m_Weights.size() == numWeights, "Weights array not correctly sized");
 	//	DBG_LOG("Size of weights array: " << numWeights*sizeof(float));
 	//	for(int i = 0; i < numWeights; i++) 
@@ -622,13 +622,13 @@ namespace mdlSkinParser
 		// to read in large arrays at once from the file.
 		o_Writer.WriteChunkHeader(c_BINF, 1, true);
 
-		envType::UInt32 numVerts = i_BoneVertices.size();
+		uint32_t numVerts = i_BoneVertices.size();
 		o_Writer.Write(numVerts); 
 		// Write num influences per vertex first
-		envType::UInt32 totalNumInfls = 0;
+		uint32_t totalNumInfls = 0;
 		for (int i = 0; i < numVerts; i++) 
 		{
-			envType::UInt16 numInfls = i_BoneVertices[i].m_Influences.size();
+			uint16_t numInfls = i_BoneVertices[i].m_Influences.size();
 			o_Writer.Write(numInfls); 
 			totalNumInfls += numInfls;
 		}
@@ -637,7 +637,7 @@ namespace mdlSkinParser
 		o_Writer.Write(totalNumInfls); 
 		for (int i = 0; i < numVerts; i++) 
 		{
-			envType::UInt16 numInfls = i_BoneVertices[i].m_Influences.size();
+			uint16_t numInfls = i_BoneVertices[i].m_Influences.size();
 			for(int j = 0; j < numInfls; j++) 
 			{
 				o_Writer.Write(i_BoneVertices[i].m_Influences[j].m_BoneIndex); 
@@ -671,7 +671,7 @@ namespace mdlSkinParser
 		// Positions or Deltas (use boolean flag to determine which)
 		o_Writer.WriteChunkHeader(c_MVER, 0, false);
 		o_Writer.Write(i_MorphTarget.m_bOffsetsAreDeltas);
-		envType::UInt32 nVerts = i_MorphTarget.m_Offsets.size();
+		uint32_t nVerts = i_MorphTarget.m_Offsets.size();
 		o_Writer.Write(nVerts);
 		for(int i = 0; i < nVerts; i++) 
 		{

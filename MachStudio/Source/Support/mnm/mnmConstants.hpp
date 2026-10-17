@@ -11,9 +11,9 @@
 #endif
 #define MNM_CONSTANTS_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/Env/envType.hpp"
-#endif 
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
+#endif
 
 
 //============================================================================

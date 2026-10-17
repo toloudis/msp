@@ -49,11 +49,11 @@ void meshIndexBuffer::Reallocate()
 	oglBufferHandle index_buffer;
 
 	// Create the index buffer
-	if (GetSizeOfIndex() == sizeof(envType::UInt16))
+	if (GetSizeOfIndex() == sizeof(uint16_t))
 	{
 		bool bNeed32Bit = false;
 		oglBufferUtil::CreateAndFillIndexBuffer( m_pDevice,
-			reinterpret_cast<envType::UInt16*>( m_pIndexBufferCopy ),
+			reinterpret_cast<uint16_t*>( m_pIndexBufferCopy ),
 			GetNumIndices(),
 			bNeed32Bit,
 			index_buffer,
@@ -61,10 +61,10 @@ void meshIndexBuffer::Reallocate()
 	}
 	else
 	{
-		DBG_ASSERT(GetSizeOfIndex() == sizeof(envType::UInt32), "Unrecognized size of index");
+		DBG_ASSERT(GetSizeOfIndex() == sizeof(uint32_t), "Unrecognized size of index");
 		bool bNeed32Bit = true;
 		oglBufferUtil::CreateAndFillIndexBuffer( m_pDevice,
-			reinterpret_cast<envType::UInt32*>( m_pIndexBufferCopy ),
+			reinterpret_cast<uint32_t*>( m_pIndexBufferCopy ),
 			GetNumIndices(),
 			bNeed32Bit,
 			index_buffer,

@@ -55,11 +55,11 @@ size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp)
 	char outfilename[FILENAME_MAX] = "./body.txt";
 	static FILE *outfile;
 	size_t written;
-	if (first_time) 
+	if (first_time)
 	{
 		first_time = 0;
 		outfile = fopen(outfilename,"w");
-		if (outfile == NULL) 
+		if (outfile == NULL)
 		{
 			return -1;
 		}
@@ -98,7 +98,7 @@ size_t parse_data(void *buffer, size_t size, size_t nmemb, void *userp)
 
 	xmlp.Close();
 
-	delete membuff;
+	delete [] membuff;
 	return nmemb*size;
 }
 }
@@ -116,7 +116,7 @@ bool mainCheckAppVersion::IsLatestVersion(const envAppVersion& i_UserVersion, co
 	CURL *curl;
 	CURLcode res;
 	curl = curl_easy_init();
-	if (curl) 
+	if (curl)
 	{
 		//curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, parse_data);
@@ -170,34 +170,34 @@ bool mainCheckAppVersion::IsLatestVersion(const envAppVersion& i_UserVersion, co
 //	CInternetSession session(_T("SGPUSession"));
 //	CHttpConnection* pConn = NULL;
 //	CHttpFile* pFile = NULL;
-//	try 
+//	try
 //	{
 //		pConn = session.GetHttpConnection(m_sServer, nPort);
 //		pFile = pConn->OpenRequest( CHttpConnection::HTTP_VERB_GET, lpFileName );
 //		pFile->SendRequest();
 //		pFile->QueryInfoStatusCode(m_dwStatus);
-//		if (m_dwStatus==HTTP_STATUS_OK) 
+//		if (m_dwStatus==HTTP_STATUS_OK)
 //		{
 //			const UINT BUFSIZE = 128;
 //			UINT nRead = pFile->Read(m_version, BUFSIZE);
-//			if (nRead>0) 
+//			if (nRead>0)
 //			{
 //				// read version number in the form Mhi,Mlo,mhi,mlo
 //				m_version[nRead] = 0;
 //				int Mhi,Mlo,mhi,mlo;
-//				_stscanf(m_version, (_T(«%x,%x,%x,%x»)), 
+//				_stscanf(m_version, (_T(ï¿½%x,%x,%x,%xï¿½)),
 //				&Mhi, &Mlo, &mhi, &mlo);
 //				dwMajorVersion = MAKELONG(Mlo,Mhi);
 //				dwMinorVersion = MAKELONG(mlo,mhi);
 //				bRet = TRUE;                // success!
 //			}
-//		} 
-//		else 
+//		}
+//		else
 //		{
 //			pFile->QueryInfo(HTTP_QUERY_STATUS_TEXT, m_sStatus);
 //		}
-//	} 
-//	catch (CInternetException* pEx) 
+//	}
+//	catch (CInternetException* pEx)
 //	{
 //	}
 //	session.Close();

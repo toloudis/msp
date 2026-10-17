@@ -172,7 +172,7 @@ namespace dbgLog
 	//
 	// \return the converted string
 	//------------------------------------------------------------------------
-	std::string UnicodetoANSI(const envType::UInt16 *i_String, int i_Length)
+	std::string UnicodetoANSI(const uint16_t *i_String, int i_Length)
 	{
 		return dbgLogPAC::UnicodetoANSI(i_String, i_Length);
 	}

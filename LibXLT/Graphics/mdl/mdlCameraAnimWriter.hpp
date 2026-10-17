@@ -15,9 +15,9 @@
 #ifndef ENV_BOOST_HPP
 #include "Core/Env/envBoost.hpp"
 #endif 
-#ifndef ENV_TYPE_HPP
-#include "Core/Env/envType.hpp"
-#endif 
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
+#endif
 #ifndef  MA_VECTOR3D_HPP
 #include "Core/Ma/maVector3d.hpp"
 #endif
@@ -43,7 +43,7 @@ namespace mdlCameraAnimWriter
 	struct CameraKeys
 	{
 		std::map<float, maVector3d > m_TranslateKeys;
-		envType::UInt8 m_RotationOrder;
+		uint8_t m_RotationOrder;
 		std::map<float, maVector3d  > m_RotateKeys;
 
 		std::map<float, float> m_FocalLengthKeys;

@@ -103,7 +103,7 @@ void WriteSceneListData( chWriter& io_Writer,
 
 	// Version 1 doesn't write number of scenes anymore
 	// (shouldn't mix numbers and chunks within one chunk)
-	//chChunkParserUtil::Write( io_Writer, (envType::Int32)(i_Data.m_Scenes.size()) );
+	//chChunkParserUtil::Write( io_Writer, (int32_t)(i_Data.m_Scenes.size()) );
 
 	//
 	for (int i=0; i<i_Data.m_Scenes.size(); i++)

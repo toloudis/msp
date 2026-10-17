@@ -424,7 +424,7 @@ public:
 	//----------------------------------------------------------------------------
 	// Find the object that matches the pick code from an earlier pick render.
 	//----------------------------------------------------------------------------
-	static pick3dPickObject* MatchPickCode(envType::UInt32 i_PickCode)
+	static pick3dPickObject* MatchPickCode(uint32_t i_PickCode)
 	{
 		const int num_objects = sm_Objects.size();
 		for (int i=0; i<num_objects; i++)

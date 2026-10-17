@@ -526,7 +526,7 @@ void mbrwMaterialSwatchDialog::browse_directory(const fsLocator &i_Directory,
 		{
 			// Reading material info doesn't read thumbnail, using different function
 			// that reads out the thumbnail data separately.
-			//envType::UInt8* pixelBuffer = NULL;
+			//uint8_t* pixelBuffer = NULL;
 			//int bufferSize = 0;
 			//int bitmapSize = 64;
 			//mbrwSwatchItem *pSwatch = NULL;
@@ -552,9 +552,9 @@ void mbrwMaterialSwatchDialog::browse_directory(const fsLocator &i_Directory,
 			{
 				// wxWidgets wants the image data in opposite order,
 				// so create a new buffer and reverse order of bytes
-				envType::UInt8* reverseBuffer = new envType::UInt8[thumbnail.GetBufferSize()];
-				const envType::UInt8 *pSrcPtr = thumbnail.GetThumbParams();
-				envType::UInt8 *pDestPtr = reverseBuffer+(thumbnail.GetBufferSize()-1);
+				uint8_t* reverseBuffer = new uint8_t[thumbnail.GetBufferSize()];
+				const uint8_t *pSrcPtr = thumbnail.GetThumbParams();
+				uint8_t *pDestPtr = reverseBuffer+(thumbnail.GetBufferSize()-1);
 				while (pDestPtr >= reverseBuffer)
 				{
 					*pDestPtr-- = *pSrcPtr++;

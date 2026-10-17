@@ -23,8 +23,8 @@
 #ifndef MA_MATRIX4X4_HPP
 #include "Core/ma/maMatrix4x4.hpp"
 #endif
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 #ifndef FS_LOCATOR_HPP
 #include "Core/Fs/fsLocator.hpp"

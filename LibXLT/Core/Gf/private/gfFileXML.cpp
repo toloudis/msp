@@ -544,7 +544,7 @@ void gfFileXML::WriteFooter()
 //	value is the number actually read into the o_Buffer.  This function
 //	also advances the file pointer.
 //------------------------------------------------------------------------
-int gfFileXML::Read( envType::Int64 i_NumBytes, void* o_Buffer )
+int gfFileXML::Read( int64_t i_NumBytes, void* o_Buffer )
 {
 	return m_FileStream->Read(i_NumBytes, o_Buffer);
 }
@@ -554,7 +554,7 @@ int gfFileXML::Read( envType::Int64 i_NumBytes, void* o_Buffer )
 //	Write writes i_NumBytes from o_Buffer into the file.  The file 
 //	pointer will also be advanced.
 //------------------------------------------------------------------------
-void gfFileXML::Write(envType::Int64 i_NumBytes, const void* i_Buffer)
+void gfFileXML::Write(int64_t i_NumBytes, const void* i_Buffer)
 {
 	DBG_ASSERT(m_FileStream != NULL, "Must have a fsFileStream to write");
 	m_FileStream->Write(i_NumBytes, i_Buffer);

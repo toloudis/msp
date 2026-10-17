@@ -35,7 +35,7 @@ namespace
 void matThumbnailParser::Read(	chReader& i_Reader,
 						chDefs::Version i_Version,
 						chDefs::Size i_Size,
-						envType::UInt8* &o_PixelBuffer, 
+						uint8_t* &o_PixelBuffer, 
 						int &o_BufferSize,
 						int &o_BitmapSize) 
 {
@@ -43,7 +43,7 @@ void matThumbnailParser::Read(	chReader& i_Reader,
 	int image_size = i_Size - image_offset;
 
 	char* header_info = new char[image_offset];
-	o_PixelBuffer = new envType::UInt8[image_size];
+	o_PixelBuffer = new uint8_t[image_size];
 	i_Reader.Read(header_info, image_offset);
 	i_Reader.Read(o_PixelBuffer, image_size);
 	delete [] header_info;
@@ -58,14 +58,14 @@ void matThumbnailParser::Read(	chReader& i_Reader,
 //	chWriter.  i_PixelBuffer is the object being written.
 //----------------------------------------------------------------------------
 void matThumbnailParser::Write( chWriter& o_Writer,
-						envType::UInt8* i_PixelBuffer, int i_BufferSize )
+						uint8_t* i_PixelBuffer, int i_BufferSize )
 {
 	//static const chDefs::Version s_Version = 0;
 	//write chunk header
 	//o_Writer.WriteChunkHeader( GetChunkName(), s_Version, false );
 
 	//write the reserved header bytes
-	const envType::UInt8 reserved[c_ReservedHeaderSize] = {0};
+	const uint8_t reserved[c_ReservedHeaderSize] = {0};
 	o_Writer.Write( reserved, sizeof( reserved ) );
 
 	//write image data
@@ -79,9 +79,9 @@ void matThumbnailParser::Write( chWriter& o_Writer,
 // Users of parsers should call create to create the object that is then
 // passed to Read.
 //----------------------------------------------------------------------------
-//envType::UInt8* matThumbnailParser::Create() const
+//uint8_t* matThumbnailParser::Create() const
 //{
-//	envType::UInt8* pBuffer = new envType::UInt8();
+//	uint8_t* pBuffer = new uint8_t();
 //	return pBuffer;
 //}
 

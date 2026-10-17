@@ -15,8 +15,8 @@
 #ifndef AN_KEYDATA_HPP
 #include "Graphics/an/anKeyData.hpp"
 #endif
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 #ifndef MA_POINT3D_HPP
 #include "Core/ma/maPoint3d.hpp"
@@ -35,7 +35,7 @@ struct prtParticleAttr
 	prtParticleAttr()
 		: m_Position(0,0,0), m_Age(0), m_Lifespan(0), m_ID(0) {}
 
-	envType::Int32 m_ID;
+	int32_t m_ID;
 	maPoint3d m_Position;
 	float m_Age;
 	float m_Lifespan;

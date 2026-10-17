@@ -14,8 +14,8 @@
 #ifndef ENT_FRAGINFOSINK_HPP
 #include "Graphics/ent/entFragInfoSink.hpp"
 #endif
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 #ifndef MA_POINT3D_HPP
 #include "Core/ma/maPoint3d.hpp"
@@ -77,7 +77,7 @@ public:
 
 	//----------------------------------------------------------------------------
 	//----------------------------------------------------------------------------
-	std::vector< envType::UInt32 >* GetIndices();
+	std::vector< uint32_t >* GetIndices();
 
 	//----------------------------------------------------------------------------
 	//----------------------------------------------------------------------------
@@ -91,7 +91,7 @@ public:
 	std::vector<maPoint2d> m_UVs;
 	//std::vector<maFloatRGBA> m_Colors;
 	int m_NumFaces;
-	std::vector<envType::UInt32> m_Indices;
+	std::vector<uint32_t> m_Indices;
 
 	// Subdivs switched to multiple materials
 	//shared_ptr<mdlMatInfo> m_Material;
@@ -123,6 +123,6 @@ public:
 	//----------------------------------------------------------------------------
 	// Expand the indices for the faces into triangle indices
 	//----------------------------------------------------------------------------
-	void GenerateTriangleIndices(std::vector<envType::UInt32> &o_Indices) const;
+	void GenerateTriangleIndices(std::vector<uint32_t> &o_Indices) const;
 };
 

@@ -16,9 +16,6 @@
 #ifndef ENV_PLATFORM_HPP
 #include "Core/env/envPlatform.hpp"
 #endif
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
-#endif
 #ifndef DBG_MSG_HPP
 #include "Core/dbg/dbgMsg.hpp"
 #endif

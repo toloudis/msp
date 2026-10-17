@@ -209,7 +209,7 @@ namespace pythPropertyUtil
 		}
 		else if (prtyInt8 *pPropCast = dynamic_cast<prtyInt8*>(pProperty))
 		{
-			envType::Int8 value = (envType::Int8)PyInt_AsLong( pValueArg ); // only integer type in python is Long?
+			int8_t value = (int8_t)PyInt_AsLong( pValueArg ); // only integer type in python is Long?
 			if (!PyErr_Occurred())
 				pPropCast->SetValue(value, bSetDirty);
 			else

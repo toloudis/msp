@@ -324,7 +324,7 @@ void tma3dRenderView::GetRenderSize(int& o_Width, int& o_Height) const
 // means nothing was picked.
 //--------------------------------------------------------------------
 void tma3dRenderView::DoPickRender(int i_X, int i_Y, float i_Time, g3dPickInfo& o_PickInfo,
-						envType::UInt32 i_PickMask)
+						uint32_t i_PickMask)
 {
 	return m_pPickBuffer->DoPickRender(i_X, i_Y, i_Time, i_PickMask, o_PickInfo, m_ViewerLayers);
 }

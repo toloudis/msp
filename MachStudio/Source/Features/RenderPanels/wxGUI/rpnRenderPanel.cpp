@@ -627,7 +627,7 @@ void rpnRenderPanel::OnMouseDown(wxMouseEvent& i_Event)
 		// Get context info about mouse position
 		g3dPickInfo pick_info;
 		do_pick_at_cursor(render_x, render_y, pick_info);
-		envType::UInt32 pick_code = pick_info.m_ObjectID;
+		uint32_t pick_code = pick_info.m_ObjectID;
 		pick3dPickObject *pPickedObject = pick3dMgr::MatchPickCode(pick_code);
 		sel3dObject *pChosenObject = sel3dCastUtil::ConvertPickToSelection(pPickedObject);
 		float depth = pick_info.m_Depth;

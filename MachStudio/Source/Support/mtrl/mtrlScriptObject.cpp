@@ -1229,7 +1229,7 @@ void mtrlScriptObject::GetBoundingBoxForMaterial(int i_Index, maAxisBox &o_BBox)
 // Get material index by looking for the node with the given 
 //	pick code.
 //--------------------------------------------------------------------
-int mtrlScriptObject::GetMaterialIndexFromPickCode(envType::UInt32 i_PickCode) const
+int mtrlScriptObject::GetMaterialIndexFromPickCode(uint32_t i_PickCode) const
 {
 	const g3dSceneNode *pPickedNode = m_pObject->GetPickedNode(i_PickCode);
 	if (pPickedNode)

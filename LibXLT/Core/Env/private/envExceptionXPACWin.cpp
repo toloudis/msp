@@ -29,9 +29,9 @@ namespace envExceptionXPAC
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void CaptureStackTrace(envType::UInt64* o_PCs, int i_MaxFrames)
+void CaptureStackTrace(uint64_t* o_PCs, int i_MaxFrames)
 {
-	memset( o_PCs, 0, sizeof( envType::UInt64 ) * i_MaxFrames );
+	memset( o_PCs, 0, sizeof( uint64_t ) * i_MaxFrames );
 
 	// See if we can get RtlCaptureContext
 	LPRtlCaptureContext pfnRtlCaptureContext = (LPRtlCaptureContext)
@@ -94,7 +94,7 @@ void CaptureStackTrace(envType::UInt64* o_PCs, int i_MaxFrames)
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-const char* FormatStackTrace(const envType::UInt64* i_PCs, int i_MaxFrames)
+const char* FormatStackTrace(const uint64_t* i_PCs, int i_MaxFrames)
 {
 	const size_t cnBufferSize = 512;
 	unsigned int nLine;

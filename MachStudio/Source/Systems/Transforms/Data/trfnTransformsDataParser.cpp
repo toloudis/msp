@@ -108,7 +108,7 @@ void trfnTransformsDataParser::ReadTransformData(	chReader& i_Reader,
 		}
 		else if ( name == c_XFMO )
 		{
-			envType::Int32 num_objects;
+			int32_t num_objects;
 			i_Reader.Read(num_objects);
 			o_Data.m_BaseData.m_Objects.resize(num_objects);
 			for (int i=0; i<num_objects; i++)
@@ -174,7 +174,7 @@ void trfnTransformsDataParser::WriteTransformData(	chWriter& o_Writer,
 	const int c_XFMO_VERSION = 0;
 	o_Writer.WriteChunkHeader( c_XFMO, c_XFMO_VERSION, false );
 	const int num_objects = i_Data.m_BaseData.m_Objects.size();
-	o_Writer.Write(envType::Int32(num_objects));
+	o_Writer.Write(int32_t(num_objects));
 	for (int i=0; i<num_objects; i++)
 	{
 		write_name_string(o_Writer,i_Data.m_BaseData.m_Objects[i]);

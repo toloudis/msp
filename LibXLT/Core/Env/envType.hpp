@@ -1,11 +1,10 @@
 /****************************************************************************\
 **  envType.hpp
 **
-**      envType.hpp supplies machine independent data types for 1, 2, 4, and
-**	8 byte length integers, and 4 and 8 byte floating point types.  These types
-**	should only be used when it is absolutely necessary to guarantee a byte
-**	size (for a file format, for instance).  For other applications you should
-**	probably just use int, or float.
+**      envType.hpp supplies the machine independent wide character type used
+**	in binary file formats, and checks that float and double are 4 and 8
+**	bytes.  For fixed-size integers use the standard int32_t, uint8_t, etc.
+**	(<cstdint>, included by envPlatform.hpp).
 **
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved
@@ -20,8 +19,6 @@
 #include "Core/env/envPlatform.hpp"
 #endif
 
-#include <stdint.h>
-
 //============================================================================
 //============================================================================
 namespace envType
@@ -35,18 +32,6 @@ namespace envType
 //------------------------------------------------------------------------
 #if (ENV_MACHINE == ENV_PC) && (ENV_COMPILER == ENV_MSVCPP)
 
-	typedef int8_t Int8;
-	typedef uint8_t UInt8;
-	typedef int16_t Int16;
-	typedef uint16_t UInt16;
-	typedef int32_t Int32;
-	typedef uint32_t UInt32;
-	typedef int64_t Int64;
-	typedef uint64_t UInt64;
-	typedef float Float32;
-	typedef double Float64;
-    typedef uintptr_t UIntPtr;
-
 	// On Windows systems wchar_t is 16 bits (2 bytes),
 	// this define is used in binary file formats where the size of the character is important.
 #define WCHART_SIZE 2
@@ -54,10 +39,13 @@ namespace envType
 #ifdef _WCHAR_T_DEFINED
 	typedef wchar_t WChar;
 #else
-	typedef UInt16 WChar;
+	typedef uint16_t WChar;
 #endif
 
 #else
 	#error Haven''t defined platform independent types for this compiler/OS/machine combination
 #endif
+
+	static_assert(sizeof(float) * 8 == 32, "float must be 32 bits");
+	static_assert(sizeof(double) * 8 == 64, "double must be 64 bits");
 }

@@ -30,7 +30,7 @@ namespace
 		// Read in the TGA light probe.
 		FILE* fp = ::_wfopen( filename.GetString(), L"rb" );
 		int fileWidth=0, fileHeight=0;
-		envType::UInt32* fTGAPixels = NULL;
+		uint32_t* fTGAPixels = NULL;
 
 		if (TGA_Read(filename, fp, &fileWidth, &fileHeight, &fTGAPixels) == 0)
 		{
@@ -43,7 +43,7 @@ namespace
 
 		D3D11_SUBRESOURCE_DATA initData;
 		initData.pSysMem = fTGAPixels;
-		initData.SysMemPitch = fileWidth * sizeof(envType::UInt32);
+		initData.SysMemPitch = fileWidth * sizeof(uint32_t);
 		initData.SysMemSlicePitch = 0;
 
 		// create a disposable staging texture to get the bits up into the real texture.

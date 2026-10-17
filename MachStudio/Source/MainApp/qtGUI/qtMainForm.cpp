@@ -449,8 +449,8 @@ void qtMainForm::OnIdle()
 			float val = mnmApp::QueryVideoMemory();
 			float max = mnmApp::QueryMaxVideoMemory();
 
-			envType::UInt32 VidMem = (envType::UInt32)(val / 1024.0f);
-			envType::UInt32 MaxMem = (envType::UInt32)(max / 1024.0f);
+			uint32_t VidMem = (uint32_t)(val / 1024.0f);
+			uint32_t MaxMem = (uint32_t)(max / 1024.0f);
 			std::ostringstream oss;
 			oss.setf(std::ios::fixed, std::ios::floatfield);
 			oss << VidMem << "/" << MaxMem;

@@ -13,9 +13,9 @@
 #endif
 #define VTX_VERTEXANIMBUDGET_HPP
  
-#ifndef ENV_TYPE_HPP
-#include "Core/Env/envType.hpp"
-#endif 
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
+#endif
 
 
 //============================================================================
@@ -23,7 +23,7 @@
 class vtxVertexAnimBudgetItem
 {
 public:
-	typedef envType::UInt64 BudgetSize;
+	typedef uint64_t BudgetSize;
 	virtual BudgetSize GetSize() const = 0;
 	//virtual BudgetSize GetMinimumSize() const = 0;
 

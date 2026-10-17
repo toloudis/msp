@@ -18,14 +18,14 @@
 #endif
 #define TMLN_DRIVERIDMGR_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 //============================================================================
 //	tmlnDriverId
 //============================================================================
-typedef envType::UInt64 tmlnDriverId;
+typedef uint64_t tmlnDriverId;
 
 //============================================================================
 //	forward references

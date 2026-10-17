@@ -11,8 +11,8 @@
 #endif
 #define TMA3D_RENDERVIEW_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 #ifndef G3D_PREFS_HPP
@@ -148,7 +148,7 @@ public:
 	// means nothing was picked.
 	//--------------------------------------------------------------------
 	void DoPickRender(int i_X, int i_Y, float i_Time, g3dPickInfo& o_PickInfo,
-						envType::UInt32 i_PickMask  = 0);
+						uint32_t i_PickMask  = 0);
 
 //========================================================================
 // Static functions

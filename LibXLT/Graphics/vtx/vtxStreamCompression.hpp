@@ -15,9 +15,9 @@
 #ifndef ENV_BOOST_HPP
 #include "Core/Env/envBoost.hpp"
 #endif 
-#ifndef ENV_TYPE_HPP
-#include "Core/Env/envType.hpp"
-#endif 
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
+#endif
 #ifndef MA_AXISBOX_HPP
 #include "Core/Ma/maAxisBox.hpp"
 #endif 
@@ -95,7 +95,7 @@ private:
 	vtxVertexFrame m_CurrentFrame;
 	vtxVertexFrame m_LastFrames[2];
 	int m_LastFrameIndex;
-	envType::Int64 m_RefFrameOffset;
+	int64_t m_RefFrameOffset;
 
 	std::vector<maPoint3d> m_Deltas;
 	shared_ptr<vtxDeltaEncoder> m_DeltaEncoder;
@@ -105,11 +105,11 @@ private:
 
 	struct sFrameData
 	{
-		envType::Float32 m_Time;
-		envType::Int64 m_ReferenceFrame;
-		envType::Int64 m_DeltaBlock;
-		envType::Int64 m_NormalsBlock;
-		envType::Int32 m_DeltaOffset;
+		float m_Time;
+		int64_t m_ReferenceFrame;
+		int64_t m_DeltaBlock;
+		int64_t m_NormalsBlock;
+		int32_t m_DeltaOffset;
 		maAxisBox m_BBox;
 		bool m_bStatic;
 

@@ -109,7 +109,7 @@ void  tmlnChannelRenderPassProperty::SetFloatValue(const prtyFloat& i_Val)
 //--------------------------------------------------------------------
 //  Set new state for property
 //--------------------------------------------------------------------
-void  tmlnChannelRenderPassProperty::SetIntValue(const envType::Int8& i_Val)
+void  tmlnChannelRenderPassProperty::SetIntValue(const int8_t& i_Val)
 {
 	m_PropertyInt.SetValue( i_Val );
 }

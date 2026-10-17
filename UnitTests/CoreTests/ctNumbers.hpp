@@ -12,8 +12,8 @@
 \****************************************************************************/
 #pragma once
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 #include <gtest/gtest.h>
@@ -25,9 +25,9 @@
 #include <vector>
 
 using ctNumberTypes = testing::Types<
-	envType::Int8, envType::UInt8, envType::Int16, envType::UInt16,
-	envType::Int32, envType::UInt32, envType::Int64, envType::UInt64,
-	envType::Float32, envType::Float64>;
+	int8_t, uint8_t, int16_t, uint16_t,
+	int32_t, uint32_t, int64_t, uint64_t,
+	float, double>;
 
 //	ctNumberValues returns the limits of T, values near them and near
 //	zero, and for floats, values that need every significant digit,
@@ -58,7 +58,7 @@ std::vector<T> ctNumberValues()
 			-T(0), limits::infinity(), -limits::infinity(),
 			limits::quiet_NaN(), std::copysign(limits::quiet_NaN(), T(-1)) });
 
-		if constexpr( std::is_same_v<T, envType::Float64> )
+		if constexpr( std::is_same_v<T, double> )
 		{
 			values.insert(values.end(), { T(9007199254740991.0), T(1e-300), T(1e300), T(0.1f), T(1.0000000000000002) });
 		}

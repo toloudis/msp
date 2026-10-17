@@ -23,11 +23,11 @@ bool g3dIndexPtr::Needs32Bit(int i_NumVertices)
 //----------------------------------------------------------------------------
 // Constructors recognize and store pointer type
 //----------------------------------------------------------------------------
-g3dIndexPtr::g3dIndexPtr(const envType::UInt16* i_pIndices)
+g3dIndexPtr::g3dIndexPtr(const uint16_t* i_pIndices)
 :	m_pIndices16(i_pIndices), m_pIndices32(NULL)
 {
 }
-g3dIndexPtr::g3dIndexPtr(const envType::UInt32* i_pIndices)
+g3dIndexPtr::g3dIndexPtr(const uint32_t* i_pIndices)
 :	m_pIndices16(NULL), m_pIndices32(i_pIndices)
 {
 }
@@ -58,7 +58,7 @@ int g3dIndexPtr::GetSizeOfIndex() const
 //----------------------------------------------------------------------------
 // Slow individual index access, try to use the pointers when you can
 //----------------------------------------------------------------------------
-envType::UInt32 g3dIndexPtr::GetIndex(int i) const
+uint32_t g3dIndexPtr::GetIndex(int i) const
 {
 	return (m_pIndices16 != NULL) ? m_pIndices16[i] : m_pIndices32[i];
 }

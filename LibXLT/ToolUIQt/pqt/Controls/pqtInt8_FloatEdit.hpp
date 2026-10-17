@@ -33,16 +33,16 @@ public:
 	// Set value into control
 	//----------------------------------------------------------------------------
 	static void SetValueIntoControl(tqcFloatEdit* i_pActualControl,
-									 envType::Int8 i_Value);
+									 int8_t i_Value);
 
 	//----------------------------------------------------------------------------
 	// Get value from control
 	//----------------------------------------------------------------------------
-	static envType::Int8 GetValueFromControl(tqcFloatEdit* i_pActualControl);
+	static int8_t GetValueFromControl(tqcFloatEdit* i_pActualControl);
 };
 
 //============================================================================
 //============================================================================
-typedef pqtTemplate_FloatEdit<prtyInt8, envType::Int8, pqtInt8_FloatEdit_Converter> pqtInt8_FloatEdit;
+typedef pqtTemplate_FloatEdit<prtyInt8, int8_t, pqtInt8_FloatEdit_Converter> pqtInt8_FloatEdit;
 
 #endif // USE_QT

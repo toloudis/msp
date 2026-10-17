@@ -72,7 +72,7 @@ namespace mdlMaterialParser
 		//------------------------------------------------------------------------
 		void read_color(chReader& i_Reader, maFloatRGBA& o_Color)
 		{
-			envType::Float32 r,g,b,a;
+			float r,g,b,a;
 			i_Reader.Read(r);
 			i_Reader.Read(g);
 			i_Reader.Read(b);
@@ -620,21 +620,21 @@ namespace mdlMaterialParser
 					else if (name == c_MBSC)
 					{
 						// bump scale
-						envType::Float32 bump_scale;
+						float bump_scale;
 						i_Reader.Read(bump_scale);
 						phong_data->m_BumpMapScale = bump_scale;
 					}
 					else if (name == c_MRFL)
 					{
 						// reflectivity
-						envType::Float32 refl;
+						float refl;
 						i_Reader.Read(refl);
 						phong_data->m_Reflectivity = refl;
 					}
 					else if (name == c_UVSC)
 					{
 						// uv scaling factor
-						envType::Float32 u,v;
+						float u,v;
 						i_Reader.Read(u);
 						i_Reader.Read(v);
 						phong_data->m_UV.m_UScale = u;

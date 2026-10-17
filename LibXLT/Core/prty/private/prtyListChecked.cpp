@@ -174,7 +174,7 @@ void prtyListChecked::Read(chReader& io_Reader)
 {
 	checked_list_type temp;
 
-	envType::Int32 size;
+	int32_t size;
 	io_Reader.Read(size);
 
 	temp.resize(size);
@@ -198,7 +198,7 @@ void prtyListChecked::Read(chReader& io_Reader)
 //virtual 
 void prtyListChecked::Write(chWriter& io_Writer) const
 {
-	envType::Int32 size = m_Value.size();
+	int32_t size = m_Value.size();
 	io_Writer.Write(size);
 
 	for (int i=0; i<size; ++i)

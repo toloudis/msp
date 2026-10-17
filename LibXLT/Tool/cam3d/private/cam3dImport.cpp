@@ -104,7 +104,7 @@ namespace
 	//------------------------------------------------------------------------
 	inline void read_vector(chReader& i_Reader, maVector3d& o_Vector)
 	{
-		envType::Float32 val;
+		float val;
 		i_Reader.Read(val);
 		o_Vector.m_X = val;
 		i_Reader.Read(val);
@@ -123,8 +123,8 @@ namespace
 		chDefs::Size size;
 		chDefs::Version version;
 
-		envType::UInt16 num_keys;
-		envType::UInt16 i;
+		uint16_t num_keys;
+		uint16_t i;
 
 		RotationOrder rotation_order = e_XYZ;
 		std::unique_ptr< anKeyData<maPoint3d> > pTranslationChannel;
@@ -161,7 +161,7 @@ namespace
 				}
 				else if (name == c_RORD)
 				{
-					envType::UInt8 order;
+					uint8_t order;
 					i_Reader.Read(order);
 					rotation_order = (RotationOrder)(order); // enumeration set up to match file format
 				}
@@ -370,7 +370,7 @@ namespace
 									float &o_FramesPerSecond,
 									float &o_BeginFrame )
 	{
-		gfFileBin file(i_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+		gfFileBin file(i_Locator, fsFileStream::e_ReadOnly);
 
 		//	If this isn't a real Terawatt/XLT binary file this will throw
 		file.ReadHeader();

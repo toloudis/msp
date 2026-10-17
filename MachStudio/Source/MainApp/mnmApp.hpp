@@ -13,8 +13,8 @@
 #ifndef APP_FLOWEVENTHANDLER_HPP
 #include "Core/app/appFlowEventHandler.hpp"
 #endif
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 #ifndef GPX_PROXYDEFS_HPP
 #include "Tool/gpx/gpxProxyDefs.hpp"

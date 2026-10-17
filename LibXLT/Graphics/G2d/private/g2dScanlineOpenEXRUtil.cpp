@@ -92,7 +92,7 @@ void ColorBufferToEXR_RGBA(g2dImage* in, Imf::Rgba * out, int numBytesPerPixel)
 {
 	// Lock surfaces
 	void* imgBits = in->Lock();
-	envType::UInt8* pImgBits = (envType::UInt8*)imgBits; // Format: B, G, R, A
+	uint8_t* pImgBits = (uint8_t*)imgBits; // Format: B, G, R, A
 
 	//Loop through all the pixels
 	int i, j, dst_idx(0);
@@ -119,7 +119,7 @@ void g2dImageToHalfArray(g2dImage* in, half * out, int numBytesPerPixel, int cur
 {
 	// Lock surfaces
 	void* imgBits = in->Lock();
-	envType::UInt8* pImgBits = (envType::UInt8*)imgBits;
+	uint8_t* pImgBits = (uint8_t*)imgBits;
 
 	//Loop through all the pixels
 	int i, j, dst_idx(0);
@@ -144,7 +144,7 @@ void g2dImageToFloatArray(g2dImage* in, float * out, int numBytesPerPixel, int c
 {
 	// Lock surfaces
 	void* imgBits = in->Lock();
-	envType::UInt8* pImgBits = (envType::UInt8*)imgBits;
+	uint8_t* pImgBits = (uint8_t*)imgBits;
 
 	//Loop through all the pixels
 	int i, j, dst_idx(0);

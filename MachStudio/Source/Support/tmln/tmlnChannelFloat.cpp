@@ -153,11 +153,11 @@ tmlnChannelInt32Property::tmlnChannelInt32Property(prtyInt32& i_Property)
 //--------------------------------------------------------------------
 void  tmlnChannelInt32Property::SetValue(float i_Val)
 {
-	envType::Int32 val = 0;
+	int32_t val = 0;
 	if (i_Val > 0)
-		val = (envType::Int32)floor(i_Val + 0.5f);
+		val = (int32_t)floor(i_Val + 0.5f);
 	else if (i_Val < 0)
-		val = (envType::Int32)ceil(i_Val - 0.5f);
+		val = (int32_t)ceil(i_Val - 0.5f);
 
 	m_Property.SetValue(val);
 	m_bScriptedValue = true;

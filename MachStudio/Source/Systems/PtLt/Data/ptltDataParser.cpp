@@ -59,7 +59,7 @@ void check_falloff(chReader& i_Reader,
 	// that the code was at version 8
 	if (i_Version == 8)
 	{
-		envType::Float32 cubic_falloff;
+		float cubic_falloff;
 		i_Reader.Read(cubic_falloff);
 	}
 }

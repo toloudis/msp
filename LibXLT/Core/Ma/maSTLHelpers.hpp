@@ -54,7 +54,7 @@ class maPointTransformer3x3
 };
 
 //============================================================================
-//	The reason maAdder is hard-coded for envType::UInt32 is that is was
+//	The reason maAdder is hard-coded for uint32_t is that is was
 //	designed for use with indices.  It would have been nice to make it a
 //	template on the integer type, but MSVCPP cannot resolve template 
 //	function calls using templated objects as parameters.
@@ -62,10 +62,10 @@ class maPointTransformer3x3
 class maAdder
 {
 	public:
-		maAdder(envType::UInt32 i_Val) : m_Val(i_Val) {}
-		envType::UInt32 operator()(const envType::UInt32& i_Val) { return i_Val + m_Val; }
+		maAdder(uint32_t i_Val) : m_Val(i_Val) {}
+		uint32_t operator()(const uint32_t& i_Val) { return i_Val + m_Val; }
 	private:
-		envType::UInt32 m_Val;
+		uint32_t m_Val;
 };
 
 //============================================================================
@@ -93,7 +93,7 @@ class maPointTransformer3x3InPlace
 };
 
 //============================================================================
-//	The reason maAdder is hard-coded for envType::UInt32 is that is was
+//	The reason maAdder is hard-coded for uint32_t is that is was
 //	designed for use with indices.  It would have been nice to make it a
 //	template on the integer type, but MSVCPP cannot resolve template 
 //	function calls using templated objects as parameters.
@@ -101,8 +101,8 @@ class maPointTransformer3x3InPlace
 class maAdderInPlace
 {
 	public:
-		maAdderInPlace(envType::UInt32 i_Val) : m_Val(i_Val) {}
-		void operator()(envType::UInt32& o_Val) { o_Val += m_Val; }
+		maAdderInPlace(uint32_t i_Val) : m_Val(i_Val) {}
+		void operator()(uint32_t& o_Val) { o_Val += m_Val; }
 	private:
-		envType::UInt32 m_Val;
+		uint32_t m_Val;
 };

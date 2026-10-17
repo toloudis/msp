@@ -240,14 +240,14 @@ void read_JOIN(	chReader& i_Reader,
 				// The influences have been moved to their own chunk in version 1
 				if (version < 1)
 				{
-					envType::UInt16 i, num_influences;
+					uint16_t i, num_influences;
 					i_Reader.Read( num_influences );
 
 					for( i = 0 ; i < num_influences ; i++ )
 					{
 						mdlSkinUtil::JointInfluence joint_infl;
 						joint_infl.m_nJointIndex = io_nJointIndex;
-						envType::UInt16 old_index; // old version only does 16-bit
+						uint16_t old_index; // old version only does 16-bit
 						i_Reader.Read( old_index );
 						joint_infl.m_nVertexIndex = old_index;
 						i_Reader.Read( joint_infl.m_fWeight );
@@ -289,7 +289,7 @@ void read_JOIN(	chReader& i_Reader,
 			}
 			else if( name == c_JINF )
 			{
-				envType::UInt32 i, num_influences;
+				uint32_t i, num_influences;
 				num_influences = mdlIndexUtil::ReadNumber(i_Reader, (version>=1));
 				//DBG_LOG2("Read joint index %d num influences: %d", io_nJointIndex, num_influences);
 
@@ -418,7 +418,7 @@ void LoadWorldFragments(const fsLocator& i_File,
 						//std::vector<matTexture*>& o_Textures,
 						entFragInfoSink* o_Sink)
 {
-	gfFileBin file(i_File, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin file(i_File, fsFileStream::e_ReadOnly);
 
 	//	If this isn't a real Terawatt/XLT binary file this will throw
 	file.ReadHeader();
@@ -500,7 +500,7 @@ void LoadFragInfos(	const fsLocator& i_File,
 {
 	DBG_LOG("In LoadFragInfos" );
 
-	gfFileBin file(i_File, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin file(i_File, fsFileStream::e_ReadOnly);
 
 	//	If this isn't a real Terawatt/XLT binary file this will throw
 	file.ReadHeader();
@@ -619,7 +619,7 @@ void LoadSingleSkinModel(	const fsLocator& i_File,
 {
 	DBG_LOG("In LoadSingleSkinModel" );
 
-	gfFileBin file(i_File, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin file(i_File, fsFileStream::e_ReadOnly);
 
 	//	If this isn't a real Terawatt/XLT binary file this will throw
 	file.ReadHeader();
@@ -771,7 +771,7 @@ void LoadCharacterModel(	const fsLocator& i_File,
 {
 //	DBG_LOG("In LoadCharacterModel" );
 
-	gfFileBin file(i_File, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin file(i_File, fsFileStream::e_ReadOnly);
 
 	//	If this isn't a real Terawatt/XLT binary file this will throw
 	file.ReadHeader();

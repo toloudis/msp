@@ -271,7 +271,7 @@ bool icnIconSet::GetPickHull() const
 // PickMask is a user defined bit mask that can be used to filter
 // the pickable objects. The default value of "0" means "do not filter".
 //----------------------------------------------------------------------------
-void icnIconSet::SetPickMask(envType::UInt32 i_PickMask)
+void icnIconSet::SetPickMask(uint32_t i_PickMask)
 {
 	m_pBaseObject->SetPickMask(i_PickMask);
 	for (int i=0; i<m_Clones.size(); ++i)
@@ -347,7 +347,7 @@ void icnIconSet::SetColor(const maFloatRGBA &i_Color)
 // Is the pick code given within the high and low pick codes assigned
 // to this node?
 //----------------------------------------------------------------------------
-bool icnIconSet::ContainsPickCode(envType::UInt32 i_PickCode) const
+bool icnIconSet::ContainsPickCode(uint32_t i_PickCode) const
 {
 	if (m_pBaseObject->ContainsPickCode(i_PickCode))
 		return true;
@@ -363,7 +363,7 @@ bool icnIconSet::ContainsPickCode(envType::UInt32 i_PickCode) const
 //--------------------------------------------------------------------
 //	Returns the node with a fragment with the given pick code
 //--------------------------------------------------------------------
-const g3dSceneNode* icnIconSet::GetPickedNode(envType::UInt32 i_PickCode) const
+const g3dSceneNode* icnIconSet::GetPickedNode(uint32_t i_PickCode) const
 {
 	const g3dSceneNode* pPicked = NULL;
 

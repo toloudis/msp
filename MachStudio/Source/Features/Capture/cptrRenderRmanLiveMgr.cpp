@@ -213,10 +213,10 @@ namespace cptrRenderRmanLiveMgr
 					{float value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_RmanShadingRate.SetValue(value);};
 
 				if (keyname == lc_Key_nRmanAArate)
-					{envType::Int32 value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_nRmanAArate.SetValue(value);};
+					{int32_t value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_nRmanAArate.SetValue(value);};
 
 				if (keyname == lc_Key_RmanAOsamples)
-					{envType::Int32 value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_RmanAOsamples.SetValue(value);};
+					{int32_t value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_RmanAOsamples.SetValue(value);};
 
 				if (keyname == lc_Key_bRmanCacheTextures)
 					{bool value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_bRmanCacheTextures.SetValue(value);};
@@ -246,7 +246,7 @@ namespace cptrRenderRmanLiveMgr
 					{bool value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_bRmanGIEnable.SetValue(value);};
 
 				if (keyname == lc_Key_RmanGIsamples)
-					{envType::Int32 value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_RmanGIsamples.SetValue(value);};
+					{int32_t value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_RmanGIsamples.SetValue(value);};
 
 				if (keyname == lc_Key_RmanGIMaxVariation)
 					{float value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_RmanGIMaxVariation.SetValue(value);};
@@ -258,19 +258,19 @@ namespace cptrRenderRmanLiveMgr
 					{float value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_RmanFilterWidth.SetValue(value);};
 
 				if (keyname == lc_Key_RmanNumCores)
-					{envType::Int32 value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_RmanNumCores.SetValue(value);};
+					{int32_t value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_RmanNumCores.SetValue(value);};
 
 				if (keyname == lc_Key_RmanTexMemory)
-					{envType::Int32 value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_RmanTexMemory.SetValue(value);};
+					{int32_t value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_RmanTexMemory.SetValue(value);};
 
 				if (keyname == lc_Key_RmanBucketOrder)
 					{int value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_RmanBucketOrder.SetValue(value);};
 
 				if (keyname == lc_Key_RmanBucketSize)
-					{envType::Int32 value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_RmanBucketSize.SetValue(value);};
+					{int32_t value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_RmanBucketSize.SetValue(value);};
 
 				if (keyname == lc_Key_RmanRayDepth)
-					{envType::Int32 value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_RmanRayDepth.SetValue(value);};
+					{int32_t value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_RmanRayDepth.SetValue(value);};
 
 				if (keyname == lc_Key_bRmanTonemapEnable)
 					{bool value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_bRmanTonemapEnable.SetValue(value);};

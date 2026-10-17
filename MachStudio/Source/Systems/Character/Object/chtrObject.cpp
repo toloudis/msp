@@ -393,7 +393,7 @@ void chtrObject::UpdateScale(const maPoint3d& i_Scale,
 //----------------------------------------------------------------------------
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
-bool chtrObject::MatchPickCode(envType::UInt32 i_PickCode) const
+bool chtrObject::MatchPickCode(uint32_t i_PickCode) const
 {
 	// no proxies for GPU picking
 	if (!m_p3DObject->GetRenderable())

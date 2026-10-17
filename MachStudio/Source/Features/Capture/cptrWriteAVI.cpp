@@ -194,7 +194,7 @@ void cptrWriteAVI::Write( g2dWindow* i_pWindow, const fsLocator& i_Locator, cons
 	g2dImage* pImg = NULL;
 	g2dScreenCaptureUtil::CaptureWindowToImage(*i_pWindow, pImg);
 	int width = 0, height = 0, bpp = 0, size = 0;
-	envType::UInt8* pixels = NULL;
+	uint8_t* pixels = NULL;
 	pImg->GetPixels(&pixels, &size, &width, &height, &bpp, l_Data.m_nCaptureSampling.GetValue());
 	delete pImg;
 
@@ -252,7 +252,7 @@ void cptrWriteAVI::Write( g2dWindow* i_pWindow, const fsLocator& i_Locator, cons
 void cptrWriteAVI::Write( g2dImage* i_pSurface, const fsLocator& i_Locator, const int i_Sampling )
 {
 	int width = 0, height = 0, bpp = 0, size = 0;
-	envType::UInt8* pixels = NULL;
+	uint8_t* pixels = NULL;
 	i_pSurface->GetPixels(&pixels, &size, &width, &height, &bpp, i_Sampling);
 	//int s =	i_pSurface->GetStride();
 	//int w = i_pSurface->GetWidth();

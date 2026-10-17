@@ -34,7 +34,7 @@
 //============================================================================
 const int c_ReadBufferSize = 512;
 const int c_WriteBufferSize = 512; //4096;
-typedef envType::UInt8 fsBufferChar;
+typedef uint8_t fsBufferChar;
 
 
 //============================================================================
@@ -319,12 +319,12 @@ fsFileStream::~fsFileStream()
 //	value is the number actually read into the o_Buffer.  This function
 //	also advances the file pointer.
 //------------------------------------------------------------------------
-int fsFileStream::Read(envType::Int64 i_NumBytes, void* o_Buffer)
+int fsFileStream::Read(int64_t i_NumBytes, void* o_Buffer)
 {
 	DBG_ASSERT(m_pImp->m_Access != e_WriteOnly, "Wrong access type for Read");
 	DBG_ASSERT(m_pImp->m_BufferFormat==e_BufferRead, "Needs read buffer format.");
 
-	envType::Int64 num_read = 0;
+	int64_t num_read = 0;
 
 	// Initialize the buffered reading
 	if ((!m_pImp->m_pBuffer) && (c_ReadBufferSize > 0))
@@ -336,7 +336,7 @@ int fsFileStream::Read(envType::Int64 i_NumBytes, void* o_Buffer)
 	}
 
 	// How much data is left in the buffer
-	envType::Int64 num_left_in_buffer = m_pImp->m_BufferValid - m_pImp->m_BufferLoc;
+	int64_t num_left_in_buffer = m_pImp->m_BufferValid - m_pImp->m_BufferLoc;
 	if (i_NumBytes <= num_left_in_buffer)
 	{
 		// We can deliver this request purely with data already in 
@@ -347,7 +347,7 @@ int fsFileStream::Read(envType::Int64 i_NumBytes, void* o_Buffer)
 	}
 	else
 	{
-		envType::Int64 left_to_read = i_NumBytes;
+		int64_t left_to_read = i_NumBytes;
 		fsBufferChar* output_buffer = static_cast<fsBufferChar*>(o_Buffer);
 		if (num_left_in_buffer > 0)
 		{
@@ -407,7 +407,7 @@ int fsFileStream::Read(envType::Int64 i_NumBytes, void* o_Buffer)
 //	Write writes i_NumBytes from o_Buffer into the file.  The file 
 //	pointer will also be advanced.
 //------------------------------------------------------------------------
-void fsFileStream::Write(envType::Int64 i_NumBytes, const void* i_Buffer)
+void fsFileStream::Write(int64_t i_NumBytes, const void* i_Buffer)
 {
 	DBG_ASSERT(m_pImp->m_Access != e_ReadOnly, "Wrong access type for Write");
 	DBG_ASSERT(m_pImp->m_BufferFormat==e_BufferWrite, "Needs write buffer format.");
@@ -445,7 +445,7 @@ void fsFileStream::Write(envType::Int64 i_NumBytes, const void* i_Buffer)
 		}
 
 		// How much room is left in the buffer
-		envType::Int64 num_left_in_buffer = c_WriteBufferSize - m_pImp->m_BufferLoc;
+		int64_t num_left_in_buffer = c_WriteBufferSize - m_pImp->m_BufferLoc;
 		if (i_NumBytes > num_left_in_buffer)
 		{
 			// Flush anything we had in the buffer
@@ -480,7 +480,7 @@ fsFileStream::FilePosType fsFileStream::GetFilePos() const
 //------------------------------------------------------------------------
 //	GetFileSize returns the size of the file.
 //------------------------------------------------------------------------
-envType::Int64 fsFileStream::GetFileSize() const
+int64_t fsFileStream::GetFileSize() const
 {
 	LARGE_INTEGER file_size;
 	if (!::GetFileSizeEx(m_pImp->m_File, &file_size))
@@ -526,7 +526,7 @@ void fsFileStream::SetFilePos(  FilePosType i_Pos, AccessPointType i_DesiredAcce
 	if ((m_pImp->m_pBuffer != NULL) && (move_method != FILE_END))
 	{
 		// Convert both seek methods into a delta from the current positíon
-		envType::Int64 delta = (i_DesiredAccessPoint == e_Beginning) ? (i_Pos - m_pImp->m_FilePointer) : i_Pos;
+		int64_t delta = (i_DesiredAccessPoint == e_Beginning) ? (i_Pos - m_pImp->m_FilePointer) : i_Pos;
 		if (delta == 0)
 		{
 			// Already at the correct position
@@ -538,7 +538,7 @@ void fsFileStream::SetFilePos(  FilePosType i_Pos, AccessPointType i_DesiredAcce
 			//static int s_NumFails = 0;
 			//s_NumAttempts++;
 		
-			envType::Int64 new_pos = m_pImp->m_BufferLoc + delta;
+			int64_t new_pos = m_pImp->m_BufferLoc + delta;
 			if (new_pos >= 0 && new_pos < m_pImp->m_BufferValid)
 			{
 				bNeedFileSeek = false;

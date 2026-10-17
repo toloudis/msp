@@ -15,8 +15,8 @@
 #ifndef DBG_MSG_HPP
 #include "Core/dbg/dbgMsg.hpp"
 #endif
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 #ifndef MA_POINT2D_HPP
 #include "Core/ma/maPoint2d.hpp"
@@ -267,12 +267,12 @@ namespace maFunctions
 	//-----------------------------------------------------------------------------
 	// convert half to float
 	//-----------------------------------------------------------------------------
-	envType::UInt16 FloatToHalf(float i);
+	uint16_t FloatToHalf(float i);
 
 	//-----------------------------------------------------------------------------
 	// convert half to float
 	//-----------------------------------------------------------------------------
-	float HalfToFloat(envType::UInt16 y);
+	float HalfToFloat(uint16_t y);
 
 	//-----------------------------------------------------------------------------
 	// convert half to float

@@ -40,7 +40,7 @@ bool SetVideoCompression(Handle i_Avi, const char* i_FourCC,
 											 i_Width, i_Height, i_BitsPerPixel, i_ImageSize);
 }
 
-bool AddFrame(Handle i_Avi, const envType::UInt8* i_Pixels, int i_ImageSize,
+bool AddFrame(Handle i_Avi, const uint8_t* i_Pixels, int i_ImageSize,
 			  int i_Width, int i_Height, int i_BitsPerPixel)
 {
 	return fsAviFilePAC::AddFrame(i_Avi, i_Pixels, i_ImageSize, i_Width, i_Height, i_BitsPerPixel);
@@ -66,7 +66,7 @@ void GetDimensions(Handle i_Avi, int& o_Width, int& o_Height)
 	fsAviFilePAC::GetDimensions(i_Avi, o_Width, o_Height);
 }
 
-bool GetFrame(Handle i_Avi, int i_Frame, envType::UInt8*& o_Data, int& o_Size)
+bool GetFrame(Handle i_Avi, int i_Frame, uint8_t*& o_Data, int& o_Size)
 {
 	return fsAviFilePAC::GetFrame(i_Avi, i_Frame, o_Data, o_Size);
 }

@@ -203,7 +203,7 @@ void pntPointObject::UpdateScale(const maPoint3d& i_Scale,
 //----------------------------------------------------------------------------
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
-bool pntPointObject::MatchPickCode(envType::UInt32 i_PickCode) const
+bool pntPointObject::MatchPickCode(uint32_t i_PickCode) const
 {
 	if (!this->GetRenderable())
 		return false;

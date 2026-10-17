@@ -889,7 +889,7 @@ void fgmtScriptObject::ChangeFragmentDataAO(int i_Index)
 // Get fragment index by looking for the node with the given 
 //	pick code.
 //--------------------------------------------------------------------
-int fgmtScriptObject::GetFragmentIndexFromPickCode(envType::UInt32 i_PickCode) const
+int fgmtScriptObject::GetFragmentIndexFromPickCode(uint32_t i_PickCode) const
 {
 	const g3dSceneNode *pPickedNode = m_pObject->GetPickedNode(i_PickCode);
 	if (pPickedNode)

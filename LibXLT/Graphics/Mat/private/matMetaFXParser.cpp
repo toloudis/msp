@@ -41,7 +41,7 @@ namespace matMetaFXParser
 			io_Writer.FinishChunk();	
 		}
 		void write_raw_data( chWriter& io_Writer,
-							 const std::vector<envType::UInt8> &i_ShaderData )
+							 const std::vector<uint8_t> &i_ShaderData )
 		{
 			const int c_DTBK_VERSION = 0;
 			io_Writer.WriteChunkHeader( c_DTBK, c_DTBK_VERSION, false );
@@ -58,7 +58,7 @@ namespace matMetaFXParser
 		}
 	
 		void read_raw_block(chReader& io_Reader, 
-					   matMetaFXBlock< std::vector<envType::UInt8> > &o_DataBlock)
+					   matMetaFXBlock< std::vector<uint8_t> > &o_DataBlock)
 		{
 			chDefs::Name name;
 			chDefs::Size size;
@@ -110,7 +110,7 @@ namespace matMetaFXParser
 						matMetaFX &o_ShaderData)
 	{
 
-		gfFileBin ifile(i_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+		gfFileBin ifile(i_Locator, fsFileStream::e_ReadOnly);
 		ifile.ReadHeader();
 		chBinReader reader(ifile);
 
@@ -149,7 +149,7 @@ namespace matMetaFXParser
 			fsFileUtil::DeleteFile(i_Locator);
 		fsFileUtil::CreateFile(i_Locator);
 
-		gfFileBin ofile(i_Locator, fsFileStream::e_WriteOnly, gfFileBin::e_LittleEndian);
+		gfFileBin ofile(i_Locator, fsFileStream::e_WriteOnly);
 		ofile.WriteHeader();
 		chBinWriter writer(ofile);
 

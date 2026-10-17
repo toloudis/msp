@@ -175,7 +175,7 @@ bool setsObject::RayPick(	const maPoint3d& i_RayStart,
 //----------------------------------------------------------------------------
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
-bool setsObject::MatchPickCode(envType::UInt32 i_PickCode) const
+bool setsObject::MatchPickCode(uint32_t i_PickCode) const
 {
 	if (!m_p3DObject->GetRenderable() || !this->GetLayerPickable())
 		return false;

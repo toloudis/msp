@@ -106,12 +106,12 @@ TEST(fsXML, WriteThenRead)
 		writer.WriteElement(k_short, short(100));
 		writer.WriteElement(k_float, 123.5f);
 		writer.WriteElement(k_string, std::string("some text"));
-		writer.WriteElement(k_int8, envType::Int8(-100));
-		writer.WriteElement(k_uint8, envType::UInt8(200));
-		writer.WriteElement(k_uint16, envType::UInt16(60000));
-		writer.WriteElement(k_uint32, envType::UInt32(4000000000u));
-		writer.WriteElement(k_uint64, envType::UInt64(10000000000ull));
-		writer.WriteElement(k_float64, envType::Float64(123.456));
+		writer.WriteElement(k_int8, int8_t(-100));
+		writer.WriteElement(k_uint8, uint8_t(200));
+		writer.WriteElement(k_uint16, uint16_t(60000));
+		writer.WriteElement(k_uint32, uint32_t(4000000000u));
+		writer.WriteElement(k_uint64, uint64_t(10000000000ull));
+		writer.WriteElement(k_float64, double(123.456));
 
 		writer.WriteEndElement();
 		writer.Close();
@@ -145,27 +145,27 @@ TEST(fsXML, WriteThenRead)
 	convert.Convert(text["var_string"], v_string);
 	EXPECT_EQ("some text", v_string);
 
-	envType::Int8 v_int8 = 0;
+	int8_t v_int8 = 0;
 	convert.Convert(text["var_Int8"], v_int8);
 	EXPECT_EQ(-100, v_int8);
 
-	envType::UInt8 v_uint8 = 0;
+	uint8_t v_uint8 = 0;
 	convert.Convert(text["var_UInt8"], v_uint8);
 	EXPECT_EQ(200, v_uint8);
 
-	envType::UInt16 v_uint16 = 0;
+	uint16_t v_uint16 = 0;
 	convert.Convert(text["var_UInt16"], v_uint16);
 	EXPECT_EQ(60000, v_uint16);
 
-	envType::UInt32 v_uint32 = 0;
+	uint32_t v_uint32 = 0;
 	convert.Convert(text["var_UInt32"], v_uint32);
 	EXPECT_EQ(4000000000u, v_uint32);
 
-	envType::UInt64 v_uint64 = 0;
+	uint64_t v_uint64 = 0;
 	convert.Convert(text["var_UInt64"], v_uint64);
 	EXPECT_EQ(10000000000ull, v_uint64);
 
-	envType::Float64 v_float64 = 0;
+	double v_float64 = 0;
 	convert.Convert(text["var_Float64"], v_float64);
 	EXPECT_NEAR(123.456, v_float64, 1e-9);
 }

@@ -41,7 +41,7 @@ class itString
 		//	little chance that Microsoft will suddenly develop a non-16 bit 
 		//	variant of Unicode
 		//------------------------------------------------------------------------
-		//typedef envType::UInt16 CharType;
+		//typedef uint16_t CharType;
 		//------------------------------------------------------------------------
 		// Now itString is defined to be a "wchar_t" string on all systems.
 		// This means it will be different sizes on Unix and Windows OSs

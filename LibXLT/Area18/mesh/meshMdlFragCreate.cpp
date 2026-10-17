@@ -181,8 +181,8 @@ void meshMdlFragCreate::OptimizeFragment(mdlSplitFragInfo &io_Info)
 		return;
 
 	// Apply remap, reordering faces better for vertex cache
-	std::vector<envType::UInt32> org_indices = io_Info.m_Indices;
-	envType::UInt32 *pOldFace, *pNewFace = &io_Info.m_Indices[0];
+	std::vector<uint32_t> org_indices = io_Info.m_Indices;
+	uint32_t *pOldFace, *pNewFace = &io_Info.m_Indices[0];
 	for (int fi=0; fi<num_faces; fi++)
 	{
 		pOldFace = &org_indices[ remapping[fi] * 3 ];

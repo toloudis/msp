@@ -77,12 +77,12 @@ void grupGroupsDataParser::ReadGroupData(	chReader& i_Reader,
 	// Version 1 removes unused style
 	if (i_Version < 1)
 	{
-		envType::UInt8 style;
+		uint8_t style;
 		i_Reader.Read(style);
 		//o_Data.m_Style = (grpsGroupStyle)style;
 	}
 
-	envType::Int32 num_objects;
+	int32_t num_objects;
 	i_Reader.Read(num_objects);
 	o_Data.m_Objects.resize(num_objects);
 	for (int i=0; i<num_objects; i++)
@@ -104,11 +104,11 @@ void grupGroupsDataParser::WriteGroupData(	chWriter& o_Writer,
 	i_Data.m_Name.Write(o_Writer);
 
 	// version 1 removes unused style
-	//envType::UInt8 style = (envType::Int8)i_Data.m_Style;
+	//uint8_t style = (int8_t)i_Data.m_Style;
 	//o_Writer.Write(style);
 
 	const int num_objects = i_Data.m_Objects.size();
-	o_Writer.Write(envType::Int32(num_objects));
+	o_Writer.Write(int32_t(num_objects));
 	for (int i=0; i<num_objects; i++)
 	{
 		write_name_string(o_Writer,i_Data.m_Objects[i]);

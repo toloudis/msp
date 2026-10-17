@@ -18,8 +18,8 @@
 #define ENV_EXCEPTIONX_HPP
 
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 #include <string>
@@ -57,7 +57,7 @@ private:
 		void RecordStackTrace();
 
 		static const size_t cnMaxStackFrames = 32;
-		envType::UInt64 nPC[cnMaxStackFrames];
+		uint64_t nPC[cnMaxStackFrames];
 #endif
 };
 

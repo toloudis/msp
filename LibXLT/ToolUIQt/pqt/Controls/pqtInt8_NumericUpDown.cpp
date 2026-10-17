@@ -15,7 +15,7 @@
 // Set value into control
 //----------------------------------------------------------------------------
 void pqtInt8_NumericUpDown_Converter::SetValueIntoControl(tqcNumericUpDown* i_pActualControl,
-													 envType::Int8 i_Value)
+													 int8_t i_Value)
 {
 	i_pActualControl->SetValue(i_Value);
 }
@@ -23,9 +23,9 @@ void pqtInt8_NumericUpDown_Converter::SetValueIntoControl(tqcNumericUpDown* i_pA
 //----------------------------------------------------------------------------
 // Get value from control
 //----------------------------------------------------------------------------
-envType::Int8 pqtInt8_NumericUpDown_Converter::GetValueFromControl(tqcNumericUpDown* i_pActualControl)
+int8_t pqtInt8_NumericUpDown_Converter::GetValueFromControl(tqcNumericUpDown* i_pActualControl)
 {
-	return (envType::Int8) i_pActualControl->GetValue();
+	return (int8_t) i_pActualControl->GetValue();
 }
 
 #endif

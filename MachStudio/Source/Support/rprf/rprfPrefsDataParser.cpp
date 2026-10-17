@@ -29,7 +29,7 @@ const chDefs::Name c_PRFD = chDefs::MakeName('P', 'R', 'F', 'D');	// prefs data
 //------------------------------------------------------------------------
 // never change this function! it is frozen at v6 of the prfd chunk.
 //------------------------------------------------------------------------
-std::string GetRendererTypePermIDFromV6(envType::UInt8 i_PrtyValue)
+std::string GetRendererTypePermIDFromV6(uint8_t i_PrtyValue)
 {
 	switch(i_PrtyValue)
 	{
@@ -54,7 +54,7 @@ std::string GetRendererTypePermIDFromV6(envType::UInt8 i_PrtyValue)
 //------------------------------------------------------------------------
 // never change this function! it is frozen at v17 of the prfd chunk.
 //------------------------------------------------------------------------
-std::string GetRendererTypePermIDFromV17(envType::UInt8 i_PrtyValue)
+std::string GetRendererTypePermIDFromV17(uint8_t i_PrtyValue)
 {
 	switch(i_PrtyValue)
 	{
@@ -91,7 +91,7 @@ std::string GetRendererTypePermIDFromV17(envType::UInt8 i_PrtyValue)
 // enum order. This must be maintained to match the m_RendererType enum 
 // defined in rprfPrefsData.
 //------------------------------------------------------------------------
-std::string GetRendererTypePermID(envType::UInt8 i_PrtyValue)
+std::string GetRendererTypePermID(uint8_t i_PrtyValue)
 {
 	switch(i_PrtyValue)
 	{
@@ -129,7 +129,7 @@ std::string GetRendererTypePermID(envType::UInt8 i_PrtyValue)
 // When reading a perm ID, map it to the correct enum value in the current
 // enum used in rprfPrefsData::m_RendererType 
 //------------------------------------------------------------------------
-envType::UInt8 GetRendererTypeFromPermID(std::string i_PermID, chDefs::Version i_Version)
+uint8_t GetRendererTypeFromPermID(std::string i_PermID, chDefs::Version i_Version)
 {
 	DBG_ASSERT(i_Version >= 6, "Renderer type IDs not used before v7");
 	if (i_PermID == "HDR")

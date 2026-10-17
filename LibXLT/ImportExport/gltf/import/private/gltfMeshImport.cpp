@@ -124,9 +124,9 @@ namespace gltfMeshImport
 
 			for (size_t i = i_FirstIndex; i + 2 < io_MeshInfo.m_Indices.size(); i += 3)
 			{
-				const envType::UInt32 i0 = io_MeshInfo.m_Indices[i];
-				const envType::UInt32 i1 = io_MeshInfo.m_Indices[i + 1];
-				const envType::UInt32 i2 = io_MeshInfo.m_Indices[i + 2];
+				const uint32_t i0 = io_MeshInfo.m_Indices[i];
+				const uint32_t i1 = io_MeshInfo.m_Indices[i + 1];
+				const uint32_t i2 = io_MeshInfo.m_Indices[i + 2];
 				const maVector3d e1 = io_MeshInfo.m_Vertices[i1] - io_MeshInfo.m_Vertices[i0];
 				const maVector3d e2 = io_MeshInfo.m_Vertices[i2] - io_MeshInfo.m_Vertices[i0];
 				// counter-clockwise front face, area weighted
@@ -225,7 +225,7 @@ namespace gltfMeshImport
 			}
 
 			for (size_t i = 0; i < triangles.size(); i++)
-				o_MeshInfo.m_Indices.push_back((envType::UInt32)(first_vertex + triangles[i]));
+				o_MeshInfo.m_Indices.push_back((uint32_t)(first_vertex + triangles[i]));
 
 			if (normals.empty())
 				compute_normals(o_MeshInfo, first_vertex, first_index);

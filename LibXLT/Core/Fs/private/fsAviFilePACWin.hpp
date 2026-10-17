@@ -33,12 +33,12 @@ namespace fsAviFilePAC
 							 bool i_ShowDialog, void* i_ParentWindow,
 							 int i_Width, int i_Height, int i_BitsPerPixel,
 							 int i_ImageSize);
-	bool AddFrame(Handle i_Avi, const envType::UInt8* i_Pixels, int i_ImageSize,
+	bool AddFrame(Handle i_Avi, const uint8_t* i_Pixels, int i_ImageSize,
 				  int i_Width, int i_Height, int i_BitsPerPixel);
 	bool AddWav(Handle i_Avi, const fsLocator& i_WavFile);
 	bool Append(Handle i_First, Handle i_Second, const fsLocator& i_SavePath);
 	float GetLength(Handle i_Avi);
 	void GetDimensions(Handle i_Avi, int& o_Width, int& o_Height);
-	bool GetFrame(Handle i_Avi, int i_Frame, envType::UInt8*& o_Data, int& o_Size);
+	bool GetFrame(Handle i_Avi, int i_Frame, uint8_t*& o_Data, int& o_Size);
 	std::string GetLastErrorMessage();
 }

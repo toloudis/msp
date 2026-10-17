@@ -57,7 +57,7 @@ void WriteToTGA( const fsLocator& i_Locator, const g2dImage* pImg )
 		
 		g2dPixelR8G8B8A8* buffer = NULL;
 		(const_cast<g2dImage*>(pImg))->GetPixels(&buffer, &width, &height);
-		TGA_Write_RGBA(file, width, height, (envType::UInt32**)(&buffer));
+		TGA_Write_RGBA(file, width, height, (uint32_t**)(&buffer));
 
 		delete [] buffer;
 	}catch(...)

@@ -13,8 +13,8 @@
 #endif
 #define G2D_SURFACELOADERD3D11_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 #ifndef G2D_PFD_HPP
 #include "Graphics/g2d/g2dPFD.hpp"
@@ -72,7 +72,7 @@ namespace g2dSurfaceLoader
 	//	RGB.
 	//------------------------------------------------------------------------
 	void LoadPNGData(	const fsLocator& i_Locator,
-						std::vector<envType::UInt8*>& o_Rows,
+						std::vector<uint8_t*>& o_Rows,
 						int& o_Width,
 						bool& o_HasAlpha);
 
@@ -81,7 +81,7 @@ namespace g2dSurfaceLoader
 	//	for this function's row data is always RGB.
 	//------------------------------------------------------------------------
 	void LoadBMPData(	const fsLocator& i_Locator,
-						std::vector<envType::UInt8*>& o_Rows,
+						std::vector<uint8_t*>& o_Rows,
 						int& o_Width,
 						bool& o_HasAlpha);
 
@@ -90,7 +90,7 @@ namespace g2dSurfaceLoader
 	//	for this function's row data is RGBA.
 	//------------------------------------------------------------------------
 	void LoadTIFFData(	const fsLocator& i_Locator,
-						std::vector<envType::UInt8*>& o_Rows,
+						std::vector<uint8_t*>& o_Rows,
 						int& o_Width,
 						bool& o_HasAlpha,
 						TIFF* i_Image);
@@ -100,7 +100,7 @@ namespace g2dSurfaceLoader
 	//	for this function's row data is RGBA.
 	//------------------------------------------------------------------------
 	void LoadTIFFData(	const fsLocator& i_Locator,
-						std::vector<envType::UInt16*>& o_Rows,
+						std::vector<uint16_t*>& o_Rows,
 						int& o_Width,
 						bool& o_HasAlpha,
 						TIFF* i_Image);
@@ -110,7 +110,7 @@ namespace g2dSurfaceLoader
 	//	for this function's row data is RGBA.  This call does floating point tiffs
 	//------------------------------------------------------------------------
 	void LoadTIFFData(	const fsLocator& i_Locator,
-						std::vector<envType::Float32*>& o_Rows,
+						std::vector<float*>& o_Rows,
 						int& o_Width,
 						bool& o_HasAlpha,
 						TIFF* i_Image);
@@ -124,7 +124,7 @@ namespace g2dSurfaceLoader
 						int i_DestStride,
 						int i_DestWidth,
 						const g2dPFD& i_DestPFD,
-						const std::vector<envType::UInt8*>& i_SourceRows,
+						const std::vector<uint8_t*>& i_SourceRows,
 						bool i_SourceHasAlpha);
 
 	//------------------------------------------------------------------------
@@ -136,7 +136,7 @@ namespace g2dSurfaceLoader
 						int i_DestStride,
 						int i_DestWidth,
 						const g2dPFD& i_DestPFD,
-						const std::vector<envType::UInt16*>& i_SourceRows,
+						const std::vector<uint16_t*>& i_SourceRows,
 						bool i_SourceHasAlpha);
 
 	//------------------------------------------------------------------------
@@ -148,6 +148,6 @@ namespace g2dSurfaceLoader
 						int i_DestStride,
 						int i_DestWidth,
 						const g2dPFD& i_DestPFD,
-						const std::vector<envType::Float32*>& i_SourceRows,
+						const std::vector<float*>& i_SourceRows,
 						bool i_SourceHasAlpha);
 }

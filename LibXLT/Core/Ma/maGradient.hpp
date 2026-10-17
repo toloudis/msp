@@ -12,8 +12,8 @@
 #endif
 #define MA_GRADIENT_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 #ifndef MA_FLOATRGBA_HPP

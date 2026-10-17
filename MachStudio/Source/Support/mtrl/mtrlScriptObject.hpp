@@ -259,7 +259,7 @@ public:
 	// Get material index by looking for the node with the given 
 	//	pick code.
 	//--------------------------------------------------------------------
-	int GetMaterialIndexFromPickCode(envType::UInt32 i_PickCode) const;
+	int GetMaterialIndexFromPickCode(uint32_t i_PickCode) const;
 
 	//--------------------------------------------------------------------
 	//	Toggle material hilighting 

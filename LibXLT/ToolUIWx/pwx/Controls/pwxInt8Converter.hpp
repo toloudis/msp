@@ -30,17 +30,17 @@ class pwxInt8Converter
 public:
 	//----------------------------------------------------------------------------
 	//----------------------------------------------------------------------------
-	static envType::Int8 GetPropertyValue(prtyProperty* i_pProperty);
+	static int8_t GetPropertyValue(prtyProperty* i_pProperty);
 
 	//----------------------------------------------------------------------------
 	// Get value from multiple properties, returns true if all the same. 
 	//----------------------------------------------------------------------------
-	static bool GetCommonValue(shared_ptr<prtyPropertyUIInfo>& i_pUIInfo, envType::Int8& o_NewValue);
+	static bool GetCommonValue(shared_ptr<prtyPropertyUIInfo>& i_pUIInfo, int8_t& o_NewValue);
 	
 	//----------------------------------------------------------------------------
 	// Set value into properties for control
 	//----------------------------------------------------------------------------
-	static void SetCommonValue(pwxControl* io_pControl, envType::Int8 i_NewValue);
+	static void SetCommonValue(pwxControl* io_pControl, int8_t i_NewValue);
 };
 
 #endif // USE_WXWIDGETS

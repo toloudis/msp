@@ -7,7 +7,7 @@
 #ifdef CPTR_RENDERBAKEDIALOG_HPP
 #error cptrRenderBakeDialog.hpp multiply included
 #endif
-#define CPTR_RENDERBAKE_HPP
+#define CPTR_RENDERBAKEDIALOG_HPP
 
 //	needed before App so USE_QT is set
 #ifndef TQT_WIDGETS_HPP

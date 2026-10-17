@@ -59,9 +59,9 @@ namespace mdlFragUtil
 		// into the larger original list.
 		//----------------------------------------------------------------------------
 		int find_used_vertices( //const std::vector<maPoint3d> &i_Vertices,
-								const std::vector<envType::UInt32> &i_Indices,
+								const std::vector<uint32_t> &i_Indices,
 								//std::vector<maPoint3d> &o_Vertices,
-								std::vector<envType::UInt32> &o_Indices,
+								std::vector<uint32_t> &o_Indices,
 								std::vector<int> &o_RemapArray)
 		{
 			// find unique used vertices
@@ -208,7 +208,7 @@ namespace mdlFragUtil
 			int first_index = 0, num_indices = i_FragInfo.m_Indices.size();
 			i_FragInfo.GetIndexRange(i, first_index, num_indices);
 
-			std::vector<envType::UInt32> new_indices(num_indices);
+			std::vector<uint32_t> new_indices(num_indices);
 			for (int ii=0; ii<num_indices; ii++)
 				new_indices[ii] = i_FragInfo.m_Indices[ii+first_index];
 
@@ -323,7 +323,7 @@ namespace mdlFragUtil
 		// Walk through the triangle list and calculate gradiants for each triangle.
 		// Sum the results into the S and T components.
 		maVector3d S, T, edge01, edge02, cp;
-		envType::Int32 ind0, ind1, ind2;
+		int32_t ind0, ind1, ind2;
 		for ( i = 0; i < numIndices; i += 3 )
 		{
 			ind0 = io_FragInfo.m_Indices[i];
@@ -501,7 +501,7 @@ namespace mdlFragUtil
 		// Walk through the triangle list and calculate gradiants for each triangle.
 		// Sum the results into the S and T components.
 		maVector3d S, T, edge01, edge02, cp;
-		envType::Int32 ind0, ind1, ind2;
+		int32_t ind0, ind1, ind2;
 		for ( i = 0; i < numIndices; i += 3 )
 		{
 			ind0 = io_FragInfo.m_Indices[i];
@@ -690,7 +690,7 @@ namespace mdlFragUtil
 
 			std::vector< int > &tri_group = tri_groups[i];
 			int num_new_indices = tri_group.size() * 3;
-			std::vector<envType::UInt32> new_indices(num_new_indices);
+			std::vector<uint32_t> new_indices(num_new_indices);
 			int tri_ind, ind = 0;
 			for (int j=0; j<tri_group.size(); ++j)
 			{

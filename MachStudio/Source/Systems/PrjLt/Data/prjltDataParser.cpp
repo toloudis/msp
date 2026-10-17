@@ -106,7 +106,7 @@ namespace
 		// that the code was at version 8
 		if (i_Version == 25)
 		{
-			envType::Float32 cubic_falloff;
+			float cubic_falloff;
 			i_Reader.Read(cubic_falloff);
 		}
 	}
@@ -315,7 +315,7 @@ namespace
 																					if (i_Version > 27)
 																					{
 																						// Properties related to spot and directional lighting
-																						envType::Int8 light_type = 0;
+																						int8_t light_type = 0;
 																						i_Reader.Read(light_type);
 																						if (light_type >= 0 && light_type < prjltData::e_NumLightTypes)
 																							o_Data.m_LightType = prjltData::LightType(light_type);
@@ -615,7 +615,7 @@ void prjltDataParser::WriteProjectedLightData(	chWriter& o_Writer,
 	i_Data.m_BaseData.m_ShaftRampData.m_NoiseFreq.Write(o_Writer);
 
 	// version 28 adds properties related to spot and directional light variations
-	envType::Int8 light_type = i_Data.m_BaseData.m_LightType;
+	int8_t light_type = i_Data.m_BaseData.m_LightType;
 	o_Writer.Write(light_type);
 	i_Data.m_BaseData.m_bDirectional.Write(o_Writer);
 	i_Data.m_BaseData.m_bConeLighting.Write(o_Writer);

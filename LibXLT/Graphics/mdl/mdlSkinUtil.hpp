@@ -12,9 +12,9 @@
 #endif
 #define MDL_SKINUTIL_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/Env/envType.hpp"
-#endif 
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
+#endif
 #ifndef MA_POINT3D_HPP
 #include "Core/Ma/maPoint3d.hpp"
 #endif 
@@ -41,8 +41,8 @@ namespace mdlSkinUtil
 	struct JointInfluence
 	{
 		int m_nJointIndex;
-		envType::UInt32 m_nVertexIndex;
-		envType::Float32 m_fWeight;
+		uint32_t m_nVertexIndex;
+		float m_fWeight;
 	};
 
 	//------------------------------------------------------------------------
@@ -60,7 +60,7 @@ namespace mdlSkinUtil
 	// into a sorted vertex list that matches the fragment info.
 	//------------------------------------------------------------------------
 	void BuildMorphTarget(const std::vector<maPoint3d> &i_PositionVecs,
-							const std::vector<envType::UInt32>& i_SparseIndices,
+							const std::vector<uint32_t>& i_SparseIndices,
 							int i_NumVertices,
 							const std::multimap<int, int> &i_VertexRemap,
 							smdlMorphTarget& o_MorphTarget);

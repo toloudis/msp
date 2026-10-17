@@ -219,7 +219,7 @@ void chXMLWriter::FinishChunk()
 //--------------------------------------------------------------------
 //	Write functions - These write the data to the chunk file.
 //--------------------------------------------------------------------
-void chXMLWriter::Write(envType::Int8 i_Val)
+void chXMLWriter::Write(int8_t i_Val)
 {
 	l_Buf = envNumberText::ToText(i_Val);
 	l_Buf += ' ';
@@ -228,7 +228,7 @@ void chXMLWriter::Write(envType::Int8 i_Val)
 	l_bLastWriteHeader = false;
 }
 
-void chXMLWriter::Write(envType::UInt8 i_Val)
+void chXMLWriter::Write(uint8_t i_Val)
 {
 	l_Buf = envNumberText::ToText(i_Val);
 	l_Buf += ' ';
@@ -237,7 +237,7 @@ void chXMLWriter::Write(envType::UInt8 i_Val)
 	l_bLastWriteHeader = false;
 }
 
-void chXMLWriter::Write(envType::Int16 i_Val)
+void chXMLWriter::Write(int16_t i_Val)
 {
 	l_Buf = envNumberText::ToText(i_Val);
 	l_Buf += ' ';
@@ -246,7 +246,7 @@ void chXMLWriter::Write(envType::Int16 i_Val)
 	l_bLastWriteHeader = false;
 }
 
-void chXMLWriter::Write(envType::UInt16 i_Val)
+void chXMLWriter::Write(uint16_t i_Val)
 {
 	l_Buf = envNumberText::ToText(i_Val);
 	l_Buf += ' ';
@@ -255,7 +255,7 @@ void chXMLWriter::Write(envType::UInt16 i_Val)
 	l_bLastWriteHeader = false;
 }
 
-void chXMLWriter::Write(envType::Int32 i_Val)
+void chXMLWriter::Write(int32_t i_Val)
 {
 	l_Buf = envNumberText::ToText(i_Val);
 	l_Buf += ' ';
@@ -264,7 +264,7 @@ void chXMLWriter::Write(envType::Int32 i_Val)
 	l_bLastWriteHeader = false;
 }
 
-void chXMLWriter::Write(envType::UInt32 i_Val)
+void chXMLWriter::Write(uint32_t i_Val)
 {
 	l_Buf = envNumberText::ToText(i_Val);
 	l_Buf += ' ';
@@ -273,7 +273,7 @@ void chXMLWriter::Write(envType::UInt32 i_Val)
 	l_bLastWriteHeader = false;
 }
 
-void chXMLWriter::Write(envType::Int64 i_Val)
+void chXMLWriter::Write(int64_t i_Val)
 {
 	l_Buf = envNumberText::ToText(i_Val);
 	l_Buf += ' ';
@@ -282,7 +282,7 @@ void chXMLWriter::Write(envType::Int64 i_Val)
 	l_bLastWriteHeader = false;
 }
 
-void chXMLWriter::Write(envType::UInt64 i_Val)
+void chXMLWriter::Write(uint64_t i_Val)
 {
 	l_Buf = envNumberText::ToText(i_Val);
 	l_Buf += ' ';
@@ -291,7 +291,7 @@ void chXMLWriter::Write(envType::UInt64 i_Val)
 	l_bLastWriteHeader = false;
 }
 
-void chXMLWriter::Write(envType::Float32 i_Val)
+void chXMLWriter::Write(float i_Val)
 {
 	l_Buf = envNumberText::ToText(i_Val);
 	l_Buf += ' ';
@@ -300,7 +300,7 @@ void chXMLWriter::Write(envType::Float32 i_Val)
 	l_bLastWriteHeader = false;
 }
 
-void chXMLWriter::Write(envType::Float64 i_Val)
+void chXMLWriter::Write(double i_Val)
 {
 	l_Buf = envNumberText::ToText(i_Val);
 	l_Buf += ' ';

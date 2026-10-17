@@ -15,8 +15,8 @@
 #ifndef PYTH_PYTHON_HPP
 #include "Support/pyth/pythPython.hpp"
 #endif
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 #include <string>
@@ -46,10 +46,10 @@ namespace pythFunctionUtil
 	//--------------------------------------------------------------------
 	// Variations of integer conversion
 	//--------------------------------------------------------------------
-	PyObject* ConvertInt(envType::Int32 i_Value);
-	PyObject* ConvertInt(envType::Int64 i_Value);
-	PyObject* ConvertInt(envType::UInt32 i_Value);
-	PyObject* ConvertInt(envType::UInt64 i_Value);
+	PyObject* ConvertInt(int32_t i_Value);
+	PyObject* ConvertInt(int64_t i_Value);
+	PyObject* ConvertInt(uint32_t i_Value);
+	PyObject* ConvertInt(uint64_t i_Value);
 
 	//--------------------------------------------------------------------
 	// Convert floating point

@@ -38,23 +38,13 @@ class gfFileBin : public gfFile
 {
 	public:
 		//------------------------------------------------------------------------
-		//	enum
-		//------------------------------------------------------------------------
-		enum EndianMode
-		{
-			e_NativeEndian = 0,
-			e_BigEndian,
-			e_LittleEndian,
-		};
-
-		//------------------------------------------------------------------------
 		//	structs
 		//------------------------------------------------------------------------
 
 		//this header is preceded in the file by the four-byte signature "TWFB"
 		struct Header
 		{
-			char m_Mode;
+			char m_Mode;	// deprecated endian mode; WriteHeader always writes 2 (little endian)
 			char m_Major;
 			char m_Minor;
 			char m_Rev;
@@ -63,16 +53,11 @@ class gfFileBin : public gfFile
 		//------------------------------------------------------------------------
 		//	Constructor
 		//------------------------------------------------------------------------
-		gfFileBin(const fsLocator& i_Locator, fsFileStream::AccessType i_DesiredAccess, EndianMode i_Mode = e_NativeEndian);
+		gfFileBin(const fsLocator& i_Locator, fsFileStream::AccessType i_DesiredAccess);
 
 		//------------------------------------------------------------------------
 		//------------------------------------------------------------------------
 		~gfFileBin();
-
-		//------------------------------------------------------------------------
-		//	GetEndianMode returns this gfFileBin's EndianMode
-		//------------------------------------------------------------------------
-		EndianMode GetEndianMode() const;
 
 		//------------------------------------------------------------------------
 		//	Read reads i_NumBytes into the buffer.  If the file is too short 
@@ -80,13 +65,13 @@ class gfFileBin : public gfFile
 		//	value is the number actually read into the o_Buffer.  This function
 		//	also advances the file pointer.
 		//------------------------------------------------------------------------
-		int Read(envType::Int64 i_NumBytes, void* o_Buffer);
+		int Read(int64_t i_NumBytes, void* o_Buffer);
 
 		//------------------------------------------------------------------------
 		//	Write writes i_NumBytes from o_Buffer into the file.  The file 
 		//	pointer will also be advanced.
 		//------------------------------------------------------------------------
-		void Write(envType::Int64 i_NumBytes, const void* i_Buffer);
+		void Write(int64_t i_NumBytes, const void* i_Buffer);
 
 		//------------------------------------------------------------------------
 		//	ReadHeader reads the file's header into the o_Header passed to it. If 
@@ -96,27 +81,16 @@ class gfFileBin : public gfFile
 		void ReadHeader(Header* o_Header = NULL);
 
 		//------------------------------------------------------------------------
-		//	WriteHeader writes the given i_Header to the file. gfFileBin::m_Mode
-		//	is used instead of the value passed in i_Header::m_Mode since a 
-		//	gfFileBin's mode can't altered after construction. The second version of
-		//	this function is an inline convenience.
+		//	WriteHeader writes the given i_Header to the file. i_Header::m_Mode
+		//	is ignored; the deprecated endian mode byte is always written as
+		//	little endian. The second version of this function is an inline
+		//	convenience.
 		//------------------------------------------------------------------------
 		void WriteHeader(const Header& i_Header);
 		void WriteHeader(int i_Major = 0, int i_Minor = 0, int i_Rev = 0);
 
 		static int GetHeaderSize();
-
-	private:
-		EndianMode m_Mode;
 };
-
-
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-inline gfFileBin::EndianMode gfFileBin::GetEndianMode() const
-{
-	return m_Mode;
-}
 
 
 //----------------------------------------------------------------------------

@@ -3,7 +3,7 @@
 **
 **      envPlatform.hpp manages platform definitions.  Some definitions, like
 **	ENV_MACHINE and ENV_COMPILER, must be defined by the user in his
-**	preprocessor defines sections.  Others, like ENV_ENDIAN and ENV_WINDOWS,
+**	preprocessor defines sections.  Others, like ENV_WINDOWS,
 **	are deduced in this file based on other values.
 **
 **	StudioGPU
@@ -123,27 +123,6 @@
 #endif
 
 //========================================================================
-//	ENV_ENDIAN possible values:
-//========================================================================
-#define		ENV_LITTLEENDIAN	61
-#define		ENV_BIGENDIAN		62
-
-//========================================================================
-//	Deduce endian value (ENV_ENDIAN)
-//========================================================================
-#if	(ENV_MACHINE == ENV_PC)
-	#define ENV_ENDIAN	ENV_LITTLEENDIAN
-#endif
-
-#if (ENV_MACHINE == ENV_MAC)
-	#define ENV_ENDIAN	ENV_BIGENDIAN
-#endif
-
-#ifndef ENV_ENDIAN
-	#error Couldn''t decide on ENV_ENDIAN
-#endif
-
-//========================================================================
 //	ENV_WINDOWS can be either 1 or 0 (true or false)
 //========================================================================
 #if	(ENV_OS == ENV_WINDOWSOS)
@@ -202,3 +181,6 @@
 #pragma warning( error: 4150  )		//  warning C4150: deletion of pointer to incomplete type 'type'; no destructor called (report as error)
 
 #endif  // visual studio
+
+// Fixed-width integer types (int32_t, uint8_t, ...) for the whole codebase.
+#include <cstdint>

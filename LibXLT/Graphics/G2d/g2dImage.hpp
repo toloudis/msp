@@ -128,7 +128,7 @@ class g2dImage
 		// Copy pixels into buffer. this call allocates a big block of mem!!!!!
 		// caller must delete [] o_pBuffer when done using it!!!!
 		//----------------------------------------------------------------------------
-		virtual void GetPixels(envType::UInt8** o_pBuffer,
+		virtual void GetPixels(uint8_t** o_pBuffer,
 			int* o_bufSize,
 			int* o_width,
 			int* o_height,
@@ -136,7 +136,7 @@ class g2dImage
 			int i_sampling = 1,
 			bool i_bGreyscale = false,
 			const maIntRect* i_pRect = NULL) = 0;
-		virtual void GetPixelsTGA(envType::UInt8 **o_pBuffer,
+		virtual void GetPixelsTGA(uint8_t **o_pBuffer,
 			int *o_bufSize,
 			int *o_width,
 			int *o_height,

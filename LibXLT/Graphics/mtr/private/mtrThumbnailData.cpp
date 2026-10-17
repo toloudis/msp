@@ -29,10 +29,10 @@ mtrThumbnailData::~mtrThumbnailData()
 //--------------------------------------------------------------------
 //	Give thumbnail info for this data structrue to manage,
 //  The i_ThumbData should have been allocated using new 
-// envType::UInt8 []. This structure will take ownership of the
+// uint8_t []. This structure will take ownership of the
 // data and delete it in the destructor
 //--------------------------------------------------------------------
-void mtrThumbnailData::SetThumbData(envType::UInt8* i_ThumbData, 
+void mtrThumbnailData::SetThumbData(uint8_t* i_ThumbData, 
 									int i_BufferSize,
 									int i_BitmapSize)
 {
@@ -66,13 +66,13 @@ bool mtrThumbnailData::GetHasThumb() const
 //	// if turning thumbnail off (values remain same when thumbnail is turned back on).
 //	if (i_bHasThumb && !m_ThumbData)
 //	{
-//		m_ThumbData = new envType::UInt8();
+//		m_ThumbData = new uint8_t();
 //	}
 //}
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-envType::UInt8* mtrThumbnailData::GetThumbParams() const
+uint8_t* mtrThumbnailData::GetThumbParams() const
 {
 	DBG_ASSERT(m_ThumbData, "Thumbnail Data is NULL, call GetHasThumb() first");
 	return m_ThumbData;
@@ -96,7 +96,7 @@ int mtrThumbnailData::GetBitmapSize() const
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-//envType::UInt8* mtrThumbnailData::ThumbParams()
+//uint8_t* mtrThumbnailData::ThumbParams()
 //{
 //	// This function could also be designed to create the data when needed...
 //	DBG_ASSERT(m_ThumbData, "Thumbnail Data is NULL, call GetHasThumb() first");

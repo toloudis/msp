@@ -106,7 +106,7 @@ splnCurvePointObject* splnCurveSelect::GetControlPointObject(splnSpline *i_pCurv
 //----------------------------------------------------------------------------
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
-pick3dPickObject* splnCurveSelect::MatchPickCode(envType::UInt32 i_PickCode)
+pick3dPickObject* splnCurveSelect::MatchPickCode(uint32_t i_PickCode)
 {
 	CurveMap::iterator it, end = l_CurveMap.end();
 	for ( it = l_CurveMap.begin(); it != end; ++it )

@@ -57,7 +57,7 @@ namespace
 
 		char* end = nullptr;
 		T value;
-		if constexpr( std::is_same_v<T, envType::UInt64> )
+		if constexpr( std::is_same_v<T, uint64_t> )
 			value = static_cast<T>(std::strtoull(i_Text, &end, 10));
 		else
 			value = static_cast<T>(std::strtoll(i_Text, &end, 10));
@@ -95,7 +95,7 @@ namespace
 		{
 			// from_chars leaves the value unset; take the infinity or zero
 			// the C library rounds it to
-			if constexpr( std::is_same_v<T, envType::Float32> )
+			if constexpr( std::is_same_v<T, float> )
 				value = std::strtof(first, nullptr);
 			else
 				value = std::strtod(first, nullptr);
@@ -113,25 +113,25 @@ namespace envNumberText
 {
 	// Int8 and UInt8 are character types; widen them so they are written
 	// as numbers
-	std::string ToText(envType::Int8 i_Value)		{ return int_to_text(int(i_Value)); }
-	std::string ToText(envType::UInt8 i_Value)		{ return int_to_text(int(i_Value)); }
-	std::string ToText(envType::Int16 i_Value)		{ return int_to_text(i_Value); }
-	std::string ToText(envType::UInt16 i_Value)		{ return int_to_text(i_Value); }
-	std::string ToText(envType::Int32 i_Value)		{ return int_to_text(i_Value); }
-	std::string ToText(envType::UInt32 i_Value)		{ return int_to_text(i_Value); }
-	std::string ToText(envType::Int64 i_Value)		{ return int_to_text(i_Value); }
-	std::string ToText(envType::UInt64 i_Value)		{ return int_to_text(i_Value); }
-	std::string ToText(envType::Float32 i_Value)	{ return float_to_text(i_Value); }
-	std::string ToText(envType::Float64 i_Value)	{ return float_to_text(i_Value); }
+	std::string ToText(int8_t i_Value)		{ return int_to_text(int(i_Value)); }
+	std::string ToText(uint8_t i_Value)		{ return int_to_text(int(i_Value)); }
+	std::string ToText(int16_t i_Value)		{ return int_to_text(i_Value); }
+	std::string ToText(uint16_t i_Value)		{ return int_to_text(i_Value); }
+	std::string ToText(int32_t i_Value)		{ return int_to_text(i_Value); }
+	std::string ToText(uint32_t i_Value)		{ return int_to_text(i_Value); }
+	std::string ToText(int64_t i_Value)		{ return int_to_text(i_Value); }
+	std::string ToText(uint64_t i_Value)		{ return int_to_text(i_Value); }
+	std::string ToText(float i_Value)	{ return float_to_text(i_Value); }
+	std::string ToText(double i_Value)	{ return float_to_text(i_Value); }
 
-	bool FromText(const char* i_Text, envType::Int8& o_Value)		{ return int_from_text(i_Text, o_Value); }
-	bool FromText(const char* i_Text, envType::UInt8& o_Value)		{ return int_from_text(i_Text, o_Value); }
-	bool FromText(const char* i_Text, envType::Int16& o_Value)		{ return int_from_text(i_Text, o_Value); }
-	bool FromText(const char* i_Text, envType::UInt16& o_Value)		{ return int_from_text(i_Text, o_Value); }
-	bool FromText(const char* i_Text, envType::Int32& o_Value)		{ return int_from_text(i_Text, o_Value); }
-	bool FromText(const char* i_Text, envType::UInt32& o_Value)		{ return int_from_text(i_Text, o_Value); }
-	bool FromText(const char* i_Text, envType::Int64& o_Value)		{ return int_from_text(i_Text, o_Value); }
-	bool FromText(const char* i_Text, envType::UInt64& o_Value)		{ return int_from_text(i_Text, o_Value); }
-	bool FromText(const char* i_Text, envType::Float32& o_Value)	{ return float_from_text(i_Text, o_Value); }
-	bool FromText(const char* i_Text, envType::Float64& o_Value)	{ return float_from_text(i_Text, o_Value); }
+	bool FromText(const char* i_Text, int8_t& o_Value)		{ return int_from_text(i_Text, o_Value); }
+	bool FromText(const char* i_Text, uint8_t& o_Value)		{ return int_from_text(i_Text, o_Value); }
+	bool FromText(const char* i_Text, int16_t& o_Value)		{ return int_from_text(i_Text, o_Value); }
+	bool FromText(const char* i_Text, uint16_t& o_Value)		{ return int_from_text(i_Text, o_Value); }
+	bool FromText(const char* i_Text, int32_t& o_Value)		{ return int_from_text(i_Text, o_Value); }
+	bool FromText(const char* i_Text, uint32_t& o_Value)		{ return int_from_text(i_Text, o_Value); }
+	bool FromText(const char* i_Text, int64_t& o_Value)		{ return int_from_text(i_Text, o_Value); }
+	bool FromText(const char* i_Text, uint64_t& o_Value)		{ return int_from_text(i_Text, o_Value); }
+	bool FromText(const char* i_Text, float& o_Value)	{ return float_from_text(i_Text, o_Value); }
+	bool FromText(const char* i_Text, double& o_Value)	{ return float_from_text(i_Text, o_Value); }
 }

@@ -16,8 +16,8 @@
 #include <string>
 #include <vector>
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 #ifndef MA_MATRIX4X4_HPP
 #include "Core/ma/maMatrix4x4.hpp"

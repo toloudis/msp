@@ -15,8 +15,8 @@
 #ifndef SEL3D_SELECTINTEREST_HPP
 #include "Tool/sel3d/sel3dSelectInterest.hpp"
 #endif
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 
@@ -48,13 +48,13 @@ class mtrlSelectInterest : public sel3dSelectInterest
 		// with the GPU pick code given. Returns NULL if no material selected.
 		//--------------------------------------------------------------------
 		static sel3dObject* GetPartFromPickCode(sel3dObject *i_pPicked,
-												envType::UInt32 i_PickCode);
+												uint32_t i_PickCode);
 
 		//--------------------------------------------------------------------
 		//	SelectFromPickCode - check the pick code of the selected
 		//	object and set the selected material index to match.
 		//--------------------------------------------------------------------
 		static bool SelectFromPickCode(sel3dObject *i_pPicked,
-										envType::UInt32 i_PickCode,
+										uint32_t i_PickCode,
 										bool i_bAppendSelection);
 };

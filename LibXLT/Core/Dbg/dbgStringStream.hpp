@@ -15,8 +15,8 @@
 #ifndef ENV_STRING_HPP
 #include "Core/env/envString.hpp"
 #endif
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 #include <ostream>

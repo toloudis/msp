@@ -17,14 +17,14 @@
 #ifndef PRTY_PROPERTYTEMPLATE_HPP
 #include "Core/prty/prtyPropertyTemplate.hpp"
 #endif 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 
 //============================================================================
 //============================================================================
-class prtyInt8 : public prtyPropertyTemplate<envType::Int8, envType::Int8>
+class prtyInt8 : public prtyPropertyTemplate<int8_t, int8_t>
 {
 	public:
 		//--------------------------------------------------------------------
@@ -37,7 +37,7 @@ class prtyInt8 : public prtyPropertyTemplate<envType::Int8, envType::Int8>
 
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		prtyInt8(const std::string& i_Name, envType::Int8 i_InitialValue);
+		prtyInt8(const std::string& i_Name, int8_t i_InitialValue);
 
 		//--------------------------------------------------------------------
 		//	The type of property it is
@@ -48,23 +48,23 @@ class prtyInt8 : public prtyPropertyTemplate<envType::Int8, envType::Int8>
 		//	operators											
 		//--------------------------------------------------------------------
 		prtyInt8& operator =(const prtyInt8& i_Property);
-		prtyInt8& operator =(const envType::Int8 i_Value);
+		prtyInt8& operator =(const int8_t i_Value);
 
 		//--------------------------------------------------------------------
 		//	comparison operators											
 		//--------------------------------------------------------------------
 		bool operator ==(const prtyInt8& i_Property) const;
 		bool operator !=(const prtyInt8& i_Property) const;
-		bool operator ==(const envType::Int8 i_Value) const;
-		bool operator !=(const envType::Int8 i_Value) const;
+		bool operator ==(const int8_t i_Value) const;
+		bool operator !=(const int8_t i_Value) const;
 
 		//--------------------------------------------------------------------
 		//	comparison operators											
 		//--------------------------------------------------------------------
-		bool operator >(const envType::Int8 i_Value) const;
-		bool operator >=(const envType::Int8 i_Value) const;
-		bool operator <(const envType::Int8 i_Value) const;
-		bool operator <=(const envType::Int8 i_Value) const;
+		bool operator >(const int8_t i_Value) const;
+		bool operator >=(const int8_t i_Value) const;
+		bool operator <(const int8_t i_Value) const;
+		bool operator <=(const int8_t i_Value) const;
 		bool operator >(const prtyInt8& i_Value) const;
 		bool operator >=(const prtyInt8& i_Value) const;
 		bool operator <(const prtyInt8& i_Value) const;

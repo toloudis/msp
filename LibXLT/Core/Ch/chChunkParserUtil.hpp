@@ -177,73 +177,73 @@ namespace chChunkParserUtil
 	//------------------------------------------------------------------------
 	inline void Write(chWriter& i_Writer,const maVector4d& i_Vec)
 	{
-		i_Writer.Write(envType::Float32(i_Vec.GetX()));
-		i_Writer.Write(envType::Float32(i_Vec.GetY()));
-		i_Writer.Write(envType::Float32(i_Vec.GetZ()));
-		i_Writer.Write(envType::Float32(i_Vec.GetW()));
+		i_Writer.Write(float(i_Vec.GetX()));
+		i_Writer.Write(float(i_Vec.GetY()));
+		i_Writer.Write(float(i_Vec.GetZ()));
+		i_Writer.Write(float(i_Vec.GetW()));
 	}
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	inline void Write(chWriter& i_Writer,const maPoint3d& i_Point)
 	{
-		i_Writer.Write(envType::Float32(i_Point.GetX()));
-		i_Writer.Write(envType::Float32(i_Point.GetY()));
-		i_Writer.Write(envType::Float32(i_Point.GetZ()));
+		i_Writer.Write(float(i_Point.GetX()));
+		i_Writer.Write(float(i_Point.GetY()));
+		i_Writer.Write(float(i_Point.GetZ()));
 	}
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	inline void Write(chWriter& i_Writer,const maPoint2d& i_Point)
 	{
-		i_Writer.Write(envType::Float32(i_Point.GetX()));
-		i_Writer.Write(envType::Float32(i_Point.GetY()));
+		i_Writer.Write(float(i_Point.GetX()));
+		i_Writer.Write(float(i_Point.GetY()));
 	}
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	inline void Write(chWriter& i_Writer,const maIntPoint2d& i_Point)
 	{
-		i_Writer.Write(envType::Int32(i_Point.GetX()));
-		i_Writer.Write(envType::Int32(i_Point.GetY()));
+		i_Writer.Write(int32_t(i_Point.GetX()));
+		i_Writer.Write(int32_t(i_Point.GetY()));
 	}
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	inline void Write(chWriter& i_Writer,const maFloatRGBA& i_Color)
 	{
-		i_Writer.Write(envType::Float32(i_Color.GetAlpha()));
-		i_Writer.Write(envType::Float32(i_Color.GetRed()));
-		i_Writer.Write(envType::Float32(i_Color.GetGreen()));
-		i_Writer.Write(envType::Float32(i_Color.GetBlue()));
+		i_Writer.Write(float(i_Color.GetAlpha()));
+		i_Writer.Write(float(i_Color.GetRed()));
+		i_Writer.Write(float(i_Color.GetGreen()));
+		i_Writer.Write(float(i_Color.GetBlue()));
 	}
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	inline void Write(chWriter& i_Writer,bool i_bValue)
 	{
-		i_Writer.Write(envType::UInt8(i_bValue));
+		i_Writer.Write(uint8_t(i_bValue));
 	}
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	inline void Write(chWriter& i_Writer,unsigned int i_nValue)
 	{
-		i_Writer.Write(envType::UInt32(i_nValue));
+		i_Writer.Write(uint32_t(i_nValue));
 	}
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	inline void Write(chWriter& i_Writer,int i_nValue)
 	{
-		i_Writer.Write(envType::Int32(i_nValue));
+		i_Writer.Write(int32_t(i_nValue));
 	}
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	inline void Write(chWriter& i_Writer,float i_fValue)
 	{
-		i_Writer.Write(envType::Float32(i_fValue));
+		i_Writer.Write(float(i_fValue));
 	}
 
 	//------------------------------------------------------------------------
@@ -254,7 +254,7 @@ namespace chChunkParserUtil
 		float angle;
 		i_Orientation.GetValue( axis, angle );
 		Write(i_Writer, axis);
-		i_Writer.Write(envType::Float32(angle));
+		i_Writer.Write(float(angle));
 	}
 
 
@@ -263,7 +263,7 @@ namespace chChunkParserUtil
 	//------------------------------------------------------------------------
 	template<class T> void ReadArray(chReader& i_Reader,
 									 std::vector<T> &o_Array,
-									 envType::UInt32 i_Num)
+									 uint32_t i_Num)
 	{
 		o_Array.resize( i_Num );
 		if (i_Reader.CanReadBinaryData())
@@ -277,7 +277,7 @@ namespace chChunkParserUtil
 		else
 		{
 			// Individual vector read
-			envType::UInt32 cur;
+			uint32_t cur;
 			for( cur = 0 ; cur < i_Num ; cur++ )
 				chChunkParserUtil::Read(i_Reader, o_Array[cur]);
 		}
@@ -288,7 +288,7 @@ namespace chChunkParserUtil
 	template<class C> void Read(chReader& i_Reader, std::vector<C>& o_Vector)
 	{
 		// read in the size
-		envType::UInt32 size;
+		uint32_t size;
 		i_Reader.Read(size);
 		ReadArray(i_Reader, o_Vector, size);
 	}
@@ -300,7 +300,7 @@ namespace chChunkParserUtil
 		i_Writer.WriteChunkHeader(i_ChunkName, 0, true);
 
 		// Write out the size
-		i_Writer.Write(envType::UInt32(i_Vector.size()));
+		i_Writer.Write(uint32_t(i_Vector.size()));
 
 		std::vector<C>::const_iterator it, end;
 		it = i_Vector.begin();
@@ -318,7 +318,7 @@ namespace chChunkParserUtil
 	template<class C> void Write( chWriter& i_Writer, const std::vector<C>& i_Vector )
 	{
 		// Write out the size
-		i_Writer.Write(envType::UInt32(i_Vector.size()));
+		i_Writer.Write(uint32_t(i_Vector.size()));
 
 		std::vector<C>::const_iterator it, end;
 		it = i_Vector.begin();

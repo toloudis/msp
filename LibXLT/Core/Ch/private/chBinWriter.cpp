@@ -19,7 +19,7 @@ namespace
 {
 	// Since chunk size is written to file as an unsigned 32-bit integer,
 	// this limits the maximum size of an individual chunk.
-	const envType::Int64 c_MaxChunkSize = UINT_MAX; // 4294967295 (0xffffffff)
+	const int64_t c_MaxChunkSize = UINT_MAX; // 4294967295 (0xffffffff)
 }
 
 //--------------------------------------------------------------------
@@ -80,52 +80,52 @@ void chBinWriter::FinishChunk()
 //--------------------------------------------------------------------
 //	Write functions - These write the data to the chunk file.
 //--------------------------------------------------------------------
-void chBinWriter::Write(envType::Int8 i_Val)
+void chBinWriter::Write(int8_t i_Val)
 {
 	gfFileUtil::Write(m_File, i_Val);
 }
 
-void chBinWriter::Write(envType::UInt8 i_Val)
+void chBinWriter::Write(uint8_t i_Val)
 {
 	gfFileUtil::Write(m_File, i_Val);
 }
 
-void chBinWriter::Write(envType::Int16 i_Val)
+void chBinWriter::Write(int16_t i_Val)
 {
 	gfFileUtil::Write(m_File, i_Val);
 }
 
-void chBinWriter::Write(envType::UInt16 i_Val)
+void chBinWriter::Write(uint16_t i_Val)
 {
 	gfFileUtil::Write(m_File, i_Val);
 }
 
-void chBinWriter::Write(envType::Int32 i_Val)
+void chBinWriter::Write(int32_t i_Val)
 {
 	gfFileUtil::Write(m_File, i_Val);
 }
 
-void chBinWriter::Write(envType::UInt32 i_Val)
+void chBinWriter::Write(uint32_t i_Val)
 {
 	gfFileUtil::Write(m_File, i_Val);
 }
 
-void chBinWriter::Write(envType::Int64 i_Val)
+void chBinWriter::Write(int64_t i_Val)
 {
 	gfFileUtil::Write(m_File, i_Val);
 }
 
-void chBinWriter::Write(envType::UInt64 i_Val)
+void chBinWriter::Write(uint64_t i_Val)
 {
 	gfFileUtil::Write(m_File, i_Val);
 }
 
-void chBinWriter::Write(envType::Float32 i_Val)
+void chBinWriter::Write(float i_Val)
 {
 	gfFileUtil::Write(m_File, i_Val);
 }
 
-void chBinWriter::Write(envType::Float64 i_Val)
+void chBinWriter::Write(double i_Val)
 {
 	gfFileUtil::Write(m_File, i_Val);
 }
@@ -136,7 +136,7 @@ void chBinWriter::Write(envType::Float64 i_Val)
 //--------------------------------------------------------------------
 void chBinWriter::Write(bool i_Val)
 {
-	gfFileUtil::Write(m_File, static_cast<envType::Int8>( i_Val ));
+	gfFileUtil::Write(m_File, static_cast<int8_t>( i_Val ));
 }
 
 //--------------------------------------------------------------------
@@ -202,7 +202,7 @@ void chBinWriter::Write(const envAppVersion& i_Val)
 //	Write chunk of binary data; this is only for
 //	chBinWriter, it is not a function of chWriter base class
 //--------------------------------------------------------------------
-void chBinWriter::Write(const void* i_Data, envType::Int64 i_NumBytes)
+void chBinWriter::Write(const void* i_Data, int64_t i_NumBytes)
 {
 	m_File.Write(i_NumBytes, i_Data);
 }

@@ -43,7 +43,7 @@ void  api3dObject::SetPivotCompensation(const maVector3d &i_Compensation)
 // Is the pick code given within the high and low pick codes assigned
 // to this node?
 //----------------------------------------------------------------------------
-bool api3dObject::ContainsPickCode(envType::UInt32 i_PickCode) const
+bool api3dObject::ContainsPickCode(uint32_t i_PickCode) const
 {
 	return false;
 }
@@ -51,7 +51,7 @@ bool api3dObject::ContainsPickCode(envType::UInt32 i_PickCode) const
 //--------------------------------------------------------------------
 //	Returns the node with a fragment with the given pick code
 //--------------------------------------------------------------------
-const g3dSceneNode* api3dObject::GetPickedNode(envType::UInt32 i_PickCode) const
+const g3dSceneNode* api3dObject::GetPickedNode(uint32_t i_PickCode) const
 {
 	return NULL;
 }

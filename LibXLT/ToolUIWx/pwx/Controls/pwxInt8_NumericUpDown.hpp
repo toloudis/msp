@@ -33,16 +33,16 @@ public:
 	// Set value into control
 	//----------------------------------------------------------------------------
 	static void SetValueIntoControl(twcNumericUpDown* i_pActualControl,
-									 envType::Int8 i_Value);
+									 int8_t i_Value);
 
 	//----------------------------------------------------------------------------
 	// Get value from control
 	//----------------------------------------------------------------------------
-	static envType::Int8 GetValueFromControl(twcNumericUpDown* i_pActualControl);
+	static int8_t GetValueFromControl(twcNumericUpDown* i_pActualControl);
 };
 
 //============================================================================
 //============================================================================
-typedef pwxTemplate_NumericUpDown<prtyInt8, envType::Int8, pwxInt8_NumericUpDown_Converter> pwxInt8_NumericUpDown;
+typedef pwxTemplate_NumericUpDown<prtyInt8, int8_t, pwxInt8_NumericUpDown_Converter> pwxInt8_NumericUpDown;
 
 #endif // USE_WXWIDGETS

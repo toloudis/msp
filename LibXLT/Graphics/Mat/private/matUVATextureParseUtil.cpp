@@ -62,12 +62,12 @@ namespace
 					chDefs::Version i_Version,
 					chDefs::Size i_Size)
 	{
-		envType::UInt32 num_frames;
-		envType::UInt32 num_width_frames;
-		envType::UInt32 num_height_frames;
-		envType::Float32 frame_rate;
-		envType::UInt8 looping;
-		envType::UInt8 reversing;
+		uint32_t num_frames;
+		uint32_t num_width_frames;
+		uint32_t num_height_frames;
+		float frame_rate;
+		uint8_t looping;
+		uint8_t reversing;
 
 		i_Reader.Read(num_frames);
 		i_Reader.Read(num_width_frames);
@@ -102,12 +102,12 @@ namespace
 	{
 		o_Writer.WriteChunkHeader(c_UDAT, 0, false);
 
-		envType::UInt32 num_frames = i_Texture.GetNumFrames();
-		envType::UInt32 num_width_frames = i_Texture.GetNumWidthFrames();
-		envType::UInt32 num_height_frames = i_Texture.GetNumHeightFrames();
-		envType::Float32 frame_rate = i_Texture.GetFrameRate();
-		envType::UInt8 looping = i_Texture.GetLooping();
-		envType::UInt8 reversing = i_Texture.GetReversing();
+		uint32_t num_frames = i_Texture.GetNumFrames();
+		uint32_t num_width_frames = i_Texture.GetNumWidthFrames();
+		uint32_t num_height_frames = i_Texture.GetNumHeightFrames();
+		float frame_rate = i_Texture.GetFrameRate();
+		uint8_t looping = i_Texture.GetLooping();
+		uint8_t reversing = i_Texture.GetReversing();
 
 		o_Writer.Write(num_frames);
 		o_Writer.Write(num_width_frames);

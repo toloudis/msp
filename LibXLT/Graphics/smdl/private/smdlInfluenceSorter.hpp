@@ -63,7 +63,7 @@ class smdlInfluenceSorter
 		{
 			g3dSceneNode* m_pJoint;
 			int m_ParentIndex;
-			std::vector<envType::UInt32> m_Indices;
+			std::vector<uint32_t> m_Indices;
 		};
 
 		//--------------------------------------------------------------------

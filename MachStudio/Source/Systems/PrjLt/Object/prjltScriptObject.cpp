@@ -202,7 +202,7 @@ prjltData prjltScriptObject::GetBaseData() const
 	data.m_ShadowIntensity	= m_pShadowIntensityChannel->GetOriginalValue();
 	data.m_LightSize		= m_pLightSizeChannel->GetOriginalValue();
 	data.m_PCSSAdjust		= m_pPCSSAdjustChannel->GetOriginalValue();
-	data.m_DepthMapSize		= (envType::Int32)m_pDepthMapSizeChannel->GetOriginalValue();
+	data.m_DepthMapSize		= (int32_t)m_pDepthMapSizeChannel->GetOriginalValue();
 	data.m_DepthBias		= m_pDepthBiasChannel->GetOriginalValue();
 	data.m_bShaftVisible	= m_pShaftVisibleChannel->GetOriginalState();
 	data.m_ShaftAlpha		= m_pShaftAlphaChannel->GetOriginalValue();

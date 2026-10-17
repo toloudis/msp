@@ -27,7 +27,7 @@ void vtxVertexFileSeeker::Attach()
 		DBG_ASSERT(!m_File, "File should not already be open");
 		if (m_File)
 			return;
-		m_File.reset(new gfFileBin(m_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian));
+		m_File.reset(new gfFileBin(m_Locator, fsFileStream::e_ReadOnly));
 		m_Reader.reset(new chBinReader(*m_File));
 	}
 	m_AttachCount++;

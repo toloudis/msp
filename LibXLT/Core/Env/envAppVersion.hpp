@@ -14,8 +14,8 @@
 #endif
 #define ENV_APPVERSION_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 #include <string>
@@ -29,21 +29,21 @@ public:
 	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------
 	envAppVersion();
-	envAppVersion(envType::Int32 i_vMaj,envType::Int32 i_vMin,envType::Int32 i_vRevision,envType::Int32 i_vBuild);
+	envAppVersion(int32_t i_vMaj,int32_t i_vMin,int32_t i_vRevision,int32_t i_vBuild);
 	explicit envAppVersion(const std::string& i_VerString);
 	explicit envAppVersion(const char* i_VerString);
 
 	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------
-	void Set(envType::Int32 i_vMaj,envType::Int32 i_vMin,envType::Int32 i_vRevision,envType::Int32 i_vBuild);
+	void Set(int32_t i_vMaj,int32_t i_vMin,int32_t i_vRevision,int32_t i_vBuild);
 
 	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------
-	void Get(envType::Int32& o_vMaj, envType::Int32& o_vMin, envType::Int32& o_vRevision, envType::Int32& o_vBuild) const;
-	envType::Int32 GetMajor() const;
-	envType::Int32 GetMinor() const;
-	envType::Int32 GetRevision() const;
-	envType::Int32 GetBuild() const;
+	void Get(int32_t& o_vMaj, int32_t& o_vMin, int32_t& o_vRevision, int32_t& o_vBuild) const;
+	int32_t GetMajor() const;
+	int32_t GetMinor() const;
+	int32_t GetRevision() const;
+	int32_t GetBuild() const;
 
 	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------
@@ -73,5 +73,5 @@ public:
 	friend std::ostream& operator << (std::ostream& io_os, const envAppVersion& i_Version);
 
 private:
-	envType::Int32 m_Major, m_Minor, m_Revision, m_Build;
+	int32_t m_Major, m_Minor, m_Revision, m_Build;
 };
