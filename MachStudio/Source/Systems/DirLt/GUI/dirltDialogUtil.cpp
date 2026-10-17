@@ -13,7 +13,6 @@
 #include "dirltDirLightDataForm.h"
 
 // tool library
-#include "tmaDialogTabbedMgr.hpp"
 
 //
 using namespace GeneratedForms;

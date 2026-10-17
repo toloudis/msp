@@ -19,9 +19,6 @@
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
 #endif
-#ifndef TMA_MANAGEDSTRINGUTILS_HPP
-#include "ToolUIManaged/tma/tmaManagedStringUtils.hpp"
-#endif
 
 #ifdef _MANAGED
 

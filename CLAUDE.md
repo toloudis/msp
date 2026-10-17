@@ -1,9 +1,8 @@
 # CLAUDE.md
 
-Guidance for working in this repository. It covers the two live source trees,
+Guidance for working in this repository. It covers the two source trees,
 `LibXLT/` (the shared engine/framework libraries) and `MachStudio/` (the
-MachStudio Pro application), plus the dead `FusionCinema3D/` and `OrthoRender/`
-apps for reference.
+MachStudio Pro application).
 
 MachStudio Pro is a Windows real-time 3D lighting, rendering and cinematography
 application (originally StudioGPU / Extra Large Technology, 2003–2010). Users
@@ -49,10 +48,10 @@ cameras/lights/objects on a timeline, and render frames or sequences on the GPU
   and `.8.00.old` files. Only `.vcxproj` files are live; a `System` folder
   with only a `.vcproj` is not built by the current solution.
 - Tests: GoogleTest unit tests live in `UnitTests/` (see Unit tests below).
-  The older harnesses in `MachStudio/TestSource/`, `TestLibXLT/` and
-  `TestTerawatt/` (obsolete `.vcproj`s; mostly interactive demos or
-  print-and-eyeball programs) are not built; what was worth keeping has been
-  ported to `UnitTests/`, and they are due to be deleted.
+  The older harnesses in `MachStudio/TestSource/` (obsolete `.vcproj`s;
+  mostly interactive demos or print-and-eyeball programs) are not built;
+  what was worth keeping has been ported to `UnitTests/`, and they are due
+  to be deleted.
 
 ### Build files
 
@@ -296,7 +295,6 @@ Each provides the same set of pieces under different prefixes.
 |---|---|---|
 | `ToolUIQt` | Qt 6 (live) | `qui` (gui implementations), `tqt` (app/menus/toolbars/panes/dialogs), `tqc` (custom controls: color pickers, gradient editors, sliders, file/dir pickers), `pqt` (property-type → control bindings for property grids) |
 | `ToolUIWx` | wxWidgets (live) | `wui`, `twx`, `twc`, `pwx` — the wx counterparts of the above |
-| `ToolUIManaged` | C++/CLI WinForms (dead) | `mui`, `tma`, `prtym`; the original .NET UI; not in the current solution |
 
 ## MachStudio (`MachStudio/Source`)
 
@@ -401,7 +399,7 @@ Entry point is `xxxSystem.hpp`.
 | `Transforms` | `trfn` | Transform hierarchy editing |
 
 Not built by the current solution (only old `.vcproj` files; kept from
-OrthoRender/earlier versions): `DirLt` (directional lights), `DirectorsCut`
+earlier versions): `DirLt` (directional lights), `DirectorsCut`
 (`dcut`, camera cut sequencing), `Particles` (`prtcl`), `Props` (`prop`,
 props incl. AI movement drivers), `Sets` (`sets`), `Sky`, `Storyboards`
 (`sbrd`), `TimeOfDay` (`tod`).
@@ -471,56 +469,10 @@ Everything animated on the timeline goes through `Support/tmln`:
 - `Qt Dialogs/` — Qt Designer `.ui` sources.
 - `TestSource/` — old standalone test harnesses, not built (see Building).
 
-## Dead applications (reference only)
-
-Both are built on the same LibXLT + MachStudio architecture, use obsolete
-`.vcproj` solutions (VS2005/2008, Win32) and are not maintained. Don't update
-them when changing shared code.
-
-### FusionCinema3D (`FusionCinema3D/`)
-A consumer "make your own 3D movie" app built on the MachStudio engine with a
-Qt 4 front end (`MainApp/qtfc3d.*`) around the wx/LibXLT core. It reused
-MachStudio's `Features`, `Support`, `Systems` and `Drivers` projects directly
-and added `Source/FCSupport`:
-
-| Package | Purpose |
-|---|---|
-| `fcmd` | The wizard-like workflow modes: New Movie → Template → Cast → Location → Action → Make → Theater (playback) |
-| `actn` | Action-step managers: scene, lights, audio, post effects, title cards |
-| `anim` | Animated UI pixmaps and transitions for the mode screens |
-| `cast` / `loc` | Choosing characters (cast) and sets (location) |
-| `fcdc` | Movie document data: timeline items and title items |
-| `fcui` | Custom UI: forms, panels, button layouts, the movie timeline |
-| `fio` | Title card I/O |
-| `ovrly` | On-screen overlay controls (color, rotate, zoom) |
-| `evnt` / `path` | Event data; asset directory parsing |
-
-`fusioncinema3d-Win32/` is its run directory (Data, Media, Shaders, DLLs).
-
-### OrthoRender (`OrthoRender/`)
-A headless/server render node derived from an earlier fork of MachStudio
-(it has its own copies of `Drivers`, `Features`, `Record`, `Support`,
-`Systems`, built against the DX9 renderer `GraphicsDX9`, which no longer
-exists in `LibXLT`). It received render jobs over ActiveMQ ("LightWait"
-messaging, `MainApp/LightWait*`), applied them to a scene and rendered:
-
-- `Features/Requests` — remote command manager and an XML command parser;
-  request tasks for scene, objects, modification, render, job info and CMS
-  requests.
-- `Features/Capture/orthoAvatarData*`, `orthoModeRender` — customizable
-  "avatar" characters (parts by category, attached to joints, with colors)
-  rendered on request.
-- `MainApp/s3.cpp`, `LightWaitUpload` — uploading rendered images to Amazon S3.
-- `Features/EONReality` — export to EON Reality; `Features/MayaExport`,
-  `Features/SelectList` — Maya export and selection lists.
-- It includes the Systems MachStudio no longer builds (DirLt, DirectorsCut,
-  Particles, Props, Sets, Sky, Storyboards, TimeOfDay).
-
 ## Other top-level directories (not covered in depth)
 - `3rdParty/` — vendored libraries (wxWidgets, Python, png, zlib, tiff, ...).
 - `Tools/` — standalone tools and DCC exporters (Max/Maya/Softimage/Rhino/
   SketchUp/FBX exporters, MatStudio, LODStudio, ParticleStudio, shader
   compiler, ...). Mostly legacy.
-- `Controls/`, `TestForms/`, `TestApps/`, `TestQt/`, `TestLibXLT/`,
-  `TestTerawatt/`, `DevTools/` — legacy .NET controls, experiments and
+- `Controls/`, `TestQt/`, `DevTools/` — legacy .NET controls, experiments and
   project wizards.
