@@ -1427,7 +1427,7 @@ void cmraCameraObject::UpdateScale(const maPoint3d& i_Scale,
 //----------------------------------------------------------------------------
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
-bool cmraCameraObject::MatchPickCode(envType::UInt32 i_PickCode)
+bool cmraCameraObject::MatchPickCode(uint32_t i_PickCode)
 {
 	if (!m_pObject || !m_pObject->GetRenderable())
 		return false;

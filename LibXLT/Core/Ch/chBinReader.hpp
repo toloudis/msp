@@ -65,16 +65,16 @@ class chBinReader : public chReader
 		//	but I think there would be problems getting them instantiated
 		//	so that they are part of the abstract base interface.
 		//--------------------------------------------------------------------
-		virtual void Read(envType::Int8& o_Val);
-		virtual void Read(envType::UInt8& o_Val);
-		virtual void Read(envType::Int16& o_Val);
-		virtual void Read(envType::UInt16& o_Val);
-		virtual void Read(envType::Int32& o_Val);
-		virtual void Read(envType::UInt32& o_Val);
-		virtual void Read(envType::Int64& o_Val);
-		virtual void Read(envType::UInt64& o_Val);
-		virtual void Read(envType::Float32& o_Val);
-		virtual void Read(envType::Float64& o_Val);
+		virtual void Read(int8_t& o_Val);
+		virtual void Read(uint8_t& o_Val);
+		virtual void Read(int16_t& o_Val);
+		virtual void Read(uint16_t& o_Val);
+		virtual void Read(int32_t& o_Val);
+		virtual void Read(uint32_t& o_Val);
+		virtual void Read(int64_t& o_Val);
+		virtual void Read(uint64_t& o_Val);
+		virtual void Read(float& o_Val);
+		virtual void Read(double& o_Val);
 
 		//--------------------------------------------------------------------
 		//	This Read reads a string called either "TRUE" or "FALSE" and 
@@ -113,7 +113,7 @@ class chBinReader : public chReader
 		//	Read chunk of binary data; this is only for
 		//	the implementations, it is not a function of chReader base class
 		//--------------------------------------------------------------------
-		virtual	void Read(void* i_Data, envType::Int64 i_NumBytes);
+		virtual	void Read(void* i_Data, int64_t i_NumBytes);
 
 		//--------------------------------------------------------------------
 		// This function asks if it is safe to read binary data in a 
@@ -136,7 +136,7 @@ class chBinReader : public chReader
 	private:
 
 		gfFileBin& m_File;
-		envType::Int64 m_FileLength;
+		int64_t m_FileLength;
 		std::stack<fsFileStream::FilePosType, std::vector<fsFileStream::FilePosType> > m_ChunkEnds;
 
 };

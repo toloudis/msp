@@ -12,8 +12,8 @@
 #endif
 #define G3D_SCENERENDERER_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 #ifndef G2D_PFD_HPP
 #include "Graphics/g2d/g2dPFD.hpp"
@@ -113,12 +113,12 @@ public:
 	// PickMask is a user defined bit mask that can be used to filter
 	// the pickable objects. The default value of "0" means "do not filter".
 	//----------------------------------------------------------------------------
-	envType::UInt32 GetPickMask() const 
+	uint32_t GetPickMask() const 
 	{ return m_PickMask; }
-	void SetPickMask(envType::UInt32 i_PickMask)
+	void SetPickMask(uint32_t i_PickMask)
 	{ m_PickMask = i_PickMask; }
 
 private:
-	envType::UInt32 m_PickMask;
+	uint32_t m_PickMask;
 };
 

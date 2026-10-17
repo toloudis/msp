@@ -506,7 +506,7 @@ g2dD3D11TexturePtr g2dImageDX11::GetSurface() const
 // this call allocates a big block of mem!!!!!
 // caller must delete [] o_pBuffer when done using it!!!!
 //----------------------------------------------------------------------------
-void g2dImageDX11::GetPixels(envType::UInt8** o_pBuffer,
+void g2dImageDX11::GetPixels(uint8_t** o_pBuffer,
 							int* o_bufSize,
 							int* o_width,
 							int* o_height,
@@ -519,7 +519,7 @@ void g2dImageDX11::GetPixels(envType::UInt8** o_pBuffer,
 	g2dDX11SurfaceUtil::GetSurfacePixels(m_pSurface, o_pBuffer, 
 		o_bufSize, o_width, o_height, o_bpp, i_sampling, i_bGreyscale, to_win_rect(i_pRect, rect));
 }
-void g2dImageDX11::GetPixelsTGA(envType::UInt8 **o_pBuffer,
+void g2dImageDX11::GetPixelsTGA(uint8_t **o_pBuffer,
 	int *o_bufSize,
 	int *o_width,
 	int *o_height,
@@ -579,10 +579,10 @@ void g2dImageDX11::GetPixels(g2dPixelRGBA32F* o_pBuffer,
 //----------------------------------------------------------------------------
 void g2dImageDX11::GetPixelColor(int i_X,
 								int i_Y,
-								envType::UInt8 &o_Red,
-								envType::UInt8 &o_Green,
-								envType::UInt8 &o_Blue,
-								envType::UInt8 &o_Alpha)
+								uint8_t &o_Red,
+								uint8_t &o_Green,
+								uint8_t &o_Blue,
+								uint8_t &o_Alpha)
 {
 	g2dDX11SurfaceUtil::GetPixelColor(m_pSurface, i_X, i_Y, o_Red, o_Green, o_Blue, o_Alpha);
 }
@@ -592,10 +592,10 @@ void g2dImageDX11::GetPixelColor(int i_X,
 //----------------------------------------------------------------------------
 void g2dImageDX11::GetPixelColor(int i_X,
 								int i_Y,
-								envType::Float32 &o_Red,
-								envType::Float32 &o_Green,
-								envType::Float32 &o_Blue,
-								envType::Float32 &o_Alpha)
+								float &o_Red,
+								float &o_Green,
+								float &o_Blue,
+								float &o_Alpha)
 {
 	g2dDX11SurfaceUtil::GetPixelColor(m_pSurface, i_X, i_Y, o_Red, o_Green, o_Blue, o_Alpha);
 }

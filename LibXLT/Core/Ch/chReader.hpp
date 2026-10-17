@@ -72,16 +72,16 @@ class chReader
 		//	but I think there would be problems getting them instantiated
 		//	so that they are part of the abstract base interface.
 		//--------------------------------------------------------------------
-		virtual void Read(envType::Int8& o_Val) = 0;
-		virtual void Read(envType::UInt8& o_Val) = 0;
-		virtual void Read(envType::Int16& o_Val) = 0;
-		virtual void Read(envType::UInt16& o_Val) = 0;
-		virtual void Read(envType::Int32& o_Val) = 0;
-		virtual void Read(envType::UInt32& o_Val) = 0;
-		virtual void Read(envType::Int64& o_Val) = 0;
-		virtual void Read(envType::UInt64& o_Val) = 0;
-		virtual void Read(envType::Float32& o_Val) = 0;
-		virtual void Read(envType::Float64& o_Val) = 0;
+		virtual void Read(int8_t& o_Val) = 0;
+		virtual void Read(uint8_t& o_Val) = 0;
+		virtual void Read(int16_t& o_Val) = 0;
+		virtual void Read(uint16_t& o_Val) = 0;
+		virtual void Read(int32_t& o_Val) = 0;
+		virtual void Read(uint32_t& o_Val) = 0;
+		virtual void Read(int64_t& o_Val) = 0;
+		virtual void Read(uint64_t& o_Val) = 0;
+		virtual void Read(float& o_Val) = 0;
+		virtual void Read(double& o_Val) = 0;
 
 		//--------------------------------------------------------------------
 		//	This Read reads a string called either "TRUE" or "FALSE" and 
@@ -120,7 +120,7 @@ class chReader
 		//	Read chunk of binary data; this is only for
 		//	the implementations, it is not a function of chReader base class
 		//--------------------------------------------------------------------
-		virtual	void Read(void* i_Data, envType::Int64 i_NumBytes) = 0;
+		virtual	void Read(void* i_Data, int64_t i_NumBytes) = 0;
 
 		//--------------------------------------------------------------------
 		// This function asks if it is safe to read binary data in a 

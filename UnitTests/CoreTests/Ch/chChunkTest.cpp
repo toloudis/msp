@@ -51,11 +51,11 @@ struct Chunk
 
 	std::vector<Chunk> m_Children;
 
-	envType::Int8 m_Data1 = 0;
-	envType::UInt8 m_Data2 = 0;
-	envType::Int16 m_Data3 = 0;
-	envType::Int32 m_Data4 = 0;
-	envType::Float32 m_Data5 = 0;
+	int8_t m_Data1 = 0;
+	uint8_t m_Data2 = 0;
+	int16_t m_Data3 = 0;
+	int32_t m_Data4 = 0;
+	float m_Data5 = 0;
 	std::string m_Data6;
 	itString m_Data7;
 };
@@ -72,12 +72,12 @@ Chunk MakeTree(int i_NumChildren, int i_NumGrandChildren)
 	{
 		Chunk leaf;
 		leaf.m_Version = version++;
-		leaf.m_Data1 = envType::Int8(rng());
-		leaf.m_Data2 = envType::UInt8(rng());
-		leaf.m_Data3 = envType::Int16(rng());
-		leaf.m_Data4 = envType::Int32(rng());
+		leaf.m_Data1 = int8_t(rng());
+		leaf.m_Data2 = uint8_t(rng());
+		leaf.m_Data3 = int16_t(rng());
+		leaf.m_Data4 = int32_t(rng());
 		// whole numbers, so the text format stores them exactly
-		leaf.m_Data5 = envType::Float32(rng() % 100000);
+		leaf.m_Data5 = float(rng() % 100000);
 		leaf.m_Data6 = "single-byte string";
 		leaf.m_Data7 = itString("double-byte string");
 		return leaf;

@@ -89,7 +89,7 @@ namespace rmanExport
 	////--------------------------------------------------------------------
 	//// ExportSubdivisionMesh()
 	////--------------------------------------------------------------------
-	//void ExportSubdivisionMesh( std::vector<envType::UInt32>* i_Indices,
+	//void ExportSubdivisionMesh( std::vector<uint32_t>* i_Indices,
 	//										  std::vector<maPoint3d>* i_Vertices,
 	//										  std::vector<maPoint2d>* i_UVs,
 	//										  std::string i_SubdivName,

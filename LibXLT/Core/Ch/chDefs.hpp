@@ -13,8 +13,8 @@
 #endif
 #define CH_DEFS_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 
@@ -22,9 +22,9 @@
 //============================================================================
 namespace chDefs
 {
-	typedef envType::UInt32 Name;
-	typedef envType::UInt32 Size;
-	typedef envType::UInt16 Version;
+	typedef uint32_t Name;
+	typedef uint32_t Size;
+	typedef uint16_t Version;
 
 	//------------------------------------------------------------------------
 	//	MakeName returns a chDefs::Name made from the 4 given characters.

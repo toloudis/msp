@@ -23,7 +23,7 @@
 //============================================================================
 struct mdlModelingPackageData
 {
-	envType::Int32	m_CreationDate;			// Julian date
+	int32_t	m_CreationDate;			// Julian date
 	envAppVersion	m_ExporterVersion;
 	envAppVersion	m_SDKVersion;
 	itString		m_ModelingPackageName;

@@ -11,8 +11,8 @@
 #endif
 #define G3D_MESHUTIL_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 #ifndef MA_POINT3D_HPP
 #include "Core/ma/maPoint3d.hpp"
@@ -40,12 +40,12 @@ namespace g3dMeshUtil
 							const maPoint3d* i_Normals,
 							const maPoint2d* i_UVs,
 							int i_NumVertices,
-							const envType::UInt32* i_Indices,
+							const uint32_t* i_Indices,
 							int i_NumIndices,
 							std::vector<maPoint3d>& o_Vertices,
 							std::vector<maPoint3d>& o_Normals,
 							std::vector<maPoint2d>* o_UVs,
-							std::vector<envType::UInt32>& o_Indices);
+							std::vector<uint32_t>& o_Indices);
 
 	//------------------------------------------------------------------------
 	//	FillNonWeldedEdges adds polygons to a mesh between edges that are not
@@ -57,6 +57,6 @@ namespace g3dMeshUtil
 	//------------------------------------------------------------------------
 	void FillNonWeldedEdges(const maPoint3d* i_Vertices,
 							int i_NumVertices,
-							std::vector<envType::UInt32>& io_Indices);
+							std::vector<uint32_t>& io_Indices);
 }
 

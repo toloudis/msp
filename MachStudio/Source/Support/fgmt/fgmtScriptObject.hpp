@@ -18,8 +18,8 @@
 #ifndef ENV_BOOST_HPP
 #include "Core/Env/envBoost.hpp"
 #endif 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
@@ -197,7 +197,7 @@ public:
 	// Get fragment index by looking for the node with the given 
 	//	pick code.
 	//--------------------------------------------------------------------
-	int GetFragmentIndexFromPickCode(envType::UInt32 i_PickCode) const;
+	int GetFragmentIndexFromPickCode(uint32_t i_PickCode) const;
 
 	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------

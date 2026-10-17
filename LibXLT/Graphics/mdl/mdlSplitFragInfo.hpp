@@ -39,7 +39,7 @@ struct mdlSplitFragInfo
 	std::vector<maVector3d> m_Normals;
 	std::vector<maPoint2d> m_UVs;
 	//std::vector<maFloatRGBA> m_Colors;	
-	std::vector<envType::UInt32> m_Indices;
+	std::vector<uint32_t> m_Indices;
 	
 	// for basis vectors
 	std::vector<maVector3d> m_Ss;	

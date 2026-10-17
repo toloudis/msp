@@ -13,8 +13,8 @@
 #endif
 #define GEO_TWINMESH_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 #ifndef MA_POINT3D_HPP
 #include "Core/ma/maPoint3d.hpp"
@@ -50,7 +50,7 @@ class geoTwinMesh
 		//	problems.  Meshes that have well defined winding orders around
 		//	all vertices will work fine.
 		//--------------------------------------------------------------------
-		void AddTriangle(envType::UInt32 i_V0, envType::UInt32 i_V1, envType::UInt32 i_V2);
+		void AddTriangle(uint32_t i_V0, uint32_t i_V1, uint32_t i_V2);
 
 		//--------------------------------------------------------------------
 		//	ConstructMesh builds a triangle mesh from the given indices.  This
@@ -58,7 +58,7 @@ class geoTwinMesh
 		//	it will behave better than adding the triangles one by one with
 		//	AddTriangle.
 		//--------------------------------------------------------------------
-		void ConstructMesh(const envType::UInt32* i_Indices, int i_NumIndices);
+		void ConstructMesh(const uint32_t* i_Indices, int i_NumIndices);
 
 		//--------------------------------------------------------------------
 		//	UnmarkAll causes all edges to be unmarked.

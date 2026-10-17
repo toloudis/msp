@@ -2,7 +2,7 @@
 **  gfFileUtil.hpp
 **
 **      gfFileUtil is a namespace containing several functions for reading and
-**		writing simple data types such as envType::UInt16
+**		writing simple data types such as uint16_t
 **
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved
@@ -13,8 +13,8 @@
 #endif
 #define GF_FILEUTIL_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/Env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 #ifndef GF_FILEBIN_HPP
@@ -28,7 +28,7 @@ namespace gfFileUtil
 {
 	//--------------------------------------------------------------------------------
 	//	Read is a template function that receives a simple primtive value such as
-	//	envType::UInt16 and returns it byteswapped if the EndianMode is different than
+	//	uint16_t and returns it byteswapped if the EndianMode is different than
 	//	the platform the game was compiled for.
 	//--------------------------------------------------------------------------------
 	template <class T>
@@ -61,7 +61,7 @@ namespace gfFileUtil
 
 	//--------------------------------------------------------------------------------
 	//	Write is a template function that receives a simple primtive value such as
-	//	envType::UInt16 and byteswaps it before writing it if the EndianMode is 
+	//	uint16_t and byteswaps it before writing it if the EndianMode is 
 	//	different than the platform the game was compiled for.
 	//--------------------------------------------------------------------------------
 	template <class T>

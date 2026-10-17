@@ -73,8 +73,8 @@ namespace
 			return 0.0f;
 
 		bool b32bit = i_Indices.Is32BitIndices();
-		const envType::UInt16* pInd16 = i_Indices.GetIndices16();
-		const envType::UInt32* pInd32 = i_Indices.GetIndices32();
+		const uint16_t* pInd16 = i_Indices.GetIndices16();
+		const uint32_t* pInd32 = i_Indices.GetIndices32();
 
 		float overlapping = 0.0f;
 		for(int i = 0; i < i_nIndices; i += 3 )
@@ -118,8 +118,8 @@ namespace
 			return;
 
 		bool b32bit = i_Indices.Is32BitIndices();
-		const envType::UInt16* pInd16 = i_Indices.GetIndices16();
-		const envType::UInt32* pInd32 = i_Indices.GetIndices32();
+		const uint16_t* pInd16 = i_Indices.GetIndices16();
+		const uint32_t* pInd32 = i_Indices.GetIndices32();
 
 		// Walk through the triangle list and calculate gradiants for each triangle.
 		// Sum the results into the S and T components.

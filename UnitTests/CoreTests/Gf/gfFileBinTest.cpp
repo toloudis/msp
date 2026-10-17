@@ -70,7 +70,7 @@ TEST(gfFileBin, ReadHeaderRejectsOtherFiles)
 //
 TEST(gfFileUtil, EndianRoundTrip)
 {
-	const envType::UInt32 value = 0x01020304;
+	const uint32_t value = 0x01020304;
 
 	struct Case
 	{
@@ -99,7 +99,7 @@ TEST(gfFileUtil, EndianRoundTrip)
 		{
 			gfFileBin read_file(file, fsFileStream::e_ReadOnly, c.m_Mode);
 			read_file.ReadHeader();
-			envType::UInt32 read_value = 0;
+			uint32_t read_value = 0;
 			gfFileUtil::Read(read_file, read_value);
 			EXPECT_EQ(value, read_value);
 		}

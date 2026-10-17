@@ -56,7 +56,7 @@ namespace vtxVertexAnimWriter
 		
 			//vertex array chunk
 			io_Writer.WriteChunkHeader(c_GVER, 1, false);
-			io_Writer.Write(envType::Int32(nVerts));
+			io_Writer.Write(int32_t(nVerts));
 			if ( nVerts > 0)
 			{
 				io_Writer.Write(&positions[0], nVerts*sizeof(maPoint3d));			
@@ -69,7 +69,7 @@ namespace vtxVertexAnimWriter
 				//{
 				//	// Write just the X and Y values of the normals
 				//	io_Writer.WriteChunkHeader(c_NCMP, 0, false);
-				//	io_Writer.Write(envType::Int32(nNormals));
+				//	io_Writer.Write(int32_t(nNormals));
 				//	for (int i=0; i<nNormals; ++i)
 				//	{
 				//		io_Writer.Write(normals[i].m_X);
@@ -82,7 +82,7 @@ namespace vtxVertexAnimWriter
 				//{
 					//normal array chunk
 					io_Writer.WriteChunkHeader(c_NVER, 1, false);
-					io_Writer.Write(envType::Int32(nNormals));
+					io_Writer.Write(int32_t(nNormals));
 					io_Writer.Write(&normals[0], nNormals*sizeof(maVector3d));
 					io_Writer.FinishChunk();
 				//}

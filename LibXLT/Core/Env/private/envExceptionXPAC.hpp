@@ -22,8 +22,8 @@
 //
 //namespace envExceptionXPAC
 //{
-//	void CaptureStackTrace(envType::UInt64* o_PCs, int i_MaxFrames);
-//	const char* FormatStackTrace(const envType::UInt64* i_PCs, int i_MaxFrames);
+//	void CaptureStackTrace(uint64_t* o_PCs, int i_MaxFrames);
+//	const char* FormatStackTrace(const uint64_t* i_PCs, int i_MaxFrames);
 //}
 //============================================================================
 

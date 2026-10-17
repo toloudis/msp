@@ -120,7 +120,7 @@ bool prtyInt32::operator <=(const prtyInt32& i_Value) const
 //virtual 
 void prtyInt32::Read(chReader& io_Reader)
 {
-	envType::Int32 temp;
+	int32_t temp;
 	io_Reader.Read(temp);
 	SetValue(temp);
 }
@@ -130,7 +130,7 @@ void prtyInt32::Read(chReader& io_Reader)
 //virtual 
 void prtyInt32::Write(chWriter& io_Writer) const
 {
-	envType::Int32 temp = GetValue();
+	int32_t temp = GetValue();
 	io_Writer.Write(temp);
 }
 

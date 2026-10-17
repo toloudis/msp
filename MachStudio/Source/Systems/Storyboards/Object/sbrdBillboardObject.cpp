@@ -384,7 +384,7 @@ bool sbrdBillboardObject::RayPick(	const maPoint3d& i_RayStart,
 //----------------------------------------------------------------------------
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
-bool sbrdBillboardObject::MatchPickCode(envType::UInt32 i_PickCode) const
+bool sbrdBillboardObject::MatchPickCode(uint32_t i_PickCode) const
 {
 	if (!m_pBillboard->GetRenderable())
 		return false;

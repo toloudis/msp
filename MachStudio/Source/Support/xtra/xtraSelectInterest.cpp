@@ -53,7 +53,7 @@ void xtraSelectInterest::RemovedFromSelection( sel3dObject* i_pSelObj )
 //	object and set the selected material index to match.
 //--------------------------------------------------------------------
 bool xtraSelectInterest::SelectFromPickCode(sel3dObject *i_pPicked,
-											envType::UInt32 i_PickCode,
+											uint32_t i_PickCode,
 											bool i_bAppendSelection)
 {
 	return false;

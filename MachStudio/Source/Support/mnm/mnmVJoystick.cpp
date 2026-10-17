@@ -7,7 +7,9 @@
 **	Copyright(C) 2000-2002 - All Rights Reserved
 \****************************************************************************/
 
-#include "Core/env/envType.hpp"	// quiets warnings
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
+#endif
 #include "Support/mnm/mnmVJoystick.hpp"
 
 #include "Input/in/inDeviceMgr.hpp"

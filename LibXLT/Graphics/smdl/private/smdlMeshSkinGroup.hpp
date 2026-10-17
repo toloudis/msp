@@ -153,7 +153,7 @@ class smdlMeshSkinGroup : public smdlSurface
 		//--------------------------------------------------------------------
 		// Access to indices
 		//--------------------------------------------------------------------
-		std::vector<envType::UInt32>* GetIndices();
+		std::vector<uint32_t>* GetIndices();
 
 		//--------------------------------------------------------------------
 		// Access to fragments
@@ -172,7 +172,7 @@ class smdlMeshSkinGroup : public smdlSurface
 		std::vector<maVector3d> m_BaseNormals;
 		std::vector<g3dFragment*> m_Fragments;
 		//vector of  copies of the index buffer-s of the fragments
-		std::vector< std::vector<envType::UInt32> > m_FragmentIndexVecs;
+		std::vector< std::vector<uint32_t> > m_FragmentIndexVecs;
 		std::vector<RemapArray> m_SplitRemapping;
 		std::vector<RemapArray> m_FullVertexRemapping;
 		std::vector<RemapArray> m_FullNormalRemapping;

@@ -725,7 +725,7 @@ void tmlnDriver::AddBasePropertiesTab()
 //static 
 void tmlnDriver::SetDefaultBlendType(const tmlnDriver::BlendType i_BlendType)
 {
-	//tmlnDriver::m_BlendDefault.SetValue( (envType::Int8)(i_BlendType) );
+	//tmlnDriver::m_BlendDefault.SetValue( (int8_t)(i_BlendType) );
 	//tmlnDriver::m_BlendDefault.SetValue( (tmlnDriver::BlendType)i_BlendType );	
 }
 //static 

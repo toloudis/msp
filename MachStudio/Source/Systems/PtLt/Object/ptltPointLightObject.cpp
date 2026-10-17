@@ -480,7 +480,7 @@ void ptltPointLightObject::UpdateScale(const maPoint3d& i_Scale,
 //----------------------------------------------------------------------------
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
-bool ptltPointLightObject::MatchPickCode(envType::UInt32 i_PickCode) const
+bool ptltPointLightObject::MatchPickCode(uint32_t i_PickCode) const
 {
 	if (!m_pObject->GetRenderable())
 		return false;

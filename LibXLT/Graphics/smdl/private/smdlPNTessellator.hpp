@@ -210,7 +210,7 @@ class smdlPNTessellator : public smdlTessellatorBase
 		std::vector<tTri> m_TList;				//triangles of base mesh (dereferenced)
 		std::vector<tVert> m_VList;				//vertices of base mesh
 		std::vector<tVert> m_VList_Tess;		//Software Tessellated vertices
-		std::vector<envType::UInt32> m_IList_Tess;		//Software Tessellated indices
+		std::vector<uint32_t> m_IList_Tess;		//Software Tessellated indices
 
 		//std::vector<int> m_Remap;
 		int m_CurSubdivLevel;

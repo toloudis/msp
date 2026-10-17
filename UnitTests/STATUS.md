@@ -84,8 +84,6 @@ Branch: `claude/unit-tests` (based on `claude/toolkit-input` at `a12c4b6f`).
   tracked.
 - CI warns that its actions (`checkout`, `cache`, `upload-artifact`,
   `setup-msbuild`) target the deprecated Node.js 20; they still run.
-- `cptrRenderBakeDialog.hpp`'s include guard checks `CPTR_RENDERBAKEDIALOG_HPP`
-  but defines `CPTR_RENDERBAKE_HPP`, so it doesn't guard.
 
 ## Working notes
 

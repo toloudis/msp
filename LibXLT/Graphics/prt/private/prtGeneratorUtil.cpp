@@ -104,9 +104,9 @@ namespace
 			{	
 				if ( name == c_GENP )
 				{
-					envType::Int8 generator_type;
-					envType::Int8 emitter_type;
-					envType::Float32 x, y, z;
+					int8_t generator_type;
+					int8_t emitter_type;
+					float x, y, z;
 					i_Reader.Read(generator_type);
 					i_Reader.Read(emitter_type);
 					i_Reader.Read(x);
@@ -119,11 +119,11 @@ namespace
 				}
 				else if ( name == c_SGPP )
 				{
-					envType::Int8 scale_mode;
-					envType::Int8 render_mode;
-					envType::Int8 uva_mode;
+					int8_t scale_mode;
+					int8_t render_mode;
+					int8_t uva_mode;
 					itString texture_name;
-					envType::Int8 num_alpha_keys;
+					int8_t num_alpha_keys;
 					
 					i_Reader.Read(scale_mode);
 					i_Reader.Read(uva_mode);
@@ -143,8 +143,8 @@ namespace
 						if ( num_alpha_keys == 1 )
 						{
 							//	we can do this with a constant animation
-							envType::Float32 time;
-							envType::Float32 value;
+							float time;
+							float value;
 
 							i_Reader.Read(time);
 							i_Reader.Read(value);
@@ -154,8 +154,8 @@ namespace
 						else if ( num_alpha_keys == 2 )
 						{
 							//	we need an an2StateAnimation
-							envType::Float32 time1, time2;
-							envType::Float32 value1, value2;
+							float time1, time2;
+							float value1, value2;
 
 							i_Reader.Read(time1);
 							i_Reader.Read(value1);
@@ -167,8 +167,8 @@ namespace
 						else if ( num_alpha_keys == 3 )
 						{
 							//	an3StateAnimation
-							envType::Float32 time1, time2, time3, time2b;
-							envType::Float32 value1, value2, value3;
+							float time1, time2, time3, time2b;
+							float value1, value2, value3;
 
 							i_Reader.Read(time1);
 							i_Reader.Read(value1);
@@ -196,8 +196,8 @@ namespace
 							int i;
 							for( i = 0 ; i < num_alpha_keys ; i++ )
 							{
-								envType::Float32 time;
-								envType::Float32 value;
+								float time;
+								float value;
 
 								i_Reader.Read(time);
 								i_Reader.Read(value);
@@ -242,12 +242,12 @@ namespace
 				}
 				else if ( name == c_PARP )
 				{
-					envType::Int8 num_parameters;
+					int8_t num_parameters;
 					i_Reader.Read(num_parameters);
 
 					// In older versions of files, newer parameters need
 					// to be skipped over and set to default values.
-					std::map<int, envType::Float32> to_skip;
+					std::map<int, float> to_skip;
 
 					if ( version < 1 )	// handle the presim time parameter
 					{
@@ -264,10 +264,10 @@ namespace
 					// the number of new parameters needed to skip
 					int total_num_params = num_parameters + to_skip.size();
 					o_Template.SetNumParameters(total_num_params);
-					envType::Float32 param;
+					float param;
 					for (int i = 0; i < total_num_params ; i++ )
 					{
-						std::map<int, envType::Float32>::iterator it = to_skip.find(i);
+						std::map<int, float>::iterator it = to_skip.find(i);
 						if ( it != to_skip.end())
 						{
 							// Skipped parameter, set to default value
@@ -301,9 +301,9 @@ namespace
 		const int c_GENP_VERSION = 0;
 		o_Writer.WriteChunkHeader(c_GENP, c_GENP_VERSION, false);
 
-		envType::Int8 generator_type = i_Template.GetType();
-		envType::Int8 emitter_type = i_Template.GetEmitterType();
-		envType::Float32 x, y, z;
+		int8_t generator_type = i_Template.GetType();
+		int8_t emitter_type = i_Template.GetEmitterType();
+		float x, y, z;
 		x = i_Template.GetEmitterScale().m_X;
 		y = i_Template.GetEmitterScale().m_Y;
 		z = i_Template.GetEmitterScale().m_Z;
@@ -330,13 +330,13 @@ namespace
 		const int c_SGPP_VERSION = 2;
 		o_Writer.WriteChunkHeader(c_SGPP, c_SGPP_VERSION, false);
 
-		envType::Int8 scale_mode	= i_Template.GetScaleMode();
-		envType::Int8 render_mode	= i_Template.GetRenderMode();
-		envType::Int8 uva_mode		= i_Template.GetUVAMode();
+		int8_t scale_mode	= i_Template.GetScaleMode();
+		int8_t render_mode	= i_Template.GetRenderMode();
+		int8_t uva_mode		= i_Template.GetUVAMode();
 		itString texture_name		= i_Template.GetTextureLocator().GetLastName();
 		// null-terminating not needed anymore
 		//texture_name += 0;
-		envType::Int8 num_alpha_keys;
+		int8_t num_alpha_keys;
 
 		o_Writer.Write(scale_mode);
 		o_Writer.Write(uva_mode);
@@ -349,10 +349,10 @@ namespace
 		{
 			num_alpha_keys = key_anim->GetNumKeys();
 			o_Writer.Write(num_alpha_keys);
-			envType::Int8 i;
+			int8_t i;
 			for( i = 0 ; i < num_alpha_keys ; i++ )
 			{
-				envType::Float32 time, value;
+				float time, value;
 				key_anim->GetKeyData(i, time, value);
 				o_Writer.Write(time);
 				o_Writer.Write(value);
@@ -366,7 +366,7 @@ namespace
 				num_alpha_keys = 3;
 				o_Writer.Write(num_alpha_keys);
 
-				envType::Float32 time, value;
+				float time, value;
 				time = 0.0f;
 				value = threestate_anim->GetFirstValue();
 				o_Writer.Write(time);
@@ -392,7 +392,7 @@ namespace
 				{
 					num_alpha_keys = 2;
 					o_Writer.Write(num_alpha_keys);
-					envType::Float32 time, value;
+					float time, value;
 					time = 0.0f;
 					value = twostate_anim->GetFirstValue();
 					o_Writer.Write(time);
@@ -409,12 +409,12 @@ namespace
 					{
 						num_alpha_keys = 1;
 						o_Writer.Write(num_alpha_keys);
-						o_Writer.Write(envType::Float32(0.0f));
-						o_Writer.Write(envType::Float32(constant_anim->GetValue(0.0f)));
+						o_Writer.Write(float(0.0f));
+						o_Writer.Write(float(constant_anim->GetValue(0.0f)));
 					}
 					else
 					{
-						o_Writer.Write(envType::Int8(0));
+						o_Writer.Write(int8_t(0));
 					}
 				}
 			}
@@ -449,14 +449,14 @@ namespace
 		const int c_PARP_VERSION = 2;
 		o_Writer.WriteChunkHeader(c_PARP, c_PARP_VERSION, false);
 
-		envType::Int8 num_params = i_Template.GetNumParameters();
+		int8_t num_params = i_Template.GetNumParameters();
 
 		o_Writer.Write(num_params);
 
-		envType::Int8 i;
+		int8_t i;
 		for( i = 0 ; i < num_params ; i++ )
 		{
-			envType::Float32 val = i_Template.GetParameter(i);
+			float val = i_Template.GetParameter(i);
 			o_Writer.Write(val);
 		}
 

@@ -202,3 +202,6 @@
 #pragma warning( error: 4150  )		//  warning C4150: deletion of pointer to incomplete type 'type'; no destructor called (report as error)
 
 #endif  // visual studio
+
+// Fixed-width integer types (int32_t, uint8_t, ...) for the whole codebase.
+#include <cstdint>

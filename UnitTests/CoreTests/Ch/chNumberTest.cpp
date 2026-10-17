@@ -55,7 +55,7 @@ const chDefs::Name c_ChunkName = chDefs::MakeName('N', 'u', 'm', 's');
 
 //	Written after the values, so a value that reads as too many or too
 //	few tokens shows up as a wrong end marker.
-const envType::Int32 c_EndMarker = -12345;
+const int32_t c_EndMarker = -12345;
 
 enum Format { e_Binary, e_Text, e_XML };
 
@@ -138,7 +138,7 @@ std::vector<T> read_values(Format i_Format, const fsLocator& i_File, size_t i_Co
 			values.push_back(value);
 		}
 
-		envType::Int32 end_marker = 0;
+		int32_t end_marker = 0;
 		io_Reader.Read(end_marker);
 		EXPECT_EQ(c_EndMarker, end_marker);
 		io_Reader.FinishChunk();
@@ -230,8 +230,8 @@ TEST(chNumber, ReadsBytesWrittenAsCharacters)
 	struct RawByte
 	{
 		char m_Char;
-		envType::Int8 m_Int8;
-		envType::UInt8 m_UInt8;
+		int8_t m_Int8;
+		uint8_t m_UInt8;
 	};
 	const RawByte raw_bytes[] =
 	{
@@ -250,9 +250,9 @@ TEST(chNumber, ReadsBytesWrittenAsCharacters)
 		fsLocator file = dir.GetLocator("raw-bytes");
 
 		// placeholders: 11110, 11111, ...
-		std::vector<envType::Int32> placeholders;
+		std::vector<int32_t> placeholders;
 		for( size_t i = 0 ; i < std::size(raw_bytes) ; i++ )
-			placeholders.push_back(envType::Int32(11110 + i));
+			placeholders.push_back(int32_t(11110 + i));
 		write_values(format, file, placeholders);
 
 		std::filesystem::path path = dir.GetPath() / "raw-bytes";
@@ -266,10 +266,10 @@ TEST(chNumber, ReadsBytesWrittenAsCharacters)
 		}
 		write_file(path, data);
 
-		std::vector<envType::Int8> as_int8;
-		ASSERT_NO_THROW(as_int8 = read_values<envType::Int8>(format, file, std::size(raw_bytes)));
-		std::vector<envType::UInt8> as_uint8;
-		ASSERT_NO_THROW(as_uint8 = read_values<envType::UInt8>(format, file, std::size(raw_bytes)));
+		std::vector<int8_t> as_int8;
+		ASSERT_NO_THROW(as_int8 = read_values<int8_t>(format, file, std::size(raw_bytes)));
+		std::vector<uint8_t> as_uint8;
+		ASSERT_NO_THROW(as_uint8 = read_values<uint8_t>(format, file, std::size(raw_bytes)));
 
 		for( size_t i = 0 ; i < std::size(raw_bytes) ; i++ )
 		{
@@ -298,17 +298,17 @@ TEST(chNumber, TextReadsExponents)
 	ASSERT_TRUE(reader.ReadChunkHeader(name, version, size));
 	EXPECT_EQ(c_ChunkName, name);
 
-	envType::Float64 d = 0;
+	double d = 0;
 	reader.Read(d);
 	EXPECT_EQ(1e-05, d);
 	reader.Read(d);
 	EXPECT_EQ(2.5e10, d);
-	envType::Float32 f = 0;
+	float f = 0;
 	reader.Read(f);
 	EXPECT_EQ(-3e7f, f);
 	reader.Read(f);
 	EXPECT_EQ(-std::numeric_limits<float>::infinity(), f);
-	envType::Int32 i = 0;
+	int32_t i = 0;
 	reader.Read(i);
 	EXPECT_EQ(4, i);
 }

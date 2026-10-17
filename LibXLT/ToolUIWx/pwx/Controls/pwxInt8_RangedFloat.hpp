@@ -33,16 +33,16 @@ public:
 	// Set value into control
 	//----------------------------------------------------------------------------
 	static void SetValueIntoControl(twcRangedFloat* i_pActualControl,
-									 envType::Int8 i_Value);
+									 int8_t i_Value);
 
 	//----------------------------------------------------------------------------
 	// Get value from control
 	//----------------------------------------------------------------------------
-	static envType::Int8 GetValueFromControl(twcRangedFloat* i_pActualControl);
+	static int8_t GetValueFromControl(twcRangedFloat* i_pActualControl);
 };
 
 //============================================================================
 //============================================================================
-typedef pwxTemplate_RangedFloat<prtyInt8, envType::Int8, pwxInt8_RangedFloat_Converter> pwxInt8_RangedFloat;
+typedef pwxTemplate_RangedFloat<prtyInt8, int8_t, pwxInt8_RangedFloat_Converter> pwxInt8_RangedFloat;
 
 #endif // USE_WXWIDGETS

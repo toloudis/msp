@@ -251,54 +251,54 @@ void chXMLReader::FinishChunk()
 //	but I think there would be problems getting them instantiated
 //	so that they are part of the abstract base interface.
 //----------------------------------------------------------------------------
-void chXMLReader::Read(envType::Int8& o_Val)
+void chXMLReader::Read(int8_t& o_Val)
 {
-	read_byte<envType::Int8>(m_File, o_Val);
+	read_byte<int8_t>(m_File, o_Val);
 }
 
-void chXMLReader::Read(envType::UInt8& o_Val)
+void chXMLReader::Read(uint8_t& o_Val)
 {
-	read_byte<envType::UInt8>(m_File, o_Val);
+	read_byte<uint8_t>(m_File, o_Val);
 }
 
-void chXMLReader::Read(envType::Int16& o_Val)
+void chXMLReader::Read(int16_t& o_Val)
 {
-	read_number<envType::Int16>(m_File, o_Val);
+	read_number<int16_t>(m_File, o_Val);
 }
 
-void chXMLReader::Read(envType::UInt16& o_Val)
+void chXMLReader::Read(uint16_t& o_Val)
 {
-	read_number<envType::UInt16>(m_File, o_Val);
+	read_number<uint16_t>(m_File, o_Val);
 }
 
-void chXMLReader::Read(envType::Int32& o_Val)
+void chXMLReader::Read(int32_t& o_Val)
 {
-	read_number<envType::Int32>(m_File, o_Val);
+	read_number<int32_t>(m_File, o_Val);
 }
 
-void chXMLReader::Read(envType::UInt32& o_Val)
+void chXMLReader::Read(uint32_t& o_Val)
 {
-	read_number<envType::UInt32>(m_File, o_Val);
+	read_number<uint32_t>(m_File, o_Val);
 }
 
-void chXMLReader::Read(envType::Int64& o_Val)
+void chXMLReader::Read(int64_t& o_Val)
 {
-	read_number<envType::Int64>(m_File, o_Val);
+	read_number<int64_t>(m_File, o_Val);
 }
 
-void chXMLReader::Read(envType::UInt64& o_Val)
+void chXMLReader::Read(uint64_t& o_Val)
 {
-	read_number<envType::UInt64>(m_File, o_Val);
+	read_number<uint64_t>(m_File, o_Val);
 }
 
-void chXMLReader::Read(envType::Float32& o_Val)
+void chXMLReader::Read(float& o_Val)
 {
-	read_number<envType::Float32>(m_File, o_Val);
+	read_number<float>(m_File, o_Val);
 }
 
-void chXMLReader::Read(envType::Float64& o_Val)
+void chXMLReader::Read(double& o_Val)
 {
-	read_number<envType::Float64>(m_File, o_Val);
+	read_number<double>(m_File, o_Val);
 }
 
 //----------------------------------------------------------------------------

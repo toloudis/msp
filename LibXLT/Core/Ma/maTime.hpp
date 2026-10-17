@@ -17,9 +17,9 @@
 #endif
 #define MA_TIME_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/Env/envType.hpp"
-#endif 
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
+#endif
 
 
 //============================================================================
@@ -34,7 +34,7 @@ class maTime
 		//--------------------------------------------------------------------
 		static maTime FromSeconds(float i_Seconds);
 		static maTime FromFrame(int i_Frame, int i_FrameRate);
-		static maTime FromUnits(envType::Int64 i_TimeValue);
+		static maTime FromUnits(int64_t i_TimeValue);
 
 		//--------------------------------------------------------------------
 		// To make comparisons with zero easier, define a static constant
@@ -49,8 +49,8 @@ class maTime
 		//--------------------------------------------------------------------
 		// Get and Set value in its internal units (6000fps frame rate)
 		//--------------------------------------------------------------------
-		envType::Int64 GetValue() const;
-		void SetValue(envType::Int64 i_TimeValue);
+		int64_t GetValue() const;
+		void SetValue(int64_t i_TimeValue);
 
 		//--------------------------------------------------------------------
 		// Set time value as a frame within a given frame rate.
@@ -114,7 +114,7 @@ class maTime
 		maTime Abs() const;
 
 	private:
-		envType::Int64	m_TimeInUnits;
+		int64_t	m_TimeInUnits;
 };
 
 //--------------------------------------------------------------------

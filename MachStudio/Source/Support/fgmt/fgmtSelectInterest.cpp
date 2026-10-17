@@ -100,7 +100,7 @@ void fgmtSelectInterest::RemovedFromSelection( sel3dObject* i_pSelObj )
 // with the GPU pick code given. Returns NULL if no fragment selected.
 //--------------------------------------------------------------------
 sel3dObject* fgmtSelectInterest::GetPartFromPickCode(sel3dObject *i_pPicked,
-													 envType::UInt32 i_PickCode)
+													 uint32_t i_PickCode)
 {
 	if ( fgmtScriptObject *pFragObject = sel3dCastUtil::CastPickObject<fgmtScriptObject>(i_pPicked) )
 	{

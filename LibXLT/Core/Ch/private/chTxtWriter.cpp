@@ -185,7 +185,7 @@ void chTxtWriter::FinishChunk()
 //--------------------------------------------------------------------
 //	Write functions - These write the data to the chunk file.
 //--------------------------------------------------------------------
-void chTxtWriter::Write(envType::Int8 i_Val)
+void chTxtWriter::Write(int8_t i_Val)
 {
 	l_Buf = envNumberText::ToText(i_Val);
 	l_Buf += ' ';
@@ -193,7 +193,7 @@ void chTxtWriter::Write(envType::Int8 i_Val)
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 }
 
-void chTxtWriter::Write(envType::UInt8 i_Val)
+void chTxtWriter::Write(uint8_t i_Val)
 {
 	l_Buf = envNumberText::ToText(i_Val);
 	l_Buf += ' ';
@@ -201,7 +201,7 @@ void chTxtWriter::Write(envType::UInt8 i_Val)
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 }
 
-void chTxtWriter::Write(envType::Int16 i_Val)
+void chTxtWriter::Write(int16_t i_Val)
 {
 	l_Buf = envNumberText::ToText(i_Val);
 	l_Buf += ' ';
@@ -209,7 +209,7 @@ void chTxtWriter::Write(envType::Int16 i_Val)
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 }
 
-void chTxtWriter::Write(envType::UInt16 i_Val)
+void chTxtWriter::Write(uint16_t i_Val)
 {
 	l_Buf = envNumberText::ToText(i_Val);
 	l_Buf += ' ';
@@ -217,7 +217,7 @@ void chTxtWriter::Write(envType::UInt16 i_Val)
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 }
 
-void chTxtWriter::Write(envType::Int32 i_Val)
+void chTxtWriter::Write(int32_t i_Val)
 {
 	l_Buf = envNumberText::ToText(i_Val);
 	l_Buf += ' ';
@@ -225,7 +225,7 @@ void chTxtWriter::Write(envType::Int32 i_Val)
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 }
 
-void chTxtWriter::Write(envType::UInt32 i_Val)
+void chTxtWriter::Write(uint32_t i_Val)
 {
 	l_Buf = envNumberText::ToText(i_Val);
 	l_Buf += ' ';
@@ -233,7 +233,7 @@ void chTxtWriter::Write(envType::UInt32 i_Val)
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 }
 
-void chTxtWriter::Write(envType::Int64 i_Val)
+void chTxtWriter::Write(int64_t i_Val)
 {
 	l_Buf = envNumberText::ToText(i_Val);
 	l_Buf += ' ';
@@ -241,7 +241,7 @@ void chTxtWriter::Write(envType::Int64 i_Val)
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 }
 
-void chTxtWriter::Write(envType::UInt64 i_Val)
+void chTxtWriter::Write(uint64_t i_Val)
 {
 	l_Buf = envNumberText::ToText(i_Val);
 	l_Buf += ' ';
@@ -249,7 +249,7 @@ void chTxtWriter::Write(envType::UInt64 i_Val)
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 }
 
-void chTxtWriter::Write(envType::Float32 i_Val)
+void chTxtWriter::Write(float i_Val)
 {
 	l_Buf = envNumberText::ToText(i_Val);
 	l_Buf += ' ';
@@ -257,7 +257,7 @@ void chTxtWriter::Write(envType::Float32 i_Val)
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 }
 
-void chTxtWriter::Write(envType::Float64 i_Val)
+void chTxtWriter::Write(double i_Val)
 {
 	l_Buf = envNumberText::ToText(i_Val);
 	l_Buf += ' ';

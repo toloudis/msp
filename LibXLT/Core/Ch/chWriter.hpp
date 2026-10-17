@@ -67,16 +67,16 @@ class chWriter
 		//	but I think there would be problems getting them instantiated
 		//	so that they are part of the abstract base interface.
 		//--------------------------------------------------------------------
-		virtual void Write(envType::Int8 i_Val) = 0;
-		virtual void Write(envType::UInt8 i_Val) = 0;
-		virtual void Write(envType::Int16 i_Val) = 0;
-		virtual void Write(envType::UInt16 i_Val) = 0;
-		virtual void Write(envType::Int32 i_Val) = 0;
-		virtual void Write(envType::UInt32 i_Val) = 0;
-		virtual void Write(envType::Int64 i_Val) = 0;
-		virtual void Write(envType::UInt64 i_Val) = 0;
-		virtual void Write(envType::Float32 i_Val) = 0;
-		virtual void Write(envType::Float64 i_Val) = 0;
+		virtual void Write(int8_t i_Val) = 0;
+		virtual void Write(uint8_t i_Val) = 0;
+		virtual void Write(int16_t i_Val) = 0;
+		virtual void Write(uint16_t i_Val) = 0;
+		virtual void Write(int32_t i_Val) = 0;
+		virtual void Write(uint32_t i_Val) = 0;
+		virtual void Write(int64_t i_Val) = 0;
+		virtual void Write(uint64_t i_Val) = 0;
+		virtual void Write(float i_Val) = 0;
+		virtual void Write(double i_Val) = 0;
 
 		//--------------------------------------------------------------------
 		//	This Write writes a string called either "TRUE" or "FALSE" based 
@@ -133,7 +133,7 @@ class chWriter
 		//	Write chunk of binary data; this is only for
 		//	the implementations, it is not a function of chWriter base class
 		//--------------------------------------------------------------------
-		virtual	void Write(const void* i_Data, envType::Int64 i_NumBytes) = 0;
+		virtual	void Write(const void* i_Data, int64_t i_NumBytes) = 0;
 
 		//------------------------------------------------------------------------
 		//	GetLocator returns this file's associated locator

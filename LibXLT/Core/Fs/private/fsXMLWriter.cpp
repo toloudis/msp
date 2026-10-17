@@ -217,7 +217,7 @@ void fsXMLWriter::WriteElement(std::string& i_KeyName, float i_Value)
 	write_end_element(i_KeyName);
 }
 //------------------------------------------------------------------------
-void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::Int8 i_Value)
+void fsXMLWriter::WriteElement(std::string& i_KeyName, int8_t i_Value)
 {
 	DBG_ASSERT(m_pFileStream != NULL, "Must Open() the Writer");
 
@@ -236,7 +236,7 @@ void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::Int8 i_Value)
 	write_end_element(i_KeyName);
 }
 //------------------------------------------------------------------------
-void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::UInt8 i_Value)
+void fsXMLWriter::WriteElement(std::string& i_KeyName, uint8_t i_Value)
 {
 	DBG_ASSERT(m_pFileStream != NULL, "Must Open() the Writer");
 
@@ -255,13 +255,13 @@ void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::UInt8 i_Value)
 	write_end_element(i_KeyName);
 }
 //------------------------------------------------------------------------
-//void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::Int16 i_Value)
+//void fsXMLWriter::WriteElement(std::string& i_KeyName, int16_t i_Value)
 //{
 //	DBG_ASSERT(m_pFileStream != NULL, "Must Open() the Writer");
 //	m_pFileStream->WriteElementString(convert_keyname(i_KeyName), XmlConvert::ToString(i_Value));
 //}
 //------------------------------------------------------------------------
-void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::UInt16 i_Value)
+void fsXMLWriter::WriteElement(std::string& i_KeyName, uint16_t i_Value)
 {
 	DBG_ASSERT(m_pFileStream != NULL, "Must Open() the Writer");
 
@@ -280,13 +280,13 @@ void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::UInt16 i_Value)
 	write_end_element(i_KeyName);
 }
 //------------------------------------------------------------------------
-//void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::Int32 i_Value)
+//void fsXMLWriter::WriteElement(std::string& i_KeyName, int32_t i_Value)
 //{
 //	DBG_ASSERT(m_pFileStream != NULL, "Must Open() the Writer");
 //	m_pFileStream->WriteElementString(convert_keyname(i_KeyName), XmlConvert::ToString(i_Value));
 //}
 //------------------------------------------------------------------------
-void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::UInt32 i_Value)
+void fsXMLWriter::WriteElement(std::string& i_KeyName, uint32_t i_Value)
 {
 	DBG_ASSERT(m_pFileStream != NULL, "Must Open() the Writer");
 
@@ -305,7 +305,7 @@ void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::UInt32 i_Value)
 	write_end_element(i_KeyName);
 }
 //------------------------------------------------------------------------
-void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::Int64 i_Value)
+void fsXMLWriter::WriteElement(std::string& i_KeyName, int64_t i_Value)
 {
 	DBG_ASSERT(m_pFileStream != NULL, "Must Open() the Writer");
 
@@ -324,7 +324,7 @@ void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::Int64 i_Value)
 	write_end_element(i_KeyName);
 }
 //------------------------------------------------------------------------
-void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::UInt64 i_Value)
+void fsXMLWriter::WriteElement(std::string& i_KeyName, uint64_t i_Value)
 {
 	DBG_ASSERT(m_pFileStream != NULL, "Must Open() the Writer");
 
@@ -343,13 +343,13 @@ void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::UInt64 i_Value)
 	write_end_element(i_KeyName);
 }
 //------------------------------------------------------------------------
-//void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::Float32 i_Value)
+//void fsXMLWriter::WriteElement(std::string& i_KeyName, float i_Value)
 //{
 //	DBG_ASSERT(m_pFileStream != NULL, "Must Open() the Writer");
 //	m_pFileStream->WriteElementString(convert_keyname(i_KeyName), XmlConvert::ToString(i_Value));
 //}
 //------------------------------------------------------------------------
-void fsXMLWriter::WriteElement(std::string& i_KeyName, envType::Float64 i_Value)
+void fsXMLWriter::WriteElement(std::string& i_KeyName, double i_Value)
 {
 	DBG_ASSERT(m_pFileStream != NULL, "Must Open() the Writer");
 

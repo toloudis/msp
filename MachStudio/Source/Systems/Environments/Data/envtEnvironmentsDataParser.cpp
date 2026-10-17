@@ -131,7 +131,7 @@ namespace
 		chChunkParserUtil::Read(i_Reader, o_Data.m_SpecularMapName);
 		chChunkParserUtil::Read(i_Reader, o_Data.m_SpecularFactor);
 		chChunkParserUtil::Read(i_Reader, o_Data.m_DiffuseAngle);
-		envType::Int32 num_objects;
+		int32_t num_objects;
 		i_Reader.Read(num_objects);
 		o_Data.m_Objects.resize(num_objects);
 		//DBG_LOG("Objects------------" << num_objects);
@@ -199,7 +199,7 @@ namespace
 			}
 		}
 
-		envType::Int32 num_objects;
+		int32_t num_objects;
 		i_Reader.Read(num_objects);
 		o_Data.m_Objects.resize(num_objects);
 		for (int i = 0; i < num_objects; i++)
@@ -483,7 +483,7 @@ void envtEnvironmentsDataParser::WriteEnvironmentData(	chWriter& o_Writer,
 	i_Data.m_BaseData.m_RampData.m_NoiseFreq.Write(o_Writer);
 
 	const int num_objects = i_Data.m_BaseData.m_Objects.size();
-	o_Writer.Write(envType::Int32(num_objects));
+	o_Writer.Write(int32_t(num_objects));
 	for (int i=0; i<num_objects; i++)
 	{
 		write_name_string(o_Writer, i_Data.m_BaseData.m_Objects[i]);

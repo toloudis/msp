@@ -11,8 +11,8 @@
 #endif
 #define FS_XMLREADER_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 #ifndef FS_FILESTREAM_HPP
 #include "Core/fs/fsFileStream.hpp"
@@ -77,16 +77,16 @@ public:
 	void Convert(const std::string& i_Text, bool& o_Value);
 	void Convert(const std::string& i_Text, short& o_Value);
 	void Convert(const std::string& i_Text, float& o_Value);
-	void Convert(const std::string& i_Text, envType::Int8& o_Value);
-	void Convert(const std::string& i_Text, envType::UInt8& o_Value);
-	//void Convert(const std::string& i_Text, envType::Int16& o_Value);
-	void Convert(const std::string& i_Text, envType::UInt16& o_Value);
-	//void Convert(const std::string& i_Text, envType::Int32& o_Value);
-	void Convert(const std::string& i_Text, envType::UInt32& o_Value);
-	void Convert(const std::string& i_Text, envType::Int64& o_Value);
-	void Convert(const std::string& i_Text, envType::UInt64& o_Value);
-	//void Convert(const std::string& i_Text, envType::Float32& o_Value);
-	void Convert(const std::string& i_Text, envType::Float64& o_Value);
+	void Convert(const std::string& i_Text, int8_t& o_Value);
+	void Convert(const std::string& i_Text, uint8_t& o_Value);
+	//void Convert(const std::string& i_Text, int16_t& o_Value);
+	void Convert(const std::string& i_Text, uint16_t& o_Value);
+	//void Convert(const std::string& i_Text, int32_t& o_Value);
+	void Convert(const std::string& i_Text, uint32_t& o_Value);
+	void Convert(const std::string& i_Text, int64_t& o_Value);
+	void Convert(const std::string& i_Text, uint64_t& o_Value);
+	//void Convert(const std::string& i_Text, float& o_Value);
+	void Convert(const std::string& i_Text, double& o_Value);
 	void Convert(const std::string& i_Text, char * o_Value);
 	void Convert(const std::string& i_Text, std::string& o_Value);
 	void Convert(const std::string& i_Text, fsLocator& o_Value);
@@ -112,7 +112,7 @@ private:
 	//	value is the number actually read into the o_Buffer.  This function
 	//	also advances the file pointer.
 	//------------------------------------------------------------------------
-	int read(envType::Int64 i_NumBytes, void* o_Buffer);
+	int read(int64_t i_NumBytes, void* o_Buffer);
 
 	//------------------------------------------------------------------------
 	//	read a chunk of data representing a node

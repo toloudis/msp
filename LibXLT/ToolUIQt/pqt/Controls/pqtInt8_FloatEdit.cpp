@@ -15,7 +15,7 @@
 // Set value into control
 //----------------------------------------------------------------------------
 void pqtInt8_FloatEdit_Converter::SetValueIntoControl(tqcFloatEdit* i_pActualControl,
-													 envType::Int8 i_Value)
+													 int8_t i_Value)
 {
 	i_pActualControl->SetFloatValue(i_Value);
 }
@@ -23,9 +23,9 @@ void pqtInt8_FloatEdit_Converter::SetValueIntoControl(tqcFloatEdit* i_pActualCon
 //----------------------------------------------------------------------------
 // Get value from control
 //----------------------------------------------------------------------------
-envType::Int8 pqtInt8_FloatEdit_Converter::GetValueFromControl(tqcFloatEdit* i_pActualControl)
+int8_t pqtInt8_FloatEdit_Converter::GetValueFromControl(tqcFloatEdit* i_pActualControl)
 {
-	return (envType::Int8) i_pActualControl->GetFloatValue();
+	return (int8_t) i_pActualControl->GetFloatValue();
 }
 
 #endif

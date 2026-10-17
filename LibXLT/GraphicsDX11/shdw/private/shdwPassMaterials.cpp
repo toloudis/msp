@@ -447,9 +447,9 @@ float shdwPassMaterials::hash_material(const std::string i_MaterialName)
 float shdwPassMaterials::hash_material_one(const std::string i_MaterialName)
 {
 	
-	const envType::UInt32 mask = 0x00ffffff;
+	const uint32_t mask = 0x00ffffff;
 
-	envType::UInt32 result = 0;
+	uint32_t result = 0;
 	int len = i_MaterialName.length();
 	if (len < 16)
 	{
@@ -479,7 +479,7 @@ float shdwPassMaterials::hash_material_two(const std::string i_MaterialName)
 {
 	unsigned char * str = (unsigned char *)i_MaterialName.c_str();
 
-	const envType::UInt32 mask = 0x00ffffff;
+	const uint32_t mask = 0x00ffffff;
     unsigned long result = 5381;
     int c;
 
@@ -498,7 +498,7 @@ float shdwPassMaterials::hash_material_two(const std::string i_MaterialName)
 float shdwPassMaterials::hash_material_three(const std::string i_MaterialName)
 {
 	unsigned char * str = (unsigned char *)i_MaterialName.c_str();
-	const envType::UInt32 mask = 0x00ffffff;
+	const uint32_t mask = 0x00ffffff;
 
 	unsigned long result = 0;
 	int c;

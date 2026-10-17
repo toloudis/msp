@@ -216,7 +216,7 @@ void fbxExport::ExportMeshToFBX(fbxGeometryData i_GeometryData, const g3dSceneNo
 		bool indexSize32 = g3dIndexPtr::Needs32Bit( currFrag->GetNumVertices() );
 		if (indexSize32)
 		{
-			envType::UInt32 *buffer = reinterpret_cast<envType::UInt32*>(pIndexBuffer);
+			uint32_t *buffer = reinterpret_cast<uint32_t*>(pIndexBuffer);
 			for ( int i = 0 ; i < currFrag->GetNumIndices() ; i++ )
 			{
 				int currIdx = buffer[i];
@@ -227,7 +227,7 @@ void fbxExport::ExportMeshToFBX(fbxGeometryData i_GeometryData, const g3dSceneNo
 		}
 		else
 		{
-			envType::UInt16 *buffer = reinterpret_cast<envType::UInt16*>(pIndexBuffer);
+			uint16_t *buffer = reinterpret_cast<uint16_t*>(pIndexBuffer);
 			for ( int i = 0 ; i < currFrag->GetNumIndices() ; i++ )
 			{
 				int currIdx = buffer[i];

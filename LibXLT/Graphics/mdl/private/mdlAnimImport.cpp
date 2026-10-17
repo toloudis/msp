@@ -78,7 +78,7 @@ void read_ASKN(	chReader& i_Reader,
 	chDefs::Size size;
 	chDefs::Version version;
 
-	envType::UInt16 num_keys;
+	uint16_t num_keys;
 	std::string skin_name;
 
 	try
@@ -143,8 +143,8 @@ void read_ANLV(	chReader& i_Reader,
 	chDefs::Size size;
 	chDefs::Version version;
 
-	envType::UInt16 num_keys;
-	envType::UInt16 i;
+	uint16_t num_keys;
+	uint16_t i;
 	int children_added = 0;
 
 	if (l_bDebugAnimNodes)
@@ -216,7 +216,7 @@ void read_ANLV(	chReader& i_Reader,
 			}
 			else if (name == c_RORD)
 			{
-				envType::UInt8 order;
+				uint8_t order;
 				i_Reader.Read(order);
 				rotation_order = (mdlRotationOrder::RotationOrder)(order); // enumeration set up to match file format
 			}
@@ -352,8 +352,8 @@ void read_ABLS(	chReader& i_Reader,
 	chDefs::Size size;
 	chDefs::Version version;
 
-	envType::UInt16 num_keys;
-	envType::UInt16 i;
+	uint16_t num_keys;
+	uint16_t i;
 
 	std::string target_name, alias_name;
 
@@ -379,7 +379,7 @@ void read_ABLS(	chReader& i_Reader,
 				if ( num_keys )
 				{
 					float time;
-					envType::Float32 val;
+					float val;
 
 					anKeyData<float>* new_anim = new anKeyData<float>();
 					for ( i = 0 ; i < num_keys ; ++i )

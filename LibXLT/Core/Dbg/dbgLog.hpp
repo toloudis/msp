@@ -18,8 +18,8 @@
 #endif
 #define DBG_LOG_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 #include <string>
@@ -92,7 +92,7 @@ namespace dbgLog
 	//
 	// \return the converted string
 	//------------------------------------------------------------------------
-	std::string UnicodetoANSI(const envType::UInt16 *i_String, int i_Length);
+	std::string UnicodetoANSI(const uint16_t *i_String, int i_Length);
 
 	//------------------------------------------------------------------------
 	//	Don't call Init() and CleanUp() yourself; they are called 

@@ -159,7 +159,7 @@ class cmpsCompass : public pick3dPickObject
 		//----------------------------------------------------------------------------
 		// Find the object that matches the pick code from an earlier pick render.
 		//----------------------------------------------------------------------------
-		virtual pick3dPickObject* MatchPickCode(envType::UInt32 i_PickCode) const;
+		virtual pick3dPickObject* MatchPickCode(uint32_t i_PickCode) const;
 
 
 	protected:

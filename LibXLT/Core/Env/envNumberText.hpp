@@ -21,8 +21,8 @@
 #endif
 #define ENV_NUMBERTEXT_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 #include <string>
@@ -38,16 +38,16 @@ namespace envNumberText
 	//	scientific notation, whichever is shorter ("1e-05"); infinities
 	//	are "inf" and "-inf", and NaNs are "nan" or "-nan".
 	//------------------------------------------------------------------------
-	std::string ToText(envType::Int8 i_Value);
-	std::string ToText(envType::UInt8 i_Value);
-	std::string ToText(envType::Int16 i_Value);
-	std::string ToText(envType::UInt16 i_Value);
-	std::string ToText(envType::Int32 i_Value);
-	std::string ToText(envType::UInt32 i_Value);
-	std::string ToText(envType::Int64 i_Value);
-	std::string ToText(envType::UInt64 i_Value);
-	std::string ToText(envType::Float32 i_Value);
-	std::string ToText(envType::Float64 i_Value);
+	std::string ToText(int8_t i_Value);
+	std::string ToText(uint8_t i_Value);
+	std::string ToText(int16_t i_Value);
+	std::string ToText(uint16_t i_Value);
+	std::string ToText(int32_t i_Value);
+	std::string ToText(uint32_t i_Value);
+	std::string ToText(int64_t i_Value);
+	std::string ToText(uint64_t i_Value);
+	std::string ToText(float i_Value);
+	std::string ToText(double i_Value);
 
 	//------------------------------------------------------------------------
 	//	FromText reads the number at the start of i_Text, after any
@@ -58,16 +58,16 @@ namespace envNumberText
 	// \return false, leaving o_Value unchanged, if i_Text does not start
 	//	with a number
 	//------------------------------------------------------------------------
-	bool FromText(const char* i_Text, envType::Int8& o_Value);
-	bool FromText(const char* i_Text, envType::UInt8& o_Value);
-	bool FromText(const char* i_Text, envType::Int16& o_Value);
-	bool FromText(const char* i_Text, envType::UInt16& o_Value);
-	bool FromText(const char* i_Text, envType::Int32& o_Value);
-	bool FromText(const char* i_Text, envType::UInt32& o_Value);
-	bool FromText(const char* i_Text, envType::Int64& o_Value);
-	bool FromText(const char* i_Text, envType::UInt64& o_Value);
-	bool FromText(const char* i_Text, envType::Float32& o_Value);
-	bool FromText(const char* i_Text, envType::Float64& o_Value);
+	bool FromText(const char* i_Text, int8_t& o_Value);
+	bool FromText(const char* i_Text, uint8_t& o_Value);
+	bool FromText(const char* i_Text, int16_t& o_Value);
+	bool FromText(const char* i_Text, uint16_t& o_Value);
+	bool FromText(const char* i_Text, int32_t& o_Value);
+	bool FromText(const char* i_Text, uint32_t& o_Value);
+	bool FromText(const char* i_Text, int64_t& o_Value);
+	bool FromText(const char* i_Text, uint64_t& o_Value);
+	bool FromText(const char* i_Text, float& o_Value);
+	bool FromText(const char* i_Text, double& o_Value);
 
 	template<class T>
 	inline bool FromText(const std::string& i_Text, T& o_Value)

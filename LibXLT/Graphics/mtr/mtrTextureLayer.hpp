@@ -21,9 +21,6 @@
 //#include "Core/ma/maVector2d.hpp"
 //#endif
 //
-//#ifndef ENV_TYPE_HPP
-//#include "Core/env/envType.hpp"
-//#endif
 //
 //#include <string>
 //#include <vector>
@@ -106,7 +103,7 @@
 //	maVector2d m_Scale;
 //	float m_Rotation;	// radians
 //
-//	envType::Int8 m_UVSet;
+//	int8_t m_UVSet;
 //	
 //	//std::vector<std::string> m_TextureNames;
 //};

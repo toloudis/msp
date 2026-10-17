@@ -62,7 +62,7 @@ public:
 	// Set compiled FX data from buffer and size. 
 	//	This class will make a copy of the data,
 	//====================================================================
-	void SetCompiledFXData(envType::UInt8 * i_CompiledShader, 
+	void SetCompiledFXData(uint8_t * i_CompiledShader, 
 						 int i_CompiledShaderSize);
 	
 	//====================================================================
@@ -72,6 +72,6 @@ public:
 	void SetHLSLSource(const std::string& i_ShaderSource);
 
 	std::string m_ShaderName;
-	matMetaFXBlock< std::vector<envType::UInt8> > m_CompiledFX;
+	matMetaFXBlock< std::vector<uint8_t> > m_CompiledFX;
 	matMetaFXBlock< std::string > m_HLSLSource;
 };

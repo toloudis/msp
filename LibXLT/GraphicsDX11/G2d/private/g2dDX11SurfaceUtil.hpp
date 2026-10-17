@@ -43,10 +43,10 @@ class SurfaceIterator
 							const g2dPFD& i_PFD);
 							//RECT *i_pRect = NULL );
 
-		void GetValue(	envType::UInt8 &o_Red,
-						envType::UInt8 &o_Green,
-						envType::UInt8 &o_Blue,
-						envType::UInt8 &o_Alpha) const;
+		void GetValue(	uint8_t &o_Red,
+						uint8_t &o_Green,
+						uint8_t &o_Blue,
+						uint8_t &o_Alpha) const;
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
 		virtual void GetValue(	float &o_Red,
@@ -90,9 +90,9 @@ class SurfaceIterator
 		int m_RGBA_bytes;		// number of bytes for one pixel
 		const g2dPFD m_PFD;
 		//RECT *m_pRect;
-		envType::UInt8* m_pBase;
+		uint8_t* m_pBase;
 	protected:
-		envType::UInt8* m_pData;
+		uint8_t* m_pData;
 };
 
 class SurfaceIteratorRGBA32F : public SurfaceIterator
@@ -226,7 +226,7 @@ namespace g2dDX11SurfaceUtil
 {
 	// allocate buffer and copy pixels into it. caller must delete [] buffer.
 	void GetSurfacePixels(g2dD3D11TexturePtr i_pSurface,
-		envType::UInt8 **o_pBuffer,
+		uint8_t **o_pBuffer,
 		int *o_bufSize,
 		int *o_width,
 		int *o_height,
@@ -236,7 +236,7 @@ namespace g2dDX11SurfaceUtil
 		RECT* i_pRect = NULL);
 
 	void GetSurfacePixelsTGA(g2dD3D11TexturePtr i_pSurface,
-		envType::UInt8 **o_pBuffer,
+		uint8_t **o_pBuffer,
 		int *o_bufSize,
 		int *o_width,
 		int *o_height,
@@ -275,10 +275,10 @@ namespace g2dDX11SurfaceUtil
 	void GetPixelColor(g2dD3D11TexturePtr i_pSurface,
 							int i_X,
 							int i_Y,
-							envType::UInt8 &o_Red,
-							envType::UInt8 &o_Green,
-							envType::UInt8 &o_Blue,
-							envType::UInt8 &o_Alpha);
+							uint8_t &o_Red,
+							uint8_t &o_Green,
+							uint8_t &o_Blue,
+							uint8_t &o_Alpha);
 
 	//----------------------------------------------------------------------------
 	// Get the color of the pixel at an individual position on the surface
@@ -286,9 +286,9 @@ namespace g2dDX11SurfaceUtil
 	void GetPixelColor(g2dD3D11TexturePtr i_pSurface,
 							int i_X,
 							int i_Y,
-							envType::Float32 &o_Red,
-							envType::Float32 &o_Green,
-							envType::Float32 &o_Blue,
-							envType::Float32 &o_Alpha);
+							float &o_Red,
+							float &o_Green,
+							float &o_Blue,
+							float &o_Alpha);
 } // namespace g2dDX11SurfaceUtil
 

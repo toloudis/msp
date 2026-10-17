@@ -11,8 +11,8 @@
 #endif
 #define VTX_DELTACOMPRESSION_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/Env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 #ifndef MA_AXISBOX_HPP
 #include "Core/Ma/maAxisBox.hpp"
@@ -33,7 +33,7 @@ struct vtxVertexFrame;
 //============================================================================
 namespace vtxDeltaCompression
 {
-	typedef envType::UInt16 CodeType;
+	typedef uint16_t CodeType;
 
 	//--------------------------------------------------------------------
 	// Get delta vectors as the difference between the middle frame and

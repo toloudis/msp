@@ -71,7 +71,7 @@ TEST(maRand32, SameSeedSameSequence)
 {
 	maRand32 a(0x12345678), b(0x12345678), c(0x87654321);
 
-	std::vector<envType::UInt32> from_a, from_b, from_c;
+	std::vector<uint32_t> from_a, from_b, from_c;
 	for( int i = 0 ; i < 1000 ; i++ )
 	{
 		from_a.push_back(a.Rand());
@@ -83,7 +83,7 @@ TEST(maRand32, SameSeedSameSequence)
 	EXPECT_NE(from_a, from_c);
 
 	// not stuck on a few values
-	EXPECT_GT(std::set<envType::UInt32>(from_a.begin(), from_a.end()).size(), 990u);
+	EXPECT_GT(std::set<uint32_t>(from_a.begin(), from_a.end()).size(), 990u);
 }
 
 TEST(maRand32, RangedRandStaysInRange)
@@ -91,7 +91,7 @@ TEST(maRand32, RangedRandStaysInRange)
 	maRand32 gen(0x2468ace0);
 	for( int i = 0 ; i < 100000 ; i++ )
 	{
-		envType::UInt32 value = gen.Rand(10, 20);
+		uint32_t value = gen.Rand(10, 20);
 		ASSERT_GE(value, 10u);
 		ASSERT_LE(value, 20u);
 	}

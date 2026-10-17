@@ -90,7 +90,7 @@ namespace mdlMaterialLegacyParser
 			maVector2d m_Scale;
 			float m_Rotation;	// radians
 
-			envType::Int8 m_UVSet;
+			int8_t m_UVSet;
 
 			//------------------------------------------------------------------------
 			//	SetupLayer is a helper function that will load a texture, add it
@@ -157,7 +157,7 @@ namespace mdlMaterialLegacyParser
 		//------------------------------------------------------------------------
 		void read_color(chReader& i_Reader, maFloatRGBA& o_Color)
 		{
-			envType::Float32 r,g,b,a;
+			float r,g,b,a;
 			i_Reader.Read(r);
 			i_Reader.Read(g);
 			i_Reader.Read(b);
@@ -173,7 +173,7 @@ namespace mdlMaterialLegacyParser
 			i_Reader.Read(o_Layer.m_TextureName);
 
 			// blend type
-			envType::Int8 int8;
+			int8_t int8;
 			i_Reader.Read(int8);
 			o_Layer.m_TextureType = mayTexLayerInfo::TextureType(int8);
 
@@ -206,7 +206,7 @@ namespace mdlMaterialLegacyParser
 //						chDefs::Size i_Size,
 //						mdlMatInfo& o_MatInfo)
 //		{
-//			envType::Int8 vshader;
+//			int8_t vshader;
 //			i_Reader.Read(vshader);
 //
 //			switch (vshader)
@@ -278,7 +278,7 @@ namespace mdlMaterialLegacyParser
 //			//  6 - Texture Scale
 //			//  7 - Texture Rotation
 //
-//			envType::Int8 mat_component, texture_layer, val, num_keys;
+//			int8_t mat_component, texture_layer, val, num_keys;
 //			i_Reader.Read(mat_component);
 //			i_Reader.Read(texture_layer);
 //			i_Reader.Read(val);
@@ -310,7 +310,7 @@ namespace mdlMaterialLegacyParser
 //			bool bInitialActive = true;
 //			if (i_Version >= 1)
 //			{
-//				envType::Int8 initial_active = 1;
+//				int8_t initial_active = 1;
 //				i_Reader.Read(initial_active);
 //				bInitialActive = (initial_active != 0);
 //			}
@@ -377,8 +377,8 @@ namespace mdlMaterialLegacyParser
 						chDefs::Version i_Version,
 						mayShaderParams& o_params)
 		{
-			envType::Int8 i;
-			envType::Int8 count;
+			int8_t i;
+			int8_t count;
 			float fval[16];
 			std::string sval, sval2;
 			
@@ -450,7 +450,7 @@ namespace mdlMaterialLegacyParser
 
 			if (i_Version > 0)
 			{
-				envType::Int8 tmpBool;
+				int8_t tmpBool;
 				// bools
 				i_Reader.Read(count);
 				for (i = 0; i < count; i++)
@@ -740,7 +740,7 @@ namespace mdlMaterialLegacyParser
 		//				read_color(i_Reader, color);
 		//				o_MatInfo.m_Emissive = color;
 
-		//				envType::Float32 spec_power;
+		//				float spec_power;
 		//				i_Reader.Read(spec_power);
 
 		//				if( spec_power == 0.0f )
@@ -754,7 +754,7 @@ namespace mdlMaterialLegacyParser
 		//					o_MatInfo.m_SpecularPower = spec_power;
 		//				}
 
-		//				envType::Int8 num_textures;
+		//				int8_t num_textures;
 		//				i_Reader.Read(num_textures);
 		//				int i;
 		//				for( i = 0 ; i < num_textures ; i++ )
@@ -792,21 +792,21 @@ namespace mdlMaterialLegacyParser
 		//			else if (name == c_MBSC)
 		//			{
 		//				// bump scale
-		//				envType::Float32 bump_scale;
+		//				float bump_scale;
 		//				i_Reader.Read(bump_scale);
 		//				o_MatInfo.m_BumpMapScale = bump_scale;
 		//			}
 		//			else if (name == c_MRFL)
 		//			{
 		//				// reflectivity
-		//				envType::Float32 refl;
+		//				float refl;
 		//				i_Reader.Read(refl);
 		//				o_MatInfo.m_Reflectivity = refl;
 		//			}
 		//			else if (name == c_UVSC)
 		//			{
 		//				// uv scaling factor
-		//				envType::Float32 u,v;
+		//				float u,v;
 		//				i_Reader.Read(u);
 		//				o_MatInfo.m_UScale = u;
 		//				i_Reader.Read(v);
@@ -1067,7 +1067,7 @@ namespace mdlMaterialLegacyParser
 		//	o_MaterialInfo.m_SpecularPower = 1.0f;
 		//}
 
-		envType::Int8 num_textures;
+		int8_t num_textures;
 		i_Reader.Read(num_textures);
 		if (num_textures > 0)
 		{

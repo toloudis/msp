@@ -55,10 +55,10 @@ void tmeshIndexBuffer::Reallocate()
 	g2dD3D11IndexBufferPtr index_buffer;
 
 	// Create the index buffer
-	if (GetSizeOfIndex() == sizeof(envType::UInt16))
+	if (GetSizeOfIndex() == sizeof(uint16_t))
 	{
 		bool bNeed32Bit = false;
-		g3dDX11BufferUtil::CreateAndFillIndexBuffer( reinterpret_cast<envType::UInt16*>( m_pIndexBufferCopy ),
+		g3dDX11BufferUtil::CreateAndFillIndexBuffer( reinterpret_cast<uint16_t*>( m_pIndexBufferCopy ),
 													GetNumIndices(),
 													bNeed32Bit,
 													index_buffer,
@@ -66,9 +66,9 @@ void tmeshIndexBuffer::Reallocate()
 	}
 	else
 	{
-		DBG_ASSERT(GetSizeOfIndex() == sizeof(envType::UInt32), "Unrecognized size of index");
+		DBG_ASSERT(GetSizeOfIndex() == sizeof(uint32_t), "Unrecognized size of index");
 		bool bNeed32Bit = true;
-		g3dDX11BufferUtil::CreateAndFillIndexBuffer( reinterpret_cast<envType::UInt32*>( m_pIndexBufferCopy ),
+		g3dDX11BufferUtil::CreateAndFillIndexBuffer( reinterpret_cast<uint32_t*>( m_pIndexBufferCopy ),
 													GetNumIndices(),
 													bNeed32Bit,
 													index_buffer,

@@ -11,8 +11,8 @@
 #endif
 #define G3D_PICKINFO_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 
@@ -33,7 +33,7 @@ public:
 	//--------------------------------------------------------------------
 	// let these be public for now. a pickrenderer will set them.
 	//--------------------------------------------------------------------
-	envType::UInt32 m_ObjectID;
+	uint32_t m_ObjectID;
 	float m_Depth;
 	float m_U,m_V;
 };

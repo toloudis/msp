@@ -516,7 +516,7 @@ void billBillboardObject::SetName(const nameString& i_Name)
 //----------------------------------------------------------------------------
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
-bool billBillboardObject::MatchPickCode(envType::UInt32 i_PickCode) const
+bool billBillboardObject::MatchPickCode(uint32_t i_PickCode) const
 {
 	// No proxies for GPU pick
 	if (!m_pBillboard->GetRenderable())

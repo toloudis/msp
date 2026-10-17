@@ -80,13 +80,13 @@ class gfFileBin : public gfFile
 		//	value is the number actually read into the o_Buffer.  This function
 		//	also advances the file pointer.
 		//------------------------------------------------------------------------
-		int Read(envType::Int64 i_NumBytes, void* o_Buffer);
+		int Read(int64_t i_NumBytes, void* o_Buffer);
 
 		//------------------------------------------------------------------------
 		//	Write writes i_NumBytes from o_Buffer into the file.  The file 
 		//	pointer will also be advanced.
 		//------------------------------------------------------------------------
-		void Write(envType::Int64 i_NumBytes, const void* i_Buffer);
+		void Write(int64_t i_NumBytes, const void* i_Buffer);
 
 		//------------------------------------------------------------------------
 		//	ReadHeader reads the file's header into the o_Header passed to it. If 

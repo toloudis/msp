@@ -33,9 +33,9 @@ void AddGrid(	float i_Width,
 				int i_HeightSections,
 				const maPoint3d& i_Offset,
 				std::vector<maPoint3d>& o_Vertices,
-				std::vector<envType::UInt32>& o_Indices)
+				std::vector<uint32_t>& o_Indices)
 {
-	const envType::UInt32 base = envType::UInt32(o_Vertices.size());
+	const uint32_t base = uint32_t(o_Vertices.size());
 	const int num_width_divisions = i_WidthSections + 1;
 	const float width_delta = i_Width / float(i_WidthSections);
 	const float height_delta = i_Height / float(i_HeightSections);
@@ -54,7 +54,7 @@ void AddGrid(	float i_Width,
 	{
 		for( int w = 0 ; w < i_WidthSections ; w++ )
 		{
-			envType::UInt32 v = base + h * num_width_divisions + w;
+			uint32_t v = base + h * num_width_divisions + w;
 			o_Indices.push_back(v);
 			o_Indices.push_back(v + 1);
 			o_Indices.push_back(v + num_width_divisions);
@@ -76,7 +76,7 @@ bool HitsVertically(const geoKDTree& i_Tree, float i_X, float i_Z)
 TEST(geoKDTree, SingleQuad)
 {
 	maPoint3d points[4] = { maPoint3d(-10, 0, -10), maPoint3d(-10, 0, 10), maPoint3d(10, 0, 10), maPoint3d(10, 0, -10) };
-	envType::UInt32 indices[6] = { 0, 1, 2, 2, 3, 0 };
+	uint32_t indices[6] = { 0, 1, 2, 2, 3, 0 };
 
 	geoKDTree tree;
 	tree.AddTriangles(points, 4, indices, 6);
@@ -90,7 +90,7 @@ TEST(geoKDTree, SingleQuad)
 TEST(geoKDTree, RegularGrid)
 {
 	std::vector<maPoint3d> vertices;
-	std::vector<envType::UInt32> indices;
+	std::vector<uint32_t> indices;
 	AddGrid(20, 20, 10, 10, maPoint3d(0, 0, 0), vertices, indices);
 
 	geoKDTree tree;
@@ -115,7 +115,7 @@ TEST(geoKDTree, RegularGrid)
 TEST(geoKDTree, GridsAroundAHole)
 {
 	std::vector<maPoint3d> vertices;
-	std::vector<envType::UInt32> indices;
+	std::vector<uint32_t> indices;
 	AddGrid(20, 20, 10, 10, maPoint3d(-15, 0, -15), vertices, indices);
 	AddGrid(20, 20, 10, 10, maPoint3d(-15, 0,  15), vertices, indices);
 	AddGrid(20, 20, 10, 10, maPoint3d( 15, 0,  15), vertices, indices);

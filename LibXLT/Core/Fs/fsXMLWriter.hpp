@@ -11,8 +11,8 @@
 #endif
 #define FS_XMLWRITER_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
@@ -93,16 +93,16 @@ public:
 	void WriteElement(std::string& i_KeyName, bool i_Value);
 	void WriteElement(std::string& i_KeyName, short i_Value);
 	void WriteElement(std::string& i_KeyName, float i_Value);
-	void WriteElement(std::string& i_KeyName, envType::Int8 i_Value);
-	void WriteElement(std::string& i_KeyName, envType::UInt8 i_Value);
-	//void WriteElement(std::string& i_KeyName, envType::Int16 i_Value);
-	void WriteElement(std::string& i_KeyName, envType::UInt16 i_Value);
-	//void WriteElement(std::string& i_KeyName, envType::Int32 i_Value);
-	void WriteElement(std::string& i_KeyName, envType::UInt32 i_Value);
-	void WriteElement(std::string& i_KeyName, envType::Int64 i_Value);
-	void WriteElement(std::string& i_KeyName, envType::UInt64 i_Value);
-	//void WriteElement(std::string& i_KeyName, envType::Float32 i_Value);
-	void WriteElement(std::string& i_KeyName, envType::Float64 i_Value);
+	void WriteElement(std::string& i_KeyName, int8_t i_Value);
+	void WriteElement(std::string& i_KeyName, uint8_t i_Value);
+	//void WriteElement(std::string& i_KeyName, int16_t i_Value);
+	void WriteElement(std::string& i_KeyName, uint16_t i_Value);
+	//void WriteElement(std::string& i_KeyName, int32_t i_Value);
+	void WriteElement(std::string& i_KeyName, uint32_t i_Value);
+	void WriteElement(std::string& i_KeyName, int64_t i_Value);
+	void WriteElement(std::string& i_KeyName, uint64_t i_Value);
+	//void WriteElement(std::string& i_KeyName, float i_Value);
+	void WriteElement(std::string& i_KeyName, double i_Value);
 	void WriteElement(std::string& i_KeyName, const char * i_Value);
 	void WriteElement(std::string& i_KeyName, const std::string& i_Value);
 	void WriteElement(std::string& i_KeyName, std::string& i_Value);

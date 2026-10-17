@@ -33,16 +33,16 @@ public:
 	// Set value into control
 	//----------------------------------------------------------------------------
 	static void SetValueIntoControl(tqcNumericUpDown* i_pActualControl,
-									 envType::Int8 i_Value);
+									 int8_t i_Value);
 
 	//----------------------------------------------------------------------------
 	// Get value from control
 	//----------------------------------------------------------------------------
-	static envType::Int8 GetValueFromControl(tqcNumericUpDown* i_pActualControl);
+	static int8_t GetValueFromControl(tqcNumericUpDown* i_pActualControl);
 };
 
 //============================================================================
 //============================================================================
-typedef pqtTemplate_NumericUpDown<prtyInt8, envType::Int8, pqtInt8_NumericUpDown_Converter> pqtInt8_NumericUpDown;
+typedef pqtTemplate_NumericUpDown<prtyInt8, int8_t, pqtInt8_NumericUpDown_Converter> pqtInt8_NumericUpDown;
 
 #endif // USE_QT

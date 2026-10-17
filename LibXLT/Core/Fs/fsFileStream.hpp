@@ -13,9 +13,9 @@
 #endif
 #define FS_FILESTREAM_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/Env/envType.hpp"
-#endif 
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
+#endif
 
 
 //================================================================================
@@ -34,7 +34,7 @@ class fsFileStream
 		// Expanding file position type to 64 bit, but keeping it signed because
 		// the SetPos() function can use negative numbers to move backwards.
 		//--------------------------------------------------------------------------------
-		typedef envType::Int64 FilePosType;
+		typedef int64_t FilePosType;
 
 		//--------------------------------------------------------------------------------
 		//	enum
@@ -75,13 +75,13 @@ class fsFileStream
 		//	value is the number actually read into the o_Buffer.  This function
 		//	also advances the file pointer.
 		//========================================================================
-		int Read(envType::Int64 i_NumBytes, void* o_Buffer);
+		int Read(int64_t i_NumBytes, void* o_Buffer);
 
 		//========================================================================
 		//	Write writes i_NumBytes from o_Buffer into the file.  The file 
 		//	pointer will also be advanced.
 		//========================================================================
-		void Write(envType::Int64 i_NumBytes, const void* i_Buffer);
+		void Write(int64_t i_NumBytes, const void* i_Buffer);
 
 		//========================================================================
 		//	GetFilePos returns the current position of the file pointer.
@@ -91,7 +91,7 @@ class fsFileStream
 		//========================================================================
 		//	GetFileSize returns the size of the file.
 		//========================================================================
-		envType::Int64 GetFileSize() const;
+		int64_t GetFileSize() const;
 
 		//========================================================================
 		//	SetFilePos sets the file pointer to the given value.  It is valid

@@ -73,7 +73,7 @@ namespace
 	//====================================================================
 	void create_basis_vectors(g3dType::BumpTex1Vertex *io_Vertices,
 		int	i_nVertices,
-		const envType::UInt32* i_pIndices,
+		const uint32_t* i_pIndices,
 		int	i_nIndices,
 		bool i_bDoFullComputation = true)
 	{
@@ -489,7 +489,7 @@ void smdlMeshSkinGroup::TransformMesh( const maMatrix4x4* i_BoneMatrices,
 			}
 			
 			// Update basis vectors
-			const std::vector<envType::UInt32> &indicesOfThisFragment =  m_FragmentIndexVecs[i];
+			const std::vector<uint32_t> &indicesOfThisFragment =  m_FragmentIndexVecs[i];
 			create_basis_vectors(pBumpVertices, num_frag_verts, &indicesOfThisFragment[0], indicesOfThisFragment.size() );
 		}
 		else
@@ -613,7 +613,7 @@ void smdlMeshSkinGroup::VertexTransformMesh(float i_CurrentFrame,
 				}
 			}
 			// Update basis vectors
-			const std::vector<envType::UInt32> &indicesOfThisFragment =  m_FragmentIndexVecs[i];
+			const std::vector<uint32_t> &indicesOfThisFragment =  m_FragmentIndexVecs[i];
 			create_basis_vectors(pBumpVertices, num_frag_verts, &indicesOfThisFragment[0], indicesOfThisFragment.size() );
 		}
 		else
@@ -692,7 +692,7 @@ std::vector<maVector3d>* smdlMeshSkinGroup::GetNormals()
 //--------------------------------------------------------------------
 // Access to indices
 //--------------------------------------------------------------------
-std::vector<envType::UInt32>* smdlMeshSkinGroup::GetIndices()
+std::vector<uint32_t>* smdlMeshSkinGroup::GetIndices()
 {	
 	return &(m_FragmentIndexVecs[0]);	
 }

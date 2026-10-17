@@ -13,8 +13,8 @@
 #endif
 #define MAT_SHADERMGR_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 #ifndef IT_STRING_HPP

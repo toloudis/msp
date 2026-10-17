@@ -408,26 +408,26 @@ class g3dSceneNode
 		// PickMask is a user defined bit mask that can be used to filter
 		// the pickable objects. The default value of "0" means "do not filter".
 		//----------------------------------------------------------------------------
-		inline envType::UInt32 GetPickMask() const;
-		void SetPickMask(envType::UInt32 i_PickMask);
+		inline uint32_t GetPickMask() const;
+		void SetPickMask(uint32_t i_PickMask);
 
 		//----------------------------------------------------------------------------
 		// Set ranges of pick codes for this node and its children in order
 		//	to locate the fragment that was picked.
 		//----------------------------------------------------------------------------
-		void SetLowPickCode(envType::UInt32 i_PickCode);
-		void SetHighPickCode(envType::UInt32 i_PickCode);
+		void SetLowPickCode(uint32_t i_PickCode);
+		void SetHighPickCode(uint32_t i_PickCode);
 
 		//----------------------------------------------------------------------------
 		// Is the pick code given within the high and low pick codes assigned
 		// to this node?
 		//----------------------------------------------------------------------------
-		bool ContainsPickCode(envType::UInt32 i_PickCode) const;
+		bool ContainsPickCode(uint32_t i_PickCode) const;
 
 		//--------------------------------------------------------------------
 		//	Returns the node with a fragment with the given pick code
 		//--------------------------------------------------------------------
-		const g3dSceneNode* GetPickedNode(envType::UInt32 i_PickCode) const;
+		const g3dSceneNode* GetPickedNode(uint32_t i_PickCode) const;
 
 		//----------------------------------------------------------------------------
 		//	DebugLogTree dumps a description of the heirarchy and children to the
@@ -498,8 +498,8 @@ class g3dSceneNode
 		maMatrix4x4 m_InvBindPose;
 
 		// GPU Picking info
-		envType::UInt32 m_PickCodeLow, m_PickCodeHigh;
-		envType::UInt32 m_PickMask;
+		uint32_t m_PickCodeLow, m_PickCodeHigh;
+		uint32_t m_PickMask;
 
 		std::string m_Name;
 		std::string m_BakeName;
@@ -1003,7 +1003,7 @@ inline bool g3dSceneNode::GetPickHull() const
 // PickMask is a user defined bit mask that can be used to filter
 // the pickable objects. The default value of "0" means "do not filter".
 //----------------------------------------------------------------------------
-inline envType::UInt32 g3dSceneNode::GetPickMask() const
+inline uint32_t g3dSceneNode::GetPickMask() const
 {
 	return m_PickMask;
 }

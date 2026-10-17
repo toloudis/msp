@@ -419,7 +419,7 @@ int cmraObjectMgr::GetIndexForObject( const nameString& i_Name )
 //----------------------------------------------------------------------------
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
-pick3dPickObject* cmraObjectMgr::MatchPickCode(envType::UInt32 i_PickCode)
+pick3dPickObject* cmraObjectMgr::MatchPickCode(uint32_t i_PickCode)
 {
 	const int num_objects = l_Cameras.size();
 	for (int i=0; i<num_objects; i++)

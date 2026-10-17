@@ -15,8 +15,8 @@
 #endif
 #define FS_AVIFILE_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 #include <string>
@@ -71,7 +71,7 @@ namespace fsAviFile
 	//	AddFrame adds a frame to the end of the movie.  i_ImageSize is the
 	//	size of i_Pixels in bytes.
 	//------------------------------------------------------------------------
-	bool AddFrame(Handle i_Avi, const envType::UInt8* i_Pixels, int i_ImageSize,
+	bool AddFrame(Handle i_Avi, const uint8_t* i_Pixels, int i_ImageSize,
 				  int i_Width, int i_Height, int i_BitsPerPixel);
 
 	//------------------------------------------------------------------------
@@ -100,7 +100,7 @@ namespace fsAviFile
 	//	pixels.  o_Data belongs to the handle and stays valid until the next
 	//	GetFrame or Close.
 	//------------------------------------------------------------------------
-	bool GetFrame(Handle i_Avi, int i_Frame, envType::UInt8*& o_Data, int& o_Size);
+	bool GetFrame(Handle i_Avi, int i_Frame, uint8_t*& o_Data, int& o_Size);
 
 	//------------------------------------------------------------------------
 	//	GetLastErrorMessage describes the result of the last call.

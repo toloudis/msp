@@ -61,7 +61,7 @@ bool matMetaFX::CompareVersion(const envAppVersion &i_Version,
 // Set compiled FX data from buffer and size. This class will 
 // make a copy of the data,
 //====================================================================
-void matMetaFX::SetCompiledFXData(envType::UInt8 * i_CompiledShader, 
+void matMetaFX::SetCompiledFXData(uint8_t * i_CompiledShader, 
 								  int i_CompiledShaderSize)
 {
 	if (i_CompiledShaderSize > 0)

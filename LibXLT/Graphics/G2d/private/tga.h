@@ -1,8 +1,8 @@
 #ifndef _H_TGA
 #define _H_TGA
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 #include <stdio.h>
@@ -58,11 +58,11 @@ class TgaFooter
 
 /* read or write pixels */
 /* can read or write pixels in chunks of any size including single pixels*/
-int TGA_Read(const itString& filePath, FILE *fp, int *width, int *height, envType::UInt32** data);
+int TGA_Read(const itString& filePath, FILE *fp, int *width, int *height, uint32_t** data);
 
 /* write 32bits rgba uncompressed tga file */
 /* input data is a 32bits rgba array */
-void TGA_Write_RGBA(std::ostream &os, int width, int height, envType::UInt32** data);
+void TGA_Write_RGBA(std::ostream &os, int width, int height, uint32_t** data);
 
 #endif /* _H_TGA */
 

@@ -447,7 +447,7 @@ class cmraCameraObject : public mnmObject,
 		//----------------------------------------------------------------------------
 		// Find the object that matches the pick code from an earlier pick render.
 		//----------------------------------------------------------------------------
-		virtual bool MatchPickCode(envType::UInt32 i_PickCode);
+		virtual bool MatchPickCode(uint32_t i_PickCode);
 
 		//--------------------------------------------------------------------
 		//	Renderable sets whether the cmraCameraObject can be selected.

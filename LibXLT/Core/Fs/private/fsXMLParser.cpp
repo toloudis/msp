@@ -145,43 +145,43 @@ void fsXMLParser::Convert(const std::string& i_Text, float& o_Value)
 {
 	envNumberText::FromText(i_Text, o_Value);
 }
-void fsXMLParser::Convert(const std::string& i_Text, envType::Int8& o_Value)
+void fsXMLParser::Convert(const std::string& i_Text, int8_t& o_Value)
 {
 	envNumberText::FromText(i_Text, o_Value);
 }
-void fsXMLParser::Convert(const std::string& i_Text, envType::UInt8& o_Value)
+void fsXMLParser::Convert(const std::string& i_Text, uint8_t& o_Value)
 {
 	envNumberText::FromText(i_Text, o_Value);
 }
-//void fsXMLParser::Convert(const std::string& i_Text, envType::Int16& o_Value)
+//void fsXMLParser::Convert(const std::string& i_Text, int16_t& o_Value)
 //{
 //	if (i_Text.length() > 0) o_Value = XmlConvert::ToInt16(new std::string(i_Text.c_str()));
 //}
-void fsXMLParser::Convert(const std::string& i_Text, envType::UInt16& o_Value)
+void fsXMLParser::Convert(const std::string& i_Text, uint16_t& o_Value)
 {
 	envNumberText::FromText(i_Text, o_Value);
 }
-//void fsXMLParser::Convert(const std::string& i_Text, envType::Int32& o_Value)
+//void fsXMLParser::Convert(const std::string& i_Text, int32_t& o_Value)
 //{
 //	if (i_Text.length() > 0) o_Value = XmlConvert::ToInt32(new std::string(i_Text.c_str()));
 //}
-void fsXMLParser::Convert(const std::string& i_Text, envType::UInt32& o_Value)
+void fsXMLParser::Convert(const std::string& i_Text, uint32_t& o_Value)
 {
 	envNumberText::FromText(i_Text, o_Value);
 }
-void fsXMLParser::Convert(const std::string& i_Text, envType::Int64& o_Value)
+void fsXMLParser::Convert(const std::string& i_Text, int64_t& o_Value)
 {
 	envNumberText::FromText(i_Text, o_Value);
 }
-void fsXMLParser::Convert(const std::string& i_Text, envType::UInt64& o_Value)
+void fsXMLParser::Convert(const std::string& i_Text, uint64_t& o_Value)
 {
 	envNumberText::FromText(i_Text, o_Value);
 }
-//void fsXMLParser::Convert(const std::string& i_Text, envType::Float32& o_Value)
+//void fsXMLParser::Convert(const std::string& i_Text, float& o_Value)
 //{
 //	if (i_Text.length() > 0) o_Value = XmlConvert::ToDecimal(new std::string(i_Text.c_str()));
 //}
-void fsXMLParser::Convert(const std::string& i_Text, envType::Float64& o_Value)
+void fsXMLParser::Convert(const std::string& i_Text, double& o_Value)
 {
 	envNumberText::FromText(i_Text, o_Value);
 }
@@ -233,7 +233,7 @@ void fsXMLParser::free_resources()
 //	value is the number actually read into the o_Buffer.  This function
 //	also advances the file pointer.
 //------------------------------------------------------------------------
-int fsXMLParser::read(envType::Int64 i_NumBytes, void* o_Buffer)
+int fsXMLParser::read(int64_t i_NumBytes, void* o_Buffer)
 {
 	int size = strlen(((char*)m_pBuffer));
 	int bytes_to_copy = (((size - m_BufferIndex) > i_NumBytes) ? i_NumBytes : (size - m_BufferIndex));

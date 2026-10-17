@@ -17,7 +17,7 @@ namespace
 {
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void find_bit_span(char& o_FirstBit, char& o_NumBits, envType::UInt32 i_Mask)
+void find_bit_span(char& o_FirstBit, char& o_NumBits, uint32_t i_Mask)
 {
 	if( i_Mask == 0 )
 	{
@@ -27,7 +27,7 @@ void find_bit_span(char& o_FirstBit, char& o_NumBits, envType::UInt32 i_Mask)
 	}
 
 	// find first bit
-	envType::UInt32 test = 1;
+	uint32_t test = 1;
 	int i;
 
 	for( i = 0 ; i < 32 ; i++ )
@@ -94,10 +94,10 @@ g2dPFD::g2dPFD( PixelFormat i_PixelFormat, int i_BitsPerPixel )
 //--------------------------------------------------------------------
 //	This constructor deduces the pixel format from the given masks.
 //--------------------------------------------------------------------
-g2dPFD::g2dPFD(	envType::UInt32 i_RedMask,
-				envType::UInt32 i_GreenMask,
-				envType::UInt32 i_BlueMask,
-				envType::UInt32 i_AlphaMask,
+g2dPFD::g2dPFD(	uint32_t i_RedMask,
+				uint32_t i_GreenMask,
+				uint32_t i_BlueMask,
+				uint32_t i_AlphaMask,
 				int i_BitsPerPixel)
 :	m_BitsPerPixel(i_BitsPerPixel),
 	m_bSwizzled(false),
@@ -139,10 +139,10 @@ g2dPFD::g2dPFD(	int i_FirstRedBit,
 //--------------------------------------------------------------------
 //	This Set deduces the pixel format from the given masks
 //--------------------------------------------------------------------
-void g2dPFD::Set(	envType::UInt32 i_RedMask,
-					envType::UInt32 i_GreenMask,
-					envType::UInt32 i_BlueMask,
-					envType::UInt32 i_AlphaMask,
+void g2dPFD::Set(	uint32_t i_RedMask,
+					uint32_t i_GreenMask,
+					uint32_t i_BlueMask,
+					uint32_t i_AlphaMask,
 					int i_BitsPerPixel)
 {
 	m_BitsPerPixel = i_BitsPerPixel;
@@ -181,9 +181,9 @@ void g2dPFD::Set(	int i_FirstRedBit,
 //--------------------------------------------------------------------
 //	MakeColor makes a g2dARGBColor from the given pixel
 //--------------------------------------------------------------------
-g2dARGBColor g2dPFD::MakeColor(envType::UInt32 i_Pixel) const
+g2dARGBColor g2dPFD::MakeColor(uint32_t i_Pixel) const
 {
-	envType::UInt32 red, green, blue, alpha;
+	uint32_t red, green, blue, alpha;
 
 	red = (i_Pixel >> m_FirstRed) & ((0x01 << m_NumRed) - 1);
 	green = (i_Pixel >> m_FirstGreen) & ((0x01 << m_NumGreen) - 1);
@@ -202,9 +202,9 @@ g2dARGBColor g2dPFD::MakeColor(envType::UInt32 i_Pixel) const
 //	in such a way that the maximum value of a color channel in the
 //	pixel is 255 in the g2dARGBColor.
 //--------------------------------------------------------------------
-g2dARGBColor g2dPFD::MakeScaledColor(envType::UInt32 i_Pixel) const
+g2dARGBColor g2dPFD::MakeScaledColor(uint32_t i_Pixel) const
 {
-	envType::UInt32 red, green, blue, alpha;
+	uint32_t red, green, blue, alpha;
 
 	red = (i_Pixel >> m_FirstRed) & ((0x01 << m_NumRed) - 1);
 	green = (i_Pixel >> m_FirstGreen) & ((0x01 << m_NumGreen) - 1);
@@ -228,9 +228,9 @@ g2dARGBColor g2dPFD::MakeScaledColor(envType::UInt32 i_Pixel) const
 //	to the pixel format of this g2dPFD.  Some color data could
 //	be lost in this operation.
 //--------------------------------------------------------------------
-envType::UInt32 g2dPFD::TransformPixel(envType::UInt32 i_Pixel, const g2dPFD& i_PFD) const
+uint32_t g2dPFD::TransformPixel(uint32_t i_Pixel, const g2dPFD& i_PFD) const
 {
-	envType::UInt32 red, green, blue, alpha;
+	uint32_t red, green, blue, alpha;
 
 	red = (i_Pixel >> i_PFD.m_FirstRed) & ((0x01 << i_PFD.m_NumRed) - 1);
 	green = (i_Pixel >> i_PFD.m_FirstGreen) & ((0x01 << i_PFD.m_NumGreen) - 1);

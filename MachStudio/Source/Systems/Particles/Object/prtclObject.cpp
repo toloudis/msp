@@ -1331,7 +1331,7 @@ bool prtclObject::RayPick(	const maPoint3d& i_RayStart,
 //----------------------------------------------------------------------------
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
-bool prtclObject::MatchPickCode(envType::UInt32 i_PickCode) const
+bool prtclObject::MatchPickCode(uint32_t i_PickCode) const
 {
 	if (!m_pDebugObject->GetRenderable())
 		return false;

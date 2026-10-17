@@ -13,8 +13,8 @@
 #endif
 #define G2D_PFD_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 #ifndef G2D_ARGBCOLOR_HPP
 #include "Graphics/g2d/g2dARGBColor.hpp"
@@ -28,11 +28,11 @@
 //============================================================================
 struct g2dPixelR16G16B16A16
 {
-	envType::UInt16 r,g,b,a;
+	uint16_t r,g,b,a;
 };
 struct g2dPixelR8G8B8A8
 {
-	envType::UInt8 r,g,b,a;
+	uint8_t r,g,b,a;
 };
 struct g2dPixelRGBA32F
 {
@@ -86,10 +86,10 @@ class g2dPFD
 		//--------------------------------------------------------------------
 		//	This constructor deduces the pixel format from the given masks.
 		//--------------------------------------------------------------------
-		g2dPFD(	envType::UInt32 i_RedMask,
-				envType::UInt32 i_GreenMask,
-				envType::UInt32 i_BlueMask,
-				envType::UInt32 i_AlphaMask,
+		g2dPFD(	uint32_t i_RedMask,
+				uint32_t i_GreenMask,
+				uint32_t i_BlueMask,
+				uint32_t i_AlphaMask,
 				int i_BitsPerPixel);
 
 		//--------------------------------------------------------------------
@@ -109,10 +109,10 @@ class g2dPFD
 		//--------------------------------------------------------------------
 		//	This Set deduces the pixel format from the given masks
 		//--------------------------------------------------------------------
-		void Set(	envType::UInt32 i_RedMask,
-					envType::UInt32 i_GreenMask,
-					envType::UInt32 i_BlueMask,
-					envType::UInt32 i_AlphaMask,
+		void Set(	uint32_t i_RedMask,
+					uint32_t i_GreenMask,
+					uint32_t i_BlueMask,
+					uint32_t i_AlphaMask,
 					int i_BitsPerPixel);
 
 		//--------------------------------------------------------------------
@@ -200,34 +200,34 @@ class g2dPFD
 		//	MakePixel makes a 32-bit pixel with the format from the given
 		//	color.  The alpha section, if present, will be zero.
 		//--------------------------------------------------------------------
-		envType::UInt32 MakePixel(const g2dRGBColor &i_Color) const;
-		envType::UInt32 MakePixel(int i_Red, int i_Green, int i_Blue) const;
+		uint32_t MakePixel(const g2dRGBColor &i_Color) const;
+		uint32_t MakePixel(int i_Red, int i_Green, int i_Blue) const;
 
 		//--------------------------------------------------------------------
 		//	MakePixel makes a 32-bit pixel with the format from the given
 		//	color.
 		//--------------------------------------------------------------------
-		envType::UInt32 MakePixel(const g2dARGBColor &i_Color) const;
-		envType::UInt32 MakePixel(int i_Red, int i_Green, int i_Blue, int i_Alpha) const;
+		uint32_t MakePixel(const g2dARGBColor &i_Color) const;
+		uint32_t MakePixel(int i_Red, int i_Green, int i_Blue, int i_Alpha) const;
 
 		//--------------------------------------------------------------------
 		//	MakeColor makes a g2dARGBColor from the given pixel
 		//--------------------------------------------------------------------
-		g2dARGBColor MakeColor(envType::UInt32 i_Pixel) const;
+		g2dARGBColor MakeColor(uint32_t i_Pixel) const;
 
 		//--------------------------------------------------------------------
 		//	MakeScaledColor makes a g2dARGBColor from the given pixel,
 		//	in such a way that the maximum value of a color channel in the
 		//	pixel is 255 in the g2dARGBColor.
 		//--------------------------------------------------------------------
-		g2dARGBColor MakeScaledColor(envType::UInt32 i_Pixel) const;
+		g2dARGBColor MakeScaledColor(uint32_t i_Pixel) const;
 
 		//--------------------------------------------------------------------
 		//	TransformPixel reformats a pixel from it's given pixel format
 		//	to the pixel format of this g2dPFD.  Some color data could
 		//	be lost in this operation.
 		//--------------------------------------------------------------------
-		envType::UInt32 TransformPixel(envType::UInt32 i_Pixel, const g2dPFD& i_PFD) const;
+		uint32_t TransformPixel(uint32_t i_Pixel, const g2dPFD& i_PFD) const;
 
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
@@ -368,9 +368,9 @@ inline int g2dPFD::NumAlphaBits() const
 //	MakePixel makes a 32-bit pixel with the format from the given
 //	color.  The alpha section, if present, will be zero.
 //--------------------------------------------------------------------
-inline envType::UInt32 g2dPFD::MakePixel(int i_Red, int i_Green, int i_Blue) const
+inline uint32_t g2dPFD::MakePixel(int i_Red, int i_Green, int i_Blue) const
 {
-	envType::UInt32 red, green, blue;
+	uint32_t red, green, blue;
 
 	red = i_Red;
 	red >>= 8 - m_NumRed;
@@ -387,7 +387,7 @@ inline envType::UInt32 g2dPFD::MakePixel(int i_Red, int i_Green, int i_Blue) con
 	return red | green | blue;
 }
 
-inline envType::UInt32 g2dPFD::MakePixel(const g2dRGBColor &i_Color) const
+inline uint32_t g2dPFD::MakePixel(const g2dRGBColor &i_Color) const
 {
 	return this->MakePixel(i_Color.GetRed(), i_Color.GetGreen(), i_Color.GetBlue());
 }
@@ -396,9 +396,9 @@ inline envType::UInt32 g2dPFD::MakePixel(const g2dRGBColor &i_Color) const
 //	MakePixel makes a 32-bit pixel with the format from the given
 //	color.
 //--------------------------------------------------------------------
-inline envType::UInt32 g2dPFD::MakePixel(int i_Red, int i_Green, int i_Blue, int i_Alpha) const
+inline uint32_t g2dPFD::MakePixel(int i_Red, int i_Green, int i_Blue, int i_Alpha) const
 {
-	envType::UInt32 red, green, blue, alpha;
+	uint32_t red, green, blue, alpha;
 
 	red = i_Red;
 	red >>= 8 - m_NumRed;
@@ -419,7 +419,7 @@ inline envType::UInt32 g2dPFD::MakePixel(int i_Red, int i_Green, int i_Blue, int
 	return red | green | blue | alpha;
 }
 
-inline envType::UInt32 g2dPFD::MakePixel(const g2dARGBColor &i_Color) const
+inline uint32_t g2dPFD::MakePixel(const g2dARGBColor &i_Color) const
 {
 	return this->MakePixel(i_Color.GetRed(), i_Color.GetGreen(), i_Color.GetBlue(), i_Color.GetAlpha());
 }

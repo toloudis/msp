@@ -17,8 +17,8 @@
 #endif
 #define GEO_KDTREE_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 #ifndef MA_POINT3D_HPP
 #include "Core/ma/maPoint3d.hpp"
@@ -57,7 +57,7 @@ class geoKDTree
 		//--------------------------------------------------------------------
 		void	AddTriangles(	const maPoint3d*			i_Vertices,
 								int							i_NumVertices,
-								const envType::UInt32*		i_Indices,
+								const uint32_t*		i_Indices,
 								int							i_NumIndices);
 
 		//--------------------------------------------------------------------

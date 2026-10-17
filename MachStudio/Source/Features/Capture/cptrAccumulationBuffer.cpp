@@ -115,10 +115,10 @@ void cptrAccumulationBuffer::Capture()
 	// dump our accumulated pixels into a ddraw surface
 
 	//lock the surface 
-	envType::UInt8* pbyBuffer = ( envType::UInt8* )m_pAccumImg->Lock();
+	uint8_t* pbyBuffer = ( uint8_t* )m_pAccumImg->Lock();
 
 	g2dPixelRGBA32F curPixel;
-	envType::UInt32 dwPosition;
+	uint32_t dwPosition;
 	int pixelIndex = 0;
 
 	DBG_ASSERT(m_PFD.GetNumChannels() == 4, "Unrecognized num channels in accumulation image.");
@@ -127,9 +127,9 @@ void cptrAccumulationBuffer::Capture()
 	//convert pixels into correct format.
 	// float16, uint8, or float32.
 	// assume that 8 bpc is the uint, and 16/32 bpc are float.
-	envType::UInt16 pixel16f[4];
+	uint16_t pixel16f[4];
 	float pixel32f[4];
-	envType::UInt8 pixel8u[4];
+	uint8_t pixel8u[4];
 
 	int bytesPerPixel = m_PFD.BitsPerPixel()/8;
 
@@ -151,10 +151,10 @@ void cptrAccumulationBuffer::Capture()
 			switch(m_PFD.GetBitsPerChannel())
 			{
 			case 8:
-				pixel8u[0] = (envType::UInt8)(curPixel.r * 255.0f);
-				pixel8u[1] = (envType::UInt8)(curPixel.g * 255.0f);
-				pixel8u[2] = (envType::UInt8)(curPixel.b * 255.0f);
-				pixel8u[3] = (envType::UInt8)(curPixel.a * 255.0f);		
+				pixel8u[0] = (uint8_t)(curPixel.r * 255.0f);
+				pixel8u[1] = (uint8_t)(curPixel.g * 255.0f);
+				pixel8u[2] = (uint8_t)(curPixel.b * 255.0f);
+				pixel8u[3] = (uint8_t)(curPixel.a * 255.0f);		
 				DBG_ASSERT(bytesPerPixel == 4, "wrong pixel size");
 				memcpy( &pbyBuffer[ dwPosition ], &pixel8u[0] , bytesPerPixel ); 
 				break;

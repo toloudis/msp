@@ -316,7 +316,7 @@ bool Append(Handle avi1, Handle avi2, const fsLocator& i_SavePath)
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-bool AddFrame(Handle avi, const envType::UInt8* i_Pixels, int i_ImageSize,
+bool AddFrame(Handle avi, const uint8_t* i_Pixels, int i_ImageSize,
 			  int i_Width, int i_Height, int i_BitsPerPixel)
 {
 	if (avi==NULL){ LastError = AVIERR_BADHANDLE; return false; }
@@ -528,7 +528,7 @@ void GetDimensions( Handle avi, int& o_Width, int& o_Height )
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-bool GetFrame( Handle avi, int i_Frame, envType::UInt8*& o_Data, int& o_Size )
+bool GetFrame( Handle avi, int i_Frame, uint8_t*& o_Data, int& o_Size )
 {
 	if (avi==NULL){ LastError = AVIERR_BADHANDLE; return false; }
 	fsAviFile::File *au = avi;

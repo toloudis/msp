@@ -33,16 +33,16 @@ public:
 	// Set value into control
 	//----------------------------------------------------------------------------
 	static void SetValueIntoControl(twcFloatEdit* i_pActualControl,
-									 envType::Int8 i_Value);
+									 int8_t i_Value);
 
 	//----------------------------------------------------------------------------
 	// Get value from control
 	//----------------------------------------------------------------------------
-	static envType::Int8 GetValueFromControl(twcFloatEdit* i_pActualControl);
+	static int8_t GetValueFromControl(twcFloatEdit* i_pActualControl);
 };
 
 //============================================================================
 //============================================================================
-typedef pwxTemplate_FloatEdit<prtyInt8, envType::Int8, pwxInt8_FloatEdit_Converter> pwxInt8_FloatEdit;
+typedef pwxTemplate_FloatEdit<prtyInt8, int8_t, pwxInt8_FloatEdit_Converter> pwxInt8_FloatEdit;
 
 #endif // USE_WXWIDGETS

@@ -289,7 +289,7 @@ public:
 	//----------------------------------------------------------------------------
 	// Find the object that matches the pick code from an earlier pick render.
 	//----------------------------------------------------------------------------
-	static pick3dPickObject* MatchPickCode(envType::UInt32 i_PickCode)
+	static pick3dPickObject* MatchPickCode(uint32_t i_PickCode)
 	{
 		if ( sm_Object->GetPickObject()->MatchPickCode( i_PickCode ) )
 		{

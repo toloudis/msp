@@ -75,7 +75,7 @@ namespace
 					}
 
 					did_read_PATT = true;
-					envType::Int32 nParticles;
+					int32_t nParticles;
 					i_Reader.Read(nParticles);
 
 					o_VertexFrame.m_Particles.resize(nParticles);
@@ -89,7 +89,7 @@ namespace
 					}
 					else
 					{
-						envType::Float32 val;
+						float val;
 						for (int i = 0; i < nParticles; i++) 
 						{
 							prtParticleAttr &part = o_VertexFrame.m_Particles[i];

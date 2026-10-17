@@ -59,7 +59,7 @@ namespace maFunctions
 		// This is about 3 times slower than Microsoft's rand(), but the random number distribution is 
 		// significantly improved.  A trade-off, we choose accuracy.  -- TMS 2/4/02
 		//
-		envType::UInt32 num = ( l_randgen.Rand() / 2 );  // just the positive entries
+		uint32_t num = ( l_randgen.Rand() / 2 );  // just the positive entries
 		float ret_val = float(num) / float( lc_fRandPositiveMax );
 
 		// They share this code to the end
@@ -75,7 +75,7 @@ namespace maFunctions
 	//------------------------------------------------------------------------
 	float FloatRand(float i_Lo, float i_Hi, maRand32& i_RandGen)
 	{
-		envType::UInt32 num = ( i_RandGen.Rand() / 2 );  // just the positive entries
+		uint32_t num = ( i_RandGen.Rand() / 2 );  // just the positive entries
 		float ret_val = float(num) / float( lc_fRandPositiveMax );
 
 		// They share this code to the end
@@ -95,7 +95,7 @@ namespace maFunctions
 		// Question: What is slower, a FP mul + integer convert, or a integer
 		// mod?  Some places say that the FP mul gives better uniformity.
 
-		envType::UInt32 num = ( l_randgen.Rand() / 2 );  // just the positive entries
+		uint32_t num = ( l_randgen.Rand() / 2 );  // just the positive entries
 		num = num % (i_Hi-i_Lo+1);
 		return i_Lo + num;
 	}
@@ -271,7 +271,7 @@ namespace maFunctions
 	//-----------------------------------------------------------------------------
 	// convert float to half, bitwise
 	//-----------------------------------------------------------------------------
-	envType::UInt16 FloatToHalfI(envType::UInt32 i)
+	uint16_t FloatToHalfI(uint32_t i)
 	{
 		int s =  (i >> 16) & 0x00008000;
 		int e = ((i >> 23) & 0x000000ff) - (127 - 15);
@@ -313,9 +313,9 @@ namespace maFunctions
 	//-----------------------------------------------------------------------------
 	// convert float to half
 	//-----------------------------------------------------------------------------
-	envType::UInt16 FloatToHalf(float i)
+	uint16_t FloatToHalf(float i)
 	{
-		union { float f; envType::UInt32 i; } v;
+		union { float f; uint32_t i; } v;
 		v.f = i;
 		return FloatToHalfI(v.i);
 	}
@@ -323,7 +323,7 @@ namespace maFunctions
 	//-----------------------------------------------------------------------------
 	// convert half to float, bitwise
 	//-----------------------------------------------------------------------------
-	envType::UInt32 HalfToFloatI(envType::UInt16 y)
+	uint32_t HalfToFloatI(uint16_t y)
 	{
 		int s = (y >> 15) & 0x00000001;
 		int e = (y >> 10) & 0x0000001f;
@@ -368,9 +368,9 @@ namespace maFunctions
 	//-----------------------------------------------------------------------------
 	// convert half to float
 	//-----------------------------------------------------------------------------
-	float HalfToFloat(envType::UInt16 y)
+	float HalfToFloat(uint16_t y)
 	{
-		union { float f; envType::UInt32 i; } v;
+		union { float f; uint32_t i; } v;
 		v.i = HalfToFloatI(y);
 		return v.f;
 	}

@@ -7,7 +7,7 @@
 #ifdef CPTR_RENDERBAKEDIALOG_HPP
 #error cptrRenderBakeDialog.hpp multiply included
 #endif
-#define CPTR_RENDERBAKE_HPP
+#define CPTR_RENDERBAKEDIALOG_HPP
 
 //	needed before App so USE_WXWIDGETS is set
 #ifndef TWX_WIDGETS_HPP
@@ -35,7 +35,7 @@ class rprfPrefsObject;
 //============================================================================
 // Class RdrLayersDialog
 //============================================================================
-class cptrRenderBakeDialog : public wxDialog 
+class cptrRenderBakeDialog : public wxDialog
 {
 	public:
 		static cptrRenderBakeDialog* Instance;

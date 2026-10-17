@@ -57,22 +57,22 @@ TYPED_TEST(envNumberTextTyped, RejectsTextThatIsNotANumber)
 //
 TEST(envNumberText, ToTextWritesBytesAsNumbers)
 {
-	EXPECT_EQ("-100", envNumberText::ToText(envType::Int8(-100)));
-	EXPECT_EQ("-128", envNumberText::ToText(envType::Int8(-128)));
-	EXPECT_EQ("0", envNumberText::ToText(envType::Int8(0)));
-	EXPECT_EQ("65", envNumberText::ToText(envType::UInt8('A')));
-	EXPECT_EQ("200", envNumberText::ToText(envType::UInt8(200)));
-	EXPECT_EQ("255", envNumberText::ToText(envType::UInt8(255)));
+	EXPECT_EQ("-100", envNumberText::ToText(int8_t(-100)));
+	EXPECT_EQ("-128", envNumberText::ToText(int8_t(-128)));
+	EXPECT_EQ("0", envNumberText::ToText(int8_t(0)));
+	EXPECT_EQ("65", envNumberText::ToText(uint8_t('A')));
+	EXPECT_EQ("200", envNumberText::ToText(uint8_t(200)));
+	EXPECT_EQ("255", envNumberText::ToText(uint8_t(255)));
 }
 
 TEST(envNumberText, ToTextWritesWholeRange)
 {
-	EXPECT_EQ("-32768", envNumberText::ToText(envType::Int16(-32768)));
-	EXPECT_EQ("65535", envNumberText::ToText(envType::UInt16(65535)));
-	EXPECT_EQ("-2147483648", envNumberText::ToText(std::numeric_limits<envType::Int32>::lowest()));
-	EXPECT_EQ("4294967295", envNumberText::ToText(std::numeric_limits<envType::UInt32>::max()));
-	EXPECT_EQ("-9223372036854775808", envNumberText::ToText(std::numeric_limits<envType::Int64>::lowest()));
-	EXPECT_EQ("18446744073709551615", envNumberText::ToText(std::numeric_limits<envType::UInt64>::max()));
+	EXPECT_EQ("-32768", envNumberText::ToText(int16_t(-32768)));
+	EXPECT_EQ("65535", envNumberText::ToText(uint16_t(65535)));
+	EXPECT_EQ("-2147483648", envNumberText::ToText(std::numeric_limits<int32_t>::lowest()));
+	EXPECT_EQ("4294967295", envNumberText::ToText(std::numeric_limits<uint32_t>::max()));
+	EXPECT_EQ("-9223372036854775808", envNumberText::ToText(std::numeric_limits<int64_t>::lowest()));
+	EXPECT_EQ("18446744073709551615", envNumberText::ToText(std::numeric_limits<uint64_t>::max()));
 }
 
 //	Floats use as few digits as read back exactly, so ordinary values look
@@ -116,7 +116,7 @@ TEST(envNumberText, ToTextWritesSpecialFloats)
 //
 TEST(envNumberText, FromTextIsLenient)
 {
-	envType::Int32 i = 0;
+	int32_t i = 0;
 	EXPECT_TRUE(envNumberText::FromText(" \t42", i));
 	EXPECT_EQ(42, i);
 	EXPECT_TRUE(envNumberText::FromText("+7", i));
@@ -126,7 +126,7 @@ TEST(envNumberText, FromTextIsLenient)
 	EXPECT_TRUE(envNumberText::FromText("1.9", i));
 	EXPECT_EQ(1, i);
 
-	envType::Float32 f = 0;
+	float f = 0;
 	EXPECT_TRUE(envNumberText::FromText("  +2.5", f));
 	EXPECT_EQ(2.5f, f);
 	EXPECT_TRUE(envNumberText::FromText("1E6", f));
@@ -148,21 +148,21 @@ TEST(envNumberText, FromTextIsLenient)
 //
 TEST(envNumberText, FromTextOutOfRange)
 {
-	envType::UInt8 u8 = 0;
+	uint8_t u8 = 0;
 	EXPECT_TRUE(envNumberText::FromText("-1", u8));
 	EXPECT_EQ(255, u8);
 	EXPECT_TRUE(envNumberText::FromText("300", u8));
 	EXPECT_EQ(44, u8);
 
-	envType::Int8 i8 = 0;
+	int8_t i8 = 0;
 	EXPECT_TRUE(envNumberText::FromText("200", i8));
 	EXPECT_EQ(-56, i8);
 
-	envType::UInt64 u64 = 0;
+	uint64_t u64 = 0;
 	EXPECT_TRUE(envNumberText::FromText("-1", u64));
-	EXPECT_EQ(std::numeric_limits<envType::UInt64>::max(), u64);
+	EXPECT_EQ(std::numeric_limits<uint64_t>::max(), u64);
 
-	envType::Float32 f = 0;
+	float f = 0;
 	EXPECT_TRUE(envNumberText::FromText("1e300", f));
 	EXPECT_EQ(std::numeric_limits<float>::infinity(), f);
 	EXPECT_TRUE(envNumberText::FromText("-1e300", f));
@@ -170,7 +170,7 @@ TEST(envNumberText, FromTextOutOfRange)
 	EXPECT_TRUE(envNumberText::FromText("1e-300", f));
 	EXPECT_EQ(0.0f, f);
 
-	envType::Float64 d = 0;
+	double d = 0;
 	EXPECT_TRUE(envNumberText::FromText("1e400", d));
 	EXPECT_EQ(std::numeric_limits<double>::infinity(), d);
 }
@@ -182,7 +182,7 @@ TEST(envNumberText, FromTextRoundsFloatOnce)
 {
 	// halfway between two floats, nudged up: the nearest double is the
 	// halfway point itself, which then rounds (to even) the wrong way
-	envType::Float32 f = 0;
+	float f = 0;
 	ASSERT_TRUE(envNumberText::FromText("1.00000005960464477550", f));
 	EXPECT_EQ(1.00000012f, f);
 }

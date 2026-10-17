@@ -499,8 +499,8 @@ const g3dOcclusionTree* bumpTriMeshBumpFrag::GetAOTree() const
 		// Unlock the vertex buffer
 		GetVertexBuffer()->ReadOnlyUnlock();
 
-		envType::UInt32* inds = new envType::UInt32[nInds];
-//		std::vector<envType::UInt32> inds;
+		uint32_t* inds = new uint32_t[nInds];
+//		std::vector<uint32_t> inds;
 //		inds.resize(nInds);
 		// Lock the index buffer
 		BYTE* rawInds = GetIndexBuffer()->ReadOnlyLockIndices();
@@ -508,12 +508,12 @@ const g3dOcclusionTree* bumpTriMeshBumpFrag::GetAOTree() const
 		if (g3dIndexPtr::Needs32Bit(nVerts))
 		{
 			for (int i = 0; i < nInds; i++)
-				inds[i] = (reinterpret_cast<const envType::UInt32*>(rawInds))[i];
+				inds[i] = (reinterpret_cast<const uint32_t*>(rawInds))[i];
 		}
 		else
 		{
 			for (int i = 0; i < nInds; i++)
-				inds[i] = (reinterpret_cast<const envType::UInt16*>(rawInds))[i];
+				inds[i] = (reinterpret_cast<const uint16_t*>(rawInds))[i];
 		}
 		// Unlock the index buffer
 		GetIndexBuffer()->ReadOnlyUnlockIndices();
@@ -648,8 +648,8 @@ void bumpTriMeshBumpFrag::ComponentSort(const maMatrix4x4& i_Transorm,
 
 	// Lock the index buffer
 	unsigned char *index_buffer =  this->LockIndices();
-	envType::UInt16* pIndices16 = reinterpret_cast<envType::UInt16*>( index_buffer );
-	envType::UInt32* pIndices32 = reinterpret_cast<envType::UInt32*>( index_buffer );
+	uint16_t* pIndices16 = reinterpret_cast<uint16_t*>( index_buffer );
+	uint32_t* pIndices32 = reinterpret_cast<uint32_t*>( index_buffer );
 	bool b32Bit = (this->GetSizeOfIndex() == 4);
 
 	const int nIndices = this->GetNumNonShadowIndices();
@@ -704,8 +704,8 @@ void bumpTriMeshBumpFrag::Split(const maAxisBox& i_camSpaceBox)
 
 	// Lock the index buffer
 	unsigned char *index_buffer =  GetIndexBuffer()->ReadOnlyLockIndices();
-	envType::UInt16* pIndices16 = reinterpret_cast<envType::UInt16*>( index_buffer );
-	envType::UInt32* pIndices32 = reinterpret_cast<envType::UInt32*>( index_buffer );
+	uint16_t* pIndices16 = reinterpret_cast<uint16_t*>( index_buffer );
+	uint32_t* pIndices32 = reinterpret_cast<uint32_t*>( index_buffer );
 	bool b32Bit = (this->GetSizeOfIndex() == 4);
 
 	const int nIndices = this->GetNumNonShadowIndices();
@@ -824,17 +824,17 @@ bool bumpTriMeshBumpFrag::GetFaceInfo(int i_Face, maPoint3d o_Points[3], maVecto
 
 	// need to know whether 16 or 32 bit indices.
 	bool indexSize32 = g3dIndexPtr::Needs32Bit(GetNumVertices());
-	envType::UInt32 ind[3];
+	uint32_t ind[3];
 	if (indexSize32)
 	{
-		envType::UInt32 *buffer = reinterpret_cast<envType::UInt32*>(pIndexBuffer);
+		uint32_t *buffer = reinterpret_cast<uint32_t*>(pIndexBuffer);
 		ind[0] = buffer[i_Face*3+0];
 		ind[1] = buffer[i_Face*3+1];
 		ind[2] = buffer[i_Face*3+2];
 	}
 	else
 	{
-		envType::UInt16 *buffer = reinterpret_cast<envType::UInt16*>(pIndexBuffer);
+		uint16_t *buffer = reinterpret_cast<uint16_t*>(pIndexBuffer);
 		ind[0] = buffer[i_Face*3+0];
 		ind[1] = buffer[i_Face*3+1];
 		ind[2] = buffer[i_Face*3+2];

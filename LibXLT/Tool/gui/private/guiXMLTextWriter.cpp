@@ -115,7 +115,7 @@ void guiXMLTextWriter::WriteElement(const char* i_KeyName, float i_Value)
 		sm_pImplementation->WriteElement(i_KeyName, i_Value);
 	}
 }
-void guiXMLTextWriter::WriteElement(const char* i_KeyName, envType::Int8 i_Value)
+void guiXMLTextWriter::WriteElement(const char* i_KeyName, int8_t i_Value)
 {
 	DBG_ASSERT(sm_pImplementation, "guiXMLTextWriter: No implementation");
 	if (sm_pImplementation)
@@ -123,7 +123,7 @@ void guiXMLTextWriter::WriteElement(const char* i_KeyName, envType::Int8 i_Value
 		sm_pImplementation->WriteElement(i_KeyName, i_Value);
 	}
 }
-void guiXMLTextWriter::WriteElement(const char* i_KeyName, envType::UInt8 i_Value)
+void guiXMLTextWriter::WriteElement(const char* i_KeyName, uint8_t i_Value)
 {
 	DBG_ASSERT(sm_pImplementation, "guiXMLTextWriter: No implementation");
 	if (sm_pImplementation)
@@ -131,10 +131,10 @@ void guiXMLTextWriter::WriteElement(const char* i_KeyName, envType::UInt8 i_Valu
 		sm_pImplementation->WriteElement(i_KeyName, i_Value);
 	}
 }
-//void guiXMLTextWriter::WriteElement(const char* i_KeyName, envType::Int16 i_Value)
+//void guiXMLTextWriter::WriteElement(const char* i_KeyName, int16_t i_Value)
 //{
 //}
-void guiXMLTextWriter::WriteElement(const char* i_KeyName, envType::UInt16 i_Value)
+void guiXMLTextWriter::WriteElement(const char* i_KeyName, uint16_t i_Value)
 {
 	DBG_ASSERT(sm_pImplementation, "guiXMLTextWriter: No implementation");
 	if (sm_pImplementation)
@@ -142,10 +142,10 @@ void guiXMLTextWriter::WriteElement(const char* i_KeyName, envType::UInt16 i_Val
 		sm_pImplementation->WriteElement(i_KeyName, i_Value);
 	}
 }
-//void guiXMLTextWriter::WriteElement(const char* i_KeyName, envType::Int32 i_Value)
+//void guiXMLTextWriter::WriteElement(const char* i_KeyName, int32_t i_Value)
 //{
 //}
-void guiXMLTextWriter::WriteElement(const char* i_KeyName, envType::UInt32 i_Value)
+void guiXMLTextWriter::WriteElement(const char* i_KeyName, uint32_t i_Value)
 {
 	DBG_ASSERT(sm_pImplementation, "guiXMLTextWriter: No implementation");
 	if (sm_pImplementation)
@@ -153,7 +153,7 @@ void guiXMLTextWriter::WriteElement(const char* i_KeyName, envType::UInt32 i_Val
 		sm_pImplementation->WriteElement(i_KeyName, i_Value);
 	}
 }
-void guiXMLTextWriter::WriteElement(const char* i_KeyName, envType::Int64 i_Value)
+void guiXMLTextWriter::WriteElement(const char* i_KeyName, int64_t i_Value)
 {
 	DBG_ASSERT(sm_pImplementation, "guiXMLTextWriter: No implementation");
 	if (sm_pImplementation)
@@ -161,7 +161,7 @@ void guiXMLTextWriter::WriteElement(const char* i_KeyName, envType::Int64 i_Valu
 		sm_pImplementation->WriteElement(i_KeyName, i_Value);
 	}
 }
-void guiXMLTextWriter::WriteElement(const char* i_KeyName, envType::UInt64 i_Value)
+void guiXMLTextWriter::WriteElement(const char* i_KeyName, uint64_t i_Value)
 {
 	DBG_ASSERT(sm_pImplementation, "guiXMLTextWriter: No implementation");
 	if (sm_pImplementation)
@@ -169,10 +169,10 @@ void guiXMLTextWriter::WriteElement(const char* i_KeyName, envType::UInt64 i_Val
 		sm_pImplementation->WriteElement(i_KeyName, i_Value);
 	}
 }
-//void guiXMLTextWriter::WriteElement(const char* i_KeyName, envType::Float32 i_Value)
+//void guiXMLTextWriter::WriteElement(const char* i_KeyName, float i_Value)
 //{
 //}
-void guiXMLTextWriter::WriteElement(const char* i_KeyName, envType::Float64 i_Value)
+void guiXMLTextWriter::WriteElement(const char* i_KeyName, double i_Value)
 {
 	DBG_ASSERT(sm_pImplementation, "guiXMLTextWriter: No implementation");
 	if (sm_pImplementation)

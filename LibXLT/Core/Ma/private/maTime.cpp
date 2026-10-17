@@ -36,7 +36,7 @@ maTime maTime::FromFrame(int i_Frame, int i_FrameRate)
 	time.SetFrame(i_Frame, i_FrameRate);
 	return time;
 }
-maTime maTime::FromUnits(envType::Int64 i_TimeValue)
+maTime maTime::FromUnits(int64_t i_TimeValue)
 {
 	maTime time;
 	time.SetValue(i_TimeValue);
@@ -59,11 +59,11 @@ maTime::maTime()
 //--------------------------------------------------------------------
 // Get and Set value in its internal units (6000fps frame rate)
 //--------------------------------------------------------------------
-envType::Int64 maTime::GetValue() const
+int64_t maTime::GetValue() const
 {
 	return m_TimeInUnits;
 }
-void maTime::SetValue(envType::Int64 i_TimeValue)
+void maTime::SetValue(int64_t i_TimeValue)
 {
 	m_TimeInUnits = i_TimeValue;
 }
@@ -91,12 +91,12 @@ void maTime::SetSeconds(float i_Seconds)
 	float fUnits = i_Seconds * 6000.0f;
 	if (fUnits < 0) fUnits -= 0.5f;
 	else fUnits += 0.5f;
-	if (fUnits > std::numeric_limits<envType::Int64>::max())
-		m_TimeInUnits = std::numeric_limits<envType::Int64>::max();
-	else if (fUnits < std::numeric_limits<envType::Int64>::min())
-		m_TimeInUnits = std::numeric_limits<envType::Int64>::min();
+	if (fUnits > std::numeric_limits<int64_t>::max())
+		m_TimeInUnits = std::numeric_limits<int64_t>::max();
+	else if (fUnits < std::numeric_limits<int64_t>::min())
+		m_TimeInUnits = std::numeric_limits<int64_t>::min();
 	else
-		m_TimeInUnits = envType::Int64( fUnits ); 
+		m_TimeInUnits = int64_t( fUnits ); 
 }
 
 //--------------------------------------------------------------------

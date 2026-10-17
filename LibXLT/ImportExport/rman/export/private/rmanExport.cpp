@@ -962,7 +962,7 @@ void rmanExport::ExportPolygonMesh(rmanGlobalData & io_GlobalData, rmanGeometryD
 				bool indexSize32 = g3dIndexPtr::Needs32Bit( currFrag->GetNumVertices() );
 				if (indexSize32)
 				{
-					envType::UInt32 *buffer = reinterpret_cast<envType::UInt32*>(pIndexBuffer);
+					uint32_t *buffer = reinterpret_cast<uint32_t*>(pIndexBuffer);
 					for ( int i = 0 ; i < currFrag->GetNumIndices() ; i++ )
 					{
 						int currIdx = buffer[i];
@@ -973,7 +973,7 @@ void rmanExport::ExportPolygonMesh(rmanGlobalData & io_GlobalData, rmanGeometryD
 				}
 				else
 				{
-					envType::UInt16 *buffer = reinterpret_cast<envType::UInt16*>(pIndexBuffer);
+					uint16_t *buffer = reinterpret_cast<uint16_t*>(pIndexBuffer);
 					for ( int i = 0 ; i < currFrag->GetNumIndices() ; i++ )
 					{
 						int currIdx = buffer[i];
@@ -1892,7 +1892,7 @@ void rmanExport::ExportReflectionMaps(rmanGlobalData & io_GlobalData)
 //--------------------------------------------------------------------
 // ExportSubdivisionMesh()
 //--------------------------------------------------------------------
-//void rmanExport::ExportSubdivisionMesh( std::vector<envType::UInt32>* i_Indices,
+//void rmanExport::ExportSubdivisionMesh( std::vector<uint32_t>* i_Indices,
 //										  std::vector<maPoint3d>* i_Vertices,
 //										  std::vector<maPoint2d>* i_UVs,
 //										  std::string i_SubdivName,

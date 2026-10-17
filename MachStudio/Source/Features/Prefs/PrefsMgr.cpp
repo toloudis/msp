@@ -196,7 +196,7 @@ namespace PrefsMgr
 				//	DefaultBlendDriverChanged - notification that the default
 				//	blend has changed
 				//--------------------------------------------------------------------
-				virtual void DefaultBlendDriverChanged( envType::Int8 i_NewDefaultBlendType );
+				virtual void DefaultBlendDriverChanged( int8_t i_NewDefaultBlendType );
 				void DefaultBlendDriverPropertyChanged(prtyProperty *i_pProperty, bool i_bDirty);
 
 				//--------------------------------------------------------------------
@@ -292,7 +292,7 @@ namespace PrefsMgr
 			if ((node_type == guiXMLTextReader::e_Text) && (keyname.length() > 0))
 			{
 				if (keyname == lc_Key_MRU)
-					{envType::Int32 value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_MRUHistory.SetValue(value);};
+					{int32_t value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_MRUHistory.SetValue(value);};
 				if (keyname == lc_Key_PTimeCode)
 					{bool value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_bPlaybackTimeCode.SetValue(value);};
 				if (keyname == lc_Key_PLoopAtEnd)
@@ -300,15 +300,15 @@ namespace PrefsMgr
 				if (keyname == lc_Key_ASave)
 					{bool value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_bAutoSave.SetValue(value);};
 				if (keyname == lc_Key_ASaveFreq)
-					{envType::Int32 value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_AutoSaveFrequencyInMinutes.SetValue(value);};
+					{int32_t value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_AutoSaveFrequencyInMinutes.SetValue(value);};
 				if (keyname == lc_Key_ASaveBackups)
-					{envType::Int8 value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_AutoSaveBackups.SetValue(value);};
+					{int8_t value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_AutoSaveBackups.SetValue(value);};
 				if (keyname == lc_Key_CEDefaultTime)
-					{envType::Int32 value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_ChannelEditor_DefaultTime.SetValue(value);};
+					{int32_t value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_ChannelEditor_DefaultTime.SetValue(value);};
 				if (keyname == lc_Key_WinWidth)
-					{envType::Int32 value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_RenderWindowWidth.SetValue(value);};
+					{int32_t value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_RenderWindowWidth.SetValue(value);};
 				if (keyname == lc_Key_WinHeight)
-					{envType::Int32 value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_RenderWindowHeight.SetValue(value);};
+					{int32_t value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_RenderWindowHeight.SetValue(value);};
 				if (keyname == lc_Key_CurrentLayout)
 					{m_Data.m_CurrentLayout.SetValue(strvalue);};
 				if (keyname == lc_Key_BMailLoc)
@@ -324,7 +324,7 @@ namespace PrefsMgr
 				if (keyname == lc_Key_IconScale)
 					{int value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_IconScale.SetValue(value);};
 				//if (keyname == lc_Key_UndoLevels)
-				//	{envType::Int8 value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_UndoLevels.SetValue(value);};
+				//	{int8_t value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_UndoLevels.SetValue(value);};
 				//if (keyname == lc_Key_UndoMemory)
 				//	{float value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_UndoMemory.SetValue(value);};
 				if (keyname == lc_Key_LastProject)
@@ -800,7 +800,7 @@ namespace PrefsMgr
 	//	blend has changed
 	//--------------------------------------------------------------------
 	//virtual 
-	void PrefsObject::DefaultBlendDriverChanged( envType::Int8 i_NewDefaultBlendType )
+	void PrefsObject::DefaultBlendDriverChanged( int8_t i_NewDefaultBlendType )
 	{
 		m_Data.m_DefaultDriverBlend.SetValue( i_NewDefaultBlendType );
 	}

@@ -11,8 +11,8 @@
 #endif
 #define SPLN_CURVESELECT_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 //============================================================================
@@ -65,7 +65,7 @@ namespace splnCurveSelect
 	//----------------------------------------------------------------------------
 	// Find the object that matches the pick code from an earlier pick render.
 	//----------------------------------------------------------------------------
-	pick3dPickObject* MatchPickCode(envType::UInt32 i_PickCode);
+	pick3dPickObject* MatchPickCode(uint32_t i_PickCode);
 
 	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------

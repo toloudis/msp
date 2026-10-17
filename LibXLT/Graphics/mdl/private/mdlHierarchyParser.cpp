@@ -259,14 +259,14 @@ namespace
 			// The influences have been moved to their own chunk in version 1
 			//if (i_Version < 1)
 			//{
-			//	envType::UInt16 i, num_influences;
+			//	uint16_t i, num_influences;
 			//	i_Reader.Read( num_influences );
 
 			//	for( i = 0 ; i < num_influences ; i++ )
 			//	{
 			//		JointInfluence joint_infl;
 			//		joint_infl.m_nJointIndex = io_nJointIndex;
-			//		envType::UInt16 old_index; // old version only does 16-bit
+			//		uint16_t old_index; // old version only does 16-bit
 			//		i_Reader.Read( old_index );
 			//		joint_infl.m_nVertexIndex = old_index;
 			//		i_Reader.Read( joint_infl.m_fWeight );

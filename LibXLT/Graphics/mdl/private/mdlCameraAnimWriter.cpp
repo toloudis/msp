@@ -104,7 +104,7 @@ namespace mdlCameraAnimWriter
 
 		// Now actually write keys
 		//	
-		envType::Int16 num_keys = valkeys.size();
+		int16_t num_keys = valkeys.size();
 		//cout << "Writing " << num_keys << " keys" << endl;
 		o_Writer.Write( num_keys );
 		for (int i=0; i<num_keys; i++)

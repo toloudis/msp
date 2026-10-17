@@ -943,7 +943,7 @@ bool mtrMaterialSaver::ReadSingleMaterial( const fsLocator &i_Locator,
 //------------------------------------------------------------------------
 bool mtrMaterialSaver::ReadThumbnail( const fsLocator &i_Locator, 
 									 mtrThumbnailData &o_Thumbnail)
-									 //envType::UInt8* &o_PixelBuffer, 
+									 //uint8_t* &o_PixelBuffer, 
 									 //int &o_BufferSize,
 									 //int &o_BitmapSize)
 {
@@ -963,7 +963,7 @@ bool mtrMaterialSaver::ReadThumbnail( const fsLocator &i_Locator,
 			// the version number. Old style thumbnails should fail.
 			if (version >= 1)
 			{
-				envType::UInt8* pixelBuffer = NULL; 
+				uint8_t* pixelBuffer = NULL; 
 				int bufferSize = 0;
 				int bitmapSize = 0;
 				matThumbnailParser::Read(reader, version, size,

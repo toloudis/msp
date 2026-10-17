@@ -764,7 +764,7 @@ void mnmApp::InitializeRender(void *i_HwndFake, void *i_Hwnd, int i_Width, int i
 #ifdef DEMO_VERSION
 	//	limit the memory for the demo
 	const int lc_MINIMUM_VIDEO_MEMORY = 1000000;	// 1gb = 1073741824 4gb = 4021288960 (divide by 1024 to get constant)
-	//const envType::UInt64 lc_MINIMUM_VIDEO_MEMORY = 8000000000;	// 1gb = 1073741824 4gb = 4021288960
+	//const uint64_t lc_MINIMUM_VIDEO_MEMORY = 8000000000;	// 1gb = 1073741824 4gb = 4021288960
 	if (l_MaxVideoMem < lc_MINIMUM_VIDEO_MEMORY)
 	{
 		std::string msg = "Unfortunately, your graphics card does not have a sufficient amount of memory to run this trial version of ";

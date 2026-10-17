@@ -26,7 +26,7 @@ namespace prtAnimationUtil
 	// Animates particles according to the baked vertex animation keys.
 	// Will alter the particles in the manager so that the correct ids exist
 	// for this time. The creator should be a class that implements
-	// ParticleType* CreateParticle(envType::Int32 i_ID, const maPoint3d& i_Position) const
+	// ParticleType* CreateParticle(int32_t i_ID, const maPoint3d& i_Position) const
 	// in order to create a new particle of the correct type.
 	//----------------------------------------------------------------------------
 	template <class ParticleType, class ParticleCreator>

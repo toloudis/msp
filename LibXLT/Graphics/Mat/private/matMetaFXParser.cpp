@@ -41,7 +41,7 @@ namespace matMetaFXParser
 			io_Writer.FinishChunk();	
 		}
 		void write_raw_data( chWriter& io_Writer,
-							 const std::vector<envType::UInt8> &i_ShaderData )
+							 const std::vector<uint8_t> &i_ShaderData )
 		{
 			const int c_DTBK_VERSION = 0;
 			io_Writer.WriteChunkHeader( c_DTBK, c_DTBK_VERSION, false );
@@ -58,7 +58,7 @@ namespace matMetaFXParser
 		}
 	
 		void read_raw_block(chReader& io_Reader, 
-					   matMetaFXBlock< std::vector<envType::UInt8> > &o_DataBlock)
+					   matMetaFXBlock< std::vector<uint8_t> > &o_DataBlock)
 		{
 			chDefs::Name name;
 			chDefs::Size size;

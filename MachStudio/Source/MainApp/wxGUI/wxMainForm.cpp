@@ -619,11 +619,11 @@ void wxMainForm::OnIdle(wxIdleEvent& i_Event)
 			float val = mnmApp::QueryVideoMemory();
 			float max = mnmApp::QueryMaxVideoMemory();
 			//static char string[256];
-			//sprintf( string, "%uM / %uM", (envType::UInt32)(val / (1024 * 1024)), 
-			//							  (envType::UInt32)(max / (1024 * 1024)) );
+			//sprintf( string, "%uM / %uM", (uint32_t)(val / (1024 * 1024)), 
+			//							  (uint32_t)(max / (1024 * 1024)) );
 
-			envType::UInt32 VidMem = (envType::UInt32)(val / 1024.0f);
-			envType::UInt32 MaxMem = (envType::UInt32)(max / 1024.0f);
+			uint32_t VidMem = (uint32_t)(val / 1024.0f);
+			uint32_t MaxMem = (uint32_t)(max / 1024.0f);
 			std::ostringstream oss;
 			oss.setf(std::ios::fixed, std::ios::floatfield);
 			oss << VidMem << "/" << MaxMem;

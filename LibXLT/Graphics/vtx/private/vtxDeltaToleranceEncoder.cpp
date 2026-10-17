@@ -19,7 +19,7 @@ namespace
 	// Each buffer is the encoded data plus 4 floats for the tolerance and bbox offset,
 	// each position is encoded as 3 16-bit codes (X,Y,Z)
 	int c_VertexStride = 3 * sizeof(vtxDeltaCompression::CodeType);
-	int c_HeaderSize = 4 * sizeof(envType::Float32);
+	int c_HeaderSize = 4 * sizeof(float);
 }
 
 
@@ -70,7 +70,7 @@ bool vtxDeltaToleranceEncoder::SubmitDeltas(const std::vector<maPoint3d> &i_Delt
 	vtxDeltaCompression::CodeType *pCodePtr = reinterpret_cast<vtxDeltaCompression::CodeType*>(pCurPtr);
 	if (vtxDeltaCompression::EncodeDeltaVectors(i_DeltaPositions, m_Tolerance, pCodePtr, min_bounds, quant))
 	{
-		envType::Float32 *pFloats = reinterpret_cast<envType::Float32*>(pTopPtr);
+		float *pFloats = reinterpret_cast<float*>(pTopPtr);
 		pFloats[0] = quant;
 		pFloats[1] = min_bounds.GetX();
 		pFloats[2] = min_bounds.GetY();
@@ -96,7 +96,7 @@ bool vtxDeltaToleranceEncoder::ReceiveDeltas(int i_FrameIndex,
 	const unsigned char *pTopPtr = m_pDeltaBuffer + (i_FrameIndex * m_Stride);
 	const unsigned char *pCurPtr = pTopPtr + c_HeaderSize; // skip over tolerance and bbox offset
 	
-	const envType::Float32 *pFloats = reinterpret_cast<const envType::Float32*>(pTopPtr);
+	const float *pFloats = reinterpret_cast<const float*>(pTopPtr);
 	float quant = pFloats[0];
 	maVector3d min_bounds( pFloats[1], pFloats[2], pFloats[3] );
 	const vtxDeltaCompression::CodeType *pCodePtr = 

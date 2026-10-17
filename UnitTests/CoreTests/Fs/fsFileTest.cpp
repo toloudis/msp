@@ -85,20 +85,20 @@ TEST(fsFileStream, WriteThenRead)
 
 	{
 		fsFileStream write_stream(file, fsFileStream::e_WriteOnly);
-		for( envType::Int16 i = 0 ; i < 1000 ; i++ )
+		for( int16_t i = 0 ; i < 1000 ; i++ )
 			write_stream.Write(sizeof(i), &i);
 	}
 
 	fsFileStream read_stream(file, fsFileStream::e_ReadOnly);
-	for( envType::Int16 i = 0 ; i < 1000 ; i++ )
+	for( int16_t i = 0 ; i < 1000 ; i++ )
 	{
-		envType::Int16 val = -1;
+		int16_t val = -1;
 		ASSERT_EQ(int(sizeof(val)), read_stream.Read(sizeof(val), &val));
 		ASSERT_EQ(i, val);
 	}
 
 	// reading past the end returns what's left: nothing
-	envType::Int16 val;
+	int16_t val;
 	EXPECT_EQ(0, read_stream.Read(sizeof(val), &val));
 }
 
@@ -110,7 +110,7 @@ TEST(fsFilePosSaver, RestoresPosition)
 
 	{
 		fsFileStream write_stream(file, fsFileStream::e_WriteOnly);
-		for( envType::Int16 i = 0 ; i < 1000 ; i++ )
+		for( int16_t i = 0 ; i < 1000 ; i++ )
 			write_stream.Write(sizeof(i), &i);
 	}
 

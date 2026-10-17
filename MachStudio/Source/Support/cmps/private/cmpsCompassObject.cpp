@@ -163,7 +163,7 @@ bool cmpsCompassObject::RayPick(int i_IconLayerIndex,
 //----------------------------------------------------------------------------
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
-bool cmpsCompassObject::MatchPickCode(envType::UInt32 i_PickCode)
+bool cmpsCompassObject::MatchPickCode(uint32_t i_PickCode)
 {
 	return false;
 }

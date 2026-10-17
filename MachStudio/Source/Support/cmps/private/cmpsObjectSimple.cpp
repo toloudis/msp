@@ -160,7 +160,7 @@ const maAxisBox& cmpsObjectSimple::GetWorldBox() const
 // Is the pick code given within the high and low pick codes assigned
 // to this node?
 //----------------------------------------------------------------------------
-bool cmpsObjectSimple::ContainsPickCode(envType::UInt32 i_PickCode) const
+bool cmpsObjectSimple::ContainsPickCode(uint32_t i_PickCode) const
 {
 	// No proxies for pick code
 	return m_pObject->ContainsPickCode(i_PickCode);

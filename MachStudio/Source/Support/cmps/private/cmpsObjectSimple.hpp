@@ -108,7 +108,7 @@ public:
 	// Is the pick code given within the high and low pick codes assigned
 	// to this node?
 	//----------------------------------------------------------------------------
-	bool ContainsPickCode(envType::UInt32 i_PickCode) const;
+	bool ContainsPickCode(uint32_t i_PickCode) const;
 
 	//--------------------------------------------------------------------
 	// Set color for fragment only (don't set the base color)

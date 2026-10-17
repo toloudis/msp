@@ -194,7 +194,7 @@ void prjltIconDirectional::SetPickable(bool i_bPickable)
 //----------------------------------------------------------------------------
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
-bool prjltIconDirectional::PositionContainsPickCode(envType::UInt32 i_PickCode) const
+bool prjltIconDirectional::PositionContainsPickCode(uint32_t i_PickCode) const
 {
 	// GPU picking is not proxied
 	if (!m_pPickPosition->GetGPUPickable())
@@ -202,7 +202,7 @@ bool prjltIconDirectional::PositionContainsPickCode(envType::UInt32 i_PickCode) 
 
 	return m_pPickPosition->ContainsPickCode(i_PickCode);
 }
-bool prjltIconDirectional::TargetContainsPickCode(envType::UInt32 i_PickCode) const
+bool prjltIconDirectional::TargetContainsPickCode(uint32_t i_PickCode) const
 {
 	// no target in this icon
 	return false;
