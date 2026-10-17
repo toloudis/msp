@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="G3d">
+      <UniqueIdentifier>{91c6b9aa-7b06-4e4f-8600-aee12e7b2053}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Support">
+      <UniqueIdentifier>{ee060c08-dc51-4048-b482-86197191f7bf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GraphicsTestsMain.cpp">
+      <Filter>Support</Filter>
+    </ClCompile>
+    <ClCompile Include="gtPlatformWin.cpp">
+      <Filter>Support</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\g3dProfilerTest.cpp">
+      <Filter>G3d</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="gtPlatform.hpp">
+      <Filter>Support</Filter>
+    </ClInclude>
+    <ClInclude Include="gtTempDir.hpp">
+      <Filter>Support</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vcpkg.json" />
+    <None Include="vcpkg-configuration.json" />
+  </ItemGroup>
+</Project>

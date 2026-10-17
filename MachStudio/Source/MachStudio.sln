@@ -64,6 +64,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Area18", "..\..\LibXLT\Area
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CoreTests", "..\..\UnitTests\CoreTests\CoreTests.vcxproj", "{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GraphicsTests", "..\..\UnitTests\GraphicsTests\GraphicsTests.vcxproj", "{35FADF25-2926-45F7-8F3D-19F065D16917}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MainAppTests", "..\..\UnitTests\MainAppTests\MainAppTests.vcxproj", "{673EB3CC-C4AE-421F-9644-CAE53F4E7FA0}"
 EndProject
 Global
@@ -428,6 +430,18 @@ Global
 		{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}.Release Wx|x64.Build.0 = Release Wx|x64
 		{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}.Release RenderNode|x64.ActiveCfg = Release RenderNode|x64
 		{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}.Release RenderNode|x64.Build.0 = Release RenderNode|x64
+		{35FADF25-2926-45F7-8F3D-19F065D16917}.Debug RenderNode|x64.ActiveCfg = Debug RenderNode|x64
+		{35FADF25-2926-45F7-8F3D-19F065D16917}.Debug RenderNode|x64.Build.0 = Debug RenderNode|x64
+		{35FADF25-2926-45F7-8F3D-19F065D16917}.Debug Qt|x64.ActiveCfg = Debug Qt|x64
+		{35FADF25-2926-45F7-8F3D-19F065D16917}.Debug Qt|x64.Build.0 = Debug Qt|x64
+		{35FADF25-2926-45F7-8F3D-19F065D16917}.Debug Wx|x64.ActiveCfg = Debug Wx|x64
+		{35FADF25-2926-45F7-8F3D-19F065D16917}.Debug Wx|x64.Build.0 = Debug Wx|x64
+		{35FADF25-2926-45F7-8F3D-19F065D16917}.Release Qt|x64.ActiveCfg = Release Qt|x64
+		{35FADF25-2926-45F7-8F3D-19F065D16917}.Release Qt|x64.Build.0 = Release Qt|x64
+		{35FADF25-2926-45F7-8F3D-19F065D16917}.Release Wx|x64.ActiveCfg = Release Wx|x64
+		{35FADF25-2926-45F7-8F3D-19F065D16917}.Release Wx|x64.Build.0 = Release Wx|x64
+		{35FADF25-2926-45F7-8F3D-19F065D16917}.Release RenderNode|x64.ActiveCfg = Release RenderNode|x64
+		{35FADF25-2926-45F7-8F3D-19F065D16917}.Release RenderNode|x64.Build.0 = Release RenderNode|x64
 		{673EB3CC-C4AE-421F-9644-CAE53F4E7FA0}.Debug RenderNode|x64.ActiveCfg = Debug RenderNode|x64
 		{673EB3CC-C4AE-421F-9644-CAE53F4E7FA0}.Debug RenderNode|x64.Build.0 = Debug RenderNode|x64
 		{673EB3CC-C4AE-421F-9644-CAE53F4E7FA0}.Debug Qt|x64.ActiveCfg = Debug Qt|x64

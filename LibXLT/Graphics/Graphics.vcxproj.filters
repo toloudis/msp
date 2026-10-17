@@ -303,6 +303,9 @@
     <ClInclude Include="G3d\g3dPrefs.hpp">
       <Filter>G3d</Filter>
     </ClInclude>
+    <ClInclude Include="G3d\g3dProfiler.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
     <ClInclude Include="G3d\g3dPrimitiveFragmentUtil.hpp">
       <Filter>G3d</Filter>
     </ClInclude>
@@ -1219,6 +1222,9 @@
       <Filter>G3d\private</Filter>
     </ClCompile>
     <ClCompile Include="G3d\private\g3dPrefs.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dProfiler.cpp">
       <Filter>G3d\private</Filter>
     </ClCompile>
     <ClCompile Include="G3d\private\g3dPrimitiveFragmentUtil.cpp">

@@ -379,6 +379,7 @@
     <ClInclude Include="G3d\g3dPostProcessing.hpp" />
     <ClInclude Include="G3d\g3dGfxOptions.hpp" />
     <ClInclude Include="G3d\g3dPrefs.hpp" />
+    <ClInclude Include="G3d\g3dProfiler.hpp" />
     <ClInclude Include="G3d\g3dPrimitiveFragmentUtil.hpp" />
     <ClInclude Include="G3d\g3dProjectedLight.hpp" />
     <ClInclude Include="G3d\g3dRendererMgr.hpp" />
@@ -762,6 +763,7 @@
     <ClCompile Include="G3d\private\g3dPointLight.cpp" />
     <ClCompile Include="G3d\private\g3dPostProcessing.cpp" />
     <ClCompile Include="G3d\private\g3dPrefs.cpp" />
+    <ClCompile Include="G3d\private\g3dProfiler.cpp" />
     <ClCompile Include="G3d\private\g3dPrimitiveFragmentUtil.cpp" />
     <ClCompile Include="G3d\private\g3dProjectedLight.cpp" />
     <ClCompile Include="G3d\private\g3dRendererMgr.cpp" />
