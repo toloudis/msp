@@ -48,6 +48,9 @@
 #ifndef FX_EFFECTDX11_HPP
 #include "GraphicsDX11/Fx/fxEffectDX11.hpp"
 #endif
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 //#include "profile.h"
 
@@ -219,6 +222,7 @@ int shdwShadowLayerRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCa
 								const g3dScene &i_Scene, const std::vector<g3dLayer*>& i_ViewerLayers,
 							   float i_fSimTime )
 {//PROFILE("Render");
+	G3D_PROFILE_SCOPE("ShadowLayerRenderer");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwShadowLayerRendererDX11::Render" );
 
 	// Initialize the triangle count
@@ -473,6 +477,7 @@ void g3dRenderWorldSpaceObjects::PerFrameCleanup()
 }
 int g3dRenderWorldSpaceObjects::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("RenderWorldSpaceObjects");
 	m_stats.Reset();
 
 	if (m_pLayer == NULL)
@@ -588,6 +593,7 @@ g3dRenderSkyBox::~g3dRenderSkyBox()
 }
 int g3dRenderSkyBox::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("RenderSkyBox");
 	// This chunk of code is never executed
 	m_stats.Reset();
 

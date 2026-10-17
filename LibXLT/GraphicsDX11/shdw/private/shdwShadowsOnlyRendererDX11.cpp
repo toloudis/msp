@@ -39,6 +39,9 @@
 #include "GraphicsDX11/G3d/g3dDrawStyleUtilDX11.hpp"
 #include "GraphicsDX11/G2d/g2dWindowDX11.hpp"
 #include "GraphicsDX11/G3d/g3dDX11TextureUtil.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 //	The reason a macro is used here (instead of a function, an inline function, or a template inline function)
 //	is that I need the __FILE__ and __LINE__ macros to resolve to useful values
@@ -139,6 +142,7 @@ int shdwShadowsOnlyRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCa
 									const g3dScene &i_Scene, const std::vector<g3dLayer*>& i_ViewerLayers,
 									float i_fSimTime )
 {//PROFILE("Render");
+	G3D_PROFILE_SCOPE("ShadowsOnlyRenderer");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwShadowsOnlyRendererDX11::Render" );
 
 	if (!g3dPrefs::CurrentPrefs().m_bProjLightsOn)

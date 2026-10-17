@@ -20,6 +20,9 @@
 #include "GraphicsDX11/mat/matRenderTargetTexture.hpp"
 #include "GraphicsDX11/eff/effShaderBaseDX11.hpp"
 #include "GraphicsDX11/g3d/g3dDX11TextureUtil.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 
 namespace
@@ -52,6 +55,7 @@ shdwPassPostShader::~shdwPassPostShader()
 //----------------------------------------------------------------------------------------
 int shdwPassPostShader::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassPostShader");
 	UINT uiPass;
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassPostShader::Render" );
 

@@ -26,6 +26,9 @@
 #include "GraphicsDX11/shdw/shdwPassDepth.hpp"
 #include "GraphicsDX11/shdw/shdwPassTransparent.hpp"
 #include "Graphics/G3d/g3dFragment.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 namespace
 {
@@ -86,6 +89,7 @@ void shdwPassFog::SetBuffers(g2dRenderTarget* io_ColorBuffer,
 //----------------------------------------------------------------------------------------
 int shdwPassFog::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassFog");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassFog::Render" );
 
 	m_stats.Reset();

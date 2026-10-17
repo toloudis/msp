@@ -33,6 +33,9 @@
 #include "Graphics/mat/matMaterial.hpp"
 #include "Graphics/mat/matTexture.hpp"
 #include "Graphics/mat/matTextureMgr.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 //#include "Tool/api3d/api3dObjectSimple.hpp"
 //#include "Tool/api3d/api3dScene.hpp"
@@ -563,6 +566,7 @@ void RunComputeShader( ID3D11DeviceContext* pd3dImmediateContext,
 	pd3dImmediateContext->CSSetConstantBuffers( 0, nNumCBuffers, pCBCS );
 
     pd3dImmediateContext->Dispatch( X, Y, Z );
+    G3D_PROFILE_DRAWS(1);
 
     ID3D11UnorderedAccessView* ppUAViewNULL[1] = { NULL };
     pd3dImmediateContext->CSSetUnorderedAccessViews( 0, 1, ppUAViewNULL, (UINT*)(&ppUAViewNULL) );

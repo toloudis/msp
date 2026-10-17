@@ -37,6 +37,9 @@
 #ifndef FX_EFFECTDX11_HPP
 #include "GraphicsDX11/Fx/fxEffectDX11.hpp"
 #endif
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 //	The reason a macro is used here (instead of a function, an inline function, or a template inline function)
 //	is that I need the __FILE__ and __LINE__ macros to resolve to useful values
@@ -248,6 +251,7 @@ void shdwPassSSAO::ReleaseResources()
 //--------------------------------------------------------------------
 int shdwPassSSAO::Render( float i_fSimTime )
 {//PROFILE("Render");
+	G3D_PROFILE_SCOPE("PassSSAO");
 
 	camPassBuffersData passBuffersData;
 	m_pCamera->GetPassBuffersParams(passBuffersData);

@@ -17,6 +17,9 @@
 #include "GraphicsDX11/g3d/g3dFogDX11.hpp"
 #include "GraphicsDX11/g3d/g3dSceneGlobal.hpp"
 #include "GraphicsDX11/g3d/g3dSceneRenderUtil.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 
 //============================================================================
@@ -48,6 +51,7 @@ g3dRenderScreenSpaceObjects::~g3dRenderScreenSpaceObjects()
 //----------------------------------------------------------------------------
 int g3dRenderScreenSpaceObjects::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("RenderScreenSpaceObjects");
 	if (m_pLayer == NULL)
 		return 0;
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"g3dRenderScreenSpaceObjects::Render" );

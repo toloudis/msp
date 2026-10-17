@@ -168,6 +168,9 @@
     <ClInclude Include="G3d\g3dDX11Util.hpp">
       <Filter>G3d</Filter>
     </ClInclude>
+    <ClInclude Include="G3d\g3dProfilerGpuDX11.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
     <ClInclude Include="G3d\g3dFogDX11.hpp">
       <Filter>G3d</Filter>
     </ClInclude>
@@ -658,6 +661,9 @@
       <Filter>G3d\private</Filter>
     </ClCompile>
     <ClCompile Include="G3d\private\g3dDX11Util.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dProfilerGpuDX11.cpp">
       <Filter>G3d\private</Filter>
     </ClCompile>
     <ClCompile Include="G3d\private\g3dFogDX11.cpp">

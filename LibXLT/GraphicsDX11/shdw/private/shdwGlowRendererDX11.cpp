@@ -34,6 +34,9 @@
 #include "GraphicsDX11/shdw/shdwPassGlow.hpp"
 #include "GraphicsDX11/shdw/shdwPassZFill.hpp"
 #include "GraphicsDX11/G2d/g2dWindowDX11.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 
 //	The reason a macro is used here (instead of a function, an inline function, or a template inline function)
@@ -122,6 +125,7 @@ int shdwGlowRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i
 								const g3dScene &i_Scene, const std::vector<g3dLayer*>& i_ViewerLayers, 
 							   float i_fSimTime )
 {//PROFILE("Render");
+	G3D_PROFILE_SCOPE("GlowRenderer");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwGlowRendererDX11::Render" );
 
 	// Initialize the triangle count

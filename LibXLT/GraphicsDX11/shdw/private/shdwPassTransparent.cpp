@@ -28,6 +28,9 @@
 #ifndef FX_EFFECTDX11_HPP
 #include "GraphicsDX11/Fx/fxEffectDX11.hpp"
 #endif
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 bool l_bHaveShadowCastingLights = false;
 
@@ -267,6 +270,7 @@ void shdwPassTransparent::SetBuffers(
 //--------------------------------------------------------------------------------------------------------
 int shdwPassTransparent::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassTransparent");
 	m_stats.Reset();
 
 	g3dTransparencySortDX11* transparencySort = m_sceneInfo->GetTransparentNodes();

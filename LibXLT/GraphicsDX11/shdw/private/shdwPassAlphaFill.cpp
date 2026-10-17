@@ -34,6 +34,9 @@
 #ifndef FX_EFFECTDX11_HPP
 #include "GraphicsDX11/Fx/fxEffectDX11.hpp"
 #endif
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 
 namespace
@@ -184,6 +187,7 @@ void shdwPassAlphaFill::SetTransparentPassInfo(g3dLayer* i_pLayer,
 //----------------------------------------------------------------------------------------
 int shdwPassAlphaFill::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassAlphaFill");
 	m_stats.Reset();
 
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassAlphaFill::Render" );

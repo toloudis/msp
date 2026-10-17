@@ -33,6 +33,9 @@
 //#include "Graphics/eff/effStrandHairData.hpp"
 #include "GraphicsDX11/eff/effStrandHair.hpp"
 #include "GraphicsDX11/Mat/matVolumeTexture.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 //define to have depths output between 0-1
 //#define USE_NORMALIZED_DEPTHS
@@ -201,6 +204,7 @@ int shdwPassOpacity::DrawNodes()
 //----------------------------------------------------------------------------------------
 int shdwPassOpacity::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassOpacity");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassOpacity::Render" );
 	m_stats.Reset();
 

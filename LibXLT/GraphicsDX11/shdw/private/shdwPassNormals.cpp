@@ -31,6 +31,9 @@
 #include "Graphics/G3d/g3dConditionalCompile.hpp"
 #include "GraphicsDX11/eff/effShaderBaseDX11.hpp"
 #include "GraphicsDX11/G3d/g3dDX11TextureUtil.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 #define TANGENT_NORMALS true
 
@@ -115,6 +118,7 @@ void shdwPassNormals::InitializeMaterial()
 //----------------------------------------------------------------------------------------
 int shdwPassNormals::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassNormals");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassNormals::Render" );
 	m_stats.Reset();
 

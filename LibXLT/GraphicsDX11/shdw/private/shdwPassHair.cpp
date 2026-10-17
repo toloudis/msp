@@ -38,6 +38,9 @@
 #include "GraphicsDX11/G2d/g2dWindowDX11.hpp"
 #include "GraphicsDX11/G2d/g2dRenderTargetDX11.hpp"
 #include "GraphicsDX11/Mat/matVolumeTexture.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 //Note that Alpha test pass cannot work with depth peeling (so currently bypassed)
 //depth peeling requires the exact depths at each layer, pre passing causes holes in the solid parts.
@@ -385,6 +388,7 @@ shdwPassHair::~shdwPassHair()
 //--------------------------------------------------------------------------------------------------------
 int shdwPassHair::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassHair");
 	m_stats.Reset();
 
 	g3dTransparencySortDX11* hairSort = m_sceneInfo->GetHairNodes();

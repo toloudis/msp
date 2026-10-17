@@ -28,6 +28,9 @@
 #include "GraphicsDX11/G3d/g3dRasterizerStateMgr.hpp"
 
 #include <string>
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 
 //------------------------------------------------------------------------------
@@ -207,6 +210,7 @@ void g2dFontObjectDX11::DrawText(const itString& i_Text, const maFloatRGBA& i_Co
     g2dDX11Global::g_pDeviceContext->PSSetConstantBuffers( 0, 1, &m_pcbPSColor );
 
 	g2dDX11Global::g_pDeviceContext->DrawIndexed(numInds, startIndex, 0);
+	G3D_PROFILE_DRAWS(1);
 
 	// Restore the Old viewport
 	g2dDX11Global::g_pDeviceContext->RSSetViewports( nViewPorts, vpOld );
@@ -918,6 +922,7 @@ void EndText11( ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3d11DeviceConte
     pd3d11DeviceContext->IASetInputLayout( g_pInputLayout11 );
     pd3d11DeviceContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
     pd3d11DeviceContext->Draw( g_FontVertices.size(), 0 );
+    G3D_PROFILE_DRAWS(1);
 
     pd3d11DeviceContext->PSSetShaderResources( 0, 1, &pOldTexture );
     SAFE_RELEASE( pOldTexture );

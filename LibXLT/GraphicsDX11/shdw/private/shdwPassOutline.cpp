@@ -22,6 +22,9 @@
 #include "GraphicsDX11/mat/matRenderTargetTexture.hpp"
 #include "GraphicsDX11/eff/effShaderBaseDX11.hpp"
 #include "GraphicsDX11/g3d/g3dDX11TextureUtil.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 namespace
 {
@@ -76,6 +79,7 @@ void shdwPassOutline::SetBuffers( matRenderTargetTexture* i_outlineTarget,
 //----------------------------------------------------------------------------------------
 int shdwPassOutline::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassOutline");
 	m_stats.Reset();
 
 	if( !g3dSingleLightRendering::GetDoSingleLightRendering()) return 0;

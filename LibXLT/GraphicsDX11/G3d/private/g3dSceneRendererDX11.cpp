@@ -29,6 +29,9 @@
 #include "GraphicsDX11/g3d/g3dSceneGlobal.hpp"
 #include "GraphicsDX11/g3d/g3dTransparencySortDX11.hpp"
 #include "Graphics/G2d/g2dRenderTarget.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 //#include "profile.h"
 
@@ -287,6 +290,7 @@ int g3dSceneRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i
 								const g3dScene &i_Scene, const std::vector<g3dLayer*>& i_ViewerLayers,
 							   float i_fSimTime )
 {//PROFILE("Render");
+	G3D_PROFILE_SCOPE("SceneRenderer");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"g3dSceneRendererDX11::Render" );
 
 	// setup fog settings

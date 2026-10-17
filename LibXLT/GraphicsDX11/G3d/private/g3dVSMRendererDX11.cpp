@@ -39,6 +39,9 @@
 #include "GraphicsDX11/eff/effPlainShaderDX11.hpp"
 #include "GraphicsDX11/hair/hairModelFrag.hpp"
 #include "GraphicsDX11/G3d/g3dDrawStyleUtilDX11.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 //#include "Graphics/Eff/effStrandHairData.hpp"
 
@@ -217,6 +220,7 @@ int g3dVSMRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_C
 									const g3dScene &i_Scene, const std::vector<g3dLayer*>& i_ViewerLayers,
 									float i_fSimTime )
 {//PROFILE("Render");
+	G3D_PROFILE_SCOPE("VSMRenderer");
 	// Create temp render target for blur
 	int w, h;
 	i_pWindow->GetDimensions(w, h);

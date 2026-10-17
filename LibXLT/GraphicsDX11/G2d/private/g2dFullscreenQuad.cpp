@@ -14,6 +14,9 @@
 
 //#include "Core/dbg/dbgMsg.hpp"
 #include "Graphics/g2d/g2dExceptionX.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 namespace
 {
@@ -277,6 +280,7 @@ void g2dFullscreenQuad::DrawFullScreenQuad11( ID3D11PixelShader* pPS,
 		g2dDX11Global::g_pDeviceContext->PSSetShader( pPS, NULL, 0 );
 
     g2dDX11Global::g_pDeviceContext->Draw( 4, 0 );
+    G3D_PROFILE_DRAWS(1);
 
 	// Restroe vertex buffer content
 	// Considering most cases the default vtx buffer is used
@@ -333,6 +337,7 @@ void g2dFullscreenQuad::DrawFullScreenQuad11( UINT Width, UINT Height,
 	g2dDX11Global::g_pDeviceContext->IASetVertexBuffers( 0, 1, pBuffers, &strides, &offsets );
 	g2dDX11Global::g_pDeviceContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP );
 	g2dDX11Global::g_pDeviceContext->Draw( 4, 0 );
+	G3D_PROFILE_DRAWS(1);
 
 	// Restroe vertex buffer content
 	// Considering most cases the default vtx buffer is used

@@ -18,6 +18,9 @@
 #include "GraphicsDX11/g3d/g3dLightMgrDX11.hpp"
 #include "GraphicsDX11/g3d/g3dSceneGlobal.hpp"
 #include "GraphicsDX11/g3d/g3dSceneRenderUtil.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 namespace
 {
@@ -47,6 +50,7 @@ shdwPassLit::~shdwPassLit()
 
 int shdwPassLit::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassLit");
 	m_stats.Reset();
 
 	if (!g3dSingleLightRendering::GetDoSingleLightRendering())

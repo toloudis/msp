@@ -29,6 +29,9 @@
 #include "GraphicsDX11/g3d/g3dSceneRenderUtil.hpp"
 #include "GraphicsDX11/mat/matRenderTargetTexture.hpp"
 #include "GraphicsDX11/shdw/shdwPassTraversal.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 namespace
 {
@@ -108,6 +111,7 @@ void shdwPassVelocity::SetOldTime(float time)
 //--------------------------------------------------------------------
 int shdwPassVelocity::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassVelocity");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwVelocityRendererDX11::Render" );
 	m_stats.Reset();
 	

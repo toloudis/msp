@@ -44,6 +44,9 @@
 #ifndef FX_EFFECTDX11_HPP
 #include "GraphicsDX11/Fx/fxEffectDX11.hpp"
 #endif
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 
 //	The reason a macro is used here (instead of a function, an inline function, or a template inline function)
@@ -605,6 +608,7 @@ void shdwPassLPVGI::ReleaseResources()
 //--------------------------------------------------------------------
 int shdwPassLPVGI::Render( float i_fSimTime )
 {//PROFILE("Render");
+	G3D_PROFILE_SCOPE("PassLPVGI");
 
 	camPassBuffersData passBuffersData;
 	m_pCamera->GetPassBuffersParams(passBuffersData);
@@ -1276,4 +1280,5 @@ void shdwPassLPVGI::drawVolumeVertex(ID3D11Buffer* i_buffer, int i_numVertex)
 	g2dDX11Global::g_pDeviceContext->IASetVertexBuffers( 0, 1, pBuffers, &strides, &offsets );
 	g2dDX11Global::g_pDeviceContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_POINTLIST );
 	g2dDX11Global::g_pDeviceContext->Draw( i_numVertex, 0 );
+	G3D_PROFILE_DRAWS(1);
 }

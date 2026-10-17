@@ -36,6 +36,9 @@
 #include "GraphicsDX11/mat/matRenderTargetTexture.hpp"
 #include "GraphicsDX11/shdw/shdwPassNormals.hpp"
 #include "GraphicsDX11/shdw/shdwPassZFill.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 namespace
 {
@@ -202,6 +205,7 @@ void shdwPassAOVolumes::InitializeMaterial()
 //----------------------------------------------------------------------------------------
 int shdwPassAOVolumes::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassAOVolumes");
 	camPassBuffersData passBuffersData;
 	m_pCamera->GetPassBuffersParams(passBuffersData);
 	float top, bottom, left, right;

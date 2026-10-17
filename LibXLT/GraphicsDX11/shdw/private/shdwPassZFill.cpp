@@ -21,6 +21,9 @@
 #include "Graphics/G3d/g3dFragment.hpp"
 #include "GraphicsDX11/G3d/g3dSceneGlobal.hpp"
 #include "GraphicsDX11/G3d/g3dDX11TextureUtil.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 static bool s_bUseSolidHairZFill = false;
 
@@ -58,6 +61,7 @@ shdwPassZFill::~shdwPassZFill()
 
 int shdwPassZFill::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassZFill");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassZFill::Render" );
 
 	m_stats.Reset();

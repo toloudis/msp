@@ -34,6 +34,9 @@
 #ifndef FX_EFFECTDX11_HPP
 #include "GraphicsDX11/Fx/fxEffectDX11.hpp"
 #endif
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 namespace
 {
@@ -121,6 +124,7 @@ shdwPassDepth::~shdwPassDepth()
 //----------------------------------------------------------------------------------------
 int shdwPassDepth::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassDepth");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassDepth::Render" );
 	m_stats.Reset();
 

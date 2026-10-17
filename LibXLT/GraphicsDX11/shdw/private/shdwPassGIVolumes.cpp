@@ -35,6 +35,9 @@
 #include "GraphicsDX11/mat/matRenderTargetTexture.hpp"
 #include "GraphicsDX11/shdw/shdwPassNormals.hpp"
 #include "GraphicsDX11/shdw/shdwPassZFill.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 namespace
 {
@@ -208,6 +211,7 @@ void shdwPassGIVolumes::InitializeMaterial()
 //----------------------------------------------------------------------------------------
 int shdwPassGIVolumes::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassGIVolumes");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassGIVolumes::Render" );
 	m_stats.Reset();
 

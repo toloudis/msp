@@ -34,6 +34,9 @@
 #include "Graphics/Mat/matMaterial.hpp"
 
 #include <algorithm>
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 namespace
 {
@@ -97,6 +100,7 @@ g3dRenderFullScreenQuad::~g3dRenderFullScreenQuad(void)
 
 int g3dRenderFullScreenQuad::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("RenderFullScreenQuad");
 	m_pRenderTarget->MakeCurrent();
 
 	if (m_clearDest)
@@ -227,6 +231,7 @@ g3dRenderText::~g3dRenderText()
 }
 int g3dRenderText::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("RenderText");
 	// Display text messages
 	g2dRGBColor text_color(0x00,0xff,0x00);
 	std::vector<itString>::const_iterator it, end = m_Messages.end();
@@ -441,6 +446,7 @@ void g3dRenderOutline::DrawQuad(float i_time)
 
 int g3dRenderLayer::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("RenderLayer");
 	if (m_pLayer == NULL)
 		return 0;
 

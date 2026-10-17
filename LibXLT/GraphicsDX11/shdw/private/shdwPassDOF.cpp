@@ -19,6 +19,9 @@
 #include "GraphicsDX11/g3d/g3dTransparencySortDX11.hpp"
 #include "GraphicsDX11/shdw/shdwPassTransparent.hpp"
 #include "Graphics/G3d/g3dFragment.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 namespace
 {
@@ -41,6 +44,7 @@ shdwPassDOF::~shdwPassDOF()
 
 int shdwPassDOF::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassDOF");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassDOF::Render" );
 
 	m_stats.Reset();

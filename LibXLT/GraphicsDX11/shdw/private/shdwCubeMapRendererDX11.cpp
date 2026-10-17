@@ -27,6 +27,9 @@
 #include "GraphicsDX11/mat/matCubeRenderTargetTexture.hpp"
 #include "Graphics/mat/matMaterial.hpp"
 #include "Graphics/sc/scObject.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 //#include c_g2dD3DX11MATH_H
 
@@ -95,6 +98,7 @@ int shdwCubeMapRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera
 									const g3dScene &i_Scene, const std::vector<g3dLayer*>& i_ViewerLayers,
 									float i_fSimTime )
 {//PROFILE("Render");
+	G3D_PROFILE_SCOPE("CubeMapRenderer");
 
 	if (!g3dPrefs::CurrentPrefs().m_bEnableReflection || g3dPassBuffers::GetDoingFileRefl() )
 	{

@@ -319,6 +319,7 @@
     <ClInclude Include="G3d\g3dDX11GlobalWin.hpp" />
     <ClInclude Include="G3d\g3dDX11TextureUtil.hpp" />
     <ClInclude Include="G3d\g3dDX11Util.hpp" />
+    <ClInclude Include="G3d\g3dProfilerGpuDX11.hpp" />
     <ClInclude Include="G3d\g3dFogDX11.hpp" />
     <ClInclude Include="G3d\g3dHelpersWin.hpp" />
     <ClInclude Include="G3d\g3dLightMgrDX11.hpp" />
@@ -485,6 +486,7 @@
     <ClCompile Include="G3d\private\g3dDX11GlobalWin.cpp" />
     <ClCompile Include="G3d\private\g3dDX11TextureUtil.cpp" />
     <ClCompile Include="G3d\private\g3dDX11Util.cpp" />
+    <ClCompile Include="G3d\private\g3dProfilerGpuDX11.cpp" />
     <ClCompile Include="G3d\private\g3dFogDX11.cpp" />
     <ClCompile Include="G3d\private\g3dLightMgrDX11.cpp" />
     <ClCompile Include="G3d\private\g3dPickBufferRendererDX11.cpp" />

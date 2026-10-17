@@ -18,6 +18,9 @@
 //#include "GraphicsDX11/sprt/sprtPackage.hpp"
 #include "GraphicsDX11/may/mayPackage.hpp"
 #include "GraphicsDX11/hair/hairPackage.hpp"
+#ifdef MSP_GFX_PROFILING
+#include "GraphicsDX11/G3d/g3dProfilerGpuDX11.hpp"
+#endif
 
 namespace
 {
@@ -26,6 +29,9 @@ int l_RefCount = 0;
 
 g2dSystemDX11* l_pSystem2D = NULL;
 g3dSystemDX11* l_pSystem3D = NULL;
+#ifdef MSP_GFX_PROFILING
+g3dProfilerGpuDX11* l_pProfilerGpu = NULL;
+#endif
 }
 
 //----------------------------------------------------------------------------
@@ -86,6 +92,11 @@ void GraphicsDX11Layer::InitGraphics()
 	shdwPackage::InitGraphics();
 	bumpPackage::InitGraphics();
 //	sprtPackage::InitGraphics();
+
+#ifdef MSP_GFX_PROFILING
+	l_pProfilerGpu = new g3dProfilerGpuDX11;
+	g3dProfiler::SetGpu(l_pProfilerGpu);
+#endif
 }
 
 //------------------------------------------------------------------------
@@ -93,6 +104,12 @@ void GraphicsDX11Layer::InitGraphics()
 //------------------------------------------------------------------------
 void GraphicsDX11Layer::CleanUpGraphics()
 {
+#ifdef MSP_GFX_PROFILING
+	g3dProfiler::SetGpu(NULL);
+	delete l_pProfilerGpu;
+	l_pProfilerGpu = NULL;
+#endif
+
 //	sprtPackage::CleanUpGraphics();
 	bumpPackage::CleanUpGraphics();
 	shdwPackage::CleanUpGraphics();

@@ -32,6 +32,9 @@
 #include "GraphicsDX11/g3d/g3dDX11TextureUtil.hpp"
 #include "GraphicsDX11/eff/effShaderBaseDX11.hpp"
 #include "GraphicsDX11/mat/matRenderTargetTexture.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 namespace
 {
@@ -124,6 +127,7 @@ void shdwPassMaterials::GenerateHSVStruct(int i_NumNodes)
 //--------------------------------------------------------------------
 int shdwPassMaterials::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassMaterials");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassMaterials::Render" );
 	m_stats.Reset();
 
