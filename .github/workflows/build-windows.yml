@@ -43,8 +43,10 @@ jobs:
         # manifest installs (LibXLT/Graphics, LibXLT/GraphicsDX11).
         # The Wx configurations build the wxWidgets interface (from
         # 3rdParty/WxWidgets); the Qt ones build the Qt 6 interface, with Qt
-        # installed on the runner by aqtinstall.
-        configuration: [ Debug Wx, Release Wx, Debug Qt, Release Qt ]
+        # installed on the runner by aqtinstall. The RenderNode ones build
+        # the headless command-line renderer (BATCH_MODE), with no GUI
+        # toolkit.
+        configuration: [ Debug Wx, Release Wx, Debug Qt, Release Qt, Debug RenderNode, Release RenderNode ]
     env:
       VCPKG_ROOT: C:\vcpkg
       VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}\vcpkg-binary-cache
