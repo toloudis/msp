@@ -18,12 +18,6 @@
 #ifndef DBG_LOG_HPP
 #include "dbgLog.hpp"
 #endif
-#ifndef MUI_MAINWINDOW_HPP
-#include "muiMainWindow.hpp"
-#endif
-#ifndef TMA_MANAGEDCONVERSIONUTIL_HPP
-#include "tmaManagedConversionUtil.hpp"
-#endif
 
 
 using namespace System;

@@ -44,12 +44,6 @@
 //#include "Tool/gui/guiMessageBox.hpp"
 //#include "Tool/gui/guiToolbarMgr.hpp"
 //#include "Tool/gui/guiSingleDocHandler.hpp"
-//#include "ToolUIManaged/mui/muiPackage.hpp"
-//#include "ToolUIManaged/mui/muiToolbarMgr.hpp"
-//#include "ToolUIManaged/tma/tmaDialogTabbedMgr.hpp"
-//#include "ToolUIManaged/tma/tmaMessaging.hpp"
-//#include "ToolUIManaged/tma/tmaStatusBarMgr.hpp"
-//#include "ToolUIManaged/tma/tmaToolBarMgr.hpp"
 //#include "Core/undo/undoUndoMgr.hpp"
 //
 ////	library

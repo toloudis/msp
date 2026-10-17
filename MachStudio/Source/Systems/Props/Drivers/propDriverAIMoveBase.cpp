@@ -20,7 +20,6 @@
 #include "tmlnDriverSplineForm.h"
 
 #include "itStringUtil.hpp"
-#include "tmaDialogTabbedMgr.hpp"
 
 
 //--------------------------------------------------------------------

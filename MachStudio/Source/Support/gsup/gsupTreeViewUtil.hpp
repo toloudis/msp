@@ -16,9 +16,6 @@
 #endif
 
 #ifdef _MANAGED
-#ifndef TMA_MANAGEDSTRINGUTILS_HPP
-#include "ToolUIManaged/tma/tmaManagedStringUtils.hpp"
-#endif
 #endif
 
 #include <string>
