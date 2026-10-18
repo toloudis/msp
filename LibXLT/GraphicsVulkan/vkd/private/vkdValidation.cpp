@@ -1,0 +1,76 @@
+/*****************************************************************************
+**  vkdValidation.cpp
+**
+**      See vkdValidation.hpp.
+**
+**	Extra Large Technology
+\****************************************************************************/
+#ifndef GVK_VKDVALIDATION_HPP
+#include "GraphicsVulkan/vkd/vkdValidation.hpp"
+#endif
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
+
+namespace gvk
+{
+	vkdValidationStats vkdValidation::Stats() const
+	{
+		vkdValidationStats stats;
+		stats.m_Errors = m_Errors.load();
+		stats.m_Warnings = m_Warnings.load();
+		stats.m_Infos = m_Infos.load();
+		return stats;
+	}
+
+	void vkdValidation::Reset()
+	{
+		m_Errors = 0;
+		m_Warnings = 0;
+		m_Infos = 0;
+	}
+
+	VKAPI_ATTR VkBool32 VKAPI_CALL vkdValidation::Callback(
+		VkDebugUtilsMessageSeverityFlagBitsEXT i_Severity,
+		VkDebugUtilsMessageTypeFlagsEXT i_Types,
+		const VkDebugUtilsMessengerCallbackDataEXT* i_pData,
+		void* i_pUserData)
+	{
+		vkdValidation* self = static_cast<vkdValidation*>(i_pUserData);
+		const char* id = (i_pData && i_pData->pMessageIdName) ? i_pData->pMessageIdName : "";
+		const char* text = (i_pData && i_pData->pMessage) ? i_pData->pMessage : "";
+
+		//	Only the validation layer's findings (validation and performance
+		//	messages) count. General messages are the loader and layers
+		//	talking about themselves (e.g. an implicit layer someone installed
+		//	targets an older Vulkan): logged, counted as information.
+		const VkDebugUtilsMessageTypeFlagsEXT c_Findings =
+			VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+		if (!(i_Types & c_Findings))
+		{
+			++self->m_Infos;
+			if (i_Severity & (VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT))
+			{
+				DBG_LOG("Vulkan message [" << id << "] " << text);
+			}
+			return VK_FALSE;
+		}
+
+		if (i_Severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
+		{
+			++self->m_Errors;
+			DBG_LOG("Vulkan validation [error] " << id << " | " << text);
+			DBG_ASSERT(false, "Vulkan validation [error] " << id << " | " << text);
+		}
+		else if (i_Severity & VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT)
+		{
+			++self->m_Warnings;
+			DBG_LOG("Vulkan validation [warning] " << id << " | " << text);
+		}
+		else
+		{
+			++self->m_Infos;
+		}
+		return VK_FALSE;		// never abort the call
+	}
+}

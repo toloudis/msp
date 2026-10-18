@@ -106,11 +106,21 @@
     <ClCompile Include="GraphicsVulkanLayer.cpp" />
     <ClCompile Include="vkd\private\vkdAdapter.cpp" />
     <ClCompile Include="vkd\private\vkdCheck.cpp" />
+    <ClCompile Include="vkd\private\vkdDevice.cpp" />
+    <ClCompile Include="vkd\private\vkdImage.cpp" />
+    <ClCompile Include="vkd\private\vkdSurfaceWin.cpp" />
+    <ClCompile Include="vkd\private\vkdValidation.cpp" />
+    <ClCompile Include="vkd\private\vkdVma.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsVulkanLayer.hpp" />
     <ClInclude Include="vkd\vkdAdapter.hpp" />
     <ClInclude Include="vkd\vkdCheck.hpp" />
+    <ClInclude Include="vkd\vkdDevice.hpp" />
+    <ClInclude Include="vkd\vkdImage.hpp" />
+    <ClInclude Include="vkd\vkdInfo.hpp" />
+    <ClInclude Include="vkd\vkdSurface.hpp" />
+    <ClInclude Include="vkd\vkdValidation.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />
