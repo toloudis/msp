@@ -1,0 +1,165 @@
+{
+  "source": "Special/Blur.fx",
+  "hlsl": "Blur.hlsl",
+  "techniques": [
+    {
+      "name": "SimpleGaussianBlur",
+      "passes": [
+        {
+          "name": "downSamplePass",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "DownSamplePS"
+            }
+          }
+        },
+        {
+          "name": "horizontalBlurPass",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SimpleGaussianBlur_horizontalBlurPass_PS"
+            }
+          }
+        },
+        {
+          "name": "verticalBlurPass",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SimpleGaussianBlur_verticalBlurPass_PS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SimpleBlur",
+      "passes": [
+        {
+          "name": "BlurXPass",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SimpleBlur_BlurXPass_PS"
+            }
+          }
+        },
+        {
+          "name": "BlurYPass",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SimpleBlur_BlurYPass_PS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SummedParallelScan",
+      "passes": [
+        {
+          "name": "HorizontalScan",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SummedParallelScan_HorizontalScan_PS"
+            }
+          }
+        },
+        {
+          "name": "VerticalScan",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SummedParallelScan_VerticalScan_PS"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "samplers": {
+    "sceneSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_LINEAR_MIP_POINT",
+        "AddressU": "Clamp",
+        "AddressV": "Clamp"
+      }
+    },
+    "downsampledSampler": {
+      "type": "SamplerState",
+      "state": {
+        "AddressU": "Clamp",
+        "AddressV": "Clamp"
+      }
+    },
+    "BlurSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "ANISOTROPIC",
+        "AddressU": "Clamp",
+        "AddressV": "Clamp",
+        "AddressW": "BORDER",
+        "MipLODBias": 0,
+        "MaxAnisotropy": 16,
+        "ComparisonFunc": "NEVER",
+        "BorderColor": [0, 0, 0, 0],
+        "MinLOD": 0,
+        "MaxLOD": 0
+      }
+    }
+  },
+  "variables": {
+    "sceneTexture": {
+      "type": "Texture2D"
+    },
+    "downsampledTexture": {
+      "type": "Texture2D"
+    },
+    "horizontalBlurTexture": {
+      "type": "Texture2D"
+    },
+    "srcSizeInfo": {
+      "type": "float4"
+    },
+    "downsampledSizeInfo": {
+      "type": "float4"
+    },
+    "VSMDepth": {
+      "type": "int",
+      "default": 1
+    }
+  }
+}

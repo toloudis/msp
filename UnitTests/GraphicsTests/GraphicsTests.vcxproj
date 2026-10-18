@@ -101,6 +101,7 @@
     <ClCompile Include="Vk\vkdBindingsTest.cpp" />
     <ClCompile Include="Vk\g2dWindowVkTest.cpp" />
     <ClCompile Include="Vk\GraphicsVulkanLayerTest.cpp" />
+    <ClCompile Include="Vk\fxShaderCopyTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />

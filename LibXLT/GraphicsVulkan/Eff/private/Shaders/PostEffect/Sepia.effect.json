@@ -1,0 +1,66 @@
+{
+  "source": "PostEffect/Sepia.fx",
+  "hlsl": "Sepia.hlsl",
+  "techniques": [
+    {
+      "name": "Default",
+      "passes": [
+        {
+          "name": "p0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "PS"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "samplers": {
+    "defaultSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "ANISOTROPIC",
+        "MaxAnisotropy": 16,
+        "AddressU": "WRAP",
+        "AddressV": "WRAP"
+      }
+    }
+  },
+  "variables": {
+    "screenTexture": {
+      "type": "Texture2D"
+    },
+    "g_Color1": {
+      "type": "float4",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "ColorPicker"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Sepia Color"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "Sepia base color"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Properties"
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 1
+        }
+      },
+      "default": [0.6353, 0.5412, 0.3961, 1.0]
+    }
+  }
+}

@@ -6,6 +6,7 @@ UnitTests/bin/
 UnitTests/**/*.vcxproj.user
 vcpkg_installed/
 LibXLT/GraphicsDX11/Fx/private/Generated/
+LibXLT/GraphicsVulkan/Fx/private/Generated/
 # MainApp build output in the run directory (the vcpkg DLLs are copied in
 # by MainApp's CopyLibraryVcpkgDlls target)
 MachStudio/MachStudio-x64/MachStudio-x64-*.exe

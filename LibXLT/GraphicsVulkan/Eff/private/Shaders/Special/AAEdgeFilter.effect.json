@@ -1,0 +1,43 @@
+{
+  "source": "Special/AAEdgeFilter.fx",
+  "hlsl": "AAEdgeFilter.hlsl",
+  "techniques": [
+    {
+      "name": "Default",
+      "passes": [
+        {
+          "name": "p0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "PS_AAEdgeFilter"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "samplers": {
+    "g_ColorSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_POINT",
+        "AddressU": "Border",
+        "AddressV": "Border",
+        "BorderColor": [0, 0, 0, 0]
+      }
+    }
+  },
+  "variables": {
+    "colorTexture": {
+      "type": "Texture2D"
+    },
+    "g_ViewportDimensions": {
+      "type": "float4"
+    }
+  }
+}

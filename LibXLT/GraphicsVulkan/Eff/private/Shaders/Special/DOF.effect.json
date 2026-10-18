@@ -1,0 +1,55 @@
+{
+  "source": "Special/DOF.fx",
+  "hlsl": "DOF.hlsl",
+  "techniques": [
+    {
+      "name": "DOFPost",
+      "passes": [
+        {
+          "name": "p0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "DOFPost_PS"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "samplers": {
+    "tSourceSampler": {
+      "type": "SamplerState",
+      "state": {
+        "AddressU": "Clamp",
+        "AddressV": "Clamp"
+      }
+    }
+  },
+  "variables": {
+    "tSource": {
+      "type": "Texture2D"
+    },
+    "tSourceLow": {
+      "type": "Texture2D"
+    },
+    "pixelSizeHigh": {
+      "type": "float2"
+    },
+    "pixelSizeLow": {
+      "type": "float2"
+    },
+    "maxCoC": {
+      "type": "float",
+      "default": 5.0
+    },
+    "radiusScale": {
+      "type": "float",
+      "default": 0.4
+    }
+  }
+}

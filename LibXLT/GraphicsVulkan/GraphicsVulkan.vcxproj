@@ -136,6 +136,141 @@
   <ItemGroup>
     <None Include="vcpkg.json" />
     <None Include="vcpkg-configuration.json" />
+    <None Include="Fx\private\EmbedShadersVk.ps1" />
+    <None Include="Eff\private\Shaders\DumpToTexture.hlsl" />
+    <None Include="Eff\private\Shaders\FinalPass.hlsl" />
+    <None Include="Eff\private\Shaders\GenRays.hlsl" />
+    <None Include="Eff\private\Shaders\HDRLighting.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Anisotropic.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Anisotropic.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Bake.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Bake.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Blinn.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Blinn.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\BlinnReflection.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\BlinnReflection.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\BlinnSkin.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\BlinnSkin.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\CarPaint.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\CarPaint.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Cartoon.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Cartoon.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Default.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Default.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\FC3DBlinn.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\FC3DBlinn.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\FC3DPhong.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\FC3DPhong.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\FC3DPhongTransparent.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\FC3DPhongTransparent.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\FC3DSpecularFresnel.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\FC3DSpecularFresnel.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\FC3DSubSurfaceScatter_wBlinnSpecular.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\FC3DSubSurfaceScatter_wBlinnSpecular.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Globals.hlsli" />
+    <None Include="Eff\private\Shaders\Materials\Hair_SH.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Hair_SH.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Lambert.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Lambert.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Lighting.hlsli" />
+    <None Include="Eff\private\Shaders\Materials\Phong.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Phong.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\PhongReflection.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\PhongReflection.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Phong_wBump.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Phong_wBump.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Simple.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Simple.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Skin.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Skin.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Skinning.hlsli" />
+    <None Include="Eff\private\Shaders\Materials\SpecularFresnel.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\SpecularFresnel.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\SubSurfaceScatter.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\SubSurfaceScatter.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\SubSurfaceScatter_wBlinnSpecular.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\SubSurfaceScatter_wBlinnSpecular.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Support.hlsli" />
+    <None Include="Eff\private\Shaders\Materials\SupportHair.hlsli" />
+    <None Include="Eff\private\Shaders\Materials\Tessellate.hlsli" />
+    <None Include="Eff\private\Shaders\Materials\testtess.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\testtess.hlsl" />
+    <None Include="Eff\private\Shaders\PostEffect\BlackAndWhite.effect.json" />
+    <None Include="Eff\private\Shaders\PostEffect\BlackAndWhite.hlsl" />
+    <None Include="Eff\private\Shaders\PostEffect\GradientMap.effect.json" />
+    <None Include="Eff\private\Shaders\PostEffect\GradientMap.hlsl" />
+    <None Include="Eff\private\Shaders\PostEffect\Helper.hlsli" />
+    <None Include="Eff\private\Shaders\PostEffect\Sepia.effect.json" />
+    <None Include="Eff\private\Shaders\PostEffect\Sepia.hlsl" />
+    <None Include="Eff\private\Shaders\PostEffect\Sketch.effect.json" />
+    <None Include="Eff\private\Shaders\PostEffect\Sketch.hlsl" />
+    <None Include="Eff\private\Shaders\PostProcess.hlsl" />
+    <None Include="Eff\private\Shaders\RayTraceCS.hlsl" />
+    <None Include="Eff\private\Shaders\Special\AAEdgeFilter.effect.json" />
+    <None Include="Eff\private\Shaders\Special\AAEdgeFilter.hlsl" />
+    <None Include="Eff\private\Shaders\Special\AOVolumes.effect.json" />
+    <None Include="Eff\private\Shaders\Special\AOVolumes.hlsl" />
+    <None Include="Eff\private\Shaders\Special\Billboard.effect.json" />
+    <None Include="Eff\private\Shaders\Special\Billboard.hlsl" />
+    <None Include="Eff\private\Shaders\Special\Blur.effect.json" />
+    <None Include="Eff\private\Shaders\Special\Blur.hlsl" />
+    <None Include="Eff\private\Shaders\Special\Brushstroke.effect.json" />
+    <None Include="Eff\private\Shaders\Special\Brushstroke.hlsl" />
+    <None Include="Eff\private\Shaders\Special\DOF.effect.json" />
+    <None Include="Eff\private\Shaders\Special\DOF.hlsl" />
+    <None Include="Eff\private\Shaders\Special\DepthMap.effect.json" />
+    <None Include="Eff\private\Shaders\Special\DepthMap.hlsl" />
+    <None Include="Eff\private\Shaders\Special\DepthRender.effect.json" />
+    <None Include="Eff\private\Shaders\Special\DepthRender.hlsl" />
+    <None Include="Eff\private\Shaders\Special\EnvBackground.effect.json" />
+    <None Include="Eff\private\Shaders\Special\EnvBackground.hlsl" />
+    <None Include="Eff\private\Shaders\Special\Fog.effect.json" />
+    <None Include="Eff\private\Shaders\Special\Fog.hlsl" />
+    <None Include="Eff\private\Shaders\Special\GIVolumes.effect.json" />
+    <None Include="Eff\private\Shaders\Special\GIVolumes.hlsl" />
+    <None Include="Eff\private\Shaders\Special\Glow.effect.json" />
+    <None Include="Eff\private\Shaders\Special\Glow.hlsl" />
+    <None Include="Eff\private\Shaders\Special\HDRLighting.effect.json" />
+    <None Include="Eff\private\Shaders\Special\HDRLighting.hlsl" />
+    <None Include="Eff\private\Shaders\Special\HairDefault.effect.json" />
+    <None Include="Eff\private\Shaders\Special\HairDefault.hlsl" />
+    <None Include="Eff\private\Shaders\Special\IlluminationOnly.effect.json" />
+    <None Include="Eff\private\Shaders\Special\IlluminationOnly.hlsl" />
+    <None Include="Eff\private\Shaders\Special\LPV_GI.effect.json" />
+    <None Include="Eff\private\Shaders\Special\LPV_GI.hlsl" />
+    <None Include="Eff\private\Shaders\Special\LightGlow.effect.json" />
+    <None Include="Eff\private\Shaders\Special\LightGlow.hlsl" />
+    <None Include="Eff\private\Shaders\Special\MapNormalsToScreen.hlsl" />
+    <None Include="Eff\private\Shaders\Special\MaskAlpha.effect.json" />
+    <None Include="Eff\private\Shaders\Special\MaskAlpha.hlsl" />
+    <None Include="Eff\private\Shaders\Special\MotionBlur.effect.json" />
+    <None Include="Eff\private\Shaders\Special\MotionBlur.hlsl" />
+    <None Include="Eff\private\Shaders\Special\NormalMap.effect.json" />
+    <None Include="Eff\private\Shaders\Special\NormalMap.hlsl" />
+    <None Include="Eff\private\Shaders\Special\OpacityRender.effect.json" />
+    <None Include="Eff\private\Shaders\Special\OpacityRender.hlsl" />
+    <None Include="Eff\private\Shaders\Special\Outline.effect.json" />
+    <None Include="Eff\private\Shaders\Special\Outline.hlsl" />
+    <None Include="Eff\private\Shaders\Special\Particle.effect.json" />
+    <None Include="Eff\private\Shaders\Special\Particle.hlsl" />
+    <None Include="Eff\private\Shaders\Special\PostAlphaMatte.effect.json" />
+    <None Include="Eff\private\Shaders\Special\PostAlphaMatte.hlsl" />
+    <None Include="Eff\private\Shaders\Special\Ramp.effect.json" />
+    <None Include="Eff\private\Shaders\Special\Ramp.hlsl" />
+    <None Include="Eff\private\Shaders\Special\ReflectiveShadowMap.effect.json" />
+    <None Include="Eff\private\Shaders\Special\ReflectiveShadowMap.hlsl" />
+    <None Include="Eff\private\Shaders\Special\ShadowsOnly.effect.json" />
+    <None Include="Eff\private\Shaders\Special\ShadowsOnly.hlsl" />
+    <None Include="Eff\private\Shaders\Special\Solid.effect.json" />
+    <None Include="Eff\private\Shaders\Special\Solid.hlsl" />
+    <None Include="Eff\private\Shaders\Special\VelocityRender.effect.json" />
+    <None Include="Eff\private\Shaders\Special\VelocityRender.hlsl" />
+    <None Include="Eff\private\Shaders\Special\ssaoBilateralBlurEngine.effect.json" />
+    <None Include="Eff\private\Shaders\Special\ssaoBilateralBlurEngine.hlsl" />
+    <None Include="Eff\private\Shaders\Special\ssaoMultiHorizonBasedAO.effect.json" />
+    <None Include="Eff\private\Shaders\Special\ssaoMultiHorizonBasedAO.hlsl" />
+    <None Include="Eff\private\Shaders\Special\ssgiMultiHorizonBasedGI.effect.json" />
+    <None Include="Eff\private\Shaders\Special\ssgiMultiHorizonBasedGI.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">
@@ -146,4 +281,20 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <!-- The built-in shaders: GraphicsDX11's HLSL, copied unchanged to Eff\private\Shaders.
+       Fx\private\EmbedShadersVk.ps1 compiles every entry point the *.effect.json manifests
+       list with DXC to SPIR-V and embeds it with the manifests (included by
+       Fx\private\fxEmbeddedShadersVk.cpp). DXC comes from this project's vcpkg packages. -->
+  <PropertyGroup>
+    <VkShaderDir>$(MSBuildThisFileDirectory)Eff\private\Shaders</VkShaderDir>
+    <VkShaderScript>$(MSBuildThisFileDirectory)Fx\private\EmbedShadersVk.ps1</VkShaderScript>
+    <VkShaderOutput>$(MSBuildThisFileDirectory)Fx\private\Generated\fxEmbeddedShadersVk.inc</VkShaderOutput>
+    <VkDxc>$(MSBuildThisFileDirectory)vcpkg_installed\x64-windows\x64-windows\tools\directx-dxc\dxc.exe</VkDxc>
+  </PropertyGroup>
+  <ItemGroup>
+    <VkShaderInput Include="$(VkShaderDir)\**\*.hlsl;$(VkShaderDir)\**\*.hlsli;$(VkShaderDir)\**\*.effect.json;$(VkShaderScript)" />
+  </ItemGroup>
+  <Target Name="EmbedVkShaders" BeforeTargets="ClCompile" AfterTargets="VcpkgInstallManifestDependencies" Inputs="@(VkShaderInput)" Outputs="$(VkShaderOutput)">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(VkShaderScript)&quot; -ShaderDir &quot;$(VkShaderDir)&quot; -OutFile &quot;$(VkShaderOutput)&quot; -Dxc &quot;$(VkDxc)&quot;" />
+  </Target>
 </Project>

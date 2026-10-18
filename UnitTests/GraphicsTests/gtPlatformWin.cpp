@@ -11,6 +11,8 @@
 #include <stdlib.h>
 #include <windows.h>
 
+#include <filesystem>
+
 void gtPlatform::SetUpUnattended()
 {
 	::SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
@@ -53,4 +55,18 @@ void gtPlatform::ResizeHiddenWindow(void* i_Window, int i_Width, int i_Height)
 void gtPlatform::DestroyHiddenWindow(void* i_Window)
 {
 	::DestroyWindow(static_cast<HWND>(i_Window));
+}
+
+std::string gtPlatform::RepoRoot()
+{
+	wchar_t exe[MAX_PATH] = {};
+	::GetModuleFileNameW(NULL, exe, MAX_PATH);
+	for (std::filesystem::path dir = std::filesystem::path(exe).parent_path(); dir.has_relative_path(); dir = dir.parent_path())
+	{
+		if (std::filesystem::is_directory(dir / "LibXLT"))
+		{
+			return (dir / "").string();
+		}
+	}
+	return std::string();
 }

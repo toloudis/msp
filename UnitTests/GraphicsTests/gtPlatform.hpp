@@ -7,6 +7,8 @@
 \****************************************************************************/
 #pragma once
 
+#include <string>
+
 namespace gtPlatform
 {
 	//	SetUpUnattended makes runtime errors (CRT asserts, abort(),
@@ -19,4 +21,8 @@ namespace gtPlatform
 	void* CreateHiddenWindow(int i_Width, int i_Height);
 	void ResizeHiddenWindow(void* i_Window, int i_Width, int i_Height);
 	void DestroyHiddenWindow(void* i_Window);
+
+	//	The repository root: the nearest directory above the test exe that
+	//	has a LibXLT folder (with a trailing separator).
+	std::string RepoRoot();
 }
