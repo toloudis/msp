@@ -217,6 +217,22 @@ TEST_F(gtLayer, StubsAnswerFromTheirData)
 	const maAxisBox& box = fragment->GetBoundingBox();
 	EXPECT_FLOAT_EQ(-1, box.GetMinX()); EXPECT_FLOAT_EQ(-2, box.GetMinY()); EXPECT_FLOAT_EQ(0, box.GetMinZ());
 	EXPECT_FLOAT_EQ(3, box.GetMaxX()); EXPECT_FLOAT_EQ(5, box.GetMaxY()); EXPECT_FLOAT_EQ(2, box.GetMaxZ());
+
+	//	as with DX11's bump fragments: BumpTex1Vertex vertices (callers lock and
+	//	read them by format, the camera icon asserts it) and 16-bit indices
+	//	unless g3dIndexPtr::Needs32Bit (the RenderMan and FBX exporters)
+	EXPECT_EQ(g3dType::e_BumpTex1Vertex, fragment->GetVertexFormat());
+	const g3dType::BumpTex1Vertex* locked = reinterpret_cast<const g3dType::BumpTex1Vertex*>(fragment->ReadOnlyLock());
+	ASSERT_NE(nullptr, locked);
+	EXPECT_FLOAT_EQ(3, locked[1].m_Vertex.GetX());
+	EXPECT_FLOAT_EQ(1, locked[2].m_Normal.GetZ());
+	fragment->ReadOnlyUnlock();
+	ASSERT_FALSE(g3dIndexPtr::Needs32Bit(3));
+	const uint16_t* locked_indices = reinterpret_cast<const uint16_t*>(fragment->ReadOnlyLockIndices());
+	ASSERT_NE(nullptr, locked_indices);
+	EXPECT_EQ(1, locked_indices[1]);
+	EXPECT_EQ(2, locked_indices[2]);
+	fragment->ReadOnlyUnlockIndices();
 }
 
 //	Effect parameter dialogs (post effects, materials) list the property

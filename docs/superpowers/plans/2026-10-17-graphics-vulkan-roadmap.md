@@ -20,11 +20,11 @@ on its own, and every plan must leave Vulkan validation clean (spec, "Validation
 ## Status
 
 - **Plan 1: done** (2026-10-17; `0f415493`..`ac724e7b`, flag reference `cec88868`).
-- **Plan 2: done** (2026-10-18; `8446cfd8`..Task 8's commit), waiting for the owner's review. Plan 3 isn't written yet.
+- **Plan 2: done** (2026-10-18; `8446cfd8`..`f1daf918`, plus the final-review fix), waiting for the owner's review. Plan 3 isn't written yet.
   - **Descriptor model, decided:** `VK_EXT_descriptor_heap`. Per draw, a binding table in the ring buffer (constant-buffer addresses, then texture, sampler and UAV heap indices by DX11 register slot); its address goes in with `vkCmdPushDataEXT`; DXC's `-fvk-[btsu]-shift` bindings map onto it, so the HLSL stays unchanged. Verified on the Quadro RTX 5000 (driver 596.59) with core, sync and GPU-assisted validation clean (`vkdBindingsTest`). The spec's fallbacks (descriptor buffers, push descriptors) weren't needed. Details in `vkd/vkdBindings.hpp`.
   - **Validation:** 0 errors and 0 warnings in the unit tests and in Qt/Wx/RenderNode start-up and shutdown, Debug and Release (`-gfxValidation`). The Intel UHD P630 is refused (it lacks Vulkan 1.4 and `VK_EXT_descriptor_heap`).
   - **For later plans:**
     - Every hook not yet ported is a stub that logs `GVK_NOT_YET`.
-    - Rendering the test scene with `-gfx vulkan` crashes at the camera icon, because `mdlFragCreateVk::CreateFragment` returns empty fragments. Plan 4's real fragments fix this.
+    - Rendering the test scene with `-gfx vulkan` stops at model loading, because `mdlFragCreateVk::CreateFragment` returns empty fragments (subdivision surfaces then find no vertices). Plan 4's real fragments fix this. Stub fragments already match DX11's format: `BumpTex1Vertex`, 16-bit indices unless `g3dIndexPtr::Needs32Bit`.
     - RenderNode with `-new` never exits, on DX11 as well (existing behaviour). Use `-version` for a start-up/shutdown check.
     - The Release DX11 frames are unchanged from Plan 1 (135/135).

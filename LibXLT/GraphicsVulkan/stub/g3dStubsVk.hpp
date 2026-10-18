@@ -114,8 +114,10 @@ namespace gvk
 	class g3dFragmentVk : public g3dFragment
 	{
 		public:
-			//	Positions and normals (any may be NULL), as g3dType::Tex1Vertex when
-			//	i_UVs is given, else g3dType::NonTexVertex; indices kept as 32-bit.
+			//	Kept on the CPU as DX11's bump fragments keep them: g3dType::
+			//	BumpTex1Vertex vertices (missing positions, normals or UVs are
+			//	zero, +Z and (0,0); S and T are +X and +Y until bump fragments
+			//	are ported) and 16-bit indices unless g3dIndexPtr::Needs32Bit.
 			g3dFragmentVk(const maPoint3d* i_Vertices, const maPoint3d* i_Normals, const maPoint2d* i_UVs, int i_nVertices,
 						  const g3dIndexPtr* i_pIndices, int i_nIndices, matMaterial* i_pMaterial, bool i_bMorphable);
 			g3dFragmentVk(const g3dFragmentVk& i_Other);
@@ -140,10 +142,9 @@ namespace gvk
 		private:
 			void update_bounds();
 
-			bool								m_bTextured;
-			std::vector<g3dType::NonTexVertex>	m_Plain;
-			std::vector<g3dType::Tex1Vertex>	m_Textured;
-			std::vector<uint32_t>				m_Indices;
+			std::vector<g3dType::BumpTex1Vertex>	m_Vertices;
+			std::vector<uint16_t>					m_Indices16;	// one of these, by g3dIndexPtr::Needs32Bit
+			std::vector<uint32_t>					m_Indices32;
 	};
 
 	class g3dFragmentCreateVk : public g3dFragmentCreateImpl

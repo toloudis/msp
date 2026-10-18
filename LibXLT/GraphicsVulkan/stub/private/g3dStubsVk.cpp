@@ -87,41 +87,38 @@ namespace gvk
 								 int i_nVertices, const g3dIndexPtr* i_pIndices, int i_nIndices,
 								 matMaterial* i_pMaterial, bool i_bMorphable)
 		: g3dFragment(i_pMaterial, 0, i_bMorphable)
-		, m_bTextured(i_UVs != NULL)
 	{
 		for (int i = 0; i < i_nVertices; ++i)
 		{
-			const maPoint3d position = i_Vertices ? i_Vertices[i] : maPoint3d(0, 0, 0);
-			const maPoint3d normal = i_Normals ? i_Normals[i] : maPoint3d(0, 0, 1);
-			if (m_bTextured)
+			g3dType::BumpTex1Vertex vertex;
+			vertex.m_Vertex = i_Vertices ? i_Vertices[i] : maPoint3d(0, 0, 0);
+			vertex.m_Normal = i_Normals ? i_Normals[i] : maPoint3d(0, 0, 1);
+			vertex.m_TexCoord = i_UVs ? i_UVs[i] : maPoint2d(0, 0);
+			vertex.m_S = maPoint3d(1, 0, 0);
+			vertex.m_T = maPoint3d(0, 1, 0);
+			m_Vertices.push_back(vertex);
+		}
+		const bool wide = g3dIndexPtr::Needs32Bit(i_nVertices);
+		for (int i = 0; i_pIndices && i < i_nIndices; ++i)
+		{
+			const uint32_t index = i_pIndices->GetIndex(i);
+			if (wide)
 			{
-				g3dType::Tex1Vertex vertex;
-				vertex.m_Vertex = position;
-				vertex.m_Normal = normal;
-				vertex.m_TexCoord = i_UVs[i];
-				m_Textured.push_back(vertex);
+				m_Indices32.push_back(index);
 			}
 			else
 			{
-				g3dType::NonTexVertex vertex;
-				vertex.m_Vertex = position;
-				vertex.m_Normal = normal;
-				m_Plain.push_back(vertex);
+				m_Indices16.push_back(static_cast<uint16_t>(index));
 			}
-		}
-		for (int i = 0; i_pIndices && i < i_nIndices; ++i)
-		{
-			m_Indices.push_back(i_pIndices->GetIndex(i));
 		}
 		update_bounds();
 	}
 
 	g3dFragmentVk::g3dFragmentVk(const g3dFragmentVk& i_Other)
 		: g3dFragment(i_Other)
-		, m_bTextured(i_Other.m_bTextured)
-		, m_Plain(i_Other.m_Plain)
-		, m_Textured(i_Other.m_Textured)
-		, m_Indices(i_Other.m_Indices)
+		, m_Vertices(i_Other.m_Vertices)
+		, m_Indices16(i_Other.m_Indices16)
+		, m_Indices32(i_Other.m_Indices32)
 	{
 	}
 
@@ -136,7 +133,7 @@ namespace gvk
 		const int count = GetNumVertices();
 		for (int i = 0; i < count; ++i)
 		{
-			const maPoint3d& p = m_bTextured ? m_Textured[i].m_Vertex : m_Plain[i].m_Vertex;
+			const maPoint3d& p = m_Vertices[i].m_Vertex;
 			if (first)
 			{
 				box = maAxisBox(p, p);
@@ -158,8 +155,8 @@ namespace gvk
 		const int count = std::min(i_NumVertices, GetNumVertices());
 		for (int i = 0; i < count; ++i)
 		{
-			maPoint3d& position = m_bTextured ? m_Textured[i].m_Vertex : m_Plain[i].m_Vertex;
-			maPoint3d& normal = m_bTextured ? m_Textured[i].m_Normal : m_Plain[i].m_Normal;
+			maPoint3d& position = m_Vertices[i].m_Vertex;
+			maPoint3d& normal = m_Vertices[i].m_Normal;
 			if (i_pVertices)
 			{
 				position = i_pVertices[i];
@@ -174,27 +171,31 @@ namespace gvk
 
 	int g3dFragmentVk::GetNumVertices() const
 	{
-		return static_cast<int>(m_bTextured ? m_Textured.size() : m_Plain.size());
+		return static_cast<int>(m_Vertices.size());
 	}
 
 	int g3dFragmentVk::GetNumIndices() const
 	{
-		return static_cast<int>(m_Indices.size());
+		return static_cast<int>(m_Indices16.size() + m_Indices32.size());
 	}
 
 	g3dType::VertexFormat g3dFragmentVk::GetVertexFormat() const
 	{
-		return m_bTextured ? g3dType::e_Tex1Vertex : g3dType::e_NonTexVertex;
+		return g3dType::e_BumpTex1Vertex;
 	}
 
 	unsigned char* g3dFragmentVk::Lock()
 	{
-		return m_bTextured ? reinterpret_cast<unsigned char*>(m_Textured.data())
-						   : reinterpret_cast<unsigned char*>(m_Plain.data());
+		return reinterpret_cast<unsigned char*>(m_Vertices.data());
 	}
 
 	void g3dFragmentVk::Unlock()								{ update_bounds(); }
-	unsigned char* g3dFragmentVk::LockIndices()					{ return reinterpret_cast<unsigned char*>(m_Indices.data()); }
+	unsigned char* g3dFragmentVk::LockIndices()
+	{
+		return m_Indices32.empty() ? reinterpret_cast<unsigned char*>(m_Indices16.data())
+								   : reinterpret_cast<unsigned char*>(m_Indices32.data());
+	}
+
 	void g3dFragmentVk::UnlockIndices()							{}
 	unsigned char* g3dFragmentVk::ReadOnlyLock()				{ return Lock(); }
 	void g3dFragmentVk::ReadOnlyUnlock()						{}
