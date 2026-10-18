@@ -15,6 +15,7 @@
 - `may` package: Maya fragment creator (`mdlFragCreate::SetImplementation`).
 - Capture paths in `Features/Capture` (accumulation, motion blur sampling, batch/bake modes) exercised under Vulkan.
 - Debug display (`g2dDebugDisplay`) and on-screen text overlays.
+- Offscreen windows for RenderNode (owner's question during Plan 3): in `BATCH_MODE` a `g2dWindowVk` can render into a plain `vkdImage` (plus depth) with no surface or swap chain, `Present` only submitting, switched on through `g3dGfxOptions`. RenderNode then needs no desktop or display for Vulkan and capture timings leave presentation out. GraphicsVulkan and one option only; DX11 is unchanged. (Removing the hidden HWNDs from RenderNode altogether is a MainApp change DX11 would share: after Phase 1.)
 
 ## Exit criteria
 

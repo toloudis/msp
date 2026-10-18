@@ -6,7 +6,7 @@
 
 **Spec:** "Library layout", "Proving parity", "Validation".
 
-**Depends on (Plan 3):** effects, pipeline cache, ring buffer, state holders, readback.
+**Depends on (Plan 3):** effects (`fxEffectVk`, the fxEffect API `effPlainEffectVk`), `vkdContext`, pipeline cache, ring buffer, state holders, `g2dFullscreenQuad`, readback, the DX11-reference test helpers (`gtD3D11`, `gtVulkanContext`, `gtImage`).
 
 ## Scope
 
@@ -16,10 +16,13 @@
 - `g3dSceneRendererCreate` implementation registering the default renderer (others return a clear "not yet implemented" until Plans 5–6, logged once).
 - Render targets / depth-stencil buffers (`g2dRenderTarget`, `g2dDepthStencilBuffer`) on dynamic rendering.
 - Profiling markers following Plan 1's naming rule (class name minus prefix and `Vk`).
+- The material shader classes (`effShaderBaseDX11` and the `eff*` effects) on `effPlainEffectVk`, replacing the `matShaderEffectVk` stubs.
+- Fonts (moved from Plan 3): `g2dFontUtil` / `g2dFontObject` (text drawn as an `scrText` sprite: a `tmeshFrag` with the font map texture), its shaders copied from the run-time strings into `G2d/private/Shaders` like the full-screen quad's; window `DrawText`.
 
 ## Exit criteria
 
 - GraphicsTests synthetic scenes (lit sphere and plane with Blinn, textured; one with tessellated displacement) match DX11 within tolerance.
+- Text images (a few strings, sizes and colours) match DX11 within tolerance.
 - `gfxcompare run` on the test scene with the default renderer forced (via render prefs or a test scene variant) produces comparable frames; differences explained or fixed.
 - Timing CSV for both backends on the same frames.
 - Zero validation errors/warnings.

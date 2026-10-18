@@ -11,6 +11,12 @@ profile at a time, with no Effects runtime involved.
 
 fxc compiles the profile written in the manifest (e.g. ps_5_0). dxc does not
 accept SM5 profiles, so the same stage is compiled as *_6_0.
+
+--spirv compiles with GraphicsVulkan's options (register shifts, D3D
+constant buffer layout, ...); they must stay the same as in
+LibXLT/GraphicsVulkan/Fx/private/EmbedShadersVk.ps1 and the GraphicsTests
+shader build step. --exclude-entry skips entry points by name (e.g. the hair
+hull shader, Hair_HS, which DXC's SPIR-V backend can't compile yet).
 """
 
 import argparse
@@ -20,12 +26,22 @@ import subprocess
 import sys
 
 
+# GraphicsVulkan's DXC options (see the docstring)
+SPIRV_OPTIONS = [
+    "-spirv", "-fspv-target-env=vulkan1.3", "-fvk-use-dx-layout", "-fvk-use-dx-position-w",
+    "-fvk-support-nonzero-base-instance", "-fvk-support-nonzero-base-vertex",
+    "-fvk-b-shift", "0", "0", "-fvk-t-shift", "100", "0", "-fvk-s-shift", "200", "0", "-fvk-u-shift", "300", "0",
+]
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("manifests", nargs="+")
     ap.add_argument("--compiler", choices=("fxc", "dxc"), default="fxc")
     ap.add_argument("--exe", help="path to the compiler (default: on PATH)")
-    ap.add_argument("--spirv", action="store_true", help="dxc only: emit SPIR-V")
+    ap.add_argument("--spirv", action="store_true", help="dxc only: emit SPIR-V with GraphicsVulkan's options")
+    ap.add_argument("--exclude-entry", action="append", default=[], metavar="NAME",
+                    help="skip entry points with this name (repeatable)")
     ap.add_argument("-v", "--verbose", action="store_true", help="show warnings")
     args = ap.parse_args()
 
@@ -43,7 +59,7 @@ def main():
                     if not stage:
                         continue
                     key = (stage["entry"], stage["profile"])
-                    if key in seen:
+                    if key in seen or stage["entry"] in args.exclude_entry:
                         continue
                     seen.add(key)
                     profile = stage["profile"]
@@ -53,7 +69,7 @@ def main():
                         profile = profile.split("_")[0] + "_6_0"
                         cmd = [exe, "-T", profile, "-E", stage["entry"], "-Fo", null, hlsl]
                         if args.spirv:
-                            cmd.insert(1, "-spirv")
+                            cmd[1:1] = SPIRV_OPTIONS
                     total += 1
                     r = subprocess.run(cmd, capture_output=True, text=True)
                     ok = r.returncode == 0

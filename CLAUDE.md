@@ -100,10 +100,18 @@ hold settings:
   precompiled header). Helpers use the `mat` prefix.
 - `UnitTests/GraphicsTests` tests `LibXLT/Graphics` code that needs no GPU
   (`g3dProfiler`) and `LibXLT/GraphicsVulkan` (`Vk/`); it links Core,
-  Graphics and GraphicsVulkan. Helpers use the `gt` prefix. The Vulkan
-  tests run with validation on (`gtVulkan` fails a test on any validation
-  message) and are skipped when there is no usable Vulkan device (as on
-  CI). A custom build step compiles `Vk/Shaders/*.hlsl` with DXC.
+  Graphics, GraphicsVulkan and GraphicsDX11, the reference the Vulkan
+  port is compared with (`Dx11/gtD3D11`: a D3D11 device on the hardware
+  adapter, else WARP). Helpers use the `gt` prefix. The Vulkan tests run
+  with validation on (`gtVulkan` fails a test on any validation message)
+  and are skipped when there is no usable Vulkan device (as on CI); the
+  tests that need only reflection run everywhere. Image comparisons
+  (`gtImage`, gfxcompare's metrics and tolerance) write `dx11.png`,
+  `vulkan.png` and `diff.png` to
+  `UnitTests/bin/x64/<Debug|Release>/GraphicsTestsImages/<test>/` when they
+  fail. A custom build step compiles `Vk/Shaders/*.hlsl` with DXC. The
+  test run keeps the user data folder (`gfPaths` `e_UserDataPath`) in a
+  temp directory.
 - `CoreTests.vcxproj` is self-contained: its build settings (include paths,
   runtime, output in `UnitTests/bin/<Platform>/<Debug|Release>/`) are in the
   project file, not a shared props file. A new test project can start as a
@@ -156,7 +164,7 @@ its own `vcpkg_installed/`):
 | `LibXLT/GraphicsVulkan/vcpkg.json` | vulkan-headers, volk, vulkan-memory-allocator, spirv-reflect, directx-dxc | the Vulkan backend: volk loads `vulkan-1.dll` at run time (nothing to link or ship); DXC compiles shaders at build time. Its `vcpkg-configuration.json` has a newer baseline than the other manifests (Vulkan 1.4 headers with `VK_EXT_descriptor_heap`) |
 | `MachStudio/Source/MainApp/vcpkg.json` | curl (+ zlib) | version check (`mainCheckAppVersion`). Linked dynamically: `libcurl.dll` (and its `zlib1.dll`) ships next to the exe |
 | `LibXLT/ToolUIWx/vcpkg.json` | (none) | |
-| `UnitTests/CoreTests/vcpkg.json`, `UnitTests/MainAppTests/vcpkg.json`, `UnitTests/GraphicsTests/vcpkg.json` | gtest | unit tests (`gmock.dll`, which includes gtest, is copied next to the test exe) |
+| `UnitTests/CoreTests/vcpkg.json`, `UnitTests/MainAppTests/vcpkg.json`, `UnitTests/GraphicsTests/vcpkg.json` | gtest (GraphicsTests: also stb, for PNG output) | unit tests (`gmock.dll`, which includes gtest, is copied next to the test exe) |
 
 The library packages live under the library projects, so MainApp adds their
 `vcpkg_installed\...\lib` dirs to its link paths and its
@@ -298,9 +306,11 @@ says why) and installs a Vulkan implementation for every Graphics hook.
 
 | Package | Purpose |
 |---|---|
-| `vkd` | Thin wrappers over the Vulkan C API (volk, VMA): device and adapter choice, command stream and timeline-semaphore submission, validation policy, images, swap chains, the per-frame ring buffer, and resource binding (`vkdBindings`) |
-| `G2d` | 2D system and windows (swap chain plus depth buffer) |
-| `G3d` | 3D system, light manager, GPU timer for the profiler |
+| `vkd` | Thin wrappers over the Vulkan C API (volk, VMA): device and adapter choice, command stream and timeline-semaphore submission, validation policy, images, swap chains, the per-frame ring buffer, resource binding (`vkdBindings`), SPIR-V reflection reported as D3D11 reflection (`vkdReflect`), shader modules (`vkdShader`), the pipeline cache (`vkdPipelineCache`, keyed by the full state, saved to `VulkanPipelineCache.bin` in the user data folder), and `vkdContext`, the DX11-style immediate context ported code draws through (state, render targets, dynamic rendering, the barriers DX11 placed implicitly) |
+| `Fx` | `fxEffectVk` (GraphicsDX11's `fxEffectDX11` on SPIR-V: same parameter names, offsets, defaults and registers), the embedded effects (`fxEmbeddedShadersVk`), `fxMaterialInstance`, and the Effects-shaped API (`fxEffectApi.hpp`) with Vulkan types |
+| `Eff` | The shaders (`Eff/private/Shaders`, a byte-identical copy of GraphicsDX11's) and `effPlainEffectVk`; the material shader classes come in Plan 4 |
+| `G2d` | 2D system and windows (swap chain plus depth buffer), `g2dFullscreenQuad` |
+| `G3d` | 3D system, light manager, GPU timer for the profiler, the blend / depth-stencil / rasterizer state holders and `g3dStateMgrVk` (DX11's, taking Vulkan enums) |
 | `stub` | Hooks not ported yet: they keep MachStudio running (renderers draw nothing, effects have no passes, textures and fragments keep their data on the CPU) and log `GVK_NOT_YET: <name>` once per call site. Later plans move each class to its real package as they port it |
 
 - **Target:** Vulkan 1.4 with `VK_EXT_descriptor_heap`, unified image
@@ -309,8 +319,16 @@ says why) and installs a Vulkan implementation for every Graphics hook.
   first, then the most device-local memory; `MSP_GFX_VK_ADAPTER=<name
   substring>` overrides it. A device that lacks something fails `Init`
   with the missing features named.
-- **Shaders:** GraphicsDX11's HLSL, copied unchanged, compiled by DXC
-  (vcpkg `directx-dxc`) to SPIR-V.
+- **Shaders:** GraphicsDX11's HLSL, copied unchanged (GraphicsTests
+  checks the copy byte for byte), compiled by DXC (vcpkg `directx-dxc`)
+  to SPIR-V at build time by `Fx/private/EmbedShadersVk.ps1` and embedded,
+  as GraphicsDX11 does with fxc. Everything that makes them work on
+  Vulkan is a DXC option; the same options are in the GraphicsTests
+  shader step and `Tools/fx2hlsl/compile_check.py --spirv`, so change all
+  three together. The hair hull shader (`Hair_HS`) doesn't compile to
+  SPIR-V yet (DXC lacks `ProcessIsolineTessFactors`): its passes draw
+  nothing (Plan 7). Shaders GraphicsDX11 compiles from strings at run time
+  are copied into `.hlsl` files when ported (`G2d/private/Shaders`).
 - **Resource binding:** shaders keep their DX11 register slots. Each draw
   writes a table into the ring buffer (constant-buffer addresses, then
   texture, sampler and UAV heap indices) and pushes its address with
@@ -321,6 +339,10 @@ says why) and installs a Vulkan implementation for every Graphics hook.
   and are logged and counted; warnings are logged and counted. A
   successful port means zero of either. At exit the log (and RenderNode's
   stderr) says `Vulkan validation: N errors, M warnings`, or `off`.
+  `vkdValidation` logs as information (not counted) only the layer's
+  notes about its own setup and `WARNING-Shader-OutputNotConsumed` (a
+  vertex shader output the pixel shader doesn't read: valid, and inherent
+  in the unchanged shaders); each has its reason in the code.
 
 ### Other LibXLT libraries
 
