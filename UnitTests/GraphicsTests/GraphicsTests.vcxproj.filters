@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Dx11">
+      <UniqueIdentifier>{3223ba1a-93aa-b8c1-b89b-641ab780d60e}</UniqueIdentifier>
+    </Filter>
     <Filter Include="G3d">
       <UniqueIdentifier>{f2a2a70d-9290-58bb-b8a0-3f1f62659745}</UniqueIdentifier>
     </Filter>
@@ -41,12 +44,21 @@
     <ClCompile Include="Vk\fxShaderCopyTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
+    <ClCompile Include="Dx11\gtD3D11.cpp">
+      <Filter>Dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\fxEffectVkReflectionTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />
     <ClInclude Include="gtTempDir.hpp" />
     <ClInclude Include="Vk\gtVulkan.hpp">
       <Filter>Vk</Filter>
+    </ClInclude>
+    <ClInclude Include="Dx11\gtD3D11.hpp">
+      <Filter>Dx11</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -65,6 +65,8 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <!-- Direct3D 11: GraphicsDX11 is the reference the Vulkan tests compare against -->
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>"$(TargetPath)" --gtest_brief=1 "--gtest_output=xml:$(OutDir)$(TargetName).xml"</Command>
@@ -102,11 +104,14 @@
     <ClCompile Include="Vk\g2dWindowVkTest.cpp" />
     <ClCompile Include="Vk\GraphicsVulkanLayerTest.cpp" />
     <ClCompile Include="Vk\fxShaderCopyTest.cpp" />
+    <ClCompile Include="Dx11\gtD3D11.cpp" />
+    <ClCompile Include="Vk\fxEffectVkReflectionTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />
     <ClInclude Include="gtTempDir.hpp" />
     <ClInclude Include="Vk\gtVulkan.hpp" />
+    <ClInclude Include="Dx11\gtD3D11.hpp" />
   </ItemGroup>
   <ItemGroup>
     <!-- The descriptor-prototype test shader, compiled to SPIR-V with the GraphicsVulkan register shifts -->
@@ -126,6 +131,9 @@
     </ProjectReference>
     <ProjectReference Include="..\..\LibXLT\Graphics\Graphics.vcxproj">
       <Project>{1D25A739-3967-4BAF-AA18-53690B00BD55}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\LibXLT\GraphicsDX11\GraphicsDX11.vcxproj">
+      <Project>{419458FF-14D9-40EC-A36E-0A72774BC100}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\LibXLT\GraphicsVulkan\GraphicsVulkan.vcxproj">
       <Project>{216ED7AE-3E0C-4B0D-A1DF-8D4D80C8AD71}</Project>

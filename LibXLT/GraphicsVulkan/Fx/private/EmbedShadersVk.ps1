@@ -54,6 +54,24 @@ function Format-Bytes([byte[]]$bytes) {
     return $sb.ToString()
 }
 
+# Names the HLSL (and the files it includes) declares bool. SPIR-V can't keep
+# a bool in a constant buffer, so DXC stores it as a uint; fxEffectVk uses
+# this list to report the declared type, as D3D reflection does.
+function Get-BoolNames([string]$path, [hashtable]$seen) {
+    $full = (Resolve-Path $path).Path
+    if ($seen.ContainsKey($full)) { return @() }
+    $seen[$full] = $true
+    $text = [IO.File]::ReadAllText($full)
+    $text = [regex]::Replace($text, '/\*.*?\*/', '', 'Singleline')
+    $text = [regex]::Replace($text, '//[^\r\n]*', '')
+    $names = @()
+    foreach ($m in [regex]::Matches($text, '\bbool\s+(\w+)\s*(?=[:;=\[])')) { $names += $m.Groups[1].Value }
+    foreach ($m in [regex]::Matches($text, '#include\s+"([^"]+)"')) {
+        $names += Get-BoolNames (Join-Path (Split-Path $full -Parent) $m.Groups[1].Value) $seen
+    }
+    return $names
+}
+
 function Stage-Entries($stages) {
     foreach ($p in $stages.PSObject.Properties) {
         if ($null -ne $p.Value) { $p.Value }
@@ -101,15 +119,15 @@ try {
                         continue
                     }
 
-                    $profile = $stage.profile.Split("_")[0] + "_6_0"
+                    $dxcProfile = $stage.profile.Split("_")[0] + "_6_0"
                     # dxc writes warnings to stderr; with "Stop", PowerShell 5.1
                     # would turn those into a terminating error
                     $ErrorActionPreference = "Continue"
-                    $log = & $Dxc @DxcOptions -T $profile -E $stage.entry -Fo $tmp $hlsl 2>&1
+                    $log = & $Dxc @DxcOptions -T $dxcProfile -E $stage.entry -Fo $tmp $hlsl 2>&1
                     $ErrorActionPreference = "Stop"
                     if ($LASTEXITCODE -ne 0) {
                         $log | ForEach-Object { Write-Host $_ }
-                        throw "dxc failed: $($stage.entry) ($profile) in $hlsl"
+                        throw "dxc failed: $($stage.entry) ($dxcProfile) in $hlsl"
                     }
                     $warnings += @($log | Where-Object { "$_" -match "warning:" }).Count
                     $bytes = [IO.File]::ReadAllBytes($tmp)
@@ -129,7 +147,8 @@ try {
         $effectName = $file.Name -replace '\.effect\.json$', ''
         $source = $file.FullName.Substring($ShaderDir.Length).TrimStart('\', '/') -replace '\\', '/'
         $count = @($table | Where-Object { $_ -notmatch "nullptr" }).Count
-        $effects += "`t{ `"$effectName`", `"$source`", (const char*)${prefix}_manifest, ${prefix}_bytecode, $count },"
+        $bools = (@(Get-BoolNames $hlsl @{}) | Sort-Object -Unique) -join " "
+        $effects += "`t{ `"$effectName`", `"$source`", (const char*)${prefix}_manifest, ${prefix}_bytecode, $count, `"$bools`" },"
         $e++
     }
 }
@@ -141,7 +160,7 @@ finally {
 if ($effects.Count -gt 0) {
     [void]$out.Append("const fxEmbeddedEffect ${TableName}::k_Effects[] = {`r`n").Append(($effects -join "`r`n")).Append("`r`n};`r`n")
 } else {
-    [void]$out.Append("const fxEmbeddedEffect ${TableName}::k_Effects[] = { { nullptr, nullptr, nullptr, nullptr, 0 } };`r`n")
+    [void]$out.Append("const fxEmbeddedEffect ${TableName}::k_Effects[] = { { nullptr, nullptr, nullptr, nullptr, 0, nullptr } };`r`n")
 }
 [void]$out.Append("const int ${TableName}::k_NumEffects = $($effects.Count);`r`n")
 $deferredList = @($skipped | ForEach-Object { "`t`"$_`"," })

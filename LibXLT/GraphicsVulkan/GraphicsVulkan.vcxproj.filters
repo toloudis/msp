@@ -109,6 +109,18 @@
     <ClCompile Include="stub\private\g3dStubsVk.cpp">
       <Filter>stub\private</Filter>
     </ClCompile>
+    <ClCompile Include="vkd\private\vkdReflect.cpp">
+      <Filter>vkd\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Fx\private\fxEffectDesc.cpp">
+      <Filter>Fx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Fx\private\fxEffectVk.cpp">
+      <Filter>Fx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Fx\private\fxEmbeddedShadersVk.cpp">
+      <Filter>Fx\private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsVulkanLayer.hpp" />
@@ -177,6 +189,18 @@
     </ClInclude>
     <ClInclude Include="stub\g3dStubsVk.hpp">
       <Filter>stub</Filter>
+    </ClInclude>
+    <ClInclude Include="vkd\vkdReflect.hpp">
+      <Filter>vkd</Filter>
+    </ClInclude>
+    <ClInclude Include="Fx\fxEffectDesc.hpp">
+      <Filter>Fx</Filter>
+    </ClInclude>
+    <ClInclude Include="Fx\fxEffectVk.hpp">
+      <Filter>Fx</Filter>
+    </ClInclude>
+    <ClInclude Include="Fx\fxEmbeddedShadersVk.hpp">
+      <Filter>Fx</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

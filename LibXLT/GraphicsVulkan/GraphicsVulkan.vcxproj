@@ -7,8 +7,9 @@
     to this file lists the packages; vcpkg-configuration.json pins a newer
     baseline than the rest of the repo, matching the Vulkan SDK 1.4.350.
 
-    volk's static library is merged into GraphicsVulkan.lib (Lib step
-    below), so MainApp only references this project.
+    The static libraries of volk and SPIRV-Reflect are merged into
+    GraphicsVulkan.lib (Lib step below), so MainApp only references this
+    project.
   -->
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
@@ -66,7 +67,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>volk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>volk.lib;spirv-reflect-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(GvkVcpkgLib);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
@@ -107,6 +108,10 @@
     <ClCompile Include="stub\private\g2dStubsVk.cpp" />
     <ClCompile Include="stub\private\matStubsVk.cpp" />
     <ClCompile Include="stub\private\g3dStubsVk.cpp" />
+    <ClCompile Include="vkd\private\vkdReflect.cpp" />
+    <ClCompile Include="Fx\private\fxEffectDesc.cpp" />
+    <ClCompile Include="Fx\private\fxEffectVk.cpp" />
+    <ClCompile Include="Fx\private\fxEmbeddedShadersVk.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsVulkanLayer.hpp" />
@@ -132,6 +137,10 @@
     <ClInclude Include="stub\g2dStubsVk.hpp" />
     <ClInclude Include="stub\matStubsVk.hpp" />
     <ClInclude Include="stub\g3dStubsVk.hpp" />
+    <ClInclude Include="vkd\vkdReflect.hpp" />
+    <ClInclude Include="Fx\fxEffectDesc.hpp" />
+    <ClInclude Include="Fx\fxEffectVk.hpp" />
+    <ClInclude Include="Fx\fxEmbeddedShadersVk.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

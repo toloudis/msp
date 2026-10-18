@@ -81,6 +81,7 @@ namespace gvk
 		struct FeatureChain
 		{
 			VkPhysicalDeviceFeatures2						m_Features2 = {VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2};
+			VkPhysicalDeviceVulkan11Features				m_Vulkan11 = {VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES};
 			VkPhysicalDeviceVulkan12Features				m_Vulkan12 = {VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES};
 			VkPhysicalDeviceVulkan13Features				m_Vulkan13 = {VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES};
 			VkPhysicalDeviceDescriptorHeapFeaturesEXT		m_Heap = {VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_HEAP_FEATURES_EXT};
@@ -89,7 +90,8 @@ namespace gvk
 			//	The extension structs are chained only when the device has the extension.
 			void Link(bool i_bHeap, bool i_bUnified)
 			{
-				m_Features2.pNext = &m_Vulkan12;
+				m_Features2.pNext = &m_Vulkan11;
+				m_Vulkan11.pNext = &m_Vulkan12;
 				m_Vulkan12.pNext = &m_Vulkan13;
 				void** next = &m_Vulkan13.pNext;
 				if (i_bHeap)
@@ -103,6 +105,45 @@ namespace gvk
 					next = &m_Unified.pNext;
 				}
 				*next = NULL;
+			}
+
+			//	Every feature vkdRequiredFeatures() can name, by that name
+			VkBool32* Find(const std::string& i_Name)
+			{
+				VkPhysicalDeviceFeatures& core = m_Features2.features;
+				const struct { const char* m_pName; VkBool32* m_pValue; } features[] =
+				{
+					{"geometryShader",					&core.geometryShader},
+					{"tessellationShader",				&core.tessellationShader},
+					{"samplerAnisotropy",				&core.samplerAnisotropy},
+					{"fillModeNonSolid",				&core.fillModeNonSolid},
+					{"depthClamp",						&core.depthClamp},
+					{"depthBiasClamp",					&core.depthBiasClamp},
+					{"independentBlend",				&core.independentBlend},
+					{"dualSrcBlend",					&core.dualSrcBlend},
+					{"textureCompressionBC",			&core.textureCompressionBC},
+					{"imageCubeArray",					&core.imageCubeArray},
+					{"shaderImageGatherExtended",		&core.shaderImageGatherExtended},
+					{"shaderClipDistance",				&core.shaderClipDistance},
+					{"shaderDrawParameters",			&m_Vulkan11.shaderDrawParameters},
+					{"samplerMirrorClampToEdge",		&m_Vulkan12.samplerMirrorClampToEdge},
+					{"timelineSemaphore",				&m_Vulkan12.timelineSemaphore},
+					{"bufferDeviceAddress",				&m_Vulkan12.bufferDeviceAddress},
+					{"dynamicRendering",				&m_Vulkan13.dynamicRendering},
+					{"synchronization2",				&m_Vulkan13.synchronization2},
+					{"shaderDemoteToHelperInvocation",	&m_Vulkan13.shaderDemoteToHelperInvocation},
+					{"descriptorHeap",					&m_Heap.descriptorHeap},
+					{"unifiedImageLayouts",				&m_Unified.unifiedImageLayouts},
+				};
+				for (const auto& feature : features)
+				{
+					if (i_Name == feature.m_pName)
+					{
+						return feature.m_pValue;
+					}
+				}
+				DBG_ASSERT(false, "vkdRequiredFeatures names a feature FeatureChain doesn't have");
+				return NULL;
 			}
 		};
 
@@ -141,22 +182,12 @@ namespace gvk
 			{
 				vkGetPhysicalDeviceFeatures2(i_Physical, &chain.m_Features2);
 			}
-			const struct { const char* m_pName; VkBool32 m_bValue; } features[] =
+			for (const std::string& name : vkdRequiredFeatures())
 			{
-				{"geometryShader",		chain.m_Features2.features.geometryShader},
-				{"tessellationShader",	chain.m_Features2.features.tessellationShader},
-				{"dynamicRendering",	chain.m_Vulkan13.dynamicRendering},
-				{"synchronization2",	chain.m_Vulkan13.synchronization2},
-				{"timelineSemaphore",	chain.m_Vulkan12.timelineSemaphore},
-				{"bufferDeviceAddress",	chain.m_Vulkan12.bufferDeviceAddress},
-				{"descriptorHeap",		chain.m_Heap.descriptorHeap},
-				{"unifiedImageLayouts",	chain.m_Unified.unifiedImageLayouts},
-			};
-			for (const auto& feature : features)
-			{
-				if (feature.m_bValue)
+				const VkBool32* value = chain.Find(name);
+				if (value && *value)
 				{
-					info.m_Features.push_back(feature.m_pName);
+					info.m_Features.push_back(name);
 				}
 			}
 			return info;
@@ -365,14 +396,13 @@ namespace gvk
 		//	Device: exactly the required features and extensions
 		FeatureChain chain;
 		chain.Link(true, true);
-		chain.m_Features2.features.geometryShader = VK_TRUE;
-		chain.m_Features2.features.tessellationShader = VK_TRUE;
-		chain.m_Vulkan12.timelineSemaphore = VK_TRUE;
-		chain.m_Vulkan12.bufferDeviceAddress = VK_TRUE;
-		chain.m_Vulkan13.dynamicRendering = VK_TRUE;
-		chain.m_Vulkan13.synchronization2 = VK_TRUE;
-		chain.m_Heap.descriptorHeap = VK_TRUE;
-		chain.m_Unified.unifiedImageLayouts = VK_TRUE;
+		for (const std::string& name : vkdRequiredFeatures())
+		{
+			if (VkBool32* value = chain.Find(name))
+			{
+				*value = VK_TRUE;
+			}
+		}
 
 		std::vector<const char*> device_extensions;
 		for (const std::string& name : vkdRequiredExtensions())
