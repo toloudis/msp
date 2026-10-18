@@ -78,6 +78,26 @@
 #include "Graphics/G3d/g3dSceneRendererTypes.hpp"
 #endif
 
+#ifndef GVK_MATSTUBSVK_HPP
+#include "GraphicsVulkan/stub/matStubsVk.hpp"
+#endif
+#ifndef EFF_SHADERPARAMS_HPP
+#include "Graphics/Eff/effShaderParams.hpp"
+#endif
+
+#ifndef EFF_BILLBOARDDATA_HPP
+#include "Graphics/Eff/effBillboardData.hpp"
+#endif
+#ifndef EFF_PHONGDATA_HPP
+#include "Graphics/Eff/effPhongData.hpp"
+#endif
+#ifndef EFF_TEXTUREDDATA_HPP
+#include "Graphics/Eff/effTexturedData.hpp"
+#endif
+#ifndef FS_LOCATOR_HPP
+#include "Core/fs/fsLocator.hpp"
+#endif
+
 #include <gtest/gtest.h>
 
 #include <memory>
@@ -199,6 +219,53 @@ TEST_F(gtLayer, StubsAnswerFromTheirData)
 	EXPECT_FLOAT_EQ(3, box.GetMaxX()); EXPECT_FLOAT_EQ(5, box.GetMaxY()); EXPECT_FLOAT_EQ(2, box.GetMaxZ());
 }
 
+//	Effect parameter dialogs (post effects, materials) list the property
+//	object BuildPrtyObject makes; until effects are ported it is empty
+TEST_F(gtLayer, ShaderEffectBuildsAnEmptyPropertyObject)
+{
+	gvk::matShaderEffectVk effect("test");
+	effShaderParams params;
+	EXPECT_EQ(0, effect.BuildPrtyObject(&params));
+	EXPECT_NE(nullptr, params.m_pPrtyUI);
+}
+
+//	Materials take their data type from the registered built-in shaders
+//	(matMaterial("Billboard.fx") gets effBillboardData), so the Vulkan
+//	shader manager registers DX11's names and data types, each with an
+//	effect (matShaderMgr asserts on a NULL one) that draws nothing yet
+TEST_F(gtLayer, ShaderMgrRegistersTheBuiltInShaders)
+{
+	gvk::matShaderMgrVk mgr;
+	std::map<std::string, matShaderInfo> shaders;
+	mgr.RegisterEffects(fsLocator(), shaders);
+
+	EXPECT_EQ(42u, shaders.size());
+	EXPECT_NE(nullptr, dynamic_cast<effBillboardData*>(shaders["Billboard.fx"].m_DataTemplate));
+	EXPECT_NE(nullptr, dynamic_cast<effPhongData*>(shaders["default"].m_DataTemplate));
+	EXPECT_NE(nullptr, dynamic_cast<effTexturedData*>(shaders["EnvBackground.fx"].m_DataTemplate));
+	EXPECT_EQ(nullptr, shaders["HDRLighting"].m_DataTemplate);
+	for (auto& shader : shaders)
+	{
+		EXPECT_NE(nullptr, shader.second.m_pEffect) << shader.first;
+		EXPECT_EQ(itString(shader.first.c_str()), shader.second.m_Name) << shader.first;
+		delete shader.second.m_DataTemplate;
+		delete shader.second.m_pEffect;
+	}
+}
+
+//	As with DX11, the 3D system initializes the shader manager once its
+//	implementation is installed, so materials get their data types
+//	(scrImage's "Billboard.fx" material needs effBillboardData)
+TEST_F(gtLayer, ShaderMgrIsInitialized)
+{
+	const bool was_enabled = matShaderMgr::GetUseShaderArray();
+	matShaderMgr::SetUseShaderArray(true);
+	std::unique_ptr<effShaderData> data(matShaderMgr::CreateData("Billboard.fx"));
+	EXPECT_NE(nullptr, dynamic_cast<effBillboardData*>(data.get()));
+	EXPECT_NE(nullptr, matShaderMgr::GetSpecialEffect("Blur"));
+	matShaderMgr::SetUseShaderArray(was_enabled);
+}
+
 TEST(gtLayerLifetime, CleanUpRemovesTheHooks)
 {
 	void* window = gtPlatform::CreateHiddenWindow(64, 64);
@@ -223,4 +290,24 @@ TEST(gtLayerLifetime, CleanUpRemovesTheHooks)
 	EXPECT_EQ(nullptr, g2dFontUtil::Implementation());
 	EXPECT_EQ(nullptr, g3dLightMgr::Implementation());
 	EXPECT_EQ(nullptr, GraphicsVulkanLayer::GetSystem2D());
+}
+
+//	Validation runs in Debug builds and with -gfxValidation; the layer says
+//	whether it ran, so a Release run without it isn't reported as clean
+TEST(gtLayerLifetime, ValidationRunsInDebugOrWhenAskedFor)
+{
+	for (bool asked : {false, true})
+	{
+		void* window = gtPlatform::CreateHiddenWindow(64, 64);
+		g3dGfxOptions options;
+		options.m_bValidation = asked;
+		if (!GraphicsVulkanLayer::Init(window, options))
+		{
+			gtPlatform::DestroyHiddenWindow(window);
+			GTEST_SKIP() << "No usable Vulkan device: " << GraphicsVulkanLayer::GetInitError();
+		}
+		EXPECT_EQ(asked || ENV_BUILD == ENV_DEBUGBUILD, GraphicsVulkanLayer::IsValidating()) << "asked: " << asked;
+		GraphicsVulkanLayer::CleanUp();
+		gtPlatform::DestroyHiddenWindow(window);
+	}
 }

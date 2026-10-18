@@ -174,6 +174,7 @@ namespace gvk
 		VkInstance					m_Instance = VK_NULL_HANDLE;
 		VkDebugUtilsMessengerEXT	m_Messenger = VK_NULL_HANDLE;
 		bool						m_bDebugUtils = false;
+		bool						m_bValidating = false;
 
 		VkPhysicalDevice			m_Physical = VK_NULL_HANDLE;
 		VkPhysicalDeviceProperties	m_Properties = {};
@@ -234,6 +235,7 @@ namespace gvk
 
 		//	Instance: validation per the policy
 		const bool want_validation = c_bDebugBuild || i_Options.m_bValidation || i_Options.m_bGpuAssisted;
+		m_bValidating = want_validation;
 		if (want_validation && !has_layer(c_ValidationLayer))
 		{
 			o_Error = std::string(c_ValidationLayer) + " isn't installed, and " +
@@ -676,6 +678,11 @@ namespace gvk
 	vkdValidationStats vkdDevice::ValidationStats() const
 	{
 		return m_pImpl->m_pValidation->Stats();
+	}
+
+	bool vkdDevice::IsValidating() const
+	{
+		return m_pImpl->m_bValidating;
 	}
 
 	void vkdDevice::ResetValidationStats()

@@ -136,6 +136,7 @@
     <ClInclude Include="vkd\vkdInfo.hpp" />
     <ClInclude Include="vkd\vkdSurface.hpp" />
     <ClInclude Include="vkd\vkdValidation.hpp" />
+    <ClInclude Include="vkd\vkdValidationStats.hpp" />
     <ClInclude Include="vkd\vkdGlobal.hpp" />
     <ClInclude Include="vkd\vkdSwapchain.hpp" />
     <ClInclude Include="G2d\g2dWindowVk.hpp" />

@@ -12,6 +12,9 @@
 #ifndef GVK_GRAPHICSVULKANLAYER_HPP
 #include "GraphicsVulkan/GraphicsVulkanLayer.hpp"
 #endif
+#ifndef GVK_VKDVALIDATION_HPP
+#include "GraphicsVulkan/vkd/vkdValidation.hpp"
+#endif
 #ifndef GVK_VKDDEVICE_HPP
 #include "GraphicsVulkan/vkd/vkdDevice.hpp"
 #endif
@@ -55,6 +58,7 @@ namespace
 
 	std::string					l_InitError;
 	vkdValidation				l_Validation;		// outlives the device: counts its destruction too
+	bool						l_bValidating = false;
 	vkdDevice*					l_pDevice = NULL;
 	vkdRingBuffer*				l_pRing = NULL;
 	vkdBindings*				l_pBindings = NULL;
@@ -76,6 +80,7 @@ bool GraphicsVulkanLayer::Init(void* /*i_hWnd*/, const g3dGfxOptions& i_Options)
 	DBG_ASSERT(!l_pDevice, "GraphicsVulkanLayer::Init called twice");
 	l_InitError.clear();
 	l_Validation.Reset();
+	l_bValidating = false;
 
 	vkdDeviceOptions options;
 	options.m_bValidation = i_Options.m_bValidation;
@@ -90,6 +95,7 @@ bool GraphicsVulkanLayer::Init(void* /*i_hWnd*/, const g3dGfxOptions& i_Options)
 		DBG_LOG("GraphicsVulkan: " << l_InitError);
 		return false;
 	}
+	l_bValidating = l_pDevice->IsValidating();
 	l_pRing = new vkdRingBuffer(*l_pDevice, c_RingBlockSize);
 	l_pBindings = new vkdBindings(*l_pDevice);
 	vkdGlobal::Set(l_pDevice, l_pRing, l_pBindings);
@@ -132,7 +138,14 @@ void GraphicsVulkanLayer::CleanUp() throw()
 	l_pDevice = NULL;
 
 	const vkdValidationStats stats = l_Validation.Stats();
-	DBG_LOG("Vulkan validation: " << stats.m_Errors << " errors, " << stats.m_Warnings << " warnings");
+	if (l_bValidating)
+	{
+		DBG_LOG("Vulkan validation: " << stats.m_Errors << " errors, " << stats.m_Warnings << " warnings");
+	}
+	else
+	{
+		DBG_LOG("Vulkan validation: off");
+	}
 }
 
 void GraphicsVulkanLayer::InitGraphics()
@@ -180,4 +193,9 @@ const std::string& GraphicsVulkanLayer::GetInitError()
 vkdValidationStats GraphicsVulkanLayer::GetValidationStats()
 {
 	return l_Validation.Stats();
+}
+
+bool GraphicsVulkanLayer::IsValidating()
+{
+	return l_bValidating;
 }

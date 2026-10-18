@@ -72,7 +72,8 @@ TEST_F(gtVulkan, ValidationErrorIsCaught)
 	vkCmdSetLineWidth(Device().Commands(), 2.0f);
 	dbgMsg::SetAssertHandler(previous);
 
-	EXPECT_EQ(1, l_Asserts.load());
+	//	DBG_ASSERT is compiled out of Release builds; the error is still counted and logged
+	EXPECT_EQ(ENV_BUILD == ENV_DEBUGBUILD ? 1 : 0, l_Asserts.load());
 	EXPECT_EQ(1, m_Validation.Stats().m_Errors);
 	EXPECT_EQ(1, Device().ValidationStats().m_Errors);
 	Device().Submit();

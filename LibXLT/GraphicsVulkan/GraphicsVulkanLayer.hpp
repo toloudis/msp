@@ -14,8 +14,8 @@
 #endif
 #define GVK_GRAPHICSVULKANLAYER_HPP
 
-#ifndef GVK_VKDVALIDATION_HPP
-#include "GraphicsVulkan/vkd/vkdValidation.hpp"
+#ifndef GVK_VKDVALIDATIONSTATS_HPP
+#include "GraphicsVulkan/vkd/vkdValidationStats.hpp"
 #endif
 
 #include <string>
@@ -64,4 +64,11 @@ class GraphicsVulkanLayer
 		//	across Init..CleanUp, including device destruction)
 		//------------------------------------------------------------------------
 		static gvk::vkdValidationStats GetValidationStats();
+
+		//------------------------------------------------------------------------
+		//	IsValidating - whether the validation layer ran (Debug builds, or
+		//	-gfxValidation); the counts mean nothing otherwise. Kept after
+		//	CleanUp, like the counts.
+		//------------------------------------------------------------------------
+		static bool IsValidating();
 };

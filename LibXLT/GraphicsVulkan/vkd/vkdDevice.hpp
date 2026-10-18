@@ -110,6 +110,8 @@ namespace gvk
 			void EndLabel(VkCommandBuffer i_Commands);
 
 			vkdValidationStats ValidationStats() const;
+			//	Whether the validation layer is on (Debug builds, or asked for)
+			bool IsValidating() const;
 			void ResetValidationStats();
 
 		private:

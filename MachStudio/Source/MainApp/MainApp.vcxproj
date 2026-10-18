@@ -461,6 +461,7 @@
     <ClInclude Include="mainInitApplication.hpp" />
     <ClInclude Include="mainInitDocument.hpp" />
     <ClInclude Include="mainCommandLine.hpp" />
+    <ClInclude Include="mainGfxBackend.hpp" />
     <ClInclude Include="mainInitGraphics.hpp" />
     <ClInclude Include="mainInitLibrary.hpp" />
     <ClInclude Include="mainInitMainWindow.hpp" />

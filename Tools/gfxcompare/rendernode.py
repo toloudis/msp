@@ -2,9 +2,14 @@
 
 The capture settings go after -render: -render loads the scene, and loading
 replaces the capture settings with the scene's own.
+
+RenderNode prints "Graphics backend: <name> on <adapter>" at startup and,
+for Vulkan, "Vulkan validation: N errors, M warnings" at exit, both on
+stderr; run returns stderr so callers can check them.
 """
 from __future__ import annotations
 
+import re
 import subprocess
 from pathlib import Path
 
@@ -25,8 +30,8 @@ def build_command(exe: Path, scene: Path, out_dir: Path, profile_csv: Path,
     return cmd
 
 
-def run(cmd: list[str], timeout_s: float, out_dir: Path) -> None:
-    """Runs cmd; raises RuntimeError if it fails or writes no images to out_dir."""
+def run(cmd: list[str], timeout_s: float, out_dir: Path) -> str:
+    """Runs cmd and returns its stderr; raises RuntimeError if it fails or writes no images to out_dir."""
     proc = subprocess.run(cmd, capture_output=True, text=True, errors="replace", timeout=timeout_s)
     if proc.returncode != 0:
         tail = (proc.stderr or proc.stdout or "")[-2000:]
@@ -34,3 +39,20 @@ def run(cmd: list[str], timeout_s: float, out_dir: Path) -> None:
     images = [p for p in Path(out_dir).iterdir() if p.suffix.lower() in IMAGE_SUFFIXES]
     if not images:
         raise RuntimeError(f"{Path(cmd[0]).name} wrote no images to {out_dir}")
+    return proc.stderr or ""
+
+
+_VALIDATION = re.compile(r"Vulkan validation: (?P<errors>\d+) errors, (?P<warnings>\d+) warnings")
+_BACKEND = re.compile(r"^Graphics backend: (?P<name>\S+) on (?P<adapter>.+?)\s*$", re.MULTILINE)
+
+
+def validation_counts(stderr: str) -> tuple[int, int] | None:
+    """(errors, warnings) from the Vulkan validation line, or None if there is none (DX11)."""
+    m = _VALIDATION.search(stderr)
+    return (int(m["errors"]), int(m["warnings"])) if m else None
+
+
+def backend_adapter(stderr: str) -> tuple[str, str] | None:
+    """(backend, adapter) from the "Graphics backend" line, or None if there is none."""
+    m = _BACKEND.search(stderr)
+    return (m["name"], m["adapter"]) if m else None

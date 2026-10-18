@@ -15,19 +15,16 @@
 #endif
 #define GVK_VKDVALIDATION_HPP
 
+#ifndef GVK_VKDVALIDATIONSTATS_HPP
+#include "GraphicsVulkan/vkd/vkdValidationStats.hpp"
+#endif
+
 #include <volk.h>
 
 #include <atomic>
 
 namespace gvk
 {
-	struct vkdValidationStats
-	{
-		int m_Errors = 0;
-		int m_Warnings = 0;
-		int m_Infos = 0;
-	};
-
 	class vkdValidation
 	{
 		public:

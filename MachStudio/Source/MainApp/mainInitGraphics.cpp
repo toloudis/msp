@@ -40,6 +40,7 @@
 #include "Graphics/G3d/g3dExceptionX.hpp"
 #include "Graphics/G3d/g3dGfxOptions.hpp"
 #include "Graphics/G3d/g3dProfiler.hpp"
+#include "Graphics/G3d/g3dSystem.hpp"
 
 #include <iostream>
 #include "Graphics/GraphicsLayer.hpp"
@@ -73,6 +74,8 @@
 #include "ToolUIWx/twx/twxInputFeed.hpp"
 #endif
 #include "GraphicsDX11/GraphicsDX11Layer.hpp"
+#include "GraphicsVulkan/GraphicsVulkanLayer.hpp"
+#include "MainApp/mainGfxBackend.hpp"
 
 
 //============================================================================
@@ -80,6 +83,54 @@
 namespace
 {
 	g3dGfxOptions l_GfxOptions;
+
+	//--------------------------------------------------------------------
+	// gfx_layer - the graphics layers have the same calls; chosen_layer
+	// is the one -gfx asked for. DX11's Init can't return failure (it
+	// throws the g2d exceptions caught below instead).
+	//--------------------------------------------------------------------
+	struct gfx_layer
+	{
+		bool (*Init)(void* i_hWnd, const g3dGfxOptions& i_Options);
+		void (*InitGraphics)();
+		void (*CleanUpGraphics)();
+		void (*CleanUp)();
+		g2dSystem* (*GetSystem2D)();
+		g3dSystem* (*GetSystem3D)();
+	};
+
+	bool init_dx11(void* i_hWnd, const g3dGfxOptions& /*i_Options*/)
+	{
+		GraphicsDX11Layer::Init(i_hWnd);
+		return true;
+	}
+
+	const gfx_layer l_DX11Layer = { init_dx11, GraphicsDX11Layer::InitGraphics, GraphicsDX11Layer::CleanUpGraphics,
+									GraphicsDX11Layer::CleanUp, GraphicsDX11Layer::GetSystem2D, GraphicsDX11Layer::GetSystem3D };
+	const gfx_layer l_VulkanLayer = { GraphicsVulkanLayer::Init, GraphicsVulkanLayer::InitGraphics, GraphicsVulkanLayer::CleanUpGraphics,
+									  GraphicsVulkanLayer::CleanUp, GraphicsVulkanLayer::GetSystem2D, GraphicsVulkanLayer::GetSystem3D };
+
+	bool l_bLayerInitialized = false;
+
+	const gfx_layer& chosen_layer()
+	{
+		return l_GfxOptions.m_Backend == g3dGfxOptions::e_Vulkan ? l_VulkanLayer : l_DX11Layer;
+	}
+
+	// The chosen layer's Init returned false (GraphicsVulkanLayer::GetInitError says why)
+	struct gfx_layer_init_failed {};
+
+	//--------------------------------------------------------------------
+	// report - logs a line; RenderNode also prints it to stderr, where
+	// gfxcompare reads the backend and validation lines.
+	//--------------------------------------------------------------------
+	void report(const std::string& i_Line)
+	{
+		DBG_LOG(i_Line.c_str());
+#ifdef BATCH_MODE
+		std::cerr << i_Line << std::endl;
+#endif
+	}
 
 	//--------------------------------------------------------------------
 	// start_profiler - -gfxProfile <file.csv> starts the graphics
@@ -142,16 +193,25 @@ mainInitGraphics::mainInitGraphics(int i_AppWidth,
 	{
 		GraphicsLayer::Init();
 
+		const gfx_layer& layer = chosen_layer();
 #ifdef USE_WXWIDGETS
-		GraphicsDX11Layer::Init(i_pMainFrame->GetRenderWindow()->GetHandle());
+		void* hWnd = i_pMainFrame->GetRenderWindow()->GetHandle();
 #elif defined(USE_QT)
-		GraphicsDX11Layer::Init(i_pMainFrame->GetRenderWindow()->GetHandle());
+		void* hWnd = i_pMainFrame->GetRenderWindow()->GetHandle();
 #else
-		GraphicsDX11Layer::Init(appApplication::GetMainWindowHandle());
+		void* hWnd = appApplication::GetMainWindowHandle();
 #endif
-		GraphicsLayer::InitGraphics(GraphicsDX11Layer::GetSystem2D(), GraphicsDX11Layer::GetSystem3D());
-		GraphicsDX11Layer::InitGraphics();
-		start_profiler("dx11");
+		if (!layer.Init(hWnd, l_GfxOptions))
+		{
+			throw gfx_layer_init_failed();
+		}
+		l_bLayerInitialized = true;
+		report(mainGfxBackend::BackendLine(l_GfxOptions.m_Backend, layer.GetSystem3D()->GetVideoAdapterName()));
+		mnmAppUtil::SetTitleSuffix(mainGfxBackend::TitleSuffix(l_GfxOptions.m_Backend));
+
+		GraphicsLayer::InitGraphics(layer.GetSystem2D(), layer.GetSystem3D());
+		layer.InitGraphics();
+		start_profiler(mainGfxBackend::Name(l_GfxOptions.m_Backend));
 
 		fsLocator font_loc;
 		font_loc.Push( gfPaths::GetPath(mnmPaths::e_ExeArt) ); 
@@ -266,6 +326,15 @@ mainInitGraphics::mainInitGraphics(int i_AppWidth,
 		mnmAppUtil::SetErrorCode(mnmErrorCodes::c_ErrorCreatingGraphics);
 		guiMessageBox::Show("Your graphics hardware may be incompatible with DirectX 11. Try running Windows Update and updating your graphics drivers. If your OS is Windows Vista, try applying update KB971512.", "Error Initializing Graphics");
 	}
+	catch( const gfx_layer_init_failed& )
+	{
+		mnmAppUtil::SetErrorCode(mnmErrorCodes::c_ErrorCreatingGraphics);
+		const std::string message = "Vulkan graphics could not start: " + GraphicsVulkanLayer::GetInitError();
+		report(message);
+#ifndef BATCH_MODE
+		guiMessageBox::Show(message.c_str(), "Error Initializing Graphics");
+#endif
+	}
 
 	if (m_bSuccessInit)
 	{
@@ -353,10 +422,29 @@ mainInitGraphics::~mainInitGraphics()
 	ImportExportLayer::CleanUp();
 	AudioDSLayer::CleanUp();
 	g3dProfiler::Stop();
-	GraphicsDX11Layer::CleanUpGraphics();
+	const gfx_layer& layer = chosen_layer();
+	layer.CleanUpGraphics();
 	GraphicsLayer::CleanUpGraphics();
-	GraphicsDX11Layer::CleanUp();
+	layer.CleanUp();
 	GraphicsLayer::CleanUp();
+
+#ifdef BATCH_MODE
+	//	GraphicsVulkanLayer::CleanUp logs the counts; RenderNode also
+	//	prints them for gfxcompare ("off" when validation didn't run)
+	if (l_bLayerInitialized && l_GfxOptions.m_Backend == g3dGfxOptions::e_Vulkan)
+	{
+		if (GraphicsVulkanLayer::IsValidating())
+		{
+			const gvk::vkdValidationStats stats = GraphicsVulkanLayer::GetValidationStats();
+			std::cerr << "Vulkan validation: " << stats.m_Errors << " errors, " << stats.m_Warnings << " warnings" << std::endl;
+		}
+		else
+		{
+			std::cerr << "Vulkan validation: off" << std::endl;
+		}
+	}
+#endif
+	l_bLayerInitialized = false;
 }
 
 //--------------------------------------------------------------------

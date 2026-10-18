@@ -18,6 +18,9 @@
     <ClCompile Include="mainCommandLineTest.cpp">
       <Filter>MainApp</Filter>
     </ClCompile>
+    <ClCompile Include="mainGfxBackendTest.cpp">
+      <Filter>MainApp</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\MachStudio\Source\MainApp\mainCommandLine.cpp">
       <Filter>MainApp</Filter>
     </ClCompile>

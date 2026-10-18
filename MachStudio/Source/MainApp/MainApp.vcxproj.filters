@@ -149,6 +149,9 @@
     <ClInclude Include="mainCommandLine.hpp">
       <Filter>Source Files\Main</Filter>
     </ClInclude>
+    <ClInclude Include="mainGfxBackend.hpp">
+      <Filter>Source Files\Main</Filter>
+    </ClInclude>
     <ClInclude Include="mainInitGraphics.hpp">
       <Filter>Source Files\Main</Filter>
     </ClInclude>

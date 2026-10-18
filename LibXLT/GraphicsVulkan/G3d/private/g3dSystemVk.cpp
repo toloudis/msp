@@ -34,12 +34,14 @@ namespace gvk
 		g3dLightMgr::SetImplementation(m_pLightMgr);
 		matTextureMgr::SetImplementation(m_pTextureMgr);
 		matShaderMgr::SetImplementation(m_pShaderMgr);
+		matShaderMgr::Initialize();		// registers the built-in shaders, as g3dSystemDX11 does
 		g2dScreenCaptureUtil::SetImplementation(m_pScreenCapture);
 	}
 
 	g3dSystemVk::~g3dSystemVk()
 	{
 		g2dScreenCaptureUtil::SetImplementation(NULL);
+		matShaderMgr::DeInitialize();
 		matShaderMgr::SetImplementation(NULL);
 		matTextureMgr::SetImplementation(NULL);
 		g3dLightMgr::SetImplementation(NULL);

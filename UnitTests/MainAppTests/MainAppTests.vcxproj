@@ -111,6 +111,7 @@
     <ClCompile Include="MainAppTestsMain.cpp" />
     <ClCompile Include="matPlatformWin.cpp" />
     <ClCompile Include="mainCommandLineTest.cpp" />
+    <ClCompile Include="mainGfxBackendTest.cpp" />
     <ClCompile Include="..\..\MachStudio\Source\MainApp\mainCommandLine.cpp" />
   </ItemGroup>
   <ItemGroup>

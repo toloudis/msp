@@ -118,6 +118,9 @@
     <ClInclude Include="vkd\vkdValidation.hpp">
       <Filter>vkd</Filter>
     </ClInclude>
+    <ClInclude Include="vkd\vkdValidationStats.hpp">
+      <Filter>vkd</Filter>
+    </ClInclude>
     <ClInclude Include="vkd\vkdGlobal.hpp">
       <Filter>vkd</Filter>
     </ClInclude>

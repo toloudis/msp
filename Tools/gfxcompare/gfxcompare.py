@@ -5,7 +5,9 @@
 
 Both write DIR/report.md (failing frames first, difference images in
 DIR/diff/, per-scope timing medians with B/A ratios) and exit 0 only if
-every frame is within tolerance. See README.md.
+every frame is within tolerance. run also fails if either render reports
+Vulkan validation messages, or if A and B ran on different adapters.
+See README.md.
 """
 from __future__ import annotations
 
@@ -52,22 +54,28 @@ def _timing_table(dir_a: Path, dir_b: Path) -> list[str]:
     return lines
 
 
-def compare(dir_a: Path, dir_b: Path, out: Path, tol: Tolerance, header: list[str] | None = None) -> int:
+def compare(dir_a: Path, dir_b: Path, out: Path, tol: Tolerance, header: list[str] | None = None,
+            problems: list[str] | None = None) -> int:
+    """problems: reasons the run fails besides the frames (validation messages, adapters)."""
     out.mkdir(parents=True, exist_ok=True)
     results = compare_dirs(dir_a, dir_b, tol, out / "diff")
     failed = [r for r in results if not r.passed]
-    ok = bool(results) and not failed
+    problems = problems or []
+    ok = bool(results) and not failed and not problems
     lines = ["# gfxcompare report", ""] + (header or []) + [
         f"- A: `{dir_a}`", f"- B: `{dir_b}`",
         f"- Tolerance: max error {tol.max_err * 255:.2f}/255; at most {tol.max_pct_over}% of pixels "
         f"over {tol.pixel_err * 255:.2f}/255",
-        f"- Result: **{'PASS' if ok else 'FAIL'}** ({len(results) - len(failed)} of {len(results)} frames within tolerance)",
-        "", "## Frames", ""]
+        f"- Result: **{'PASS' if ok else 'FAIL'}** ({len(results) - len(failed)} of {len(results)} frames within tolerance)"]
+    lines += [f"- **FAIL:** {p}" for p in problems]
+    lines += ["", "## Frames", ""]
     lines += _frame_table(results) if results else ["No frames found."]
     lines += ["", "## Timing", ""] + _timing_table(dir_a, dir_b) + [""]
     (out / "report.md").write_text("\n".join(lines), encoding="utf-8")
     print(f"{'PASS' if ok else 'FAIL'}: {len(results) - len(failed)}/{len(results)} frames within tolerance; "
           f"report: {out / 'report.md'}")
+    for p in problems:
+        print(f"FAIL: {p}")
     return 0 if ok else 1
 
 
@@ -117,6 +125,7 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     header = [f"- Scene: `{scene}`", f"- RenderNode: `{args.exe}`",
               f"- A arguments: `{args.a_args}`", f"- B arguments: `{args.b_args}`"]
+    problems, adapters = [], {}
     for label, extra in (("a", args.a_args), ("b", args.b_args)):
         out_dir = (args.out / label).resolve()
         out_dir.mkdir(parents=True, exist_ok=True)
@@ -127,11 +136,25 @@ def main(argv: list[str] | None = None) -> int:
                                        shlex.split(extra, posix=False), args.format, args.width, args.height)
         print(f"rendering {label.upper()}: {' '.join(cmd)}")
         try:
-            rendernode.run(cmd, args.timeout, out_dir)
+            stderr = rendernode.run(cmd, args.timeout, out_dir)
         except (RuntimeError, OSError) as e:
             print(f"gfxcompare run: render {label.upper()} failed: {e}", file=sys.stderr)
             return 2
-    return compare(args.out / "a", args.out / "b", args.out, tol, header)
+        L = label.upper()
+        backend = rendernode.backend_adapter(stderr)
+        adapters[label] = backend[1] if backend else None
+        header.append(f"- {L} backend: {f'{backend[0]} on {backend[1]}' if backend else 'unknown'}")
+        counts = rendernode.validation_counts(stderr)
+        if "Vulkan validation: off" in stderr:
+            header.append(f"- {L} Vulkan validation: off (run with -gfxValidation to check it)")
+        if counts is not None:
+            header.append(f"- {L} Vulkan validation: {counts[0]} errors, {counts[1]} warnings")
+            if counts != (0, 0):
+                problems.append(f"render {L} reported Vulkan validation messages "
+                                f"({counts[0]} errors, {counts[1]} warnings)")
+    if adapters["a"] and adapters["b"] and adapters["a"] != adapters["b"]:
+        problems.append(f"A and B ran on different adapters ({adapters['a']} / {adapters['b']})")
+    return compare(args.out / "a", args.out / "b", args.out, tol, header, problems)
 
 
 if __name__ == "__main__":

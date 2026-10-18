@@ -33,7 +33,14 @@ python Tools/gfxcompare/gfxcompare.py run --exe MachStudio/MachStudio-x64/MachSt
 
 - `--scene` defaults to the `MSP_GFX_TEST_SCENE` environment variable.
 - `--a-args` / `--b-args` are extra RenderNode arguments for each run (for
-  example `-gfx dx11` and `-gfx vulkan` once the Vulkan backend exists).
+  example `-gfx dx11` and `-gfx vulkan`).
+- `run` reads each render's stderr: the report shows the backend and
+  adapter (`Graphics backend: <name> on <adapter>`) and, for Vulkan, the
+  validation counts (`Vulkan validation: N errors, M warnings`). It fails
+  (exit 1) if either render reports any validation message, or if A and B
+  ran on different adapters. Release builds validate only with
+  `-gfxValidation`; without it RenderNode prints `Vulkan validation: off`
+  and the report says so.
 - `--format PNG|PFM`, `--width`, `--height` set the capture; otherwise the
   scene's own capture settings are used. The frames go to `out\cmp\a` and
   `out\cmp\b`, each with its `timing.csv`.

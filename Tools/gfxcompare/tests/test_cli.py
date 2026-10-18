@@ -69,3 +69,56 @@ def test_cli_run_requires_scene(monkeypatch, tmp_path, capsys):
     code = gfxcompare.main(["run", "--exe", "rn.exe", "--out", str(tmp_path)])
     assert code == 2
     assert "scene" in capsys.readouterr().err.lower()
+
+
+FAKE_RENDERNODE = """
+import pathlib, sys
+import numpy as np
+from PIL import Image
+args = sys.argv[1:]
+out = pathlib.Path(args[args.index("-capOutputPath") + 1])
+Image.fromarray(np.full((8, 8, 3), 100, dtype=np.uint8)).save(out / "f_0001.PNG")
+for a in args:
+    if a.startswith("say="):
+        sys.stderr.write(a[4:].replace("_", " ") + "\\n")
+"""
+
+
+def run_fake(tmp_path, a_says, b_says):
+    script = tmp_path / "fake_rendernode.py"
+    script.write_text(FAKE_RENDERNODE)
+    scene = tmp_path / "scene.mab"
+    scene.write_text("")
+    def args(says):
+        return " ".join([str(script)] + ["say=" + s.replace(" ", "_") for s in says])
+    out = tmp_path / "out"
+    code = gfxcompare.main(["run", "--exe", sys.executable, "--scene", str(scene), "--out", str(out),
+                            "--a-args", args(a_says), "--b-args", args(b_says)])
+    return code, (out / "report.md").read_text()
+
+
+def test_cli_run_passes_and_reports_backends(tmp_path):
+    code, report = run_fake(tmp_path, ["Graphics backend: dx11 on GPU X"],
+                            ["Graphics backend: vulkan on GPU X", "Vulkan validation: 0 errors, 0 warnings"])
+    assert code == 0
+    assert "dx11 on GPU X" in report and "vulkan on GPU X" in report
+
+
+def test_cli_run_fails_on_validation_messages(tmp_path):
+    code, report = run_fake(tmp_path, ["Graphics backend: dx11 on GPU X"],
+                            ["Graphics backend: vulkan on GPU X", "Vulkan validation: 0 errors, 2 warnings"])
+    assert code == 1
+    assert "FAIL" in report and "2 warnings" in report
+
+
+def test_cli_run_fails_on_different_adapters(tmp_path):
+    code, report = run_fake(tmp_path, ["Graphics backend: dx11 on GPU X"], ["Graphics backend: vulkan on GPU Y"])
+    assert code == 1
+    assert "FAIL" in report and "adapter" in report.lower()
+
+
+def test_cli_run_reports_vulkan_validation_off(tmp_path):
+    code, report = run_fake(tmp_path, ["Graphics backend: dx11 on GPU X"],
+                            ["Graphics backend: vulkan on GPU X", "Vulkan validation: off"])
+    assert code == 0
+    assert "B Vulkan validation: off" in report

@@ -6,7 +6,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from rendernode import build_command, run  # noqa: E402
+from rendernode import backend_adapter, build_command, run, validation_counts  # noqa: E402
 
 
 def test_build_command_order():
@@ -44,3 +44,24 @@ def test_run_requires_images(tmp_path):
 def test_run_succeeds_when_images_written(tmp_path):
     script = "import pathlib,sys; pathlib.Path(sys.argv[1], 'f_0001.PNG').write_bytes(b'x')"
     run([sys.executable, "-c", script, str(tmp_path)], 60, tmp_path)
+
+
+def test_run_returns_stderr(tmp_path):
+    script = ("import pathlib,sys; pathlib.Path(sys.argv[1], 'f_0001.PNG').write_bytes(b'x'); "
+              "sys.stderr.write('hello')")
+    assert "hello" in run([sys.executable, "-c", script, str(tmp_path)], 60, tmp_path)
+
+
+def test_validation_counts_parsed():
+    err = "noise\nVulkan validation: 3 errors, 12 warnings\nmore\n"
+    assert validation_counts(err) == (3, 12)
+
+
+def test_validation_counts_absent_for_dx11():
+    assert validation_counts("Graphics backend: dx11 on NVIDIA Quadro RTX 5000\n") is None
+
+
+def test_backend_adapter_parsed():
+    err = "Graphics backend: vulkan on NVIDIA Quadro RTX 5000\r\nother\n"
+    assert backend_adapter(err) == ("vulkan", "NVIDIA Quadro RTX 5000")
+    assert backend_adapter("nothing here") is None

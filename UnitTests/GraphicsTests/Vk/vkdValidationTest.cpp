@@ -42,7 +42,8 @@ TEST(vkdValidation, ValidationErrorCountsAndAsserts)
 	send(validation, VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT, VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT, "VUID-x");
 	dbgMsg::SetAssertHandler(previous);
 	EXPECT_EQ(1, validation.Stats().m_Errors);
-	EXPECT_EQ(1, l_Asserts);
+	//	DBG_ASSERT is compiled out of Release builds; the error is still counted and logged
+	EXPECT_EQ(ENV_BUILD == ENV_DEBUGBUILD ? 1 : 0, l_Asserts);
 }
 
 TEST(vkdValidation, ValidationAndPerformanceWarningsCount)
