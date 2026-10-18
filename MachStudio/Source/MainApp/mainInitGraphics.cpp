@@ -207,7 +207,6 @@ mainInitGraphics::mainInitGraphics(int i_AppWidth,
 		}
 		l_bLayerInitialized = true;
 		report(mainGfxBackend::BackendLine(l_GfxOptions.m_Backend, layer.GetSystem3D()->GetVideoAdapterName()));
-		mnmAppUtil::SetTitleSuffix(mainGfxBackend::TitleSuffix(l_GfxOptions.m_Backend));
 
 		GraphicsLayer::InitGraphics(layer.GetSystem2D(), layer.GetSystem3D());
 		layer.InitGraphics();

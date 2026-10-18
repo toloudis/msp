@@ -23,12 +23,6 @@ namespace mnmAppUtil
 	void UpdateTitleBar( bool i_bDisplayDirtyFlag );
 
 	//------------------------------------------------------------------------
-	//	SetTitleSuffix - text UpdateTitleBar appends to every title (the
-	//	graphics backend, e.g. " [Vulkan]"); empty by default
-	//------------------------------------------------------------------------
-	void SetTitleSuffix( const wchar_t* i_Suffix );
-
-	//------------------------------------------------------------------------
 	// Get/Set the error code for the app
 	//------------------------------------------------------------------------
 	int GetErrorCode();

@@ -23,7 +23,6 @@
 namespace
 {
 	int l_ErrorCode = 0;
-	itString l_TitleSuffix;
 }
 
 //------------------------------------------------------------------------
@@ -47,20 +46,11 @@ void mnmAppUtil::UpdateTitleBar( bool i_bDisplayDirtyFlag )
 
 	if (i_bDisplayDirtyFlag)
 		title_str += L"*";
-	title_str += l_TitleSuffix;
 	guiMainWindow::SetAppTitle(title_str);
 
 	//std::ostringstream buffer;
 	//buffer << mnmConstants::c_PRODUCTTM << " - " << sceneFilename << (i_bDisplayDirtyFlag ? "*":" ");
 	//guiMainWindow::SetAppTitle( buffer.str().c_str() );
-}
-
-//------------------------------------------------------------------------
-//	SetTitleSuffix
-//------------------------------------------------------------------------
-void mnmAppUtil::SetTitleSuffix( const wchar_t* i_Suffix )
-{
-	l_TitleSuffix = i_Suffix;
 }
 
 //------------------------------------------------------------------------
