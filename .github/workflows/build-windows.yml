@@ -135,13 +135,14 @@ jobs:
           /v:minimal
 
       # The XML reports the test runs in the build wrote, uploaded even when
-      # a test failed.
+      # a test failed. The test projects are toolkit-neutral: they build in
+      # plain Debug or Release (see Directory.Build.props).
       - name: Upload unit test results
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
           name: unit-tests-${{ matrix.configuration }}
-          path: UnitTests/bin/x64/${{ matrix.configuration }}/*.xml
+          path: UnitTests/bin/x64/${{ startsWith(matrix.configuration, 'Debug') && 'Debug' || 'Release' }}/*.xml
           if-no-files-found: ignore
 
       # The exe loads OpenEXR from its own folder; fail if a build would not

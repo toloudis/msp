@@ -11,6 +11,17 @@
       Debug RenderNode,     - the headless batch renderer: no GUI toolkit
       Release RenderNode      (BATCH_MODE; see CLAUDE.md)
 
+    Projects that don't depend on the toolkit (Core, Graphics,
+    GraphicsDX11, GraphicsVulkan, Tool, Input, InputTPC, AudioDS,
+    ImportExport and the UnitTests projects) have only plain Debug and
+    Release configurations, and MachStudio.sln maps all three toolkit
+    configurations onto them, so they build once per Debug/Release instead
+    of once per toolkit. Build through the solution: a project built on
+    its own passes its configuration to its ProjectReferences, which these
+    projects don't have. Their sources must not use BATCH_MODE, USE_QT,
+    USE_WXWIDGETS or the MSP_GUI_* macros; a project that needs them keeps
+    the six configurations.
+
     MspGuiToolkit (Qt, Wx or None) is the toolkit, and MspBaseConfiguration
     is the configuration without the toolkit (Debug or Release), for the
     settings that only care about that (3rdParty/WxWidgets/build/msw/
@@ -35,8 +46,9 @@
 <Project>
   <PropertyGroup>
     <MspGuiToolkit Condition="$(Configuration.EndsWith(' Qt'))">Qt</MspGuiToolkit>
-    <MspGuiToolkit Condition="$(Configuration.EndsWith(' RenderNode'))">None</MspGuiToolkit>
-    <MspGuiToolkit Condition="'$(MspGuiToolkit)' == ''">Wx</MspGuiToolkit>
+    <MspGuiToolkit Condition="$(Configuration.EndsWith(' Wx'))">Wx</MspGuiToolkit>
+    <!-- RenderNode, and the toolkit-neutral projects' plain Debug/Release -->
+    <MspGuiToolkit Condition="'$(MspGuiToolkit)' == ''">None</MspGuiToolkit>
     <MspBaseConfiguration>$(Configuration)</MspBaseConfiguration>
     <MspBaseConfiguration Condition="$(Configuration.EndsWith(' Qt')) or $(Configuration.EndsWith(' Wx'))">$(Configuration.Substring(0, $([MSBuild]::Subtract($(Configuration.Length), 3))))</MspBaseConfiguration>
     <MspBaseConfiguration Condition="$(Configuration.EndsWith(' RenderNode'))">$(Configuration.Substring(0, $([MSBuild]::Subtract($(Configuration.Length), 11))))</MspBaseConfiguration>

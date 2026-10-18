@@ -39,6 +39,18 @@ cameras/lights/objects on a timeline, and render frames or sequences on the GPU
     `USE_WXWIDGETS`/`USE_QT`), and a `wxGUI/` header keeps its
     `#include <wx/...>` lines inside `#ifdef USE_WXWIDGETS` so toolkit-neutral
     code can include it in any build.
+  - Projects that don't depend on the toolkit (Core, Graphics,
+    GraphicsDX11, GraphicsVulkan, Tool, Input, InputTPC, AudioDS,
+    ImportExport and the UnitTests projects) have only plain `Debug` and
+    `Release` configurations; `MachStudio.sln` maps the three toolkit
+    configurations onto them, so they build once per Debug/Release, into
+    `bin\x64\Debug\` or `Release\`, and are shared by the Qt, Wx and
+    RenderNode builds. Build through the solution (a project built on its
+    own passes its configuration name to its ProjectReferences). Their
+    code must not use `BATCH_MODE`, `USE_QT`, `USE_WXWIDGETS` or
+    `MSP_GUI_*`; a project that does keeps the six configurations. Don't
+    run two builds of the same base configuration (e.g. `Debug Qt` and
+    `Debug Wx`) at the same time: they write the same files.
 - Executables land in `MachStudio/MachStudio-x64/` (e.g.
   `MachStudio-x64-Qt-Release.exe`, `MachStudio-x64-RenderNode-Release.exe`),
   alongside runtime data and DLLs.
@@ -93,17 +105,17 @@ hold settings:
   message) and are skipped when there is no usable Vulkan device (as on
   CI). A custom build step compiles `Vk/Shaders/*.hlsl` with DXC.
 - `CoreTests.vcxproj` is self-contained: its build settings (include paths,
-  runtime, output in `UnitTests/bin/<Platform>/<Configuration>/`) are in the
+  runtime, output in `UnitTests/bin/<Platform>/<Debug|Release>/`) are in the
   project file, not a shared props file. A new test project can start as a
   copy of it.
-- The test projects have the solution's six configurations only so the
-  libraries they reference build in the same configuration as MainApp; the
-  tests don't use a GUI toolkit.
+- The test projects, like the libraries they test, have only `Debug` and
+  `Release` (they don't use a GUI toolkit); every solution configuration
+  builds and runs them once per Debug/Release.
 - `CoreTestsMain.cpp` initializes `CoreLayer` once and installs a
   `dbgMsg::SetAssertHandler` hook so a failed `DBG_ASSERT` becomes a test
   failure instead of the abort/continue dialog. `ctPlatform` turns CRT
   assert and crash dialogs off, so runs never wait for input.
-- Run: `UnitTests/bin/x64/<Configuration>/CoreTests.exe` (gtest flags such as
+- Run: `UnitTests/bin/x64/<Debug|Release>/CoreTests.exe` (gtest flags such as
   `--gtest_filter=ma*` work); Visual Studio's Google Test adapter should also
   list them in Test Explorer.
 - The tests run as part of the build: the test project's Post-Build Event
