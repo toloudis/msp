@@ -35,6 +35,11 @@
 #ifndef GVK_VKDREFLECT_HPP
 #include "GraphicsVulkan/vkd/vkdReflect.hpp"
 #endif
+#ifndef GVK_VKDSHADER_HPP
+#include "GraphicsVulkan/vkd/vkdShader.hpp"
+#endif
+
+#include <volk.h>
 
 #include <cstdint>
 #include <functional>
@@ -47,7 +52,10 @@ namespace gvk
 {
 	class vkdDevice;
 	class vkdImage;
-	class vkdShader;
+
+	//	A manifest sampler state (D3D names) as Vulkan sampler state. false,
+	//	with o_Error, for a name or border colour Vulkan can't express.
+	bool fxSamplerToVulkan(const fxSamplerDesc& i_Desc, VkSamplerCreateInfo& o_Info, std::string& o_Error);
 
 	//========================================================================
 	// Compiled SPIR-V for one entry point and (manifest) profile.
@@ -177,6 +185,15 @@ namespace gvk
 		const void* GetConstantBufferDefaults(int i_Buffer) const;	// as created
 		void SetConstantBufferData(int i_Buffer, const void* i_pData, uint32_t i_Bytes);
 
+		// Sets the pass's shaders on vkdGlobal::Context(), and binds the
+		// constant buffers (uploaded to the ring when changed, or when the
+		// last upload was for an earlier submission), textures, samplers and
+		// UAVs every stage of the pass reads, at their registers. A NULL
+		// texture binds a transparent black one, as D3D reads a NULL view.
+		// A deferred pass binds no shaders, so what is drawn next draws
+		// nothing (logged once).
+		void Apply(int i_Technique, int i_Pass);
+
 	private:
 		fxEffectVk() {}
 
@@ -190,7 +207,7 @@ namespace gvk
 		{
 			fxStage m_Stage = fx_VS;
 			fxBytecode m_Bytecode;
-			vkdShaderReflection m_Reflection;
+			std::unique_ptr<vkdShader> m_pShader;	// a module only with a device
 			std::vector<Binding> m_ConstantBuffers;
 			std::vector<Binding> m_Resources;
 			std::vector<Binding> m_Samplers;
@@ -203,6 +220,8 @@ namespace gvk
 			const Shader* m_Stages[fx_NumGraphicsStages] = {};
 			std::vector<int> m_ConstantBuffers;	// every buffer any stage reads
 			bool m_bDeferred = false;
+			bool m_bUavs = false;				// some stage writes a UAV
+			mutable bool m_bReported = false;	// deferral / slot clash logged
 		};
 
 		struct ConstantBuffer
@@ -212,6 +231,8 @@ namespace gvk
 			std::vector<uint8_t> m_Data;
 			std::vector<uint8_t> m_Defaults;
 			bool m_bDirty = true;
+			uint64_t m_UploadedFor = 0;		// vkdDevice::PendingValue() of the last upload
+			VkDeviceAddress m_Gpu = 0;		// where it was uploaded
 		};
 
 		struct Variable
@@ -225,6 +246,8 @@ namespace gvk
 			const fxBytecodeSource& i_Bytecode, bool& o_bDeferred, std::string& o_Error);
 		bool reflect(Shader& io_Shader, std::string& o_Error);
 		int get_sampler(const std::string& i_Name);
+		bool check_samplers(std::string& o_Error) const;
+		uint32_t sampler_index(int i_Sampler);
 		void apply_defaults();
 
 		fxEffectDesc m_Desc;
@@ -238,6 +261,8 @@ namespace gvk
 		std::vector<vkdImage*> m_UnorderedAccess;
 		std::map<std::string, int> m_UnorderedAccessNames;
 		std::vector<std::string> m_SamplerList;					// by index
+		std::vector<uint32_t> m_SamplerHeap;					// vkdBindings sampler index, by index (created on first Apply)
+		std::string m_Name;										// for logs and debug names
 		std::map<std::string, int> m_SamplerNames;
 	};
 }

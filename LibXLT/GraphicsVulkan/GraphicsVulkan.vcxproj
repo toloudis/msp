@@ -115,6 +115,8 @@
     <ClCompile Include="vkd\private\vkdShader.cpp" />
     <ClCompile Include="vkd\private\vkdPipelineCache.cpp" />
     <ClCompile Include="vkd\private\vkdContext.cpp" />
+    <ClCompile Include="Eff\private\effPlainEffectVk.cpp" />
+    <ClCompile Include="Fx\private\fxMaterialInstance.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsVulkanLayer.hpp" />
@@ -148,6 +150,9 @@
     <ClInclude Include="vkd\vkdShader.hpp" />
     <ClInclude Include="vkd\vkdPipelineCache.hpp" />
     <ClInclude Include="vkd\vkdContext.hpp" />
+    <ClInclude Include="Eff\effPlainEffectVk.hpp" />
+    <ClInclude Include="Fx\fxMaterialInstance.hpp" />
+    <ClInclude Include="Fx\fxEffectApi.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

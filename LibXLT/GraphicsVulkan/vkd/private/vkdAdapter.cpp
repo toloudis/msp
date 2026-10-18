@@ -98,6 +98,7 @@ namespace gvk
 			"shaderDrawParameters",
 			"shaderDemoteToHelperInvocation",
 			"samplerMirrorClampToEdge",
+			"scalarBlockLayout",			// constant buffers in D3D packing (DXC -fvk-use-dx-layout)
 			"dynamicRendering",
 			"synchronization2",
 			"timelineSemaphore",

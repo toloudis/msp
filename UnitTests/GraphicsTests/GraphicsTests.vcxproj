@@ -111,6 +111,8 @@
     <ClCompile Include="Vk\fxEffectVkReflectionTest.cpp" />
     <ClCompile Include="Vk\vkdPipelineCacheTest.cpp" />
     <ClCompile Include="Vk\vkdContextTest.cpp" />
+    <ClCompile Include="Vk\fxEffectVkTest.cpp" />
+    <ClCompile Include="Vk\effPlainEffectVkTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />

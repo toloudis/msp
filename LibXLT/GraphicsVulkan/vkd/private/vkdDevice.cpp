@@ -127,6 +127,7 @@ namespace gvk
 					{"shaderClipDistance",				&core.shaderClipDistance},
 					{"shaderDrawParameters",			&m_Vulkan11.shaderDrawParameters},
 					{"samplerMirrorClampToEdge",		&m_Vulkan12.samplerMirrorClampToEdge},
+					{"scalarBlockLayout",				&m_Vulkan12.scalarBlockLayout},
 					{"timelineSemaphore",				&m_Vulkan12.timelineSemaphore},
 					{"bufferDeviceAddress",				&m_Vulkan12.bufferDeviceAddress},
 					{"dynamicRendering",				&m_Vulkan13.dynamicRendering},

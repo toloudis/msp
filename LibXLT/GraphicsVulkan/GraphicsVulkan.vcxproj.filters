@@ -130,6 +130,12 @@
     <ClCompile Include="vkd\private\vkdContext.cpp">
       <Filter>vkd\private</Filter>
     </ClCompile>
+    <ClCompile Include="Eff\private\effPlainEffectVk.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Fx\private\fxMaterialInstance.cpp">
+      <Filter>Fx\private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsVulkanLayer.hpp" />
@@ -222,6 +228,15 @@
     </ClInclude>
     <ClInclude Include="vkd\vkdContext.hpp">
       <Filter>vkd</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effPlainEffectVk.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Fx\fxMaterialInstance.hpp">
+      <Filter>Fx</Filter>
+    </ClInclude>
+    <ClInclude Include="Fx\fxEffectApi.hpp">
+      <Filter>Fx</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -38,7 +38,14 @@ namespace gvk
 {
 	//	D3D_SHADER_VARIABLE_CLASS and D3D_SHADER_VARIABLE_TYPE values
 	enum fxVarClass { fx_SVC_SCALAR = 0, fx_SVC_VECTOR, fx_SVC_MATRIX_ROWS, fx_SVC_MATRIX_COLUMNS, fx_SVC_OBJECT, fx_SVC_STRUCT };
-	enum fxVarType { fx_SVT_VOID = 0, fx_SVT_BOOL = 1, fx_SVT_INT = 2, fx_SVT_FLOAT = 3, fx_SVT_UINT = 19 };
+	enum fxVarType
+	{
+		fx_SVT_VOID = 0, fx_SVT_BOOL = 1, fx_SVT_INT = 2, fx_SVT_FLOAT = 3, fx_SVT_STRING = 4,
+		fx_SVT_TEXTURE = 5, fx_SVT_TEXTURE1D = 6, fx_SVT_TEXTURE2D = 7, fx_SVT_TEXTURE3D = 8, fx_SVT_TEXTURECUBE = 9,
+		fx_SVT_SAMPLER = 10, fx_SVT_UINT = 19, fx_SVT_BUFFER = 25, fx_SVT_TEXTURE1DARRAY = 28, fx_SVT_TEXTURE2DARRAY = 29,
+		fx_SVT_TEXTURE2DMS = 32, fx_SVT_TEXTURE2DMSARRAY = 33, fx_SVT_TEXTURECUBEARRAY = 34, fx_SVT_DOUBLE = 39,
+		fx_SVT_BYTEADDRESS_BUFFER = 46, fx_SVT_STRUCTURED_BUFFER = 48
+	};
 
 	//	The shape of a constant, as D3D11 reflection reports it
 	struct vkdShaderType

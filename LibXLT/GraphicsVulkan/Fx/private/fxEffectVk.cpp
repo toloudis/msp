@@ -6,8 +6,27 @@
 **      except for types.
 \****************************************************************************/
 #include "GraphicsVulkan/Fx/fxEffectVk.hpp"
+#ifndef GVK_VKDBINDINGS_HPP
+#include "GraphicsVulkan/vkd/vkdBindings.hpp"
+#endif
+#ifndef GVK_VKDCHECK_HPP
+#include "GraphicsVulkan/vkd/vkdCheck.hpp"
+#endif
+#ifndef GVK_VKDCONTEXT_HPP
+#include "GraphicsVulkan/vkd/vkdContext.hpp"
+#endif
+#ifndef GVK_VKDDEVICE_HPP
+#include "GraphicsVulkan/vkd/vkdDevice.hpp"
+#endif
+#ifndef GVK_VKDGLOBAL_HPP
+#include "GraphicsVulkan/vkd/vkdGlobal.hpp"
+#endif
+#ifndef GVK_VKDIMAGE_HPP
+#include "GraphicsVulkan/vkd/vkdImage.hpp"
+#endif
 
 #include <algorithm>
+#include <cctype>
 #include <cstring>
 
 namespace gvk
@@ -19,6 +38,73 @@ namespace gvk
 			VK_SHADER_STAGE_VERTEX_BIT, VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT, VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT,
 			VK_SHADER_STAGE_GEOMETRY_BIT, VK_SHADER_STAGE_FRAGMENT_BIT, VK_SHADER_STAGE_COMPUTE_BIT
 		};
+
+		bool same_nocase(const std::string& a, const char* b)
+		{
+			const size_t n = strlen(b);
+			if (a.size() != n)
+			{
+				return false;
+			}
+			for (size_t i = 0; i < n; i++)
+			{
+				if (tolower((unsigned char)a[i]) != tolower((unsigned char)b[i]))
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+
+		//	D3D11 filter names (as Effects spelled them) -> min, mag, mip linear
+		struct FilterName { const char* m_Name; bool m_bMin, m_bMag, m_bMip; };
+		const FilterName c_Filters[] =
+		{
+			{ "MIN_MAG_MIP_POINT",					false, false, false },
+			{ "MIN_MAG_POINT_MIP_LINEAR",			false, false, true },
+			{ "MIN_POINT_MAG_LINEAR_MIP_POINT",		false, true, false },
+			{ "MIN_POINT_MAG_MIP_LINEAR",			false, true, true },
+			{ "MIN_LINEAR_MAG_MIP_POINT",			true, false, false },
+			{ "MIN_LINEAR_MAG_POINT_MIP_LINEAR",	true, false, true },
+			{ "MIN_MAG_LINEAR_MIP_POINT",			true, true, false },
+			{ "MIN_MAG_MIP_LINEAR",					true, true, true },
+			{ "ANISOTROPIC",						true, true, true },
+		};
+
+		struct NamedValue { const char* m_Name; int m_Value; };
+		const NamedValue c_AddressModes[] =
+		{
+			{ "WRAP",			VK_SAMPLER_ADDRESS_MODE_REPEAT },
+			{ "MIRROR",			VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT },
+			{ "CLAMP",			VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE },
+			{ "BORDER",			VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER },
+			{ "MIRROR_ONCE",	VK_SAMPLER_ADDRESS_MODE_MIRROR_CLAMP_TO_EDGE },
+		};
+		const NamedValue c_CompareOps[] =
+		{
+			{ "NEVER",			VK_COMPARE_OP_NEVER },
+			{ "LESS",			VK_COMPARE_OP_LESS },
+			{ "EQUAL",			VK_COMPARE_OP_EQUAL },
+			{ "LESS_EQUAL",		VK_COMPARE_OP_LESS_OR_EQUAL },
+			{ "GREATER",		VK_COMPARE_OP_GREATER },
+			{ "NOT_EQUAL",		VK_COMPARE_OP_NOT_EQUAL },
+			{ "GREATER_EQUAL",	VK_COMPARE_OP_GREATER_OR_EQUAL },
+			{ "ALWAYS",			VK_COMPARE_OP_ALWAYS },
+		};
+
+		template <size_t N>
+		bool lookup(const NamedValue (&i_Table)[N], const std::string& i_Name, int& o_Value)
+		{
+			for (const NamedValue& nv : i_Table)
+			{
+				if (same_nocase(i_Name, nv.m_Name))
+				{
+					o_Value = nv.m_Value;
+					return true;
+				}
+			}
+			return false;
+		}
 
 		//	A constant buffer can't hold a SPIR-V bool, so DXC stores a bool
 		//	as a uint; the manifest or the HLSL has the declared type.
@@ -48,7 +134,8 @@ namespace gvk
 		std::unique_ptr<fxEffectVk> effect(new fxEffectVk());
 		effect->m_Desc = i_Desc;
 		effect->m_BoolNames = i_BoolNames;
-		if (!effect->build(i_pDevice, i_Bytecode, o_Error))
+		effect->m_Name = i_Desc.m_Hlsl;
+		if (!effect->build(i_pDevice, i_Bytecode, o_Error) || !effect->check_samplers(o_Error))
 		{
 			o_Error = i_Desc.m_Hlsl + ": " + o_Error;
 			return nullptr;
@@ -96,6 +183,7 @@ namespace gvk
 						return false;
 					}
 					pipeline.m_Stages[s] = shader;
+					pipeline.m_bUavs |= !shader->m_UnorderedAccess.empty();
 					for (const Binding& b : shader->m_ConstantBuffers)
 					{
 						if (std::find(pipeline.m_ConstantBuffers.begin(), pipeline.m_ConstantBuffers.end(), b.m_Index)
@@ -148,18 +236,14 @@ namespace gvk
 			return nullptr;
 		}
 
-		if (!vkdReflect(shader->m_Bytecode.m_pData, shader->m_Bytecode.m_Size, shader->m_Reflection, o_Error) ||
-			!reflect(*shader, o_Error))
+		const std::string name = m_Name + " " + i_Desc.m_Entry;
+		shader->m_pShader = vkdShader::Create(i_pDevice, k_StageBits[i_Stage], shader->m_Bytecode.m_pData,
+											  shader->m_Bytecode.m_Size, i_Desc.m_Entry.c_str(), name.c_str(), o_Error);
+		if (!shader->m_pShader || !reflect(*shader, o_Error))
 		{
 			o_Error = i_Desc.m_Entry + ": " + o_Error;
 			return nullptr;
 		}
-		if (shader->m_Reflection.m_Stage != k_StageBits[i_Stage])
-		{
-			o_Error = i_Desc.m_Entry + ": SPIR-V is for another stage than " + i_Desc.m_Profile;
-			return nullptr;
-		}
-		(void)i_pDevice;	// shader modules: see vkdShader
 
 		const Shader* result = shader.get();
 		m_Shaders[key] = std::move(shader);
@@ -171,7 +255,7 @@ namespace gvk
 	//------------------------------------------------------------------------
 	bool fxEffectVk::reflect(Shader& io_Shader, std::string& o_Error)
 	{
-		for (const vkdShaderBuffer& buffer : io_Shader.m_Reflection.m_ConstantBuffers)
+		for (const vkdShaderBuffer& buffer : io_Shader.m_pShader->Reflection().m_ConstantBuffers)
 		{
 			const std::string& name = buffer.m_Name;
 			int index = -1;
@@ -233,7 +317,7 @@ namespace gvk
 			io_Shader.m_ConstantBuffers.push_back({ buffer.m_Slot, index });
 		}
 
-		for (const vkdShaderResource& resource : io_Shader.m_Reflection.m_Resources)
+		for (const vkdShaderResource& resource : io_Shader.m_pShader->Reflection().m_Resources)
 		{
 			if (resource.m_Count != 1)
 			{
@@ -396,7 +480,7 @@ namespace gvk
 			return nullptr;
 		}
 		const Shader* shader = m_Pipelines[i_Technique][i_Pass].m_Stages[i_Stage];
-		return shader ? &shader->m_Reflection : nullptr;
+		return shader ? &shader->m_pShader->Reflection() : nullptr;
 	}
 
 	std::vector<fxEffectVk::StageBinding> fxEffectVk::GetStageBindings(int i_Technique, int i_Pass, fxStage i_Stage) const
@@ -669,6 +753,235 @@ namespace gvk
 		{
 			memcpy(cb.m_Data.data(), i_pData, bytes);
 			cb.m_bDirty = true;
+		}
+	}
+
+	//------------------------------------------------------------------------
+	// Samplers: every one the shaders use must map to Vulkan (checked by
+	//	Create); the Vulkan samplers are made on first use
+	//------------------------------------------------------------------------
+	bool fxEffectVk::check_samplers(std::string& o_Error) const
+	{
+		for (const std::string& name : m_SamplerList)
+		{
+			fxSamplerDesc defaults;		// a sampler the .fx declared without state gets the D3D defaults
+			defaults.m_Name = name;
+			const fxSamplerDesc* desc = m_Desc.FindSampler(name);
+			VkSamplerCreateInfo info;
+			if (!fxSamplerToVulkan(desc ? *desc : defaults, info, o_Error))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	uint32_t fxEffectVk::sampler_index(int i_Sampler)
+	{
+		if (m_SamplerHeap.empty())
+		{
+			vkdBindings& bindings = vkdGlobal::Bindings();
+			for (const std::string& name : m_SamplerList)
+			{
+				fxSamplerDesc defaults;
+				defaults.m_Name = name;
+				const fxSamplerDesc* desc = m_Desc.FindSampler(name);
+				VkSamplerCreateInfo info;
+				std::string error;
+				fxSamplerToVulkan(desc ? *desc : defaults, info, error);
+				m_SamplerHeap.push_back(bindings.AddSampler(info));
+			}
+		}
+		return m_SamplerHeap[i_Sampler];
+	}
+
+	bool fxSamplerToVulkan(const fxSamplerDesc& i_Desc, VkSamplerCreateInfo& o_Info, std::string& o_Error)
+	{
+		o_Info = VkSamplerCreateInfo{VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
+		std::string filter = i_Desc.m_Filter;
+		const bool comparison = filter.size() > 11 && same_nocase(filter.substr(0, 11), "COMPARISON_");
+		if (comparison)
+		{
+			filter = filter.substr(11);
+		}
+		const FilterName* found = nullptr;
+		for (const FilterName& f : c_Filters)
+		{
+			if (same_nocase(filter, f.m_Name))
+			{
+				found = &f;
+			}
+		}
+		if (!found)
+		{
+			o_Error = "sampler " + i_Desc.m_Name + ": unknown filter " + i_Desc.m_Filter;
+			return false;
+		}
+		o_Info.minFilter = found->m_bMin ? VK_FILTER_LINEAR : VK_FILTER_NEAREST;
+		o_Info.magFilter = found->m_bMag ? VK_FILTER_LINEAR : VK_FILTER_NEAREST;
+		o_Info.mipmapMode = found->m_bMip ? VK_SAMPLER_MIPMAP_MODE_LINEAR : VK_SAMPLER_MIPMAP_MODE_NEAREST;
+		o_Info.maxAnisotropy = 1.0f;
+		if (same_nocase(filter, "ANISOTROPIC"))
+		{
+			o_Info.anisotropyEnable = VK_TRUE;
+			o_Info.maxAnisotropy = (float)std::min(std::max(i_Desc.m_MaxAnisotropy, 1), 16);
+		}
+
+		VkSamplerAddressMode* address[3] = { &o_Info.addressModeU, &o_Info.addressModeV, &o_Info.addressModeW };
+		bool border = false;
+		for (int i = 0; i < 3; i++)
+		{
+			int mode;
+			if (!lookup(c_AddressModes, i_Desc.m_Address[i], mode))
+			{
+				o_Error = "sampler " + i_Desc.m_Name + ": unknown address mode " + i_Desc.m_Address[i];
+				return false;
+			}
+			*address[i] = (VkSamplerAddressMode)mode;
+			border |= (mode == VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER);
+		}
+
+		if (comparison)
+		{
+			int op;
+			if (!lookup(c_CompareOps, i_Desc.m_ComparisonFunc, op))
+			{
+				o_Error = "sampler " + i_Desc.m_Name + ": unknown comparison " + i_Desc.m_ComparisonFunc;
+				return false;
+			}
+			o_Info.compareEnable = VK_TRUE;
+			o_Info.compareOp = (VkCompareOp)op;
+		}
+
+		//	Vulkan has three border colours; the manifests use only two of them
+		const float* c = i_Desc.m_BorderColor;
+		if (c[0] == 0 && c[1] == 0 && c[2] == 0 && c[3] == 0)
+		{
+			o_Info.borderColor = VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK;
+		}
+		else if (c[0] == 0 && c[1] == 0 && c[2] == 0 && c[3] == 1)
+		{
+			o_Info.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_BLACK;
+		}
+		else if (c[0] == 1 && c[1] == 1 && c[2] == 1 && c[3] == 1)
+		{
+			o_Info.borderColor = VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
+		}
+		else if (border)
+		{
+			o_Error = "sampler " + i_Desc.m_Name + ": border colour (" + std::to_string(c[0]) + ", " + std::to_string(c[1]) + ", " +
+					  std::to_string(c[2]) + ", " + std::to_string(c[3]) + ") has no Vulkan equivalent";
+			return false;
+		}
+
+		o_Info.mipLodBias = i_Desc.m_MipLODBias;
+		o_Info.minLod = std::max(i_Desc.m_MinLOD, 0.0f);
+		o_Info.maxLod = i_Desc.m_MaxLOD >= 3.4e38f ? VK_LOD_CLAMP_NONE : std::max(i_Desc.m_MaxLOD, o_Info.minLod);
+		return true;
+	}
+
+	//------------------------------------------------------------------------
+	// Apply()
+	//------------------------------------------------------------------------
+	void fxEffectVk::Apply(int i_Technique, int i_Pass)
+	{
+		if (i_Pass < 0 || i_Pass >= GetPassCount(i_Technique))
+		{
+			return;
+		}
+		const Pipeline& pipeline = m_Pipelines[i_Technique][i_Pass];
+		vkdContext& context = vkdGlobal::Context();
+
+		const vkdShader* stages[vkdPipelineKey::c_Stages] = {};
+		if (pipeline.m_bDeferred)
+		{
+			GVK_NOT_YET("fxEffectVk::Apply of a pass with a hair hull shader (Plan 7)");
+			context.SetShaders(stages);
+			return;
+		}
+		for (int s = 0; s < fx_NumGraphicsStages; s++)
+		{
+			stages[s] = pipeline.m_Stages[s] ? pipeline.m_Stages[s]->m_pShader.get() : nullptr;
+		}
+		context.SetShaders(stages);
+
+		//	Constant buffers: upload what changed, and what was uploaded for an
+		//	earlier submission (the ring may have reused that memory since)
+		vkdDevice& device = vkdGlobal::Device();
+		for (int index : pipeline.m_ConstantBuffers)
+		{
+			ConstantBuffer& cb = m_ConstantBuffers[index];
+			if (cb.m_bDirty || cb.m_UploadedFor != device.PendingValue())
+			{
+				cb.m_Gpu = context.Upload(cb.m_Data.data(), cb.m_Size).m_Gpu;
+				cb.m_UploadedFor = device.PendingValue();
+				cb.m_bDirty = false;
+			}
+		}
+
+		//	One binding table serves every stage, where D3D11 had registers per
+		//	stage: two stages of a pass can't need different things in one slot
+		vkdBindings& bindings = context.Bindings();
+		struct Slot { int m_Kind; uint32_t m_Slot; int m_Index; };
+		std::vector<Slot> used;
+		bool clash = false;
+		auto claim = [&used, &clash](int i_Kind, uint32_t i_Slot, int i_Index)
+		{
+			for (const Slot& u : used)
+			{
+				if (u.m_Kind == i_Kind && u.m_Slot == i_Slot)
+				{
+					clash |= (u.m_Index != i_Index);
+					return false;
+				}
+			}
+			used.push_back({ i_Kind, i_Slot, i_Index });
+			return true;
+		};
+		for (int s = 0; s < fx_NumGraphicsStages; s++)
+		{
+			const Shader* shader = pipeline.m_Stages[s];
+			if (!shader)
+			{
+				continue;
+			}
+			for (const Binding& b : shader->m_ConstantBuffers)
+			{
+				if (claim(0, b.m_Slot, b.m_Index))
+				{
+					bindings.SetConstantBuffer(b.m_Slot, m_ConstantBuffers[b.m_Index].m_Gpu, m_ConstantBuffers[b.m_Index].m_Size);
+				}
+			}
+			for (const Binding& b : shader->m_Resources)
+			{
+				if (claim(1, b.m_Slot, b.m_Index))
+				{
+					vkdImage* image = m_Resources[b.m_Index] ? m_Resources[b.m_Index] : context.NullTexture();
+					bindings.SetTexture(b.m_Slot, image->SampledIndex(bindings));
+				}
+			}
+			for (const Binding& b : shader->m_Samplers)
+			{
+				if (claim(2, b.m_Slot, b.m_Index))
+				{
+					bindings.SetSampler(b.m_Slot, sampler_index(b.m_Index));
+				}
+			}
+			for (const Binding& b : shader->m_UnorderedAccess)
+			{
+				if (claim(3, b.m_Slot, b.m_Index))
+				{
+					vkdImage* image = m_UnorderedAccess[b.m_Index] ? m_UnorderedAccess[b.m_Index] : context.NullTexture();
+					bindings.SetUav(b.m_Slot, image->StorageIndex(bindings));
+				}
+			}
+		}
+		context.SetWritesUavs(pipeline.m_bUavs);
+		if (clash && !pipeline.m_bReported)
+		{
+			pipeline.m_bReported = true;
+			DBG_LOG("fxEffectVk: " << m_Name << " " << m_Desc.m_Techniques[i_Technique].m_Passes[i_Pass].m_Name
+					<< ": two stages read different things from one register; the Vulkan binding table holds one");
 		}
 	}
 }

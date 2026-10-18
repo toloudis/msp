@@ -50,6 +50,7 @@
 #include <volk.h>
 
 #include <cstdint>
+#include <memory>
 
 namespace gvk
 {
@@ -119,6 +120,10 @@ namespace gvk
 
 			vkdPipelineCache& Pipelines()	{ return m_Pipelines; }
 
+			//	A 1x1 transparent black image (sampled and storage) to bind where
+			//	DX11 code binds a NULL view, which reads as zeros in D3D11
+			vkdImage* NullTexture();
+
 		private:
 			vkdContext(const vkdContext&) = delete;
 			vkdContext& operator = (const vkdContext&) = delete;
@@ -159,6 +164,7 @@ namespace gvk
 			uint32_t				m_ColorCount = 0;
 			vkdImage*				m_pDepth = nullptr;
 			bool					m_bUavs;
+			std::unique_ptr<vkdImage> m_pNullTexture;
 
 			//	Recording
 			VkCommandBuffer			m_Commands = VK_NULL_HANDLE;	// the command buffer last recorded into

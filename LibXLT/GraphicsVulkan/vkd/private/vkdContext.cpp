@@ -651,6 +651,18 @@ namespace gvk
 		return commands;
 	}
 
+	vkdImage* vkdContext::NullTexture()
+	{
+		if (!m_pNullTexture)
+		{
+			m_pNullTexture = vkdImage::Create2D(m_Device, 1, 1, VK_FORMAT_R8G8B8A8_UNORM,
+				VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, "vkdContext null texture");
+			const float zero[4] = { 0, 0, 0, 0 };
+			ClearRenderTarget(m_pNullTexture.get(), zero);
+		}
+		return m_pNullTexture.get();
+	}
+
 	uint64_t vkdContext::Flush()
 	{
 		std::lock_guard<std::recursive_mutex> lock(m_Device.StreamLock());
