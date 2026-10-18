@@ -200,10 +200,14 @@ These were decided with the project owner:
   - the state managers (`g3dBlendStateMgr`, `g3dDepthStencilStateMgr`,
     `g3dRasterizerStateMgr`, `g3dStateMgr`) become small state holders that
     feed the pipeline key.
-- **Device selection:** Vulkan uses the same GPU as DX11, found by
-  matching the DXGI adapter's LUID (`VkPhysicalDeviceIDProperties`), so
-  both backends are always compared on the same hardware. On this machine
-  that must be the Quadro, not the Intel GPU. The chosen device is logged.
+- **Device selection** uses Vulkan alone, no platform APIs: among the
+  physical devices that meet every requirement, prefer a discrete GPU, then
+  the one with the most device-local memory, then enumeration order. An
+  environment variable (`MSP_GFX_VK_ADAPTER`, a name substring) overrides
+  it for testing. On this machine that picks the Quadro, not the Intel
+  GPU. Both backends log the adapter they use, RenderNode prints it, and
+  `gfxcompare` flags a comparison whose two runs used different adapters,
+  so DX11 and Vulkan are always compared on the same hardware.
 - **API and loading:** the Vulkan C API, loaded with **volk** (instance
   and device function tables). Nothing links `vulkan-1.lib`, so the
   executable runs on a machine without a Vulkan driver as long as DX11 is

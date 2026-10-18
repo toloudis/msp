@@ -4,7 +4,7 @@
 
 **Goal:** `-gfx vulkan` starts MachStudio (Qt, Wx and RenderNode) on a new GraphicsVulkan library that creates the Vulkan device and a swap chain per window and clears them, with zero validation messages; DX11 stays the default and unchanged. Along the way, prove the descriptor model the port will use.
 
-**Architecture:** A new static library `LibXLT/GraphicsVulkan` (everything in C++ namespace `gvk`) with a device package `vkd` (volk, VMA, device chosen by the DX11 adapter's LUID, an immediate-context-style command stream, frames in flight on a timeline semaphore, deferred destruction, a per-frame ring buffer, slot-based resource binding on `VK_EXT_descriptor_heap`, validation policy). `g2dSystemVk`/`g2dWindowVk`/`g3dSystemVk` implement the Graphics abstractions; every other `SetImplementation` hook gets a Vulkan class whose not-yet-ported methods are safe stubs marked `GVK_NOT_YET`, so the whole app runs and later plans fill them in. `mainInitGraphics` picks the layer from `-gfx`.
+**Architecture:** A new static library `LibXLT/GraphicsVulkan` (everything in C++ namespace `gvk`) with a device package `vkd` (volk, VMA, device chosen with Vulkan alone (discrete GPU, most device-local memory), an immediate-context-style command stream, frames in flight on a timeline semaphore, deferred destruction, a per-frame ring buffer, slot-based resource binding on `VK_EXT_descriptor_heap`, validation policy). `g2dSystemVk`/`g2dWindowVk`/`g3dSystemVk` implement the Graphics abstractions; every other `SetImplementation` hook gets a Vulkan class whose not-yet-ported methods are safe stubs marked `GVK_NOT_YET`, so the whole app runs and later plans fill them in. `mainInitGraphics` picks the layer from `-gfx`.
 
 **Tech Stack:** C++17 (MSVC x64), Vulkan 1.4 C API via volk, Vulkan Memory Allocator, DXC (SPIR-V) for one test shader, GoogleTest; vcpkg baseline `a0b1c8d3a477c1cb4813d8e127a56961707ca42b` (vulkan-headers/volk/spirv-reflect 1.4.350.0, VMA 3.4.0, directx-dxc 2026-05-27 — matching the installed Vulkan SDK 1.4.350).
 
@@ -16,16 +16,16 @@
 - `-gfx dx11` and no `-gfx` flag behave exactly as before (DX11 self-comparison from Plan 1 still passes).
 - All GraphicsVulkan code is in namespace `gvk`; include guards start with `GVK_`; classes GraphicsDX11 names `...DX11` are named `...Vk` here. Packages and file layout follow CLAUDE.md (public headers in the package folder, `.cpp` in `private/`, includes rooted `"GraphicsVulkan/..."`, guarded includes).
 - Vulkan C API only, loaded with volk; nothing links `vulkan-1.lib`. No Vulkan-Hpp.
-- Windows APIs (HWND, DXGI) only in `*Win*` files.
+- Windows APIs (HWND) only in `*Win*` files; the only one in this plan is `vkCreateWin32SurfaceKHR` with the window's HWND. Device selection is cross-platform Vulkan code.
 - Baseline device: Vulkan 1.4 plus `VK_EXT_descriptor_heap` (or the fallback chosen in Task 4), `VK_KHR_unified_image_layouts`, `VK_KHR_calibrated_timestamps`, `VK_EXT_memory_budget`, geometry and tessellation shaders, dynamic rendering, synchronization2, timeline semaphores. A missing one is reported by name and MachStudio exits; never a silent fallback to DX11.
 - **Validation (spec "Validation"):** Debug builds always enable `VK_LAYER_KHRONOS_validation` with synchronization validation; missing layer in Debug → report and exit. Release enables it with `-gfxValidation`. Errors → `DBG_ASSERT`; warnings counted; counts printed at exit (log, and stderr in RenderNode). Zero errors and zero warnings is the bar for every test and run in this plan. Suppression only for a confirmed layer false positive, with the message ID and reason in a comment.
 - Swap chains match DX11: `VK_FORMAT_R8G8B8A8_UNORM` colour, `VK_FORMAT_D24_UNORM_S8_UINT` depth-stencil, no vsync (present mode `IMMEDIATE`, else `MAILBOX`, else `FIFO`, logged).
-- The Vulkan device is the adapter DX11 would use: `IDXGIFactory6::EnumAdapterByGpuPreference(0, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE)`, matched by LUID (`VkPhysicalDeviceIDProperties::deviceLUID`).
+- Device selection uses Vulkan only (no DXGI or other platform API): among physical devices with no missing requirements, prefer `VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU`, then the largest total `DEVICE_LOCAL` heap size, then enumeration order. `MSP_GFX_VK_ADAPTER` (name substring, case-insensitive) overrides it for testing; an override that matches nothing, or matches a device with missing requirements, is an error naming what was found. Both backends log `Graphics backend: <name> on <adapter>`; RenderNode also prints it to stderr.
 - Git: branch `claude/graphics-vulkan`; stage explicit paths only; don't push. Commit messages end with `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
 
 ## Review Focus
 
-1. **Silent wrong GPU or backend:** on this two-GPU machine, Vulkan must pick the Quadro, never the Intel UHD; if the LUID match fails it must say so and exit, not take device 0 (Task 2 test `NoLuidMatchIsAnError`, Task 3 log check).
+1. **Silent wrong GPU or backend:** on this two-GPU machine, Vulkan must pick the Quadro, never the Intel UHD; if no device meets the requirements it must say so and exit, not take device 0; and a DX11-vs-Vulkan comparison on different adapters must be flagged (Task 2 tests `PrefersDiscrete`, `NoSuitableDeviceIsAnError`; Task 7 `gfxcompare` adapter check).
 2. **Window resize and minimize:** resizing a render panel, or minimizing the main window (0×0 surface), must not crash, leak, or produce validation errors; swap chains are recreated on `VK_ERROR_OUT_OF_DATE_KHR`/`VK_SUBOPTIMAL_KHR` and skipped while 0×0 (Task 5 test `ResizeAndZeroSizeAreClean`, Task 7 manual).
 3. **Shutdown order:** closing MachStudio with windows open must wait for the GPU, destroy swap chains before surfaces before the device, and leave no validation "object not destroyed" messages (Task 3 test `DestroyIsValidationClean`, Task 7 manual exit check).
 4. **Two threads touching the queue:** windows are created on the main thread and presented on the render thread; every queue submit/present goes through `vkdDevice`'s queue lock (Task 3 test `SubmitFromTwoThreads`).
@@ -41,7 +41,7 @@
 | `GraphicsVulkanLayer.hpp/.cpp` | `Init(void* hWnd)`, `CleanUp()`, `InitGraphics()`, `CleanUpGraphics()`, `GetSystem2D()`, `GetSystem3D()`, plus `GetInitError()` |
 | `vkd/vkdCheck.hpp` | `VK_CHECK(expr)`, `vkdResultName(VkResult)`, `GVK_NOT_YET(name)` |
 | `vkd/vkdInfo.hpp` | Struct helpers (`vkdImageCreateInfo2D(...)`, `vkdImageBarrier(...)`, `vkdRenderingInfo(...)`, ...) |
-| `vkd/vkdAdapter.hpp`, `private/vkdAdapter.cpp`, `private/vkdAdapterWin.cpp` | Pure device selection + feature check; DXGI LUID lookup (Win) |
+| `vkd/vkdAdapter.hpp`, `private/vkdAdapter.cpp` | Pure device selection + requirement check (cross-platform) |
 | `vkd/vkdDevice.hpp`, `private/vkdDevice.cpp` | Instance, debug messenger, device, queue + lock, VMA, command stream, frames in flight, deferred destruction, naming |
 | `vkd/vkdValidation.hpp`, `private/vkdValidation.cpp` | Debug-utils callback, error/warning counters, assert on error |
 | `vkd/vkdRingBuffer.hpp`, `private/vkdRingBuffer.cpp` | Per-frame upload ring (host-visible, device-address) |
@@ -92,14 +92,17 @@ namespace gvk {
 struct vkdAdapterInfo                       // one VkPhysicalDevice, as plain data
 {
     std::string m_Name;
-    uint8_t     m_Luid[8];
-    bool        m_bLuidValid;
+    bool        m_bDiscrete;                // VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU
+    uint64_t    m_DeviceLocalBytes;         // sum of DEVICE_LOCAL heap sizes
     uint32_t    m_ApiVersion;
     std::vector<std::string> m_Extensions;  // supported device extensions
     std::vector<std::string> m_Features;    // supported feature names we check (see vkdRequiredFeatures)
 };
-// Index of the adapter whose LUID equals i_Luid, or -1 (with o_Error naming all adapters seen).
-int vkdSelectAdapter(const std::vector<vkdAdapterInfo>& i_Adapters, const uint8_t i_Luid[8], std::string& o_Error);
+// Index of the adapter to use, or -1 with o_Error naming every adapter seen and what each lacks.
+// Without an override: adapters with no missing requirements, discrete first, then most
+// device-local memory, then lowest index. With i_Override (case-insensitive name substring):
+// the first adapter whose name matches; an error if none matches or it lacks requirements.
+int vkdSelectAdapter(const std::vector<vkdAdapterInfo>& i_Adapters, const std::string& i_Override, std::string& o_Error);
 // Names of what i_Adapter lacks: "Vulkan 1.4" if m_ApiVersion < 1.4, each missing extension, each missing feature.
 std::vector<std::string> vkdMissingRequirements(const vkdAdapterInfo& i_Adapter);
 const std::vector<std::string>& vkdRequiredExtensions();   // exact list from Global Constraints (+ VK_KHR_swapchain)
@@ -109,7 +112,7 @@ const std::vector<std::string>& vkdRequiredFeatures();     // "geometryShader", 
 `vkdCheck.hpp`: `VK_CHECK(expr)` — on failure `DBG_ASSERT` with the expression text and `vkdResultName(result)`, and evaluates to the `VkResult`; `GVK_NOT_YET("Class::Method")` — `DBG_LOG`s `GVK_NOT_YET: Class::Method` the first time each call site runs.
 
 - [ ] **Step 1: Create the project.** Static library, six configurations, settings copied from `GraphicsDX11.vcxproj` (include roots, runtime, warning level, output dirs), no PCH; vcpkg manifest `{"name":"graphicsvulkan","dependencies":["vulkan-headers","volk","vulkan-memory-allocator","spirv-reflect","directx-dxc"]}` with `vcpkg-configuration.json` baseline `a0b1c8d3a477c1cb4813d8e127a56961707ca42b`; defines `VK_NO_PROTOTYPES` and `VK_USE_PLATFORM_WIN32_KHR` (the latter only consumed in `*Win*` files). Add to the solution (all six) and as a MainApp ProjectReference; MainApp links the GraphicsVulkan vcpkg lib dir and its `CopyLibraryVcpkgDlls` copies any GraphicsVulkan DLLs (dxcompiler is not needed at run time in this plan; copy nothing that isn't used).
-- [ ] **Step 2: Failing tests** in `vkdAdapterTest.cpp` (pure data, no GPU): `SelectsByLuid` (Intel + Quadro, Quadro's LUID → 1), `NoLuidMatchIsAnError` (→ -1, error lists both names), `InvalidLuidIsSkipped` (`m_bLuidValid=false` never matches), `CompleteAdapterHasNothingMissing`, `Vulkan13IsMissing14` (`"Vulkan 1.4"` reported), `MissingExtensionNamed` (drop `VK_EXT_descriptor_heap` → named), `MissingFeatureNamed` (drop `tessellationShader` → named).
+- [ ] **Step 2: Failing tests** in `vkdAdapterTest.cpp` (pure data, no GPU): `PrefersDiscrete` (Intel integrated listed first + Quadro discrete → 1), `MoreMemoryWins` (two discrete, 8 GB and 16 GB → the 16 GB one), `SkipsDevicesMissingRequirements` (discrete Vulkan 1.3 + integrated complete → the integrated one), `NoSuitableDeviceIsAnError` (→ -1, error names both devices and what each lacks), `OverrideSelectsByName` (`"uhd"` → the Intel one, if complete), `OverrideMissingRequirementsIsAnError` (override names a Vulkan 1.3 device → -1 naming `Vulkan 1.4`), `OverrideMatchingNothingIsAnError`, `CompleteAdapterHasNothingMissing`, `Vulkan13IsMissing14` (`"Vulkan 1.4"` reported), `MissingExtensionNamed` (drop `VK_EXT_descriptor_heap` → named), `MissingFeatureNamed` (drop `tessellationShader` → named).
 - [ ] **Step 3: Build GraphicsTests; fails** (no header).
 - [ ] **Step 4: Implement `vkdAdapter.cpp`.**
 - [ ] **Step 5: GraphicsTests pass; MainApp still builds in Debug Qt and Release RenderNode.**
@@ -119,7 +122,7 @@ const std::vector<std::string>& vkdRequiredFeatures();     // "geometryShader", 
 
 ### Task 3: `vkdDevice` — instance, device, validation, command stream
 
-**Files:** Create `vkd/vkdDevice.hpp`, `vkd/vkdValidation.hpp`, `vkd/vkdInfo.hpp`, `vkd/vkdImage.hpp`, `vkd/private/vkdDevice.cpp`, `vkdValidation.cpp`, `vkdImage.cpp`, `vkdAdapterWin.cpp`; Test `UnitTests/GraphicsTests/Vk/gtVulkan.hpp` (fixture), `Vk/vkdDeviceTest.cpp`.
+**Files:** Create `vkd/vkdDevice.hpp`, `vkd/vkdValidation.hpp`, `vkd/vkdInfo.hpp`, `vkd/vkdImage.hpp`, `vkd/private/vkdDevice.cpp`, `vkdValidation.cpp`, `vkdImage.cpp`; Test `UnitTests/GraphicsTests/Vk/gtVulkan.hpp` (fixture), `Vk/vkdDeviceTest.cpp`.
 
 **Interfaces — Consumes:** Task 2. **Produces:**
 ```cpp
@@ -128,11 +131,9 @@ struct vkdDeviceOptions
 {
     bool m_bValidation;          // forced true in Debug
     bool m_bGpuAssisted;         // GPU-assisted validation (tests / sign-off only)
-    std::string m_AdapterOverride; // from env MSP_GFX_VK_ADAPTER (name substring), Debug/testing only; empty = DX11's adapter
+    std::string m_AdapterOverride; // from env MSP_GFX_VK_ADAPTER (name substring); empty = automatic selection
 };
 struct vkdValidationStats { int m_Errors; int m_Warnings; int m_Infos; };
-
-bool vkdHighPerformanceLuid(uint8_t o_Luid[8]);   // vkdAdapterWin.cpp: DXGI EnumAdapterByGpuPreference(0, HIGH_PERFORMANCE)
 
 class vkdDevice
 {
@@ -165,7 +166,7 @@ public:
 Rules: up to 3 command buffers in flight (`c_FramesInFlight = 3`); `Commands()` reuses the oldest slot after `WaitFor` its value; instance API version 1.4; debug-utils messenger always installed when validation is on; `vkdValidation` counts by severity, `DBG_ASSERT`s on errors with the message ID and text, logs warnings; synchronization validation enabled through `VkLayerSettingsCreateInfoEXT` (`validate_sync = true`; `gpuav_enable` when `m_bGpuAssisted`). `vkdImage`: 2D image + view on VMA (`Create2D(device, w, h, format, usage, name)`), `ReadBack(...)` → `std::vector<uint8_t>` via a staging buffer and `Submit`+`WaitFor`.
 
 - [ ] **Step 1: Fixture `gtVulkan`** (GoogleTest fixture): creates a `vkdDevice` with validation (and the test name as object-name prefix) or calls `GTEST_SKIP()` with the reason when `Create` fails because no Vulkan device/driver/layer exists; in `TearDown` asserts `ValidationStats()` is all zero, then deletes the device.
-- [ ] **Step 2: Failing tests** in `vkdDeviceTest.cpp`: `CreatesOnTheDx11Adapter` (device LUID == `vkdHighPerformanceLuid`; name contains "Quadro" on the dev machine — log only, not asserted), `ClearAndReadBack` (64×64 R8G8B8A8, clear to (0.25,0.5,0.75,1) with `vkCmdClearColorImage`, read back → every pixel (64,128,191,255) ±1), `ValidationErrorIsCaught` (swap in a counting handler with `dbgMsg::SetAssertHandler` for the test's duration so the expected assert isn't a failure; record a deliberately invalid call, e.g. clear an image created without `TRANSFER_DST` usage; expect exactly one assert through the test assert hook and `m_Errors == 1`, then reset the stats so TearDown passes), `DeferredDestroyRunsAfterGpu`, `SubmitFromTwoThreads` (two threads each submit 100 clears under `Commands()`/`Submit()` → no validation messages, all values complete), `DestroyIsValidationClean` (create/destroy device with images alive in deferred destruction → zero messages).
+- [ ] **Step 2: Failing tests** in `vkdDeviceTest.cpp`: `CreatesOnTheBestAdapter` (the chosen device is discrete when any discrete device exists; its name is logged — "Quadro" on the dev machine), `ClearAndReadBack` (64×64 R8G8B8A8, clear to (0.25,0.5,0.75,1) with `vkCmdClearColorImage`, read back → every pixel (64,128,191,255) ±1), `ValidationErrorIsCaught` (swap in a counting handler with `dbgMsg::SetAssertHandler` for the test's duration so the expected assert isn't a failure; record a deliberately invalid call, e.g. clear an image created without `TRANSFER_DST` usage; expect exactly one assert through the test assert hook and `m_Errors == 1`, then reset the stats so TearDown passes), `DeferredDestroyRunsAfterGpu`, `SubmitFromTwoThreads` (two threads each submit 100 clears under `Commands()`/`Submit()` → no validation messages, all values complete), `DestroyIsValidationClean` (create/destroy device with images alive in deferred destruction → zero messages).
 - [ ] **Step 3: Build; fail.** **Step 4: Implement.** **Step 5: Tests pass on the Quadro with zero validation messages** (Debug Qt) and **skip cleanly** when run with `MSP_GFX_VK_ADAPTER=nomatch` (simulated missing device → `Create` returns the reason).
 - [ ] **Step 6: Commit** — "vkdDevice: instance, device on the DX11 adapter, validation, command stream".
 
@@ -244,9 +245,9 @@ Note: with dynamic rendering and unified image layouts, a clear of the acquired 
 
 **Files:** Modify `MachStudio/Source/MainApp/mainInitGraphics.cpp/.hpp`, `MainApp.vcxproj`, `Tools/gfxcompare/rendernode.py`, `gfxcompare.py` (+ tests); maybe the window-title/status code that already shows the product name (find where `SetTitle`/status panels are set; keep the change in MainApp).
 
-**Interfaces — Consumes:** Task 1 (`m_Backend`, `m_bValidation`), `GraphicsVulkanLayer` (Tasks 2–6). **Produces:** `mainInitGraphics` calls one backend through a small table (`Init`, `InitGraphics`, `CleanUpGraphics`, `CleanUp`, `GetSystem2D/3D`, name `"dx11"`/`"vulkan"`), used for the profiler backend name, the log line `Graphics backend: <name> on <adapter>`, and the main window title suffix ` [Vulkan]` (nothing added for DX11, so DX11 looks exactly as before). If `GraphicsVulkanLayer::Init` fails: `guiMessageBox` (or stderr in `BATCH_MODE`) with `GraphicsVulkanLayer::GetInitError()`, and the app exits with a non-zero code. At shutdown the Vulkan layer prints `Vulkan validation: N errors, M warnings` to the log (and stderr in RenderNode).
+**Interfaces — Consumes:** Task 1 (`m_Backend`, `m_bValidation`), `GraphicsVulkanLayer` (Tasks 2–6). **Produces:** `mainInitGraphics` calls one backend through a small table (`Init`, `InitGraphics`, `CleanUpGraphics`, `CleanUp`, `GetSystem2D/3D`, name `"dx11"`/`"vulkan"`), used for the profiler backend name, the log line `Graphics backend: <name> on <adapter>` (adapter from `g3dSystem::GetVideoAdapterName()`, so DX11 needs no change; also printed to stderr in `BATCH_MODE`), and the main window title suffix ` [Vulkan]` (nothing added for DX11, so DX11 looks exactly as before). If `GraphicsVulkanLayer::Init` fails: `guiMessageBox` (or stderr in `BATCH_MODE`) with `GraphicsVulkanLayer::GetInitError()`, and the app exits with a non-zero code. At shutdown the Vulkan layer prints `Vulkan validation: N errors, M warnings` to the log (and stderr in RenderNode).
 
-- [ ] **Step 1: gfxcompare validation gate (TDD, Python):** `rendernode.run` returns the process's stderr; new `rendernode.validation_counts(stderr) -> tuple[int, int] | None` parses `Vulkan validation: N errors, M warnings`; `gfxcompare run` fails (exit 1, reason in `report.md`) if either run reports any. Tests: `test_validation_counts_parsed`, `test_validation_counts_absent_for_dx11`, `test_cli_run_fails_on_validation_messages` (fake exe via `sys.executable -c` writing an image and the line).
+- [ ] **Step 1: gfxcompare validation gate (TDD, Python):** `rendernode.run` returns the process's stderr; new `rendernode.validation_counts(stderr) -> tuple[int, int] | None` parses `Vulkan validation: N errors, M warnings`; `gfxcompare run` fails (exit 1, reason in `report.md`) if either run reports any. Also `rendernode.backend_adapter(stderr) -> tuple[str, str] | None` parses `Graphics backend: <name> on <adapter>`; the report shows both runs' backend and adapter, and `gfxcompare run` fails (exit 1) if the two adapters differ. Tests: `test_validation_counts_parsed`, `test_validation_counts_absent_for_dx11`, `test_cli_run_fails_on_validation_messages`, `test_backend_adapter_parsed`, `test_cli_run_fails_on_different_adapters` (fake exes via `sys.executable -c` writing an image and the lines).
 - [ ] **Step 2:** Implement the switch. Build all six configurations; all unit tests pass.
 - [ ] **Step 3: Manual checks** (Debug and Release, Qt and Wx): `-gfx vulkan -new` → main window and every render panel show the background clear colour, title ends in `[Vulkan]`; resize panels, change the panel layout, minimize/restore the main window; quit → log shows `Vulkan validation: 0 errors, 0 warnings` and no crash. `-gfx dx11 -new` and no flag → unchanged. RenderNode: `-gfx vulkan -new` starts and exits with code 0 and the validation line on stderr. `MSP_GFX_VK_ADAPTER=UHD` (Intel) → exits with a message naming the missing requirements (Vulkan 1.4, `VK_EXT_descriptor_heap`, ...). Record the `GVK_NOT_YET` names logged in a `-gfx vulkan -new` session in the commit message.
 - [ ] **Step 4:** Plan 1 harness still passes for DX11: `gfxcompare run` DX11 vs DX11 on the test scene (Release RenderNode, `MspGfxProfiling=true`).
