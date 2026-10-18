@@ -110,6 +110,7 @@
     <ClCompile Include="GraphicsTestsMain.cpp" />
     <ClCompile Include="gtPlatformWin.cpp" />
     <ClCompile Include="G3d\g3dProfilerTest.cpp" />
+    <ClCompile Include="Vk\vkdAdapterTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />
@@ -125,6 +126,9 @@
     </ProjectReference>
     <ProjectReference Include="..\..\LibXLT\Graphics\Graphics.vcxproj">
       <Project>{1D25A739-3967-4BAF-AA18-53690B00BD55}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\LibXLT\GraphicsVulkan\GraphicsVulkan.vcxproj">
+      <Project>{216ED7AE-3E0C-4B0D-A1DF-8D4D80C8AD71}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

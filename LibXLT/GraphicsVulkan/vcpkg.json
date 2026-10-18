@@ -1,0 +1,11 @@
+{
+  "name": "graphicsvulkan",
+  "version": "1.0",
+  "dependencies": [
+    "vulkan-headers",
+    "volk",
+    "vulkan-memory-allocator",
+    "spirv-reflect",
+    "directx-dxc"
+  ]
+}

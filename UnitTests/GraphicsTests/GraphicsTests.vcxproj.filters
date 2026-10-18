@@ -2,30 +2,25 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="G3d">
-      <UniqueIdentifier>{91c6b9aa-7b06-4e4f-8600-aee12e7b2053}</UniqueIdentifier>
+      <UniqueIdentifier>{f2a2a70d-9290-58bb-b8a0-3f1f62659745}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Support">
-      <UniqueIdentifier>{ee060c08-dc51-4048-b482-86197191f7bf}</UniqueIdentifier>
+    <Filter Include="Vk">
+      <UniqueIdentifier>{e41e15ae-4660-8c90-5013-d92f7425fee5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GraphicsTestsMain.cpp">
-      <Filter>Support</Filter>
-    </ClCompile>
-    <ClCompile Include="gtPlatformWin.cpp">
-      <Filter>Support</Filter>
-    </ClCompile>
+    <ClCompile Include="GraphicsTestsMain.cpp" />
+    <ClCompile Include="gtPlatformWin.cpp" />
     <ClCompile Include="G3d\g3dProfilerTest.cpp">
       <Filter>G3d</Filter>
     </ClCompile>
+    <ClCompile Include="Vk\vkdAdapterTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="gtPlatform.hpp">
-      <Filter>Support</Filter>
-    </ClInclude>
-    <ClInclude Include="gtTempDir.hpp">
-      <Filter>Support</Filter>
-    </ClInclude>
+    <ClInclude Include="gtPlatform.hpp" />
+    <ClInclude Include="gtTempDir.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />
