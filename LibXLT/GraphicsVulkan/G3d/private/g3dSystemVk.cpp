@@ -11,17 +11,42 @@
 #ifndef GVK_VKDDEVICE_HPP
 #include "GraphicsVulkan/vkd/vkdDevice.hpp"
 #endif
+#ifndef GVK_G3DLIGHTMGRVK_HPP
+#include "GraphicsVulkan/G3d/g3dLightMgrVk.hpp"
+#endif
+#ifndef GVK_MATSTUBSVK_HPP
+#include "GraphicsVulkan/stub/matStubsVk.hpp"
+#endif
+#ifndef GVK_G2DSTUBSVK_HPP
+#include "GraphicsVulkan/stub/g2dStubsVk.hpp"
+#endif
 
 namespace gvk
 {
 	g3dSystemVk::g3dSystemVk(vkdDevice& i_Device)
 		: m_Device(i_Device)
 		, m_Name(i_Device.Adapter().m_Name)
+		, m_pLightMgr(new g3dLightMgrVk)
+		, m_pTextureMgr(new matTextureMgrVk)
+		, m_pShaderMgr(new matShaderMgrVk)
+		, m_pScreenCapture(new g2dScreenCaptureUtilVk)
 	{
+		g3dLightMgr::SetImplementation(m_pLightMgr);
+		matTextureMgr::SetImplementation(m_pTextureMgr);
+		matShaderMgr::SetImplementation(m_pShaderMgr);
+		g2dScreenCaptureUtil::SetImplementation(m_pScreenCapture);
 	}
 
 	g3dSystemVk::~g3dSystemVk()
 	{
+		g2dScreenCaptureUtil::SetImplementation(NULL);
+		matShaderMgr::SetImplementation(NULL);
+		matTextureMgr::SetImplementation(NULL);
+		g3dLightMgr::SetImplementation(NULL);
+		delete m_pScreenCapture;
+		delete m_pShaderMgr;
+		delete m_pTextureMgr;
+		delete m_pLightMgr;
 	}
 
 	const char* g3dSystemVk::GetVideoAdapterName()

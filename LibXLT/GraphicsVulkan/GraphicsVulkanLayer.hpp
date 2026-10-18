@@ -14,6 +14,10 @@
 #endif
 #define GVK_GRAPHICSVULKANLAYER_HPP
 
+#ifndef GVK_VKDVALIDATION_HPP
+#include "GraphicsVulkan/vkd/vkdValidation.hpp"
+#endif
+
 #include <string>
 
 class g2dSystem;
@@ -54,4 +58,10 @@ class GraphicsVulkanLayer
 		//	GetInitError - why Init failed (empty if it didn't)
 		//------------------------------------------------------------------------
 		static const std::string& GetInitError();
+
+		//------------------------------------------------------------------------
+		//	GetValidationStats - Vulkan validation messages so far (counted
+		//	across Init..CleanUp, including device destruction)
+		//------------------------------------------------------------------------
+		static gvk::vkdValidationStats GetValidationStats();
 };

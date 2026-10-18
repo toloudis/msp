@@ -21,13 +21,25 @@
 #include "Core/dbg/dbgMsg.hpp"
 #endif
 
+#ifndef GVK_G2DSTUBSVK_HPP
+#include "GraphicsVulkan/stub/g2dStubsVk.hpp"
+#endif
+
 #include <algorithm>
 
 namespace gvk
 {
 	g2dSystemVk::g2dSystemVk(vkdDevice& i_Device)
 		: m_Device(i_Device)
+		, m_pResourceCounter(new g2dResourceCounterVk)
+		, m_pFontUtil(new g2dFontUtilVk)
+		, m_pImageCreate(new g2dImageCreateVk)
+		, m_pImageSave(new g2dImageSaveVk)
 	{
+		g2dResourceCounter::SetImplementation(m_pResourceCounter);
+		g2dFontUtil::SetImplementation(m_pFontUtil);
+		g2dImageCreate::SetImplementation(m_pImageCreate);
+		g2dImageSave::SetImplementation(m_pImageSave);
 	}
 
 	g2dSystemVk::~g2dSystemVk()
@@ -37,6 +49,15 @@ namespace gvk
 			delete window;
 		}
 		m_Windows.clear();
+
+		g2dImageSave::SetImplementation(NULL);
+		g2dImageCreate::SetImplementation(NULL);
+		g2dFontUtil::SetImplementation(NULL);
+		g2dResourceCounter::SetImplementation(NULL);
+		delete m_pImageSave;
+		delete m_pImageCreate;
+		delete m_pFontUtil;
+		delete m_pResourceCounter;
 	}
 
 	g2dWindow* g2dSystemVk::CreateAppWindow(int i_Width, int i_Height, int i_X, int i_Y)

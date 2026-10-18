@@ -119,6 +119,10 @@
     <ClCompile Include="G2d\private\g2dSystemVk.cpp" />
     <ClCompile Include="G3d\private\g3dSystemVk.cpp" />
     <ClCompile Include="G3d\private\g3dProfilerGpuVk.cpp" />
+    <ClCompile Include="G3d\private\g3dLightMgrVk.cpp" />
+    <ClCompile Include="stub\private\g2dStubsVk.cpp" />
+    <ClCompile Include="stub\private\matStubsVk.cpp" />
+    <ClCompile Include="stub\private\g3dStubsVk.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsVulkanLayer.hpp" />
@@ -139,6 +143,10 @@
     <ClInclude Include="G2d\g2dSystemVk.hpp" />
     <ClInclude Include="G3d\g3dSystemVk.hpp" />
     <ClInclude Include="G3d\g3dProfilerGpuVk.hpp" />
+    <ClInclude Include="G3d\g3dLightMgrVk.hpp" />
+    <ClInclude Include="stub\g2dStubsVk.hpp" />
+    <ClInclude Include="stub\matStubsVk.hpp" />
+    <ClInclude Include="stub\g3dStubsVk.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

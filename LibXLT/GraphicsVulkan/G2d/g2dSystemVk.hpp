@@ -2,8 +2,9 @@
 **  g2dSystemVk.hpp
 **
 **      g2dSystemVk creates and owns the Vulkan windows (g2dWindowVk), as
-**	g2dSystemDX11 does for DX11. Full-screen windows aren't supported,
-**	exactly as in DX11.
+**	g2dSystemDX11 does for DX11, and installs the 2D hooks (resource
+**	counter, fonts, image creation and saving) while it exists.
+**	Full-screen windows aren't supported, exactly as in DX11.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -21,6 +22,10 @@
 namespace gvk
 {
 	class vkdDevice;
+	class g2dResourceCounterVk;
+	class g2dFontUtilVk;
+	class g2dImageCreateVk;
+	class g2dImageSaveVk;
 
 	class g2dSystemVk : public g2dSystem
 	{
@@ -40,5 +45,11 @@ namespace gvk
 		private:
 			vkdDevice&				m_Device;
 			std::vector<g2dWindow*>	m_Windows;
+
+			//	The 2D hooks, installed for the system's lifetime (as g2dSystemDX11)
+			g2dResourceCounterVk*	m_pResourceCounter;
+			g2dFontUtilVk*			m_pFontUtil;
+			g2dImageCreateVk*		m_pImageCreate;
+			g2dImageSaveVk*			m_pImageSave;
 	};
 }

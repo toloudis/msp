@@ -13,6 +13,12 @@
     <Filter Include="G3d\private">
       <UniqueIdentifier>{fa3aae3e-6f79-849a-20bb-31a3cf511bc3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="stub">
+      <UniqueIdentifier>{e8f65fd8-d973-f998-5dc7-ea3cf1614ae1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="stub\private">
+      <UniqueIdentifier>{916da593-97b9-dabc-1d7e-60c4bd68afbb}</UniqueIdentifier>
+    </Filter>
     <Filter Include="vkd">
       <UniqueIdentifier>{c9fef3bb-2152-762e-4b52-af1070182d27}</UniqueIdentifier>
     </Filter>
@@ -67,6 +73,18 @@
     <ClCompile Include="G3d\private\g3dProfilerGpuVk.cpp">
       <Filter>G3d\private</Filter>
     </ClCompile>
+    <ClCompile Include="G3d\private\g3dLightMgrVk.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="stub\private\g2dStubsVk.cpp">
+      <Filter>stub\private</Filter>
+    </ClCompile>
+    <ClCompile Include="stub\private\matStubsVk.cpp">
+      <Filter>stub\private</Filter>
+    </ClCompile>
+    <ClCompile Include="stub\private\g3dStubsVk.cpp">
+      <Filter>stub\private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsVulkanLayer.hpp" />
@@ -120,6 +138,18 @@
     </ClInclude>
     <ClInclude Include="G3d\g3dProfilerGpuVk.hpp">
       <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dLightMgrVk.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="stub\g2dStubsVk.hpp">
+      <Filter>stub</Filter>
+    </ClInclude>
+    <ClInclude Include="stub\matStubsVk.hpp">
+      <Filter>stub</Filter>
+    </ClInclude>
+    <ClInclude Include="stub\g3dStubsVk.hpp">
+      <Filter>stub</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
