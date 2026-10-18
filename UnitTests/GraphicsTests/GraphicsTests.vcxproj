@@ -46,6 +46,9 @@
   <PropertyGroup>
     <OutDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <!-- DXC and GraphicsVulkan's shader options; keep the options in step with
+         LibXLT\GraphicsVulkan\Fx\private\EmbedShadersVk.ps1 and Tools\fx2hlsl\compile_check.py -->
+    <GtDxc>"$(ProjectDir)..\..\LibXLT\GraphicsVulkan\vcpkg_installed\x64-windows\x64-windows\tools\directx-dxc\dxc.exe" -spirv -fspv-target-env=vulkan1.3 -fvk-use-dx-layout -fvk-use-dx-position-w -fvk-support-nonzero-base-instance -fvk-support-nonzero-base-vertex -fvk-b-shift 0 0 -fvk-t-shift 100 0 -fvk-s-shift 200 0 -fvk-u-shift 300 0</GtDxc>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -106,6 +109,7 @@
     <ClCompile Include="Vk\fxShaderCopyTest.cpp" />
     <ClCompile Include="Dx11\gtD3D11.cpp" />
     <ClCompile Include="Vk\fxEffectVkReflectionTest.cpp" />
+    <ClCompile Include="Vk\vkdPipelineCacheTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />
@@ -114,13 +118,18 @@
     <ClInclude Include="Dx11\gtD3D11.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <!-- The descriptor-prototype test shader, compiled to SPIR-V with the GraphicsVulkan register shifts -->
-    <CustomBuild Include="Vk\Shaders\gtBindingProto.hlsl">
-      <Command>"$(ProjectDir)..\..\LibXLT\GraphicsVulkan\vcpkg_installed\x64-windows\x64-windows\tools\directx-dxc\dxc.exe" -spirv -fspv-target-env=vulkan1.3 -fvk-use-dx-layout -fvk-b-shift 0 0 -fvk-t-shift 100 0 -fvk-s-shift 200 0 -fvk-u-shift 300 0 -T vs_6_0 -E VSMain -Vn g_gtBindingProtoVS -Fh "$(IntDir)gtBindingProtoVS.h" "%(FullPath)" &amp;&amp; "$(ProjectDir)..\..\LibXLT\GraphicsVulkan\vcpkg_installed\x64-windows\x64-windows\tools\directx-dxc\dxc.exe" -spirv -fspv-target-env=vulkan1.3 -fvk-use-dx-layout -fvk-b-shift 0 0 -fvk-t-shift 100 0 -fvk-s-shift 200 0 -fvk-u-shift 300 0 -T ps_6_0 -E PSMain -Vn g_gtBindingProtoPS -Fh "$(IntDir)gtBindingProtoPS.h" "%(FullPath)"</Command>
-      <Message>DXC (SPIR-V) %(Filename)%(Extension)</Message>
-      <Outputs>$(IntDir)gtBindingProtoVS.h;$(IntDir)gtBindingProtoPS.h</Outputs>
-    </CustomBuild>
+    <!-- Test shaders: VSMain and PSMain of each, compiled to SPIR-V with GraphicsVulkan's
+         options into headers g_<name>VS / g_<name>PS ($(IntDir)<name>VS.h, <name>PS.h) -->
+    <CustomBuild Include="Vk\Shaders\gtBindingProto.hlsl" />
+    <CustomBuild Include="Vk\Shaders\gtSolid.hlsl" />
   </ItemGroup>
+  <ItemDefinitionGroup>
+    <CustomBuild>
+      <Command>$(GtDxc) -T vs_6_0 -E VSMain -Vn g_%(Filename)VS -Fh "$(IntDir)%(Filename)VS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -T ps_6_0 -E PSMain -Vn g_%(Filename)PS -Fh "$(IntDir)%(Filename)PS.h" "%(FullPath)"</Command>
+      <Message>DXC (SPIR-V) %(Filename)%(Extension)</Message>
+      <Outputs>$(IntDir)%(Filename)VS.h;$(IntDir)%(Filename)PS.h</Outputs>
+    </CustomBuild>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />
     <None Include="vcpkg-configuration.json" />

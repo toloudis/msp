@@ -121,6 +121,12 @@
     <ClCompile Include="Fx\private\fxEmbeddedShadersVk.cpp">
       <Filter>Fx\private</Filter>
     </ClCompile>
+    <ClCompile Include="vkd\private\vkdShader.cpp">
+      <Filter>vkd\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vkd\private\vkdPipelineCache.cpp">
+      <Filter>vkd\private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsVulkanLayer.hpp" />
@@ -201,6 +207,15 @@
     </ClInclude>
     <ClInclude Include="Fx\fxEmbeddedShadersVk.hpp">
       <Filter>Fx</Filter>
+    </ClInclude>
+    <ClInclude Include="vkd\vkdState.hpp">
+      <Filter>vkd</Filter>
+    </ClInclude>
+    <ClInclude Include="vkd\vkdShader.hpp">
+      <Filter>vkd</Filter>
+    </ClInclude>
+    <ClInclude Include="vkd\vkdPipelineCache.hpp">
+      <Filter>vkd</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
