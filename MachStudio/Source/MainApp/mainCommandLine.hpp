@@ -54,6 +54,12 @@
 **	                             folders
 **
 **	Graphics
+**	  -gfx dx11|vulkan           graphics backend; default dx11. If Vulkan
+**	                             can't start, MachStudio says why and exits
+**	                             (it never falls back to DX11)
+**	  -gfxValidation             turn on the Vulkan validation layer (Debug
+**	                             builds always have it on); the error and
+**	                             warning counts are printed at exit
 **	  -gfxProfile <file.csv>     write the CPU and GPU time and draw count of
 **	                             every renderer and pass, per frame, to a CSV
 **	                             file. Only in builds with profiling markers
@@ -120,7 +126,7 @@ struct mainCommandLine
 		std::string	m_Value;
 	};
 
-	g3dGfxOptions		m_Gfx;							// -gfxProfile <file.csv>
+	g3dGfxOptions		m_Gfx;							// -gfx, -gfxValidation, -gfxProfile
 	bool				m_bNoSplash = false;			// -NoSplash: no splash screen
 	bool				m_bShowWindows = false;			// -show: show windows in RenderNode builds
 	std::vector<Action>	m_Actions;						// in command-line order

@@ -175,6 +175,7 @@ TEST(mainCommandLine, HelpListsEveryFlag)
 		"-capFormat", "-capCompress", "-capCamera", "-capWidth", "-capHeight",
 		"-capOutputFile", "-capOutputPath", "-capOutputPathRoot",
 		"-license", "-NoSplash", "-show", "-version", "-help", "-gfxProfile",
+		"-gfx", "-gfxValidation",
 	};
 	for (const char* flag : flags)
 	{
@@ -182,4 +183,47 @@ TEST(mainCommandLine, HelpListsEveryFlag)
 		EXPECT_NE(std::string::npos, help.find(std::string("\n  ") + flag + " "))
 			<< flag << " is missing from the help text";
 	}
+}
+
+TEST(mainCommandLine, GfxVulkan)
+{
+	mainCommandLine line = mainCommandLine::Parse("-gfx vulkan -new");
+	EXPECT_EQ(g3dGfxOptions::e_Vulkan, line.m_Gfx.m_Backend);
+	expect_actions({act(mainCommandLine::e_New)}, line);
+	EXPECT_TRUE(line.m_Warnings.empty());
+}
+
+TEST(mainCommandLine, GfxDefaultsToDx11)
+{
+	EXPECT_EQ(g3dGfxOptions::e_DX11, mainCommandLine::Parse("-new").m_Gfx.m_Backend);
+	EXPECT_FALSE(mainCommandLine::Parse("-new").m_Gfx.m_bValidation);
+}
+
+TEST(mainCommandLine, GfxDx11CaseInsensitive)
+{
+	mainCommandLine line = mainCommandLine::Parse("-gfx DX11");
+	EXPECT_EQ(g3dGfxOptions::e_DX11, line.m_Gfx.m_Backend);
+	EXPECT_EQ(g3dGfxOptions::e_Vulkan, mainCommandLine::Parse("/gfx Vulkan").m_Gfx.m_Backend);
+	EXPECT_TRUE(line.m_Warnings.empty());
+}
+
+TEST(mainCommandLine, GfxBadValueWarns)
+{
+	mainCommandLine line = mainCommandLine::Parse("-gfx metal");
+	EXPECT_EQ(g3dGfxOptions::e_DX11, line.m_Gfx.m_Backend);
+	ASSERT_EQ(1u, line.m_Warnings.size());
+	EXPECT_NE(std::string::npos, line.m_Warnings[0].find("metal"));
+}
+
+TEST(mainCommandLine, GfxValidation)
+{
+	EXPECT_TRUE(mainCommandLine::Parse("-gfxValidation").m_Gfx.m_bValidation);
+}
+
+TEST(mainCommandLine, GfxFirstMeansNotAPath)
+{
+	mainCommandLine line = mainCommandLine::Parse("-gfx vulkan C:\\x.mab");
+	EXPECT_TRUE(line.m_Actions.empty());
+	ASSERT_EQ(1u, line.m_Warnings.size());
+	EXPECT_NE(std::string::npos, line.m_Warnings[0].find("x.mab"));
 }

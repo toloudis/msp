@@ -9,6 +9,8 @@
 #ifndef MAIN_COMMANDLINE_HPP
 #include "MainApp/mainCommandLine.hpp"
 #endif
+#include <cctype>
+
 #ifndef APP_COMMANDLINE_HPP
 #include "Core/App/appCommandLine.hpp"
 #endif
@@ -167,6 +169,40 @@ mainCommandLine mainCommandLine::Parse(const std::string& i_Line)
 				result.m_Warnings.push_back("Command-line " + token + " has no value; ignored");
 			}
 		}
+		else if (appCommandLine::IsFlag(token, "gfx"))
+		{
+			parsed_any_data = true;
+			if (i + 1 < tokens.size())
+			{
+				const std::string& value = tokens[++i];
+				std::string lower(value);
+				for (char& c : lower)
+				{
+					c = static_cast<char>(tolower(static_cast<unsigned char>(c)));
+				}
+				if (lower == "dx11")
+				{
+					result.m_Gfx.m_Backend = g3dGfxOptions::e_DX11;
+				}
+				else if (lower == "vulkan")
+				{
+					result.m_Gfx.m_Backend = g3dGfxOptions::e_Vulkan;
+				}
+				else
+				{
+					result.m_Warnings.push_back("Command-line " + token + " " + value + ": unknown backend (use dx11 or vulkan); using dx11");
+				}
+			}
+			else
+			{
+				result.m_Warnings.push_back("Command-line " + token + " has no value; ignored");
+			}
+		}
+		else if (appCommandLine::IsFlag(token, "gfxValidation"))
+		{
+			parsed_any_data = true;
+			result.m_Gfx.m_bValidation = true;
+		}
 		else if (appCommandLine::IsFlag(token, "script"))
 		{
 			parsed_any_data = true;
@@ -260,6 +296,12 @@ Rendering
   -capOutputPathRoot <dir>   output root folder for relative output folders
 
 Graphics
+  -gfx dx11|vulkan           graphics backend; default dx11. If Vulkan can't
+                             start, MachStudio says why and exits (it never
+                             falls back to DX11)
+  -gfxValidation             turn on the Vulkan validation layer (Debug
+                             builds always have it on); the error and
+                             warning counts are printed at exit
   -gfxProfile <file.csv>     write the CPU and GPU time and draw count of
                              every renderer and pass, per frame, to a CSV
                              file. Only in builds with profiling markers
