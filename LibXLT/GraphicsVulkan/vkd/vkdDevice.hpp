@@ -91,6 +91,10 @@ namespace gvk
 			void		WaitIdle();
 			uint64_t	CompletedValue() const;
 
+			//	The timeline value the open command buffer will get when it is
+			//	submitted: anything used in it is free once this completes.
+			uint64_t	PendingValue() const;
+
 			//	Runs i_Destroy once the GPU has finished all work submitted so
 			//	far, including the open command buffer.
 			void DeferDestroy(std::function<void()> i_Destroy);

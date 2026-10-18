@@ -8,6 +8,8 @@
 #ifndef GVK_VKDVALIDATION_HPP
 #include "GraphicsVulkan/vkd/vkdValidation.hpp"
 #endif
+#include <cstring>
+
 #ifndef DBG_MSG_HPP
 #include "Core/dbg/dbgMsg.hpp"
 #endif
@@ -46,7 +48,27 @@ namespace gvk
 		//	targets an older Vulkan): logged, counted as information.
 		const VkDebugUtilsMessageTypeFlagsEXT c_Findings =
 			VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-		if (!(i_Types & c_Findings))
+		//	Suppressed (counted as information): the validation layer
+		//	describing its own configuration when GPU-assisted validation is
+		//	on - not findings about the application.
+		//	  VALIDATION-SETTINGS: "GPU-AV and core checks both enabled, slow"
+		//	  WARNING-Setting-Limit-Adjusted: GPU-AV forces features it needs
+		//	    for its instrumentation (int64, buffer stores, ...)
+		//	  WARNING-GPU-Assisted-Validation: GPU-AV enlarges the descriptor
+		//	    heap's reserved range for itself ("Internal Warning")
+		static const char* const c_LayerNotices[] =
+		{
+			"VALIDATION-SETTINGS",
+			"WARNING-Setting-Limit-Adjusted",
+			"WARNING-GPU-Assisted-Validation",
+		};
+		bool notice = false;
+		for (const char* notice_id : c_LayerNotices)
+		{
+			notice = notice || strcmp(id, notice_id) == 0;
+		}
+
+		if (!(i_Types & c_Findings) || notice)
 		{
 			++self->m_Infos;
 			if (i_Severity & (VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT))

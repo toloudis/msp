@@ -39,6 +39,10 @@ namespace gvk
 			uint32_t	Width() const		{ return m_Width; }
 			uint32_t	Height() const		{ return m_Height; }
 
+			//	The view description (descriptor heaps build image descriptors
+			//	from it); valid even when the usage needs no VkImageView.
+			const VkImageViewCreateInfo& ViewInfo() const { return m_ViewInfo; }
+
 			//	ReadBack copies the image to the CPU (rows tightly packed),
 			//	submitting the open commands and waiting for them. Needs
 			//	VK_IMAGE_USAGE_TRANSFER_SRC_BIT and a colour format.
@@ -50,6 +54,7 @@ namespace gvk
 			vkdDevice&		m_Device;
 			VkImage			m_Image = VK_NULL_HANDLE;
 			VkImageView		m_View = VK_NULL_HANDLE;
+			VkImageViewCreateInfo m_ViewInfo = {VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
 			VmaAllocation	m_Allocation = nullptr;
 			VkFormat		m_Format = VK_FORMAT_UNDEFINED;
 			VkImageAspectFlags m_Aspect = 0;

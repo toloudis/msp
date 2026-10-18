@@ -105,7 +105,9 @@
   <ItemGroup>
     <ClCompile Include="GraphicsVulkanLayer.cpp" />
     <ClCompile Include="vkd\private\vkdAdapter.cpp" />
+    <ClCompile Include="vkd\private\vkdBindings.cpp" />
     <ClCompile Include="vkd\private\vkdCheck.cpp" />
+    <ClCompile Include="vkd\private\vkdRingBuffer.cpp" />
     <ClCompile Include="vkd\private\vkdDevice.cpp" />
     <ClCompile Include="vkd\private\vkdImage.cpp" />
     <ClCompile Include="vkd\private\vkdSurfaceWin.cpp" />
@@ -115,7 +117,10 @@
   <ItemGroup>
     <ClInclude Include="GraphicsVulkanLayer.hpp" />
     <ClInclude Include="vkd\vkdAdapter.hpp" />
+    <ClInclude Include="vkd\vkdBindings.hpp" />
     <ClInclude Include="vkd\vkdCheck.hpp" />
+    <ClInclude Include="vkd\vkdRingBuffer.hpp" />
+    <ClInclude Include="vkd\private\vkdVma.hpp" />
     <ClInclude Include="vkd\vkdDevice.hpp" />
     <ClInclude Include="vkd\vkdImage.hpp" />
     <ClInclude Include="vkd\vkdInfo.hpp" />

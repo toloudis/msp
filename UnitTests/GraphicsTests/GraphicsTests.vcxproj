@@ -65,7 +65,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\LibXLT\GraphicsVulkan\vcpkg_installed\x64-windows\x64-windows\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(IntDir);$(ProjectDir)..\..\LibXLT\GraphicsVulkan\vcpkg_installed\x64-windows\x64-windows\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <!-- vcpkg's x64-windows gtest is a DLL -->
       <PreprocessorDefinitions>WIN64;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;GTEST_LINKED_AS_SHARED_LIBRARY=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -113,11 +113,21 @@
     <ClCompile Include="Vk\vkdAdapterTest.cpp" />
     <ClCompile Include="Vk\vkdDeviceTest.cpp" />
     <ClCompile Include="Vk\vkdValidationTest.cpp" />
+    <ClCompile Include="Vk\vkdRingBufferTest.cpp" />
+    <ClCompile Include="Vk\vkdBindingsTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />
     <ClInclude Include="gtTempDir.hpp" />
     <ClInclude Include="Vk\gtVulkan.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- The descriptor-prototype test shader, compiled to SPIR-V with the GraphicsVulkan register shifts -->
+    <CustomBuild Include="Vk\Shaders\gtBindingProto.hlsl">
+      <Command>"$(ProjectDir)..\..\LibXLT\GraphicsVulkan\vcpkg_installed\x64-windows\x64-windows\tools\directx-dxc\dxc.exe" -spirv -fspv-target-env=vulkan1.3 -fvk-use-dx-layout -fvk-b-shift 0 0 -fvk-t-shift 100 0 -fvk-s-shift 200 0 -fvk-u-shift 300 0 -T vs_6_0 -E VSMain -Vn g_gtBindingProtoVS -Fh "$(IntDir)gtBindingProtoVS.h" "%(FullPath)" &amp;&amp; "$(ProjectDir)..\..\LibXLT\GraphicsVulkan\vcpkg_installed\x64-windows\x64-windows\tools\directx-dxc\dxc.exe" -spirv -fspv-target-env=vulkan1.3 -fvk-use-dx-layout -fvk-b-shift 0 0 -fvk-t-shift 100 0 -fvk-s-shift 200 0 -fvk-u-shift 300 0 -T ps_6_0 -E PSMain -Vn g_gtBindingProtoPS -Fh "$(IntDir)gtBindingProtoPS.h" "%(FullPath)"</Command>
+      <Message>DXC (SPIR-V) %(Filename)%(Extension)</Message>
+      <Outputs>$(IntDir)gtBindingProtoVS.h;$(IntDir)gtBindingProtoPS.h</Outputs>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

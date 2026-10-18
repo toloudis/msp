@@ -72,13 +72,13 @@ namespace gvk
 		const VkImageUsageFlags c_ViewUsages = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT |
 			VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT |
 			VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT;
+		VkImageViewCreateInfo& view = image->m_ViewInfo;
+		view.image = image->m_Image;
+		view.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		view.format = i_Format;
+		view.subresourceRange = vkdRange(i_Aspect);
 		if (i_Usage & c_ViewUsages)
 		{
-			VkImageViewCreateInfo view = {VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
-			view.image = image->m_Image;
-			view.viewType = VK_IMAGE_VIEW_TYPE_2D;
-			view.format = i_Format;
-			view.subresourceRange = vkdRange(i_Aspect);
 			VK_CHECK(vkCreateImageView(i_Device.Device(), &view, NULL, &image->m_View));
 			i_Device.SetName(VK_OBJECT_TYPE_IMAGE_VIEW, reinterpret_cast<uint64_t>(image->m_View), i_Name);
 		}

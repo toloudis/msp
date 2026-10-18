@@ -13,7 +13,13 @@
     <ClCompile Include="vkd\private\vkdAdapter.cpp">
       <Filter>vkd\private</Filter>
     </ClCompile>
+    <ClCompile Include="vkd\private\vkdBindings.cpp">
+      <Filter>vkd\private</Filter>
+    </ClCompile>
     <ClCompile Include="vkd\private\vkdCheck.cpp">
+      <Filter>vkd\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vkd\private\vkdRingBuffer.cpp">
       <Filter>vkd\private</Filter>
     </ClCompile>
     <ClCompile Include="vkd\private\vkdDevice.cpp">
@@ -37,8 +43,17 @@
     <ClInclude Include="vkd\vkdAdapter.hpp">
       <Filter>vkd</Filter>
     </ClInclude>
+    <ClInclude Include="vkd\vkdBindings.hpp">
+      <Filter>vkd</Filter>
+    </ClInclude>
     <ClInclude Include="vkd\vkdCheck.hpp">
       <Filter>vkd</Filter>
+    </ClInclude>
+    <ClInclude Include="vkd\vkdRingBuffer.hpp">
+      <Filter>vkd</Filter>
+    </ClInclude>
+    <ClInclude Include="vkd\private\vkdVma.hpp">
+      <Filter>vkd\private</Filter>
     </ClInclude>
     <ClInclude Include="vkd\vkdDevice.hpp">
       <Filter>vkd</Filter>

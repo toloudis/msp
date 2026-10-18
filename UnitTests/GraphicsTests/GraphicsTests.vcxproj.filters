@@ -7,6 +7,9 @@
     <Filter Include="Vk">
       <UniqueIdentifier>{e41e15ae-4660-8c90-5013-d92f7425fee5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Vk\Shaders">
+      <UniqueIdentifier>{633f78dd-3797-68cd-1a09-96d88b161ff9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsTestsMain.cpp" />
@@ -23,6 +26,12 @@
     <ClCompile Include="Vk\vkdValidationTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
+    <ClCompile Include="Vk\vkdRingBufferTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\vkdBindingsTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />
@@ -30,6 +39,11 @@
     <ClInclude Include="Vk\gtVulkan.hpp">
       <Filter>Vk</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Vk\Shaders\gtBindingProto.hlsl">
+      <Filter>Vk\Shaders</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

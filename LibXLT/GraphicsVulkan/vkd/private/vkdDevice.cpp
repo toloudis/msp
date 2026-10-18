@@ -625,6 +625,11 @@ namespace gvk
 		return m_pImpl->Completed();
 	}
 
+	uint64_t vkdDevice::PendingValue() const
+	{
+		return m_pImpl->m_LastSubmitted + 1;
+	}
+
 	void vkdDevice::DeferDestroy(std::function<void()> i_Destroy)
 	{
 		std::lock_guard<std::mutex> lock(m_pImpl->m_DeferLock);

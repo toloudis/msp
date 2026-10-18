@@ -71,3 +71,19 @@ TEST(vkdValidation, ResetClears)
 	validation.Reset();
 	EXPECT_EQ(0, validation.Stats().m_Warnings);
 }
+
+TEST(vkdValidation, LayerSetupNoticesAreInformation)
+{
+	//	The validation layer describing its own configuration (GPU-assisted
+	//	validation's setup) isn't a finding about the application.
+	vkdValidation validation;
+	for (const char* id : {"VALIDATION-SETTINGS", "WARNING-Setting-Limit-Adjusted", "WARNING-GPU-Assisted-Validation"})
+	{
+		send(validation, VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT, VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT, id);
+	}
+	EXPECT_EQ(0, validation.Stats().m_Warnings);
+	EXPECT_EQ(3, validation.Stats().m_Infos);
+	//	other warnings still count
+	send(validation, VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT, VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT, "SYNC-HAZARD-WRITE-AFTER-WRITE");
+	EXPECT_EQ(1, validation.Stats().m_Warnings);
+}
