@@ -54,4 +54,29 @@ namespace gvk
 		}
 		return surface;
 	}
+
+	void vkdWindowClientSize(void* i_NativeWindow, int& o_Width, int& o_Height)
+	{
+		RECT rect = {};
+		if (i_NativeWindow && ::GetClientRect(static_cast<HWND>(i_NativeWindow), &rect))
+		{
+			o_Width = rect.right - rect.left;
+			o_Height = rect.bottom - rect.top;
+		}
+		else
+		{
+			o_Width = 0;
+			o_Height = 0;
+		}
+	}
+
+	bool vkdWindowIsOpen(void* i_NativeWindow)
+	{
+		return i_NativeWindow && ::IsWindow(static_cast<HWND>(i_NativeWindow)) != 0;
+	}
+
+	void vkdSetWindowTitle(void* i_NativeWindow, const wchar_t* i_Title)
+	{
+		::SetWindowTextW(static_cast<HWND>(i_NativeWindow), i_Title);
+	}
 }

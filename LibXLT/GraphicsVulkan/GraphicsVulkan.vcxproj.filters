@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="G2d">
+      <UniqueIdentifier>{41eaa174-f92e-dcd0-78c5-86b9b9e004fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="G2d\private">
+      <UniqueIdentifier>{09aaa5e9-b077-7dbe-68e6-fcecdaf47542}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="G3d">
+      <UniqueIdentifier>{f2a2a70d-9290-58bb-b8a0-3f1f62659745}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="G3d\private">
+      <UniqueIdentifier>{fa3aae3e-6f79-849a-20bb-31a3cf511bc3}</UniqueIdentifier>
+    </Filter>
     <Filter Include="vkd">
       <UniqueIdentifier>{c9fef3bb-2152-762e-4b52-af1070182d27}</UniqueIdentifier>
     </Filter>
@@ -37,6 +49,24 @@
     <ClCompile Include="vkd\private\vkdVma.cpp">
       <Filter>vkd\private</Filter>
     </ClCompile>
+    <ClCompile Include="vkd\private\vkdGlobal.cpp">
+      <Filter>vkd\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vkd\private\vkdSwapchain.cpp">
+      <Filter>vkd\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dWindowVk.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dSystemVk.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dSystemVk.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dProfilerGpuVk.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsVulkanLayer.hpp" />
@@ -69,6 +99,27 @@
     </ClInclude>
     <ClInclude Include="vkd\vkdValidation.hpp">
       <Filter>vkd</Filter>
+    </ClInclude>
+    <ClInclude Include="vkd\vkdGlobal.hpp">
+      <Filter>vkd</Filter>
+    </ClInclude>
+    <ClInclude Include="vkd\vkdSwapchain.hpp">
+      <Filter>vkd</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dWindowVk.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dDepthStencilBufferVk.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dSystemVk.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dSystemVk.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dProfilerGpuVk.hpp">
+      <Filter>G3d</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

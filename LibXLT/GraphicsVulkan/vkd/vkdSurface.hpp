@@ -2,7 +2,8 @@
 **  vkdSurface.hpp
 **
 **      The platform part of window surfaces (PAC style): the instance
-**	extension a surface needs and creating one for a native window.
+**	extension a surface needs, creating one for a native window, and the
+**	few native window queries the swap chain needs.
 **	Implemented per platform (vkdSurfaceWin.cpp on Windows).
 **
 **	Extra Large Technology
@@ -21,4 +22,9 @@ namespace gvk
 
 	//	A surface for a native window (HWND on Windows), or VK_NULL_HANDLE.
 	VkSurfaceKHR vkdCreateSurface(VkInstance i_Instance, void* i_NativeWindow);
+
+	//	Native window queries the swap chain code needs.
+	void vkdWindowClientSize(void* i_NativeWindow, int& o_Width, int& o_Height);
+	bool vkdWindowIsOpen(void* i_NativeWindow);
+	void vkdSetWindowTitle(void* i_NativeWindow, const wchar_t* i_Title);
 }

@@ -113,6 +113,12 @@
     <ClCompile Include="vkd\private\vkdSurfaceWin.cpp" />
     <ClCompile Include="vkd\private\vkdValidation.cpp" />
     <ClCompile Include="vkd\private\vkdVma.cpp" />
+    <ClCompile Include="vkd\private\vkdGlobal.cpp" />
+    <ClCompile Include="vkd\private\vkdSwapchain.cpp" />
+    <ClCompile Include="G2d\private\g2dWindowVk.cpp" />
+    <ClCompile Include="G2d\private\g2dSystemVk.cpp" />
+    <ClCompile Include="G3d\private\g3dSystemVk.cpp" />
+    <ClCompile Include="G3d\private\g3dProfilerGpuVk.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsVulkanLayer.hpp" />
@@ -126,6 +132,13 @@
     <ClInclude Include="vkd\vkdInfo.hpp" />
     <ClInclude Include="vkd\vkdSurface.hpp" />
     <ClInclude Include="vkd\vkdValidation.hpp" />
+    <ClInclude Include="vkd\vkdGlobal.hpp" />
+    <ClInclude Include="vkd\vkdSwapchain.hpp" />
+    <ClInclude Include="G2d\g2dWindowVk.hpp" />
+    <ClInclude Include="G2d\g2dDepthStencilBufferVk.hpp" />
+    <ClInclude Include="G2d\g2dSystemVk.hpp" />
+    <ClInclude Include="G3d\g3dSystemVk.hpp" />
+    <ClInclude Include="G3d\g3dProfilerGpuVk.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

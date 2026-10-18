@@ -115,6 +115,7 @@
     <ClCompile Include="Vk\vkdValidationTest.cpp" />
     <ClCompile Include="Vk\vkdRingBufferTest.cpp" />
     <ClCompile Include="Vk\vkdBindingsTest.cpp" />
+    <ClCompile Include="Vk\g2dWindowVkTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />
