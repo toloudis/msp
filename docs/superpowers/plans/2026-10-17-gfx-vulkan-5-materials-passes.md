@@ -1,12 +1,12 @@
 # GraphicsVulkan materials and `shdw` passes — Implementation Plan (Phase 1, Plan 5)
 
-> **Status: STUB.** Written in detail only after Plan 4 is finished and reviewed by the owner. Execute with superpowers:executing-plans, inline (no subagents); stop for review when done. Likely the largest plan; may be split into 5a/5b when detailed.
+> **Status: STUB.** Written in detail only after Plans 4a and 4b are finished and reviewed by the owner. Execute with superpowers:executing-plans, inline (no subagents); stop for review when done. Likely the largest plan; may be split into 5a/5b when detailed.
 
 **Goal:** The full beauty path renders: every material effect, the HDR renderer and all its passes, reflections, AO and GI, matching DX11 on synthetic scenes and the test scene's beauty frames.
 
 **Spec:** "Scope" (Decided 5), "Proving parity", "Validation".
 
-**Depends on (Plan 4):** fragments, textures, default renderer, render targets.
+**Depends on (Plans 4a and 4b):** fragments, textures, default renderer, render targets.
 
 ## Scope
 
