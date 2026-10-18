@@ -87,7 +87,11 @@ hold settings:
   compiled straight into the test exe (and marked `NotUsing` for MainApp's
   precompiled header). Helpers use the `mat` prefix.
 - `UnitTests/GraphicsTests` tests `LibXLT/Graphics` code that needs no GPU
-  (`g3dProfiler`); it links Core and Graphics. Helpers use the `gt` prefix.
+  (`g3dProfiler`) and `LibXLT/GraphicsVulkan` (`Vk/`); it links Core,
+  Graphics and GraphicsVulkan. Helpers use the `gt` prefix. The Vulkan
+  tests run with validation on (`gtVulkan` fails a test on any validation
+  message) and are skipped when there is no usable Vulkan device (as on
+  CI). A custom build step compiles `Vk/Shaders/*.hlsl` with DXC.
 - `CoreTests.vcxproj` is self-contained: its build settings (include paths,
   runtime, output in `UnitTests/bin/<Platform>/<Configuration>/`) are in the
   project file, not a shared props file. A new test project can start as a
@@ -137,6 +141,7 @@ its own `vcpkg_installed/`):
 |---|---|---|
 | `LibXLT/Graphics/vcpkg.json` | OpenEXR (+ Imath, libdeflate) | writing `.exr` render output (`g2dScanlineOpenEXRUtil`, `g2dOpenEXROutStream`, `g2dHDRUtil`) |
 | `LibXLT/GraphicsDX11/vcpkg.json` | DirectXTex, nlohmann-json | DDS/texture loading and image saving; parsing `*.effect.json` effect descriptions (`fxEffectDesc`). glTF import bundles its own `json.hpp`/`tiny_gltf.h` |
+| `LibXLT/GraphicsVulkan/vcpkg.json` | vulkan-headers, volk, vulkan-memory-allocator, spirv-reflect, directx-dxc | the Vulkan backend: volk loads `vulkan-1.dll` at run time (nothing to link or ship); DXC compiles shaders at build time. Its `vcpkg-configuration.json` has a newer baseline than the other manifests (Vulkan 1.4 headers with `VK_EXT_descriptor_heap`) |
 | `MachStudio/Source/MainApp/vcpkg.json` | curl (+ zlib) | version check (`mainCheckAppVersion`). Linked dynamically: `libcurl.dll` (and its `zlib1.dll`) ships next to the exe |
 | `LibXLT/ToolUIWx/vcpkg.json` | (none) | |
 | `UnitTests/CoreTests/vcpkg.json`, `UnitTests/MainAppTests/vcpkg.json`, `UnitTests/GraphicsTests/vcpkg.json` | gtest | unit tests (`gmock.dll`, which includes gtest, is copied next to the test exe) |
@@ -206,7 +211,7 @@ exists (FBX support is compiled out; see the leftovers note above).
 ## LibXLT — shared engine and application framework
 
 `LibXLT/` ("Extra Large Technology") is a set of static libraries layered
-roughly Core → Graphics → GraphicsDX11 → Tool → ToolUI*.
+roughly Core → Graphics → GraphicsDX11 (or GraphicsVulkan) → Tool → ToolUI*.
 
 ### Core (`LibXLT/Core`)
 Platform layer and fundamental services; no graphics.
@@ -270,6 +275,41 @@ The live Direct3D 11 renderer.
 | `shdw` | Multi-pass "shadow" renderers: depth, HDR, glow, materials, baking, AO and GI previews, frame buffer manager |
 | `tmesh` | Triangle mesh fragments, vertex/index buffers, BVH |
 
+### GraphicsVulkan (`LibXLT/GraphicsVulkan`)
+The Vulkan renderer, being ported from GraphicsDX11 (plan:
+`docs/superpowers/plans/2026-10-17-graphics-vulkan-roadmap.md`; design:
+`docs/superpowers/specs/2026-10-17-graphics-vulkan-design.md`). MachStudio
+uses it with `-gfx vulkan`; DX11 stays the default. Namespace `gvk`,
+include guards `GVK_*`, class names end in `Vk`. `GraphicsVulkanLayer` has
+the same calls as `GraphicsDX11Layer` (its `Init` can fail; `GetInitError`
+says why) and installs a Vulkan implementation for every Graphics hook.
+
+| Package | Purpose |
+|---|---|
+| `vkd` | Thin wrappers over the Vulkan C API (volk, VMA): device and adapter choice, command stream and timeline-semaphore submission, validation policy, images, swap chains, the per-frame ring buffer, and resource binding (`vkdBindings`) |
+| `G2d` | 2D system and windows (swap chain plus depth buffer) |
+| `G3d` | 3D system, light manager, GPU timer for the profiler |
+| `stub` | Hooks not ported yet: they keep MachStudio running (renderers draw nothing, effects have no passes, textures and fragments keep their data on the CPU) and log `GVK_NOT_YET: <name>` once per call site. Later plans move each class to its real package as they port it |
+
+- **Target:** Vulkan 1.4 with `VK_EXT_descriptor_heap`, unified image
+  layouts (everything stays in `GENERAL`), dynamic rendering, sync2,
+  timeline semaphores. The adapter is chosen without DXGI: a discrete GPU
+  first, then the most device-local memory; `MSP_GFX_VK_ADAPTER=<name
+  substring>` overrides it. A device that lacks something fails `Init`
+  with the missing features named.
+- **Shaders:** GraphicsDX11's HLSL, copied unchanged, compiled by DXC
+  (vcpkg `directx-dxc`) to SPIR-V.
+- **Resource binding:** shaders keep their DX11 register slots. Each draw
+  writes a table into the ring buffer (constant-buffer addresses, then
+  texture, sampler and UAV heap indices) and pushes its address with
+  `vkCmdPushDataEXT`; DXC's `-fvk-[btsu]-shift 0/100/200/300` bindings map
+  onto it. The layout is in `vkd/vkdBindings.hpp`.
+- **Validation:** `VK_LAYER_KHRONOS_validation` always runs in Debug
+  builds, and in Release with `-gfxValidation`. Errors `DBG_ASSERT` (Debug)
+  and are logged and counted; warnings are logged and counted. A
+  successful port means zero of either. At exit the log (and RenderNode's
+  stderr) says `Vulkan validation: N errors, M warnings`, or `off`.
+
 ### Other LibXLT libraries
 
 | Library | Purpose |
@@ -324,8 +364,10 @@ slider, drop target and resolve-path dialog for each toolkit. `Commands/` and
 
 The command line is parsed first thing in `DoWinMain`, before the main
 window and graphics exist, by `mainCommandLine::Parse` (all flags; tested in
-`UnitTests/MainAppTests`): graphics options go to `mainInitGraphics`,
-`-NoSplash`/`-show` are applied at once, and the actions (`-file`,
+`UnitTests/MainAppTests`): graphics options (`-gfx dx11|vulkan`,
+`-gfxValidation`, `-gfxProfile`) go to `mainInitGraphics`, which starts the
+chosen graphics layer and logs `Graphics backend: <name> on <adapter>`;
+`-NoSplash`/`-show` are applied at once; and the actions (`-file`,
 `-render`, `-cap*`, `-script`, ...) run after start-up, in order, in
 `mnmApp::RunCommandLine`. `-render <scene>` loads the scene, which replaces
 the capture settings, so `-cap*` flags go after `-render`. The full
