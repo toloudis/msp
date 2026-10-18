@@ -57,6 +57,13 @@ void gtPlatform::DestroyHiddenWindow(void* i_Window)
 	::DestroyWindow(static_cast<HWND>(i_Window));
 }
 
+std::string gtPlatform::ExeDir()
+{
+	wchar_t exe[MAX_PATH] = {};
+	::GetModuleFileNameW(NULL, exe, MAX_PATH);
+	return (std::filesystem::path(exe).parent_path() / "").u8string();
+}
+
 std::string gtPlatform::RepoRoot()
 {
 	wchar_t exe[MAX_PATH] = {};

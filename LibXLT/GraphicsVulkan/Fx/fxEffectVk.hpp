@@ -141,7 +141,15 @@ namespace gvk
 
 		// Parameter handles; invalid if no entry point uses the name.
 		Constant FindConstant(const std::string& i_Name) const;
+		// windows.h #defines FindResource as FindResourceW (or A): the method
+		// keeps its name whatever was included, and the forwarders let calls
+		// from code that has windows.h in effect resolve to it
+#pragma push_macro("FindResource")
+#undef FindResource
 		Resource FindResource(const std::string& i_Name) const;
+		Resource FindResourceW(const std::string& i_Name) const { return FindResource(i_Name); }
+		Resource FindResourceA(const std::string& i_Name) const { return FindResource(i_Name); }
+#pragma pop_macro("FindResource")
 		UnorderedAccess FindUnorderedAccess(const std::string& i_Name) const;
 		// The reflected type of a constant; nullptr if no entry point uses it.
 		const Type* FindConstantType(const std::string& i_Name) const;

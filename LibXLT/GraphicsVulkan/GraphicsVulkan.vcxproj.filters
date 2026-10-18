@@ -31,6 +31,9 @@
     <Filter Include="G2d\private">
       <UniqueIdentifier>{09aaa5e9-b077-7dbe-68e6-fcecdaf47542}</UniqueIdentifier>
     </Filter>
+    <Filter Include="G2d\private\Shaders">
+      <UniqueIdentifier>{2431057b-38c3-5827-ab0b-295dc4c5dc3a}</UniqueIdentifier>
+    </Filter>
     <Filter Include="G3d">
       <UniqueIdentifier>{f2a2a70d-9290-58bb-b8a0-3f1f62659745}</UniqueIdentifier>
     </Filter>
@@ -136,6 +139,21 @@
     <ClCompile Include="Fx\private\fxMaterialInstance.cpp">
       <Filter>Fx\private</Filter>
     </ClCompile>
+    <ClCompile Include="G3d\private\g3dBlendStateMgr.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dDepthStencilStateMgr.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dRasterizerStateMgr.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dStateMgr.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dFullscreenQuad.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsVulkanLayer.hpp" />
@@ -237,6 +255,21 @@
     </ClInclude>
     <ClInclude Include="Fx\fxEffectApi.hpp">
       <Filter>Fx</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dBlendStateMgr.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dDepthStencilStateMgr.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dRasterizerStateMgr.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dStateMgr.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dFullscreenQuad.hpp">
+      <Filter>G2d</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -646,6 +679,18 @@
     </None>
     <None Include="Eff\private\Shaders\Special\ssgiMultiHorizonBasedGI.hlsl">
       <Filter>Eff\private\Shaders\Special</Filter>
+    </None>
+    <None Include="G2d\private\Shaders\FullscreenQuadVS.hlsl">
+      <Filter>G2d\private\Shaders</Filter>
+    </None>
+    <None Include="G2d\private\Shaders\TexturedQuadPS.hlsl">
+      <Filter>G2d\private\Shaders</Filter>
+    </None>
+    <None Include="G2d\private\Shaders\FullscreenQuad.effect.json">
+      <Filter>G2d\private\Shaders</Filter>
+    </None>
+    <None Include="G2d\private\Shaders\TexturedQuad.effect.json">
+      <Filter>G2d\private\Shaders</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -52,7 +52,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(IntDir);$(ProjectDir)..\..\LibXLT\GraphicsVulkan\vcpkg_installed\x64-windows\x64-windows\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(IntDir);$(ProjectDir)..\..\LibXLT\GraphicsVulkan\vcpkg_installed\x64-windows\x64-windows\include;$(ProjectDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <!-- vcpkg's x64-windows gtest is a DLL -->
       <PreprocessorDefinitions>WIN64;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;GTEST_LINKED_AS_SHARED_LIBRARY=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -68,8 +68,11 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <!-- Direct3D 11: GraphicsDX11 is the reference the Vulkan tests compare against -->
+      <!-- Direct3D 11: GraphicsDX11 is the reference the Vulkan tests compare against
+           (its headers ask for DirectXTex.lib, from its vcpkg packages) -->
       <AdditionalDependencies>d3d11.lib;dxgi.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories Condition="'$(MspBaseConfiguration)' == 'Debug'">$(ProjectDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(MspBaseConfiguration)' == 'Release'">$(ProjectDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>"$(TargetPath)" --gtest_brief=1 "--gtest_output=xml:$(OutDir)$(TargetName).xml"</Command>
@@ -113,12 +116,18 @@
     <ClCompile Include="Vk\vkdContextTest.cpp" />
     <ClCompile Include="Vk\fxEffectVkTest.cpp" />
     <ClCompile Include="Vk\effPlainEffectVkTest.cpp" />
+    <ClCompile Include="gtImage.cpp" />
+    <ClCompile Include="gtImageTest.cpp" />
+    <ClCompile Include="Vk\g2dFullscreenQuadTest.cpp" />
+    <ClCompile Include="Vk\fxParityTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />
     <ClInclude Include="gtTempDir.hpp" />
     <ClInclude Include="Vk\gtVulkan.hpp" />
     <ClInclude Include="Dx11\gtD3D11.hpp" />
+    <ClInclude Include="gtImage.hpp" />
+    <ClInclude Include="Vk\gtVulkanContext.hpp" />
   </ItemGroup>
   <ItemGroup>
     <!-- Test shaders: VSMain and PSMain of each, compiled to SPIR-V with GraphicsVulkan's

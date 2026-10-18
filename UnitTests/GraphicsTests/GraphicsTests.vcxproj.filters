@@ -62,6 +62,14 @@
     <ClCompile Include="Vk\effPlainEffectVkTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
+    <ClCompile Include="gtImage.cpp" />
+    <ClCompile Include="gtImageTest.cpp" />
+    <ClCompile Include="Vk\g2dFullscreenQuadTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\fxParityTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />
@@ -71,6 +79,10 @@
     </ClInclude>
     <ClInclude Include="Dx11\gtD3D11.hpp">
       <Filter>Dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="gtImage.hpp" />
+    <ClInclude Include="Vk\gtVulkanContext.hpp">
+      <Filter>Vk</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

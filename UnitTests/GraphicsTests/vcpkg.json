@@ -2,6 +2,7 @@
   "name": "graphicstests",
   "version": "1.0",
   "dependencies": [
-    "gtest"
+    "gtest",
+    "stb"
   ]
 }

@@ -1,0 +1,20 @@
+{
+  "source": "g2dFullscreenQuad.cpp",
+  "hlsl": "TexturedQuadPS.hlsl",
+  "techniques": [
+    {
+      "name": "Quad",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "TexturedQuadPS"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

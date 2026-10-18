@@ -25,4 +25,7 @@ namespace gtPlatform
 	//	The repository root: the nearest directory above the test exe that
 	//	has a LibXLT folder (with a trailing separator).
 	std::string RepoRoot();
+
+	//	The directory the test exe is in (UTF-8, with a trailing separator).
+	std::string ExeDir();
 }

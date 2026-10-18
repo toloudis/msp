@@ -88,3 +88,19 @@ TEST(vkdValidation, LayerSetupNoticesAreInformation)
 	send(validation, VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT, VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT, "SYNC-HAZARD-WRITE-AFTER-WRITE");
 	EXPECT_EQ(1, validation.Stats().m_Warnings);
 }
+
+TEST(vkdValidation, UnreadShaderOutputsAreInformation)
+{
+	//	A vertex shader writing an output the pixel shader doesn't read is
+	//	valid in Vulkan and in D3D11, and the shaders are GraphicsDX11's,
+	//	unchanged: logged, not counted as a warning.
+	vkdValidation validation;
+	send(validation, VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT, VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT,
+		 "WARNING-Shader-OutputNotConsumed");
+	EXPECT_EQ(0, validation.Stats().m_Warnings);
+	EXPECT_EQ(1, validation.Stats().m_Infos);
+	//	reading an input the previous stage doesn't write is still a finding
+	send(validation, VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT, VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT,
+		 "WARNING-Shader-InputNotProduced");
+	EXPECT_EQ(1, validation.Stats().m_Warnings);
+}

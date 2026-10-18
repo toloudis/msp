@@ -24,6 +24,9 @@
 #ifndef GVK_G2DSTUBSVK_HPP
 #include "GraphicsVulkan/stub/g2dStubsVk.hpp"
 #endif
+#ifndef GVK_G2DFULLSCREENQUAD_HPP
+#include "GraphicsVulkan/G2d/g2dFullscreenQuad.hpp"
+#endif
 
 #include <algorithm>
 
@@ -40,6 +43,8 @@ namespace gvk
 		g2dFontUtil::SetImplementation(m_pFontUtil);
 		g2dImageCreate::SetImplementation(m_pImageCreate);
 		g2dImageSave::SetImplementation(m_pImageSave);
+
+		g2dFullscreenQuad::InitFullscreenQuad();
 	}
 
 	g2dSystemVk::~g2dSystemVk()
@@ -49,6 +54,8 @@ namespace gvk
 			delete window;
 		}
 		m_Windows.clear();
+
+		g2dFullscreenQuad::CleanUpFullscreenQuad();
 
 		g2dImageSave::SetImplementation(NULL);
 		g2dImageCreate::SetImplementation(NULL);

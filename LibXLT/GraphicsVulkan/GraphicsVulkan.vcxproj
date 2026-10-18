@@ -117,6 +117,11 @@
     <ClCompile Include="vkd\private\vkdContext.cpp" />
     <ClCompile Include="Eff\private\effPlainEffectVk.cpp" />
     <ClCompile Include="Fx\private\fxMaterialInstance.cpp" />
+    <ClCompile Include="G3d\private\g3dBlendStateMgr.cpp" />
+    <ClCompile Include="G3d\private\g3dDepthStencilStateMgr.cpp" />
+    <ClCompile Include="G3d\private\g3dRasterizerStateMgr.cpp" />
+    <ClCompile Include="G3d\private\g3dStateMgr.cpp" />
+    <ClCompile Include="G2d\private\g2dFullscreenQuad.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsVulkanLayer.hpp" />
@@ -153,6 +158,11 @@
     <ClInclude Include="Eff\effPlainEffectVk.hpp" />
     <ClInclude Include="Fx\fxMaterialInstance.hpp" />
     <ClInclude Include="Fx\fxEffectApi.hpp" />
+    <ClInclude Include="G3d\g3dBlendStateMgr.hpp" />
+    <ClInclude Include="G3d\g3dDepthStencilStateMgr.hpp" />
+    <ClInclude Include="G3d\g3dRasterizerStateMgr.hpp" />
+    <ClInclude Include="G3d\g3dStateMgr.hpp" />
+    <ClInclude Include="G2d\g2dFullscreenQuad.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />
@@ -292,6 +302,10 @@
     <None Include="Eff\private\Shaders\Special\ssaoMultiHorizonBasedAO.hlsl" />
     <None Include="Eff\private\Shaders\Special\ssgiMultiHorizonBasedGI.effect.json" />
     <None Include="Eff\private\Shaders\Special\ssgiMultiHorizonBasedGI.hlsl" />
+    <None Include="G2d\private\Shaders\FullscreenQuadVS.hlsl" />
+    <None Include="G2d\private\Shaders\TexturedQuadPS.hlsl" />
+    <None Include="G2d\private\Shaders\FullscreenQuad.effect.json" />
+    <None Include="G2d\private\Shaders\TexturedQuad.effect.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">
@@ -317,5 +331,18 @@
   </ItemGroup>
   <Target Name="EmbedVkShaders" BeforeTargets="ClCompile" AfterTargets="VcpkgInstallManifestDependencies" Inputs="@(VkShaderInput)" Outputs="$(VkShaderOutput)">
     <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(VkShaderScript)&quot; -ShaderDir &quot;$(VkShaderDir)&quot; -OutFile &quot;$(VkShaderOutput)&quot; -Dxc &quot;$(VkDxc)&quot;" />
+  </Target>
+  <!-- g2dFullscreenQuad's shaders (GraphicsVulkan only; DX11 compiles them from strings at run
+       time), embedded the same way as table g2dQuadShadersVk (included by
+       G2d\private\g2dFullscreenQuad.cpp). -->
+  <PropertyGroup>
+    <VkQuadShaderDir>$(MSBuildThisFileDirectory)G2d\private\Shaders</VkQuadShaderDir>
+    <VkQuadShaderOutput>$(MSBuildThisFileDirectory)Fx\private\Generated\g2dQuadShadersVk.inc</VkQuadShaderOutput>
+  </PropertyGroup>
+  <ItemGroup>
+    <VkQuadShaderInput Include="$(VkQuadShaderDir)\*.hlsl;$(VkQuadShaderDir)\*.effect.json;$(VkShaderScript)" />
+  </ItemGroup>
+  <Target Name="EmbedVkQuadShaders" BeforeTargets="ClCompile" AfterTargets="VcpkgInstallManifestDependencies" Inputs="@(VkQuadShaderInput)" Outputs="$(VkQuadShaderOutput)">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(VkShaderScript)&quot; -ShaderDir &quot;$(VkQuadShaderDir)&quot; -OutFile &quot;$(VkQuadShaderOutput)&quot; -Dxc &quot;$(VkDxc)&quot; -TableName g2dQuadShadersVk" />
   </Target>
 </Project>

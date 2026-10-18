@@ -532,6 +532,8 @@ namespace gvk
 		return (it != m_Variables.end()) ? it->second.m_Constant : Constant();
 	}
 
+#pragma push_macro("FindResource")
+#undef FindResource
 	fxEffectVk::Resource fxEffectVk::FindResource(const std::string& i_Name) const
 	{
 		Resource r;
@@ -542,6 +544,7 @@ namespace gvk
 		}
 		return r;
 	}
+#pragma pop_macro("FindResource")
 
 	const fxEffectVk::Type* fxEffectVk::FindConstantType(const std::string& i_Name) const
 	{
