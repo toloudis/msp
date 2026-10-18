@@ -95,6 +95,12 @@ namespace gvk
 			//	submitted: anything used in it is free once this completes.
 			uint64_t	PendingValue() const;
 
+			//	Called (under the stream lock) whenever Commands() is about to
+			//	hand out the open command buffer, Submit() included, so the code
+			//	that records state into it (vkdContext) can end what it has open
+			//	first. One hook; empty removes it.
+			void SetRecordingHook(std::function<void()> i_Hook);
+
 			//	Runs i_Destroy once the GPU has finished all work submitted so
 			//	far, including the open command buffer.
 			void DeferDestroy(std::function<void()> i_Destroy);

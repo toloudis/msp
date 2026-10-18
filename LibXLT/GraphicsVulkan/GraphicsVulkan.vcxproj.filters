@@ -127,6 +127,9 @@
     <ClCompile Include="vkd\private\vkdPipelineCache.cpp">
       <Filter>vkd\private</Filter>
     </ClCompile>
+    <ClCompile Include="vkd\private\vkdContext.cpp">
+      <Filter>vkd\private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsVulkanLayer.hpp" />
@@ -215,6 +218,9 @@
       <Filter>vkd</Filter>
     </ClInclude>
     <ClInclude Include="vkd\vkdPipelineCache.hpp">
+      <Filter>vkd</Filter>
+    </ClInclude>
+    <ClInclude Include="vkd\vkdContext.hpp">
       <Filter>vkd</Filter>
     </ClInclude>
   </ItemGroup>

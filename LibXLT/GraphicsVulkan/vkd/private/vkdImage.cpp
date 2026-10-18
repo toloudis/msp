@@ -8,6 +8,9 @@
 #ifndef GVK_VKDIMAGE_HPP
 #include "GraphicsVulkan/vkd/vkdImage.hpp"
 #endif
+#ifndef GVK_VKDBINDINGS_HPP
+#include "GraphicsVulkan/vkd/vkdBindings.hpp"
+#endif
 #ifndef GVK_VKDDEVICE_HPP
 #include "GraphicsVulkan/vkd/vkdDevice.hpp"
 #endif
@@ -49,6 +52,7 @@ namespace gvk
 		std::unique_ptr<vkdImage> image(new vkdImage(i_Device));
 		image->m_Format = i_Format;
 		image->m_Aspect = i_Aspect;
+		image->m_Usage = i_Usage;
 		image->m_Width = i_Width;
 		image->m_Height = i_Height;
 
@@ -88,8 +92,40 @@ namespace gvk
 		return image;
 	}
 
+	uint32_t vkdImage::SampledIndex(vkdBindings& i_Bindings)
+	{
+		DBG_ASSERT(!m_pBindings || m_pBindings == &i_Bindings, "vkdImage: registered with another vkdBindings");
+		if (m_SampledIndex == UINT32_MAX)
+		{
+			m_pBindings = &i_Bindings;
+			m_SampledIndex = i_Bindings.AddImage(m_ViewInfo, VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE);
+		}
+		return m_SampledIndex;
+	}
+
+	uint32_t vkdImage::StorageIndex(vkdBindings& i_Bindings)
+	{
+		DBG_ASSERT(!m_pBindings || m_pBindings == &i_Bindings, "vkdImage: registered with another vkdBindings");
+		if (m_StorageIndex == UINT32_MAX)
+		{
+			m_pBindings = &i_Bindings;
+			m_StorageIndex = i_Bindings.AddImage(m_ViewInfo, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+		}
+		return m_StorageIndex;
+	}
+
 	vkdImage::~vkdImage()
 	{
+		if (m_pBindings)
+		{
+			for (uint32_t index : {m_SampledIndex, m_StorageIndex})
+			{
+				if (index != UINT32_MAX)
+				{
+					m_pBindings->RemoveImage(index);
+				}
+			}
+		}
 		VkDevice device = m_Device.Device();
 		VmaAllocator allocator = m_Device.Allocator();
 		VkImage image = m_Image;

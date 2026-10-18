@@ -19,6 +19,8 @@ namespace gvk
 		vkdDevice*		l_pDevice = 0;
 		vkdRingBuffer*	l_pRing = 0;
 		vkdBindings*	l_pBindings = 0;
+		vkdPipelineCache* l_pPipelines = 0;
+		vkdContext*		l_pContext = 0;
 	}
 
 	namespace vkdGlobal
@@ -41,13 +43,28 @@ namespace gvk
 			return *l_pBindings;
 		}
 
+		vkdPipelineCache& Pipelines()
+		{
+			DBG_ASSERT(l_pPipelines, "vkdGlobal: no pipeline cache (GraphicsVulkanLayer not initialized)");
+			return *l_pPipelines;
+		}
+
+		vkdContext& Context()
+		{
+			DBG_ASSERT(l_pContext, "vkdGlobal: no context (GraphicsVulkanLayer not initialized)");
+			return *l_pContext;
+		}
+
 		bool IsSet()
 		{
 			return l_pDevice != 0;
 		}
 
-		void Set(vkdDevice* i_pDevice, vkdRingBuffer* i_pRing, vkdBindings* i_pBindings)
+		void Set(vkdDevice* i_pDevice, vkdRingBuffer* i_pRing, vkdBindings* i_pBindings,
+				 vkdPipelineCache* i_pPipelines, vkdContext* i_pContext)
 		{
+			l_pPipelines = i_pPipelines;
+			l_pContext = i_pContext;
 			l_pDevice = i_pDevice;
 			l_pRing = i_pRing;
 			l_pBindings = i_pBindings;

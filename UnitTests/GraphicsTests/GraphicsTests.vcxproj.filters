@@ -53,6 +53,9 @@
     <ClCompile Include="Vk\vkdPipelineCacheTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
+    <ClCompile Include="Vk\vkdContextTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />

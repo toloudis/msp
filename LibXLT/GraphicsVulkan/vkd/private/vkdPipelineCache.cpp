@@ -221,7 +221,7 @@ namespace gvk
 		std::vector<char> data;
 		if (!m_File.empty())
 		{
-			std::ifstream in(m_File, std::ios::binary);
+			std::ifstream in(std::filesystem::u8path(m_File), std::ios::binary);
 			if (in)
 			{
 				data.assign(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
@@ -293,7 +293,7 @@ namespace gvk
 
 		const std::string temp = m_File + ".tmp";
 		{
-			std::ofstream out(temp, std::ios::binary | std::ios::trunc);
+			std::ofstream out(std::filesystem::u8path(temp), std::ios::binary | std::ios::trunc);
 			out.write(data.data(), data.size());
 			if (!out)
 			{
@@ -302,7 +302,7 @@ namespace gvk
 			}
 		}
 		std::error_code ec;
-		std::filesystem::rename(temp, m_File, ec);
+		std::filesystem::rename(std::filesystem::u8path(temp), std::filesystem::u8path(m_File), ec);
 		if (ec)
 		{
 			DBG_LOG("vkdPipelineCache: can't replace " << m_File << " (" << ec.message() << ")");

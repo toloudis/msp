@@ -61,10 +61,11 @@ namespace gvk
 		create_heap(m_Samplers, c_MaxSamplers, sampler_stride, heap.minSamplerHeapReservedRange,
 					heap.samplerHeapAlignment, "vkdBindings sampler heap");
 
-		m_FreeImages.reserve(c_MaxImages);
+		m_pFreeImages = std::make_shared<FreeImages>();
+		m_pFreeImages->m_Indices.reserve(c_MaxImages);
 		for (uint32_t i = c_MaxImages; i > 0; --i)
 		{
-			m_FreeImages.push_back(i - 1);		// index 0 first
+			m_pFreeImages->m_Indices.push_back(i - 1);		// index 0 first
 		}
 		build_mappings();
 	}
@@ -162,10 +163,13 @@ namespace gvk
 	//------------------------------------------------------------------------
 	uint32_t vkdBindings::AddImage(const VkImageViewCreateInfo& i_View, VkDescriptorType i_Type)
 	{
-		std::lock_guard<std::mutex> lock(m_Lock);
-		DBG_ASSERT(!m_FreeImages.empty(), "vkdBindings: resource heap full (" << c_MaxImages << " images)");
-		const uint32_t index = m_FreeImages.back();
-		m_FreeImages.pop_back();
+		uint32_t index;
+		{
+			std::lock_guard<std::mutex> lock(m_pFreeImages->m_Lock);
+			DBG_ASSERT(!m_pFreeImages->m_Indices.empty(), "vkdBindings: resource heap full (" << c_MaxImages << " images)");
+			index = m_pFreeImages->m_Indices.back();
+			m_pFreeImages->m_Indices.pop_back();
+		}
 
 		VkImageDescriptorInfoEXT image = {VK_STRUCTURE_TYPE_IMAGE_DESCRIPTOR_INFO_EXT};
 		image.pView = &i_View;
@@ -181,10 +185,11 @@ namespace gvk
 
 	void vkdBindings::RemoveImage(uint32_t i_Index)
 	{
-		m_Device.DeferDestroy([this, i_Index]()
+		std::shared_ptr<FreeImages> free = m_pFreeImages;
+		m_Device.DeferDestroy([free, i_Index]()
 		{
-			std::lock_guard<std::mutex> lock(m_Lock);
-			m_FreeImages.push_back(i_Index);
+			std::lock_guard<std::mutex> lock(free->m_Lock);
+			free->m_Indices.push_back(i_Index);
 		});
 	}
 

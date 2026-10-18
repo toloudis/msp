@@ -24,6 +24,9 @@
 #ifndef GVK_VKDBINDINGS_HPP
 #include "GraphicsVulkan/vkd/vkdBindings.hpp"
 #endif
+#ifndef GVK_VKDCONTEXT_HPP
+#include "GraphicsVulkan/vkd/vkdContext.hpp"
+#endif
 #ifndef GVK_VKDGLOBAL_HPP
 #include "GraphicsVulkan/vkd/vkdGlobal.hpp"
 #endif
@@ -47,8 +50,18 @@
 #ifndef DBG_MSG_HPP
 #include "Core/dbg/dbgMsg.hpp"
 #endif
+#ifndef GF_PATHS_HPP
+#include "Core/Gf/gfPaths.hpp"
+#endif
+#ifndef FS_FILEUTIL_HPP
+#include "Core/fs/fsFileUtil.hpp"
+#endif
+#ifndef IT_STRING_HPP
+#include "Core/it/itString.hpp"
+#endif
 
 #include <cstdlib>
+#include <filesystem>
 
 using namespace gvk;
 
@@ -56,12 +69,28 @@ namespace
 {
 	const VkDeviceSize c_RingBlockSize = 4 * 1024 * 1024;
 
+	//	Where pipelines persist between runs: the user data folder (UTF-8),
+	//	or nowhere when the app hasn't set one up
+	std::string pipeline_cache_file()
+	{
+		if (!gfPaths::IsPathValid(gfPaths::e_UserDataPath))
+		{
+			DBG_LOG("GraphicsVulkan: no user data folder; pipelines are not kept between runs");
+			return std::string();
+		}
+		itString folder;
+		fsFileUtil::LocatorToUnicodeString(gfPaths::GetPath(gfPaths::e_UserDataPath), folder);
+		return (std::filesystem::path(folder.GetString()) / "VulkanPipelineCache.bin").u8string();
+	}
+
 	std::string					l_InitError;
 	vkdValidation				l_Validation;		// outlives the device: counts its destruction too
 	bool						l_bValidating = false;
 	vkdDevice*					l_pDevice = NULL;
 	vkdRingBuffer*				l_pRing = NULL;
 	vkdBindings*				l_pBindings = NULL;
+	vkdPipelineCache*			l_pPipelines = NULL;
+	vkdContext*					l_pContext = NULL;
 	g2dSystemVk*				l_pSystem2D = NULL;
 	g3dSystemVk*				l_pSystem3D = NULL;
 	g3dFragmentCreateVk*		l_pFragmentCreate = NULL;
@@ -98,7 +127,9 @@ bool GraphicsVulkanLayer::Init(void* /*i_hWnd*/, const g3dGfxOptions& i_Options)
 	l_bValidating = l_pDevice->IsValidating();
 	l_pRing = new vkdRingBuffer(*l_pDevice, c_RingBlockSize);
 	l_pBindings = new vkdBindings(*l_pDevice);
-	vkdGlobal::Set(l_pDevice, l_pRing, l_pBindings);
+	l_pPipelines = new vkdPipelineCache(*l_pDevice, *l_pBindings, pipeline_cache_file());
+	l_pContext = new vkdContext(*l_pDevice, *l_pRing, *l_pBindings, *l_pPipelines);
+	vkdGlobal::Set(l_pDevice, l_pRing, l_pBindings, l_pPipelines, l_pContext);
 
 	l_pSystem2D = new g2dSystemVk(*l_pDevice);
 	l_pSystem3D = new g3dSystemVk(*l_pDevice);
@@ -129,7 +160,11 @@ void GraphicsVulkanLayer::CleanUp() throw()
 	l_pSystem3D = NULL;
 	l_pSystem2D = NULL;
 
-	vkdGlobal::Set(NULL, NULL, NULL);
+	vkdGlobal::Set(NULL, NULL, NULL, NULL, NULL);
+	delete l_pContext;
+	delete l_pPipelines;
+	l_pContext = NULL;
+	l_pPipelines = NULL;
 	delete l_pBindings;
 	delete l_pRing;
 	l_pBindings = NULL;

@@ -77,7 +77,7 @@ namespace gvk
 	class vkdPipelineCache
 	{
 		public:
-			//	i_File: where the driver's cache data persists ("" = nowhere)
+			//	i_File: where the driver's cache data persists (UTF-8; "" = nowhere)
 			vkdPipelineCache(vkdDevice& i_Device, vkdBindings& i_Bindings, const std::string& i_File);
 			//	Saves (if there is a file), then destroys the pipelines once the GPU is done.
 			~vkdPipelineCache();

@@ -228,6 +228,8 @@ namespace gvk
 		Slot						m_Slots[c_FramesInFlight];
 		uint32_t					m_Slot = 0;
 		bool						m_bOpen = false;
+		std::function<void()>		m_RecordingHook;
+		bool						m_bInHook = false;
 
 		struct Deferred
 		{
@@ -590,7 +592,19 @@ namespace gvk
 			VK_CHECK(vkBeginCommandBuffer(slot.m_Commands, &begin));
 			m_pImpl->m_bOpen = true;
 		}
+		if (m_pImpl->m_RecordingHook && !m_pImpl->m_bInHook)
+		{
+			m_pImpl->m_bInHook = true;
+			m_pImpl->m_RecordingHook();
+			m_pImpl->m_bInHook = false;
+		}
 		return slot.m_Commands;
+	}
+
+	void vkdDevice::SetRecordingHook(std::function<void()> i_Hook)
+	{
+		std::lock_guard<std::recursive_mutex> lock(m_pImpl->m_StreamLock);
+		m_pImpl->m_RecordingHook = i_Hook;
 	}
 
 	uint64_t vkdDevice::Submit(const std::vector<VkSemaphoreSubmitInfo>& i_Wait,

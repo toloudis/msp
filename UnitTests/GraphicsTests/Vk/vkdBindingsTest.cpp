@@ -294,3 +294,21 @@ TEST_F(gtBindings, RemovedImageIndexIsReusedAfterGpu)
 	Device().WaitFor(Device().Submit());
 	EXPECT_EQ(index, m_pBindings->AddImage(tex->ViewInfo(), VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE));
 }
+
+//	An image removed just before its vkdBindings is destroyed: the deferred
+//	return of its index runs later, when the device destroys, and must not
+//	touch the destroyed vkdBindings (MachStudio deletes the bindings before
+//	the device, and so do tests).
+TEST_F(gtBindings, RemovalOutlivesBindings)
+{
+	std::unique_ptr<vkdImage> tex = texture("tex", 1, 2, 3, 4);
+	m_pBindings->RemoveImage(m_pBindings->AddImage(tex->ViewInfo(), VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE));
+	m_pBindings.reset();
+	tex.reset();
+	Device().WaitIdle();
+	vkDestroyPipeline(Device().Device(), m_Pipeline, NULL);
+	m_pRing.reset();
+	m_pDevice.reset();		// runs the deferred removal; with the bug: use after free (hang or crash)
+	EXPECT_EQ(0, m_Validation.Stats().m_Errors);
+	EXPECT_EQ(0, m_Validation.Stats().m_Warnings);
+}

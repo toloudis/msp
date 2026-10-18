@@ -10,6 +10,13 @@
 **	Extra Large Technology
 \****************************************************************************/
 #include "gtPlatform.hpp"
+#include "gtTempDir.hpp"
+
+#ifndef GF_PATHS_HPP
+#include "Core/Gf/gfPaths.hpp"
+#endif
+
+#include <filesystem>
 
 #ifndef GVK_GRAPHICSVULKANLAYER_HPP
 #include "GraphicsVulkan/GraphicsVulkanLayer.hpp"
@@ -326,4 +333,27 @@ TEST(gtLayerLifetime, ValidationRunsInDebugOrWhenAskedFor)
 		GraphicsVulkanLayer::CleanUp();
 		gtPlatform::DestroyHiddenWindow(window);
 	}
+}
+
+//	Pipelines persist in the user data folder (gfPaths::e_UserDataPath)
+TEST(gtLayerLifetime, PipelineCacheKeptInUserData)
+{
+	gtTempDir dir;
+	const fsLocator previous = gfPaths::GetPath(gfPaths::e_UserDataPath);
+	gfPaths::ResetPath(gfPaths::e_UserDataPath, dir.GetLocator());
+	void* window = gtPlatform::CreateHiddenWindow(64, 64);
+	g3dGfxOptions options;
+	options.m_bValidation = true;
+	const bool ok = GraphicsVulkanLayer::Init(window, options);
+	if (ok)
+	{
+		GraphicsVulkanLayer::CleanUp();
+	}
+	gtPlatform::DestroyHiddenWindow(window);
+	gfPaths::ResetPath(gfPaths::e_UserDataPath, previous);
+	if (!ok)
+	{
+		GTEST_SKIP() << "No usable Vulkan device: " << GraphicsVulkanLayer::GetInitError();
+	}
+	EXPECT_TRUE(std::filesystem::is_regular_file(dir.GetPath() / "VulkanPipelineCache.bin"));
 }

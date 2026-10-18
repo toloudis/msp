@@ -110,6 +110,7 @@
     <ClCompile Include="Dx11\gtD3D11.cpp" />
     <ClCompile Include="Vk\fxEffectVkReflectionTest.cpp" />
     <ClCompile Include="Vk\vkdPipelineCacheTest.cpp" />
+    <ClCompile Include="Vk\vkdContextTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />

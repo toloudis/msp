@@ -23,6 +23,7 @@ typedef struct VmaAllocation_T* VmaAllocation;
 
 namespace gvk
 {
+	class vkdBindings;
 	class vkdDevice;
 
 	class vkdImage
@@ -36,12 +37,21 @@ namespace gvk
 			VkImage		Image() const		{ return m_Image; }
 			VkImageView	View() const		{ return m_View; }
 			VkFormat	Format() const		{ return m_Format; }
+			VkImageUsageFlags Usage() const	{ return m_Usage; }
+			VkImageAspectFlags Aspect() const { return m_Aspect; }
+			VkSampleCountFlagBits Samples() const { return VK_SAMPLE_COUNT_1_BIT; }
 			uint32_t	Width() const		{ return m_Width; }
 			uint32_t	Height() const		{ return m_Height; }
 
 			//	The view description (descriptor heaps build image descriptors
 			//	from it); valid even when the usage needs no VkImageView.
 			const VkImageViewCreateInfo& ViewInfo() const { return m_ViewInfo; }
+
+			//	The image's index in i_Bindings' resource heap, as a sampled
+			//	(t register) or storage (u register) image: registered on first
+			//	use, removed when the image is destroyed.
+			uint32_t SampledIndex(vkdBindings& i_Bindings);
+			uint32_t StorageIndex(vkdBindings& i_Bindings);
 
 			//	ReadBack copies the image to the CPU (rows tightly packed),
 			//	submitting the open commands and waiting for them. Needs
@@ -58,6 +68,10 @@ namespace gvk
 			VmaAllocation	m_Allocation = nullptr;
 			VkFormat		m_Format = VK_FORMAT_UNDEFINED;
 			VkImageAspectFlags m_Aspect = 0;
+			VkImageUsageFlags m_Usage = 0;
+			vkdBindings*	m_pBindings = nullptr;
+			uint32_t		m_SampledIndex = UINT32_MAX;
+			uint32_t		m_StorageIndex = UINT32_MAX;
 			uint32_t		m_Width = 0;
 			uint32_t		m_Height = 0;
 	};

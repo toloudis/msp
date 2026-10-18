@@ -17,15 +17,20 @@ namespace gvk
 	class vkdDevice;
 	class vkdRingBuffer;
 	class vkdBindings;
+	class vkdContext;
+	class vkdPipelineCache;
 
 	namespace vkdGlobal
 	{
 		vkdDevice&		Device();
 		vkdRingBuffer&	Ring();
 		vkdBindings&	Bindings();
+		vkdPipelineCache& Pipelines();
+		vkdContext&		Context();
 		bool			IsSet();
 
-		//	Called by GraphicsVulkanLayer; Set(NULL, NULL, NULL) clears.
-		void Set(vkdDevice* i_pDevice, vkdRingBuffer* i_pRing, vkdBindings* i_pBindings);
+		//	Called by GraphicsVulkanLayer; all NULL clears.
+		void Set(vkdDevice* i_pDevice, vkdRingBuffer* i_pRing, vkdBindings* i_pBindings,
+				 vkdPipelineCache* i_pPipelines, vkdContext* i_pContext);
 	}
 }

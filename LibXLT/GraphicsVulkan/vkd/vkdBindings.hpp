@@ -42,6 +42,7 @@
 #include <volk.h>
 
 #include <map>
+#include <memory>
 #include <mutex>
 #include <tuple>
 #include <vector>
@@ -113,7 +114,14 @@ namespace gvk
 			vkdDevice&								m_Device;
 			Heap									m_Resources;
 			Heap									m_Samplers;
-			std::vector<uint32_t>					m_FreeImages;		// back() is handed out next
+			//	Free resource-heap indices; shared with the deferred returns of
+			//	removed images, which may run after this object is destroyed
+			struct FreeImages
+			{
+				std::mutex				m_Lock;
+				std::vector<uint32_t>	m_Indices;		// back() is handed out next
+			};
+			std::shared_ptr<FreeImages>				m_pFreeImages;
 			uint32_t								m_SamplerCount = 0;
 			std::map<SamplerKey, uint32_t>			m_SamplerIndex;
 			std::mutex								m_Lock;
