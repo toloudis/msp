@@ -328,8 +328,10 @@ window and graphics exist, by `mainCommandLine::Parse` (all flags; tested in
 `-NoSplash`/`-show` are applied at once, and the actions (`-file`,
 `-render`, `-cap*`, `-script`, ...) run after start-up, in order, in
 `mnmApp::RunCommandLine`. `-render <scene>` loads the scene, which replaces
-the capture settings, so `-cap*` flags go after `-render`. `-help` lists
-every flag.
+the capture settings, so `-cap*` flags go after `-render`. The full
+command line reference (what each flag does) is at the top of
+`MainApp/mainCommandLine.hpp`; `-help` prints the same text
+(`mainCommandLine::HelpText()`), and a test checks it lists every flag.
 
 ### Support
 Shared application services used by Features and Systems.

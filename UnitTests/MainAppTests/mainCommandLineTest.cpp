@@ -165,3 +165,21 @@ TEST(mainCommandLine, AllCaptureFlags)
 					act(mainCommandLine::e_Batch, "b.mab"),
 					act(mainCommandLine::e_File, "x.mab")}, line);
 }
+
+TEST(mainCommandLine, HelpListsEveryFlag)
+{
+	const std::string help = mainCommandLine::HelpText();
+	const char* const flags[] =
+	{
+		"-file", "-lastfile", "-new", "-render", "-batch", "-script",
+		"-capFormat", "-capCompress", "-capCamera", "-capWidth", "-capHeight",
+		"-capOutputFile", "-capOutputPath", "-capOutputPathRoot",
+		"-license", "-NoSplash", "-show", "-version", "-help", "-gfxProfile",
+	};
+	for (const char* flag : flags)
+	{
+		//	each flag starts a line of the help text
+		EXPECT_NE(std::string::npos, help.find(std::string("\n  ") + flag + " "))
+			<< flag << " is missing from the help text";
+	}
+}

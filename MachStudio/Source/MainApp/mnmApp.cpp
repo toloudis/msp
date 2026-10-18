@@ -353,28 +353,7 @@ void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 		}
 		case mainCommandLine::e_Help:
 		{
-			std::cout << "Command line parameters" << std::endl;
-			std::cout << "-----------------------" << std::endl;
-			std::cout << "-file <scene>             open a scene" << std::endl;
-			std::cout << "-lastfile                 open the most recent scene" << std::endl;
-			std::cout << "-new                      start a new scene" << std::endl;
-			std::cout << "-render <scene>           render a scene with its capture settings" << std::endl;
-			std::cout << "-batch <scene>            batch-render a scene" << std::endl;
-			std::cout << "-script <file.py> [args]  run a Python script" << std::endl;
-			std::cout << "-capFormat <format>       capture format (PNG, EXR, ...)" << std::endl;
-			std::cout << "-capCompress <code>       capture compression code" << std::endl;
-			std::cout << "-capCamera <camera>       capture camera" << std::endl;
-			std::cout << "-capWidth <pixels>        capture width" << std::endl;
-			std::cout << "-capHeight <pixels>       capture height" << std::endl;
-			std::cout << "-capOutputFile <file>     capture output file name" << std::endl;
-			std::cout << "-capOutputPath <dir>      capture output directory" << std::endl;
-			std::cout << "-capOutputPathRoot <dir>  capture output root directory" << std::endl;
-			std::cout << "-license <key>            validate a license key" << std::endl;
-			std::cout << "-NoSplash                 don't show the splash screen" << std::endl;
-			std::cout << "-show                     show windows in batch mode" << std::endl;
-			std::cout << "-version                  print the version" << std::endl;
-			std::cout << "-gfxProfile <file.csv>    write per-pass graphics timings (profiling builds)" << std::endl;
-			std::cout << "-help                     print this list" << std::endl;
+			std::cout << mainCommandLine::HelpText() << std::flush;
 			break;
 		}
 		case mainCommandLine::e_Batch:

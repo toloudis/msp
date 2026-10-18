@@ -213,3 +213,68 @@ mainCommandLine mainCommandLine::Parse(const std::string& i_Line)
 	}
 	return result;
 }
+
+//----------------------------------------------------------------------------
+//	Keep in step with the reference at the top of mainCommandLine.hpp.
+//----------------------------------------------------------------------------
+const char* mainCommandLine::HelpText()
+{
+	return R"(Usage:
+  MachStudio [options]
+  MachStudio <scene.mab | character.chx | character.gxb>
+
+Every flag may start with '-' or '/'. A value with spaces must be in double
+quotes. Flags run in the order given; the capture settings (-cap*) change
+the settings of the open scene, so put them after -render or -file (loading
+a scene replaces them with the scene's own).
+
+If the first thing on the line isn't a known flag, the whole line is taken
+as a file to open, as when a file is double-clicked: a scene (.mab) is
+opened, a character (.chx/.gxb) is added to a new scene in its project.
+
+Scenes
+  -file <scene.mab>          open a scene
+  -lastfile                  open the most recently used scene
+  -new                       start a new, empty scene
+
+Rendering
+  -render <scene.mab>        open a scene and render it with its render
+                             (capture) settings; MachStudio exits when the
+                             render is done. The usual way to use the
+                             RenderNode build.
+  -batch <batchfile>         render every scene listed in a render batch
+                             file, one after another
+  -capFormat <format>        output format: PNG, TGA, BMP, JPG, DDS, TIF,
+                             HDR, PFM, PPM, DIB, EXR (frames) or AVI
+  -capCompress <code>        video compression code for AVI output
+  -capCamera <camera>        also render from this camera (by name); repeat
+                             to add more cameras
+  -capWidth <pixels>         output width
+  -capHeight <pixels>        output height
+  -capOutputFile <tags>      output file name, made of text and tags such as
+                             <SceneFilename>, <CameraName>, <RenderLayerName>,
+                             <RenderPassName> and <0000> (frame number,
+                             zero-padded)
+  -capOutputPath <tags>      output folder, absolute or relative to the
+                             output root; may use the same tags
+  -capOutputPathRoot <dir>   output root folder for relative output folders
+
+Graphics
+  -gfxProfile <file.csv>     write the CPU and GPU time and draw count of
+                             every renderer and pass, per frame, to a CSV
+                             file. Only in builds with profiling markers
+                             (Debug, or built with MspGfxProfiling=true);
+                             ignored otherwise.
+
+Start-up and other
+  -NoSplash                  don't show the splash screen
+  -show                      show windows in RenderNode (batch) builds,
+                             which hide them by default
+  -script <file.py> [args]   run a Python script after start-up, with the
+                             rest of the line as its arguments (needs a build
+                             with Python enabled; current builds don't run it)
+  -license <key>             validate a license key
+  -version                   print the version
+  -help                      print this list
+)";
+}

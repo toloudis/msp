@@ -10,6 +10,68 @@
 **	Toolkit-neutral; depends only on Core and the g3dGfxOptions header,
 **	so UnitTests/MainAppTests can compile it.
 **
+**	Command line reference (what `-help` prints; HelpText() below):
+**
+**	  MachStudio [options]
+**	  MachStudio <scene.mab | character.chx | character.gxb>
+**
+**	Every flag may start with '-' or '/'. A value with spaces must be in
+**	double quotes. Flags run in the order given; the capture settings
+**	(-cap*) change the settings of the open scene, so put them after
+**	-render or -file (loading a scene replaces them with the scene's own).
+**
+**	If the first thing on the line isn't a known flag, the whole line is
+**	taken as a file to open, as when a file is double-clicked: a scene
+**	(.mab) is opened, a character (.chx/.gxb) is added to a new scene in
+**	its project.
+**
+**	Scenes
+**	  -file <scene.mab>          open a scene
+**	  -lastfile                  open the most recently used scene
+**	  -new                       start a new, empty scene
+**
+**	Rendering
+**	  -render <scene.mab>        open a scene and render it with its render
+**	                             (capture) settings; MachStudio exits when
+**	                             the render is done. The usual way to use
+**	                             the RenderNode build.
+**	  -batch <batchfile>         render every scene listed in a render batch
+**	                             file, one after another
+**	  -capFormat <format>        output format: PNG, TGA, BMP, JPG, DDS, TIF,
+**	                             HDR, PFM, PPM, DIB, EXR (frames) or AVI
+**	  -capCompress <code>        video compression code for AVI output
+**	  -capCamera <camera>        also render from this camera (by name);
+**	                             repeat to add more cameras
+**	  -capWidth <pixels>         output width
+**	  -capHeight <pixels>        output height
+**	  -capOutputFile <tags>      output file name, made of text and tags such
+**	                             as <SceneFilename>, <CameraName>,
+**	                             <RenderLayerName>, <RenderPassName> and
+**	                             <0000> (frame number, zero-padded)
+**	  -capOutputPath <tags>      output folder, absolute or relative to the
+**	                             output root; may use the same tags
+**	  -capOutputPathRoot <dir>   output root folder for relative output
+**	                             folders
+**
+**	Graphics
+**	  -gfxProfile <file.csv>     write the CPU and GPU time and draw count of
+**	                             every renderer and pass, per frame, to a CSV
+**	                             file. Only in builds with profiling markers
+**	                             (Debug, or built with MspGfxProfiling=true);
+**	                             ignored otherwise.
+**
+**	Start-up and other
+**	  -NoSplash                  don't show the splash screen
+**	  -show                      show windows in RenderNode (batch) builds,
+**	                             which hide them by default
+**	  -script <file.py> [args]   run a Python script after start-up, with
+**	                             the rest of the line as its arguments
+**	                             (needs a build with Python enabled; current
+**	                             builds don't run it)
+**	  -license <key>             validate a license key
+**	  -version                   print the version
+**	  -help                      print this list
+**
 **	Extra Large Technology
 \****************************************************************************/
 #ifdef MAIN_COMMANDLINE_HPP
@@ -28,26 +90,28 @@
 //============================================================================
 struct mainCommandLine
 {
+	//	The actions, run after start-up in command-line order. See the
+	//	reference above for what each flag does.
 	enum ActionKind
 	{
-		e_File,				// -file <scene>
-		e_LastFile,			// -lastfile
-		e_Help,				// -help
-		e_Batch,			// -batch <scene>
-		e_Render,			// -render <scene>
-		e_Script,			// -script <script.py> [args]
-		e_CapFormat,		// -capFormat <format>
-		e_CapCompress,		// -capCompress <code>
-		e_CapCamera,		// -capCamera <camera>
-		e_CapWidth,			// -capWidth <pixels>
-		e_CapHeight,		// -capHeight <pixels>
-		e_CapOutputFile,	// -capOutputFile <file>
-		e_CapOutputPath,	// -capOutputPath <dir>
-		e_CapOutputPathRoot,// -capOutputPathRoot <dir>
-		e_New,				// -new
-		e_License,			// -license <key>
-		e_Version,			// -version
-		e_OpenPath			// the whole line is a file to open (double-click)
+		e_File,				// -file <scene.mab>: open a scene
+		e_LastFile,			// -lastfile: open the most recently used scene
+		e_Help,				// -help: print the command line reference
+		e_Batch,			// -batch <batchfile>: render every scene in a render batch file
+		e_Render,			// -render <scene.mab>: open a scene, render it, then exit
+		e_Script,			// -script <file.py> [args]: run a Python script (Python builds only)
+		e_CapFormat,		// -capFormat <format>: output format (PNG, EXR, AVI, ...)
+		e_CapCompress,		// -capCompress <code>: AVI video compression code
+		e_CapCamera,		// -capCamera <camera>: also render from this camera
+		e_CapWidth,			// -capWidth <pixels>: output width
+		e_CapHeight,		// -capHeight <pixels>: output height
+		e_CapOutputFile,	// -capOutputFile <tags>: output file name (text and tags)
+		e_CapOutputPath,	// -capOutputPath <tags>: output folder
+		e_CapOutputPathRoot,// -capOutputPathRoot <dir>: root for relative output folders
+		e_New,				// -new: start a new, empty scene
+		e_License,			// -license <key>: validate a license key
+		e_Version,			// -version: print the version
+		e_OpenPath			// (no flag) the whole line is a file to open, as on double-click
 	};
 
 	struct Action
@@ -56,11 +120,11 @@ struct mainCommandLine
 		std::string	m_Value;
 	};
 
-	g3dGfxOptions		m_Gfx;
-	bool				m_bNoSplash = false;		// -NoSplash
-	bool				m_bShowWindows = false;		// -show
-	std::vector<Action>	m_Actions;					// in command-line order
-	std::vector<std::string> m_Warnings;			// ignored tokens etc., logged once Core is up
+	g3dGfxOptions		m_Gfx;							// -gfxProfile <file.csv>
+	bool				m_bNoSplash = false;			// -NoSplash: no splash screen
+	bool				m_bShowWindows = false;			// -show: show windows in RenderNode builds
+	std::vector<Action>	m_Actions;						// in command-line order
+	std::vector<std::string> m_Warnings;				// ignored tokens etc., logged once Core is up
 
 	//------------------------------------------------------------------------
 	//	Parse - flags take '-' or '/'. A flag's value is the next token (a
@@ -70,4 +134,10 @@ struct mainCommandLine
 	//	-version), the whole line is a file to open and parsing stops.
 	//------------------------------------------------------------------------
 	static mainCommandLine Parse(const std::string& i_Line);
+
+	//------------------------------------------------------------------------
+	//	HelpText - the command line reference that -help prints (the same
+	//	as the reference at the top of this file). Lines end with '\n'.
+	//------------------------------------------------------------------------
+	static const char* HelpText();
 };
