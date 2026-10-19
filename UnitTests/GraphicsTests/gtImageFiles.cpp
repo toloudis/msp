@@ -965,16 +965,3 @@ bool gtLoadReference(const gtImageFile& i_File, DirectX::ScratchImage& o_Image, 
 	}
 	return true;
 }
-
-gtComScope::gtComScope()
-{
-	m_bInitialized = SUCCEEDED(CoInitializeEx(nullptr, COINIT_MULTITHREADED));
-}
-
-gtComScope::~gtComScope()
-{
-	if (m_bInitialized)
-	{
-		CoUninitialize();
-	}
-}

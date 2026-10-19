@@ -6,7 +6,6 @@
 **	Extra Large Technology
 \****************************************************************************/
 #include "gtBackend.hpp"
-#include "gtImageFiles.hpp"
 #include "gtPlatform.hpp"
 
 #ifndef GRAPHICS_LAYER_HPP
@@ -63,9 +62,6 @@ namespace
 
 	bool run_dx11(void* i_pWindow, const std::function<void()>& i_Function)
 	{
-		//	DirectXTex uses WIC (decoding, and the Fant scaler for 8-bit mips),
-		//	which needs COM, as MachStudio initializes it
-		gtComScope com;
 		l_PreviousHandler = dbgMsg::SetAssertHandler(&report_dx11_assert);
 		try
 		{

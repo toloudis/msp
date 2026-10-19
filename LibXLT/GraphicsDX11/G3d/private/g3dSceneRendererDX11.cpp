@@ -255,8 +255,10 @@ namespace
 							   bLowRes);
 			g3dDrawStyleUtilDX11::RestoreNormalDrawStyle();
 
-			// Render the transparent nodes
+			// Render the transparent nodes, then forget them (kept, they
+			// would be drawn again next frame, freed or not)
 			l_transparencySort.RenderTransparentNodes(state_traverser );
+			l_transparencySort.ClearTransparentNodes();
 		}
 		else
 		{

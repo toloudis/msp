@@ -9,9 +9,6 @@
 **      transparent nodes, fog, the wireframe draw styles and hardware
 **      tessellation (the PTess passes). Also: every renderer type the
 **      Vulkan creator can't build yet gives the forward renderer.
-**      GraphicsDX11's forward renderer can render transparent nodes only
-**      once per process (see render_dx11), so its renders run in gtest
-**      death-test child processes.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -65,8 +62,6 @@
 
 #include <gtest/gtest.h>
 
-#include <cstdlib>
-#include <fstream>
 #include <functional>
 #include <iostream>
 #include <memory>
@@ -103,64 +98,12 @@ namespace
 		return picture;
 	}
 
-	//	The failures the current test has had so far
-	int failures()
-	{
-		const testing::TestResult* result = testing::UnitTest::GetInstance()->current_test_info()->result();
-		int n = 0;
-		for (int i = 0; i < result->total_part_count(); i++)
-			n += result->GetTestPartResult(i).failed() ? 1 : 0;
-		return n;
-	}
-
-	//	The child process's half of render_dx11: renders, writes the pixels
-	//	to i_File and exits (0 if all went well). (The child runs the test
-	//	from the start, so failures before this one aren't its own.)
-	void render_dx11_child(const SceneFunction& i_Build, const std::filesystem::path& i_Dir, const std::filesystem::path& i_File)
-	{
-		const int before = failures();
-		gtPicture picture;
-		gtBackend::Run(gtBackend::e_DX11, [&]() { picture = render(gtBackend::e_DX11, i_Build, i_Dir); });
-		bool ok = picture.Valid() && failures() == before;
-		if (ok)
-		{
-			std::ofstream out(i_File, std::ios::binary);
-			out.write((const char*)picture.m_Rgba.data(), picture.m_Rgba.size());
-			ok = out.good();
-		}
-		if (!ok)
-			std::cerr << "the DX11 render failed (its output is above)" << std::endl;
-		std::cout.flush();
-		std::exit(ok ? 0 : 1);
-	}
-
-	//	What GraphicsDX11's forward renderer draws. It keeps every
-	//	transparent node it is given in a static list it never clears (or
-	//	sorts), and draws them all again on every later Render, freed or not;
-	//	so each DX11 render here runs in a process of its own (a gtest death
-	//	test child) and hands its pixels back in a file.
-	gtPicture render_dx11(const SceneFunction& i_Build, const std::filesystem::path& i_Dir)
-	{
-		const std::filesystem::path file = i_Dir / "dx11.rgba";
-		EXPECT_EXIT(render_dx11_child(i_Build, i_Dir, file), ::testing::ExitedWithCode(0), "");
-		gtPicture picture;
-		std::ifstream in(file, std::ios::binary);
-		std::vector<uint8_t> rgba((size_t)c_Size * c_Size * 4);
-		if (in.read((char*)rgba.data(), rgba.size()))
-		{
-			picture.m_Width = c_Size;
-			picture.m_Height = c_Size;
-			picture.m_Rgba = std::move(rgba);
-		}
-		return picture;
-	}
-
 	//	Renders on both backends and compares
 	void expect_same_image(const char* i_pTest, const SceneFunction& i_Build)
 	{
 		gtTempDir dir;
-		const gtPicture dx11 = render_dx11(i_Build, dir.GetPath());
-		gtPicture vulkan;
+		gtPicture dx11, vulkan;
+		gtBackend::Run(gtBackend::e_DX11, [&]() { dx11 = render(gtBackend::e_DX11, i_Build, dir.GetPath()); });
 		if (!gtBackend::Run(gtBackend::e_Vulkan, [&]() { vulkan = render(gtBackend::e_Vulkan, i_Build, dir.GetPath()); }))
 			return;
 		EXPECT_TRUE(dx11.Valid());

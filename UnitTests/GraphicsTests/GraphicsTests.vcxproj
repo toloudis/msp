@@ -77,8 +77,8 @@
       <AdditionalLibraryDirectories Condition="'$(MspBaseConfiguration)' == 'Release'">$(ProjectDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\lib;$(ProjectDir)..\..\LibXLT\Graphics\vcpkg_installed\x64-windows\x64-windows\lib;$(ProjectDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>"$(TargetPath)" --gtest_brief=1 "--gtest_output=xml:$(OutDir)$(TargetName).xml"</Command>
-      <Message>Running the unit tests</Message>
+      <Command>powershell -NoProfile -ExecutionPolicy Bypass -File "$(ProjectDir)..\RunShards.ps1" -Exe "$(TargetPath)" -Xml "$(OutDir)$(TargetName).xml" --gtest_brief=1</Command>
+      <Message>Running the unit tests (in parallel shards)</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(MspBaseConfiguration)' == 'Debug'">
@@ -137,7 +137,6 @@
     <ClCompile Include="Vk\effShaderVkTest.cpp" />
     <ClCompile Include="gtTarget.cpp" />
     <ClCompile Include="Vk\g3dSceneRendererVkTest.cpp" />
-    <ClCompile Include="gtDx11Child.cpp" />
     <ClCompile Include="gtSceneWindow.cpp" />
     <ClCompile Include="Vk\g2dFontVkTest.cpp" />
     <ClCompile Include="Vk\g2dCaptureVkTest.cpp" />
@@ -149,11 +148,11 @@
     <ClInclude Include="Dx11\gtD3D11.hpp" />
     <ClInclude Include="gtImage.hpp" />
     <ClInclude Include="Vk\gtVulkanContext.hpp" />
+    <ClInclude Include="Vk\gtVulkanSuite.hpp" />
     <ClInclude Include="gtImageFiles.hpp" />
     <ClInclude Include="gtBackend.hpp" />
     <ClInclude Include="gtScene.hpp" />
     <ClInclude Include="gtTarget.hpp" />
-    <ClInclude Include="gtDx11Child.hpp" />
     <ClInclude Include="gtSceneWindow.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -189,6 +188,19 @@
     </ProjectReference>
     <ProjectReference Include="..\..\LibXLT\GraphicsVulkan\GraphicsVulkan.vcxproj">
       <Project>{216ED7AE-3E0C-4B0D-A1DF-8D4D80C8AD71}</Project>
+    </ProjectReference>
+    <!-- Not linked: built first, so the other test projects aren't copying their
+         vcpkg DLLs (gmock.dll) into the shared output folder while this project's
+         tests are running and have them loaded -->
+    <ProjectReference Include="..\CoreTests\CoreTests.vcxproj">
+      <Project>{a47f6ef0-4e08-4c1a-a930-cc4af2bbe402}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\MainAppTests\MainAppTests.vcxproj">
+      <Project>{673eb3cc-c4ae-421f-9644-cae53f4e7fa0}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -28,6 +28,7 @@
 
 #include <gtest/gtest.h>
 
+#include <cstdlib>
 #include <filesystem>
 #include <string>
 
@@ -42,14 +43,21 @@ namespace
 int main(int argc, char** argv)
 {
 	gtPlatform::SetUpUnattended();
+	gtPlatform::StartCom();
 	testing::InitGoogleTest(&argc, argv);
 
 	CoreLayer::Init();
 	dbgMsg::AssertHandler previous_handler = dbgMsg::SetAssertHandler(&ReportAssert);
 
 	//	What the libraries keep in the user data folder (the Vulkan pipeline
-	//	cache) goes to a temporary folder, not the real one
-	const std::filesystem::path user_data = std::filesystem::temp_directory_path() / "MspGraphicsTests" / "UserData";
+	//	cache) goes to a temporary folder, not the real one; one per shard
+	//	(RunShards.ps1 runs them at the same time)
+	std::string user_data_name = "UserData";
+	if (const char* shard = std::getenv("GTEST_SHARD_INDEX"))
+	{
+		user_data_name += std::string("-shard") + shard;
+	}
+	const std::filesystem::path user_data = std::filesystem::temp_directory_path() / "MspGraphicsTests" / user_data_name;
 	std::filesystem::create_directories(user_data);
 	fsLocator user_data_locator;
 	fsFileUtil::UnicodeStringToLocator(itString(user_data.wstring().c_str()), user_data_locator);
@@ -59,5 +67,6 @@ int main(int argc, char** argv)
 
 	dbgMsg::SetAssertHandler(previous_handler);
 	CoreLayer::CleanUp();
+	gtPlatform::StopCom();
 	return result;
 }

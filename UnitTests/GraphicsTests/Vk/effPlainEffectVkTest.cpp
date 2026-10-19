@@ -30,6 +30,7 @@
 #include <gtest/gtest.h>
 
 #include <cstring>
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -51,25 +52,52 @@ namespace
 		return i_p ? i_p : "(null)";
 	}
 
+	//	Each effect is made once for the suite, on one D3D11 device: only
+	//	SettersRoundTrip writes values, and no other test reads them
 	class effPlainEffectVkTest : public ::testing::TestWithParam<std::string>
 	{
+		public:
+			static void SetUpTestSuite()
+			{
+				s_pD3D11.reset(new gtD3D11());
+				if (!s_pD3D11->Create(s_D3D11Error))
+				{
+					s_pD3D11.reset();
+				}
+			}
+
+			static void TearDownTestSuite()
+			{
+				s_Effects.clear();
+				s_pD3D11.reset();
+			}
+
 		protected:
 			void SetUp() override
 			{
 				const gvk::fxEmbeddedEffect* vk = gvk::fxEmbeddedShadersVk::Find(GetParam());
 				const fxEmbeddedEffect* dx = fxEmbeddedShaders::Find(GetParam());
 				ASSERT_TRUE(vk && dx);
+				Effects& effects = s_Effects[GetParam()];
 				std::string error;
-				std::unique_ptr<gvk::fxEffectVk> vkEffect = gvk::fxEmbeddedShadersVk::CreateVk(*vk, nullptr, error);
-				ASSERT_TRUE(vkEffect != nullptr) << error;
-				m_pVk.reset(new gvk::effPlainEffectVk(std::move(vkEffect), vk->m_Source));
-				if (!m_D3D11.Create(error))
+				if (!effects.m_pVk)
 				{
-					GTEST_SKIP() << "No Direct3D 11 device: " << error;
+					std::unique_ptr<gvk::fxEffectVk> vkEffect = gvk::fxEmbeddedShadersVk::CreateVk(*vk, nullptr, error);
+					ASSERT_TRUE(vkEffect != nullptr) << error;
+					effects.m_pVk.reset(new gvk::effPlainEffectVk(std::move(vkEffect), vk->m_Source));
 				}
-				std::unique_ptr<fxEffectDX11> dxEffect = fxEmbeddedShaders::CreateDX11(*dx, m_D3D11.Device(), error);
-				ASSERT_TRUE(dxEffect != nullptr) << error;
-				m_pDX11.reset(new effPlainEffect(std::move(dxEffect), dx->m_Source));
+				m_pVk = effects.m_pVk.get();
+				if (!s_pD3D11)
+				{
+					GTEST_SKIP() << "No Direct3D 11 device: " << s_D3D11Error;
+				}
+				if (!effects.m_pDX11)
+				{
+					std::unique_ptr<fxEffectDX11> dxEffect = fxEmbeddedShaders::CreateDX11(*dx, s_pD3D11->Device(), error);
+					ASSERT_TRUE(dxEffect != nullptr) << error;
+					effects.m_pDX11.reset(new effPlainEffect(std::move(dxEffect), dx->m_Source));
+				}
+				m_pDX11 = effects.m_pDX11.get();
 			}
 
 			static void same_type(fxEffectType* i_pDX11, gvk::fxEffectType* i_pVk, const std::string& i_What)
@@ -87,10 +115,22 @@ namespace
 				EXPECT_EQ(a.Columns, b.Columns) << i_What;
 			}
 
-			gtD3D11							m_D3D11;
-			std::unique_ptr<gvk::effPlainEffectVk>	m_pVk;
-			std::unique_ptr<effPlainEffect>	m_pDX11;
+			struct Effects
+			{
+				std::unique_ptr<gvk::effPlainEffectVk>	m_pVk;
+				std::unique_ptr<effPlainEffect>			m_pDX11;
+			};
+			static std::unique_ptr<gtD3D11>			s_pD3D11;
+			static std::string						s_D3D11Error;
+			static std::map<std::string, Effects>	s_Effects;
+
+			gvk::effPlainEffectVk*	m_pVk = nullptr;
+			effPlainEffect*			m_pDX11 = nullptr;
 	};
+
+	std::unique_ptr<gtD3D11> effPlainEffectVkTest::s_pD3D11;
+	std::string effPlainEffectVkTest::s_D3D11Error;
+	std::map<std::string, effPlainEffectVkTest::Effects> effPlainEffectVkTest::s_Effects;
 }
 
 TEST_P(effPlainEffectVkTest, SameVariables)

@@ -7,15 +7,11 @@
 **      (g2dWindow::DrawText) and into a render target (g2dWindowDrawUtil's
 **      DrawText, which g3dRenderPass uses), at several sizes, colours and
 **      offsets; GetTextSizeInPixels; and no font without the bitmap.
-**      GraphicsDX11 can load the font bitmap safely in only one run per
-**      process (see gtDx11Child), so each DX11 half runs in a gtest death-test
-**      child process.
 **      Skipped without a Vulkan device.
 **
 **	Extra Large Technology
 \****************************************************************************/
 #include "gtBackend.hpp"
-#include "gtDx11Child.hpp"
 #include "gtImage.hpp"
 #include "gtPlatform.hpp"
 #include "gtSceneWindow.hpp"
@@ -51,10 +47,8 @@
 
 #include <cstring>
 #include <filesystem>
-#include <fstream>
 #include <functional>
 #include <iostream>
-#include <iterator>
 #include <string>
 #include <vector>
 
@@ -181,45 +175,6 @@ namespace
 		release_fonts(fonts);
 	}
 
-	//	Pictures and ints to and from bytes
-	void put_int(std::vector<uint8_t>& io_Bytes, int i_Value)
-	{
-		const uint8_t* p = (const uint8_t*)&i_Value;
-		io_Bytes.insert(io_Bytes.end(), p, p + sizeof(int));
-	}
-
-	bool get_int(const std::vector<uint8_t>& i_Bytes, size_t& io_At, int& o_Value)
-	{
-		if (io_At + sizeof(int) > i_Bytes.size())
-			return false;
-		memcpy(&o_Value, &i_Bytes[io_At], sizeof(int));
-		io_At += sizeof(int);
-		return true;
-	}
-
-	void put_picture(std::vector<uint8_t>& io_Bytes, const gtPicture& i_rPicture)
-	{
-		put_int(io_Bytes, i_rPicture.m_Width);
-		put_int(io_Bytes, i_rPicture.m_Height);
-		io_Bytes.insert(io_Bytes.end(), i_rPicture.m_Rgba.begin(), i_rPicture.m_Rgba.end());
-	}
-
-	gtPicture get_picture(const std::vector<uint8_t>& i_Bytes, size_t& io_At)
-	{
-		gtPicture picture;
-		int width = 0, height = 0;
-		if (!get_int(i_Bytes, io_At, width) || !get_int(i_Bytes, io_At, height) || width <= 0 || height <= 0)
-			return picture;
-		const size_t size = (size_t)width * height * 4;
-		if (io_At + size > i_Bytes.size())
-			return picture;
-		picture.m_Width = width;
-		picture.m_Height = height;
-		picture.m_Rgba.assign(i_Bytes.begin() + io_At, i_Bytes.begin() + io_At + size);
-		io_At += size;
-		return picture;
-	}
-
 	//	GetTextSizeInPixels of a few strings in each font, flattened
 	std::vector<int> text_sizes()
 	{
@@ -257,19 +212,8 @@ namespace
 
 TEST(g2dFontVk, TextMatchesDX11)
 {
-	const std::vector<uint8_t> bytes = gtInDx11([]()
-	{
-		gtPicture window, target;
-		draw_texts(gtBackend::e_DX11, window, target);
-		std::vector<uint8_t> result;
-		put_picture(result, window);
-		put_picture(result, target);
-		return result;
-	});
-	size_t at = 0;
-	const gtPicture dx11_window = get_picture(bytes, at);
-	const gtPicture dx11_target = get_picture(bytes, at);
-	gtPicture vulkan_window, vulkan_target;
+	gtPicture dx11_window, dx11_target, vulkan_window, vulkan_target;
+	gtBackend::Run(gtBackend::e_DX11, [&]() { draw_texts(gtBackend::e_DX11, dx11_window, dx11_target); });
 	if (!gtBackend::Run(gtBackend::e_Vulkan, [&]() { draw_texts(gtBackend::e_Vulkan, vulkan_window, vulkan_target); }))
 		return;
 	expect_match("TextMatchesDX11_Window", dx11_window, vulkan_window);
@@ -278,19 +222,8 @@ TEST(g2dFontVk, TextMatchesDX11)
 
 TEST(g2dFontVk, TextSizeMatchesDX11)
 {
-	const std::vector<uint8_t> bytes = gtInDx11([]()
-	{
-		std::vector<uint8_t> result;
-		for (int value : text_sizes())
-			put_int(result, value);
-		return result;
-	});
-	std::vector<int> dx11;
-	size_t at = 0;
-	int value = 0;
-	while (get_int(bytes, at, value))
-		dx11.push_back(value);
-	std::vector<int> vulkan;
+	std::vector<int> dx11, vulkan;
+	gtBackend::Run(gtBackend::e_DX11, [&]() { dx11 = text_sizes(); });
 	if (!gtBackend::Run(gtBackend::e_Vulkan, [&]() { vulkan = text_sizes(); }))
 		return;
 	ASSERT_FALSE(dx11.empty());
@@ -299,13 +232,9 @@ TEST(g2dFontVk, TextSizeMatchesDX11)
 
 TEST(g2dFontVk, NoBitmapNoFontAsDX11)
 {
-	const std::vector<uint8_t> bytes = gtInDx11([]()
-	{
-		return std::vector<uint8_t>(1, no_bitmap_no_font() ? 1 : 0);
-	});
-	ASSERT_EQ(1u, bytes.size());
-	EXPECT_EQ(1, bytes[0]) << "DX11 gave a font";
-	bool vulkan = false;
+	bool dx11 = false, vulkan = false;
+	gtBackend::Run(gtBackend::e_DX11, [&]() { dx11 = no_bitmap_no_font(); });
+	EXPECT_TRUE(dx11) << "DX11 gave a font";
 	if (!gtBackend::Run(gtBackend::e_Vulkan, [&]() { vulkan = no_bitmap_no_font(); }))
 		return;
 	EXPECT_TRUE(vulkan) << "Vulkan gave a font";

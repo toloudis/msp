@@ -19,7 +19,7 @@
 **
 **	Extra Large Technology
 \****************************************************************************/
-#include "Vk/gtVulkanContext.hpp"
+#include "Vk/gtVulkanSuite.hpp"
 #include "Dx11/gtD3D11.hpp"
 #include "gtImage.hpp"
 
@@ -213,32 +213,65 @@ namespace
 		}
 	}
 
-	class fxParity : public gtVulkanContext, public ::testing::WithParamInterface<std::string>
+	//	One Vulkan device and one D3D11 device for the whole suite
+	class fxParity : public gtVulkanSuite, public ::testing::WithParamInterface<std::string>
 	{
+		public:
+			static void SetUpTestSuite()
+			{
+				gtVulkanSuite::SetUpTestSuite();
+				s_pD3D11.reset(new gtD3D11());
+				if (!s_pD3D11->Create(s_D3D11Error))
+				{
+					s_pD3D11.reset();
+				}
+			}
+
+			static void TearDownTestSuite()
+			{
+				s_pD3D11.reset();
+				gtVulkanSuite::TearDownTestSuite();
+			}
+
 		protected:
 			void SetUp() override
 			{
-				gtVulkanContext::SetUp();
-				if (m_pDevice)
+				gtVulkanSuite::SetUp();
+				if (IsSkipped())
 				{
-					gvk::g2dFullscreenQuad::InitFullscreenQuad();
+					return;
 				}
+				if (!s_pD3D11)
+				{
+					GTEST_SKIP() << "No Direct3D 11 device: " << s_D3D11Error;
+				}
+				gvk::g2dFullscreenQuad::InitFullscreenQuad();
+				m_bQuad = true;
 			}
 
 			void TearDown() override
 			{
-				if (m_pDevice)
+				if (m_bQuad)
 				{
 					gvk::g2dFullscreenQuad::CleanUpFullscreenQuad();
 				}
-				gtVulkanContext::TearDown();
+				gtVulkanSuite::TearDown();
 			}
+
+			gtD3D11& D3D11() { return *s_pD3D11; }
+
+			static std::unique_ptr<gtD3D11>	s_pD3D11;
+			static std::string				s_D3D11Error;
+			bool							m_bQuad = false;
 	};
+
+	std::unique_ptr<gtD3D11> fxParity::s_pD3D11;
+	std::string fxParity::s_D3D11Error;
 }
 
 TEST_P(fxParity, FullScreenPassesMatchDX11)
 {
-	GT_D3D11(d3d);
+	gtD3D11& d3d = D3D11();
 	gtD3D11::Globals globals(d3d);
 	g2dFullscreenQuad::InitFullscreenQuad();
 	std::string error;

@@ -30,6 +30,8 @@
 
 #include <algorithm>
 #include <cstring>
+#include <map>
+#include <memory>
 #include <set>
 #include <sstream>
 #include <string>
@@ -178,9 +180,26 @@ namespace
 		return true;
 	}
 
-	//	Both versions of one embedded effect
+	//	Both versions of one embedded effect. The tests only read them, so
+	//	each effect is made once for the suite, on one D3D11 device.
 	class fxEffectVkReflection : public ::testing::TestWithParam<std::string>
 	{
+		public:
+			static void SetUpTestSuite()
+			{
+				s_pD3D11.reset(new gtD3D11());
+				if (!s_pD3D11->Create(s_D3D11Error))
+				{
+					s_pD3D11.reset();
+				}
+			}
+
+			static void TearDownTestSuite()
+			{
+				s_Effects.clear();
+				s_pD3D11.reset();
+			}
+
 		protected:
 			void SetUp() override
 			{
@@ -190,16 +209,25 @@ namespace
 				ASSERT_TRUE(m_pVkEmbedded != nullptr);
 				ASSERT_TRUE(m_pDX11Embedded != nullptr) << name << " is not in GraphicsDX11";
 
+				Effects& effects = s_Effects[name];
 				std::string error;
-				m_pVk = gvk::fxEmbeddedShadersVk::CreateVk(*m_pVkEmbedded, nullptr, error);
-				ASSERT_TRUE(m_pVk != nullptr) << error;
-
-				if (!m_D3D11.Create(error))
+				if (!effects.m_pVk)
 				{
-					GTEST_SKIP() << "No Direct3D 11 device: " << error;
+					effects.m_pVk = gvk::fxEmbeddedShadersVk::CreateVk(*m_pVkEmbedded, nullptr, error);
+					ASSERT_TRUE(effects.m_pVk != nullptr) << error;
 				}
-				m_pDX11 = fxEmbeddedShaders::CreateDX11(*m_pDX11Embedded, m_D3D11.Device(), error);
-				ASSERT_TRUE(m_pDX11 != nullptr) << error;
+				m_pVk = effects.m_pVk.get();
+
+				if (!s_pD3D11)
+				{
+					GTEST_SKIP() << "No Direct3D 11 device: " << s_D3D11Error;
+				}
+				if (!effects.m_pDX11)
+				{
+					effects.m_pDX11 = fxEmbeddedShaders::CreateDX11(*m_pDX11Embedded, s_pD3D11->Device(), error);
+					ASSERT_TRUE(effects.m_pDX11 != nullptr) << error;
+				}
+				m_pDX11 = effects.m_pDX11.get();
 			}
 
 			//	The fxc bytecode of one DX11 stage
@@ -218,12 +246,24 @@ namespace
 				return false;
 			}
 
+			struct Effects
+			{
+				std::unique_ptr<gvk::fxEffectVk>	m_pVk;
+				std::unique_ptr<fxEffectDX11>		m_pDX11;
+			};
+			static std::unique_ptr<gtD3D11>			s_pD3D11;
+			static std::string						s_D3D11Error;
+			static std::map<std::string, Effects>	s_Effects;
+
 			const gvk::fxEmbeddedEffect*		m_pVkEmbedded = nullptr;
 			const fxEmbeddedEffect*				m_pDX11Embedded = nullptr;
-			std::unique_ptr<gvk::fxEffectVk>	m_pVk;
-			gtD3D11								m_D3D11;
-			std::unique_ptr<fxEffectDX11>		m_pDX11;
+			gvk::fxEffectVk*					m_pVk = nullptr;
+			fxEffectDX11*						m_pDX11 = nullptr;
 	};
+
+	std::unique_ptr<gtD3D11> fxEffectVkReflection::s_pD3D11;
+	std::string fxEffectVkReflection::s_D3D11Error;
+	std::map<std::string, fxEffectVkReflection::Effects> fxEffectVkReflection::s_Effects;
 }
 
 TEST_P(fxEffectVkReflection, SameTechniquesAndPasses)

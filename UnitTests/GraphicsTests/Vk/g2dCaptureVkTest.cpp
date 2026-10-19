@@ -7,13 +7,12 @@
 **      resolution) and of a render target, the image's pixels as floats
 **      (GetPixels, for the accumulation buffer), and the image saved as
 **      a PNG (g2dImageSave), each against DX11 with both layers up
-**      (gtBackend; each DX11 half in a child process, gtDx11Child).
+**      (gtBackend).
 **      Skipped without a Vulkan device.
 **
 **	Extra Large Technology
 \****************************************************************************/
 #include "gtBackend.hpp"
-#include "gtDx11Child.hpp"
 #include "gtImage.hpp"
 #include "gtSceneWindow.hpp"
 #include "gtTempDir.hpp"
@@ -88,58 +87,6 @@ namespace
 		int						m_PngHeight = 0;
 		gtPicture				m_Presented;
 	};
-
-	//	A Capture to and from bytes, for the DX11 child process
-	template <typename T> void put(std::vector<uint8_t>& io_Bytes, const std::vector<T>& i_Values)
-	{
-		const uint64_t n = i_Values.size();
-		io_Bytes.insert(io_Bytes.end(), (const uint8_t*)&n, (const uint8_t*)&n + sizeof(n));
-		io_Bytes.insert(io_Bytes.end(), (const uint8_t*)i_Values.data(), (const uint8_t*)(i_Values.data() + i_Values.size()));
-	}
-
-	template <typename T> bool get(const std::vector<uint8_t>& i_Bytes, size_t& io_At, std::vector<T>& o_Values)
-	{
-		uint64_t n = 0;
-		if (io_At + sizeof(n) > i_Bytes.size())
-			return false;
-		memcpy(&n, &i_Bytes[io_At], sizeof(n));
-		io_At += sizeof(n);
-		if (io_At + n * sizeof(T) > i_Bytes.size())
-			return false;
-		o_Values.resize((size_t)n);
-		memcpy(o_Values.data(), &i_Bytes[io_At], (size_t)n * sizeof(T));
-		io_At += (size_t)n * sizeof(T);
-		return true;
-	}
-
-	std::vector<uint8_t> to_bytes(const Capture& i_Capture)
-	{
-		std::vector<uint8_t> bytes;
-		put(bytes, std::vector<int>{ i_Capture.m_Width, i_Capture.m_Height, i_Capture.m_BitsPerPixel, i_Capture.m_FirstRedBit,
-									 i_Capture.m_PngWidth, i_Capture.m_PngHeight });
-		put(bytes, i_Capture.m_Rgba);
-		put(bytes, i_Capture.m_Png);
-		return bytes;
-	}
-
-	Capture from_bytes(const std::vector<uint8_t>& i_Bytes)
-	{
-		Capture capture;
-		size_t at = 0;
-		std::vector<int> ints;
-		if (!get(i_Bytes, at, ints) || ints.size() != 6 || !get(i_Bytes, at, capture.m_Rgba) || !get(i_Bytes, at, capture.m_Png))
-		{
-			ADD_FAILURE() << "no result from the DX11 half";
-			return Capture();
-		}
-		capture.m_Width = ints[0];
-		capture.m_Height = ints[1];
-		capture.m_BitsPerPixel = ints[2];
-		capture.m_FirstRedBit = ints[3];
-		capture.m_PngWidth = ints[4];
-		capture.m_PngHeight = ints[5];
-		return capture;
-	}
 
 	fsLocator locator_of(const std::filesystem::path& i_Path)
 	{
@@ -248,7 +195,8 @@ TEST(g2dCaptureVk, CaptureWindowToImageMatchesDX11)
 {
 	gtTempDir dir;
 	Capture vulkan;
-	const Capture dx11 = from_bytes(gtInDx11([&]() { return to_bytes(capture_window(gtBackend::e_DX11, dir.GetPath(), 0, 0)); }));
+	Capture dx11;
+	gtBackend::Run(gtBackend::e_DX11, [&]() { dx11 = capture_window(gtBackend::e_DX11, dir.GetPath(), 0, 0); });
 	if (!gtBackend::Run(gtBackend::e_Vulkan, [&]() { vulkan = capture_window(gtBackend::e_Vulkan, dir.GetPath(), 0, 0); }))
 		return;
 	EXPECT_EQ(160, vulkan.m_Width);
@@ -272,7 +220,8 @@ TEST(g2dCaptureVk, CaptureOffscreenWindowMatchesDX11)
 {
 	gtTempDir dir;
 	Capture vulkan;
-	const Capture dx11 = from_bytes(gtInDx11([&]() { return to_bytes(capture_window(gtBackend::e_DX11, dir.GetPath(), 96, 64)); }));
+	Capture dx11;
+	gtBackend::Run(gtBackend::e_DX11, [&]() { dx11 = capture_window(gtBackend::e_DX11, dir.GetPath(), 96, 64); });
 	if (!gtBackend::Run(gtBackend::e_Vulkan, [&]() { vulkan = capture_window(gtBackend::e_Vulkan, dir.GetPath(), 96, 64); }))
 		return;
 	EXPECT_EQ(96, vulkan.m_Width);
@@ -287,7 +236,8 @@ TEST(g2dCaptureVk, CaptureWindowAtGivenSizeMatchesDX11)
 {
 	gtTempDir dir;
 	Capture vulkan;
-	const Capture dx11 = from_bytes(gtInDx11([&]() { return to_bytes(capture_window(gtBackend::e_DX11, dir.GetPath(), 0, 0, 200, 150)); }));
+	Capture dx11;
+	gtBackend::Run(gtBackend::e_DX11, [&]() { dx11 = capture_window(gtBackend::e_DX11, dir.GetPath(), 0, 0, 200, 150); });
 	if (!gtBackend::Run(gtBackend::e_Vulkan, [&]() { vulkan = capture_window(gtBackend::e_Vulkan, dir.GetPath(), 0, 0, 200, 150); }))
 		return;
 	EXPECT_EQ(200, dx11.m_Width);
@@ -315,7 +265,8 @@ TEST(g2dCaptureVk, CaptureRenderTargetToImageMatchesDX11)
 		return capture;
 	};
 	Capture vulkan;
-	const Capture dx11 = from_bytes(gtInDx11([&]() { return to_bytes(run(gtBackend::e_DX11)); }));
+	Capture dx11;
+	gtBackend::Run(gtBackend::e_DX11, [&]() { dx11 = run(gtBackend::e_DX11); });
 	if (!gtBackend::Run(gtBackend::e_Vulkan, [&]() { vulkan = run(gtBackend::e_Vulkan); }))
 		return;
 	EXPECT_EQ(48, vulkan.m_Width);

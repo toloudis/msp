@@ -48,15 +48,6 @@ struct gtImageFile
 std::vector<gtImageFile> gtWriteImageFiles(const std::filesystem::path& i_Dir);
 
 //	What GraphicsDX11 decodes from the file, before any resize or mips.
-//	COM must be initialized (gtComScope) for the WIC cases.
+//	(WIC needs COM, which GraphicsTestsMain starts: gtPlatform::StartCom.)
 bool gtLoadReference(const gtImageFile& i_File, DirectX::ScratchImage& o_Image, std::string& o_Error);
 
-//	Initializes COM on this thread for WIC while it lives
-class gtComScope
-{
-	public:
-		gtComScope();
-		~gtComScope();
-	private:
-		bool m_bInitialized;
-};

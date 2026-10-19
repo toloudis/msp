@@ -254,7 +254,6 @@ namespace
 				m_Files = gtWriteImageFiles(m_Dir.GetPath());
 			}
 
-			gtComScope				m_Com;
 			gtTempDir				m_Dir;
 			std::vector<gtImageFile> m_Files;
 	};

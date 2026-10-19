@@ -192,7 +192,6 @@ namespace
 
 TEST(matMipFilter, TriangleMipsMatchDirectXTex)
 {
-	gtComScope com;
 	for (DXGI_FORMAT format : c_Formats)
 	{
 		for (Size size : c_Sizes)
@@ -206,7 +205,6 @@ TEST(matMipFilter, TriangleMipsMatchDirectXTex)
 //	8-bit formats to WIC's Fant scaler and filters the others itself
 TEST(matMipFilter, BoxMipsMatchDirectXTex)
 {
-	gtComScope com;
 	const Size c_Pow2[] = { { 64, 64 }, { 64, 16 }, { 1, 8 } };
 	for (DXGI_FORMAT format : { DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_FORMAT_R16G16B16A16_FLOAT })
 	{
@@ -224,7 +222,6 @@ TEST(matMipFilter, BoxMipsMatchDirectXTex)
 
 TEST(matMipFilter, ReduceMatchesDirectXTex)
 {
-	gtComScope com;
 	for (DXGI_FORMAT format : { DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_FORMAT_R8_UNORM, DXGI_FORMAT_R16G16B16A16_FLOAT })
 	{
 		for (Size size : { Size{ 64, 64 }, Size{ 37, 23 } })

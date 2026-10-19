@@ -156,13 +156,42 @@ namespace
 		return data;
 	}
 
-	void expect_same(const gtMesh& i_Mesh, bool i_bMorphable)
+	//	One mesh to read
+	struct ReadCase
 	{
-		FragmentData dx11, vulkan;
-		gtBackend::Run(gtBackend::e_DX11, [&]() { dx11 = read(gtBackend::e_DX11, i_Mesh, i_bMorphable); });
-		if (!gtBackend::Run(gtBackend::e_Vulkan, [&]() { vulkan = read(gtBackend::e_Vulkan, i_Mesh, i_bMorphable); }))
-			return;
+		const char*	m_pName;
+		gtMesh		m_Mesh;
+		bool		m_bMorphable;
+	};
 
+	void expect_same(const FragmentData& dx11, const FragmentData& vulkan);
+
+	//	Reads every case on each backend (one layer start-up each) and compares
+	void expect_same(const std::vector<ReadCase>& i_Cases)
+	{
+		std::vector<FragmentData> dx11s, vulkans;
+		gtBackend::Run(gtBackend::e_DX11, [&]()
+		{
+			for (const ReadCase& c : i_Cases)
+				dx11s.push_back(read(gtBackend::e_DX11, c.m_Mesh, c.m_bMorphable));
+		});
+		if (!gtBackend::Run(gtBackend::e_Vulkan, [&]()
+		{
+			for (const ReadCase& c : i_Cases)
+				vulkans.push_back(read(gtBackend::e_Vulkan, c.m_Mesh, c.m_bMorphable));
+		}))
+			return;
+		ASSERT_EQ(i_Cases.size(), dx11s.size());
+		ASSERT_EQ(i_Cases.size(), vulkans.size());
+		for (size_t i = 0; i < i_Cases.size(); i++)
+		{
+			SCOPED_TRACE(i_Cases[i].m_pName);
+			expect_same(dx11s[i], vulkans[i]);
+		}
+	}
+
+	void expect_same(const FragmentData& dx11, const FragmentData& vulkan)
+	{
 		EXPECT_EQ(g3dType::e_BumpTex1Vertex, dx11.m_Format);
 		EXPECT_EQ(dx11.m_Format, vulkan.m_Format);
 		EXPECT_EQ(dx11.m_Vertices, vulkan.m_Vertices);
@@ -181,24 +210,14 @@ namespace
 
 TEST(bumpFragmentVkTest, SameVertexAndIndexData)
 {
-	{
-		SCOPED_TRACE("sphere");
-		expect_same(gtScene::Sphere(12, 24), false);
-	}
-	{
-		SCOPED_TRACE("sphere, morphable");
-		expect_same(gtScene::Sphere(12, 24), true);
-	}
-	{
-		SCOPED_TRACE("plane");
-		expect_same(gtScene::Plane(), false);
-	}
-	{
-		SCOPED_TRACE("grid 300 (32-bit indices)");
-		const gtMesh grid = gtScene::Grid(300);
-		ASSERT_GT(grid.VertexCount(), 65535);
-		expect_same(grid, false);
-	}
+	const gtMesh grid = gtScene::Grid(300);
+	ASSERT_GT(grid.VertexCount(), 65535);
+	expect_same({
+		{ "sphere", gtScene::Sphere(12, 24), false },
+		{ "sphere, morphable", gtScene::Sphere(12, 24), true },
+		{ "plane", gtScene::Plane(), false },
+		{ "grid 300 (32-bit indices)", grid, false },
+	});
 }
 
 namespace
@@ -294,13 +313,42 @@ namespace
 		return picture;
 	}
 
-	//	Draws on both backends and compares
-	void expect_same_image(const char* i_pTest, const gtMesh& i_Mesh, const DrawOptions& i_Options)
+	//	One mesh to draw; m_pName names the saved images if they differ
+	struct DrawCase
 	{
-		gtPicture dx11, vulkan;
-		gtBackend::Run(gtBackend::e_DX11, [&]() { dx11 = draw(gtBackend::e_DX11, i_Mesh, i_Options); });
-		if (!gtBackend::Run(gtBackend::e_Vulkan, [&]() { vulkan = draw(gtBackend::e_Vulkan, i_Mesh, i_Options); }))
+		const char*	m_pName;
+		gtMesh		m_Mesh;
+		DrawOptions	m_Options;
+	};
+
+	void expect_same_image(const char* i_pTest, const gtPicture& dx11, const gtPicture& vulkan);
+
+	//	Draws every case on each backend (one layer start-up each) and compares
+	void expect_same_images(const std::vector<DrawCase>& i_Cases)
+	{
+		std::vector<gtPicture> dx11s, vulkans;
+		gtBackend::Run(gtBackend::e_DX11, [&]()
+		{
+			for (const DrawCase& c : i_Cases)
+				dx11s.push_back(draw(gtBackend::e_DX11, c.m_Mesh, c.m_Options));
+		});
+		if (!gtBackend::Run(gtBackend::e_Vulkan, [&]()
+		{
+			for (const DrawCase& c : i_Cases)
+				vulkans.push_back(draw(gtBackend::e_Vulkan, c.m_Mesh, c.m_Options));
+		}))
 			return;
+		ASSERT_EQ(i_Cases.size(), dx11s.size());
+		ASSERT_EQ(i_Cases.size(), vulkans.size());
+		for (size_t i = 0; i < i_Cases.size(); i++)
+		{
+			SCOPED_TRACE(i_Cases[i].m_pName);
+			expect_same_image(i_Cases[i].m_pName, dx11s[i], vulkans[i]);
+		}
+	}
+
+	void expect_same_image(const char* i_pTest, const gtPicture& dx11, const gtPicture& vulkan)
+	{
 		EXPECT_TRUE(dx11.Valid());
 		EXPECT_TRUE(vulkan.Valid());
 		if (!dx11.Valid() || !vulkan.Valid())
@@ -323,46 +371,40 @@ namespace
 
 TEST(bumpFragmentVkTest, FragmentDrawsMatchDX11)
 {
-	{
-		SCOPED_TRACE("static");
-		expect_same_image("FragmentDrawsMatchDX11_static", gtScene::Sphere(16, 32), DrawOptions());
-	}
-	{
-		SCOPED_TRACE("morphable, updated after the first draw");
-		DrawOptions options;
-		options.m_bMorphable = true;
-		options.m_bMorphAfterDraw = true;
-		expect_same_image("FragmentDrawsMatchDX11_morph", gtScene::Sphere(16, 32), options);
-	}
+	//	static; morphable, updated after the first draw
+	DrawOptions morph;
+	morph.m_bMorphable = true;
+	morph.m_bMorphAfterDraw = true;
+	expect_same_images({
+		{ "FragmentDrawsMatchDX11_static", gtScene::Sphere(16, 32), DrawOptions() },
+		{ "FragmentDrawsMatchDX11_morph", gtScene::Sphere(16, 32), morph },
+	});
 }
 
 TEST(bumpFragmentVkTest, LargeMeshMatchesDX11)
 {
 	const gtMesh grid = gtScene::Grid(300);
 	ASSERT_GT(grid.VertexCount(), 65535);
-	{
-		SCOPED_TRACE("whole");
-		expect_same_image("LargeMeshMatchesDX11_whole", grid, DrawOptions());
-	}
-	{
-		SCOPED_TRACE("split and draw-call-limited");
-		DrawOptions options;
-		options.m_bSplit = true;
-		options.m_DrawLimit = 3000;
-		expect_same_image("LargeMeshMatchesDX11_split", grid, options);
-	}
+	//	whole; split and draw-call-limited
+	DrawOptions split;
+	split.m_bSplit = true;
+	split.m_DrawLimit = 3000;
+	expect_same_images({
+		{ "LargeMeshMatchesDX11_whole", grid, DrawOptions() },
+		{ "LargeMeshMatchesDX11_split", grid, split },
+	});
 }
 
 TEST(bumpFragmentVkTest, DestroyAfterDrawIsSafe)
 {
 	//	The images still match, and gtBackend fails the test on any
 	//	validation message (a freed buffer the GPU still reads)
-	for (bool morphable : { false, true })
-	{
-		SCOPED_TRACE(morphable ? "morphable" : "static");
-		DrawOptions options;
-		options.m_bMorphable = morphable;
-		options.m_bDestroyBeforeRead = true;
-		expect_same_image(morphable ? "DestroyAfterDrawIsSafe_morph" : "DestroyAfterDrawIsSafe_static", gtScene::Sphere(8, 16), options);
-	}
+	DrawOptions still, morph;
+	still.m_bDestroyBeforeRead = true;
+	morph.m_bMorphable = true;
+	morph.m_bDestroyBeforeRead = true;
+	expect_same_images({
+		{ "DestroyAfterDrawIsSafe_static", gtScene::Sphere(8, 16), still },
+		{ "DestroyAfterDrawIsSafe_morph", gtScene::Sphere(8, 16), morph },
+	});
 }

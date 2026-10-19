@@ -27,6 +27,16 @@ void gtPlatform::SetUpUnattended()
 	_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
 }
 
+void gtPlatform::StartCom()
+{
+	::CoInitializeEx(NULL, COINIT_MULTITHREADED);
+}
+
+void gtPlatform::StopCom()
+{
+	::CoUninitialize();
+}
+
 void* gtPlatform::CreateHiddenWindow(int i_Width, int i_Height)
 {
 	static bool s_bRegistered = false;

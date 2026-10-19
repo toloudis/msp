@@ -552,7 +552,6 @@ namespace
 TEST(matTextureMgrVkTest, LoadedFormatsMatchDX11)
 {
 	gtTempDir dir;
-	gtComScope com;
 	const std::vector<gtImageFile> files = gtWriteImageFiles(dir.GetPath());
 	std::map<std::string, Loaded> results[2];
 	const bool ran = run_both([&](gtBackend::Kind i_Kind)
@@ -611,7 +610,6 @@ TEST(matTextureMgrVkTest, LoadedFormatsMatchDX11)
 TEST(matTextureMgrVkTest, MipChainsMatchDX11)
 {
 	gtTempDir dir;
-	gtComScope com;
 	const char* const c_Names[] = { "png_rgba8", "png_srgb_chunk", "png_grey8", "png_rgba16", "tif_rgbaf32", "jpg_rgb",
 									"bmp_rgb24", "tga_bgra32", "hdr_radiance", "dds_rgba8_mips", "dds_bc1" };
 	std::vector<gtImageFile> files;
@@ -695,7 +693,6 @@ TEST(matTextureMgrVkTest, MipChainsMatchDX11)
 TEST(matTextureMgrVkTest, CubeAndVolumeMatchDX11)
 {
 	gtTempDir dir;
-	gtComScope com;
 	const std::vector<gtImageFile> all = gtWriteImageFiles(dir.GetPath());
 	std::vector<gtImageFile> files;
 	for (const gtImageFile& file : all)

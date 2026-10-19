@@ -28,6 +28,39 @@
 #include <memory>
 #include <vector>
 
+//	The images gtVulkanContext and gtVulkanSuite make, and their readback
+namespace gtVulkanImages
+{
+	//	An R8G8B8A8 render target that can also be sampled, cleared and read back
+	inline std::unique_ptr<gvk::vkdImage> Target(gvk::vkdDevice& i_Device, uint32_t i_Width, uint32_t i_Height)
+	{
+		return gvk::vkdImage::Create2D(i_Device, i_Width, i_Height, VK_FORMAT_R8G8B8A8_UNORM,
+			VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT |
+			VK_IMAGE_USAGE_TRANSFER_DST_BIT, "gtVulkanContext target");
+	}
+
+	//	An R8G8B8A8 texture holding i_pRgba (rows tightly packed)
+	inline std::unique_ptr<gvk::vkdImage> Texture(gvk::vkdDevice& i_Device, gvk::vkdContext& i_Context,
+												  uint32_t i_Width, uint32_t i_Height, const uint8_t* i_pRgba)
+	{
+		std::unique_ptr<gvk::vkdImage> image = gvk::vkdImage::Create2D(i_Device, i_Width, i_Height, VK_FORMAT_R8G8B8A8_UNORM,
+			VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, "gtVulkanContext texture");
+		gvk::vkdRingBuffer::Allocation staging = i_Context.Upload(i_pRgba, (VkDeviceSize)i_Width * i_Height * 4, 16);
+		VkBufferImageCopy region = {};
+		region.bufferOffset = staging.m_Offset;
+		region.imageSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
+		region.imageExtent = { i_Width, i_Height, 1 };
+		vkCmdCopyBufferToImage(i_Context.Commands(), staging.m_Buffer, image->Image(), VK_IMAGE_LAYOUT_GENERAL, 1, &region);
+		return image;
+	}
+
+	inline std::vector<uint8_t> Read(gvk::vkdContext& i_Context, gvk::vkdImage* i_pImage)
+	{
+		i_Context.Flush();
+		return i_pImage->ReadBack();
+	}
+}
+
 class gtVulkanContext : public gtVulkan
 {
 	protected:
@@ -65,31 +98,20 @@ class gtVulkanContext : public gtVulkan
 		//	An R8G8B8A8 render target that can also be sampled, cleared and read back
 		gvk::vkdImage* Target(uint32_t i_Width, uint32_t i_Height)
 		{
-			m_Images.push_back(gvk::vkdImage::Create2D(Device(), i_Width, i_Height, VK_FORMAT_R8G8B8A8_UNORM,
-				VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT |
-				VK_IMAGE_USAGE_TRANSFER_DST_BIT, "gtVulkanContext target"));
+			m_Images.push_back(gtVulkanImages::Target(Device(), i_Width, i_Height));
 			return m_Images.back().get();
 		}
 
 		//	An R8G8B8A8 texture holding i_pRgba (rows tightly packed)
 		gvk::vkdImage* Texture(uint32_t i_Width, uint32_t i_Height, const uint8_t* i_pRgba)
 		{
-			m_Images.push_back(gvk::vkdImage::Create2D(Device(), i_Width, i_Height, VK_FORMAT_R8G8B8A8_UNORM,
-				VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, "gtVulkanContext texture"));
-			gvk::vkdImage* image = m_Images.back().get();
-			gvk::vkdRingBuffer::Allocation staging = m_pContext->Upload(i_pRgba, (VkDeviceSize)i_Width * i_Height * 4, 16);
-			VkBufferImageCopy region = {};
-			region.bufferOffset = staging.m_Offset;
-			region.imageSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
-			region.imageExtent = { i_Width, i_Height, 1 };
-			vkCmdCopyBufferToImage(m_pContext->Commands(), staging.m_Buffer, image->Image(), VK_IMAGE_LAYOUT_GENERAL, 1, &region);
-			return image;
+			m_Images.push_back(gtVulkanImages::Texture(Device(), *m_pContext, i_Width, i_Height, i_pRgba));
+			return m_Images.back().get();
 		}
 
 		std::vector<uint8_t> Read(gvk::vkdImage* i_pImage)
 		{
-			m_pContext->Flush();
-			return i_pImage->ReadBack();
+			return gtVulkanImages::Read(*m_pContext, i_pImage);
 		}
 
 		std::unique_ptr<gvk::vkdBindings>		m_pBindings;
