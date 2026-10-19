@@ -85,8 +85,8 @@
 #include "Graphics/G3d/g3dSceneRendererTypes.hpp"
 #endif
 
-#ifndef GVK_MATSTUBSVK_HPP
-#include "GraphicsVulkan/stub/matStubsVk.hpp"
+#ifndef GVK_EFF_SHADERARRAY_HPP
+#include "GraphicsVulkan/Eff/effShaderArray.hpp"
 #endif
 #ifndef EFF_SHADERPARAMS_HPP
 #include "Graphics/Eff/effShaderParams.hpp"
@@ -242,23 +242,14 @@ TEST_F(gtLayer, StubsAnswerFromTheirData)
 	fragment->ReadOnlyUnlockIndices();
 }
 
-//	Effect parameter dialogs (post effects, materials) list the property
-//	object BuildPrtyObject makes; until effects are ported it is empty
-TEST_F(gtLayer, ShaderEffectBuildsAnEmptyPropertyObject)
-{
-	gvk::matShaderEffectVk effect("test");
-	effShaderParams params;
-	EXPECT_EQ(0, effect.BuildPrtyObject(&params));
-	EXPECT_NE(nullptr, params.m_pPrtyUI);
-}
-
 //	Materials take their data type from the registered built-in shaders
 //	(matMaterial("Billboard.fx") gets effBillboardData), so the Vulkan
 //	shader manager registers DX11's names and data types, each with an
-//	effect (matShaderMgr asserts on a NULL one) that draws nothing yet
+//	effect (matShaderMgr asserts on a NULL one); effShaderVkTest compares
+//	the whole registry with DX11's
 TEST_F(gtLayer, ShaderMgrRegistersTheBuiltInShaders)
 {
-	gvk::matShaderMgrVk mgr;
+	gvk::effShaderArray mgr;
 	std::map<std::string, matShaderInfo> shaders;
 	mgr.RegisterEffects(fsLocator(), shaders);
 

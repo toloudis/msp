@@ -4,9 +4,8 @@
 **      Vulkan implementations of the 3D graphics hooks that aren't ported
 **	yet (see g2dStubsVk.hpp for the rules):
 **
-**	  g3dSceneRendererVk, g3dPickRendererVk, g3dSceneRendererCreateVk
-**		every renderer type; they draw nothing (the target renderer has
-**		already cleared the target), the pick renderer picks nothing
+**	  g3dPickRendererVk	the pick renderer picks nothing (g3dSceneRendererCreateVk
+**						makes it)
 **	  g3dBakeVk				baking (nothing to bake)
 **	  hairModelFragVk, hairRendererVk
 **		hair fragments (mayFragCreate::CreateHairFragment) keep their
@@ -22,9 +21,6 @@
 
 #ifndef G3D_SCENERENDERER_HPP
 #include "Graphics/G3d/g3dSceneRenderer.hpp"
-#endif
-#ifndef G3D_SCENERENDERERCREATE_HPP
-#include "Graphics/G3d/g3dSceneRendererCreate.hpp"
 #endif
 #ifndef G3D_BAKE_HPP
 #include "Graphics/G3d/g3dBake.hpp"
@@ -47,18 +43,6 @@
 
 namespace gvk
 {
-	class g3dSceneRendererVk : public g3dSceneRenderer
-	{
-		public:
-			explicit g3dSceneRendererVk(const char* i_pType) : m_pType(i_pType) {}
-			virtual int Render(g2dRenderTarget* i_pWindow, const camCamera& i_Camera, const g3dScene& i_Scene,
-							   const std::vector<g3dLayer*>& i_ViewerLayers, float i_fSimTime);
-			virtual void ReleaseResources();
-
-		private:
-			const char* m_pType;
-	};
-
 	class g3dPickRendererVk : public g3dPickRenderer
 	{
 		public:
@@ -68,32 +52,6 @@ namespace gvk
 			virtual void SetPickViewport(g2dRenderTarget* i_pTarget);
 			virtual void RestoreViewport();
 			virtual void GetPickInfo(g2dRenderTarget* i_pWindow, g3dPickInfo& o_PickInfo);
-	};
-
-	class g3dSceneRendererCreateVk : public g3dSceneRendererCreateImpl
-	{
-		public:
-			virtual g3dSceneRenderer* CreateDefaultRenderer();
-			virtual g3dSceneRenderer* CreateHDRRenderer();
-			virtual g3dSceneRenderer* CreateSimpleRenderer();
-			virtual g3dSceneRenderer* CreateTextureRenderer();
-			virtual g3dSceneRenderer* CreateDepthMapRenderer();
-			virtual g3dSceneRenderer* CreateRSMRenderer();
-			virtual g3dSceneRenderer* CreateOpacityMapRenderer(g3dProjectedLight* pProjLight);
-			virtual g3dSceneRenderer* CreateCubeMapRenderer(scObject* i_Obj, matMaterial* i_Material, bool i_RenderPerFrame);
-			virtual g3dSceneRenderer* CreatePlanarReflectionRenderer(scObject* i_Obj, matMaterial* i_Material);
-			virtual g3dSceneRenderer* CreateAmbientOcclusionRenderer();
-			virtual g3dSceneRenderer* CreateGlobalIlluminationRenderer();
-			virtual g3dSceneRenderer* CreateDepthRenderer();
-			virtual g3dSceneRenderer* CreateUVRenderer();
-			virtual g3dPickRenderer* CreatePickRenderer();
-			virtual g3dSceneRenderer* CreateShadowMaskRenderer();
-			virtual g3dSceneRenderer* CreateIlluminationRenderer();
-			virtual g3dSceneRenderer* CreateNormalRenderer();
-			virtual g3dSceneRenderer* CreateVelocityMapRenderer();
-			virtual g3dSceneRenderer* CreateMaterialsRenderer();
-			virtual g3dSceneRenderer* CreateReflectionOnlyRenderer();
-			virtual g3dSceneRenderer* CreateGlowRenderer();
 	};
 
 	class g3dBakeVk : public g3dBakeImpl

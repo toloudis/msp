@@ -98,6 +98,10 @@ namespace gvk
 
 			//	b/t/s/u register slots for the next draws
 			vkdBindings& Bindings()		{ return m_Bindings; }
+			//	D3D11's *SSetShaderResources(i_Slot, 1, &view): binds i_pImage as
+			//	a sampled image at t register i_Slot; NULL binds NullTexture(),
+			//	as D3D11 reads a NULL view as zeros
+			void SetShaderResource(uint32_t i_Slot, vkdImage* i_pImage);
 			//	Short-lived GPU memory (constants, dynamic vertices); valid for work recorded from now on
 			vkdRingBuffer::Allocation Upload(const void* i_pData, VkDeviceSize i_Size, VkDeviceSize i_Alignment = 256);
 			//	The same, for the caller to fill

@@ -134,6 +134,8 @@
     <ClCompile Include="Vk\matTextureMgrVkTest.cpp" />
     <ClCompile Include="gtScene.cpp" />
     <ClCompile Include="Vk\bumpFragmentVkTest.cpp" />
+    <ClCompile Include="Vk\effShaderVkTest.cpp" />
+    <ClCompile Include="gtTarget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />
@@ -145,6 +147,7 @@
     <ClInclude Include="gtImageFiles.hpp" />
     <ClInclude Include="gtBackend.hpp" />
     <ClInclude Include="gtScene.hpp" />
+    <ClInclude Include="gtTarget.hpp" />
   </ItemGroup>
   <ItemGroup>
     <!-- Test shaders: VSMain and PSMain of each, compiled to SPIR-V with GraphicsVulkan's

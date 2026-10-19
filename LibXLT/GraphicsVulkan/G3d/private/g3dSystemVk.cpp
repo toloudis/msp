@@ -14,8 +14,23 @@
 #ifndef GVK_G3DLIGHTMGRVK_HPP
 #include "GraphicsVulkan/G3d/g3dLightMgrVk.hpp"
 #endif
-#ifndef GVK_MATSTUBSVK_HPP
-#include "GraphicsVulkan/stub/matStubsVk.hpp"
+#ifndef GVK_EFF_SHADERARRAY_HPP
+#include "GraphicsVulkan/Eff/effShaderArray.hpp"
+#endif
+#ifndef GVK_G3D_VKUTIL_HPP
+#include "GraphicsVulkan/G3d/g3dVkUtil.hpp"
+#endif
+#ifndef GVK_G3D_DRAWSTYLEUTILVK_HPP
+#include "GraphicsVulkan/G3d/g3dDrawStyleUtilVk.hpp"
+#endif
+#ifndef GVK_G3D_SCENEGLOBAL_HPP
+#include "GraphicsVulkan/G3d/g3dSceneGlobal.hpp"
+#endif
+#ifndef GVK_G3D_SCENERENDERERVK_HPP
+#include "GraphicsVulkan/G3d/g3dSceneRendererVk.hpp"
+#endif
+#ifndef GVK_G3D_TRANSPARENCYSORTVK_HPP
+#include "GraphicsVulkan/G3d/g3dTransparencySortVk.hpp"
 #endif
 #ifndef GVK_MATTEXTUREMGRVK_HPP
 #include "GraphicsVulkan/Mat/matTextureMgrVk.hpp"
@@ -43,8 +58,8 @@ namespace gvk
 		g3dBlendStateMgr::BlendState*				st_pInitial = NULL;
 		g3dDepthStencilStateMgr::DepthStencilState*	ds_pTest_Write_LessE_NS = NULL;
 
-		//	As g3dSystemDX11's init_d3d_states, without the renderers' own
-		//	states (each comes with its renderer's port)
+		//	As g3dSystemDX11's init_d3d_states, with the states of the parts
+		//	ported so far (the other renderers' come with their ports)
 		void init_states()
 		{
 			//initialize State managers first
@@ -63,12 +78,14 @@ namespace gvk
 
 			//init g3d state systems
 			g3dStateMgrVk::Init();
+			g3dVkUtil::InitStates();
+			g3dSceneRendererVk::InitStates();
+			g3dTransparencySortVk::InitStates();
 
 			//	we want to set D3D to cull CW faces
 			//	(because of our coordinate system change to right-handed), even though
 			//	our users think that we are culling CCW faces
-			//	(DX11 takes the fill mode from g3dDrawStyleUtilDX11, ported with the renderers)
-			g3dRasterizerStateMgr::SetRasterizerState( VK_CULL_MODE_FRONT_BIT, VK_POLYGON_MODE_FILL );
+			g3dRasterizerStateMgr::SetRasterizerState( VK_CULL_MODE_FRONT_BIT, g3dDrawStyleUtilVk::GetD3DDrawStyle() );
 
 			//	Set Z comparison
 			g3dDepthStencilStateMgr::SetDepthStencilState( ds_pTest_Write_LessE_NS );
@@ -79,6 +96,9 @@ namespace gvk
 
 		void cleanup_states()
 		{
+			g3dTransparencySortVk::CleanupStates();
+			g3dSceneRendererVk::CleanupStates();
+			g3dVkUtil::CleanupStates();
 			g3dStateMgrVk::CleanUp();
 
 			delete ds_pTest_Write_LessE_NS;
@@ -98,20 +118,33 @@ namespace gvk
 		, m_Name(i_Device.Adapter().m_Name)
 		, m_pLightMgr(new g3dLightMgrVk)
 		, m_pTextureMgr(new matTextureMgrVk)
-		, m_pShaderMgr(new matShaderMgrVk)
+		, m_pShaderMgr(new effShaderArray)
 		, m_pScreenCapture(new g2dScreenCaptureUtilVk)
 	{
+		g3dSceneGlobal::g_Identity.Identity();
+
+		init_states();
+
+		g3dSceneGlobal::g_AdditiveMode = false;
+		g3dSceneGlobal::SetTransforms(maPoint3d(0,0,0), maMatrix4x4(), maMatrix4x4());
+		g3dSceneGlobal::g_FrameTime = 0.0f;
+
+		g3dSceneGlobal::g_ScreenSpaceViewport = false;
+
 		g3dLightMgr::SetImplementation(m_pLightMgr);
 		matTextureMgr::SetImplementation(m_pTextureMgr);
 		m_pTextureMgr->Initialize();
 		matShaderMgr::SetImplementation(m_pShaderMgr);
-		init_states();
 		matShaderMgr::Initialize();		// registers the built-in shaders, as g3dSystemDX11 does
 		g2dScreenCaptureUtil::SetImplementation(m_pScreenCapture);
+
+		g3dDrawStyleUtilVk::Initialize();
 	}
 
 	g3dSystemVk::~g3dSystemVk()
 	{
+		g3dDrawStyleUtilVk::DeInitialize();
+
 		g2dScreenCaptureUtil::SetImplementation(NULL);
 		matShaderMgr::DeInitialize();
 		m_pTextureMgr->DeInitialize();

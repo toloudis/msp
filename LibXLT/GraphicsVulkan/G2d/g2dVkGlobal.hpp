@@ -67,6 +67,10 @@ namespace gvk
 		//	g2dDX11Global::RestrictPow2Textures (false, as in DX11)
 		bool RestrictPow2Textures();
 
+		//	g2dDX11Global::g_bHasStencil (true once DX11's primary window has
+		//	its D24S8 depth buffer): every Vulkan depth buffer is D24S8
+		bool HasStencil();
+
 		//	g2dDX11Global::ChooseMultisampleQuality: the most samples the
 		//	device supports for colour images of i_Format (and D24S8 depth),
 		//	up to D3D11's largest count (32); 1 if none

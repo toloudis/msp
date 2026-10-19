@@ -5,14 +5,20 @@
 **      the same meshes made through g3dFragmentCreate under each layer
 **      (gtBackend) give the same vertex format, vertex bytes (basis
 **      vectors computed), index width and bytes, bounding box, sub-
-**      fragments and bake factors.
+**      fragments and bake factors. Drawn with a Solid material through
+**      bumpBumpRenderer they give the same image (also split into sub-
+**      fragments and draw-call-limited, with more than 65,535 vertices),
+**      and a fragment destroyed right after its draw stays valid until the
+**      GPU is done with it (validation; Review Focus 1).
 **
 **      Skipped without a Vulkan device (the DX11 half still runs).
 **
 **	Extra Large Technology
 \****************************************************************************/
 #include "gtBackend.hpp"
+#include "gtImage.hpp"
 #include "gtScene.hpp"
+#include "gtTarget.hpp"
 
 #ifndef G3D_FRAGMENT_HPP
 #include "Graphics/G3d/g3dFragment.hpp"
@@ -23,15 +29,48 @@
 #ifndef MA_AXISBOX_HPP
 #include "Core/Ma/maAxisBox.hpp"
 #endif
+#ifndef G3D_SCENENODE_HPP
+#include "Graphics/G3d/g3dSceneNode.hpp"
+#endif
+#ifndef G3D_RENDERERMGR_HPP
+#include "Graphics/G3d/g3dRendererMgr.hpp"
+#endif
+#ifndef MAT_MATERIAL_HPP
+#include "Graphics/Mat/matMaterial.hpp"
+#endif
+#ifndef MAT_SHADERMGR_HPP
+#include "Graphics/Mat/matShaderMgr.hpp"
+#endif
+#ifndef MAT_SHADEREFFECT_HPP
+#include "Graphics/Mat/matShaderEffect.hpp"
+#endif
+#ifndef EFF_SOLIDDATA_HPP
+#include "Graphics/Eff/effSolidData.hpp"
+#endif
+#ifndef CAM_CAMERA_HPP
+#include "Graphics/Cam/camCamera.hpp"
+#endif
 
 //	DX11
 #ifndef TMESH_FRAG_HPP
 #include "GraphicsDX11/tmesh/tmeshFrag.hpp"
 #endif
+#ifndef BUMP_BUMPRENDERER_HPP
+#include "GraphicsDX11/bump/bumpBumpRenderer.hpp"
+#endif
+#ifndef G3D_RASTERIZERSTATEMGR_HPP
+#include "GraphicsDX11/G3d/g3dRasterizerStateMgr.hpp"
+#endif
 
 //	Vulkan
 #ifndef GVK_TMESH_FRAG_HPP
 #include "GraphicsVulkan/tmesh/tmeshFrag.hpp"
+#endif
+#ifndef GVK_BUMP_BUMPRENDERER_HPP
+#include "GraphicsVulkan/bump/bumpBumpRenderer.hpp"
+#endif
+#ifndef GVK_G3DRASTERIZERSTATEMGR_HPP
+#include "GraphicsVulkan/G3d/g3dRasterizerStateMgr.hpp"
 #endif
 
 #include <gtest/gtest.h>
@@ -159,5 +198,171 @@ TEST(bumpFragmentVkTest, SameVertexAndIndexData)
 		const gtMesh grid = gtScene::Grid(300);
 		ASSERT_GT(grid.VertexCount(), 65535);
 		expect_same(grid, false);
+	}
+}
+
+namespace
+{
+	//	How a mesh is drawn
+	struct DrawOptions
+	{
+		bool	m_bMorphable = false;
+		bool	m_bSplit = false;				// into sub-fragments (bumpTriMeshBumpFrag::Split), each drawn
+		int		m_DrawLimit = -1;				// bumpBumpRenderer::SetDrawLimit (-1: D3D's)
+		bool	m_bDestroyBeforeRead = false;	// the fragment goes before the GPU has drawn it
+		bool	m_bMorphAfterDraw = false;		// UpdateVertices after the first draw, then draw again
+	};
+
+	//	The mesh drawn with a Solid material through bumpBumpRenderer (as a
+	//	renderer's DrawNode does), seen from +Z, into a 128x128 target
+	gtPicture draw(gtBackend::Kind i_Kind, const gtMesh& i_Mesh, const DrawOptions& i_Options)
+	{
+		const float clear[4] = { 0, 0, 0, 1 };
+		gtTarget target(i_Kind, 128, 128, clear);
+
+		camCamera camera;
+		camera.SetFOV(45.0f);
+		camera.SetAspect(1.0f);
+		camera.SetClip(0.1f, 100.0f);
+		camera.LookAt(maPoint3d(0.3f, 0.4f, 3.5f), maPoint3d(0, 0, 0), maVector3d(0, 1, 0));
+		maMatrix4x4 view, projection, world;
+		camera.GetCameraMatrix(view);
+		camera.GetProjectionMatrix(projection);
+		projection.ScaleBy(-1.0f, 1.0f, 1.0f);		// as g3dSceneRenderUtil::SetViewingTransforms
+		world.Identity();
+
+		matMaterial material("Solid.fx", matShaderMgr::CreateData("Solid.fx"));
+		effSolidData* solid = dynamic_cast<effSolidData*>(material.GetEffectData());
+		EXPECT_TRUE(solid != NULL);
+		if (solid)
+			solid->m_Color = maFloatRGBA(0.25f, 0.5f, 0.75f, 1.0f);
+		matShaderEffect* effect = matShaderMgr::GetEffect(material);
+		EXPECT_TRUE(effect != NULL);
+		if (!effect)
+			return gtPicture();
+
+		g3dFragment* fragment = i_Mesh.CreateFragment(&material, i_Options.m_bMorphable);
+		if (i_Options.m_bSplit)
+			fragment->Split(fragment->GetBoundingBox());
+		const int parts = fragment->GetSubFragments().empty() ? 1 : (int)fragment->GetSubFragments().size();
+
+		if (i_Kind == gtBackend::e_DX11)
+		{
+			bumpBumpRenderer::SetDrawLimit(i_Options.m_DrawLimit);
+			g3dRasterizerStateMgr::SetRasterizerState(D3D11_CULL_NONE, D3D11_FILL_SOLID);
+		}
+		else
+		{
+			gvk::bumpBumpRenderer::SetDrawLimit(i_Options.m_DrawLimit);
+			gvk::g3dRasterizerStateMgr::SetRasterizerState(VK_CULL_MODE_NONE, VK_POLYGON_MODE_FILL);
+		}
+
+		auto render = [&]()
+		{
+			effect->SetTechnique(matShaderEffect::e_Default);
+			effect->SetupMatrices(world, view, projection, camera.GetPosition());
+			effect->SetupMaterial(&material);
+			for (int part = 0; part < parts; part++)
+			{
+				g3dSceneNode node(fragment, world, part);
+				EXPECT_GT(g3dRendererMgr::Render(&node, &material, effect), 0) << "part " << part;
+			}
+		};
+		render();
+		if (i_Options.m_bMorphAfterDraw)
+		{
+			//	move the mesh aside and draw it again: the image has both
+			std::vector<maPoint3d> moved(i_Mesh.m_Positions);
+			for (maPoint3d& p : moved)
+				p = maPoint3d(p.m_X * 0.5f - 0.4f, p.m_Y * 0.5f, p.m_Z - 1.0f);
+			fragment->UpdateVertices((int)moved.size(), moved.data(), NULL);
+			render();
+		}
+
+		if (i_Options.m_bDestroyBeforeRead)
+		{
+			delete fragment;
+			fragment = NULL;
+		}
+		gtPicture picture = target.Read();
+		delete fragment;
+
+		if (i_Kind == gtBackend::e_DX11)
+			bumpBumpRenderer::SetDrawLimit(-1);
+		else
+			gvk::bumpBumpRenderer::SetDrawLimit(-1);
+		return picture;
+	}
+
+	//	Draws on both backends and compares
+	void expect_same_image(const char* i_pTest, const gtMesh& i_Mesh, const DrawOptions& i_Options)
+	{
+		gtPicture dx11, vulkan;
+		gtBackend::Run(gtBackend::e_DX11, [&]() { dx11 = draw(gtBackend::e_DX11, i_Mesh, i_Options); });
+		if (!gtBackend::Run(gtBackend::e_Vulkan, [&]() { vulkan = draw(gtBackend::e_Vulkan, i_Mesh, i_Options); }))
+			return;
+		EXPECT_TRUE(dx11.Valid());
+		EXPECT_TRUE(vulkan.Valid());
+		if (!dx11.Valid() || !vulkan.Valid())
+			return;
+
+		//	the mesh covers a good part of the image
+		int covered = 0;
+		for (size_t i = 0; i < dx11.m_Rgba.size(); i += 4)
+			covered += (dx11.m_Rgba[i] | dx11.m_Rgba[i + 1] | dx11.m_Rgba[i + 2]) != 0;
+		EXPECT_GT(covered, 128 * 128 / 20) << "DX11 drew almost nothing";
+
+		const gtCompareResult result = gtCompareImages(dx11.m_Rgba.data(), vulkan.m_Rgba.data(), 128, 128);
+		if (!result.m_bPass)
+		{
+			ADD_FAILURE() << result.Describe() << " (images in "
+				<< gtSaveComparison(i_pTest, dx11.m_Rgba.data(), vulkan.m_Rgba.data(), 128, 128) << ")";
+		}
+	}
+}
+
+TEST(bumpFragmentVkTest, FragmentDrawsMatchDX11)
+{
+	{
+		SCOPED_TRACE("static");
+		expect_same_image("FragmentDrawsMatchDX11_static", gtScene::Sphere(16, 32), DrawOptions());
+	}
+	{
+		SCOPED_TRACE("morphable, updated after the first draw");
+		DrawOptions options;
+		options.m_bMorphable = true;
+		options.m_bMorphAfterDraw = true;
+		expect_same_image("FragmentDrawsMatchDX11_morph", gtScene::Sphere(16, 32), options);
+	}
+}
+
+TEST(bumpFragmentVkTest, LargeMeshMatchesDX11)
+{
+	const gtMesh grid = gtScene::Grid(300);
+	ASSERT_GT(grid.VertexCount(), 65535);
+	{
+		SCOPED_TRACE("whole");
+		expect_same_image("LargeMeshMatchesDX11_whole", grid, DrawOptions());
+	}
+	{
+		SCOPED_TRACE("split and draw-call-limited");
+		DrawOptions options;
+		options.m_bSplit = true;
+		options.m_DrawLimit = 3000;
+		expect_same_image("LargeMeshMatchesDX11_split", grid, options);
+	}
+}
+
+TEST(bumpFragmentVkTest, DestroyAfterDrawIsSafe)
+{
+	//	The images still match, and gtBackend fails the test on any
+	//	validation message (a freed buffer the GPU still reads)
+	for (bool morphable : { false, true })
+	{
+		SCOPED_TRACE(morphable ? "morphable" : "static");
+		DrawOptions options;
+		options.m_bMorphable = morphable;
+		options.m_bDestroyBeforeRead = true;
+		expect_same_image(morphable ? "DestroyAfterDrawIsSafe_morph" : "DestroyAfterDrawIsSafe_static", gtScene::Sphere(8, 16), options);
 	}
 }

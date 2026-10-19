@@ -40,6 +40,9 @@
 #ifndef GVK_G3DSTUBSVK_HPP
 #include "GraphicsVulkan/stub/g3dStubsVk.hpp"
 #endif
+#ifndef GVK_G3D_SCENERENDERERCREATEVK_HPP
+#include "GraphicsVulkan/G3d/g3dSceneRendererCreateVk.hpp"
+#endif
 #ifndef GVK_TMESH_PACKAGE_HPP
 #include "GraphicsVulkan/tmesh/tmeshPackage.hpp"
 #endif

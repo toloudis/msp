@@ -23,16 +23,6 @@ namespace gvk
 	//------------------------------------------------------------------------
 	//	Renderers
 	//------------------------------------------------------------------------
-	int g3dSceneRendererVk::Render(g2dRenderTarget*, const camCamera&, const g3dScene&, const std::vector<g3dLayer*>&, float)
-	{
-		GVK_NOT_YET(m_pType);
-		return 0;
-	}
-
-	void g3dSceneRendererVk::ReleaseResources()
-	{
-	}
-
 	int g3dPickRendererVk::Render(g2dRenderTarget*, const camCamera&, const g3dScene&, const std::vector<g3dLayer*>&, float)
 	{
 		GVK_NOT_YET("g3dPickRendererVk::Render");
@@ -44,27 +34,6 @@ namespace gvk
 	void g3dPickRendererVk::RestoreViewport()					{}
 	void g3dPickRendererVk::GetPickInfo(g2dRenderTarget*, g3dPickInfo&)	{ GVK_NOT_YET("g3dPickRendererVk::GetPickInfo"); }
 
-	g3dSceneRenderer* g3dSceneRendererCreateVk::CreateDefaultRenderer()		{ return new g3dSceneRendererVk("default renderer"); }
-	g3dSceneRenderer* g3dSceneRendererCreateVk::CreateHDRRenderer()			{ return new g3dSceneRendererVk("HDR renderer"); }
-	g3dSceneRenderer* g3dSceneRendererCreateVk::CreateSimpleRenderer()		{ return new g3dSceneRendererVk("simple renderer"); }
-	g3dSceneRenderer* g3dSceneRendererCreateVk::CreateTextureRenderer()		{ return new g3dSceneRendererVk("texture renderer"); }
-	g3dSceneRenderer* g3dSceneRendererCreateVk::CreateDepthMapRenderer()	{ return new g3dSceneRendererVk("depth map renderer"); }
-	g3dSceneRenderer* g3dSceneRendererCreateVk::CreateRSMRenderer()			{ return new g3dSceneRendererVk("RSM renderer"); }
-	g3dSceneRenderer* g3dSceneRendererCreateVk::CreateOpacityMapRenderer(g3dProjectedLight*)	{ return new g3dSceneRendererVk("opacity map renderer"); }
-	g3dSceneRenderer* g3dSceneRendererCreateVk::CreateCubeMapRenderer(scObject*, matMaterial*, bool)	{ return new g3dSceneRendererVk("cube map renderer"); }
-	g3dSceneRenderer* g3dSceneRendererCreateVk::CreatePlanarReflectionRenderer(scObject*, matMaterial*)	{ return new g3dSceneRendererVk("planar reflection renderer"); }
-	g3dSceneRenderer* g3dSceneRendererCreateVk::CreateAmbientOcclusionRenderer()	{ return new g3dSceneRendererVk("ambient occlusion renderer"); }
-	g3dSceneRenderer* g3dSceneRendererCreateVk::CreateGlobalIlluminationRenderer()	{ return new g3dSceneRendererVk("global illumination renderer"); }
-	g3dSceneRenderer* g3dSceneRendererCreateVk::CreateDepthRenderer()		{ return new g3dSceneRendererVk("depth renderer"); }
-	g3dSceneRenderer* g3dSceneRendererCreateVk::CreateUVRenderer()			{ return new g3dSceneRendererVk("UV renderer"); }
-	g3dPickRenderer* g3dSceneRendererCreateVk::CreatePickRenderer()			{ return new g3dPickRendererVk; }
-	g3dSceneRenderer* g3dSceneRendererCreateVk::CreateShadowMaskRenderer()	{ return new g3dSceneRendererVk("shadow mask renderer"); }
-	g3dSceneRenderer* g3dSceneRendererCreateVk::CreateIlluminationRenderer()	{ return new g3dSceneRendererVk("illumination renderer"); }
-	g3dSceneRenderer* g3dSceneRendererCreateVk::CreateNormalRenderer()		{ return new g3dSceneRendererVk("normal renderer"); }
-	g3dSceneRenderer* g3dSceneRendererCreateVk::CreateVelocityMapRenderer()	{ return new g3dSceneRendererVk("velocity map renderer"); }
-	g3dSceneRenderer* g3dSceneRendererCreateVk::CreateMaterialsRenderer()	{ return new g3dSceneRendererVk("materials renderer"); }
-	g3dSceneRenderer* g3dSceneRendererCreateVk::CreateReflectionOnlyRenderer()	{ return new g3dSceneRendererVk("reflection-only renderer"); }
-	g3dSceneRenderer* g3dSceneRendererCreateVk::CreateGlowRenderer()		{ return new g3dSceneRendererVk("glow renderer"); }
 
 	//------------------------------------------------------------------------
 	//	Baking

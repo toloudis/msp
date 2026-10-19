@@ -14,6 +14,9 @@
 #ifndef G3D_TYPE_HPP
 #include "Graphics/G3d/g3dType.hpp"
 #endif
+#ifndef MAT_SHADERMGR_HPP
+#include "Graphics/mat/matShaderMgr.hpp"
+#endif
 #ifndef GVK_VKDSTATE_HPP
 #include "GraphicsVulkan/vkd/vkdState.hpp"
 #endif
@@ -49,6 +52,10 @@ void Initialize()
 	// optional skinning info.
 //	float4 Bones	: TEXCOORD1;
 //	float4 Weights	: TEXCOORD2;
+
+	// as in DX11, where it comes with finding the default effect the input
+	// layouts are made against (Vulkan's need no shader)
+	matShaderMgr::SetUseShaderArray(true);
 
 	const uint32_t stride = sizeof(g3dType::BumpTex1Vertex);
 	l_BumpDecl.reset(new vkdVertexLayout(

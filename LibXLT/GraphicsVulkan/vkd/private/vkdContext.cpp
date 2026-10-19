@@ -666,6 +666,12 @@ namespace gvk
 		return m_pNullTexture.get();
 	}
 
+	void vkdContext::SetShaderResource(uint32_t i_Slot, vkdImage* i_pImage)
+	{
+		vkdImage* image = i_pImage ? i_pImage : NullTexture();
+		m_Bindings.SetTexture(i_Slot, image->SampledIndex(m_Bindings));
+	}
+
 	uint64_t vkdContext::Flush()
 	{
 		std::lock_guard<std::recursive_mutex> lock(m_Device.StreamLock());

@@ -24,7 +24,7 @@ namespace gvk
 	class vkdDevice;
 	class g3dLightMgrVk;
 	class matTextureMgrVk;
-	class matShaderMgrVk;
+	class effShaderArray;
 	class g2dScreenCaptureUtilVk;
 
 	class g3dSystemVk : public g3dSystem
@@ -43,7 +43,7 @@ namespace gvk
 			//	The 3D hooks, installed for the system's lifetime (as g3dSystemDX11)
 			g3dLightMgrVk*			m_pLightMgr;
 			matTextureMgrVk*		m_pTextureMgr;
-			matShaderMgrVk*			m_pShaderMgr;
+			effShaderArray*			m_pShaderMgr;
 			g2dScreenCaptureUtilVk*	m_pScreenCapture;
 	};
 }
