@@ -133,6 +133,12 @@
     <ClCompile Include="vkd\private\vkdContext.cpp">
       <Filter>vkd\private</Filter>
     </ClCompile>
+    <ClCompile Include="vkd\private\vkdBuffer.cpp">
+      <Filter>vkd\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vkd\private\vkdFormat.cpp">
+      <Filter>vkd\private</Filter>
+    </ClCompile>
     <ClCompile Include="Eff\private\effPlainEffectVk.cpp">
       <Filter>Eff\private</Filter>
     </ClCompile>
@@ -245,6 +251,12 @@
       <Filter>vkd</Filter>
     </ClInclude>
     <ClInclude Include="vkd\vkdContext.hpp">
+      <Filter>vkd</Filter>
+    </ClInclude>
+    <ClInclude Include="vkd\vkdBuffer.hpp">
+      <Filter>vkd</Filter>
+    </ClInclude>
+    <ClInclude Include="vkd\vkdFormat.hpp">
       <Filter>vkd</Filter>
     </ClInclude>
     <ClInclude Include="Eff\effPlainEffectVk.hpp">

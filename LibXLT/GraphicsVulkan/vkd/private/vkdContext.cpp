@@ -591,7 +591,9 @@ namespace gvk
 					   "vkdContext::ClearRenderTarget: the image needs TRANSFER_DST usage to be cleared outside rendering");
 			end_rendering(commands);
 			barrier_if_needed(commands);
-			const VkImageSubresourceRange range = vkdRange(VK_IMAGE_ASPECT_COLOR_BIT);
+			//	the part of the image the target views (one face or mip of a texture)
+			VkImageSubresourceRange range = i_pTarget->Range();
+			range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 			vkCmdClearColorImage(commands, i_pTarget->Image(), VK_IMAGE_LAYOUT_GENERAL, &color, 1, &range);
 			m_bNeedBarrier = true;
 		}
@@ -630,7 +632,8 @@ namespace gvk
 					   "vkdContext::ClearDepthStencil: the image needs TRANSFER_DST usage to be cleared outside rendering");
 			end_rendering(commands);
 			barrier_if_needed(commands);
-			const VkImageSubresourceRange range = vkdRange(aspects);
+			VkImageSubresourceRange range = i_pTarget->Range();
+			range.aspectMask = aspects;
 			vkCmdClearDepthStencilImage(commands, i_pTarget->Image(), VK_IMAGE_LAYOUT_GENERAL, &value, 1, &range);
 			m_bNeedBarrier = true;
 		}

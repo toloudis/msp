@@ -115,6 +115,8 @@
     <ClCompile Include="vkd\private\vkdShader.cpp" />
     <ClCompile Include="vkd\private\vkdPipelineCache.cpp" />
     <ClCompile Include="vkd\private\vkdContext.cpp" />
+    <ClCompile Include="vkd\private\vkdBuffer.cpp" />
+    <ClCompile Include="vkd\private\vkdFormat.cpp" />
     <ClCompile Include="Eff\private\effPlainEffectVk.cpp" />
     <ClCompile Include="Fx\private\fxMaterialInstance.cpp" />
     <ClCompile Include="G3d\private\g3dBlendStateMgr.cpp" />
@@ -155,6 +157,8 @@
     <ClInclude Include="vkd\vkdShader.hpp" />
     <ClInclude Include="vkd\vkdPipelineCache.hpp" />
     <ClInclude Include="vkd\vkdContext.hpp" />
+    <ClInclude Include="vkd\vkdBuffer.hpp" />
+    <ClInclude Include="vkd\vkdFormat.hpp" />
     <ClInclude Include="Eff\effPlainEffectVk.hpp" />
     <ClInclude Include="Fx\fxMaterialInstance.hpp" />
     <ClInclude Include="Fx\fxEffectApi.hpp" />

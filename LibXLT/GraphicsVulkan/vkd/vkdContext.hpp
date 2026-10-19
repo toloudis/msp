@@ -100,6 +100,8 @@ namespace gvk
 			vkdBindings& Bindings()		{ return m_Bindings; }
 			//	Short-lived GPU memory (constants, dynamic vertices); valid for work recorded from now on
 			vkdRingBuffer::Allocation Upload(const void* i_pData, VkDeviceSize i_Size, VkDeviceSize i_Alignment = 256);
+			//	The same, for the caller to fill
+			vkdRingBuffer::Allocation Allocate(VkDeviceSize i_Size, VkDeviceSize i_Alignment = 256)	{ return m_Ring.Allocate(i_Size, i_Alignment); }
 
 			void Draw(uint32_t i_Vertices, uint32_t i_First);
 			void DrawIndexed(uint32_t i_Indices, uint32_t i_FirstIndex, int32_t i_BaseVertex);

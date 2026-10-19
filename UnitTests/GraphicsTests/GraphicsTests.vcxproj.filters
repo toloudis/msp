@@ -70,6 +70,15 @@
     <ClCompile Include="Vk\fxParityTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
+    <ClCompile Include="Vk\vkdFormatTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\vkdImageTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\vkdBufferTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
     <ClCompile Include="Vk\tiffVcpkgTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
