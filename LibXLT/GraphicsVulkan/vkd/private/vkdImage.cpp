@@ -160,6 +160,22 @@ namespace gvk
 		return image;
 	}
 
+	std::unique_ptr<vkdImage> vkdImage::Wrap(vkdDevice& i_Device, VkImage i_Image, VkImageView i_View,
+											 const vkdImageDesc& i_Desc)
+	{
+		std::unique_ptr<vkdImage> image(new vkdImage(i_Device));
+		image->m_Desc = i_Desc;
+		image->m_Image = i_Image;
+		image->m_View = i_View;
+		image->m_bOwnsView = false;
+		VkImageViewCreateInfo& view = image->m_ViewInfo;
+		view.image = i_Image;
+		view.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		view.format = i_Desc.m_Format;
+		view.subresourceRange = vkdRange(i_Desc.m_Aspect);
+		return image;
+	}
+
 	std::unique_ptr<vkdImage> vkdImage::Create2D(vkdDevice& i_Device, uint32_t i_Width, uint32_t i_Height,
 												 VkFormat i_Format, VkImageUsageFlags i_Usage, const char* i_Name,
 												 VkImageAspectFlags i_Aspect)
@@ -268,7 +284,7 @@ namespace gvk
 		VkDevice device = m_Device.Device();
 		VmaAllocator allocator = m_Device.Allocator();
 		VkImage image = m_Allocation ? m_Image : VK_NULL_HANDLE;
-		VkImageView view = m_View;
+		VkImageView view = m_bOwnsView ? m_View : VK_NULL_HANDLE;
 		VmaAllocation allocation = m_Allocation;
 		m_Device.DeferDestroy([device, allocator, image, view, allocation]()
 		{

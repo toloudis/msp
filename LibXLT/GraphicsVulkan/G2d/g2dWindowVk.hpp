@@ -3,11 +3,21 @@
 **
 **      g2dWindowVk is a g2dWindow drawn with Vulkan: a swap chain on the
 **	native window (vkdSwapchain) plus a D24S8 depth buffer, matching the
-**	DX11 window (g2dWindowPrimaryDX11). Clears record into the device's
-**	command stream; Present submits and presents.
+**	DX11 window (g2dWindowDX11 and g2dWindowPrimaryDX11).
 **
-**	Not yet ported (GVK_NOT_YET): the debug overlay, DrawText/DrawRect/
-**	DrawImage, and rendering at a resolution other than the window's.
+**	- BeginScene acquires the frame's swap-chain image (once per frame);
+**	  MakeCurrent and the clears make it and the depth buffer vkdContext's
+**	  targets, as DX11's configure_device; Present submits and presents.
+**	- While the window has no area (or no image can be acquired) the frame
+**	  is skipped: no targets are bound, so draws and clears do nothing.
+**	- The swap-chain image is unbound from vkdContext at Present (it can't
+**	  be drawn to until the next frame acquires one), and the window's
+**	  targets when they are resized or destroyed.
+**	- SetRenderResolution renders into an RGBA8 image of that size and, in
+**	  Present, draws it scaled into the window (GetPresentRect), with black
+**	  bars, as g2dWindowPrimaryDX11.
+**
+**	Not yet ported (GVK_NOT_YET): the debug overlay and DrawText.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -33,6 +43,7 @@
 namespace gvk
 {
 	class vkdDevice;
+	class vkdImage;
 	class g2dDepthStencilBufferVk;
 
 	class g2dWindowVk : public g2dWindow
@@ -66,6 +77,7 @@ namespace gvk
 			virtual void DrawImage(int i_DX1, int i_DY1, int i_SX1, int i_SY1, int i_SX2, int i_SY2, const g2dImage& i_Image);
 			virtual void ResizeWindow(int i_Width, int i_Height);
 			virtual void SetRenderResolution(int i_Width, int i_Height);
+			virtual void GetPresentRect(int& o_X, int& o_Y, int& o_Width, int& o_Height) const;
 			virtual void Present();
 			virtual void SetTitle(const itString& i_Title);
 			virtual float GetFrameRateAverage();
@@ -78,8 +90,16 @@ namespace gvk
 
 		private:
 			void set_size(int i_Width, int i_Height);
-			void clear_color(float r, float g, float b, float a);
-			void clear_depth(bool i_bDepth, float i_Depth, bool i_bStencil, unsigned int i_Stencil);
+			bool create_offscreen_buffer(int i_Width, int i_Height);
+			bool is_offscreen() const { return m_pOffscreen != NULL; }
+			//	What is drawn to: the offscreen image, else the frame's
+			//	swap-chain image (acquired now if need be); NULL to skip
+			vkdImage* back_buffer();
+			//	Our targets on vkdContext, as DX11's; false (nothing bound)
+			//	when the frame is skipped
+			bool configure_device();
+			//	Takes the window's images off vkdContext if they are on it
+			void release_targets(bool i_bSwapchainOnly);
 			void mark_frame();
 
 			vkdDevice&		m_Device;
@@ -87,6 +107,15 @@ namespace gvk
 			bool			m_bOwnHwnd;
 			vkdSwapchain	m_Swapchain;
 			shared_ptr<g2dDepthStencilBufferVk>	m_Depth;
+
+			//	size of the swap chain (the window's client area)
+			int				m_WindowWidth = 0;
+			int				m_WindowHeight = 0;
+			//	requested render resolution, 0 when rendering at the window size
+			int				m_RenderWidth = 0;
+			int				m_RenderHeight = 0;
+			//	the image rendered into at the render resolution
+			std::unique_ptr<vkdImage>	m_pOffscreen;
 
 			maRunningAverage	m_FPSAverage;
 			float				m_StartTime = 0;

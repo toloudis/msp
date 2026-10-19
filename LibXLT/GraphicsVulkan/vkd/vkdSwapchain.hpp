@@ -20,12 +20,14 @@
 #include <volk.h>
 
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <vector>
 
 namespace gvk
 {
 	class vkdDevice;
+	class vkdImage;
 
 	class vkdSwapchain
 	{
@@ -51,6 +53,11 @@ namespace gvk
 			//	The current image (valid while IsAcquired()).
 			VkImage		Image() const;
 			VkImageView	View() const;
+			//	The current image as a vkdImage, to bind as a render target
+			//	(NULL unless IsAcquired()); its usage is the swap chain's.
+			//	Destroyed when the swap chain is recreated, so unbind it
+			//	before the next Acquire.
+			vkdImage*	Target() const;
 			VkFormat	Format() const		{ return m_Format; }
 			uint32_t	Width() const		{ return m_Extent.width; }
 			uint32_t	Height() const		{ return m_Extent.height; }
@@ -76,6 +83,7 @@ namespace gvk
 			VkExtent2D					m_Extent = {0, 0};
 			std::vector<VkImage>		m_Images;
 			std::vector<VkImageView>	m_Views;
+			std::vector<std::unique_ptr<vkdImage>> m_Targets;	// wrap m_Images and m_Views
 			std::vector<VkSemaphore>	m_RenderDone;		// per image
 			std::vector<VkSemaphore>	m_AcquireSemaphores;	// rotating
 			std::vector<uint64_t>		m_AcquireValues;	// timeline value that freed each

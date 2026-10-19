@@ -10,6 +10,7 @@
 #endif
 #ifndef GVK_VKDDEVICE_HPP
 #include "GraphicsVulkan/vkd/vkdDevice.hpp"
+#include "GraphicsVulkan/vkd/vkdImage.hpp"
 #endif
 #ifndef GVK_VKDCHECK_HPP
 #include "GraphicsVulkan/vkd/vkdCheck.hpp"
@@ -114,6 +115,7 @@ namespace gvk
 
 	void vkdSwapchain::destroy_images()
 	{
+		m_Targets.clear();
 		for (VkImageView view : m_Views)
 		{
 			vkDestroyImageView(m_Device.Device(), view, NULL);
@@ -135,6 +137,11 @@ namespace gvk
 	VkImageView vkdSwapchain::View() const
 	{
 		return m_bAcquired ? m_Views[m_Current] : VK_NULL_HANDLE;
+	}
+
+	vkdImage* vkdSwapchain::Target() const
+	{
+		return m_bAcquired ? m_Targets[m_Current].get() : nullptr;
 	}
 
 	//------------------------------------------------------------------------
@@ -246,6 +253,12 @@ namespace gvk
 			VkImageView image_view = VK_NULL_HANDLE;
 			VK_CHECK(vkCreateImageView(m_Device.Device(), &view, NULL, &image_view));
 			m_Views.push_back(image_view);
+			vkdImageDesc desc;
+			desc.m_Format = m_Format;
+			desc.m_Width = extent.width;
+			desc.m_Height = extent.height;
+			desc.m_Usage = info.imageUsage;
+			m_Targets.push_back(vkdImage::Wrap(m_Device, m_Images[i], image_view, desc));
 			m_RenderDone.push_back(new_semaphore(m_Device, m_Name + " render done " + std::to_string(i)));
 		}
 		while (m_AcquireSemaphores.size() < count + 1)

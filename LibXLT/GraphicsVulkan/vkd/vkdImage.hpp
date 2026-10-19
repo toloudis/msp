@@ -13,6 +13,9 @@
 **	bind as render targets or textures where DX11 code makes a view of
 **	part of a texture. They share the parent's VkImage and are owned by it.
 **
+**	Wrap() gives a vkdImage for an image and view made elsewhere (a swap
+**	chain's), so it can be bound like any other; it destroys neither.
+**
 **	Extra Large Technology
 \****************************************************************************/
 #ifdef GVK_VKDIMAGE_HPP
@@ -57,6 +60,10 @@ namespace gvk
 			static std::unique_ptr<vkdImage> Create2D(vkdDevice& i_Device, uint32_t i_Width, uint32_t i_Height,
 													  VkFormat i_Format, VkImageUsageFlags i_Usage, const char* i_Name,
 													  VkImageAspectFlags i_Aspect = VK_IMAGE_ASPECT_COLOR_BIT);
+			//	i_Image and i_View stay their owner's: they must outlive the
+			//	vkdImage (and any use of it the GPU hasn't finished)
+			static std::unique_ptr<vkdImage> Wrap(vkdDevice& i_Device, VkImage i_Image, VkImageView i_View,
+												  const vkdImageDesc& i_Desc);
 			~vkdImage();
 
 			//	For a subresource or depth view, the description of what the
@@ -125,6 +132,7 @@ namespace gvk
 			VkImageView		m_View = VK_NULL_HANDLE;
 			VkImageViewCreateInfo m_ViewInfo = {VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
 			VmaAllocation	m_Allocation = nullptr;		// NULL for views: the parent owns the image
+			bool			m_bOwnsView = true;			// false for Wrap()
 			vkdBindings*	m_pBindings = nullptr;
 			uint32_t		m_SampledIndex = UINT32_MAX;
 			uint32_t		m_StorageIndex = UINT32_MAX;

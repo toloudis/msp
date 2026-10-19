@@ -112,6 +112,9 @@
     <ClCompile Include="vkd\private\vkdSwapchain.cpp">
       <Filter>vkd\private</Filter>
     </ClCompile>
+    <ClCompile Include="G2d\private\g2dWindowDrawUtilVk.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
     <ClCompile Include="G2d\private\g2dWindowVk.cpp">
       <Filter>G2d\private</Filter>
     </ClCompile>
@@ -421,6 +424,9 @@
     </ClInclude>
     <ClInclude Include="vkd\vkdSwapchain.hpp">
       <Filter>vkd</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\private\g2dWindowDrawUtilVk.hpp">
+      <Filter>G2d\private</Filter>
     </ClInclude>
     <ClInclude Include="G2d\g2dWindowVk.hpp">
       <Filter>G2d</Filter>

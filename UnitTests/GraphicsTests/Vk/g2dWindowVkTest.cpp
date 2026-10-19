@@ -3,11 +3,20 @@
 **
 **      g2dWindowVk: surface and swap chain on a (hidden) native window:
 **      clear and present, resize including to nothing, two windows, and
-**      the GPU timer for g3dProfiler. Skipped without a Vulkan device.
+**      the GPU timer for g3dProfiler. Then windows that render scenes,
+**      with the whole layer up (gtBackend): a scene in a window equals the
+**      same scene in a render-target texture, survives resizes and a 0x0
+**      window, renders at another resolution (scaled into the window),
+**      and DrawRect / DrawImage match DX11's window. Skipped without a
+**      Vulkan device.
 **
 **	Extra Large Technology
 \****************************************************************************/
-#include "gtVulkan.hpp"
+#include "gtVulkanContext.hpp"
+#include "gtBackend.hpp"
+#include "gtImage.hpp"
+#include "gtScene.hpp"
+#include "gtTarget.hpp"
 #include "gtPlatform.hpp"
 
 #ifndef GVK_G2DWINDOWVK_HPP
@@ -28,8 +37,50 @@
 #ifndef G3D_PROFILER_HPP
 #include "Graphics/G3d/g3dProfiler.hpp"
 #endif
+#ifndef G2D_SYSTEM_HPP
+#include "Graphics/G2d/g2dSystem.hpp"
+#endif
+#ifndef G2D_IMAGE_HPP
+#include "Graphics/G2d/g2dImage.hpp"
+#endif
+#ifndef G2D_IMAGECREATE_HPP
+#include "Graphics/G2d/g2dImageCreate.hpp"
+#endif
+#ifndef G2D_PFD_HPP
+#include "Graphics/G2d/g2dPFD.hpp"
+#endif
+#ifndef G3D_LIGHTMGR_HPP
+#include "Graphics/G3d/g3dLightMgr.hpp"
+#endif
+#ifndef MA_FLOATRGBA_HPP
+#include "Core/Ma/maFloatRGBA.hpp"
+#endif
+#ifndef EFF_PHONGDATA_HPP
+#include "Graphics/Eff/effPhongData.hpp"
+#endif
+#ifndef GRAPHICSDX11_LAYER_HPP
+#include "GraphicsDX11/GraphicsDX11Layer.hpp"
+#endif
+#ifndef G2D_WINDOWDX11_HPP
+#include "GraphicsDX11/g2d/g2dWindowDX11.hpp"
+#endif
+#ifndef G2D_DX11GLOBALWIN_HPP
+#include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
+#endif
+#ifndef G3D_SCENERENDERERDX11_HPP
+#include "GraphicsDX11/g3d/g3dSceneRendererDX11.hpp"
+#endif
+#ifndef GVK_GRAPHICSVULKANLAYER_HPP
+#include "GraphicsVulkan/GraphicsVulkanLayer.hpp"
+#endif
+#ifndef GVK_G3D_SCENERENDERERVK_HPP
+#include "GraphicsVulkan/G3d/g3dSceneRendererVk.hpp"
+#endif
 #include "gtTempDir.hpp"
 
+#include <wrl/client.h>
+
+#include <cstring>
 #include <fstream>
 #include <memory>
 #include <string>
@@ -38,7 +89,7 @@ using namespace gvk;
 
 namespace
 {
-	class gtWindow : public gtVulkan
+	class gtWindow : public gtVulkanContext
 	{
 		protected:
 			void TearDown() override
@@ -49,7 +100,7 @@ namespace
 					gtPlatform::DestroyHiddenWindow(hwnd);
 				}
 				m_Native.clear();
-				gtVulkan::TearDown();
+				gtVulkanContext::TearDown();
 			}
 
 			g2dWindowVk& window(int i_Width, int i_Height)
@@ -192,3 +243,367 @@ TEST_F(gtVulkan, GpuTimerMeasuresClear)
 	EXPECT_GE(std::stod(field(root, 6)), std::stod(field(clears, 6)));
 }
 #endif
+
+//============================================================================
+//	Windows that render scenes, with the whole layer up (gtBackend)
+//============================================================================
+namespace
+{
+	using Microsoft::WRL::ComPtr;
+
+	g2dSystem* system_2d(gtBackend::Kind i_Kind)
+	{
+		return i_Kind == gtBackend::e_DX11 ? GraphicsDX11Layer::GetSystem2D() : GraphicsVulkanLayer::GetSystem2D();
+	}
+
+	//	A g2dWindow on a hidden native window, made by the backend's g2dSystem
+	class gtSceneWindow
+	{
+		public:
+			gtSceneWindow(gtBackend::Kind i_Kind, int i_Width, int i_Height)
+				: m_Kind(i_Kind)
+				, m_pNative(gtPlatform::CreateHiddenWindow(i_Width, i_Height))
+				, m_pWindow(system_2d(i_Kind)->CreateSubWindow(m_pNative))
+			{
+			}
+			~gtSceneWindow()
+			{
+				system_2d(m_Kind)->DestroyWindow(m_pWindow);
+				gtPlatform::DestroyHiddenWindow(m_pNative);
+			}
+
+			g2dWindow& Window()		{ return *m_pWindow; }
+
+			void Resize(int i_Width, int i_Height)
+			{
+				gtPlatform::ResizeHiddenWindow(m_pNative, i_Width, i_Height);
+				m_pWindow->ResizeWindow(i_Width, i_Height);
+			}
+
+			//	Presents the frame and returns what it showed (RGBA, top row
+			//	first; the window's size). DX11 reads its back buffer just
+			//	before presenting.
+			gtPicture Present()
+			{
+				gtPicture picture;
+				if (m_Kind == gtBackend::e_Vulkan)
+				{
+					gvk::g2dWindowVk* window = dynamic_cast<gvk::g2dWindowVk*>(m_pWindow);
+					EXPECT_TRUE(window != NULL);
+					window->DebugReadBackNextFrame();
+					window->Present();
+					picture.m_Rgba = window->DebugPixels();
+					if (window->SwapchainFormat() == VK_FORMAT_B8G8R8A8_UNORM)
+					{
+						for (size_t i = 0; i + 3 < picture.m_Rgba.size(); i += 4)
+							std::swap(picture.m_Rgba[i], picture.m_Rgba[i + 2]);
+					}
+				}
+				else
+				{
+					picture = read_dx11();
+					m_pWindow->Present();
+				}
+				int x = 0, y = 0;
+				m_pWindow->GetPresentRect(x, y, picture.m_Width, picture.m_Height);
+				picture.m_Width += 2 * x;
+				picture.m_Height += 2 * y;
+				return picture;
+			}
+
+		private:
+			gtPicture read_dx11()
+			{
+				gtPicture picture;
+				g2dWindowDX11* window = dynamic_cast<g2dWindowDX11*>(m_pWindow);
+				EXPECT_TRUE(window != NULL);
+				if (!window)
+					return picture;
+				g2dD3D11RenderTargetPtr view = window->GetBackBuffer();
+				ComPtr<ID3D11Resource> resource;
+				view->GetResource(&resource);
+				view->Release();
+				D3D11_TEXTURE2D_DESC desc;
+				static_cast<ID3D11Texture2D*>(resource.Get())->GetDesc(&desc);
+				desc.Usage = D3D11_USAGE_STAGING;
+				desc.BindFlags = 0;
+				desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+				desc.MiscFlags = 0;
+				ComPtr<ID3D11Texture2D> staging;
+				if (FAILED(g2dDX11Global::g_pDevice->CreateTexture2D(&desc, NULL, &staging)))
+				{
+					ADD_FAILURE() << "no staging texture";
+					return picture;
+				}
+				ID3D11DeviceContext* context = g2dDX11Global::g_pDeviceContext;
+				context->CopyResource(staging.Get(), resource.Get());
+				D3D11_MAPPED_SUBRESOURCE mapped;
+				if (SUCCEEDED(context->Map(staging.Get(), 0, D3D11_MAP_READ, 0, &mapped)))
+				{
+					const size_t row = (size_t)desc.Width * 4;
+					picture.m_Rgba.resize(row * desc.Height);
+					for (UINT y = 0; y < desc.Height; y++)
+						memcpy(&picture.m_Rgba[y * row], (const uint8_t*)mapped.pData + y * mapped.RowPitch, row);
+					context->Unmap(staging.Get(), 0);
+				}
+				return picture;
+			}
+
+			gtBackend::Kind	m_Kind;
+			void*			m_pNative;
+			g2dWindow*		m_pWindow;
+	};
+
+	//	Two lit Phong spheres
+	void spheres(gtSceneBuilder& io_Builder)
+	{
+		g3dLightMgr::SetAmbient(maFloatRGBA(0.1f, 0.15f, 0.2f, 1));
+		io_Builder.PointLight(maPoint3d(2, 3, 4), maFloatRGBA(0.9f, 0.8f, 0.7f, 1), 25.0f);
+		matMaterial* phong = io_Builder.Keep(gtScene::DataMaterial("Phong.fx", [](effShaderData* i_pData)
+		{
+			gtScene::SetPhong(i_pData, gtScene::e_NonDefault);
+			if (effPhongData* data = dynamic_cast<effPhongData*>(i_pData))
+				data->m_Transparency = 1.0f;
+		}));
+		io_Builder.Add(gtScene::Sphere(16, 32), phong, gtScene::Place(-0.6f, 0.2f, 0, 0.8f));
+		io_Builder.Add(gtScene::Sphere(16, 32), phong, gtScene::Place(0.7f, -0.3f, 0.5f, 0.6f));
+	}
+
+	//	One frame of the scene into io_rWindow: black with depth 1, then the
+	//	forward renderer (which clears the colour again, as DX11's)
+	void render_frame(g2dWindow& io_rWindow, g3dSceneRenderer& io_rRenderer, gtSceneBuilder& io_rBuilder)
+	{
+		io_rWindow.BeginScene();
+		io_rWindow.MakeCurrent();
+		io_rWindow.Clear(g2dRGBColor(0, 0, 0));
+		const std::vector<g3dLayer*> no_layers;
+		io_rRenderer.Render(&io_rWindow, io_rBuilder.Camera(), io_rBuilder.Scene(), no_layers, 1.25f);
+		io_rWindow.EndScene();
+	}
+
+	//	How many pixels of i_rPicture aren't black
+	int lit_pixels(const gtPicture& i_rPicture)
+	{
+		int lit = 0;
+		for (size_t i = 0; i + 3 < i_rPicture.m_Rgba.size(); i += 4)
+			lit += (i_rPicture.m_Rgba[i] | i_rPicture.m_Rgba[i + 1] | i_rPicture.m_Rgba[i + 2]) != 0;
+		return lit;
+	}
+
+	bool same_rgb(const gtPicture& i_rPicture, int i_X, int i_Y, uint8_t i_R, uint8_t i_G, uint8_t i_B)
+	{
+		const uint8_t* p = &i_rPicture.m_Rgba[((size_t)i_Y * i_rPicture.m_Width + i_X) * 4];
+		return p[0] == i_R && p[1] == i_G && p[2] == i_B;
+	}
+}
+
+TEST(g2dWindowVkScene, SceneInWindowMatchesOffscreen)
+{
+	const int size = 256;
+	gtPicture offscreen, windowed;
+	gtBackend::Run(gtBackend::e_Vulkan, [&]()
+	{
+		gtSceneBuilder builder;
+		spheres(builder);
+		gvk::g3dSceneRendererVk renderer;
+		{
+			const float black[4] = { 0, 0, 0, 1 };
+			gtTarget target(gtBackend::e_Vulkan, size, size, black);
+			const std::vector<g3dLayer*> no_layers;
+			renderer.Render(target.Target(), builder.Camera(), builder.Scene(), no_layers, 1.25f);
+			offscreen = target.Read();
+		}
+		gtSceneWindow window(gtBackend::e_Vulkan, size, size);
+		render_frame(window.Window(), renderer, builder);
+		windowed = window.Present();
+		renderer.ReleaseResources();
+	});
+	if (::testing::Test::IsSkipped())
+		return;
+	ASSERT_TRUE(offscreen.Valid());
+	ASSERT_TRUE(windowed.Valid());
+	ASSERT_EQ(size, windowed.m_Width);
+	EXPECT_GT(lit_pixels(offscreen), size * size / 20) << "the scene drew almost nothing";
+	const gtCompareResult result = gtCompareImages(offscreen.m_Rgba.data(), windowed.m_Rgba.data(), size, size);
+	std::cout << "  SceneInWindowMatchesOffscreen: " << result.Describe() << std::endl;
+	if (!result.m_bPass)
+	{
+		ADD_FAILURE() << result.Describe() << " (images in "
+			<< gtSaveComparison("SceneInWindowMatchesOffscreen", offscreen.m_Rgba.data(), windowed.m_Rgba.data(), size, size) << ")";
+	}
+}
+
+TEST(g2dWindowVkScene, SceneInWindowResizes)
+{
+	gtBackend::Run(gtBackend::e_Vulkan, [&]()
+	{
+		gtSceneBuilder builder;
+		spheres(builder);
+		gvk::g3dSceneRendererVk renderer;
+		gtSceneWindow window(gtBackend::e_Vulkan, 200, 150);
+		auto frame = [&]()
+		{
+			render_frame(window.Window(), renderer, builder);
+			return window.Present();
+		};
+		gtPicture picture = frame();
+		EXPECT_EQ(200u * 150u * 4u, picture.m_Rgba.size());
+		EXPECT_GT(lit_pixels(picture), 0);
+
+		window.Resize(320, 240);
+		picture = frame();
+		EXPECT_EQ(320u * 240u * 4u, picture.m_Rgba.size());
+		EXPECT_GT(lit_pixels(picture), 0);
+
+		//	minimized: nothing is drawn or presented, and nothing fails
+		window.Resize(0, 0);
+		frame();
+		frame();
+
+		window.Resize(160, 120);
+		picture = frame();
+		EXPECT_EQ(160u * 120u * 4u, picture.m_Rgba.size());
+		EXPECT_GT(lit_pixels(picture), 0);
+
+		//	resized between BeginScene and Present
+		window.Window().BeginScene();
+		window.Window().Clear(g2dRGBColor(0, 0, 0));
+		window.Resize(200, 100);
+		picture = frame();
+		EXPECT_EQ(200u * 100u * 4u, picture.m_Rgba.size());
+		EXPECT_GT(lit_pixels(picture), 0);
+		renderer.ReleaseResources();
+	});
+}
+
+TEST(g2dWindowVkScene, RenderResolutionScales)
+{
+	gtBackend::Run(gtBackend::e_Vulkan, [&]()
+	{
+		gtSceneWindow window(gtBackend::e_Vulkan, 200, 100);
+		g2dWindow& w = window.Window();
+		int width = 0, height = 0;
+
+		//	50x50 rendered, shown 100x100 in the middle with black bars
+		w.SetRenderResolution(50, 50);
+		w.GetDimensions(width, height);
+		EXPECT_EQ(50, width);
+		EXPECT_EQ(50, height);
+		int x = 0, y = 0;
+		w.GetPresentRect(x, y, width, height);
+		EXPECT_EQ(50, x);
+		EXPECT_EQ(0, y);
+		EXPECT_EQ(100, width);
+		EXPECT_EQ(100, height);
+
+		w.BeginScene();
+		w.Clear(g2dRGBColor(255, 0, 0));
+		w.EndScene();
+		gtPicture picture = window.Present();
+		ASSERT_EQ(200u * 100u * 4u, picture.m_Rgba.size());
+		ASSERT_EQ(200, picture.m_Width);
+		for (int py = 0; py < 100; py += 3)
+		{
+			for (int px = 0; px < 200; px += 3)
+			{
+				const bool inside = px >= 50 && px < 150;
+				ASSERT_TRUE(inside ? same_rgb(picture, px, py, 255, 0, 0) : same_rgb(picture, px, py, 0, 0, 0))
+					<< "pixel " << px << "," << py;
+			}
+		}
+
+		//	a scene at 64x64 fills the window's middle 100x100, scaled up
+		gtSceneBuilder builder;
+		spheres(builder);
+		gvk::g3dSceneRendererVk renderer;
+		w.SetRenderResolution(64, 64);
+		render_frame(w, renderer, builder);
+		picture = window.Present();
+		ASSERT_EQ(200u * 100u * 4u, picture.m_Rgba.size());
+		int lit_middle = 0, lit_bars = 0;
+		for (int py = 0; py < 100; py++)
+		{
+			for (int px = 0; px < 200; px++)
+			{
+				const int lit = same_rgb(picture, px, py, 0, 0, 0) ? 0 : 1;
+				if (px >= 50 && px < 150)
+					lit_middle += lit;
+				else
+					lit_bars += lit;
+			}
+		}
+		EXPECT_GT(lit_middle, 100 * 100 / 20);
+		EXPECT_EQ(0, lit_bars);
+
+		//	back to the window's size
+		w.SetRenderResolution(0, 0);
+		w.GetDimensions(width, height);
+		EXPECT_EQ(200, width);
+		EXPECT_EQ(100, height);
+		w.BeginScene();
+		w.Clear(g2dRGBColor(0, 0, 255));
+		w.EndScene();
+		picture = window.Present();
+		ASSERT_EQ(200u * 100u * 4u, picture.m_Rgba.size());
+		EXPECT_TRUE(same_rgb(picture, 0, 0, 0, 0, 255));
+		EXPECT_TRUE(same_rgb(picture, 199, 99, 0, 0, 255));
+		renderer.ReleaseResources();
+	});
+}
+
+TEST(g2dWindowVkScene, DrawRectAndImageMatchDX11)
+{
+	//	On each backend: a grey window, a 40x30 image drawn whole, part of
+	//	it, clipped at each edge and wholly off, and a rectangle (DX11's
+	//	DrawRect draws nothing: "not implemented")
+	auto draw = [](gtBackend::Kind i_Kind)
+	{
+		gtSceneWindow window(i_Kind, 160, 120);
+		g2dWindow& w = window.Window();
+		const g2dPFD rgba8(0, 8, 8, 8, 16, 8, 24, 8, 32);
+		std::unique_ptr<g2dImage> image(g2dImageCreate::Make(40, 30, rgba8, g2dImage::e_VideoMemory));
+		uint8_t* pixels = static_cast<uint8_t*>(image->Lock());
+		const int stride = image->GetStride();
+		for (int y = 0; y < 30; y++)
+		{
+			for (int x = 0; x < 40; x++)
+			{
+				uint8_t* p = pixels + y * stride + x * 4;
+				p[0] = (uint8_t)(x * 6);
+				p[1] = (uint8_t)(y * 8);
+				p[2] = (uint8_t)((x + y) % 2 ? 255 : 40);
+				p[3] = 255;
+			}
+		}
+		image->Release();
+
+		w.BeginScene();
+		w.MakeCurrent();
+		w.Clear(g2dRGBColor(60, 60, 60));
+		w.DrawImage(10, 10, *image);
+		w.DrawImage(70, 20, 5, 5, 25, 20, *image);
+		w.DrawImage(-15, 80, *image);		// left edge
+		w.DrawImage(140, -10, *image);		// top and right edges
+		w.DrawImage(100, 100, *image);		// bottom edge
+		w.DrawImage(-50, 50, *image);		// all off
+		w.DrawRect(5, 5, 50, 50, g2dRGBColor(255, 255, 0));
+		w.EndScene();
+		return window.Present();
+	};
+	gtPicture dx11, vulkan;
+	if (!gtBackend::Run(gtBackend::e_DX11, [&]() { dx11 = draw(gtBackend::e_DX11); }))
+		return;
+	if (!gtBackend::Run(gtBackend::e_Vulkan, [&]() { vulkan = draw(gtBackend::e_Vulkan); }))
+		return;
+	ASSERT_TRUE(dx11.Valid());
+	ASSERT_TRUE(vulkan.Valid());
+	ASSERT_EQ(dx11.m_Rgba.size(), vulkan.m_Rgba.size());
+	//	the image is there (its corner pixels exactly)
+	EXPECT_TRUE(same_rgb(dx11, 10, 10, 0, 0, 40));
+	EXPECT_TRUE(same_rgb(dx11, 49, 39, 234, 232, 40));
+	int differ = 0;
+	for (size_t i = 0; i < dx11.m_Rgba.size(); i += 4)
+		differ += memcmp(&dx11.m_Rgba[i], &vulkan.m_Rgba[i], 3) != 0;
+	EXPECT_EQ(0, differ) << "pixels differ (images in "
+		<< gtSaveComparison("DrawRectAndImageMatchDX11", dx11.m_Rgba.data(), vulkan.m_Rgba.data(), 160, 120) << ")";
+}

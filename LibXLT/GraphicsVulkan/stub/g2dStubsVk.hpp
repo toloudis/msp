@@ -116,6 +116,9 @@ namespace gvk
 			virtual void GetPixels(g2dPixelRGBA32F* o_pBuffer, int i_Width, int i_Height);
 			virtual void SwapChannels(int i_ChannelOne, int i_ChannelTwo);
 
+			//	The pixels, GetStride() bytes per row (NULL if empty)
+			const uint8_t* Pixels() const { return m_Pixels.empty() ? NULL : m_Pixels.data(); }
+
 		private:
 			int bytes_per_pixel() const;
 
