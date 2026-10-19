@@ -9,7 +9,7 @@ from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from imgcompare import Tolerance, compare_dirs, compare_images, diff_image, load_image  # noqa: E402
+from imgcompare import Tolerance, compare_dirs, compare_images, diff_image, frame_number, load_image  # noqa: E402
 
 L = 1.0 / 255.0
 
@@ -136,6 +136,39 @@ def test_compare_dirs_is_case_insensitive_on_extension(tmp_path):
     write_png(b / "F_0001.PNG", img)
     results = compare_dirs(a, b, Tolerance(), None)
     assert len(results) == 1 and results[0].passed
+
+
+def test_frame_number_is_the_trailing_digits():
+    assert frame_number("Scene_CAM01_Master_BTY_0296.PNG") == 296
+    assert frame_number("f1.png") == 1
+    assert frame_number("beauty.png") is None
+
+
+def test_compare_dirs_frame_window_ignores_frames_outside(tmp_path):
+    # A is a full render (frames 1-5), B a short one (2-3): only 2-3 are compared
+    a, b = tmp_path / "a", tmp_path / "b"
+    a.mkdir(); b.mkdir()
+    img = np.full((4, 4, 3), 128, dtype=np.uint8)
+    for n in range(1, 6):
+        write_png(a / f"f_{n:04d}.png", img)
+    for n in (2, 3):
+        write_png(b / f"f_{n:04d}.png", img)
+    results = compare_dirs(a, b, Tolerance(), None, frames=(2, 3))
+    assert [r.name for r in results] == ["f_0002.png", "f_0003.png"]
+    assert all(r.passed for r in results)
+
+
+def test_compare_dirs_frame_window_still_fails_missing_frames(tmp_path):
+    a, b = tmp_path / "a", tmp_path / "b"
+    a.mkdir(); b.mkdir()
+    img = np.full((4, 4, 3), 128, dtype=np.uint8)
+    for n in range(1, 6):
+        write_png(a / f"f_{n:04d}.png", img)
+    write_png(b / "f_0002.png", img)
+    results = compare_dirs(a, b, Tolerance(), None, frames=(2, None))
+    by_name = {r.name: r for r in results}
+    assert set(by_name) == {"f_0002.png", "f_0003.png", "f_0004.png", "f_0005.png"}
+    assert by_name["f_0003.png"].reason == "missing in B"
 
 
 def test_compare_dirs_writes_diff_for_failures_only(tmp_path):

@@ -53,6 +53,16 @@ def test_cli_compare_empty_folders_fail(tmp_path):
     assert gfxcompare.main(["compare", str(a), str(b), "--out", str(tmp_path / "out")]) == 1
 
 
+def test_cli_compare_frame_window(tmp_path):
+    # f_0001 only in A: outside the window it is ignored, inside it fails
+    a, b = make_dirs(tmp_path)
+    (b / "f_0001.PNG").unlink()
+    out = tmp_path / "out"
+    assert gfxcompare.main(["compare", str(a), str(b), "--out", str(out), "--start-frame", "2"]) == 0
+    assert "frames 2 to the end" in (out / "report.md").read_text()
+    assert gfxcompare.main(["compare", str(a), str(b), "--out", str(out)]) == 1
+
+
 def test_cli_compare_includes_timing_when_present(tmp_path):
     a, b = make_dirs(tmp_path)
     header = "backend,frame,sim_time,path,depth,cpu_ms,gpu_ms,draws\n"
@@ -77,14 +87,17 @@ import numpy as np
 from PIL import Image
 args = sys.argv[1:]
 out = pathlib.Path(args[args.index("-capOutputPath") + 1])
-Image.fromarray(np.full((8, 8, 3), 100, dtype=np.uint8)).save(out / "f_0001.PNG")
+first = int(args[args.index("-capStartFrame") + 1]) if "-capStartFrame" in args else 1
+last = int(args[args.index("-capEndFrame") + 1]) if "-capEndFrame" in args else 3
+for n in range(first, last + 1):
+    Image.fromarray(np.full((8, 8, 3), 100, dtype=np.uint8)).save(out / f"f_{n:04d}.PNG")
 for a in args:
     if a.startswith("say="):
         sys.stderr.write(a[4:].replace("_", " ") + "\\n")
 """
 
 
-def run_fake(tmp_path, a_says, b_says):
+def run_fake(tmp_path, a_says, b_says, extra=()):
     script = tmp_path / "fake_rendernode.py"
     script.write_text(FAKE_RENDERNODE)
     scene = tmp_path / "scene.mab"
@@ -93,7 +106,7 @@ def run_fake(tmp_path, a_says, b_says):
         return " ".join([str(script)] + ["say=" + s.replace(" ", "_") for s in says])
     out = tmp_path / "out"
     code = gfxcompare.main(["run", "--exe", sys.executable, "--scene", str(scene), "--out", str(out),
-                            "--a-args", args(a_says), "--b-args", args(b_says)])
+                            "--a-args", args(a_says), "--b-args", args(b_says)] + list(extra))
     return code, (out / "report.md").read_text()
 
 
@@ -102,6 +115,13 @@ def test_cli_run_passes_and_reports_backends(tmp_path):
                             ["Graphics backend: vulkan on GPU X", "Vulkan validation: 0 errors, 0 warnings"])
     assert code == 0
     assert "dx11 on GPU X" in report and "vulkan on GPU X" in report
+
+
+def test_cli_run_frame_window_renders_only_those_frames(tmp_path):
+    code, report = run_fake(tmp_path, [], [], extra=["--start-frame", "2", "--end-frame", "2"])
+    assert code == 0
+    assert sorted(p.name for p in (tmp_path / "out" / "a").glob("*.PNG")) == ["f_0002.PNG"]
+    assert "frames 2 to 2" in report
 
 
 def test_cli_run_fails_on_validation_messages(tmp_path):

@@ -18,7 +18,8 @@ from imgcompare import IMAGE_SUFFIXES
 
 def build_command(exe: Path, scene: Path, out_dir: Path, profile_csv: Path,
                   extra_args: list[str], fmt: str = "PNG",
-                  width: int | None = None, height: int | None = None) -> list[str]:
+                  width: int | None = None, height: int | None = None,
+                  start_frame: int | None = None, end_frame: int | None = None) -> list[str]:
     cmd = [str(exe)] + list(extra_args)
     cmd += ["-gfxProfile", str(profile_csv)]
     cmd += ["-render", str(scene)]
@@ -27,6 +28,10 @@ def build_command(exe: Path, scene: Path, out_dir: Path, profile_csv: Path,
         cmd += ["-capWidth", str(width)]
     if height is not None:
         cmd += ["-capHeight", str(height)]
+    if start_frame is not None:
+        cmd += ["-capStartFrame", str(start_frame)]
+    if end_frame is not None:
+        cmd += ["-capEndFrame", str(end_frame)]
     return cmd
 
 

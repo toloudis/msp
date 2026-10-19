@@ -1,7 +1,8 @@
 """Render a scene twice with MachStudio's RenderNode and compare the frames and timings.
 
   gfxcompare.py run --exe EXE [--scene MAB] --out DIR [--a-args "..."] [--b-args "..."]
-  gfxcompare.py compare DIR_A DIR_B --out DIR
+                    [--start-frame N] [--end-frame N]
+  gfxcompare.py compare DIR_A DIR_B --out DIR [--start-frame N] [--end-frame N]
 
 Both write DIR/report.md (failing frames first, difference images in
 DIR/diff/, per-scope timing medians with B/A ratios) and exit 0 only if
@@ -54,11 +55,17 @@ def _timing_table(dir_a: Path, dir_b: Path) -> list[str]:
     return lines
 
 
+def _window_text(frames) -> str:
+    first, last = frames
+    return f"frames {'the first' if first is None else first} to {'the end' if last is None else last}"
+
+
 def compare(dir_a: Path, dir_b: Path, out: Path, tol: Tolerance, header: list[str] | None = None,
-            problems: list[str] | None = None) -> int:
-    """problems: reasons the run fails besides the frames (validation messages, adapters)."""
+            problems: list[str] | None = None, frames=None) -> int:
+    """problems: reasons the run fails besides the frames (validation messages, adapters).
+    frames: (first, last) frame numbers to compare, None for all."""
     out.mkdir(parents=True, exist_ok=True)
-    results = compare_dirs(dir_a, dir_b, tol, out / "diff")
+    results = compare_dirs(dir_a, dir_b, tol, out / "diff", frames)
     failed = [r for r in results if not r.passed]
     problems = problems or []
     ok = bool(results) and not failed and not problems
@@ -67,6 +74,8 @@ def compare(dir_a: Path, dir_b: Path, out: Path, tol: Tolerance, header: list[st
         f"- Tolerance: max error {tol.max_err * 255:.2f}/255; at most {tol.max_pct_over}% of pixels "
         f"over {tol.pixel_err * 255:.2f}/255",
         f"- Result: **{'PASS' if ok else 'FAIL'}** ({len(results) - len(failed)} of {len(results)} frames within tolerance)"]
+    if frames is not None:
+        lines.append(f"- Compared: {_window_text(frames)} (others ignored)")
     lines += [f"- **FAIL:** {p}" for p in problems]
     lines += ["", "## Frames", ""]
     lines += _frame_table(results) if results else ["No frames found."]
@@ -77,6 +86,10 @@ def compare(dir_a: Path, dir_b: Path, out: Path, tol: Tolerance, header: list[st
     for p in problems:
         print(f"FAIL: {p}")
     return 0 if ok else 1
+
+
+def _frames(args):
+    return None if args.start_frame is None and args.end_frame is None else (args.start_frame, args.end_frame)
 
 
 def _tolerance(args) -> Tolerance:
@@ -93,6 +106,10 @@ def _parser() -> argparse.ArgumentParser:
         sp.add_argument("--pixel-err", type=float, default=d.pixel_err * 255, help="per-pixel error counted as 'over', in 1/255 units")
         sp.add_argument("--max-pct-over", type=float, default=d.max_pct_over, help="allowed percent of pixels over --pixel-err")
 
+    def frame_args(sp, what):
+        sp.add_argument("--start-frame", type=int, help=f"first frame to {what} (absolute frame number)")
+        sp.add_argument("--end-frame", type=int, help=f"last frame to {what} (included)")
+
     r = sub.add_parser("run", help="render with RenderNode twice (A, B) and compare")
     r.add_argument("--exe", required=True, type=Path, help="RenderNode executable")
     r.add_argument("--scene", type=Path, default=None, help="scene (.mab); default $MSP_GFX_TEST_SCENE")
@@ -103,12 +120,14 @@ def _parser() -> argparse.ArgumentParser:
     r.add_argument("--width", type=int)
     r.add_argument("--height", type=int)
     r.add_argument("--timeout", type=float, default=7200, help="seconds per render")
+    frame_args(r, "render and compare")
     tolerance_args(r)
 
     c = sub.add_parser("compare", help="compare two folders of frames")
     c.add_argument("dir_a", type=Path)
     c.add_argument("dir_b", type=Path)
     c.add_argument("--out", required=True, type=Path)
+    frame_args(c, "compare; frames outside are ignored")
     tolerance_args(c)
     return p
 
@@ -117,7 +136,7 @@ def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     tol = _tolerance(args)
     if args.command == "compare":
-        return compare(args.dir_a, args.dir_b, args.out, tol)
+        return compare(args.dir_a, args.dir_b, args.out, tol, frames=_frames(args))
 
     scene = args.scene or (Path(os.environ["MSP_GFX_TEST_SCENE"]) if os.environ.get("MSP_GFX_TEST_SCENE") else None)
     if scene is None:
@@ -133,7 +152,8 @@ def main(argv: list[str] | None = None) -> int:
             if old.is_file():
                 old.unlink()
         cmd = rendernode.build_command(args.exe.resolve(), scene, out_dir, out_dir / TIMING_CSV,
-                                       shlex.split(extra, posix=False), args.format, args.width, args.height)
+                                       shlex.split(extra, posix=False), args.format, args.width, args.height,
+                                       args.start_frame, args.end_frame)
         print(f"rendering {label.upper()}: {' '.join(cmd)}")
         try:
             stderr = rendernode.run(cmd, args.timeout, out_dir)
@@ -154,7 +174,7 @@ def main(argv: list[str] | None = None) -> int:
                                 f"({counts[0]} errors, {counts[1]} warnings)")
     if adapters["a"] and adapters["b"] and adapters["a"] != adapters["b"]:
         problems.append(f"A and B ran on different adapters ({adapters['a']} / {adapters['b']})")
-    return compare(args.out / "a", args.out / "b", args.out, tol, header, problems)
+    return compare(args.out / "a", args.out / "b", args.out, tol, header, problems, _frames(args))
 
 
 if __name__ == "__main__":

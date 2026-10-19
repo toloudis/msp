@@ -4,10 +4,13 @@ Images load as float32 HxWxC: PNG (8 or 16 bit) normalized to [0, 1], PFM as
 stored. Errors are absolute per-channel differences over RGB (alpha only when
 both images have it). A frame passes when its largest error is within
 Tolerance.max_err and at most Tolerance.max_pct_over percent of its pixels
-have an error above Tolerance.pixel_err.
+have an error above Tolerance.pixel_err. A frame's number is the digits at
+the end of its file name (RenderNode's <0000> tag); a folder comparison can
+be limited to a window of frame numbers.
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -102,12 +105,34 @@ def diff_image(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     return np.repeat((v * 255.0 + 0.5).astype(np.uint8)[:, :, None], 3, axis=2)
 
 
-def _frames(folder: Path) -> dict[str, Path]:
-    return {p.name: p for p in Path(folder).iterdir() if p.is_file() and p.suffix.lower() in IMAGE_SUFFIXES}
+_FRAME_NUMBER = re.compile(r"(\d+)$")
+
+FrameWindow = tuple[int | None, int | None]     # (first, last), both included; None: no limit
 
 
-def compare_dirs(dir_a: Path, dir_b: Path, tol: Tolerance, diff_dir: Path | None) -> list[FrameResult]:
-    frames_a, frames_b = _frames(dir_a), _frames(dir_b)
+def frame_number(name: str) -> int | None:
+    """The digits at the end of the file name's stem, or None."""
+    m = _FRAME_NUMBER.search(Path(name).stem)
+    return int(m[1]) if m else None
+
+
+def _in_window(name: str, frames: FrameWindow | None) -> bool:
+    n = frame_number(name)
+    if frames is None or n is None:
+        return True                     # a name without a number is always compared
+    first, last = frames
+    return (first is None or n >= first) and (last is None or n <= last)
+
+
+def _frames(folder: Path, frames: FrameWindow | None) -> dict[str, Path]:
+    return {p.name: p for p in Path(folder).iterdir()
+            if p.is_file() and p.suffix.lower() in IMAGE_SUFFIXES and _in_window(p.name, frames)}
+
+
+def compare_dirs(dir_a: Path, dir_b: Path, tol: Tolerance, diff_dir: Path | None,
+                 frames: FrameWindow | None = None) -> list[FrameResult]:
+    """frames: only frames in this window are compared (one missing from either side still fails)."""
+    frames_a, frames_b = _frames(dir_a, frames), _frames(dir_b, frames)
     results = []
     for name in sorted(set(frames_a) | set(frames_b)):
         if name not in frames_b:

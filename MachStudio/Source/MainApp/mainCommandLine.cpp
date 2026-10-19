@@ -33,6 +33,8 @@ namespace
 		{ "capCamera",			mainCommandLine::e_CapCamera },
 		{ "capWidth",			mainCommandLine::e_CapWidth },
 		{ "capHeight",			mainCommandLine::e_CapHeight },
+		{ "capStartFrame",		mainCommandLine::e_CapStartFrame },
+		{ "capEndFrame",		mainCommandLine::e_CapEndFrame },
 		{ "capOutputFile",		mainCommandLine::e_CapOutputFile },
 		{ "capOutputPath",		mainCommandLine::e_CapOutputPath },
 		{ "capOutputPathRoot",	mainCommandLine::e_CapOutputPathRoot },
@@ -287,6 +289,16 @@ Rendering
                              to add more cameras
   -capWidth <pixels>         output width
   -capHeight <pixels>        output height
+  -capStartFrame <frame>     render only from this frame on (an absolute
+                             frame number, as in output file names);
+                             narrows the scene's range, whichever way it is
+                             set. The frame before it is rendered too, not
+                             saved, so motion matches a full render. Unlike
+                             the other -cap* flags it isn't a scene setting:
+                             it holds for every render in the run, wherever
+                             it is on the line
+  -capEndFrame <frame>       render only up to this frame (included); as
+                             -capStartFrame
   -capOutputFile <tags>      output file name, made of text and tags such as
                              <SceneFilename>, <CameraName>, <RenderLayerName>,
                              <RenderPassName> and <0000> (frame number,

@@ -44,6 +44,16 @@
 **	                             repeat to add more cameras
 **	  -capWidth <pixels>         output width
 **	  -capHeight <pixels>        output height
+**	  -capStartFrame <frame>     render only from this frame on (an absolute
+**	                             frame number, as in output file names);
+**	                             narrows the scene's range, whichever way it
+**	                             is set. The frame before it is rendered too,
+**	                             not saved, so motion matches a full render.
+**	                             Unlike the other -cap* flags it isn't a
+**	                             scene setting: it holds for every render in
+**	                             the run, wherever it is on the line
+**	  -capEndFrame <frame>       render only up to this frame (included); as
+**	                             -capStartFrame
 **	  -capOutputFile <tags>      output file name, made of text and tags such
 **	                             as <SceneFilename>, <CameraName>,
 **	                             <RenderLayerName>, <RenderPassName> and
@@ -111,6 +121,8 @@ struct mainCommandLine
 		e_CapCamera,		// -capCamera <camera>: also render from this camera
 		e_CapWidth,			// -capWidth <pixels>: output width
 		e_CapHeight,		// -capHeight <pixels>: output height
+		e_CapStartFrame,	// -capStartFrame <frame>: render only from this frame on
+		e_CapEndFrame,		// -capEndFrame <frame>: render only up to this frame
 		e_CapOutputFile,	// -capOutputFile <tags>: output file name (text and tags)
 		e_CapOutputPath,	// -capOutputPath <tags>: output folder
 		e_CapOutputPathRoot,// -capOutputPathRoot <dir>: root for relative output folders

@@ -60,7 +60,19 @@ namespace captRenderOutputDataUtil
 	//------------------------------------------------------------------------
 	void SetCaptureWidth(int i_Width);
 	void SetCaptureHeight(int i_Height);
-	
+
+	//------------------------------------------------------------------------
+	// The frame window (-capStartFrame, -capEndFrame): renders capture only
+	// frames in it, absolute frame numbers, both ends included; -1 leaves
+	// that end as the render's frame range sets it. Not part of the scene
+	// (a scene load keeps it): it applies to every render in the run
+	// (cptrModeRender applies it).
+	//------------------------------------------------------------------------
+	void SetFrameWindowStart(int i_Frame);
+	void SetFrameWindowEnd(int i_Frame);
+	int GetFrameWindowStart();
+	int GetFrameWindowEnd();
+
 	//------------------------------------------------------------------------
 	// Set the render output file and path
 	//------------------------------------------------------------------------

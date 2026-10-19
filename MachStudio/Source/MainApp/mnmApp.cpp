@@ -442,6 +442,18 @@ void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 			captRenderOutputDataUtil::SetCaptureHeight(itStringUtil::GetInt(itString(value.c_str())));
 			break;
 		}
+		case mainCommandLine::e_CapStartFrame:
+		{
+			DBG_LOG( "   Command-line CAPTURE-STARTFRAME " << value );
+			captRenderOutputDataUtil::SetFrameWindowStart(itStringUtil::GetInt(itString(value.c_str())));
+			break;
+		}
+		case mainCommandLine::e_CapEndFrame:
+		{
+			DBG_LOG( "   Command-line CAPTURE-ENDFRAME " << value );
+			captRenderOutputDataUtil::SetFrameWindowEnd(itStringUtil::GetInt(itString(value.c_str())));
+			break;
+		}
 		case mainCommandLine::e_CapOutputFile:
 		{
 			DBG_LOG( "   Command-line CAPTURE-OUTPUTFILE " << value );

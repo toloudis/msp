@@ -166,6 +166,15 @@ TEST(mainCommandLine, AllCaptureFlags)
 					act(mainCommandLine::e_File, "x.mab")}, line);
 }
 
+TEST(mainCommandLine, CaptureFrameWindow)
+{
+	mainCommandLine line = mainCommandLine::Parse("-render s.mab -capStartFrame 296 /capEndFrame 315");
+	expect_actions({act(mainCommandLine::e_Render, "s.mab"),
+					act(mainCommandLine::e_CapStartFrame, "296"),
+					act(mainCommandLine::e_CapEndFrame, "315")}, line);
+	EXPECT_TRUE(line.m_Warnings.empty());
+}
+
 TEST(mainCommandLine, HelpListsEveryFlag)
 {
 	const std::string help = mainCommandLine::HelpText();
@@ -173,6 +182,7 @@ TEST(mainCommandLine, HelpListsEveryFlag)
 	{
 		"-file", "-lastfile", "-new", "-render", "-batch", "-script",
 		"-capFormat", "-capCompress", "-capCamera", "-capWidth", "-capHeight",
+		"-capStartFrame", "-capEndFrame",
 		"-capOutputFile", "-capOutputPath", "-capOutputPathRoot",
 		"-license", "-NoSplash", "-show", "-version", "-help", "-gfxProfile",
 		"-gfx", "-gfxValidation",

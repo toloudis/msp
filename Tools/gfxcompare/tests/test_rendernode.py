@@ -25,6 +25,19 @@ def test_build_command_order():
     assert rest[rest.index("-capHeight") + 1] == "360"
 
 
+def test_build_command_frame_window_after_render():
+    cmd = build_command(Path("rn.exe"), Path("s.mab"), Path("o"), Path("o/t.csv"), [],
+                        start_frame=296, end_frame=315)
+    render = cmd.index("-render")
+    assert cmd.index("-capStartFrame") > render and cmd[cmd.index("-capStartFrame") + 1] == "296"
+    assert cmd.index("-capEndFrame") > render and cmd[cmd.index("-capEndFrame") + 1] == "315"
+
+
+def test_build_command_without_frame_window_has_no_frame_flags():
+    cmd = build_command(Path("rn.exe"), Path("s.mab"), Path("o"), Path("o/t.csv"), [])
+    assert "-capStartFrame" not in cmd and "-capEndFrame" not in cmd
+
+
 def test_build_command_without_size_has_no_size_flags():
     cmd = build_command(Path("rn.exe"), Path("s.mab"), Path("o"), Path("o/t.csv"), [])
     assert "-capWidth" not in cmd and "-capHeight" not in cmd

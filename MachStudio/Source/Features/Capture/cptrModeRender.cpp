@@ -241,6 +241,8 @@ cptrModeRender::cptrModeRender()
 	m_bPaused(false),
 	m_CurrentCameraNumber(0),
 	m_bUseOnlyValidCaptureTimes(true),
+	m_bWarmUpFrame(false),
+	m_bWarmUpPending(false),
 	m_fRenderStartTime(0.0f),
 	m_RenderPrefsObjectID(rndrPrefsMgr::e_RenderFullPrefs)
 {
@@ -1001,6 +1003,31 @@ void cptrModeRender::EndStateInitCaptures()
 		m_fEndTime = data.m_fEndTime.GetValue();
 	}
 
+	//	the command line's frame window (-capStartFrame, -capEndFrame)
+	//	narrows the range, whichever way it was set; capture drivers still
+	//	pick the frames and cameras within it. A window that starts later
+	//	renders the frame before it first, unsaved (see OnStateLeadIn).
+	m_bWarmUpFrame = false;
+	if (captRenderOutputDataUtil::GetFrameWindowStart() >= 0)
+	{
+		const maTime start = tmlnTimeUtil::GetTimeFromFrames( captRenderOutputDataUtil::GetFrameWindowStart() );
+		if (start > data.m_fStartTime.GetValue())
+		{
+			data.m_fStartTime.SetValue( start );
+			m_bWarmUpFrame = true;
+		}
+	}
+	if (captRenderOutputDataUtil::GetFrameWindowEnd() >= 0)
+	{
+		const maTime end = tmlnTimeUtil::GetTimeFromFrames( captRenderOutputDataUtil::GetFrameWindowEnd() );
+		if (end < m_fEndTime)
+		{
+			data.m_fEndTime.SetValue( end );
+			cptrRenderUtil::SetCaptureTimeMax( end );
+			m_fEndTime = end;
+		}
+	}
+
 
 	//	show the Capture Status dialog
 	//
@@ -1312,12 +1339,34 @@ void cptrModeRender::BeginStateLeadIn()
 
 	captRenderOutputData& data = captRenderOutputDataUtil::Data();
 	m_fLeadTimeDelta = data.m_fLeadIn.GetValue();
+	m_bWarmUpPending = m_bWarmUpFrame;
 }
 //----------------------------------------------------------------------------
 void cptrModeRender::OnStateLeadIn()
 {
 	if ( m_fLeadTimeDelta <= 0.0f )
 	{
+		//	A frame window that starts after the render's range: render
+		//	the frame before the window last, as a full render would have,
+		//	so what the first frame takes from the one before (motion
+		//	vectors) is the same. Its sim time is before the start time, so
+		//	it isn't saved (as lead-in frames aren't), and it is the sim
+		//	time the capture starts from.
+		if ( m_bWarmUpPending )
+		{
+			m_bWarmUpPending = false;
+			set_timeline( captRenderOutputDataUtil::Data().m_fStartTime.GetValue() - tmlnTimeLine::GetFrameIncrement(), true );
+			modeModeTime::Think();
+			xfrmTransformMgr::UpdateTransforms();
+			gpxProxyMgr::Update();
+			api3dScene::Think( tmlnTimeLine::GetTimeInSeconds() );
+			do_lead_render();
+			if (m_bAborted)
+			{
+				GotoState( m_StateEndCapture );
+			}
+			return;
+		}
 		GotoState( m_StateCapture );
 		return;
 	}
