@@ -119,16 +119,26 @@ namespace gvk
 		m_Depth.reset();
 		m_pOffscreen.reset();
 
-		// Render offscreen at the render resolution if one is set
+		// Render offscreen at the render resolution if one is set. Also when
+		// the native window's client area isn't the size given: DX11's back
+		// buffer is the size given whatever the window (ResizeBuffers), but a
+		// swap chain is the client area's size (a capture window bigger than
+		// the screen gets a smaller one), so render offscreen at the size
+		// given and stretch it over the window in Present, as DXGI does.
 		int width = i_Width;
 		int height = i_Height;
 		if (i_Width > 0 && i_Height > 0)
 		{
-			if (m_RenderWidth > 0 && m_RenderHeight > 0 &&
-				create_offscreen_buffer(m_RenderWidth, m_RenderHeight))
+			int client_width = 0, client_height = 0;
+			vkdWindowClientSize(m_Hwnd, client_width, client_height);
+			const bool render_resolution = m_RenderWidth > 0 && m_RenderHeight > 0;
+			const int target_width = render_resolution ? m_RenderWidth : i_Width;
+			const int target_height = render_resolution ? m_RenderHeight : i_Height;
+			if ((render_resolution || client_width != i_Width || client_height != i_Height) &&
+				create_offscreen_buffer(target_width, target_height))
 			{
-				width = m_RenderWidth;
-				height = m_RenderHeight;
+				width = target_width;
+				height = target_height;
 			}
 			m_Depth.reset(new g2dDepthStencilBufferVk(&m_Device));
 			m_Depth->Make(width, height, g2dVkGlobal::e_DXGI_D24_UNORM_S8_UINT, VK_SAMPLE_COUNT_1_BIT, g2dResourceCounterVk::eWindow);
@@ -431,6 +441,15 @@ namespace gvk
 
 			int x, y, width, height;
 			GetPresentRect(x, y, width, height);
+			if (m_RenderWidth <= 0 || m_RenderHeight <= 0)
+			{
+				// offscreen only because the client area isn't the size
+				// given: stretched over the whole window, as DXGI presents
+				x = 0;
+				y = 0;
+				width = (int)m_Swapchain.Target()->Width();
+				height = (int)m_Swapchain.Target()->Height();
+			}
 			g2dFullscreenQuad::DrawTexturedQuad(m_pOffscreen.get(),
 				(uint32_t)width, (uint32_t)height, (float)x, (float)y);
 

@@ -194,12 +194,19 @@ namespace
 
 	//	A window drawn mid-frame (grey, the pattern image in it), captured
 	//	before Present, as cptrRenderThread does; i_RenderW/H > 0 renders
-	//	offscreen at that resolution
-	Capture capture_window(gtBackend::Kind i_Kind, const std::filesystem::path& i_Dir, int i_RenderW, int i_RenderH)
+	//	offscreen at that resolution; i_ResizeW/H > 0 resizes the g2dWindow
+	//	only, not the native window (as a capture window bigger than the
+	//	screen is: Windows makes its client area smaller)
+	Capture capture_window(gtBackend::Kind i_Kind, const std::filesystem::path& i_Dir, int i_RenderW, int i_RenderH,
+						   int i_ResizeW = 0, int i_ResizeH = 0)
 	{
 		Capture capture;
 		gtSceneWindow window(i_Kind, 160, 120);
 		g2dWindow& w = window.Window();
+		if (i_ResizeW > 0)
+		{
+			w.ResizeWindow(i_ResizeW, i_ResizeH);
+		}
 		if (i_RenderW > 0)
 		{
 			w.SetRenderResolution(i_RenderW, i_RenderH);
@@ -270,6 +277,21 @@ TEST(g2dCaptureVk, CaptureOffscreenWindowMatchesDX11)
 		return;
 	EXPECT_EQ(96, vulkan.m_Width);
 	EXPECT_EQ(64, vulkan.m_Height);
+	expect_same(dx11, vulkan);
+}
+
+//	A window whose native client area isn't the size it was given (a capture
+//	window bigger than the screen): DX11's back buffer is the size given
+//	(ResizeBuffers), and so is what Vulkan renders and captures
+TEST(g2dCaptureVk, CaptureWindowAtGivenSizeMatchesDX11)
+{
+	gtTempDir dir;
+	Capture vulkan;
+	const Capture dx11 = from_bytes(gtInDx11([&]() { return to_bytes(capture_window(gtBackend::e_DX11, dir.GetPath(), 0, 0, 200, 150)); }));
+	if (!gtBackend::Run(gtBackend::e_Vulkan, [&]() { vulkan = capture_window(gtBackend::e_Vulkan, dir.GetPath(), 0, 0, 200, 150); }))
+		return;
+	EXPECT_EQ(200, dx11.m_Width);
+	EXPECT_EQ(150, dx11.m_Height);
 	expect_same(dx11, vulkan);
 }
 
