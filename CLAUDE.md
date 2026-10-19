@@ -105,7 +105,10 @@ hold settings:
   adapter, else WARP). Helpers use the `gt` prefix. The Vulkan tests run
   with validation on (`gtVulkan` fails a test on any validation message)
   and are skipped when there is no usable Vulkan device (as on CI); the
-  tests that need only reflection run everywhere. Image comparisons
+  tests that need only reflection run everywhere. `gtBackend` runs the
+  same test code under the whole GraphicsDX11 layer and then the whole
+  GraphicsVulkan layer, as MachStudio starts them, so a test can compare
+  what Graphics-level calls (`matTextureMgr`, ...) give on each. Image comparisons
   (`gtImage`, gfxcompare's metrics and tolerance) write `dx11.png`,
   `vulkan.png` and `diff.png` to
   `UnitTests/bin/x64/<Debug|Release>/GraphicsTestsImages/<test>/` when they
@@ -305,10 +308,11 @@ says why) and installs a Vulkan implementation for every Graphics hook.
 
 | Package | Purpose |
 |---|---|
-| `vkd` | Thin wrappers over the Vulkan C API (volk, VMA): device and adapter choice, command stream and timeline-semaphore submission, validation policy, images, swap chains, the per-frame ring buffer, resource binding (`vkdBindings`), SPIR-V reflection reported as D3D11 reflection (`vkdReflect`), shader modules (`vkdShader`), the pipeline cache (`vkdPipelineCache`, keyed by the full state, saved to `VulkanPipelineCache.bin` in the user data folder), and `vkdContext`, the DX11-style immediate context ported code draws through (state, render targets, dynamic rendering, the barriers DX11 placed implicitly) |
+| `vkd` | Thin wrappers over the Vulkan C API (volk, VMA): device and adapter choice, command stream and timeline-semaphore submission, validation policy, images of every shape and format (`vkdImage`: 1D/2D/3D, arrays, cubes, mips, multisampling; upload, readback, mip generation) and buffers (`vkdBuffer`), DXGI formats to Vulkan ones (`vkdFormat`; the two X8 formats become A8 with alpha 255), swap chains, the per-frame ring buffer, resource binding (`vkdBindings`), SPIR-V reflection reported as D3D11 reflection (`vkdReflect`), shader modules (`vkdShader`), the pipeline cache (`vkdPipelineCache`, keyed by the full state, saved to `VulkanPipelineCache.bin` in the user data folder), and `vkdContext`, the DX11-style immediate context ported code draws through (state, render targets, dynamic rendering, the barriers DX11 placed implicitly) |
 | `Fx` | `fxEffectVk` (GraphicsDX11's `fxEffectDX11` on SPIR-V: same parameter names, offsets, defaults and registers), the embedded effects (`fxEmbeddedShadersVk`), `fxMaterialInstance`, and the Effects-shaped API (`fxEffectApi.hpp`) with Vulkan types |
 | `Eff` | The shaders (`Eff/private/Shaders`, a byte-identical copy of GraphicsDX11's) and `effPlainEffectVk`; the material shader classes come in Plan 4b |
-| `G2d` | 2D system and windows (swap chain plus depth buffer), `g2dFullscreenQuad` |
+| `G2d` | 2D system and windows (swap chain plus depth buffer), textures and render-target textures (`g2dTextureVk`, `g2dRenderTargetTextureVk`), `g2dFullscreenQuad` |
+| `Mat` | Textures: `matTextureMgrVk` (DX11's texture manager: loading, creating, reloading, destroying) and the texture classes (plain, mip, static cube, volume, render target) on `vkdImage`. Decoding is portable (`matImageDecode`: stb_image, libtiff, and ports of DirectXTex's DDS and TGA readers, and Graphics' RGBE reader for HDR; no DirectXTex or WIC), as are the mip filters (`matMipFilter`: DirectXTex's triangle and box filters, WIC's Fant scaler emulated); GraphicsTests checks both against DirectXTex. Shadow maps, RSMs and cube render targets are textures with a size and no image until Plan 5 |
 | `G3d` | 3D system, light manager, GPU timer for the profiler, the blend / depth-stencil / rasterizer state holders and `g3dStateMgrVk` (DX11's, taking Vulkan enums) |
 | `stub` | Hooks not ported yet: they keep MachStudio running (renderers draw nothing, effects have no passes, textures and fragments keep their data on the CPU) and log `GVK_NOT_YET: <name>` once per call site. Later plans move each class to its real package as they port it |
 
