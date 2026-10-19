@@ -8,11 +8,10 @@
 **		every renderer type; they draw nothing (the target renderer has
 **		already cleared the target), the pick renderer picks nothing
 **	  g3dBakeVk				baking (nothing to bake)
-**	  g3dFragmentVk, g3dFragmentCreateVk
-**		mesh fragments keep their vertices and indices (and bounding box)
-**		on the CPU; no GPU buffers yet
-**	  g3dVertexBufferVk, mdlFragCreateVk
-**		model-import fragment creation: empty fragments for now
+**	  hairModelFragVk, hairRendererVk
+**		hair fragments (mayFragCreate::CreateHairFragment) keep their
+**		vertices and bounding box on the CPU; their renderer, registered
+**		as DX11's hairPackage registers hairRenderer, draws nothing
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -33,17 +32,14 @@
 #ifndef G3D_FRAGMENT_HPP
 #include "Graphics/G3d/g3dFragment.hpp"
 #endif
-#ifndef G3D_FRAGMENTCREATE_HPP
-#include "Graphics/G3d/g3dFragmentCreate.hpp"
+#ifndef G3D_BASERENDERER_HPP
+#include "Graphics/G3d/g3dBaseRenderer.hpp"
 #endif
-#ifndef G3D_VERTEXBUFFER_HPP
-#include "Graphics/G3d/g3dVertexBuffer.hpp"
+#ifndef G3D_INDEXPTR_HPP
+#include "Graphics/G3d/g3dIndexPtr.hpp"
 #endif
 #ifndef G3D_TYPE_HPP
 #include "Graphics/G3d/g3dType.hpp"
-#endif
-#ifndef MDL_FRAGCREATE_HPP
-#include "Graphics/mdl/mdlFragCreate.hpp"
 #endif
 
 #include <string>
@@ -111,17 +107,20 @@ namespace gvk
 			virtual void SetOutputDirectory(const fsLocator& i_OutputDir);
 	};
 
-	class g3dFragmentVk : public g3dFragment
+	class hairModelFragVk : public g3dFragment
 	{
 		public:
 			//	Kept on the CPU as DX11's bump fragments keep them: g3dType::
 			//	BumpTex1Vertex vertices (missing positions, normals or UVs are
-			//	zero, +Z and (0,0); S and T are +X and +Y until bump fragments
-			//	are ported) and 16-bit indices unless g3dIndexPtr::Needs32Bit.
-			g3dFragmentVk(const maPoint3d* i_Vertices, const maPoint3d* i_Normals, const maPoint2d* i_UVs, int i_nVertices,
-						  const g3dIndexPtr* i_pIndices, int i_nIndices, matMaterial* i_pMaterial, bool i_bMorphable);
-			g3dFragmentVk(const g3dFragmentVk& i_Other);
-			virtual ~g3dFragmentVk();
+			//	zero, +Z and (0,0); S and T are +X and +Y) and 16-bit indices
+			//	unless g3dIndexPtr::Needs32Bit.
+			hairModelFragVk(const maPoint3d* i_Vertices, const maPoint3d* i_Normals, const maPoint2d* i_UVs, int i_nVertices,
+							const g3dIndexPtr* i_pIndices, int i_nIndices, matMaterial* i_pMaterial, bool i_bMorphable);
+			hairModelFragVk(const hairModelFragVk& i_Other);
+			virtual ~hairModelFragVk();
+
+			//	The render mode hairRendererVk got (as hairModelFrag::SetRendererId)
+			static void SetRendererId(int i_RenderMode);
 
 			virtual void Deallocate();
 			virtual void Reallocate();
@@ -142,48 +141,17 @@ namespace gvk
 		private:
 			void update_bounds();
 
+			static int								sm_RendererId;
 			std::vector<g3dType::BumpTex1Vertex>	m_Vertices;
 			std::vector<uint16_t>					m_Indices16;	// one of these, by g3dIndexPtr::Needs32Bit
 			std::vector<uint32_t>					m_Indices32;
 	};
 
-	class g3dFragmentCreateVk : public g3dFragmentCreateImpl
+	class hairRendererVk : public g3dBaseRenderer
 	{
 		public:
-			virtual g3dFragment* CreateFragment(const maPoint3d* i_Vertices, const maPoint3d* i_Normals, int i_nVertices,
-												const g3dIndexPtr i_Indices, int i_nIndices, matMaterial* i_pMaterial, bool i_bMorphable);
-			virtual g3dFragment* CreateFragment(const maPoint3d* i_Vertices, const maPoint3d* i_Normals, const maPoint2d* i_UVs,
-												int i_nVertices, const g3dIndexPtr i_Indices, int i_nIndices,
-												matMaterial* i_pMaterial, bool i_bMorphable);
-			virtual g3dFragment* CreateLineList(const maPoint3d* i_Vertices, const maPoint3d* i_Normals, int i_nVertices,
-												const g3dIndexPtr i_Indices, int i_nIndices, matMaterial* i_pMaterial,
-												bool i_bMorphable, const maPoint2d* i_UVs, const maPoint3d* i_Ss, const maPoint3d* i_Ts);
-			virtual g3dFragment* CloneFragment(const g3dFragment* i_pFragment);
-			virtual void SetComputeBasisVectors(bool i_bCompute);
-			virtual void StoreGeometryInVideoMemory(bool i_bVideoMem);
-	};
-
-	class g3dVertexBufferVk : public g3dVertexBuffer
-	{
-		public:
-			virtual void UpdateVertices(int i_NumVertices, const maPoint3d* i_pVertices, const maVector3d* i_pNormals = NULL);
-			virtual int GetNumVertices() const;
-			virtual g3dType::VertexFormat GetVertexFormat() const;
-			virtual unsigned char* Lock();
-			virtual void Unlock();
-			virtual void SetBoundingBox(const maAxisBox& i_BoundingBox);
-	};
-
-	class mdlFragCreateVk : public mdlFragCreateImpl
-	{
-		public:
-			virtual bool UseBumpFrag(int i_NumTexCoords, bool i_EffectQualified);
-			virtual g3dFragment* CreateFragment(const mdlSplitFragInfo& i_Info, bool i_Morphable = false);
-			virtual g3dFragment* CreateHairFragment(const mdlHairInfo& i_Info, matMaterial* i_pMaterial);
-			virtual void OptimizeFragment(mdlSplitFragInfo& io_Info);
-			virtual g3dVertexBuffer* CreateFragmentGroup(const mdlFragInfo& i_FragInfo, std::vector<g3dFragment*>& o_Fragments,
-														 bool i_Morphable = false);
-			virtual void UpdateFragmentGroup(const mdlFragInfo& i_FragInfo, g3dVertexBuffer& io_SharedVertexBuffer,
-											 std::vector<g3dFragment*>& io_Fragments, bool i_Morphable = false);
+			virtual void Deallocate()	{}
+			virtual void Reallocate()	{}
+			virtual int Render(const g3dSceneNode* i_pNode, const matMaterial* i_pMaterial, matShaderEffect* i_pEffect);
 	};
 }

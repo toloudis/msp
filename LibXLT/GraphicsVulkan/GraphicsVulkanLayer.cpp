@@ -3,9 +3,10 @@
 **
 **      See GraphicsVulkanLayer.hpp. Hooks are installed where GraphicsDX11
 **	installs its own: the 2D and 3D systems install theirs while they
-**	exist; Init installs the fragment creators (as bumpPackage/mayPackage
-**	Init do); InitGraphics installs the scene renderers and baking (as
-**	shdwPackage::InitGraphics does).
+**	exist; Init initializes the packages in GraphicsDX11Layer's order
+**	(tmesh, bump, may, then the hair stand-in), which install the fragment
+**	creators; InitGraphics installs the scene renderers and baking (as
+**	shdwPackage::InitGraphics does) and the bump vertex layouts.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -38,6 +39,24 @@
 #endif
 #ifndef GVK_G3DSTUBSVK_HPP
 #include "GraphicsVulkan/stub/g3dStubsVk.hpp"
+#endif
+#ifndef GVK_TMESH_PACKAGE_HPP
+#include "GraphicsVulkan/tmesh/tmeshPackage.hpp"
+#endif
+#ifndef GVK_BUMP_PACKAGE_HPP
+#include "GraphicsVulkan/bump/bumpPackage.hpp"
+#endif
+#ifndef GVK_MAY_PACKAGE_HPP
+#include "GraphicsVulkan/may/mayPackage.hpp"
+#endif
+#ifndef G3D_FRAGMENTCREATE_HPP
+#include "Graphics/G3d/g3dFragmentCreate.hpp"
+#endif
+#ifndef G3D_RENDERERMGR_HPP
+#include "Graphics/G3d/g3dRendererMgr.hpp"
+#endif
+#ifndef MDL_FRAGCREATE_HPP
+#include "Graphics/mdl/mdlFragCreate.hpp"
 #endif
 #ifdef MSP_GFX_PROFILING
 #ifndef GVK_G3DPROFILERGPUVK_HPP
@@ -93,8 +112,7 @@ namespace
 	vkdContext*					l_pContext = NULL;
 	g2dSystemVk*				l_pSystem2D = NULL;
 	g3dSystemVk*				l_pSystem3D = NULL;
-	g3dFragmentCreateVk*		l_pFragmentCreate = NULL;
-	mdlFragCreateVk*			l_pMdlFragCreate = NULL;
+	hairRendererVk*				l_pHairRenderer = NULL;
 	g3dSceneRendererCreateVk*	l_pRendererCreate = NULL;
 	g3dBakeVk*					l_pBake = NULL;
 #ifdef MSP_GFX_PROFILING
@@ -134,10 +152,13 @@ bool GraphicsVulkanLayer::Init(void* /*i_hWnd*/, const g3dGfxOptions& i_Options)
 	l_pSystem2D = new g2dSystemVk(*l_pDevice);
 	l_pSystem3D = new g3dSystemVk(*l_pDevice);
 
-	l_pFragmentCreate = new g3dFragmentCreateVk;
-	g3dFragmentCreate::SetImplementation(l_pFragmentCreate);
-	l_pMdlFragCreate = new mdlFragCreateVk;
-	mdlFragCreate::SetImplementation(l_pMdlFragCreate);
+	// initialize packages in the layer
+	tmeshPackage::Init();
+	bumpPackage::Init();
+	mayPackage::Init();
+	// hairPackage::Init's stand-in until hair is ported (Plan 7)
+	l_pHairRenderer = new hairRendererVk;
+	hairModelFragVk::SetRendererId(g3dRendererMgr::AddRenderer(l_pHairRenderer));
 	return true;
 }
 
@@ -148,12 +169,15 @@ void GraphicsVulkanLayer::CleanUp() throw()
 		return;
 	}
 	l_pDevice->WaitIdle();
+	// clean up our internal stuff, in reverse order (DX11's packages leave
+	// the creators installed after deleting them; they are removed here)
+	delete l_pHairRenderer;
+	l_pHairRenderer = NULL;
+	mayPackage::CleanUp();
 	mdlFragCreate::SetImplementation(NULL);
+	bumpPackage::CleanUp();
 	g3dFragmentCreate::SetImplementation(NULL);
-	delete l_pMdlFragCreate;
-	delete l_pFragmentCreate;
-	l_pMdlFragCreate = NULL;
-	l_pFragmentCreate = NULL;
+	tmeshPackage::CleanUp();
 
 	delete l_pSystem3D;
 	delete l_pSystem2D;
@@ -185,6 +209,7 @@ void GraphicsVulkanLayer::CleanUp() throw()
 
 void GraphicsVulkanLayer::InitGraphics()
 {
+	bumpPackage::InitGraphics();
 	l_pRendererCreate = new g3dSceneRendererCreateVk;
 	g3dSceneRendererCreate::SetImplementation(l_pRendererCreate);
 	l_pBake = new g3dBakeVk;
@@ -208,6 +233,7 @@ void GraphicsVulkanLayer::CleanUpGraphics()
 	delete l_pRendererCreate;
 	l_pBake = NULL;
 	l_pRendererCreate = NULL;
+	bumpPackage::CleanUpGraphics();
 }
 
 g2dSystem* GraphicsVulkanLayer::GetSystem2D()

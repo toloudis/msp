@@ -147,6 +147,20 @@
     <ClCompile Include="Mat\private\matTextureLoader.cpp" />
     <ClCompile Include="Mat\private\matTextureLoaderDDS.cpp" />
     <ClCompile Include="Mat\private\matTextureMgrVk.cpp" />
+    <ClCompile Include="G3d\private\g3dVkBufferUtil.cpp" />
+    <ClCompile Include="bump\private\bumpBufferUtil.cpp" />
+    <ClCompile Include="bump\private\bumpBumpRenderer.cpp" />
+    <ClCompile Include="bump\private\bumpFragmentCreate.cpp" />
+    <ClCompile Include="bump\private\bumpPackage.cpp" />
+    <ClCompile Include="bump\private\bumpTriMeshBumpFrag.cpp" />
+    <ClCompile Include="bump\private\bumpVertexBuffer.cpp" />
+    <ClCompile Include="bump\private\bumpVertexDecl.cpp" />
+    <ClCompile Include="may\private\mayFragCreate.cpp" />
+    <ClCompile Include="may\private\mayPackage.cpp" />
+    <ClCompile Include="tmesh\private\tmeshFrag.cpp" />
+    <ClCompile Include="tmesh\private\tmeshIndexBuffer.cpp" />
+    <ClCompile Include="tmesh\private\tmeshPackage.cpp" />
+    <ClCompile Include="tmesh\private\tmeshVertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsVulkanLayer.hpp" />
@@ -207,6 +221,20 @@
     <ClInclude Include="Mat\matRenderTargetTexture.hpp" />
     <ClInclude Include="Mat\matTextureMgrVk.hpp" />
     <ClInclude Include="Mat\private\matTextureLoader.hpp" />
+    <ClInclude Include="G3d\g3dVkBufferUtil.hpp" />
+    <ClInclude Include="bump\bumpBufferUtil.hpp" />
+    <ClInclude Include="bump\bumpBumpRenderer.hpp" />
+    <ClInclude Include="bump\bumpFragmentCreate.hpp" />
+    <ClInclude Include="bump\bumpPackage.hpp" />
+    <ClInclude Include="bump\bumpTriMeshBumpFrag.hpp" />
+    <ClInclude Include="bump\bumpVertexBuffer.hpp" />
+    <ClInclude Include="bump\private\bumpVertexDecl.hpp" />
+    <ClInclude Include="may\mayFragCreate.hpp" />
+    <ClInclude Include="may\mayPackage.hpp" />
+    <ClInclude Include="tmesh\tmeshFrag.hpp" />
+    <ClInclude Include="tmesh\tmeshIndexBuffer.hpp" />
+    <ClInclude Include="tmesh\tmeshPackage.hpp" />
+    <ClInclude Include="tmesh\tmeshVertexBuffer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

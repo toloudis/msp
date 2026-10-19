@@ -81,12 +81,19 @@ namespace gvk
 	void g3dBakeVk::SetOutputDirectory(const fsLocator&)						{}
 
 	//------------------------------------------------------------------------
-	//	g3dFragmentVk
+	//	hairModelFragVk
 	//------------------------------------------------------------------------
-	g3dFragmentVk::g3dFragmentVk(const maPoint3d* i_Vertices, const maPoint3d* i_Normals, const maPoint2d* i_UVs,
+	int hairModelFragVk::sm_RendererId = 0;
+
+	void hairModelFragVk::SetRendererId(int i_RenderMode)
+	{
+		sm_RendererId = i_RenderMode;
+	}
+
+	hairModelFragVk::hairModelFragVk(const maPoint3d* i_Vertices, const maPoint3d* i_Normals, const maPoint2d* i_UVs,
 								 int i_nVertices, const g3dIndexPtr* i_pIndices, int i_nIndices,
 								 matMaterial* i_pMaterial, bool i_bMorphable)
-		: g3dFragment(i_pMaterial, 0, i_bMorphable)
+		: g3dFragment(i_pMaterial, sm_RendererId, i_bMorphable)
 	{
 		for (int i = 0; i < i_nVertices; ++i)
 		{
@@ -114,7 +121,7 @@ namespace gvk
 		update_bounds();
 	}
 
-	g3dFragmentVk::g3dFragmentVk(const g3dFragmentVk& i_Other)
+	hairModelFragVk::hairModelFragVk(const hairModelFragVk& i_Other)
 		: g3dFragment(i_Other)
 		, m_Vertices(i_Other.m_Vertices)
 		, m_Indices16(i_Other.m_Indices16)
@@ -122,11 +129,11 @@ namespace gvk
 	{
 	}
 
-	g3dFragmentVk::~g3dFragmentVk()
+	hairModelFragVk::~hairModelFragVk()
 	{
 	}
 
-	void g3dFragmentVk::update_bounds()
+	void hairModelFragVk::update_bounds()
 	{
 		maAxisBox box;
 		bool first = true;
@@ -147,10 +154,10 @@ namespace gvk
 		SetBoundingBox(box);
 	}
 
-	void g3dFragmentVk::Deallocate()	{}
-	void g3dFragmentVk::Reallocate()	{}
+	void hairModelFragVk::Deallocate()	{}
+	void hairModelFragVk::Reallocate()	{}
 
-	void g3dFragmentVk::UpdateVertices(int i_NumVertices, const maPoint3d* i_pVertices, const maVector3d* i_pNormals)
+	void hairModelFragVk::UpdateVertices(int i_NumVertices, const maPoint3d* i_pVertices, const maVector3d* i_pNormals)
 	{
 		const int count = std::min(i_NumVertices, GetNumVertices());
 		for (int i = 0; i < count; ++i)
@@ -169,107 +176,46 @@ namespace gvk
 		update_bounds();
 	}
 
-	int g3dFragmentVk::GetNumVertices() const
+	int hairModelFragVk::GetNumVertices() const
 	{
 		return static_cast<int>(m_Vertices.size());
 	}
 
-	int g3dFragmentVk::GetNumIndices() const
+	int hairModelFragVk::GetNumIndices() const
 	{
 		return static_cast<int>(m_Indices16.size() + m_Indices32.size());
 	}
 
-	g3dType::VertexFormat g3dFragmentVk::GetVertexFormat() const
+	g3dType::VertexFormat hairModelFragVk::GetVertexFormat() const
 	{
 		return g3dType::e_BumpTex1Vertex;
 	}
 
-	unsigned char* g3dFragmentVk::Lock()
+	unsigned char* hairModelFragVk::Lock()
 	{
 		return reinterpret_cast<unsigned char*>(m_Vertices.data());
 	}
 
-	void g3dFragmentVk::Unlock()								{ update_bounds(); }
-	unsigned char* g3dFragmentVk::LockIndices()
+	void hairModelFragVk::Unlock()								{ update_bounds(); }
+	unsigned char* hairModelFragVk::LockIndices()
 	{
 		return m_Indices32.empty() ? reinterpret_cast<unsigned char*>(m_Indices16.data())
 								   : reinterpret_cast<unsigned char*>(m_Indices32.data());
 	}
 
-	void g3dFragmentVk::UnlockIndices()							{}
-	unsigned char* g3dFragmentVk::ReadOnlyLock()				{ return Lock(); }
-	void g3dFragmentVk::ReadOnlyUnlock()						{}
-	unsigned char* g3dFragmentVk::ReadOnlyLockIndices()			{ return LockIndices(); }
-	void g3dFragmentVk::ReadOnlyUnlockIndices()					{}
-	void g3dFragmentVk::ComponentSort(const maMatrix4x4&, const maPoint3d&)	{ GVK_NOT_YET("g3dFragmentVk::ComponentSort"); }
+	void hairModelFragVk::UnlockIndices()							{}
+	unsigned char* hairModelFragVk::ReadOnlyLock()				{ return Lock(); }
+	void hairModelFragVk::ReadOnlyUnlock()						{}
+	unsigned char* hairModelFragVk::ReadOnlyLockIndices()			{ return LockIndices(); }
+	void hairModelFragVk::ReadOnlyUnlockIndices()					{}
+	void hairModelFragVk::ComponentSort(const maMatrix4x4&, const maPoint3d&)	{ GVK_NOT_YET("hairModelFragVk::ComponentSort"); }
 
 	//------------------------------------------------------------------------
-	//	g3dFragmentCreateVk
+	//	hairRendererVk
 	//------------------------------------------------------------------------
-	g3dFragment* g3dFragmentCreateVk::CreateFragment(const maPoint3d* i_Vertices, const maPoint3d* i_Normals, int i_nVertices,
-													 const g3dIndexPtr i_Indices, int i_nIndices, matMaterial* i_pMaterial,
-													 bool i_bMorphable)
+	int hairRendererVk::Render(const g3dSceneNode*, const matMaterial*, matShaderEffect*)
 	{
-		return new g3dFragmentVk(i_Vertices, i_Normals, NULL, i_nVertices, &i_Indices, i_nIndices, i_pMaterial, i_bMorphable);
-	}
-
-	g3dFragment* g3dFragmentCreateVk::CreateFragment(const maPoint3d* i_Vertices, const maPoint3d* i_Normals, const maPoint2d* i_UVs,
-													 int i_nVertices, const g3dIndexPtr i_Indices, int i_nIndices,
-													 matMaterial* i_pMaterial, bool i_bMorphable)
-	{
-		return new g3dFragmentVk(i_Vertices, i_Normals, i_UVs, i_nVertices, &i_Indices, i_nIndices, i_pMaterial, i_bMorphable);
-	}
-
-	g3dFragment* g3dFragmentCreateVk::CreateLineList(const maPoint3d* i_Vertices, const maPoint3d* i_Normals, int i_nVertices,
-													 const g3dIndexPtr i_Indices, int i_nIndices, matMaterial* i_pMaterial,
-													 bool i_bMorphable, const maPoint2d*, const maPoint3d*, const maPoint3d*)
-	{
-		return new g3dFragmentVk(i_Vertices, i_Normals, NULL, i_nVertices, &i_Indices, i_nIndices, i_pMaterial, i_bMorphable);
-	}
-
-	g3dFragment* g3dFragmentCreateVk::CloneFragment(const g3dFragment* i_pFragment)
-	{
-		const g3dFragmentVk* fragment = dynamic_cast<const g3dFragmentVk*>(i_pFragment);
-		return fragment ? new g3dFragmentVk(*fragment) : NULL;
-	}
-
-	void g3dFragmentCreateVk::SetComputeBasisVectors(bool)		{}
-	void g3dFragmentCreateVk::StoreGeometryInVideoMemory(bool)	{}
-
-	//------------------------------------------------------------------------
-	//	g3dVertexBufferVk, mdlFragCreateVk - model import isn't ported yet
-	//------------------------------------------------------------------------
-	void g3dVertexBufferVk::UpdateVertices(int, const maPoint3d*, const maVector3d*)	{ GVK_NOT_YET("g3dVertexBufferVk::UpdateVertices"); }
-	int g3dVertexBufferVk::GetNumVertices() const					{ return 0; }
-	g3dType::VertexFormat g3dVertexBufferVk::GetVertexFormat() const	{ return g3dType::e_NonTexVertex; }
-	unsigned char* g3dVertexBufferVk::Lock()						{ return NULL; }
-	void g3dVertexBufferVk::Unlock()								{}
-	void g3dVertexBufferVk::SetBoundingBox(const maAxisBox&)		{}
-
-	bool mdlFragCreateVk::UseBumpFrag(int, bool)	{ return true; }
-
-	g3dFragment* mdlFragCreateVk::CreateFragment(const mdlSplitFragInfo&, bool i_Morphable)
-	{
-		GVK_NOT_YET("mdlFragCreateVk::CreateFragment");
-		return new g3dFragmentVk(NULL, NULL, NULL, 0, NULL, 0, NULL, i_Morphable);
-	}
-
-	g3dFragment* mdlFragCreateVk::CreateHairFragment(const mdlHairInfo&, matMaterial* i_pMaterial)
-	{
-		GVK_NOT_YET("mdlFragCreateVk::CreateHairFragment");
-		return new g3dFragmentVk(NULL, NULL, NULL, 0, NULL, 0, i_pMaterial, false);
-	}
-
-	void mdlFragCreateVk::OptimizeFragment(mdlSplitFragInfo&)	{}
-
-	g3dVertexBuffer* mdlFragCreateVk::CreateFragmentGroup(const mdlFragInfo&, std::vector<g3dFragment*>&, bool)
-	{
-		GVK_NOT_YET("mdlFragCreateVk::CreateFragmentGroup");
-		return new g3dVertexBufferVk;
-	}
-
-	void mdlFragCreateVk::UpdateFragmentGroup(const mdlFragInfo&, g3dVertexBuffer&, std::vector<g3dFragment*>&, bool)
-	{
-		GVK_NOT_YET("mdlFragCreateVk::UpdateFragmentGroup");
+		GVK_NOT_YET("hairRendererVk::Render (hair is Plan 7)");
+		return 0;
 	}
 }

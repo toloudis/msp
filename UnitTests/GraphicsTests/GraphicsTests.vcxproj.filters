@@ -96,6 +96,10 @@
     <ClCompile Include="Vk\matTextureMgrVkTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
+    <ClCompile Include="Vk\bumpFragmentVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="gtScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />
@@ -110,6 +114,7 @@
     <ClInclude Include="Vk\gtVulkanContext.hpp">
       <Filter>Vk</Filter>
     </ClInclude>
+    <ClInclude Include="gtScene.hpp" />
     <ClInclude Include="gtImageFiles.hpp" />
     <ClInclude Include="gtBackend.hpp" />
   </ItemGroup>

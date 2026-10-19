@@ -58,6 +58,24 @@
     <Filter Include="Mat\private">
       <UniqueIdentifier>{a4454e70-a779-4f6e-88f5-6dc943d70429}</UniqueIdentifier>
     </Filter>
+    <Filter Include="bump">
+      <UniqueIdentifier>{489b5fd6-c447-4612-a025-a2f45fbd93ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="bump\private">
+      <UniqueIdentifier>{46eca325-7ebb-41fc-b726-ec567273691e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="may">
+      <UniqueIdentifier>{7086fef5-61ac-4c3d-80dc-1a2754106721}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="may\private">
+      <UniqueIdentifier>{915893d0-2977-4b35-a876-c082801a78c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tmesh">
+      <UniqueIdentifier>{b26dc0eb-ab54-4981-8f39-ef8d89d19928}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tmesh\private">
+      <UniqueIdentifier>{17bfd27c-eadd-4b70-b47e-baf835df18c1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsVulkanLayer.cpp" />
@@ -235,6 +253,48 @@
     <ClCompile Include="Mat\private\matTextureMgrVk.cpp">
       <Filter>Mat\private</Filter>
     </ClCompile>
+    <ClCompile Include="G3d\private\g3dVkBufferUtil.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="bump\private\bumpBufferUtil.cpp">
+      <Filter>bump\private</Filter>
+    </ClCompile>
+    <ClCompile Include="bump\private\bumpBumpRenderer.cpp">
+      <Filter>bump\private</Filter>
+    </ClCompile>
+    <ClCompile Include="bump\private\bumpFragmentCreate.cpp">
+      <Filter>bump\private</Filter>
+    </ClCompile>
+    <ClCompile Include="bump\private\bumpPackage.cpp">
+      <Filter>bump\private</Filter>
+    </ClCompile>
+    <ClCompile Include="bump\private\bumpTriMeshBumpFrag.cpp">
+      <Filter>bump\private</Filter>
+    </ClCompile>
+    <ClCompile Include="bump\private\bumpVertexBuffer.cpp">
+      <Filter>bump\private</Filter>
+    </ClCompile>
+    <ClCompile Include="bump\private\bumpVertexDecl.cpp">
+      <Filter>bump\private</Filter>
+    </ClCompile>
+    <ClCompile Include="may\private\mayFragCreate.cpp">
+      <Filter>may\private</Filter>
+    </ClCompile>
+    <ClCompile Include="may\private\mayPackage.cpp">
+      <Filter>may\private</Filter>
+    </ClCompile>
+    <ClCompile Include="tmesh\private\tmeshFrag.cpp">
+      <Filter>tmesh\private</Filter>
+    </ClCompile>
+    <ClCompile Include="tmesh\private\tmeshIndexBuffer.cpp">
+      <Filter>tmesh\private</Filter>
+    </ClCompile>
+    <ClCompile Include="tmesh\private\tmeshPackage.cpp">
+      <Filter>tmesh\private</Filter>
+    </ClCompile>
+    <ClCompile Include="tmesh\private\tmeshVertexBuffer.cpp">
+      <Filter>tmesh\private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsVulkanLayer.hpp" />
@@ -408,6 +468,48 @@
     </ClInclude>
     <ClInclude Include="Mat\private\matTextureLoader.hpp">
       <Filter>Mat\private</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dVkBufferUtil.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="bump\bumpBufferUtil.hpp">
+      <Filter>bump</Filter>
+    </ClInclude>
+    <ClInclude Include="bump\bumpBumpRenderer.hpp">
+      <Filter>bump</Filter>
+    </ClInclude>
+    <ClInclude Include="bump\bumpFragmentCreate.hpp">
+      <Filter>bump</Filter>
+    </ClInclude>
+    <ClInclude Include="bump\bumpPackage.hpp">
+      <Filter>bump</Filter>
+    </ClInclude>
+    <ClInclude Include="bump\bumpTriMeshBumpFrag.hpp">
+      <Filter>bump</Filter>
+    </ClInclude>
+    <ClInclude Include="bump\bumpVertexBuffer.hpp">
+      <Filter>bump</Filter>
+    </ClInclude>
+    <ClInclude Include="bump\private\bumpVertexDecl.hpp">
+      <Filter>bump\private</Filter>
+    </ClInclude>
+    <ClInclude Include="may\mayFragCreate.hpp">
+      <Filter>may</Filter>
+    </ClInclude>
+    <ClInclude Include="may\mayPackage.hpp">
+      <Filter>may</Filter>
+    </ClInclude>
+    <ClInclude Include="tmesh\tmeshFrag.hpp">
+      <Filter>tmesh</Filter>
+    </ClInclude>
+    <ClInclude Include="tmesh\tmeshIndexBuffer.hpp">
+      <Filter>tmesh</Filter>
+    </ClInclude>
+    <ClInclude Include="tmesh\tmeshPackage.hpp">
+      <Filter>tmesh</Filter>
+    </ClInclude>
+    <ClInclude Include="tmesh\tmeshVertexBuffer.hpp">
+      <Filter>tmesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
