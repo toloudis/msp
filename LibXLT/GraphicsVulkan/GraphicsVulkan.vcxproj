@@ -124,6 +124,13 @@
     <ClCompile Include="G3d\private\g3dRasterizerStateMgr.cpp" />
     <ClCompile Include="G3d\private\g3dStateMgr.cpp" />
     <ClCompile Include="G2d\private\g2dFullscreenQuad.cpp" />
+    <ClCompile Include="Mat\private\matImageDecode.cpp" />
+    <ClCompile Include="Mat\private\matImageDecodeStb.cpp" />
+    <ClCompile Include="Mat\private\matImageDecodeTga.cpp" />
+    <ClCompile Include="Mat\private\matImageDecodeTiff.cpp" />
+    <ClCompile Include="Mat\private\matImageDecodeDds.cpp" />
+    <ClCompile Include="Mat\private\matImageDecodeHdr.cpp" />
+    <ClCompile Include="Mat\private\matMipFilter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsVulkanLayer.hpp" />
@@ -167,6 +174,9 @@
     <ClInclude Include="G3d\g3dRasterizerStateMgr.hpp" />
     <ClInclude Include="G3d\g3dStateMgr.hpp" />
     <ClInclude Include="G2d\g2dFullscreenQuad.hpp" />
+    <ClInclude Include="Mat\matImageDecode.hpp" />
+    <ClInclude Include="Mat\matMipFilter.hpp" />
+    <ClInclude Include="Mat\private\matImageDecodeInternal.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

@@ -82,6 +82,13 @@
     <ClCompile Include="Vk\tiffVcpkgTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
+    <ClCompile Include="gtImageFiles.cpp" />
+    <ClCompile Include="Vk\matImageDecodeTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\matMipFilterTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />
@@ -96,6 +103,7 @@
     <ClInclude Include="Vk\gtVulkanContext.hpp">
       <Filter>Vk</Filter>
     </ClInclude>
+    <ClInclude Include="gtImageFiles.hpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Vk\Shaders\gtBindingProto.hlsl">

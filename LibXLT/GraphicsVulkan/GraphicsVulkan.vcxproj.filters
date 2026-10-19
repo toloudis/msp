@@ -52,6 +52,12 @@
     <Filter Include="vkd\private">
       <UniqueIdentifier>{565ec346-c858-4985-b851-8fb200929193}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Mat">
+      <UniqueIdentifier>{6314c9f1-2813-4d1d-b036-22ec88dc30e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mat\private">
+      <UniqueIdentifier>{a4454e70-a779-4f6e-88f5-6dc943d70429}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsVulkanLayer.cpp" />
@@ -159,6 +165,27 @@
     </ClCompile>
     <ClCompile Include="G2d\private\g2dFullscreenQuad.cpp">
       <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matImageDecode.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matImageDecodeStb.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matImageDecodeTga.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matImageDecodeTiff.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matImageDecodeDds.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matImageDecodeHdr.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Mat\private\matMipFilter.cpp">
+      <Filter>Mat\private</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -282,6 +309,15 @@
     </ClInclude>
     <ClInclude Include="G2d\g2dFullscreenQuad.hpp">
       <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matImageDecode.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matMipFilter.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\private\matImageDecodeInternal.hpp">
+      <Filter>Mat\private</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
