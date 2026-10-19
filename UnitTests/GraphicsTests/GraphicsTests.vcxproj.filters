@@ -102,6 +102,9 @@
     <ClCompile Include="Vk\effShaderVkTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
+    <ClCompile Include="Vk\g3dSceneRendererVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
     <ClCompile Include="gtTarget.cpp" />
     <ClCompile Include="gtScene.cpp" />
   </ItemGroup>

@@ -1,0 +1,506 @@
+/*****************************************************************************
+**  g3dSceneRendererVkTest.cpp
+**
+**      The forward renderer (g3dSceneRendererVk) against GraphicsDX11's
+**      (g3dSceneRendererDX11): the same synthetic scene (gtSceneBuilder)
+**      rendered by each into a 256x256 render-target texture, compared
+**      with gfxcompare's tolerance. Lit spheres on every material class
+**      (with zero and very large values), a textured scene, sorted
+**      transparent nodes, fog, the wireframe draw styles and hardware
+**      tessellation (the PTess passes). Also: every renderer type the
+**      Vulkan creator can't build yet gives the forward renderer.
+**      GraphicsDX11's forward renderer can render transparent nodes only
+**      once per process (see render_dx11), so its renders run in gtest
+**      death-test child processes.
+**
+**	Extra Large Technology
+\****************************************************************************/
+#include "gtBackend.hpp"
+#include "gtImage.hpp"
+#include "gtScene.hpp"
+#include "gtTarget.hpp"
+#include "gtTempDir.hpp"
+
+#ifndef G3D_SCENE_HPP
+#include "Graphics/G3d/g3dScene.hpp"
+#endif
+#ifndef G3D_SCENENODE_HPP
+#include "Graphics/G3d/g3dSceneNode.hpp"
+#endif
+#ifndef G3D_LAYER_HPP
+#include "Graphics/G3d/g3dLayer.hpp"
+#endif
+#ifndef G3D_LIGHTMGR_HPP
+#include "Graphics/G3d/g3dLightMgr.hpp"
+#endif
+#ifndef G3D_PREFS_HPP
+#include "Graphics/G3d/g3dPrefs.hpp"
+#endif
+#ifndef G3D_SCENERENDERERCREATE_HPP
+#include "Graphics/G3d/g3dSceneRendererCreate.hpp"
+#endif
+#ifndef MAT_MATERIAL_HPP
+#include "Graphics/Mat/matMaterial.hpp"
+#endif
+#ifndef MAT_SHADERMGR_HPP
+#include "Graphics/Mat/matShaderMgr.hpp"
+#endif
+#ifndef EFF_PHONGDATA_HPP
+#include "Graphics/Eff/effPhongData.hpp"
+#endif
+#ifndef EFF_SOLIDDATA_HPP
+#include "Graphics/Eff/effSolidData.hpp"
+#endif
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
+
+#ifndef G3D_SCENERENDERERDX11_HPP
+#include "GraphicsDX11/g3d/g3dSceneRendererDX11.hpp"
+#endif
+
+#ifndef GVK_G3D_SCENERENDERERVK_HPP
+#include "GraphicsVulkan/G3d/g3dSceneRendererVk.hpp"
+#endif
+
+#include <gtest/gtest.h>
+
+#include <cstdlib>
+#include <fstream>
+#include <functional>
+#include <iostream>
+#include <memory>
+#include <sstream>
+#include <string>
+#include <vector>
+
+namespace
+{
+	const int c_Size = 256;
+
+	//	Builds a scene into the builder (on the backend that is up)
+	typedef std::function<void(gtSceneBuilder&, const std::filesystem::path&)> SceneFunction;
+
+	//	i_Build's scene rendered by i_Kind's forward renderer
+	gtPicture render(gtBackend::Kind i_Kind, const SceneFunction& i_Build, const std::filesystem::path& i_Dir)
+	{
+		const float clear[4] = { 0, 0, 0, 1 };
+		gtTarget target(i_Kind, c_Size, c_Size, clear);
+		gtSceneBuilder builder;
+		g3dLightMgr::SetAmbient(maFloatRGBA(0.1f, 0.15f, 0.2f, 1));
+		i_Build(builder, i_Dir);
+
+		std::unique_ptr<g3dSceneRenderer> renderer;
+		if (i_Kind == gtBackend::e_DX11)
+			renderer.reset(new g3dSceneRendererDX11());
+		else
+			renderer.reset(new gvk::g3dSceneRendererVk());
+		const std::vector<g3dLayer*> no_layers;
+		renderer->Render(target.Target(), builder.Camera(), builder.Scene(), no_layers, 1.25f);
+		gtPicture picture = target.Read();
+		renderer->ReleaseResources();
+		renderer.reset();
+		return picture;
+	}
+
+	//	The failures the current test has had so far
+	int failures()
+	{
+		const testing::TestResult* result = testing::UnitTest::GetInstance()->current_test_info()->result();
+		int n = 0;
+		for (int i = 0; i < result->total_part_count(); i++)
+			n += result->GetTestPartResult(i).failed() ? 1 : 0;
+		return n;
+	}
+
+	//	The child process's half of render_dx11: renders, writes the pixels
+	//	to i_File and exits (0 if all went well). (The child runs the test
+	//	from the start, so failures before this one aren't its own.)
+	void render_dx11_child(const SceneFunction& i_Build, const std::filesystem::path& i_Dir, const std::filesystem::path& i_File)
+	{
+		const int before = failures();
+		gtPicture picture;
+		gtBackend::Run(gtBackend::e_DX11, [&]() { picture = render(gtBackend::e_DX11, i_Build, i_Dir); });
+		bool ok = picture.Valid() && failures() == before;
+		if (ok)
+		{
+			std::ofstream out(i_File, std::ios::binary);
+			out.write((const char*)picture.m_Rgba.data(), picture.m_Rgba.size());
+			ok = out.good();
+		}
+		if (!ok)
+			std::cerr << "the DX11 render failed (its output is above)" << std::endl;
+		std::cout.flush();
+		std::exit(ok ? 0 : 1);
+	}
+
+	//	What GraphicsDX11's forward renderer draws. It keeps every
+	//	transparent node it is given in a static list it never clears (or
+	//	sorts), and draws them all again on every later Render, freed or not;
+	//	so each DX11 render here runs in a process of its own (a gtest death
+	//	test child) and hands its pixels back in a file.
+	gtPicture render_dx11(const SceneFunction& i_Build, const std::filesystem::path& i_Dir)
+	{
+		const std::filesystem::path file = i_Dir / "dx11.rgba";
+		EXPECT_EXIT(render_dx11_child(i_Build, i_Dir, file), ::testing::ExitedWithCode(0), "");
+		gtPicture picture;
+		std::ifstream in(file, std::ios::binary);
+		std::vector<uint8_t> rgba((size_t)c_Size * c_Size * 4);
+		if (in.read((char*)rgba.data(), rgba.size()))
+		{
+			picture.m_Width = c_Size;
+			picture.m_Height = c_Size;
+			picture.m_Rgba = std::move(rgba);
+		}
+		return picture;
+	}
+
+	//	Renders on both backends and compares
+	void expect_same_image(const char* i_pTest, const SceneFunction& i_Build)
+	{
+		gtTempDir dir;
+		const gtPicture dx11 = render_dx11(i_Build, dir.GetPath());
+		gtPicture vulkan;
+		if (!gtBackend::Run(gtBackend::e_Vulkan, [&]() { vulkan = render(gtBackend::e_Vulkan, i_Build, dir.GetPath()); }))
+			return;
+		EXPECT_TRUE(dx11.Valid());
+		EXPECT_TRUE(vulkan.Valid());
+		if (!dx11.Valid() || !vulkan.Valid())
+			return;
+
+		//	the scene covers a good part of the image
+		int covered = 0;
+		for (size_t i = 0; i < dx11.m_Rgba.size(); i += 4)
+			covered += (dx11.m_Rgba[i] | dx11.m_Rgba[i + 1] | dx11.m_Rgba[i + 2]) != 0;
+		EXPECT_GT(covered, c_Size * c_Size / 20) << "DX11 drew almost nothing";
+
+		const gtCompareResult result = gtCompareImages(dx11.m_Rgba.data(), vulkan.m_Rgba.data(), c_Size, c_Size);
+		std::cout << "  " << i_pTest << ": " << result.Describe() << std::endl;
+		if (!result.m_bPass)
+		{
+			ADD_FAILURE() << result.Describe() << " (images in "
+				<< gtSaveComparison(i_pTest, dx11.m_Rgba.data(), vulkan.m_Rgba.data(), c_Size, c_Size) << ")";
+		}
+	}
+
+	//	An opaque Phong data material (SetPhong's values, transparency 1)
+	matMaterial* opaque_phong(const std::string& i_Shader, gtScene::Values i_Values)
+	{
+		return gtScene::DataMaterial(i_Shader, [i_Values](effShaderData* i_pData)
+		{
+			gtScene::SetPhong(i_pData, i_Values);
+			if (effPhongData* phong = dynamic_cast<effPhongData*>(i_pData))
+				phong->m_Transparency = 1.0f;
+		});
+	}
+
+	//	The usual two lights
+	void lights(gtSceneBuilder& io_Builder)
+	{
+		io_Builder.PointLight(maPoint3d(2, 3, 4), maFloatRGBA(0.9f, 0.8f, 0.7f, 1), 25.0f);
+		io_Builder.DirectionalLight(maVector3d(-0.3f, -0.8f, -0.5f), maFloatRGBA(0.4f, 0.5f, 0.6f, 1));
+	}
+
+	//	Twelve spheres: rows Blinn, Phong, Lambert material shaders and the
+	//	built-in Phong; columns non-default, zero and very large values
+	void lit_spheres(gtSceneBuilder& io_Builder, const std::filesystem::path&)
+	{
+		const gtMesh sphere = gtScene::Sphere(16, 32);
+		const gtScene::Values values[3] = { gtScene::e_NonDefault, gtScene::e_Zero, gtScene::e_Huge };
+		const char* shaders[3] = { "Blinn.fx", "Phong.fx", "Lambert.fx" };
+		for (int row = 0; row < 4; row++)
+		{
+			for (int column = 0; column < 3; column++)
+			{
+				matMaterial* material = row < 3
+					? gtScene::ShaderMaterial(shaders[row], values[column])
+					: opaque_phong("Phong.fx", values[column]);
+				io_Builder.Keep(material);
+				io_Builder.Add(sphere, material, gtScene::Place(-1.5f + 1.5f * column, 1.8f - 1.2f * row, 0, 0.55f));
+			}
+		}
+		lights(io_Builder);
+	}
+}
+
+TEST(g3dSceneRendererVkTest, LitSpheresMatchDX11)
+{
+	expect_same_image("LitSpheresMatchDX11", lit_spheres);
+}
+
+TEST(g3dSceneRendererVkTest, TexturedMatchDX11)
+{
+	expect_same_image("TexturedMatchDX11", [](gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
+	{
+		matTexture* checker = io_Builder.Keep(gtScene::CheckerTexture(i_Dir, 128, 128, 8));
+		matTexture* fine = io_Builder.Keep(gtScene::CheckerTexture(i_Dir, 100, 60, 10));
+		matMaterial* blinn = io_Builder.Keep(gtScene::ShaderMaterial("Blinn.fx", gtScene::e_NonDefault, { checker }));
+		matMaterial* lambert = io_Builder.Keep(gtScene::ShaderMaterial("Lambert.fx", gtScene::e_NonDefault, { fine }));
+		maMatrix4x4 floor = gtScene::Place(0, 0, -1.5f, 2.5f);
+		io_Builder.Add(gtScene::Plane(), lambert, floor);
+		io_Builder.Add(gtScene::Sphere(16, 32), blinn, gtScene::Place(-0.9f, 0.3f, 0, 0.8f));
+		io_Builder.Add(gtScene::Sphere(16, 32), lambert, gtScene::Place(0.9f, -0.3f, 0.5f, 0.7f));
+		lights(io_Builder);
+	});
+}
+
+TEST(g3dSceneRendererVkTest, TransparencyMatchDX11)
+{
+	expect_same_image("TransparencyMatchDX11", [](gtSceneBuilder& io_Builder, const std::filesystem::path&)
+	{
+		auto transparent = [](float i_R, float i_G, float i_B, float i_Transparency)
+		{
+			return gtScene::DataMaterial("Phong.fx", [=](effShaderData* i_pData)
+			{
+				gtScene::SetPhong(i_pData, gtScene::e_NonDefault);
+				effPhongData* phong = dynamic_cast<effPhongData*>(i_pData);
+				phong->m_ColorDiffuse = maFloatRGBA(i_R, i_G, i_B, 1);
+				phong->m_Transparency = i_Transparency;
+			});
+		};
+		matMaterial* back = io_Builder.Keep(opaque_phong("Phong.fx", gtScene::e_NonDefault));
+		io_Builder.Add(gtScene::Plane(), back, gtScene::Place(0, 0, -2, 2.5f));
+		//	added far to near, near to far and in between: the sort orders them
+		io_Builder.Add(gtScene::Sphere(16, 32), io_Builder.Keep(transparent(1, 0.2f, 0.2f, 0.5f)), gtScene::Place(-0.5f, 0.3f, 1.0f, 0.9f));
+		io_Builder.Add(gtScene::Sphere(16, 32), io_Builder.Keep(transparent(0.2f, 1, 0.2f, 0.35f)), gtScene::Place(0.5f, 0.3f, -0.5f, 0.9f));
+		io_Builder.Add(gtScene::Sphere(16, 32), io_Builder.Keep(transparent(0.2f, 0.2f, 1, 0.65f)), gtScene::Place(0, -0.5f, 0.2f, 0.9f));
+		lights(io_Builder);
+	});
+}
+
+TEST(g3dSceneRendererVkTest, FogMatchDX11)
+{
+	expect_same_image("FogMatchDX11", [](gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
+	{
+		lit_spheres(io_Builder, i_Dir);
+		fogParams fog;
+		fog.m_nMode = g3dType::e_FogModeLinear;
+		fog.m_Color = maFloatRGBA(0.6f, 0.6f, 0.7f, 1);
+		fog.m_fStart = 4.0f;
+		fog.m_fEnd = 9.0f;
+		fog.m_fDensity = 0.3f;
+		io_Builder.Scene().SetFog(fog);
+		io_Builder.Layer().SetFogEnabled(true);
+	});
+}
+
+namespace
+{
+	//	Sets the draw-style preferences while it lives
+	class DrawStyleScope
+	{
+		public:
+			DrawStyleScope(g3dSceneNode::DrawStyle i_Style, bool i_bWireframe)
+			{
+				g3dPrefs::g3dRenderPrefs& prefs = g3dPrefs::CurrentPrefs();
+				m_Style = prefs.m_DrawStyle;
+				m_bWireframe = prefs.m_bRenderWireframe;
+				prefs.m_DrawStyle = i_Style;
+				prefs.m_bRenderWireframe = i_bWireframe;
+			}
+			~DrawStyleScope()
+			{
+				g3dPrefs::g3dRenderPrefs& prefs = g3dPrefs::CurrentPrefs();
+				prefs.m_DrawStyle = m_Style;
+				prefs.m_bRenderWireframe = m_bWireframe;
+			}
+		private:
+			g3dSceneNode::DrawStyle	m_Style;
+			bool					m_bWireframe;
+	};
+}
+
+TEST(g3dSceneRendererVkTest, WireframeDrawStyleMatchDX11)
+{
+	{
+		SCOPED_TRACE("wireframe");
+		DrawStyleScope style(g3dSceneNode::e_Wireframe, false);
+		expect_same_image("WireframeDrawStyleMatchDX11_wireframe", lit_spheres);
+	}
+	{
+		SCOPED_TRACE("lit wireframe (preference)");
+		DrawStyleScope style(g3dSceneNode::e_Solid, true);
+		expect_same_image("WireframeDrawStyleMatchDX11_lit", lit_spheres);
+	}
+	{
+		SCOPED_TRACE("node draw style");
+		DrawStyleScope style(g3dSceneNode::e_Solid, false);
+		expect_same_image("WireframeDrawStyleMatchDX11_node", [](gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
+		{
+			lit_spheres(io_Builder, i_Dir);
+			std::vector<g3dSceneNode*>& nodes = io_Builder.Layer().GetRootNode()->GetChildren();
+			for (size_t i = 0; i < nodes.size(); i += 2)
+				nodes[i]->SetDrawStyle(i % 4 == 0 ? g3dSceneNode::e_Wireframe : g3dSceneNode::e_LitWireframe);
+		});
+	}
+}
+
+namespace
+{
+	//	Sets the hardware tessellation preference while it lives
+	class TessellationScope
+	{
+		public:
+			TessellationScope(bool i_bOn)
+			{
+				m_bWas = g3dPrefs::CurrentPrefs().m_bUseHardwareTessellation;
+				g3dPrefs::CurrentPrefs().m_bUseHardwareTessellation = i_bOn;
+			}
+			~TessellationScope()
+			{
+				g3dPrefs::CurrentPrefs().m_bUseHardwareTessellation = m_bWas;
+			}
+		private:
+			bool m_bWas;
+	};
+
+	//	testtess.fx (its PTess pass has a hull and a domain shader) on
+	//	displacement materials with three tessellation factors
+	void tessellated(gtSceneBuilder& io_Builder, const std::filesystem::path&)
+	{
+		const float factors[3] = { 1.0f, 4.0f, 9.5f };
+		for (int i = 0; i < 3; i++)
+		{
+			matMaterial* material = io_Builder.Keep(opaque_phong("testtess.fx", gtScene::e_NonDefault));
+			material->SetHasDisplacement(true);
+			material->DisplacementData().m_TessellationValue = factors[i];
+			io_Builder.Add(gtScene::Sphere(8, 12), material, gtScene::Place(-1.5f + 1.5f * i, 0.6f, 0, 0.6f));
+			io_Builder.Add(gtScene::Grid(4), material, gtScene::Place(-1.5f + 1.5f * i, -1.0f, 0, 0.6f));
+		}
+		lights(io_Builder);
+	}
+
+	int lit_pixels(const gtPicture& i_Picture)
+	{
+		int n = 0;
+		for (size_t i = 0; i < i_Picture.m_Rgba.size(); i += 4)
+			n += (i_Picture.m_Rgba[i] | i_Picture.m_Rgba[i + 1] | i_Picture.m_Rgba[i + 2]) != 0;
+		return n;
+	}
+}
+
+TEST(g3dSceneRendererVkTest, TessellatedDisplacementMatchDX11)
+{
+	{
+		SCOPED_TRACE("solid");
+		TessellationScope tessellation(true);
+		expect_same_image("TessellatedDisplacementMatchDX11_solid", tessellated);
+	}
+	{
+		//	(testtess's pixel shader is plain white: the wireframe shows the
+		//	triangles the tessellator made)
+		SCOPED_TRACE("wireframe");
+		TessellationScope tessellation(true);
+		DrawStyleScope style(g3dSceneNode::e_Solid, true);
+		expect_same_image("TessellatedDisplacementMatchDX11_wireframe", tessellated);
+	}
+	{
+		SCOPED_TRACE("the PTess pass ran");
+		DrawStyleScope style(g3dSceneNode::e_Solid, true);
+		gtTempDir dir;
+		gtPicture with, without;
+		{
+			TessellationScope tessellation(true);
+			if (!gtBackend::Run(gtBackend::e_Vulkan, [&]() { with = render(gtBackend::e_Vulkan, tessellated, dir.GetPath()); }))
+				return;
+		}
+		{
+			TessellationScope tessellation(false);
+			gtBackend::Run(gtBackend::e_Vulkan, [&]() { without = render(gtBackend::e_Vulkan, tessellated, dir.GetPath()); });
+		}
+		EXPECT_GT(lit_pixels(with), lit_pixels(without) * 3 / 2) << "the tessellated wireframe has no more edges";
+	}
+}
+
+namespace
+{
+	//	The DBG_LOG lines written while it lives
+	class LogCapture
+	{
+		public:
+			LogCapture() : m_Name(L"g3dSceneRendererVkTest")
+			{
+				dbgMsg::addStream(m_Name, &m_Text);
+				dbgMsg::enableStreamLog(m_Name, true);
+			}
+			~LogCapture()
+			{
+				dbgMsg::removeStream(m_Name);
+			}
+			std::string Text() const	{ return m_Text.str(); }
+		private:
+			std::wstring		m_Name;
+			std::ostringstream	m_Text;
+	};
+
+	int count_of(const std::string& i_Text, const std::string& i_Part)
+	{
+		int n = 0;
+		for (size_t at = i_Text.find(i_Part); at != std::string::npos; at = i_Text.find(i_Part, at + 1))
+			n++;
+		return n;
+	}
+}
+
+TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
+{
+	struct Case
+	{
+		const char* m_pName;
+		std::function<g3dSceneRenderer*()> m_Create;
+	};
+	const std::vector<Case> cases =
+	{
+		{ "default", []() { return g3dSceneRendererCreate::CreateDefaultRenderer(); } },
+		{ "HDR", []() { return g3dSceneRendererCreate::CreateHDRRenderer(); } },
+		{ "simple", []() { return g3dSceneRendererCreate::CreateSimpleRenderer(); } },
+		{ "texture", []() { return g3dSceneRendererCreate::CreateTextureRenderer(); } },
+		{ "depth map", []() { return g3dSceneRendererCreate::CreateDepthMapRenderer(); } },
+		{ "RSM", []() { return g3dSceneRendererCreate::CreateRSMRenderer(); } },
+		{ "opacity map", []() { return g3dSceneRendererCreate::CreateOpacityMapRenderer(NULL); } },
+		{ "cube map", []() { return g3dSceneRendererCreate::CreateCubeMapRenderer(NULL, NULL, false); } },
+		{ "planar reflection", []() { return g3dSceneRendererCreate::CreatePlanarReflectionRenderer(NULL, NULL); } },
+		{ "ambient occlusion", []() { return g3dSceneRendererCreate::CreateAmbientOcclusionRenderer(); } },
+		{ "global illumination", []() { return g3dSceneRendererCreate::CreateGlobalIlluminationRenderer(); } },
+		{ "depth", []() { return g3dSceneRendererCreate::CreateDepthRenderer(); } },
+		{ "UV", []() { return g3dSceneRendererCreate::CreateUVRenderer(); } },
+		{ "shadow mask", []() { return g3dSceneRendererCreate::CreateShadowMaskRenderer(); } },
+		{ "illumination", []() { return g3dSceneRendererCreate::CreateIlluminationRenderer(); } },
+		{ "normal", []() { return g3dSceneRendererCreate::CreateNormalRenderer(); } },
+		{ "velocity map", []() { return g3dSceneRendererCreate::CreateVelocityMapRenderer(); } },
+		{ "materials", []() { return g3dSceneRendererCreate::CreateMaterialsRenderer(); } },
+		{ "reflection-only", []() { return g3dSceneRendererCreate::CreateReflectionOnlyRenderer(); } },
+		{ "glow", []() { return g3dSceneRendererCreate::CreateGlowRenderer(); } },
+	};
+
+	gtBackend::Run(gtBackend::e_Vulkan, [&]()
+	{
+		std::string log;
+		{
+			LogCapture capture;
+			for (int round = 0; round < 2; round++)
+			{
+				for (const Case& c : cases)
+				{
+					SCOPED_TRACE(c.m_pName);
+					std::unique_ptr<g3dSceneRenderer> renderer(c.m_Create());
+					EXPECT_TRUE(dynamic_cast<gvk::g3dSceneRendererVk*>(renderer.get()) != NULL);
+				}
+				for (int type = g3dSceneRendererTypes::e_Default; type <= g3dSceneRendererTypes::e_RmanColorBleed; type++)
+				{
+					SCOPED_TRACE(type);
+					std::unique_ptr<g3dSceneRenderer> renderer(g3dSceneRendererCreate::CreateRenderer((g3dSceneRendererTypes::RendererType)type));
+					EXPECT_TRUE(dynamic_cast<gvk::g3dSceneRendererVk*>(renderer.get()) != NULL);
+				}
+			}
+			log = capture.Text();
+		}
+		//	once each, at most (a type logged by an earlier test isn't logged
+		//	again); DBG_LOG writes only in Debug builds
+		for (const Case& c : cases)
+		{
+			EXPECT_LE(count_of(log, std::string("GVK_NOT_YET: ") + c.m_pName + " renderer"), 1) << c.m_pName << "\n" << log;
+		}
+	});
+}
+

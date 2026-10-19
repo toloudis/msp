@@ -481,7 +481,10 @@ namespace gvk
 		key.m_Samples = (uint8_t)samples;
 		key.m_Fill = m_Rasterizer.m_Fill;
 		key.m_bDepthClip = m_Rasterizer.m_bDepthClip ? 1 : 0;
-		key.m_bAntialiasedLine = m_Rasterizer.m_bAntialiasedLine ? 1 : 0;
+		//	D3D11 draws lines as 1.4-pixel quadrilaterals when MultisampleEnable
+		//	is set (on any target), aliased otherwise; alpha-antialiased lines
+		//	(AntialiasedLineEnable alone) aren't emulated: nothing asks for them
+		key.m_LineMode = m_Rasterizer.m_bMultisample ? VK_LINE_RASTERIZATION_MODE_RECTANGULAR : VK_LINE_RASTERIZATION_MODE_BRESENHAM;
 		key.m_Blend = m_Blend;
 
 		VkPipeline pipeline = m_Pipelines.Get(key, m_Shaders, m_pLayout);

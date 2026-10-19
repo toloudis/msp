@@ -287,8 +287,12 @@ namespace
 							   bLowRes);
 			g3dDrawStyleUtilVk::RestoreNormalDrawStyle();
 
-			// Render the transparent nodes
+			// Render the transparent nodes, in the order they were found (as
+			// DX11's, which never sorts them); then forget them (DX11's
+			// list keeps every node it was given, and draws them all again
+			// next frame, freed or not)
 			l_transparencySort.RenderTransparentNodes(state_traverser );
+			l_transparencySort.ClearTransparentNodes();
 		}
 		else
 		{

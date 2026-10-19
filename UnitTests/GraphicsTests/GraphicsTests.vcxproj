@@ -136,6 +136,7 @@
     <ClCompile Include="Vk\bumpFragmentVkTest.cpp" />
     <ClCompile Include="Vk\effShaderVkTest.cpp" />
     <ClCompile Include="gtTarget.cpp" />
+    <ClCompile Include="Vk\g3dSceneRendererVkTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />

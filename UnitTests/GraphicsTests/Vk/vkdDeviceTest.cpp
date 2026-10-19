@@ -68,8 +68,8 @@ TEST_F(gtVulkan, ValidationErrorIsCaught)
 {
 	l_Asserts = 0;
 	dbgMsg::AssertHandler previous = dbgMsg::SetAssertHandler(&count_assert);
-	//	wideLines isn't enabled, so a line width other than 1 is invalid
-	vkCmdSetLineWidth(Device().Commands(), 2.0f);
+	//	Depth bounds outside 0..1 are invalid (no VK_EXT_depth_range_unrestricted)
+	vkCmdSetDepthBounds(Device().Commands(), -1.0f, 1.0f);
 	dbgMsg::SetAssertHandler(previous);
 
 	//	DBG_ASSERT is compiled out of Release builds; the error is still counted and logged

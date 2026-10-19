@@ -113,7 +113,7 @@ namespace gvk
 		m_Samples = VK_SAMPLE_COUNT_1_BIT;
 		m_Fill = VK_POLYGON_MODE_FILL;
 		m_bDepthClip = 1;
-		m_bAntialiasedLine = 0;
+		m_LineMode = VK_LINE_RASTERIZATION_MODE_BRESENHAM;
 		for (uint32_t c = 0; c < vkdBlendState::c_MaxTargets; c++)
 		{
 			m_Colors[c] = VK_FORMAT_UNDEFINED;
@@ -135,7 +135,7 @@ namespace gvk
 		if (m_VertexLayout != i_Other.m_VertexLayout || m_TopologyClass != i_Other.m_TopologyClass ||
 			m_PatchControlPoints != i_Other.m_PatchControlPoints || m_ColorCount != i_Other.m_ColorCount ||
 			m_Samples != i_Other.m_Samples || m_Fill != i_Other.m_Fill || m_bDepthClip != i_Other.m_bDepthClip ||
-			m_bAntialiasedLine != i_Other.m_bAntialiasedLine || m_Depth != i_Other.m_Depth ||
+			m_LineMode != i_Other.m_LineMode || m_Depth != i_Other.m_Depth ||
 			m_Stencil != i_Other.m_Stencil || m_Blend.m_bAlphaToCoverage != i_Other.m_Blend.m_bAlphaToCoverage ||
 			m_Blend.m_bIndependent != i_Other.m_Blend.m_bIndependent)
 		{
@@ -172,7 +172,7 @@ namespace gvk
 		hash(h, m_Samples);
 		hash(h, m_Fill);
 		hash(h, m_bDepthClip);
-		hash(h, m_bAntialiasedLine);
+		hash(h, m_LineMode);
 		hash(h, m_Depth);
 		hash(h, m_Stencil);
 		hash(h, m_Blend.m_bAlphaToCoverage);
@@ -481,7 +481,13 @@ namespace gvk
 		VkPipelineRasterizationStateCreateInfo raster = {VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO};
 		raster.depthClampEnable = i_Key.m_bDepthClip ? VK_FALSE : VK_TRUE;
 		raster.polygonMode = i_Key.m_Fill;
-		raster.lineWidth = 1.0f;
+		//	Lines and wireframe edges as D3D11 draws them: quadrilaterals 1.4
+		//	pixels wide when the state has MultisampleEnable, else aliased
+		//	(the diamond-exit rule, Vulkan's Bresenham)
+		VkPipelineRasterizationLineStateCreateInfo line = {VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_LINE_STATE_CREATE_INFO};
+		line.lineRasterizationMode = i_Key.m_LineMode;
+		raster.lineWidth = i_Key.m_LineMode == VK_LINE_RASTERIZATION_MODE_RECTANGULAR ? 1.4f : 1.0f;
+		raster.pNext = &line;
 
 		VkPipelineMultisampleStateCreateInfo multisample = {VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO};
 		multisample.rasterizationSamples = (VkSampleCountFlagBits)i_Key.m_Samples;

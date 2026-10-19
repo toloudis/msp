@@ -105,6 +105,9 @@ namespace gvk
 			"bufferDeviceAddress",
 			"descriptorHeap",
 			"unifiedImageLayouts",
+			"bresenhamLines",				// D3D11's aliased lines (diamond exit)
+			"rectangularLines",				// D3D11's multisample-enabled lines: quadrilaterals...
+			"wideLines",					// ...1.4 pixels wide
 		};
 		return s_Features;
 	}

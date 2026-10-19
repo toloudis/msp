@@ -62,7 +62,7 @@ namespace gvk
 		uint8_t			m_Samples;				// VkSampleCountFlagBits
 		VkPolygonMode	m_Fill;
 		uint32_t		m_bDepthClip;
-		uint32_t		m_bAntialiasedLine;
+		VkLineRasterizationMode m_LineMode;	// D3D11's line style (vkdContext picks it)
 		VkFormat		m_Colors[vkdBlendState::c_MaxTargets];
 		VkFormat		m_Depth;				// VK_FORMAT_UNDEFINED if none
 		VkFormat		m_Stencil;

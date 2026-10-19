@@ -84,16 +84,23 @@ namespace gvk
 			VkPhysicalDeviceVulkan11Features				m_Vulkan11 = {VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES};
 			VkPhysicalDeviceVulkan12Features				m_Vulkan12 = {VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES};
 			VkPhysicalDeviceVulkan13Features				m_Vulkan13 = {VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES};
+			VkPhysicalDeviceVulkan14Features				m_Vulkan14 = {VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_4_FEATURES};
 			VkPhysicalDeviceDescriptorHeapFeaturesEXT		m_Heap = {VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_HEAP_FEATURES_EXT};
 			VkPhysicalDeviceUnifiedImageLayoutsFeaturesKHR	m_Unified = {VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_UNIFIED_IMAGE_LAYOUTS_FEATURES_KHR};
 
-			//	The extension structs are chained only when the device has the extension.
-			void Link(bool i_bHeap, bool i_bUnified)
+			//	The extension structs are chained only when the device has the
+			//	extension, the 1.4 one only on a 1.4 device.
+			void Link(bool i_bVulkan14, bool i_bHeap, bool i_bUnified)
 			{
 				m_Features2.pNext = &m_Vulkan11;
 				m_Vulkan11.pNext = &m_Vulkan12;
 				m_Vulkan12.pNext = &m_Vulkan13;
 				void** next = &m_Vulkan13.pNext;
+				if (i_bVulkan14)
+				{
+					*next = &m_Vulkan14;
+					next = &m_Vulkan14.pNext;
+				}
 				if (i_bHeap)
 				{
 					*next = &m_Heap;
@@ -133,6 +140,9 @@ namespace gvk
 					{"dynamicRendering",				&m_Vulkan13.dynamicRendering},
 					{"synchronization2",				&m_Vulkan13.synchronization2},
 					{"shaderDemoteToHelperInvocation",	&m_Vulkan13.shaderDemoteToHelperInvocation},
+					{"bresenhamLines",					&m_Vulkan14.bresenhamLines},
+					{"rectangularLines",				&m_Vulkan14.rectangularLines},
+					{"wideLines",						&core.wideLines},
 					{"descriptorHeap",					&m_Heap.descriptorHeap},
 					{"unifiedImageLayouts",				&m_Unified.unifiedImageLayouts},
 				};
@@ -177,7 +187,8 @@ namespace gvk
 			}
 
 			FeatureChain chain;
-			chain.Link(listed(info.m_Extensions, VK_EXT_DESCRIPTOR_HEAP_EXTENSION_NAME),
+			chain.Link(properties.apiVersion >= VK_API_VERSION_1_4,
+					   listed(info.m_Extensions, VK_EXT_DESCRIPTOR_HEAP_EXTENSION_NAME),
 					   listed(info.m_Extensions, VK_KHR_UNIFIED_IMAGE_LAYOUTS_EXTENSION_NAME));
 			if (properties.apiVersion >= VK_API_VERSION_1_3)
 			{
@@ -398,7 +409,7 @@ namespace gvk
 
 		//	Device: exactly the required features and extensions
 		FeatureChain chain;
-		chain.Link(true, true);
+		chain.Link(true, true, true);
 		for (const std::string& name : vkdRequiredFeatures())
 		{
 			if (VkBool32* value = chain.Find(name))
