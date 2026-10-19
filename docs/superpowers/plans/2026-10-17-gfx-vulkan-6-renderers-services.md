@@ -11,8 +11,8 @@
 ## Scope
 
 - Renderers: simple, texture, depth, depth map, RSM, opacity map, UV, normal, velocity map, materials, illumination, shadow mask, reflection-only, glow-only, shadows-only, GI preview, AO preview, single-pass; pick renderer (`g3dPickRenderer`, pick buffer readback).
-- Services: `g3dBake` (baking renderer), `g2dScreenCaptureUtil`, `g2dImageSave`, `g2dImageCreate`, `g2dResourceCounter` (video memory via memory budget), `g3dSystem::GetVideoAdapterName/GetVideoMemory`.
-- `may` package: Maya fragment creator (`mdlFragCreate::SetImplementation`).
+- Services: `g3dBake` (baking renderer), `g2dImageCreate` (loading files), the rest of `g2dImage` (resampling `CopyImage`, `DrawImage`, the sampled/greyscale/TGA/R16G16B16A16 `GetPixels`), `g2dImageSave`'s BMP, JPG, TIFF and DDS, texture saving and `MergeTransparentTextures`, `g2dResourceCounter` (video memory via memory budget), `g3dSystem::GetVideoAdapterName/GetVideoMemory`.
+- Done in Plan 4b, because the test scene needed them: the `may` package (Maya fragment creator), `g2dScreenCaptureUtil` (all of it), RGBA-float `GetPixels`, and `g2dImageSave` for EXR, HDR, TGA and PNG (stb_image_write).
 - Capture paths in `Features/Capture` (accumulation, motion blur sampling, batch/bake modes) exercised under Vulkan.
 - Debug display (`g2dDebugDisplay`) and on-screen text overlays.
 - Offscreen windows for RenderNode (owner's question during Plan 3): in `BATCH_MODE` a `g2dWindowVk` can render into a plain `vkdImage` (plus depth) with no surface or swap chain, `Present` only submitting, switched on through `g3dGfxOptions`. RenderNode then needs no desktop or display for Vulkan and capture timings leave presentation out. GraphicsVulkan and one option only; DX11 is unchanged. (Removing the hidden HWNDs from RenderNode altogether is a MainApp change DX11 would share: after Phase 1.)
