@@ -110,6 +110,7 @@
     <ClCompile Include="Vk\vkdRingBufferTest.cpp" />
     <ClCompile Include="Vk\vkdBindingsTest.cpp" />
     <ClCompile Include="Vk\g2dWindowVkTest.cpp" />
+    <ClCompile Include="Vk\g2dSystemVkTest.cpp" />
     <ClCompile Include="Vk\GraphicsVulkanLayerTest.cpp" />
     <ClCompile Include="Vk\fxShaderCopyTest.cpp" />
     <ClCompile Include="Dx11\gtD3D11.cpp" />

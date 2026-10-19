@@ -20,6 +20,9 @@
 #ifndef DBG_MSG_HPP
 #include "Core/dbg/dbgMsg.hpp"
 #endif
+#ifndef G2D_RESETHANDLER_HPP
+#include "Graphics/G2d/g2dResetHandler.hpp"
+#endif
 
 #ifndef GVK_G2DSTUBSVK_HPP
 #include "GraphicsVulkan/stub/g2dStubsVk.hpp"
@@ -65,6 +68,9 @@ namespace gvk
 		delete m_pImageCreate;
 		delete m_pFontUtil;
 		delete m_pResourceCounter;
+
+		//	The handlers Graphics and the texture manager registered (as DX11)
+		g2dResetHandler::DestroyResetHandlers();
 	}
 
 	g2dWindow* g2dSystemVk::CreateAppWindow(int i_Width, int i_Height, int i_X, int i_Y)
