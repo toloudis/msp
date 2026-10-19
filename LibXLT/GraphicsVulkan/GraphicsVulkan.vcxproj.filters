@@ -247,6 +247,9 @@
     <ClCompile Include="Mat\private\matVolumeTexture.cpp">
       <Filter>Mat\private</Filter>
     </ClCompile>
+    <ClCompile Include="Mat\private\matCubeRenderTargetTexture.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
     <ClCompile Include="Mat\private\matRenderTargetTexture.cpp">
       <Filter>Mat\private</Filter>
     </ClCompile>
@@ -555,6 +558,9 @@
       <Filter>Mat</Filter>
     </ClInclude>
     <ClInclude Include="Mat\matVolumeTexture.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matCubeRenderTargetTexture.hpp">
       <Filter>Mat</Filter>
     </ClInclude>
     <ClInclude Include="Mat\matRenderTargetTexture.hpp">

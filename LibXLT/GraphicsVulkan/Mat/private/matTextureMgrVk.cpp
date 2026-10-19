@@ -9,6 +9,9 @@
 #ifndef GVK_MATTEXTUREMGRVK_HPP
 #include "GraphicsVulkan/Mat/matTextureMgrVk.hpp"
 #endif
+#ifndef GVK_MATCUBERENDERTARGETTEXTURE_HPP
+#include "GraphicsVulkan/Mat/matCubeRenderTargetTexture.hpp"
+#endif
 #ifndef GVK_MATMIPTEXTURE_HPP
 #include "GraphicsVulkan/Mat/matMipTexture.hpp"
 #endif
@@ -1261,15 +1264,43 @@ matTexture* matTextureMgrVk::CreateRenderTargetTexture(matTexture* i_Texture,
 }
 
 //--------------------------------------------------------------------
-//	Cube render targets come with their passes (Plan 5)
+//	CreateCubeRenderTargetTexture creates a cubemap texture that can 
+//	be rendered to. 
 //--------------------------------------------------------------------
 matTexture* matTextureMgrVk::CreateCubeRenderTargetTexture(int i_nTextureWidth,
 													int i_nTextureHeight,
 													g2dPFD* i_PFD)
 {
-	GVK_NOT_YET("matTextureMgrVk::CreateCubeRenderTargetTexture");
-	matTexture* pTexture = new matStubTextureVk(i_nTextureWidth, i_nTextureHeight, i_PFD, "cube render target");
-	l_PendingTextures.insert(pTexture);
+	if (g2dVkGlobal::RestrictPow2Textures())
+	{
+		if (!((i_nTextureWidth & (i_nTextureWidth - 1)) == 0) ||
+			!((i_nTextureHeight & (i_nTextureHeight - 1)) == 0))
+		{
+			throw matInvalidTextureSizeX(fsLocator());
+		}
+	}
+
+	const g2dPFD& image_format = (i_PFD != NULL) ? (*i_PFD) : matVkGlobal::TrueAlphaTextureFormat();
+	matCubeRenderTargetTexture* pTexture = new matCubeRenderTargetTexture();
+	
+	try
+	{
+		pTexture->Make(i_nTextureWidth, i_nTextureHeight, image_format);
+	}
+	catch (const g2dOutOfVideoMemoryX& )
+	{
+		delete pTexture;
+		throw;
+	}
+	catch ( const envExceptionX& i_Ex )
+	{
+		DBG_ERROR(i_Ex.GetErrorMessage());
+		return NULL;
+	}
+
+	l_RenderTargetTextures[pTexture] = FileInfo(i_nTextureWidth, i_nTextureHeight, image_format);
+	pTexture->ReloadInfo();
+
 	return pTexture;
 }
 

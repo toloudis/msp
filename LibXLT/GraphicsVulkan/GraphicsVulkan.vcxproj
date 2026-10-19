@@ -145,6 +145,7 @@
     <ClCompile Include="Mat\private\matMipTexture.cpp" />
     <ClCompile Include="Mat\private\matStaticCubeTexture.cpp" />
     <ClCompile Include="Mat\private\matVolumeTexture.cpp" />
+    <ClCompile Include="Mat\private\matCubeRenderTargetTexture.cpp" />
     <ClCompile Include="Mat\private\matRenderTargetTexture.cpp" />
     <ClCompile Include="Mat\private\matTextureLoader.cpp" />
     <ClCompile Include="Mat\private\matTextureLoaderDDS.cpp" />
@@ -250,6 +251,7 @@
     <ClInclude Include="Mat\matMipTexture.hpp" />
     <ClInclude Include="Mat\matStaticCubeTexture.hpp" />
     <ClInclude Include="Mat\matVolumeTexture.hpp" />
+    <ClInclude Include="Mat\matCubeRenderTargetTexture.hpp" />
     <ClInclude Include="Mat\matRenderTargetTexture.hpp" />
     <ClInclude Include="Mat\matTextureMgrVk.hpp" />
     <ClInclude Include="Mat\private\matTextureLoader.hpp" />

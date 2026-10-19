@@ -58,6 +58,7 @@
 #endif
 #ifndef MAT_RENDERTARGETTEXTURE_HPP
 #include "GraphicsDX11/mat/matRenderTargetTexture.hpp"
+#include "GraphicsDX11/mat/matCubeRenderTargetTexture.hpp"
 #endif
 
 //	Vulkan
@@ -66,6 +67,7 @@
 #endif
 #ifndef GVK_MATRENDERTARGETTEXTURE_HPP
 #include "GraphicsVulkan/Mat/matRenderTargetTexture.hpp"
+#include "GraphicsVulkan/Mat/matCubeRenderTargetTexture.hpp"
 #endif
 #ifndef GVK_G3DVKTEXTUREUTIL_HPP
 #include "GraphicsVulkan/G3d/g3dVkTextureUtil.hpp"
@@ -897,6 +899,85 @@ TEST(matTextureMgrVkTest, RenderTargetTextureClearsAndDraws)
 	ASSERT_TRUE(rgb.m_bValid);
 	EXPECT_EQ(10, rgb.m_Rgba[0]);
 	EXPECT_EQ(0, rgb.m_Rgba[3]);
+}
+
+//----------------------------------------------------------------------------
+//	A cube render target texture (reflection maps): a render target with a
+//	depth buffer and a full mip chain, zeros when made; an RGB clear clears
+//	every face, a colour clear and a draw only the current face
+//----------------------------------------------------------------------------
+TEST(matTextureMgrVkTest, CubeRenderTargetTextureMatchesDX11)
+{
+	const int c_Size = 16;
+	const std::vector<uint8_t> texels = pattern(c_Size, c_Size, 5);
+	std::map<std::string, Picture> results[2];
+	int mips[2] = {};
+	const bool ran = run_both([&](gtBackend::Kind i_Kind)
+	{
+		Drawer drawer(i_Kind);
+		std::map<std::string, Picture>& r = results[i_Kind];
+		matTexture* cube = matTextureMgr::CreateCubeRenderTargetTexture(c_Size, c_Size, NULL);
+		ASSERT_TRUE(cube != NULL);
+		g2dRenderTarget* api = cube->GetRenderTargetAPI();
+		ASSERT_TRUE(api != NULL);
+		EXPECT_TRUE(api->GetHasDepthBuffer());
+		int width = 0, height = 0;
+		api->GetDimensions(width, height);
+		EXPECT_EQ(c_Size, width);
+		EXPECT_EQ(c_Size, height);
+		mips[i_Kind] = drawer.Mips(cube);
+		auto set_face = [&](int i_Face)
+		{
+			if (i_Kind == gtBackend::e_DX11)
+				dynamic_cast<::matCubeRenderTargetTexture*>(cube)->SetFaceTarget(i_Face);
+			else
+				dynamic_cast<gvk::matCubeRenderTargetTexture*>(cube)->SetFaceTarget(i_Face);
+		};
+		auto read_all = [&](const std::string& i_Step)
+		{
+			for (int face = 0; face < 6; face++)
+			{
+				for (int mip = 0; mip < 2; mip++)
+				{
+					r[i_Step + "_face" + std::to_string(face) + "_mip" + std::to_string(mip)] = drawer.Texels(cube, mip, face);
+				}
+			}
+		};
+		read_all("Made");
+		api->Clear(g2dRGBColor(10, 20, 30));
+		read_all("Clear_RGB");
+		set_face(4);
+		api->Clear(maFloatRGBA(0.2f, 0.4f, 0.6f, 0.8f), true, 1.0f, true, 0);
+		read_all("Clear_face4");
+		set_face(1);
+		matTexture* texture = matTextureMgr::CreateTexture(c_Size, c_Size, &c_RGBA8, false, (void*)texels.data());
+		ASSERT_TRUE(texture != NULL);
+		drawer.Draw(texture, cube);
+		read_all("Drawn_face1");
+
+		for (matTexture* t : { cube, texture })
+		{
+			matTextureMgr::ReleaseTexture(t);
+		}
+	});
+	if (!ran)
+	{
+		return;
+	}
+	EXPECT_EQ(mips[gtBackend::e_DX11], mips[gtBackend::e_Vulkan]);
+	EXPECT_EQ(5, mips[gtBackend::e_Vulkan]);
+	EXPECT_EQ(results[gtBackend::e_DX11].size(), results[gtBackend::e_Vulkan].size());
+	for (auto& entry : results[gtBackend::e_DX11])
+	{
+		expect_same(entry.second, results[gtBackend::e_Vulkan][entry.first], entry.first);
+	}
+	//	And the values themselves
+	const Picture& rgb = results[gtBackend::e_Vulkan]["Clear_RGB_face3_mip0"];
+	ASSERT_TRUE(rgb.m_bValid);
+	EXPECT_EQ(10, rgb.m_Rgba[0]);
+	const Picture& face4 = results[gtBackend::e_Vulkan]["Clear_face4_face4_mip0"];
+	ASSERT_TRUE(face4.m_bValid);
+	EXPECT_NEAR(0.2 * 255, face4.m_Rgba[0], 1);
 }
 
 //----------------------------------------------------------------------------
