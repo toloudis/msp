@@ -120,6 +120,7 @@
     <ClCompile Include="gtImageTest.cpp" />
     <ClCompile Include="Vk\g2dFullscreenQuadTest.cpp" />
     <ClCompile Include="Vk\fxParityTest.cpp" />
+    <ClCompile Include="Vk\tiffVcpkgTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />

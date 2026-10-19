@@ -146,7 +146,6 @@ build notes):
 |---|---|---|
 | wxWidgets 3.2 | `WxWidgets/` (headers, import libs; `wxwidgets.props`) | Wx UI builds only (DLLs in `MachStudio-x64/`) |
 | libpng 1.6 | headers `Png/lpng162`, lib/DLL `Libs/x64/libpng16` | image loading (`g2dSurfaceLoaderDX11`) |
-| libtiff 4.0.6 | headers `tiff-4.0.6/`, lib/DLL `Libs/x64/tiff` | image loading |
 | zlib + minizip | headers `Png/zlib-1.2.5`, lib/DLL `Libs/x64/zlibwapi` (zlib 1.2.8 sources in `zlib/`) | vertex-animation compression (`vtx`), zip (`cmpr`) |
 | Python 3.9 | `Python/include` (headers only, not in git) | embedded Python; compiled out unless `PYTHON_ENABLED` is defined, which no live configuration does |
 
@@ -160,11 +159,11 @@ its own `vcpkg_installed/`):
 | Manifest | Packages | Used for |
 |---|---|---|
 | `LibXLT/Graphics/vcpkg.json` | OpenEXR (+ Imath, libdeflate) | writing `.exr` render output (`g2dScanlineOpenEXRUtil`, `g2dOpenEXROutStream`, `g2dHDRUtil`) |
-| `LibXLT/GraphicsDX11/vcpkg.json` | DirectXTex, nlohmann-json | DDS/texture loading and image saving; parsing `*.effect.json` effect descriptions (`fxEffectDesc`). glTF import bundles its own `json.hpp`/`tiny_gltf.h` |
-| `LibXLT/GraphicsVulkan/vcpkg.json` | vulkan-headers, volk, vulkan-memory-allocator, spirv-reflect, directx-dxc | the Vulkan backend: volk loads `vulkan-1.dll` at run time (nothing to link or ship); DXC compiles shaders at build time. Its `vcpkg-configuration.json` has a newer baseline than the other manifests (Vulkan 1.4 headers with `VK_EXT_descriptor_heap`) |
+| `LibXLT/GraphicsDX11/vcpkg.json` | DirectXTex, nlohmann-json, libtiff (+ libjpeg-turbo, liblzma, zlib) | DDS/texture loading and image saving; parsing `*.effect.json` effect descriptions (`fxEffectDesc`); TIFF loading (`g2dSurfaceLoaderDX11`; MainApp links `tiff.lib`/`tiffd.lib` from here). glTF import bundles its own `json.hpp`/`tiny_gltf.h` |
+| `LibXLT/GraphicsVulkan/vcpkg.json` | vulkan-headers, volk, vulkan-memory-allocator, spirv-reflect, directx-dxc | the Vulkan backend: volk loads `vulkan-1.dll` at run time (nothing to link or ship); DXC compiles shaders at build time. Its `vcpkg-configuration.json` has a newer baseline than the other manifests (Vulkan 1.4 headers with `VK_EXT_descriptor_heap`). libtiff and the DLLs it brings are pinned with `overrides` to the same versions in this manifest, GraphicsDX11's and GraphicsTests', because MachStudio loads one `tiff.dll`; zlib is pinned to MainApp's (curl's) version. Change all three together |
 | `MachStudio/Source/MainApp/vcpkg.json` | curl (+ zlib) | version check (`mainCheckAppVersion`). Linked dynamically: `libcurl.dll` (and its `zlib1.dll`) ships next to the exe |
 | `LibXLT/ToolUIWx/vcpkg.json` | (none) | |
-| `UnitTests/CoreTests/vcpkg.json`, `UnitTests/MainAppTests/vcpkg.json`, `UnitTests/GraphicsTests/vcpkg.json` | gtest (GraphicsTests: also stb, for PNG output) | unit tests (`gmock.dll`, which includes gtest, is copied next to the test exe) |
+| `UnitTests/CoreTests/vcpkg.json`, `UnitTests/MainAppTests/vcpkg.json`, `UnitTests/GraphicsTests/vcpkg.json` | gtest (GraphicsTests: also stb, for PNG output, and libtiff) | unit tests (`gmock.dll`, which includes gtest, is copied next to the test exe) |
 
 The library packages live under the library projects, so MainApp adds their
 `vcpkg_installed\...\lib` dirs to its link paths and its

@@ -13,3 +13,10 @@ MachStudio/MachStudio-x64/MachStudio-x64-*.exe
 MachStudio/MachStudio-x64/MachStudio-x64-*.pdb
 MachStudio/MachStudio-x64/*.map
 MachStudio/MachStudio-x64/*-3_[0-9].dll
+# libtiff and the DLLs it brings, from GraphicsDX11's vcpkg manifest
+MachStudio/MachStudio-x64/tiff.dll
+MachStudio/MachStudio-x64/tiffd.dll
+MachStudio/MachStudio-x64/jpeg62.dll
+MachStudio/MachStudio-x64/turbojpeg.dll
+MachStudio/MachStudio-x64/liblzma.dll
+MachStudio/MachStudio-x64/zlibd1.dll
