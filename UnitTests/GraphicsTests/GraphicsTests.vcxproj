@@ -48,7 +48,7 @@
     <IntDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
     <!-- DXC and GraphicsVulkan's shader options; keep the options in step with
          LibXLT\GraphicsVulkan\Fx\private\EmbedShadersVk.ps1 and Tools\fx2hlsl\compile_check.py -->
-    <GtDxc>"$(ProjectDir)..\..\LibXLT\GraphicsVulkan\vcpkg_installed\x64-windows\x64-windows\tools\directx-dxc\dxc.exe" -spirv -fspv-target-env=vulkan1.3 -fvk-use-dx-layout -fvk-use-dx-position-w -fvk-support-nonzero-base-instance -fvk-support-nonzero-base-vertex -fvk-b-shift 0 0 -fvk-t-shift 100 0 -fvk-s-shift 200 0 -fvk-u-shift 300 0</GtDxc>
+    <GtDxc>"$(ProjectDir)..\..\LibXLT\GraphicsVulkan\vcpkg_installed\x64-windows\x64-windows\tools\directx-dxc\dxc.exe" -spirv -fspv-target-env=vulkan1.3 -fvk-use-dx-layout -fvk-use-dx-position-w -fvk-support-nonzero-base-instance -fvk-support-nonzero-base-vertex -fvk-auto-shift-bindings -fvk-b-shift 0 0 -fvk-t-shift 100 0 -fvk-s-shift 200 0 -fvk-u-shift 300 0</GtDxc>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -137,6 +137,8 @@
     <ClCompile Include="Vk\effShaderVkTest.cpp" />
     <ClCompile Include="gtTarget.cpp" />
     <ClCompile Include="Vk\g3dSceneRendererVkTest.cpp" />
+    <ClCompile Include="gtSceneWindow.cpp" />
+    <ClCompile Include="Vk\g2dFontVkTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />
@@ -149,6 +151,7 @@
     <ClInclude Include="gtBackend.hpp" />
     <ClInclude Include="gtScene.hpp" />
     <ClInclude Include="gtTarget.hpp" />
+    <ClInclude Include="gtSceneWindow.hpp" />
   </ItemGroup>
   <ItemGroup>
     <!-- Test shaders: VSMain and PSMain of each, compiled to SPIR-V with GraphicsVulkan's

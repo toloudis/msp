@@ -16,7 +16,9 @@
 **	    offset 448:  8 x 4-byte UAV heap indices           (u0..u7)
 **	  and pushes the table's 8-byte address (vkCmdPushDataEXT, offset 0).
 **	- Shaders are compiled by DXC with -fvk-b-shift 0, -fvk-t-shift 100,
-**	  -fvk-s-shift 200, -fvk-u-shift 300 (all set 0). ShaderMapping()
+**	  -fvk-s-shift 200, -fvk-u-shift 300 (all set 0) and
+**	  -fvk-auto-shift-bindings (a resource with no register() gets the
+**	  register fxc would give it, shifted). ShaderMapping()
 **	  maps each of those bindings to the table: constant buffers with
 **	  VK_DESCRIPTOR_MAPPING_SOURCE_INDIRECT_ADDRESS_EXT, images and
 **	  samplers with VK_DESCRIPTOR_MAPPING_SOURCE_HEAP_WITH_INDIRECT_INDEX_EXT.

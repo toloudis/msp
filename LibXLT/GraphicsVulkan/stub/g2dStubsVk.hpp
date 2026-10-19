@@ -8,7 +8,6 @@
 **	later plan ports it.
 **
 **	  g2dResourceCounterVk		memory statistics (all zero)
-**	  g2dFontUtilVk				font handles and the font bitmap path (no text drawing yet)
 **	  g2dImageVk, g2dImageCreateVk	CPU images: pixels kept and readable; file loading not yet
 **	  g2dImageSaveVk			saving images and windows (not yet)
 **	  g2dScreenCaptureUtilVk	window and texture capture (not yet)
@@ -22,9 +21,6 @@
 
 #ifndef G2D_RESOURCECOUNTER_HPP
 #include "Graphics/G2d/g2dResourceCounter.hpp"
-#endif
-#ifndef G2D_FONTUTIL_HPP
-#include "Graphics/G2d/g2dFontUtil.hpp"
 #endif
 #ifndef G2D_IMAGE_HPP
 #include "Graphics/G2d/g2dImage.hpp"
@@ -72,23 +68,6 @@ namespace gvk
 			virtual int GetNumVertexBuffers();
 			virtual float GetTotalIndexBufferMemory();
 			virtual int GetNumIndexBuffers();
-	};
-
-	class g2dFontUtilVk : public g2dFontUtilImpl
-	{
-		public:
-			virtual ~g2dFontUtilVk();
-			virtual g2dFontHandle LoadFont(const itString& i_Name, int i_Size);
-			virtual void ReleaseFont(g2dFontHandle i_Handle);
-			virtual void GetLoadedFontName(g2dFontHandle i_Font, itString& o_Name);
-			virtual void GetLoadedFontName(g2dFontHandle i_Font, std::string& o_Name);
-			virtual void GetTextSizeInPixels(g2dFontHandle i_Font, const itString& i_Text, int& o_Width, int& o_Height);
-			virtual void SetGlobalFontBitmap(const fsLocator& i_FontPath);
-			virtual void GetGlobalFontBitmap(fsLocator& o_FontPath);
-
-		private:
-			std::map<g2dFontHandle, std::string> m_Fonts;
-			fsLocator m_FontBitmap;
 	};
 
 	class g2dImageVk : public g2dImage

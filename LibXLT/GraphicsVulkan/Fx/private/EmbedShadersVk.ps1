@@ -32,12 +32,13 @@ param(
 $ErrorActionPreference = "Stop"
 
 # GraphicsVulkan's DXC options (see the header comment and vkd/vkdBindings.hpp):
-# register shifts for the descriptor-heap binding table, D3D constant buffer
-# layout, D3D's SV_Position.w and SV_VertexID/SV_InstanceID meanings. Y is
-# flipped with a negative viewport height, so no -fvk-invert-y.
+# register shifts for the descriptor-heap binding table (applied to resources
+# with no register() too, which get the registers fxc would give them), D3D
+# constant buffer layout, D3D's SV_Position.w and SV_VertexID/SV_InstanceID
+# meanings. Y is flipped with a negative viewport height, so no -fvk-invert-y.
 $DxcOptions = @(
     "-spirv", "-fspv-target-env=vulkan1.3", "-fvk-use-dx-layout", "-fvk-use-dx-position-w",
-    "-fvk-support-nonzero-base-instance", "-fvk-support-nonzero-base-vertex",
+    "-fvk-support-nonzero-base-instance", "-fvk-support-nonzero-base-vertex", "-fvk-auto-shift-bindings",
     "-fvk-b-shift", "0", "0", "-fvk-t-shift", "100", "0", "-fvk-s-shift", "200", "0", "-fvk-u-shift", "300", "0"
 )
 

@@ -29,7 +29,7 @@ import sys
 # GraphicsVulkan's DXC options (see the docstring)
 SPIRV_OPTIONS = [
     "-spirv", "-fspv-target-env=vulkan1.3", "-fvk-use-dx-layout", "-fvk-use-dx-position-w",
-    "-fvk-support-nonzero-base-instance", "-fvk-support-nonzero-base-vertex",
+    "-fvk-support-nonzero-base-instance", "-fvk-support-nonzero-base-vertex", "-fvk-auto-shift-bindings",
     "-fvk-b-shift", "0", "0", "-fvk-t-shift", "100", "0", "-fvk-s-shift", "200", "0", "-fvk-u-shift", "300", "0",
 ]
 

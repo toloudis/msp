@@ -115,6 +115,9 @@
     <ClCompile Include="G2d\private\g2dWindowDrawUtilVk.cpp">
       <Filter>G2d\private</Filter>
     </ClCompile>
+    <ClCompile Include="G2d\private\g2dFontUtilVk.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
     <ClCompile Include="G2d\private\g2dWindowVk.cpp">
       <Filter>G2d\private</Filter>
     </ClCompile>
@@ -426,6 +429,9 @@
       <Filter>vkd</Filter>
     </ClInclude>
     <ClInclude Include="G2d\private\g2dWindowDrawUtilVk.hpp">
+      <Filter>G2d\private</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\private\g2dFontUtilVk.hpp">
       <Filter>G2d\private</Filter>
     </ClInclude>
     <ClInclude Include="G2d\g2dWindowVk.hpp">
@@ -1102,10 +1108,22 @@
     <None Include="G2d\private\Shaders\TexturedQuadPS.hlsl">
       <Filter>G2d\private\Shaders</Filter>
     </None>
+    <None Include="G2d\private\Shaders\FontVS.hlsl">
+      <Filter>G2d\private\Shaders</Filter>
+    </None>
+    <None Include="G2d\private\Shaders\FontPS.hlsl">
+      <Filter>G2d\private\Shaders</Filter>
+    </None>
     <None Include="G2d\private\Shaders\FullscreenQuad.effect.json">
       <Filter>G2d\private\Shaders</Filter>
     </None>
     <None Include="G2d\private\Shaders\TexturedQuad.effect.json">
+      <Filter>G2d\private\Shaders</Filter>
+    </None>
+    <None Include="G2d\private\Shaders\FontVS.effect.json">
+      <Filter>G2d\private\Shaders</Filter>
+    </None>
+    <None Include="G2d\private\Shaders\FontPS.effect.json">
       <Filter>G2d\private\Shaders</Filter>
     </None>
   </ItemGroup>

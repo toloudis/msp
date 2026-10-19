@@ -3,7 +3,7 @@
 **
 **      g2dWindowDrawUtilVk provides drawing utilities for windows: the port
 **	of GraphicsDX11's g2dWindowDrawUtilDX11 (its Clear functions are
-**	g2dVkGlobal::ClearCurrent; text drawing comes with the fonts).
+**	g2dVkGlobal::ClearCurrent).
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -12,8 +12,15 @@
 #endif
 #define GVK_G2DWINDOWDRAWUTILVK_HPP
 
+#ifndef G2D_FONTHANDLE_HPP
+#include "Graphics/G2d/g2dFontHandle.hpp"
+#endif
+
+#undef DrawText
+
 class g2dImage;
 class g2dRGBColor;
+class itString;
 
 namespace gvk
 {
@@ -34,6 +41,19 @@ namespace gvk
 						int i_Y1,
 						int i_X2,
 						int i_Y2,
+						const g2dRGBColor& i_Color);
+
+		//------------------------------------------------------------------------
+		//	DrawText draws the given text such that it's upper left corner is
+		//	at (i_X1, i_Y1).  It will be silently clipped or rejected by the
+		//	current viewing area.
+		//	(As in DX11, the colour's 0..255 components go to the shader as
+		//	they are, not divided by 255: g2dWindow::DrawText divides them.)
+		//------------------------------------------------------------------------
+		void DrawText(	int i_X,
+						int i_Y,
+						g2dFontHandle i_Font,
+						const itString& i_Text,
 						const g2dRGBColor& i_Color);
 
 		//------------------------------------------------------------------------

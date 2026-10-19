@@ -41,6 +41,9 @@
 #ifndef GVK_G2DWINDOWDRAWUTILVK_HPP
 #include "GraphicsVulkan/G2d/private/g2dWindowDrawUtilVk.hpp"
 #endif
+#ifndef GVK_G2DFONTUTILVK_HPP
+#include "GraphicsVulkan/G2d/private/g2dFontUtilVk.hpp"
+#endif
 #ifndef GVK_G3DSTATEMGR_HPP
 #include "GraphicsVulkan/G3d/g3dStateMgr.hpp"
 #endif
@@ -314,9 +317,18 @@ namespace gvk
 		g2dWindowDrawUtilVk::DrawRect(i_X1, i_Y1, i_X2, i_Y2, i_Color);
 	}
 
-	void g2dWindowVk::DrawText(int, int, g2dFontHandle, const itString&, const g2dRGBColor&)
+	//------------------------------------------------------------------------
+	//	DrawText draws the given text such that it's upper left corner is
+	//	at (i_X1, i_Y1).  It will be silently clipped or rejected by the
+	//	current viewing area.
+	//------------------------------------------------------------------------
+	void g2dWindowVk::DrawText(int i_X, int i_Y, g2dFontHandle i_Font, const itString& i_Text, const g2dRGBColor& i_Color)
 	{
-		GVK_NOT_YET("g2dWindowVk::DrawText");
+		configure_device();
+
+		g2dFontObjectVk* font = reinterpret_cast<g2dFontObjectVk*>(i_Font);
+		if (font)
+			font->DrawText(i_Text, maFloatRGBA(i_Color.GetRed()/255.0f, i_Color.GetGreen()/255.0f, i_Color.GetBlue()/255.0f, 1.0f), i_X, i_Y);
 	}
 
 	void g2dWindowVk::DrawImage(int i_DX1, int i_DY1, const g2dImage& i_Image)

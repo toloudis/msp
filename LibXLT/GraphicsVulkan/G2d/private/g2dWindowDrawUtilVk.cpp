@@ -14,6 +14,12 @@
 #ifndef GVK_G2DSTUBSVK_HPP
 #include "GraphicsVulkan/stub/g2dStubsVk.hpp"
 #endif
+#ifndef GVK_G2DFONTUTILVK_HPP
+#include "GraphicsVulkan/G2d/private/g2dFontUtilVk.hpp"
+#endif
+#ifndef G2D_RGBCOLOR_HPP
+#include "Graphics/G2d/g2dRGBColor.hpp"
+#endif
 #ifndef GVK_VKDCONTEXT_HPP
 #include "GraphicsVulkan/vkd/vkdContext.hpp"
 #endif
@@ -57,6 +63,22 @@ void DrawRect(	int /*i_X1*/,
 {
 	// should draw a screen aligned quad here.
 	DBG_ERROR("g2dWindowDrawUtilVk::DrawRect not implemented!");
+}
+
+//----------------------------------------------------------------------------
+//	DrawText draws the given text such that it's upper left corner is
+//	at (i_X1, i_Y1).  It will be silently clipped or rejected by the
+//	current viewing area.
+//----------------------------------------------------------------------------
+void DrawText(	int i_X,
+				int i_Y,
+				g2dFontHandle i_Font,
+				const itString& i_Text,
+				const g2dRGBColor& i_Color)
+{
+	g2dFontObjectVk* font = reinterpret_cast<g2dFontObjectVk*>(i_Font);
+	if (font)
+		font->DrawText(i_Text, maFloatRGBA(i_Color.GetRed(), i_Color.GetGreen(), i_Color.GetBlue(), 1.0f), i_X, i_Y);
 }
 
 //----------------------------------------------------------------------------

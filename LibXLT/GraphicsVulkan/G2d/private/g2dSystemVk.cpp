@@ -30,6 +30,9 @@
 #ifndef GVK_G2DFULLSCREENQUAD_HPP
 #include "GraphicsVulkan/G2d/g2dFullscreenQuad.hpp"
 #endif
+#ifndef GVK_G2DFONTUTILVK_HPP
+#include "GraphicsVulkan/G2d/private/g2dFontUtilVk.hpp"
+#endif
 
 #include <algorithm>
 

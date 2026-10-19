@@ -1,0 +1,20 @@
+{
+  "source": "g2dFontUtilDX11.cpp",
+  "hlsl": "FontPS.hlsl",
+  "techniques": [
+    {
+      "name": "Font",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "QuadPS"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

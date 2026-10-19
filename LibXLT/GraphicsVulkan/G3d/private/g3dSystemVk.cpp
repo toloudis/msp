@@ -50,6 +50,9 @@
 #ifndef GVK_G2DSTUBSVK_HPP
 #include "GraphicsVulkan/stub/g2dStubsVk.hpp"
 #endif
+#ifndef GVK_G2DFONTUTILVK_HPP
+#include "GraphicsVulkan/G2d/private/g2dFontUtilVk.hpp"
+#endif
 
 namespace gvk
 {
@@ -139,10 +142,16 @@ namespace gvk
 		g2dScreenCaptureUtil::SetImplementation(m_pScreenCapture);
 
 		g3dDrawStyleUtilVk::Initialize();
+
+		g2dFontObjectVk::Init();
 	}
 
 	g3dSystemVk::~g3dSystemVk()
 	{
+		g2dFontObjectVk::Cleanup();
+
+		g2dFontUtil::ReleaseAllFonts();
+
 		g3dDrawStyleUtilVk::DeInitialize();
 
 		g2dScreenCaptureUtil::SetImplementation(NULL);

@@ -17,6 +17,7 @@
 #include "gtImage.hpp"
 #include "gtScene.hpp"
 #include "gtTarget.hpp"
+#include "gtSceneWindow.hpp"
 #include "gtPlatform.hpp"
 
 #ifndef GVK_G2DWINDOWVK_HPP
@@ -77,8 +78,6 @@
 #include "GraphicsVulkan/G3d/g3dSceneRendererVk.hpp"
 #endif
 #include "gtTempDir.hpp"
-
-#include <wrl/client.h>
 
 #include <cstring>
 #include <fstream>
@@ -249,111 +248,6 @@ TEST_F(gtVulkan, GpuTimerMeasuresClear)
 //============================================================================
 namespace
 {
-	using Microsoft::WRL::ComPtr;
-
-	g2dSystem* system_2d(gtBackend::Kind i_Kind)
-	{
-		return i_Kind == gtBackend::e_DX11 ? GraphicsDX11Layer::GetSystem2D() : GraphicsVulkanLayer::GetSystem2D();
-	}
-
-	//	A g2dWindow on a hidden native window, made by the backend's g2dSystem
-	class gtSceneWindow
-	{
-		public:
-			gtSceneWindow(gtBackend::Kind i_Kind, int i_Width, int i_Height)
-				: m_Kind(i_Kind)
-				, m_pNative(gtPlatform::CreateHiddenWindow(i_Width, i_Height))
-				, m_pWindow(system_2d(i_Kind)->CreateSubWindow(m_pNative))
-			{
-			}
-			~gtSceneWindow()
-			{
-				system_2d(m_Kind)->DestroyWindow(m_pWindow);
-				gtPlatform::DestroyHiddenWindow(m_pNative);
-			}
-
-			g2dWindow& Window()		{ return *m_pWindow; }
-
-			void Resize(int i_Width, int i_Height)
-			{
-				gtPlatform::ResizeHiddenWindow(m_pNative, i_Width, i_Height);
-				m_pWindow->ResizeWindow(i_Width, i_Height);
-			}
-
-			//	Presents the frame and returns what it showed (RGBA, top row
-			//	first; the window's size). DX11 reads its back buffer just
-			//	before presenting.
-			gtPicture Present()
-			{
-				gtPicture picture;
-				if (m_Kind == gtBackend::e_Vulkan)
-				{
-					gvk::g2dWindowVk* window = dynamic_cast<gvk::g2dWindowVk*>(m_pWindow);
-					EXPECT_TRUE(window != NULL);
-					window->DebugReadBackNextFrame();
-					window->Present();
-					picture.m_Rgba = window->DebugPixels();
-					if (window->SwapchainFormat() == VK_FORMAT_B8G8R8A8_UNORM)
-					{
-						for (size_t i = 0; i + 3 < picture.m_Rgba.size(); i += 4)
-							std::swap(picture.m_Rgba[i], picture.m_Rgba[i + 2]);
-					}
-				}
-				else
-				{
-					picture = read_dx11();
-					m_pWindow->Present();
-				}
-				int x = 0, y = 0;
-				m_pWindow->GetPresentRect(x, y, picture.m_Width, picture.m_Height);
-				picture.m_Width += 2 * x;
-				picture.m_Height += 2 * y;
-				return picture;
-			}
-
-		private:
-			gtPicture read_dx11()
-			{
-				gtPicture picture;
-				g2dWindowDX11* window = dynamic_cast<g2dWindowDX11*>(m_pWindow);
-				EXPECT_TRUE(window != NULL);
-				if (!window)
-					return picture;
-				g2dD3D11RenderTargetPtr view = window->GetBackBuffer();
-				ComPtr<ID3D11Resource> resource;
-				view->GetResource(&resource);
-				view->Release();
-				D3D11_TEXTURE2D_DESC desc;
-				static_cast<ID3D11Texture2D*>(resource.Get())->GetDesc(&desc);
-				desc.Usage = D3D11_USAGE_STAGING;
-				desc.BindFlags = 0;
-				desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-				desc.MiscFlags = 0;
-				ComPtr<ID3D11Texture2D> staging;
-				if (FAILED(g2dDX11Global::g_pDevice->CreateTexture2D(&desc, NULL, &staging)))
-				{
-					ADD_FAILURE() << "no staging texture";
-					return picture;
-				}
-				ID3D11DeviceContext* context = g2dDX11Global::g_pDeviceContext;
-				context->CopyResource(staging.Get(), resource.Get());
-				D3D11_MAPPED_SUBRESOURCE mapped;
-				if (SUCCEEDED(context->Map(staging.Get(), 0, D3D11_MAP_READ, 0, &mapped)))
-				{
-					const size_t row = (size_t)desc.Width * 4;
-					picture.m_Rgba.resize(row * desc.Height);
-					for (UINT y = 0; y < desc.Height; y++)
-						memcpy(&picture.m_Rgba[y * row], (const uint8_t*)mapped.pData + y * mapped.RowPitch, row);
-					context->Unmap(staging.Get(), 0);
-				}
-				return picture;
-			}
-
-			gtBackend::Kind	m_Kind;
-			void*			m_pNative;
-			g2dWindow*		m_pWindow;
-	};
-
 	//	Two lit Phong spheres
 	void spheres(gtSceneBuilder& io_Builder)
 	{

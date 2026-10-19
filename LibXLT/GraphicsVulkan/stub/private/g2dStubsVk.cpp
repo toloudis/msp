@@ -11,12 +11,6 @@
 #ifndef GVK_VKDCHECK_HPP
 #include "GraphicsVulkan/vkd/vkdCheck.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/It/itString.hpp"
-#endif
-#ifndef IT_STRINGUTIL_HPP
-#include "Core/It/itStringUtil.hpp"
-#endif
 
 #include <algorithm>
 #include <cstring>
@@ -37,63 +31,6 @@ namespace gvk
 	int g2dResourceCounterVk::GetNumVertexBuffers()				{ GVK_NOT_YET("g2dResourceCounterVk"); return 0; }
 	float g2dResourceCounterVk::GetTotalIndexBufferMemory()		{ GVK_NOT_YET("g2dResourceCounterVk"); return 0; }
 	int g2dResourceCounterVk::GetNumIndexBuffers()				{ GVK_NOT_YET("g2dResourceCounterVk"); return 0; }
-
-	//------------------------------------------------------------------------
-	//	g2dFontUtilVk - handles and names are real; text drawing is in the
-	//	windows (g2dWindowVk::DrawText, not yet ported)
-	//------------------------------------------------------------------------
-	g2dFontUtilVk::~g2dFontUtilVk()
-	{
-		for (auto& font : m_Fonts)
-		{
-			delete font.first;
-		}
-	}
-
-	g2dFontHandle g2dFontUtilVk::LoadFont(const itString& i_Name, int /*i_Size*/)
-	{
-		g2dFontHandle handle = new __g2dFontHandleImp;
-		m_Fonts[handle] = itStringUtil::GetStdString(i_Name);
-		return handle;
-	}
-
-	void g2dFontUtilVk::ReleaseFont(g2dFontHandle i_Handle)
-	{
-		if (m_Fonts.erase(i_Handle))
-		{
-			delete i_Handle;
-		}
-	}
-
-	void g2dFontUtilVk::GetLoadedFontName(g2dFontHandle i_Font, itString& o_Name)
-	{
-		auto found = m_Fonts.find(i_Font);
-		o_Name = itString(found != m_Fonts.end() ? found->second.c_str() : "");
-	}
-
-	void g2dFontUtilVk::GetLoadedFontName(g2dFontHandle i_Font, std::string& o_Name)
-	{
-		auto found = m_Fonts.find(i_Font);
-		o_Name = found != m_Fonts.end() ? found->second : std::string();
-	}
-
-	//	Not yet: the bitmap font's metrics; 8x16 pixels per character for now.
-	void g2dFontUtilVk::GetTextSizeInPixels(g2dFontHandle, const itString& i_Text, int& o_Width, int& o_Height)
-	{
-		GVK_NOT_YET("g2dFontUtilVk::GetTextSizeInPixels");
-		o_Width = 8 * static_cast<int>(i_Text.GetLength());
-		o_Height = 16;
-	}
-
-	void g2dFontUtilVk::SetGlobalFontBitmap(const fsLocator& i_FontPath)
-	{
-		m_FontBitmap = i_FontPath;
-	}
-
-	void g2dFontUtilVk::GetGlobalFontBitmap(fsLocator& o_FontPath)
-	{
-		o_FontPath = m_FontBitmap;
-	}
 
 	//------------------------------------------------------------------------
 	//	g2dImageVk - a CPU image
