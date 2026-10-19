@@ -25,6 +25,8 @@
 #include "GraphicsVulkan/Mat/private/matImageDecodeInternal.hpp"
 #endif
 
+// Keep this format-restricted implementation separate from ImportExport's copy.
+#define STB_IMAGE_STATIC
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_PNG
 #define STBI_ONLY_JPEG
