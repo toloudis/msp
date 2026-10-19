@@ -6,12 +6,13 @@
 
 **Spec:** "Scope" (Decided 5), "Constraints and facts" (the `SetImplementation` hooks), "Validation".
 
-**Depends on (Plan 5):** `shdw` passes and the HDR renderer.
+**Depends on (Plans 5a and 5b):** `shdw` passes, the HDR renderer, the simple renderer (`shdwShadowLayerRendererVk`), the depth map and RSM renderers, `shdwPassNormals`.
 
 ## Scope
 
-- Renderers: simple, texture, depth, depth map, RSM, opacity map, UV, normal, velocity map, materials, illumination, shadow mask, reflection-only, glow-only, shadows-only, GI preview, AO preview, single-pass; pick renderer (`g3dPickRenderer`, pick buffer readback).
+- Renderers: texture, depth, opacity map, UV, normal, velocity map (with `shdwPassVelocity`), materials, illumination, shadow mask, reflection-only, glow-only, shadows-only, GI preview (with `shdwPassGIVolumes`, compiled out of the HDR renderer: Plan 5a decision 3), AO preview; pick renderer (`g3dPickRenderer`, pick buffer readback).
 - Services: `g3dBake` (baking renderer), `g2dImageCreate` (loading files), the rest of `g2dImage` (resampling `CopyImage`, `DrawImage`, the sampled/greyscale/TGA/R16G16B16A16 `GetPixels`), `g2dImageSave`'s BMP, JPG, TIFF and DDS, texture saving and `MergeTransparentTextures`, `g2dResourceCounter` (video memory via memory budget), `g3dSystem::GetVideoAdapterName/GetVideoMemory`.
+- Done in Plan 5a/5b: simple renderer, depth map (shadow maps), RSM. Not ported (unreachable on DX11, Plan 5a decision 3): single-pass, ray-trace and test renderers.
 - Done in Plan 4b, because the test scene needed them: the `may` package (Maya fragment creator), `g2dScreenCaptureUtil` (all of it), RGBA-float `GetPixels`, and `g2dImageSave` for EXR, HDR, TGA and PNG (stb_image_write).
 - Capture paths in `Features/Capture` (accumulation, motion blur sampling, batch/bake modes) exercised under Vulkan.
 - Debug display (`g2dDebugDisplay`) and on-screen text overlays.
