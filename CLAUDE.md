@@ -108,13 +108,18 @@ hold settings:
   tests that need only reflection run everywhere. `gtBackend` runs the
   same test code under the whole GraphicsDX11 layer and then the whole
   GraphicsVulkan layer, as MachStudio starts them, so a test can compare
-  what Graphics-level calls (`matTextureMgr`, ...) give on each. Image comparisons
+  what Graphics-level calls (`matTextureMgr`, ...) give on each, all in
+  one process (the run starts COM once, as MachStudio does: DirectXTex
+  keeps one WIC factory per process). Parameterized suites with many
+  small tests share one device per suite (`Vk/gtVulkanSuite`, or a
+  `SetUpTestSuite` D3D11 device) and still check validation per test.
+  Image comparisons
   (`gtImage`, gfxcompare's metrics and tolerance) write `dx11.png`,
   `vulkan.png` and `diff.png` to
   `UnitTests/bin/x64/<Debug|Release>/GraphicsTestsImages/<test>/` when they
   fail. A custom build step compiles `Vk/Shaders/*.hlsl` with DXC. The
   test run keeps the user data folder (`gfPaths` `e_UserDataPath`) in a
-  temp directory.
+  temp directory, one per shard.
 - `CoreTests.vcxproj` is self-contained: its build settings (include paths,
   runtime, output in `UnitTests/bin/<Platform>/<Debug|Release>/`) are in the
   project file, not a shared props file. A new test project can start as a
@@ -131,10 +136,15 @@ hold settings:
   list them in Test Explorer.
 - The tests run as part of the build: the test project's Post-Build Event
   (Project Properties → Build Events) runs the exe after linking and writes
-  `<TargetName>.xml` next to it; a failing test fails the build. MainApp
+  `<TargetName>.xml` next to it; a failing test fails the build.
+  GraphicsTests' step runs it through `UnitTests/RunShards.ps1`: up to 8
+  gtest shards at once (`GTEST_TOTAL_SHARDS`/`GTEST_SHARD_INDEX`), their
+  output printed in turn and their XML merged into the one report. MainApp
   has an ordinary ProjectReference to each test project (nothing linked),
   so MachStudio isn't built until the tests pass. A new test project gets
-  the same reference in `MainApp.vcxproj`, and may reference whatever
+  the same reference in `MainApp.vcxproj` and in `GraphicsTests.vcxproj`
+  (so it isn't copying its vcpkg DLLs into the shared output folder while
+  GraphicsTests' shards have them loaded), and may reference whatever
   libraries it tests. CI builds `MainApp;CoreTests;MainAppTests;GraphicsTests`
   in every configuration and uploads the XML reports.
 - Core headers have `#error` "multiply included" guards, so guard their
@@ -409,7 +419,9 @@ chosen graphics layer and logs `Graphics backend: <name> on <adapter>`;
 `-NoSplash`/`-show` are applied at once; and the actions (`-file`,
 `-render`, `-cap*`, `-script`, ...) run after start-up, in order, in
 `mnmApp::RunCommandLine`. `-render <scene>` loads the scene, which replaces
-the capture settings, so `-cap*` flags go after `-render`. The full
+the capture settings, so `-cap*` flags go after `-render`
+(`-capStartFrame`/`-capEndFrame`, a frame window for every render in the
+run, are the exception: they aren't scene settings). The full
 command line reference (what each flag does) is at the top of
 `MainApp/mainCommandLine.hpp`; `-help` prints the same text
 (`mainCommandLine::HelpText()`), and a test checks it lists every flag.
