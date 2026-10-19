@@ -14,6 +14,12 @@
 #ifndef GVK_VKDDEVICE_HPP
 #include "GraphicsVulkan/vkd/vkdDevice.hpp"
 #endif
+#ifndef GVK_G2DVKGLOBAL_HPP
+#include "GraphicsVulkan/G2d/g2dVkGlobal.hpp"
+#endif
+#ifndef GVK_VKDIMAGE_HPP
+#include "GraphicsVulkan/vkd/vkdImage.hpp"
+#endif
 #ifndef GVK_VKDCHECK_HPP
 #include "GraphicsVulkan/vkd/vkdCheck.hpp"
 #endif
@@ -88,7 +94,8 @@ namespace gvk
 		m_Depth.reset();
 		if (i_Width > 0 && i_Height > 0)
 		{
-			m_Depth.reset(new g2dDepthStencilBufferVk(m_Device, static_cast<uint32_t>(i_Width), static_cast<uint32_t>(i_Height)));
+			m_Depth.reset(new g2dDepthStencilBufferVk(&m_Device));
+			m_Depth->Make(i_Width, i_Height, g2dVkGlobal::e_DXGI_D24_UNORM_S8_UINT, VK_SAMPLE_COUNT_1_BIT, g2dResourceCounterVk::eWindow);
 		}
 		//	R8G8B8A8 (red in the low byte); B8G8R8A8 only if the surface lacks it
 		g2dPFD pfd;
@@ -153,7 +160,7 @@ namespace gvk
 		VkClearDepthStencilValue value = {i_Depth, i_Stencil};
 		VkImageSubresourceRange range = vkdRange((i_bDepth ? VK_IMAGE_ASPECT_DEPTH_BIT : 0) |
 												 (i_bStencil ? VK_IMAGE_ASPECT_STENCIL_BIT : 0));
-		vkCmdClearDepthStencilImage(commands, m_Depth->Image().Image(), VK_IMAGE_LAYOUT_GENERAL, &value, 1, &range);
+		vkCmdClearDepthStencilImage(commands, m_Depth->GetDepthView()->Image(), VK_IMAGE_LAYOUT_GENERAL, &value, 1, &range);
 	}
 
 	//	As DX11: opaque colour, and the depth buffer cleared to 1.

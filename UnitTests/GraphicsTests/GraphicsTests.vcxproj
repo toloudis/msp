@@ -69,10 +69,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <!-- Direct3D 11: GraphicsDX11 is the reference the Vulkan tests compare against
-           (its headers ask for DirectXTex.lib, from its vcpkg packages) -->
-      <AdditionalDependencies>d3d11.lib;dxgi.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories Condition="'$(MspBaseConfiguration)' == 'Debug'">$(ProjectDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalLibraryDirectories Condition="'$(MspBaseConfiguration)' == 'Release'">$(ProjectDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+           (its headers ask for DirectXTex.lib, from its vcpkg packages). gtBackend brings up
+           the whole DX11 and Graphics layers, which also need Graphics' OpenEXR (vcpkg) and
+           libpng and zlibwapi (3rdParty), as MachStudio does -->
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;d3dcompiler.lib;libpng16.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories Condition="'$(MspBaseConfiguration)' == 'Debug'">$(ProjectDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\debug\lib;$(ProjectDir)..\..\LibXLT\Graphics\vcpkg_installed\x64-windows\x64-windows\debug\lib;$(ProjectDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(MspBaseConfiguration)' == 'Release'">$(ProjectDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\lib;$(ProjectDir)..\..\LibXLT\Graphics\vcpkg_installed\x64-windows\x64-windows\lib;$(ProjectDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>"$(TargetPath)" --gtest_brief=1 "--gtest_output=xml:$(OutDir)$(TargetName).xml"</Command>
@@ -127,6 +129,8 @@
     <ClCompile Include="gtImageFiles.cpp" />
     <ClCompile Include="Vk\matImageDecodeTest.cpp" />
     <ClCompile Include="Vk\matMipFilterTest.cpp" />
+    <ClCompile Include="gtBackend.cpp" />
+    <ClCompile Include="Vk\matTextureMgrVkTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />
@@ -136,12 +140,17 @@
     <ClInclude Include="gtImage.hpp" />
     <ClInclude Include="Vk\gtVulkanContext.hpp" />
     <ClInclude Include="gtImageFiles.hpp" />
+    <ClInclude Include="gtBackend.hpp" />
   </ItemGroup>
   <ItemGroup>
     <!-- Test shaders: VSMain and PSMain of each, compiled to SPIR-V with GraphicsVulkan's
          options into headers g_<name>VS / g_<name>PS ($(IntDir)<name>VS.h, <name>PS.h) -->
     <CustomBuild Include="Vk\Shaders\gtBindingProto.hlsl" />
     <CustomBuild Include="Vk\Shaders\gtSolid.hlsl" />
+    <CustomBuild Include="Vk\Shaders\gtTexel.hlsl" />
+    <CustomBuild Include="Vk\Shaders\gtTexel3D.hlsl">
+      <AdditionalInputs>%(RootDir)%(Directory)gtTexel.hlsl</AdditionalInputs>
+    </CustomBuild>
   </ItemGroup>
   <ItemDefinitionGroup>
     <CustomBuild>
@@ -169,4 +178,19 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <!-- The DLLs the Graphics and GraphicsDX11 libraries need at run time (their vcpkg
+       packages, libpng and zlibwapi), next to the exe before the tests run (as MainApp's
+       CopyLibraryVcpkgDlls); the test project's own vcpkg DLLs are left as they are -->
+  <Target Name="CopyLibraryDlls" BeforeTargets="PostBuildEvent">
+    <PropertyGroup>
+      <LibraryVcpkgBin Condition="'$(MspBaseConfiguration)'=='Debug'">debug\bin</LibraryVcpkgBin>
+      <LibraryVcpkgBin Condition="'$(MspBaseConfiguration)'=='Release'">bin</LibraryVcpkgBin>
+    </PropertyGroup>
+    <ItemGroup>
+      <LibraryDll Include="$(ProjectDir)..\..\LibXLT\Graphics\vcpkg_installed\x64-windows\x64-windows\$(LibraryVcpkgBin)\*.dll" />
+      <LibraryDll Include="$(ProjectDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\$(LibraryVcpkgBin)\*.dll" />
+      <LibraryDll Include="$(ProjectDir)..\..\3rdParty\Libs\$(Platform)\libpng16.dll;$(ProjectDir)..\..\3rdParty\Libs\$(Platform)\zlibwapi.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="%(LibraryDll.Identity)" DestinationFolder="$(OutDir)" Condition="!Exists('$(OutDir)%(LibraryDll.Filename)%(LibraryDll.Extension)')" />
+  </Target>
 </Project>

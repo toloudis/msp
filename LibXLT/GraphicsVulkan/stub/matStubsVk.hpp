@@ -2,8 +2,8 @@
 **  matStubsVk.hpp
 **
 **      Vulkan implementations of the material hooks that aren't ported yet
-**	(see g2dStubsVk.hpp for the rules): textures and the texture manager
-**	keep their sizes and names but have no GPU image yet; shader effects
+**	(see g2dStubsVk.hpp for the rules): the textures matTextureMgrVk doesn't
+**	make yet keep their sizes and names but have no GPU image; shader effects
 **	have no passes (renderers draw nothing with them); the shader manager
 **	registers no effects yet.
 **
@@ -17,8 +17,8 @@
 #ifndef MAT_TEXTURE_HPP
 #include "Graphics/Mat/matTexture.hpp"
 #endif
-#ifndef MAT_TEXTUREMGR_HPP
-#include "Graphics/Mat/matTextureMgr.hpp"
+#ifndef GVK_MATTEXTUREVK_HPP
+#include "GraphicsVulkan/Mat/matTextureVk.hpp"
 #endif
 #ifndef MAT_SHADEREFFECT_HPP
 #include "Graphics/Mat/matShaderEffect.hpp"
@@ -35,57 +35,19 @@
 
 namespace gvk
 {
-	class matTextureVk : public matTexture
+	//	The texture shadow maps, reflective shadow maps and cube render
+	//	targets get until Plan 5 ports them (matTextureMgrVk makes them): a
+	//	size and a pixel format, no image
+	class matStubTextureVk : public matTextureVk
 	{
 		public:
-			matTextureVk(int i_Width, int i_Height, const g2dPFD* i_pPFD, const std::string& i_Name);
-			virtual ~matTextureVk();
-			virtual char* MakeTransparencyMap(float i_Bias, const g2dPFD& i_PFD, int i_Width, int i_Height);
+			matStubTextureVk(int i_Width, int i_Height, const g2dPFD* i_pPFD, const std::string& i_Name);
+			virtual ~matStubTextureVk();
+			virtual vkdImage* GetImage() const { return NULL; }
 			const std::string& Name() const { return m_Name; }
 
 		private:
 			std::string m_Name;
-	};
-
-	class matTextureMgrVk : public matTextureMgrImpl
-	{
-		public:
-			virtual ~matTextureMgrVk();
-			virtual unsigned int GetTotalTextureMemory();
-			virtual matTexture* LoadTexture(const fsLocator& i_Directory, const itString& i_Name, std::vector<itString>& o_UVANames,
-											TEXTURE_TYPE i_Type = TEXTURE_TYPE_2D, bool i_bIgnoreTUVSuffix = false, bool mipmap_if_2D = true);
-			virtual matTexture* CreateShadowMap(int i_nTextureWidth, int i_nTextureHeight);
-			virtual matTexture* CreateReflectiveShadowMap(int i_nTextureWidth, int i_nTextureHeight);
-			virtual matTexture* CreateRenderTargetTexture(int i_nTextureWidth, int i_nTextureHeight, bool i_bFloatingPoint,
-														  const g2dPFD* i_PFD, bool i_bAutoGenMipmap, bool i_bAllocDepthBuffer,
-														  matTextureMgr::eResourceCategory i_ResourceCategory, bool i_bFloatDepth,
-														  bool i_bAntiAlias);
-			virtual matTexture* CreateRenderTargetTexture(matTexture* i_Texture, bool i_bAutoGenMipmap,
-														  matTextureMgr::eResourceCategory i_ResourceCategory);
-			virtual matTexture* CreateCubeRenderTargetTexture(int i_nTextureWidth, int i_nTextureHeight, g2dPFD* i_PFD);
-			virtual void DestroyTexture(matTexture* i_Texture);
-			virtual void DestroyAllTextures();
-			virtual void ReloadTexture(const fsLocator& i_Locator, bool i_bIsMipMap = true);
-			virtual void UnloadTexture(const fsLocator& i_Locator);
-			virtual void SaveTextureToRgbaTiff(matTexture* i_pTexture, const fsLocator& i_FilePathLocator);
-			virtual void SaveTextureToRgbaPNG(matTexture* i_pTexture, const fsLocator& i_FilePathLocator);
-			virtual void SaveTextureToFile(matTexture* i_pTexture, const fsLocator& i_FilePathLocator);
-			virtual void FillTexture(matTexture* i_pTexture, const maFloatRGBA& i_Color);
-			virtual void FillTexture(matTexture* i_pTexture, void* i_PixelData, int i_nByte);
-			virtual void UpdateTexture(matTexture* i_pTexture, unsigned char* i_Data, int i_Size, int nMipLevel = 0);
-			virtual matTexture* CreateTexture(int i_nTextureWidth, int i_nTextureHeight, const g2dPFD* i_PFD, bool i_bMipmap);
-			virtual matTexture* CreateTexture(int i_nTextureWidth, int i_nTextureHeight, const g2dPFD* i_PFD, bool i_bMipmap,
-											  void* i_PixelData);
-			virtual matTexture* CreateTexture3D(int i_nTextureWidth, int i_nTextureHeight, int i_nTextureDepth,
-												const g2dPFD* i_PFD, BIND_TYPE i_Bindings);
-			virtual matTexture* CreateTexture3D(int i_nTextureWidth, int i_nTextureHeight, int i_nTextureDepth,
-												const g2dPFD* i_PFD, BIND_TYPE i_Bindings, void* i_PixelData);
-			virtual void CopyTexture(matTexture* i_SrcTex, matTexture* i_DstTex);
-			virtual void MergeTransparentTextures(matTexture* i_pTexO, matTexture* i_pTexI, g2dRenderTarget* io_pTarget);
-
-		private:
-			matTexture* add(matTextureVk* i_pTexture);
-			std::vector<matTexture*> m_Textures;
 	};
 
 	class matShaderEffectVk : public matShaderEffect

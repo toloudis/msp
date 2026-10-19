@@ -131,6 +131,22 @@
     <ClCompile Include="Mat\private\matImageDecodeDds.cpp" />
     <ClCompile Include="Mat\private\matImageDecodeHdr.cpp" />
     <ClCompile Include="Mat\private\matMipFilter.cpp" />
+    <ClCompile Include="G2d\private\g2dVkGlobal.cpp" />
+    <ClCompile Include="G2d\private\g2dTextureVk.cpp" />
+    <ClCompile Include="G2d\private\g2dRenderTargetTextureVk.cpp" />
+    <ClCompile Include="G2d\private\g2dDepthStencilBufferVk.cpp" />
+    <ClCompile Include="G2d\private\g2dRenderTargetVk.cpp" />
+    <ClCompile Include="G3d\private\g3dVkTextureUtil.cpp" />
+    <ClCompile Include="Mat\private\matVkGlobal.cpp" />
+    <ClCompile Include="Mat\private\matTextureVk.cpp" />
+    <ClCompile Include="Mat\private\matPlainTexture.cpp" />
+    <ClCompile Include="Mat\private\matMipTexture.cpp" />
+    <ClCompile Include="Mat\private\matStaticCubeTexture.cpp" />
+    <ClCompile Include="Mat\private\matVolumeTexture.cpp" />
+    <ClCompile Include="Mat\private\matRenderTargetTexture.cpp" />
+    <ClCompile Include="Mat\private\matTextureLoader.cpp" />
+    <ClCompile Include="Mat\private\matTextureLoaderDDS.cpp" />
+    <ClCompile Include="Mat\private\matTextureMgrVk.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsVulkanLayer.hpp" />
@@ -177,6 +193,20 @@
     <ClInclude Include="Mat\matImageDecode.hpp" />
     <ClInclude Include="Mat\matMipFilter.hpp" />
     <ClInclude Include="Mat\private\matImageDecodeInternal.hpp" />
+    <ClInclude Include="G2d\g2dVkGlobal.hpp" />
+    <ClInclude Include="G2d\g2dTextureVk.hpp" />
+    <ClInclude Include="G2d\g2dRenderTargetTextureVk.hpp" />
+    <ClInclude Include="G2d\g2dRenderTargetVk.hpp" />
+    <ClInclude Include="G3d\g3dVkTextureUtil.hpp" />
+    <ClInclude Include="Mat\matVkGlobal.hpp" />
+    <ClInclude Include="Mat\matTextureVk.hpp" />
+    <ClInclude Include="Mat\matPlainTexture.hpp" />
+    <ClInclude Include="Mat\matMipTexture.hpp" />
+    <ClInclude Include="Mat\matStaticCubeTexture.hpp" />
+    <ClInclude Include="Mat\matVolumeTexture.hpp" />
+    <ClInclude Include="Mat\matRenderTargetTexture.hpp" />
+    <ClInclude Include="Mat\matTextureMgrVk.hpp" />
+    <ClInclude Include="Mat\private\matTextureLoader.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

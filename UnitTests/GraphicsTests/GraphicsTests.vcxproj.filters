@@ -89,6 +89,10 @@
     <ClCompile Include="Vk\matMipFilterTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
+    <ClCompile Include="gtBackend.cpp" />
+    <ClCompile Include="Vk\matTextureMgrVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />
@@ -104,12 +108,19 @@
       <Filter>Vk</Filter>
     </ClInclude>
     <ClInclude Include="gtImageFiles.hpp" />
+    <ClInclude Include="gtBackend.hpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Vk\Shaders\gtBindingProto.hlsl">
       <Filter>Vk\Shaders</Filter>
     </CustomBuild>
     <CustomBuild Include="Vk\Shaders\gtSolid.hlsl">
+      <Filter>Vk\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Vk\Shaders\gtTexel.hlsl">
+      <Filter>Vk\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Vk\Shaders\gtTexel3D.hlsl">
       <Filter>Vk\Shaders</Filter>
     </CustomBuild>
   </ItemGroup>

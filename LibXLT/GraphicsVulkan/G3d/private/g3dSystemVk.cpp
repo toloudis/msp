@@ -17,6 +17,9 @@
 #ifndef GVK_MATSTUBSVK_HPP
 #include "GraphicsVulkan/stub/matStubsVk.hpp"
 #endif
+#ifndef GVK_MATTEXTUREMGRVK_HPP
+#include "GraphicsVulkan/Mat/matTextureMgrVk.hpp"
+#endif
 #ifndef GVK_G3DBLENDSTATEMGR_HPP
 #include "GraphicsVulkan/G3d/g3dBlendStateMgr.hpp"
 #endif
@@ -100,6 +103,7 @@ namespace gvk
 	{
 		g3dLightMgr::SetImplementation(m_pLightMgr);
 		matTextureMgr::SetImplementation(m_pTextureMgr);
+		m_pTextureMgr->Initialize();
 		matShaderMgr::SetImplementation(m_pShaderMgr);
 		init_states();
 		matShaderMgr::Initialize();		// registers the built-in shaders, as g3dSystemDX11 does
@@ -110,6 +114,7 @@ namespace gvk
 	{
 		g2dScreenCaptureUtil::SetImplementation(NULL);
 		matShaderMgr::DeInitialize();
+		m_pTextureMgr->DeInitialize();
 		cleanup_states();
 		matShaderMgr::SetImplementation(NULL);
 		matTextureMgr::SetImplementation(NULL);

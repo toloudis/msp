@@ -424,25 +424,33 @@ namespace
 	//------------------------------------------------------------------------
 	//	HDR (Radiance RGBE, run-length encoded scanlines)
 	//------------------------------------------------------------------------
-	std::vector<uint8_t> hdr(uint32_t i_Seed)
+	//	i_Program: the header's "#?" program type (RGBE_WriteHeader writes
+	//	"RGBE" without one; GraphicsDX11's texture manager only takes files
+	//	that start "#?RADIANCE")
+	std::vector<uint8_t> hdr(uint32_t i_Seed, const char* i_Program = NULL, uint32_t i_W = c_W, uint32_t i_H = c_H)
 	{
-		std::vector<float> rgb(c_W * c_H * 3);
-		for (uint32_t y = 0; y < c_H; y++)
+		std::vector<float> rgb(i_W * i_H * 3);
+		for (uint32_t y = 0; y < i_H; y++)
 		{
-			for (uint32_t x = 0; x < c_W; x++)
+			for (uint32_t x = 0; x < i_W; x++)
 			{
 				for (uint32_t c = 0; c < 3; c++)
 				{
 					//	A wide range, with runs (every 4th column repeats) for the RLE
 					const uint32_t sx = x - x % 4 * (x % 4 < 2);
-					rgb[(y * c_W + x) * 3 + c] = value(sx, y, c, i_Seed) / 32.0f * (1 + (y % 5));
+					rgb[(y * i_W + x) * 3 + c] = value(sx, y, c, i_Seed) / 32.0f * (1 + (y % 5));
 				}
 			}
 		}
 		std::ostringstream os(std::ios::binary);
 		rgbe_header_info info = {};
-		RGBE_WriteHeader(os, c_W, c_H, &info);
-		RGBE_WritePixels_RLE(os, rgb.data(), c_W, c_H);
+		if (i_Program)
+		{
+			info.valid = RGBE_VALID_PROGRAMTYPE;
+			strncpy(info.programtype, i_Program, sizeof(info.programtype) - 1);
+		}
+		RGBE_WriteHeader(os, i_W, i_H, &info);
+		RGBE_WritePixels_RLE(os, rgb.data(), i_W, i_H);
 		const std::string s = os.str();
 		return std::vector<uint8_t>(s.begin(), s.end());
 	}
@@ -844,6 +852,7 @@ std::vector<gtImageFile> gtWriteImageFiles(const std::filesystem::path& i_Dir)
 
 	//	HDR
 	write_file(add("hdr_rle", ".hdr", gtImageFile::e_HDR, gtImageFile::e_RefHDR), hdr(seed));
+	write_file(add("hdr_radiance", ".hdr", gtImageFile::e_HDR, gtImageFile::e_RefHDR), hdr(seed, "RADIANCE", 32, 16));		// a power of two: DX11 makes its mips with DirectXTex's box filter
 
 	//	DDS
 	for (const DdsCase& c : c_Dds)

@@ -51,6 +51,16 @@ namespace gvk
 	class g2dResourceCounterVk : public g2dResourceCounterImpl
 	{
 		public:
+			//	g2dResourceCounterDX11's categories: the texture and render
+			//	target classes take one (counting comes with this class's port)
+			enum eResourceCategory
+			{
+				eWindow,
+				eRenderTarget,
+				eShadow,
+				eTexture
+			};
+
 			virtual float GetTotalVideoMemory();
 			virtual float GetTotalSceneTextureMemory();
 			virtual int GetNumSceneTextures();
