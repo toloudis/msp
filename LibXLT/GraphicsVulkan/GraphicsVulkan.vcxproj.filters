@@ -121,6 +121,12 @@
     <ClCompile Include="G2d\private\g2dWindowVk.cpp">
       <Filter>G2d\private</Filter>
     </ClCompile>
+    <ClCompile Include="G2d\private\g2dImageSaveVk.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dScreenCaptureUtilVk.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
     <ClCompile Include="G2d\private\g2dSystemVk.cpp">
       <Filter>G2d\private</Filter>
     </ClCompile>
@@ -441,6 +447,12 @@
       <Filter>G2d</Filter>
     </ClInclude>
     <ClInclude Include="G2d\g2dDepthStencilBufferVk.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dImageSaveVk.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dScreenCaptureUtilVk.hpp">
       <Filter>G2d</Filter>
     </ClInclude>
     <ClInclude Include="G2d\g2dSystemVk.hpp">

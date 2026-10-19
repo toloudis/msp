@@ -83,6 +83,11 @@ namespace gvk
 			virtual float GetFrameRateAverage();
 			virtual float GetFrameRate();
 
+			//	What is drawn to (g2dWindowDX11::GetBackBuffer): the offscreen
+			//	image, else the frame's swap-chain image (acquired now if need
+			//	be); NULL when the frame is skipped
+			vkdImage* GetBackBuffer() { return back_buffer(); }
+
 			//	Testing
 			VkFormat SwapchainFormat() const { return m_Swapchain.Format(); }
 			void DebugReadBackNextFrame() { m_Swapchain.DebugReadBackNextFrame(); }

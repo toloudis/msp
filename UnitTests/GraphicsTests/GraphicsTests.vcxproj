@@ -137,8 +137,10 @@
     <ClCompile Include="Vk\effShaderVkTest.cpp" />
     <ClCompile Include="gtTarget.cpp" />
     <ClCompile Include="Vk\g3dSceneRendererVkTest.cpp" />
+    <ClCompile Include="gtDx11Child.cpp" />
     <ClCompile Include="gtSceneWindow.cpp" />
     <ClCompile Include="Vk\g2dFontVkTest.cpp" />
+    <ClCompile Include="Vk\g2dCaptureVkTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />
@@ -151,6 +153,7 @@
     <ClInclude Include="gtBackend.hpp" />
     <ClInclude Include="gtScene.hpp" />
     <ClInclude Include="gtTarget.hpp" />
+    <ClInclude Include="gtDx11Child.hpp" />
     <ClInclude Include="gtSceneWindow.hpp" />
   </ItemGroup>
   <ItemGroup>

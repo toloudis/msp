@@ -87,6 +87,12 @@ namespace gvk
 			uint64_t Submit(const std::vector<VkSemaphoreSubmitInfo>& i_Wait = {},
 							const std::vector<VkSemaphoreSubmitInfo>& i_Signal = {});
 
+			//	A wait the next Submit, whoever calls it, adds to its own: a
+			//	swap chain's acquire semaphore, which must be waited on before
+			//	the image is written, by whichever submission comes first
+			//	(a readback mid-frame submits before Present does)
+			void		AddSubmitWait(const VkSemaphoreSubmitInfo& i_Wait);
+
 			void		WaitFor(uint64_t i_TimelineValue);
 			void		WaitIdle();
 			uint64_t	CompletedValue() const;

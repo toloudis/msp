@@ -8,9 +8,12 @@
 **	later plan ports it.
 **
 **	  g2dResourceCounterVk		memory statistics (all zero)
-**	  g2dImageVk, g2dImageCreateVk	CPU images: pixels kept and readable; file loading not yet
-**	  g2dImageSaveVk			saving images and windows (not yet)
-**	  g2dScreenCaptureUtilVk	window and texture capture (not yet)
+**	  g2dImageVk, g2dImageCreateVk	CPU images: pixels kept and readable (8-bit
+**					RGBA, and RGBA floats as DX11 gives them); resampling and
+**					file loading not yet
+**
+**	Saving images and capturing windows are ported: G2d/g2dImageSaveVk,
+**	G2d/g2dScreenCaptureUtilVk.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -27,12 +30,6 @@
 #endif
 #ifndef G2D_IMAGECREATE_HPP
 #include "Graphics/G2d/g2dImageCreate.hpp"
-#endif
-#ifndef G2D_IMAGESAVE_HPP
-#include "Graphics/G2d/g2dImageSave.hpp"
-#endif
-#ifndef G2D_SCREENCAPTUREUTIL_HPP
-#include "Graphics/G2d/g2dScreenCaptureUtil.hpp"
 #endif
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
@@ -100,6 +97,7 @@ namespace gvk
 
 		private:
 			int bytes_per_pixel() const;
+			bool get_float_pixel(int i_X, int i_Y, g2dPixelRGBA32F& o_Pixel) const;
 
 			g2dPFD m_PFD;
 			int m_Width = 0;
@@ -114,20 +112,4 @@ namespace gvk
 			virtual g2dImage* Load(const fsLocator& i_Locator, g2dImage::CreateLoc i_Loc);
 	};
 
-	class g2dImageSaveVk : public g2dImageSaveImpl
-	{
-		public:
-			virtual void Save(const fsLocator& i_FileName, g2dWindow* i_pWin);
-			virtual void Save(const fsLocator& i_FileName, const g2dImage* i_pImage);
-	};
-
-	class g2dScreenCaptureUtilVk : public g2dScreenCaptureImpl
-	{
-		public:
-			virtual void CaptureWindowToFile(g2dWindow& i_Window, const fsLocator& i_Locator, const int i_Sampling);
-			virtual void CaptureImageToFile(g2dImage& i_Image, const fsLocator& i_Locator, const int i_Sampling);
-			virtual void CaptureWindowToImage(g2dWindow& i_Window, g2dImage*& img, bool backBuffer = true);
-			virtual void CaptureRenderTargetToImage(g2dRenderTarget& i_Window, g2dImage*& img);
-			virtual void Capture2DTextureToImage(matTexture* i_pTexture, g2dImage*& o_Image);
-	};
 }

@@ -24,6 +24,9 @@
 #include "Graphics/G2d/g2dResetHandler.hpp"
 #endif
 
+#ifndef GVK_G2DIMAGESAVEVK_HPP
+#include "GraphicsVulkan/G2d/g2dImageSaveVk.hpp"
+#endif
 #ifndef GVK_G2DSTUBSVK_HPP
 #include "GraphicsVulkan/stub/g2dStubsVk.hpp"
 #endif

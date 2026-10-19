@@ -12,6 +12,13 @@
 #include "GraphicsVulkan/vkd/vkdCheck.hpp"
 #endif
 
+#ifndef DBG_MSG_HPP
+#include "Core/Dbg/dbgMsg.hpp"
+#endif
+#ifndef MA_FUNCTIONS_HPP
+#include "Core/Ma/maFunctions.hpp"
+#endif
+
 #include <algorithm>
 #include <cstring>
 
@@ -124,18 +131,71 @@ namespace gvk
 		}
 	}
 
+	//	GraphicsDX11's GetSurfacePixels (g2dDX11SurfaceUtil's copyPixels and
+	//	SurfaceIterator::GetValue): bottom row first; 8-bit RGBA / 255, 16- and
+	//	32-bit float with 1, 2 or 4 channels (green and blue 0, alpha 1 where
+	//	missing). Another format gives zeros, as an iterator DX11 lacks.
+	bool g2dImageVk::get_float_pixel(int i_X, int i_Y, g2dPixelRGBA32F& o_Pixel) const
+	{
+		const int nc = m_PFD.GetNumChannels();
+		const uint8_t* data = m_Pixels.data() + (size_t)i_Y * GetStride() + (size_t)i_X * bytes_per_pixel();
+		float c[4] = { 0, 0, 0, 1 };
+		switch (m_PFD.GetBitsPerChannel())
+		{
+		case 8:
+			if (nc != 4 || m_PFD.IsFloat())
+				return false;
+			for (int i = 0; i < 4; i++)
+				c[i] = data[i] / 255.0f;
+			break;
+		case 16:
+			if (!m_PFD.IsFloat() || (nc != 1 && nc != 2 && nc != 4))
+				return false;
+			for (int i = 0; i < nc; i++)
+				c[i] = maFunctions::HalfToFloat(reinterpret_cast<const uint16_t*>(data)[i]);
+			break;
+		case 32:
+			if (!m_PFD.IsFloat() || (nc != 1 && nc != 2 && nc != 4))
+				return false;
+			memcpy(c, data, nc * sizeof(float));
+			break;
+		default:
+			return false;
+		}
+		o_Pixel.r = c[0];
+		o_Pixel.g = c[1];
+		o_Pixel.b = c[2];
+		o_Pixel.a = c[3];
+		return true;
+	}
+
+	//	this call allocates a big block of mem; the caller deletes [] it
 	void g2dImageVk::GetPixels(g2dPixelRGBA32F** o_pBuffer, int* o_width, int* o_height)
 	{
-		GVK_NOT_YET("g2dImageVk::GetPixels (RGBA32F)");
 		*o_pBuffer = new g2dPixelRGBA32F[static_cast<size_t>(m_Width) * m_Height]();
 		*o_width = m_Width;
 		*o_height = m_Height;
+		GetPixels(*o_pBuffer, m_Width, m_Height);
 	}
 
 	void g2dImageVk::GetPixels(g2dPixelRGBA32F* o_pBuffer, int i_Width, int i_Height)
 	{
-		GVK_NOT_YET("g2dImageVk::GetPixels (RGBA32F into a buffer)");
-		memset(o_pBuffer, 0, sizeof(g2dPixelRGBA32F) * static_cast<size_t>(i_Width) * i_Height);
+		DBG_ASSERT(i_Width <= m_Width, "GetPixels: bad image dimensions");
+		DBG_ASSERT(i_Height <= m_Height, "GetPixels: bad image dimensions");
+		g2dPixelRGBA32F* ptr = o_pBuffer;
+		for (int r = i_Height - 1; r >= 0; r--)
+		{
+			for (int c = 0; c < i_Width; c++)
+			{
+				if (!get_float_pixel(c, r, *ptr))
+				{
+					GVK_NOT_YET("g2dImageVk::GetPixels (RGBA32F from this pixel format)");
+					memset(o_pBuffer, 0, sizeof(g2dPixelRGBA32F) * static_cast<size_t>(i_Width) * i_Height);
+					return;
+				}
+				ptr++;
+			}
+		}
 	}
 
 	void g2dImageVk::SwapChannels(int i_ChannelOne, int i_ChannelTwo)
@@ -171,34 +231,4 @@ namespace gvk
 		return image;
 	}
 
-	//------------------------------------------------------------------------
-	//	g2dImageSaveVk, g2dScreenCaptureUtilVk
-	//------------------------------------------------------------------------
-	void g2dImageSaveVk::Save(const fsLocator&, g2dWindow*)			{ GVK_NOT_YET("g2dImageSaveVk::Save (window)"); }
-	void g2dImageSaveVk::Save(const fsLocator&, const g2dImage*)	{ GVK_NOT_YET("g2dImageSaveVk::Save (image)"); }
-
-	void g2dScreenCaptureUtilVk::CaptureWindowToFile(g2dWindow&, const fsLocator&, const int)
-	{
-		GVK_NOT_YET("g2dScreenCaptureUtilVk::CaptureWindowToFile");
-	}
-
-	void g2dScreenCaptureUtilVk::CaptureImageToFile(g2dImage&, const fsLocator&, const int)
-	{
-		GVK_NOT_YET("g2dScreenCaptureUtilVk::CaptureImageToFile");
-	}
-
-	void g2dScreenCaptureUtilVk::CaptureWindowToImage(g2dWindow&, g2dImage*&, bool)
-	{
-		GVK_NOT_YET("g2dScreenCaptureUtilVk::CaptureWindowToImage");
-	}
-
-	void g2dScreenCaptureUtilVk::CaptureRenderTargetToImage(g2dRenderTarget&, g2dImage*&)
-	{
-		GVK_NOT_YET("g2dScreenCaptureUtilVk::CaptureRenderTargetToImage");
-	}
-
-	void g2dScreenCaptureUtilVk::Capture2DTextureToImage(matTexture*, g2dImage*&)
-	{
-		GVK_NOT_YET("g2dScreenCaptureUtilVk::Capture2DTextureToImage");
-	}
 }

@@ -8,13 +8,14 @@
 **      DrawText, which g3dRenderPass uses), at several sizes, colours and
 **      offsets; GetTextSizeInPixels; and no font without the bitmap.
 **      GraphicsDX11 can load the font bitmap safely in only one run per
-**      process (see in_dx11), so each DX11 half runs in a gtest death-test
+**      process (see gtDx11Child), so each DX11 half runs in a gtest death-test
 **      child process.
 **      Skipped without a Vulkan device.
 **
 **	Extra Large Technology
 \****************************************************************************/
 #include "gtBackend.hpp"
+#include "gtDx11Child.hpp"
 #include "gtImage.hpp"
 #include "gtPlatform.hpp"
 #include "gtSceneWindow.hpp"
@@ -180,54 +181,6 @@ namespace
 		release_fonts(fonts);
 	}
 
-	//	The failures the current test has had so far
-	int failures()
-	{
-		const testing::TestResult* result = testing::UnitTest::GetInstance()->current_test_info()->result();
-		int n = 0;
-		for (int i = 0; i < result->total_part_count(); i++)
-			n += result->GetTestPartResult(i).failed() ? 1 : 0;
-		return n;
-	}
-
-	typedef std::function<std::vector<uint8_t>()> Dx11Function;
-
-	//	The child process's half of in_dx11: runs i_Function with DX11 up,
-	//	writes what it returned to i_File and exits (0 if all went well).
-	//	(The child runs the test from the start, so failures before this
-	//	one aren't its own.)
-	void dx11_child(const Dx11Function& i_Function, const std::filesystem::path& i_File)
-	{
-		const int before = failures();
-		std::vector<uint8_t> bytes;
-		bool ok = gtBackend::Run(gtBackend::e_DX11, [&]() { bytes = i_Function(); }) && failures() == before;
-		if (ok)
-		{
-			std::ofstream out(i_File, std::ios::binary);
-			out.write((const char*)bytes.data(), bytes.size());
-			ok = out.good();
-		}
-		if (!ok)
-			std::cerr << "the DX11 half failed (its output is above)" << std::endl;
-		std::cout.flush();
-		std::exit(ok ? 0 : 1);
-	}
-
-	//	What i_Function returns with GraphicsDX11 up. After a GraphicsDX11
-	//	run that loaded the font bitmap, a later run in the same process can
-	//	crash loading it again (depending on what ran before; the cause is
-	//	in GraphicsDX11, which MachStudio starts once per process), so each
-	//	DX11 half runs in a process of its own (a gtest death test child)
-	//	and hands its result back in a file.
-	std::vector<uint8_t> in_dx11(const Dx11Function& i_Function)
-	{
-		gtTempDir dir;
-		const std::filesystem::path file = dir.GetPath() / "dx11.bin";
-		EXPECT_EXIT(dx11_child(i_Function, file), ::testing::ExitedWithCode(0), "");
-		std::ifstream in(file, std::ios::binary);
-		return std::vector<uint8_t>(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
-	}
-
 	//	Pictures and ints to and from bytes
 	void put_int(std::vector<uint8_t>& io_Bytes, int i_Value)
 	{
@@ -304,7 +257,7 @@ namespace
 
 TEST(g2dFontVk, TextMatchesDX11)
 {
-	const std::vector<uint8_t> bytes = in_dx11([]()
+	const std::vector<uint8_t> bytes = gtInDx11([]()
 	{
 		gtPicture window, target;
 		draw_texts(gtBackend::e_DX11, window, target);
@@ -325,7 +278,7 @@ TEST(g2dFontVk, TextMatchesDX11)
 
 TEST(g2dFontVk, TextSizeMatchesDX11)
 {
-	const std::vector<uint8_t> bytes = in_dx11([]()
+	const std::vector<uint8_t> bytes = gtInDx11([]()
 	{
 		std::vector<uint8_t> result;
 		for (int value : text_sizes())
@@ -346,7 +299,7 @@ TEST(g2dFontVk, TextSizeMatchesDX11)
 
 TEST(g2dFontVk, NoBitmapNoFontAsDX11)
 {
-	const std::vector<uint8_t> bytes = in_dx11([]()
+	const std::vector<uint8_t> bytes = gtInDx11([]()
 	{
 		return std::vector<uint8_t>(1, no_bitmap_no_font() ? 1 : 0);
 	});

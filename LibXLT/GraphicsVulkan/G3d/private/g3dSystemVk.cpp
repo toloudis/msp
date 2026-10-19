@@ -47,6 +47,9 @@
 #ifndef GVK_G3DSTATEMGR_HPP
 #include "GraphicsVulkan/G3d/g3dStateMgr.hpp"
 #endif
+#ifndef GVK_G2DSCREENCAPTUREUTILVK_HPP
+#include "GraphicsVulkan/G2d/g2dScreenCaptureUtilVk.hpp"
+#endif
 #ifndef GVK_G2DSTUBSVK_HPP
 #include "GraphicsVulkan/stub/g2dStubsVk.hpp"
 #endif

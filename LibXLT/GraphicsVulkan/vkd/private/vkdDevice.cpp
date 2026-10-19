@@ -240,6 +240,8 @@ namespace gvk
 		Slot						m_Slots[c_FramesInFlight];
 		uint32_t					m_Slot = 0;
 		bool						m_bOpen = false;
+		//	waits the next Submit adds (AddSubmitWait)
+		std::vector<VkSemaphoreSubmitInfo>	m_PendingWaits;
 		std::function<void()>		m_RecordingHook;
 		bool						m_bInHook = false;
 
@@ -627,6 +629,9 @@ namespace gvk
 		VK_CHECK(vkEndCommandBuffer(commands));
 
 		const uint64_t value = ++m_pImpl->m_LastSubmitted;
+		std::vector<VkSemaphoreSubmitInfo> waits(i_Wait);
+		waits.insert(waits.end(), m_pImpl->m_PendingWaits.begin(), m_pImpl->m_PendingWaits.end());
+		m_pImpl->m_PendingWaits.clear();
 		std::vector<VkSemaphoreSubmitInfo> signals(i_Signal);
 		VkSemaphoreSubmitInfo timeline = {VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO};
 		timeline.semaphore = m_pImpl->m_Timeline;
@@ -637,8 +642,8 @@ namespace gvk
 		VkCommandBufferSubmitInfo command_info = {VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO};
 		command_info.commandBuffer = commands;
 		VkSubmitInfo2 submit = {VK_STRUCTURE_TYPE_SUBMIT_INFO_2};
-		submit.waitSemaphoreInfoCount = static_cast<uint32_t>(i_Wait.size());
-		submit.pWaitSemaphoreInfos = i_Wait.data();
+		submit.waitSemaphoreInfoCount = static_cast<uint32_t>(waits.size());
+		submit.pWaitSemaphoreInfos = waits.data();
 		submit.commandBufferInfoCount = 1;
 		submit.pCommandBufferInfos = &command_info;
 		submit.signalSemaphoreInfoCount = static_cast<uint32_t>(signals.size());
@@ -653,6 +658,12 @@ namespace gvk
 		m_pImpl->m_bOpen = false;
 		m_pImpl->RunDeferred(false);
 		return value;
+	}
+
+	void vkdDevice::AddSubmitWait(const VkSemaphoreSubmitInfo& i_Wait)
+	{
+		std::lock_guard<std::recursive_mutex> lock(m_pImpl->m_StreamLock);
+		m_pImpl->m_PendingWaits.push_back(i_Wait);
 	}
 
 	void vkdDevice::WaitFor(uint64_t i_TimelineValue)

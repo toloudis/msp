@@ -107,8 +107,12 @@
     </ClCompile>
     <ClCompile Include="gtTarget.cpp" />
     <ClCompile Include="gtScene.cpp" />
+    <ClCompile Include="gtDx11Child.cpp" />
     <ClCompile Include="gtSceneWindow.cpp" />
     <ClCompile Include="Vk\g2dFontVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\g2dCaptureVkTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
   </ItemGroup>
@@ -129,6 +133,7 @@
     <ClInclude Include="gtScene.hpp" />
     <ClInclude Include="gtImageFiles.hpp" />
     <ClInclude Include="gtBackend.hpp" />
+    <ClInclude Include="gtDx11Child.hpp" />
     <ClInclude Include="gtSceneWindow.hpp" />
   </ItemGroup>
   <ItemGroup>
