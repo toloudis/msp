@@ -57,35 +57,6 @@
 
 namespace
 {
-	//	The effect shows: on DX11, the scene with it (i_With) differs from the
-	//	scene without it (i_Without) by more than 8/255 in at least
-	//	i_MinPixels pixels; saves both if not (with as dx11, without as
-	//	vulkan). Guards against a parity test that passes because DX11
-	//	draws nothing for the feature in the test scene.
-	void expect_effect_shows(const char* i_pName, const gtSceneFunction& i_With, const gtRenderOptions& i_WithOptions,
-							 const gtSceneFunction& i_Without, const gtRenderOptions& i_WithoutOptions, int i_MinPixels)
-	{
-		gtTempDir dir;
-		gtPicture with, without;
-		gtBackend::Run(gtBackend::e_DX11, [&]()
-		{
-			with = gtRenderScene(i_With, dir.GetPath(), i_WithOptions);
-			without = gtRenderScene(i_Without, dir.GetPath(), i_WithoutOptions);
-		});
-		ASSERT_TRUE(with.Valid() && without.Valid());
-		int differing = 0;
-		for (size_t i = 0; i < with.m_Rgba.size(); i += 4)
-		{
-			int diff = 0;
-			for (int c = 0; c < 4; c++)
-				diff = std::max(diff, std::abs((int)with.m_Rgba[i + c] - (int)without.m_Rgba[i + c]));
-			differing += diff > 8;
-		}
-		std::cout << "  " << i_pName << ": " << differing << " pixels changed on DX11" << std::endl;
-		EXPECT_GE(differing, i_MinPixels) << i_pName << ": images (with as dx11, without as vulkan) in "
-			<< gtSaveComparison(std::string(i_pName) + "/shows", with.m_Rgba.data(), without.m_Rgba.data(), with.m_Width, with.m_Height);
-	}
-
 	//	A backdrop plane and four spheres resting against it, two of them
 	//	overlapping (a second depth layer for SSAO's peeling), lit by shadow-
 	//	casting lights. i_pEdit, if given, edits each sphere's material.
@@ -318,9 +289,9 @@ TEST(shdwScreenPassesVkTest, SSAOMatchDX11)
 
 	gtRenderOptions off = ssao_prefs(false, false);
 	off.m_Prefs = nullptr;
-	expect_effect_shows("SSAOMatchDX11", ssao_scene(0), ssao_prefs(true, false), ssao_scene(0), off, 256 * 256 / 50);
+	gtExpectEffectShows("SSAOMatchDX11", ssao_scene(0), ssao_prefs(true, false), ssao_scene(0), off, 256 * 256 / 50);
 	gtRenderOptions mode10_layer1 = ssao_prefs(false, false, 10);
-	expect_effect_shows("SSAOMatchDX11/debug_mode10_peeled", close, mode10, close, mode10_layer1, 256 * 256 / 100);
+	gtExpectEffectShows("SSAOMatchDX11/debug_mode10_peeled", close, mode10, close, mode10_layer1, 256 * 256 / 100);
 }
 
 TEST(shdwScreenPassesVkTest, GlowMatchDX11)
@@ -335,8 +306,8 @@ TEST(shdwScreenPassesVkTest, GlowMatchDX11)
 
 	gtRenderOptions off;
 	off.m_Prefs = [](g3dPrefs::g3dRenderPrefs& p) { p.m_bEnableGlow = false; };
-	expect_effect_shows("GlowMatchDX11/specular", glow_scene(false), options, glow_scene(false), off, 256 * 256 / 100);
-	expect_effect_shows("GlowMatchDX11/constant", glow_scene(true), options, glow_scene(true), off, 256 * 256 / 100);
+	gtExpectEffectShows("GlowMatchDX11/specular", glow_scene(false), options, glow_scene(false), off, 256 * 256 / 100);
+	gtExpectEffectShows("GlowMatchDX11/constant", glow_scene(true), options, glow_scene(true), off, 256 * 256 / 100);
 }
 
 TEST(shdwScreenPassesVkTest, OutlineMatchDX11)
@@ -347,7 +318,7 @@ TEST(shdwScreenPassesVkTest, OutlineMatchDX11)
 
 	gtRenderOptions off;
 	off.m_Prefs = [](g3dPrefs::g3dRenderPrefs& p) { p.m_bEnableOutline = false; };
-	expect_effect_shows("OutlineMatchDX11", outline_scene, options, outline_scene, off, 256);
+	gtExpectEffectShows("OutlineMatchDX11", outline_scene, options, outline_scene, off, 256);
 }
 
 TEST(shdwScreenPassesVkTest, PostEffectsMatchDX11)
@@ -360,7 +331,7 @@ TEST(shdwScreenPassesVkTest, PostEffectsMatchDX11)
 
 	for (const char* effect : effects)
 	{
-		expect_effect_shows((std::string("PostEffectsMatchDX11/") + effect).c_str(), post_scene(effect), gtRenderOptions(),
+		gtExpectEffectShows((std::string("PostEffectsMatchDX11/") + effect).c_str(), post_scene(effect), gtRenderOptions(),
 							[](gtSceneBuilder& io_Builder, const std::filesystem::path&) { spheres_on_backdrop(io_Builder); },
 							gtRenderOptions(), 256 * 256 / 20);
 	}
@@ -378,7 +349,7 @@ TEST(shdwScreenPassesVkTest, MatteMatchesDX11)
 
 	gtRenderOptions off;
 	off.m_Prefs = [](g3dPrefs::g3dRenderPrefs& p) { p.m_bEnableGlow = true; };
-	expect_effect_shows("MatteMatchesDX11", glow_scene(false), options, glow_scene(false), off, 256 * 256 / 20);
+	gtExpectEffectShows("MatteMatchesDX11", glow_scene(false), options, glow_scene(false), off, 256 * 256 / 20);
 }
 
 TEST(shdwScreenPassesVkTest, EveryPostEffectAtOnceMatchesDX11)
@@ -390,7 +361,7 @@ TEST(shdwScreenPassesVkTest, EveryPostEffectAtOnceMatchesDX11)
 		{ "all_matte", everything_scene, everything_prefs(true, false) },
 	});
 
-	expect_effect_shows("EveryPostEffectAtOnceMatchesDX11", everything_scene, everything_prefs(false, false),
+	gtExpectEffectShows("EveryPostEffectAtOnceMatchesDX11", everything_scene, everything_prefs(false, false),
 						[](gtSceneBuilder& io_Builder, const std::filesystem::path&) { spheres_on_backdrop(io_Builder); },
 						gtRenderOptions(), 256 * 256 / 20);
 }

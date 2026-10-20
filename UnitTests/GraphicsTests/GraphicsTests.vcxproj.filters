@@ -115,6 +115,9 @@
     <ClCompile Include="Vk\shdwHDRRendererVkTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
+    <ClCompile Include="Vk\shdwReflectionVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
     <ClCompile Include="Vk\shdwShadowVkTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>

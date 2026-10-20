@@ -86,6 +86,18 @@
 #ifndef G2D_RGBCOLOR_HPP
 #include "Graphics/G2d/g2dRGBColor.hpp"
 #endif
+#ifndef G3D_PLANARREFLECTIONTARGETRENDERER_HPP
+#include "Graphics/G3d/g3dPlanarReflectionTargetRenderer.hpp"
+#endif
+#ifndef G3D_CUBICREFLECTIONTARGETRENDERER_HPP
+#include "Graphics/G3d/g3dCubicReflectionTargetRenderer.hpp"
+#endif
+#ifndef EFF_REFLDATA_HPP
+#include "Graphics/Eff/effReflData.hpp"
+#endif
+#ifndef SC_OBJECT_HPP
+#include "Graphics/Sc/scObject.hpp"
+#endif
 
 #include <gtest/gtest.h>
 #include <stb_image_write.h>
@@ -413,6 +425,10 @@ gtSceneBuilder::~gtSceneBuilder()
 	for (auto& renderer : m_DepthRenderers)
 		renderer->ReleaseResources();
 	m_DepthRenderers.clear();
+	for (auto& renderer : m_ReflectionRenderers)
+		renderer->ReleaseResources();
+	m_ReflectionRenderers.clear();
+	m_Reflectors.clear();
 	m_pScene.reset();
 	m_pRoot.reset();
 	m_pOverlayRoot.reset();
@@ -511,6 +527,51 @@ g3dProjectedLight* gtSceneBuilder::ProjectedLight(const maPoint3d& i_Position, c
 		m_TargetRenderers.back()->SetBackgroundColor(g2dRGBColor(0xff, 0xff, 0xff));
 	}
 	return light;
+}
+
+namespace
+{
+	//	A scene object whose base is a builder's node (the reflection
+	//	renderers find the reflector's fragments under GetBase()); the node
+	//	stays the builder's
+	class gtNodeObject : public scObject
+	{
+		public:
+			explicit gtNodeObject(g3dSceneNode* i_pNode) : m_pNode(i_pNode) {}
+			virtual const g3dSceneNode* GetBase() const	{ return m_pNode; }
+			virtual g3dSceneNode* GetBase()				{ return m_pNode; }
+
+		private:
+			g3dSceneNode*	m_pNode;
+	};
+}
+
+void gtSceneBuilder::Reflective(g3dSceneNode* i_pNode, bool i_bPlanar, bool i_bPerFrame)
+{
+	matMaterial* material = i_pNode->GetFragment()->GetMaterial();
+	material->SetHasReflection(true);
+	effReflectionMap& data = material->ReflectionData();
+	data.m_bIsPlanar = i_bPlanar;
+	data.m_bAutoGenEnvMap = i_bPerFrame;
+	data.m_ReflectionMap = Keep(i_bPlanar
+		? matTextureMgr::CreateRenderTargetTexture(data.m_ReflMapResolution, data.m_ReflMapResolution, false, NULL, true)
+		: matTextureMgr::CreateCubeRenderTargetTexture(data.m_ReflMapResolution, data.m_ReflMapResolution, NULL));
+
+	m_Reflectors.emplace_back(new gtNodeObject(i_pNode));
+	g2dRenderTarget* target = data.m_ReflectionMap->GetRenderTargetAPI();
+	if (i_bPlanar)
+	{
+		m_ReflectionRenderers.emplace_back(g3dSceneRendererCreate::CreatePlanarReflectionRenderer(m_Reflectors.back().get(), material));
+		m_TargetRenderers.emplace_back(new g3dPlanarReflectionTargetRenderer(target, m_ReflectionRenderers.back().get(),
+																			  m_pScene.get(), &m_Camera));
+	}
+	else
+	{
+		m_ReflectionRenderers.emplace_back(g3dSceneRendererCreate::CreateCubeMapRenderer(m_Reflectors.back().get(), material, i_bPerFrame));
+		m_TargetRenderers.emplace_back(new g3dCubicReflectionTargetRenderer(target, m_ReflectionRenderers.back().get(),
+																			 m_pScene.get(), &m_Camera));
+	}
+	m_TargetRenderers.back()->SetBackgroundColor(g2dRGBColor(0, 0, 0));
 }
 
 void gtSceneBuilder::RenderTargets(float i_fSimTime)

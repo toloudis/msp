@@ -29,6 +29,12 @@
 #ifndef GVK_G3D_DEPTHMAPRENDERERVK_HPP
 #include "GraphicsVulkan/G3d/g3dDepthMapRendererVk.hpp"
 #endif
+#ifndef GVK_G3D_RENDERCAMERASPACE_HPP
+#include "GraphicsVulkan/G3d/g3dRenderCameraSpace.hpp"
+#endif
+#ifndef GVK_G3D_RENDERSCREENSPACE_HPP
+#include "GraphicsVulkan/G3d/g3dRenderScreenSpace.hpp"
+#endif
 #ifndef GVK_G3D_SCENERENDERERVK_HPP
 #include "GraphicsVulkan/G3d/g3dSceneRendererVk.hpp"
 #endif
@@ -92,6 +98,8 @@ namespace gvk
 			g3dStateMgrVk::Init();
 			g3dVkUtil::InitStates();
 			g3dDepthMapRendererVk::InitStates();
+			g3dRenderCameraSpaceObjects::InitStates();
+			g3dRenderScreenSpaceObjects::InitStates();
 			g3dSceneRendererVk::InitStates();
 			g3dTransparencySortVk::InitStates();
 			g3dRenderPass::InitStates();
@@ -113,6 +121,8 @@ namespace gvk
 			g3dRenderPass::CleanupStates();
 			g3dTransparencySortVk::CleanupStates();
 			g3dSceneRendererVk::CleanupStates();
+			g3dRenderScreenSpaceObjects::CleanupStates();
+			g3dRenderCameraSpaceObjects::CleanupStates();
 			g3dDepthMapRendererVk::CleanupStates();
 			g3dVkUtil::CleanupStates();
 			g3dStateMgrVk::CleanUp();

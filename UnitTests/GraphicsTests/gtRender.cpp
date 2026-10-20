@@ -34,6 +34,8 @@
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
+#include <cstdlib>
 #include <iostream>
 #include <memory>
 
@@ -111,6 +113,8 @@ gtPicture gtRenderScene(const gtSceneFunction& i_Build, const std::filesystem::p
 		renderer->Render(target.Target(), builder.Camera(), builder.Scene(), builder.ViewerLayers(), i_Options.m_SimTime);
 	}
 	gtPicture picture = target.Read();
+	if (i_Options.m_AfterRender)
+		i_Options.m_AfterRender(builder);
 	renderer->ReleaseResources();
 	renderer.reset();
 	return picture;
@@ -172,4 +176,28 @@ void gtExpectSameImages(const char* i_pTest, const std::vector<gtCase>& i_Cases)
 			? std::string(i_pTest) : std::string(i_pTest) + "/" + i_Cases[i].m_Name;
 		compare(name, dx11[i], vulkan[i], i_Cases[i].m_Options);
 	}
+}
+
+void gtExpectEffectShows(const char* i_pName, const gtSceneFunction& i_With, const gtRenderOptions& i_WithOptions,
+						 const gtSceneFunction& i_Without, const gtRenderOptions& i_WithoutOptions, int i_MinPixels)
+{
+	gtTempDir dir;
+	gtPicture with, without;
+	gtBackend::Run(gtBackend::e_DX11, [&]()
+	{
+		with = gtRenderScene(i_With, dir.GetPath(), i_WithOptions);
+		without = gtRenderScene(i_Without, dir.GetPath(), i_WithoutOptions);
+	});
+	ASSERT_TRUE(with.Valid() && without.Valid());
+	int differing = 0;
+	for (size_t i = 0; i < with.m_Rgba.size(); i += 4)
+	{
+		int diff = 0;
+		for (int c = 0; c < 4; c++)
+			diff = std::max(diff, std::abs((int)with.m_Rgba[i + c] - (int)without.m_Rgba[i + c]));
+		differing += diff > 8;
+	}
+	std::cout << "  " << i_pName << ": " << differing << " pixels changed on DX11" << std::endl;
+	EXPECT_GE(differing, i_MinPixels) << i_pName << ": images (with as dx11, without as vulkan) in "
+		<< gtSaveComparison(std::string(i_pName) + "/shows", with.m_Rgba.data(), without.m_Rgba.data(), with.m_Width, with.m_Height);
 }

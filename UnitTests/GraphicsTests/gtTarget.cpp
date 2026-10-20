@@ -49,6 +49,7 @@
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <cstring>
 
 using Microsoft::WRL::ComPtr;
@@ -88,7 +89,8 @@ gtPicture gtTarget::Read() const
 	return picture;
 }
 
-std::vector<uint8_t> gtReadTexture(gtBackend::Kind i_Kind, const matTexture* i_pTexture, int i_BytesPerTexel)
+std::vector<uint8_t> gtReadTexture(gtBackend::Kind i_Kind, const matTexture* i_pTexture, int i_BytesPerTexel,
+								   int i_Mip, int i_Layer)
 {
 	std::vector<uint8_t> texels;
 	if (i_Kind == gtBackend::e_Vulkan)
@@ -98,7 +100,7 @@ std::vector<uint8_t> gtReadTexture(gtBackend::Kind i_Kind, const matTexture* i_p
 		if (!image)
 			return texels;
 		gvk::vkdGlobal::Context().Flush();
-		return image->ReadBack(0, 0);
+		return image->ReadBack((uint32_t)i_Mip, (uint32_t)i_Layer);
 	}
 
 	const matTextureDX11* texture = dynamic_cast<const matTextureDX11*>(i_pTexture);
@@ -109,6 +111,9 @@ std::vector<uint8_t> gtReadTexture(gtBackend::Kind i_Kind, const matTexture* i_p
 	ID3D11DeviceContext* context = g2dDX11Global::g_pDeviceContext;
 	D3D11_TEXTURE2D_DESC desc;
 	static_cast<ID3D11Texture2D*>(texture->GetResource())->GetDesc(&desc);
+	const UINT subresource = D3D11CalcSubresource((UINT)i_Mip, (UINT)i_Layer, desc.MipLevels);
+	desc.Width = (std::max)(1u, desc.Width >> i_Mip);
+	desc.Height = (std::max)(1u, desc.Height >> i_Mip);
 	D3D11_TEXTURE2D_DESC staging_desc = desc;
 	staging_desc.MipLevels = staging_desc.ArraySize = 1;
 	staging_desc.SampleDesc.Count = 1;
@@ -123,7 +128,7 @@ std::vector<uint8_t> gtReadTexture(gtBackend::Kind i_Kind, const matTexture* i_p
 		ADD_FAILURE() << "no staging texture";
 		return texels;
 	}
-	context->CopySubresourceRegion(staging.Get(), 0, 0, 0, 0, texture->GetResource(), 0, NULL);
+	context->CopySubresourceRegion(staging.Get(), 0, 0, 0, 0, texture->GetResource(), subresource, NULL);
 	D3D11_MAPPED_SUBRESOURCE mapped;
 	if (SUCCEEDED(context->Map(staging.Get(), 0, D3D11_MAP_READ, 0, &mapped)))
 	{

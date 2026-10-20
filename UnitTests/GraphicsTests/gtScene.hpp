@@ -47,6 +47,7 @@ class g3dSceneRenderer;
 class g3dTargetRenderer;
 class matMaterial;
 class matTexture;
+class scObject;
 struct g3dAmbientEnvState;
 struct g3dRenderState;
 
@@ -171,8 +172,22 @@ class gtSceneBuilder
 		g3dProjectedLight*	ProjectedLight(const maPoint3d& i_Position, const maPoint3d& i_Target,
 									   const maFloatRGBA& i_Color, int i_ShadowMapSize);
 
-		//	Renders the builder's target renderers (the shadow maps) for this
-		//	frame, as api3dTargetRendererMgr does before the view is drawn
+		//	Makes i_pNode's material reflective, as mtrlScriptObject does:
+		//	the material gets a reflection map (a mipped render target for a
+		//	planar reflection, a cube render target otherwise; the material's
+		//	resolution, 128 by default), and a reflection renderer
+		//	(g3dSceneRendererCreate::CreatePlanarReflectionRenderer /
+		//	CreateCubeMapRenderer, i_bPerFrame: the cube map is rendered
+		//	every frame, else once) with its g3dPlanarReflectionTargetRenderer /
+		//	g3dCubicReflectionTargetRenderer from the builder's camera, on a
+		//	black background; RenderTargets renders it. Use a material shader
+		//	with reflection maps ("BlinnReflection.fx") and give each
+		//	reflector its own material.
+		void			Reflective(g3dSceneNode* i_pNode, bool i_bPlanar, bool i_bPerFrame);
+
+		//	Renders the builder's target renderers (shadow maps and
+		//	reflections, in the order they were made) for this frame, as
+		//	api3dTargetRendererMgr does before the view is drawn
 		void			RenderTargets(float i_fSimTime = 1.25f);
 
 		//	The usual two lights: a warm point light and a cool directional one
@@ -225,6 +240,8 @@ class gtSceneBuilder
 		std::vector<g3dLight*>			m_Lights;
 		std::vector<std::unique_ptr<camCamera>>			m_ShadowCameras;
 		std::vector<std::unique_ptr<g3dSceneRenderer>>	m_DepthRenderers;
+		std::vector<std::unique_ptr<scObject>>			m_Reflectors;		// the reflection renderers' objects
+		std::vector<std::unique_ptr<g3dSceneRenderer>>	m_ReflectionRenderers;
 		std::vector<std::unique_ptr<g3dTargetRenderer>>	m_TargetRenderers;
 		bool							m_bLightsCastShadows = false;
 };

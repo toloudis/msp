@@ -65,6 +65,15 @@
 #ifndef GVK_SHDW_HDRRENDERERVK_HPP
 #include "GraphicsVulkan/shdw/shdwHDRRendererVk.hpp"
 #endif
+#ifndef GVK_SHDW_SHADOWLAYERRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwShadowLayerRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_PLANARREFLECTIONRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwPlanarReflectionRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_CUBEMAPRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwCubeMapRendererVk.hpp"
+#endif
 
 #include <gtest/gtest.h>
 
@@ -345,12 +354,9 @@ TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
 	};
 	const std::vector<Case> cases =
 	{
-		{ "simple", []() { return g3dSceneRendererCreate::CreateSimpleRenderer(); } },
 		{ "texture", []() { return g3dSceneRendererCreate::CreateTextureRenderer(); } },
 		{ "RSM", []() { return g3dSceneRendererCreate::CreateRSMRenderer(); } },
 		{ "opacity map", []() { return g3dSceneRendererCreate::CreateOpacityMapRenderer(NULL); } },
-		{ "cube map", []() { return g3dSceneRendererCreate::CreateCubeMapRenderer(NULL, NULL, false); } },
-		{ "planar reflection", []() { return g3dSceneRendererCreate::CreatePlanarReflectionRenderer(NULL, NULL); } },
 		{ "ambient occlusion", []() { return g3dSceneRendererCreate::CreateAmbientOcclusionRenderer(); } },
 		{ "global illumination", []() { return g3dSceneRendererCreate::CreateGlobalIlluminationRenderer(); } },
 		{ "depth", []() { return g3dSceneRendererCreate::CreateDepthRenderer(); } },
@@ -390,6 +396,10 @@ TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
 						EXPECT_TRUE(dynamic_cast<gvk::shdwHDRRendererVk*>(renderer.get()) != NULL);
 					else if (type == g3dSceneRendererTypes::e_DepthMap)		// since Task 3
 						EXPECT_TRUE(dynamic_cast<gvk::g3dDepthMapRendererVk*>(renderer.get()) != NULL);
+					else if (type == g3dSceneRendererTypes::e_CubeMap)		// since Task 6
+						EXPECT_TRUE(dynamic_cast<gvk::shdwCubeMapRendererVk*>(renderer.get()) != NULL);
+					else if (type == g3dSceneRendererTypes::e_PlanarReflection)
+						EXPECT_TRUE(dynamic_cast<gvk::shdwPlanarReflectionRendererVk*>(renderer.get()) != NULL);
 					else
 						EXPECT_TRUE(dynamic_cast<gvk::g3dSceneRendererVk*>(renderer.get()) != NULL);
 				}
@@ -401,6 +411,10 @@ TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
 				{
 					std::unique_ptr<g3dSceneRenderer> renderer(g3dSceneRendererCreate::CreateDepthMapRenderer());
 					EXPECT_TRUE(dynamic_cast<gvk::g3dDepthMapRendererVk*>(renderer.get()) != NULL);
+				}
+				{
+					std::unique_ptr<g3dSceneRenderer> renderer(g3dSceneRendererCreate::CreateSimpleRenderer());
+					EXPECT_TRUE(dynamic_cast<gvk::shdwShadowLayerRendererVk*>(renderer.get()) != NULL);
 				}
 			}
 			log = capture.Text();

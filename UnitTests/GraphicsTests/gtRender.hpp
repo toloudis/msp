@@ -61,6 +61,10 @@ struct gtRenderOptions
 	//	Runs before each frame (shadow maps and reflections)
 	std::function<void(gtSceneBuilder&)>		m_BeforeFrame;
 
+	//	Runs after the last frame, on the backend that is up, while the
+	//	scene is still there (to read its render targets back)
+	std::function<void(gtSceneBuilder&)>		m_AfterRender;
+
 	//	The comparison checks that DX11 drew on a good part of the image
 	//	(off for images that are mostly black by design: debug buffers)
 	bool	m_bCheckCoverage = true;
@@ -120,3 +124,11 @@ struct gtCase
 //	gtExpectSameImage for several cases, all rendered under one
 //	gtBackend::Run per backend; each is reported as <test>/<case>
 void gtExpectSameImages(const char* i_pTest, const std::vector<gtCase>& i_Cases);
+
+//	The feature shows: on DX11, the scene with it (i_With) differs from the
+//	scene without it (i_Without) by more than 8/255 in at least
+//	i_MinPixels pixels; saves both if not (with as dx11, without as
+//	vulkan). Guards against a parity test that passes because DX11 draws
+//	nothing for the feature in the test scene.
+void gtExpectEffectShows(const char* i_pName, const gtSceneFunction& i_With, const gtRenderOptions& i_WithOptions,
+						 const gtSceneFunction& i_Without, const gtRenderOptions& i_WithoutOptions, int i_MinPixels);

@@ -17,6 +17,15 @@
 #ifndef GVK_SHDW_HDRRENDERERVK_HPP
 #include "GraphicsVulkan/shdw/shdwHDRRendererVk.hpp"
 #endif
+#ifndef GVK_SHDW_SHADOWLAYERRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwShadowLayerRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_PLANARREFLECTIONRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwPlanarReflectionRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_CUBEMAPRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwCubeMapRendererVk.hpp"
+#endif
 
 namespace gvk
 {
@@ -33,8 +42,7 @@ shdwSceneRendererCreate::~shdwSceneRendererCreate()
 
 g3dSceneRenderer* shdwSceneRendererCreate::CreateDefaultRenderer()		{ return new shdwHDRRendererVk(); }
 g3dSceneRenderer* shdwSceneRendererCreate::CreateHDRRenderer()			{ return new shdwHDRRendererVk(); }
-//	shdwShadowLayerRendererDX11 (Plan 5a, Task 6)
-g3dSceneRenderer* shdwSceneRendererCreate::CreateSimpleRenderer()		{ return m_Fallback.CreateSimpleRenderer(); }
+g3dSceneRenderer* shdwSceneRendererCreate::CreateSimpleRenderer()		{ return new shdwShadowLayerRendererVk(); }
 //	g3dTextureRendererDX11 (Plan 6)
 g3dSceneRenderer* shdwSceneRendererCreate::CreateTextureRenderer()		{ return m_Fallback.CreateTextureRenderer(); }
 g3dSceneRenderer* shdwSceneRendererCreate::CreateDepthMapRenderer()		{ return new g3dDepthMapRendererVk(); }
@@ -42,15 +50,13 @@ g3dSceneRenderer* shdwSceneRendererCreate::CreateDepthMapRenderer()		{ return ne
 g3dSceneRenderer* shdwSceneRendererCreate::CreateRSMRenderer()			{ return m_Fallback.CreateRSMRenderer(); }
 //	shdwOpacityMapRendererDX11 (Plan 6)
 g3dSceneRenderer* shdwSceneRendererCreate::CreateOpacityMapRenderer(g3dProjectedLight* pProjLight)	{ return m_Fallback.CreateOpacityMapRenderer(pProjLight); }
-//	shdwCubeMapRendererDX11 (Plan 5a, Task 6)
 g3dSceneRenderer* shdwSceneRendererCreate::CreateCubeMapRenderer(scObject* i_Obj, matMaterial* i_Material, bool i_RenderPerFrame)
 {
-	return m_Fallback.CreateCubeMapRenderer(i_Obj, i_Material, i_RenderPerFrame);
+	return new shdwCubeMapRendererVk(i_Obj, i_Material, i_RenderPerFrame);
 }
-//	shdwPlanarReflectionRendererDX11 (Plan 5a, Task 6)
 g3dSceneRenderer* shdwSceneRendererCreate::CreatePlanarReflectionRenderer(scObject* i_Obj, matMaterial* i_Material)
 {
-	return m_Fallback.CreatePlanarReflectionRenderer(i_Obj, i_Material);
+	return new shdwPlanarReflectionRendererVk(i_Obj, i_Material);
 }
 //	shdwAOPreviewRendererDX11 (Plan 6)
 g3dSceneRenderer* shdwSceneRendererCreate::CreateAmbientOcclusionRenderer()	{ return m_Fallback.CreateAmbientOcclusionRenderer(); }
