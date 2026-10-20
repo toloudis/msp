@@ -98,6 +98,18 @@
 #ifndef GVK_SHDW_PASSSTUBSVK_HPP
 #include "GraphicsVulkan/stub/shdwPassStubsVk.hpp"
 #endif
+#ifndef GVK_SHDW_PASSSSAO_HPP
+#include "GraphicsVulkan/shdw/shdwPassSSAO.hpp"
+#endif
+#ifndef GVK_SHDW_PASSGLOW_HPP
+#include "GraphicsVulkan/shdw/shdwPassGlow.hpp"
+#endif
+#ifndef GVK_SHDW_PASSOUTLINE_HPP
+#include "GraphicsVulkan/shdw/shdwPassOutline.hpp"
+#endif
+#ifndef GVK_SHDW_PASSPOSTSHADER_HPP
+#include "GraphicsVulkan/shdw/shdwPassPostShader.hpp"
+#endif
 #ifndef GVK_SHDW_PASSDEPTH_HPP
 #include "GraphicsVulkan/shdw/shdwPassDepth.hpp"
 #endif

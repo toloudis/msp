@@ -109,6 +109,13 @@ namespace gtScene
 	//	generated). Release with matTextureMgr::ReleaseTexture.
 	matTexture* CheckerTexture(const std::filesystem::path& i_Dir, int i_Width, int i_Height, int i_Cells);
 
+	//	An i_Width x 1 RGBA32F ramp without mips, as MachStudio's ramps are
+	//	(rmpTextureMgr), smooth from left to right (dark blue, red-orange,
+	//	pale yellow): a gradient map for lookups by a computed coordinate,
+	//	where a checker's hard edges would turn last-bit differences into
+	//	large ones. Release with matTextureMgr::ReleaseTexture.
+	matTexture* RampTexture(int i_Width);
+
 	//	A lat-long i_Width x i_Height environment: a sky graded from blue at
 	//	the top to a dark ground at the bottom, and a sun spot of value
 	//	i_Peak above the horizon, in the builder camera's view (an RGBE .hdr

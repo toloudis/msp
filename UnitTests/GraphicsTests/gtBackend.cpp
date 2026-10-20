@@ -79,6 +79,12 @@ namespace
 		GraphicsLayer::InitGraphics(GraphicsDX11Layer::GetSystem2D(), GraphicsDX11Layer::GetSystem3D());
 		GraphicsDX11Layer::InitGraphics();
 
+		//	MachStudio's primary window sets this when it makes its D24S8
+		//	depth buffer (g2dWindowPrimaryDX11); the tests make none, and
+		//	without it SSAO skips its stencil mask and blends no AO. Every
+		//	DX11 depth buffer is D24S8, as every Vulkan one is (HasStencil).
+		g2dDX11Global::g_bHasStencil = true;
+
 		i_Function();
 
 		//	g2dDX11Global keeps the current targets across devices (MachStudio

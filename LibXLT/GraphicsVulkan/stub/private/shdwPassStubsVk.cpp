@@ -14,43 +14,6 @@
 
 namespace gvk
 {
-	shdwPassSSAO::shdwPassSSAO(matRenderTargetTexture*, matRenderTargetTexture*, matRenderTargetTexture*,
-		g2dRenderTarget*, matRenderTargetTexture*, matRenderTargetTexture*, const ssaoParams&)
-	{
-	}
-	int shdwPassSSAO::Render(float)
-	{
-		GVK_NOT_YET("shdwPassSSAO");
-		return 0;
-	}
-
-	shdwPassGlow::shdwPassGlow(g3dLayer*, const camCamera*, matRenderTargetTexture*, matRenderTargetTexture*)
-	{
-	}
-	int shdwPassGlow::Render(float)
-	{
-		GVK_NOT_YET("shdwPassGlow");
-		return 0;
-	}
-
-	shdwPassOutline::shdwPassOutline(matRenderTargetTexture*, matRenderTargetTexture*, g2dRenderTarget*, shdwPassTraversal*)
-	{
-	}
-	int shdwPassOutline::Render(float)
-	{
-		GVK_NOT_YET("shdwPassOutline");
-		return 0;
-	}
-
-	shdwPassPostShader::shdwPassPostShader(matRenderTargetTexture*, matRenderTargetTexture*)
-	{
-	}
-	int shdwPassPostShader::Render(float)
-	{
-		GVK_NOT_YET("shdwPassPostShader");
-		return 0;
-	}
-
 	shdwPassFog::shdwPassFog(g2dRenderTarget*, matRenderTargetTexture*, matRenderTargetTexture*, const g3dScene*, const camCamera*)
 	{
 	}

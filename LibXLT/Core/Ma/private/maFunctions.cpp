@@ -11,6 +11,7 @@
 #include "Core/ma/maConstants.hpp"
 #include "Core/ma/maRotation.hpp"
 
+#include <new>
 #include <stdlib.h>
 #include <time.h>
 
@@ -98,6 +99,16 @@ namespace maFunctions
 		uint32_t num = ( l_randgen.Rand() / 2 );  // just the positive entries
 		num = num % (i_Hi-i_Lo+1);
 		return i_Lo + num;
+	}
+
+	//------------------------------------------------------------------------
+	//	ResetRand restarts l_randgen's sequence (maRand32 owns its tables and
+	//	can't be assigned: it is made again in place)
+	//------------------------------------------------------------------------
+	void ResetRand()
+	{
+		l_randgen.~maRand32();
+		new (&l_randgen) maRand32( l_ThisIsRandomEnough );
 	}
 
 	//------------------------------------------------------------------------

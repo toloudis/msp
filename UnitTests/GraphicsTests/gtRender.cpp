@@ -10,6 +10,12 @@
 #include "gtScene.hpp"
 #include "gtTempDir.hpp"
 
+#ifndef MA_FUNCTIONS_HPP
+#include "Core/Ma/maFunctions.hpp"
+#endif
+#ifndef G3D_POSTPROCESSING_HPP
+#include "Graphics/G3d/g3dPostProcessing.hpp"
+#endif
 #ifndef G3D_LIGHTMGR_HPP
 #include "Graphics/G3d/g3dLightMgr.hpp"
 #endif
@@ -47,7 +53,9 @@ gtPrefsScope::gtPrefsScope()
 	m_bBaking(g3dSingleLightRendering::GetDoBaking()),
 	m_bIsolateReflections(g3dSingleLightRendering::GetDoIsolateReflections()),
 	m_pActiveLight(g3dSingleLightRendering::GetActiveLight()),
-	m_bFirstLight(g3dSingleLightRendering::IsFirstLight())
+	m_bFirstLight(g3dSingleLightRendering::IsFirstLight()),
+	m_bPostActive(g3dPostProcessing::GetActive()),
+	m_PostEffect(g3dPostProcessing::GetPostEffect())
 {
 }
 
@@ -66,6 +74,8 @@ gtPrefsScope::~gtPrefsScope()
 	g3dSingleLightRendering::SetDoIsolateReflections(m_bIsolateReflections);
 	g3dSingleLightRendering::SetActiveLight(m_pActiveLight);
 	g3dSingleLightRendering::SetFirstLight(m_bFirstLight);
+	g3dPostProcessing::SetActive(m_bPostActive);
+	g3dPostProcessing::SetPostEffect(m_PostEffect);
 }
 
 //============================================================================
@@ -74,6 +84,8 @@ gtPrefsScope::~gtPrefsScope()
 gtPicture gtRenderScene(const gtSceneFunction& i_Build, const std::filesystem::path& i_Dir, const gtRenderOptions& i_Options)
 {
 	gtPrefsScope prefs;
+	//	the same random numbers on both backends (SSAO's random texture)
+	maFunctions::ResetRand();
 	g3dSingleLightRendering::SetDoSingleLightRendering(i_Options.m_bSingleLight);
 	if (i_Options.m_Prefs)
 		i_Options.m_Prefs(g3dPrefs::CurrentPrefs());

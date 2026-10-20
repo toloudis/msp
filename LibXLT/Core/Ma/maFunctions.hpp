@@ -93,6 +93,14 @@ namespace maFunctions
 	int IntRand(int i_Lo, int i_Hi);
 
 	//------------------------------------------------------------------------
+	//	ResetRand restarts the sequence FloatRand and IntRand (without a
+	//	generator) draw from, as it was when the program started. The
+	//	backend parity tests call it before each render, so that both
+	//	backends make the same random textures (SSAO's sample rotations).
+	//------------------------------------------------------------------------
+	void ResetRand();
+
+	//------------------------------------------------------------------------
 	//	float-specific absolute value
 	//------------------------------------------------------------------------
 	float FAbs(float i_Val);

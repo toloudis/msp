@@ -6,8 +6,6 @@
 **	constructors and Render calls, draws nothing and logs
 **	GVK_NOT_YET: <class> once. Each moves to shdw/ when it is ported:
 **
-**	  shdwPassSSAO, shdwPassGlow, shdwPassOutline,
-**	  shdwPassPostShader						Plan 5a, Task 5
 **	  shdwPassFog, shdwPassDOF, shdwPassAOVolumes,
 **	  shdwPassSSGI, shdwPassLPVGI				Plan 5b
 **
@@ -33,45 +31,6 @@ namespace gvk
 {
 	class matRenderTargetTexture;
 	class shdwPassTraversal;
-
-	class shdwPassSSAO : public g3dRenderPass
-	{
-	public:
-		shdwPassSSAO(matRenderTargetTexture* i_NearDepthBuffer, matRenderTargetTexture* i_DepthBuffer, matRenderTargetTexture* i_DepthBuffer2,
-			g2dRenderTarget* i_FullSceneColors, matRenderTargetTexture* i_pAOSurface, matRenderTargetTexture* i_pTmpSurface, const ssaoParams& i_SSAOParams);
-
-		virtual int Render(float i_time);
-		void SetSceneInfo(shdwPassTraversal*) {}
-		void SetCamera(const camCamera*) {}
-	};
-
-	class shdwPassGlow : public g3dRenderPass
-	{
-	public:
-		shdwPassGlow(g3dLayer* i_pLayer,
-			const camCamera* i_pCamera,
-			matRenderTargetTexture* i_SceneTarget,
-			matRenderTargetTexture* i_glowTarget );
-
-		virtual int Render(float i_time);
-		void SetSceneInfo(shdwPassTraversal*) {}
-	};
-
-	class shdwPassOutline : public g3dRenderPass
-	{
-	public:
-		shdwPassOutline( matRenderTargetTexture* i_outlineTarget, matRenderTargetTexture* i_AATarget, g2dRenderTarget* i_destination, shdwPassTraversal* i_SceneInfo );
-
-		virtual int Render(float i_time);
-	};
-
-	class shdwPassPostShader : public g3dRenderPass
-	{
-	public:
-		shdwPassPostShader(matRenderTargetTexture* i_ScratchTex, matRenderTargetTexture* i_destination);
-
-		virtual int Render(float i_time);
-	};
 
 	class shdwPassFog : public g3dRenderPass
 	{

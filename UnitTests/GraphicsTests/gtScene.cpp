@@ -47,6 +47,9 @@
 #ifndef MAT_TEXTUREMGR_HPP
 #include "Graphics/Mat/matTextureMgr.hpp"
 #endif
+#ifndef G2D_PFD_HPP
+#include "Graphics/G2d/g2dPFD.hpp"
+#endif
 #ifndef EFF_SHADERPARAMS_HPP
 #include "Graphics/Eff/effShaderParams.hpp"
 #endif
@@ -248,6 +251,25 @@ void gtScene::SetPhong(effShaderData* io_pData, Values i_Values)
 	phong->m_Transparency = i_Values == e_Zero ? 0.0f : (i_Values == e_Huge ? 1.0f : 0.7f);
 }
 
+namespace
+{
+	//	i_Rgba (RGBA8) written to i_Path as a PNG and loaded through
+	//	matTextureMgr, mips generated
+	matTexture* load_png(const std::filesystem::path& i_Path, int i_Width, int i_Height, const std::vector<uint8_t>& i_Rgba)
+	{
+		if (!stbi_write_png(i_Path.u8string().c_str(), i_Width, i_Height, 4, i_Rgba.data(), i_Width * 4))
+		{
+			ADD_FAILURE() << "can't write " << i_Path.u8string();
+			return NULL;
+		}
+		fsLocator locator;
+		fsFileUtil::UnicodeStringToLocator(itString(i_Path.wstring().c_str()), locator);
+		matTexture* texture = matTextureMgr::LoadTexture(locator, TEXTURE_TYPE_2D, true);
+		EXPECT_TRUE(texture != NULL) << i_Path.u8string();
+		return texture;
+	}
+}
+
 matTexture* gtScene::CheckerTexture(const std::filesystem::path& i_Dir, int i_Width, int i_Height, int i_Cells)
 {
 	std::vector<uint8_t> rgba((size_t)i_Width * i_Height * 4);
@@ -265,16 +287,26 @@ matTexture* gtScene::CheckerTexture(const std::filesystem::path& i_Dir, int i_Wi
 			p[3] = 255;
 		}
 	}
-	const std::filesystem::path path = i_Dir / ("checker_" + std::to_string(i_Width) + "x" + std::to_string(i_Height) + "_" + std::to_string(i_Cells) + ".png");
-	if (!stbi_write_png(path.u8string().c_str(), i_Width, i_Height, 4, rgba.data(), i_Width * 4))
+	return load_png(i_Dir / ("checker_" + std::to_string(i_Width) + "x" + std::to_string(i_Height) + "_" + std::to_string(i_Cells) + ".png"),
+					i_Width, i_Height, rgba);
+}
+
+matTexture* gtScene::RampTexture(int i_Width)
+{
+	std::vector<float> rgba((size_t)i_Width * 4);
+	for (int x = 0; x < i_Width; x++)
 	{
-		ADD_FAILURE() << "can't write " << path.u8string();
-		return NULL;
+		//	dark blue, through red-orange, to pale yellow
+		const float u = (x + 0.5f) / i_Width;
+		float* p = &rgba[(size_t)x * 4];
+		p[0] = (20 + 225 * std::min(1.0f, 1.6f * u)) / 255.0f;
+		p[1] = (30 + 200 * u * u) / 255.0f;
+		p[2] = (120 - 80 * u + 100 * u * u * u) / 255.0f;
+		p[3] = 1.0f;
 	}
-	fsLocator locator;
-	fsFileUtil::UnicodeStringToLocator(itString(path.wstring().c_str()), locator);
-	matTexture* texture = matTextureMgr::LoadTexture(locator, TEXTURE_TYPE_2D, true);
-	EXPECT_TRUE(texture != NULL) << path.u8string();
+	g2dPFD pfd(g2dPFD::e_RGBA32f, 32 * 4);
+	matTexture* texture = matTextureMgr::CreateTexture(i_Width, 1, &pfd, false, rgba.data());
+	EXPECT_TRUE(texture != NULL);
 	return texture;
 }
 

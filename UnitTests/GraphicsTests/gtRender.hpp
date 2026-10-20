@@ -15,6 +15,9 @@
 
 #include "gtTarget.hpp"
 
+#ifndef ENV_BOOST_HPP
+#include "Core/Env/envBoost.hpp"
+#endif
 #ifndef G3D_PREFS_HPP
 #include "Graphics/G3d/g3dPrefs.hpp"
 #endif
@@ -27,6 +30,7 @@
 #include <string>
 #include <vector>
 
+class effShaderParams;
 class g3dLight;
 class g3dSceneRenderer;
 class gtSceneBuilder;
@@ -67,8 +71,8 @@ struct gtRenderOptions
 	float	m_MaxPctOver = 0.1f;
 };
 
-//	Saves g3dPrefs::CurrentPrefs() and g3dSingleLightRendering's flags, and
-//	restores them when it goes
+//	Saves g3dPrefs::CurrentPrefs(), g3dSingleLightRendering's flags and
+//	g3dPostProcessing's effect, and restores them when it goes
 class gtPrefsScope
 {
 	public:
@@ -92,6 +96,8 @@ class gtPrefsScope
 		bool						m_bIsolateReflections;
 		const g3dLight*				m_pActiveLight;
 		bool						m_bFirstLight;
+		bool						m_bPostActive;
+		shared_ptr<effShaderParams>	m_PostEffect;
 };
 
 //	i_Build's scene rendered on the backend that is up, into an
