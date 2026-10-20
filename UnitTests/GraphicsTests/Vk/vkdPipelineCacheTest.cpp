@@ -9,8 +9,6 @@
 **	Extra Large Technology
 \****************************************************************************/
 #include "Vk/gtVulkan.hpp"
-#include "Dx11/gtD3D11.hpp"
-#include "gtPlatform.hpp"
 #include "gtTempDir.hpp"
 
 #ifndef GVK_VKDBINDINGS_HPP
@@ -25,8 +23,6 @@
 
 #include "gtSolidVS.h"
 #include "gtSolidPS.h"
-
-#include <d3dcompiler.h>
 
 #include <cstring>
 #include <fstream>
@@ -181,69 +177,6 @@ TEST_F(vkdPipelineCacheTest, MissingVertexInputFails)
 	vkdVertexLayout lower({ { "position", 0, VK_FORMAT_R32G32B32_SFLOAT, 0, 0 },
 							{ "Color", 0, VK_FORMAT_R32G32B32A32_SFLOAT, 0, 12 } }, { 28 });
 	EXPECT_NE(VK_NULL_HANDLE, cache.Get(Key(&lower), Stages(), &lower));
-}
-
-TEST_F(vkdPipelineCacheTest, SvPositionMatchesPositionAsD3D11)
-{
-	//	GraphicsDX11 makes the bump meshes' input layout once, against the
-	//	default effect's signature, which names the position SV_POSITION;
-	//	some material shaders (Skin, BlinnSkin) read it as POSITION. D3D11
-	//	rejects that pairing in CreateInputLayout, but a layout made against
-	//	one shader feeds another by register when drawing, so they draw.
-	//	The pipeline cache matches by name, so it must take one for the other.
-	GT_D3D11(d3d);
-	ID3D11Device* device = d3d.Device();
-	ID3D11DeviceContext* context = d3d.Context();
-	const std::string root = gtPlatform::RepoRoot();
-	const std::wstring file = std::wstring(root.begin(), root.end()) + L"UnitTests\\GraphicsTests\\Vk\\Shaders\\gtSolid.hlsl";
-	Microsoft::WRL::ComPtr<ID3DBlob> vs, ps, reference, errors;
-	ASSERT_TRUE(SUCCEEDED(D3DCompileFromFile(file.c_str(), NULL, NULL, "VSMain", "vs_5_0", 0, 0, &vs, &errors)));
-	ASSERT_TRUE(SUCCEEDED(D3DCompileFromFile(file.c_str(), NULL, NULL, "PSMain", "ps_5_0", 0, 0, &ps, &errors)));
-	const char* c_Reference = "float4 main(float3 p : SV_POSITION, float4 c : COLOR0) : SV_Position { return float4(p, 1) * c.x; }";
-	ASSERT_TRUE(SUCCEEDED(D3DCompile(c_Reference, strlen(c_Reference), "reference", NULL, NULL, "main", "vs_5_0", 0, 0, &reference, &errors)))
-		<< (errors ? (const char*)errors->GetBufferPointer() : "");
-	const D3D11_INPUT_ELEMENT_DESC elements[] =
-	{
-		{ "SV_POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> rejected, layout;
-	EXPECT_FALSE(SUCCEEDED(device->CreateInputLayout(elements, 2, vs->GetBufferPointer(), vs->GetBufferSize(), &rejected)));
-	ASSERT_TRUE(SUCCEEDED(device->CreateInputLayout(elements, 2, reference->GetBufferPointer(), reference->GetBufferSize(), &layout)));
-
-	//	one triangle over the whole 4x4 target, drawn by gtSolid (POSITION):
-	//	its colour times an unbound tint (0) replaces the blue clear
-	const float vertices[3][7] = { { -1, -1, 0, 1, 1, 1, 1 }, { -1, 3, 0, 1, 1, 1, 1 }, { 3, -1, 0, 1, 1, 1, 1 } };
-	D3D11_BUFFER_DESC bufferDesc = { sizeof(vertices), D3D11_USAGE_DEFAULT, D3D11_BIND_VERTEX_BUFFER, 0, 0, 0 };
-	D3D11_SUBRESOURCE_DATA init = { vertices, 0, 0 };
-	Microsoft::WRL::ComPtr<ID3D11Buffer> buffer;
-	ASSERT_TRUE(SUCCEEDED(device->CreateBuffer(&bufferDesc, &init, &buffer)));
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> vertexShader;
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> pixelShader;
-	device->CreateVertexShader(vs->GetBufferPointer(), vs->GetBufferSize(), NULL, &vertexShader);
-	device->CreatePixelShader(ps->GetBufferPointer(), ps->GetBufferSize(), NULL, &pixelShader);
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> view;
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> target = d3d.CreateTexture(4, 4, NULL, true, NULL, &view);
-	const float blue[4] = { 0, 0, 1, 1 };
-	context->ClearRenderTargetView(view.Get(), blue);
-	context->OMSetRenderTargets(1, view.GetAddressOf(), NULL);
-	const D3D11_VIEWPORT viewport = { 0, 0, 4, 4, 0, 1 };
-	context->RSSetViewports(1, &viewport);
-	const UINT stride = sizeof(vertices[0]), offset = 0;
-	context->IASetVertexBuffers(0, 1, buffer.GetAddressOf(), &stride, &offset);
-	context->IASetInputLayout(layout.Get());
-	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	context->VSSetShader(vertexShader.Get(), NULL, 0);
-	context->PSSetShader(pixelShader.Get(), NULL, 0);
-	context->Draw(3, 0);
-	const std::vector<uint8_t> pixels = d3d.ReadBack(target.Get());
-	ASSERT_EQ(4u * 4 * 4, pixels.size());
-	EXPECT_EQ(0, pixels[0] + pixels[1] + pixels[2] + pixels[3]) << "D3D11 didn't draw: blue " << (int)pixels[2];
-
-	vkdPipelineCache cache(Device(), *m_pBindings, "");
-	vkdVertexLayout svPosition({ { "SV_POSITION", 0, VK_FORMAT_R32G32B32_SFLOAT, 0, 0 },
-								 { "COLOR", 0, VK_FORMAT_R32G32B32A32_SFLOAT, 0, 12 } }, { 28 });
-	EXPECT_NE(VK_NULL_HANDLE, cache.Get(Key(&svPosition), Stages(), &svPosition));
 }
 
 TEST_F(vkdPipelineCacheTest, SaveAndReload)

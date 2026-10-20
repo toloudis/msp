@@ -105,7 +105,7 @@ SamplerState glowSampler : register(s11);		// linear, wrap
 //application data passed to vertex shader
 struct appdata 
 {
-    float3 Position	: POSITION;
+    float3 Position	: SV_POSITION;
     float3 Normal	: NORMAL;
     float2 UV		: TEXCOORD0;
     float3 T		: TANGENT;
