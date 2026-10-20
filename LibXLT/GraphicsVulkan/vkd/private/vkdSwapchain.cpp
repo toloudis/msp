@@ -221,8 +221,10 @@ namespace gvk
 		info.imageColorSpace = chosen.colorSpace;
 		info.imageExtent = extent;
 		info.imageArrayLayers = 1;
+		//	sampled as DX11's swap chain is a shader input (DXGI_USAGE_SHADER_INPUT):
+		//	the HDR renderer reads the window's image back
 		info.imageUsage = (VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT |
-						   VK_IMAGE_USAGE_TRANSFER_SRC_BIT) & caps.supportedUsageFlags;
+						   VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_SAMPLED_BIT) & caps.supportedUsageFlags;
 		info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
 		info.preTransform = caps.currentTransform;
 		info.compositeAlpha = alpha;

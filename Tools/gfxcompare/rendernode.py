@@ -61,3 +61,14 @@ def backend_adapter(stderr: str) -> tuple[str, str] | None:
     """(backend, adapter) from the "Graphics backend" line, or None if there is none."""
     m = _BACKEND.search(stderr)
     return (m["name"], m["adapter"]) if m else None
+
+
+_VENDOR = re.compile(r"^(NVIDIA|AMD|ATI|Intel\(R\)|Intel)\s+", re.IGNORECASE)
+
+
+def same_adapter(a: str, b: str) -> bool:
+    """Whether two adapter names are the same GPU: DXGI names start with the
+    vendor ("NVIDIA Quadro RTX 5000"), Vulkan's may not ("Quadro RTX 5000")."""
+    def bare(name: str) -> str:
+        return _VENDOR.sub("", name.strip()).casefold()
+    return bare(a) == bare(b)

@@ -77,6 +77,9 @@
 #ifndef GVK_G3D_SCENERENDERERVK_HPP
 #include "GraphicsVulkan/G3d/g3dSceneRendererVk.hpp"
 #endif
+#ifndef G3D_SCENERENDERERCREATE_HPP
+#include "Graphics/G3d/g3dSceneRendererCreate.hpp"
+#endif
 #include "gtTempDir.hpp"
 
 #include <cstring>
@@ -324,6 +327,45 @@ TEST(g2dWindowVkScene, SceneInWindowMatchesOffscreen)
 	{
 		ADD_FAILURE() << result.Describe() << " (images in "
 			<< gtSaveComparison("SceneInWindowMatchesOffscreen", offscreen.m_Rgba.data(), windowed.m_Rgba.data(), size, size) << ")";
+	}
+}
+
+//	MachStudio's viewport draws through the HDR renderer into the window's
+//	swap-chain image, which the renderer also reads (DX11 makes its swap
+//	chain with DXGI_USAGE_SHADER_INPUT)
+TEST(g2dWindowVkScene, HDRSceneInWindowMatchesOffscreen)
+{
+	const int size = 256;
+	gtPicture offscreen, windowed;
+	gtBackend::Run(gtBackend::e_Vulkan, [&]()
+	{
+		gtSceneBuilder builder;
+		spheres(builder);
+		std::unique_ptr<g3dSceneRenderer> renderer(g3dSceneRendererCreate::CreateHDRRenderer());
+		{
+			const float black[4] = { 0, 0, 0, 1 };
+			gtTarget target(gtBackend::e_Vulkan, size, size, black);
+			const std::vector<g3dLayer*> no_layers;
+			renderer->Render(target.Target(), builder.Camera(), builder.Scene(), no_layers, 1.25f);
+			offscreen = target.Read();
+		}
+		gtSceneWindow window(gtBackend::e_Vulkan, size, size);
+		render_frame(window.Window(), *renderer, builder);
+		windowed = window.Present();
+		renderer->ReleaseResources();
+	});
+	if (::testing::Test::IsSkipped())
+		return;
+	ASSERT_TRUE(offscreen.Valid());
+	ASSERT_TRUE(windowed.Valid());
+	ASSERT_EQ(size, windowed.m_Width);
+	EXPECT_GT(lit_pixels(offscreen), size * size / 20) << "the scene drew almost nothing";
+	const gtCompareResult result = gtCompareImages(offscreen.m_Rgba.data(), windowed.m_Rgba.data(), size, size);
+	std::cout << "  HDRSceneInWindowMatchesOffscreen: " << result.Describe() << std::endl;
+	if (!result.m_bPass)
+	{
+		ADD_FAILURE() << result.Describe() << " (images in "
+			<< gtSaveComparison("HDRSceneInWindowMatchesOffscreen", offscreen.m_Rgba.data(), windowed.m_Rgba.data(), size, size) << ")";
 	}
 }
 

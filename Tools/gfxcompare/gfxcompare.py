@@ -172,7 +172,7 @@ def main(argv: list[str] | None = None) -> int:
             if counts != (0, 0):
                 problems.append(f"render {L} reported Vulkan validation messages "
                                 f"({counts[0]} errors, {counts[1]} warnings)")
-    if adapters["a"] and adapters["b"] and adapters["a"] != adapters["b"]:
+    if adapters["a"] and adapters["b"] and not rendernode.same_adapter(adapters["a"], adapters["b"]):
         problems.append(f"A and B ran on different adapters ({adapters['a']} / {adapters['b']})")
     return compare(args.out / "a", args.out / "b", args.out, tol, header, problems, _frames(args))
 

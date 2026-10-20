@@ -137,6 +137,14 @@ def test_cli_run_fails_on_different_adapters(tmp_path):
     assert "FAIL" in report and "adapter" in report.lower()
 
 
+def test_cli_run_same_adapter_with_and_without_vendor_name(tmp_path):
+    # DXGI names the Quadro "NVIDIA Quadro RTX 5000", Vulkan "Quadro RTX 5000"
+    code, report = run_fake(tmp_path, ["Graphics backend: dx11 on NVIDIA Quadro RTX 5000"],
+                            ["Graphics backend: vulkan on Quadro RTX 5000"])
+    assert code == 0
+    assert "different adapters" not in report
+
+
 def test_cli_run_reports_vulkan_validation_off(tmp_path):
     code, report = run_fake(tmp_path, ["Graphics backend: dx11 on GPU X"],
                             ["Graphics backend: vulkan on GPU X", "Vulkan validation: off"])

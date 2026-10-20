@@ -52,13 +52,15 @@ shared_ptr<shdwFrameBufferMgr> shdwSceneRendererVk::GetFrameBuffer()
 //--------------------------------------------------------------------
 //	Tell this renderer to share resources with another.
 //	The partner's resources will be replaced.
+//	A partner that isn't a shdw renderer is left alone: the creator still
+//	answers the types not ported yet with the forward renderer, which has
+//	no frame buffer (DX11 asserts here; all its types are shdw renderers).
 //--------------------------------------------------------------------
 void shdwSceneRendererVk::ShareBuffers(g3dSceneRenderer* i_Partner)
 {
 	shdwSceneRendererVk* partner = dynamic_cast<shdwSceneRendererVk*>(i_Partner);
-	DBG_ASSERT(partner, "ShareBuffers: Bad renderer class type!");
-
-	partner->SetFrameBuffer(this->m_pFrameBuffer);
+	if (partner)
+		partner->SetFrameBuffer(this->m_pFrameBuffer);
 }
 
 }

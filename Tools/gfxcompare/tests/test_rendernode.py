@@ -6,7 +6,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from rendernode import backend_adapter, build_command, run, validation_counts  # noqa: E402
+from rendernode import backend_adapter, build_command, run, same_adapter, validation_counts  # noqa: E402
 
 
 def test_build_command_order():
@@ -78,3 +78,12 @@ def test_backend_adapter_parsed():
     err = "Graphics backend: vulkan on NVIDIA Quadro RTX 5000\r\nother\n"
     assert backend_adapter(err) == ("vulkan", "NVIDIA Quadro RTX 5000")
     assert backend_adapter("nothing here") is None
+
+
+def test_same_adapter_ignores_vendor_name():
+    assert same_adapter("NVIDIA Quadro RTX 5000", "Quadro RTX 5000")
+    assert same_adapter("Quadro RTX 5000", "nvidia quadro rtx 5000")
+    assert same_adapter("Intel(R) UHD Graphics P630", "Intel(R) UHD Graphics P630")
+    assert same_adapter("AMD Radeon RX 7900 XTX", "Radeon RX 7900 XTX")
+    assert not same_adapter("NVIDIA Quadro RTX 5000", "Intel(R) UHD Graphics P630")
+    assert not same_adapter("NVIDIA Quadro RTX 5000", "NVIDIA Quadro RTX 4000")

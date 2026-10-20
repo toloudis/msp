@@ -428,3 +428,25 @@ TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
 	});
 }
 
+//	MachStudio's render view (tma3dRenderView) and capture thread
+//	(cptrRenderThread) share the HDR renderer's buffers with every renderer
+//	they make, including the types still answered with the forward
+//	renderer, which has no buffers to share
+TEST(g3dSceneRendererVkTest, HDRRendererSharesBuffersWithEveryType)
+{
+	gtBackend::Run(gtBackend::e_Vulkan, [&]()
+	{
+		std::unique_ptr<g3dSceneRenderer> hdr(g3dSceneRendererCreate::CreateHDRRenderer());
+		gvk::shdwSceneRendererVk* hdrShdw = dynamic_cast<gvk::shdwSceneRendererVk*>(hdr.get());
+		ASSERT_TRUE(hdrShdw != NULL);
+		for (int type = g3dSceneRendererTypes::e_Default; type <= g3dSceneRendererTypes::e_RmanColorBleed; type++)
+		{
+			SCOPED_TRACE(type);
+			std::unique_ptr<g3dSceneRenderer> partner(g3dSceneRendererCreate::CreateRenderer((g3dSceneRendererTypes::RendererType)type));
+			hdr->ShareBuffers(partner.get());
+			if (gvk::shdwSceneRendererVk* shdw = dynamic_cast<gvk::shdwSceneRendererVk*>(partner.get()))
+				EXPECT_EQ(shdw->GetFrameBuffer(), hdrShdw->GetFrameBuffer());
+		}
+	});
+}
+

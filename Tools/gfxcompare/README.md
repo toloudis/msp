@@ -38,7 +38,9 @@ python Tools/gfxcompare/gfxcompare.py run --exe MachStudio/MachStudio-x64/MachSt
   adapter (`Graphics backend: <name> on <adapter>`) and, for Vulkan, the
   validation counts (`Vulkan validation: N errors, M warnings`). It fails
   (exit 1) if either render reports any validation message, or if A and B
-  ran on different adapters. Release builds validate only with
+  ran on different adapters (names are compared without a leading vendor
+  name: DXGI says "NVIDIA Quadro RTX 5000" where Vulkan says "Quadro RTX
+  5000"). Release builds validate only with
   `-gfxValidation`; without it RenderNode prints `Vulkan validation: off`
   and the report says so.
 - `--format PNG|PFM`, `--width`, `--height` set the capture; otherwise the
