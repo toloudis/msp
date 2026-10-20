@@ -67,3 +67,26 @@ on its own, and every plan must leave Vulkan validation clean (spec, "Validation
   - **Scope from measurement:** Plan 1's DX11 timing CSV shows what the test scene's beauty frames run: `HDRRenderer` with ZFill, Environment, Lit, SSAO (and its Depth), AlphaFill, Depth, Glow and tone mapping, and `PlanarReflection` drawn by `ShadowLayerRenderer` (the simple renderer). There are no shadow-map, cube-map, DOF, fog or GI markers. 5a covers that path and what the same code reaches with other settings; 5b covers the rest.
   - **Moved:** the simple and depth-map renderers from Plan 6 into 5a, and the RSM renderer into 5b (LPV is its only user).
   - **Not ported (unreachable on DX11):** the ray-tracing, test and single-pass renderers with `rtUtil`/`rasterizerUtil`; `effShaderArray`'s `.o` shaders; `shdwPassMapNormalsToScreen`; VSM shadows; `g3dCubeMapRendererDX11`; the camera/screen-space render passes. The motion-blur velocity pass and the GI volumes are compiled out of the HDR renderer and go to Plan 6 with their preview renderers. There is no deferred context.
+
+## Open investigations
+
+### Anisotropic filtering differs between DX11 and Vulkan (found in 5a Task 7, `12330bd7`)
+
+**Symptom.** Textures sampled with an anisotropic sampler come out differently on the two backends on the same GPU (Quadro RTX 5000): up to 35/255 on about 2% of pixels at hard checker edges in `shdwMaterialsVkTest`. Every material shader's `g_DefaultSampler` is `ANISOTROPIC`, `MaxAnisotropy` 16, wrap, so this touches every textured material in MachStudio.
+
+**Known so far.**
+- Both backends ask for the same sampler: the translations in `fxEffectDX11.cpp` and `fxEffectVk.cpp` (`fxSamplerToVulkan`) give linear min/mag/mip, anisotropy 16, wrap, LOD bias 0, the same LOD range; `samplerAnisotropy` is enabled; validation is clean.
+- Everything else agrees: with `ANISOTROPIC` turned into `MIN_MAG_MIP_LINEAR` on both backends (a temporary experiment, not committed), every case of `shdwMaterialsVkTest` (both tests, 66 renders) matched within 1/255. So the textures, mips, geometry and derivatives are the same; only the anisotropic filter differs.
+- Not yet known: whether the driver filters differently per API (both specs leave the anisotropic footprint, tap count and placement to the implementation; NVIDIA's "Texture filtering – Quality" and "anisotropic sample optimization" may apply to one API and not the other), or whether something in our setup (the image view's mip range, `minLod`, the sampler's flags) differs in a way only anisotropic filtering shows.
+
+**Workaround in place.** `shdwMaterialsVkTest` softens its checkers (`gtScene::CheckerTexture` `i_Blur` 8) and allows max 24/255 on up to 0.2% of pixels (measured 21/255, 0.154%); its exception table explains it. The owner wants the normal tolerance back.
+
+**Plan.**
+1. **Raw-API test** (`UnitTests/GraphicsTests/Vk`, e.g. `vkdAnisotropicTest.cpp`): one tilted quad textured with a hard checker (mipped, RGBA8), drawn with a hand-made sampler on plain D3D11 (`gtD3D11`, shaders compiled at run time like `vkdContextTest`) and on plain Vulkan (`vkdContext`, a shader from `Vk/Shaders` compiled by the test project's DXC step), none of MachStudio's code involved. Cases: anisotropy 1 (trilinear), 2, 4, 8, 16; a quad tilted 60° and 80°; with and without mips. Print max error and % over for each.
+2. **Quick check by the owner:** NVIDIA Control Panel → Manage 3D settings → Texture filtering – Quality = "High quality" (and anisotropic sample optimization off), then rerun the raw test and `shdwMaterialsVkTest`. If the gap closes, it's the driver's optimizations.
+3. **Decide from the results.**
+   - *Raw APIs match, MachStudio's backends don't:* the difference is ours. Bisect the image view and sampler setup against the raw test (mip range, `minLod`/`maxLod`, view type, format), fix it, and give `shdwMaterialsVkTest` hard checkers and gfxcompare's tolerance again.
+   - *Raw APIs differ the same way:* it's the driver. Add a test-only switch on both backends that makes anisotropic samplers trilinear (in the two sampler translations), turn it on in the parity tests so they use hard checkers and the normal tolerance, and keep the raw test as the one place anisotropic filtering itself is compared, with a documented tolerance. Note the expected difference for the test-scene comparison (gfxcompare's tolerance on textured frames).
+4. Record the outcome here and in the 5a ledger.
+
+**When.** After 5a Task 8 (test-scene parity), before 5b, unless Task 8's frames need it sooner.
