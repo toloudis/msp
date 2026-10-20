@@ -107,8 +107,20 @@ namespace gtScene
 
 	//	An RGBA8 i_Width x i_Height texture of i_Cells x i_Cells coloured
 	//	checks (a PNG written to i_Dir, loaded through matTextureMgr, mips
-	//	generated). Release with matTextureMgr::ReleaseTexture.
-	matTexture* CheckerTexture(const std::filesystem::path& i_Dir, int i_Width, int i_Height, int i_Cells);
+	//	generated). i_Blur > 0 softens the edges with a box filter of that
+	//	radius in texels: anisotropic filtering of a hard edge is the
+	//	driver's own and differs between D3D11 and Vulkan on the same GPU
+	//	(up to ~35/255 at the edges). Release with matTextureMgr::ReleaseTexture.
+	matTexture* CheckerTexture(const std::filesystem::path& i_Dir, int i_Width, int i_Height, int i_Cells, int i_Blur = 0);
+
+	//	An RGBA8 i_Size x i_Size height map of i_Bumps x i_Bumps smooth bumps
+	//	(grey, 0 to 255), and the matching tangent-space normal map (RGB the
+	//	normal packed into 0..255, flat is (128, 128, 255)): a displacement
+	//	map and a normal map without hard edges (PNGs written to i_Dir, loaded
+	//	through matTextureMgr, mips generated). Release with
+	//	matTextureMgr::ReleaseTexture.
+	matTexture* HeightTexture(const std::filesystem::path& i_Dir, int i_Size, int i_Bumps);
+	matTexture* NormalTexture(const std::filesystem::path& i_Dir, int i_Size, int i_Bumps);
 
 	//	An i_Width x 1 RGBA32F ramp without mips, as MachStudio's ramps are
 	//	(rmpTextureMgr), smooth from left to right (dark blue, red-orange,

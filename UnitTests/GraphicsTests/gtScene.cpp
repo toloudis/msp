@@ -282,7 +282,7 @@ namespace
 	}
 }
 
-matTexture* gtScene::CheckerTexture(const std::filesystem::path& i_Dir, int i_Width, int i_Height, int i_Cells)
+matTexture* gtScene::CheckerTexture(const std::filesystem::path& i_Dir, int i_Width, int i_Height, int i_Cells, int i_Blur)
 {
 	std::vector<uint8_t> rgba((size_t)i_Width * i_Height * 4);
 	for (int y = 0; y < i_Height; y++)
@@ -299,8 +299,80 @@ matTexture* gtScene::CheckerTexture(const std::filesystem::path& i_Dir, int i_Wi
 			p[3] = 255;
 		}
 	}
-	return load_png(i_Dir / ("checker_" + std::to_string(i_Width) + "x" + std::to_string(i_Height) + "_" + std::to_string(i_Cells) + ".png"),
+	//	softened by a (2 * i_Blur + 1)^2 box filter, wrapping as the texture does
+	for (int pass = 0; pass < 2 && i_Blur > 0; pass++)
+	{
+		const std::vector<uint8_t> source = rgba;
+		for (int y = 0; y < i_Height; y++)
+		{
+			for (int x = 0; x < i_Width; x++)
+			{
+				for (int c = 0; c < 3; c++)
+				{
+					int sum = 0;
+					for (int d = -i_Blur; d <= i_Blur; d++)
+					{
+						const int sx = pass == 0 ? (x + d + i_Width) % i_Width : x;
+						const int sy = pass == 1 ? (y + d + i_Height) % i_Height : y;
+						sum += source[((size_t)sy * i_Width + sx) * 4 + c];
+					}
+					rgba[((size_t)y * i_Width + x) * 4 + c] = (uint8_t)((sum + i_Blur) / (2 * i_Blur + 1));
+				}
+			}
+		}
+	}
+	return load_png(i_Dir / ("checker_" + std::to_string(i_Width) + "x" + std::to_string(i_Height) + "_" + std::to_string(i_Cells) +
+							 (i_Blur > 0 ? "_blur" + std::to_string(i_Blur) : std::string()) + ".png"),
 					i_Width, i_Height, rgba);
+}
+
+namespace
+{
+	//	Smooth bumps, 0..1: i_Bumps x i_Bumps of them over the texture
+	float bump_height(float i_U, float i_V, int i_Bumps)
+	{
+		const float k = 6.2831853f * i_Bumps;
+		return 0.5f + 0.5f * sinf(k * i_U) * sinf(k * i_V);
+	}
+}
+
+matTexture* gtScene::HeightTexture(const std::filesystem::path& i_Dir, int i_Size, int i_Bumps)
+{
+	std::vector<uint8_t> rgba((size_t)i_Size * i_Size * 4);
+	for (int y = 0; y < i_Size; y++)
+	{
+		for (int x = 0; x < i_Size; x++)
+		{
+			const uint8_t h = (uint8_t)(255.0f * bump_height((x + 0.5f) / i_Size, (y + 0.5f) / i_Size, i_Bumps) + 0.5f);
+			uint8_t* p = &rgba[((size_t)y * i_Size + x) * 4];
+			p[0] = p[1] = p[2] = h;
+			p[3] = 255;
+		}
+	}
+	return load_png(i_Dir / ("height_" + std::to_string(i_Size) + "_" + std::to_string(i_Bumps) + ".png"), i_Size, i_Size, rgba);
+}
+
+matTexture* gtScene::NormalTexture(const std::filesystem::path& i_Dir, int i_Size, int i_Bumps)
+{
+	std::vector<uint8_t> rgba((size_t)i_Size * i_Size * 4);
+	const float d = 1.0f / i_Size;
+	for (int y = 0; y < i_Size; y++)
+	{
+		for (int x = 0; x < i_Size; x++)
+		{
+			//	the height's slope, as a tangent-space normal packed into 0..255
+			const float u = (x + 0.5f) * d, v = (y + 0.5f) * d;
+			const float dx = (bump_height(u + d, v, i_Bumps) - bump_height(u - d, v, i_Bumps)) * 0.5f * i_Size / (6.2831853f * i_Bumps);
+			const float dy = (bump_height(u, v + d, i_Bumps) - bump_height(u, v - d, i_Bumps)) * 0.5f * i_Size / (6.2831853f * i_Bumps);
+			const float length = sqrtf(dx * dx + dy * dy + 1.0f);
+			uint8_t* p = &rgba[((size_t)y * i_Size + x) * 4];
+			p[0] = (uint8_t)(127.5f + 127.5f * -dx / length);
+			p[1] = (uint8_t)(127.5f + 127.5f * -dy / length);
+			p[2] = (uint8_t)(127.5f + 127.5f * 1.0f / length);
+			p[3] = 255;
+		}
+	}
+	return load_png(i_Dir / ("normal_" + std::to_string(i_Size) + "_" + std::to_string(i_Bumps) + ".png"), i_Size, i_Size, rgba);
 }
 
 matTexture* gtScene::RampTexture(int i_Width)

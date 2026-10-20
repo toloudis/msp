@@ -440,6 +440,24 @@ namespace gvk
 						break;
 					}
 				}
+				//	GraphicsDX11 makes a mesh's input layout once, against one
+				//	shader's signature, and D3D11 feeds every other shader drawn
+				//	with it by register: the bump layouts' SV_POSITION reaches
+				//	shaders that read POSITION (Skin, BlinnSkin). Take one name
+				//	for the other when the layout has no exact match.
+				if (!element && input.m_Index == 0)
+				{
+					const char* alias = same_semantic(input.m_Semantic, "POSITION") ? "SV_POSITION"
+									  : same_semantic(input.m_Semantic, "SV_POSITION") ? "POSITION" : nullptr;
+					for (const vkdVertexElement& e : i_pLayout->Elements())
+					{
+						if (alias && e.m_SemanticIndex == 0 && same_semantic(e.m_Semantic, alias))
+						{
+							element = &e;
+							break;
+						}
+					}
+				}
 			}
 			if (!element)
 			{
