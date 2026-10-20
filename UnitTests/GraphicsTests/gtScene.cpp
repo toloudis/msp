@@ -273,6 +273,7 @@ gtSceneBuilder::~gtSceneBuilder()
 {
 	m_pScene.reset();
 	m_pRoot.reset();
+	m_pOverlayRoot.reset();
 	m_Fragments.clear();
 	m_Materials.clear();
 	for (matTexture* texture : m_Textures)
@@ -301,6 +302,22 @@ g3dSceneNode* gtSceneBuilder::Add(const gtMesh& i_Mesh, matMaterial* i_pMaterial
 	g3dSceneNode* node = new g3dSceneNode(fragment, i_World);
 	m_pRoot->AddChild(node);
 	m_pScene->UpdateWorldData();		// transforms and world boxes, as the scene manager does
+	return node;
+}
+
+g3dSceneNode* gtSceneBuilder::AddLayer(const gtMesh& i_Mesh, matMaterial* i_pMaterial, const maMatrix4x4& i_Camera)
+{
+	if (!m_pOverlayLayer)
+	{
+		m_pOverlayRoot.reset(new g3dSceneNode());
+		m_pOverlayLayer = new g3dLayer(m_pOverlayRoot.get(), g3dLayer::e_ZBuffer, g3dLayer::e_Camera);
+		m_pScene->AppendLayer(m_pOverlayLayer);
+	}
+	g3dFragment* fragment = i_Mesh.CreateFragment(i_pMaterial);
+	m_Fragments.emplace_back(fragment);
+	g3dSceneNode* node = new g3dSceneNode(fragment, i_Camera);
+	m_pOverlayRoot->AddChild(node);
+	m_pScene->UpdateWorldData();
 	return node;
 }
 

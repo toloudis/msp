@@ -1,15 +1,13 @@
 /****************************************************************************\
 **	g3dSceneRendererCreateVk.hpp
 **
-**	The GraphicsVulkan renderer creator (GraphicsDX11's renderers are made
-**	by g3dSceneRendererDX11Create and, in MachStudio, shdwPackage's
-**	creator, whose default is the HDR renderer).
-**
-**	Until the shdw renderers are ported (Plans 5 and 6), every renderer
-**	type the creator can't build yet, the default and HDR ones included,
-**	is answered with the forward renderer (g3dSceneRendererVk), logged once
-**	per type with GVK_NOT_YET. The pick renderer is a stub that picks
-**	nothing (it isn't a scene renderer).
+**	GraphicsVulkan's counterpart of g3dSceneRendererDX11Create (which
+**	GraphicsDX11 never installs: shdwPackage's creator is the one used).
+**	Here it is the fallback of shdw's creator (shdwSceneRendererCreate):
+**	until the shdw renderers are ported (Plans 5 and 6), every renderer
+**	type shdw can't build yet is answered with the forward renderer
+**	(g3dSceneRendererVk), logged once per type with GVK_NOT_YET. The pick
+**	renderer is a stub that picks nothing (it isn't a scene renderer).
 **
 **	StudioGPU
 **	Copyright(C) 2010 - All Rights Reserved

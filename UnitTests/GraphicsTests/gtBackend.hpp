@@ -29,6 +29,9 @@ namespace gtBackend
 
 	const char* Name(Kind i_Kind);
 
+	//	The backend whose layer Run has up (asserts that one is)
+	Kind Current();
+
 	//	Runs i_Function with the backend up; false (and the test marked
 	//	skipped) if the backend isn't available
 	bool Run(Kind i_Kind, const std::function<void()>& i_Function);

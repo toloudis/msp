@@ -38,6 +38,9 @@
 
 namespace
 {
+	gtBackend::Kind l_Current = gtBackend::e_DX11;
+	bool l_bRunning = false;
+
 	//	GTEST_SKIP's effect from a function that returns a value
 	void skip(const std::string& i_Why)
 	{
@@ -119,12 +122,21 @@ const char* gtBackend::Name(Kind i_Kind)
 	return i_Kind == e_DX11 ? "DX11" : "Vulkan";
 }
 
+gtBackend::Kind gtBackend::Current()
+{
+	DBG_ASSERT(l_bRunning, "gtBackend::Current called outside gtBackend::Run");
+	return l_Current;
+}
+
 bool gtBackend::Run(Kind i_Kind, const std::function<void()>& i_Function)
 {
 	SCOPED_TRACE(Name(i_Kind));
 	GraphicsLayer::Init();
 	void* window = gtPlatform::CreateHiddenWindow(64, 64);
+	l_Current = i_Kind;
+	l_bRunning = true;
 	const bool ran = (i_Kind == e_DX11) ? run_dx11(window, i_Function) : run_vulkan(window, i_Function);
+	l_bRunning = false;
 	gtPlatform::DestroyHiddenWindow(window);
 	GraphicsLayer::CleanUp();
 	return ran;

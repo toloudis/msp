@@ -192,6 +192,14 @@
     <ClCompile Include="G3d\private\g3dSceneRenderUtil.cpp" />
     <ClCompile Include="G3d\private\g3dSceneRendererCreateVk.cpp" />
     <ClCompile Include="G3d\private\g3dSceneRendererVk.cpp" />
+    <ClCompile Include="G3d\private\g3dRenderPass.cpp" />
+    <ClCompile Include="shdw\private\shdwPackage.cpp" />
+    <ClCompile Include="shdw\private\shdwSceneRendererCreate.cpp" />
+    <ClCompile Include="shdw\private\shdwSceneRendererVk.cpp" />
+    <ClCompile Include="shdw\private\shdwPassTraversal.cpp" />
+    <ClCompile Include="shdw\private\shdwFrameBufferMgr.cpp" />
+    <ClCompile Include="shdw\private\shdwVelocityStateManager.cpp" />
+    <ClCompile Include="shdw\private\GlareDefVk.cpp" />
     <ClCompile Include="G3d\private\g3dTransparencySortVk.cpp" />
     <ClCompile Include="G3d\private\g3dVkUtil.cpp" />
   </ItemGroup>
@@ -299,6 +307,14 @@
     <ClInclude Include="G3d\g3dSceneRenderUtil.hpp" />
     <ClInclude Include="G3d\g3dSceneRendererCreateVk.hpp" />
     <ClInclude Include="G3d\g3dSceneRendererVk.hpp" />
+    <ClInclude Include="G3d\g3dRenderPass.hpp" />
+    <ClInclude Include="shdw\shdwPackage.hpp" />
+    <ClInclude Include="shdw\shdwSceneRendererCreate.hpp" />
+    <ClInclude Include="shdw\shdwSceneRendererVk.hpp" />
+    <ClInclude Include="shdw\shdwPassTraversal.hpp" />
+    <ClInclude Include="shdw\shdwFrameBufferMgr.hpp" />
+    <ClInclude Include="shdw\shdwVelocityStateManager.hpp" />
+    <ClInclude Include="shdw\private\GlareDefVk.h" />
     <ClInclude Include="G3d\g3dTransparencySortVk.hpp" />
     <ClInclude Include="G3d\g3dVkUtil.hpp" />
   </ItemGroup>

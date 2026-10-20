@@ -108,6 +108,10 @@
     <ClCompile Include="gtTarget.cpp" />
     <ClCompile Include="gtScene.cpp" />
     <ClCompile Include="gtSceneWindow.cpp" />
+    <ClCompile Include="gtRender.cpp" />
+    <ClCompile Include="Vk\shdwScaffoldingVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
     <ClCompile Include="Vk\g2dFontVkTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
@@ -136,6 +140,7 @@
     <ClInclude Include="gtImageFiles.hpp" />
     <ClInclude Include="gtBackend.hpp" />
     <ClInclude Include="gtSceneWindow.hpp" />
+    <ClInclude Include="gtRender.hpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Vk\Shaders\gtBindingProto.hlsl">

@@ -76,6 +76,12 @@
     <Filter Include="tmesh\private">
       <UniqueIdentifier>{17bfd27c-eadd-4b70-b47e-baf835df18c1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shdw">
+      <UniqueIdentifier>{c96c859c-8805-4ef4-8da6-7524eb5c0039}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shdw\private">
+      <UniqueIdentifier>{1c0fb1e3-a53e-4466-bb78-d4ec32ea8dd8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GraphicsVulkanLayer.cpp" />
@@ -385,6 +391,30 @@
     </ClCompile>
     <ClCompile Include="G3d\private\g3dSceneRendererCreateVk.cpp">
       <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dRenderPass.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPackage.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwSceneRendererCreate.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwSceneRendererVk.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassTraversal.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwFrameBufferMgr.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwVelocityStateManager.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\GlareDefVk.cpp">
+      <Filter>shdw\private</Filter>
     </ClCompile>
     <ClCompile Include="G3d\private\g3dSceneRendererVk.cpp">
       <Filter>G3d\private</Filter>
@@ -701,6 +731,30 @@
     </ClInclude>
     <ClInclude Include="G3d\g3dSceneRendererCreateVk.hpp">
       <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dRenderPass.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPackage.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwSceneRendererCreate.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwSceneRendererVk.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassTraversal.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwFrameBufferMgr.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwVelocityStateManager.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\private\GlareDefVk.h">
+      <Filter>shdw\private</Filter>
     </ClInclude>
     <ClInclude Include="G3d\g3dSceneRendererVk.hpp">
       <Filter>G3d</Filter>

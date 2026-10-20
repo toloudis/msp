@@ -4,9 +4,10 @@
 **      See GraphicsVulkanLayer.hpp. Hooks are installed where GraphicsDX11
 **	installs its own: the 2D and 3D systems install theirs while they
 **	exist; Init initializes the packages in GraphicsDX11Layer's order
-**	(tmesh, bump, may, then the hair stand-in), which install the fragment
-**	creators; InitGraphics installs the scene renderers and baking (as
-**	shdwPackage::InitGraphics does) and the bump vertex layouts.
+**	(shdw, tmesh, bump, may, then the hair stand-in), which install the
+**	scene renderer creator and the fragment creators; InitGraphics makes
+**	shdw's render states, installs baking (as shdwPackage::InitGraphics
+**	does) and the bump vertex layouts.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -40,8 +41,8 @@
 #ifndef GVK_G3DSTUBSVK_HPP
 #include "GraphicsVulkan/stub/g3dStubsVk.hpp"
 #endif
-#ifndef GVK_G3D_SCENERENDERERCREATEVK_HPP
-#include "GraphicsVulkan/G3d/g3dSceneRendererCreateVk.hpp"
+#ifndef GVK_SHDW_PACKAGE_HPP
+#include "GraphicsVulkan/shdw/shdwPackage.hpp"
 #endif
 #ifndef GVK_TMESH_PACKAGE_HPP
 #include "GraphicsVulkan/tmesh/tmeshPackage.hpp"
@@ -116,7 +117,6 @@ namespace
 	g2dSystemVk*				l_pSystem2D = NULL;
 	g3dSystemVk*				l_pSystem3D = NULL;
 	hairRendererVk*				l_pHairRenderer = NULL;
-	g3dSceneRendererCreateVk*	l_pRendererCreate = NULL;
 	g3dBakeVk*					l_pBake = NULL;
 #ifdef MSP_GFX_PROFILING
 	g3dProfilerGpuVk*			l_pProfilerGpu = NULL;
@@ -156,6 +156,7 @@ bool GraphicsVulkanLayer::Init(void* /*i_hWnd*/, const g3dGfxOptions& i_Options)
 	l_pSystem3D = new g3dSystemVk(*l_pDevice);
 
 	// initialize packages in the layer
+	shdwPackage::Init();
 	tmeshPackage::Init();
 	bumpPackage::Init();
 	mayPackage::Init();
@@ -181,6 +182,7 @@ void GraphicsVulkanLayer::CleanUp() throw()
 	bumpPackage::CleanUp();
 	g3dFragmentCreate::SetImplementation(NULL);
 	tmeshPackage::CleanUp();
+	shdwPackage::CleanUp();
 
 	delete l_pSystem3D;
 	delete l_pSystem2D;
@@ -212,9 +214,8 @@ void GraphicsVulkanLayer::CleanUp() throw()
 
 void GraphicsVulkanLayer::InitGraphics()
 {
+	shdwPackage::InitGraphics();
 	bumpPackage::InitGraphics();
-	l_pRendererCreate = new g3dSceneRendererCreateVk;
-	g3dSceneRendererCreate::SetImplementation(l_pRendererCreate);
 	l_pBake = new g3dBakeVk;
 	g3dBake::SetImplementation(l_pBake);
 #ifdef MSP_GFX_PROFILING
@@ -231,12 +232,10 @@ void GraphicsVulkanLayer::CleanUpGraphics()
 	l_pProfilerGpu = NULL;
 #endif
 	g3dBake::SetImplementation(NULL);
-	g3dSceneRendererCreate::SetImplementation(NULL);
 	delete l_pBake;
-	delete l_pRendererCreate;
 	l_pBake = NULL;
-	l_pRendererCreate = NULL;
 	bumpPackage::CleanUpGraphics();
+	shdwPackage::CleanUpGraphics();
 }
 
 g2dSystem* GraphicsVulkanLayer::GetSystem2D()

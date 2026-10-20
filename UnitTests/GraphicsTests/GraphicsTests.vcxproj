@@ -138,6 +138,8 @@
     <ClCompile Include="gtTarget.cpp" />
     <ClCompile Include="Vk\g3dSceneRendererVkTest.cpp" />
     <ClCompile Include="gtSceneWindow.cpp" />
+    <ClCompile Include="gtRender.cpp" />
+    <ClCompile Include="Vk\shdwScaffoldingVkTest.cpp" />
     <ClCompile Include="Vk\g2dFontVkTest.cpp" />
     <ClCompile Include="Vk\g2dCaptureVkTest.cpp" />
   </ItemGroup>
@@ -154,6 +156,7 @@
     <ClInclude Include="gtScene.hpp" />
     <ClInclude Include="gtTarget.hpp" />
     <ClInclude Include="gtSceneWindow.hpp" />
+    <ClInclude Include="gtRender.hpp" />
   </ItemGroup>
   <ItemGroup>
     <!-- Test shaders: VSMain and PSMain of each, compiled to SPIR-V with GraphicsVulkan's

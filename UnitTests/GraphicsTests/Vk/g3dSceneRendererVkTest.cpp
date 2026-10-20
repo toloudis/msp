@@ -13,9 +13,8 @@
 **	Extra Large Technology
 \****************************************************************************/
 #include "gtBackend.hpp"
-#include "gtImage.hpp"
+#include "gtRender.hpp"
 #include "gtScene.hpp"
-#include "gtTarget.hpp"
 #include "gtTempDir.hpp"
 
 #ifndef G3D_SCENE_HPP
@@ -71,59 +70,31 @@
 
 namespace
 {
-	const int c_Size = 256;
-
-	//	Builds a scene into the builder (on the backend that is up)
-	typedef std::function<void(gtSceneBuilder&, const std::filesystem::path&)> SceneFunction;
-
-	//	i_Build's scene rendered by i_Kind's forward renderer
-	gtPicture render(gtBackend::Kind i_Kind, const SceneFunction& i_Build, const std::filesystem::path& i_Dir)
+	//	The forward renderer of the backend that is up
+	g3dSceneRenderer* forward_renderer()
 	{
-		const float clear[4] = { 0, 0, 0, 1 };
-		gtTarget target(i_Kind, c_Size, c_Size, clear);
-		gtSceneBuilder builder;
-		g3dLightMgr::SetAmbient(maFloatRGBA(0.1f, 0.15f, 0.2f, 1));
-		i_Build(builder, i_Dir);
-
-		std::unique_ptr<g3dSceneRenderer> renderer;
-		if (i_Kind == gtBackend::e_DX11)
-			renderer.reset(new g3dSceneRendererDX11());
-		else
-			renderer.reset(new gvk::g3dSceneRendererVk());
-		const std::vector<g3dLayer*> no_layers;
-		renderer->Render(target.Target(), builder.Camera(), builder.Scene(), no_layers, 1.25f);
-		gtPicture picture = target.Read();
-		renderer->ReleaseResources();
-		renderer.reset();
-		return picture;
+		if (gtBackend::Current() == gtBackend::e_DX11)
+			return new g3dSceneRendererDX11();
+		return new gvk::g3dSceneRendererVk();
 	}
 
-	//	Renders on both backends and compares
-	void expect_same_image(const char* i_pTest, const SceneFunction& i_Build)
+	gtRenderOptions forward_options()
 	{
-		gtTempDir dir;
-		gtPicture dx11, vulkan;
-		gtBackend::Run(gtBackend::e_DX11, [&]() { dx11 = render(gtBackend::e_DX11, i_Build, dir.GetPath()); });
-		if (!gtBackend::Run(gtBackend::e_Vulkan, [&]() { vulkan = render(gtBackend::e_Vulkan, i_Build, dir.GetPath()); }))
-			return;
-		EXPECT_TRUE(dx11.Valid());
-		EXPECT_TRUE(vulkan.Valid());
-		if (!dx11.Valid() || !vulkan.Valid())
-			return;
+		gtRenderOptions options;
+		options.m_CreateRenderer = forward_renderer;
+		return options;
+	}
 
-		//	the scene covers a good part of the image
-		int covered = 0;
-		for (size_t i = 0; i < dx11.m_Rgba.size(); i += 4)
-			covered += (dx11.m_Rgba[i] | dx11.m_Rgba[i + 1] | dx11.m_Rgba[i + 2]) != 0;
-		EXPECT_GT(covered, c_Size * c_Size / 20) << "DX11 drew almost nothing";
+	//	i_Build's scene rendered by the forward renderer of the backend that is up
+	gtPicture render(const gtSceneFunction& i_Build, const std::filesystem::path& i_Dir)
+	{
+		return gtRenderScene(i_Build, i_Dir, forward_options());
+	}
 
-		const gtCompareResult result = gtCompareImages(dx11.m_Rgba.data(), vulkan.m_Rgba.data(), c_Size, c_Size);
-		std::cout << "  " << i_pTest << ": " << result.Describe() << std::endl;
-		if (!result.m_bPass)
-		{
-			ADD_FAILURE() << result.Describe() << " (images in "
-				<< gtSaveComparison(i_pTest, dx11.m_Rgba.data(), vulkan.m_Rgba.data(), c_Size, c_Size) << ")";
-		}
+	//	Renders on both backends with their forward renderers and compares
+	void expect_same_image(const char* i_pTest, const gtSceneFunction& i_Build)
+	{
+		gtExpectSameImage(i_pTest, i_Build, forward_options());
 	}
 
 	//	An opaque Phong data material (SetPhong's values, transparency 1)
@@ -344,12 +315,12 @@ TEST(g3dSceneRendererVkTest, TessellatedDisplacementMatchDX11)
 		gtPicture with, without;
 		{
 			TessellationScope tessellation(true);
-			if (!gtBackend::Run(gtBackend::e_Vulkan, [&]() { with = render(gtBackend::e_Vulkan, tessellated, dir.GetPath()); }))
+			if (!gtBackend::Run(gtBackend::e_Vulkan, [&]() { with = render(tessellated, dir.GetPath()); }))
 				return;
 		}
 		{
 			TessellationScope tessellation(false);
-			gtBackend::Run(gtBackend::e_Vulkan, [&]() { without = render(gtBackend::e_Vulkan, tessellated, dir.GetPath()); });
+			gtBackend::Run(gtBackend::e_Vulkan, [&]() { without = render(tessellated, dir.GetPath()); });
 		}
 		EXPECT_GT(lit_pixels(with), lit_pixels(without) * 3 / 2) << "the tessellated wireframe has no more edges";
 	}

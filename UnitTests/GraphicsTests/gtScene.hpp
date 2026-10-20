@@ -123,11 +123,16 @@ class gtSceneBuilder
 		//	set as the scene manager would)
 		g3dSceneNode*	Add(const gtMesh& i_Mesh, matMaterial* i_pMaterial, const maMatrix4x4& i_World);
 
+		//	A node in a second (overlay) layer: camera space, z-buffered,
+		//	as MachStudio's camera layer (api3dSceneImpl); made on first use
+		g3dSceneNode*	AddLayer(const gtMesh& i_Mesh, matMaterial* i_pMaterial, const maMatrix4x4& i_Camera);
+
 		void			PointLight(const maPoint3d& i_Position, const maFloatRGBA& i_Color, float i_Range = 50.0f);
 		void			DirectionalLight(const maVector3d& i_Direction, const maFloatRGBA& i_Color);
 
 		g3dScene&		Scene()		{ return *m_pScene; }
 		g3dLayer&		Layer()		{ return *m_pLayer; }
+		g3dLayer*		OverlayLayer()	{ return m_pOverlayLayer; }		// NULL until AddLayer
 		camCamera&		Camera()	{ return m_Camera; }
 
 	private:
@@ -137,6 +142,8 @@ class gtSceneBuilder
 		camCamera						m_Camera;
 		std::unique_ptr<g3dSceneNode>	m_pRoot;			// owns the nodes Add makes
 		g3dLayer*						m_pLayer;			// owned by the scene
+		std::unique_ptr<g3dSceneNode>	m_pOverlayRoot;		// owns the nodes AddLayer makes
+		g3dLayer*						m_pOverlayLayer = NULL;	// owned by the scene
 		std::unique_ptr<g3dScene>		m_pScene;
 		std::vector<std::unique_ptr<g3dFragment>>	m_Fragments;
 		std::vector<std::unique_ptr<matMaterial>>	m_Materials;

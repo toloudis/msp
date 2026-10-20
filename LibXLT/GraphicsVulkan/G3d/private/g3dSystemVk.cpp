@@ -32,6 +32,9 @@
 #ifndef GVK_G3D_TRANSPARENCYSORTVK_HPP
 #include "GraphicsVulkan/G3d/g3dTransparencySortVk.hpp"
 #endif
+#ifndef GVK_G3D_RENDERPASS_HPP
+#include "GraphicsVulkan/G3d/g3dRenderPass.hpp"
+#endif
 #ifndef GVK_MATTEXTUREMGRVK_HPP
 #include "GraphicsVulkan/Mat/matTextureMgrVk.hpp"
 #endif
@@ -87,6 +90,7 @@ namespace gvk
 			g3dVkUtil::InitStates();
 			g3dSceneRendererVk::InitStates();
 			g3dTransparencySortVk::InitStates();
+			g3dRenderPass::InitStates();
 
 			//	we want to set D3D to cull CW faces
 			//	(because of our coordinate system change to right-handed), even though
@@ -102,6 +106,7 @@ namespace gvk
 
 		void cleanup_states()
 		{
+			g3dRenderPass::CleanupStates();
 			g3dTransparencySortVk::CleanupStates();
 			g3dSceneRendererVk::CleanupStates();
 			g3dVkUtil::CleanupStates();
