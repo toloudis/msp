@@ -182,6 +182,9 @@
     <CustomBuild Include="Vk\Shaders\gtTexel3D.hlsl">
       <Filter>Vk\Shaders</Filter>
     </CustomBuild>
+    <CustomBuild Include="Vk\Shaders\gtLayered.hlsl">
+      <Filter>Vk\Shaders</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />

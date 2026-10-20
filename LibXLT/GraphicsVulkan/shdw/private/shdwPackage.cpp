@@ -74,6 +74,9 @@
 #ifndef GVK_SHDW_PASSSSGI_HPP
 #include "GraphicsVulkan/shdw/shdwPassSSGI.hpp"
 #endif
+#ifndef GVK_SHDW_PASSLPVGI_HPP
+#include "GraphicsVulkan/shdw/shdwPassLPVGI.hpp"
+#endif
 #ifndef GVK_SHDW_PASSAOVOLUMES_HPP
 #include "GraphicsVulkan/shdw/shdwPassAOVolumes.hpp"
 #endif
@@ -163,6 +166,7 @@ void shdwPackage::InitGraphics()
 	shdwHDRRendererVk::InitStates();
 	shdwPassHair::InitStates();
 	shdwPassAOVolumes::InitStates();
+	shdwPassLPVGI::InitStates();
 	shdwPassPostShader::InitStates();
 	shdwPassEnvBackground::InitStates();
 }
@@ -174,6 +178,7 @@ void shdwPackage::CleanUpGraphics()
 {
 	shdwPassEnvBackground::CleanupStates();
 	shdwPassPostShader::CleanupStates();
+	shdwPassLPVGI::CleanupStates();
 	shdwPassAOVolumes::CleanupStates();
 	shdwPassHair::CleanupStates();
 	shdwHDRRendererVk::CleanupStates();

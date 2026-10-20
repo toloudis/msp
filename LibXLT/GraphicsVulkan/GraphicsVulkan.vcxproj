@@ -110,7 +110,6 @@
     <ClCompile Include="G3d\private\g3dProfilerGpuVk.cpp" />
     <ClCompile Include="G3d\private\g3dLightMgrVk.cpp" />
     <ClCompile Include="stub\private\g2dStubsVk.cpp" />
-    <ClCompile Include="stub\private\matStubsVk.cpp" />
     <ClCompile Include="stub\private\g3dStubsVk.cpp" />
     <ClCompile Include="vkd\private\vkdReflect.cpp" />
     <ClCompile Include="Fx\private\fxEffectDesc.cpp" />
@@ -150,6 +149,7 @@
     <ClCompile Include="Mat\private\matVolumeTexture.cpp" />
     <ClCompile Include="Mat\private\matCubeRenderTargetTexture.cpp" />
     <ClCompile Include="Mat\private\matShadowMap.cpp" />
+    <ClCompile Include="Mat\private\matReflectiveShadowMap.cpp" />
     <ClCompile Include="Mat\private\matRenderTargetTexture.cpp" />
     <ClCompile Include="Mat\private\matTextureLoader.cpp" />
     <ClCompile Include="Mat\private\matTextureLoaderDDS.cpp" />
@@ -188,6 +188,7 @@
     <ClCompile Include="Eff\private\effStrandHair.cpp" />
     <ClCompile Include="Eff\private\effTextured.cpp" />
     <ClCompile Include="G3d\private\g3dDepthMapRendererVk.cpp" />
+    <ClCompile Include="G3d\private\g3dRSMRendererVk.cpp" />
     <ClCompile Include="G3d\private\g3dRenderCameraSpace.cpp" />
     <ClCompile Include="G3d\private\g3dRenderScreenSpace.cpp" />
     <ClCompile Include="G3d\private\g3dDrawStyleUtilVk.cpp" />
@@ -223,12 +224,12 @@
     <ClCompile Include="shdw\private\shdwPassNormals.cpp" />
     <ClCompile Include="shdw\private\shdwPassAOVolumes.cpp" />
     <ClCompile Include="shdw\private\shdwPassSSGI.cpp" />
+    <ClCompile Include="shdw\private\shdwPassLPVGI.cpp" />
     <ClCompile Include="shdw\private\shdwPassOutline.cpp" />
     <ClCompile Include="shdw\private\shdwPassPostShader.cpp" />
     <ClCompile Include="shdw\private\shdwPassDepth.cpp" />
     <ClCompile Include="shdw\private\shdwPassToneMap.cpp" />
     <ClCompile Include="shdw\private\shdwPassHair.cpp" />
-    <ClCompile Include="stub\private\shdwPassStubsVk.cpp" />
     <ClCompile Include="G3d\private\g3dTransparencySortVk.cpp" />
     <ClCompile Include="G3d\private\g3dVkUtil.cpp" />
   </ItemGroup>
@@ -258,7 +259,6 @@
     <ClInclude Include="G3d\g3dProfilerGpuVk.hpp" />
     <ClInclude Include="G3d\g3dLightMgrVk.hpp" />
     <ClInclude Include="stub\g2dStubsVk.hpp" />
-    <ClInclude Include="stub\matStubsVk.hpp" />
     <ClInclude Include="stub\g3dStubsVk.hpp" />
     <ClInclude Include="vkd\vkdReflect.hpp" />
     <ClInclude Include="Fx\fxEffectDesc.hpp" />
@@ -295,6 +295,7 @@
     <ClInclude Include="Mat\matVolumeTexture.hpp" />
     <ClInclude Include="Mat\matCubeRenderTargetTexture.hpp" />
     <ClInclude Include="Mat\matShadowMap.hpp" />
+    <ClInclude Include="Mat\matReflectiveShadowMap.hpp" />
     <ClInclude Include="Mat\matRenderTargetTexture.hpp" />
     <ClInclude Include="Mat\matTextureMgrVk.hpp" />
     <ClInclude Include="Mat\private\matTextureLoader.hpp" />
@@ -332,6 +333,7 @@
     <ClInclude Include="Eff\effStrandHair.hpp" />
     <ClInclude Include="Eff\effTextured.hpp" />
     <ClInclude Include="G3d\g3dDepthMapRendererVk.hpp" />
+    <ClInclude Include="G3d\g3dRSMRendererVk.hpp" />
     <ClInclude Include="G3d\g3dRenderCameraSpace.hpp" />
     <ClInclude Include="G3d\g3dRenderScreenSpace.hpp" />
     <ClInclude Include="G3d\g3dDrawStyleUtilVk.hpp" />
@@ -367,12 +369,12 @@
     <ClInclude Include="shdw\shdwPassNormals.hpp" />
     <ClInclude Include="shdw\shdwPassAOVolumes.hpp" />
     <ClInclude Include="shdw\shdwPassSSGI.hpp" />
+    <ClInclude Include="shdw\shdwPassLPVGI.hpp" />
     <ClInclude Include="shdw\shdwPassOutline.hpp" />
     <ClInclude Include="shdw\shdwPassPostShader.hpp" />
     <ClInclude Include="shdw\shdwPassDepth.hpp" />
     <ClInclude Include="shdw\shdwPassToneMap.hpp" />
     <ClInclude Include="shdw\shdwPassHair.hpp" />
-    <ClInclude Include="stub\shdwPassStubsVk.hpp" />
     <ClInclude Include="G3d\g3dTransparencySortVk.hpp" />
     <ClInclude Include="G3d\g3dVkUtil.hpp" />
   </ItemGroup>

@@ -29,6 +29,9 @@
 #ifndef GVK_G3D_DEPTHMAPRENDERERVK_HPP
 #include "GraphicsVulkan/G3d/g3dDepthMapRendererVk.hpp"
 #endif
+#ifndef GVK_G3D_RSMRENDERERVK_HPP
+#include "GraphicsVulkan/G3d/g3dRSMRendererVk.hpp"
+#endif
 #ifndef GVK_G3D_RENDERCAMERASPACE_HPP
 #include "GraphicsVulkan/G3d/g3dRenderCameraSpace.hpp"
 #endif
@@ -103,6 +106,7 @@ namespace gvk
 			g3dSceneRendererVk::InitStates();
 			g3dTransparencySortVk::InitStates();
 			g3dRenderPass::InitStates();
+			g3dRSMRendererVk::InitStates();
 
 			//	we want to set D3D to cull CW faces
 			//	(because of our coordinate system change to right-handed), even though
@@ -118,6 +122,7 @@ namespace gvk
 
 		void cleanup_states()
 		{
+			g3dRSMRendererVk::CleanupStates();
 			g3dRenderPass::CleanupStates();
 			g3dTransparencySortVk::CleanupStates();
 			g3dSceneRendererVk::CleanupStates();

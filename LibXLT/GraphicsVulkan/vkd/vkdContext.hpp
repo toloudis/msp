@@ -24,6 +24,10 @@
 **	  buffer. Within one rendering scope, draws to the same attachments are
 **	  ordered by rasterization order, as in D3D11. Synchronization
 **	  validation checks this; Phase 2 can narrow it.
+**	- Rendering covers as many layers as the bound views have (a volume's
+**	  LayeredView: a geometry shader picks the layer); views of different
+**	  layer counts aren't rendered into (D3D11 needs equal array sizes):
+**	  the draws are skipped and logged.
 **	- The initial state, and ResetState(), is D3D11's ClearState().
 **
 **	One context, used by one thread at a time (the render thread, as
@@ -180,6 +184,7 @@ namespace gvk
 			uint64_t				m_CommandsValue = 0;			// its timeline value
 			bool					m_bRendering = false;
 			VkExtent2D				m_RenderExtent = {};
+			uint32_t				m_RenderLayers = 1;
 			bool					m_bNeedBarrier = false;
 			bool					m_bRecording = false;			// inside one of our own calls
 			VkPipeline				m_BoundPipeline = VK_NULL_HANDLE;

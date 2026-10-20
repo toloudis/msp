@@ -148,9 +148,6 @@
     <ClCompile Include="stub\private\g2dStubsVk.cpp">
       <Filter>stub\private</Filter>
     </ClCompile>
-    <ClCompile Include="stub\private\matStubsVk.cpp">
-      <Filter>stub\private</Filter>
-    </ClCompile>
     <ClCompile Include="stub\private\g3dStubsVk.cpp">
       <Filter>stub\private</Filter>
     </ClCompile>
@@ -268,6 +265,9 @@
     <ClCompile Include="Mat\private\matShadowMap.cpp">
       <Filter>Mat\private</Filter>
     </ClCompile>
+    <ClCompile Include="Mat\private\matReflectiveShadowMap.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
     <ClCompile Include="Mat\private\matRenderTargetTexture.cpp">
       <Filter>Mat\private</Filter>
     </ClCompile>
@@ -382,6 +382,9 @@
     <ClCompile Include="G3d\private\g3dDepthMapRendererVk.cpp">
       <Filter>G3d\private</Filter>
     </ClCompile>
+    <ClCompile Include="G3d\private\g3dRSMRendererVk.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
     <ClCompile Include="G3d\private\g3dRenderCameraSpace.cpp">
       <Filter>G3d\private</Filter>
     </ClCompile>
@@ -485,6 +488,9 @@
     <ClCompile Include="shdw\private\shdwPassSSGI.cpp">
       <Filter>shdw\private</Filter>
     </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassLPVGI.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
     <ClCompile Include="shdw\private\shdwPassOutline.cpp">
       <Filter>shdw\private</Filter>
     </ClCompile>
@@ -499,9 +505,6 @@
     </ClCompile>
     <ClCompile Include="shdw\private\shdwPassHair.cpp">
       <Filter>shdw\private</Filter>
-    </ClCompile>
-    <ClCompile Include="stub\private\shdwPassStubsVk.cpp">
-      <Filter>stub\private</Filter>
     </ClCompile>
     <ClCompile Include="G3d\private\g3dSceneRendererVk.cpp">
       <Filter>G3d\private</Filter>
@@ -585,9 +588,6 @@
       <Filter>G3d</Filter>
     </ClInclude>
     <ClInclude Include="stub\g2dStubsVk.hpp">
-      <Filter>stub</Filter>
-    </ClInclude>
-    <ClInclude Include="stub\matStubsVk.hpp">
       <Filter>stub</Filter>
     </ClInclude>
     <ClInclude Include="stub\g3dStubsVk.hpp">
@@ -696,6 +696,9 @@
       <Filter>Mat</Filter>
     </ClInclude>
     <ClInclude Include="Mat\matShadowMap.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\matReflectiveShadowMap.hpp">
       <Filter>Mat</Filter>
     </ClInclude>
     <ClInclude Include="Mat\matRenderTargetTexture.hpp">
@@ -809,6 +812,9 @@
     <ClInclude Include="G3d\g3dDepthMapRendererVk.hpp">
       <Filter>G3d</Filter>
     </ClInclude>
+    <ClInclude Include="G3d\g3dRSMRendererVk.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
     <ClInclude Include="G3d\g3dRenderCameraSpace.hpp">
       <Filter>G3d</Filter>
     </ClInclude>
@@ -912,6 +918,9 @@
     <ClInclude Include="shdw\shdwPassSSGI.hpp">
       <Filter>shdw</Filter>
     </ClInclude>
+    <ClInclude Include="shdw\shdwPassLPVGI.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
     <ClInclude Include="shdw\shdwPassOutline.hpp">
       <Filter>shdw</Filter>
     </ClInclude>
@@ -926,9 +935,6 @@
     </ClInclude>
     <ClInclude Include="shdw\shdwPassHair.hpp">
       <Filter>shdw</Filter>
-    </ClInclude>
-    <ClInclude Include="stub\shdwPassStubsVk.hpp">
-      <Filter>stub</Filter>
     </ClInclude>
     <ClInclude Include="G3d\g3dSceneRendererVk.hpp">
       <Filter>G3d</Filter>

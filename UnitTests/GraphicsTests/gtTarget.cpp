@@ -92,25 +92,37 @@ gtPicture gtTarget::Read() const
 std::vector<uint8_t> gtReadTexture(gtBackend::Kind i_Kind, const matTexture* i_pTexture, int i_BytesPerTexel,
 								   int i_Mip, int i_Layer)
 {
-	std::vector<uint8_t> texels;
 	if (i_Kind == gtBackend::e_Vulkan)
 	{
 		gvk::vkdImage* image = gvk::g3dVkTextureUtil::GetImage(i_pTexture);
 		EXPECT_TRUE(image != NULL);
-		if (!image)
-			return texels;
-		gvk::vkdGlobal::Context().Flush();
-		return image->ReadBack((uint32_t)i_Mip, (uint32_t)i_Layer);
+		return gtReadVkImage(image, i_Mip, i_Layer);
 	}
 
 	const matTextureDX11* texture = dynamic_cast<const matTextureDX11*>(i_pTexture);
 	EXPECT_TRUE(texture && texture->GetResource());
 	if (!texture || !texture->GetResource())
+		return std::vector<uint8_t>();
+	return gtReadD3D11Texture(static_cast<ID3D11Texture2D*>(texture->GetResource()), i_BytesPerTexel, i_Mip, i_Layer);
+}
+
+std::vector<uint8_t> gtReadVkImage(gvk::vkdImage* i_pImage, int i_Mip, int i_Layer)
+{
+	if (!i_pImage)
+		return std::vector<uint8_t>();
+	gvk::vkdGlobal::Context().Flush();
+	return i_pImage->ReadBack((uint32_t)i_Mip, (uint32_t)i_Layer);
+}
+
+std::vector<uint8_t> gtReadD3D11Texture(ID3D11Texture2D* i_pTexture, int i_BytesPerTexel, int i_Mip, int i_Layer)
+{
+	std::vector<uint8_t> texels;
+	if (!i_pTexture)
 		return texels;
 	ID3D11Device* device = g2dDX11Global::g_pDevice;
 	ID3D11DeviceContext* context = g2dDX11Global::g_pDeviceContext;
 	D3D11_TEXTURE2D_DESC desc;
-	static_cast<ID3D11Texture2D*>(texture->GetResource())->GetDesc(&desc);
+	i_pTexture->GetDesc(&desc);
 	const UINT subresource = D3D11CalcSubresource((UINT)i_Mip, (UINT)i_Layer, desc.MipLevels);
 	desc.Width = (std::max)(1u, desc.Width >> i_Mip);
 	desc.Height = (std::max)(1u, desc.Height >> i_Mip);
@@ -128,7 +140,7 @@ std::vector<uint8_t> gtReadTexture(gtBackend::Kind i_Kind, const matTexture* i_p
 		ADD_FAILURE() << "no staging texture";
 		return texels;
 	}
-	context->CopySubresourceRegion(staging.Get(), 0, 0, 0, 0, texture->GetResource(), subresource, NULL);
+	context->CopySubresourceRegion(staging.Get(), 0, 0, 0, 0, i_pTexture, subresource, NULL);
 	D3D11_MAPPED_SUBRESOURCE mapped;
 	if (SUCCEEDED(context->Map(staging.Get(), 0, D3D11_MAP_READ, 0, &mapped)))
 	{

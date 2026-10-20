@@ -14,6 +14,9 @@
 #ifndef GVK_G3D_DEPTHMAPRENDERERVK_HPP
 #include "GraphicsVulkan/G3d/g3dDepthMapRendererVk.hpp"
 #endif
+#ifndef GVK_G3D_RSMRENDERERVK_HPP
+#include "GraphicsVulkan/G3d/g3dRSMRendererVk.hpp"
+#endif
 #ifndef GVK_SHDW_HDRRENDERERVK_HPP
 #include "GraphicsVulkan/shdw/shdwHDRRendererVk.hpp"
 #endif
@@ -46,8 +49,7 @@ g3dSceneRenderer* shdwSceneRendererCreate::CreateSimpleRenderer()		{ return new 
 //	g3dTextureRendererDX11 (Plan 6)
 g3dSceneRenderer* shdwSceneRendererCreate::CreateTextureRenderer()		{ return m_Fallback.CreateTextureRenderer(); }
 g3dSceneRenderer* shdwSceneRendererCreate::CreateDepthMapRenderer()		{ return new g3dDepthMapRendererVk(); }
-//	g3dRSMRendererDX11 (Plan 5b)
-g3dSceneRenderer* shdwSceneRendererCreate::CreateRSMRenderer()			{ return m_Fallback.CreateRSMRenderer(); }
+g3dSceneRenderer* shdwSceneRendererCreate::CreateRSMRenderer()			{ return new g3dRSMRendererVk(); }
 //	shdwOpacityMapRendererDX11 (Plan 6)
 g3dSceneRenderer* shdwSceneRendererCreate::CreateOpacityMapRenderer(g3dProjectedLight* pProjLight)	{ return m_Fallback.CreateOpacityMapRenderer(pProjLight); }
 g3dSceneRenderer* shdwSceneRendererCreate::CreateCubeMapRenderer(scObject* i_Obj, matMaterial* i_Material, bool i_RenderPerFrame)

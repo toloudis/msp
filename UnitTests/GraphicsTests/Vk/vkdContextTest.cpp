@@ -6,7 +6,9 @@
 **      compared with a D3D11 device drawing the same HLSL), depth, stencil
 **      and scissor state work, rendering to a target and then sampling it
 **      is ordered (synchronization validation is on), and state changes
-**      that are dynamic don't create pipelines.
+**      that are dynamic don't create pipelines. Layered rendering (a
+**      geometry shader picking the slice of a volume with
+**      SV_RenderTargetArrayIndex) matches D3D11's.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -31,11 +33,15 @@
 #include "gtSolidPS.h"
 #include "gtBindingProtoVS.h"
 #include "gtBindingProtoPS.h"
+#include "gtLayeredVS.h"
+#include "gtLayeredGS.h"
+#include "gtLayeredPS.h"
 
 #include <d3dcompiler.h>
 
 #include <cstring>
 #include <memory>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -599,4 +605,288 @@ TEST_F(vkdContextTest, DestroyedTargetsAreUnbound)
 	Begin(next);
 	DrawVertices(front.data(), 6);
 	EXPECT_EQ(c_Red, pixel(Read(next), 32, 32));
+}
+
+namespace
+{
+	//	Layered rendering: three c_LayerSize x c_LayerSize x i_Slices
+	//	R32G32B32A32_FLOAT volumes, as LPV's
+	const uint32_t c_LayerSize = 8, c_LayerTargets = 3;
+	typedef std::vector<std::vector<float>> Volumes;		// texels of each target, slice by slice
+
+	struct LayeredConstants
+	{
+		uint32_t m_Slices, m_bPast, m_Pad[2];
+	};
+
+	//	gtLayered.hlsl compiled with fxc, drawn once into three volumes
+	//	cleared to i_Clear (render target views of the whole volume, as
+	//	shdwPassLPVGI makes them), read back
+	bool d3d_layered(gtD3D11& i_D3D, uint32_t i_Slices, bool i_bPast, const float i_Clear[4], Volumes& o_Volumes,
+					 std::string& o_Error)
+	{
+		using Microsoft::WRL::ComPtr;
+		const std::string root = gtPlatform::RepoRoot();
+		const std::wstring file = std::wstring(root.begin(), root.end()) +
+								  L"UnitTests\\GraphicsTests\\Vk\\Shaders\\gtLayered.hlsl";
+		ComPtr<ID3DBlob> vs, gs, ps, errors;
+		if (FAILED(D3DCompileFromFile(file.c_str(), NULL, NULL, "VSMain", "vs_5_0", 0, 0, &vs, &errors)) ||
+			FAILED(D3DCompileFromFile(file.c_str(), NULL, NULL, "GSMain", "gs_5_0", 0, 0, &gs, &errors)) ||
+			FAILED(D3DCompileFromFile(file.c_str(), NULL, NULL, "PSMain", "ps_5_0", 0, 0, &ps, &errors)))
+		{
+			o_Error = errors ? (const char*)errors->GetBufferPointer() : "can't compile gtLayered.hlsl";
+			return false;
+		}
+		ID3D11Device* d = i_D3D.Device();
+		ID3D11DeviceContext* c = i_D3D.Context();
+		ComPtr<ID3D11VertexShader> vertex;
+		ComPtr<ID3D11GeometryShader> geometry;
+		ComPtr<ID3D11PixelShader> pixel_shader;
+		d->CreateVertexShader(vs->GetBufferPointer(), vs->GetBufferSize(), NULL, &vertex);
+		d->CreateGeometryShader(gs->GetBufferPointer(), gs->GetBufferSize(), NULL, &geometry);
+		d->CreatePixelShader(ps->GetBufferPointer(), ps->GetBufferSize(), NULL, &pixel_shader);
+		D3D11_TEXTURE3D_DESC desc = { c_LayerSize, c_LayerSize, i_Slices, 1, DXGI_FORMAT_R32G32B32A32_FLOAT,
+									  D3D11_USAGE_DEFAULT, D3D11_BIND_RENDER_TARGET, 0, 0 };
+		ComPtr<ID3D11Texture3D> volumes[c_LayerTargets];
+		ComPtr<ID3D11RenderTargetView> views[c_LayerTargets];
+		ID3D11RenderTargetView* bound[c_LayerTargets];
+		for (uint32_t t = 0; t < c_LayerTargets; t++)
+		{
+			d->CreateTexture3D(&desc, NULL, &volumes[t]);
+			if (volumes[t])
+				d->CreateRenderTargetView(volumes[t].Get(), NULL, &views[t]);
+			if (!views[t])
+			{
+				o_Error = "can't make the volumes";
+				return false;
+			}
+			bound[t] = views[t].Get();
+		}
+		const LayeredConstants constants = { i_Slices, i_bPast ? 1u : 0u, { 0, 0 } };
+		D3D11_BUFFER_DESC cb = { sizeof(constants), D3D11_USAGE_DEFAULT, D3D11_BIND_CONSTANT_BUFFER, 0, 0, 0 };
+		D3D11_SUBRESOURCE_DATA init = { &constants, 0, 0 };
+		ComPtr<ID3D11Buffer> buffer;
+		d->CreateBuffer(&cb, &init, &buffer);
+
+		c->ClearState();
+		for (uint32_t t = 0; t < c_LayerTargets; t++)
+			c->ClearRenderTargetView(bound[t], i_Clear);
+		c->OMSetRenderTargets(c_LayerTargets, bound, NULL);
+		D3D11_VIEWPORT viewport = { 0, 0, (float)c_LayerSize, (float)c_LayerSize, 0, 1 };
+		c->RSSetViewports(1, &viewport);
+		c->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		c->VSSetShader(vertex.Get(), NULL, 0);
+		c->GSSetShader(geometry.Get(), NULL, 0);
+		c->GSSetConstantBuffers(0, 1, buffer.GetAddressOf());
+		c->PSSetShader(pixel_shader.Get(), NULL, 0);
+		c->Draw(3, 0);
+
+		desc.Usage = D3D11_USAGE_STAGING;
+		desc.BindFlags = 0;
+		desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+		o_Volumes.assign(c_LayerTargets, std::vector<float>());
+		const size_t row = c_LayerSize * 4;			// floats
+		for (uint32_t t = 0; t < c_LayerTargets; t++)
+		{
+			ComPtr<ID3D11Texture3D> staging;
+			d->CreateTexture3D(&desc, NULL, &staging);
+			c->CopyResource(staging.Get(), volumes[t].Get());
+			D3D11_MAPPED_SUBRESOURCE mapped;
+			if (!staging || FAILED(c->Map(staging.Get(), 0, D3D11_MAP_READ, 0, &mapped)))
+			{
+				o_Error = "can't map the volume";
+				return false;
+			}
+			o_Volumes[t].resize(row * c_LayerSize * i_Slices);
+			for (uint32_t z = 0; z < i_Slices; z++)
+			{
+				for (uint32_t y = 0; y < c_LayerSize; y++)
+				{
+					memcpy(&o_Volumes[t][(z * c_LayerSize + y) * row],
+						   (const uint8_t*)mapped.pData + z * mapped.DepthPitch + y * mapped.RowPitch, row * sizeof(float));
+				}
+			}
+			c->Unmap(staging.Get(), 0);
+		}
+		c->ClearState();
+		return true;
+	}
+
+	class vkdContextLayeredTest : public vkdContextTest
+	{
+		protected:
+			void SetUp() override
+			{
+				vkdContextTest::SetUp();
+				if (!m_pDevice)
+				{
+					return;
+				}
+				std::string error;
+				m_pLayeredVS = vkdShader::Create(&Device(), VK_SHADER_STAGE_VERTEX_BIT, g_gtLayeredVS, sizeof(g_gtLayeredVS), "VSMain", "gtLayered VS", error);
+				m_pLayeredGS = vkdShader::Create(&Device(), VK_SHADER_STAGE_GEOMETRY_BIT, g_gtLayeredGS, sizeof(g_gtLayeredGS), "GSMain", "gtLayered GS", error);
+				m_pLayeredPS = vkdShader::Create(&Device(), VK_SHADER_STAGE_FRAGMENT_BIT, g_gtLayeredPS, sizeof(g_gtLayeredPS), "PSMain", "gtLayered PS", error);
+				ASSERT_TRUE(m_pLayeredVS && m_pLayeredGS && m_pLayeredPS) << error;
+			}
+
+			void TearDown() override
+			{
+				m_pLayeredVS.reset();
+				m_pLayeredGS.reset();
+				m_pLayeredPS.reset();
+				vkdContextTest::TearDown();
+			}
+
+			vkdImage* Volume(uint32_t i_Slices)
+			{
+				vkdImageDesc desc;
+				desc.m_Type = VK_IMAGE_TYPE_3D;
+				desc.m_Format = VK_FORMAT_R32G32B32A32_SFLOAT;
+				desc.m_Width = desc.m_Height = c_LayerSize;
+				desc.m_Depth = i_Slices;
+				desc.m_Usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT |
+							   VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+				desc.m_bLayeredTarget = true;
+				m_Images.push_back(vkdImage::Create(Device(), desc, "vkdContextTest volume"));
+				return m_Images.back().get();
+			}
+
+			//	Binds i_Count targets with a c_LayerSize viewport and gtLayered's
+			//	shaders, and draws once
+			void DrawLayered(uint32_t i_Count, vkdImage* const* i_ppTargets, uint32_t i_Slices, bool i_bPast)
+			{
+				vkdContext& c = *m_pContext;
+				c.SetRenderTargets(i_Count, i_ppTargets, nullptr);
+				vkdViewport viewport;
+				viewport.m_Width = viewport.m_Height = (float)c_LayerSize;
+				c.SetViewports(1, &viewport);
+				const vkdShader* stages[5] = { m_pLayeredVS.get(), nullptr, nullptr, m_pLayeredGS.get(), m_pLayeredPS.get() };
+				c.SetShaders(stages);
+				c.SetVertexLayout(nullptr);
+				c.SetTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+				const LayeredConstants constants = { i_Slices, i_bPast ? 1u : 0u, { 0, 0 } };
+				vkdRingBuffer::Allocation cb = c.Upload(&constants, sizeof(constants));
+				c.Bindings().SetConstantBuffer(0, cb.m_Gpu, sizeof(constants));
+				c.Draw(3, 0);
+			}
+
+			std::vector<float> ReadFloats(vkdImage* i_pImage)
+			{
+				const std::vector<uint8_t> bytes = Read(i_pImage);
+				std::vector<float> floats(bytes.size() / sizeof(float));
+				memcpy(floats.data(), bytes.data(), floats.size() * sizeof(float));
+				return floats;
+			}
+
+			//	The Vulkan side of d3d_layered: the first volume cleared before
+			//	it is bound (outside rendering), the others while bound
+			Volumes Layered(uint32_t i_Slices, bool i_bPast, const float i_Clear[4])
+			{
+				vkdImage* views[c_LayerTargets];
+				vkdImage* volumes[c_LayerTargets];
+				for (uint32_t t = 0; t < c_LayerTargets; t++)
+				{
+					volumes[t] = Volume(i_Slices);
+					views[t] = volumes[t]->LayeredView();
+				}
+				m_pContext->ClearRenderTarget(views[0], i_Clear);
+				m_pContext->SetRenderTargets(c_LayerTargets, views, nullptr);
+				for (uint32_t t = 1; t < c_LayerTargets; t++)
+					m_pContext->ClearRenderTarget(views[t], i_Clear);
+				DrawLayered(c_LayerTargets, views, i_Slices, i_bPast);
+				Volumes result;
+				for (uint32_t t = 0; t < c_LayerTargets; t++)
+					result.push_back(ReadFloats(volumes[t]));
+				m_pContext->SetRenderTargets(0, nullptr, nullptr);
+				return result;
+			}
+
+			std::unique_ptr<vkdShader>	m_pLayeredVS, m_pLayeredGS, m_pLayeredPS;
+	};
+
+	//	The first texel of each slice of target i_Target, as text
+	std::string slices(const Volumes& i_Volumes, uint32_t i_Target, uint32_t i_Slices)
+	{
+		std::ostringstream text;
+		for (uint32_t z = 0; z < i_Slices && (z + 1) * c_LayerSize * c_LayerSize * 4 <= i_Volumes[i_Target].size(); z++)
+		{
+			const float* t = &i_Volumes[i_Target][z * c_LayerSize * c_LayerSize * 4];
+			text << " [" << t[0] << " " << t[1] << " " << t[2] << " " << t[3] << "]";
+		}
+		return text.str();
+	}
+
+	void expect_same_volumes(const Volumes& i_DX, const Volumes& i_Vk, uint32_t i_Slices)
+	{
+		ASSERT_EQ(c_LayerTargets, i_Vk.size());
+		for (uint32_t t = 0; t < c_LayerTargets; t++)
+		{
+			ASSERT_EQ(i_DX[t].size(), i_Vk[t].size()) << "target " << t;
+			EXPECT_TRUE(i_DX[t] == i_Vk[t]) << "target " << t << ": D3D11" << slices(i_DX, t, i_Slices)
+											<< ", Vulkan" << slices(i_Vk, t, i_Slices);
+		}
+	}
+}
+
+TEST_F(vkdContextLayeredTest, LayeredRenderingMatchesD3D11)
+{
+	GT_D3D11(d3d);
+	const uint32_t c_Slices = 4;
+	const float clear[4] = { 0.25f, 0.5f, 0.75f, 1.0f };
+	Volumes dx;
+	std::string error;
+	ASSERT_TRUE(d3d_layered(d3d, c_Slices, false, clear, dx, error)) << error;
+	const Volumes vk = Layered(c_Slices, false, clear);
+	expect_same_volumes(dx, vk, c_Slices);
+	//	and every slice was drawn: slice z of target 0 is (z, 0, 0, 1)
+	for (uint32_t z = 0; z < c_Slices; z++)
+	{
+		const float* texel = &vk[0][(z * c_LayerSize * c_LayerSize + 37) * 4];
+		EXPECT_EQ((float)z, texel[0]) << "slice " << z;
+		EXPECT_EQ(0.0f, texel[1]) << "slice " << z;
+		EXPECT_EQ(1.0f, texel[3]) << "slice " << z;
+	}
+}
+
+TEST_F(vkdContextLayeredTest, LayerPastTheLastSliceMatchesD3D11)
+{
+	//	LPV's injection rounds a VPL's slice up to the slice count when it
+	//	lies in the last half slice
+	GT_D3D11(d3d);
+	const uint32_t c_Slices = 4;
+	const float clear[4] = { 0.25f, 0.5f, 0.75f, 1.0f };
+	Volumes dx;
+	std::string error;
+	ASSERT_TRUE(d3d_layered(d3d, c_Slices, true, clear, dx, error)) << error;
+	const Volumes vk = Layered(c_Slices, true, clear);
+	expect_same_volumes(dx, vk, c_Slices);
+	//	D3D11 renders it into slice 0 (Vulkan leaves a Layer past the last
+	//	one undefined: this checks the driver does as D3D11 does)
+	const float* texel = &dx[0][37 * 4];
+	EXPECT_EQ((float)c_Slices, texel[0]) << "D3D11" << slices(dx, 0, c_Slices);
+}
+
+TEST_F(vkdContextLayeredTest, TargetsWithDifferentLayerCountsAreRefused)
+{
+	//	D3D11 doesn't render into views of different array sizes; nor does
+	//	vkdContext (the draw is skipped and logged)
+	vkdImage* volume = Volume(4);
+	std::unique_ptr<vkdImage> flat = vkdImage::Create2D(Device(), c_LayerSize, c_LayerSize, VK_FORMAT_R32G32B32A32_SFLOAT,
+		VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, "flat");
+	const float clear[4] = { 0.25f, 0.5f, 0.75f, 1.0f };
+	m_pContext->ClearRenderTarget(volume->LayeredView(), clear);
+	m_pContext->ClearRenderTarget(flat.get(), clear);
+	vkdImage* targets[2] = { volume->LayeredView(), flat.get() };
+	DrawLayered(2, targets, 4, false);
+	const std::vector<float> both[2] = { ReadFloats(volume), ReadFloats(flat.get()) };
+	for (const std::vector<float>& texels : both)
+	{
+		ASSERT_FALSE(texels.empty());
+		for (size_t i = 0; i < texels.size(); i += 4)
+		{
+			ASSERT_EQ(clear[0], texels[i]) << i;
+			ASSERT_EQ(clear[3], texels[i + 3]) << i;
+		}
+	}
+	m_pContext->SetRenderTargets(0, nullptr, nullptr);
 }

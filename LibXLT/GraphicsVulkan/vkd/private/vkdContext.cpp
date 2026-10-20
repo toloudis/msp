@@ -376,6 +376,23 @@ namespace gvk
 		VkRenderingAttachmentInfo stencil = {VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO};
 		uint32_t width = UINT32_MAX, height = UINT32_MAX;
 		const char* label = "vkdContext: no targets";
+		//	every view the same number of layers, as D3D11 requires
+		uint32_t layers = 0;
+		bool same_layers = true;
+		for (uint32_t c = 0; c <= m_ColorCount; c++)
+		{
+			const vkdImage* image = c < m_ColorCount ? m_Colors[c] : m_pDepth;
+			if (image)
+			{
+				same_layers &= (layers == 0 || layers == image->Desc().m_Layers);
+				layers = image->Desc().m_Layers;
+			}
+		}
+		if (!same_layers)
+		{
+			DBG_WARNING("vkdContext: render targets with different layer counts; nothing is rendered");
+			return false;
+		}
 		for (uint32_t c = 0; c < m_ColorCount; c++)
 		{
 			colors[c].sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
@@ -413,7 +430,7 @@ namespace gvk
 			height = (uint32_t)(m_Viewports[0].m_Y + m_Viewports[0].m_Height);
 		}
 		info.renderArea = { { 0, 0 }, { width, height } };
-		info.layerCount = 1;
+		info.layerCount = std::max(layers, 1u);
 		info.colorAttachmentCount = m_ColorCount;
 		info.pColorAttachments = colors;
 
@@ -422,6 +439,7 @@ namespace gvk
 		vkCmdBeginRendering(i_Commands, &info);
 		m_bRendering = true;
 		m_RenderExtent = { width, height };
+		m_RenderLayers = info.layerCount;
 		m_bDynamicDirty = true;
 		return true;
 	}
@@ -615,7 +633,7 @@ namespace gvk
 			clear.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 			clear.colorAttachment = attachment;
 			clear.clearValue.color = color;
-			VkClearRect rect = { { { 0, 0 }, m_RenderExtent }, 0, 1 };
+			VkClearRect rect = { { { 0, 0 }, m_RenderExtent }, 0, m_RenderLayers };
 			vkCmdClearAttachments(commands, 1, &clear, 1, &rect);
 		}
 		else
@@ -624,9 +642,15 @@ namespace gvk
 					   "vkdContext::ClearRenderTarget: the image needs TRANSFER_DST usage to be cleared outside rendering");
 			end_rendering(commands);
 			barrier_if_needed(commands);
-			//	the part of the image the target views (one face or mip of a texture)
+			//	the part of the image the target views (one face or mip of a texture;
+			//	a 3D image's layered view is all of mip 0, its one layer)
 			VkImageSubresourceRange range = i_pTarget->Range();
 			range.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+			if (i_pTarget->Desc().m_Type == VK_IMAGE_TYPE_3D)
+			{
+				range.baseArrayLayer = 0;
+				range.layerCount = 1;
+			}
 			vkCmdClearColorImage(commands, i_pTarget->Image(), VK_IMAGE_LAYOUT_GENERAL, &color, 1, &range);
 			m_bNeedBarrier = true;
 		}
@@ -656,7 +680,7 @@ namespace gvk
 			VkClearAttachment clear = {};
 			clear.aspectMask = aspects;
 			clear.clearValue.depthStencil = value;
-			VkClearRect rect = { { { 0, 0 }, m_RenderExtent }, 0, 1 };
+			VkClearRect rect = { { { 0, 0 }, m_RenderExtent }, 0, m_RenderLayers };
 			vkCmdClearAttachments(commands, 1, &clear, 1, &rect);
 		}
 		else if (aspects)

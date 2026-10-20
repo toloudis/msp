@@ -176,6 +176,11 @@
     <CustomBuild Include="Vk\Shaders\gtTexel3D.hlsl">
       <AdditionalInputs>%(RootDir)%(Directory)gtTexel.hlsl</AdditionalInputs>
     </CustomBuild>
+    <!-- also a geometry shader, GSMain -->
+    <CustomBuild Include="Vk\Shaders\gtLayered.hlsl">
+      <Command>$(GtDxc) -T vs_6_0 -E VSMain -Vn g_%(Filename)VS -Fh "$(IntDir)%(Filename)VS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -T gs_6_0 -E GSMain -Vn g_%(Filename)GS -Fh "$(IntDir)%(Filename)GS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -T ps_6_0 -E PSMain -Vn g_%(Filename)PS -Fh "$(IntDir)%(Filename)PS.h" "%(FullPath)"</Command>
+      <Outputs>$(IntDir)%(Filename)VS.h;$(IntDir)%(Filename)GS.h;$(IntDir)%(Filename)PS.h</Outputs>
+    </CustomBuild>
   </ItemGroup>
   <ItemDefinitionGroup>
     <CustomBuild>

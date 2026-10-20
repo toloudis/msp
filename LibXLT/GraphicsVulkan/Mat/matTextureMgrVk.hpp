@@ -7,9 +7,8 @@
 **	them by kind. matTextureMgr itself does the reference counting by
 **	locator.
 **
-**	Not ported here, each logging GVK_NOT_YET: reflective shadow maps
-**	(Plan 5b, with LPV GI: until then a texture with a size and no image),
-**	MergeTransparentTextures and the save-to-file calls (Plan 6).
+**	Not ported here, each logging GVK_NOT_YET: MergeTransparentTextures
+**	and the save-to-file calls (Plan 6).
 **
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved

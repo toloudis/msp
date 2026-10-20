@@ -62,6 +62,9 @@
 #ifndef GVK_G3D_DEPTHMAPRENDERERVK_HPP
 #include "GraphicsVulkan/G3d/g3dDepthMapRendererVk.hpp"
 #endif
+#ifndef GVK_G3D_RSMRENDERERVK_HPP
+#include "GraphicsVulkan/G3d/g3dRSMRendererVk.hpp"
+#endif
 #ifndef GVK_SHDW_HDRRENDERERVK_HPP
 #include "GraphicsVulkan/shdw/shdwHDRRendererVk.hpp"
 #endif
@@ -355,7 +358,6 @@ TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
 	const std::vector<Case> cases =
 	{
 		{ "texture", []() { return g3dSceneRendererCreate::CreateTextureRenderer(); } },
-		{ "RSM", []() { return g3dSceneRendererCreate::CreateRSMRenderer(); } },
 		{ "opacity map", []() { return g3dSceneRendererCreate::CreateOpacityMapRenderer(NULL); } },
 		{ "ambient occlusion", []() { return g3dSceneRendererCreate::CreateAmbientOcclusionRenderer(); } },
 		{ "global illumination", []() { return g3dSceneRendererCreate::CreateGlobalIlluminationRenderer(); } },
@@ -415,6 +417,10 @@ TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
 				{
 					std::unique_ptr<g3dSceneRenderer> renderer(g3dSceneRendererCreate::CreateSimpleRenderer());
 					EXPECT_TRUE(dynamic_cast<gvk::shdwShadowLayerRendererVk*>(renderer.get()) != NULL);
+				}
+				{	// since Plan 5b Task 3
+					std::unique_ptr<g3dSceneRenderer> renderer(g3dSceneRendererCreate::CreateRSMRenderer());
+					EXPECT_TRUE(dynamic_cast<gvk::g3dRSMRendererVk*>(renderer.get()) != NULL);
 				}
 			}
 			log = capture.Text();

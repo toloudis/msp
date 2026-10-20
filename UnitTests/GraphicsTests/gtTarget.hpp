@@ -16,6 +16,8 @@
 
 class g2dRenderTarget;
 class matTexture;
+struct ID3D11Texture2D;
+namespace gvk { class vkdImage; }
 
 struct gtPicture
 {
@@ -53,3 +55,8 @@ class gtTarget
 //	shadow map), and for mips and cube faces
 std::vector<uint8_t> gtReadTexture(gtBackend::Kind i_Kind, const matTexture* i_pTexture, int i_BytesPerTexel,
 								   int i_Mip = 0, int i_Layer = 0);
+
+//	gtReadTexture's two halves, for textures that aren't a matTexture's
+//	main image (the other targets of a reflective shadow map)
+std::vector<uint8_t> gtReadD3D11Texture(ID3D11Texture2D* i_pTexture, int i_BytesPerTexel, int i_Mip = 0, int i_Layer = 0);
+std::vector<uint8_t> gtReadVkImage(gvk::vkdImage* i_pImage, int i_Mip = 0, int i_Layer = 0);

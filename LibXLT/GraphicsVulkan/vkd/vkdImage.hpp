@@ -12,6 +12,10 @@
 **	of one face or slice; the depth aspect) as vkdImages of their own, to
 **	bind as render targets or textures where DX11 code makes a view of
 **	part of a texture. They share the parent's VkImage and are owned by it.
+**	A 3D image made with m_bLayeredTarget also has LayeredView(), a 2D-array
+**	view of all its slices: the render target view D3D11 makes of a whole
+**	volume, into which a geometry shader picks the slice
+**	(SV_RenderTargetArrayIndex).
 **
 **	Wrap() gives a vkdImage for an image and view made elsewhere (a swap
 **	chain's), so it can be bound like any other; it destroys neither.
@@ -51,6 +55,7 @@ namespace gvk
 		VkSampleCountFlagBits	m_Samples = VK_SAMPLE_COUNT_1_BIT;
 		VkImageUsageFlags		m_Usage = 0;
 		VkImageAspectFlags		m_Aspect = VK_IMAGE_ASPECT_COLOR_BIT;
+		bool					m_bLayeredTarget = false;	// 3D images only: rendered into slice by slice (LayeredView)
 	};
 
 	class vkdImage
@@ -92,6 +97,11 @@ namespace gvk
 			//	A view of the depth aspect only, for sampling a depth-stencil
 			//	image; made on first use and owned by this image
 			vkdImage* DepthView();
+			//	For a 3D image made with m_bLayeredTarget: a 2D-array view of
+			//	mip 0's slices (one layer per slice), to bind as a render
+			//	target; made on first use and owned by this image. Its Desc()
+			//	keeps VK_IMAGE_TYPE_3D, with m_Layers the slice count.
+			vkdImage* LayeredView();
 
 			//	The image's index in i_Bindings' resource heap, as a sampled
 			//	(t register) or storage (u register) image: registered on first
@@ -138,6 +148,7 @@ namespace gvk
 			uint32_t		m_StorageIndex = UINT32_MAX;
 			std::map<uint64_t, std::unique_ptr<vkdImage>> m_Subresources;	// by mip << 32 | layer
 			std::unique_ptr<vkdImage> m_pDepthView;
+			std::unique_ptr<vkdImage> m_pLayeredView;
 	};
 
 	//	vkdFormatSize - bytes per pixel of an uncompressed format; 0 for

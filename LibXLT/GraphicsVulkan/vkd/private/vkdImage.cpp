@@ -111,7 +111,9 @@ namespace gvk
 		{
 			info.flags |= VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
 		}
-		if (i_Desc.m_Type == VK_IMAGE_TYPE_3D && (i_Desc.m_Usage & VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT))
+		DBG_ASSERT(!i_Desc.m_bLayeredTarget || (i_Desc.m_Type == VK_IMAGE_TYPE_3D && (i_Desc.m_Usage & VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT)),
+				   "vkdImage::Create: m_bLayeredTarget is for 3D colour attachments");
+		if (i_Desc.m_bLayeredTarget)
 		{
 			//	Rendering into slices, as DX11's render target views of volume textures
 			info.flags |= VK_IMAGE_CREATE_2D_ARRAY_COMPATIBLE_BIT;
@@ -244,6 +246,20 @@ namespace gvk
 		return m_pDepthView.get();
 	}
 
+	vkdImage* vkdImage::LayeredView()
+	{
+		DBG_ASSERT(m_Allocation, "vkdImage::LayeredView: called on a view");
+		DBG_ASSERT(m_Desc.m_bLayeredTarget, "vkdImage::LayeredView: the image wasn't made with m_bLayeredTarget");
+		if (!m_pLayeredView && m_Desc.m_bLayeredTarget)
+		{
+			//	the slices of a 2D_ARRAY_COMPATIBLE 3D image are its layers in
+			//	a 2D-array view
+			VkImageSubresourceRange range = { m_Desc.m_Aspect, 0, 1, 0, m_Desc.m_Depth };
+			m_pLayeredView = make_view(range, VK_IMAGE_VIEW_TYPE_2D_ARRAY, "vkdImage layered view");
+		}
+		return m_pLayeredView.get();
+	}
+
 	uint32_t vkdImage::SampledIndex(vkdBindings& i_Bindings)
 	{
 		DBG_ASSERT(!m_pBindings || m_pBindings == &i_Bindings, "vkdImage: registered with another vkdBindings");
@@ -273,6 +289,7 @@ namespace gvk
 		//	Views of this image go first, so their destruction is queued before the image's
 		m_Subresources.clear();
 		m_pDepthView.reset();
+		m_pLayeredView.reset();
 		if (m_pBindings)
 		{
 			for (uint32_t index : {m_SampledIndex, m_StorageIndex})

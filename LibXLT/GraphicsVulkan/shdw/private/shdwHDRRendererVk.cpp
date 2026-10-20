@@ -101,9 +101,6 @@
 #ifndef GVK_SHDW_PASSFOG_HPP
 #include "GraphicsVulkan/shdw/shdwPassFog.hpp"
 #endif
-#ifndef GVK_SHDW_PASSSTUBSVK_HPP
-#include "GraphicsVulkan/stub/shdwPassStubsVk.hpp"
-#endif
 #ifndef GVK_SHDW_PASSSSAO_HPP
 #include "GraphicsVulkan/shdw/shdwPassSSAO.hpp"
 #endif
@@ -112,6 +109,9 @@
 #endif
 #ifndef GVK_SHDW_PASSSSGI_HPP
 #include "GraphicsVulkan/shdw/shdwPassSSGI.hpp"
+#endif
+#ifndef GVK_SHDW_PASSLPVGI_HPP
+#include "GraphicsVulkan/shdw/shdwPassLPVGI.hpp"
 #endif
 #ifndef GVK_SHDW_PASSGLOW_HPP
 #include "GraphicsVulkan/shdw/shdwPassGlow.hpp"
