@@ -13,7 +13,8 @@
 **      VPLs injected into the radiance volumes from a geometry shader, the
 **      propagation, the volumes applied to the scene and blended), the
 **      RSM itself (every target, as floats), the cases with no light to
-**      inject, and the volumes remade between frames.
+**      inject, and the volumes remade between frames. Last, each AO
+**      (SSAO, AO volumes) with each GI (SSGI, LPV), HDR AA off and on.
 **
 **      Exceptions to gfxcompare's tolerance (max 2/255, at most 0.1% of
 **      pixels over 1/255): none.
@@ -539,4 +540,69 @@ TEST(shdwAoGiVkTest, LPVResizeBetweenFramesIsClean)
 		return { "frame" + std::to_string(i_Frames), build, options };
 	};
 	gtExpectSameImages("LPVResizeBetweenFramesIsClean", { resized(1), resized(2), resized(3) });
+}
+
+namespace
+{
+	//	LPV's room with ao_scene's SSAO settings and gi_scene's SSGI ones
+	void ao_gi_room(gtSceneBuilder& io_Builder, const std::filesystem::path&)
+	{
+		lpv_room(io_Builder, e_GILight, false, NULL);
+		set_lpv(io_Builder.Scene(), LpvSettings());
+		ssaoParams ao;
+		io_Builder.Scene().GetSSAOSettings(ao);
+		ao.m_AORadius = 1.2f;
+		ao.m_AORadiusFar = 2.4f;
+		ao.m_Contrast = 3.0f;
+		ao.m_Color = maFloatRGBA(0.1f, 0.05f, 0.2f, 1.0f);
+		io_Builder.Scene().SetSSAOSettings(ao);
+		ssgiParams gi;
+		io_Builder.Scene().GetSSGISettings(gi);
+		gi.m_GIRadius = 1.0f;
+		gi.m_GIRadiusFar = 2.0f;
+		gi.m_Contrast = 2.0f;
+		io_Builder.Scene().SetSSGISettings(gi);
+	}
+
+	//	AO (if i_bAO: AO volumes or SSAO) and GI (if i_bGI: LPV or SSGI)
+	gtRenderOptions ao_gi_prefs(bool i_bAO, bool i_bAOVolumes, bool i_bGI, bool i_bLPV, bool i_bAA)
+	{
+		gtRenderOptions options;
+		options.m_Prefs = [=](g3dPrefs::g3dRenderPrefs& p)
+		{
+			p.m_bEnableSSAO = i_bAO;
+			p.m_bAOInvalid = i_bAOVolumes;
+			p.m_bEnableSSGI = i_bGI;
+			p.m_bGIInvalid = i_bLPV;
+			p.m_bHDRAA = i_bAA;
+		};
+		//	the projected light's shadow map
+		options.m_BeforeFrame = [](gtSceneBuilder& io_Builder) { io_Builder.RenderTargets(); };
+		return options;
+	}
+}
+
+TEST(shdwAoGiVkTest, AOAndGICombinationsMatchDX11)
+{
+	//	AO and GI share scratch textures and DepthBuffer(), and each pass
+	//	clears what the next restores (Review Focus 5)
+	std::vector<gtCase> cases;
+	for (int aa = 0; aa < 2; aa++)
+	{
+		for (int volumes = 0; volumes < 2; volumes++)
+		{
+			for (int lpv = 0; lpv < 2; lpv++)
+			{
+				const std::string name = std::string(volumes ? "aovolumes" : "ssao") + (lpv ? "_lpv" : "_ssgi") + (aa ? "_hdraa" : "");
+				cases.push_back({ name, ao_gi_room, ao_gi_prefs(true, volumes != 0, true, lpv != 0, aa != 0) });
+			}
+		}
+	}
+	gtExpectSameImages("AOAndGICombinationsMatchDX11", cases);
+
+	//	the AO shows over each GI
+	gtExpectEffectShows("AOAndGICombinationsMatchDX11/ssao_lpv", ao_gi_room, ao_gi_prefs(true, false, true, true, false),
+						ao_gi_room, ao_gi_prefs(false, false, true, true, false), 256 * 256 / 100);
+	gtExpectEffectShows("AOAndGICombinationsMatchDX11/aovolumes_ssgi", ao_gi_room, ao_gi_prefs(true, true, true, false, false),
+						ao_gi_room, ao_gi_prefs(false, true, true, false, false), 256 * 256 / 100);
 }

@@ -13,6 +13,9 @@
 #ifndef MA_FUNCTIONS_HPP
 #include "Core/Ma/maFunctions.hpp"
 #endif
+#ifndef G3D_PASSBUFFERS_HPP
+#include "Graphics/G3d/g3dPassBuffers.hpp"
+#endif
 #ifndef G3D_POSTPROCESSING_HPP
 #include "Graphics/G3d/g3dPostProcessing.hpp"
 #endif
@@ -57,7 +60,8 @@ gtPrefsScope::gtPrefsScope()
 	m_pActiveLight(g3dSingleLightRendering::GetActiveLight()),
 	m_bFirstLight(g3dSingleLightRendering::IsFirstLight()),
 	m_bPostActive(g3dPostProcessing::GetActive()),
-	m_PostEffect(g3dPostProcessing::GetPostEffect())
+	m_PostEffect(g3dPostProcessing::GetPostEffect()),
+	m_bDoingFileRefl(g3dPassBuffers::GetDoingFileRefl())
 {
 }
 
@@ -78,6 +82,7 @@ gtPrefsScope::~gtPrefsScope()
 	g3dSingleLightRendering::SetFirstLight(m_bFirstLight);
 	g3dPostProcessing::SetActive(m_bPostActive);
 	g3dPostProcessing::SetPostEffect(m_PostEffect);
+	g3dPassBuffers::SetDoingFileRefl(m_bDoingFileRefl);
 }
 
 //============================================================================

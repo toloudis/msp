@@ -75,8 +75,9 @@ struct gtRenderOptions
 	float	m_MaxPctOver = 0.1f;
 };
 
-//	Saves g3dPrefs::CurrentPrefs(), g3dSingleLightRendering's flags and
-//	g3dPostProcessing's effect, and restores them when it goes
+//	Saves g3dPrefs::CurrentPrefs(), g3dSingleLightRendering's flags,
+//	g3dPostProcessing's effect and g3dPassBuffers' file-reflection flag,
+//	and restores them when it goes
 class gtPrefsScope
 {
 	public:
@@ -102,6 +103,7 @@ class gtPrefsScope
 		bool						m_bFirstLight;
 		bool						m_bPostActive;
 		shared_ptr<effShaderParams>	m_PostEffect;
+		bool						m_bDoingFileRefl;
 };
 
 //	i_Build's scene rendered on the backend that is up, into an

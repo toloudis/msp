@@ -105,6 +105,11 @@ namespace gtScene
 	//	effPhongData set to i_Values (colours, specular power, transparency)
 	void SetPhong(effShaderData* io_pData, Values i_Values);
 
+	//	Sets a material shader material's parameter named i_pName (its HLSL
+	//	name); a test failure if it has none
+	void SetFloat(matMaterial* io_pMaterial, const char* i_pName, float i_Value);
+	void SetColor(matMaterial* io_pMaterial, const char* i_pName, const maFloatRGBA& i_Value);
+
 	//	An RGBA8 i_Width x i_Height texture of i_Cells x i_Cells coloured
 	//	checks (a PNG written to i_Dir, loaded through matTextureMgr, mips
 	//	generated). i_Blur > 0 softens the edges with a box filter of that

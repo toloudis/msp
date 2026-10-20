@@ -11,7 +11,9 @@
 **      from a bright sun, alpha, HDR anti-aliasing on and off, each HDR
 **      debug buffer, the ambient-only branch (single-light rendering off),
 **      every optional pass off, no lights and many lights, overlay and
-**      viewer layers, and one renderer used at several sizes in turn.
+**      viewer layers, one renderer used at several sizes in turn, and
+**      the camera's render-pass buffers (beauty, reflection with a file
+**      reflection, AO in place of AO volumes or SSAO; Add and Multiply).
 **
 **      The lights cast shadows, as MachStudio's do (the lit pass draws only
 **      those). Plan 4b's built-in Phong row is drawn by the transparent pass
@@ -36,6 +38,9 @@
 
 #ifndef G3D_LIGHTMGR_HPP
 #include "Graphics/G3d/g3dLightMgr.hpp"
+#endif
+#ifndef G3D_PASSBUFFERS_HPP
+#include "Graphics/G3d/g3dPassBuffers.hpp"
 #endif
 #ifndef G3D_PREFS_HPP
 #include "Graphics/G3d/g3dPrefs.hpp"
@@ -342,3 +347,150 @@ TEST(shdwHDRRendererVkTest, ResizeBetweenFramesMatchesDX11)
 	}
 }
 
+
+namespace
+{
+	//	A render-pass buffer: blended with i_Op at i_Intensity, or none
+	struct PassBuffer
+	{
+		bool	m_bOn = false;
+		int		m_Op = g3dPassBuffers::e_ADD;
+		float	m_Intensity = 1.0f;
+	};
+
+	PassBuffer pass_buffer(int i_Op, float i_Intensity)
+	{
+		PassBuffer buffer;
+		buffer.m_bOn = true;
+		buffer.m_Op = i_Op;
+		buffer.m_Intensity = i_Intensity;
+		return buffer;
+	}
+
+	struct PassBuffers
+	{
+		PassBuffer	m_Beauty, m_Refl, m_AO;
+		bool		m_bFileRefl = false;	// g3dPassBuffers::SetDoingFileRefl
+	};
+
+	//	The moderate spheres above a planar reflector (BlinnReflection, dark,
+	//	with shdwReflectionVkTest's strong Fresnel bias) under the global
+	//	environment (its pass draws the reflection term), the
+	//	camera given i_Buffers' pass buffers as cmraCameraObject loads them
+	//	(soft checker images: each buffer its own)
+	gtSceneFunction pass_buffer_scene(const PassBuffers& i_Buffers)
+	{
+		return [=](gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
+		{
+			moderate(io_Builder);
+			io_Builder.Camera().LookAt(maPoint3d(0, 1.0f, 7.0f), maPoint3d(0, -0.6f, 0), maVector3d(0, 1, 0));
+			maMatrix4x4 floor;
+			floor.MakeRotate(maVector3d(0, 0, 1), maVector3d(0, 1, 0));
+			floor.ScaleBy(3.0f, 3.0f, 3.0f);
+			floor.TranslateBy(0, -2.1f, 0);
+			matMaterial* reflector = io_Builder.Keep(gtScene::ShaderMaterial("BlinnReflection.fx", gtScene::e_Defaults));
+			gtScene::SetColor(reflector, "g_diffuse", maFloatRGBA(0.1f, 0.1f, 0.12f, 1));
+			gtScene::SetFloat(reflector, "fresnelBias", 0.6f);
+			io_Builder.Reflective(io_Builder.Add(gtScene::Plane(), reflector, floor), true, false);
+			environment(io_Builder, i_Dir, false);
+
+			camPassBuffersData data;
+			int cells = 4;
+			auto image = [&](const PassBuffer& i_Buffer, matTexture*& o_pTexture, int& o_Op, float& o_Intensity)
+			{
+				if (!i_Buffer.m_bOn)
+					return;
+				o_pTexture = io_Builder.Keep(gtScene::CheckerTexture(i_Dir, 128, 128, cells++, 4));
+				o_Op = i_Buffer.m_Op;
+				o_Intensity = i_Buffer.m_Intensity;
+			};
+			image(i_Buffers.m_Beauty, data.m_BeautyBuffer, data.m_BeautyBlendOp, data.m_BeautyIntensity);
+			image(i_Buffers.m_Refl, data.m_ReflBuffer, data.m_ReflBlendOp, data.m_ReflIntensity);
+			image(i_Buffers.m_AO, data.m_AOBuffer, data.m_AOBlendOp, data.m_AOIntensity);
+			io_Builder.Camera().SetPassBuffersParams(data);
+			//	gtPrefsScope restores it
+			g3dPassBuffers::SetDoingFileRefl(i_Buffers.m_bFileRefl);
+		};
+	}
+
+	//	The reflection rendered before the frame; AO volumes (i_bAOVolumes)
+	//	or SSAO if i_bAO
+	gtRenderOptions pass_buffer_prefs(bool i_bAO = false, bool i_bAOVolumes = true, bool i_bAA = false)
+	{
+		gtRenderOptions options;
+		options.m_Prefs = [=](g3dPrefs::g3dRenderPrefs& p)
+		{
+			p.m_bEnableReflection = true;
+			p.m_bEnableSSAO = i_bAO;
+			p.m_bAOInvalid = i_bAOVolumes;
+			p.m_bHDRAA = i_bAA;
+		};
+		options.m_BeforeFrame = [](gtSceneBuilder& io_Builder) { io_Builder.RenderTargets(); };
+		return options;
+	}
+}
+
+TEST(shdwHDRRendererVkTest, PassBuffersMatchDX11)
+{
+	//	the blend ops MachStudio offers (cmraDriverRenderPass: Add and
+	//	Multiply; Replace's tag is commented out, and BlendBuffers sets no
+	//	blend state for it)
+	const int ops[2] = { g3dPassBuffers::e_ADD, g3dPassBuffers::e_MUL };
+	const char* opNames[2] = { "add", "mul" };
+	std::vector<gtCase> cases;
+	for (int i = 0; i < 2; i++)
+	{
+		const std::string op = opNames[i];
+		PassBuffers beauty;
+		beauty.m_Beauty = pass_buffer(ops[i], 0.6f);
+		cases.push_back({ "beauty_" + op, pass_buffer_scene(beauty), pass_buffer_prefs() });
+
+		//	a file reflection: the reflection buffer in place of the
+		//	planar reflection (not rendered, and no map in the material)
+		PassBuffers refl;
+		refl.m_Refl = pass_buffer(ops[i], 0.8f);
+		refl.m_bFileRefl = true;
+		cases.push_back({ "refl_file_" + op, pass_buffer_scene(refl), pass_buffer_prefs() });
+
+		//	the AO buffer in place of the AO volumes pass, and of SSAO
+		PassBuffers ao;
+		ao.m_AO = pass_buffer(ops[i], 0.7f);
+		cases.push_back({ "ao_volumes_" + op, pass_buffer_scene(ao), pass_buffer_prefs(true, true) });
+		cases.push_back({ "ssao_" + op, pass_buffer_scene(ao), pass_buffer_prefs(true, false) });
+	}
+	//	the reflection buffer without a file reflection: left out, and the
+	//	planar reflection rendered
+	PassBuffers reflNotFile;
+	reflNotFile.m_Refl = pass_buffer(g3dPassBuffers::e_ADD, 0.8f);
+	cases.push_back({ "refl_not_file", pass_buffer_scene(reflNotFile), pass_buffer_prefs() });
+	//	a file reflection with no reflection buffer
+	PassBuffers fileOnly;
+	fileOnly.m_bFileRefl = true;
+	cases.push_back({ "file_refl_no_buffer", pass_buffer_scene(fileOnly), pass_buffer_prefs() });
+	//	all three, AO volumes and HDR AA on
+	PassBuffers all;
+	all.m_Beauty = pass_buffer(g3dPassBuffers::e_MUL, 1.2f);
+	all.m_Refl = pass_buffer(g3dPassBuffers::e_ADD, 0.5f);
+	all.m_AO = pass_buffer(g3dPassBuffers::e_MUL, 1.0f);
+	all.m_bFileRefl = true;
+	cases.push_back({ "all_hdraa", pass_buffer_scene(all), pass_buffer_prefs(true, true, true) });
+	gtExpectSameImages("PassBuffersMatchDX11", cases);
+
+	PassBuffers none, fileRefl;
+	fileRefl.m_bFileRefl = true;
+	PassBuffers beauty, refl, ao;
+	beauty.m_Beauty = pass_buffer(g3dPassBuffers::e_ADD, 0.6f);
+	refl.m_Refl = pass_buffer(g3dPassBuffers::e_ADD, 0.8f);
+	refl.m_bFileRefl = true;
+	ao.m_AO = pass_buffer(g3dPassBuffers::e_MUL, 0.7f);
+	const int c_Min = 256 * 256 / 50;
+	gtExpectEffectShows("PassBuffersMatchDX11/beauty", pass_buffer_scene(beauty), pass_buffer_prefs(),
+						pass_buffer_scene(none), pass_buffer_prefs(), c_Min);
+	gtExpectEffectShows("PassBuffersMatchDX11/refl_file", pass_buffer_scene(refl), pass_buffer_prefs(),
+						pass_buffer_scene(fileRefl), pass_buffer_prefs(), c_Min);
+	//	a file reflection drops the planar reflection
+	gtExpectEffectShows("PassBuffersMatchDX11/file_refl", pass_buffer_scene(none), pass_buffer_prefs(),
+						pass_buffer_scene(fileRefl), pass_buffer_prefs(), 256 * 256 / 500);
+	gtExpectEffectShows("PassBuffersMatchDX11/ao_volumes", pass_buffer_scene(ao), pass_buffer_prefs(true, true),
+						pass_buffer_scene(none), pass_buffer_prefs(true, true), c_Min);
+}

@@ -263,6 +263,36 @@ void gtScene::SetPhong(effShaderData* io_pData, Values i_Values)
 	phong->m_Transparency = i_Values == e_Zero ? 0.0f : (i_Values == e_Huge ? 1.0f : 0.7f);
 }
 
+void gtScene::SetFloat(matMaterial* io_pMaterial, const char* i_pName, float i_Value)
+{
+	std::vector<effParamFloat*> floats;
+	io_pMaterial->GetShaderParams(0)->GetAllFloatParams(floats);
+	for (effParamFloat* param : floats)
+	{
+		if (param->GetName() == i_pName)
+		{
+			param->Property().SetValue(i_Value);
+			return;
+		}
+	}
+	ADD_FAILURE() << "no parameter " << i_pName;
+}
+
+void gtScene::SetColor(matMaterial* io_pMaterial, const char* i_pName, const maFloatRGBA& i_Value)
+{
+	std::vector<effParamColor*> colors;
+	io_pMaterial->GetShaderParams(0)->GetAllColorParams(colors);
+	for (effParamColor* param : colors)
+	{
+		if (param->GetName() == i_pName)
+		{
+			param->Property().SetValue(i_Value);
+			return;
+		}
+	}
+	ADD_FAILURE() << "no parameter " << i_pName;
+}
+
 namespace
 {
 	//	i_Rgba (RGBA8) written to i_Path as a PNG and loaded through

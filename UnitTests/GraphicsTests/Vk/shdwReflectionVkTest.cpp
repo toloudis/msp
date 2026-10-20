@@ -110,37 +110,6 @@ namespace
 		return m;
 	}
 
-	//	Sets the material parameter named i_pName (its HLSL name)
-	void set_float(matMaterial* io_pMaterial, const char* i_pName, float i_Value)
-	{
-		std::vector<effParamFloat*> floats;
-		io_pMaterial->GetShaderParams(0)->GetAllFloatParams(floats);
-		for (effParamFloat* param : floats)
-		{
-			if (param->GetName() == i_pName)
-			{
-				param->Property().SetValue(i_Value);
-				return;
-			}
-		}
-		ADD_FAILURE() << "no parameter " << i_pName;
-	}
-
-	void set_color(matMaterial* io_pMaterial, const char* i_pName, const maFloatRGBA& i_Value)
-	{
-		std::vector<effParamColor*> colors;
-		io_pMaterial->GetShaderParams(0)->GetAllColorParams(colors);
-		for (effParamColor* param : colors)
-		{
-			if (param->GetName() == i_pName)
-			{
-				param->Property().SetValue(i_Value);
-				return;
-			}
-		}
-		ADD_FAILURE() << "no parameter " << i_pName;
-	}
-
 	//	A BlinnReflection material set to show its reflection map well: dark
 	//	diffuse; a strong Fresnel
 	//	bias (planar maps); IOR 1.5 and refraction (cube maps: with the
@@ -148,10 +117,10 @@ namespace
 	matMaterial* reflector(gtSceneBuilder& io_Builder)
 	{
 		matMaterial* material = io_Builder.Keep(gtScene::ShaderMaterial("BlinnReflection.fx", gtScene::e_Defaults));
-		set_color(material, "g_diffuse", maFloatRGBA(0.1f, 0.1f, 0.12f, 1));
-		set_float(material, "fresnelBias", 0.6f);
-		set_float(material, "IOR", 1.5f);
-		set_float(material, "refrFactor", 0.8f);
+		gtScene::SetColor(material, "g_diffuse", maFloatRGBA(0.1f, 0.1f, 0.12f, 1));
+		gtScene::SetFloat(material, "fresnelBias", 0.6f);
+		gtScene::SetFloat(material, "IOR", 1.5f);
+		gtScene::SetFloat(material, "refrFactor", 0.8f);
 		return material;
 	}
 
