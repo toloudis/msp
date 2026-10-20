@@ -21,6 +21,7 @@
 
 #include <cstdint>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace gvk
@@ -39,6 +40,12 @@ public:
 
 	bool IsValid() const { return m_Buffer >= 0; }
 
+	// Leaves a variable of the block that the renderer sets (found by its
+	// semantic: the view matrix, the reflection map flags) to the renderer:
+	// Restore keeps the value the renderer wrote last, as the effect did
+	// before materials had their own blocks. Ignored if i_Variable isn't in
+	// the block.
+	void Exclude(const std::string& i_Variable);
 	// Put this material's values in place, before writing parameters.
 	void Restore() const;
 	// Keep what was written, after writing parameters.
@@ -48,5 +55,7 @@ private:
 	fxEffectVk* m_pEffect;
 	int m_Buffer;
 	std::vector<uint8_t> m_Data;
+	// Byte ranges (offset, size) of the excluded variables
+	std::vector<std::pair<uint32_t, uint32_t>> m_Excluded;
 };
 }

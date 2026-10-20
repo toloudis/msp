@@ -1714,6 +1714,24 @@ int effShaderBaseVk::BuildPrtyObject(effShaderParams* o_pParams) const
 		bindings->m_pMaterial.reset(new fxMaterialInstance(plain->GetEffectVk()));
 		if (!bindings->m_pMaterial->IsValid())
 			bindings->m_pMaterial.reset();
+		else
+		{
+			// What the renderer sets in the material's block (by semantic:
+			// standard matrices, reflection map flags) stays the renderer's;
+			// restoring the material's copy would undo it (SetupMaterial
+			// sets the reflection flags before it binds the parameters)
+			std::vector<fxEffectVariable*> renderer_set(m_stdMatrices, m_stdMatrices + e_NumMatrices);
+			renderer_set.push_back(m_ReflectionMapIsPlanarHandle);
+			renderer_set.push_back(m_HasReflectionMapHandle);
+			renderer_set.push_back(m_IsReflectionGenHandle);
+			renderer_set.push_back(m_hCubeMapEnabled);
+			for (fxEffectVariable* variable : renderer_set)
+			{
+				fxEffectVariableDesc desc;
+				if (variable && variable->IsValid() && variable->GetDesc(&desc) && desc.Name)
+					bindings->m_pMaterial->Exclude(desc.Name);
+			}
+		}
 	}
 	o_pParams->m_pShaderBindings = bindings;
 	o_pParams->m_pPrtyUI = new prtyObject;

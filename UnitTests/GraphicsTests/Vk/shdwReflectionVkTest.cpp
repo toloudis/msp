@@ -21,16 +21,10 @@
 **        printed (no assertion) when the profiling markers are compiled
 **        in (Debug, or Release with MspGfxProfiling=true).
 **
-**      DX11 draws no material-shader reflection in the view: SetupMaterial
-**      sets the shader's HasReflectionMap / ReflectionMapIsPlanar and then
-**      binds the material's parameters, whose fxMaterialInstance copy of
-**      the material constant buffer puts them back to false (since the
-**      materials became plain HLSL). Vulkan's port does the same, so the
-**      images match without a reflection in them, and the reflection maps
-**      are where the reflection renderers' work is compared; a check on
-**      DX11 makes sure the maps show the scene.
-**
-**	Extra Large Technology
+**      Checks on DX11 alone make sure the maps show the scene and the
+**      reflections show in the view (they didn't from the plain-HLSL
+**      conversion until fxMaterialInstance::Exclude: restoring a material's
+**      parameter block undid the reflection flags SetupMaterial had set).
 \****************************************************************************/
 #include "gtBackend.hpp"
 #include "gtImage.hpp"
@@ -146,8 +140,8 @@ namespace
 		ADD_FAILURE() << "no parameter " << i_pName;
 	}
 
-	//	A BlinnReflection material set to show its reflection map well (once
-	//	DX11 draws it, see the file comment): dark diffuse; a strong Fresnel
+	//	A BlinnReflection material set to show its reflection map well: dark
+	//	diffuse; a strong Fresnel
 	//	bias (planar maps); IOR 1.5 and refraction (cube maps: with the
 	//	default IOR of 1 and no refraction the cube term is zero)
 	matMaterial* reflector(gtSceneBuilder& io_Builder)
@@ -247,9 +241,7 @@ namespace
 
 	//	Every layer and mip of every reflection map matches between the
 	//	backends, and the maps that should show the scene do on DX11: a
-	//	planar map in its one layer, a cube map in at least three faces. (DX11 draws no
-	//	material-shader reflection in the view, so the maps are where the
-	//	reflection renderers' work shows; see the file comment.)
+	//	planar map in its one layer, a cube map in at least three faces.
 	void expect_same_maps(const std::string& i_Name, const reflection_state& i_State)
 	{
 		SCOPED_TRACE(i_Name);
@@ -304,7 +296,7 @@ namespace
 	//	y = -1, seen from above and in front, lit by shadow-casting lights
 	//	and the global environment (the environment pass draws the
 	//	reflection term)
-	gtSceneFunction planar_scene(state_ptr io_State)
+	gtSceneFunction planar_scene(state_ptr io_State, bool i_bReflective = true)
 	{
 		return [=](gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
 		{
@@ -321,14 +313,15 @@ namespace
 			}
 			io_Builder.TwoLights();
 			environment(io_Builder, i_Dir);
-			reflect(io_Builder, io_State, floor, true, false);
+			if (i_bReflective)
+				reflect(io_Builder, io_State, floor, true, false);
 		};
 	}
 
 	//	A reflective (cube-mapped) sphere among four tinted ones, lit by
 	//	shadow-casting lights and the global environment; the one above
 	//	moves before the second frame
-	gtSceneFunction cube_scene(state_ptr io_State, bool i_bPerFrame)
+	gtSceneFunction cube_scene(state_ptr io_State, bool i_bPerFrame, bool i_bReflective = true)
 	{
 		return [=](gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
 		{
@@ -350,7 +343,8 @@ namespace
 			}
 			io_Builder.TwoLights();
 			environment(io_Builder, i_Dir);
-			reflect(io_Builder, io_State, mirror, false, i_bPerFrame);
+			if (i_bReflective)
+				reflect(io_Builder, io_State, mirror, false, i_bPerFrame);
 		};
 	}
 
@@ -438,6 +432,13 @@ TEST(shdwReflectionVkTest, PlanarReflectionMatchDX11)
 	state_ptr state(new reflection_state);
 	gtExpectSameImage("PlanarReflectionMatchDX11", planar_scene(state), reflection_options(state));
 	expect_same_maps("PlanarReflectionMatchDX11", *state);
+
+	//	the reflection shows in the view on DX11
+	state_ptr plain(new reflection_state);
+	gtRenderOptions plain_options = reflection_options(plain);
+	plain_options.m_AfterRender = nullptr;
+	gtExpectEffectShows("PlanarReflectionMatchDX11", planar_scene(state), reflection_options(state),
+						planar_scene(plain, false), plain_options, 256 * 256 / 100);
 }
 
 TEST(shdwReflectionVkTest, CubeMapReflectionMatchDX11)
@@ -454,6 +455,13 @@ TEST(shdwReflectionVkTest, CubeMapReflectionMatchDX11)
 	//	a map made once keeps the first frame's scene: the moved sphere
 	//	shows only in the map made per frame
 	EXPECT_NE(once->m_Levels[0], per_frame->m_Levels[0]);
+
+	//	the reflection shows in the view on DX11
+	state_ptr plain(new reflection_state);
+	gtRenderOptions plain_options = reflection_options(plain);
+	plain_options.m_AfterRender = nullptr;
+	gtExpectEffectShows("CubeMapReflectionMatchDX11", cube_scene(per_frame, true), reflection_options(per_frame),
+						cube_scene(plain, true, false), plain_options, 256 * 256 / 200);
 }
 
 TEST(shdwReflectionVkTest, SeveralReflectorsMatchDX11)
