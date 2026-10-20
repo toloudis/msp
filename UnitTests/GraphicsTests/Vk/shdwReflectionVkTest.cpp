@@ -23,8 +23,9 @@
 **
 **      Checks on DX11 alone make sure the maps show the scene and the
 **      reflections show in the view (they didn't from the plain-HLSL
-**      conversion until fxMaterialInstance::Exclude: restoring a material's
-**      parameter block undid the reflection flags SetupMaterial had set).
+**      conversion until fxMaterialInstance left the renderer's variables
+**      to the renderer: restoring a material's parameter block undid the
+**      reflection flags SetupMaterial had set).
 \****************************************************************************/
 #include "gtBackend.hpp"
 #include "gtImage.hpp"
