@@ -107,6 +107,12 @@
 #ifndef GVK_SHDW_PASSSSAO_HPP
 #include "GraphicsVulkan/shdw/shdwPassSSAO.hpp"
 #endif
+#ifndef GVK_SHDW_PASSAOVOLUMES_HPP
+#include "GraphicsVulkan/shdw/shdwPassAOVolumes.hpp"
+#endif
+#ifndef GVK_SHDW_PASSSSGI_HPP
+#include "GraphicsVulkan/shdw/shdwPassSSGI.hpp"
+#endif
 #ifndef GVK_SHDW_PASSGLOW_HPP
 #include "GraphicsVulkan/shdw/shdwPassGlow.hpp"
 #endif

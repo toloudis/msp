@@ -68,6 +68,15 @@
 #ifndef GVK_SHDW_PASSDOF_HPP
 #include "GraphicsVulkan/shdw/shdwPassDOF.hpp"
 #endif
+#ifndef GVK_SHDW_PASSNORMALS_HPP
+#include "GraphicsVulkan/shdw/shdwPassNormals.hpp"
+#endif
+#ifndef GVK_SHDW_PASSSSGI_HPP
+#include "GraphicsVulkan/shdw/shdwPassSSGI.hpp"
+#endif
+#ifndef GVK_SHDW_PASSAOVOLUMES_HPP
+#include "GraphicsVulkan/shdw/shdwPassAOVolumes.hpp"
+#endif
 
 #include <cstddef>
 namespace gvk
@@ -139,9 +148,11 @@ void shdwPackage::InitGraphics()
 	shdwPassAmbient::InitStates();
 	shdwPassEnvironment::InitStates();
 	shdwPassLit::InitStates();
+	shdwPassNormals::InitStates();
 	shdwPassDepth::InitStates();
 	shdwPassAlphaFill::InitStates();
 	shdwPassSSAO::InitStates();
+	shdwPassSSGI::InitStates();
 	shdwPassTransparent::InitStates();
 	shdwPassZFill::InitStates();
 	shdwShadowLayerRendererVk::InitStates();
@@ -151,6 +162,7 @@ void shdwPackage::InitGraphics()
 	shdwPassDOF::InitStates();
 	shdwHDRRendererVk::InitStates();
 	shdwPassHair::InitStates();
+	shdwPassAOVolumes::InitStates();
 	shdwPassPostShader::InitStates();
 	shdwPassEnvBackground::InitStates();
 }
@@ -162,6 +174,7 @@ void shdwPackage::CleanUpGraphics()
 {
 	shdwPassEnvBackground::CleanupStates();
 	shdwPassPostShader::CleanupStates();
+	shdwPassAOVolumes::CleanupStates();
 	shdwPassHair::CleanupStates();
 	shdwHDRRendererVk::CleanupStates();
 	shdwPassDOF::CleanupStates();
@@ -171,14 +184,17 @@ void shdwPackage::CleanUpGraphics()
 	shdwShadowLayerRendererVk::CleanupStates();
 	shdwPassZFill::CleanupStates();
 	shdwPassTransparent::CleanupStates();
+	shdwPassSSGI::CleanupStates();
 	shdwPassSSAO::CleanupStates();
 	shdwPassAlphaFill::CleanupStates();
 	shdwPassDepth::CleanupStates();
+	shdwPassNormals::CleanupStates();
 	shdwPassLit::CleanupStates();
 	shdwPassEnvironment::CleanupStates();
 	shdwPassAmbient::CleanupStates();
 	shdwPassToneMap::CleanupStates();
 
+	shdwPassSSGI::CleanUp();
 	shdwPassSSAO::CleanUp();
 }
 

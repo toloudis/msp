@@ -14,26 +14,6 @@
 
 namespace gvk
 {
-	shdwPassAOVolumes::shdwPassAOVolumes(g2dRenderTarget*, matRenderTargetTexture*, matRenderTargetTexture*,
-		matRenderTargetTexture*, matRenderTargetTexture*, const camCamera*, const ssaoParams&)
-	{
-	}
-	int shdwPassAOVolumes::Render(float)
-	{
-		GVK_NOT_YET("shdwPassAOVolumes");
-		return 0;
-	}
-
-	shdwPassSSGI::shdwPassSSGI(matRenderTargetTexture*, matRenderTargetTexture*, matRenderTargetTexture*, g2dRenderTarget*,
-		matRenderTargetTexture*, matRenderTargetTexture*, const ssgiParams&, matRenderTargetTexture*)
-	{
-	}
-	int shdwPassSSGI::Render(float)
-	{
-		GVK_NOT_YET("shdwPassSSGI");
-		return 0;
-	}
-
 	shdwPassLPVGI::shdwPassLPVGI(const ssgiParams&, matRenderTargetTexture*, matRenderTargetTexture*, g2dRenderTarget*,
 		const camCamera*, const g3dScene*, bool)
 	{

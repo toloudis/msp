@@ -6,7 +6,7 @@
 **	constructors and Render calls, draws nothing and logs
 **	GVK_NOT_YET: <class> once. Each moves to shdw/ when it is ported:
 **
-**	  shdwPassAOVolumes, shdwPassSSGI, shdwPassLPVGI	Plan 5b
+**	  shdwPassLPVGI	Plan 5b
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -30,37 +30,6 @@ namespace gvk
 {
 	class matRenderTargetTexture;
 	class shdwPassTraversal;
-
-	class shdwPassAOVolumes : public g3dRenderPass
-	{
-	public:
-		shdwPassAOVolumes(g2dRenderTarget* i_pFinalTarget, matRenderTargetTexture* i_pAO,
-			matRenderTargetTexture* i_pPositions,
-			matRenderTargetTexture* i_pNormals,
-			matRenderTargetTexture* i_pDepth,
-			const camCamera* i_pCamera,
-			const ssaoParams& i_Params);
-
-		virtual int Render(float i_time);
-		void SetSceneInfo(shdwPassTraversal*) {}
-	};
-
-	class shdwPassSSGI : public g3dRenderPass
-	{
-	public:
-		shdwPassSSGI(matRenderTargetTexture* i_NearDepthBuffer,
-			matRenderTargetTexture* i_DepthBuffer,
-			matRenderTargetTexture* i_DepthBuffer2,
-			g2dRenderTarget* i_FullSceneColors,
-			matRenderTargetTexture* i_pGISurface,
-			matRenderTargetTexture* i_pTmpSurface,
-			const ssgiParams& i_SSGIParams,
-			matRenderTargetTexture* i_FullSceneColorsTex);
-
-		virtual int Render(float i_time);
-		void SetSceneInfo(shdwPassTraversal*) {}
-		void SetCamera(const camCamera*) {}
-	};
 
 	class shdwPassLPVGI : public g3dRenderPass
 	{

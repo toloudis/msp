@@ -220,6 +220,9 @@
     <ClCompile Include="shdw\private\shdwPassGlow.cpp" />
     <ClCompile Include="shdw\private\shdwPassDOF.cpp" />
     <ClCompile Include="shdw\private\shdwPassFog.cpp" />
+    <ClCompile Include="shdw\private\shdwPassNormals.cpp" />
+    <ClCompile Include="shdw\private\shdwPassAOVolumes.cpp" />
+    <ClCompile Include="shdw\private\shdwPassSSGI.cpp" />
     <ClCompile Include="shdw\private\shdwPassOutline.cpp" />
     <ClCompile Include="shdw\private\shdwPassPostShader.cpp" />
     <ClCompile Include="shdw\private\shdwPassDepth.cpp" />
@@ -361,6 +364,9 @@
     <ClInclude Include="shdw\shdwPassGlow.hpp" />
     <ClInclude Include="shdw\shdwPassDOF.hpp" />
     <ClInclude Include="shdw\shdwPassFog.hpp" />
+    <ClInclude Include="shdw\shdwPassNormals.hpp" />
+    <ClInclude Include="shdw\shdwPassAOVolumes.hpp" />
+    <ClInclude Include="shdw\shdwPassSSGI.hpp" />
     <ClInclude Include="shdw\shdwPassOutline.hpp" />
     <ClInclude Include="shdw\shdwPassPostShader.hpp" />
     <ClInclude Include="shdw\shdwPassDepth.hpp" />
