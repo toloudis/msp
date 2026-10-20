@@ -95,6 +95,12 @@
 #ifndef GVK_SHDW_PASSAMBIENT_HPP
 #include "GraphicsVulkan/shdw/shdwPassAmbient.hpp"
 #endif
+#ifndef GVK_SHDW_PASSDOF_HPP
+#include "GraphicsVulkan/shdw/shdwPassDOF.hpp"
+#endif
+#ifndef GVK_SHDW_PASSFOG_HPP
+#include "GraphicsVulkan/shdw/shdwPassFog.hpp"
+#endif
 #ifndef GVK_SHDW_PASSSTUBSVK_HPP
 #include "GraphicsVulkan/stub/shdwPassStubsVk.hpp"
 #endif
@@ -1300,9 +1306,152 @@ void shdwHDRRendererVk::LuminanceToGrayscale(matRenderTargetTexture* pTex, const
 //--------------------------------------------------------------------
 void shdwHDRRendererVk::RenderDOF(float i_fSimTime, bool i_debug)
 {
-	//	DX11's body (the DOF pass, the blur and g3dRenderDOF) is ported with
-	//	shdwPassDOF in Plan 5b; until then nothing is drawn
-	GVK_NOT_YET("shdwHDRRendererVk::RenderDOF");
+//	HRESULT op_result;
+
+	m_pWindow->MakeCurrent();
+//	m_pWindow->ClearDepthStencil();
+
+	// replace alpha in HDR render target with blurriness factor
+
+	// draw this to a AA buffer if AA enabled.
+	// then resolve to one of our scratch buffers.
+	// replace alpha in render target with blurriness factor
+#ifdef NEW_AA_CODE
+	matRenderTargetTexture* currentHDRTarget = m_pFrameBuffer->HDRRenderTarget();
+#else
+	g2dRenderTarget* currentHDRTarget = NULL;
+	if (g3dPrefs::CurrentPrefs().m_bHDRAA)
+	{
+		// this target has its own depth buffer with it!
+		currentHDRTarget = m_pFrameBuffer->HDRAATarget();
+	}
+	else
+	{
+		// this target uses the backbuffer's depth buffer!
+		currentHDRTarget = m_pFrameBuffer->HDRRenderTargetTex()->GetRenderTargetAPI();
+	}
+#endif
+
+	currentHDRTarget->MakeCurrent();
+//	currentHDRTarget->ClearDepthStencil();
+	shdwPassDOF dofPass;
+	dofPass.SetSceneInfo(&m_SceneDatabase);
+	dofPass.Render(i_fSimTime);
+
+#ifdef NEW_AA_CODE
+	currentHDRTarget->CopyWithResolve( m_pFrameBuffer->HDRRenderTargetTex() );
+#else
+	if (currentHDRTarget == m_pFrameBuffer->HDRAATarget())
+	{
+		m_pFrameBuffer->HDRAATarget()->Resolve(m_pFrameBuffer->HDRRenderTargetTex());
+	}
+#endif
+
+	// Now, prepare blurred version of color buffer:
+
+	m_pWindow->MakeCurrent();
+
+	// Copy backbuffer to DOF Reserve Target.
+	// This will be the source texture with color data.
+//	CopyCurrentTargetIntoTexture(m_pFrameBuffer->DOFReserveTarget());
+    CopyBackBufInto(m_pFrameBuffer->DOFReserveTarget());
+
+	// now put alphas in m_pDOFReserveTarget.
+	m_pFrameBuffer->DOFReserveTarget()->MakeCurrent();
+	int w,h;
+	m_pFrameBuffer->DOFReserveTarget()->GetDimensions(w,h);
+	g3dBlendStateMgr::SetBlendState(st_DOF1);
+
+//	g2dDX11Global::g_pDevice->SetVertexShader(NULL);
+//	g2dDX11Global::g_pDevice->SetPixelShader(NULL);
+
+	matShaderEffect* pEffBase = g3dVkUtil::GetEffect("HDRLighting");
+	pEffBase->SetTechnique("SimpleCopyLDR");
+	vkdImage* inputTextures[1] = {
+		m_pFrameBuffer->HDRRenderTargetTex()->GetImage()
+	};
+//	g2dDX11Global::g_pDevice->SetTexture( 0, m_pFrameBuffer->HDRRenderTargetTex()->GetSurface() );
+//	g2dDX11Global::g_pDevice->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_POINT  );
+//	g2dDX11Global::g_pDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_POINT  );
+
+	g3dRasterizerStateMgr::SetRasterizerState( VK_CULL_MODE_NONE, g3dDrawStyleUtilVk::GetD3DDrawStyle() );
+
+	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Disable_NS );
+
+    uint32_t uiPassCount, uiPass;
+    uiPassCount = pEffBase->Begin();
+    for (uiPass = 0; uiPass < uiPassCount; uiPass++)
+    {
+        pEffBase->BeginPass(uiPass);
+		vkdGlobal::Context().SetShaderResources(0, 1, inputTextures);
+        g3dVkUtil::DrawFullScreenQuad( w,h );
+        pEffBase->EndPass();
+    }
+    pEffBase->End();
+
+//	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Test_Write_LessE_NS );
+
+	g3dBlendStateMgr::SetBlendState(st_DOF2);
+
+	g3dRasterizerStateMgr::SetRasterizerState( g3dVkUtil::GetCullMode(), g3dDrawStyleUtilVk::GetD3DDrawStyle() );
+
+	m_pWindow->MakeCurrent();
+	if (i_debug)
+		DrawAlpha(m_pFrameBuffer->DOFReserveTarget(), m_pWindow);
+	else
+	{
+	// run the Blur effect on this data
+		matShaderEffect* effBlur = matShaderMgr::GetSpecialEffect("Blur");
+		effBlurData blurData;
+		blurData.m_pSceneTexture = m_pFrameBuffer->DOFReserveTarget();
+		blurData.m_pDownsampledTexture = m_pFrameBuffer->DOFBlurTarget();
+		blurData.m_pHorizontalBlurTexture = m_pFrameBuffer->DOFHBlurTarget();
+		effBlur->SetupParams(&blurData);
+
+		vkdImage* nullTex[1] = {NULL};
+
+		g3dBlendStateMgr::SetBlendState(st_DOF2);
+
+		effBlur->SetTechnique(matShaderEffect::e_Default);
+		int nPasses = effBlur->Begin();
+		// DBG_ASSERT(nPasses == 3, "Wrong number of passes in blur shader");
+
+		m_pFrameBuffer->DOFBlurTarget()->MakeCurrent();
+		effBlur->BeginPass(0);
+		g3dRenderFullScreenQuad fsq0(m_pFrameBuffer->DOFReserveTarget(), m_pFrameBuffer->DOFBlurTarget());
+		l_nNumTrianglesRendered += fsq0.Render(i_fSimTime);
+		effBlur->EndPass();
+
+		vkdGlobal::Context().SetShaderResources(0, 1, nullTex);
+
+		m_pFrameBuffer->DOFHBlurTarget()->MakeCurrent();
+		effBlur->BeginPass(1);
+		g3dRenderFullScreenQuad fsq1(m_pFrameBuffer->DOFBlurTarget(), m_pFrameBuffer->DOFHBlurTarget());
+		l_nNumTrianglesRendered += fsq1.Render(i_fSimTime);
+		effBlur->EndPass();
+
+		vkdGlobal::Context().SetShaderResources(0, 1, nullTex);
+
+		m_pFrameBuffer->DOFBlurTarget()->MakeCurrent();
+		effBlur->BeginPass(2);
+		g3dRenderFullScreenQuad fsq2(m_pFrameBuffer->DOFHBlurTarget(), m_pFrameBuffer->DOFBlurTarget());
+		l_nNumTrianglesRendered += fsq2.Render(i_fSimTime);
+		effBlur->EndPass();
+
+		vkdGlobal::Context().SetShaderResources(0, 1, nullTex);
+
+		effBlur->End();
+
+		g3dBlendStateMgr::SetBlendState(st_DOFRestore);
+		/////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////
+
+		// post process full screen quad
+		g3dRenderDOF rpass_DOF(m_pFrameBuffer->DOFReserveTarget(), m_pFrameBuffer->DOFBlurTarget(), m_pWindow);
+		l_nNumTrianglesRendered += rpass_DOF.Render(i_fSimTime);
+	}
 }
 
 //	(DX11's CheckForNaN, ReadFirstFloat and WriteFirstFloat, D3D9 code that is

@@ -62,6 +62,12 @@
 #ifndef GVK_SHDW_PASSPOSTSHADER_HPP
 #include "GraphicsVulkan/shdw/shdwPassPostShader.hpp"
 #endif
+#ifndef GVK_SHDW_PASSFOG_HPP
+#include "GraphicsVulkan/shdw/shdwPassFog.hpp"
+#endif
+#ifndef GVK_SHDW_PASSDOF_HPP
+#include "GraphicsVulkan/shdw/shdwPassDOF.hpp"
+#endif
 
 #include <cstddef>
 namespace gvk
@@ -141,6 +147,8 @@ void shdwPackage::InitGraphics()
 	shdwShadowLayerRendererVk::InitStates();
 	shdwPassOutline::InitStates();
 	shdwPassGlow::InitStates();
+	shdwPassFog::InitStates();
+	shdwPassDOF::InitStates();
 	shdwHDRRendererVk::InitStates();
 	shdwPassHair::InitStates();
 	shdwPassPostShader::InitStates();
@@ -156,6 +164,8 @@ void shdwPackage::CleanUpGraphics()
 	shdwPassPostShader::CleanupStates();
 	shdwPassHair::CleanupStates();
 	shdwHDRRendererVk::CleanupStates();
+	shdwPassDOF::CleanupStates();
+	shdwPassFog::CleanupStates();
 	shdwPassGlow::CleanupStates();
 	shdwPassOutline::CleanupStates();
 	shdwShadowLayerRendererVk::CleanupStates();

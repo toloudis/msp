@@ -470,6 +470,12 @@
     <ClCompile Include="shdw\private\shdwPassGlow.cpp">
       <Filter>shdw\private</Filter>
     </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassDOF.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassFog.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
     <ClCompile Include="shdw\private\shdwPassOutline.cpp">
       <Filter>shdw\private</Filter>
     </ClCompile>
@@ -880,6 +886,12 @@
       <Filter>shdw</Filter>
     </ClInclude>
     <ClInclude Include="shdw\shdwPassGlow.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassDOF.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassFog.hpp">
       <Filter>shdw</Filter>
     </ClInclude>
     <ClInclude Include="shdw\shdwPassOutline.hpp">

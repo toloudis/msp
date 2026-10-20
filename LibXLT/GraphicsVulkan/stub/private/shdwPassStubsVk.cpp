@@ -14,24 +14,6 @@
 
 namespace gvk
 {
-	shdwPassFog::shdwPassFog(g2dRenderTarget*, matRenderTargetTexture*, matRenderTargetTexture*, const g3dScene*, const camCamera*)
-	{
-	}
-	int shdwPassFog::Render(float)
-	{
-		GVK_NOT_YET("shdwPassFog");
-		return 0;
-	}
-
-	shdwPassDOF::shdwPassDOF()
-	{
-	}
-	int shdwPassDOF::Render(float)
-	{
-		GVK_NOT_YET("shdwPassDOF");
-		return 0;
-	}
-
 	shdwPassAOVolumes::shdwPassAOVolumes(g2dRenderTarget*, matRenderTargetTexture*, matRenderTargetTexture*,
 		matRenderTargetTexture*, matRenderTargetTexture*, const camCamera*, const ssaoParams&)
 	{

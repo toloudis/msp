@@ -6,8 +6,7 @@
 **	constructors and Render calls, draws nothing and logs
 **	GVK_NOT_YET: <class> once. Each moves to shdw/ when it is ported:
 **
-**	  shdwPassFog, shdwPassDOF, shdwPassAOVolumes,
-**	  shdwPassSSGI, shdwPassLPVGI				Plan 5b
+**	  shdwPassAOVolumes, shdwPassSSGI, shdwPassLPVGI	Plan 5b
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -31,28 +30,6 @@ namespace gvk
 {
 	class matRenderTargetTexture;
 	class shdwPassTraversal;
-
-	class shdwPassFog : public g3dRenderPass
-	{
-	public:
-		shdwPassFog(g2dRenderTarget* io_ColorBuffer,
-			matRenderTargetTexture* i_DepthBuffer,
-			matRenderTargetTexture* i_TempBuffer,
-			const g3dScene* i_Scene,
-			const camCamera* i_Camera);
-
-		virtual int Render(float i_time);
-		void SetSceneInfo(shdwPassTraversal*) {}
-	};
-
-	class shdwPassDOF : public g3dRenderPass
-	{
-	public:
-		shdwPassDOF();
-
-		virtual int Render(float i_time);
-		void SetSceneInfo(shdwPassTraversal*) {}
-	};
 
 	class shdwPassAOVolumes : public g3dRenderPass
 	{
