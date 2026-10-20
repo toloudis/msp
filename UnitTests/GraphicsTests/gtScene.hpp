@@ -44,6 +44,8 @@ class g3dScene;
 class g3dSceneNode;
 class matMaterial;
 class matTexture;
+struct g3dAmbientEnvState;
+struct g3dRenderState;
 
 //	A triangle mesh: positions, normals, UVs, and a triangle list
 struct gtMesh
@@ -80,6 +82,8 @@ namespace gtScene
 		e_NonDefault,		// every float and colour moved off its default
 		e_Zero,				// floats 0 (zero specular power), colours transparent black
 		e_Huge,				// floats 1e6 (very large specular power), colours white
+		e_Defaults,			// the effect's own values (ShaderMaterial only)
+		e_Tinted,			// floats the effect's own, colours moderate tints
 	};
 
 	//	A material on a material shader ("Blinn.fx"): its parameters built by
@@ -102,8 +106,20 @@ namespace gtScene
 	//	generated). Release with matTextureMgr::ReleaseTexture.
 	matTexture* CheckerTexture(const std::filesystem::path& i_Dir, int i_Width, int i_Height, int i_Cells);
 
+	//	A lat-long i_Width x i_Height environment: a sky graded from blue at
+	//	the top to a dark ground at the bottom, and a sun spot of value
+	//	i_Peak above the horizon, in the builder camera's view (an RGBE .hdr
+	//	written to i_Dir, loaded through matTextureMgr, mips generated; make
+	//	the size a power of two, as DX11 then makes the mips with
+	//	DirectXTex's box filter and Vulkan matches it). Release with
+	//	matTextureMgr::ReleaseTexture.
+	matTexture* HdrTexture(const std::filesystem::path& i_Dir, int i_Width, int i_Height, float i_Peak);
+
 	//	A translation and uniform scale
 	maMatrix4x4 Place(float i_X, float i_Y, float i_Z, float i_Scale = 1.0f);
+
+	//	An opaque Phong data material (SetPhong's values, transparency 1)
+	matMaterial* OpaquePhong(const std::string& i_Shader, Values i_Values);
 }
 
 //	A one-layer scene for the scene renderers, with what it owns: nodes and
@@ -127,12 +143,41 @@ class gtSceneBuilder
 		//	as MachStudio's camera layer (api3dSceneImpl); made on first use
 		g3dSceneNode*	AddLayer(const gtMesh& i_Mesh, matMaterial* i_pMaterial, const maMatrix4x4& i_Camera);
 
+		//	A node in a viewer layer: a layer that isn't the scene's but is
+		//	passed to the renderer's Render (ViewerLayers), camera space and
+		//	z-buffered; made on first use
+		g3dSceneNode*	AddViewerLayer(const gtMesh& i_Mesh, matMaterial* i_pMaterial, const maMatrix4x4& i_Camera);
+
 		void			PointLight(const maPoint3d& i_Position, const maFloatRGBA& i_Color, float i_Range = 50.0f);
 		void			DirectionalLight(const maVector3d& i_Direction, const maFloatRGBA& i_Color);
+
+		//	The usual two lights: a warm point light and a cool directional one
+		void			TwoLights();
+
+		//	Whether the lights made from now on cast shadows (as MachStudio's
+		//	point and projected lights do: the HDR renderer's lit pass draws
+		//	only those); off by default
+		void			LightsCastShadows(bool i_bCast)		{ m_bLightsCastShadows = i_bCast; }
+
+		//	Twelve spheres (Plan 4b's): rows Blinn, Phong, Lambert material
+		//	shaders and the built-in Phong (left out if !i_bBuiltInPhong: its
+		//	data materials count as transparent); columns non-default, zero
+		//	and very large values; and TwoLights if i_bLights
+		void			LitSpheres(bool i_bLights = true, bool i_bBuiltInPhong = true);
+
+		//	The global environment ("swl", as evmtEnvironment::UpdateToSceneGlobal
+		//	sets it): every node lit by i_pDiffuse and i_pSpecular (the root's
+		//	environment, which the nodes inherit), and the scene's global
+		//	ambient enabled, drawn as the background if i_bBackground. The root
+		//	also gets a render state linking the lights made so far, as
+		//	MachStudio's objects have (api3dObjectSingle::AddLightToRenderState):
+		//	the state traverser records environments only under a render state.
+		void			GlobalEnvironment(matTexture* i_pDiffuse, matTexture* i_pSpecular, bool i_bBackground);
 
 		g3dScene&		Scene()		{ return *m_pScene; }
 		g3dLayer&		Layer()		{ return *m_pLayer; }
 		g3dLayer*		OverlayLayer()	{ return m_pOverlayLayer; }		// NULL until AddLayer
+		const std::vector<g3dLayer*>&	ViewerLayers() const	{ return m_ViewerLayers; }
 		camCamera&		Camera()	{ return m_Camera; }
 
 	private:
@@ -144,9 +189,15 @@ class gtSceneBuilder
 		g3dLayer*						m_pLayer;			// owned by the scene
 		std::unique_ptr<g3dSceneNode>	m_pOverlayRoot;		// owns the nodes AddLayer makes
 		g3dLayer*						m_pOverlayLayer = NULL;	// owned by the scene
+		std::unique_ptr<g3dSceneNode>	m_pViewerRoot;		// owns the nodes AddViewerLayer makes
+		std::unique_ptr<g3dScene>		m_pViewerScene;		// owns the viewer layer (and updates its world data)
+		std::vector<g3dLayer*>			m_ViewerLayers;
+		std::unique_ptr<g3dAmbientEnvState>	m_pEnvironment;	// the root's, from GlobalEnvironment
+		std::unique_ptr<g3dRenderState>	m_pRenderState;	// the root's, from GlobalEnvironment
 		std::unique_ptr<g3dScene>		m_pScene;
 		std::vector<std::unique_ptr<g3dFragment>>	m_Fragments;
 		std::vector<std::unique_ptr<matMaterial>>	m_Materials;
 		std::vector<matTexture*>		m_Textures;
 		std::vector<g3dLight*>			m_Lights;
+		bool							m_bLightsCastShadows = false;
 };

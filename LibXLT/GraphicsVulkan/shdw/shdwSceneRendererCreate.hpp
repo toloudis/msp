@@ -5,10 +5,11 @@
 **	stencil shadow technique.
 **
 **	GraphicsVulkan port of GraphicsDX11's shdwSceneRendererCreate, which
-**	shdwPackage installs. A renderer type whose shdw renderer isn't ported
+**	shdwPackage installs. The default and HDR renderers are
+**	shdwHDRRendererVk. A renderer type whose shdw renderer isn't ported
 **	yet is answered by g3dSceneRendererCreateVk (the forward renderer,
-**	logged once per type with GVK_NOT_YET), as are all of them until Plan
-**	5a's tasks switch them over; the pick renderer is its stub.
+**	logged once per type with GVK_NOT_YET) until a later task switches it
+**	over; the pick renderer is its stub.
 **
 **	Extra Large Technology
 **	Copyright(C) 2005. - All Rights Reserved

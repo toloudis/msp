@@ -62,12 +62,20 @@
 #ifndef IT_STRING_HPP
 #include "Core/it/itString.hpp"
 #endif
+#ifndef G3D_RENDERSTATE_HPP
+#include "Graphics/G3d/g3dRenderState.hpp"
+#endif
 
 #include <gtest/gtest.h>
 #include <stb_image_write.h>
 
+#include "Graphics/G2d/private/rgbe.h"
+
 #include <algorithm>
 #include <cmath>
+#include <cstring>
+#include <fstream>
+#include <sstream>
 
 g3dFragment* gtMesh::CreateFragment(matMaterial* i_pMaterial, bool i_bMorphable) const
 {
@@ -154,6 +162,8 @@ namespace
 		{
 			case gtScene::e_Zero:	return 0.0f;
 			case gtScene::e_Huge:	return 1.0e6f;
+			case gtScene::e_Defaults:
+			case gtScene::e_Tinted:	return i_Default;
 			default:				return i_Default * 1.37f + 0.11f + 0.01f * i_Index;
 		}
 	}
@@ -164,6 +174,7 @@ namespace
 		{
 			case gtScene::e_Zero:	return maFloatRGBA(0, 0, 0, 0);
 			case gtScene::e_Huge:	return maFloatRGBA(1, 1, 1, 1);
+			case gtScene::e_Tinted:	return maFloatRGBA(0.5f - 0.08f * (i_Index % 4), 0.3f + 0.06f * (i_Index % 4), 0.2f, 1.0f);
 			default:				return maFloatRGBA(0.2f + 0.05f * i_Index, 0.5f, 0.8f - 0.05f * i_Index, 0.9f);
 		}
 	}
@@ -181,12 +192,15 @@ matMaterial* gtScene::ShaderMaterial(const std::string& i_Shader, Values i_Value
 		effect->BuildPrtyObject(params.get());
 	std::vector<effParamFloat*> floats;
 	params->GetAllFloatParams(floats);
-	for (size_t i = 0; i < floats.size(); i++)
-		floats[i]->Property().SetValue(float_value(i_Values, floats[i]->GetProperty().GetValue(), (int)i));
 	std::vector<effParamColor*> colors;
 	params->GetAllColorParams(colors);
-	for (size_t i = 0; i < colors.size(); i++)
-		colors[i]->Property().SetValue(color_value(i_Values, (int)i));
+	if (i_Values != e_Defaults)
+	{
+		for (size_t i = 0; i < floats.size(); i++)
+			floats[i]->Property().SetValue(float_value(i_Values, floats[i]->GetProperty().GetValue(), (int)i));
+		for (size_t i = 0; i < colors.size(); i++)
+			colors[i]->Property().SetValue(color_value(i_Values, (int)i));
+	}
 	std::vector<effParamTexture*> textures;
 	params->GetAllTextureParams(textures);
 	for (size_t i = 0; i < textures.size() && i < i_Textures.size(); i++)
@@ -246,12 +260,86 @@ matTexture* gtScene::CheckerTexture(const std::filesystem::path& i_Dir, int i_Wi
 	return texture;
 }
 
+matTexture* gtScene::HdrTexture(const std::filesystem::path& i_Dir, int i_Width, int i_Height, float i_Peak)
+{
+	//	the sun: a disc around (u, v) = (0.295, 0.43), which the camera (at +Z
+	//	looking down -Z, u = 0.25 in the shaders' CartesianToPolar) sees
+	//	about 16 degrees right and 12 up, beside the builders' spheres
+	const float sun_u = 0.295f, sun_v = 0.43f, sun_radius = 0.015f;
+	std::vector<float> rgb((size_t)i_Width * i_Height * 3);
+	for (int y = 0; y < i_Height; y++)
+	{
+		const float v = (y + 0.5f) / i_Height;
+		for (int x = 0; x < i_Width; x++)
+		{
+			const float u = (x + 0.5f) / i_Width;
+			float* p = &rgb[((size_t)y * i_Width + x) * 3];
+			//	no hard edges anywhere (see the sun below): the sky, bright pale
+			//	blue at the horizon to deep blue at the top, blends into the
+			//	ground, brown and darker downwards, with soft stripes around
+			const float t_sky = std::min(v / 0.5f, 1.0f);
+			const float t_ground = std::max((v - 0.5f) / 0.5f, 0.0f);
+			const float stripe = 0.85f + 0.15f * sinf(u * 6.2831853f * 8.0f);
+			const float sky[3] = { 0.15f + 0.6f * t_sky, 0.3f + 0.55f * t_sky, 0.9f + 0.3f * t_sky };
+			const float ground[3] = { (0.35f - 0.25f * t_ground) * stripe, (0.25f - 0.18f * t_ground) * stripe, (0.12f - 0.08f * t_ground) * stripe };
+			float blend = std::min(std::max((v - 0.45f) / 0.1f, 0.0f), 1.0f);
+			blend = blend * blend * (3.0f - 2.0f * blend);
+			for (int c = 0; c < 3; c++)
+				p[c] = sky[c] + (ground[c] - sky[c]) * blend;
+			//	a soft (Gaussian) edge, as a real sun has: a hard 50:1 step would
+			//	turn the last-bit differences between the backends' direction
+			//	to lat-long maths into a whole step on the pixels at its edge
+			const float du = u - sun_u, dv = (v - sun_v) * 0.5f;
+			const float sun = expf(-(du * du + dv * dv) / (sun_radius * sun_radius));
+			p[0] += (i_Peak - p[0]) * sun;
+			p[1] += (i_Peak - p[1]) * sun;
+			p[2] += (i_Peak * 0.8f - p[2]) * sun;
+		}
+	}
+	//	"#?RADIANCE": GraphicsDX11's texture manager only takes files that start so
+	std::ostringstream os(std::ios::binary);
+	rgbe_header_info info = {};
+	info.valid = RGBE_VALID_PROGRAMTYPE;
+	strncpy(info.programtype, "RADIANCE", sizeof(info.programtype) - 1);
+	RGBE_WriteHeader(os, i_Width, i_Height, &info);
+	RGBE_WritePixels_RLE(os, rgb.data(), i_Width, i_Height);
+	const std::string bytes = os.str();
+
+	std::ostringstream name;
+	name << "sky_" << i_Width << "x" << i_Height << "_" << i_Peak << ".hdr";
+	const std::filesystem::path path = i_Dir / name.str();
+	{
+		std::ofstream out(path, std::ios::binary);
+		out.write(bytes.data(), (std::streamsize)bytes.size());
+		if (!out)
+		{
+			ADD_FAILURE() << "can't write " << path.u8string();
+			return NULL;
+		}
+	}
+	fsLocator locator;
+	fsFileUtil::UnicodeStringToLocator(itString(path.wstring().c_str()), locator);
+	matTexture* texture = matTextureMgr::LoadTexture(locator, TEXTURE_TYPE_2D, true);
+	EXPECT_TRUE(texture != NULL) << path.u8string();
+	return texture;
+}
+
 maMatrix4x4 gtScene::Place(float i_X, float i_Y, float i_Z, float i_Scale)
 {
 	maMatrix4x4 m;
 	m.MakeScale(i_Scale, i_Scale, i_Scale);
 	m.TranslateBy(i_X, i_Y, i_Z);
 	return m;
+}
+
+matMaterial* gtScene::OpaquePhong(const std::string& i_Shader, Values i_Values)
+{
+	return DataMaterial(i_Shader, [i_Values](effShaderData* i_pData)
+	{
+		SetPhong(i_pData, i_Values);
+		if (effPhongData* phong = dynamic_cast<effPhongData*>(i_pData))
+			phong->m_Transparency = 1.0f;
+	});
 }
 
 //============================================================================
@@ -274,6 +362,10 @@ gtSceneBuilder::~gtSceneBuilder()
 	m_pScene.reset();
 	m_pRoot.reset();
 	m_pOverlayRoot.reset();
+	m_pViewerScene.reset();
+	m_pViewerRoot.reset();
+	m_pEnvironment.reset();
+	m_pRenderState.reset();
 	m_Fragments.clear();
 	m_Materials.clear();
 	for (matTexture* texture : m_Textures)
@@ -321,12 +413,78 @@ g3dSceneNode* gtSceneBuilder::AddLayer(const gtMesh& i_Mesh, matMaterial* i_pMat
 	return node;
 }
 
+g3dSceneNode* gtSceneBuilder::AddViewerLayer(const gtMesh& i_Mesh, matMaterial* i_pMaterial, const maMatrix4x4& i_Camera)
+{
+	if (!m_pViewerScene)
+	{
+		m_pViewerRoot.reset(new g3dSceneNode());
+		g3dLayer* layer = new g3dLayer(m_pViewerRoot.get(), g3dLayer::e_ZBuffer, g3dLayer::e_Camera);
+		m_pViewerScene.reset(new g3dScene(layer));
+		m_ViewerLayers.push_back(layer);
+	}
+	g3dFragment* fragment = i_Mesh.CreateFragment(i_pMaterial);
+	m_Fragments.emplace_back(fragment);
+	g3dSceneNode* node = new g3dSceneNode(fragment, i_Camera);
+	m_pViewerRoot->AddChild(node);
+	m_pViewerScene->UpdateWorldData();
+	return node;
+}
+
+void gtSceneBuilder::TwoLights()
+{
+	PointLight(maPoint3d(2, 3, 4), maFloatRGBA(0.9f, 0.8f, 0.7f, 1), 25.0f);
+	DirectionalLight(maVector3d(-0.3f, -0.8f, -0.5f), maFloatRGBA(0.4f, 0.5f, 0.6f, 1));
+}
+
+void gtSceneBuilder::LitSpheres(bool i_bLights, bool i_bBuiltInPhong)
+{
+	const gtMesh sphere = gtScene::Sphere(16, 32);
+	const gtScene::Values values[3] = { gtScene::e_NonDefault, gtScene::e_Zero, gtScene::e_Huge };
+	const char* shaders[3] = { "Blinn.fx", "Phong.fx", "Lambert.fx" };
+	for (int row = 0; row < (i_bBuiltInPhong ? 4 : 3); row++)
+	{
+		for (int column = 0; column < 3; column++)
+		{
+			matMaterial* material = row < 3
+				? gtScene::ShaderMaterial(shaders[row], values[column])
+				: gtScene::OpaquePhong("Phong.fx", values[column]);
+			Keep(material);
+			Add(sphere, material, gtScene::Place(-1.5f + 1.5f * column, 1.8f - 1.2f * row, 0, 0.55f));
+		}
+	}
+	if (i_bLights)
+		TwoLights();
+}
+
+void gtSceneBuilder::GlobalEnvironment(matTexture* i_pDiffuse, matTexture* i_pSpecular, bool i_bBackground)
+{
+	g3dAmbientEnvState state;
+	state.m_bInherit = false;
+	state.m_DiffuseMap = i_pDiffuse;
+	state.m_DiffuseFactor = 1.0f;
+	state.m_DiffuseAngle = 0.0f;
+	state.m_DiffuseColor = maFloatRGBA(1, 1, 1, 1);
+	state.m_SpecularMap = i_pSpecular;
+	state.m_SpecularFactor = 1.0f;
+	state.m_SpecularAngle = 0.0f;
+	state.m_SpecularColor = maFloatRGBA(1, 1, 1, 1);
+	state.m_bEnableSwlEnv = true;
+	state.m_bEnableSwlEnvBG = i_bBackground;
+	m_pScene->SetGlobalAmbient(state);
+	m_pEnvironment.reset(new g3dAmbientEnvState(state));
+	m_pRoot->SetEnvironment(m_pEnvironment.get());
+	m_pRenderState.reset(new g3dRenderState());
+	m_pRenderState->m_Lights = m_Lights;
+	m_pRoot->SetRenderState(m_pRenderState.get());
+}
+
 void gtSceneBuilder::PointLight(const maPoint3d& i_Position, const maFloatRGBA& i_Color, float i_Range)
 {
 	g3dPointLight* light = g3dLightMgr::CreatePointLight();
 	light->SetPosition(i_Position);
 	light->SetIntensity(i_Color);
 	light->SetRange(i_Range);
+	light->SetCastsShadow(m_bLightsCastShadows);
 	light->SetEnable(true);
 	m_Lights.push_back(light);
 }
@@ -336,6 +494,7 @@ void gtSceneBuilder::DirectionalLight(const maVector3d& i_Direction, const maFlo
 	g3dDirectionalLight* light = g3dLightMgr::CreateDirectionalLight();
 	light->SetDirection(i_Direction);
 	light->SetIntensity(i_Color);
+	light->SetCastsShadow(m_bLightsCastShadows);
 	light->SetEnable(true);
 	m_Lights.push_back(light);
 }

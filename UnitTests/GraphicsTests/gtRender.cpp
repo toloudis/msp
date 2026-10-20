@@ -87,7 +87,6 @@ gtPicture gtRenderScene(const gtSceneFunction& i_Build, const std::filesystem::p
 
 	std::unique_ptr<g3dSceneRenderer> renderer(i_Options.m_CreateRenderer
 		? i_Options.m_CreateRenderer() : g3dSceneRendererCreate::CreateDefaultRenderer());
-	const std::vector<g3dLayer*> no_layers;
 	for (int frame = 0; frame < i_Options.m_Frames; frame++)
 	{
 		if (i_Options.m_BeforeFrame)
@@ -97,7 +96,7 @@ gtPicture gtRenderScene(const gtSceneFunction& i_Build, const std::filesystem::p
 			target.Target()->MakeCurrent();
 			target.Target()->Clear(maFloatRGBA(clear[0], clear[1], clear[2], clear[3]), true, 1.0f);
 		}
-		renderer->Render(target.Target(), builder.Camera(), builder.Scene(), no_layers, i_Options.m_SimTime);
+		renderer->Render(target.Target(), builder.Camera(), builder.Scene(), builder.ViewerLayers(), i_Options.m_SimTime);
 	}
 	gtPicture picture = target.Read();
 	renderer->ReleaseResources();
@@ -107,7 +106,7 @@ gtPicture gtRenderScene(const gtSceneFunction& i_Build, const std::filesystem::p
 
 namespace
 {
-	void compare(const std::string& i_Name, const gtPicture& i_DX11, const gtPicture& i_Vulkan)
+	void compare(const std::string& i_Name, const gtPicture& i_DX11, const gtPicture& i_Vulkan, const gtRenderOptions& i_Options)
 	{
 		SCOPED_TRACE(i_Name);
 		EXPECT_TRUE(i_DX11.Valid());
@@ -121,9 +120,11 @@ namespace
 		int covered = 0;
 		for (size_t i = 0; i < i_DX11.m_Rgba.size(); i += 4)
 			covered += (i_DX11.m_Rgba[i] | i_DX11.m_Rgba[i + 1] | i_DX11.m_Rgba[i + 2]) != 0;
-		EXPECT_GT(covered, i_DX11.m_Width * i_DX11.m_Height / 20) << "DX11 drew almost nothing";
+		if (i_Options.m_bCheckCoverage)
+			EXPECT_GT(covered, i_DX11.m_Width * i_DX11.m_Height / 20) << "DX11 drew almost nothing";
 
-		const gtCompareResult result = gtCompareImages(i_DX11.m_Rgba.data(), i_Vulkan.m_Rgba.data(), i_DX11.m_Width, i_DX11.m_Height);
+		const gtCompareResult result = gtCompareImages(i_DX11.m_Rgba.data(), i_Vulkan.m_Rgba.data(), i_DX11.m_Width, i_DX11.m_Height,
+													   i_Options.m_MaxErr, 1 / 255.0f, i_Options.m_MaxPctOver);
 		std::cout << "  " << i_Name << ": " << result.Describe() << std::endl;
 		if (!result.m_bPass)
 		{
@@ -157,6 +158,6 @@ void gtExpectSameImages(const char* i_pTest, const std::vector<gtCase>& i_Cases)
 	{
 		const std::string name = i_Cases[i].m_Name.empty()
 			? std::string(i_pTest) : std::string(i_pTest) + "/" + i_Cases[i].m_Name;
-		compare(name, dx11[i], vulkan[i]);
+		compare(name, dx11[i], vulkan[i], i_Cases[i].m_Options);
 	}
 }

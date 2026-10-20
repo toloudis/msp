@@ -56,6 +56,15 @@ struct gtRenderOptions
 
 	//	Runs before each frame (shadow maps and reflections)
 	std::function<void(gtSceneBuilder&)>		m_BeforeFrame;
+
+	//	The comparison checks that DX11 drew on a good part of the image
+	//	(off for images that are mostly black by design: debug buffers)
+	bool	m_bCheckCoverage = true;
+
+	//	The tolerance (gtCompareImages'): loosen it only for a case in its
+	//	test's exception table, with the measured error and the reason
+	float	m_MaxErr = 2 / 255.0f;
+	float	m_MaxPctOver = 0.1f;
 };
 
 //	Saves g3dPrefs::CurrentPrefs() and g3dSingleLightRendering's flags, and
@@ -86,7 +95,8 @@ class gtPrefsScope
 };
 
 //	i_Build's scene rendered on the backend that is up, into an
-//	m_Width x m_Height target cleared to (0, 0, 0, 0)
+//	m_Width x m_Height target cleared to (0, 0, 0, 0); the builder's viewer
+//	layers are passed to Render
 gtPicture gtRenderScene(const gtSceneFunction& i_Build, const std::filesystem::path& i_Dir, const gtRenderOptions& i_Options);
 
 //	Renders on both backends and compares: the DX11 image must cover a good

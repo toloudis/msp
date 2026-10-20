@@ -8,7 +8,8 @@
 **      (with zero and very large values), a textured scene, sorted
 **      transparent nodes, fog, the wireframe draw styles and hardware
 **      tessellation (the PTess passes). Also: every renderer type the
-**      Vulkan creator can't build yet gives the forward renderer.
+**      Vulkan creator can't build yet gives the forward renderer, and the
+**      default and HDR types give the HDR renderer.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -58,6 +59,9 @@
 #ifndef GVK_G3D_SCENERENDERERVK_HPP
 #include "GraphicsVulkan/G3d/g3dSceneRendererVk.hpp"
 #endif
+#ifndef GVK_SHDW_HDRRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwHDRRendererVk.hpp"
+#endif
 
 #include <gtest/gtest.h>
 
@@ -97,43 +101,16 @@ namespace
 		gtExpectSameImage(i_pTest, i_Build, forward_options());
 	}
 
-	//	An opaque Phong data material (SetPhong's values, transparency 1)
-	matMaterial* opaque_phong(const std::string& i_Shader, gtScene::Values i_Values)
-	{
-		return gtScene::DataMaterial(i_Shader, [i_Values](effShaderData* i_pData)
-		{
-			gtScene::SetPhong(i_pData, i_Values);
-			if (effPhongData* phong = dynamic_cast<effPhongData*>(i_pData))
-				phong->m_Transparency = 1.0f;
-		});
-	}
-
 	//	The usual two lights
 	void lights(gtSceneBuilder& io_Builder)
 	{
-		io_Builder.PointLight(maPoint3d(2, 3, 4), maFloatRGBA(0.9f, 0.8f, 0.7f, 1), 25.0f);
-		io_Builder.DirectionalLight(maVector3d(-0.3f, -0.8f, -0.5f), maFloatRGBA(0.4f, 0.5f, 0.6f, 1));
+		io_Builder.TwoLights();
 	}
 
-	//	Twelve spheres: rows Blinn, Phong, Lambert material shaders and the
-	//	built-in Phong; columns non-default, zero and very large values
+	//	Twelve spheres (gtSceneBuilder::LitSpheres)
 	void lit_spheres(gtSceneBuilder& io_Builder, const std::filesystem::path&)
 	{
-		const gtMesh sphere = gtScene::Sphere(16, 32);
-		const gtScene::Values values[3] = { gtScene::e_NonDefault, gtScene::e_Zero, gtScene::e_Huge };
-		const char* shaders[3] = { "Blinn.fx", "Phong.fx", "Lambert.fx" };
-		for (int row = 0; row < 4; row++)
-		{
-			for (int column = 0; column < 3; column++)
-			{
-				matMaterial* material = row < 3
-					? gtScene::ShaderMaterial(shaders[row], values[column])
-					: opaque_phong("Phong.fx", values[column]);
-				io_Builder.Keep(material);
-				io_Builder.Add(sphere, material, gtScene::Place(-1.5f + 1.5f * column, 1.8f - 1.2f * row, 0, 0.55f));
-			}
-		}
-		lights(io_Builder);
+		io_Builder.LitSpheres();
 	}
 }
 
@@ -172,7 +149,7 @@ TEST(g3dSceneRendererVkTest, TransparencyMatchDX11)
 				phong->m_Transparency = i_Transparency;
 			});
 		};
-		matMaterial* back = io_Builder.Keep(opaque_phong("Phong.fx", gtScene::e_NonDefault));
+		matMaterial* back = io_Builder.Keep(gtScene::OpaquePhong("Phong.fx", gtScene::e_NonDefault));
 		io_Builder.Add(gtScene::Plane(), back, gtScene::Place(0, 0, -2, 2.5f));
 		//	added far to near, near to far and in between: the sort orders them
 		io_Builder.Add(gtScene::Sphere(16, 32), io_Builder.Keep(transparent(1, 0.2f, 0.2f, 0.5f)), gtScene::Place(-0.5f, 0.3f, 1.0f, 0.9f));
@@ -275,7 +252,7 @@ namespace
 		const float factors[3] = { 1.0f, 4.0f, 9.5f };
 		for (int i = 0; i < 3; i++)
 		{
-			matMaterial* material = io_Builder.Keep(opaque_phong("testtess.fx", gtScene::e_NonDefault));
+			matMaterial* material = io_Builder.Keep(gtScene::OpaquePhong("testtess.fx", gtScene::e_NonDefault));
 			material->SetHasDisplacement(true);
 			material->DisplacementData().m_TessellationValue = factors[i];
 			io_Builder.Add(gtScene::Sphere(8, 12), material, gtScene::Place(-1.5f + 1.5f * i, 0.6f, 0, 0.6f));
@@ -365,8 +342,6 @@ TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
 	};
 	const std::vector<Case> cases =
 	{
-		{ "default", []() { return g3dSceneRendererCreate::CreateDefaultRenderer(); } },
-		{ "HDR", []() { return g3dSceneRendererCreate::CreateHDRRenderer(); } },
 		{ "simple", []() { return g3dSceneRendererCreate::CreateSimpleRenderer(); } },
 		{ "texture", []() { return g3dSceneRendererCreate::CreateTextureRenderer(); } },
 		{ "depth map", []() { return g3dSceneRendererCreate::CreateDepthMapRenderer(); } },
@@ -404,7 +379,20 @@ TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
 				{
 					SCOPED_TRACE(type);
 					std::unique_ptr<g3dSceneRenderer> renderer(g3dSceneRendererCreate::CreateRenderer((g3dSceneRendererTypes::RendererType)type));
-					EXPECT_TRUE(dynamic_cast<gvk::g3dSceneRendererVk*>(renderer.get()) != NULL);
+					//	default and HDR (and the types CreateRenderer answers with the
+					//	default) are the HDR renderer since Plan 5a Task 2
+					const bool hdr = type == g3dSceneRendererTypes::e_Default || type == g3dSceneRendererTypes::e_HDR ||
+						type == g3dSceneRendererTypes::e_DirtyMatte || type == g3dSceneRendererTypes::e_Wireframe ||
+						type == g3dSceneRendererTypes::e_RmanColorBleed;
+					if (hdr)
+						EXPECT_TRUE(dynamic_cast<gvk::shdwHDRRendererVk*>(renderer.get()) != NULL);
+					else
+						EXPECT_TRUE(dynamic_cast<gvk::g3dSceneRendererVk*>(renderer.get()) != NULL);
+				}
+				for (auto create : { g3dSceneRendererCreate::CreateDefaultRenderer, g3dSceneRendererCreate::CreateHDRRenderer })
+				{
+					std::unique_ptr<g3dSceneRenderer> renderer(create());
+					EXPECT_TRUE(dynamic_cast<gvk::shdwHDRRendererVk*>(renderer.get()) != NULL);
 				}
 			}
 			log = capture.Text();

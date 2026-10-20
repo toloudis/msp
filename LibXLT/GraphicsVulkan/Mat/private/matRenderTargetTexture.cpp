@@ -18,6 +18,9 @@
 #ifndef GVK_G2DVKGLOBAL_HPP
 #include "GraphicsVulkan/G2d/g2dVkGlobal.hpp"
 #endif
+#ifndef GVK_G3D_VKUTIL_HPP
+#include "GraphicsVulkan/G3d/g3dVkUtil.hpp"
+#endif
 #ifndef GVK_VKDCONTEXT_HPP
 #include "GraphicsVulkan/vkd/vkdContext.hpp"
 #endif
@@ -361,7 +364,7 @@ namespace gvk
 		}
 		else if( !IsAA() )	//resort to a scaled copy if source is not MSAA
 		{
-			GVK_NOT_YET("matRenderTargetTexture::CopyWithResolve (scaled copy: g3dDX11Util::CopyTexToTarget)");
+			g3dVkUtil::CopyTexToTarget( this, o_pTexture );
 		}
 		else
 		{
@@ -374,7 +377,7 @@ namespace gvk
 			//Make sure both have depths and that target is non MSAA
 			if( GetHasDepthBuffer() && o_pTexture->GetHasDepthBuffer() && !o_pTexture->IsAA() )
 			{
-				GVK_NOT_YET("matRenderTargetTexture::CopyWithResolve (depth: g3dDX11Util::CopyDepth)");
+				g3dVkUtil::CopyDepth( this, o_pTexture );
 			}
 			else rVal = false;	//can't resolve/copy if requested
 		}

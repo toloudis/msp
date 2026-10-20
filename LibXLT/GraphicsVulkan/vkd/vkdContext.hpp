@@ -102,6 +102,9 @@ namespace gvk
 			//	a sampled image at t register i_Slot; NULL binds NullTexture(),
 			//	as D3D11 reads a NULL view as zeros
 			void SetShaderResource(uint32_t i_Slot, vkdImage* i_pImage);
+			//	D3D11's *SSetShaderResources(i_Start, i_Count, i_ppViews): SetShaderResource
+			//	for each slot from i_Start
+			void SetShaderResources(uint32_t i_Start, uint32_t i_Count, vkdImage* const* i_ppImages);
 			//	Short-lived GPU memory (constants, dynamic vertices); valid for work recorded from now on
 			vkdRingBuffer::Allocation Upload(const void* i_pData, VkDeviceSize i_Size, VkDeviceSize i_Alignment = 256);
 			//	The same, for the caller to fill

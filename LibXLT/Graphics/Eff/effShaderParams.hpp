@@ -485,6 +485,8 @@ public:
 protected:
 	// shader ptr, can be null if shader not yet loaded
 	matShaderEffect* m_pShader;
+	// matShaderMgr::GetGeneration() when m_pShader was set
+	int m_ShaderGeneration;
 
 	// all the variables
 	std::vector<effParamTexture*> m_TextureParams;

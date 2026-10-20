@@ -14,6 +14,36 @@
 #ifndef GVK_SHDW_SCENERENDERERCREATE_HPP
 #include "GraphicsVulkan/shdw/shdwSceneRendererCreate.hpp"
 #endif
+#ifndef GVK_SHDW_PASSTONEMAP_HPP
+#include "GraphicsVulkan/shdw/shdwPassToneMap.hpp"
+#endif
+#ifndef GVK_SHDW_PASSAMBIENT_HPP
+#include "GraphicsVulkan/shdw/shdwPassAmbient.hpp"
+#endif
+#ifndef GVK_SHDW_PASSENVIRONMENT_HPP
+#include "GraphicsVulkan/shdw/shdwPassEnvironment.hpp"
+#endif
+#ifndef GVK_SHDW_PASSLIT_HPP
+#include "GraphicsVulkan/shdw/shdwPassLit.hpp"
+#endif
+#ifndef GVK_SHDW_PASSDEPTH_HPP
+#include "GraphicsVulkan/shdw/shdwPassDepth.hpp"
+#endif
+#ifndef GVK_SHDW_PASSALPHAFILL_HPP
+#include "GraphicsVulkan/shdw/shdwPassAlphaFill.hpp"
+#endif
+#ifndef GVK_SHDW_PASSZFILL_HPP
+#include "GraphicsVulkan/shdw/shdwPassZFill.hpp"
+#endif
+#ifndef GVK_SHDW_HDRRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwHDRRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_PASSHAIR_HPP
+#include "GraphicsVulkan/shdw/shdwPassHair.hpp"
+#endif
+#ifndef GVK_SHDW_PASSENVBACKGROUND_HPP
+#include "GraphicsVulkan/shdw/shdwPassEnvBackground.hpp"
+#endif
 
 #include <cstddef>
 namespace gvk
@@ -81,6 +111,16 @@ void shdwPackage::CleanUp() throw()
 //------------------------------------------------------------------------
 void shdwPackage::InitGraphics()
 {
+	shdwPassToneMap::InitStates();
+	shdwPassAmbient::InitStates();
+	shdwPassEnvironment::InitStates();
+	shdwPassLit::InitStates();
+	shdwPassDepth::InitStates();
+	shdwPassAlphaFill::InitStates();
+	shdwPassZFill::InitStates();
+	shdwHDRRendererVk::InitStates();
+	shdwPassHair::InitStates();
+	shdwPassEnvBackground::InitStates();
 }
 
 //------------------------------------------------------------------------
@@ -88,6 +128,16 @@ void shdwPackage::InitGraphics()
 //------------------------------------------------------------------------
 void shdwPackage::CleanUpGraphics()
 {
+	shdwPassEnvBackground::CleanupStates();
+	shdwPassHair::CleanupStates();
+	shdwHDRRendererVk::CleanupStates();
+	shdwPassZFill::CleanupStates();
+	shdwPassAlphaFill::CleanupStates();
+	shdwPassDepth::CleanupStates();
+	shdwPassLit::CleanupStates();
+	shdwPassEnvironment::CleanupStates();
+	shdwPassAmbient::CleanupStates();
+	shdwPassToneMap::CleanupStates();
 }
 
 }

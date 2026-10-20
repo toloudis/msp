@@ -200,6 +200,17 @@
     <ClCompile Include="shdw\private\shdwFrameBufferMgr.cpp" />
     <ClCompile Include="shdw\private\shdwVelocityStateManager.cpp" />
     <ClCompile Include="shdw\private\GlareDefVk.cpp" />
+    <ClCompile Include="shdw\private\shdwHDRRendererVk.cpp" />
+    <ClCompile Include="shdw\private\shdwPassZFill.cpp" />
+    <ClCompile Include="shdw\private\shdwPassAmbient.cpp" />
+    <ClCompile Include="shdw\private\shdwPassEnvironment.cpp" />
+    <ClCompile Include="shdw\private\shdwPassEnvBackground.cpp" />
+    <ClCompile Include="shdw\private\shdwPassLit.cpp" />
+    <ClCompile Include="shdw\private\shdwPassAlphaFill.cpp" />
+    <ClCompile Include="shdw\private\shdwPassDepth.cpp" />
+    <ClCompile Include="shdw\private\shdwPassToneMap.cpp" />
+    <ClCompile Include="shdw\private\shdwPassHair.cpp" />
+    <ClCompile Include="stub\private\shdwPassStubsVk.cpp" />
     <ClCompile Include="G3d\private\g3dTransparencySortVk.cpp" />
     <ClCompile Include="G3d\private\g3dVkUtil.cpp" />
   </ItemGroup>
@@ -315,6 +326,17 @@
     <ClInclude Include="shdw\shdwFrameBufferMgr.hpp" />
     <ClInclude Include="shdw\shdwVelocityStateManager.hpp" />
     <ClInclude Include="shdw\private\GlareDefVk.h" />
+    <ClInclude Include="shdw\shdwHDRRendererVk.hpp" />
+    <ClInclude Include="shdw\shdwPassZFill.hpp" />
+    <ClInclude Include="shdw\shdwPassAmbient.hpp" />
+    <ClInclude Include="shdw\shdwPassEnvironment.hpp" />
+    <ClInclude Include="shdw\shdwPassEnvBackground.hpp" />
+    <ClInclude Include="shdw\shdwPassLit.hpp" />
+    <ClInclude Include="shdw\shdwPassAlphaFill.hpp" />
+    <ClInclude Include="shdw\shdwPassDepth.hpp" />
+    <ClInclude Include="shdw\shdwPassToneMap.hpp" />
+    <ClInclude Include="shdw\shdwPassHair.hpp" />
+    <ClInclude Include="stub\shdwPassStubsVk.hpp" />
     <ClInclude Include="G3d\g3dTransparencySortVk.hpp" />
     <ClInclude Include="G3d\g3dVkUtil.hpp" />
   </ItemGroup>

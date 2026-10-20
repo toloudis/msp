@@ -11,6 +11,9 @@
 #ifndef GVK_SHDW_SCENERENDERERCREATE_HPP
 #include "GraphicsVulkan/shdw/shdwSceneRendererCreate.hpp"
 #endif
+#ifndef GVK_SHDW_HDRRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwHDRRendererVk.hpp"
+#endif
 
 namespace gvk
 {
@@ -25,10 +28,8 @@ shdwSceneRendererCreate::~shdwSceneRendererCreate()
 //	Each renderer type answers with its shdw renderer once that is ported
 //	(DX11's choice is in the comment); until then, with the fallback.
 
-//	shdwHDRRendererDX11 (Plan 5a, Task 2)
-g3dSceneRenderer* shdwSceneRendererCreate::CreateDefaultRenderer()		{ return m_Fallback.CreateDefaultRenderer(); }
-//	shdwHDRRendererDX11 (Plan 5a, Task 2)
-g3dSceneRenderer* shdwSceneRendererCreate::CreateHDRRenderer()			{ return m_Fallback.CreateHDRRenderer(); }
+g3dSceneRenderer* shdwSceneRendererCreate::CreateDefaultRenderer()		{ return new shdwHDRRendererVk(); }
+g3dSceneRenderer* shdwSceneRendererCreate::CreateHDRRenderer()			{ return new shdwHDRRendererVk(); }
 //	shdwShadowLayerRendererDX11 (Plan 5a, Task 6)
 g3dSceneRenderer* shdwSceneRendererCreate::CreateSimpleRenderer()		{ return m_Fallback.CreateSimpleRenderer(); }
 //	g3dTextureRendererDX11 (Plan 6)
