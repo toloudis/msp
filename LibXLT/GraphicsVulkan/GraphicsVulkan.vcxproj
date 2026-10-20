@@ -148,6 +148,7 @@
     <ClCompile Include="Mat\private\matStaticCubeTexture.cpp" />
     <ClCompile Include="Mat\private\matVolumeTexture.cpp" />
     <ClCompile Include="Mat\private\matCubeRenderTargetTexture.cpp" />
+    <ClCompile Include="Mat\private\matShadowMap.cpp" />
     <ClCompile Include="Mat\private\matRenderTargetTexture.cpp" />
     <ClCompile Include="Mat\private\matTextureLoader.cpp" />
     <ClCompile Include="Mat\private\matTextureLoaderDDS.cpp" />
@@ -185,6 +186,7 @@
     <ClCompile Include="Eff\private\effSolid.cpp" />
     <ClCompile Include="Eff\private\effStrandHair.cpp" />
     <ClCompile Include="Eff\private\effTextured.cpp" />
+    <ClCompile Include="G3d\private\g3dDepthMapRendererVk.cpp" />
     <ClCompile Include="G3d\private\g3dDrawStyleUtilVk.cpp" />
     <ClCompile Include="G3d\private\g3dFogVk.cpp" />
     <ClCompile Include="G3d\private\g3dRenderStateCache.cpp" />
@@ -275,6 +277,7 @@
     <ClInclude Include="Mat\matStaticCubeTexture.hpp" />
     <ClInclude Include="Mat\matVolumeTexture.hpp" />
     <ClInclude Include="Mat\matCubeRenderTargetTexture.hpp" />
+    <ClInclude Include="Mat\matShadowMap.hpp" />
     <ClInclude Include="Mat\matRenderTargetTexture.hpp" />
     <ClInclude Include="Mat\matTextureMgrVk.hpp" />
     <ClInclude Include="Mat\private\matTextureLoader.hpp" />
@@ -311,6 +314,7 @@
     <ClInclude Include="Eff\effSolid.hpp" />
     <ClInclude Include="Eff\effStrandHair.hpp" />
     <ClInclude Include="Eff\effTextured.hpp" />
+    <ClInclude Include="G3d\g3dDepthMapRendererVk.hpp" />
     <ClInclude Include="G3d\g3dDrawStyleUtilVk.hpp" />
     <ClInclude Include="G3d\g3dFogVk.hpp" />
     <ClInclude Include="G3d\g3dRenderStateCache.hpp" />

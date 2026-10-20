@@ -262,6 +262,9 @@
     <ClCompile Include="Mat\private\matCubeRenderTargetTexture.cpp">
       <Filter>Mat\private</Filter>
     </ClCompile>
+    <ClCompile Include="Mat\private\matShadowMap.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
     <ClCompile Include="Mat\private\matRenderTargetTexture.cpp">
       <Filter>Mat\private</Filter>
     </ClCompile>
@@ -372,6 +375,9 @@
     </ClCompile>
     <ClCompile Include="Eff\private\effTextured.cpp">
       <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dDepthMapRendererVk.cpp">
+      <Filter>G3d\private</Filter>
     </ClCompile>
     <ClCompile Include="G3d\private\g3dDrawStyleUtilVk.cpp">
       <Filter>G3d\private</Filter>
@@ -638,6 +644,9 @@
     <ClInclude Include="Mat\matCubeRenderTargetTexture.hpp">
       <Filter>Mat</Filter>
     </ClInclude>
+    <ClInclude Include="Mat\matShadowMap.hpp">
+      <Filter>Mat</Filter>
+    </ClInclude>
     <ClInclude Include="Mat\matRenderTargetTexture.hpp">
       <Filter>Mat</Filter>
     </ClInclude>
@@ -745,6 +754,9 @@
     </ClInclude>
     <ClInclude Include="Eff\effTextured.hpp">
       <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dDepthMapRendererVk.hpp">
+      <Filter>G3d</Filter>
     </ClInclude>
     <ClInclude Include="G3d\g3dDrawStyleUtilVk.hpp">
       <Filter>G3d</Filter>

@@ -11,6 +11,9 @@
 #ifndef GVK_SHDW_SCENERENDERERCREATE_HPP
 #include "GraphicsVulkan/shdw/shdwSceneRendererCreate.hpp"
 #endif
+#ifndef GVK_G3D_DEPTHMAPRENDERERVK_HPP
+#include "GraphicsVulkan/G3d/g3dDepthMapRendererVk.hpp"
+#endif
 #ifndef GVK_SHDW_HDRRENDERERVK_HPP
 #include "GraphicsVulkan/shdw/shdwHDRRendererVk.hpp"
 #endif
@@ -34,8 +37,7 @@ g3dSceneRenderer* shdwSceneRendererCreate::CreateHDRRenderer()			{ return new sh
 g3dSceneRenderer* shdwSceneRendererCreate::CreateSimpleRenderer()		{ return m_Fallback.CreateSimpleRenderer(); }
 //	g3dTextureRendererDX11 (Plan 6)
 g3dSceneRenderer* shdwSceneRendererCreate::CreateTextureRenderer()		{ return m_Fallback.CreateTextureRenderer(); }
-//	g3dDepthMapRendererDX11 (Plan 5a, Task 3)
-g3dSceneRenderer* shdwSceneRendererCreate::CreateDepthMapRenderer()		{ return m_Fallback.CreateDepthMapRenderer(); }
+g3dSceneRenderer* shdwSceneRendererCreate::CreateDepthMapRenderer()		{ return new g3dDepthMapRendererVk(); }
 //	g3dRSMRendererDX11 (Plan 5b)
 g3dSceneRenderer* shdwSceneRendererCreate::CreateRSMRenderer()			{ return m_Fallback.CreateRSMRenderer(); }
 //	shdwOpacityMapRendererDX11 (Plan 6)

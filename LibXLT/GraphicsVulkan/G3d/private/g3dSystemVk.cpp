@@ -26,6 +26,9 @@
 #ifndef GVK_G3D_SCENEGLOBAL_HPP
 #include "GraphicsVulkan/G3d/g3dSceneGlobal.hpp"
 #endif
+#ifndef GVK_G3D_DEPTHMAPRENDERERVK_HPP
+#include "GraphicsVulkan/G3d/g3dDepthMapRendererVk.hpp"
+#endif
 #ifndef GVK_G3D_SCENERENDERERVK_HPP
 #include "GraphicsVulkan/G3d/g3dSceneRendererVk.hpp"
 #endif
@@ -88,6 +91,7 @@ namespace gvk
 			//init g3d state systems
 			g3dStateMgrVk::Init();
 			g3dVkUtil::InitStates();
+			g3dDepthMapRendererVk::InitStates();
 			g3dSceneRendererVk::InitStates();
 			g3dTransparencySortVk::InitStates();
 			g3dRenderPass::InitStates();
@@ -109,6 +113,7 @@ namespace gvk
 			g3dRenderPass::CleanupStates();
 			g3dTransparencySortVk::CleanupStates();
 			g3dSceneRendererVk::CleanupStates();
+			g3dDepthMapRendererVk::CleanupStates();
 			g3dVkUtil::CleanupStates();
 			g3dStateMgrVk::CleanUp();
 

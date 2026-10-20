@@ -46,3 +46,8 @@ class gtTarget
 		gtBackend::Kind	m_Kind;
 		matTexture*		m_pTexture;
 };
+
+//	Mip 0 of a 2D texture on whichever backend i_Kind is (the one that is
+//	up), rows tightly packed (i_BytesPerTexel each), top row first: for
+//	targets that aren't RGBA8 (an R32_FLOAT shadow map)
+std::vector<uint8_t> gtReadTexture(gtBackend::Kind i_Kind, const matTexture* i_pTexture, int i_BytesPerTexel);

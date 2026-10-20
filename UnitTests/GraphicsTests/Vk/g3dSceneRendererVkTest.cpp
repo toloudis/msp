@@ -59,6 +59,9 @@
 #ifndef GVK_G3D_SCENERENDERERVK_HPP
 #include "GraphicsVulkan/G3d/g3dSceneRendererVk.hpp"
 #endif
+#ifndef GVK_G3D_DEPTHMAPRENDERERVK_HPP
+#include "GraphicsVulkan/G3d/g3dDepthMapRendererVk.hpp"
+#endif
 #ifndef GVK_SHDW_HDRRENDERERVK_HPP
 #include "GraphicsVulkan/shdw/shdwHDRRendererVk.hpp"
 #endif
@@ -344,7 +347,6 @@ TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
 	{
 		{ "simple", []() { return g3dSceneRendererCreate::CreateSimpleRenderer(); } },
 		{ "texture", []() { return g3dSceneRendererCreate::CreateTextureRenderer(); } },
-		{ "depth map", []() { return g3dSceneRendererCreate::CreateDepthMapRenderer(); } },
 		{ "RSM", []() { return g3dSceneRendererCreate::CreateRSMRenderer(); } },
 		{ "opacity map", []() { return g3dSceneRendererCreate::CreateOpacityMapRenderer(NULL); } },
 		{ "cube map", []() { return g3dSceneRendererCreate::CreateCubeMapRenderer(NULL, NULL, false); } },
@@ -386,6 +388,8 @@ TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
 						type == g3dSceneRendererTypes::e_RmanColorBleed;
 					if (hdr)
 						EXPECT_TRUE(dynamic_cast<gvk::shdwHDRRendererVk*>(renderer.get()) != NULL);
+					else if (type == g3dSceneRendererTypes::e_DepthMap)		// since Task 3
+						EXPECT_TRUE(dynamic_cast<gvk::g3dDepthMapRendererVk*>(renderer.get()) != NULL);
 					else
 						EXPECT_TRUE(dynamic_cast<gvk::g3dSceneRendererVk*>(renderer.get()) != NULL);
 				}
@@ -393,6 +397,10 @@ TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
 				{
 					std::unique_ptr<g3dSceneRenderer> renderer(create());
 					EXPECT_TRUE(dynamic_cast<gvk::shdwHDRRendererVk*>(renderer.get()) != NULL);
+				}
+				{
+					std::unique_ptr<g3dSceneRenderer> renderer(g3dSceneRendererCreate::CreateDepthMapRenderer());
+					EXPECT_TRUE(dynamic_cast<gvk::g3dDepthMapRendererVk*>(renderer.get()) != NULL);
 				}
 			}
 			log = capture.Text();

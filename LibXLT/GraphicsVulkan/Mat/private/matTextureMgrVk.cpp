@@ -33,6 +33,9 @@
 #ifndef GVK_MATTEXTURELOADER_HPP
 #include "GraphicsVulkan/Mat/private/matTextureLoader.hpp"
 #endif
+#ifndef GVK_MATSHADOWMAP_HPP
+#include "GraphicsVulkan/Mat/matShadowMap.hpp"
+#endif
 #ifndef GVK_MATSTUBSVK_HPP
 #include "GraphicsVulkan/stub/matStubsVk.hpp"
 #endif
@@ -1022,17 +1025,55 @@ void matTextureMgrVk::ReloadCompressedTexture( const fsLocator& i_Locator, matTe
 }
 
 //--------------------------------------------------------------------
-//	Shadow maps and reflective shadow maps come with their passes
-//	(Plan 5): a texture with the size and no image until then
+//	CreateShadowMap creates a shadow map texture that can 
+//	be rendered to. Use the GetRenderTargetAPI() function
+//	on the returned texture in order to render to it.
 //--------------------------------------------------------------------
 matTexture* matTextureMgrVk::CreateShadowMap(int i_nTextureWidth, int i_nTextureHeight)
 {
-	GVK_NOT_YET("matTextureMgrVk::CreateShadowMap");
-	matTexture* pTexture = new matStubTextureVk(std::max(i_nTextureWidth, 1), std::max(i_nTextureHeight, 1), NULL, "shadow map");
+	if (g2dVkGlobal::RestrictPow2Textures())
+	{
+		if (!((i_nTextureWidth & (i_nTextureWidth - 1)) == 0) ||
+			!((i_nTextureHeight & (i_nTextureHeight - 1)) == 0))
+		{
+			throw matInvalidTextureSizeX(fsLocator());
+		}
+	}
+
+	matShadowMap* pTexture = new matShadowMap();
+
+	i_nTextureWidth = std::max(i_nTextureWidth,1);
+	i_nTextureHeight = std::max(i_nTextureHeight,1);
+
+	try
+	{
+		pTexture->Make( i_nTextureWidth, i_nTextureHeight );
+	}
+	catch (const g2dOutOfVideoMemoryX& )
+	{
+		delete pTexture;
+		throw;
+	}
+	catch ( const envExceptionX& i_Ex )
+	{
+		DBG_ERROR(i_Ex.GetErrorMessage());
+		delete pTexture;
+		return NULL;
+	}
+
+	// update all the core data for the texture
+	pTexture->ReloadInfo();
+
+	// add memory count to shadow map category 
 	l_ShadowMapTextures[pTexture] = FileInfo(i_nTextureWidth, i_nTextureHeight, pTexture->GetPixelFormat());
+
 	return pTexture;
 }
 
+//--------------------------------------------------------------------
+//	Reflective shadow maps come with LPV GI (Plan 5b): a texture with
+//	the size and no image until then
+//--------------------------------------------------------------------
 matTexture* matTextureMgrVk::CreateReflectiveShadowMap(int i_nTextureWidth, int i_nTextureHeight)
 {
 	GVK_NOT_YET("matTextureMgrVk::CreateReflectiveShadowMap");

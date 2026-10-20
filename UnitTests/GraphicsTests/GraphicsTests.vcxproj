@@ -141,6 +141,7 @@
     <ClCompile Include="gtRender.cpp" />
     <ClCompile Include="Vk\shdwScaffoldingVkTest.cpp" />
     <ClCompile Include="Vk\shdwHDRRendererVkTest.cpp" />
+    <ClCompile Include="Vk\shdwShadowVkTest.cpp" />
     <ClCompile Include="Vk\g2dFontVkTest.cpp" />
     <ClCompile Include="Vk\g2dCaptureVkTest.cpp" />
   </ItemGroup>

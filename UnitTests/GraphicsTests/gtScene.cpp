@@ -65,6 +65,24 @@
 #ifndef G3D_RENDERSTATE_HPP
 #include "Graphics/G3d/g3dRenderState.hpp"
 #endif
+#ifndef MAT_TEXTURE_HPP
+#include "Graphics/Mat/matTexture.hpp"
+#endif
+#ifndef G3D_PROJECTEDLIGHT_HPP
+#include "Graphics/G3d/g3dProjectedLight.hpp"
+#endif
+#ifndef G3D_SCENERENDERER_HPP
+#include "Graphics/G3d/g3dSceneRenderer.hpp"
+#endif
+#ifndef G3D_SCENERENDERERCREATE_HPP
+#include "Graphics/G3d/g3dSceneRendererCreate.hpp"
+#endif
+#ifndef G3D_TARGETRENDERER_HPP
+#include "Graphics/G3d/g3dTargetRenderer.hpp"
+#endif
+#ifndef G2D_RGBCOLOR_HPP
+#include "Graphics/G2d/g2dRGBColor.hpp"
+#endif
 
 #include <gtest/gtest.h>
 #include <stb_image_write.h>
@@ -359,6 +377,10 @@ gtSceneBuilder::gtSceneBuilder()
 
 gtSceneBuilder::~gtSceneBuilder()
 {
+	m_TargetRenderers.clear();
+	for (auto& renderer : m_DepthRenderers)
+		renderer->ReleaseResources();
+	m_DepthRenderers.clear();
 	m_pScene.reset();
 	m_pRoot.reset();
 	m_pOverlayRoot.reset();
@@ -428,6 +450,41 @@ g3dSceneNode* gtSceneBuilder::AddViewerLayer(const gtMesh& i_Mesh, matMaterial* 
 	m_pViewerRoot->AddChild(node);
 	m_pViewerScene->UpdateWorldData();
 	return node;
+}
+
+g3dProjectedLight* gtSceneBuilder::ProjectedLight(const maPoint3d& i_Position, const maPoint3d& i_Target,
+												  const maFloatRGBA& i_Color, int i_ShadowMapSize)
+{
+	g3dProjectedLight* light = g3dLightMgr::CreateProjectedLight();
+	light->SetCastsShadow(true);
+	light->SetIntensity(i_Color);
+	light->SetEnable(true);
+	light->SetPosition(i_Position);
+	light->SetTarget(i_Target);
+	light->SetRange(30.0f);
+	light->SetAngle(60.0f);
+	light->SetInnerAngle(60.0f);
+	m_Lights.push_back(light);
+
+	m_ShadowCameras.emplace_back(new camCamera());
+	camCamera* camera = m_ShadowCameras.back().get();
+	light->OrientCamera(*camera);
+	if (i_ShadowMapSize > 0)
+	{
+		matTexture* map = Keep(matTextureMgr::CreateShadowMap(i_ShadowMapSize, i_ShadowMapSize));
+		light->SetShadowMap(map);
+		m_DepthRenderers.emplace_back(g3dSceneRendererCreate::CreateDepthMapRenderer());
+		m_TargetRenderers.emplace_back(new g3dTargetRenderer(map->GetRenderTargetAPI(), m_DepthRenderers.back().get(),
+															 m_pScene.get(), camera));
+		m_TargetRenderers.back()->SetBackgroundColor(g2dRGBColor(0xff, 0xff, 0xff));
+	}
+	return light;
+}
+
+void gtSceneBuilder::RenderTargets(float i_fSimTime)
+{
+	for (auto& renderer : m_TargetRenderers)
+		renderer->Render(i_fSimTime);
 }
 
 void gtSceneBuilder::TwoLights()

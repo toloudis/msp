@@ -27,9 +27,8 @@
 
 namespace gvk
 {
-	//	The texture shadow maps, reflective shadow maps and cube render
-	//	targets get until Plan 5 ports them (matTextureMgrVk makes them): a
-	//	size and a pixel format, no image
+	//	The texture reflective shadow maps get until Plan 5b ports them
+	//	(matTextureMgrVk makes them): a size and a pixel format, no image
 	class matStubTextureVk : public matTextureVk
 	{
 		public:

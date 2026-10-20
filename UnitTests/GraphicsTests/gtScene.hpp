@@ -40,8 +40,11 @@ class effShaderData;
 class g3dFragment;
 class g3dLayer;
 class g3dLight;
+class g3dProjectedLight;
 class g3dScene;
 class g3dSceneNode;
+class g3dSceneRenderer;
+class g3dTargetRenderer;
 class matMaterial;
 class matTexture;
 struct g3dAmbientEnvState;
@@ -151,6 +154,20 @@ class gtSceneBuilder
 		void			PointLight(const maPoint3d& i_Position, const maFloatRGBA& i_Color, float i_Range = 50.0f);
 		void			DirectionalLight(const maVector3d& i_Direction, const maFloatRGBA& i_Color);
 
+		//	A spot light at i_Position aimed at i_Target (a 60 degree cone,
+		//	range 30), casting shadows. With i_ShadowMapSize > 0 it gets a
+		//	shadow map (matTextureMgr::CreateShadowMap), a depth map renderer
+		//	(g3dSceneRendererCreate::CreateDepthMapRenderer) and a target
+		//	renderer drawing the scene into the map from the light's shadow
+		//	camera, as prjltProjectedLightObject sets them up; RenderTargets
+		//	renders the map. 0: no shadow map.
+		g3dProjectedLight*	ProjectedLight(const maPoint3d& i_Position, const maPoint3d& i_Target,
+									   const maFloatRGBA& i_Color, int i_ShadowMapSize);
+
+		//	Renders the builder's target renderers (the shadow maps) for this
+		//	frame, as api3dTargetRendererMgr does before the view is drawn
+		void			RenderTargets(float i_fSimTime = 1.25f);
+
 		//	The usual two lights: a warm point light and a cool directional one
 		void			TwoLights();
 
@@ -199,5 +216,8 @@ class gtSceneBuilder
 		std::vector<std::unique_ptr<matMaterial>>	m_Materials;
 		std::vector<matTexture*>		m_Textures;
 		std::vector<g3dLight*>			m_Lights;
+		std::vector<std::unique_ptr<camCamera>>			m_ShadowCameras;
+		std::vector<std::unique_ptr<g3dSceneRenderer>>	m_DepthRenderers;
+		std::vector<std::unique_ptr<g3dTargetRenderer>>	m_TargetRenderers;
 		bool							m_bLightsCastShadows = false;
 };

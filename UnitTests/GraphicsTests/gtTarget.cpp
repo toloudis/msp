@@ -84,21 +84,27 @@ gtPicture gtTarget::Read() const
 		return picture;
 	picture.m_Width = m_pTexture->GetWidth();
 	picture.m_Height = m_pTexture->GetHeight();
-	if (m_Kind == gtBackend::e_Vulkan)
+	picture.m_Rgba = gtReadTexture(m_Kind, m_pTexture, 4);
+	return picture;
+}
+
+std::vector<uint8_t> gtReadTexture(gtBackend::Kind i_Kind, const matTexture* i_pTexture, int i_BytesPerTexel)
+{
+	std::vector<uint8_t> texels;
+	if (i_Kind == gtBackend::e_Vulkan)
 	{
-		gvk::vkdImage* image = gvk::g3dVkTextureUtil::GetImage(m_pTexture);
+		gvk::vkdImage* image = gvk::g3dVkTextureUtil::GetImage(i_pTexture);
 		EXPECT_TRUE(image != NULL);
 		if (!image)
-			return picture;
+			return texels;
 		gvk::vkdGlobal::Context().Flush();
-		picture.m_Rgba = image->ReadBack(0, 0);
-		return picture;
+		return image->ReadBack(0, 0);
 	}
 
-	const matTextureDX11* texture = dynamic_cast<const matTextureDX11*>(m_pTexture);
+	const matTextureDX11* texture = dynamic_cast<const matTextureDX11*>(i_pTexture);
 	EXPECT_TRUE(texture && texture->GetResource());
 	if (!texture || !texture->GetResource())
-		return picture;
+		return texels;
 	ID3D11Device* device = g2dDX11Global::g_pDevice;
 	ID3D11DeviceContext* context = g2dDX11Global::g_pDeviceContext;
 	D3D11_TEXTURE2D_DESC desc;
@@ -115,19 +121,19 @@ gtPicture gtTarget::Read() const
 	if (FAILED(device->CreateTexture2D(&staging_desc, NULL, &staging)))
 	{
 		ADD_FAILURE() << "no staging texture";
-		return picture;
+		return texels;
 	}
 	context->CopySubresourceRegion(staging.Get(), 0, 0, 0, 0, texture->GetResource(), 0, NULL);
 	D3D11_MAPPED_SUBRESOURCE mapped;
 	if (SUCCEEDED(context->Map(staging.Get(), 0, D3D11_MAP_READ, 0, &mapped)))
 	{
-		const size_t row = (size_t)desc.Width * 4;
-		picture.m_Rgba.resize(row * desc.Height);
+		const size_t row = (size_t)desc.Width * i_BytesPerTexel;
+		texels.resize(row * desc.Height);
 		for (UINT y = 0; y < desc.Height; y++)
 		{
-			memcpy(&picture.m_Rgba[y * row], (const uint8_t*)mapped.pData + y * mapped.RowPitch, row);
+			memcpy(&texels[y * row], (const uint8_t*)mapped.pData + y * mapped.RowPitch, row);
 		}
 		context->Unmap(staging.Get(), 0);
 	}
-	return picture;
+	return texels;
 }
