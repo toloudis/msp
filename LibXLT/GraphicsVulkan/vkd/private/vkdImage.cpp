@@ -268,6 +268,8 @@ namespace gvk
 
 	vkdImage::~vkdImage()
 	{
+		//	Not bound as a target any more (vkdContext)
+		m_Device.ImageDestroyed(this);
 		//	Views of this image go first, so their destruction is queued before the image's
 		m_Subresources.clear();
 		m_pDepthView.reset();

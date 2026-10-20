@@ -568,3 +568,35 @@ TEST_F(vkdContextTest, ResetStateRestoresDefaults)
 	EXPECT_EQ(nullptr, depth);
 	m_pContext->Flush();
 }
+
+TEST_F(vkdContextTest, DestroyedTargetsAreUnbound)
+{
+	//	D3D11 keeps a bound target alive; here the context forgets an image
+	//	destroyed while bound, so it never begins rendering with it (a new
+	//	image at the same address would otherwise look bound)
+	std::unique_ptr<vkdImage> color = vkdImage::Create2D(Device(), c_Size, c_Size, VK_FORMAT_R8G8B8A8_UNORM,
+		VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, "destroyed color");
+	std::unique_ptr<vkdImage> depth = vkdImage::Create2D(Device(), c_Size, c_Size, VK_FORMAT_D24_UNORM_S8_UINT,
+		VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT, "destroyed depth",
+		VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT);
+	const float red[4] = { 1, 0, 0, 1 };
+	const std::vector<Vertex> front = quad(0.5f, red);
+	Begin(color.get(), depth.get());
+	m_pContext->ClearDepthStencil(depth.get(), true, 1.0f, true, 0);
+	DrawVertices(front.data(), 6);			// rendering is open on both
+	depth.reset();
+	color.reset();
+
+	vkdImage* colors[8] = {};
+	vkdImage* bound_depth = nullptr;
+	const uint32_t count = m_pContext->GetRenderTargets(colors, &bound_depth);
+	EXPECT_EQ(nullptr, bound_depth);
+	for (uint32_t c = 0; c < count; c++)
+		EXPECT_EQ(nullptr, colors[c]) << c;
+
+	//	drawing goes on into new targets
+	vkdImage* next = Target();
+	Begin(next);
+	DrawVertices(front.data(), 6);
+	EXPECT_EQ(c_Red, pixel(Read(next), 32, 32));
+}

@@ -103,6 +103,8 @@ namespace gvk
 			"synchronization2",
 			"timelineSemaphore",
 			"bufferDeviceAddress",
+			"hostQueryReset",				// vkdOcclusionQuery resets its query on the host
+			"occlusionQueryPrecise",		// ...and counts samples exactly, as D3D11 does
 			"descriptorHeap",
 			"unifiedImageLayouts",
 			"bresenhamLines",				// D3D11's aliased lines (diamond exit)

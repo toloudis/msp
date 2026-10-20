@@ -14,26 +14,6 @@
 
 namespace gvk
 {
-	shdwPassTransparent::shdwPassTransparent(g3dLayer*, const camCamera*, matRenderTargetTexture*, matRenderTargetTexture*,
-		matRenderTargetTexture*, matRenderTargetTexture*, matRenderTargetTexture*, g2dRenderTarget*)
-	{
-	}
-	int shdwPassTransparent::Render(float)
-	{
-		GVK_NOT_YET("shdwPassTransparent");
-		return 0;
-	}
-	int shdwPassTransparent::RenderDepthPeeled(float)
-	{
-		GVK_NOT_YET("shdwPassTransparent");
-		return 0;
-	}
-	int shdwPassTransparent::RenderDeferred(float)
-	{
-		GVK_NOT_YET("shdwPassTransparent");
-		return 0;
-	}
-
 	shdwPassSSAO::shdwPassSSAO(matRenderTargetTexture*, matRenderTargetTexture*, matRenderTargetTexture*,
 		g2dRenderTarget*, matRenderTargetTexture*, matRenderTargetTexture*, const ssaoParams&)
 	{

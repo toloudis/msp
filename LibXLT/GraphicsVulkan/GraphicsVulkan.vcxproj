@@ -119,6 +119,7 @@
     <ClCompile Include="vkd\private\vkdShader.cpp" />
     <ClCompile Include="vkd\private\vkdPipelineCache.cpp" />
     <ClCompile Include="vkd\private\vkdContext.cpp" />
+    <ClCompile Include="vkd\private\vkdOcclusionQuery.cpp" />
     <ClCompile Include="vkd\private\vkdBuffer.cpp" />
     <ClCompile Include="vkd\private\vkdFormat.cpp" />
     <ClCompile Include="Eff\private\effPlainEffectVk.cpp" />
@@ -209,6 +210,7 @@
     <ClCompile Include="shdw\private\shdwPassEnvBackground.cpp" />
     <ClCompile Include="shdw\private\shdwPassLit.cpp" />
     <ClCompile Include="shdw\private\shdwPassAlphaFill.cpp" />
+    <ClCompile Include="shdw\private\shdwPassTransparent.cpp" />
     <ClCompile Include="shdw\private\shdwPassDepth.cpp" />
     <ClCompile Include="shdw\private\shdwPassToneMap.cpp" />
     <ClCompile Include="shdw\private\shdwPassHair.cpp" />
@@ -252,6 +254,7 @@
     <ClInclude Include="vkd\vkdShader.hpp" />
     <ClInclude Include="vkd\vkdPipelineCache.hpp" />
     <ClInclude Include="vkd\vkdContext.hpp" />
+    <ClInclude Include="vkd\vkdOcclusionQuery.hpp" />
     <ClInclude Include="vkd\vkdBuffer.hpp" />
     <ClInclude Include="vkd\vkdFormat.hpp" />
     <ClInclude Include="Eff\effPlainEffectVk.hpp" />
@@ -337,6 +340,7 @@
     <ClInclude Include="shdw\shdwPassEnvBackground.hpp" />
     <ClInclude Include="shdw\shdwPassLit.hpp" />
     <ClInclude Include="shdw\shdwPassAlphaFill.hpp" />
+    <ClInclude Include="shdw\shdwPassTransparent.hpp" />
     <ClInclude Include="shdw\shdwPassDepth.hpp" />
     <ClInclude Include="shdw\shdwPassToneMap.hpp" />
     <ClInclude Include="shdw\shdwPassHair.hpp" />

@@ -175,6 +175,9 @@
     <ClCompile Include="vkd\private\vkdContext.cpp">
       <Filter>vkd\private</Filter>
     </ClCompile>
+    <ClCompile Include="vkd\private\vkdOcclusionQuery.cpp">
+      <Filter>vkd\private</Filter>
+    </ClCompile>
     <ClCompile Include="vkd\private\vkdBuffer.cpp">
       <Filter>vkd\private</Filter>
     </ClCompile>
@@ -443,6 +446,9 @@
     <ClCompile Include="shdw\private\shdwPassAlphaFill.cpp">
       <Filter>shdw\private</Filter>
     </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassTransparent.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
     <ClCompile Include="shdw\private\shdwPassDepth.cpp">
       <Filter>shdw\private</Filter>
     </ClCompile>
@@ -567,6 +573,9 @@
       <Filter>vkd</Filter>
     </ClInclude>
     <ClInclude Include="vkd\vkdContext.hpp">
+      <Filter>vkd</Filter>
+    </ClInclude>
+    <ClInclude Include="vkd\vkdOcclusionQuery.hpp">
       <Filter>vkd</Filter>
     </ClInclude>
     <ClInclude Include="vkd\vkdBuffer.hpp">
@@ -820,6 +829,9 @@
       <Filter>shdw</Filter>
     </ClInclude>
     <ClInclude Include="shdw\shdwPassAlphaFill.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassTransparent.hpp">
       <Filter>shdw</Filter>
     </ClInclude>
     <ClInclude Include="shdw\shdwPassDepth.hpp">

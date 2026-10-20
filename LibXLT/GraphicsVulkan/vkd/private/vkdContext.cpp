@@ -91,10 +91,40 @@ namespace gvk
 				m_bNeedBarrier = true;
 			}
 		});
+		//	An image destroyed while bound as a target is unbound: D3D11 keeps
+		//	it alive, but ported code always binds new targets before drawing
+		//	again, and a dangling pointer would be taken for a new image made
+		//	at the same address (is_bound) and begin rendering with the old
+		//	one's views. Rendering into it ends first (its views are freed only
+		//	once the GPU is done with what was recorded).
+		m_Device.SetImageDestroyHook([this](const vkdImage* i_pImage)
+		{
+			if (!is_bound(i_pImage))
+			{
+				return;
+			}
+			if (m_bRendering && m_Commands && m_CommandsValue == m_Device.PendingValue())
+			{
+				end_rendering(m_Commands);
+			}
+			m_bRendering = false;
+			if (m_pDepth == i_pImage)
+			{
+				m_pDepth = nullptr;
+			}
+			for (uint32_t c = 0; c < m_ColorCount; c++)
+			{
+				if (m_Colors[c] == i_pImage)
+				{
+					m_Colors[c] = nullptr;
+				}
+			}
+		});
 	}
 
 	vkdContext::~vkdContext()
 	{
+		m_Device.SetImageDestroyHook(std::function<void(const vkdImage*)>());
 		m_Device.SetRecordingHook(std::function<void()>());
 		std::lock_guard<std::recursive_mutex> lock(m_Device.StreamLock());
 		if (m_bRendering && m_Commands && m_CommandsValue == m_Device.PendingValue())

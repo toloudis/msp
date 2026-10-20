@@ -137,6 +137,8 @@ namespace gvk
 					{"scalarBlockLayout",				&m_Vulkan12.scalarBlockLayout},
 					{"timelineSemaphore",				&m_Vulkan12.timelineSemaphore},
 					{"bufferDeviceAddress",				&m_Vulkan12.bufferDeviceAddress},
+					{"hostQueryReset",					&m_Vulkan12.hostQueryReset},
+					{"occlusionQueryPrecise",			&core.occlusionQueryPrecise},
 					{"dynamicRendering",				&m_Vulkan13.dynamicRendering},
 					{"synchronization2",				&m_Vulkan13.synchronization2},
 					{"shaderDemoteToHelperInvocation",	&m_Vulkan13.shaderDemoteToHelperInvocation},
@@ -244,6 +246,7 @@ namespace gvk
 		std::vector<VkSemaphoreSubmitInfo>	m_PendingWaits;
 		std::function<void()>		m_RecordingHook;
 		bool						m_bInHook = false;
+		std::function<void(const vkdImage*)>	m_ImageDestroyHook;
 
 		struct Deferred
 		{
@@ -619,6 +622,21 @@ namespace gvk
 	{
 		std::lock_guard<std::recursive_mutex> lock(m_pImpl->m_StreamLock);
 		m_pImpl->m_RecordingHook = i_Hook;
+	}
+
+	void vkdDevice::SetImageDestroyHook(std::function<void(const vkdImage*)> i_Hook)
+	{
+		std::lock_guard<std::recursive_mutex> lock(m_pImpl->m_StreamLock);
+		m_pImpl->m_ImageDestroyHook = i_Hook;
+	}
+
+	void vkdDevice::ImageDestroyed(const vkdImage* i_pImage)
+	{
+		std::lock_guard<std::recursive_mutex> lock(m_pImpl->m_StreamLock);
+		if (m_pImpl->m_ImageDestroyHook)
+		{
+			m_pImpl->m_ImageDestroyHook(i_pImage);
+		}
 	}
 
 	uint64_t vkdDevice::Submit(const std::vector<VkSemaphoreSubmitInfo>& i_Wait,

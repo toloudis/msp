@@ -114,6 +114,9 @@
 #ifndef GVK_SHDW_PASSTONEMAP_HPP
 #include "GraphicsVulkan/shdw/shdwPassToneMap.hpp"
 #endif
+#ifndef GVK_SHDW_PASSTRANSPARENT_HPP
+#include "GraphicsVulkan/shdw/shdwPassTransparent.hpp"
+#endif
 #ifndef GVK_SHDW_PASSZFILL_HPP
 #include "GraphicsVulkan/shdw/shdwPassZFill.hpp"
 #endif

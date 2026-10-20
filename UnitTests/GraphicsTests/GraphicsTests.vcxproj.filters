@@ -118,6 +118,12 @@
     <ClCompile Include="Vk\shdwShadowVkTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
+    <ClCompile Include="Vk\shdwTransparentVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\vkdOcclusionQueryTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
     <ClCompile Include="Vk\g2dFontVkTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>

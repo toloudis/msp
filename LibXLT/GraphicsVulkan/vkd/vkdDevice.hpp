@@ -43,6 +43,8 @@ typedef struct VmaAllocator_T* VmaAllocator;
 
 namespace gvk
 {
+	class vkdImage;
+
 	struct vkdDeviceOptions
 	{
 		bool		m_bValidation = false;		// forced on in Debug builds
@@ -106,6 +108,13 @@ namespace gvk
 			//	that records state into it (vkdContext) can end what it has open
 			//	first. One hook; empty removes it.
 			void SetRecordingHook(std::function<void()> i_Hook);
+
+			//	Called (under the stream lock) by each vkdImage as it is
+			//	destroyed, so the code that holds it bound as a target
+			//	(vkdContext) can let it go: D3D11 keeps a bound resource alive,
+			//	here the pointer would dangle. One hook; empty removes it.
+			void SetImageDestroyHook(std::function<void(const vkdImage*)> i_Hook);
+			void ImageDestroyed(const vkdImage* i_pImage);
 
 			//	Runs i_Destroy once the GPU has finished all work submitted so
 			//	far, including the open command buffer.

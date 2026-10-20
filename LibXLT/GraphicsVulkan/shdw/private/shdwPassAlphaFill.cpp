@@ -70,8 +70,8 @@
 #ifndef GVK_MATRENDERTARGETTEXTURE_HPP
 #include "GraphicsVulkan/Mat/matRenderTargetTexture.hpp"
 #endif
-#ifndef GVK_SHDW_PASSSTUBSVK_HPP
-#include "GraphicsVulkan/stub/shdwPassStubsVk.hpp"
+#ifndef GVK_SHDW_PASSTRANSPARENT_HPP
+#include "GraphicsVulkan/shdw/shdwPassTransparent.hpp"
 #endif
 #ifndef G3D_FRAGMENT_HPP
 #include "Graphics/G3d/g3dFragment.hpp"

@@ -14,8 +14,8 @@
 **      viewer layers, and one renderer used at several sizes in turn.
 **
 **      The lights cast shadows, as MachStudio's do (the lit pass draws only
-**      those). Plan 4b's built-in Phong row is left out: its data materials
-**      count as transparent, and the transparent pass is ported in Task 4.
+**      those). Plan 4b's built-in Phong row is drawn by the transparent pass
+**      (its data materials count as transparent whatever their transparency).
 **
 **      Exceptions to gfxcompare's tolerance (max 2/255, at most 0.1% of
 **      pixels over 1/255):
@@ -75,12 +75,11 @@ namespace
 	const int c_StarCamera = 1;			// GLT_CAMERA
 	const int c_StarCrossScreen = 4;	// GLT_FILTER_CROSSSCREEN
 
-	//	Plan 4b's spheres (without the built-in Phong row), lit by shadow-
-	//	casting lights
+	//	Plan 4b's twelve spheres, lit by shadow-casting lights
 	void spheres(gtSceneBuilder& io_Builder, bool i_bLights = true)
 	{
 		io_Builder.LightsCastShadows(true);
-		io_Builder.LitSpheres(i_bLights, false);
+		io_Builder.LitSpheres(i_bLights, true);
 	}
 
 	//	Rows Blinn, Phong and Lambert; columns the shader's own values and

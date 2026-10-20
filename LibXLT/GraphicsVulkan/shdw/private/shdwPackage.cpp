@@ -32,6 +32,9 @@
 #ifndef GVK_SHDW_PASSALPHAFILL_HPP
 #include "GraphicsVulkan/shdw/shdwPassAlphaFill.hpp"
 #endif
+#ifndef GVK_SHDW_PASSTRANSPARENT_HPP
+#include "GraphicsVulkan/shdw/shdwPassTransparent.hpp"
+#endif
 #ifndef GVK_SHDW_PASSZFILL_HPP
 #include "GraphicsVulkan/shdw/shdwPassZFill.hpp"
 #endif
@@ -117,6 +120,7 @@ void shdwPackage::InitGraphics()
 	shdwPassLit::InitStates();
 	shdwPassDepth::InitStates();
 	shdwPassAlphaFill::InitStates();
+	shdwPassTransparent::InitStates();
 	shdwPassZFill::InitStates();
 	shdwHDRRendererVk::InitStates();
 	shdwPassHair::InitStates();
@@ -132,6 +136,7 @@ void shdwPackage::CleanUpGraphics()
 	shdwPassHair::CleanupStates();
 	shdwHDRRendererVk::CleanupStates();
 	shdwPassZFill::CleanupStates();
+	shdwPassTransparent::CleanupStates();
 	shdwPassAlphaFill::CleanupStates();
 	shdwPassDepth::CleanupStates();
 	shdwPassLit::CleanupStates();
