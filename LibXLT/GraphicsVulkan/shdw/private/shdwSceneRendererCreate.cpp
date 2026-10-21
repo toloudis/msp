@@ -62,6 +62,9 @@
 #ifndef GVK_G3D_TEXTURERENDERERVK_HPP
 #include "GraphicsVulkan/G3d/g3dTextureRendererVk.hpp"
 #endif
+#ifndef GVK_G3D_PICKBUFFERRENDERERVK_HPP
+#include "GraphicsVulkan/G3d/g3dPickBufferRendererVk.hpp"
+#endif
 
 namespace gvk
 {
@@ -96,8 +99,7 @@ g3dSceneRenderer* shdwSceneRendererCreate::CreateAmbientOcclusionRenderer()	{ re
 g3dSceneRenderer* shdwSceneRendererCreate::CreateGlobalIlluminationRenderer()	{ return new shdwGIPreviewRendererVk(); }
 g3dSceneRenderer* shdwSceneRendererCreate::CreateDepthRenderer()		{ return new shdwDepthRendererVk(); }
 g3dSceneRenderer* shdwSceneRendererCreate::CreateUVRenderer()			{ return new shdwUVRendererVk(); }
-//	g3dPickBufferRendererDX11 (Plan 6; the stub picks nothing)
-g3dPickRenderer* shdwSceneRendererCreate::CreatePickRenderer()			{ return m_Fallback.CreatePickRenderer(); }
+g3dPickRenderer* shdwSceneRendererCreate::CreatePickRenderer()			{ return new g3dPickBufferRendererVk(); }
 g3dSceneRenderer* shdwSceneRendererCreate::CreateShadowMaskRenderer()	{ return new shdwShadowsOnlyRendererVk(true); }
 g3dSceneRenderer* shdwSceneRendererCreate::CreateIlluminationRenderer()	{ return new shdwShadowsOnlyRendererVk(false); }
 g3dSceneRenderer* shdwSceneRendererCreate::CreateNormalRenderer()		{ return new shdwNormalRendererVk(); }

@@ -21,21 +21,6 @@
 namespace gvk
 {
 	//------------------------------------------------------------------------
-	//	Renderers
-	//------------------------------------------------------------------------
-	int g3dPickRendererVk::Render(g2dRenderTarget*, const camCamera&, const g3dScene&, const std::vector<g3dLayer*>&, float)
-	{
-		GVK_NOT_YET("g3dPickRendererVk::Render");
-		return 0;
-	}
-
-	void g3dPickRendererVk::ReleaseResources()					{}
-	void g3dPickRendererVk::SetPickViewport(g2dRenderTarget*)	{ GVK_NOT_YET("g3dPickRendererVk::SetPickViewport"); }
-	void g3dPickRendererVk::RestoreViewport()					{}
-	void g3dPickRendererVk::GetPickInfo(g2dRenderTarget*, g3dPickInfo&)	{ GVK_NOT_YET("g3dPickRendererVk::GetPickInfo"); }
-
-
-	//------------------------------------------------------------------------
 	//	Baking
 	//------------------------------------------------------------------------
 	int g3dBakeVk::Init(const g2dPFD&, const g3dScene*, const fsLocator&, float, const camCamera&, bool,

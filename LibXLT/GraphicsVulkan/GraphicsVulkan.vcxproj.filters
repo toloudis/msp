@@ -397,6 +397,9 @@
     <ClCompile Include="G3d\private\g3dDepthMapRendererVk.cpp">
       <Filter>G3d\private</Filter>
     </ClCompile>
+    <ClCompile Include="G3d\private\g3dPickBufferRendererVk.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
     <ClCompile Include="G3d\private\g3dRSMRendererVk.cpp">
       <Filter>G3d\private</Filter>
     </ClCompile>
@@ -879,6 +882,9 @@
       <Filter>Eff</Filter>
     </ClInclude>
     <ClInclude Include="G3d\g3dDepthMapRendererVk.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dPickBufferRendererVk.hpp">
       <Filter>G3d</Filter>
     </ClInclude>
     <ClInclude Include="G3d\g3dRSMRendererVk.hpp">

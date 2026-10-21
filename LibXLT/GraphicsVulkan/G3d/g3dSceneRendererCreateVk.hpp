@@ -7,7 +7,7 @@
 **	until the shdw renderers are ported (Plans 5 and 6), every renderer
 **	type shdw can't build yet is answered with the forward renderer
 **	(g3dSceneRendererVk), logged once per type with GVK_NOT_YET. The pick
-**	renderer is a stub that picks nothing (it isn't a scene renderer).
+**	renderer is g3dPickBufferRendererVk, as DX11's.
 **
 **	StudioGPU
 **	Copyright(C) 2010 - All Rights Reserved

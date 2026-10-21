@@ -7,8 +7,6 @@
 **	should do real work runs. Each class moves to its real package when a
 **	later plan ports it.
 **
-**	  g3dPickRendererVk	the pick renderer picks nothing (g3dSceneRendererCreateVk
-**						makes it)
 **	  g3dBakeVk				baking (nothing to bake)
 **	  hairModelFragVk, hairRendererVk
 **		hair fragments (mayFragCreate::CreateHairFragment) keep their
@@ -46,17 +44,6 @@
 
 namespace gvk
 {
-	class g3dPickRendererVk : public g3dPickRenderer
-	{
-		public:
-			virtual int Render(g2dRenderTarget* i_pWindow, const camCamera& i_Camera, const g3dScene& i_Scene,
-							   const std::vector<g3dLayer*>& i_ViewerLayers, float i_fSimTime);
-			virtual void ReleaseResources();
-			virtual void SetPickViewport(g2dRenderTarget* i_pTarget);
-			virtual void RestoreViewport();
-			virtual void GetPickInfo(g2dRenderTarget* i_pWindow, g3dPickInfo& o_PickInfo);
-	};
-
 	class g3dBakeVk : public g3dBakeImpl
 	{
 		public:

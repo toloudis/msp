@@ -29,6 +29,9 @@
 #ifndef GVK_G3D_DEPTHMAPRENDERERVK_HPP
 #include "GraphicsVulkan/G3d/g3dDepthMapRendererVk.hpp"
 #endif
+#ifndef GVK_G3D_PICKBUFFERRENDERERVK_HPP
+#include "GraphicsVulkan/G3d/g3dPickBufferRendererVk.hpp"
+#endif
 #ifndef GVK_G3D_RSMRENDERERVK_HPP
 #include "GraphicsVulkan/G3d/g3dRSMRendererVk.hpp"
 #endif
@@ -101,6 +104,7 @@ namespace gvk
 			g3dStateMgrVk::Init();
 			g3dVkUtil::InitStates();
 			g3dDepthMapRendererVk::InitStates();
+			g3dPickBufferRendererVk::InitStates();
 			g3dRenderCameraSpaceObjects::InitStates();
 			g3dRenderScreenSpaceObjects::InitStates();
 			g3dSceneRendererVk::InitStates();
@@ -130,6 +134,7 @@ namespace gvk
 			g3dSceneRendererVk::CleanupStates();
 			g3dRenderScreenSpaceObjects::CleanupStates();
 			g3dRenderCameraSpaceObjects::CleanupStates();
+			g3dPickBufferRendererVk::CleanupStates();
 			g3dDepthMapRendererVk::CleanupStates();
 			g3dVkUtil::CleanupStates();
 			g3dStateMgrVk::CleanUp();

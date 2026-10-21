@@ -13,7 +13,7 @@
 #include "GraphicsVulkan/G3d/g3dSceneRendererVk.hpp"
 #endif
 #ifndef GVK_G3DSTUBSVK_HPP
-#include "GraphicsVulkan/stub/g3dStubsVk.hpp"
+#include "GraphicsVulkan/G3d/g3dPickBufferRendererVk.hpp"
 #endif
 #ifndef GVK_VKDCHECK_HPP
 #include "GraphicsVulkan/vkd/vkdCheck.hpp"
@@ -53,7 +53,7 @@ g3dSceneRenderer* g3dSceneRendererCreateVk::CreateMaterialsRenderer()	{ return f
 g3dSceneRenderer* g3dSceneRendererCreateVk::CreateReflectionOnlyRenderer()	{ return forward("reflection-only renderer (forward renderer used)"); }
 g3dSceneRenderer* g3dSceneRendererCreateVk::CreateGlowRenderer()		{ return forward("glow renderer (forward renderer used)"); }
 
-//	Not a scene renderer: the stub picks nothing (Plan 6)
-g3dPickRenderer* g3dSceneRendererCreateVk::CreatePickRenderer()			{ return new g3dPickRendererVk; }
+//	Creates renderer for the purpose of picking the object at a pixel
+g3dPickRenderer* g3dSceneRendererCreateVk::CreatePickRenderer()			{ return new g3dPickBufferRendererVk(); }
 
 }
