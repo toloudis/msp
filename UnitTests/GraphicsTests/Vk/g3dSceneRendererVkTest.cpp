@@ -77,6 +77,21 @@
 #ifndef GVK_SHDW_CUBEMAPRENDERERVK_HPP
 #include "GraphicsVulkan/shdw/shdwCubeMapRendererVk.hpp"
 #endif
+#ifndef GVK_SHDW_DEPTHRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwDepthRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_NORMALRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwNormalRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_MATERIALSRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwMaterialsRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_GLOWRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwGlowRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_REFLECTIONSONLYRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwReflectionsOnlyRendererVk.hpp"
+#endif
 
 #include <gtest/gtest.h>
 
@@ -361,15 +376,39 @@ TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
 		{ "opacity map", []() { return g3dSceneRendererCreate::CreateOpacityMapRenderer(NULL); } },
 		{ "ambient occlusion", []() { return g3dSceneRendererCreate::CreateAmbientOcclusionRenderer(); } },
 		{ "global illumination", []() { return g3dSceneRendererCreate::CreateGlobalIlluminationRenderer(); } },
-		{ "depth", []() { return g3dSceneRendererCreate::CreateDepthRenderer(); } },
 		{ "UV", []() { return g3dSceneRendererCreate::CreateUVRenderer(); } },
 		{ "shadow mask", []() { return g3dSceneRendererCreate::CreateShadowMaskRenderer(); } },
 		{ "illumination", []() { return g3dSceneRendererCreate::CreateIlluminationRenderer(); } },
-		{ "normal", []() { return g3dSceneRendererCreate::CreateNormalRenderer(); } },
 		{ "velocity map", []() { return g3dSceneRendererCreate::CreateVelocityMapRenderer(); } },
-		{ "materials", []() { return g3dSceneRendererCreate::CreateMaterialsRenderer(); } },
-		{ "reflection-only", []() { return g3dSceneRendererCreate::CreateReflectionOnlyRenderer(); } },
-		{ "glow", []() { return g3dSceneRendererCreate::CreateGlowRenderer(); } },
+	};
+	//	ported in Plan 6 Task 4
+	struct Ported
+	{
+		g3dSceneRendererTypes::RendererType	m_Type;
+		std::function<g3dSceneRenderer*()>	m_Create;
+		std::function<bool(g3dSceneRenderer*)>	m_IsPort;
+	};
+	const std::vector<Ported> ported =
+	{
+		{ g3dSceneRendererTypes::e_Depth, []() { return g3dSceneRendererCreate::CreateDepthRenderer(); },
+		  [](g3dSceneRenderer* r) { return dynamic_cast<gvk::shdwDepthRendererVk*>(r) != NULL; } },
+		{ g3dSceneRendererTypes::e_Normals, []() { return g3dSceneRendererCreate::CreateNormalRenderer(); },
+		  [](g3dSceneRenderer* r) { return dynamic_cast<gvk::shdwNormalRendererVk*>(r) != NULL; } },
+		{ g3dSceneRendererTypes::e_Materials, []() { return g3dSceneRendererCreate::CreateMaterialsRenderer(); },
+		  [](g3dSceneRenderer* r) { return dynamic_cast<gvk::shdwMaterialsRendererVk*>(r) != NULL; } },
+		{ g3dSceneRendererTypes::e_ReflectionOnly, []() { return g3dSceneRendererCreate::CreateReflectionOnlyRenderer(); },
+		  [](g3dSceneRenderer* r) { return dynamic_cast<gvk::shdwReflectionsOnlyRendererVk*>(r) != NULL; } },
+		{ g3dSceneRendererTypes::e_Glow, []() { return g3dSceneRendererCreate::CreateGlowRenderer(); },
+		  [](g3dSceneRenderer* r) { return dynamic_cast<gvk::shdwGlowRendererVk*>(r) != NULL; } },
+	};
+	auto find_ported = [&](int i_Type) -> const Ported*
+	{
+		for (const Ported& p : ported)
+		{
+			if (p.m_Type == i_Type)
+				return &p;
+		}
+		return NULL;
 	};
 
 	gtBackend::Run(gtBackend::e_Vulkan, [&]()
@@ -402,6 +441,8 @@ TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
 						EXPECT_TRUE(dynamic_cast<gvk::shdwCubeMapRendererVk*>(renderer.get()) != NULL);
 					else if (type == g3dSceneRendererTypes::e_PlanarReflection)
 						EXPECT_TRUE(dynamic_cast<gvk::shdwPlanarReflectionRendererVk*>(renderer.get()) != NULL);
+					else if (const Ported* p = find_ported(type))	// since Plan 6 Task 4
+						EXPECT_TRUE(p->m_IsPort(renderer.get()));
 					else
 						EXPECT_TRUE(dynamic_cast<gvk::g3dSceneRendererVk*>(renderer.get()) != NULL);
 				}
@@ -421,6 +462,12 @@ TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
 				{	// since Plan 5b Task 3
 					std::unique_ptr<g3dSceneRenderer> renderer(g3dSceneRendererCreate::CreateRSMRenderer());
 					EXPECT_TRUE(dynamic_cast<gvk::g3dRSMRendererVk*>(renderer.get()) != NULL);
+				}
+				for (const Ported& p : ported)
+				{
+					SCOPED_TRACE(p.m_Type);
+					std::unique_ptr<g3dSceneRenderer> renderer(p.m_Create());
+					EXPECT_TRUE(p.m_IsPort(renderer.get()));
 				}
 			}
 			log = capture.Text();

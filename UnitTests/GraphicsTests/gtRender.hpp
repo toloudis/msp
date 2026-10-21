@@ -43,6 +43,12 @@ struct gtRenderOptions
 {
 	int		m_Width = 256, m_Height = 256;
 
+	//	Renders into a window (gtSceneWindow: BeginScene, Clear, Render,
+	//	EndScene and Present each frame) instead of a render-target texture:
+	//	the preview renderers draw only into windows (they cast the target
+	//	to the backend's window class, as MachStudio's viewport gives them)
+	bool	m_bInWindow = false;
+
 	//	The renderer (empty: g3dSceneRendererCreate::CreateDefaultRenderer)
 	std::function<g3dSceneRenderer*()>			m_CreateRenderer;
 
@@ -107,7 +113,8 @@ class gtPrefsScope
 };
 
 //	i_Build's scene rendered on the backend that is up, into an
-//	m_Width x m_Height target cleared to (0, 0, 0, 0); the builder's viewer
+//	m_Width x m_Height target cleared to (0, 0, 0, 0) (a window cleared to
+//	black, if m_bInWindow); the builder's viewer
 //	layers are passed to Render
 gtPicture gtRenderScene(const gtSceneFunction& i_Build, const std::filesystem::path& i_Dir, const gtRenderOptions& i_Options);
 

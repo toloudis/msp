@@ -81,6 +81,25 @@
 #include "GraphicsVulkan/shdw/shdwPassAOVolumes.hpp"
 #endif
 
+#ifndef GVK_SHDW_NORMALRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwNormalRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_MATERIALSRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwMaterialsRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_PASSMATERIALS_HPP
+#include "GraphicsVulkan/shdw/shdwPassMaterials.hpp"
+#endif
+#ifndef GVK_SHDW_DEPTHRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwDepthRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_REFLECTIONSONLYRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwReflectionsOnlyRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_GLOWRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwGlowRendererVk.hpp"
+#endif
+
 #include <cstddef>
 namespace gvk
 {
@@ -157,16 +176,22 @@ void shdwPackage::InitGraphics()
 	shdwPassSSAO::InitStates();
 	shdwPassSSGI::InitStates();
 	shdwPassTransparent::InitStates();
+	shdwNormalRendererVk::InitStates();
 	shdwPassZFill::InitStates();
+	shdwMaterialsRendererVk::InitStates();
+	shdwPassMaterials::InitStates();
+	shdwDepthRendererVk::InitStates();
 	shdwShadowLayerRendererVk::InitStates();
 	shdwPassOutline::InitStates();
 	shdwPassGlow::InitStates();
 	shdwPassFog::InitStates();
 	shdwPassDOF::InitStates();
 	shdwHDRRendererVk::InitStates();
+	shdwReflectionsOnlyRendererVk::InitStates();
 	shdwPassHair::InitStates();
 	shdwPassAOVolumes::InitStates();
 	shdwPassLPVGI::InitStates();
+	shdwGlowRendererVk::InitStates();
 	shdwPassPostShader::InitStates();
 	shdwPassEnvBackground::InitStates();
 }
@@ -178,16 +203,22 @@ void shdwPackage::CleanUpGraphics()
 {
 	shdwPassEnvBackground::CleanupStates();
 	shdwPassPostShader::CleanupStates();
+	shdwGlowRendererVk::CleanupStates();
 	shdwPassLPVGI::CleanupStates();
 	shdwPassAOVolumes::CleanupStates();
 	shdwPassHair::CleanupStates();
+	shdwReflectionsOnlyRendererVk::CleanupStates();
 	shdwHDRRendererVk::CleanupStates();
 	shdwPassDOF::CleanupStates();
 	shdwPassFog::CleanupStates();
 	shdwPassGlow::CleanupStates();
 	shdwPassOutline::CleanupStates();
 	shdwShadowLayerRendererVk::CleanupStates();
+	shdwDepthRendererVk::CleanupStates();
+	shdwPassMaterials::CleanupStates();
+	shdwMaterialsRendererVk::CleanupStates();
 	shdwPassZFill::CleanupStates();
+	shdwNormalRendererVk::CleanupStates();
 	shdwPassTransparent::CleanupStates();
 	shdwPassSSGI::CleanupStates();
 	shdwPassSSAO::CleanupStates();

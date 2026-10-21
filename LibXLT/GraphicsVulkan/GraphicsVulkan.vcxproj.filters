@@ -497,6 +497,24 @@
     <ClCompile Include="shdw\private\shdwPassNormals.cpp">
       <Filter>shdw\private</Filter>
     </ClCompile>
+    <ClCompile Include="shdw\private\shdwDepthRendererVk.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwNormalRendererVk.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwMaterialsRendererVk.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwGlowRendererVk.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwReflectionsOnlyRendererVk.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassMaterials.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
     <ClCompile Include="shdw\private\shdwPassAOVolumes.cpp">
       <Filter>shdw\private</Filter>
     </ClCompile>
@@ -940,6 +958,24 @@
       <Filter>shdw</Filter>
     </ClInclude>
     <ClInclude Include="shdw\shdwPassNormals.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwDepthRendererVk.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwNormalRendererVk.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwMaterialsRendererVk.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwGlowRendererVk.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwReflectionsOnlyRendererVk.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassMaterials.hpp">
       <Filter>shdw</Filter>
     </ClInclude>
     <ClInclude Include="shdw\shdwPassAOVolumes.hpp">

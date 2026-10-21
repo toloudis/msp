@@ -8,6 +8,7 @@
 #include "gtRender.hpp"
 #include "gtImage.hpp"
 #include "gtScene.hpp"
+#include "gtSceneWindow.hpp"
 #include "gtTempDir.hpp"
 
 #ifndef MA_FUNCTIONS_HPP
@@ -33,6 +34,12 @@
 #endif
 #ifndef G2D_RENDERTARGET_HPP
 #include "Graphics/G2d/g2dRenderTarget.hpp"
+#endif
+#ifndef G2D_RGBCOLOR_HPP
+#include "Graphics/G2d/g2dRGBColor.hpp"
+#endif
+#ifndef G2D_WINDOW_HPP
+#include "Graphics/G2d/g2dWindow.hpp"
 #endif
 
 #include <gtest/gtest.h>
@@ -98,7 +105,12 @@ gtPicture gtRenderScene(const gtSceneFunction& i_Build, const std::filesystem::p
 		i_Options.m_Prefs(g3dPrefs::CurrentPrefs());
 
 	const float clear[4] = { 0, 0, 0, 0 };
-	gtTarget target(gtBackend::Current(), i_Options.m_Width, i_Options.m_Height, clear);
+	std::unique_ptr<gtTarget> target;
+	std::unique_ptr<gtSceneWindow> window;
+	if (i_Options.m_bInWindow)
+		window.reset(new gtSceneWindow(gtBackend::Current(), i_Options.m_Width, i_Options.m_Height));
+	else
+		target.reset(new gtTarget(gtBackend::Current(), i_Options.m_Width, i_Options.m_Height, clear));
 	gtSceneBuilder builder;
 	builder.Camera().SetAspect((float)i_Options.m_Width / (float)i_Options.m_Height);
 	g3dLightMgr::SetAmbient(maFloatRGBA(0.1f, 0.15f, 0.2f, 1));
@@ -106,18 +118,31 @@ gtPicture gtRenderScene(const gtSceneFunction& i_Build, const std::filesystem::p
 
 	std::unique_ptr<g3dSceneRenderer> renderer(i_Options.m_CreateRenderer
 		? i_Options.m_CreateRenderer() : g3dSceneRendererCreate::CreateDefaultRenderer());
+	gtPicture picture;
 	for (int frame = 0; frame < i_Options.m_Frames; frame++)
 	{
 		if (i_Options.m_BeforeFrame)
 			i_Options.m_BeforeFrame(builder);
+		if (window)
+		{
+			g2dWindow& w = window->Window();
+			w.BeginScene();
+			w.MakeCurrent();
+			w.Clear(g2dRGBColor(0, 0, 0));
+			renderer->Render(&w, builder.Camera(), builder.Scene(), builder.ViewerLayers(), i_Options.m_SimTime);
+			w.EndScene();
+			picture = window->Present();
+			continue;
+		}
 		if (frame > 0)
 		{
-			target.Target()->MakeCurrent();
-			target.Target()->Clear(maFloatRGBA(clear[0], clear[1], clear[2], clear[3]), true, 1.0f);
+			target->Target()->MakeCurrent();
+			target->Target()->Clear(maFloatRGBA(clear[0], clear[1], clear[2], clear[3]), true, 1.0f);
 		}
-		renderer->Render(target.Target(), builder.Camera(), builder.Scene(), builder.ViewerLayers(), i_Options.m_SimTime);
+		renderer->Render(target->Target(), builder.Camera(), builder.Scene(), builder.ViewerLayers(), i_Options.m_SimTime);
 	}
-	gtPicture picture = target.Read();
+	if (target)
+		picture = target->Read();
 	if (i_Options.m_AfterRender)
 		i_Options.m_AfterRender(builder);
 	renderer->ReleaseResources();

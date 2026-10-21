@@ -29,6 +29,21 @@
 #ifndef GVK_SHDW_CUBEMAPRENDERERVK_HPP
 #include "GraphicsVulkan/shdw/shdwCubeMapRendererVk.hpp"
 #endif
+#ifndef GVK_SHDW_DEPTHRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwDepthRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_NORMALRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwNormalRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_MATERIALSRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwMaterialsRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_GLOWRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwGlowRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_REFLECTIONSONLYRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwReflectionsOnlyRendererVk.hpp"
+#endif
 
 namespace gvk
 {
@@ -64,8 +79,7 @@ g3dSceneRenderer* shdwSceneRendererCreate::CreatePlanarReflectionRenderer(scObje
 g3dSceneRenderer* shdwSceneRendererCreate::CreateAmbientOcclusionRenderer()	{ return m_Fallback.CreateAmbientOcclusionRenderer(); }
 //	shdwGIPreviewRendererDX11 (Plan 6)
 g3dSceneRenderer* shdwSceneRendererCreate::CreateGlobalIlluminationRenderer()	{ return m_Fallback.CreateGlobalIlluminationRenderer(); }
-//	shdwDepthRendererDX11 (Plan 6)
-g3dSceneRenderer* shdwSceneRendererCreate::CreateDepthRenderer()		{ return m_Fallback.CreateDepthRenderer(); }
+g3dSceneRenderer* shdwSceneRendererCreate::CreateDepthRenderer()		{ return new shdwDepthRendererVk(); }
 //	shdwUVRendererDX11 (Plan 6)
 g3dSceneRenderer* shdwSceneRendererCreate::CreateUVRenderer()			{ return m_Fallback.CreateUVRenderer(); }
 //	g3dPickBufferRendererDX11 (Plan 6; the stub picks nothing)
@@ -74,15 +88,11 @@ g3dPickRenderer* shdwSceneRendererCreate::CreatePickRenderer()			{ return m_Fall
 g3dSceneRenderer* shdwSceneRendererCreate::CreateShadowMaskRenderer()	{ return m_Fallback.CreateShadowMaskRenderer(); }
 //	shdwShadowsOnlyRendererDX11(false) (Plan 6)
 g3dSceneRenderer* shdwSceneRendererCreate::CreateIlluminationRenderer()	{ return m_Fallback.CreateIlluminationRenderer(); }
-//	shdwNormalRendererDX11 (Plan 6)
-g3dSceneRenderer* shdwSceneRendererCreate::CreateNormalRenderer()		{ return m_Fallback.CreateNormalRenderer(); }
+g3dSceneRenderer* shdwSceneRendererCreate::CreateNormalRenderer()		{ return new shdwNormalRendererVk(); }
 //	shdwVelocityMapRendererDX11 (Plan 6)
 g3dSceneRenderer* shdwSceneRendererCreate::CreateVelocityMapRenderer()	{ return m_Fallback.CreateVelocityMapRenderer(); }
-//	shdwMaterialsRendererDX11 (Plan 6)
-g3dSceneRenderer* shdwSceneRendererCreate::CreateMaterialsRenderer()	{ return m_Fallback.CreateMaterialsRenderer(); }
-//	shdwReflectionsOnlyRendererDX11 (Plan 6)
-g3dSceneRenderer* shdwSceneRendererCreate::CreateReflectionOnlyRenderer()	{ return m_Fallback.CreateReflectionOnlyRenderer(); }
-//	shdwGlowRendererDX11 (Plan 6)
-g3dSceneRenderer* shdwSceneRendererCreate::CreateGlowRenderer()			{ return m_Fallback.CreateGlowRenderer(); }
+g3dSceneRenderer* shdwSceneRendererCreate::CreateMaterialsRenderer()	{ return new shdwMaterialsRendererVk(); }
+g3dSceneRenderer* shdwSceneRendererCreate::CreateReflectionOnlyRenderer()	{ return new shdwReflectionsOnlyRendererVk(); }
+g3dSceneRenderer* shdwSceneRendererCreate::CreateGlowRenderer()			{ return new shdwGlowRendererVk(); }
 
 }
