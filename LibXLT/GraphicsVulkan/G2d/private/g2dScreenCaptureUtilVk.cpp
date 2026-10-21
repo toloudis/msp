@@ -9,8 +9,8 @@
 #ifndef GVK_G2DSCREENCAPTUREUTILVK_HPP
 #include "GraphicsVulkan/G2d/g2dScreenCaptureUtilVk.hpp"
 #endif
-#ifndef GVK_G2DSTUBSVK_HPP
-#include "GraphicsVulkan/stub/g2dStubsVk.hpp"
+#ifndef GVK_G2DIMAGEVK_HPP
+#include "GraphicsVulkan/G2d/g2dImageVk.hpp"
 #endif
 #ifndef GVK_G2DVKGLOBAL_HPP
 #include "GraphicsVulkan/G2d/g2dVkGlobal.hpp"
@@ -84,11 +84,8 @@ namespace
 			}
 			format = (format == VK_FORMAT_B8G8R8A8_SRGB) ? VK_FORMAT_R8G8B8A8_SRGB : VK_FORMAT_R8G8B8A8_UNORM;
 		}
-		g2dPFD pfd;
-		g2dVkGlobal::PFDFromDxgiFormat(vkdDxgiFromFormat(format), pfd);
-
 		g2dImageVk* image = new g2dImageVk;
-		image->Make(i_pSource->Width(), i_pSource->Height(), pfd, g2dImage::e_SystemMemory);
+		image->MakeFromDxgiFormat(i_pSource->Width(), i_pSource->Height(), vkdDxgiFromFormat(format));
 		const size_t bytes = (size_t)image->GetStride() * image->GetHeight();
 		if (pixels.size() != bytes || !image->Lock())
 		{

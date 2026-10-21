@@ -151,6 +151,7 @@
     <ClCompile Include="Vk\vkdOcclusionQueryTest.cpp" />
     <ClCompile Include="Vk\g2dFontVkTest.cpp" />
     <ClCompile Include="Vk\g2dCaptureVkTest.cpp" />
+    <ClCompile Include="Vk\g2dImageVkTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />

@@ -209,7 +209,7 @@ TEST_F(gtLayer, StubsAnswerFromTheirData)
 	image->GetPixels(&copy, &width, &height);
 	ASSERT_NE(nullptr, copy);
 	EXPECT_EQ(4, width);
-	EXPECT_EQ(77, copy[2 * 4 + 3].g);
+	EXPECT_EQ(77, copy[(4 - 1 - 2) * 4 + 3].g);		// bottom row first, as DX11's
 	delete[] copy;
 
 	//	a fragment's bounding box comes from its vertices

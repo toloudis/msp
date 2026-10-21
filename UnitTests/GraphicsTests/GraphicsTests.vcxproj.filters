@@ -145,6 +145,9 @@
     <ClCompile Include="Vk\g2dCaptureVkTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
+    <ClCompile Include="Vk\g2dImageVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />

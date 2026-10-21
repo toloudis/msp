@@ -130,6 +130,15 @@
     <ClCompile Include="G2d\private\g2dImageSaveVk.cpp">
       <Filter>G2d\private</Filter>
     </ClCompile>
+    <ClCompile Include="G2d\private\g2dImageVk.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dImageCreateVk.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dSurfaceUtilVk.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
     <ClCompile Include="G2d\private\g2dScreenCaptureUtilVk.cpp">
       <Filter>G2d\private</Filter>
     </ClCompile>
@@ -571,6 +580,15 @@
     </ClInclude>
     <ClInclude Include="G2d\g2dImageSaveVk.hpp">
       <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dImageVk.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dImageCreateVk.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\private\g2dSurfaceUtilVk.hpp">
+      <Filter>G2d\private</Filter>
     </ClInclude>
     <ClInclude Include="G2d\g2dScreenCaptureUtilVk.hpp">
       <Filter>G2d</Filter>

@@ -9,8 +9,8 @@
 #ifndef GVK_G2DIMAGESAVEVK_HPP
 #include "GraphicsVulkan/G2d/g2dImageSaveVk.hpp"
 #endif
-#ifndef GVK_G2DSTUBSVK_HPP
-#include "GraphicsVulkan/stub/g2dStubsVk.hpp"
+#ifndef GVK_G2DIMAGEVK_HPP
+#include "GraphicsVulkan/G2d/g2dImageVk.hpp"
 #endif
 #ifndef GVK_VKDCHECK_HPP
 #include "GraphicsVulkan/vkd/vkdCheck.hpp"

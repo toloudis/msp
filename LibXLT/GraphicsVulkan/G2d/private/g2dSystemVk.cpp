@@ -30,6 +30,9 @@
 #ifndef GVK_G2DSTUBSVK_HPP
 #include "GraphicsVulkan/stub/g2dStubsVk.hpp"
 #endif
+#ifndef GVK_G2DIMAGECREATEVK_HPP
+#include "GraphicsVulkan/G2d/g2dImageCreateVk.hpp"
+#endif
 #ifndef GVK_G2DFULLSCREENQUAD_HPP
 #include "GraphicsVulkan/G2d/g2dFullscreenQuad.hpp"
 #endif

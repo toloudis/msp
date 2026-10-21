@@ -11,8 +11,8 @@
 #ifndef GVK_G2DVKGLOBAL_HPP
 #include "GraphicsVulkan/G2d/g2dVkGlobal.hpp"
 #endif
-#ifndef GVK_G2DSTUBSVK_HPP
-#include "GraphicsVulkan/stub/g2dStubsVk.hpp"
+#ifndef GVK_G2DIMAGEVK_HPP
+#include "GraphicsVulkan/G2d/g2dImageVk.hpp"
 #endif
 #ifndef GVK_G2DFONTUTILVK_HPP
 #include "GraphicsVulkan/G2d/private/g2dFontUtilVk.hpp"
