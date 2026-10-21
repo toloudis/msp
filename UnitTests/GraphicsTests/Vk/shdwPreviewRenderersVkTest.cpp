@@ -25,7 +25,12 @@
 **        shdwAoGiVkTest's spheres on a floor, SSAO and AO volumes, and a
 **        sphere that doesn't receive occlusion;
 **      - the GI preview renderer (shdwGIPreviewRendererVk): shdwAoGiVkTest's
-**        LPV room, SSGI and LPV, and LPV with HDR AA.
+**        LPV room, SSGI and LPV, and LPV with HDR AA;
+**      - the UV renderer (shdwUVRendererVk), as fgmtUVEditor uses it: a
+**        textured sphere, and a bump-mapped plane with UVs outside 0-1;
+**      - the texture renderer (g3dTextureRendererVk), as rmpTextureMgr
+**        draws its ramps: a Ramp.fx square in a screen-space layer, each
+**        gradient shape, with and without waves.
 **
 **      Each case is also checked on DX11 alone: the renderer's image
 **      differs from the default renderer's (gtExpectEffectShows), so a
@@ -47,8 +52,14 @@
 #ifndef EFF_PHONGDATA_HPP
 #include "Graphics/Eff/effPhongData.hpp"
 #endif
+#ifndef EFF_RAMPDATA_HPP
+#include "Graphics/Eff/effRampData.hpp"
+#endif
 #ifndef G3D_FRAGMENT_HPP
 #include "Graphics/G3d/g3dFragment.hpp"
+#endif
+#ifndef G3D_LAYER_HPP
+#include "Graphics/G3d/g3dLayer.hpp"
 #endif
 #ifndef G3D_PREFS_HPP
 #include "Graphics/G3d/g3dPrefs.hpp"
@@ -537,4 +548,115 @@ TEST(shdwPreviewRenderersVkTest, GIPreviewRendererMatchesDX11)
 		gtExpectEffectShows(("GIPreviewRendererMatchesDX11/" + c.m_Name + "/gi_off").c_str(), c.m_Build, c.m_Options,
 							c.m_Build, off, 256 * 256 / 50);
 	}
+}
+
+namespace
+{
+	//	fgmtUVEditor's view: an orthographic camera whose sub-viewport shows
+	//	-1..1 (the UV renderer draws the UV square there)
+	void uv_camera(gtSceneBuilder& io_Builder)
+	{
+		camCamera& camera = io_Builder.Camera();
+		camera.SetOrthographic(true);
+		camera.SetClip(0, 1);
+		camera.SetAspect(1);
+		camera.SetSubViewport(1, -1, -1, 1);
+	}
+
+	//	The UV renderer draws the layer's root fragment (fgmtUVEditor makes
+	//	the edited node the root): i_Mesh with i_pMaterial is added, and the
+	//	root takes its fragment
+	void uv_root(gtSceneBuilder& io_Builder, const gtMesh& i_Mesh, matMaterial* i_pMaterial)
+	{
+		g3dSceneNode* node = io_Builder.Add(i_Mesh, i_pMaterial, maMatrix4x4());
+		io_Builder.Layer().GetRootNode()->SetFragment(const_cast<g3dFragment*>(node->GetFragment()));
+		uv_camera(io_Builder);
+	}
+
+	//	A sphere with a soft checker texture
+	void uv_sphere(gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
+	{
+		matTexture* checker = io_Builder.Keep(gtScene::CheckerTexture(i_Dir, 128, 128, 8, 4));
+		matMaterial* material = io_Builder.Keep(gtScene::ShaderMaterial("Blinn.fx", gtScene::e_Tinted, { checker }));
+		uv_root(io_Builder, gtScene::Sphere(12, 24), material);
+	}
+
+	//	A bump-mapped plane (a soft normal map) cut into quads, its UVs
+	//	running from -0.5 to 1.5 (the baking transform clamps them to the
+	//	square's edges)
+	void uv_plane(gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
+	{
+		gtMesh plane = gtScene::Grid(6);
+		for (maPoint2d& uv : plane.m_UVs)
+			uv = maPoint2d(uv.GetX() * 2.0f - 0.5f, uv.GetY() * 2.0f - 0.5f);
+		matTexture* checker = io_Builder.Keep(gtScene::CheckerTexture(i_Dir, 128, 128, 8, 4));
+		matTexture* normals = io_Builder.Keep(gtScene::NormalTexture(i_Dir, 128, 4));
+		matMaterial* material = io_Builder.Keep(gtScene::ShaderMaterial("Blinn.fx", gtScene::e_Tinted, { checker }));
+		material->NormalsData().m_pNormalMap = normals;
+		material->NormalsData().m_BumpScale = 1.0f;
+		uv_root(io_Builder, plane, material);
+	}
+
+	//	rmpTextureMgr's ramp: a 2 x 2 square with a Ramp.fx material
+	//	(effRampData, no specular) in a screen-space, z-sorted layer, drawn
+	//	by the texture renderer into a render-target texture; the gradient
+	//	is gtScene::RampTexture (the 1D RGBA32F texture rmpTextureMgr fills),
+	//	without noise (rmpTextureMgr's noise map is never made)
+	gtSceneFunction ramp_scene(int i_Shape, float i_UWave, float i_VWave)
+	{
+		return [=](gtSceneBuilder& io_Builder, const std::filesystem::path&)
+		{
+			io_Builder.Layer().SetSortMethod(g3dLayer::e_ZSort);
+			io_Builder.Layer().SetModelSpace(g3dLayer::e_Screen);
+			matTexture* gradient = io_Builder.Keep(gtScene::RampTexture(512));
+			matMaterial* material = io_Builder.Keep(gtScene::DataMaterial("Ramp.fx", [=](effShaderData* io_pData)
+			{
+				effRampData* ramp = dynamic_cast<effRampData*>(io_pData);
+				EXPECT_TRUE(ramp != NULL);
+				if (!ramp)
+					return;
+				ramp->m_Texture = gradient;
+				ramp->m_NoiseTexture = NULL;
+				ramp->m_RampShape = i_Shape;
+				ramp->m_RampInterpolation = 1;
+				ramp->m_UWave = i_UWave;
+				ramp->m_UWaveFreq = 0.5f;
+				ramp->m_VWave = i_VWave;
+				ramp->m_VWaveFreq = 0.5f;
+				ramp->m_Noise = 0;
+				ramp->m_NoiseFreq = 0.5f;
+			}));
+			material->SetHasSpecular(false);
+			io_Builder.Add(gtScene::Plane(), material, maMatrix4x4());
+		};
+	}
+
+	gtRenderOptions renderer_options(const create_fn& i_Create)
+	{
+		gtRenderOptions options;
+		options.m_CreateRenderer = i_Create;
+		return options;
+	}
+}
+
+TEST(shdwPreviewRenderersVkTest, UVRendererMatchesDX11)
+{
+	const gtRenderOptions uv = renderer_options([]() { return g3dSceneRendererCreate::CreateUVRenderer(); });
+	expect_cases("UVRendererMatchesDX11",
+	{
+		{ "sphere", uv_sphere, uv },
+		{ "bump_plane", uv_plane, uv },
+	});
+}
+
+TEST(shdwPreviewRenderersVkTest, TextureRendererMatchesDX11)
+{
+	const gtRenderOptions texture = renderer_options([]() { return g3dSceneRendererCreate::CreateTextureRenderer(); });
+	expect_cases("TextureRendererMatchesDX11",
+	{
+		{ "linear_u", ramp_scene(0, 0, 0), texture },
+		{ "linear_v_wave", ramp_scene(1, 0.1f, 0.05f), texture },
+		{ "circular", ramp_scene(2, 0, 0), texture },
+		{ "square_wave", ramp_scene(3, 0.05f, 0.1f), texture },
+	});
 }

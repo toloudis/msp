@@ -101,6 +101,15 @@
 #ifndef GVK_SHDW_REFLECTIONSONLYRENDERERVK_HPP
 #include "GraphicsVulkan/shdw/shdwReflectionsOnlyRendererVk.hpp"
 #endif
+#ifndef GVK_SHDW_VELOCITYMAPRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwVelocityMapRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_UVRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwUVRendererVk.hpp"
+#endif
+#ifndef GVK_G3D_TEXTURERENDERERVK_HPP
+#include "GraphicsVulkan/G3d/g3dTextureRendererVk.hpp"
+#endif
 
 #include <gtest/gtest.h>
 
@@ -381,12 +390,10 @@ TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
 	};
 	const std::vector<Case> cases =
 	{
-		{ "texture", []() { return g3dSceneRendererCreate::CreateTextureRenderer(); } },
+		//	Plan 7 (decision 2 of Plan 6: its maps are read only by hair)
 		{ "opacity map", []() { return g3dSceneRendererCreate::CreateOpacityMapRenderer(NULL); } },
-		{ "UV", []() { return g3dSceneRendererCreate::CreateUVRenderer(); } },
-		{ "velocity map", []() { return g3dSceneRendererCreate::CreateVelocityMapRenderer(); } },
 	};
-	//	ported in Plan 6 Tasks 4 and 5
+	//	ported in Plan 6 Tasks 4 to 6
 	struct Ported
 	{
 		g3dSceneRendererTypes::RendererType	m_Type;
@@ -413,6 +420,8 @@ TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
 		  [](g3dSceneRenderer* r) { return dynamic_cast<gvk::shdwAOPreviewRendererVk*>(r) != NULL; } },
 		{ g3dSceneRendererTypes::e_GlobalIllumination, []() { return g3dSceneRendererCreate::CreateGlobalIlluminationRenderer(); },
 		  [](g3dSceneRenderer* r) { return dynamic_cast<gvk::shdwGIPreviewRendererVk*>(r) != NULL; } },
+		{ g3dSceneRendererTypes::e_VelocityMap, []() { return g3dSceneRendererCreate::CreateVelocityMapRenderer(); },
+		  [](g3dSceneRenderer* r) { return dynamic_cast<gvk::shdwVelocityMapRendererVk*>(r) != NULL; } },
 	};
 	auto find_ported = [&](int i_Type) -> const Ported*
 	{
@@ -475,6 +484,12 @@ TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
 				{	// since Plan 5b Task 3
 					std::unique_ptr<g3dSceneRenderer> renderer(g3dSceneRendererCreate::CreateRSMRenderer());
 					EXPECT_TRUE(dynamic_cast<gvk::g3dRSMRendererVk*>(renderer.get()) != NULL);
+				}
+				{	// since Plan 6 Task 6 (neither has a renderer type)
+					std::unique_ptr<g3dSceneRenderer> texture(g3dSceneRendererCreate::CreateTextureRenderer());
+					EXPECT_TRUE(dynamic_cast<gvk::g3dTextureRendererVk*>(texture.get()) != NULL);
+					std::unique_ptr<g3dSceneRenderer> uv(g3dSceneRendererCreate::CreateUVRenderer());
+					EXPECT_TRUE(dynamic_cast<gvk::shdwUVRendererVk*>(uv.get()) != NULL);
 				}
 				for (const Ported& p : ported)
 				{

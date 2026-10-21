@@ -115,7 +115,8 @@ gtPicture gtRenderScene(const gtSceneFunction& i_Build, const std::filesystem::p
 			target.Target()->MakeCurrent();
 			target.Target()->Clear(maFloatRGBA(clear[0], clear[1], clear[2], clear[3]), true, 1.0f);
 		}
-		renderer->Render(target.Target(), builder.Camera(), builder.Scene(), builder.ViewerLayers(), i_Options.m_SimTime);
+		renderer->Render(target.Target(), builder.Camera(), builder.Scene(), builder.ViewerLayers(),
+						 i_Options.m_SimTime + frame * i_Options.m_SimTimeStep);
 	}
 	gtPicture picture = target.Read();
 	if (i_Options.m_AfterRender)

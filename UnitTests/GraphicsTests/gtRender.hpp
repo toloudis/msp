@@ -57,6 +57,10 @@ struct gtRenderOptions
 	int		m_Frames = 1;
 
 	float	m_SimTime = 1.25f;
+	//	Added to the time each frame (frame n renders at m_SimTime + n * step):
+	//	renderers that compare a frame with the one before (velocity) see the
+	//	time move
+	float	m_SimTimeStep = 0;
 
 	//	Runs before each frame (shadow maps and reflections)
 	std::function<void(gtSceneBuilder&)>		m_BeforeFrame;

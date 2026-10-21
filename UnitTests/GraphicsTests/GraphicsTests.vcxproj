@@ -147,6 +147,7 @@
     <ClCompile Include="Vk\shdwTransparentVkTest.cpp" />
     <ClCompile Include="Vk\shdwScreenPassesVkTest.cpp" />
     <ClCompile Include="Vk\shdwPreviewRenderersVkTest.cpp" />
+    <ClCompile Include="Vk\shdwVelocityVkTest.cpp" />
     <ClCompile Include="Vk\shdwDofFogVkTest.cpp" />
     <ClCompile Include="Vk\shdwAoGiVkTest.cpp" />
     <ClCompile Include="Vk\vkdOcclusionQueryTest.cpp" />

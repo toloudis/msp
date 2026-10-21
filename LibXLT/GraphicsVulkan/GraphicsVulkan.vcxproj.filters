@@ -400,6 +400,9 @@
     <ClCompile Include="G3d\private\g3dRSMRendererVk.cpp">
       <Filter>G3d\private</Filter>
     </ClCompile>
+    <ClCompile Include="G3d\private\g3dTextureRendererVk.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
     <ClCompile Include="G3d\private\g3dRenderCameraSpace.cpp">
       <Filter>G3d\private</Filter>
     </ClCompile>
@@ -495,6 +498,15 @@
       <Filter>shdw\private</Filter>
     </ClCompile>
     <ClCompile Include="shdw\private\shdwPassNormals.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassVelocity.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwVelocityMapRendererVk.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwUVRendererVk.cpp">
       <Filter>shdw\private</Filter>
     </ClCompile>
     <ClCompile Include="shdw\private\shdwShadowsOnlyRendererVk.cpp">
@@ -872,6 +884,9 @@
     <ClInclude Include="G3d\g3dRSMRendererVk.hpp">
       <Filter>G3d</Filter>
     </ClInclude>
+    <ClInclude Include="G3d\g3dTextureRendererVk.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
     <ClInclude Include="G3d\g3dRenderCameraSpace.hpp">
       <Filter>G3d</Filter>
     </ClInclude>
@@ -967,6 +982,15 @@
       <Filter>shdw</Filter>
     </ClInclude>
     <ClInclude Include="shdw\shdwPassNormals.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassVelocity.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwVelocityMapRendererVk.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwUVRendererVk.hpp">
       <Filter>shdw</Filter>
     </ClInclude>
     <ClInclude Include="shdw\shdwShadowsOnlyRendererVk.hpp">
