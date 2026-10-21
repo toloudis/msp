@@ -89,6 +89,15 @@
 #ifndef GVK_SHDW_GLOWRENDERERVK_HPP
 #include "GraphicsVulkan/shdw/shdwGlowRendererVk.hpp"
 #endif
+#ifndef GVK_SHDW_SHADOWSONLYRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwShadowsOnlyRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_AOPREVIEWRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwAOPreviewRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_GIPREVIEWRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwGIPreviewRendererVk.hpp"
+#endif
 #ifndef GVK_SHDW_REFLECTIONSONLYRENDERERVK_HPP
 #include "GraphicsVulkan/shdw/shdwReflectionsOnlyRendererVk.hpp"
 #endif
@@ -374,14 +383,10 @@ TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
 	{
 		{ "texture", []() { return g3dSceneRendererCreate::CreateTextureRenderer(); } },
 		{ "opacity map", []() { return g3dSceneRendererCreate::CreateOpacityMapRenderer(NULL); } },
-		{ "ambient occlusion", []() { return g3dSceneRendererCreate::CreateAmbientOcclusionRenderer(); } },
-		{ "global illumination", []() { return g3dSceneRendererCreate::CreateGlobalIlluminationRenderer(); } },
 		{ "UV", []() { return g3dSceneRendererCreate::CreateUVRenderer(); } },
-		{ "shadow mask", []() { return g3dSceneRendererCreate::CreateShadowMaskRenderer(); } },
-		{ "illumination", []() { return g3dSceneRendererCreate::CreateIlluminationRenderer(); } },
 		{ "velocity map", []() { return g3dSceneRendererCreate::CreateVelocityMapRenderer(); } },
 	};
-	//	ported in Plan 6 Task 4
+	//	ported in Plan 6 Tasks 4 and 5
 	struct Ported
 	{
 		g3dSceneRendererTypes::RendererType	m_Type;
@@ -400,6 +405,14 @@ TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
 		  [](g3dSceneRenderer* r) { return dynamic_cast<gvk::shdwReflectionsOnlyRendererVk*>(r) != NULL; } },
 		{ g3dSceneRendererTypes::e_Glow, []() { return g3dSceneRendererCreate::CreateGlowRenderer(); },
 		  [](g3dSceneRenderer* r) { return dynamic_cast<gvk::shdwGlowRendererVk*>(r) != NULL; } },
+		{ g3dSceneRendererTypes::e_ShadowMask, []() { return g3dSceneRendererCreate::CreateShadowMaskRenderer(); },
+		  [](g3dSceneRenderer* r) { return dynamic_cast<gvk::shdwShadowsOnlyRendererVk*>(r) != NULL; } },
+		{ g3dSceneRendererTypes::e_IlluminationOnly, []() { return g3dSceneRendererCreate::CreateIlluminationRenderer(); },
+		  [](g3dSceneRenderer* r) { return dynamic_cast<gvk::shdwShadowsOnlyRendererVk*>(r) != NULL; } },
+		{ g3dSceneRendererTypes::e_AmbientOcclusion, []() { return g3dSceneRendererCreate::CreateAmbientOcclusionRenderer(); },
+		  [](g3dSceneRenderer* r) { return dynamic_cast<gvk::shdwAOPreviewRendererVk*>(r) != NULL; } },
+		{ g3dSceneRendererTypes::e_GlobalIllumination, []() { return g3dSceneRendererCreate::CreateGlobalIlluminationRenderer(); },
+		  [](g3dSceneRenderer* r) { return dynamic_cast<gvk::shdwGIPreviewRendererVk*>(r) != NULL; } },
 	};
 	auto find_ported = [&](int i_Type) -> const Ported*
 	{

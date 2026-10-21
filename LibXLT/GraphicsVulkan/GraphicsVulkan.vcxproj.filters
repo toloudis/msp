@@ -497,6 +497,15 @@
     <ClCompile Include="shdw\private\shdwPassNormals.cpp">
       <Filter>shdw\private</Filter>
     </ClCompile>
+    <ClCompile Include="shdw\private\shdwShadowsOnlyRendererVk.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwAOPreviewRendererVk.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwGIPreviewRendererVk.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
     <ClCompile Include="shdw\private\shdwDepthRendererVk.cpp">
       <Filter>shdw\private</Filter>
     </ClCompile>
@@ -958,6 +967,15 @@
       <Filter>shdw</Filter>
     </ClInclude>
     <ClInclude Include="shdw\shdwPassNormals.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwShadowsOnlyRendererVk.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwAOPreviewRendererVk.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwGIPreviewRendererVk.hpp">
       <Filter>shdw</Filter>
     </ClInclude>
     <ClInclude Include="shdw\shdwDepthRendererVk.hpp">

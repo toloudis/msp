@@ -15,7 +15,17 @@
 **      - the glow renderer (shdwGlowRendererVk): a glowing sphere and one
 **        that doesn't glow;
 **      - the reflection-only renderer (shdwReflectionsOnlyRendererVk): a
-**        planar reflective floor and a cube-mapped sphere.
+**        planar reflective floor and a cube-mapped sphere;
+**      - the shadow mask and illumination renderers
+**        (shdwShadowsOnlyRendererVk, masking and not): shdwShadowVkTest's
+**        spheres before a wall under a shadowed projected light, with a
+**        shadow-casting point light or not, and with the projected light's
+**        shadows off;
+**      - the AO preview renderer (shdwAOPreviewRendererVk):
+**        shdwAoGiVkTest's spheres on a floor, SSAO and AO volumes, and a
+**        sphere that doesn't receive occlusion;
+**      - the GI preview renderer (shdwGIPreviewRendererVk): shdwAoGiVkTest's
+**        LPV room, SSGI and LPV, and LPV with HDR AA.
 **
 **      Each case is also checked on DX11 alone: the renderer's image
 **      differs from the default renderer's (gtExpectEffectShows), so a
@@ -28,6 +38,9 @@
 #include "gtRender.hpp"
 #include "gtScene.hpp"
 
+#ifndef MA_CONSTANTS_HPP
+#include "Core/Ma/maConstants.hpp"
+#endif
 #ifndef EFF_GLOWDATA_HPP
 #include "Graphics/Eff/effGlowData.hpp"
 #endif
@@ -39,6 +52,9 @@
 #endif
 #ifndef G3D_PREFS_HPP
 #include "Graphics/G3d/g3dPrefs.hpp"
+#endif
+#ifndef G3D_PROJECTEDLIGHT_HPP
+#include "Graphics/G3d/g3dProjectedLight.hpp"
 #endif
 #ifndef G3D_SCENE_HPP
 #include "Graphics/G3d/g3dScene.hpp"
@@ -97,24 +113,36 @@ namespace
 		return i_Options;
 	}
 
-	//	Each scene with HDR AA off and on, compared; then each case is
-	//	checked on DX11 to differ from the default renderer's image
+	//	The cases compared; then each is checked on DX11 to differ from the
+	//	default renderer's image
+	void expect_cases(const char* i_pTest, const std::vector<gtCase>& i_Cases)
+	{
+		gtExpectSameImages(i_pTest, i_Cases);
+		for (const gtCase& c : i_Cases)
+		{
+			gtExpectEffectShows((std::string(i_pTest) + "/" + c.m_Name).c_str(), c.m_Build, c.m_Options,
+								c.m_Build, with_default(c.m_Options), 256 * 256 / 50);
+		}
+	}
+
+	//	Each scene with HDR AA off and on, as expect_cases; i_BeforeFrame
+	//	runs before each frame
 	void expect_renderer(const char* i_pTest, const create_fn& i_Create,
 						 const std::vector<std::pair<std::string, gtSceneFunction>>& i_Scenes,
-						 const std::function<void(g3dPrefs::g3dRenderPrefs&)>& i_Prefs = nullptr, int i_Frames = 1)
+						 const std::function<void(g3dPrefs::g3dRenderPrefs&)>& i_Prefs = nullptr, int i_Frames = 1,
+						 const std::function<void(gtSceneBuilder&)>& i_BeforeFrame = nullptr)
 	{
 		std::vector<gtCase> cases;
 		for (const auto& scene : i_Scenes)
 		{
 			for (bool aa : { false, true })
-				cases.push_back({ scene.first + (aa ? "/hdr_aa" : "/no_aa"), scene.second, preview(i_Create, aa, i_Prefs, i_Frames) });
+			{
+				gtRenderOptions options = preview(i_Create, aa, i_Prefs, i_Frames);
+				options.m_BeforeFrame = i_BeforeFrame;
+				cases.push_back({ scene.first + (aa ? "/hdr_aa" : "/no_aa"), scene.second, options });
+			}
 		}
-		gtExpectSameImages(i_pTest, cases);
-		for (const gtCase& c : cases)
-		{
-			gtExpectEffectShows((std::string(i_pTest) + "/" + c.m_Name).c_str(), c.m_Build, c.m_Options,
-								c.m_Build, with_default(c.m_Options), 256 * 256 / 50);
-		}
+		expect_cases(i_pTest, cases);
 	}
 
 	//	Spheres at five depths across the view, and a transparent (Phong
@@ -281,10 +309,232 @@ TEST(shdwPreviewRenderersVkTest, ReflectionOnlyRendererMatchesDX11)
 	std::vector<gtCase> cases;
 	for (bool aa : { false, true })
 		cases.push_back({ aa ? "reflectors/hdr_aa" : "reflectors/no_aa", reflection_scene, reflection_options(aa) });
-	gtExpectSameImages("ReflectionOnlyRendererMatchesDX11", cases);
+	expect_cases("ReflectionOnlyRendererMatchesDX11", cases);
+}
+
+namespace
+{
+	//	Casts and receives shadows (fragments do neither by default)
+	g3dFragment* casts_shadow(g3dSceneNode* io_pNode)
+	{
+		g3dFragment* fragment = const_cast<g3dFragment*>(io_pNode->GetFragment());
+		fragment->SetCastsShadow(true);
+		fragment->SetReceivesShadow(true);
+		return fragment;
+	}
+
+	//	shdwShadowVkTest's scene: three spheres in front of a wall, lit by a
+	//	projected light from the front with a shadow map (i_bProjectedShadows
+	//	false: the light casts no shadow); with i_bPointLight, also a
+	//	shadow-casting point light on the left
+	gtSceneFunction shadow_scene(bool i_bPointLight, bool i_bProjectedShadows)
+	{
+		return [=](gtSceneBuilder& io_Builder, const std::filesystem::path&)
+		{
+			const gtMesh sphere = gtScene::Sphere(16, 32);
+			matMaterial* wall = io_Builder.Keep(gtScene::ShaderMaterial("Lambert.fx", gtScene::e_Defaults));
+			casts_shadow(io_Builder.Add(gtScene::Plane(), wall, gtScene::Place(0, 0, -1.5f, 4.0f)));
+			const gtScene::Values values[3] = { gtScene::e_Defaults, gtScene::e_Tinted, gtScene::e_Defaults };
+			const char* shaders[3] = { "Blinn.fx", "Phong.fx", "Lambert.fx" };
+			for (int i = 0; i < 3; i++)
+			{
+				matMaterial* material = io_Builder.Keep(gtScene::ShaderMaterial(shaders[i], values[i]));
+				casts_shadow(io_Builder.Add(sphere, material, gtScene::Place(-1.3f + 1.3f * i, 0.4f - 0.4f * i, 0, 0.5f)));
+			}
+			g3dProjectedLight* light = io_Builder.ProjectedLight(maPoint3d(1.5f, 2.5f, 7.0f), maPoint3d(0, 0, -1.5f),
+																 maFloatRGBA(1.0f, 0.95f, 0.85f, 1), 1024);
+			if (!i_bProjectedShadows)
+				light->SetCastsShadow(false);
+			if (i_bPointLight)
+			{
+				io_Builder.LightsCastShadows(true);
+				io_Builder.PointLight(maPoint3d(-3.0f, 1.0f, 3.0f), maFloatRGBA(0.7f, 0.7f, 0.8f, 1), 25.0f);
+			}
+		};
+	}
+
+	//	The shadow mask or illumination renderer on the shadow scene: one
+	//	light, two, and the projected light's shadows off; the shadow map
+	//	rendered before each frame
+	void expect_shadows_only(const char* i_pTest, const create_fn& i_Create)
+	{
+		expect_renderer(i_pTest, i_Create,
+						{ { "projected", shadow_scene(false, true) },
+						  { "projected_point", shadow_scene(true, true) },
+						  { "unshadowed_projected_point", shadow_scene(true, false) } },
+						[](g3dPrefs::g3dRenderPrefs& p) { p.m_bProjLightsOn = true; }, 1,
+						[](gtSceneBuilder& io_Builder) { io_Builder.RenderTargets(); });
+	}
+
+	//	shdwAoGiVkTest's AO scene: four spheres on a floor, lit by
+	//	shadow-casting lights, seen from the side; with i_bMaskOne, sphere 3
+	//	doesn't receive occlusion
+	gtSceneFunction ao_scene(bool i_bMaskOne)
+	{
+		return [=](gtSceneBuilder& io_Builder, const std::filesystem::path&)
+		{
+			io_Builder.LightsCastShadows(true);
+			matMaterial* floor = io_Builder.Keep(gtScene::ShaderMaterial("Lambert.fx", gtScene::e_Tinted));
+			io_Builder.Add(gtScene::Plane(), floor, gtScene::Place(0, 0, -1.0f, 2.6f));
+			const gtMesh sphere = gtScene::Sphere(16, 32);
+			const char* shaders[2] = { "Blinn.fx", "Lambert.fx" };
+			const float x[4] = { -1.3f, -0.25f, 0.55f, 1.45f };
+			const float y[4] = { 0.5f, -0.3f, -0.1f, -0.7f };
+			for (int i = 0; i < 4; i++)
+			{
+				matMaterial* material = io_Builder.Keep(gtScene::ShaderMaterial(shaders[i % 2], gtScene::e_Tinted));
+				g3dSceneNode* node = io_Builder.Add(sphere, material, gtScene::Place(x[i], y[i], -0.45f, 0.55f));
+				if (i_bMaskOne && i == 3)
+					const_cast<g3dFragment*>(node->GetFragment())->SetReceivesOcclusion(false);
+			}
+			io_Builder.TwoLights();
+			io_Builder.Camera().LookAt(maPoint3d(3.0f, 2.5f, 4.5f), maPoint3d(0, 0, -0.7f), maVector3d(0, 1, 0));
+			ssaoParams params;
+			io_Builder.Scene().GetSSAOSettings(params);
+			params.m_AORadius = 1.2f;
+			params.m_AORadiusFar = 2.4f;
+			params.m_Contrast = 3.0f;
+			params.m_Color = maFloatRGBA(0.1f, 0.05f, 0.2f, 1.0f);
+			io_Builder.Scene().SetSSAOSettings(params);
+		};
+	}
+
+	//	The AO preview renderer, SSAO or AO volumes (m_bAOInvalid)
+	gtRenderOptions ao_preview(bool i_bVolumes)
+	{
+		return preview([]() { return g3dSceneRendererCreate::CreateAmbientOcclusionRenderer(); }, false,
+					   [=](g3dPrefs::g3dRenderPrefs& p)
+					   {
+						   p.m_bEnableSSAO = true;
+						   p.m_bAOInvalid = i_bVolumes;
+					   });
+	}
+
+	//	A Lambert material with its diffuse colour (g_diffuse) set
+	matMaterial* coloured(const maFloatRGBA& i_Color)
+	{
+		matMaterial* material = gtScene::ShaderMaterial("Lambert.fx", gtScene::e_Defaults);
+		gtScene::SetColor(material, "g_diffuse", i_Color);
+		return material;
+	}
+
+	//	The plane (facing +Z) scaled to 2.6, turned a quarter about Y
+	//	(i_Turn 1 or -1) and moved to x = i_X
+	maMatrix4x4 side_wall(float i_X, float i_Turn)
+	{
+		maMatrix4x4 m;
+		m.MakeScale(2.6f, 2.6f, 2.6f);
+		m.RotateBy(i_Turn * maConstants::c_fPI_Div_2, maVector3d(0, 1, 0));
+		m.TranslateBy(i_X, 0, -0.2f);
+		return m;
+	}
+
+	//	shdwAoGiVkTest's LPV room: a white back wall and floor, red and
+	//	green side walls and a white sphere, the usual two lights and a
+	//	GI-enabled projected light casting shadows; SSGI settings as its
+	//	SSGI scene's
+	void gi_room(gtSceneBuilder& io_Builder, const std::filesystem::path&)
+	{
+		io_Builder.LightsCastShadows(true);
+		matMaterial* white = io_Builder.Keep(coloured(maFloatRGBA(0.5f, 0.5f, 0.5f, 1.0f)));
+		matMaterial* red = io_Builder.Keep(coloured(maFloatRGBA(0.8f, 0.08f, 0.04f, 1.0f)));
+		matMaterial* green = io_Builder.Keep(coloured(maFloatRGBA(0.08f, 0.7f, 0.08f, 1.0f)));
+		const gtMesh plane = gtScene::Plane();
+		casts_shadow(io_Builder.Add(plane, white, gtScene::Place(0, 0, -1.5f, 2.6f)));
+		casts_shadow(io_Builder.Add(plane, red, side_wall(-1.6f, 1.0f)));
+		casts_shadow(io_Builder.Add(plane, green, side_wall(1.6f, -1.0f)));
+		//	the floor: the plane turned to face +Y
+		maMatrix4x4 floor;
+		floor.MakeScale(2.6f, 2.6f, 2.6f);
+		floor.RotateBy(-maConstants::c_fPI_Div_2, maVector3d(1, 0, 0));
+		floor.TranslateBy(0, -1.3f, -0.2f);
+		casts_shadow(io_Builder.Add(plane, white, floor));
+		casts_shadow(io_Builder.Add(gtScene::Sphere(16, 32), white, gtScene::Place(0.2f, -0.7f, -0.4f, 0.6f)));
+		io_Builder.TwoLights();
+		g3dProjectedLight* light = io_Builder.ProjectedLight(maPoint3d(0.6f, 1.0f, 2.5f), maPoint3d(-0.6f, -0.8f, -1.2f),
+															 maFloatRGBA(1.0f, 0.95f, 0.9f, 1.0f), 256);
+		light->SetGIEnabled(true);
+
+		ssgiParams params;
+		io_Builder.Scene().GetSSGISettings(params);
+		params.m_GIRadius = 1.0f;
+		params.m_GIRadiusFar = 2.0f;
+		params.m_Contrast = 2.0f;
+		params.m_LPVVolumeSize = 32;
+		params.m_LPVRSMSize = 512;
+		params.m_LPVIteration = 2;
+		params.m_LPVScale = 1.0f;
+		params.m_LPVGIFalloff = 1.0f;
+		io_Builder.Scene().SetSSGISettings(params);
+	}
+
+	//	The GI preview renderer, SSGI or LPV (m_bGIInvalid); the projected
+	//	light's shadow map rendered before each frame
+	gtRenderOptions gi_preview(bool i_bLPV, bool i_bHDRAA)
+	{
+		gtRenderOptions options = preview([]() { return g3dSceneRendererCreate::CreateGlobalIlluminationRenderer(); }, i_bHDRAA,
+										  [=](g3dPrefs::g3dRenderPrefs& p)
+										  {
+											  p.m_bEnableSSGI = true;
+											  p.m_bGIInvalid = i_bLPV;
+										  });
+		options.m_BeforeFrame = [](gtSceneBuilder& io_Builder) { io_Builder.RenderTargets(); };
+		return options;
+	}
+}
+
+TEST(shdwPreviewRenderersVkTest, ShadowMaskRendererMatchesDX11)
+{
+	expect_shadows_only("ShadowMaskRendererMatchesDX11", []() { return g3dSceneRendererCreate::CreateShadowMaskRenderer(); });
+}
+
+TEST(shdwPreviewRenderersVkTest, IlluminationRendererMatchesDX11)
+{
+	expect_shadows_only("IlluminationRendererMatchesDX11", []() { return g3dSceneRendererCreate::CreateIlluminationRenderer(); });
+}
+
+TEST(shdwPreviewRenderersVkTest, AOPreviewRendererMatchesDX11)
+{
+	//	Exception table: SSAO max 3/255 (measured: one pixel, on the floor's
+	//	silhouette against the background, 253 on DX11 and 250 on Vulkan,
+	//	the same on every run). The preview shows the AO term alone on
+	//	white, so one occlusion sample that lands the other side of the
+	//	edge shows at full strength; the HDR renderer's SSAO cases
+	//	(shdwAoGiVkTest) multiply it into the lit image and stay within
+	//	1/255.
+	gtRenderOptions ssao = ao_preview(false);
+	ssao.m_MaxErr = 3 / 255.0f;
+	expect_cases("AOPreviewRendererMatchesDX11",
+	{
+		{ "ssao", ao_scene(false), ssao },
+		{ "ao_volumes", ao_scene(false), ao_preview(true) },
+		//	sphere 3 left out by the stencil mask
+		{ "ao_volumes_masked", ao_scene(true), ao_preview(true) },
+	});
+}
+
+TEST(shdwPreviewRenderersVkTest, GIPreviewRendererMatchesDX11)
+{
+	const std::vector<gtCase> cases =
+	{
+		{ "ssgi", gi_room, gi_preview(false, false) },
+		{ "lpv", gi_room, gi_preview(true, false) },
+		{ "lpv_hdr_aa", gi_room, gi_preview(true, true) },
+	};
+	expect_cases("GIPreviewRendererMatchesDX11", cases);
+
+	//	the GI shows: with GI off the preview is black (measured: SSGI
+	//	brightens about 21000 pixels by more than 8/255, LPV about 19000)
 	for (const gtCase& c : cases)
 	{
-		gtExpectEffectShows(("ReflectionOnlyRendererMatchesDX11/" + c.m_Name).c_str(), c.m_Build, c.m_Options,
-							c.m_Build, with_default(c.m_Options), 256 * 256 / 50);
+		gtRenderOptions off = c.m_Options;
+		const auto prefs = off.m_Prefs;
+		off.m_Prefs = [prefs](g3dPrefs::g3dRenderPrefs& p)
+		{
+			prefs(p);
+			p.m_bEnableSSGI = false;
+		};
+		gtExpectEffectShows(("GIPreviewRendererMatchesDX11/" + c.m_Name + "/gi_off").c_str(), c.m_Build, c.m_Options,
+							c.m_Build, off, 256 * 256 / 50);
 	}
 }

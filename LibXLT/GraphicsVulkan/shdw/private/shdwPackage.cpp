@@ -100,6 +100,16 @@
 #include "GraphicsVulkan/shdw/shdwGlowRendererVk.hpp"
 #endif
 
+#ifndef GVK_SHDW_SHADOWSONLYRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwShadowsOnlyRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_AOPREVIEWRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwAOPreviewRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_GIPREVIEWRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwGIPreviewRendererVk.hpp"
+#endif
+
 #include <cstddef>
 namespace gvk
 {
@@ -181,12 +191,15 @@ void shdwPackage::InitGraphics()
 	shdwMaterialsRendererVk::InitStates();
 	shdwPassMaterials::InitStates();
 	shdwDepthRendererVk::InitStates();
+	shdwAOPreviewRendererVk::InitStates();
+	shdwShadowsOnlyRendererVk::InitStates();
 	shdwShadowLayerRendererVk::InitStates();
 	shdwPassOutline::InitStates();
 	shdwPassGlow::InitStates();
 	shdwPassFog::InitStates();
 	shdwPassDOF::InitStates();
 	shdwHDRRendererVk::InitStates();
+	shdwGIPreviewRendererVk::InitStates();
 	shdwReflectionsOnlyRendererVk::InitStates();
 	shdwPassHair::InitStates();
 	shdwPassAOVolumes::InitStates();
@@ -208,12 +221,15 @@ void shdwPackage::CleanUpGraphics()
 	shdwPassAOVolumes::CleanupStates();
 	shdwPassHair::CleanupStates();
 	shdwReflectionsOnlyRendererVk::CleanupStates();
+	shdwGIPreviewRendererVk::CleanupStates();
 	shdwHDRRendererVk::CleanupStates();
 	shdwPassDOF::CleanupStates();
 	shdwPassFog::CleanupStates();
 	shdwPassGlow::CleanupStates();
 	shdwPassOutline::CleanupStates();
 	shdwShadowLayerRendererVk::CleanupStates();
+	shdwShadowsOnlyRendererVk::CleanupStates();
+	shdwAOPreviewRendererVk::CleanupStates();
 	shdwDepthRendererVk::CleanupStates();
 	shdwPassMaterials::CleanupStates();
 	shdwMaterialsRendererVk::CleanupStates();

@@ -227,6 +227,9 @@
     <ClCompile Include="shdw\private\shdwPassDOF.cpp" />
     <ClCompile Include="shdw\private\shdwPassFog.cpp" />
     <ClCompile Include="shdw\private\shdwPassNormals.cpp" />
+    <ClCompile Include="shdw\private\shdwShadowsOnlyRendererVk.cpp" />
+    <ClCompile Include="shdw\private\shdwAOPreviewRendererVk.cpp" />
+    <ClCompile Include="shdw\private\shdwGIPreviewRendererVk.cpp" />
     <ClCompile Include="shdw\private\shdwDepthRendererVk.cpp" />
     <ClCompile Include="shdw\private\shdwNormalRendererVk.cpp" />
     <ClCompile Include="shdw\private\shdwMaterialsRendererVk.cpp" />
@@ -383,6 +386,9 @@
     <ClInclude Include="shdw\shdwPassDOF.hpp" />
     <ClInclude Include="shdw\shdwPassFog.hpp" />
     <ClInclude Include="shdw\shdwPassNormals.hpp" />
+    <ClInclude Include="shdw\shdwShadowsOnlyRendererVk.hpp" />
+    <ClInclude Include="shdw\shdwAOPreviewRendererVk.hpp" />
+    <ClInclude Include="shdw\shdwGIPreviewRendererVk.hpp" />
     <ClInclude Include="shdw\shdwDepthRendererVk.hpp" />
     <ClInclude Include="shdw\shdwNormalRendererVk.hpp" />
     <ClInclude Include="shdw\shdwMaterialsRendererVk.hpp" />

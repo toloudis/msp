@@ -34,7 +34,6 @@ class g3dSceneNode;
 class g3dLayer;
 class matMaterial;
 class matRenderTargetTexture;
-class g2dWindowDX11;
 
 class shdwGIPreviewRendererDX11 : public shdwSceneRendererDX11
 {
@@ -68,7 +67,7 @@ private:
 
 	shdwPassTraversal m_SceneDatabase;
 
-	g2dWindowDX11* m_pWindow;
+	g2dRenderTarget* m_pWindow;
 	int m_Width, m_Height;
 	int m_OverscanSize;
 	void CreateSurfaces(g2dRenderTarget* i_pWindow);
