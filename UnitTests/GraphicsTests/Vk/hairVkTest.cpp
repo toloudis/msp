@@ -18,7 +18,10 @@
 **      - morphed hair, which DX11 never uploads again (Review Focus 5);
 **      - the renderers with their own hair branches (HAIR_SUPPORTED):
 **        depth, normal, materials, shadow mask and illumination, and the
-**        depth map renderer's shadow map.
+**        depth map renderer's shadow map;
+**      - the hair pass (shdwPassHair) in the HDR renderer: every
+**        transparency mode, depth peeling included, HDR AA off and on, with
+**        SSAO and glow; and in the GI preview renderer.
 **
 **      Each case is also checked on DX11 alone: the hair changes the image
 **      (gtExpectEffectShows), so a Vulkan renderer that draws no hair can't
@@ -41,6 +44,9 @@
 #endif
 #ifndef G3D_PROJECTEDLIGHT_HPP
 #include "Graphics/G3d/g3dProjectedLight.hpp"
+#endif
+#ifndef G3D_SCENE_HPP
+#include "Graphics/G3d/g3dScene.hpp"
 #endif
 #ifndef G3D_SCENENODE_HPP
 #include "Graphics/G3d/g3dSceneNode.hpp"
@@ -133,6 +139,8 @@ namespace
 		bool		m_bNearClip = false;	// the camera's far clip near the scene (the depth preview's grey range)
 		bool		m_bPointLight = false;	// a point light instead of TwoLights
 		bool		m_bShadows = false;		// a wall behind, the projected light with a shadow map, all casting
+		bool		m_bSpheres = false;		// Plan 4b's lit spheres behind, the head in front, the lights casting shadows
+		bool		m_bSSAO = false;		// shdwAoGiVkTest's SSAO settings (the defaults black the image out)
 		//	runs on the hair node after the scene is built
 		std::function<void(g3dSceneNode*)>	m_Edit;
 	};
@@ -153,13 +161,29 @@ namespace
 	{
 		if (i_Setup.m_bNearClip)
 			io_Builder.Camera().SetClip(0.5f, 20.0f);
+		if (i_Setup.m_bSpheres)
+		{
+			io_Builder.LightsCastShadows(true);		// else the HDR renderer's lit pass skips them
+			io_Builder.LitSpheres(false);
+		}
+		if (i_Setup.m_bSSAO)
+		{
+			ssaoParams params;
+			io_Builder.Scene().GetSSAOSettings(params);
+			params.m_AORadius = 1.2f;
+			params.m_AORadiusFar = 2.4f;
+			params.m_Contrast = 3.0f;
+			params.m_Color = maFloatRGBA(0.1f, 0.05f, 0.2f, 1.0f);
+			io_Builder.Scene().SetSSAOSettings(params);
+		}
+		const maMatrix4x4 place = i_Setup.m_bSpheres ? gtScene::Place(0, -0.35f, 1.5f, 0.9f) : c_HairPlace;
 		g3dSceneNode* head_node = NULL;
 		if (i_Setup.m_bHead)
 		{
 			matMaterial* head = io_Builder.Keep(gtScene::ShaderMaterial("Blinn.fx", gtScene::e_Tinted));
-			head_node = io_Builder.Add(gtScene::Sphere(16, 32), head, c_HairPlace * gtScene::Place(0, 0, 0, 0.97f));
+			head_node = io_Builder.Add(gtScene::Sphere(16, 32), head, place * gtScene::Place(0, 0, 0, 0.97f));
 		}
-		g3dSceneNode* hair_node = i_Setup.m_bHair ? io_Builder.Hair(i_Setup.m_Shape, c_HairPlace) : NULL;
+		g3dSceneNode* hair_node = i_Setup.m_bHair ? io_Builder.Hair(i_Setup.m_Shape, place) : NULL;
 		if (hair_node && i_Setup.m_Edit)
 			i_Setup.m_Edit(hair_node);
 		if (i_Setup.m_bShadows)
@@ -495,4 +519,50 @@ TEST(hairVkTest, HairInOtherRenderersMatchesDX11)
 			  << hair << " texels hair on DX11" << std::endl;
 	EXPECT_EQ(0u, differing);
 	EXPECT_GT(hair, dx11.size() / 200);		// the guard: the hair is in DX11's map
+}
+
+//	The hair pass (shdwPassHair) in the HDR renderer, hair over the lit
+//	spheres: transparency modes 0 (solid), 1 (blended), 2 (depth peeled,
+//	4 layers) and 3 (drawn as 1), HDR AA off and on;
+//	with SSAO and glow on; and the GI preview renderer, whose hair also
+//	goes through the pass (moved here from HairInOtherRenderersMatchesDX11)
+TEST(hairVkTest, HairPassMatchesDX11)
+{
+	const create_fn hdr = []() { return g3dSceneRendererCreate::CreateHDRRenderer(); };
+	hair_setup spheres;
+	spheres.m_bSpheres = true;
+	std::vector<hair_case> cases;
+	for (int mode : { 0, 1, 2, 3 })
+	{
+		for (bool aa : { false, true })
+		{
+			cases.push_back({ "mode" + std::to_string(mode) + (aa ? "/aa" : "/no_aa"), spheres,
+							  hair_options(hdr, [=](g3dPrefs::g3dRenderPrefs& p)
+			{
+				p.m_HairTransparencyMode = mode;
+				p.m_bHairDepthPeel = mode == 2;
+				p.m_nHairDepthPeelLayers = 4;
+				p.m_bHDRAA = aa;
+			}) });
+		}
+	}
+	hair_setup ssao = spheres;
+	ssao.m_bSSAO = true;
+	cases.push_back({ "ssao_glow", ssao, hair_options(hdr, [](g3dPrefs::g3dRenderPrefs& p)
+	{
+		p.m_HairTransparencyMode = 1;
+		p.m_bEnableSSAO = true;
+		p.m_bAOInvalid = true;		// as shdwAoGiVkTest's ao_prefs
+		p.m_bEnableGlow = true;
+	}) });
+	hair_setup shadows;
+	shadows.m_bShadows = true;
+	gtRenderOptions gi = hair_options([]() { return g3dSceneRendererCreate::CreateGlobalIlluminationRenderer(); },
+									  [](g3dPrefs::g3dRenderPrefs& p) { p.m_bEnableSSGI = true; });
+	gi.m_BeforeFrame = [](gtSceneBuilder& io_Builder) { io_Builder.RenderTargets(); };
+	//	(the GI preview runs the hair pass, but what the pass draws doesn't
+	//	reach the preview: the Vulkan stand-in drew the same image; the hair
+	//	shows through the light's shadow map, which the guard sees)
+	cases.push_back({ "gi_preview", shadows, gi });
+	expect_cases("HairPassMatchesDX11", cases);
 }

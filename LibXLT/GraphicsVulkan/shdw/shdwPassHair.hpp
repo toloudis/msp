@@ -1,11 +1,7 @@
 /****************************************************************************\
 **	shdwPassHair.hpp
 **
-**	Render hair.
-**
-**	GraphicsVulkan stand-in for GraphicsDX11's shdwPassHair until hair is
-**	ported (Plan 7): DX11's constructors and Render calls; it draws
-**	nothing and logs GVK_NOT_YET: shdwPassHair once.
+**	Render pass to draw hair (GraphicsVulkan port of GraphicsDX11's).
 **
 **	StudioGPU
 **	Copyright(C) 2010 - All Rights Reserved
@@ -31,8 +27,12 @@ class shdwPassTraversal;
 class shdwPassHair : public g3dRenderPass
 {
 public:
+	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------
 	shdwPassHair();
 
+	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------
 	shdwPassHair(
 		const camCamera* i_pCamera,
 		matRenderTargetTexture* (&i_Targets)[4],
@@ -46,12 +46,17 @@ public:
 		matRenderTargetTexture* i_ScratchTarget2
 	);
 
+	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------
 	~shdwPassHair();
 
+	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------
 	virtual int Render(float i_time);
-
 	int RenderDepthPeeled(float i_time );
 
+	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------
 	void SetSceneInfo(shdwPassTraversal* i_traversal) {m_sceneInfo = i_traversal;}
 
 	static void InitStates();
@@ -59,6 +64,32 @@ public:
 
 protected:
 	shdwPassTraversal*		m_sceneInfo;
+
+	const camCamera*		m_pCamera;
+
+	g2dRenderTarget*        m_ZBuffer;
+	matRenderTargetTexture*	m_pTargets[4];
+	matRenderTargetTexture*	m_pDepth;
+
+	//for depth peeling
+	matRenderTargetTexture* m_depthTarget1;
+	matRenderTargetTexture* m_depthTarget2;
+	matRenderTargetTexture* m_depthAux;
+	matRenderTargetTexture* m_ScratchTarget1;
+	matRenderTargetTexture* m_ScratchTarget2;
+
+private:
+	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------
+	int RenderHairNodes( bool i_bPeeled );
+
+	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------
+	int RenderPeeledRColors();
+
+	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------
+	void SwapDepthTargets( matRenderTargetTexture*& io_pDst, matRenderTargetTexture*& io_pSrc );	//acquires if ptrs are NULL
 };
 
 }

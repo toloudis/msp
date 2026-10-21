@@ -54,8 +54,7 @@ namespace
 {
 	bool l_sSaveOpacity = true;
 
-	matRenderTargetTexture* l_pColor = NULL;	//hair main target color
-	g2dRenderTargetDX11* l_pColorAA = NULL;	//hair main target color with MSAA
+	g2dRenderTarget* l_pColor = NULL;	//hair main target color (with MSAA if HDR AA is on)
 	g2dWindowDX11* l_pDepth = NULL;	//hair main target depth
 	matRenderTargetTexture*	l_pOSMTextures[4] = {NULL};
 	const camCamera *l_pCamera = NULL;
@@ -171,8 +170,7 @@ namespace
 		HairData.Default();
 
 		int W, H;
-		if( l_pColorAA ) l_pColorAA->GetDimensions( W, H );
-		else l_pColor->GetDimensions( W, H );
+		l_pColor->GetDimensions( W, H );
 		HairData.m_InvScreenSize = maVector2d( 1.0f / W, 1.0f / H );
 
 		if( 0==g3dPrefs::CurrentPrefs().m_HairTransparencyMode )	//if solid set power high to disable alpha
@@ -355,17 +353,9 @@ shdwPassHair::shdwPassHair(
 	m_pTargets[2] = i_Targets[2];
 	m_pTargets[3] = i_Targets[3];
 
-	//hack to acquire actual targets
-	if( g3dPrefs::CurrentPrefs().m_bHDRAA )
-	{
-		l_pColorAA = dynamic_cast<g2dRenderTargetDX11*>(i_destination);
-		l_pColor = NULL;
-	}
-	else
-	{
-		l_pColorAA = NULL;
-		l_pColor = dynamic_cast<matRenderTargetTexture*>(i_destination);
-	}
+	//(the HDR AA target is a matRenderTargetTexture, not a g2dRenderTargetDX11:
+	//casting by type left no target with HDR AA on)
+	l_pColor = i_destination;
 	l_pDepth = dynamic_cast<g2dWindowDX11*>(i_ZBuffer);
 }
 
