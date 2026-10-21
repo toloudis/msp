@@ -341,10 +341,13 @@ says why) and installs a Vulkan implementation for every Graphics hook.
   as GraphicsDX11 does with fxc. Everything that makes them work on
   Vulkan is a DXC option; the same options are in the GraphicsTests
   shader step and `Tools/fx2hlsl/compile_check.py --spirv`, so change all
-  three together. The hair hull shader (`Hair_HS`) doesn't compile to
-  SPIR-V yet (DXC lacks `ProcessIsolineTessFactors`): its passes draw
-  nothing (Plan 7). Shaders GraphicsDX11 compiles from strings at run time
-  are copied into `.hlsl` files when ported (`G2d/private/Shaders`).
+  three together. The one exception: DXC's SPIR-V backend lacks
+  `ProcessIsolineTessFactors`, which the hair hull shader (`Hair_HS`)
+  calls, so that stage is compiled from a wrapper in `Eff/private/ShadersVk/`
+  (`*.vulkan-only.*`, the only Vulkan-only shader code) that defines it as
+  fxc does and includes the unchanged file (`vkdIsolineTest` checks it
+  against D3D11; `compile_check.py --vulkan-only-dir`). Shaders
+  GraphicsDX11 compiles from strings at run time are copied into `.hlsl` files when ported (`G2d/private/Shaders`).
 - **Resource binding:** shaders keep their DX11 register slots. Each draw
   writes a table into the ring buffer (constant-buffer addresses, then
   texture, sampler and UAV heap indices) and pushes its address with

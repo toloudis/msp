@@ -62,6 +62,9 @@
     <ClCompile Include="Vk\vkdContextTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
+    <ClCompile Include="Vk\vkdIsolineTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
     <ClCompile Include="Vk\fxEffectVkTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
@@ -213,6 +216,9 @@
       <Filter>Vk\Shaders</Filter>
     </CustomBuild>
     <CustomBuild Include="Vk\Shaders\gtLayered.hlsl">
+      <Filter>Vk\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Vk\Shaders\gtIsoline.hlsl">
       <Filter>Vk\Shaders</Filter>
     </CustomBuild>
   </ItemGroup>

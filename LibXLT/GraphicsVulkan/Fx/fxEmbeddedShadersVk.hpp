@@ -45,15 +45,11 @@ namespace gvk
 	{
 		extern const fxEmbeddedEffect k_Effects[];
 		extern const int k_NumEffects;
-		// "<hlsl path>|<entry>" of the stages not compiled yet (see fxEffectVk)
-		extern const char* const k_Deferred[];
-		extern const int k_NumDeferred;
 
 		// nullptr if there is no embedded effect of that name
 		const fxEmbeddedEffect* Find(const std::string& i_Name);
 
-		// Bytecode lookup for one embedded effect, for fxEffectVk::Create:
-		// deferred stages answer true with no data.
+		// Bytecode lookup for one embedded effect, for fxEffectVk::Create
 		fxBytecodeSource BytecodeSource(const fxEmbeddedEffect& i_Effect);
 
 		// Parse the manifest and build the effect (i_pDevice NULL: reflection only).

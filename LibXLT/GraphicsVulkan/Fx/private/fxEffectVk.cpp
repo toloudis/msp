@@ -195,13 +195,7 @@ namespace gvk
 					{
 						continue;
 					}
-					bool deferred = false;
-					const Shader* shader = get_shader(i_pDevice, (fxStage)s, pass.m_Stages[s], i_Bytecode, deferred, o_Error);
-					if (deferred)
-					{
-						pipeline.m_bDeferred = true;
-						continue;
-					}
+					const Shader* shader = get_shader(i_pDevice, (fxStage)s, pass.m_Stages[s], i_Bytecode, o_Error);
 					if (!shader)
 					{
 						return false;
@@ -233,13 +227,11 @@ namespace gvk
 	}
 
 	//------------------------------------------------------------------------
-	// get_shader() - shaders are shared between passes. A bytecode source
-	//	that answers true with no data marks a deferred stage.
+	// get_shader() - shaders are shared between passes
 	//------------------------------------------------------------------------
 	const fxEffectVk::Shader* fxEffectVk::get_shader(vkdDevice* i_pDevice, fxStage i_Stage, const fxStageDesc& i_Desc,
-		const fxBytecodeSource& i_Bytecode, bool& o_bDeferred, std::string& o_Error)
+		const fxBytecodeSource& i_Bytecode, std::string& o_Error)
 	{
-		o_bDeferred = false;
 		std::string key = i_Desc.m_Entry + "|" + i_Desc.m_Profile;
 		auto found = m_Shaders.find(key);
 		if (found != m_Shaders.end())
@@ -252,11 +244,6 @@ namespace gvk
 		if (!i_Bytecode(i_Desc.m_Entry, i_Desc.m_Profile, shader->m_Bytecode))
 		{
 			o_Error = "no bytecode for " + i_Desc.m_Entry + " (" + i_Desc.m_Profile + ")";
-			return nullptr;
-		}
-		if (!shader->m_Bytecode.m_pData)
-		{
-			o_bDeferred = true;
 			return nullptr;
 		}
 
@@ -493,15 +480,6 @@ namespace gvk
 			return 0;
 		}
 		return (int)m_Pipelines[i_Technique].size();
-	}
-
-	bool fxEffectVk::IsPassDeferred(int i_Technique, int i_Pass) const
-	{
-		if (i_Pass < 0 || i_Pass >= GetPassCount(i_Technique))
-		{
-			return false;
-		}
-		return m_Pipelines[i_Technique][i_Pass].m_bDeferred;
 	}
 
 	const vkdShaderReflection* fxEffectVk::GetStageReflection(int i_Technique, int i_Pass, fxStage i_Stage) const
@@ -986,12 +964,6 @@ namespace gvk
 		vkdContext& context = vkdGlobal::Context();
 
 		const vkdShader* stages[vkdPipelineKey::c_Stages] = {};
-		if (pipeline.m_bDeferred)
-		{
-			GVK_NOT_YET("fxEffectVk::Apply of a pass with a hair hull shader (Plan 7)");
-			context.SetShaders(stages);
-			return;
-		}
 		for (int s = 0; s < fx_NumGraphicsStages; s++)
 		{
 			stages[s] = pipeline.m_Stages[s] ? pipeline.m_Stages[s]->m_pShader.get() : nullptr;

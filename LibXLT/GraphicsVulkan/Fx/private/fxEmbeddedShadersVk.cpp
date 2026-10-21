@@ -43,19 +43,6 @@ namespace gvk
 					return true;
 				}
 			}
-			//	a deferred stage of this effect's .hlsl: "<dir>/<hlsl>|<entry>"
-			const std::string source = i_Effect.m_Source;
-			const std::string dir = source.substr(0, source.find_last_of('/') + 1);
-			for (int i = 0; i < k_NumDeferred; i++)
-			{
-				const std::string deferred = k_Deferred[i];
-				const size_t bar = deferred.find('|');
-				if (deferred.substr(bar + 1) == i_Entry && deferred.compare(0, dir.size(), dir) == 0)
-				{
-					o_Bytecode = fxBytecode();
-					return true;
-				}
-			}
 			return false;
 		};
 	}

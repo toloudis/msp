@@ -19,10 +19,6 @@
 **      - Every constant buffer must have one layout across all of the
 **        effect's entry points (as in fxEffectDX11).
 **      - Samplers are immutable, created from the manifest.
-**
-**      Stages DXC can't compile yet (the hair hull shader, see
-**      fxEmbeddedShadersVk::k_Deferred) have no bytecode: their passes are
-**      "deferred", draw nothing and say so once (GVK_NOT_YET).
 \****************************************************************************/
 #ifdef GVK_FXEFFECTVK_HPP
 #error fxEffectVk.hpp multiply included
@@ -135,11 +131,9 @@ namespace gvk
 		int GetTechniqueCount() const { return (int)m_Desc.m_Techniques.size(); }
 		int FindTechnique(const std::string& i_Name) const;	// -1 if missing
 		int GetPassCount(int i_Technique) const;
-		// The pass uses a stage DXC couldn't compile (see the header comment)
-		bool IsPassDeferred(int i_Technique, int i_Pass) const;
 		// What one stage of a pass reads, by register (empty if the stage is unused)
 		std::vector<StageBinding> GetStageBindings(int i_Technique, int i_Pass, fxStage i_Stage) const;
-		// The reflection of one stage of a pass; nullptr if the stage is unused or deferred
+		// The reflection of one stage of a pass; nullptr if the stage is unused
 		const vkdShaderReflection* GetStageReflection(int i_Technique, int i_Pass, fxStage i_Stage) const;
 
 		// Parameter handles; invalid if no entry point uses the name.
@@ -205,8 +199,6 @@ namespace gvk
 		// last upload was for an earlier submission), textures, samplers and
 		// UAVs every stage of the pass reads, at their registers. A NULL
 		// texture binds a transparent black one, as D3D reads a NULL view.
-		// A deferred pass binds no shaders, so what is drawn next draws
-		// nothing (logged once).
 		void Apply(int i_Technique, int i_Pass);
 
 	private:
@@ -234,9 +226,8 @@ namespace gvk
 		{
 			const Shader* m_Stages[fx_NumGraphicsStages] = {};
 			std::vector<int> m_ConstantBuffers;	// every buffer any stage reads
-			bool m_bDeferred = false;
 			bool m_bUavs = false;				// some stage writes a UAV
-			mutable bool m_bReported = false;	// deferral / slot clash logged
+			mutable bool m_bReported = false;	// slot clash logged
 		};
 
 		struct ConstantBuffer
@@ -258,7 +249,7 @@ namespace gvk
 
 		bool build(vkdDevice* i_pDevice, const fxBytecodeSource& i_Bytecode, std::string& o_Error);
 		const Shader* get_shader(vkdDevice* i_pDevice, fxStage i_Stage, const fxStageDesc& i_Desc,
-			const fxBytecodeSource& i_Bytecode, bool& o_bDeferred, std::string& o_Error);
+			const fxBytecodeSource& i_Bytecode, std::string& o_Error);
 		bool reflect(Shader& io_Shader, std::string& o_Error);
 		int get_sampler(const std::string& i_Name);
 		bool check_samplers(std::string& o_Error) const;

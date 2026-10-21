@@ -80,6 +80,9 @@
 #ifndef EFF_PLAINEFFECT_HPP
 #include "GraphicsDX11/eff/effPlainEffect.hpp"
 #endif
+#ifndef G3D_SCENEGLOBAL_HPP
+#include "GraphicsDX11/G3d/g3dSceneGlobal.hpp"
+#endif
 
 //	Vulkan
 #ifndef GVK_EFF_SHADERBASEVK_HPP
@@ -93,6 +96,9 @@
 #endif
 #ifndef GVK_FXEFFECTVK_HPP
 #include "GraphicsVulkan/Fx/fxEffectVk.hpp"
+#endif
+#ifndef GVK_G3D_SCENEGLOBAL_HPP
+#include "GraphicsVulkan/G3d/g3dSceneGlobal.hpp"
 #endif
 #ifndef GVK_VKDIMAGE_HPP
 #include "GraphicsVulkan/vkd/vkdImage.hpp"
@@ -538,6 +544,12 @@ namespace
 	{
 		std::vector<EffectState> states;
 		Lights lights;
+		//	g_targetRes is the size of the last HDR render, a process-wide
+		//	global in each backend that nothing resets: give both the same
+		//	one, so a render by an earlier test in this process doesn't show
+		const maVector4d target_res(640.0f, 480.0f, 1.0f / 640.0f, 1.0f / 480.0f);
+		::g3dSceneGlobal::g_TargetRes = target_res;
+		gvk::g3dSceneGlobal::g_TargetRes = target_res;
 		for (const MaterialCase& c : material_cases())
 		{
 			SCOPED_TRACE(c.m_Name);

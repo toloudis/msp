@@ -96,10 +96,6 @@ namespace
 	//	Why the pass can't be drawn as a full-screen pass; empty if it can
 	std::string unqualified(const gvk::fxEffectVk& i_Effect, int i_Technique, int i_Pass)
 	{
-		if (i_Effect.IsPassDeferred(i_Technique, i_Pass))
-		{
-			return "deferred (hair hull shader)";
-		}
 		for (gvk::fxStage s : { gvk::fx_HS, gvk::fx_DS, gvk::fx_GS })
 		{
 			if (i_Effect.GetStageReflection(i_Technique, i_Pass, s))

@@ -13,9 +13,11 @@
     Tools/fx2hlsl/compile_check.py --spirv; keep the three in step.
 
     -TableName names the generated table (default fxEmbeddedShadersVk, i.e.
-    fxEmbeddedShadersVk::k_Effects). -Deferred lists "<file>|<entry>" stages
-    that DXC can't compile yet; they are skipped (and listed in the table's
-    k_Deferred) instead of failing the build.
+    fxEmbeddedShadersVk::k_Effects). $VulkanOnlySource maps "<file>|<entry>"
+    stages that DXC can't compile from the copy to a wrapper in
+    -VulkanOnlyDir (default: ShadersVk next to -ShaderDir) that supplies
+    what DXC lacks and includes the unchanged file; only those stages are
+    compiled from the wrapper.
 
     Called from GraphicsVulkan.vcxproj (target EmbedVkShaders) before
     compiling. Written for Windows PowerShell 5.1.
@@ -25,9 +27,16 @@ param(
     [Parameter(Mandatory = $true)][string]$OutFile,
     [Parameter(Mandatory = $true)][string]$Dxc,
     [string]$TableName = "fxEmbeddedShadersVk",
-    # Hair_HS uses ProcessIsolineTessFactors, which DXC's SPIR-V backend lacks (Plan 7)
-    [string[]]$Deferred = @("Materials/Hair_SH.hlsl|Hair_HS", "Special/HairDefault.hlsl|Hair_HS", "Special/OpacityRender.hlsl|Hair_HS")
+    [string]$VulkanOnlyDir = ""
 )
+
+# Hair_HS uses ProcessIsolineTessFactors, which DXC's SPIR-V backend lacks:
+# its wrappers include IsolineTessFactors.vulkan-only.hlsli first
+$VulkanOnlySource = @{
+    "Materials/Hair_SH.hlsl|Hair_HS" = "Hair_SH.vulkan-only.hlsl";
+    "Special/HairDefault.hlsl|Hair_HS" = "HairDefault.vulkan-only.hlsl";
+    "Special/OpacityRender.hlsl|Hair_HS" = "OpacityRender.vulkan-only.hlsl"
+}
 
 $ErrorActionPreference = "Stop"
 
@@ -80,6 +89,7 @@ function Stage-Entries($stages) {
 }
 
 $ShaderDir = (Resolve-Path $ShaderDir).Path
+if ($VulkanOnlyDir -eq "") { $VulkanOnlyDir = Join-Path (Split-Path $ShaderDir -Parent) "ShadersVk" }
 $tmp = [IO.Path]::GetTempFileName()
 
 $out = New-Object System.Text.StringBuilder
@@ -88,7 +98,7 @@ $out = New-Object System.Text.StringBuilder
 [void]$out.Append("namespace gvk`r`n{`r`nnamespace`r`n{`r`n")
 
 $effects = @()
-$skipped = @()
+$vulkanOnly = @()
 $withGlobals = @()
 $warnings = 0
 $manifests = Get-ChildItem -Path $ShaderDir -Filter *.effect.json -Recurse | Sort-Object FullName
@@ -115,20 +125,22 @@ try {
                     if ($seen.ContainsKey($key)) { continue }
                     $seen[$key] = $true
 
-                    if ($Deferred -contains "$hlslRel|$($stage.entry)") {
-                        $skipped += "$hlslRel|$($stage.entry)"
-                        continue
+                    $source = $hlsl
+                    if ($VulkanOnlySource.ContainsKey("$hlslRel|$($stage.entry)")) {
+                        $source = Join-Path $VulkanOnlyDir $VulkanOnlySource["$hlslRel|$($stage.entry)"]
+                        if (-not (Test-Path $source)) { throw "Vulkan-only source not found: $source" }
+                        $vulkanOnly += "$hlslRel|$($stage.entry)"
                     }
 
                     $dxcProfile = $stage.profile.Split("_")[0] + "_6_0"
                     # dxc writes warnings to stderr; with "Stop", PowerShell 5.1
                     # would turn those into a terminating error
                     $ErrorActionPreference = "Continue"
-                    $log = & $Dxc @DxcOptions -T $dxcProfile -E $stage.entry -Fo $tmp $hlsl 2>&1
+                    $log = & $Dxc @DxcOptions -T $dxcProfile -E $stage.entry -Fo $tmp $source 2>&1
                     $ErrorActionPreference = "Stop"
                     if ($LASTEXITCODE -ne 0) {
                         $log | ForEach-Object { Write-Host $_ }
-                        throw "dxc failed: $($stage.entry) ($dxcProfile) in $hlsl"
+                        throw "dxc failed: $($stage.entry) ($dxcProfile) in $source"
                     }
                     $warnings += @($log | Where-Object { "$_" -match "warning:" }).Count
                     $bytes = [IO.File]::ReadAllBytes($tmp)
@@ -164,15 +176,10 @@ if ($effects.Count -gt 0) {
     [void]$out.Append("const fxEmbeddedEffect ${TableName}::k_Effects[] = { { nullptr, nullptr, nullptr, nullptr, 0, nullptr } };`r`n")
 }
 [void]$out.Append("const int ${TableName}::k_NumEffects = $($effects.Count);`r`n")
-$deferredList = @($skipped | ForEach-Object { "`t`"$_`"," })
-if ($deferredList.Count -eq 0) { $deferredList = @("`tnullptr,") }
-[void]$out.Append("const char* const ${TableName}::k_Deferred[] = {`r`n").Append(($deferredList -join "`r`n")).Append("`r`n};`r`n")
-[void]$out.Append("const int ${TableName}::k_NumDeferred = $($skipped.Count);`r`n")
 [void]$out.Append("}`r`n")
 
 $dir = Split-Path $OutFile -Parent
 if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir | Out-Null }
 [IO.File]::WriteAllText($OutFile, $out.ToString())
-foreach ($s in $skipped) { Write-Host "EmbedShadersVk: deferred $s" }
 foreach ($g in $withGlobals) { Write-Host "EmbedShadersVk: `$Globals in $g" }
-Write-Host "EmbedShadersVk: $($effects.Count) effect(s), $($skipped.Count) deferred stage(s), $warnings DXC warning(s) -> $OutFile"
+Write-Host "EmbedShadersVk: $($effects.Count) effect(s), $($vulkanOnly.Count) stage(s) from Vulkan-only sources, $warnings DXC warning(s) -> $OutFile"

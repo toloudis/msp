@@ -49,6 +49,8 @@
     <!-- DXC and GraphicsVulkan's shader options; keep the options in step with
          LibXLT\GraphicsVulkan\Fx\private\EmbedShadersVk.ps1 and Tools\fx2hlsl\compile_check.py -->
     <GtDxc>"$(ProjectDir)..\..\LibXLT\GraphicsVulkan\vcpkg_installed\x64-windows\x64-windows\tools\directx-dxc\dxc.exe" -spirv -fspv-target-env=vulkan1.3 -fvk-use-dx-layout -fvk-use-dx-position-w -fvk-support-nonzero-base-instance -fvk-support-nonzero-base-vertex -fvk-auto-shift-bindings -fvk-b-shift 0 0 -fvk-t-shift 100 0 -fvk-s-shift 200 0 -fvk-u-shift 300 0</GtDxc>
+    <!-- GraphicsVulkan's Vulkan-only shader code, for test shaders that need it -->
+    <GtShadersVk>$(ProjectDir)..\..\LibXLT\GraphicsVulkan\Eff\private\ShadersVk</GtShadersVk>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -118,6 +120,7 @@
     <ClCompile Include="Vk\vkdPipelineCacheTest.cpp" />
     <ClCompile Include="Vk\vkdAnisotropicTest.cpp" />
     <ClCompile Include="Vk\vkdContextTest.cpp" />
+    <ClCompile Include="Vk\vkdIsolineTest.cpp" />
     <ClCompile Include="Vk\fxEffectVkTest.cpp" />
     <ClCompile Include="Vk\effPlainEffectVkTest.cpp" />
     <ClCompile Include="gtImage.cpp" />
@@ -183,6 +186,12 @@
     <CustomBuild Include="Vk\Shaders\gtAniso.hlsl">
       <Command>$(GtDxc) -T vs_6_0 -E VSMain -Vn g_%(Filename)VS -Fh "$(IntDir)%(Filename)VS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -T ps_6_0 -E PSMain -Vn g_%(Filename)PS -Fh "$(IntDir)%(Filename)PS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -T ps_6_0 -E PSLod -Vn g_%(Filename)LodPS -Fh "$(IntDir)%(Filename)LodPS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -T ps_6_0 -E PSDeriv -Vn g_%(Filename)DerivPS -Fh "$(IntDir)%(Filename)DerivPS.h" "%(FullPath)"</Command>
       <Outputs>$(IntDir)%(Filename)VS.h;$(IntDir)%(Filename)PS.h;$(IntDir)%(Filename)LodPS.h;$(IntDir)%(Filename)DerivPS.h</Outputs>
+    </CustomBuild>
+    <!-- hull and domain shaders too; includes GraphicsVulkan's Vulkan-only isoline factors -->
+    <CustomBuild Include="Vk\Shaders\gtIsoline.hlsl">
+      <Command>$(GtDxc) -I "$(GtShadersVk)" -T vs_6_0 -E VSMain -Vn g_%(Filename)VS -Fh "$(IntDir)%(Filename)VS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -I "$(GtShadersVk)" -T hs_6_0 -E HSMain -Vn g_%(Filename)HS -Fh "$(IntDir)%(Filename)HS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -I "$(GtShadersVk)" -T ds_6_0 -E DSMain -Vn g_%(Filename)DS -Fh "$(IntDir)%(Filename)DS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -I "$(GtShadersVk)" -T ps_6_0 -E PSMain -Vn g_%(Filename)PS -Fh "$(IntDir)%(Filename)PS.h" "%(FullPath)"</Command>
+      <Outputs>$(IntDir)%(Filename)VS.h;$(IntDir)%(Filename)HS.h;$(IntDir)%(Filename)DS.h;$(IntDir)%(Filename)PS.h</Outputs>
+      <AdditionalInputs>$(GtShadersVk)\IsolineTessFactors.vulkan-only.hlsli</AdditionalInputs>
     </CustomBuild>
     <CustomBuild Include="Vk\Shaders\gtSolid.hlsl" />
     <CustomBuild Include="Vk\Shaders\gtStructuredRead.hlsl" />

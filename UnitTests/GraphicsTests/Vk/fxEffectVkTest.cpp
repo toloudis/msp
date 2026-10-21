@@ -211,7 +211,7 @@ namespace
 
 TEST_F(fxEffectVkTest, AllEffectsCreateOnTheDevice)
 {
-	int deferred = 0;
+	int tessellated = 0;
 	for (int e = 0; e < fxEmbeddedShadersVk::k_NumEffects; e++)
 	{
 		std::string error;
@@ -221,12 +221,12 @@ TEST_F(fxEffectVkTest, AllEffectsCreateOnTheDevice)
 		{
 			for (int p = 0; p < effect->GetPassCount(t); p++)
 			{
-				deferred += effect->IsPassDeferred(t, p) ? 1 : 0;
+				tessellated += effect->GetStageReflection(t, p, fx_HS) ? 1 : 0;
 			}
 		}
 	}
-	EXPECT_GT(deferred, 0);		// the hair hull shader passes
-	std::cout << "deferred passes (hair hull shader): " << deferred << std::endl;
+	EXPECT_GT(tessellated, 0);		// the hair hull shader (Vulkan-only isoline factors) among them
+	std::cout << "passes with a hull shader: " << tessellated << std::endl;
 }
 
 TEST(fxSamplerToVulkan, Mapping)

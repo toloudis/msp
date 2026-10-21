@@ -40,8 +40,6 @@ namespace gvk
 	{
 		extern const fxEmbeddedEffect k_Effects[];
 		extern const int k_NumEffects;
-		extern const char* const k_Deferred[];
-		extern const int k_NumDeferred;
 	}
 }
 

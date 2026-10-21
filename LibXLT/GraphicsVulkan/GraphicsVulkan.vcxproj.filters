@@ -16,6 +16,9 @@
     <Filter Include="Eff\private\Shaders\PostEffect">
       <UniqueIdentifier>{9a337bd2-b148-24a9-acf2-957aa56cc659}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Eff\private\ShadersVk">
+      <UniqueIdentifier>{5b7c3e1a-2d4f-4a8b-9c61-7e0f3d2a1b94}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Eff\private\Shaders\Special">
       <UniqueIdentifier>{037e2f93-ff8e-d4b2-d5c2-d47cf46f3cf3}</UniqueIdentifier>
     </Filter>
@@ -1236,6 +1239,18 @@
     </None>
     <None Include="Eff\private\Shaders\Materials\SupportHair.hlsli">
       <Filter>Eff\private\Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\ShadersVk\IsolineTessFactors.vulkan-only.hlsli">
+      <Filter>Eff\private\ShadersVk</Filter>
+    </None>
+    <None Include="Eff\private\ShadersVk\Hair_SH.vulkan-only.hlsl">
+      <Filter>Eff\private\ShadersVk</Filter>
+    </None>
+    <None Include="Eff\private\ShadersVk\HairDefault.vulkan-only.hlsl">
+      <Filter>Eff\private\ShadersVk</Filter>
+    </None>
+    <None Include="Eff\private\ShadersVk\OpacityRender.vulkan-only.hlsl">
+      <Filter>Eff\private\ShadersVk</Filter>
     </None>
     <None Include="Eff\private\Shaders\Materials\Tessellate.hlsli">
       <Filter>Eff\private\Shaders\Materials</Filter>

@@ -477,6 +477,10 @@
     <None Include="Eff\private\Shaders\Materials\SubSurfaceScatter_wBlinnSpecular.hlsl" />
     <None Include="Eff\private\Shaders\Materials\Support.hlsli" />
     <None Include="Eff\private\Shaders\Materials\SupportHair.hlsli" />
+    <None Include="Eff\private\ShadersVk\IsolineTessFactors.vulkan-only.hlsli" />
+    <None Include="Eff\private\ShadersVk\Hair_SH.vulkan-only.hlsl" />
+    <None Include="Eff\private\ShadersVk\HairDefault.vulkan-only.hlsl" />
+    <None Include="Eff\private\ShadersVk\OpacityRender.vulkan-only.hlsl" />
     <None Include="Eff\private\Shaders\Materials\Tessellate.hlsli" />
     <None Include="Eff\private\Shaders\Materials\testtess.effect.json" />
     <None Include="Eff\private\Shaders\Materials\testtess.hlsl" />
@@ -574,7 +578,8 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <!-- The built-in shaders: GraphicsDX11's HLSL, copied unchanged to Eff\private\Shaders.
+  <!-- The built-in shaders: GraphicsDX11's HLSL, copied unchanged to Eff\private\Shaders
+       (plus the Vulkan-only wrappers in Eff\private\ShadersVk, for stages DXC can't compile from the copy).
        Fx\private\EmbedShadersVk.ps1 compiles every entry point the *.effect.json manifests
        list with DXC to SPIR-V and embeds it with the manifests (included by
        Fx\private\fxEmbeddedShadersVk.cpp). DXC comes from this project's vcpkg packages. -->
@@ -585,7 +590,7 @@
     <VkDxc>$(MSBuildThisFileDirectory)vcpkg_installed\x64-windows\x64-windows\tools\directx-dxc\dxc.exe</VkDxc>
   </PropertyGroup>
   <ItemGroup>
-    <VkShaderInput Include="$(VkShaderDir)\**\*.hlsl;$(VkShaderDir)\**\*.hlsli;$(VkShaderDir)\**\*.effect.json;$(VkShaderScript)" />
+    <VkShaderInput Include="$(VkShaderDir)\**\*.hlsl;$(VkShaderDir)\**\*.hlsli;$(VkShaderDir)\**\*.effect.json;$(MSBuildThisFileDirectory)Eff\private\ShadersVk\*.hlsl*;$(VkShaderScript)" />
   </ItemGroup>
   <Target Name="EmbedVkShaders" BeforeTargets="ClCompile" AfterTargets="VcpkgInstallManifestDependencies" Inputs="@(VkShaderInput)" Outputs="$(VkShaderOutput)">
     <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(VkShaderScript)&quot; -ShaderDir &quot;$(VkShaderDir)&quot; -OutFile &quot;$(VkShaderOutput)&quot; -Dxc &quot;$(VkDxc)&quot;" />

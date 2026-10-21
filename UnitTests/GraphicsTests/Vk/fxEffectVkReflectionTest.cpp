@@ -362,11 +362,7 @@ TEST_P(fxEffectVkReflection, SameStageBindings)
 				{
 					continue;
 				}
-				if (!m_pVk->GetStageReflection(t, p, (gvk::fxStage)s))
-				{
-					EXPECT_TRUE(m_pVk->IsPassDeferred(t, p)) << stage.m_Entry << " has no SPIR-V";
-					continue;	// deferred (hair hull shader)
-				}
+				ASSERT_TRUE(m_pVk->GetStageReflection(t, p, (gvk::fxStage)s)) << stage.m_Entry << " has no SPIR-V";
 				const void* code = nullptr;
 				size_t size = 0;
 				ASSERT_TRUE(dx11_bytecode(stage.m_Entry, stage.m_Profile, code, size)) << stage.m_Entry;
