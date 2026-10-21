@@ -12,6 +12,7 @@
 #include "Graphics/g2d/g2dARGBColor.hpp"
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
 #include "GraphicsDX11/g2d/private/g2dImageDrawUtilDX11.hpp"
+#include "GraphicsDX11/g2d/private/g2dDX11SurfaceUtil.hpp"
 
 namespace g2dImageDrawUtilDX11
 {
@@ -102,6 +103,39 @@ void DrawImage(	g2dD3D11TexturePtr o_DestSurface,
 
 	DBG_ASSERT(source_width > 0, "Invalid image area");
 	DBG_ASSERT(source_height > 0, "Invalid image area");
+
+	// D3D11 copies only between formats of one family (CopySubresourceRegion
+	// copies nothing otherwise): between different formats, convert each
+	// pixel through the surface iterators, as the filtered CopyImage does
+	// (cptrRenderUtil's quadrant captures draw the RG32F velocity buffer
+	// into an RGBA32F image).
+	D3D11_TEXTURE2D_DESC dest_desc, src_desc;
+	o_DestSurface->GetDesc(&dest_desc);
+	i_SrcSurface->GetDesc(&src_desc);
+	if (dest_desc.Format != src_desc.Format)
+	{
+		SurfaceLocker dst_surf_locker(o_DestSurface, true);
+		SurfaceLocker src_surf_locker(i_SrcSurface);
+		if (src_surf_locker.IsLocked() && dst_surf_locker.IsLocked())
+		{
+			SurfaceIterator& src_surf_it = *(src_surf_locker.GetIterator());
+			SurfaceIterator& dst_surf_it = *(dst_surf_locker.GetIterator());
+			float r, g, b, a;
+			for (int y = 0; y < source_height; y++)
+			{
+				src_surf_it.SetPosition(i_SY1 + y, i_SX1);
+				dst_surf_it.SetPosition(i_DY1 + y, i_DX1);
+				for (int x = 0; x < source_width; x++)
+				{
+					src_surf_it.GetValue(r, g, b, a);
+					dst_surf_it.SetValue(r, g, b, a);
+					src_surf_it.IncCol();
+					dst_surf_it.IncCol();
+				}
+			}
+		}
+		return;
+	}
 
 	D3D11_BOX source_rect;
 	source_rect.left = i_SX1;

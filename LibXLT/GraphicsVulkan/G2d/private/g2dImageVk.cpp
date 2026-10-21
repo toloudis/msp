@@ -145,6 +145,36 @@ namespace
 		DBG_ASSERT(source_width > 0, "Invalid image area");
 		DBG_ASSERT(source_height > 0, "Invalid image area");
 
+		// D3D11 copies only between formats of one family (CopySubresourceRegion
+		// copies nothing otherwise): between different formats, convert each
+		// pixel through the surface iterators, as the filtered CopyImage does
+		// (cptrRenderUtil's quadrant captures draw the RG32F velocity buffer
+		// into an RGBA32F image).
+		if (o_DestSurface.GetDxgiFormat() != i_SrcSurface.GetDxgiFormat())
+		{
+			SurfaceLocker dst_surf_locker(&o_DestSurface, true);
+			SurfaceLocker src_surf_locker(&i_SrcSurface);
+			if (src_surf_locker.IsLocked() && dst_surf_locker.IsLocked())
+			{
+				SurfaceIterator& src_surf_it = *(src_surf_locker.GetIterator());
+				SurfaceIterator& dst_surf_it = *(dst_surf_locker.GetIterator());
+				float r, g, b, a;
+				for (int y = 0; y < source_height; y++)
+				{
+					src_surf_it.SetPosition(i_SY1 + y, i_SX1);
+					dst_surf_it.SetPosition(i_DY1 + y, i_DX1);
+					for (int x = 0; x < source_width; x++)
+					{
+						src_surf_it.GetValue(r, g, b, a);
+						dst_surf_it.SetValue(r, g, b, a);
+						src_surf_it.IncCol();
+						dst_surf_it.IncCol();
+					}
+				}
+			}
+			return;
+		}
+
 		copy_region(o_DestSurface, i_DX1, i_DY1, i_SrcSurface, i_SX1, i_SY1, i_SX2, i_SY2);
 	}
 }	// end of namespace

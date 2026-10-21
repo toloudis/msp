@@ -327,6 +327,68 @@ TEST(g2dImageVkTest, DrawImageMatchDX11)
 	});
 }
 
+//----------------------------------------------------------------------------
+//	DrawImage between different formats converts each pixel through the
+//	surface iterators (D3D11's CopySubresourceRegion copies only within a
+//	format family, so DX11 used to copy nothing): every pair of formats,
+//	inside and clipped; and cptrRenderUtil's quadrant capture of the
+//	velocity map, RG32F quadrants into the RGBA32F image GetCapturePFD
+//	makes, which must hold (r, g, 0, 1) of each quadrant
+//----------------------------------------------------------------------------
+TEST(g2dImageVkTest, DrawImageAcrossFormatsMatchDX11)
+{
+	expect_same([](Results& o_Results)
+	{
+		for (const Format& from : formats())
+		{
+			std::unique_ptr<g2dImage> source = make(16, 12, from.m_PFD, 31);
+			for (const Format& to : formats())
+			{
+				if (from.m_PFD.GetPixelFormat() == to.m_PFD.GetPixelFormat())
+					continue;
+				const std::string name = std::string(from.m_pName) + "_to_" + to.m_pName;
+				std::unique_ptr<g2dImage> dest = make(40, 30, to.m_PFD, 32);
+				const Bytes before = raw(*dest);
+				dest->DrawImage(5, 4, *source);
+				const Bytes inside = raw(*dest);
+				EXPECT_TRUE(before != inside) << name << ": nothing drawn";
+				o_Results[name + "/inside"] = inside;
+				dest->DrawImage(30, -3, *source);
+				dest->DrawImage(-2, 27, 4, 3, 14, 11, *source);
+				o_Results[name + "/clipped"] = raw(*dest);
+			}
+		}
+
+		//	four 16 x 12 RG32F quadrants into a 32 x 24 RGBA32F image
+		const g2dPFD rg32f(g2dPFD::e_GR32f, 64), rgba32f(g2dPFD::e_RGBA32f, 128);
+		std::unique_ptr<g2dImage> quad(g2dImageCreate::Make(32, 24, rgba32f, g2dImage::e_SystemMemory));
+		std::vector<std::unique_ptr<g2dImage>> quadrants;
+		for (int i = 0; i < 4; i++)
+		{
+			quadrants.push_back(make(16, 12, rg32f, 40 + i));
+			quad->DrawImage((i % 2) * 16, (i / 2) * 12, *quadrants.back());
+		}
+		const Bytes out = raw(*quad);
+		int wrong = 0;
+		for (int i = 0; i < 4; i++)
+		{
+			const Bytes in = raw(*quadrants[i]);
+			for (int y = 0; y < 12; y++)
+			{
+				for (int x = 0; x < 16; x++)
+				{
+					float rg[2], rgba[4];
+					std::memcpy(rg, &in[((size_t)y * 16 + x) * 8], sizeof(rg));
+					std::memcpy(rgba, &out[(((size_t)(i / 2) * 12 + y) * 32 + (i % 2) * 16 + x) * 16], sizeof(rgba));
+					wrong += rgba[0] != rg[0] || rgba[1] != rg[1] || rgba[2] != 0 || rgba[3] != 1;
+				}
+			}
+		}
+		EXPECT_EQ(0, wrong) << "quadrant pixels not (r, g, 0, 1)";
+		o_Results["quadrants_RG32F_to_RGBA32F"] = out;
+	});
+}
+
 namespace
 {
 	//	The bytes DX11's GetPixels writes (see the file comment)
