@@ -6,10 +6,11 @@
 
 **Spec:** "Decided" 4 (hair), 9 (Phase 1 exit), 10 (proof of parity); "Validation"; "Phase 2 direction".
 
-**Depends on (Plan 6):** every other renderer and service.
+**Depends on (Plan 6):** every other renderer and service, and the `-cap*` capture flags (`-capSampling`, `-capJitter`, `-capMotionSamples`, `-capPasses`, `-capHardwareAA`) for the full test-scene runs.
 
 ## Scope
 
+- The opacity map renderer (moved here by Plan 6's decision 2): `shdwOpacityMapRendererDX11` with `shdwPassOpacity`, which fills a projected light's opacity shadow maps. Their only reader is `shdwPassHair`, so they matter once hair draws. Until then `shdwSceneRendererCreate::CreateOpacityMapRenderer` answers with the forward stand-in (logged `GVK_NOT_YET`), and `shdwSceneRendererVk::ShareBuffers` leaves that stand-in alone (it has no frame buffer; any other partner that isn't a `shdw` renderer asserts, as on DX11). Once it is ported, `ShareBuffers` can drop the stand-in check.
 - Hair: `HairRendererVk`, `shdwPassHair`, `hair` package. Hull shaders (`Hair_SH`, `HairDefault`, `OpacityRender` → `Hair_HS`) fail in DXC's SPIR-V backend on `ProcessIsolineTessFactors`; write a Vulkan-only copy of the hull shader with the isoline factor computation by hand, in a file whose name marks it Vulkan-only. If that gets ugly, defer hair with a written reason and a clear runtime message.
 - Full test-scene run (`Dume_Demo_testTESS.mab`) with `gfxcompare run`, all frames within tolerance; also the other scenes in the folder as extra coverage.
 - Validation sign-off: Debug RenderNode run of the test scene and the full GraphicsTests suite with core + sync validation at zero; one GPU-assisted validation run at zero; best-practices output reviewed and summarized.
