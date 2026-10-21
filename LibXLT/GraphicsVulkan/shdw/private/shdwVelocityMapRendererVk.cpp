@@ -250,7 +250,8 @@ g2dRenderTarget* shdwVelocityMapRendererVk::GetRawBuffer()
 //--------------------------------------------------------------------
 g2dPFD::PixelFormat shdwVelocityMapRendererVk::GetRawBufferPFD()
 {
-	return g2dPFD::e_RGBA16f;
+	// the velocity buffer's own format (shdwFrameBufferMgr makes it e_GR32f)
+	return g2dPFD::e_GR32f;
 }
 
 void shdwVelocityMapRendererVk::InitStates()

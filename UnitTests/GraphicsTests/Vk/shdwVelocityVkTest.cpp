@@ -122,9 +122,12 @@ namespace
 		{
 			const matTexture* map = dynamic_cast<const matTexture*>(i_Run->m_pVelocity->GetRawBuffer());
 			EXPECT_TRUE(map != NULL);
-			//	DX11's answer, though the buffer is RG32F (shdwFrameBufferMgr's
-			//	e_GR32f): the port keeps it
-			EXPECT_EQ(g2dPFD::e_RGBA16f, i_Run->m_pVelocity->GetRawBufferPFD());
+			//	the format reported is the buffer's (RG32F, shdwFrameBufferMgr's
+			//	e_GR32f): cptrRenderUtil::GetCapturePFD makes the capture's
+			//	images from it
+			EXPECT_EQ(g2dPFD::e_GR32f, i_Run->m_pVelocity->GetRawBufferPFD());
+			if (const g2dRenderTarget* buffer = i_Run->m_pVelocity->GetRawBuffer())
+				EXPECT_EQ(buffer->GetPixelFormat().GetPixelFormat(), i_Run->m_pVelocity->GetRawBufferPFD());
 			std::vector<float>& out = i_Run->m_Map[gtBackend::Current()];
 			out.clear();
 			if (map)
