@@ -215,7 +215,7 @@ namespace
 	{
 		io_Builder.LightsCastShadows(true);
 		const gtMesh sphere = gtScene::Sphere(24, 48);
-		matTexture* mask = io_Builder.Keep(gtScene::CheckerTexture(i_Dir, 64, 64, 4, 8));
+		matTexture* mask = io_Builder.Keep(gtScene::CheckerTexture(i_Dir, 64, 64, 4));
 		for (int i = 0; i < 3; i++)
 		{
 			matMaterial* material = io_Builder.Keep(gtScene::ShaderMaterial("Blinn.fx", gtScene::e_Tinted));
@@ -302,8 +302,8 @@ namespace
 	void cutout_scene(gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
 	{
 		io_Builder.LightsCastShadows(true);
-		matTexture* diffuse = io_Builder.Keep(gtScene::CheckerTexture(i_Dir, 64, 64, 4, 8));
-		matTexture* web = io_Builder.Keep(gtScene::WebTexture(i_Dir, 128, 8, 4));
+		matTexture* diffuse = io_Builder.Keep(gtScene::CheckerTexture(i_Dir, 64, 64, 4));
+		matTexture* web = io_Builder.Keep(gtScene::WebTexture(i_Dir, 128, 8));
 		matMaterial* material = io_Builder.Keep(gtScene::ShaderMaterial("Blinn.fx", gtScene::e_Tinted, { diffuse }));
 		gtScene::SetTexture(material, "transparencyMap", web);
 		io_Builder.Add(gtScene::Plane(), material, gtScene::Place(0, 0, 1.0f, 1.6f));
@@ -626,7 +626,7 @@ namespace
 	//	A sphere with a soft checker texture
 	void uv_sphere(gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
 	{
-		matTexture* checker = io_Builder.Keep(gtScene::CheckerTexture(i_Dir, 128, 128, 8, 4));
+		matTexture* checker = io_Builder.Keep(gtScene::CheckerTexture(i_Dir, 128, 128, 8));
 		matMaterial* material = io_Builder.Keep(gtScene::ShaderMaterial("Blinn.fx", gtScene::e_Tinted, { checker }));
 		uv_root(io_Builder, gtScene::Sphere(12, 24), material);
 	}
@@ -639,7 +639,7 @@ namespace
 		gtMesh plane = gtScene::Grid(6);
 		for (maPoint2d& uv : plane.m_UVs)
 			uv = maPoint2d(uv.GetX() * 2.0f - 0.5f, uv.GetY() * 2.0f - 0.5f);
-		matTexture* checker = io_Builder.Keep(gtScene::CheckerTexture(i_Dir, 128, 128, 8, 4));
+		matTexture* checker = io_Builder.Keep(gtScene::CheckerTexture(i_Dir, 128, 128, 8));
 		matTexture* normals = io_Builder.Keep(gtScene::NormalTexture(i_Dir, 128, 4));
 		matMaterial* material = io_Builder.Keep(gtScene::ShaderMaterial("Blinn.fx", gtScene::e_Tinted, { checker }));
 		material->NormalsData().m_pNormalMap = normals;

@@ -56,6 +56,9 @@
     <ClCompile Include="Vk\vkdPipelineCacheTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
+    <ClCompile Include="Vk\vkdAnisotropicTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
     <ClCompile Include="Vk\vkdContextTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
@@ -192,6 +195,9 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Vk\Shaders\gtBindingProto.hlsl">
+      <Filter>Vk\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Vk\Shaders\gtAniso.hlsl">
       <Filter>Vk\Shaders</Filter>
     </CustomBuild>
     <CustomBuild Include="Vk\Shaders\gtSolid.hlsl">

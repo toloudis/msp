@@ -112,19 +112,18 @@ namespace gtScene
 	void SetTexture(matMaterial* io_pMaterial, const char* i_pName, matTexture* i_pTexture);
 
 	//	An RGBA8 i_Width x i_Height texture of i_Cells x i_Cells coloured
-	//	checks (a PNG written to i_Dir, loaded through matTextureMgr, mips
-	//	generated). i_Blur > 0 softens the edges with a box filter of that
-	//	radius in texels: anisotropic filtering of a hard edge is the
-	//	driver's own and differs between D3D11 and Vulkan on the same GPU
-	//	(up to ~35/255 at the edges). Release with matTextureMgr::ReleaseTexture.
-	matTexture* CheckerTexture(const std::filesystem::path& i_Dir, int i_Width, int i_Height, int i_Cells, int i_Blur = 0);
+	//	checks with hard edges (a PNG written to i_Dir, loaded through
+	//	matTextureMgr, mips generated). Textures are never softened to hide
+	//	a difference: where D3D11 and Vulkan pick different mip levels
+	//	(gtMipTolerance), a test allows that difference instead.
+	//	Release with matTextureMgr::ReleaseTexture.
+	matTexture* CheckerTexture(const std::filesystem::path& i_Dir, int i_Width, int i_Height, int i_Cells);
 
 	//	An RGBA8 i_Size x i_Size transparency map like a cobweb's: white
-	//	strands (i_Strands x i_Strands grid lines) on black, softened by a
-	//	box filter of radius i_Blur texels (see CheckerTexture), as a
-	//	material shader's transparencyMap (its red channel is the alpha).
-	//	Release with matTextureMgr::ReleaseTexture.
-	matTexture* WebTexture(const std::filesystem::path& i_Dir, int i_Size, int i_Strands, int i_Blur);
+	//	strands (i_Strands x i_Strands grid lines) on black, hard-edged (see
+	//	CheckerTexture), as a material shader's transparencyMap (its red
+	//	channel is the alpha). Release with matTextureMgr::ReleaseTexture.
+	matTexture* WebTexture(const std::filesystem::path& i_Dir, int i_Size, int i_Strands);
 
 	//	An RGBA8 i_Size x i_Size height map of i_Bumps x i_Bumps smooth bumps
 	//	(grey, 0 to 255), and the matching tangent-space normal map (RGB the

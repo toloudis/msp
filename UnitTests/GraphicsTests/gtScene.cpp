@@ -329,7 +329,7 @@ namespace
 	}
 }
 
-matTexture* gtScene::CheckerTexture(const std::filesystem::path& i_Dir, int i_Width, int i_Height, int i_Cells, int i_Blur)
+matTexture* gtScene::CheckerTexture(const std::filesystem::path& i_Dir, int i_Width, int i_Height, int i_Cells)
 {
 	std::vector<uint8_t> rgba((size_t)i_Width * i_Height * 4);
 	for (int y = 0; y < i_Height; y++)
@@ -346,34 +346,11 @@ matTexture* gtScene::CheckerTexture(const std::filesystem::path& i_Dir, int i_Wi
 			p[3] = 255;
 		}
 	}
-	//	softened by a (2 * i_Blur + 1)^2 box filter, wrapping as the texture does
-	for (int pass = 0; pass < 2 && i_Blur > 0; pass++)
-	{
-		const std::vector<uint8_t> source = rgba;
-		for (int y = 0; y < i_Height; y++)
-		{
-			for (int x = 0; x < i_Width; x++)
-			{
-				for (int c = 0; c < 3; c++)
-				{
-					int sum = 0;
-					for (int d = -i_Blur; d <= i_Blur; d++)
-					{
-						const int sx = pass == 0 ? (x + d + i_Width) % i_Width : x;
-						const int sy = pass == 1 ? (y + d + i_Height) % i_Height : y;
-						sum += source[((size_t)sy * i_Width + sx) * 4 + c];
-					}
-					rgba[((size_t)y * i_Width + x) * 4 + c] = (uint8_t)((sum + i_Blur) / (2 * i_Blur + 1));
-				}
-			}
-		}
-	}
-	return load_png(i_Dir / ("checker_" + std::to_string(i_Width) + "x" + std::to_string(i_Height) + "_" + std::to_string(i_Cells) +
-							 (i_Blur > 0 ? "_blur" + std::to_string(i_Blur) : std::string()) + ".png"),
+	return load_png(i_Dir / ("checker_" + std::to_string(i_Width) + "x" + std::to_string(i_Height) + "_" + std::to_string(i_Cells) + ".png"),
 					i_Width, i_Height, rgba);
 }
 
-matTexture* gtScene::WebTexture(const std::filesystem::path& i_Dir, int i_Size, int i_Strands, int i_Blur)
+matTexture* gtScene::WebTexture(const std::filesystem::path& i_Dir, int i_Size, int i_Strands)
 {
 	const int cell = i_Size / i_Strands;
 	std::vector<uint8_t> rgba((size_t)i_Size * i_Size * 4);
@@ -387,26 +364,7 @@ matTexture* gtScene::WebTexture(const std::filesystem::path& i_Dir, int i_Size, 
 			p[3] = 255;
 		}
 	}
-	for (int pass = 0; pass < 2 && i_Blur > 0; pass++)
-	{
-		const std::vector<uint8_t> source = rgba;
-		for (int y = 0; y < i_Size; y++)
-		{
-			for (int x = 0; x < i_Size; x++)
-			{
-				int sum = 0;
-				for (int d = -i_Blur; d <= i_Blur; d++)
-				{
-					const int sx = pass == 0 ? (x + d + i_Size) % i_Size : x;
-					const int sy = pass == 1 ? (y + d + i_Size) % i_Size : y;
-					sum += source[((size_t)sy * i_Size + sx) * 4];
-				}
-				uint8_t* p = &rgba[((size_t)y * i_Size + x) * 4];
-				p[0] = p[1] = p[2] = (uint8_t)((sum + i_Blur) / (2 * i_Blur + 1));
-			}
-		}
-	}
-	return load_png(i_Dir / ("web_" + std::to_string(i_Size) + "_" + std::to_string(i_Strands) + "_blur" + std::to_string(i_Blur) + ".png"),
+	return load_png(i_Dir / ("web_" + std::to_string(i_Size) + "_" + std::to_string(i_Strands) + ".png"),
 					i_Size, i_Size, rgba);
 }
 

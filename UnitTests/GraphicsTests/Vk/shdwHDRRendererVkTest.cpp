@@ -408,7 +408,7 @@ namespace
 			{
 				if (!i_Buffer.m_bOn)
 					return;
-				o_pTexture = io_Builder.Keep(gtScene::CheckerTexture(i_Dir, 128, 128, cells++, 4));
+				o_pTexture = io_Builder.Keep(gtScene::CheckerTexture(i_Dir, 128, 128, cells++));
 				o_Op = i_Buffer.m_Op;
 				o_Intensity = i_Buffer.m_Intensity;
 			};

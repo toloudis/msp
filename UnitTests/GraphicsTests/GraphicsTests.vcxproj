@@ -116,6 +116,7 @@
     <ClCompile Include="Dx11\gtD3D11.cpp" />
     <ClCompile Include="Vk\fxEffectVkReflectionTest.cpp" />
     <ClCompile Include="Vk\vkdPipelineCacheTest.cpp" />
+    <ClCompile Include="Vk\vkdAnisotropicTest.cpp" />
     <ClCompile Include="Vk\vkdContextTest.cpp" />
     <ClCompile Include="Vk\fxEffectVkTest.cpp" />
     <ClCompile Include="Vk\effPlainEffectVkTest.cpp" />
@@ -178,6 +179,11 @@
     <!-- Test shaders: VSMain and PSMain of each, compiled to SPIR-V with GraphicsVulkan's
          options into headers g_<name>VS / g_<name>PS ($(IntDir)<name>VS.h, <name>PS.h) -->
     <CustomBuild Include="Vk\Shaders\gtBindingProto.hlsl" />
+    <!-- also pixel shaders PSLod and PSDeriv -->
+    <CustomBuild Include="Vk\Shaders\gtAniso.hlsl">
+      <Command>$(GtDxc) -T vs_6_0 -E VSMain -Vn g_%(Filename)VS -Fh "$(IntDir)%(Filename)VS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -T ps_6_0 -E PSMain -Vn g_%(Filename)PS -Fh "$(IntDir)%(Filename)PS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -T ps_6_0 -E PSLod -Vn g_%(Filename)LodPS -Fh "$(IntDir)%(Filename)LodPS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -T ps_6_0 -E PSDeriv -Vn g_%(Filename)DerivPS -Fh "$(IntDir)%(Filename)DerivPS.h" "%(FullPath)"</Command>
+      <Outputs>$(IntDir)%(Filename)VS.h;$(IntDir)%(Filename)PS.h;$(IntDir)%(Filename)LodPS.h;$(IntDir)%(Filename)DerivPS.h</Outputs>
+    </CustomBuild>
     <CustomBuild Include="Vk\Shaders\gtSolid.hlsl" />
     <CustomBuild Include="Vk\Shaders\gtTexel.hlsl" />
     <CustomBuild Include="Vk\Shaders\gtTexel3D.hlsl">

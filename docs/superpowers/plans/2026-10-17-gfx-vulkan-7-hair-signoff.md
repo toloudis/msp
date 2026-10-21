@@ -67,6 +67,8 @@ Also:
    - If the gap is ours: fix it, and use the normal tolerance.
    - If it is the driver: a documented, per-feature tolerance for textured frames ("loosen per feature only with a written reason", spec), with the raw test as evidence.
 
+   **Outcome (Task 1):** D3D11 and Vulkan compute a different level of detail for textures seen at an angle (roadmap, "Open investigations"). The owner ruled it an API difference: tests use hard textures with a documented tolerance, and Task 9 gives gfxcompare a higher tolerance for textured frames (a perceptual metric such as FLIP is an option).
+
 ## Global Constraints
 
 Plan 6's Global Constraints apply unchanged:
@@ -324,7 +326,7 @@ This follows the roadmap's investigation plan ("Open investigations"), which is 
   - supersampling 2;
   - every `-capPasses` pass (296–300).
 
-  Expected: every frame within the tolerance Task 1 settled on (decision 6). Any frame outside it is investigated, and a GraphicsTests case is added or fixed, before sign-off.
+  First give gfxcompare its tolerance for the level-of-detail difference (decision 6's outcome), measured on these runs and documented in its README. Expected: every frame within the tolerance Task 1 settled on (decision 6). Any frame outside it is investigated, and a GraphicsTests case is added or fixed, before sign-off.
 - [ ] **Step 3: Timing runs.** No validation; `-gfxProfile`; the machine otherwise idle; `testTESS` and `testAO`, 296–315, each backend twice. Report the median of the two:
   - per-pass CPU and GPU;
   - frame CPU and GPU;

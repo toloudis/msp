@@ -28,14 +28,18 @@
 **      pixels over 1/255):
 **
 **        case                       measured                reason
-**        every case                 max 21/255, 0.154% over the material
-**            shaders' default sampler is anisotropic, and anisotropic
-**            filtering is the driver's own: D3D11 and Vulkan differ where a
-**            texture changes quickly, on the same GPU with the same sampler
-**            settings. Hard checker edges gave up to 35/255 over 2%, so the
-**            checkers are softened (c_CheckerBlur); with trilinear filtering
-**            put in its place on both backends (an experiment, not kept)
-**            every case matched within 1/255. Allowed: 24/255, 0.2%.
+**        every case                 max 52/255, 2.03% over  mip selection:
+**            the checker is hard-edged (textures are never softened to hide
+**            a difference), and on a texture seen at an angle D3D11 and
+**            Vulkan compute a different level of detail (the driver's, per
+**            API: vkdAnisotropicTest; head-on they're identical). Where the
+**            mip level differs the hard edge differs. Mean error stays under
+**            0.12/255. Allowed: 64/255, 2.5% (c_MaxErr, c_MaxPctOver).
+**        SpecularFresnel            max 228/255 on 4-5       the same, at the
+**            (and tess_off/on)      isolated pixels         sphere tops: the
+**            checker is minified so much that neighbouring pixels range
+**            over 33..255, and a different mip level lands a pixel in
+**            another cell. Allowed: any max, 2.5% (c_MaxErrIsolated).
 **        Skin, BlinnSkin, testtess  DX11 draws nothing     their PTess
 **            tess_on (no coverage)  (Vulkan neither)       passes don't draw
 **            on DX11 (Skin and BlinnSkin's has a vertex shader only, from
@@ -104,11 +108,12 @@ namespace
 	//	material parser renames, the default material, the tessellation test)
 	const char* const c_Hidden[] = { "Skin.fx", "BlinnSkin.fx", "Default.fx", "testtess.fx" };
 
-	//	The checkers' edges are softened over this many texels, and the
-	//	tolerance is the exception table's (anisotropic filtering)
-	const int c_CheckerBlur = 8;
-	const float c_MaxErr = 24 / 255.0f;
-	const float c_MaxPctOver = 0.2f;
+	//	The exception table's tolerance (mip selection), and the materials
+	//	whose isolated pixels may differ by any amount
+	const float c_MaxErr = 64 / 255.0f;
+	const float c_MaxErrIsolated = 1.0f;
+	const float c_MaxPctOver = 2.5f;
+	const std::set<std::string> c_IsolatedFlips = { "SpecularFresnel.fx" };
 
 	//	Their tessellated pass draws nothing on DX11 (see the exception table)
 	const std::set<std::string> c_NoTessellatedDraw = { "Skin.fx", "BlinnSkin.fx", "testtess.fx" };
@@ -196,7 +201,7 @@ namespace
 			io_Builder.LightsCastShadows(true);
 			const gtMesh sphere = gtScene::Sphere(16, 32);
 			const gtScene::Values values[3] = { gtScene::e_NonDefault, gtScene::e_Zero, gtScene::e_Huge };
-			matTexture* checker = io_Builder.Keep(gtScene::CheckerTexture(i_Dir, 128, 128, 8, c_CheckerBlur));
+			matTexture* checker = io_Builder.Keep(gtScene::CheckerTexture(i_Dir, 128, 128, 8));
 			matTexture* normals = io_Builder.Keep(gtScene::NormalTexture(i_Dir, 128, 4));
 			matTexture* heights = i_bDisplace ? io_Builder.Keep(gtScene::HeightTexture(i_Dir, 128, 3)) : NULL;
 			for (int row = 0; row < 3; row++)
@@ -240,12 +245,12 @@ namespace
 	}
 
 	//	Shadow maps rendered before each frame; the exception table's tolerance
-	gtRenderOptions options(bool i_bTessellation = true)
+	gtRenderOptions options(const std::string& i_Shader, bool i_bTessellation = true)
 	{
 		gtRenderOptions o;
 		o.m_BeforeFrame = [](gtSceneBuilder& io_Builder) { io_Builder.RenderTargets(); };
 		o.m_Prefs = [i_bTessellation](g3dPrefs::g3dRenderPrefs& p) { p.m_bUseHardwareTessellation = i_bTessellation; };
-		o.m_MaxErr = c_MaxErr;
+		o.m_MaxErr = c_IsolatedFlips.count(i_Shader) ? c_MaxErrIsolated : c_MaxErr;
 		o.m_MaxPctOver = c_MaxPctOver;
 		return o;
 	}
@@ -264,7 +269,7 @@ TEST(shdwMaterialsVkTest, EveryMaterialMatchesDX11)
 		return;
 	std::vector<gtCase> cases;
 	for (const Material& m : list)
-		cases.push_back({ case_name(m.m_Shader), material_scene(m.m_Shader, false), options() });
+		cases.push_back({ case_name(m.m_Shader), material_scene(m.m_Shader, false), options(m.m_Shader) });
 	gtExpectSameImages("EveryMaterialMatchesDX11", cases);
 }
 
@@ -278,8 +283,8 @@ TEST(shdwMaterialsVkTest, TessellatedMaterialsMatchDX11)
 	{
 		if (!m.m_bTessellates)
 			continue;
-		cases.push_back({ case_name(m.m_Shader) + "/tess_off", material_scene(m.m_Shader, true), options(false) });
-		gtRenderOptions on = options(true);
+		cases.push_back({ case_name(m.m_Shader) + "/tess_off", material_scene(m.m_Shader, true), options(m.m_Shader, false) });
+		gtRenderOptions on = options(m.m_Shader, true);
 		on.m_bCheckCoverage = c_NoTessellatedDraw.count(m.m_Shader) == 0;
 		cases.push_back({ case_name(m.m_Shader) + "/tess_on", material_scene(m.m_Shader, true), on });
 	}
