@@ -97,6 +97,12 @@
 #include "Input/in/inDeviceMgr.hpp"
 #include "Input/in/inPackage.hpp"
 #include "Support/pyth/pythUtil.hpp"
+#ifndef RLYR_PASSESOBJECT_HPP
+#include "Support/rlyr/rlyrPassesObject.hpp"
+#endif
+#ifndef RLYR_RENDERLAYERMGR_HPP
+#include "Support/rlyr/rlyrRenderLayerMgr.hpp"
+#endif
 #include "Tool/api3d/api3dLightMgr.hpp"
 #include "Tool/api3d/api3dScene.hpp"
 #include "Tool/api3d/api3dTargetRendererMgr.hpp"
@@ -470,6 +476,73 @@ void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 		{
 			DBG_LOG( "   Command-line CAPTURE-OUTPUTPATHROOT " << value );
 			captRenderOutputDataUtil::SetCaptureOutputDirectoryRoot( itString(value.c_str()) );
+			break;
+		}
+		case mainCommandLine::e_CapSampling:
+		{
+			DBG_LOG( "   Command-line CAPTURE-SAMPLING " << value );
+			captRenderOutputDataUtil::SetCaptureSampling(itStringUtil::GetInt(itString(value.c_str())));
+			break;
+		}
+		case mainCommandLine::e_CapJitter:
+		{
+			DBG_LOG( "   Command-line CAPTURE-JITTER " << value );
+			int filter = 0;
+			float width = 0.0f;
+			if ( mainCommandLine::SplitJitter( value, filter, width ) )
+			{
+				captRenderOutputDataUtil::SetJitteredSampling( true );
+				captRenderOutputDataUtil::SetJitterFilter( filter, width );
+			}
+			else
+			{
+				captRenderOutputDataUtil::SetJitteredSampling( false );
+			}
+			break;
+		}
+		case mainCommandLine::e_CapMotionSamples:
+		{
+			DBG_LOG( "   Command-line CAPTURE-MOTIONSAMPLES " << value );
+			captRenderOutputDataUtil::SetMotionSamples(itStringUtil::GetInt(itString(value.c_str())));
+			break;
+		}
+		case mainCommandLine::e_CapPasses:
+		{
+			DBG_LOG( "   Command-line CAPTURE-PASSES " << value );
+			//	the scene's pass names, by pass type
+			std::vector<std::string> pass_names;
+			for ( int pass = rlyrPassesObject::e_Beauty; pass <= rlyrPassesObject::e_RmanColorBleed; ++pass )
+			{
+				pass_names.push_back( itStringUtil::GetStdString(
+					captRenderOutputDataUtil::GetRenderPassName( static_cast<rlyrPassesObject::ePassType>(pass) ) ) );
+			}
+			std::vector<int> passes;
+			std::string unknown;
+			if ( !mainCommandLine::MatchPasses( value, pass_names, passes, unknown ) )
+			{
+				DBG_LOG( "   Command-line -capPasses: unknown pass " << unknown << "; ignored" );
+				break;
+			}
+			std::vector<rlyrPassesObject::ePassType> pass_types;
+			for ( size_t i = 0; i < passes.size(); ++i )
+			{
+				pass_types.push_back( static_cast<rlyrPassesObject::ePassType>(passes[i]) );
+			}
+			for ( int layer = 0; layer < rlyrRenderLayerMgr::GetNumRenderLayers(); ++layer )
+			{
+				rlyrPassesObject* layer_passes = rlyrRenderLayerMgr::GetLayerRenderPasses(
+					rlyrRenderLayerMgr::GetLayerName( layer ) );
+				if ( layer_passes )
+				{
+					layer_passes->SetPasses( pass_types );
+				}
+			}
+			break;
+		}
+		case mainCommandLine::e_CapHardwareAA:
+		{
+			DBG_LOG( "   Command-line CAPTURE-HARDWAREAA " << value );
+			captRenderOutputDataUtil::SetHardwareAA( value == "on" );
 			break;
 		}
 		case mainCommandLine::e_New:

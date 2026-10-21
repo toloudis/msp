@@ -43,8 +43,14 @@ python Tools/gfxcompare/gfxcompare.py run --exe MachStudio/MachStudio-x64/MachSt
   5000"). Release builds validate only with
   `-gfxValidation`; without it RenderNode prints `Vulkan validation: off`
   and the report says so.
-- `--format PNG|PFM`, `--width`, `--height` set the capture; otherwise the
-  scene's own capture settings are used. The frames go to `out\cmp\a` and
+- `--format PNG|PFM|BMP|JPG|TIF`, `--width`, `--height` set the capture;
+  otherwise the scene's own capture settings are used.
+- `--cap-args "..."` adds capture settings to both renders, after `-render`
+  (they are scene settings, which loading the scene would replace), for
+  example `--cap-args "-capSampling 3 -capJitter gaussian 1.5"` or
+  `--cap-args "-capPasses BTY,Z,NOR"` (see MachStudio's `-help`). With
+  several passes each frame number has one file per pass; the pass name is
+  in the file name, so they are matched by name as usual. The frames go to `out\cmp\a` and
   `out\cmp\b`, each with its `timing.csv`.
 - `--start-frame N` / `--end-frame N` render only those frames (absolute
   frame numbers, as in the file names; both included), through RenderNode's
@@ -75,6 +81,7 @@ A frame passes when its largest per-channel error is at most `--max-err`
 (default 2, in 1/255 units) and at most `--max-pct-over` percent (default
 0.1) of its pixels have an error above `--pixel-err` (default 1/255).
 Frames are matched by file name; a frame missing from either side fails.
+Frames can be PNG (8 or 16 bit), PFM, BMP, JPG or TIFF.
 A frame's number is the digits at the end of its file name.
 Difference images are white at 8/255 error.
 

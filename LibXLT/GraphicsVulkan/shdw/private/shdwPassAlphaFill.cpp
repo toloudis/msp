@@ -465,6 +465,14 @@ int shdwPassAlphaFill::RenderNode(const sNodePlusState& i_Node, g3dRenderStateTr
 	
 	fxEffect* pEffectDX = dynamic_cast<effShaderBaseVk*>(pEffect)->GetFxEffect();
 
+	// an opaque node: no transparency. The effect is shared with
+	// RenderTransparentNode, which sets these for each transparent node;
+	// left as they were, ZFill alpha-tested this node against the last
+	// one's transparency map (even after that texture was released)
+	pEffectDX->GetVariableByName("hasTransparencyMap")->AsScalar()->SetBool(false);
+	pEffectDX->GetVariableByName("transparencyMap")->AsShaderResource()->SetResource(NULL);
+	pEffectDX->GetVariableByName("g_transparency")->AsScalar()->SetFloat(1.0f);
+
 	// e_Environment is a different type of ambient pass that is ambient-only.
 	pEffect->SetTechnique(m_bAA ? "ZFillRGBA" : "ZFill");
 

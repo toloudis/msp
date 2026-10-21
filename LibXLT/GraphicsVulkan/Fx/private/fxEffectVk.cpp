@@ -140,6 +140,17 @@ namespace gvk
 			o_Error = i_Desc.m_Hlsl + ": " + o_Error;
 			return nullptr;
 		}
+		//	A bound image destroyed before the effect is unbound (it reads as
+		//	the null texture), where D3D11's view would keep it alive
+		if (i_pDevice)
+		{
+			fxEffectVk* pEffect = effect.get();
+			effect->m_pDevice = i_pDevice;
+			effect->m_ImageDestroyHook = i_pDevice->AddImageDestroyHook([pEffect](const vkdImage* i_pImage)
+			{
+				pEffect->forget_image(i_pImage);
+			});
+		}
 		return effect;
 	}
 
@@ -147,6 +158,10 @@ namespace gvk
 	//------------------------------------------------------------------------
 	fxEffectVk::~fxEffectVk()
 	{
+		if (m_pDevice)
+		{
+			m_pDevice->RemoveImageDestroyHook(m_ImageDestroyHook);
+		}
 	}
 
 	//------------------------------------------------------------------------
@@ -685,6 +700,24 @@ namespace gvk
 		const ConstantBuffer& cb = m_ConstantBuffers[i_Constant.m_Buffer];
 		uint32_t bytes = (i_Bytes < i_Constant.m_Size) ? i_Bytes : i_Constant.m_Size;
 		memcpy(o_pData, &cb.m_Data[i_Constant.m_Offset], bytes);
+	}
+
+	void fxEffectVk::forget_image(const vkdImage* i_pImage)
+	{
+		for (vkdImage*& image : m_Resources)
+		{
+			if (image == i_pImage)
+			{
+				image = nullptr;
+			}
+		}
+		for (vkdImage*& image : m_UnorderedAccess)
+		{
+			if (image == i_pImage)
+			{
+				image = nullptr;
+			}
+		}
 	}
 
 	vkdImage* fxEffectVk::GetResource(const Resource& i_Resource) const

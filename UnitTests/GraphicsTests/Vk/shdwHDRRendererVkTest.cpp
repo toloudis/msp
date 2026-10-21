@@ -14,6 +14,8 @@
 **      viewer layers, one renderer used at several sizes in turn, and
 **      the camera's render-pass buffers (beauty, reflection with a file
 **      reflection, AO in place of AO volumes or SSAO; Add and Multiply).
+**      Also (Vulkan only) sharing the HDR renderer's buffers with every
+**      type, as MachStudio's capture thread and render view do.
 **
 **      The lights cast shadows, as MachStudio's do (the lit pass draws only
 **      those). Plan 4b's built-in Phong row is drawn by the transparent pass
@@ -65,6 +67,12 @@
 #endif
 #ifndef CAM_CAMERA_HPP
 #include "Graphics/Cam/camCamera.hpp"
+#endif
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
+#ifndef GVK_SHDW_SCENERENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwSceneRendererVk.hpp"
 #endif
 
 #include <gtest/gtest.h>
@@ -493,4 +501,74 @@ TEST(shdwHDRRendererVkTest, PassBuffersMatchDX11)
 						pass_buffer_scene(fileRefl), pass_buffer_prefs(), 256 * 256 / 500);
 	gtExpectEffectShows("PassBuffersMatchDX11/ao_volumes", pass_buffer_scene(ao), pass_buffer_prefs(true, true),
 						pass_buffer_scene(none), pass_buffer_prefs(true, true), c_Min);
+}
+
+//	MachStudio's capture thread (cptrRenderThread) and render view
+//	(tma3dRenderView) share the HDR renderer's buffers with each renderer
+//	they make; every type the creator makes is a shdw renderer, as on DX11,
+//	but the opacity map renderer, whose forward stand-in (Plan 7) has no
+//	buffers and is left alone. Each partner renders once with the shared
+//	buffers. A partner of any other class asserts, as DX11's.
+TEST(shdwHDRRendererVkTest, ShareBuffersWithEveryType)
+{
+	const g3dSceneRendererTypes::RendererType types[] =
+	{
+		g3dSceneRendererTypes::e_Default, g3dSceneRendererTypes::e_HDR,
+		g3dSceneRendererTypes::e_AmbientOcclusion, g3dSceneRendererTypes::e_Depth,
+		g3dSceneRendererTypes::e_ShadowMask, g3dSceneRendererTypes::e_Materials,
+		g3dSceneRendererTypes::e_VelocityMap, g3dSceneRendererTypes::e_Normals,
+		g3dSceneRendererTypes::e_IlluminationOnly, g3dSceneRendererTypes::e_DirtyMatte,
+		g3dSceneRendererTypes::e_Wireframe, g3dSceneRendererTypes::e_ReflectionOnly,
+		g3dSceneRendererTypes::e_GlobalIllumination, g3dSceneRendererTypes::e_Glow,
+	};
+	gtTempDir dir;
+	gtBackend::Run(gtBackend::e_Vulkan, [&]()
+	{
+		gtPrefsScope prefs_scope;
+		std::unique_ptr<g3dSceneRenderer> hdr(g3dSceneRendererCreate::CreateHDRRenderer());
+		gvk::shdwSceneRendererVk* hdrShdw = dynamic_cast<gvk::shdwSceneRendererVk*>(hdr.get());
+		ASSERT_TRUE(hdrShdw != NULL);
+
+		for (g3dSceneRendererTypes::RendererType type : types)
+		{
+			SCOPED_TRACE(type);
+			gtRenderOptions options;
+			options.m_CreateRenderer = [&]()
+			{
+				g3dSceneRenderer* partner = g3dSceneRendererCreate::CreateRenderer(type);
+				gvk::shdwSceneRendererVk* shdw = dynamic_cast<gvk::shdwSceneRendererVk*>(partner);
+				EXPECT_TRUE(shdw != NULL);
+				hdr->ShareBuffers(partner);
+				if (shdw)
+					EXPECT_EQ(shdw->GetFrameBuffer(), hdrShdw->GetFrameBuffer());
+				return partner;
+			};
+			gtRenderScene(lit_spheres, dir.GetPath(), options);
+		}
+
+		{	//	the opacity map renderer's stand-in
+			SCOPED_TRACE("opacity map");
+			gtRenderOptions options;
+			options.m_CreateRenderer = [&]()
+			{
+				g3dSceneRenderer* partner = g3dSceneRendererCreate::CreateOpacityMapRenderer(NULL);
+				EXPECT_TRUE(dynamic_cast<gvk::shdwSceneRendererVk*>(partner) == NULL);
+				hdr->ShareBuffers(partner);
+				return partner;
+			};
+			gtRenderScene(lit_spheres, dir.GetPath(), options);
+		}
+
+	#if ENV_BUILD == ENV_DEBUGBUILD
+		{	//	not a shdw renderer: asserts (DBG_ASSERT is compiled out of Release)
+			static int s_Asserts;
+			s_Asserts = 0;
+			dbgMsg::AssertHandler previous = dbgMsg::SetAssertHandler([](const std::string&) { ++s_Asserts; });
+			std::unique_ptr<g3dSceneRenderer> cube(g3dSceneRendererCreate::CreateCubeMapRenderer(NULL, NULL, false));
+			hdr->ShareBuffers(cube.get());
+			dbgMsg::SetAssertHandler(previous);
+			EXPECT_EQ(1, s_Asserts);
+		}
+	#endif
+	});
 }

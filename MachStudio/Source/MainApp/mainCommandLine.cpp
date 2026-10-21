@@ -9,7 +9,9 @@
 #ifndef MAIN_COMMANDLINE_HPP
 #include "MainApp/mainCommandLine.hpp"
 #endif
+#include <algorithm>
 #include <cctype>
+#include <cstdlib>
 
 #ifndef APP_COMMANDLINE_HPP
 #include "Core/App/appCommandLine.hpp"
@@ -52,6 +54,220 @@ namespace
 	bool is_space(char i_Char)
 	{
 		return i_Char == ' ' || i_Char == '\t' || i_Char == '\n' || i_Char == '\r';
+	}
+
+	std::string to_lower(const std::string& i_Text)
+	{
+		std::string lower(i_Text);
+		for (char& c : lower)
+		{
+			c = static_cast<char>(tolower(static_cast<unsigned char>(c)));
+		}
+		return lower;
+	}
+
+	//	-capJitter's filters, in captRenderOutputData::eFilterFunc's order,
+	//	spelled as its enum tags
+	const char* const c_JitterFilters[] =
+	{
+		"Box", "Gaussian", "Mitchell", "Triangle", "Sinc", "Lanczos", "Blackman-Harris", "Catmull-Rom",
+	};
+	const int c_NumJitterFilters = sizeof(c_JitterFilters) / sizeof(c_JitterFilters[0]);
+
+	int find_jitter_filter(const std::string& i_Name)
+	{
+		const std::string lower = to_lower(i_Name);
+		for (int i = 0; i < c_NumJitterFilters; ++i)
+		{
+			if (lower == to_lower(c_JitterFilters[i]))
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	//	the whole token must be the number
+	bool parse_int(const std::string& i_Text, int& o_Value)
+	{
+		if (i_Text.empty())
+		{
+			return false;
+		}
+		char* end = NULL;
+		long value = strtol(i_Text.c_str(), &end, 10);
+		if (*end != '\0')
+		{
+			return false;
+		}
+		o_Value = static_cast<int>(value);
+		return true;
+	}
+	bool parse_float(const std::string& i_Text, float& o_Value)
+	{
+		if (i_Text.empty())
+		{
+			return false;
+		}
+		char* end = NULL;
+		o_Value = strtof(i_Text.c_str(), &end);
+		return *end == '\0';
+	}
+
+	//	splits a comma-separated list; false if an item is empty
+	bool split_list(const std::string& i_List, std::vector<std::string>& o_Items)
+	{
+		o_Items.clear();
+		size_t start = 0;
+		for (;;)
+		{
+			size_t comma = i_List.find(',', start);
+			std::string item = i_List.substr(start, comma == std::string::npos ? std::string::npos : comma - start);
+			size_t first = item.find_first_not_of(" \t");
+			if (first == std::string::npos)
+			{
+				return false;
+			}
+			item = item.substr(first, item.find_last_not_of(" \t") - first + 1);
+			o_Items.push_back(item);
+			if (comma == std::string::npos)
+			{
+				return true;
+			}
+			start = comma + 1;
+		}
+	}
+
+	//------------------------------------------------------------------------
+	//	parse_capture_flag - the capture flags whose values are checked
+	//	while parsing (-capSampling, -capJitter, -capMotionSamples,
+	//	-capPasses, -capHardwareAA). False if i_Tokens[io_Index] isn't one
+	//	of them; else io_Index moves past the values, and a missing or bad
+	//	value drops the flag with a warning.
+	//------------------------------------------------------------------------
+	bool parse_capture_flag(const std::vector<std::string>& i_Tokens, size_t& io_Index, mainCommandLine& io_Result)
+	{
+		const std::string& token = i_Tokens[io_Index];
+		mainCommandLine::ActionKind kind;
+		if (appCommandLine::IsFlag(token, "capSampling"))
+		{
+			kind = mainCommandLine::e_CapSampling;
+		}
+		else if (appCommandLine::IsFlag(token, "capJitter"))
+		{
+			kind = mainCommandLine::e_CapJitter;
+		}
+		else if (appCommandLine::IsFlag(token, "capMotionSamples"))
+		{
+			kind = mainCommandLine::e_CapMotionSamples;
+		}
+		else if (appCommandLine::IsFlag(token, "capPasses"))
+		{
+			kind = mainCommandLine::e_CapPasses;
+		}
+		else if (appCommandLine::IsFlag(token, "capHardwareAA"))
+		{
+			kind = mainCommandLine::e_CapHardwareAA;
+		}
+		else
+		{
+			return false;
+		}
+
+		//	-capJitter takes "off" or a filter and a width
+		size_t num_values = 1;
+		if (kind == mainCommandLine::e_CapJitter
+			&& io_Index + 1 < i_Tokens.size()
+			&& to_lower(i_Tokens[io_Index + 1]) != "off")
+		{
+			num_values = 2;
+		}
+		if (io_Index + num_values >= i_Tokens.size())
+		{
+			io_Result.m_Warnings.push_back("Command-line " + token + " has no value; ignored");
+			io_Index = i_Tokens.size() - 1;
+			return true;
+		}
+		const std::string& value = i_Tokens[io_Index + 1];
+		const std::string& value2 = num_values == 2 ? i_Tokens[io_Index + 2] : std::string();
+		io_Index += num_values;
+
+		std::string action_value;
+		std::string problem;
+		int number = 0;
+		switch (kind)
+		{
+		case mainCommandLine::e_CapSampling:
+			if (!parse_int(value, number) || number < 1 || number > 8)
+			{
+				problem = "must be 1 to 8";
+			}
+			action_value = std::to_string(number);
+			break;
+		case mainCommandLine::e_CapMotionSamples:
+			if (!parse_int(value, number) || number < 1 || number > 16)
+			{
+				problem = "must be 1 to 16";
+			}
+			action_value = std::to_string(number);
+			break;
+		case mainCommandLine::e_CapHardwareAA:
+			action_value = to_lower(value);
+			if (action_value != "on" && action_value != "off")
+			{
+				problem = "must be on or off";
+			}
+			break;
+		case mainCommandLine::e_CapJitter:
+			if (num_values == 1)
+			{
+				action_value = "off";
+			}
+			else
+			{
+				int filter = find_jitter_filter(value);
+				float width = 0.0f;
+				if (filter < 0)
+				{
+					problem = "unknown filter (use Box, Gaussian, Mitchell, Triangle, Sinc, Lanczos, Blackman-Harris or Catmull-Rom)";
+				}
+				else if (!parse_float(value2, width) || !(width > 0.0f && width <= 8.0f))
+				{
+					problem = "the width must be above 0 and at most 8";
+				}
+				else
+				{
+					action_value = std::string(c_JitterFilters[filter]) + " " + value2;
+				}
+			}
+			break;
+		case mainCommandLine::e_CapPasses:
+		{
+			std::vector<std::string> names;
+			if (!split_list(value, names))
+			{
+				problem = "a pass name is empty";
+			}
+			for (size_t i = 0; i < names.size(); ++i)
+			{
+				action_value += (i == 0 ? "" : ",") + names[i];
+			}
+			break;
+		}
+		default:
+			break;
+		}
+
+		if (problem.empty())
+		{
+			io_Result.m_Actions.push_back(make_action(kind, action_value));
+		}
+		else
+		{
+			io_Result.m_Warnings.push_back("Command-line " + token + " " + value + (value2.empty() ? "" : " " + value2)
+										   + ": " + problem + "; ignored");
+		}
+		return true;
 	}
 
 	//------------------------------------------------------------------------
@@ -156,6 +372,11 @@ mainCommandLine mainCommandLine::Parse(const std::string& i_Line)
 		}
 		if (is_value_flag)
 		{
+			continue;
+		}
+		if (parse_capture_flag(tokens, i, result))
+		{
+			parsed_any_data = true;
 			continue;
 		}
 
@@ -306,6 +527,25 @@ Rendering
   -capOutputPath <tags>      output folder, absolute or relative to the
                              output root; may use the same tags
   -capOutputPathRoot <dir>   output root folder for relative output folders
+  -capSampling <n>           supersampling: n x n samples per pixel, 1 to 8
+                             (1 = none); how they are taken is -capJitter's
+  -capJitter off             take the samples on a regular grid (the frame
+                             is rendered n times the size and scaled down)
+  -capJitter <filter> <width>
+                             take jittered samples, accumulated with this
+                             filter (Box, Gaussian, Mitchell, Triangle, Sinc,
+                             Lanczos, Blackman-Harris or Catmull-Rom) and
+                             width in pixels (above 0, at most 8)
+  -capMotionSamples <n>      motion samples per frame, 1 to 16 (kept with
+                             the scene; renders ignore it for now, motion
+                             blur is turned off in the renderer)
+  -capPasses <pass,...>      render these passes, by the scene's pass names
+                             (by default BTY, DIFF, SPEC, AO, GI, Z, SHDW,
+                             ILLUM, NOR, MAT, WIRE, MTL, REFL, VEL, BLOOM,
+                             STAR, DOF, PREV, EMI, SPECENV, SPECLIT, DIFFENV,
+                             DIFFLIT, GLOW, COLBL), in every render layer;
+                             the others are turned off
+  -capHardwareAA on|off      the renderer's own antialiasing (HDR AA)
 
 Graphics
   -gfx dx11|vulkan           graphics backend; default dx11. If Vulkan can't
@@ -331,4 +571,60 @@ Start-up and other
   -version                   print the version
   -help                      print this list
 )";
+}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+bool mainCommandLine::SplitJitter(const std::string& i_Value, int& o_Filter, float& o_Width)
+{
+	size_t space = i_Value.rfind(' ');
+	if (space == std::string::npos)
+	{
+		return false;
+	}
+	int filter = find_jitter_filter(i_Value.substr(0, space));
+	float width = 0.0f;
+	if (filter < 0 || !parse_float(i_Value.substr(space + 1), width))
+	{
+		return false;
+	}
+	o_Filter = filter;
+	o_Width = width;
+	return true;
+}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+bool mainCommandLine::MatchPasses(const std::string& i_List, const std::vector<std::string>& i_PassNames,
+								  std::vector<int>& o_Passes, std::string& o_Unknown)
+{
+	o_Passes.clear();
+	o_Unknown.clear();
+	std::vector<std::string> names;
+	split_list(i_List, names);
+	for (const std::string& name : names)
+	{
+		const std::string lower = to_lower(name);
+		bool found = false;
+		for (size_t pass = 0; pass < i_PassNames.size(); ++pass)
+		{
+			if (!lower.empty() && lower == to_lower(i_PassNames[pass]))
+			{
+				found = true;
+				if (std::find(o_Passes.begin(), o_Passes.end(), static_cast<int>(pass)) == o_Passes.end())
+				{
+					o_Passes.push_back(static_cast<int>(pass));
+				}
+				break;
+			}
+		}
+		if (!found)
+		{
+			o_Passes.clear();
+			o_Unknown = name;
+			return false;
+		}
+	}
+	std::sort(o_Passes.begin(), o_Passes.end());
+	return true;
 }

@@ -97,7 +97,7 @@ namespace gvk
 		//	at the same address (is_bound) and begin rendering with the old
 		//	one's views. Rendering into it ends first (its views are freed only
 		//	once the GPU is done with what was recorded).
-		m_Device.SetImageDestroyHook([this](const vkdImage* i_pImage)
+		m_ImageDestroyHook = m_Device.AddImageDestroyHook([this](const vkdImage* i_pImage)
 		{
 			if (!is_bound(i_pImage))
 			{
@@ -124,7 +124,7 @@ namespace gvk
 
 	vkdContext::~vkdContext()
 	{
-		m_Device.SetImageDestroyHook(std::function<void(const vkdImage*)>());
+		m_Device.RemoveImageDestroyHook(m_ImageDestroyHook);
 		m_Device.SetRecordingHook(std::function<void()>());
 		std::lock_guard<std::recursive_mutex> lock(m_Device.StreamLock());
 		if (m_bRendering && m_Commands && m_CommandsValue == m_Device.PendingValue())

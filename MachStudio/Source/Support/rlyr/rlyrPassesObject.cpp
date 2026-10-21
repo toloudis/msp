@@ -10,6 +10,8 @@
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
 #include "Graphics/g3d/g3dPrefs.hpp"
 
+#include <algorithm>
+
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
 rlyrPassesObject::rlyrPassesObject()
@@ -161,6 +163,37 @@ void rlyrPassesObject::CollectPasses(std::vector<rlyrPassesObject::ePassType>& o
 		o_Passes.push_back(e_Glow);
 	if (m_Data.m_RmanColorBleed.GetValue())
 		o_Passes.push_back(e_RmanColorBleed);
+}
+
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+void rlyrPassesObject::SetPasses(const std::vector<rlyrPassesObject::ePassType>& i_Passes)
+{
+	m_Data.m_Beauty.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_Beauty) != i_Passes.end());
+	m_Data.m_Diffuse.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_Diffuse) != i_Passes.end());
+	m_Data.m_Specular.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_Specular) != i_Passes.end());
+	m_Data.m_AOOnly.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_AOOnly) != i_Passes.end());
+	m_Data.m_Depth.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_Depth) != i_Passes.end());
+	m_Data.m_ShadowMask.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_ShadowMask) != i_Passes.end());
+	m_Data.m_IlluminationOnly.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_IlluminationOnly) != i_Passes.end());
+	m_Data.m_Normals.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_Normals) != i_Passes.end());
+	m_Data.m_DirtyMatte.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_DirtyMatte) != i_Passes.end());
+	m_Data.m_Wireframe.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_Wireframe) != i_Passes.end());
+	m_Data.m_Materials.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_Materials) != i_Passes.end());
+	m_Data.m_ReflectionsOnly.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_ReflectionsOnly) != i_Passes.end());
+	m_Data.m_Velocity.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_Velocity) != i_Passes.end());
+	m_Data.m_Bloom.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_Bloom) != i_Passes.end());
+	m_Data.m_Star.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_Star) != i_Passes.end());
+	m_Data.m_CameraDOF.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_CameraDOF) != i_Passes.end());
+	m_Data.m_Preview.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_Preview) != i_Passes.end());
+	m_Data.m_Emissive.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_Emissive) != i_Passes.end());
+	m_Data.m_SpecEnv.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_SpecEnv) != i_Passes.end());
+	m_Data.m_SpecLit.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_SpecLit) != i_Passes.end());
+	m_Data.m_DiffEnv.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_DiffEnv) != i_Passes.end());
+	m_Data.m_DiffLit.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_DiffLit) != i_Passes.end());
+	m_Data.m_GI.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_GlobalIllumination) != i_Passes.end());
+	m_Data.m_Glow.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_Glow) != i_Passes.end());
+	m_Data.m_RmanColorBleed.SetValue(std::find(i_Passes.begin(), i_Passes.end(), e_RmanColorBleed) != i_Passes.end());
 }
 
 //--------------------------------------------------------------------

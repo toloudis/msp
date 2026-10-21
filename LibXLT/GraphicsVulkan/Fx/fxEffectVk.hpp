@@ -257,6 +257,7 @@ namespace gvk
 		bool check_samplers(std::string& o_Error) const;
 		uint32_t sampler_index(int i_Sampler);
 		void apply_defaults();
+		void forget_image(const vkdImage* i_pImage);	// unbinds an image being destroyed
 
 		fxEffectDesc m_Desc;
 		std::vector<std::string> m_BoolNames;
@@ -272,5 +273,7 @@ namespace gvk
 		std::vector<uint32_t> m_SamplerHeap;					// vkdBindings sampler index, by index (created on first Apply)
 		std::string m_Name;										// for logs and debug names
 		std::map<std::string, int> m_SamplerNames;
+		vkdDevice* m_pDevice = nullptr;							// the device it was made on (none for reflection only)
+		int m_ImageDestroyHook = 0;								// its vkdDevice::AddImageDestroyHook id
 	};
 }

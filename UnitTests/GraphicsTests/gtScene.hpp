@@ -109,6 +109,7 @@ namespace gtScene
 	//	name); a test failure if it has none
 	void SetFloat(matMaterial* io_pMaterial, const char* i_pName, float i_Value);
 	void SetColor(matMaterial* io_pMaterial, const char* i_pName, const maFloatRGBA& i_Value);
+	void SetTexture(matMaterial* io_pMaterial, const char* i_pName, matTexture* i_pTexture);
 
 	//	An RGBA8 i_Width x i_Height texture of i_Cells x i_Cells coloured
 	//	checks (a PNG written to i_Dir, loaded through matTextureMgr, mips
@@ -117,6 +118,13 @@ namespace gtScene
 	//	driver's own and differs between D3D11 and Vulkan on the same GPU
 	//	(up to ~35/255 at the edges). Release with matTextureMgr::ReleaseTexture.
 	matTexture* CheckerTexture(const std::filesystem::path& i_Dir, int i_Width, int i_Height, int i_Cells, int i_Blur = 0);
+
+	//	An RGBA8 i_Size x i_Size transparency map like a cobweb's: white
+	//	strands (i_Strands x i_Strands grid lines) on black, softened by a
+	//	box filter of radius i_Blur texels (see CheckerTexture), as a
+	//	material shader's transparencyMap (its red channel is the alpha).
+	//	Release with matTextureMgr::ReleaseTexture.
+	matTexture* WebTexture(const std::filesystem::path& i_Dir, int i_Size, int i_Strands, int i_Blur);
 
 	//	An RGBA8 i_Size x i_Size height map of i_Bumps x i_Bumps smooth bumps
 	//	(grey, 0 to 255), and the matching tangent-space normal map (RGB the

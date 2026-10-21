@@ -189,3 +189,16 @@ def test_diff_image_scales_to_white():
     assert img.dtype == np.uint8 and img.shape == (8, 8, 3)
     assert tuple(img[1, 1]) == (255, 255, 255)
     assert tuple(img[0, 0]) == (0, 0, 0)
+
+
+@pytest.mark.parametrize("ext", [".bmp", ".jpg", ".tif", ".tiff"])
+def test_compare_dirs_reads_capture_formats(tmp_path, ext):
+    # MachStudio's -capFormat BMP, JPG and TIF frames
+    a, b = tmp_path / "a", tmp_path / "b"
+    a.mkdir(); b.mkdir()
+    img = np.full((4, 4, 3), 128, dtype=np.uint8)
+    write_png(a / f"f_0001{ext}", img)
+    write_png(b / f"f_0001{ext}", img)
+    results = compare_dirs(a, b, Tolerance(), None)
+    assert len(results) == 1 and results[0].passed
+    assert load_image(a / f"f_0001{ext}").shape == (4, 4, 3)

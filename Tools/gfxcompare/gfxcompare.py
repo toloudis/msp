@@ -116,7 +116,9 @@ def _parser() -> argparse.ArgumentParser:
     r.add_argument("--out", required=True, type=Path)
     r.add_argument("--a-args", default="", help="extra RenderNode arguments for run A")
     r.add_argument("--b-args", default="", help="extra RenderNode arguments for run B")
-    r.add_argument("--format", default="PNG", choices=["PNG", "PFM"])
+    r.add_argument("--cap-args", default="",
+                   help="extra capture settings for both runs (-capSampling, -capPasses, ...), put after -render")
+    r.add_argument("--format", default="PNG", choices=["PNG", "PFM", "BMP", "JPG", "TIF"])
     r.add_argument("--width", type=int)
     r.add_argument("--height", type=int)
     r.add_argument("--timeout", type=float, default=7200, help="seconds per render")
@@ -144,6 +146,8 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     header = [f"- Scene: `{scene}`", f"- RenderNode: `{args.exe}`",
               f"- A arguments: `{args.a_args}`", f"- B arguments: `{args.b_args}`"]
+    if args.cap_args:
+        header.append(f"- Capture arguments: `{args.cap_args}`")
     problems, adapters = [], {}
     for label, extra in (("a", args.a_args), ("b", args.b_args)):
         out_dir = (args.out / label).resolve()
@@ -153,7 +157,7 @@ def main(argv: list[str] | None = None) -> int:
                 old.unlink()
         cmd = rendernode.build_command(args.exe.resolve(), scene, out_dir, out_dir / TIMING_CSV,
                                        shlex.split(extra, posix=False), args.format, args.width, args.height,
-                                       args.start_frame, args.end_frame)
+                                       args.start_frame, args.end_frame, shlex.split(args.cap_args, posix=False))
         print(f"rendering {label.upper()}: {' '.join(cmd)}")
         try:
             stderr = rendernode.run(cmd, args.timeout, out_dir)

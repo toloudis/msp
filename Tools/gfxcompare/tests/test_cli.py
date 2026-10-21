@@ -1,5 +1,7 @@
 """Tests for the gfxcompare command line (compare and run)."""
 import sys
+
+import pytest
 from pathlib import Path
 
 import numpy as np
@@ -89,8 +91,12 @@ args = sys.argv[1:]
 out = pathlib.Path(args[args.index("-capOutputPath") + 1])
 first = int(args[args.index("-capStartFrame") + 1]) if "-capStartFrame" in args else 1
 last = int(args[args.index("-capEndFrame") + 1]) if "-capEndFrame" in args else 3
+fmt = args[args.index("-capFormat") + 1] if "-capFormat" in args else "PNG"
 for n in range(first, last + 1):
-    Image.fromarray(np.full((8, 8, 3), 100, dtype=np.uint8)).save(out / f"f_{n:04d}.PNG")
+    Image.fromarray(np.full((8, 8, 3), 100, dtype=np.uint8)).save(out / f"f_{n:04d}.{fmt}")
+if "-capSampling" in args:
+    (out / "sampling.txt").write_text(args[args.index("-capSampling") + 1] + " after render "
+                                      + str(args.index("-capSampling") > args.index("-render")))
 for a in args:
     if a.startswith("say="):
         sys.stderr.write(a[4:].replace("_", " ") + "\\n")
@@ -150,3 +156,18 @@ def test_cli_run_reports_vulkan_validation_off(tmp_path):
                             ["Graphics backend: vulkan on GPU X", "Vulkan validation: off"])
     assert code == 0
     assert "B Vulkan validation: off" in report
+
+
+def test_cli_run_capture_args_go_to_both_renders_after_render(tmp_path):
+    code, report = run_fake(tmp_path, [], [], extra=["--cap-args", "-capSampling 2"])
+    assert code == 0
+    assert "Capture arguments: `-capSampling 2`" in report
+    for label in ("a", "b"):
+        assert (tmp_path / "out" / label / "sampling.txt").read_text() == "2 after render True"
+
+
+@pytest.mark.parametrize("fmt", ["BMP", "JPG", "TIF"])
+def test_cli_run_other_capture_formats(tmp_path, fmt):
+    code, report = run_fake(tmp_path, [], [], extra=["--format", fmt])
+    assert code == 0
+    assert sorted(p.name for p in (tmp_path / "out" / "a").iterdir() if p.suffix == "." + fmt) ==         [f"f_000{n}.{fmt}" for n in (1, 2, 3)]

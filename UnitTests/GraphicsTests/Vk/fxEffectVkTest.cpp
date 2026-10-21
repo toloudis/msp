@@ -365,3 +365,29 @@ TEST_F(fxEffectVkTest, TextureAndSamplerBound)
 	const std::vector<uint8_t> none = Read();
 	EXPECT_TRUE(near_color(none, 61, 32, 0, 0, 255, 255)) << describe(none, 61, 32);
 }
+
+//	A texture destroyed while an effect still has it bound (a material's map
+//	released while the effect variable keeps it, as shdwPassAlphaFill's
+//	shared effect did): D3D11 keeps the view alive by its reference; here
+//	the effect lets it go, so it reads as the null texture rather than a
+//	freed image
+TEST_F(fxEffectVkTest, DestroyedTextureIsUnbound)
+{
+	const uint8_t texels[16] = { 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255 };
+	fxEffectVk& solid = Solid();
+	const fxEffectVk::Resource map = solid.FindResource("TransparencyMap");
+	solid.SetResource(map, Texture(texels));
+	solid.SetConstant(solid.FindConstant("hasTransparencyMap"), (uint32_t)1);
+	solid.SetConstant(solid.FindConstant("g_Transparency"), 1.0f);
+	solid.SetConstant(solid.FindConstant("g_AlphaTestRef"), 0.5f);
+	SetColor(1, 1, 0, 1);
+	Draw();
+	const std::vector<uint8_t> drawn = Read();
+	EXPECT_TRUE(near_color(drawn, 32, 32, 255, 255, 0, 255)) << describe(drawn, 32, 32);
+
+	m_pTexture.reset();
+	EXPECT_EQ(nullptr, solid.GetResource(map));
+	Draw();
+	const std::vector<uint8_t> image = Read();
+	EXPECT_TRUE(near_color(image, 32, 32, 0, 0, 255, 255)) << describe(image, 32, 32);
+}

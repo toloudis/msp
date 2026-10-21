@@ -189,6 +189,7 @@ namespace gvk
 			bool					m_bRecording = false;			// inside one of our own calls
 			VkPipeline				m_BoundPipeline = VK_NULL_HANDLE;
 			bool					m_bDynamicDirty = true;
+			int						m_ImageDestroyHook = 0;			// vkdDevice::AddImageDestroyHook's id
 			bool					m_bBuffersDirty = true;
 	};
 }

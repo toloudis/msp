@@ -246,7 +246,8 @@ namespace gvk
 		std::vector<VkSemaphoreSubmitInfo>	m_PendingWaits;
 		std::function<void()>		m_RecordingHook;
 		bool						m_bInHook = false;
-		std::function<void(const vkdImage*)>	m_ImageDestroyHook;
+		std::vector<std::pair<int, std::function<void(const vkdImage*)>>>	m_ImageDestroyHooks;
+		int							m_NextImageDestroyHook = 1;
 
 		struct Deferred
 		{
@@ -624,18 +625,34 @@ namespace gvk
 		m_pImpl->m_RecordingHook = i_Hook;
 	}
 
-	void vkdDevice::SetImageDestroyHook(std::function<void(const vkdImage*)> i_Hook)
+	int vkdDevice::AddImageDestroyHook(std::function<void(const vkdImage*)> i_Hook)
 	{
 		std::lock_guard<std::recursive_mutex> lock(m_pImpl->m_StreamLock);
-		m_pImpl->m_ImageDestroyHook = i_Hook;
+		const int id = m_pImpl->m_NextImageDestroyHook++;
+		m_pImpl->m_ImageDestroyHooks.push_back(std::make_pair(id, i_Hook));
+		return id;
+	}
+
+	void vkdDevice::RemoveImageDestroyHook(int i_Id)
+	{
+		std::lock_guard<std::recursive_mutex> lock(m_pImpl->m_StreamLock);
+		auto& hooks = m_pImpl->m_ImageDestroyHooks;
+		for (auto it = hooks.begin(); it != hooks.end(); ++it)
+		{
+			if (it->first == i_Id)
+			{
+				hooks.erase(it);
+				return;
+			}
+		}
 	}
 
 	void vkdDevice::ImageDestroyed(const vkdImage* i_pImage)
 	{
 		std::lock_guard<std::recursive_mutex> lock(m_pImpl->m_StreamLock);
-		if (m_pImpl->m_ImageDestroyHook)
+		for (const auto& hook : m_pImpl->m_ImageDestroyHooks)
 		{
-			m_pImpl->m_ImageDestroyHook(i_pImage);
+			hook.second(i_pImage);
 		}
 	}
 

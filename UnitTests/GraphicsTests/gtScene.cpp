@@ -278,6 +278,23 @@ void gtScene::SetFloat(matMaterial* io_pMaterial, const char* i_pName, float i_V
 	ADD_FAILURE() << "no parameter " << i_pName;
 }
 
+void gtScene::SetTexture(matMaterial* io_pMaterial, const char* i_pName, matTexture* i_pTexture)
+{
+	std::vector<effParamTexture*> textures;
+	io_pMaterial->GetShaderParams(0)->GetAllTextureParams(textures);
+	std::string names;
+	for (effParamTexture* param : textures)
+	{
+		if (param->GetName() == i_pName)
+		{
+			param->SetTexture(i_pTexture);
+			return;
+		}
+		names += " " + param->GetName();
+	}
+	ADD_FAILURE() << "no texture parameter " << i_pName << " (has" << names << ")";
+}
+
 void gtScene::SetColor(matMaterial* io_pMaterial, const char* i_pName, const maFloatRGBA& i_Value)
 {
 	std::vector<effParamColor*> colors;
@@ -354,6 +371,43 @@ matTexture* gtScene::CheckerTexture(const std::filesystem::path& i_Dir, int i_Wi
 	return load_png(i_Dir / ("checker_" + std::to_string(i_Width) + "x" + std::to_string(i_Height) + "_" + std::to_string(i_Cells) +
 							 (i_Blur > 0 ? "_blur" + std::to_string(i_Blur) : std::string()) + ".png"),
 					i_Width, i_Height, rgba);
+}
+
+matTexture* gtScene::WebTexture(const std::filesystem::path& i_Dir, int i_Size, int i_Strands, int i_Blur)
+{
+	const int cell = i_Size / i_Strands;
+	std::vector<uint8_t> rgba((size_t)i_Size * i_Size * 4);
+	for (int y = 0; y < i_Size; y++)
+	{
+		for (int x = 0; x < i_Size; x++)
+		{
+			const bool strand = (x % cell) < cell / 4 || (y % cell) < cell / 4;
+			uint8_t* p = &rgba[((size_t)y * i_Size + x) * 4];
+			p[0] = p[1] = p[2] = strand ? 255 : 0;
+			p[3] = 255;
+		}
+	}
+	for (int pass = 0; pass < 2 && i_Blur > 0; pass++)
+	{
+		const std::vector<uint8_t> source = rgba;
+		for (int y = 0; y < i_Size; y++)
+		{
+			for (int x = 0; x < i_Size; x++)
+			{
+				int sum = 0;
+				for (int d = -i_Blur; d <= i_Blur; d++)
+				{
+					const int sx = pass == 0 ? (x + d + i_Size) % i_Size : x;
+					const int sy = pass == 1 ? (y + d + i_Size) % i_Size : y;
+					sum += source[((size_t)sy * i_Size + sx) * 4];
+				}
+				uint8_t* p = &rgba[((size_t)y * i_Size + x) * 4];
+				p[0] = p[1] = p[2] = (uint8_t)((sum + i_Blur) / (2 * i_Blur + 1));
+			}
+		}
+	}
+	return load_png(i_Dir / ("web_" + std::to_string(i_Size) + "_" + std::to_string(i_Strands) + "_blur" + std::to_string(i_Blur) + ".png"),
+					i_Size, i_Size, rgba);
 }
 
 namespace

@@ -186,6 +186,7 @@ TEST(mainCommandLine, HelpListsEveryFlag)
 		"-capOutputFile", "-capOutputPath", "-capOutputPathRoot",
 		"-license", "-NoSplash", "-show", "-version", "-help", "-gfxProfile",
 		"-gfx", "-gfxValidation",
+		"-capSampling", "-capJitter", "-capMotionSamples", "-capPasses", "-capHardwareAA",
 	};
 	for (const char* flag : flags)
 	{
@@ -236,4 +237,146 @@ TEST(mainCommandLine, GfxFirstMeansNotAPath)
 	EXPECT_TRUE(line.m_Actions.empty());
 	ASSERT_EQ(1u, line.m_Warnings.size());
 	EXPECT_NE(std::string::npos, line.m_Warnings[0].find("x.mab"));
+}
+
+//	Plan 6 Task 10: the capture flags that RenderNode needs to reach the
+//	sampling, jitter, motion-sample, pass and hardware-AA settings.
+
+TEST(mainCommandLine, CaptureSamplingFlags)
+{
+	mainCommandLine line = mainCommandLine::Parse(
+		"-render s.mab -capSampling 3 -capJitter gaussian 1.5 -capMotionSamples 4 -capHardwareAA OFF");
+	expect_actions({act(mainCommandLine::e_Render, "s.mab"),
+					act(mainCommandLine::e_CapSampling, "3"),
+					act(mainCommandLine::e_CapJitter, "Gaussian 1.5"),
+					act(mainCommandLine::e_CapMotionSamples, "4"),
+					act(mainCommandLine::e_CapHardwareAA, "off")}, line);
+	EXPECT_TRUE(line.m_Warnings.empty());
+}
+
+TEST(mainCommandLine, CaptureJitterOffAndEveryFilter)
+{
+	mainCommandLine line = mainCommandLine::Parse(
+		"-render s.mab -capJitter off -capJitter Box 1 -capJitter mitchell 2 -capJitter TRIANGLE 0.5 "
+		"-capJitter sinc 3 -capJitter lanczos 4 -capJitter blackman-harris 2.5 -capJitter catmull-rom 8 "
+		"/capHardwareAA on");
+	expect_actions({act(mainCommandLine::e_Render, "s.mab"),
+					act(mainCommandLine::e_CapJitter, "off"),
+					act(mainCommandLine::e_CapJitter, "Box 1"),
+					act(mainCommandLine::e_CapJitter, "Mitchell 2"),
+					act(mainCommandLine::e_CapJitter, "Triangle 0.5"),
+					act(mainCommandLine::e_CapJitter, "Sinc 3"),
+					act(mainCommandLine::e_CapJitter, "Lanczos 4"),
+					act(mainCommandLine::e_CapJitter, "Blackman-Harris 2.5"),
+					act(mainCommandLine::e_CapJitter, "Catmull-Rom 8"),
+					act(mainCommandLine::e_CapHardwareAA, "on")}, line);
+	EXPECT_TRUE(line.m_Warnings.empty());
+}
+
+TEST(mainCommandLine, CaptureJitterSplits)
+{
+	int filter = -1;
+	float width = 0.0f;
+	EXPECT_TRUE(mainCommandLine::SplitJitter("Gaussian 1.5", filter, width));
+	EXPECT_EQ(1, filter);		// captRenderOutputData::eFilterGaussian
+	EXPECT_FLOAT_EQ(1.5f, width);
+	EXPECT_TRUE(mainCommandLine::SplitJitter("Catmull-Rom 8", filter, width));
+	EXPECT_EQ(7, filter);		// captRenderOutputData::eFilterCatmullRom
+	EXPECT_FLOAT_EQ(8.0f, width);
+	EXPECT_FALSE(mainCommandLine::SplitJitter("off", filter, width));
+}
+
+TEST(mainCommandLine, CapturePassesKeepsTheList)
+{
+	mainCommandLine line = mainCommandLine::Parse("-render s.mab -capPasses BTY,Z,NOR");
+	expect_actions({act(mainCommandLine::e_Render, "s.mab"),
+					act(mainCommandLine::e_CapPasses, "BTY,Z,NOR")}, line);
+	EXPECT_TRUE(line.m_Warnings.empty());
+}
+
+TEST(mainCommandLine, CaptureNewFlagsBeforeRenderKeepTheirOrder)
+{
+	//	parsed in order; loading the scene in -render then replaces them
+	mainCommandLine line = mainCommandLine::Parse("-capSampling 2 -capPasses BTY -render s.mab");
+	expect_actions({act(mainCommandLine::e_CapSampling, "2"),
+					act(mainCommandLine::e_CapPasses, "BTY"),
+					act(mainCommandLine::e_Render, "s.mab")}, line);
+}
+
+TEST(mainCommandLine, CaptureNewFlagsMissingValue)
+{
+	const char* const lines[] =
+	{
+		"-render s.mab -capSampling",
+		"-render s.mab -capJitter",
+		"-render s.mab -capJitter gaussian",
+		"-render s.mab -capMotionSamples",
+		"-render s.mab -capPasses",
+		"-render s.mab -capHardwareAA",
+	};
+	for (const char* text : lines)
+	{
+		mainCommandLine line = mainCommandLine::Parse(text);
+		expect_actions({act(mainCommandLine::e_Render, "s.mab")}, line);
+		EXPECT_EQ(1u, line.m_Warnings.size()) << text;
+	}
+}
+
+TEST(mainCommandLine, CaptureNewFlagsBadValue)
+{
+	const char* const lines[] =
+	{
+		"-render s.mab -capSampling 0",
+		"-render s.mab -capSampling 9",
+		"-render s.mab -capSampling two",
+		"-render s.mab -capSampling 2x",
+		"-render s.mab -capJitter wobbly 1",
+		"-render s.mab -capJitter gaussian 0",
+		"-render s.mab -capJitter gaussian -1",
+		"-render s.mab -capJitter gaussian 9",
+		"-render s.mab -capJitter gaussian wide",
+		"-render s.mab -capMotionSamples 0",
+		"-render s.mab -capMotionSamples 17",
+		"-render s.mab -capHardwareAA maybe",
+		"-render s.mab -capPasses BTY,,Z",
+		"-render s.mab -capPasses ,",
+	};
+	for (const char* text : lines)
+	{
+		mainCommandLine line = mainCommandLine::Parse(text);
+		expect_actions({act(mainCommandLine::e_Render, "s.mab")}, line);
+		EXPECT_EQ(1u, line.m_Warnings.size()) << text;
+	}
+}
+
+TEST(mainCommandLine, CaptureNewFlagsInRange)
+{
+	mainCommandLine line = mainCommandLine::Parse(
+		"-render s.mab -capSampling 1 -capSampling 8 -capMotionSamples 1 -capMotionSamples 16");
+	expect_actions({act(mainCommandLine::e_Render, "s.mab"),
+					act(mainCommandLine::e_CapSampling, "1"),
+					act(mainCommandLine::e_CapSampling, "8"),
+					act(mainCommandLine::e_CapMotionSamples, "1"),
+					act(mainCommandLine::e_CapMotionSamples, "16")}, line);
+	EXPECT_TRUE(line.m_Warnings.empty());
+}
+
+TEST(mainCommandLine, CapturePassesMatchTheScenesNames)
+{
+	//	the scene's pass names, by pass type (captRenderOutputDataUtil::GetRenderPassName)
+	const std::vector<std::string> names = { "BTY", "DIFF", "SPEC", "AO", "Z", "MyNormals" };
+	std::vector<int> passes;
+	std::string unknown;
+	EXPECT_TRUE(mainCommandLine::MatchPasses("bty,Z,mynormals", names, passes, unknown));
+	EXPECT_EQ(std::vector<int>({0, 4, 5}), passes);
+	EXPECT_EQ("", unknown);
+
+	//	a pass named twice is rendered once
+	EXPECT_TRUE(mainCommandLine::MatchPasses("AO,ao", names, passes, unknown));
+	EXPECT_EQ(std::vector<int>({3}), passes);
+
+	//	an unknown name rejects the whole list
+	EXPECT_FALSE(mainCommandLine::MatchPasses("BTY,NOR", names, passes, unknown));
+	EXPECT_TRUE(passes.empty());
+	EXPECT_EQ("NOR", unknown);
 }

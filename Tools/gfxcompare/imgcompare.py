@@ -17,7 +17,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-IMAGE_SUFFIXES = (".png", ".pfm")
+IMAGE_SUFFIXES = (".png", ".pfm", ".bmp", ".jpg", ".tif", ".tiff")
 
 
 @dataclass

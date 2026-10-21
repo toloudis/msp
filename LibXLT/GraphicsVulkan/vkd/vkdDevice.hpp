@@ -110,10 +110,12 @@ namespace gvk
 			void SetRecordingHook(std::function<void()> i_Hook);
 
 			//	Called (under the stream lock) by each vkdImage as it is
-			//	destroyed, so the code that holds it bound as a target
-			//	(vkdContext) can let it go: D3D11 keeps a bound resource alive,
-			//	here the pointer would dangle. One hook; empty removes it.
-			void SetImageDestroyHook(std::function<void(const vkdImage*)> i_Hook);
+			//	destroyed, so the code that holds it bound (vkdContext as a
+			//	target, fxEffectVk as a resource) can let it go: D3D11 keeps a
+			//	bound resource alive, here the pointer would dangle. Hooks run
+			//	in the order added; Add returns the id Remove takes.
+			int AddImageDestroyHook(std::function<void(const vkdImage*)> i_Hook);
+			void RemoveImageDestroyHook(int i_Id);
 			void ImageDestroyed(const vkdImage* i_pImage);
 
 			//	Runs i_Destroy once the GPU has finished all work submitted so

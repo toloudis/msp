@@ -62,6 +62,16 @@ namespace captRenderOutputDataUtil
 	void SetCaptureHeight(int i_Height);
 
 	//------------------------------------------------------------------------
+	// Set the sampling (-capSampling, -capJitter, -capMotionSamples,
+	// -capHardwareAA). i_Filter is a captRenderOutputData::eFilterFunc.
+	//------------------------------------------------------------------------
+	void SetCaptureSampling(int i_Sampling);
+	void SetJitteredSampling(bool i_bJittered);
+	void SetJitterFilter(int i_Filter, float i_Width);
+	void SetMotionSamples(int i_Samples);
+	void SetHardwareAA(bool i_bHardwareAA);
+
+	//------------------------------------------------------------------------
 	// The frame window (-capStartFrame, -capEndFrame): renders capture only
 	// frames in it, absolute frame numbers, both ends included; -1 leaves
 	// that end as the render's frame range sets it. Not part of the scene

@@ -87,3 +87,19 @@ def test_same_adapter_ignores_vendor_name():
     assert same_adapter("AMD Radeon RX 7900 XTX", "Radeon RX 7900 XTX")
     assert not same_adapter("NVIDIA Quadro RTX 5000", "Intel(R) UHD Graphics P630")
     assert not same_adapter("NVIDIA Quadro RTX 5000", "NVIDIA Quadro RTX 4000")
+
+
+def test_build_command_capture_args_go_last():
+    # extra capture settings (-capSampling, -capPasses, ...) are scene
+    # settings: they go after -render, with the others
+    cmd = build_command(Path("rn.exe"), Path("s.mab"), Path("o"), Path("o/t.csv"), ["-gfx", "vulkan"],
+                        start_frame=296, end_frame=300, capture_args=["-capSampling", "2", "-capPasses", "BTY,Z"])
+    render = cmd.index("-render")
+    assert cmd.index("-capSampling") > render and cmd[cmd.index("-capSampling") + 1] == "2"
+    assert cmd[-4:] == ["-capSampling", "2", "-capPasses", "BTY,Z"]
+    assert cmd[1:3] == ["-gfx", "vulkan"]
+
+
+def test_build_command_without_capture_args_is_unchanged():
+    assert build_command(Path("rn.exe"), Path("s.mab"), Path("o"), Path("o/t.csv"), []) == \
+        build_command(Path("rn.exe"), Path("s.mab"), Path("o"), Path("o/t.csv"), [], capture_args=[])

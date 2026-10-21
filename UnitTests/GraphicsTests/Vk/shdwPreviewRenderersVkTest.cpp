@@ -30,7 +30,10 @@
 **        textured sphere, and a bump-mapped plane with UVs outside 0-1;
 **      - the texture renderer (g3dTextureRendererVk), as rmpTextureMgr
 **        draws its ramps: a Ramp.fx square in a screen-space layer, each
-**        gradient shape, with and without waves.
+**        gradient shape, with and without waves;
+**      - a soft cutout (a Blinn transparency map over a sphere) through the
+**        materials, normal, illumination, reflection-only and depth
+**        renderers, alpha included.
 **
 **      Each case is also checked on DX11 alone: the renderer's image
 **      differs from the default renderer's (gtExpectEffectShows), so a
@@ -287,6 +290,53 @@ namespace
 		options.m_BeforeFrame = [](gtSceneBuilder& io_Builder) { io_Builder.RenderTargets(); };
 		return options;
 	}
+}
+
+namespace
+{
+	//	A cobweb-like material: a soft white-on-black grid as Blinn's
+	//	transparency map (strands opaque, holes clear; binding it sets
+	//	hasTransparencyMap, its ExistVar) over a tinted sphere,
+	//	lit; the test scene's cobweb is the one thing whose alpha shows in
+	//	the materials, normal, illumination and reflection-only passes
+	void cutout_scene(gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
+	{
+		io_Builder.LightsCastShadows(true);
+		matTexture* diffuse = io_Builder.Keep(gtScene::CheckerTexture(i_Dir, 64, 64, 4, 8));
+		matTexture* web = io_Builder.Keep(gtScene::WebTexture(i_Dir, 128, 8, 4));
+		matMaterial* material = io_Builder.Keep(gtScene::ShaderMaterial("Blinn.fx", gtScene::e_Tinted, { diffuse }));
+		gtScene::SetTexture(material, "transparencyMap", web);
+		io_Builder.Add(gtScene::Plane(), material, gtScene::Place(0, 0, 1.0f, 1.6f));
+		matMaterial* behind = io_Builder.Keep(gtScene::ShaderMaterial("Phong.fx", gtScene::e_Tinted));
+		io_Builder.Add(gtScene::Sphere(16, 32), behind, gtScene::Place(0.4f, 0, -1.0f, 1.0f));
+		io_Builder.TwoLights();
+	}
+}
+
+//	Plan 6 Task 10: the capture passes of the test scene whose cobweb
+//	differed more than the beauty pass (alpha and alpha-tested edges; the
+//	cobweb's texture is hard-edged, so that was the anisotropic filtering
+//	difference): a soft cutout through each of those renderers matches
+TEST(shdwPreviewRenderersVkTest, CutoutMatchesDX11)
+{
+	const std::pair<const char*, create_fn> renderers[] =
+	{
+		{ "materials", []() { return g3dSceneRendererCreate::CreateMaterialsRenderer(); } },
+		{ "normal", []() { return g3dSceneRendererCreate::CreateNormalRenderer(); } },
+		{ "illumination", []() { return g3dSceneRendererCreate::CreateIlluminationRenderer(); } },
+		{ "reflection_only", []() { return g3dSceneRendererCreate::CreateReflectionOnlyRenderer(); } },
+		{ "depth", []() { return g3dSceneRendererCreate::CreateDepthRenderer(); } },
+	};
+	std::vector<gtCase> cases;
+	for (const auto& r : renderers)
+	{
+		for (bool aa : { false, true })
+		{
+			cases.push_back({ std::string(r.first) + (aa ? "/hdr_aa" : "/no_aa"), cutout_scene,
+							  preview(r.second, aa, [](g3dPrefs::g3dRenderPrefs& p) { p.m_bEnableTransparent = true; }) });
+		}
+	}
+	expect_cases("CutoutMatchesDX11", cases);
 }
 
 TEST(shdwPreviewRenderersVkTest, DepthRendererMatchesDX11)
