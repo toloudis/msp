@@ -229,6 +229,9 @@
     <ClCompile Include="Mat\private\matImageDecodeHdr.cpp">
       <Filter>Mat\private</Filter>
     </ClCompile>
+    <ClCompile Include="Mat\private\matImageEncode.cpp">
+      <Filter>Mat\private</Filter>
+    </ClCompile>
     <ClCompile Include="Mat\private\matMipFilter.cpp">
       <Filter>Mat\private</Filter>
     </ClCompile>
@@ -675,6 +678,9 @@
       <Filter>Mat</Filter>
     </ClInclude>
     <ClInclude Include="Mat\private\matImageDecodeInternal.hpp">
+      <Filter>Mat\private</Filter>
+    </ClInclude>
+    <ClInclude Include="Mat\private\matImageEncode.hpp">
       <Filter>Mat\private</Filter>
     </ClInclude>
     <ClInclude Include="G2d\g2dVkGlobal.hpp">

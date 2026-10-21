@@ -12,8 +12,8 @@
 #ifndef GVK_G2DIMAGEVK_HPP
 #include "GraphicsVulkan/G2d/g2dImageVk.hpp"
 #endif
-#ifndef GVK_VKDCHECK_HPP
-#include "GraphicsVulkan/vkd/vkdCheck.hpp"
+#ifndef GVK_MATIMAGEENCODE_HPP
+#include "GraphicsVulkan/Mat/private/matImageEncode.hpp"
 #endif
 #ifndef DBG_MSG_HPP
 #include "Core/Dbg/dbgMsg.hpp"
@@ -46,14 +46,6 @@
 #include "Graphics/G2d/g2dImage.hpp"
 #endif
 
-//	static: ImportExport (glTF) links its own stb_image_write into MachStudio
-#define STB_IMAGE_WRITE_STATIC
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#define STBI_WRITE_NO_STDIO
-#include <stb_image_write.h>
-
-#include <filesystem>
-#include <fstream>
 #include <memory>
 #include <vector>
 
@@ -135,46 +127,58 @@ namespace
 		throw g2dUnknownImageFileTypeX();
 	}
 
-	void append_bytes(void* i_pContext, void* i_pData, int i_Size)
+	//------------------------------------------------------------------------
+	//	DX11's get_d3d_file_format: the formats DX11 saves through WIC; the
+	//	rest throw (DDS is written only by texture saving)
+	//------------------------------------------------------------------------
+	enum Codec
 	{
-		std::vector<uint8_t>& bytes = *static_cast<std::vector<uint8_t>*>(i_pContext);
-		const uint8_t* data = static_cast<const uint8_t*>(i_pData);
-		bytes.insert(bytes.end(), data, data + i_Size);
+		e_CodecBMP,
+		e_CodecJPEG,
+		e_CodecPNG,
+		e_CodecTIFF
+	};
+
+	Codec get_codec( FileType i_Type )
+	{
+		switch( i_Type )
+		{
+			case e_BMP:
+				return e_CodecBMP;
+			case e_JPG:
+				return e_CodecJPEG;
+			case e_PNG:
+				return e_CodecPNG;
+			case e_TIFF:
+				return e_CodecTIFF;
+			case e_DDS:
+			case e_TGA:
+			case e_PPM:
+			case e_DIB:
+			case e_HDR:
+			case e_PFM:
+				throw g2dUnknownImageFileTypeX();
+		}
+
+		throw g2dUnknownImageFileTypeX();
 	}
 
 	//------------------------------------------------------------------------
-	//	DX11's SaveToFile (DirectXTex's SaveToWICFile) for PNG: an 8-bit
-	//	RGBA image as a 32-bit RGBA PNG
+	//	DX11's SaveToFile (DirectXTex's SaveToWICFile), through matImageEncode
 	//------------------------------------------------------------------------
-	void save_png(const fsLocator& i_FileName, const g2dImage* i_pImage)
+	void SaveToFile(const fsLocator& i_FileName, const g2dImageVk& i_Image, Codec i_Codec)
 	{
-		const g2dPFD& pfd = i_pImage->GetPixelFormat();
-		g2dImage* image = const_cast<g2dImage*>(i_pImage);
-		if (pfd.GetNumChannels() != 4 || pfd.GetBitsPerChannel() != 8 || pfd.IsFloat() || pfd.FirstRedBit() != 0)
-		{
-			GVK_NOT_YET("g2dImageSaveVk::Save (PNG of an image that isn't 8-bit RGBA)");
-			throw g2dImageSaveX();
-		}
+		const matEncodeImage image = { i_Image.GetWidth(), i_Image.GetHeight(), i_Image.GetStride(),
+									   i_Image.GetDxgiFormat(), i_Image.Pixels() };
 		std::vector<uint8_t> bytes;
-		const void* pixels = image->Lock();
-		const int written = pixels ? stbi_write_png_to_func(append_bytes, &bytes, image->GetWidth(), image->GetHeight(), 4,
-															 pixels, image->GetStride()) : 0;
-		image->Release();
-		if (!written)
+		switch (i_Codec)
 		{
-			DBG_TRACE("stbi_write_png failed");
-			throw g2dImageSaveX();
+			case e_CodecBMP:	bytes = matEncodeBMP(image); break;
+			case e_CodecJPEG:	bytes = matEncodeJPG(image); break;
+			case e_CodecPNG:	bytes = matEncodePNG(image); break;
+			case e_CodecTIFF:	bytes = matEncodeTIFF(image); break;
 		}
-
-		itString filename;
-		fsFileUtil::LocatorToUnicodeString(i_FileName, filename);
-		std::ofstream file(std::filesystem::path(filename.GetString()), std::ios::binary | std::ios::trunc);
-		file.write(reinterpret_cast<const char*>(bytes.data()), (std::streamsize)bytes.size());
-		if (!file)
-		{
-			DBG_TRACE("Couldn't write " << filename);
-			throw g2dImageSaveX();
-		}
+		matEncodeWriteFile(i_FileName, bytes);
 	}
 }
 
@@ -189,13 +193,16 @@ namespace
 	{
 		if (i_pWin)
 		{
+			//	DX11's capture_back_buffer
 			g2dImage* image = NULL;
 			g2dScreenCaptureUtil::CaptureWindowToImage(*i_pWin, image);
 			std::unique_ptr<g2dImage> owned(image);
-			if (image)
-			{
-				Save(i_FileName, image);
-			}
+			const g2dImageVk* pImageVk = dynamic_cast<const g2dImageVk*>(image);
+			DBG_ASSERT(pImageVk != 0, "Not a valid image pointer");
+
+			FileType type = pick_format( i_FileName );
+
+			SaveToFile( i_FileName, *pImageVk, get_codec( type ) );
 		}
 	}
 
@@ -221,14 +228,8 @@ namespace
 		}else if (type == e_TGA)
 		{
 			g2dTGAUtil::WriteToTGA(i_FileName, i_pImage);
-		}else if (type == e_PNG)
-		{
-			save_png(i_FileName, i_pImage);
 		} else {
-			//	DX11 saves these through WIC (BMP, JPG, TIFF, DDS; PPM, DIB
-			//	and PFM throw g2dUnknownImageFileTypeX there too)
-			GVK_NOT_YET("g2dImageSaveVk::Save (formats DX11 saves through WIC, other than PNG)");
-			throw g2dImageSaveX();
+			SaveToFile( i_FileName, *pImageVk, get_codec( type ) );
 		}
 	}
 }

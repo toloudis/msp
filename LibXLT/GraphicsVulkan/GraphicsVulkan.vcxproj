@@ -137,6 +137,7 @@
     <ClCompile Include="Mat\private\matImageDecodeTiff.cpp" />
     <ClCompile Include="Mat\private\matImageDecodeDds.cpp" />
     <ClCompile Include="Mat\private\matImageDecodeHdr.cpp" />
+    <ClCompile Include="Mat\private\matImageEncode.cpp" />
     <ClCompile Include="Mat\private\matMipFilter.cpp" />
     <ClCompile Include="G2d\private\g2dVkGlobal.cpp" />
     <ClCompile Include="G2d\private\g2dTextureVk.cpp" />
@@ -288,6 +289,7 @@
     <ClInclude Include="Mat\matImageDecode.hpp" />
     <ClInclude Include="Mat\matMipFilter.hpp" />
     <ClInclude Include="Mat\private\matImageDecodeInternal.hpp" />
+    <ClInclude Include="Mat\private\matImageEncode.hpp" />
     <ClInclude Include="G2d\g2dVkGlobal.hpp" />
     <ClInclude Include="G2d\g2dTextureVk.hpp" />
     <ClInclude Include="G2d\g2dRenderTargetTextureVk.hpp" />

@@ -39,6 +39,27 @@
 #ifndef GVK_MATSHADOWMAP_HPP
 #include "GraphicsVulkan/Mat/matShadowMap.hpp"
 #endif
+#ifndef GVK_MATIMAGEENCODE_HPP
+#include "GraphicsVulkan/Mat/private/matImageEncode.hpp"
+#endif
+#ifndef GVK_G3D_VKUTIL_HPP
+#include "GraphicsVulkan/G3d/g3dVkUtil.hpp"
+#endif
+#ifndef GVK_G3DBLENDSTATEMGR_HPP
+#include "GraphicsVulkan/G3d/g3dBlendStateMgr.hpp"
+#endif
+#ifndef GVK_G3DDEPTHSTENCILSTATEMGR_HPP
+#include "GraphicsVulkan/G3d/g3dDepthStencilStateMgr.hpp"
+#endif
+#ifndef GVK_G3DRASTERIZERSTATEMGR_HPP
+#include "GraphicsVulkan/G3d/g3dRasterizerStateMgr.hpp"
+#endif
+#ifndef GVK_G3D_DRAWSTYLEUTILVK_HPP
+#include "GraphicsVulkan/G3d/g3dDrawStyleUtilVk.hpp"
+#endif
+#ifndef G2D_RENDERTARGET_HPP
+#include "Graphics/G2d/g2dRenderTarget.hpp"
+#endif
 #ifndef GVK_G2DVKGLOBAL_HPP
 #include "GraphicsVulkan/G2d/g2dVkGlobal.hpp"
 #endif
@@ -106,6 +127,11 @@ namespace gvk
 
 namespace
 {
+	g3dBlendStateMgr::BlendState* st_NoBlend = NULL;
+	g3dBlendStateMgr::BlendState* st_Blend = NULL;
+
+	g3dDepthStencilStateMgr::DepthStencilState* ds_Disable_NS = NULL;
+	g3dDepthStencilStateMgr::DepthStencilState* ds_Test_Write_LessE_NS = NULL;
 
 enum FileType
 {
@@ -1576,22 +1602,148 @@ void matTextureMgrVk::UnloadTexture( const fsLocator& i_Locator )
 {
 }
 
-//------------------------------------------------------------------------
-//	Saving comes in Plan 6 (stb_image_write and libtiff)
-//------------------------------------------------------------------------
-void matTextureMgrVk::SaveTextureToRgbaTiff(matTexture*, const fsLocator&)
+namespace
 {
-	GVK_NOT_YET("matTextureMgrVk::SaveTextureToRgbaTiff");
+	//------------------------------------------------------------------------
+	//	DX11's CaptureTexture, then GetImage(0, 0, 0): mip 0 of layer 0, in
+	//	the texture's DXGI format
+	//------------------------------------------------------------------------
+	struct CapturedTexture
+	{
+		std::vector<uint8_t>	m_Pixels;
+		matEncodeImage			m_Image;
+	};
+
+	//	false if the texture has no image (DX11's GetSurface() == NULL)
+	bool capture_texture(matTexture* i_pTexture, CapturedTexture& o_Captured)
+	{
+		matTextureVk* texture = dynamic_cast<matTextureVk*>(i_pTexture);
+		vkdImage* image = texture ? texture->GetImage() : NULL;
+		if (!image)
+		{
+			return false;
+		}
+		if (image->Samples() != VK_SAMPLE_COUNT_1_BIT)
+		{
+			//	DX11's CaptureTexture resolves a multisampled texture
+			DBG_TRACE("SaveTexture: multisampled textures aren't read back on Vulkan");
+			throw g2dImageSaveX();
+		}
+		//	end the frame's rendering and submit it, then copy
+		vkdGlobal::Context().Flush();
+		o_Captured.m_Pixels = image->ReadBack(0, 0);
+
+		uint32_t format = vkdDxgiFromFormat(image->Format());
+		//	Vulkan has no X8 formats: a B8G8R8X8 texture's image is B8G8R8A8
+		//	(alpha 255, vkdFormat)
+		const uint32_t c_B8G8R8A8 = 87, c_B8G8R8X8 = 88;
+		if (format == c_B8G8R8A8 && i_pTexture->GetPixelFormat().GetPixelFormat() == g2dPFD::e_RColor)
+		{
+			format = c_B8G8R8X8;
+		}
+		const vkdFormatInfo info = vkdFormatInfoOf(image->Format());
+		const int width = (int)image->Width(), height = (int)image->Height();
+		const int stride = (int)(((width + info.m_BlockWidth - 1) / info.m_BlockWidth) * info.m_BlockBytes);
+		const int rows = (int)((height + info.m_BlockHeight - 1) / info.m_BlockHeight);
+		if (info.m_BlockBytes == 0 || o_Captured.m_Pixels.size() < (size_t)stride * rows)
+		{
+			DBG_TRACE("SaveTexture: couldn't read the texture back (" << o_Captured.m_Pixels.size() << " bytes)");
+			throw g2dImageSaveX();
+		}
+		o_Captured.m_Image = { width, height, stride, format, o_Captured.m_Pixels.data() };
+		return true;
+	}
+
+	//	DX11's SaveToWICFile and SaveToDDSFile calls, whose failures it
+	//	traces (and doesn't throw)
+	void save_captured(const CapturedTexture& i_Captured, std::vector<uint8_t> (*i_Encode)(const matEncodeImage&),
+					   const fsLocator& i_Locator, const char* i_pWhat)
+	{
+		try
+		{
+			matEncodeWriteFile(i_Locator, i_Encode(i_Captured.m_Image));
+		}
+		catch (const g2dImageSaveX&)
+		{
+			DBG_TRACE( i_pWhat << ": DXGI format " << i_Captured.m_Image.m_DxgiFormat << " not written" );
+		}
+	}
 }
 
-void matTextureMgrVk::SaveTextureToRgbaPNG(matTexture*, const fsLocator&)
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
+void matTextureMgrVk::SaveTextureToRgbaTiff(matTexture* i_pTexture,
+	const fsLocator& i_FilePathLocator)
 {
-	GVK_NOT_YET("matTextureMgrVk::SaveTextureToRgbaPNG");
+	DBG_ASSERT(dynamic_cast<matTextureVk*>(i_pTexture), "Bad source texture passed in to SaveTextureToFile");
+
+	CapturedTexture captured;
+	if ( !capture_texture(i_pTexture, captured) )
+	{
+		DBG_TRACE( "Texture not found in memory. Aborting save. ");
+		return;
+	}
+
+	save_captured(captured, matEncodeTIFF, i_FilePathLocator, "SaveTextureToFile");
 }
 
-void matTextureMgrVk::SaveTextureToFile(matTexture*, const fsLocator&)
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
+void matTextureMgrVk::SaveTextureToRgbaPNG(matTexture* i_pTexture,
+	const fsLocator& i_FilePathLocator)
 {
-	GVK_NOT_YET("matTextureMgrVk::SaveTextureToFile");
+	DBG_ASSERT(dynamic_cast<matTextureVk*>(i_pTexture), "Bad source texture passed in to SaveTextureToFile");
+
+	CapturedTexture captured;
+	if ( !capture_texture(i_pTexture, captured) )
+	{
+		DBG_TRACE( "Texture not found in memory. Aborting save. ");
+		return;
+	}
+
+	save_captured(captured, matEncodePNG, i_FilePathLocator, "SaveTextureToRgbaPNG");
+}
+
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
+void matTextureMgrVk::SaveTextureToFile(matTexture* i_pTexture,
+	const fsLocator& i_FilePathLocator)
+{
+	DBG_ASSERT(dynamic_cast<matTextureVk*>(i_pTexture), "Bad source texture passed in to SaveTextureToFile");
+
+	//	DX11's CaptureTexture fails for a texture without a resource
+	CapturedTexture captured;
+	if ( !capture_texture(i_pTexture, captured) )
+	{
+		DBG_TRACE("SaveTextureToFile: no texture to read back");
+		throw g2dImageSaveX();
+	}
+
+	//	decide what kind of file format to output
+	itString fname = i_FilePathLocator.GetLastName();
+	itString ext;
+	fname.GetExtension(ext);
+
+	if ((ext == itString("bmp")) || (ext == itString("BMP")))
+	{
+		save_captured(captured, matEncodeBMP, i_FilePathLocator, "SaveTextureToFile");
+	}
+	else if ((ext == itString("jpg")) || (ext == itString("JPG")) || (ext == itString("JPEG")) || (ext == itString("jpeg")))
+	{
+		save_captured(captured, matEncodeJPG, i_FilePathLocator, "SaveTextureToFile");
+	}
+	else if ((ext == itString("png")) || (ext == itString("PNG")))
+	{
+		save_captured(captured, matEncodePNG, i_FilePathLocator, "SaveTextureToFile");
+	}
+	else if ((ext == itString("dds")) || (ext == itString("DDS")))
+	{
+		save_captured(captured, matEncodeDDS, i_FilePathLocator, "SaveTextureToFile");
+	}
+	else if ((ext == itString("tif")) || (ext == itString("TIF")) || (ext == itString("TIFF")) || (ext == itString("tiff")))
+	{
+		SaveTextureToRgbaTiff(i_pTexture, i_FilePathLocator);
+	}
 }
 
 //------------------------------------------------------------------------
@@ -1646,11 +1798,26 @@ void matTextureMgrVk::UpdateTexture( matTexture* i_pTexture, unsigned char* i_Da
 }
 
 //------------------------------------------------------------------------
-//	Plan 6 (it needs g3dDX11Util's copy)
 //------------------------------------------------------------------------
-void matTextureMgrVk::MergeTransparentTextures(matTexture*, matTexture*, g2dRenderTarget*)
+void matTextureMgrVk::MergeTransparentTextures(matTexture* i_pTexO, matTexture* i_pTexI, g2dRenderTarget* io_pTarget)
 {
-	GVK_NOT_YET("matTextureMgrVk::MergeTransparentTextures");
+	io_pTarget->MakeCurrent();
+
+	g3dBlendStateMgr::SetBlendState(st_NoBlend);
+
+	g3dRasterizerStateMgr::SetRasterizerState( VK_CULL_MODE_NONE, g3dDrawStyleUtilVk::GetD3DDrawStyle() );
+
+	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Disable_NS );
+
+	g3dVkUtil::CopyTexToTarget( i_pTexO, io_pTarget );						//copy existing texture into target
+
+	g3dBlendStateMgr::SetBlendState(st_Blend);
+
+	g3dVkUtil::CopyTexToTarget( i_pTexI, io_pTarget );						//blend with new texture
+
+	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Test_Write_LessE_NS );
+
+	g3dRasterizerStateMgr::SetRasterizerState( g3dVkUtil::GetCullMode(), g3dDrawStyleUtilVk::GetD3DDrawStyle() );
 }
 
 //--------------------------------------------------------------------
@@ -1726,6 +1893,34 @@ matPlainTexture* matTextureMgrVk::LoadResourceTexture(const fsLocator& i_Locator
 	l_PlainTextures[texture] = file_info;
 
 	return texture;
+}
+
+//--------------------------------------------------------------------
+//	DX11's blend states: copy, then multiply (dest * src)
+//--------------------------------------------------------------------
+void matTextureMgrVk::InitStates()
+{
+	st_NoBlend = new g3dBlendStateMgr::BlendState( false, false,
+		VK_BLEND_FACTOR_ZERO,VK_BLEND_FACTOR_SRC_COLOR,VK_BLEND_OP_ADD,
+		VK_BLEND_FACTOR_ZERO,VK_BLEND_FACTOR_SRC_ALPHA,VK_BLEND_OP_ADD,
+		VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT );
+	st_Blend = new g3dBlendStateMgr::BlendState( false, true,
+		VK_BLEND_FACTOR_ZERO,VK_BLEND_FACTOR_SRC_COLOR,VK_BLEND_OP_ADD,
+		VK_BLEND_FACTOR_ZERO,VK_BLEND_FACTOR_SRC_ALPHA,VK_BLEND_OP_ADD,
+		VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT );
+
+	g3dDepthStencilStateMgr::DepthStencilOp_Desc OP_DEFAULT( VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP, VK_COMPARE_OP_ALWAYS );
+
+	ds_Disable_NS = new g3dDepthStencilStateMgr::DepthStencilState( false, false, VK_COMPARE_OP_LESS_OR_EQUAL, false, 0xff, 0xff, OP_DEFAULT, OP_DEFAULT );
+	ds_Test_Write_LessE_NS = new g3dDepthStencilStateMgr::DepthStencilState( true, true, VK_COMPARE_OP_LESS_OR_EQUAL, false, 0xff, 0xff, OP_DEFAULT, OP_DEFAULT );
+}
+
+void matTextureMgrVk::CleanupStates()
+{
+	delete st_NoBlend;				st_NoBlend = NULL;
+	delete st_Blend;				st_Blend = NULL;
+	delete ds_Disable_NS;			ds_Disable_NS = NULL;
+	delete ds_Test_Write_LessE_NS;	ds_Test_Write_LessE_NS = NULL;
 }
 
 }

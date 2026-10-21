@@ -3,9 +3,10 @@
 **
 **	GraphicsVulkan port of GraphicsDX11's g2dImageSaveDX11: saves an
 **	image, or a window's back buffer, to a file whose type its extension
-**	names. EXR, HDR and TGA go through Graphics' writers, as on DX11;
-**	PNG (8-bit RGBA images) through stb_image_write, where DX11 used
-**	WIC. The other WIC formats (BMP, JPG, DDS, TIFF) aren't ported yet.
+**	names. EXR, HDR and TGA (images only) go through Graphics' writers,
+**	as on DX11; BMP, JPG, PNG and TIFF through matImageEncode, which
+**	writes what DX11's WIC path writes. DDS, PPM, DIB and PFM throw
+**	g2dUnknownImageFileTypeX, as on DX11.
 **
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved

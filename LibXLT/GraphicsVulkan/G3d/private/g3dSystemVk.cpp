@@ -105,6 +105,7 @@ namespace gvk
 			g3dRenderScreenSpaceObjects::InitStates();
 			g3dSceneRendererVk::InitStates();
 			g3dTransparencySortVk::InitStates();
+			matTextureMgrVk::InitStates();
 			g3dRenderPass::InitStates();
 			g3dRSMRendererVk::InitStates();
 
@@ -124,6 +125,7 @@ namespace gvk
 		{
 			g3dRSMRendererVk::CleanupStates();
 			g3dRenderPass::CleanupStates();
+			matTextureMgrVk::CleanupStates();
 			g3dTransparencySortVk::CleanupStates();
 			g3dSceneRendererVk::CleanupStates();
 			g3dRenderScreenSpaceObjects::CleanupStates();

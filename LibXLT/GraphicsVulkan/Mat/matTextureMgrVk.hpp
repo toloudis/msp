@@ -7,8 +7,9 @@
 **	them by kind. matTextureMgr itself does the reference counting by
 **	locator.
 **
-**	Not ported here, each logging GVK_NOT_YET: MergeTransparentTextures
-**	and the save-to-file calls (Plan 6).
+**	Texture saving reads back mip 0 of layer 0 (DX11's CaptureTexture,
+**	then GetImage(0, 0, 0)) and writes it through matImageEncode; as on
+**	DX11, a file that can't be written is traced, not thrown.
 **
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved
@@ -47,6 +48,13 @@ namespace gvk
 		void DeInitialize();
 
 		static matTexture* GetPoisson();
+
+		//------------------------------------------------------------------------
+		//	The blend and depth states MergeTransparentTextures uses (made and
+		//	released by g3dSystemVk, as DX11's)
+		//------------------------------------------------------------------------
+		static void InitStates();
+		static void CleanupStates();
 
 		//------------------------------------------------------------------------
 		//	GetTotalTextureMemory returns the device-local memory, in bytes
