@@ -9,6 +9,9 @@
 #ifndef GVK_VKDBINDINGS_HPP
 #include "GraphicsVulkan/vkd/vkdBindings.hpp"
 #endif
+#ifndef GVK_VKDBUFFER_HPP
+#include "GraphicsVulkan/vkd/vkdBuffer.hpp"
+#endif
 #ifndef GVK_VKDCHECK_HPP
 #include "GraphicsVulkan/vkd/vkdCheck.hpp"
 #endif
@@ -140,8 +143,9 @@ namespace gvk
 			o_Error = i_Desc.m_Hlsl + ": " + o_Error;
 			return nullptr;
 		}
-		//	A bound image destroyed before the effect is unbound (it reads as
-		//	the null texture), where D3D11's view would keep it alive
+		//	A bound image or buffer destroyed before the effect is unbound (it
+		//	reads as the null texture or buffer), where D3D11's view would keep
+		//	it alive
 		if (i_pDevice)
 		{
 			fxEffectVk* pEffect = effect.get();
@@ -149,6 +153,10 @@ namespace gvk
 			effect->m_ImageDestroyHook = i_pDevice->AddImageDestroyHook([pEffect](const vkdImage* i_pImage)
 			{
 				pEffect->forget_image(i_pImage);
+			});
+			effect->m_BufferDestroyHook = i_pDevice->AddBufferDestroyHook([pEffect](const vkdBuffer* i_pBuffer)
+			{
+				pEffect->forget_buffer(i_pBuffer);
 			});
 		}
 		return effect;
@@ -161,6 +169,7 @@ namespace gvk
 		if (m_pDevice)
 		{
 			m_pDevice->RemoveImageDestroyHook(m_ImageDestroyHook);
+			m_pDevice->RemoveBufferDestroyHook(m_BufferDestroyHook);
 		}
 	}
 
@@ -349,11 +358,18 @@ namespace gvk
 					{
 						index = (int)m_Resources.size();
 						m_Resources.push_back(nullptr);
+						m_ResourceBuffers.push_back(nullptr);
+						m_ResourceIsBuffer.push_back(resource.m_bStorageBuffer);
 						m_ResourceNames[resource.m_Name] = index;
 					}
 					else
 					{
 						index = it->second;
+						if (m_ResourceIsBuffer[index] != resource.m_bStorageBuffer)
+						{
+							o_Error = resource.m_Name + ": a buffer in one stage and a texture in another";
+							return false;
+						}
 					}
 					io_Shader.m_Resources.push_back({ resource.m_Slot, index });
 					break;
@@ -675,12 +691,37 @@ namespace gvk
 		SetConstant(i_Constant, transposed, sizeof(transposed));
 	}
 
-	void fxEffectVk::SetResource(const Resource& i_Resource, vkdImage* i_pImage)
+	bool fxEffectVk::SetResource(const Resource& i_Resource, vkdImage* i_pImage)
 	{
-		if (i_Resource.IsValid())
+		if (!i_Resource.IsValid())
 		{
-			m_Resources[i_Resource.m_Index] = i_pImage;
+			return true;
 		}
+		if (m_ResourceIsBuffer[i_Resource.m_Index])
+		{
+			return false;
+		}
+		m_Resources[i_Resource.m_Index] = i_pImage;
+		return true;
+	}
+
+	bool fxEffectVk::SetBuffer(const Resource& i_Resource, vkdBuffer* i_pBuffer)
+	{
+		if (!i_Resource.IsValid())
+		{
+			return true;
+		}
+		if (!m_ResourceIsBuffer[i_Resource.m_Index])
+		{
+			return false;
+		}
+		m_ResourceBuffers[i_Resource.m_Index] = i_pBuffer;
+		return true;
+	}
+
+	bool fxEffectVk::IsBufferResource(const Resource& i_Resource) const
+	{
+		return i_Resource.IsValid() && m_ResourceIsBuffer[i_Resource.m_Index];
 	}
 
 	void fxEffectVk::SetUnorderedAccess(const UnorderedAccess& i_UAV, vkdImage* i_pImage)
@@ -723,6 +764,22 @@ namespace gvk
 	vkdImage* fxEffectVk::GetResource(const Resource& i_Resource) const
 	{
 		return i_Resource.IsValid() ? m_Resources[i_Resource.m_Index] : nullptr;
+	}
+
+	vkdBuffer* fxEffectVk::GetBuffer(const Resource& i_Resource) const
+	{
+		return i_Resource.IsValid() ? m_ResourceBuffers[i_Resource.m_Index] : nullptr;
+	}
+
+	void fxEffectVk::forget_buffer(const vkdBuffer* i_pBuffer)
+	{
+		for (vkdBuffer*& buffer : m_ResourceBuffers)
+		{
+			if (buffer == i_pBuffer)
+			{
+				buffer = nullptr;
+			}
+		}
 	}
 
 	//------------------------------------------------------------------------
@@ -992,8 +1049,16 @@ namespace gvk
 			{
 				if (claim(1, b.m_Slot, b.m_Index))
 				{
-					vkdImage* image = m_Resources[b.m_Index] ? m_Resources[b.m_Index] : context.NullTexture();
-					bindings.SetTexture(b.m_Slot, image->SampledIndex(bindings));
+					if (m_ResourceIsBuffer[b.m_Index])
+					{
+						vkdBuffer* buffer = m_ResourceBuffers[b.m_Index];
+						bindings.SetTexture(b.m_Slot, buffer ? buffer->ResourceIndex(bindings) : bindings.NullBufferIndex());
+					}
+					else
+					{
+						vkdImage* image = m_Resources[b.m_Index] ? m_Resources[b.m_Index] : context.NullTexture();
+						bindings.SetTexture(b.m_Slot, image->SampledIndex(bindings));
+					}
 				}
 			}
 			for (const Binding& b : shader->m_Samplers)

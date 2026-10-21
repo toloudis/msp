@@ -267,6 +267,7 @@ namespace gvk
 					break;
 				case SPV_REFLECT_DESCRIPTOR_TYPE_STORAGE_BUFFER:
 					resource.m_bBuffer = true;
+					resource.m_bStorageBuffer = true;
 					break;
 				default:
 					break;

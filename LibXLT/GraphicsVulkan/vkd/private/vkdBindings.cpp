@@ -49,30 +49,52 @@ namespace gvk
 		properties.pNext = &heap;
 		vkGetPhysicalDeviceProperties2(i_Device.Physical(), &properties);
 
-		const VkDeviceSize image_size = std::max(
+		//	Images and buffers share the resource heap: each entry fits either
+		const VkDeviceSize resource_size = std::max({
 			vkGetPhysicalDeviceDescriptorSizeEXT(i_Device.Physical(), VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE),
-			vkGetPhysicalDeviceDescriptorSizeEXT(i_Device.Physical(), VK_DESCRIPTOR_TYPE_STORAGE_IMAGE));
-		const VkDeviceSize image_stride = align_up(image_size, heap.imageDescriptorAlignment);
+			vkGetPhysicalDeviceDescriptorSizeEXT(i_Device.Physical(), VK_DESCRIPTOR_TYPE_STORAGE_IMAGE),
+			vkGetPhysicalDeviceDescriptorSizeEXT(i_Device.Physical(), VK_DESCRIPTOR_TYPE_STORAGE_BUFFER)});
+		const VkDeviceSize resource_stride = align_up(resource_size,
+			std::max(heap.imageDescriptorAlignment, heap.bufferDescriptorAlignment));
 		const VkDeviceSize sampler_stride = align_up(
 			vkGetPhysicalDeviceDescriptorSizeEXT(i_Device.Physical(), VK_DESCRIPTOR_TYPE_SAMPLER), heap.samplerDescriptorAlignment);
 
-		create_heap(m_Resources, c_MaxImages, image_stride, heap.minResourceHeapReservedRange,
+		create_heap(m_Resources, c_MaxImages, resource_stride, heap.minResourceHeapReservedRange,
 					heap.resourceHeapAlignment, "vkdBindings resource heap");
 		create_heap(m_Samplers, c_MaxSamplers, sampler_stride, heap.minSamplerHeapReservedRange,
 					heap.samplerHeapAlignment, "vkdBindings sampler heap");
 
-		m_pFreeImages = std::make_shared<FreeImages>();
-		m_pFreeImages->m_Indices.reserve(c_MaxImages);
+		m_pFreeIndices = std::make_shared<FreeIndices>();
+		m_pFreeIndices->m_Indices.reserve(c_MaxImages);
 		for (uint32_t i = c_MaxImages; i > 0; --i)
 		{
-			m_pFreeImages->m_Indices.push_back(i - 1);		// index 0 first
+			m_pFreeIndices->m_Indices.push_back(i - 1);		// index 0 first
 		}
 		build_mappings();
+
+		//	The null buffer: host-visible, so it is zeroed without a command
+		VkBufferCreateInfo info = {VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO};
+		info.size = c_NullBufferSize;
+		info.usage = VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT;
+		VmaAllocationCreateInfo allocation_info = {};
+		allocation_info.usage = VMA_MEMORY_USAGE_AUTO;
+		allocation_info.flags = VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT | VMA_ALLOCATION_CREATE_MAPPED_BIT;
+		allocation_info.requiredFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+		VmaAllocationInfo mapped = {};
+		VK_CHECK(vmaCreateBuffer(i_Device.Allocator(), &info, &allocation_info, &m_NullBuffer, &m_NullAllocation, &mapped));
+		memset(mapped.pMappedData, 0, static_cast<size_t>(c_NullBufferSize));
+		i_Device.SetName(VK_OBJECT_TYPE_BUFFER, reinterpret_cast<uint64_t>(m_NullBuffer), "vkdBindings null buffer");
+		VkBufferDeviceAddressInfo address = {VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO};
+		address.buffer = m_NullBuffer;
+		m_NullBufferIndex = AddBuffer(vkGetBufferDeviceAddress(i_Device.Device(), &address), c_NullBufferSize);
 	}
 
 	vkdBindings::~vkdBindings()
 	{
 		VmaAllocator allocator = m_Device.Allocator();
+		VkBuffer null_buffer = m_NullBuffer;
+		VmaAllocation null_allocation = m_NullAllocation;
+		m_Device.DeferDestroy([allocator, null_buffer, null_allocation]() { vmaDestroyBuffer(allocator, null_buffer, null_allocation); });
 		for (Heap* heap : {&m_Resources, &m_Samplers})
 		{
 			VkBuffer buffer = heap->m_Buffer;
@@ -139,10 +161,14 @@ namespace gvk
 			m->sourceData.indirectIndex.heapIndexStride = static_cast<uint32_t>(i_Stride);
 			m->sourceData.indirectIndex.heapArrayStride = static_cast<uint32_t>(i_Stride);
 		};
+		//	A StructuredBuffer at a t register is a storage buffer. DXC marks its
+		//	block's member NonWritable, not the variable, which makes it a
+		//	read-write one to VK_EXT_descriptor_heap: both kinds map here
 		for (uint32_t slot = 0; slot < c_TextureSlots; ++slot)
 		{
 			indexed(c_TextureBinding + slot,
-					VK_SPIRV_RESOURCE_TYPE_SAMPLED_IMAGE_BIT_EXT | VK_SPIRV_RESOURCE_TYPE_READ_ONLY_IMAGE_BIT_EXT,
+					VK_SPIRV_RESOURCE_TYPE_SAMPLED_IMAGE_BIT_EXT | VK_SPIRV_RESOURCE_TYPE_READ_ONLY_IMAGE_BIT_EXT |
+					VK_SPIRV_RESOURCE_TYPE_READ_ONLY_STORAGE_BUFFER_BIT_EXT | VK_SPIRV_RESOURCE_TYPE_READ_WRITE_STORAGE_BUFFER_BIT_EXT,
 					c_TexturesOffset + slot * 4, m_Resources.m_Stride);
 		}
 		for (uint32_t slot = 0; slot < c_SamplerSlots; ++slot)
@@ -161,16 +187,18 @@ namespace gvk
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
+	uint32_t vkdBindings::take_index()
+	{
+		std::lock_guard<std::mutex> lock(m_pFreeIndices->m_Lock);
+		DBG_ASSERT(!m_pFreeIndices->m_Indices.empty(), "vkdBindings: resource heap full (" << c_MaxImages << " images and buffers)");
+		const uint32_t index = m_pFreeIndices->m_Indices.back();
+		m_pFreeIndices->m_Indices.pop_back();
+		return index;
+	}
+
 	uint32_t vkdBindings::AddImage(const VkImageViewCreateInfo& i_View, VkDescriptorType i_Type)
 	{
-		uint32_t index;
-		{
-			std::lock_guard<std::mutex> lock(m_pFreeImages->m_Lock);
-			DBG_ASSERT(!m_pFreeImages->m_Indices.empty(), "vkdBindings: resource heap full (" << c_MaxImages << " images)");
-			index = m_pFreeImages->m_Indices.back();
-			m_pFreeImages->m_Indices.pop_back();
-		}
-
+		const uint32_t index = take_index();
 		VkImageDescriptorInfoEXT image = {VK_STRUCTURE_TYPE_IMAGE_DESCRIPTOR_INFO_EXT};
 		image.pView = &i_View;
 		image.layout = VK_IMAGE_LAYOUT_GENERAL;
@@ -183,9 +211,22 @@ namespace gvk
 		return index;
 	}
 
-	void vkdBindings::RemoveImage(uint32_t i_Index)
+	uint32_t vkdBindings::AddBuffer(VkDeviceAddress i_Address, VkDeviceSize i_Size)
 	{
-		std::shared_ptr<FreeImages> free = m_pFreeImages;
+		const uint32_t index = take_index();
+		VkDeviceAddressRangeEXT range = {i_Address, i_Size};
+		VkResourceDescriptorInfoEXT info = {VK_STRUCTURE_TYPE_RESOURCE_DESCRIPTOR_INFO_EXT};
+		info.type = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+		info.data.pAddressRange = &range;
+		VkHostAddressRangeEXT destination = {m_Resources.m_pCpu + index * m_Resources.m_Stride,
+											 static_cast<size_t>(m_Resources.m_Stride)};
+		VK_CHECK(vkWriteResourceDescriptorsEXT(m_Device.Device(), 1, &info, &destination));
+		return index;
+	}
+
+	void vkdBindings::RemoveResource(uint32_t i_Index)
+	{
+		std::shared_ptr<FreeIndices> free = m_pFreeIndices;
 		m_Device.DeferDestroy([free, i_Index]()
 		{
 			std::lock_guard<std::mutex> lock(free->m_Lock);

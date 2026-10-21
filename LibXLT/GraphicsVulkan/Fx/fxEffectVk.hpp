@@ -50,6 +50,7 @@
 
 namespace gvk
 {
+	class vkdBuffer;
 	class vkdDevice;
 	class vkdImage;
 
@@ -92,6 +93,8 @@ namespace gvk
 		typedef vkdShaderType Type;
 
 		// Handle to a texture/buffer (t register) slot in the resource table.
+		// A StructuredBuffer's slot takes a vkdBuffer (SetBuffer), any other
+		// an image (SetResource).
 		struct Resource
 		{
 			int m_Index = -1;
@@ -177,12 +180,16 @@ namespace gvk
 		// A 4x4 matrix given row-major; transposed on the way in when the
 		// shader stores it column-major.
 		void SetMatrix(const Constant& i_Constant, const float* i_pRowMajor4x4);
-		void SetResource(const Resource& i_Resource, vkdImage* i_pImage);
+		// false (and nothing set) if the slot is a buffer's / an image's
+		bool SetResource(const Resource& i_Resource, vkdImage* i_pImage);
+		bool SetBuffer(const Resource& i_Resource, vkdBuffer* i_pBuffer);
+		bool IsBufferResource(const Resource& i_Resource) const;
 		void SetUnorderedAccess(const UnorderedAccess& i_UAV, vkdImage* i_pImage);
 
 		// Read back what was written (or the default), for the material UI.
 		void GetConstant(const Constant& i_Constant, void* o_pData, uint32_t i_Bytes) const;
 		vkdImage* GetResource(const Resource& i_Resource) const;
+		vkdBuffer* GetBuffer(const Resource& i_Resource) const;
 
 		// Whole constant buffers, by the cbuffer's name in the .hlsl (see
 		// fxMaterialInstance).
@@ -258,6 +265,7 @@ namespace gvk
 		uint32_t sampler_index(int i_Sampler);
 		void apply_defaults();
 		void forget_image(const vkdImage* i_pImage);	// unbinds an image being destroyed
+		void forget_buffer(const vkdBuffer* i_pBuffer);	// unbinds a buffer being destroyed
 
 		fxEffectDesc m_Desc;
 		std::vector<std::string> m_BoolNames;
@@ -266,6 +274,8 @@ namespace gvk
 		std::vector<ConstantBuffer> m_ConstantBuffers;
 		std::map<std::string, Variable> m_Variables;
 		std::vector<vkdImage*> m_Resources;
+		std::vector<vkdBuffer*> m_ResourceBuffers;				// by resource index, for StructuredBuffer slots
+		std::vector<bool> m_ResourceIsBuffer;					// by resource index
 		std::map<std::string, int> m_ResourceNames;
 		std::vector<vkdImage*> m_UnorderedAccess;
 		std::map<std::string, int> m_UnorderedAccessNames;
@@ -275,5 +285,6 @@ namespace gvk
 		std::map<std::string, int> m_SamplerNames;
 		vkdDevice* m_pDevice = nullptr;							// the device it was made on (none for reflection only)
 		int m_ImageDestroyHook = 0;								// its vkdDevice::AddImageDestroyHook id
+		int m_BufferDestroyHook = 0;							// its vkdDevice::AddBufferDestroyHook id
 	};
 }

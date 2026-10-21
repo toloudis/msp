@@ -248,6 +248,8 @@ namespace gvk
 		bool						m_bInHook = false;
 		std::vector<std::pair<int, std::function<void(const vkdImage*)>>>	m_ImageDestroyHooks;
 		int							m_NextImageDestroyHook = 1;
+		std::vector<std::pair<int, std::function<void(const vkdBuffer*)>>>	m_BufferDestroyHooks;
+		int							m_NextBufferDestroyHook = 1;
 
 		struct Deferred
 		{
@@ -653,6 +655,37 @@ namespace gvk
 		for (const auto& hook : m_pImpl->m_ImageDestroyHooks)
 		{
 			hook.second(i_pImage);
+		}
+	}
+
+	int vkdDevice::AddBufferDestroyHook(std::function<void(const vkdBuffer*)> i_Hook)
+	{
+		std::lock_guard<std::recursive_mutex> lock(m_pImpl->m_StreamLock);
+		const int id = m_pImpl->m_NextBufferDestroyHook++;
+		m_pImpl->m_BufferDestroyHooks.push_back(std::make_pair(id, i_Hook));
+		return id;
+	}
+
+	void vkdDevice::RemoveBufferDestroyHook(int i_Id)
+	{
+		std::lock_guard<std::recursive_mutex> lock(m_pImpl->m_StreamLock);
+		auto& hooks = m_pImpl->m_BufferDestroyHooks;
+		for (auto it = hooks.begin(); it != hooks.end(); ++it)
+		{
+			if (it->first == i_Id)
+			{
+				hooks.erase(it);
+				return;
+			}
+		}
+	}
+
+	void vkdDevice::BufferDestroyed(const vkdBuffer* i_pBuffer)
+	{
+		std::lock_guard<std::recursive_mutex> lock(m_pImpl->m_StreamLock);
+		for (const auto& hook : m_pImpl->m_BufferDestroyHooks)
+		{
+			hook.second(i_pBuffer);
 		}
 	}
 

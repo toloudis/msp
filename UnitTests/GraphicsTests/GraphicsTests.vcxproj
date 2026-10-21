@@ -185,6 +185,7 @@
       <Outputs>$(IntDir)%(Filename)VS.h;$(IntDir)%(Filename)PS.h;$(IntDir)%(Filename)LodPS.h;$(IntDir)%(Filename)DerivPS.h</Outputs>
     </CustomBuild>
     <CustomBuild Include="Vk\Shaders\gtSolid.hlsl" />
+    <CustomBuild Include="Vk\Shaders\gtStructuredRead.hlsl" />
     <CustomBuild Include="Vk\Shaders\gtTexel.hlsl" />
     <CustomBuild Include="Vk\Shaders\gtTexel3D.hlsl">
       <AdditionalInputs>%(RootDir)%(Directory)gtTexel.hlsl</AdditionalInputs>

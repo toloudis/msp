@@ -131,6 +131,13 @@ namespace
 			i_Type.m_Type != fx_SVT_STRING && i_Type.m_Type != fx_SVT_SAMPLER;
 	}
 
+	// a StructuredBuffer or ByteAddressBuffer: bound as a vkdBuffer
+	bool is_buffer(const TypeInfo& i_Type)
+	{
+		return i_Type.m_Class == fx_SVC_OBJECT &&
+			(i_Type.m_Type == fx_SVT_STRUCTURED_BUFFER || i_Type.m_Type == fx_SVT_BYTEADDRESS_BUFFER);
+	}
+
 	uint32_t register_stride(const TypeInfo& i_Type)
 	{
 		return (i_Type.GetElementSize() + 15) & ~15u;
@@ -363,12 +370,37 @@ public:
 		return true;
 	}
 
+	using fxEffectVariable::SetResource;
 	virtual bool SetResource(vkdImage* i_pImage)
 	{
 		if (m_Kind == e_Resource)
-			Effect()->SetResource(m_Resource, i_pImage);
-		else if (m_Kind == e_Shadow && is_resource(m_TypeInfo))
+			return Effect()->SetResource(m_Resource, i_pImage);
+		else if (m_Kind == e_Shadow && is_resource(m_TypeInfo) && !is_buffer(m_TypeInfo))
 			m_pShadowView = i_pImage;
+		else
+			return false;
+		return true;
+	}
+	virtual bool SetResource(vkdBuffer* i_pBuffer)
+	{
+		if (m_Kind == e_Resource)
+			return Effect()->SetBuffer(m_Resource, i_pBuffer);
+		else if (m_Kind == e_Shadow && is_buffer(m_TypeInfo))
+			m_pShadowBuffer = i_pBuffer;
+		else
+			return false;
+		return true;
+	}
+	virtual bool UnbindResource()
+	{
+		if (m_Kind == e_Resource)
+			return Effect()->IsBufferResource(m_Resource) ? Effect()->SetBuffer(m_Resource, nullptr)
+				: Effect()->SetResource(m_Resource, (vkdImage*)nullptr);
+		else if (m_Kind == e_Shadow && is_resource(m_TypeInfo))
+		{
+			m_pShadowView = nullptr;
+			m_pShadowBuffer = nullptr;
+		}
 		else
 			return false;
 		return true;
@@ -566,6 +598,7 @@ private:
 	fxEffectVk::UnorderedAccess m_UnorderedAccess;
 	std::vector<uint8_t> m_Shadow;
 	vkdImage* m_pShadowView = nullptr;
+	vkdBuffer* m_pShadowBuffer = nullptr;
 	std::map<std::string, std::unique_ptr<Variable>> m_Children;	// members, elements, @annotations
 };
 

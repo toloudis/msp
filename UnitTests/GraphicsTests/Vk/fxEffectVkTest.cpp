@@ -10,6 +10,9 @@
 \****************************************************************************/
 #include "Vk/gtVulkan.hpp"
 
+#ifndef GVK_EFFPLAINEFFECTVK_HPP
+#include "GraphicsVulkan/Eff/effPlainEffectVk.hpp"
+#endif
 #ifndef GVK_FXEMBEDDEDSHADERSVK_HPP
 #include "GraphicsVulkan/Fx/fxEmbeddedShadersVk.hpp"
 #endif
@@ -18,6 +21,9 @@
 #endif
 #ifndef GVK_VKDBINDINGS_HPP
 #include "GraphicsVulkan/vkd/vkdBindings.hpp"
+#endif
+#ifndef GVK_VKDBUFFER_HPP
+#include "GraphicsVulkan/vkd/vkdBuffer.hpp"
 #endif
 #ifndef GVK_VKDCONTEXT_HPP
 #include "GraphicsVulkan/vkd/vkdContext.hpp"
@@ -390,4 +396,64 @@ TEST_F(fxEffectVkTest, DestroyedTextureIsUnbound)
 	Draw();
 	const std::vector<uint8_t> image = Read();
 	EXPECT_TRUE(near_color(image, 32, 32, 0, 0, 255, 255)) << describe(image, 32, 32);
+}
+
+//	A StructuredBuffer variable (HairDefault's g_HairGeometry, at t38) takes a
+//	vkdBuffer through the fxEffect API, and a texture variable doesn't (nor
+//	does the buffer variable take an image), as DX11's type check refuses.
+//	A buffer destroyed while bound is let go, as images are: the effect then
+//	binds the null buffer, and drawing stays clean
+TEST_F(fxEffectVkTest, BufferVariableBindsBuffer)
+{
+	std::string error;
+	std::unique_ptr<fxEffectVk> created = fxEmbeddedShadersVk::CreateVk(*fxEmbeddedShadersVk::Find("HairDefault"), &Device(), error);
+	ASSERT_TRUE(created != nullptr) << error;
+	fxEffectVk* hair = created.get();
+	effPlainEffectVk effect(std::move(created), "Special/HairDefault.effect.json");
+	const fxEffectVk::Resource geometry_handle = hair->FindResource("g_HairGeometry");
+	ASSERT_TRUE(geometry_handle.IsValid());
+	ASSERT_TRUE(hair->FindResource("depthMap").IsValid());
+
+	const float points[2][3] = { { -0.5f, 0, 0.5f }, { 0.5f, 0, 0.5f } };
+	std::unique_ptr<vkdBuffer> buffer = vkdBuffer::Create(Device(), sizeof(points), VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, "g_HairGeometry");
+	buffer->Upload(*m_pContext, 0, points, sizeof(points));
+	fxEffectVariable* geometry = effect.GetVariableByName("g_HairGeometry")->AsShaderResource();
+	fxEffectVariable* depth = effect.GetVariableByName("depthMap")->AsShaderResource();
+	EXPECT_TRUE(geometry->SetResource(buffer.get()));
+	EXPECT_EQ(buffer.get(), hair->GetBuffer(geometry_handle));
+	EXPECT_FALSE(depth->SetResource(buffer.get()));
+	std::unique_ptr<vkdImage> image = vkdImage::Create2D(Device(), 1, 1, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT, "image");
+	EXPECT_FALSE(geometry->SetResource(image.get()));
+	EXPECT_EQ(buffer.get(), hair->GetBuffer(geometry_handle));
+	EXPECT_TRUE(depth->SetResource(image.get()));
+	EXPECT_TRUE(depth->SetResource(NULL));		// D3D code unbinds with NULL, of either kind
+	EXPECT_TRUE(geometry->SetResource(NULL));
+	EXPECT_EQ(nullptr, hair->GetBuffer(geometry_handle));
+	EXPECT_TRUE(geometry->SetResource(buffer.get()));
+
+	//	Simple / PLines: VS, GS and PS (no hull shader); the VS reads g_HairGeometry
+	const int technique = hair->FindTechnique("Simple");
+	auto draw = [&]()
+	{
+		vkdContext& c = *m_pContext;
+		vkdImage* target = m_pTarget.get();
+		c.SetRenderTargets(1, &target, nullptr);
+		vkdViewport viewport;
+		viewport.m_Width = viewport.m_Height = (float)c_Size;
+		c.SetViewports(1, &viewport);
+		const float blue[4] = { 0, 0, 1, 1 };
+		c.ClearRenderTarget(target, blue);
+		hair->Apply(technique, 2);		// PDefault, PTess, PLines, PLinesTess
+		c.SetVertexLayout(nullptr);
+		c.SetTopology(VK_PRIMITIVE_TOPOLOGY_LINE_STRIP);
+		c.Draw(2, 0);
+		m_pContext->Flush();
+	};
+	draw();
+	buffer.reset();
+	EXPECT_EQ(nullptr, hair->GetBuffer(geometry_handle));
+	draw();
+	Device().WaitIdle();
+	EXPECT_EQ(0, m_Validation.Stats().m_Errors);
+	EXPECT_EQ(0, m_Validation.Stats().m_Warnings);
 }

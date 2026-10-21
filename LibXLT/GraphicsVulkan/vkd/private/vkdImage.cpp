@@ -296,7 +296,7 @@ namespace gvk
 			{
 				if (index != UINT32_MAX)
 				{
-					m_pBindings->RemoveImage(index);
+					m_pBindings->RemoveResource(index);
 				}
 			}
 		}

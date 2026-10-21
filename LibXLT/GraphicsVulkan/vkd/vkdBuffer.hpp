@@ -6,7 +6,9 @@
 **	DX11's default-usage buffers are with initial data or
 **	UpdateSubresource. Buffers DX11 maps with WRITE_DISCARD don't use it:
 **	they are written to the ring per use (vkdContext::Upload). It has a
-**	device address. Destruction is deferred until the GPU is done with it.
+**	device address. Made with STORAGE_BUFFER usage, a shader reads it as a
+**	StructuredBuffer through ResourceIndex(). Destruction is deferred until
+**	the GPU is done with it.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -23,6 +25,7 @@ typedef struct VmaAllocation_T* VmaAllocation;
 
 namespace gvk
 {
+	class vkdBindings;
 	class vkdContext;
 	class vkdDevice;
 
@@ -42,6 +45,10 @@ namespace gvk
 			VkDeviceAddress	Address() const		{ return m_Address; }
 			VkDeviceSize	Size() const		{ return m_Size; }
 
+			//	Its read-only storage-buffer descriptor in i_Bindings' resource
+			//	heap (made on first use; one vkdBindings per buffer)
+			uint32_t ResourceIndex(vkdBindings& i_Bindings);
+
 		private:
 			vkdBuffer(vkdDevice& i_Device) : m_Device(i_Device) {}
 			vkdBuffer(const vkdBuffer&) = delete;
@@ -52,5 +59,7 @@ namespace gvk
 			VmaAllocation	m_Allocation = nullptr;
 			VkDeviceAddress	m_Address = 0;
 			VkDeviceSize	m_Size = 0;
+			vkdBindings*	m_pBindings = nullptr;
+			uint32_t		m_ResourceIndex = UINT32_MAX;
 	};
 }

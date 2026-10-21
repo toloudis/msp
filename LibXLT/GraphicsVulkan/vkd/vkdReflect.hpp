@@ -98,6 +98,7 @@ namespace gvk
 		bool		m_bArrayed = false;
 		bool		m_bMultisampled = false;
 		bool		m_bBuffer = false;	// structured/byte-address/typed buffer
+		bool		m_bStorageBuffer = false;	// structured/byte-address buffer (a storage buffer, not a texel buffer)
 	};
 
 	struct vkdShaderInput			// a vertex shader input with a location

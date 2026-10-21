@@ -10,7 +10,8 @@
 **      - HRESULT -> bool (true where D3D code tested SUCCEEDED)
 **      - LPCSTR -> const char*, UINT -> uint32_t, BYTE/SIZE_T dropped
 **      - D3D_SHADER_VARIABLE_CLASS / _TYPE -> fxVarClass / fxVarType (same values)
-**      - ID3D11ShaderResourceView* / ID3D11UnorderedAccessView* -> vkdImage*
+**      - ID3D11ShaderResourceView* / ID3D11UnorderedAccessView* -> vkdImage*,
+**        or vkdBuffer* for a StructuredBuffer's view
 **      - fxEffectPass::Apply(flags) binds through vkdGlobal::Context()
 **      - fxEffectPassDesc has no input signature: Vulkan matches vertex
 **        inputs to the layout by semantic when the pipeline is created
@@ -28,10 +29,12 @@
 #include "GraphicsVulkan/vkd/vkdReflect.hpp"
 #endif
 
+#include <cstddef>
 #include <cstdint>
 
 namespace gvk
 {
+class vkdBuffer;
 class vkdImage;
 class fxEffectVariable;
 
@@ -131,7 +134,15 @@ public:
 
 	virtual bool GetString(const char** o_pValue) = 0;
 
+	// A texture variable takes an image and a StructuredBuffer variable a
+	// buffer; the other kind fails (false, nothing set).
 	virtual bool SetResource(vkdImage* i_pImage) = 0;
+	virtual bool SetResource(vkdBuffer* i_pBuffer) = 0;
+	// D3D code unbinds with SetResource(NULL), which the two overloads above
+	// would make ambiguous: NULL (0 in MSVC) or nullptr unbinds either kind.
+	bool SetResource(int /*i_Null*/) { return UnbindResource(); }
+	bool SetResource(std::nullptr_t) { return UnbindResource(); }
+	virtual bool UnbindResource() = 0;
 	virtual bool GetResource(vkdImage** o_ppImage) = 0;
 	virtual bool SetUnorderedAccessView(vkdImage* i_pImage) = 0;
 

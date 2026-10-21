@@ -43,6 +43,7 @@ typedef struct VmaAllocator_T* VmaAllocator;
 
 namespace gvk
 {
+	class vkdBuffer;
 	class vkdImage;
 
 	struct vkdDeviceOptions
@@ -117,6 +118,10 @@ namespace gvk
 			int AddImageDestroyHook(std::function<void(const vkdImage*)> i_Hook);
 			void RemoveImageDestroyHook(int i_Id);
 			void ImageDestroyed(const vkdImage* i_pImage);
+			//	The same for each vkdBuffer (fxEffectVk binds structured buffers)
+			int AddBufferDestroyHook(std::function<void(const vkdBuffer*)> i_Hook);
+			void RemoveBufferDestroyHook(int i_Id);
+			void BufferDestroyed(const vkdBuffer* i_pBuffer);
 
 			//	Runs i_Destroy once the GPU has finished all work submitted so
 			//	far, including the open command buffer.

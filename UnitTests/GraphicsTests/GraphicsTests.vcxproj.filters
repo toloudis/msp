@@ -200,6 +200,9 @@
     <CustomBuild Include="Vk\Shaders\gtAniso.hlsl">
       <Filter>Vk\Shaders</Filter>
     </CustomBuild>
+    <CustomBuild Include="Vk\Shaders\gtStructuredRead.hlsl">
+      <Filter>Vk\Shaders</Filter>
+    </CustomBuild>
     <CustomBuild Include="Vk\Shaders\gtSolid.hlsl">
       <Filter>Vk\Shaders</Filter>
     </CustomBuild>

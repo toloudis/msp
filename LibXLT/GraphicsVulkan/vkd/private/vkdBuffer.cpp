@@ -8,6 +8,9 @@
 #ifndef GVK_VKDBUFFER_HPP
 #include "GraphicsVulkan/vkd/vkdBuffer.hpp"
 #endif
+#ifndef GVK_VKDBINDINGS_HPP
+#include "GraphicsVulkan/vkd/vkdBindings.hpp"
+#endif
 #ifndef GVK_VKDCONTEXT_HPP
 #include "GraphicsVulkan/vkd/vkdContext.hpp"
 #endif
@@ -44,8 +47,25 @@ namespace gvk
 		return buffer;
 	}
 
+	uint32_t vkdBuffer::ResourceIndex(vkdBindings& i_Bindings)
+	{
+		DBG_ASSERT(!m_pBindings || m_pBindings == &i_Bindings, "vkdBuffer: registered with another vkdBindings");
+		if (m_ResourceIndex == UINT32_MAX)
+		{
+			m_pBindings = &i_Bindings;
+			m_ResourceIndex = i_Bindings.AddBuffer(m_Address, m_Size);
+		}
+		return m_ResourceIndex;
+	}
+
 	vkdBuffer::~vkdBuffer()
 	{
+		//	Not bound to an effect any more (fxEffectVk)
+		m_Device.BufferDestroyed(this);
+		if (m_pBindings)
+		{
+			m_pBindings->RemoveResource(m_ResourceIndex);
+		}
 		VmaAllocator allocator = m_Device.Allocator();
 		VkBuffer buffer = m_Buffer;
 		VmaAllocation allocation = m_Allocation;
