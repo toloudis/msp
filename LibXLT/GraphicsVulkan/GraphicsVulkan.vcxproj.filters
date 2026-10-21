@@ -154,8 +154,11 @@
     <ClCompile Include="G3d\private\g3dLightMgrVk.cpp">
       <Filter>G3d\private</Filter>
     </ClCompile>
-    <ClCompile Include="stub\private\g2dStubsVk.cpp">
-      <Filter>stub\private</Filter>
+    <ClCompile Include="G2d\private\g2dResourceCounterVk.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dDebugDisplay.cpp">
+      <Filter>G2d\private</Filter>
     </ClCompile>
     <ClCompile Include="stub\private\g3dStubsVk.cpp">
       <Filter>stub\private</Filter>
@@ -608,8 +611,11 @@
     <ClInclude Include="G3d\g3dLightMgrVk.hpp">
       <Filter>G3d</Filter>
     </ClInclude>
-    <ClInclude Include="stub\g2dStubsVk.hpp">
-      <Filter>stub</Filter>
+    <ClInclude Include="G2d\g2dResourceCounterVk.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dDebugDisplay.hpp">
+      <Filter>G2d</Filter>
     </ClInclude>
     <ClInclude Include="stub\g3dStubsVk.hpp">
       <Filter>stub</Filter>

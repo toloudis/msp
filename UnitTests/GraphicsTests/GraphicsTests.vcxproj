@@ -153,6 +153,7 @@
     <ClCompile Include="Vk\g2dCaptureVkTest.cpp" />
     <ClCompile Include="Vk\g2dImageVkTest.cpp" />
     <ClCompile Include="Vk\g2dImageSaveVkTest.cpp" />
+    <ClCompile Include="Vk\g2dResourceCounterVkTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />

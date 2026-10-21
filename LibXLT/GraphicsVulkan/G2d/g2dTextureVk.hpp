@@ -14,8 +14,8 @@
 #endif
 #define GVK_G2DTEXTUREVK_HPP
 
-#ifndef GVK_G2DSTUBSVK_HPP
-#include "GraphicsVulkan/stub/g2dStubsVk.hpp"
+#ifndef GVK_G2DRESOURCECOUNTERVK_HPP
+#include "GraphicsVulkan/G2d/g2dResourceCounterVk.hpp"
 #endif
 
 #include <cstdint>
@@ -58,6 +58,9 @@ namespace gvk
 		uint32_t m_Format;
 		int m_MipLevels;
 		std::unique_ptr<vkdImage> m_pImage;
+
+		//	The KB counted (g2dTextureDX11::GetSize)
+		float GetSize();
 	};
 
 	//	The usage every texture image gets: sampled, written from the CPU and

@@ -35,6 +35,12 @@
 #ifndef GVK_VKDGLOBAL_HPP
 #include "GraphicsVulkan/vkd/vkdGlobal.hpp"
 #endif
+#ifndef GVK_G2DDEBUGDISPLAY_HPP
+#include "GraphicsVulkan/G2d/g2dDebugDisplay.hpp"
+#endif
+#ifndef G2D_RESOURCECOUNTER_HPP
+#include "Graphics/G2d/g2dResourceCounter.hpp"
+#endif
 #ifndef GVK_G2DFULLSCREENQUAD_HPP
 #include "GraphicsVulkan/G2d/g2dFullscreenQuad.hpp"
 #endif
@@ -67,7 +73,10 @@
 #endif
 
 #include <algorithm>
+#include <iomanip>
 #include <mutex>
+#include <sstream>
+#include <string>
 
 namespace gvk
 {
@@ -88,6 +97,8 @@ namespace gvk
 		, m_Swapchain(i_Device, i_Hwnd, window_name(i_Hwnd))
 		, m_FPSAverage(600)
 	{
+		m_pDebugDisplay.reset(new g2dDebugDisplay(*this));
+
 		int width = i_Width;
 		int height = i_Height;
 		if (width < 0 || height < 0)
@@ -103,6 +114,7 @@ namespace gvk
 		m_Device.WaitIdle();
 		m_pOffscreen.reset();
 		m_Depth.reset();
+		m_pDebugDisplay.reset();
 		if (m_bOwnHwnd)
 		{
 			appApplication::DestroySubWindow(m_Hwnd);
@@ -245,10 +257,52 @@ namespace gvk
 		}
 	}
 
+	//	g2dWindowDX11::EndScene: the frame rate, and the debug overlay
 	void g2dWindowVk::EndScene()
 	{
 		mark_frame();
+
+		// we want the average fps to be kept track of even if we are not viewing it
 		m_FPSAverage.Push(m_FrameRate);
+
+		std::string line;
+		std::ostringstream oss;
+		oss.setf(std::ios::fixed, std::ios::floatfield);
+
+		oss << "app fps:     "<<std::setprecision(2)<<m_FrameRate<<" "<<std::setprecision(1)<<std::setw(3)<<1000.0f/m_FrameRate<<" ms";
+		line = oss.str();
+		m_pDebugDisplay->SetDebugInfo(0, line.c_str());
+
+		oss.str("");
+		oss << "app avg fps: "<<std::setprecision(2)<<m_FPSAverage.GetAverage()<<" "<<std::setprecision(1)<<std::setw(3)<<1000.0f/m_FPSAverage.GetAverage()<<" ms";
+		line = oss.str();
+		m_pDebugDisplay->SetDebugInfo(1, line.c_str());
+
+		float ge = g2dResourceCounter::GetTotalVertexBufferMemory() + g2dResourceCounter::GetTotalIndexBufferMemory();
+		oss.str("");
+		oss << "Geometry: "<<std::setprecision(2)<<std::setw(6)<<ge/1024.0f<<" MB";
+		line = oss.str();
+		m_pDebugDisplay->SetDebugInfo(2, line.c_str());
+
+		float tx = g2dResourceCounter::GetTotalSceneTextureMemory();
+		oss.str("");
+		oss << "Textures: "<<std::setprecision(2)<<std::setw(6)<<tx/1024.0f<<" MB";
+		line = oss.str();
+		m_pDebugDisplay->SetDebugInfo(3, line.c_str());
+
+		float sh = g2dResourceCounter::GetTotalShadowMapMemory();
+		oss.str("");
+		oss << "Shadows: "<<std::setprecision(2)<<std::setw(6)<<sh/1024.0f<<" MB";
+		line = oss.str();
+		m_pDebugDisplay->SetDebugInfo(4, line.c_str());
+
+		float fb = g2dResourceCounter::GetTotalFramebufferMemory();
+		oss.str("");
+		oss << "Framebuffers: "<<std::setprecision(2)<<std::setw(6)<<fb/1024.0f<<" MB";
+		line = oss.str();
+		m_pDebugDisplay->SetDebugInfo(5, line.c_str());
+
+		m_pDebugDisplay->Render();
 	}
 
 	//	As DX11: opaque colour, and the depth buffer cleared to 1.
@@ -306,19 +360,12 @@ namespace gvk
 
 	void g2dWindowVk::EnableDebugOverlay(bool i_bEnabled)
 	{
-		m_bDebugOverlay = i_bEnabled;
+		m_pDebugDisplay->EnableDebugOverlay(i_bEnabled);
 	}
 
 	void g2dWindowVk::SetDebugInfo(int i_Line, const char* i_Text)
 	{
-		if (i_Text)
-		{
-			m_DebugLines[i_Line] = i_Text;
-		}
-		else
-		{
-			m_DebugLines.erase(i_Line);
-		}
+		m_pDebugDisplay->SetDebugInfo(i_Line, i_Text);
 	}
 
 	void g2dWindowVk::DrawRect(int i_X1, int i_Y1, int i_X2, int i_Y2, const g2dRGBColor& i_Color)
@@ -426,11 +473,6 @@ namespace gvk
 
 	void g2dWindowVk::Present()
 	{
-		if (m_bDebugOverlay && !m_DebugLines.empty())
-		{
-			GVK_NOT_YET("g2dWindowVk debug overlay");
-		}
-
 		// When rendering offscreen, draw the image scaled to fit the window,
 		// centered, with black bars where the aspect ratios differ
 		if (is_offscreen() && m_Swapchain.Acquire())

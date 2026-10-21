@@ -21,6 +21,9 @@
 #ifndef GVK_VKDGLOBAL_HPP
 #include "GraphicsVulkan/vkd/vkdGlobal.hpp"
 #endif
+#ifndef GVK_G2DVKGLOBAL_HPP
+#include "GraphicsVulkan/G2d/g2dVkGlobal.hpp"
+#endif
 #ifndef G2D_EXCEPTIONX_HPP
 #include "Graphics/G2d/g2dExceptionX.hpp"
 #endif
@@ -42,6 +45,7 @@ namespace gvk
 
 	g2dRenderTargetTextureVk::~g2dRenderTargetTextureVk()
 	{
+		g2dResourceCounterVk::RemoveResource(GetSize(), m_Category);
 	}
 
 	//------------------------------------------------------------------------
@@ -75,7 +79,18 @@ namespace gvk
 		m_Height = i_Height;
 		m_Multisample = i_Multisample;
 		m_Mips = i_bGenerateMips ? 0 : 1;
+
 		m_Category = i_Category;
+		g2dResourceCounterVk::AddResource(GetSize(), i_Category);
+	}
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	float g2dRenderTargetTextureVk::GetSize()
+	{
+		int bpp = g2dVkGlobal::BitsPerPixel(m_Format);
+		float size = (float)m_Width*(float)m_Height*(bpp/8) / 1024.0f;
+		return m_Mips ? size : (size * 3.0f/2.0f);	//0 is full mip chain
 	}
 
 	//	D3D renders to mip 0 of a render target view of the whole texture;

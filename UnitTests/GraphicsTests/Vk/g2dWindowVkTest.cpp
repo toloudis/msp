@@ -7,8 +7,8 @@
 **      with the whole layer up (gtBackend): a scene in a window equals the
 **      same scene in a render-target texture, survives resizes and a 0x0
 **      window, renders at another resolution (scaled into the window),
-**      and DrawRect / DrawImage match DX11's window. Skipped without a
-**      Vulkan device.
+**      and DrawRect / DrawImage and the debug overlay match DX11's
+**      window. Skipped without a Vulkan device.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -22,6 +22,9 @@
 
 #ifndef GVK_G2DWINDOWVK_HPP
 #include "GraphicsVulkan/G2d/g2dWindowVk.hpp"
+#endif
+#ifndef GVK_G2DRESOURCECOUNTERVK_HPP
+#include "GraphicsVulkan/G2d/g2dResourceCounterVk.hpp"
 #endif
 #ifndef GVK_G3DPROFILERGPUVK_HPP
 #include "GraphicsVulkan/G3d/g3dProfilerGpuVk.hpp"
@@ -81,9 +84,23 @@
 #include "Graphics/G3d/g3dSceneRendererCreate.hpp"
 #endif
 #include "gtTempDir.hpp"
+#ifndef G2D_FONTUTIL_HPP
+#include "Graphics/G2d/g2dFontUtil.hpp"
+#endif
+#ifndef FS_FILEUTIL_HPP
+#include "Core/fs/fsFileUtil.hpp"
+#endif
+#ifndef FS_LOCATOR_HPP
+#include "Core/fs/fsLocator.hpp"
+#endif
+#ifndef IT_STRING_HPP
+#include "Core/It/itString.hpp"
+#endif
 
 #include <cstring>
+#include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <memory>
 #include <string>
 
@@ -91,9 +108,36 @@ using namespace gvk;
 
 namespace
 {
+	//	No fonts: the debug overlay of a window made without the layer
+	//	(g2dWindowVk loads its font when it is made, as DX11's)
+	class gtNoFonts : public g2dFontUtilImpl
+	{
+		public:
+			g2dFontHandle LoadFont(const itString&, int) override						{ return NULL; }
+			void ReleaseFont(g2dFontHandle) override									{}
+			void GetLoadedFontName(g2dFontHandle, itString& o_Name) override			{ o_Name = itString(); }
+			void GetLoadedFontName(g2dFontHandle, std::string& o_Name) override		{ o_Name.clear(); }
+			void GetTextSizeInPixels(g2dFontHandle, const itString&, int& o_Width, int& o_Height) override
+			{
+				o_Width = o_Height = 0;
+			}
+			void SetGlobalFontBitmap(const fsLocator&) override						{}
+			void GetGlobalFontBitmap(fsLocator& o_FontPath) override					{ o_FontPath = fsLocator(); }
+	};
+
+	//	Windows on the device alone. g2dWindowVk uses the hooks a g2d system
+	//	installs for its windows (the resource counter and the font util, in
+	//	EndScene and when it is made), so they are installed here too.
 	class gtWindow : public gtVulkanContext
 	{
 		protected:
+			void SetUp() override
+			{
+				gtVulkanContext::SetUp();
+				g2dResourceCounter::SetImplementation(&m_Counter);
+				g2dFontUtil::SetImplementation(&m_Fonts);
+			}
+
 			void TearDown() override
 			{
 				m_Windows.clear();
@@ -102,6 +146,8 @@ namespace
 					gtPlatform::DestroyHiddenWindow(hwnd);
 				}
 				m_Native.clear();
+				g2dFontUtil::SetImplementation(NULL);
+				g2dResourceCounter::SetImplementation(NULL);
 				gtVulkanContext::TearDown();
 			}
 
@@ -113,6 +159,8 @@ namespace
 				return *m_Windows.back();
 			}
 
+			g2dResourceCounterVk m_Counter;
+			gtNoFonts m_Fonts;
 			std::vector<void*> m_Native;
 			std::vector<std::unique_ptr<g2dWindowVk>> m_Windows;
 	};
@@ -542,4 +590,75 @@ TEST(g2dWindowVkScene, DrawRectAndImageMatchDX11)
 		differ += memcmp(&dx11.m_Rgba[i], &vulkan.m_Rgba[i], 3) != 0;
 	EXPECT_EQ(0, differ) << "pixels differ (images in "
 		<< gtSaveComparison("DrawRectAndImageMatchDX11", dx11.m_Rgba.data(), vulkan.m_Rgba.data(), 160, 120) << ")";
+}
+
+TEST(g2dWindowVkScene, DebugOverlayMatchesDX11)
+{
+	//	On each backend: the overlay on, three lines of debug info below the
+	//	six the window writes itself every frame (frame rates and the
+	//	resource counter's memory), drawn by EndScene in green. The window
+	//	loads its font when it is made, so the font bitmap is set first, as
+	//	mainInitGraphics does before it sets up the render windows (and put
+	//	back after the window has gone).
+	const int width = 240, height = 160;
+	struct bitmap_scope
+	{
+		fsLocator m_Previous;
+		bitmap_scope()		{ g2dFontUtil::GetGlobalFontBitmap(m_Previous); }
+		~bitmap_scope()		{ g2dFontUtil::SetGlobalFontBitmap(m_Previous); }
+	};
+	auto draw = [&](gtBackend::Kind i_Kind)
+	{
+		bitmap_scope previous_bitmap;
+		const std::filesystem::path bitmap = std::filesystem::u8path(gtPlatform::RepoRoot()) / "MachStudio" / "MachStudio-x64" /
+			"Data" / "Icons" / "font-lucd00.png";
+		fsLocator locator;
+		fsFileUtil::UnicodeStringToLocator(itString(bitmap.wstring().c_str()), locator);
+		g2dFontUtil::SetGlobalFontBitmap(locator);
+		gtSceneWindow window(i_Kind, width, height);
+		g2dWindow& w = window.Window();
+		w.EnableDebugOverlay(true);
+		w.SetDebugInfo(6, "Debug line six: ABC xyz 0123");
+		w.SetDebugInfo(7, "Seven: !@#$%^&*()_+-=[]{}");
+		w.SetDebugInfo(8, "eight 8.75 MB");
+		w.BeginScene();
+		w.MakeCurrent();
+		w.Clear(g2dRGBColor(30, 30, 30));
+		w.EndScene();
+		return window.Present();
+	};
+	gtPicture dx11, vulkan;
+	if (!gtBackend::Run(gtBackend::e_DX11, [&]() { dx11 = draw(gtBackend::e_DX11); }))
+		return;
+	if (!gtBackend::Run(gtBackend::e_Vulkan, [&]() { vulkan = draw(gtBackend::e_Vulkan); }))
+		return;
+	ASSERT_TRUE(dx11.Valid());
+	ASSERT_TRUE(vulkan.Valid());
+	ASSERT_EQ(dx11.m_Rgba.size(), vulkan.m_Rgba.size());
+
+	//	green text (anti-aliased over the grey) in the window's own lines (0-5, rows 15-104) and in ours
+	//	(6-8, from row 105), on both
+	auto green = [&](const gtPicture& i_rPicture, int i_Y0, int i_Y1)
+	{
+		int count = 0;
+		for (int y = i_Y0; y < i_Y1; y++)
+			for (int x = 0; x < width; x++)
+			{
+				const uint8_t* p = &i_rPicture.m_Rgba[((size_t)y * width + x) * 4];
+				count += p[1] > 100 && p[0] < 60 && p[2] < 60;
+			}
+		return count;
+	};
+	const int first_row = 6 * 15 + 15;
+	EXPECT_GT(green(dx11, 0, first_row), 200);
+	EXPECT_GT(green(vulkan, 0, first_row), 200);
+	EXPECT_GT(green(dx11, first_row, height), 100);
+
+	//	our lines match (the window's own show frame rates, which differ)
+	const size_t offset = (size_t)first_row * width * 4;
+	const int rows = height - first_row;
+	const gtCompareResult result = gtCompareImages(dx11.m_Rgba.data() + offset, vulkan.m_Rgba.data() + offset, width, rows);
+	std::cout << "  DebugOverlayMatchesDX11: " << result.Describe() << std::endl;
+	EXPECT_TRUE(result.m_bPass) << result.Describe() << " (images in "
+		<< gtSaveComparison("DebugOverlayMatchesDX11", dx11.m_Rgba.data() + offset, vulkan.m_Rgba.data() + offset, width, rows) << ")";
 }

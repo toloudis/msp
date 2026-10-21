@@ -112,7 +112,8 @@
     <ClCompile Include="G3d\private\g3dSystemVk.cpp" />
     <ClCompile Include="G3d\private\g3dProfilerGpuVk.cpp" />
     <ClCompile Include="G3d\private\g3dLightMgrVk.cpp" />
-    <ClCompile Include="stub\private\g2dStubsVk.cpp" />
+    <ClCompile Include="G2d\private\g2dResourceCounterVk.cpp" />
+    <ClCompile Include="G2d\private\g2dDebugDisplay.cpp" />
     <ClCompile Include="stub\private\g3dStubsVk.cpp" />
     <ClCompile Include="vkd\private\vkdReflect.cpp" />
     <ClCompile Include="Fx\private\fxEffectDesc.cpp" />
@@ -265,7 +266,8 @@
     <ClInclude Include="G3d\g3dSystemVk.hpp" />
     <ClInclude Include="G3d\g3dProfilerGpuVk.hpp" />
     <ClInclude Include="G3d\g3dLightMgrVk.hpp" />
-    <ClInclude Include="stub\g2dStubsVk.hpp" />
+    <ClInclude Include="G2d\g2dResourceCounterVk.hpp" />
+    <ClInclude Include="G2d\g2dDebugDisplay.hpp" />
     <ClInclude Include="stub\g3dStubsVk.hpp" />
     <ClInclude Include="vkd\vkdReflect.hpp" />
     <ClInclude Include="Fx\fxEffectDesc.hpp" />

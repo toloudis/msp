@@ -53,6 +53,7 @@ namespace gvk
 
 	g2dRenderTargetVk::~g2dRenderTargetVk()
 	{
+		g2dResourceCounterVk::RemoveResource(GetSize(), g2dResourceCounterVk::eRenderTarget);
 	}
 
 	//------------------------------------------------------------------------
@@ -173,6 +174,8 @@ namespace gvk
 		m_PFD = i_PFD;
 		m_Width = i_Width;
 		m_Height = i_Height;
+
+		g2dResourceCounterVk::AddResource(GetSize(), g2dResourceCounterVk::eRenderTarget);
 	}
 
 	//------------------------------------------------------------------------
@@ -193,6 +196,14 @@ namespace gvk
 			"Need to call Make() before rendering to target");
 		g2dVkGlobal::SetRenderTargets(m_pTarget.get(), m_DepthStencil->GetDepthView());
 		g2dVkGlobal::SetViewport(m_Width, m_Height);
+	}
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	float g2dRenderTargetVk::GetSize()
+	{
+		// assume 32bit depth buffer is always here.
+		return m_Width*m_Height*(m_PFD.BitsPerPixel()/8 + 32/8) / 1024.0f;
 	}
 
 	//------------------------------------------------------------------------

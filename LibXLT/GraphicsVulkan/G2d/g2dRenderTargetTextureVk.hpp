@@ -13,8 +13,8 @@
 #endif
 #define GVK_G2DRENDERTARGETTEXTUREVK_HPP
 
-#ifndef GVK_G2DSTUBSVK_HPP
-#include "GraphicsVulkan/stub/g2dStubsVk.hpp"
+#ifndef GVK_G2DRESOURCECOUNTERVK_HPP
+#include "GraphicsVulkan/G2d/g2dResourceCounterVk.hpp"
 #endif
 
 #include <volk.h>
@@ -56,5 +56,8 @@ namespace gvk
 		uint32_t m_Format;
 		VkSampleCountFlagBits m_Multisample;
 		std::unique_ptr<vkdImage> m_pImage;
+
+		//	The KB counted (g2dRenderTargetTextureDX11::GetSize)
+		float GetSize();
 	};
 }

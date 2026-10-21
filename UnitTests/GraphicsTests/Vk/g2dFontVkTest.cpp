@@ -7,7 +7,8 @@
 **      (g2dWindow::DrawText) and into a render target (g2dWindowDrawUtil's
 **      DrawText, which g3dRenderPass uses), at several sizes, colours and
 **      offsets; GetTextSizeInPixels; and no font without the bitmap.
-**      Skipped without a Vulkan device.
+**      Skipped without a Vulkan device. Also g2dFontUtil's cache (no
+**      device): the last ReleaseFont unloads the font.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -45,6 +46,7 @@
 #include "GraphicsVulkan/G2d/private/g2dWindowDrawUtilVk.hpp"
 #endif
 
+#include <cstdint>
 #include <cstring>
 #include <filesystem>
 #include <functional>
@@ -238,4 +240,58 @@ TEST(g2dFontVk, NoBitmapNoFontAsDX11)
 	if (!gtBackend::Run(gtBackend::e_Vulkan, [&]() { vulkan = no_bitmap_no_font(); }))
 		return;
 	EXPECT_TRUE(vulkan) << "Vulkan gave a font";
+}
+
+namespace
+{
+	//	Counts the fonts g2dFontUtil loads and releases through it
+	class gtCountingFonts : public g2dFontUtilImpl
+	{
+		public:
+			int m_Loads = 0;
+			int m_Releases = 0;
+
+			g2dFontHandle LoadFont(const itString&, int) override
+			{
+				++m_Loads;
+				return reinterpret_cast<g2dFontHandle>((intptr_t)m_Loads);
+			}
+			void ReleaseFont(g2dFontHandle) override									{ ++m_Releases; }
+			void GetLoadedFontName(g2dFontHandle, itString& o_Name) override			{ o_Name = itString(); }
+			void GetLoadedFontName(g2dFontHandle, std::string& o_Name) override		{ o_Name.clear(); }
+			void GetTextSizeInPixels(g2dFontHandle, const itString&, int& o_Width, int& o_Height) override
+			{
+				o_Width = o_Height = 0;
+			}
+			void SetGlobalFontBitmap(const fsLocator&) override						{}
+			void GetGlobalFontBitmap(fsLocator& o_FontPath) override					{ o_FontPath = fsLocator(); }
+	};
+}
+
+//	A font is loaded once while it is in use, and unloaded (and forgotten)
+//	when the last user releases it, so a later LoadFont loads it again from
+//	the implementation that is installed then (a backend's font util; the
+//	tests run one backend after the other in one process)
+TEST(g2dFontUtil, LastReleaseUnloadsTheFont)
+{
+	g2dFontUtilImpl* previous = g2dFontUtil::Implementation();
+	gtCountingFonts fonts;
+	g2dFontUtil::SetImplementation(&fonts);
+	const itString name("gtCountingFonts");
+
+	g2dFontHandle a = g2dFontUtil::LoadFont(name, 11);
+	g2dFontHandle b = g2dFontUtil::LoadFont(name, 11);
+	EXPECT_EQ(a, b);
+	EXPECT_EQ(1, fonts.m_Loads);
+	g2dFontUtil::ReleaseFont(a);
+	EXPECT_EQ(0, fonts.m_Releases);
+	g2dFontUtil::ReleaseFont(b);
+	EXPECT_EQ(1, fonts.m_Releases);
+
+	g2dFontHandle c = g2dFontUtil::LoadFont(name, 11);
+	EXPECT_EQ(2, fonts.m_Loads);
+	g2dFontUtil::ReleaseFont(c);
+	EXPECT_EQ(2, fonts.m_Releases);
+
+	g2dFontUtil::SetImplementation(previous);
 }

@@ -117,6 +117,9 @@ namespace gvk
 		std::unique_ptr<vkdImage> m_pTarget;
 		shared_ptr<g2dDepthStencilBufferVk> m_DepthStencil;
 
+		//	The KB counted (g2dRenderTargetDX11::GetSize)
+		float GetSize();
+
 		//------------------------------------------------------------------------
 		// set up device to render to our window
 		//------------------------------------------------------------------------

@@ -2,7 +2,10 @@
 **  g3dStubsVk.hpp
 **
 **      Vulkan implementations of the 3D graphics hooks that aren't ported
-**	yet (see g2dStubsVk.hpp for the rules):
+**	yet: they keep MachStudio running (every call returns a usable object
+**	or a harmless value) and log GVK_NOT_YET the first time a call that
+**	should do real work runs. Each class moves to its real package when a
+**	later plan ports it.
 **
 **	  g3dPickRendererVk	the pick renderer picks nothing (g3dSceneRendererCreateVk
 **						makes it)

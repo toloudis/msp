@@ -16,8 +16,9 @@
 **	- SetRenderResolution renders into an RGBA8 image of that size and, in
 **	  Present, draws it scaled into the window (GetPresentRect), with black
 **	  bars, as g2dWindowPrimaryDX11.
-**
-**	Not yet ported (GVK_NOT_YET): the debug overlay and DrawText.
+**	- EndScene writes the frame rates and the resource counter's memory
+**	  totals into debug lines 0-5 and draws the debug overlay
+**	  (g2dDebugDisplay) if it is on, as g2dWindowDX11::EndScene.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -36,15 +37,14 @@
 #include "GraphicsVulkan/vkd/vkdSwapchain.hpp"
 #endif
 
-#include <map>
 #include <memory>
-#include <string>
 
 namespace gvk
 {
 	class vkdDevice;
 	class vkdImage;
 	class g2dDepthStencilBufferVk;
+	class g2dDebugDisplay;
 
 	class g2dWindowVk : public g2dWindow
 	{
@@ -126,7 +126,6 @@ namespace gvk
 			float				m_StartTime = 0;
 			float				m_FrameRate = 0;
 			int					m_Frames = 0;
-			bool				m_bDebugOverlay = false;
-			std::map<int, std::string>	m_DebugLines;
+			std::unique_ptr<g2dDebugDisplay>	m_pDebugDisplay;
 	};
 }

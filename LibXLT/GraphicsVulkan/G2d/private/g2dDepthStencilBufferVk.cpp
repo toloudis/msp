@@ -33,6 +33,7 @@ namespace gvk
 
 	g2dDepthStencilBufferVk::~g2dDepthStencilBufferVk()
 	{
+		g2dResourceCounterVk::RemoveResource(GetSize(), m_Category);
 	}
 
 	//------------------------------------------------------------------------
@@ -61,7 +62,18 @@ namespace gvk
 		m_Width = i_Width;
 		m_Height = i_Height;
 		m_Multisample = i_Multisample;
+
 		m_Category = i_Category;
+		g2dResourceCounterVk::AddResource(GetSize(), i_Category);
+	}
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	float g2dDepthStencilBufferVk::GetSize()
+	{
+		// assume 32bit depth buffer is always here.
+		int bpp = 32;
+		return (float)m_Width*(float)m_Height*(bpp/8) / 1024.0f;
 	}
 
 	//	The depth aspect, as DX11's R24_UNORM_X8_TYPELESS view

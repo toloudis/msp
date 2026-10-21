@@ -65,8 +65,8 @@
 #ifndef GVK_G2DSCREENCAPTUREUTILVK_HPP
 #include "GraphicsVulkan/G2d/g2dScreenCaptureUtilVk.hpp"
 #endif
-#ifndef GVK_G2DSTUBSVK_HPP
-#include "GraphicsVulkan/stub/g2dStubsVk.hpp"
+#ifndef GVK_G2DRESOURCECOUNTERVK_HPP
+#include "GraphicsVulkan/G2d/g2dResourceCounterVk.hpp"
 #endif
 #ifndef GVK_G2DFONTUTILVK_HPP
 #include "GraphicsVulkan/G2d/private/g2dFontUtilVk.hpp"

@@ -39,7 +39,10 @@ tmeshIndexBuffer::~tmeshIndexBuffer()
 {
 	if ( m_pIndexBuffer != NULL )
 	{
-		g3dVkBufferUtil::ReleaseIndexBuffer(m_pIndexBuffer);
+		// DX11 releases the buffer itself, not through
+		// g3dDX11BufferUtil::ReleaseIndexBuffer, so the resource counter's
+		// index buffer totals don't change (nor do they when it's made)
+		delete m_pIndexBuffer;
 	}
 	delete[] m_pIndexBufferCopy;
 }
@@ -50,7 +53,8 @@ tmeshIndexBuffer::~tmeshIndexBuffer()
 //------------------------------------------------------------------------
 void tmeshIndexBuffer::Deallocate()
 {
-	g3dVkBufferUtil::ReleaseIndexBuffer(m_pIndexBuffer);
+	// as DX11, not through ReleaseIndexBuffer (see the destructor)
+	delete m_pIndexBuffer;
 	// DX11 keeps the released pointer (and releases it again later); a
 	// deleted buffer must not be used again here
 	m_pIndexBuffer = NULL;

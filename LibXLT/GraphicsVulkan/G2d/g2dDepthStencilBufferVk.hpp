@@ -18,8 +18,8 @@
 #ifndef G2D_DEPTHSTENCILBUFFER_HPP
 #include "Graphics/G2d/g2dDepthStencilBuffer.hpp"
 #endif
-#ifndef GVK_G2DSTUBSVK_HPP
-#include "GraphicsVulkan/stub/g2dStubsVk.hpp"
+#ifndef GVK_G2DRESOURCECOUNTERVK_HPP
+#include "GraphicsVulkan/G2d/g2dResourceCounterVk.hpp"
 #endif
 
 #include <volk.h>
@@ -61,5 +61,8 @@ namespace gvk
 		VkSampleCountFlagBits m_Multisample;
 		vkdDevice* m_pDevice;
 		std::unique_ptr<vkdImage> m_pDepthTexture;
+
+		//	The KB counted (g2dDepthStencilBufferDX11::GetSize)
+		float GetSize();
 	};
 }

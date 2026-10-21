@@ -20,8 +20,8 @@
 #ifndef GVK_MATTEXTUREVK_HPP
 #include "GraphicsVulkan/Mat/matTextureVk.hpp"
 #endif
-#ifndef GVK_G2DSTUBSVK_HPP
-#include "GraphicsVulkan/stub/g2dStubsVk.hpp"
+#ifndef GVK_G2DRESOURCECOUNTERVK_HPP
+#include "GraphicsVulkan/G2d/g2dResourceCounterVk.hpp"
 #endif
 #ifndef G2D_RENDERTARGET_HPP
 #include "Graphics/G2d/g2dRenderTarget.hpp"

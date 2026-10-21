@@ -27,8 +27,8 @@
 #ifndef GVK_G2DIMAGESAVEVK_HPP
 #include "GraphicsVulkan/G2d/g2dImageSaveVk.hpp"
 #endif
-#ifndef GVK_G2DSTUBSVK_HPP
-#include "GraphicsVulkan/stub/g2dStubsVk.hpp"
+#ifndef GVK_G2DRESOURCECOUNTERVK_HPP
+#include "GraphicsVulkan/G2d/g2dResourceCounterVk.hpp"
 #endif
 #ifndef GVK_G2DIMAGECREATEVK_HPP
 #include "GraphicsVulkan/G2d/g2dImageCreateVk.hpp"

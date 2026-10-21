@@ -18,6 +18,9 @@
 #ifndef GVK_VKDGLOBAL_HPP
 #include "GraphicsVulkan/vkd/vkdGlobal.hpp"
 #endif
+#ifndef GVK_G2DVKGLOBAL_HPP
+#include "GraphicsVulkan/G2d/g2dVkGlobal.hpp"
+#endif
 #ifndef G2D_EXCEPTIONX_HPP
 #include "Graphics/G2d/g2dExceptionX.hpp"
 #endif
@@ -53,6 +56,7 @@ namespace gvk
 
 	g2dTextureVk::~g2dTextureVk()
 	{
+		g2dResourceCounterVk::RemoveResource(GetSize(), m_Category);
 	}
 
 	//------------------------------------------------------------------------
@@ -94,5 +98,20 @@ namespace gvk
 		m_Height = (short)m_pImage->Desc().m_Height;
 		m_MipLevels = (int)m_pImage->Desc().m_Mips;
 		m_Category = i_Category;
+		g2dResourceCounterVk::AddResource(GetSize(), i_Category);
+	}
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	float g2dTextureVk::GetSize()
+	{
+		int bpp = g2dVkGlobal::BitsPerPixel(m_Format);
+		float baseSize = (float)m_Width*(float)m_Height*(bpp/8) / 1024.0f;
+
+		// approximation assuming all mip levels are present.
+		if (m_MipLevels > 1)
+			baseSize *= 1.333333f;
+
+		return baseSize;
 	}
 }
