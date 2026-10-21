@@ -16,6 +16,11 @@
 **	- SetRenderResolution renders into an RGBA8 image of that size and, in
 **	  Present, draws it scaled into the window (GetPresentRect), with black
 **	  bars, as g2dWindowPrimaryDX11.
+**	- Headless (g3dGfxOptions::m_bHeadless, RenderNode): no surface and no
+**	  swap chain. The window always renders into its RGBA8 image (at the
+**	  render resolution, else the window's size), and Present submits the
+**	  frame and does nothing else. The native window is kept (its handle,
+**	  IsOpen, and its size when none is given).
 **	- EndScene writes the frame rates and the resource counter's memory
 **	  totals into debug lines 0-5 and draws the debug overlay
 **	  (g2dDebugDisplay) if it is on, as g2dWindowDX11::EndScene.
@@ -51,7 +56,9 @@ namespace gvk
 		public:
 			//	i_bOwnHwnd: the window was made for this object (destroyed with it).
 			//	i_Width/i_Height: -1 means the window's client size.
-			g2dWindowVk(vkdDevice& i_Device, void* i_Hwnd, bool i_bOwnHwnd, int i_Width = -1, int i_Height = -1);
+			//	i_bHeadless: no swap chain (see above).
+			g2dWindowVk(vkdDevice& i_Device, void* i_Hwnd, bool i_bOwnHwnd, int i_Width = -1, int i_Height = -1,
+						bool i_bHeadless = false);
 			virtual ~g2dWindowVk();
 
 			//	g2dRenderTarget
@@ -88,10 +95,11 @@ namespace gvk
 			//	be); NULL when the frame is skipped
 			vkdImage* GetBackBuffer() { return back_buffer(); }
 
-			//	Testing
-			VkFormat SwapchainFormat() const { return m_Swapchain.Format(); }
-			void DebugReadBackNextFrame() { m_Swapchain.DebugReadBackNextFrame(); }
-			const std::vector<uint8_t>& DebugPixels() const { return m_Swapchain.DebugPixels(); }
+			//	Testing (headless: R8G8B8A8, and no pixels read back)
+			bool HasSwapchain() const { return m_pSwapchain != NULL; }
+			VkFormat SwapchainFormat() const;
+			void DebugReadBackNextFrame();
+			const std::vector<uint8_t>& DebugPixels() const;
 
 		private:
 			void set_size(int i_Width, int i_Height);
@@ -110,10 +118,12 @@ namespace gvk
 			vkdDevice&		m_Device;
 			void*			m_Hwnd;
 			bool			m_bOwnHwnd;
-			vkdSwapchain	m_Swapchain;
+			//	NULL when headless
+			std::unique_ptr<vkdSwapchain>	m_pSwapchain;
 			shared_ptr<g2dDepthStencilBufferVk>	m_Depth;
 
-			//	size of the swap chain (the window's client area)
+			//	size of the swap chain (the window's client area; headless, the
+			//	size given)
 			int				m_WindowWidth = 0;
 			int				m_WindowHeight = 0;
 			//	requested render resolution, 0 when rendering at the window size

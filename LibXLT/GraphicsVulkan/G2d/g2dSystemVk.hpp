@@ -4,7 +4,9 @@
 **      g2dSystemVk creates and owns the Vulkan windows (g2dWindowVk), as
 **	g2dSystemDX11 does for DX11, and installs the 2D hooks (resource
 **	counter, fonts, image creation and saving) while it exists.
-**	Full-screen windows aren't supported, exactly as in DX11.
+**	Full-screen windows aren't supported, exactly as in DX11. Headless
+**	(g3dGfxOptions::m_bHeadless, RenderNode), its windows have no swap
+**	chain.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -30,7 +32,7 @@ namespace gvk
 	class g2dSystemVk : public g2dSystem
 	{
 		public:
-			explicit g2dSystemVk(vkdDevice& i_Device);
+			g2dSystemVk(vkdDevice& i_Device, bool i_bHeadless);
 			virtual ~g2dSystemVk();
 
 			virtual g2dWindow* CreateAppWindow(int i_Width, int i_Height, int i_X, int i_Y);
@@ -44,6 +46,7 @@ namespace gvk
 
 		private:
 			vkdDevice&				m_Device;
+			bool					m_bHeadless;
 			std::vector<g2dWindow*>	m_Windows;
 
 			//	The 2D hooks, installed for the system's lifetime (as g2dSystemDX11)

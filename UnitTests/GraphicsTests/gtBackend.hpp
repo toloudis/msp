@@ -35,4 +35,8 @@ namespace gtBackend
 	//	Runs i_Function with the backend up; false (and the test marked
 	//	skipped) if the backend isn't available
 	bool Run(Kind i_Kind, const std::function<void()>& i_Function);
+
+	//	Run(e_Vulkan, ...) with g3dGfxOptions::m_bHeadless, as RenderNode
+	//	starts the layer: windows have no swap chain
+	bool RunVulkanHeadless(const std::function<void()>& i_Function);
 }

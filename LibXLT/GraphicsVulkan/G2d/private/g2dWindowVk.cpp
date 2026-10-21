@@ -90,13 +90,17 @@ namespace gvk
 		}
 	}
 
-	g2dWindowVk::g2dWindowVk(vkdDevice& i_Device, void* i_Hwnd, bool i_bOwnHwnd, int i_Width, int i_Height)
+	g2dWindowVk::g2dWindowVk(vkdDevice& i_Device, void* i_Hwnd, bool i_bOwnHwnd, int i_Width, int i_Height,
+							 bool i_bHeadless)
 		: m_Device(i_Device)
 		, m_Hwnd(i_Hwnd)
 		, m_bOwnHwnd(i_bOwnHwnd)
-		, m_Swapchain(i_Device, i_Hwnd, window_name(i_Hwnd))
 		, m_FPSAverage(600)
 	{
+		if (!i_bHeadless)
+		{
+			m_pSwapchain.reset(new vkdSwapchain(i_Device, i_Hwnd, window_name(i_Hwnd)));
+		}
 		m_pDebugDisplay.reset(new g2dDebugDisplay(*this));
 
 		int width = i_Width;
@@ -115,6 +119,7 @@ namespace gvk
 		m_pOffscreen.reset();
 		m_Depth.reset();
 		m_pDebugDisplay.reset();
+		m_pSwapchain.reset();
 		if (m_bOwnHwnd)
 		{
 			appApplication::DestroySubWindow(m_Hwnd);
@@ -137,16 +142,20 @@ namespace gvk
 		// swap chain is the client area's size (a capture window bigger than
 		// the screen gets a smaller one), so render offscreen at the size
 		// given and stretch it over the window in Present, as DXGI does.
+		// Headless, there is only the offscreen image.
 		int width = i_Width;
 		int height = i_Height;
 		if (i_Width > 0 && i_Height > 0)
 		{
 			int client_width = 0, client_height = 0;
-			vkdWindowClientSize(m_Hwnd, client_width, client_height);
+			if (m_pSwapchain)
+			{
+				vkdWindowClientSize(m_Hwnd, client_width, client_height);
+			}
 			const bool render_resolution = m_RenderWidth > 0 && m_RenderHeight > 0;
 			const int target_width = render_resolution ? m_RenderWidth : i_Width;
 			const int target_height = render_resolution ? m_RenderHeight : i_Height;
-			if ((render_resolution || client_width != i_Width || client_height != i_Height) &&
+			if ((!m_pSwapchain || render_resolution || client_width != i_Width || client_height != i_Height) &&
 				create_offscreen_buffer(target_width, target_height))
 			{
 				width = target_width;
@@ -158,7 +167,7 @@ namespace gvk
 		//	R8G8B8A8 (red in the low byte); B8G8R8A8 only if the surface lacks
 		//	it (the offscreen image is always R8G8B8A8, as DX11's back buffer)
 		g2dPFD pfd;
-		if (!is_offscreen() && m_Swapchain.Format() == VK_FORMAT_B8G8R8A8_UNORM)
+		if (!is_offscreen() && SwapchainFormat() == VK_FORMAT_B8G8R8A8_UNORM)
 		{
 			pfd.Set(16, 8, 8, 8, 0, 8, 24, 8, 32);
 		}
@@ -185,7 +194,26 @@ namespace gvk
 		{
 			return m_pOffscreen.get();
 		}
-		return m_Swapchain.Acquire() ? m_Swapchain.Target() : NULL;
+		return m_pSwapchain && m_pSwapchain->Acquire() ? m_pSwapchain->Target() : NULL;
+	}
+
+	VkFormat g2dWindowVk::SwapchainFormat() const
+	{
+		return m_pSwapchain ? m_pSwapchain->Format() : VK_FORMAT_R8G8B8A8_UNORM;
+	}
+
+	void g2dWindowVk::DebugReadBackNextFrame()
+	{
+		if (m_pSwapchain)
+		{
+			m_pSwapchain->DebugReadBackNextFrame();
+		}
+	}
+
+	const std::vector<uint8_t>& g2dWindowVk::DebugPixels() const
+	{
+		static const std::vector<uint8_t> c_None;
+		return m_pSwapchain ? m_pSwapchain->DebugPixels() : c_None;
 	}
 
 	//	g2dWindowDX11::configure_device: our back buffer and depth buffer as
@@ -212,7 +240,7 @@ namespace gvk
 		}
 		vkdImage* color = g2dVkGlobal::GetColorTarget();
 		vkdImage* depth = g2dVkGlobal::GetDepthTarget();
-		const bool swapchain_color = color && color == m_Swapchain.Target();
+		const bool swapchain_color = color && m_pSwapchain && color == m_pSwapchain->Target();
 		const bool our_color = swapchain_color || (color && color == m_pOffscreen.get());
 		const bool our_depth = depth && m_Depth && depth == m_Depth->GetDepthView();
 		if (i_bSwapchainOnly)
@@ -237,7 +265,10 @@ namespace gvk
 		g3dStateMgrVk::SetDefault();
 
 		// the frame's swap-chain image
-		m_Swapchain.Acquire();
+		if (m_pSwapchain)
+		{
+			m_pSwapchain->Acquire();
+		}
 	}
 
 	void g2dWindowVk::MakeCurrent()
@@ -407,12 +438,15 @@ namespace gvk
 		//	An image acquired at the old size can't be given back unpresented:
 		//	present it now (DX11's ResizeBuffers drops the frame being drawn),
 		//	so the next frame acquires one of the new size
-		if (m_Swapchain.IsAcquired())
+		if (m_pSwapchain)
 		{
-			release_targets(true);
-			m_Swapchain.Present();
+			if (m_pSwapchain->IsAcquired())
+			{
+				release_targets(true);
+				m_pSwapchain->Present();
+			}
+			m_pSwapchain->Invalidate();
 		}
-		m_Swapchain.Invalidate();
 		set_size(i_Width, i_Height);
 	}
 
@@ -473,11 +507,18 @@ namespace gvk
 
 	void g2dWindowVk::Present()
 	{
+		// Headless: nothing to show; the frame is submitted
+		if (!m_pSwapchain)
+		{
+			vkdGlobal::Context().Flush();
+			return;
+		}
+
 		// When rendering offscreen, draw the image scaled to fit the window,
 		// centered, with black bars where the aspect ratios differ
-		if (is_offscreen() && m_Swapchain.Acquire())
+		if (is_offscreen() && m_pSwapchain->Acquire())
 		{
-			g2dVkGlobal::SetRenderTargets(m_Swapchain.Target(), NULL);
+			g2dVkGlobal::SetRenderTargets(m_pSwapchain->Target(), NULL);
 			const float black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 			g2dVkGlobal::ClearCurrent(black);
 
@@ -489,8 +530,8 @@ namespace gvk
 				// given: stretched over the whole window, as DXGI presents
 				x = 0;
 				y = 0;
-				width = (int)m_Swapchain.Target()->Width();
-				height = (int)m_Swapchain.Target()->Height();
+				width = (int)m_pSwapchain->Target()->Width();
+				height = (int)m_pSwapchain->Target()->Height();
 			}
 			g2dFullscreenQuad::DrawTexturedQuad(m_pOffscreen.get(),
 				(uint32_t)width, (uint32_t)height, (float)x, (float)y);
@@ -503,7 +544,7 @@ namespace gvk
 
 		// the image can't be drawn to once presented
 		release_targets(true);
-		m_Swapchain.Present();
+		m_pSwapchain->Present();
 	}
 
 	void g2dWindowVk::SetTitle(const itString& i_Title)

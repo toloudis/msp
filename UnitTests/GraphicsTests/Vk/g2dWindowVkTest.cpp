@@ -8,7 +8,9 @@
 **      same scene in a render-target texture, survives resizes and a 0x0
 **      window, renders at another resolution (scaled into the window),
 **      and DrawRect / DrawImage and the debug overlay match DX11's
-**      window. Skipped without a Vulkan device.
+**      window. Headless windows (RenderNode) have no swap chain and
+**      capture what a window with one does. Skipped without a Vulkan
+**      device.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -46,6 +48,9 @@
 #endif
 #ifndef G2D_IMAGE_HPP
 #include "Graphics/G2d/g2dImage.hpp"
+#endif
+#ifndef G2D_SCREENCAPTUREUTIL_HPP
+#include "Graphics/G2d/g2dScreenCaptureUtil.hpp"
 #endif
 #ifndef G2D_IMAGECREATE_HPP
 #include "Graphics/G2d/g2dImageCreate.hpp"
@@ -97,12 +102,15 @@
 #include "Core/It/itString.hpp"
 #endif
 
+#include <algorithm>
+#include <cmath>
 #include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <memory>
 #include <string>
+#include <vector>
 
 using namespace gvk;
 
@@ -661,4 +669,197 @@ TEST(g2dWindowVkScene, DebugOverlayMatchesDX11)
 	std::cout << "  DebugOverlayMatchesDX11: " << result.Describe() << std::endl;
 	EXPECT_TRUE(result.m_bPass) << result.Describe() << " (images in "
 		<< gtSaveComparison("DebugOverlayMatchesDX11", dx11.m_Rgba.data() + offset, vulkan.m_Rgba.data() + offset, width, rows) << ")";
+}
+
+//============================================================================
+//	Headless windows (RenderNode: g3dGfxOptions::m_bHeadless): no swap
+//	chain, rendered into an image of the window's size
+//============================================================================
+namespace
+{
+	//	What io_rWindow drew this frame, captured before Present as
+	//	cptrRenderThread does (g2dScreenCaptureUtil); then presented
+	gtPicture capture_and_present(g2dWindow& io_rWindow)
+	{
+		gtPicture picture;
+		g2dImage* captured = NULL;
+		g2dScreenCaptureUtil::CaptureWindowToImage(io_rWindow, captured);
+		EXPECT_TRUE(captured != NULL);
+		if (captured)
+		{
+			picture.m_Width = captured->GetWidth();
+			picture.m_Height = captured->GetHeight();
+			const size_t count = (size_t)picture.m_Width * picture.m_Height;
+			std::vector<g2dPixelRGBA32F> pixels(count);
+			captured->GetPixels(pixels.data(), picture.m_Width, picture.m_Height);
+			const float* values = reinterpret_cast<const float*>(pixels.data());
+			picture.m_Rgba.resize(count * 4);
+			for (size_t i = 0; i < count * 4; i++)
+				picture.m_Rgba[i] = (uint8_t)std::lround((std::min)((std::max)(values[i], 0.0f), 1.0f) * 255.0f);
+			delete captured;
+		}
+		io_rWindow.Present();
+		return picture;
+	}
+
+	bool has_swapchain(g2dWindow& i_rWindow)
+	{
+		g2dWindowVk* window = dynamic_cast<g2dWindowVk*>(&i_rWindow);
+		EXPECT_TRUE(window != NULL);
+		return window && window->HasSwapchain();
+	}
+
+	const int c_OverlayWidth = 240, c_OverlayHeight = 160;
+	const int c_OverlayFirstRow = 6 * 15 + 15;		// below the window's own lines 0-5 (frame rates differ)
+
+	//	The frames HeadlessWindowMatchesSwapchainWindow compares: the scene
+	//	at the window's size, after a resize, after a 0x0 window, at a
+	//	render resolution, and the debug overlay's lines 6-8
+	std::vector<gtPicture> window_frames(bool i_bHeadless)
+	{
+		std::vector<gtPicture> frames;
+		gtSceneBuilder builder;
+		spheres(builder);
+		gvk::g3dSceneRendererVk renderer;
+		{
+			gtSceneWindow window(gtBackend::e_Vulkan, 200, 150);
+			g2dWindow& w = window.Window();
+			EXPECT_EQ(!i_bHeadless, has_swapchain(w));
+			render_frame(w, renderer, builder);
+			frames.push_back(capture_and_present(w));
+
+			window.Resize(320, 240);
+			render_frame(w, renderer, builder);
+			frames.push_back(capture_and_present(w));
+
+			//	minimized: nothing is drawn, nothing fails
+			window.Resize(0, 0);
+			render_frame(w, renderer, builder);
+			w.Present();
+
+			window.Resize(160, 120);
+			render_frame(w, renderer, builder);
+			frames.push_back(capture_and_present(w));
+
+			w.SetRenderResolution(64, 48);
+			render_frame(w, renderer, builder);
+			frames.push_back(capture_and_present(w));
+			w.SetRenderResolution(0, 0);
+			EXPECT_EQ(!i_bHeadless, has_swapchain(w));
+		}
+		{
+			//	the font bitmap first: the window loads its font when made
+			fsLocator previous;
+			g2dFontUtil::GetGlobalFontBitmap(previous);
+			const std::filesystem::path bitmap = std::filesystem::u8path(gtPlatform::RepoRoot()) / "MachStudio" / "MachStudio-x64" /
+				"Data" / "Icons" / "font-lucd00.png";
+			fsLocator locator;
+			fsFileUtil::UnicodeStringToLocator(itString(bitmap.wstring().c_str()), locator);
+			g2dFontUtil::SetGlobalFontBitmap(locator);
+			{
+				gtSceneWindow window(gtBackend::e_Vulkan, c_OverlayWidth, c_OverlayHeight);
+				g2dWindow& w = window.Window();
+				w.EnableDebugOverlay(true);
+				w.SetDebugInfo(6, "Debug line six: ABC xyz 0123");
+				w.SetDebugInfo(7, "Seven: !@#$%^&*()_+-=[]{}");
+				w.SetDebugInfo(8, "eight 8.75 MB");
+				render_frame(w, renderer, builder);
+				gtPicture overlay = capture_and_present(w);
+				if (overlay.Valid())
+				{
+					overlay.m_Rgba.erase(overlay.m_Rgba.begin(), overlay.m_Rgba.begin() + (size_t)c_OverlayFirstRow * c_OverlayWidth * 4);
+					overlay.m_Height -= c_OverlayFirstRow;
+				}
+				frames.push_back(overlay);
+			}
+			g2dFontUtil::SetGlobalFontBitmap(previous);
+		}
+		renderer.ReleaseResources();
+		return frames;
+	}
+}
+
+//	RenderNode's windows render into an image instead of a swap chain:
+//	every capture must be what a window with a swap chain gives
+TEST(g2dWindowVkScene, HeadlessWindowMatchesSwapchainWindow)
+{
+	std::vector<gtPicture> swapchain, headless;
+	if (!gtBackend::Run(gtBackend::e_Vulkan, [&]() { swapchain = window_frames(false); }))
+		return;
+	if (!gtBackend::RunVulkanHeadless([&]() { headless = window_frames(true); }))
+		return;
+	const char* names[] = { "200x150", "320x240", "160x120 after 0x0", "render 64x48", "debug overlay" };
+	const int sizes[][2] = { { 200, 150 }, { 320, 240 }, { 160, 120 }, { 64, 48 }, { c_OverlayWidth, c_OverlayHeight - c_OverlayFirstRow } };
+	ASSERT_EQ(5u, swapchain.size());
+	ASSERT_EQ(5u, headless.size());
+	for (size_t f = 0; f < swapchain.size(); f++)
+	{
+		SCOPED_TRACE(names[f]);
+		const gtPicture& a = swapchain[f];
+		const gtPicture& b = headless[f];
+		ASSERT_TRUE(a.Valid());
+		ASSERT_TRUE(b.Valid());
+		EXPECT_EQ(sizes[f][0], a.m_Width);
+		EXPECT_EQ(sizes[f][1], a.m_Height);
+		ASSERT_EQ(a.m_Width, b.m_Width);
+		ASSERT_EQ(a.m_Height, b.m_Height);
+		EXPECT_GT(lit_pixels(a), a.m_Width * a.m_Height / 20) << "drew almost nothing";
+		int differ = 0;
+		for (size_t i = 0; i < a.m_Rgba.size(); i += 4)
+			differ += memcmp(&a.m_Rgba[i], &b.m_Rgba[i], 4) != 0;
+		std::cout << "  HeadlessWindowMatchesSwapchainWindow " << names[f] << ": " << differ << " pixels differ" << std::endl;
+		EXPECT_EQ(0, differ) << "(images in " << gtSaveComparison((std::string("Headless_") + std::to_string(f)).c_str(),
+			a.m_Rgba.data(), b.m_Rgba.data(), a.m_Width, a.m_Height) << ")";
+	}
+}
+
+TEST(g2dWindowVkScene, HeadlessWindowHasNoSwapchain)
+{
+	gtBackend::RunVulkanHeadless([&]()
+	{
+		auto frame = [](g2dWindow& io_rWindow)
+		{
+			io_rWindow.BeginScene();
+			io_rWindow.Clear(g2dRGBColor(255, 0, 0));
+			io_rWindow.EndScene();
+			io_rWindow.Present();
+		};
+		gtSceneWindow window(gtBackend::e_Vulkan, 160, 120);
+		g2dWindow& w = window.Window();
+		EXPECT_FALSE(has_swapchain(w));
+		EXPECT_TRUE(w.GetHasDepthBuffer());
+		frame(w);
+		EXPECT_FALSE(has_swapchain(w));
+
+		window.Resize(320, 240);
+		EXPECT_FALSE(has_swapchain(w));
+		frame(w);
+		int width = 0, height = 0;
+		w.GetDimensions(width, height);
+		EXPECT_EQ(320, width);
+		EXPECT_EQ(240, height);
+		int x = 1, y = 1;
+		w.GetPresentRect(x, y, width, height);
+		EXPECT_EQ(0, x);
+		EXPECT_EQ(0, y);
+		EXPECT_EQ(320, width);
+		EXPECT_EQ(240, height);
+
+		window.Resize(0, 0);
+		frame(w);
+		EXPECT_FALSE(has_swapchain(w));
+		window.Resize(100, 80);
+		w.SetRenderResolution(50, 40);
+		frame(w);
+		EXPECT_FALSE(has_swapchain(w));
+
+		//	the system's other windows too (CreateSubWindow with a size
+		//	makes its own native window, as cptrModeRender's capture window)
+		g2dSystem* system = GraphicsVulkanLayer::GetSystem2D();
+		g2dWindow* sub = system->CreateSubWindow(128, 64, 0, 0);
+		ASSERT_TRUE(sub != NULL);
+		EXPECT_FALSE(has_swapchain(*sub));
+		frame(*sub);
+		system->DestroyWindow(sub);
+	});
 }

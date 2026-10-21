@@ -151,7 +151,7 @@ bool GraphicsVulkanLayer::Init(void* /*i_hWnd*/, const g3dGfxOptions& i_Options)
 	l_pContext = new vkdContext(*l_pDevice, *l_pRing, *l_pBindings, *l_pPipelines);
 	vkdGlobal::Set(l_pDevice, l_pRing, l_pBindings, l_pPipelines, l_pContext);
 
-	l_pSystem2D = new g2dSystemVk(*l_pDevice);
+	l_pSystem2D = new g2dSystemVk(*l_pDevice, i_Options.m_bHeadless);
 	l_pSystem3D = new g3dSystemVk(*l_pDevice);
 
 	// initialize packages in the layer

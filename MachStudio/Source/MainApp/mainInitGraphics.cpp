@@ -201,6 +201,11 @@ mainInitGraphics::mainInitGraphics(int i_AppWidth,
 #else
 		void* hWnd = appApplication::GetMainWindowHandle();
 #endif
+#ifdef BATCH_MODE
+		// RenderNode never shows its windows: Vulkan renders them without
+		// swap chains (DX11 ignores this)
+		l_GfxOptions.m_bHeadless = true;
+#endif
 		if (!layer.Init(hWnd, l_GfxOptions))
 		{
 			throw gfx_layer_init_failed();

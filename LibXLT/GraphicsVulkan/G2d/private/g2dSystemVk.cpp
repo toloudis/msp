@@ -44,8 +44,9 @@
 
 namespace gvk
 {
-	g2dSystemVk::g2dSystemVk(vkdDevice& i_Device)
+	g2dSystemVk::g2dSystemVk(vkdDevice& i_Device, bool i_bHeadless)
 		: m_Device(i_Device)
+		, m_bHeadless(i_bHeadless)
 		, m_pResourceCounter(new g2dResourceCounterVk)
 		, m_pFontUtil(new g2dFontUtilVk)
 		, m_pImageCreate(new g2dImageCreateVk)
@@ -85,21 +86,21 @@ namespace gvk
 	g2dWindow* g2dSystemVk::CreateAppWindow(int i_Width, int i_Height, int i_X, int i_Y)
 	{
 		appApplication::SetMainWindowSize(i_X, i_Y, i_Width, i_Height);
-		g2dWindow* window = new g2dWindowVk(m_Device, appApplication::GetMainWindowHandle(), false);
+		g2dWindow* window = new g2dWindowVk(m_Device, appApplication::GetMainWindowHandle(), false, -1, -1, m_bHeadless);
 		m_Windows.push_back(window);
 		return window;
 	}
 
 	g2dWindow* g2dSystemVk::CreateAppWindow(void* i_Handle)
 	{
-		g2dWindow* window = new g2dWindowVk(m_Device, i_Handle, false);
+		g2dWindow* window = new g2dWindowVk(m_Device, i_Handle, false, -1, -1, m_bHeadless);
 		m_Windows.push_back(window);
 		return window;
 	}
 
 	g2dWindow* g2dSystemVk::CreateSubWindow(void* i_Handle)
 	{
-		g2dWindow* window = new g2dWindowVk(m_Device, i_Handle, false);
+		g2dWindow* window = new g2dWindowVk(m_Device, i_Handle, false, -1, -1, m_bHeadless);
 		m_Windows.push_back(window);
 		return window;
 	}
@@ -108,7 +109,7 @@ namespace gvk
 	{
 		itString title("");
 		void* handle = appApplication::CreateSubWindow(i_Width, i_Height, i_X, i_Y, title);
-		g2dWindow* window = new g2dWindowVk(m_Device, handle, true, i_Width, i_Height);
+		g2dWindow* window = new g2dWindowVk(m_Device, handle, true, i_Width, i_Height, m_bHeadless);
 		m_Windows.push_back(window);
 		return window;
 	}

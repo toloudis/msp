@@ -40,6 +40,7 @@ namespace
 {
 	gtBackend::Kind l_Current = gtBackend::e_DX11;
 	bool l_bRunning = false;
+	bool l_bHeadless = false;
 
 	//	GTEST_SKIP's effect from a function that returns a value
 	void skip(const std::string& i_Why)
@@ -102,6 +103,7 @@ namespace
 		g3dGfxOptions options;
 		options.m_Backend = g3dGfxOptions::e_Vulkan;
 		options.m_bValidation = true;
+		options.m_bHeadless = l_bHeadless;
 		if (!GraphicsVulkanLayer::Init(i_pWindow, options))
 		{
 			skip("No usable Vulkan device: " + GraphicsVulkanLayer::GetInitError());
@@ -145,5 +147,13 @@ bool gtBackend::Run(Kind i_Kind, const std::function<void()>& i_Function)
 	l_bRunning = false;
 	gtPlatform::DestroyHiddenWindow(window);
 	GraphicsLayer::CleanUp();
+	return ran;
+}
+
+bool gtBackend::RunVulkanHeadless(const std::function<void()>& i_Function)
+{
+	l_bHeadless = true;
+	const bool ran = Run(e_Vulkan, i_Function);
+	l_bHeadless = false;
 	return ran;
 }
