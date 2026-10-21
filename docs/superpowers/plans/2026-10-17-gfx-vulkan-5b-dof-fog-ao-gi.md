@@ -33,7 +33,7 @@ Code is copied and changed only where it touches D3D, as before. Each task delet
 3. **Branches ported but not tested, because nothing reaches them.** In the HDR renderer, the reflection-generation branch (`GetDoReflectionGen`) is copied with the rest of `Render` but has no test: nothing calls `g3dSingleLightRendering::SetDoReflectionGen`. A grep in Task 4 confirms that before the ruling is recorded.
 
    The file pass buffers *are* reached: capture render passes (`cmraDriverRenderPass`) set `g3dPassBuffers::SetDoingFileRefl`, and cameras give beauty and reflection buffers. They are tested in Task 4.
-4. **Extra scenes.** The owner's folder has `Dume_Demo_testAO.mab` and `Dume_Demo_stress001_AOtiles.mab`. They get a short-window `gfxcompare` run here as extra coverage (spec, "Proving parity"), after a DX11-against-DX11 run shows they are deterministic.
+4. **Extra scenes.** The owner's folder has `Dume_Demo_testAO.mab` and `Dume_Demo_stress001_AOtiles.mab`. They get a short-window `gfxcompare` run here as extra coverage (spec, "Proving parity"), after a DX11-against-DX11 run shows they are deterministic. (Owner, 2026-10-20: `stress001_AOtiles` isn't used for testing; only `testAO`.)
 
 ## Global Constraints
 

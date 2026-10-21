@@ -29,4 +29,4 @@
 
 ## Open questions
 
-- Which capture modes the test scene exercises; whether another scene (`Dume_Demo_testAO.mab`, `stress001_AOtiles.mab`) is needed for AO/bake coverage.
+- Which capture modes the test scene exercises; whether another scene (`Dume_Demo_testAO.mab`; not `stress001_AOtiles.mab`, which the owner ruled out) is needed for AO/bake coverage.
