@@ -94,6 +94,7 @@ on its own, and every plan must leave Vulkan validation clean (spec, "Validation
     - Validation 0/0 in every Vulkan run. Debug RenderNode, every pass, 296-300: 0/0, no asserts, no `GVK_NOT_YET`.
   - **DX11 harness:** 5/5 against itself and against the post-`6848f8d2` reference (frames 296-300).
   - **For Plan 7:** the opacity map renderer with hair; the anisotropic investigation (still open) decides whether the test scene can pass.
+- **Plan 7: written** (2026-10-21), waiting for the owner's review. Ten tasks: the anisotropic investigation and single-pixel outliers first; structured-buffer shader inputs; the hull shader's isoline factors in a Vulkan-only wrapper (with a rule for deferring hair); hair fragments and renderer; `shdwPassHair`; the opacity map renderer; unconsumed outputs trimmed at pipeline creation (SPIRV-Tools); `MSP_GFX_VK_VALIDATION` (GPU-assisted, best practices) and the validation sign-off; test-scene sign-off and the Phase 1 report; docs.
 
 ## Open investigations
 
