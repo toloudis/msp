@@ -37,11 +37,8 @@
 #ifndef GVK_BUMP_VERTEXBUFFER_HPP
 #include "GraphicsVulkan/bump/bumpVertexBuffer.hpp"
 #endif
-#ifndef GVK_G3DSTUBSVK_HPP
-#include "GraphicsVulkan/stub/g3dStubsVk.hpp"
-#endif
-#ifndef GVK_VKDCHECK_HPP
-#include "GraphicsVulkan/vkd/vkdCheck.hpp"
+#ifndef GVK_HAIR_MODELFRAGVK_HPP
+#include "GraphicsVulkan/hair/hairModelFragVk.hpp"
 #endif
 
 namespace gvk
@@ -169,9 +166,7 @@ g3dFragment* mayFragCreate::CreateHairFragment(const mdlHairInfo &i_HairInfo,
 											   matMaterial *i_pMaterial)
 {
 	matMaterial *pMaterial = (i_pMaterial) ? i_pMaterial : i_HairInfo.m_Material->m_pMaterial;
-	// hairModelFrag comes with the hair port (Plan 7): an empty stand-in
-	GVK_NOT_YET("mayFragCreate::CreateHairFragment (hair is Plan 7)");
-	return new hairModelFragVk( NULL, NULL, NULL, 0, NULL, 0, pMaterial, false );
+	return new hairModelFragVk( i_HairInfo, pMaterial );
 }
 
 //------------------------------------------------------------------------

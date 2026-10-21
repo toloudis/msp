@@ -74,6 +74,18 @@
 #ifndef G3D_PROJECTEDLIGHT_HPP
 #include "Graphics/G3d/g3dProjectedLight.hpp"
 #endif
+#ifndef MDL_FRAGCREATE_HPP
+#include "Graphics/mdl/mdlFragCreate.hpp"
+#endif
+#ifndef MDL_HAIRINFO_HPP
+#include "Graphics/mdl/mdlHairInfo.hpp"
+#endif
+#ifndef MA_FUNCTIONS_HPP
+#include "Core/Ma/maFunctions.hpp"
+#endif
+#ifndef MA_RAND_HPP
+#include "Core/Ma/maRand.hpp"
+#endif
 #ifndef G3D_SCENERENDERER_HPP
 #include "Graphics/G3d/g3dSceneRenderer.hpp"
 #endif
@@ -578,6 +590,62 @@ g3dSceneNode* gtSceneBuilder::Add(const gtMesh& i_Mesh, matMaterial* i_pMaterial
 	g3dSceneNode* node = new g3dSceneNode(fragment, i_World);
 	m_pRoot->AddChild(node);
 	m_pScene->UpdateWorldData();		// transforms and world boxes, as the scene manager does
+	return node;
+}
+
+g3dSceneNode* gtSceneBuilder::Hair(const gtHairShape& i_Shape, const maMatrix4x4& i_World)
+{
+	maRand32 rand(0x2F6B1C3Du);
+	mdlHairInfo info;
+	info.m_HairName = "gtHair";
+	info.m_nVerticesPerStrand = i_Shape.m_nVerticesPerStrand;
+	info.m_nHairVertices = i_Shape.m_nStrands * i_Shape.m_nVerticesPerStrand;
+	info.m_Strands.resize(i_Shape.m_nStrands);
+	const maVector3d c_Gravity(0, -1, 0);
+	for (mdlHairStrand& strand : info.m_Strands)
+	{
+		//	a root on the upper half sphere, and two directions across the strand
+		maVector3d normal;
+		do
+		{
+			normal = maVector3d(maFunctions::FloatRand(-1, 1, rand), maFunctions::FloatRand(0, 1, rand),
+								maFunctions::FloatRand(-1, 1, rand));
+		} while (normal.Length() < 0.1f || normal.Length() > 1.0f);
+		normal.Normalize();
+		maVector3d across = normal.Cross(fabsf(normal.GetY()) < 0.9f ? maVector3d(0, 1, 0) : maVector3d(1, 0, 0));
+		across.Normalize();
+		const maVector3d across2 = normal.Cross(across);
+		const float length = i_Shape.m_Length * maFunctions::FloatRand(0.75f, 1.0f, rand);
+		const float phase = maFunctions::FloatRand(0, 6.2831853f, rand);
+
+		strand.m_ControlPoints.resize(i_Shape.m_nVerticesPerStrand);
+		for (int v = 0; v < i_Shape.m_nVerticesPerStrand; v++)
+		{
+			const float t = i_Shape.m_nVerticesPerStrand > 1 ? v / float(i_Shape.m_nVerticesPerStrand - 1) : 0.0f;
+			const float turn = phase + 3 * 6.2831853f * t;
+			const float curl = i_Shape.m_Curl * length * 0.1f * t;
+			strand.m_ControlPoints[v].Position = normal * (1.0f + length * t) + c_Gravity * (0.5f * length * t * t)
+												 + across * (curl * cosf(turn)) + across2 * (curl * sinf(turn));
+		}
+		mdlHairMaterial& material = strand.Material;
+		material.m_RootRadius = i_Shape.m_RootRadius;
+		material.m_TipRadius = i_Shape.m_TipRadius;
+		material.m_RootColor = maVector3d(i_Shape.m_RootColor.GetRed(), i_Shape.m_RootColor.GetGreen(), i_Shape.m_RootColor.GetBlue());
+		material.m_TipColor = maVector3d(i_Shape.m_TipColor.GetRed(), i_Shape.m_TipColor.GetGreen(), i_Shape.m_TipColor.GetBlue());
+		material.m_SurfaceNormal = normal;
+		material.m_Opacity = i_Shape.m_Opacity;
+		material.m_Specular = 0.5f;
+		material.m_Gloss = 40.0f;
+		material.m_AmbientDiffuse = 0.3f;
+	}
+
+	//	hairImport's material: Hair_SH.fx with the parameters it builds
+	matMaterial* material = Keep(gtScene::ShaderMaterial("Hair_SH.fx", gtScene::e_Defaults));
+	g3dFragment* fragment = mdlFragCreate::CreateHairFragment(info, material);
+	m_Fragments.emplace_back(fragment);
+	g3dSceneNode* node = new g3dSceneNode(fragment, i_World);
+	m_pRoot->AddChild(node);
+	m_pScene->UpdateWorldData();
 	return node;
 }
 

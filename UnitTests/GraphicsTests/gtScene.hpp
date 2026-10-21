@@ -67,6 +67,26 @@ struct gtMesh
 	g3dFragment* CreateFragment(matMaterial* i_pMaterial = NULL, bool i_bMorphable = false) const;
 };
 
+//	A hair object for gtSceneBuilder::Hair: m_nStrands strands of
+//	m_nVerticesPerStrand control points, rooted on the upper half of the unit
+//	sphere and growing along its normal, m_Length long, bent down by a fixed
+//	gravity curve and wound around their direction by m_Curl (0: straight;
+//	1: a turn of radius m_Length / 10 every third of the strand). Each strand
+//	has the radii, colours and opacity given (hairImport's per-strand
+//	material: rootRadii, tipRadii, rootColor, ...)
+struct gtHairShape
+{
+	int			m_nStrands = 64;
+	int			m_nVerticesPerStrand = 8;
+	float		m_Length = 0.8f;
+	float		m_Curl = 0.3f;
+	float		m_RootRadius = 0.012f;
+	float		m_TipRadius = 0.004f;
+	maFloatRGBA	m_RootColor = maFloatRGBA(0.35f, 0.2f, 0.1f, 1);
+	maFloatRGBA	m_TipColor = maFloatRGBA(0.9f, 0.75f, 0.45f, 1);
+	float		m_Opacity = 1.0f;
+};
+
 namespace gtScene
 {
 	//	Unit sphere at the origin: i_Rings bands from pole to pole,
@@ -182,6 +202,12 @@ class gtSceneBuilder
 		//	passed to the renderer's Render (ViewerLayers), camera space and
 		//	z-buffered; made on first use
 		g3dSceneNode*	AddViewerLayer(const gtMesh& i_Mesh, matMaterial* i_pMaterial, const maMatrix4x4& i_Camera);
+
+		//	A hair node: i_Shape's strands (the same on every call: their
+		//	random roots and lengths come from a fixed seed) made into a
+		//	fragment by mdlFragCreate::CreateHairFragment, on a Hair_SH.fx
+		//	material as hairImport sets it, placed by i_World
+		g3dSceneNode*	Hair(const gtHairShape& i_Shape, const maMatrix4x4& i_World);
 
 		void			PointLight(const maPoint3d& i_Position, const maFloatRGBA& i_Color, float i_Range = 50.0f);
 		void			DirectionalLight(const maVector3d& i_Direction, const maFloatRGBA& i_Color);

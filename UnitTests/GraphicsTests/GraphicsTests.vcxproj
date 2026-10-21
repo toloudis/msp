@@ -120,6 +120,7 @@
     <ClCompile Include="Vk\vkdPipelineCacheTest.cpp" />
     <ClCompile Include="Vk\vkdAnisotropicTest.cpp" />
     <ClCompile Include="Vk\vkdContextTest.cpp" />
+    <ClCompile Include="Vk\hairVkTest.cpp" />
     <ClCompile Include="Vk\vkdIsolineTest.cpp" />
     <ClCompile Include="Vk\fxEffectVkTest.cpp" />
     <ClCompile Include="Vk\effPlainEffectVkTest.cpp" />

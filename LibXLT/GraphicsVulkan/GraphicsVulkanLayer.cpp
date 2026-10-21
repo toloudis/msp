@@ -4,7 +4,7 @@
 **      See GraphicsVulkanLayer.hpp. Hooks are installed where GraphicsDX11
 **	installs its own: the 2D and 3D systems install theirs while they
 **	exist; Init initializes the packages in GraphicsDX11Layer's order
-**	(shdw, tmesh, bump, may, then the hair stand-in), which install the
+**	(shdw, tmesh, bump, may, hair), which install the
 **	scene renderer creator and the fragment creators; InitGraphics makes
 **	shdw's render states, installs baking (as shdwPackage::InitGraphics
 **	does) and the bump vertex layouts.
@@ -38,8 +38,8 @@
 #ifndef GVK_G3DSYSTEMVK_HPP
 #include "GraphicsVulkan/G3d/g3dSystemVk.hpp"
 #endif
-#ifndef GVK_G3DSTUBSVK_HPP
-#include "GraphicsVulkan/stub/g3dStubsVk.hpp"
+#ifndef GVK_HAIR_PACKAGE_HPP
+#include "GraphicsVulkan/hair/hairPackage.hpp"
 #endif
 #ifndef GVK_SHDW_PACKAGE_HPP
 #include "GraphicsVulkan/shdw/shdwPackage.hpp"
@@ -55,9 +55,6 @@
 #endif
 #ifndef G3D_FRAGMENTCREATE_HPP
 #include "Graphics/G3d/g3dFragmentCreate.hpp"
-#endif
-#ifndef G3D_RENDERERMGR_HPP
-#include "Graphics/G3d/g3dRendererMgr.hpp"
 #endif
 #ifndef MDL_FRAGCREATE_HPP
 #include "Graphics/mdl/mdlFragCreate.hpp"
@@ -116,7 +113,6 @@ namespace
 	vkdContext*					l_pContext = NULL;
 	g2dSystemVk*				l_pSystem2D = NULL;
 	g3dSystemVk*				l_pSystem3D = NULL;
-	hairRendererVk*				l_pHairRenderer = NULL;
 #ifdef MSP_GFX_PROFILING
 	g3dProfilerGpuVk*			l_pProfilerGpu = NULL;
 #endif
@@ -159,9 +155,7 @@ bool GraphicsVulkanLayer::Init(void* /*i_hWnd*/, const g3dGfxOptions& i_Options)
 	tmeshPackage::Init();
 	bumpPackage::Init();
 	mayPackage::Init();
-	// hairPackage::Init's stand-in until hair is ported (Plan 7)
-	l_pHairRenderer = new hairRendererVk;
-	hairModelFragVk::SetRendererId(g3dRendererMgr::AddRenderer(l_pHairRenderer));
+	hairPackage::Init();
 	return true;
 }
 
@@ -174,8 +168,7 @@ void GraphicsVulkanLayer::CleanUp() throw()
 	l_pDevice->WaitIdle();
 	// clean up our internal stuff, in reverse order (DX11's packages leave
 	// the creators installed after deleting them; they are removed here)
-	delete l_pHairRenderer;
-	l_pHairRenderer = NULL;
+	hairPackage::CleanUp();
 	mayPackage::CleanUp();
 	mdlFragCreate::SetImplementation(NULL);
 	bumpPackage::CleanUp();

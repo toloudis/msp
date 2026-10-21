@@ -62,6 +62,9 @@
     <ClCompile Include="Vk\vkdContextTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
+    <ClCompile Include="Vk\hairVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
     <ClCompile Include="Vk\vkdIsolineTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>

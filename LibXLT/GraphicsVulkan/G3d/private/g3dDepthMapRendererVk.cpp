@@ -80,8 +80,8 @@
 #ifndef GVK_G3D_DRAWSTYLEUTILVK_HPP
 #include "GraphicsVulkan/G3d/g3dDrawStyleUtilVk.hpp"
 #endif
-#ifndef GVK_G3DSTUBSVK_HPP
-#include "GraphicsVulkan/stub/g3dStubsVk.hpp"
+#ifndef GVK_HAIR_MODELFRAGVK_HPP
+#include "GraphicsVulkan/hair/hairModelFragVk.hpp"
 #endif
 #ifndef GVK_VKDCONTEXT_HPP
 #include "GraphicsVulkan/vkd/vkdContext.hpp"

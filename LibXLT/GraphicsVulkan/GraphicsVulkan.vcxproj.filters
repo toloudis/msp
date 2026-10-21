@@ -43,10 +43,10 @@
     <Filter Include="G3d\private">
       <UniqueIdentifier>{fa3aae3e-6f79-849a-20bb-31a3cf511bc3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="stub">
+    <Filter Include="hair">
       <UniqueIdentifier>{e8f65fd8-d973-f998-5dc7-ea3cf1614ae1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="stub\private">
+    <Filter Include="hair\private">
       <UniqueIdentifier>{916da593-97b9-dabc-1d7e-60c4bd68afbb}</UniqueIdentifier>
     </Filter>
     <Filter Include="vkd">
@@ -163,8 +163,14 @@
     <ClCompile Include="G2d\private\g2dDebugDisplay.cpp">
       <Filter>G2d\private</Filter>
     </ClCompile>
-    <ClCompile Include="stub\private\g3dStubsVk.cpp">
-      <Filter>stub\private</Filter>
+    <ClCompile Include="hair\private\hairModelFragVk.cpp">
+      <Filter>hair\private</Filter>
+    </ClCompile>
+    <ClCompile Include="hair\private\HairRendererVk.cpp">
+      <Filter>hair\private</Filter>
+    </ClCompile>
+    <ClCompile Include="hair\private\hairPackage.cpp">
+      <Filter>hair\private</Filter>
     </ClCompile>
     <ClCompile Include="vkd\private\vkdReflect.cpp">
       <Filter>vkd\private</Filter>
@@ -665,8 +671,14 @@
     <ClInclude Include="G2d\g2dDebugDisplay.hpp">
       <Filter>G2d</Filter>
     </ClInclude>
-    <ClInclude Include="stub\g3dStubsVk.hpp">
-      <Filter>stub</Filter>
+    <ClInclude Include="hair\hairModelFragVk.hpp">
+      <Filter>hair</Filter>
+    </ClInclude>
+    <ClInclude Include="hair\HairRendererVk.hpp">
+      <Filter>hair</Filter>
+    </ClInclude>
+    <ClInclude Include="hair\hairPackage.hpp">
+      <Filter>hair</Filter>
     </ClInclude>
     <ClInclude Include="vkd\vkdReflect.hpp">
       <Filter>vkd</Filter>

@@ -114,7 +114,9 @@
     <ClCompile Include="G3d\private\g3dLightMgrVk.cpp" />
     <ClCompile Include="G2d\private\g2dResourceCounterVk.cpp" />
     <ClCompile Include="G2d\private\g2dDebugDisplay.cpp" />
-    <ClCompile Include="stub\private\g3dStubsVk.cpp" />
+    <ClCompile Include="hair\private\hairModelFragVk.cpp" />
+    <ClCompile Include="hair\private\HairRendererVk.cpp" />
+    <ClCompile Include="hair\private\hairPackage.cpp" />
     <ClCompile Include="vkd\private\vkdReflect.cpp" />
     <ClCompile Include="Fx\private\fxEffectDesc.cpp" />
     <ClCompile Include="Fx\private\fxEffectVk.cpp" />
@@ -283,7 +285,9 @@
     <ClInclude Include="G3d\g3dLightMgrVk.hpp" />
     <ClInclude Include="G2d\g2dResourceCounterVk.hpp" />
     <ClInclude Include="G2d\g2dDebugDisplay.hpp" />
-    <ClInclude Include="stub\g3dStubsVk.hpp" />
+    <ClInclude Include="hair\hairModelFragVk.hpp" />
+    <ClInclude Include="hair\HairRendererVk.hpp" />
+    <ClInclude Include="hair\hairPackage.hpp" />
     <ClInclude Include="vkd\vkdReflect.hpp" />
     <ClInclude Include="Fx\fxEffectDesc.hpp" />
     <ClInclude Include="Fx\fxEffectVk.hpp" />
