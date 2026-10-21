@@ -7,7 +7,6 @@
 **	should do real work runs. Each class moves to its real package when a
 **	later plan ports it.
 **
-**	  g3dBakeVk				baking (nothing to bake)
 **	  hairModelFragVk, hairRendererVk
 **		hair fragments (mayFragCreate::CreateHairFragment) keep their
 **		vertices and bounding box on the CPU; their renderer, registered
@@ -22,9 +21,6 @@
 
 #ifndef G3D_SCENERENDERER_HPP
 #include "Graphics/G3d/g3dSceneRenderer.hpp"
-#endif
-#ifndef G3D_BAKE_HPP
-#include "Graphics/G3d/g3dBake.hpp"
 #endif
 #ifndef G3D_FRAGMENT_HPP
 #include "Graphics/G3d/g3dFragment.hpp"
@@ -44,17 +40,6 @@
 
 namespace gvk
 {
-	class g3dBakeVk : public g3dBakeImpl
-	{
-		public:
-			virtual int Init(const g2dPFD& i_PFD, const g3dScene* i_pScene, const fsLocator& i_OutputPath, float i_fSimTime,
-							 const camCamera& i_Camera, bool i_bIsSaveAndReplace, const std::string& i_OutputFormat,
-							 int i_Res, int i_TextureReduce);
-			virtual int CleanUp();
-			virtual bool BakeNextNode(std::map<const g3dFragment*, std::string>& io_TextureNameMap);
-			virtual void SetOutputDirectory(const fsLocator& i_OutputDir);
-	};
-
 	class hairModelFragVk : public g3dFragment
 	{
 		public:

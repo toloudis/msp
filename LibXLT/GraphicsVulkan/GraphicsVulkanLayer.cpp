@@ -117,7 +117,6 @@ namespace
 	g2dSystemVk*				l_pSystem2D = NULL;
 	g3dSystemVk*				l_pSystem3D = NULL;
 	hairRendererVk*				l_pHairRenderer = NULL;
-	g3dBakeVk*					l_pBake = NULL;
 #ifdef MSP_GFX_PROFILING
 	g3dProfilerGpuVk*			l_pProfilerGpu = NULL;
 #endif
@@ -216,8 +215,6 @@ void GraphicsVulkanLayer::InitGraphics()
 {
 	shdwPackage::InitGraphics();
 	bumpPackage::InitGraphics();
-	l_pBake = new g3dBakeVk;
-	g3dBake::SetImplementation(l_pBake);
 #ifdef MSP_GFX_PROFILING
 	l_pProfilerGpu = new g3dProfilerGpuVk(*l_pDevice);
 	g3dProfiler::SetGpu(l_pProfilerGpu);
@@ -231,9 +228,6 @@ void GraphicsVulkanLayer::CleanUpGraphics()
 	delete l_pProfilerGpu;
 	l_pProfilerGpu = NULL;
 #endif
-	g3dBake::SetImplementation(NULL);
-	delete l_pBake;
-	l_pBake = NULL;
 	bumpPackage::CleanUpGraphics();
 	shdwPackage::CleanUpGraphics();
 }

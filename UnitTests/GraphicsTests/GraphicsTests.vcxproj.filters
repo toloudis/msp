@@ -139,6 +139,9 @@
     <ClCompile Include="Vk\g3dPickVkTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
+    <ClCompile Include="Vk\shdwBakeVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
     <ClCompile Include="Vk\shdwDofFogVkTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>

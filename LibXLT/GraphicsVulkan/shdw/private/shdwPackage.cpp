@@ -120,6 +120,10 @@
 #include "GraphicsVulkan/shdw/shdwUVRendererVk.hpp"
 #endif
 
+#ifndef GVK_SHDW_BAKINGRENDERER_HPP
+#include "GraphicsVulkan/shdw/shdwBakingRenderer.hpp"
+#endif
+
 #include <cstddef>
 namespace gvk
 {
@@ -129,6 +133,7 @@ namespace
 
 int l_RefCount = 0;
 shdwSceneRendererCreate* l_pRendererCreator = 0;
+shdwBakingRenderer* l_pBakingRenderer = 0;
 
 }
 
@@ -214,12 +219,16 @@ void shdwPackage::InitGraphics()
 	shdwVelocityMapRendererVk::InitStates();
 	shdwUVRendererVk::InitStates();
 	shdwReflectionsOnlyRendererVk::InitStates();
+	shdwBakingRenderer::InitStates();
 	shdwPassHair::InitStates();
 	shdwPassAOVolumes::InitStates();
 	shdwPassLPVGI::InitStates();
 	shdwGlowRendererVk::InitStates();
 	shdwPassPostShader::InitStates();
 	shdwPassEnvBackground::InitStates();
+
+	l_pBakingRenderer = new shdwBakingRenderer;
+	g3dBake::SetImplementation(l_pBakingRenderer);
 }
 
 //------------------------------------------------------------------------
@@ -233,6 +242,7 @@ void shdwPackage::CleanUpGraphics()
 	shdwPassLPVGI::CleanupStates();
 	shdwPassAOVolumes::CleanupStates();
 	shdwPassHair::CleanupStates();
+	shdwBakingRenderer::CleanupStates();
 	shdwReflectionsOnlyRendererVk::CleanupStates();
 	shdwUVRendererVk::CleanupStates();
 	shdwVelocityMapRendererVk::CleanupStates();
@@ -264,6 +274,10 @@ void shdwPackage::CleanUpGraphics()
 
 	shdwPassSSGI::CleanUp();
 	shdwPassSSAO::CleanUp();
+
+	delete l_pBakingRenderer;
+	l_pBakingRenderer = NULL;
+	g3dBake::SetImplementation(NULL);
 }
 
 }

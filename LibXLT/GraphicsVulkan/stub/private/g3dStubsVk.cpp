@@ -21,20 +21,6 @@
 namespace gvk
 {
 	//------------------------------------------------------------------------
-	//	Baking
-	//------------------------------------------------------------------------
-	int g3dBakeVk::Init(const g2dPFD&, const g3dScene*, const fsLocator&, float, const camCamera&, bool,
-						const std::string&, int, int)
-	{
-		GVK_NOT_YET("g3dBakeVk::Init");
-		return 0;
-	}
-
-	int g3dBakeVk::CleanUp()													{ return 0; }
-	bool g3dBakeVk::BakeNextNode(std::map<const g3dFragment*, std::string>&)	{ return false; }		// nothing (more) to bake
-	void g3dBakeVk::SetOutputDirectory(const fsLocator&)						{}
-
-	//------------------------------------------------------------------------
 	//	hairModelFragVk
 	//------------------------------------------------------------------------
 	int hairModelFragVk::sm_RendererId = 0;

@@ -232,6 +232,7 @@
     <ClCompile Include="shdw\private\shdwPassVelocity.cpp" />
     <ClCompile Include="shdw\private\shdwVelocityMapRendererVk.cpp" />
     <ClCompile Include="shdw\private\shdwUVRendererVk.cpp" />
+    <ClCompile Include="shdw\private\shdwBakingRenderer.cpp" />
     <ClCompile Include="shdw\private\shdwShadowsOnlyRendererVk.cpp" />
     <ClCompile Include="shdw\private\shdwAOPreviewRendererVk.cpp" />
     <ClCompile Include="shdw\private\shdwGIPreviewRendererVk.cpp" />
@@ -396,6 +397,7 @@
     <ClInclude Include="shdw\shdwPassVelocity.hpp" />
     <ClInclude Include="shdw\shdwVelocityMapRendererVk.hpp" />
     <ClInclude Include="shdw\shdwUVRendererVk.hpp" />
+    <ClInclude Include="shdw\shdwBakingRenderer.hpp" />
     <ClInclude Include="shdw\shdwShadowsOnlyRendererVk.hpp" />
     <ClInclude Include="shdw\shdwAOPreviewRendererVk.hpp" />
     <ClInclude Include="shdw\shdwGIPreviewRendererVk.hpp" />

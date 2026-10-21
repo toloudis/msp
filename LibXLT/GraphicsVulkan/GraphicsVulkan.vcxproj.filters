@@ -512,6 +512,9 @@
     <ClCompile Include="shdw\private\shdwUVRendererVk.cpp">
       <Filter>shdw\private</Filter>
     </ClCompile>
+    <ClCompile Include="shdw\private\shdwBakingRenderer.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
     <ClCompile Include="shdw\private\shdwShadowsOnlyRendererVk.cpp">
       <Filter>shdw\private</Filter>
     </ClCompile>
@@ -997,6 +1000,9 @@
       <Filter>shdw</Filter>
     </ClInclude>
     <ClInclude Include="shdw\shdwUVRendererVk.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwBakingRenderer.hpp">
       <Filter>shdw</Filter>
     </ClInclude>
     <ClInclude Include="shdw\shdwShadowsOnlyRendererVk.hpp">
