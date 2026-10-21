@@ -37,7 +37,6 @@
 #include "GraphicsDX11/shdw/shdwPassAlphaFill.hpp"
 #include "GraphicsDX11/shdw/shdwPassNormals.hpp"
 #include "GraphicsDX11/shdw/shdwPassZFill.hpp"
-#include "GraphicsDX11/G2d/g2dWindowDX11.hpp"
 #ifndef FX_EFFECTDX11_HPP
 #include "GraphicsDX11/Fx/fxEffectDX11.hpp"
 #endif
@@ -115,8 +114,7 @@ int shdwReflectionsOnlyRendererDX11::Render( g2dRenderTarget* i_pWindow, const c
 	// Initialize the triangle count
 	l_nNumTrianglesRendered = 0;
 
-	m_pWindow = dynamic_cast<g2dWindowDX11*>(i_pWindow);
-	DBG_ASSERT( m_pWindow, "Render requires a g2dWindowDX11 render target" );
+	m_pWindow = i_pWindow;
 
 	// Set our global / local frame time value
 	g3dSceneGlobal::g_FrameTime = i_fSimTime;

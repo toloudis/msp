@@ -81,9 +81,6 @@
 #ifndef GVK_SHDW_PASSZFILL_HPP
 #include "GraphicsVulkan/shdw/shdwPassZFill.hpp"
 #endif
-#ifndef GVK_G2DWINDOWVK_HPP
-#include "GraphicsVulkan/G2d/g2dWindowVk.hpp"
-#endif
 #ifndef G3D_PROFILER_HPP
 #include "Graphics/G3d/g3dProfiler.hpp"
 #endif
@@ -169,8 +166,7 @@ int shdwGlowRendererVk::Render( g2dRenderTarget* i_pWindow, const camCamera& i_C
 	// Initialize the triangle count
 	l_nNumTrianglesRendered = 0;
 
-	m_pWindow = dynamic_cast<g2dWindowVk*>(i_pWindow);
-	DBG_ASSERT( m_pWindow, "Render requires a g2dWindowVk render target" );
+	m_pWindow = i_pWindow;
 
 	// Set our global / local frame time value
 	g3dSceneGlobal::g_FrameTime = i_fSimTime;

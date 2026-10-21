@@ -33,7 +33,6 @@ namespace gvk
 //	Forward References
 //--------------------------------------------------------------------
 class matRenderTargetTexture;
-class g2dWindowVk;
 
 class shdwNormalRendererVk : public shdwSceneRendererVk
 {
@@ -73,7 +72,7 @@ protected:
 	// based on whether width/height of window have changed.
 	int m_Width, m_Height;
 
-	g2dWindowVk* m_pWindow;
+	g2dRenderTarget* m_pWindow;
 
 	void CreateSurfaces(g2dRenderTarget* i_pWindow);
 

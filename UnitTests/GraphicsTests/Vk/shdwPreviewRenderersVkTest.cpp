@@ -4,8 +4,7 @@
 **      The preview renderers MachStudio's viewport offers (the render
 **      types in g3dSceneRendererTypes) on Vulkan against DX11, each made by
 **      the creator (g3dSceneRendererCreate::Create<Type>Renderer) and drawn
-**      into a window (gtRenderOptions::m_bInWindow: they cast the target to
-**      the backend's window class), with HDR AA off and on (the frame
+**      into a render-target texture, with HDR AA off and on (the frame
 **      buffer's multisampled target and its resolve, NEW_AA_CODE):
 **      - the depth renderer (shdwDepthRendererVk): spheres at five depths
 **        and a transparent one;
@@ -75,13 +74,11 @@ namespace
 
 	typedef std::function<g3dSceneRenderer*()> create_fn;
 
-	//	The renderer, in a window, HDR AA as given; i_Prefs edits the prefs
-	//	further
+	//	The renderer, HDR AA as given; i_Prefs edits the prefs further
 	gtRenderOptions preview(const create_fn& i_Create, bool i_bHDRAA,
 							const std::function<void(g3dPrefs::g3dRenderPrefs&)>& i_Prefs = nullptr, int i_Frames = 1)
 	{
 		gtRenderOptions options;
-		options.m_bInWindow = true;
 		options.m_CreateRenderer = i_Create;
 		options.m_Frames = i_Frames;
 		options.m_Prefs = [=](g3dPrefs::g3dRenderPrefs& p)

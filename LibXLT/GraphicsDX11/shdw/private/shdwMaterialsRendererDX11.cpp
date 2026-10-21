@@ -33,7 +33,6 @@
 #include "GraphicsDX11/shdw/shdwPassAlphaFill.hpp"
 #include "GraphicsDX11/shdw/shdwPassMaterials.hpp"
 #include "GraphicsDX11/shdw/shdwPassZFill.hpp"
-#include "GraphicsDX11/G2d/g2dWindowDX11.hpp"
 #ifndef G3D_PROFILER_HPP
 #include "Graphics/G3d/g3dProfiler.hpp"
 #endif
@@ -130,8 +129,7 @@ int shdwMaterialsRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCame
 
 	// Initialize the triangle count
 	l_nNumTrianglesRendered = 0;
-	m_pWindow = dynamic_cast<g2dWindowDX11*>(i_pWindow);
-	DBG_ASSERT( m_pWindow, "Render requires a g2dWindowDX11 render target" );
+	m_pWindow = i_pWindow;
 
 	// Set our global / local frame time value
 	g3dSceneGlobal::g_FrameTime = i_fSimTime;
