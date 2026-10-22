@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     GoogleTest unit tests for LibXLT/Core: a console exe that links Core
-    (ProjectReference below) and gets gtest from vcpkg.json next to this
-    file. vcpkg's x64-windows gtest is a DLL (gmock.dll, copied next to the
+    (ProjectReference below) and gets gtest from the repository's
+    vcpkg.json. vcpkg's x64-windows gtest is a DLL (gmock.dll, copied next to the
     exe).
 
     The Post-Build Event runs the tests right after linking, so a failing
@@ -48,9 +48,6 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <PropertyGroup Label="Vcpkg">
-    <VcpkgEnableManifest>true</VcpkgEnableManifest>
-  </PropertyGroup>
   <PropertyGroup>
     <OutDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
@@ -127,10 +124,6 @@
     <ClInclude Include="ctNumbers.hpp" />
     <ClInclude Include="ctPlatform.hpp" />
     <ClInclude Include="ctTempDir.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="vcpkg.json" />
-    <None Include="vcpkg-configuration.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\LibXLT\Core\Core.vcxproj">

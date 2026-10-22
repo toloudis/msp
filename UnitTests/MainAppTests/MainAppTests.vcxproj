@@ -3,7 +3,7 @@
     GoogleTest unit tests for toolkit-neutral MainApp code. MainApp is an
     exe, so the sources under test (mainCommandLine.cpp) are compiled
     straight into this exe; it links Core (ProjectReference below) and gets
-    gtest from vcpkg.json next to this file. Otherwise set up like
+    gtest from the repository's vcpkg.json. Otherwise set up like
     CoreTests: the Post-Build Event runs the tests (a failure fails the
     build), MainApp references this project, output goes to
     UnitTests/bin/<Platform>/<Configuration>/.
@@ -41,9 +41,6 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <PropertyGroup Label="Vcpkg">
-    <VcpkgEnableManifest>true</VcpkgEnableManifest>
-  </PropertyGroup>
   <PropertyGroup>
     <OutDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
@@ -100,10 +97,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="matPlatform.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="vcpkg.json" />
-    <None Include="vcpkg-configuration.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\LibXLT\Core\Core.vcxproj">

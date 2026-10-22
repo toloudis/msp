@@ -3,13 +3,11 @@
     GraphicsVulkan: the Vulkan implementation of the LibXLT/Graphics
     abstractions (the counterpart of GraphicsDX11). Everything is in C++
     namespace gvk. Vulkan is the C API, loaded at run time with volk (no
-    vulkan-1.lib); memory through Vulkan Memory Allocator. vcpkg.json next
-    to this file lists the packages; vcpkg-configuration.json pins a newer
-    baseline than the rest of the repo, matching the Vulkan SDK 1.4.350.
-
-    The static libraries of volk and SPIRV-Reflect are merged into
-    GraphicsVulkan.lib (Lib step below), so MainApp only references this
-    project.
+    vulkan-1.lib); memory through Vulkan Memory Allocator. Its packages
+    are in the repository's vcpkg.json, whose baseline matches the Vulkan
+    SDK 1.4.350. The executables that link this library get volk,
+    SPIRV-Reflect and SPIRV-Tools (static libraries) from vcpkg's
+    automatic linking.
   -->
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
@@ -44,14 +42,9 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <PropertyGroup Label="Vcpkg">
-    <VcpkgEnableManifest>true</VcpkgEnableManifest>
-  </PropertyGroup>
   <PropertyGroup>
     <OutDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
     <IntDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
-    <GvkVcpkgLib Condition="'$(MspBaseConfiguration)' == 'Debug'">$(ProjectDir)vcpkg_installed\x64-windows\x64-windows\debug\lib</GvkVcpkgLib>
-    <GvkVcpkgLib Condition="'$(MspBaseConfiguration)' == 'Release'">$(ProjectDir)vcpkg_installed\x64-windows\x64-windows\lib</GvkVcpkgLib>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -67,8 +60,6 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>volk.lib;spirv-reflect-static.lib;SPIRV-Tools-opt.lib;SPIRV-Tools.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(GvkVcpkgLib);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
   </ItemDefinitionGroup>
@@ -427,8 +418,6 @@
     <ClInclude Include="G3d\g3dVkUtil.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="vcpkg.json" />
-    <None Include="vcpkg-configuration.json" />
     <None Include="Fx\private\EmbedShadersVk.ps1" />
     <None Include="Eff\private\Shaders\DumpToTexture.hlsl" />
     <None Include="Eff\private\Shaders\FinalPass.hlsl" />
@@ -590,12 +579,12 @@
        (plus the Vulkan-only wrappers in Eff\private\ShadersVk, for stages DXC can't compile from the copy).
        Fx\private\EmbedShadersVk.ps1 compiles every entry point the *.effect.json manifests
        list with DXC to SPIR-V and embeds it with the manifests (included by
-       Fx\private\fxEmbeddedShadersVk.cpp). DXC comes from this project's vcpkg packages. -->
+       Fx\private\fxEmbeddedShadersVk.cpp). DXC comes from the repository's vcpkg packages. -->
   <PropertyGroup>
     <VkShaderDir>$(MSBuildThisFileDirectory)Eff\private\Shaders</VkShaderDir>
     <VkShaderScript>$(MSBuildThisFileDirectory)Fx\private\EmbedShadersVk.ps1</VkShaderScript>
     <VkShaderOutput>$(MSBuildThisFileDirectory)Fx\private\Generated\fxEmbeddedShadersVk.inc</VkShaderOutput>
-    <VkDxc>$(MSBuildThisFileDirectory)vcpkg_installed\x64-windows\x64-windows\tools\directx-dxc\dxc.exe</VkDxc>
+    <VkDxc>$(MspVcpkgDir)tools\directx-dxc\dxc.exe</VkDxc>
   </PropertyGroup>
   <ItemGroup>
     <VkShaderInput Include="$(VkShaderDir)\**\*.hlsl;$(VkShaderDir)\**\*.hlsli;$(VkShaderDir)\**\*.effect.json;$(MSBuildThisFileDirectory)Eff\private\ShadersVk\*.hlsl*;$(VkShaderScript)" />

@@ -80,17 +80,17 @@ hold settings:
 
 | File | Applies to | What it does |
 |---|---|---|
-| `Directory.Build.props` (repo root) | every project, automatically | Works out `MspGuiToolkit` (Qt/Wx/None) and `MspBaseConfiguration` (Debug/Release) from the configuration name; wx include dirs; defines `MSP_GFX_PROFILING` in Debug or with `MspGfxProfiling=true`. `3rdParty/WxWidgets/build/msw/wx_setup.props` reads `MspBaseConfiguration` |
+| `Directory.Build.props` (repo root) | every project, automatically | Works out `MspGuiToolkit` (Qt/Wx/None) and `MspBaseConfiguration` (Debug/Release) from the configuration name; wx include dirs; defines `MSP_GFX_PROFILING` in Debug or with `MspGfxProfiling=true`; turns on vcpkg manifest mode with the root manifest and install (`MspVcpkgDir` is the `x64-windows` install). `3rdParty/WxWidgets/build/msw/wx_setup.props` reads `MspBaseConfiguration` |
 | `MachStudio/Source/Directory.Build.targets` | MachStudio projects, automatically | Drops `wxGUI/` or `qtGUI/` sources for the other toolkit; imports `qt6.props` and runs `windeployqt` for Qt |
 | `LibXLT/ToolUIQt/qt6.props` | Qt builds (ToolUIQt, and MachStudio projects through the targets above) | Qt include dirs, defines and libraries (no moc/uic step) |
 | `3rdParty/WxWidgets/wxwidgets.props` | Wx builds of the projects that import it (ToolUIWx, Support, Features, MainApp, ...) | wx libraries |
-| `vcpkg.json` next to a project | that project | Its vcpkg packages (see Dependencies) |
+| `vcpkg.json`, `vcpkg-configuration.json` (repo root) | every project | All the vcpkg packages and the baseline (see Dependencies) |
 
 ### Unit tests
 
 - `UnitTests/CoreTests/CoreTests.vcxproj` is a console exe of GoogleTest tests
   for `LibXLT/Core`, in `MachStudio.sln`. It links `Core` through a
-  ProjectReference and gets gtest from its own vcpkg manifest. Tests sit in
+  ProjectReference and gets gtest from vcpkg. Tests sit in
   folders named after the package they test (`Ch/chChunkTest.cpp`,
   `Ma/maMatrixTest.cpp`, ...); helpers use the `ct` prefix (`ctTempDir` for a
   per-test temp directory, `ctMath` for approximate vector/matrix checks).
@@ -170,21 +170,26 @@ Unused leftovers in `Libs/x64`: `jpeg.lib`, the 2011
 `fbxsdk` libs (FBX import/export needs `USE_FBX_IMPORTEXPORT`, which no
 configuration defines), `python26/27`, `ATITessellation*`.
 
-**From vcpkg** (manifest mode, `VcpkgEnableManifest`; each project installs into
-its own `vcpkg_installed/`):
+**From vcpkg**: one manifest, `vcpkg.json` at the repo root (its baseline
+in `vcpkg-configuration.json` next to it), installed once into
+`vcpkg_installed/` at the root, by `vcpkg install` there or by the first
+project a build compiles (vcpkg locks the folder; the other projects find
+its stamp file current and skip the step). `Directory.Build.props` turns
+manifest mode on for every project and points them all at that install, so
+every project sees every package's headers, executables link every
+package's libraries automatically (only what they use ends up in them), and
+vcpkg copies the DLLs an executable needs next to it. Paths a project names
+itself (dxc.exe, the Imath include folder) use `$(MspVcpkgDir)`, the
+`x64-windows` install.
 
-| Manifest | Packages | Used for |
+| Packages | Used by | For |
 |---|---|---|
-| `LibXLT/Graphics/vcpkg.json` | OpenEXR (+ Imath, libdeflate) | writing `.exr` render output (`g2dScanlineOpenEXRUtil`, `g2dOpenEXROutStream`, `g2dHDRUtil`) |
-| `LibXLT/GraphicsDX11/vcpkg.json` | DirectXTex, nlohmann-json, libtiff (+ libjpeg-turbo, liblzma, zlib) | DDS/texture loading and image saving; parsing `*.effect.json` effect descriptions (`fxEffectDesc`); TIFF loading (`g2dSurfaceLoaderDX11`; MainApp links `tiff.lib`/`tiffd.lib` from here). glTF import bundles its own `json.hpp`/`tiny_gltf.h` |
-| `LibXLT/GraphicsVulkan/vcpkg.json` | vulkan-headers, volk, vulkan-memory-allocator, spirv-reflect, spirv-tools, directx-dxc, stb, libtiff | the Vulkan backend: volk loads `vulkan-1.dll` at run time (nothing to link or ship); DXC compiles shaders at build time; SPIRV-Tools (static) removes unconsumed shader outputs when pipelines are made (`vkdLinkStages`); stb_image and libtiff decode textures (`matImageDecode`; DDS and TGA are read by ports of DirectXTex's readers, no DirectXTex or WIC). Its `vcpkg-configuration.json` has a newer baseline than the other manifests (Vulkan 1.4 headers with `VK_EXT_descriptor_heap`). libtiff and the DLLs it brings are pinned with `overrides` to the same versions in this manifest, GraphicsDX11's and GraphicsTests', because MachStudio loads one `tiff.dll`; zlib is pinned to MainApp's (curl's) version. Change all three together |
-| `MachStudio/Source/MainApp/vcpkg.json` | curl (+ zlib) | version check (`mainCheckAppVersion`). Linked dynamically: `libcurl.dll` (and its `zlib1.dll`) ships next to the exe |
-| `LibXLT/ToolUIWx/vcpkg.json` | (none) | |
-| `UnitTests/CoreTests/vcpkg.json`, `UnitTests/MainAppTests/vcpkg.json`, `UnitTests/GraphicsTests/vcpkg.json` | gtest (GraphicsTests: also stb, for PNG output, and libtiff) | unit tests (`gmock.dll`, which includes gtest, is copied next to the test exe) |
+| OpenEXR (+ Imath, libdeflate) | Graphics | writing `.exr` render output (`g2dScanlineOpenEXRUtil`, `g2dOpenEXROutStream`, `g2dHDRUtil`) |
+| DirectXTex, nlohmann-json, libtiff (+ libjpeg-turbo, liblzma, zlib) | GraphicsDX11 | DDS/texture loading and image saving; parsing `*.effect.json` effect descriptions (`fxEffectDesc`); TIFF loading (`g2dSurfaceLoaderDX11`). glTF import bundles its own `json.hpp`/`tiny_gltf.h` |
+| vulkan-headers, volk, vulkan-memory-allocator, spirv-reflect, spirv-tools, directx-dxc, stb, libtiff, nlohmann-json | GraphicsVulkan | the Vulkan backend: volk loads `vulkan-1.dll` at run time (nothing to link or ship); DXC compiles shaders at build time; SPIRV-Tools (static) removes unconsumed shader outputs when pipelines are made (`vkdLinkStages`); stb_image and libtiff decode textures (`matImageDecode`; DDS and TGA are read by ports of DirectXTex's readers, no DirectXTex or WIC). The baseline is new enough for the Vulkan 1.4 headers with `VK_EXT_descriptor_heap` |
+| curl (+ zlib) | MainApp | version check (`mainCheckAppVersion`). Linked dynamically: `libcurl.dll` (and its `zlib1.dll`) ships next to the exe |
+| gtest; stb and libtiff | the UnitTests projects; GraphicsTests | unit tests (`gmock.dll`, which includes gtest, is copied next to the test exe); PNG output and TIFF checks |
 
-The library packages live under the library projects, so MainApp adds their
-`vcpkg_installed\...\lib` dirs to its link paths and its
-`CopyLibraryVcpkgDlls` target copies their DLLs into `MachStudio-x64/`.
 `ImportExport` still has an include path to `3rdParty\FBX`, which no longer
 exists (FBX support is compiled out; see the leftovers note above).
 

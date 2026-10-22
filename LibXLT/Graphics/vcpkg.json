@@ -1,7 +1,0 @@
-{
-  "name": "graphics",
-  "version": "1.0",
-  "dependencies": [
-    "openexr"
-  ]
-}

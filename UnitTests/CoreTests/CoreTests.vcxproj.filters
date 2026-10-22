@@ -117,12 +117,4 @@
       <Filter>Support</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="vcpkg.json">
-      <Filter>Support</Filter>
-    </None>
-    <None Include="vcpkg-configuration.json">
-      <Filter>Support</Filter>
-    </None>
-  </ItemGroup>
 </Project>

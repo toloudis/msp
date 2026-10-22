@@ -15,7 +15,7 @@
 
 #include <iostream>
 
-// libcurl comes from vcpkg (MainApp/vcpkg.json) as a DLL; vcpkg's MSBuild
+// libcurl comes from vcpkg (the repository's vcpkg.json) as a DLL; vcpkg's MSBuild
 // integration supplies the include path and links libcurl.lib, and copies
 // libcurl.dll next to the exe.
 #include "curl/curl.h"

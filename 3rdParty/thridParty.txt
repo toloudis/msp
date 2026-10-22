@@ -5,7 +5,7 @@ https://sourceforge.net/projects/boost/files/boost-binaries/
 boost_1_60_0-msvc-14.0-64.exe
 
 curl
-now comes from vcpkg (MachStudio/Source/MainApp/vcpkg.json), linked as libcurl.dll
+now comes from vcpkg (vcpkg.json at the repository root), linked as libcurl.dll
 
 libs/x64 (drop various .lib files in here)
 
@@ -20,7 +20,7 @@ png/zlib-1.2.5 (http://sourceforge.net/projects/libpng/files/zlib/1.2.5/)
 
 Python (need include files here, libs in libs)
 
-Tiff: no longer here; from vcpkg (LibXLT/GraphicsDX11/vcpkg.json)
+Tiff: no longer here; from vcpkg (vcpkg.json at the repository root)
 
 WxWidgets 
 https://github.com/wxWidgets/wxWidgets/releases/tag/v3.1.0

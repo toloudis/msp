@@ -1,7 +1,0 @@
-{
-  "name": "mainapptests",
-  "version": "1.0",
-  "dependencies": [
-    "gtest"
-  ]
-}

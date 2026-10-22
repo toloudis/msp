@@ -42,6 +42,19 @@
     without it they compile to nothing. It is defined in Debug builds, and
     in Release when built with /p:MspGfxProfiling=true. MachStudio's
     -gfxProfile <file.csv> then writes per-pass timings.
+
+    vcpkg: every project uses the one manifest next to this file
+    (vcpkg.json, vcpkg-configuration.json) and the one install of it,
+    vcpkg_installed\ next to this file, the same folder "vcpkg install"
+    run here fills. The first project to compile installs whatever is
+    missing (vcpkg locks the folder while it does); after that the
+    others find vcpkg's stamp file up to date and skip the step. Debug
+    and Release libraries are in the same install. vcpkg adds the
+    include and library folders to every project, links every library
+    into executables (only what they use ends up in them) and copies the
+    DLLs an executable needs next to it. MspVcpkgDir is the install for
+    the one triplet, x64-windows, for the paths projects name themselves
+    (tools such as dxc.exe, include subfolders).
   -->
 <Project>
   <PropertyGroup>
@@ -59,6 +72,13 @@
       <PreprocessorDefinitions>MSP_GFX_PROFILING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
+
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+    <VcpkgManifestRoot>$(MSBuildThisFileDirectory)</VcpkgManifestRoot>
+    <VcpkgInstalledDir>$(MSBuildThisFileDirectory)vcpkg_installed\</VcpkgInstalledDir>
+    <MspVcpkgDir>$(VcpkgInstalledDir)x64-windows\</MspVcpkgDir>
+  </PropertyGroup>
 
   <PropertyGroup Condition="'$(MspGuiToolkit)' == 'Wx'">
     <MspWxIncludeDirs>$(MSBuildThisFileDirectory)3rdParty\wxWidgets\include;$(MSBuildThisFileDirectory)3rdParty\wxWidgets\include\msvc</MspWxIncludeDirs>

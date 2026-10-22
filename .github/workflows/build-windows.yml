@@ -38,15 +38,26 @@ jobs:
         run: python Tools/fx2hlsl/compile_check.py --compiler dxc --exe $env:DXC --verbose (Get-ChildItem -Recurse -Filter *.effect.json LibXLT/GraphicsDX11).FullName
 
       # The Windows SDK's dxc has no SPIR-V backend: use the one GraphicsVulkan
-      # builds with, from its vcpkg manifest (same baseline, same version).
+      # builds with, from the repository's vcpkg manifest (same baseline, same
+      # version), with the build jobs' binary cache.
+      - name: Restore vcpkg binary cache
+        if: ${{ !cancelled() }}
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}\vcpkg-binary-cache
+          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json') }}
+          restore-keys: vcpkg-${{ runner.os }}-
+
       - name: Install GraphicsVulkan's DXC (vcpkg)
         if: ${{ !cancelled() }}
         shell: pwsh
+        env:
+          VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}\vcpkg-binary-cache
         run: |
-          $root = Join-Path $env:RUNNER_TEMP "vk"
-          & "$env:VCPKG_INSTALLATION_ROOT\vcpkg.exe" install --triplet x64-windows --x-manifest-root=LibXLT/GraphicsVulkan --x-install-root=$root
+          New-Item -ItemType Directory -Force -Path $env:VCPKG_DEFAULT_BINARY_CACHE | Out-Null
+          & "$env:VCPKG_INSTALLATION_ROOT\vcpkg.exe" install --triplet x64-windows
           if ($LASTEXITCODE -ne 0) { throw "vcpkg install failed" }
-          "VKDXC=$root\x64-windows\tools\directx-dxc\dxc.exe" >> $env:GITHUB_ENV
+          "VKDXC=$env:GITHUB_WORKSPACE\vcpkg_installed\x64-windows\tools\directx-dxc\dxc.exe" >> $env:GITHUB_ENV
 
       - name: Compile GraphicsVulkan's shaders as SPIR-V (dxc)
         if: ${{ !cancelled() }}
@@ -74,8 +85,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # All configurations link the vcpkg packages from the per-library
-        # manifest installs (LibXLT/Graphics, LibXLT/GraphicsDX11).
+        # All configurations link the vcpkg packages from the one install
+        # of the repository's vcpkg.json (vcpkg_installed/).
         # The Wx configurations build the wxWidgets interface (from
         # 3rdParty/WxWidgets); the Qt ones build the Qt 6 interface, with Qt
         # installed on the runner by aqtinstall. The RenderNode ones build
@@ -124,7 +135,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
-          key: vcpkg-${{ runner.os }}-${{ hashFiles('**/vcpkg.json', '**/vcpkg-configuration.json') }}
+          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json') }}
           restore-keys: vcpkg-${{ runner.os }}-
 
       - name: Integrate vcpkg with MSBuild
@@ -132,6 +143,14 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force -Path $env:VCPKG_DEFAULT_BINARY_CACHE | Out-Null
           & "$env:VCPKG_ROOT\vcpkg.exe" integrate install
+
+      # Every project uses this one install (see Directory.Build.props);
+      # installing it before the build keeps its log in a step of its own.
+      - name: Install vcpkg packages
+        shell: pwsh
+        run: |
+          & "$env:VCPKG_ROOT\vcpkg.exe" install --triplet x64-windows
+          if ($LASTEXITCODE -ne 0) { throw "vcpkg install failed" }
 
       # /m builds independent projects in parallel. UseMultiToolTask also
       # compiles the source files within each project in parallel (none of
@@ -173,7 +192,7 @@ jobs:
         shell: pwsh
         run: |
           $suffix = if ("${{ matrix.configuration }}".StartsWith("Debug")) { "_d" } else { "" }
-          $dll = "MachStudio/MachStudio-x64/OpenEXR-3_2$suffix.dll"
+          $dll = "MachStudio/MachStudio-x64/OpenEXR-3_[0-9]$suffix.dll"
           if (-not (Test-Path $dll)) { throw "$dll is missing" }
           Get-ChildItem MachStudio/MachStudio-x64/*.dll | Select-Object -ExpandProperty Name
 

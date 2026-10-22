@@ -1,0 +1,20 @@
+{
+  "name": "machstudio",
+  "version": "1.0",
+  "$comment": "Every vcpkg package MachStudio, LibXLT and the unit tests use. Installed once, into vcpkg_installed/ next to this file (\"vcpkg install\" here, or the first project a build reaches), and shared by every project and configuration; see Directory.Build.props.",
+  "dependencies": [
+    { "name": "openexr", "$comment": "Graphics: .exr render output" },
+    { "name": "directxtex", "$comment": "GraphicsDX11: DDS/texture loading, image saving" },
+    { "name": "nlohmann-json", "$comment": "GraphicsDX11, GraphicsVulkan: *.effect.json" },
+    { "name": "tiff", "$comment": "GraphicsDX11, GraphicsVulkan, GraphicsTests: TIFF loading and saving" },
+    { "name": "vulkan-headers", "$comment": "GraphicsVulkan" },
+    { "name": "volk", "$comment": "GraphicsVulkan: loads vulkan-1.dll at run time" },
+    { "name": "vulkan-memory-allocator", "$comment": "GraphicsVulkan" },
+    { "name": "spirv-reflect", "$comment": "GraphicsVulkan: vkdReflect" },
+    { "name": "spirv-tools", "$comment": "GraphicsVulkan: vkdLinkStages" },
+    { "name": "directx-dxc", "$comment": "GraphicsVulkan, GraphicsTests, CI: HLSL to SPIR-V at build time" },
+    { "name": "stb", "$comment": "GraphicsVulkan: image decoding and encoding; GraphicsTests: PNG output" },
+    { "name": "curl", "$comment": "MainApp: version check" },
+    { "name": "gtest", "$comment": "CoreTests, MainAppTests, GraphicsTests" }
+  ]
+}
