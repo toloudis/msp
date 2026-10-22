@@ -357,7 +357,13 @@ says why) and installs a Vulkan implementation for every Graphics hook.
   builds, and in Release with `-gfxValidation`. Errors `DBG_ASSERT` (Debug)
   and are logged and counted; warnings are logged and counted. A
   successful port means zero of either. At exit the log (and RenderNode's
-  stderr) says `Vulkan validation: N errors, M warnings`, or `off`.
+  stderr) says `Vulkan validation: N errors, M warnings, P best-practices
+  notes`, or `off`. `MSP_GFX_VK_VALIDATION` (a comma list, read with
+  `MSP_GFX_VK_ADAPTER` by `vkdReadEnvironment`, in MachStudio and the
+  tests) adds `gpu` (GPU-assisted validation; its vertex-fetch bounds check
+  is off, a layer false positive, see `vkdDevice.cpp`) and/or
+  `bestpractices` (Khronos and NVIDIA advice, counted as notes, which fail
+  nothing); either turns validation on, Release included.
   `vkdValidation` logs as information (not counted) only the layer's
   notes about its own setup; each has its reason in the code.
   `WARNING-Shader-OutputNotConsumed` (a vertex, domain or geometry

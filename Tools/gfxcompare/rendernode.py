@@ -4,7 +4,8 @@ The capture settings go after -render: -render loads the scene, and loading
 replaces the capture settings with the scene's own.
 
 RenderNode prints "Graphics backend: <name> on <adapter>" at startup and,
-for Vulkan, "Vulkan validation: N errors, M warnings" at exit, both on
+for Vulkan, "Vulkan validation: N errors, M warnings[, P best-practices
+notes]" at exit (older builds print no notes), both on
 stderr; run returns stderr so callers can check them.
 """
 from __future__ import annotations
@@ -49,14 +50,16 @@ def run(cmd: list[str], timeout_s: float, out_dir: Path) -> str:
     return proc.stderr or ""
 
 
-_VALIDATION = re.compile(r"Vulkan validation: (?P<errors>\d+) errors, (?P<warnings>\d+) warnings")
+_VALIDATION = re.compile(r"Vulkan validation: (?P<errors>\d+) errors, (?P<warnings>\d+) warnings"
+                         r"(?:, (?P<notes>\d+) best-practices notes)?")
 _BACKEND = re.compile(r"^Graphics backend: (?P<name>\S+) on (?P<adapter>.+?)\s*$", re.MULTILINE)
 
 
-def validation_counts(stderr: str) -> tuple[int, int] | None:
-    """(errors, warnings) from the Vulkan validation line, or None if there is none (DX11)."""
+def validation_counts(stderr: str) -> tuple[int, int, int] | None:
+    """(errors, warnings, best-practices notes) from the Vulkan validation line, or None if
+    there is none (DX11). Notes are 0 on the older line without them."""
     m = _VALIDATION.search(stderr)
-    return (int(m["errors"]), int(m["warnings"])) if m else None
+    return (int(m["errors"]), int(m["warnings"]), int(m["notes"] or 0)) if m else None
 
 
 def backend_adapter(stderr: str) -> tuple[str, str] | None:

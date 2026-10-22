@@ -22,6 +22,7 @@ namespace gvk
 		stats.m_Errors = m_Errors.load();
 		stats.m_Warnings = m_Warnings.load();
 		stats.m_Infos = m_Infos.load();
+		stats.m_BestPractices = m_BestPractices.load();
 		return stats;
 	}
 
@@ -30,6 +31,7 @@ namespace gvk
 		m_Errors = 0;
 		m_Warnings = 0;
 		m_Infos = 0;
+		m_BestPractices = 0;
 	}
 
 	VKAPI_ATTR VkBool32 VKAPI_CALL vkdValidation::Callback(
@@ -66,6 +68,15 @@ namespace gvk
 		for (const char* notice_id : c_LayerNotices)
 		{
 			notice = notice || strcmp(id, notice_id) == 0;
+		}
+
+		//	Best-practices advice (Khronos' and NVIDIA's): counted apart
+		static const char c_BestPractices[] = "BestPractices-";
+		if (strncmp(id, c_BestPractices, sizeof(c_BestPractices) - 1) == 0)
+		{
+			++self->m_BestPractices;
+			DBG_LOG("Vulkan validation [best-practices] " << id << " | " << text);
+			return VK_FALSE;
 		}
 
 		if (!(i_Types & c_Findings) || notice)

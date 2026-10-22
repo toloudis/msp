@@ -153,3 +153,49 @@ TEST_F(vkdBufferTest, DestroyAfterDrawIsSafe)
 	EXPECT_EQ(c_Red, pixel(image, 4, 16));
 	EXPECT_EQ(c_Green, pixel(image, 28, 16));
 }
+
+namespace
+{
+	class vkdBufferGpuAvTest : public vkdBufferTest
+	{
+		protected:
+			bool UseGpuAssistedValidation() const override { return true; }
+	};
+}
+
+TEST_F(vkdBufferGpuAvTest, IndexedDrawsOfDifferentSizesAreClean)
+{
+	//	Two indexed draws in one command buffer, the first with more vertices
+	//	than the second, every index in range: GPU-assisted validation must
+	//	check each draw against its own vertex buffer (the font and scene
+	//	tests draw like this)
+	vkdImage* target = Begin();
+	const float red[4] = { 1, 0, 0, 1 }, green[4] = { 0, 1, 0, 1 };
+	std::vector<Vertex> big = quad(red, -1, -0.5f), right = quad(red, -0.5f, 0);
+	big.insert(big.end(), right.begin(), right.end());					// 12 vertices
+	std::unique_ptr<vkdBuffer> big_vb = VertexBuffer(big);
+	std::unique_ptr<vkdBuffer> small_vb = VertexBuffer(quad(green, 0, 1));	// 6 vertices
+	std::vector<uint16_t> big_ib, small_ib;
+	for (uint16_t i = 0; i < 12; i++) big_ib.push_back(i);
+	for (uint16_t i = 0; i < 6; i++) small_ib.push_back(i);
+	auto index_buffer = [&](const std::vector<uint16_t>& i_Indices)
+	{
+		const VkDeviceSize size = i_Indices.size() * sizeof(uint16_t);
+		std::unique_ptr<vkdBuffer> buffer = vkdBuffer::Create(Device(), size, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, "vkdBufferTest indices");
+		buffer->Upload(Context(), 0, i_Indices.data(), size);
+		return buffer;
+	};
+	std::unique_ptr<vkdBuffer> big_ibuf = index_buffer(big_ib), small_ibuf = index_buffer(small_ib);
+
+	Context().SetVertexBuffer(0, big_vb->Buffer(), 0);
+	Context().SetIndexBuffer(big_ibuf->Buffer(), 0, VK_INDEX_TYPE_UINT16);
+	Context().DrawIndexed(12, 0, 0);
+	Context().SetVertexBuffer(0, small_vb->Buffer(), 0);
+	Context().SetIndexBuffer(small_ibuf->Buffer(), 0, VK_INDEX_TYPE_UINT16);
+	Context().DrawIndexed(6, 0, 0);
+	const std::vector<uint8_t> image = Read(target);
+	EXPECT_EQ(c_Red, pixel(image, 4, 16));
+	EXPECT_EQ(c_Red, pixel(image, 12, 16));
+	EXPECT_EQ(c_Green, pixel(image, 28, 16));
+	//	gtVulkan's TearDown requires validation 0/0
+}

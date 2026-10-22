@@ -151,6 +151,14 @@ def test_cli_run_same_adapter_with_and_without_vendor_name(tmp_path):
     assert "different adapters" not in report
 
 
+def test_cli_run_reports_but_passes_best_practices_notes(tmp_path):
+    code, report = run_fake(tmp_path, ["Graphics backend: dx11 on GPU X"],
+                            ["Graphics backend: vulkan on GPU X",
+                             "Vulkan validation: 0 errors, 0 warnings, 9 best-practices notes"])
+    assert code == 0
+    assert "B Vulkan validation: 0 errors, 0 warnings, 9 best-practices notes" in report
+
+
 def test_cli_run_reports_vulkan_validation_off(tmp_path):
     code, report = run_fake(tmp_path, ["Graphics backend: dx11 on GPU X"],
                             ["Graphics backend: vulkan on GPU X", "Vulkan validation: off"])

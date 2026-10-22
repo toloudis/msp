@@ -34,10 +34,7 @@ class gtVulkanSuite : public ::testing::Test
 			gvk::vkdDeviceOptions options;
 			options.m_bValidation = true;
 			options.m_pValidation = &shared.m_Validation;
-			if (const char* adapter = std::getenv("MSP_GFX_VK_ADAPTER"))
-			{
-				options.m_AdapterOverride = adapter;
-			}
+			gvk::vkdReadEnvironment(options);
 			shared.m_pDevice.reset(gvk::vkdDevice::Create(options, shared.m_Error));
 			if (!shared.m_pDevice)
 			{

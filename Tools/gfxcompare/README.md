@@ -36,8 +36,11 @@ python Tools/gfxcompare/gfxcompare.py run --exe MachStudio/MachStudio-x64/MachSt
   example `-gfx dx11` and `-gfx vulkan`).
 - `run` reads each render's stderr: the report shows the backend and
   adapter (`Graphics backend: <name> on <adapter>`) and, for Vulkan, the
-  validation counts (`Vulkan validation: N errors, M warnings`). It fails
-  (exit 1) if either render reports any validation message, or if A and B
+  validation counts (`Vulkan validation: N errors, M warnings, P
+  best-practices notes`; older builds print no notes). It fails
+  (exit 1) if either render reports an error or a warning (best-practices
+  notes, from `MSP_GFX_VK_VALIDATION=bestpractices`, are reported but fail
+  nothing), or if A and B
   ran on different adapters (names are compared without a leading vendor
   name: DXGI says "NVIDIA Quadro RTX 5000" where Vulkan says "Quadro RTX
   5000"). Release builds validate only with

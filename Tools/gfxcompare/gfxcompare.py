@@ -172,8 +172,10 @@ def main(argv: list[str] | None = None) -> int:
         if "Vulkan validation: off" in stderr:
             header.append(f"- {L} Vulkan validation: off (run with -gfxValidation to check it)")
         if counts is not None:
-            header.append(f"- {L} Vulkan validation: {counts[0]} errors, {counts[1]} warnings")
-            if counts != (0, 0):
+            # best-practices notes are reported but fail nothing
+            header.append(f"- {L} Vulkan validation: {counts[0]} errors, {counts[1]} warnings, "
+                          f"{counts[2]} best-practices notes")
+            if counts[:2] != (0, 0):
                 problems.append(f"render {L} reported Vulkan validation messages "
                                 f"({counts[0]} errors, {counts[1]} warnings)")
     if adapters["a"] and adapters["b"] and not rendernode.same_adapter(adapters["a"], adapters["b"]):

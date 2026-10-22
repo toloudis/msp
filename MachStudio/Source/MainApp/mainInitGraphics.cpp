@@ -440,7 +440,8 @@ mainInitGraphics::~mainInitGraphics()
 		if (GraphicsVulkanLayer::IsValidating())
 		{
 			const gvk::vkdValidationStats stats = GraphicsVulkanLayer::GetValidationStats();
-			std::cerr << "Vulkan validation: " << stats.m_Errors << " errors, " << stats.m_Warnings << " warnings" << std::endl;
+			std::cerr << "Vulkan validation: " << stats.m_Errors << " errors, " << stats.m_Warnings << " warnings, "
+					  << stats.m_BestPractices << " best-practices notes" << std::endl;
 		}
 		else
 		{

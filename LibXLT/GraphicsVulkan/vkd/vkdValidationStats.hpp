@@ -19,5 +19,6 @@ namespace gvk
 		int m_Errors = 0;
 		int m_Warnings = 0;
 		int m_Infos = 0;
+		int m_BestPractices = 0;		// MSP_GFX_VK_VALIDATION=bestpractices advice; fails nothing
 	};
 }

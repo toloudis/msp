@@ -130,10 +130,7 @@ bool GraphicsVulkanLayer::Init(void* /*i_hWnd*/, const g3dGfxOptions& i_Options)
 	vkdDeviceOptions options;
 	options.m_bValidation = i_Options.m_bValidation;
 	options.m_pValidation = &l_Validation;
-	if (const char* adapter = std::getenv("MSP_GFX_VK_ADAPTER"))
-	{
-		options.m_AdapterOverride = adapter;
-	}
+	vkdReadEnvironment(options);
 	l_pDevice = vkdDevice::Create(options, l_InitError);
 	if (!l_pDevice)
 	{
@@ -196,7 +193,8 @@ void GraphicsVulkanLayer::CleanUp() throw()
 	const vkdValidationStats stats = l_Validation.Stats();
 	if (l_bValidating)
 	{
-		DBG_LOG("Vulkan validation: " << stats.m_Errors << " errors, " << stats.m_Warnings << " warnings");
+		DBG_LOG("Vulkan validation: " << stats.m_Errors << " errors, " << stats.m_Warnings << " warnings, "
+				<< stats.m_BestPractices << " best-practices notes");
 	}
 	else
 	{

@@ -4,7 +4,10 @@
 **      The Vulkan validation policy: messages from VK_LAYER_KHRONOS_validation
 **	(through VK_EXT_debug_utils) are counted by severity; errors DBG_ASSERT
 **	with the message ID and text, warnings are logged. A successful port
-**	means zero errors and zero warnings. Lines read "Vulkan validation
+**	means zero errors and zero warnings. Best-practices advice (message IDs
+**	starting "BestPractices-", only with MSP_GFX_VK_VALIDATION=bestpractices)
+**	is logged and counted on its own, whatever its severity, and fails
+**	nothing: it is input for later tuning. Lines read "Vulkan validation
 **	[error] <ID> | <text>": not "error <ID>:", which MSBuild would take
 **	for a build error when the tests run after linking.
 **
@@ -42,5 +45,6 @@ namespace gvk
 			std::atomic<int> m_Errors{0};
 			std::atomic<int> m_Warnings{0};
 			std::atomic<int> m_Infos{0};
+			std::atomic<int> m_BestPractices{0};
 	};
 }

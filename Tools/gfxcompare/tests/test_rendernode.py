@@ -67,7 +67,16 @@ def test_run_returns_stderr(tmp_path):
 
 def test_validation_counts_parsed():
     err = "noise\nVulkan validation: 3 errors, 12 warnings\nmore\n"
-    assert validation_counts(err) == (3, 12)
+    assert validation_counts(err) == (3, 12, 0)
+
+
+def test_validation_counts_with_best_practices_notes():
+    err = "Vulkan validation: 0 errors, 1 warnings, 57 best-practices notes\n"
+    assert validation_counts(err) == (0, 1, 57)
+
+
+def test_validation_counts_old_line_has_no_notes():
+    assert validation_counts("Vulkan validation: 3 errors, 12 warnings\n") == (3, 12, 0)
 
 
 def test_validation_counts_absent_for_dx11():

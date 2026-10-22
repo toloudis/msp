@@ -12,6 +12,12 @@
 **	Validation follows the GraphicsVulkan policy: always on in Debug (the
 **	layer is required there), on in Release with m_bValidation; errors
 **	DBG_ASSERT, warnings are logged and counted (see vkdValidation.hpp).
+**	vkdReadEnvironment fills the options from the environment:
+**	  MSP_GFX_VK_ADAPTER	the device, by a substring of its name
+**	  MSP_GFX_VK_VALIDATION	a comma list of extra validation modes:
+**				gpu (GPU-assisted), bestpractices (Khronos and NVIDIA
+**				best practices); either one turns validation on.
+**				Sign-off and test tools, not user options.
 **
 **	Threads: recording and Submit() from more than one thread must hold
 **	StreamLock() for the whole record-and-submit; every queue operation
@@ -50,11 +56,21 @@ namespace gvk
 	{
 		bool		m_bValidation = false;		// forced on in Debug builds
 		bool		m_bGpuAssisted = false;		// GPU-assisted validation (tests and sign-off runs)
+		bool		m_bBestPractices = false;	// best-practices checks (Khronos and NVIDIA), counted apart
 		std::string	m_AdapterOverride;			// MSP_GFX_VK_ADAPTER: device name substring; empty = automatic
 		vkdValidation* m_pValidation = nullptr;	// counts validation messages; must outlive the device,
 												// so messages during destruction are counted too.
 												// NULL: the device keeps its own.
 	};
+
+	//	Reads MSP_GFX_VK_ADAPTER and MSP_GFX_VK_VALIDATION into io_Options
+	//	(unset variables change nothing)
+	void vkdReadEnvironment(vkdDeviceOptions& io_Options);
+
+	//	Applies an MSP_GFX_VK_VALIDATION value: "gpu", "bestpractices",
+	//	comma-separated, any case and spacing; unknown words are logged and
+	//	ignored. A mode turns m_bValidation on.
+	void vkdApplyValidationModes(const std::string& i_Modes, vkdDeviceOptions& io_Options);
 
 	class vkdDevice
 	{

@@ -18,8 +18,12 @@
 #include "GraphicsVulkan/vkd/private/vkdVma.hpp"
 #endif
 
+#include <algorithm>
+#include <cctype>
+#include <cstdlib>
 #include <cstring>
 #include <deque>
+#include <sstream>
 
 namespace gvk
 {
@@ -288,12 +292,13 @@ namespace gvk
 		}
 
 		//	Instance: validation per the policy
-		const bool want_validation = c_bDebugBuild || i_Options.m_bValidation || i_Options.m_bGpuAssisted;
+		const bool want_validation = c_bDebugBuild || i_Options.m_bValidation || i_Options.m_bGpuAssisted ||
+									 i_Options.m_bBestPractices;
 		m_bValidating = want_validation;
 		if (want_validation && !has_layer(c_ValidationLayer))
 		{
 			o_Error = std::string(c_ValidationLayer) + " isn't installed, and " +
-					  (c_bDebugBuild ? "Debug builds always validate" : "validation was asked for (-gfxValidation)") +
+					  (c_bDebugBuild ? "Debug builds always validate" : "validation was asked for (-gfxValidation or MSP_GFX_VK_VALIDATION)") +
 					  "; install the Vulkan SDK.";
 			return false;
 		}
@@ -326,12 +331,24 @@ namespace gvk
 		messenger_info.pfnUserCallback = &vkdValidation::Callback;
 		messenger_info.pUserData = m_pValidation;
 
-		const VkBool32 c_True = VK_TRUE;
+		const VkBool32 c_True = VK_TRUE, c_False = VK_FALSE;
 		std::vector<VkLayerSettingEXT> settings;
 		settings.push_back({c_ValidationLayer, "validate_sync", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &c_True});
 		if (i_Options.m_bGpuAssisted)
 		{
 			settings.push_back({c_ValidationLayer, "gpuav_enable", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &c_True});
+			//	GPU-AV's vertex-fetch bounds check is off: in SDK 1.4.350 it
+			//	checks every indexed draw of a command buffer against the
+			//	vertex buffer of the last one, so a draw with fewer vertices
+			//	after a bigger one reports the bigger one's in-range indices
+			//	as out of bounds (vkdBufferGpuAvTest reproduces it with the
+			//	check on). Turn it back on once the layer is fixed.
+			settings.push_back({c_ValidationLayer, "gpuav_vertex_attribute_fetch_oob", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &c_False});
+		}
+		if (i_Options.m_bBestPractices)
+		{
+			settings.push_back({c_ValidationLayer, "validate_best_practices", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &c_True});
+			settings.push_back({c_ValidationLayer, "validate_best_practices_nvidia", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &c_True});
 		}
 		VkLayerSettingsCreateInfoEXT settings_info = {VK_STRUCTURE_TYPE_LAYER_SETTINGS_CREATE_INFO_EXT};
 		settings_info.settingCount = static_cast<uint32_t>(settings.size());
@@ -560,6 +577,43 @@ namespace gvk
 	vkdDevice::vkdDevice()
 		: m_pImpl(new Impl)
 	{
+	}
+
+	void vkdApplyValidationModes(const std::string& i_Modes, vkdDeviceOptions& io_Options)
+	{
+		std::istringstream words(i_Modes);
+		std::string word;
+		while (std::getline(words, word, ','))
+		{
+			word.erase(std::remove_if(word.begin(), word.end(), [](unsigned char c) { return std::isspace(c) != 0; }), word.end());
+			std::transform(word.begin(), word.end(), word.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+			if (word == "gpu")
+			{
+				io_Options.m_bGpuAssisted = true;
+				io_Options.m_bValidation = true;
+			}
+			else if (word == "bestpractices")
+			{
+				io_Options.m_bBestPractices = true;
+				io_Options.m_bValidation = true;
+			}
+			else if (!word.empty())
+			{
+				DBG_LOG("GraphicsVulkan: MSP_GFX_VK_VALIDATION: unknown mode \"" << word << "\" ignored (use gpu, bestpractices)");
+			}
+		}
+	}
+
+	void vkdReadEnvironment(vkdDeviceOptions& io_Options)
+	{
+		if (const char* adapter = std::getenv("MSP_GFX_VK_ADAPTER"))
+		{
+			io_Options.m_AdapterOverride = adapter;
+		}
+		if (const char* modes = std::getenv("MSP_GFX_VK_VALIDATION"))
+		{
+			vkdApplyValidationModes(modes, io_Options);
+		}
 	}
 
 	vkdDevice* vkdDevice::Create(const vkdDeviceOptions& i_Options, std::string& o_Error)
