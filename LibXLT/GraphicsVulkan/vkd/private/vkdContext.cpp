@@ -24,9 +24,6 @@
 #ifndef GVK_VKDSHADER_HPP
 #include "GraphicsVulkan/vkd/vkdShader.hpp"
 #endif
-#ifndef G3D_PROFILER_HPP
-#include "Graphics/G3d/g3dProfiler.hpp"
-#endif
 
 #include <algorithm>
 #include <cstring>
@@ -586,7 +583,6 @@ namespace gvk
 		if (prepare_draw(commands))
 		{
 			vkCmdDraw(commands, i_Vertices, i_Instances, i_First, i_FirstInstance);
-			G3D_PROFILE_DRAWS(1);
 			m_bNeedBarrier |= m_bUavs;
 		}
 		m_bRecording = false;
@@ -600,7 +596,6 @@ namespace gvk
 		if (prepare_draw(commands))
 		{
 			vkCmdDrawIndexed(commands, i_Indices, i_Instances, i_FirstIndex, i_BaseVertex, i_FirstInstance);
-			G3D_PROFILE_DRAWS(1);
 			m_bNeedBarrier |= m_bUavs;
 		}
 		m_bRecording = false;

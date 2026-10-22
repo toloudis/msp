@@ -1013,6 +1013,7 @@ void shdwPassLPVGI::drawVolumeVertex(g3dVkBuffer* i_buffer, int i_numVertex)
 	context.SetVertexBuffer( 0, buffer, offset );
 	context.SetTopology( VK_PRIMITIVE_TOPOLOGY_POINT_LIST );
 	context.Draw( i_numVertex, 0 );
+	G3D_PROFILE_DRAWS(1);
 }
 
 }

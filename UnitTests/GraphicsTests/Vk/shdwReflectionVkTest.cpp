@@ -66,6 +66,7 @@
 #include <fstream>
 #include <functional>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <sstream>
 #include <string>
@@ -367,6 +368,25 @@ namespace
 		}
 		return out.str();
 	}
+
+	//	draws per "frame,path" of a profiler CSV
+	std::map<std::string, std::string> profile_draws(const std::string& i_Csv)
+	{
+		std::ifstream in(i_Csv);
+		std::map<std::string, std::string> draws;
+		std::string line;
+		std::getline(in, line);	// header
+		while (std::getline(in, line))
+		{
+			std::vector<std::string> fields;
+			std::istringstream row(line);
+			for (std::string field; std::getline(row, field, ',');)
+				fields.push_back(field);
+			if (fields.size() == 8)
+				draws[fields[1] + "," + fields[3]] = fields[7];
+		}
+		return draws;
+	}
 }
 
 TEST(shdwReflectionVkTest, SimpleRendererMatchesDX11)
@@ -457,6 +477,23 @@ TEST(shdwReflectionVkTest, SeveralReflectorsMatchDX11)
 			continue;
 		std::cout << "  " << names[i] << " reflection renderer times (backend,frame,sim_time,path,depth,cpu_ms,gpu_ms,draws):\n"
 				  << reflection_timings(csv);
+	}
+
+	//	the backends count draws at the same points (bump draws, full-screen
+	//	quads, ...), so every scope reports the same number
+	const std::map<std::string, std::string> dx11 = profile_draws((dir.GetPath() / "dx11.csv").string());
+	const std::map<std::string, std::string> vulkan = profile_draws((dir.GetPath() / "vulkan.csv").string());
+	if (!dx11.empty() && !vulkan.empty())
+	{
+		EXPECT_EQ(dx11.size(), vulkan.size());
+		for (const auto& scope : dx11)
+		{
+			const auto it = vulkan.find(scope.first);
+			if (it == vulkan.end())
+				ADD_FAILURE() << "no Vulkan row for " << scope.first;
+			else
+				EXPECT_EQ(scope.second, it->second) << "draws of " << scope.first;
+		}
 	}
 #else
 	std::cout << "  reflection renderer timings off: this build has no profiling markers (MspGfxProfiling=true)" << std::endl;

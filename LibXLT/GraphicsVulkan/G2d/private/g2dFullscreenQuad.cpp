@@ -25,6 +25,9 @@
 #ifndef GVK_VKDSHADER_HPP
 #include "GraphicsVulkan/vkd/vkdShader.hpp"
 #endif
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 #ifndef DBG_MSG_HPP
 #include "Core/Dbg/dbgMsg.hpp"
 #endif
@@ -168,6 +171,7 @@ namespace gvk
 		context.SetVertexBuffer( 0, vb.m_Buffer, vb.m_Offset );
 		context.SetTopology( VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP );
 		context.Draw( 4, 0 );
+		G3D_PROFILE_DRAWS(1);
 
 		// Restore the Old viewport
 		context.SetViewports( nViewPorts, vpOld );
