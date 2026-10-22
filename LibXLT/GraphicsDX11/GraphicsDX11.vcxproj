@@ -122,7 +122,6 @@
     <ClInclude Include="G2d\private\g2dFontUtilDX11.hpp" />
     <ClInclude Include="G2d\private\g2dImageCreateDX11.hpp" />
     <ClInclude Include="G2d\private\g2dImageDrawUtilDX11.hpp" />
-    <ClInclude Include="G2d\private\g2dImageSaveDX11.hpp" />
     <ClInclude Include="G2d\private\g2dScreenCaptureUtilDX11.hpp" />
     <ClInclude Include="G2d\private\g2dSurfaceLoaderDX11.hpp" />
     <ClInclude Include="G2d\private\g2dWindowDrawUtilDX11.hpp" />
@@ -283,7 +282,6 @@
     <ClCompile Include="G2d\private\g2dImageCreateDX11.cpp" />
     <ClCompile Include="G2d\private\g2dImageDrawUtilDX11.cpp" />
     <ClCompile Include="G2d\private\g2dImageDX11.cpp" />
-    <ClCompile Include="G2d\private\g2dImageSaveDX11.cpp" />
     <ClCompile Include="G2d\private\g2dRenderTargetDX11.cpp" />
     <ClCompile Include="G2d\private\g2dRenderTargetTextureDX11.cpp" />
     <ClCompile Include="G2d\private\g2dResourceCounterDX11.cpp" />

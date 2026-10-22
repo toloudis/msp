@@ -15,7 +15,6 @@
 #include "GraphicsDX11/g2d/g2dWindowPrimaryDX11.hpp"
 #include "GraphicsDX11/g2d/private/g2dFontUtilDX11.hpp"
 #include "GraphicsDX11/g2d/private/g2dImageCreateDX11.hpp"
-#include "GraphicsDX11/g2d/private/g2dImageSaveDX11.hpp"
 
 #include "Core/env/envSTLHelpers.hpp"
 //#include "Core/Env/envThread.hpp"
@@ -215,8 +214,7 @@ bool find_has_stencil(int i_BitDepth, const DXGI_FORMAT &i_AdapterFormat, const 
 //------------------------------------------------------------------------
 g2dSystemDX11::g2dSystemDX11(int i_Adapter /*= 0*/)
 :	m_pFontImpl(NULL),
-	m_pImageCreator(NULL),
-	m_pImageSaver(NULL)
+	m_pImageCreator(NULL)
 {
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
@@ -408,9 +406,6 @@ g2dSystemDX11::g2dSystemDX11(int i_Adapter /*= 0*/)
 	m_pImageCreator = new g2dImageCreateDX11();
 	g2dImageCreate::SetImplementation(m_pImageCreator);
 
-	m_pImageSaver = new g2dImageSaveDX11();
-	g2dImageSave::SetImplementation(m_pImageSaver);
-
 	g2dFullscreenQuad::InitFullscreenQuad();
 
 	// we do not need to create an appwindow just for d3d's sake.
@@ -443,7 +438,6 @@ g2dSystemDX11::~g2dSystemDX11()
 	delete m_pResourceCounterImpl;
 	delete m_pFontImpl;
 	delete m_pImageCreator;
-	delete m_pImageSaver;
 
 	g2dResetHandler::DestroyResetHandlers();
 

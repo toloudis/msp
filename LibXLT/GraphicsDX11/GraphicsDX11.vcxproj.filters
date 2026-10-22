@@ -126,9 +126,6 @@
     <ClInclude Include="G2d\private\g2dImageDrawUtilDX11.hpp">
       <Filter>G2d\private</Filter>
     </ClInclude>
-    <ClInclude Include="G2d\private\g2dImageSaveDX11.hpp">
-      <Filter>G2d\private</Filter>
-    </ClInclude>
     <ClInclude Include="G2d\private\g2dScreenCaptureUtilDX11.hpp">
       <Filter>G2d\private</Filter>
     </ClInclude>
@@ -601,9 +598,6 @@
       <Filter>G2d\private</Filter>
     </ClCompile>
     <ClCompile Include="G2d\private\g2dImageDX11.cpp">
-      <Filter>G2d\private</Filter>
-    </ClCompile>
-    <ClCompile Include="G2d\private\g2dImageSaveDX11.cpp">
       <Filter>G2d\private</Filter>
     </ClCompile>
     <ClCompile Include="G2d\private\g2dRenderTargetDX11.cpp">

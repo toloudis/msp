@@ -27,7 +27,6 @@ namespace gvk
 	class g2dResourceCounterVk;
 	class g2dFontUtilVk;
 	class g2dImageCreateVk;
-	class g2dImageSaveVk;
 
 	class g2dSystemVk : public g2dSystem
 	{
@@ -53,6 +52,5 @@ namespace gvk
 			g2dResourceCounterVk*	m_pResourceCounter;
 			g2dFontUtilVk*			m_pFontUtil;
 			g2dImageCreateVk*		m_pImageCreate;
-			g2dImageSaveVk*			m_pImageSave;
 	};
 }

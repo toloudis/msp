@@ -174,8 +174,14 @@ namespace
 	void g2dScreenCaptureUtilVk::Capture2DTextureToImage( matTexture* i_pTexture,
 															g2dImage*& o_Image)
 	{
+		//	no image (DX11: no resource) or a multisampled one (not read back
+		//	on Vulkan): nothing to capture
 		vkdImage* buffer = g3dVkTextureUtil::GetImage(i_pTexture);
-		DBG_ASSERT(buffer != NULL, "Expected a Vulkan texture");
+		if (buffer == NULL || buffer->Samples() != VK_SAMPLE_COUNT_1_BIT)
+		{
+			DBG_TRACE("Capture2DTextureToImage: no single-sample image to read back");
+			throw g2dCaptureX();
+		}
 
 		g2dImageVk* image = capture_image(buffer);
 		if (image != NULL)

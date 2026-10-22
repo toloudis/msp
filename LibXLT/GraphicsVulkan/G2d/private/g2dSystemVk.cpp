@@ -24,9 +24,6 @@
 #include "Graphics/G2d/g2dResetHandler.hpp"
 #endif
 
-#ifndef GVK_G2DIMAGESAVEVK_HPP
-#include "GraphicsVulkan/G2d/g2dImageSaveVk.hpp"
-#endif
 #ifndef GVK_G2DRESOURCECOUNTERVK_HPP
 #include "GraphicsVulkan/G2d/g2dResourceCounterVk.hpp"
 #endif
@@ -50,12 +47,10 @@ namespace gvk
 		, m_pResourceCounter(new g2dResourceCounterVk)
 		, m_pFontUtil(new g2dFontUtilVk)
 		, m_pImageCreate(new g2dImageCreateVk)
-		, m_pImageSave(new g2dImageSaveVk)
 	{
 		g2dResourceCounter::SetImplementation(m_pResourceCounter);
 		g2dFontUtil::SetImplementation(m_pFontUtil);
 		g2dImageCreate::SetImplementation(m_pImageCreate);
-		g2dImageSave::SetImplementation(m_pImageSave);
 
 		g2dFullscreenQuad::InitFullscreenQuad();
 	}
@@ -70,11 +65,9 @@ namespace gvk
 
 		g2dFullscreenQuad::CleanUpFullscreenQuad();
 
-		g2dImageSave::SetImplementation(NULL);
 		g2dImageCreate::SetImplementation(NULL);
 		g2dFontUtil::SetImplementation(NULL);
 		g2dResourceCounter::SetImplementation(NULL);
-		delete m_pImageSave;
 		delete m_pImageCreate;
 		delete m_pFontUtil;
 		delete m_pResourceCounter;

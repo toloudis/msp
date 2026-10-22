@@ -241,6 +241,13 @@ namespace matTextureMgr
 	void UnloadTexture( const fsLocator& i_Locator);
 
 	//------------------------------------------------------------------------
+	//	Texture saving: mip 0 of layer 0, read back with
+	//	g2dScreenCaptureUtil::Capture2DTextureToImage and written with
+	//	g2dImageSaveUtil (the same on every backend). SaveTextureToFile
+	//	writes the type the extension names, and throws g2dImageSaveX if
+	//	there is no texture to read back; SaveTextureToRgbaTiff and
+	//	SaveTextureToRgbaPNG write TIFF and PNG whatever the extension. A
+	//	file that can't be written is traced, not thrown.
 	//------------------------------------------------------------------------
 	void SaveTextureToFile(matTexture* i_pTexture, 
 		const fsLocator& i_FilePathLocator);
@@ -409,21 +416,6 @@ public:
 	//	UnloadTextures resets the d3d surface of a texture
 	//--------------------------------------------------------------------
 	virtual void UnloadTexture( const fsLocator& i_Locator ) = 0;
-
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	virtual void SaveTextureToRgbaTiff(matTexture* i_pTexture, 
-		const fsLocator& i_FilePathLocator) = 0;
-
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	virtual void SaveTextureToRgbaPNG(matTexture* i_pTexture, 
-		const fsLocator& i_FilePathLocator) = 0;
-
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	virtual void SaveTextureToFile(matTexture* i_pTexture, 
-		const fsLocator& i_FilePathLocator) = 0;
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------

@@ -27,7 +27,6 @@
 class g2dWindowDX11;
 class g2dFontUtilDX11;
 class g2dImageCreateDX11;
-class g2dImageSaveDX11;
 class g2dResourceCounterDX11;
 
 //============================================================================
@@ -99,7 +98,6 @@ private:
 	g2dResourceCounterDX11* m_pResourceCounterImpl;
 	g2dFontUtilDX11* m_pFontImpl;
 	g2dImageCreateDX11* m_pImageCreator;
-	g2dImageSaveDX11* m_pImageSaver;
 
 	void CreateDevice(void* i_Hwnd, int i_Adapter);
 

@@ -19,12 +19,16 @@
 #include "Core/gf/gfFileBin.hpp"
 #include "Core/it/itStringUtil.hpp"
 #include "Graphics/g2d/g2dExceptionX.hpp"
+#include "Graphics/g2d/g2dImage.hpp"
+#include "Graphics/g2d/g2dImageSaveUtil.hpp"
+#include "Graphics/g2d/g2dScreenCaptureUtil.hpp"
 #include "Graphics/mat/matUVATexture.hpp"
 #include "Graphics/mat/matUVATextureParseUtil.hpp"
 //#include "Tool/gpx/gpxRenderControl.hpp"
 
 #include <iomanip>
 #include <algorithm>
+#include <memory>
 #include <set>
 
 
@@ -38,6 +42,43 @@ namespace
 	bool l_bAllowNullTextures = false;
 	bool l_bSkipAllTextures = false;
 	bool l_bCompressTextures = false;
+
+	//------------------------------------------------------------------------
+	//	Texture saving: mip 0 of layer 0 read back into an image (as
+	//	DirectXTex's CaptureTexture, then GetImage(0, 0, 0)); NULL if there
+	//	is nothing to read back
+	//------------------------------------------------------------------------
+	std::unique_ptr<g2dImage> capture_texture(matTexture* i_pTexture)
+	{
+		if (!i_pTexture)
+			return NULL;
+		g2dImage* image = NULL;
+		try
+		{
+			g2dScreenCaptureUtil::Capture2DTextureToImage(i_pTexture, image);
+		}
+		catch (const g2dCaptureX&)
+		{
+			delete image;
+			image = NULL;
+		}
+		return std::unique_ptr<g2dImage>(image);
+	}
+
+	//	As GraphicsDX11 did: a file that can't be written (or a type that
+	//	isn't known) is traced, not thrown
+	template <class F>
+	void write_traced(const char* i_pWhat, const fsLocator& i_Locator, F i_Write)
+	{
+		try
+		{
+			i_Write();
+		}
+		catch (const envExceptionX&)
+		{
+			DBG_TRACE(i_pWhat << ": " << i_Locator << " not written");
+		}
+	}
 	matTextureAdjuster *l_pTextureAdjuster = NULL;
 	fsLocator l_TextureFileName;
 	fsResourceTrackerInterest* rsrInterest;
@@ -697,10 +738,14 @@ void UnloadTexture( const fsLocator& i_Locator )
 void SaveTextureToFile(matTexture* i_pTexture, 
 	const fsLocator& i_FilePathLocator)
 {
-	DBG_ASSERT(l_pImpl, "No texture manager implementation yet.");
-	if (!l_pImpl)
-		return;
-	l_pImpl->SaveTextureToFile(i_pTexture, i_FilePathLocator);
+	std::unique_ptr<g2dImage> image = capture_texture(i_pTexture);
+	if (!image)
+	{
+		DBG_TRACE("SaveTextureToFile: no texture to read back");
+		throw g2dImageSaveX();
+	}
+	write_traced("SaveTextureToFile", i_FilePathLocator,
+				 [&]() { g2dImageSaveUtil::Write(i_FilePathLocator, image.get()); });
 }
 
 //------------------------------------------------------------------------
@@ -708,10 +753,14 @@ void SaveTextureToFile(matTexture* i_pTexture,
 void SaveTextureToRgbaTiff(matTexture* i_pTexture, 
 	const fsLocator& i_FilePathLocator)
 {
-	DBG_ASSERT(l_pImpl, "No texture manager implementation yet.");
-	if (!l_pImpl)
+	std::unique_ptr<g2dImage> image = capture_texture(i_pTexture);
+	if (!image)
+	{
+		DBG_TRACE("SaveTextureToRgbaTiff: texture not found in memory. Aborting save.");
 		return;
-	l_pImpl->SaveTextureToRgbaTiff(i_pTexture, i_FilePathLocator);
+	}
+	write_traced("SaveTextureToRgbaTiff", i_FilePathLocator,
+				 [&]() { g2dImageSaveUtil::WriteTIFF(i_FilePathLocator, image.get()); });
 }
 
 //------------------------------------------------------------------------
@@ -719,10 +768,14 @@ void SaveTextureToRgbaTiff(matTexture* i_pTexture,
 void SaveTextureToRgbaPNG(matTexture* i_pTexture, 
 	const fsLocator& i_FilePathLocator)
 {
-	DBG_ASSERT(l_pImpl, "No texture manager implementation yet.");
-	if (!l_pImpl)
+	std::unique_ptr<g2dImage> image = capture_texture(i_pTexture);
+	if (!image)
+	{
+		DBG_TRACE("SaveTextureToRgbaPNG: texture not found in memory. Aborting save.");
 		return;
-	l_pImpl->SaveTextureToRgbaPNG(i_pTexture, i_FilePathLocator);
+	}
+	write_traced("SaveTextureToRgbaPNG", i_FilePathLocator,
+				 [&]() { g2dImageSaveUtil::WritePNG(i_FilePathLocator, image.get()); });
 }
 
 //------------------------------------------------------------------------

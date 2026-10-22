@@ -7,10 +7,6 @@
 **	them by kind. matTextureMgr itself does the reference counting by
 **	locator.
 **
-**	Texture saving reads back mip 0 of layer 0 (DX11's CaptureTexture,
-**	then GetImage(0, 0, 0)) and writes it through matImageEncode; as on
-**	DX11, a file that can't be written is traced, not thrown.
-**
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
@@ -138,10 +134,6 @@ namespace gvk
 		//	UnloadTextures does nothing, as in DX11
 		//--------------------------------------------------------------------
 		virtual void UnloadTexture( const fsLocator& i_Locator );
-
-		virtual void SaveTextureToRgbaTiff(matTexture* i_pTexture, const fsLocator& i_FilePathLocator);
-		virtual void SaveTextureToRgbaPNG(matTexture* i_pTexture, const fsLocator& i_FilePathLocator);
-		virtual void SaveTextureToFile(matTexture* i_pTexture, const fsLocator& i_FilePathLocator);
 
 		//------------------------------------------------------------------------
 		//	FillTexture writes RGBA floats to every texel (as DX11: right only

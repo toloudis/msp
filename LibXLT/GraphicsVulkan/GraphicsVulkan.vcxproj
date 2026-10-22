@@ -95,7 +95,6 @@
     <ClCompile Include="G2d\private\g2dFontUtilVk.cpp" />
     <ClCompile Include="G2d\private\g2dWindowVk.cpp" />
     <ClCompile Include="G2d\private\g2dImageCreateVk.cpp" />
-    <ClCompile Include="G2d\private\g2dImageSaveVk.cpp" />
     <ClCompile Include="G2d\private\g2dImageVk.cpp" />
     <ClCompile Include="G2d\private\g2dScreenCaptureUtilVk.cpp" />
     <ClCompile Include="G2d\private\g2dSurfaceUtilVk.cpp" />
@@ -132,7 +131,6 @@
     <ClCompile Include="Mat\private\matImageDecodeTiff.cpp" />
     <ClCompile Include="Mat\private\matImageDecodeDds.cpp" />
     <ClCompile Include="Mat\private\matImageDecodeHdr.cpp" />
-    <ClCompile Include="Mat\private\matImageEncode.cpp" />
     <ClCompile Include="Mat\private\matMipFilter.cpp" />
     <ClCompile Include="G2d\private\g2dVkGlobal.cpp" />
     <ClCompile Include="G2d\private\g2dTextureVk.cpp" />
@@ -269,7 +267,6 @@
     <ClInclude Include="G2d\private\g2dSurfaceUtilVk.hpp" />
     <ClInclude Include="G2d\g2dDepthStencilBufferVk.hpp" />
     <ClInclude Include="G2d\g2dImageCreateVk.hpp" />
-    <ClInclude Include="G2d\g2dImageSaveVk.hpp" />
     <ClInclude Include="G2d\g2dImageVk.hpp" />
     <ClInclude Include="G2d\g2dScreenCaptureUtilVk.hpp" />
     <ClInclude Include="G2d\g2dSystemVk.hpp" />
@@ -304,7 +301,6 @@
     <ClInclude Include="Mat\matImageDecode.hpp" />
     <ClInclude Include="Mat\matMipFilter.hpp" />
     <ClInclude Include="Mat\private\matImageDecodeInternal.hpp" />
-    <ClInclude Include="Mat\private\matImageEncode.hpp" />
     <ClInclude Include="G2d\g2dVkGlobal.hpp" />
     <ClInclude Include="G2d\g2dTextureVk.hpp" />
     <ClInclude Include="G2d\g2dRenderTargetTextureVk.hpp" />
