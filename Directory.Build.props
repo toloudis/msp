@@ -50,10 +50,13 @@
     missing (vcpkg locks the folder while it does); after that the
     others find vcpkg's stamp file up to date and skip the step. Debug
     and Release libraries are in the same install. vcpkg adds the
-    include and library folders to every project, links every library
-    into executables (only what they use ends up in them) and copies the
-    DLLs an executable needs next to it. MspVcpkgDir is the install for
-    the one triplet, x64-windows, for the paths projects name themselves
+    include and library folders to every project and copies the DLLs an
+    executable needs next to it. It also links every library in the
+    install into every executable (a static library or DLL the executable
+    doesn't use doesn't end up in it), so no project names vcpkg
+    libraries; triplets\x64-windows.cmake keeps two libraries with the
+    same functions out of the install. MspVcpkgDir is the install for the
+    one triplet, x64-windows, for the paths projects name themselves
     (tools such as dxc.exe, include subfolders).
   -->
 <Project>
@@ -78,6 +81,9 @@
     <VcpkgManifestRoot>$(MSBuildThisFileDirectory)</VcpkgManifestRoot>
     <VcpkgInstalledDir>$(MSBuildThisFileDirectory)vcpkg_installed\</VcpkgInstalledDir>
     <MspVcpkgDir>$(VcpkgInstalledDir)x64-windows\</MspVcpkgDir>
+    <!-- Debug or Release libraries and DLLs; vcpkg would otherwise go by
+         UseDebugLibraries, which not every project sets -->
+    <VcpkgConfiguration>$(MspBaseConfiguration)</VcpkgConfiguration>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(MspGuiToolkit)' == 'Wx'">

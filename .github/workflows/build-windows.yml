@@ -7,6 +7,43 @@ on:
   workflow_dispatch:
 
 jobs:
+  # Builds the vcpkg packages of the repository's vcpkg.json once, Debug and
+  # Release (the x64-windows triplet builds both), into vcpkg's binary
+  # cache, before the jobs that use them start. Those jobs only restore the
+  # cache: their "vcpkg install" unpacks the packages instead of building
+  # them, and the cache is saved once, here, instead of by whichever of
+  # them finishes first. When the manifest changes, the newest older cache
+  # is restored and only what changed is built.
+  vcpkg-packages:
+    runs-on: windows-latest
+    env:
+      VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}\vcpkg-binary-cache
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore vcpkg binary cache
+        id: vcpkg-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
+          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json') }}
+          restore-keys: vcpkg-${{ runner.os }}-
+
+      - name: Build vcpkg packages
+        if: ${{ steps.vcpkg-cache.outputs.cache-hit != 'true' }}
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path $env:VCPKG_DEFAULT_BINARY_CACHE | Out-Null
+          & "$env:VCPKG_INSTALLATION_ROOT\vcpkg.exe" install --triplet x64-windows
+          if ($LASTEXITCODE -ne 0) { throw "vcpkg install failed" }
+
+      - name: Save vcpkg binary cache
+        if: ${{ steps.vcpkg-cache.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
+          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json') }}
+
   # Compiles every entry point of the shaders converted from Effects (.fx)
   # to plain HLSL, one entry point at a time: as SM 5 with fxc (what the DX11
   # renderer uses), as SM 6 with dxc (for a future DX12 port), and as SPIR-V
@@ -14,6 +51,7 @@ jobs:
   # identical to GraphicsDX11's (GraphicsTests checks that), so the fxc and
   # dxc steps read GraphicsDX11's.
   converted-shaders:
+    needs: vcpkg-packages
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -39,14 +77,14 @@ jobs:
 
       # The Windows SDK's dxc has no SPIR-V backend: use the one GraphicsVulkan
       # builds with, from the repository's vcpkg manifest (same baseline, same
-      # version), with the build jobs' binary cache.
+      # version), unpacked from the binary cache vcpkg-packages saved.
       - name: Restore vcpkg binary cache
         if: ${{ !cancelled() }}
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: ${{ github.workspace }}\vcpkg-binary-cache
           key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json') }}
-          restore-keys: vcpkg-${{ runner.os }}-
+          fail-on-cache-miss: true
 
       - name: Install GraphicsVulkan's DXC (vcpkg)
         if: ${{ !cancelled() }}
@@ -81,6 +119,7 @@ jobs:
         run: python -m pytest Tools/gfxcompare/tests -q
 
   build-mainapp:
+    needs: vcpkg-packages
     runs-on: windows-latest
     strategy:
       fail-fast: false
@@ -131,12 +170,13 @@ jobs:
           if (-not (Test-Path "$qtdir\include\QtWidgets\QWidget")) { throw "Qt not found at $qtdir" }
           "QTDIR=$qtdir" >> $env:GITHUB_ENV
 
+      # Built by vcpkg-packages; the install step below only unpacks them
       - name: Restore vcpkg binary cache
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
           key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json') }}
-          restore-keys: vcpkg-${{ runner.os }}-
+          fail-on-cache-miss: true
 
       - name: Integrate vcpkg with MSBuild
         shell: pwsh
@@ -146,6 +186,7 @@ jobs:
 
       # Every project uses this one install (see Directory.Build.props);
       # installing it before the build keeps its log in a step of its own.
+      # Every package comes from the binary cache.
       - name: Install vcpkg packages
         shell: pwsh
         run: |

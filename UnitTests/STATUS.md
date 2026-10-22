@@ -77,11 +77,6 @@ Branch: `claude/unit-tests` (based on `claude/toolkit-input` at `a12c4b6f`).
   Harmless, but noisy; the tests could redirect that stream.
 - Files saved by pre-2015 MSVC runtimes may hold floats as `1.#INF` or
   `1.#QNAN`; these read as 1.
-- `MachStudio/MachStudio-x64/libcurl.dll` and `zlib1.dll` are committed, but
-  every MainApp build overwrites them with the vcpkg copies, so they show as
-  modified. The Debug OpenEXR DLLs (`*_d.dll`) are committed and the Release
-  ones aren't. Probably none of the vcpkg DLLs MainApp copies in should be
-  tracked.
 - CI warns that its actions (`checkout`, `cache`, `upload-artifact`,
   `setup-msbuild`) target the deprecated Node.js 20; they still run.
 
@@ -102,7 +97,7 @@ Branch: `claude/unit-tests` (based on `claude/toolkit-input` at `a12c4b6f`).
 - Scripts in Git Bash heredocs lose backslashes (`\\` becomes `\`); write
   Python that handles Windows paths to a file first.
 - vcpkg's x64-windows gtest is a DLL (`GTEST_LINKED_AS_SHARED_LIBRARY=1`), and
-  the exe resolves gtest from `gmock.dll`, which is copied next to it.
+  the exe resolves gtest from `gtest.dll`, which is copied next to it.
 - `maRotation`'s `a * b` applies `b` first; `maMatrix4x4`'s `A * B` applies `A`
   first (row vectors). The tests pin both down.
 - `gfFileXML::WriteHeader` also writes an `<SGPU>` root tag, which readers

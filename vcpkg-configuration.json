@@ -4,6 +4,7 @@
     "baseline": "a0b1c8d3a477c1cb4813d8e127a56961707ca42b",
     "repository": "https://github.com/microsoft/vcpkg"
   },
+  "overlay-triplets": [ "triplets" ],
   "registries": [
     {
       "kind": "artifact",

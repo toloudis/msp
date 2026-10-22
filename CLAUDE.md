@@ -178,7 +178,12 @@ its stamp file current and skip the step). `Directory.Build.props` turns
 manifest mode on for every project and points them all at that install, so
 every project sees every package's headers, executables link every
 package's libraries automatically (only what they use ends up in them), and
-vcpkg copies the DLLs an executable needs next to it. Paths a project names
+vcpkg copies the DLLs an executable needs next to it. No project names a
+vcpkg library. `triplets/x64-windows.cmake` (listed in
+`vcpkg-configuration.json`'s `overlay-triplets`) replaces vcpkg's triplet of
+that name to build spirv-tools static: with dynamic linkage it also installs
+`SPIRV-Tools-shared.lib`, whose functions collide with the static
+`SPIRV-Tools.lib` GraphicsVulkan uses. Paths a project names
 itself (dxc.exe, the Imath include folder) use `$(MspVcpkgDir)`, the
 `x64-windows` install.
 
@@ -188,7 +193,7 @@ itself (dxc.exe, the Imath include folder) use `$(MspVcpkgDir)`, the
 | DirectXTex, nlohmann-json, libtiff (+ libjpeg-turbo, liblzma, zlib) | GraphicsDX11 | DDS/texture loading and image saving; parsing `*.effect.json` effect descriptions (`fxEffectDesc`); TIFF loading (`g2dSurfaceLoaderDX11`). glTF import bundles its own `json.hpp`/`tiny_gltf.h` |
 | vulkan-headers, volk, vulkan-memory-allocator, spirv-reflect, spirv-tools, directx-dxc, stb, libtiff, nlohmann-json | GraphicsVulkan | the Vulkan backend: volk loads `vulkan-1.dll` at run time (nothing to link or ship); DXC compiles shaders at build time; SPIRV-Tools (static) removes unconsumed shader outputs when pipelines are made (`vkdLinkStages`); stb_image and libtiff decode textures (`matImageDecode`; DDS and TGA are read by ports of DirectXTex's readers, no DirectXTex or WIC). The baseline is new enough for the Vulkan 1.4 headers with `VK_EXT_descriptor_heap` |
 | curl (+ zlib) | MainApp | version check (`mainCheckAppVersion`). Linked dynamically: `libcurl.dll` (and its `zlib1.dll`) ships next to the exe |
-| gtest; stb and libtiff | the UnitTests projects; GraphicsTests | unit tests (`gmock.dll`, which includes gtest, is copied next to the test exe); PNG output and TIFF checks |
+| gtest; stb and libtiff | the UnitTests projects; GraphicsTests | unit tests (`gtest.dll` is copied next to the test exe); PNG output and TIFF checks |
 
 `ImportExport` still has an include path to `3rdParty\FBX`, which no longer
 exists (FBX support is compiled out; see the leftovers note above).

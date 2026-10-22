@@ -371,7 +371,7 @@ void LoadResource(matPlainTexture* io_Texture, const fsLocator& i_Locator, int i
     // NEED TO KNOW TYPE FIRST... ASSUME WIC.
     DirectX::TexMetadata metadata;
     std::unique_ptr<DirectX::ScratchImage> image(new DirectX::ScratchImage);
-    HRESULT hr = DirectX::LoadFromWICMemory(pSource, size, DirectX::WIC_FLAGS::WIC_FLAGS_NONE, &metadata, *image);
+    HRESULT hr = DirectX::LoadFromWICMemory(static_cast<const uint8_t*>(pSource), size, DirectX::WIC_FLAGS::WIC_FLAGS_NONE, &metadata, *image);
     // mip levels 1 only.
     metadata.mipLevels = 1;
 
