@@ -78,7 +78,7 @@ Per pass, DX11 vs Vulkan, worst frame of 296–300:
 | ILLUM, MTL, NOR, REFL | fail, max 69–121/255, up to 0.026% over 16/255 | cutout flips on the cobweb's hard-edged alpha. A soft cutout matches within 1/255 (`CutoutMatchesDX11`). |
 | GI | fail, max 46/255, 0.0008% over 16/255 | the noise, plus DX11's own nondeterminism: DX11 differs from itself by 2–6/255 on 0.002% of pixels |
 
-**Not covered by the scenes:** AO volumes, SSGI and LPV (no scene here runs them; `Dume_Demo_stress001_AOtiles` isn't used, at the owner's request), hair, and the opacity maps. GraphicsTests covers them. The `COLBL` pass (RenderMan color bleeding) crashes RenderNode on both backends (see "Items for the owner"), so it was left out.
+**Not covered by the scenes:** AO volumes, SSGI and LPV (no scene here runs them; `Dume_Demo_stress001_AOtiles` isn't used, at the owner's request), hair, and the opacity maps. GraphicsTests covers them. The `COLBL` pass (RenderMan color bleeding) has no GPU renderer and crashed RenderNode on both backends; `-capPasses` now skips it with a warning (see "Items for the owner").
 
 ## Parity: GraphicsTests
 
@@ -229,7 +229,7 @@ Each of these was deferred or found during the port:
 1. **DX11's NaNs on the first velocity frame.** The previous camera defaults to a `camCamera` that gives NaN velocities. Vulkan matches them. The owner deferred the fix to after the port.
 2. **DX11's GI pass isn't deterministic.** It differs from itself by 2–6/255 on 0.002% of pixels from run to run.
 3. **DX11's `shdwPassOpacity` clears only the first opacity map.** Maps 1–7 of OSM16/32 accumulate frame over frame. This was found by reading the code (Plan 7 Task 6) and not measured. Vulkan does the same.
-4. **The `COLBL` (RenderMan color bleeding) pass crashes RenderNode on both backends.** `-capPasses` could refuse RenderMan passes.
+4. **The `COLBL` (RenderMan color bleeding) pass crashed RenderNode on both backends**: no GPU renderer makes it. Resolved at the owner's request: `-capPasses` skips RenderMan passes with a warning and renders the rest.
 5. **The GPU-assisted validation false positive** (vertex fetch bounds against the last draw's buffer). Filing it with the Khronos validation layers is outward-facing, so it hasn't been done.
 6. **`vkAllocateMemory` returns `OUT_OF_DEVICE_MEMORY` while textures load** (best practices, RenderNode). The frames are correct; not investigated.
 7. **`g2dWindowVkScene.HeadlessWindowMatchesSwapchainWindow` failed once under shard load:** an empty capture from the swap-chain window at a render resolution. It hasn't recurred.

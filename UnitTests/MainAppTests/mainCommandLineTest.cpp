@@ -365,18 +365,53 @@ TEST(mainCommandLine, CapturePassesMatchTheScenesNames)
 {
 	//	the scene's pass names, by pass type (captRenderOutputDataUtil::GetRenderPassName)
 	const std::vector<std::string> names = { "BTY", "DIFF", "SPEC", "AO", "Z", "MyNormals" };
+	const std::vector<int> none;
 	std::vector<int> passes;
 	std::string unknown;
-	EXPECT_TRUE(mainCommandLine::MatchPasses("bty,Z,mynormals", names, passes, unknown));
+	std::vector<std::string> skipped;
+	EXPECT_TRUE(mainCommandLine::MatchPasses("bty,Z,mynormals", names, none, passes, unknown, skipped));
 	EXPECT_EQ(std::vector<int>({0, 4, 5}), passes);
 	EXPECT_EQ("", unknown);
+	EXPECT_TRUE(skipped.empty());
 
 	//	a pass named twice is rendered once
-	EXPECT_TRUE(mainCommandLine::MatchPasses("AO,ao", names, passes, unknown));
+	EXPECT_TRUE(mainCommandLine::MatchPasses("AO,ao", names, none, passes, unknown, skipped));
 	EXPECT_EQ(std::vector<int>({3}), passes);
 
 	//	an unknown name rejects the whole list
-	EXPECT_FALSE(mainCommandLine::MatchPasses("BTY,NOR", names, passes, unknown));
+	EXPECT_FALSE(mainCommandLine::MatchPasses("BTY,NOR", names, none, passes, unknown, skipped));
 	EXPECT_TRUE(passes.empty());
 	EXPECT_EQ("NOR", unknown);
+}
+
+TEST(mainCommandLine, CapturePassesSkipRenderManPasses)
+{
+	//	pass type 6 stands for a RenderMan pass (COLBL): GPU renders have no
+	//	renderer for it, so it is left out and the rest of the list kept
+	const std::vector<std::string> names = { "BTY", "DIFF", "SPEC", "AO", "Z", "MyNormals", "COLBL" };
+	const std::vector<int> renderman = { 6 };
+	std::vector<int> passes;
+	std::string unknown;
+	std::vector<std::string> skipped;
+	EXPECT_TRUE(mainCommandLine::MatchPasses("BTY,colbl,Z", names, renderman, passes, unknown, skipped));
+	EXPECT_EQ(std::vector<int>({0, 4}), passes);
+	EXPECT_EQ(std::vector<std::string>({"colbl"}), skipped);
+	EXPECT_EQ("", unknown);
+
+	//	nothing left: the list is ignored, the skipped pass still reported
+	EXPECT_FALSE(mainCommandLine::MatchPasses("COLBL", names, renderman, passes, unknown, skipped));
+	EXPECT_TRUE(passes.empty());
+	EXPECT_EQ(std::vector<std::string>({"COLBL"}), skipped);
+	EXPECT_EQ("", unknown);
+
+	//	an unknown name still rejects the whole list
+	EXPECT_FALSE(mainCommandLine::MatchPasses("COLBL,NOR", names, renderman, passes, unknown, skipped));
+	EXPECT_EQ("NOR", unknown);
+	EXPECT_TRUE(skipped.empty());
+}
+
+TEST(mainCommandLine, HelpSaysRenderManPassesAreSkipped)
+{
+	const std::string help = mainCommandLine::HelpText();
+	EXPECT_NE(std::string::npos, help.find("RenderMan passes (COLBL)"));
 }

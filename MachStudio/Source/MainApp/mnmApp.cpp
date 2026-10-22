@@ -516,11 +516,23 @@ void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 				pass_names.push_back( itStringUtil::GetStdString(
 					captRenderOutputDataUtil::GetRenderPassName( static_cast<rlyrPassesObject::ePassType>(pass) ) ) );
 			}
+			//	RenderMan passes have no GPU renderer (a capture of one crashes)
+			const std::vector<int> refused = { rlyrPassesObject::e_RmanColorBleed };
 			std::vector<int> passes;
 			std::string unknown;
-			if ( !mainCommandLine::MatchPasses( value, pass_names, passes, unknown ) )
+			std::vector<std::string> skipped;
+			const bool matched = mainCommandLine::MatchPasses( value, pass_names, refused, passes, unknown, skipped );
+			for ( size_t i = 0; i < skipped.size(); ++i )
 			{
-				DBG_LOG( "   Command-line -capPasses: unknown pass " << unknown << "; ignored" );
+				DBG_WARNING( "Command-line -capPasses: " << skipped[i]
+							 << " is a RenderMan pass, which GPU renders can't make; skipped" );
+			}
+			if ( !matched )
+			{
+				if ( unknown.empty() )
+					DBG_LOG( "   Command-line -capPasses: no pass left to render; ignored" );
+				else
+					DBG_LOG( "   Command-line -capPasses: unknown pass " << unknown << "; ignored" );
 				break;
 			}
 			std::vector<rlyrPassesObject::ePassType> pass_types;

@@ -81,8 +81,10 @@
 **	                             names (by default BTY, DIFF, SPEC, AO, GI, Z,
 **	                             SHDW, ILLUM, NOR, MAT, WIRE, MTL, REFL, VEL,
 **	                             BLOOM, STAR, DOF, PREV, EMI, SPECENV,
-**	                             SPECLIT, DIFFENV, DIFFLIT, GLOW, COLBL), in
-**	                             every render layer; the others are turned off
+**	                             SPECLIT, DIFFENV, DIFFLIT, GLOW), in every
+**	                             render layer; the others are turned off.
+**	                             RenderMan passes (COLBL) are skipped with a
+**	                             warning: GPU renders can't make them
 **	  -capHardwareAA on|off      the renderer's own antialiasing (HDR AA)
 **
 **	Graphics
@@ -199,9 +201,13 @@ struct mainCommandLine
 	//	(i_PassNames[t] is pass type t's name, from
 	//	captRenderOutputDataUtil::GetRenderPassName): o_Passes gets the
 	//	pass types named, each once, in pass-type order. Names match
-	//	without regard to case. An unknown name fails the whole list: false,
-	//	o_Passes empty and the name in o_Unknown.
+	//	without regard to case. Names of the pass types in i_Refused
+	//	(RenderMan passes) are left out and listed in o_Skipped. An unknown
+	//	name fails the whole list (false, o_Passes empty, the name in
+	//	o_Unknown), and so does a list with nothing left (false, o_Unknown
+	//	empty).
 	//------------------------------------------------------------------------
 	static bool MatchPasses(const std::string& i_List, const std::vector<std::string>& i_PassNames,
-							std::vector<int>& o_Passes, std::string& o_Unknown);
+							const std::vector<int>& i_Refused, std::vector<int>& o_Passes,
+							std::string& o_Unknown, std::vector<std::string>& o_Skipped);
 };

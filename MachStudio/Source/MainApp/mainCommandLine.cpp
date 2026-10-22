@@ -543,8 +543,10 @@ Rendering
                              (by default BTY, DIFF, SPEC, AO, GI, Z, SHDW,
                              ILLUM, NOR, MAT, WIRE, MTL, REFL, VEL, BLOOM,
                              STAR, DOF, PREV, EMI, SPECENV, SPECLIT, DIFFENV,
-                             DIFFLIT, GLOW, COLBL), in every render layer;
-                             the others are turned off
+                             DIFFLIT, GLOW), in every render layer; the
+                             others are turned off. RenderMan passes (COLBL)
+                             are skipped with a warning: GPU renders can't
+                             make them
   -capHardwareAA on|off      the renderer's own antialiasing (HDR AA)
 
 Graphics
@@ -596,10 +598,12 @@ bool mainCommandLine::SplitJitter(const std::string& i_Value, int& o_Filter, flo
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 bool mainCommandLine::MatchPasses(const std::string& i_List, const std::vector<std::string>& i_PassNames,
-								  std::vector<int>& o_Passes, std::string& o_Unknown)
+								  const std::vector<int>& i_Refused, std::vector<int>& o_Passes,
+								  std::string& o_Unknown, std::vector<std::string>& o_Skipped)
 {
 	o_Passes.clear();
 	o_Unknown.clear();
+	o_Skipped.clear();
 	std::vector<std::string> names;
 	split_list(i_List, names);
 	for (const std::string& name : names)
@@ -611,6 +615,11 @@ bool mainCommandLine::MatchPasses(const std::string& i_List, const std::vector<s
 			if (!lower.empty() && lower == to_lower(i_PassNames[pass]))
 			{
 				found = true;
+				if (std::find(i_Refused.begin(), i_Refused.end(), static_cast<int>(pass)) != i_Refused.end())
+				{
+					o_Skipped.push_back(name);
+					break;
+				}
 				if (std::find(o_Passes.begin(), o_Passes.end(), static_cast<int>(pass)) == o_Passes.end())
 				{
 					o_Passes.push_back(static_cast<int>(pass));
@@ -621,10 +630,11 @@ bool mainCommandLine::MatchPasses(const std::string& i_List, const std::vector<s
 		if (!found)
 		{
 			o_Passes.clear();
+			o_Skipped.clear();
 			o_Unknown = name;
 			return false;
 		}
 	}
 	std::sort(o_Passes.begin(), o_Passes.end());
-	return true;
+	return !o_Passes.empty();
 }

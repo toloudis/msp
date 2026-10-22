@@ -443,7 +443,8 @@ run, are the exception: they aren't scene settings). `-capSampling`,
 the sampling, pass and anti-aliasing settings RenderNode has no other way
 to change (Python is compiled out); their values are checked while parsing
 (a bad one is dropped with a warning), and `-capPasses` names passes by the
-scene's pass names and sets them in every render layer. The full
+scene's pass names and sets them in every render layer (RenderMan passes,
+such as COLBL, are skipped with a warning: no GPU renderer makes them). The full
 command line reference (what each flag does) is at the top of
 `MainApp/mainCommandLine.hpp`; `-help` prints the same text
 (`mainCommandLine::HelpText()`), and a test checks it lists every flag.
