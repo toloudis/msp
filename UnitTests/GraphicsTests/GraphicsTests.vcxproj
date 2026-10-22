@@ -46,12 +46,17 @@
   <PropertyGroup>
     <OutDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+    <!-- DXC and GraphicsVulkan's shader options; keep the options in step with
+         LibXLT\GraphicsVulkan\Fx\private\EmbedShadersVk.ps1 and Tools\fx2hlsl\compile_check.py -->
+    <GtDxc>"$(ProjectDir)..\..\LibXLT\GraphicsVulkan\vcpkg_installed\x64-windows\x64-windows\tools\directx-dxc\dxc.exe" -spirv -fspv-target-env=vulkan1.3 -fvk-use-dx-layout -fvk-use-dx-position-w -fvk-support-nonzero-base-instance -fvk-support-nonzero-base-vertex -fvk-auto-shift-bindings -fvk-b-shift 0 0 -fvk-t-shift 100 0 -fvk-s-shift 200 0 -fvk-u-shift 300 0</GtDxc>
+    <!-- GraphicsVulkan's Vulkan-only shader code, for test shaders that need it -->
+    <GtShadersVk>$(ProjectDir)..\..\LibXLT\GraphicsVulkan\Eff\private\ShadersVk</GtShadersVk>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(IntDir);$(ProjectDir)..\..\LibXLT\GraphicsVulkan\vcpkg_installed\x64-windows\x64-windows\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(IntDir);$(ProjectDir)..\..\LibXLT\GraphicsVulkan\vcpkg_installed\x64-windows\x64-windows\include;$(ProjectDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <!-- vcpkg's x64-windows gtest is a DLL -->
-      <PreprocessorDefinitions>WIN64;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;GTEST_LINKED_AS_SHARED_LIBRARY=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN64;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;NOMINMAX;GTEST_LINKED_AS_SHARED_LIBRARY=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -65,11 +70,14 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <!-- Direct3D 11: GraphicsDX11 is the reference the Vulkan tests compare against
+           (its headers ask for DirectXTex.lib, from its vcpkg packages). gtBackend brings up
+           the whole DX11 and Graphics layers, which also need Graphics' OpenEXR (vcpkg) and
+           libpng and zlibwapi (3rdParty), as MachStudio does -->
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;d3dcompiler.lib;libpng16.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories Condition="'$(MspBaseConfiguration)' == 'Debug'">$(ProjectDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\debug\lib;$(ProjectDir)..\..\LibXLT\Graphics\vcpkg_installed\x64-windows\x64-windows\debug\lib;$(ProjectDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(MspBaseConfiguration)' == 'Release'">$(ProjectDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\lib;$(ProjectDir)..\..\LibXLT\Graphics\vcpkg_installed\x64-windows\x64-windows\lib;$(ProjectDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
-    <PostBuildEvent>
-      <Command>"$(TargetPath)" --gtest_brief=1 "--gtest_output=xml:$(OutDir)$(TargetName).xml"</Command>
-      <Message>Running the unit tests</Message>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(MspBaseConfiguration)' == 'Debug'">
     <ClCompile>
@@ -100,21 +108,114 @@
     <ClCompile Include="Vk\vkdRingBufferTest.cpp" />
     <ClCompile Include="Vk\vkdBindingsTest.cpp" />
     <ClCompile Include="Vk\g2dWindowVkTest.cpp" />
+    <ClCompile Include="Vk\g2dSystemVkTest.cpp" />
     <ClCompile Include="Vk\GraphicsVulkanLayerTest.cpp" />
+    <ClCompile Include="Vk\fxShaderCopyTest.cpp" />
+    <ClCompile Include="Dx11\gtD3D11.cpp" />
+    <ClCompile Include="Vk\fxEffectVkReflectionTest.cpp" />
+    <ClCompile Include="Vk\vkdPipelineCacheTest.cpp" />
+    <ClCompile Include="Vk\vkdAnisotropicTest.cpp" />
+    <ClCompile Include="Vk\vkdContextTest.cpp" />
+    <ClCompile Include="Vk\hairVkTest.cpp" />
+    <ClCompile Include="Vk\shdwOpacityVkTest.cpp" />
+    <ClCompile Include="Vk\vkdIsolineTest.cpp" />
+    <ClCompile Include="Vk\fxEffectVkTest.cpp" />
+    <ClCompile Include="Vk\effPlainEffectVkTest.cpp" />
+    <ClCompile Include="gtImage.cpp" />
+    <ClCompile Include="gtImageTest.cpp" />
+    <ClCompile Include="Vk\g2dFullscreenQuadTest.cpp" />
+    <ClCompile Include="Vk\fxParityTest.cpp" />
+    <ClCompile Include="Vk\vkdFormatTest.cpp" />
+    <ClCompile Include="Vk\vkdImageTest.cpp" />
+    <ClCompile Include="Vk\vkdBufferTest.cpp" />
+    <ClCompile Include="Vk\tiffVcpkgTest.cpp" />
+    <ClCompile Include="gtImageFiles.cpp" />
+    <ClCompile Include="Vk\matImageDecodeTest.cpp" />
+    <ClCompile Include="Vk\matMipFilterTest.cpp" />
+    <ClCompile Include="gtBackend.cpp" />
+    <ClCompile Include="Vk\matTextureMgrVkTest.cpp" />
+    <ClCompile Include="gtScene.cpp" />
+    <ClCompile Include="Vk\bumpFragmentVkTest.cpp" />
+    <ClCompile Include="Vk\effShaderVkTest.cpp" />
+    <ClCompile Include="gtTarget.cpp" />
+    <ClCompile Include="Vk\g3dSceneRendererVkTest.cpp" />
+    <ClCompile Include="gtSceneWindow.cpp" />
+    <ClCompile Include="gtRender.cpp" />
+    <ClCompile Include="Vk\shdwScaffoldingVkTest.cpp" />
+    <ClCompile Include="Vk\shdwHDRRendererVkTest.cpp" />
+    <ClCompile Include="Vk\shdwMaterialsVkTest.cpp" />
+    <ClCompile Include="Vk\shdwReflectionVkTest.cpp" />
+    <ClCompile Include="Vk\shdwShadowVkTest.cpp" />
+    <ClCompile Include="Vk\shdwTransparentVkTest.cpp" />
+    <ClCompile Include="Vk\shdwScreenPassesVkTest.cpp" />
+    <ClCompile Include="Vk\shdwPreviewRenderersVkTest.cpp" />
+    <ClCompile Include="Vk\shdwVelocityVkTest.cpp" />
+    <ClCompile Include="Vk\g3dPickVkTest.cpp" />
+    <ClCompile Include="Vk\shdwBakeVkTest.cpp" />
+    <ClCompile Include="Vk\shdwDofFogVkTest.cpp" />
+    <ClCompile Include="Vk\shdwAoGiVkTest.cpp" />
+    <ClCompile Include="Vk\vkdOcclusionQueryTest.cpp" />
+    <ClCompile Include="Vk\g2dFontVkTest.cpp" />
+    <ClCompile Include="Vk\g2dCaptureVkTest.cpp" />
+    <ClCompile Include="Vk\g2dImageVkTest.cpp" />
+    <ClCompile Include="Vk\g2dImageSaveVkTest.cpp" />
+    <ClCompile Include="Vk\g2dResourceCounterVkTest.cpp" />
+    <ClCompile Include="Vk\vkdLinkStagesTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />
     <ClInclude Include="gtTempDir.hpp" />
     <ClInclude Include="Vk\gtVulkan.hpp" />
+    <ClInclude Include="Dx11\gtD3D11.hpp" />
+    <ClInclude Include="gtImage.hpp" />
+    <ClInclude Include="Vk\gtVulkanContext.hpp" />
+    <ClInclude Include="Vk\gtVulkanSuite.hpp" />
+    <ClInclude Include="gtImageFiles.hpp" />
+    <ClInclude Include="gtBackend.hpp" />
+    <ClInclude Include="gtScene.hpp" />
+    <ClInclude Include="gtTarget.hpp" />
+    <ClInclude Include="gtSceneWindow.hpp" />
+    <ClInclude Include="gtRender.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <!-- The descriptor-prototype test shader, compiled to SPIR-V with the GraphicsVulkan register shifts -->
-    <CustomBuild Include="Vk\Shaders\gtBindingProto.hlsl">
-      <Command>"$(ProjectDir)..\..\LibXLT\GraphicsVulkan\vcpkg_installed\x64-windows\x64-windows\tools\directx-dxc\dxc.exe" -spirv -fspv-target-env=vulkan1.3 -fvk-use-dx-layout -fvk-b-shift 0 0 -fvk-t-shift 100 0 -fvk-s-shift 200 0 -fvk-u-shift 300 0 -T vs_6_0 -E VSMain -Vn g_gtBindingProtoVS -Fh "$(IntDir)gtBindingProtoVS.h" "%(FullPath)" &amp;&amp; "$(ProjectDir)..\..\LibXLT\GraphicsVulkan\vcpkg_installed\x64-windows\x64-windows\tools\directx-dxc\dxc.exe" -spirv -fspv-target-env=vulkan1.3 -fvk-use-dx-layout -fvk-b-shift 0 0 -fvk-t-shift 100 0 -fvk-s-shift 200 0 -fvk-u-shift 300 0 -T ps_6_0 -E PSMain -Vn g_gtBindingProtoPS -Fh "$(IntDir)gtBindingProtoPS.h" "%(FullPath)"</Command>
-      <Message>DXC (SPIR-V) %(Filename)%(Extension)</Message>
-      <Outputs>$(IntDir)gtBindingProtoVS.h;$(IntDir)gtBindingProtoPS.h</Outputs>
+    <!-- Test shaders: VSMain and PSMain of each, compiled to SPIR-V with GraphicsVulkan's
+         options into headers g_<name>VS / g_<name>PS ($(IntDir)<name>VS.h, <name>PS.h) -->
+    <CustomBuild Include="Vk\Shaders\gtBindingProto.hlsl" />
+    <!-- also pixel shaders PSLod and PSDeriv -->
+    <CustomBuild Include="Vk\Shaders\gtAniso.hlsl">
+      <Command>$(GtDxc) -T vs_6_0 -E VSMain -Vn g_%(Filename)VS -Fh "$(IntDir)%(Filename)VS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -T ps_6_0 -E PSMain -Vn g_%(Filename)PS -Fh "$(IntDir)%(Filename)PS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -T ps_6_0 -E PSLod -Vn g_%(Filename)LodPS -Fh "$(IntDir)%(Filename)LodPS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -T ps_6_0 -E PSDeriv -Vn g_%(Filename)DerivPS -Fh "$(IntDir)%(Filename)DerivPS.h" "%(FullPath)"</Command>
+      <Outputs>$(IntDir)%(Filename)VS.h;$(IntDir)%(Filename)PS.h;$(IntDir)%(Filename)LodPS.h;$(IntDir)%(Filename)DerivPS.h</Outputs>
+    </CustomBuild>
+    <!-- hull and domain shaders too; includes GraphicsVulkan's Vulkan-only isoline factors -->
+    <CustomBuild Include="Vk\Shaders\gtIsoline.hlsl">
+      <Command>$(GtDxc) -I "$(GtShadersVk)" -T vs_6_0 -E VSMain -Vn g_%(Filename)VS -Fh "$(IntDir)%(Filename)VS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -I "$(GtShadersVk)" -T hs_6_0 -E HSMain -Vn g_%(Filename)HS -Fh "$(IntDir)%(Filename)HS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -I "$(GtShadersVk)" -T ds_6_0 -E DSMain -Vn g_%(Filename)DS -Fh "$(IntDir)%(Filename)DS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -I "$(GtShadersVk)" -T ps_6_0 -E PSMain -Vn g_%(Filename)PS -Fh "$(IntDir)%(Filename)PS.h" "%(FullPath)"</Command>
+      <Outputs>$(IntDir)%(Filename)VS.h;$(IntDir)%(Filename)HS.h;$(IntDir)%(Filename)DS.h;$(IntDir)%(Filename)PS.h</Outputs>
+      <AdditionalInputs>$(GtShadersVk)\IsolineTessFactors.vulkan-only.hlsli</AdditionalInputs>
+    </CustomBuild>
+    <CustomBuild Include="Vk\Shaders\gtSolid.hlsl" />
+    <!-- also a pixel shader PSAll -->
+    <CustomBuild Include="Vk\Shaders\gtLink.hlsl">
+      <Command>$(GtDxc) -T vs_6_0 -E VSMain -Vn g_%(Filename)VS -Fh "$(IntDir)%(Filename)VS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -T ps_6_0 -E PSMain -Vn g_%(Filename)PS -Fh "$(IntDir)%(Filename)PS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -T ps_6_0 -E PSAll -Vn g_%(Filename)AllPS -Fh "$(IntDir)%(Filename)AllPS.h" "%(FullPath)"</Command>
+      <Outputs>$(IntDir)%(Filename)VS.h;$(IntDir)%(Filename)PS.h;$(IntDir)%(Filename)AllPS.h</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="Vk\Shaders\gtStructuredRead.hlsl" />
+    <CustomBuild Include="Vk\Shaders\gtTexel.hlsl" />
+    <CustomBuild Include="Vk\Shaders\gtTexel3D.hlsl">
+      <AdditionalInputs>%(RootDir)%(Directory)gtTexel.hlsl</AdditionalInputs>
+    </CustomBuild>
+    <!-- also a geometry shader, GSMain -->
+    <CustomBuild Include="Vk\Shaders\gtLayered.hlsl">
+      <Command>$(GtDxc) -T vs_6_0 -E VSMain -Vn g_%(Filename)VS -Fh "$(IntDir)%(Filename)VS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -T gs_6_0 -E GSMain -Vn g_%(Filename)GS -Fh "$(IntDir)%(Filename)GS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -T ps_6_0 -E PSMain -Vn g_%(Filename)PS -Fh "$(IntDir)%(Filename)PS.h" "%(FullPath)"</Command>
+      <Outputs>$(IntDir)%(Filename)VS.h;$(IntDir)%(Filename)GS.h;$(IntDir)%(Filename)PS.h</Outputs>
     </CustomBuild>
   </ItemGroup>
+  <ItemDefinitionGroup>
+    <CustomBuild>
+      <Command>$(GtDxc) -T vs_6_0 -E VSMain -Vn g_%(Filename)VS -Fh "$(IntDir)%(Filename)VS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -T ps_6_0 -E PSMain -Vn g_%(Filename)PS -Fh "$(IntDir)%(Filename)PS.h" "%(FullPath)"</Command>
+      <Message>DXC (SPIR-V) %(Filename)%(Extension)</Message>
+      <Outputs>$(IntDir)%(Filename)VS.h;$(IntDir)%(Filename)PS.h</Outputs>
+    </CustomBuild>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />
     <None Include="vcpkg-configuration.json" />
@@ -126,9 +227,28 @@
     <ProjectReference Include="..\..\LibXLT\Graphics\Graphics.vcxproj">
       <Project>{1D25A739-3967-4BAF-AA18-53690B00BD55}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\LibXLT\GraphicsDX11\GraphicsDX11.vcxproj">
+      <Project>{419458FF-14D9-40EC-A36E-0A72774BC100}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\LibXLT\GraphicsVulkan\GraphicsVulkan.vcxproj">
       <Project>{216ED7AE-3E0C-4B0D-A1DF-8D4D80C8AD71}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <!-- The DLLs the Graphics and GraphicsDX11 libraries need at run time (their vcpkg
+       packages, libpng and zlibwapi), next to the exe (as MainApp's CopyLibraryVcpkgDlls),
+       so it can be run from its folder; the test project's own vcpkg DLLs are left as they
+       are. The build doesn't run the tests: see README.md -->
+  <Target Name="CopyLibraryDlls" BeforeTargets="PostBuildEvent">
+    <PropertyGroup>
+      <LibraryVcpkgBin Condition="'$(MspBaseConfiguration)'=='Debug'">debug\bin</LibraryVcpkgBin>
+      <LibraryVcpkgBin Condition="'$(MspBaseConfiguration)'=='Release'">bin</LibraryVcpkgBin>
+    </PropertyGroup>
+    <ItemGroup>
+      <LibraryDll Include="$(ProjectDir)..\..\LibXLT\Graphics\vcpkg_installed\x64-windows\x64-windows\$(LibraryVcpkgBin)\*.dll" />
+      <LibraryDll Include="$(ProjectDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\$(LibraryVcpkgBin)\*.dll" />
+      <LibraryDll Include="$(ProjectDir)..\..\3rdParty\Libs\$(Platform)\libpng16.dll;$(ProjectDir)..\..\3rdParty\Libs\$(Platform)\zlibwapi.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="%(LibraryDll.Identity)" DestinationFolder="$(OutDir)" Condition="!Exists('$(OutDir)%(LibraryDll.Filename)%(LibraryDll.Extension)')" />
+  </Target>
 </Project>

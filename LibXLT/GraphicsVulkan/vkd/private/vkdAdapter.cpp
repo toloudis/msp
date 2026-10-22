@@ -85,12 +85,32 @@ namespace gvk
 		{
 			"geometryShader",
 			"tessellationShader",
+			"samplerAnisotropy",
+			"fillModeNonSolid",
+			"depthClamp",
+			"depthBiasClamp",
+			"independentBlend",
+			"dualSrcBlend",
+			"textureCompressionBC",
+			"imageCubeArray",
+			"shaderImageGatherExtended",	// the shaders' SPIR-V capabilities (fxEffectVkCapabilities test)
+			"shaderClipDistance",
+			"fragmentStoresAndAtomics",		// pixel-shader UAVs (the hair opacity volume), as D3D11 has them
+			"shaderDrawParameters",
+			"shaderDemoteToHelperInvocation",
+			"samplerMirrorClampToEdge",
+			"scalarBlockLayout",			// constant buffers in D3D packing (DXC -fvk-use-dx-layout)
 			"dynamicRendering",
 			"synchronization2",
 			"timelineSemaphore",
 			"bufferDeviceAddress",
+			"hostQueryReset",				// vkdOcclusionQuery resets its query on the host
+			"occlusionQueryPrecise",		// ...and counts samples exactly, as D3D11 does
 			"descriptorHeap",
 			"unifiedImageLayouts",
+			"bresenhamLines",				// D3D11's aliased lines (diamond exit)
+			"rectangularLines",				// D3D11's multisample-enabled lines: quadrilaterals...
+			"wideLines",					// ...1.4 pixels wide
 		};
 		return s_Features;
 	}

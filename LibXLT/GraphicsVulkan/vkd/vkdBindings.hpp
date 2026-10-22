@@ -6,9 +6,13 @@
 **	using VK_EXT_descriptor_heap, without any change to the HLSL.
 **
 **	How it works:
-**	- Image and sampler descriptors live in one resource heap and one
-**	  sampler heap (host-visible buffers, written with
-**	  vkWrite*DescriptorsEXT). AddImage/AddSampler return heap indices.
+**	- Image, buffer and sampler descriptors live in one resource heap and
+**	  one sampler heap (host-visible buffers, written with
+**	  vkWrite*DescriptorsEXT). AddImage/AddBuffer/AddSampler return heap
+**	  indices. A StructuredBuffer at a t register is a read-only storage
+**	  buffer in the resource heap, its index in the same table slot as a
+**	  texture's (Plan 7, decision 2), so each resource-heap entry is as big
+**	  as the larger of the two descriptors.
 **	- Per draw, Apply() writes a binding table into the ring buffer:
 **	    offset   0: 16 x 8-byte constant-buffer addresses (b0..b15)
 **	    offset 128: 64 x 4-byte texture heap indices      (t0..t63)
@@ -16,7 +20,9 @@
 **	    offset 448:  8 x 4-byte UAV heap indices           (u0..u7)
 **	  and pushes the table's 8-byte address (vkCmdPushDataEXT, offset 0).
 **	- Shaders are compiled by DXC with -fvk-b-shift 0, -fvk-t-shift 100,
-**	  -fvk-s-shift 200, -fvk-u-shift 300 (all set 0). ShaderMapping()
+**	  -fvk-s-shift 200, -fvk-u-shift 300 (all set 0) and
+**	  -fvk-auto-shift-bindings (a resource with no register() gets the
+**	  register fxc would give it, shifted). ShaderMapping()
 **	  maps each of those bindings to the table: constant buffers with
 **	  VK_DESCRIPTOR_MAPPING_SOURCE_INDIRECT_ADDRESS_EXT, images and
 **	  samplers with VK_DESCRIPTOR_MAPPING_SOURCE_HEAP_WITH_INDIRECT_INDEX_EXT.
@@ -42,6 +48,7 @@
 #include <volk.h>
 
 #include <map>
+#include <memory>
 #include <mutex>
 #include <tuple>
 #include <vector>
@@ -60,7 +67,7 @@ namespace gvk
 			static const uint32_t c_TextureSlots = 64;
 			static const uint32_t c_SamplerSlots = 16;
 			static const uint32_t c_UavSlots = 8;
-			static const uint32_t c_MaxImages = 4096;		// resource heap capacity
+			static const uint32_t c_MaxImages = 4096;		// resource heap capacity (images and buffers)
 			static const uint32_t c_MaxSamplers = 256;		// sampler heap capacity
 
 			static const uint32_t c_TextureBinding = 100;	// DXC -fvk-t-shift
@@ -73,8 +80,17 @@ namespace gvk
 			//	i_Type: VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE or VK_DESCRIPTOR_TYPE_STORAGE_IMAGE.
 			//	The image is in VK_IMAGE_LAYOUT_GENERAL (unified image layouts).
 			uint32_t AddImage(const VkImageViewCreateInfo& i_View, VkDescriptorType i_Type);
-			//	Frees the index once the GPU is done with work submitted so far.
-			void RemoveImage(uint32_t i_Index);
+			//	A read-only storage buffer (a StructuredBuffer or ByteAddressBuffer
+			//	at a t register): i_Size bytes from i_Address
+			uint32_t AddBuffer(VkDeviceAddress i_Address, VkDeviceSize i_Size);
+			//	Frees an index AddImage or AddBuffer gave, once the GPU is done
+			//	with work submitted so far.
+			void RemoveResource(uint32_t i_Index);
+			//	A buffer of c_NullBufferSize zero bytes, to bind where DX11 code
+			//	binds a NULL buffer view, which reads as zeros in D3D11 (reads past
+			//	its end are undefined here)
+			uint32_t NullBufferIndex() const	{ return m_NullBufferIndex; }
+			static const VkDeviceSize c_NullBufferSize = 64 * 1024;
 			//	Same state, same index.
 			uint32_t AddSampler(const VkSamplerCreateInfo& i_Info);
 
@@ -113,7 +129,19 @@ namespace gvk
 			vkdDevice&								m_Device;
 			Heap									m_Resources;
 			Heap									m_Samplers;
-			std::vector<uint32_t>					m_FreeImages;		// back() is handed out next
+			VkBuffer								m_NullBuffer = VK_NULL_HANDLE;
+			VmaAllocation							m_NullAllocation = nullptr;
+			uint32_t								m_NullBufferIndex = 0;
+			//	Free resource-heap indices; shared with the deferred returns of
+			//	removed resources, which may run after this object is destroyed
+			struct FreeIndices
+			{
+				std::mutex				m_Lock;
+				std::vector<uint32_t>	m_Indices;		// back() is handed out next
+			};
+			uint32_t take_index();
+
+			std::shared_ptr<FreeIndices>			m_pFreeIndices;
 			uint32_t								m_SamplerCount = 0;
 			std::map<SamplerKey, uint32_t>			m_SamplerIndex;
 			std::mutex								m_Lock;

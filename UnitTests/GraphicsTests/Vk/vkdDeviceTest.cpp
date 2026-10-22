@@ -68,8 +68,8 @@ TEST_F(gtVulkan, ValidationErrorIsCaught)
 {
 	l_Asserts = 0;
 	dbgMsg::AssertHandler previous = dbgMsg::SetAssertHandler(&count_assert);
-	//	wideLines isn't enabled, so a line width other than 1 is invalid
-	vkCmdSetLineWidth(Device().Commands(), 2.0f);
+	//	Depth bounds outside 0..1 are invalid (no VK_EXT_depth_range_unrestricted)
+	vkCmdSetDepthBounds(Device().Commands(), -1.0f, 1.0f);
 	dbgMsg::SetAssertHandler(previous);
 
 	//	DBG_ASSERT is compiled out of Release builds; the error is still counted and logged
@@ -138,6 +138,46 @@ TEST(vkdDeviceLifetime, DestroyIsValidationClean)
 	device.reset();
 	EXPECT_EQ(0, validation.Stats().m_Errors);
 	EXPECT_EQ(0, validation.Stats().m_Warnings);
+}
+
+TEST(vkdDeviceOptions, EnvironmentSelectsValidation)
+{
+	struct Case { const char* m_Modes; bool m_bValidation, m_bGpu, m_bBest; };
+	const Case cases[] =
+	{
+		{"gpu",						true,	true,	false},
+		{"bestpractices",			true,	false,	true},
+		{"gpu,bestpractices",		true,	true,	true},
+		{" BestPractices , GPU ",	true,	true,	true},		// spaces and case don't matter
+		{"",						false,	false,	false},
+		{"bogus",					false,	false,	false},		// logged, ignored
+		{"gpu,bogus",				true,	true,	false},
+	};
+	for (const Case& c : cases)
+	{
+		vkdDeviceOptions options;
+		vkdApplyValidationModes(c.m_Modes, options);
+		EXPECT_EQ(c.m_bValidation, options.m_bValidation) << "\"" << c.m_Modes << "\"";
+		EXPECT_EQ(c.m_bGpu, options.m_bGpuAssisted) << "\"" << c.m_Modes << "\"";
+		EXPECT_EQ(c.m_bBest, options.m_bBestPractices) << "\"" << c.m_Modes << "\"";
+	}
+
+	//	vkdReadEnvironment reads both variables (whatever this run has set)
+	vkdDeviceOptions expected;
+	if (const char* adapter = std::getenv("MSP_GFX_VK_ADAPTER"))
+	{
+		expected.m_AdapterOverride = adapter;
+	}
+	if (const char* modes = std::getenv("MSP_GFX_VK_VALIDATION"))
+	{
+		vkdApplyValidationModes(modes, expected);
+	}
+	vkdDeviceOptions read;
+	vkdReadEnvironment(read);
+	EXPECT_EQ(expected.m_AdapterOverride, read.m_AdapterOverride);
+	EXPECT_EQ(expected.m_bValidation, read.m_bValidation);
+	EXPECT_EQ(expected.m_bGpuAssisted, read.m_bGpuAssisted);
+	EXPECT_EQ(expected.m_bBestPractices, read.m_bBestPractices);
 }
 
 TEST(vkdDeviceLifetime, NoMatchingAdapterIsAReason)

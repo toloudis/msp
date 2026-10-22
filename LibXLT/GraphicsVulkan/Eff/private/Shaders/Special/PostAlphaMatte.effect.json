@@ -1,0 +1,41 @@
+{
+  "source": "Special/PostAlphaMatte.fx",
+  "hlsl": "PostAlphaMatte.hlsl",
+  "techniques": [
+    {
+      "name": "AlphaPost",
+      "passes": [
+        {
+          "name": "p0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "AlphaPost_VS"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "AlphaPost_PS"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "samplers": {
+    "g_SourceSampler": {
+      "type": "SamplerState",
+      "state": {
+        "AddressU": "Mirror",
+        "AddressV": "Mirror"
+      }
+    }
+  },
+  "variables": {
+    "tSource": {
+      "type": "Texture2D"
+    },
+    "pixelSize": {
+      "type": "float2"
+    }
+  }
+}

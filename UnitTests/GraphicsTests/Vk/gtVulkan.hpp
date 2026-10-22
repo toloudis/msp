@@ -8,7 +8,8 @@
 **      validation layer reported anything, including while the device was
 **      being destroyed.
 **
-**      MSP_GFX_VK_ADAPTER picks the device by name, as in MachStudio.
+**      MSP_GFX_VK_ADAPTER picks the device by name and
+**      MSP_GFX_VK_VALIDATION adds validation modes, as in MachStudio.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -31,12 +32,9 @@ class gtVulkan : public ::testing::Test
 		{
 			gvk::vkdDeviceOptions options;
 			options.m_bValidation = true;
-			options.m_bGpuAssisted = UseGpuAssistedValidation();
 			options.m_pValidation = &m_Validation;
-			if (const char* adapter = std::getenv("MSP_GFX_VK_ADAPTER"))
-			{
-				options.m_AdapterOverride = adapter;
-			}
+			gvk::vkdReadEnvironment(options);
+			options.m_bGpuAssisted = options.m_bGpuAssisted || UseGpuAssistedValidation();
 			std::string error;
 			m_pDevice.reset(gvk::vkdDevice::Create(options, error));
 			if (!m_pDevice)

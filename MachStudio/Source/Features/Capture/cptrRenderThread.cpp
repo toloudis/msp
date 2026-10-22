@@ -798,13 +798,17 @@ bool cptrRenderThread::RenderJitteredFrame(float i_StereoOffset)
 		RenderScene( timeline_time );
 		pCamera->SetSubViewport(-1, 1, -1, 1);
 
+		//	nothing is captured before the start time (lead-in frames, and
+		//	the frame before a -capStartFrame window): those are only rendered
 		g2dImage* pImg = NULL;
 		cptrRenderUtil::CaptureFrameToImage(pImg);
-		DBG_ASSERT(pImg != NULL, "failed to capture frame to image");
-		data.m_nWidth.SetValue(pImg->GetWidth());
-		data.m_nHeight.SetValue(pImg->GetHeight());
-		m_AccBuf->Add(pImg, cptrRenderUtil::GetSamplePos(i).GetZ());
-		delete pImg;
+		if (pImg != NULL)
+		{
+			data.m_nWidth.SetValue(pImg->GetWidth());
+			data.m_nHeight.SetValue(pImg->GetHeight());
+			m_AccBuf->Add(pImg, cptrRenderUtil::GetSamplePos(i).GetZ());
+			delete pImg;
+		}
 
 		// we can now draw the frame sample into the window.
 		if ( pCamera->GetStereoType() == STEREO_OFF )

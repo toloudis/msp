@@ -11,6 +11,8 @@
 #include <stdlib.h>
 #include <windows.h>
 
+#include <filesystem>
+
 void gtPlatform::SetUpUnattended()
 {
 	::SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
@@ -23,6 +25,16 @@ void gtPlatform::SetUpUnattended()
 	_CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDERR);
 	_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
 	_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
+}
+
+void gtPlatform::StartCom()
+{
+	::CoInitializeEx(NULL, COINIT_MULTITHREADED);
+}
+
+void gtPlatform::StopCom()
+{
+	::CoUninitialize();
 }
 
 void* gtPlatform::CreateHiddenWindow(int i_Width, int i_Height)
@@ -53,4 +65,25 @@ void gtPlatform::ResizeHiddenWindow(void* i_Window, int i_Width, int i_Height)
 void gtPlatform::DestroyHiddenWindow(void* i_Window)
 {
 	::DestroyWindow(static_cast<HWND>(i_Window));
+}
+
+std::string gtPlatform::ExeDir()
+{
+	wchar_t exe[MAX_PATH] = {};
+	::GetModuleFileNameW(NULL, exe, MAX_PATH);
+	return (std::filesystem::path(exe).parent_path() / "").u8string();
+}
+
+std::string gtPlatform::RepoRoot()
+{
+	wchar_t exe[MAX_PATH] = {};
+	::GetModuleFileNameW(NULL, exe, MAX_PATH);
+	for (std::filesystem::path dir = std::filesystem::path(exe).parent_path(); dir.has_relative_path(); dir = dir.parent_path())
+	{
+		if (std::filesystem::is_directory(dir / "LibXLT"))
+		{
+			return (dir / "").string();
+		}
+	}
+	return std::string();
 }

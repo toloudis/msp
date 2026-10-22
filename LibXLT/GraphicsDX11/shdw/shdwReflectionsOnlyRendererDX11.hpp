@@ -26,7 +26,6 @@
 //--------------------------------------------------------------------
 class matRenderTargetTexture;
 class effTexturedData;
-class g2dWindowDX11;
 
 class shdwReflectionsOnlyRendererDX11 : public shdwSceneRendererDX11
 {
@@ -64,7 +63,7 @@ protected:
 	// based on whether width/height of window have changed.
 	int m_Width, m_Height;
 
-	g2dWindowDX11* m_pWindow;
+	g2dRenderTarget* m_pWindow;
 
 	void CreateSurfaces(g2dRenderTarget* i_pWindow);
 	

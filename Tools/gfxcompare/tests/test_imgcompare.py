@@ -9,7 +9,7 @@ from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from imgcompare import Tolerance, compare_dirs, compare_images, diff_image, load_image  # noqa: E402
+from imgcompare import Tolerance, compare_dirs, compare_images, diff_image, frame_number, load_image  # noqa: E402
 
 L = 1.0 / 255.0
 
@@ -60,6 +60,56 @@ def test_many_pixels_over_fail_pct():
     assert not r.passed
     assert r.pct_over == pytest.approx(1.0)
     assert "pct_over" in r.reason
+
+
+def lod_noise(shape=(100, 100, 3)):
+    """1% of pixels off by 3 levels: fails the strict tolerance, within the lod one."""
+    a = flat(shape=shape)
+    b = a.copy()
+    b[:1, :, 0] += 3 * L
+    return a, b
+
+
+def test_lod_tolerance_allows_low_level_noise():
+    a, b = lod_noise()
+    assert not compare_images(a, b, Tolerance(), "f").passed
+    assert compare_images(a, b, Tolerance.lod(), "f").passed
+
+
+def test_lod_tolerance_allows_isolated_large_errors():
+    a = flat(shape=(200, 200, 3))
+    b = a.copy()
+    b[0, 0, 0] += 120 * L          # one pixel in 40000 (0.0025%): an alpha-test flip
+    r = compare_images(a, b, Tolerance.lod(), "f")
+    assert r.passed and r.pct_strong == pytest.approx(0.0025)
+
+
+def test_lod_tolerance_fails_many_large_errors():
+    a = flat(shape=(100, 100, 3))
+    b = a.copy()
+    b[0, :10, 0] += 20 * L         # 10 of 10000 pixels (0.1%) over 16/255
+    r = compare_images(a, b, Tolerance.lod(), "f")
+    assert not r.passed and "pct_strong" in r.reason
+
+
+def test_lod_tolerance_fails_spread_noise():
+    a = flat(shape=(100, 100, 3))
+    b = a.copy()
+    b[:2, :, 0] += 5 * L           # 2% of pixels over 4/255
+    r = compare_images(a, b, Tolerance.lod(), "f")
+    assert not r.passed and "pct_over" in r.reason
+
+
+def test_lod_tolerance_fails_high_mean():
+    a = flat(shape=(100, 100, 3))
+    b = a + 2 * L                  # every pixel 2/255 off: under the per-pixel threshold, mean too high
+    r = compare_images(a, b, Tolerance.lod(), "f")
+    assert not r.passed and "mean_err" in r.reason
+
+
+def test_strict_tolerance_has_no_strong_or_mean_limit():
+    t = Tolerance()
+    assert t.strong_err is None and t.max_mean_err is None
 
 
 def test_size_mismatch_fails():
@@ -138,6 +188,39 @@ def test_compare_dirs_is_case_insensitive_on_extension(tmp_path):
     assert len(results) == 1 and results[0].passed
 
 
+def test_frame_number_is_the_trailing_digits():
+    assert frame_number("Scene_CAM01_Master_BTY_0296.PNG") == 296
+    assert frame_number("f1.png") == 1
+    assert frame_number("beauty.png") is None
+
+
+def test_compare_dirs_frame_window_ignores_frames_outside(tmp_path):
+    # A is a full render (frames 1-5), B a short one (2-3): only 2-3 are compared
+    a, b = tmp_path / "a", tmp_path / "b"
+    a.mkdir(); b.mkdir()
+    img = np.full((4, 4, 3), 128, dtype=np.uint8)
+    for n in range(1, 6):
+        write_png(a / f"f_{n:04d}.png", img)
+    for n in (2, 3):
+        write_png(b / f"f_{n:04d}.png", img)
+    results = compare_dirs(a, b, Tolerance(), None, frames=(2, 3))
+    assert [r.name for r in results] == ["f_0002.png", "f_0003.png"]
+    assert all(r.passed for r in results)
+
+
+def test_compare_dirs_frame_window_still_fails_missing_frames(tmp_path):
+    a, b = tmp_path / "a", tmp_path / "b"
+    a.mkdir(); b.mkdir()
+    img = np.full((4, 4, 3), 128, dtype=np.uint8)
+    for n in range(1, 6):
+        write_png(a / f"f_{n:04d}.png", img)
+    write_png(b / "f_0002.png", img)
+    results = compare_dirs(a, b, Tolerance(), None, frames=(2, None))
+    by_name = {r.name: r for r in results}
+    assert set(by_name) == {"f_0002.png", "f_0003.png", "f_0004.png", "f_0005.png"}
+    assert by_name["f_0003.png"].reason == "missing in B"
+
+
 def test_compare_dirs_writes_diff_for_failures_only(tmp_path):
     a, b, d = tmp_path / "a", tmp_path / "b", tmp_path / "diff"
     a.mkdir(); b.mkdir()
@@ -156,3 +239,16 @@ def test_diff_image_scales_to_white():
     assert img.dtype == np.uint8 and img.shape == (8, 8, 3)
     assert tuple(img[1, 1]) == (255, 255, 255)
     assert tuple(img[0, 0]) == (0, 0, 0)
+
+
+@pytest.mark.parametrize("ext", [".bmp", ".jpg", ".tif", ".tiff"])
+def test_compare_dirs_reads_capture_formats(tmp_path, ext):
+    # MachStudio's -capFormat BMP, JPG and TIF frames
+    a, b = tmp_path / "a", tmp_path / "b"
+    a.mkdir(); b.mkdir()
+    img = np.full((4, 4, 3), 128, dtype=np.uint8)
+    write_png(a / f"f_0001{ext}", img)
+    write_png(b / f"f_0001{ext}", img)
+    results = compare_dirs(a, b, Tolerance(), None)
+    assert len(results) == 1 and results[0].passed
+    assert load_image(a / f"f_0001{ext}").shape == (4, 4, 3)

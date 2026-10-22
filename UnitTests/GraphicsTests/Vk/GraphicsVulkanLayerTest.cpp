@@ -10,6 +10,13 @@
 **	Extra Large Technology
 \****************************************************************************/
 #include "gtPlatform.hpp"
+#include "gtTempDir.hpp"
+
+#ifndef GF_PATHS_HPP
+#include "Core/Gf/gfPaths.hpp"
+#endif
+
+#include <filesystem>
 
 #ifndef GVK_GRAPHICSVULKANLAYER_HPP
 #include "GraphicsVulkan/GraphicsVulkanLayer.hpp"
@@ -78,8 +85,8 @@
 #include "Graphics/G3d/g3dSceneRendererTypes.hpp"
 #endif
 
-#ifndef GVK_MATSTUBSVK_HPP
-#include "GraphicsVulkan/stub/matStubsVk.hpp"
+#ifndef GVK_EFF_SHADERARRAY_HPP
+#include "GraphicsVulkan/Eff/effShaderArray.hpp"
 #endif
 #ifndef EFF_SHADERPARAMS_HPP
 #include "Graphics/Eff/effShaderParams.hpp"
@@ -202,7 +209,7 @@ TEST_F(gtLayer, StubsAnswerFromTheirData)
 	image->GetPixels(&copy, &width, &height);
 	ASSERT_NE(nullptr, copy);
 	EXPECT_EQ(4, width);
-	EXPECT_EQ(77, copy[2 * 4 + 3].g);
+	EXPECT_EQ(77, copy[(4 - 1 - 2) * 4 + 3].g);		// bottom row first, as DX11's
 	delete[] copy;
 
 	//	a fragment's bounding box comes from its vertices
@@ -235,23 +242,14 @@ TEST_F(gtLayer, StubsAnswerFromTheirData)
 	fragment->ReadOnlyUnlockIndices();
 }
 
-//	Effect parameter dialogs (post effects, materials) list the property
-//	object BuildPrtyObject makes; until effects are ported it is empty
-TEST_F(gtLayer, ShaderEffectBuildsAnEmptyPropertyObject)
-{
-	gvk::matShaderEffectVk effect("test");
-	effShaderParams params;
-	EXPECT_EQ(0, effect.BuildPrtyObject(&params));
-	EXPECT_NE(nullptr, params.m_pPrtyUI);
-}
-
 //	Materials take their data type from the registered built-in shaders
 //	(matMaterial("Billboard.fx") gets effBillboardData), so the Vulkan
 //	shader manager registers DX11's names and data types, each with an
-//	effect (matShaderMgr asserts on a NULL one) that draws nothing yet
+//	effect (matShaderMgr asserts on a NULL one); effShaderVkTest compares
+//	the whole registry with DX11's
 TEST_F(gtLayer, ShaderMgrRegistersTheBuiltInShaders)
 {
-	gvk::matShaderMgrVk mgr;
+	gvk::effShaderArray mgr;
 	std::map<std::string, matShaderInfo> shaders;
 	mgr.RegisterEffects(fsLocator(), shaders);
 
@@ -326,4 +324,27 @@ TEST(gtLayerLifetime, ValidationRunsInDebugOrWhenAskedFor)
 		GraphicsVulkanLayer::CleanUp();
 		gtPlatform::DestroyHiddenWindow(window);
 	}
+}
+
+//	Pipelines persist in the user data folder (gfPaths::e_UserDataPath)
+TEST(gtLayerLifetime, PipelineCacheKeptInUserData)
+{
+	gtTempDir dir;
+	const fsLocator previous = gfPaths::GetPath(gfPaths::e_UserDataPath);
+	gfPaths::ResetPath(gfPaths::e_UserDataPath, dir.GetLocator());
+	void* window = gtPlatform::CreateHiddenWindow(64, 64);
+	g3dGfxOptions options;
+	options.m_bValidation = true;
+	const bool ok = GraphicsVulkanLayer::Init(window, options);
+	if (ok)
+	{
+		GraphicsVulkanLayer::CleanUp();
+	}
+	gtPlatform::DestroyHiddenWindow(window);
+	gfPaths::ResetPath(gfPaths::e_UserDataPath, previous);
+	if (!ok)
+	{
+		GTEST_SKIP() << "No usable Vulkan device: " << GraphicsVulkanLayer::GetInitError();
+	}
+	EXPECT_TRUE(std::filesystem::is_regular_file(dir.GetPath() / "VulkanPipelineCache.bin"));
 }

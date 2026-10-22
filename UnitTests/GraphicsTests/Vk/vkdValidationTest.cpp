@@ -88,3 +88,44 @@ TEST(vkdValidation, LayerSetupNoticesAreInformation)
 	send(validation, VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT, VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT, "SYNC-HAZARD-WRITE-AFTER-WRITE");
 	EXPECT_EQ(1, validation.Stats().m_Warnings);
 }
+
+TEST(vkdValidation, BestPracticesCountedApart)
+{
+	//	MSP_GFX_VK_VALIDATION=bestpractices: the layer's advice (Khronos and
+	//	NVIDIA) is counted on its own, whatever its severity, and fails nothing
+	vkdValidation validation;
+	l_Asserts = 0;
+	dbgMsg::AssertHandler previous = dbgMsg::SetAssertHandler(&count_assert);
+	send(validation, VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT, VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT,
+		 "BestPractices-vkBindMemory-small-dedicated-allocation");
+	send(validation, VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT, VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT,
+		 "BestPractices-NVIDIA-ClearColor-NotCompressed");
+	send(validation, VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT, VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT,
+		 "BestPractices-Error-Severity");
+	send(validation, VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT, VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT,
+		 "BestPractices-Info-Severity");
+	dbgMsg::SetAssertHandler(previous);
+	EXPECT_EQ(4, validation.Stats().m_BestPractices);
+	EXPECT_EQ(0, validation.Stats().m_Warnings);
+	EXPECT_EQ(0, validation.Stats().m_Errors);
+	EXPECT_EQ(0, l_Asserts);
+	//	only the prefix counts: other warnings are still warnings
+	send(validation, VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT, VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT, "UNASSIGNED-BestPractices");
+	EXPECT_EQ(1, validation.Stats().m_Warnings);
+	validation.Reset();
+	EXPECT_EQ(0, validation.Stats().m_BestPractices);
+}
+
+TEST(vkdValidation, UnreadShaderOutputsAreWarnings)
+{
+	//	vkdPipelineCache removes the outputs a pixel shader doesn't take
+	//	(vkdLinkStages), so a message about one is a finding again
+	vkdValidation validation;
+	send(validation, VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT, VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT,
+		 "WARNING-Shader-OutputNotConsumed");
+	EXPECT_EQ(1, validation.Stats().m_Warnings);
+	EXPECT_EQ(0, validation.Stats().m_Infos);
+	send(validation, VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT, VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT,
+		 "WARNING-Shader-InputNotProduced");
+	EXPECT_EQ(2, validation.Stats().m_Warnings);
+}

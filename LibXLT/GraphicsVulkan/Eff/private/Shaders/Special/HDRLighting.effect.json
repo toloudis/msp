@@ -1,0 +1,882 @@
+{
+  "source": "Special/HDRLighting.fx",
+  "hlsl": "HDRLighting.hlsl",
+  "techniques": [
+    {
+      "name": "Bloom",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "BloomPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Star",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "StarPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SampleAvgLum",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SampleLumInitial"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ResampleAvgLum",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SampleLumIterative"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ResampleAvgLumExp",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SampleLumFinal"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CalculateAdaptedLum",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "CalculateAdaptedLumPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "DownScale4x4",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "DownScale4x4PS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "DownScale2x2",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "DownScale2x2PS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "GaussBlur5x5",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "GaussBlur5x5PS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "BrightPassFilter",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "BrightPassFilter_Reinhard"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "FinalScenePass",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "FinalScenePassPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "FinalScenePass_Fast",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "FinalScenePass_FastPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SimpleCopy",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SimpleCopyPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ScaledCopy",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ScaledCopyPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SimpleCopyInvAlpha",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SimpleCopyInvAlphaPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SimpleCopyInvGAlpha",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SimpleCopyInvGAlphaPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SimpleCopyLDR",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SimpleCopyLDRPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SimpleCopyInvSat",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SimpleCopyInvSatPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SimpleCopyLum",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SimpleCopyLumPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SimpleCopyLumLDR",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SimpleCopyLumLDRPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SimpleCopyAlphaSat",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SimpleCopyAlphaSatPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "DrawLuminance",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "LuminanceToGray"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "DrawAlpha",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SimpleDrawAlpha"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "DepthCopy",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "DepthCopyPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "DepthCopyMS",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "DepthCopyMSPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ColorTint",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ColorTintPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ColorTintLum",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ColorTintLumPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CopyComponent",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "CopyComponentPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SimpleColor",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SimpleColorPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "MergeTextures_1",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "MergeTextures_1PS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "MergeTextures_2",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "MergeTextures_2PS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "MergeTextures_3",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "MergeTextures_3PS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "MergeTextures_4",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "MergeTextures_4PS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "MergeTextures_5",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "MergeTextures_5PS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "MergeTextures_6",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "MergeTextures_6PS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "MergeTextures_7",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "MergeTextures_7PS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "MergeTextures_8",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "MergeTextures_8PS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "LinearMapping",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "LinearMappingPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "RedChannel",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "RedChannelPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "GreenChannel",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "GreenChannelPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "BlueChannel",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "BlueChannelPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "AlphaChannel",
+      "passes": [
+        {
+          "name": "P0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "AlphaChannelPS"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "samplers": {
+    "g_DefaultSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_POINT",
+        "AddressU": "Wrap",
+        "AddressV": "Wrap"
+      }
+    },
+    "g_PointSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_POINT",
+        "AddressU": "Wrap",
+        "AddressV": "Wrap"
+      }
+    },
+    "g_PointClampSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_POINT",
+        "AddressU": "Clamp",
+        "AddressV": "Clamp"
+      }
+    },
+    "g_LinearSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_LINEAR_MIP_POINT",
+        "AddressU": "Wrap",
+        "AddressV": "Wrap"
+      }
+    },
+    "g_LinearClampSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_LINEAR_MIP_POINT",
+        "AddressU": "Clamp",
+        "AddressV": "Clamp"
+      }
+    }
+  },
+  "variables": {
+    "BRIGHT_PASS_THRESHOLD": {
+      "type": "float",
+      "default": 5.0
+    },
+    "BRIGHT_PASS_OFFSET": {
+      "type": "float",
+      "default": 10.0
+    },
+    "g_avSampleOffsets": {
+      "type": "float2",
+      "array": "[MAX_SAMPLES]"
+    },
+    "g_avSampleWeights": {
+      "type": "float4",
+      "array": "[MAX_SAMPLES]"
+    },
+    "g_fMiddleGray": {
+      "type": "float",
+      "default": 1.0
+    },
+    "g_fWhiteCutoff": {
+      "type": "float",
+      "default": 1.0
+    },
+    "g_bEnableToneMap": {
+      "type": "bool",
+      "default": true
+    },
+    "g_fBloomScale": {
+      "type": "float",
+      "default": 1.0
+    },
+    "g_fStarScale": {
+      "type": "float",
+      "default": 0.5
+    },
+    "g_fixedLuminance": {
+      "type": "float",
+      "default": 1
+    },
+    "g_ColorTint": {
+      "type": "float4",
+      "default": [1, 1, 1, 1]
+    },
+    "g_nSrcComponent": {
+      "type": "int",
+      "default": 0
+    },
+    "g_nDstComponent": {
+      "type": "int",
+      "default": 0
+    },
+    "g_bIsRefOn": {
+      "type": "bool",
+      "default": false
+    },
+    "g_fRef": {
+      "type": "float",
+      "default": 0.0
+    },
+    "g_scaledCopyFactor": {
+      "type": "float",
+      "default": 1.0
+    },
+    "g_scaledCopyUVs": {
+      "type": "float4",
+      "default": [1, -1, -1, 1]
+    },
+    "g_RangeMax": {
+      "type": "float",
+      "default": 1
+    },
+    "g_RangeMin": {
+      "type": "float",
+      "default": 0
+    }
+  }
+}

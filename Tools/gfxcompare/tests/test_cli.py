@@ -1,5 +1,7 @@
 """Tests for the gfxcompare command line (compare and run)."""
 import sys
+
+import pytest
 from pathlib import Path
 
 import numpy as np
@@ -47,10 +49,31 @@ def test_cli_compare_tolerance_flags(tmp_path):
                             "--max-err", "80", "--pixel-err", "80"]) == 0
 
 
+def test_cli_compare_lod_tolerance(tmp_path):
+    a, b = make_dirs(tmp_path, differ=True)     # one pixel of 64 off by 60/255: 1.6% over 16/255
+    out = tmp_path / "out"
+    assert gfxcompare.main(["compare", str(a), str(b), "--out", str(out), "--tolerance", "lod"]) == 1
+    report = (out / "report.md").read_text()
+    assert "lod" in report and "16.00/255" in report
+    # flags given with the preset override its values
+    assert gfxcompare.main(["compare", str(a), str(b), "--out", str(out), "--tolerance", "lod",
+                            "--pixel-err", "80", "--strong-err", "80", "--max-mean-err", "1"]) == 0
+
+
 def test_cli_compare_empty_folders_fail(tmp_path):
     a, b = tmp_path / "a", tmp_path / "b"
     a.mkdir(); b.mkdir()
     assert gfxcompare.main(["compare", str(a), str(b), "--out", str(tmp_path / "out")]) == 1
+
+
+def test_cli_compare_frame_window(tmp_path):
+    # f_0001 only in A: outside the window it is ignored, inside it fails
+    a, b = make_dirs(tmp_path)
+    (b / "f_0001.PNG").unlink()
+    out = tmp_path / "out"
+    assert gfxcompare.main(["compare", str(a), str(b), "--out", str(out), "--start-frame", "2"]) == 0
+    assert "frames 2 to the end" in (out / "report.md").read_text()
+    assert gfxcompare.main(["compare", str(a), str(b), "--out", str(out)]) == 1
 
 
 def test_cli_compare_includes_timing_when_present(tmp_path):
@@ -77,14 +100,21 @@ import numpy as np
 from PIL import Image
 args = sys.argv[1:]
 out = pathlib.Path(args[args.index("-capOutputPath") + 1])
-Image.fromarray(np.full((8, 8, 3), 100, dtype=np.uint8)).save(out / "f_0001.PNG")
+first = int(args[args.index("-capStartFrame") + 1]) if "-capStartFrame" in args else 1
+last = int(args[args.index("-capEndFrame") + 1]) if "-capEndFrame" in args else 3
+fmt = args[args.index("-capFormat") + 1] if "-capFormat" in args else "PNG"
+for n in range(first, last + 1):
+    Image.fromarray(np.full((8, 8, 3), 100, dtype=np.uint8)).save(out / f"f_{n:04d}.{fmt}")
+if "-capSampling" in args:
+    (out / "sampling.txt").write_text(args[args.index("-capSampling") + 1] + " after render "
+                                      + str(args.index("-capSampling") > args.index("-render")))
 for a in args:
     if a.startswith("say="):
         sys.stderr.write(a[4:].replace("_", " ") + "\\n")
 """
 
 
-def run_fake(tmp_path, a_says, b_says):
+def run_fake(tmp_path, a_says, b_says, extra=()):
     script = tmp_path / "fake_rendernode.py"
     script.write_text(FAKE_RENDERNODE)
     scene = tmp_path / "scene.mab"
@@ -93,7 +123,7 @@ def run_fake(tmp_path, a_says, b_says):
         return " ".join([str(script)] + ["say=" + s.replace(" ", "_") for s in says])
     out = tmp_path / "out"
     code = gfxcompare.main(["run", "--exe", sys.executable, "--scene", str(scene), "--out", str(out),
-                            "--a-args", args(a_says), "--b-args", args(b_says)])
+                            "--a-args", args(a_says), "--b-args", args(b_says)] + list(extra))
     return code, (out / "report.md").read_text()
 
 
@@ -102,6 +132,13 @@ def test_cli_run_passes_and_reports_backends(tmp_path):
                             ["Graphics backend: vulkan on GPU X", "Vulkan validation: 0 errors, 0 warnings"])
     assert code == 0
     assert "dx11 on GPU X" in report and "vulkan on GPU X" in report
+
+
+def test_cli_run_frame_window_renders_only_those_frames(tmp_path):
+    code, report = run_fake(tmp_path, [], [], extra=["--start-frame", "2", "--end-frame", "2"])
+    assert code == 0
+    assert sorted(p.name for p in (tmp_path / "out" / "a").glob("*.PNG")) == ["f_0002.PNG"]
+    assert "frames 2 to 2" in report
 
 
 def test_cli_run_fails_on_validation_messages(tmp_path):
@@ -117,8 +154,39 @@ def test_cli_run_fails_on_different_adapters(tmp_path):
     assert "FAIL" in report and "adapter" in report.lower()
 
 
+def test_cli_run_same_adapter_with_and_without_vendor_name(tmp_path):
+    # DXGI names the Quadro "NVIDIA Quadro RTX 5000", Vulkan "Quadro RTX 5000"
+    code, report = run_fake(tmp_path, ["Graphics backend: dx11 on NVIDIA Quadro RTX 5000"],
+                            ["Graphics backend: vulkan on Quadro RTX 5000"])
+    assert code == 0
+    assert "different adapters" not in report
+
+
+def test_cli_run_reports_but_passes_best_practices_notes(tmp_path):
+    code, report = run_fake(tmp_path, ["Graphics backend: dx11 on GPU X"],
+                            ["Graphics backend: vulkan on GPU X",
+                             "Vulkan validation: 0 errors, 0 warnings, 9 best-practices notes"])
+    assert code == 0
+    assert "B Vulkan validation: 0 errors, 0 warnings, 9 best-practices notes" in report
+
+
 def test_cli_run_reports_vulkan_validation_off(tmp_path):
     code, report = run_fake(tmp_path, ["Graphics backend: dx11 on GPU X"],
                             ["Graphics backend: vulkan on GPU X", "Vulkan validation: off"])
     assert code == 0
     assert "B Vulkan validation: off" in report
+
+
+def test_cli_run_capture_args_go_to_both_renders_after_render(tmp_path):
+    code, report = run_fake(tmp_path, [], [], extra=["--cap-args", "-capSampling 2"])
+    assert code == 0
+    assert "Capture arguments: `-capSampling 2`" in report
+    for label in ("a", "b"):
+        assert (tmp_path / "out" / label / "sampling.txt").read_text() == "2 after render True"
+
+
+@pytest.mark.parametrize("fmt", ["BMP", "JPG", "TIF"])
+def test_cli_run_other_capture_formats(tmp_path, fmt):
+    code, report = run_fake(tmp_path, [], [], extra=["--format", fmt])
+    assert code == 0
+    assert sorted(p.name for p in (tmp_path / "out" / "a").iterdir() if p.suffix == "." + fmt) ==         [f"f_000{n}.{fmt}" for n in (1, 2, 3)]

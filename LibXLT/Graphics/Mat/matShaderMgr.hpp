@@ -87,6 +87,21 @@ namespace matShaderMgr
 	void DeInitialize();
 
 	//------------------------------------------------------------------------
+	// GetGeneration - counts the times the effects were deleted (each
+	//	Initialize and DeInitialize): an effect pointer got under an earlier
+	//	generation points to a deleted effect (effShaderParams::GetShader
+	//	finds it again)
+	//------------------------------------------------------------------------
+	int GetGeneration();
+
+	//------------------------------------------------------------------------
+	// FindEffect - the loaded effect named i_ShaderName: a built-in one by
+	//	its file name, else one loaded from that path. NULL (and nothing
+	//	loaded or logged) if there is none.
+	//------------------------------------------------------------------------
+	matShaderEffect* FindEffect(const fsLocator& i_ShaderName);
+
+	//------------------------------------------------------------------------
 	// Get the main shaders root path
 	//------------------------------------------------------------------------
 	fsLocator GetDefaultShaderPath();

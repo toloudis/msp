@@ -1,0 +1,706 @@
+{
+  "source": "DepthRender.fx",
+  "hlsl": "DepthRender.hlsl",
+  "techniques": [
+    {
+      "name": "Default",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "DepthVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "DepthPS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "DepthVS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "DepthPS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Depth_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Depth_DS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ScreenSpaceDepthPeelGreater",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "DepthVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ScreenSpaceDepthPeelGreater_PS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "DepthVS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ScreenSpaceDepthPeelGreater_PS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Depth_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Depth_DS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ScreenSpaceDepthPeelLess",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "DepthVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ScreenSpaceDepthPeelLess_PS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "DepthVS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ScreenSpaceDepthPeelLess_PS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Depth_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Depth_DS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ViewSpaceDepth",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "DepthVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ViewSpaceDepthPS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "DepthVS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ViewSpaceDepthPS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Depth_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Depth_DS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ViewSpaceDepthPeelGreater",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "DepthVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ViewSpaceDepthPeelGreater_PS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "DepthVS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ViewSpaceDepthPeelGreater_PS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Depth_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Depth_DS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ViewSpaceDepthPeelLess",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "DepthVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ViewSpaceDepthPeelLess_PS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "DepthVS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ViewSpaceDepthPeelLess_PS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Depth_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Depth_DS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "NViewSpaceDepth",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "DepthVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "NViewSpaceDepth_PS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "DepthVS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "NViewSpaceDepth_PS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Depth_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Depth_DS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "NViewSpaceDepthPeelLess",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "DepthVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "NViewSpaceDepthPeelLess_PS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "DepthVS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "NViewSpaceDepthPeelLess_PS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Depth_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Depth_DS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "NViewSpaceDepthPeelGreater",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "DepthVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "NViewSpaceDepthPeelGreater_PS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "DepthVS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "NViewSpaceDepthPeelGreater_PS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Depth_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Depth_DS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "DOFPrep",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "DepthVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "DOFPrep_PDefault_PS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "DepthVS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "DOFPrep_PDefault_PS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Depth_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Depth_DS"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "samplers": {
+    "g_DefaultSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "ANISOTROPIC",
+        "MaxAnisotropy": 16,
+        "AddressU": "Wrap",
+        "AddressV": "Wrap"
+      }
+    },
+    "g_CubeSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_LINEAR",
+        "AddressU": "Wrap",
+        "AddressV": "Clamp"
+      }
+    },
+    "bumpMapSampler": {
+      "type": "SamplerState",
+      "state": {
+        "FILTER": "ANISOTROPIC",
+        "AddressU": "WRAP",
+        "AddressV": "WRAP"
+      }
+    },
+    "displacementSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_LINEAR",
+        "AddressU": "Wrap",
+        "AddressV": "Wrap"
+      }
+    },
+    "displacementTapSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_POINT",
+        "AddressU": "Wrap",
+        "AddressV": "Wrap"
+      }
+    }
+  },
+  "variables": {
+    "g_uvTransform": {
+      "type": "float4x4",
+      "default": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    "g_ClipPlane": {
+      "type": "float4",
+      "default": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    "g_bakeTransform": {
+      "type": "float4",
+      "default": [
+        1,
+        1,
+        0,
+        0
+      ]
+    },
+    "g_bake": {
+      "type": "bool",
+      "default": false
+    },
+    "g_FirstLight": {
+      "type": "bool",
+      "default": false
+    },
+    "g_worldIT": {
+      "type": "float4x4",
+      "semantic": "WorldIT"
+    },
+    "g_wvp": {
+      "type": "float4x4",
+      "semantic": "WorldViewProjection"
+    },
+    "g_wv": {
+      "type": "float4x4",
+      "semantic": "WorldView"
+    },
+    "g_world": {
+      "type": "float4x4",
+      "semantic": "World"
+    },
+    "g_vp": {
+      "type": "float4x4",
+      "semantic": "ViewProjection"
+    },
+    "g_proj": {
+      "type": "float4x4",
+      "semantic": "Projection"
+    },
+    "g_eyePos": {
+      "type": "float4",
+      "semantic": "CameraPos"
+    },
+    "g_targetRes": {
+      "type": "float4"
+    },
+    "g_bumpMapScale": {
+      "type": "float",
+      "semantic": "BumpMapScale",
+      "default": 0.0
+    },
+    "hasNormalMap": {
+      "type": "bool",
+      "default": false
+    },
+    "normalMap": {
+      "type": "Texture2D",
+      "semantic": "NormalMap"
+    },
+    "g_time_0_X": {
+      "type": "float"
+    },
+    "g_AlphaTestRef": {
+      "type": "float",
+      "default": 0.0
+    },
+    "g_bDoubleSided": {
+      "type": "bool",
+      "semantic": "DoubleSided",
+      "default": false
+    },
+    "g_IsolateReflection": {
+      "type": "bool",
+      "default": false
+    },
+    "g_bCubeMapEnabled": {
+      "type": "bool",
+      "default": false
+    },
+    "g_diffuseFactor": {
+      "type": "float",
+      "default": 0.1
+    },
+    "g_bHasDiffuseEnvMap": {
+      "type": "bool"
+    },
+    "g_diffuseEnvAngle": {
+      "type": "float",
+      "default": 0
+    },
+    "g_envDiffuseColor": {
+      "type": "float4",
+      "default": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "diffuseEnvMap": {
+      "type": "Texture2D"
+    },
+    "g_specularFactor": {
+      "type": "float",
+      "default": 0.1
+    },
+    "g_bHasSpecularEnvMap": {
+      "type": "bool"
+    },
+    "g_specularEnvAngle": {
+      "type": "float",
+      "default": 0
+    },
+    "g_envSpecularColor": {
+      "type": "float4",
+      "default": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "specularEnvMap": {
+      "type": "Texture2D"
+    },
+    "g_glowSize": {
+      "type": "float",
+      "default": 0
+    },
+    "g_bHasMask": {
+      "type": "bool",
+      "default": false
+    },
+    "g_bConstGlow": {
+      "type": "bool",
+      "default": false
+    },
+    "g_fDofBlurCutoff": {
+      "type": "float",
+      "default": 1
+    },
+    "g_vDofParams": {
+      "type": "float4",
+      "default": [
+        30,
+        60,
+        80,
+        120
+      ]
+    },
+    "g_IsReflectionGen": {
+      "type": "bool",
+      "semantic": "IsReflectionGen",
+      "default": false
+    },
+    "g_vTessellationFactor": {
+      "type": "float4"
+    },
+    "meshDataTexture": {
+      "type": "Texture2D",
+      "semantic": "meshdatamap"
+    },
+    "g_MeshDataTextureWidth": {
+      "type": "float",
+      "default": 256.0
+    },
+    "g_MeshDataTextureHeight": {
+      "type": "float",
+      "default": 64.0
+    },
+    "g_view": {
+      "type": "float4x4",
+      "semantic": "View"
+    },
+    "g_hasDisplacementMap": {
+      "type": "bool",
+      "default": false
+    },
+    "g_DisplacementScale": {
+      "type": "float"
+    },
+    "g_DisplacementBias": {
+      "type": "float"
+    },
+    "g_DisplacementBlur": {
+      "type": "float"
+    },
+    "g_DisplacementMapSize": {
+      "type": "float2"
+    },
+    "g_ObjectUVScale": {
+      "type": "float2"
+    },
+    "g_DisplacementMap": {
+      "type": "Texture2D"
+    },
+    "hasHardwareTessellation": {
+      "type": "bool",
+      "default": true
+    },
+    "hasTransparencyMap": {
+      "type": "bool",
+      "default": false
+    },
+    "TransparencyMap": {
+      "type": "Texture2D"
+    },
+    "g_Transparency": {
+      "type": "float",
+      "default": 1.0
+    },
+    "hasDepthMap": {
+      "type": "bool",
+      "default": false
+    },
+    "DepthMap": {
+      "type": "Texture2D"
+    },
+    "ZNear": {
+      "type": "float",
+      "default": 1
+    },
+    "ZFar": {
+      "type": "float",
+      "default": 1000
+    },
+    "g_InvScreenSize": {
+      "type": "float2"
+    },
+    "g_bias": {
+      "type": "float",
+      "default": 0.0
+    }
+  }
+}

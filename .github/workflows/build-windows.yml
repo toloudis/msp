@@ -9,7 +9,10 @@ on:
 jobs:
   # Compiles every entry point of the shaders converted from Effects (.fx)
   # to plain HLSL, one entry point at a time: as SM 5 with fxc (what the DX11
-  # renderer uses) and as SM 6 with dxc (for a future DX12 port).
+  # renderer uses), as SM 6 with dxc (for a future DX12 port), and as SPIR-V
+  # with GraphicsVulkan's options. GraphicsVulkan's copy of the shaders is
+  # identical to GraphicsDX11's (GraphicsTests checks that), so the fxc and
+  # dxc steps read GraphicsDX11's.
   converted-shaders:
     runs-on: windows-latest
     steps:
@@ -27,12 +30,29 @@ jobs:
 
       - name: Compile converted shaders as SM 5 (fxc)
         shell: pwsh
-        run: python Tools/fx2hlsl/compile_check.py --compiler fxc --exe $env:FXC --verbose (Get-ChildItem -Recurse -Filter *.effect.json LibXLT).FullName
+        run: python Tools/fx2hlsl/compile_check.py --compiler fxc --exe $env:FXC --verbose (Get-ChildItem -Recurse -Filter *.effect.json LibXLT/GraphicsDX11).FullName
 
       - name: Compile converted shaders as SM 6 (dxc)
         if: ${{ !cancelled() }}
         shell: pwsh
-        run: python Tools/fx2hlsl/compile_check.py --compiler dxc --exe $env:DXC --verbose (Get-ChildItem -Recurse -Filter *.effect.json LibXLT).FullName
+        run: python Tools/fx2hlsl/compile_check.py --compiler dxc --exe $env:DXC --verbose (Get-ChildItem -Recurse -Filter *.effect.json LibXLT/GraphicsDX11).FullName
+
+      # The Windows SDK's dxc has no SPIR-V backend: use the one GraphicsVulkan
+      # builds with, from its vcpkg manifest (same baseline, same version).
+      - name: Install GraphicsVulkan's DXC (vcpkg)
+        if: ${{ !cancelled() }}
+        shell: pwsh
+        run: |
+          $root = Join-Path $env:RUNNER_TEMP "vk"
+          & "$env:VCPKG_INSTALLATION_ROOT\vcpkg.exe" install --triplet x64-windows --x-manifest-root=LibXLT/GraphicsVulkan --x-install-root=$root
+          if ($LASTEXITCODE -ne 0) { throw "vcpkg install failed" }
+          "VKDXC=$root\x64-windows\tools\directx-dxc\dxc.exe" >> $env:GITHUB_ENV
+
+      - name: Compile GraphicsVulkan's shaders as SPIR-V (dxc)
+        if: ${{ !cancelled() }}
+        shell: pwsh
+        # the hair files through their Vulkan-only wrappers (ProcessIsolineTessFactors)
+        run: python Tools/fx2hlsl/compile_check.py --compiler dxc --exe $env:VKDXC --spirv --vulkan-only-dir LibXLT/GraphicsVulkan/Eff/private/ShadersVk --verbose (Get-ChildItem -Recurse -Filter *.effect.json LibXLT/GraphicsVulkan/Eff).FullName
 
   # Unit tests of Tools/gfxcompare, the tool that renders a scene twice
   # with RenderNode and compares frames and timings (no GPU needed here).
@@ -120,7 +140,9 @@ jobs:
       #
       # The GoogleTest unit tests (UnitTests/) run as soon as they are
       # built, and MainApp references them, so a failing test fails this
-      # step before MachStudio is built.
+      # step before MachStudio is built. GraphicsTests is built but not run
+      # (no build runs it; it is run by hand): its tests need GPU
+      # capabilities the runners don't reliably have.
       - name: Build MainApp and unit tests (${{ matrix.configuration }}|x64)
         working-directory: MachStudio/Source
         run: >

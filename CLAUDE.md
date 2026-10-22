@@ -100,10 +100,29 @@ hold settings:
   precompiled header). Helpers use the `mat` prefix.
 - `UnitTests/GraphicsTests` tests `LibXLT/Graphics` code that needs no GPU
   (`g3dProfiler`) and `LibXLT/GraphicsVulkan` (`Vk/`); it links Core,
-  Graphics and GraphicsVulkan. Helpers use the `gt` prefix. The Vulkan
-  tests run with validation on (`gtVulkan` fails a test on any validation
-  message) and are skipped when there is no usable Vulkan device (as on
-  CI). A custom build step compiles `Vk/Shaders/*.hlsl` with DXC.
+  Graphics, GraphicsVulkan and GraphicsDX11, the reference the Vulkan
+  port is compared with (`Dx11/gtD3D11`: a D3D11 device on the hardware
+  adapter, else WARP). Helpers use the `gt` prefix. The Vulkan tests run
+  with validation on (`gtVulkan` fails a test on any validation message)
+  and are skipped when there is no usable Vulkan device; the tests that
+  need only reflection run everywhere. No build runs them (they take a
+  while, and need a GPU; GitHub's runners have none they can rely on):
+  they are run by hand, as `UnitTests/GraphicsTests/README.md` says.
+  `gtBackend` runs the
+  same test code under the whole GraphicsDX11 layer and then the whole
+  GraphicsVulkan layer, as MachStudio starts them, so a test can compare
+  what Graphics-level calls (`matTextureMgr`, ...) give on each, all in
+  one process (the run starts COM once, as MachStudio does: DirectXTex
+  keeps one WIC factory per process). Parameterized suites with many
+  small tests share one device per suite (`Vk/gtVulkanSuite`, or a
+  `SetUpTestSuite` D3D11 device) and still check validation per test.
+  Image comparisons
+  (`gtImage`, gfxcompare's metrics and tolerance) write `dx11.png`,
+  `vulkan.png` and `diff.png` to
+  `UnitTests/bin/x64/<Debug|Release>/GraphicsTestsImages/<test>/` when they
+  fail. A custom build step compiles `Vk/Shaders/*.hlsl` with DXC. The
+  test run keeps the user data folder (`gfPaths` `e_UserDataPath`) in a
+  temp directory, one per shard.
 - `CoreTests.vcxproj` is self-contained: its build settings (include paths,
   runtime, output in `UnitTests/bin/<Platform>/<Debug|Release>/`) are in the
   project file, not a shared props file. A new test project can start as a
@@ -118,14 +137,20 @@ hold settings:
 - Run: `UnitTests/bin/x64/<Debug|Release>/CoreTests.exe` (gtest flags such as
   `--gtest_filter=ma*` work); Visual Studio's Google Test adapter should also
   list them in Test Explorer.
-- The tests run as part of the build: the test project's Post-Build Event
-  (Project Properties → Build Events) runs the exe after linking and writes
-  `<TargetName>.xml` next to it; a failing test fails the build. MainApp
-  has an ordinary ProjectReference to each test project (nothing linked),
-  so MachStudio isn't built until the tests pass. A new test project gets
-  the same reference in `MainApp.vcxproj`, and may reference whatever
-  libraries it tests. CI builds `MainApp;CoreTests;MainAppTests;GraphicsTests`
-  in every configuration and uploads the XML reports.
+- CoreTests and MainAppTests run as part of the build: the test project's
+  Post-Build Event (Project Properties → Build Events) runs the exe after
+  linking and writes `<TargetName>.xml` next to it; a failing test fails
+  the build. GraphicsTests has no such step: it is only built, and run
+  explicitly (`UnitTests/GraphicsTests/README.md`), usually through
+  `UnitTests/RunShards.ps1`: up to 8 gtest shards at once
+  (`GTEST_TOTAL_SHARDS`/`GTEST_SHARD_INDEX`), their output printed in turn
+  and their XML merged into the one report. MainApp has an ordinary
+  ProjectReference to each test project (nothing linked), so MachStudio
+  isn't built until the tests have built and (but for GraphicsTests)
+  passed. A new test project gets the same reference in `MainApp.vcxproj`
+  and may reference whatever libraries it tests. CI builds
+  `MainApp;CoreTests;MainAppTests;GraphicsTests` in every configuration
+  (which runs CoreTests and MainAppTests) and uploads the XML reports.
 - Core headers have `#error` "multiply included" guards, so guard their
   includes in test files as everywhere else (`#ifndef MA_PLANE_HPP ...`).
 
@@ -138,7 +163,6 @@ build notes):
 |---|---|---|
 | wxWidgets 3.2 | `WxWidgets/` (headers, import libs; `wxwidgets.props`) | Wx UI builds only (DLLs in `MachStudio-x64/`) |
 | libpng 1.6 | headers `Png/lpng162`, lib/DLL `Libs/x64/libpng16` | image loading (`g2dSurfaceLoaderDX11`) |
-| libtiff 4.0.6 | headers `tiff-4.0.6/`, lib/DLL `Libs/x64/tiff` | image loading |
 | zlib + minizip | headers `Png/zlib-1.2.5`, lib/DLL `Libs/x64/zlibwapi` (zlib 1.2.8 sources in `zlib/`) | vertex-animation compression (`vtx`), zip (`cmpr`) |
 | Python 3.9 | `Python/include` (headers only, not in git) | embedded Python; compiled out unless `PYTHON_ENABLED` is defined, which no live configuration does |
 
@@ -152,11 +176,11 @@ its own `vcpkg_installed/`):
 | Manifest | Packages | Used for |
 |---|---|---|
 | `LibXLT/Graphics/vcpkg.json` | OpenEXR (+ Imath, libdeflate) | writing `.exr` render output (`g2dScanlineOpenEXRUtil`, `g2dOpenEXROutStream`, `g2dHDRUtil`) |
-| `LibXLT/GraphicsDX11/vcpkg.json` | DirectXTex, nlohmann-json | DDS/texture loading and image saving; parsing `*.effect.json` effect descriptions (`fxEffectDesc`). glTF import bundles its own `json.hpp`/`tiny_gltf.h` |
-| `LibXLT/GraphicsVulkan/vcpkg.json` | vulkan-headers, volk, vulkan-memory-allocator, spirv-reflect, directx-dxc | the Vulkan backend: volk loads `vulkan-1.dll` at run time (nothing to link or ship); DXC compiles shaders at build time. Its `vcpkg-configuration.json` has a newer baseline than the other manifests (Vulkan 1.4 headers with `VK_EXT_descriptor_heap`) |
+| `LibXLT/GraphicsDX11/vcpkg.json` | DirectXTex, nlohmann-json, libtiff (+ libjpeg-turbo, liblzma, zlib) | DDS/texture loading and image saving; parsing `*.effect.json` effect descriptions (`fxEffectDesc`); TIFF loading (`g2dSurfaceLoaderDX11`; MainApp links `tiff.lib`/`tiffd.lib` from here). glTF import bundles its own `json.hpp`/`tiny_gltf.h` |
+| `LibXLT/GraphicsVulkan/vcpkg.json` | vulkan-headers, volk, vulkan-memory-allocator, spirv-reflect, spirv-tools, directx-dxc, stb, libtiff | the Vulkan backend: volk loads `vulkan-1.dll` at run time (nothing to link or ship); DXC compiles shaders at build time; SPIRV-Tools (static) removes unconsumed shader outputs when pipelines are made (`vkdLinkStages`); stb_image and libtiff decode textures (`matImageDecode`; DDS and TGA are read by ports of DirectXTex's readers, no DirectXTex or WIC). Its `vcpkg-configuration.json` has a newer baseline than the other manifests (Vulkan 1.4 headers with `VK_EXT_descriptor_heap`). libtiff and the DLLs it brings are pinned with `overrides` to the same versions in this manifest, GraphicsDX11's and GraphicsTests', because MachStudio loads one `tiff.dll`; zlib is pinned to MainApp's (curl's) version. Change all three together |
 | `MachStudio/Source/MainApp/vcpkg.json` | curl (+ zlib) | version check (`mainCheckAppVersion`). Linked dynamically: `libcurl.dll` (and its `zlib1.dll`) ships next to the exe |
 | `LibXLT/ToolUIWx/vcpkg.json` | (none) | |
-| `UnitTests/CoreTests/vcpkg.json`, `UnitTests/MainAppTests/vcpkg.json`, `UnitTests/GraphicsTests/vcpkg.json` | gtest | unit tests (`gmock.dll`, which includes gtest, is copied next to the test exe) |
+| `UnitTests/CoreTests/vcpkg.json`, `UnitTests/MainAppTests/vcpkg.json`, `UnitTests/GraphicsTests/vcpkg.json` | gtest (GraphicsTests: also stb, for PNG output, and libtiff) | unit tests (`gmock.dll`, which includes gtest, is copied next to the test exe) |
 
 The library packages live under the library projects, so MainApp adds their
 `vcpkg_installed\...\lib` dirs to its link paths and its
@@ -298,10 +322,16 @@ says why) and installs a Vulkan implementation for every Graphics hook.
 
 | Package | Purpose |
 |---|---|
-| `vkd` | Thin wrappers over the Vulkan C API (volk, VMA): device and adapter choice, command stream and timeline-semaphore submission, validation policy, images, swap chains, the per-frame ring buffer, and resource binding (`vkdBindings`) |
-| `G2d` | 2D system and windows (swap chain plus depth buffer) |
-| `G3d` | 3D system, light manager, GPU timer for the profiler |
-| `stub` | Hooks not ported yet: they keep MachStudio running (renderers draw nothing, effects have no passes, textures and fragments keep their data on the CPU) and log `GVK_NOT_YET: <name>` once per call site. Later plans move each class to its real package as they port it |
+| `vkd` | Thin wrappers over the Vulkan C API (volk, VMA): device and adapter choice, command stream and timeline-semaphore submission, validation policy, images of every shape and format (`vkdImage`: 1D/2D/3D, arrays, cubes, mips, multisampling, 3D images rendered layer by layer; upload, readback, mip generation) and buffers (`vkdBuffer`), DXGI formats to Vulkan ones (`vkdFormat`; the two X8 formats become A8 with alpha 255), swap chains, the per-frame ring buffer, resource binding (`vkdBindings`), SPIR-V reflection reported as D3D11 reflection (`vkdReflect`), shader modules (`vkdShader`), occlusion queries (`vkdOcclusionQuery`, sample-exact as D3D11's), the pipeline cache (`vkdPipelineCache`, keyed by the full state, saved to `VulkanPipelineCache.bin` in the user data folder; it drops the outputs a pixel shader doesn't take from the stage before it, `vkdLinkStages`), and `vkdContext`, the DX11-style immediate context ported code draws through (state, render targets, dynamic rendering with as many layers as the bound views have, for a geometry shader's `SV_RenderTargetArrayIndex`, the barriers DX11 placed implicitly) |
+| `Fx` | `fxEffectVk` (GraphicsDX11's `fxEffectDX11` on SPIR-V: same parameter names, offsets, defaults and registers; an image destroyed while bound to an effect is unbound through `vkdDevice`'s image-destroy hooks and reads as the null texture, where D3D11's view would keep it alive), the embedded effects (`fxEmbeddedShadersVk`), `fxMaterialInstance`, and the Effects-shaped API (`fxEffectApi.hpp`) with Vulkan types |
+| `Eff` | The shaders (`Eff/private/Shaders`, a byte-identical copy of GraphicsDX11's), `effPlainEffectVk`, and the material shader classes: `effShaderBaseVk`, the `eff*` classes (Phong, Solid, Textured, Glow, Blur, DOF, Outline, Occlusion, Particle, Billboard, Bake, Ramp, Mask Alpha, Light Glow, Strand Hair), `effShaderParamsVk`, and `effShaderArray`, which registers them all as DX11's does |
+| `G2d` | 2D system and windows (swap chain plus depth buffer; scenes render into the acquired swap-chain image, or into an offscreen image with `SetRenderResolution`; `DrawImage`/`DrawRect` in `g2dWindowDrawUtilVk`), textures and render-target textures (`g2dTextureVk`, `g2dRenderTargetTextureVk`), `g2dFullscreenQuad`, the bitmap font (`g2dFontUtilVk`: window and render-target text), frame capture (`g2dScreenCaptureUtilVk`: a window's back buffer, a render target or a texture read back into a CPU image), CPU images and image loading (`g2dImageVk`, `g2dImageCreateVk`), image saving (`g2dImageSaveVk`: EXR, HDR and TGA through Graphics' writers; PNG, BMP, JPG and TIFF through `Mat`'s `matImageEncode`, in the layouts DX11's WIC path writes; DDS, PPM, DIB and PFM throw, as on DX11), the resource counter (`g2dResourceCounterVk`: DX11's sums by category) and the debug overlay (`g2dDebugDisplay`). A window whose native client area isn't the size it was given renders offscreen at that size (D3D11's `ResizeBuffers`). In RenderNode (`g3dGfxOptions::m_bHeadless`, set by `mainInitGraphics` in `BATCH_MODE` builds) windows have no surface or swap chain: they render into an offscreen image, and `Present` only submits |
+| `Mat` | Textures: `matTextureMgrVk` (DX11's texture manager: loading, creating, reloading, destroying) and the texture classes (plain, mip, static cube, volume, render target) on `vkdImage`. Decoding is portable (`matImageDecode`: stb_image, libtiff, and ports of DirectXTex's DDS and TGA readers, and Graphics' RGBE reader for HDR; no DirectXTex or WIC), as are the mip filters (`matMipFilter`: DirectXTex's triangle and box filters, WIC's Fant scaler emulated); GraphicsTests checks both against DirectXTex. Cube render targets (`matCubeRenderTargetTexture`, reflection maps) and shadow maps (`matShadowMap`, cleared to 0 when made) are real, filled by the `shdw` cube map renderer and the depth map renderer, as are reflective shadow maps (`matReflectiveShadowMap`, LPV GI's), filled by the RSM renderer. Texture saving (`SaveTextureToFile`, DDS through a port of DirectXTex's DDS writer) and `MergeTransparentTextures` are DX11's. `matImageEncode` writes BMP, JPG (stb_image_write at WIC's default quality), PNG, TIFF (libtiff) and DDS without WIC |
+| `G3d` | 3D system, light manager, GPU timer for the profiler, the blend / depth-stencil / rasterizer state holders and `g3dStateMgrVk` (DX11's, taking Vulkan enums); the per-node rendering machinery (`g3dVkUtil`, `g3dSceneRenderUtil`, `g3dRenderStateCache`, `g3dSceneGlobal`, `g3dDrawStyleUtilVk`, `g3dTransparencySortVk`, `g3dFogVk`), vertex and index buffers (`g3dVkBufferUtil`: static ones device-local, dynamic ones written to the ring per use), the render passes (`g3dRenderPass`) with the camera- and screen-space ones (`g3dRenderCameraSpaceObjects`, `g3dRenderScreenSpaceObjects`), the depth map renderer `g3dDepthMapRendererVk` (shadow maps), the RSM renderer `g3dRSMRendererVk`, the pick renderer `g3dPickBufferRendererVk`, the texture renderer `g3dTextureRendererVk`, and the plain forward renderer `g3dSceneRendererVk` |
+| `shdw` | The multi-pass renderers, ported from GraphicsDX11's: `shdwSceneRendererCreate` (installed by `shdwPackage`; default and HDR give `shdwHDRRendererVk`, simple gives `shdwShadowLayerRendererVk`, plus the depth map, RSM, planar reflection, cube map, pick and texture renderers, and the opacity map renderer `shdwOpacityMapRendererVk`; every type is real), the preview renderers (depth, normal, materials, glow, reflections only, shadow mask and illumination (`shdwShadowsOnlyRendererVk`), AO and GI previews, velocity map, UV), the baker (`shdwBakingRenderer`, installed by `shdwPackage` as `g3dBake`'s implementation), the HDR renderer (tone mapping, bloom and star with `GlareDefVk`, HDR AA, depth of field, debug modes, matte), the frame buffer manager, and the passes: traversal, ZFill, depth, alpha fill, ambient, environment and its background, lit, transparent (sorted, depth-peeled with occlusion queries, deferred), SSAO, glow, outline, post shaders, tone map, DOF, fog, AO volumes, normals, materials, velocity, screen-space GI, LPV GI (radiance volumes drawn slice by slice from a geometry shader), hair (`shdwPassHair`: every transparency mode, depth peeling with occlusion queries) and opacity (`shdwPassOpacity`: a light's 1, 4 or 8 opacity shadow maps, or its opacity volume written from the pixel shader, which hair reads for its shadows). `ShareBuffers` asserts, as DX11's, on a partner that isn't a `shdw` renderer |
+| `tmesh`, `bump` | Triangle-mesh fragments and their vertex/index buffers; bump-mapped fragments, the fragment creator and the bump renderer, installed by `bumpPackage` as on DX11 (32-bit indices above 65,535 vertices; meshes split by the draw-call size limit) |
+| `may` | Model-import fragment creation (`mayFragCreate`), so scenes load, hair included |
+| `hair` | Hair fragments (`hairModelFragVk`: the strands' materials and control points in two structured buffers, `vkdBuffer`s read as `g_HairMaterials`/`g_HairGeometry`; none for a hair object without strands, which draws nothing) and `HairRendererVk` (no vertex input, a 1-point patch list or a line strip, one of Hair_SH's four passes), installed by `hairPackage` as on DX11. Every Graphics hook now has its real class |
 
 - **Target:** Vulkan 1.4 with `VK_EXT_descriptor_heap`, unified image
   layouts (everything stays in `GENERAL`), dynamic rendering, sync2,
@@ -309,8 +339,19 @@ says why) and installs a Vulkan implementation for every Graphics hook.
   first, then the most device-local memory; `MSP_GFX_VK_ADAPTER=<name
   substring>` overrides it. A device that lacks something fails `Init`
   with the missing features named.
-- **Shaders:** GraphicsDX11's HLSL, copied unchanged, compiled by DXC
-  (vcpkg `directx-dxc`) to SPIR-V.
+- **Shaders:** GraphicsDX11's HLSL, copied unchanged (GraphicsTests
+  checks the copy byte for byte), compiled by DXC (vcpkg `directx-dxc`)
+  to SPIR-V at build time by `Fx/private/EmbedShadersVk.ps1` and embedded,
+  as GraphicsDX11 does with fxc. Everything that makes them work on
+  Vulkan is a DXC option; the same options are in the GraphicsTests
+  shader step and `Tools/fx2hlsl/compile_check.py --spirv`, so change all
+  three together. The one exception: DXC's SPIR-V backend lacks
+  `ProcessIsolineTessFactors`, which the hair hull shader (`Hair_HS`)
+  calls, so that stage is compiled from a wrapper in `Eff/private/ShadersVk/`
+  (`*.vulkan-only.*`, the only Vulkan-only shader code) that defines it as
+  fxc does and includes the unchanged file (`vkdIsolineTest` checks it
+  against D3D11; `compile_check.py --vulkan-only-dir`). Shaders
+  GraphicsDX11 compiles from strings at run time are copied into `.hlsl` files when ported (`G2d/private/Shaders`).
 - **Resource binding:** shaders keep their DX11 register slots. Each draw
   writes a table into the ring buffer (constant-buffer addresses, then
   texture, sampler and UAV heap indices) and pushes its address with
@@ -320,7 +361,21 @@ says why) and installs a Vulkan implementation for every Graphics hook.
   builds, and in Release with `-gfxValidation`. Errors `DBG_ASSERT` (Debug)
   and are logged and counted; warnings are logged and counted. A
   successful port means zero of either. At exit the log (and RenderNode's
-  stderr) says `Vulkan validation: N errors, M warnings`, or `off`.
+  stderr) says `Vulkan validation: N errors, M warnings, P best-practices
+  notes`, or `off`. `MSP_GFX_VK_VALIDATION` (a comma list, read with
+  `MSP_GFX_VK_ADAPTER` by `vkdReadEnvironment`, in MachStudio and the
+  tests) adds `gpu` (GPU-assisted validation; its vertex-fetch bounds check
+  is off, a layer false positive, see `vkdDevice.cpp`) and/or
+  `bestpractices` (Khronos and NVIDIA advice, counted as notes, which fail
+  nothing); either turns validation on, Release included.
+  `vkdValidation` logs as information (not counted) only the layer's
+  notes about its own setup; each has its reason in the code.
+  `WARNING-Shader-OutputNotConsumed` (a vertex, domain or geometry
+  shader output the pixel shader doesn't take, inherent in the unchanged
+  shaders, which share vertex shaders between pixel shaders) doesn't
+  arise: `vkdPipelineCache` links the stages as D3D11 does, removing those
+  outputs from a copy of the SPIR-V (`vkd/private/vkdLinkStages.hpp`,
+  SPIRV-Tools); the image doesn't change.
 
 ### Other LibXLT libraries
 
@@ -382,7 +437,15 @@ chosen graphics layer and logs `Graphics backend: <name> on <adapter>`;
 `-NoSplash`/`-show` are applied at once; and the actions (`-file`,
 `-render`, `-cap*`, `-script`, ...) run after start-up, in order, in
 `mnmApp::RunCommandLine`. `-render <scene>` loads the scene, which replaces
-the capture settings, so `-cap*` flags go after `-render`. The full
+the capture settings, so `-cap*` flags go after `-render`
+(`-capStartFrame`/`-capEndFrame`, a frame window for every render in the
+run, are the exception: they aren't scene settings). `-capSampling`,
+`-capJitter`, `-capMotionSamples`, `-capPasses` and `-capHardwareAA` reach
+the sampling, pass and anti-aliasing settings RenderNode has no other way
+to change (Python is compiled out); their values are checked while parsing
+(a bad one is dropped with a warning), and `-capPasses` names passes by the
+scene's pass names and sets them in every render layer (RenderMan passes,
+such as COLBL, are skipped with a warning: no GPU renderer makes them). The full
 command line reference (what each flag does) is at the top of
 `MainApp/mainCommandLine.hpp`; `-help` prints the same text
 (`mainCommandLine::HelpText()`), and a test checks it lists every flag.

@@ -12,6 +12,12 @@
 **	Validation follows the GraphicsVulkan policy: always on in Debug (the
 **	layer is required there), on in Release with m_bValidation; errors
 **	DBG_ASSERT, warnings are logged and counted (see vkdValidation.hpp).
+**	vkdReadEnvironment fills the options from the environment:
+**	  MSP_GFX_VK_ADAPTER	the device, by a substring of its name
+**	  MSP_GFX_VK_VALIDATION	a comma list of extra validation modes:
+**				gpu (GPU-assisted), bestpractices (Khronos and NVIDIA
+**				best practices); either one turns validation on.
+**				Sign-off and test tools, not user options.
 **
 **	Threads: recording and Submit() from more than one thread must hold
 **	StreamLock() for the whole record-and-submit; every queue operation
@@ -43,15 +49,28 @@ typedef struct VmaAllocator_T* VmaAllocator;
 
 namespace gvk
 {
+	class vkdBuffer;
+	class vkdImage;
+
 	struct vkdDeviceOptions
 	{
 		bool		m_bValidation = false;		// forced on in Debug builds
 		bool		m_bGpuAssisted = false;		// GPU-assisted validation (tests and sign-off runs)
+		bool		m_bBestPractices = false;	// best-practices checks (Khronos and NVIDIA), counted apart
 		std::string	m_AdapterOverride;			// MSP_GFX_VK_ADAPTER: device name substring; empty = automatic
 		vkdValidation* m_pValidation = nullptr;	// counts validation messages; must outlive the device,
 												// so messages during destruction are counted too.
 												// NULL: the device keeps its own.
 	};
+
+	//	Reads MSP_GFX_VK_ADAPTER and MSP_GFX_VK_VALIDATION into io_Options
+	//	(unset variables change nothing)
+	void vkdReadEnvironment(vkdDeviceOptions& io_Options);
+
+	//	Applies an MSP_GFX_VK_VALIDATION value: "gpu", "bestpractices",
+	//	comma-separated, any case and spacing; unknown words are logged and
+	//	ignored. A mode turns m_bValidation on.
+	void vkdApplyValidationModes(const std::string& i_Modes, vkdDeviceOptions& io_Options);
 
 	class vkdDevice
 	{
@@ -87,6 +106,12 @@ namespace gvk
 			uint64_t Submit(const std::vector<VkSemaphoreSubmitInfo>& i_Wait = {},
 							const std::vector<VkSemaphoreSubmitInfo>& i_Signal = {});
 
+			//	A wait the next Submit, whoever calls it, adds to its own: a
+			//	swap chain's acquire semaphore, which must be waited on before
+			//	the image is written, by whichever submission comes first
+			//	(a readback mid-frame submits before Present does)
+			void		AddSubmitWait(const VkSemaphoreSubmitInfo& i_Wait);
+
 			void		WaitFor(uint64_t i_TimelineValue);
 			void		WaitIdle();
 			uint64_t	CompletedValue() const;
@@ -94,6 +119,25 @@ namespace gvk
 			//	The timeline value the open command buffer will get when it is
 			//	submitted: anything used in it is free once this completes.
 			uint64_t	PendingValue() const;
+
+			//	Called (under the stream lock) whenever Commands() is about to
+			//	hand out the open command buffer, Submit() included, so the code
+			//	that records state into it (vkdContext) can end what it has open
+			//	first. One hook; empty removes it.
+			void SetRecordingHook(std::function<void()> i_Hook);
+
+			//	Called (under the stream lock) by each vkdImage as it is
+			//	destroyed, so the code that holds it bound (vkdContext as a
+			//	target, fxEffectVk as a resource) can let it go: D3D11 keeps a
+			//	bound resource alive, here the pointer would dangle. Hooks run
+			//	in the order added; Add returns the id Remove takes.
+			int AddImageDestroyHook(std::function<void(const vkdImage*)> i_Hook);
+			void RemoveImageDestroyHook(int i_Id);
+			void ImageDestroyed(const vkdImage* i_pImage);
+			//	The same for each vkdBuffer (fxEffectVk binds structured buffers)
+			int AddBufferDestroyHook(std::function<void(const vkdBuffer*)> i_Hook);
+			void RemoveBufferDestroyHook(int i_Id);
+			void BufferDestroyed(const vkdBuffer* i_pBuffer);
 
 			//	Runs i_Destroy once the GPU has finished all work submitted so
 			//	far, including the open command buffer.

@@ -197,7 +197,7 @@ bool effParamTexture::Load(const fsResourceFinder& i_Finder)
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
 effShaderParams::effShaderParams()
-:	m_pShader(NULL), m_pShaderBindings(NULL), m_pPrtyUI(NULL),
+:	m_pShader(NULL), m_ShaderGeneration(0), m_pShaderBindings(NULL), m_pPrtyUI(NULL),
 	m_pDiffuseMap(NULL), m_pTransparencyMap(NULL), 
 	m_pDiffuseColor(NULL), m_pTransparency(NULL),
 	m_pPathObject(NULL), m_Version(0)
@@ -230,6 +230,7 @@ effShaderParams* effShaderParams::Clone() const
 	effShaderParams* clone = new effShaderParams;
 	clone->m_ShaderName = m_ShaderName;
 	clone->m_pShader = m_pShader;
+	clone->m_ShaderGeneration = m_ShaderGeneration;
 	clone->m_Version = m_Version;
 
 	for (int i = 0; i < m_FloatParams.size(); i++)
@@ -266,6 +267,7 @@ void effShaderParams::SetShaderName(const fsLocator& i_ShaderPath, matShaderEffe
 
 	m_ShaderName = i_ShaderPath;
 	m_pShader = i_pShader;
+	m_ShaderGeneration = matShaderMgr::GetGeneration();
 }
 
 //------------------------------------------------------------------------
@@ -282,6 +284,15 @@ void effShaderParams::SetShaderPathObject(prtyTextureFileName* i_Path)
 //------------------------------------------------------------------------
 matShaderEffect* effShaderParams::GetShader()
 {
+	// The effect was found before matShaderMgr last deleted its effects (the
+	// graphics layer restarted: a device reset, or a test that starts a
+	// layer more than once) and is gone: find the new one by name
+	if (m_pShader != NULL && m_ShaderGeneration != matShaderMgr::GetGeneration())
+	{
+		m_pShader = matShaderMgr::FindEffect(m_ShaderName);
+		m_ShaderGeneration = matShaderMgr::GetGeneration();
+	}
+
 	// this will load shader if it hasn't been instantiated yet!
 	if (m_pShader == NULL)
 	{
@@ -338,6 +349,7 @@ matShaderEffect* effShaderParams::GetShader()
 			DBG_WARNING("No shader could be loaded for " << m_ShaderName);
 			return NULL;
 		}
+		m_ShaderGeneration = matShaderMgr::GetGeneration();
 	}
 	return m_pShader;
 }

@@ -20,17 +20,33 @@
 #ifndef DBG_MSG_HPP
 #include "Core/dbg/dbgMsg.hpp"
 #endif
+#ifndef G2D_RESETHANDLER_HPP
+#include "Graphics/G2d/g2dResetHandler.hpp"
+#endif
 
-#ifndef GVK_G2DSTUBSVK_HPP
-#include "GraphicsVulkan/stub/g2dStubsVk.hpp"
+#ifndef GVK_G2DIMAGESAVEVK_HPP
+#include "GraphicsVulkan/G2d/g2dImageSaveVk.hpp"
+#endif
+#ifndef GVK_G2DRESOURCECOUNTERVK_HPP
+#include "GraphicsVulkan/G2d/g2dResourceCounterVk.hpp"
+#endif
+#ifndef GVK_G2DIMAGECREATEVK_HPP
+#include "GraphicsVulkan/G2d/g2dImageCreateVk.hpp"
+#endif
+#ifndef GVK_G2DFULLSCREENQUAD_HPP
+#include "GraphicsVulkan/G2d/g2dFullscreenQuad.hpp"
+#endif
+#ifndef GVK_G2DFONTUTILVK_HPP
+#include "GraphicsVulkan/G2d/private/g2dFontUtilVk.hpp"
 #endif
 
 #include <algorithm>
 
 namespace gvk
 {
-	g2dSystemVk::g2dSystemVk(vkdDevice& i_Device)
+	g2dSystemVk::g2dSystemVk(vkdDevice& i_Device, bool i_bHeadless)
 		: m_Device(i_Device)
+		, m_bHeadless(i_bHeadless)
 		, m_pResourceCounter(new g2dResourceCounterVk)
 		, m_pFontUtil(new g2dFontUtilVk)
 		, m_pImageCreate(new g2dImageCreateVk)
@@ -40,6 +56,8 @@ namespace gvk
 		g2dFontUtil::SetImplementation(m_pFontUtil);
 		g2dImageCreate::SetImplementation(m_pImageCreate);
 		g2dImageSave::SetImplementation(m_pImageSave);
+
+		g2dFullscreenQuad::InitFullscreenQuad();
 	}
 
 	g2dSystemVk::~g2dSystemVk()
@@ -50,6 +68,8 @@ namespace gvk
 		}
 		m_Windows.clear();
 
+		g2dFullscreenQuad::CleanUpFullscreenQuad();
+
 		g2dImageSave::SetImplementation(NULL);
 		g2dImageCreate::SetImplementation(NULL);
 		g2dFontUtil::SetImplementation(NULL);
@@ -58,26 +78,29 @@ namespace gvk
 		delete m_pImageCreate;
 		delete m_pFontUtil;
 		delete m_pResourceCounter;
+
+		//	The handlers Graphics and the texture manager registered (as DX11)
+		g2dResetHandler::DestroyResetHandlers();
 	}
 
 	g2dWindow* g2dSystemVk::CreateAppWindow(int i_Width, int i_Height, int i_X, int i_Y)
 	{
 		appApplication::SetMainWindowSize(i_X, i_Y, i_Width, i_Height);
-		g2dWindow* window = new g2dWindowVk(m_Device, appApplication::GetMainWindowHandle(), false);
+		g2dWindow* window = new g2dWindowVk(m_Device, appApplication::GetMainWindowHandle(), false, -1, -1, m_bHeadless);
 		m_Windows.push_back(window);
 		return window;
 	}
 
 	g2dWindow* g2dSystemVk::CreateAppWindow(void* i_Handle)
 	{
-		g2dWindow* window = new g2dWindowVk(m_Device, i_Handle, false);
+		g2dWindow* window = new g2dWindowVk(m_Device, i_Handle, false, -1, -1, m_bHeadless);
 		m_Windows.push_back(window);
 		return window;
 	}
 
 	g2dWindow* g2dSystemVk::CreateSubWindow(void* i_Handle)
 	{
-		g2dWindow* window = new g2dWindowVk(m_Device, i_Handle, false);
+		g2dWindow* window = new g2dWindowVk(m_Device, i_Handle, false, -1, -1, m_bHeadless);
 		m_Windows.push_back(window);
 		return window;
 	}
@@ -86,7 +109,7 @@ namespace gvk
 	{
 		itString title("");
 		void* handle = appApplication::CreateSubWindow(i_Width, i_Height, i_X, i_Y, title);
-		g2dWindow* window = new g2dWindowVk(m_Device, handle, true, i_Width, i_Height);
+		g2dWindow* window = new g2dWindowVk(m_Device, handle, true, i_Width, i_Height, m_bHeadless);
 		m_Windows.push_back(window);
 		return window;
 	}

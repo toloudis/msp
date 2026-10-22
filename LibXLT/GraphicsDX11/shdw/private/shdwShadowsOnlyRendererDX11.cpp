@@ -37,7 +37,6 @@
 #include "GraphicsDX11/shdw/shdwFrameBufferMgr.hpp"
 #include "GraphicsDX11/shdw/shdwPassZFill.hpp"
 #include "GraphicsDX11/G3d/g3dDrawStyleUtilDX11.hpp"
-#include "GraphicsDX11/G2d/g2dWindowDX11.hpp"
 #include "GraphicsDX11/G3d/g3dDX11TextureUtil.hpp"
 #ifndef G3D_PROFILER_HPP
 #include "Graphics/G3d/g3dProfiler.hpp"
@@ -148,8 +147,7 @@ int shdwShadowsOnlyRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCa
 	if (!g3dPrefs::CurrentPrefs().m_bProjLightsOn)
 		return 0;
 
-	m_pWindow = dynamic_cast<g2dWindowDX11*>(i_pWindow);
-	DBG_ASSERT( m_pWindow, "Render requires a g2dWindowDX11 render target" );
+	m_pWindow = i_pWindow;
 
 	CreateSurfaces(i_pWindow);
 	

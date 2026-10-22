@@ -7,8 +7,9 @@
     to this file lists the packages; vcpkg-configuration.json pins a newer
     baseline than the rest of the repo, matching the Vulkan SDK 1.4.350.
 
-    volk's static library is merged into GraphicsVulkan.lib (Lib step
-    below), so MainApp only references this project.
+    The static libraries of volk and SPIRV-Reflect are merged into
+    GraphicsVulkan.lib (Lib step below), so MainApp only references this
+    project.
   -->
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
@@ -66,7 +67,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>volk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>volk.lib;spirv-reflect-static.lib;SPIRV-Tools-opt.lib;SPIRV-Tools.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(GvkVcpkgLib);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
@@ -99,14 +100,162 @@
     <ClCompile Include="vkd\private\vkdVma.cpp" />
     <ClCompile Include="vkd\private\vkdGlobal.cpp" />
     <ClCompile Include="vkd\private\vkdSwapchain.cpp" />
+    <ClCompile Include="G2d\private\g2dWindowDrawUtilVk.cpp" />
+    <ClCompile Include="G2d\private\g2dFontUtilVk.cpp" />
     <ClCompile Include="G2d\private\g2dWindowVk.cpp" />
+    <ClCompile Include="G2d\private\g2dImageCreateVk.cpp" />
+    <ClCompile Include="G2d\private\g2dImageSaveVk.cpp" />
+    <ClCompile Include="G2d\private\g2dImageVk.cpp" />
+    <ClCompile Include="G2d\private\g2dScreenCaptureUtilVk.cpp" />
+    <ClCompile Include="G2d\private\g2dSurfaceUtilVk.cpp" />
     <ClCompile Include="G2d\private\g2dSystemVk.cpp" />
     <ClCompile Include="G3d\private\g3dSystemVk.cpp" />
     <ClCompile Include="G3d\private\g3dProfilerGpuVk.cpp" />
     <ClCompile Include="G3d\private\g3dLightMgrVk.cpp" />
-    <ClCompile Include="stub\private\g2dStubsVk.cpp" />
-    <ClCompile Include="stub\private\matStubsVk.cpp" />
-    <ClCompile Include="stub\private\g3dStubsVk.cpp" />
+    <ClCompile Include="G2d\private\g2dResourceCounterVk.cpp" />
+    <ClCompile Include="G2d\private\g2dDebugDisplay.cpp" />
+    <ClCompile Include="hair\private\hairModelFragVk.cpp" />
+    <ClCompile Include="hair\private\HairRendererVk.cpp" />
+    <ClCompile Include="hair\private\hairPackage.cpp" />
+    <ClCompile Include="vkd\private\vkdReflect.cpp" />
+    <ClCompile Include="Fx\private\fxEffectDesc.cpp" />
+    <ClCompile Include="Fx\private\fxEffectVk.cpp" />
+    <ClCompile Include="Fx\private\fxEmbeddedShadersVk.cpp" />
+    <ClCompile Include="vkd\private\vkdShader.cpp" />
+    <ClCompile Include="vkd\private\vkdPipelineCache.cpp" />
+    <ClCompile Include="vkd\private\vkdLinkStages.cpp" />
+    <ClCompile Include="vkd\private\vkdContext.cpp" />
+    <ClCompile Include="vkd\private\vkdOcclusionQuery.cpp" />
+    <ClCompile Include="vkd\private\vkdBuffer.cpp" />
+    <ClCompile Include="vkd\private\vkdFormat.cpp" />
+    <ClCompile Include="Eff\private\effPlainEffectVk.cpp" />
+    <ClCompile Include="Fx\private\fxMaterialInstance.cpp" />
+    <ClCompile Include="G3d\private\g3dBlendStateMgr.cpp" />
+    <ClCompile Include="G3d\private\g3dDepthStencilStateMgr.cpp" />
+    <ClCompile Include="G3d\private\g3dRasterizerStateMgr.cpp" />
+    <ClCompile Include="G3d\private\g3dStateMgr.cpp" />
+    <ClCompile Include="G2d\private\g2dFullscreenQuad.cpp" />
+    <ClCompile Include="Mat\private\matImageDecode.cpp" />
+    <ClCompile Include="Mat\private\matImageDecodeStb.cpp" />
+    <ClCompile Include="Mat\private\matImageDecodeTga.cpp" />
+    <ClCompile Include="Mat\private\matImageDecodeTiff.cpp" />
+    <ClCompile Include="Mat\private\matImageDecodeDds.cpp" />
+    <ClCompile Include="Mat\private\matImageDecodeHdr.cpp" />
+    <ClCompile Include="Mat\private\matImageEncode.cpp" />
+    <ClCompile Include="Mat\private\matMipFilter.cpp" />
+    <ClCompile Include="G2d\private\g2dVkGlobal.cpp" />
+    <ClCompile Include="G2d\private\g2dTextureVk.cpp" />
+    <ClCompile Include="G2d\private\g2dRenderTargetTextureVk.cpp" />
+    <ClCompile Include="G2d\private\g2dDepthStencilBufferVk.cpp" />
+    <ClCompile Include="G2d\private\g2dRenderTargetVk.cpp" />
+    <ClCompile Include="G3d\private\g3dVkTextureUtil.cpp" />
+    <ClCompile Include="Mat\private\matVkGlobal.cpp" />
+    <ClCompile Include="Mat\private\matTextureVk.cpp" />
+    <ClCompile Include="Mat\private\matPlainTexture.cpp" />
+    <ClCompile Include="Mat\private\matMipTexture.cpp" />
+    <ClCompile Include="Mat\private\matStaticCubeTexture.cpp" />
+    <ClCompile Include="Mat\private\matVolumeTexture.cpp" />
+    <ClCompile Include="Mat\private\matCubeRenderTargetTexture.cpp" />
+    <ClCompile Include="Mat\private\matShadowMap.cpp" />
+    <ClCompile Include="Mat\private\matReflectiveShadowMap.cpp" />
+    <ClCompile Include="Mat\private\matRenderTargetTexture.cpp" />
+    <ClCompile Include="Mat\private\matTextureLoader.cpp" />
+    <ClCompile Include="Mat\private\matTextureLoaderDDS.cpp" />
+    <ClCompile Include="Mat\private\matTextureMgrVk.cpp" />
+    <ClCompile Include="G3d\private\g3dVkBufferUtil.cpp" />
+    <ClCompile Include="bump\private\bumpBufferUtil.cpp" />
+    <ClCompile Include="bump\private\bumpBumpRenderer.cpp" />
+    <ClCompile Include="bump\private\bumpFragmentCreate.cpp" />
+    <ClCompile Include="bump\private\bumpPackage.cpp" />
+    <ClCompile Include="bump\private\bumpTriMeshBumpFrag.cpp" />
+    <ClCompile Include="bump\private\bumpVertexBuffer.cpp" />
+    <ClCompile Include="bump\private\bumpVertexDecl.cpp" />
+    <ClCompile Include="may\private\mayFragCreate.cpp" />
+    <ClCompile Include="may\private\mayPackage.cpp" />
+    <ClCompile Include="tmesh\private\tmeshFrag.cpp" />
+    <ClCompile Include="tmesh\private\tmeshIndexBuffer.cpp" />
+    <ClCompile Include="tmesh\private\tmeshPackage.cpp" />
+    <ClCompile Include="tmesh\private\tmeshVertexBuffer.cpp" />
+    <ClCompile Include="Eff\private\effBake.cpp" />
+    <ClCompile Include="Eff\private\effBillboard.cpp" />
+    <ClCompile Include="Eff\private\effBlur.cpp" />
+    <ClCompile Include="Eff\private\effDOF.cpp" />
+    <ClCompile Include="Eff\private\effGlow.cpp" />
+    <ClCompile Include="Eff\private\effLightGlow.cpp" />
+    <ClCompile Include="Eff\private\effMaskAlpha.cpp" />
+    <ClCompile Include="Eff\private\effOcclusion.cpp" />
+    <ClCompile Include="Eff\private\effOutline.cpp" />
+    <ClCompile Include="Eff\private\effParticle.cpp" />
+    <ClCompile Include="Eff\private\effPhong.cpp" />
+    <ClCompile Include="Eff\private\effPlainShaderVk.cpp" />
+    <ClCompile Include="Eff\private\effRamp.cpp" />
+    <ClCompile Include="Eff\private\effShaderArray.cpp" />
+    <ClCompile Include="Eff\private\effShaderBaseVk.cpp" />
+    <ClCompile Include="Eff\private\effShaderParamsVk.cpp" />
+    <ClCompile Include="Eff\private\effSolid.cpp" />
+    <ClCompile Include="Eff\private\effStrandHair.cpp" />
+    <ClCompile Include="Eff\private\effTextured.cpp" />
+    <ClCompile Include="G3d\private\g3dDepthMapRendererVk.cpp" />
+    <ClCompile Include="G3d\private\g3dPickBufferRendererVk.cpp" />
+    <ClCompile Include="G3d\private\g3dRSMRendererVk.cpp" />
+    <ClCompile Include="G3d\private\g3dTextureRendererVk.cpp" />
+    <ClCompile Include="G3d\private\g3dRenderCameraSpace.cpp" />
+    <ClCompile Include="G3d\private\g3dRenderScreenSpace.cpp" />
+    <ClCompile Include="G3d\private\g3dDrawStyleUtilVk.cpp" />
+    <ClCompile Include="G3d\private\g3dFogVk.cpp" />
+    <ClCompile Include="G3d\private\g3dRenderStateCache.cpp" />
+    <ClCompile Include="G3d\private\g3dSceneGlobal.cpp" />
+    <ClCompile Include="G3d\private\g3dSceneRenderUtil.cpp" />
+    <ClCompile Include="G3d\private\g3dSceneRendererVk.cpp" />
+    <ClCompile Include="G3d\private\g3dRenderPass.cpp" />
+    <ClCompile Include="shdw\private\shdwPackage.cpp" />
+    <ClCompile Include="shdw\private\shdwSceneRendererCreate.cpp" />
+    <ClCompile Include="shdw\private\shdwSceneRendererVk.cpp" />
+    <ClCompile Include="shdw\private\shdwPassTraversal.cpp" />
+    <ClCompile Include="shdw\private\shdwFrameBufferMgr.cpp" />
+    <ClCompile Include="shdw\private\shdwVelocityStateManager.cpp" />
+    <ClCompile Include="shdw\private\GlareDefVk.cpp" />
+    <ClCompile Include="shdw\private\shdwHDRRendererVk.cpp" />
+    <ClCompile Include="shdw\private\shdwShadowLayerRendererVk.cpp" />
+    <ClCompile Include="shdw\private\shdwPlanarReflectionRendererVk.cpp" />
+    <ClCompile Include="shdw\private\shdwCubeMapRendererVk.cpp" />
+    <ClCompile Include="shdw\private\shdwPassZFill.cpp" />
+    <ClCompile Include="shdw\private\shdwPassAmbient.cpp" />
+    <ClCompile Include="shdw\private\shdwPassEnvironment.cpp" />
+    <ClCompile Include="shdw\private\shdwPassEnvBackground.cpp" />
+    <ClCompile Include="shdw\private\shdwPassLit.cpp" />
+    <ClCompile Include="shdw\private\shdwPassAlphaFill.cpp" />
+    <ClCompile Include="shdw\private\shdwPassTransparent.cpp" />
+    <ClCompile Include="shdw\private\shdwPassSSAO.cpp" />
+    <ClCompile Include="shdw\private\shdwPassGlow.cpp" />
+    <ClCompile Include="shdw\private\shdwPassDOF.cpp" />
+    <ClCompile Include="shdw\private\shdwPassFog.cpp" />
+    <ClCompile Include="shdw\private\shdwPassNormals.cpp" />
+    <ClCompile Include="shdw\private\shdwPassVelocity.cpp" />
+    <ClCompile Include="shdw\private\shdwVelocityMapRendererVk.cpp" />
+    <ClCompile Include="shdw\private\shdwUVRendererVk.cpp" />
+    <ClCompile Include="shdw\private\shdwBakingRenderer.cpp" />
+    <ClCompile Include="shdw\private\shdwShadowsOnlyRendererVk.cpp" />
+    <ClCompile Include="shdw\private\shdwAOPreviewRendererVk.cpp" />
+    <ClCompile Include="shdw\private\shdwGIPreviewRendererVk.cpp" />
+    <ClCompile Include="shdw\private\shdwDepthRendererVk.cpp" />
+    <ClCompile Include="shdw\private\shdwNormalRendererVk.cpp" />
+    <ClCompile Include="shdw\private\shdwMaterialsRendererVk.cpp" />
+    <ClCompile Include="shdw\private\shdwGlowRendererVk.cpp" />
+    <ClCompile Include="shdw\private\shdwReflectionsOnlyRendererVk.cpp" />
+    <ClCompile Include="shdw\private\shdwPassMaterials.cpp" />
+    <ClCompile Include="shdw\private\shdwPassAOVolumes.cpp" />
+    <ClCompile Include="shdw\private\shdwPassSSGI.cpp" />
+    <ClCompile Include="shdw\private\shdwPassLPVGI.cpp" />
+    <ClCompile Include="shdw\private\shdwPassOutline.cpp" />
+    <ClCompile Include="shdw\private\shdwPassPostShader.cpp" />
+    <ClCompile Include="shdw\private\shdwPassDepth.cpp" />
+    <ClCompile Include="shdw\private\shdwPassToneMap.cpp" />
+    <ClCompile Include="shdw\private\shdwPassHair.cpp" />
+    <ClCompile Include="shdw\private\shdwPassOpacity.cpp" />
+    <ClCompile Include="shdw\private\shdwOpacityMapRendererVk.cpp" />
+    <ClCompile Include="G3d\private\g3dTransparencySortVk.cpp" />
+    <ClCompile Include="G3d\private\g3dVkUtil.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsVulkanLayer.hpp" />
@@ -124,18 +273,309 @@
     <ClInclude Include="vkd\vkdGlobal.hpp" />
     <ClInclude Include="vkd\vkdSwapchain.hpp" />
     <ClInclude Include="G2d\g2dWindowVk.hpp" />
+    <ClInclude Include="G2d\private\g2dWindowDrawUtilVk.hpp" />
+    <ClInclude Include="G2d\private\g2dFontUtilVk.hpp" />
+    <ClInclude Include="G2d\private\g2dSurfaceUtilVk.hpp" />
     <ClInclude Include="G2d\g2dDepthStencilBufferVk.hpp" />
+    <ClInclude Include="G2d\g2dImageCreateVk.hpp" />
+    <ClInclude Include="G2d\g2dImageSaveVk.hpp" />
+    <ClInclude Include="G2d\g2dImageVk.hpp" />
+    <ClInclude Include="G2d\g2dScreenCaptureUtilVk.hpp" />
     <ClInclude Include="G2d\g2dSystemVk.hpp" />
     <ClInclude Include="G3d\g3dSystemVk.hpp" />
     <ClInclude Include="G3d\g3dProfilerGpuVk.hpp" />
     <ClInclude Include="G3d\g3dLightMgrVk.hpp" />
-    <ClInclude Include="stub\g2dStubsVk.hpp" />
-    <ClInclude Include="stub\matStubsVk.hpp" />
-    <ClInclude Include="stub\g3dStubsVk.hpp" />
+    <ClInclude Include="G2d\g2dResourceCounterVk.hpp" />
+    <ClInclude Include="G2d\g2dDebugDisplay.hpp" />
+    <ClInclude Include="hair\hairModelFragVk.hpp" />
+    <ClInclude Include="hair\HairRendererVk.hpp" />
+    <ClInclude Include="hair\hairPackage.hpp" />
+    <ClInclude Include="vkd\vkdReflect.hpp" />
+    <ClInclude Include="Fx\fxEffectDesc.hpp" />
+    <ClInclude Include="Fx\fxEffectVk.hpp" />
+    <ClInclude Include="Fx\fxEmbeddedShadersVk.hpp" />
+    <ClInclude Include="vkd\vkdState.hpp" />
+    <ClInclude Include="vkd\vkdShader.hpp" />
+    <ClInclude Include="vkd\vkdPipelineCache.hpp" />
+    <ClInclude Include="vkd\private\vkdLinkStages.hpp" />
+    <ClInclude Include="vkd\vkdContext.hpp" />
+    <ClInclude Include="vkd\vkdOcclusionQuery.hpp" />
+    <ClInclude Include="vkd\vkdBuffer.hpp" />
+    <ClInclude Include="vkd\vkdFormat.hpp" />
+    <ClInclude Include="Eff\effPlainEffectVk.hpp" />
+    <ClInclude Include="Fx\fxMaterialInstance.hpp" />
+    <ClInclude Include="Fx\fxEffectApi.hpp" />
+    <ClInclude Include="G3d\g3dBlendStateMgr.hpp" />
+    <ClInclude Include="G3d\g3dDepthStencilStateMgr.hpp" />
+    <ClInclude Include="G3d\g3dRasterizerStateMgr.hpp" />
+    <ClInclude Include="G3d\g3dStateMgr.hpp" />
+    <ClInclude Include="G2d\g2dFullscreenQuad.hpp" />
+    <ClInclude Include="Mat\matImageDecode.hpp" />
+    <ClInclude Include="Mat\matMipFilter.hpp" />
+    <ClInclude Include="Mat\private\matImageDecodeInternal.hpp" />
+    <ClInclude Include="Mat\private\matImageEncode.hpp" />
+    <ClInclude Include="G2d\g2dVkGlobal.hpp" />
+    <ClInclude Include="G2d\g2dTextureVk.hpp" />
+    <ClInclude Include="G2d\g2dRenderTargetTextureVk.hpp" />
+    <ClInclude Include="G2d\g2dRenderTargetVk.hpp" />
+    <ClInclude Include="G3d\g3dVkTextureUtil.hpp" />
+    <ClInclude Include="Mat\matVkGlobal.hpp" />
+    <ClInclude Include="Mat\matTextureVk.hpp" />
+    <ClInclude Include="Mat\matPlainTexture.hpp" />
+    <ClInclude Include="Mat\matMipTexture.hpp" />
+    <ClInclude Include="Mat\matStaticCubeTexture.hpp" />
+    <ClInclude Include="Mat\matVolumeTexture.hpp" />
+    <ClInclude Include="Mat\matCubeRenderTargetTexture.hpp" />
+    <ClInclude Include="Mat\matShadowMap.hpp" />
+    <ClInclude Include="Mat\matReflectiveShadowMap.hpp" />
+    <ClInclude Include="Mat\matRenderTargetTexture.hpp" />
+    <ClInclude Include="Mat\matTextureMgrVk.hpp" />
+    <ClInclude Include="Mat\private\matTextureLoader.hpp" />
+    <ClInclude Include="G3d\g3dVkBufferUtil.hpp" />
+    <ClInclude Include="bump\bumpBufferUtil.hpp" />
+    <ClInclude Include="bump\bumpBumpRenderer.hpp" />
+    <ClInclude Include="bump\bumpFragmentCreate.hpp" />
+    <ClInclude Include="bump\bumpPackage.hpp" />
+    <ClInclude Include="bump\bumpTriMeshBumpFrag.hpp" />
+    <ClInclude Include="bump\bumpVertexBuffer.hpp" />
+    <ClInclude Include="bump\private\bumpVertexDecl.hpp" />
+    <ClInclude Include="may\mayFragCreate.hpp" />
+    <ClInclude Include="may\mayPackage.hpp" />
+    <ClInclude Include="tmesh\tmeshFrag.hpp" />
+    <ClInclude Include="tmesh\tmeshIndexBuffer.hpp" />
+    <ClInclude Include="tmesh\tmeshPackage.hpp" />
+    <ClInclude Include="tmesh\tmeshVertexBuffer.hpp" />
+    <ClInclude Include="Eff\effBake.hpp" />
+    <ClInclude Include="Eff\effBillboard.hpp" />
+    <ClInclude Include="Eff\effBlur.hpp" />
+    <ClInclude Include="Eff\effDOF.hpp" />
+    <ClInclude Include="Eff\effGlow.hpp" />
+    <ClInclude Include="Eff\effLightGlow.hpp" />
+    <ClInclude Include="Eff\effMaskAlpha.hpp" />
+    <ClInclude Include="Eff\effOcclusion.hpp" />
+    <ClInclude Include="Eff\effOutline.hpp" />
+    <ClInclude Include="Eff\effParticle.hpp" />
+    <ClInclude Include="Eff\effPhong.hpp" />
+    <ClInclude Include="Eff\effPlainShaderVk.hpp" />
+    <ClInclude Include="Eff\effRamp.hpp" />
+    <ClInclude Include="Eff\effShaderArray.hpp" />
+    <ClInclude Include="Eff\effShaderBaseVk.hpp" />
+    <ClInclude Include="Eff\effShaderParamsVk.hpp" />
+    <ClInclude Include="Eff\effSolid.hpp" />
+    <ClInclude Include="Eff\effStrandHair.hpp" />
+    <ClInclude Include="Eff\effTextured.hpp" />
+    <ClInclude Include="G3d\g3dDepthMapRendererVk.hpp" />
+    <ClInclude Include="G3d\g3dPickBufferRendererVk.hpp" />
+    <ClInclude Include="G3d\g3dRSMRendererVk.hpp" />
+    <ClInclude Include="G3d\g3dTextureRendererVk.hpp" />
+    <ClInclude Include="G3d\g3dRenderCameraSpace.hpp" />
+    <ClInclude Include="G3d\g3dRenderScreenSpace.hpp" />
+    <ClInclude Include="G3d\g3dDrawStyleUtilVk.hpp" />
+    <ClInclude Include="G3d\g3dFogVk.hpp" />
+    <ClInclude Include="G3d\g3dRenderStateCache.hpp" />
+    <ClInclude Include="G3d\g3dSceneGlobal.hpp" />
+    <ClInclude Include="G3d\g3dSceneRenderUtil.hpp" />
+    <ClInclude Include="G3d\g3dSceneRendererVk.hpp" />
+    <ClInclude Include="G3d\g3dRenderPass.hpp" />
+    <ClInclude Include="shdw\shdwPackage.hpp" />
+    <ClInclude Include="shdw\shdwSceneRendererCreate.hpp" />
+    <ClInclude Include="shdw\shdwSceneRendererVk.hpp" />
+    <ClInclude Include="shdw\shdwPassTraversal.hpp" />
+    <ClInclude Include="shdw\shdwFrameBufferMgr.hpp" />
+    <ClInclude Include="shdw\shdwVelocityStateManager.hpp" />
+    <ClInclude Include="shdw\private\GlareDefVk.h" />
+    <ClInclude Include="shdw\shdwHDRRendererVk.hpp" />
+    <ClInclude Include="shdw\shdwShadowLayerRendererVk.hpp" />
+    <ClInclude Include="shdw\shdwPlanarReflectionRendererVk.hpp" />
+    <ClInclude Include="shdw\shdwCubeMapRendererVk.hpp" />
+    <ClInclude Include="shdw\shdwPassZFill.hpp" />
+    <ClInclude Include="shdw\shdwPassAmbient.hpp" />
+    <ClInclude Include="shdw\shdwPassEnvironment.hpp" />
+    <ClInclude Include="shdw\shdwPassEnvBackground.hpp" />
+    <ClInclude Include="shdw\shdwPassLit.hpp" />
+    <ClInclude Include="shdw\shdwPassAlphaFill.hpp" />
+    <ClInclude Include="shdw\shdwPassTransparent.hpp" />
+    <ClInclude Include="shdw\shdwPassSSAO.hpp" />
+    <ClInclude Include="shdw\shdwPassGlow.hpp" />
+    <ClInclude Include="shdw\shdwPassDOF.hpp" />
+    <ClInclude Include="shdw\shdwPassFog.hpp" />
+    <ClInclude Include="shdw\shdwPassNormals.hpp" />
+    <ClInclude Include="shdw\shdwPassVelocity.hpp" />
+    <ClInclude Include="shdw\shdwVelocityMapRendererVk.hpp" />
+    <ClInclude Include="shdw\shdwUVRendererVk.hpp" />
+    <ClInclude Include="shdw\shdwBakingRenderer.hpp" />
+    <ClInclude Include="shdw\shdwShadowsOnlyRendererVk.hpp" />
+    <ClInclude Include="shdw\shdwAOPreviewRendererVk.hpp" />
+    <ClInclude Include="shdw\shdwGIPreviewRendererVk.hpp" />
+    <ClInclude Include="shdw\shdwDepthRendererVk.hpp" />
+    <ClInclude Include="shdw\shdwNormalRendererVk.hpp" />
+    <ClInclude Include="shdw\shdwMaterialsRendererVk.hpp" />
+    <ClInclude Include="shdw\shdwGlowRendererVk.hpp" />
+    <ClInclude Include="shdw\shdwReflectionsOnlyRendererVk.hpp" />
+    <ClInclude Include="shdw\shdwPassMaterials.hpp" />
+    <ClInclude Include="shdw\shdwPassAOVolumes.hpp" />
+    <ClInclude Include="shdw\shdwPassSSGI.hpp" />
+    <ClInclude Include="shdw\shdwPassLPVGI.hpp" />
+    <ClInclude Include="shdw\shdwPassOutline.hpp" />
+    <ClInclude Include="shdw\shdwPassPostShader.hpp" />
+    <ClInclude Include="shdw\shdwPassDepth.hpp" />
+    <ClInclude Include="shdw\shdwPassToneMap.hpp" />
+    <ClInclude Include="shdw\shdwPassHair.hpp" />
+    <ClInclude Include="shdw\shdwPassOpacity.hpp" />
+    <ClInclude Include="shdw\shdwOpacityMapRendererVk.hpp" />
+    <ClInclude Include="G3d\g3dTransparencySortVk.hpp" />
+    <ClInclude Include="G3d\g3dVkUtil.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vcpkg.json" />
     <None Include="vcpkg-configuration.json" />
+    <None Include="Fx\private\EmbedShadersVk.ps1" />
+    <None Include="Eff\private\Shaders\DumpToTexture.hlsl" />
+    <None Include="Eff\private\Shaders\FinalPass.hlsl" />
+    <None Include="Eff\private\Shaders\GenRays.hlsl" />
+    <None Include="Eff\private\Shaders\HDRLighting.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Anisotropic.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Anisotropic.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Bake.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Bake.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Blinn.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Blinn.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\BlinnReflection.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\BlinnReflection.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\BlinnSkin.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\BlinnSkin.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\CarPaint.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\CarPaint.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Cartoon.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Cartoon.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Default.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Default.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\FC3DBlinn.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\FC3DBlinn.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\FC3DPhong.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\FC3DPhong.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\FC3DPhongTransparent.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\FC3DPhongTransparent.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\FC3DSpecularFresnel.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\FC3DSpecularFresnel.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\FC3DSubSurfaceScatter_wBlinnSpecular.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\FC3DSubSurfaceScatter_wBlinnSpecular.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Globals.hlsli" />
+    <None Include="Eff\private\Shaders\Materials\Hair_SH.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Hair_SH.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Lambert.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Lambert.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Lighting.hlsli" />
+    <None Include="Eff\private\Shaders\Materials\Phong.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Phong.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\PhongReflection.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\PhongReflection.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Phong_wBump.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Phong_wBump.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Simple.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Simple.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Skin.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Skin.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Skinning.hlsli" />
+    <None Include="Eff\private\Shaders\Materials\SpecularFresnel.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\SpecularFresnel.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\SubSurfaceScatter.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\SubSurfaceScatter.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\SubSurfaceScatter_wBlinnSpecular.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\SubSurfaceScatter_wBlinnSpecular.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Support.hlsli" />
+    <None Include="Eff\private\Shaders\Materials\SupportHair.hlsli" />
+    <None Include="Eff\private\ShadersVk\IsolineTessFactors.vulkan-only.hlsli" />
+    <None Include="Eff\private\ShadersVk\Hair_SH.vulkan-only.hlsl" />
+    <None Include="Eff\private\ShadersVk\HairDefault.vulkan-only.hlsl" />
+    <None Include="Eff\private\ShadersVk\OpacityRender.vulkan-only.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Tessellate.hlsli" />
+    <None Include="Eff\private\Shaders\Materials\testtess.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\testtess.hlsl" />
+    <None Include="Eff\private\Shaders\PostEffect\BlackAndWhite.effect.json" />
+    <None Include="Eff\private\Shaders\PostEffect\BlackAndWhite.hlsl" />
+    <None Include="Eff\private\Shaders\PostEffect\GradientMap.effect.json" />
+    <None Include="Eff\private\Shaders\PostEffect\GradientMap.hlsl" />
+    <None Include="Eff\private\Shaders\PostEffect\Helper.hlsli" />
+    <None Include="Eff\private\Shaders\PostEffect\Sepia.effect.json" />
+    <None Include="Eff\private\Shaders\PostEffect\Sepia.hlsl" />
+    <None Include="Eff\private\Shaders\PostEffect\Sketch.effect.json" />
+    <None Include="Eff\private\Shaders\PostEffect\Sketch.hlsl" />
+    <None Include="Eff\private\Shaders\PostProcess.hlsl" />
+    <None Include="Eff\private\Shaders\RayTraceCS.hlsl" />
+    <None Include="Eff\private\Shaders\Special\AAEdgeFilter.effect.json" />
+    <None Include="Eff\private\Shaders\Special\AAEdgeFilter.hlsl" />
+    <None Include="Eff\private\Shaders\Special\AOVolumes.effect.json" />
+    <None Include="Eff\private\Shaders\Special\AOVolumes.hlsl" />
+    <None Include="Eff\private\Shaders\Special\Billboard.effect.json" />
+    <None Include="Eff\private\Shaders\Special\Billboard.hlsl" />
+    <None Include="Eff\private\Shaders\Special\Blur.effect.json" />
+    <None Include="Eff\private\Shaders\Special\Blur.hlsl" />
+    <None Include="Eff\private\Shaders\Special\Brushstroke.effect.json" />
+    <None Include="Eff\private\Shaders\Special\Brushstroke.hlsl" />
+    <None Include="Eff\private\Shaders\Special\DOF.effect.json" />
+    <None Include="Eff\private\Shaders\Special\DOF.hlsl" />
+    <None Include="Eff\private\Shaders\Special\DepthMap.effect.json" />
+    <None Include="Eff\private\Shaders\Special\DepthMap.hlsl" />
+    <None Include="Eff\private\Shaders\Special\DepthRender.effect.json" />
+    <None Include="Eff\private\Shaders\Special\DepthRender.hlsl" />
+    <None Include="Eff\private\Shaders\Special\EnvBackground.effect.json" />
+    <None Include="Eff\private\Shaders\Special\EnvBackground.hlsl" />
+    <None Include="Eff\private\Shaders\Special\Fog.effect.json" />
+    <None Include="Eff\private\Shaders\Special\Fog.hlsl" />
+    <None Include="Eff\private\Shaders\Special\GIVolumes.effect.json" />
+    <None Include="Eff\private\Shaders\Special\GIVolumes.hlsl" />
+    <None Include="Eff\private\Shaders\Special\Glow.effect.json" />
+    <None Include="Eff\private\Shaders\Special\Glow.hlsl" />
+    <None Include="Eff\private\Shaders\Special\HDRLighting.effect.json" />
+    <None Include="Eff\private\Shaders\Special\HDRLighting.hlsl" />
+    <None Include="Eff\private\Shaders\Special\HairDefault.effect.json" />
+    <None Include="Eff\private\Shaders\Special\HairDefault.hlsl" />
+    <None Include="Eff\private\Shaders\Special\IlluminationOnly.effect.json" />
+    <None Include="Eff\private\Shaders\Special\IlluminationOnly.hlsl" />
+    <None Include="Eff\private\Shaders\Special\LPV_GI.effect.json" />
+    <None Include="Eff\private\Shaders\Special\LPV_GI.hlsl" />
+    <None Include="Eff\private\Shaders\Special\LightGlow.effect.json" />
+    <None Include="Eff\private\Shaders\Special\LightGlow.hlsl" />
+    <None Include="Eff\private\Shaders\Special\MapNormalsToScreen.hlsl" />
+    <None Include="Eff\private\Shaders\Special\MaskAlpha.effect.json" />
+    <None Include="Eff\private\Shaders\Special\MaskAlpha.hlsl" />
+    <None Include="Eff\private\Shaders\Special\MotionBlur.effect.json" />
+    <None Include="Eff\private\Shaders\Special\MotionBlur.hlsl" />
+    <None Include="Eff\private\Shaders\Special\NormalMap.effect.json" />
+    <None Include="Eff\private\Shaders\Special\NormalMap.hlsl" />
+    <None Include="Eff\private\Shaders\Special\OpacityRender.effect.json" />
+    <None Include="Eff\private\Shaders\Special\OpacityRender.hlsl" />
+    <None Include="Eff\private\Shaders\Special\Outline.effect.json" />
+    <None Include="Eff\private\Shaders\Special\Outline.hlsl" />
+    <None Include="Eff\private\Shaders\Special\Particle.effect.json" />
+    <None Include="Eff\private\Shaders\Special\Particle.hlsl" />
+    <None Include="Eff\private\Shaders\Special\PostAlphaMatte.effect.json" />
+    <None Include="Eff\private\Shaders\Special\PostAlphaMatte.hlsl" />
+    <None Include="Eff\private\Shaders\Special\Ramp.effect.json" />
+    <None Include="Eff\private\Shaders\Special\Ramp.hlsl" />
+    <None Include="Eff\private\Shaders\Special\ReflectiveShadowMap.effect.json" />
+    <None Include="Eff\private\Shaders\Special\ReflectiveShadowMap.hlsl" />
+    <None Include="Eff\private\Shaders\Special\ShadowsOnly.effect.json" />
+    <None Include="Eff\private\Shaders\Special\ShadowsOnly.hlsl" />
+    <None Include="Eff\private\Shaders\Special\Solid.effect.json" />
+    <None Include="Eff\private\Shaders\Special\Solid.hlsl" />
+    <None Include="Eff\private\Shaders\Special\VelocityRender.effect.json" />
+    <None Include="Eff\private\Shaders\Special\VelocityRender.hlsl" />
+    <None Include="Eff\private\Shaders\Special\ssaoBilateralBlurEngine.effect.json" />
+    <None Include="Eff\private\Shaders\Special\ssaoBilateralBlurEngine.hlsl" />
+    <None Include="Eff\private\Shaders\Special\ssaoMultiHorizonBasedAO.effect.json" />
+    <None Include="Eff\private\Shaders\Special\ssaoMultiHorizonBasedAO.hlsl" />
+    <None Include="Eff\private\Shaders\Special\ssgiMultiHorizonBasedGI.effect.json" />
+    <None Include="Eff\private\Shaders\Special\ssgiMultiHorizonBasedGI.hlsl" />
+    <None Include="G2d\private\Shaders\FullscreenQuadVS.hlsl" />
+    <None Include="G2d\private\Shaders\TexturedQuadPS.hlsl" />
+    <None Include="G2d\private\Shaders\FullscreenQuad.effect.json" />
+    <None Include="G2d\private\Shaders\TexturedQuad.effect.json" />
+    <None Include="G2d\private\Shaders\FontVS.hlsl" />
+    <None Include="G2d\private\Shaders\FontPS.hlsl" />
+    <None Include="G2d\private\Shaders\FontVS.effect.json" />
+    <None Include="G2d\private\Shaders\FontPS.effect.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">
@@ -146,4 +586,34 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <!-- The built-in shaders: GraphicsDX11's HLSL, copied unchanged to Eff\private\Shaders
+       (plus the Vulkan-only wrappers in Eff\private\ShadersVk, for stages DXC can't compile from the copy).
+       Fx\private\EmbedShadersVk.ps1 compiles every entry point the *.effect.json manifests
+       list with DXC to SPIR-V and embeds it with the manifests (included by
+       Fx\private\fxEmbeddedShadersVk.cpp). DXC comes from this project's vcpkg packages. -->
+  <PropertyGroup>
+    <VkShaderDir>$(MSBuildThisFileDirectory)Eff\private\Shaders</VkShaderDir>
+    <VkShaderScript>$(MSBuildThisFileDirectory)Fx\private\EmbedShadersVk.ps1</VkShaderScript>
+    <VkShaderOutput>$(MSBuildThisFileDirectory)Fx\private\Generated\fxEmbeddedShadersVk.inc</VkShaderOutput>
+    <VkDxc>$(MSBuildThisFileDirectory)vcpkg_installed\x64-windows\x64-windows\tools\directx-dxc\dxc.exe</VkDxc>
+  </PropertyGroup>
+  <ItemGroup>
+    <VkShaderInput Include="$(VkShaderDir)\**\*.hlsl;$(VkShaderDir)\**\*.hlsli;$(VkShaderDir)\**\*.effect.json;$(MSBuildThisFileDirectory)Eff\private\ShadersVk\*.hlsl*;$(VkShaderScript)" />
+  </ItemGroup>
+  <Target Name="EmbedVkShaders" BeforeTargets="ClCompile" AfterTargets="VcpkgInstallManifestDependencies" Inputs="@(VkShaderInput)" Outputs="$(VkShaderOutput)">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(VkShaderScript)&quot; -ShaderDir &quot;$(VkShaderDir)&quot; -OutFile &quot;$(VkShaderOutput)&quot; -Dxc &quot;$(VkDxc)&quot;" />
+  </Target>
+  <!-- g2dFullscreenQuad's shaders (GraphicsVulkan only; DX11 compiles them from strings at run
+       time), embedded the same way as table g2dQuadShadersVk (included by
+       G2d\private\g2dFullscreenQuad.cpp). -->
+  <PropertyGroup>
+    <VkQuadShaderDir>$(MSBuildThisFileDirectory)G2d\private\Shaders</VkQuadShaderDir>
+    <VkQuadShaderOutput>$(MSBuildThisFileDirectory)Fx\private\Generated\g2dQuadShadersVk.inc</VkQuadShaderOutput>
+  </PropertyGroup>
+  <ItemGroup>
+    <VkQuadShaderInput Include="$(VkQuadShaderDir)\*.hlsl;$(VkQuadShaderDir)\*.effect.json;$(VkShaderScript)" />
+  </ItemGroup>
+  <Target Name="EmbedVkQuadShaders" BeforeTargets="ClCompile" AfterTargets="VcpkgInstallManifestDependencies" Inputs="@(VkQuadShaderInput)" Outputs="$(VkQuadShaderOutput)">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(VkShaderScript)&quot; -ShaderDir &quot;$(VkQuadShaderDir)&quot; -OutFile &quot;$(VkQuadShaderOutput)&quot; -Dxc &quot;$(VkDxc)&quot; -TableName g2dQuadShadersVk" />
+  </Target>
 </Project>

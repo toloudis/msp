@@ -72,6 +72,11 @@ public:
 	void CollectPasses(std::vector<ePassType>& o_Passes);
 
 	//--------------------------------------------------------------------
+	// Turn on the given passes and turn off all others (-capPasses)
+	//--------------------------------------------------------------------
+	void SetPasses(const std::vector<ePassType>& i_Passes);
+
+	//--------------------------------------------------------------------
 	// Modify prefs flags relevant to the given pass type
 	//--------------------------------------------------------------------
 	static void AdjustPrefs(ePassType i_Pass, g3dPrefs::g3dRenderPrefs& o_Prefs);

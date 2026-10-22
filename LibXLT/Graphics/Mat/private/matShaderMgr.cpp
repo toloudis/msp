@@ -43,6 +43,9 @@ namespace
 	// cache of loaded user shaders
 	std::map<fsLocator, matShaderEffect*> l_LoadedShaders;
 
+	// incremented each time the effects above are deleted
+	int l_Generation = 0;
+
 	// the built-in shaders offered in the shader pickers
 	std::vector<matShaderInfo> l_MaterialShaders;
 	std::vector<matShaderInfo> l_PostEffectShaders;
@@ -85,6 +88,8 @@ namespace
 
 		l_MaterialShaders.clear();
 		l_PostEffectShaders.clear();
+
+		l_Generation++;
 	}
 
 	//----------------------------------------------------------------------------
@@ -183,6 +188,34 @@ void Initialize()
 void DeInitialize()
 {
 	clear_map();
+}
+
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
+int GetGeneration()
+{
+	return l_Generation;
+}
+
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
+matShaderEffect* FindEffect(const fsLocator& i_ShaderName)
+{
+	// as a tokenized fsLocator (a name set from one string isn't)
+	itString name;
+	fsLocator shaderLoc;
+	fsFileUtil::LocatorToUnicodeString(i_ShaderName, name);
+	fsFileUtil::UnicodeStringToLocator(name, shaderLoc);
+
+	std::map<std::string, matShaderInfo>::iterator it =
+		find_shader(itStringUtil::GetStdString(shaderLoc.GetLastName()));
+	if (it != l_ShaderMap.end())
+		return it->second.m_pEffect;
+
+	std::map<fsLocator, matShaderEffect*>::iterator it2 = l_LoadedShaders.find(shaderLoc);
+	if (it2 != l_LoadedShaders.end())
+		return it2->second;
+	return NULL;
 }
 
 //------------------------------------------------------------------------

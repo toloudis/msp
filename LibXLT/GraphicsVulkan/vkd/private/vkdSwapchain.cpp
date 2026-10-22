@@ -10,6 +10,7 @@
 #endif
 #ifndef GVK_VKDDEVICE_HPP
 #include "GraphicsVulkan/vkd/vkdDevice.hpp"
+#include "GraphicsVulkan/vkd/vkdImage.hpp"
 #endif
 #ifndef GVK_VKDCHECK_HPP
 #include "GraphicsVulkan/vkd/vkdCheck.hpp"
@@ -96,6 +97,12 @@ namespace gvk
 
 	vkdSwapchain::~vkdSwapchain()
 	{
+		if (m_bAcquired)
+		{
+			//	the device holds the acquire wait for its next submission:
+			//	submit it now, before the semaphore goes
+			m_Device.Submit();
+		}
 		m_Device.WaitIdle();
 		destroy_images();
 		for (VkSemaphore semaphore : m_AcquireSemaphores)
@@ -114,6 +121,7 @@ namespace gvk
 
 	void vkdSwapchain::destroy_images()
 	{
+		m_Targets.clear();
 		for (VkImageView view : m_Views)
 		{
 			vkDestroyImageView(m_Device.Device(), view, NULL);
@@ -135,6 +143,11 @@ namespace gvk
 	VkImageView vkdSwapchain::View() const
 	{
 		return m_bAcquired ? m_Views[m_Current] : VK_NULL_HANDLE;
+	}
+
+	vkdImage* vkdSwapchain::Target() const
+	{
+		return m_bAcquired ? m_Targets[m_Current].get() : nullptr;
 	}
 
 	//------------------------------------------------------------------------
@@ -208,8 +221,10 @@ namespace gvk
 		info.imageColorSpace = chosen.colorSpace;
 		info.imageExtent = extent;
 		info.imageArrayLayers = 1;
+		//	sampled as DX11's swap chain is a shader input (DXGI_USAGE_SHADER_INPUT):
+		//	the HDR renderer reads the window's image back
 		info.imageUsage = (VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT |
-						   VK_IMAGE_USAGE_TRANSFER_SRC_BIT) & caps.supportedUsageFlags;
+						   VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_SAMPLED_BIT) & caps.supportedUsageFlags;
 		info.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
 		info.preTransform = caps.currentTransform;
 		info.compositeAlpha = alpha;
@@ -246,6 +261,12 @@ namespace gvk
 			VkImageView image_view = VK_NULL_HANDLE;
 			VK_CHECK(vkCreateImageView(m_Device.Device(), &view, NULL, &image_view));
 			m_Views.push_back(image_view);
+			vkdImageDesc desc;
+			desc.m_Format = m_Format;
+			desc.m_Width = extent.width;
+			desc.m_Height = extent.height;
+			desc.m_Usage = info.imageUsage;
+			m_Targets.push_back(vkdImage::Wrap(m_Device, m_Images[i], image_view, desc));
 			m_RenderDone.push_back(new_semaphore(m_Device, m_Name + " render done " + std::to_string(i)));
 		}
 		while (m_AcquireSemaphores.size() < count + 1)
@@ -310,7 +331,13 @@ namespace gvk
 			m_AcquireUsed = slot;
 			m_NextAcquire = (slot + 1) % static_cast<uint32_t>(m_AcquireSemaphores.size());
 			m_bAcquired = true;
-			//	After the acquire wait (ALL_COMMANDS in Present's submit): to
+			//	The next submission waits for the acquire (Present's, or an
+			//	earlier one: a readback mid-frame)
+			VkSemaphoreSubmitInfo wait = {VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO};
+			wait.semaphore = m_AcquireSemaphores[slot];
+			wait.stageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
+			m_Device.AddSubmitWait(wait);
+			//	After the acquire wait (ALL_COMMANDS in the next submit): to
 			//	GENERAL, discarding the old contents.
 			image_barrier(m_Device.Commands(), m_Images[m_Current],
 						  VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT, VK_ACCESS_2_NONE, VK_IMAGE_LAYOUT_UNDEFINED,
@@ -355,13 +382,12 @@ namespace gvk
 					  VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT, VK_ACCESS_2_MEMORY_WRITE_BIT, VK_IMAGE_LAYOUT_GENERAL,
 					  VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT, VK_ACCESS_2_NONE, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 
-		VkSemaphoreSubmitInfo wait = {VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO};
-		wait.semaphore = m_AcquireSemaphores[m_AcquireUsed];
-		wait.stageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
+		//	The acquire wait went with the first submission since Acquire
+		//	(this one, or a readback's): AddSubmitWait
 		VkSemaphoreSubmitInfo signal = {VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO};
 		signal.semaphore = m_RenderDone[m_Current];
 		signal.stageMask = VK_PIPELINE_STAGE_2_ALL_COMMANDS_BIT;
-		const uint64_t value = m_Device.Submit({wait}, {signal});
+		const uint64_t value = m_Device.Submit({}, {signal});
 		m_AcquireValues[m_AcquireUsed] = value;
 
 		VkPresentInfoKHR present = {VK_STRUCTURE_TYPE_PRESENT_INFO_KHR};

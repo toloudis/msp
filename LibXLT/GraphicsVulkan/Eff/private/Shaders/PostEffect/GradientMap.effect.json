@@ -1,0 +1,82 @@
+{
+  "source": "PostEffect/GradientMap.fx",
+  "hlsl": "GradientMap.hlsl",
+  "techniques": [
+    {
+      "name": "Default",
+      "passes": [
+        {
+          "name": "p0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "PS"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "samplers": {
+    "defaultSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "ANISOTROPIC",
+        "MaxAnisotropy": 16,
+        "AddressU": "WRAP",
+        "AddressV": "WRAP"
+      }
+    },
+    "gradientSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "ANISOTROPIC",
+        "MaxAnisotropy": 16,
+        "AddressU": "CLAMP",
+        "AddressV": "CLAMP"
+      }
+    }
+  },
+  "variables": {
+    "screenTexture": {
+      "type": "Texture2D"
+    },
+    "hasGradientMap": {
+      "type": "bool",
+      "default": false
+    },
+    "gradientMap": {
+      "type": "Texture2D",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "FilePicker"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Gradient Map"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "gradient map"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Properties"
+        },
+        "ExistVar": {
+          "type": "string",
+          "value": "hasGradientMap"
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 1
+        }
+      }
+    }
+  }
+}

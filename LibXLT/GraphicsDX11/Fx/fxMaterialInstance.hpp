@@ -20,6 +20,7 @@
 
 #include <cstdint>
 #include <string>
+#include <utility>
 #include <vector>
 
 class fxEffectDX11;
@@ -31,8 +32,14 @@ public:
 	static const char* const k_MaterialBuffer;
 
 	// Starts from the effect's defaults. Invalid if the effect has no such
-	// buffer.
-	fxMaterialInstance(fxEffectDX11* i_pEffect, const std::string& i_Buffer = k_MaterialBuffer);
+	// buffer. i_RendererVariables are variables of the block that the
+	// renderer sets (found by their semantic: the view matrix, the
+	// reflection map flags): Restore leaves them with the value the renderer
+	// wrote last, as the effect did before materials had their own blocks.
+	// Names not in the block are ignored.
+	fxMaterialInstance(fxEffectDX11* i_pEffect,
+					   const std::vector<std::string>& i_RendererVariables = std::vector<std::string>(),
+					   const std::string& i_Buffer = k_MaterialBuffer);
 
 	bool IsValid() const { return m_Buffer >= 0; }
 
@@ -45,4 +52,6 @@ private:
 	fxEffectDX11* m_pEffect;
 	int m_Buffer;
 	std::vector<uint8_t> m_Data;
+	// Byte ranges (offset, size) of the renderer's variables
+	std::vector<std::pair<uint32_t, uint32_t>> m_RendererRanges;
 };

@@ -17,6 +17,9 @@
 #ifndef GVK_VKDRINGBUFFER_HPP
 #include "GraphicsVulkan/vkd/vkdRingBuffer.hpp"
 #endif
+#ifndef GVK_VKDBUFFER_HPP
+#include "GraphicsVulkan/vkd/vkdBuffer.hpp"
+#endif
 #ifndef GVK_VKDIMAGE_HPP
 #include "GraphicsVulkan/vkd/vkdImage.hpp"
 #endif
@@ -29,6 +32,8 @@
 
 #include "gtBindingProtoVS.h"	// g_gtBindingProtoVS (SPIR-V, built from Shaders/gtBindingProto.hlsl)
 #include "gtBindingProtoPS.h"	// g_gtBindingProtoPS
+#include "gtStructuredReadVS.h"	// g_gtStructuredReadVS (Shaders/gtStructuredRead.hlsl)
+#include "gtStructuredReadPS.h"	// g_gtStructuredReadPS
 
 #include <cstring>
 
@@ -52,7 +57,8 @@ namespace
 				}
 				m_pRing.reset(new vkdRingBuffer(Device(), 64 * 1024));
 				m_pBindings.reset(new vkdBindings(Device()));
-				m_Pipeline = make_pipeline();
+				m_Pipeline = make_pipeline(g_gtBindingProtoVS, sizeof(g_gtBindingProtoVS),
+											g_gtBindingProtoPS, sizeof(g_gtBindingProtoPS), VK_FORMAT_R8G8B8A8_UNORM);
 			}
 
 			void TearDown() override
@@ -77,10 +83,11 @@ namespace
 				return module;
 			}
 
-			VkPipeline make_pipeline()
+			VkPipeline make_pipeline(const unsigned char* i_pVS, size_t i_VSSize, const unsigned char* i_pPS, size_t i_PSSize,
+									 VkFormat i_ColorFormat)
 			{
-				VkShaderModule vs = module(g_gtBindingProtoVS, sizeof(g_gtBindingProtoVS));
-				VkShaderModule ps = module(g_gtBindingProtoPS, sizeof(g_gtBindingProtoPS));
+				VkShaderModule vs = module(i_pVS, i_VSSize);
+				VkShaderModule ps = module(i_pPS, i_PSSize);
 				VkPipelineShaderStageCreateInfo stages[2] = {};
 				stages[0].sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 				stages[0].pNext = &m_pBindings->ShaderMapping();
@@ -114,7 +121,7 @@ namespace
 				dynamic.dynamicStateCount = 2;
 				dynamic.pDynamicStates = dynamic_states;
 
-				const VkFormat color_format = VK_FORMAT_R8G8B8A8_UNORM;
+				const VkFormat color_format = i_ColorFormat;
 				VkPipelineRenderingCreateInfo rendering = {VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO};
 				rendering.colorAttachmentCount = 1;
 				rendering.pColorAttachmentFormats = &color_format;
@@ -172,6 +179,11 @@ namespace
 			//	Draws one full-screen triangle into i_Target with the current bindings.
 			void draw(vkdImage& i_Target)
 			{
+				draw(i_Target, m_Pipeline);
+			}
+
+			void draw(vkdImage& i_Target, VkPipeline i_Pipeline)
+			{
 				VkCommandBuffer commands = Device().Commands();
 				vkdFullBarrier(commands);
 				VkRenderingAttachmentInfo color = {VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO};
@@ -185,7 +197,7 @@ namespace
 				rendering.colorAttachmentCount = 1;
 				rendering.pColorAttachments = &color;
 				vkCmdBeginRendering(commands, &rendering);
-				vkCmdBindPipeline(commands, VK_PIPELINE_BIND_POINT_GRAPHICS, m_Pipeline);
+				vkCmdBindPipeline(commands, VK_PIPELINE_BIND_POINT_GRAPHICS, i_Pipeline);
 				m_pBindings->BindHeaps(commands);
 				m_pBindings->Apply(commands, *m_pRing);
 				//	D3D's Y direction: a negative viewport height
@@ -196,6 +208,19 @@ namespace
 				vkCmdSetScissor(commands, 0, 1, &scissor);
 				vkCmdDraw(commands, 3, 1, 0, 0);
 				vkCmdEndRendering(commands);
+			}
+
+			//	A device-local buffer holding i_Size bytes of i_pData, uploaded through the ring.
+			std::unique_ptr<vkdBuffer> buffer(const char* i_Name, const void* i_pData, VkDeviceSize i_Size)
+			{
+				std::unique_ptr<vkdBuffer> buffer = vkdBuffer::Create(Device(), i_Size, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT, i_Name);
+				vkdRingBuffer::Allocation staging = m_pRing->Allocate(i_Size, 16);
+				memcpy(staging.m_pCpu, i_pData, static_cast<size_t>(i_Size));
+				VkCommandBuffer commands = Device().Commands();
+				vkdFullBarrier(commands);
+				VkBufferCopy region = {staging.m_Offset, 0, i_Size};
+				vkCmdCopyBuffer(commands, staging.m_Buffer, buffer->Buffer(), 1, &region);
+				return buffer;
 			}
 
 			std::unique_ptr<vkdImage> target(const char* i_Name)
@@ -277,6 +302,74 @@ TEST_F(gtBindings, TwoDrawsDifferentBindings)
 	expect_all(b->ReadBack(), 0, 0, 128, 255);
 }
 
+//	StructuredBuffer<float4> at t3 and StructuredBuffer<uint> at t7, next to a
+//	texture at t0, read through storage-buffer descriptors in the resource
+//	heap (the hair shaders' g_HairMaterials and g_HairGeometry). Then the null
+//	buffer at both slots reads as zeros, as a NULL view does in D3D11.
+TEST_F(gtBindings, StructuredBufferReads)
+{
+	const Float4 values[4] = {{0.25f, 1.5f, -2.0f, 0.0f}, {1.25f, 2.5f, -3.0f, 0.5f},
+							  {2.25f, 3.5f, -4.0f, 0.25f}, {3.25f, 4.5f, 1e6f, -0.75f}};
+	const uint32_t counts[4] = {7, 0, 65536, 3};
+	std::unique_ptr<vkdBuffer> value_buffer = buffer("values", values, sizeof(values));
+	std::unique_ptr<vkdBuffer> count_buffer = buffer("counts", counts, sizeof(counts));
+	std::unique_ptr<vkdImage> tex = texture("tex", 0, 0, 0, 255);
+	std::unique_ptr<vkdImage> out = vkdImage::Create2D(Device(), 4, 1, VK_FORMAT_R32G32B32A32_SFLOAT,
+		VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT, "out");
+	VkPipeline pipeline = make_pipeline(g_gtStructuredReadVS, sizeof(g_gtStructuredReadVS),
+										g_gtStructuredReadPS, sizeof(g_gtStructuredReadPS), VK_FORMAT_R32G32B32A32_SFLOAT);
+
+	m_pBindings->SetTexture(0, m_pBindings->AddImage(tex->ViewInfo(), VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE));
+	const uint32_t value_index = m_pBindings->AddBuffer(value_buffer->Address(), value_buffer->Size());
+	const uint32_t count_index = m_pBindings->AddBuffer(count_buffer->Address(), count_buffer->Size());
+	m_pBindings->SetTexture(3, value_index);
+	m_pBindings->SetTexture(7, count_index);
+	draw(*out, pipeline);
+	std::vector<uint8_t> pixels = out->ReadBack();
+	ASSERT_EQ(sizeof(values), pixels.size());
+	const float* p = reinterpret_cast<const float*>(pixels.data());
+	for (int x = 0; x < 4; ++x)
+	{
+		EXPECT_EQ(values[x].x + (float)counts[x], p[x * 4 + 0]) << "pixel " << x;
+		EXPECT_EQ(values[x].y, p[x * 4 + 1]) << "pixel " << x;
+		EXPECT_EQ(values[x].z, p[x * 4 + 2]) << "pixel " << x;
+		EXPECT_EQ(values[x].w + 1.0f, p[x * 4 + 3]) << "pixel " << x;
+	}
+
+	m_pBindings->SetTexture(3, m_pBindings->NullBufferIndex());
+	m_pBindings->SetTexture(7, m_pBindings->NullBufferIndex());
+	draw(*out, pipeline);
+	pixels = out->ReadBack();
+	p = reinterpret_cast<const float*>(pixels.data());
+	for (int x = 0; x < 4; ++x)
+	{
+		EXPECT_EQ(0.0f, p[x * 4 + 0]) << "pixel " << x;
+		EXPECT_EQ(0.0f, p[x * 4 + 1]) << "pixel " << x;
+		EXPECT_EQ(0.0f, p[x * 4 + 2]) << "pixel " << x;
+		EXPECT_EQ(1.0f, p[x * 4 + 3]) << "pixel " << x;
+	}
+
+	m_pBindings->RemoveResource(value_index);
+	m_pBindings->RemoveResource(count_index);
+	Device().WaitIdle();
+	vkDestroyPipeline(Device().Device(), pipeline, NULL);
+	EXPECT_EQ(0, m_Validation.Stats().m_Errors);
+	EXPECT_EQ(0, m_Validation.Stats().m_Warnings);
+}
+
+//	An image and a buffer share the resource heap: the index a removed buffer
+//	gave back is handed to the next image
+TEST_F(gtBindings, RemovedBufferIndexIsReusedAfterGpu)
+{
+	const uint32_t data[4] = {1, 2, 3, 4};
+	std::unique_ptr<vkdBuffer> buf = buffer("buf", data, sizeof(data));
+	const uint32_t index = m_pBindings->AddBuffer(buf->Address(), buf->Size());
+	m_pBindings->RemoveResource(index);
+	Device().WaitFor(Device().Submit());
+	std::unique_ptr<vkdImage> tex = texture("tex", 1, 2, 3, 4);
+	EXPECT_EQ(index, m_pBindings->AddImage(tex->ViewInfo(), VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE));
+}
+
 TEST_F(gtBindings, SamplerDedup)
 {
 	uint32_t first = m_pBindings->AddSampler(point_sampler());
@@ -290,7 +383,25 @@ TEST_F(gtBindings, RemovedImageIndexIsReusedAfterGpu)
 {
 	std::unique_ptr<vkdImage> tex = texture("tex", 1, 2, 3, 4);
 	uint32_t index = m_pBindings->AddImage(tex->ViewInfo(), VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE);
-	m_pBindings->RemoveImage(index);
+	m_pBindings->RemoveResource(index);
 	Device().WaitFor(Device().Submit());
 	EXPECT_EQ(index, m_pBindings->AddImage(tex->ViewInfo(), VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE));
+}
+
+//	An image removed just before its vkdBindings is destroyed: the deferred
+//	return of its index runs later, when the device destroys, and must not
+//	touch the destroyed vkdBindings (MachStudio deletes the bindings before
+//	the device, and so do tests).
+TEST_F(gtBindings, RemovalOutlivesBindings)
+{
+	std::unique_ptr<vkdImage> tex = texture("tex", 1, 2, 3, 4);
+	m_pBindings->RemoveResource(m_pBindings->AddImage(tex->ViewInfo(), VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE));
+	m_pBindings.reset();
+	tex.reset();
+	Device().WaitIdle();
+	vkDestroyPipeline(Device().Device(), m_Pipeline, NULL);
+	m_pRing.reset();
+	m_pDevice.reset();		// runs the deferred removal; with the bug: use after free (hang or crash)
+	EXPECT_EQ(0, m_Validation.Stats().m_Errors);
+	EXPECT_EQ(0, m_Validation.Stats().m_Warnings);
 }

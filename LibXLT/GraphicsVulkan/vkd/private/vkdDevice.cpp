@@ -18,8 +18,12 @@
 #include "GraphicsVulkan/vkd/private/vkdVma.hpp"
 #endif
 
+#include <algorithm>
+#include <cctype>
+#include <cstdlib>
 #include <cstring>
 #include <deque>
+#include <sstream>
 
 namespace gvk
 {
@@ -81,17 +85,26 @@ namespace gvk
 		struct FeatureChain
 		{
 			VkPhysicalDeviceFeatures2						m_Features2 = {VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2};
+			VkPhysicalDeviceVulkan11Features				m_Vulkan11 = {VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES};
 			VkPhysicalDeviceVulkan12Features				m_Vulkan12 = {VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES};
 			VkPhysicalDeviceVulkan13Features				m_Vulkan13 = {VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES};
+			VkPhysicalDeviceVulkan14Features				m_Vulkan14 = {VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_4_FEATURES};
 			VkPhysicalDeviceDescriptorHeapFeaturesEXT		m_Heap = {VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DESCRIPTOR_HEAP_FEATURES_EXT};
 			VkPhysicalDeviceUnifiedImageLayoutsFeaturesKHR	m_Unified = {VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_UNIFIED_IMAGE_LAYOUTS_FEATURES_KHR};
 
-			//	The extension structs are chained only when the device has the extension.
-			void Link(bool i_bHeap, bool i_bUnified)
+			//	The extension structs are chained only when the device has the
+			//	extension, the 1.4 one only on a 1.4 device.
+			void Link(bool i_bVulkan14, bool i_bHeap, bool i_bUnified)
 			{
-				m_Features2.pNext = &m_Vulkan12;
+				m_Features2.pNext = &m_Vulkan11;
+				m_Vulkan11.pNext = &m_Vulkan12;
 				m_Vulkan12.pNext = &m_Vulkan13;
 				void** next = &m_Vulkan13.pNext;
+				if (i_bVulkan14)
+				{
+					*next = &m_Vulkan14;
+					next = &m_Vulkan14.pNext;
+				}
 				if (i_bHeap)
 				{
 					*next = &m_Heap;
@@ -103,6 +116,52 @@ namespace gvk
 					next = &m_Unified.pNext;
 				}
 				*next = NULL;
+			}
+
+			//	Every feature vkdRequiredFeatures() can name, by that name
+			VkBool32* Find(const std::string& i_Name)
+			{
+				VkPhysicalDeviceFeatures& core = m_Features2.features;
+				const struct { const char* m_pName; VkBool32* m_pValue; } features[] =
+				{
+					{"geometryShader",					&core.geometryShader},
+					{"tessellationShader",				&core.tessellationShader},
+					{"samplerAnisotropy",				&core.samplerAnisotropy},
+					{"fillModeNonSolid",				&core.fillModeNonSolid},
+					{"depthClamp",						&core.depthClamp},
+					{"depthBiasClamp",					&core.depthBiasClamp},
+					{"independentBlend",				&core.independentBlend},
+					{"dualSrcBlend",					&core.dualSrcBlend},
+					{"textureCompressionBC",			&core.textureCompressionBC},
+					{"imageCubeArray",					&core.imageCubeArray},
+					{"shaderImageGatherExtended",		&core.shaderImageGatherExtended},
+					{"shaderClipDistance",				&core.shaderClipDistance},
+					{"fragmentStoresAndAtomics",		&core.fragmentStoresAndAtomics},
+					{"shaderDrawParameters",			&m_Vulkan11.shaderDrawParameters},
+					{"samplerMirrorClampToEdge",		&m_Vulkan12.samplerMirrorClampToEdge},
+					{"scalarBlockLayout",				&m_Vulkan12.scalarBlockLayout},
+					{"timelineSemaphore",				&m_Vulkan12.timelineSemaphore},
+					{"bufferDeviceAddress",				&m_Vulkan12.bufferDeviceAddress},
+					{"hostQueryReset",					&m_Vulkan12.hostQueryReset},
+					{"occlusionQueryPrecise",			&core.occlusionQueryPrecise},
+					{"dynamicRendering",				&m_Vulkan13.dynamicRendering},
+					{"synchronization2",				&m_Vulkan13.synchronization2},
+					{"shaderDemoteToHelperInvocation",	&m_Vulkan13.shaderDemoteToHelperInvocation},
+					{"bresenhamLines",					&m_Vulkan14.bresenhamLines},
+					{"rectangularLines",				&m_Vulkan14.rectangularLines},
+					{"wideLines",						&core.wideLines},
+					{"descriptorHeap",					&m_Heap.descriptorHeap},
+					{"unifiedImageLayouts",				&m_Unified.unifiedImageLayouts},
+				};
+				for (const auto& feature : features)
+				{
+					if (i_Name == feature.m_pName)
+					{
+						return feature.m_pValue;
+					}
+				}
+				DBG_ASSERT(false, "vkdRequiredFeatures names a feature FeatureChain doesn't have");
+				return NULL;
 			}
 		};
 
@@ -135,28 +194,19 @@ namespace gvk
 			}
 
 			FeatureChain chain;
-			chain.Link(listed(info.m_Extensions, VK_EXT_DESCRIPTOR_HEAP_EXTENSION_NAME),
+			chain.Link(properties.apiVersion >= VK_API_VERSION_1_4,
+					   listed(info.m_Extensions, VK_EXT_DESCRIPTOR_HEAP_EXTENSION_NAME),
 					   listed(info.m_Extensions, VK_KHR_UNIFIED_IMAGE_LAYOUTS_EXTENSION_NAME));
 			if (properties.apiVersion >= VK_API_VERSION_1_3)
 			{
 				vkGetPhysicalDeviceFeatures2(i_Physical, &chain.m_Features2);
 			}
-			const struct { const char* m_pName; VkBool32 m_bValue; } features[] =
+			for (const std::string& name : vkdRequiredFeatures())
 			{
-				{"geometryShader",		chain.m_Features2.features.geometryShader},
-				{"tessellationShader",	chain.m_Features2.features.tessellationShader},
-				{"dynamicRendering",	chain.m_Vulkan13.dynamicRendering},
-				{"synchronization2",	chain.m_Vulkan13.synchronization2},
-				{"timelineSemaphore",	chain.m_Vulkan12.timelineSemaphore},
-				{"bufferDeviceAddress",	chain.m_Vulkan12.bufferDeviceAddress},
-				{"descriptorHeap",		chain.m_Heap.descriptorHeap},
-				{"unifiedImageLayouts",	chain.m_Unified.unifiedImageLayouts},
-			};
-			for (const auto& feature : features)
-			{
-				if (feature.m_bValue)
+				const VkBool32* value = chain.Find(name);
+				if (value && *value)
 				{
-					info.m_Features.push_back(feature.m_pName);
+					info.m_Features.push_back(name);
 				}
 			}
 			return info;
@@ -197,6 +247,14 @@ namespace gvk
 		Slot						m_Slots[c_FramesInFlight];
 		uint32_t					m_Slot = 0;
 		bool						m_bOpen = false;
+		//	waits the next Submit adds (AddSubmitWait)
+		std::vector<VkSemaphoreSubmitInfo>	m_PendingWaits;
+		std::function<void()>		m_RecordingHook;
+		bool						m_bInHook = false;
+		std::vector<std::pair<int, std::function<void(const vkdImage*)>>>	m_ImageDestroyHooks;
+		int							m_NextImageDestroyHook = 1;
+		std::vector<std::pair<int, std::function<void(const vkdBuffer*)>>>	m_BufferDestroyHooks;
+		int							m_NextBufferDestroyHook = 1;
 
 		struct Deferred
 		{
@@ -234,12 +292,13 @@ namespace gvk
 		}
 
 		//	Instance: validation per the policy
-		const bool want_validation = c_bDebugBuild || i_Options.m_bValidation || i_Options.m_bGpuAssisted;
+		const bool want_validation = c_bDebugBuild || i_Options.m_bValidation || i_Options.m_bGpuAssisted ||
+									 i_Options.m_bBestPractices;
 		m_bValidating = want_validation;
 		if (want_validation && !has_layer(c_ValidationLayer))
 		{
 			o_Error = std::string(c_ValidationLayer) + " isn't installed, and " +
-					  (c_bDebugBuild ? "Debug builds always validate" : "validation was asked for (-gfxValidation)") +
+					  (c_bDebugBuild ? "Debug builds always validate" : "validation was asked for (-gfxValidation or MSP_GFX_VK_VALIDATION)") +
 					  "; install the Vulkan SDK.";
 			return false;
 		}
@@ -272,12 +331,24 @@ namespace gvk
 		messenger_info.pfnUserCallback = &vkdValidation::Callback;
 		messenger_info.pUserData = m_pValidation;
 
-		const VkBool32 c_True = VK_TRUE;
+		const VkBool32 c_True = VK_TRUE, c_False = VK_FALSE;
 		std::vector<VkLayerSettingEXT> settings;
 		settings.push_back({c_ValidationLayer, "validate_sync", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &c_True});
 		if (i_Options.m_bGpuAssisted)
 		{
 			settings.push_back({c_ValidationLayer, "gpuav_enable", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &c_True});
+			//	GPU-AV's vertex-fetch bounds check is off: in SDK 1.4.350 it
+			//	checks every indexed draw of a command buffer against the
+			//	vertex buffer of the last one, so a draw with fewer vertices
+			//	after a bigger one reports the bigger one's in-range indices
+			//	as out of bounds (vkdBufferGpuAvTest reproduces it with the
+			//	check on). Turn it back on once the layer is fixed.
+			settings.push_back({c_ValidationLayer, "gpuav_vertex_attribute_fetch_oob", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &c_False});
+		}
+		if (i_Options.m_bBestPractices)
+		{
+			settings.push_back({c_ValidationLayer, "validate_best_practices", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &c_True});
+			settings.push_back({c_ValidationLayer, "validate_best_practices_nvidia", VK_LAYER_SETTING_TYPE_BOOL32_EXT, 1, &c_True});
 		}
 		VkLayerSettingsCreateInfoEXT settings_info = {VK_STRUCTURE_TYPE_LAYER_SETTINGS_CREATE_INFO_EXT};
 		settings_info.settingCount = static_cast<uint32_t>(settings.size());
@@ -364,15 +435,14 @@ namespace gvk
 
 		//	Device: exactly the required features and extensions
 		FeatureChain chain;
-		chain.Link(true, true);
-		chain.m_Features2.features.geometryShader = VK_TRUE;
-		chain.m_Features2.features.tessellationShader = VK_TRUE;
-		chain.m_Vulkan12.timelineSemaphore = VK_TRUE;
-		chain.m_Vulkan12.bufferDeviceAddress = VK_TRUE;
-		chain.m_Vulkan13.dynamicRendering = VK_TRUE;
-		chain.m_Vulkan13.synchronization2 = VK_TRUE;
-		chain.m_Heap.descriptorHeap = VK_TRUE;
-		chain.m_Unified.unifiedImageLayouts = VK_TRUE;
+		chain.Link(true, true, true);
+		for (const std::string& name : vkdRequiredFeatures())
+		{
+			if (VkBool32* value = chain.Find(name))
+			{
+				*value = VK_TRUE;
+			}
+		}
 
 		std::vector<const char*> device_extensions;
 		for (const std::string& name : vkdRequiredExtensions())
@@ -509,6 +579,43 @@ namespace gvk
 	{
 	}
 
+	void vkdApplyValidationModes(const std::string& i_Modes, vkdDeviceOptions& io_Options)
+	{
+		std::istringstream words(i_Modes);
+		std::string word;
+		while (std::getline(words, word, ','))
+		{
+			word.erase(std::remove_if(word.begin(), word.end(), [](unsigned char c) { return std::isspace(c) != 0; }), word.end());
+			std::transform(word.begin(), word.end(), word.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+			if (word == "gpu")
+			{
+				io_Options.m_bGpuAssisted = true;
+				io_Options.m_bValidation = true;
+			}
+			else if (word == "bestpractices")
+			{
+				io_Options.m_bBestPractices = true;
+				io_Options.m_bValidation = true;
+			}
+			else if (!word.empty())
+			{
+				DBG_LOG("GraphicsVulkan: MSP_GFX_VK_VALIDATION: unknown mode \"" << word << "\" ignored (use gpu, bestpractices)");
+			}
+		}
+	}
+
+	void vkdReadEnvironment(vkdDeviceOptions& io_Options)
+	{
+		if (const char* adapter = std::getenv("MSP_GFX_VK_ADAPTER"))
+		{
+			io_Options.m_AdapterOverride = adapter;
+		}
+		if (const char* modes = std::getenv("MSP_GFX_VK_VALIDATION"))
+		{
+			vkdApplyValidationModes(modes, io_Options);
+		}
+	}
+
 	vkdDevice* vkdDevice::Create(const vkdDeviceOptions& i_Options, std::string& o_Error)
 	{
 		vkdDevice* device = new vkdDevice;
@@ -560,7 +667,81 @@ namespace gvk
 			VK_CHECK(vkBeginCommandBuffer(slot.m_Commands, &begin));
 			m_pImpl->m_bOpen = true;
 		}
+		if (m_pImpl->m_RecordingHook && !m_pImpl->m_bInHook)
+		{
+			m_pImpl->m_bInHook = true;
+			m_pImpl->m_RecordingHook();
+			m_pImpl->m_bInHook = false;
+		}
 		return slot.m_Commands;
+	}
+
+	void vkdDevice::SetRecordingHook(std::function<void()> i_Hook)
+	{
+		std::lock_guard<std::recursive_mutex> lock(m_pImpl->m_StreamLock);
+		m_pImpl->m_RecordingHook = i_Hook;
+	}
+
+	int vkdDevice::AddImageDestroyHook(std::function<void(const vkdImage*)> i_Hook)
+	{
+		std::lock_guard<std::recursive_mutex> lock(m_pImpl->m_StreamLock);
+		const int id = m_pImpl->m_NextImageDestroyHook++;
+		m_pImpl->m_ImageDestroyHooks.push_back(std::make_pair(id, i_Hook));
+		return id;
+	}
+
+	void vkdDevice::RemoveImageDestroyHook(int i_Id)
+	{
+		std::lock_guard<std::recursive_mutex> lock(m_pImpl->m_StreamLock);
+		auto& hooks = m_pImpl->m_ImageDestroyHooks;
+		for (auto it = hooks.begin(); it != hooks.end(); ++it)
+		{
+			if (it->first == i_Id)
+			{
+				hooks.erase(it);
+				return;
+			}
+		}
+	}
+
+	void vkdDevice::ImageDestroyed(const vkdImage* i_pImage)
+	{
+		std::lock_guard<std::recursive_mutex> lock(m_pImpl->m_StreamLock);
+		for (const auto& hook : m_pImpl->m_ImageDestroyHooks)
+		{
+			hook.second(i_pImage);
+		}
+	}
+
+	int vkdDevice::AddBufferDestroyHook(std::function<void(const vkdBuffer*)> i_Hook)
+	{
+		std::lock_guard<std::recursive_mutex> lock(m_pImpl->m_StreamLock);
+		const int id = m_pImpl->m_NextBufferDestroyHook++;
+		m_pImpl->m_BufferDestroyHooks.push_back(std::make_pair(id, i_Hook));
+		return id;
+	}
+
+	void vkdDevice::RemoveBufferDestroyHook(int i_Id)
+	{
+		std::lock_guard<std::recursive_mutex> lock(m_pImpl->m_StreamLock);
+		auto& hooks = m_pImpl->m_BufferDestroyHooks;
+		for (auto it = hooks.begin(); it != hooks.end(); ++it)
+		{
+			if (it->first == i_Id)
+			{
+				hooks.erase(it);
+				return;
+			}
+		}
+	}
+
+	void vkdDevice::BufferDestroyed(const vkdBuffer* i_pBuffer)
+	{
+		std::lock_guard<std::recursive_mutex> lock(m_pImpl->m_StreamLock);
+		for (const auto& hook : m_pImpl->m_BufferDestroyHooks)
+		{
+			hook.second(i_pBuffer);
+		}
 	}
 
 	uint64_t vkdDevice::Submit(const std::vector<VkSemaphoreSubmitInfo>& i_Wait,
@@ -571,6 +752,9 @@ namespace gvk
 		VK_CHECK(vkEndCommandBuffer(commands));
 
 		const uint64_t value = ++m_pImpl->m_LastSubmitted;
+		std::vector<VkSemaphoreSubmitInfo> waits(i_Wait);
+		waits.insert(waits.end(), m_pImpl->m_PendingWaits.begin(), m_pImpl->m_PendingWaits.end());
+		m_pImpl->m_PendingWaits.clear();
 		std::vector<VkSemaphoreSubmitInfo> signals(i_Signal);
 		VkSemaphoreSubmitInfo timeline = {VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO};
 		timeline.semaphore = m_pImpl->m_Timeline;
@@ -581,8 +765,8 @@ namespace gvk
 		VkCommandBufferSubmitInfo command_info = {VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO};
 		command_info.commandBuffer = commands;
 		VkSubmitInfo2 submit = {VK_STRUCTURE_TYPE_SUBMIT_INFO_2};
-		submit.waitSemaphoreInfoCount = static_cast<uint32_t>(i_Wait.size());
-		submit.pWaitSemaphoreInfos = i_Wait.data();
+		submit.waitSemaphoreInfoCount = static_cast<uint32_t>(waits.size());
+		submit.pWaitSemaphoreInfos = waits.data();
 		submit.commandBufferInfoCount = 1;
 		submit.pCommandBufferInfos = &command_info;
 		submit.signalSemaphoreInfoCount = static_cast<uint32_t>(signals.size());
@@ -597,6 +781,12 @@ namespace gvk
 		m_pImpl->m_bOpen = false;
 		m_pImpl->RunDeferred(false);
 		return value;
+	}
+
+	void vkdDevice::AddSubmitWait(const VkSemaphoreSubmitInfo& i_Wait)
+	{
+		std::lock_guard<std::recursive_mutex> lock(m_pImpl->m_StreamLock);
+		m_pImpl->m_PendingWaits.push_back(i_Wait);
 	}
 
 	void vkdDevice::WaitFor(uint64_t i_TimelineValue)

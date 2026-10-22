@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Dx11">
+      <UniqueIdentifier>{3223ba1a-93aa-b8c1-b89b-641ab780d60e}</UniqueIdentifier>
+    </Filter>
     <Filter Include="G3d">
       <UniqueIdentifier>{f2a2a70d-9290-58bb-b8a0-3f1f62659745}</UniqueIdentifier>
     </Filter>
@@ -26,6 +29,9 @@
     <ClCompile Include="Vk\vkdValidationTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
+    <ClCompile Include="Vk\vkdLinkStagesTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
     <ClCompile Include="Vk\vkdRingBufferTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
@@ -35,7 +41,144 @@
     <ClCompile Include="Vk\g2dWindowVkTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
+    <ClCompile Include="Vk\g2dSystemVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
     <ClCompile Include="Vk\GraphicsVulkanLayerTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\fxShaderCopyTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Dx11\gtD3D11.cpp">
+      <Filter>Dx11</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\fxEffectVkReflectionTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\vkdPipelineCacheTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\vkdAnisotropicTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\vkdContextTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\hairVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\shdwOpacityVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\vkdIsolineTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\fxEffectVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\effPlainEffectVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="gtImage.cpp" />
+    <ClCompile Include="gtImageTest.cpp" />
+    <ClCompile Include="Vk\g2dFullscreenQuadTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\fxParityTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\vkdFormatTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\vkdImageTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\vkdBufferTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\tiffVcpkgTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="gtImageFiles.cpp" />
+    <ClCompile Include="Vk\matImageDecodeTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\matMipFilterTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="gtBackend.cpp" />
+    <ClCompile Include="Vk\matTextureMgrVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\bumpFragmentVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\effShaderVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\g3dSceneRendererVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="gtTarget.cpp" />
+    <ClCompile Include="gtScene.cpp" />
+    <ClCompile Include="gtSceneWindow.cpp" />
+    <ClCompile Include="gtRender.cpp" />
+    <ClCompile Include="Vk\shdwScaffoldingVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\shdwHDRRendererVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\shdwMaterialsVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\shdwReflectionVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\shdwShadowVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\shdwTransparentVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\shdwScreenPassesVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\shdwPreviewRenderersVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\shdwVelocityVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\g3dPickVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\shdwBakeVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\shdwDofFogVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\shdwAoGiVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\vkdOcclusionQueryTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\g2dFontVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\g2dCaptureVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\g2dImageVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\g2dImageSaveVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\g2dResourceCounterVkTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
   </ItemGroup>
@@ -45,9 +188,49 @@
     <ClInclude Include="Vk\gtVulkan.hpp">
       <Filter>Vk</Filter>
     </ClInclude>
+    <ClInclude Include="Dx11\gtD3D11.hpp">
+      <Filter>Dx11</Filter>
+    </ClInclude>
+    <ClInclude Include="gtImage.hpp" />
+    <ClInclude Include="Vk\gtVulkanContext.hpp">
+      <Filter>Vk</Filter>
+    </ClInclude>
+    <ClInclude Include="Vk\gtVulkanSuite.hpp">
+      <Filter>Vk</Filter>
+    </ClInclude>
+    <ClInclude Include="gtTarget.hpp" />
+    <ClInclude Include="gtScene.hpp" />
+    <ClInclude Include="gtImageFiles.hpp" />
+    <ClInclude Include="gtBackend.hpp" />
+    <ClInclude Include="gtSceneWindow.hpp" />
+    <ClInclude Include="gtRender.hpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Vk\Shaders\gtBindingProto.hlsl">
+      <Filter>Vk\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Vk\Shaders\gtAniso.hlsl">
+      <Filter>Vk\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Vk\Shaders\gtStructuredRead.hlsl">
+      <Filter>Vk\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Vk\Shaders\gtSolid.hlsl">
+      <Filter>Vk\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Vk\Shaders\gtLink.hlsl">
+      <Filter>Vk\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Vk\Shaders\gtTexel.hlsl">
+      <Filter>Vk\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Vk\Shaders\gtTexel3D.hlsl">
+      <Filter>Vk\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Vk\Shaders\gtLayered.hlsl">
+      <Filter>Vk\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Vk\Shaders\gtIsoline.hlsl">
       <Filter>Vk\Shaders</Filter>
     </CustomBuild>
   </ItemGroup>

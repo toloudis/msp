@@ -44,6 +44,16 @@
 **	                             repeat to add more cameras
 **	  -capWidth <pixels>         output width
 **	  -capHeight <pixels>        output height
+**	  -capStartFrame <frame>     render only from this frame on (an absolute
+**	                             frame number, as in output file names);
+**	                             narrows the scene's range, whichever way it
+**	                             is set. The frame before it is rendered too,
+**	                             not saved, so motion matches a full render.
+**	                             Unlike the other -cap* flags it isn't a
+**	                             scene setting: it holds for every render in
+**	                             the run, wherever it is on the line
+**	  -capEndFrame <frame>       render only up to this frame (included); as
+**	                             -capStartFrame
 **	  -capOutputFile <tags>      output file name, made of text and tags such
 **	                             as <SceneFilename>, <CameraName>,
 **	                             <RenderLayerName>, <RenderPassName> and
@@ -52,6 +62,30 @@
 **	                             output root; may use the same tags
 **	  -capOutputPathRoot <dir>   output root folder for relative output
 **	                             folders
+**	  -capSampling <n>           supersampling: n x n samples per pixel, 1 to
+**	                             8 (1 = none); how they are taken is
+**	                             -capJitter's
+**	  -capJitter off             take the samples on a regular grid (the
+**	                             frame is rendered n times the size and
+**	                             scaled down)
+**	  -capJitter <filter> <width>
+**	                             take jittered samples, accumulated with this
+**	                             filter (Box, Gaussian, Mitchell, Triangle,
+**	                             Sinc, Lanczos, Blackman-Harris or
+**	                             Catmull-Rom) and width in pixels (above 0,
+**	                             at most 8)
+**	  -capMotionSamples <n>      motion samples per frame, 1 to 16 (kept with
+**	                             the scene; renders ignore it for now, motion
+**	                             blur is turned off in the renderer)
+**	  -capPasses <pass,...>      render these passes, by the scene's pass
+**	                             names (by default BTY, DIFF, SPEC, AO, GI, Z,
+**	                             SHDW, ILLUM, NOR, MAT, WIRE, MTL, REFL, VEL,
+**	                             BLOOM, STAR, DOF, PREV, EMI, SPECENV,
+**	                             SPECLIT, DIFFENV, DIFFLIT, GLOW), in every
+**	                             render layer; the others are turned off.
+**	                             RenderMan passes (COLBL) are skipped with a
+**	                             warning: GPU renders can't make them
+**	  -capHardwareAA on|off      the renderer's own antialiasing (HDR AA)
 **
 **	Graphics
 **	  -gfx dx11|vulkan           graphics backend; default dx11. If Vulkan
@@ -111,9 +145,16 @@ struct mainCommandLine
 		e_CapCamera,		// -capCamera <camera>: also render from this camera
 		e_CapWidth,			// -capWidth <pixels>: output width
 		e_CapHeight,		// -capHeight <pixels>: output height
+		e_CapStartFrame,	// -capStartFrame <frame>: render only from this frame on
+		e_CapEndFrame,		// -capEndFrame <frame>: render only up to this frame
 		e_CapOutputFile,	// -capOutputFile <tags>: output file name (text and tags)
 		e_CapOutputPath,	// -capOutputPath <tags>: output folder
 		e_CapOutputPathRoot,// -capOutputPathRoot <dir>: root for relative output folders
+		e_CapSampling,		// -capSampling <n>: n x n samples per pixel ("1" to "8")
+		e_CapJitter,		// -capJitter off | <filter> <width>: "off", or "<Filter> <width>" with the filter's own spelling (SplitJitter)
+		e_CapMotionSamples,	// -capMotionSamples <n>: motion samples per frame ("1" to "16")
+		e_CapPasses,		// -capPasses <pass,...>: the passes to render, by name (MatchPasses)
+		e_CapHardwareAA,	// -capHardwareAA on|off: "on" or "off"
 		e_New,				// -new: start a new, empty scene
 		e_License,			// -license <key>: validate a license key
 		e_Version,			// -version: print the version
@@ -146,4 +187,27 @@ struct mainCommandLine
 	//	as the reference at the top of this file). Lines end with '\n'.
 	//------------------------------------------------------------------------
 	static const char* HelpText();
+
+	//------------------------------------------------------------------------
+	//	SplitJitter - an e_CapJitter value: false for "off", else true with
+	//	the filter (captRenderOutputData::eFilterFunc's order: Box,
+	//	Gaussian, Mitchell, Triangle, Sinc, Lanczos, Blackman-Harris,
+	//	Catmull-Rom) and the width.
+	//------------------------------------------------------------------------
+	static bool SplitJitter(const std::string& i_Value, int& o_Filter, float& o_Width);
+
+	//------------------------------------------------------------------------
+	//	MatchPasses - an e_CapPasses value against the scene's pass names
+	//	(i_PassNames[t] is pass type t's name, from
+	//	captRenderOutputDataUtil::GetRenderPassName): o_Passes gets the
+	//	pass types named, each once, in pass-type order. Names match
+	//	without regard to case. Names of the pass types in i_Refused
+	//	(RenderMan passes) are left out and listed in o_Skipped. An unknown
+	//	name fails the whole list (false, o_Passes empty, the name in
+	//	o_Unknown), and so does a list with nothing left (false, o_Unknown
+	//	empty).
+	//------------------------------------------------------------------------
+	static bool MatchPasses(const std::string& i_List, const std::vector<std::string>& i_PassNames,
+							const std::vector<int>& i_Refused, std::vector<int>& o_Passes,
+							std::string& o_Unknown, std::vector<std::string>& o_Skipped);
 };

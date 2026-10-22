@@ -201,6 +201,11 @@ mainInitGraphics::mainInitGraphics(int i_AppWidth,
 #else
 		void* hWnd = appApplication::GetMainWindowHandle();
 #endif
+#ifdef BATCH_MODE
+		// RenderNode never shows its windows: Vulkan renders them without
+		// swap chains (DX11 ignores this)
+		l_GfxOptions.m_bHeadless = true;
+#endif
 		if (!layer.Init(hWnd, l_GfxOptions))
 		{
 			throw gfx_layer_init_failed();
@@ -435,7 +440,8 @@ mainInitGraphics::~mainInitGraphics()
 		if (GraphicsVulkanLayer::IsValidating())
 		{
 			const gvk::vkdValidationStats stats = GraphicsVulkanLayer::GetValidationStats();
-			std::cerr << "Vulkan validation: " << stats.m_Errors << " errors, " << stats.m_Warnings << " warnings" << std::endl;
+			std::cerr << "Vulkan validation: " << stats.m_Errors << " errors, " << stats.m_Warnings << " warnings, "
+					  << stats.m_BestPractices << " best-practices notes" << std::endl;
 		}
 		else
 		{

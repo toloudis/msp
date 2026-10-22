@@ -52,7 +52,11 @@ namespace captRenderOutputDataUtil
 		//	render output object
 		//
 		static captRenderOutputObject* l_DataObject = 0;
-		
+
+		//	the frame window (-1: no limit)
+		int l_FrameWindowStart = -1;
+		int l_FrameWindowEnd = -1;
+
 		//====================================================================
 		//====================================================================
 		class CaptureNameResolver : public pythProperty::NameResolver
@@ -200,6 +204,51 @@ namespace captRenderOutputDataUtil
 	void SetCaptureHeight(int i_Height)
 	{
 		l_DataObject->m_Data.m_nHeight.SetValue(i_Height);
+	}
+
+	//------------------------------------------------------------------------
+	// Set the sampling
+	//------------------------------------------------------------------------
+	void SetCaptureSampling(int i_Sampling)
+	{
+		l_DataObject->m_Data.m_nCaptureSampling.SetValue(i_Sampling);
+	}
+	void SetJitteredSampling(bool i_bJittered)
+	{
+		l_DataObject->m_Data.m_bJitteredSampling.SetValue(i_bJittered);
+	}
+	void SetJitterFilter(int i_Filter, float i_Width)
+	{
+		l_DataObject->m_Data.m_FilterFunc.SetValue(i_Filter);
+		l_DataObject->m_Data.m_FilterWidth.SetValue(i_Width);
+	}
+	void SetMotionSamples(int i_Samples)
+	{
+		l_DataObject->m_Data.m_nMotionSamplesPerFrame.SetValue(i_Samples);
+	}
+	void SetHardwareAA(bool i_bHardwareAA)
+	{
+		l_DataObject->m_Data.m_bHardwareAA.SetValue(i_bHardwareAA);
+	}
+
+	//------------------------------------------------------------------------
+	// The frame window
+	//------------------------------------------------------------------------
+	void SetFrameWindowStart(int i_Frame)
+	{
+		l_FrameWindowStart = i_Frame;
+	}
+	void SetFrameWindowEnd(int i_Frame)
+	{
+		l_FrameWindowEnd = i_Frame;
+	}
+	int GetFrameWindowStart()
+	{
+		return l_FrameWindowStart;
+	}
+	int GetFrameWindowEnd()
+	{
+		return l_FrameWindowEnd;
 	}
 
 	//------------------------------------------------------------------------

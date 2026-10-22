@@ -113,7 +113,7 @@ g2dFontHandle LoadFont(const itString& i_Name, int i_Size)
 	}
 
 	DBG_ASSERT(l_pImpl, "No font util implementation.");
-	g2dFontHandle Font;
+	g2dFontHandle Font = NULL;
 	if (l_pImpl)
 		Font = l_pImpl->LoadFont(i_Name, i_Size);
 	l_FontMap[FontKeyStruct(i_Name, i_Size)] = FontValueStruct(Font);
@@ -148,7 +148,8 @@ void ReleaseFont(g2dFontHandle i_Handle)
 	{
 		if (i_Handle == i->second.m_Font)
 		{
-			if (!((i->second.m_RefCount)--))
+			// the last user: unload it (an entry starts with a count of 1)
+			if (--(i->second.m_RefCount) == 0)
 			{
 				DBG_ASSERT(l_pImpl, "No font util implementation.");
 				if (l_pImpl)
