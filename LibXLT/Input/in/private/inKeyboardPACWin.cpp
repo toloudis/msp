@@ -16,7 +16,9 @@ namespace inKeyboardPAC
 namespace
 {
 
-enum { e_EXTENDED = 0x100 };
+// Extended keys are 0xE000 | scan code (their E0 prefix), as Qt and
+// MapVirtualKey give them
+enum { e_EXTENDED = 0xE000 };
 
 }
 

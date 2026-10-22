@@ -29,10 +29,11 @@ namespace twxInputFeed
 
 #ifdef __WXMSW__
 			// The raw flags are the key message's lParam: the scan code is
-			// in bits 16-23, and bit 24 is set for extended keys
+			// in bits 16-23, and bit 24 is set for extended keys, which
+			// inKeyboard takes with their E0 prefix (0xE000 | scan code)
 			const wxUint32 flags = i_Event.GetRawKeyFlags();
 			const unsigned int scan_code = (flags >> 16) & 0xFF;
-			const unsigned int extended = ((flags >> 24) & 1) ? 0x100 : 0;
+			const unsigned int extended = ((flags >> 24) & 1) ? 0xE000 : 0;
 			if (scan_code != 0)
 				pKeyboard->SetNativeKeyState(scan_code | extended, i_bDown);
 #else

@@ -78,7 +78,8 @@ public:
 	//========================================================================
 	//	SetNativeKeyState records a key going down or up, given the
 	//	platform's scan code for it (on Windows, the scan code from the
-	//	key message, plus 0x100 for extended keys). Keys we don't know
+	//	key message, with the E0 prefix of extended keys as 0xE000, as
+	//	MapVirtualKey's MAPVK_VK_TO_VSC_EX gives it). Keys we don't know
 	//	are ignored.
 	//========================================================================
 	void SetNativeKeyState(unsigned int i_NativeScanCode, bool i_bDown);

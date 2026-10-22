@@ -5,6 +5,7 @@ LibXLT/bin/
 UnitTests/bin/
 UnitTests/**/*.vcxproj.user
 vcpkg_installed/
+graphify-out/
 LibXLT/GraphicsDX11/Fx/private/Generated/
 LibXLT/GraphicsVulkan/Fx/private/Generated/
 # The run directories MainApp builds into, one per configuration

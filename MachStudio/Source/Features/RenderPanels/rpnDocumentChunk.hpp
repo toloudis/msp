@@ -92,6 +92,12 @@ public:
 	virtual void  SetInactive( bool i_bUpdateData );
 
 	//--------------------------------------------------------------------
+	//  This virtual function is called on all chunks after all
+	//	chunks have finished loading successfully
+	//--------------------------------------------------------------------
+	virtual void  NotifyLoadFinished();
+
+	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------
 	void SetupPaths();
 

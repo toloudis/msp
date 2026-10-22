@@ -12,6 +12,11 @@
 #else
 #include "Features/RenderPanels/wxGUI/rpnPanelGrid.hpp"
 #endif
+#ifdef MSP_GUI_QT
+#include "Features/RenderPanels/qtGUI/rpnRenderPanel.hpp"
+#else
+#include "Features/RenderPanels/wxGUI/rpnRenderPanel.hpp"
+#endif
 
 #include "Core/ch/chReader.hpp"
 #include "Core/ch/chWriter.hpp"
@@ -148,6 +153,22 @@ void  rpnDocumentChunk::SetActive()
 void  rpnDocumentChunk::SetInactive( bool i_bUpdateData )
 {
 	if (sm_pActiveChunk == this) sm_pActiveChunk = NULL;
+}
+
+//--------------------------------------------------------------------
+//  The cameras are loaded now, possibly after SetActive attached the
+// camera manipulator, so attach it again to take up the loaded
+// camera position. Otherwise the first drag snaps the camera back.
+//--------------------------------------------------------------------
+void  rpnDocumentChunk::NotifyLoadFinished()
+{
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
+	if (rpnPanelGrid::Instance != NULL)
+	{
+		for (int i=0; i<4; ++i)
+			rpnPanelGrid::Instance->GetRenderPanel(i)->ConfirmCameraManip();
+	}
+#endif
 }
 
 //--------------------------------------------------------------------
