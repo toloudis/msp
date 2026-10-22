@@ -49,6 +49,8 @@ namespace gvk
 			o_Error = shader->m_Name + ": the SPIR-V is for another stage";
 			return nullptr;
 		}
+		const uint32_t* words = static_cast<const uint32_t*>(i_pSpirv);
+		shader->m_Spirv.assign(words, words + i_Size / sizeof(uint32_t));
 		if (i_pDevice)
 		{
 			VkShaderModuleCreateInfo info = {VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO};

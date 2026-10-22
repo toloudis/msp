@@ -6,6 +6,7 @@
     "volk",
     "vulkan-memory-allocator",
     "spirv-reflect",
+    "spirv-tools",
     "directx-dxc",
     "nlohmann-json",
     "tiff",

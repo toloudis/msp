@@ -39,4 +39,10 @@ namespace gtBackend
 	//	Run(e_Vulkan, ...) with g3dGfxOptions::m_bHeadless, as RenderNode
 	//	starts the layer: windows have no swap chain
 	bool RunVulkanHeadless(const std::function<void()>& i_Function);
+
+	//	Run(e_Vulkan, ...) with vkdPipelineCache::SetTrimOutputs(false),
+	//	validation off in Release, and warnings not counted (the producers'
+	//	unconsumed outputs are warnings): the reference that trimmed runs
+	//	are compared with
+	bool RunVulkanUntrimmed(const std::function<void()>& i_Function);
 }

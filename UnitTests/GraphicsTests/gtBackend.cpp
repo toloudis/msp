@@ -23,6 +23,9 @@
 #ifndef GVK_VKDVALIDATIONSTATS_HPP
 #include "GraphicsVulkan/vkd/vkdValidationStats.hpp"
 #endif
+#ifndef GVK_VKDPIPELINECACHE_HPP
+#include "GraphicsVulkan/vkd/vkdPipelineCache.hpp"
+#endif
 #ifndef G3D_GFXOPTIONS_HPP
 #include "Graphics/G3d/g3dGfxOptions.hpp"
 #endif
@@ -41,6 +44,7 @@ namespace
 	gtBackend::Kind l_Current = gtBackend::e_DX11;
 	bool l_bRunning = false;
 	bool l_bHeadless = false;
+	bool l_bUntrimmed = false;
 
 	//	GTEST_SKIP's effect from a function that returns a value
 	void skip(const std::string& i_Why)
@@ -102,7 +106,7 @@ namespace
 	{
 		g3dGfxOptions options;
 		options.m_Backend = g3dGfxOptions::e_Vulkan;
-		options.m_bValidation = true;
+		options.m_bValidation = !l_bUntrimmed;
 		options.m_bHeadless = l_bHeadless;
 		if (!GraphicsVulkanLayer::Init(i_pWindow, options))
 		{
@@ -120,7 +124,10 @@ namespace
 
 		const gvk::vkdValidationStats stats = GraphicsVulkanLayer::GetValidationStats();
 		EXPECT_EQ(0, stats.m_Errors) << "Vulkan validation errors (see the log)";
-		EXPECT_EQ(0, stats.m_Warnings) << "Vulkan validation warnings (see the log)";
+		//	untrimmed, the unconsumed outputs are warnings (Debug builds
+		//	validate whatever the options say)
+		if (!l_bUntrimmed)
+			EXPECT_EQ(0, stats.m_Warnings) << "Vulkan validation warnings (see the log)";
 		return true;
 	}
 }
@@ -155,5 +162,15 @@ bool gtBackend::RunVulkanHeadless(const std::function<void()>& i_Function)
 	l_bHeadless = true;
 	const bool ran = Run(e_Vulkan, i_Function);
 	l_bHeadless = false;
+	return ran;
+}
+
+bool gtBackend::RunVulkanUntrimmed(const std::function<void()>& i_Function)
+{
+	l_bUntrimmed = true;
+	gvk::vkdPipelineCache::SetTrimOutputs(false);
+	const bool ran = Run(e_Vulkan, i_Function);
+	gvk::vkdPipelineCache::SetTrimOutputs(true);
+	l_bUntrimmed = false;
 	return ran;
 }

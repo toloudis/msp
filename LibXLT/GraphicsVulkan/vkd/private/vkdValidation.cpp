@@ -56,16 +56,8 @@ namespace gvk
 		//	    for its instrumentation (int64, buffer stores, ...)
 		//	  WARNING-GPU-Assisted-Validation: GPU-AV enlarges the descriptor
 		//	    heap's reserved range for itself ("Internal Warning")
-		//	and one finding that is valid usage, inherent in the unchanged
-		//	GraphicsDX11 shaders:
-		//	  WARNING-Shader-OutputNotConsumed: a vertex shader writes an
-		//	    output the pixel shader of the pass doesn't read (e.g.
-		//	    DepthRender's shared vertex shaders). Vulkan and D3D11 both
-		//	    allow it; the shaders can't change (GraphicsVulkan design,
-		//	    "Shaders"). Reading an input nothing writes still counts.
 		static const char* const c_LayerNotices[] =
 		{
-			"WARNING-Shader-OutputNotConsumed",
 			"VALIDATION-SETTINGS",
 			"WARNING-Setting-Limit-Adjusted",
 			"WARNING-GPU-Assisted-Validation",

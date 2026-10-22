@@ -164,6 +164,7 @@
     <ClCompile Include="Vk\g2dImageVkTest.cpp" />
     <ClCompile Include="Vk\g2dImageSaveVkTest.cpp" />
     <ClCompile Include="Vk\g2dResourceCounterVkTest.cpp" />
+    <ClCompile Include="Vk\vkdLinkStagesTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />
@@ -196,6 +197,11 @@
       <AdditionalInputs>$(GtShadersVk)\IsolineTessFactors.vulkan-only.hlsli</AdditionalInputs>
     </CustomBuild>
     <CustomBuild Include="Vk\Shaders\gtSolid.hlsl" />
+    <!-- also a pixel shader PSAll -->
+    <CustomBuild Include="Vk\Shaders\gtLink.hlsl">
+      <Command>$(GtDxc) -T vs_6_0 -E VSMain -Vn g_%(Filename)VS -Fh "$(IntDir)%(Filename)VS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -T ps_6_0 -E PSMain -Vn g_%(Filename)PS -Fh "$(IntDir)%(Filename)PS.h" "%(FullPath)" &amp;&amp; $(GtDxc) -T ps_6_0 -E PSAll -Vn g_%(Filename)AllPS -Fh "$(IntDir)%(Filename)AllPS.h" "%(FullPath)"</Command>
+      <Outputs>$(IntDir)%(Filename)VS.h;$(IntDir)%(Filename)PS.h;$(IntDir)%(Filename)AllPS.h</Outputs>
+    </CustomBuild>
     <CustomBuild Include="Vk\Shaders\gtStructuredRead.hlsl" />
     <CustomBuild Include="Vk\Shaders\gtTexel.hlsl" />
     <CustomBuild Include="Vk\Shaders\gtTexel3D.hlsl">

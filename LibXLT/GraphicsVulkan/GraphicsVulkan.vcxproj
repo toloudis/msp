@@ -67,7 +67,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
     <Lib>
-      <AdditionalDependencies>volk.lib;spirv-reflect-static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>volk.lib;spirv-reflect-static.lib;SPIRV-Tools-opt.lib;SPIRV-Tools.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(GvkVcpkgLib);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
@@ -123,6 +123,7 @@
     <ClCompile Include="Fx\private\fxEmbeddedShadersVk.cpp" />
     <ClCompile Include="vkd\private\vkdShader.cpp" />
     <ClCompile Include="vkd\private\vkdPipelineCache.cpp" />
+    <ClCompile Include="vkd\private\vkdLinkStages.cpp" />
     <ClCompile Include="vkd\private\vkdContext.cpp" />
     <ClCompile Include="vkd\private\vkdOcclusionQuery.cpp" />
     <ClCompile Include="vkd\private\vkdBuffer.cpp" />
@@ -296,6 +297,7 @@
     <ClInclude Include="vkd\vkdState.hpp" />
     <ClInclude Include="vkd\vkdShader.hpp" />
     <ClInclude Include="vkd\vkdPipelineCache.hpp" />
+    <ClInclude Include="vkd\private\vkdLinkStages.hpp" />
     <ClInclude Include="vkd\vkdContext.hpp" />
     <ClInclude Include="vkd\vkdOcclusionQuery.hpp" />
     <ClInclude Include="vkd\vkdBuffer.hpp" />

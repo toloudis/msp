@@ -29,6 +29,9 @@
     <ClCompile Include="Vk\vkdValidationTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
+    <ClCompile Include="Vk\vkdLinkStagesTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
     <ClCompile Include="Vk\vkdRingBufferTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
@@ -213,6 +216,9 @@
       <Filter>Vk\Shaders</Filter>
     </CustomBuild>
     <CustomBuild Include="Vk\Shaders\gtSolid.hlsl">
+      <Filter>Vk\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Vk\Shaders\gtLink.hlsl">
       <Filter>Vk\Shaders</Filter>
     </CustomBuild>
     <CustomBuild Include="Vk\Shaders\gtTexel.hlsl">

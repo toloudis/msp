@@ -190,6 +190,9 @@
     <ClCompile Include="vkd\private\vkdPipelineCache.cpp">
       <Filter>vkd\private</Filter>
     </ClCompile>
+    <ClCompile Include="vkd\private\vkdLinkStages.cpp">
+      <Filter>vkd\private</Filter>
+    </ClCompile>
     <ClCompile Include="vkd\private\vkdContext.cpp">
       <Filter>vkd\private</Filter>
     </ClCompile>
@@ -603,6 +606,9 @@
       <Filter>vkd</Filter>
     </ClInclude>
     <ClInclude Include="vkd\private\vkdVma.hpp">
+      <Filter>vkd\private</Filter>
+    </ClInclude>
+    <ClInclude Include="vkd\private\vkdLinkStages.hpp">
       <Filter>vkd\private</Filter>
     </ClInclude>
     <ClInclude Include="vkd\vkdDevice.hpp">

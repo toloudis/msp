@@ -10,8 +10,10 @@
 #include "GraphicsVulkan/vkd/vkdCheck.hpp"
 #include "GraphicsVulkan/vkd/vkdDevice.hpp"
 #include "GraphicsVulkan/vkd/vkdShader.hpp"
+#include "GraphicsVulkan/vkd/private/vkdLinkStages.hpp"
 
 #include <algorithm>
+#include <atomic>
 #include <cctype>
 #include <cstring>
 #include <filesystem>
@@ -26,6 +28,7 @@ namespace gvk
 	{
 		std::mutex						s_LiveLock;
 		std::vector<vkdPipelineCache*>	s_Live;
+		std::atomic<bool>				s_bTrimOutputs(true);
 
 		//	FNV-1a over the bytes of one value
 		template <class T> void hash(size_t& io_Hash, const T& i_Value)
@@ -213,6 +216,10 @@ namespace gvk
 		{
 			destroy_later(entry.second.m_Pipeline);
 		}
+		for (auto& linked : m_Linked)
+		{
+			destroy_later(linked.second);
+		}
 		vkDestroyPipelineCache(m_Device.Device(), m_Cache, NULL);
 	}
 
@@ -328,6 +335,12 @@ namespace gvk
 		return m_Creations;
 	}
 
+	uint64_t vkdPipelineCache::Trimmed() const
+	{
+		std::lock_guard<std::mutex> lock(m_Lock);
+		return m_Trimmed;
+	}
+
 	void vkdPipelineCache::destroy_later(VkPipeline i_Pipeline)
 	{
 		if (i_Pipeline)
@@ -340,6 +353,58 @@ namespace gvk
 		}
 	}
 
+	void vkdPipelineCache::destroy_later(VkShaderModule i_Module)
+	{
+		if (i_Module)
+		{
+			VkDevice device = m_Device.Device();
+			m_Device.DeferDestroy([device, i_Module]()
+			{
+				vkDestroyShaderModule(device, i_Module, NULL);
+			});
+		}
+	}
+
+	void vkdPipelineCache::SetTrimOutputs(bool i_bTrim)
+	{
+		s_bTrimOutputs = i_bTrim;
+	}
+
+	bool vkdPipelineCache::TrimOutputs()
+	{
+		return s_bTrimOutputs;
+	}
+
+	VkShaderModule vkdPipelineCache::linked_module(const vkdShader& i_Producer, const vkdShader& i_Consumer)
+	{
+		const std::pair<uint64_t, uint64_t> pair(i_Producer.Id(), i_Consumer.Id());
+		auto found = m_Linked.find(pair);
+		if (found != m_Linked.end())
+		{
+			return found->second ? found->second : i_Producer.Module();
+		}
+		VkShaderModule module = VK_NULL_HANDLE;
+		const std::vector<uint32_t> trimmed = vkdTrimUnconsumedOutputs(i_Producer.Spirv(), i_Consumer.Spirv());
+		if (trimmed != i_Producer.Spirv())
+		{
+			VkShaderModuleCreateInfo info = {VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO};
+			info.codeSize = trimmed.size() * sizeof(uint32_t);
+			info.pCode = trimmed.data();
+			if (VK_CHECK(vkCreateShaderModule(m_Device.Device(), &info, NULL, &module)) != VK_SUCCESS)
+			{
+				module = VK_NULL_HANDLE;		// use the producer as it is
+			}
+			else
+			{
+				const std::string name = std::string(i_Producer.Name()) + " for " + i_Consumer.Name();
+				m_Device.SetName(VK_OBJECT_TYPE_SHADER_MODULE, reinterpret_cast<uint64_t>(module), name.c_str());
+				m_Trimmed++;
+			}
+		}
+		m_Linked[pair] = module;
+		return module ? module : i_Producer.Module();
+	}
+
 	void vkdPipelineCache::Evict(uint64_t i_ShaderId)
 	{
 		std::lock_guard<std::mutex> lock(m_Lock);
@@ -350,6 +415,18 @@ namespace gvk
 			{
 				destroy_later(it->second.m_Pipeline);
 				it = m_Pipelines.erase(it);
+			}
+			else
+			{
+				++it;
+			}
+		}
+		for (auto it = m_Linked.begin(); it != m_Linked.end(); )
+		{
+			if (it->first.first == i_ShaderId || it->first.second == i_ShaderId)
+			{
+				destroy_later(it->second);
+				it = m_Linked.erase(it);
 			}
 			else
 			{
@@ -422,6 +499,22 @@ namespace gvk
 		{
 			DBG_LOG("vkdPipelineCache: " << name << ": no vertex shader");
 			return VK_NULL_HANDLE;
+		}
+
+		//	The last pre-rasterization stage (geometry, else domain, else
+		//	vertex shader) linked to the pixel shader: stages[] holds the
+		//	present stages in order, so it is the one before the last
+		const uint32_t c_PS = vkdPipelineKey::c_Stages - 1;
+		if (s_bTrimOutputs && i_Stages[c_PS] && stageCount > 1)
+		{
+			for (uint32_t s = c_PS; s-- > 0; )
+			{
+				if (i_Stages[s])
+				{
+					stages[stageCount - 2].module = linked_module(*i_Stages[s], *i_Stages[c_PS]);
+					break;
+				}
+			}
 		}
 
 		//	Vertex inputs, matched to the layout by semantic, as CreateInputLayout does

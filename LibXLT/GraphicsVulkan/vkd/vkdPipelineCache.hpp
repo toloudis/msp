@@ -15,6 +15,13 @@
 **	- Vertex inputs are matched to the layout by semantic and index, as
 **	  D3D11's CreateInputLayout does; an input the layout doesn't supply
 **	  fails the pipeline (logged), as it fails in D3D11.
+**	- The stage that feeds the pixel shader (geometry, else domain, else
+**	  vertex shader) is linked to it as D3D11 does: a copy of it, made
+**	  once per pair of shaders, has no outputs at locations the pixel
+**	  shader doesn't declare (vkdTrimUnconsumedOutputs, which explains
+**	  why and what changes). The image is the same; the validation layer
+**	  just has no unconsumed outputs to warn about. SetTrimOutputs(false)
+**	  turns this off (tests compare the two).
 **	- The driver's pipeline cache data is saved to a file and loaded at
 **	  start, so pipelines from earlier runs are quick to create. A file
 **	  from another GPU or driver, or a damaged one, is ignored (logged).
@@ -39,6 +46,7 @@
 #include <mutex>
 #include <string>
 #include <unordered_map>
+#include <utility>
 
 namespace gvk
 {
@@ -96,8 +104,14 @@ namespace gvk
 			//	Writes the driver's cache data to the file (via a .tmp file). false if it can't.
 			bool Save();
 
+			//	Whether new pipelines link their stages (default true)
+			static void	SetTrimOutputs(bool i_bTrim);
+			static bool	TrimOutputs();
+
 			size_t		Count() const;
 			uint64_t	Creations() const;
+			//	Producers made with outputs removed (one per pair of shaders)
+			uint64_t	Trimmed() const;
 			//	false when there was no file, or it was rejected
 			bool		LoadedFromFile() const		{ return m_bLoaded; }
 
@@ -109,6 +123,9 @@ namespace gvk
 							  const vkdVertexLayout* i_pLayout);
 			void load();
 			void destroy_later(VkPipeline i_Pipeline);
+			void destroy_later(VkShaderModule i_Module);
+			//	i_Producer's module for a pipeline with i_Consumer as pixel shader
+			VkShaderModule linked_module(const vkdShader& i_Producer, const vkdShader& i_Consumer);
 
 			vkdDevice&		m_Device;
 			vkdBindings&	m_Bindings;
@@ -116,7 +133,13 @@ namespace gvk
 			VkPipelineCache	m_Cache = VK_NULL_HANDLE;
 			bool			m_bLoaded = false;
 			uint64_t		m_Creations = 0;
+			uint64_t		m_Trimmed = 0;
 			std::unordered_map<vkdPipelineKey, Entry, KeyHash> m_Pipelines;
+			//	Trimmed producers by (producer id, consumer id); VK_NULL_HANDLE
+			//	when the producer is used as it is
+			struct PairHash { size_t operator () (const std::pair<uint64_t, uint64_t>& i_Pair) const
+							  { return std::hash<uint64_t>()(i_Pair.first * 1099511628211ull ^ i_Pair.second); } };
+			std::unordered_map<std::pair<uint64_t, uint64_t>, VkShaderModule, PairHash> m_Linked;
 			mutable std::mutex m_Lock;
 	};
 }

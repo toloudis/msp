@@ -44,6 +44,8 @@ namespace gvk
 			const char*					Entry() const		{ return m_Entry.c_str(); }
 			const char*					Name() const		{ return m_Name.c_str(); }
 			const vkdShaderReflection&	Reflection() const	{ return m_Reflection; }
+			//	The SPIR-V words (vkdPipelineCache trims a producer's outputs from them)
+			const std::vector<uint32_t>& Spirv() const		{ return m_Spirv; }
 			//	Vertex shaders: the inputs a vertex layout must supply
 			const std::vector<vkdShaderInput>& Inputs() const { return m_Reflection.m_Inputs; }
 
@@ -59,5 +61,6 @@ namespace gvk
 			std::string			m_Entry;
 			std::string			m_Name;
 			vkdShaderReflection	m_Reflection;
+			std::vector<uint32_t> m_Spirv;
 	};
 }
