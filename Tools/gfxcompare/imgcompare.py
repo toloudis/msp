@@ -4,7 +4,9 @@ Images load as float32 HxWxC: PNG (8 or 16 bit) normalized to [0, 1], PFM as
 stored. Errors are absolute per-channel differences over RGB (alpha only when
 both images have it). A frame passes when its largest error is within
 Tolerance.max_err and at most Tolerance.max_pct_over percent of its pixels
-have an error above Tolerance.pixel_err. A frame's number is the digits at
+have an error above Tolerance.pixel_err. A tolerance can also limit the
+percent of pixels over a second, larger error (strong_err, max_pct_strong)
+and the mean error (max_mean_err); Tolerance.lod() uses them. A frame's number is the digits at
 the end of its file name (RenderNode's <0000> tag); a folder comparison can
 be limited to a window of frame numbers.
 """
@@ -25,6 +27,19 @@ class Tolerance:
     max_err: float = 2 / 255
     pixel_err: float = 1 / 255
     max_pct_over: float = 0.1          # percent of pixels
+    strong_err: float | None = None    # per-pixel error counted as 'strong'; None: no such limit
+    max_pct_strong: float = 0.0        # percent of pixels over strong_err
+    max_mean_err: float | None = None  # None: no limit
+
+    @staticmethod
+    def lod() -> "Tolerance":
+        """For frames with textures seen at an angle, rendered by different APIs (DX11
+        and Vulkan): the driver computes a texture's level of detail differently per
+        API, which gives low-level noise over textured surfaces and isolated large
+        errors where an alpha-tested texture's cutout flips. Measured on the test
+        scenes (README.md, "Tolerance")."""
+        return Tolerance(max_err=1.0, pixel_err=4 / 255, max_pct_over=0.5,
+                         strong_err=16 / 255, max_pct_strong=0.04, max_mean_err=0.6 / 255)
 
 
 @dataclass
@@ -35,6 +50,7 @@ class FrameResult:
     max_err: float
     mean_err: float
     pct_over: float
+    pct_strong: float = 0.0            # percent of pixels over Tolerance.strong_err (0 without one)
 
 
 def _load_pfm(path: Path) -> np.ndarray:
@@ -89,12 +105,17 @@ def compare_images(a: np.ndarray, b: np.ndarray, tol: Tolerance, name: str) -> F
     max_err = float(err.max())
     mean_err = float(err.mean())
     pct_over = float((err > tol.pixel_err + 1e-9).mean() * 100.0)
+    pct_strong = 0.0 if tol.strong_err is None else float((err > tol.strong_err + 1e-9).mean() * 100.0)
     reasons = []
     if max_err > tol.max_err + 1e-9:
         reasons.append(f"max_err {max_err * 255:.2f}/255 > {tol.max_err * 255:.2f}/255")
     if pct_over > tol.max_pct_over:
         reasons.append(f"pct_over {pct_over:.3f}% > {tol.max_pct_over}%")
-    return FrameResult(name, not reasons, "; ".join(reasons), max_err, mean_err, pct_over)
+    if tol.strong_err is not None and pct_strong > tol.max_pct_strong:
+        reasons.append(f"pct_strong {pct_strong:.4f}% > {tol.max_pct_strong}% (over {tol.strong_err * 255:.2f}/255)")
+    if tol.max_mean_err is not None and mean_err > tol.max_mean_err + 1e-9:
+        reasons.append(f"mean_err {mean_err * 255:.3f}/255 > {tol.max_mean_err * 255:.3f}/255")
+    return FrameResult(name, not reasons, "; ".join(reasons), max_err, mean_err, pct_over, pct_strong)
 
 
 def diff_image(a: np.ndarray, b: np.ndarray) -> np.ndarray:

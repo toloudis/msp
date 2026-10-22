@@ -31,13 +31,25 @@ def _fmt(v, spec=".3f"):
     return "-" if v is None else format(v, spec)
 
 
-def _frame_table(results: list[FrameResult]) -> list[str]:
-    lines = ["| frame | result | max err (/255) | mean err (/255) | % over | reason |",
-             "|---|---|---|---|---|---|"]
+def _frame_table(results: list[FrameResult], tol: Tolerance) -> list[str]:
+    strong = tol.strong_err is not None
+    lines = ["| frame | result | max err (/255) | mean err (/255) | % over |" + (" % strong |" if strong else "")
+             + " reason |", "|---|---|---|---|---|" + ("---|" if strong else "") + "---|"]
     for r in sorted(results, key=lambda r: (r.passed, r.name)):
         lines.append(f"| {r.name} | {'pass' if r.passed else '**FAIL**'} | {r.max_err * 255:.2f} | "
-                     f"{r.mean_err * 255:.3f} | {r.pct_over:.3f} | {r.reason} |")
+                     f"{r.mean_err * 255:.3f} | {r.pct_over:.3f} |" + (f" {r.pct_strong:.4f} |" if strong else "")
+                     + f" {r.reason} |")
     return lines
+
+
+def _tolerance_text(tol: Tolerance, name: str) -> str:
+    text = (f"{name}: max error {tol.max_err * 255:.2f}/255; at most {tol.max_pct_over}% of pixels "
+            f"over {tol.pixel_err * 255:.2f}/255")
+    if tol.strong_err is not None:
+        text += f"; at most {tol.max_pct_strong}% over {tol.strong_err * 255:.2f}/255"
+    if tol.max_mean_err is not None:
+        text += f"; mean error at most {tol.max_mean_err * 255:.3f}/255"
+    return text
 
 
 def _timing_table(dir_a: Path, dir_b: Path) -> list[str]:
@@ -61,7 +73,7 @@ def _window_text(frames) -> str:
 
 
 def compare(dir_a: Path, dir_b: Path, out: Path, tol: Tolerance, header: list[str] | None = None,
-            problems: list[str] | None = None, frames=None) -> int:
+            problems: list[str] | None = None, frames=None, tol_name: str = "strict") -> int:
     """problems: reasons the run fails besides the frames (validation messages, adapters).
     frames: (first, last) frame numbers to compare, None for all."""
     out.mkdir(parents=True, exist_ok=True)
@@ -71,14 +83,13 @@ def compare(dir_a: Path, dir_b: Path, out: Path, tol: Tolerance, header: list[st
     ok = bool(results) and not failed and not problems
     lines = ["# gfxcompare report", ""] + (header or []) + [
         f"- A: `{dir_a}`", f"- B: `{dir_b}`",
-        f"- Tolerance: max error {tol.max_err * 255:.2f}/255; at most {tol.max_pct_over}% of pixels "
-        f"over {tol.pixel_err * 255:.2f}/255",
+        f"- Tolerance: {_tolerance_text(tol, tol_name)}",
         f"- Result: **{'PASS' if ok else 'FAIL'}** ({len(results) - len(failed)} of {len(results)} frames within tolerance)"]
     if frames is not None:
         lines.append(f"- Compared: {_window_text(frames)} (others ignored)")
     lines += [f"- **FAIL:** {p}" for p in problems]
     lines += ["", "## Frames", ""]
-    lines += _frame_table(results) if results else ["No frames found."]
+    lines += _frame_table(results, tol) if results else ["No frames found."]
     lines += ["", "## Timing", ""] + _timing_table(dir_a, dir_b) + [""]
     (out / "report.md").write_text("\n".join(lines), encoding="utf-8")
     print(f"{'PASS' if ok else 'FAIL'}: {len(results) - len(failed)}/{len(results)} frames within tolerance; "
@@ -92,8 +103,19 @@ def _frames(args):
     return None if args.start_frame is None and args.end_frame is None else (args.start_frame, args.end_frame)
 
 
+TOLERANCES = {"strict": Tolerance, "lod": Tolerance.lod}
+
+
 def _tolerance(args) -> Tolerance:
-    return Tolerance(max_err=args.max_err / 255.0, pixel_err=args.pixel_err / 255.0, max_pct_over=args.max_pct_over)
+    """The --tolerance preset, with any value given by a flag in its place."""
+    tol = TOLERANCES[args.tolerance]()
+    for flag, field, scale in (("max_err", "max_err", 255.0), ("pixel_err", "pixel_err", 255.0),
+                               ("max_pct_over", "max_pct_over", 1.0), ("strong_err", "strong_err", 255.0),
+                               ("max_pct_strong", "max_pct_strong", 1.0), ("max_mean_err", "max_mean_err", 255.0)):
+        value = getattr(args, flag)
+        if value is not None:
+            setattr(tol, field, value / scale)
+    return tol
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -101,10 +123,15 @@ def _parser() -> argparse.ArgumentParser:
     sub = p.add_subparsers(dest="command", required=True)
 
     def tolerance_args(sp):
-        d = Tolerance()
-        sp.add_argument("--max-err", type=float, default=d.max_err * 255, help="largest allowed channel error, in 1/255 units")
-        sp.add_argument("--pixel-err", type=float, default=d.pixel_err * 255, help="per-pixel error counted as 'over', in 1/255 units")
-        sp.add_argument("--max-pct-over", type=float, default=d.max_pct_over, help="allowed percent of pixels over --pixel-err")
+        sp.add_argument("--tolerance", choices=sorted(TOLERANCES), default="strict",
+                        help="tolerance preset: strict (default) or lod (DX11 against Vulkan on textured "
+                             "frames; see README.md); the flags below override its values")
+        sp.add_argument("--max-err", type=float, help="largest allowed channel error, in 1/255 units (strict: 2)")
+        sp.add_argument("--pixel-err", type=float, help="per-pixel error counted as 'over', in 1/255 units (strict: 1)")
+        sp.add_argument("--max-pct-over", type=float, help="allowed percent of pixels over --pixel-err (strict: 0.1)")
+        sp.add_argument("--strong-err", type=float, help="per-pixel error counted as 'strong', in 1/255 units (strict: none)")
+        sp.add_argument("--max-pct-strong", type=float, help="allowed percent of pixels over --strong-err")
+        sp.add_argument("--max-mean-err", type=float, help="largest allowed mean error, in 1/255 units (strict: none)")
 
     def frame_args(sp, what):
         sp.add_argument("--start-frame", type=int, help=f"first frame to {what} (absolute frame number)")
@@ -138,7 +165,7 @@ def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     tol = _tolerance(args)
     if args.command == "compare":
-        return compare(args.dir_a, args.dir_b, args.out, tol, frames=_frames(args))
+        return compare(args.dir_a, args.dir_b, args.out, tol, frames=_frames(args), tol_name=args.tolerance)
 
     scene = args.scene or (Path(os.environ["MSP_GFX_TEST_SCENE"]) if os.environ.get("MSP_GFX_TEST_SCENE") else None)
     if scene is None:
@@ -180,7 +207,7 @@ def main(argv: list[str] | None = None) -> int:
                                 f"({counts[0]} errors, {counts[1]} warnings)")
     if adapters["a"] and adapters["b"] and not rendernode.same_adapter(adapters["a"], adapters["b"]):
         problems.append(f"A and B ran on different adapters ({adapters['a']} / {adapters['b']})")
-    return compare(args.out / "a", args.out / "b", args.out, tol, header, problems, _frames(args))
+    return compare(args.out / "a", args.out / "b", args.out, tol, header, problems, _frames(args), args.tolerance)
 
 
 if __name__ == "__main__":

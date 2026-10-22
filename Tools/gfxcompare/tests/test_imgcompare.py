@@ -62,6 +62,56 @@ def test_many_pixels_over_fail_pct():
     assert "pct_over" in r.reason
 
 
+def lod_noise(shape=(100, 100, 3)):
+    """1% of pixels off by 3 levels: fails the strict tolerance, within the lod one."""
+    a = flat(shape=shape)
+    b = a.copy()
+    b[:1, :, 0] += 3 * L
+    return a, b
+
+
+def test_lod_tolerance_allows_low_level_noise():
+    a, b = lod_noise()
+    assert not compare_images(a, b, Tolerance(), "f").passed
+    assert compare_images(a, b, Tolerance.lod(), "f").passed
+
+
+def test_lod_tolerance_allows_isolated_large_errors():
+    a = flat(shape=(200, 200, 3))
+    b = a.copy()
+    b[0, 0, 0] += 120 * L          # one pixel in 40000 (0.0025%): an alpha-test flip
+    r = compare_images(a, b, Tolerance.lod(), "f")
+    assert r.passed and r.pct_strong == pytest.approx(0.0025)
+
+
+def test_lod_tolerance_fails_many_large_errors():
+    a = flat(shape=(100, 100, 3))
+    b = a.copy()
+    b[0, :10, 0] += 20 * L         # 10 of 10000 pixels (0.1%) over 16/255
+    r = compare_images(a, b, Tolerance.lod(), "f")
+    assert not r.passed and "pct_strong" in r.reason
+
+
+def test_lod_tolerance_fails_spread_noise():
+    a = flat(shape=(100, 100, 3))
+    b = a.copy()
+    b[:2, :, 0] += 5 * L           # 2% of pixels over 4/255
+    r = compare_images(a, b, Tolerance.lod(), "f")
+    assert not r.passed and "pct_over" in r.reason
+
+
+def test_lod_tolerance_fails_high_mean():
+    a = flat(shape=(100, 100, 3))
+    b = a + 2 * L                  # every pixel 2/255 off: under the per-pixel threshold, mean too high
+    r = compare_images(a, b, Tolerance.lod(), "f")
+    assert not r.passed and "mean_err" in r.reason
+
+
+def test_strict_tolerance_has_no_strong_or_mean_limit():
+    t = Tolerance()
+    assert t.strong_err is None and t.max_mean_err is None
+
+
 def test_size_mismatch_fails():
     r = compare_images(flat(shape=(4, 4, 3)), flat(shape=(4, 5, 3)), Tolerance(), "f")
     assert not r.passed

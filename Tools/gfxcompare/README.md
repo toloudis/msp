@@ -83,6 +83,39 @@ given).
 A frame passes when its largest per-channel error is at most `--max-err`
 (default 2, in 1/255 units) and at most `--max-pct-over` percent (default
 0.1) of its pixels have an error above `--pixel-err` (default 1/255).
+This is `--tolerance strict`, for two renders by the same backend.
+
+`--tolerance lod` is for DX11 against Vulkan. The NVIDIA driver computes a
+texture's level of detail differently per API where the texture is seen at
+an angle (GraphicsTests' `vkdAnisotropicTest`; roadmap, "Open
+investigations"). That gives two kinds of difference, and neither is a bug
+of ours:
+- low-level noise over textured surfaces (about 3% of pixels over 1/255 in
+  the test scene's beauty frames);
+- isolated large errors where an alpha-tested texture's cutout flips (the
+  cobweb: up to 121/255 on a few hundred pixels).
+
+A frame passes `lod` when:
+- at most 0.5% of its pixels are over 4/255;
+- at most 0.04% of its pixels are over 16/255;
+- its mean error is at most 0.6/255;
+- there is no limit on the largest error.
+
+The limits were measured on Release RenderNode runs (Plan 7 Task 9: testTESS
+beauty, `-capSampling 2`, all 24 GPU passes, and testAO; frames 296-315, the
+passes 296-300). The worst frames were:
+- 0.35% over 4/255 (DOF, where the blur spreads the noise);
+- 0.026% over 16/255 (ILLUM, MTL, REFL: the cutout flips);
+- mean 0.38/255 (DOF).
+
+A real difference still fails. The DX11 reflection bug fixed in `6848f8d2`
+(frames before and after the fix) gives 4.6% of pixels over 4/255, 4.2%
+over 16/255, mean 2.3/255.
+
+Any limit can be changed with a flag given after the preset: `--max-err`,
+`--pixel-err`, `--max-pct-over`, `--strong-err`, `--max-pct-strong`,
+`--max-mean-err`. The report states the tolerance it used.
+
 Frames are matched by file name; a frame missing from either side fails.
 Frames can be PNG (8 or 16 bit), PFM, BMP, JPG or TIFF.
 A frame's number is the digits at the end of its file name.

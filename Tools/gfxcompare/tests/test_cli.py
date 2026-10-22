@@ -49,6 +49,17 @@ def test_cli_compare_tolerance_flags(tmp_path):
                             "--max-err", "80", "--pixel-err", "80"]) == 0
 
 
+def test_cli_compare_lod_tolerance(tmp_path):
+    a, b = make_dirs(tmp_path, differ=True)     # one pixel of 64 off by 60/255: 1.6% over 16/255
+    out = tmp_path / "out"
+    assert gfxcompare.main(["compare", str(a), str(b), "--out", str(out), "--tolerance", "lod"]) == 1
+    report = (out / "report.md").read_text()
+    assert "lod" in report and "16.00/255" in report
+    # flags given with the preset override its values
+    assert gfxcompare.main(["compare", str(a), str(b), "--out", str(out), "--tolerance", "lod",
+                            "--pixel-err", "80", "--strong-err", "80", "--max-mean-err", "1"]) == 0
+
+
 def test_cli_compare_empty_folders_fail(tmp_path):
     a, b = tmp_path / "a", tmp_path / "b"
     a.mkdir(); b.mkdir()
