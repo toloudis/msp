@@ -12,7 +12,8 @@
 **  - TIFF: libtiff, in the layout WIC wrote: 8-bit for 8-bit sources,
 **    16-bit for the others; LZW
 **  - DDS: the pixels as stored, under DirectXTex's header for one 2D image
-**  - EXR: g2dScanlineOpenEXRUtil (OpenEXR)
+**  - EXR: g2dScanlineOpenEXRUtil (OpenEXR): 8-bit RGBA, and the half and
+**    float formats
 **  - DIB: not written (Write throws g2dUnknownImageFileTypeX)
 **
 **  Pixels are read through g2dImage::Lock with the image's g2dPFD: 8-bit

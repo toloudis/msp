@@ -626,10 +626,17 @@ void WritePFM(const fsLocator& i_FileName, const g2dImage* i_pImage)
 }
 
 //----------------------------------------------------------------------------
-//	EXR: g2dScanlineOpenEXRUtil
+//	EXR: g2dScanlineOpenEXRUtil, which writes 8-bit RGBA, half and float
+//	RGBA and single-channel images (the others: g2dImageSaveX)
 //----------------------------------------------------------------------------
 void WriteEXR(const fsLocator& i_FileName, const g2dImage* i_pImage)
 {
+	const Source source = i_pImage ? source_of(i_pImage->GetPixelFormat()) : e_None;
+	if (source != e_RGBA8 && source != e_RGBA16F && source != e_RGBA32F && source != e_Grey16F && source != e_Grey32F)
+	{
+		DBG_TRACE("g2dImageSaveUtil: can't write this pixel format to EXR");
+		throw g2dImageSaveX();
+	}
 	g2dScanlineOpenEXRUtil::WriteToScanlineEXR(i_FileName, i_pImage);
 }
 

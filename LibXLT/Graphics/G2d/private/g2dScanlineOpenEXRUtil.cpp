@@ -308,10 +308,10 @@ void g2dScanlineOpenEXRUtil::WriteToScanlineEXR(const fsLocator& i_Locator, cons
 	{
 
 		// Create buffer to hold arbitrary RGBA channels
-		half * r_arb_channel = new half[width*height];
-		half * g_arb_channel = new half[width*height];
-		half * b_arb_channel = new half[width*height];
-		half * a_arb_channel = new half[width*height];
+		half * r_arb_channel = new half[width*height]();
+		half * g_arb_channel = new half[width*height]();
+		half * b_arb_channel = new half[width*height]();
+		half * a_arb_channel = new half[width*height]();
 
 		// Fill buffers with motion data from the RGBA16f D3D surface
 		if ( pixelFormat == g2dPFD::e_RGBA16f ) 
@@ -350,10 +350,10 @@ void g2dScanlineOpenEXRUtil::WriteToScanlineEXR(const fsLocator& i_Locator, cons
 	else if ( pixelFormat == g2dPFD::e_RGBA32f || pixelFormat == g2dPFD::e_Float32 ) 
 	{
 		// Create buffer to hold arbitrary RGBA channels
-		float * r_arb_channel = new float[width*height];
-		float * g_arb_channel = new float[width*height];
-		float * b_arb_channel = new float[width*height];
-		float * a_arb_channel = new float[width*height];
+		float * r_arb_channel = new float[width*height]();
+		float * g_arb_channel = new float[width*height]();
+		float * b_arb_channel = new float[width*height]();
+		float * a_arb_channel = new float[width*height]();
 
 		// Fill buffers with motion data from the 32f D3D surface
 		if ( pixelFormat == g2dPFD::e_RGBA32f ) 
