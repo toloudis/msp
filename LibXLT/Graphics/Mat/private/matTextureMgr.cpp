@@ -183,7 +183,7 @@ namespace
 		DBG_WARNING("Texture Memory Usage Total:  " << std::setprecision(2) << total << " MB");
 	}
 
-	
+
 	//--------------------------------------------------------------------
 	// TEXTURE MANAGEMENT
 	//--------------------------------------------------------------------
@@ -239,7 +239,7 @@ void GetTextureName(const fsLocator& i_TextureFileName)
 //------------------------------------------------------------------------
 void Init()
 {
-	if( NULL == l_pTextureAdjuster ) 
+	if( NULL == l_pTextureAdjuster )
 		l_pTextureAdjuster = new matTextureAdjuster;
 	rsrInterest = fsResourceTracker::GetInterestList();
 	rsrInterest->TextureReloadFunction(&ReloadTexture);
@@ -392,7 +392,7 @@ matTexture* LoadTexture(const fsLocator& i_Directory, const itString& i_Name, co
 																			dummy_names,
 																			i_Type,
 																			true, mipmap_if_2D);
-		
+
 						l_NRTextures[new_texture_page] = TextureInfoNR(uva_locator, new_texture_page);
 						uva_locator.Pop();
 						uva_texture->AddTexturePage(new_texture_page);
@@ -406,7 +406,7 @@ matTexture* LoadTexture(const fsLocator& i_Directory, const itString& i_Name, co
 				fsFileUtil::LocatorToANSIFilename( tex_locator, dbg_filename );
 				DBG_ERROR("Not enough video memory to load " << dbg_filename.c_str() << "." );
 				DumpTextureList();
-				
+
 				if (new_texture)
 					ReleaseTexture(new_texture);
 				throw; // bring down the game
@@ -521,20 +521,21 @@ matUVATexture* CreateUVATexture()
 
 
 //--------------------------------------------------------------------
-//	CreateShadowMap creates a shadow map texture that can 
+//	CreateShadowMap creates a shadow map texture that can
 //	be rendered to. Use the GetRenderTargetAPI() function
 //	on the returned texture in order to render to it.
 //--------------------------------------------------------------------
 matTexture* CreateShadowMap(int i_nTextureWidth, int i_nTextureHeight)
 {
-	DBG_WARNING("No texture manager implementation yet.");
-	if (!l_pImpl)
+	if (!l_pImpl) {
+		DBG_WARNING("No texture manager implementation yet.");
 		return NULL;
+	}
 	return l_pImpl->CreateShadowMap(i_nTextureWidth, i_nTextureHeight);
 }
 
 //--------------------------------------------------------------------
-//	CreateShadowMap creates a reflective shadow map texture that can 
+//	CreateShadowMap creates a reflective shadow map texture that can
 //	be rendered to. Use the GetRenderTargetAPI() function
 //	on the returned texture in order to render to it.
 //--------------------------------------------------------------------
@@ -547,7 +548,7 @@ matTexture* CreateReflectiveShadowMap(int i_nTextureWidth, int i_nTextureHeight)
 }
 
 //--------------------------------------------------------------------
-//	CreateRenderTargetTexture creates a texture that can 
+//	CreateRenderTargetTexture creates a texture that can
 //	be rendered to. Use the GetRenderTargetAPI() function
 //	on the returned texture in order to render to it.
 //--------------------------------------------------------------------
@@ -564,12 +565,12 @@ matTexture* CreateRenderTargetTexture(int i_nTextureWidth,
 //	DBG_ASSERT(l_pImpl, "No texture manager implementation yet.");
 	if (!l_pImpl)
 		return NULL;
-	return l_pImpl->CreateRenderTargetTexture(i_nTextureWidth, i_nTextureHeight, 
+	return l_pImpl->CreateRenderTargetTexture(i_nTextureWidth, i_nTextureHeight,
 		i_bFloatingPoint, i_PFD, i_bAutoGenMipmap, i_bAllocDepthBuffer, i_ResourceCategory, i_bFloatDepth, i_bAntiAlias );
 }
 
 //--------------------------------------------------------------------
-//	CreateRenderTargetTexture creates a texture that can 
+//	CreateRenderTargetTexture creates a texture that can
 //	be rendered to. Use the GetRenderTargetAPI() function
 //	on the returned texture in order to render to it.
 //	The texture is initialized with data from the given input texture.
@@ -585,8 +586,8 @@ matTexture* CreateRenderTargetTexture(matTexture* i_Texture,
 }
 
 //--------------------------------------------------------------------
-//	CreateCubeRenderTargetTexture creates a cubemap texture that can 
-//	be rendered to. 
+//	CreateCubeRenderTargetTexture creates a cubemap texture that can
+//	be rendered to.
 //--------------------------------------------------------------------
 matTexture* CreateCubeRenderTargetTexture(int i_nTextureWidth,
 											int i_nTextureHeight,
@@ -632,14 +633,14 @@ void ReleaseTexture(matTexture* i_Texture)
 		//no texture to delete
 		return;
 	}
-	
+
 	// check reusable textures first
 	Textures::iterator it = l_Textures.begin();
 	Textures::iterator end = l_Textures.end();
 
 	for( ; it != end; ++it )
 	{
-		
+
 		if( it->second.m_Texture == i_Texture )
 			break;
 	}
@@ -735,7 +736,7 @@ void UnloadTexture( const fsLocator& i_Locator )
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-void SaveTextureToFile(matTexture* i_pTexture, 
+void SaveTextureToFile(matTexture* i_pTexture,
 	const fsLocator& i_FilePathLocator)
 {
 	std::unique_ptr<g2dImage> image = capture_texture(i_pTexture);
@@ -750,7 +751,7 @@ void SaveTextureToFile(matTexture* i_pTexture,
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-void SaveTextureToRgbaTiff(matTexture* i_pTexture, 
+void SaveTextureToRgbaTiff(matTexture* i_pTexture,
 	const fsLocator& i_FilePathLocator)
 {
 	std::unique_ptr<g2dImage> image = capture_texture(i_pTexture);
@@ -765,7 +766,7 @@ void SaveTextureToRgbaTiff(matTexture* i_pTexture,
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-void SaveTextureToRgbaPNG(matTexture* i_pTexture, 
+void SaveTextureToRgbaPNG(matTexture* i_pTexture,
 	const fsLocator& i_FilePathLocator)
 {
 	std::unique_ptr<g2dImage> image = capture_texture(i_pTexture);
@@ -810,7 +811,7 @@ void UpdateTexture( matTexture* i_pTexture, unsigned char* i_data, int size, int
 
 
 //--------------------------------------------------------------------
-//	CreateTexture creates a texture 
+//	CreateTexture creates a texture
 //  NOTE: The texture will be initialized if i_PixelData and i_Size
 //	are set.
 //--------------------------------------------------------------------
