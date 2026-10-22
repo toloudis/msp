@@ -1,5 +1,7 @@
 # GraphicsVulkan hair and Phase 1 sign-off — Implementation Plan (Phase 1, Plan 7)
 
+**Status:** implemented (2026-10-22; `dae13d18`..the docs commit); hair matched, not deferred. Waiting for the owner's Phase 1 sign-off. Report: `docs/superpowers/reports/2026-10-22-gfx-vulkan-phase1.md`; rulings in the ledger.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task by task, inline in the session (the owner asked for no subagents). Steps use checkbox (`- [ ]`) syntax for tracking. As in 5a, 5b and 6, **stop for the owner's review after each task**. The owner clears context between tasks, so resume from the plan's ledger (`.superpowers/sdd/2026-10-17-gfx-vulkan-7-hair-signoff/progress.md`). Read the 5a, 5b and 6 ledgers' rulings first. When the plan is done, stop: Phase 1 sign-off is the owner's call.
 
 **Goal:** Hair renders on Vulkan and matches DX11 (or is formally deferred, by the rule in decision 1). The test scene passes. Validation is clean in every mode, the timing report is written, and Phase 1's exit criteria are shown and written up.

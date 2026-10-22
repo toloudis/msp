@@ -212,7 +212,7 @@ On these scenes the GPU time (mostly SSAO) is far larger than the passes' CPU ti
 | the 256×256×4 opacity volume | made into file-local pointers that nothing reads |
 
 **Left as `GVK_NOT_YET`** (logged once if reached):
-- **The demo watermark** (`matTextureLoader::LoadResource`, Windows resources). Only the licensing code's demo mode loads it.
+- **The demo watermark** (`matTextureLoader::LoadResource`, Windows resources). Only a `DEMO_VERSION` build loads it (`cptrModeRender`), and no project defines `DEMO_VERSION`. A texture file that doesn't exist also gets there; DX11 finds no resource either, and the texture stays empty on both backends.
 - **Instance data with a step rate above 1** (`vkdPipelineCache`). No vertex layout in MachStudio uses one.
 
 **Hair is not deferred.** The hull shader's `ProcessIsolineTessFactors` is the one piece of Vulkan-only shader code (`Eff/private/ShadersVk/`, 6 lines: fxc's own lowering for `fractional_odd`). It matches D3D11 at the factors' limits (`vkdIsolineTest`, `hairVkTest`).
