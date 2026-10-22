@@ -129,9 +129,6 @@
     <ClInclude Include="G2d\g2dFontUtil.hpp">
       <Filter>G2d</Filter>
     </ClInclude>
-    <ClInclude Include="G2d\g2dHDRUtil.hpp">
-      <Filter>G2d</Filter>
-    </ClInclude>
     <ClInclude Include="G2d\g2dImage.hpp">
       <Filter>G2d</Filter>
     </ClInclude>
@@ -139,6 +136,9 @@
       <Filter>G2d</Filter>
     </ClInclude>
     <ClInclude Include="G2d\g2dImageSave.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dImageSaveUtil.hpp">
       <Filter>G2d</Filter>
     </ClInclude>
     <ClInclude Include="G2d\g2dOpenEXRDefines.hpp">
@@ -178,9 +178,6 @@
       <Filter>G2d</Filter>
     </ClInclude>
     <ClInclude Include="G2d\g2dSystem.hpp">
-      <Filter>G2d</Filter>
-    </ClInclude>
-    <ClInclude Include="G2d\g2dTGAUtil.hpp">
       <Filter>G2d</Filter>
     </ClInclude>
     <ClInclude Include="G2d\g2dTiledOpenEXRUtil.hpp">
@@ -1095,13 +1092,13 @@
     <ClCompile Include="G2d\private\g2dFontUtil.cpp">
       <Filter>G2d\private</Filter>
     </ClCompile>
-    <ClCompile Include="G2d\private\g2dHDRUtil.cpp">
-      <Filter>G2d\private</Filter>
-    </ClCompile>
     <ClCompile Include="G2d\private\g2dImageCreate.cpp">
       <Filter>G2d\private</Filter>
     </ClCompile>
     <ClCompile Include="G2d\private\g2dImageSave.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dImageSaveUtil.cpp">
       <Filter>G2d\private</Filter>
     </ClCompile>
     <ClCompile Include="G2d\private\g2dOpenEXROutStream.cpp">
@@ -1132,9 +1129,6 @@
       <Filter>G2d\private</Filter>
     </ClCompile>
     <ClCompile Include="G2d\private\g2dSystem.cpp">
-      <Filter>G2d\private</Filter>
-    </ClCompile>
-    <ClCompile Include="G2d\private\g2dTGAUtil.cpp">
       <Filter>G2d\private</Filter>
     </ClCompile>
     <ClCompile Include="G2d\private\g2dTiledOpenEXRUtil.cpp">

@@ -134,10 +134,10 @@
     <ClInclude Include="G2d\g2dExceptionX.hpp" />
     <ClInclude Include="G2d\g2dFontHandle.hpp" />
     <ClInclude Include="G2d\g2dFontUtil.hpp" />
-    <ClInclude Include="G2d\g2dHDRUtil.hpp" />
     <ClInclude Include="G2d\g2dImage.hpp" />
     <ClInclude Include="G2d\g2dImageCreate.hpp" />
     <ClInclude Include="G2d\g2dImageSave.hpp" />
+    <ClInclude Include="G2d\g2dImageSaveUtil.hpp" />
     <ClInclude Include="G2d\g2dOpenEXRDefines.hpp" />
     <ClInclude Include="G2d\g2dOpenEXROutStream.hpp" />
     <ClInclude Include="G2d\g2dPackage.hpp" />
@@ -151,7 +151,6 @@
     <ClInclude Include="G2d\g2dScreenResolution.hpp" />
     <ClInclude Include="G2d\g2dScreenUtil.hpp" />
     <ClInclude Include="G2d\g2dSystem.hpp" />
-    <ClInclude Include="G2d\g2dTGAUtil.hpp" />
     <ClInclude Include="G2d\g2dTiledOpenEXRUtil.hpp" />
     <ClInclude Include="G2d\g2dWindow.hpp" />
     <ClInclude Include="G2d\private\rgbe.h" />
@@ -458,9 +457,9 @@
     <ClCompile Include="G2d\private\g2dDepthStencilBuffer.cpp" />
     <ClCompile Include="G2d\private\g2dExceptionX.cpp" />
     <ClCompile Include="G2d\private\g2dFontUtil.cpp" />
-    <ClCompile Include="G2d\private\g2dHDRUtil.cpp" />
     <ClCompile Include="G2d\private\g2dImageCreate.cpp" />
     <ClCompile Include="G2d\private\g2dImageSave.cpp" />
+    <ClCompile Include="G2d\private\g2dImageSaveUtil.cpp" />
     <ClCompile Include="G2d\private\g2dOpenEXROutStream.cpp" />
     <ClCompile Include="G2d\private\g2dPackage.cpp" />
     <ClCompile Include="G2d\private\g2dPFD.cpp" />
@@ -471,7 +470,6 @@
     <ClCompile Include="G2d\private\g2dScreenCaptureUtil.cpp" />
     <ClCompile Include="G2d\private\g2dScreenUtil.cpp" />
     <ClCompile Include="G2d\private\g2dSystem.cpp" />
-    <ClCompile Include="G2d\private\g2dTGAUtil.cpp" />
     <ClCompile Include="G2d\private\g2dTiledOpenEXRUtil.cpp" />
     <ClCompile Include="G2d\private\g2dWindow.cpp" />
     <ClCompile Include="G2d\private\rgbe.cpp" />

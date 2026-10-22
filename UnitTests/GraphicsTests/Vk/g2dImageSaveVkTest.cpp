@@ -3,14 +3,23 @@
 **
 **      Image and texture saving (g2dImageSave, matTextureMgr's
 **      SaveTextureToFile, SaveTextureToRgbaTiff and SaveTextureToRgbaPNG)
-**      and MergeTransparentTextures. GraphicsDX11 writes BMP, JPG, PNG and
-**      TIFF through DirectXTex and WIC, and DDS through DirectXTex;
-**      GraphicsVulkan has neither, and writes the same layouts itself
-**      (Plan 6 decision 3; the layouts were measured in Task 2 Step 1 and
-**      are in the plan's ledger). Each test saves the same pixels through
-**      both backends, checks the headers, and decodes both files with the
-**      same decoder (stb_image, libtiff); the pixels must be equal.
-**      BMP and DDS files must be byte-identical.
+**      and MergeTransparentTextures.
+**
+**      g2dImageSave: both backends write every type but TIFF through
+**      Graphics' g2dImageSaveUtil (stb_image_write, PPM, PFM, OpenEXR), so
+**      those files must be byte-identical (the backends hand it the same
+**      pixels); SaveUtilDecodes checks what they hold against the source.
+**      TIFF goes through WIC on DX11 and matImageEncode on Vulkan, as
+**      texture saving does.
+**
+**      Texture saving: GraphicsDX11 writes BMP, JPG, PNG and TIFF through
+**      DirectXTex and WIC, and DDS through DirectXTex; GraphicsVulkan has
+**      neither, and writes the same layouts itself (Plan 6 decision 3; the
+**      layouts were measured in Task 2 Step 1 and are in the plan's
+**      ledger). Each test saves the same pixels through both backends,
+**      checks the headers, and decodes both files with the same decoder
+**      (stb_image, libtiff); the pixels must be equal. BMP and DDS files
+**      must be byte-identical.
 **
 **      Exceptions, measured (decision 3):
 **      - JPG: two JPEG encoders (WIC's, stb_image_write's) at quality 90
@@ -75,6 +84,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_PNG
 #define STBI_ONLY_JPEG
+#define STBI_ONLY_BMP
+#define STBI_ONLY_TGA
+#define STBI_ONLY_HDR
+#define STBI_ONLY_PNM
 #include <stb_image.h>
 
 #include <tiffio.h>
@@ -99,6 +112,7 @@ namespace
 	//	The exceptions to "decoded pixels equal" (see the top of the file)
 	const float c_JpgMaxErr = 6 / 255.0f;
 	const float c_JpgPctOver = 37.0f;
+	const float c_JpgMeanErr = 6 / 255.0f;		// a JPG against its source (SaveUtilDecodes)
 	const int c_SrgbMax16 = 2;
 	const int c_FixedMax = 1;
 
@@ -222,6 +236,7 @@ namespace
 		bool		m_bGreySource = false;
 		bool		m_bFloatSource = false;
 		bool		m_bUnorm16Source = false;
+		bool		m_bShared = false;		// written by g2dImageSaveUtil
 	};
 	typedef std::map<std::string, Saved> Results;
 
@@ -467,6 +482,18 @@ namespace
 		EXPECT_LE(worst, c_FixedMax) << "largest difference " << worst << "/8192";
 	}
 
+	void expect_identical(const Saved& i_Dx11, const Saved& i_Vulkan)
+	{
+		if (i_Dx11.m_File != i_Vulkan.m_File)
+		{
+			size_t first = 0;
+			while (first < i_Dx11.m_File.size() && first < i_Vulkan.m_File.size() && i_Dx11.m_File[first] == i_Vulkan.m_File[first])
+				first++;
+			ADD_FAILURE() << "not byte-identical: DX11 " << i_Dx11.m_File.size() << " bytes, Vulkan " << i_Vulkan.m_File.size()
+						  << ", first difference at byte " << first;
+		}
+	}
+
 	void expect_same_file(const std::string& i_Name, const Saved& i_Dx11, const Saved& i_Vulkan, const std::filesystem::path& i_Dir)
 	{
 		SCOPED_TRACE(i_Name);
@@ -475,20 +502,17 @@ namespace
 		if (!i_Dx11.m_bExists || !i_Vulkan.m_bExists)
 			return;
 		const std::string ext = extension(i_Name);
-		if (ext == "bmp" && i_Dx11.m_bUnorm16Source)
+		if (i_Dx11.m_bShared)
+		{
+			expect_identical(i_Dx11, i_Vulkan);
+		}
+		else if (ext == "bmp" && i_Dx11.m_bUnorm16Source)
 		{
 			expect_same_fixed_point_bmp(i_Dx11, i_Vulkan);
 		}
 		else if (ext == "bmp" || ext == "dds")
 		{
-			if (i_Dx11.m_File != i_Vulkan.m_File)
-			{
-				size_t first = 0;
-				while (first < i_Dx11.m_File.size() && first < i_Vulkan.m_File.size() && i_Dx11.m_File[first] == i_Vulkan.m_File[first])
-					first++;
-				ADD_FAILURE() << "not byte-identical: DX11 " << i_Dx11.m_File.size() << " bytes, Vulkan " << i_Vulkan.m_File.size()
-							  << ", first difference at byte " << first;
-			}
+			expect_identical(i_Dx11, i_Vulkan);
 		}
 		else if (ext == "png")
 		{
@@ -542,6 +566,155 @@ namespace
 		const std::filesystem::path path = i_Dir / name;
 		const std::string result = outcome([&]() { g2dImageSave::Save(locator_of(path), image.get()); });
 		o_Results[name] = saved(result, path, &i_Format);
+		o_Results[name].m_bShared = std::string(i_Ext) != "tif";
+	}
+
+	//	The types g2dImageSaveUtil writes
+	const std::vector<const char*>& shared_extensions()
+	{
+		static const std::vector<const char*> c_Extensions = { "bmp", "png", "jpg", "tga", "hdr", "ppm", "pfm", "exr" };
+		return c_Extensions;
+	}
+
+	//------------------------------------------------------------------------
+	//	What g2dImageSaveUtil should read from a test image (pixels()): RGBA
+	//	floats, top row first (grey in R, G and B; BGRX's alpha 1)
+	//------------------------------------------------------------------------
+	std::vector<float> source_rgba(const Format& i_Format)
+	{
+		const Bytes data = pixels(i_Format);
+		const int bytes = i_Format.m_Channels * i_Format.m_Bits / 8;
+		const bool bgrx = i_Format.m_PFD.GetPixelFormat() == g2dPFD::e_RColor;
+		std::vector<float> out((size_t)c_W * c_H * 4);
+		for (size_t i = 0; i < (size_t)c_W * c_H; i++)
+		{
+			const uint8_t* p = data.data() + i * bytes;
+			float v[4] = { 0, 0, 0, 1 };
+			for (int c = 0; c < i_Format.m_Channels; c++)
+			{
+				if (i_Format.m_Bits == 8)
+					v[c] = p[c] / 255.0f;
+				else if (!i_Format.m_bFloat)
+					v[c] = reinterpret_cast<const uint16_t*>(p)[c] / 65535.0f;
+				else if (i_Format.m_Bits == 16)
+					v[c] = maFunctions::HalfToFloat(reinterpret_cast<const uint16_t*>(p)[c]);
+				else
+					v[c] = reinterpret_cast<const float*>(p)[c];
+			}
+			if (i_Format.m_Channels == 1)
+				v[1] = v[2] = v[0];
+			if (bgrx)
+			{
+				std::swap(v[0], v[2]);
+				v[3] = 1.0f;
+			}
+			for (int c = 0; c < 4; c++)
+				out[i * 4 + c] = v[c];
+		}
+		return out;
+	}
+
+	//	An 8-bit file's sample: floats (linear) through the sRGB curve,
+	//	alpha linear
+	int expected_byte(float i_V, bool i_bFloatSource, int i_Channel)
+	{
+		double v = i_V;
+		if (i_bFloatSource && i_Channel < 3)
+		{
+			v = std::min(1.0, std::max(0.0, v));
+			v = v <= 0.0031308 ? v * 12.92 : 1.055 * std::pow(v, 1.0 / 2.4) - 0.055;
+		}
+		return (int)std::floor(std::min(1.0, std::max(0.0, v)) * 255.0 + 0.5);
+	}
+
+	//	A PFM file's floats (RGB or grey), top row first; empty if it isn't one
+	std::vector<float> read_pfm(const Bytes& i_File, int& o_Channels)
+	{
+		const std::string text(i_File.begin(), i_File.begin() + std::min<size_t>(i_File.size(), 64));
+		const std::string header = std::string(text[1] == 'f' ? "Pf\n" : "PF\n") + std::to_string(c_W) + " " + std::to_string(c_H) + "\n-1.0\n";
+		o_Channels = text[1] == 'f' ? 1 : 3;
+		const size_t row = (size_t)c_W * o_Channels;
+		if (text.compare(0, header.size(), header) != 0 || i_File.size() != header.size() + row * c_H * sizeof(float))
+			return std::vector<float>();
+		std::vector<float> out(row * c_H);
+		for (int y = 0; y < c_H; y++)
+			memcpy(&out[y * row], &i_File[header.size() + (c_H - 1 - y) * row * sizeof(float)], row * sizeof(float));
+		return out;
+	}
+
+	//------------------------------------------------------------------------
+	//	Decodes what g2dImageSaveUtil wrote for i_Format as i_Ext and checks
+	//	it against the source
+	//------------------------------------------------------------------------
+	void expect_decodes(const Format& i_Format, const std::string& i_Ext, const Bytes& i_File)
+	{
+		SCOPED_TRACE(std::string(i_Format.m_pName) + "." + i_Ext);
+		const std::vector<float> source = source_rgba(i_Format);
+		const bool alpha = i_Format.m_Channels == 4 && i_Format.m_PFD.GetPixelFormat() != g2dPFD::e_RColor;
+		if (i_Ext == "pfm")
+		{
+			int channels = 0;
+			const std::vector<float> got = read_pfm(i_File, channels);
+			ASSERT_FALSE(got.empty()) << "not a " << c_W << "x" << c_H << " PFM";
+			EXPECT_EQ(channels, i_Format.m_Channels == 1 ? 1 : 3);
+			int wrong = 0;
+			for (size_t i = 0; i < (size_t)c_W * c_H; i++)
+				for (int c = 0; c < channels; c++)
+					wrong += got[i * channels + c] != source[i * 4 + c];
+			EXPECT_EQ(0, wrong) << "samples differ";
+			return;
+		}
+		if (i_Ext == "hdr")
+		{
+			int w = 0, h = 0, n = 0;
+			float* got = stbi_loadf_from_memory(i_File.data(), (int)i_File.size(), &w, &h, &n, 3);
+			ASSERT_TRUE(got != NULL) << "stb_image can't read it";
+			EXPECT_EQ(c_W, w);
+			EXPECT_EQ(c_H, h);
+			//	RGBE: 8-bit mantissas sharing the largest channel's exponent
+			float worst = 0;
+			for (size_t i = 0; i < (size_t)c_W * c_H && w == c_W && h == c_H; i++)
+			{
+				const float s[3] = { std::max(0.0f, source[i * 4]), std::max(0.0f, source[i * 4 + 1]), std::max(0.0f, source[i * 4 + 2]) };
+				const float largest = std::max(s[0], std::max(s[1], s[2]));
+				for (int c = 0; c < 3; c++)
+					worst = std::max(worst, std::abs(got[i * 3 + c] - s[c]) / std::max(largest, 1e-6f));
+			}
+			EXPECT_LE(worst, 1 / 128.0f) << "largest error, relative to the pixel's largest channel";
+			stbi_image_free(got);
+			return;
+		}
+		int w = 0, h = 0, n = 0;
+		stbi_uc* got = stbi_load_from_memory(i_File.data(), (int)i_File.size(), &w, &h, &n, 4);
+		ASSERT_TRUE(got != NULL) << "stb_image can't read it";
+		EXPECT_EQ(c_W, w);
+		EXPECT_EQ(c_H, h);
+		const bool file_alpha = alpha && (i_Ext == "png" || i_Ext == "bmp" || i_Ext == "tga");
+		std::vector<uint8_t> expected((size_t)c_W * c_H * 4);
+		for (size_t i = 0; i < expected.size(); i++)
+			expected[i] = (uint8_t)((i % 4 == 3 && !file_alpha) ? 255 : expected_byte(source[i], i_Format.m_bFloat, (int)(i % 4)));
+		if (w == c_W && h == c_H)
+		{
+			if (i_Ext == "jpg")
+			{
+				//	Lossy (4:2:0, quality 90) on a small image: the mean error
+				//	only (a swapped channel or flipped image is far above it;
+				//	measured up to 4.7/255, on RGBA16F)
+				const gtCompareResult r = gtCompareImages(expected.data(), got, w, h);
+				EXPECT_LE(r.m_MeanErr, c_JpgMeanErr) << r.Describe();
+			}
+			else
+			{
+				//	8-bit sources exactly; others within 1 (the writer's float
+				//	arithmetic against this double one)
+				const int tolerance = (i_Format.m_Bits == 8) ? 0 : 1;
+				int worst = 0;
+				for (size_t i = 0; i < expected.size(); i++)
+					worst = std::max(worst, std::abs((int)expected[i] - (int)got[i]));
+				EXPECT_LE(worst, tolerance) << "largest difference " << worst << "/255";
+			}
+		}
+		stbi_image_free(got);
 	}
 
 	matTexture* make_texture(const Format& i_Format)
@@ -594,32 +767,75 @@ namespace
 
 //----------------------------------------------------------------------------
 //	An 8-bit RGBA image (what a capture of a window or an LDR render target
-//	gives) to each format WIC writes
+//	gives) to each format g2dImageSave writes
 //----------------------------------------------------------------------------
 TEST(g2dImageSaveVkTest, SaveFormatsMatchDX11)
 {
 	expect_same([](const std::filesystem::path& i_Dir, Results& o_Results)
 	{
-		for (const char* ext : { "bmp", "png", "tif", "jpg" })
+		for (const char* ext : shared_extensions())
 			save_image(rgba8(), ext, i_Dir, o_Results);
+		save_image(rgba8(), "tif", i_Dir, o_Results);
 	});
 }
 
 //----------------------------------------------------------------------------
 //	Images that aren't 8-bit RGBA (Review Focus 2): HDR captures
 //	(RGBA32F, RGBA16F), 16-bit, grey and float single-channel images, BGRX;
-//	the layouts DX11's WIC path gives (RG32F, which DX11 can't write
-//	through WIC: SaveWiclessFormatAsDX11)
+//	TIFF in the layouts DX11's WIC path gives (RG32F, which neither
+//	g2dImageSaveUtil nor WIC writes: SaveWiclessFormatAsDX11)
 //----------------------------------------------------------------------------
 TEST(g2dImageSaveVkTest, SaveNonRGBA8MatchesDX11)
 {
 	expect_same([](const std::filesystem::path& i_Dir, Results& o_Results)
 	{
 		for (const Format& format : other_formats())
-			for (const char* ext : { "bmp", "png", "tif", "jpg" })
-				if ((!format.m_bTens || std::string(ext) != "jpg") && !format.m_bWicFails)
-					save_image(format, ext, i_Dir, o_Results);
+		{
+			if (format.m_bWicFails)
+				continue;
+			for (const char* ext : shared_extensions())
+				save_image(format, ext, i_Dir, o_Results);
+			save_image(format, "tif", i_Dir, o_Results);
+		}
 	});
+}
+
+//----------------------------------------------------------------------------
+//	g2dImageSaveUtil's files hold the source's pixels: 8-bit files exactly
+//	(floats through the sRGB curve; JPG within c_JpgMaxErr), HDR within
+//	RGBE's precision, PFM exactly; on each backend (EXR: g2dScanlineOpenEXRUtil,
+//	not decoded here)
+//----------------------------------------------------------------------------
+TEST(g2dImageSaveVkTest, SaveUtilDecodes)
+{
+	std::vector<Format> formats = other_formats();
+	formats.insert(formats.begin(), rgba8());
+	for (gtBackend::Kind kind : { gtBackend::e_DX11, gtBackend::e_Vulkan })
+	{
+		SCOPED_TRACE(kind == gtBackend::e_DX11 ? "DX11" : "Vulkan");
+		gtTempDir dir;
+		const bool ran = gtBackend::Run(kind, [&]()
+		{
+			for (const Format& format : formats)
+			{
+				if (format.m_bWicFails)
+					continue;
+				std::unique_ptr<g2dImage> image = make_image(format);
+				for (const char* ext : shared_extensions())
+				{
+					if (std::string(ext) == "exr")
+						continue;
+					const std::filesystem::path path = dir.GetPath() / (std::string(format.m_pName) + "." + ext);
+					EXPECT_EQ("ok", outcome([&]() { g2dImageSave::Save(locator_of(path), image.get()); })) << path;
+					const Saved s = saved("ok", path, &format);
+					if (s.m_bExists)
+						expect_decodes(format, ext, s.m_File);
+				}
+			}
+		});
+		if (!ran)
+			return;
+	}
 }
 
 //----------------------------------------------------------------------------
@@ -666,7 +882,7 @@ TEST(g2dImageSaveVkTest, SaveThrowsAsDX11)
 {
 	expect_same([](const std::filesystem::path& i_Dir, Results& o_Results)
 	{
-		for (const char* ext : { "dds", "ppm", "dib", "pfm", "xyz" })
+		for (const char* ext : { "dds", "dib", "xyz" })
 		{
 			save_image(rgba8(), ext, i_Dir, o_Results);
 			EXPECT_EQ("g2dUnknownImageFileTypeX", o_Results[std::string("RGBA8.") + ext].m_Outcome) << ext;
@@ -675,8 +891,8 @@ TEST(g2dImageSaveVkTest, SaveThrowsAsDX11)
 }
 
 //----------------------------------------------------------------------------
-//	A window's back buffer, mid-frame: BMP and PNG as an image's; TGA, HDR
-//	and EXR aren't written from a window on DX11 (only from an image)
+//	A window's back buffer, mid-frame: captured to an image and saved as
+//	one, so every type an image is saved to (DDS throws)
 //----------------------------------------------------------------------------
 TEST(g2dImageSaveVkTest, SaveWindowMatchesDX11)
 {
@@ -690,13 +906,17 @@ TEST(g2dImageSaveVkTest, SaveWindowMatchesDX11)
 		w.Clear(g2dRGBColor(60, 70, 80));
 		w.DrawImage(5, 7, *image);
 		w.EndScene();
-		for (const char* ext : { "bmp", "png", "tga", "hdr", "exr", "dds" })
+		std::vector<const char*> extensions = shared_extensions();
+		extensions.push_back("tif");
+		extensions.push_back("dds");
+		for (const char* ext : extensions)
 		{
 			const std::string name = std::string("window.") + ext;
 			const std::filesystem::path path = i_Dir / name;
 			const std::string result = outcome([&]() { g2dImageSave::Save(locator_of(path), &w); });
 			Saved s = saved(result, path, &rgba8());
-			if (std::string(ext) == "bmp" || std::string(ext) == "png")
+			s.m_bShared = std::string(ext) != "tif";
+			if (std::string(ext) != "dds")
 			{
 				o_Results[name] = s;
 			}
