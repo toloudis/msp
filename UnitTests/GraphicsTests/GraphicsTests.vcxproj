@@ -52,6 +52,11 @@
     <!-- GraphicsVulkan's Vulkan-only shader code, for test shaders that need it -->
     <GtShadersVk>$(ProjectDir)..\..\LibXLT\GraphicsVulkan\Eff\private\ShadersVk</GtShadersVk>
   </PropertyGroup>
+  <!-- /p:MspRunGraphicsTests=false builds the tests without running them (CI: GitHub's
+       runners have no GPU these tests can rely on) -->
+  <PropertyGroup Condition="'$(MspRunGraphicsTests)' == 'false'">
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+  </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(IntDir);$(ProjectDir)..\..\LibXLT\GraphicsVulkan\vcpkg_installed\x64-windows\x64-windows\include;$(ProjectDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

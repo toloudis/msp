@@ -104,8 +104,10 @@ hold settings:
   port is compared with (`Dx11/gtD3D11`: a D3D11 device on the hardware
   adapter, else WARP). Helpers use the `gt` prefix. The Vulkan tests run
   with validation on (`gtVulkan` fails a test on any validation message)
-  and are skipped when there is no usable Vulkan device (as on CI); the
-  tests that need only reflection run everywhere. `gtBackend` runs the
+  and are skipped when there is no usable Vulkan device; the tests that
+  need only reflection run everywhere. CI builds them but doesn't run them
+  (`/p:MspRunGraphicsTests=false` turns the post-build run off): GitHub's
+  runners have no GPU they can rely on. `gtBackend` runs the
   same test code under the whole GraphicsDX11 layer and then the whole
   GraphicsVulkan layer, as MachStudio starts them, so a test can compare
   what Graphics-level calls (`matTextureMgr`, ...) give on each, all in
@@ -146,7 +148,8 @@ hold settings:
   (so it isn't copying its vcpkg DLLs into the shared output folder while
   GraphicsTests' shards have them loaded), and may reference whatever
   libraries it tests. CI builds `MainApp;CoreTests;MainAppTests;GraphicsTests`
-  in every configuration and uploads the XML reports.
+  in every configuration, runs every test project but GraphicsTests, and
+  uploads the XML reports.
 - Core headers have `#error` "multiply included" guards, so guard their
   includes in test files as everywhere else (`#ifndef MA_PLANE_HPP ...`).
 

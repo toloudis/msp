@@ -140,7 +140,9 @@ jobs:
       #
       # The GoogleTest unit tests (UnitTests/) run as soon as they are
       # built, and MainApp references them, so a failing test fails this
-      # step before MachStudio is built.
+      # step before MachStudio is built. GraphicsTests is built but not run
+      # (MspRunGraphicsTests=false): its tests need GPU capabilities the
+      # runners don't reliably have.
       - name: Build MainApp and unit tests (${{ matrix.configuration }}|x64)
         working-directory: MachStudio/Source
         run: >
@@ -148,6 +150,7 @@ jobs:
           "/t:MainApp;CoreTests;MainAppTests;GraphicsTests"
           "/p:Configuration=${{ matrix.configuration }}"
           /p:Platform=x64
+          /p:MspRunGraphicsTests=false
           /m
           /p:UseMultiToolTask=true
           /p:EnforceProcessCountAcrossBuilds=true
