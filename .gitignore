@@ -7,26 +7,7 @@ UnitTests/**/*.vcxproj.user
 vcpkg_installed/
 LibXLT/GraphicsDX11/Fx/private/Generated/
 LibXLT/GraphicsVulkan/Fx/private/Generated/
-# MainApp build output in the run directory
-MachStudio/MachStudio-x64/MachStudio-x64-*.exe
-MachStudio/MachStudio-x64/MachStudio-x64-*.pdb
-MachStudio/MachStudio-x64/*.map
-# The vcpkg DLLs the exe needs, which vcpkg copies next to it when MainApp
-# links (OpenEXR and Imath, libdeflate, OpenJPH, DirectXTex, libtiff and
-# what it brings, curl, zlib; Debug and Release names)
-MachStudio/MachStudio-x64/*-3_[0-9].dll
-MachStudio/MachStudio-x64/*-3_[0-9]_d.dll
-MachStudio/MachStudio-x64/deflate.dll
-MachStudio/MachStudio-x64/openjph.*.dll
-MachStudio/MachStudio-x64/DirectXTex.dll
-MachStudio/MachStudio-x64/tiff.dll
-MachStudio/MachStudio-x64/tiffd.dll
-MachStudio/MachStudio-x64/jpeg62.dll
-MachStudio/MachStudio-x64/turbojpeg.dll
-MachStudio/MachStudio-x64/liblzma.dll
-MachStudio/MachStudio-x64/libcurl.dll
-MachStudio/MachStudio-x64/libcurl-d.dll
-MachStudio/MachStudio-x64/z.dll
-MachStudio/MachStudio-x64/zd.dll
-MachStudio/MachStudio-x64/zlib1.dll
-MachStudio/MachStudio-x64/zlibd1.dll
+# The run directories MainApp builds into, one per configuration
+# (MachStudio-x64-<Qt|Wx|RenderNode>-<Debug|Release>): the exe and everything the
+# build copies next to it (Runtime/Data, vcpkg, 3rdParty, wx and Qt DLLs)
+MachStudio/MachStudio-x64-*/

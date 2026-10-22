@@ -60,7 +60,7 @@ namespace
 {
 	fsLocator font_bitmap()
 	{
-		const std::filesystem::path path = std::filesystem::u8path(gtPlatform::RepoRoot()) / "MachStudio" / "MachStudio-x64" / "Data" /
+		const std::filesystem::path path = std::filesystem::u8path(gtPlatform::RepoRoot()) / "MachStudio" / "Runtime" / "Data" /
 			"Icons" / "font-lucd00.png";
 		fsLocator locator;
 		fsFileUtil::UnicodeStringToLocator(itString(path.wstring().c_str()), locator);

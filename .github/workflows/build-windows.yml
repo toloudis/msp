@@ -227,15 +227,18 @@ jobs:
           path: UnitTests/bin/x64/${{ startsWith(matrix.configuration, 'Debug') && 'Debug' || 'Release' }}/*.xml
           if-no-files-found: ignore
 
+      # Each configuration builds into MachStudio/MachStudio-x64-<toolkit>-<Debug|Release>.
       # The exe loads OpenEXR from its own folder; fail if a build would not
       # start because the DLL is missing.
       - name: Check OpenEXR DLL is next to the exe
         shell: pwsh
         run: |
           $suffix = if ("${{ matrix.configuration }}".StartsWith("Debug")) { "_d" } else { "" }
-          $dll = "MachStudio/MachStudio-x64/OpenEXR-3_[0-9]$suffix.dll"
+          $base, $toolkit = "${{ matrix.configuration }}".Split(" ")
+          $dir = "MachStudio/MachStudio-x64-$toolkit-$base"
+          $dll = "$dir/OpenEXR-3_[0-9]$suffix.dll"
           if (-not (Test-Path $dll)) { throw "$dll is missing" }
-          Get-ChildItem MachStudio/MachStudio-x64/*.dll | Select-Object -ExpandProperty Name
+          Get-ChildItem $dir/*.dll | Select-Object -ExpandProperty Name
 
       # windeployqt copies the Qt DLLs and the platform plugin next to the
       # exe; without them a Qt build would not start.
@@ -244,6 +247,8 @@ jobs:
         shell: pwsh
         run: |
           $suffix = if ("${{ matrix.configuration }}".StartsWith("Debug")) { "d" } else { "" }
+          $base, $toolkit = "${{ matrix.configuration }}".Split(" ")
+          $dir = "MachStudio/MachStudio-x64-$toolkit-$base"
           foreach ($f in "Qt6Core$suffix.dll", "Qt6Gui$suffix.dll", "Qt6Widgets$suffix.dll", "platforms/qwindows$suffix.dll") {
-            if (-not (Test-Path "MachStudio/MachStudio-x64/$f")) { throw "$f is missing" }
+            if (-not (Test-Path "$dir/$f")) { throw "$f is missing" }
           }

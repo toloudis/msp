@@ -51,9 +51,14 @@ cameras/lights/objects on a timeline, and render frames or sequences on the GPU
     `MSP_GUI_*`; a project that does keeps the six configurations. Don't
     run two builds of the same base configuration (e.g. `Debug Qt` and
     `Debug Wx`) at the same time: they write the same files.
-- Executables land in `MachStudio/MachStudio-x64/` (e.g.
-  `MachStudio-x64-Qt-Release.exe`, `MachStudio-x64-RenderNode-Release.exe`),
-  alongside runtime data and DLLs.
+- Each configuration builds into its own run directory,
+  `MachStudio/MachStudio-x64-<Qt|Wx|RenderNode>-<Debug|Release>/` (e.g.
+  `MachStudio-x64-Qt-Release/MachStudio-x64-Qt-Release.exe`), holding only
+  what that build needs: after linking, MainApp's `MspDeployRuntime` target
+  copies `MachStudio/Runtime/Data` (found next to the exe), libpng and
+  zlibwapi (`3rdParty/Libs/x64`) and, in Wx builds, that Debug/Release's
+  wx DLLs; vcpkg and `windeployqt` add theirs. The folders are ignored by
+  git and can be deleted to start clean.
 - Third-party libraries come from `3rdParty/`, from vcpkg, or (Qt) from a
   separate install; see Dependencies below.
 - Many directories still contain obsolete `.vcproj` (VS2005/2008), `.vspscc`
@@ -161,7 +166,7 @@ build notes):
 
 | Library | Location | Used for |
 |---|---|---|
-| wxWidgets 3.2 | `WxWidgets/` (headers, import libs; `wxwidgets.props`) | Wx UI builds only (DLLs in `MachStudio-x64/`) |
+| wxWidgets 3.2 | `WxWidgets/` (headers, import libs; `wxwidgets.props`) | Wx UI builds only (DLLs in `lib/vc14x_x64_dll`, copied into the Wx run directories) |
 | libpng 1.6 | headers `Png/lpng162`, lib/DLL `Libs/x64/libpng16` | image loading (`g2dSurfaceLoaderDX11`) |
 | zlib + minizip | headers `Png/zlib-1.2.5`, lib/DLL `Libs/x64/zlibwapi` (zlib 1.2.8 sources in `zlib/`) | vertex-animation compression (`vtx`), zip (`cmpr`) |
 | Python 3.9 | `Python/include` (headers only, not in git) | embedded Python; compiled out unless `PYTHON_ENABLED` is defined, which no live configuration does |
@@ -615,8 +620,9 @@ Everything animated on the timeline goes through `Support/tmln`:
 `rcd` — live recording of float channels from input devices into keys.
 
 ### Other MachStudio folders
-- `MachStudio-x64/` — run directory: built EXEs, DLLs, Qt plugins, and the
-  runtime `Data` (configs, effects, icons).
+- `Runtime/` — the checked-in runtime files: `Data` (configs, effects,
+  icons), copied into each run directory `MachStudio-x64-<toolkit>-<config>/`
+  by the build; and unused Python 2.7 leftovers (`Lib`, `python`).
 - `wxFormBuilder/` — `.fbp` sources for the generated wx dialog base classes
   (`...DialogBase.h`); regenerate rather than hand-edit those.
 - `Qt Dialogs/` — Qt Designer `.ui` sources.

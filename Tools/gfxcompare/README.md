@@ -27,7 +27,7 @@ msbuild MachStudio/Source/MachStudio.sln /t:MainApp "/p:Configuration=Release Re
 Render twice and compare:
 
 ```
-python Tools/gfxcompare/gfxcompare.py run --exe MachStudio/MachStudio-x64/MachStudio-x64-RenderNode-Release.exe ^
+python Tools/gfxcompare/gfxcompare.py run --exe MachStudio/MachStudio-x64-RenderNode-Release/MachStudio-x64-RenderNode-Release.exe ^
     --scene C:\path\scene.mab --out out\cmp [--a-args "..."] [--b-args "..."]
 ```
 

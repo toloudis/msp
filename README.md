@@ -61,8 +61,10 @@ Or from a PowerShell prompt:
 msbuild MachStudio/Source/MachStudio.sln "/p:Configuration=Release Qt" /p:Platform=x64 /m
 ```
 
-The executables land in `MachStudio/MachStudio-x64/` (for example
-`MachStudio-x64-Qt-Release.exe`), next to the DLLs and data they need.
+Each configuration builds into its own folder,
+`MachStudio/MachStudio-x64-<Qt|Wx|RenderNode>-<Debug|Release>/` (for example
+`MachStudio-x64-Qt-Release/MachStudio-x64-Qt-Release.exe`), and the build copies
+the DLLs and data it needs next to it (the data from `MachStudio/Runtime/Data`).
 
 The unit tests (`UnitTests/`) build with the solution; CoreTests and
 MainAppTests run as part of the build, and a failing test fails it.

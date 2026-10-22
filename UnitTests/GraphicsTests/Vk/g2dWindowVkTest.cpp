@@ -618,7 +618,7 @@ TEST(g2dWindowVkScene, DebugOverlayMatchesDX11)
 	auto draw = [&](gtBackend::Kind i_Kind)
 	{
 		bitmap_scope previous_bitmap;
-		const std::filesystem::path bitmap = std::filesystem::u8path(gtPlatform::RepoRoot()) / "MachStudio" / "MachStudio-x64" /
+		const std::filesystem::path bitmap = std::filesystem::u8path(gtPlatform::RepoRoot()) / "MachStudio" / "Runtime" /
 			"Data" / "Icons" / "font-lucd00.png";
 		fsLocator locator;
 		fsFileUtil::UnicodeStringToLocator(itString(bitmap.wstring().c_str()), locator);
@@ -751,7 +751,7 @@ namespace
 			//	the font bitmap first: the window loads its font when made
 			fsLocator previous;
 			g2dFontUtil::GetGlobalFontBitmap(previous);
-			const std::filesystem::path bitmap = std::filesystem::u8path(gtPlatform::RepoRoot()) / "MachStudio" / "MachStudio-x64" /
+			const std::filesystem::path bitmap = std::filesystem::u8path(gtPlatform::RepoRoot()) / "MachStudio" / "Runtime" /
 				"Data" / "Icons" / "font-lucd00.png";
 			fsLocator locator;
 			fsFileUtil::UnicodeStringToLocator(itString(bitmap.wstring().c_str()), locator);
