@@ -88,7 +88,7 @@
 **	  -capHardwareAA on|off      the renderer's own antialiasing (HDR AA)
 **
 **	Graphics
-**	  -gfx dx11|vulkan           graphics backend; default dx11. If Vulkan
+**	  -gfx dx11|vulkan           graphics backend; default vulkan. If Vulkan
 **	                             can't start, MachStudio says why and exits
 **	                             (it never falls back to DX11)
 **	  -gfxValidation             turn on the Vulkan validation layer (Debug

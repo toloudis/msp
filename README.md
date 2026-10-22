@@ -2,8 +2,8 @@
 
 MachStudio Pro is a Windows real-time 3D lighting, rendering and
 cinematography application. Scenes exported from DCC tools (Maya, Max, FBX,
-glTF) are lit, animated on a timeline and rendered on the GPU (Direct3D 11,
-or Vulkan with `-gfx vulkan`). The code is in two trees: `LibXLT/`, the
+glTF) are lit, animated on a timeline and rendered on the GPU (Vulkan 1.4,
+or Direct3D 11 with `-gfx dx11`). The code is in two trees: `LibXLT/`, the
 shared engine and framework libraries, and `MachStudio/`, the application.
 [CLAUDE.md](CLAUDE.md) describes the code in detail.
 

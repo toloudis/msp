@@ -4,7 +4,7 @@
   "$comment": "Every vcpkg package MachStudio, LibXLT and the unit tests use. Installed once, into vcpkg_installed/ next to this file (\"vcpkg install\" here, or the first project a build reaches), and shared by every project and configuration; see Directory.Build.props.",
   "dependencies": [
     { "name": "openexr", "$comment": "Graphics: .exr render output" },
-    { "name": "directxtex", "$comment": "GraphicsDX11: DDS/texture loading, image saving" },
+    { "name": "directxtex", "version>=": "2026-05-07", "$comment": "GraphicsDX11: DDS/texture loading, image saving. GraphicsVulkan's matMipFilter is a port of this release's mip filters (GraphicsTests compare them); a different release may need it updated" },
     { "name": "nlohmann-json", "$comment": "GraphicsDX11, GraphicsVulkan: *.effect.json" },
     { "name": "tiff", "$comment": "GraphicsDX11, GraphicsVulkan, GraphicsTests: TIFF loading and saving" },
     { "name": "vulkan-headers", "$comment": "GraphicsVulkan" },

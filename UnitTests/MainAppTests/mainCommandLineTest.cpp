@@ -204,9 +204,9 @@ TEST(mainCommandLine, GfxVulkan)
 	EXPECT_TRUE(line.m_Warnings.empty());
 }
 
-TEST(mainCommandLine, GfxDefaultsToDx11)
+TEST(mainCommandLine, GfxDefaultsToVulkan)
 {
-	EXPECT_EQ(g3dGfxOptions::e_DX11, mainCommandLine::Parse("-new").m_Gfx.m_Backend);
+	EXPECT_EQ(g3dGfxOptions::e_Vulkan, mainCommandLine::Parse("-new").m_Gfx.m_Backend);
 	EXPECT_FALSE(mainCommandLine::Parse("-new").m_Gfx.m_bValidation);
 }
 
@@ -221,7 +221,7 @@ TEST(mainCommandLine, GfxDx11CaseInsensitive)
 TEST(mainCommandLine, GfxBadValueWarns)
 {
 	mainCommandLine line = mainCommandLine::Parse("-gfx metal");
-	EXPECT_EQ(g3dGfxOptions::e_DX11, line.m_Gfx.m_Backend);
+	EXPECT_EQ(g3dGfxOptions::e_Vulkan, line.m_Gfx.m_Backend);
 	ASSERT_EQ(1u, line.m_Warnings.size());
 	EXPECT_NE(std::string::npos, line.m_Warnings[0].find("metal"));
 }

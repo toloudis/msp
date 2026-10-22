@@ -192,7 +192,7 @@ namespace gvk
 						d[0] = store_unorm8(v.z); d[1] = store_unorm8(v.y); d[2] = store_unorm8(v.x); d[3] = store_unorm8(1.0f);
 						break;
 					case e_R8_UNORM:
-						d[0] = (uint8_t)(saturate(v.x) * 255.f);		// DirectXTex truncates R8, without the bias
+						d[0] = store_unorm8(v.x);		// with the bias since DirectXTex's May 2026 release
 						break;
 					case e_R16_UNORM:
 					{

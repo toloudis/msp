@@ -19,7 +19,7 @@ struct g3dGfxOptions
 {
 	enum Backend { e_DX11, e_Vulkan };
 
-	Backend		m_Backend = e_DX11;		// -gfx dx11|vulkan
+	Backend		m_Backend = e_Vulkan;	// -gfx dx11|vulkan
 	bool		m_bValidation = false;	// -gfxValidation (Debug builds always validate)
 	std::string m_ProfileFile;			// -gfxProfile <file.csv>; empty: profiling off
 	//	Windows render into an image of their size, with no swap chain

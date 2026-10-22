@@ -8,7 +8,7 @@ MachStudio Pro is a Windows real-time 3D lighting, rendering and cinematography
 application (originally StudioGPU / Extra Large Technology, 2003–2010). Users
 load scenes exported from DCC tools (Maya, Max, FBX, glTF), light them, animate
 cameras/lights/objects on a timeline, and render frames or sequences on the GPU
-(Direct3D 11), with export to RenderMan.
+(Vulkan by default, or Direct3D 11), with export to RenderMan.
 
 ## Building
 
@@ -306,7 +306,8 @@ implements these).
 | `vtx` | Vertex animation / geometry cache compression (delta, normal and zlib encoders) |
 
 ### GraphicsDX11 (`LibXLT/GraphicsDX11`)
-The live Direct3D 11 renderer.
+The Direct3D 11 renderer (`-gfx dx11`), and the reference the Vulkan port is
+compared with.
 
 | Package | Purpose |
 |---|---|
@@ -324,8 +325,9 @@ The live Direct3D 11 renderer.
 ### GraphicsVulkan (`LibXLT/GraphicsVulkan`)
 The Vulkan renderer, being ported from GraphicsDX11 (plan:
 `docs/superpowers/plans/2026-10-17-graphics-vulkan-roadmap.md`; design:
-`docs/superpowers/specs/2026-10-17-graphics-vulkan-design.md`). MachStudio
-uses it with `-gfx vulkan`; DX11 stays the default. Namespace `gvk`,
+`docs/superpowers/specs/2026-10-17-graphics-vulkan-design.md`). It is
+MachStudio's default backend; `-gfx dx11` picks GraphicsDX11 instead (there
+is no fallback: if Vulkan can't start, MachStudio says why and exits). Namespace `gvk`,
 include guards `GVK_*`, class names end in `Vk`. `GraphicsVulkanLayer` has
 the same calls as `GraphicsDX11Layer` (its `Init` can fail; `GetInitError`
 says why) and installs a Vulkan implementation for every Graphics hook.

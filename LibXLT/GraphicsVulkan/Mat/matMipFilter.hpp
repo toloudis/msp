@@ -5,7 +5,7 @@
 **	do on the CPU with DirectXTex, ported (DirectXTexMipmaps.cpp,
 **	DirectXTexResize.cpp, filters.h and the scanline conversions of
 **	DirectXTexConvert.cpp; MIT licence, Copyright (c) Microsoft
-**	Corporation; the September 2024 release GraphicsDX11 links):
+**	Corporation; the May 2026 release GraphicsDX11 links):
 **
 **	- matGenerateMips with e_Triangle is GenerateMipMaps(TEX_FILTER_TRIANGLE)
 **	  (the WIC formats' loads); e_Box is GenerateMipMaps(TEX_FILTER_FANT)
