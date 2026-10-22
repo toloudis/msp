@@ -97,7 +97,7 @@ Branch: `claude/unit-tests` (based on `claude/toolkit-input` at `a12c4b6f`).
 - Scripts in Git Bash heredocs lose backslashes (`\\` becomes `\`); write
   Python that handles Windows paths to a file first.
 - vcpkg's x64-windows gtest is a DLL (`GTEST_LINKED_AS_SHARED_LIBRARY=1`), and
-  the exe resolves gtest from `gtest.dll`, which is copied next to it.
+  the exe resolves gtest from `gmock.dll`, which is copied next to it.
 - `maRotation`'s `a * b` applies `b` first; `maMatrix4x4`'s `A * B` applies `A`
   first (row vectors). The tests pin both down.
 - `gfFileXML::WriteHeader` also writes an `<SGPU>` root tag, which readers

@@ -2,7 +2,7 @@
 <!--
     GoogleTest unit tests for LibXLT/Core: a console exe that links Core
     (ProjectReference below) and gets gtest from the repository's
-    vcpkg.json. vcpkg's x64-windows gtest is a DLL (gtest.dll, copied next to the
+    vcpkg.json. vcpkg's x64-windows gtest is a DLL (gmock.dll, copied next to the
     exe).
 
     The Post-Build Event runs the tests right after linking, so a failing
