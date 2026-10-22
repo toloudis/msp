@@ -541,8 +541,8 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <!-- MachStudio isn't built until the unit tests have built and passed
-         (their Post-Build Event runs them). Nothing is linked from
-         them. -->
+         (their Post-Build Event runs them; GraphicsTests has none, and is
+         only built). Nothing is linked from them. -->
     <ProjectReference Include="..\..\..\UnitTests\CoreTests\CoreTests.vcxproj">
       <Project>{a47f6ef0-4e08-4c1a-a930-cc4af2bbe402}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

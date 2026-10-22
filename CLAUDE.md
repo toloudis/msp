@@ -105,9 +105,10 @@ hold settings:
   adapter, else WARP). Helpers use the `gt` prefix. The Vulkan tests run
   with validation on (`gtVulkan` fails a test on any validation message)
   and are skipped when there is no usable Vulkan device; the tests that
-  need only reflection run everywhere. CI builds them but doesn't run them
-  (`/p:MspRunGraphicsTests=false` turns the post-build run off): GitHub's
-  runners have no GPU they can rely on. `gtBackend` runs the
+  need only reflection run everywhere. No build runs them (they take a
+  while, and need a GPU; GitHub's runners have none they can rely on):
+  they are run by hand, as `UnitTests/GraphicsTests/README.md` says.
+  `gtBackend` runs the
   same test code under the whole GraphicsDX11 layer and then the whole
   GraphicsVulkan layer, as MachStudio starts them, so a test can compare
   what Graphics-level calls (`matTextureMgr`, ...) give on each, all in
@@ -136,20 +137,20 @@ hold settings:
 - Run: `UnitTests/bin/x64/<Debug|Release>/CoreTests.exe` (gtest flags such as
   `--gtest_filter=ma*` work); Visual Studio's Google Test adapter should also
   list them in Test Explorer.
-- The tests run as part of the build: the test project's Post-Build Event
-  (Project Properties → Build Events) runs the exe after linking and writes
-  `<TargetName>.xml` next to it; a failing test fails the build.
-  GraphicsTests' step runs it through `UnitTests/RunShards.ps1`: up to 8
-  gtest shards at once (`GTEST_TOTAL_SHARDS`/`GTEST_SHARD_INDEX`), their
-  output printed in turn and their XML merged into the one report. MainApp
-  has an ordinary ProjectReference to each test project (nothing linked),
-  so MachStudio isn't built until the tests pass. A new test project gets
-  the same reference in `MainApp.vcxproj` and in `GraphicsTests.vcxproj`
-  (so it isn't copying its vcpkg DLLs into the shared output folder while
-  GraphicsTests' shards have them loaded), and may reference whatever
-  libraries it tests. CI builds `MainApp;CoreTests;MainAppTests;GraphicsTests`
-  in every configuration, runs every test project but GraphicsTests, and
-  uploads the XML reports.
+- CoreTests and MainAppTests run as part of the build: the test project's
+  Post-Build Event (Project Properties → Build Events) runs the exe after
+  linking and writes `<TargetName>.xml` next to it; a failing test fails
+  the build. GraphicsTests has no such step: it is only built, and run
+  explicitly (`UnitTests/GraphicsTests/README.md`), usually through
+  `UnitTests/RunShards.ps1`: up to 8 gtest shards at once
+  (`GTEST_TOTAL_SHARDS`/`GTEST_SHARD_INDEX`), their output printed in turn
+  and their XML merged into the one report. MainApp has an ordinary
+  ProjectReference to each test project (nothing linked), so MachStudio
+  isn't built until the tests have built and (but for GraphicsTests)
+  passed. A new test project gets the same reference in `MainApp.vcxproj`
+  and may reference whatever libraries it tests. CI builds
+  `MainApp;CoreTests;MainAppTests;GraphicsTests` in every configuration
+  (which runs CoreTests and MainAppTests) and uploads the XML reports.
 - Core headers have `#error` "multiply included" guards, so guard their
   includes in test files as everywhere else (`#ifndef MA_PLANE_HPP ...`).
 

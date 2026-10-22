@@ -4,8 +4,8 @@
     Runs a GoogleTest exe as several processes at once, each running a
     share of the tests (gtest sharding: GTEST_TOTAL_SHARDS and
     GTEST_SHARD_INDEX), then prints each shard's output in turn and merges
-    their XML reports into one. Used by GraphicsTests' post-build step:
-    its tests spend most of their time waiting on device and layer start-up,
+    their XML reports into one. Used to run GraphicsTests by hand (see
+    GraphicsTests/README.md): its tests spend most of their time waiting on device and layer start-up,
     so they run several at a time. -Shards defaults to 8 (fewer on a
     machine with fewer cores): more gave no gain on a 12-core machine.
 
