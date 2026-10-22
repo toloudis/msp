@@ -11,8 +11,8 @@
 **      path with single-light rendering off), a wireframe node (non-solid)
 **      and a transparent one; the cases cover LPV GI, AO (which DX11's
 **      bake leaves out), HDR AA, normals, no lit pass, 512 texels, a
-**      texture reduction (which DX11 ignores), RGBA16F targets and TGA
-**      (which DX11's SaveTextureToFile doesn't write). Then fragments with
+**      texture reduction (which DX11 ignores), RGBA16F targets and TGA.
+**      Then fragments with
 **      odd UVs (Review Focus 5): no UVs, UVs partly outside 0..1, and UVs
 **      in -1..2 (a UV area of 2 or more, which the baker skips).
 **
@@ -73,6 +73,7 @@
 #define STB_IMAGE_STATIC
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_PNG
+#define STBI_ONLY_TGA
 #include <stb_image.h>
 
 #include <gtest/gtest.h>
@@ -108,7 +109,6 @@ namespace
 		int				m_Res = 128;
 		int				m_TextureReduce = 0;
 		bool			m_bHalfFloat = false;	// RGBA16F (api3dBakeScene's e_RGBA16f), else RGBA8
-		bool			m_bExpectFiles = true;	// DX11 writes files (TGA: it writes nothing)
 		//	DX11 draws on a good part of every file (else of one at least)
 		bool			m_bEveryFileCovered = true;
 	};
@@ -265,7 +265,7 @@ namespace
 		return result;
 	}
 
-	//	The file decoded to RGBA8 (PNG only), or empty
+	//	The file decoded to RGBA8 (PNG and TGA only), or empty
 	std::vector<uint8_t> decode(const std::vector<uint8_t>& i_File, int& o_Width, int& o_Height)
 	{
 		int channels = 0;
@@ -292,10 +292,7 @@ namespace
 		for (const auto& f : i_Vulkan.m_Files)
 			vulkanNames.push_back(f.first);
 		EXPECT_EQ(dx11Names, vulkanNames);
-		if (i_Case.m_bExpectFiles)
-			EXPECT_FALSE(dx11Names.empty()) << "DX11 baked nothing";
-		else
-			EXPECT_TRUE(dx11Names.empty());
+		EXPECT_FALSE(dx11Names.empty()) << "DX11 baked nothing";
 
 		int coveredFiles = 0;
 		for (const auto& f : i_DX11.m_Files)
@@ -331,8 +328,7 @@ namespace
 					<< gtSaveComparison(fileName, a.data(), b.data(), w[0], h[0]) << ")";
 			}
 		}
-		if (i_Case.m_bExpectFiles)
-			EXPECT_GT(coveredFiles, 0) << name << ": DX11 baked nothing visible";
+		EXPECT_GT(coveredFiles, 0) << name << ": DX11 baked nothing visible";
 	}
 
 	//	Every case on DX11, then every case on Vulkan, each backend's in one
@@ -414,10 +410,8 @@ TEST(shdwBakeVkTest, BakeMatchesDX11)
 		cases.push_back(c);
 	}
 	{
-		//	SaveTextureToFile writes nothing for TGA on DX11
 		BakeCase c = room_case("tga", nullptr);
 		c.m_Format = "tga";
-		c.m_bExpectFiles = false;
 		cases.push_back(c);
 	}
 	expect_same_bakes("BakeMatchesDX11", cases);
