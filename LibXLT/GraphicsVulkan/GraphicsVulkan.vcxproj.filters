@@ -437,9 +437,6 @@
     <ClCompile Include="G3d\private\g3dSceneRenderUtil.cpp">
       <Filter>G3d\private</Filter>
     </ClCompile>
-    <ClCompile Include="G3d\private\g3dSceneRendererCreateVk.cpp">
-      <Filter>G3d\private</Filter>
-    </ClCompile>
     <ClCompile Include="G3d\private\g3dRenderPass.cpp">
       <Filter>G3d\private</Filter>
     </ClCompile>
@@ -573,6 +570,12 @@
       <Filter>shdw\private</Filter>
     </ClCompile>
     <ClCompile Include="shdw\private\shdwPassHair.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwPassOpacity.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
+    <ClCompile Include="shdw\private\shdwOpacityMapRendererVk.cpp">
       <Filter>shdw\private</Filter>
     </ClCompile>
     <ClCompile Include="G3d\private\g3dSceneRendererVk.cpp">
@@ -933,9 +936,6 @@
     <ClInclude Include="G3d\g3dSceneRenderUtil.hpp">
       <Filter>G3d</Filter>
     </ClInclude>
-    <ClInclude Include="G3d\g3dSceneRendererCreateVk.hpp">
-      <Filter>G3d</Filter>
-    </ClInclude>
     <ClInclude Include="G3d\g3dRenderPass.hpp">
       <Filter>G3d</Filter>
     </ClInclude>
@@ -1069,6 +1069,12 @@
       <Filter>shdw</Filter>
     </ClInclude>
     <ClInclude Include="shdw\shdwPassHair.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPassOpacity.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwOpacityMapRendererVk.hpp">
       <Filter>shdw</Filter>
     </ClInclude>
     <ClInclude Include="G3d\g3dSceneRendererVk.hpp">

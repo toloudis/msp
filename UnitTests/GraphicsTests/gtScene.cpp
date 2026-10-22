@@ -545,9 +545,44 @@ gtSceneBuilder::gtSceneBuilder()
 	m_pScene.reset(new g3dScene(m_pLayer));
 }
 
+//	A light's hair shadows (HairShadows)
+struct gtSceneBuilder::OpacityShadows
+{
+	g3dProjectedLight*					m_pLight = NULL;
+	camCamera							m_Camera;		// the light's shadow camera
+	matTexture*							m_pMaps[MAX_OPACITY_MAPS] = {};
+	matTexture*							m_pVolume = NULL;
+	std::unique_ptr<g3dSceneRenderer>	m_pRenderer;
+	std::unique_ptr<g3dTargetRenderer>	m_pTarget;
+
+	//	The maps, volume and target renderer (the renderer stays, as the
+	//	light object's does)
+	void Release()
+	{
+		m_pTarget.reset();
+		for (int i = 0; i < MAX_OPACITY_MAPS; i++)
+		{
+			if (m_pMaps[i])
+				matTextureMgr::ReleaseTexture(m_pMaps[i]);
+			m_pMaps[i] = NULL;
+			m_pLight->SetOpacityShadowMap(NULL, i);
+		}
+		if (m_pVolume)
+			matTextureMgr::ReleaseTexture(m_pVolume);
+		m_pVolume = NULL;
+		m_pLight->SetOpacityVolume(NULL);
+	}
+};
+
 gtSceneBuilder::~gtSceneBuilder()
 {
 	m_TargetRenderers.clear();
+	for (auto& shadows : m_OpacityShadows)
+	{
+		shadows->Release();
+		shadows->m_pRenderer->ReleaseResources();
+	}
+	m_OpacityShadows.clear();
 	for (auto& renderer : m_DepthRenderers)
 		renderer->ReleaseResources();
 	m_DepthRenderers.clear();
@@ -760,6 +795,81 @@ void gtSceneBuilder::RenderTargets(float i_fSimTime)
 {
 	for (auto& renderer : m_TargetRenderers)
 		renderer->Render(i_fSimTime);
+	for (auto& shadows : m_OpacityShadows)
+	{
+		if (shadows->m_pTarget)
+			shadows->m_pTarget->Render(i_fSimTime);
+	}
+}
+
+void gtSceneBuilder::HairShadows(g3dProjectedLight* io_pLight, HAIR_SHADOW_TYPE i_Type, int i_Size)
+{
+	OpacityShadows* shadows = NULL;
+	for (auto& s : m_OpacityShadows)
+	{
+		if (s->m_pLight == io_pLight)
+			shadows = s.get();
+	}
+	if (shadows)
+	{
+		shadows->Release();
+	}
+	else
+	{
+		m_OpacityShadows.emplace_back(new OpacityShadows());
+		shadows = m_OpacityShadows.back().get();
+		shadows->m_pLight = io_pLight;
+		shadows->m_pRenderer.reset(g3dSceneRendererCreate::CreateOpacityMapRenderer(io_pLight));
+	}
+	io_pLight->SetHairShadowType(i_Type);
+	io_pLight->OrientCamera(shadows->m_Camera);
+
+	//	prjltProjectedLightObject's l_ldrPFD
+	const g2dPFD ldr(0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000, 32);
+	int count = 1;
+	if (i_Type == HAIR_SHADOW_OSM16 || i_Type == HAIR_SHADOW_DOSM16)
+		count = 4;
+	else if (i_Type == HAIR_SHADOW_OSM32 || i_Type == HAIR_SHADOW_DOSM32)
+		count = 8;
+	for (int i = 0; i < count; i++)
+	{
+		shadows->m_pMaps[i] = matTextureMgr::CreateRenderTargetTexture(i_Size, i_Size, false, &ldr, false, true,
+																	   matTextureMgr::e_ShadowMap);
+	}
+	if (i_Type == HAIR_SHADOW_VOLUME4)
+	{
+		const g2dPFD l8(g2dPFD::e_Luminance8, 8);
+		std::vector<unsigned char> data((size_t)i_Size * i_Size * 4, 0x00);
+		std::fill(data.begin() + data.size() / 2, data.end(), (unsigned char)0xff);
+		shadows->m_pVolume = matTextureMgr::CreateTexture3D(i_Size, i_Size, 4, &l8,
+															BIND_SHADER_RESOURCE | BIND_UNORDERED_ACCESS, data.data());
+	}
+	for (int i = 0; i < MAX_OPACITY_MAPS; i++)
+		io_pLight->SetOpacityShadowMap(shadows->m_pMaps[i], i);
+	io_pLight->SetOpacityVolume(shadows->m_pVolume);
+
+	shadows->m_pTarget.reset(new g3dTargetRenderer(shadows->m_pMaps[0]->GetRenderTargetAPI(), shadows->m_pRenderer.get(),
+												   m_pScene.get(), &shadows->m_Camera));
+}
+
+matTexture* gtSceneBuilder::OpacityMap(const g3dProjectedLight* i_pLight, int i_Index) const
+{
+	for (const auto& s : m_OpacityShadows)
+	{
+		if (s->m_pLight == i_pLight)
+			return s->m_pMaps[i_Index];
+	}
+	return NULL;
+}
+
+matTexture* gtSceneBuilder::OpacityVolume(const g3dProjectedLight* i_pLight) const
+{
+	for (const auto& s : m_OpacityShadows)
+	{
+		if (s->m_pLight == i_pLight)
+			return s->m_pVolume;
+	}
+	return NULL;
 }
 
 void gtSceneBuilder::TwoLights()

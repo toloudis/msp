@@ -546,17 +546,14 @@ TEST(shdwHDRRendererVkTest, ShareBuffersWithEveryType)
 			gtRenderScene(lit_spheres, dir.GetPath(), options);
 		}
 
-		{	//	the opacity map renderer's stand-in
+		{	//	the opacity map renderer (it has no type, and draws only for a
+			//	light: shdwOpacityVkTest renders it)
 			SCOPED_TRACE("opacity map");
-			gtRenderOptions options;
-			options.m_CreateRenderer = [&]()
-			{
-				g3dSceneRenderer* partner = g3dSceneRendererCreate::CreateOpacityMapRenderer(NULL);
-				EXPECT_TRUE(dynamic_cast<gvk::shdwSceneRendererVk*>(partner) == NULL);
-				hdr->ShareBuffers(partner);
-				return partner;
-			};
-			gtRenderScene(lit_spheres, dir.GetPath(), options);
+			std::unique_ptr<g3dSceneRenderer> partner(g3dSceneRendererCreate::CreateOpacityMapRenderer(NULL));
+			gvk::shdwSceneRendererVk* shdw = dynamic_cast<gvk::shdwSceneRendererVk*>(partner.get());
+			ASSERT_TRUE(shdw != NULL);
+			hdr->ShareBuffers(partner.get());
+			EXPECT_EQ(shdw->GetFrameBuffer(), hdrShdw->GetFrameBuffer());
 		}
 
 	#if ENV_BUILD == ENV_DEBUGBUILD

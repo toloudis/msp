@@ -6,10 +6,7 @@
 **
 **	GraphicsVulkan port of GraphicsDX11's shdwSceneRendererCreate, which
 **	shdwPackage installs. The default and HDR renderers are
-**	shdwHDRRendererVk. Every renderer is ported but the opacity map
-**	renderer (Plan 7: its maps are read only by hair), which is answered
-**	by g3dSceneRendererCreateVk (the forward renderer, logged once with
-**	GVK_NOT_YET).
+**	shdwHDRRendererVk; every other type gets its port, as on DX11.
 **
 **	Extra Large Technology
 **	Copyright(C) 2005. - All Rights Reserved
@@ -20,8 +17,8 @@
 #endif
 #define GVK_SHDW_SCENERENDERERCREATE_HPP
 
-#ifndef GVK_G3D_SCENERENDERERCREATEVK_HPP
-#include "GraphicsVulkan/G3d/g3dSceneRendererCreateVk.hpp"
+#ifndef G3D_SCENERENDERERCREATE_HPP
+#include "Graphics/g3d/g3dSceneRendererCreate.hpp"
 #endif
 
 //--------------------------------------------------------------------
@@ -61,10 +58,6 @@ public:
 		virtual g3dSceneRenderer* CreateMaterialsRenderer( );
 		virtual g3dSceneRenderer* CreateReflectionOnlyRenderer();
 		virtual g3dSceneRenderer* CreateGlowRenderer();
-
-private:
-		//	The forward renderer standing in for types not ported yet
-		g3dSceneRendererCreateVk m_Fallback;
 };
 
 }

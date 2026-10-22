@@ -47,6 +47,12 @@
 #ifndef GVK_SHDW_PASSHAIR_HPP
 #include "GraphicsVulkan/shdw/shdwPassHair.hpp"
 #endif
+#ifndef GVK_SHDW_PASSOPACITY_HPP
+#include "GraphicsVulkan/shdw/shdwPassOpacity.hpp"
+#endif
+#ifndef GVK_SHDW_OPACITYMAPRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwOpacityMapRendererVk.hpp"
+#endif
 #ifndef GVK_SHDW_PASSENVBACKGROUND_HPP
 #include "GraphicsVulkan/shdw/shdwPassEnvBackground.hpp"
 #endif
@@ -221,6 +227,8 @@ void shdwPackage::InitGraphics()
 	shdwReflectionsOnlyRendererVk::InitStates();
 	shdwBakingRenderer::InitStates();
 	shdwPassHair::InitStates();
+	shdwPassOpacity::InitStates();
+	shdwOpacityMapRendererVk::InitStates();
 	shdwPassAOVolumes::InitStates();
 	shdwPassLPVGI::InitStates();
 	shdwGlowRendererVk::InitStates();
@@ -241,6 +249,8 @@ void shdwPackage::CleanUpGraphics()
 	shdwGlowRendererVk::CleanupStates();
 	shdwPassLPVGI::CleanupStates();
 	shdwPassAOVolumes::CleanupStates();
+	shdwOpacityMapRendererVk::CleanupStates();
+	shdwPassOpacity::CleanupStates();
 	shdwPassHair::CleanupStates();
 	shdwBakingRenderer::CleanupStates();
 	shdwReflectionsOnlyRendererVk::CleanupStates();

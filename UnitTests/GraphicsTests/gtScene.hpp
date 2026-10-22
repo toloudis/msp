@@ -29,6 +29,10 @@
 #include "Graphics/Cam/camCamera.hpp"
 #endif
 
+#ifndef G3D_PROJECTEDLIGHT_HPP
+#include "Graphics/G3d/g3dProjectedLight.hpp"
+#endif
+
 #include <cstdint>
 #include <filesystem>
 #include <functional>
@@ -222,6 +226,25 @@ class gtSceneBuilder
 		g3dProjectedLight*	ProjectedLight(const maPoint3d& i_Position, const maPoint3d& i_Target,
 									   const maFloatRGBA& i_Color, int i_ShadowMapSize);
 
+		//	Hair shadows for i_pLight, as prjltProjectedLightObject::
+		//	ConfirmOpacityMap makes them: i_Type's opacity maps (1, 4 or 8
+		//	i_Size x i_Size LDR render targets without mips, e_ShadowMap;
+		//	4 for OSM16/DOSM16, 8 for OSM32/DOSM32), for HAIR_SHADOW_VOLUME4
+		//	also the L8 i_Size x i_Size x 4 volume (half 0, half 255, a
+		//	shader resource and UAV), the light's hair shadow type, the
+		//	light's opacity map renderer (g3dSceneRendererCreate::
+		//	CreateOpacityMapRenderer, made once per light) and a target
+		//	renderer drawing into the first map from the light's shadow
+		//	camera. RenderTargets renders it after the other targets (as
+		//	api3dTargetRendererMgr's e_Opacity). Called again for the same
+		//	light, it releases the old maps and target renderer first (a
+		//	shadow type change).
+		void			HairShadows(g3dProjectedLight* io_pLight, HAIR_SHADOW_TYPE i_Type, int i_Size);
+		//	The opacity maps and volume HairShadows made for i_pLight
+		//	(NULL past the type's count)
+		matTexture*		OpacityMap(const g3dProjectedLight* i_pLight, int i_Index) const;
+		matTexture*		OpacityVolume(const g3dProjectedLight* i_pLight) const;
+
 		//	Makes i_pNode's material reflective, as mtrlScriptObject does:
 		//	the material gets a reflection map (a mipped render target for a
 		//	planar reflection, a cube render target otherwise; the material's
@@ -293,5 +316,7 @@ class gtSceneBuilder
 		std::vector<std::unique_ptr<scObject>>			m_Reflectors;		// the reflection renderers' objects
 		std::vector<std::unique_ptr<g3dSceneRenderer>>	m_ReflectionRenderers;
 		std::vector<std::unique_ptr<g3dTargetRenderer>>	m_TargetRenderers;
+		struct OpacityShadows;
+		std::vector<std::unique_ptr<OpacityShadows>>	m_OpacityShadows;	// HairShadows', rendered after m_TargetRenderers
 		bool							m_bLightsCastShadows = false;
 };

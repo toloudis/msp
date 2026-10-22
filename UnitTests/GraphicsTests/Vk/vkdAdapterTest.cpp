@@ -158,7 +158,7 @@ TEST(vkdAdapter, RequiredListsCoverThePlan)
 	const std::vector<std::string>& feat = vkdRequiredFeatures();
 	for (const char* name : {"geometryShader", "tessellationShader", "dynamicRendering", "synchronization2",
 							 "timelineSemaphore", "descriptorHeap", "unifiedImageLayouts", "bufferDeviceAddress",
-							 "bresenhamLines", "hostQueryReset", "occlusionQueryPrecise"})
+							 "bresenhamLines", "hostQueryReset", "occlusionQueryPrecise", "fragmentStoresAndAtomics"})
 	{
 		EXPECT_NE(feat.end(), std::find(feat.begin(), feat.end(), std::string(name))) << name;
 	}

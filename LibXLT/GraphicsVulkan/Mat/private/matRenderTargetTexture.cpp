@@ -138,6 +138,13 @@ namespace gvk
 		if (i_bAllocDepthBuf == false)
 			m_bNoDepthRequested = true;
 
+		//	A target nothing has drawn into yet reads as D3D11 gives it in
+		//	practice (zeroed memory), not as whatever the allocation held:
+		//	the opacity pass, as DX11's, clears only the first of a light's
+		//	opacity maps and adds into the others
+		const float zero[4] = { 0, 0, 0, 0 };
+		vkdGlobal::Context().ClearRenderTarget(GetColorBuffer(), zero);
+
 		// sync up new size and pixel format info
 		ReloadInfo();
 	}

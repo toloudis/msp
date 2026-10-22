@@ -103,7 +103,55 @@ std::vector<uint8_t> gtReadTexture(gtBackend::Kind i_Kind, const matTexture* i_p
 	EXPECT_TRUE(texture && texture->GetResource());
 	if (!texture || !texture->GetResource())
 		return std::vector<uint8_t>();
+	D3D11_RESOURCE_DIMENSION dimension;
+	texture->GetResource()->GetType(&dimension);
+	if (dimension == D3D11_RESOURCE_DIMENSION_TEXTURE3D)
+		return gtReadD3D11Volume(static_cast<ID3D11Texture3D*>(texture->GetResource()), i_BytesPerTexel, i_Mip);
 	return gtReadD3D11Texture(static_cast<ID3D11Texture2D*>(texture->GetResource()), i_BytesPerTexel, i_Mip, i_Layer);
+}
+
+std::vector<uint8_t> gtReadD3D11Volume(ID3D11Texture3D* i_pTexture, int i_BytesPerTexel, int i_Mip)
+{
+	std::vector<uint8_t> texels;
+	if (!i_pTexture)
+		return texels;
+	ID3D11Device* device = g2dDX11Global::g_pDevice;
+	ID3D11DeviceContext* context = g2dDX11Global::g_pDeviceContext;
+	D3D11_TEXTURE3D_DESC desc;
+	i_pTexture->GetDesc(&desc);
+	const UINT subresource = D3D11CalcSubresource((UINT)i_Mip, 0, desc.MipLevels);
+	desc.Width = (std::max)(1u, desc.Width >> i_Mip);
+	desc.Height = (std::max)(1u, desc.Height >> i_Mip);
+	desc.Depth = (std::max)(1u, desc.Depth >> i_Mip);
+	D3D11_TEXTURE3D_DESC staging_desc = desc;
+	staging_desc.MipLevels = 1;
+	staging_desc.Usage = D3D11_USAGE_STAGING;
+	staging_desc.BindFlags = 0;
+	staging_desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+	staging_desc.MiscFlags = 0;
+	ComPtr<ID3D11Texture3D> staging;
+	if (FAILED(device->CreateTexture3D(&staging_desc, NULL, &staging)))
+	{
+		ADD_FAILURE() << "no staging volume";
+		return texels;
+	}
+	context->CopySubresourceRegion(staging.Get(), 0, 0, 0, 0, i_pTexture, subresource, NULL);
+	D3D11_MAPPED_SUBRESOURCE mapped;
+	if (SUCCEEDED(context->Map(staging.Get(), 0, D3D11_MAP_READ, 0, &mapped)))
+	{
+		const size_t row = (size_t)desc.Width * i_BytesPerTexel;
+		texels.resize(row * desc.Height * desc.Depth);
+		for (UINT z = 0; z < desc.Depth; z++)
+		{
+			for (UINT y = 0; y < desc.Height; y++)
+			{
+				memcpy(&texels[(z * desc.Height + y) * row],
+					   (const uint8_t*)mapped.pData + z * mapped.DepthPitch + y * mapped.RowPitch, row);
+			}
+		}
+		context->Unmap(staging.Get(), 0);
+	}
+	return texels;
 }
 
 std::vector<uint8_t> gtReadVkImage(gvk::vkdImage* i_pImage, int i_Mip, int i_Layer)

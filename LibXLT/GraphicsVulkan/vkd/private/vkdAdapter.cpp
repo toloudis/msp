@@ -95,6 +95,7 @@ namespace gvk
 			"imageCubeArray",
 			"shaderImageGatherExtended",	// the shaders' SPIR-V capabilities (fxEffectVkCapabilities test)
 			"shaderClipDistance",
+			"fragmentStoresAndAtomics",		// pixel-shader UAVs (the hair opacity volume), as D3D11 has them
 			"shaderDrawParameters",
 			"shaderDemoteToHelperInvocation",
 			"samplerMirrorClampToEdge",

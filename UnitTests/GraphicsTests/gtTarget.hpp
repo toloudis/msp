@@ -17,6 +17,7 @@
 class g2dRenderTarget;
 class matTexture;
 struct ID3D11Texture2D;
+struct ID3D11Texture3D;
 namespace gvk { class vkdImage; }
 
 struct gtPicture
@@ -52,11 +53,13 @@ class gtTarget
 //	One mip of one layer (a cube face) of a 2D texture on whichever backend
 //	i_Kind is (the one that is up), rows tightly packed (i_BytesPerTexel
 //	each), top row first: for targets that aren't RGBA8 (an R32_FLOAT
-//	shadow map), and for mips and cube faces
+//	shadow map), and for mips and cube faces. For a 3D texture, every
+//	depth slice of the mip, slice after slice (i_Layer unused)
 std::vector<uint8_t> gtReadTexture(gtBackend::Kind i_Kind, const matTexture* i_pTexture, int i_BytesPerTexel,
 								   int i_Mip = 0, int i_Layer = 0);
 
 //	gtReadTexture's two halves, for textures that aren't a matTexture's
 //	main image (the other targets of a reflective shadow map)
 std::vector<uint8_t> gtReadD3D11Texture(ID3D11Texture2D* i_pTexture, int i_BytesPerTexel, int i_Mip = 0, int i_Layer = 0);
+std::vector<uint8_t> gtReadD3D11Volume(ID3D11Texture3D* i_pTexture, int i_BytesPerTexel, int i_Mip = 0);
 std::vector<uint8_t> gtReadVkImage(gvk::vkdImage* i_pImage, int i_Mip = 0, int i_Layer = 0);

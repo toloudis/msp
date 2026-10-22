@@ -132,6 +132,7 @@ namespace gvk
 					{"imageCubeArray",					&core.imageCubeArray},
 					{"shaderImageGatherExtended",		&core.shaderImageGatherExtended},
 					{"shaderClipDistance",				&core.shaderClipDistance},
+					{"fragmentStoresAndAtomics",		&core.fragmentStoresAndAtomics},
 					{"shaderDrawParameters",			&m_Vulkan11.shaderDrawParameters},
 					{"samplerMirrorClampToEdge",		&m_Vulkan12.samplerMirrorClampToEdge},
 					{"scalarBlockLayout",				&m_Vulkan12.scalarBlockLayout},

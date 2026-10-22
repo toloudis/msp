@@ -65,6 +65,9 @@
 #ifndef GVK_G3D_PICKBUFFERRENDERERVK_HPP
 #include "GraphicsVulkan/G3d/g3dPickBufferRendererVk.hpp"
 #endif
+#ifndef GVK_SHDW_OPACITYMAPRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwOpacityMapRendererVk.hpp"
+#endif
 
 namespace gvk
 {
@@ -76,8 +79,7 @@ shdwSceneRendererCreate::~shdwSceneRendererCreate()
 {
 }
 
-//	Each renderer type answers with its shdw renderer once that is ported
-//	(DX11's choice is in the comment); until then, with the fallback.
+//	Each renderer type answers with its port of DX11's choice.
 
 g3dSceneRenderer* shdwSceneRendererCreate::CreateDefaultRenderer()		{ return new shdwHDRRendererVk(); }
 g3dSceneRenderer* shdwSceneRendererCreate::CreateHDRRenderer()			{ return new shdwHDRRendererVk(); }
@@ -85,8 +87,7 @@ g3dSceneRenderer* shdwSceneRendererCreate::CreateSimpleRenderer()		{ return new 
 g3dSceneRenderer* shdwSceneRendererCreate::CreateTextureRenderer()		{ return new g3dTextureRendererVk(); }
 g3dSceneRenderer* shdwSceneRendererCreate::CreateDepthMapRenderer()		{ return new g3dDepthMapRendererVk(); }
 g3dSceneRenderer* shdwSceneRendererCreate::CreateRSMRenderer()			{ return new g3dRSMRendererVk(); }
-//	shdwOpacityMapRendererDX11 (Plan 7: its maps are read only by hair)
-g3dSceneRenderer* shdwSceneRendererCreate::CreateOpacityMapRenderer(g3dProjectedLight* pProjLight)	{ return m_Fallback.CreateOpacityMapRenderer(pProjLight); }
+g3dSceneRenderer* shdwSceneRendererCreate::CreateOpacityMapRenderer(g3dProjectedLight* pProjLight)	{ return new shdwOpacityMapRendererVk(pProjLight); }
 g3dSceneRenderer* shdwSceneRendererCreate::CreateCubeMapRenderer(scObject* i_Obj, matMaterial* i_Material, bool i_RenderPerFrame)
 {
 	return new shdwCubeMapRendererVk(i_Obj, i_Material, i_RenderPerFrame);

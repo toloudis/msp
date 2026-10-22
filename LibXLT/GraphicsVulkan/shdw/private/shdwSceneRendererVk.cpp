@@ -14,9 +14,6 @@
 #include "GraphicsVulkan/shdw/shdwFrameBufferMgr.hpp"
 #endif
 
-#ifndef GVK_G3D_SCENERENDERERVK_HPP
-#include "GraphicsVulkan/G3d/g3dSceneRendererVk.hpp"
-#endif
 #ifndef DBG_MSG_HPP
 #include "Core/dbg/dbgMsg.hpp"
 #endif
@@ -55,14 +52,9 @@ shared_ptr<shdwFrameBufferMgr> shdwSceneRendererVk::GetFrameBuffer()
 //--------------------------------------------------------------------
 //	Tell this renderer to share resources with another.
 //	The partner's resources will be replaced.
-//	The forward renderer standing in for the opacity map renderer (Plan 7)
-//	has no frame buffer and is left alone; on DX11 that is a shdw renderer.
 //--------------------------------------------------------------------
 void shdwSceneRendererVk::ShareBuffers(g3dSceneRenderer* i_Partner)
 {
-	if (dynamic_cast<g3dSceneRendererVk*>(i_Partner))
-		return;
-
 	shdwSceneRendererVk* partner = dynamic_cast<shdwSceneRendererVk*>(i_Partner);
 	DBG_ASSERT(partner, "ShareBuffers: Bad renderer class type!");
 

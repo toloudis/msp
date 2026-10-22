@@ -7,9 +7,10 @@
 **      with gfxcompare's tolerance. Lit spheres on every material class
 **      (with zero and very large values), a textured scene, sorted
 **      transparent nodes, fog, the wireframe draw styles and hardware
-**      tessellation (the PTess passes). Also: every renderer type the
-**      Vulkan creator can't build yet gives the forward renderer, and the
-**      default and HDR types give the HDR renderer.
+**      tessellation (the PTess passes). Also: every renderer type gives
+**      the renderer DX11's shdw creator gives (none falls back to the
+**      forward renderer since Plan 7 Task 6), and the default and HDR
+**      types give the HDR renderer.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -103,6 +104,9 @@
 #endif
 #ifndef GVK_SHDW_VELOCITYMAPRENDERERVK_HPP
 #include "GraphicsVulkan/shdw/shdwVelocityMapRendererVk.hpp"
+#endif
+#ifndef GVK_SHDW_OPACITYMAPRENDERERVK_HPP
+#include "GraphicsVulkan/shdw/shdwOpacityMapRendererVk.hpp"
 #endif
 #ifndef GVK_SHDW_UVRENDERERVK_HPP
 #include "GraphicsVulkan/shdw/shdwUVRendererVk.hpp"
@@ -381,18 +385,11 @@ namespace
 	}
 }
 
-TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
+//	Every Create* call and renderer type gives its shdw port (or, as on
+//	DX11, its g3d one: depth map, RSM, texture); none is the forward
+//	renderer standing in, and nothing logs GVK_NOT_YET
+TEST(g3dSceneRendererVkTest, EveryTypeIsShdw)
 {
-	struct Case
-	{
-		const char* m_pName;
-		std::function<g3dSceneRenderer*()> m_Create;
-	};
-	const std::vector<Case> cases =
-	{
-		//	Plan 7 (decision 2 of Plan 6: its maps are read only by hair)
-		{ "opacity map", []() { return g3dSceneRendererCreate::CreateOpacityMapRenderer(NULL); } },
-	};
 	//	ported in Plan 6 Tasks 4 to 6
 	struct Ported
 	{
@@ -440,11 +437,9 @@ TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
 			LogCapture capture;
 			for (int round = 0; round < 2; round++)
 			{
-				for (const Case& c : cases)
-				{
-					SCOPED_TRACE(c.m_pName);
-					std::unique_ptr<g3dSceneRenderer> renderer(c.m_Create());
-					EXPECT_TRUE(dynamic_cast<gvk::g3dSceneRendererVk*>(renderer.get()) != NULL);
+				{	// since Plan 7 Task 6
+					std::unique_ptr<g3dSceneRenderer> renderer(g3dSceneRendererCreate::CreateOpacityMapRenderer(NULL));
+					EXPECT_TRUE(dynamic_cast<gvk::shdwOpacityMapRendererVk*>(renderer.get()) != NULL);
 				}
 				for (int type = g3dSceneRendererTypes::e_Default; type <= g3dSceneRendererTypes::e_RmanColorBleed; type++)
 				{
@@ -466,7 +461,7 @@ TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
 					else if (const Ported* p = find_ported(type))	// since Plan 6 Task 4
 						EXPECT_TRUE(p->m_IsPort(renderer.get()));
 					else
-						EXPECT_TRUE(dynamic_cast<gvk::g3dSceneRendererVk*>(renderer.get()) != NULL);
+						EXPECT_TRUE(dynamic_cast<gvk::g3dSceneRendererVk*>(renderer.get()) == NULL) << "the forward renderer";
 				}
 				for (auto create : { g3dSceneRendererCreate::CreateDefaultRenderer, g3dSceneRendererCreate::CreateHDRRenderer })
 				{
@@ -500,12 +495,7 @@ TEST(g3dSceneRendererVkTest, UnportedTypesFallBack)
 			}
 			log = capture.Text();
 		}
-		//	once each, at most (a type logged by an earlier test isn't logged
-		//	again); DBG_LOG writes only in Debug builds
-		for (const Case& c : cases)
-		{
-			EXPECT_LE(count_of(log, std::string("GVK_NOT_YET: ") + c.m_pName + " renderer"), 1) << c.m_pName << "\n" << log;
-		}
+		EXPECT_EQ(0, count_of(log, "GVK_NOT_YET")) << log;
 	});
 }
 
