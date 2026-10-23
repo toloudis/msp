@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Support">
+      <UniqueIdentifier>{161def80-172d-49d2-a147-6cf31b81faaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gltf">
+      <UniqueIdentifier>{df5ee9af-39e6-4737-9ec4-144864bf8d64}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ImportExportTestsMain.cpp">
+      <Filter>Support</Filter>
+    </ClCompile>
+    <ClCompile Include="ietPlatformWin.cpp">
+      <Filter>Support</Filter>
+    </ClCompile>
+    <ClCompile Include="gltf\gltfImageExtractTest.cpp">
+      <Filter>gltf</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ietPlatform.hpp">
+      <Filter>Support</Filter>
+    </ClInclude>
+    <ClInclude Include="ietTempDir.hpp">
+      <Filter>Support</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

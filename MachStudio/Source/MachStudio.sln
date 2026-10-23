@@ -70,6 +70,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GraphicsTests", "..\..\Unit
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MainAppTests", "..\..\UnitTests\MainAppTests\MainAppTests.vcxproj", "{673EB3CC-C4AE-421F-9644-CAE53F4E7FA0}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImportExportTests", "..\..\UnitTests\ImportExportTests\ImportExportTests.vcxproj", "{0C3462FD-854B-47CA-8870-B0B8461B9966}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug RenderNode|x64 = Debug RenderNode|x64
@@ -468,6 +470,18 @@ Global
 		{673EB3CC-C4AE-421F-9644-CAE53F4E7FA0}.Release Wx|x64.Build.0 = Release|x64
 		{673EB3CC-C4AE-421F-9644-CAE53F4E7FA0}.Release RenderNode|x64.ActiveCfg = Release|x64
 		{673EB3CC-C4AE-421F-9644-CAE53F4E7FA0}.Release RenderNode|x64.Build.0 = Release|x64
+		{0C3462FD-854B-47CA-8870-B0B8461B9966}.Debug RenderNode|x64.ActiveCfg = Debug|x64
+		{0C3462FD-854B-47CA-8870-B0B8461B9966}.Debug RenderNode|x64.Build.0 = Debug|x64
+		{0C3462FD-854B-47CA-8870-B0B8461B9966}.Debug Qt|x64.ActiveCfg = Debug|x64
+		{0C3462FD-854B-47CA-8870-B0B8461B9966}.Debug Qt|x64.Build.0 = Debug|x64
+		{0C3462FD-854B-47CA-8870-B0B8461B9966}.Debug Wx|x64.ActiveCfg = Debug|x64
+		{0C3462FD-854B-47CA-8870-B0B8461B9966}.Debug Wx|x64.Build.0 = Debug|x64
+		{0C3462FD-854B-47CA-8870-B0B8461B9966}.Release Qt|x64.ActiveCfg = Release|x64
+		{0C3462FD-854B-47CA-8870-B0B8461B9966}.Release Qt|x64.Build.0 = Release|x64
+		{0C3462FD-854B-47CA-8870-B0B8461B9966}.Release Wx|x64.ActiveCfg = Release|x64
+		{0C3462FD-854B-47CA-8870-B0B8461B9966}.Release Wx|x64.Build.0 = Release|x64
+		{0C3462FD-854B-47CA-8870-B0B8461B9966}.Release RenderNode|x64.ActiveCfg = Release|x64
+		{0C3462FD-854B-47CA-8870-B0B8461B9966}.Release RenderNode|x64.Build.0 = Release|x64
 		{3B0F4C6E-8E0A-4F4B-9C55-2D7A1E6C9A41}.Debug RenderNode|x64.ActiveCfg = Debug Wx|x64
 		{3B0F4C6E-8E0A-4F4B-9C55-2D7A1E6C9A41}.Debug Qt|x64.ActiveCfg = Debug Qt|x64
 		{3B0F4C6E-8E0A-4F4B-9C55-2D7A1E6C9A41}.Debug Wx|x64.ActiveCfg = Debug Wx|x64

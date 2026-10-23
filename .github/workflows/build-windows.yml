@@ -207,7 +207,7 @@ jobs:
         working-directory: MachStudio/Source
         run: >
           msbuild MachStudio.sln
-          "/t:MainApp;CoreTests;MainAppTests;GraphicsTests"
+          "/t:MainApp;CoreTests;MainAppTests;ImportExportTests;GraphicsTests"
           "/p:Configuration=${{ matrix.configuration }}"
           /p:Platform=x64
           /m

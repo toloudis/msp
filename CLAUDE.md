@@ -103,6 +103,10 @@ hold settings:
   (`mainCommandLine`); MainApp is an exe, so the sources under test are
   compiled straight into the test exe (and marked `NotUsing` for MainApp's
   precompiled header). Helpers use the `mat` prefix.
+- `UnitTests/ImportExportTests` tests `LibXLT/ImportExport` code that needs
+  no GPU (`gltf/`: `gltfImageExtract`); it links Core and ImportExport
+  (only the objects the tests use come in from the static library).
+  Helpers use the `iet` prefix.
 - `UnitTests/GraphicsTests` tests `LibXLT/Graphics` code that needs no GPU
   (`g3dProfiler`) and `LibXLT/GraphicsVulkan` (`Vk/`); it links Core,
   Graphics, GraphicsVulkan and GraphicsDX11, the reference the Vulkan
@@ -142,7 +146,7 @@ hold settings:
 - Run: `UnitTests/bin/x64/<Debug|Release>/CoreTests.exe` (gtest flags such as
   `--gtest_filter=ma*` work); Visual Studio's Google Test adapter should also
   list them in Test Explorer.
-- CoreTests and MainAppTests run as part of the build: the test project's
+- CoreTests, MainAppTests and ImportExportTests run as part of the build: the test project's
   Post-Build Event (Project Properties → Build Events) runs the exe after
   linking and writes `<TargetName>.xml` next to it; a failing test fails
   the build. GraphicsTests has no such step: it is only built, and run
@@ -154,8 +158,9 @@ hold settings:
   isn't built until the tests have built and (but for GraphicsTests)
   passed. A new test project gets the same reference in `MainApp.vcxproj`
   and may reference whatever libraries it tests. CI builds
-  `MainApp;CoreTests;MainAppTests;GraphicsTests` in every configuration
-  (which runs CoreTests and MainAppTests) and uploads the XML reports.
+  `MainApp;CoreTests;MainAppTests;ImportExportTests;GraphicsTests` in every
+  configuration (which runs all but GraphicsTests) and uploads the XML
+  reports.
 - Core headers have `#error` "multiply included" guards, so guard their
   includes in test files as everywhere else (`#ifndef MA_PLANE_HPP ...`).
 

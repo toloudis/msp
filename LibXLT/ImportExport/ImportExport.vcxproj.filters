@@ -103,6 +103,9 @@
     <ClCompile Include="gltf\import\private\gltfModelImport.cpp">
       <Filter>gltf\import\private</Filter>
     </ClCompile>
+    <ClCompile Include="gltf\import\private\gltfImageExtract.cpp">
+      <Filter>gltf\import\private</Filter>
+    </ClCompile>
     <ClCompile Include="gltf\import\private\gltfSdkManager.cpp">
       <Filter>gltf\import\private</Filter>
     </ClCompile>
@@ -188,6 +191,9 @@
       <Filter>gltf\import\private</Filter>
     </ClInclude>
     <ClInclude Include="gltf\import\private\gltfModelImport.hpp">
+      <Filter>gltf\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="gltf\import\private\gltfImageExtract.hpp">
       <Filter>gltf\import\private</Filter>
     </ClInclude>
     <ClInclude Include="gltf\import\private\gltfSdkManager.hpp">

@@ -70,7 +70,7 @@ entModelTemplate* gltfImport::LoadGeometry( const fsLocator&	i_ModelLocator,
 			fsResourceTracker::MarkBegin(i_ModelLocator);
 
 			//	Use character template for all generalized hierarchical models now.
-			std::auto_ptr<emdlCharacterTemplate> mdl_template(new emdlCharacterTemplate());
+			std::unique_ptr<emdlCharacterTemplate> mdl_template(new emdlCharacterTemplate());
 
 			g3dSceneNode* pBase;
 			gltfModelImport::LoadModel(	pScene,

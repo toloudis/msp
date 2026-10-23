@@ -65,6 +65,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <ResourceCompile>
@@ -94,6 +95,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <ResourceCompile>
@@ -116,6 +118,7 @@
     <ClCompile Include="fbx\export\private\fbxExportData.cpp" />
     <ClCompile Include="gltf\gltfPackage.cpp" />
     <ClCompile Include="gltf\import\private\gltfImport.cpp" />
+    <ClCompile Include="gltf\import\private\gltfImageExtract.cpp" />
     <ClCompile Include="gltf\import\private\gltfLayerMapper.cpp" />
     <ClCompile Include="gltf\import\private\gltfMaterialImport.cpp" />
     <ClCompile Include="gltf\import\private\gltfMeshImport.cpp" />
@@ -143,6 +146,7 @@
     <ClInclude Include="gltf\gltfPackage.hpp" />
     <ClInclude Include="gltf\import\gltfImport.hpp" />
     <ClInclude Include="gltf\import\private\gltfAccessorUtil.hpp" />
+    <ClInclude Include="gltf\import\private\gltfImageExtract.hpp" />
     <ClInclude Include="gltf\import\private\gltfLayerMapper.hpp" />
     <ClInclude Include="gltf\import\private\gltfMaterialImport.hpp" />
     <ClInclude Include="gltf\import\private\gltfMeshImport.hpp" />

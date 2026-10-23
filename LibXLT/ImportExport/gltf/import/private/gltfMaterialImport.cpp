@@ -7,7 +7,7 @@
 \****************************************************************************/
 #include "ImportExport/gltf/import/private/gltfMaterialImport.hpp"
 #include "ImportExport/gltf/import/private/gltfAccessorUtil.hpp"
-#include "ImportExport/gltf/import/private/stb_image_write.h"
+#include "ImportExport/gltf/import/private/gltfImageExtract.hpp"
 
 #include "Core/dbg/dbgMsg.hpp"
 #include "Core/fs/fsFileUtil.hpp"
@@ -17,11 +17,8 @@
 #include "Graphics/mdl/mdlMatInfo.hpp"
 
 #include <algorithm>
-#include <fstream>
 #include <set>
 #include <sstream>
-
-#include <direct.h>
 
 
 //----------------------------------------------------------------------------
@@ -51,86 +48,6 @@ namespace gltfMaterialImport
 		}
 
 		//--------------------------------------------------------------------
-		// extract_embedded_image - write an image stored inside the glTF
-		// (a .glb buffer view or a data URI) to
-		// "<model dir>\<model name>_textures\image<N>.<ext>" and return that
-		// full path. Returns "" if the image can't be extracted.
-		//--------------------------------------------------------------------
-		std::string extract_embedded_image(const tinygltf::Model* i_pModel, int i_ImageIndex,
-										   const fsLocator& i_ContainingFile)
-		{
-			const tinygltf::Image& image = i_pModel->images[i_ImageIndex];
-
-			// Get the still-encoded (png/jpg) image bytes
-			const unsigned char* pBytes = NULL;
-			size_t num_bytes = 0;
-			std::string mime_type = image.mimeType;
-			if (image.bufferView >= 0 && image.bufferView < (int)i_pModel->bufferViews.size())
-			{
-				const tinygltf::BufferView& bv = i_pModel->bufferViews[image.bufferView];
-				if (bv.buffer >= 0 && bv.buffer < (int)i_pModel->buffers.size() &&
-					bv.byteOffset + bv.byteLength <= i_pModel->buffers[bv.buffer].data.size() &&
-					bv.byteLength > 0)
-				{
-					pBytes = &i_pModel->buffers[bv.buffer].data[0] + bv.byteOffset;
-					num_bytes = bv.byteLength;
-				}
-			}
-
-			// Data URI images are only kept decoded by tinygltf, so those
-			// are re-encoded as png from their 8 bit pixels.
-			const bool bWritePixels = !pBytes && !image.image.empty() && image.bits == 8 &&
-				image.width > 0 && image.height > 0 && image.component >= 1 && image.component <= 4 &&
-				image.image.size() >= (size_t)image.width * image.height * image.component;
-			if (!pBytes && !bWritePixels)
-			{
-				DBG_WARNING("glTF image " << i_ImageIndex << " (" << image.name << ") has no readable embedded data");
-				return "";
-			}
-
-			// Our texture loader detects the format from the file header,
-			// the extension is just for people browsing the folder.
-			const char* ext = "png";
-			if (pBytes && (mime_type.find("jpeg") != std::string::npos || mime_type.find("jpg") != std::string::npos))
-				ext = "jpg";
-
-			std::string model_path;
-			fsFileUtil::LocatorToANSIFilename(i_ContainingFile, model_path);
-			const size_t slash = model_path.find_last_of("\\/");
-			const std::string model_dir = (slash == std::string::npos) ? std::string() : model_path.substr(0, slash + 1);
-			std::string model_name = (slash == std::string::npos) ? model_path : model_path.substr(slash + 1);
-			const size_t dot = model_name.find_last_of('.');
-			if (dot != std::string::npos)
-				model_name = model_name.substr(0, dot);
-
-			const std::string texture_dir = model_dir + model_name + "_textures";
-			_mkdir(texture_dir.c_str());	// fine if it already exists
-
-			std::ostringstream texture_path;
-			texture_path << texture_dir << "\\image" << i_ImageIndex << "." << ext;
-
-			bool bWritten = false;
-			if (bWritePixels)
-			{
-				bWritten = stbi_write_png(texture_path.str().c_str(), image.width, image.height, image.component,
-										  &image.image[0], image.width * image.component) != 0;
-			}
-			else
-			{
-				std::ofstream out(texture_path.str().c_str(), std::ios::out | std::ios::binary | std::ios::trunc);
-				if (out)
-					out.write((const char*)pBytes, (std::streamsize)num_bytes);
-				bWritten = !!out;
-			}
-			if (!bWritten)
-			{
-				DBG_WARNING("Could not write embedded glTF image to " << texture_path.str());
-				return "";
-			}
-			return texture_path.str();
-		}
-
-		//--------------------------------------------------------------------
 		// get_texture_path - full path of the image file behind a glTF
 		// texture index, resolved relative to the glTF file.
 		// Returns "" if there is no usable external image file.
@@ -150,7 +67,7 @@ namespace gltfMaterialImport
 			{
 				// Images embedded in a .glb or as data URIs are written out
 				// to files, since our texture manager loads textures by name.
-				return extract_embedded_image(i_pModel, tex.source, i_ContainingFile);
+				return gltfImageExtract::ExtractEmbeddedImage(*i_pModel, tex.source, i_ContainingFile);
 			}
 
 			// uris are URL-encoded (e.g. spaces as %20)
