@@ -194,6 +194,24 @@ gtMesh gtScene::Grid(int i_N)
 	return mesh;
 }
 
+gtMesh gtScene::GridWithHoles(int i_N)
+{
+	gtMesh mesh = Grid(i_N);
+	std::vector<uint32_t> kept;
+	for (int r = 0; r < i_N; r++)
+	{
+		for (int c = 0; c < i_N; c++)
+		{
+			if (((c + r) & 1) != 0)
+				continue;
+			const size_t quad = ((size_t)r * i_N + c) * 6;
+			kept.insert(kept.end(), mesh.m_Indices.begin() + quad, mesh.m_Indices.begin() + quad + 6);
+		}
+	}
+	mesh.m_Indices = kept;
+	return mesh;
+}
+
 gtMesh gtScene::Plane()
 {
 	return Grid(1);
@@ -290,6 +308,21 @@ void gtScene::SetFloat(matMaterial* io_pMaterial, const char* i_pName, float i_V
 	ADD_FAILURE() << "no parameter " << i_pName;
 }
 
+void gtScene::SetInt(matMaterial* io_pMaterial, const char* i_pName, int i_Value)
+{
+	std::vector<effParamInt*> ints;
+	io_pMaterial->GetShaderParams(0)->GetAllIntParams(ints);
+	for (effParamInt* param : ints)
+	{
+		if (param->GetName() == i_pName)
+		{
+			param->Property().SetValue(i_Value);
+			return;
+		}
+	}
+	ADD_FAILURE() << "no parameter " << i_pName;
+}
+
 void gtScene::SetTexture(matMaterial* io_pMaterial, const char* i_pName, matTexture* i_pTexture)
 {
 	std::vector<effParamTexture*> textures;
@@ -341,7 +374,8 @@ namespace
 	}
 }
 
-matTexture* gtScene::CheckerTexture(const std::filesystem::path& i_Dir, int i_Width, int i_Height, int i_Cells)
+matTexture* gtScene::CheckerTexture(const std::filesystem::path& i_Dir, int i_Width, int i_Height, int i_Cells,
+									 bool i_bClearOddCells)
 {
 	std::vector<uint8_t> rgba((size_t)i_Width * i_Height * 4);
 	for (int y = 0; y < i_Height; y++)
@@ -355,10 +389,11 @@ matTexture* gtScene::CheckerTexture(const std::filesystem::path& i_Dir, int i_Wi
 			p[0] = (uint8_t)(odd ? 230 : 40 + 20 * (cx % 8));
 			p[1] = (uint8_t)(odd ? 200 : 60 + 25 * (cy % 8));
 			p[2] = (uint8_t)(odd ? 60 : 210);
-			p[3] = 255;
+			p[3] = (uint8_t)(odd && i_bClearOddCells ? 0 : 255);
 		}
 	}
-	return load_png(i_Dir / ("checker_" + std::to_string(i_Width) + "x" + std::to_string(i_Height) + "_" + std::to_string(i_Cells) + ".png"),
+	return load_png(i_Dir / ("checker_" + std::to_string(i_Width) + "x" + std::to_string(i_Height) + "_" + std::to_string(i_Cells)
+					+ (i_bClearOddCells ? "_clear" : "") + ".png"),
 					i_Width, i_Height, rgba);
 }
 
@@ -378,6 +413,25 @@ matTexture* gtScene::WebTexture(const std::filesystem::path& i_Dir, int i_Size, 
 	}
 	return load_png(i_Dir / ("web_" + std::to_string(i_Size) + "_" + std::to_string(i_Strands) + ".png"),
 					i_Size, i_Size, rgba);
+}
+
+matTexture* gtScene::CheckerMaskTexture(const std::filesystem::path& i_Dir, int i_Width, int i_Height, int i_Cells)
+{
+	std::vector<uint8_t> rgba((size_t)i_Width * i_Height * 4);
+	for (int y = 0; y < i_Height; y++)
+	{
+		for (int x = 0; x < i_Width; x++)
+		{
+			const int cx = x * i_Cells / i_Width;
+			const int cy = y * i_Cells / i_Height;
+			uint8_t* p = &rgba[((size_t)y * i_Width + x) * 4];
+			const bool odd = ((cx + cy) & 1) != 0;
+			p[0] = p[1] = p[2] = odd ? 0 : 255;
+			p[3] = 255;
+		}
+	}
+	return load_png(i_Dir / ("checker_mask_" + std::to_string(i_Width) + "x" + std::to_string(i_Height) + "_" + std::to_string(i_Cells) + ".png"),
+					i_Width, i_Height, rgba);
 }
 
 namespace

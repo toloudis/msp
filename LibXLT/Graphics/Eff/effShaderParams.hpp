@@ -478,6 +478,12 @@ public:
 	effParamTexture* m_pTransparencyMap;
 	effParamColor* m_pDiffuseColor;
 	effParamFloat* m_pTransparency;
+	// the AlphaMode semantic (Pbr.fx's g_alphaMode: 0 opaque, 1 mask,
+	// 2 blend); when set, it alone decides HasTransparency
+	effParamInt* m_pAlphaMode;
+	// the AlphaCutoff semantic (Pbr.fx's g_alphaCutoff: MASK keeps alpha
+	// at or above it)
+	effParamFloat* m_pAlphaCutoff;
 
 	// shader id
 	fsLocator m_ShaderName;

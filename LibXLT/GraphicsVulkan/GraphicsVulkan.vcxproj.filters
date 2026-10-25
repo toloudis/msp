@@ -1211,6 +1211,12 @@
     <None Include="Eff\private\Shaders\Materials\Phong_wBump.hlsl">
       <Filter>Eff\private\Shaders\Materials</Filter>
     </None>
+    <None Include="Eff\private\Shaders\Materials\Pbr.effect.json">
+      <Filter>Eff\private\Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Pbr.hlsl">
+      <Filter>Eff\private\Shaders\Materials</Filter>
+    </None>
     <None Include="Eff\private\Shaders\Materials\Simple.effect.json">
       <Filter>Eff\private\Shaders\Materials</Filter>
     </None>

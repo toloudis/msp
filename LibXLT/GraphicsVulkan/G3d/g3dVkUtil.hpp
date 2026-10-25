@@ -15,6 +15,10 @@
 #endif
 #define GVK_G3D_VKUTIL_HPP
 
+#ifndef EFF_OPACITY_HPP
+#include "Graphics/Eff/effOpacity.hpp"
+#endif
+
 #include <volk.h>
 
 #include <string>
@@ -39,6 +43,7 @@ class matTexture;
 
 namespace gvk
 {
+class effShaderBaseVk;
 class fxEffectVk;
 class matRenderTargetTexture;
 
@@ -179,6 +184,13 @@ namespace g3dVkUtil
 
 	// set shader globals
 	void SetupShaderGlobals(matShaderEffect* i_pEffect);
+
+	// i_Material's opacity (effOpacity::Of) set on i_pEffect's variables
+	// named i_pHasMap, i_pMap and i_pValue (each pass's shader spells them
+	// its own way); for MASK, raises the effect's alpha test reference to
+	// the cutoff. Call after the pass's SetupShaderGlobals and SetupMaterial.
+	effOpacity SetupOpacity(effShaderBaseVk* i_pEffect, const matMaterial& i_Material,
+							const char* i_pHasMap, const char* i_pMap, const char* i_pValue);
 
 	// geometry data
 	void SetupShaderGeometry(matShaderEffect* i_pEffect, 

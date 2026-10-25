@@ -4,6 +4,9 @@
     <Filter Include="Dx11">
       <UniqueIdentifier>{3223ba1a-93aa-b8c1-b89b-641ab780d60e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Eff">
+      <UniqueIdentifier>{8d1f6b2e-3c4a-4e7b-9a51-2f6c0d8e4b17}</UniqueIdentifier>
+    </Filter>
     <Filter Include="G3d">
       <UniqueIdentifier>{f2a2a70d-9290-58bb-b8a0-3f1f62659745}</UniqueIdentifier>
     </Filter>
@@ -17,6 +20,12 @@
   <ItemGroup>
     <ClCompile Include="GraphicsTestsMain.cpp" />
     <ClCompile Include="gtPlatformWin.cpp" />
+    <ClCompile Include="Eff\effOpacityTest.cpp">
+      <Filter>Eff</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\effPbrDataTest.cpp">
+      <Filter>Eff</Filter>
+    </ClCompile>
     <ClCompile Include="G3d\g3dProfilerTest.cpp">
       <Filter>G3d</Filter>
     </ClCompile>
@@ -115,6 +124,9 @@
       <Filter>Vk</Filter>
     </ClCompile>
     <ClCompile Include="Vk\effShaderVkTest.cpp">
+      <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="Vk\effPbrVkTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
     <ClCompile Include="Vk\g3dSceneRendererVkTest.cpp">

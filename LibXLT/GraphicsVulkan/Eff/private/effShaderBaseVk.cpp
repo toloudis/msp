@@ -1443,6 +1443,14 @@ void effShaderBaseVk::SetAlphaTestRef(float i_Value) const
 	m_AlphaTestRefHandle->AsScalar()->SetFloat(i_Value);
 }
 
+float effShaderBaseVk::GetAlphaTestRef() const
+{
+	float value = 0.0f;
+	if (!m_AlphaTestRefHandle->AsScalar()->GetFloat(&value))
+		return 0.0f;
+	return value;
+}
+
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 void effShaderBaseVk::SetClipPlane( const maVector4d& i_Plane ) const
@@ -1937,6 +1945,8 @@ bool effShaderBaseVk::GetShaderParamInfo(fxEffectVariable* i_hParam,
 			// check to see if this is a "special" param:
 			if (semantic == "opacity")
 				o_pParams->m_pTransparency = effParam;
+			else if (semantic == "alphacutoff")
+				o_pParams->m_pAlphaCutoff = effParam;
 		}
 		else
 		{
@@ -2013,6 +2023,10 @@ bool effShaderBaseVk::GetShaderParamInfo(fxEffectVariable* i_hParam,
 			foundParam = true;
 	
 			effParamInt* effParam = MapEnumParam(o_pParams, o_pBindings, pEnumVar, name, true, true, o_UIInfo);
+
+			// check to see if this is a "special" param:
+			if (semantic == "alphamode")
+				o_pParams->m_pAlphaMode = effParam;
 		}
 	}
 	else if (sControl == "Any")

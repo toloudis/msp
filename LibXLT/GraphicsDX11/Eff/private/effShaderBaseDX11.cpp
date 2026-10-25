@@ -1508,24 +1508,31 @@ void effShaderBaseDX11::SetupMaterial(const matMaterial* i_Material,
 {
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"effShaderBaseDX1::SetupMaterial" );
 
+	shared_ptr<effShaderParams> p = i_Material->GetShaderParams(i_MaterialLayerIndex);
+	SetupMaterialParams(i_Material, p.get());
+
+	D3DPERF_EndEvent();
+}
+
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+void effShaderBaseDX11::SetupMaterialParams(const matMaterial* i_Material, effShaderParams* i_pParams) const
+{
 	// set up reflection mapping (will null out variables if no refl map):
 	const effReflectionMap& pData = i_Material->GetReflectionData();
 	SetupReflectionMap(pData.m_bIsPlanar, pData.m_ReflectionMap);
 
 	// set up shader parameters:
-	shared_ptr<effShaderParams> p = i_Material->GetShaderParams(i_MaterialLayerIndex);
-	if (p)
+	if (i_pParams)
 	{
-		//		p->Dump();
-		if (!p->m_pShaderBindings)
+		//		i_pParams->Dump();
+		if (!i_pParams->m_pShaderBindings)
 		{
-			BuildPrtyObject(p.get());
+			BuildPrtyObject(i_pParams);
 		}
 
-		Bind(p->m_pShaderBindings);
+		Bind(i_pParams->m_pShaderBindings);
 	}
-
-	D3DPERF_EndEvent();
 }
 
 //--------------------------------------------------------------------
@@ -1887,6 +1894,8 @@ bool effShaderBaseDX11::GetShaderParamInfo(fxEffectVariable* i_hParam,
 			// check to see if this is a "special" param:
 			if (semantic == "opacity")
 				o_pParams->m_pTransparency = effParam;
+			else if (semantic == "alphacutoff")
+				o_pParams->m_pAlphaCutoff = effParam;
 		}
 		else
 		{
@@ -1963,6 +1972,10 @@ bool effShaderBaseDX11::GetShaderParamInfo(fxEffectVariable* i_hParam,
 			foundParam = true;
 	
 			effParamInt* effParam = MapEnumParam(o_pParams, o_pBindings, pEnumVar, name, true, true, o_UIInfo);
+
+			// check to see if this is a "special" param:
+			if (semantic == "alphamode")
+				o_pParams->m_pAlphaMode = effParam;
 		}
 	}
 	else if (sControl == "Any")

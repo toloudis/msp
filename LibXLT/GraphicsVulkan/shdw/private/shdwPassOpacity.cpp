@@ -36,6 +36,9 @@
 #ifndef EFF_SHADERPARAMS_HPP
 #include "Graphics/Eff/effShaderParams.hpp"
 #endif
+#ifndef EFF_OPACITY_HPP
+#include "Graphics/Eff/effOpacity.hpp"
+#endif
 #ifndef EFF_STRANDHAIRDATA_HPP
 #include "Graphics/Eff/effStrandHairData.hpp"
 #endif
@@ -359,31 +362,14 @@ int shdwPassOpacity::RenderNode(const sNodePlusState& i_Node)
 		const matMaterial* pOrigMaterial = i_Node.m_pNode->GetFragment()->GetMaterial();
 		if( pOrigMaterial->GetHasTransparency() )
 		{
-			float val = 0;
-			matTexture* pTex = NULL;
-			shared_ptr<effShaderParams> parms = pOrigMaterial->GetShaderParams();
-			if( parms )
-			{
-				effParamTexture* pTexParam = parms->m_pTransparencyMap;
-				if( pTexParam ) pTex = pTexParam->GetTexture();
-				effParamFloat* pVar = parms->m_pTransparency;
-				if( pVar ) val = pVar->GetProperty().GetValue();
-			}
-			else
-			{
-				effShaderData* data = pOrigMaterial->GetEffectData();
-				if( data )
-				{
-					pTex = data->GetTransparencyTexture();
-					val = data->GetTransparencyValue();
-				}
-			}
-
-			if( pTex )
+			// BLEND only: a MASK material is opaque here (its alpha is coverage, not a test)
+			const effOpacity opacity = effOpacity::Of(*pOrigMaterial);
+			vkdImage* pOpacityImage = g3dVkTextureUtil::GetOpacityImage(opacity);
+			if( pOpacityImage )
 			{
 				pD3DEffect->GetVariableByName("hasDiffuseMap")->AsScalar()->SetBool( true );
-				pD3DEffect->GetVariableByName("diffuseMap")->AsShaderResource()->SetResource( g3dVkTextureUtil::GetImage(pTex) );
-				pD3DEffect->GetVariableByName("g_Transparency")->AsScalar()->SetFloat( val );
+				pD3DEffect->GetVariableByName("diffuseMap")->AsShaderResource()->SetResource( pOpacityImage );
+				pD3DEffect->GetVariableByName("g_Transparency")->AsScalar()->SetFloat( opacity.m_Value );
 			}
 		}
 		else
@@ -474,32 +460,15 @@ int shdwPassOpacity::RenderHairNode(const sNodePlusState& i_Node)
 		const matMaterial* pOrigMaterial = i_Node.m_pNode->GetFragment()->GetMaterial();
 		if( pOrigMaterial->GetHasTransparency() )
 		{
-			float val = 1;
-			matTexture* pTex = NULL;
-			shared_ptr<effShaderParams> parms = pOrigMaterial->GetShaderParams();
-			if( parms )
-			{
-				effParamTexture* pTexParam = parms->m_pTransparencyMap;
-				if( pTexParam ) pTex = pTexParam->GetTexture();
-				effParamFloat* pVar = parms->m_pTransparency;
-				if( pVar ) val = pVar->GetProperty().GetValue();
-			}
-			else
-			{
-				effShaderData* data = pOrigMaterial->GetEffectData();
-				if( data )
-				{
-					pTex = data->GetTransparencyTexture();
-					val = data->GetTransparencyValue();
-				}
-			}
-
-			if( pTex )
+			// BLEND only: a MASK material is opaque here (its alpha is coverage, not a test)
+			const effOpacity opacity = effOpacity::Of(*pOrigMaterial);
+			vkdImage* pOpacityImage = g3dVkTextureUtil::GetOpacityImage(opacity);
+			if( pOpacityImage )
 			{
 				pD3DEffect->GetVariableByName("hasDiffuseMap")->AsScalar()->SetBool( true );
-				pD3DEffect->GetVariableByName("diffuseMap")->AsShaderResource()->SetResource( g3dVkTextureUtil::GetImage(pTex) );
+				pD3DEffect->GetVariableByName("diffuseMap")->AsShaderResource()->SetResource( pOpacityImage );
 			}
-			pD3DEffect->GetVariableByName("g_Transparency")->AsScalar()->SetFloat( val );
+			pD3DEffect->GetVariableByName("g_Transparency")->AsScalar()->SetFloat( opacity.m_Value );
 		}
 		else
 		{

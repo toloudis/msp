@@ -19,6 +19,7 @@
 **
 **	Extra Large Technology
 \****************************************************************************/
+#include "Vk/gtVulkanOnly.hpp"
 #include "gtBackend.hpp"
 
 #ifndef MAT_SHADERMGR_HPP
@@ -163,6 +164,9 @@ namespace
 		for (const matShaderInfo& info : matShaderMgr::GetMaterialShaders())
 		{
 			const std::string name = itStringUtil::GetStdString(info.m_Name);
+			// DX11 has no Vulkan-only material to compare with
+			if (gtVulkanOnly::IsVulkanOnlyMaterial(name))
+				continue;
 			visitor.m_Effects.push_back({ "material " + name, matShaderMgr::GetEffect(fsLocator(itString(name.c_str()))) });
 		}
 		for (const matShaderInfo& info : matShaderMgr::GetPostEffectShaders())
@@ -190,6 +194,8 @@ namespace
 		matShaderMgr::visitShaders(&visitor);
 		for (const matShaderInfo& info : matShaderMgr::GetMaterialShaders())
 		{
+			if (gtVulkanOnly::IsVulkanOnlyMaterial(itStringUtil::GetStdString(info.m_Name)))
+				continue;
 			out << "material " << itStringUtil::GetStdString(info.m_Name) << " '" << info.m_UIName << "' '"
 				<< info.m_HelpString << "' outline " << info.m_bSupportsOutline << "\n";
 		}

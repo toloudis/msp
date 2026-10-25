@@ -297,6 +297,9 @@
     <ClInclude Include="Eff\effSolid.hpp">
       <Filter>Eff</Filter>
     </ClInclude>
+    <ClInclude Include="Eff\effPbrFallback.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
     <ClInclude Include="Eff\effStrandHair.hpp">
       <Filter>Eff</Filter>
     </ClInclude>
@@ -781,6 +784,9 @@
       <Filter>Eff\private</Filter>
     </ClCompile>
     <ClCompile Include="Eff\private\effSolid.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effPbrFallback.cpp">
       <Filter>Eff\private</Filter>
     </ClCompile>
     <ClCompile Include="Eff\private\effStrandHair.cpp">

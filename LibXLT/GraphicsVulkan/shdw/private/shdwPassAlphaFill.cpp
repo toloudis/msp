@@ -463,15 +463,8 @@ int shdwPassAlphaFill::RenderNode(const sNodePlusState& i_Node, g3dRenderStateTr
 	const matMaterial* pMaterial = &l_AlphaFillMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 	
-	fxEffect* pEffectDX = dynamic_cast<effShaderBaseVk*>(pEffect)->GetFxEffect();
-
-	// an opaque node: no transparency. The effect is shared with
-	// RenderTransparentNode, which sets these for each transparent node;
-	// left as they were, ZFill alpha-tested this node against the last
-	// one's transparency map (even after that texture was released)
-	pEffectDX->GetVariableByName("hasTransparencyMap")->AsScalar()->SetBool(false);
-	pEffectDX->GetVariableByName("transparencyMap")->AsShaderResource()->SetResource(NULL);
-	pEffectDX->GetVariableByName("g_transparency")->AsScalar()->SetFloat(1.0f);
+	effShaderBaseVk* pEffectVk = dynamic_cast<effShaderBaseVk*>(pEffect);
+	fxEffect* pEffectDX = pEffectVk->GetFxEffect();
 
 	// e_Environment is a different type of ambient pass that is ambient-only.
 	pEffect->SetTechnique(m_bAA ? "ZFillRGBA" : "ZFill");
@@ -481,6 +474,23 @@ int shdwPassAlphaFill::RenderNode(const sNodePlusState& i_Node, g3dRenderStateTr
 
 	// geometry data
 	g3dVkUtil::SetupShaderGeometry(pEffect, i_Node.m_pNode);
+
+	// an opaque node: no transparency, but a MASK material's cut-out. The
+	// effect is shared with RenderTransparentNode, which sets these for each
+	// transparent node; left as they were, ZFill alpha-tested this node
+	// against the last one's transparency map (even after that texture was
+	// released)
+	const matMaterial* pNodeMaterial = g3dVkUtil::GetMaterial(i_Node.m_pNode);
+	if (pNodeMaterial)
+	{
+		g3dVkUtil::SetupOpacity(pEffectVk, *pNodeMaterial, "hasTransparencyMap", "transparencyMap", "g_transparency");
+	}
+	else
+	{
+		pEffectDX->GetVariableByName("hasTransparencyMap")->AsScalar()->SetBool(false);
+		pEffectDX->GetVariableByName("transparencyMap")->AsShaderResource()->SetResource(NULL);
+		pEffectDX->GetVariableByName("g_transparency")->AsScalar()->SetFloat(1.0f);
+	}
 
 	bool bDoubleSided = i_Node.m_pNode->GetFragment()->GetDoubleSided();
 	g3dRasterizerStateMgr::SetRasterizerState( bDoubleSided ? VK_CULL_MODE_NONE : g3dVkUtil::GetCullMode(), g3dDrawStyleUtilVk::GetD3DDrawStyle() );
@@ -510,74 +520,11 @@ int shdwPassAlphaFill::RenderTransparentNode(const g3dSceneNode* i_pNode, g3dRen
 	const matMaterial* pAlphaMaterial = &l_AlphaFillMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pAlphaMaterial);
 	
-	fxEffect* pEffectDX = dynamic_cast<effShaderBaseVk*>(pEffect)->GetFxEffect();
+	effShaderBaseVk* pEffectVk = dynamic_cast<effShaderBaseVk*>(pEffect);
+	fxEffect* pEffectDX = pEffectVk->GetFxEffect();
 
 	const matMaterial* pMaterial = g3dVkUtil::GetMaterial(i_pNode);
 
-	//setup transparency parameters
-//#define NEWTRANS
-#ifdef NEWTRANS 
-	float val = 1.0f;
-	matTexture* pTex = NULL;
-	if( pMaterial && pMaterial->GetHasTransparency() )
-	{
-		shared_ptr<effShaderParams> parms = pMaterial->GetShaderParams();
-		if( parms )
-		{
-			effParamTexture* pTexParam = parms->m_pTransparencyMap;
-			if( pTexParam ) pTex = pTexParam->GetTexture();
-			effParamFloat* pVar = parms->m_pTransparency;
-			if( pVar ) val = pVar->GetProperty().GetValue();
-		}
-		else
-		{
-			effShaderData* data = pMaterial->GetEffectData();
-			if( data )
-			{
-				pTex = data->GetTransparencyTexture();
-				val = data->GetTransparencyValue();
-			}
-		}
-	}
-
-	pEffectDX->GetVariableByName("hasTransparencyMap")->AsScalar()->SetBool((pTex!=NULL) ? true : false);
-	pEffectDX->GetVariableByName("transparencyMap")->AsShaderResource()->SetResource(
-		(pTex!=NULL) ? g3dVkTextureUtil::GetImage(pTex) : NULL);
-	pEffectDX->GetVariableByName("g_transparency")->AsScalar()->SetFloat(val);
-#else
-	pEffectDX->GetVariableByName("hasTransparencyMap")->AsScalar()->SetBool(false);
-	pEffectDX->GetVariableByName("g_transparency")->AsScalar()->SetFloat(1.0f);
-	// Get the transparent map from the material
-	if ( pMaterial )
-	{
-		// first check shader params
-		if (pMaterial->GetShaderParams() != NULL)
-		{
-			if (pMaterial->GetShaderParams()->m_pTransparencyMap)
-			{
-				if (pMaterial->GetShaderParams()->m_pTransparencyMap->GetTexture())
-				{
-					pEffectDX->GetVariableByName("transparencyMap")->AsShaderResource()->SetResource(
-						g3dVkTextureUtil::GetImage(pMaterial->GetShaderParams()->m_pTransparencyMap->GetTexture()));
-					pEffectDX->GetVariableByName("hasTransparencyMap")->AsScalar()->SetBool(true);
-				}
-			}
-			if (pMaterial->GetShaderParams()->m_pTransparency)
-			{
-				pEffectDX->GetVariableByName("g_transparency")->AsScalar()->SetFloat(pMaterial->GetShaderParams()->m_pTransparency->GetProperty().GetValue());
-			}
-		}
-		// then check effectdata
-		else if (pMaterial->GetEffectData() != NULL)
-		{
-			pEffectDX->GetVariableByName("transparencyMap")->AsShaderResource()->SetResource(
-						g3dVkTextureUtil::GetImage(pMaterial->GetEffectData()->GetTransparencyTexture()));
-			if (pMaterial->GetEffectData()->GetTransparencyTexture())
-				pEffectDX->GetVariableByName("hasTransparencyMap")->AsScalar()->SetBool(true);
-			pEffectDX->GetVariableByName("g_transparency")->AsScalar()->SetFloat(pMaterial->GetEffectData()->GetTransparencyValue());
-		}
-	}
-#endif
 	if (i_isBinaryAlpha)
 	{
 		pEffect->SetTechnique(m_bAA ? "BinaryAlphaFillRGBA" : "BinaryAlphaFill");
@@ -592,6 +539,17 @@ int shdwPassAlphaFill::RenderTransparentNode(const g3dSceneNode* i_pNode, g3dRen
 
 	// geometry data
 	g3dVkUtil::SetupShaderGeometry(pEffect, i_pNode);
+
+	// the material's opacity
+	if (pMaterial)
+	{
+		g3dVkUtil::SetupOpacity(pEffectVk, *pMaterial, "hasTransparencyMap", "transparencyMap", "g_transparency");
+	}
+	else
+	{
+		pEffectDX->GetVariableByName("hasTransparencyMap")->AsScalar()->SetBool(false);
+		pEffectDX->GetVariableByName("g_transparency")->AsScalar()->SetFloat(1.0f);
+	}
 
 	bool bDoubleSided = i_pNode->GetFragment()->GetDoubleSided();
 	g3dRasterizerStateMgr::SetRasterizerState( bDoubleSided ? VK_CULL_MODE_NONE : g3dVkUtil::GetCullMode(), g3dDrawStyleUtilVk::GetD3DDrawStyle() );

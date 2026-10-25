@@ -14,6 +14,7 @@
 #endif
 #define GVK_G3DVKTEXTUREUTIL_HPP
 
+struct effOpacity;
 class matTexture;
 class maVector2d;
 class maVector4d;
@@ -36,6 +37,12 @@ namespace gvk
 		// page of a UVA texture); NULL if it has none
 		//------------------------------------------------------------------------
 		vkdImage* GetImage(const matTexture* i_pTexture);
+
+		//------------------------------------------------------------------------
+		// GetOpacityImage - the image a pass binds as i_Opacity's map: NULL
+		// without one; read through its alpha view for a PBR base color map
+		//------------------------------------------------------------------------
+		vkdImage* GetOpacityImage(const effOpacity& i_Opacity);
 
 		//------------------------------------------------------------------------
 		// TexRect - Windows' RECT (right and bottom exclusive), with its

@@ -12,6 +12,12 @@
 #ifndef GVK_MATTEXTUREVK_HPP
 #include "GraphicsVulkan/Mat/matTextureVk.hpp"
 #endif
+#ifndef GVK_VKDIMAGE_HPP
+#include "GraphicsVulkan/vkd/vkdImage.hpp"
+#endif
+#ifndef EFF_OPACITY_HPP
+#include "Graphics/Eff/effOpacity.hpp"
+#endif
 #ifndef MAT_UVATEXTURE_HPP
 #include "Graphics/Mat/matUVATexture.hpp"
 #endif
@@ -51,6 +57,17 @@ namespace gvk
 		}
 
 		return NULL;
+	}
+
+	//------------------------------------------------------------------------
+	// GetOpacityImage - the image a pass binds as an opacity map
+	//------------------------------------------------------------------------
+	vkdImage* g3dVkTextureUtil::GetOpacityImage(const effOpacity& i_Opacity)
+	{
+		vkdImage* image = GetImage(i_Opacity.m_pMap);
+		if (image && i_Opacity.m_bMapAlpha)
+			image = image->AlphaView();
+		return image;
 	}
 
 	void g3dVkTextureUtil::SetRect(TexRect* o_pRect, int i_Left, int i_Top, int i_Right, int i_Bottom)

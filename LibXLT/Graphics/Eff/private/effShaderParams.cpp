@@ -199,7 +199,7 @@ bool effParamTexture::Load(const fsResourceFinder& i_Finder)
 effShaderParams::effShaderParams()
 :	m_pShader(NULL), m_ShaderGeneration(0), m_pShaderBindings(NULL), m_pPrtyUI(NULL),
 	m_pDiffuseMap(NULL), m_pTransparencyMap(NULL), 
-	m_pDiffuseColor(NULL), m_pTransparency(NULL),
+	m_pDiffuseColor(NULL), m_pTransparency(NULL), m_pAlphaMode(NULL), m_pAlphaCutoff(NULL),
 	m_pPathObject(NULL), m_Version(0)
 {
 }
@@ -610,6 +610,13 @@ void effShaderParams::Dump()
 //------------------------------------------------------------------------
 bool effShaderParams::HasTransparency()
 {
+	// an alpha mode decides by itself: BLEND is transparent whatever the
+	// alpha values, MASK cuts out and is drawn as opaque
+	if( m_pAlphaMode )
+	{
+		return m_pAlphaMode->GetProperty().GetValue() == 2;
+	}
+
 	if( m_pTransparency )
 	{
 		if (m_pTransparency->GetProperty().GetValue() < 1)
@@ -696,6 +703,10 @@ void effShaderParams::SetMatchingParams(const effShaderParams* i_pOtherParams)
 		m_pDiffuseColor->Property().SetValue(i_pOtherParams->m_pDiffuseColor->GetProperty().GetValue());
 	if (m_pTransparency && i_pOtherParams->m_pTransparency)
 		m_pTransparency->Property().SetValue(i_pOtherParams->m_pTransparency->GetProperty().GetValue());
+	if (m_pAlphaMode && i_pOtherParams->m_pAlphaMode)
+		m_pAlphaMode->Property().SetValue(i_pOtherParams->m_pAlphaMode->GetProperty().GetValue());
+	if (m_pAlphaCutoff && i_pOtherParams->m_pAlphaCutoff)
+		m_pAlphaCutoff->Property().SetValue(i_pOtherParams->m_pAlphaCutoff->GetProperty().GetValue());
 }
 
 //------------------------------------------------------------------------
@@ -722,6 +733,8 @@ void effShaderParams::Clear()
 	//m_pTransparencyMap = NULL;
 	//m_pDiffuseColor = NULL;
 	//m_pTransparency = NULL;
+	//m_pAlphaMode = NULL;
+	//m_pAlphaCutoff = NULL;
 
 	m_pShader = NULL;
 

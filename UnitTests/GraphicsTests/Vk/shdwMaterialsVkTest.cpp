@@ -47,6 +47,7 @@
 **
 **	Extra Large Technology
 \****************************************************************************/
+#include "Vk/gtVulkanOnly.hpp"
 #include "gtBackend.hpp"
 #include "gtImage.hpp"
 #include "gtRender.hpp"
@@ -140,6 +141,9 @@ namespace
 		}
 		for (const char* excluded : c_Excluded)
 			names.erase(excluded);
+		// DX11 has no Vulkan-only material to compare with
+		for (auto it = names.begin(); it != names.end(); )
+			it = gtVulkanOnly::IsVulkanOnlyMaterial(*it) ? names.erase(it) : std::next(it);
 		std::vector<Material> materials;
 		for (const std::string& name : names)
 		{

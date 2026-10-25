@@ -98,6 +98,8 @@
     <ClCompile Include="GraphicsTestsMain.cpp" />
     <ClCompile Include="gtPlatformWin.cpp" />
     <ClCompile Include="G3d\g3dProfilerTest.cpp" />
+    <ClCompile Include="Eff\effOpacityTest.cpp" />
+    <ClCompile Include="Eff\effPbrDataTest.cpp" />
     <ClCompile Include="Vk\vkdAdapterTest.cpp" />
     <ClCompile Include="Vk\vkdDeviceTest.cpp" />
     <ClCompile Include="Vk\vkdValidationTest.cpp" />
@@ -133,6 +135,7 @@
     <ClCompile Include="gtScene.cpp" />
     <ClCompile Include="Vk\bumpFragmentVkTest.cpp" />
     <ClCompile Include="Vk\effShaderVkTest.cpp" />
+    <ClCompile Include="Vk\effPbrVkTest.cpp" />
     <ClCompile Include="gtTarget.cpp" />
     <ClCompile Include="Vk\g3dSceneRendererVkTest.cpp" />
     <ClCompile Include="gtSceneWindow.cpp" />

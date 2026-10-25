@@ -13,6 +13,7 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/It/itStringUtil.hpp"
 #include "Graphics/Eff/effBlinnData.hpp"
+#include "Graphics/Eff/effPbrData.hpp"
 #include "Graphics/Mat/matTexturePathUtil.hpp"
 #include "Graphics/mdl/mdlMatInfo.hpp"
 
@@ -109,12 +110,7 @@ namespace gltfMaterialImport
 
 		//--------------------------------------------------------------------
 		// convert_material - convert glTF metallic-roughness material to our
-		// Blinn material. This is an approximation:
-		//  base color -> diffuse color and texture
-		//  metallic   -> specular color (blend of 4% grey and base color)
-		//                and environment reflectivity
-		//  roughness  -> shininess (1 - roughness)
-		//  BLEND alpha -> transparency; MASK is treated as opaque
+		// Blinn material, with effPbrData's Blinn fallback (an approximation).
 		//--------------------------------------------------------------------
 		void convert_material(const tinygltf::Model* i_pModel, const tinygltf::Material &i_Material,
 							  const std::string& i_Name,
@@ -123,52 +119,36 @@ namespace gltfMaterialImport
 		{
 			o_MatInfo.SetMaterialName(i_Name);
 
-			shared_ptr<effBlinnData> eff_data(new effBlinnData());
-
 			const tinygltf::PbrMetallicRoughness & pbr = i_Material.pbrMetallicRoughness;
-			const double r = get_factor(pbr.baseColorFactor, 0, 1.0);
-			const double g = get_factor(pbr.baseColorFactor, 1, 1.0);
-			const double b = get_factor(pbr.baseColorFactor, 2, 1.0);
-			const double metallic = (std::min)((std::max)(pbr.metallicFactor, 0.0), 1.0);
-			const double roughness = (std::min)((std::max)(pbr.roughnessFactor, 0.0), 1.0);
+			effPbrData pbr_data;
 
-			// Only BLEND materials are see-through. MASK (alpha cutoff) is not
-			// supported by our shaders, so it is drawn opaque.
-			double alpha = 1;
 			if (i_Material.alphaMode == "BLEND")
-			{
-				alpha = get_factor(pbr.baseColorFactor, 3, 1.0);
+				pbr_data.m_AlphaMode = effPbrData::e_Blend;
+			else if (i_Material.alphaMode == "MASK")
+				pbr_data.m_AlphaMode = effPbrData::e_Mask;
+			pbr_data.m_AlphaCutoff = (float)i_Material.alphaCutoff;
+
+			double alpha = get_factor(pbr.baseColorFactor, 3, 1.0);
+			if (pbr_data.m_AlphaMode == effPbrData::e_Blend)
 				fix_alpha(alpha);
-			}
-			eff_data->m_Transparency = (float)alpha;
-			eff_data->m_ColorDiffuse.Set(r, g, b, alpha);
+			pbr_data.m_BaseColor.Set((float)get_factor(pbr.baseColorFactor, 0, 1.0),
+									 (float)get_factor(pbr.baseColorFactor, 1, 1.0),
+									 (float)get_factor(pbr.baseColorFactor, 2, 1.0), (float)alpha);
+			pbr_data.m_Metallic = (float)pbr.metallicFactor;
+			pbr_data.m_Roughness = (float)pbr.roughnessFactor;
+			pbr_data.m_Emissive.Set((float)get_factor(i_Material.emissiveFactor, 0, 0.0),
+									(float)get_factor(i_Material.emissiveFactor, 1, 0.0),
+									(float)get_factor(i_Material.emissiveFactor, 2, 0.0), 1);
+			pbr_data.m_BaseColorMap = get_texture_path(i_pModel, pbr.baseColorTexture.index, i_ContainingFile);
 
-			// Always forcing ambient, could be controlled by a setting.
-			eff_data->m_ColorAmbient.Set(1,1,1,1);
-			eff_data->m_ColorEmissive.Set(get_factor(i_Material.emissiveFactor, 0, 0.0),
-										  get_factor(i_Material.emissiveFactor, 1, 0.0),
-										  get_factor(i_Material.emissiveFactor, 2, 0.0), 1);
-
-			// Dielectrics reflect ~4% untinted, metals reflect their base color
-			const double dielectric_spec = 0.04;
-			eff_data->m_ColorSpecular.Set(dielectric_spec + (r - dielectric_spec) * metallic,
-										  dielectric_spec + (g - dielectric_spec) * metallic,
-										  dielectric_spec + (b - dielectric_spec) * metallic, 1);
-			// Blinn.fx shininess is 0..1, larger is a tighter highlight
-			eff_data->m_SpecularPower = (float)(1.0 - roughness);
-			eff_data->m_DiffuseRoughness = (float)roughness;
-			eff_data->m_Reflectivity = (float)metallic;
-
-			// look for textures:
-			// The base color factor multiplies the texture (Blinn.fx does the same)
-			eff_data->m_NameDiffuse = get_texture_path(i_pModel, pbr.baseColorTexture.index, i_ContainingFile);
-			eff_data->m_NameNormalMap = get_texture_path(i_pModel, i_Material.normalTexture.index, i_ContainingFile);
-			if (!eff_data->m_NameNormalMap.empty())
-				eff_data->m_BumpMapScale = (float)i_Material.normalTexture.scale;
+			effBlinnData eff_data = pbr_data.MakeBlinnFallback();
+			eff_data.m_NameNormalMap = get_texture_path(i_pModel, i_Material.normalTexture.index, i_ContainingFile);
+			if (!eff_data.m_NameNormalMap.empty())
+				eff_data.m_BumpMapScale = (float)i_Material.normalTexture.scale;
 
 			shared_ptr<effShaderParams> eff_params(new effShaderParams()); 
 			eff_params->SetShaderName(itString("Blinn.fx"));
-			eff_data->AddToParams(*eff_params);
+			eff_data.AddToParams(*eff_params);
 
 			o_MatInfo.SetShaderParams(eff_params);
 		}

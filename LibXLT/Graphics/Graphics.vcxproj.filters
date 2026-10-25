@@ -555,6 +555,12 @@
     <ClInclude Include="Eff\effBlinnDataParser.hpp">
       <Filter>Eff</Filter>
     </ClInclude>
+    <ClInclude Include="Eff\effOpacity.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effPbrData.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
     <ClInclude Include="Eff\effBlurData.hpp">
       <Filter>Eff</Filter>
     </ClInclude>
@@ -1426,6 +1432,12 @@
       <Filter>Eff\private</Filter>
     </ClCompile>
     <ClCompile Include="Eff\private\effBlinnDataParser.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effOpacity.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effPbrData.cpp">
       <Filter>Eff\private</Filter>
     </ClCompile>
     <ClCompile Include="Eff\private\effBlurData.cpp">

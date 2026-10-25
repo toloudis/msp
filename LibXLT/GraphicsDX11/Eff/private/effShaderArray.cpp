@@ -48,6 +48,9 @@
 #include "GraphicsDX11/eff/effGlow.hpp"
 //#include "GraphicsDX11/eff/effHair.hpp"
 #include "GraphicsDX11/eff/effStrandHair.hpp"
+#ifndef EFF_PBRFALLBACK_HPP
+#include "GraphicsDX11/eff/effPbrFallback.hpp"
+#endif
 //#include "GraphicsDX11/eff/effLambert.hpp"
 #include "GraphicsDX11/eff/effLightGlow.hpp"
 #include "GraphicsDX11/eff/effMaskAlpha.hpp"
@@ -399,6 +402,12 @@ static matShaderEffect* LoadPlainMaterial(const fsLocator& i_ShaderLoc, const st
 		return NULL;
 	name.erase(dot);
 
+	// There is no PBR shader on DX11: Pbr.fx materials are drawn by Blinn,
+	// converted when they are set up (effPbrFallback)
+	const bool bPbr = _stricmp(i_FileName.c_str(), effPbrData::c_ShaderName) == 0;
+	if (bPbr)
+		name = "Blinn";
+
 	const fxEmbeddedEffect* embedded = fxEmbeddedShaders::Find(name);
 	if (!embedded || strncmp(embedded->m_Source, "Materials/", 10) != 0)
 		return NULL;
@@ -415,6 +424,8 @@ static matShaderEffect* LoadPlainMaterial(const fsLocator& i_ShaderLoc, const st
 	fsLocator folder = i_ShaderLoc;
 	folder.Pop();
 	std::unique_ptr<fxEffect> plain(new effPlainEffect(std::move(effect), embedded->m_Source));
+	if (bPbr)
+		return new effPbrFallback(folder, std::move(plain), i_FileName);
 	if (plain->GetVariableByName("hasHairSupport")->IsValid())	//this is a hair effect
 		return new effStrandHair(folder, std::move(plain), i_FileName);
 	return new effShaderBaseDX11(folder, std::move(plain), i_FileName);

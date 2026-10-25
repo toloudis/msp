@@ -5,7 +5,8 @@
 **      arrays in uncompressed and BC formats upload and read back
 **      unchanged; GenerateMips matches D3D11's GenerateMips; views of one
 **      face render and clear that face only; the depth view of a
-**      depth-stencil image samples.
+**      depth-stencil image samples; the alpha view of a colour image
+**      samples its alpha in every channel (1 for a format without alpha).
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -307,6 +308,86 @@ TEST_F(vkdImageTest, DepthViewSamples)
 	EXPECT_NEAR(64, image[(15 * 16 + 15) * 4], 1);
 	c.SetRenderTargets(0, nullptr, nullptr);
 	c.Flush();
+	vs.reset();
+	ps.reset();
+}
+
+//	Plan 2b: PBR's base color alpha reaches the unchanged pass shaders, which
+//	read a transparency map's red, through AlphaView
+TEST_F(vkdImageTest, AlphaViewSamples)
+{
+	std::string error;
+	std::unique_ptr<vkdShader> vs = vkdShader::Create(&Device(), VK_SHADER_STAGE_VERTEX_BIT, g_gtBindingProtoVS, sizeof(g_gtBindingProtoVS), "VSMain", "gtBindingProto VS", error);
+	std::unique_ptr<vkdShader> ps = vkdShader::Create(&Device(), VK_SHADER_STAGE_FRAGMENT_BIT, g_gtBindingProtoPS, sizeof(g_gtBindingProtoPS), "PSMain", "gtBindingProto PS", error);
+	ASSERT_TRUE(vs && ps) << error;
+	VkSamplerCreateInfo point = {VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO};
+	const uint32_t sampler = m_pBindings->AddSampler(point);
+
+	//	i_pView sampled over a 16x16 target: the target's first pixel
+	auto sample = [&](vkdImage* i_pView)
+	{
+		vkdImage* target = Target(16, 16);
+		vkdContext& c = Context();
+		c.SetRenderTargets(1, &target, nullptr);
+		vkdViewport viewport;
+		viewport.m_Width = viewport.m_Height = 16;
+		c.SetViewports(1, &viewport);
+		const vkdShader* stages[5] = { vs.get(), nullptr, nullptr, nullptr, ps.get() };
+		c.SetShaders(stages);
+		c.SetVertexLayout(nullptr);
+		c.SetTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+		const float scale[4] = { 1, 1, 1, 1 }, bias[4] = { 0, 0, 0, 0 };
+		c.Bindings().SetConstantBuffer(0, c.Upload(scale, 16).m_Gpu, 16);
+		c.Bindings().SetConstantBuffer(3, c.Upload(bias, 16).m_Gpu, 16);
+		c.Bindings().SetTexture(0, i_pView->SampledIndex(*m_pBindings));
+		c.Bindings().SetTexture(37, c.NullTexture()->SampledIndex(*m_pBindings));
+		c.Bindings().SetSampler(13, sampler);
+		c.Draw(3, 0);
+		const std::vector<uint8_t> image = Read(target);
+		c.SetRenderTargets(0, nullptr, nullptr);
+		return std::vector<uint8_t>(image.begin(), image.begin() + 4);
+	};
+
+	vkdImageDesc desc;
+	desc.m_Format = VK_FORMAT_R8G8B8A8_UNORM;
+	desc.m_Width = desc.m_Height = 16;
+	desc.m_Usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+	vkdImage* rgba = Make(desc, "AlphaViewSamples RGBA");
+	std::vector<uint8_t> texels(16 * 16 * 4);
+	for (size_t i = 0; i < texels.size(); i += 4)
+	{
+		texels[i] = 10; texels[i + 1] = 20; texels[i + 2] = 30; texels[i + 3] = 200;
+	}
+	rgba->Upload(Context(), 0, 0, texels.data(), 16 * 4, texels.size());
+	vkdImage* alpha = rgba->AlphaView();
+	ASSERT_NE(nullptr, alpha);
+	EXPECT_NE(rgba, alpha);
+	EXPECT_EQ(rgba->Image(), alpha->Image());
+	EXPECT_EQ(alpha, rgba->AlphaView());
+	EXPECT_NEAR(10, sample(rgba)[0], 1) << "the image itself reads red";
+	const std::vector<uint8_t> a = sample(alpha);
+	for (int i = 0; i < 4; i++)
+		EXPECT_NEAR(200, a[i], 1) << "alpha view channel " << i;
+
+	//	no alpha channel: the view reads 1
+	desc.m_Format = VK_FORMAT_R8_UNORM;
+	vkdImage* r8 = Make(desc, "AlphaViewSamples R8");
+	const std::vector<uint8_t> grey(16 * 16, 77);
+	r8->Upload(Context(), 0, 0, grey.data(), 16, grey.size());
+	EXPECT_NEAR(255, sample(r8->AlphaView())[0], 1) << "R8 alpha view";
+
+	//	destroying the image reports its alpha view to the destroy hooks
+	//	(fxEffectVk unbinds it there)
+	desc.m_Format = VK_FORMAT_R8G8B8A8_UNORM;
+	std::unique_ptr<vkdImage> doomed = vkdImage::Create(Device(), desc, "AlphaViewSamples doomed");
+	const vkdImage* doomed_view = doomed->AlphaView();
+	std::vector<const vkdImage*> destroyed;
+	const int hook = Device().AddImageDestroyHook([&](const vkdImage* i_pImage) { destroyed.push_back(i_pImage); });
+	doomed.reset();
+	Device().RemoveImageDestroyHook(hook);
+	EXPECT_NE(destroyed.end(), std::find(destroyed.begin(), destroyed.end(), doomed_view));
+
+	Context().Flush();
 	vs.reset();
 	ps.reset();
 }

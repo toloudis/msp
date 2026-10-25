@@ -179,6 +179,7 @@
     <ClInclude Include="Eff\effShaderParamsDX11.hpp" />
     <ClInclude Include="Eff\effShaderUtilWin.hpp" />
     <ClInclude Include="Eff\effSolid.hpp" />
+    <ClInclude Include="Eff\effPbrFallback.hpp" />
     <ClInclude Include="Eff\effStrandHair.hpp" />
     <ClInclude Include="Eff\effTextured.hpp" />
     <ClInclude Include="Mat\matCubeRenderTargetTexture.hpp" />
@@ -343,6 +344,7 @@
     <ClCompile Include="Eff\private\effShaderParamsDX11.cpp" />
     <ClCompile Include="Eff\private\effShaderUtilWin.cpp" />
     <ClCompile Include="Eff\private\effSolid.cpp" />
+    <ClCompile Include="Eff\private\effPbrFallback.cpp" />
     <ClCompile Include="Eff\private\effStrandHair.cpp" />
     <ClCompile Include="Eff\private\effTextured.cpp" />
     <ClCompile Include="Mat\private\matCubeRenderTargetTexture.cpp" />

@@ -457,6 +457,8 @@
     <None Include="Eff\private\Shaders\Materials\PhongReflection.hlsl" />
     <None Include="Eff\private\Shaders\Materials\Phong_wBump.effect.json" />
     <None Include="Eff\private\Shaders\Materials\Phong_wBump.hlsl" />
+    <None Include="Eff\private\Shaders\Materials\Pbr.effect.json" />
+    <None Include="Eff\private\Shaders\Materials\Pbr.hlsl" />
     <None Include="Eff\private\Shaders\Materials\Simple.effect.json" />
     <None Include="Eff\private\Shaders\Materials\Simple.hlsl" />
     <None Include="Eff\private\Shaders\Materials\Skin.effect.json" />

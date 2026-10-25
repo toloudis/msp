@@ -104,6 +104,11 @@ namespace gtScene
 	//	quads: (i_N + 1)^2 vertices (Grid(300) needs 32-bit indices)
 	gtMesh Grid(int i_N);
 
+	//	Grid(i_N) without the quads where CheckerTexture(..., i_N, true) has
+	//	alpha 0 (quad (c, r) is checker cell (c, r); the odd ones go): the
+	//	cut-out's shape in the mesh, to compare a MASK material with
+	gtMesh GridWithHoles(int i_N);
+
 	//	The values a material's parameters are given
 	enum Values
 	{
@@ -132,6 +137,7 @@ namespace gtScene
 	//	Sets a material shader material's parameter named i_pName (its HLSL
 	//	name); a test failure if it has none
 	void SetFloat(matMaterial* io_pMaterial, const char* i_pName, float i_Value);
+	void SetInt(matMaterial* io_pMaterial, const char* i_pName, int i_Value);
 	void SetColor(matMaterial* io_pMaterial, const char* i_pName, const maFloatRGBA& i_Value);
 	void SetTexture(matMaterial* io_pMaterial, const char* i_pName, matTexture* i_pTexture);
 
@@ -139,15 +145,22 @@ namespace gtScene
 	//	checks with hard edges (a PNG written to i_Dir, loaded through
 	//	matTextureMgr, mips generated). Textures are never softened to hide
 	//	a difference: where D3D11 and Vulkan pick different mip levels
-	//	(gtMipTolerance), a test allows that difference instead.
+	//	(gtMipTolerance), a test allows that difference instead. With
+	//	i_bClearOddCells the odd cells have alpha 0 (a cut-out), else 255.
 	//	Release with matTextureMgr::ReleaseTexture.
-	matTexture* CheckerTexture(const std::filesystem::path& i_Dir, int i_Width, int i_Height, int i_Cells);
+	matTexture* CheckerTexture(const std::filesystem::path& i_Dir, int i_Width, int i_Height, int i_Cells,
+							   bool i_bClearOddCells = false);
 
 	//	An RGBA8 i_Size x i_Size transparency map like a cobweb's: white
 	//	strands (i_Strands x i_Strands grid lines) on black, hard-edged (see
 	//	CheckerTexture), as a material shader's transparencyMap (its red
 	//	channel is the alpha). Release with matTextureMgr::ReleaseTexture.
 	matTexture* WebTexture(const std::filesystem::path& i_Dir, int i_Size, int i_Strands);
+
+	//	CheckerTexture(..., i_Cells, true)'s alpha as a transparency map: RGB
+	//	255 where the checker's alpha is 255, 0 where it is 0, alpha 255.
+	//	Release with matTextureMgr::ReleaseTexture.
+	matTexture* CheckerMaskTexture(const std::filesystem::path& i_Dir, int i_Width, int i_Height, int i_Cells);
 
 	//	An RGBA8 i_Size x i_Size height map of i_Bumps x i_Bumps smooth bumps
 	//	(grey, 0 to 255), and the matching tangent-space normal map (RGB the

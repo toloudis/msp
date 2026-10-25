@@ -299,34 +299,8 @@ int shdwPassNormals::RenderNode(const sNodePlusState& i_Node, bool i_isTanSpace,
 	g3dVkUtil::SetupShaderGeometry(pEffect, i_Node.m_pNode);
 
 	//setup transparency parameters
-	float val = 1.0f;
-	matTexture* pTex = NULL;
 	const matMaterial* pOrigMaterial = i_Node.m_pNode->GetFragment()->GetMaterial();
-	if( pOrigMaterial->GetHasTransparency() )
-	{
-		shared_ptr<effShaderParams> parms = pOrigMaterial->GetShaderParams();
-		if( parms )
-		{
-			effParamTexture* pTexParam = parms->m_pTransparencyMap;
-			if( pTexParam ) pTex = pTexParam->GetTexture();
-			effParamFloat* pVar = parms->m_pTransparency;
-			if( pVar ) val = pVar->GetProperty().GetValue();
-		}
-		else
-		{
-			effShaderData* data = pOrigMaterial->GetEffectData();
-			if( data )
-			{
-				pTex = data->GetTransparencyTexture();
-				val = data->GetTransparencyValue();
-			}
-		}
-	}
-
-	pD3DEffect->GetVariableByName("hasTransparencyMap")->AsScalar()->SetBool((pTex!=NULL) ? true : false);
-	pD3DEffect->GetVariableByName("TransparencyMap")->AsShaderResource()->SetResource(
-		(pTex!=NULL) ? g3dVkTextureUtil::GetImage(pTex) : NULL);
-	pD3DEffect->GetVariableByName("g_Transparency")->AsScalar()->SetFloat(val);
+	g3dVkUtil::SetupOpacity(i_pEffect, *pOrigMaterial, "hasTransparencyMap", "TransparencyMap", "g_Transparency");
 
 	bool bDoubleSided = i_Node.m_pNode->GetFragment()->GetDoubleSided();
 	g3dRasterizerStateMgr::SetRasterizerState( bDoubleSided ? VK_CULL_MODE_NONE : g3dVkUtil::GetCullMode(), g3dDrawStyleUtilVk::GetD3DDrawStyle() );

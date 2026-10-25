@@ -73,6 +73,9 @@
 #ifndef GVK_EFF_SHADERBASEVK_HPP
 #include "GraphicsVulkan/Eff/effShaderBaseVk.hpp"
 #endif
+#ifndef EFF_OPACITY_HPP
+#include "Graphics/Eff/effOpacity.hpp"
+#endif
 #ifndef GVK_EFF_SHADERARRAY_HPP
 #include "GraphicsVulkan/Eff/effShaderArray.hpp"
 #endif
@@ -909,6 +912,20 @@ void g3dVkUtil::SetupShaderGlobals(matShaderEffect* i_pEffect)
 	i_pEffect->SetIsolateReflections(g3dSingleLightRendering::GetDoIsolateReflections());
 	i_pEffect->SetAlphaTestRef(g3dSceneGlobal::g_AlphaTestRef);
 	i_pEffect->SetClipPlane(g3dSceneGlobal::g_ClipPlane);
+}
+
+// a material's opacity on a pass's shader
+effOpacity g3dVkUtil::SetupOpacity(effShaderBaseVk* i_pEffect, const matMaterial& i_Material,
+								   const char* i_pHasMap, const char* i_pMap, const char* i_pValue)
+{
+	const effOpacity opacity = effOpacity::Of(i_Material);
+	vkdImage* image = g3dVkTextureUtil::GetOpacityImage(opacity);
+	fxEffect* effect = i_pEffect->GetFxEffect();
+	effect->GetVariableByName(i_pHasMap)->AsScalar()->SetBool(image != NULL);
+	effect->GetVariableByName(i_pMap)->AsShaderResource()->SetResource(image);
+	effect->GetVariableByName(i_pValue)->AsScalar()->SetFloat(opacity.m_Value);
+	i_pEffect->SetAlphaTestRef(opacity.AlphaTestRef(i_pEffect->GetAlphaTestRef()));
+	return opacity;
 }
 
 // geometry data

@@ -300,6 +300,8 @@ public:
 	// 1 or greater kills all drawing for normal alpha values
 	//------------------------------------------------------------------------
 	virtual void SetAlphaTestRef(float i_Value) const;
+	// the value SetAlphaTestRef last set (0 if the effect has no g_AlphaTestRef)
+	float GetAlphaTestRef() const;
 
 	//--------------------------------------------------------------------
 	// global function that set a user defined clip plane

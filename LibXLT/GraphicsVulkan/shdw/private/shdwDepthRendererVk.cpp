@@ -354,34 +354,8 @@ void shdwDepthRendererVk::DrawNode(const g3dSceneNode* i_pNode)
 	// geometry data
 	g3dVkUtil::SetupShaderGeometry(pEffect, i_pNode);
 
-	float val = 1.0f;
-	matTexture* pTex = NULL;
 	const matMaterial* pOrigMaterial = i_pNode->GetFragment()->GetMaterial();
-	if( pOrigMaterial->GetHasTransparency() )
-	{
-		shared_ptr<effShaderParams> parms = pOrigMaterial->GetShaderParams();
-		if( parms )
-		{
-			effParamTexture* pTexParam = parms->m_pTransparencyMap;
-			if( pTexParam ) pTex = pTexParam->GetTexture();
-			effParamFloat* pVar = parms->m_pTransparency;
-			if( pVar ) val = pVar->GetProperty().GetValue();
-		}
-		else
-		{
-			effShaderData* data = pOrigMaterial->GetEffectData();
-			if( data )
-			{
-				pTex = data->GetTransparencyTexture();
-				val = data->GetTransparencyValue();
-			}
-		}
-	}
-
-	pD3DEffect->GetVariableByName("hasTransparencyMap")->AsScalar()->SetBool((pTex!=NULL) ? true : false);
-	pD3DEffect->GetVariableByName("TransparencyMap")->AsShaderResource()->SetResource(
-		(pTex!=NULL) ? g3dVkTextureUtil::GetImage(pTex) : NULL);
-	pD3DEffect->GetVariableByName("g_Transparency")->AsScalar()->SetFloat(val);
+	g3dVkUtil::SetupOpacity(i_pEffect, *pOrigMaterial, "hasTransparencyMap", "TransparencyMap", "g_Transparency");
 
 	l_nNumTrianglesRendered += g3dRendererMgr::Render( i_pNode, pMaterial, pEffect );
 }

@@ -15,7 +15,9 @@
 **	A 3D image made with m_bLayeredTarget also has LayeredView(), a 2D-array
 **	view of all its slices: the render target view D3D11 makes of a whole
 **	volume, into which a geometry shader picks the slice
-**	(SV_RenderTargetArrayIndex).
+**	(SV_RenderTargetArrayIndex). AlphaView() reads the whole image with
+**	every channel its alpha, for shaders that read an opacity map's red
+**	(a PBR base color map's alpha as a transparency map).
 **
 **	Wrap() gives a vkdImage for an image and view made elsewhere (a swap
 **	chain's), so it can be bound like any other; it destroys neither.
@@ -102,6 +104,10 @@ namespace gvk
 			//	target; made on first use and owned by this image. Its Desc()
 			//	keeps VK_IMAGE_TYPE_3D, with m_Layers the slice count.
 			vkdImage* LayeredView();
+			//	A view of the whole image whose four channels all read its
+			//	alpha (1 for a format without alpha); made on first use and
+			//	owned by this image
+			vkdImage* AlphaView();
 
 			//	The image's index in i_Bindings' resource heap, as a sampled
 			//	(t register) or storage (u register) image: registered on first
@@ -134,7 +140,7 @@ namespace gvk
 
 			//	A view of part of this image, owned by it
 			std::unique_ptr<vkdImage> make_view(const VkImageSubresourceRange& i_Range, VkImageViewType i_Type,
-												const char* i_Name);
+												const char* i_Name, const VkComponentMapping& i_Components = {});
 
 			vkdDevice&		m_Device;
 			vkdImageDesc	m_Desc;
@@ -149,6 +155,7 @@ namespace gvk
 			std::map<uint64_t, std::unique_ptr<vkdImage>> m_Subresources;	// by mip << 32 | layer
 			std::unique_ptr<vkdImage> m_pDepthView;
 			std::unique_ptr<vkdImage> m_pLayeredView;
+			std::unique_ptr<vkdImage> m_pAlphaView;
 	};
 
 	//	vkdFormatSize - bytes per pixel of an uncompressed format; 0 for

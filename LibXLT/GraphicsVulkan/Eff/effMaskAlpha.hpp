@@ -51,5 +51,9 @@ protected:
 	fxEffectVariable* m_hUseDither;
 	fxEffectVariable* m_hDitherAlphaBias;
 	fxEffectVariable* m_hTransparency;
+	// ReflectiveShadowMap.fx's own threshold (it ignores g_AlphaTestRef)
+	// and its default
+	fxEffectVariable* m_hAlphaThreshold;
+	float m_DefaultAlphaThreshold;
 };
 }

@@ -18,6 +18,9 @@
 #ifndef GVK_G3DVKTEXTUREUTIL_HPP
 #include "GraphicsVulkan/G3d/g3dVkTextureUtil.hpp"
 #endif
+#ifndef GVK_VKDIMAGE_HPP
+#include "GraphicsVulkan/vkd/vkdImage.hpp"
+#endif
 #ifndef GVK_G3DLIGHTMGRVK_HPP
 #include "GraphicsVulkan/G3d/g3dLightMgrVk.hpp"
 #endif
@@ -27,6 +30,8 @@
 #ifndef GVK_G3D_SCENEGLOBAL_HPP
 #include "GraphicsVulkan/G3d/g3dSceneGlobal.hpp"
 #endif
+
+#include <algorithm>
 
 namespace gvk
 {
@@ -43,6 +48,11 @@ effMaskAlpha::effMaskAlpha(const fsLocator& i_Directory, std::unique_ptr<fxEffec
 	MapParameter("g_bUseDither", m_hUseDither );
 	MapParameter("g_DitherAlphaBias", m_hDitherAlphaBias );
 	MapParameter("g_transparency", m_hTransparency );
+
+	MapParameter("alphaThreshold", m_hAlphaThreshold );
+	m_DefaultAlphaThreshold = 0.0f;
+	if (m_hAlphaThreshold->IsValid())
+		m_hAlphaThreshold->AsScalar()->GetFloat(&m_DefaultAlphaThreshold);
 }
 
 //====================================================================
@@ -70,7 +80,15 @@ void effMaskAlpha::SetupMaterial(const matMaterial* i_Material,
 	SetAlphaTestRef( pData->m_AlphaThreshold );
 
 	m_hHasTransparency->SetBool((pData->m_TextureTransparencyMap != NULL) ? true : false);
-	m_hTransparencyMap->SetResource(g3dVkTextureUtil::GetImage(pData->m_TextureTransparencyMap));
+	vkdImage* transparency_map = g3dVkTextureUtil::GetImage(pData->m_TextureTransparencyMap);
+	if (transparency_map && pData->m_bTransparencyMapAlpha)
+		transparency_map = transparency_map->AlphaView();
+	m_hTransparencyMap->SetResource(transparency_map);
+
+	// a MASK material's cutoff (m_AlphaThreshold) reaches the RSM's own
+	// threshold too, which stays at least its default
+	if (m_hAlphaThreshold->IsValid())
+		m_hAlphaThreshold->AsScalar()->SetFloat(std::max(m_DefaultAlphaThreshold, pData->m_AlphaThreshold));
 
 
 	m_hUseDither->SetBool((pData->m_bDitherTranslucent)?true:false);

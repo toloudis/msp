@@ -35,6 +35,9 @@ public:
 
 	virtual effShaderData* Clone() const {return new effMaskAlphaData(*this);}
 
+	// m_AlphaThreshold's default
+	static const float c_DefaultAlphaThreshold;
+
 	maFloatRGBA m_Color;
 	float m_AlphaThreshold;
 	bool m_bDitherTranslucent;
@@ -42,4 +45,6 @@ public:
 	float m_Transparency;
 
 	matTexture* m_TextureTransparencyMap;
+	// read m_TextureTransparencyMap's alpha (a PBR base color map), else its red
+	bool m_bTransparencyMapAlpha;
 };

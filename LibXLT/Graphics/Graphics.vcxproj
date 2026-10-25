@@ -276,6 +276,8 @@
     <ClInclude Include="Eff\effBillboardData.hpp" />
     <ClInclude Include="Eff\effBlinnData.hpp" />
     <ClInclude Include="Eff\effBlinnDataParser.hpp" />
+    <ClInclude Include="Eff\effOpacity.hpp" />
+    <ClInclude Include="Eff\effPbrData.hpp" />
     <ClInclude Include="Eff\effBlurData.hpp" />
     <ClInclude Include="Eff\effDisplacementData.hpp" />
     <ClInclude Include="Eff\effDisplacementDataParser.hpp" />
@@ -596,6 +598,8 @@
     <ClCompile Include="Eff\private\effBillboardData.cpp" />
     <ClCompile Include="Eff\private\effBlinnData.cpp" />
     <ClCompile Include="Eff\private\effBlinnDataParser.cpp" />
+    <ClCompile Include="Eff\private\effOpacity.cpp" />
+    <ClCompile Include="Eff\private\effPbrData.cpp" />
     <ClCompile Include="Eff\private\effBlurData.cpp" />
     <ClCompile Include="Eff\private\effDisplacementData.cpp" />
     <ClCompile Include="Eff\private\effDisplacementDataParser.cpp" />

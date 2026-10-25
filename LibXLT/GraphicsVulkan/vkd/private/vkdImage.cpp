@@ -192,7 +192,7 @@ namespace gvk
 	}
 
 	std::unique_ptr<vkdImage> vkdImage::make_view(const VkImageSubresourceRange& i_Range, VkImageViewType i_Type,
-												  const char* i_Name)
+												  const char* i_Name, const VkComponentMapping& i_Components)
 	{
 		std::unique_ptr<vkdImage> view(new vkdImage(m_Device));
 		vkdImageDesc& desc = view->m_Desc;
@@ -208,6 +208,7 @@ namespace gvk
 		view->m_ViewInfo = m_ViewInfo;
 		view->m_ViewInfo.viewType = i_Type;
 		view->m_ViewInfo.subresourceRange = i_Range;
+		view->m_ViewInfo.components = i_Components;
 		if (m_Desc.m_Usage & c_ViewUsages)
 		{
 			VK_CHECK(vkCreateImageView(m_Device.Device(), &view->m_ViewInfo, NULL, &view->m_View));
@@ -260,6 +261,18 @@ namespace gvk
 		return m_pLayeredView.get();
 	}
 
+	vkdImage* vkdImage::AlphaView()
+	{
+		DBG_ASSERT(m_Allocation, "vkdImage::AlphaView: called on a view");
+		if (!m_pAlphaView)
+		{
+			const VkComponentMapping alpha = { VK_COMPONENT_SWIZZLE_A, VK_COMPONENT_SWIZZLE_A,
+											   VK_COMPONENT_SWIZZLE_A, VK_COMPONENT_SWIZZLE_A };
+			m_pAlphaView = make_view(m_ViewInfo.subresourceRange, m_ViewInfo.viewType, "vkdImage alpha view", alpha);
+		}
+		return m_pAlphaView.get();
+	}
+
 	uint32_t vkdImage::SampledIndex(vkdBindings& i_Bindings)
 	{
 		DBG_ASSERT(!m_pBindings || m_pBindings == &i_Bindings, "vkdImage: registered with another vkdBindings");
@@ -290,6 +303,7 @@ namespace gvk
 		m_Subresources.clear();
 		m_pDepthView.reset();
 		m_pLayeredView.reset();
+		m_pAlphaView.reset();
 		if (m_pBindings)
 		{
 			for (uint32_t index : {m_SampledIndex, m_StorageIndex})

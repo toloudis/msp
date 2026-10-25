@@ -13,6 +13,7 @@
 **
 **	Extra Large Technology
 \****************************************************************************/
+#include "Vk/gtVulkanOnly.hpp"
 #include "Dx11/gtD3D11.hpp"
 
 #ifndef GVK_FXEMBEDDEDSHADERSVK_HPP
@@ -61,9 +62,11 @@ namespace
 	std::vector<std::string> effect_names()
 	{
 		std::vector<std::string> names;
+		// DX11 has no Vulkan-only effect to compare with
 		for (int i = 0; i < gvk::fxEmbeddedShadersVk::k_NumEffects; i++)
 		{
-			names.push_back(gvk::fxEmbeddedShadersVk::k_Effects[i].m_Name);
+			if (!gtVulkanOnly::IsVulkanOnlyEffect(gvk::fxEmbeddedShadersVk::k_Effects[i].m_Name))
+				names.push_back(gvk::fxEmbeddedShadersVk::k_Effects[i].m_Name);
 		}
 		return names;
 	}

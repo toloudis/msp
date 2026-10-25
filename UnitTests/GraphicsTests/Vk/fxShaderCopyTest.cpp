@@ -3,11 +3,13 @@
 **
 **      GraphicsVulkan's shader directory is an exact copy of GraphicsDX11's:
 **      the HLSL is never edited, only compiled differently (see the
-**      GraphicsVulkan design, "Shaders").
+**      GraphicsVulkan design, "Shaders"). The Vulkan-only material shaders
+**      (gtVulkanOnly) have no original, and each of them must exist.
 **
 **	Extra Large Technology
 \****************************************************************************/
 #include "gtPlatform.hpp"
+#include "Vk/gtVulkanOnly.hpp"
 
 #include <gtest/gtest.h>
 
@@ -66,8 +68,16 @@ TEST(fxShaderCopy, IdenticalToDX11)
 	const std::set<std::string> dx11Files = list_files(dx11, true);
 	EXPECT_GT(dx11Files.size(), 100u);
 
+	for (const std::string& file : gtVulkanOnly::Files())
+	{
+		EXPECT_TRUE(vkFiles.count(file)) << file << " is listed as Vulkan-only but doesn't exist";
+		EXPECT_FALSE(dx11Files.count(file)) << file << " is listed as Vulkan-only but has a GraphicsDX11 original";
+	}
+
 	for (const std::string& file : vkFiles)
 	{
+		if (gtVulkanOnly::IsVulkanOnlyFile(file))
+			continue;
 		ASSERT_TRUE(fs::is_regular_file(dx11 / file)) << file << " has no GraphicsDX11 original";
 		EXPECT_TRUE(read_file(vk / file) == read_file(dx11 / file)) << file << " differs from GraphicsDX11's";
 	}

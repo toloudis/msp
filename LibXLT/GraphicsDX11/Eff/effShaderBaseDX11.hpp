@@ -323,6 +323,13 @@ protected:
     fxEffectDesc_ m_EffectDesc;
 
 	mutable fxEffectTechnique* m_CurrentTechnique;
+
+	//====================================================================
+	// SetupMaterial with i_pParams in place of the material's own
+	// parameters: the material's reflection map, then i_pParams' bindings
+	// (made on first use) are bound
+	//====================================================================
+	void SetupMaterialParams(const matMaterial* i_Material, effShaderParams* i_pParams) const;
 private:
 
 	//====================================================================

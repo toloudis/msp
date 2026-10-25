@@ -54,6 +54,8 @@ python Tools/fx2hlsl/compile_check.py --compiler dxc --exe <path to a SPIR-V dxc
 
 `--spirv` uses GraphicsVulkan's DXC options (register shifts, D3D constant buffer layout, ...), the same as its build step (`LibXLT/GraphicsVulkan/Fx/private/EmbedShadersVk.ps1`). The Windows SDK's dxc has no SPIR-V backend; use GraphicsVulkan's, from the repository's vcpkg packages (`vcpkg_installed/x64-windows/tools/directx-dxc/dxc.exe`, after `vcpkg install` at the repository root or a build). `--exclude-entry` skips entry points by name; `Hair_HS` (the hair hull shader) doesn't compile to SPIR-V yet.
 
+`Materials/Pbr` (GraphicsVulkan's glTF material) has no DX11 original; check it with `--spirv` against GraphicsVulkan's copy only.
+
 CI compiles every `*.effect.json` under `LibXLT/GraphicsDX11` as SM 5 (fxc) and as SM 6 (dxc), both from the Windows SDK, and GraphicsVulkan's copies (identical; GraphicsTests checks) as SPIR-V with GraphicsVulkan's dxc. A converted file is not done until it passes all three.
 
 ## Converted effects
