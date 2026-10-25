@@ -13,6 +13,9 @@
 #ifndef CAM_CAMERA_HPP
 #include "Graphics/cam/camCamera.hpp"
 #endif
+#ifndef EFF_OPACITY_HPP
+#include "Graphics/Eff/effOpacity.hpp"
+#endif
 #ifndef EFF_MASKALPHADATA_HPP
 #include "Graphics/eff/effMaskAlphaData.hpp"
 #endif
@@ -258,28 +261,20 @@ void g3dPickBufferRendererVk::world_space_render( g3dSceneNode* i_pNode,
 		if (i_pNode->GetMaterial())
 			pMaterial = i_pNode->GetMaterial();
 
-		m_pMaskAlphaData->m_TextureTransparencyMap = NULL;
-		m_pMaskAlphaData->m_Transparency = 1.0f;
-		if (pMaterial )
-		{
-			// first check shader params
-			if (pMaterial->GetShaderParams() != NULL)
-			{
-				if (pMaterial->GetShaderParams()->m_pTransparencyMap)
-					m_pMaskAlphaData->m_TextureTransparencyMap = pMaterial->GetShaderParams()->m_pTransparencyMap->GetTexture();
-				if (pMaterial->GetShaderParams()->m_pTransparency)
-					m_pMaskAlphaData->m_Transparency = pMaterial->GetShaderParams()->m_pTransparency->GetProperty().GetValue();
-			}
-			// then check effectdata
-			else if (pMaterial->GetEffectData() != NULL)
-			{
-				m_pMaskAlphaData->m_TextureTransparencyMap = pMaterial->GetEffectData()->GetTransparencyTexture();
-				m_pMaskAlphaData->m_Transparency = pMaterial->GetEffectData()->GetTransparencyValue();
-			}
-		}
+		// the material's opacity: a PBR base color map is read through its
+		// alpha, and a MASK material's cutoff is the threshold (the data is
+		// shared by every node, so all of it is set each time)
+		const effOpacity opacity = pMaterial ? effOpacity::Of(*pMaterial) : effOpacity();
+		m_pMaskAlphaData->m_TextureTransparencyMap = opacity.m_pMap;
+		m_pMaskAlphaData->m_bTransparencyMapAlpha = opacity.m_bMapAlpha;
+		m_pMaskAlphaData->m_Transparency = opacity.m_Value;
+		m_pMaskAlphaData->m_AlphaThreshold = opacity.AlphaTestRef(effMaskAlphaData::c_DefaultAlphaThreshold);
 
-		// Render the fragment with our masking shader
-		l_nNumTriangles += DrawNode( i_pNode );
+		// Render the fragment with our masking shader; not a MASK one without
+		// a map whose alpha is under its cutoff (cut everywhere, and the pick
+		// shader has no value to test)
+		if (!(opacity.m_bCutOut && !opacity.m_pMap && opacity.m_Value < opacity.m_Cutoff))
+			l_nNumTriangles += DrawNode( i_pNode );
 
 		m_FragmentCount++;
 	}

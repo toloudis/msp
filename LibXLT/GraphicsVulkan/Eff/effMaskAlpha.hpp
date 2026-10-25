@@ -54,6 +54,10 @@ protected:
 	// ReflectiveShadowMap.fx's own threshold (it ignores g_AlphaTestRef)
 	// and its default
 	fxEffectVariable* m_hAlphaThreshold;
+	// MaskAlpha.fx's (the pick renderer's) alpha-tested map: its alpha,
+	// with no value to multiply
+	fxEffectVariable* m_hHasDiffuseMap;
+	fxEffectVariable* m_hDiffuseMap;
 	float m_DefaultAlphaThreshold;
 };
 }

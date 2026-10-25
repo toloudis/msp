@@ -31,6 +31,9 @@
 #ifndef MA_CONSTANTS_HPP
 #include "Core/Ma/maConstants.hpp"
 #endif
+#ifndef EFF_PBRDATA_HPP
+#include "Graphics/Eff/effPbrData.hpp"
+#endif
 #ifndef G3D_FRAGMENT_HPP
 #include "Graphics/G3d/g3dFragment.hpp"
 #endif
@@ -472,6 +475,75 @@ TEST(shdwAoGiVkTest, RSMMatchesDX11)
 							<< ", Vulkan " << (first < vulkan[t].size() ? vulkan[t][first] : 0);
 		//	the light sees the room: most texels are written
 		EXPECT_GT(written, dx11[t].size() / 4) << names[t];
+	}
+}
+
+//	Plan 2b: a PBR MASK plane between the GI light and the room draws into
+//	the RSM (position, normal, flux) as the opaque plane with its holes cut
+//	out of the mesh; Vulkan alone
+TEST(shdwAoGiVkTest, PbrMaskRSMMatchesHoledGrid)
+{
+	const int c_Size = 128;
+	const char* names[3] = { "position", "normal", "flux" };
+	enum Plane { e_Mask, e_Holes, e_None };
+	gtTempDir dir;
+	auto run = [&](Plane i_Plane)
+	{
+		RSMTargets targets;
+		g3dProjectedLight* light = NULL;
+		gtRenderOptions options = lpv_prefs(false);
+		options.m_AfterRender = [&](gtSceneBuilder& io_Builder) { targets = render_rsm(io_Builder, light, c_Size); };
+		gtRenderScene([&](gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
+					  {
+						  lpv_room(io_Builder, e_GILight, false, &light);
+						  if (i_Plane == e_None)
+							  return;
+						  matMaterial* m = io_Builder.Keep(gtScene::ShaderMaterial(effPbrData::c_ShaderName, gtScene::e_Defaults));
+						  gtScene::SetInt(m, effPbrData::c_AlphaMode, i_Plane == e_Mask ? effPbrData::e_Mask : effPbrData::e_Opaque);
+						  gtScene::SetTexture(m, effPbrData::c_BaseColorMap,
+											  io_Builder.Keep(gtScene::CheckerTexture(i_Dir, 64, 64, 8, true)));
+						  //	about a third of the way from the light to the room, facing it
+						  g3dSceneNode* node = io_Builder.Add(i_Plane == e_Holes ? gtScene::GridWithHoles(8) : gtScene::Grid(8), m,
+															  gtScene::Place(0.25f, 0.45f, 1.4f, 0.4f));
+						  g3dFragment* fragment = const_cast<g3dFragment*>(node->GetFragment());
+						  fragment->SetCastsShadow(true);
+						  fragment->SetReceivesShadow(true);
+					  }, dir.GetPath(), options);
+		return targets;
+	};
+	RSMTargets mask, holed, none;
+	if (!gtBackend::Run(gtBackend::e_Vulkan, [&]() { mask = run(e_Mask); holed = run(e_Holes); none = run(e_None); }))
+		return;
+	ASSERT_EQ((size_t)matReflectiveShadowMap::e_NumRSMRenderTarget, mask.size());
+	ASSERT_EQ(mask.size(), holed.size());
+	ASSERT_EQ(mask.size(), none.size());
+	const size_t texels = (size_t)c_Size * c_Size;
+	for (size_t t = 0; t < mask.size(); t++)
+	{
+		ASSERT_EQ(texels * 4, mask[t].size()) << names[t];
+		ASSERT_EQ(mask[t].size(), holed[t].size()) << names[t];
+		ASSERT_EQ(mask[t].size(), none[t].size()) << names[t];
+		size_t over = 0, plane = 0;
+		for (size_t i = 0; i < texels; i++)
+		{
+			bool apart = false, shows = false;
+			for (size_t c = i * 4; c < i * 4 + 4; c++)
+			{
+				const float a = mask[t][c], b = holed[t][c], n = none[t][c];
+				//	1e-5 relative (absolute below 1), as RSMMatchesDX11
+				apart |= !(std::fabs(a - b) <= 1e-5f * std::max(1.0f, std::max(std::fabs(a), std::fabs(b))));
+				shows |= !(std::fabs(a - n) <= 1e-5f * std::max(1.0f, std::max(std::fabs(a), std::fabs(n))));
+			}
+			over += apart;
+			plane += shows;
+		}
+		std::cout << "  " << names[t] << ": " << over << " texels apart from the holed mesh, " << plane
+				  << " differ from the room alone" << std::endl;
+		//	the alpha cut and the mesh edge may disagree at a texel centred
+		//	on a cell boundary
+		EXPECT_LE(over, texels / 1000) << names[t];
+		//	not vacuous: the plane is in the RSM
+		EXPECT_GT(plane, texels / 100) << names[t];
 	}
 }
 

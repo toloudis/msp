@@ -36,6 +36,9 @@
 #ifndef EFF_SHADERPARAMS_HPP
 #include "Graphics/Eff/effShaderParams.hpp"
 #endif
+#ifndef G3D_FRAGMENT_HPP
+#include "Graphics/G3d/g3dFragment.hpp"
+#endif
 #ifndef G3D_PREFS_HPP
 #include "Graphics/G3d/g3dPrefs.hpp"
 #endif
@@ -416,6 +419,37 @@ namespace
 		};
 	}
 
+	//	plane_scene with shadows: the plane (shadow dithering i_bDither,
+	//	bias 0.4) and the sphere behind it cast and receive shadows, a wall
+	//	behind them receives them, from the two lights and a projected light
+	//	with a shadow map (the depth map renderer's). The plane's checker is
+	//	magnified (mip 0), as in plane_scene: mips are made premultiplied, as
+	//	WIC makes them for DX11, so a cleared cell's colour fades at its edges
+	gtSceneFunction shadow_scene(Plane i_Plane, const material_fn& i_Material, bool i_bDither = false)
+	{
+		return [=](gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
+		{
+			io_Builder.LightsCastShadows(true);
+			auto shadowed = [](g3dSceneNode* io_pNode)
+			{
+				g3dFragment* fragment = const_cast<g3dFragment*>(io_pNode->GetFragment());
+				fragment->SetCastsShadow(true);
+				fragment->SetReceivesShadow(true);
+				return fragment;
+			};
+			matMaterial* material = i_Material(io_Builder, i_Dir);
+			g3dFragment* plane = shadowed(io_Builder.Add(i_Plane == e_Holes ? gtScene::GridWithHoles(8) : gtScene::Grid(8), material,
+														 gtScene::Place(i_Plane == e_OutOfView ? 100.0f : -0.3f, 0.2f, 1.0f, 1.6f)));
+			if (i_bDither)
+				plane->SetShadowDithering(true, 0.4f);
+			matMaterial* grey = io_Builder.Keep(gtScene::ShaderMaterial("Phong.fx", gtScene::e_Tinted));
+			shadowed(io_Builder.Add(gtScene::Sphere(16, 32), grey, gtScene::Place(0.6f, -0.3f, -0.5f, 0.6f)));
+			shadowed(io_Builder.Add(gtScene::Plane(), grey, gtScene::Place(0, 0, -1.5f, 3.0f)));
+			io_Builder.TwoLights();
+			io_Builder.ProjectedLight(maPoint3d(-1.5f, 1.5f, 6.0f), maPoint3d(0, 0, 0), maFloatRGBA(1.0f, 0.95f, 0.85f, 1), 512);
+		};
+	}
+
 	struct twin_renderer
 	{
 		const char*								m_pName;
@@ -525,6 +559,60 @@ TEST(effPbrVkTest, BlendMatchesBlinnInThePasses)
 				expect_twins(name + "/alpha shows", pbr_plane,
 							 plane_scene(e_Full, pbr(effPbrData::e_Opaque, 1.0f, 0.5f, e_ClearMap)), options, false);
 			}
+		}
+	});
+}
+
+//	Plan 2b Task 4: shadow maps (the depth map renderer) cut a MASK
+//	material's holes, and dithering doesn't thin what MASK keeps
+TEST(effPbrVkTest, MaskShadowsMatchHoledGrid)
+{
+	gtBackend::Run(gtBackend::e_Vulkan, []()
+	{
+		using P = effPbrData;
+		//	m_bBeautyOnly: the shadow mask and illumination renderers write the
+		//	alpha they test as the surface's opacity, so a MASK surface's kept
+		//	pixels are as opaque as its base alpha there (soft at the cut edges,
+		//	0.6 with "dithered"), not fully opaque as the mesh twin's; its cut
+		//	and its shadows are checked in the HDR renderer
+		struct Case { const char* m_pName; gtSceneFunction m_Pbr, m_Twin; bool m_bEdges; bool m_bBeautyOnly; };
+		const std::vector<Case> cases =
+		{
+			{ "mask", shadow_scene(e_Full, pbr(P::e_Mask, 1.0f, 0.5f, e_ClearMap)),
+					  shadow_scene(e_Holes, pbr(P::e_Opaque, 1.0f, 0.5f, e_ClearMap)), true, true },
+			{ "below cutoff", shadow_scene(e_Full, pbr(P::e_Mask, 0.4f, 0.5f, e_NoMap)),
+							  shadow_scene(e_OutOfView, pbr(P::e_Mask, 0.4f, 0.5f, e_NoMap)), false, false },
+			// (no "opaque ignores alpha" here: with shadow-casting lights an
+			// opaque material's diffuse map alpha already darkens its lit
+			// colour, Blinn's as PBR's; Task 3's MaskMatchesHoledGrid checks
+			// it without shadows)
+			// with dithering on, the kept alpha 0.6 is under 0.3 + the 0.4 bias
+			{ "dithered", shadow_scene(e_Full, pbr(P::e_Mask, 0.6f, 0.3f, e_ClearMap), true),
+						  shadow_scene(e_Holes, pbr(P::e_Opaque, 0.6f, 0.3f, e_ClearMap), true), true, true },
+		};
+		const std::vector<twin_renderer> renderers =
+		{
+			{ "hdr", nullptr },
+			{ "shadow_mask", []() { return g3dSceneRendererCreate::CreateShadowMaskRenderer(); } },
+			{ "illumination", []() { return g3dSceneRendererCreate::CreateIlluminationRenderer(); } },
+		};
+		for (const twin_renderer& r : renderers)
+		{
+			gtRenderOptions options = twin_options(r.m_Create, false);
+			options.m_Frames = 2;
+			options.m_BeforeFrame = [](gtSceneBuilder& io_Builder) { io_Builder.RenderTargets(); };
+			for (const Case& c : cases)
+			{
+				if (c.m_bBeautyOnly && r.m_Create)
+					continue;
+				gtRenderOptions o = options;
+				if (c.m_bEdges)
+					o.m_MaxErr = 1.0f;
+				expect_twins(std::string(r.m_pName) + "/" + c.m_pName, c.m_Pbr, c.m_Twin, o);
+			}
+			// not vacuous: the holes show, in the plane and its shadow
+			expect_twins(std::string(r.m_pName) + "/holes show", cases[0].m_Pbr,
+						 shadow_scene(e_Full, pbr(P::e_Opaque, 1.0f, 0.5f, e_ClearMap)), options, false);
 		}
 	});
 }

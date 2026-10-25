@@ -8,7 +8,9 @@
 **      the viewer's camera narrowed to the picked pixel's sub-viewport,
 **      SetPickViewport / RestoreViewport around a g3dTargetRenderer's
 **      Render, and GetPickInfo. Every pick's object ID must be equal on
-**      both backends, and its depth and UV within 1e-5.
+**      both backends, and its depth and UV within 1e-5. On Vulkan alone,
+**      a PBR MASK material picks as the same plane with its holes cut out
+**      of the mesh (plan 2b).
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -16,6 +18,7 @@
 #include "gtRender.hpp"
 #include "gtScene.hpp"
 #include "gtTarget.hpp"
+#include "gtTempDir.hpp"
 
 #ifndef CAM_CAMERA_HPP
 #include "Graphics/Cam/camCamera.hpp"
@@ -28,6 +31,9 @@
 #endif
 #ifndef G2D_RENDERTARGET_HPP
 #include "Graphics/G2d/g2dRenderTarget.hpp"
+#endif
+#ifndef EFF_PBRDATA_HPP
+#include "Graphics/Eff/effPbrData.hpp"
 #endif
 #ifndef G3D_PICKINFO_HPP
 #include "Graphics/G3d/g3dPickInfo.hpp"
@@ -286,4 +292,56 @@ TEST(g3dPickVkTest, PickEdgesAndBackgroundMatchDX11)
 		if (i != 4)
 			EXPECT_EQ(0u, open[i].m_ObjectID) << "DX11 picked something at background pick " << i;
 	}
+}
+
+//	Plan 2b: a MASK plane (the checker's cleared cells cut out) in front of
+//	a sphere picks as the opaque plane with those cells removed from its
+//	mesh: background, plane or sphere, at the same depth, at every pick
+TEST(g3dPickVkTest, PbrMaskPicksAsHoledGrid)
+{
+	const int w = 128, h = 128;
+	std::vector<gtPickAt> picks;
+	for (int y = 0; y < 16; y++)
+		for (int x = 0; x < 16; x++)
+			picks.push_back({ x * 8 + 4, y * 8 + 3, 0 });
+	gtTempDir dir;
+	auto scene = [&](int i_Mode, bool i_bHoles)
+	{
+		return [&dir, i_Mode, i_bHoles](gtSceneBuilder& io_Builder)
+		{
+			matMaterial* plane = io_Builder.Keep(gtScene::ShaderMaterial(effPbrData::c_ShaderName, gtScene::e_Defaults));
+			gtScene::SetInt(plane, effPbrData::c_AlphaMode, i_Mode);
+			gtScene::SetTexture(plane, effPbrData::c_BaseColorMap,
+								io_Builder.Keep(gtScene::CheckerTexture(dir.GetPath(), 64, 64, 8, true)));
+			io_Builder.Add(i_bHoles ? gtScene::GridWithHoles(8) : gtScene::Grid(8), plane, gtScene::Place(0, 0, 1.0f, 1.6f));
+			matMaterial* behind = io_Builder.Keep(gtScene::ShaderMaterial("Blinn.fx", gtScene::e_Tinted));
+			io_Builder.Add(gtScene::Sphere(16, 32), behind, gtScene::Place(0.4f, 0, -1.0f, 1.0f));
+		};
+	};
+	std::vector<g3dPickInfo> mask, holed, solid;
+	if (!gtBackend::Run(gtBackend::e_Vulkan, [&]()
+		{
+			mask = pick_all(scene(effPbrData::e_Mask, false), w, h, picks);
+			holed = pick_all(scene(effPbrData::e_Opaque, true), w, h, picks);
+			solid = pick_all(scene(effPbrData::e_Opaque, false), w, h, picks);
+		}))
+		return;
+	ASSERT_EQ(picks.size(), mask.size());
+	ASSERT_EQ(picks.size(), holed.size());
+	ASSERT_EQ(picks.size(), solid.size());
+	int through = 0;
+	for (size_t i = 0; i < picks.size(); i++)
+	{
+		const g3dPickInfo& m = mask[i];
+		const g3dPickInfo& o = holed[i];
+		if ((m.m_ObjectID != 0) != (o.m_ObjectID != 0) || !(std::fabs(m.m_Depth - o.m_Depth) <= 1e-5f))
+		{
+			ADD_FAILURE() << "pick (" << picks[i].m_X << ", " << picks[i].m_Y << "): MASK id " << m.m_ObjectID << " depth "
+						  << m.m_Depth << ", holed mesh id " << o.m_ObjectID << " depth " << o.m_Depth;
+		}
+		through += !(std::fabs(m.m_Depth - solid[i].m_Depth) <= 1e-5f);
+	}
+	//	guard: some picks go through the holes (to the sphere or the background)
+	std::cout << "  " << through << " of " << picks.size() << " picks through the holes" << std::endl;
+	EXPECT_GT(through, (int)picks.size() / 8) << "the holes changed no pick";
 }

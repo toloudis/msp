@@ -50,6 +50,8 @@ effMaskAlpha::effMaskAlpha(const fsLocator& i_Directory, std::unique_ptr<fxEffec
 	MapParameter("g_transparency", m_hTransparency );
 
 	MapParameter("alphaThreshold", m_hAlphaThreshold );
+	MapParameter("hasDiffuseMap", m_hHasDiffuseMap );
+	MapParameter("diffuseMap", m_hDiffuseMap );
 	m_DefaultAlphaThreshold = 0.0f;
 	if (m_hAlphaThreshold->IsValid())
 		m_hAlphaThreshold->AsScalar()->GetFloat(&m_DefaultAlphaThreshold);
@@ -84,6 +86,19 @@ void effMaskAlpha::SetupMaterial(const matMaterial* i_Material,
 	if (transparency_map && pData->m_bTransparencyMapAlpha)
 		transparency_map = transparency_map->AlphaView();
 	m_hTransparencyMap->SetResource(transparency_map);
+
+	// MaskAlpha.fx (picks) has no transparency map: it alpha-tests
+	// diffuseMap's alpha, which nothing set, so picks never cut anything out
+	// (as on DX11). A PBR base color map goes there, through its alpha view,
+	// with the threshold divided by the value it would be multiplied by.
+	if (m_hHasDiffuseMap->IsValid() && !m_hTransparencyMap->IsValid())
+	{
+		const bool pbr_map = transparency_map && pData->m_bTransparencyMapAlpha;
+		m_hHasDiffuseMap->AsScalar()->SetBool(pbr_map);
+		m_hDiffuseMap->SetResource(pbr_map ? transparency_map : NULL);
+		if (pbr_map)
+			SetAlphaTestRef(pData->m_AlphaThreshold / std::max(pData->m_Transparency, 1.0e-6f));
+	}
 
 	// a MASK material's cutoff (m_AlphaThreshold) reaches the RSM's own
 	// threshold too, which stays at least its default
