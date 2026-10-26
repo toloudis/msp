@@ -27,6 +27,10 @@
 **	  appended after the walk, so their parent groups precede them. When
 **	  the skeleton can't be read, the mesh is placed as a plain mesh node
 **	  is (and comes in static).
+**	- What each object's animations become, and when they play, is
+**	  gltfAnimTracks::Decide's (gltfAnimTracks.cpp). A transform-clip mesh
+**	  (its transform animation can't be keys) sits at its parent with an
+**	  identity transform; its template carries the node's transform.
 **	- Identity: path segments from the scene root joined with '/'. A
 **	  segment is the node's name, or "#<node index>" when the name is empty
 **	  or a sibling (same parent, or another scene root) has the same name.
@@ -76,6 +80,9 @@
 #ifndef GLTF_ANIMREAD_HPP
 #include "ImportExport/gltf/import/private/gltfAnimRead.hpp"
 #endif
+#ifndef GLTF_ANIMTRACKS_HPP
+#include "ImportExport/gltf/import/private/gltfAnimTracks.hpp"
+#endif
 #ifndef GLTF_SKELETONREAD_HPP
 #include "ImportExport/gltf/import/private/gltfSkeletonRead.hpp"
 #endif
@@ -93,6 +100,7 @@
 #include "Core/ma/maMatrix4x4.hpp"
 #endif
 
+#include <algorithm>
 #include <cmath>
 #include <map>
 #include <set>
@@ -443,17 +451,30 @@ namespace gltfSceneRead
 		reader.ReadSiblings(i_Model.scenes[scene].nodes, "", -1, NULL);
 		reader.AddSkinnedMeshes();
 
-		// the clips that play on each mesh
-		const std::vector<std::string> clips = gltfAnimRead::ClipIdentities(i_Model);
+		// the materials each mesh uses
 		for (gltfSceneObject& object : objects)
 		{
-			for (int animation : gltfAnimRead::AnimationsFor(i_Model, object))
+			if (object.m_Mesh < 0 || object.m_Mesh >= (int)i_Model.meshes.size())
+				continue;
+			for (const tinygltf::Primitive& primitive : i_Model.meshes[object.m_Mesh].primitives)
 			{
-				gltfClipRef clip;
-				clip.m_Identity = clips[animation];
-				clip.m_Name = gltfAnimRead::ClipName(i_Model, animation);
-				object.m_Clips.push_back(clip);
+				if (primitive.material >= 0)
+					object.m_Materials.push_back(primitive.material);
 			}
+			std::sort(object.m_Materials.begin(), object.m_Materials.end());
+			object.m_Materials.erase(std::unique(object.m_Materials.begin(), object.m_Materials.end()), object.m_Materials.end());
+		}
+
+		// keys and clips; a transform-clip mesh sits at its parent
+		gltfAnimTracks::Decide(i_Model, objects, gltfAnimTracks::c_SampleRate);
+		for (gltfSceneObject& object : objects)
+		{
+			if (!object.m_bTransformClip)
+				continue;
+			object.m_Translation = maVector3d();
+			object.m_Rotation = maRotation();
+			object.m_Scale = maVector3d(1, 1, 1);
+			object.m_bUniformScale = true;
 		}
 		return objects;
 	}

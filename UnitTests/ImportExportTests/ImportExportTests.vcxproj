@@ -100,6 +100,7 @@
     <ClCompile Include="gltf\gltfSkeletonReadTest.cpp" />
     <ClCompile Include="gltf\gltfSkinReadTest.cpp" />
     <ClCompile Include="gltf\gltfAnimReadTest.cpp" />
+    <ClCompile Include="gltf\gltfAnimTracksTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ietPlatform.hpp" />

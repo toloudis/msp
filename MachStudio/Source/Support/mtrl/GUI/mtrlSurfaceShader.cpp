@@ -43,6 +43,19 @@
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+// The channel made from the parameter's property in the constructor
+//----------------------------------------------------------------------------
+tmlnChannel* mtrlSurfaceShader::FindParamChannel(const std::string& i_Param) const
+{
+	effShaderParam* pParam = m_pShaderDataProxy->GetUIShaderParams().FindParam(i_Param);
+	if (!pParam || !pParam->GetBaseProperty())
+		return NULL;
+	return FindChannel(m_Material.GetMaterialName(), pParam->GetBaseProperty()->GetPropertyName());
+}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 mtrlSurfaceShader::mtrlSurfaceShader(mdlMaterialInfo& i_MatData, 
 							 matMaterial* i_pMaterial,
 							 shared_ptr<effShaderParams> i_pShaderData,

@@ -138,6 +138,7 @@
     <ClCompile Include="gltf\import\private\gltfSkeletonRead.cpp" />
     <ClCompile Include="gltf\import\private\gltfSkinRead.cpp" />
     <ClCompile Include="gltf\import\private\gltfAnimRead.cpp" />
+    <ClCompile Include="gltf\import\private\gltfAnimTracks.cpp" />
     <ClCompile Include="gltf\import\private\gltfAnimKeys.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -182,6 +183,7 @@
     <ClInclude Include="gltf\import\private\gltfSkeletonRead.hpp" />
     <ClInclude Include="gltf\import\private\gltfSkinRead.hpp" />
     <ClInclude Include="gltf\import\private\gltfAnimRead.hpp" />
+    <ClInclude Include="gltf\import\private\gltfAnimTracks.hpp" />
     <ClInclude Include="gltf\import\private\gltfAnimKeys.hpp" />
   </ItemGroup>
   <ItemGroup>

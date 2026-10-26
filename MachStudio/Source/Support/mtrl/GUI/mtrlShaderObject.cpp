@@ -114,6 +114,20 @@ const std::vector<tmlnChannel*>& mtrlShaderObject::GetChannels() const
 	return m_Channels;
 }
 
+//------------------------------------------------------------------------
+// The channel of the property with that name
+//------------------------------------------------------------------------
+tmlnChannel* mtrlShaderObject::FindChannel(const std::string& i_MaterialName, const std::string& i_PropertyName) const
+{
+	const std::string channel_name = i_MaterialName + "." + i_PropertyName;
+	for (tmlnChannel* pChannel : m_Channels)
+	{
+		if (pChannel->GetName() == channel_name)
+			return pChannel;
+	}
+	return NULL;
+}
+
 //--------------------------------------------------------------------
 // Returns true if there are some drivers on the channels
 // for the material.

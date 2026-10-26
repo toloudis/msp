@@ -306,6 +306,7 @@
     <ClCompile Include="DriverCreator\cmmDriverCreatorPosition.cpp" />
     <ClCompile Include="DriverCreator\cmmDriverCreatorTexture.cpp" />
     <ClCompile Include="DriverCreator\cmmDriverCreatorVideo.cpp" />
+    <ClCompile Include="DriverCreator\cmmKeyUtil.cpp" />
     <ClCompile Include="Object\cmmFalloffAspect.cpp" />
     <ClCompile Include="Object\cmmNamedPropertyObject.cpp" />
     <ClCompile Include="Object\cmmScriptObject.cpp" />
@@ -370,6 +371,7 @@
     <ClInclude Include="DriverCreator\cmmDriverCreatorPosition.hpp" />
     <ClInclude Include="DriverCreator\cmmDriverCreatorTexture.hpp" />
     <ClInclude Include="DriverCreator\cmmDriverCreatorVideo.hpp" />
+    <ClInclude Include="DriverCreator\cmmKeyUtil.hpp" />
     <ClInclude Include="Object\cmmFalloffAspect.hpp" />
     <ClInclude Include="Object\cmmNamedPropertyObject.hpp" />
     <ClInclude Include="Object\cmmNamedScriptObjectReference.hpp" />

@@ -55,4 +55,9 @@ namespace gltfMaterialRead
 
 	// the glTF default material (a primitive without one)
 	gltfMaterialDesc ReadDefault();
+
+	// the material's unique name: its glTF name, "Material_<index>" when it
+	// has none, with "_<index>" appended when an earlier material has the
+	// same; "DefaultMaterial" for an index out of range
+	std::string MaterialKey(const tinygltf::Model& i_Model, int i_MaterialIndex);
 }

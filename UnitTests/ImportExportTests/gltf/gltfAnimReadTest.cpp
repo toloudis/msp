@@ -254,3 +254,177 @@ TEST(gltfSceneRead, ClipsOnObjects)
 	ASSERT_EQ(1u, box.m_Clips.size());
 	EXPECT_EQ("Morph", box.m_Clips[0].m_Identity);
 }
+
+namespace
+{
+	// adds a sampler to animation i_Animation and returns its index
+	int AddSampler(tinygltf::Model& io_Model, int i_Animation, const std::vector<float>& i_Times,
+				   const std::vector<float>& i_Values, int i_Type, const std::string& i_Interpolation = "LINEAR")
+	{
+		tinygltf::AnimationSampler sampler;
+		sampler.input = ietAddFloatAccessor(io_Model, i_Times, TINYGLTF_TYPE_SCALAR);
+		sampler.output = ietAddFloatAccessor(io_Model, i_Values, i_Type);
+		sampler.interpolation = i_Interpolation;
+		io_Model.animations[i_Animation].samplers.push_back(sampler);
+		return (int)io_Model.animations[i_Animation].samplers.size() - 1;
+	}
+
+	// a model with nodes N0, N1, one light, one camera, three materials and an animation "A"
+	// translating N0 over 0..1 s
+	tinygltf::Model PointerModel()
+	{
+		tinygltf::Model model;
+		const int n0 = AddNode(model, "N0");
+		AddNode(model, "N1");
+		model.lights.resize(1);
+		model.cameras.resize(1);
+		model.materials.resize(3);
+		AddAnimation(model, "A", n0, "translation", { 0, 1 }, { 0, 0, 0,  1, 0, 0 }, TINYGLTF_TYPE_VEC3);
+		return model;
+	}
+
+	gltfAnimTarget Resolve(const tinygltf::Model& i_Model, int i_Channel)
+	{
+		return gltfAnimRead::ResolveTarget(i_Model, i_Model.animations[0].channels[i_Channel]);
+	}
+}
+
+TEST(gltfAnimRead, NodePointerIsNodeChannel)
+{
+	tinygltf::Model model = PointerModel();
+	const int sampler = AddSampler(model, 0, { 0, 1 }, { 0, 0, 0, 1,  0, 1, 0, 0 }, TINYGLTF_TYPE_VEC4);
+	ietAddPointerChannel(model, 0, "/nodes/1/rotation", sampler);
+
+	const gltfAnimTarget target = Resolve(model, 1);
+	EXPECT_EQ(gltfAnimTarget::e_Node, target.m_Kind);
+	EXPECT_EQ(1, target.m_Index);
+	EXPECT_EQ(gltfAnimChannel::e_Rotation, target.m_Path);
+
+	const gltfClip clip = Read(model, "A");
+	ASSERT_EQ(2u, clip.m_Channels.size());
+	EXPECT_EQ(1, clip.m_Channels[1].m_Node);
+	EXPECT_EQ(gltfAnimChannel::e_Rotation, clip.m_Channels[1].m_Path);
+	EXPECT_TRUE(clip.m_Pointers.empty());
+
+	// a node pointer counts like a node channel: weights on a morphing mesh
+	model.meshes.resize(1);
+	model.meshes[0].primitives.resize(1);
+	model.meshes[0].primitives[0].targets.resize(1);
+	model.nodes[1].mesh = 0;
+	const int weights = AddSampler(model, 0, { 0, 1 }, { 0, 1 }, TINYGLTF_TYPE_SCALAR);
+	ietAddPointerChannel(model, 0, "/nodes/1/weights", weights);
+	EXPECT_TRUE(gltfAnimRead::AnimatesWeights(model, 1));
+	gltfSceneObject object;
+	object.m_Kind = gltfSceneObject::e_Mesh;
+	object.m_Node = 1;
+	object.m_Mesh = 0;
+	EXPECT_EQ((std::vector<int>{ 0 }), gltfAnimRead::AnimationsFor(model, object));
+}
+
+TEST(gltfAnimRead, LightPointer)
+{
+	tinygltf::Model model = PointerModel();
+	const int sampler = AddSampler(model, 0, { 0, 1 }, { 0.5f, 0.75f }, TINYGLTF_TYPE_SCALAR);
+	ietAddPointerChannel(model, 0, "/extensions/KHR_lights_punctual/lights/0/spot/outerConeAngle", sampler);
+
+	const gltfAnimTarget target = Resolve(model, 1);
+	EXPECT_EQ(gltfAnimTarget::e_Light, target.m_Kind);
+	EXPECT_EQ(0, target.m_Index);
+	EXPECT_EQ("spot/outerConeAngle", target.m_Property);
+
+	const gltfClip clip = Read(model, "A");
+	EXPECT_EQ(1u, clip.m_Channels.size());
+	ASSERT_EQ(1u, clip.m_Pointers.size());
+	const gltfPointerChannel& pointer = clip.m_Pointers[0];
+	EXPECT_EQ(-1, pointer.m_Node);
+	EXPECT_EQ(gltfAnimTarget::e_Light, pointer.m_Target.m_Kind);
+	EXPECT_EQ(1, pointer.m_Components);
+	EXPECT_EQ((std::vector<float>{ 0, 30 }), pointer.m_Times);
+	EXPECT_EQ((std::vector<float>{ 0.5f, 0.75f }), pointer.m_Values);
+}
+
+TEST(gltfAnimRead, CameraPointer)
+{
+	tinygltf::Model model = PointerModel();
+	const int sampler = AddSampler(model, 0, { 0, 1 }, { 0.5f, 1 }, TINYGLTF_TYPE_SCALAR);
+	ietAddPointerChannel(model, 0, "/cameras/0/perspective/yfov", sampler);
+
+	const gltfAnimTarget target = Resolve(model, 1);
+	EXPECT_EQ(gltfAnimTarget::e_Camera, target.m_Kind);
+	EXPECT_EQ(0, target.m_Index);
+	EXPECT_EQ("perspective/yfov", target.m_Property);
+}
+
+TEST(gltfAnimRead, MaterialPointer)
+{
+	tinygltf::Model model = PointerModel();
+	const int sampler = AddSampler(model, 0, { 0, 1 }, { 1, 0, 0, 1,  0, 0, 1, 1 }, TINYGLTF_TYPE_VEC4);
+	ietAddPointerChannel(model, 0, "/materials/2/pbrMetallicRoughness/baseColorFactor", sampler);
+
+	const gltfAnimTarget target = Resolve(model, 1);
+	EXPECT_EQ(gltfAnimTarget::e_Material, target.m_Kind);
+	EXPECT_EQ(2, target.m_Index);
+	EXPECT_EQ("pbrMetallicRoughness/baseColorFactor", target.m_Property);
+
+	const gltfClip clip = Read(model, "A");
+	ASSERT_EQ(1u, clip.m_Pointers.size());
+	EXPECT_EQ(4, clip.m_Pointers[0].m_Components);
+	EXPECT_EQ(8u, clip.m_Pointers[0].m_Values.size());
+}
+
+TEST(gltfAnimRead, UnsupportedPointer)
+{
+	tinygltf::Model model = PointerModel();
+	const int vec2 = AddSampler(model, 0, { 0, 1 }, { 0, 0,  1, 1 }, TINYGLTF_TYPE_VEC2);
+	const int scalar = AddSampler(model, 0, { 0, 1 }, { 0, 1 }, TINYGLTF_TYPE_SCALAR);
+	const int vec3 = AddSampler(model, 0, { 0, 1 }, { 0, 0, 0,  1, 1, 1 }, TINYGLTF_TYPE_VEC3);
+	ietAddPointerChannel(model, 0, "/materials/0/extensions/KHR_texture_transform/offset", vec2);
+	ietAddPointerChannel(model, 0, "/meshes/0/weights", scalar);
+	ietAddPointerChannel(model, 0, "/materials/9/emissiveFactor", vec3);
+
+	for (int c = 1; c <= 3; c++)
+		EXPECT_EQ(gltfAnimTarget::e_None, Resolve(model, c).m_Kind) << "channel " << c;
+
+	const gltfClip clip = Read(model, "A");
+	EXPECT_EQ(1u, clip.m_Channels.size());
+	EXPECT_TRUE(clip.m_Pointers.empty());
+}
+
+TEST(gltfAnimRead, StepKeptForKeys)
+{
+	tinygltf::Model model;
+	const int n = AddNode(model, "N");
+	AddAnimation(model, "A", n, "scale", { 0, 1 }, { 1, 1, 1,  2, 2, 2 }, TINYGLTF_TYPE_VEC3, "STEP");
+
+	gltfClip clip;
+	ASSERT_TRUE(gltfAnimRead::ReadClip(model, "A", c_Fps, clip, false));
+	const gltfAnimChannel& channel = clip.m_Channels[0];
+	EXPECT_TRUE(channel.m_bStep);
+	EXPECT_EQ((std::vector<float>{ 0, 30 }), channel.m_Times);
+	ASSERT_EQ(6u, channel.m_Values.size());
+	EXPECT_FLOAT_EQ(1, channel.m_Values[0]);
+	EXPECT_FLOAT_EQ(2, channel.m_Values[3]);
+
+	// as holds (the default): gltfAnimRead.Step
+	const gltfClip holds = Read(model, "A");
+	EXPECT_FALSE(holds.m_Channels[0].m_bStep);
+	EXPECT_EQ(3u, holds.m_Channels[0].m_Times.size());
+}
+
+TEST(gltfAnimRead, ClipStartIncludesPointers)
+{
+	tinygltf::Model model;
+	const int n = AddNode(model, "N");
+	model.lights.resize(1);
+	AddAnimation(model, "A", n, "translation", { 1, 2 }, { 0, 0, 0,  1, 0, 0 }, TINYGLTF_TYPE_VEC3);
+	const int sampler = AddSampler(model, 0, { 0.5f, 3 }, { 1, 2 }, TINYGLTF_TYPE_SCALAR);
+	ietAddPointerChannel(model, 0, "/extensions/KHR_lights_punctual/lights/0/intensity", sampler);
+
+	const gltfClip clip = Read(model, "A");
+	ASSERT_EQ(1u, clip.m_Channels.size());
+	EXPECT_NEAR(15, clip.m_Channels[0].m_Times[0], 1e-4f);
+	EXPECT_NEAR(45, clip.m_Channels[0].m_Times[1], 1e-4f);
+	ASSERT_EQ(1u, clip.m_Pointers.size());
+	EXPECT_NEAR(0, clip.m_Pointers[0].m_Times[0], 1e-4f);
+	EXPECT_NEAR(75, clip.m_Length, 1e-4f);
+}

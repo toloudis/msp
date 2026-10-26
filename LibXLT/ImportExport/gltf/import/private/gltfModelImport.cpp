@@ -15,6 +15,10 @@
 **	  joint, with an identity inverse bind pose, so bone 0's matrix is the
 **	  baked scale; every vertex is on bone 0 with weight 1, and the mesh's
 **	  targets are morph targets (weights 0 outside a clip).
+**	- Transform-clip (an e_Mesh whose transform animation can't be keys,
+**	  gltfAnimTracks.cpp): as morph-animated, but the base node carries
+**	  the node's whole local transform (non-uniform scale included), which
+**	  its clips animate; the object sits at its parent.
 **	- Static: as before, with the default weights (node.weights, else
 **	  mesh.weights) baked into the positions. A skinned mesh whose
 **	  skeleton can't be read comes in this way, with a warning.
@@ -30,6 +34,9 @@
 #include "ImportExport/gltf/import/private/gltfAnimRead.hpp"
 #include "ImportExport/gltf/import/private/gltfSkeletonRead.hpp"
 #include "ImportExport/gltf/import/private/gltfSkinRead.hpp"
+#ifndef GLTF_NODETRANSFORM_HPP
+#include "ImportExport/gltf/import/private/gltfNodeTransform.hpp"
+#endif
 
 #include "Core/dbg/dbgMsg.hpp"
 #include "Core/Ma/maConstants.hpp"
@@ -264,10 +271,17 @@ namespace gltfModelImport
 			DBG_WARNING("glTF mesh " << i_Object.m_Identity << ": its skeleton can't be read; it comes in static, in its bind pose");
 		}
 
-		// the scale the object can't carry
-		const maVector3d baked_scale = i_Object.m_bUniformScale ? maVector3d(1, 1, 1) : i_Object.m_Scale;
+		// the scale the object can't carry; a transform-clip mesh: the node's transform
 		maMatrix4x4 matx;
-		matx.MakeScale(baked_scale.m_X, baked_scale.m_Y, baked_scale.m_Z);
+		if (i_Object.m_Kind == gltfSceneObject::e_Mesh && i_Object.m_bTransformClip)
+		{
+			matx = gltfNodeTransform::NodeMatrix(node);
+		}
+		else
+		{
+			const maVector3d baked_scale = i_Object.m_bUniformScale ? maVector3d(1, 1, 1) : i_Object.m_Scale;
+			matx.MakeScale(baked_scale.m_X, baked_scale.m_Y, baked_scale.m_Z);
+		}
 		o_pSceneNode->SetTransform(matx);
 
 		// morph-animated: the base node is bone 0, its matrix the baked scale

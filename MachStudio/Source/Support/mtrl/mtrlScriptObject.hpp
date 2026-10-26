@@ -47,6 +47,7 @@ class mtrlShaderObject;
 class mtrlPropertyObject;
 class relObject;
 class relRelationship;
+class tmlnChannel;
 
 
 //============================================================================
@@ -123,6 +124,13 @@ public:
 	//	Return names of all Materials in one array
 	//--------------------------------------------------------------------
 	void  GetMaterialNames(std::vector<std::string> &o_Names) const;
+
+	//--------------------------------------------------------------------
+	// The channel of a material's shader parameter (an effect parameter
+	// name), or of its normal map's scale; NULL if there is none
+	//--------------------------------------------------------------------
+	tmlnChannel* FindMaterialChannel(const std::string& i_Material, const std::string& i_Param) const;
+	tmlnChannel* FindNormalScaleChannel(const std::string& i_Material) const;
 
 	//--------------------------------------------------------------------
 	// Return index for material with given name. Returns -1

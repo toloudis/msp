@@ -32,22 +32,23 @@ class effPbrData
 public:
 	enum AlphaMode { e_Opaque = 0, e_Mask = 1, e_Blend = 2 };
 
-	// The Pbr.fx parameter names (Pbr.effect.json)
-	static const char* const c_ShaderName;
-	static const char* const c_BaseColor;
-	static const char* const c_BaseColorMap;
-	static const char* const c_Metallic;
-	static const char* const c_Roughness;
-	static const char* const c_MetallicRoughnessMap;
-	static const char* const c_OcclusionMap;
-	static const char* const c_OcclusionStrength;
-	static const char* const c_Emissive;
-	static const char* const c_EmissiveMap;
-	static const char* const c_EmissiveStrength;
-	static const char* const c_AlphaMode;
-	static const char* const c_AlphaCutoff;
-	static const char* const c_ReflectionMap;
-	static const char* const c_ReflectionMapAngle;
+	// The Pbr.fx parameter names (Pbr.effect.json); in the header so code
+	// that doesn't link Graphics (the glTF readers) can use them
+	static constexpr const char* c_ShaderName = "Pbr.fx";
+	static constexpr const char* c_BaseColor = "g_baseColor";
+	static constexpr const char* c_BaseColorMap = "baseColorMap";
+	static constexpr const char* c_Metallic = "g_metallic";
+	static constexpr const char* c_Roughness = "g_roughness";
+	static constexpr const char* c_MetallicRoughnessMap = "metallicRoughnessMap";
+	static constexpr const char* c_OcclusionMap = "occlusionMap";
+	static constexpr const char* c_OcclusionStrength = "g_occlusionStrength";
+	static constexpr const char* c_Emissive = "g_emissive";
+	static constexpr const char* c_EmissiveMap = "emissiveMap";
+	static constexpr const char* c_EmissiveStrength = "g_emissiveStrength";
+	static constexpr const char* c_AlphaMode = "g_alphaMode";
+	static constexpr const char* c_AlphaCutoff = "g_alphaCutoff";
+	static constexpr const char* c_ReflectionMap = "cubeMap";
+	static constexpr const char* c_ReflectionMapAngle = "g_reflMapAngle";
 
 	// glTF defaults
 	effPbrData();

@@ -62,6 +62,23 @@ struct iscnClipDesc
 {
 	std::string m_Identity;		// its identity in the file (entImport::LoadAnimKeys' clip)
 	std::string m_Name;			// display name
+	float m_Begin = 0;			// seconds: where it begins on the timeline
+};
+
+//----------------------------------------------------------------------------
+//	Keys on one of an object's channels
+//----------------------------------------------------------------------------
+struct iscnKeyTrack
+{
+	enum Channel { e_Position, e_Orientation, e_Scale, e_Target, e_Tilt, e_Color, e_Intensity, e_Range,
+				   e_Angle, e_Penumbra, e_FOV, e_OrthoWidth, e_Near, e_Far, e_MaterialParam, e_MaterialNormalScale };
+	Channel m_Channel = e_Position;
+	std::string m_Material, m_Param;	// e_Material*: the material's name and the parameter's
+	bool m_bStep = false;				// each key holds until the next; else linear
+	std::vector<float> m_Times;			// seconds on the timeline
+	std::vector<float> m_Values;		// per key: position, target: 3 (centimetres, the parent's space);
+										// orientation: 4 (quaternion x y z w; a projected light's in world
+										// space, else the parent's); colour: 4 (RGBA); else 1 (degrees, cm)
 };
 
 //----------------------------------------------------------------------------
@@ -82,6 +99,7 @@ struct iscnObjectDesc
 	iscnCameraDesc m_Camera;	// e_Camera only
 	std::vector<iscnClipDesc> m_Clips;	// e_Mesh only: the animations of the file that play on it,
 										// in file order, each an Anim-Full clip
+	std::vector<iscnKeyTrack> m_Keys;	// its channels keyed, after it is in its group
 };
 
 //----------------------------------------------------------------------------

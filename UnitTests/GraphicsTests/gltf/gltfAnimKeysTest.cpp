@@ -226,5 +226,38 @@ TEST(gltfAnimKeys, UntouchedClip)
 {
 	Rig rig;
 	EXPECT_FALSE(rig.Build(rig.m_Body, "Spin"));	// Box's rotation: nothing of Body's
-	EXPECT_FALSE(rig.Build(rig.m_Box, "Spin"));		// a rigid node's own transform: Plan 6
+	EXPECT_FALSE(rig.Build(rig.m_Box, "Spin"));		// a rigid node's own transform: keys (gltfAnimTracks)
+}
+
+TEST(gltfAnimKeys, TransformClipHead)
+{
+	// a leaf mesh at (0, 0, 0.5) m whose scale goes (1,1,1) -> (2,1,1): it can't be keyed
+	tinygltf::Model model;
+	model.meshes.resize(1);
+	model.meshes[0].primitives.resize(1);
+	const int box = AddNode(model, "Box");
+	model.nodes[box].mesh = 0;
+	model.nodes[box].translation = { 0, 0, 0.5 };
+	tinygltf::Scene scene;
+	scene.nodes = { box };
+	model.scenes.push_back(scene);
+	AddAnimation(model, "Stretch", box, "scale", { 0, 1 }, { 1, 1, 1,  2, 1, 1 }, TINYGLTF_TYPE_VEC3);
+
+	const std::vector<gltfSceneObject> objects = gltfSceneRead::ReadScene(model);
+	ASSERT_EQ(1u, objects.size());
+	ASSERT_TRUE(objects[0].m_bTransformClip);
+	gltfClip clip;
+	ASSERT_TRUE(gltfAnimRead::ReadClip(model, "Stretch", c_Fps, clip));
+	std::unique_ptr<emdlCharacterAnimKeys> keys(gltfAnimKeys::Build(model, objects[0], clip, c_Fps));
+	ASSERT_TRUE(keys);
+	const smdlGeoAnimKeys& head = Head(*keys).GetData();
+	ASSERT_TRUE(head.HasAnimation());
+	const maVector3d scale = head.GetScale(15);
+	EXPECT_NEAR(1.5f, scale.m_X, 1e-4f);
+	EXPECT_NEAR(1, scale.m_Y, 1e-4f);
+	EXPECT_NEAR(1, scale.m_Z, 1e-4f);
+	const maVector3d translation = head.GetTranslation(15);
+	EXPECT_NEAR(0, translation.m_X, 1e-4f);
+	EXPECT_NEAR(0, translation.m_Y, 1e-4f);
+	EXPECT_NEAR(50, translation.m_Z, 1e-4f);
 }

@@ -80,20 +80,6 @@ namespace gltfMaterialImport
 		}
 
 		//--------------------------------------------------------------------
-		// glTF name of a material or a simple one built from its index
-		//--------------------------------------------------------------------
-		std::string get_base_name(const tinygltf::Model* i_pModel, int i_MaterialIndex)
-		{
-			const std::string& name = i_pModel->materials[i_MaterialIndex].name;
-			if (!name.empty())
-				return name;
-
-			std::ostringstream base;
-			base << "Material_" << i_MaterialIndex;
-			return base.str();
-		}
-
-		//--------------------------------------------------------------------
 		// add_material - convert glTF material and add it to the table
 		//--------------------------------------------------------------------
 		void add_material(const tinygltf::Model* i_pModel, int i_MaterialIndex,
@@ -180,21 +166,7 @@ namespace gltfMaterialImport
 	//--------------------------------------------------------------------
 	std::string GetMaterialKey(const tinygltf::Model* i_pModel, int i_MaterialIndex)
 	{
-		if (i_MaterialIndex < 0 || i_MaterialIndex >= (int)i_pModel->materials.size())
-			return "DefaultMaterial";
-
-		// Later materials that repeat an earlier name get their index appended
-		const std::string base = get_base_name(i_pModel, i_MaterialIndex);
-		bool bDuplicate = (base == "DefaultMaterial");
-		for (int i = 0; i < i_MaterialIndex && !bDuplicate; i++)
-			bDuplicate = (get_base_name(i_pModel, i) == base);
-
-		if (!bDuplicate)
-			return base;
-
-		std::ostringstream key;
-		key << base << "_" << i_MaterialIndex;
-		return key.str();
+		return gltfMaterialRead::MaterialKey(*i_pModel, i_MaterialIndex);
 	}
 
 	//--------------------------------------------------------------------

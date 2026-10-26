@@ -11,9 +11,8 @@
 **	  the file named by the object's identity (chtrData::m_SourceIdentity;
 **	  templates are loaded and shared per file and part). Each of its
 **	  clips becomes an Anim-Full driver on it that plays that clip of the
-**	  file (chtrOperations::AddAnimationClip): the first begins at time 0,
-**	  each next one where the one before ends, in file order, so all are
-**	  on the timeline and none overlap.
+**	  file (chtrOperations::AddAnimationClip), beginning where the clip
+**	  says (iscnClipDesc::m_Begin; the format's importer lays them out).
 **	- e_PointLight: a point light (Systems/PtLt). e_SpotLight,
 **	  e_DirectionalLight: a projected light (Systems/PrjLt) of that type,
 **	  with the defaults prjltOperations::AddObject(type) gives.
@@ -21,6 +20,16 @@
 **	- Every object is added at its world pose and then put into its group
 **	  with trfnOperations::AddNodeToTransform, which keeps the world pose
 **	  (so do its undo and redo), giving back the file's local transforms.
+**	- Keys (iscnObjectDesc::m_Keys) are added after the parenting (which
+**	  moves property values, not drivers), so their values are in the
+**	  parent's space as they come: each track on the channel of that
+**	  name on the object (the property's name in its system's data:
+**	  Position, Orientation, Scale; a light's Color, Intensity, Range,
+**	  Target Point, Angle, Penumbra; a camera's Target, Tilt, Field of
+**	  View, Ortho Width, Near Clip, Far Clip), material tracks on the
+**	  character's material channels (mtrlScriptObject), through
+**	  cmmKeyUtil::AddKeys. A track whose channel isn't there is skipped
+**	  with a warning.
 **	- Names are the objects' names, made unique with "_<n>" when an object
 **	  of that name exists. Each object remembers the file and its identity
 **	  in it (m_SourceFile / m_SourceIdentity).
@@ -31,14 +40,24 @@
 #include "Features/Import/imptSceneAppend.hpp"
 
 #include "Support/capt/captRenderOutputDataUtil.hpp"
+#include "Support/mtrl/mtrlScriptObject.hpp"
+#include "Support/tmln/tmlnChannelSet.hpp"
+#include "Support/tmln/tmlnScriptObject.hpp"
 #include "Systems/Cameras/Undo/cmraOperations.hpp"
 #include "Systems/Cameras/Data/cmraScriptData.hpp"
+#include "Systems/Cameras/Object/cmraObjectMgr.hpp"
+#include "Systems/Cameras/Object/cmraScriptObject.hpp"
+#include "Systems/Character/Object/chtrObjectMgr.hpp"
 #include "Systems/Character/Undo/chtrOperations.hpp"
+#include "Systems/Common/DriverCreator/cmmKeyUtil.hpp"
 #include "Systems/PrjLt/Data/prjltScriptData.hpp"
+#include "Systems/PrjLt/Object/prjltObjectMgr.hpp"
 #include "Systems/PrjLt/Undo/prjltOperations.hpp"
 #include "Systems/PtLt/Data/ptltScriptData.hpp"
+#include "Systems/PtLt/Object/ptltObjectMgr.hpp"
 #include "Systems/PtLt/Undo/ptltOperations.hpp"
 #include "Systems/Transforms/Data/trfnScriptData.hpp"
+#include "Systems/Transforms/Object/trfnObjectMgr.hpp"
 #include "Systems/Transforms/Undo/trfnOperations.hpp"
 
 #ifndef DBG_MSG_HPP
@@ -66,6 +85,7 @@
 #include "Tool/gui/guiMessageBox.hpp"
 #endif
 
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -139,10 +159,9 @@ namespace imptSceneAppend
 			if (name.IsEmpty())
 				return name;
 
-			// its clips, end to end from time 0
-			maTime begin = maTime::FromSeconds(0);
+			// its clips, where the importer put them
 			for (const iscnClipDesc& clip : i_Object.m_Clips)
-				begin = chtrOperations::AddAnimationClip(name, i_File, clip.m_Identity, clip.m_Name, begin);
+				chtrOperations::AddAnimationClip(name, i_File, clip.m_Identity, clip.m_Name, maTime::FromSeconds(clip.m_Begin));
 			return name;
 		}
 
@@ -213,6 +232,182 @@ namespace imptSceneAppend
 			data.m_BaseData.m_SourceFile = i_File;
 			data.m_BaseData.m_SourceIdentity = i_Object.m_Identity;
 			return cmraOperations::AddObject(data);
+		}
+
+		//--------------------------------------------------------------------
+		// The script object of an added object, and the names of its keyed
+		// channels (its system's data's property names; empty for a
+		// channel it doesn't have)
+		//--------------------------------------------------------------------
+		struct KeyedObject
+		{
+			tmlnScriptObject* m_pObject = NULL;
+			std::function<std::string (iscnKeyTrack::Channel)> m_ChannelName;
+		};
+
+		template <class xxxBaseData>
+		std::string transform_channel(const xxxBaseData& i_Data, iscnKeyTrack::Channel i_Channel)
+		{
+			switch (i_Channel)
+			{
+				case iscnKeyTrack::e_Position:		return i_Data.m_Position.GetPropertyName();
+				case iscnKeyTrack::e_Orientation:	return i_Data.m_Orientation.GetPropertyName();
+				case iscnKeyTrack::e_Scale:			return i_Data.m_Scale.GetPropertyName();
+				default:							return std::string();
+			}
+		}
+
+		KeyedObject keyed_object(iscnObjectDesc::Kind i_Kind, const nameString& i_Name)
+		{
+			KeyedObject keyed;
+			switch (i_Kind)
+			{
+				case iscnObjectDesc::e_Group:
+				{
+					const int index = trfnObjectMgr::GetIndexForObject(i_Name);
+					if (index < 0)
+						break;
+					keyed.m_pObject = trfnObjectMgr::GetObject(index);
+					const auto data = trfnObjectMgr::GetScriptData(index).m_BaseData;
+					keyed.m_ChannelName = [data](iscnKeyTrack::Channel c) { return transform_channel(data, c); };
+					break;
+				}
+				case iscnObjectDesc::e_Mesh:
+				{
+					const int index = chtrObjectMgr::GetIndexForObject(i_Name);
+					if (index < 0)
+						break;
+					keyed.m_pObject = chtrObjectMgr::GetObject(index);
+					const auto data = chtrObjectMgr::GetScriptData(index).m_BaseData;
+					keyed.m_ChannelName = [data](iscnKeyTrack::Channel c) { return transform_channel(data, c); };
+					break;
+				}
+				case iscnObjectDesc::e_PointLight:
+				{
+					const int index = ptltObjectMgr::GetIndexForObject(i_Name);
+					if (index < 0)
+						break;
+					keyed.m_pObject = ptltObjectMgr::GetObject(index);
+					const auto data = ptltObjectMgr::GetScriptData(index).m_BaseData;
+					keyed.m_ChannelName = [data](iscnKeyTrack::Channel c)
+					{
+						switch (c)
+						{
+							case iscnKeyTrack::e_Position:	return data.m_Position.GetPropertyName();
+							case iscnKeyTrack::e_Color:		return data.m_Color.GetPropertyName();
+							case iscnKeyTrack::e_Intensity:	return data.m_Intensity.GetPropertyName();
+							case iscnKeyTrack::e_Range:		return data.m_Range.GetPropertyName();
+							default:						return std::string();
+						}
+					};
+					break;
+				}
+				case iscnObjectDesc::e_SpotLight:
+				case iscnObjectDesc::e_DirectionalLight:
+				{
+					const int index = prjltObjectMgr::GetIndexForObject(i_Name);
+					if (index < 0)
+						break;
+					keyed.m_pObject = prjltObjectMgr::GetObject(index);
+					const auto data = prjltObjectMgr::GetScriptData(index).m_BaseData;
+					keyed.m_ChannelName = [data](iscnKeyTrack::Channel c)
+					{
+						switch (c)
+						{
+							case iscnKeyTrack::e_Position:		return data.m_Position.GetPropertyName();
+							case iscnKeyTrack::e_Target:		return data.m_Target.GetPropertyName();
+							case iscnKeyTrack::e_Orientation:	return data.m_Orientation.GetPropertyName();
+							case iscnKeyTrack::e_Color:			return data.m_Color.GetPropertyName();
+							case iscnKeyTrack::e_Intensity:		return data.m_Intensity.GetPropertyName();
+							case iscnKeyTrack::e_Range:			return data.m_Range.GetPropertyName();
+							case iscnKeyTrack::e_Angle:			return data.m_Angle.GetPropertyName();
+							case iscnKeyTrack::e_Penumbra:		return data.m_Penumbra.GetPropertyName();
+							default:							return std::string();
+						}
+					};
+					break;
+				}
+				case iscnObjectDesc::e_Camera:
+				{
+					const int index = cmraObjectMgr::GetIndexForObject(i_Name);
+					if (index < 0)
+						break;
+					keyed.m_pObject = cmraObjectMgr::GetObject(index);
+					const auto data = cmraObjectMgr::GetScriptData(index).m_BaseData;
+					keyed.m_ChannelName = [data](iscnKeyTrack::Channel c)
+					{
+						switch (c)
+						{
+							case iscnKeyTrack::e_Position:		return data.m_Position.GetPropertyName();
+							case iscnKeyTrack::e_Target:		return data.m_Target.GetPropertyName();
+							case iscnKeyTrack::e_Tilt:			return data.m_Tilt.GetPropertyName();
+							case iscnKeyTrack::e_FOV:			return data.m_FOV.GetPropertyName();
+							case iscnKeyTrack::e_OrthoWidth:	return data.m_OrthoWidth.GetPropertyName();
+							case iscnKeyTrack::e_Near:			return data.m_Near.GetPropertyName();
+							case iscnKeyTrack::e_Far:			return data.m_Far.GetPropertyName();
+							default:							return std::string();
+						}
+					};
+					break;
+				}
+			}
+			return keyed;
+		}
+
+		//--------------------------------------------------------------------
+		// the object's keys on its channels
+		//--------------------------------------------------------------------
+		void add_keys(const iscnObjectDesc& i_Object, const nameString& i_Name)
+		{
+			if (i_Object.m_Keys.empty())
+				return;
+			const KeyedObject keyed = keyed_object(i_Object.m_Kind, i_Name);
+			if (!keyed.m_pObject)
+				return;
+
+			for (const iscnKeyTrack& track : i_Object.m_Keys)
+			{
+				// its channel
+				tmlnChannel* pChannel = NULL;
+				std::string channel_name;
+				if (track.m_Channel == iscnKeyTrack::e_MaterialParam || track.m_Channel == iscnKeyTrack::e_MaterialNormalScale)
+				{
+					channel_name = track.m_Material + "." + track.m_Param;
+					if (const mtrlScriptObject* pMaterials = dynamic_cast<const mtrlScriptObject*>(keyed.m_pObject))
+					{
+						pChannel = (track.m_Channel == iscnKeyTrack::e_MaterialParam)
+								   ? pMaterials->FindMaterialChannel(track.m_Material, track.m_Param)
+								   : pMaterials->FindNormalScaleChannel(track.m_Material);
+					}
+				}
+				else
+				{
+					channel_name = keyed.m_ChannelName(track.m_Channel);
+					const int index = channel_name.empty() ? -1 : keyed.m_pObject->GetChannelSet().GetChannel(channel_name.c_str());
+					if (index >= 0)
+						pChannel = &keyed.m_pObject->ChannelSet().Channel(index);
+				}
+				if (!pChannel)
+				{
+					DBG_WARNING("Keys for " << i_Name.GetString() << " skipped: it has no channel "
+								<< (channel_name.empty() ? std::to_string((int)track.m_Channel) : channel_name));
+					continue;
+				}
+
+				// its keys
+				const size_t num = track.m_Times.size();
+				const size_t components = num ? track.m_Values.size() / num : 0;
+				std::vector<cmmKey> keys(num);
+				for (size_t k = 0; k < num; ++k)
+				{
+					keys[k].m_Time = maTime::FromSeconds(track.m_Times[k]);
+					for (size_t c = 0; c < components && c < 4; ++c)
+						keys[k].m_Value[c] = track.m_Values[k * components + c];
+				}
+				if (!cmmKeyUtil::AddKeys(keyed.m_pObject, pChannel, keys, track.m_bStep))
+					DBG_WARNING("Keys for " << i_Name.GetString() << " skipped: channel " << pChannel->GetName()
+								<< " takes no float, position, colour or orientation keys");
+			}
 		}
 
 		//--------------------------------------------------------------------
@@ -301,6 +496,13 @@ namespace imptSceneAppend
 			const int parent = objects[i].m_Parent;
 			if (parent >= 0 && parent < (int)i && !names[i].IsEmpty() && !names[parent].IsEmpty())
 				trfnOperations::AddNodeToTransform(names[parent], names[i]);
+		}
+
+		// keys, once every object is in its group
+		for (size_t i = 0; i < objects.size(); ++i)
+		{
+			if (!names[i].IsEmpty())
+				add_keys(objects[i], names[i]);
 		}
 		return true;
 	}

@@ -9,6 +9,8 @@
 #include "ImportExport/gltf/import/private/gltfMaterialRead.hpp"
 #endif
 
+#include <sstream>
+
 
 namespace
 {
@@ -94,6 +96,40 @@ const gltfTextureRef& gltfMaterialDesc::TransformSource() const
 //----------------------------------------------------------------------------
 namespace gltfMaterialRead
 {
+	namespace
+	{
+		// a material's glTF name or a simple one built from its index
+		std::string base_name(const tinygltf::Model& i_Model, int i_MaterialIndex)
+		{
+			const std::string& name = i_Model.materials[i_MaterialIndex].name;
+			if (!name.empty())
+				return name;
+
+			std::ostringstream base;
+			base << "Material_" << i_MaterialIndex;
+			return base.str();
+		}
+	}
+
+	std::string MaterialKey(const tinygltf::Model& i_Model, int i_MaterialIndex)
+	{
+		if (i_MaterialIndex < 0 || i_MaterialIndex >= (int)i_Model.materials.size())
+			return "DefaultMaterial";
+
+		// Later materials that repeat an earlier name get their index appended
+		const std::string base = base_name(i_Model, i_MaterialIndex);
+		bool bDuplicate = (base == "DefaultMaterial");
+		for (int i = 0; i < i_MaterialIndex && !bDuplicate; i++)
+			bDuplicate = (base_name(i_Model, i) == base);
+
+		if (!bDuplicate)
+			return base;
+
+		std::ostringstream key;
+		key << base << "_" << i_MaterialIndex;
+		return key.str();
+	}
+
 	gltfMaterialDesc Read(const tinygltf::Material& i_Material)
 	{
 		gltfMaterialDesc d;

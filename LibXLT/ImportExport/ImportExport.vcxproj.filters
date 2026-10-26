@@ -142,6 +142,9 @@
     <ClCompile Include="gltf\import\private\gltfAnimRead.cpp">
       <Filter>gltf\import\private</Filter>
     </ClCompile>
+    <ClCompile Include="gltf\import\private\gltfAnimTracks.cpp">
+      <Filter>gltf\import\private</Filter>
+    </ClCompile>
     <ClCompile Include="gltf\import\private\gltfAnimKeys.cpp">
       <Filter>gltf\import\private</Filter>
     </ClCompile>
@@ -266,6 +269,9 @@
       <Filter>gltf\import\private</Filter>
     </ClInclude>
     <ClInclude Include="gltf\import\private\gltfAnimRead.hpp">
+      <Filter>gltf\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="gltf\import\private\gltfAnimTracks.hpp">
       <Filter>gltf\import\private</Filter>
     </ClInclude>
     <ClInclude Include="gltf\import\private\gltfAnimKeys.hpp">

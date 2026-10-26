@@ -142,3 +142,10 @@ void mtrlNormals::UpdateMaskTexture(prtyProperty *i_pProperty, bool i_bDirty)
 	if (i_bDirty)
 		mtrlOperations::SetChunkDataChanged();
 }
+//----------------------------------------------------------------------------
+// The channel of the normal map's scale
+//----------------------------------------------------------------------------
+tmlnChannel* mtrlNormals::BumpScaleChannel() const
+{
+	return FindChannel(m_Material.GetMaterialName(), m_Data.m_BumpScale.GetPropertyName());
+}

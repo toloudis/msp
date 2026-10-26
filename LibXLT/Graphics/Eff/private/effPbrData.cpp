@@ -15,22 +15,6 @@
 #include <algorithm>
 
 
-const char* const effPbrData::c_ShaderName = "Pbr.fx";
-const char* const effPbrData::c_BaseColor = "g_baseColor";
-const char* const effPbrData::c_BaseColorMap = "baseColorMap";
-const char* const effPbrData::c_Metallic = "g_metallic";
-const char* const effPbrData::c_Roughness = "g_roughness";
-const char* const effPbrData::c_MetallicRoughnessMap = "metallicRoughnessMap";
-const char* const effPbrData::c_OcclusionMap = "occlusionMap";
-const char* const effPbrData::c_OcclusionStrength = "g_occlusionStrength";
-const char* const effPbrData::c_Emissive = "g_emissive";
-const char* const effPbrData::c_EmissiveMap = "emissiveMap";
-const char* const effPbrData::c_EmissiveStrength = "g_emissiveStrength";
-const char* const effPbrData::c_AlphaMode = "g_alphaMode";
-const char* const effPbrData::c_AlphaCutoff = "g_alphaCutoff";
-const char* const effPbrData::c_ReflectionMap = "cubeMap";
-const char* const effPbrData::c_ReflectionMapAngle = "g_reflMapAngle";
-
 
 namespace
 {

@@ -7,9 +7,12 @@
 **
 **	- One key root, named "" (the character's hierarchy root, which
 **	  smdlHierarchyObject animates first). Its head is the template's base
-**	  node and has no channels; for a skinned object it has one child
-**	  mirroring gltfSkeleton::m_Nodes in order, so child i of a key node
-**	  is child i of its scene node, as the template was built.
+**	  node and has no channels, except on a transform-clip mesh
+**	  (gltfAnimTracks.cpp), whose base node is its glTF node: the head
+**	  takes the clip's translation, rotation and scale of that node. For a
+**	  skinned object the head has one child mirroring
+**	  gltfSkeleton::m_Nodes in order, so child i of a key node is child i
+**	  of its scene node, as the template was built.
 **	- MachStudio replaces a node's whole transform when it has any
 **	  channel, and reads a missing translation as 0: so a node with any
 **	  channel gets all three, the missing ones one key at frame 0 holding
@@ -34,6 +37,9 @@
 #endif
 #ifndef GLTF_SKINREAD_HPP
 #include "ImportExport/gltf/import/private/gltfSkinRead.hpp"
+#endif
+#ifndef GLTF_NODETRANSFORM_HPP
+#include "ImportExport/gltf/import/private/gltfNodeTransform.hpp"
 #endif
 
 #ifndef DBG_MSG_HPP
@@ -103,6 +109,29 @@ namespace
 		return true;
 	}
 
+	bool has_transform(const NodeChannels& i_Channels)
+	{
+		return i_Channels.m_pPath[gltfAnimChannel::e_Translation] || i_Channels.m_pPath[gltfAnimChannel::e_Rotation]
+			   || i_Channels.m_pPath[gltfAnimChannel::e_Scale];
+	}
+
+	//--------------------------------------------------------------------
+	// all three channels of a node with any, the missing ones its rest values
+	//--------------------------------------------------------------------
+	void transform_keys(const NodeChannels& i_Channels, const maVector3d& i_Translation, const maRotation& i_Rotation,
+						const maVector3d& i_Scale, smdlGeoAnimKeys& o_Keys, emdlCharacterAnimKeys& io_Keys)
+	{
+		anKeyData<maVector3d>* translate = vector_keys(i_Channels.m_pPath[gltfAnimChannel::e_Translation], i_Translation);
+		anKeyData<maRotation>* rotate = rotation_keys(i_Channels.m_pPath[gltfAnimChannel::e_Rotation], i_Rotation);
+		anKeyData<maVector3d>* scale = vector_keys(i_Channels.m_pPath[gltfAnimChannel::e_Scale], i_Scale);
+		io_Keys.TranslateChannels().push_back(translate);
+		io_Keys.RotateChannels().push_back(rotate);
+		io_Keys.ScaleChannels().push_back(scale);
+		o_Keys.SetTranslate(translate);
+		o_Keys.SetRotate(rotate);
+		o_Keys.SetScale(scale);
+	}
+
 	//--------------------------------------------------------------------
 	// the keys of one skeleton node: all three channels when the clip
 	// has any of them, else none
@@ -116,17 +145,8 @@ namespace
 		std::map<int, NodeChannels>::const_iterator it = i_Channels.find(node.m_Node);
 		if (it == i_Channels.end())
 			return keys;
-		const NodeChannels& channels = it->second;
-
-		anKeyData<maVector3d>* translate = vector_keys(channels.m_pPath[gltfAnimChannel::e_Translation], node.m_Translation);
-		anKeyData<maRotation>* rotate = rotation_keys(channels.m_pPath[gltfAnimChannel::e_Rotation], node.m_Rotation);
-		anKeyData<maVector3d>* scale = vector_keys(channels.m_pPath[gltfAnimChannel::e_Scale], node.m_Scale);
-		io_Keys.TranslateChannels().push_back(translate);
-		io_Keys.RotateChannels().push_back(rotate);
-		io_Keys.ScaleChannels().push_back(scale);
-		keys.SetTranslate(translate);
-		keys.SetRotate(rotate);
-		keys.SetScale(scale);
+		transform_keys(it->second, node.m_Translation, node.m_Rotation, node.m_Scale, keys, io_Keys);
+		const anKeyData<maVector3d>* scale = io_Keys.ScaleChannels().back();
 
 		if (node.m_bJoint && !scale_is_one(*scale))
 		{
@@ -181,7 +201,18 @@ namespace gltfAnimKeys
 
 		bool bTouched = false;
 		shared_ptr<KeyTree> tree(new KeyTree());
-		tree->SetHead(smdlGeoAnimKeys());
+
+		// a transform-clip mesh: the head is its node
+		smdlGeoAnimKeys head;
+		std::map<int, NodeChannels>::const_iterator own_node = channels.find(i_Object.m_Node);
+		if (i_Object.m_Kind == gltfSceneObject::e_Mesh && i_Object.m_bTransformClip && own_node != channels.end()
+			&& has_transform(own_node->second) && i_Object.m_Node >= 0 && i_Object.m_Node < (int)i_Model.nodes.size())
+		{
+			const gltfNodeTransform::Transform rest = gltfNodeTransform::NodeTransform(i_Model.nodes[i_Object.m_Node]);
+			transform_keys(own_node->second, rest.m_Translation, rest.m_Rotation, rest.m_Scale, head, *keys);
+			bTouched = true;
+		}
+		tree->SetHead(head);
 
 		gltfSkeleton skeleton;
 		if (i_Object.m_Kind == gltfSceneObject::e_SkinnedMesh && gltfSkeletonRead::Read(i_Model, i_Object.m_Skin, skeleton))
@@ -189,9 +220,7 @@ namespace gltfAnimKeys
 			for (const gltfSkeletonNode& node : skeleton.m_Nodes)
 			{
 				std::map<int, NodeChannels>::const_iterator it = channels.find(node.m_Node);
-				if (it != channels.end() && (it->second.m_pPath[gltfAnimChannel::e_Translation]
-											 || it->second.m_pPath[gltfAnimChannel::e_Rotation]
-											 || it->second.m_pPath[gltfAnimChannel::e_Scale]))
+				if (it != channels.end() && has_transform(it->second))
 					bTouched = true;
 			}
 			KeyTree::iterator head = tree->GetIterator();

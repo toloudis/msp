@@ -42,6 +42,9 @@
     <ClCompile Include="gltf\gltfAnimReadTest.cpp">
       <Filter>gltf</Filter>
     </ClCompile>
+    <ClCompile Include="gltf\gltfAnimTracksTest.cpp">
+      <Filter>gltf</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ietPlatform.hpp">

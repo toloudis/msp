@@ -13,6 +13,7 @@
 
 #include <cstdint>
 #include <cstring>
+#include <string>
 #include <vector>
 
 namespace iet
@@ -55,4 +56,16 @@ inline int ietAddUByteAccessor(tinygltf::Model& io_Model, const std::vector<uint
 	const int ncomp = tinygltf::GetNumComponentsInType((uint32_t)i_Type);
 	return iet::AddAccessor(io_Model, i_Values.data(), i_Values.size(), i_Values.size() / ncomp,
 							TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE, i_Type);
+}
+
+// a KHR_animation_pointer channel on animation i_Animation, through its sampler i_Sampler
+inline void ietAddPointerChannel(tinygltf::Model& io_Model, int i_Animation, const std::string& i_Pointer, int i_Sampler)
+{
+	tinygltf::Value::Object pointer;
+	pointer["pointer"] = tinygltf::Value(i_Pointer);
+	tinygltf::AnimationChannel channel;
+	channel.sampler = i_Sampler;
+	channel.target_path = "pointer";
+	channel.target_extensions["KHR_animation_pointer"] = tinygltf::Value(pointer);
+	io_Model.animations[i_Animation].channels.push_back(channel);
 }

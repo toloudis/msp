@@ -65,6 +65,31 @@ struct gltfClipRef
 {
 	std::string m_Identity;		// the animation's identity in the file
 	std::string m_Name;			// display name
+	float m_Begin = 0;			// seconds: where it plays on the object's timeline
+};
+
+//----------------------------------------------------------------------------
+//	Keys of one property of one object, from its animations, on its
+//	timeline (gltfAnimTracks.cpp has the rule)
+//----------------------------------------------------------------------------
+struct gltfTrack
+{
+	enum Property
+	{
+		e_Translation, e_Rotation, e_Scale,			// the node's local TRS: centimetres; x y z w; three scales
+		e_LightColor, e_LightIntensity, e_LightRange,	// RGB; as the file; centimetres
+		e_SpotInnerCone, e_SpotOuterCone,			// half-angles, radians
+		e_CameraYFov, e_CameraXMag, e_CameraYMag, e_CameraNear, e_CameraFar,	// radians; centimetres
+		e_MaterialParam,							// m_Param of material m_Material
+		e_MaterialNormalScale						// material m_Material's normal map scale
+	};
+	Property m_Property = e_Translation;
+	std::string m_Material;			// gltfMaterialImport::GetMaterialKey
+	std::string m_Param;			// an effPbrData parameter name
+	int m_Components = 1;
+	bool m_bStep = false;			// each key holds until the next; else linear (slerp for rotations)
+	std::vector<float> m_Times;		// seconds from time 0, ascending
+	std::vector<float> m_Values;	// m_Components per time
 };
 
 //----------------------------------------------------------------------------
@@ -89,6 +114,13 @@ struct gltfSceneObject
 	gltfLightDesc m_LightDesc;	// e_Light only
 	gltfCameraDesc m_CameraDesc;	// e_Camera only
 	std::vector<gltfClipRef> m_Clips;	// e_Mesh, e_SkinnedMesh: the animations that play on it, in file order
+	std::vector<int> m_Materials;		// e_Mesh, e_SkinnedMesh: the glTF materials its mesh's primitives use,
+										// ascending, no repeats
+	std::vector<gltfTrack> m_Tracks;	// its keys (gltfAnimTracks::Decide)
+	bool m_bNodeTransform = true;		// it carries its node's transform: false for a skinned mesh and for
+										// content under its own node's group (gltfAnimTracks::Decide)
+	bool m_bTransformClip = false;		// e_Mesh: its transform animation plays in its clips; it sits at its
+										// parent with an identity transform (gltfAnimTracks.cpp)
 };
 
 namespace gltfSceneRead

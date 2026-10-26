@@ -120,6 +120,9 @@
     <ClCompile Include="DriverCreator\cmmDriverCreatorVideo.cpp">
       <Filter>DriverCreator</Filter>
     </ClCompile>
+    <ClCompile Include="DriverCreator\cmmKeyUtil.cpp">
+      <Filter>DriverCreator</Filter>
+    </ClCompile>
     <ClCompile Include="Object\cmmFalloffAspect.cpp">
       <Filter>Object</Filter>
     </ClCompile>
@@ -302,6 +305,9 @@
       <Filter>DriverCreator</Filter>
     </ClInclude>
     <ClInclude Include="DriverCreator\cmmDriverCreatorVideo.hpp">
+      <Filter>DriverCreator</Filter>
+    </ClInclude>
+    <ClInclude Include="DriverCreator\cmmKeyUtil.hpp">
       <Filter>DriverCreator</Filter>
     </ClInclude>
     <ClInclude Include="Object\cmmFalloffAspect.hpp">

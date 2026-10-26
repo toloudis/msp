@@ -14,6 +14,8 @@
 #include "Support/mtrl/GUI/mtrlSetOperation.hpp"
 #include "Support/mtrl/GUI/mtrlShaderObject.hpp"
 #include "Support/mtrl/GUI/mtrlShaderUtil.hpp"
+#include "Support/mtrl/GUI/mtrlNormals.hpp"
+#include "Support/mtrl/GUI/mtrlSurfaceShader.hpp"
 #include "Support/mtrl/mtrlHighlight.hpp"
 #include "Support/tmln/tmlnScriptObject.hpp"
 
@@ -693,6 +695,36 @@ matMaterial* mtrlScriptObject::GetMaterial(int i_Index) const
 {
 	DBG_ASSERT(i_Index < m_pModelInstance->GetMaterials().size(), "Material index out of range");
 	return m_pModelInstance->GetMaterials()[i_Index];
+}
+
+//--------------------------------------------------------------------
+// The channel of a material's shader parameter
+//--------------------------------------------------------------------
+tmlnChannel* mtrlScriptObject::FindMaterialChannel(const std::string& i_Material, const std::string& i_Param) const
+{
+	for (mtrlPropertyObject* pObject : m_PropertyObjects)
+	{
+		if (!pObject || pObject->GetName() != i_Material)
+			continue;
+		if (mtrlSurfaceShader* pShader = dynamic_cast<mtrlSurfaceShader*>(pObject->GetShaderDataObject()))
+			return pShader->FindParamChannel(i_Param);
+	}
+	return NULL;
+}
+
+//--------------------------------------------------------------------
+// The channel of a material's normal map scale
+//--------------------------------------------------------------------
+tmlnChannel* mtrlScriptObject::FindNormalScaleChannel(const std::string& i_Material) const
+{
+	for (mtrlPropertyObject* pObject : m_PropertyObjects)
+	{
+		if (!pObject || pObject->GetName() != i_Material)
+			continue;
+		if (mtrlNormals* pNormals = dynamic_cast<mtrlNormals*>(pObject->GetNormalsDataObject()))
+			return pNormals->BumpScaleChannel();
+	}
+	return NULL;
 }
 
 //--------------------------------------------------------------------
