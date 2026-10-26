@@ -9,7 +9,11 @@
 **	- e_Group: a transform group (Systems/Transforms).
 **	- e_Mesh: a character (Systems/Character) whose model is the part of
 **	  the file named by the object's identity (chtrData::m_SourceIdentity;
-**	  templates are loaded and shared per file and part).
+**	  templates are loaded and shared per file and part). Each of its
+**	  clips becomes an Anim-Full driver on it that plays that clip of the
+**	  file (chtrOperations::AddAnimationClip): the first begins at time 0,
+**	  each next one where the one before ends, in file order, so all are
+**	  on the timeline and none overlap.
 **	- e_PointLight: a point light (Systems/PtLt). e_SpotLight,
 **	  e_DirectionalLight: a projected light (Systems/PrjLt) of that type,
 **	  with the defaults prjltOperations::AddObject(type) gives.
@@ -131,7 +135,15 @@ namespace imptSceneAppend
 			data.m_BaseData.m_Position = i_Object.m_Position;
 			data.m_BaseData.m_Orientation = i_Object.m_Orientation;
 			data.m_BaseData.m_Scale = i_Object.m_Scale;
-			return chtrOperations::AddObject(data);
+			const nameString name = chtrOperations::AddObject(data);
+			if (name.IsEmpty())
+				return name;
+
+			// its clips, end to end from time 0
+			maTime begin = maTime::FromSeconds(0);
+			for (const iscnClipDesc& clip : i_Object.m_Clips)
+				begin = chtrOperations::AddAnimationClip(name, i_File, clip.m_Identity, clip.m_Name, begin);
+			return name;
 		}
 
 		//--------------------------------------------------------------------

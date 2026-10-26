@@ -31,6 +31,7 @@ namespace
 	//   ReadAnimFullInfo
 	//========================================================================
 	void ReadAnimFullInfo(	chReader& i_Reader,
+							chDefs::Name i_Name,
 							chDefs::Version i_Version,
 							chDefs::Size i_Size,
 							tmlnAnimationFullInfo& o_Info )
@@ -54,6 +55,12 @@ namespace
 		{
 			chChunkParserUtil::Read(i_Reader, o_Info.m_bUseAnimStart );
 		}
+
+		// TDAD version 3 adds the clip (the old character and prop chunks have none)
+		if (i_Name == c_TDAD && i_Version >= 3)
+		{
+			chChunkParserUtil::Read(i_Reader, o_Info.m_AnimClip );
+		}
 	}
 
 	//========================================================================
@@ -62,8 +69,8 @@ namespace
 	void WriteAnimFullInfo(	chWriter& o_Writer,
 							const tmlnAnimationFullInfo& i_Info )
 	{
-		// Version 2 writes full filename
-		o_Writer.WriteChunkHeader( c_TDAD, 2, false );
+		// Version 2 writes full filename, version 3 the clip
+		o_Writer.WriteChunkHeader( c_TDAD, 3, false );
 
 		// Convert array of itStrings to a single itString with
 		// path separators in order to write to file.
@@ -81,6 +88,9 @@ namespace
 
 		// Version 1 adds m_bUseAnimStart
 		chChunkParserUtil::Write(o_Writer, i_Info.m_bUseAnimStart );
+
+		// Version 3 adds m_AnimClip
+		chChunkParserUtil::Write(o_Writer, i_Info.m_AnimClip );
 
 		o_Writer.FinishChunk();
 	}
@@ -137,7 +147,7 @@ void tmlnDriverAnimationFullParser::Read(	chReader& i_Reader,
 		}
 		else if ( name == c_TDAD || name == c_CDAD || name == c_PDAD )
 		{
-			ReadAnimFullInfo(i_Reader, version, size, driver.m_Info );
+			ReadAnimFullInfo(i_Reader, name, version, size, driver.m_Info );
 		}
 		i_Reader.FinishChunk();
 	}

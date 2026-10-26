@@ -13,8 +13,12 @@
 **	  the part of the file the model template loads
 **	  (gltfImport::LoadGeometryPart). A non-uniform scale is baked into the
 **	  template; the object's scale is then its parents'.
-**	- e_SkinnedMesh: until skins are imported, an ordinary mesh in the bind
-**	  pose (one warning per file).
+**	- e_SkinnedMesh: a mesh too; its template holds the mesh and its
+**	  skeleton (gltfImport::LoadGeometryPart), and the object sits at the
+**	  skeleton root's parent (gltfSceneRead.cpp).
+**	- Meshes carry their clips (gltfSceneObject::m_Clips: the animations
+**	  that play on them, gltfAnimRead.cpp), each loaded by its identity
+**	  for the mesh's part (gltfImport::LoadAnimKeysPart).
 **	- Lights: point, spot or directional by type. Colour, intensity,
 **	  falloff and cone come from gltfLightDesc; the range is
 **	  gltfPlacement::LightRange (MachStudio has no unlimited range); spot
@@ -138,7 +142,6 @@ void gltfSceneImport::Convert(const std::vector<gltfSceneObject>& i_Objects, con
 
 	o_Scene.m_Objects.clear();
 	o_Scene.m_Objects.reserve(i_Objects.size());
-	bool warned_skin = false;
 	for (size_t i = 0; i < i_Objects.size(); ++i)
 	{
 		const gltfSceneObject& object = i_Objects[i];
@@ -159,15 +162,15 @@ void gltfSceneImport::Convert(const std::vector<gltfSceneObject>& i_Objects, con
 					DBG_WARNING("glTF node " << object.m_Identity << " has a non-uniform scale; its group uses their mean");
 				break;
 			case gltfSceneObject::e_SkinnedMesh:
-				if (!warned_skin)
-				{
-					DBG_WARNING("glTF file " << i_FileName << ": skins come in a later version; skinned meshes are in their bind pose");
-					warned_skin = true;
-				}
-				desc.m_Kind = iscnObjectDesc::e_Mesh;
-				break;
 			case gltfSceneObject::e_Mesh:
 				desc.m_Kind = iscnObjectDesc::e_Mesh;
+				for (const gltfClipRef& clip : object.m_Clips)
+				{
+					iscnClipDesc clip_desc;
+					clip_desc.m_Identity = clip.m_Identity;
+					clip_desc.m_Name = clip.m_Name;
+					desc.m_Clips.push_back(clip_desc);
+				}
 				break;
 			case gltfSceneObject::e_Light:
 				desc.m_Light = convert_light(object.m_LightDesc, pose);

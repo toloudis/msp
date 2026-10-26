@@ -130,6 +130,21 @@
     <ClCompile Include="gltf\import\private\gltfSdkManager.cpp">
       <Filter>gltf\import\private</Filter>
     </ClCompile>
+    <ClCompile Include="gltf\import\private\gltfNodeTransform.cpp">
+      <Filter>gltf\import\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gltf\import\private\gltfSkeletonRead.cpp">
+      <Filter>gltf\import\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gltf\import\private\gltfSkinRead.cpp">
+      <Filter>gltf\import\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gltf\import\private\gltfAnimRead.cpp">
+      <Filter>gltf\import\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gltf\import\private\gltfAnimKeys.cpp">
+      <Filter>gltf\import\private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="fbx\fbxPackage.hpp">
@@ -239,6 +254,21 @@
       <Filter>gltf\import\private</Filter>
     </ClInclude>
     <ClInclude Include="gltf\import\private\gltfSdkManager.hpp">
+      <Filter>gltf\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="gltf\import\private\gltfNodeTransform.hpp">
+      <Filter>gltf\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="gltf\import\private\gltfSkeletonRead.hpp">
+      <Filter>gltf\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="gltf\import\private\gltfSkinRead.hpp">
+      <Filter>gltf\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="gltf\import\private\gltfAnimRead.hpp">
+      <Filter>gltf\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="gltf\import\private\gltfAnimKeys.hpp">
       <Filter>gltf\import\private</Filter>
     </ClInclude>
   </ItemGroup>

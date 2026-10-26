@@ -79,6 +79,15 @@ public:
 	virtual entAnimKeys* LoadAnimKeys( const fsLocator& i_AnimLocator ) = 0;
 
 	//----------------------------------------------------------------------------
+	// Load one clip of a file (i_Clip: its identity in the file) built for one
+	// part of it (i_Part, as LoadGeometryPart). NULL lets the next
+	// implementation try; importers without clips keep this one.
+	//----------------------------------------------------------------------------
+	virtual entAnimKeys* LoadAnimKeysPart( const fsLocator& i_AnimLocator,
+										   const std::string& i_Part,
+										   const std::string& i_Clip ) { return NULL; }
+
+	//----------------------------------------------------------------------------
 	// Create animation from key data,
 	// deletion of return value is responsibility of caller
 	//----------------------------------------------------------------------------
@@ -142,6 +151,16 @@ namespace entImport
 	//		If there is an error, NULL is returned.
 	//----------------------------------------------------------------------------
 	entAnimKeys* LoadAnimKeys( const fsLocator& i_AnimLocator );
+
+	//----------------------------------------------------------------------------
+	// Load one clip of a file for one part of it
+	// (entImportImpl::LoadAnimKeysPart); an empty clip loads the file as
+	// the animation, as above.
+	//		If there is an error, NULL is returned.
+	//----------------------------------------------------------------------------
+	entAnimKeys* LoadAnimKeys( const fsLocator& i_AnimLocator,
+							   const std::string& i_Part,
+							   const std::string& i_Clip );
 
 	//----------------------------------------------------------------------------
 	// Create animation from key data,

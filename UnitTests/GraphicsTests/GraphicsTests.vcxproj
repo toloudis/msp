@@ -51,7 +51,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(IntDir);$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\LibXLT;$(ProjectDir)..\..\MachStudio\Source;$(IntDir);$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <!-- vcpkg's x64-windows gtest is a DLL -->
       <PreprocessorDefinitions>WIN64;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;NOMINMAX;GTEST_LINKED_AS_SHARED_LIBRARY=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -162,6 +162,9 @@
     <ClCompile Include="Vk\g2dImageSaveVkTest.cpp" />
     <ClCompile Include="Vk\g2dResourceCounterVkTest.cpp" />
     <ClCompile Include="Vk\vkdLinkStagesTest.cpp" />
+    <ClCompile Include="gltf\gltfAnimKeysTest.cpp" />
+    <ClCompile Include="xfrm\xfrmApplyTransformUtilTest.cpp" />
+    <ClCompile Include="..\..\MachStudio\Source\Support\xfrm\xfrmApplyTransformUtil.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gtPlatform.hpp" />

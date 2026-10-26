@@ -33,12 +33,24 @@
     <ClCompile Include="gltf\gltfSdkManagerTest.cpp">
       <Filter>gltf</Filter>
     </ClCompile>
+    <ClCompile Include="gltf\gltfSkeletonReadTest.cpp">
+      <Filter>gltf</Filter>
+    </ClCompile>
+    <ClCompile Include="gltf\gltfSkinReadTest.cpp">
+      <Filter>gltf</Filter>
+    </ClCompile>
+    <ClCompile Include="gltf\gltfAnimReadTest.cpp">
+      <Filter>gltf</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ietPlatform.hpp">
       <Filter>Support</Filter>
     </ClInclude>
     <ClInclude Include="ietTempDir.hpp">
+      <Filter>Support</Filter>
+    </ClInclude>
+    <ClInclude Include="ietGltfModel.hpp">
       <Filter>Support</Filter>
     </ClInclude>
   </ItemGroup>

@@ -87,13 +87,13 @@ namespace
 				// one weights per blend shape node.
 				if (!i_MorphTargets[w].m_Alias.empty())
 				{
-					i_pMorphAnim->GetMorphKeysForTarget(i_MorphTargets[w].m_Alias);
+					morph_keys = i_pMorphAnim->GetMorphKeysForTarget(i_MorphTargets[w].m_Alias);
 				}
 				// If we didn't get a morph animation channel through the
 				// alis, try to use the blend shape node (the older format).
 				if (!morph_keys)
 				{
-					i_pMorphAnim->GetMorphKeysForTarget(i_MorphTargets[w].m_Name);
+					morph_keys = i_pMorphAnim->GetMorphKeysForTarget(i_MorphTargets[w].m_Name);
 				}
 				if (morph_keys)
 				{

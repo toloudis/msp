@@ -97,10 +97,14 @@
     <ClCompile Include="gltf\gltfSceneImportTest.cpp" />
     <ClCompile Include="gltf\gltfSceneReadTest.cpp" />
     <ClCompile Include="gltf\gltfSdkManagerTest.cpp" />
+    <ClCompile Include="gltf\gltfSkeletonReadTest.cpp" />
+    <ClCompile Include="gltf\gltfSkinReadTest.cpp" />
+    <ClCompile Include="gltf\gltfAnimReadTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ietPlatform.hpp" />
     <ClInclude Include="ietTempDir.hpp" />
+    <ClInclude Include="ietGltfModel.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\LibXLT\Core\Core.vcxproj">

@@ -224,6 +224,46 @@ entAnimKeys* entImport::LoadAnimKeys(const fsLocator& i_AnimLocator)
 }
 
 //----------------------------------------------------------------------------
+// Load one clip of a file for one part of it
+//----------------------------------------------------------------------------
+entAnimKeys* entImport::LoadAnimKeys(const fsLocator& i_AnimLocator,
+									 const std::string& i_Part,
+									 const std::string& i_Clip)
+{
+	if (i_Clip.empty())
+		return LoadAnimKeys(i_AnimLocator);
+
+	try
+	{
+		int nimpl = (int) l_pImplementations.size();
+		for (int i=0; i<nimpl; i++)
+		{
+			entAnimKeys* keys = l_pImplementations[i]->LoadAnimKeysPart(i_AnimLocator, i_Part, i_Clip);
+			if (keys != NULL)
+				return keys;
+		}
+
+		// No implementation handled this file format, set error string and return NULL
+		DBG_ERROR("Unrecognized animation file format or clip " << i_AnimLocator << " (" << i_Part.c_str() << ", " << i_Clip.c_str() << ")");
+	}
+	catch ( const envExceptionX& i_Ex)
+	{
+		DBG_ERROR("Problem occurred loading animation: " << i_Ex.GetErrorMessage());
+	}
+	catch (const std::bad_alloc&)
+	{
+		DBG_ERROR("Out of memory while loading animation " << i_AnimLocator);
+	}
+	catch (...)
+	{
+		DBG_ERROR("General exception while loading animation " << i_AnimLocator);
+	}
+
+	// If we got here, there was an error, return NULL
+	return NULL;
+}
+
+//----------------------------------------------------------------------------
 // Create animation from key data
 //----------------------------------------------------------------------------
 entAnimation* entImport::CreateAnimation(const entAnimKeys &i_KeyData)

@@ -114,32 +114,40 @@ namespace chtrOperations
 		l_AppenderPatterns = i_Appender ? i_FilePatterns : std::string();
 	}
 
-	//------------------------------------------------------------------------
-	//  LoadAnimation onto the character with the given index.
-	//------------------------------------------------------------------------
-	void  LoadAnimation(int i_Index, const fsLocator &i_AnimLocator)
+	namespace
 	{
-		chtrScriptObject *pCharacter = chtrObjectMgr::GetObject(i_Index);
-		if (pCharacter)
+		//--------------------------------------------------------------------
+		// The steps LoadAnimation and AddAnimationClip share: a new Anim-Full
+		// driver on the character, its info filled in by i_SetInfo and its
+		// times finally set by i_Place (may be empty), an undo operation, and
+		// the time range widened to show it. The driver joins the character
+		// only once its times are final: AddDriver checks it for conflicts
+		// with the character's other drivers, and a new driver starts as a
+		// zero-length one at the current time.
+		//--------------------------------------------------------------------
+		chtrDriverAnimationFull* add_animation_driver(chtrScriptObject *pCharacter,
+													  const std::function<void (tmlnDriverAnimationFullInfo&)>& i_SetInfo,
+													  const std::function<void (chtrDriverAnimationFull&)>& i_Place)
 		{
 			// Create Animation Driver
 			chtrDriverAnimationFull* pDriver = chtrDriverCreator::CreateAnimationDriver(pCharacter);
 			if (pDriver)
 			{
-				pCharacter->AddDriver( pDriver );
-
 				// GetDriverInfo returns a copy that we need to delete
 				std::unique_ptr<tmlnDriverInfo> pInfo( pDriver->GetDriverInfo() );
 				if (tmlnDriverAnimationFullInfo *pAnimInfo = dynamic_cast<tmlnDriverAnimationFullInfo*>(pInfo.get()))
 				{
-					pAnimInfo->m_Info.m_AnimFilename = i_AnimLocator;
-					pAnimInfo->m_Info.m_bUseAnimStart = true;
+					i_SetInfo( *pAnimInfo );
 					pDriver->SetDriverInfo( *pAnimInfo );
 
 					// The SetDriverInfo call above is going to mess up the frame rate,
 					// so restore it to the value from the animation file.
 					pDriver->SetFrameRateFromAnimData();
 				}
+				if (i_Place)
+					i_Place( *pDriver );
+
+				pCharacter->AddDriver( pDriver );
 
 				// Create an undo operation for this driver
 				undoUndoMgr::AddOperation( new cmmAddDriverOperation(pCharacter->CreateReferenceToSelf(), pDriver) );
@@ -159,10 +167,59 @@ namespace chtrOperations
 					min_time = pDriver->GetBeginTime();
 					tmlnTimeLine::SetTimeRange(min_time, max_time);
 				}
-					
+
 				chnlDialogUtil::ObjectSelected(pCharacter);
 			}
+			return pDriver;
 		}
+	}
+
+	//------------------------------------------------------------------------
+	//  LoadAnimation onto the character with the given index.
+	//------------------------------------------------------------------------
+	void  LoadAnimation(int i_Index, const fsLocator &i_AnimLocator)
+	{
+		chtrScriptObject *pCharacter = chtrObjectMgr::GetObject(i_Index);
+		if (pCharacter)
+		{
+			add_animation_driver(pCharacter, [&](tmlnDriverAnimationFullInfo& io_Info)
+			{
+				io_Info.m_Info.m_AnimFilename = i_AnimLocator;
+				io_Info.m_Info.m_bUseAnimStart = true;
+			}, nullptr);
+		}
+	}
+
+	//------------------------------------------------------------------------
+	//  Add one clip of a file as an Anim-Full driver on the named character
+	//------------------------------------------------------------------------
+	maTime AddAnimationClip(const nameString& i_Character, const fsLocator& i_File, const std::string& i_Clip,
+							const std::string& i_DisplayName, const maTime& i_Begin)
+	{
+		chtrScriptObject *pCharacter = chtrObjectMgr::GetObject(chtrObjectMgr::GetIndexForObject(i_Character));
+		if (!pCharacter)
+			return i_Begin;
+
+		chtrDriverAnimationFull* pDriver = add_animation_driver(pCharacter, [&](tmlnDriverAnimationFullInfo& io_Info)
+		{
+			io_Info.m_Info.m_AnimFilename = i_File;
+			io_Info.m_Info.m_AnimClip = i_Clip;
+			io_Info.m_Info.m_AnimName = i_DisplayName;
+			io_Info.m_Info.m_bUseAnimStart = false;
+			io_Info.m_Info.m_bDriverToAnimLength = true;
+		}, [&](chtrDriverAnimationFull& io_Driver)
+		{
+			// exactly from i_Begin (the info's times are float seconds, which
+			// could leave it a unit inside the clip before), for the clip's length
+			io_Driver.SetBeginTime( i_Begin );
+			if (io_Driver.GetAnimationNumFrames() > 0)
+				io_Driver.SetEndTime( i_Begin + maTime::FromSeconds(io_Driver.GetAnimationLength()) );
+			else
+				io_Driver.SetEndTime( i_Begin );
+		});
+		if (!pDriver || pDriver->GetAnimationNumFrames() <= 0)
+			return i_Begin;
+		return pDriver->GetEndTime();
 	}
 
 	//--------------------------------------------------------------------

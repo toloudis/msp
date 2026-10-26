@@ -141,6 +141,12 @@ public:
 	//--------------------------------------------------------------------
 	virtual maFloatRGBA GetClipFillColor() const;
 
+	//--------------------------------------------------------------------
+	// The part of the animation file the animated model is (empty: the
+	// whole file), with which a clip is loaded (entImport::LoadAnimKeys)
+	//--------------------------------------------------------------------
+	virtual std::string GetAnimPart() const { return std::string(); }
+
 protected:
 	//--------------------------------------------------------------------
 	//	PerformSplit - Split up the details of this driver between itself
@@ -183,6 +189,7 @@ private:
 	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------
 	void AnimFileNameChanged(prtyProperty *i_pProperty, bool i_bDirty);
+	void AnimClipChanged(prtyProperty *i_pProperty, bool i_bDirty);
 	void AnimNameChanged(prtyProperty *i_pProperty, bool i_bDirty);
 	void FrameRateChanged(prtyProperty *i_pProperty, bool i_bDirty);
 	void AnimationPropertiesChanged(prtyProperty *i_pProperty, bool i_bDirty);
@@ -200,6 +207,7 @@ private:
 	prtyBoolean		m_bDriverToAnimLength;
 	prtyBoolean		m_bUseAnimStart;
 	prtyFilePath	m_AnimFilename;
+	prtyText		m_AnimClip;				// the clip's identity in the file; empty: the whole file
 	prtyText		m_AnimName;
 	prtyFloat		m_FrameRate;
 	prtyFloat		m_StartFrame;			// -1.0 is default / not set

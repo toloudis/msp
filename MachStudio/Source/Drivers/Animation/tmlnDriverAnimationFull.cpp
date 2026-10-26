@@ -43,14 +43,29 @@ namespace
 {
 	const bool c_UseSharedAssetMgr = true;
 
-	class SharedAnimMgr : public envSharedAssetMgr<entAnimKeys, fsLocator>
+	// an animation: a file, or one clip of a file built for one part of it
+	struct AnimKey
+	{
+		fsLocator m_File;
+		std::string m_Part, m_Clip;
+
+		bool operator<(const AnimKey& i_Other) const
+		{
+			if (m_File < i_Other.m_File) return true;
+			if (i_Other.m_File < m_File) return false;
+			if (m_Part != i_Other.m_Part) return m_Part < i_Other.m_Part;
+			return m_Clip < i_Other.m_Clip;
+		}
+	};
+
+	class SharedAnimMgr : public envSharedAssetMgr<entAnimKeys, AnimKey>
 	{
 		//--------------------------------------------------------------------
 		// Load Animation from filename
 		//--------------------------------------------------------------------
-		virtual entAnimKeys* LoadAsset(const fsLocator& i_Locator)
+		virtual entAnimKeys* LoadAsset(const AnimKey& i_Key)
 		{
-			return entImport::LoadAnimKeys( i_Locator );
+			return entImport::LoadAnimKeys( i_Key.m_File, i_Key.m_Part, i_Key.m_Clip );
 		}
 	};
 	SharedAnimMgr l_SharedAnimationMgr;
@@ -74,6 +89,7 @@ tmlnDriverAnimationFull::tmlnDriverAnimationFull(tmlnChannelAnimationFull &i_Cha
 	m_bDriverToAnimLength("Driver to Anim Length",true),
 	m_bUseAnimStart("Use Anim Start",false),
 	m_AnimFilename("Animation File Name"),
+	m_AnimClip("Anim Clip"),
 	m_AnimName("Anim Name"),
 	m_FrameRate("Frame Rate",g3dConstants::c_fDefaultFrameRate),
 	m_StartFrame("Start Frame",-1),			// -1.0 is default / not set
@@ -94,6 +110,10 @@ tmlnDriverAnimationFull::tmlnDriverAnimationFull(tmlnChannelAnimationFull &i_Cha
 	pTBUII = new prtyTextBoxUIInfo(&(m_AnimName), "Asset", "Display name for animation");
 	const int lc_ANIMTEXT_WIDTH = 150;
 	pTBUII->SetMaxWidth( lc_ANIMTEXT_WIDTH );
+	AddProperty( pTBUII );
+	pTBUII = new prtyTextBoxUIInfo(&(m_AnimClip), "Asset", "Animation in the file, empty for the whole file");
+	pTBUII->SetMaxWidth( lc_ANIMTEXT_WIDTH );
+	pTBUII->SetReadOnly(true);
 	AddProperty( pTBUII );
 	pPUII = new prtyCheckBoxUIInfo(&(m_bDriverToAnimLength), "Asset", "Resize driver length to length of animation at given frame rate");
 	AddProperty( pPUII );
@@ -119,6 +139,7 @@ tmlnDriverAnimationFull::tmlnDriverAnimationFull(tmlnChannelAnimationFull &i_Cha
 
 	// Register callbacks to update dirty bit when properties change
 	m_AnimFilename.AddCallback(new prtyCallbackWrapper<tmlnDriverAnimationFull>(this, &tmlnDriverAnimationFull::AnimFileNameChanged));
+	m_AnimClip.AddCallback(new prtyCallbackWrapper<tmlnDriverAnimationFull>(this, &tmlnDriverAnimationFull::AnimClipChanged));
 	m_AnimName.AddCallback(new prtyCallbackWrapper<tmlnDriverAnimationFull>(this, &tmlnDriverAnimationFull::AnimNameChanged));
 	m_bDriverToAnimLength.AddCallback(new prtyCallbackWrapper<tmlnDriverAnimationFull>(this, &tmlnDriverAnimationFull::DriverToAnimLengthChanged));
 	m_bUseAnimStart.AddCallback(new prtyCallbackWrapper<tmlnDriverAnimationFull>(this, &tmlnDriverAnimationFull::UseAnimStartChanged));
@@ -263,6 +284,7 @@ tmlnDriverInfo*  tmlnDriverAnimationFull::GetDriverInfo() const
 	int anim_index = 0;
 
 	pInfo->m_Info.m_AnimFilename	= m_AnimFilename.GetValue();
+	pInfo->m_Info.m_AnimClip		= m_AnimClip.GetValue();
 	pInfo->m_Info.m_AnimName		= m_AnimName.GetValue();
 	pInfo->m_Info.m_bDriverToAnimLength = m_bDriverToAnimLength.GetValue();
 	pInfo->m_Info.m_bUseAnimStart	= m_bUseAnimStart.GetValue();
@@ -287,6 +309,9 @@ void tmlnDriverAnimationFull::SetDriverInfo(const tmlnDriverAnimationFullInfo& i
 	this->m_bUseAnimStart = false;
 
 	this->SetBaseDriverInfo(i_Info);
+
+	// the clip first: the file name's change loads the animation
+	this->m_AnimClip.SetValue(i_Info.m_Info.m_AnimClip );
 
 	// this will load and create the animation as needed
 	this->m_AnimFilename.SetValue(i_Info.m_Info.m_AnimFilename );
@@ -529,10 +554,15 @@ void tmlnDriverAnimationFull::load_animation()
 		if (fsFileUtil::FileExists(anim_loc))
 		{
 			// Load the animation (either ourselves, or through shared animation manager
+			AnimKey key;
+			key.m_File = anim_loc;
+			key.m_Clip = m_AnimClip.GetValue();
+			if (!key.m_Clip.empty())
+				key.m_Part = this->GetAnimPart();
 			if (c_UseSharedAssetMgr)
-				m_pAnimKeys = l_SharedAnimationMgr.Load( anim_loc );
+				m_pAnimKeys = l_SharedAnimationMgr.Load( key );
 			else
-				m_pAnimKeys = entImport::LoadAnimKeys( anim_loc );
+				m_pAnimKeys = entImport::LoadAnimKeys( key.m_File, key.m_Part, key.m_Clip );
 			
 			// Get start time exported with animation data
 			if (m_pAnimKeys)
@@ -638,6 +668,14 @@ void tmlnDriverAnimationFull::AnimFileNameChanged(prtyProperty *i_pProperty, boo
 	{
 		load_animation();
 	}
+}
+
+//--------------------------------------------------------------------
+// a new clip reloads, as a new file does
+//--------------------------------------------------------------------
+void tmlnDriverAnimationFull::AnimClipChanged(prtyProperty *i_pProperty, bool i_bDirty)
+{
+	AnimFileNameChanged(i_pProperty, i_bDirty);
 }
 
 //--------------------------------------------------------------------

@@ -8,6 +8,7 @@
 #include "ImportExport/gltf/import/private/gltfMeshImport.hpp"
 #include "ImportExport/gltf/import/private/gltfAccessorUtil.hpp"
 #include "ImportExport/gltf/import/private/gltfMaterialImport.hpp"
+#include "ImportExport/gltf/import/private/gltfSkinRead.hpp"
 
 #include "Core/dbg/dbgMsg.hpp"
 #include "Graphics/g3d/g3dSceneNode.hpp"
@@ -16,6 +17,12 @@
 #include "Graphics/mdl/mdlFragInfo.hpp"
 #include "Graphics/mdl/mdlFragUtil.hpp"
 #include "Graphics/mdl/mdlSplitFragInfo.hpp"
+#ifndef SMDL_SKININFO_HPP
+#include "Graphics/mdl/mdlSkinInfo.hpp"
+#endif
+#ifndef SMDL_CHARACTERSKIN_HPP
+#include "Graphics/smdl/smdlCharacterSkin.hpp"
+#endif
 
 #include <algorithm>
 #include <map>
@@ -31,6 +38,18 @@ namespace gltfMeshImport
 
 	namespace
 	{
+		//------------------------------------------------------------------------
+		// what a skinned or morphing mesh gathers per vertex, in vertex order
+		//------------------------------------------------------------------------
+		struct SkinSink
+		{
+			const std::vector<int>* m_pBoneOfJoint = NULL;	// NULL: every vertex on bone 0
+			size_t m_NumTargets = 0;						// morph targets to gather
+			std::vector<smdlBoneVertex> m_BoneVertices;
+			std::vector<std::vector<maVector3d>> m_Targets;	// [target][vertex], deltas in centimetres
+			bool m_bRenormalized = false;
+		};
+
 		//------------------------------------------------------------------------
 		// group of primitive indices per material
 		//------------------------------------------------------------------------
@@ -148,7 +167,8 @@ namespace gltfMeshImport
 		// Returns false if the primitive could not be read.
 		//--------------------------------------------------------------------
 		bool append_primitive(const tinygltf::Model* i_pModel, const tinygltf::Mesh& i_Mesh, int i_PrimIndex,
-							  bool i_bWriteUVs, mdlFragInfo& o_MeshInfo)
+							  bool i_bWriteUVs, const std::vector<float>& i_BakedWeights, SkinSink* io_pSkin,
+							  mdlFragInfo& o_MeshInfo)
 		{
 			const tinygltf::Primitive& prim = i_Mesh.primitives[i_PrimIndex];
 
@@ -201,14 +221,63 @@ namespace gltfMeshImport
 			if (triangles.empty())
 				return false;
 
+			// morph deltas, for baking default weights or for the skin's morph targets
+			std::vector<std::vector<maVector3d>> deltas;
+			if ((!i_BakedWeights.empty() || (io_pSkin && io_pSkin->m_NumTargets > 0))
+				&& !gltfSkinRead::ReadMorphDeltas(*i_pModel, prim, num_verts, deltas))
+			{
+				DBG_WARNING("glTF mesh " << i_Mesh.name << ": could not read the morph targets of primitive " << i_PrimIndex);
+				deltas.clear();
+			}
+
+			if (io_pSkin)
+			{
+				// bone influences: every vertex on bone 0 without a skeleton
+				std::vector<std::vector<gltfSkinRead::gltfInfluence>> influences;
+				if (io_pSkin->m_pBoneOfJoint)
+				{
+					bool bRenormalized = false;
+					if (gltfSkinRead::ReadInfluences(*i_pModel, prim, *io_pSkin->m_pBoneOfJoint, influences, bRenormalized))
+						io_pSkin->m_bRenormalized |= bRenormalized;
+					else
+						DBG_WARNING("glTF mesh " << i_Mesh.name << ": primitive " << i_PrimIndex << " has no readable joints and weights; it follows the skeleton root");
+				}
+				const gltfSkinRead::gltfInfluence root = { 0, 1 };
+				influences.resize(num_verts, std::vector<gltfSkinRead::gltfInfluence>(1, root));
+				for (size_t v = 0; v < num_verts; v++)
+				{
+					smdlBoneVertex bone_vertex;
+					for (const gltfSkinRead::gltfInfluence& influence : influences[v])
+					{
+						scBoneInfluence bone_influence;
+						bone_influence.m_fWeight = influence.m_Weight;
+						bone_influence.m_BoneIndex = influence.m_Bone;
+						bone_vertex.m_Influences.push_back(bone_influence);
+					}
+					io_pSkin->m_BoneVertices.push_back(bone_vertex);
+				}
+
+				// a primitive with fewer targets contributes zeros
+				io_pSkin->m_Targets.resize(io_pSkin->m_NumTargets);
+				for (size_t t = 0; t < io_pSkin->m_NumTargets; t++)
+				{
+					if (t < deltas.size())
+						io_pSkin->m_Targets[t].insert(io_pSkin->m_Targets[t].end(), deltas[t].begin(), deltas[t].end());
+					else
+						io_pSkin->m_Targets[t].resize(io_pSkin->m_Targets[t].size() + num_verts);
+				}
+			}
+
 			const size_t first_vertex = o_MeshInfo.m_Vertices.size();
 			const size_t first_index = o_MeshInfo.m_Indices.size();
 
 			for (size_t v = 0; v < num_verts; v++)
 			{
-				o_MeshInfo.m_Vertices.push_back(maPoint3d(positions[v * 3] * c_UnitScale,
-														  positions[v * 3 + 1] * c_UnitScale,
-														  positions[v * 3 + 2] * c_UnitScale));
+				maPoint3d position(positions[v * 3] * c_UnitScale, positions[v * 3 + 1] * c_UnitScale,
+								   positions[v * 3 + 2] * c_UnitScale);
+				for (size_t t = 0; t < i_BakedWeights.size() && t < deltas.size(); t++)
+					position += deltas[t][v] * i_BakedWeights[t];
+				o_MeshInfo.m_Vertices.push_back(position);
 				if (!normals.empty())
 					o_MeshInfo.m_Normals.push_back(maVector3d(normals[v * 3], normals[v * 3 + 1], normals[v * 3 + 2]));
 				else
@@ -240,7 +309,9 @@ namespace gltfMeshImport
 		void get_frag_info(const tinygltf::Model* i_pModel, const tinygltf::Mesh& i_Mesh, 
 						   mdlFragInfo& o_MeshInfo,
 						   mdlMatInfoTable& io_MaterialTable,
-						   std::vector<bool>& o_DoubleSided)
+						   std::vector<bool>& o_DoubleSided,
+						   const std::vector<float>& i_BakedWeights,
+						   SkinSink* io_pSkin)
 		{
 			std::vector<MaterialPolyGroup> poly_groups;
 			process_poly_materials(i_pModel, i_Mesh, poly_groups);
@@ -275,7 +346,8 @@ namespace gltfMeshImport
 				const int num_indices = poly_group.m_PolyIndices.size();
 				for (int pi=0; pi<num_indices; pi++)
 				{
-					append_primitive(i_pModel, i_Mesh, poly_group.m_PolyIndices[pi], has_texture_coords, o_MeshInfo);
+					append_primitive(i_pModel, i_Mesh, poly_group.m_PolyIndices[pi], has_texture_coords, i_BakedWeights,
+									 io_pSkin, o_MeshInfo);
 				}
 
 				// Nothing readable for this material
@@ -305,7 +377,8 @@ namespace gltfMeshImport
 					  mdlMatInfoTable& io_MaterialTable,
 					  std::vector<g3dFragment*>& o_Fragments,
 					  std::vector<matMaterial*>& o_Materials,
-					  const fsLocator& i_ContainingFile)
+					  const fsLocator& i_ContainingFile,
+					  const std::vector<float>& i_BakedWeights)
 					  //std::vector<matTexture*>& o_Textures)
 	{
 		const bool bCreateMaterials = true;
@@ -314,7 +387,7 @@ namespace gltfMeshImport
 
 		mdlFragInfo frag_info;
 		std::vector<bool> double_sided;
-		get_frag_info(i_pModel, *i_Mesh, frag_info, io_MaterialTable, double_sided);
+		get_frag_info(i_pModel, *i_Mesh, frag_info, io_MaterialTable, double_sided, i_BakedWeights, NULL);
 		if (frag_info.m_Materials.empty())
 			return;
 
@@ -361,5 +434,54 @@ namespace gltfMeshImport
 
 	}
 
-}	// end of namespace
+	//------------------------------------------------------------------------
+	//	ConvertSkinnedMesh converts the glTF mesh into one skinned surface
+	//------------------------------------------------------------------------
+	void ConvertSkinnedMesh(const tinygltf::Model* i_pModel, const tinygltf::Mesh* i_Mesh,
+							const tinygltf::Node& i_Node,
+							const std::vector<int>* i_pBoneOfJoint,
+							const std::vector<float>& i_BakedWeights,
+							mdlMatInfoTable& io_MaterialTable,
+							std::vector<matMaterial*>& o_Materials,
+							const fsLocator& i_ContainingFile,
+							mdlSkinInfo& o_Skin)
+	{
+		const bool bCreateMaterials = true;
+		gltfMaterialImport::GetNodeMaterials(i_pModel, i_Mesh,
+				io_MaterialTable, o_Materials, bCreateMaterials, i_ContainingFile);
 
+		SkinSink skin;
+		skin.m_pBoneOfJoint = i_pBoneOfJoint;
+		skin.m_NumTargets = i_BakedWeights.empty() ? gltfSkinRead::NumMorphTargets(*i_Mesh) : 0;
+
+		mdlFragInfo frag_info;
+		std::vector<bool> double_sided;
+		get_frag_info(i_pModel, *i_Mesh, frag_info, io_MaterialTable, double_sided, i_BakedWeights, &skin);
+		if (frag_info.m_Materials.empty())
+			return;
+		if (skin.m_bRenormalized)
+			DBG_WARNING("glTF mesh " << i_Mesh->name << ": some vertex weights don't sum to 1; they were renormalized");
+
+		frag_info.m_Name = !i_Node.name.empty() ? i_Node.name : i_Mesh->name;
+		frag_info.m_NumOrigVertices = (int)frag_info.m_Vertices.size();
+		frag_info.m_NumOrigNormals = (int)frag_info.m_Normals.size();
+		// smdl splits the skin's fragments, with one double-sided flag for all
+		frag_info.m_Flags.m_bDoubleSided = std::find(double_sided.begin(), double_sided.end(), true) != double_sided.end();
+
+		shared_ptr<smdlCharacterSkin> character_skin(new smdlCharacterSkin());
+		character_skin->m_BoneVertices.swap(skin.m_BoneVertices);
+		for (size_t t = 0; t < skin.m_Targets.size(); t++)
+		{
+			shared_ptr<smdlMorphTarget> target(new smdlMorphTarget());
+			target->m_Name = gltfSkinRead::MorphTargetKey((int)t);
+			target->m_Offsets.swap(skin.m_Targets[t]);
+			target->m_bOffsetsAreDeltas = true;
+			character_skin->m_MorphTargets.push_back(target);
+		}
+
+		o_Skin.m_MeshInfo.reset(new mdlFragInfo(frag_info));
+		o_Skin.m_SkinInfo = character_skin;
+		o_Skin.m_SceneNodeName.clear();
+	}
+
+}	// end of namespace

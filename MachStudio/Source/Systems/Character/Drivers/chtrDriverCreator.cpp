@@ -179,7 +179,7 @@ void chtrDriverCreator::GatherPossibleDrivers( const tmlnScriptObject* i_pObject
 chtrDriverAnimationFull* chtrDriverCreator::CreateAnimationDriver( chtrScriptObject* i_pObject )
 {
 	chtrDriverAnimationFull* pDriver = new chtrDriverAnimationFull( i_pObject->ChannelAnimationFull(),
-		c_CDAF, i_pObject->GetDirectory() );
+		c_CDAF, i_pObject->GetDirectory(), i_pObject->GetBaseData().m_SourceIdentity );
 	pDriver->SetName( CHTRDRIVERNAME_ANIMATIONFULL );
 	pDriver->SetInitialTime(0.0f);
 	pDriver->ShowIcons( chtrObjectMgr::IconsVisible() );
@@ -250,7 +250,7 @@ tmlnDriver* chtrDriverCreator::CreateDriverByName( const char* i_DriverName,
 	if ( itStringUtil::CompareNoCase(i_DriverName, CHTRDRIVERNAME_ANIMATIONFULL) == 0 )
 	{
 		chtrDriverAnimationFull* pDriver = new chtrDriverAnimationFull( chtr_obj->ChannelAnimationFull(),
-			c_CDAF, chtr_obj->GetDirectory() );
+			c_CDAF, chtr_obj->GetDirectory(), chtr_obj->GetBaseData().m_SourceIdentity );
 		pDriver->SetName( CHTRDRIVERNAME_ANIMATIONFULL );
 		pDriver->SetInitialTime(0.0f);
 		pDriver->ShowIcons( chtrObjectMgr::IconsVisible() );
@@ -409,7 +409,7 @@ tmlnDriver* chtrDriverCreator::CreateDriverFromInfo( tmlnScriptObject* io_pObjec
 		tmlnDriverAnimationFullInfo driver_info( dynamic_cast<const tmlnDriverAnimationFullInfo&>(i_Info) );
 		resolve_animpath(driver_info.m_Info.m_AnimFilename, chtr_obj->GetDirectory());
 		chtrDriverAnimationFull * pDriver = new chtrDriverAnimationFull( chtr_obj->ChannelAnimationFull(),
-			c_CDAF, chtr_obj->GetDirectory() );
+			c_CDAF, chtr_obj->GetDirectory(), chtr_obj->GetBaseData().m_SourceIdentity );
 		pDriver->SetDriverInfo(driver_info);
 
 		tmlnChannel& channel = chtr_obj->ChannelAnimationFull();

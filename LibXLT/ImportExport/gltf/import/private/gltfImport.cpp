@@ -13,6 +13,7 @@
 #include "ImportExport/gltf/import/private/gltfSdkManager.hpp"
 #include "ImportExport/gltf/import/private/gltfSceneRead.hpp"
 #include "ImportExport/gltf/import/private/gltfPlacement.hpp"
+#include "ImportExport/gltf/import/private/gltfAnimKeys.hpp"
 
 #ifndef DBG_MSG_HPP
 #include "Core/Dbg/dbgMsg.hpp"
@@ -20,6 +21,12 @@
 #include "Core/Fs/fsFileUtil.hpp"
 #include "Core/Fs/fsResourceTracker.hpp"
 #include "Graphics/emdl/emdlCharacterTemplate.hpp"
+#ifndef EMDL_CHARACTERANIMKEYS_HPP
+#include "Graphics/emdl/emdlCharacterAnimKeys.hpp"
+#endif
+#ifndef G3D_CONSTANTS_HPP
+#include "Graphics/G3d/g3dConstants.hpp"
+#endif
 
 namespace
 {
@@ -128,13 +135,9 @@ entModelTemplate* gltfImport::LoadGeometryPart( const fsLocator& i_ModelLocator,
 
 	std::unique_ptr<emdlCharacterTemplate> mdl_template(new emdlCharacterTemplate());
 
-	// a non-uniform scale goes into the template (the character's scale is one float)
-	const maVector3d baked_scale = pObject->m_bUniformScale ? maVector3d(1, 1, 1) : pObject->m_Scale;
-
 	g3dSceneNode* pBase;
 	gltfModelImport::LoadNodeMesh(	pScene.get(),
-									pObject->m_Node,
-									baked_scale,
+									*pObject,
 									i_ModelLocator,
 									pBase,
 									mdl_template->SkinnedSurfaces(),
@@ -173,10 +176,50 @@ entAnimKeys* gltfImport::LoadAnimKeys(const fsLocator& i_AnimLocator)
 }
 
 //----------------------------------------------------------------------------
+// Load one clip built for one mesh node
+//----------------------------------------------------------------------------
+entAnimKeys* gltfImport::LoadAnimKeysPart(const fsLocator& i_AnimLocator,
+										  const std::string& i_Part,
+										  const std::string& i_Clip)
+{
+	std::string filename;
+	fsFileUtil::LocatorToANSIFilename(i_AnimLocator, filename);
+	if (!gltfSdkManager::IsRecognizedFileFormat(filename.c_str()))
+		return NULL;	// let the next implementation try
+
+	std::shared_ptr<const tinygltf::Model> pScene = gltfSdkManager::LoadSceneShared(filename.c_str());
+	if (!pScene)
+		return NULL;
+
+	const std::vector<gltfSceneObject> objects = gltfSceneRead::ReadScene(*pScene);
+	const gltfSceneObject* pObject = gltfPlacement::FindMeshObject(objects, i_Part);
+	if (!pObject)
+	{
+		DBG_WARNING("glTF file " << filename << " has no mesh node " << i_Part << " for animation " << i_Clip);
+		return NULL;
+	}
+
+	gltfClip clip;
+	if (!gltfAnimRead::ReadClip(*pScene, i_Clip, g3dConstants::c_fDefaultFrameRate, clip))
+	{
+		DBG_WARNING("glTF file " << filename << " has no animation " << i_Clip << " (for " << i_Part << ")");
+		return NULL;
+	}
+
+	fsResourceTracker::MarkBegin(i_AnimLocator);
+	emdlCharacterAnimKeys* pKeys = gltfAnimKeys::Build(*pScene, *pObject, clip, g3dConstants::c_fDefaultFrameRate);
+	fsResourceTracker::MarkEnd(i_AnimLocator);
+	if (!pKeys)
+		DBG_WARNING("glTF file " << filename << ": animation " << i_Clip << " doesn't move " << i_Part);
+	return pKeys;
+}
+
+//----------------------------------------------------------------------------
 // Create animation from key data
 //----------------------------------------------------------------------------
 entAnimation* gltfImport::CreateAnimation(const entAnimKeys &i_KeyData)
 {
-	// No animation implementation yet.
+	// emdlImport::CreateAnimation makes the animation from the
+	// emdlCharacterAnimKeys LoadAnimKeysPart builds.
 	return NULL;
 }

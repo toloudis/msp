@@ -170,3 +170,27 @@ TEST(gltfSceneImport, ReadsThroughTheRegistry)
 	iscnSceneImport::RemoveImplementation(pImport);
 	EXPECT_FALSE(iscnSceneImport::IsRecognized(dir.GetLocator("scene.gltf")));
 }
+
+TEST(gltfSceneImport, ClipsCopied)
+{
+	std::vector<gltfSceneObject> objects;
+	objects.push_back(Object(gltfSceneObject::e_Group, "Group"));
+	objects.push_back(Object(gltfSceneObject::e_SkinnedMesh, "Body", 0));
+	gltfClipRef walk, unnamed;
+	walk.m_Identity = "Walk";
+	walk.m_Name = "Walk";
+	unnamed.m_Identity = "#1";
+	unnamed.m_Name = "Animation 1";
+	objects[1].m_Clips = { walk, unnamed };
+
+	iscnSceneDesc scene;
+	gltfSceneImport::Convert(objects, "test.gltf", iscnSceneSettings(), scene);
+	ASSERT_EQ(2u, scene.m_Objects.size());
+	EXPECT_TRUE(scene.m_Objects[0].m_Clips.empty());
+	const std::vector<iscnClipDesc>& clips = scene.m_Objects[1].m_Clips;
+	ASSERT_EQ(2u, clips.size());
+	EXPECT_EQ("Walk", clips[0].m_Identity);
+	EXPECT_EQ("Walk", clips[0].m_Name);
+	EXPECT_EQ("#1", clips[1].m_Identity);
+	EXPECT_EQ("Animation 1", clips[1].m_Name);
+}

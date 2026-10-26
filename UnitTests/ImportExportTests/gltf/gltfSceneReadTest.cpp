@@ -265,9 +265,45 @@ TEST(gltfSceneRead, SkinJointsAreNotObjects)
 	ExpectRotation(maRotation(0, sinf(c_Pi / 4), 0, cosf(c_Pi / 4)), hat_object.m_Rotation);
 	ExpectVector(hat_object.m_Scale, 1, 1, 1);
 
+	// the skinned mesh sits at its skeleton root's (Hips's) parent, Rig, appended after the walk
 	EXPECT_EQ(gltfSceneObject::e_SkinnedMesh, objects[2].m_Kind);
 	EXPECT_EQ(0, objects[2].m_Skin);
 	EXPECT_EQ(0, objects[2].m_Parent);
+	ExpectIdentityTransform(objects[2]);
+}
+
+TEST(gltfSceneRead, SkinnedMeshAtSkeletonBase)
+{
+	// Armature (90 degrees about X, scale 0.01) -> { Hips(joint), Body(mesh 0, skin 0, translation (5,0,0)) }
+	tinygltf::Model model;
+	model.meshes.resize(1);
+	const int hips = AddNode(model, "Hips");
+	const int body = AddNode(model, "Body");
+	model.nodes[body].mesh = 0;
+	model.nodes[body].skin = 0;
+	model.nodes[body].translation = { 5, 0, 0 };
+	const int armature = AddNode(model, "Armature", { hips, body });
+	model.nodes[armature].rotation = { sinf(c_Pi / 4), 0, 0, cosf(c_Pi / 4) };
+	model.nodes[armature].scale = { 0.01, 0.01, 0.01 };
+	model.skins.resize(1);
+	model.skins[0].joints = { hips };
+	AddScene(model, { armature });
+
+	std::vector<gltfSceneObject> objects = gltfSceneRead::ReadScene(model);
+	ASSERT_EQ((std::vector<std::string>{ "Armature", "Armature/Body:mesh" }), Identities(objects));
+	EXPECT_EQ(gltfSceneObject::e_SkinnedMesh, objects[1].m_Kind);
+	EXPECT_EQ(0, objects[1].m_Parent);
+	ExpectIdentityTransform(objects[1]);
+
+	// Hips a scene root instead: the skinned mesh at the top, identity
+	tinygltf::Model rootModel = model;
+	rootModel.nodes[armature].children = { body };
+	rootModel.scenes[0].nodes = { hips, armature };
+	objects = gltfSceneRead::ReadScene(rootModel);
+	ASSERT_EQ(2u, objects.size());
+	EXPECT_EQ(gltfSceneObject::e_SkinnedMesh, objects.back().m_Kind);
+	EXPECT_EQ(-1, objects.back().m_Parent);
+	ExpectIdentityTransform(objects.back());
 }
 
 TEST(gltfSceneRead, NoScene)

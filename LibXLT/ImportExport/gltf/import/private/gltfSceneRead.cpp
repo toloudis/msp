@@ -16,6 +16,17 @@
 **	  skin's joints are not objects: their non-joint descendants with
 **	  content attach to the nearest group above, their transforms composed
 **	  through the joints (one warning per such node).
+**	- A skinned mesh is placed at its skeleton, not at its node: glTF
+**	  ignores a skinned mesh node's transform (the vertices follow the
+**	  joints' world transforms). Its character holds the skeleton root R
+**	  (gltfSkeletonRead) with R's local transform, so the object sits at
+**	  R's parent B: a child of B's group with an identity transform, or at
+**	  the top with identity when R is a scene root. When B is a joint of
+**	  another skin (no object), it is a child of the nearest group above B
+**	  with B's transform relative to it (one warning). Skinned meshes are
+**	  appended after the walk, so their parent groups precede them. When
+**	  the skeleton can't be read, the mesh is placed as a plain mesh node
+**	  is (and comes in static).
 **	- Identity: path segments from the scene root joined with '/'. A
 **	  segment is the node's name, or "#<node index>" when the name is empty
 **	  or a sibling (same parent, or another scene root) has the same name.
@@ -59,6 +70,15 @@
 #ifndef GLTF_MESHIMPORT_HPP
 #include "ImportExport/gltf/import/private/gltfMeshImport.hpp"
 #endif
+#ifndef GLTF_NODETRANSFORM_HPP
+#include "ImportExport/gltf/import/private/gltfNodeTransform.hpp"
+#endif
+#ifndef GLTF_ANIMREAD_HPP
+#include "ImportExport/gltf/import/private/gltfAnimRead.hpp"
+#endif
+#ifndef GLTF_SKELETONREAD_HPP
+#include "ImportExport/gltf/import/private/gltfSkeletonRead.hpp"
+#endif
 
 #ifndef DBG_MSG_HPP
 #include "Core/dbg/dbgMsg.hpp"
@@ -69,113 +89,19 @@
 #ifndef MA_CONSTANTS_HPP
 #include "Core/ma/maConstants.hpp"
 #endif
-#ifndef MA_MATRIX3X3_HPP
-#include "Core/ma/maMatrix3x3.hpp"
-#endif
 #ifndef MA_MATRIX4X4_HPP
 #include "Core/ma/maMatrix4x4.hpp"
 #endif
 
 #include <cmath>
+#include <map>
 #include <set>
 #include <sstream>
 
 
 namespace
 {
-	struct Transform
-	{
-		maVector3d m_Translation;
-		maRotation m_Rotation;
-		maVector3d m_Scale = maVector3d(1, 1, 1);
-	};
-
-	//--------------------------------------------------------------------
-	// the node's local matrix (row vectors, as ours; centimetres)
-	//--------------------------------------------------------------------
-	maMatrix4x4 node_matrix(const tinygltf::Node& i_Node)
-	{
-		maMatrix4x4 m;
-		if (i_Node.matrix.size() == 16)
-		{
-			// glTF matrices are column-major with column vectors, which has the
-			// same memory layout as our row-major, row-vector matrices
-			for (int i = 0; i < 16; ++i)
-				m.Ptr()[i] = (float)i_Node.matrix[i];
-			for (int i = 12; i < 15; ++i)
-				m.Ptr()[i] *= gltfMeshImport::c_UnitScale;
-			return m;
-		}
-
-		maVector3d scale(1, 1, 1), trans;
-		maRotation rot;
-		if (i_Node.scale.size() == 3)
-			scale = maVector3d((float)i_Node.scale[0], (float)i_Node.scale[1], (float)i_Node.scale[2]);
-		if (i_Node.rotation.size() == 4)
-			rot = maRotation((float)i_Node.rotation[0], (float)i_Node.rotation[1], (float)i_Node.rotation[2], (float)i_Node.rotation[3]);
-		if (i_Node.translation.size() == 3)
-			trans = maVector3d((float)i_Node.translation[0], (float)i_Node.translation[1], (float)i_Node.translation[2]) * gltfMeshImport::c_UnitScale;
-
-		m.MakeScale(scale.m_X, scale.m_Y, scale.m_Z);
-		m *= rot.GetMatrix();
-		m.TranslateBy(trans.m_X, trans.m_Y, trans.m_Z);
-		return m;
-	}
-
-	//--------------------------------------------------------------------
-	// translation, rotation and scale of a matrix: scale is the basis
-	// vectors' lengths (one negated for a mirror), rotation the
-	// normalized basis
-	//--------------------------------------------------------------------
-	Transform decompose(const maMatrix4x4& i_Matrix)
-	{
-		Transform t;
-		const float* p = i_Matrix.GetPtr();
-		t.m_Translation = maVector3d(p[12], p[13], p[14]);
-
-		maVector3d rows[3];
-		float scale[3];
-		for (int r = 0; r < 3; r++)
-		{
-			rows[r] = maVector3d(p[r * 4], p[r * 4 + 1], p[r * 4 + 2]);
-			scale[r] = rows[r].Length();
-		}
-		const float det = rows[0].m_X * (rows[1].m_Y * rows[2].m_Z - rows[1].m_Z * rows[2].m_Y)
-						- rows[0].m_Y * (rows[1].m_X * rows[2].m_Z - rows[1].m_Z * rows[2].m_X)
-						+ rows[0].m_Z * (rows[1].m_X * rows[2].m_Y - rows[1].m_Y * rows[2].m_X);
-		if (det < 0)
-			scale[0] = -scale[0];
-
-		maMatrix3x3 rot;
-		for (int r = 0; r < 3; r++)
-		{
-			const maVector3d axis = (scale[r] != 0) ? rows[r] * (1.0f / scale[r]) : maVector3d();
-			rot(r, 0) = axis.m_X;
-			rot(r, 1) = axis.m_Y;
-			rot(r, 2) = axis.m_Z;
-		}
-		t.m_Rotation.SetValue(rot);
-		t.m_Scale = maVector3d(scale[0], scale[1], scale[2]);
-		return t;
-	}
-
-	//--------------------------------------------------------------------
-	// the node's transform: TRS as given, else its matrix decomposed
-	//--------------------------------------------------------------------
-	Transform node_transform(const tinygltf::Node& i_Node)
-	{
-		if (i_Node.matrix.size() == 16)
-			return decompose(node_matrix(i_Node));
-
-		Transform t;
-		if (i_Node.scale.size() == 3)
-			t.m_Scale = maVector3d((float)i_Node.scale[0], (float)i_Node.scale[1], (float)i_Node.scale[2]);
-		if (i_Node.rotation.size() == 4)
-			t.m_Rotation = maRotation((float)i_Node.rotation[0], (float)i_Node.rotation[1], (float)i_Node.rotation[2], (float)i_Node.rotation[3]);
-		if (i_Node.translation.size() == 3)
-			t.m_Translation = maVector3d((float)i_Node.translation[0], (float)i_Node.translation[1], (float)i_Node.translation[2]) * gltfMeshImport::c_UnitScale;
-		return t;
-	}
+	using gltfNodeTransform::Transform;
 
 	//--------------------------------------------------------------------
 	// a KHR_lights_punctual light in MachStudio's units (see the top)
@@ -275,6 +201,39 @@ namespace
 			}
 		}
 
+		//----------------------------------------------------------------
+		// the skinned meshes, at their skeleton root's parent (see the top)
+		//----------------------------------------------------------------
+		void AddSkinnedMeshes()
+		{
+			for (const SkinnedMesh& mesh : m_SkinnedMeshes)
+			{
+				int parent = -1;
+				Transform transform;
+				if (mesh.m_Base >= 0)
+				{
+					std::map<int, Placement>::const_iterator it = m_Placements.find(mesh.m_Base);
+					if (it == m_Placements.end())
+					{
+						DBG_WARNING("glTF skinned mesh " << mesh.m_Path << ": its skeleton's parent node isn't an object; placed at the top");
+					}
+					else
+					{
+						parent = it->second.m_Object;
+						if (it->second.m_bBelowJoint)
+						{
+							DBG_WARNING("glTF skinned mesh " << mesh.m_Path << ": its skeleton's parent is a joint; placed with the joint's transform at the time of import");
+							transform = gltfNodeTransform::Decompose(it->second.m_Matrix);
+						}
+					}
+				}
+				const int index = Add(gltfSceneObject::e_SkinnedMesh, mesh.m_Node, mesh.m_Path + ":mesh",
+									  m_Model.meshes[m_Model.nodes[mesh.m_Node].mesh].name, parent, transform);
+				m_Objects[index].m_Mesh = m_Model.nodes[mesh.m_Node].mesh;
+				m_Objects[index].m_Skin = m_Model.nodes[mesh.m_Node].skin;
+			}
+		}
+
 	private:
 		bool IsNode(int i_Node) const
 		{
@@ -340,10 +299,22 @@ namespace
 			if (node.mesh >= 0 && node.mesh < (int)m_Model.meshes.size())
 			{
 				const bool bSkinned = node.skin >= 0 && node.skin < (int)m_Model.skins.size();
-				const int index = Add(bSkinned ? gltfSceneObject::e_SkinnedMesh : gltfSceneObject::e_Mesh, i_Node,
-									  i_Path + ":mesh", m_Model.meshes[node.mesh].name, i_Parent, i_Transform);
-				m_Objects[index].m_Mesh = node.mesh;
-				m_Objects[index].m_Skin = bSkinned ? node.skin : -1;
+				gltfSkeleton skeleton;
+				if (bSkinned && gltfSkeletonRead::Read(m_Model, node.skin, skeleton))
+				{
+					SkinnedMesh mesh;
+					mesh.m_Node = i_Node;
+					mesh.m_Path = i_Path;
+					mesh.m_Base = skeleton.m_Base;
+					m_SkinnedMeshes.push_back(mesh);
+				}
+				else
+				{
+					const int index = Add(bSkinned ? gltfSceneObject::e_SkinnedMesh : gltfSceneObject::e_Mesh, i_Node,
+										  i_Path + ":mesh", m_Model.meshes[node.mesh].name, i_Parent, i_Transform);
+					m_Objects[index].m_Mesh = node.mesh;
+					m_Objects[index].m_Skin = bSkinned ? node.skin : -1;
+				}
 			}
 			if (node.light >= 0 && node.light < (int)m_Model.lights.size())
 			{
@@ -395,9 +366,10 @@ namespace
 			if (m_Joints.count(i_Node))
 			{
 				// not an object: pass its transform down to the objects below it
-				maMatrix4x4 joint = node_matrix(node);
+				maMatrix4x4 joint = gltfNodeTransform::NodeMatrix(node);
 				if (i_pJointMatrix)
 					joint = joint * *i_pJointMatrix;
+				m_Placements[i_Node] = Placement{ i_Parent, true, joint };
 				ReadSiblings(node.children, i_Path, i_Parent, &joint);
 			}
 			else
@@ -406,16 +378,17 @@ namespace
 				if (i_pJointMatrix)
 				{
 					DBG_WARNING("glTF node " << i_Path << " is below a skin joint; it is placed with the joint's transform at the time of import");
-					transform = decompose(node_matrix(node) * *i_pJointMatrix);
+					transform = gltfNodeTransform::Decompose(gltfNodeTransform::NodeMatrix(node) * *i_pJointMatrix);
 				}
 				else
 				{
-					transform = node_transform(node);
+					transform = gltfNodeTransform::NodeTransform(node);
 				}
 
 				if (HasChildren(node))
 				{
 					const int group = Add(gltfSceneObject::e_Group, i_Node, i_Path, "", i_Parent, transform);
+					m_Placements[i_Node] = Placement{ group, false, maMatrix4x4() };
 					AddContent(i_Node, i_Path, group, Transform());
 					ReadSiblings(node.children, i_Path, group, NULL);
 				}
@@ -428,10 +401,27 @@ namespace
 			m_Visiting.erase(i_Node);
 		}
 
+		// where an object below a node goes: a group's object, or a joint's
+		// nearest group with the joints' transforms between them
+		struct Placement
+		{
+			int m_Object;
+			bool m_bBelowJoint;
+			maMatrix4x4 m_Matrix;
+		};
+		struct SkinnedMesh
+		{
+			int m_Node;
+			std::string m_Path;
+			int m_Base;				// the skeleton root's parent, -1 at the top
+		};
+
 		const tinygltf::Model& m_Model;
 		std::vector<gltfSceneObject>& m_Objects;
 		std::set<int> m_Joints;
 		std::set<int> m_Visiting;
+		std::map<int, Placement> m_Placements;
+		std::vector<SkinnedMesh> m_SkinnedMeshes;
 	};
 }
 
@@ -451,6 +441,20 @@ namespace gltfSceneRead
 
 		SceneReader reader(i_Model, objects);
 		reader.ReadSiblings(i_Model.scenes[scene].nodes, "", -1, NULL);
+		reader.AddSkinnedMeshes();
+
+		// the clips that play on each mesh
+		const std::vector<std::string> clips = gltfAnimRead::ClipIdentities(i_Model);
+		for (gltfSceneObject& object : objects)
+		{
+			for (int animation : gltfAnimRead::AnimationsFor(i_Model, object))
+			{
+				gltfClipRef clip;
+				clip.m_Identity = clips[animation];
+				clip.m_Name = gltfAnimRead::ClipName(i_Model, animation);
+				object.m_Clips.push_back(clip);
+			}
+		}
 		return objects;
 	}
 }

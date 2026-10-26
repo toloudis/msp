@@ -14,6 +14,9 @@
 #ifndef CHTR_SCRIPTDATA_HPP
 #include "Systems/Character/Data/chtrScriptData.hpp"
 #endif
+#ifndef MA_TIME_HPP
+#include "Core/Ma/maTime.hpp"
+#endif
 
 #include <functional>
 #include <string>
@@ -46,6 +49,15 @@ namespace chtrOperations
 	//  LoadAnimation onto the character with the given index.
 	//------------------------------------------------------------------------
 	void LoadAnimation(int i_Index, const fsLocator &i_AnimLocator);
+
+	//------------------------------------------------------------------------
+	//  Add one clip of a file (i_Clip: its identity there) as an Anim-Full
+	//  driver on the named character, beginning at i_Begin and lasting the
+	//  clip; returns the driver's end time (i_Begin when the clip didn't
+	//  load). Undoable, as LoadAnimation.
+	//------------------------------------------------------------------------
+	maTime AddAnimationClip(const nameString& i_Character, const fsLocator& i_File, const std::string& i_Clip,
+							const std::string& i_DisplayName, const maTime& i_Begin);
 
 	//------------------------------------------------------------------------
 	//  Add new item to character

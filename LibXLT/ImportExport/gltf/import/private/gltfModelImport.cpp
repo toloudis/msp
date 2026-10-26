@@ -1,18 +1,46 @@
 /****************************************************************************\
 **  gltfModelImport.cpp
 **
+**	LoadNodeMesh: the template of one mesh object
+**
+**	- Skinned (an e_SkinnedMesh whose skeleton gltfSkeletonRead reads): a
+**	  base node (identity) whose one child is the skeleton, built from
+**	  gltfSkeleton::m_Nodes in order (glTF names, local TRS, joints marked
+**	  with their inverse bind matrices), so bones count in that order. The
+**	  mesh is one skinned surface (mdlSkinInfo) on the character's root;
+**	  its morph targets are kept when an animation sets the node's
+**	  weights, else its default weights are baked into the positions.
+**	- Morph-animated (an e_Mesh with clips: an animation sets its
+**	  weights): the base node carries the baked scale and is the one
+**	  joint, with an identity inverse bind pose, so bone 0's matrix is the
+**	  baked scale; every vertex is on bone 0 with weight 1, and the mesh's
+**	  targets are morph targets (weights 0 outside a clip).
+**	- Static: as before, with the default weights (node.weights, else
+**	  mesh.weights) baked into the positions. A skinned mesh whose
+**	  skeleton can't be read comes in this way, with a warning.
+**	- The baked scale: a non-uniform object scale goes into the template
+**	  (the character's scale is one float); else (1, 1, 1).
+**
 **
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "ImportExport/gltf/import/private/gltfModelImport.hpp"
 #include "ImportExport/gltf/import/private/gltfMeshImport.hpp"
+#include "ImportExport/gltf/import/private/gltfAnimRead.hpp"
+#include "ImportExport/gltf/import/private/gltfSkeletonRead.hpp"
+#include "ImportExport/gltf/import/private/gltfSkinRead.hpp"
 
 #include "Core/dbg/dbgMsg.hpp"
 #include "Core/Ma/maConstants.hpp"
 #include "Graphics/g3d/g3dSceneNode.hpp"
+#ifndef MA_ROTATION_HPP
 #include "Core/Ma/maRotation.hpp"
+#endif
 #include "Graphics/mdl/private/mdlRotationOrder.hpp"
+#ifndef SMDL_SKININFO_HPP
+#include "Graphics/mdl/mdlSkinInfo.hpp"
+#endif
 
 #undef FindResource
 
@@ -95,7 +123,8 @@ namespace gltfModelImport
 				tinygltf::Mesh* pMesh = &i_pModel->meshes[i_pNode->mesh];
 					if (pMesh)
 					{
-						gltfMeshImport::ConvertMesh(i_pModel, pMesh, o_pSceneNode, io_MaterialTable, o_Fragments, o_Materials, i_ContainingFile);
+						gltfMeshImport::ConvertMesh(i_pModel, pMesh, o_pSceneNode, io_MaterialTable, o_Fragments, o_Materials, i_ContainingFile,
+													gltfSkinRead::DefaultWeights(*pMesh, *i_pNode));
 					}
 			}
 
@@ -114,6 +143,35 @@ namespace gltfModelImport
 
 				if (new_node)
 					o_pSceneNode->AddChild(new_node);
+			}
+		}
+
+		//------------------------------------------------------------------------
+		// the skeleton's nodes under i_pBase, in m_Nodes order
+		//------------------------------------------------------------------------
+		void build_skeleton(const tinygltf::Model* i_pModel, const gltfSkeleton& i_Skeleton, g3dSceneNode* i_pBase)
+		{
+			std::vector<g3dSceneNode*> nodes;
+			for (const gltfSkeletonNode& skeleton_node : i_Skeleton.m_Nodes)
+			{
+				g3dSceneNode* pNode = new g3dSceneNode();
+				pNode->SetName(i_pModel->nodes[skeleton_node.m_Node].name.c_str());
+
+				maMatrix4x4 matx;
+				matx.MakeScale(skeleton_node.m_Scale.m_X, skeleton_node.m_Scale.m_Y, skeleton_node.m_Scale.m_Z);
+				matx *= skeleton_node.m_Rotation.GetMatrix();
+				matx.TranslateBy(skeleton_node.m_Translation.m_X, skeleton_node.m_Translation.m_Y, skeleton_node.m_Translation.m_Z);
+				pNode->SetTransform(matx);
+
+				if (skeleton_node.m_bJoint)
+				{
+					pNode->SetIsJoint(true);
+					pNode->SetInvBindPose(skeleton_node.m_InvBindPose);
+				}
+
+				g3dSceneNode* pParent = (skeleton_node.m_Parent < 0) ? i_pBase : nodes[skeleton_node.m_Parent];
+				pParent->AddChild(pNode);
+				nodes.push_back(pNode);
 			}
 		}
 
@@ -167,8 +225,7 @@ namespace gltfModelImport
 	//	LoadNodeMesh converts one node's mesh into our scene graph.
 	//------------------------------------------------------------------------
 	void LoadNodeMesh(	const tinygltf::Model* i_pScene,
-						int i_Node,
-						const maVector3d& i_BakedScale,
+						const gltfSceneObject& i_Object,
 						const fsLocator& i_Locator,
 						g3dSceneNode*& o_pSceneNode,
 						std::vector<mdlSkinInfo>& o_SkinData,
@@ -176,18 +233,60 @@ namespace gltfModelImport
 						mdlMatInfoTable& o_MaterialTable,
 						std::vector<matMaterial*>& o_Materials)
 	{
-		const tinygltf::Node& node = i_pScene->nodes[i_Node];
+		const tinygltf::Node& node = i_pScene->nodes[i_Object.m_Node];
 
 		o_pSceneNode = new g3dSceneNode();
 		o_pSceneNode->SetName(node.name.c_str());
 
+		if (node.mesh < 0 || node.mesh >= (int)i_pScene->meshes.size())
+			return;
+		const tinygltf::Mesh& mesh = i_pScene->meshes[node.mesh];
+		const std::vector<float> default_weights = gltfSkinRead::DefaultWeights(mesh, node);
+		const std::vector<float> no_weights;
+
+		// skinned: the skeleton under an identity base, the mesh one skinned surface
+		gltfSkeleton skeleton;
+		if (i_Object.m_Kind == gltfSceneObject::e_SkinnedMesh)
+		{
+			if (gltfSkeletonRead::Read(*i_pScene, i_Object.m_Skin, skeleton))
+			{
+				build_skeleton(i_pScene, skeleton, o_pSceneNode);
+
+				const bool bMorphing = gltfAnimRead::AnimatesWeights(*i_pScene, i_Object.m_Node);
+				mdlSkinInfo skin;
+				gltfMeshImport::ConvertSkinnedMesh(i_pScene, &mesh, node, &skeleton.m_BoneOfJoint,
+												   bMorphing ? no_weights : default_weights,
+												   o_MaterialTable, o_Materials, i_Locator, skin);
+				if (skin.m_MeshInfo)
+					o_SkinData.push_back(skin);
+				return;
+			}
+			DBG_WARNING("glTF mesh " << i_Object.m_Identity << ": its skeleton can't be read; it comes in static, in its bind pose");
+		}
+
+		// the scale the object can't carry
+		const maVector3d baked_scale = i_Object.m_bUniformScale ? maVector3d(1, 1, 1) : i_Object.m_Scale;
 		maMatrix4x4 matx;
-		matx.MakeScale(i_BakedScale.m_X, i_BakedScale.m_Y, i_BakedScale.m_Z);
+		matx.MakeScale(baked_scale.m_X, baked_scale.m_Y, baked_scale.m_Z);
 		o_pSceneNode->SetTransform(matx);
 
-		if (node.mesh >= 0 && node.mesh < (int)i_pScene->meshes.size())
-			gltfMeshImport::ConvertMesh(i_pScene, &i_pScene->meshes[node.mesh], o_pSceneNode, o_MaterialTable,
-										o_Fragments, o_Materials, i_Locator);
+		// morph-animated: the base node is bone 0, its matrix the baked scale
+		if (i_Object.m_Kind == gltfSceneObject::e_Mesh && !i_Object.m_Clips.empty())
+		{
+			o_pSceneNode->SetIsJoint(true);
+			o_pSceneNode->SetInvBindPose(maMatrix4x4());
+
+			mdlSkinInfo skin;
+			gltfMeshImport::ConvertSkinnedMesh(i_pScene, &mesh, node, NULL, no_weights,
+											   o_MaterialTable, o_Materials, i_Locator, skin);
+			if (skin.m_MeshInfo)
+				o_SkinData.push_back(skin);
+			return;
+		}
+
+		// static
+		gltfMeshImport::ConvertMesh(i_pScene, &mesh, o_pSceneNode, o_MaterialTable,
+									o_Fragments, o_Materials, i_Locator, default_weights);
 	}
 
 }	// end of namespace

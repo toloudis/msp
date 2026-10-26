@@ -57,6 +57,15 @@ public:
 	virtual entAnimKeys* LoadAnimKeys( const fsLocator& i_AnimLocator );
 
 	//----------------------------------------------------------------------------
+	// Load one clip (i_Clip: its identity, gltfAnimRead::ClipIdentities) built
+	// for one mesh node (i_Part: its identity, as LoadGeometryPart),
+	// deletion of return value is responsibility of caller
+	//----------------------------------------------------------------------------
+	virtual entAnimKeys* LoadAnimKeysPart( const fsLocator& i_AnimLocator,
+										   const std::string& i_Part,
+										   const std::string& i_Clip );
+
+	//----------------------------------------------------------------------------
 	// Create animation from key data,
 	// deletion of return value is responsibility of caller
 	//----------------------------------------------------------------------------

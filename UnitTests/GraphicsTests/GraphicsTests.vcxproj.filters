@@ -10,6 +10,12 @@
     <Filter Include="G3d">
       <UniqueIdentifier>{f2a2a70d-9290-58bb-b8a0-3f1f62659745}</UniqueIdentifier>
     </Filter>
+    <Filter Include="xfrm">
+      <UniqueIdentifier>{9ebd0003-39ef-466a-a892-6c4820549ddf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gltf">
+      <UniqueIdentifier>{355e3fc0-0bdf-4630-acde-1287a1ce1f91}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Vk">
       <UniqueIdentifier>{e41e15ae-4660-8c90-5013-d92f7425fee5}</UniqueIdentifier>
     </Filter>
@@ -198,6 +204,15 @@
     </ClCompile>
     <ClCompile Include="Vk\g2dResourceCounterVkTest.cpp">
       <Filter>Vk</Filter>
+    </ClCompile>
+    <ClCompile Include="gltf\gltfAnimKeysTest.cpp">
+      <Filter>gltf</Filter>
+    </ClCompile>
+    <ClCompile Include="xfrm\xfrmApplyTransformUtilTest.cpp">
+      <Filter>xfrm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\MachStudio\Source\Support\xfrm\xfrmApplyTransformUtil.cpp">
+      <Filter>xfrm</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

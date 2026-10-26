@@ -59,11 +59,23 @@ struct gltfCameraDesc
 };
 
 //----------------------------------------------------------------------------
+//	A glTF animation that plays on an object (gltfAnimRead.cpp has the rule)
+//----------------------------------------------------------------------------
+struct gltfClipRef
+{
+	std::string m_Identity;		// the animation's identity in the file
+	std::string m_Name;			// display name
+};
+
+//----------------------------------------------------------------------------
 //	One object a glTF node becomes
 //----------------------------------------------------------------------------
 struct gltfSceneObject
 {
 	enum Kind { e_Group, e_Mesh, e_SkinnedMesh, e_Light, e_Camera };
+	// e_SkinnedMesh: placed at its skeleton root's parent with an identity
+	// transform (its node's own transform is ignored, as glTF does), when
+	// its skeleton can be read (gltfSceneRead.cpp has the rule)
 	Kind m_Kind = e_Group;
 	std::string m_Identity;		// the glTF name path (gltfSceneRead.cpp has the rule)
 	std::string m_Name;			// node name; if empty, the mesh/light/camera's name; else "Node_<index>"
@@ -76,6 +88,7 @@ struct gltfSceneObject
 	int m_Mesh = -1, m_Skin = -1, m_Light = -1, m_Camera = -1;	// glTF indices, -1 if not this kind
 	gltfLightDesc m_LightDesc;	// e_Light only
 	gltfCameraDesc m_CameraDesc;	// e_Camera only
+	std::vector<gltfClipRef> m_Clips;	// e_Mesh, e_SkinnedMesh: the animations that play on it, in file order
 };
 
 namespace gltfSceneRead

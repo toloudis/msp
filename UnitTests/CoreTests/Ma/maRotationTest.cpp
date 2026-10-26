@@ -113,6 +113,29 @@ TEST(maRotation, EulerRoundTrip)
 	EXPECT_TRUE(SameRotation(euler_rot, from_euler));
 }
 
+TEST(maRotation, EulerRoundTripAtGimbalLock)
+{
+	// rotations whose Y angle is +-90 degrees: X and Z turn about the same
+	// axis, so only their sum or difference is defined (glTF's Z-up to Y-up
+	// node under a -90 degree turn about Z gives (-0.5, -0.5, -0.5, 0.5))
+	maRotation rotations[] = {
+		maRotation(-0.5f, -0.5f, -0.5f, 0.5f),
+		maRotation(0.5f, 0.5f, 0.5f, 0.5f),
+		maRotation(30 * c_DegToRad, 90 * c_DegToRad, 50 * c_DegToRad),
+		maRotation(30 * c_DegToRad, -90 * c_DegToRad, 50 * c_DegToRad),
+		maRotation(0, 90 * c_DegToRad, 180 * c_DegToRad),
+		maRotation(maVector3d(0, 1, 0), 90 * c_DegToRad),
+	};
+	for( const maRotation& rot : rotations )
+	{
+		float x = 0, y = 0, z = 0;
+		rot.GetEuler(x, y, z);
+		maRotation from_euler;
+		from_euler.SetEuler(x, y, z);
+		EXPECT_TRUE(SameRotation(rot, from_euler)) << rot.GetX() << " " << rot.GetY() << " " << rot.GetZ() << " " << rot.GetW();
+	}
+}
+
 TEST(maRotation, SlerpEndsAndMiddle)
 {
 	maRotation start(maVector3d(0, 0, 1), 0);

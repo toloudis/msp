@@ -56,6 +56,15 @@ struct iscnCameraDesc
 };
 
 //----------------------------------------------------------------------------
+//	An animation of the file that plays on an object
+//----------------------------------------------------------------------------
+struct iscnClipDesc
+{
+	std::string m_Identity;		// its identity in the file (entImport::LoadAnimKeys' clip)
+	std::string m_Name;			// display name
+};
+
+//----------------------------------------------------------------------------
 //	One object
 //----------------------------------------------------------------------------
 struct iscnObjectDesc
@@ -71,6 +80,8 @@ struct iscnObjectDesc
 	float m_Scale = 1;			// world, one scale (groups and meshes)
 	iscnLightDesc m_Light;		// lights only
 	iscnCameraDesc m_Camera;	// e_Camera only
+	std::vector<iscnClipDesc> m_Clips;	// e_Mesh only: the animations of the file that play on it,
+										// in file order, each an Anim-Full clip
 };
 
 //----------------------------------------------------------------------------
