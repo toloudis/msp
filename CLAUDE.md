@@ -298,7 +298,7 @@ implements these).
 |---|---|
 | `An` (`an`) | Animation primitives: key, frame, constant and multi-state animations |
 | `Cam` (`cam`) | Cameras and orbit/target camera manipulators |
-| `Eff` (`eff`) | Effect/material parameter data and parsers (Blinn, Lambert, glow, DOF, fur, hair, displacement, bake, ...); `effPbrData`, a typed view of a `Pbr.fx` material's parameter bag (names, glTF defaults, the Blinn fallback DX11 draws); `effOpacity`, a material's opacity for the passes that draw it with their own shader (depth, ZFill, alpha fill, shadow maps, pick, RSM, the previews): a PBR material's base color map alpha and MASK cutoff, else its transparency map and value |
+| `Eff` (`eff`) | Effect/material parameter data and parsers (Blinn, Lambert, glow, DOF, fur, hair, displacement, bake, ...); `effPbrData`, a typed view of a `Pbr.fx` material's parameter bag (names, glTF defaults, the Blinn fallback: its values, and `MakeBlinnFallbackParams`, the Blinn bag with the PBR bag's textures that DX11 draws and RenderMan exports); `effOpacity`, a material's opacity for the passes that draw it with their own shader (depth, ZFill, alpha fill, shadow maps, pick, RSM, the previews): a PBR material's base color map alpha and MASK cutoff, else its transparency map and value |
 | `Ent` (`ent`) | Entities: model/animation templates and instances, LOD models, scene and scene world |
 | `G2d` (`g2d`) | 2D resources: images, render targets, depth buffers, fonts; image and texture saving for every backend: `g2dImageSave` (an image, or a window captured to one) and `matTextureMgr`'s `SaveTextureTo*` (a texture's mip 0 read back with `g2dScreenCaptureUtil::Capture2DTextureToImage`) write through `g2dImageSaveUtil` (PNG, BMP, JPG, TGA, HDR through stb_image_write; TIFF through libtiff; PPM, PFM and DDS written directly; EXR through OpenEXR; DIB isn't written) |
 | `G3d` (`g3d`) | 3D renderer abstractions: base renderer, fragments, lights, render layers, baking, jitter |
@@ -408,7 +408,7 @@ says why) and installs a Vulkan implementation for every Graphics hook.
 |---|---|
 | `Area18` | Experimental OpenGL (gl3w/GLEW) renderer from 2009: GL device/context, shaders, meshes, a render-graph engine (`rndr`), fontstash text, test scenes. In the solution but not built in any solution configuration, and not linked into MachStudio. |
 | `AudioDS` (`sn`) | Sound: DirectSound 2D/streamed playback, MP3 via DirectShow, Redbook audio; used by sound timeline drivers |
-| `ImportExport` | Scene import/export: `fbx` (FBX SDK import/export), `gltf` (glTF import), `rman` (RenderMan export/live) |
+| `ImportExport` | Scene import/export: `fbx` (FBX SDK import/export), `gltf` (glTF import), `rman` (RenderMan export/live; a PBR material exports as its Blinn fallback, `Surface "Blinn"`, through `rmanExport::ExportShaderParams`) |
 | `Input` (`in`) | Device-independent input: device manager, keyboard, mouse, gamepad, joystick, tablet, virtual joystick. The keyboard and mouse are fed by the GUI toolkit (`tqtInputFeed` / `twxInputFeed`: key and button events plus a per-frame cursor/button sample); no gamepad backend exists |
 | `InputTPC` | Tablet PC (pen/ink) PAC implementation for `Input` |
 | `SecuritySoftwareShield` (`scrtys`) | Licensing via SoftwareShield; the one linked into MachStudio |

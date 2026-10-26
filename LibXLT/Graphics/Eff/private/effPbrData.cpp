@@ -75,6 +75,24 @@ namespace
 	{
 		return (std::min)((std::max)(i_Value, 0.0f), 1.0f);
 	}
+
+	//------------------------------------------------------------------------
+	// io_To's texture parameter i_pToName gets i_From's i_pFromName texture,
+	// ramp and file name
+	//------------------------------------------------------------------------
+	void copy_texture(const effShaderParams& i_From, const char* i_pFromName,
+					  effShaderParams& io_To, const char* i_pToName)
+	{
+		effParamTexture* to = io_To.FindTextureParam(i_pToName);
+		if (!to)
+			return;
+		effParamTexture* from = i_From.FindTextureParam(i_pFromName);
+		to->SetTexture(from ? from->GetTexture() : NULL);
+		to->SetRampTexture(from ? from->GetRampTexture() : NULL);
+		to->SetRampProperty(from ? from->GetSmartRampProperty() : shared_ptr<prtyObject>());
+		if (from)
+			to->Property().SetValueWithoutNotify(from->GetProperty().GetFullValue());
+	}
 }
 
 
@@ -204,4 +222,22 @@ effBlinnData effPbrData::MakeBlinnFallback() const
 	blinn.m_NameDiffuse = m_BaseColorMap;
 	blinn.m_NameEnvironment = m_ReflectionMap;
 	return blinn;
+}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+std::shared_ptr<effShaderParams> effPbrData::MakeBlinnFallbackParams(const effShaderParams& i_Pbr)
+{
+	std::shared_ptr<effShaderParams> blinn(new effShaderParams());
+	FromParams(i_Pbr).MakeBlinnFallback().AddToParams(*blinn);
+	CopyTexturesToBlinnFallback(i_Pbr, *blinn);
+	return blinn;
+}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+void effPbrData::CopyTexturesToBlinnFallback(const effShaderParams& i_Pbr, effShaderParams& io_Blinn)
+{
+	copy_texture(i_Pbr, c_BaseColorMap, io_Blinn, "diffuseMap");
+	copy_texture(i_Pbr, c_ReflectionMap, io_Blinn, "cubeMap");
 }

@@ -3,7 +3,8 @@
 **
 **      effPbrData: glTF defaults, the Pbr.fx parameter bag both ways
 **      (missing parameters and a bad alpha mode read as defaults), and the
-**      Blinn values DX11 draws a Pbr material with.
+**      Blinn values DX11 draws a Pbr material with, and the Blinn bag (with
+**      the Pbr bag's textures) DX11 draws and RenderMan exports.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -13,11 +14,17 @@
 #ifndef EFF_BLINNDATA_HPP
 #include "Graphics/Eff/effBlinnData.hpp"
 #endif
+#ifndef FS_FILEUTIL_HPP
+#include "Core/fs/fsFileUtil.hpp"
+#endif
 #ifndef EFF_SHADERPARAMS_HPP
 #include "Graphics/Eff/effShaderParams.hpp"
 #endif
 
 #include <gtest/gtest.h>
+
+#include <string>
+#include <vector>
 
 namespace
 {
@@ -137,4 +144,96 @@ TEST(effPbrData, BlinnFallbackMatchesTheImporterConversion)
 
 	data.m_Metallic = 3.0f;
 	EXPECT_FLOAT_EQ(data.MakeBlinnFallback().m_Reflectivity, 1.0f);
+}
+
+namespace
+{
+	//	A texture parameter's file name ("" for none): the same path can be
+	//	one locator name or several
+	std::string file_name(const effParamTexture& i_Param)
+	{
+		std::string name;
+		if (i_Param.GetProperty().GetValue().GetNumNames() > 0)
+			fsFileUtil::LocatorToANSIFilename(i_Param.GetProperty().GetValue(), name);
+		return name;
+	}
+
+	//	i_A and i_B have the same parameters with the same values (texture
+	//	parameters by file name)
+	void ExpectSameParams(const effShaderParams& i_A, const effShaderParams& i_B)
+	{
+		std::vector<effParamFloat*> floats;
+		i_A.GetAllFloatParams(floats);
+		std::vector<effParamFloat*> b_floats;
+		i_B.GetAllFloatParams(b_floats);
+		EXPECT_EQ(floats.size(), b_floats.size());
+		for (effParamFloat* a : floats)
+		{
+			const effParamFloat* b = i_B.FindFloatParam(a->GetName());
+			ASSERT_TRUE(b != NULL) << a->GetName();
+			EXPECT_FLOAT_EQ(a->GetProperty().GetValue(), b->GetProperty().GetValue()) << a->GetName();
+		}
+		std::vector<effParamColor*> colors;
+		i_A.GetAllColorParams(colors);
+		std::vector<effParamColor*> b_colors;
+		i_B.GetAllColorParams(b_colors);
+		EXPECT_EQ(colors.size(), b_colors.size());
+		for (effParamColor* a : colors)
+		{
+			const effParamColor* b = i_B.FindColorParam(a->GetName());
+			ASSERT_TRUE(b != NULL) << a->GetName();
+			EXPECT_TRUE(a->GetProperty().GetValue() == b->GetProperty().GetValue()) << a->GetName();
+		}
+		std::vector<effParamTexture*> textures;
+		i_A.GetAllTextureParams(textures);
+		std::vector<effParamTexture*> b_textures;
+		i_B.GetAllTextureParams(b_textures);
+		EXPECT_EQ(textures.size(), b_textures.size());
+		for (effParamTexture* a : textures)
+		{
+			const effParamTexture* b = i_B.FindTextureParam(a->GetName());
+			ASSERT_TRUE(b != NULL) << a->GetName();
+			EXPECT_EQ(file_name(*a), file_name(*b)) << a->GetName();
+		}
+	}
+}
+
+TEST(effPbrData, BlinnFallbackParams)
+{
+	effPbrData data = NonDefault();
+	effShaderParams pbr;
+	data.AddToParams(pbr);
+	//	The textures the Pbr bag has loaded go with their file names (the
+	//	pointers are only copied, never used, here)
+	matTexture* const base = reinterpret_cast<matTexture*>(0x1000);
+	matTexture* const refl = reinterpret_cast<matTexture*>(0x2000);
+	pbr.FindTextureParam(effPbrData::c_BaseColorMap)->SetTexture(base);
+	pbr.FindTextureParam(effPbrData::c_ReflectionMap)->SetTexture(refl);
+
+	const shared_ptr<effShaderParams> blinn = effPbrData::MakeBlinnFallbackParams(pbr);
+	ASSERT_TRUE(blinn != NULL);
+	effShaderParams expected;
+	data.MakeBlinnFallback().AddToParams(expected);
+	ExpectSameParams(expected, *blinn);
+	EXPECT_TRUE(blinn->FindTextureParam("diffuseMap")->GetProperty().GetValue()
+				== pbr.FindTextureParam(effPbrData::c_BaseColorMap)->GetProperty().GetValue());
+	EXPECT_TRUE(blinn->FindTextureParam("cubeMap")->GetProperty().GetValue()
+				== pbr.FindTextureParam(effPbrData::c_ReflectionMap)->GetProperty().GetValue());
+	EXPECT_EQ(base, blinn->FindTextureParam("diffuseMap")->GetTexture());
+	EXPECT_EQ(refl, blinn->FindTextureParam("cubeMap")->GetTexture());
+	EXPECT_EQ(NULL, blinn->FindTextureParam("transparencyMap")->GetTexture());
+
+	//	Edited and converted again: the new values, not a stale copy
+	pbr.FindFloatParam(effPbrData::c_Metallic)->Property().SetValue(0.9f);
+	data.m_Metallic = 0.9f;
+	const shared_ptr<effShaderParams> again = effPbrData::MakeBlinnFallbackParams(pbr);
+	effShaderParams expected_again;
+	data.MakeBlinnFallback().AddToParams(expected_again);
+	ExpectSameParams(expected_again, *again);
+	EXPECT_FALSE(again->FindColorParam("g_specular")->GetProperty().GetValue()
+				 == blinn->FindColorParam("g_specular")->GetProperty().GetValue());
+	EXPECT_FLOAT_EQ(0.9f, again->FindFloatParam("g_reflectivity")->GetProperty().GetValue());
+
+	pbr.FindTextureParam(effPbrData::c_BaseColorMap)->SetTexture(NULL);
+	pbr.FindTextureParam(effPbrData::c_ReflectionMap)->SetTexture(NULL);
 }

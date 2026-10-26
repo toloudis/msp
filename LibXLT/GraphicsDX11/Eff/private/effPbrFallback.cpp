@@ -13,23 +13,6 @@
 #include "Core/dbg/dbgMsg.hpp"
 
 
-namespace
-{
-	//------------------------------------------------------------------------
-	// i_pTo's texture parameter i_pToName gets i_pFrom's i_pFromName texture
-	//------------------------------------------------------------------------
-	void copy_texture(const effShaderParams* i_pFrom, const char* i_pFromName,
-					  effShaderParams* i_pTo, const char* i_pToName)
-	{
-		effParamTexture* to = i_pTo->FindTextureParam(i_pToName);
-		if (!to)
-			return;
-		const effParamTexture* from = i_pFrom->FindTextureParam(i_pFromName);
-		to->SetTexture(from ? from->GetTexture() : NULL);
-	}
-}
-
-
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 effPbrFallback::effPbrFallback(const fsLocator& i_Directory, std::unique_ptr<fxEffect> i_pBlinnEffect, std::string i_Name)
@@ -49,14 +32,14 @@ effShaderParams* effPbrFallback::blinn_params(effShaderParams* i_pPbr) const
 		// A new bag, or the Pbr values changed (an animated channel, or
 		// another material at the same address): convert again
 		entry.m_Data = data;
-		entry.m_pBlinn.reset(new effShaderParams());
-		data.MakeBlinnFallback().AddToParams(*entry.m_pBlinn);
+		entry.m_pBlinn = effPbrData::MakeBlinnFallbackParams(*i_pPbr);
 	}
-
-	// The textures the Pbr bag has loaded (Blinn's are found by name only
-	// when its own bag is loaded, which this one never is)
-	copy_texture(i_pPbr, effPbrData::c_BaseColorMap, entry.m_pBlinn.get(), "diffuseMap");
-	copy_texture(i_pPbr, effPbrData::c_ReflectionMap, entry.m_pBlinn.get(), "cubeMap");
+	else
+	{
+		// The textures the Pbr bag has loaded since (Blinn's are found by
+		// name only when its own bag is loaded, which this one never is)
+		effPbrData::CopyTexturesToBlinnFallback(*i_pPbr, *entry.m_pBlinn);
+	}
 	return entry.m_pBlinn.get();
 }
 

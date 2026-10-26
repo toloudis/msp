@@ -14,7 +14,10 @@
 **        by shadow-casting lights and a shadowed projected light; then the
 **        mirror and the black metal alone through the HDR renderer (a NaN
 **        from the BRDF spreads through bloom and blanks the picture);
-**      - its alpha mode decides whether a material is transparent.
+**      - its alpha mode decides whether a material is transparent;
+**      - the material editor's generic path: the controls its manifest
+**        gives (the alpha mode a combo box, the base color map's ExistVar),
+**        and a material saved and read back with every value.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -57,8 +60,44 @@
 #ifndef MAT_TEXTUREMGR_HPP
 #include "Graphics/Mat/matTextureMgr.hpp"
 #endif
+#ifndef MDL_MATERIALINFO_HPP
+#include "Graphics/mdl/mdlMaterialInfo.hpp"
+#endif
+#ifndef MTR_MATERIALSAVER_HPP
+#include "Graphics/mtr/mtrMaterialSaver.hpp"
+#endif
+#ifndef GVK_EFF_SHADERBASEVK_HPP
+#include "GraphicsVulkan/Eff/effShaderBaseVk.hpp"
+#endif
+#ifndef GVK_FXEFFECTAPI_HPP
+#include "GraphicsVulkan/Fx/fxEffectApi.hpp"
+#endif
+#ifndef CH_BINREADER_HPP
+#include "Core/ch/chBinReader.hpp"
+#endif
+#ifndef CH_BINWRITER_HPP
+#include "Core/ch/chBinWriter.hpp"
+#endif
+#ifndef GF_FILEBIN_HPP
+#include "Core/gf/gfFileBin.hpp"
+#endif
+#ifndef FS_FILEUTIL_HPP
+#include "Core/fs/fsFileUtil.hpp"
+#endif
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
+#endif
+#ifndef FS_RESOURCEFINDERDIR_HPP
+#include "Core/fs/fsResourceFinderDir.hpp"
+#endif
+#ifndef PRTY_COMBOBOXUIINFO_HPP
+#include "Core/prty/prtyComboBoxUIInfo.hpp"
+#endif
+#ifndef PRTY_OBJECT_HPP
+#include "Core/prty/prtyObject.hpp"
+#endif
+#ifndef PRTY_RANGEDFLOATUIINFO_HPP
+#include "Core/prty/prtyRangedFloatUIInfo.hpp"
 #endif
 #ifndef IT_STRING_HPP
 #include "Core/it/itString.hpp"
@@ -71,6 +110,7 @@
 
 #include <functional>
 #include <string>
+#include <typeinfo>
 #include <vector>
 
 namespace
@@ -614,5 +654,250 @@ TEST(effPbrVkTest, MaskShadowsMatchHoledGrid)
 			expect_twins(std::string(r.m_pName) + "/holes show", cases[0].m_Pbr,
 						 shadow_scene(e_Full, pbr(P::e_Opaque, 1.0f, 0.5f, e_ClearMap)), options, false);
 		}
+	});
+}
+
+//============================================================================
+//	Plan 3: the material editor's generic path for a PBR material. The
+//	effect's manifest gives the controls (BuildPrtyObject: the bag's
+//	m_pPrtyUI UI infos, which pqt/pwx turn into widgets) and the .mab saves
+//	the bag as an SHDT chunk; nothing in either is PBR-specific.
+//============================================================================
+namespace
+{
+	//	The UI info in i_pParams' editor for the property labelled i_Label
+	const prtyPropertyUIInfo* ui_info(const effShaderParams* i_pParams, const std::string& i_Label)
+	{
+		for (const shared_ptr<prtyPropertyUIInfo>& info : i_pParams->m_pPrtyUI->GetList())
+		{
+			if (info->GetProperty(0)->GetPropertyName() == i_Label)
+				return info.get();
+		}
+		return NULL;
+	}
+
+	//	The ExistVar i_pName as the material's bindings set it in its effect
+	bool bound_bool(matMaterial* i_pMaterial, const char* i_pName)
+	{
+		shared_ptr<effShaderParams> params = i_pMaterial->GetShaderParams(0);
+		gvk::effShaderBaseVk* effect = dynamic_cast<gvk::effShaderBaseVk*>(params->GetShader());
+		EXPECT_TRUE(effect != NULL);
+		if (!effect)
+			return false;
+		params->m_pShaderBindings->Bind();
+		bool value = false;
+		EXPECT_TRUE(effect->GetFxEffect()->GetVariableByName(i_pName)->AsScalar()->GetBool(&value)) << i_pName;
+		return value;
+	}
+
+	fsLocator locator_of(const std::filesystem::path& i_Path)
+	{
+		fsLocator locator;
+		fsFileUtil::UnicodeStringToLocator(itString(i_Path.wstring().c_str()), locator);
+		return locator;
+	}
+}
+
+TEST(effPbrVkTest, EditorControlsFromManifest)
+{
+	gtBackend::Run(gtBackend::e_Vulkan, []()
+	{
+		std::unique_ptr<matMaterial> pbr(gtScene::ShaderMaterial(effPbrData::c_ShaderName, gtScene::e_Defaults));
+		std::unique_ptr<matMaterial> blinn(gtScene::ShaderMaterial("Blinn.fx", gtScene::e_Defaults));
+		const effShaderParams* params = pbr->GetShaderParams(0).get();
+		const effShaderParams* blinn_params = blinn->GetShaderParams(0).get();
+		ASSERT_TRUE(params->m_pPrtyUI != NULL);
+		ASSERT_TRUE(blinn_params->m_pPrtyUI != NULL);
+
+		//	The UI info classes Blinn's controls get: Base Color is a
+		//	ColorPicker, Base Color Map a TextureFilePicker, the maps
+		//	FilePickers and the numbers Sliders, as Blinn's Diffuse Color,
+		//	Diffuse Map, Emissive Map and Roughness
+		const prtyPropertyUIInfo* colour = ui_info(blinn_params, "Diffuse Color");
+		const prtyPropertyUIInfo* texture = ui_info(blinn_params, "Diffuse Map");
+		const prtyPropertyUIInfo* file = ui_info(blinn_params, "Emissive Map");
+		const prtyPropertyUIInfo* slider = ui_info(blinn_params, "Roughness");
+		ASSERT_TRUE(colour && texture && file && slider) << "Blinn's labels changed";
+
+		enum Kind { e_Colour, e_Texture, e_File, e_Slider, e_Combo };
+		struct Control { const char* m_pLabel; const char* m_pCategory; Kind m_Kind; float m_Max; };
+		const std::vector<Control> expected =
+		{
+			{ "Base Color", "Base", e_Colour, 0 },
+			{ "Base Color Map", "Base", e_Texture, 0 },
+			{ "Metallic", "Metal/Rough", e_Slider, 1 },
+			{ "Roughness", "Metal/Rough", e_Slider, 1 },
+			{ "Metallic (B) Roughness (G) Map", "Metal/Rough", e_File, 0 },
+			{ "Occlusion Map (R)", "Occlusion", e_File, 0 },
+			{ "Occlusion Strength", "Occlusion", e_Slider, 1 },
+			{ "Emissive Color", "Emissive", e_Colour, 0 },
+			{ "Emissive Map", "Emissive", e_File, 0 },
+			{ "Emissive Strength", "Emissive", e_Slider, 100 },
+			{ "Alpha Mode", "Alpha", e_Combo, 0 },
+			{ "Alpha Cutoff", "Alpha", e_Slider, 1 },
+			{ "Reflection Map", "Reflection", e_File, 0 },
+			{ "Map Angle", "Reflection", e_Slider, 360 },
+		};
+		const PropertyUIIList& list = params->m_pPrtyUI->GetList();
+		ASSERT_EQ(expected.size(), list.size());
+		size_t i = 0;
+		for (const shared_ptr<prtyPropertyUIInfo>& info : list)
+		{
+			const Control& c = expected[i++];
+			SCOPED_TRACE(c.m_pLabel);
+			EXPECT_EQ(c.m_pLabel, info->GetProperty(0)->GetPropertyName());
+			EXPECT_EQ(c.m_pCategory, info->GetCategory());
+			const prtyPropertyUIInfo& got = *info;
+			switch (c.m_Kind)
+			{
+				case e_Colour:	EXPECT_EQ(typeid(*colour), typeid(got)); break;
+				case e_Texture:	EXPECT_EQ(typeid(*texture), typeid(got)); break;
+				case e_File:	EXPECT_EQ(typeid(*file), typeid(got)); break;
+				case e_Slider:
+				{
+					EXPECT_EQ(typeid(*slider), typeid(got));
+					const prtyRangedFloatUIInfo* ranged = dynamic_cast<const prtyRangedFloatUIInfo*>(&got);
+					ASSERT_TRUE(ranged != NULL);
+					EXPECT_EQ(0.0f, ranged->GetMinimum());
+					EXPECT_EQ(c.m_Max, ranged->GetMaximum());
+					break;
+				}
+				case e_Combo:
+				{
+					const prtyComboBoxUIInfo* combo = dynamic_cast<const prtyComboBoxUIInfo*>(&got);
+					ASSERT_TRUE(combo != NULL) << typeid(got).name();
+					// index = the value the shader reads (effPbrData::AlphaMode)
+					EXPECT_EQ(std::vector<std::string>({ "Opaque", "Mask", "Blend" }), combo->m_List);
+					EXPECT_EQ(effPbrData::e_Opaque, 0);
+					EXPECT_EQ(effPbrData::e_Mask, 1);
+					EXPECT_EQ(effPbrData::e_Blend, 2);
+					// and it edits the alpha mode parameter
+					EXPECT_EQ(&params->FindIntParam(effPbrData::c_AlphaMode)->Property(), got.GetProperty(0));
+					break;
+				}
+			}
+		}
+
+		//	ExistVar: a base color map picked by file name (the property the
+		//	editor's chooser sets, then loaded as the editor and .mab loading
+		//	do) turns hasBaseColorMap on; clearing the name turns it off
+		gtTempDir dir;
+		matTexture* checker = gtScene::CheckerTexture(dir.GetPath(), 64, 64, 8, true);
+		ASSERT_TRUE(checker != NULL);
+		const std::filesystem::path png = dir.GetPath() / "checker_64x64_8_clear.png";
+		ASSERT_TRUE(std::filesystem::exists(png));
+		effParamTexture* map = params->FindTextureParam(effPbrData::c_BaseColorMap);
+		ASSERT_TRUE(map != NULL);
+		const fsResourceFinderDir finder(locator_of(dir.GetPath()));
+		EXPECT_FALSE(bound_bool(pbr.get(), "hasBaseColorMap")) << "no map";
+		map->Property().SetValue(locator_of(png));
+		EXPECT_TRUE(map->Load(finder));
+		matTexture* loaded = map->GetTexture();
+		EXPECT_TRUE(loaded != NULL);
+		EXPECT_TRUE(bound_bool(pbr.get(), "hasBaseColorMap")) << "map picked";
+		map->Property().SetValue(fsLocator());
+		EXPECT_TRUE(map->Load(finder));
+		EXPECT_EQ(NULL, map->GetTexture());
+		EXPECT_FALSE(bound_bool(pbr.get(), "hasBaseColorMap")) << "map cleared";
+		if (loaded)
+			matTextureMgr::ReleaseTexture(loaded);
+		matTextureMgr::ReleaseTexture(checker);
+	});
+}
+
+TEST(effPbrVkTest, SavedAndReloaded)
+{
+	gtBackend::Run(gtBackend::e_Vulkan, []()
+	{
+		gtTempDir dir;
+		//	Real files for the maps: reading resolves texture paths
+		matTexture* checker = gtScene::CheckerTexture(dir.GetPath(), 64, 64, 8, true);
+		ASSERT_TRUE(checker != NULL);
+		matTextureMgr::ReleaseTexture(checker);
+		const std::filesystem::path png = dir.GetPath() / "checker_64x64_8_clear.png";
+		auto map_file = [&](const char* i_pName)
+		{
+			const std::filesystem::path path = dir.GetPath() / i_pName;
+			std::filesystem::copy_file(png, path);
+			std::string ansi;
+			fsFileUtil::LocatorToANSIFilename(locator_of(path), ansi);
+			return ansi;
+		};
+
+		//	Every field off its default (effPbrDataTest's NonDefault)
+		effPbrData data;
+		data.m_BaseColor.Set(0.2f, 0.4f, 0.6f, 0.5f);
+		data.m_BaseColorMap = map_file("base.png");
+		data.m_Metallic = 0.3f;
+		data.m_Roughness = 0.7f;
+		data.m_MetallicRoughnessMap = map_file("mr.png");
+		data.m_OcclusionMap = map_file("ao.png");
+		data.m_OcclusionStrength = 0.8f;
+		data.m_Emissive.Set(0.1f, 0.2f, 0.3f, 1.0f);
+		data.m_EmissiveMap = map_file("emissive.png");
+		data.m_EmissiveStrength = 3.0f;
+		data.m_AlphaMode = effPbrData::e_Mask;
+		data.m_AlphaCutoff = 0.25f;
+		data.m_ReflectionMap = map_file("refl.png");
+		data.m_ReflectionMapAngle = 90.0f;
+
+		//	The editor's bag (built by the effect), set to those values
+		std::unique_ptr<matMaterial> pbr(gtScene::ShaderMaterial(effPbrData::c_ShaderName, gtScene::e_Defaults));
+		shared_ptr<effShaderParams> written = pbr->GetShaderParams(0);
+		{
+			effShaderParams values;
+			data.AddToParams(values);
+			written->SetMatchingParams(&values);
+		}
+		ASSERT_TRUE(effPbrData::FromParams(*written) == data) << "the values weren't set";
+
+		//	Saved as every material is (the MATR chunk: shader name and the
+		//	SHDT bag) and read back
+		const fsLocator file = locator_of(dir.GetPath() / "material.bin");
+		fsFileUtil::CreateFile(file);
+		{
+			mdlMaterialInfo info;
+			info.SetShaderParams(written);
+			gfFileBin write_file(file, fsFileStream::e_WriteOnly);
+			chBinWriter writer(write_file);
+			mtrMaterialSaver::WriteMaterialData(writer, info);
+		}
+		mdlMaterialInfo read_info;
+		{
+			gfFileBin read_file(file, fsFileStream::e_ReadOnly);
+			chBinReader reader(read_file);
+			chDefs::Name name;
+			chDefs::Version version;
+			chDefs::Size size;
+			ASSERT_TRUE(reader.ReadChunkHeader(name, version, size));
+			ASSERT_EQ(mtrMaterialSaver::GetChunkName(), name);
+			mtrMaterialSaver::ReadMaterialData(reader, version, size, read_info);
+			reader.FinishChunk();
+		}
+		shared_ptr<effShaderParams> read = read_info.GetShaderParams();
+		ASSERT_TRUE(read != NULL);
+		EXPECT_EQ(itString(effPbrData::c_ShaderName), read->GetShaderName().GetLastName());
+		const effPbrData back = effPbrData::FromParams(*read);
+		EXPECT_EQ(effPbrData::e_Mask, back.m_AlphaMode);
+		EXPECT_EQ(data.m_BaseColorMap, back.m_BaseColorMap);
+		EXPECT_EQ(data.m_ReflectionMap, back.m_ReflectionMap);
+		EXPECT_TRUE(back == data);
+
+		//	The loaded material's editor (the effect builds the read bag's
+		//	UI) shows the saved values, not the manifest's defaults
+		matShaderEffect* effect = read->GetShader();
+		ASSERT_TRUE(effect != NULL);
+		effect->BuildPrtyObject(read.get());
+		ASSERT_TRUE(read->m_pPrtyUI != NULL);
+		EXPECT_EQ(written->m_pPrtyUI->GetList().size(), read->m_pPrtyUI->GetList().size());
+		EXPECT_TRUE(effPbrData::FromParams(*read) == data);
+		const prtyPropertyUIInfo* mode = ui_info(read.get(), "Alpha Mode");
+		ASSERT_TRUE(mode != NULL);
+		EXPECT_EQ(&read->FindIntParam(effPbrData::c_AlphaMode)->Property(), mode->GetProperty(0));
+		EXPECT_EQ(effPbrData::e_Mask, read->FindIntParam(effPbrData::c_AlphaMode)->GetProperty().GetValue());
+		const prtyPropertyUIInfo* metallic = ui_info(read.get(), "Metallic");
+		ASSERT_TRUE(metallic != NULL);
+		EXPECT_EQ(&read->FindFloatParam(effPbrData::c_Metallic)->Property(), metallic->GetProperty(0));
+		EXPECT_FLOAT_EQ(0.3f, read->FindFloatParam(effPbrData::c_Metallic)->GetProperty().GetValue());
 	});
 }

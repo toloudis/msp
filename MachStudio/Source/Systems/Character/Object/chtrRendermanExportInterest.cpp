@@ -27,6 +27,8 @@
 
 #include "Tool/api3d/api3dObjectEntity.hpp"
 
+#include "ImportExport/rman/export/rmanExport.hpp"
+
 #include "Support/fgmt/GUI/fgmtPropertyObject.hpp"
 #include "Support/rman/rmanExporter.hpp"
 #include "Support/rman/rmanMgr.hpp"
@@ -53,7 +55,10 @@ void GatherTextures(std::string i_Name, const g3dSceneNode * i_pNode, g3dAmbient
 	{
 		std::vector<effParamTexture*> textures;
 		const matMaterial* mat = currFrag->GetMaterial();
-		mat->GetMaterialLayer(0)->GetShaderParams()->GetAllTextureParams(textures);
+		// the bag the export writes (a PBR material's Blinn fallback), so the
+		// texture names match; it owns the parameters until the loop ends
+		const shared_ptr<effShaderParams> params = rmanExport::ExportShaderParams(*mat);
+		params->GetAllTextureParams(textures);
 	
 		std::string fragName = currFrag->GetFragmentName();
 		std::string matName = currFrag->GetMaterial()->GetName();

@@ -19,6 +19,7 @@
 #include "Core/name/nameString.hpp"
 
 #include "Graphics/cam/camCamera.hpp"
+#include "Graphics/eff/effPbrData.hpp"
 #include "Graphics/eff/effShaderParams.hpp"
 #include "Graphics/g3d/g3dConstants.hpp"
 #include "Graphics/g3d/g3dFragment.hpp"
@@ -435,6 +436,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 	std::string normMapName = "";
 	std::string envDiffMapName = "";
 	std::string envSpecMapName = "";
+	const shared_ptr<effShaderParams> shaderParams = rmanExport::ExportShaderParams(*i_pFrag->GetMaterial());
 	
 	currAttribute << "  Displacement \"Tessellate\" ";
 	
@@ -539,7 +541,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 			currAttribute << endl;
 
 			std::vector<effParamFloat*> floatParams;
-			i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetAllFloatParams(floatParams);
+			shaderParams->GetAllFloatParams(floatParams);
 			for ( int i = 0 ; i < floatParams.size() ; i++ )
 			{
 				effParamFloat* currParam = floatParams[i];
@@ -551,7 +553,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 			}
 			std::vector<effParamTexture*> textureParams;
 
-			i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetAllTextureParams(textureParams);
+			shaderParams->GetAllTextureParams(textureParams);
 			for ( int i = 0 ; i < textureParams.size() ; i++ )
 			{
 				effParamTexture* currParam = textureParams[i];	
@@ -591,7 +593,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 			currAttribute << endl;
 
 			std::vector<effParamFloat*> floatParams;
-			i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetAllFloatParams(floatParams);
+			shaderParams->GetAllFloatParams(floatParams);
 			for ( int i = 0 ; i < floatParams.size() ; i++ )
 			{
 				effParamFloat* currParam = floatParams[i];
@@ -603,7 +605,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 			}
 			std::vector<effParamTexture*> textureParams;
 
-			i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetAllTextureParams(textureParams);
+			shaderParams->GetAllTextureParams(textureParams);
 			for ( int i = 0 ; i < textureParams.size() ; i++ )
 			{
 				effParamTexture* currParam = textureParams[i];	
@@ -656,7 +658,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 			currAttribute << WriteFloat("camFarClip",  io_GlobalData.m_SceneCamera->GetFarClip() );
 
 			std::vector<effParamFloat*> floatParams;
-			i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetAllFloatParams(floatParams);
+			shaderParams->GetAllFloatParams(floatParams);
 			for ( int i = 0 ; i < floatParams.size() ; i++ )
 			{
 				effParamFloat* currParam = floatParams[i];
@@ -667,7 +669,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 			}
 			std::vector<effParamTexture*> textureParams;
 
-			i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetAllTextureParams(textureParams);
+			shaderParams->GetAllTextureParams(textureParams);
 			for ( int i = 0 ; i < textureParams.size() ; i++ )
 			{
 				effParamTexture* currParam = textureParams[i];	
@@ -689,7 +691,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 		// Beauty pass
 		else 
 		{
-			fsLocator shader = fsLocator( i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetShaderName() );
+			fsLocator shader = fsLocator( shaderParams->GetShaderName() );
 			std::string shaderName;
 			fsFileUtil::LocatorToANSIFilename(shader.GetLastName(),shaderName,false);
 			shaderName = shaderName.substr(0,shaderName.length()-3);
@@ -699,7 +701,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 			std::vector<std::string> tempVals;
 			
 			std::vector<effParamTexture*> textureParams;
-			i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetAllTextureParams(textureParams);
+			shaderParams->GetAllTextureParams(textureParams);
 			for ( int i = 0 ; i < textureParams.size() ; i++ )
 			{
 				effParamTexture* currParam = textureParams[i];	
@@ -718,7 +720,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 			}
 			
 			std::vector<effParamColor*> colorParams;
-			i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetAllColorParams(colorParams);
+			shaderParams->GetAllColorParams(colorParams);
 			for ( int i = 0 ; i < colorParams.size() ; i++ )
 			{
 				effParamColor* currParam = colorParams[i];
@@ -731,7 +733,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 			}
 
 			std::vector<effParamFloat*> floatParams;
-			i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetAllFloatParams(floatParams);
+			shaderParams->GetAllFloatParams(floatParams);
 			for ( int i = 0 ; i < floatParams.size() ; i++ )
 			{
 				effParamFloat* currParam = floatParams[i];
@@ -743,7 +745,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 			}
 
 			std::vector<effParamBool*> boolParams;
-			i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetAllBoolParams(boolParams);
+			shaderParams->GetAllBoolParams(boolParams);
 			for ( int i = 0 ; i < boolParams.size() ; i++ )
 			{
 				effParamBool* currParam = boolParams[i];
@@ -751,7 +753,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 			}
 
 			std::vector<effParamInt*> intParams;
-			i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetAllIntParams(intParams);
+			shaderParams->GetAllIntParams(intParams);
 			for ( int i = 0 ; i < intParams.size() ; i++ )
 			{
 				effParamInt* currParam = intParams[i];
@@ -878,6 +880,23 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 
 	io_GlobalData.m_ShadowMapAttributes.push_back( fullDisplacementStr.str() );
 	io_GlobalData.m_ShadowMapAttributes.push_back( fullShadowSurfaceStr.str() );
+}
+
+//--------------------------------------------------------------------
+// ExportShaderParams()
+//--------------------------------------------------------------------
+std::shared_ptr<effShaderParams> rmanExport::ExportShaderParams(const matMaterial& i_Material)
+{
+	shared_ptr<effShaderParams> params = i_Material.GetShaderParams(0);
+	if (!params || params->GetShaderName().GetNumNames() == 0)
+		return params;
+	std::string shader;
+	fsFileUtil::LocatorToANSIFilename(params->GetShaderName().GetLastName(), shader, false);
+	if (_stricmp(shader.c_str(), effPbrData::c_ShaderName) != 0)
+		return params;
+	shared_ptr<effShaderParams> blinn = effPbrData::MakeBlinnFallbackParams(*params);
+	blinn->SetShaderName(fsLocator(itString("Blinn.fx")));
+	return blinn;
 }
 
 //--------------------------------------------------------------------

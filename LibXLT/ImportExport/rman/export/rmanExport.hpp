@@ -37,12 +37,15 @@ class maRotation;
 class camCamera;
 class g3dSceneNode;
 class g3dFragment;
+class effShaderParams;
+class matMaterial;
 class maFloatRGBA;
 class g3dFragment;
 
 typedef unsigned char BYTE;
 
 #include <map>
+#include <memory>
 #include <vector>
 #include <fstream>
 
@@ -50,6 +53,16 @@ typedef unsigned char BYTE;
 //============================================================================
 namespace rmanExport
 {
+	//--------------------------------------------------------------------
+	// ExportShaderParams(): the parameter bag exported for i_Material's
+	// layer 0, with the shader name the export writes. A Pbr.fx material,
+	// which RenderMan has no shader for, exports as its Blinn fallback
+	// (effPbrData::MakeBlinnFallbackParams, named Blinn.fx); any other
+	// material, its own bag. Read once per fragment, by the export and the
+	// texture gathering, so they name the same textures.
+	//--------------------------------------------------------------------
+	std::shared_ptr<effShaderParams> ExportShaderParams(const matMaterial& i_Material);
+
 
 	//--------------------------------------------------------------------
 	// ExportPolygonMesh()

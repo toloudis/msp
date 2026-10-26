@@ -4,7 +4,8 @@
 **      effPbrData is a typed view of a Pbr.fx (glTF 2.0 metallic-roughness)
 **	material's parameter bag. It is not an effShaderData and is never saved
 **	itself: AddToParams writes the bag, FromParams reads one, and
-**	MakeBlinnFallback gives the Blinn values DX11 draws the material with.
+**	MakeBlinnFallback gives the Blinn values DX11 draws the material with;
+**	MakeBlinnFallbackParams, the Blinn bag DX11 draws and RenderMan exports.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -17,6 +18,7 @@
 #include "Core/ma/maFloatRGBA.hpp"
 #endif
 
+#include <memory>
 #include <string>
 
 class effBlinnData;
@@ -94,4 +96,29 @@ public:
 	//  BLEND alpha -> transparency; MASK is drawn opaque
 	//------------------------------------------------------------------------
 	effBlinnData MakeBlinnFallback() const;
+
+	//------------------------------------------------------------------------
+	// The Blinn bag for a Pbr bag: MakeBlinnFallback's values, with the
+	// textures the Pbr bag has loaded (base color map -> diffuseMap,
+	// reflection map -> cubeMap) and their file names, which exporters read.
+	// A new bag each call, from the Pbr bag's current values; no shader name.
+	//
+	// Why: Pbr.fx exists only on Vulkan, but a PBR material must still draw
+	// and export where there is no PBR shader. Those places stand in Blinn
+	// for it, and they use this one conversion so they agree:
+	//  - GraphicsDX11's effPbrFallback (blinn_params) draws a Pbr material
+	//    with this bag, cached per Pbr bag and rebuilt when its values change
+	//  - RenderMan export (rmanExport::ExportShaderParams, called by
+	//    ExportShaderInfo and the Character system's GatherTextures) writes
+	//    it as Surface "Blinn", since RenderMan has no Pbr shader
+	// A new consumer that can't draw Pbr.fx should call this too, rather
+	// than converting the parameters itself.
+	//------------------------------------------------------------------------
+	static std::shared_ptr<effShaderParams> MakeBlinnFallbackParams(const effShaderParams& i_Pbr);
+
+	//------------------------------------------------------------------------
+	// io_Blinn (a MakeBlinnFallbackParams bag) gets i_Pbr's textures again:
+	// for a cached bag whose Pbr textures were loaded after it was made
+	//------------------------------------------------------------------------
+	static void CopyTexturesToBlinnFallback(const effShaderParams& i_Pbr, effShaderParams& io_Blinn);
 };
