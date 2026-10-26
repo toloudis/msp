@@ -108,8 +108,9 @@ hold settings:
   (only the objects the tests use come in from the static library).
   Helpers use the `iet` prefix.
 - `UnitTests/GraphicsTests` tests `LibXLT/Graphics` code that needs no GPU
-  (`g3dProfiler`) and `LibXLT/GraphicsVulkan` (`Vk/`); it links Core,
-  Graphics, GraphicsVulkan and GraphicsDX11, the reference the Vulkan
+  (`g3dProfiler`, and the glTF material import, which builds Graphics
+  materials) and `LibXLT/GraphicsVulkan` (`Vk/`); it links Core,
+  Graphics, ImportExport, GraphicsVulkan and GraphicsDX11, the reference the Vulkan
   port is compared with (`Dx11/gtD3D11`: a D3D11 device on the hardware
   adapter, else WARP). Helpers use the `gt` prefix. The Vulkan tests run
   with validation on (`gtVulkan` fails a test on any validation message)
@@ -408,7 +409,7 @@ says why) and installs a Vulkan implementation for every Graphics hook.
 |---|---|
 | `Area18` | Experimental OpenGL (gl3w/GLEW) renderer from 2009: GL device/context, shaders, meshes, a render-graph engine (`rndr`), fontstash text, test scenes. In the solution but not built in any solution configuration, and not linked into MachStudio. |
 | `AudioDS` (`sn`) | Sound: DirectSound 2D/streamed playback, MP3 via DirectShow, Redbook audio; used by sound timeline drivers |
-| `ImportExport` | Scene import/export: `fbx` (FBX SDK import/export), `gltf` (glTF import), `rman` (RenderMan export/live; a PBR material exports as its Blinn fallback, `Surface "Blinn"`, through `rmanExport::ExportShaderParams`) |
+| `ImportExport` | Scene import/export: `fbx` (FBX SDK import/export), `gltf` (glTF import: materials as `Pbr.fx`, read by `gltfMaterialRead` into a plain description and built by `gltfMaterialImport`, with the normal map in the material's normals data and `KHR_texture_transform` in its UV transform; `gltfSceneRead` reads a glTF's node tree into descriptions of the objects it becomes (groups, meshes, lights, cameras, with identity paths, centimetre transforms and light and camera values in MachStudio's units), which object creation (Plan 4b) uses), `rman` (RenderMan export/live; a PBR material exports as its Blinn fallback, `Surface "Blinn"`, through `rmanExport::ExportShaderParams`) |
 | `Input` (`in`) | Device-independent input: device manager, keyboard, mouse, gamepad, joystick, tablet, virtual joystick. The keyboard and mouse are fed by the GUI toolkit (`tqtInputFeed` / `twxInputFeed`: key and button events plus a per-frame cursor/button sample); no gamepad backend exists |
 | `InputTPC` | Tablet PC (pen/ink) PAC implementation for `Input` |
 | `SecuritySoftwareShield` (`scrtys`) | Licensing via SoftwareShield; the one linked into MachStudio |

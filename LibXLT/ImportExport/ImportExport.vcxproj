@@ -121,6 +121,8 @@
     <ClCompile Include="gltf\import\private\gltfImageExtract.cpp" />
     <ClCompile Include="gltf\import\private\gltfLayerMapper.cpp" />
     <ClCompile Include="gltf\import\private\gltfMaterialImport.cpp" />
+    <ClCompile Include="gltf\import\private\gltfMaterialRead.cpp" />
+    <ClCompile Include="gltf\import\private\gltfSceneRead.cpp" />
     <ClCompile Include="gltf\import\private\gltfMeshImport.cpp" />
     <ClCompile Include="gltf\import\private\gltfModelImport.cpp" />
     <ClCompile Include="gltf\import\private\gltfSdkManager.cpp" />
@@ -149,6 +151,8 @@
     <ClInclude Include="gltf\import\private\gltfImageExtract.hpp" />
     <ClInclude Include="gltf\import\private\gltfLayerMapper.hpp" />
     <ClInclude Include="gltf\import\private\gltfMaterialImport.hpp" />
+    <ClInclude Include="gltf\import\private\gltfMaterialRead.hpp" />
+    <ClInclude Include="gltf\import\private\gltfSceneRead.hpp" />
     <ClInclude Include="gltf\import\private\gltfMeshImport.hpp" />
     <ClInclude Include="gltf\import\private\gltfModelImport.hpp" />
     <ClInclude Include="gltf\import\private\gltfSdkManager.hpp" />

@@ -18,6 +18,12 @@
     <ClCompile Include="gltf\gltfImageExtractTest.cpp">
       <Filter>gltf</Filter>
     </ClCompile>
+    <ClCompile Include="gltf\gltfMaterialReadTest.cpp">
+      <Filter>gltf</Filter>
+    </ClCompile>
+    <ClCompile Include="gltf\gltfSceneReadTest.cpp">
+      <Filter>gltf</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ietPlatform.hpp">

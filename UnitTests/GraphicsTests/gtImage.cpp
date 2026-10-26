@@ -8,6 +8,8 @@
 #include "gtImage.hpp"
 #include "gtPlatform.hpp"
 
+//	static: ImportExport (glTF, gltfMaterialImportTest) links its own stb_image_write
+#define STB_IMAGE_WRITE_STATIC
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define STBI_WINDOWS_UTF8
 #include <stb_image_write.h>

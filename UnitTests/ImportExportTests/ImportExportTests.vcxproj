@@ -92,6 +92,8 @@
     <ClCompile Include="ImportExportTestsMain.cpp" />
     <ClCompile Include="ietPlatformWin.cpp" />
     <ClCompile Include="gltf\gltfImageExtractTest.cpp" />
+    <ClCompile Include="gltf\gltfMaterialReadTest.cpp" />
+    <ClCompile Include="gltf\gltfSceneReadTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ietPlatform.hpp" />

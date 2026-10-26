@@ -97,6 +97,12 @@
     <ClCompile Include="gltf\import\private\gltfMaterialImport.cpp">
       <Filter>gltf\import\private</Filter>
     </ClCompile>
+    <ClCompile Include="gltf\import\private\gltfMaterialRead.cpp">
+      <Filter>gltf\import\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gltf\import\private\gltfSceneRead.cpp">
+      <Filter>gltf\import\private</Filter>
+    </ClCompile>
     <ClCompile Include="gltf\import\private\gltfMeshImport.cpp">
       <Filter>gltf\import\private</Filter>
     </ClCompile>
@@ -185,6 +191,12 @@
       <Filter>gltf\import\private</Filter>
     </ClInclude>
     <ClInclude Include="gltf\import\private\gltfMaterialImport.hpp">
+      <Filter>gltf\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="gltf\import\private\gltfMaterialRead.hpp">
+      <Filter>gltf\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="gltf\import\private\gltfSceneRead.hpp">
       <Filter>gltf\import\private</Filter>
     </ClInclude>
     <ClInclude Include="gltf\import\private\gltfMeshImport.hpp">

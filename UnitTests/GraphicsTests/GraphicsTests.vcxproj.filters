@@ -26,6 +26,12 @@
     <ClCompile Include="Eff\effPbrDataTest.cpp">
       <Filter>Eff</Filter>
     </ClCompile>
+    <ClCompile Include="Eff\effUVTransformTest.cpp">
+      <Filter>Eff</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\gltfMaterialImportTest.cpp">
+      <Filter>Eff</Filter>
+    </ClCompile>
     <ClCompile Include="G3d\g3dProfilerTest.cpp">
       <Filter>G3d</Filter>
     </ClCompile>
