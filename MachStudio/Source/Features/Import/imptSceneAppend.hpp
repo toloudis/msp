@@ -6,6 +6,8 @@
 **	projected lights, cameras, and transform groups holding the
 **	hierarchy, as one undo step. The Objects dialog reaches it through
 **	chtrOperations::SetFileAppender (FeaturesLayer installs it).
+**	Scene trees and object properties refresh once after all objects,
+**	parenting and keys have been added, rather than for each selection.
 **
 **	Extra Large Technology
 \****************************************************************************/

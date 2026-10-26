@@ -17,7 +17,9 @@
 #include "tiny_gltf.h"
 
 #include <memory>
+#include <vector>
 
+struct gltfSceneObject;
 
 namespace gltfSdkManager 
 {
@@ -46,5 +48,12 @@ namespace gltfSdkManager
 	//------------------------------------------------------------------------
 	std::shared_ptr<const tinygltf::Model> LoadSceneShared(const char* pFilename);
 
-}
+	//------------------------------------------------------------------------
+	// The derived objects for a non-null shared model. Kept in a one-entry
+	// cache by model ownership, so geometry and clip loads reuse the same
+	// scene traversal and animation analysis. Reloaded models get new objects.
+	//------------------------------------------------------------------------
+	std::shared_ptr<const std::vector<gltfSceneObject>> ReadSceneObjectsShared(
+		const std::shared_ptr<const tinygltf::Model>& i_pModel);
 
+}

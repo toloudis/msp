@@ -74,6 +74,71 @@ TEST(gltfSdkManager, MissingFile)
 	EXPECT_FALSE(gltfSdkManager::LoadSceneShared(file.c_str()));
 }
 
+TEST(gltfSdkManager, ReusesDerivedObjectsForEveryMeshLoad)
+{
+	ietTempDir dir;
+	const std::string file = WriteScene(dir, false);
+	const auto model = gltfSdkManager::LoadSceneShared(file.c_str());
+	ASSERT_TRUE(model);
+	const auto objects = gltfSdkManager::ReadSceneObjectsShared(model);
+	ASSERT_EQ(2u, objects->size());
+	EXPECT_EQ("A:mesh", objects->front().m_Identity);
+	for (int i = 0; i < 6594; ++i)
+		EXPECT_EQ(objects, gltfSdkManager::ReadSceneObjectsShared(model));
+}
+
+TEST(gltfSdkManager, DerivedObjectsFollowReloadedModel)
+{
+	ietTempDir dir;
+	const std::string file = WriteScene(dir, false);
+	const auto first_model = gltfSdkManager::LoadSceneShared(file.c_str());
+	ASSERT_TRUE(first_model);
+	const auto first = gltfSdkManager::ReadSceneObjectsShared(first_model);
+	WriteScene(dir, true);
+	const auto second_model = gltfSdkManager::LoadSceneShared(file.c_str());
+	ASSERT_TRUE(second_model);
+	const auto second = gltfSdkManager::ReadSceneObjectsShared(second_model);
+	EXPECT_NE(first, second);
+	EXPECT_EQ(2u, first->size());
+	ASSERT_EQ(3u, second->size());
+	EXPECT_EQ("C:mesh", second->back().m_Identity);
+	EXPECT_EQ(second, gltfSdkManager::ReadSceneObjectsShared(second_model));
+}
+
+TEST(gltfSdkManager, CleanUpReleasesDerivedObjects)
+{
+	ietTempDir dir;
+	const std::string file = WriteScene(dir, false);
+	std::weak_ptr<const tinygltf::Model> model_ref;
+	std::weak_ptr<const std::vector<gltfSceneObject>> objects_ref;
+	{
+		const auto model = gltfSdkManager::LoadSceneShared(file.c_str());
+		ASSERT_TRUE(model);
+		model_ref = model;
+		objects_ref = gltfSdkManager::ReadSceneObjectsShared(model);
+	}
+	EXPECT_FALSE(model_ref.expired());
+	EXPECT_FALSE(objects_ref.expired());
+	gltfSdkManager::CleanUp();
+	EXPECT_TRUE(model_ref.expired());
+	EXPECT_TRUE(objects_ref.expired());
+}
+
+TEST(gltfSceneFile, ReadObjectsReturnsIndependentCopy)
+{
+	ietTempDir dir;
+	const std::string file = WriteScene(dir, false);
+	std::vector<gltfSceneObject> objects;
+	ASSERT_TRUE(gltfSceneFile::ReadObjects(dir.GetLocator("scene.gltf"), objects));
+	objects.front().m_Name = "Edited";
+	objects.clear();
+	const auto model = gltfSdkManager::LoadSceneShared(file.c_str());
+	ASSERT_TRUE(model);
+	const auto cached = gltfSdkManager::ReadSceneObjectsShared(model);
+	ASSERT_EQ(2u, cached->size());
+	EXPECT_EQ("A", cached->front().m_Name);
+}
+
 TEST(gltfSceneFile, ReadObjects)
 {
 	ietTempDir dir;

@@ -79,6 +79,20 @@ namespace cmmObjectDialogUtil
 	void ClearDialog();
 
 	//--------------------------------------------------------------------
+	// Coalesce UpdateDialog/ClearDialog calls until the outermost scope
+	// ends. Only the last request is applied, using the final selection.
+	//--------------------------------------------------------------------
+	class DeferUpdates
+	{
+	public:
+		DeferUpdates();
+		~DeferUpdates();
+	private:
+		DeferUpdates(const DeferUpdates&);
+		DeferUpdates& operator=(const DeferUpdates&);
+	};
+
+	//--------------------------------------------------------------------
 	//	Create the driver
 	//--------------------------------------------------------------------
 	void CreateDriver(std::string& i_DriverName);
@@ -103,4 +117,3 @@ namespace cmmObjectDialogUtil
 #endif
 
 }	// end of namespace
-

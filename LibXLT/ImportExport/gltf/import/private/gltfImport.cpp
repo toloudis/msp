@@ -123,8 +123,8 @@ entModelTemplate* gltfImport::LoadGeometryPart( const fsLocator& i_ModelLocator,
 	if (!pScene)
 		return NULL;
 
-	const std::vector<gltfSceneObject> objects = gltfSceneRead::ReadScene(*pScene);
-	const gltfSceneObject* pObject = gltfPlacement::FindMeshObject(objects, i_Part);
+	const auto objects = gltfSdkManager::ReadSceneObjectsShared(pScene);
+	const gltfSceneObject* pObject = gltfPlacement::FindMeshObject(*objects, i_Part);
 	if (!pObject)
 	{
 		DBG_WARNING("glTF file " << filename << " has no mesh node " << i_Part);
@@ -191,8 +191,8 @@ entAnimKeys* gltfImport::LoadAnimKeysPart(const fsLocator& i_AnimLocator,
 	if (!pScene)
 		return NULL;
 
-	const std::vector<gltfSceneObject> objects = gltfSceneRead::ReadScene(*pScene);
-	const gltfSceneObject* pObject = gltfPlacement::FindMeshObject(objects, i_Part);
+	const auto objects = gltfSdkManager::ReadSceneObjectsShared(pScene);
+	const gltfSceneObject* pObject = gltfPlacement::FindMeshObject(*objects, i_Part);
 	if (!pObject)
 	{
 		DBG_WARNING("glTF file " << filename << " has no mesh node " << i_Part << " for animation " << i_Clip);

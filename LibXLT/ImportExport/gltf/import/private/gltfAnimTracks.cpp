@@ -584,7 +584,7 @@ namespace gltfAnimTracks
 			object.m_bNodeTransform = object.m_Kind != gltfSceneObject::e_SkinnedMesh && !bUnderOwnGroup;
 		}
 
-		// every animation read once (ReadScene, and so Decide, runs for every template and clip loaded)
+		// Every animation read once; the derived scene is shared by template and clip loads.
 		const std::vector<gltfClip> clips = read_clips(i_Model, i_FramesPerSecond);
 		const std::vector<float> lengths = animation_lengths(clips, i_FramesPerSecond);
 		const std::vector<std::string> identities = gltfAnimRead::ClipIdentities(i_Model);

@@ -198,11 +198,20 @@ namespace
 		void ReadSiblings(const std::vector<int>& i_Nodes, const std::string& i_ParentPath, int i_Parent,
 						  const maMatrix4x4* i_pJointMatrix)
 		{
+			std::map<std::string, int> named_nodes;
 			for (int node : i_Nodes)
 			{
 				if (!IsNode(node))
 					continue;
-				std::string path = Segment(node, i_Nodes);
+				const auto inserted = named_nodes.emplace(m_Model.nodes[node].name, node);
+				if (!inserted.second && inserted.first->second != node)
+					inserted.first->second = -1;
+			}
+			for (int node : i_Nodes)
+			{
+				if (!IsNode(node))
+					continue;
+				std::string path = Segment(node, named_nodes);
 				if (!i_ParentPath.empty())
 					path = i_ParentPath + "/" + path;
 				ReadNode(node, path, i_Parent, i_pJointMatrix);
@@ -251,16 +260,10 @@ namespace
 		//----------------------------------------------------------------
 		// the node's path segment: its name, unless empty or shared by a sibling
 		//----------------------------------------------------------------
-		std::string Segment(int i_Node, const std::vector<int>& i_Siblings) const
+		std::string Segment(int i_Node, const std::map<std::string, int>& i_NamedNodes) const
 		{
 			const std::string& name = m_Model.nodes[i_Node].name;
-			bool bUnique = !name.empty();
-			for (int sibling : i_Siblings)
-			{
-				if (bUnique && sibling != i_Node && IsNode(sibling) && m_Model.nodes[sibling].name == name)
-					bUnique = false;
-			}
-			if (bUnique)
+			if (!name.empty() && i_NamedNodes.at(name) == i_Node)
 				return name;
 
 			std::ostringstream segment;
@@ -492,7 +495,7 @@ namespace gltfSceneFile
 		std::shared_ptr<const tinygltf::Model> pModel = gltfSdkManager::LoadSceneShared(filename.c_str());
 		if (!pModel)
 			return false;
-		o_Objects = gltfSceneRead::ReadScene(*pModel);
+		o_Objects = *gltfSdkManager::ReadSceneObjectsShared(pModel);
 		return true;
 	}
 }

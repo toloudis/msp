@@ -50,6 +50,8 @@
 #include "Systems/Character/Object/chtrObjectMgr.hpp"
 #include "Systems/Character/Undo/chtrOperations.hpp"
 #include "Systems/Common/DriverCreator/cmmKeyUtil.hpp"
+#include "Systems/Common/GUI/cmmObjectDialogUtil.hpp"
+#include "Systems/Common/GUI/cmmSystemDialogUtil.hpp"
 #include "Systems/PrjLt/Data/prjltScriptData.hpp"
 #include "Systems/PrjLt/Object/prjltObjectMgr.hpp"
 #include "Systems/PrjLt/Undo/prjltOperations.hpp"
@@ -461,6 +463,9 @@ namespace imptSceneAppend
 		}
 
 		UndoBlock block("Add " + file_name);
+		// Rebuild trees and property controls once, using the final selection.
+		cmmObjectDialogUtil::DeferUpdates defer_object_updates;
+		cmmSystemDialogUtil::DeferUpdates defer_updates;
 
 		// the name each object got, empty if it couldn't be added
 		const std::vector<iscnObjectDesc>& objects = scene.m_Objects;

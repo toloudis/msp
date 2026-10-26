@@ -24,8 +24,11 @@
 #include <functional>
 #include <list>
 #include <map>
+#include <unordered_set>
 
 #ifdef USE_QT
+
+#include <QHash>
 
 class fsLocator;
 
@@ -167,7 +170,10 @@ class tqcTreeView : public QTreeWidget
 		//--------------------------------------------------------------------
 		// private functions
 		//--------------------------------------------------------------------
-		typedef std::list<tqcTreeItemId> TreeItemIdSet;
+		typedef std::vector<tqcTreeItemId> TreeItemIdList;
+		typedef std::unordered_set<tqcTreeItemId> TreeItemIdSet;
+		// An item's children by their text (the first child with each text)
+		typedef QHash<QString, tqcTreeItemId> ChildrenByText;
 
 		tqcTreeItemId find_child_node(QTreeWidgetItem* i_Parent, NodeFilterFunction i_Function);
 		int get_item_state(tqcTreeItemId i_Node);
@@ -178,9 +184,10 @@ class tqcTreeView : public QTreeWidget
 		bool is_mixed_checked(tqcTreeItemId i_Node);
 		void set_item_checked(tqcTreeItemId i_Node, bool i_bChecked);
 		void check_all_children(tqcTreeItemId i_Item, bool i_bNewCheckState);
-		void get_all_tree_items(QTreeWidgetItem* i_Parent, TreeItemIdSet& o_TreeIds);
-		void find_or_create_tree_node(TreeItemIdSet& io_ItemsToDelete,
+		void get_all_tree_items(QTreeWidgetItem* i_Parent, TreeItemIdList& o_TreeIds);
+		void find_or_create_tree_node(TreeItemIdSet& io_ItemsToKeep,
 									  QTreeWidgetItem* i_Parent,
+									  ChildrenByText& io_ParentChildren,
 									  const shared_ptr<tqcTreeNode>& i_Node);
 		void update_parent_checked_state(tqcTreeItemId i_Parent);
 		void set_checked_state(tqcTreeItemId i_Item, bool i_bNewCheckState);

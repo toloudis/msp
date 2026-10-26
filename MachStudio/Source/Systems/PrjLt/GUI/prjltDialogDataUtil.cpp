@@ -24,9 +24,7 @@ namespace
 //--------------------------------------------------------------------
 void  prjltDialogDataUtil::UpdateListDialog()
 {
-	cmmDialogDataList data_list;
-	prjltDialogDataUtil::RebuildListData(data_list);
-	cmmSystemDialogUtil::UpdatePlacedList(c_SystemName,data_list);
+	cmmSystemDialogUtil::UpdatePlacedList(c_SystemName, &prjltDialogDataUtil::RebuildListData);
 }
 
 //--------------------------------------------------------------------
@@ -53,4 +51,3 @@ void prjltDialogDataUtil::RebuildListData(cmmDialogDataList& io_DataList)
 		dialog_data.m_GroupState	= cmmDialogData::e_LeafNode;
 	}
 }
-

@@ -6,6 +6,7 @@
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "ImportExport/gltf/import/private/gltfSdkManager.hpp"
+#include "ImportExport/gltf/import/private/gltfSceneRead.hpp"
 
 #include "Core/Dbg/dbgMsg.hpp"
 
@@ -56,6 +57,8 @@ namespace gltfSdkManager
 		};
 		std::mutex s_CacheMutex;
 		SceneCache s_Cache;
+		std::shared_ptr<const tinygltf::Model> s_pObjectsModel;
+		std::shared_ptr<const std::vector<gltfSceneObject>> s_pObjects;
 	}
 
 	//------------------------------------------------------------------------
@@ -70,6 +73,8 @@ namespace gltfSdkManager
 	{
 		std::lock_guard<std::mutex> lock(s_CacheMutex);
 		s_Cache = SceneCache();
+		s_pObjects.reset();
+		s_pObjectsModel.reset();
 	}
 
 	
@@ -147,6 +152,21 @@ namespace gltfSdkManager
 		return pModel;
 	}
 
-} // end of namespace
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	std::shared_ptr<const std::vector<gltfSceneObject>> ReadSceneObjectsShared(
+		const std::shared_ptr<const tinygltf::Model>& i_pModel)
+	{
+		DBG_ASSERT(i_pModel != NULL, "Cannot read glTF objects without a model");
+		std::lock_guard<std::mutex> lock(s_CacheMutex);
+		if (s_pObjectsModel == i_pModel && s_pObjects)
+			return s_pObjects;
 
+		auto objects = std::make_shared<const std::vector<gltfSceneObject>>(gltfSceneRead::ReadScene(*i_pModel));
+		s_pObjectsModel = i_pModel;
+		s_pObjects = objects;
+		return objects;
+	}
+
+} // end of namespace
 

@@ -50,26 +50,21 @@ namespace
 
 
 	//--------------------------------------------------------------------
-	// Find node with given text as child of parent node. 
-	// Check IsOk() of returned value to see if found.
+	// The parent node's children by their text; the first child with
+	// each text, as a search of the children in order would find
 	//--------------------------------------------------------------------
-	wxTreeItemId find_node(wxTreeCtrl* io_pTreeCtrl, 
-						   wxTreeItemId i_Parent, 
-						   const wxString &i_Text)
+	std::unordered_map<std::wstring, wxTreeItemIdValue> children_by_text(wxTreeCtrl* io_pTreeCtrl,
+																		 wxTreeItemId i_Parent)
 	{
-		wxTreeItemId id;
+		std::unordered_map<std::wstring, wxTreeItemIdValue> children;
 		wxTreeItemIdValue cookie;
-		for (id = io_pTreeCtrl->GetFirstChild(i_Parent, cookie);
-			 id.IsOk(); 
+		for (wxTreeItemId id = io_pTreeCtrl->GetFirstChild(i_Parent, cookie);
+			 id.IsOk();
 			 id = io_pTreeCtrl->GetNextChild(i_Parent, cookie))
 		{
-			if (i_Text == io_pTreeCtrl->GetItemText(id))
-			{
-				// found it
-				break;
-			}
+			children.insert(std::make_pair(io_pTreeCtrl->GetItemText(id).ToStdWstring(), id.m_pItem));
 		}
-		return id; // id.IsOk() == false if not found
+		return children;
 	}
 
 }	// end of namespace
@@ -184,8 +179,9 @@ void twcTreeView::UpdateTreeData(const std::vector< shared_ptr<twcTreeNode> >& i
 	m_bUpdating  = true;
 
 	// Whatever tree nodes we don't confirm should be deleted.
-	// Start with all tree nodes and remove them as we confirm them.
-	TreeItemIdSet items_to_delete;
+	// List all tree nodes, and collect the ones we confirm.
+	TreeItemIdList old_items;
+	TreeItemIdSet items_to_keep;
 
 	// Get root node
 	wxTreeItemId root = this->GetRootItem();
@@ -195,10 +191,11 @@ void twcTreeView::UpdateTreeData(const std::vector< shared_ptr<twcTreeNode> >& i
 	}
 	else
 	{
-		get_all_tree_items(root, items_to_delete);
+		get_all_tree_items(root, old_items);
 	}
+	items_to_keep.reserve(old_items.size());
 
-	//DBG_LOG("Before update, have " << items_to_delete.size() << " items" );
+	//DBG_LOG("Before update, have " << old_items.size() << " items" );
 
 	//DBG_LOG("twcTreeView: Updating tree data");
 	this->Freeze();
@@ -206,27 +203,29 @@ void twcTreeView::UpdateTreeData(const std::vector< shared_ptr<twcTreeNode> >& i
 	// Make a copy?
 	//m_RootNodes = i_RootNodes;
 
+	ChildrenByText root_children = children_by_text(this, root);
 	const int num_roots = i_RootNodes.size();
 	for (int i=0; i<num_roots; i++)
 	{
-		find_or_create_tree_node(items_to_delete, root, i_RootNodes[i]);
+		find_or_create_tree_node(items_to_keep, root, root_children, i_RootNodes[i]);
 	}
 	this->SortChildren(root);
 
 	// Check to see if we are about to delete the selected node
+	// (an old node we did not confirm)
 	wxTreeItemId sel_node = this->GetSelection();
 	if (sel_node.IsOk())
 	{
-		if (envSTLHelpers::Contains(items_to_delete, sel_node))
+		if (sel_node != root && items_to_keep.find(sel_node.m_pItem) == items_to_keep.end())
 			this->Unselect();
 	}
 
 	// Now remove all the old nodes that we did not confirm
-	//DBG_LOG("After update, have " << items_to_delete.size() << " items" );
-	TreeItemIdSet::iterator item_it;
-	for (item_it = items_to_delete.begin(); item_it != items_to_delete.end(); ++item_it)
+	// (children were listed before their parents)
+	for (size_t i = 0; i < old_items.size(); ++i)
 	{
-		this->Delete(*item_it);
+		if (items_to_keep.find(old_items[i]) == items_to_keep.end())
+			this->Delete(old_items[i]);
 	}
 
 	this->Thaw();
@@ -446,8 +445,8 @@ void twcTreeView::check_all_children(wxTreeItemId i_Item, bool i_bNewCheckState)
 //------------------------------------------------------------------------
 // Get the ids of all nodes under the given parent node
 //------------------------------------------------------------------------
-void twcTreeView::get_all_tree_items(wxTreeItemId i_Parent, 
-									 TreeItemIdSet& o_TreeIds)
+void twcTreeView::get_all_tree_items(wxTreeItemId i_Parent,
+									 TreeItemIdList& o_TreeIds)
 {
 	wxTreeItemIdValue cookie;
 	for (wxTreeItemId id = this->GetFirstChild(i_Parent, cookie);
@@ -468,18 +467,18 @@ void twcTreeView::get_all_tree_items(wxTreeItemId i_Parent,
 //------------------------------------------------------------------------
 // Create subtree for this node under the given parent
 //------------------------------------------------------------------------
-void twcTreeView::find_or_create_tree_node(TreeItemIdSet& io_ItemsToDelete,
+void twcTreeView::find_or_create_tree_node(TreeItemIdSet& io_ItemsToKeep,
 										   wxTreeItemId i_Parent,
-										   const shared_ptr<twcTreeNode>& i_Node,
-										   bool i_bCreateAlways)
+										   ChildrenByText& io_ParentChildren,
+										   const shared_ptr<twcTreeNode>& i_Node)
 {
 	wxTreeItemId node_item;
 	wxString text_str = i_Node->GetDisplayString();
+	const std::wstring text_key = text_str.ToStdWstring();
 
-	// In some cases, we know we will always need to create a new node
-	// and can skip the "find" step.
-	if (!i_bCreateAlways)
-		node_item = find_node(this, i_Parent, text_str);
+	ChildrenByText::const_iterator found = io_ParentChildren.find(text_key);
+	if (found != io_ParentChildren.end())
+		node_item = wxTreeItemId(found->second);
 
 	// State index defines checkbox, use "0" for no check box.
 	// Image index comes from user, -1 means don't use an image at all.
@@ -498,11 +497,12 @@ void twcTreeView::find_or_create_tree_node(TreeItemIdSet& io_ItemsToDelete,
 
 		// Store reference to the twcTreeNode in the item data
 		this->SetItemData(node_item, new TreeNodeItemData(i_Node));
+		io_ParentChildren.insert(std::make_pair(text_key, node_item.m_pItem));
 	}
-	else 
+	else
 	{
-		// Found node, reuse it, and remove from list of nodes to delete
-		envSTLHelpers::RemoveOneValue(io_ItemsToDelete, node_item);
+		// Found node, reuse it, and keep it from being deleted
+		io_ItemsToKeep.insert(node_item.m_pItem);
 
 		// Update image in case it changed
 		this->SetItemImage( node_item, image_index );
@@ -518,9 +518,13 @@ void twcTreeView::find_or_create_tree_node(TreeItemIdSet& io_ItemsToDelete,
 	}
 
 	const int num_kids = i_Node->m_Children.size();
-	for (int k=0; k<num_kids; k++)
+	if (num_kids > 0)
 	{
-		find_or_create_tree_node(io_ItemsToDelete, node_item, i_Node->m_Children[k]);
+		ChildrenByText node_children = children_by_text(this, node_item);
+		for (int k=0; k<num_kids; k++)
+		{
+			find_or_create_tree_node(io_ItemsToKeep, node_item, node_children, i_Node->m_Children[k]);
+		}
 	}
 	if (i_Node->IsCheckable() && (num_kids > 0))
 	{

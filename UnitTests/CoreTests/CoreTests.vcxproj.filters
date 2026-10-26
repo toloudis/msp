@@ -34,6 +34,9 @@
     <Filter Include="Rel">
       <UniqueIdentifier>{51d893f3-3007-4c85-8147-ab204725b3cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Name">
+      <UniqueIdentifier>{B158D7DE-62E6-4A72-85DB-BEC509DFF3C8}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Undo">
       <UniqueIdentifier>{8e0b6c2a-4f1d-4c39-9a57-3d2e6b1f7c41}</UniqueIdentifier>
     </Filter>
@@ -41,6 +44,9 @@
   <ItemGroup>
     <ClCompile Include="CoreTestsMain.cpp">
       <Filter>Support</Filter>
+    </ClCompile>
+    <ClCompile Include="Name\nameObjectTest.cpp">
+      <Filter>Name</Filter>
     </ClCompile>
     <ClCompile Include="ctPlatformWin.cpp">
       <Filter>Support</Filter>

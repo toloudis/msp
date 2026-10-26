@@ -31,10 +31,7 @@ namespace
 //--------------------------------------------------------------------
 void  chtrDialogDataUtil::UpdateListDialog()
 {
-	cmmDialogDataList data_list;
-	chtrDialogDataUtil::RebuildListData(data_list);
-	
-	cmmSystemDialogUtil::UpdatePlacedList(c_SystemName,data_list);
+	cmmSystemDialogUtil::UpdatePlacedList(c_SystemName, &chtrDialogDataUtil::RebuildListData);
 }
 
 //--------------------------------------------------------------------

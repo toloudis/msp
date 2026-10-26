@@ -184,6 +184,40 @@ TEST(gltfSceneRead, IdentityFallsBackToIndex)
 	EXPECT_EQ((std::vector<std::string>{ "#0:mesh", "#4:mesh" }), Identities(gltfSceneRead::ReadScene(roots)));
 }
 
+TEST(gltfSceneRead, WideSiblingListKeepsIdentityRules)
+{
+	tinygltf::Model model;
+	model.meshes.resize(1);
+	std::vector<int> roots = { -1, 99999 };
+	for (int i = 0; i < 6594; ++i)
+	{
+		const std::string name = i < 2 ? "Duplicate" : (i == 2 ? "" : "Node_" + std::to_string(i));
+		const int node = AddNode(model, name);
+		model.nodes[node].mesh = 0;
+		roots.push_back(node);
+	}
+	AddScene(model, roots);
+	const auto objects = gltfSceneRead::ReadScene(model);
+	ASSERT_EQ(6594u, objects.size());
+	for (int i = 0; i < 6594; ++i)
+	{
+		const std::string segment = i < 3 ? "#" + std::to_string(i) : "Node_" + std::to_string(i);
+		EXPECT_EQ(segment + ":mesh", objects[i].m_Identity);
+		EXPECT_EQ(-1, objects[i].m_Parent);
+	}
+}
+
+TEST(gltfSceneRead, RepeatedNodeIndexDoesNotMakeItsNameAmbiguous)
+{
+	tinygltf::Model model;
+	model.meshes.resize(1);
+	const int node = AddNode(model, "Mesh");
+	model.nodes[node].mesh = 0;
+	AddScene(model, { node, node, -1 });
+	EXPECT_EQ((std::vector<std::string>{ "Mesh:mesh", "Mesh:mesh" }),
+		Identities(gltfSceneRead::ReadScene(model)));
+}
+
 TEST(gltfSceneRead, TranslationInCentimetres)
 {
 	tinygltf::Model model;

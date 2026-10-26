@@ -25,14 +25,12 @@ namespace
 //--------------------------------------------------------------------
 void  cmraDialogDataUtil::UpdateListDialog()
 {
-	cmmDialogDataList data_list;
 	std::vector<shared_ptr<camCamera>> camera_list;
 	std::vector<std::string> name_list;
 
-	cmraDialogDataUtil::RebuildListData(data_list);
 	cmraDialogDataUtil::RebuildCameraList(camera_list, name_list);
 
-	cmmSystemDialogUtil::UpdatePlacedList(c_SystemName,data_list);
+	cmmSystemDialogUtil::UpdatePlacedList(c_SystemName, &cmraDialogDataUtil::RebuildListData);
 	billObjectMgr::UpdateCameraList(camera_list, name_list);
 }
 

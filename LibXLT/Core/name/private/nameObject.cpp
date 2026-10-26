@@ -25,18 +25,26 @@ nameObject::~nameObject()
 //virtual 
 void nameObject::SetName(const nameString& i_Name)
 {
-	std::string temp;
+	if (m_Name.GetUID() != nameString::e_InvalidUID && m_Name.ExactMatch(i_Name))
+		return;
+
 	m_Name = i_Name;
 	
-	for ( int i = 0 ;  i < i_Name.GetUID() ; i++ )
+	// Check existing names once, not every UID ever allocated. As before,
+	// an older object keeps its name when a later UID has the same text.
+	nameList names;
+	if (i_Name.GetUID() > 0)
+		nameMgr::GetNameList(names);
+	for (const nameString* name : names)
 	{
-		nameMgr::GetNameString(i, temp);
-		//DBG_LOG2(" Names %s %s ", temp, m_Name.GetString().c_str());
-		if(m_Name.GetString() == temp && temp.size() > 0) 
+		const std::string text = name->GetString();
+		if (name->GetUID() >= 0 && name->GetUID() < i_Name.GetUID()
+			&& !text.empty() && m_Name.GetString() == text)
 		{
-			std::string msg = "Name \" " + temp +"\" exists. Please use a different name.";
+			std::string msg = "Name \" " + text +"\" exists. Please use a different name.";
 			guiMessageBox::Show(msg.c_str(), "Error", guiMessageBox::e_OKOnly);
 			m_Name.SetString(i_Name.GetString() + ".copy");
+			break;
 		}
 	}
 	nameMgr::RegisterName( m_Name );

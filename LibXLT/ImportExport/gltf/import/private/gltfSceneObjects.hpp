@@ -132,7 +132,7 @@ namespace gltfSceneRead
 namespace gltfSceneFile
 {
 	// The objects of the file's default scene, parents before children
-	// (gltfSceneRead::ReadScene of the parsed file, which is cached); false
-	// when the file doesn't parse.
+	// (the parsed file and its derived objects are cached); false when the
+	// file doesn't parse. The caller receives its own editable copy.
 	bool ReadObjects(const fsLocator& i_File, std::vector<gltfSceneObject>& o_Objects);
 }

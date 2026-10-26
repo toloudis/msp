@@ -117,6 +117,7 @@
     <ClCompile Include="Ma\maPlaneTest.cpp" />
     <ClCompile Include="Ma\maRotationTest.cpp" />
     <ClCompile Include="Ma\maVectorTest.cpp" />
+    <ClCompile Include="Name\nameObjectTest.cpp" />
     <ClCompile Include="Rel\relReferenceTest.cpp" />
     <ClCompile Include="Undo\undoUndoMgrTest.cpp" />
   </ItemGroup>

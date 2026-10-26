@@ -44,6 +44,9 @@
 namespace
 {
 	bool l_bShowPropertyKeys = false;
+	int l_nDeferDepth = 0;
+	enum DeferredUpdate { e_None, e_Update, e_Clear };
+	DeferredUpdate l_DeferredUpdate = e_None;
 }
 
 
@@ -150,6 +153,11 @@ namespace cmmObjectDialogUtil
 	//--------------------------------------------------------------------
 	void UpdateDialog()
 	{
+		if (l_nDeferDepth > 0)
+		{
+			l_DeferredUpdate = e_Update;
+			return;
+		}
 
 #if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cmmObjectDialog::FormInstance)
@@ -165,6 +173,11 @@ namespace cmmObjectDialogUtil
 	//--------------------------------------------------------------------
 	void ClearDialog()
 	{
+		if (l_nDeferDepth > 0)
+		{
+			l_DeferredUpdate = e_Clear;
+			return;
+		}
 
 #if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cmmObjectDialog::FormInstance)
@@ -172,6 +185,26 @@ namespace cmmObjectDialogUtil
 			cmmObjectDialog::FormInstance->Clear();
 		}
 #endif
+	}
+
+	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------
+	DeferUpdates::DeferUpdates()
+	{
+		++l_nDeferDepth;
+	}
+
+	DeferUpdates::~DeferUpdates()
+	{
+		if (--l_nDeferDepth > 0)
+			return;
+
+		const DeferredUpdate update = l_DeferredUpdate;
+		l_DeferredUpdate = e_None;
+		if (update == e_Update)
+			UpdateDialog();
+		else if (update == e_Clear)
+			ClearDialog();
 	}
 
 	//--------------------------------------------------------------------
@@ -264,4 +297,3 @@ namespace cmmObjectDialogUtil
 #endif
 
 }	// end of namespace
-

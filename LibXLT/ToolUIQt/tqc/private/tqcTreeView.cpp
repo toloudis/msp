@@ -35,16 +35,22 @@ namespace
 	const int c_ImageGap = 2;
 
 	//------------------------------------------------------------------------
-	// Find child item with the given text. NULL if not found.
+	// The item's children by their text; the first child with each text,
+	// as a search of the children in order would find
 	//------------------------------------------------------------------------
-	tqcTreeItemId find_node(QTreeWidgetItem* i_Parent, const QString &i_Text)
+	QHash<QString, tqcTreeItemId> children_by_text(QTreeWidgetItem* i_Parent)
 	{
-		for (int i = 0; i < i_Parent->childCount(); ++i)
+		QHash<QString, tqcTreeItemId> children;
+		const int count = i_Parent->childCount();
+		children.reserve(count);
+		for (int i = 0; i < count; ++i)
 		{
-			if (i_Parent->child(i)->text(0) == i_Text)
-				return i_Parent->child(i);
+			QTreeWidgetItem* child = i_Parent->child(i);
+			const QString text = child->text(0);
+			if (!children.contains(text))
+				children.insert(text, child);
 		}
-		return NULL;
+		return children;
 	}
 }	// end of namespace
 
@@ -151,23 +157,26 @@ void tqcTreeView::UpdateTreeData(const std::vector< shared_ptr<tqcTreeNode> >& i
 	this->setUpdatesEnabled(false);
 
 	// Whatever tree nodes we don't confirm should be deleted.
-	// Start with all tree nodes and remove them as we confirm them.
-	TreeItemIdSet items_to_delete;
+	// List all tree nodes, and collect the ones we confirm.
+	TreeItemIdList old_items;
 	QTreeWidgetItem* root = this->invisibleRootItem();
-	get_all_tree_items(root, items_to_delete);
+	get_all_tree_items(root, old_items);
+	TreeItemIdSet items_to_keep;
+	items_to_keep.reserve(old_items.size());
 
+	ChildrenByText root_children = children_by_text(root);
 	for (size_t i=0; i<i_RootNodes.size(); i++)
 	{
-		find_or_create_tree_node(items_to_delete, root, i_RootNodes[i]);
+		find_or_create_tree_node(items_to_keep, root, root_children, i_RootNodes[i]);
 	}
 	root->sortChildren(0, Qt::AscendingOrder);
 
 	// Now remove all the old nodes that we did not confirm
 	// (children were listed before their parents)
-	TreeItemIdSet::iterator item_it;
-	for (item_it = items_to_delete.begin(); item_it != items_to_delete.end(); ++item_it)
+	for (size_t i = 0; i < old_items.size(); ++i)
 	{
-		delete_item(*item_it);
+		if (items_to_keep.find(old_items[i]) == items_to_keep.end())
+			delete_item(old_items[i]);
 	}
 
 	this->setUpdatesEnabled(true);
@@ -405,7 +414,7 @@ void tqcTreeView::check_all_children(tqcTreeItemId i_Item, bool i_bNewCheckState
 // before their parents.
 //--------------------------------------------------------------------
 void tqcTreeView::get_all_tree_items(QTreeWidgetItem* i_Parent,
-									 TreeItemIdSet& o_TreeIds)
+									 TreeItemIdList& o_TreeIds)
 {
 	for (int i = 0; i < i_Parent->childCount(); ++i)
 	{
@@ -420,12 +429,13 @@ void tqcTreeView::get_all_tree_items(QTreeWidgetItem* i_Parent,
 //--------------------------------------------------------------------
 // Create subtree for this node under the given parent
 //--------------------------------------------------------------------
-void tqcTreeView::find_or_create_tree_node(TreeItemIdSet& io_ItemsToDelete,
+void tqcTreeView::find_or_create_tree_node(TreeItemIdSet& io_ItemsToKeep,
 										   QTreeWidgetItem* i_Parent,
+										   ChildrenByText& io_ParentChildren,
 										   const shared_ptr<tqcTreeNode>& i_Node)
 {
 	QString text_str = i_Node->GetDisplayString();
-	tqcTreeItemId node_item = find_node(i_Parent, text_str);
+	tqcTreeItemId node_item = io_ParentChildren.value(text_str, NULL);
 
 	// State index defines checkbox, use "0" for no check box.
 	// Image index comes from user, -1 means don't use an image at all.
@@ -440,20 +450,25 @@ void tqcTreeView::find_or_create_tree_node(TreeItemIdSet& io_ItemsToDelete,
 	{
 		// Need to create the node
 		node_item = new QTreeWidgetItem(i_Parent, QStringList(text_str));
+		io_ParentChildren.insert(text_str, node_item);
 	}
 	else
 	{
-		// Found node, reuse it, and remove from list of nodes to delete
-		envSTLHelpers::RemoveOneValue(io_ItemsToDelete, node_item);
+		// Found node, reuse it, and keep it from being deleted
+		io_ItemsToKeep.insert(node_item);
 	}
 	m_NodeData[node_item] = i_Node;
 	m_ItemImage[node_item] = image_index;
 	m_ItemState[node_item] = state_index;
 	update_item_icon(node_item);
 
-	for (size_t k=0; k<i_Node->m_Children.size(); k++)
+	if (!i_Node->m_Children.empty())
 	{
-		find_or_create_tree_node(io_ItemsToDelete, node_item, i_Node->m_Children[k]);
+		ChildrenByText node_children = children_by_text(node_item);
+		for (size_t k=0; k<i_Node->m_Children.size(); k++)
+		{
+			find_or_create_tree_node(io_ItemsToKeep, node_item, node_children, i_Node->m_Children[k]);
+		}
 	}
 
 	if (i_Node->IsCheckable() && !i_Node->m_Children.empty())

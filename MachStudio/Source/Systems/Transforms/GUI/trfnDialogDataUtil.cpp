@@ -22,9 +22,7 @@ namespace
 //--------------------------------------------------------------------
 void  trfnDialogDataUtil::UpdateListDialog()
 {
-	cmmDialogDataList data_list;
-	trfnDialogDataUtil::RebuildListData(data_list);
-	cmmSystemDialogUtil::UpdatePlacedList(c_SystemName,data_list);
+	cmmSystemDialogUtil::UpdatePlacedList(c_SystemName, &trfnDialogDataUtil::RebuildListData);
 }
 
 //--------------------------------------------------------------------

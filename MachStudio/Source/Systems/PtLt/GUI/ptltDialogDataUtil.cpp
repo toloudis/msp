@@ -28,9 +28,7 @@ namespace
 //--------------------------------------------------------------------
 void  ptltDialogDataUtil::UpdateListDialog()
 {
-	cmmDialogDataList data_list;
-	ptltDialogDataUtil::RebuildListData(data_list);
-	cmmSystemDialogUtil::UpdatePlacedList(c_SystemName,data_list);
+	cmmSystemDialogUtil::UpdatePlacedList(c_SystemName, &ptltDialogDataUtil::RebuildListData);
 }
 
 //--------------------------------------------------------------------
