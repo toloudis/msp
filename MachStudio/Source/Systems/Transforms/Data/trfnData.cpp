@@ -20,7 +20,8 @@ trfnData::trfnData()
 	m_PivotPoint("Local Pivot"),
 	m_bPickable("Pickable", true),
 	m_bWireframe("Wireframe", false),
-	m_bInheritsTransform("Inherits Transform", true)
+	m_bInheritsTransform("Inherits Transform", true),
+	m_SourceFile("Source File")
 {
 }
 
@@ -58,6 +59,8 @@ trfnData& trfnData::operator=(const trfnData& i_Data)
 	this->m_bInheritsTransform	= i_Data.m_bInheritsTransform;
 
 	this->m_Objects				= i_Data.m_Objects;
+	this->m_SourceFile			= i_Data.m_SourceFile;
+	this->m_SourceIdentity		= i_Data.m_SourceIdentity;
 
 	return *this;
 }

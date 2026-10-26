@@ -105,9 +105,11 @@ namespace
 	};
 
 	//--------------------------------------------------------------------
-	// load entity from .chx (usually loaded from .edf)
+	// load entity from .chx (usually loaded from .edf); i_Identity is the
+	// part of the file (a scene file's node), empty for the whole file
 	//--------------------------------------------------------------------
 	api3dObjectEntity* load_chx_entity(const fsLocator& i_Locator,
+							const std::string& i_Identity,
 							const std::vector< shared_ptr<mdlMaterialInfo> > &i_MaterialOverrides)
 	{
 		if (fsFileUtil::FileExists(i_Locator))
@@ -121,7 +123,7 @@ namespace
 			if (!i_MaterialOverrides.empty())
 				matShaderParser::SetResolveAbsolutePaths(false);
 			std::unique_ptr<entModelTemplate> mdl_template(
-							api3dSharedModelMgr::LoadModelTemplate(i_Locator) );
+							api3dSharedModelMgr::LoadModelTemplate(i_Locator, i_Identity) );
 							//entImport::LoadGeometry(i_Locator));
 			if (mdl_template.get())
 			{
@@ -406,7 +408,7 @@ chtrScriptObject* chtrObjectCreator::Create(const chtrScriptData &i_Data)
 	geom_loc = file_loc;
 
 	try{
-		entity_obj = load_chx_entity(file_loc, i_Data.m_Materials);
+		entity_obj = load_chx_entity(file_loc, i_Data.m_BaseData.m_SourceIdentity, i_Data.m_Materials);
 	}
 	catch (const g2dOutOfSystemMemoryX&)
 	{
@@ -467,7 +469,7 @@ void  chtrObjectMgr::ReloadCharacter(int i_Index)
 	// a reload of the geometry file by first removing the filename from
 	// shared asset management. In this way, the next call to "Load" will
 	// reload the geometry file and not return the cached shared template.
-	api3dSharedModelMgr::StopSharing(data.m_BaseData.m_Filename.GetValue());
+	api3dSharedModelMgr::StopSharing(data.m_BaseData.m_Filename.GetValue(), data.m_BaseData.m_SourceIdentity);
 
 	// I think the safest way to handle this is to delete the old
 	// object and create a new one from the data, recreating drivers
@@ -517,6 +519,7 @@ void  chtrObjectMgr::ChangeFilename(int i_Index, const fsLocator& i_Filename)
 	chtrScriptObject* old_obj = sm_Objects[i_Index];
 	chtrScriptData data = old_obj->GetScriptData();
 	data.m_BaseData.m_Filename = i_Filename;
+	data.m_BaseData.m_SourceIdentity.clear();	// a new file is loaded whole
 	data.m_Materials.clear();	// Clear out material overrides when switching to new model.
 	chtrScriptObject* new_obj = chtrObjectCreator::Create(data);
 	if (new_obj)
@@ -632,7 +635,8 @@ void chtrObjectMgr::SetData(const chtrCharactersData &i_Data)
 
 				// This only handles straight geometry files
 				geom_locs[i] = file_locs[i];
-				entities[i] = load_chx_entity(file_locs[i], i_Data.m_Items[i].m_Materials);
+				entities[i] = load_chx_entity(file_locs[i], i_Data.m_Items[i].m_BaseData.m_SourceIdentity,
+											  i_Data.m_Items[i].m_Materials);
 			}
 			catch ( gfInvalidFileBinX& /*i_Ex*/ )
 			{

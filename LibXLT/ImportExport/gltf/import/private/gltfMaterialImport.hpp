@@ -67,7 +67,7 @@ namespace gltfMaterialImport
 	//--------------------------------------------------------------------
 	// Get materials from node containing a mesh
 	//--------------------------------------------------------------------
-	void GetNodeMaterials(const tinygltf::Model* i_pModel, tinygltf::Mesh* i_pMesh,
+	void GetNodeMaterials(const tinygltf::Model* i_pModel, const tinygltf::Mesh* i_pMesh,
 						  mdlMatInfoTable& io_MaterialTable,
 						  //const fsResourceFinder& i_TextureFinder,
 						  std::vector<matMaterial*>& o_Materials,

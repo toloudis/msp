@@ -160,12 +160,17 @@ namespace undoUndoMgr
 		DBG_ASSERT(multi_op, "EndMultipleOperationBlock does not match number of Begin calls");
 		l_BlockUndos.pop();
 		
-		// Only add the multi-op if stack is finished and
-		// some operations have been added to it.
-		if (l_BlockUndos.empty() && multi_op->GetNumOperations() > 0)
+		// Only add the multi-op if some operations have been added to it:
+		// to the stack when it is the outermost block, else to the block
+		// it is nested in.
+		if (multi_op->GetNumOperations() > 0 && l_BlockUndos.empty())
 		{
 			add_operation(multi_op);
 			notify_interests_undo_added();
+		}
+		else if (multi_op->GetNumOperations() > 0)
+		{
+			l_BlockUndos.top()->AddOperation(multi_op);
 		}
 		else
 		{

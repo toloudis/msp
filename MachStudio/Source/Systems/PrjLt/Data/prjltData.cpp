@@ -69,7 +69,8 @@ prjltData::prjltData()
 	m_HairMaxBound("Max Bounds", 1000000.0f ),
 	m_HairShadowType("Hair Shadow Type"),
 	m_GISource("GI Source", false),
-	m_ReflectiveMapSize("GI Map Size", 256)
+	m_ReflectiveMapSize("GI Map Size", 256),
+	m_SourceFile("Source File")
 {
 	m_ShadowQuality.SetEnumTag(0, "Low");
 	m_ShadowQuality.SetEnumTag(1, "Medium");
@@ -136,7 +137,8 @@ prjltData::prjltData(const prjltData& i_Data)
 	m_bEnabledRamp("Enable Ramp Texture", false),
 	m_RampTrigger("Ramp Edit"),
 	m_GISource("GI Source", false),
-	m_ReflectiveMapSize("GI Map Size", 256)
+	m_ReflectiveMapSize("GI Map Size", 256),
+	m_SourceFile("Source File")
 	/*m_RampGradient("Ramp", maGradient()),
 	m_RampShape("Ramp Shape", 0),
 	m_RampInterpolation("Ramp Interpolation", 0),
@@ -250,6 +252,8 @@ prjltData& prjltData::operator=(const prjltData& i_Data)
 	this->m_HairMaxBound	= i_Data.m_HairMaxBound;
 
 	this->m_GISource			= i_Data.m_GISource;
+	this->m_SourceFile			= i_Data.m_SourceFile;
+	this->m_SourceIdentity		= i_Data.m_SourceIdentity;
 
 	return *this;
 }

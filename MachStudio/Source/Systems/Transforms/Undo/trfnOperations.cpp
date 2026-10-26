@@ -66,10 +66,10 @@ namespace trfnOperations
 		trfnScriptData default_data;
 		AddObject(default_data);
 	}
-	void  AddObject(const trfnScriptData& i_Data)
+	nameString  AddObject(const trfnScriptData& i_Data)
 	{
 		int index = trfnActualOperations::AddObject(i_Data);
-		if (index < 0) return;	// if there is a problem loading the object, return immediately
+		if (index < 0) return nameString();	// if there is a problem loading the object, return immediately
 
 		//char displaytext[128];
 		//sprintf(displaytext, "%s - %s", c_AddOperationDisplayName, i_Data.m_Name.GetString().c_str());
@@ -79,6 +79,7 @@ namespace trfnOperations
 		std::string displaytext(oss.str());
 		
 		undoUndoMgr::AddOperation(new trfnAddOperation(index, trfnObjectMgr::GetScriptData(index), displaytext.c_str()));
+		return trfnObjectMgr::GetScriptData(index).m_BaseData.m_Name.GetValue();
 	}
 
 	//--------------------------------------------------------------------

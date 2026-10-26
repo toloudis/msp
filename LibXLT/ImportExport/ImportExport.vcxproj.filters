@@ -40,6 +40,12 @@
     <Filter Include="gltf\import">
       <UniqueIdentifier>{dcb63c6c-fd38-4c57-9c57-ababb7da7734}</UniqueIdentifier>
     </Filter>
+    <Filter Include="iscn">
+      <UniqueIdentifier>{3b6f2d41-8a1c-4e7b-9f02-5c4d8e6a1b73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="iscn\private">
+      <UniqueIdentifier>{7d2e9a15-0b4f-4c8e-a6d3-1f5b7c9e2a64}</UniqueIdentifier>
+    </Filter>
     <Filter Include="gltf\import\private">
       <UniqueIdentifier>{cfaba4af-3223-49cb-b169-94a61e2b9639}</UniqueIdentifier>
     </Filter>
@@ -100,8 +106,17 @@
     <ClCompile Include="gltf\import\private\gltfMaterialRead.cpp">
       <Filter>gltf\import\private</Filter>
     </ClCompile>
+    <ClCompile Include="gltf\import\private\gltfPlacement.cpp">
+      <Filter>gltf\import\private</Filter>
+    </ClCompile>
     <ClCompile Include="gltf\import\private\gltfSceneRead.cpp">
       <Filter>gltf\import\private</Filter>
+    </ClCompile>
+    <ClCompile Include="gltf\import\private\gltfSceneImport.cpp">
+      <Filter>gltf\import\private</Filter>
+    </ClCompile>
+    <ClCompile Include="iscn\private\iscnSceneImport.cpp">
+      <Filter>iscn\private</Filter>
     </ClCompile>
     <ClCompile Include="gltf\import\private\gltfMeshImport.cpp">
       <Filter>gltf\import\private</Filter>
@@ -172,6 +187,12 @@
     <ClInclude Include="gltf\import\gltfImport.hpp">
       <Filter>gltf\import</Filter>
     </ClInclude>
+    <ClInclude Include="gltf\import\private\gltfPlacement.hpp">
+      <Filter>gltf\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="gltf\import\private\gltfSceneObjects.hpp">
+      <Filter>gltf\import\private</Filter>
+    </ClInclude>
     <ClInclude Include="gltf\import\private\json.hpp">
       <Filter>gltf\import\private</Filter>
     </ClInclude>
@@ -198,6 +219,15 @@
     </ClInclude>
     <ClInclude Include="gltf\import\private\gltfSceneRead.hpp">
       <Filter>gltf\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="gltf\import\private\gltfSceneImport.hpp">
+      <Filter>gltf\import\private</Filter>
+    </ClInclude>
+    <ClInclude Include="iscn\iscnSceneDesc.hpp">
+      <Filter>iscn</Filter>
+    </ClInclude>
+    <ClInclude Include="iscn\iscnSceneImport.hpp">
+      <Filter>iscn</Filter>
     </ClInclude>
     <ClInclude Include="gltf\import\private\gltfMeshImport.hpp">
       <Filter>gltf\import\private</Filter>

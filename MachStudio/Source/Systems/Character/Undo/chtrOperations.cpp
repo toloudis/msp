@@ -48,6 +48,9 @@ namespace chtrOperations
 		typedef cmmSetOperationTemplate< chtrScriptData, chtrActualOperations, chtrObjectMgr> chtrSetOperation;
 
 		const char* c_MultipleLoadOperationName = "Load Objects";
+
+		std::function<bool (const fsLocator&)> l_FileAppender;
+		std::string l_AppenderPatterns;		// ";"-separated, empty if none
 		const char* c_GeometryDirCategory = "Geometry";
 		
 		//--------------------------------------------------------------------
@@ -57,11 +60,13 @@ namespace chtrOperations
 		bool browse_for_objects(std::vector<fsLocator> &o_ChosenLocators) 
 		{
 			//i_Filter should be string like: "My files (*.myf)|*.myf|All files (*.*)|*.*"
+			std::string patterns = "*.*x*";
+			if (!l_AppenderPatterns.empty())
+				patterns += ";" + l_AppenderPatterns;
 #ifdef HAIR_SUPPORTED
-			std::string fileFilter = "Model Files (*.*x*;*.hair)|*.*x*;*.hair|All files (*.*)|*.*";
-#else
-			std::string fileFilter = "Model Files (*.*x*)|*.*x*|All files (*.*)|*.*";
+			patterns += ";*.hair";
 #endif
+			std::string fileFilter = "Model Files (" + patterns + ")|" + patterns + "|All files (*.*)|*.*";
 
 			// Use the geometry directory category here
 			return (guiFileDialogUtils::GetOpenFileNames(fileFilter, c_GeometryDirCategory, o_ChosenLocators));
@@ -84,7 +89,8 @@ namespace chtrOperations
 			{
 				try
 				{
-					chtrOperations::AddObject( chtrScriptData( browseFileNames[i] ) );
+					if (!l_FileAppender || !l_FileAppender(browseFileNames[i]))
+						chtrOperations::AddObject( chtrScriptData( browseFileNames[i] ) );
 				}catch (const g2dOutOfSystemMemoryX&)
 				{
 					// out of memory exception occurred
@@ -98,6 +104,14 @@ namespace chtrOperations
 			if (num_files > 0)
 				undoUndoMgr::EndMultipleOperationBlock();
 		}
+	}
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	void SetFileAppender(std::function<bool (const fsLocator&)> i_Appender, const std::string& i_FilePatterns)
+	{
+		l_FileAppender = i_Appender;
+		l_AppenderPatterns = i_Appender ? i_FilePatterns : std::string();
 	}
 
 	//------------------------------------------------------------------------
@@ -154,10 +168,10 @@ namespace chtrOperations
 	//--------------------------------------------------------------------
 	//  Add new item to Character
 	//--------------------------------------------------------------------
-	void  AddObject(const chtrScriptData &i_Item)
+	nameString  AddObject(const chtrScriptData &i_Item)
 	{
 		int index = chtrActualOperations::AddObject(i_Item);
-		if (index < 0) return;	// if there is a problem loading the object, return immediately
+		if (index < 0) return nameString();	// if there is a problem loading the object, return immediately
 
 		l_LastOp = NULL;
 		//char displaytext[256];
@@ -167,6 +181,7 @@ namespace chtrOperations
 		std::string displaytext(oss.str());
 		// Need new name given to new object when making udo operation
 		undoUndoMgr::AddOperation( new chtrAddOperation( index, chtrObjectMgr::GetScriptData(index), displaytext.c_str() ) );
+		return chtrObjectMgr::GetScriptData(index).m_BaseData.m_Name.GetValue();
 	}
 
 	//--------------------------------------------------------------------

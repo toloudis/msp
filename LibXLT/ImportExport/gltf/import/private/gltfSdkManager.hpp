@@ -16,6 +16,8 @@
 
 #include "tiny_gltf.h"
 
+#include <memory>
+
 
 namespace gltfSdkManager 
 {
@@ -36,6 +38,13 @@ namespace gltfSdkManager
 	// Create a scene for the gltf with the given filename.
 	//------------------------------------------------------------------------
 	tinygltf::Model* LoadScene(const char* pFilename);
+
+	//------------------------------------------------------------------------
+	// The parsed file, kept in a one-entry cache keyed by path, size and
+	// last write time, so the per-node loads of one file parse it once and
+	// a file changed on disk is parsed again. NULL if it doesn't parse.
+	//------------------------------------------------------------------------
+	std::shared_ptr<const tinygltf::Model> LoadSceneShared(const char* pFilename);
 
 }
 

@@ -48,7 +48,8 @@ namespace ptltOperations
 	//  Add new point light to world
 	//--------------------------------------------------------------------
 	void  AddObject();
-	void  AddObject(const ptltScriptData& i_Data);
+	// returns the name the new object got, empty if it couldn't be added
+	nameString  AddObject(const ptltScriptData& i_Data);
 
 	//--------------------------------------------------------------------
 	// Add point light at current camera position

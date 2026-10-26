@@ -34,6 +34,9 @@
     <Filter Include="Rel">
       <UniqueIdentifier>{51d893f3-3007-4c85-8147-ab204725b3cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Undo">
+      <UniqueIdentifier>{8e0b6c2a-4f1d-4c39-9a57-3d2e6b1f7c41}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CoreTestsMain.cpp">
@@ -101,6 +104,9 @@
     </ClCompile>
     <ClCompile Include="Rel\relReferenceTest.cpp">
       <Filter>Rel</Filter>
+    </ClCompile>
+    <ClCompile Include="Undo\undoUndoMgrTest.cpp">
+      <Filter>Undo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

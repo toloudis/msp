@@ -97,6 +97,43 @@ entModelTemplate* entImport::LoadGeometry( const fsLocator& i_ModelLocator,
 }
 
 //----------------------------------------------------------------------------
+//  LoadGeometry of one part
+//----------------------------------------------------------------------------
+entModelTemplate* entImport::LoadGeometry( const fsLocator& i_ModelLocator,
+										   const std::string& i_Part )
+{
+	if (i_Part.empty())
+		return LoadGeometry(i_ModelLocator, (entFragInfoSink*)NULL);
+
+	try
+	{
+		const int nimpl = l_pImplementations.size();
+		for (int i=0; i<nimpl; i++)
+		{
+			entModelTemplate* model_template = l_pImplementations[i]->LoadGeometryPart(i_ModelLocator, i_Part);
+			if (model_template != NULL)
+				return model_template;
+		}
+		// No implementation handled this file format, set error string and return NULL
+		DBG_ERROR("Unrecognized model file format or part " << i_ModelLocator << " (" << i_Part.c_str() << ")");
+	}
+	catch ( const envExceptionX& i_Ex)
+	{
+		DBG_ERROR("Problem occurred loading model: " << i_Ex.GetErrorMessage());
+	}
+	catch (const std::bad_alloc&)
+	{
+		DBG_ERROR("Out of memory while loading model " << i_ModelLocator);
+	}
+	catch (...)
+	{
+		DBG_ERROR("General exception while loading model " << i_ModelLocator);
+	}
+
+	return NULL;
+}
+
+//----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 scObject* entImport::CreateObject( const entModelTemplate& i_Template,
 								   entModelInstance &o_Instance,

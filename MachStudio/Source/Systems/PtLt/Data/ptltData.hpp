@@ -10,6 +10,9 @@
 #endif
 #define PTLT_DATA_HPP
 
+#ifndef PRTY_FILEPATH_HPP
+#include "Core/prty/prtyFilePath.hpp"
+#endif
 #ifndef PRTY_BOOLEAN_HPP
 #include "Core/prty/prtyBoolean.hpp"
 #endif
@@ -65,4 +68,6 @@ public:
 	prtyBoolean				m_bSpecularEnabled;
 	prtyBoolean				m_bAffectsFur;
 	prtyBoolean				m_bAffectsGlow;
+	prtyFilePath			m_SourceFile;		// the scene file this came from; empty: not from a file
+	std::string				m_SourceIdentity;	// its identity in that file (iscnObjectDesc::m_Identity)
 };

@@ -70,7 +70,8 @@ cmraCameraData::cmraCameraData()
 	m_BlendOpShadowMask("Render Pass: Shadow Mask",g3dPassBuffers::e_MUL),
 	m_TextureFilenameBeauty("Render Pass: Beauty"),
 	m_IntensityBeauty("Render Pass: Beauty",1.0f),
-	m_BlendOpBeauty("Render Pass: Beauty",g3dPassBuffers::e_ADD)
+	m_BlendOpBeauty("Render Pass: Beauty",g3dPassBuffers::e_ADD),
+	m_SourceFile("Source File")
 {
 	m_HDRStarType.SetEnumTag(0,"Disable");
 	m_HDRStarType.SetEnumTag(1,"Camera");
@@ -166,7 +167,8 @@ cmraCameraData::cmraCameraData(const cmraCameraData& i_Data)
 	m_BlendOpShadowMask("Render Pass: Shadow Mask",g3dPassBuffers::e_MUL),
 	m_TextureFilenameBeauty("Render Pass: Beauty"),
 	m_IntensityBeauty("Render Pass: Beauty",1.0f),
-	m_BlendOpBeauty("Render Pass: Beauty",g3dPassBuffers::e_ADD)
+	m_BlendOpBeauty("Render Pass: Beauty",g3dPassBuffers::e_ADD),
+	m_SourceFile("Source File")
 {
 	m_HDRStarType.SetEnumTag(0,"Disable");
 	m_HDRStarType.SetEnumTag(1,"Camera");
@@ -271,6 +273,8 @@ cmraCameraData& cmraCameraData::operator=(const cmraCameraData& i_Data)
 	this->m_TextureFilenameRefl		= i_Data.m_TextureFilenameRefl;
 	this->m_TextureFilenameShadowMask = i_Data.m_TextureFilenameShadowMask;
 	this->m_TextureFilenameBeauty		= i_Data.m_TextureFilenameBeauty;
+	this->m_SourceFile				= i_Data.m_SourceFile;
+	this->m_SourceIdentity			= i_Data.m_SourceIdentity;
 
 	return *this;
 }

@@ -189,6 +189,9 @@
     <ClCompile Include="Import\ImportUtil.cpp">
       <Filter>Import</Filter>
     </ClCompile>
+    <ClCompile Include="Import\imptSceneAppend.cpp">
+      <Filter>Import</Filter>
+    </ClCompile>
     <ClCompile Include="Import\wxGUI\ImportDialog.cpp">
       <Filter>Import\wxGUI</Filter>
     </ClCompile>
@@ -898,6 +901,9 @@
       <Filter>Import</Filter>
     </ClInclude>
     <ClInclude Include="Import\ImportUtil.hpp">
+      <Filter>Import</Filter>
+    </ClInclude>
+    <ClInclude Include="Import\imptSceneAppend.hpp">
       <Filter>Import</Filter>
     </ClInclude>
     <ClInclude Include="Import\wxGUI\ImportDialog.hpp">

@@ -11,7 +11,12 @@
 
 #include "ImportExport/gltf/import/private/gltfModelImport.hpp"
 #include "ImportExport/gltf/import/private/gltfSdkManager.hpp"
+#include "ImportExport/gltf/import/private/gltfSceneRead.hpp"
+#include "ImportExport/gltf/import/private/gltfPlacement.hpp"
 
+#ifndef DBG_MSG_HPP
+#include "Core/Dbg/dbgMsg.hpp"
+#endif
 #include "Core/Fs/fsFileUtil.hpp"
 #include "Core/Fs/fsResourceTracker.hpp"
 #include "Graphics/emdl/emdlCharacterTemplate.hpp"
@@ -94,6 +99,54 @@ entModelTemplate* gltfImport::LoadGeometry( const fsLocator&	i_ModelLocator,
 
 	// return NULL and let next implementation try to handle it
 	return NULL;
+}
+
+//----------------------------------------------------------------------------
+//  LoadGeometryPart: one node's mesh
+//----------------------------------------------------------------------------
+entModelTemplate* gltfImport::LoadGeometryPart( const fsLocator& i_ModelLocator,
+												const std::string& i_Part )
+{
+	std::string filename;
+	fsFileUtil::LocatorToANSIFilename(i_ModelLocator, filename);
+	if (!gltfSdkManager::IsRecognizedFileFormat(filename.c_str()))
+		return NULL;	// let the next implementation try
+
+	std::shared_ptr<const tinygltf::Model> pScene = gltfSdkManager::LoadSceneShared(filename.c_str());
+	if (!pScene)
+		return NULL;
+
+	const std::vector<gltfSceneObject> objects = gltfSceneRead::ReadScene(*pScene);
+	const gltfSceneObject* pObject = gltfPlacement::FindMeshObject(objects, i_Part);
+	if (!pObject)
+	{
+		DBG_WARNING("glTF file " << filename << " has no mesh node " << i_Part);
+		return NULL;
+	}
+
+	fsResourceTracker::MarkBegin(i_ModelLocator);
+
+	std::unique_ptr<emdlCharacterTemplate> mdl_template(new emdlCharacterTemplate());
+
+	// a non-uniform scale goes into the template (the character's scale is one float)
+	const maVector3d baked_scale = pObject->m_bUniformScale ? maVector3d(1, 1, 1) : pObject->m_Scale;
+
+	g3dSceneNode* pBase;
+	gltfModelImport::LoadNodeMesh(	pScene.get(),
+									pObject->m_Node,
+									baked_scale,
+									i_ModelLocator,
+									pBase,
+									mdl_template->SkinnedSurfaces(),
+									mdl_template->Fragments(),
+									mdl_template->MaterialTable(),
+									mdl_template->Materials());
+
+	mdl_template->SetModel( pBase );
+	mdl_template->SetFilename( i_ModelLocator );
+
+	fsResourceTracker::MarkEnd(i_ModelLocator);
+	return mdl_template.release();
 }
 
 

@@ -44,7 +44,7 @@ namespace gltfMeshImport
 	//	ConvertMesh converts the geometry in the glTF mesh 
 	//	into our fragment type.
 	//------------------------------------------------------------------------
-	void ConvertMesh( const tinygltf::Model* i_pModel, tinygltf::Mesh* i_Mesh,
+	void ConvertMesh( const tinygltf::Model* i_pModel, const tinygltf::Mesh* i_Mesh,
 					  g3dSceneNode*& io_pSceneNode,
 					  //const fsResourceFinder& i_TextureFinder,
 					  mdlMatInfoTable& io_MaterialTable,

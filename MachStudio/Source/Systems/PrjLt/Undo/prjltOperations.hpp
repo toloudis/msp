@@ -47,7 +47,8 @@ namespace prjltOperations
 	//--------------------------------------------------------------------
 	void  AddObject();
 	void  AddObject(prjltData::LightType i_LightType);
-	void  AddObject(const prjltScriptData& i_Data);
+	// returns the name the new object got, empty if it couldn't be added
+	nameString  AddObject(const prjltScriptData& i_Data);
 
 	//--------------------------------------------------------------------
 	// Add projected light at current camera position

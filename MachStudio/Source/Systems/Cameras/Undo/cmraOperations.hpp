@@ -49,6 +49,8 @@ namespace cmraOperations
 	void  AddPerspectiveCamera();
 	void  AddOrthographicCamera();
 	void  AddObject(bool i_bOrthographic = false);
+	// returns the name the new object got, empty if it couldn't be added
+	nameString  AddObject(const cmraScriptData& i_Data);
 
 	//------------------------------------------------------------------------
 	//  LoadAnimation onto the character with the given index.

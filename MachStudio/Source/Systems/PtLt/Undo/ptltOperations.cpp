@@ -65,10 +65,10 @@ namespace ptltOperations
 		default_data.m_BaseData.m_Name = objName;
 		AddObject(default_data);
 	}
-	void  AddObject(const ptltScriptData& i_Data)
+	nameString  AddObject(const ptltScriptData& i_Data)
 	{
 		int index = ptltActualOperations::AddObject(i_Data);
-		if (index < 0) return;	// if there is a problem loading the object, return immediately
+		if (index < 0) return nameString();	// if there is a problem loading the object, return immediately
 
 		l_LastOp = NULL;
 		std::string add_operation_name(c_AddOperationDisplayName);
@@ -79,6 +79,7 @@ namespace ptltOperations
 		std::string display_text = add_operation_name + data_name;
 		// Need new name given to new object when making udo operation
 		undoUndoMgr::AddOperation(new ptltAddOperation(index, ptltObjectMgr::GetScriptData(index), display_text.c_str()));
+		return ptltObjectMgr::GetScriptData(index).m_BaseData.m_Name.GetValue();
 	}
 
 	//--------------------------------------------------------------------

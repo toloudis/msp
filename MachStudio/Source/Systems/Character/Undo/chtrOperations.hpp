@@ -15,6 +15,9 @@
 #include "Systems/Character/Data/chtrScriptData.hpp"
 #endif
 
+#include <functional>
+#include <string>
+
 
 //============================================================================
 //	forward references
@@ -31,6 +34,15 @@ namespace chtrOperations
 	void BrowseLoadObjects();
 
 	//------------------------------------------------------------------------
+	// The code BrowseLoadObjects offers each file to first: a scene file's
+	// objects are added by it (Features/Import's imptSceneAppend, which can
+	// reach every System), and it returns false for a file it doesn't add,
+	// which then loads as a character. i_FilePatterns ("*.a;*.b") are added
+	// to the browse filter. An empty function removes it.
+	//------------------------------------------------------------------------
+	void SetFileAppender(std::function<bool (const fsLocator&)> i_Appender, const std::string& i_FilePatterns);
+
+	//------------------------------------------------------------------------
 	//  LoadAnimation onto the character with the given index.
 	//------------------------------------------------------------------------
 	void LoadAnimation(int i_Index, const fsLocator &i_AnimLocator);
@@ -38,7 +50,8 @@ namespace chtrOperations
 	//------------------------------------------------------------------------
 	//  Add new item to character
 	//------------------------------------------------------------------------
-	void  AddObject(const chtrScriptData &i_Item);
+	// returns the name the new object got, empty if it couldn't be added
+	nameString  AddObject(const chtrScriptData &i_Item);
 
 	//------------------------------------------------------------------------
 	//  Change data for a specific item

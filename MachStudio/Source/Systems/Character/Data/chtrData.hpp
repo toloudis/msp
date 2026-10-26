@@ -38,6 +38,7 @@
 #include "Core/prty/prtyVector3d.hpp"
 #endif
 
+#include <string>
 #include <vector>
 
 
@@ -81,4 +82,7 @@ public:
 	prtyPoint3d				m_PivotPoint;
 	prtyVector3d			m_PivotCompensation;
 	prtyBoolean				m_bLockedMaterials;
+	std::string				m_SourceIdentity;	// the part of m_Filename this character
+												// is (a scene file's node, iscnObjectDesc::m_Identity);
+												// empty: the whole file
 };

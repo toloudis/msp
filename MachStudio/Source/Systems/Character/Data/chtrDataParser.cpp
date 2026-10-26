@@ -199,6 +199,10 @@ void chtrDataParser::ReadCharacterChunk(chReader& i_Reader,
 				{
 					o_Data.m_BaseData.m_bLockedMaterials.Read(i_Reader);
 				}
+				if (version >= 9)
+				{
+					chChunkParserUtil::Read(i_Reader, o_Data.m_BaseData.m_SourceIdentity);
+				}
 
 				// HACK: [rjk] oh this hurts.  because some files wrote out invalid IDs
 				//	this hack will find an ID "up higher" so they don't get assigned an
@@ -260,7 +264,7 @@ void chtrDataParser::WriteCharacterChunk(chWriter& o_Writer,
 	const bool c_bCHRC_CONTAINER_CHUNK = true;
 	o_Writer.WriteChunkHeader( c_CHRC, c_CHRCHUNK_VERSION, c_bCHRC_CONTAINER_CHUNK );
 
-	const int l_CHRD_VERSION = 8;
+	const int l_CHRD_VERSION = 9;
 	o_Writer.WriteChunkHeader( c_CHRD, l_CHRD_VERSION, false );
 	i_Data.m_BaseData.m_Name.Write(o_Writer);
 	i_Data.m_BaseData.m_Filename.Write(o_Writer);
@@ -276,6 +280,8 @@ void chtrDataParser::WriteCharacterChunk(chWriter& o_Writer,
 
 	//	version 8 adds locked materials flag
 	i_Data.m_BaseData.m_bLockedMaterials.Write(o_Writer);
+	//	version 9 adds the part of the file (a scene file node's identity)
+	chChunkParserUtil::Write(o_Writer, i_Data.m_BaseData.m_SourceIdentity);
 
 	o_Writer.FinishChunk();
 

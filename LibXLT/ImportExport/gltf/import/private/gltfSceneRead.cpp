@@ -53,12 +53,18 @@
 #ifndef GLTF_SCENEREAD_HPP
 #include "ImportExport/gltf/import/private/gltfSceneRead.hpp"
 #endif
+#ifndef GLTF_SDKMANAGER_HPP
+#include "ImportExport/gltf/import/private/gltfSdkManager.hpp"
+#endif
 #ifndef GLTF_MESHIMPORT_HPP
 #include "ImportExport/gltf/import/private/gltfMeshImport.hpp"
 #endif
 
 #ifndef DBG_MSG_HPP
 #include "Core/dbg/dbgMsg.hpp"
+#endif
+#ifndef FS_FILEUTIL_HPP
+#include "Core/Fs/fsFileUtil.hpp"
 #endif
 #ifndef MA_CONSTANTS_HPP
 #include "Core/ma/maConstants.hpp"
@@ -446,5 +452,22 @@ namespace gltfSceneRead
 		SceneReader reader(i_Model, objects);
 		reader.ReadSiblings(i_Model.scenes[scene].nodes, "", -1, NULL);
 		return objects;
+	}
+}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+namespace gltfSceneFile
+{
+	bool ReadObjects(const fsLocator& i_File, std::vector<gltfSceneObject>& o_Objects)
+	{
+		o_Objects.clear();
+		std::string filename;
+		fsFileUtil::LocatorToANSIFilename(i_File, filename);
+		std::shared_ptr<const tinygltf::Model> pModel = gltfSdkManager::LoadSceneShared(filename.c_str());
+		if (!pModel)
+			return false;
+		o_Objects = gltfSceneRead::ReadScene(*pModel);
+		return true;
 	}
 }

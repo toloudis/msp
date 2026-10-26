@@ -20,6 +20,9 @@
 #include "Graphics/Ent/entImport.hpp"
 #include "Graphics/Ent/entModelTemplate.hpp"
 #include "Graphics/smdl/private/smdlSubdivNetworkMgr.hpp"
+#ifndef FS_LOCATOR_HPP
+#include "Core/Fs/fsLocator.hpp"
+#endif
 
 
 //============================================================================
@@ -48,16 +51,59 @@ namespace api3dSharedModelMgr
 			}
 		};
 		SharedModelMgr l_SharedModelMgr;
+
+		//--------------------------------------------------------------------
+		// A part of a file: its templates are shared apart from the whole
+		// file's
+		//--------------------------------------------------------------------
+		struct PartLocator
+		{
+			fsLocator m_Locator;
+			std::string m_Part;
+
+			bool operator < (const PartLocator& i_Other) const
+			{
+				if (m_Locator < i_Other.m_Locator)
+					return true;
+				if (i_Other.m_Locator < m_Locator)
+					return false;
+				return m_Part < i_Other.m_Part;
+			}
+		};
+
+		//--------------------------------------------------------------------
+		//--------------------------------------------------------------------
+		class SharedPartMgr : public envSharedAssetMgr<entModelTemplate, PartLocator>
+		{
+		public:
+			//----------------------------------------------------------------
+			// Load one part of a file
+			//----------------------------------------------------------------
+			virtual entModelTemplate* LoadAsset(const PartLocator& i_Locator)
+			{
+				DBG_TRACE("Loading file: " << i_Locator.m_Locator << " (" << i_Locator.m_Part.c_str() << ")");
+				return entImport::LoadGeometry(i_Locator.m_Locator, i_Locator.m_Part);
+			}
+		};
+		SharedPartMgr l_SharedPartMgr;
 	}
 
 	//========================================================================
 	// See if the file has already been loaded. If so, return that
 	// model template. Otherwise, load the geometry file.
 	//========================================================================
-	entModelTemplate* LoadModelTemplate(const fsLocator& i_Locator)
+	entModelTemplate* LoadModelTemplate(const fsLocator& i_Locator, const std::string& i_Part)
 	{
 		try
 		{
+			if (!i_Part.empty())
+			{
+				const PartLocator part = { i_Locator, i_Part };
+				if (c_UseSharedAssetMgr)
+					return l_SharedPartMgr.Load(part);
+				else
+					return l_SharedPartMgr.LoadAsset(part);
+			}
 			if (c_UseSharedAssetMgr)
 				return l_SharedModelMgr.Load(i_Locator);
 			else
@@ -86,7 +132,12 @@ namespace api3dSharedModelMgr
 	int ReleaseModelTemplate(entModelTemplate* i_ModelTemplate)
 	{
 		if (c_UseSharedAssetMgr)
-			return l_SharedModelMgr.Release(i_ModelTemplate);
+		{
+			const int count = l_SharedModelMgr.Release(i_ModelTemplate);
+			if (count >= 0)
+				return count;
+			return l_SharedPartMgr.Release(i_ModelTemplate);
+		}
 		else
 		{
 			// No sharing so just delete the template
@@ -100,10 +151,15 @@ namespace api3dSharedModelMgr
 	// next call to LoadModelTemplate() will reload the original
 	// geometry file.
 	//========================================================================
-	void StopSharing(const fsLocator& i_Locator)
+	void StopSharing(const fsLocator& i_Locator, const std::string& i_Part)
 	{
 		if (c_UseSharedAssetMgr)
-			l_SharedModelMgr.StopSharing(i_Locator);
+		{
+			if (i_Part.empty())
+				l_SharedModelMgr.StopSharing(i_Locator);
+			else
+				l_SharedPartMgr.StopSharing(PartLocator{ i_Locator, i_Part });
+		}
 
 		// Also have to stop sharing the subdivision networks
 		// because the subdiv info may change when reloading the new geometry.

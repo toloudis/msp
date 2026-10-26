@@ -80,10 +80,10 @@ namespace prjltOperations
 	//--------------------------------------------------------------------
 	//  Add new projected light to world
 	//--------------------------------------------------------------------
-	void  AddObject(const prjltScriptData& i_Data)
+	nameString  AddObject(const prjltScriptData& i_Data)
 	{
 		int index = prjltActualOperations::AddObject(i_Data);
-		if (index < 0) return;	// if there is a problem loading the object, return immediately
+		if (index < 0) return nameString();	// if there is a problem loading the object, return immediately
 
 		l_LastOp = NULL;
 		//char displaytext[128];
@@ -96,6 +96,7 @@ namespace prjltOperations
 		
 		// Need new name given to new object when making udo operation
 		undoUndoMgr::AddOperation(new prjltAddOperation(index, prjltObjectMgr::GetScriptData(index), displaytext.c_str()));
+		return prjltObjectMgr::GetScriptData(index).m_BaseData.m_Name.GetValue();
 	}
 
 	//--------------------------------------------------------------------

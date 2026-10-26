@@ -245,6 +245,12 @@ namespace
 				o_Data.m_CoC.Read(i_Reader);
 			}
 
+			if (i_Version >= 20)
+			{
+				o_Data.m_SourceFile.Read(i_Reader);
+				chChunkParserUtil::Read(i_Reader, o_Data.m_SourceIdentity);
+			}
+
 		}
 	}
 
@@ -293,7 +299,7 @@ namespace
 		o_Writer.FinishChunk();
 
 		// Write cam info
-		const int l_CAMI_VERSION = 19;
+		const int l_CAMI_VERSION = 20;
 		o_Writer.WriteChunkHeader( c_CAMI, l_CAMI_VERSION, false );
 		i_Data.m_Target.Write(o_Writer);
 		i_Data.m_FOV.Write(o_Writer);
@@ -358,6 +364,10 @@ namespace
 
 		//version 19
 		i_Data.m_CoC.Write(o_Writer);
+
+		// version 20: the file and identity it came from
+		i_Data.m_SourceFile.Write(o_Writer);
+		chChunkParserUtil::Write(o_Writer, i_Data.m_SourceIdentity);
 
 
 		o_Writer.FinishChunk();

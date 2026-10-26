@@ -21,7 +21,16 @@
     <ClCompile Include="gltf\gltfMaterialReadTest.cpp">
       <Filter>gltf</Filter>
     </ClCompile>
+    <ClCompile Include="gltf\gltfPlacementTest.cpp">
+      <Filter>gltf</Filter>
+    </ClCompile>
+    <ClCompile Include="gltf\gltfSceneImportTest.cpp">
+      <Filter>gltf</Filter>
+    </ClCompile>
     <ClCompile Include="gltf\gltfSceneReadTest.cpp">
+      <Filter>gltf</Filter>
+    </ClCompile>
+    <ClCompile Include="gltf\gltfSdkManagerTest.cpp">
       <Filter>gltf</Filter>
     </ClCompile>
   </ItemGroup>

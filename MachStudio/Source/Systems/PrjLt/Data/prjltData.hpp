@@ -19,9 +19,9 @@
 #ifndef PRTY_ENUM_HPP
 #include "Core/prty/prtyEnum.hpp"
 #endif
-//#ifndef PRTY_FILEPATH_HPP
-//#include "Core/prty/prtyFilePath.hpp"
-//#endif
+#ifndef PRTY_FILEPATH_HPP
+#include "Core/prty/prtyFilePath.hpp"
+#endif
 #ifndef PRTY_FLOAT_HPP
 #include "Core/prty/prtyFloat.hpp"
 #endif
@@ -173,5 +173,8 @@ public:
 	// RSM GI parameters
 	prtyBoolean				m_GISource;
 	prtyInt32				m_ReflectiveMapSize;
+
+	prtyFilePath			m_SourceFile;		// the scene file this came from; empty: not from a file
+	std::string				m_SourceIdentity;	// its identity in that file (iscnObjectDesc::m_Identity)
 };
 

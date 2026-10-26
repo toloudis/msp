@@ -96,6 +96,11 @@ void read_pointlight_data(	chReader& i_Reader,
 					{
 						o_Data.m_Intensity.Read(i_Reader);
 					}
+					if (i_Version >= 9)
+					{
+						o_Data.m_SourceFile.Read(i_Reader);
+						chChunkParserUtil::Read(i_Reader, o_Data.m_SourceIdentity);
+					}
 				}
 			}
 		}
@@ -261,7 +266,7 @@ void  ptltDataParser::WritePointLightData(	chWriter& o_Writer,
 	//	version 3 = all data written from ptltScriptData structure
 	//  version 4 = adds DiffuseEnabled and SpecularEnabled flags
 	//
-	const int l_PTLTITEM_VERSION = 7; //bga - Note, the next version should be 9, not 8!
+	const int l_PTLTITEM_VERSION = 9; // not 8: see check_falloff
 	o_Writer.WriteChunkHeader( c_PTLT, l_PTLTITEM_VERSION, false );
 	i_Data.m_BaseData.m_Color.Write(o_Writer);
 	i_Data.m_BaseData.m_Enabled.Write(o_Writer);
@@ -276,6 +281,9 @@ void  ptltDataParser::WritePointLightData(	chWriter& o_Writer,
 	i_Data.m_BaseData.m_bAffectsGlow.Write(o_Writer);
 	// version 7:
 	i_Data.m_BaseData.m_Intensity.Write(o_Writer);
+	// version 9: the file and identity it came from
+	i_Data.m_BaseData.m_SourceFile.Write(o_Writer);
+	chChunkParserUtil::Write(o_Writer, i_Data.m_BaseData.m_SourceIdentity);
 
 	o_Writer.FinishChunk();
 

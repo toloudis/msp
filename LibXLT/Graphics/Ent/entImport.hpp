@@ -20,6 +20,7 @@
 #include "Core/env/envBoost.hpp"
 #endif
 
+#include <string>
 #include <vector>
 
 
@@ -51,6 +52,14 @@ public:
 	virtual entModelTemplate* LoadGeometry( const fsLocator&	i_ModelLocator,
 								   //const fsResourceFinder& i_TextureFinder,
 								   entFragInfoSink* o_Sink = NULL ) = 0;
+
+	//----------------------------------------------------------------------------
+	// Load one part of a file (for glTF, a node's mesh, named by its identity
+	// in the file), creating a model template to hold it. NULL lets the next
+	// implementation try; importers without parts keep this one.
+	//----------------------------------------------------------------------------
+	virtual entModelTemplate* LoadGeometryPart( const fsLocator& i_ModelLocator,
+												const std::string& i_Part ) { return NULL; }
 
 	//----------------------------------------------------------------------------
 	// Creates scObject as instance of the template. Data to be stored
@@ -106,6 +115,14 @@ namespace entImport
 	entModelTemplate* LoadGeometry( const fsLocator&	i_ModelLocator,
 								   //const fsResourceFinder& i_TextureFinder,
 								   entFragInfoSink* o_Sink = NULL );
+
+	//----------------------------------------------------------------------------
+	// Load one part of a file (entImportImpl::LoadGeometryPart); an empty
+	// part loads the whole file, as above.
+	//		If there is an error, NULL is returned.
+	//----------------------------------------------------------------------------
+	entModelTemplate* LoadGeometry( const fsLocator& i_ModelLocator,
+								    const std::string& i_Part );
 
 	//----------------------------------------------------------------------------
 	// Create scObject of appropriate animation type from template

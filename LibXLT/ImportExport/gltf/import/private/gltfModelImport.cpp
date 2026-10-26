@@ -163,5 +163,32 @@ namespace gltfModelImport
 			//			o_Fragments, o_Materials, o_Textures);
 	}
 
+	//------------------------------------------------------------------------
+	//	LoadNodeMesh converts one node's mesh into our scene graph.
+	//------------------------------------------------------------------------
+	void LoadNodeMesh(	const tinygltf::Model* i_pScene,
+						int i_Node,
+						const maVector3d& i_BakedScale,
+						const fsLocator& i_Locator,
+						g3dSceneNode*& o_pSceneNode,
+						std::vector<mdlSkinInfo>& o_SkinData,
+						std::vector<g3dFragment*>& o_Fragments,
+						mdlMatInfoTable& o_MaterialTable,
+						std::vector<matMaterial*>& o_Materials)
+	{
+		const tinygltf::Node& node = i_pScene->nodes[i_Node];
+
+		o_pSceneNode = new g3dSceneNode();
+		o_pSceneNode->SetName(node.name.c_str());
+
+		maMatrix4x4 matx;
+		matx.MakeScale(i_BakedScale.m_X, i_BakedScale.m_Y, i_BakedScale.m_Z);
+		o_pSceneNode->SetTransform(matx);
+
+		if (node.mesh >= 0 && node.mesh < (int)i_pScene->meshes.size())
+			gltfMeshImport::ConvertMesh(i_pScene, &i_pScene->meshes[node.mesh], o_pSceneNode, o_MaterialTable,
+										o_Fragments, o_Materials, i_Locator);
+	}
+
 }	// end of namespace
 

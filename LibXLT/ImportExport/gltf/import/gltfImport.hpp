@@ -36,6 +36,13 @@ public:
 								    entFragInfoSink* o_Sink = NULL );
 
 	//----------------------------------------------------------------------------
+	// Load one node's mesh (i_Part: its identity, gltfSceneObject::m_Identity),
+	// creating a model template to hold it
+	//----------------------------------------------------------------------------
+	virtual entModelTemplate* LoadGeometryPart( const fsLocator& i_ModelLocator,
+												const std::string& i_Part );
+
+	//----------------------------------------------------------------------------
 	// Create scObject of appropriate animation type from template
 	//----------------------------------------------------------------------------
 	virtual scObject* CreateObject( const entModelTemplate& i_Template,

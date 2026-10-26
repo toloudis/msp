@@ -84,6 +84,7 @@ chtrData& chtrData::operator=(const chtrData& i_Data)
 	this->m_PivotPoint			= i_Data.m_PivotPoint;
 	this->m_PivotCompensation	= i_Data.m_PivotCompensation;
 	this->m_bLockedMaterials	= i_Data.m_bLockedMaterials;
+	this->m_SourceIdentity		= i_Data.m_SourceIdentity;
 
 	return *this;
 }

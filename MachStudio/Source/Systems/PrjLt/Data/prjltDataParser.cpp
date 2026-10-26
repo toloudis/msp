@@ -352,6 +352,11 @@ namespace
 																									o_Data.m_HairShadowSize.Read(i_Reader);
 																									o_Data.m_HairShadowType.Read(i_Reader);
 																								}
+																								if (i_Version >= 33)
+																								{
+																									o_Data.m_SourceFile.Read(i_Reader);
+																									chChunkParserUtil::Read(i_Reader, o_Data.m_SourceIdentity);
+																								}
 																							}
 																						}
 																					}
@@ -509,7 +514,7 @@ void prjltDataParser::WriteProjectedLightData(	chWriter& o_Writer,
 	o_Writer.WriteChunkHeader( c_PRJC, l_PRJCCHNK_VERSION, true );
 
 	// Write base info
-	const int l_PRJTITEM_VERSION = 32; 
+	const int l_PRJTITEM_VERSION = 33; 
 	o_Writer.WriteChunkHeader( c_PRJT, l_PRJTITEM_VERSION, false );
 
 	i_Data.m_BaseData.m_Enabled.Write(o_Writer);
@@ -628,6 +633,10 @@ void prjltDataParser::WriteProjectedLightData(	chWriter& o_Writer,
 	i_Data.m_BaseData.m_HairShadowEnable.Write(o_Writer);
 	i_Data.m_BaseData.m_HairShadowSize.Write(o_Writer);
 	i_Data.m_BaseData.m_HairShadowType.Write(o_Writer);
+
+	// version 33: the file and identity it came from
+	i_Data.m_BaseData.m_SourceFile.Write(o_Writer);
+	chChunkParserUtil::Write(o_Writer, i_Data.m_BaseData.m_SourceIdentity);
 
 	o_Writer.FinishChunk();	// c_PRJT
 

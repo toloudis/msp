@@ -25,7 +25,8 @@ namespace trfnOperations
 	//  Add new transform to world
 	//--------------------------------------------------------------------
 	void  AddObject();
-	void  AddObject(const trfnScriptData& i_Data);
+	// returns the name the new object got, empty if it couldn't be added
+	nameString  AddObject(const trfnScriptData& i_Data);
 
 	//--------------------------------------------------------------------
 	//  Select transform with given index

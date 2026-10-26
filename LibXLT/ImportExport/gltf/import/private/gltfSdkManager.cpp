@@ -11,6 +11,10 @@
 
 #include <string.h>
 
+#include <filesystem>
+#include <mutex>
+#include <system_error>
+
 // Define these only in *one* .cc file.
 #define TINYGLTF_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
@@ -39,6 +43,19 @@ namespace gltfSdkManager
 
 		bool IsAsciiFile(const char* pFilename)  { return has_extension(pFilename, ".gltf"); }
 		bool IsBinaryFile(const char* pFilename) { return has_extension(pFilename, ".glb"); }
+
+		//--------------------------------------------------------------------
+		// LoadSceneShared's one-entry cache
+		//--------------------------------------------------------------------
+		struct SceneCache
+		{
+			std::string m_Path;
+			std::uintmax_t m_Size = 0;
+			std::filesystem::file_time_type m_WriteTime;
+			std::shared_ptr<const tinygltf::Model> m_pModel;
+		};
+		std::mutex s_CacheMutex;
+		SceneCache s_Cache;
 	}
 
 	//------------------------------------------------------------------------
@@ -51,6 +68,8 @@ namespace gltfSdkManager
 	//------------------------------------------------------------------------
 	void CleanUp() throw()
 	{
+		std::lock_guard<std::mutex> lock(s_CacheMutex);
+		s_Cache = SceneCache();
 	}
 
 	
@@ -96,6 +115,37 @@ namespace gltfSdkManager
 		return pScene;
 	}
 
+
+	//------------------------------------------------------------------------
+	// The parsed file, from the cache when its path, size and write time
+	// are those of the cached one.
+	//------------------------------------------------------------------------
+	std::shared_ptr<const tinygltf::Model> LoadSceneShared(const char* pFilename)
+	{
+		std::error_code ec;
+		const std::filesystem::path path = std::filesystem::u8path(pFilename);	// the name is UTF-8 (fsFileUtil)
+		const std::uintmax_t size = std::filesystem::file_size(path, ec);
+		if (ec)
+		{
+			DBG_ERROR("glTF error loading " << pFilename << ": " << ec.message());
+			return NULL;
+		}
+		const std::filesystem::file_time_type write_time = std::filesystem::last_write_time(path, ec);
+
+		std::lock_guard<std::mutex> lock(s_CacheMutex);
+		if (s_Cache.m_pModel && s_Cache.m_Path == pFilename && s_Cache.m_Size == size && s_Cache.m_WriteTime == write_time)
+			return s_Cache.m_pModel;
+
+		std::shared_ptr<const tinygltf::Model> pModel(LoadScene(pFilename));
+		if (pModel)
+		{
+			s_Cache.m_Path = pFilename;
+			s_Cache.m_Size = size;
+			s_Cache.m_WriteTime = write_time;
+			s_Cache.m_pModel = pModel;
+		}
+		return pModel;
+	}
 
 } // end of namespace
 

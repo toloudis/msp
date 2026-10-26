@@ -118,6 +118,7 @@
     <ClCompile Include="Ma\maRotationTest.cpp" />
     <ClCompile Include="Ma\maVectorTest.cpp" />
     <ClCompile Include="Rel\relReferenceTest.cpp" />
+    <ClCompile Include="Undo\undoUndoMgrTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ctMath.hpp" />

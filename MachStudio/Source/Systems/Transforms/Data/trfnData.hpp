@@ -13,6 +13,9 @@
 #ifndef PRTY_BOOLEAN_HPP
 #include "Core/prty/prtyBoolean.hpp"
 #endif 
+#ifndef PRTY_FILEPATH_HPP
+#include "Core/prty/prtyFilePath.hpp"
+#endif
 #ifndef PRTY_FLOAT_HPP
 #include "Core/prty/prtyFloat.hpp"
 #endif
@@ -63,4 +66,6 @@ public:
 	prtyBoolean				m_bInheritsTransform;
 
 	std::vector<nameString> m_Objects;
+	prtyFilePath			m_SourceFile;		// the scene file this came from; empty: not from a file
+	std::string				m_SourceIdentity;	// its identity in that file (iscnObjectDesc::m_Identity)
 };

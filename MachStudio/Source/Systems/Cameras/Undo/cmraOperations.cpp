@@ -89,21 +89,25 @@ namespace cmraOperations
 		cmraObjectMgr::GenerateNewCameraName( basename, newname, i_bOrthographic );
 		default_data.m_BaseData.m_Name = newname;
 
-		//
-		int index = cmraActualOperations::AddObject(default_data);
-		if (index < 0) return;	// if there is a problem loading the object, return immediately
+		AddObject(default_data);
+	}
+	nameString  AddObject(const cmraScriptData& i_Data)
+	{
+		int index = cmraActualOperations::AddObject(i_Data);
+		if (index < 0) return nameString();	// if there is a problem loading the object, return immediately
 
 		l_LastOp = NULL;
 		//char displaytext[256];
-		//sprintf(displaytext, "%s - %s", c_AddOperationDisplayName, default_data.m_BaseData.m_Name.GetString().c_str());
+		//sprintf(displaytext, "%s - %s", c_AddOperationDisplayName, i_Data.m_BaseData.m_Name.GetString().c_str());
 		
 		std::ostringstream oss;
 		oss.setf(0, std::ios::floatfield);
-		oss << c_AddOperationDisplayName <<" - " << default_data.m_BaseData.m_Name.GetString().c_str() ;
+		oss << c_AddOperationDisplayName <<" - " << i_Data.m_BaseData.m_Name.GetString().c_str() ;
 		std::string displaytext(oss.str());
 		
 		// Need new name given to new object when making udo operation
 		undoUndoMgr::AddOperation(new cmraAddOperation(index, cmraObjectMgr::GetScriptData(index), displaytext.c_str()));
+		return cmraObjectMgr::GetScriptData(index).m_BaseData.m_Name.GetValue();
 	}
 
 	//------------------------------------------------------------------------

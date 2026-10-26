@@ -105,6 +105,13 @@ void trfnTransformsDataParser::ReadTransformData(	chReader& i_Reader,
 				// version 1 adds "inherits transform" flag
 				o_Data.m_BaseData.m_bInheritsTransform.Read(i_Reader);
 			}
+
+			if (version >= 3)
+			{
+				// version 3 adds the file and identity it came from
+				o_Data.m_BaseData.m_SourceFile.Read(i_Reader);
+				chChunkParserUtil::Read(i_Reader, o_Data.m_BaseData.m_SourceIdentity);
+			}
 		}
 		else if ( name == c_XFMO )
 		{
@@ -151,7 +158,7 @@ void trfnTransformsDataParser::WriteTransformData(	chWriter& o_Writer,
 	o_Writer.WriteChunkHeader( c_XFMC, c_XFMC_VERSION, c_bXFMC_CONTAINER_CHUNK );
 
 	// Basic data
-	const int c_XFMD_VERSION = 2;
+	const int c_XFMD_VERSION = 3;
 	o_Writer.WriteChunkHeader( c_XFMD, c_XFMD_VERSION, false );
 	i_Data.m_BaseData.m_Name.Write(o_Writer);
 	i_Data.m_BaseData.m_Position.Write(o_Writer);
@@ -167,6 +174,10 @@ void trfnTransformsDataParser::WriteTransformData(	chWriter& o_Writer,
 
 	// version 2 adds "inherits transform" flag
 	i_Data.m_BaseData.m_bInheritsTransform.Write(o_Writer);
+
+	// version 3 adds the file and identity it came from
+	i_Data.m_BaseData.m_SourceFile.Write(o_Writer);
+	chChunkParserUtil::Write(o_Writer, i_Data.m_BaseData.m_SourceIdentity);
 
 	o_Writer.FinishChunk();
 

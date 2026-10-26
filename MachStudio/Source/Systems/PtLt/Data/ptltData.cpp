@@ -26,7 +26,8 @@ ptltData::ptltData()
 	m_bDiffuseEnabled("Enable Diffuse", true),
 	m_bSpecularEnabled("Enable Specular", true),
 	m_bAffectsFur("Affects Fur", true),
-	m_bAffectsGlow("Affects Glow", true)
+	m_bAffectsGlow("Affects Glow", true),
+	m_SourceFile("Source File")
 {
 }
 
@@ -45,7 +46,8 @@ ptltData::ptltData(const ptltData& i_Data)
 	m_bDiffuseEnabled("Enable Diffuse", true),
 	m_bSpecularEnabled("Enable Specular", true),
 	m_bAffectsFur("Affects Fur", true),
-	m_bAffectsGlow("Affects Glow", true)
+	m_bAffectsGlow("Affects Glow", true),
+	m_SourceFile("Source File")
 {
 	(*this) = i_Data;
 }
@@ -82,6 +84,8 @@ ptltData& ptltData::operator=(const ptltData& i_Data)
 	this->m_bSpecularEnabled = i_Data.m_bSpecularEnabled;
 	this->m_bAffectsFur		= i_Data.m_bAffectsFur;
 	this->m_bAffectsGlow	= i_Data.m_bAffectsGlow;
+	this->m_SourceFile		= i_Data.m_SourceFile;
+	this->m_SourceIdentity	= i_Data.m_SourceIdentity;
 
 	return *this;
 }
