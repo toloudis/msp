@@ -86,6 +86,9 @@
 #ifndef GUI_MESSAGEBOX_HPP
 #include "Tool/gui/guiMessageBox.hpp"
 #endif
+#ifndef MAT_TEXTUREMGR_HPP
+#include "Graphics/Mat/matTextureMgr.hpp"
+#endif
 
 #include <functional>
 #include <string>
@@ -449,6 +452,8 @@ namespace imptSceneAppend
 	//------------------------------------------------------------------------
 	bool AppendFile(const fsLocator& i_File)
 	{
+		DBG_TRACE("Texture load diagnostics: importing " << i_File);
+		matTextureMgr::LoadDiagnostics texture_diagnostics;
 		const std::string file_name = itStringUtil::GetStdString(i_File.GetLastName());
 
 		iscnSceneSettings settings;

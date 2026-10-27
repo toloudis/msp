@@ -104,6 +104,17 @@ namespace matTextureMgr
 	void SetCompressTextures(bool i_bSkip);
 	bool IsCompressTextures();
 
+	// Logs per-cache-path requests, hits, backend loads and successful texture
+	// creations at scope exit, in Release too. Nested scopes share one report.
+	// Counts file loads through LoadTexture, not procedural textures or reloads.
+	class LoadDiagnostics
+	{
+	public:
+		LoadDiagnostics();
+		~LoadDiagnostics();
+		LoadDiagnostics(const LoadDiagnostics&) = delete;
+		LoadDiagnostics& operator=(const LoadDiagnostics&) = delete;
+	};
 
 	//------------------------------------------------------------------------
 	//	GetTotalTextureMemory returns alleged amount of texture memory

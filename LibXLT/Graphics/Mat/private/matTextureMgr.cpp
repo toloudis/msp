@@ -43,6 +43,16 @@ namespace
 	bool l_bSkipAllTextures = false;
 	bool l_bCompressTextures = false;
 
+	struct LoadCounts
+	{
+		size_t requests = 0;
+		size_t hits = 0;
+		size_t loads = 0;
+		size_t created = 0;
+	};
+	unsigned int l_LoadDiagnosticsDepth = 0;
+	std::map<fsLocator, LoadCounts> l_LoadCounts;
+
 	//------------------------------------------------------------------------
 	//	Texture saving: mip 0 of layer 0 read back into an image (as
 	//	DirectXTex's CaptureTexture, then GetImage(0, 0, 0)); NULL if there
@@ -331,6 +341,42 @@ matTexture* LoadTexture( const fsLocator& i_Locator, const TEXTURE_TYPE i_Type, 
 	return LoadTexture(loc, i_Locator.GetLastName(), i_Type, mipmap_if_2D);
 }
 //--------------------------------------------------------------------
+LoadDiagnostics::LoadDiagnostics()
+{
+	if (l_LoadDiagnosticsDepth++ == 0)
+		l_LoadCounts.clear();
+}
+
+LoadDiagnostics::~LoadDiagnostics()
+{
+	if (--l_LoadDiagnosticsDepth != 0)
+		return;
+
+	LoadCounts total;
+	size_t loadedPaths = 0;
+	size_t repeatedPaths = 0;
+	for (const auto& entry : l_LoadCounts)
+	{
+		const LoadCounts& counts = entry.second;
+		total.requests += counts.requests;
+		total.hits += counts.hits;
+		total.loads += counts.loads;
+		total.created += counts.created;
+		if (counts.created != 0)
+			++loadedPaths;
+		if (counts.created > 1)
+			++repeatedPaths;
+		DBG_TRACE("Texture load diagnostics: path=" << entry.first
+			<< " requests=" << counts.requests << " hits=" << counts.hits
+			<< " backendLoads=" << counts.loads << " created=" << counts.created);
+	}
+	DBG_TRACE("Texture load diagnostics: TOTAL requestedPaths=" << l_LoadCounts.size()
+		<< " loadedPaths=" << loadedPaths << " repeatedCreationPaths=" << repeatedPaths
+		<< " requests=" << total.requests << " hits=" << total.hits
+		<< " backendLoads=" << total.loads << " created=" << total.created);
+	l_LoadCounts.clear();
+}
+
 matTexture* LoadTexture(const fsLocator& i_Directory, const itString& i_Name, const TEXTURE_TYPE i_Type/* = TEXTURE_TYPE_2D*/, const bool mipmap_if_2D /*= true*/, const bool i_bIgnoreTUVSuffix /*= false*/)
 {
 	if (l_pImpl == NULL)
@@ -356,6 +402,10 @@ matTexture* LoadTexture(const fsLocator& i_Directory, const itString& i_Name, co
 	tex_directory = tex_locator;
 	tex_locator.Push(tex_name);
 
+	LoadCounts* counts = l_LoadDiagnosticsDepth ? &l_LoadCounts[tex_locator] : nullptr;
+	if (counts)
+		++counts->requests;
+
 	//
 	std::map<fsLocator, TextureInfo>::iterator it = l_Textures.end();
 	it = l_Textures.find(tex_locator);
@@ -371,7 +421,11 @@ matTexture* LoadTexture(const fsLocator& i_Directory, const itString& i_Name, co
 				std::vector<itString> names;
 
 				// ACTUALLY LOAD THE TEXTURE!!!!
+				if (counts)
+					++counts->loads;
 				new_texture = l_pImpl->LoadTexture(tex_directory, tex_name, names, i_Type, i_bIgnoreTUVSuffix, mipmap_if_2D);
+				if (counts && new_texture)
+					++counts->created;
 
 				matUVATexture *uva_texture = dynamic_cast<matUVATexture*>(new_texture);
 				if (uva_texture)
@@ -439,6 +493,8 @@ matTexture* LoadTexture(const fsLocator& i_Directory, const itString& i_Name, co
 	}
 	else
 	{
+		if (counts)
+			++counts->hits;
 		++(it->second.m_Count);
 		return it->second.m_Texture;
 	}
@@ -895,7 +951,6 @@ void CopyTexture(matTexture* i_SrcTex, matTexture* i_DstTex)
 	l_pImpl->CopyTexture(i_SrcTex, i_DstTex);
 }
 }
-
 
 
 
