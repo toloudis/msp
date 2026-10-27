@@ -688,7 +688,7 @@ void IlluminateProjLightHair(in float3 Ps, in LightInfo light, in ProjLightInfo 
 		}
 
 		float d = length(OUT.L);
-		float atten = 1 / (light.Falloff.x + light.Falloff.y * d + light.Falloff.z * d * d);
+		float atten = 1 / max(1e-6, light.Falloff.x + light.Falloff.y * d + light.Falloff.z * d * d);
 
 		float3 shadowCoeff = 1;
 

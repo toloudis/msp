@@ -98,6 +98,7 @@
     <ClCompile Include="GraphicsTestsMain.cpp" />
     <ClCompile Include="gtPlatformWin.cpp" />
     <ClCompile Include="G3d\g3dProfilerTest.cpp" />
+    <ClCompile Include="G3d\g3dLightFalloffTest.cpp" />
     <ClCompile Include="Eff\effOpacityTest.cpp" />
     <ClCompile Include="Eff\effPbrDataTest.cpp" />
     <ClCompile Include="Eff\effUVTransformTest.cpp" />

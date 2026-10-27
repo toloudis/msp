@@ -88,14 +88,14 @@ float attenuation(float3 Pw,		// Position of vertex in world coords
 		float d = distance(Pw, light.Pos.xyz);
 		if (d > light.FalloffStart)
 		{
-			atten = 1 / (light.Falloff.x + 
+			atten = 1 / max(1e-6, light.Falloff.x +
 						light.Falloff.y * (d - light.FalloffStart) + 
 						light.Falloff.z * (d - light.FalloffStart) * (d - light.FalloffStart) + 
 						light.Falloff.w * (d - light.FalloffStart) * (d - light.FalloffStart) * (d - light.FalloffStart));
 		}
 		else
 		{
-			atten = 1 / (light.Falloff.x);
+			atten = 1 / max(1e-6, light.Falloff.x);
 		}
 	}
 	return atten;

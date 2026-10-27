@@ -41,6 +41,9 @@
     <ClCompile Include="G3d\g3dProfilerTest.cpp">
       <Filter>G3d</Filter>
     </ClCompile>
+    <ClCompile Include="G3d\g3dLightFalloffTest.cpp">
+      <Filter>G3d</Filter>
+    </ClCompile>
     <ClCompile Include="Vk\vkdAdapterTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>

@@ -70,7 +70,8 @@ class g3dPointLight : public g3dLight
 
 		//--------------------------------------------------------------------
 		//	The SetFalloff0-2 functions allow the user to set the falloff
-		//	curve.
+		//	curve. Coefficients are nonnegative; a0 may be zero for
+		//	inverse-square attenuation. Shaders guard a zero denominator.
 		//--------------------------------------------------------------------
 		void SetFalloff0(float i_Val);
 		void SetFalloff1(float i_Val);
@@ -96,4 +97,3 @@ class g3dPointLight : public g3dLight
 		float m_fStart;
 		float m_fRange;
 };
-
