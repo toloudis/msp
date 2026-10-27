@@ -166,7 +166,7 @@ bool make_texture(const matDecodedImage& i_Decoded, int i_WidthReduce, int i_Hei
 	matDecodedImage chain;
 	if (i_Levels == 1)
 	{
-		chain = reduced;
+		chain = std::move(reduced);
 	}
 	else if (!matGenerateMips(reduced, i_Levels, chain, i_Filter))
 	{

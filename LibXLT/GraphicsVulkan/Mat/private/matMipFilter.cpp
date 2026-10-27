@@ -602,6 +602,35 @@ namespace gvk
 			};
 			const uint32_t channels = i_F.m_Bytes;
 			const bool alpha = channels == 4 && i_F.m_Dxgi != e_B8G8R8X8_UNORM;
+			//	Unscaled (matReduce without a reduction, the usual load): each
+			//	destination pixel is its source pixel with weight 1, so only the
+			//	premultiply round trip changes it
+			if (i_Src.m_Width == o_Dest.m_Width && i_Src.m_Height == o_Dest.m_Height)
+			{
+				const size_t row = (size_t)i_Src.m_Width * channels;
+				for (uint32_t y = 0; y < i_Src.m_Height; y++)
+				{
+					const uint8_t* s = i_Src.m_pPixels + y * i_Src.m_RowPitch;
+					uint8_t* d = o_Dest.m_pPixels + y * o_Dest.m_RowPitch;
+					if (!alpha)
+					{
+						memcpy(d, s, row);
+						continue;
+					}
+					for (size_t p = 0; p < row; p += 4)
+					{
+						const uint32_t a = s[p + 3];
+						const uint32_t recip = a ? 0xFF0000u / a : 0;
+						for (int c = 0; c < 3; c++)
+						{
+							const uint32_t pre = (s[p + c] * a + 127) / 255;
+							d[p + c] = a ? (uint8_t)std::min(255u, (uint32_t)(((uint64_t)pre * recip) >> 16)) : 0;
+						}
+						d[p + 3] = (uint8_t)a;
+					}
+				}
+				return;
+			}
 			//	The source, premultiplied where it has alpha
 			std::vector<uint8_t> source((size_t)i_Src.m_Width * i_Src.m_Height * channels);
 			for (uint32_t y = 0; y < i_Src.m_Height; y++)
@@ -718,11 +747,10 @@ namespace gvk
 		{
 			return false;
 		}
-		matDecodedImage source;
-		make_chain(source, f->m_Dxgi, f->m_Bytes, i_Image.m_Width, i_Image.m_Height, 1);
-		copy_level0(i_Image, f->m_Bytes, level_of(source, 0));
 		make_chain(o_Image, f->m_Dxgi, f->m_Bytes, width, height, 1);
-		const Level src = level_of(source, 0), dest = level_of(o_Image, 0);
+		const matDecodedImage::Sub& s = i_Image.m_Subs[0];
+		const Level src = { i_Image.m_Width, i_Image.m_Height, const_cast<uint8_t*>(i_Image.m_Bytes.data()) + s.m_Offset, s.m_RowPitch },
+					dest = level_of(o_Image, 0);
 		if (f->m_bWic)
 		{
 			resize_fant(*f, src, dest);
