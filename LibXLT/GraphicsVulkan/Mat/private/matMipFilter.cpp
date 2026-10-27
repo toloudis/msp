@@ -356,50 +356,94 @@ namespace gvk
 			return filter;
 		}
 
-		//	Generate2DMipsTriangleFilter
+		//	A TriangleFilter flattened: source u's entries are
+		//	m_To[m_First[u]] to m_To[m_First[u + 1]]
+		struct FlatFilter
+		{
+			std::vector<uint32_t>	m_First;
+			std::vector<To>			m_To;
+		};
+
+		FlatFilter flatten(const TriangleFilter& i_Filter)
+		{
+			FlatFilter f;
+			f.m_First.reserve(i_Filter.size() + 1);
+			for (const std::vector<To>& to : i_Filter)
+			{
+				f.m_First.push_back((uint32_t)f.m_To.size());
+				f.m_To.insert(f.m_To.end(), to.begin(), to.end());
+			}
+			f.m_First.push_back((uint32_t)f.m_To.size());
+			return f;
+		}
+
+		//	Generate2DMipsTriangleFilter. A destination row is accumulated in
+		//	a pooled row from its first source row to its last (only a few
+		//	are open at once), in DirectXTex's order
 		bool triangle_mips(const Format& i_F, matDecodedImage& io_Chain)
 		{
 			uint32_t width = io_Chain.m_Width, height = io_Chain.m_Height;
 			std::vector<V4> row(width);
-			std::vector<std::vector<V4>> acc;
+			std::vector<std::vector<V4>> pool;
+			std::vector<uint32_t> free_rows;
 			for (uint32_t level = 1; level < io_Chain.m_Mips; ++level)
 			{
 				const Level src = level_of(io_Chain, level - 1), dest = level_of(io_Chain, level);
 				const uint32_t nwidth = width > 1 ? width >> 1 : 1, nheight = height > 1 ? height >> 1 : 1;
-				const TriangleFilter tfX = create_triangle_filter(width, nwidth);
-				const TriangleFilter tfY = create_triangle_filter(height, nheight);
-				acc.assign(nheight, std::vector<V4>(nwidth, V4{ 0, 0, 0, 0 }));
-				std::vector<uint32_t> remaining(nheight, 0);
-				for (const std::vector<To>& yFrom : tfY)
+				const FlatFilter tfX = flatten(create_triangle_filter(width, nwidth));
+				const FlatFilter tfY = flatten(create_triangle_filter(height, nheight));
+				pool.clear();
+				free_rows.clear();
+				std::vector<uint32_t> remaining(nheight, 0), slot(nheight, UINT32_MAX);
+				for (const To& t : tfY.m_To)
 				{
-					for (const To& t : yFrom)
-					{
-						remaining[t.m_U]++;
-					}
+					remaining[t.m_U]++;
 				}
 				for (uint32_t y = 0; y < height; ++y)
 				{
-					const std::vector<To>& yFrom = tfY[y];
-					load_row(i_F, src.m_pPixels + y * src.m_RowPitch, width, row.data());
-					for (uint32_t x = 0; x < width; ++x)
+					const To* yBegin = tfY.m_To.data() + tfY.m_First[y];
+					const To* yEnd = tfY.m_To.data() + tfY.m_First[y + 1];
+					if (yBegin == yEnd)
 					{
-						const std::vector<To>& xFrom = tfX[x];
-						for (const To& yt : yFrom)
+						continue;
+					}
+					for (const To* yt = yBegin; yt != yEnd; ++yt)
+					{
+						if (slot[yt->m_U] == UINT32_MAX)
 						{
-							std::vector<V4>& a = acc[yt.m_U];
-							for (const To& xt : xFrom)
+							if (free_rows.empty())
 							{
-								const float weight = yt.m_Weight * xt.m_Weight;
-								a[xt.m_U] = row[x] * weight + a[xt.m_U];
+								free_rows.push_back((uint32_t)pool.size());
+								pool.emplace_back(nwidth);
+							}
+							slot[yt->m_U] = free_rows.back();
+							free_rows.pop_back();
+							std::fill(pool[slot[yt->m_U]].begin(), pool[slot[yt->m_U]].end(), V4{ 0, 0, 0, 0 });
+						}
+					}
+					load_row(i_F, src.m_pPixels + y * src.m_RowPitch, width, row.data());
+					for (const To* yt = yBegin; yt != yEnd; ++yt)
+					{
+						V4* a = pool[slot[yt->m_U]].data();
+						const float yWeight = yt->m_Weight;
+						for (uint32_t x = 0; x < width; ++x)
+						{
+							const V4 v = row[x];
+							const To* xEnd = tfX.m_To.data() + tfX.m_First[x + 1];
+							for (const To* xt = tfX.m_To.data() + tfX.m_First[x]; xt != xEnd; ++xt)
+							{
+								const float weight = yWeight * xt->m_Weight;
+								a[xt->m_U] = v * weight + a[xt->m_U];
 							}
 						}
 					}
 					//	Write completed accumulation rows
-					for (const To& yt : yFrom)
+					for (const To* yt = yBegin; yt != yEnd; ++yt)
 					{
-						if (--remaining[yt.m_U] == 0)
+						if (--remaining[yt->m_U] == 0)
 						{
-							store_row(i_F, acc[yt.m_U].data(), dest.m_Width, dest.m_pPixels + yt.m_U * dest.m_RowPitch);
+							store_row(i_F, pool[slot[yt->m_U]].data(), dest.m_Width, dest.m_pPixels + yt->m_U * dest.m_RowPitch);
+							free_rows.push_back(slot[yt->m_U]);
 						}
 					}
 				}
@@ -607,6 +651,21 @@ namespace gvk
 			//	premultiply round trip changes it
 			if (i_Src.m_Width == o_Dest.m_Width && i_Src.m_Height == o_Dest.m_Height)
 			{
+				//	The round trip of colour c at alpha a, [a][c]
+				static const std::vector<uint8_t> s_RoundTrip = []
+				{
+					std::vector<uint8_t> t(256 * 256);
+					for (uint32_t a = 1; a < 256; a++)
+					{
+						const uint32_t recip = 0xFF0000u / a;
+						for (uint32_t c = 0; c < 256; c++)
+						{
+							const uint32_t pre = (c * a + 127) / 255;
+							t[a * 256 + c] = (uint8_t)std::min(255u, (uint32_t)(((uint64_t)pre * recip) >> 16));
+						}
+					}
+					return t;
+				}();
 				const size_t row = (size_t)i_Src.m_Width * channels;
 				for (uint32_t y = 0; y < i_Src.m_Height; y++)
 				{
@@ -619,14 +678,11 @@ namespace gvk
 					}
 					for (size_t p = 0; p < row; p += 4)
 					{
-						const uint32_t a = s[p + 3];
-						const uint32_t recip = a ? 0xFF0000u / a : 0;
-						for (int c = 0; c < 3; c++)
-						{
-							const uint32_t pre = (s[p + c] * a + 127) / 255;
-							d[p + c] = a ? (uint8_t)std::min(255u, (uint32_t)(((uint64_t)pre * recip) >> 16)) : 0;
-						}
-						d[p + 3] = (uint8_t)a;
+						const uint8_t* t = &s_RoundTrip[(size_t)s[p + 3] * 256];
+						d[p] = t[s[p]];
+						d[p + 1] = t[s[p + 1]];
+						d[p + 2] = t[s[p + 2]];
+						d[p + 3] = s[p + 3];
 					}
 				}
 				return;
