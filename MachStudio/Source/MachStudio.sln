@@ -62,8 +62,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImportExport", "..\..\LibXL
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SoftwareShield", "..\..\LibXLT\SecuritySoftwareShield\SecuritySoftwareShield.vcxproj", "{4F086E7B-E7E0-4358-9C37-964AE63E31D6}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Area18", "..\..\LibXLT\Area18\Area18.vcxproj", "{F05BD011-50ED-473A-B895-FED684891CA5}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CoreTests", "..\..\UnitTests\CoreTests\CoreTests.vcxproj", "{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GraphicsTests", "..\..\UnitTests\GraphicsTests\GraphicsTests.vcxproj", "{35FADF25-2926-45F7-8F3D-19F065D16917}"
@@ -428,12 +426,6 @@ Global
 		{4F086E7B-E7E0-4358-9C37-964AE63E31D6}.Release Wx|x64.Build.0 = Release Wx|x64
 		{4F086E7B-E7E0-4358-9C37-964AE63E31D6}.Release RenderNode|x64.ActiveCfg = Release RenderNode|x64
 		{4F086E7B-E7E0-4358-9C37-964AE63E31D6}.Release RenderNode|x64.Build.0 = Release RenderNode|x64
-		{F05BD011-50ED-473A-B895-FED684891CA5}.Debug RenderNode|x64.ActiveCfg = Debug Wx|x64
-		{F05BD011-50ED-473A-B895-FED684891CA5}.Debug Qt|x64.ActiveCfg = Debug Qt|x64
-		{F05BD011-50ED-473A-B895-FED684891CA5}.Debug Wx|x64.ActiveCfg = Debug Wx|x64
-		{F05BD011-50ED-473A-B895-FED684891CA5}.Release Qt|x64.ActiveCfg = Release Wx|x64
-		{F05BD011-50ED-473A-B895-FED684891CA5}.Release Wx|x64.ActiveCfg = Release Wx|x64
-		{F05BD011-50ED-473A-B895-FED684891CA5}.Release RenderNode|x64.ActiveCfg = Release Wx|x64
 		{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}.Debug RenderNode|x64.ActiveCfg = Debug|x64
 		{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}.Debug RenderNode|x64.Build.0 = Debug|x64
 		{A47F6EF0-4E08-4C1A-A930-CC4AF2BBE402}.Debug Qt|x64.ActiveCfg = Debug|x64

@@ -65,10 +65,6 @@ cameras/lights/objects on a timeline, and render frames or sequences on the GPU
   and `.8.00.old` files. Only `.vcxproj` files are live; a `System` folder
   with only a `.vcproj` is not built by the current solution.
 - Tests: GoogleTest unit tests live in `UnitTests/` (see Unit tests below).
-  The older harnesses in `MachStudio/TestSource/` (obsolete `.vcproj`s;
-  mostly interactive demos or print-and-eyeball programs) are not built;
-  what was worth keeping has been ported to `UnitTests/`, and they are due
-  to be deleted.
 - Graphics profiling: `MSP_GFX_PROFILING` (defined in Debug, and in Release
   when built with `/p:MspGfxProfiling=true`; see `Directory.Build.props`)
   turns on the `G3D_PROFILE_*` markers (`Graphics/G3d/g3dProfiler.hpp`) in
@@ -284,7 +280,7 @@ Platform layer and fundamental services; no graphics.
 | `Gf` (`gf`) | Generic file layer (bin/txt/XML file types, translation between versions, standard directories/paths) |
 | `It` (`it`) | Internationalization: locales and localized strings |
 | `Ma` (`ma`) | Math: vectors, matrices, rotations, planes, boxes, colors, gradients, sampling, random |
-| `Scrty` (`scrty`) | Abstract copy-protection/licensing interface (implemented by the `Security*` libraries) |
+| `Scrty` (`scrty`) | Abstract copy-protection/licensing interface (implemented by `SecuritySoftwareShield`) |
 | `dm` | Finite state machine (`dmFSM`, `dmState`) |
 | `name` | Named-object registry and name-change notification |
 | `prty` | Property system: typed properties (bool, color, enum, file path, ...) plus UI-hint "UIInfo" classes that drive the property grids and dialogs |
@@ -407,14 +403,12 @@ says why) and installs a Vulkan implementation for every Graphics hook.
 
 | Library | Purpose |
 |---|---|
-| `Area18` | Experimental OpenGL (gl3w/GLEW) renderer from 2009: GL device/context, shaders, meshes, a render-graph engine (`rndr`), fontstash text, test scenes. In the solution but not built in any solution configuration, and not linked into MachStudio. |
+| `Area18` | Experimental OpenGL (gl3w/GLEW) renderer from 2009: GL device/context, shaders, meshes, a render-graph engine (`rndr`), fontstash text, test scenes. Not in the solution, not built, and not linked into MachStudio. |
 | `AudioDS` (`sn`) | Sound: DirectSound 2D/streamed playback, MP3 via DirectShow, Redbook audio; used by sound timeline drivers |
 | `ImportExport` | Scene import/export: `iscn` (format-neutral scene import: `iscnSceneDesc`, the objects a scene file brings in (groups, meshes, point/spot/directional lights, cameras) with world poses and values already in MachStudio's terms, and `iscnSceneImport`, a registry of format readers keyed by file, as `entImport` is for models; the application makes the objects from it, Features/Import's `imptSceneAppend`; `iscnRefLedger`, each brought-in object's saved bytes when it was last built from its file (equal bytes: a reference; else a copy), file stamps (`iscnStampFile`: size and last-modified time, read from the directory entry, not the file) and the `SRCR` chunk's contents; `iscnSceneChoice`, choosing which of a file's objects to bring in: the object tree, item labels naming each object's keys and clips, and a chosen object's ancestor groups coming with it), `fbx` (FBX SDK import/export), `gltf` (glTF import: materials as `Pbr.fx`, read by `gltfMaterialRead` into a plain description and built by `gltfMaterialImport`, with the normal map in the material's normals data and `KHR_texture_transform` in its UV transform; `gltfSceneRead` reads a glTF's node tree into descriptions of the objects it becomes (`gltfSceneObjects.hpp`: groups, meshes, lights, cameras, with identity paths, centimetre transforms and light and camera values in MachStudio's units; `gltfSceneFile::ReadObjects` reads them from a file, parsed once through `gltfSdkManager::LoadSceneShared`'s one-entry cache); `gltfPlacement` computes what MachStudio's objects need that glTF doesn't give directly (world poses, look-at targets, directional orientation, camera tilt and horizontal FOV, a light range for "no limit"); `gltfSceneImport`, registered by `gltfPackage` as the `.gltf`/`.glb` `iscnSceneImport` reader, turns them into an `iscnSceneDesc`; `gltfImport::LoadGeometryPart` loads one node's mesh as its own template, so `entImport::LoadGeometry` and `api3dSharedModelMgr::LoadModelTemplate` take an optional *part* (a node identity; empty is the whole file), shared per (file, part); skins, morphs and clips: GPU-free readers `gltfSkeletonRead` (the node tree a skin needs: its root, the root's parent, bone order, inverse bind matrices; a skinned mesh object sits at the skeleton root's parent), `gltfSkinRead` (every `JOINTS_n`/`WEIGHTS_n` influence, no cap; morph position deltas; default weights) and `gltfAnimRead` (an animation as keys in frames, STEP and CUBICSPLINE as linear keys, or STEP kept for keys; clip identities; which animations play on a mesh, `gltfSceneObject::m_Clips`; `ResolveTarget`: a channel's node or `KHR_animation_pointer` target (node pointers are node channels; light, camera and material pointers in `gltfClip::m_Pointers`)); keys: GPU-free `gltfAnimTracks` (the keys-vs-clip rule: per object, the animations that touch it end to end from 0 (`gltfClipRef::m_Begin`), key tracks of its node's TRS and of its light, camera and material properties (`gltfSceneObject::m_Tracks`), reduced to the keys that matter (`c_MaxKeys` 300 after reduction); a rigid mesh that can't be keyed is a transform-clip mesh (`m_bTransformClip`: at its parent, its template's base node carrying the node's transform, its clips animating it); groups, lights and cameras always keys), turned into `iscnKeyTrack`s in MachStudio's terms by `gltfSceneImport` (`iscnObjectDesc::m_Keys`: parent-space positions, targets and orientations; world-space directional orientation and camera tilt); `LoadNodeMesh` builds a skinned template (the skeleton plus one `mdlSkinInfo`), a morph-animated one (the base node as bone 0) or a static one (default weights baked); `gltfAnimKeys` builds a clip's `emdlCharacterAnimKeys` mirroring that template, loaded through `entImport::LoadAnimKeys(file, part, clip)` (`gltfImport::LoadAnimKeysPart`)), `rman` (RenderMan export/live; a PBR material exports as its Blinn fallback, `Surface "Blinn"`, through `rmanExport::ExportShaderParams`) |
 | `Input` (`in`) | Device-independent input: device manager, keyboard, mouse, gamepad, joystick, tablet, virtual joystick. The keyboard and mouse are fed by the GUI toolkit (`tqtInputFeed` / `twxInputFeed`: key and button events plus a per-frame cursor/button sample); no gamepad backend exists |
 | `InputTPC` | Tablet PC (pen/ink) PAC implementation for `Input` |
-| `SecuritySoftwareShield` (`scrtys`) | Licensing via SoftwareShield; the one linked into MachStudio |
-| `SecurityAladdin` (`scrtya`) | Licensing via Aladdin HASP dongles (obsolete) |
-| `SecurityMatrix` (`scrtym`) | Licensing via Matrix dongles (obsolete) |
+| `SecuritySoftwareShield` (`scrtys`) | Licensing via SoftwareShield |
 
 ### Tool (`LibXLT/Tool`)
 Toolkit-neutral application framework for 3D editing tools.
@@ -639,7 +633,6 @@ Everything animated on the timeline goes through `Support/tmln`:
 - `wxFormBuilder/` — `.fbp` sources for the generated wx dialog base classes
   (`...DialogBase.h`); regenerate rather than hand-edit those.
 - `Qt Dialogs/` — Qt Designer `.ui` sources.
-- `TestSource/` — old standalone test harnesses, not built (see Building).
 
 ## Other top-level directories (not covered in depth)
 - `3rdParty/` — vendored libraries (wxWidgets, Python, png, zlib, tiff, ...).
@@ -648,5 +641,3 @@ Everything animated on the timeline goes through `Support/tmln`:
   compiler, ...). Mostly legacy. Live: `Tools/fx2hlsl` (shader compile
   checks) and `Tools/gfxcompare` (renders a scene twice with RenderNode and
   compares frames and `-gfxProfile` timings; see its README).
-- `Controls/`, `TestQt/`, `DevTools/` — legacy .NET controls, experiments and
-  project wizards.
