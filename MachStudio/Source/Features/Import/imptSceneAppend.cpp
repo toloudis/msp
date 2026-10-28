@@ -60,7 +60,12 @@
 #include "Systems/Transforms/Undo/trfnOperations.hpp"
 #include "Features/RenderPanels/rpnOperations.hpp"
 #include "Support/cams/camsCameraMgr.hpp"
+#include "Support/tmln/tmlnTimeLine.hpp"
+#include "Support/tmln/tmlnTimelineMgr.hpp"
 
+#ifndef MA_FUNCTIONS_HPP
+#include "Core/Ma/maFunctions.hpp"
+#endif
 #ifndef DBG_MSG_HPP
 #include "Core/dbg/dbgMsg.hpp"
 #endif
@@ -291,6 +296,16 @@ namespace imptSceneAppend
 			}
 			break;
 		}
+		// the timeline covers the whole animation: widen (never narrow) its
+		// default range to every driver's, as Expand Timeline does
+		maTime min_time, max_time;
+		if (tmlnTimelineMgr::GetDriverBounds(min_time, max_time))
+		{
+			min_time = maFunctions::Lowest(min_time, tmlnTimeLine::GetMinimum());
+			max_time = maFunctions::Highest(max_time, tmlnTimeLine::GetMaximum());
+			tmlnTimeLine::SetTimeRange(min_time, max_time);
+		}
+
 		DBG_LOG("Opened " << i_File << " as a new scene; "
 				<< (view_camera.empty() ? std::string("no cameras") : "view camera " + view_camera));
 		return true;

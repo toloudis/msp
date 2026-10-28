@@ -68,7 +68,8 @@ namespace imptSceneAppend
 	//------------------------------------------------------------------------
 	// File > Open of a scene file: read it and add every object to the new,
 	// empty scene the document manager has just made, then have the active
-	// view look through the file's first camera, if it has one; false
+	// view look through the file's first camera, if it has one, and widen
+	// the timeline to cover all its animation (never narrowing it); false
 	// (after telling the user) if it can't be read
 	//------------------------------------------------------------------------
 	bool OpenFile(const fsLocator& i_File);
