@@ -392,7 +392,6 @@
     <ClCompile Include="mnm\mnmCompassUtil.cpp" />
     <ClCompile Include="mnm\mnmDebugInfoWin.cpp" />
     <ClCompile Include="mnm\mnmObject.cpp" />
-    <ClCompile Include="mnm\mnmSourceState.cpp" />
     <ClCompile Include="mnm\mnmPackage.cpp" />
     <ClCompile Include="mnm\mnmPaths.cpp" />
     <ClCompile Include="mnm\mnmReference.cpp" />
@@ -712,7 +711,6 @@
     <ClInclude Include="mnm\mnmDebugInfo.hpp" />
     <ClInclude Include="mnm\mnmErrorCodes.hpp" />
     <ClInclude Include="mnm\mnmObject.hpp" />
-    <ClInclude Include="mnm\mnmSourceState.hpp" />
     <ClInclude Include="mnm\mnmPackage.hpp" />
     <ClInclude Include="mnm\mnmPaths.hpp" />
     <ClInclude Include="mnm\mnmPickMask.hpp" />

@@ -1,7 +1,7 @@
 /*****************************************************************************
-**  mnmSourceState.hpp
+**  cmmSourceState.hpp
 **
-**      mnmSourceState is the read-only "Source" line on the property page
+**      cmmSourceState is the read-only "Source" line on the property page
 **	of an object brought in from a scene file: whether it still follows
 **	the file (a reference) or has been edited (a copy), and the file.
 **	Features/Import (imptSceneRefs) sets the text; it isn't part of the
@@ -9,10 +9,10 @@
 **
 **	Extra Large Technology
 \****************************************************************************/
-#ifdef MNM_SOURCESTATE_HPP
-#error mnmSourceState.hpp multiply included
+#ifdef CMM_SOURCESTATE_HPP
+#error cmmSourceState.hpp multiply included
 #endif
-#define MNM_SOURCESTATE_HPP
+#define CMM_SOURCESTATE_HPP
 
 #ifndef PRTY_TEXT_HPP
 #include "Core/prty/prtyText.hpp"
@@ -29,14 +29,14 @@ class prtyPropertyUIInfo;
 
 //============================================================================
 //============================================================================
-class mnmSourceState
+class cmmSourceState
 {
 public:
 	//--------------------------------------------------------------------
 	// The property is named "Source" and starts empty
 	//--------------------------------------------------------------------
-	mnmSourceState();
-	virtual ~mnmSourceState();
+	cmmSourceState();
+	virtual ~cmmSourceState();
 
 	//--------------------------------------------------------------------
 	// Show i_Text (no undo, doesn't change the document)

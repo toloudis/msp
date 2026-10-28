@@ -471,9 +471,6 @@
     <ClCompile Include="mnm\mnmObject.cpp">
       <Filter>mnm</Filter>
     </ClCompile>
-    <ClCompile Include="mnm\mnmSourceState.cpp">
-      <Filter>mnm</Filter>
-    </ClCompile>
     <ClCompile Include="mnm\mnmPackage.cpp">
       <Filter>mnm</Filter>
     </ClCompile>
@@ -1423,9 +1420,6 @@
       <Filter>mnm</Filter>
     </ClInclude>
     <ClInclude Include="mnm\mnmObject.hpp">
-      <Filter>mnm</Filter>
-    </ClInclude>
-    <ClInclude Include="mnm\mnmSourceState.hpp">
       <Filter>mnm</Filter>
     </ClInclude>
     <ClInclude Include="mnm\mnmPackage.hpp">

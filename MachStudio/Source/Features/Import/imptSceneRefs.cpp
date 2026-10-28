@@ -40,8 +40,8 @@
 \****************************************************************************/
 #include "Features/Import/imptSceneRefs.hpp"
 
-#ifndef MNM_SOURCESTATE_HPP
-#include "Support/mnm/mnmSourceState.hpp"
+#ifndef CMM_SOURCESTATE_HPP
+#include "Systems/Common/Object/cmmSourceState.hpp"
 #endif
 #ifndef MNM_THINKMGR_HPP
 #include "Support/mnm/mnmThinkMgr.hpp"
@@ -171,10 +171,10 @@ namespace imptSceneRefs
 		//--------------------------------------------------------------------
 		// the Source line of each selected sourced object
 		//--------------------------------------------------------------------
-		mnmSourceState* source_state(const Sourced& i_Object, sel3dObject*& o_pPick)
+		cmmSourceState* source_state(const Sourced& i_Object, sel3dObject*& o_pPick)
 		{
 			o_pPick = NULL;
-			mnmSourceState* pState = NULL;
+			cmmSourceState* pState = NULL;
 			switch (i_Object.m_System)
 			{
 				case imptSceneBuild::e_Character:
@@ -217,7 +217,7 @@ namespace imptSceneRefs
 			for (const Sourced& object : GetSourcedObjects())
 			{
 				sel3dObject* pPick = NULL;
-				mnmSourceState* pState = source_state(object, pPick);
+				cmmSourceState* pState = source_state(object, pPick);
 				if (!pState || !pPick || !sel3dMgr::IsSelected(pPick))
 					continue;
 				const std::string file_name = itStringUtil::GetStdString(object.m_File.GetLastName());

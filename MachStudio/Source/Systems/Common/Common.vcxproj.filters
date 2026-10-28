@@ -129,6 +129,9 @@
     <ClCompile Include="Object\cmmNamedPropertyObject.cpp">
       <Filter>Object</Filter>
     </ClCompile>
+    <ClCompile Include="Object\cmmSourceState.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
     <ClCompile Include="Object\cmmScriptObject.cpp">
       <Filter>Object</Filter>
     </ClCompile>
@@ -314,6 +317,9 @@
       <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="Object\cmmNamedPropertyObject.hpp">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\cmmSourceState.hpp">
       <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="Object\cmmNamedScriptObjectReference.hpp">

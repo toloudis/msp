@@ -15,8 +15,8 @@
 #ifndef PRJLT_DATA_HPP
 #include "Systems/PrjLt/Data/prjltData.hpp"
 #endif
-#ifndef MNM_SOURCESTATE_HPP
-#include "Support/mnm/mnmSourceState.hpp"
+#ifndef CMM_SOURCESTATE_HPP
+#include "Systems/Common/Object/cmmSourceState.hpp"
 #endif
 #ifndef MNM_OBJECT_HPP
 #include "Support/mnm/mnmObject.hpp"
@@ -83,7 +83,7 @@ class prjltProjectedLightObject : public mnmObject,
 									public icnIconScaleInterest,
 									public ltstIsolatable,
 									public xfrmTransformNodeCallback,
-									public mnmSourceState
+									public cmmSourceState
 {
 	public:
 		//------------------------------------------------------------------------

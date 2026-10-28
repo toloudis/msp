@@ -309,6 +309,7 @@
     <ClCompile Include="DriverCreator\cmmKeyUtil.cpp" />
     <ClCompile Include="Object\cmmFalloffAspect.cpp" />
     <ClCompile Include="Object\cmmNamedPropertyObject.cpp" />
+    <ClCompile Include="Object\cmmSourceState.cpp" />
     <ClCompile Include="Object\cmmScriptObject.cpp" />
     <ClCompile Include="Object\cmmSelectablePropertyObject.cpp" />
     <ClCompile Include="TimeData\cmmTimeData.cpp" />
@@ -374,6 +375,7 @@
     <ClInclude Include="DriverCreator\cmmKeyUtil.hpp" />
     <ClInclude Include="Object\cmmFalloffAspect.hpp" />
     <ClInclude Include="Object\cmmNamedPropertyObject.hpp" />
+    <ClInclude Include="Object\cmmSourceState.hpp" />
     <ClInclude Include="Object\cmmNamedScriptObjectReference.hpp" />
     <ClInclude Include="Object\cmmScriptObject.hpp" />
     <ClInclude Include="Object\cmmSelectablePropertyObject.hpp" />
