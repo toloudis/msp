@@ -21,6 +21,9 @@
 #ifndef ENV_BOOST_HPP
 #include "Core/Env/envBoost.hpp"
 #endif 
+#ifndef ISCN_SCENEDESC_HPP
+#include "ImportExport/iscn/iscnSceneDesc.hpp"
+#endif
 
 #include <map>
 #include <vector>
@@ -74,7 +77,8 @@ class ImportDialog : public ImportDialogBase
 		virtual void AllowDupes_OnCheckBox( wxCommandEvent& i_Event );
 
 		ImportData& m_Data;
-		shared_ptr<docDocument> m_pDoc;
+		shared_ptr<docDocument> m_pDoc;	// a .mab being imported
+		iscnSceneDesc m_Scene;			// or the objects of a file iscnSceneImport reads
 };
 
 #endif // USE_WXWIDGETS

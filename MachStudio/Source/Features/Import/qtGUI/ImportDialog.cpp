@@ -83,20 +83,20 @@ ImportDialog::~ImportDialog()
 void ImportDialog::clear_file()
 {
 	m_Data.m_Chunks.clear();
-	m_Data.m_Scene = iscnSceneDesc();
+	m_Scene = iscnSceneDesc();
 	m_pDoc.reset();
 	m_treeCtrl_Import->clear();
 }
 
 //--------------------------------------------------------------------
-// Read a file another format's importer reads; m_Data.m_Scene stays
+// Read a file another format's importer reads; m_Scene stays
 // empty if it can't be read (ReadFile has told the user)
 //--------------------------------------------------------------------
 void ImportDialog::load_scene(const fsLocator& i_ImportLoc)
 {
 	m_Data.m_LastFile = i_ImportLoc;
-	if (!imptSceneAppend::ReadFile( i_ImportLoc, m_Data.m_Scene ))
-		m_Data.m_Scene = iscnSceneDesc();
+	if (!imptSceneAppend::ReadFile( i_ImportLoc, m_Scene ))
+		m_Scene = iscnSceneDesc();
 }
 
 //--------------------------------------------------------------------
@@ -115,9 +115,9 @@ void ImportDialog::fillintree_scene()
 //--------------------------------------------------------------------
 void ImportDialog::add_scene_items(QTreeWidgetItem* i_pParentItem, int i_Parent)
 {
-	for (int index : iscnSceneChoice::Children( m_Data.m_Scene, i_Parent ))
+	for (int index : iscnSceneChoice::Children( m_Scene, i_Parent ))
 	{
-		const QStringList text( tqtQString(iscnSceneChoice::ItemLabel( m_Data.m_Scene.m_Objects[index] )) );
+		const QStringList text( tqtQString(iscnSceneChoice::ItemLabel( m_Scene.m_Objects[index] )) );
 		QTreeWidgetItem* item = i_pParentItem ? new QTreeWidgetItem( i_pParentItem, text )
 											  : new QTreeWidgetItem( m_treeCtrl_Import, text );
 		item->setData( 0, Qt::UserRole, index );
@@ -134,7 +134,7 @@ void ImportDialog::add_scene_items(QTreeWidgetItem* i_pParentItem, int i_Parent)
 //--------------------------------------------------------------------
 std::vector<bool> ImportDialog::chosen_scene_objects() const
 {
-	std::vector<bool> chosen( m_Data.m_Scene.m_Objects.size(), false );
+	std::vector<bool> chosen( m_Scene.m_Objects.size(), false );
 	std::vector<QTreeWidgetItem*> items;
 	for (int i = 0; i < m_treeCtrl_Import->topLevelItemCount(); ++i)
 		items.push_back( m_treeCtrl_Import->topLevelItem(i) );
@@ -280,10 +280,10 @@ void ImportDialog::filePicker_FileChanged()
 //--------------------------------------------------------------------
 void ImportDialog::buttonImport_Click()
 {
-	if (m_pDoc == NULL && !m_Data.m_Scene.m_Objects.empty())
+	if (m_pDoc == NULL && !m_Scene.m_Objects.empty())
 	{
 		// Add the checked objects (and their groups) to the scene
-		imptSceneAppend::AppendScene( m_Data.m_LastFile, m_Data.m_Scene, chosen_scene_objects() );
+		imptSceneAppend::AppendScene( m_Data.m_LastFile, m_Scene, chosen_scene_objects() );
 		this->accept();
 	}
 	else if (m_pDoc != NULL)
