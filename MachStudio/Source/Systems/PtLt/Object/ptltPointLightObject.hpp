@@ -19,6 +19,9 @@
 #ifndef CMM_NAMEDPROPERTYOBJECT_HPP
 #include "Systems/Common/Object/cmmNamedPropertyObject.hpp"
 #endif 
+#ifndef MNM_SOURCESTATE_HPP
+#include "Support/mnm/mnmSourceState.hpp"
+#endif
 #ifndef MNM_OBJECT_HPP
 #include "Support/mnm/mnmObject.hpp"
 #endif
@@ -75,7 +78,8 @@ class ptltPointLightObject :
 	public cmmFalloffAspect,
 	public icnIconScaleInterest,
 	public ltstIsolatable,
-	public xfrmTransformNodeCallback
+	public xfrmTransformNodeCallback,
+	public mnmSourceState
 {
 public:
 		//--------------------------------------------------------------------

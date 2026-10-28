@@ -558,6 +558,9 @@
     <ClInclude Include="Ch\chBinWriter.hpp">
       <Filter>Ch</Filter>
     </ClInclude>
+    <ClInclude Include="Ch\chMemWriter.hpp">
+      <Filter>Ch</Filter>
+    </ClInclude>
     <ClInclude Include="Ch\chChunkParserUtil.hpp">
       <Filter>Ch</Filter>
     </ClInclude>
@@ -1156,6 +1159,9 @@
       <Filter>Ch\ChPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Ch\private\chBinWriter.cpp">
+      <Filter>Ch\ChPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ch\private\chMemWriter.cpp">
       <Filter>Ch\ChPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Ch\private\chChunkParserUtil.cpp">

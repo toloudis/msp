@@ -260,6 +260,7 @@
     <ClInclude Include="dm\dmState.hpp" />
     <ClInclude Include="Ch\chBinReader.hpp" />
     <ClInclude Include="Ch\chBinWriter.hpp" />
+    <ClInclude Include="Ch\chMemWriter.hpp" />
     <ClInclude Include="Ch\chChunkParserUtil.hpp" />
     <ClInclude Include="Ch\chDefs.hpp" />
     <ClInclude Include="Ch\chExceptionX.hpp" />
@@ -1047,6 +1048,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="Ch\private\chChunkParserUtil.cpp" />
+    <ClCompile Include="Ch\private\chMemWriter.cpp" />
     <ClCompile Include="Ch\private\chExceptionX.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

@@ -7,8 +7,14 @@
     <Filter Include="gltf">
       <UniqueIdentifier>{df5ee9af-39e6-4737-9ec4-144864bf8d64}</UniqueIdentifier>
     </Filter>
+    <Filter Include="iscn">
+      <UniqueIdentifier>{6b1f3c2e-8a4d-4f7e-9c51-2d7e0a9b4c13}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="iscn\iscnRefLedgerTest.cpp">
+      <Filter>iscn</Filter>
+    </ClCompile>
     <ClCompile Include="ImportExportTestsMain.cpp">
       <Filter>Support</Filter>
     </ClCompile>

@@ -23,6 +23,7 @@
 #include "Features/Keyframing/keyfPackage.hpp"
 #include "Features/Import/ImportUtil.hpp"
 #include "Features/Import/imptSceneAppend.hpp"
+#include "Features/Import/imptSceneRefs.hpp"
 #include "Features/MaterialBrowse/mbrwPackage.hpp"
 //#include "Features/MayaExport/MayaExportUtil.hpp"
 #include "Features/ObjectManip/mnpPackage.hpp"
@@ -84,6 +85,7 @@ void FeaturesLayer::Init(g2dSystem *i_pSystem)
 		//LoadPrefsMgr::Init();
 		pytFeature::Init();
 		imptSceneAppend::Init();
+		imptSceneRefs::Init();
 
 #if defined(USE_WXWIDGETS) || defined(USE_QT)
 		// Read in layout configurations
@@ -107,6 +109,7 @@ void FeaturesLayer::CleanUp() throw()
 	{
 		// clean up our internal stuff, in reverse order
 		//
+		imptSceneRefs::CleanUp();
 		imptSceneAppend::CleanUp();
 		pytFeature::CleanUp();
 		//prefsQuickMgr::CleanUp();

@@ -113,6 +113,9 @@ ptltPointLightObject::ptltPointLightObject()
 	AddProperty( pPUII );
 	AddProperty( new prtyCheckBoxUIInfo(&(m_Data.m_Enabled), "Asset", "Is the object enabled") );
 
+	// whether it still follows the scene file it came from (imptSceneRefs)
+	AddProperty( CreateSourceStateUIInfo() );
+
 	// Falloff group
 	cmmFalloffAspect::RegisterProperties( this, &(m_Data.m_Falloff));
 
@@ -736,9 +739,7 @@ void ptltPointLightObject::UpdateParentTransform()
 //--------------------------------------------------------------------
 void ptltPointLightObject::ApplyTransformation(const maMatrix4x4& i_Matrix)
 {
-	maPoint3d position = m_Data.m_Position.GetValue();
-	i_Matrix.Transform(position);
-	m_Data.m_Position.SetValue(position);
+	m_Data.ApplyTransformation(i_Matrix);
 }
 
 //--------------------------------------------------------------------

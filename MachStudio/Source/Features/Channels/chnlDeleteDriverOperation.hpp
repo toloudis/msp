@@ -85,5 +85,6 @@ private:
 	tmlnDriverInfo* m_pInfo;
 	tmlnDriver* m_pDriver;
 	int m_DriverIndex;
+	int m_DriverPosition;		// its place in the object's driver list once restored (tmlnScriptObject::FindDriver)
 
 };

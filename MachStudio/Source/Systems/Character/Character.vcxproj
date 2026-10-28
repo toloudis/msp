@@ -286,6 +286,7 @@
     <ClCompile Include="Gui\chtrGeomList.cpp" />
     <ClCompile Include="Undo\chtrActualOperations.cpp" />
     <ClCompile Include="Undo\chtrOperations.cpp" />
+    <ClCompile Include="Undo\chtrReplaceOperation.cpp" />
     <ClCompile Include="Data\chtrData.cpp" />
     <ClCompile Include="Data\chtrDataParser.cpp" />
     <ClCompile Include="Data\chtrDocumentChunk.cpp" />
@@ -330,6 +331,7 @@
     <ClInclude Include="GUI\chtrPartConstants.hpp" />
     <ClInclude Include="Undo\chtrActualOperations.hpp" />
     <ClInclude Include="Undo\chtrOperations.hpp" />
+    <ClInclude Include="Undo\chtrReplaceOperation.hpp" />
     <ClInclude Include="Data\chtrData.hpp" />
     <ClInclude Include="Data\chtrDataParser.hpp" />
     <ClInclude Include="Data\chtrDocumentChunk.hpp" />

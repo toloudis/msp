@@ -368,4 +368,20 @@ namespace cmraOperations
 		cmraActualOperations::SetDescription(l_SelectedIndex, Description);
 	}
 
+	//--------------------------------------------------------------------
+	// Set the whole object of that name as one undoable step
+	//--------------------------------------------------------------------
+	void SetObjectData(const nameString& i_Name, const cmraScriptData& i_Data)
+	{
+		const int index = cmraObjectMgr::GetIndexForObject(i_Name);
+		if (index < 0)
+			return;
+
+		typedef cmmSetOperationTemplate< cmraScriptData, cmraActualOperations, cmraObjectMgr> SetObjectOperation;
+		const std::string display_name = "Change " + i_Name.GetString();
+		undoUndoMgr::AddOperation(new SetObjectOperation(index, cmraObjectMgr::GetScriptData(index), display_name.c_str()));
+		l_LastOp = NULL;	// later edits start their own step
+		cmraActualOperations::SetData(index, i_Data);
+	}
+
 }	// end of namespace

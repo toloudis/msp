@@ -55,6 +55,9 @@ trfnTransformObject::trfnTransformObject()
 	pPUII = new prtyCheckBoxUIInfo(&(m_Data.m_bWireframe), "Asset", "Wireframe draw style");
 	AddProperty( pPUII );
 
+	// whether it still follows the scene file it came from (imptSceneRefs)
+	AddProperty( CreateSourceStateUIInfo() );
+
 	pPUII = new prtyCheckBoxUIInfo(&(m_Data.m_bInheritsTransform), "Transform", "Inheirt parent transformation");
 	AddProperty( pPUII );
 	pPUII = new prtyVector3dEditUpDownUIInfo(&(m_Data.m_Position), "Transform", "Position of the object");
@@ -436,12 +439,7 @@ void trfnTransformObject::UpdateParentTransform()
 //--------------------------------------------------------------------
 void trfnTransformObject::ApplyTransformation(const maMatrix4x4& i_Matrix)
 {
-	xfrmApplyTransformUtil::ApplyTransformation(i_Matrix,
-												m_Data.m_Position,
-												m_Data.m_Orientation,
-												m_Data.m_Scale,
-												m_Data.m_PivotPoint,
-												m_Data.m_PivotCompensation);
+	m_Data.ApplyTransformation(i_Matrix);
 }
 
 

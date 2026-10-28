@@ -330,4 +330,20 @@ namespace prjltOperations
 		}
 	}
 
+	//--------------------------------------------------------------------
+	// Set the whole object of that name as one undoable step
+	//--------------------------------------------------------------------
+	void SetObjectData(const nameString& i_Name, const prjltScriptData& i_Data)
+	{
+		const int index = prjltObjectMgr::GetIndexForObject(i_Name);
+		if (index < 0)
+			return;
+
+		typedef cmmSetOperationTemplate< prjltScriptData, prjltActualOperations, prjltObjectMgr> SetObjectOperation;
+		const std::string display_name = "Change " + i_Name.GetString();
+		undoUndoMgr::AddOperation(new SetObjectOperation(index, prjltObjectMgr::GetScriptData(index), display_name.c_str()));
+		l_LastOp = NULL;	// later edits start their own step
+		prjltActualOperations::SetData(index, i_Data);
+	}
+
 }	// end of namespace

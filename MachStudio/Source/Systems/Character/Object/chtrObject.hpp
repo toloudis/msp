@@ -17,6 +17,9 @@
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
 #endif
+#ifndef MNM_SOURCESTATE_HPP
+#include "Support/mnm/mnmSourceState.hpp"
+#endif
 #ifndef MNM_OBJECT_HPP
 #include "Support/mnm/mnmObject.hpp"
 #endif
@@ -48,7 +51,8 @@ class gpxSceneObject;
 //============================================================================
 class chtrObject :	public mnmObject, 
 					public cmmNamedPropertyObject,
-					public xfrmTransformNodeCallback
+					public xfrmTransformNodeCallback,
+					public mnmSourceState
 {
 	public:
 		//--------------------------------------------------------------------

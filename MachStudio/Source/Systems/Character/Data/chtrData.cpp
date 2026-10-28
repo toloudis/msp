@@ -7,6 +7,10 @@
 **  Copyright(C) 2004 - All Rights Reserved
 \****************************************************************************/
 #include "Systems/Character/Data/chtrData.hpp"
+#include "Support/xfrm/xfrmApplyTransformUtil.hpp"
+#ifndef MA_MATRIX4X4_HPP
+#include "Core/ma/maMatrix4x4.hpp"
+#endif
 
 #include "Core/env/envSTLHelpers.hpp"
 
@@ -89,3 +93,17 @@ chtrData& chtrData::operator=(const chtrData& i_Data)
 	return *this;
 }
 
+
+
+//---------------------------------------------------------------------------
+// Apply i_Matrix to its placement, without undo
+//---------------------------------------------------------------------------
+void chtrData::ApplyTransformation(const maMatrix4x4& i_Matrix)
+{
+	xfrmApplyTransformUtil::ApplyTransformation(i_Matrix,
+												m_Position,
+												m_Orientation,
+												m_Scale,
+												m_PivotPoint,
+												m_PivotCompensation);
+}

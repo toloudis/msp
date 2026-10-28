@@ -150,6 +150,30 @@ bool  tmlnScriptObject::HasDriver(tmlnDriver *i_pDriver)
 }
 
 //--------------------------------------------------------------------
+//  Find a driver an undo operation refers to (see .hpp)
+//--------------------------------------------------------------------
+tmlnDriver* tmlnScriptObject::FindDriver(tmlnDriver *i_pDriver, int i_Position)
+{
+	if (i_Position >= 0 && i_Position < (int)m_Drivers.size() && m_Drivers[i_Position] == i_pDriver)
+		return i_pDriver;
+	if (i_pDriver && HasDriver(i_pDriver))
+		return i_pDriver;		// moved, not recreated
+	if (i_Position >= 0 && i_Position < (int)m_Drivers.size())
+		return m_Drivers[i_Position];
+	return NULL;
+}
+
+int tmlnScriptObject::GetDriverPosition(const tmlnDriver *i_pDriver) const
+{
+	for (int i = 0; i < (int)m_Drivers.size(); ++i)
+	{
+		if (m_Drivers[i] == i_pDriver)
+			return i;
+	}
+	return -1;
+}
+
+//--------------------------------------------------------------------
 //  Add Channel with given name. This class owns the channel,
 // but returns a pointer to it for convenience
 //--------------------------------------------------------------------

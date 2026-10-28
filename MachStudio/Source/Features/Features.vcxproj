@@ -299,6 +299,9 @@
     <ClCompile Include="Import\ImportDialogUtil.cpp" />
     <ClCompile Include="Import\ImportUtil.cpp" />
     <ClCompile Include="Import\imptSceneAppend.cpp" />
+    <ClCompile Include="Import\imptSceneBuild.cpp" />
+    <ClCompile Include="Import\imptSceneRefs.cpp" />
+    <ClCompile Include="Import\imptSceneRefsChunk.cpp" />
     <ClCompile Include="Import\wxGUI\ImportDialog.cpp" />
     <ClCompile Include="Import\wxGUI\ImportDialogBase.cpp" />
     <ClCompile Include="ProjectSetup\prjPython.cpp" />
@@ -552,6 +555,9 @@
     <ClInclude Include="Import\ImportDialogUtil.hpp" />
     <ClInclude Include="Import\ImportUtil.hpp" />
     <ClInclude Include="Import\imptSceneAppend.hpp" />
+    <ClInclude Include="Import\imptSceneBuild.hpp" />
+    <ClInclude Include="Import\imptSceneRefs.hpp" />
+    <ClInclude Include="Import\imptSceneRefsChunk.hpp" />
     <ClInclude Include="Import\wxGUI\ImportDialog.hpp" />
     <ClInclude Include="Import\wxGUI\ImportDialogBase.h" />
     <ClInclude Include="ProjectSetup\prjPython.hpp" />

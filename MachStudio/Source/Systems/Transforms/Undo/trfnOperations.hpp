@@ -29,6 +29,12 @@ namespace trfnOperations
 	nameString  AddObject(const trfnScriptData& i_Data);
 
 	//--------------------------------------------------------------------
+	// Set the whole object of that name (values, drivers, channels) as one
+	// undoable step; nothing if no parent has that name
+	//--------------------------------------------------------------------
+	void SetObjectData(const nameString& i_Name, const trfnScriptData& i_Data);
+
+	//--------------------------------------------------------------------
 	//  Select transform with given index
 	//--------------------------------------------------------------------
 	void  SelectObject(int i_Index);

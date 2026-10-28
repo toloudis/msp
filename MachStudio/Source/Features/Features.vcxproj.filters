@@ -192,6 +192,15 @@
     <ClCompile Include="Import\imptSceneAppend.cpp">
       <Filter>Import</Filter>
     </ClCompile>
+    <ClCompile Include="Import\imptSceneBuild.cpp">
+      <Filter>Import</Filter>
+    </ClCompile>
+    <ClCompile Include="Import\imptSceneRefs.cpp">
+      <Filter>Import</Filter>
+    </ClCompile>
+    <ClCompile Include="Import\imptSceneRefsChunk.cpp">
+      <Filter>Import</Filter>
+    </ClCompile>
     <ClCompile Include="Import\wxGUI\ImportDialog.cpp">
       <Filter>Import\wxGUI</Filter>
     </ClCompile>
@@ -904,6 +913,15 @@
       <Filter>Import</Filter>
     </ClInclude>
     <ClInclude Include="Import\imptSceneAppend.hpp">
+      <Filter>Import</Filter>
+    </ClInclude>
+    <ClInclude Include="Import\imptSceneBuild.hpp">
+      <Filter>Import</Filter>
+    </ClInclude>
+    <ClInclude Include="Import\imptSceneRefs.hpp">
+      <Filter>Import</Filter>
+    </ClInclude>
+    <ClInclude Include="Import\imptSceneRefsChunk.hpp">
       <Filter>Import</Filter>
     </ClInclude>
     <ClInclude Include="Import\wxGUI\ImportDialog.hpp">

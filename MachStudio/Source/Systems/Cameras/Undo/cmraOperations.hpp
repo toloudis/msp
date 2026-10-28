@@ -52,6 +52,12 @@ namespace cmraOperations
 	// returns the name the new object got, empty if it couldn't be added
 	nameString  AddObject(const cmraScriptData& i_Data);
 
+	//--------------------------------------------------------------------
+	// Set the whole object of that name (values, drivers, channels) as one
+	// undoable step; nothing if no camera has that name
+	//--------------------------------------------------------------------
+	void SetObjectData(const nameString& i_Name, const cmraScriptData& i_Data);
+
 	//------------------------------------------------------------------------
 	//  LoadAnimation onto the character with the given index.
 	//------------------------------------------------------------------------

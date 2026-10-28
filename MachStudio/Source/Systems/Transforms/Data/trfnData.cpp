@@ -6,6 +6,10 @@
 **  Copyright(C) 2010 - All Rights Reserved
 \********************************************************************************************/
 #include "Systems/Transforms/Data/trfnData.hpp"
+#include "Support/xfrm/xfrmApplyTransformUtil.hpp"
+#ifndef MA_MATRIX4X4_HPP
+#include "Core/ma/maMatrix4x4.hpp"
+#endif
 
 #include "Core/env/envSTLHelpers.hpp"
 
@@ -63,4 +67,18 @@ trfnData& trfnData::operator=(const trfnData& i_Data)
 	this->m_SourceIdentity		= i_Data.m_SourceIdentity;
 
 	return *this;
+}
+
+
+//---------------------------------------------------------------------------
+// Apply i_Matrix to its placement, without undo
+//---------------------------------------------------------------------------
+void trfnData::ApplyTransformation(const maMatrix4x4& i_Matrix)
+{
+	xfrmApplyTransformUtil::ApplyTransformation(i_Matrix,
+												m_Position,
+												m_Orientation,
+												m_Scale,
+												m_PivotPoint,
+												m_PivotCompensation);
 }

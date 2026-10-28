@@ -51,6 +51,12 @@ namespace prjltOperations
 	nameString  AddObject(const prjltScriptData& i_Data);
 
 	//--------------------------------------------------------------------
+	// Set the whole object of that name (values, drivers, channels) as one
+	// undoable step; nothing if no projected light has that name
+	//--------------------------------------------------------------------
+	void SetObjectData(const nameString& i_Name, const prjltScriptData& i_Data);
+
+	//--------------------------------------------------------------------
 	// Add projected light at current camera position
 	//--------------------------------------------------------------------
 	void AddLightAtCameraPosition(prjltData::LightType i_LightType = prjltData::e_ProjectedLight);

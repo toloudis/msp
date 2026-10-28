@@ -14,6 +14,9 @@
 #ifndef TRFN_DATA_HPP
 #include "Systems/Transforms/Data/trfnData.hpp"
 #endif
+#ifndef MNM_SOURCESTATE_HPP
+#include "Support/mnm/mnmSourceState.hpp"
+#endif
 #ifndef MNM_OBJECT_HPP
 #include "Support/mnm/mnmObject.hpp"
 #endif
@@ -39,7 +42,8 @@ class xfrmTransformGroup;
 //============================================================================
 class trfnTransformObject : public mnmObject, 
 							public cmmNamedPropertyObject,
-							public xfrmTransformNodeCallback
+							public xfrmTransformNodeCallback,
+							public mnmSourceState
 {
 public:
 		//--------------------------------------------------------------------

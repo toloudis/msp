@@ -6,6 +6,9 @@
 **  Copyright(C) 2004 - All Rights Reserved
 \********************************************************************************************/
 #include "Systems/PrjLt/Data/prjltData.hpp"
+#ifndef MA_MATRIX4X4_HPP
+#include "Core/ma/maMatrix4x4.hpp"
+#endif
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Graphics/G3d/g3dProjectedLight.hpp"
@@ -256,4 +259,21 @@ prjltData& prjltData::operator=(const prjltData& i_Data)
 	this->m_SourceIdentity		= i_Data.m_SourceIdentity;
 
 	return *this;
+}
+
+
+//---------------------------------------------------------------------------
+// Apply i_Matrix to its placement, without undo (position and target; an
+// orientation stays as it is)
+//---------------------------------------------------------------------------
+void prjltData::ApplyTransformation(const maMatrix4x4& i_Matrix)
+{
+	maPoint3d position = m_Position.GetValue();
+	maPoint3d target = m_Target.GetValue();
+
+	i_Matrix.Transform(position);
+	i_Matrix.Transform(target);
+
+	m_Position.SetValue(position);
+	m_Target.SetValue(target);
 }

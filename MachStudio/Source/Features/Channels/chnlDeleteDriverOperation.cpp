@@ -34,7 +34,8 @@ chnlDeleteDriverOperation::chnlDeleteDriverOperation(shared_ptr<relObjectReferen
 :	m_ScriptObjectRef(i_ScriptObjectRef), 
 	m_pInfo(i_pInfo), 
 	m_pDriver(NULL),
-	m_DriverIndex(i_DriverIndex)
+	m_DriverIndex(i_DriverIndex),
+	m_DriverPosition(-1)
 {
 }
 
@@ -85,6 +86,7 @@ void  chnlDeleteDriverOperation::Undo()
 		if (pScriptObject)
 		{
 			m_pDriver = tmlnCreator::RestoreDriverFromInfo(pScriptObject, m_pInfo, m_DriverIndex);
+			m_DriverPosition = pScriptObject->GetDriverPosition(m_pDriver);
 			chnlDialogUtil::UpdateChannels();
 		}
 		else
@@ -107,7 +109,9 @@ void  chnlDeleteDriverOperation::Redo()
 		tmlnScriptObject *pScriptObject = dynamic_cast<tmlnScriptObject*>(pObject);
 		if (pScriptObject)
 		{
-			if (pScriptObject->RemoveDriver(m_pDriver, m_DriverIndex))
+			// the driver, even if the object's drivers were recreated since
+			m_pDriver = pScriptObject->FindDriver(m_pDriver, m_DriverPosition);
+			if (m_pDriver && pScriptObject->RemoveDriver(m_pDriver, m_DriverIndex))
 			{
 				delete m_pDriver;
 				m_pDriver = NULL;

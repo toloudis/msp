@@ -54,6 +54,9 @@
     <ClCompile Include="Undo\chtrOperations.cpp">
       <Filter>Undo</Filter>
     </ClCompile>
+    <ClCompile Include="Undo\chtrReplaceOperation.cpp">
+      <Filter>Undo</Filter>
+    </ClCompile>
     <ClCompile Include="Data\chtrData.cpp">
       <Filter>Data</Filter>
     </ClCompile>
@@ -157,6 +160,9 @@
       <Filter>Undo</Filter>
     </ClInclude>
     <ClInclude Include="Undo\chtrOperations.hpp">
+      <Filter>Undo</Filter>
+    </ClInclude>
+    <ClInclude Include="Undo\chtrReplaceOperation.hpp">
       <Filter>Undo</Filter>
     </ClInclude>
     <ClInclude Include="Data\chtrData.hpp">

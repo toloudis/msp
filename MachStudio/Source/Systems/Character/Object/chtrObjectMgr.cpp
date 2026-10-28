@@ -41,6 +41,9 @@
 #include "Tool/api3d/api3dSharedModelMgr.hpp"
 #include "Tool/api3d/api3dSubdiv.hpp"
 #include "Tool/pick3d/pick3dPickList.hpp"
+#ifndef SEL3D_MGR_HPP
+#include "Tool/sel3d/sel3dMgr.hpp"
+#endif
 
 #include <iomanip>
 #include <sstream>
@@ -462,8 +465,7 @@ void  chtrObjectMgr::ReloadCharacter(int i_Index)
 	if (l_bCreatingCharacter)
 		return;
 
-	chtrScriptObject* old_obj = sm_Objects[i_Index];
-	chtrScriptData data = old_obj->GetScriptData();
+	chtrScriptData data = sm_Objects[i_Index]->GetScriptData();
 
 	// When we have shared geometry instances, we can only force
 	// a reload of the geometry file by first removing the filename from
@@ -471,11 +473,27 @@ void  chtrObjectMgr::ReloadCharacter(int i_Index)
 	// reload the geometry file and not return the cached shared template.
 	api3dSharedModelMgr::StopSharing(data.m_BaseData.m_Filename.GetValue(), data.m_BaseData.m_SourceIdentity);
 
+	ReplaceCharacter(i_Index, data);
+	SelectObject(i_Index);
+}
+
+//--------------------------------------------------------------------
+//  Recreate the character with given index from i_Data
+//--------------------------------------------------------------------
+void  chtrObjectMgr::ReplaceCharacter(int i_Index, const chtrScriptData& i_Data)
+{
+	//	prevent the changing of filename to cause an infinite loop
+	if (l_bCreatingCharacter)
+		return;
+
+	chtrScriptObject* old_obj = sm_Objects[i_Index];
+	const bool was_selected = sel3dMgr::IsSelected(old_obj->GetPickObject());
+
 	// I think the safest way to handle this is to delete the old
 	// object and create a new one from the data, recreating drivers
 	// and channels for the new object. Instead of trying to remap
 	// all of the old pointers.
-	chtrScriptObject* new_obj = chtrObjectCreator::Create(data);
+	chtrScriptObject* new_obj = chtrObjectCreator::Create(i_Data);
 	if (new_obj)
 	{
 		// Transfer light set assignments from old object to new object
@@ -493,9 +511,12 @@ void  chtrObjectMgr::ReloadCharacter(int i_Index)
 		// Transfer transform
 		xfrmTransformMgr::ReplaceObject(old_obj->GetPickObject(), new_obj->GetPickObject());
 
+		if (was_selected)
+			sel3dMgr::RemoveFromSelection(old_obj->GetPickObject());
 		sm_Objects[i_Index] = new_obj;
 		chtrDialogDataUtil::UpdateListDialog();
-		SelectObject(i_Index);
+		if (was_selected)
+			sel3dMgr::AddToSelection(new_obj->GetPickObject());
 
 		delete old_obj;
 	}

@@ -13,6 +13,9 @@
 #ifndef DYN_CONTROLDATA_HPP
 #include "Support/dyn/dynControlData.hpp"
 #endif
+#ifndef MA_MATRIX4X4_HPP
+#include "Core/ma/maMatrix4x4.hpp"
+#endif
 #ifndef PRTY_BOOLEAN_HPP
 #include "Core/prty/prtyBoolean.hpp"
 #endif
@@ -68,6 +71,12 @@ public:
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	chtrData& operator=(const chtrData& i_Data);
+
+	//------------------------------------------------------------------------
+	// Apply i_Matrix to its placement, without undo (what parenting does to
+	// keep the world pose)
+	//------------------------------------------------------------------------
+	void ApplyTransformation(const maMatrix4x4& i_Matrix);
 
 	//------------------------------------------------------------------------
 	//	data

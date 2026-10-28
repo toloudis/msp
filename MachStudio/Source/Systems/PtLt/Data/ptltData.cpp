@@ -6,6 +6,9 @@
 **  Copyright(C) 2003 - All Rights Reserved
 \********************************************************************************************/
 #include "Systems/PtLt/Data/ptltData.hpp"
+#ifndef MA_MATRIX4X4_HPP
+#include "Core/ma/maMatrix4x4.hpp"
+#endif
 
 #include "Core/env/envSTLHelpers.hpp"
 //#include "Support/tmln/tmlnDriverInfo.hpp"
@@ -88,4 +91,15 @@ ptltData& ptltData::operator=(const ptltData& i_Data)
 	this->m_SourceIdentity	= i_Data.m_SourceIdentity;
 
 	return *this;
+}
+
+
+//---------------------------------------------------------------------------
+// Apply i_Matrix to its placement, without undo
+//---------------------------------------------------------------------------
+void ptltData::ApplyTransformation(const maMatrix4x4& i_Matrix)
+{
+	maPoint3d position = m_Position.GetValue();
+	i_Matrix.Transform(position);
+	m_Position.SetValue(position);
 }

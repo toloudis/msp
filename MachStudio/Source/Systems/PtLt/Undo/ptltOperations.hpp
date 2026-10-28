@@ -52,6 +52,12 @@ namespace ptltOperations
 	nameString  AddObject(const ptltScriptData& i_Data);
 
 	//--------------------------------------------------------------------
+	// Set the whole object of that name (values, drivers, channels) as one
+	// undoable step; nothing if no point light has that name
+	//--------------------------------------------------------------------
+	void SetObjectData(const nameString& i_Name, const ptltScriptData& i_Data);
+
+	//--------------------------------------------------------------------
 	// Add point light at current camera position
 	//--------------------------------------------------------------------
 	void AddLightAtCameraPosition();

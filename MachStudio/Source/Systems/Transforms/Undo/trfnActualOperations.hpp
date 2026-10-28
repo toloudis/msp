@@ -37,6 +37,11 @@ public:
 	static void  DeleteObject(int i_Index);
 
 	//--------------------------------------------------------------------
+	//  Set the whole object (values, drivers, channels)
+	//--------------------------------------------------------------------
+	static void SetData(int i_Index, const trfnScriptData& i_Data);
+
+	//--------------------------------------------------------------------
 	//	Add object to things that are lit by the given light set
 	//--------------------------------------------------------------------
 	static void  AddNodeToTransform(const nameString& i_SetName, 

@@ -100,6 +100,7 @@
     <ClCompile Include="ctPlatformWin.cpp" />
     <ClCompile Include="App\appCommandLineTest.cpp" />
     <ClCompile Include="Ch\chChunkTest.cpp" />
+    <ClCompile Include="Ch\chMemWriterTest.cpp" />
     <ClCompile Include="Ch\chNumberTest.cpp" />
     <ClCompile Include="Dbg\dbgMsgTest.cpp" />
     <ClCompile Include="Env\envNumberTextTest.cpp" />

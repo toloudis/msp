@@ -15,6 +15,12 @@
 #include "Systems/Character/Drivers/chtrDriverCreator.hpp"
 #include "Systems/Character/Object/chtrObjectMgr.hpp"
 #include "Systems/Character/Undo/chtrActualOperations.hpp"
+#ifndef CHTR_REPLACEOPERATION_HPP
+#include "Systems/Character/Undo/chtrReplaceOperation.hpp"
+#endif
+#ifndef CHTR_DOCUMENTCHUNK_HPP
+#include "Systems/Character/Data/chtrDocumentChunk.hpp"
+#endif
 #include "Systems/Common/Gui/cmmAddDriverOperation.hpp"
 #include "Systems/Common/Templates/cmmAddOperationTemplate.hpp"
 #include "Systems/Common/Templates/cmmDeleteOperationTemplate.hpp"
@@ -294,6 +300,22 @@ namespace chtrOperations
 	void  ReloadCharacter(int i_Index)
 	{
 		chtrObjectMgr::ReloadCharacter(i_Index);
+	}
+
+	//--------------------------------------------------------------------
+	//  Replace the character of that name as one undoable step
+	//--------------------------------------------------------------------
+	void  ReplaceObjectData(const nameString& i_Name, const chtrScriptData& i_Data)
+	{
+		const int index = chtrObjectMgr::GetIndexForObject(i_Name);
+		if (index < 0)
+			return;
+
+		undoUndoMgr::AddOperation(new chtrReplaceOperation(i_Name, chtrObjectMgr::GetScriptData(index), "Change " + i_Name.GetString()));
+		l_LastOp = NULL;	// later edits start their own step
+		chtrObjectMgr::ReplaceCharacter(index, i_Data);
+		chtrDocumentChunk::ActiveDataChanged();
+		chnlDialogUtil::UpdateChannels();
 	}
 
 	//--------------------------------------------------------------------

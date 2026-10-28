@@ -29,10 +29,14 @@ namespace
 cmmAddDriverOperation::cmmAddDriverOperation(shared_ptr<relObjectReference> i_ScriptObjectRef,
 											 tmlnDriver* i_pDriver)
 :	m_ScriptObjectRef(i_ScriptObjectRef), 
-	m_pDriver(i_pDriver), 
+	m_pDriver(i_pDriver),
 	m_pInfo(NULL),
-	m_DriverIndex(0)
+	m_DriverIndex(0),
+	m_DriverPosition(-1),
+	m_DriverName(i_pDriver ? i_pDriver->GetName() : std::string())
 {
+	if (tmlnScriptObject* pScriptObject = dynamic_cast<tmlnScriptObject*>(m_ScriptObjectRef->GetObject()))
+		m_DriverPosition = pScriptObject->GetDriverPosition(m_pDriver);
 }
 
 //--------------------------------------------------------------------
@@ -57,7 +61,7 @@ std::string  cmmAddDriverOperation::GetDisplayName()
 
 	std::ostringstream oss;
 	oss.setf(0, std::ios::floatfield);
-	oss << c_AddOperationDisplayName << " - " << (m_pInfo ? m_pInfo->m_Name.c_str() : m_pDriver->GetName().c_str());
+	oss << c_AddOperationDisplayName << " - " << (m_pInfo ? m_pInfo->m_Name.c_str() : m_DriverName.c_str());
 	std::string displaytext(oss.str());
 	return displaytext;
 }
@@ -78,16 +82,24 @@ float  cmmAddDriverOperation::GetMemoryUsage()
 //--------------------------------------------------------------------
 void  cmmAddDriverOperation::Undo()
 {
-	// Save info in order to restore the driver
-	if (!m_pInfo)
-		m_pInfo = m_pDriver->GetDriverInfo();
-
 	relObject *pObject = m_ScriptObjectRef->GetObject();
 	if (pObject)
 	{
 		tmlnScriptObject *pScriptObject = dynamic_cast<tmlnScriptObject*>(pObject);
 		if (pScriptObject)
 		{
+			// the driver, even if the object's drivers were recreated since
+			m_pDriver = pScriptObject->FindDriver(m_pDriver, m_DriverPosition);
+			if (!m_pDriver)
+			{
+				DBG_WARNING("Add driver undo: the driver is no longer on its object.");
+				return;
+			}
+
+			// Save info in order to restore the driver
+			if (!m_pInfo)
+				m_pInfo = m_pDriver->GetDriverInfo();
+
 			// Disconnect and delete driver
 			if (pScriptObject->RemoveDriver(m_pDriver, m_DriverIndex))
 			{
@@ -119,6 +131,7 @@ void  cmmAddDriverOperation::Redo()
 		{
 			m_pDriver = tmlnCreator::RestoreDriverFromInfo(pScriptObject, m_pInfo, m_DriverIndex);
 			chnlDialogUtil::UpdateChannels();
+			m_DriverPosition = pScriptObject->GetDriverPosition(m_pDriver);
 		}
 		else
 			DBG_WARNING("Add driver redo: Resolved object is not a script object type.");

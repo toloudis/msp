@@ -84,5 +84,7 @@ private:
 	tmlnDriver* m_pDriver;
 	tmlnDriverInfo* m_pInfo;
 	int m_DriverIndex;
+	int m_DriverPosition;		// its place in the object's driver list (tmlnScriptObject::FindDriver)
+	std::string m_DriverName;
 
 };

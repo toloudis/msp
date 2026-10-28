@@ -40,6 +40,11 @@ public:
 	//--------------------------------------------------------------------
 	static void  DeleteObject(int i_Index);
 
+	//--------------------------------------------------------------------
+	//  Set the whole object (values, drivers, channels)
+	//--------------------------------------------------------------------
+	static void SetData(int i_Index, const ptltScriptData& i_Data);
+
 
 };	// end of static class
 

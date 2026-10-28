@@ -9,6 +9,7 @@
 #include "Systems/Transforms/Undo/trfnOperations.hpp"
 #include "Systems/Transforms/Undo/trfnActualOperations.hpp"
 #include "Systems/Transforms/Undo/trfnObjectOperation.hpp"
+#include "Systems/Transforms/Object/trfnObjectMgr.hpp"
 #include "Systems/Transforms/Data/trfnDocumentChunk.hpp"
 
 #include "Features/Prefs/PrefsMgr.hpp"
@@ -351,6 +352,21 @@ namespace trfnOperations
 		{
 			RemoveNodeFromParent(*nit);
 		}
+	}
+
+	//--------------------------------------------------------------------
+	// Set the whole object of that name as one undoable step
+	//--------------------------------------------------------------------
+	void SetObjectData(const nameString& i_Name, const trfnScriptData& i_Data)
+	{
+		const int index = trfnObjectMgr::GetIndexForObject(i_Name);
+		if (index < 0)
+			return;
+
+		typedef cmmSetOperationTemplate< trfnScriptData, trfnActualOperations, trfnObjectMgr> SetObjectOperation;
+		const std::string display_name = "Change " + i_Name.GetString();
+		undoUndoMgr::AddOperation(new SetObjectOperation(index, trfnObjectMgr::GetScriptData(index), display_name.c_str()));
+		trfnActualOperations::SetData(index, i_Data);
 	}
 
 }	// end of namespace

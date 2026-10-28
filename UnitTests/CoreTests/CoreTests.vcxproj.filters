@@ -57,6 +57,9 @@
     <ClCompile Include="Ch\chChunkTest.cpp">
       <Filter>Ch</Filter>
     </ClCompile>
+    <ClCompile Include="Ch\chMemWriterTest.cpp">
+      <Filter>Ch</Filter>
+    </ClCompile>
     <ClCompile Include="Ch\chNumberTest.cpp">
       <Filter>Ch</Filter>
     </ClCompile>

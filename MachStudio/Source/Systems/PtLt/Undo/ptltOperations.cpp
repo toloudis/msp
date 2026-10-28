@@ -209,4 +209,20 @@ namespace ptltOperations
 		}
 	}
 
+	//--------------------------------------------------------------------
+	// Set the whole object of that name as one undoable step
+	//--------------------------------------------------------------------
+	void SetObjectData(const nameString& i_Name, const ptltScriptData& i_Data)
+	{
+		const int index = ptltObjectMgr::GetIndexForObject(i_Name);
+		if (index < 0)
+			return;
+
+		typedef cmmSetOperationTemplate< ptltScriptData, ptltActualOperations, ptltObjectMgr> SetObjectOperation;
+		const std::string display_name = "Change " + i_Name.GetString();
+		undoUndoMgr::AddOperation(new SetObjectOperation(index, ptltObjectMgr::GetScriptData(index), display_name.c_str()));
+		l_LastOp = NULL;	// later edits start their own step
+		ptltActualOperations::SetData(index, i_Data);
+	}
+
 }	// end of namespace

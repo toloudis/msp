@@ -18,6 +18,9 @@
 #ifndef ICN_ICONSCALE_HPP
 #include "Tool/icn/icnIconScale.hpp"
 #endif
+#ifndef MNM_SOURCESTATE_HPP
+#include "Support/mnm/mnmSourceState.hpp"
+#endif
 #ifndef MNM_OBJECT_HPP
 #include "Support/mnm/mnmObject.hpp"
 #endif
@@ -56,7 +59,8 @@ class cmraCameraObject : public mnmObject,
 						 public cmmNamedPropertyObject,
 						 public gpxCamera::CameraChangedCallback,
 						 public icnIconScaleInterest,
-						 public xfrmTransformNodeCallback
+						 public xfrmTransformNodeCallback,
+						 public mnmSourceState
 {
 	public:
 		//--------------------------------------------------------------------

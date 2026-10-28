@@ -282,6 +282,9 @@ cmraCameraObject::cmraCameraObject(bool i_bOrthographic,
 		AddProperty( pPUII );
 		pPUII = new prtyTextBoxUIInfo(&(m_Data.m_Description), "Asset", "Description of the object");
 		AddProperty( pPUII );
+
+		// whether it still follows the scene file it came from (imptSceneRefs)
+		AddProperty( CreateSourceStateUIInfo() );
 	}
 
 	//--------------------- Real world camera functions ------------------------------
@@ -2301,15 +2304,7 @@ void cmraCameraObject::UpdateParentTransform()
 //--------------------------------------------------------------------
 void cmraCameraObject::ApplyTransformation(const maMatrix4x4& i_Matrix)
 {
-	maPoint3d position = m_Data.m_Position.GetValue();
-	maPoint3d target = m_Data.m_Target.GetValue();
-
-	i_Matrix.Transform(position);
-	i_Matrix.Transform(target);
-
-	m_Data.m_Position.SetValue(position);
-	m_Data.m_Target.SetValue(target);
-
+	m_Data.ApplyTransformation(i_Matrix);
 }
 
 //--------------------------------------------------------------------

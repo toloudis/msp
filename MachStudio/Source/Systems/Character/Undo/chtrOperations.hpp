@@ -86,6 +86,12 @@ namespace chtrOperations
 	void  ReloadCharacter(int i_Index);
 
 	//--------------------------------------------------------------------
+	//  Replace the character of that name by i_Data (recreating it, as a
+	//	reload does) as one undoable step; nothing if there is none
+	//--------------------------------------------------------------------
+	void  ReplaceObjectData(const nameString& i_Name, const chtrScriptData& i_Data);
+
+	//--------------------------------------------------------------------
 	//  Select character with given index
 	//--------------------------------------------------------------------
 	void  SelectObject(int i_Index);
