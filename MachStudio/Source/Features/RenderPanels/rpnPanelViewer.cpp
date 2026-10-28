@@ -58,9 +58,9 @@ rpnPanelViewer::rpnPanelViewer()
 	m_bAllowShadows(false),
 	m_pDirectorsCut(NULL)
 {
-	// Panel viewers have one screen space layer and two icon layers that are specific to 
+	// Panel viewers have one screen space layer and two icon layers that are specific to
 	// this viewer (so that they can resize and set visibility separately)
-	//	
+	//
 	// Camera space layer specific to this viewer
 	m_LayerRoots.push_back( new g3dSceneNode() );
 	this->AppendLayer(new g3dLayer( m_LayerRoots[e_CameraLayer] , g3dLayer::e_ZBuffer,
@@ -82,11 +82,11 @@ rpnPanelViewer::rpnPanelViewer()
 					g3dLayer::e_ZBuffer, g3dLayer::e_World, g3dLayer::e_Multiplicative,
 					false, false, false, true) );
 
-	// Register this viewer´s layers with the icon layer management,
+	// Register this viewer's layers with the icon layer management,
 	// so that this viewer gets a local copy of each icon.
 	m_IconLayerIndex = icnIconLayer::AddIconLayers( m_LayerRoots[e_IconLayer], m_LayerRoots[e_ManipulatorLayer]);
 
-	// Create the world axis for this viewer and place it in the 
+	// Create the world axis for this viewer and place it in the
 	// camera space layer
 	m_pWorldAxis = new cmpsWorldAxis;
 	m_pWorldAxis->SetScale( maPoint3d( c_fScreenCompassRadian, c_fScreenCompassRadian, c_fScreenCompassRadian ) );
@@ -122,9 +122,9 @@ int rpnPanelViewer::GetIconLayerIndex() const
 
 
 //--------------------------------------------------------------------
-//	Prepare viewer´s layers for rendering
+//	Prepare viewerÂ´s layers for rendering
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 void rpnPanelViewer::Think( float i_fSimTime )
 {
 	// Set up the camera if we have a directors cut
@@ -136,7 +136,7 @@ void rpnPanelViewer::Think( float i_fSimTime )
 			this->SetCamera( camsCameraMgr::GetCamera(dcut_index) );
 		}
 	}
-	
+
 	// Update scale of icons that stay the same size in every camera pane
 	int width = 0, height = 0;
 	this->GetWindow()->GetDimensions(width, height);
@@ -156,11 +156,11 @@ void rpnPanelViewer::Think( float i_fSimTime )
 		rot.SetValue( matrix );
 		m_pWorldAxis->SetOrientation( rot );
 
-		// This axis is in camera space. In order to keep it in the 
+		// This axis is in camera space. In order to keep it in the
 		// lower left corner, we need to adjust when the camera's
 		// aspect ratio changes.
 		float aspect = GetCamera()->GetAspect();
-		float yoff = (aspect > 0) ? (-2.0f / aspect) : -1.5f; 
+		float yoff = (aspect > 0) ? (-2.0f / aspect) : -1.5f;
 		m_pWorldAxis->SetPosition( maPoint3d(2.1f,yoff,2.5f) );
 	}
 
@@ -182,7 +182,7 @@ void rpnPanelViewer::Think( float i_fSimTime )
 //--------------------------------------------------------------------
 //	Render renders the scene node hierarchy.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 void rpnPanelViewer::Render( float i_fSimTime, bool i_bClear )
 {
 	// Turn off shadows if needed
@@ -218,7 +218,7 @@ void rpnPanelViewer::Render( float i_fSimTime, bool i_bClear )
 	g3dViewer::Render( i_fSimTime, this->GetLayers(),i_bClear );
 
 	//bga - each viewer has its own text label, so not necessary anymore to turn it off
-	// Turn off our text label so it doesn't show up in other views 
+	// Turn off our text label so it doesn't show up in other views
 	// or in the capture renders
 	//if (m_pTextLabel)
 	//	m_pTextLabel->SetRenderable(false);
@@ -228,7 +228,7 @@ void rpnPanelViewer::Render( float i_fSimTime, bool i_bClear )
 	{
 		rndrPrefsUtil::SetMultipassRendering( bShadowsWereOn );
 	}
-	
+
 	// Restore low-res state
 	if (rpnRenderingPrefs::GetAllLowResolution())
 	{
@@ -238,12 +238,12 @@ void rpnPanelViewer::Render( float i_fSimTime, bool i_bClear )
 
 
 //------------------------------------------------------------------------
-// CreateTextLabel - give font to use 
+// CreateTextLabel - give font to use
 //------------------------------------------------------------------------
 void rpnPanelViewer::CreateTextLabel(const fsLocator &i_FontPath)
 {
 	DBG_ASSERT(m_pTextLabel == NULL, "Text label already created.");
-			
+
 	/*std::string filename;
 	fsFileUtil::LocatorToANSIFilename(i_FontPath, filename);
 	DBG_LOG( "RenderPanel, loading font file " << filename.c_str() );*/
@@ -259,7 +259,7 @@ void rpnPanelViewer::CreateTextLabel(const fsLocator &i_FontPath)
 
 	// Create thread safe proxy
 	m_pTextLabelProxy = new gpxText(*m_pTextLabel);
-			
+
 	m_LayerRoots[e_ScreenLayer]->AddChild( m_pTextLabel->GetSceneNode() );
 }
 
@@ -315,7 +315,7 @@ bool rpnPanelViewer::GetAllowShadows() const
 }
 
 //----------------------------------------------------------------------------
-// Set directors cut, this causes the camera to switch based 
+// Set directors cut, this causes the camera to switch based
 //	on the simulation time
 //----------------------------------------------------------------------------
 void rpnPanelViewer::SetDirectorsCut(camsDirectorsCut *i_pDirectorsCut)

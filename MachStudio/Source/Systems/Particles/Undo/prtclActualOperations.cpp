@@ -91,7 +91,7 @@ void prtclActualOperations::SetData(int i_Index, const prtclScriptData& i_Data)
 //--------------------------------------------------------------------
 void prtclActualOperations::ChangeDriverData(int i_Index, const prtclScriptData& i_Data)
 {
-	// no need to notify prtclObjectMgr if there is no undo, 
+	// no need to notify prtclObjectMgr if there is no undo,
 	// this message is coming from the object directly
 
 	prtclDialogUtil::UpdateParticleData(i_Index, i_Data);
@@ -111,7 +111,7 @@ void prtclActualOperations::SetName(int i_Index, const nameString& i_Name)
 
 	prtclObjectMgr::SetBaseData(i_Index, data);
 
-	// we don’t need to do the first call since the name isn’t changing.
+	// we don't need to do the first call since the name isn't changing.
 	//
 	prtclDialogDataUtil::UpdateListDialog();				// because of name
 	prtclDialogUtil::UpdateParticleData(i_Index, data);

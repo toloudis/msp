@@ -53,9 +53,9 @@ void tmlnTimelineMgr::DeInitialize()
 //--------------------------------------------------------------------
 void tmlnTimelineMgr::Update(const maTime& i_Time)
 {
-	// some drivers, such as attachment, need to be delayed to make 
+	// some drivers, such as attachment, need to be delayed to make
 	// sure others, such as animation, have set the final position
-	// 
+	//
 	std::list<tmlnDriver*> delayed_drivers;
 
 	std::vector<tmlnScriptObject*>::iterator obj_it	= timelinemap::l_ScriptObjects.begin();
@@ -69,8 +69,8 @@ void tmlnTimelineMgr::Update(const maTime& i_Time)
 	{
 		// Because of the way attachments work, we need to flush the transformations
 		// from the drivers that just finished updating into the scene graph.
-		// But, we don´t want to interrupt a render for this - just when there is no
-		// render thread already running. This will make it so that capture will 
+		// But, we don't want to interrupt a render for this - just when there is no
+		// render thread already running. This will make it so that capture will
 		// be correct, but interactive modes will catch up the next frame.
 		if (!g3dThreadControl::IsRenderThreadActive())
 		{

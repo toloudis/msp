@@ -173,9 +173,9 @@ namespace
 
 #if ENV_BUILD == ENV_DEBUGBUILD
 	const int	lc_SECURITY_CHECK_DELAY_NORMAL	= 60.0f * 0.5f;		// 30 seconds (for testing only)
-	const int	lc_SECURITY_CHECK_DELAY_INVALID	= 60.0f * 1.0f;		// 
+	const int	lc_SECURITY_CHECK_DELAY_INVALID	= 60.0f * 1.0f;		//
 	const int	lc_SECURITY_VALID_DELAY_NORMAL	= 60.0f * 0.125f;	// less than "checks"
-	const int	lc_SECURITY_VALID_DELAY_INVALID	= 60.0f * 0.25f;	// 
+	const int	lc_SECURITY_VALID_DELAY_INVALID	= 60.0f * 0.25f;	//
 	const UINT	lc_SECURITY_INVALID_COUNTER_MAX	= 2;
 #else
 	const int	lc_SECURITY_CHECK_DELAY_NORMAL	= 60.0f * 30.0f;	// 30 minutes
@@ -236,7 +236,7 @@ void render_3dWindow()
 //	RunApp() should be called to start the application.  When control
 //	returns from RunApp(), the application is finished.
 //--------------------------------------------------------------------
-//static 
+//static
 void mnmApp::RunApp()
 {
 	DBG_ASSERT( l_pAppInstance,"The app has not been created");
@@ -275,7 +275,7 @@ bool mnmApp::IsActive()
 //--------------------------------------------------------------------
 //	set this app as "active"
 //--------------------------------------------------------------------
-//static 
+//static
 void mnmApp::SetActive( bool i_bActive )
 {
 	l_bActive = i_bActive;
@@ -297,7 +297,7 @@ bool mnmApp::IsRenderEnabled()
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-//static 
+//static
 int mnmApp::GetScreenSpaceIndex()
 {
 	return l_nScreenSpaceIndex;
@@ -305,7 +305,7 @@ int mnmApp::GetScreenSpaceIndex()
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-//static 
+//static
 //int mnmApp::GetIconsLayerIndex()
 //{
 //	return l_nIconsLayerIndex;
@@ -313,7 +313,7 @@ int mnmApp::GetScreenSpaceIndex()
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-//static 
+//static
 //int mnmApp::GetManipulatorsLayerIndex()
 //{
 //	return l_nManipulatorsLayerIndex;
@@ -408,7 +408,7 @@ void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 
 			fsLocator script_file;
 			fsFileUtil::ANSIFilenameToLocator(script_string, script_file );
-			
+
 			if (fsFileUtil::FileExists( script_file ))
 			{
 				if (args_string != "")
@@ -602,7 +602,7 @@ void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 			std::string typeCheck;
 			fsFileUtil::ANSIFilenameToLocator(value, scenefile );
 			if ( fsFileUtil::FileExists( scenefile ) )
-			{	
+			{
 				fsFileUtil::LocatorToANSIFilename(scenefile, typeCheck);
 				if (typeCheck.find(".mab") != std::string::npos
 					|| docSingleTypeMgr::IsForeignFile(scenefile))
@@ -661,7 +661,7 @@ void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 }
 
 //--------------------------------------------------------------------
-//static 
+//static
 // return value in KB
 //--------------------------------------------------------------------
 float mnmApp::QueryVideoMemory()
@@ -702,14 +702,14 @@ void mnmApp::SetWindowSize(int i_width, int i_height)
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 mnmApp::mnmApp()
-:	m_pSystem(NULL), 
+:	m_pSystem(NULL),
 	m_pSystem3D(NULL)
 {
 	l_pAppInstance = this;
 
 	mnmApp::sm_FPSAverage.SetHistorySize(100);
 	mnmApp::SetActive( false );
-	
+
 	std::vector<fsLocator> iconPathList;
 	gfPaths::GetPathList(mnmPaths::e_ExeArt, iconPathList);
 
@@ -815,7 +815,7 @@ void mnmApp::InitializeRender(void *i_HwndFake, void *i_Hwnd, int i_Width, int i
 	this->m_RenderViews.push_back(pMainView);
 	tma3dRenderView::SetActiveRenderView(pMainView);
 
-	std::vector<dbgStream*> _osList = dbgMsg::GetStreamList(); 
+	std::vector<dbgStream*> _osList = dbgMsg::GetStreamList();
 	std::vector<bool> doThreadList(_osList.size());
 	std::vector<bool> doFileList(_osList.size());
 
@@ -855,7 +855,7 @@ void mnmApp::InitializeRender(void *i_HwndFake, void *i_Hwnd, int i_Width, int i
 	//	g3dLayer::e_World, g3dLayer::e_Additive,
 	//	false, false, false, true);
 
-	
+
 	// Now we can create the text label for the main render window
 	// after the shaders are enabled and the screen layer has been created.
 	fsLocator font_loc;
@@ -906,7 +906,7 @@ tma3dRenderView* mnmApp::GetRenderView(int i_Index)
 }
 
 //--------------------------------------------------------------------
-// GetNumberOfRenderViews - return the number of render views 
+// GetNumberOfRenderViews - return the number of render views
 //--------------------------------------------------------------------
 int mnmApp::GetNumberOfRenderViews()
 {
@@ -937,8 +937,8 @@ void mnmApp::TryThink()
 {
 	//bga - I would like to handle exceptions here, but I am not sure what we could
 	// do about them. I don't want to continually pop up messages when the rendering fails
-	// because the user will need to be able to click other menu items in order to 
-	// fix the problem. 
+	// because the user will need to be able to click other menu items in order to
+	// fix the problem.
 	//
 	try
 	{
@@ -988,8 +988,8 @@ void mnmApp::Think()
 	// think the camera manager
 	//mnmCameraMgr::Think();
 
-	// Look for tilde hotkey here instead of in 
-	// the window code so that we can turn on 
+	// Look for tilde hotkey here instead of in
+	// the window code so that we can turn on
 	// a tighter render loop, even when not currently rendering.
 	if ( inDeviceMgr::GetKeyboard() &&
 		inDeviceMgr::GetKeyboard()->IsReleased(inKeys::e_TILDE) )
@@ -1033,7 +1033,7 @@ void mnmApp::Think()
 
 	if (mnmApp::IsRenderEnabled())
 	{
-		// Our panel viewers need to do some thinking to setup the 
+		// Our panel viewers need to do some thinking to setup the
 		// overlay planes for their rendering. Do this before the proxy manager
 		// update, and not in Render() anymore in order to better multithread it.
 		float timeline_time = tmlnTimeLine::GetTimeInSeconds();
@@ -1132,7 +1132,7 @@ void mnmApp::Render()
 	// the rendering is controlled by the mode itself.
 	if (mnmApp::IsRenderEnabled())
 	{
-		// If there is already a render thread active, have to 
+		// If there is already a render thread active, have to
 		// wait until it finishes
 		if (!g3dThreadControl::IsRenderThreadActive())
 		{
@@ -1156,14 +1156,14 @@ void mnmApp::Render()
 				// in the highlighting.
 				bool bHighlightIsOn = (mtrlHighlight::AreMaterialsHighlighted() ||
 									   fgmtHighlight::AreSurfacesHighlighted());
-			
-				// Note: debug display forces re-renders in order to measure 
+
+				// Note: debug display forces re-renders in order to measure
 				// the frame rate correctly.
 				m_RenderViews[0]->GetWindow()->EnableDebugOverlay(l_bDebugDisplay);
 
 				// Were there any changes made by the proxies? If not,
-				// then we don´t have to update the render views.
-				if ( bHadProxyUpdates || gpxRenderControl::IsRenderNeeded() 
+				// then we don't have to update the render views.
+				if ( bHadProxyUpdates || gpxRenderControl::IsRenderNeeded()
 					|| bHighlightIsOn ||  l_bDebugDisplay)
 				{
 					// Clear dirty bit now
@@ -1216,10 +1216,10 @@ void mnmApp::DoRender()
 	//	keep start time of render
 	float render_time = appTime::GetTime();
 
-	// Scene's Think() was pulled out of the mode´s Think in order to 
+	// Scene's Think() was pulled out of the mode's Think in order to
 	// refactor it into the render thread.
 	float timeline_time = tmlnTimeLine::GetTimeInSeconds();
-	//DBG_ASSERT(timeline_time == appSimTime::GetTime(), "Timeline and simulation time don´t match");
+	//DBG_ASSERT(timeline_time == appSimTime::GetTime(), "Timeline and simulation time don't match");
 	//DBG_LOG("Timeline: " << timeline_time << " Sim time: " << appSimTime::GetTime());
 	api3dScene::Think( timeline_time );
 
@@ -1301,7 +1301,7 @@ void mnmApp::SetRenderPass(int i_RenderPassType, std::string& i_RenderPassName)
 //		g3dPrefs::g3dRenderPrefs prefs = g3dPrefs::CurrentPrefs();
 		// set up prefs for renderpass
 //		rlyrPassesObject::AdjustPrefs((rlyrPassesObject::ePassType)i_RenderPassType, prefs);
-		
+
 		// enum type conversion
 		tma3dRenderView::RendererType rType;
 		switch (i_RenderPassType)

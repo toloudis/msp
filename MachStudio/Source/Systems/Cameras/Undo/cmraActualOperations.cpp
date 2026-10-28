@@ -81,7 +81,7 @@ void cmraActualOperations::SetData(int i_Index, const cmraScriptData& i_Data)
 		//cmraCueDialogUtil::UpdateCameraNames();
 
 		cmraDocumentChunk::ActiveDataChanged();
-	}	
+	}
 	else
 	{
 		camCamera &camera = cam3dMgr::GetEditorCamera();
@@ -122,7 +122,7 @@ void cmraActualOperations::SetData(int i_Index, const cmraScriptData& i_Data)
 //--------------------------------------------------------------------
 void cmraActualOperations::ChangeDriverData(int i_Index, const cmraScriptData& i_Data)
 {
-	// no need to notify cmraObjectMgr if there is no undo, 
+	// no need to notify cmraObjectMgr if there is no undo,
 	// this message is coming from the object directly
 
 	cmraDocumentChunk::ActiveDataChanged();
@@ -140,7 +140,7 @@ void cmraActualOperations::SetDescription(int i_Index, const nameString& i_Descr
 
 	cmraObjectMgr::SetBaseData(i_Index, data);
 
-	// we don’t need to do the first call since the Description isn’t changing.
+	// we don't need to do the first call since the Description isn't changing.
 	//
 	cmraDialogUtil::UpdateListDialog();
 

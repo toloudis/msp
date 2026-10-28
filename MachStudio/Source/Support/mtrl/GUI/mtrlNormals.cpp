@@ -29,16 +29,16 @@
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-mtrlNormals::mtrlNormals(mdlMaterialInfo& i_Data, 
+mtrlNormals::mtrlNormals(mdlMaterialInfo& i_Data,
 				   effNormalsData* i_pShaderData,
 				   const fsLocator &i_TextureDir)
 :	mtrlShaderObject(i_TextureDir),
-	m_Material(i_Data), 
+	m_Material(i_Data),
 	m_pShaderData(i_pShaderData)
 {
 	DBG_ASSERT(m_pShaderData != NULL, "mtrlNormals expected effNormalsData");
 
-	// Create thread-safe proxy for the material´s effect data.
+	// Create thread-safe proxy for the material's effect data.
 	m_pShaderDataProxy.reset( new gpxEffectNormals(*m_pShaderData) );
 
 	m_Data.m_BumpScale.SetValue(m_pShaderData->m_BumpScale);
@@ -58,14 +58,14 @@ mtrlNormals::mtrlNormals(mdlMaterialInfo& i_Data,
 	this->AddFloatChannel(m_Material.GetMaterialName(), m_Data.m_BumpScale);
 	this->AddTextureChannel(m_Material.GetMaterialName(), m_Data.m_NormalMap);
 
-	RegisterData(i_TextureDir); 
+	RegisterData(i_TextureDir);
 }
 
 //------------------------------------------------------------------------
 // Set a new directory for the material in order to find the textures.
 // Called when the material has been exported to the material library.
 //------------------------------------------------------------------------
-//virtual 
+//virtual
 void mtrlNormals::UpdateTextureDirectory(const fsLocator &i_TextureDir)
 {
 	mtrlShaderObject::UpdateTextureDirectory(i_TextureDir);
@@ -78,7 +78,7 @@ void mtrlNormals::UpdateTextureDirectory(const fsLocator &i_TextureDir)
 // Get list of used textures in order to support copying them
 // to the material library when exporting.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 void mtrlNormals::GetTextureList(std::vector<fsLocator>& o_TextureList)
 {
 	if (m_Data.m_NormalMap.GetValue().GetNumNames() > 1)
@@ -117,10 +117,10 @@ void mtrlNormals::Update(prtyProperty *i_pProperty, bool i_bDirty)
 		set_shader_data(normals_data);	// set into material template
 		mtrlOperations::SetChunkDataChanged();
 	}
-	
-	// use proxy to update material´s shader at a thread-safe time
+
+	// use proxy to update material's shader at a thread-safe time
 	m_pShaderDataProxy->SetBumpScale( m_Data.m_BumpScale.GetValue() );
-	
+
 }
 
 //----------------------------------------------------------------------------

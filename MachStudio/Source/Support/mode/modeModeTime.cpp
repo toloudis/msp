@@ -121,14 +121,14 @@ void modeModeTime::Think()
 	//cam3dMgr::GetCamera().LookAt(maPoint3d(10,10,0), maPoint3d(0,0,0), maVector3d(0,1,0));
 
 	//bga - these two calls that set up transforms based on camera positions
-	// really need to be somewhere in a single viewport render´s steps.
+	// really need to be somewhere in a single viewport render's steps.
 	//
 	// Orient the billboards to the camera
 	scBillboard::SetCameraPosition( cam3dMgr::GetCamera() );
 	// Update LOD based on camera position
 	api3dScene::UpdateLOD( cam3dMgr::GetCamera().GetPosition() );
 
-	//bga - this call is removed from the mode think 
+	//bga - this call is removed from the mode think
 	// in order to put it into the render thread
 	//api3dScene::Think( timeline_time );
 }

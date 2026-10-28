@@ -50,7 +50,7 @@ grupGroupObject::~grupGroupObject()
 //--------------------------------------------------------------------
 // Get the name of the object.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 std::string grupGroupObject::GetDisplayName() const
 {
 	return GetName().GetString();
@@ -60,7 +60,7 @@ std::string grupGroupObject::GetDisplayName() const
 // Get parent object of this object in order to define relationships
 //	between icons and their affected objects.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 //sel3dObject* grupGroupObject::GetParentObject() const
 //{
 //	return m_pParent;
@@ -75,7 +75,7 @@ std::string grupGroupObject::GetDisplayName() const
 //  get a list of resources.  the resources will be appended to the
 //	passed in list.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 void grupGroupObject::GetResourceList( fsResourceTrackerData& io_List )
 {
 	// no resources in group
@@ -87,7 +87,7 @@ void grupGroupObject::GetResourceList( fsResourceTrackerData& io_List )
 const grupData& grupGroupObject::GetData() const
 {
 	// Since we don't have a property for checked lists, the group manager
-	// still maintains the "true" object connectíons.
+	// still maintains the "true" object connections.
 	// We have to refresh that info from the manager whenever
 	// someone asks for the data.
 	m_Data.m_Objects.clear();
@@ -147,7 +147,7 @@ void grupGroupObject::SetName(const nameString& i_Name)
 // Callbacks for when properties change, updates member data
 //--------------------------------------------------------------------
 void grupGroupObject::NameChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	// The property's check will prevent an infinite
 	// loop here.
 	this->SetName( m_Data.m_Name.GetValue() );

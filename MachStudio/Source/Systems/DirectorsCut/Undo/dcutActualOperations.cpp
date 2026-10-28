@@ -80,7 +80,7 @@ void dcutActualOperations::SetData(int i_Index, const dcutScriptData& i_Data)
 		dcutCueDialogUtil::UpdateCameraNames();
 
 		dcutDocumentChunk::ActiveDataChanged();
-	}	
+	}
 
 	dcutDialogUtil::UpdateCameraData(i_Index, i_Data);
 }
@@ -106,7 +106,7 @@ void dcutActualOperations::UpdateCameraData( int i_Index )
 //--------------------------------------------------------------------
 void dcutActualOperations::ChangeDriverData(int i_Index, const dcutScriptData& i_Data)
 {
-	// no need to notify dcutObjectMgr if there is no undo, 
+	// no need to notify dcutObjectMgr if there is no undo,
 	// this message is coming from the object directly
 
 	dcutDialogUtil::UpdateCameraData(i_Index, i_Data);
@@ -126,7 +126,7 @@ void dcutActualOperations::ChangeDriverData(int i_Index, const dcutScriptData& i
 //
 //	dcutObjectMgr::SetBaseData(i_Index, data);
 //
-//	// we don’t need to do the first call since the Description isn’t changing.
+//	// we don't need to do the first call since the Description isn't changing.
 //	//
 //	dcutDialogUtil::UpdateListDialog();
 //

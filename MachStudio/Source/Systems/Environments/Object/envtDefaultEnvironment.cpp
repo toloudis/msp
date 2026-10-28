@@ -119,7 +119,7 @@ envtDefaultEnvironment::~envtDefaultEnvironment()
 //--------------------------------------------------------------------
 // Get the name of the object.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 std::string envtDefaultEnvironment::GetDisplayName() const
 {
 	return evmtEnvironmentMgr::GetDefaultEnvironmentName();
@@ -132,7 +132,7 @@ const envtData& envtDefaultEnvironment::GetData() const
 {
 	// Since we don't have properties that handle things like
 	// checked lists and tree controls, the environment manager
-	// still maintains the "true" object and environment connectíons.
+	// still maintains the "true" object and environment connections.
 	// We have to refresh that info from the manager whenever
 	// someone asks for the data.
 	std::vector<nameString> objects;
@@ -162,7 +162,7 @@ void envtDefaultEnvironment::SetData(const envtData &i_Data)
 	// don't set name into underlying evmt - this env is not nameable.
 //	m_pEnvironment->SetName(m_Data.m_Name.GetValue());
 
-	if( m_Data.m_DiffuseMapName.GetFullValue().m_CurrentCallback == 
+	if( m_Data.m_DiffuseMapName.GetFullValue().m_CurrentCallback ==
 		prtyTextureFileChooserUIInfo::GetType(prtyTextureFileChooserUIInfo::e_Ramp) )
 	{
 		m_pEnvironment->RampChanged(m_Data.m_RampData);
@@ -389,7 +389,7 @@ bool envtDefaultEnvironment::GetEnabledRamp()
 // Get parent object of this object in order to define relationships
 //	between icons and their affected objects.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 //sel3dObject* envtDefaultEnvironment::GetParentObject() const
 //{
 //	return m_pParent;

@@ -31,9 +31,9 @@
 //----------------------------------------------------------------------------
 trfnTransformObject::trfnTransformObject()
 :	m_pParent(NULL)
-{	
+{
 	m_p3DNode = new api3dObjectNode();
-	
+
 	//	add it to the scene
 	api3dScene::AddObject(m_p3DNode);
 
@@ -65,7 +65,7 @@ trfnTransformObject::trfnTransformObject()
 	prtyVector3dEditUpDownUIInfo *pPVEUDUII  = new prtyVector3dEditUpDownUIInfo(&(m_Data.m_Orientation), "Transform", "Orientation of the object");
 	pPVEUDUII->SetIncrement(0.5f, 0.5f, 0.5f);
 	pPVEUDUII->SetDecimalPlaces(1);
-	AddProperty( pPVEUDUII );		
+	AddProperty( pPVEUDUII );
 	pPUII  = new prtyFloatEditUIInfo(&(m_Data.m_Scale), "Transform", "Scale of the object");
 	AddProperty( pPUII );
 	pPVEUDUII = new prtyVector3dEditUpDownUIInfo(&(m_Data.m_PivotPoint), "Transform", "Pivot position in local space");
@@ -106,7 +106,7 @@ trfnTransformObject::~trfnTransformObject()
 //--------------------------------------------------------------------
 // Get the name of the object.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 std::string trfnTransformObject::GetDisplayName() const
 {
 	return GetName().GetString();
@@ -116,7 +116,7 @@ std::string trfnTransformObject::GetDisplayName() const
 // Get parent object of this object in order to define relationships
 //	between icons and their affected objects.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 //sel3dObject* trfnTransformObject::GetParentObject() const
 //{
 //	return m_pParent;
@@ -131,7 +131,7 @@ std::string trfnTransformObject::GetDisplayName() const
 //  get a list of resources.  the resources will be appended to the
 //	passed in list.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 void trfnTransformObject::GetResourceList( fsResourceTrackerData& io_List )
 {
 	// no resources in transform
@@ -143,7 +143,7 @@ void trfnTransformObject::GetResourceList( fsResourceTrackerData& io_List )
 const trfnData& trfnTransformObject::GetData() const
 {
 	// Since we don't have a property for checked lists, the transform manager
-	// still maintains the "true" object connectíons.
+	// still maintains the "true" object connections.
 	// We have to refresh that info from the manager whenever
 	// someone asks for the data.
 	m_Data.m_Objects.clear();
@@ -168,7 +168,7 @@ void trfnTransformObject::SetData(const trfnData &i_Data)
 	{
 		// Don't want to preserve transform here because we are reconstructing an
 		// existing hierarchy from loading a file.
-		const bool c_bPreserveTransform = false; 
+		const bool c_bPreserveTransform = false;
 		xfrmTransformMgr::AddNodeToTransform(set_name, m_Data.m_Objects[i], c_bPreserveTransform);
 	}
 }
@@ -246,7 +246,7 @@ maAxisBox trfnTransformObject::GetWorldBox(int i_IconLayerIndex) const
 //		object will rotate around. Used to center rotation and
 //		scale compasses.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 maPoint3d trfnTransformObject::GetWorldPivot() const
 {
 	// pivot point in object space is just local pivot plus position
@@ -260,9 +260,9 @@ maPoint3d trfnTransformObject::GetWorldPivot() const
 }
 
 //--------------------------------------------------------------------
-//  Get sum of matrices of all parents of this node. 
+//  Get sum of matrices of all parents of this node.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 void trfnTransformObject::GetParentMatrix(maMatrix4x4 &o_Transformation) const
 {
 	// let transform manager compute the sum of the parent matrices
@@ -271,13 +271,13 @@ void trfnTransformObject::GetParentMatrix(maMatrix4x4 &o_Transformation) const
 
 
 //--------------------------------------------------------------------
-// Change the pivot point of this object to the center 
+// Change the pivot point of this object to the center
 // of its bounding box
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 void trfnTransformObject::CenterPivot()
 {
-	// Going to directly access the scene graph here, so stop any running threads	
+	// Going to directly access the scene graph here, so stop any running threads
 	gpxRenderControl::ConfirmSingleThread();
 
 	maPoint3d pivot_pt;
@@ -315,7 +315,7 @@ maPoint3d trfnTransformObject::GetPosition() const
 {
 	return m_Data.m_Position.GetValue();
 }
-void trfnTransformObject::UpdatePosition(const maPoint3d& i_Position, 
+void trfnTransformObject::UpdatePosition(const maPoint3d& i_Position,
 								bool i_bNewOperation)
 {
 	if (i_bNewOperation)
@@ -332,7 +332,7 @@ maRotation trfnTransformObject::GetOrientation() const
 {
 	return m_Data.m_Orientation.GetQuaternion();
 }
-void trfnTransformObject::UpdateOrientation(const maRotation& i_Orientation, 
+void trfnTransformObject::UpdateOrientation(const maRotation& i_Orientation,
 										bool i_bNewOperation)
 {
 	if (i_bNewOperation)
@@ -348,7 +348,7 @@ maPoint3d trfnTransformObject::GetScale() const
 {
 	return m_p3DNodeProxy->GetScale();
 }
-void trfnTransformObject::UpdateScale(const maPoint3d& i_Scale, 
+void trfnTransformObject::UpdateScale(const maPoint3d& i_Scale,
 								bool i_bNewOperation)
 {
 	if (i_bNewOperation)
@@ -397,8 +397,8 @@ void  trfnTransformObject::SetEditorVisible(bool i_bVisible)
 //	// object is visible only if channel and gui and layer are all
 //	// are set visible == true;
 //	m_p3DNodeProxy->SetActiveFromSceneMgr(i_bVisible);
-//	m_p3DNodeProxy->SetRenderable(m_Data.m_bVisible.GetValue() 
-//							&& m_Data.m_bEditorVisible.GetValue()); 
+//	m_p3DNodeProxy->SetRenderable(m_Data.m_bVisible.GetValue()
+//							&& m_Data.m_bEditorVisible.GetValue());
 //							//&& m_bLayerVisible);
 }
 //bool trfnTransformObject::GetEditorVisible() const
@@ -433,7 +433,7 @@ void trfnTransformObject::UpdateParentTransform()
 }
 
 //--------------------------------------------------------------------
-// Called from transformation manager when the parenting of this 
+// Called from transformation manager when the parenting of this
 // object changes in a way that we need to alter our values to
 // saty in the same world position.
 //--------------------------------------------------------------------
@@ -447,7 +447,7 @@ void trfnTransformObject::ApplyTransformation(const maMatrix4x4& i_Matrix)
 // Callbacks for when properties change, updates member data
 //--------------------------------------------------------------------
 void trfnTransformObject::NameChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	// The property's check will prevent an infinite
 	// loop here.
 	this->SetName( m_Data.m_Name.GetValue() );
@@ -473,7 +473,7 @@ void trfnTransformObject::PositionChanged(prtyProperty *i_pProperty, bool i_bDir
 		trfnDocumentChunk::ActiveDataChanged();
 }
 void trfnTransformObject::OrientationChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	const maRotation& orientation = m_Data.m_Orientation.GetQuaternion();
 	m_p3DNodeProxy->SetOrientation( orientation );
 
@@ -486,7 +486,7 @@ void trfnTransformObject::OrientationChanged(prtyProperty *i_pProperty, bool i_b
 		trfnDocumentChunk::ActiveDataChanged();
 }
 void trfnTransformObject::ScaleChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	m_p3DNodeProxy->SetUniformScale( m_Data.m_Scale.GetValue() );
 
 	// Update our local transformation matrix into the xfrmTransformGroup
@@ -498,7 +498,7 @@ void trfnTransformObject::ScaleChanged(prtyProperty *i_pProperty, bool i_bDirty)
 		trfnDocumentChunk::ActiveDataChanged();
 }
 void trfnTransformObject::PivotChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	const maPoint3d& pivot = m_Data.m_PivotPoint.GetValue();
 	if (i_bDirty)
 	{
@@ -528,7 +528,7 @@ void trfnTransformObject::PivotChanged(prtyProperty *i_pProperty, bool i_bDirty)
 	}
 }
 void trfnTransformObject::PivotCompensationChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	const maVector3d& vec = m_Data.m_PivotCompensation.GetValue();
 	m_p3DNodeProxy->SetPivotCompensation( vec );
 
@@ -544,18 +544,18 @@ void trfnTransformObject::InheritsTransformChanged(prtyProperty *i_pProperty, bo
 		trfnDocumentChunk::ActiveDataChanged();
 }
 void trfnTransformObject::VisibleChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	// object is visible only if channel and gui and layer are all
 	// are set visible == true;
 	m_p3DNodeProxy->SetRenderable(m_Data.m_bVisible.GetValue() );
 		//&& m_Data.m_bEditorVisible.GetValue() );
 }
 void trfnTransformObject::PickableChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	m_p3DNodeProxy->SetGPUPickable( m_Data.m_bPickable.GetValue() );
 	m_pTransform->SetPickable( m_Data.m_bPickable.GetValue() );
 }
 void trfnTransformObject::WireframeChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	m_p3DNodeProxy->SetWireframe(m_Data.m_bWireframe.GetValue() );
 }

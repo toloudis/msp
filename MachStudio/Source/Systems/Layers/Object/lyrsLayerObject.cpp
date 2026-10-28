@@ -64,7 +64,7 @@ lyrsLayerObject::~lyrsLayerObject()
 //--------------------------------------------------------------------
 // Get the name of the object.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 std::string lyrsLayerObject::GetDisplayName() const
 {
 	return GetName().GetString();
@@ -74,7 +74,7 @@ std::string lyrsLayerObject::GetDisplayName() const
 // Get parent object of this object in order to define relationships
 //	between icons and their affected objects.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 //sel3dObject* lyrsLayerObject::GetParentObject() const
 //{
 //	return m_pParent;
@@ -89,7 +89,7 @@ std::string lyrsLayerObject::GetDisplayName() const
 //  get a list of resources.  the resources will be appended to the
 //	passed in list.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 void lyrsLayerObject::GetResourceList( fsResourceTrackerData& io_List )
 {
 	// no resources in layer
@@ -101,7 +101,7 @@ void lyrsLayerObject::GetResourceList( fsResourceTrackerData& io_List )
 const lyrsData& lyrsLayerObject::GetData() const
 {
 	// Since we don't have a property for checked lists, the layer manager
-	// still maintains the "true" object connectíons.
+	// still maintains the "true" object connections.
 	// We have to refresh that info from the manager whenever
 	// someone asks for the data.
 	m_Data.m_Objects.clear();
@@ -161,7 +161,7 @@ void lyrsLayerObject::SetName(const nameString& i_Name)
 // Callbacks for when properties change, updates member data
 //--------------------------------------------------------------------
 void lyrsLayerObject::NameChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	// The property's check will prevent an infinite
 	// loop here.
 	this->SetName( m_Data.m_Name.GetValue() );

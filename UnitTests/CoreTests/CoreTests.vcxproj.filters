@@ -63,6 +63,9 @@
     <ClCompile Include="Ch\chNumberTest.cpp">
       <Filter>Ch</Filter>
     </ClCompile>
+    <ClCompile Include="Ch\chStringTest.cpp">
+      <Filter>Ch</Filter>
+    </ClCompile>
     <ClCompile Include="Dbg\dbgMsgTest.cpp">
       <Filter>Dbg</Filter>
     </ClCompile>
@@ -72,6 +75,9 @@
     <ClCompile Include="Env\envSTLHelpersTest.cpp">
       <Filter>Env</Filter>
     </ClCompile>
+    <ClCompile Include="Env\envStringTest.cpp">
+      <Filter>Env</Filter>
+    </ClCompile>
     <ClCompile Include="Env\envThreadGroupTest.cpp">
       <Filter>Env</Filter>
     </ClCompile>
@@ -79,6 +85,9 @@
       <Filter>Env</Filter>
     </ClCompile>
     <ClCompile Include="Fs\fsFileTest.cpp">
+      <Filter>Fs</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\fsNarrowPathTest.cpp">
       <Filter>Fs</Filter>
     </ClCompile>
     <ClCompile Include="Fs\fsXMLTest.cpp">

@@ -45,7 +45,7 @@ namespace
 			fsFileUtil::CreateDirectory( i_RootPath );
 		i_RootPath.Pop();
 
-		// Not créating Models or Sounds directories anymore
+		// Not creating Models or Sounds directories anymore
 		//i_RootPath.Push( gfPaths::GetSubPath(gfPaths::e_Models) );
 		//if ( !fsFileUtil::DirectoryExists( i_RootPath ) )
 		//	fsFileUtil::CreateDirectory( i_RootPath );
@@ -380,7 +380,7 @@ void mnmPaths::CreateStockDirectories( const fsLocator& i_Root, const itString& 
 	//	maybe expose the function CreateSystemDirectory()?
 	//
 
-	// Sounds 
+	// Sounds
 	rootpath.Push( "Sounds" );
 	if ( !fsFileUtil::DirectoryExists( rootpath ) )
 		fsFileUtil::CreateDirectory( rootpath );
@@ -473,7 +473,7 @@ void mnmPaths::ExtractObjectDirectoryName( const fsLocator i_FullDir, itString& 
 void mnmPaths::ConvertFilename( fsLocator& io_FileName )
 {
 	std::string dir;
-	
+
 	fsFileUtil::LocatorToANSIFilename( io_FileName, dir );
 	DBG_TRACE( "original directory = " << dir.c_str() );
 
@@ -515,11 +515,11 @@ void mnmPaths::SetupMainPaths()
 	locator.Push(c_SUBDIRNAME_USER_PROJECTS);
 	gfPaths::SetPath(mnmPaths::e_UserProjects, locator);
 
-	
+
 	locator.Pop();
 	locator.Push(c_SUBDIRNAME_CACHE);
 	gfPaths::SetPath(mnmPaths::e_Cache, locator);
-	
+
 	locator.Pop();
 	locator.Push(c_SUBDIRNAME_DATA);
 	gfPaths::SetPath(mnmPaths::e_Data, locator);

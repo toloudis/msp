@@ -1,7 +1,7 @@
 /*****************************************************************************
 **	gpxGlobalIllumination.hpp
 **
-**	This class is a thread-safe proxy for the api3dScene´s ssgiParams
+**	This class is a thread-safe proxy for the api3dScene's ssgiParams
 **
 **	StudioGPU
 **	Copyright(C) 2010 - All Rights Reserved
@@ -13,11 +13,11 @@
 
 #ifndef GPX_PROXYOBJECT_HPP
 #include "Tool/gpx/gpxProxyObject.hpp"
-#endif 
+#endif
 
 #ifndef G3D_SCENE_HPP
 #include "Graphics/G3d/g3dScene.hpp"
-#endif 
+#endif
 
 
 //============================================================================

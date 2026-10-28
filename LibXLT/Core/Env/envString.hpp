@@ -47,4 +47,22 @@ namespace envString
 	//------------------------------------------------------------------------
 	std::wstring UTF8ToWideChar(const std::string &i_String);
 
+	//------------------------------------------------------------------------
+	// Convert UTF-8 to UTF-16 (the string format of binary chunk files).
+	// Portable: no platform calls, the same on every platform. Embedded
+	// NULs are kept. Invalid UTF-8 (a stray continuation byte, a lead
+	// byte without all its continuation bytes, an overlong form, an
+	// encoded surrogate, a value above U+10FFFF) becomes U+FFFD, one for
+	// each maximal invalid subpart, as the Unicode standard recommends.
+	//------------------------------------------------------------------------
+	std::u16string UTF8ToUTF16(const char *i_String, size_t i_Length);
+	std::u16string UTF8ToUTF16(const std::string &i_String);
+
+	//------------------------------------------------------------------------
+	// Convert UTF-16 to UTF-8. Portable, as UTF8ToUTF16. Embedded NULs are
+	// kept; an unpaired surrogate becomes U+FFFD.
+	//------------------------------------------------------------------------
+	std::string UTF16ToUTF8(const char16_t *i_String, size_t i_Length);
+	std::string UTF16ToUTF8(const std::u16string &i_String);
+
 }

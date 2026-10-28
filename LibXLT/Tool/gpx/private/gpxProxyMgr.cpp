@@ -66,7 +66,7 @@ namespace gpxProxyMgr
 		}
 		return bChanged;
 #else
-		// When changes aren´t proxied, can´t tell if a new render is needed or not.
+		// When changes aren't proxied, can't tell if a new render is needed or not.
 		// So we have to return true here, as if we changed something.
 		return true;
 #endif

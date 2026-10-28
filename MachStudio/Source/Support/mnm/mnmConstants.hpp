@@ -58,9 +58,9 @@ namespace mnmConstants
 	//const wchar_t* GetProductDisplayName()
 	//{
 	//#ifdef DEMO_VERSION
-	//	return L"MachStudio™ Pro Trial Version";
+	//	return L"MachStudioâ„¢ Pro Trial Version";
 	//#else
-	//	return L"MachStudio™ Pro";
+	//	return L"MachStudioâ„¢ Pro";
 	//#endif
 	//}
 
@@ -76,16 +76,16 @@ namespace mnmConstants
 	//	Constants based on the application
 	//
 #if (SGPU_APP == MS_PRO)
-	static const char* c_COPYRIGHT	= "Copyright© studio|gpu, Inc. 2003-10.";
-	static const wchar_t* cw_COPYRIGHT	= L"Copyright© studio|gpu, Inc. 2003-10.";
+	static const char* c_COPYRIGHT	= "CopyrightÂ© studio|gpu, Inc. 2003-10.";
+	static const wchar_t* cw_COPYRIGHT	= L"CopyrightÂ© studio|gpu, Inc. 2003-10.";
 	static const char* c_PRODUCT	= "MachStudio Pro";
 	static const wchar_t* cw_PRODUCT	= L"MachStudio Pro";
 
 	//	demo or not
 	#ifdef DEMO_VERSION
-		static const wchar_t* c_PRODUCT_FOR_DISPLAY = L"MachStudio™ Pro Trial Version";
+		static const wchar_t* c_PRODUCT_FOR_DISPLAY = L"MachStudioâ„¢ Pro Trial Version";
 	#else
-		static const wchar_t* c_PRODUCT_FOR_DISPLAY	= L"MachStudio™ Pro";
+		static const wchar_t* c_PRODUCT_FOR_DISPLAY	= L"MachStudioâ„¢ Pro";
 	#endif
 
 	//	executable
@@ -97,23 +97,23 @@ namespace mnmConstants
 	//#endif
 
 #elif (SGPU_APP == MS_CORE)
-	static const char* c_COPYRIGHT	= "Copyright© studio|gpu, Inc. 2009-2010.";
+	static const char* c_COPYRIGHT	= "CopyrightÂ© studio|gpu, Inc. 2009-2010.";
 
 	#if(MS_MODELING_PACKAGE & MODELINGPACKAGE_RHINO)
 		static const char* c_PRODUCT	= "MachStudio Core for Rhino";
 		//	demo or not
 		#ifdef DEMO_VERSION
-			static const wchar_t* c_PRODUCT_FOR_DISPLAY = L"MachStudio™ Core for Rhino Trial Version";
+			static const wchar_t* c_PRODUCT_FOR_DISPLAY = L"MachStudioâ„¢ Core for Rhino Trial Version";
 		#else
-			static const wchar_t* c_PRODUCT_FOR_DISPLAY	= L"MachStudio™ Core for Rhino";
+			static const wchar_t* c_PRODUCT_FOR_DISPLAY	= L"MachStudioâ„¢ Core for Rhino";
 		#endif
 	#else
 		static const char* c_PRODUCT	= "MachStudio Core";
 		//	demo or not
 		#ifdef DEMO_VERSION
-			static const wchar_t* c_PRODUCT_FOR_DISPLAY = L"MachStudio™ Core Trial Version";
+			static const wchar_t* c_PRODUCT_FOR_DISPLAY = L"MachStudioâ„¢ Core Trial Version";
 		#else
-			static const wchar_t* c_PRODUCT_FOR_DISPLAY	= L"MachStudio™ Core";
+			static const wchar_t* c_PRODUCT_FOR_DISPLAY	= L"MachStudioâ„¢ Core";
 		#endif
 	#endif
 
@@ -134,12 +134,12 @@ namespace mnmConstants
 	#endif	// modeling_package
 
 #elif (SGPU_APP == MS_FUSION)
-	static const wchar_t* cw_COPYRIGHT	= L"Copyright© studio|gpu, Inc. 2010.";
-	static const char* c_COPYRIGHT	= "Copyright© studio|gpu, Inc. 2010.";
+	static const wchar_t* cw_COPYRIGHT	= L"CopyrightÂ© studio|gpu, Inc. 2010.";
+	static const char* c_COPYRIGHT	= "CopyrightÂ© studio|gpu, Inc. 2010.";
 
 	static const char* c_PRODUCT	= "Fusion Cinema3d";
 	static const wchar_t* cw_PRODUCT	= L"Fusion Cinema3d";
-	static const wchar_t* c_PRODUCT_FOR_DISPLAY	= L"Fusion Cinema3d™";
+	static const wchar_t* c_PRODUCT_FOR_DISPLAY	= L"Fusion Cinema3dâ„¢";
 	static const char* c_EXECUTABLE	= "FusionCinema3d.exe";
 
 #else
@@ -150,7 +150,7 @@ namespace mnmConstants
 	//	generic constants
 	//--------------------------------------------------------------------
 	static const char* c_COMPANY	= "StudioGPU";
-	static const char* c_TRADEMARK  = "™";
+	static const char* c_TRADEMARK  = "â„¢";
 	static const wchar_t* cw_RIGHTS  = L"All rights reserved.";
 	static const wchar_t* cw_64BIT  = L"64-bit";
 	static const wchar_t* cw_32BIT  = L"32-bit";

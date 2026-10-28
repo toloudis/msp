@@ -102,12 +102,15 @@
     <ClCompile Include="Ch\chChunkTest.cpp" />
     <ClCompile Include="Ch\chMemWriterTest.cpp" />
     <ClCompile Include="Ch\chNumberTest.cpp" />
+    <ClCompile Include="Ch\chStringTest.cpp" />
     <ClCompile Include="Dbg\dbgMsgTest.cpp" />
     <ClCompile Include="Env\envNumberTextTest.cpp" />
     <ClCompile Include="Env\envSTLHelpersTest.cpp" />
+    <ClCompile Include="Env\envStringTest.cpp" />
     <ClCompile Include="Env\envThreadGroupTest.cpp" />
     <ClCompile Include="Env\envWorkerThreadTest.cpp" />
     <ClCompile Include="Fs\fsFileTest.cpp" />
+    <ClCompile Include="Fs\fsNarrowPathTest.cpp" />
     <ClCompile Include="Fs\fsXMLTest.cpp" />
     <ClCompile Include="Geo\geoKDTreeTest.cpp" />
     <ClCompile Include="Gf\gfFileBinTest.cpp" />

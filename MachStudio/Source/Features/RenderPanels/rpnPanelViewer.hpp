@@ -17,7 +17,7 @@
 #endif
 #ifndef G3D_LAYERCONTAINER_HPP
 #include "Graphics/G3d/g3dLayerContainer.hpp"
-#endif 
+#endif
 
 
 //============================================================================
@@ -52,18 +52,18 @@ public:
 	int GetIconLayerIndex() const;
 
 	//--------------------------------------------------------------------
-	//	Prepare viewer´s layers for rendering
+	//	Prepare viewer's layers for rendering
 	//--------------------------------------------------------------------
 	virtual void Think( float i_fSimTime );
 
 	//--------------------------------------------------------------------
 	//	Render renders the scene node hierarchy.
 	//--------------------------------------------------------------------
-	virtual void Render( float i_fSimTime, 
+	virtual void Render( float i_fSimTime,
 						 bool i_bClear = true );
 
 	//------------------------------------------------------------------------
-	// CreateTextLabel - give font to use 
+	// CreateTextLabel - give font to use
 	//------------------------------------------------------------------------
 	void CreateTextLabel(const fsLocator &i_FontPath);
 
@@ -90,12 +90,12 @@ public:
 	bool GetAllowShadows() const;
 
 	//----------------------------------------------------------------------------
-	// Set directors cut, this causes the camera to switch based 
+	// Set directors cut, this causes the camera to switch based
 	//	on the simulation time
 	//----------------------------------------------------------------------------
 	void SetDirectorsCut(camsDirectorsCut *i_pDirectorsCut);
 	camsDirectorsCut* GetDirectorsCut();
-	
+
 	//----------------------------------------------------------------------------
 	// Returns true if the panel has a directors cut
 	//----------------------------------------------------------------------------

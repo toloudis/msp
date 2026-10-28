@@ -10,7 +10,6 @@
 
 #include "Systems/Common/GUI/cmmAddDriverOperation.hpp"
 #include "Systems/Common/GUI/cmmSystemDialogInterest.hpp"
-#include "Systems/Common/GUI/mGUI/cmmSystemForm.h"
 #ifdef MSP_GUI_QT
 #include "Systems/Common/GUI/qtGUI/cmmSceneDialog.hpp"
 #else
@@ -32,6 +31,7 @@
 #else
 #include "ToolUIWx/twx/twxSystem.hpp"
 #endif
+#include "Features/SceneSetup/Data/SceneSetupData.hpp"
 
 
 //============================================================================

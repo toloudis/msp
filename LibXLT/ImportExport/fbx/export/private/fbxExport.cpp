@@ -34,7 +34,7 @@
 #endif
 #pragma comment(lib,"wininet.lib")
 
-typedef unsigned char BYTE; 
+typedef unsigned char BYTE;
 
 
 //============================================================================
@@ -78,7 +78,7 @@ maVector3d GetRotationVec(maMatrix4x4 i_Mat)
 		for ( int j = 0 ; j < 4 ; j++ )
 		{
 			M[i][j] = transpose.m_Mat[i*4+j];
-		}	
+		}
 	}
 
     EulerAngles ea;
@@ -157,8 +157,8 @@ bool SaveScene(KFbxSdkManager* pSdkManager, KFbxDocument* pScene, const char* pF
         return false;
     }
 
-    // Set the export states. By default, the export states are always set to 
-    // true except for the option eEXPORT_TEXTURE_AS_EMBEDDED. The code below 
+    // Set the export states. By default, the export states are always set to
+    // true except for the option eEXPORT_TEXTURE_AS_EMBEDDED. The code below
     // shows how to change these states.
     (*(pSdkManager->GetIOSettings())).SetBoolProp(EXP_FBX_MATERIAL,        true);
     (*(pSdkManager->GetIOSettings())).SetBoolProp(EXP_FBX_TEXTURE,         true);
@@ -195,7 +195,7 @@ void fbxExport::BeginExportToFBX(fsLocator i_FullFilePath)
 // ExportMeshToFBX()
 //--------------------------------------------------------------------
 void fbxExport::ExportMeshToFBX(fbxGeometryData i_GeometryData, const g3dSceneNode * i_pNode)
-{	
+{
 
 	g3dFragment * currFrag = (g3dFragment*)i_pNode->GetFragment();
 	if ( currFrag && currFrag->GetFragmentName() != "" )
@@ -268,7 +268,7 @@ void fbxExport::ExportMeshToFBX(fbxGeometryData i_GeometryData, const g3dSceneNo
 		// Create a node for the mesh.
 		KFbxNode* lNode = KFbxNode::Create(l_SdkManager, layerName.c_str());
 
-		// Set the node as a child of the scene’s root node.
+		// Set the node as a child of the scene's root node.
 		lRootNode->AddChild(lNode);
 
 		// Set the mesh as the node attribute of the node
@@ -360,7 +360,7 @@ void fbxExport::ExportMeshToFBX(fbxGeometryData i_GeometryData, const g3dSceneNo
 			gMaterial->GetDiffuseFactor().Set(0);
 			lNode->AddMaterial(gMaterial);
 
-			// Texture mapping 
+			// Texture mapping
 			KFbxLayerElementTexture* lTextureDiffuseLayer = KFbxLayerElementTexture::Create(lMesh, texLayerName.c_str());
 			lTextureDiffuseLayer->SetMappingMode(KFbxLayerElement::eALL_SAME);
 			lTextureDiffuseLayer->SetReferenceMode(KFbxLayerElement::eINDEX_TO_DIRECT);
@@ -384,7 +384,7 @@ void fbxExport::ExportMeshToFBX(fbxGeometryData i_GeometryData, const g3dSceneNo
 	{
 		ExportMeshToFBX(i_GeometryData, i_pNode->GetChild(i));
 	}
-	
+
 }
 
 //--------------------------------------------------------------------
@@ -421,7 +421,7 @@ void fbxExport::ExportCameraToFBX(fbxCameraData i_CameraData)
 			myCamera->FieldOfView.Set( i_CameraData.m_FOV );
 		}
 	}
-	
+
 
 	myCamera->SetNearPlane( i_CameraData.m_NearClip );
 	myCamera->SetFarPlane( i_CameraData.m_FarClip );
@@ -429,7 +429,7 @@ void fbxExport::ExportCameraToFBX(fbxCameraData i_CameraData)
 	KFbxNode* myCameraNode = KFbxNode::Create(l_Scene, camNode.c_str());
 	myCameraNode->SetName( baseName.c_str() );
 	myCameraNode->LclTranslation.Set(KFbxVector4(i_CameraData.m_Position.GetX(), i_CameraData.m_Position.GetY(), i_CameraData.m_Position.GetZ()));
- 
+
 	myCameraNode->SetNodeAttribute(myCamera);
 	KFbxNode* myRootNode = l_Scene->GetRootNode();
 	myRootNode->AddChild(myCameraNode);

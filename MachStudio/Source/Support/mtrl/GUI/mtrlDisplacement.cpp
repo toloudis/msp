@@ -21,16 +21,16 @@
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-mtrlDisplacement::mtrlDisplacement(mdlMaterialInfo& i_Data, 
+mtrlDisplacement::mtrlDisplacement(mdlMaterialInfo& i_Data,
 				   effDisplacementData* i_pShaderData,
 				   const fsLocator& i_TextureDir)
 :	mtrlShaderObject(i_TextureDir),
-	m_Material(i_Data), 
+	m_Material(i_Data),
 	m_pShaderData(i_pShaderData)
 {
 	DBG_ASSERT(m_pShaderData != NULL, "mtrlDisplacement expected effDisplacementData");
 
-	// Create thread-safe proxy for the material´s effect data.
+	// Create thread-safe proxy for the material's effect data.
 	m_pShaderDataProxy.reset( new gpxEffectDisplacement(*m_pShaderData) );
 
 	prtyTextureFileData tex;
@@ -39,8 +39,8 @@ mtrlDisplacement::mtrlDisplacement(mdlMaterialInfo& i_Data,
 
 	m_Data.m_DisplacementMap.SetValue(tex);
 	m_Data.m_DisplacementMap.SetRevertValue(tex);
-	
-	
+
+
 	m_Data.m_DisplacementScale.SetValue(m_pShaderData->m_Scale);
 	m_Data.m_DisplacementBias.SetValue(m_pShaderData->m_Bias);
 	m_Data.m_DisplacementBlur.SetValue(m_pShaderData->m_Blur);
@@ -68,7 +68,7 @@ mtrlDisplacement::mtrlDisplacement(mdlMaterialInfo& i_Data,
 // Set a new directory for the material in order to find the textures.
 // Called when the material has been exported to the material library.
 //------------------------------------------------------------------------
-//virtual 
+//virtual
 void mtrlDisplacement::UpdateTextureDirectory(const fsLocator &i_TextureDir)
 {
 	mtrlShaderObject::UpdateTextureDirectory(i_TextureDir);
@@ -81,7 +81,7 @@ void mtrlDisplacement::UpdateTextureDirectory(const fsLocator &i_TextureDir)
 // Get list of used textures in order to support copying them
 // to the material library when exporting.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 void mtrlDisplacement::GetTextureList(std::vector<fsLocator>& o_TextureList)
 {
 	if (m_Data.m_DisplacementMap.GetValue().GetNumNames() > 1)
@@ -152,7 +152,7 @@ void mtrlDisplacement::Update(prtyProperty *i_pProperty, bool i_bDirty)
 		mtrlOperations::SetChunkDataChanged();
 	}
 
-	// use proxy to update material´s shader at a thread-safe time
+	// use proxy to update material's shader at a thread-safe time
 	m_pShaderDataProxy->SetScale( m_Data.m_DisplacementScale.GetValue() );
 	m_pShaderDataProxy->SetBias( m_Data.m_DisplacementBias.GetValue() );
 	m_pShaderDataProxy->SetBlur( m_Data.m_DisplacementBlur.GetValue() );

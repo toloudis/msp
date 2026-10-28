@@ -81,7 +81,7 @@ hold settings:
 
 | File | Applies to | What it does |
 |---|---|---|
-| `Directory.Build.props` (repo root) | every project, automatically | Works out `MspGuiToolkit` (Qt/Wx/None) and `MspBaseConfiguration` (Debug/Release) from the configuration name; wx include dirs; defines `MSP_GFX_PROFILING` in Debug or with `MspGfxProfiling=true`; turns on vcpkg manifest mode with the root manifest and install (`MspVcpkgDir` is the `x64-windows` install). `3rdParty/WxWidgets/build/msw/wx_setup.props` reads `MspBaseConfiguration` |
+| `Directory.Build.props` (repo root) | every project, automatically | Works out `MspGuiToolkit` (Qt/Wx/None) and `MspBaseConfiguration` (Debug/Release) from the configuration name; wx include dirs; compiles with `/utf-8` (sources and narrow literals are UTF-8; a project setting `AdditionalOptions` keeps `%(AdditionalOptions)`); merges `Utf8CodePage.manifest` (next to it) into every exe, making UTF-8 the process code page, so narrow file names given to the C runtime are UTF-8; defines `MSP_GFX_PROFILING` in Debug or with `MspGfxProfiling=true`; turns on vcpkg manifest mode with the root manifest and install (`MspVcpkgDir` is the `x64-windows` install). `3rdParty/WxWidgets/build/msw/wx_setup.props` reads `MspBaseConfiguration` |
 | `MachStudio/Source/Directory.Build.targets` | MachStudio projects, automatically | Drops `wxGUI/` or `qtGUI/` sources for the other toolkit; imports `qt6.props` and runs `windeployqt` for Qt |
 | `LibXLT/ToolUIQt/qt6.props` | Qt builds (ToolUIQt, and MachStudio projects through the targets above) | Qt include dirs, defines and libraries (no moc/uic step) |
 | `3rdParty/WxWidgets/wxwidgets.props` | Wx builds of the projects that import it (ToolUIWx, Support, Features, MainApp, ...) | wx libraries |
@@ -160,6 +160,11 @@ hold settings:
   reports.
 - Core headers have `#error` "multiply included" guards, so guard their
   includes in test files as everywhere else (`#ifndef MA_PLANE_HPP ...`).
+- `UnitTests/CoreTests/Data/` holds files the tests read, found from the
+  test's `__FILE__` (an absolute path in these builds). The
+  `OldFormatStrings*.bin` files record the binary chunk format before the
+  move to UTF-8 strings and must never be regenerated (its `README.md`
+  describes them).
 
 ### Dependencies
 

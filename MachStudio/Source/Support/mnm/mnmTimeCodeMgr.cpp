@@ -81,7 +81,7 @@ namespace
 			oss.setf(0, std::ios::floatfield);
 			oss <<time_string<<"("<<frames_string<<")";
 			text = oss.str();
-		
+
 		}
 		TCMData::l_pTimeCodeTextProxy->SetText( itString( text.c_str() ) );
 	}
@@ -143,7 +143,7 @@ void mnmTimeCodeMgr::Update()
 void mnmTimeCodeMgr::SetShowTimeCode( bool i_bShow )
 {
 	//bga - this should probably just be a "SetRenderable" call so that
-	// we don´t have to stop the threads.
+	// we don't have to stop the threads.
 	if ( i_bShow )
 	{
 		if ( !TCMData::l_bShowTimeCode )
@@ -158,7 +158,7 @@ void mnmTimeCodeMgr::SetShowTimeCode( bool i_bShow )
 	{
 		if ( TCMData::l_bShowTimeCode )
 		{
-			
+
 			// stop running threads before changing scene structure
 			gpxRenderControl::ConfirmSingleThread();
 

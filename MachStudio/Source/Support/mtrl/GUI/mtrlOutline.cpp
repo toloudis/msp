@@ -27,16 +27,16 @@
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-mtrlOutline::mtrlOutline(mdlMaterialInfo& i_Data, 
+mtrlOutline::mtrlOutline(mdlMaterialInfo& i_Data,
 				   effOutlineData* i_pShaderData,
 				   const fsLocator &i_TextureDir)
 :	mtrlShaderObject(i_TextureDir),
-	m_Material(i_Data), 
+	m_Material(i_Data),
 	m_pShaderData(i_pShaderData)
 {
 	DBG_ASSERT(m_pShaderData != NULL, "mtrlOutline expected effOutlineData");
 
-	// Create thread-safe proxy for the material´s effect data.
+	// Create thread-safe proxy for the material's effect data.
 	m_pShaderDataProxy.reset( new gpxEffectOutline(*m_pShaderData) );
 
 	m_Data.m_OutlineDepthScale.SetValue(m_pShaderData->m_OutlineDepthScale);
@@ -62,14 +62,14 @@ mtrlOutline::mtrlOutline(mdlMaterialInfo& i_Data,
 	AddBooleanChannel(m_Material.GetMaterialName(), m_Data.m_bUseDepths );
 	AddBooleanChannel(m_Material.GetMaterialName(), m_Data.m_bUseNormals );
 
-	RegisterData(i_TextureDir); 
+	RegisterData(i_TextureDir);
 }
 
 //------------------------------------------------------------------------
 // Set a new directory for the material in order to find the textures.
 // Called when the material has been exported to the material library.
 //------------------------------------------------------------------------
-//virtual 
+//virtual
 void mtrlOutline::UpdateTextureDirectory(const fsLocator &i_TextureDir)
 {
 	mtrlShaderObject::UpdateTextureDirectory(i_TextureDir);
@@ -82,7 +82,7 @@ void mtrlOutline::UpdateTextureDirectory(const fsLocator &i_TextureDir)
 // Get list of used textures in order to support copying them
 // to the material library when exporting.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 void mtrlOutline::GetTextureList(std::vector<fsLocator>& o_TextureList)
 {
 }
@@ -155,7 +155,7 @@ void mtrlOutline::Update(prtyProperty *i_pProperty, bool i_bDirty)
 		mtrlOperations::SetChunkDataChanged();
 	}
 
-	// use proxy to update material´s shader at a thread-safe time
+	// use proxy to update material's shader at a thread-safe time
 	m_pShaderDataProxy->SetOutlineDepthScale( m_Data.m_OutlineDepthScale.GetValue() );
 	m_pShaderDataProxy->SetOutlineMinAngle( m_Data.m_OutlineMinAngle.GetValue() );
 	m_pShaderDataProxy->SetOutlineMaxAngle( m_Data.m_OutlineMaxAngle.GetValue() );

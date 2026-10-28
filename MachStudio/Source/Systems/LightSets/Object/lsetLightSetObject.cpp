@@ -13,7 +13,7 @@
 #include "Systems/LightSets/Undo/lsetOperations.hpp"
 
 #include "Support/ltst/ltstLightSetMgr.hpp"
-#include "Support/ltst/ltstLightSet.hpp"	
+#include "Support/ltst/ltstLightSet.hpp"
 #include "Core/prty/prtyTextBoxUIInfo.hpp"
 
 //----------------------------------------------------------------------------
@@ -46,7 +46,7 @@ lsetLightSetObject::~lsetLightSetObject()
 //--------------------------------------------------------------------
 // Get the name of the object.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 std::string lsetLightSetObject::GetDisplayName() const
 {
 	return GetName().GetString();
@@ -59,7 +59,7 @@ const lsetData& lsetLightSetObject::GetData() const
 {
 	// Since we don't have properties that handle things like
 	// checked lists and tree controls, the light set manager
-	// still maintains the "true" object and light connectíons.
+	// still maintains the "true" object and light connections.
 	// We have to refresh that info from the manager whenever
 	// someone asks for the data.
 	ltstLightSetData data;
@@ -139,7 +139,7 @@ void lsetLightSetObject::SetName(const nameString& i_Name)
 // Callbacks for when properties change, updates member data
 //--------------------------------------------------------------------
 void lsetLightSetObject::NameChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	// The property's check will prevent an infinite
 	// loop here.
 	this->SetName( m_Data.m_Name.GetValue() );
@@ -171,7 +171,7 @@ ltstLightSet* lsetLightSetObject::GetLightSet()
 // Get parent object of this object in order to define relationships
 //	between icons and their affected objects.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 //sel3dObject* lsetLightSetObject::GetParentObject() const
 //{
 //	return m_pParent;

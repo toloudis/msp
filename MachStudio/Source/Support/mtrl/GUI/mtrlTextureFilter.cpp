@@ -19,7 +19,7 @@
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-mtrlTextureFilter::mtrlTextureFilter(mdlMaterialInfo& i_Data, 
+mtrlTextureFilter::mtrlTextureFilter(mdlMaterialInfo& i_Data,
 				   effTextureFilterData* i_pShaderData,
 				   const fsLocator &i_TextureDir)
 :	mtrlShaderObject(i_TextureDir),
@@ -28,17 +28,17 @@ mtrlTextureFilter::mtrlTextureFilter(mdlMaterialInfo& i_Data,
 {
 	m_Data.m_bEnableMipmap.SetValue(m_pShaderData->m_bEnableMipmap );
 
-	// Create thread-safe proxy as association between the data and the material´s effect data.
+	// Create thread-safe proxy as association between the data and the material's effect data.
 	m_pShaderDataProxy.reset( new gpxEffectTextureFilter(*m_pShaderData) );
 
-	RegisterData(i_TextureDir); 
+	RegisterData(i_TextureDir);
 }
 
 //------------------------------------------------------------------------
 // Set a new directory for the material in order to find the textures.
 // Called when the material has been exported to the material library.
 //------------------------------------------------------------------------
-//virtual 
+//virtual
 void mtrlTextureFilter::UpdateTextureDirectory(const fsLocator &i_TextureDir)
 {
 	mtrlShaderObject::UpdateTextureDirectory(i_TextureDir);
@@ -48,7 +48,7 @@ void mtrlTextureFilter::UpdateTextureDirectory(const fsLocator &i_TextureDir)
 // Get list of used textures in order to support copying them
 // to the material library when exporting.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 void mtrlTextureFilter::GetTextureList(std::vector<fsLocator>& o_TextureList)
 {
 	// no texture to be returned for this object type
@@ -61,7 +61,7 @@ void mtrlTextureFilter::RegisterData(const fsLocator &i_TextureDir)
 	prtyCheckBoxUIInfo* pCBUII = NULL;
 	pCBUII  = new prtyCheckBoxUIInfo(&(m_Data.m_bEnableMipmap), "Texture Filtering", "Enable Mipmapping");
 	AddProperty( pCBUII );
-	
+
 	//
 	m_Data.m_bEnableMipmap.AddCallback(new prtyCallbackWrapper<mtrlTextureFilter>(this, &mtrlTextureFilter::Update));
 }
@@ -78,7 +78,7 @@ void mtrlTextureFilter::Update(prtyProperty *i_pProperty, bool i_bDirty)
 		mtrlOperations::ReloadTextures(texture_data.m_bEnableMipmap);
 	}
 
-	// use proxy to update material´s shader at a thread-safe time
+	// use proxy to update material's shader at a thread-safe time
 	m_pShaderDataProxy->SetFilter(m_Data.m_bEnableMipmap.GetValue());
 }
 

@@ -174,7 +174,7 @@ namespace
 
 	//------------------------------------------------------------------------
 	// If we are writing through a delayed buffer, write the contents
-	//	of the buffer to the file. 
+	//	of the buffer to the file.
 	//------------------------------------------------------------------------
 	void flush_buffer(fsFileStreamImp* io_pImp)
 	{
@@ -248,7 +248,7 @@ fsFileStream::fsFileStream(const fsLocator& i_Locator, AccessType i_DesiredAcces
 	//	fsFileUtil::LocatorToANSIFilename(i_Locator, file_path);
 	//	DBG_LOG("File is NOT begin tracked (" << file_path.c_str() << ")" );
 	//}
-	
+
 	HANDLE new_file = INVALID_HANDLE_VALUE;
 
 	while( true )
@@ -258,7 +258,7 @@ fsFileStream::fsFileStream(const fsLocator& i_Locator, AccessType i_DesiredAcces
 		itString filename;
 		fsFileUtilPAC::LocatorToUnicodeFilename(i_Locator, filename);
 		//DBG_LOG("Creating/Opening UNICODE stream  " << filename);
-	
+
 		if ( filename.GetLength() == 0 )
 		{
 			fsResourceTracker::Remove(i_Locator);		// shouldn't be here?  put where throw is CAUGHT
@@ -314,7 +314,7 @@ fsFileStream::~fsFileStream()
 }
 
 //------------------------------------------------------------------------
-//	Read reads i_NumBytes into the buffer.  If the file is too short 
+//	Read reads i_NumBytes into the buffer.  If the file is too short
 //	to read	i_NumBytes, it will read as many as it can.  The return
 //	value is the number actually read into the o_Buffer.  This function
 //	also advances the file pointer.
@@ -339,7 +339,7 @@ int fsFileStream::Read(int64_t i_NumBytes, void* o_Buffer)
 	int64_t num_left_in_buffer = m_pImp->m_BufferValid - m_pImp->m_BufferLoc;
 	if (i_NumBytes <= num_left_in_buffer)
 	{
-		// We can deliver this request purely with data already in 
+		// We can deliver this request purely with data already in
 		// the buffer.
 		::memcpy(o_Buffer, m_pImp->m_pBuffer+m_pImp->m_BufferLoc, i_NumBytes);
 		m_pImp->m_BufferLoc += i_NumBytes;
@@ -389,7 +389,7 @@ int fsFileStream::Read(int64_t i_NumBytes, void* o_Buffer)
 			if (num_left_in_buffer > 0)
 			{
 				// Copy more from our buffer into the requesting array
-				int amount_to_copy = maFunctions::Lowest(num_left_in_buffer, left_to_read); 
+				int amount_to_copy = maFunctions::Lowest(num_left_in_buffer, left_to_read);
 				::memcpy(output_buffer, m_pImp->m_pBuffer, amount_to_copy);
 				m_pImp->m_BufferLoc += amount_to_copy;
 				num_read += amount_to_copy;
@@ -404,7 +404,7 @@ int fsFileStream::Read(int64_t i_NumBytes, void* o_Buffer)
 }
 
 //------------------------------------------------------------------------
-//	Write writes i_NumBytes from o_Buffer into the file.  The file 
+//	Write writes i_NumBytes from o_Buffer into the file.  The file
 //	pointer will also be advanced.
 //------------------------------------------------------------------------
 void fsFileStream::Write(int64_t i_NumBytes, const void* i_Buffer)
@@ -453,7 +453,7 @@ void fsFileStream::Write(int64_t i_NumBytes, const void* i_Buffer)
 		}
 
 		// Since there was an earlier test for whether the request was
-		// larger than the buffer size, we know we can handle this request 
+		// larger than the buffer size, we know we can handle this request
 		// purely within the memory buffer
 		::memcpy(m_pImp->m_pBuffer+m_pImp->m_BufferLoc, i_Buffer, i_NumBytes);
 		m_pImp->m_BufferLoc += i_NumBytes;
@@ -525,7 +525,7 @@ void fsFileStream::SetFilePos(  FilePosType i_Pos, AccessPointType i_DesiredAcce
 	bool bNeedFileSeek = true;
 	if ((m_pImp->m_pBuffer != NULL) && (move_method != FILE_END))
 	{
-		// Convert both seek methods into a delta from the current positíon
+		// Convert both seek methods into a delta from the current position
 		int64_t delta = (i_DesiredAccessPoint == e_Beginning) ? (i_Pos - m_pImp->m_FilePointer) : i_Pos;
 		if (delta == 0)
 		{
@@ -537,7 +537,7 @@ void fsFileStream::SetFilePos(  FilePosType i_Pos, AccessPointType i_DesiredAcce
 			//static int s_NumAttempts = 0;
 			//static int s_NumFails = 0;
 			//s_NumAttempts++;
-		
+
 			int64_t new_pos = m_pImp->m_BufferLoc + delta;
 			if (new_pos >= 0 && new_pos < m_pImp->m_BufferValid)
 			{
@@ -545,7 +545,7 @@ void fsFileStream::SetFilePos(  FilePosType i_Pos, AccessPointType i_DesiredAcce
 				m_pImp->m_BufferLoc = new_pos;
 				m_pImp->m_FilePointer += delta;
 			}
-			//else 
+			//else
 			//	 s_NumFails++;
 		}
 	}
@@ -559,7 +559,7 @@ void fsFileStream::SetFilePos(  FilePosType i_Pos, AccessPointType i_DesiredAcce
 		// Mark the buffer as invalid
 		m_pImp->m_BufferLoc = m_pImp->m_BufferValid = 0;
 
-		//bga - switching this to GetFileSizeEx in order to handle 
+		//bga - switching this to GetFileSizeEx in order to handle
 		// file sizes greater than 32-bit int can handle.
 		//
 		//DWORD ret_val = INVALID_SET_FILE_POINTER;

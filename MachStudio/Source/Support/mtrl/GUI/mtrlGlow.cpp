@@ -29,11 +29,11 @@
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-mtrlGlow::mtrlGlow(mdlMaterialInfo& i_Data, 
+mtrlGlow::mtrlGlow(mdlMaterialInfo& i_Data,
 				   effGlowData* i_pShaderData,
 				   const fsLocator &i_TextureDir)
 :	mtrlShaderObject(i_TextureDir),
-	m_Material(i_Data), 
+	m_Material(i_Data),
 	m_pShaderData(i_pShaderData)
 {
 	DBG_ASSERT(m_pShaderData != NULL, "mtrlGlow expected effGlowData");
@@ -54,7 +54,7 @@ mtrlGlow::mtrlGlow(mdlMaterialInfo& i_Data,
 
 	m_Data.m_GlowMask.SetValue(tex);
 	m_Data.m_GlowMask.SetRevertValue(tex);
-	
+
 	// Create channels for the properties (this will set the "original value"
 	// for the channels to the value in the material data).
 	this->AddFloatChannel(m_Material.GetMaterialName(), m_Data.m_GlowAmount);
@@ -63,14 +63,14 @@ mtrlGlow::mtrlGlow(mdlMaterialInfo& i_Data,
 	this->AddBooleanChannel(m_Material.GetMaterialName(), m_Data.m_bConstantGlow);
 	this->AddTextureChannel(m_Material.GetMaterialName(), m_Data.m_GlowMask);
 
-	RegisterData(i_TextureDir); 
+	RegisterData(i_TextureDir);
 }
 
 //------------------------------------------------------------------------
 // Set a new directory for the material in order to find the textures.
 // Called when the material has been exported to the material library.
 //------------------------------------------------------------------------
-//virtual 
+//virtual
 void mtrlGlow::UpdateTextureDirectory(const fsLocator &i_TextureDir)
 {
 	mtrlShaderObject::UpdateTextureDirectory(i_TextureDir);
@@ -83,7 +83,7 @@ void mtrlGlow::UpdateTextureDirectory(const fsLocator &i_TextureDir)
 // Get list of used textures in order to support copying them
 // to the material library when exporting.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 void mtrlGlow::GetTextureList(std::vector<fsLocator>& o_TextureList)
 {
 	if (m_Data.m_GlowMask.GetValue().GetNumNames() > 1)
@@ -137,7 +137,7 @@ void mtrlGlow::Update(prtyProperty *i_pProperty, bool i_bDirty)
 		mtrlOperations::SetChunkDataChanged();
 	}
 
-	// use proxy to update material´s shader at a thread-safe time
+	// use proxy to update material's shader at a thread-safe time
 	m_pShaderDataProxy->SetConstantGlow( m_Data.m_bConstantGlow.GetValue() );
 	m_pShaderDataProxy->SetGlowAmount( m_Data.m_GlowAmount.GetValue() );
 	m_pShaderDataProxy->SetGlowScale( maVector4d(m_Data.m_GlowScale.GetValue().GetX(),
@@ -145,7 +145,7 @@ void mtrlGlow::Update(prtyProperty *i_pProperty, bool i_bDirty)
 												m_Data.m_GlowScale.GetValue().GetZ(),
 												1) );
 	m_pShaderDataProxy->SetGlowSize( m_Data.m_GlowSize.GetValue() );
-	 
+
 }
 
 //----------------------------------------------------------------------------
@@ -194,7 +194,7 @@ void mtrlGlow::UpdateMaskTexture(prtyProperty *i_pProperty, bool i_bDirty)
 			callback = prtyTextureFileChooserUIInfo::GetType(prtyTextureFileChooserUIInfo::e_Texture);
 			m_bEnabledRamp = false;
 			m_Data.m_RampData = rmpData();
-			
+
 			m_pEnvironment->SetDiffuseTexture(NULL);
 		}
 
@@ -202,7 +202,7 @@ void mtrlGlow::UpdateMaskTexture(prtyProperty *i_pProperty, bool i_bDirty)
 		m_Data.m_GlowMask.SetValueWithoutNotify(val);
 	}
 	*/
-	
+
 	UpdateTexture(m_Data.m_GlowMask, i_bDirty,
 		m_pShaderData->m_NameGlowMask, m_pShaderData->m_pGlowMask,
 		glow_data.m_NameGlowMask, glow_data.m_pGlowMask);

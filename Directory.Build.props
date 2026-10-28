@@ -43,6 +43,20 @@
     in Release when built with /p:MspGfxProfiling=true. MachStudio's
     -gfxProfile <file.csv> then writes per-pass timings.
 
+    /utf-8: sources are read as UTF-8 and narrow string literals are
+    compiled as UTF-8, in every project. Keep source files UTF-8 (no BOM
+    needed). Visual Studio has no property page setting for it; it shows
+    under C/C++ > Command Line. A project that sets AdditionalOptions must
+    keep %(AdditionalOptions) in it, or it drops this.
+
+    Utf8CodePage.manifest (next to this file) is merged into the manifest
+    of every executable (ConfigurationType Application: MachStudio and
+    the test exes), making UTF-8 the process code page, so narrow
+    strings given to the C runtime and the Win32 "A" functions (file
+    names in particular) are UTF-8. The condition can test
+    ConfigurationType here although projects set it later: MSBuild
+    evaluates every property before any item definition.
+
     vcpkg: every project uses the one manifest next to this file
     (vcpkg.json, vcpkg-configuration.json) and the one install of it,
     vcpkg_installed\ next to this file, the same folder "vcpkg install"
@@ -69,6 +83,18 @@
     <MspBaseConfiguration Condition="$(Configuration.EndsWith(' Qt')) or $(Configuration.EndsWith(' Wx'))">$(Configuration.Substring(0, $([MSBuild]::Subtract($(Configuration.Length), 3))))</MspBaseConfiguration>
     <MspBaseConfiguration Condition="$(Configuration.EndsWith(' RenderNode'))">$(Configuration.Substring(0, $([MSBuild]::Subtract($(Configuration.Length), 11))))</MspBaseConfiguration>
   </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+  <ItemDefinitionGroup Condition="'$(ConfigurationType)' == 'Application'">
+    <Manifest>
+      <AdditionalManifestFiles>$(MSBuildThisFileDirectory)Utf8CodePage.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
+  </ItemDefinitionGroup>
 
   <ItemDefinitionGroup Condition="'$(MspBaseConfiguration)' == 'Debug' or '$(MspGfxProfiling)' == 'true'">
     <ClCompile>

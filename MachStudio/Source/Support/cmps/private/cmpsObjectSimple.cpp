@@ -1,8 +1,8 @@
 /*****************************************************************************
 **	cmpsObjectSimple.cpp
 **
-**	Derived class, represents an element of geometry for a compass part. 
-**	Adds on some convenience functions to the api3dObjectSimple api 
+**	Derived class, represents an element of geometry for a compass part.
+**	Adds on some convenience functions to the api3dObjectSimple api
 **	for setting color states on the compass part.
 **
 **	StudioGPU
@@ -33,7 +33,7 @@ namespace
 // constructor - this object assumes ownership of the arguments.
 //	It will also assign the material to the fragment.
 //--------------------------------------------------------------------
-cmpsObjectSimple::cmpsObjectSimple(g3dFragment* i_pFragment, 
+cmpsObjectSimple::cmpsObjectSimple(g3dFragment* i_pFragment,
 								   matMaterial *i_pMaterial,
 								   cmpsRenderLayer::RenderLayer i_RenderLayer)
 :	m_bActive(true),
@@ -49,7 +49,7 @@ cmpsObjectSimple::cmpsObjectSimple(g3dFragment* i_pFragment,
 //	It will also assign the material to the fragment.
 //--------------------------------------------------------------------
 cmpsObjectSimple::cmpsObjectSimple(const maMatrix4x4 &i_Transform,
-								   g3dFragment* i_pFragment, 
+								   g3dFragment* i_pFragment,
 								   matMaterial *i_pMaterial,
 								   cmpsRenderLayer::RenderLayer i_RenderLayer)
 :	m_bActive(true),
@@ -59,7 +59,7 @@ cmpsObjectSimple::cmpsObjectSimple(const maMatrix4x4 &i_Transform,
 
 	Init(pBaseObj, i_pMaterial, i_RenderLayer);
 }
- 
+
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
@@ -76,13 +76,13 @@ cmpsObjectSimple::~cmpsObjectSimple()
 //--------------------------------------------------------------------
 //void cmpsObjectSimple::AddToScene(int i_Layer)
 //{
-//	// compass manipulators don´t go into scene anymore, they go into
+//	// compass manipulators don't go into scene anymore, they go into
 //	// special icon layers per viewer
 //	api3dScene::AddObject( m_pObject, i_Layer );
 //}
 //void cmpsObjectSimple::RemoveFromScene(int i_Layer)
 //{
-//	// compass manipulators don´t go into scene anymore, they go into
+//	// compass manipulators don't go into scene anymore, they go into
 //	// special icon layers per viewer
 //	api3dScene::RemoveObject( m_pObject, i_Layer );
 //}
@@ -96,7 +96,7 @@ maPoint3d  cmpsObjectSimple::GetPosition() const
 }
 void  cmpsObjectSimple::SetPosition(const maPoint3d &i_Position)
 {
-	// check for changed value so that proxy isn´t always dirty
+	// check for changed value so that proxy isn't always dirty
 	//if (m_pObjectProxy->GetPosition() != i_Position)
 	if ((m_pObjectProxy->GetPosition() - i_Position).LengthSqr() > maConstants::c_fEpsilon)
 		m_pObjectProxy->SetPosition(i_Position);
@@ -111,7 +111,7 @@ maRotation cmpsObjectSimple::GetOrientation() const
 }
 void  cmpsObjectSimple::SetOrientation(const maRotation &i_Rotation)
 {
-	// check for changed value so that proxy isn´t always dirty
+	// check for changed value so that proxy isn't always dirty
 	if (m_pObjectProxy->GetOrientation() != i_Rotation)
 		m_pObjectProxy->SetOrientation(i_Rotation);
 }
@@ -125,7 +125,7 @@ maVector3d cmpsObjectSimple::GetScale() const
 }
 void  cmpsObjectSimple::SetScale(const maVector3d& i_Scale)
 {
-	// check for changed value so that proxy isn´t always dirty
+	// check for changed value so that proxy isn't always dirty
 	if (m_pObjectProxy->GetScale() != i_Scale)
 	{
 		m_pObjectProxy->SetScale(i_Scale);
@@ -137,9 +137,9 @@ void  cmpsObjectSimple::SetScale(const maVector3d& i_Scale)
 //----------------------------------------------------------------------------
 void cmpsObjectSimple::SetRenderable(bool i_Renderable)
 {
-	// check for changed value so that proxy isn´t always dirty
+	// check for changed value so that proxy isn't always dirty
 	if (m_pObjectProxy->GetRenderable() != i_Renderable)
-	{	
+	{
 		m_pObjectProxy->SetRenderable(i_Renderable);
 	}
 }
@@ -266,7 +266,7 @@ void cmpsObjectSimple::DisplayActive(bool i_bActive)
 }
 
 //--------------------------------------------------------------------
-//	SetLayerScale changes the scale of the compass for only a 
+//	SetLayerScale changes the scale of the compass for only a
 // given icon layer (a render panel)
 //--------------------------------------------------------------------
 void  cmpsObjectSimple::SetLayerScale(int i_IconLayerIndex, const maPoint3d& i_Scale)
@@ -279,18 +279,18 @@ maPoint3d cmpsObjectSimple::GetLayerScale(int i_IconLayerIndex) const
 }
 
 //--------------------------------------------------------------------
-//	SetLayerRenderable sets the compass visibility for only a given icon 
+//	SetLayerRenderable sets the compass visibility for only a given icon
 // layer (a render panel)
 //--------------------------------------------------------------------
 void  cmpsObjectSimple::SetLayerRenderable(int i_IconLayerIndex, bool i_bRender)
 {
 	m_pObjectProxy->SetLayerRenderable(i_IconLayerIndex, i_bRender);
 }
-						     
+
 //--------------------------------------------------------------------
 // shared constructor code
 //--------------------------------------------------------------------
-void cmpsObjectSimple::Init(api3dObjectSimple *i_pBaseObj, 
+void cmpsObjectSimple::Init(api3dObjectSimple *i_pBaseObj,
 							matMaterial *i_pMaterial,
 							cmpsRenderLayer::RenderLayer i_RenderLayer)
 {
@@ -305,7 +305,7 @@ void cmpsObjectSimple::Init(api3dObjectSimple *i_pBaseObj,
 
 	// Create proxy to buffer changes to the scene object when multithreading
 	m_pObjectProxy = new gpxIconSet(*m_pObject);
-			
+
 	// Also create a proxy for the phong data so we can set the color safely
 	effSolidData* pData = dynamic_cast<effSolidData*>(i_pMaterial->GetEffectData());
 	if (pData == NULL) {
@@ -313,6 +313,6 @@ void cmpsObjectSimple::Init(api3dObjectSimple *i_pBaseObj,
 		return;
 	}
 	DBG_ASSERT(pData != NULL, "cmpsObjectSimple not using effSolid");
-	m_ColorData = *pData; // Make thread-safe copy of data 
+	m_ColorData = *pData; // Make thread-safe copy of data
 	m_pMaterialProxy = new gpxSolidData(m_ColorData, *pData); // proxy associates the two data structs
 }

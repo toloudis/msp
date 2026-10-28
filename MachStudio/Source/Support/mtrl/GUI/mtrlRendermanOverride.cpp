@@ -30,16 +30,16 @@
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-mtrlRendermanOverride::mtrlRendermanOverride(mdlMaterialInfo& i_Data, 
+mtrlRendermanOverride::mtrlRendermanOverride(mdlMaterialInfo& i_Data,
 				   effRendermanOverrideData* i_pShaderData,
 				   const fsLocator &i_TextureDir)
 :	mtrlShaderObject(i_TextureDir),
-	m_Material(i_Data), 
+	m_Material(i_Data),
 	m_pShaderData(i_pShaderData)
 {
 	DBG_ASSERT(m_pShaderData != NULL, "mtrlRendermanOverride expected effRendermanOverrideData");
 
-	// Create thread-safe proxy for the material´s effect data.
+	// Create thread-safe proxy for the material's effect data.
 	m_pShaderDataProxy.reset( new gpxEffectRendermanOverride(*m_pShaderData) );
 
 	m_Data.m_ParamList.SetValue( m_pShaderData->m_ParamList );
@@ -48,14 +48,14 @@ mtrlRendermanOverride::mtrlRendermanOverride(mdlMaterialInfo& i_Data,
 	m_Data.m_bOverrideShader.SetValue( m_pShaderData->m_bOverrideShader );
 	m_Data.m_bOverrideAttributes.SetValue( m_pShaderData->m_bOverrideAttributes );
 
-	RegisterData(i_TextureDir); 
+	RegisterData(i_TextureDir);
 }
 
 //------------------------------------------------------------------------
 // Set a new directory for the material in order to find the textures.
 // Called when the material has been exported to the material library.
 //------------------------------------------------------------------------
-//virtual 
+//virtual
 void mtrlRendermanOverride::UpdateTextureDirectory(const fsLocator &i_TextureDir)
 {
 }
@@ -64,7 +64,7 @@ void mtrlRendermanOverride::UpdateTextureDirectory(const fsLocator &i_TextureDir
 // Get list of used textures in order to support copying them
 // to the material library when exporting.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 void mtrlRendermanOverride::GetTextureList(std::vector<fsLocator>& o_TextureList)
 {
 }
@@ -75,7 +75,7 @@ void mtrlRendermanOverride::RegisterData(const fsLocator &i_TextureDir)
 {
 	prtyCheckBoxUIInfo * pCBUII;
 	prtyTextBoxUIInfo* pPUII;
-	
+
 	pCBUII = new prtyCheckBoxUIInfo(&(m_Data.m_bOverrideShader), "RenderMan Override", "Override Shader");
 	AddProperty( pCBUII );
 
@@ -113,14 +113,14 @@ void mtrlRendermanOverride::Update(prtyProperty *i_pProperty, bool i_bDirty)
 		set_shader_data(rman_override_data);	// set into material template
 		mtrlOperations::SetChunkDataChanged();
 	}
-	
-	// use proxy to update material´s shader at a thread-safe time
+
+	// use proxy to update material's shader at a thread-safe time
 	m_pShaderDataProxy->SetShaderLoc( m_Data.m_ShaderLocation.GetValue() );
 	m_pShaderDataProxy->SetParamList(  m_Data.m_ParamList.GetValue().c_str() );
 	m_pShaderDataProxy->SetAttributeList(  m_Data.m_AttributeList.GetValue().c_str() );
 	m_pShaderDataProxy->SetOverrideShader( m_Data.m_bOverrideShader.GetValue() );
 	m_pShaderDataProxy->SetOverrideAttributes( m_Data.m_bOverrideAttributes.GetValue() );
-	
+
 }
 
 //----------------------------------------------------------------------------
@@ -129,8 +129,8 @@ void mtrlRendermanOverride::Update(prtyProperty *i_pProperty, bool i_bDirty)
 void mtrlRendermanOverride::set_shader_data(effRendermanOverrideData& i_Data)
 {
 	i_Data.m_ShaderLocation = m_Data.m_ShaderLocation.GetValue();
-	i_Data.m_ParamList = m_Data.m_ParamList.GetValue().c_str();	
-	i_Data.m_AttributeList = m_Data.m_AttributeList.GetValue().c_str();	
+	i_Data.m_ParamList = m_Data.m_ParamList.GetValue().c_str();
+	i_Data.m_AttributeList = m_Data.m_AttributeList.GetValue().c_str();
 	i_Data.m_bOverrideShader = m_Data.m_bOverrideShader.GetValue();
 	i_Data.m_bOverrideAttributes = m_Data.m_bOverrideAttributes.GetValue();
 }

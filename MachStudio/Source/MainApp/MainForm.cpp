@@ -498,7 +498,7 @@
 //
 //	cli::array<Reflection::AssemblyProductAttribute^>^ titles = dynamic_cast<cli::array<Reflection::AssemblyProductAttribute^>^ >(pSRAss->GetCustomAttributes(Reflection::AssemblyProductAttribute::typeid, false));
 //	pstrProduct = ((titles!=nullptr) && (titles->Length>0)) ? titles[0]->Product : gcnew System::String(mnmConstants::c_PRODUCTTM);
-//	pstrProduct = String::Concat(pstrProduct, "™ ");
+//	pstrProduct = String::Concat(pstrProduct, "â„¢ ");
 //	cli::array<Reflection::AssemblyCopyrightAttribute^>^ copyrights = dynamic_cast<cli::array<Reflection::AssemblyCopyrightAttribute^>^ >(pSRAss->GetCustomAttributes(Reflection::AssemblyCopyrightAttribute::typeid, false));
 //	pstrCopyright = ((copyrights!=nullptr) && (copyrights->Length>0)) ? copyrights[0]->Copyright : gcnew System::String(mnmConstants::c_COPYRIGHT);
 //	cli::array<Reflection::AssemblyCompanyAttribute^>^ Companys = dynamic_cast<cli::array<Reflection::AssemblyCompanyAttribute^>^ >(pSRAss->GetCustomAttributes(Reflection::AssemblyCompanyAttribute::typeid, false));
