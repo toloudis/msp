@@ -102,6 +102,7 @@
     <ClCompile Include="gltf\gltfAnimReadTest.cpp" />
     <ClCompile Include="gltf\gltfAnimTracksTest.cpp" />
     <ClCompile Include="iscn\iscnRefLedgerTest.cpp" />
+    <ClCompile Include="iscn\iscnSceneChoiceTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ietPlatform.hpp" />

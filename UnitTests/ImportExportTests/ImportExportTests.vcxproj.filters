@@ -15,6 +15,9 @@
     <ClCompile Include="iscn\iscnRefLedgerTest.cpp">
       <Filter>iscn</Filter>
     </ClCompile>
+    <ClCompile Include="iscn\iscnSceneChoiceTest.cpp">
+      <Filter>iscn</Filter>
+    </ClCompile>
     <ClCompile Include="ImportExportTestsMain.cpp">
       <Filter>Support</Filter>
     </ClCompile>

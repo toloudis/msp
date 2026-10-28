@@ -23,6 +23,7 @@
 #endif 
 
 #include <map>
+#include <vector>
 
 
 //============================================================================
@@ -59,6 +60,10 @@ class ImportDialog : public ImportDialogBase
 		void fillintree();
 		void update_ImportDataList();
 		void clear_data();
+		void load_scene(const fsLocator& i_ImportLoc);
+		void fillintree_scene();
+		void add_scene_items(wxTreeItemId i_ParentItem, int i_Parent);
+		std::vector<bool> chosen_scene_objects() const;
 
 		//--------------------------------------------------------------------
 		// event handling

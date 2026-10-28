@@ -8,11 +8,14 @@
 \****************************************************************************/
 #include "Features/Import/qtGUI/ImportDialog.hpp"
 
+#include "Features/Import/ImportDialogUtil.hpp"
 #include "Features/Import/ImportUtil.hpp"
+#include "Features/Import/imptSceneAppend.hpp"
 
 #include "Core/Dbg/dbgMsg.hpp"
 #include "Core/Fs/fsFileUtil.hpp"
 #include "Core/It/itStringUtil.hpp"
+#include "ImportExport/iscn/iscnSceneChoice.hpp"
 #include "Tool/doc/docSingleDocumentMgr.hpp"
 #include "Tool/doc/docSingleTypeMgr.hpp"
 #include "ToolUIQt/tqc/tqcFilePicker.hpp"
@@ -41,7 +44,7 @@ ImportDialog::ImportDialog( QWidget* parent, ImportData& i_Data )
 	QGroupBox* pBox = new QGroupBox( "Root Scene/Shot file", this );
 	QVBoxLayout* sbSizer2 = new QVBoxLayout( pBox );
 	m_filePicker1 = new tqcFilePicker( pBox );
-	m_filePicker1->SetFilter( itString(L"Scene files (*.mab)|*.mab") );
+	m_filePicker1->SetFilter( itString(ImportDialogUtil::FileFilter().c_str()) );
 	sbSizer2->addWidget( m_filePicker1 );
 	m_checkBox_AllowDupes = new QCheckBox( "Import Duplicates by Renaming", pBox );
 	m_checkBox_AllowDupes->setEnabled( false );
@@ -71,8 +74,81 @@ ImportDialog::ImportDialog( QWidget* parent, ImportData& i_Data )
 //--------------------------------------------------------------------
 ImportDialog::~ImportDialog()
 {
+	clear_file();
+}
+
+//--------------------------------------------------------------------
+// Forget the previously picked file
+//--------------------------------------------------------------------
+void ImportDialog::clear_file()
+{
 	m_Data.m_Chunks.clear();
+	m_Data.m_Scene = iscnSceneDesc();
 	m_pDoc.reset();
+	m_treeCtrl_Import->clear();
+}
+
+//--------------------------------------------------------------------
+// Read a file another format's importer reads; m_Data.m_Scene stays
+// empty if it can't be read (ReadFile has told the user)
+//--------------------------------------------------------------------
+void ImportDialog::load_scene(const fsLocator& i_ImportLoc)
+{
+	m_Data.m_LastFile = i_ImportLoc;
+	if (!imptSceneAppend::ReadFile( i_ImportLoc, m_Data.m_Scene ))
+		m_Data.m_Scene = iscnSceneDesc();
+}
+
+//--------------------------------------------------------------------
+// The file's objects as a tree, all checked; each item holds its
+// object's index. A group's check state follows its children, and a
+// partly checked group is brought in (iscnSceneChoice::WithAncestors).
+//--------------------------------------------------------------------
+void ImportDialog::fillintree_scene()
+{
+	m_treeCtrl_Import->clear();
+	add_scene_items( NULL, -1 );
+	m_treeCtrl_Import->expandAll();
+}
+
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+void ImportDialog::add_scene_items(QTreeWidgetItem* i_pParentItem, int i_Parent)
+{
+	for (int index : iscnSceneChoice::Children( m_Data.m_Scene, i_Parent ))
+	{
+		const QStringList text( tqtQString(iscnSceneChoice::ItemLabel( m_Data.m_Scene.m_Objects[index] )) );
+		QTreeWidgetItem* item = i_pParentItem ? new QTreeWidgetItem( i_pParentItem, text )
+											  : new QTreeWidgetItem( m_treeCtrl_Import, text );
+		item->setData( 0, Qt::UserRole, index );
+		item->setFlags( item->flags() | Qt::ItemIsUserCheckable );
+		item->setCheckState( 0, Qt::Checked );
+		add_scene_items( item, index );
+		if (item->childCount() > 0)
+			item->setFlags( item->flags() | Qt::ItemIsAutoTristate );
+	}
+}
+
+//--------------------------------------------------------------------
+// Per object: is its item checked or partly checked?
+//--------------------------------------------------------------------
+std::vector<bool> ImportDialog::chosen_scene_objects() const
+{
+	std::vector<bool> chosen( m_Data.m_Scene.m_Objects.size(), false );
+	std::vector<QTreeWidgetItem*> items;
+	for (int i = 0; i < m_treeCtrl_Import->topLevelItemCount(); ++i)
+		items.push_back( m_treeCtrl_Import->topLevelItem(i) );
+	while (!items.empty())
+	{
+		QTreeWidgetItem* item = items.back();
+		items.pop_back();
+		const int index = item->data( 0, Qt::UserRole ).toInt();
+		if (index >= 0 && index < (int)chosen.size())
+			chosen[index] = item->checkState(0) != Qt::Unchecked;
+		for (int i = 0; i < item->childCount(); ++i)
+			items.push_back( item->child(i) );
+	}
+	return chosen;
 }
 
 //--------------------------------------------------------------------
@@ -184,10 +260,19 @@ void ImportDialog::update_ImportDataList()
 void ImportDialog::filePicker_FileChanged()
 {
 	const fsLocator& file_loc = m_filePicker1->GetFullpath();
+	clear_file();
 	if ( file_loc.GetNumNames() > 0 )
 	{
-		load_document(file_loc);
-		fillintree();
+		if (imptSceneAppend::IsSceneFile(file_loc))
+		{
+			load_scene(file_loc);
+			fillintree_scene();
+		}
+		else
+		{
+			load_document(file_loc);
+			fillintree();
+		}
 	}
 }
 
@@ -195,7 +280,13 @@ void ImportDialog::filePicker_FileChanged()
 //--------------------------------------------------------------------
 void ImportDialog::buttonImport_Click()
 {
-	if (m_pDoc != NULL)
+	if (m_pDoc == NULL && !m_Data.m_Scene.m_Objects.empty())
+	{
+		// Add the checked objects (and their groups) to the scene
+		imptSceneAppend::AppendScene( m_Data.m_LastFile, m_Data.m_Scene, chosen_scene_objects() );
+		this->accept();
+	}
+	else if (m_pDoc != NULL)
 	{
 		// Update our m_Data structure based on the state of the check boxes
 		update_ImportDataList();

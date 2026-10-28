@@ -1,7 +1,9 @@
 /*****************************************************************************
 **	ImportDialog.hpp
 **
-**	Dialog for importing parts of another scene, written in Qt
+**	Dialog for importing parts of another scene, written in Qt: a .mab's
+**	chunks and items, or the object tree of a file another format's
+**	importer reads (iscnSceneImport)
 **
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
@@ -22,12 +24,14 @@
 #endif
 
 #include <map>
+#include <vector>
 
 //============================================================================
 //============================================================================
 class docDocument;
 class QCheckBox;
 class QTreeWidget;
+class QTreeWidgetItem;
 class tqcFilePicker;
 
 #ifdef USE_QT
@@ -53,6 +57,11 @@ class ImportDialog : public QDialog
 		void load_document(const fsLocator& i_ImportLoc);
 		void fillintree();
 		void update_ImportDataList();
+		void clear_file();
+		void load_scene(const fsLocator& i_ImportLoc);
+		void fillintree_scene();
+		void add_scene_items(QTreeWidgetItem* i_pParentItem, int i_Parent);
+		std::vector<bool> chosen_scene_objects() const;
 
 		//--------------------------------------------------------------------
 		// event handling

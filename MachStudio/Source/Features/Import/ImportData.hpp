@@ -19,6 +19,9 @@
 #ifndef DOC_DOCUMENT_HPP
 #include "Tool/doc/docDocument.hpp"
 #endif
+#ifndef ISCN_SCENEDESC_HPP
+#include "ImportExport/iscn/iscnSceneDesc.hpp"
+#endif
 
 
 
@@ -59,4 +62,8 @@ public:
 	docDocument::LoadFlags m_LoadMethod;
 
 	std::vector<ImportChunkListData> m_Chunks;
+
+	// the objects of a file another format's importer reads
+	// (iscnSceneImport); empty for a .mab, which fills m_Chunks
+	iscnSceneDesc m_Scene;
 };

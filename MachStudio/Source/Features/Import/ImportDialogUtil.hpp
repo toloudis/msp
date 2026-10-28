@@ -16,6 +16,8 @@
 #include "Features/Import/ImportData.hpp"
 #endif
 
+#include <string>
+
 
 namespace ImportDialogUtil
 {
@@ -28,5 +30,11 @@ namespace ImportDialogUtil
 	//  Hide - the dialog is going away, update the data
 	//------------------------------------------------------------------------
 	void  Hide();
+
+	//------------------------------------------------------------------------
+	//  The dialog's file filter: .mab and every scene file format
+	//	("Scene files (*.mab;<patterns>)|*.mab;<patterns>")
+	//------------------------------------------------------------------------
+	std::string FileFilter();
 
 }	// end of namespace

@@ -121,6 +121,9 @@
     <ClCompile Include="iscn\private\iscnRefLedger.cpp">
       <Filter>iscn\private</Filter>
     </ClCompile>
+    <ClCompile Include="iscn\private\iscnSceneChoice.cpp">
+      <Filter>iscn\private</Filter>
+    </ClCompile>
     <ClCompile Include="gltf\import\private\gltfMeshImport.cpp">
       <Filter>gltf\import\private</Filter>
     </ClCompile>
@@ -251,6 +254,9 @@
       <Filter>iscn</Filter>
     </ClInclude>
     <ClInclude Include="iscn\iscnRefLedger.hpp">
+      <Filter>iscn</Filter>
+    </ClInclude>
+    <ClInclude Include="iscn\iscnSceneChoice.hpp">
       <Filter>iscn</Filter>
     </ClInclude>
     <ClInclude Include="gltf\import\private\gltfMeshImport.hpp">

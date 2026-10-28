@@ -6,11 +6,14 @@
 \****************************************************************************/
 #include "Features/Import/wxGUI/ImportDialog.hpp"
 
+#include "Features/Import/ImportDialogUtil.hpp"
 #include "Features/Import/ImportUtil.hpp"
+#include "Features/Import/imptSceneAppend.hpp"
 #include "Support/gsup/gsupTreeCtrlUtil.hpp"
 
 #include "Core/Fs/fsFileUtil.hpp"
 #include "Core/It/itStringUtil.hpp"
+#include "ImportExport/iscn/iscnSceneChoice.hpp"
 #include "Tool/doc/docSingleDocumentMgr.hpp"
 #include "Tool/doc/docSingleTypeMgr.hpp"
 #include "Tool/gui/guiMenuMgr.hpp"
@@ -80,6 +83,31 @@ namespace
 			i_pTreeCtrl->SetItemImage(i_Parent, e_MixChecked);
 	}
 
+	//------------------------------------------------------------------------
+	// Set an item and all its descendants
+	//------------------------------------------------------------------------
+	void set_subtree_checked(wxTreeCtrl* i_pTreeCtrl, wxTreeItemId i_Node, bool i_bChecked)
+	{
+		set_item_checked(i_pTreeCtrl, i_Node, i_bChecked);
+		wxTreeItemIdValue cookie;
+		for (wxTreeItemId id = i_pTreeCtrl->GetFirstChild(i_Node, cookie);
+			 id.IsOk();
+			 id = i_pTreeCtrl->GetNextChild(i_Node, cookie))
+		{
+			set_subtree_checked(i_pTreeCtrl, id, i_bChecked);
+		}
+	}
+
+	//------------------------------------------------------------------------
+	// A scene file object's index, held by its tree item
+	//------------------------------------------------------------------------
+	class SceneItemData : public wxTreeItemData
+	{
+	public:
+		explicit SceneItemData(int i_Index) : m_Index(i_Index) {}
+		int m_Index;
+	};
+
 }	// end of namespace
 
 
@@ -102,6 +130,19 @@ ImportDialog::ImportDialog( wxWindow* parent, ImportData& i_Data )
     }
     m_treeCtrl_Import->AssignImageList(pCheckImages); // tree ctrl takes ownership
 
+	// wxFilePickerCtrl can't change its wildcard once made, so the generated
+	// picker is replaced by one with every scene file format's patterns
+	// (it is m_filePicker1 again, which the base disconnects when it goes)
+	wxFilePickerCtrl* pOldPicker = m_filePicker1;
+	pOldPicker->Disconnect( wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler( ImportDialogBase::filePicker_FileChanged ), NULL, this );
+	const std::string filter = ImportDialogUtil::FileFilter();
+	m_filePicker1 = new wxFilePickerCtrl( pOldPicker->GetParent(), wxID_ANY, wxEmptyString, wxT("Select a scene file to import"),
+										  wxString(filter.c_str(), wxConvUTF8), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
+	GetSizer()->Replace( pOldPicker, m_filePicker1, true );
+	pOldPicker->Destroy();
+	m_filePicker1->Connect( wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler( ImportDialogBase::filePicker_FileChanged ), NULL, this );
+	Layout();
+
 	//
 	m_checkBox_AllowDupes->Enable(false);
 }
@@ -111,6 +152,7 @@ ImportDialog::ImportDialog( wxWindow* parent, ImportData& i_Data )
 ImportDialog::~ImportDialog()
 {
 	m_Data.m_Chunks.clear();
+	m_Data.m_Scene = iscnSceneDesc();
 	m_pDoc.reset();
 }
 
@@ -246,6 +288,74 @@ void ImportDialog::update_ImportDataList()
 //--------------------------------------------------------------------
 void ImportDialog::clear_data()
 {
+	m_Data.m_Chunks.clear();
+	m_Data.m_Scene = iscnSceneDesc();
+	m_pDoc.reset();
+	m_treeCtrl_Import->DeleteAllItems();
+}
+
+//------------------------------------------------------------------------
+// Read a file another format's importer reads; m_Data.m_Scene stays
+// empty if it can't be read (ReadFile has told the user)
+//------------------------------------------------------------------------
+void ImportDialog::load_scene(const fsLocator& i_ImportLoc)
+{
+	m_Data.m_LastFile = i_ImportLoc;
+	if (!imptSceneAppend::ReadFile( i_ImportLoc, m_Data.m_Scene ))
+		m_Data.m_Scene = iscnSceneDesc();
+}
+
+//------------------------------------------------------------------------
+// The file's objects as a tree, all checked; each item holds its
+// object's index. A group's check state follows its children, and a
+// mixed group is brought in (iscnSceneChoice::WithAncestors).
+//------------------------------------------------------------------------
+void ImportDialog::fillintree_scene()
+{
+	m_treeCtrl_Import->DeleteAllItems();
+	wxTreeItemId root = m_treeCtrl_Import->AddRoot(L"Root");
+	add_scene_items(root, -1);
+	m_treeCtrl_Import->ExpandAll();
+}
+
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
+void ImportDialog::add_scene_items(wxTreeItemId i_ParentItem, int i_Parent)
+{
+	for (int index : iscnSceneChoice::Children( m_Data.m_Scene, i_Parent ))
+	{
+		const std::string label = iscnSceneChoice::ItemLabel( m_Data.m_Scene.m_Objects[index] );
+		wxTreeItemId item = m_treeCtrl_Import->AppendItem( i_ParentItem, wxString(label.c_str(), wxConvUTF8),
+														   e_Checked, -1, new SceneItemData(index) );
+		add_scene_items( item, index );
+	}
+}
+
+//------------------------------------------------------------------------
+// Per object: is its item checked or mixed?
+//------------------------------------------------------------------------
+std::vector<bool> ImportDialog::chosen_scene_objects() const
+{
+	std::vector<bool> chosen( m_Data.m_Scene.m_Objects.size(), false );
+	std::vector<wxTreeItemId> items( 1, m_treeCtrl_Import->GetRootItem() );
+	while (!items.empty())
+	{
+		const wxTreeItemId item = items.back();
+		items.pop_back();
+		if (!item.IsOk())
+			continue;
+		const SceneItemData* pData = dynamic_cast<const SceneItemData*>(m_treeCtrl_Import->GetItemData(item));
+		if (pData && pData->m_Index >= 0 && pData->m_Index < (int)chosen.size())
+			chosen[pData->m_Index] = get_item_checked(m_treeCtrl_Import, item);
+		wxTreeItemIdValue cookie;
+		for (wxTreeItemId id = m_treeCtrl_Import->GetFirstChild(item, cookie);
+			 id.IsOk();
+			 id = m_treeCtrl_Import->GetNextChild(item, cookie))
+		{
+			items.push_back(id);
+		}
+	}
+	return chosen;
 }
 
 //--------------------------------------------------------------------
@@ -255,7 +365,13 @@ void ImportDialog::filePicker_FileChanged( wxFileDirPickerEvent& i_Event )
 {
 	fsLocator file_loc;
 	fsFileUtil::UnicodeStringToLocator(itString((const char*)i_Event.GetPath().c_str()), file_loc);
-	if ( file_loc.GetNumNames() > 0 )
+	clear_data();
+	if ( file_loc.GetNumNames() > 0 && imptSceneAppend::IsSceneFile(file_loc) )
+	{
+		load_scene(file_loc);
+		fillintree_scene();
+	}
+	else if ( file_loc.GetNumNames() > 0 )
 	{
 		load_document(file_loc);
 		fillintree();
@@ -279,22 +395,16 @@ void ImportDialog::treeCtrl_LeftMouseDown( wxMouseEvent& i_Event )
 
 			// Clicked on check box for item
 			bool bNewCheckState = (!get_item_checked(m_treeCtrl_Import, pick_item));
-			set_item_checked(m_treeCtrl_Import, pick_item, bNewCheckState);
+			set_subtree_checked(m_treeCtrl_Import, pick_item, bNewCheckState);
 
-			if (m_treeCtrl_Import->ItemHasChildren(pick_item))
+			// a scene file's tree is deeper than a .mab's two levels: every
+			// ancestor (not the hidden root) follows its children
+			const wxTreeItemId root = m_treeCtrl_Import->GetRootItem();
+			for (wxTreeItemId parent = m_treeCtrl_Import->GetItemParent(pick_item);
+				 parent.IsOk() && parent != root;
+				 parent = m_treeCtrl_Import->GetItemParent(parent))
 			{
-				//set checked state of child nodes
-				wxTreeItemIdValue cookie;
-				for (wxTreeItemId id = m_treeCtrl_Import->GetFirstChild(pick_item, cookie);
-					 id.IsOk(); 
-					 id = m_treeCtrl_Import->GetNextChild(pick_item, cookie))
-				{	
-					set_item_checked(m_treeCtrl_Import, id, bNewCheckState);
-				}
-			}
-			else
-			{
-				update_parent_checked_state( m_treeCtrl_Import, m_treeCtrl_Import->GetItemParent(pick_item) );
+				update_parent_checked_state( m_treeCtrl_Import, parent );
 			}
 
 			bSkip = false;
@@ -307,7 +417,13 @@ void ImportDialog::treeCtrl_LeftMouseDown( wxMouseEvent& i_Event )
 //----------------------------------------------------------------------------
 void ImportDialog::buttonImport_Click( wxCommandEvent& i_Event )
 {
-	if (m_pDoc != NULL)
+	if (m_pDoc == NULL && !m_Data.m_Scene.m_Objects.empty())
+	{
+		// Add the checked objects (and their groups) to the scene
+		imptSceneAppend::AppendScene( m_Data.m_LastFile, m_Data.m_Scene, chosen_scene_objects() );
+		this->EndModal( wxOK );
+	}
+	else if (m_pDoc != NULL)
 	{
 		// Update our m_Data structure based on the state of the check boxes
 		update_ImportDataList();

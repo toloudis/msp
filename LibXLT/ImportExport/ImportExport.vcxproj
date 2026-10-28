@@ -127,6 +127,7 @@
     <ClCompile Include="gltf\import\private\gltfSceneImport.cpp" />
     <ClCompile Include="iscn\private\iscnSceneImport.cpp" />
     <ClCompile Include="iscn\private\iscnRefLedger.cpp" />
+    <ClCompile Include="iscn\private\iscnSceneChoice.cpp" />
     <ClCompile Include="gltf\import\private\gltfMeshImport.cpp" />
     <ClCompile Include="gltf\import\private\gltfModelImport.cpp" />
     <ClCompile Include="gltf\import\private\gltfSdkManager.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="iscn\iscnSceneDesc.hpp" />
     <ClInclude Include="iscn\iscnSceneImport.hpp" />
     <ClInclude Include="iscn\iscnRefLedger.hpp" />
+    <ClInclude Include="iscn\iscnSceneChoice.hpp" />
     <ClInclude Include="gltf\import\private\gltfMeshImport.hpp" />
     <ClInclude Include="gltf\import\private\gltfModelImport.hpp" />
     <ClInclude Include="gltf\import\private\gltfSdkManager.hpp" />

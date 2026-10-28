@@ -37,7 +37,9 @@
 **	- Names are the objects' names, made unique with "_<n>" when an object
 **	  of that name exists. Each object remembers the file and its identity
 **	  in it (m_SourceFile / m_SourceIdentity).
-**	- The whole file is one undo step.
+**	- The whole file (or the chosen part of it) is one undo step.
+**	- A partial append (the Import dialog) adds the chosen objects and
+**	  their ancestor groups; the rest of the file is skipped.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -72,6 +74,9 @@
 #ifndef UNDO_UNDOMGR_HPP
 #include "Core/undo/undoUndoMgr.hpp"
 #endif
+#ifndef ISCN_SCENECHOICE_HPP
+#include "ImportExport/iscn/iscnSceneChoice.hpp"
+#endif
 #ifndef ISCN_SCENEDESC_HPP
 #include "ImportExport/iscn/iscnSceneDesc.hpp"
 #endif
@@ -85,6 +90,7 @@
 #include "Graphics/Mat/matTextureMgr.hpp"
 #endif
 
+#include <algorithm>
 #include <functional>
 #include <string>
 #include <vector>
@@ -156,31 +162,51 @@ namespace imptSceneAppend
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
+	bool ReadFile(const fsLocator& i_File, iscnSceneDesc& o_Scene)
+	{
+		if (iscnSceneImport::Read(i_File, imptSceneBuild::SceneSettings(), o_Scene))
+			return true;
+		const std::string msg = "Could not load the scene file " + itStringUtil::GetStdString(i_File.GetLastName());
+		DBG_ERROR(msg);
+		guiMessageBox::Show(msg.c_str(), "Geometry Load Error");
+		return false;
+	}
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	bool AppendFile(const fsLocator& i_File)
 	{
+		iscnSceneDesc scene;
+		if (!ReadFile(i_File, scene))
+			return false;
+		AppendScene(i_File, scene, std::vector<bool>(scene.m_Objects.size(), true));
+		return true;
+	}
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	bool AppendScene(const fsLocator& i_File, const iscnSceneDesc& i_Scene, const std::vector<bool>& i_Chosen)
+	{
+		const std::vector<bool> chosen = iscnSceneChoice::WithAncestors(i_Scene, i_Chosen);
+		if (std::find(chosen.begin(), chosen.end(), true) == chosen.end())
+			return false;
+
 		DBG_TRACE("Texture load diagnostics: importing " << i_File);
 		matTextureMgr::LoadDiagnostics texture_diagnostics;
 		const std::string file_name = itStringUtil::GetStdString(i_File.GetLastName());
-
-		iscnSceneDesc scene;
-		if (!iscnSceneImport::Read(i_File, imptSceneBuild::SceneSettings(), scene))
-		{
-			const std::string msg = "Could not load the scene file " + file_name;
-			DBG_ERROR(msg);
-			guiMessageBox::Show(msg.c_str(), "Geometry Load Error");
-			return false;
-		}
 
 		UndoBlock block("Add " + file_name);
 		// Rebuild trees and property controls once, using the final selection.
 		cmmObjectDialogUtil::DeferUpdates defer_object_updates;
 		cmmSystemDialogUtil::DeferUpdates defer_updates;
 
-		// the name each object got, empty if it couldn't be added
-		const std::vector<iscnObjectDesc>& objects = scene.m_Objects;
+		// the name each object got, empty if it wasn't chosen or couldn't be added
+		const std::vector<iscnObjectDesc>& objects = i_Scene.m_Objects;
 		std::vector<nameString> names(objects.size());
 		for (size_t i = 0; i < objects.size(); ++i)
 		{
+			if (!chosen[i])
+				continue;
 			const iscnObjectDesc& object = objects[i];
 			const nameString name = unique_name(object.m_Name);
 			switch (imptSceneBuild::SystemFor(object.m_Kind))
