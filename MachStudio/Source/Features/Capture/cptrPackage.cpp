@@ -288,6 +288,17 @@ namespace cptrPackage
 			DBG_ERROR("File does not exist: " << i_SceneFile);
 			mnmAppUtil::SetErrorCode(mnmErrorCodes::c_SceneFileNotFound); // could not load scene
 		}
+		else if (docSingleTypeMgr::IsForeignFile(i_SceneFile))
+		{
+			// rendering a scene file of another format (glTF) is deferred:
+			// it would open as an untitled scene, which can't be rendered
+			DBG_ERROR("-render takes a .mab scene: open " << i_SceneFile << " in MachStudio and save it as a .mab");
+			if (!modeModeMgr::IsEmpty())
+			{
+				modeModeMgr::Clear();
+			}
+			mnmAppUtil::SetErrorCode(mnmErrorCodes::c_CouldNotLoadScene); // could not load scene
+		}
 		else
 		{
 			//

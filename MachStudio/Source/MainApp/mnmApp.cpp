@@ -604,7 +604,8 @@ void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 			if ( fsFileUtil::FileExists( scenefile ) )
 			{	
 				fsFileUtil::LocatorToANSIFilename(scenefile, typeCheck);
-				if (typeCheck.find(".mab") != std::string::npos)
+				if (typeCheck.find(".mab") != std::string::npos
+					|| docSingleTypeMgr::IsForeignFile(scenefile))
 				{
 					//DBG_TRACE( "   Opening Scene " << token );
 					mnpPackage::LaunchFile( scenefile );

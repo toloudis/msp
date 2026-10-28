@@ -15,6 +15,7 @@
 #include "Core/Fs/fsLocator.hpp"
 #include "Core/It/itStringUtil.hpp"
 #include "Tool/tma3d/tma3dRenderView.hpp"
+#include "Tool/doc/docSingleTypeMgr.hpp"
 #include "Tool/gui/guiSingleDocHandler.hpp"
 #include "Systems/Character/Undo/chtrOperations.hpp"
 
@@ -100,7 +101,8 @@ bool qtMainDropTarget::OnDropFiles(int x, int y, const QStringList& filenames)
 			m_pRenderView->PanelToRenderPixel(render_x, render_y);
 			mbrwPaintUtil::PasteMaterialFile( m_pRenderView, render_x, render_y, file_loc);
 		}
-		if(itStringUtil::Equal(ext, itString("mab")))
+		// a scene, or a scene file of another format (glTF), opened as a new scene
+		if(itStringUtil::Equal(ext, itString("mab")) || docSingleTypeMgr::IsForeignFile(file_loc))
 		{
 			guiSingleDocHandler::Open(file_loc, false);
 		}

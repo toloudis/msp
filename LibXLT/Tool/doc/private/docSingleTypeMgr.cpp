@@ -31,10 +31,16 @@ namespace docSingleTypeMgr
 
 		fsLocator l_MRUFile(itString("RecentFiles.cfg"));
 		std::string l_Filter;
+		// the pieces of l_Filter GetOpenFilter adds the foreign opener's patterns to
+		std::string l_FilterHead, l_FilterDescription, l_FilterExt;
 		docDocumentType l_DocumentType;
 		std::list<fsLocator> l_MRUDocs;
 
 		int l_MaxFileList = 10;
+
+		std::function<bool (const fsLocator&)> l_IsForeign;
+		std::function<bool (const fsLocator&)> l_OpenForeign;
+		std::string l_ForeignPatterns;
 
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
@@ -198,6 +204,9 @@ namespace docSingleTypeMgr
 		// Create filter format like:
 		// "My Files (*.ext)|*.ext|All Files (*.*)|*.*"
 		l_Filter = filter + descrip + "(*" + ext + ")|*" + ext + "|All Files (*.*)|*.*";
+		l_FilterHead = filter;
+		l_FilterDescription = descrip;
+		l_FilterExt = ext;
 
 	}
 
@@ -207,6 +216,36 @@ namespace docSingleTypeMgr
 	std::string  GetFilter()
 	{
 		return l_Filter;
+	}
+
+	//--------------------------------------------------------------------
+	//  The foreign opener (see .hpp)
+	//--------------------------------------------------------------------
+	void SetForeignOpener(std::function<bool (const fsLocator&)> i_IsForeign,
+						  std::function<bool (const fsLocator&)> i_Open,
+						  const std::string& i_Patterns)
+	{
+		l_IsForeign = i_IsForeign;
+		l_OpenForeign = i_Open;
+		l_ForeignPatterns = i_Patterns;
+	}
+
+	bool IsForeignFile(const fsLocator& i_File)
+	{
+		return l_IsForeign && l_OpenForeign && l_IsForeign(i_File);
+	}
+
+	bool OpenForeignFile(const fsLocator& i_File)
+	{
+		return l_OpenForeign(i_File);
+	}
+
+	std::string GetOpenFilter()
+	{
+		if (!l_OpenForeign || l_ForeignPatterns.empty())
+			return l_Filter;
+		const std::string patterns = "*" + l_FilterExt + ";" + l_ForeignPatterns;
+		return l_FilterHead + l_FilterDescription + "(" + patterns + ")|" + patterns + "|All Files (*.*)|*.*";
 	}
 
 

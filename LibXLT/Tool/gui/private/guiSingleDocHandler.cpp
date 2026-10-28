@@ -41,8 +41,10 @@ namespace guiSingleDocHandler
 		//--------------------------------------------------------------------------
 		void safe_load_document(const fsLocator &i_Loc, bool i_bSkipErrorDialog = false)
 		{
-		
-		gfPaths::SetPath(gfPaths::e_MabPath, i_Loc);
+		// a foreign file opens as a new, untitled document (no .mab path, as after New)
+		const bool bForeign = docSingleTypeMgr::IsForeignFile(i_Loc);
+		if (!bForeign)
+			gfPaths::SetPath(gfPaths::e_MabPath, i_Loc);
 
 		#ifndef _DEBUG
 			//Setup loading text for the new file, truncates if filename length is too long
@@ -86,9 +88,13 @@ namespace guiSingleDocHandler
 			//
 			try
 			{
-				bNewerVersion = docSingleDocumentMgr::LoadDocument(i_Loc);
+				bool bOpened = true;
+				if (bForeign)
+					bOpened = docSingleDocumentMgr::OpenForeignFile(i_Loc);
+				else
+					bNewerVersion = docSingleDocumentMgr::LoadDocument(i_Loc);
 
-				if ( l_bRememberLastDirectory )
+				if ( bOpened && l_bRememberLastDirectory )
 				{
 					fsLocator file_loc = i_Loc;
 					file_loc.Pop();						// pop off the filename
@@ -233,7 +239,7 @@ namespace guiSingleDocHandler
 	void Open(bool i_bSkipErrorDialog)
 	{
 		
-		std::string filter = docSingleTypeMgr::GetFilter();
+		std::string filter = docSingleTypeMgr::GetOpenFilter();
 		fsLocator initial_dir;
 		fsLocator file_loc;
 		//fsFileUtil::UnicodeStringToLocator( itString("."), initial_dir );'

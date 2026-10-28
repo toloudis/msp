@@ -115,6 +115,32 @@ namespace docSingleDocumentMgr
 	}
 
 	//--------------------------------------------------------------------
+	//  Call this on File->Open of a foreign file (see .hpp)
+	//--------------------------------------------------------------------
+	bool OpenForeignFile( const fsLocator &i_Locator )
+	{
+		NewDocument();
+		try
+		{
+			if (!docSingleTypeMgr::OpenForeignFile(i_Locator))
+			{
+				NewDocument();
+				return false;
+			}
+		}
+		catch(...)
+		{
+			l_Document->Clear();
+			throw;
+		}
+
+		// a new scene: undoing what the opener added would empty it
+		undoUndoMgr::Commit();
+		docSingleTypeMgr::AddToMRU(i_Locator);
+		return true;
+	}
+
+	//--------------------------------------------------------------------
 	//  Call this on File->Save
 	//--------------------------------------------------------------------
 	void  SaveDocument()

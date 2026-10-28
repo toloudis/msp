@@ -480,7 +480,7 @@ const char* mainCommandLine::HelpText()
 {
 	return R"(Usage:
   MachStudio [options]
-  MachStudio <scene.mab | character.chx | character.gxb>
+  MachStudio <scene.mab | scene.gltf | scene.glb | character.chx | character.gxb>
 
 Every flag may start with '-' or '/'. A value with spaces must be in double
 quotes. Flags run in the order given; the capture settings (-cap*) change
@@ -489,10 +489,12 @@ a scene replaces them with the scene's own).
 
 If the first thing on the line isn't a known flag, the whole line is taken
 as a file to open, as when a file is double-clicked: a scene (.mab) is
-opened, a character (.chx/.gxb) is added to a new scene in its project.
+opened, a glTF (.gltf/.glb) is opened as a new, untitled scene, a
+character (.chx/.gxb) is added to a new scene in its project.
 
 Scenes
-  -file <scene.mab>          open a scene
+  -file <scene>              open a scene (.mab), or a glTF (.gltf/.glb)
+                             as a new, untitled scene
   -lastfile                  open the most recently used scene
   -new                       start a new, empty scene
 
@@ -500,7 +502,8 @@ Rendering
   -render <scene.mab>        open a scene and render it with its render
                              (capture) settings; MachStudio exits when the
                              render is done. The usual way to use the
-                             RenderNode build.
+                             RenderNode build. Not a glTF: open it and
+                             save it as a .mab first.
   -batch <batchfile>         render every scene listed in a render batch
                              file, one after another
   -capFormat <format>        output format: PNG, TGA, BMP, JPG, DDS, TIF,

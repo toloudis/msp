@@ -58,6 +58,8 @@
 #include "Systems/PtLt/Undo/ptltOperations.hpp"
 #include "Systems/Transforms/Data/trfnScriptData.hpp"
 #include "Systems/Transforms/Undo/trfnOperations.hpp"
+#include "Features/RenderPanels/rpnOperations.hpp"
+#include "Support/cams/camsCameraMgr.hpp"
 
 #ifndef DBG_MSG_HPP
 #include "Core/dbg/dbgMsg.hpp"
@@ -82,6 +84,9 @@
 #endif
 #ifndef ISCN_SCENEIMPORT_HPP
 #include "ImportExport/iscn/iscnSceneImport.hpp"
+#endif
+#ifndef DOC_SINGLETYPEMGR_HPP
+#include "Tool/doc/docSingleTypeMgr.hpp"
 #endif
 #ifndef GUI_MESSAGEBOX_HPP
 #include "Tool/gui/guiMessageBox.hpp"
@@ -144,6 +149,7 @@ namespace imptSceneAppend
 	void Init()
 	{
 		chtrOperations::SetFileAppender(&append_if_scene, iscnSceneImport::GetFilePatterns());
+		docSingleTypeMgr::SetForeignOpener(&IsSceneFile, &OpenFile, iscnSceneImport::GetFilePatterns());
 	}
 
 	//------------------------------------------------------------------------
@@ -151,6 +157,8 @@ namespace imptSceneAppend
 	void CleanUp() throw()
 	{
 		chtrOperations::SetFileAppender(std::function<bool (const fsLocator&)>(), std::string());
+		docSingleTypeMgr::SetForeignOpener(std::function<bool (const fsLocator&)>(),
+										   std::function<bool (const fsLocator&)>(), std::string());
 	}
 
 	//------------------------------------------------------------------------
@@ -185,7 +193,8 @@ namespace imptSceneAppend
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	bool AppendScene(const fsLocator& i_File, const iscnSceneDesc& i_Scene, const std::vector<bool>& i_Chosen)
+	bool AppendScene(const fsLocator& i_File, const iscnSceneDesc& i_Scene, const std::vector<bool>& i_Chosen,
+					 std::vector<nameString>* o_Names)
 	{
 		const std::vector<bool> chosen = iscnSceneChoice::WithAncestors(i_Scene, i_Chosen);
 		if (std::find(chosen.begin(), chosen.end(), true) == chosen.end())
@@ -252,6 +261,38 @@ namespace imptSceneAppend
 				imptSceneRefs::Remember(sourced);
 		}
 		imptSceneRefs::StampFile(i_File);
+		if (o_Names)
+			*o_Names = names;
+		return true;
+	}
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	bool OpenFile(const fsLocator& i_File)
+	{
+		iscnSceneDesc scene;
+		if (!ReadFile(i_File, scene))
+			return false;
+		std::vector<nameString> names;
+		AppendScene(i_File, scene, std::vector<bool>(scene.m_Objects.size(), true), &names);
+
+		// the first camera in the file's order is the one the view looks through
+		std::string view_camera;
+		for (size_t i = 0; i < scene.m_Objects.size() && i < names.size(); ++i)
+		{
+			if (scene.m_Objects[i].m_Kind != iscnObjectDesc::e_Camera || names[i].IsEmpty())
+				continue;
+			const int index = camsCameraMgr::GetIndexForName(names[i]);
+			if (index >= 0)
+			{
+				rpnOperations::ChangeCamera(camsCameraMgr::GetCameraProxy(index), names[i].GetString());
+				camsCameraMgr::SelectCamera(index);
+				view_camera = names[i].GetString();
+			}
+			break;
+		}
+		DBG_LOG("Opened " << i_File << " as a new scene; "
+				<< (view_camera.empty() ? std::string("no cameras") : "view camera " + view_camera));
 		return true;
 	}
 }

@@ -12,6 +12,10 @@
 **	user chose (AppendScene); a chosen object brings its ancestor groups
 **	(iscnSceneChoice::WithAncestors), so its keys, in its parent's space,
 **	and its rebuilds (imptSceneRefs) stay right.
+**	File > Open (and drag-and-drop, -file, the recent files) opens a scene
+**	file as a new, untitled scene through the document manager's foreign
+**	opener (docSingleTypeMgr::SetForeignOpener, installed by Init), which
+**	calls OpenFile.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -23,6 +27,7 @@
 #include <vector>
 
 class fsLocator;
+class nameString;
 struct iscnSceneDesc;
 
 //============================================================================
@@ -30,7 +35,7 @@ struct iscnSceneDesc;
 namespace imptSceneAppend
 {
 	//------------------------------------------------------------------------
-	// Install and remove the Objects dialog hook
+	// Install and remove the Objects dialog hook and the foreign opener
 	//------------------------------------------------------------------------
 	void Init();
 	void CleanUp() throw();
@@ -48,13 +53,23 @@ namespace imptSceneAppend
 	//------------------------------------------------------------------------
 	// Add the chosen objects of i_Scene (read from i_File; one entry per
 	// object) and their ancestors, as one undo step; false, with no undo
-	// step, if nothing is chosen
+	// step, if nothing is chosen. o_Names, if given, gets the name each
+	// object got (one per object; empty if it wasn't added).
 	//------------------------------------------------------------------------
-	bool AppendScene(const fsLocator& i_File, const iscnSceneDesc& i_Scene, const std::vector<bool>& i_Chosen);
+	bool AppendScene(const fsLocator& i_File, const iscnSceneDesc& i_Scene, const std::vector<bool>& i_Chosen,
+					 std::vector<nameString>* o_Names = nullptr);
 
 	//------------------------------------------------------------------------
 	// Add every object of the scene file; false (after telling the user)
 	// if it can't be read
 	//------------------------------------------------------------------------
 	bool AppendFile(const fsLocator& i_File);
+
+	//------------------------------------------------------------------------
+	// File > Open of a scene file: read it and add every object to the new,
+	// empty scene the document manager has just made, then have the active
+	// view look through the file's first camera, if it has one; false
+	// (after telling the user) if it can't be read
+	//------------------------------------------------------------------------
+	bool OpenFile(const fsLocator& i_File);
 }

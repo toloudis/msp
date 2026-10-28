@@ -52,6 +52,16 @@ namespace docSingleDocumentMgr
 	bool LoadDocument( const fsLocator &i_Locator, docDocument::LoadFlags i_LoadMethod = docDocument::e_New_Doc );
 
 	//--------------------------------------------------------------------
+	//  Call this on File->Open of a foreign file
+	//	(docSingleTypeMgr::IsForeignFile), after checking NeedSave(): a
+	//	new, untitled document filled by the foreign opener, with no undo
+	//	history, added to the MRU. Returns false if the opener couldn't
+	//	(it has told the user). On false or a throw the document is left
+	//	new and empty; the exception is passed on.
+	//--------------------------------------------------------------------
+	bool OpenForeignFile( const fsLocator &i_Locator );
+
+	//--------------------------------------------------------------------
 	//  Call this on File->Save
 	//--------------------------------------------------------------------
 	void  SaveDocument();
