@@ -4,6 +4,7 @@ MachStudio/Source/.vs
 LibXLT/bin/
 UnitTests/bin/
 *.vcxproj.user
+__pycache__
 vcpkg_installed/
 graphify-out/
 LibXLT/GraphicsDX11/Fx/private/Generated/
