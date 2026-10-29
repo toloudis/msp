@@ -1,6 +1,6 @@
 #include "tga.h"
 
-#include "Core/it/itString.hpp"
+#include <string>
 
 #include <string.h>
 #include <ostream>
@@ -45,7 +45,7 @@ uint32_t* flip(uint32_t* in, int w, int h)
 
 /* read or write headers */
 /* you may set rgbe_header_info to null if you want to */
-int TGA_Read(const itString& filePath, FILE *fp, int *width, int *height, uint32_t** o_data)
+int TGA_Read(const std::string& filePath, FILE *fp, int *width, int *height, uint32_t** o_data)
 {
 	TgaHeader header; 
 	TgaFooter footer; 

@@ -13,9 +13,7 @@
 #endif
 #define IN_DEVICE_HPP
 
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 
 class inDevice
 {
@@ -54,15 +52,15 @@ public:
 	//	GetDeviceName returns the name of the device, for example, 
 	//	"Microsoft SideWinder Pro"
 	//========================================================================
-	const itString& GetDeviceName() const;
+	const std::string& GetDeviceName() const;
 
 	//========================================================================
 	//	GetDeviceName returns the name of the device, for example, 
 	//	"Microsoft SideWinder Pro"
 	//========================================================================
-	void SetDeviceName(itString& i_DeviceName);
+	void SetDeviceName(std::string& i_DeviceName);
 
 private:
 	bool m_Enabled;
-	itString m_DeviceName;
+	std::string m_DeviceName;
 };

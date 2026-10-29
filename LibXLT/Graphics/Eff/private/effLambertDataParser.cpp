@@ -75,9 +75,9 @@ void effLambertDataParser::Read(chReader& i_Reader,
 	o_Shader.AddParam(new effParamColor("g_ambient", "g_ambient", data.m_ColorAmbient));
 	o_Shader.AddParam(new effParamColor("g_diffuse", "g_diffuse", data.m_ColorDiffuse));
 	o_Shader.AddParam(new effParamFloat("g_transparency", "g_transparency", data.m_Transparency));
-	o_Shader.AddParam(new effParamTexture("diffuseMap", "diffuseMap", itString(data.m_NameDiffuse.c_str())));
-	o_Shader.AddParam(new effParamTexture("normalMap", "normalMap", itString(data.m_NameNormalMap.c_str())));
-	o_Shader.AddParam(new effParamTexture("transparencyMap", "transparencyMap", itString(data.m_NameTransparencyMap.c_str())));
+	o_Shader.AddParam(new effParamTexture("diffuseMap", "diffuseMap", data.m_NameDiffuse));
+	o_Shader.AddParam(new effParamTexture("normalMap", "normalMap", data.m_NameNormalMap));
+	o_Shader.AddParam(new effParamTexture("transparencyMap", "transparencyMap", data.m_NameTransparencyMap));
 }
 
 //----------------------------------------------------------------------------

@@ -10,7 +10,7 @@
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsResourceFinder.hpp"
-#include "Core/it/itString.hpp"
+#include <string>
 #include "Graphics/mat/matTexture.hpp"
 #include "Graphics/mat/matTextureMgr.hpp"
 
@@ -148,7 +148,7 @@ void effOcclusionData::ReloadTextures(const fsLocator& i_TextureDirectory)
 		{
 			matTextureMgr::SetSkipAllTextures(false);
 		}
-		matTexture* loadedTex = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_TextureName.c_str()));
+		matTexture* loadedTex = matTextureMgr::LoadTexture(i_TextureDirectory, m_TextureName);
 		if (s_bSkipTextureOverride && skip)
 		{
 			matTextureMgr::SetSkipAllTextures(true);
@@ -181,7 +181,7 @@ void effOcclusionData::ReloadTextures(const fsResourceFinder& i_TextureFinder)
 		{
 			matTextureMgr::SetSkipAllTextures(false);
 		}
-		matTexture* loadedTex = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_TextureName.c_str()));
+		matTexture* loadedTex = matTextureMgr::LoadTexture(i_TextureFinder, m_TextureName);
 		if (s_bSkipTextureOverride && skip)
 		{
 			matTextureMgr::SetSkipAllTextures(true);

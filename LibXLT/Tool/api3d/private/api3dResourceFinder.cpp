@@ -26,16 +26,16 @@ api3dResourceFinder::api3dResourceFinder(const fsLocator &i_Directory)
 //	into o_FoundLocator.
 //----------------------------------------------------------------------------
 //virtual
-bool api3dResourceFinder::FindResource( const itString& i_FileName,
+bool api3dResourceFinder::FindResource( const std::string& i_FileName,
 					fsLocator& o_FoundLocator) const
 {
 	o_FoundLocator = m_RootDirectory;
 
-	if (   i_FileName.HasSubString(itString(".jpg"))
-		|| i_FileName.HasSubString(itString(".bmp"))
-		|| i_FileName.HasSubString(itString(".scm"))
-		|| i_FileName.HasSubString(itString(".iff"))
-		|| i_FileName.HasSubString(itString(".dds")) )
+	if (   (i_FileName.find(std::string(".jpg")) != std::string::npos)
+		|| (i_FileName.find(std::string(".bmp")) != std::string::npos)
+		|| (i_FileName.find(std::string(".scm")) != std::string::npos)
+		|| (i_FileName.find(std::string(".iff")) != std::string::npos)
+		|| (i_FileName.find(std::string(".dds")) != std::string::npos) )
 	{
 		o_FoundLocator.Push( gfPaths::GetSubPath(gfPaths::e_Textures) );
 	}
@@ -56,7 +56,7 @@ bool api3dResourceFinder::FindResource( const itString& i_FileName,
 //	some implementations.
 //----------------------------------------------------------------------------
 //virtual
-bool api3dResourceFinder::FindResource(const itString& i_FileName,
+bool api3dResourceFinder::FindResource(const std::string& i_FileName,
 					const fsLocator& i_AskingLocator,
 					fsLocator& o_FoundLocator) const
 {

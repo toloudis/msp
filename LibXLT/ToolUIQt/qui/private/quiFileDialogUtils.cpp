@@ -31,17 +31,17 @@ namespace
 	//---------------------------------------------------------------------------
 	QString locator_to_qstring(const fsLocator& i_Locator)
 	{
-		itString path;
+		std::string path;
 		fsFileUtil::LocatorToUnicodeString( i_Locator, path );
-		return QString::fromWCharArray(path.GetString());
+		return QString::fromStdString(path);
 	}
 
 	//---------------------------------------------------------------------------
 	//---------------------------------------------------------------------------
 	void qstring_to_locator(const QString& i_Path, fsLocator& o_Locator)
 	{
-		std::wstring path = QDir::toNativeSeparators(i_Path).toStdWString();
-		fsFileUtil::UnicodeStringToLocator(itString(path.c_str()), o_Locator);
+		std::string path = QDir::toNativeSeparators(i_Path).toStdString();
+		fsFileUtil::UnicodeStringToLocator(path, o_Locator);
 	}
 }
 

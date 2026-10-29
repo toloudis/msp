@@ -14,6 +14,7 @@
 #define GVK_VKDSURFACE_HPP
 
 #include <volk.h>
+#include <string>
 
 namespace gvk
 {
@@ -26,5 +27,6 @@ namespace gvk
 	//	Native window queries the swap chain code needs.
 	void vkdWindowClientSize(void* i_NativeWindow, int& o_Width, int& o_Height);
 	bool vkdWindowIsOpen(void* i_NativeWindow);
-	void vkdSetWindowTitle(void* i_NativeWindow, const wchar_t* i_Title);
+	//	i_Title is UTF-8.
+	void vkdSetWindowTitle(void* i_NativeWindow, const std::string& i_Title);
 }

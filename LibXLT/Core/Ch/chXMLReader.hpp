@@ -108,6 +108,7 @@ class chXMLReader : public chReader
 		virtual void ReadItString(std::string& o_Val);
 
 		using chReader::Read;
+		using chReader::ReadItString;
 
 		//--------------------------------------------------------------------
 		//	Read in an envAppVersion structure

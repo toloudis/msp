@@ -41,9 +41,9 @@ namespace
 			
 		// Read in a single itString with path separators and then 
 		// split into locator
-		itString savefilename;
+		std::string savefilename;
 		fsLocator texture_locator;
-		chChunkParserUtil::Read( i_Reader, savefilename );
+		chChunkParserUtil::ReadItString( i_Reader, savefilename );
 		fsFileUtil::UnicodeStringToLocator( savefilename, texture_locator );
 
 		prtyTextureFileData val;
@@ -72,7 +72,7 @@ namespace
 		//chChunkParserUtil::Write(o_Writer, i_Info.m_FirstTextureFileName);
 		// Convert array of itStrings to a single itString with
 		// path separators in order to write to file.
-		itString savefilename;
+		std::string savefilename;
 		fsFileUtil::LocatorToUnicodeString( i_Info.m_FirstTextureFileName.GetValue(), savefilename );
 		chChunkParserUtil::Write( o_Writer, savefilename );
 

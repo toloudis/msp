@@ -93,21 +93,21 @@ void ResourceTrackerDialog::update_tree_resources(const fsResourceTrackerData& i
 	//
 	m_treeCtrl_resources->DeleteAllItems();
 	fsLocator scenefile = docSingleDocumentMgr::GetFilename();
-	itString scenefilestring;
+	std::string scenefilestring;
 	fsFileUtil::LocatorToUnicodeString(scenefile, scenefilestring);
-	m_treeCtrl_resources->AddRoot(scenefilestring.GetString());
+	m_treeCtrl_resources->AddRoot(wxString::FromUTF8(scenefilestring));
 
 	fsLocator assetfile;
 	std::set<fsLocator>::const_iterator it;
 	for (it = file_paths.begin(); it != file_paths.end(); ++it)
 	{
 		assetfile = (*it);
-		itString assetfile_string;
+		std::string assetfile_string;
 		fsFileUtil::LocatorToUnicodeString(assetfile, assetfile_string);
 
 		if (assetfile.GetNumNames() > 0)
 			wxTreeItemId node_id = m_treeCtrl_resources->AppendItem(m_treeCtrl_resources->GetRootItem(),
-																	assetfile_string.GetString());
+																	wxString::FromUTF8(assetfile_string));
 	}
 
 	//	expand the tree
@@ -121,9 +121,9 @@ void ResourceTrackerDialog::update_tree_hierarchy(const fsResourceTrackerData& i
 	std::stack<wxTreeItemId> parents;
 	m_treeCtrl_hierarchy->DeleteAllItems();
 	fsLocator scenefile = docSingleDocumentMgr::GetFilename();
-	itString scenefilestring;
+	std::string scenefilestring;
 	fsFileUtil::LocatorToUnicodeString(scenefile, scenefilestring);
-	m_treeCtrl_hierarchy->AddRoot(scenefilestring.GetString());
+	m_treeCtrl_hierarchy->AddRoot(wxString::FromUTF8(scenefilestring));
 
 	//
 	//DBG_TRACE("=-- RESOURCES --=");
@@ -149,12 +149,12 @@ void ResourceTrackerDialog::update_tree_hierarchy(const fsResourceTrackerData& i
 		}
 
 		//	add the item to the tree
-		itString assetfile_string;
+		std::string assetfile_string;
 		fsFileUtil::LocatorToUnicodeString(i_ResourceTrackerData.m_Resources[i].GetFilePath(), assetfile_string);
-		if (assetfile_string.GetLength() > 0)
+		if (assetfile_string.size() > 0)
 		{
 			node_id = m_treeCtrl_hierarchy->AppendItem(parents.top(),
-														assetfile_string.GetString());
+														wxString::FromUTF8(assetfile_string));
 		}
 		else
 		{

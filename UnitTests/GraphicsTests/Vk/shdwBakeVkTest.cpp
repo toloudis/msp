@@ -244,7 +244,7 @@ namespace
 		}
 
 		fsLocator locator;
-		fsFileUtil::UnicodeStringToLocator(itString(out.wstring().c_str()), locator);
+		fsFileUtil::UnicodeStringToLocator(out.u8string(), locator);
 		std::map<const g3dFragment*, std::string> names;
 		result.m_Count = g3dBake::Init(pfd, &builder.Scene(), locator, 1.25f, builder.Camera(), true,
 									   i_Case.m_Format, i_Case.m_Res, i_Case.m_TextureReduce);

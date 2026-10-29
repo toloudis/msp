@@ -183,12 +183,6 @@ void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, const fsLocator& i
 
 	XMLWriter::m_pWriter->WriteElement(std::string(i_KeyName), i_Value);
 }
-void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, const itString& i_Value)
-{
-	DBG_ASSERT(XMLWriter::m_pWriter != NULL, "Must Open() the Writer");
-
-	XMLWriter::m_pWriter->WriteElement(std::string(i_KeyName), std::string(i_Value));
-}
 void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, const maFloatRGBA& i_Value)
 {
 	DBG_ASSERT(XMLWriter::m_pWriter != NULL, "Must Open() the Writer");

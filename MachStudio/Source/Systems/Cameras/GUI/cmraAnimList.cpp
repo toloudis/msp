@@ -15,11 +15,11 @@
 //============================================================================
 namespace
 {
-	const itString c_FileTypeExtensions(".cam");
+	const std::string c_FileTypeExtensions(".cam");
 
 	fsLocator l_AppDir;
-	itString l_SystemDirName; 
-	itString l_SceneSubDirName;
+	std::string l_SystemDirName; 
+	std::string l_SceneSubDirName;
 
 } // end of anonymous namespace
 
@@ -29,7 +29,7 @@ namespace
 //		i_SystemDirName		- the name of the directory for this system
 //		i_SubDirName		- the sub-dir to look for extensions (data, model,...)
 //------------------------------------------------------------------------
-void cmraAnimList::Init( const itString& i_SystemDirName, const itString& i_SceneSubDirName )
+void cmraAnimList::Init( const std::string& i_SystemDirName, const std::string& i_SceneSubDirName )
 {
 	l_SystemDirName = i_SystemDirName; 
 	l_SceneSubDirName = i_SceneSubDirName;
@@ -53,7 +53,7 @@ void cmraAnimList::SetAppDirectory(const fsLocator &i_Dir)
 //------------------------------------------------------------------------
 // system directory name
 //------------------------------------------------------------------------
-itString cmraAnimList::GetSystemDirName()
+std::string cmraAnimList::GetSystemDirName()
 {
 	return l_SystemDirName;
 }

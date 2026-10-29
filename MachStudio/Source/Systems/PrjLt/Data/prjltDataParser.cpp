@@ -70,15 +70,15 @@ namespace
 				//
 				fsysFileList file_list;
 				prjltTextureList::BuildFileList(file_list);
-				itString tex_fname = tex_loc.GetLastName();
+				std::string tex_fname = tex_loc.GetLastName();
 
 				//bga - Old file formats relied on the texture manager
 				// promoting "bmp" files to "dds" files. I am just 
 				// going to hack in this particular switch that was
 				// common because it was the default value in really
 				// old files.
-				if (tex_fname == itString("Projection.bmp"))
-					tex_fname = itString("Projection.dds");
+				if (tex_fname == "Projection.bmp")
+					tex_fname = std::string("Projection.dds");
 
 				if (file_list.FindFilePath(tex_fname, tex_loc))
 					tex_loc.Push(tex_fname);

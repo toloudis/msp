@@ -89,11 +89,11 @@ bool qtMainDropTarget::OnDropFiles(int x, int y, const QStringList& filenames)
 	if (filenames.size() == 1)
 	{
 		fsLocator file_loc;
-		fsFileUtil::UnicodeStringToLocator( itString(filenames[0].toStdWString().c_str()), file_loc );
-		itString filename = file_loc.GetLastName();
-		itString ext;
-		filename.GetExtension( ext );
-		if (itStringUtil::Equal(ext, itString("mtl")))
+		fsFileUtil::UnicodeStringToLocator( filenames[0].toStdString(), file_loc );
+		std::string filename = file_loc.GetLastName();
+		std::string ext;
+		itStringUtil::GetExtension(filename,  ext );
+		if (itStringUtil::Equal(ext, std::string("mtl")))
 		{
 			// convert the panel position to a pixel in the rendered image
 			int render_x = x;
@@ -102,11 +102,11 @@ bool qtMainDropTarget::OnDropFiles(int x, int y, const QStringList& filenames)
 			mbrwPaintUtil::PasteMaterialFile( m_pRenderView, render_x, render_y, file_loc);
 		}
 		// a scene, or a scene file of another format (glTF), opened as a new scene
-		if(itStringUtil::Equal(ext, itString("mab")) || docSingleTypeMgr::IsForeignFile(file_loc))
+		if(itStringUtil::Equal(ext, std::string("mab")) || docSingleTypeMgr::IsForeignFile(file_loc))
 		{
 			guiSingleDocHandler::Open(file_loc, false);
 		}
-		if(itStringUtil::Equal(ext, itString("gxb")))
+		if(itStringUtil::Equal(ext, std::string("gxb")))
 		{
 			chtrOperations::AddObject(chtrScriptData(file_loc));
 		}

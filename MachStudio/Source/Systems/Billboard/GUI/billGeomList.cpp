@@ -18,7 +18,7 @@
 // Expand from filename into full locator searching in directory tree.
 // Returns true if found.
 //------------------------------------------------------------------------
-bool billGeomList::FindFile(const itString& i_Filename, fsLocator& o_Locator)
+bool billGeomList::FindFile(const std::string& i_Filename, fsLocator& o_Locator)
 {
 	fsysFileList file_list;
 	billGeomList::BuildFileList(file_list);

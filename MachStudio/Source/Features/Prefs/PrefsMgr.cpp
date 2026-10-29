@@ -242,7 +242,7 @@ namespace PrefsMgr
 			//------------------------------------------------------------
 			virtual prtyObject* ResolveName(std::string &i_PropertyObjectName)
 			{
-				if (i_PropertyObjectName == std::string("Preferences"))
+				if (i_PropertyObjectName == "Preferences")
 				{
 					return l_pPrefsObject;
 				}
@@ -266,7 +266,7 @@ namespace PrefsMgr
 								   int& o_HeightReduce) const
 			{
 				// Make sure font for 3d window is not reduced
-				if (i_Locator.GetLastName() == itString(mnmConstants::c_ViewerFontName))
+				if (i_Locator.GetLastName() == std::string(mnmConstants::c_ViewerFontName))
 					o_WidthReduce = o_HeightReduce = 0;
 				else
 					o_WidthReduce = o_HeightReduce = PrefsMgr::Data().m_TextureReduce.GetValue();

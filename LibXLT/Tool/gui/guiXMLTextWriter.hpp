@@ -17,9 +17,6 @@
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
 #ifndef MA_FLOATRGBA_HPP
 #include "Core/ma/maFloatRGBA.hpp"
 #endif
@@ -91,7 +88,6 @@ public:
 	static void WriteElement(const char* i_KeyName, const char * i_Value);
 	static void WriteElement(const char* i_KeyName, const std::string& i_Value);
 	static void WriteElement(const char* i_KeyName, const fsLocator& i_Value);
-	static void WriteElement(const char* i_KeyName, const itString& i_Value);
 	static void WriteElement(const char* i_KeyName, const maFloatRGBA& i_Value);
 };
 
@@ -153,6 +149,5 @@ public:
 	virtual void WriteElement(const char* i_KeyName, const char * i_Value) = 0;
 	virtual void WriteElement(const char* i_KeyName, const std::string& i_Value) = 0;
 	virtual void WriteElement(const char* i_KeyName, const fsLocator& i_Value) = 0;
-	virtual void WriteElement(const char* i_KeyName, const itString& i_Value) = 0;
 	virtual void WriteElement(const char* i_KeyName, const maFloatRGBA& i_Value) = 0;
 };

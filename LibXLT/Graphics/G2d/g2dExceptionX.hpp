@@ -15,9 +15,7 @@
 #ifndef ENV_EXCEPTIONX_HPP
 #include "Core/env/envExceptionX.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 
 
 //============================================================================
@@ -67,7 +65,7 @@ class g2dUnknownFontX : public envExceptionX
 
 		//------------------------------------------------------------------------
 		//------------------------------------------------------------------------
-		g2dUnknownFontX(const itString& i_Name);
+		g2dUnknownFontX(const std::string& i_Name);
 
 		//--------------------------------------------------------------------
 		// Returns error message string
@@ -77,10 +75,10 @@ class g2dUnknownFontX : public envExceptionX
 		//------------------------------------------------------------------------
 		//	GetName returns the name of the font which couldn't be found
 		//------------------------------------------------------------------------
-		const itString& GetName() const;
+		const std::string& GetName() const;
 
 	private:
-		itString m_Name;
+		std::string m_Name;
 };
 
 

@@ -7,8 +7,8 @@
 
 #include <stdio.h>
 #include <iosfwd>
+#include <string>
 
-class itString;
 
 
 // TGA pixel formats
@@ -58,7 +58,7 @@ class TgaFooter
 
 /* read or write pixels */
 /* can read or write pixels in chunks of any size including single pixels*/
-int TGA_Read(const itString& filePath, FILE *fp, int *width, int *height, uint32_t** data);
+int TGA_Read(const std::string& filePath, FILE *fp, int *width, int *height, uint32_t** data);
 
 /* write 32bits rgba uncompressed tga file */
 /* input data is a 32bits rgba array */

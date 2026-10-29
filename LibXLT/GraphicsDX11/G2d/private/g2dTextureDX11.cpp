@@ -10,6 +10,9 @@
 #include "Graphics/g2d/g2dExceptionX.hpp"
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
 #include "GraphicsDX11/g2d/private/g2dWindowDrawUtilDX11.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/Dbg/dbgMsg.hpp"
+#endif
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------

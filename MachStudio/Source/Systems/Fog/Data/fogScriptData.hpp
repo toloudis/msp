@@ -10,9 +10,7 @@
 #endif
 #define FOG_SCRIPTDATA_HPP
 
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 #ifndef MA_POINT3D_HPP
 #include "Core/ma/maPoint3d.hpp"
 #endif

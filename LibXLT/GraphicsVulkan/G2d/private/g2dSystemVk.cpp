@@ -14,9 +14,7 @@
 #ifndef APP_APPLICATION_HPP
 #include "Core/App/appApplication.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/It/itString.hpp"
-#endif
+#include <string>
 #ifndef DBG_MSG_HPP
 #include "Core/dbg/dbgMsg.hpp"
 #endif
@@ -100,7 +98,7 @@ namespace gvk
 
 	g2dWindow* g2dSystemVk::CreateSubWindow(int i_Width, int i_Height, int i_X, int i_Y)
 	{
-		itString title("");
+		std::string title("");
 		void* handle = appApplication::CreateSubWindow(i_Width, i_Height, i_X, i_Y, title);
 		g2dWindow* window = new g2dWindowVk(m_Device, handle, true, i_Width, i_Height, m_bHeadless);
 		m_Windows.push_back(window);

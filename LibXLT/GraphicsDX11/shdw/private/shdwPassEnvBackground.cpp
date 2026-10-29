@@ -70,7 +70,7 @@ shdwPassEnvBackground::shdwPassEnvBackground(g2dRenderTarget* i_pRenderTarget,
 	if (!l_EnvBgMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/EnvBackground.fx"), matShaderMgr::GetSpecialEffect("EnvBackground.fx"));
+		p->SetShaderName(std::string("Special/EnvBackground.fx"), matShaderMgr::GetSpecialEffect("EnvBackground.fx"));
 		l_EnvBgMat.SetShaderParams(p);
 	}
 }

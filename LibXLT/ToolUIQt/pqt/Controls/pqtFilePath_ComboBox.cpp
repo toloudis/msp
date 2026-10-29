@@ -159,9 +159,9 @@ void pqtFilePath_ComboBox::SetValueIntoControl(const fsLocator& i_Value)
 	if (index < 0)
 	{
 		// not one of the choices (an old or custom file): show its path
-		itString label;
+		std::string label;
 		fsFileUtil::LocatorToUnicodeString(i_Value, label);
-		m_pActualControl->addItem(QString::fromWCharArray(label.GetString()));
+		m_pActualControl->addItem(QString::fromStdString(label));
 		index = m_pActualControl->count() - 1;
 		m_Values.push_back(i_Value);
 	}

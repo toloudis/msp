@@ -124,9 +124,9 @@ namespace
 	bool l_bRemovedSelectionBox = false;
 	int l_ErrorCode = 1;
 	float m_camera_percentage = 0.0;
-	itString m_camera_label;
-	itString m_cameras_label;
-	itString m_scenes_label;
+	std::string m_camera_label;
+	std::string m_cameras_label;
+	std::string m_scenes_label;
 	float m_scenes_percentage;
 
 	bool l_bDoneFirstPass = false;
@@ -314,8 +314,8 @@ void cptrModeRender::Initialize()
 			&& data.m_bBatchSkipDialog.GetValue())
 		{
 			// show the message on stats log
-			itString s("Error: No output file specified. Skip Scene ");
-			s += itString(data.m_CurrentSceneFilename.GetString().c_str());
+			std::string s("Error: No output file specified. Skip Scene ");
+			s += data.m_CurrentSceneFilename.GetString();
 			cptrRenderStatsDialogUtil::AddStatsMessage(s);
 			cptrRenderStatsDialogUtil::Newline();
 		}
@@ -349,9 +349,9 @@ void cptrModeRender::Initialize()
 			DBG_ERROR("Cannot render the scene " << data.m_CurrentSceneFilename.GetString().c_str() << ".  There are no cameras created." );
 
 			// show the message on stats log
-			itString s("Cannot render the scene ");
-			s += itString(data.m_CurrentSceneFilename.GetString().c_str());
-			s += itString(".  There are no cameras created.");
+			std::string s("Cannot render the scene ");
+			s += data.m_CurrentSceneFilename.GetString();
+			s += std::string(".  There are no cameras created.");
 			cptrRenderStatsDialogUtil::AddStatsMessage(s);
 			cptrRenderStatsDialogUtil::Newline();
 		}
@@ -416,7 +416,7 @@ void cptrModeRender::Initialize()
 	std::string numberstr(oss.str());
 
 
-	itString it_number(numberstr.c_str());
+	std::string it_number(numberstr.c_str());
 	fsLocator resource_name;
 	resource_name.Push(it_number);
 	//resource_name.Push(itString(L"C:"));
@@ -763,9 +763,9 @@ void cptrModeRender::EndStateInitCaptures()
 			DBG_ERROR("Cannot render the scene " << data.m_CurrentSceneFilename.GetString().c_str() << ".  Sampling settings too high - please use jitter or reduce the number of samples." );
 
 			// show the message on stats log
-			itString s("Cannot render the scene ");
-			s += itString(data.m_CurrentSceneFilename.GetString().c_str());
-			s += itString(".  Sampling settings too high - please use jitter or reduce the number of samples.");
+			std::string s("Cannot render the scene ");
+			s += data.m_CurrentSceneFilename.GetString();
+			s += std::string(".  Sampling settings too high - please use jitter or reduce the number of samples.");
 			cptrRenderStatsDialogUtil::AddStatsMessage(s);
 			cptrRenderStatsDialogUtil::Newline();
 		}
@@ -858,7 +858,7 @@ void cptrModeRender::EndStateInitCaptures()
 		//
 		if (data.m_RenderPosTime != captRenderOutputData::c_InitRenderPosTime)
 		{
-			nameString camname( itStringUtil::GetStdString(data.m_RenderPosCamera.GetValue()) );
+			nameString camname( data.m_RenderPosCamera.GetValue() );
 			startcam_index = camsCameraMgr::GetIndexForName(camname);
 			if (startcam_index == -1)
 				startcam_index = 0;
@@ -889,7 +889,7 @@ void cptrModeRender::EndStateInitCaptures()
 		//
 		if (data.m_RenderPosTime != captRenderOutputData::c_InitRenderPosTime)
 		{
-			nameString camname( itStringUtil::GetStdString(data.m_RenderPosCamera.GetValue()) );
+			nameString camname( data.m_RenderPosCamera.GetValue() );
 			int startcam_index = camsCameraMgr::GetIndexForName(camname);
 			if (startcam_index == -1)
 				startcam_index = 0;
@@ -1050,13 +1050,13 @@ void cptrModeRender::EndStateInitCaptures()
 
 	std::string filename;
 	docSingleDocumentMgr::GetFilenameOnly(filename);
-	data.m_CurrentSceneFilename.SetValue( itString(filename.c_str()) );
+	data.m_CurrentSceneFilename.SetValue( filename );
 	data.m_RenderPosScene.SetValue( data.m_CurrentSceneFilename.GetValue() );		// for saving render position
-	itString sfname = data.m_CurrentSceneFilename.GetValue();
-	sfname.StripExtension();
+	std::string sfname = data.m_CurrentSceneFilename.GetValue();
+	itStringUtil::StripExtension(sfname);
 	data.m_CurrentSceneFilename.SetValue(sfname);
 
-	cptrRenderStatsDataUtil::StartScene( itStringUtil::GetStdString(sfname) );
+	cptrRenderStatsDataUtil::StartScene( sfname );
 	cptrRenderStatsDialogUtil::UpdateStatsDialog();
 
 	cptrRenderUtil::Initialize();
@@ -1182,7 +1182,7 @@ void cptrModeRender::OnStateBeginCapture()
 							//
 							m_pWindow = m_pSystem->CreateSubWindow(width, height, 300, 10);
 							//m_pWindow = m_pSystem->CreateSubFullScreen(width, height, 32 );
-							m_pWindow->SetTitle(itString(L"Render"));
+							m_pWindow->SetTitle(std::string("Render"));
 						}
 						catch ( const envExceptionX& i_Ex )
 						{
@@ -1191,7 +1191,7 @@ void cptrModeRender::OnStateBeginCapture()
 							if (data.m_bBatchMode.GetValue()
 								&& data.m_bBatchSkipDialog.GetValue())
 							{
-								cptrRenderStatsDialogUtil::AddStatsMessage(itString(msg.c_str()));
+								cptrRenderStatsDialogUtil::AddStatsMessage(msg);
 								cptrRenderStatsDialogUtil::Newline();
 							}
 							else
@@ -1226,7 +1226,7 @@ void cptrModeRender::OnStateBeginCapture()
 				}
 			}
 
-			itString cam_name;
+			std::string cam_name;
 			nameString theName;
 			std::string cam_desc;
 			camsFollowUtil::GetCurrentCameraName(theName);
@@ -1234,7 +1234,7 @@ void cptrModeRender::OnStateBeginCapture()
 			cam_name = theName.GetString().c_str();
 			data.m_RenderPosCamera.SetValue( cam_name );			// for saving render position
 
-			itString layer_name;
+			std::string layer_name;
 			nameString layer_desc = rlyrRenderLayerMgr::GetLayerName( m_CurrentLayerIndex );
 			layer_name = layer_desc.GetString().c_str();
 			data.m_RenderPosLayer.SetValue( layer_name );			// for saving render position
@@ -1321,8 +1321,8 @@ void cptrModeRender::ApplyRenderPrefs()
 void cptrModeRender::EndStateBeginCapture()
 {
 	captRenderOutputData& data = captRenderOutputDataUtil::Data();
-	itString scene_label;
-	scene_label += itString("Scene - ");
+	std::string scene_label;
+	scene_label += std::string("Scene - ");
 	scene_label += data.m_CurrentSceneFilename.GetValue();
 	cptrRenderProgressDialogUtil::SetSceneLabel( scene_label );
 	cptrRenderProgressDialogUtil::Raise();
@@ -1476,7 +1476,7 @@ void cptrModeRender::OnStateCapture()
 				i != -1 && j < loop;
 				i = rlyrRenderLayerMgr::GetNextLayerIndex(i), j++)
 			{
-				itString layer_name;
+				std::string layer_name;
 				nameString layer_desc = rlyrRenderLayerMgr::GetLayerName( i );
 				layer_name = layer_desc.GetString().c_str();
 				data.m_RenderPosLayer.SetValue( layer_name );			// for saving render position
@@ -1495,7 +1495,7 @@ void cptrModeRender::OnStateCapture()
 				for (int k = 0; k < loopPasses; k++)
 				{
 					rlyrPassesObject::ePassType passType = thePasses[k];
-					itString pass_name = captRenderOutputDataUtil::GetRenderPassName(passType);
+					std::string pass_name = captRenderOutputDataUtil::GetRenderPassName(passType);
 					captRenderOutputDataUtil::SetCurrentRenderPass( pass_name );
 
 					// set up folder name in data util
@@ -1546,7 +1546,7 @@ void cptrModeRender::OnStateCapture()
 		std::ostringstream oss;
 		oss<<"Render at "<<timestring;
 		std::string window_title(oss.str());
-		m_pWindow->SetTitle( itString(window_title.c_str()) );
+		m_pWindow->SetTitle( window_title );
 
 		//	set a time code anytime we have a new camera
 		//
@@ -1799,7 +1799,7 @@ void cptrModeRender::OnStatePostCapture()
 		std::ostringstream oss;
 		oss << "Render complete";
 		std::string window_title(oss.str());
-		m_pWindow->SetTitle( itString(window_title.c_str()) );
+		m_pWindow->SetTitle( window_title );
 
 		GotoState(m_StateWaitToEndMode);
 	}
@@ -1881,8 +1881,8 @@ void cptrModeRender::do_titlecard_render()
 
 	//	gather the data
 	//
-	g2dFontHandle font = g2dFontUtil::LoadFont(itString("Arial"), 20);
-	itString text;
+	g2dFontHandle font = g2dFontUtil::LoadFont(std::string("Arial"), 20);
+	std::string text;
 
 	//char buffer[512];
 	//const char* buffer;
@@ -1916,13 +1916,13 @@ void cptrModeRender::do_titlecard_render()
 	//float mintime = tmlnTimeLine::GetMinimum();
 	//::sprintf(buffer,"Scene: %s", itStringUtil::GetStdString(data.m_CurrentSceneFilename.GetValue()).c_str() );
 	std::ostringstream oss;
-	oss <<"Scene: "<<itStringUtil::GetStdString(data.m_CurrentSceneFilename.GetValue());
+	oss <<"Scene: "<<data.m_CurrentSceneFilename.GetValue();
 	buffer = oss.str();
 	text = buffer.c_str();
 	m_pWindow->DrawText(c_XLOC,  c_YLOC+c_YLOC_INC*0, font, text, color);
 
 	//::sprintf(buffer,"Camera: %s", itStringUtil::GetStdString(data.m_CurrentCamera.GetValue()).c_str() );
-	oss <<"Camera: "<<itStringUtil::GetStdString(data.m_CurrentCamera.GetValue());
+	oss <<"Camera: "<<data.m_CurrentCamera.GetValue();
 	buffer = oss.str();
 	text = buffer.c_str();
 	m_pWindow->DrawText(c_XLOC,  c_YLOC+c_YLOC_INC*1, font, text, color);
@@ -2014,7 +2014,7 @@ void cptrModeRender::check_for_render_thread_error()
 			if (data.m_bBatchMode.GetValue()
 				&& data.m_bBatchSkipDialog.GetValue())
 			{
-				cptrRenderStatsDialogUtil::AddStatsMessage(itString(msg.c_str()));
+				cptrRenderStatsDialogUtil::AddStatsMessage(msg);
 				cptrRenderStatsDialogUtil::Newline();
 			}
 			else
@@ -2065,7 +2065,7 @@ void cptrModeRender::try_render_capture()
 	//	Output a line for each frame rendered
 	//
 	captRenderOutputData& data = captRenderOutputDataUtil::Data();
-	nameString camname( itStringUtil::GetStdString(data.m_RenderPosCamera.GetValue()) );
+	nameString camname( data.m_RenderPosCamera.GetValue() );
 	DBG_LOG("Scene: " << data.m_CurrentSceneFilename.GetValue() << " Camera: " << camname << " Frame: " << tmlnTimeLine::GetValue().AsFrame(tmlnTimeLine::GetFPS()) );
 }
 
@@ -2182,7 +2182,7 @@ void cptrModeRender::build_directory()
 	captRenderOutputData& data = captRenderOutputDataUtil::Data();
 
 	// tell the outputdatautil what the current camera name is.
-	itString cam_dir_name;
+	std::string cam_dir_name;
 	nameString theName;
 	camsFollowUtil::GetCurrentCameraName( theName );
 	cam_dir_name = theName.GetString().c_str();
@@ -2217,7 +2217,7 @@ void cptrModeRender::build_directory()
 		i != -1 && j < loop;
 		i = rlyrRenderLayerMgr::GetNextLayerIndex(i), j++)
 	{
-		itString layer_name;
+		std::string layer_name;
 		nameString layer_desc = rlyrRenderLayerMgr::GetLayerName( i );
 		layer_name = layer_desc.GetString().c_str();
 		data.m_RenderPosLayer.SetValue( layer_name );			// for saving render position
@@ -2243,7 +2243,7 @@ void cptrModeRender::build_directory()
 			if (data.m_bUseRenderPassAsDirectory.GetValue())
 			{
 				rlyrPassesObject::ePassType passType = thePasses[k];
-				itString pass_name = captRenderOutputDataUtil::GetRenderPassName(passType);
+				std::string pass_name = captRenderOutputDataUtil::GetRenderPassName(passType);
 				captRenderOutputDataUtil::SetCurrentRenderPass( pass_name );
 			}
 
@@ -2272,7 +2272,7 @@ void cptrModeRender::build_directory()
 					if(data.m_bBatchMode.GetValue()
 						&& data.m_bBatchSkipDialog.GetValue())
 					{
-						cptrRenderStatsDialogUtil::AddStatsMessage(itString(msg.c_str()));
+						cptrRenderStatsDialogUtil::AddStatsMessage(msg);
 						cptrRenderStatsDialogUtil::Newline();
 					}
 					else
@@ -2288,7 +2288,7 @@ void cptrModeRender::build_directory()
 					if(data.m_bBatchMode.GetValue()
 						&& data.m_bBatchSkipDialog.GetValue())
 					{
-						cptrRenderStatsDialogUtil::AddStatsMessage(itString(msg.c_str()));
+						cptrRenderStatsDialogUtil::AddStatsMessage(msg);
 						cptrRenderStatsDialogUtil::Newline();
 					}
 					else
@@ -2312,7 +2312,7 @@ void cptrModeRender::update_render_layer_progress()
 	nameString layer_desc = rlyrRenderLayerMgr::GetLayerName( m_CurrentLayerIndex );
 	std::stringstream rl_stream;
 	rl_stream << "Render Layer - " << layer_desc.GetString();
-	itString layer_label(rl_stream.str().c_str());
+	std::string layer_label(rl_stream.str().c_str());
 
 	m_Data.m_LayersCompleted = m_CurrentLayerIndex;
 	m_Data.m_CurLayerName = layer_desc;
@@ -2378,7 +2378,7 @@ void cptrModeRender::update_scenes_percentage(bool i_bCompleted)
 {
 	captRenderOutputData& data = captRenderOutputDataUtil::Data();
 	std::string filename;
-	filename = itStringUtil::GetStdString( data.m_CurrentSceneFilename.GetValue() );
+	filename = data.m_CurrentSceneFilename.GetValue();
 	m_Data.m_CurSceneName = nameString(filename.c_str());
 }
 
@@ -2414,7 +2414,7 @@ void cptrModeRender::update_progress_percentages_dialog()
 	std::ostringstream oss;
 	oss << "Camera - "<< theName.GetString();
 	std::string buffer(oss.str());
-	itString camera_label(buffer.c_str());
+	std::string camera_label(buffer.c_str());
 	float percentage = get_camera_percentage();
 	m_camera_percentage = percentage;
 	m_camera_label = camera_label;
@@ -2426,7 +2426,7 @@ void cptrModeRender::update_progress_percentages_dialog()
 	oss << "Camera  "<< m_CurrentCameraNumber+1 <<" of "<< m_NumberOfRenderableCameras;
 
 	std::string buffer1(oss.str());
-	itString cameras_label(buffer1.c_str());
+	std::string cameras_label(buffer1.c_str());
 	m_camera_label = cameras_label;
 
 	oss.clear();
@@ -2434,7 +2434,7 @@ void cptrModeRender::update_progress_percentages_dialog()
 	oss << "Scene  "<<data.m_CurrentSceneNumber.GetValue() <<" of "<<data.m_NumberOfScenes.GetValue();
 	std::string buffer2(oss.str());
 
-	itString scenes_label(buffer2.c_str());
+	std::string scenes_label(buffer2.c_str());
 
 	percentage = 0.0f;
 	percentage = ((float)(data.m_CurrentSceneNumber.GetValue()-1) / (float)data.m_NumberOfScenes.GetValue());
@@ -2548,7 +2548,7 @@ void cptrModeRender::init_layer_indices()
 	captRenderOutputData& data = captRenderOutputDataUtil::Data();
 
 	//now get the resume layer
-	nameString layername( itStringUtil::GetStdString(data.m_RenderPosLayer.GetValue()) );
+	nameString layername( data.m_RenderPosLayer.GetValue() );
 	m_LastLayerIndex = rlyrRenderLayerMgr::GetNumRenderLayers();
 	m_CurrentLayerIndex = -1;
 	int startlayer_index = rlyrRenderLayerMgr::GetLayerIndexByName(layername);

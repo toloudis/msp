@@ -47,9 +47,9 @@ mtrlLambert::mtrlLambert(mdlMaterialInfo& i_MatData,
 	m_Data.m_UVAngle.SetValue(m_pShaderData->m_UV.m_UVAngle );
 
 
-	m_Data.m_TextureDiffuse.SetValue(itString(m_pShaderData->m_NameDiffuse.c_str()));
-	m_Data.m_TextureNormalMap.SetValue(itString(m_pShaderData->m_NameNormalMap.c_str()));
-	m_Data.m_TextureTransparencyMap.SetValue(itString(m_pShaderData->m_NameTransparencyMap.c_str()));
+	m_Data.m_TextureDiffuse.SetValue(m_pShaderData->m_NameDiffuse);
+	m_Data.m_TextureNormalMap.SetValue(m_pShaderData->m_NameNormalMap);
+	m_Data.m_TextureTransparencyMap.SetValue(m_pShaderData->m_NameTransparencyMap);
 
 	// Create channels for the properties (this will set the "original value"
 	// for the channels to the value in the material data).

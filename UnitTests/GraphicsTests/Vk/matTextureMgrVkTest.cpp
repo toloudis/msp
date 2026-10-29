@@ -42,9 +42,6 @@
 #ifndef FS_FILEUTIL_HPP
 #include "Core/fs/fsFileUtil.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
 
 //	DX11
 #ifndef G2D_DX11GLOBALWIN_HPP
@@ -124,7 +121,7 @@ namespace
 	fsLocator locator_of(const std::filesystem::path& i_Path)
 	{
 		fsLocator locator;
-		fsFileUtil::UnicodeStringToLocator(itString(i_Path.wstring().c_str()), locator);
+		fsFileUtil::UnicodeStringToLocator(i_Path.u8string(), locator);
 		return locator;
 	}
 

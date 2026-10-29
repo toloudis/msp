@@ -54,16 +54,16 @@ namespace cmprZipUtil
 		void increment_destination(fsLocator& io_DestLocator)
 		{
 			fsLocator new_dest = io_DestLocator;
-			itString dest_file = io_DestLocator.GetLastName();
-			itString ext;
-			dest_file.GetExtension(ext);
-			dest_file.StripExtension();
+			std::string dest_file = io_DestLocator.GetLastName();
+			std::string ext;
+			itStringUtil::GetExtension(dest_file, ext);
+			itStringUtil::StripExtension(dest_file);
 			
-			if(!dest_file.HasSubString(itString("_part")))
+			if(!(dest_file.find(std::string("_part")) != std::string::npos))
 			{
-				std::string dest_string = itStringUtil::GetStdString(dest_file);
+				std::string dest_string = dest_file;
 				dest_string += "_part1";
-				itString dest(dest_string.c_str());
+				std::string dest(dest_string.c_str());
 				dest_file = dest;
 				new_dest.ReplaceLastName(dest);
 				new_dest.ReplaceExtension(ext);
@@ -72,11 +72,11 @@ namespace cmprZipUtil
 				fsFileUtil::RenameFile(io_DestLocator, new_dest);
 			}
 			//get the current part number
-			int length = dest_file.GetLength();
-			itString::CharType counter_char = dest_file[length - 1];
+			int length = dest_file.size();
+			char counter_char = dest_file[length - 1];
 			int counter = counter_char - L'0';
 			counter++;
-			counter_char = (itString::CharType)std::to_wstring(counter)[0];
+			counter_char = (char)std::to_wstring(counter)[0];
 			dest_file[length - 1] = counter_char;
 			new_dest.ReplaceLastName(dest_file);
 			new_dest.ReplaceExtension(ext);
@@ -108,7 +108,7 @@ namespace cmprZipUtil
 		fsFileUtil::LocatorToANSIFilename(io_DestPath, dest_zip_path, true);
 		fsFileUtil::LocatorToANSIFilename(i_SourceFile, src_folder_string);
 
-		file_string = itStringUtil::GetStdString(i_SourceFile.GetLastName());
+		file_string = i_SourceFile.GetLastName();
 
 		/*
 			We need to pop up a warning if the file path has any unicode characters in it because 

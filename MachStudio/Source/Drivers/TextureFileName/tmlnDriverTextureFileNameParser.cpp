@@ -38,9 +38,9 @@ namespace
 			
 		// Read in a single itString with path separators and then 
 		// split into locator
-		itString savefilename;
+		std::string savefilename;
 		fsLocator driver_loc;
-		chChunkParserUtil::Read( i_Reader, savefilename );
+		chChunkParserUtil::ReadItString( i_Reader, savefilename );
 		fsFileUtil::UnicodeStringToLocator( savefilename, driver_loc );
 		prtyTextureFileData val = o_Driver.m_Value.GetFullValue();
 		val.m_TextureLocator = driver_loc;
@@ -58,7 +58,7 @@ namespace
 
 		// Convert array of itStrings to a single itString with
 		// path separators in order to write to file.
-		itString savefilename;
+		std::string savefilename;
 		fsFileUtil::LocatorToUnicodeString( i_Driver.m_Value.GetValue(), savefilename );
 		chChunkParserUtil::Write( o_Writer, savefilename );
 

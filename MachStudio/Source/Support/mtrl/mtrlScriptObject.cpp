@@ -554,9 +554,9 @@ void mtrlScriptObject::SaveMaterials(const fsLocator& i_Locator,
 	// the geometry files anymore (that was the old way of doing it).
 	fsLocator gmb_locator = i_Locator;
 	gmb_locator.Pop();
-	itString filename = i_Locator.GetLastName();
-	filename.StripExtension();
-	filename += itString(".gmb");
+	std::string filename = i_Locator.GetLastName();
+	itStringUtil::StripExtension(filename);
+	filename += std::string(".gmb");
 	gmb_locator.Push(filename);
 	mtrMaterialSaver::WriteMaterialSet(gmb_locator, m_Materials);
 
@@ -1107,7 +1107,7 @@ void mtrlScriptObject::GetMaterialResources( fsResourceTrackerData& io_List )
 	{
 		this->GetTextureList( i, texture_list );
 
-		itString itName;
+		std::string itName;
 		fsLocator shaderLoc;	
 		fsFileUtil::LocatorToUnicodeString( m_Materials[i]->GetShaderParams()->GetShaderName(), itName );	
 		fsFileUtil::UnicodeStringToLocator( itName, shaderLoc );

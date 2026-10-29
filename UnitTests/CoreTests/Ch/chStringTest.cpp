@@ -192,7 +192,7 @@ void ReadParserUtilStrings(chReader& io_Reader, const std::vector<std::string>& 
 		chChunkParserUtil::ReadItString(io_Reader, text);
 		EXPECT_EQ(expected, text);
 		itString wide;
-		chChunkParserUtil::Read(io_Reader, wide);
+		chChunkParserUtil::ReadItString(io_Reader, wide);
 		EXPECT_EQ(expected, std::string(wide));
 		int32_t sentinel = 0;
 		io_Reader.Read(sentinel);

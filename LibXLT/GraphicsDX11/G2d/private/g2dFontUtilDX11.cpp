@@ -121,7 +121,7 @@ g2dFontObjectDX11::g2dFontObjectDX11(matTexture* i_FontMap):
 {
 	m_TextSprite = new scrText();
 	m_TextSprite->SetFontMapImage(i_FontMap, 320, 256);
-	m_TextSprite->SetText(itString(""));
+	m_TextSprite->SetText(std::string());
 	m_TextSprite->SetScreenBased(true);
 	m_TextSprite->SetTextSize( m_TextSize / l_baseFontSize);
 	m_TextSprite->SetBackgroundColor(maFloatRGBA(0,0,0,0));
@@ -136,7 +136,7 @@ g2dFontObjectDX11::~g2dFontObjectDX11()
 	m_TextSprite = NULL;
 }
 
-void g2dFontObjectDX11::DrawText(const itString& i_Text, const maFloatRGBA& i_Color, int i_OffsetX, int i_OffsetY)
+void g2dFontObjectDX11::DrawText(const std::string& i_Text, const maFloatRGBA& i_Color, int i_OffsetX, int i_OffsetY)
 {
 	// Save the old viewport
 	D3D11_VIEWPORT vpOld[D3D11_VIEWPORT_AND_SCISSORRECT_MAX_INDEX];
@@ -469,7 +469,7 @@ g2dFontUtilDX11::~g2dFontUtilDX11()
 //	a g2dFontHandle which can be used later.  When you are done with the
 //	font, call ReleaseFont.
 //------------------------------------------------------------------------
-g2dFontHandle g2dFontUtilDX11::LoadFont(const itString& i_Name, int i_Size)
+g2dFontHandle g2dFontUtilDX11::LoadFont(const std::string& i_Name, int i_Size)
 {
 #ifdef BITMAP_FONT_SPRITE
 	fsLocator filePath = l_GloablFontMap;
@@ -619,34 +619,26 @@ void g2dFontUtilDX11::ReleaseFont(g2dFontHandle i_Handle)
 // g2dFontHandle.  It looks this up in the system to learn exactly what
 // the system loaded.
 //------------------------------------------------------------------------
-void g2dFontUtilDX11::GetLoadedFontName( g2dFontHandle i_Font, itString& o_Name )
+void g2dFontUtilDX11::GetLoadedFontName( g2dFontHandle i_Font, std::string& o_Name )
 {
 #ifdef BITMAP_FONT_SPRITE
 	// does this function need to be implemented?
 #else
 	IDWriteTextFormat* pTextFormat = reinterpret_cast<IDWriteTextFormat*>(i_Font);
 
+	//	the size GetFontFamilyName takes includes the NULL
 	UINT32 size = pTextFormat->GetFontFamilyNameLength();
-	o_Name.SetLength(size);
-
-	pTextFormat->GetFontFamilyName(&o_Name[0], size);
-#endif
-}
-
-void g2dFontUtilDX11::GetLoadedFontName( g2dFontHandle i_Font, std::string& o_Name )
-{
-#ifdef BITMAP_FONT_SPRITE
-#else
-	itString temp;
-	GetLoadedFontName( i_Font, temp );
-	o_Name = itStringUtil::GetStdString(temp);
+	std::wstring name(size + 1, L'\0');
+	pTextFormat->GetFontFamilyName(&name[0], size + 1);
+	name.resize(size);
+	o_Name = envString::WideCharToUTF8(name);
 #endif
 }
 
 //------------------------------------------------------------------------
 //	GetTextSizeInPixels returns the width and height in pixels of the given text and font
 //------------------------------------------------------------------------
-void g2dFontUtilDX11::GetTextSizeInPixels(g2dFontHandle i_Font, const itString& i_Text, int& o_Width, int& o_Height)
+void g2dFontUtilDX11::GetTextSizeInPixels(g2dFontHandle i_Font, const std::string& i_Text, int& o_Width, int& o_Height)
 {
 	//DBG_ASSERT(false, "g2dFontUtilDX11::GetTextSizeInPixels not implemented");
 #ifdef BITMAP_FONT_SPRITE

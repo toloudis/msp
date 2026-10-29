@@ -41,7 +41,7 @@ void lyrsDialogDataUtil::RebuildListData(cmmDialogDataList& io_DataList)
 	{
 		lyrsData objdata = lyrsObjectMgr::GetData(i);
 		io_DataList[startindex+i].m_Name		= objdata.m_Name.GetValue();
-		io_DataList[startindex+i].m_Filename	= itString( io_DataList[startindex+i].m_Name.GetString().c_str() );
+		io_DataList[startindex+i].m_Filename	= io_DataList[startindex+i].m_Name.GetString();
 		io_DataList[startindex+i].m_Desc		= "";
 		io_DataList[startindex+i].m_SystemName	= c_SystemName;
 		io_DataList[startindex+i].m_bVisible	= true;//false;//objdata.m_bEditorVisible.GetValue();

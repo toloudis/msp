@@ -377,13 +377,13 @@ LoadDiagnostics::~LoadDiagnostics()
 	l_LoadCounts.clear();
 }
 
-matTexture* LoadTexture(const fsLocator& i_Directory, const itString& i_Name, const TEXTURE_TYPE i_Type/* = TEXTURE_TYPE_2D*/, const bool mipmap_if_2D /*= true*/, const bool i_bIgnoreTUVSuffix /*= false*/)
+matTexture* LoadTexture(const fsLocator& i_Directory, const std::string& i_Name, const TEXTURE_TYPE i_Type/* = TEXTURE_TYPE_2D*/, const bool mipmap_if_2D /*= true*/, const bool i_bIgnoreTUVSuffix /*= false*/)
 {
 	if (l_pImpl == NULL)
 		return NULL;
 
 	//we want no extension information to remain in the name of the texture
-	itString tex_name(i_Name);
+	std::string tex_name(i_Name);
 	//tex_name.StripExtension();
 	itStringUtil::ToLower(tex_name);
 
@@ -393,7 +393,7 @@ matTexture* LoadTexture(const fsLocator& i_Directory, const itString& i_Name, co
 	fsLocator tex_locator(i_Directory), tex_directory;
 	int count = tex_locator.GetNumNames();
 	int i;
-	itString temp;
+	std::string temp;
 	for ( i=0; i<count; ++i )
 	{
 		temp = tex_locator.GetName(i);
@@ -418,7 +418,7 @@ matTexture* LoadTexture(const fsLocator& i_Directory, const itString& i_Name, co
 		{
 			try
 			{
-				std::vector<itString> names;
+				std::vector<std::string> names;
 
 				// ACTUALLY LOAD THE TEXTURE!!!!
 				if (counts)
@@ -432,9 +432,9 @@ matTexture* LoadTexture(const fsLocator& i_Directory, const itString& i_Name, co
 				{
 					//load all the named textures
 					int i, num_names = names.size();
-					itString uva_name;
+					std::string uva_name;
 					fsLocator uva_locator = tex_directory;
-					std::vector<itString> dummy_names;
+					std::vector<std::string> dummy_names;
 					for (i = 0; i < num_names; ++i)
 					{
 						uva_name = names[i];
@@ -502,14 +502,14 @@ matTexture* LoadTexture(const fsLocator& i_Directory, const itString& i_Name, co
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-matTexture* LoadTexture(const fsResourceFinder& i_Finder, const itString& i_Name, const TEXTURE_TYPE i_Type/* = TEXTURE_TYPE_2D*/, const bool mipmap_if_2D /*= true */)
+matTexture* LoadTexture(const fsResourceFinder& i_Finder, const std::string& i_Name, const TEXTURE_TYPE i_Type/* = TEXTURE_TYPE_2D*/, const bool mipmap_if_2D /*= true */)
 {
 	fsLocator found_loc;
 	if (i_Finder.FindResource(i_Name, found_loc))
 	{
 		// found_loc returns full path including filename
 		fsLocator dir = found_loc;
-		itString name = dir.GetLastName();
+		std::string name = dir.GetLastName();
 		dir.Pop();
 
 		return LoadTexture(dir, name, i_Type, mipmap_if_2D);
@@ -524,7 +524,7 @@ matTexture* LoadTexture(const fsResourceFinder& i_Finder, const itString& i_Name
 //--------------------------------------------------------------------
 void WriteUVATexture(	const matUVATexture& i_Texture,
 						const fsLocator& i_Locator,
-						const itString* i_Textures)
+						const std::string* i_Textures)
 {
 	gfFileBin file(i_Locator, fsFileStream::e_WriteOnly);
 	file.WriteHeader(0, 0, 1);
@@ -537,7 +537,7 @@ void WriteUVATexture(	const matUVATexture& i_Texture,
 //--------------------------------------------------------------------
 void WriteUVATexture(	const matUVATexture& i_Texture,
 						chWriter& i_Writer,
-						const itString* i_Textures)
+						const std::string* i_Textures)
 {
 	matUVATextureParseUtil::WriteUVATexture(i_Writer, i_Texture, i_Textures);
 }
@@ -549,7 +549,7 @@ void WriteUVATexture(	const matUVATexture& i_Texture,
 //	texture.
 //--------------------------------------------------------------------
 matUVATexture* ReadUVATexture(const fsLocator& i_Locator,
-							  std::vector<itString>& o_Textures)
+							  std::vector<std::string>& o_Textures)
 {
 	gfFileBin file(i_Locator, fsFileStream::e_ReadOnly);
 	gfFileBin::Header header;
@@ -766,7 +766,7 @@ void ReloadTexture( const fsLocator& i_Locator, bool i_bIsMipMap )
 	//gpxRenderControl::ConfirmSingleThread();
 	fsLocator tex_locator(i_Locator);
 	int count = tex_locator.GetNumNames();
-	itString temp;
+	std::string temp;
 	for ( int i = 0; i < count; ++i )
 	{
 		temp = tex_locator.GetName(i);

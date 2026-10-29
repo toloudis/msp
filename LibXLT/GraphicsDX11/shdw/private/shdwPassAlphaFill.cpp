@@ -151,7 +151,7 @@ shdwPassAlphaFill::shdwPassAlphaFill(g2dRenderTarget* i_destination, bool i_isBi
 	if (!l_AlphaFillMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/DepthMap.fx"), matShaderMgr::GetSpecialEffect("DepthMap.fx"));
+		p->SetShaderName(std::string("Special/DepthMap.fx"), matShaderMgr::GetSpecialEffect("DepthMap.fx"));
 		l_AlphaFillMat.SetShaderParams(p);
 	}
 }

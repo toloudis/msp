@@ -87,7 +87,7 @@ namespace
 	//
 	//	SoundDir should be the post-fix dir path under the app path.
 	//--------------------------------------------------------------------
-	void Init(const fsLocator& i_AppDir, const itString& i_CharacterDataDir)
+	void Init(const fsLocator& i_AppDir, const std::string& i_CharacterDataDir)
 	{
 		// Set up callback
 		api3dSubdiv::RegisterSubdivInterest(&l_SubdivCallback);
@@ -96,10 +96,10 @@ namespace
 		smdlSubdivCharacter::SetMaxSubdivLevel(c_MaxSubdivLevel);
 
 		chtrAnimList::Init( i_CharacterDataDir, 
-							itString(gfPaths::GetSubPath(gfPaths::e_Data)) );
+							std::string(gfPaths::GetSubPath(gfPaths::e_Data)) );
 		chtrAnimList::SetAppDirectory( i_AppDir );
 		chtrGeomList::Init(i_CharacterDataDir, 
-						  itString(gfPaths::GetSubPath(gfPaths::e_Data)));		
+						  std::string(gfPaths::GetSubPath(gfPaths::e_Data)));		
 		//chtrGeomList::SetAppDirectory( i_AppDir );
 
 		// Initialize namespaces

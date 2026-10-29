@@ -99,9 +99,6 @@
 #ifndef PRTY_RANGEDFLOATUIINFO_HPP
 #include "Core/prty/prtyRangedFloatUIInfo.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
 #ifndef IT_STRINGUTIL_HPP
 #include "Core/it/itStringUtil.hpp"
 #endif
@@ -252,13 +249,13 @@ TEST(effPbrVkTest, ListedAndLoadable)
 		const matShaderInfo* found = NULL;
 		for (const matShaderInfo& info : matShaderMgr::GetMaterialShaders())
 		{
-			if (itStringUtil::GetStdString(info.m_Name) == effPbrData::c_ShaderName)
+			if (info.m_Name == effPbrData::c_ShaderName)
 				found = &info;
 		}
 		ASSERT_TRUE(found != NULL) << "Pbr.fx not in GetMaterialShaders()";
 		EXPECT_EQ(found->m_UIName, "PBR");
 
-		matShaderEffect* effect = matShaderMgr::GetEffect(fsLocator(itString(effPbrData::c_ShaderName)));
+		matShaderEffect* effect = matShaderMgr::GetEffect(fsLocator(std::string(effPbrData::c_ShaderName)));
 		ASSERT_TRUE(effect != NULL);
 		EXPECT_TRUE(effect->HasHardwareTessellation());
 	});
@@ -693,7 +690,7 @@ namespace
 	fsLocator locator_of(const std::filesystem::path& i_Path)
 	{
 		fsLocator locator;
-		fsFileUtil::UnicodeStringToLocator(itString(i_Path.wstring().c_str()), locator);
+		fsFileUtil::UnicodeStringToLocator(i_Path.u8string(), locator);
 		return locator;
 	}
 }
@@ -876,7 +873,7 @@ TEST(effPbrVkTest, SavedAndReloaded)
 		}
 		shared_ptr<effShaderParams> read = read_info.GetShaderParams();
 		ASSERT_TRUE(read != NULL);
-		EXPECT_EQ(itString(effPbrData::c_ShaderName), read->GetShaderName().GetLastName());
+		EXPECT_EQ(std::string(effPbrData::c_ShaderName), read->GetShaderName().GetLastName());
 		const effPbrData back = effPbrData::FromParams(*read);
 		EXPECT_EQ(effPbrData::e_Mask, back.m_AlphaMode);
 		EXPECT_EQ(data.m_BaseColorMap, back.m_BaseColorMap);

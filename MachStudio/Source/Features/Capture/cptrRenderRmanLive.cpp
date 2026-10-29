@@ -175,10 +175,10 @@ void cptrRenderRmanLive::Start(cptrRenderRmanLiveData i_Data)
 
 	camCamera cam = cam3dMgr::GetCamera();
 
-	itString sceneName = docSingleDocumentMgr::GetFilename().GetLastName();
-	sceneName.StripExtension();
-	itString sceneNameWithExt = sceneName;
-	sceneNameWithExt += itString(".rib");
+	std::string sceneName = docSingleDocumentMgr::GetFilename().GetLastName();
+	itStringUtil::StripExtension(sceneName);
+	std::string sceneNameWithExt = sceneName;
+	sceneNameWithExt += std::string(".rib");
 
 	fsLocator rmanLiveRoot = gfPaths::GetPath(gfPaths::e_UserDataPath);
 	rmanLiveRoot.Push("rmanLiveCache");
@@ -196,9 +196,9 @@ void cptrRenderRmanLive::Start(cptrRenderRmanLiveData i_Data)
 	fsLocator rootLoc = fullSceneLoc;
 	rootLoc.Pop();
 
-	itString currFrameNameIt = fullSceneLoc.GetLastName();
-	currFrameNameIt.StripExtension();
-	std::string currFrameName = itStringUtil::GetStdString(currFrameNameIt);
+	std::string currFrameNameIt = fullSceneLoc.GetLastName();
+	itStringUtil::StripExtension(currFrameNameIt);
+	std::string currFrameName = currFrameNameIt;
 	//std::string sceneName = itStringUtil::GetStdString(sceneName);
 
 	std::string engine = "prman";

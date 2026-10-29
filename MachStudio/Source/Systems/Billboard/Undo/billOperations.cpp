@@ -161,11 +161,11 @@ namespace billOperations
 	{
 		if (i_Filename.IsEmpty())
 		{
-			billObjectMgr::create_default_name(itString("Billboard"), o_NameString, l_ObjectCounter);
+			billObjectMgr::create_default_name(std::string("Billboard"), o_NameString, l_ObjectCounter);
 		}
 		else
 		{
-			billObjectMgr::create_duplicate_name(itString(i_Filename.GetString().c_str()), o_NameString);
+			billObjectMgr::create_duplicate_name(i_Filename.GetString(), o_NameString);
 		}
 	}
 }	// end of namespace

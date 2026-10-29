@@ -9,6 +9,7 @@
 #ifdef CPTR_SCANLINEEXRUTIL_HPP
 #error g2dScanlineOpenEXRUtil.hpp multiply included
 #endif
+#include <string>
 #define CPTR_SCANLINEEXRUTIL_HPP
 
 
@@ -16,7 +17,6 @@
 //============================================================================
 class fsLocator;
 class g2dImage;
-class itString;
 
 
 //============================================================================

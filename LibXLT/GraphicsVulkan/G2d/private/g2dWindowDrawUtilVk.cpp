@@ -73,7 +73,7 @@ void DrawRect(	int /*i_X1*/,
 void DrawText(	int i_X,
 				int i_Y,
 				g2dFontHandle i_Font,
-				const itString& i_Text,
+				const std::string& i_Text,
 				const g2dRGBColor& i_Color)
 {
 	g2dFontObjectVk* font = reinterpret_cast<g2dFontObjectVk*>(i_Font);

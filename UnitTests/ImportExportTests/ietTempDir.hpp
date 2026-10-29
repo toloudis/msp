@@ -15,9 +15,6 @@
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
 
 #include <gtest/gtest.h>
 
@@ -58,7 +55,7 @@ class ietTempDir
 		{
 			std::filesystem::path path = i_Name ? m_Path / i_Name : m_Path;
 			fsLocator locator;
-			fsFileUtil::UnicodeStringToLocator(itString(path.wstring().c_str()), locator);
+			fsFileUtil::UnicodeStringToLocator(path.u8string(), locator);
 			return locator;
 		}
 

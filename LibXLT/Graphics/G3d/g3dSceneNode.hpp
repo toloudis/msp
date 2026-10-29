@@ -27,9 +27,6 @@
 #ifndef MA_MATRIX4X4_HPP
 #include "Core/ma/maMatrix4x4.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/It/itString.hpp"
-#endif
 
 #include <deque>
 #include <string>

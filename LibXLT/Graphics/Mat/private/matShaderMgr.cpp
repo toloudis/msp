@@ -96,8 +96,8 @@ namespace
 	//----------------------------------------------------------------------------
 	bool shader_name_less(const matShaderInfo& i_A, const matShaderInfo& i_B)
 	{
-		return itStringUtil::CompareNoCase(itStringUtil::GetStdString(i_A.m_Name),
-										   itStringUtil::GetStdString(i_B.m_Name)) < 0;
+		return itStringUtil::CompareNoCase(i_A.m_Name,
+										   i_B.m_Name) < 0;
 	}
 
 	//----------------------------------------------------------------------------
@@ -167,10 +167,10 @@ void Initialize()
 		}
 
 		// Ensure drive letter is in upper case
-		itString fx_dir_itStr;
+		std::string fx_dir_itStr;
 		fsFileUtil::LocatorToUnicodeString( fx_dir.GetName(0) , fx_dir_itStr );
-		std::string driveLetter = uppercase( itStringUtil::GetStdString(fx_dir_itStr) );
-		fx_dir.ReplaceName( itString(driveLetter.c_str()) , 0 );
+		std::string driveLetter = uppercase( fx_dir_itStr );
+		fx_dir.ReplaceName( driveLetter , 0 );
 
 		l_ShadersRoot = fx_dir;
 
@@ -202,13 +202,13 @@ int GetGeneration()
 matShaderEffect* FindEffect(const fsLocator& i_ShaderName)
 {
 	// as a tokenized fsLocator (a name set from one string isn't)
-	itString name;
+	std::string name;
 	fsLocator shaderLoc;
 	fsFileUtil::LocatorToUnicodeString(i_ShaderName, name);
 	fsFileUtil::UnicodeStringToLocator(name, shaderLoc);
 
 	std::map<std::string, matShaderInfo>::iterator it =
-		find_shader(itStringUtil::GetStdString(shaderLoc.GetLastName()));
+		find_shader(shaderLoc.GetLastName());
 	if (it != l_ShaderMap.end())
 		return it->second.m_pEffect;
 
@@ -245,7 +245,7 @@ fsLocator ResolveShaderPath(const fsLocator& i_ShaderName)
 	if ( shaderLoc.GetNumNames() == 1 )
 	{
 		// Get the shader name
-		std::string shaderFileName = itStringUtil::GetStdString(shaderLoc.GetLastName());
+		std::string shaderFileName = shaderLoc.GetLastName();
 
 		shaderLoc = matShaderMgr::GetDefaultShaderPath();
 		shaderLoc.Push( shaderFileName.c_str() );
@@ -359,7 +359,7 @@ matShaderEffect* GetPostEffect(const fsLocator& i_PathToShader)
 		return NULL;
 
 	fsLocator path = i_PathToShader;
-	std::string lastName = itStringUtil::GetStdString(path.GetLastName());
+	std::string lastName = path.GetLastName();
 
 	// a single name can hold a folder too ("PostEffect/Sepia.fx")
 	const size_t sep = lastName.find_last_of("/\\");
@@ -375,7 +375,7 @@ matShaderEffect* GetPostEffect(const fsLocator& i_PathToShader)
 		{
 			std::string tmp_s;
 			fsFileUtil::LocatorToANSIFilename(i_PathToShader, tmp_s);
-			path = fsLocator(itString(tmp_s.c_str()));
+			path = fsLocator(tmp_s);
 		}
 
 		std::map<fsLocator, matShaderEffect*>::iterator it = l_LoadedShaders.find( path );
@@ -438,10 +438,10 @@ bool IsMachStudioShader(const fsLocator& i_ShaderName)
 	if (i_ShaderName.GetNumNames() == 0)
 		return false;
 
-	const std::string name = itStringUtil::GetStdString(i_ShaderName.GetLastName());
+	const std::string name = i_ShaderName.GetLastName();
 	for (size_t i = 0; i < l_MaterialShaders.size(); i++)
 	{
-		if (itStringUtil::CompareNoCase(itStringUtil::GetStdString(l_MaterialShaders[i].m_Name), name) == 0)
+		if (itStringUtil::CompareNoCase(l_MaterialShaders[i].m_Name, name) == 0)
 			return true;
 	}
 	return false;

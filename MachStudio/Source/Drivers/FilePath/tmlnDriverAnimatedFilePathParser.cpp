@@ -41,8 +41,8 @@ namespace
 			
 		// Read in a single itString with path separators and then 
 		// split into locator
-		itString savefilename;
-		chChunkParserUtil::Read( i_Reader, savefilename );
+		std::string savefilename;
+		chChunkParserUtil::ReadItString( i_Reader, savefilename );
 		fsFileUtil::UnicodeStringToLocator( savefilename, o_Info.m_FirstFilePath );
 
 		chChunkParserUtil::Read(i_Reader, o_Info.m_NumberOfFrames );
@@ -69,7 +69,7 @@ namespace
 		//chChunkParserUtil::Write(o_Writer, i_Info.m_FirstFilePath);
 		// Convert array of itStrings to a single itString with
 		// path separators in order to write to file.
-		itString savefilename;
+		std::string savefilename;
 		fsFileUtil::LocatorToUnicodeString( i_Info.m_FirstFilePath, savefilename );
 		chChunkParserUtil::Write( o_Writer, savefilename );
 

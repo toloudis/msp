@@ -21,7 +21,7 @@ namespace
 	//--------------------------------------------------------------------
 	void add_tree_branch( wxTreeCtrl* io_pTreeCtrl, 
 						  const fsLocator& i_Path, 
-						  const itString& i_Filename )
+						  const std::string& i_Filename )
 	{
 		DBG_ASSERT( io_pTreeCtrl != NULL, "Cannot have a nullptr wxTreeCtrl" );
 
@@ -56,7 +56,7 @@ namespace
 
 		//	now add the filename
 		//
-		wxString fname(i_Filename.GetString());
+		wxString fname = wxString::FromUTF8(i_Filename);
 		wxTreeItemId node = gsupTreeCtrlUtil::FindNode(io_pTreeCtrl, parent, fname);
 		if (!node.IsOk()) // If not already added..
 		{
@@ -224,7 +224,7 @@ namespace
 	//--------------------------------------------------------------------
 	void add_tree_branch( QTreeWidget* io_pTreeCtrl,
 						  const fsLocator& i_Path,
-						  const itString& i_Filename )
+						  const std::string& i_Filename )
 	{
 		DBG_ASSERT( io_pTreeCtrl != NULL, "Cannot have a nullptr QTreeWidget" );
 		QTreeWidgetItem* parent = io_pTreeCtrl->invisibleRootItem();
@@ -240,7 +240,7 @@ namespace
 
 		//	now add the filename
 		//
-		QString fname = QString::fromWCharArray(i_Filename.GetString());
+		QString fname = QString::fromStdString(i_Filename);
 		if (gsupTreeCtrlUtil::FindNode(parent, fname) == NULL) // If not already added..
 		{
 			new QTreeWidgetItem(parent, QStringList(fname));

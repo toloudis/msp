@@ -8,7 +8,10 @@
 
 #include "Core/Env/envSTLHelpers.hpp"
 #include "Core/Fs/fsFileUtil.hpp"
-#include "Core/It/itString.hpp"
+#include <string>
+#ifndef DBG_MSG_HPP
+#include "Core/Dbg/dbgMsg.hpp"
+#endif
 
 
 #ifdef USE_WXWIDGETS
@@ -118,11 +121,11 @@ twcTreeView::~twcTreeView()
 void twcTreeView::LoadImagesFromDirectory( const fsLocator& i_IconDirectory )
 {
 	// Create state images to represent checked state
-	itString icon_dir;
+	std::string icon_dir;
 	fsFileUtil::LocatorToUnicodeString( i_IconDirectory, icon_dir );
 
 	wxImageList *pCheckImages = new wxImageList(13, 13, false, e_NumCheckboxImageStates);
-	std::wstring image_dir( icon_dir.GetString() );
+	wxString image_dir = wxString::FromUTF8(icon_dir);
     {
         wxLogNull nullLog;
 	    pCheckImages->Add(wxBitmap(image_dir + L"\\tree-unchecked.png", wxBITMAP_TYPE_PNG)); // need extra image to hold the zeroth slot

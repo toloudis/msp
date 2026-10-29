@@ -36,8 +36,8 @@ namespace
 	{
 		// Read in a single itString with path separators and then 
 		// split into locator
-		itString loadfilename;
-		chChunkParserUtil::Read( i_Reader, loadfilename );
+		std::string loadfilename;
+		chChunkParserUtil::ReadItString( i_Reader, loadfilename );
 		fsFileUtil::UnicodeStringToLocator( loadfilename, o_Info.m_FileName );
 //		chChunkParserUtil::Read(i_Reader, o_Info.m_FileName);
 
@@ -56,7 +56,7 @@ namespace
 		const int l_VIDF_VERSION = 1;
 		o_Writer.WriteChunkHeader( c_VIDF, l_VIDF_VERSION, false );
 
-		itString savefilename;
+		std::string savefilename;
 		fsFileUtil::LocatorToUnicodeString( i_Info.m_FileName, savefilename );
 		chChunkParserUtil::Write( o_Writer, savefilename );
 //		chChunkParserUtil::Write( o_Writer, i_Info.m_FileName );

@@ -31,6 +31,9 @@
 #include "GraphicsDX11/mat/matMipTexture.hpp"
 #include "GraphicsDX11/mat/matPlainTexture.hpp"
 #include "GraphicsDX11/mat/matStaticCubeTexture.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/Env/envString.hpp"
+#endif
 
 //============================================================================
 //============================================================================
@@ -76,35 +79,35 @@ enum FileType
 FileType pick_format(const fsLocator& i_FileName)
 {
     //	decide what kind of file we have
-    itString fname = i_FileName.GetLastName();
-    itString ext;
-    fname.GetExtension(ext);
+    std::string fname = i_FileName.GetLastName();
+    std::string ext;
+    itStringUtil::GetExtension(fname, ext);
 
-    if ((ext == itString("bmp")) || (ext == itString("BMP")))
+    if ((ext == "bmp") || (ext == "BMP"))
     {
         return e_BMP;
     }
-    else if ((ext == itString("jpg")) || (ext == itString("JPG")) || (ext == itString("JPEG")) || (ext == itString("jpeg")))
+    else if ((ext == "jpg") || (ext == "JPG") || (ext == "JPEG") || (ext == "jpeg"))
     {
         return e_JPG;
     }
-    else if ((ext == itString("tga")) || (ext == itString("TGA")))
+    else if ((ext == "tga") || (ext == "TGA"))
     {
         return e_TGA;
     }
-    else if ((ext == itString("png")) || (ext == itString("PNG")))
+    else if ((ext == "png") || (ext == "PNG"))
     {
         return e_PNG;
     }
-    else if ((ext == itString("dds")) || (ext == itString("DDS")))
+    else if ((ext == "dds") || (ext == "DDS"))
     {
         return e_DDS;
     }
-    else if ((ext == itString("tif")) || (ext == itString("TIF")) || (ext == itString("Tif")))
+    else if ((ext == "tif") || (ext == "TIF") || (ext == "Tif"))
     {
         return e_TIFF;
     }
-    else if ((ext == itString("tiff")) || (ext == itString("TIFF")) || (ext == itString("Tiff")))
+    else if ((ext == "tiff") || (ext == "TIFF") || (ext == "Tiff"))
     {
         return e_TIFF;
     }
@@ -115,7 +118,7 @@ FileType pick_format(const fsLocator& i_FileName)
 //----------------------------------------------------------------------------
 HRESULT do_load_texture(ID3D11Resource*& io_Texture, const fsLocator& i_Locator, int i_WidthReduce, int i_HeightReduce, bool i_bIsMipMap)
 {
-    itString filename;
+    std::string filename;
     fsFileUtil::LocatorToUnicodeString(i_Locator, filename);
 
     DirectX::TexMetadata info;
@@ -125,10 +128,10 @@ HRESULT do_load_texture(ID3D11Resource*& io_Texture, const fsLocator& i_Locator,
     FileType file_type = pick_format(i_Locator);
     switch (file_type) {
     case e_DDS:
-        hr = DirectX::LoadFromDDSFile(filename.GetString(), DirectX::DDS_FLAGS::DDS_FLAGS_NONE, &info, *image);
+        hr = DirectX::LoadFromDDSFile(envString::UTF8ToWideChar(filename).c_str(), DirectX::DDS_FLAGS::DDS_FLAGS_NONE, &info, *image);
         break;
     case e_TGA:
-        hr = DirectX::LoadFromTGAFile(filename.GetString(), &info, *image);
+        hr = DirectX::LoadFromTGAFile(envString::UTF8ToWideChar(filename).c_str(), &info, *image);
         break;
     case e_BMP:
     case e_JPG:
@@ -136,7 +139,7 @@ HRESULT do_load_texture(ID3D11Resource*& io_Texture, const fsLocator& i_Locator,
     case e_TIFF:
     case e_GIF:
     case e_WMP:
-        hr = DirectX::LoadFromWICFile(filename.GetString(), DirectX::WIC_FLAGS::WIC_FLAGS_NONE, &info, *image);
+        hr = DirectX::LoadFromWICFile(envString::UTF8ToWideChar(filename).c_str(), DirectX::WIC_FLAGS::WIC_FLAGS_NONE, &info, *image);
         break;
     default:
         break;
@@ -173,7 +176,7 @@ void load_mip_texture(matMipTexture* io_Texture, const fsLocator& i_Locator, boo
 
 		g2dDX11Global::PrintDXError(hr);
 
-        itString filename;
+        std::string filename;
         fsFileUtil::LocatorToUnicodeString(i_Locator, filename);
         if (matTextureMgr::IsAllowNullTextures())
 		{
@@ -212,7 +215,7 @@ void load_plain_texture(matPlainTexture* io_Texture, const fsLocator& i_Locator,
 
         g2dDX11Global::PrintDXError(hr);
 
-        itString filename;
+        std::string filename;
         fsFileUtil::LocatorToUnicodeString(i_Locator, filename);
         if (matTextureMgr::IsAllowNullTextures())
         {
@@ -358,7 +361,7 @@ void ReloadTIFF(matMipTexture& io_Texture, const fsLocator& i_Locator, bool i_Tr
 void LoadResource(matPlainTexture* io_Texture, const fsLocator& i_Locator, int i_WidthReduce, int i_HeightReduce)
 {
     // LOAD RESOURCE DATA INTO MEMORY PTR
-    itString file_name;
+    std::string file_name;
     fsFileUtil::LocatorToUnicodeString(i_Locator, file_name);
     DBG_LOG("loading resource " << i_Locator << " (" << file_name << ")");
 

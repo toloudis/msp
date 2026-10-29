@@ -62,9 +62,6 @@
 #ifndef MA_FLOATRGBA_HPP
 #include "Core/Ma/maFloatRGBA.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/It/itString.hpp"
-#endif
 #ifndef APP_APPLICATION_HPP
 #include "Core/App/appApplication.hpp"
 #endif
@@ -410,7 +407,7 @@ namespace gvk
 	//	at (i_X1, i_Y1).  It will be silently clipped or rejected by the
 	//	current viewing area.
 	//------------------------------------------------------------------------
-	void g2dWindowVk::DrawText(int i_X, int i_Y, g2dFontHandle i_Font, const itString& i_Text, const g2dRGBColor& i_Color)
+	void g2dWindowVk::DrawText(int i_X, int i_Y, g2dFontHandle i_Font, const std::string& i_Text, const g2dRGBColor& i_Color)
 	{
 		configure_device();
 
@@ -547,9 +544,9 @@ namespace gvk
 		m_pSwapchain->Present();
 	}
 
-	void g2dWindowVk::SetTitle(const itString& i_Title)
+	void g2dWindowVk::SetTitle(const std::string& i_Title)
 	{
-		vkdSetWindowTitle(m_Hwnd, i_Title.GetString());
+		vkdSetWindowTitle(m_Hwnd, i_Title);
 	}
 
 	float g2dWindowVk::GetFrameRateAverage()

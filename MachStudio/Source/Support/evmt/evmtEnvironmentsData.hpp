@@ -14,9 +14,6 @@
 #ifndef NAME_STRING_HPP
 #include "nameString.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "itString.hpp"
-#endif
 
 #include <vector>
 

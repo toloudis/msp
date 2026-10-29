@@ -35,7 +35,7 @@ lyrsDialogInterest::lyrsDialogInterest()
 //	Add Object to Placed
 //--------------------------------------------------------------------
 //virtual 
-void lyrsDialogInterest::AddObject(const itString& i_FileName, const fsLocator& i_Path)
+void lyrsDialogInterest::AddObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 	//std::string dir1, dir2;
 	//dir1 = itStringUtil::GetStdString(i_Path.GetName(0));
@@ -116,8 +116,8 @@ void lyrsDialogInterest::GetAvailableObjects(fsysFileList& io_FileList) const
 	fsLocator path;
 	//path.Push("Data");
 	path.Push(c_SystemName);
-	itString fname;
-	fname = itString("Layer");
+	std::string fname;
+	fname = std::string("Layer");
 	io_FileList.AddFilename(path,fname);
 }
 

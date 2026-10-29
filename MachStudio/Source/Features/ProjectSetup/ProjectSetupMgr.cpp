@@ -174,7 +174,7 @@ namespace ProjectSetupMgr
 			apppath = gfPaths::GetPath( gfPaths::e_ExePath );
 		}
 
-		itString scene_name( i_Data.m_CurrentSceneName.c_str() );
+		std::string scene_name( i_Data.m_CurrentSceneName.c_str() );
 
 		//	setup all the paths
 		mnmPaths::SetupPaths( apppath, scene_name );
@@ -207,7 +207,7 @@ namespace ProjectSetupMgr
 			apppath = gfPaths::GetPath( gfPaths::e_ExePath );
 		}
 
-		itString scene_name( i_SceneName.c_str() );
+		std::string scene_name( i_SceneName.c_str() );
 
 		//	setup all the paths
 		mnmPaths::SetupPaths( apppath, scene_name );
@@ -245,18 +245,18 @@ namespace ProjectSetupMgr
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void make_projectfilename( itString& i_Filename )
+	void make_projectfilename( std::string& i_Filename )
 	{
-		if ( !i_Filename.HasSubString( itString(lc_ProjectFileExt) ) )
+		if ( !(i_Filename.find( std::string(lc_ProjectFileExt) ) != std::string::npos) )
 		{
-			i_Filename += itString(lc_ProjectFileExt);
+			i_Filename += std::string(lc_ProjectFileExt);
 		}
 	}
 
 	//------------------------------------------------------------------------
 	//	WriteProject() - write the current project data
 	//------------------------------------------------------------------------
-	void WriteProject( const itString& i_Filename )
+	void WriteProject( const std::string& i_Filename )
 	{
 		fsLocator locator = gfPaths::GetPath(mnmPaths::e_SaveProjectFiles);
 
@@ -267,7 +267,7 @@ namespace ProjectSetupMgr
 		}
 
 		//	add the filename
-		itString fullFilename;
+		std::string fullFilename;
 		fullFilename = i_Filename;
 		make_projectfilename( fullFilename );
 		locator.Push( fullFilename );
@@ -310,7 +310,7 @@ namespace ProjectSetupMgr
 	//------------------------------------------------------------------------
 	//	ReadProject() - read the current project data
 	//------------------------------------------------------------------------
-	void ReadProject( const itString& i_Filename )
+	void ReadProject( const std::string& i_Filename )
 	{
 		fsLocator locator = gfPaths::GetPath(mnmPaths::e_SaveProjectFiles);
 
@@ -321,7 +321,7 @@ namespace ProjectSetupMgr
 		}
 
 		//	add the filename
-		itString fullFilename;
+		std::string fullFilename;
 		fullFilename = i_Filename;
 		make_projectfilename( fullFilename );
 		locator.Push( fullFilename );
@@ -367,7 +367,7 @@ namespace ProjectSetupMgr
 			{
 				//DBG_LOG("Creating (" << l_Data.m_Scenes[i].m_SceneName.c_str() << ")" );
 				mnmPaths::CreateSceneDirectories( dir, 
-												itString(l_Data.m_Scenes[i].m_SceneName.c_str()) );
+												l_Data.m_Scenes[i].m_SceneName );
 			}
 			catch ( const envExceptionX& i_Ex )
 			{

@@ -44,7 +44,7 @@ ImportDialog::ImportDialog( QWidget* parent, ImportData& i_Data )
 	QGroupBox* pBox = new QGroupBox( "Root Scene/Shot file", this );
 	QVBoxLayout* sbSizer2 = new QVBoxLayout( pBox );
 	m_filePicker1 = new tqcFilePicker( pBox );
-	m_filePicker1->SetFilter( itString(ImportDialogUtil::FileFilter().c_str()) );
+	m_filePicker1->SetFilter( ImportDialogUtil::FileFilter() );
 	sbSizer2->addWidget( m_filePicker1 );
 	m_checkBox_AllowDupes = new QCheckBox( "Import Duplicates by Renaming", pBox );
 	m_checkBox_AllowDupes->setEnabled( false );

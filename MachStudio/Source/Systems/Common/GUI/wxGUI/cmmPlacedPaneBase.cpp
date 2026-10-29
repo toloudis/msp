@@ -10,7 +10,7 @@
 #include "cmmPlacedPaneBase.h"
 #include "ToolUIWx/twc/twcTreeView.hpp"
 #include "Core/Fs/fsFileUtil.hpp"
-#include "Core/It/itString.hpp"
+#include <string>
 
 ///////////////////////////////////////////////////////////////////////////
 

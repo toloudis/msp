@@ -78,8 +78,8 @@ namespace gvk
 		// a single codebase for this function
 		//--------------------------------------------------------------------
 		virtual matTexture* LoadTexture(const fsLocator& i_Directory,
-								const itString& i_Name,
-								std::vector<itString>& o_UVANames,
+								const std::string& i_Name,
+								std::vector<std::string>& o_UVANames,
 								TEXTURE_TYPE i_Type = TEXTURE_TYPE_2D,
 								bool i_bIgnoreTUVSuffix = false,
 								bool mipmap_if_2D = true);

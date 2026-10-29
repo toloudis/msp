@@ -46,7 +46,7 @@ namespace pythDialogUtil
 			std::cout << i_LogStr << std::endl;
 
 #if defined(USE_WXWIDGETS) || defined(USE_QT)
-			pythPythonDialog::AddToLog(itString(i_LogStr));
+			pythPythonDialog::AddToLog(std::string(i_LogStr));
 #endif // USE_WXWIDGETS
 		}
 

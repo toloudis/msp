@@ -15,9 +15,7 @@
 #include "ToolUIQt/tqt/tqtWidgets.hpp"
 #endif
 
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 
 #ifdef USE_QT
 
@@ -31,8 +29,8 @@ class cptrRenderStatsDialog : public QDialog
 	public:
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		void UpdateStatString( itString& i_pString );
-		void AddStatString( itString& i_pString );
+		void UpdateStatString( std::string& i_pString );
+		void AddStatString( std::string& i_pString );
 		void Clear();
 
 		//--------------------------------------------------------------------
@@ -40,7 +38,7 @@ class cptrRenderStatsDialog : public QDialog
 		cptrRenderStatsDialog( QWidget* parent );
 
 	private:
-		void append_text( const itString& i_String );
+		void append_text( const std::string& i_String );
 
 		QPlainTextEdit* m_richText_stats;
 };

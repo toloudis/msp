@@ -36,7 +36,7 @@ g2dDebugDisplay::g2dDebugDisplay(g2dWindow& i_Window)
 
 	//fsLocator font_loc;
 	//g2dFontUtil::GetGlobalFontBitmap(font_loc);
-	itString font_loc_s;
+	std::string font_loc_s;
 	//// First user def path happens to be where fontMap is
 	//// Need to change this code if e_ExeArt no longer equals to e_FirstUserDefPath
 	//font_loc.Push( gfPaths::GetPath(gfPaths::e_FirstUserDefPath) ); 
@@ -59,8 +59,8 @@ void g2dDebugDisplay::Render()
 {
 	if ( m_bEnabled )
 	{
-		std::map<int, itString>::iterator it = m_DebugInfo.begin();
-		std::map<int, itString>::iterator end = m_DebugInfo.end();
+		std::map<int, std::string>::iterator it = m_DebugInfo.begin();
+		std::map<int, std::string>::iterator end = m_DebugInfo.end();
 
 		g2dRGBColor text_color(0x00,0xff,0x00);
 		while ( it != end )
@@ -82,7 +82,7 @@ void g2dDebugDisplay::Render()
 void g2dDebugDisplay::SetDebugInfo(int i_Line, const char* i_Text)
 {
 	if ( i_Text )
-		m_DebugInfo[i_Line] = itString(i_Text);
+		m_DebugInfo[i_Line] = std::string(i_Text);
 	else
 		m_DebugInfo.erase(m_DebugInfo.find(i_Line));
 }

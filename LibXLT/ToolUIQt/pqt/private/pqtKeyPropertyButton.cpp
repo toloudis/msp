@@ -22,9 +22,9 @@ namespace
 	{
 		fsLocator loc(guiMenuMgr::GetIconDirectory());
 		loc.Push(i_pFilename);
-		itString filename;
+		std::string filename;
 		fsFileUtil::LocatorToUnicodeString(loc, filename);
-		return QString::fromWCharArray(filename.GetString());
+		return QString::fromStdString(filename);
 	}
 }
 

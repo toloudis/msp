@@ -73,9 +73,9 @@ cmmSceneDialog::cmmSceneDialog( QWidget* parent,
 	m_notebook1->addTab( m_pLightsPane, "Light Sets" );
 
 	// Load images for the different system
-	itString icon_dir;
+	std::string icon_dir;
 	fsFileUtil::LocatorToUnicodeString( guiMenuMgr::GetIconDirectory(), icon_dir );
-	const QString icondir = QString::fromWCharArray(icon_dir.GetString());
+	const QString icondir = QString::fromStdString(icon_dir);
 
 	std::vector<QPixmap> icon_images;
 	icon_images.push_back(QPixmap(icondir + "\\tree-parent.png"));

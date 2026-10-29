@@ -17,8 +17,8 @@
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
+#ifndef IT_STRINGUTIL_HPP
+#include "Core/It/itStringUtil.hpp"
 #endif
 #ifndef MA_FUNCTIONS_HPP
 #include "Core/Ma/maFunctions.hpp"
@@ -51,7 +51,6 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
-#include <cwctype>
 #include <filesystem>
 #include <fstream>
 #include <string>
@@ -329,9 +328,9 @@ namespace
 	//	Writes the bytes to the file (replacing it); throws g2dImageSaveX
 	void write_file(const fsLocator& i_FileName, const Bytes& i_Bytes)
 	{
-		itString filename;
+		std::string filename;
 		fsFileUtil::LocatorToUnicodeString(i_FileName, filename);
-		std::ofstream file(std::filesystem::path(filename.GetString()), std::ios::binary | std::ios::trunc);
+		std::ofstream file(std::filesystem::u8path(filename), std::ios::binary | std::ios::trunc);
 		file.write(reinterpret_cast<const char*>(i_Bytes.data()), (std::streamsize)i_Bytes.size());
 		if (!file)
 		{
@@ -467,25 +466,23 @@ namespace g2dImageSaveUtil
 //----------------------------------------------------------------------------
 FileType PickFormat(const fsLocator& i_FileName)
 {
-	itString fname = i_FileName.GetLastName();
-	itString ext;
-	fname.GetExtension(ext);
+	std::string fname = i_FileName.GetLastName();
+	std::string ext;
+	itStringUtil::GetExtension(fname, ext);
 
-	std::wstring e(ext.GetString());
-	for (wchar_t& c : e)
-		c = (wchar_t)std::towlower(c);
+	const std::string& e = itStringUtil::ToLower(ext);
 
-	if (e == L"bmp")						return e_BMP;
-	if (e == L"jpg" || e == L"jpeg")		return e_JPG;
-	if (e == L"tga")						return e_TGA;
-	if (e == L"png")						return e_PNG;
-	if (e == L"dds")						return e_DDS;
-	if (e == L"ppm")						return e_PPM;
-	if (e == L"dib")						return e_DIB;
-	if (e == L"hdr")						return e_HDR;
-	if (e == L"pfm")						return e_PFM;
-	if (e == L"exr")						return e_EXR;
-	if (e == L"tif" || e == L"tiff")		return e_TIFF;
+	if (e == "bmp")						return e_BMP;
+	if (e == "jpg" || e == "jpeg")		return e_JPG;
+	if (e == "tga")						return e_TGA;
+	if (e == "png")						return e_PNG;
+	if (e == "dds")						return e_DDS;
+	if (e == "ppm")						return e_PPM;
+	if (e == "dib")						return e_DIB;
+	if (e == "hdr")						return e_HDR;
+	if (e == "pfm")						return e_PFM;
+	if (e == "exr")						return e_EXR;
+	if (e == "tif" || e == "tiff")		return e_TIFF;
 	throw g2dUnknownImageFileTypeX();
 }
 

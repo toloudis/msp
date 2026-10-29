@@ -181,7 +181,7 @@ void shdwPassAOVolumes::InitializeMaterial()
 	if (!l_AOMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/AOVolumes.fx"), matShaderMgr::GetSpecialEffect("AOVolumes.fx"));
+		p->SetShaderName(std::string("Special/AOVolumes.fx"), matShaderMgr::GetSpecialEffect("AOVolumes.fx"));
 		l_AOMat.SetShaderParams(p);
 	}
 
@@ -196,7 +196,7 @@ void shdwPassAOVolumes::InitializeMaterial()
 	if (!l_DepthMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/DepthRender.fx"), matShaderMgr::GetSpecialEffect("DepthRender.fx"));
+		p->SetShaderName(std::string("Special/DepthRender.fx"), matShaderMgr::GetSpecialEffect("DepthRender.fx"));
 		l_DepthMat.SetShaderParams(p);
 	}
 }

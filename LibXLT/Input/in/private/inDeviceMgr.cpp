@@ -57,13 +57,13 @@ void Init(int i_NumSticksOnVJoystick)
 	// One keyboard and one mouse, fed by the GUI toolkit's events. No
 	// gamepads, since there is no gamepad source.
 	inKeyboard* keyboard = new inKeyboard;
-	itString keyboard_name("Keyboard");
+	std::string keyboard_name("Keyboard");
 	keyboard->SetDeviceName(keyboard_name);
 	l_Keyboards.push_back(keyboard);
 	l_NumKeyboards = l_Keyboards.size();
 
 	inMouse* mouse = new inMouse;
-	itString mouse_name("Mouse");
+	std::string mouse_name("Mouse");
 	mouse->SetDeviceName(mouse_name);
 	l_Mouses.push_back(mouse);
 	l_NumMouses = l_Mouses.size();

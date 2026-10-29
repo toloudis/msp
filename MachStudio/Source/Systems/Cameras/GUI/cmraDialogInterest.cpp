@@ -42,14 +42,14 @@ cmraDialogInterest::cmraDialogInterest()
 //	Add Object to Placed
 //--------------------------------------------------------------------
 //virtual 
-void cmraDialogInterest::AddObject(const itString& i_FileName, const fsLocator& i_Path)
+void cmraDialogInterest::AddObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 	//std::string dir1, dir2;
 	//dir1 = itStringUtil::GetStdString(i_Path.GetName(0));
 	//dir2 = itStringUtil::GetStdString(i_Path.GetName(1));
 	//DBG_LOG2("cmraDialogInterest %s-%s", dir1.c_str(), dir2.c_str());
 
-	bool bOrthographic = (i_FileName == itString(c_OrthographicName));
+	bool bOrthographic = (i_FileName == std::string(c_OrthographicName));
 	cmraOperations::AddObject(bOrthographic);
 
 	// change focus to the main app
@@ -163,10 +163,10 @@ void cmraDialogInterest::GetAvailableObjects(fsysFileList& io_FileList) const
 	fsLocator path;
 	//path.Push("Data");
 	path.Push(c_SystemName);
-	itString fname;
-	fname = itString(c_PerspectiveName);
+	std::string fname;
+	fname = std::string(c_PerspectiveName);
 	io_FileList.AddFilename(path, fname);
-	fname = itString(c_OrthographicName);
+	fname = std::string(c_OrthographicName);
 	io_FileList.AddFilename(path, fname);
 }
 

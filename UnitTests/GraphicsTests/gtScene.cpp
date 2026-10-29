@@ -62,9 +62,7 @@
 #ifndef FS_FILEUTIL_HPP
 #include "Core/fs/fsFileUtil.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 #ifndef G3D_RENDERSTATE_HPP
 #include "Graphics/G3d/g3dRenderState.hpp"
 #endif
@@ -247,7 +245,7 @@ matMaterial* gtScene::ShaderMaterial(const std::string& i_Shader, Values i_Value
 {
 	matMaterial* material = new matMaterial();
 	shared_ptr<effShaderParams> params(new effShaderParams());
-	params->SetShaderName(itString(i_Shader.c_str()));
+	params->SetShaderName(i_Shader);
 	material->SetShaderParams(params);
 	matShaderEffect* effect = params->GetShader();
 	EXPECT_TRUE(effect) << i_Shader;
@@ -367,7 +365,7 @@ namespace
 			return NULL;
 		}
 		fsLocator locator;
-		fsFileUtil::UnicodeStringToLocator(itString(i_Path.wstring().c_str()), locator);
+		fsFileUtil::UnicodeStringToLocator(i_Path.u8string(), locator);
 		matTexture* texture = matTextureMgr::LoadTexture(locator, TEXTURE_TYPE_2D, true);
 		EXPECT_TRUE(texture != NULL) << i_Path.u8string();
 		return texture;
@@ -560,7 +558,7 @@ matTexture* gtScene::HdrTexture(const std::filesystem::path& i_Dir, int i_Width,
 		}
 	}
 	fsLocator locator;
-	fsFileUtil::UnicodeStringToLocator(itString(path.wstring().c_str()), locator);
+	fsFileUtil::UnicodeStringToLocator(path.u8string(), locator);
 	matTexture* texture = matTextureMgr::LoadTexture(locator, TEXTURE_TYPE_2D, true);
 	EXPECT_TRUE(texture != NULL) << path.u8string();
 	return texture;

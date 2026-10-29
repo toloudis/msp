@@ -7,6 +7,9 @@
 \****************************************************************************/
 #ifndef GVK_VKDSURFACE_HPP
 #include "GraphicsVulkan/vkd/vkdSurface.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/Env/envString.hpp"
+#endif
 #endif
 
 #include <windows.h>
@@ -75,8 +78,8 @@ namespace gvk
 		return i_NativeWindow && ::IsWindow(static_cast<HWND>(i_NativeWindow)) != 0;
 	}
 
-	void vkdSetWindowTitle(void* i_NativeWindow, const wchar_t* i_Title)
+	void vkdSetWindowTitle(void* i_NativeWindow, const std::string& i_Title)
 	{
-		::SetWindowTextW(static_cast<HWND>(i_NativeWindow), i_Title);
+		::SetWindowTextW(static_cast<HWND>(i_NativeWindow), envString::UTF8ToWideChar(i_Title).c_str());
 	}
 }

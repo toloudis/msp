@@ -13,7 +13,7 @@
 #include "Core/env/envPackage.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/it/itPackage.hpp"
-#include "Core/it/itString.hpp"
+#include <string>
 #include "Graphics/g2d/g2dFontUtil.hpp"
 
 

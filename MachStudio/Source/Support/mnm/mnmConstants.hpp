@@ -77,15 +77,13 @@ namespace mnmConstants
 	//
 #if (SGPU_APP == MS_PRO)
 	static const char* c_COPYRIGHT	= "Copyright© studio|gpu, Inc. 2003-10.";
-	static const wchar_t* cw_COPYRIGHT	= L"Copyright© studio|gpu, Inc. 2003-10.";
 	static const char* c_PRODUCT	= "MachStudio Pro";
-	static const wchar_t* cw_PRODUCT	= L"MachStudio Pro";
 
 	//	demo or not
 	#ifdef DEMO_VERSION
-		static const wchar_t* c_PRODUCT_FOR_DISPLAY = L"MachStudio™ Pro Trial Version";
+		static const char* c_PRODUCT_FOR_DISPLAY = "MachStudio™ Pro Trial Version";
 	#else
-		static const wchar_t* c_PRODUCT_FOR_DISPLAY	= L"MachStudio™ Pro";
+		static const char* c_PRODUCT_FOR_DISPLAY	= "MachStudio™ Pro";
 	#endif
 
 	//	executable
@@ -103,17 +101,17 @@ namespace mnmConstants
 		static const char* c_PRODUCT	= "MachStudio Core for Rhino";
 		//	demo or not
 		#ifdef DEMO_VERSION
-			static const wchar_t* c_PRODUCT_FOR_DISPLAY = L"MachStudio™ Core for Rhino Trial Version";
+			static const char* c_PRODUCT_FOR_DISPLAY = "MachStudio™ Core for Rhino Trial Version";
 		#else
-			static const wchar_t* c_PRODUCT_FOR_DISPLAY	= L"MachStudio™ Core for Rhino";
+			static const char* c_PRODUCT_FOR_DISPLAY	= "MachStudio™ Core for Rhino";
 		#endif
 	#else
 		static const char* c_PRODUCT	= "MachStudio Core";
 		//	demo or not
 		#ifdef DEMO_VERSION
-			static const wchar_t* c_PRODUCT_FOR_DISPLAY = L"MachStudio™ Core Trial Version";
+			static const char* c_PRODUCT_FOR_DISPLAY = "MachStudio™ Core Trial Version";
 		#else
-			static const wchar_t* c_PRODUCT_FOR_DISPLAY	= L"MachStudio™ Core";
+			static const char* c_PRODUCT_FOR_DISPLAY	= "MachStudio™ Core";
 		#endif
 	#endif
 
@@ -134,12 +132,10 @@ namespace mnmConstants
 	#endif	// modeling_package
 
 #elif (SGPU_APP == MS_FUSION)
-	static const wchar_t* cw_COPYRIGHT	= L"Copyright© studio|gpu, Inc. 2010.";
 	static const char* c_COPYRIGHT	= "Copyright© studio|gpu, Inc. 2010.";
 
 	static const char* c_PRODUCT	= "Fusion Cinema3d";
-	static const wchar_t* cw_PRODUCT	= L"Fusion Cinema3d";
-	static const wchar_t* c_PRODUCT_FOR_DISPLAY	= L"Fusion Cinema3d™";
+	static const char* c_PRODUCT_FOR_DISPLAY	= "Fusion Cinema3d™";
 	static const char* c_EXECUTABLE	= "FusionCinema3d.exe";
 
 #else
@@ -151,9 +147,9 @@ namespace mnmConstants
 	//--------------------------------------------------------------------
 	static const char* c_COMPANY	= "StudioGPU";
 	static const char* c_TRADEMARK  = "™";
-	static const wchar_t* cw_RIGHTS  = L"All rights reserved.";
-	static const wchar_t* cw_64BIT  = L"64-bit";
-	static const wchar_t* cw_32BIT  = L"32-bit";
+	static const char* c_RIGHTS  = "All rights reserved.";
+	static const char* c_64BIT  = "64-bit";
+	static const char* c_32BIT  = "32-bit";
 
 	//--------------------------------------------------------------------
 	//	Status Panels

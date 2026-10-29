@@ -39,9 +39,7 @@
 #ifndef GF_FILETRANSLATIONMGR_HPP
 #include "Core/Gf/gfFileTranslationMgr.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/It/itString.hpp"
-#endif
+#include <string>
 #ifndef G2D_EXCEPTIONX_HPP
 #include "Graphics/G2d/g2dExceptionX.hpp"
 #endif
@@ -238,7 +236,7 @@ namespace
 		o_HasAlpha = (color_type & 4) != 0;
 
 		matDecodedImage decoded;
-		itString error;
+		std::string error;
 		if (!matDecodeImage(i_Locator, matImageFileType::e_PNG, decoded, &error))
 		{
 			DBG_ERROR("Couldn't read PNG file: " << error);

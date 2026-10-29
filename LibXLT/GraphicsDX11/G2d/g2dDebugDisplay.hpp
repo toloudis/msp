@@ -14,9 +14,7 @@
 #ifndef G2D_FONTHANDLE_HPP
 #include "Graphics/g2d/g2dFontHandle.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 
 #include <map>
 
@@ -64,6 +62,6 @@ class g2dDebugDisplay
 		g2dWindow& m_Window;
 		g2dFontHandle m_DebugFont;
 		bool m_bEnabled;
-		std::map<int, itString> m_DebugInfo;
+		std::map<int, std::string> m_DebugInfo;
 };
 

@@ -20,6 +20,9 @@
 #include "Graphics/g3d/g3dSceneNode.hpp"
 #include "Graphics/mat/matTexture.hpp"
 #include "Graphics/mat/matTextureMgr.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/Env/envString.hpp"
+#endif
 
 
 //============================================================================
@@ -81,7 +84,7 @@ void scrText::SetPosition(const maPoint3d& i_Position)
 //--------------------------------------------------------------------
 //	GetText returns the text string to be displayed
 //--------------------------------------------------------------------
-const itString& scrText::GetText() const
+const std::string& scrText::GetText() const
 {
 	return m_Text;
 }
@@ -89,7 +92,7 @@ const itString& scrText::GetText() const
 //--------------------------------------------------------------------
 //	SetText sets the text string to be displayed
 //--------------------------------------------------------------------
-void scrText::SetText(const itString& i_Text)
+void scrText::SetText(const std::string& i_Text)
 {
 	if (m_Text == i_Text)
 	{
@@ -207,7 +210,7 @@ void scrText::SetCentered(bool i_bCentered)
 	{
 		m_CenterOffsetX = 0;
 	}
-	else if (m_pTexture && m_Text.GetLength())
+	else if (m_pTexture && m_Text.size())
 	{
 		center_text();
 		update_transform();
@@ -260,7 +263,9 @@ void scrText::make_geometry()
 	//delete any old objects
 	free_geometry();
 
-	int i, text_len = m_Text.GetLength();
+	//	one glyph per UTF-16 unit of the UTF-8 text, as when it was an itString
+	const std::u16string glyphs = envString::UTF8ToUTF16(m_Text);
+	int i, text_len = int(glyphs.size());
 	m_FragmentLengthInChar = text_len;
 
 	if (!m_pTexture || !text_len)
@@ -276,7 +281,7 @@ void scrText::make_geometry()
 	unsigned short *indices = new unsigned short[text_len * 6];
 	for (i = 0; i < text_len; ++i)
 	{
-		ch = m_Text[i];
+		ch = char(glyphs[i]);
 		start_uvX = ch % lc_NumHorizontalChars * m_UVWidth;
 		start_uvY = ch / lc_NumHorizontalChars * m_UVHeight;
 
@@ -441,7 +446,7 @@ void scrText::update_transform()
 //--------------------------------------------------------------------
 void scrText::center_text()
 {
-	if (!m_bCentered || !m_pTexture || !m_Text.GetLength())
+	if (!m_bCentered || !m_pTexture || !m_Text.size())
 	{
 		m_CenterOffsetX = 0;
 		return;
@@ -451,5 +456,5 @@ void scrText::center_text()
 	GetSize(width, height);
 	// update_transform scales each character to (2 * width + 1) / 2
 	// window units wide
-	m_CenterOffsetX = (static_cast<float>(m_Text.GetLength()) / 2.0f) * (width + 0.5f);
+	m_CenterOffsetX = (static_cast<float>(envString::UTF8ToUTF16(m_Text).size()) / 2.0f) * (width + 0.5f);
 }

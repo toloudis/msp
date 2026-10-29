@@ -240,7 +240,7 @@ public:
 	// to check for empty strings in the itString, which cannot
 	// be Push'ed onto the fsLocator.
 	//------------------------------------------------------------------------
-	effParamTexture(const std::string& i_Name, const std::string& i_PrtyName, const itString& i_Default);
+	effParamTexture(const std::string& i_Name, const std::string& i_PrtyName, const std::string& i_Default);
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------

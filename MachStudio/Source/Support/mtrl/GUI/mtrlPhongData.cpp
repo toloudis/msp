@@ -28,14 +28,14 @@ mtrlPhongData::mtrlPhongData()
 	m_UTrans("U Translate", 0.0f),
 	m_VTrans("V Translate", 0.0f),
 	m_UVAngle("UV Rotate", 0.0f),
-	m_TextureDiffuse("Diffuse Map", itString("")),
-	m_TextureSpecular("Specular Map", itString("")),
-	m_TextureGloss("Gloss Map", itString("")),
-	m_TextureEnvironment("Cube Env Map", itString("")),
-	m_TextureNormalMap("Normal Map", itString("")),
-	m_TextureReflectFactorMap("Reflection Mask", itString("")),
-	m_TextureTransparencyMap("Transparency Map", itString("")),
-	m_TextureDisplacementMap("Displacement Map", itString(""))
+	m_TextureDiffuse("Diffuse Map", std::string()),
+	m_TextureSpecular("Specular Map", std::string()),
+	m_TextureGloss("Gloss Map", std::string()),
+	m_TextureEnvironment("Cube Env Map", std::string()),
+	m_TextureNormalMap("Normal Map", std::string()),
+	m_TextureReflectFactorMap("Reflection Mask", std::string()),
+	m_TextureTransparencyMap("Transparency Map", std::string()),
+	m_TextureDisplacementMap("Displacement Map", std::string())
 {
 }
 
@@ -57,14 +57,14 @@ mtrlPhongData::mtrlPhongData(const mtrlPhongData& i_Data)
 	m_UTrans("U Translate", 0.0f),
 	m_VTrans("V Translate", 0.0f),
 	m_UVAngle("UV Rotate", 0.0f),
-	m_TextureDiffuse("Diffuse Map", itString("")),
-	m_TextureSpecular("Specular Map", itString("")),
-	m_TextureGloss("Gloss Map", itString("")),
-	m_TextureEnvironment("Cube Env Map", itString("")),
-	m_TextureNormalMap("Normal Map", itString("")),
-	m_TextureReflectFactorMap("Reflection Mask", itString("")),
-	m_TextureTransparencyMap("Transparency Map", itString("")),
-	m_TextureDisplacementMap("Displacement Map", itString(""))
+	m_TextureDiffuse("Diffuse Map", std::string()),
+	m_TextureSpecular("Specular Map", std::string()),
+	m_TextureGloss("Gloss Map", std::string()),
+	m_TextureEnvironment("Cube Env Map", std::string()),
+	m_TextureNormalMap("Normal Map", std::string()),
+	m_TextureReflectFactorMap("Reflection Mask", std::string()),
+	m_TextureTransparencyMap("Transparency Map", std::string()),
+	m_TextureDisplacementMap("Displacement Map", std::string())
 {
 	(*this) = i_Data;
 }

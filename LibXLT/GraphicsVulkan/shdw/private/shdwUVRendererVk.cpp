@@ -111,7 +111,7 @@ shdwUVRendererVk::shdwUVRendererVk()
 	if (!l_UVMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/Solid.fx"), matShaderMgr::GetSpecialEffect("Solid.fx"));
+		p->SetShaderName(std::string("Special/Solid.fx"), matShaderMgr::GetSpecialEffect("Solid.fx"));
 		l_UVMat.SetShaderParams(p);
 	}
 }

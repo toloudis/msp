@@ -39,9 +39,9 @@ namespace
 	//--------------------------------------------------------------------
 	QString get_icon_directory()
 	{
-		itString wide_dir;
+		std::string wide_dir;
 		fsFileUtil::LocatorToUnicodeString(guiMenuMgr::GetIconDirectory(), wide_dir);
-		return QString::fromWCharArray(wide_dir.GetString()) + "\\";
+		return QString::fromStdString(wide_dir) + "\\";
 	}
 
 	//--------------------------------------------------------------------

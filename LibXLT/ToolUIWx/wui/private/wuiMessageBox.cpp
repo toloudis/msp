@@ -10,7 +10,7 @@
 #include "ToolUIWx/twx/twxMessageBox.hpp"
 
 #include "Core/dbg/dbgMsg.hpp"
-#include "Core/it/itString.hpp"
+#include <string>
 
 
 //===========================================================================
@@ -31,12 +31,12 @@ int wuiMessageBox::Show( const char* i_Message, const char* i_Title, int i_Type 
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-int wuiMessageBox::Show( const itString& i_Message, const itString& i_Title, int i_Type )
+int wuiMessageBox::Show( const std::string& i_Message, const std::string& i_Title, int i_Type )
 {
 #ifdef USE_WXWIDGETS
 	return twxMessageBox::Show( i_Message, i_Title, i_Type );
 #else // USE_WXWIDGETS
-	DBG_ERROR("MessageBox: "<< i_Message.GetString());
+	DBG_ERROR("MessageBox: "<< i_Message);
 	return guiMessageBox::e_Cancel;
 #endif // USE_WXWIDGETS
 }

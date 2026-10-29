@@ -40,10 +40,11 @@ namespace
 	{
 		if (i_Version < 2)
 		{
-			itString null_terminated_string;
-			i_Reader.Read(null_terminated_string);
-			if (null_terminated_string.GetLength() > 1)
-				o_Driver.m_SoundName = fsLocator(itString(0, null_terminated_string.GetLength() - 1, null_terminated_string)); // un-NULL terminate
+			//	ReadItString gives the name without its terminating NULL
+			std::string sound_name;
+			i_Reader.ReadItString(sound_name);
+			if (!sound_name.empty())
+				o_Driver.m_SoundName = fsLocator(sound_name);
 			else
 				o_Driver.m_SoundName.Clear();
 		}
@@ -51,8 +52,8 @@ namespace
 		{
 			// Read in a single itString with path separators and then 
 			// split into locator
-			itString savefilename;
-			chChunkParserUtil::Read( i_Reader, savefilename );
+			std::string savefilename;
+			chChunkParserUtil::ReadItString( i_Reader, savefilename );
 			fsFileUtil::UnicodeStringToLocator( savefilename, o_Driver.m_SoundName );
 			//Note: not resolving the absolute path here, let the DriverCreator handle that
 		}
@@ -77,7 +78,7 @@ namespace
 
 		// Version 2: Convert array of itStrings to a single itString with
 		// path separators in order to write to file.
-		itString savefilename;
+		std::string savefilename;
 		fsFileUtil::LocatorToUnicodeString( i_Driver.m_SoundName, savefilename );
 		chChunkParserUtil::Write( o_Writer, savefilename );
 

@@ -161,10 +161,6 @@ void guiXMLTextReader::Convert(const std::string& i_Text, fsLocator& o_Value)
 {
 	if (i_Text.length() > 0) fsFileUtil::ANSIFilenameToLocator( i_Text, o_Value );
 }
-void guiXMLTextReader::Convert(const std::string& i_Text, itString& o_Value)
-{
-	if (i_Text.length() > 0) o_Value = i_Text.c_str();
-}
 void guiXMLTextReader::Convert(const std::string& i_Text, maFloatRGBA& o_Value)
 {
 	if (i_Text.length() > 0)

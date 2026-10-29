@@ -182,7 +182,7 @@ public:
 		{
 			//char msg[512];
 			std::string txt;
-			txt = itStringUtil::GetStdString(i_Ex.GetLocator().GetLastName());
+			txt = i_Ex.GetLocator().GetLastName();
 			//sprintf( msg, "Cannot add the object -- missing %s", txt.c_str() );
 			std::ostringstream oss;
 			oss.setf(0, std::ios::floatfield);
@@ -354,13 +354,13 @@ public:
 	//--------------------------------------------------------------------
 	//	create a default name for the new object
 	//--------------------------------------------------------------------
-	static void create_default_name( const itString& i_Filename, 
+	static void create_default_name( const std::string& i_Filename, 
 									nameString& o_NameString, 
 									int& io_ObjectCounter)
 	{
 		nameMgr::VerifyNoDupNameFunc verifyFunc = &VerifyNodupeName;
 		nameMgr::CreateDefaultName( 
-			nameString(itStringUtil::GetStdString( i_Filename ).c_str()),
+			nameString(i_Filename.c_str()),
 			verifyFunc,
 			o_NameString,
 			io_ObjectCounter
@@ -371,12 +371,12 @@ public:
 	//	create a new name according to the original name and increase
 	//	the ending number
 	//--------------------------------------------------------------------
-	static void create_duplicate_name( const itString& i_Filename, 
+	static void create_duplicate_name( const std::string& i_Filename, 
 										nameString& o_NameString)
 	{
 		nameMgr::VerifyNoDupNameFunc verifyFunc = &VerifyNodupeName;
 		nameMgr::CreateDuplicateName(
-			nameString(itStringUtil::GetStdString( i_Filename ).c_str()),
+			nameString(i_Filename.c_str()),
 			verifyFunc,
 			o_NameString);
 	}

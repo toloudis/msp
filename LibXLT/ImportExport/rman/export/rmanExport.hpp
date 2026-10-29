@@ -24,6 +24,7 @@
 #ifndef RMAN_EXPORTDATA_HPP
 #include "ImportExport/rman/export/rmanExportData.hpp"
 #endif
+#include <string>
 
 //============================================================================
 //	Forward References
@@ -32,7 +33,6 @@ struct rmanExportData;
 struct rmanUVTransformData;
 struct g3dAmbientEnvState;
 class fsLocator;
-class itString;
 class maRotation;
 class camCamera;
 class g3dSceneNode;

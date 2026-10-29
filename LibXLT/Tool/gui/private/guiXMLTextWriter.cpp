@@ -204,14 +204,6 @@ void guiXMLTextWriter::WriteElement(const char* i_KeyName, const fsLocator& i_Va
 		sm_pImplementation->WriteElement(i_KeyName, i_Value);
 	}
 }
-void guiXMLTextWriter::WriteElement(const char* i_KeyName, const itString& i_Value)
-{
-	DBG_ASSERT(sm_pImplementation, "guiXMLTextWriter: No implementation");
-	if (sm_pImplementation)
-	{
-		sm_pImplementation->WriteElement(i_KeyName, i_Value);
-	}
-}
 void guiXMLTextWriter::WriteElement(const char* i_KeyName, const maFloatRGBA& i_Value)
 {
 	DBG_ASSERT(sm_pImplementation, "guiXMLTextWriter: No implementation");

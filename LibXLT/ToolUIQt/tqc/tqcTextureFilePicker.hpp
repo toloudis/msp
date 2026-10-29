@@ -57,13 +57,13 @@ class tqcTextureFilePicker : public QWidget, public tqcValueChangedNotifier
 		//--------------------------------------------------------------------
 		//	Filename
 		//--------------------------------------------------------------------
-		itString GetFilename() const;
+		std::string GetFilename() const;
 
 		//--------------------------------------------------------------------
 		//	Filter
 		//--------------------------------------------------------------------
-		const itString& GetFilter() const;
-		void SetFilter(const itString& i_Filter);
+		const std::string& GetFilter() const;
+		void SetFilter(const std::string& i_Filter);
 
 		//--------------------------------------------------------------------
 		//	ShowFileNameOnly
@@ -137,7 +137,7 @@ class tqcTextureFilePicker : public QWidget, public tqcValueChangedNotifier
 		QToolButton* m_pInvokeButton;
 		
 		fsLocator	m_Value;
-		itString	m_Filter;
+		std::string	m_Filter;
 		bool		m_bShowFileNameOnly;
 		bool		m_bButtonPress;
 		fsLocator	m_InitialDirectory;

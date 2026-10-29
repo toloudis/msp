@@ -50,9 +50,9 @@ mtrlToon::mtrlToon(mdlMaterialInfo& i_MatData,
 	m_Data.m_Transition2.SetValue(m_pShaderData->m_Transition2 );
 	m_Data.m_Transition3.SetValue(m_pShaderData->m_Transition3 );
 
-	m_Data.m_TextureDiffuse.SetValue(itString(m_pShaderData->m_NameDiffuse.c_str()));
-	m_Data.m_TextureGradientMap.SetValue(itString(m_pShaderData->m_NameGradientMap.c_str()));
-	m_Data.m_TextureTransparencyMap.SetValue(itString(m_pShaderData->m_NameTransparencyMap.c_str()));
+	m_Data.m_TextureDiffuse.SetValue(m_pShaderData->m_NameDiffuse);
+	m_Data.m_TextureGradientMap.SetValue(m_pShaderData->m_NameGradientMap);
+	m_Data.m_TextureTransparencyMap.SetValue(m_pShaderData->m_NameTransparencyMap);
 
 	m_Data.m_SpecularEnable.SetValue(m_pShaderData->m_SpecularEnable);
 	m_Data.m_Smoothness.SetValue(m_pShaderData->m_Smoothness );

@@ -19,6 +19,9 @@
 
 #include <sstream>
 #include <iomanip>
+#ifndef IT_STRINGUTIL_HPP
+#include "Core/It/itStringUtil.hpp"
+#endif
 
 //--------------------------------------------------------------------
 //	Constructor
@@ -53,9 +56,9 @@ void rptReportMem::Generate()
 	std::string filename;
 	fsFileUtil::LocatorToANSIFilename(sceneFile, filename);
 
-	itString fname = sceneFile.GetLastName();
-	fname.StripExtension();
-	fname += itString(".mem");
+	std::string fname = sceneFile.GetLastName();
+	itStringUtil::StripExtension(fname);
+	fname += std::string(".mem");
 
 	sceneFile.Pop();
 	sceneFile.Push(fname);

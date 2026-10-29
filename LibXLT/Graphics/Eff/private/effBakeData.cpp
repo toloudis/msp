@@ -82,9 +82,9 @@ void effBakeData::GetTextureNames(std::vector<std::string>& o_Names) const
 void effBakeData::ReloadTextures(const fsLocator& i_TextureDirectory)
 {
 	if (m_NameEmissive != "")
-		m_TextureEmissive = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameEmissive.c_str()));
+		m_TextureEmissive = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameEmissive);
 	if (m_NameNormalMap != "")
-		m_TextureNormalMap = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameNormalMap.c_str()));
+		m_TextureNormalMap = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameNormalMap);
 }
 
 //----------------------------------------------------------------------------
@@ -92,9 +92,9 @@ void effBakeData::ReloadTextures(const fsLocator& i_TextureDirectory)
 void effBakeData::ReloadTextures(const fsResourceFinder& i_TextureFinder)
 {
 	if (m_NameEmissive != "")
-		m_TextureEmissive = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameEmissive.c_str()));
+		m_TextureEmissive = matTextureMgr::LoadTexture(i_TextureFinder, m_NameEmissive);
 	if (m_NameNormalMap != "")
-		m_TextureNormalMap = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameNormalMap.c_str()));
+		m_TextureNormalMap = matTextureMgr::LoadTexture(i_TextureFinder, m_NameNormalMap);
 }
 
 //----------------------------------------------------------------------------
@@ -118,6 +118,6 @@ void effBakeData::AddToParams(effShaderParams& o_Params)
 {
 	o_Params.SetVersion(1);
 	o_Params.AddParam(new effParamColor("g_emissive", "g_emissive", m_ColorEmissive));
-	o_Params.AddParam(new effParamTexture("emissiveMap", "emissiveMap", itString(m_NameEmissive.c_str())));
-	o_Params.AddParam(new effParamTexture("normalMap", "normalMap", itString(m_NameNormalMap.c_str())));
+	o_Params.AddParam(new effParamTexture("emissiveMap", "emissiveMap", m_NameEmissive));
+	o_Params.AddParam(new effParamTexture("normalMap", "normalMap", m_NameNormalMap));
 }

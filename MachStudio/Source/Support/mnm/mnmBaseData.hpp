@@ -11,9 +11,7 @@
 #endif
 #define MNM_BASEDATA_HPP
 
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 #ifndef MA_POINT3D_HPP
 #include "Core/ma/maPoint3d.hpp"
 #endif
@@ -42,11 +40,11 @@ public:
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	mnmBaseData( const itString& i_Filename );
+	mnmBaseData( const std::string& i_Filename );
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	mnmBaseData(const itString& i_Filename,
+	mnmBaseData(const std::string& i_Filename,
 				 const maPoint3d& i_Position,
 				 const maRotation& i_Orientation );
 
@@ -67,7 +65,7 @@ public:
 	//
 	bool		m_bEditorVisible;
 	nameString	m_Name;
-	itString	m_Filename;
+	std::string	m_Filename;
 	maPoint3d	m_Position;
 	maRotation	m_Orientation;
 	//float or maPoint3d m_Scale; (????)

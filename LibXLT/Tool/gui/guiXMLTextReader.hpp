@@ -17,9 +17,6 @@
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
 #ifndef MA_FLOATRGBA_HPP
 #include "Core/Ma/maFloatRGBA.hpp"
 #endif
@@ -97,7 +94,6 @@ public:
 	static void Convert(const std::string& i_Text, char * o_Value);
 	static void Convert(const std::string& i_Text, std::string& o_Value);
 	static void Convert(const std::string& i_Text, fsLocator& o_Value);
-	static void Convert(const std::string& i_Text, itString& o_Value);
 	static void Convert(const std::string& i_Text, maFloatRGBA& o_Value);
 
 };

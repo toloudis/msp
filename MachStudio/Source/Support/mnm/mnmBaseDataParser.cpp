@@ -46,7 +46,7 @@ void read_base_data(chReader& i_Reader,
 	chChunkParserUtil::Read(i_Reader, name);
 	o_Data.m_Name.SetString( name );
 
-	chChunkParserUtil::Read(i_Reader, o_Data.m_Filename);
+	chChunkParserUtil::ReadItString(i_Reader, o_Data.m_Filename);
 	chChunkParserUtil::Read(i_Reader, o_Data.m_Position);
 	chChunkParserUtil::Read(i_Reader, o_Data.m_Orientation);
 	chChunkParserUtil::Read(i_Reader, o_Data.m_bEditorVisible);

@@ -132,7 +132,7 @@ shdwPassOpacity::shdwPassOpacity(matRenderTargetTexture* (&i_pTargets)[8], const
 	if (!l_OpacityMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/OpacityRender.fx"), matShaderMgr::GetSpecialEffect("OpacityRender.fx"));
+		p->SetShaderName(std::string("Special/OpacityRender.fx"), matShaderMgr::GetSpecialEffect("OpacityRender.fx"));
 		l_OpacityMat.SetShaderParams(p);
 	}
 	m_OverscanPixels = 0;

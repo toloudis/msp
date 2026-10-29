@@ -62,11 +62,11 @@ prjltScriptObject* prjltObjectCreator::Create(const prjltScriptData &i_Data)
 		//	creating a generic name.
 		/*if (i_Data.m_BaseData.m_Name.GetValue().IsEmpty())
 		{
-			create_default_name( itString("ProjectedLight"), objName );
+			create_default_name( std::string("ProjectedLight"), objName );
 		}
 		else
 		{
-			create_default_name( itString(i_Data.m_BaseData.m_Name.GetString().c_str()), objName );
+			create_default_name( i_Data.m_BaseData.m_Name.GetString(), objName );
 		}*/
 
 		prjltOperations::CreateNewObjectName(nameString(), objName, i_Data.m_BaseData.m_LightType);

@@ -18,11 +18,11 @@
 #ifndef RLYR_PASSESOBJECT_HPP
 #include "Support/rlyr/rlyrPassesObject.hpp"
 #endif
+#include <string>
 
 //============================================================================
 //	Forward References
 //============================================================================
-class itString;
 class nameString;
 class prtyObject;
 
@@ -47,13 +47,13 @@ namespace captRenderOutputDataUtil
 	//------------------------------------------------------------------------
 	// Set format and compress code for the render
 	//------------------------------------------------------------------------
-	void SetCaptureFormat(const itString& i_CapFormat);
-	void SetCompressCode(const itString& i_CompressCode);
+	void SetCaptureFormat(const std::string& i_CapFormat);
+	void SetCompressCode(const std::string& i_CompressCode);
 
 	//------------------------------------------------------------------------
 	// Set the given camera as an active camera
 	//------------------------------------------------------------------------
-	void SetActiveCamera(const itString& i_Camera);
+	void SetActiveCamera(const std::string& i_Camera);
 
 	//------------------------------------------------------------------------
 	// Set the render resolution width and height
@@ -86,9 +86,9 @@ namespace captRenderOutputDataUtil
 	//------------------------------------------------------------------------
 	// Set the render output file and path
 	//------------------------------------------------------------------------
-	void SetCaptureOutputFile(itString& i_OutputFile);
-	void SetCaptureOutputDirectory(itString& i_OutputPath);
-	void SetCaptureOutputDirectoryRoot(itString& i_OutputPath);
+	void SetCaptureOutputFile(const std::string& i_OutputFile);
+	void SetCaptureOutputDirectory(const std::string& i_OutputPath);
+	void SetCaptureOutputDirectoryRoot(const std::string& i_OutputPath);
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -127,26 +127,26 @@ namespace captRenderOutputDataUtil
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void SetCurrentScene( itString& i_SceneName );
+	void SetCurrentScene( std::string& i_SceneName );
 	void SetCurrentScene( nameString& i_SceneName );
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void SetCurrentCamera( itString& i_CamName );
+	void SetCurrentCamera( std::string& i_CamName );
 	void SetCurrentCamera( nameString& i_CamName );
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void SetCurrentLayer( itString& i_LayerName );
+	void SetCurrentLayer( std::string& i_LayerName );
 	void SetCurrentLayer( nameString& i_LayerName );
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void SetCurrentRenderPass( itString& i_RenderPass );
+	void SetCurrentRenderPass( std::string& i_RenderPass );
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void SetCurrentSceneFilename( itString& i_SceneFilename );
+	void SetCurrentSceneFilename( std::string& i_SceneFilename );
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -168,7 +168,7 @@ namespace captRenderOutputDataUtil
 	//	the format will be "scenename_cameraname_counter" or a variation of
 	//	this depending on the flags set.
 	//------------------------------------------------------------------------
-	void GenerateFilename( itString& o_Filename, bool i_bCapturingRenderman = false );
+	void GenerateFilename( std::string& o_Filename, bool i_bCapturingRenderman = false );
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -176,7 +176,7 @@ namespace captRenderOutputDataUtil
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void SetPrefix( itString& i_Prefix );
+	void SetPrefix( std::string& i_Prefix );
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -212,6 +212,6 @@ namespace captRenderOutputDataUtil
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	itString GetRenderPassName(rlyrPassesObject::ePassType i_PassType);
+	std::string GetRenderPassName(rlyrPassesObject::ePassType i_PassType);
 
 }	// end of namespace

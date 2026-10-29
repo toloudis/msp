@@ -67,7 +67,7 @@ namespace captRenderOutputDataUtil
 			//------------------------------------------------------------
 			virtual prtyObject* ResolveName(std::string &i_PropertyObjectName)
 			{
-				if (i_PropertyObjectName == std::string("CapturePrefs"))
+				if (i_PropertyObjectName == "CapturePrefs")
 				{
 					return l_DataObject;
 				}
@@ -167,23 +167,23 @@ namespace captRenderOutputDataUtil
 	//------------------------------------------------------------------------
 	// Set format and compress code for the render
 	//------------------------------------------------------------------------
-	void SetCaptureFormat(const itString& i_CapFormat)
+	void SetCaptureFormat(const std::string& i_CapFormat)
 	{
-		std::string format = itStringUtil::GetStdString(i_CapFormat);
+		std::string format = i_CapFormat;
 		l_DataObject->m_Data.m_CaptureFormat.SetValue(format.c_str());
 	}
-	void SetCompressCode(const itString& i_CompressCode)
+	void SetCompressCode(const std::string& i_CompressCode)
 	{
-		std::string code = itStringUtil::GetStdString(i_CompressCode);
+		std::string code = i_CompressCode;
 		l_DataObject->m_Data.m_CompressCode.SetValue(code.c_str());
 	}
 
 	//------------------------------------------------------------------------
 	// Set the given camera as an active camera
 	//------------------------------------------------------------------------
-	void SetActiveCamera(const itString& i_Camera)
+	void SetActiveCamera(const std::string& i_Camera)
 	{
-		std::string cam = itStringUtil::GetStdString(i_Camera);
+		std::string cam = i_Camera;
 		int num_cameras = l_DataObject->m_Data.m_Cameras.GetNumberOfItems();
 		for (int i = 0; i < num_cameras; ++i)
 		{
@@ -254,17 +254,17 @@ namespace captRenderOutputDataUtil
 	//------------------------------------------------------------------------
 	// Set the render output file and path
 	//------------------------------------------------------------------------
-	void SetCaptureOutputFile(itString& i_OutputFile)
+	void SetCaptureOutputFile(const std::string& i_OutputFile)
 	{
 		l_DataObject->m_Data.m_OutputFileTags.SetValue( i_OutputFile );
 		l_DataObject->m_Data.m_bOutputFileCustomize.SetValue( true );
 	}
-	void SetCaptureOutputDirectory(itString& i_OutputPath)
+	void SetCaptureOutputDirectory(const std::string& i_OutputPath)
 	{
 		l_DataObject->m_Data.m_OutputDirectoryTags.SetValue( i_OutputPath );
 		l_DataObject->m_Data.m_bOutputDirectoryCustomize.SetValue( true );
 	}
-	void SetCaptureOutputDirectoryRoot(itString& i_OutputPath)
+	void SetCaptureOutputDirectoryRoot(const std::string& i_OutputPath)
 	{
 		l_DataObject->m_Data.m_OutputDirectoryRoot.SetValue( i_OutputPath );
 	}
@@ -369,7 +369,7 @@ namespace captRenderOutputDataUtil
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void SetCurrentScene( itString& i_SceneName )
+	void SetCurrentScene( std::string& i_SceneName )
 	{
 		l_DataObject->m_Data.m_CurrentScene.SetValue( i_SceneName );
 
@@ -377,36 +377,36 @@ namespace captRenderOutputDataUtil
 	}
 	void SetCurrentScene( nameString& i_SceneName )
 	{
-		l_DataObject->m_Data.m_CurrentScene.SetValue( itString(i_SceneName.GetString().c_str()) );
+		l_DataObject->m_Data.m_CurrentScene.SetValue( i_SceneName.GetString() );
 
 		//DBG_LOG("Setting CurrentScene (" << itStringUtil::GetStdString(l_DataObject->m_Data.m_CurrentScene).c_str() << ")");
 	}
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void SetCurrentCamera( itString& i_CamName )
+	void SetCurrentCamera( std::string& i_CamName )
 	{
 		l_DataObject->m_Data.m_CurrentCamera.SetValue( i_CamName );
 	}
 	void SetCurrentCamera( nameString& i_CamName )
 	{
-		l_DataObject->m_Data.m_CurrentCamera.SetValue( itString(i_CamName.GetString().c_str()) );
+		l_DataObject->m_Data.m_CurrentCamera.SetValue( i_CamName.GetString() );
 	}
 	
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void SetCurrentLayer( itString& i_LayerName )
+	void SetCurrentLayer( std::string& i_LayerName )
 	{
 		l_DataObject->m_Data.m_CurrentLayer.SetValue( i_LayerName );
 	}
 	void SetCurrentLayer( nameString& i_LayerName )
 	{
-		l_DataObject->m_Data.m_CurrentLayer.SetValue( itString(i_LayerName.GetString().c_str()) );
+		l_DataObject->m_Data.m_CurrentLayer.SetValue( i_LayerName.GetString() );
 	}
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void SetCurrentRenderPass( itString& i_RenderPass )
+	void SetCurrentRenderPass( std::string& i_RenderPass )
 	{
 		l_DataObject->m_Data.m_CurrentRenderPass.SetValue( i_RenderPass );
 		//	TODO: remove spaces from the class
@@ -416,7 +416,7 @@ namespace captRenderOutputDataUtil
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void SetCurrentSceneFilename( itString& i_SceneFilename )
+	void SetCurrentSceneFilename( std::string& i_SceneFilename )
 	{
 		l_DataObject->m_Data.m_CurrentSceneFilename.SetValue( i_SceneFilename );
 	}
@@ -449,7 +449,7 @@ namespace captRenderOutputDataUtil
 	//	the format will be "scenename_cameraname_counter" or a variation of
 	//	this depending on the flags set.
 	//------------------------------------------------------------------------
-	void GenerateFilename( itString& o_Filename, bool i_bCapturingRenderman /*false*/ )
+	void GenerateFilename( std::string& o_Filename, bool i_bCapturingRenderman /*false*/ )
 	{
 		captRenderOutputTagsUtil::GenerateOutputFilename( l_DataObject->m_Data, o_Filename, i_bCapturingRenderman );
 	}
@@ -461,9 +461,9 @@ namespace captRenderOutputDataUtil
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void SetPrefix( itString& i_Prefix )
+	void SetPrefix( std::string& i_Prefix )
 	{
-		l_DataObject->m_Data.m_Prefix.SetValue( itStringUtil::GetStdString( i_Prefix ) );
+		l_DataObject->m_Data.m_Prefix.SetValue( i_Prefix );
 	}
 
 	//------------------------------------------------------------------------
@@ -526,9 +526,9 @@ namespace captRenderOutputDataUtil
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	itString GetRenderPassName(rlyrPassesObject::ePassType i_PassType)
+	std::string GetRenderPassName(rlyrPassesObject::ePassType i_PassType)
 	{
-		itString pass_name;
+		std::string pass_name;
 		switch (i_PassType)
 		{
 		case rlyrPassesObject::e_Beauty:

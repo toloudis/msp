@@ -98,9 +98,6 @@
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/It/itString.hpp"
-#endif
 
 #include <algorithm>
 #include <cmath>
@@ -121,11 +118,10 @@ namespace
 	class gtNoFonts : public g2dFontUtilImpl
 	{
 		public:
-			g2dFontHandle LoadFont(const itString&, int) override						{ return NULL; }
+			g2dFontHandle LoadFont(const std::string&, int) override						{ return NULL; }
 			void ReleaseFont(g2dFontHandle) override									{}
-			void GetLoadedFontName(g2dFontHandle, itString& o_Name) override			{ o_Name = itString(); }
 			void GetLoadedFontName(g2dFontHandle, std::string& o_Name) override		{ o_Name.clear(); }
-			void GetTextSizeInPixels(g2dFontHandle, const itString&, int& o_Width, int& o_Height) override
+			void GetTextSizeInPixels(g2dFontHandle, const std::string&, int& o_Width, int& o_Height) override
 			{
 				o_Width = o_Height = 0;
 			}
@@ -621,7 +617,7 @@ TEST(g2dWindowVkScene, DebugOverlayMatchesDX11)
 		const std::filesystem::path bitmap = std::filesystem::u8path(gtPlatform::RepoRoot()) / "MachStudio" / "Runtime" /
 			"Data" / "Icons" / "font-lucd00.png";
 		fsLocator locator;
-		fsFileUtil::UnicodeStringToLocator(itString(bitmap.wstring().c_str()), locator);
+		fsFileUtil::UnicodeStringToLocator(bitmap.u8string(), locator);
 		g2dFontUtil::SetGlobalFontBitmap(locator);
 		gtSceneWindow window(i_Kind, width, height);
 		g2dWindow& w = window.Window();
@@ -754,7 +750,7 @@ namespace
 			const std::filesystem::path bitmap = std::filesystem::u8path(gtPlatform::RepoRoot()) / "MachStudio" / "Runtime" /
 				"Data" / "Icons" / "font-lucd00.png";
 			fsLocator locator;
-			fsFileUtil::UnicodeStringToLocator(itString(bitmap.wstring().c_str()), locator);
+			fsFileUtil::UnicodeStringToLocator(bitmap.u8string(), locator);
 			g2dFontUtil::SetGlobalFontBitmap(locator);
 			{
 				gtSceneWindow window(gtBackend::e_Vulkan, c_OverlayWidth, c_OverlayHeight);

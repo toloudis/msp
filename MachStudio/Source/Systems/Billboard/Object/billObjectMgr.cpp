@@ -80,7 +80,7 @@ billScriptObject* billObjectCreator::Create(const billScriptData &i_Data)
 			//	set a default name for the object
 			nameString objName;
 			//create_default_name( i_Data.m_BaseData.m_Filename.GetValue(), objName );
-			/*create_default_name( itString("Billboard"), objName );
+			/*create_default_name( std::string("Billboard"), objName );
 			Billboard->SetName( objName );*/
 
 			billOperations::CreateNewObjectName(nameString(), objName);

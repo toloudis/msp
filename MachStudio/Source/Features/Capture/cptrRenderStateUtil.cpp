@@ -22,6 +22,9 @@
 #include "Core/gf/gfFileBin.hpp"
 #include "Tool/doc/docSingleDocumentMgr.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
+#ifndef IT_STRINGUTIL_HPP
+#include "Core/It/itStringUtil.hpp"
+#endif
 
 
 //============================================================================
@@ -50,9 +53,9 @@ namespace cptrRenderStateUtil
 			i_Locator.Push( docSingleDocumentMgr::GetFilename().GetLastName() );
 		}
 
-		itString fname = i_Locator.GetLastName();
-		fname.StripExtension();
-		fname += itString(c_RENDERSTATE_EXTENSION);
+		std::string fname = i_Locator.GetLastName();
+		itStringUtil::StripExtension(fname);
+		fname += std::string(c_RENDERSTATE_EXTENSION);
 		i_Locator.Pop();
 		i_Locator.Push(fname);
 

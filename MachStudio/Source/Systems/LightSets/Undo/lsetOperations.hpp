@@ -11,6 +11,7 @@
 #ifdef LSET_OPERATIONS_HPP
 #error lsetOperations.hpp multiply included
 #endif
+#include <string>
 #define LSET_OPERATIONS_HPP
 
 class api3dObjectSingle;
@@ -19,7 +20,6 @@ class lsetScriptObject;
 class ltstLightSetData;
 class nameObject;
 class nameString;
-class itString;
 
 #include <map>
 #include <vector>

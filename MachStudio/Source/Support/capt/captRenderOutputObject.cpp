@@ -448,7 +448,7 @@ void captRenderOutputObject::ReadFromConfigFile(const fsLocator& i_ConfigFile,
 			else if (keyname == l_cRenderKey_UseRenderPassInName)
 				{bool value; guiXMLTextReader::Convert(strvalue, value); o_Data.m_bUseRenderPassInFilename.SetValue(value);}
 			else if (keyname == l_cRenderKey_OutputDirectoryTags)
-				{itString value; guiXMLTextReader::Convert(strvalue, value); o_Data.m_OutputDirectoryTags.SetValue(value);}
+				{std::string value; guiXMLTextReader::Convert(strvalue, value); o_Data.m_OutputDirectoryTags.SetValue(value);}
 			else if (keyname == l_cRenderKey_OutputDirectoryCustomize)
 				{bool value; guiXMLTextReader::Convert(strvalue, value); o_Data.m_bOutputDirectoryCustomize.SetValue(value);}
 			else if (keyname == l_cRenderKey_UseRenderDriverAsDir)
@@ -460,7 +460,7 @@ void captRenderOutputObject::ReadFromConfigFile(const fsLocator& i_ConfigFile,
 			else if (keyname == l_cRenderKey_UseSceneFilenameAsDir)
 				{bool value; guiXMLTextReader::Convert(strvalue, value); o_Data.m_bUseSceneFilenameAsDirectory.SetValue(value);}
 			else if (keyname == l_cRenderKey_OutputFileTags)
-				{itString value; guiXMLTextReader::Convert(strvalue, value); o_Data.m_OutputFileTags.SetValue(value);}
+				{std::string value; guiXMLTextReader::Convert(strvalue, value); o_Data.m_OutputFileTags.SetValue(value);}
 			else if (keyname == l_cRenderKey_OutputFileCustomize)
 				{bool value; guiXMLTextReader::Convert(strvalue, value); o_Data.m_bOutputFileCustomize.SetValue(value);}
 			else if (keyname == l_cRenderKey_Width)
@@ -1005,7 +1005,7 @@ void captRenderOutputObject::update_compresscodeUII( const std::string& i_Captur
 #ifndef DEMO_VERSION
 	// TODO - codes commented out generated empty or bad files
 
-	if (i_CaptureType == std::string("AVI"))
+	if (i_CaptureType == "AVI")
 	{
 		m_Data.m_bCaptureMovie.SetValue(true);
 		m_pCompressCodeUII->ClearItems();
@@ -1043,7 +1043,7 @@ void captRenderOutputObject::update_compresscodeUII( const std::string& i_Captur
 
 		m_pCompressCodeUII->UpdateControl();
 	}
-	else if (i_CaptureType == std::string("MOV"))
+	else if (i_CaptureType == "MOV")
 	{
 		m_Data.m_bCaptureMovie.SetValue(true);
 		m_pCompressCodeUII->ClearItems();
@@ -1139,9 +1139,9 @@ void captRenderOutputObject::update_compresscodeUII( const std::string& i_Captur
 void captRenderOutputObject::GetDefaultCompressCode(const std::string& i_CaptureType)
 {
 	m_Data.m_CompressCode.SetValue("");
-	if (i_CaptureType == std::string("AVI"))
+	if (i_CaptureType == "AVI")
 		m_Data.m_CompressCode.SetValue("RAW");
-	else if (i_CaptureType == std::string("MOV"))
+	else if (i_CaptureType == "MOV")
 		m_Data.m_CompressCode.SetValue("jpeg");
 	else
 		m_Data.m_CompressCode.SetValue("None");
@@ -1295,7 +1295,7 @@ void captRenderOutputObject::ResolutionClicked(prtyProperty *i_pProperty, bool i
 {
 	if ( (m_Data.m_Resolution.GetValue().size() == 0)
 		||
-		 (m_Data.m_Resolution.GetValue() == std::string("Custom Resolution")))
+		 (m_Data.m_Resolution.GetValue() == "Custom Resolution"))
 	{
 		//m_Data.m_nWidth.SetValue(0);
 		//m_Data.m_nHeight.SetValue(0);

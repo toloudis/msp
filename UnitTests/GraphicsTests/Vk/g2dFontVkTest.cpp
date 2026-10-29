@@ -36,9 +36,6 @@
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/It/itString.hpp"
-#endif
 #ifndef G2D_WINDOWDRAWUTILD3D11_HPP
 #include "GraphicsDX11/g2d/private/g2dWindowDrawUtilDX11.hpp"
 #endif
@@ -63,7 +60,7 @@ namespace
 		const std::filesystem::path path = std::filesystem::u8path(gtPlatform::RepoRoot()) / "MachStudio" / "Runtime" / "Data" /
 			"Icons" / "font-lucd00.png";
 		fsLocator locator;
-		fsFileUtil::UnicodeStringToLocator(itString(path.wstring().c_str()), locator);
+		fsFileUtil::UnicodeStringToLocator(path.u8string(), locator);
 		return locator;
 	}
 
@@ -92,7 +89,7 @@ namespace
 		g2dFontUtil::SetGlobalFontBitmap(font_bitmap());
 		std::vector<g2dFontHandle> fonts;
 		for (const gtText& text : k_Texts)
-			fonts.push_back(g2dFontUtil::LoadFont(itString("Lucida"), text.m_Size));
+			fonts.push_back(g2dFontUtil::LoadFont(std::string("Lucida"), text.m_Size));
 		return fonts;
 	}
 
@@ -102,7 +99,7 @@ namespace
 			g2dFontUtil::ReleaseFont(font);
 	}
 
-	void draw_into_target(gtBackend::Kind i_Kind, int i_X, int i_Y, g2dFontHandle i_Font, const itString& i_Text,
+	void draw_into_target(gtBackend::Kind i_Kind, int i_X, int i_Y, g2dFontHandle i_Font, const std::string& i_Text,
 						  const g2dRGBColor& i_Color)
 	{
 		if (i_Kind == gtBackend::e_DX11)
@@ -159,7 +156,7 @@ namespace
 			for (size_t i = 0; i < fonts.size(); i++)
 			{
 				const gtText& text = k_Texts[i];
-				w.DrawText(text.m_X, text.m_Y, fonts[i], itString(text.m_pText), text.m_Color);
+				w.DrawText(text.m_X, text.m_Y, fonts[i], std::string(text.m_pText), text.m_Color);
 			}
 			w.EndScene();
 			o_Window = window.Present();
@@ -170,7 +167,7 @@ namespace
 			for (size_t i = 0; i < fonts.size(); i++)
 			{
 				const gtText& text = k_Texts[i];
-				draw_into_target(i_Kind, text.m_X, text.m_Y, fonts[i], itString(text.m_pText), text.m_Color);
+				draw_into_target(i_Kind, text.m_X, text.m_Y, fonts[i], std::string(text.m_pText), text.m_Color);
 			}
 			o_Target = target.Read();
 		}
@@ -188,7 +185,7 @@ namespace
 			for (const char* s : strings)
 			{
 				int w = -1, h = -1;
-				g2dFontUtil::GetTextSizeInPixels(font, itString(s), w, h);
+				g2dFontUtil::GetTextSizeInPixels(font, std::string(s), w, h);
 				result.push_back(w);
 				result.push_back(h);
 			}
@@ -201,9 +198,9 @@ namespace
 	//	(and the bitmap path reads back as set)
 	bool no_bitmap_no_font()
 	{
-		const fsLocator missing(itString("no-such-font-bitmap.png"));
+		const fsLocator missing(std::string("no-such-font-bitmap.png"));
 		g2dFontUtil::SetGlobalFontBitmap(missing);
-		g2dFontHandle font = g2dFontUtil::LoadFont(itString("Lucida"), 10);
+		g2dFontHandle font = g2dFontUtil::LoadFont(std::string("Lucida"), 10);
 		fsLocator path;
 		g2dFontUtil::GetGlobalFontBitmap(path);
 		EXPECT_TRUE(path == missing);
@@ -251,15 +248,14 @@ namespace
 			int m_Loads = 0;
 			int m_Releases = 0;
 
-			g2dFontHandle LoadFont(const itString&, int) override
+			g2dFontHandle LoadFont(const std::string&, int) override
 			{
 				++m_Loads;
 				return reinterpret_cast<g2dFontHandle>((intptr_t)m_Loads);
 			}
 			void ReleaseFont(g2dFontHandle) override									{ ++m_Releases; }
-			void GetLoadedFontName(g2dFontHandle, itString& o_Name) override			{ o_Name = itString(); }
 			void GetLoadedFontName(g2dFontHandle, std::string& o_Name) override		{ o_Name.clear(); }
-			void GetTextSizeInPixels(g2dFontHandle, const itString&, int& o_Width, int& o_Height) override
+			void GetTextSizeInPixels(g2dFontHandle, const std::string&, int& o_Width, int& o_Height) override
 			{
 				o_Width = o_Height = 0;
 			}
@@ -277,7 +273,7 @@ TEST(g2dFontUtil, LastReleaseUnloadsTheFont)
 	g2dFontUtilImpl* previous = g2dFontUtil::Implementation();
 	gtCountingFonts fonts;
 	g2dFontUtil::SetImplementation(&fonts);
-	const itString name("gtCountingFonts");
+	const std::string name("gtCountingFonts");
 
 	g2dFontHandle a = g2dFontUtil::LoadFont(name, 11);
 	g2dFontHandle b = g2dFontUtil::LoadFont(name, 11);

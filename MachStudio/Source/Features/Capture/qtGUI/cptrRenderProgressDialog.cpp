@@ -32,9 +32,9 @@
 
 namespace
 {
-	QString to_qstring(const itString& i_String)
+	QString to_qstring(const std::string& i_String)
 	{
-		return QString::fromWCharArray(i_String.GetString());
+		return QString::fromStdString(i_String);
 	}
 
 	QProgressBar* create_gauge(QWidget* i_pParent)
@@ -119,11 +119,11 @@ cptrRenderProgressDialog::~cptrRenderProgressDialog()
 //--------------------------------------------------------------------
 //	set the percentage for scenes
 //--------------------------------------------------------------------
-void cptrRenderProgressDialog::SetScenesRenderPercentage( float i_percentage, const itString& i_label )
+void cptrRenderProgressDialog::SetScenesRenderPercentage( float i_percentage, const std::string& i_label )
 {
 	m_fLastScenesPercentage = i_percentage;
 	m_gauge_Scenes->setValue( (int)i_percentage );
-	if (i_label.GetLength() > 0)
+	if (i_label.size() > 0)
 		m_staticText_SceneNumber->setText( to_qstring(i_label) );
 }
 
@@ -153,38 +153,38 @@ void cptrRenderProgressDialog::AbortProgress()
 //--------------------------------------------------------------------
 //	set the label for scene
 //--------------------------------------------------------------------
-void cptrRenderProgressDialog::SetSceneLabel( const itString& i_label )
+void cptrRenderProgressDialog::SetSceneLabel( const std::string& i_label )
 {
-	if (i_label.GetLength() > 0)
+	if (i_label.size() > 0)
 		m_staticText_SceneName->setText( to_qstring(i_label) );
 }
 
 //--------------------------------------------------------------------
 //	set the label for the current render layer
 //--------------------------------------------------------------------
-void cptrRenderProgressDialog::SetRenderLayerLabel( const itString& i_label )
+void cptrRenderProgressDialog::SetRenderLayerLabel( const std::string& i_label )
 {
-	if (i_label.GetLength() > 0)
+	if (i_label.size() > 0)
 		m_staticText_LayerName->setText( to_qstring(i_label) );
 }
 
 //--------------------------------------------------------------------
 //	set the percentage for cameras
 //--------------------------------------------------------------------
-void cptrRenderProgressDialog::SetCamerasRenderPercentage( float i_percentage, const itString& i_label )
+void cptrRenderProgressDialog::SetCamerasRenderPercentage( float i_percentage, const std::string& i_label )
 {
 	m_gauge_Cameras->setValue( (int)i_percentage );
-	if (i_label.GetLength() > 0)
+	if (i_label.size() > 0)
 		m_staticText_CameraName->setText( to_qstring(i_label) );
 }
 
 //--------------------------------------------------------------------
 //	set the percentage for camera
 //--------------------------------------------------------------------
-void cptrRenderProgressDialog::SetCameraRenderPercentage( float i_percentage, const itString& i_label )
+void cptrRenderProgressDialog::SetCameraRenderPercentage( float i_percentage, const std::string& i_label )
 {
 	m_gauge_Camera->setValue( (int)i_percentage );
-	if (i_label.GetLength() > 0)
+	if (i_label.size() > 0)
 		m_staticText_CameraNumber->setText( to_qstring(i_label) );
 }
 

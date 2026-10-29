@@ -25,7 +25,7 @@ chReader::~chReader()
 //--------------------------------------------------------------------
 //	Temporary: ReadItString into an itString (see the .hpp)
 //--------------------------------------------------------------------
-void chReader::Read(itString& o_Val)
+void chReader::ReadItString(itString& o_Val)
 {
 	std::string utf8;
 	ReadItString(utf8);

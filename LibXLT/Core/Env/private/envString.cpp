@@ -210,4 +210,28 @@ namespace envString
 	{
 		return UTF16ToUTF8(i_String.data(), i_String.size());
 	}
+
+	bool StartsWith(const std::string &i_String, const std::string &i_SubString)
+	{
+		return !i_SubString.empty()
+			&& i_String.size() >= i_SubString.size()
+			&& i_String.compare(0, i_SubString.size(), i_SubString) == 0;
+	}
+
+	bool EndsWith(const std::string &i_String, const std::string &i_SubString)
+	{
+		return !i_SubString.empty()
+			&& i_String.size() >= i_SubString.size()
+			&& i_String.compare(i_String.size() - i_SubString.size(), i_SubString.size(), i_SubString) == 0;
+	}
+
+	bool IsASCII(const std::string &i_String)
+	{
+		for( char c : i_String )
+		{
+			if( (unsigned char)c > 127 )
+				return false;
+		}
+		return true;
+	}
 }

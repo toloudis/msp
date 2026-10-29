@@ -76,9 +76,9 @@ namespace
 		else if (i_Version == 1)
 		{
 			std::string new_desc;
-			itString desc;
-			chChunkParserUtil::Read(i_Reader,desc);
-			new_desc = itStringUtil::GetStdString(desc);
+			std::string desc;
+			chChunkParserUtil::ReadItString(i_Reader,desc);
+			new_desc = desc;
 			o_Data.m_Description.SetValue(new_desc);
 		}
 	}

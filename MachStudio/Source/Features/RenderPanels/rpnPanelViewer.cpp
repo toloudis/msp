@@ -255,7 +255,7 @@ void rpnPanelViewer::CreateTextLabel(const fsLocator &i_FontPath)
 	m_pTextLabel->SetCentered( true );
 	m_pTextLabel->SetSize( 5, 8 );
 	m_pTextLabel->SetRenderable(true);
-	m_pTextLabel->SetText( itString("") );
+	m_pTextLabel->SetText( std::string() );
 
 	// Create thread safe proxy
 	m_pTextLabelProxy = new gpxText(*m_pTextLabel);
@@ -293,7 +293,7 @@ void rpnPanelViewer::SetTextString(const std::string& i_String)
 {
 	if (m_pTextLabelProxy)
 	{
-		m_pTextLabelProxy->SetText( itString(i_String.c_str()) );
+		m_pTextLabelProxy->SetText( i_String );
 	}
 	m_TextString = i_String;
 }

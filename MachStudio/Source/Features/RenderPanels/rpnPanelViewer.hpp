@@ -18,13 +18,13 @@
 #ifndef G3D_LAYERCONTAINER_HPP
 #include "Graphics/G3d/g3dLayerContainer.hpp"
 #endif
+#include <string>
 
 
 //============================================================================
 //	Forward References
 //============================================================================
 class fsLocator;
-class itString;
 class maFloatRGBA;
 class scrText;
 class camsDirectorsCut;

@@ -35,7 +35,7 @@ envtDialogInterest::envtDialogInterest()
 //	Add Object to Placed
 //--------------------------------------------------------------------
 //virtual 
-void envtDialogInterest::AddObject(const itString& i_FileName, const fsLocator& i_Path)
+void envtDialogInterest::AddObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 	//std::string dir1, dir2;
 	//dir1 = itStringUtil::GetStdString(i_Path.GetName(0));
@@ -126,8 +126,8 @@ void envtDialogInterest::GetAvailableObjects(fsysFileList& io_FileList) const
 	fsLocator path;
 	//path.Push("Data");
 	path.Push(c_SystemName);
-	itString fname;
-	fname = itString("Environment Lights");
+	std::string fname;
+	fname = std::string("Environment Lights");
 	io_FileList.AddFilename(path,fname);
 }
 

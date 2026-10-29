@@ -64,9 +64,9 @@ cmmSceneDialog::cmmSceneDialog( wxWindow* parent,
 	m_notebook1->AddPage( m_pLightsPane, wxT("Light Sets"), true, wxNullBitmap );
 
 	// Load images for the different system 
-	itString icon_dir;
+	std::string icon_dir;
 	fsFileUtil::LocatorToUnicodeString( guiMenuMgr::GetIconDirectory(), icon_dir );
-	std::wstring icondir = icon_dir.GetString();
+	wxString icondir = wxString::FromUTF8(icon_dir);
 	wxImageList *pIconImages = new wxImageList(FromDIP(13), FromDIP(13), false, cmmPlacedImages::e_NumSystemImageIcons);
     {
         wxLogNull nullLog;

@@ -187,7 +187,7 @@ void shdwPassGIVolumes::InitializeMaterial()
 	if (!l_GIMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/GIVolumes.fx"), matShaderMgr::GetSpecialEffect("GIVolumes.fx"));
+		p->SetShaderName(std::string("Special/GIVolumes.fx"), matShaderMgr::GetSpecialEffect("GIVolumes.fx"));
 		l_GIMat.SetShaderParams(p);
 	}
 
@@ -202,7 +202,7 @@ void shdwPassGIVolumes::InitializeMaterial()
 	if (!l_DepthMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/DepthRender.fx"), matShaderMgr::GetSpecialEffect("DepthRender.fx"));
+		p->SetShaderName(std::string("Special/DepthRender.fx"), matShaderMgr::GetSpecialEffect("DepthRender.fx"));
 		l_DepthMat.SetShaderParams(p);
 	}
 }

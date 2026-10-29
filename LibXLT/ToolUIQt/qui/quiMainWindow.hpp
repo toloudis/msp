@@ -22,12 +22,12 @@ class quiMainWindow : public guiMainWindowImpl
 	//---------------------------------------------------------------------------
 	//	SetAppTitle()
 	//---------------------------------------------------------------------------
-	void SetAppTitle( const itString& i_Text );
+	void SetAppTitle( const std::string& i_Text );
 
 	//---------------------------------------------------------------------------
 	//	GetAppTitle()
 	//---------------------------------------------------------------------------
-	itString GetAppTitle();
+	std::string GetAppTitle();
 
 	//---------------------------------------------------------------------------
 	//	give focus to the main window

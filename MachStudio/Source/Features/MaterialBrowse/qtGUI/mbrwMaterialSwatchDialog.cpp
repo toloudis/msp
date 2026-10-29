@@ -54,9 +54,9 @@ namespace
 	//--------------------------------------------------------------------
 	QString get_icon_directory()
 	{
-		itString wide_dir;
+		std::string wide_dir;
 		fsFileUtil::LocatorToUnicodeString(guiMenuMgr::GetIconDirectory(), wide_dir);
-		return QString::fromWCharArray(wide_dir.GetString()) + "\\";
+		return QString::fromStdString(wide_dir) + "\\";
 	}
 
 	//--------------------------------------------------------------------
@@ -100,13 +100,13 @@ namespace
 	fsLocator to_locator(const QString& i_Path)
 	{
 		fsLocator loc;
-		fsFileUtil::UnicodeStringToLocator(itString(i_Path.toStdWString().c_str()), loc);
+		fsFileUtil::UnicodeStringToLocator(i_Path.toStdString(), loc);
 		return loc;
 	}
 
-	QString to_qstring(const itString& i_String)
+	QString to_qstring(const std::string& i_String)
 	{
-		return QString::fromWCharArray(i_String.GetString());
+		return QString::fromStdString(i_String);
 	}
 
 		
@@ -148,7 +148,7 @@ namespace
 						
 						// these lines gather only one level of sub directories and only
 						// those directories that have mtl files somewhere under them
-						itString subdir = i_Directory.GetName( m_RootDir.GetNumNames() );
+						std::string subdir = i_Directory.GetName( m_RootDir.GetNumNames() );
 						m_SubDirs.insert(fsLocator(subdir));
 					}
 				}
@@ -180,7 +180,7 @@ namespace
 			{
 				if (i_File.GetNumNames() > 0)
 				{
-					itString dir_name = i_File.GetLastName();
+					std::string dir_name = i_File.GetLastName();
 					if (dir_name[0] != '.')
 					{
 						m_bHasSubdirs = true;
@@ -353,7 +353,7 @@ void mbrwMaterialSwatchDialog::buttonPaint_Click()
 	if (pItem && pItem->isSelected())
 	{
 		fsLocator mtl_loc = m_CurrentMaterialDir;
-		mtl_loc.Push(itString(pItem->text().toStdWString().c_str()));
+		mtl_loc.Push(pItem->text().toStdString());
 		mbrwPaintUtil::AssignMaterialFile(mtl_loc);
 	}
 }
@@ -362,7 +362,7 @@ void mbrwMaterialSwatchDialog::buttonNewFolder_Click()
 {
 	fsLocator init_dir;
 	gfDirectoryCategories::GetCurDirectory(c_MaterialDirCategory, init_dir);
-	itString defaultPath;
+	std::string defaultPath;
 	fsFileUtil::LocatorToUnicodeString(init_dir, defaultPath);
 
 	// The directory dialog has its own "new folder" button
@@ -378,7 +378,7 @@ void mbrwMaterialSwatchDialog::buttonBrowse_Click()
 {
 	fsLocator init_dir;
 	gfDirectoryCategories::GetCurDirectory(c_MaterialDirCategory, init_dir);
-	itString defaultPath;
+	std::string defaultPath;
 	fsFileUtil::LocatorToUnicodeString(init_dir, defaultPath);
 
 	QString path = QFileDialog::getExistingDirectory(tqtSystem::g_pMainForm,
@@ -408,8 +408,8 @@ void mbrwMaterialSwatchDialog::listCtrl_beginDrag()
 	if (filename.endsWith(".mtl", Qt::CaseInsensitive))
 	{
 		fsLocator fullpath = m_CurrentMaterialDir;
-		fullpath.Push( itString(filename.toStdWString().c_str()) );
-		itString itFilename;
+		fullpath.Push( filename.toStdString() );
+		std::string itFilename;
 		fsFileUtil::LocatorToUnicodeString(fullpath, itFilename);
 
 		QMimeData* pData = new QMimeData();
@@ -436,7 +436,7 @@ void mbrwMaterialSwatchDialog::listCtrl_doubleClick( QListWidgetItem* i_pItem )
 		{
 			// Concatenate relative path to the root directory to get fullpath
 			fsLocator new_dir = m_CurrentMaterialDir;
-			new_dir.Push( itString(sub_dir_str.toStdWString().c_str()) );
+			new_dir.Push( sub_dir_str.toStdString() );
 			browse_directory( new_dir );
 		}
 	}
@@ -502,7 +502,7 @@ void mbrwMaterialSwatchDialog::browse_directory(const fsLocator &i_Directory,
 	for (int sdi=0; sdi<dir_list.size(); ++sdi)
 	{
 		fsLocator subdir = dir_list[sdi];
-		itString subdir_name = subdir.GetName( i_Directory.GetNumNames() );
+		std::string subdir_name = subdir.GetName( i_Directory.GetNumNames() );
 		if (subdir_name[0] != '.')
 		{
 			SubDirectoryTarget subdir_search;
@@ -530,7 +530,7 @@ void mbrwMaterialSwatchDialog::browse_directory(const fsLocator &i_Directory,
 	std::set<fsLocator>::const_iterator it;
 	for (it = material_list.m_SubDirs.begin(); it != material_list.m_SubDirs.end(); ++it)
 	{
-		itString subpath;
+		std::string subpath;
 		fsFileUtil::LocatorToUnicodeString(*it, subpath);
 		new QListWidgetItem( folder_icon, to_qstring(subpath), m_listCtrl_Icons );
 	}

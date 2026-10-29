@@ -10,7 +10,7 @@
 
 #include "Core/Env/envSTLHelpers.hpp"
 #include "Core/Fs/fsFileUtil.hpp"
-#include "Core/It/itString.hpp"
+#include <string>
 #include "Core/dbg/dbgMsg.hpp"
 
 #include <algorithm>
@@ -88,9 +88,9 @@ tqcTreeView::~tqcTreeView()
 //--------------------------------------------------------------------
 void tqcTreeView::LoadImagesFromDirectory( const fsLocator& i_IconDirectory )
 {
-	itString icon_dir;
+	std::string icon_dir;
 	fsFileUtil::LocatorToUnicodeString( i_IconDirectory, icon_dir );
-	QString image_dir = QString::fromWCharArray(icon_dir.GetString());
+	QString image_dir = QString::fromStdString(icon_dir);
 
 	std::vector<QPixmap> images;
 	images.push_back(QPixmap());	// no checkbox

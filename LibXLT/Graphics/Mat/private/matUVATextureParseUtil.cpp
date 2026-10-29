@@ -90,12 +90,12 @@ namespace
 					matUVATexture& o_Texture,
 					chDefs::Version i_Version,
 					chDefs::Size i_Size,
-					std::vector<itString>& o_Names)
+					std::vector<std::string>& o_Names)
 	{
 		std::string texture_filename;
 
 		i_Reader.Read(texture_filename);
-		o_Names.push_back(itString(texture_filename.c_str()));
+		o_Names.push_back(texture_filename);
 	}
 
 	void write_UDAT(chWriter& o_Writer, const matUVATexture& i_Texture)
@@ -119,20 +119,20 @@ namespace
 		o_Writer.FinishChunk();
 	}
 
-	void write_TPAG(chWriter& o_Writer, const itString* i_Textures, int i_Num)
+	void write_TPAG(chWriter& o_Writer, const std::string* i_Textures, int i_Num)
 	{
 		o_Writer.WriteChunkHeader(c_TPAG, 0, false);
 
 		//	We must make a single-byte string out of the itString
 		//	This only works for ANSI strings
 		//
-		const itString& it_string = i_Textures[i_Num];
+		const std::string& it_string = i_Textures[i_Num];
 		std::string single_byte_string;
 
 		int i;
-		int num = it_string.GetLength();
+		int num = it_string.size();
 		for( i = 0 ; i < num ; i++ )
-			single_byte_string += char(it_string.GetString()[i]);
+			single_byte_string += char(it_string.c_str()[i]);
 
 		o_Writer.Write(single_byte_string.c_str());
 
@@ -144,7 +144,7 @@ namespace
 //	ReadUVATexture reads the given UVA using the given chReader.
 //--------------------------------------------------------------------
 matUVATexture* ReadUVATexture(	chReader& i_Reader,
-								std::vector<itString>& o_Names)
+								std::vector<std::string>& o_Names)
 {
 	chDefs::Name name;
 	chDefs::Size size;
@@ -192,7 +192,7 @@ matUVATexture* ReadUVATexture(	chReader& i_Reader,
 //--------------------------------------------------------------------
 //	WriteUVATexture writes the given UVA using the given chWriter.
 //--------------------------------------------------------------------
-void WriteUVATexture(chWriter& i_Writer, const matUVATexture& i_Texture, const itString* i_Textures)
+void WriteUVATexture(chWriter& i_Writer, const matUVATexture& i_Texture, const std::string* i_Textures)
 {
 	i_Writer.WriteChunkHeader(c_TUVA, 0, true);
 

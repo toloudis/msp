@@ -129,10 +129,10 @@ void cptrRenderBatchDialog::SaveFile(const fsLocator &i_Loc)
 //------------------------------------------------------------------------
 void cptrRenderBatchDialog::UpdateFileDirectory( fsLocator& i_dir )
 {
-	itString sdir;
+	std::string sdir;
 	fsFileUtil::LocatorToUnicodeString(i_dir, sdir);
 
-	m_textCtrl_BatchFile->SetValue( sdir.GetString() );
+	m_textCtrl_BatchFile->SetValue( wxString::FromUTF8(sdir) );
 
 	cptrRenderBatchData& data = cptrRenderBatchDataUtil::Data();
 	data.m_BatchFilename.SetValue(i_dir);
@@ -155,7 +155,7 @@ void cptrRenderBatchDialog::SetDataValues()
 	for ( i = 0 ; i < numitems ; ++i )
 	{
 		fsLocator dir;
-		fsFileUtil::UnicodeStringToLocator( itString((const char*)m_checkList_Scenes->GetString(i).c_str()), dir);
+		fsFileUtil::UnicodeStringToLocator( (const char*)m_checkList_Scenes->GetString(i), dir);
 		m_Data.m_Scenes[i].m_Filename.SetValue(dir);
 		m_Data.m_Scenes[i].m_bChecked.SetValue(m_checkList_Scenes->IsChecked(i));
 
@@ -181,9 +181,9 @@ void cptrRenderBatchDialog::SetComponentValues()
 	int i;
 	for ( i = 0 ; i < m_Data.m_Scenes.size() ; ++i )
 	{
-		itString filename;
+		std::string filename;
 		fsFileUtil::LocatorToUnicodeString(m_Data.m_Scenes[i].m_Filename.GetValue(), filename);
-		m_checkList_Scenes->Append(filename.GetString());
+		m_checkList_Scenes->Append(wxString::FromUTF8(filename));
 		m_checkList_Scenes->Check(i, m_Data.m_Scenes[i].m_bChecked.GetValue() );
 	}
 
@@ -240,11 +240,11 @@ void cptrRenderBatchDialog::button_AddScene_OnButtonClick( wxCommandEvent& event
 		initial_dir = docSingleDocumentMgr::GetFilename();
 		initial_dir.Pop();
 	}
-	itString init_dir;
-	itString filter_str(filter.c_str());
+	std::string init_dir;
+	std::string filter_str(filter.c_str());
 	fsFileUtil::LocatorToUnicodeString( initial_dir, init_dir );
-	wxFileDialog dialog(NULL,wxT("Open File"), init_dir.GetString(),wxEmptyString,
-						filter_str.GetString(),wxFD_MULTIPLE);
+	wxFileDialog dialog(NULL,wxT("Open File"), wxString::FromUTF8(init_dir),wxEmptyString,
+						wxString::FromUTF8(filter_str),wxFD_MULTIPLE);
 
 	if(dialog.ShowModal() == wxID_OK)
 	{
@@ -252,10 +252,10 @@ void cptrRenderBatchDialog::button_AddScene_OnButtonClick( wxCommandEvent& event
 		dialog.GetPaths(paths);
 		for ( size_t i = 0 ; i < paths.size() ; i ++ )
 		{
-            fsFileUtil::UnicodeStringToLocator(itString(paths[i].wc_str()), file_loc);
-			itString filename;
+            fsFileUtil::UnicodeStringToLocator(paths[i].utf8_string(), file_loc);
+			std::string filename;
 			fsFileUtil::LocatorToUnicodeString(file_loc, filename);
-			m_checkList_Scenes->Append(filename.GetString());
+			m_checkList_Scenes->Append(wxString::FromUTF8(filename));
 			m_checkList_Scenes->Check(m_checkList_Scenes->GetCount()-1, true );
 		}
 	}
@@ -264,7 +264,7 @@ void cptrRenderBatchDialog::button_AddScene_OnButtonClick( wxCommandEvent& event
 	//	let the user choose
 	/*if (guiFileDialogUtils::GetOpenFileName(filter, initial_dir, file_loc))
 	{
-		itString filename;
+		std::string filename;
 		fsFileUtil::LocatorToUnicodeString(file_loc, filename);
 		m_checkList_Scenes->Append(filename.GetString());
 		m_checkList_Scenes->Check(m_checkList_Scenes->GetCount()-1, true );
@@ -326,9 +326,9 @@ void cptrRenderBatchDialog::button_AddCurrent_OnButtonClick( wxCommandEvent& eve
 	{
 		file_loc = docSingleDocumentMgr::GetFilename();
 
-		itString filename;
+		std::string filename;
 		fsFileUtil::LocatorToUnicodeString(file_loc, filename);
-		m_checkList_Scenes->Append(filename.GetString());
+		m_checkList_Scenes->Append(wxString::FromUTF8(filename));
 		m_checkList_Scenes->Check(m_checkList_Scenes->GetCount()-1, true );
 	}
 
@@ -374,7 +374,7 @@ void cptrRenderBatchDialog::button_LoadBatch_OnButtonClick( wxCommandEvent& even
 	if (guiFileDialogUtils::GetOpenFileName(filter, initial_dir, file_loc))
 	{
 		std::string name;
-		name = itStringUtil::GetStdString(file_loc.GetLastName());
+		name = file_loc.GetLastName();
 		//DBG_LOG( "Loading batch file (" << name.c_str() << ")" );
 
 		ReadFile(file_loc);

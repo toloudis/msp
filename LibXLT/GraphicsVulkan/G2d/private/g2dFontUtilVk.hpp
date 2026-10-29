@@ -27,7 +27,6 @@
 
 #undef DrawText
 
-class itString;
 class matTexture;
 class scrText;
 
@@ -41,7 +40,7 @@ namespace gvk
 
 		//	Draws into the current render target, the text's top left at
 		//	(i_OffsetX, i_OffsetY)
-		void DrawText(const itString& i_Text, const maFloatRGBA& i_Color, int i_OffsetX = 0, int i_OffsetY = 0);
+		void DrawText(const std::string& i_Text, const maFloatRGBA& i_Color, int i_OffsetX = 0, int i_OffsetY = 0);
 		void SetFontMap(matTexture* i_fontMap);
 		void SetTextSize(float i_Size) {m_TextSize = i_Size;}
 
@@ -77,7 +76,7 @@ namespace gvk
 		//	(The bitmap font: i_Name isn't used; NULL if the global font
 		//	bitmap doesn't exist.)
 		//------------------------------------------------------------------------
-		g2dFontHandle LoadFont(const itString& i_Name, int i_Size);
+		g2dFontHandle LoadFont(const std::string& i_Name, int i_Size);
 
 		//------------------------------------------------------------------------
 		//	ReleaseFont informs the system that you are done with the given
@@ -91,14 +90,13 @@ namespace gvk
 		// the system loaded.
 		// (Not implemented for the bitmap font, as in DX11: o_Name is unchanged.)
 		//------------------------------------------------------------------------
-		void GetLoadedFontName( g2dFontHandle i_Font, itString& o_Name );
 		void GetLoadedFontName( g2dFontHandle i_Font, std::string& o_Name );
 
 		//------------------------------------------------------------------------
 		//	GetTextSizeInPixels returns the width and height in pixels of the given text and font
 		//	(1 x 1 for the bitmap font, as in DX11)
 		//------------------------------------------------------------------------
-		void GetTextSizeInPixels(g2dFontHandle i_Font, const itString& i_Text, int& o_Width, int& o_Height);
+		void GetTextSizeInPixels(g2dFontHandle i_Font, const std::string& i_Text, int& o_Width, int& o_Height);
 
 		//------------------------------------------------------------------------
 		//	Get and set the global font path

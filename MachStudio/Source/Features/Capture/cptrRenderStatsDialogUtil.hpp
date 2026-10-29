@@ -11,9 +11,7 @@
 #endif
 #define CPTR_RENDERSTATSDIALOGUTIL_HPP
 
-#ifndef IT_STRING_HPP
-#include "Core/It/itString.hpp"
-#endif
+#include <string>
 
 //============================================================================
 //============================================================================
@@ -36,7 +34,7 @@ namespace cptrRenderStatsDialogUtil
 	//--------------------------------------------------------------------
 	// Append message on render stats
 	//--------------------------------------------------------------------
-	void AddStatsMessage(itString& i_message);
+	void AddStatsMessage(std::string& i_message);
 
 	//--------------------------------------------------------------------
 	// Next line

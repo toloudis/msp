@@ -254,7 +254,7 @@ void mtrlShaderObject::PropertyChanged(prtyProperty *i_pProperty, bool i_bDirty)
 //------------------------------------------------------------------------
 // Convenience functions for locating a texture
 //------------------------------------------------------------------------
-fsLocator mtrlShaderObject::LocateTexture(const itString& i_Filename)
+fsLocator mtrlShaderObject::LocateTexture(const std::string& i_Filename)
 {
 	// Construct a fsResourceFinder to use to locate the textures in the object directory
 	const bool bStrict = true; // has to return false if not found

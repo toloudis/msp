@@ -14,6 +14,7 @@
 #ifndef TQT_WIDGETS_HPP
 #include "ToolUIQt/tqt/tqtWidgets.hpp"
 #endif
+#include <string>
 
 
 #ifdef USE_QT
@@ -21,7 +22,6 @@
 //============================================================================
 //	Forward references
 //============================================================================
-class itString;
 
 
 //============================================================================
@@ -55,6 +55,6 @@ namespace tqtMessageBox
 	//	return: one of the enumerations MBReturn
 	//---------------------------------------------------------------------------
 	int Show( const char* i_Message, const char* i_Title, int i_Type = e_OKOnly );
-	int Show( const itString& i_Message, const itString& i_Title, int i_Type = e_OKOnly );
+	int Show( const std::string& i_Message, const std::string& i_Title, int i_Type = e_OKOnly );
 }
 #endif

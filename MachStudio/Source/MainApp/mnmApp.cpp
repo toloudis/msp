@@ -422,67 +422,67 @@ void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 		case mainCommandLine::e_CapFormat:
 		{
 			DBG_LOG( "   Command-line CAPTURE-FORMAT " << value );
-			captRenderOutputDataUtil::SetCaptureFormat( itString(value.c_str()) );
+			captRenderOutputDataUtil::SetCaptureFormat( value );
 			break;
 		}
 		case mainCommandLine::e_CapCompress:
 		{
 			DBG_LOG( "   Command-line CAPTURE-COMPRESS " << value );
-			captRenderOutputDataUtil::SetCompressCode( itString(value.c_str()) );
+			captRenderOutputDataUtil::SetCompressCode( value );
 			break;
 		}
 		case mainCommandLine::e_CapCamera:
 		{
 			DBG_LOG( "   Command-line CAPTURE-CAMERA " << value );
-			captRenderOutputDataUtil::SetActiveCamera( itString(value.c_str()) );
+			captRenderOutputDataUtil::SetActiveCamera( value );
 			break;
 		}
 		case mainCommandLine::e_CapWidth:
 		{
 			DBG_LOG( "   Command-line CAPTURE-WIDTH " << value );
-			captRenderOutputDataUtil::SetCaptureWidth(itStringUtil::GetInt(itString(value.c_str())));
+			captRenderOutputDataUtil::SetCaptureWidth(itStringUtil::GetInt(value));
 			break;
 		}
 		case mainCommandLine::e_CapHeight:
 		{
 			DBG_LOG( "   Command-line CAPTURE-HEIGHT " << value );
-			captRenderOutputDataUtil::SetCaptureHeight(itStringUtil::GetInt(itString(value.c_str())));
+			captRenderOutputDataUtil::SetCaptureHeight(itStringUtil::GetInt(value));
 			break;
 		}
 		case mainCommandLine::e_CapStartFrame:
 		{
 			DBG_LOG( "   Command-line CAPTURE-STARTFRAME " << value );
-			captRenderOutputDataUtil::SetFrameWindowStart(itStringUtil::GetInt(itString(value.c_str())));
+			captRenderOutputDataUtil::SetFrameWindowStart(itStringUtil::GetInt(value));
 			break;
 		}
 		case mainCommandLine::e_CapEndFrame:
 		{
 			DBG_LOG( "   Command-line CAPTURE-ENDFRAME " << value );
-			captRenderOutputDataUtil::SetFrameWindowEnd(itStringUtil::GetInt(itString(value.c_str())));
+			captRenderOutputDataUtil::SetFrameWindowEnd(itStringUtil::GetInt(value));
 			break;
 		}
 		case mainCommandLine::e_CapOutputFile:
 		{
 			DBG_LOG( "   Command-line CAPTURE-OUTPUTFILE " << value );
-			captRenderOutputDataUtil::SetCaptureOutputFile( itString(value.c_str()) );
+			captRenderOutputDataUtil::SetCaptureOutputFile( value );
 			break;
 		}
 		case mainCommandLine::e_CapOutputPath:
 		{
 			DBG_LOG( "   Command-line CAPTURE-OUTPUTPATH " << value );
-			captRenderOutputDataUtil::SetCaptureOutputDirectory( itString(value.c_str()) );
+			captRenderOutputDataUtil::SetCaptureOutputDirectory( value );
 			break;
 		}
 		case mainCommandLine::e_CapOutputPathRoot:
 		{
 			DBG_LOG( "   Command-line CAPTURE-OUTPUTPATHROOT " << value );
-			captRenderOutputDataUtil::SetCaptureOutputDirectoryRoot( itString(value.c_str()) );
+			captRenderOutputDataUtil::SetCaptureOutputDirectoryRoot( value );
 			break;
 		}
 		case mainCommandLine::e_CapSampling:
 		{
 			DBG_LOG( "   Command-line CAPTURE-SAMPLING " << value );
-			captRenderOutputDataUtil::SetCaptureSampling(itStringUtil::GetInt(itString(value.c_str())));
+			captRenderOutputDataUtil::SetCaptureSampling(itStringUtil::GetInt(value));
 			break;
 		}
 		case mainCommandLine::e_CapJitter:
@@ -504,7 +504,7 @@ void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 		case mainCommandLine::e_CapMotionSamples:
 		{
 			DBG_LOG( "   Command-line CAPTURE-MOTIONSAMPLES " << value );
-			captRenderOutputDataUtil::SetMotionSamples(itStringUtil::GetInt(itString(value.c_str())));
+			captRenderOutputDataUtil::SetMotionSamples(itStringUtil::GetInt(value));
 			break;
 		}
 		case mainCommandLine::e_CapPasses:
@@ -514,8 +514,7 @@ void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 			std::vector<std::string> pass_names;
 			for ( int pass = rlyrPassesObject::e_Beauty; pass <= rlyrPassesObject::e_RmanColorBleed; ++pass )
 			{
-				pass_names.push_back( itStringUtil::GetStdString(
-					captRenderOutputDataUtil::GetRenderPassName( static_cast<rlyrPassesObject::ePassType>(pass) ) ) );
+				pass_names.push_back( captRenderOutputDataUtil::GetRenderPassName( static_cast<rlyrPassesObject::ePassType>(pass) ) );
 			}
 			//	RenderMan passes have no GPU renderer (a capture of one crashes)
 			const std::vector<int> refused = { rlyrPassesObject::e_RmanColorBleed };
@@ -573,25 +572,25 @@ void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 		}
 		case mainCommandLine::e_Version:
 		{
-			itString helpMessage = itString(mnmConstants::c_PRODUCT_FOR_DISPLAY);
-			helpMessage += L" ";
+			std::string helpMessage = std::string(mnmConstants::c_PRODUCT_FOR_DISPLAY);
+			helpMessage += " ";
 		#ifdef WIN64
-			helpMessage += itString(mnmConstants::cw_64BIT);
+			helpMessage += std::string(mnmConstants::c_64BIT);
 		#else
 			#ifdef WIN32
-			helpMessage += itString(mnmConstants::cw_32BIT);
+			helpMessage += std::string(mnmConstants::c_32BIT);
 			#endif
 		#endif
-			helpMessage += L" (";
-			helpMessage += itString(mainConstants::mc_ExecutableVersion);
-			helpMessage += L")";
-			helpMessage += L"\r\n";
-			helpMessage += L"\r\n";
-			helpMessage += mnmConstants::cw_COPYRIGHT;
-			helpMessage += L"\r\n";
-			helpMessage += mnmConstants::cw_RIGHTS;
-			helpMessage += L"\r\n";
-			std::string outputstr = itStringUtil::GetStdString(helpMessage);
+			helpMessage += " (";
+			helpMessage += std::string(mainConstants::mc_ExecutableVersion);
+			helpMessage += ")";
+			helpMessage += "\r\n";
+			helpMessage += "\r\n";
+			helpMessage += mnmConstants::c_COPYRIGHT;
+			helpMessage += "\r\n";
+			helpMessage += mnmConstants::c_RIGHTS;
+			helpMessage += "\r\n";
+			std::string outputstr = helpMessage;
 			std::cout << outputstr.c_str();
 			break;
 		}
@@ -619,7 +618,7 @@ void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 
 					//get the project directory for this character file
 					fsLocator tempLocator = scenefile;
-					tempLocator.RemoveAfter(itString("Data"));
+					tempLocator.RemoveAfter(std::string("Data"));
 					tempLocator.Pop();
 					std::string tempString;
 					fsFileUtil::LocatorToANSIFilename(tempLocator, tempString);
@@ -628,12 +627,12 @@ void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 					SceneData.m_Data.m_ProjectDirectory = tempString;
 
 					//Get the project name
-					tempString = itStringUtil::GetStdString(tempLocator.GetLastName());
+					tempString = tempLocator.GetLastName();
 					//DBG_TRACE( "   projectName " << tempString.c_str());
 					SceneData.m_Data.m_ProjectName = tempString;
 
 					//Create a new scene file name with tempScene appended after the character's file name
-					tempString = itStringUtil::GetStdString(scenefile.GetLastName());
+					tempString = scenefile.GetLastName();
 					chtrFileName = tempString;
 					tempString = tempString.substr(0, tempString.find("."));
 					tempString += "_tempScene";
@@ -645,14 +644,14 @@ void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 
 					//	prepare the initial scene directory based on project settings
 					//
-					itString scene_name(SceneData.m_Data.m_SceneName.c_str());
+					std::string scene_name(SceneData.m_Data.m_SceneName.c_str());
 					fsLocator project_dir;
 					fsFileUtil::ANSIFilenameToLocator( SceneData.m_Data.m_ProjectDirectory, project_dir );
 					mnmPaths::SetupPaths( project_dir, scene_name );
 					guiSingleDocHandler::SetInitialDirectory( gfPaths::GetPath( mnmPaths::e_SaveShots ) );
 
 					chtrDialogInterest newCharacter;
-					newCharacter.AddObject(itString(chtrFileName.c_str()), scenefile);
+					newCharacter.AddObject(chtrFileName, scenefile);
 				}
 			}
 			break;

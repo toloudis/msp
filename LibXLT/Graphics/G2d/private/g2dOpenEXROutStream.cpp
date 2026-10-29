@@ -18,9 +18,9 @@ g2dOpenEXROutStream::g2dOpenEXROutStream(const char fileName[],const fsLocator& 
 :
 	Imf::OStream(fileName)
 {
-	itString itFileName;
+	std::string itFileName;
 	fsFileUtil::LocatorToUnicodeString( i_Locator, itFileName );
-	m_OutStream = new std::ofstream( std::filesystem::path( itFileName.GetString() ), std::ios::binary );
+	m_OutStream = new std::ofstream( std::filesystem::u8path( itFileName ), std::ios::binary );
 }
 
 //--------------------------------------------------------------------

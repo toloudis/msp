@@ -50,9 +50,7 @@
 #ifndef FS_RESOURCETRACKER_HPP
 #include "Core/fs/fsResourceTracker.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 #ifndef G2D_EXCEPTIONX_HPP
 #include "Graphics/G2d/g2dExceptionX.hpp"
 #endif
@@ -61,6 +59,9 @@
 #endif
 #ifndef MAT_TEXTURETRACKING_HPP
 #include "Graphics/Mat/matTextureTracking.hpp"
+#endif
+#ifndef IT_STRINGUTIL_HPP
+#include "Core/It/itStringUtil.hpp"
 #endif
 
 namespace gvk
@@ -89,35 +90,35 @@ enum FileType
 FileType pick_format(const fsLocator& i_FileName)
 {
 	//	decide what kind of file we have
-	itString fname = i_FileName.GetLastName();
-	itString ext;
-	fname.GetExtension(ext);
+	std::string fname = i_FileName.GetLastName();
+	std::string ext;
+	itStringUtil::GetExtension(fname, ext);
 
-	if ((ext == itString("bmp")) || (ext == itString("BMP")))
+	if ((ext == "bmp") || (ext == "BMP"))
 	{
 		return e_BMP;
 	}
-	else if ((ext == itString("jpg")) || (ext == itString("JPG")) || (ext == itString("JPEG")) || (ext == itString("jpeg")))
+	else if ((ext == "jpg") || (ext == "JPG") || (ext == "JPEG") || (ext == "jpeg"))
 	{
 		return e_JPG;
 	}
-	else if ((ext == itString("tga")) || (ext == itString("TGA")))
+	else if ((ext == "tga") || (ext == "TGA"))
 	{
 		return e_TGA;
 	}
-	else if ((ext == itString("png")) || (ext == itString("PNG")))
+	else if ((ext == "png") || (ext == "PNG"))
 	{
 		return e_PNG;
 	}
-	else if ((ext == itString("dds")) || (ext == itString("DDS")))
+	else if ((ext == "dds") || (ext == "DDS"))
 	{
 		return e_DDS;
 	}
-	else if ((ext == itString("tif")) || (ext == itString("TIF")) || (ext == itString("Tif")))
+	else if ((ext == "tif") || (ext == "TIF") || (ext == "Tif"))
 	{
 		return e_TIFF;
 	}
-	else if ((ext == itString("tiff")) || (ext == itString("TIFF")) || (ext == itString("Tiff")))
+	else if ((ext == "tiff") || (ext == "TIFF") || (ext == "Tiff"))
 	{
 		return e_TIFF;
 	}
@@ -189,7 +190,7 @@ bool do_load_texture(std::unique_ptr<vkdImage>& o_Image, uint32_t& o_Format, con
 {
 	FileType file_type = pick_format(i_Locator);
 	matDecodedImage decoded;
-	itString error;
+	std::string error;
 	if (!matDecodeImage(i_Locator, decode_type(file_type), decoded, &error))
 	{
 		DBG_WARNING("Can't decode texture " << file_name(i_Locator) << ": " << error);
@@ -211,7 +212,7 @@ void finish_load(TEXTURE* io_Texture, const fsLocator& i_Locator, bool i_bLoaded
 	{
 		fsResourceTracker::Remove(i_Locator);
 
-		itString filename;
+		std::string filename;
 		fsFileUtil::LocatorToUnicodeString(i_Locator, filename);
 		if (matTextureMgr::IsAllowNullTextures())
 		{
@@ -265,7 +266,7 @@ void load_typed(TEXTURE* io_Texture, const fsLocator& i_Locator, matImageFileTyp
 	std::unique_ptr<vkdImage> image;
 	uint32_t format = 0;
 	matDecodedImage decoded;
-	itString error;
+	std::string error;
 	bool loaded = matDecodeImage(i_Locator, i_Type, decoded, &error);
 	if (!loaded)
 	{

@@ -168,7 +168,7 @@ namespace pythPropertyUtil
 			const char *pFilename = PyString_AsString( pValueArg );
 			if (!pFilename)
 				return NULL;
-			pPropCast->SetValue(itString(pFilename), bSetDirty);
+			pPropCast->SetValue(std::string(pFilename), bSetDirty);
 		}
 		else if (prtyFilePath *pPropCast = dynamic_cast<prtyFilePath*>(pProperty))
 		{

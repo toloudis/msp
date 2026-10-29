@@ -28,6 +28,9 @@
 #endif
 
 #include "Core/app/private/appApplicationPAC.hpp"	// FIX - if this is sorted with includes, it compiles with errors.
+#ifndef ENV_STRING_HPP
+#include "Core/Env/envString.hpp"
+#endif
 
 
 //--------------------------------------------------------------------
@@ -51,7 +54,7 @@ mainInitLibrary::mainInitLibrary(HINSTANCE hInstance,
 	// bother given them the correct ones.
 	m_Argc = 1;
 	m_Argv[0] = new TCHAR[::strlen(mnmConstants::c_EXECUTABLE)+1];
-	wcscpy(m_Argv[0], itString(mnmConstants::c_EXECUTABLE).GetString());
+	wcscpy(m_Argv[0], envString::UTF8ToWideChar(mnmConstants::c_EXECUTABLE).c_str());
 	m_Argv[1] = NULL;
 
 	// Initialize wxWidgets

@@ -48,7 +48,7 @@ class cptrRenderBatchDialog : public QDialog
 		void UpdateFileDirectory( fsLocator& i_dir );
 		void SetDataValues();
 		void SetComponentValues();
-		void add_scene(const itString& i_Filename, bool i_bChecked);
+		void add_scene(const std::string& i_Filename, bool i_bChecked);
 
 		//--------------------------------------------------------------------
 		// event handling

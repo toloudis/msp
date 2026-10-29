@@ -38,7 +38,7 @@ public:
 	//	Proxies functions just set the data internally. The changes are
 	//	only pushed through to the character when "Update()" is called.
 	//--------------------------------------------------------------------
-	void SetText(const itString& i_Text);
+	void SetText(const std::string& i_Text);
 	void SetForegroundColor( const maFloatRGBA& i_Color );
 	void SetRenderable(bool i_bRenderable);
 	void SetPosition(const maPoint3d& i_Position);
@@ -62,7 +62,7 @@ private:
 	scrText &m_Text;
 
 #if USE_PROXIES
-	itString m_String;
+	std::string m_String;
 	maFloatRGBA m_Color;
 	bool m_bRenderable;
 	maPoint3d m_Position;

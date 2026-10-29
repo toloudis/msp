@@ -76,9 +76,7 @@
 #ifndef FS_FILEUTIL_HPP
 #include "Core/fs/fsFileUtil.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 
 #include <cstdlib>
 #include <filesystem>
@@ -98,9 +96,9 @@ namespace
 			DBG_LOG("GraphicsVulkan: no user data folder; pipelines are not kept between runs");
 			return std::string();
 		}
-		itString folder;
+		std::string folder;
 		fsFileUtil::LocatorToUnicodeString(gfPaths::GetPath(gfPaths::e_UserDataPath), folder);
-		return (std::filesystem::path(folder.GetString()) / "VulkanPipelineCache.bin").u8string();
+		return (std::filesystem::u8path(folder) / "VulkanPipelineCache.bin").u8string();
 	}
 
 	std::string					l_InitError;

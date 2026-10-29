@@ -320,7 +320,7 @@ snSoundJob2D::SetFilename( const fsLocator & Filename )
 
 	//	If there is no name for this job, give it the file name
 	//
-	if ( this->GetName().GetLength() == 0 )
+	if ( this->GetName().size() == 0 )
 	{
 		if ( Filename.GetNumNames() != 0 )
 		{

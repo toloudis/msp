@@ -115,11 +115,11 @@ void effReflDataParser::Read(	chReader& i_Reader,
 	o_Shader.AddParam(new effParamColor("g_ambient", "g_ambient", data.m_ColorAmbient));
 	o_Shader.AddParam(new effParamColor("g_diffuse", "g_diffuse", data.m_ColorDiffuse));
 	o_Shader.AddParam(new effParamColor("g_specular", "g_specular", data.m_ColorSpecular));
-	o_Shader.AddParam(new effParamTexture("diffuseMap", "diffuseMap", itString(data.m_NameDiffuseMap.c_str())));
-	o_Shader.AddParam(new effParamTexture("normalMap", "normalMap", itString(data.m_NameNormalMap.c_str())));
-	o_Shader.AddParam(new effParamTexture("specularMap", "specularMap", itString(data.m_NameSpecularMap.c_str())));
-	o_Shader.AddParam(new effParamTexture("reflectFactorMap", "reflectFactorMap", itString(data.m_NameReflectFactorMap.c_str())));
-	o_Shader.AddParam(new effParamTexture("transparencyMap", "transparencyMap", itString(data.m_NameTransparencyMap.c_str())));
+	o_Shader.AddParam(new effParamTexture("diffuseMap", "diffuseMap", data.m_NameDiffuseMap));
+	o_Shader.AddParam(new effParamTexture("normalMap", "normalMap", data.m_NameNormalMap));
+	o_Shader.AddParam(new effParamTexture("specularMap", "specularMap", data.m_NameSpecularMap));
+	o_Shader.AddParam(new effParamTexture("reflectFactorMap", "reflectFactorMap", data.m_NameReflectFactorMap));
+	o_Shader.AddParam(new effParamTexture("transparencyMap", "transparencyMap", data.m_NameTransparencyMap));
 	o_Shader.AddParam(new effParamFloat("IOR", "IOR", data.m_IOR));
 	o_Shader.AddParam(new effParamFloat("reflLOD", "reflLOD", data.m_ReflLOD));
 	o_Shader.AddParam(new effParamFloat("refrLOD", "refrLOD", data.m_RefrLOD));

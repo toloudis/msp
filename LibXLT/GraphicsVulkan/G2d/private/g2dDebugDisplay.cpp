@@ -31,7 +31,7 @@ namespace gvk
 		m_bEnabled(false)
 	{
 		//	DX11's: the font name is left empty (the bitmap font, whatever it's called)
-		itString font_loc_s;
+		std::string font_loc_s;
 		m_DebugFont = g2dFontUtil::LoadFont( font_loc_s, 14 );
 	}
 
@@ -49,8 +49,8 @@ namespace gvk
 	{
 		if ( m_bEnabled )
 		{
-			std::map<int, itString>::iterator it = m_DebugInfo.begin();
-			std::map<int, itString>::iterator end = m_DebugInfo.end();
+			std::map<int, std::string>::iterator it = m_DebugInfo.begin();
+			std::map<int, std::string>::iterator end = m_DebugInfo.end();
 
 			g2dRGBColor text_color(0x00,0xff,0x00);
 			while ( it != end )
@@ -72,7 +72,7 @@ namespace gvk
 	void g2dDebugDisplay::SetDebugInfo(int i_Line, const char* i_Text)
 	{
 		if ( i_Text )
-			m_DebugInfo[i_Line] = itString(i_Text);
+			m_DebugInfo[i_Line] = std::string(i_Text);
 		else
 			m_DebugInfo.erase(m_DebugInfo.find(i_Line));
 	}

@@ -279,7 +279,7 @@ void g3dRenderAlpha::DrawQuad(float i_time)
 	m_effect->End();
 }
 
-g3dRenderText::g3dRenderText(std::vector<itString>& i_Messages, g2dFontHandle i_Font)
+g3dRenderText::g3dRenderText(std::vector<std::string>& i_Messages, g2dFontHandle i_Font)
 {
 	m_Messages = i_Messages;
 	m_Font = i_Font;
@@ -292,7 +292,7 @@ int g3dRenderText::Render(float i_time)
 	G3D_PROFILE_SCOPE("RenderText");
 	// Display text messages
 	g2dRGBColor text_color(0x00,0xff,0x00);
-	std::vector<itString>::const_iterator it, end = m_Messages.end();
+	std::vector<std::string>::const_iterator it, end = m_Messages.end();
 	int offset = 0; 
 	int nChars = 0;
 	for ( it = m_Messages.begin(); it != end; ++it, ++offset )
@@ -300,7 +300,7 @@ int g3dRenderText::Render(float i_time)
 		int y = (offset * 15) + 30;
 		int x = 10;
 		g2dWindowDrawUtilVk::DrawText(x, y, m_Font, (*it), text_color);
-		nChars += (*it).GetLength();
+		nChars += (*it).size();
 	}
 
 	// 2 triangles per character

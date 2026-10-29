@@ -181,7 +181,7 @@ namespace
 	//	g3dPostProcessing after the render.
 	void set_post_effect(gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir, const std::string& i_Name)
 	{
-		const itString file((i_Name + ".fx").c_str());
+		const std::string file((i_Name + ".fx").c_str());
 		matShaderEffect* effect = matShaderMgr::GetPostEffect(fsLocator(file));
 		ASSERT_TRUE(effect != NULL) << i_Name;
 		shared_ptr<effShaderParams> params(new effShaderParams());

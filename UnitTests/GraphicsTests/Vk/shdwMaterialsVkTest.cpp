@@ -77,9 +77,6 @@
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
 #ifndef IT_STRINGUTIL_HPP
 #include "Core/it/itStringUtil.hpp"
 #endif
@@ -133,10 +130,10 @@ namespace
 	{
 		std::set<std::string> names;
 		for (const matShaderInfo& info : matShaderMgr::GetMaterialShaders())
-			names.insert(itStringUtil::GetStdString(info.m_Name));
+			names.insert(info.m_Name);
 		for (const char* hidden : c_Hidden)
 		{
-			if (matShaderMgr::GetEffect(fsLocator(itString(hidden))))
+			if (matShaderMgr::GetEffect(fsLocator(std::string(hidden))))
 				names.insert(hidden);
 		}
 		for (const char* excluded : c_Excluded)
@@ -149,7 +146,7 @@ namespace
 		{
 			Material material;
 			material.m_Shader = name;
-			matShaderEffect* effect = matShaderMgr::GetEffect(fsLocator(itString(name.c_str())));
+			matShaderEffect* effect = matShaderMgr::GetEffect(fsLocator(name));
 			EXPECT_TRUE(effect) << name;
 			material.m_bTessellates = effect && effect->HasHardwareTessellation();
 			materials.push_back(material);

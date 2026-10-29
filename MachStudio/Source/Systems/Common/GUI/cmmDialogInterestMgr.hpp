@@ -60,7 +60,7 @@ namespace cmmDialogInterestMgr
 	//--------------------------------------------------------------------
 	//	Replace Selected Object with this asset path from available
 	//--------------------------------------------------------------------
-	void ReplaceObject(const itString& i_FileName, const fsLocator& i_Path);
+	void ReplaceObject(const std::string& i_FileName, const fsLocator& i_Path);
 
 	//--------------------------------------------------------------------
 	//	Delete Object from Placed

@@ -77,6 +77,5 @@ class quiXMLTextWriter : public guiXMLTextWriterImpl
 	virtual void WriteElement(const char* i_KeyName, const char * i_Value);
 	virtual void WriteElement(const char* i_KeyName, const std::string& i_Value);
 	virtual void WriteElement(const char* i_KeyName, const fsLocator& i_Value);
-	virtual void WriteElement(const char* i_KeyName, const itString& i_Value);
 	virtual void WriteElement(const char* i_KeyName, const maFloatRGBA& i_Value);
 };

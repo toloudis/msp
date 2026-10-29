@@ -43,9 +43,9 @@
 
 namespace
 {
-	QString to_qstring(const itString& i_String)
+	QString to_qstring(const std::string& i_String)
 	{
-		return QString::fromWCharArray(i_String.GetString());
+		return QString::fromStdString(i_String);
 	}
 
 	QPushButton* add_button(QWidget* i_pParent, QBoxLayout* i_pLayout, const char* i_pText)
@@ -127,7 +127,7 @@ void cptrRenderBatchDialog::set_continue_button()
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-void cptrRenderBatchDialog::add_scene(const itString& i_Filename, bool i_bChecked)
+void cptrRenderBatchDialog::add_scene(const std::string& i_Filename, bool i_bChecked)
 {
 	QListWidgetItem* pItem = new QListWidgetItem( to_qstring(i_Filename), m_checkList_Scenes );
 	pItem->setFlags( pItem->flags() | Qt::ItemIsUserCheckable );
@@ -179,7 +179,7 @@ void cptrRenderBatchDialog::SaveFile(const fsLocator &i_Loc)
 //--------------------------------------------------------------------
 void cptrRenderBatchDialog::UpdateFileDirectory( fsLocator& i_dir )
 {
-	itString sdir;
+	std::string sdir;
 	fsFileUtil::LocatorToUnicodeString(i_dir, sdir);
 	m_textCtrl_BatchFile->setText( to_qstring(sdir) );
 
@@ -199,7 +199,7 @@ void cptrRenderBatchDialog::SetDataValues()
 	{
 		QListWidgetItem* pItem = m_checkList_Scenes->item(i);
 		fsLocator dir;
-		fsFileUtil::UnicodeStringToLocator( itString(pItem->text().toStdWString().c_str()), dir);
+		fsFileUtil::UnicodeStringToLocator( pItem->text().toStdString(), dir);
 		m_Data.m_Scenes[i].m_Filename.SetValue(dir);
 		m_Data.m_Scenes[i].m_bChecked.SetValue(pItem->checkState() == Qt::Checked);
 	}
@@ -215,7 +215,7 @@ void cptrRenderBatchDialog::SetComponentValues()
 	m_checkList_Scenes->clear();
 	for ( int i = 0 ; i < m_Data.m_Scenes.size() ; ++i )
 	{
-		itString filename;
+		std::string filename;
 		fsFileUtil::LocatorToUnicodeString(m_Data.m_Scenes[i].m_Filename.GetValue(), filename);
 		add_scene(filename, m_Data.m_Scenes[i].m_bChecked.GetValue());
 	}
@@ -244,7 +244,7 @@ void cptrRenderBatchDialog::button_AddScene_OnButtonClick()
 		initial_dir = docSingleDocumentMgr::GetFilename();
 		initial_dir.Pop();
 	}
-	itString init_dir;
+	std::string init_dir;
 	fsFileUtil::LocatorToUnicodeString( initial_dir, init_dir );
 
 	const QStringList paths = QFileDialog::getOpenFileNames(this, "Open File", to_qstring(init_dir),
@@ -252,8 +252,8 @@ void cptrRenderBatchDialog::button_AddScene_OnButtonClick()
 	for (const QString& path : paths)
 	{
 		fsLocator file_loc;
-		fsFileUtil::UnicodeStringToLocator(itString(QDir::toNativeSeparators(path).toStdWString().c_str()), file_loc);
-		itString filename;
+		fsFileUtil::UnicodeStringToLocator(QDir::toNativeSeparators(path).toStdString(), file_loc);
+		std::string filename;
 		fsFileUtil::LocatorToUnicodeString(file_loc, filename);
 		add_scene(filename, true);
 	}
@@ -299,7 +299,7 @@ void cptrRenderBatchDialog::button_AddCurrent_OnButtonClick()
 {
 	if ( docSingleDocumentMgr::GetFilename().GetNumNames() > 0 )
 	{
-		itString filename;
+		std::string filename;
 		fsFileUtil::LocatorToUnicodeString(docSingleDocumentMgr::GetFilename(), filename);
 		add_scene(filename, true);
 	}

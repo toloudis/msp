@@ -59,7 +59,7 @@ void LoadHair( const fsLocator& i_Locator,
 	new_mat_info->CreateMaterial();
 	o_Materials.push_back(new_mat_info->m_pMaterial);
 
-	fsLocator hair_shader_loc(itString("Hair_SH.fx"));
+	fsLocator hair_shader_loc(std::string("Hair_SH.fx"));
 	matShaderEffect* eff = matShaderMgr::GetEffect(hair_shader_loc);
 	if (eff)
 	{

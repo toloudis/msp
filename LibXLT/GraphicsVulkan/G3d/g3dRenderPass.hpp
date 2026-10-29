@@ -23,9 +23,7 @@
 #ifndef MA_VECTOR4D_HPP
 #include "Core/ma/maVector4d.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 #ifndef G2D_FONTHANDLE_HPP
 #include "Graphics/g2d/g2dFontHandle.hpp"
 #endif
@@ -109,12 +107,12 @@ protected:
 class g3dRenderText : public g3dRenderPass
 {
 public:
-	g3dRenderText(std::vector<itString>& i_Messages, g2dFontHandle i_Font);
+	g3dRenderText(std::vector<std::string>& i_Messages, g2dFontHandle i_Font);
 	virtual ~g3dRenderText(void);
 
 	virtual int Render(float i_time);
 protected:
-	std::vector<itString> m_Messages;
+	std::vector<std::string> m_Messages;
 	g2dFontHandle m_Font;
 };
 

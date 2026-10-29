@@ -51,14 +51,14 @@ mtrlBlinn::mtrlBlinn(mdlMaterialInfo& i_MatData,
 	m_Data.m_VTrans.SetValue(m_pShaderData->m_UV.m_VTrans );
 	m_Data.m_UVAngle.SetValue(m_pShaderData->m_UV.m_UVAngle );
 
-	m_Data.m_TextureDiffuse.SetValue(itString(m_pShaderData->m_NameDiffuse.c_str()));
-	m_Data.m_TextureSpecular.SetValue(itString(m_pShaderData->m_NameSpecular.c_str()));
-	m_Data.m_TextureGloss.SetValue(itString(m_pShaderData->m_NameGloss.c_str()));
-	m_Data.m_TextureEnvironment.SetValue(itString(m_pShaderData->m_NameEnvironment.c_str()));
-	m_Data.m_TextureNormalMap.SetValue(itString(m_pShaderData->m_NameNormalMap.c_str()));
-	m_Data.m_TextureReflectFactorMap.SetValue(itString(m_pShaderData->m_NameReflectFactorMap.c_str()));
-	m_Data.m_TextureIORMap.SetValue(itString(m_pShaderData->m_NameIORMap.c_str()));
-	m_Data.m_TextureTransparencyMap.SetValue(itString(m_pShaderData->m_NameTransparencyMap.c_str()));
+	m_Data.m_TextureDiffuse.SetValue(m_pShaderData->m_NameDiffuse);
+	m_Data.m_TextureSpecular.SetValue(m_pShaderData->m_NameSpecular);
+	m_Data.m_TextureGloss.SetValue(m_pShaderData->m_NameGloss);
+	m_Data.m_TextureEnvironment.SetValue(m_pShaderData->m_NameEnvironment);
+	m_Data.m_TextureNormalMap.SetValue(m_pShaderData->m_NameNormalMap);
+	m_Data.m_TextureReflectFactorMap.SetValue(m_pShaderData->m_NameReflectFactorMap);
+	m_Data.m_TextureIORMap.SetValue(m_pShaderData->m_NameIORMap);
+	m_Data.m_TextureTransparencyMap.SetValue(m_pShaderData->m_NameTransparencyMap);
 
 	// Create channels for the properties (this will set the "original value"
 	// for the channels to the value in the material data).

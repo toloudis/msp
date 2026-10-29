@@ -14,9 +14,7 @@
 #ifndef ENV_APPVERSION_HPP
 #include "Core/env/envAppVersion.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 
 
 //============================================================================
@@ -26,7 +24,7 @@
 //============================================================================
 struct mnmAppPackageData
 {
-	itString		m_SGPUAppName;
+	std::string		m_SGPUAppName;
 	envAppVersion	m_SGPUAppVersion;
 };
 

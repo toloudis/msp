@@ -117,21 +117,21 @@ mainInitApplication::mainInitApplication(g2dSystem* i_pSystem)
 	// Geometry systems
 //	setsSystem::Init(app_dir, itString("Sets"));
 //	propSystem::Init(itString("Props"));
-	chtrSystem::Init(app_dir, itString("Characters"));
+	chtrSystem::Init(app_dir, std::string("Characters"));
 //	prtclSystem::Init(app_dir, itString("Effects"));
-	billSystem::Init(app_dir, itString("Effects"));
+	billSystem::Init(app_dir, std::string("Effects"));
 
 	guiMenuMgr::AddSeparator( "Create" );
 
 	// Light systems
 	ptltSystem::Init();
-	prjltSystem::Init(app_dir, itString("Effects"));
+	prjltSystem::Init(app_dir, std::string("Effects"));
 //	dirltSystem::Init();
 
 	guiMenuMgr::AddSeparator( "Create" );
 
 	// Camera systems
-	cmraSystem::Init(app_dir, itString("Sets")); // could have Cameras dir later?
+	cmraSystem::Init(app_dir, std::string("Sets")); // could have Cameras dir later?
 //	dcutSystem::Init(i_pSystem);
 
 	guiMenuMgr::AddSeparator( "Create" );
@@ -144,7 +144,7 @@ mainInitApplication::mainInitApplication(g2dSystem* i_pSystem)
 //	skySystem::Init();
 //	rcdSystem::Init();
 //	sbrdSystem::Init(app_dir, itString("Storyboards"));
-	envtSystem::Init(app_dir, itString("Effects"));
+	envtSystem::Init(app_dir, std::string("Effects"));
 	grupSystem::Init();
 	trfnSystem::Init();
 	// Putting these last makes sure that the lights and objects 

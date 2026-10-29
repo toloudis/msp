@@ -129,9 +129,9 @@ namespace cptrRenderProgressDialogUtil
 	//--------------------------------------------------------------------
 	// Set the current render layer label
 	//--------------------------------------------------------------------
-	void SetRenderLayerProgress( const itString& i_label )
+	void SetRenderLayerProgress( const std::string& i_label )
 	{
-		if (i_label.GetLength() > 0)
+		if (i_label.size() > 0)
 			DBG_LOG(i_label);
 
 #if defined(USE_WXWIDGETS) || defined(USE_QT)
@@ -145,7 +145,7 @@ namespace cptrRenderProgressDialogUtil
 	//--------------------------------------------------------------------
 	//	set the percentage for scenes
 	//--------------------------------------------------------------------
-	void SetScenesRenderPercentage( float i_percentage, const itString& i_label )
+	void SetScenesRenderPercentage( float i_percentage, const std::string& i_label )
 	{
 
 #if defined(USE_WXWIDGETS) || defined(USE_QT)
@@ -159,7 +159,7 @@ namespace cptrRenderProgressDialogUtil
 	//--------------------------------------------------------------------
 	//	set the percentage for cameras
 	//--------------------------------------------------------------------
-	void SetCamerasRenderPercentage( float i_percentage, const itString& i_label )
+	void SetCamerasRenderPercentage( float i_percentage, const std::string& i_label )
 	{
 
 #if defined(USE_WXWIDGETS) || defined(USE_QT)
@@ -173,7 +173,7 @@ namespace cptrRenderProgressDialogUtil
 	//--------------------------------------------------------------------
 	//	set the percentage for camera
 	//--------------------------------------------------------------------
-	void SetCameraRenderPercentage( float i_percentage, const itString& i_label )
+	void SetCameraRenderPercentage( float i_percentage, const std::string& i_label )
 	{
 
 #if defined(USE_WXWIDGETS) || defined(USE_QT)
@@ -201,9 +201,9 @@ namespace cptrRenderProgressDialogUtil
 	//--------------------------------------------------------------------
 	//	set the percentage for scene
 	//--------------------------------------------------------------------
-	void SetSceneLabel( const itString& i_label )
+	void SetSceneLabel( const std::string& i_label )
 	{
-		if (i_label.GetLength() > 0)
+		if (i_label.size() > 0)
 			DBG_LOG(i_label);
 
 

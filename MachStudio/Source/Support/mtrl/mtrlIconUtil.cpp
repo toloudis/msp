@@ -369,7 +369,7 @@ namespace mtrlIconUtil
 
 			//create the projection texture for both projection lights
 			fsResourceFinderDir finder(get_texture_path(l_ObjectFile));
-			itString tex_name("Shader_Ball_projection.dds");
+			std::string tex_name("Shader_Ball_projection.dds");
 			l_LightTexture = matTextureMgr::LoadTexture(finder, tex_name);
 
 			l_ProjectedLight1 = g3dLightMgr::CreateProjectedLight();

@@ -25,7 +25,7 @@
 namespace
 {
 	const char* c_SystemName = "Objects";
-	const itString c_BrowseObject("Browse");
+	const std::string c_BrowseObject("Browse");
 	//const char* c_BrowseInitDir = "C:\\projects";
 
 }
@@ -42,7 +42,7 @@ chtrDialogInterest::chtrDialogInterest()
 //	Add Object to Placed
 //--------------------------------------------------------------------
 //virtual 
-void chtrDialogInterest::AddObject(const itString& i_FileName, const fsLocator& i_Path)
+void chtrDialogInterest::AddObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 	//std::string dir1, dir2;
 	//dir1 = itStringUtil::GetStdString(i_Path.GetName(0));
@@ -245,25 +245,25 @@ int chtrDialogInterest::GetAllowedInteractions(const fsLocator& i_Path) const
 	if (i_Path.GetNumNames() == 4)
 	{	
 		// Path to part name. Allow delete if the category is "Controls"
-		if (i_Path.GetName(2) == itString("Controls") &&
-			i_Path.GetName(3) != itString(chtrPartConstants::c_NewControlString) )
+		if (i_Path.GetName(2) == "Controls" &&
+			i_Path.GetName(3) != std::string(chtrPartConstants::c_NewControlString) )
 		{
 			return (  e_DIAllow_Edit
 					| e_DIAllow_Del
 					);
 		}
-		else if (i_Path.GetName(2) ==itString(chtrPartConstants::c_MaterialCategoryName) &&
-			i_Path.GetName(3) != itString(chtrPartConstants::c_MaterialOverrideString) )
+		else if (i_Path.GetName(2) ==std::string(chtrPartConstants::c_MaterialCategoryName) &&
+			i_Path.GetName(3) != std::string(chtrPartConstants::c_MaterialOverrideString) )
 		{
 			return (  e_DIAllow_Edit
 					| e_DIAllow_Del
 					| e_DIAllow_Reload
 					);
 		}
-		else if (   (i_Path.GetName(2) == itString(chtrPartConstants::c_ExpressionCategoryName) 
-			     &&	 i_Path.GetName(3) != itString(chtrPartConstants::c_NewExpressionSingleString)
-			     &&	 i_Path.GetName(3) != itString(chtrPartConstants::c_NewExpressionDualString)
-			     &&	 i_Path.GetName(3) != itString(chtrPartConstants::c_NewExpressionQuadString) ) )
+		else if (   (i_Path.GetName(2) == std::string(chtrPartConstants::c_ExpressionCategoryName) 
+			     &&	 i_Path.GetName(3) != std::string(chtrPartConstants::c_NewExpressionSingleString)
+			     &&	 i_Path.GetName(3) != std::string(chtrPartConstants::c_NewExpressionDualString)
+			     &&	 i_Path.GetName(3) != std::string(chtrPartConstants::c_NewExpressionQuadString) ) )
 		{
 			return (  e_DIAllow_Edit
 					| e_DIAllow_Del

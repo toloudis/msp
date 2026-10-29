@@ -122,19 +122,16 @@ namespace
 					int8_t scale_mode;
 					int8_t render_mode;
 					int8_t uva_mode;
-					itString texture_name;
+					std::string texture_name;
 					int8_t num_alpha_keys;
 					
 					i_Reader.Read(scale_mode);
 					i_Reader.Read(uva_mode);
 					i_Reader.Read(render_mode);
-					i_Reader.Read(texture_name);
+					i_Reader.ReadItString(texture_name);
 					i_Reader.Read(num_alpha_keys);
 
-					//	remove NULLs from texture_name
-					int last_char = texture_name.GetLength() - 1;
-					DBG_ASSERT(texture_name[last_char] == 0, "expected terminating NULL");
-					texture_name.RemoveCharAt(last_char);
+					//	ReadItString gives the name without its terminating NULL
 					fsLocator texture_locator;
 					texture_locator.Push(texture_name);
 
@@ -229,13 +226,10 @@ namespace
 				}
 				else if ( name == c_TDPP )
 				{
-					itString geometry_name;
-					i_Reader.Read(geometry_name);
+					std::string geometry_name;
+					i_Reader.ReadItString(geometry_name);
 
-					//	remove NULLs from texture_name
-					int last_char = geometry_name.GetLength() - 1;
-					DBG_ASSERT(geometry_name[last_char] == 0, "expected terminating NULL");
-					geometry_name.RemoveCharAt(last_char);
+					//	ReadItString gives the name without its terminating NULL
 					fsLocator geometry_locator;
 					geometry_locator.Push(geometry_name);
 					o_Template.SetGeometryLocator(geometry_locator);
@@ -333,7 +327,7 @@ namespace
 		int8_t scale_mode	= i_Template.GetScaleMode();
 		int8_t render_mode	= i_Template.GetRenderMode();
 		int8_t uva_mode		= i_Template.GetUVAMode();
-		itString texture_name		= i_Template.GetTextureLocator().GetLastName();
+		std::string texture_name		= i_Template.GetTextureLocator().GetLastName();
 		// null-terminating not needed anymore
 		//texture_name += 0;
 		int8_t num_alpha_keys;
@@ -341,7 +335,7 @@ namespace
 		o_Writer.Write(scale_mode);
 		o_Writer.Write(uva_mode);
 		o_Writer.Write(render_mode);
-		o_Writer.Write(texture_name.GetString());
+		o_Writer.Write(texture_name.c_str());
 		
 		const anKeyAnimation<float>* key_anim = dynamic_cast<const anKeyAnimation<float>*>(&(i_Template.GetAlphaAnimation()));
 		
@@ -434,10 +428,10 @@ namespace
 		const int c_TDPP_VERSION = 0;
 		o_Writer.WriteChunkHeader(c_TDPP, c_TDPP_VERSION, false);
 
-		itString geometry_name = i_Template.GetGeometryLocator().GetLastName();
+		std::string geometry_name = i_Template.GetGeometryLocator().GetLastName();
 		// null-terminating not needed anymore
 		//geometry_name += 0;
-		o_Writer.Write(geometry_name.GetString());
+		o_Writer.Write(geometry_name.c_str());
 		
 		o_Writer.FinishChunk();
 	}
@@ -636,7 +630,7 @@ prtParticleGenerator* prtGeneratorUtil::MakeGenerator( const prtParticleGenerato
 
 		//	load model
 		fsLocator g_locator = i_Template.GetGeometryLocator();
-		if ( g_locator.GetLastName().HasSubString(itString(".mx")) )
+		if ( g_locator.GetLastName().HasSubString(std::string(".mx")) )
 		{
 			//	it's a simple (one fragment) model
 			mdlImport::LoadWorldFragments( g_locator,
@@ -646,7 +640,7 @@ prtParticleGenerator* prtGeneratorUtil::MakeGenerator( const prtParticleGenerato
 										   p3DGenerator->GetTextures() );
 			p3DGenerator->SetModelType( prt3DParticleGenerator::e_Simple );
 		}
-		else if ( g_locator.GetLastName().HasSubString( itString(".mhx") ) )
+		else if ( g_locator.GetLastName().HasSubString( std::string(".mhx") ) )
 		{
 			//	it's a hierarchical model
 			g3dSceneNode* pHierarchy;

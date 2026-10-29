@@ -457,7 +457,7 @@ namespace pythMtrlProperty
 
 		//create the fsLocator using the given path
 		fsLocator matLocator;
-		matLocator = fsLocator(	itString(material_location) );
+		matLocator = fsLocator(	std::string(material_location) );
 		try
 		{
 			int num_imported = 	script_obj->ImportMaterials(matLocator);
@@ -487,7 +487,7 @@ namespace pythMtrlProperty
 
 		//create the fsLocator using the given path
 		fsLocator matLocator;
-		matLocator = fsLocator(	itString(material_location) );
+		matLocator = fsLocator(	std::string(material_location) );
 		try
 		{
 			script_obj->SaveMaterials(matLocator);
@@ -517,7 +517,7 @@ namespace pythMtrlProperty
 
 		//create the fsLocator using the given path
 		fsLocator matLocator;
-		matLocator = fsLocator(	itString(material_location) );
+		matLocator = fsLocator(	std::string(material_location) );
 
 		//set the index of the current material
 		mtrlOperations::SetSelectedMaterialIndex(script_obj, script_obj->GetIndexForName(material_name));
@@ -547,7 +547,7 @@ namespace pythMtrlProperty
 
 		//create the fsLocator using the given path
 		fsLocator matLocator;
-		matLocator = fsLocator(	itString(material_location) );
+		matLocator = fsLocator(	std::string(material_location) );
 
 		//use the material locator given, but don't pop up a message box if there is an error
 		try

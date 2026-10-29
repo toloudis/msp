@@ -109,7 +109,7 @@ size_t parse_data(void *buffer, size_t size, size_t nmemb, void *userp)
 //	IsLatestVersion - returns true if app is up to date. If not, it also
 //	returns the version and the file to download.
 //----------------------------------------------------------------------------
-bool mainCheckAppVersion::IsLatestVersion(const envAppVersion& i_UserVersion, const std::string& i_VersionURL, envAppVersion& o_LatestVersion, itString& o_DownloadFile)
+bool mainCheckAppVersion::IsLatestVersion(const envAppVersion& i_UserVersion, const std::string& i_VersionURL, envAppVersion& o_LatestVersion, std::string& o_DownloadFile)
 {
 	l_UserVersion = i_UserVersion;
 

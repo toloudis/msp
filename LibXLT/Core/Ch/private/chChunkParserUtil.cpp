@@ -168,9 +168,9 @@ void ReadItString( chReader& i_Reader, std::string& o_Name )
 //------------------------------------------------------------------------
 //	Temporary
 //------------------------------------------------------------------------
-void Read( chReader& i_Reader, itString& o_Name )
+void ReadItString( chReader& i_Reader, itString& o_Name )
 {
-	i_Reader.Read(o_Name);
+	i_Reader.ReadItString(o_Name);
 }
 
 //------------------------------------------------------------------------

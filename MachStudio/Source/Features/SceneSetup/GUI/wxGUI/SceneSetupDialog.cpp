@@ -92,7 +92,7 @@ void SceneSetupDialog::build_project_list()
 
 	//	grab the saved ones
 	fsFileEnum::fsFileList filelist;
-	fsFileEnum::EnumerateFiles( gfPaths::GetPath(mnmPaths::e_SaveProjectFiles), filelist, itString(".mpj") );
+	fsFileEnum::EnumerateFiles( gfPaths::GetPath(mnmPaths::e_SaveProjectFiles), filelist, std::string(".mpj") );
 
 	// build the list
 	int filenum = filelist.size();
@@ -158,7 +158,7 @@ void SceneSetupDialog::update_project_index()
 	{
 		//	Read the Project File
 		//
-        ProjectSetupMgr::ReadProject( itString( m_listBox_Projects->GetStringSelection().wc_str() ) );
+        ProjectSetupMgr::ReadProject(  m_listBox_Projects->GetStringSelection().utf8_string() );
 		mark_project_data_dirty();
 	}
 	else
@@ -378,13 +378,13 @@ void SceneSetupDialog::finalize_data()
 	ProjectSetupData& PSData = ProjectSetupMgr::Data();
 	if (PSData.m_bDirty)
 	{
-		ProjectSetupMgr::WriteProject( itString( PSData.m_ProjectName.c_str() ) );
+		ProjectSetupMgr::WriteProject( PSData.m_ProjectName );
 		PSData.m_bDirty = false;
 	}
 
 	//	prepare the initial scene directory based on project settings
 	//
-	itString scene_name(m_SceneSetupData.m_Data.m_SceneName.c_str());
+	std::string scene_name(m_SceneSetupData.m_Data.m_SceneName.c_str());
 	fsLocator project_dir;
 	fsFileUtil::ANSIFilenameToLocator( m_SceneSetupData.m_Data.m_ProjectDirectory, project_dir );
 	mnmPaths::SetupPaths( project_dir, scene_name );

@@ -39,19 +39,19 @@ public:
 	//  Set new state for object, needs to be implemented in
 	// derived class
 	//--------------------------------------------------------------------
-	virtual void  SetValue(const itString& i_Val) = 0;
+	virtual void  SetValue(const std::string& i_Val) = 0;
 
 	//--------------------------------------------------------------------
 	//  Get current state of object
 	//--------------------------------------------------------------------
-	virtual const itString& GetValue() const = 0;
+	virtual const std::string& GetValue() const = 0;
 
 	//--------------------------------------------------------------------
 	//	The channel has the idea of an "original" state that it
 	//	goes to if there is no driver active.
 	//--------------------------------------------------------------------
-	void  SetOriginalValue(const itString& i_Val);
-	const itString& GetOriginalValue() const;
+	void  SetOriginalValue(const std::string& i_Val);
+	const std::string& GetOriginalValue() const;
 
 	//--------------------------------------------------------------------
 	//	Reset to "original" value, the value when no driver is active.
@@ -68,7 +68,7 @@ public:
 	void SetDirectory(const fsLocator& i_Locator);
 
 protected:
-	itString m_OriginalValue;
+	std::string m_OriginalValue;
 	fsLocator m_Directory;
 };
 
@@ -84,12 +84,12 @@ public:
 	//--------------------------------------------------------------------
 	//  Set new state for property
 	//--------------------------------------------------------------------
-	virtual void  SetValue(const itString& i_Val);
+	virtual void  SetValue(const std::string& i_Val);
 
 	//--------------------------------------------------------------------
 	//  Get current state of property
 	//--------------------------------------------------------------------
-	virtual const itString& GetValue() const;
+	virtual const std::string& GetValue() const;
 
 	//--------------------------------------------------------------------
 	// HasValueVariation - returns true if the current value of the

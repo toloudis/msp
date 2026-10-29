@@ -72,9 +72,9 @@ namespace
 	//------------------------------------------------------------------------
 	QString get_icon_directory()
 	{
-		itString wide_dir;
+		std::string wide_dir;
 		fsFileUtil::LocatorToUnicodeString(guiMenuMgr::GetIconDirectory(), wide_dir);
-		return QString::fromWCharArray(wide_dir.GetString());
+		return QString::fromStdString(wide_dir);
 	}
 
 	const float c_InitialZoom = 60.0f;
@@ -1072,9 +1072,9 @@ void chnlTraxDialog::checkBox_Snap_Clicked()
 //--------------------------------------------------------------------
 // Add category label to form
 //--------------------------------------------------------------------
-void chnlTraxDialog::add_category(const itString& i_CategoryName)
+void chnlTraxDialog::add_category(const std::string& i_CategoryName)
 {
-	QLabel *pCategory = new QLabel( QString::fromWCharArray(i_CategoryName.GetString()) );
+	QLabel *pCategory = new QLabel( QString::fromStdString(i_CategoryName) );
 	pCategory->setAlignment( Qt::AlignCenter );
 	QFont font = pCategory->font();
 	font.setPointSize( 8 );
@@ -1345,7 +1345,7 @@ void chnlTraxDialog::add_channels_for_object(tmlnScriptObject* i_pObject)
 	if (!i_pObject) return;
 
 	// Add Category based on object's name
-	this->add_category(itString(i_pObject->GetDisplayName().c_str()));
+	this->add_category(i_pObject->GetDisplayName());
 
 	// Add Channels for object that have a driver ONLY
 	//

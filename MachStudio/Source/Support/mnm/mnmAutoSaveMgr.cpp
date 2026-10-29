@@ -26,6 +26,9 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
+#ifndef IT_STRINGUTIL_HPP
+#include "Core/It/itStringUtil.hpp"
+#endif
 
 
 //============================================================================
@@ -54,20 +57,20 @@ void set_auto_save_time()
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-void create_autosave_filename( itString& io_filename )
+void create_autosave_filename( std::string& io_filename )
 {
-	io_filename.StripExtension();
+	itStringUtil::StripExtension(io_filename);
 	
 	/*char extras[ 8 ];
 	sprintf( extras, "~%02d.mab", AutoSaveData::l_AutoSaveBackupCounter );
-	io_filename += itString( extras );*/
+	io_filename += std::string( extras );*/
 	
 	std::ostringstream extras_stream(std::ostringstream::out);
 	std::string extras;
 	extras_stream << "~" <<  std::setw(2) << std::setfill('0') <<AutoSaveData::l_AutoSaveBackupCounter << ".mab";
 	extras = extras_stream.str();
 	
-	io_filename += itString( extras.c_str() );
+	io_filename += extras;
 
 	AutoSaveData::l_AutoSaveBackupCounter++;
 
@@ -105,7 +108,7 @@ void perform_auto_save()
 	//	perform the save
 	//
 	fsLocator origfile = docSingleDocumentMgr::GetFilename();
-	itString filename = (origfile.GetNumNames() > 0) ? itString(origfile.GetLastName()) : itString("Untitled");
+	std::string filename = (origfile.GetNumNames() > 0) ? std::string(origfile.GetLastName()) : std::string("Untitled");
 	
 	fsLocator bufile;
 	bufile = gfPaths::GetPath( mnmPaths::e_AutoSave );
@@ -231,7 +234,7 @@ void mnmAutoSaveMgr::BackupSavedFile()
 	{
 		return;
 	}
-	itString filename = origfile.GetLastName();
+	std::string filename = origfile.GetLastName();
 	
 	fsLocator bufile;
 	bufile = gfPaths::GetPath( mnmPaths::e_AutoSave );

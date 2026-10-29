@@ -98,9 +98,9 @@ void wxMRUManager::OnMenuOpen(wxMenuEvent& i_Event)
 			bool have_MRU = (locators.size() > i);
 			if (have_MRU)
 			{
-				itString filename;
+				std::string filename;
 				fsFileUtil::LocatorToUnicodeString(locators[i], filename);
-				m_pMRUMenu->SetLabel(wxID_FILE1 + i, filename.GetString());
+				m_pMRUMenu->SetLabel(wxID_FILE1 + i, wxString::FromUTF8(filename));
 			}
 			else
 			{

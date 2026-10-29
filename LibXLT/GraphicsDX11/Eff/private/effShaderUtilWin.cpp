@@ -15,6 +15,9 @@
 #include "Core/fs/fsResourceTracker.hpp"
 #include "Core/it/itStringUtil.hpp"
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/Env/envString.hpp"
+#endif
 
 namespace effShaderUtilWin
 {
@@ -120,7 +123,7 @@ namespace effShaderUtilWin
 		const std::string& i_Profile,
 		ID3DBlob** o_Shader)
 	{
-		itString filename;
+		std::string filename;
 		fsFileUtil::LocatorToUnicodeString(i_Locator, filename);
 		//DBG_LOG1("Reading effect from file: %s", filename.c_str());
 
@@ -128,7 +131,7 @@ namespace effShaderUtilWin
 		ID3DBlob* errors = NULL;
 
         HRESULT op_result = D3DCompileFromFile(
-            filename.GetString(),//in      LPCWSTR pFileName,
+            envString::UTF8ToWideChar(filename).c_str(),//in      LPCWSTR pFileName,
             NULL,//in_opt  const D3D_SHADER_MACRO pDefines,
             NULL,//in_opt  ID3DInclude pInclude,
             i_Entrypoint.c_str(),//in      LPCSTR pEntrypoint,

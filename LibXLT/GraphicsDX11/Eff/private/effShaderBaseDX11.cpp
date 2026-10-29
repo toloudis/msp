@@ -2006,7 +2006,7 @@ effParamTexture* effShaderBaseDX11::MapTextureParam(effShaderParams* o_pParams,
 	}
 	else
 	{
-		effParam = new effParamTexture(i_Name, uiLabel, itString(""));
+		effParam = new effParamTexture(i_Name, uiLabel, std::string());
 		o_pParams->AddParam(effParam);
 	}
 
@@ -2459,7 +2459,7 @@ effParamTexture* effShaderBaseDX11::MapTextureParam(effShaderParams* o_pParams,
 	if (effParam)
 		return effParam;
 
-	effParam = new effParamTexture(i_Name, i_Name, itString(""));
+	effParam = new effParamTexture(i_Name, i_Name, std::string());
 	o_pParams->AddParam(effParam);
 
 	//parse texture type

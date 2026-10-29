@@ -491,11 +491,11 @@ namespace chtrOperations
 	{
 		if (i_Filename.IsEmpty())
 		{
-			chtrObjectMgr::create_default_name(itString("Object"), o_NameString, l_ObjectCounter);
+			chtrObjectMgr::create_default_name(std::string("Object"), o_NameString, l_ObjectCounter);
 		}
 		else
 		{
-			chtrObjectMgr::create_duplicate_name(itString(i_Filename.GetString().c_str()), o_NameString);
+			chtrObjectMgr::create_duplicate_name(i_Filename.GetString(), o_NameString);
 		}
 	}
 

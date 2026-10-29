@@ -19,9 +19,6 @@
 #include "Core/Fs/fsLocator.hpp"
 #endif 
 
-#ifndef IT_STRING_HPP
-#include "Core/It/itString.hpp"
-#endif 
 
 
 //============================================================================

@@ -26,9 +26,9 @@
 class chtrGeomListConfig
 {
 public:
-	static itString GetFileTypeExtensions()
+	static std::string GetFileTypeExtensions()
 	{
-		return itString("gxb;mhx;jnx;vtx;mx;chx;chd");
+		return std::string("gxb;mhx;jnx;vtx;mx;chx;chd");
 		//return itString("chx;chd;gxb");
 	}
 };

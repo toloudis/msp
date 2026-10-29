@@ -56,9 +56,9 @@ void LoadPreferencesDialog::SetMissingTextureList(const std::set<fsLocator>& i_S
 	std::set<fsLocator>::const_iterator it;
 	for (it = i_Set.begin(); it != i_Set.end(); ++it)
 	{
-		itString filename;
+		std::string filename;
 		fsFileUtil::LocatorToUnicodeString(*it, filename);
-		m_listBox1->Append( filename.GetString() );
+		m_listBox1->Append( wxString::FromUTF8(filename) );
 	}
 }
 

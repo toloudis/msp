@@ -64,9 +64,6 @@
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
 #ifndef IT_STRINGUTIL_HPP
 #include "Core/it/itStringUtil.hpp"
 #endif
@@ -163,16 +160,16 @@ namespace
 		matShaderMgr::visitShaders(&visitor);
 		for (const matShaderInfo& info : matShaderMgr::GetMaterialShaders())
 		{
-			const std::string name = itStringUtil::GetStdString(info.m_Name);
+			const std::string name = info.m_Name;
 			// DX11 has no Vulkan-only material to compare with
 			if (gtVulkanOnly::IsVulkanOnlyMaterial(name))
 				continue;
-			visitor.m_Effects.push_back({ "material " + name, matShaderMgr::GetEffect(fsLocator(itString(name.c_str()))) });
+			visitor.m_Effects.push_back({ "material " + name, matShaderMgr::GetEffect(fsLocator(name)) });
 		}
 		for (const matShaderInfo& info : matShaderMgr::GetPostEffectShaders())
 		{
-			const std::string name = itStringUtil::GetStdString(info.m_Name);
-			visitor.m_Effects.push_back({ "post " + name, matShaderMgr::GetPostEffect(fsLocator(itString(name.c_str()))) });
+			const std::string name = info.m_Name;
+			visitor.m_Effects.push_back({ "post " + name, matShaderMgr::GetPostEffect(fsLocator(name)) });
 		}
 		return visitor.m_Effects;
 	}
@@ -194,14 +191,14 @@ namespace
 		matShaderMgr::visitShaders(&visitor);
 		for (const matShaderInfo& info : matShaderMgr::GetMaterialShaders())
 		{
-			if (gtVulkanOnly::IsVulkanOnlyMaterial(itStringUtil::GetStdString(info.m_Name)))
+			if (gtVulkanOnly::IsVulkanOnlyMaterial(info.m_Name))
 				continue;
-			out << "material " << itStringUtil::GetStdString(info.m_Name) << " '" << info.m_UIName << "' '"
+			out << "material " << info.m_Name << " '" << info.m_UIName << "' '"
 				<< info.m_HelpString << "' outline " << info.m_bSupportsOutline << "\n";
 		}
 		for (const matShaderInfo& info : matShaderMgr::GetPostEffectShaders())
 		{
-			out << "post " << itStringUtil::GetStdString(info.m_Name) << " '" << info.m_UIName << "'\n";
+			out << "post " << info.m_Name << " '" << info.m_UIName << "'\n";
 		}
 		return out.str();
 	}
@@ -424,7 +421,7 @@ namespace
 	{
 		matMaterial* material = new matMaterial();
 		shared_ptr<effShaderParams> params(new effShaderParams());
-		params->SetShaderName(itString(i_Shader.c_str()));
+		params->SetShaderName(i_Shader);
 		material->SetShaderParams(params);
 		matShaderEffect* effect = params->GetShader();
 		EXPECT_TRUE(effect) << i_Shader;

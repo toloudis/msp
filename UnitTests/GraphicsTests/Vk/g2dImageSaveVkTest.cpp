@@ -235,7 +235,7 @@ namespace
 	fsLocator locator_of(const std::filesystem::path& i_Path)
 	{
 		fsLocator locator;
-		fsFileUtil::UnicodeStringToLocator(itString(i_Path.wstring().c_str()), locator);
+		fsFileUtil::UnicodeStringToLocator(i_Path.u8string(), locator);
 		return locator;
 	}
 

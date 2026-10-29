@@ -45,7 +45,7 @@ envtDefaultEnvironment::envtDefaultEnvironment()
 	envtTextureList::BuildFileList(fileList);
 	fsLocator texDir;
 	if (fileList.Size() > 0)
-		fileList.GetFilePath(0, texDir);
+		static_cast<const fsysFileList&>(fileList).GetFilePath(0, texDir);	// the index, not a file name
 
 	// Register the properties so they can be displayed to the user
 	//

@@ -133,7 +133,7 @@ namespace
 
 		envAppVersion user_version( mainConstants::mc_ExecutableVersion );
 		envAppVersion latest_version;
-		itString download_file;
+		std::string download_file;
 		std::string version_URL;
 
 		//	pick the appropriate XML file based on the application and version

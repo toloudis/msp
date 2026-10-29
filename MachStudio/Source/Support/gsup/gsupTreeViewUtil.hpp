@@ -41,7 +41,6 @@ using namespace System::Windows::Forms;
 //	forward references
 //============================================================================
 class fsLocator;
-class itString;
 
 //============================================================================
 //============================================================================
@@ -334,7 +333,7 @@ private:
 		//--------------------------------------------------------------------
 		//	add a tree node
 		//--------------------------------------------------------------------
-		static void AddTreeNode( TreeView^ io_pTreeView, const itString& i_Filename )
+		static void AddTreeNode( TreeView^ io_pTreeView, const std::string& i_Filename )
 		{
 			String^ pFname = tmaManagedStringUtils::ItStringToManagedString(i_Filename);
 			io_pTreeView->Nodes->Add( gcnew TreeNode( pFname ) );
@@ -344,7 +343,7 @@ private:
 		//	add a tree branch (and the corresponding parent nodes based on the
 		//	path)
 		//--------------------------------------------------------------------
-		static void AddTreeBranch( TreeView^ io_pTreeView, const fsLocator& i_Path, const itString& i_Filename )
+		static void AddTreeBranch( TreeView^ io_pTreeView, const fsLocator& i_Path, const std::string& i_Filename )
 		{
 			DBG_ASSERT0( io_pTreeView != nullptr, "Cannot have a nullptr TreeView" );
 

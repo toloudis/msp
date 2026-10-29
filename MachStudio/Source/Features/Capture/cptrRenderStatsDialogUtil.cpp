@@ -20,6 +20,9 @@
 #else
 #include "ToolUIWx/twx/twxSystem.hpp"
 #endif
+#ifndef DBG_MSG_HPP
+#include "Core/Dbg/dbgMsg.hpp"
+#endif
 
 
 //============================================================================
@@ -87,7 +90,7 @@ namespace cptrRenderStatsDialogUtil
 		cptrRenderStatsDataUtil::BuildOutputString(outstring);
 		if (l_pRenderStatsDialog != NULL)
 		{
-			l_pRenderStatsDialog->UpdateStatString( itString(outstring.c_str()) );
+			l_pRenderStatsDialog->UpdateStatString( outstring );
 		}
 #endif
 	}
@@ -95,9 +98,9 @@ namespace cptrRenderStatsDialogUtil
 	//--------------------------------------------------------------------
 	// Append message on render stats
 	//--------------------------------------------------------------------
-	void AddStatsMessage(itString& i_Message)
+	void AddStatsMessage(std::string& i_Message)
 	{
-		if (i_Message.GetLength() > 0)
+		if (i_Message.size() > 0)
 			DBG_LOG(i_Message);
 
 #if defined(USE_WXWIDGETS) || defined(USE_QT)
@@ -116,7 +119,7 @@ namespace cptrRenderStatsDialogUtil
 #if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (l_pRenderStatsDialog != NULL)
 		{
-			l_pRenderStatsDialog->AddStatString(itString());
+			l_pRenderStatsDialog->AddStatString(std::string());
 		}
 #endif
 	}

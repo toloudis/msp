@@ -50,9 +50,9 @@ twcTextureFilePicker::twcTextureFilePicker(wxWindow* i_pParent)
 	bSizer1->Add( m_pChoice, 0, wxALL, 0 );
 	
 	//function button
-	itString icon_dir;
+	std::string icon_dir;
 	fsFileUtil::LocatorToUnicodeString( guiMenuMgr::GetIconDirectory(), icon_dir );
-	std::wstring icondir = icon_dir.GetString();
+	wxString icondir = wxString::FromUTF8(icon_dir);
 
     wxLogNull nullLog;
 
@@ -105,16 +105,16 @@ prtyPropertyUIInfo* twcTextureFilePicker::GetUIInfo()
 //--------------------------------------------------------------------
 //	Filename
 //--------------------------------------------------------------------
-itString twcTextureFilePicker::GetFilename() const
+std::string twcTextureFilePicker::GetFilename() const
 {
     if (m_Value.GetNumNames() == 0)
-        return itString("");
+        return std::string();
 	else if (fsFileUtil::DirectoryExists(m_Value))
     {
         // If the fullpath is a directory, then the filename
         // should be empty. (The directory would be used to specify
         // the initial directory for the Browse dialog).
-        return itString("");
+        return std::string();
     }
     else
     {
@@ -125,11 +125,11 @@ itString twcTextureFilePicker::GetFilename() const
 //--------------------------------------------------------------------
 //	Filter
 //--------------------------------------------------------------------
-const itString& twcTextureFilePicker::GetFilter() const
+const std::string& twcTextureFilePicker::GetFilter() const
 {
 	return m_Filter;
 }
-void twcTextureFilePicker::SetFilter(const itString& i_Filter)
+void twcTextureFilePicker::SetFilter(const std::string& i_Filter)
 {
 	m_Filter = i_Filter;
 }
@@ -293,9 +293,9 @@ void twcTextureFilePicker::update_textbox()
 	}
 	else
 	{
-		itString full_path;
+		std::string full_path;
 		fsFileUtil::LocatorToUnicodeString( m_Value, full_path );
-		this->m_pTextBox->SetValue(full_path.GetString());
+		this->m_pTextBox->SetValue(wxString::FromUTF8(full_path));
 		this->m_pTextBox->SetInsertionPointEnd(); // show end of fullpath, not beginning
 	}
 }
@@ -316,9 +316,9 @@ void twcTextureFilePicker::OnTextChange(wxCommandEvent& i_Event)
 	wxString lastvalue = m_pTextBox->last_value();
 	if( m_CurrentMode == prtyTextureFileChooserUIInfo::GetType(prtyTextureFileChooserUIInfo::e_Texture) )
 	{
-		itString full_path(m_pTextBox->GetValue().wc_str());
+		std::string full_path(m_pTextBox->GetValue().utf8_string());
 		fsFileUtil::UnicodeStringToLocator(full_path, m_Value);
-		if(full_path.GetLength() != 0 )
+		if(full_path.size() != 0 )
 		{
 			if(!fsFileUtil::FileExists(m_Value))
 			{
@@ -327,7 +327,7 @@ void twcTextureFilePicker::OnTextChange(wxCommandEvent& i_Event)
 				std::string msg = "Cannot find file\n" + filename;
 				guiMessageBox::Show(msg.c_str(), "Error", guiMessageBox::e_OKOnly);
 				m_pTextBox->SetValue(lastvalue);
-				itString path(lastvalue.wc_str());
+				std::string path(lastvalue.utf8_string());
 				fsFileUtil::UnicodeStringToLocator(path, m_Value);
 			}
 		}
@@ -340,8 +340,8 @@ void twcTextureFilePicker::OnTextChange(wxCommandEvent& i_Event)
 void twcTextureFilePicker::OnChoiceSelected(wxCommandEvent& i_Event)
 {
 	m_CurrentSelection = m_pChoice->GetSelection();
-	itString choice_text(m_pChoice->GetStringSelection().wc_str());
-	std::string selection = itStringUtil::GetStdString(choice_text);
+	std::string choice_text(m_pChoice->GetStringSelection().utf8_string());
+	std::string selection = choice_text;
 	if( m_CurrentMode == selection )
 		return;
 
@@ -407,21 +407,21 @@ void twcTextureFilePicker::OnInvokeClick(wxCommandEvent& i_Event)
 	m_bButtonPress = false;
 	if( m_CurrentMode == prtyTextureFileChooserUIInfo::GetType(prtyTextureFileChooserUIInfo::e_Texture) )
 	{
-		itString init_dir;
+		std::string init_dir;
 		fsFileUtil::LocatorToUnicodeString( get_initial_directory(), init_dir );
 
 		wxFileDialog dialog( this,
 						wxT("Open File"),
-						init_dir.GetString(),
+						wxString::FromUTF8(init_dir),
 						wxEmptyString,
-						m_Filter.GetString()
+						wxString::FromUTF8(m_Filter)
 					 );
 
 		//dialog.CentreOnParent();
 
 		if (dialog.ShowModal() == wxID_OK)
 		{
-			itString full_path(dialog.GetPath().wc_str());
+			std::string full_path(dialog.GetPath().utf8_string());
 			fsFileUtil::UnicodeStringToLocator(full_path, m_Value);
 
 			// maintain the current directory by category

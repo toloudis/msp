@@ -18,9 +18,6 @@
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/It/itString.hpp"
-#endif
 #ifndef DBG_MSG_HPP
 #include "Core/Dbg/dbgMsg.hpp"
 #endif
@@ -173,7 +170,7 @@ g2dFontObjectVk::g2dFontObjectVk(matTexture* i_FontMap):
 {
 	m_TextSprite = new scrText();
 	m_TextSprite->SetFontMapImage(i_FontMap, 320, 256);
-	m_TextSprite->SetText(itString(""));
+	m_TextSprite->SetText(std::string());
 	m_TextSprite->SetScreenBased(true);
 	m_TextSprite->SetTextSize( m_TextSize / l_baseFontSize);
 	m_TextSprite->SetBackgroundColor(maFloatRGBA(0,0,0,0));
@@ -188,7 +185,7 @@ g2dFontObjectVk::~g2dFontObjectVk()
 	m_TextSprite = NULL;
 }
 
-void g2dFontObjectVk::DrawText(const itString& i_Text, const maFloatRGBA& i_Color, int i_OffsetX, int i_OffsetY)
+void g2dFontObjectVk::DrawText(const std::string& i_Text, const maFloatRGBA& i_Color, int i_OffsetX, int i_OffsetY)
 {
 	if (!m_pQuadVS || !m_pQuadPS)
 		return;
@@ -360,7 +357,7 @@ g2dFontUtilVk::~g2dFontUtilVk()
 //	a g2dFontHandle which can be used later.  When you are done with the
 //	font, call ReleaseFont.
 //------------------------------------------------------------------------
-g2dFontHandle g2dFontUtilVk::LoadFont(const itString& /*i_Name*/, int i_Size)
+g2dFontHandle g2dFontUtilVk::LoadFont(const std::string& /*i_Name*/, int i_Size)
 {
 	fsLocator filePath = l_GloablFontMap;
 	//fsFileUtil::UnicodeStringToLocator(i_Name, filePath);
@@ -432,19 +429,15 @@ void g2dFontUtilVk::ReleaseFont(g2dFontHandle i_Handle)
 // g2dFontHandle.  It looks this up in the system to learn exactly what
 // the system loaded.
 //------------------------------------------------------------------------
-void g2dFontUtilVk::GetLoadedFontName( g2dFontHandle /*i_Font*/, itString& /*o_Name*/ )
-{
-	// does this function need to be implemented?
-}
-
 void g2dFontUtilVk::GetLoadedFontName( g2dFontHandle /*i_Font*/, std::string& /*o_Name*/ )
 {
+	// does this function need to be implemented?
 }
 
 //------------------------------------------------------------------------
 //	GetTextSizeInPixels returns the width and height in pixels of the given text and font
 //------------------------------------------------------------------------
-void g2dFontUtilVk::GetTextSizeInPixels(g2dFontHandle /*i_Font*/, const itString& /*i_Text*/, int& o_Width, int& o_Height)
+void g2dFontUtilVk::GetTextSizeInPixels(g2dFontHandle /*i_Font*/, const std::string& /*i_Text*/, int& o_Width, int& o_Height)
 {
 	o_Width = 1;
 	o_Height = 1;

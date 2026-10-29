@@ -83,7 +83,7 @@ namespace
 			text = oss.str();
 
 		}
-		TCMData::l_pTimeCodeTextProxy->SetText( itString( text.c_str() ) );
+		TCMData::l_pTimeCodeTextProxy->SetText( text );
 	}
 }
 
@@ -104,7 +104,7 @@ void mnmTimeCodeMgr::Initialize()
 	TCMData::l_pTimeCodeText->SetPosition( maPoint3d( 10, 10, 0 ) );
 	TCMData::l_pTimeCodeText->SetCentered( false );
 	TCMData::l_pTimeCodeText->SetSize( 10, 16 );
-	TCMData::l_pTimeCodeText->SetText( itString("00:00:00") );
+	TCMData::l_pTimeCodeText->SetText( std::string("00:00:00") );
 	TCMData::l_fFramePerSecond = g3dConstants::c_fDefaultFrameRate;
 
 	TCMData::l_ScreenSpaceLayer = mnmApp::GetScreenSpaceIndex();//2;		// FIX: - hard-coded value

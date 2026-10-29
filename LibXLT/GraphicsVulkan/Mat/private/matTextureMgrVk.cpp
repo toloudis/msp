@@ -815,30 +815,30 @@ unsigned int matTextureMgrVk::GetNumFramebufferTargets()
 // a single codebase for this function
 //--------------------------------------------------------------------
 matTexture* matTextureMgrVk::LoadTexture(const fsLocator& i_Directory,
-						const itString& i_Name,
-						std::vector<itString>& o_UVANames,
+						const std::string& i_Name,
+						std::vector<std::string>& o_UVANames,
 						TEXTURE_TYPE i_Type/* = TEXTURE_TYPE_2D*/,
 						bool i_bIgnoreTUVSuffix /*= false*/,
 						bool mipmap_if_2D /*= true*/)
 {
-	DBG_ASSERT( i_Name.GetLength() > 0, "No name for texture" );
+	DBG_ASSERT( i_Name.size() > 0, "No name for texture" );
 
 	int width_reduce, height_reduce;
 
 	fsLocator tex_locator(i_Directory);
 	tex_locator.Push(i_Name);
 
-	itString extension;
-	i_Name.GetExtension(extension);
+	std::string extension;
+	itStringUtil::GetExtension(i_Name, extension);
 	itStringUtil::ToLower(extension);
 
 	if (gfFileTranslationMgr::FileExists(tex_locator))
 	{
-		if (extension == itString("dds"))
+		if (extension == "dds")
 		{
 			return this->LoadCompressedTexture( tex_locator, i_Type, mipmap_if_2D );
 		}
-		else if (extension == itString("tuv"))
+		else if (extension == "tuv")
 		{
 			if( i_Type == TEXTURE_TYPE_UNKNOWN || i_Type == TEXTURE_TYPE_2D )
 			{

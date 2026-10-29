@@ -10,9 +10,7 @@
 #endif
 #define BILL_SCRIPTDATA_HPP
 
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 #ifndef MA_POINT3D_HPP
 #include "Core/ma/maPoint3d.hpp"
 #endif
@@ -70,11 +68,11 @@ public:
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	billScriptData(const itString& i_Filename );
+	billScriptData(const std::string& i_Filename );
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	billScriptData(	const itString& i_Filename,
+	billScriptData(	const std::string& i_Filename,
 					const maPoint3d& i_Position,
 					float i_Scale );
 
@@ -109,7 +107,7 @@ class billListData
 public:
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void Add(const itString& i_Filename,
+	void Add(const std::string& i_Filename,
 			 const maPoint3d& i_Position,
 			 float i_Scale);
 

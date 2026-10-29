@@ -20,6 +20,9 @@
 
 #include <iomanip>
 #include <queue>
+#ifndef ENV_STRING_HPP
+#include "Core/Env/envString.hpp"
+#endif
 
 
 //============================================================================
@@ -35,12 +38,12 @@
 //============================================================================
 namespace
 {
-	std::vector<std::vector<itString>>	l_RenderOutputTags(2, std::vector<itString>(0));
+	std::vector<std::vector<std::string>>	l_RenderOutputTags(2, std::vector<std::string>(0));
 
 	struct ParsedNode
 	{
 		bool bIsTag;
-		itString StringData;
+		std::string StringData;
 	};
 	std::queue<ParsedNode> ParsedData;
 
@@ -48,20 +51,20 @@ namespace
 //------------------------------------------------------------------------
 /// @param i_TagNum
 //------------------------------------------------------------------------
-itString get_tag(int i_TagNum)
+std::string get_tag(int i_TagNum)
 {
 	if ((i_TagNum >= 0) && (i_TagNum < captRenderOutputTags::e_SceneEnvTagsCount))
 	{
 		return l_RenderOutputTags[0][i_TagNum];
 	}
-	return itString();
+	return std::string();
 }
 
 //------------------------------------------------------------------------
 /// @param i_Data render output data structure
 /// @param i_TagNum index of the tag
 //------------------------------------------------------------------------
-itString get_tagstring( captRenderOutputData& i_Data, int i_TagNum )
+std::string get_tagstring( captRenderOutputData& i_Data, int i_TagNum )
 {
 	if ((i_TagNum >= 0) && (i_TagNum < captRenderOutputTags::e_SceneEnvTagsCount))
 	{
@@ -78,7 +81,7 @@ itString get_tagstring( captRenderOutputData& i_Data, int i_TagNum )
 				// remove front + back spaces (front won't happen because of "_" before
 				std::string::size_type const first = i_Data.m_CompressCode.GetValue().find_first_not_of(" \t");
 				std::string temp = i_Data.m_CompressCode.GetValue().substr(first, i_Data.m_CompressCode.GetValue().find_last_not_of(" \t")-first+1).c_str();
-				return itString(temp.c_str());
+				return temp;
 			}
 			case captRenderOutputTags::e_RenderPassName:
 			{
@@ -96,18 +99,18 @@ itString get_tagstring( captRenderOutputData& i_Data, int i_TagNum )
 				std::ostringstream oss;
 				oss << std::setw(i_Data.m_nCounterDigits.GetValue());
 				oss << i_Data.m_nCurrentFrame.GetValue();
-				return itString( oss.str().c_str());
+				return oss.str();
 			}
 			case captRenderOutputTags::e_CountersZeros:
 			{
 				std::ostringstream oss;
 				oss << std::setfill('0') << std::setw(i_Data.m_nCounterDigits.GetValue());
 				oss << i_Data.m_nCurrentFrame.GetValue();
-				return itString( oss.str().c_str() );
+				return oss.str();
 			}
 			case captRenderOutputTags::e_Resolution:
 			{
-				itString resolution;
+				std::string resolution;
 				std::ostringstream oss;
 				oss << (i_Data.m_nWidth.GetValue()) << "x" << (i_Data.m_nHeight.GetValue());
 				resolution = oss.str().c_str();
@@ -115,7 +118,7 @@ itString get_tagstring( captRenderOutputData& i_Data, int i_TagNum )
 			}
 			case captRenderOutputTags::e_ResolutionWidth:
 			{
-				itString resolution;
+				std::string resolution;
 				std::ostringstream oss;
 				oss << i_Data.m_nWidth.GetValue();
 				resolution = oss.str().c_str();
@@ -123,7 +126,7 @@ itString get_tagstring( captRenderOutputData& i_Data, int i_TagNum )
 			}
 			case captRenderOutputTags::e_ResolutionHeight:
 			{
-				itString resolution;
+				std::string resolution;
 				std::ostringstream oss;
 				//oss.setf(0, std::ios::floatfield);
 				//oss.setf(std::ios::fixed, std::ios::floatfield);
@@ -135,19 +138,19 @@ itString get_tagstring( captRenderOutputData& i_Data, int i_TagNum )
 			case captRenderOutputTags::e_OutputBaseDir:
 			{
 				fsLocator dir = i_Data.m_OutputDirectoryRoot.GetValue();
-				itString path;
+				std::string path;
 				fsFileUtil::LocatorToUnicodeString( dir, path );
 				return path;
 			}
 			case captRenderOutputTags::e_CaptureUnique:
 			{
 				//	need camera "letter"
-				itString resolution;
+				std::string resolution;
 				return resolution;
 			}
 			case captRenderOutputTags::e_FPS:
 			{
-				itString value;
+				std::string value;
 				std::ostringstream oss;
 				oss.setf(0, std::ios::floatfield);
 				oss.setf(std::ios::fixed, std::ios::floatfield);
@@ -158,7 +161,7 @@ itString get_tagstring( captRenderOutputData& i_Data, int i_TagNum )
 			}
 			case captRenderOutputTags::e_Time:
 			{
-				itString value;
+				std::string value;
 				std::string timestr;
 				tmlnTimeUtil::GetTimeStringInHMSM( tmlnTimeLine::GetValue(), timestr );
 				value = timestr.c_str();
@@ -166,7 +169,7 @@ itString get_tagstring( captRenderOutputData& i_Data, int i_TagNum )
 			}
 			case captRenderOutputTags::e_Minutes:
 			{
-				itString value;
+				std::string value;
 				std::string timestr;
 				int Hours, Minutes, Seconds;
 				float Milliseconds;
@@ -181,7 +184,7 @@ itString get_tagstring( captRenderOutputData& i_Data, int i_TagNum )
 			}
 			case captRenderOutputTags::e_Seconds:
 			{
-				itString value;
+				std::string value;
 				std::string timestr;
 				int Hours, Minutes, Seconds;
 				float Milliseconds;
@@ -196,7 +199,7 @@ itString get_tagstring( captRenderOutputData& i_Data, int i_TagNum )
 			}
 			case captRenderOutputTags::e_Milliseconds:
 			{
-				itString value;
+				std::string value;
 				std::string timestr;
 				int Hours, Minutes, Seconds;
 				float Milliseconds;
@@ -211,7 +214,7 @@ itString get_tagstring( captRenderOutputData& i_Data, int i_TagNum )
 			}
 			case captRenderOutputTags::e_Frame:
 			{
-				itString value;
+				std::string value;
 				std::ostringstream oss;
 				oss.setf(0, std::ios::floatfield);
 				oss.setf(std::ios::fixed, std::ios::floatfield);
@@ -222,29 +225,29 @@ itString get_tagstring( captRenderOutputData& i_Data, int i_TagNum )
 			}
 			case captRenderOutputTags::e_RenderType:
 			{
-				itString value;
+				std::string value;
 				/// \todo fill in this value for RenderType
 				return value;
 			}
 			case captRenderOutputTags::e_StereoEye:
 			{
-				itString value;
+				std::string value;
 				//	Stereo
 				if (i_Data.m_CurrentStereoMode.GetValue() == STEREO_LEFTCAM )
 				{
-					value = itString(L"Left");
+					value = std::string("Left");
 				}
 				else if (i_Data.m_CurrentStereoMode.GetValue() == STEREO_RIGHTCAM )
 				{
-					value = itString(L"Right");
+					value = std::string("Right");
 				}
 				return value;
 			}
 			default:
-				return itString(L"");
+				return std::string();
 		}
 	}
-	return itString(L"");
+	return std::string();
 }
 
 }
@@ -272,46 +275,46 @@ void captRenderOutputTagsUtil::SetToDefault()
 {
 	l_RenderOutputTags[0].resize( captRenderOutputTags::e_SceneEnvTagsCount );
 	l_RenderOutputTags[1].resize( captRenderOutputTags::e_SceneEnvTagsCount );
-	l_RenderOutputTags[0][captRenderOutputTags::e_SceneFilename] = itString(L"SceneFilename");
-	l_RenderOutputTags[1][captRenderOutputTags::e_SceneFilename] = itString(L"");
-	l_RenderOutputTags[0][captRenderOutputTags::e_CameraName] = itString(L"CameraName");
-	l_RenderOutputTags[1][captRenderOutputTags::e_CameraName] = itString(L"");
-	l_RenderOutputTags[0][captRenderOutputTags::e_RenderLayerName] = itString(L"RenderLayerName");
-	l_RenderOutputTags[1][captRenderOutputTags::e_RenderLayerName] = itString(L"");
-	l_RenderOutputTags[0][captRenderOutputTags::e_CompressionType] = itString(L"CompressionType");
-	l_RenderOutputTags[1][captRenderOutputTags::e_CompressionType] = itString(L"");
-	l_RenderOutputTags[0][captRenderOutputTags::e_RenderPassName] = itString(L"RenderPassName");
-	l_RenderOutputTags[1][captRenderOutputTags::e_RenderPassName] = itString(L"");
-	l_RenderOutputTags[0][captRenderOutputTags::e_Counters] = itString(L"#");
-	l_RenderOutputTags[1][captRenderOutputTags::e_Counters] = itString(L"");
-	l_RenderOutputTags[0][captRenderOutputTags::e_CountersZeros] = itString(L"0");
-	l_RenderOutputTags[1][captRenderOutputTags::e_CountersZeros] = itString(L"");
-	l_RenderOutputTags[0][captRenderOutputTags::e_OutputBaseDir] = itString(L"OutputBaseDir");
-	l_RenderOutputTags[1][captRenderOutputTags::e_OutputBaseDir] = itString(L"");
-	l_RenderOutputTags[0][captRenderOutputTags::e_CaptureUnique] = itString(L"CaptureUnique");
-	l_RenderOutputTags[1][captRenderOutputTags::e_CaptureUnique] = itString(L"");
-	l_RenderOutputTags[0][captRenderOutputTags::e_Resolution] = itString(L"Resolution");
-	l_RenderOutputTags[1][captRenderOutputTags::e_Resolution] = itString(L"");
-	l_RenderOutputTags[0][captRenderOutputTags::e_ResolutionWidth] = itString(L"ResolutionWidth");
-	l_RenderOutputTags[1][captRenderOutputTags::e_ResolutionWidth] = itString(L"");
-	l_RenderOutputTags[0][captRenderOutputTags::e_ResolutionHeight] = itString(L"ResolutionHeight");
-	l_RenderOutputTags[1][captRenderOutputTags::e_ResolutionHeight] = itString(L"");
-	l_RenderOutputTags[0][captRenderOutputTags::e_FPS] = itString(L"FPS");
-	l_RenderOutputTags[1][captRenderOutputTags::e_FPS] = itString(L"");
-	l_RenderOutputTags[0][captRenderOutputTags::e_Time] = itString(L"Time");
-	l_RenderOutputTags[1][captRenderOutputTags::e_Time] = itString(L"");
-	l_RenderOutputTags[0][captRenderOutputTags::e_Minutes] = itString(L"Minutes");
-	l_RenderOutputTags[1][captRenderOutputTags::e_Minutes] = itString(L"");
-	l_RenderOutputTags[0][captRenderOutputTags::e_Seconds] = itString(L"Seconds");
-	l_RenderOutputTags[1][captRenderOutputTags::e_Seconds] = itString(L"");
-	l_RenderOutputTags[0][captRenderOutputTags::e_Milliseconds] = itString(L"Milliseconds");
-	l_RenderOutputTags[1][captRenderOutputTags::e_Milliseconds] = itString(L"");
-	l_RenderOutputTags[0][captRenderOutputTags::e_Frame] = itString(L"Frame");
-	l_RenderOutputTags[1][captRenderOutputTags::e_Frame] = itString(L"");
-	l_RenderOutputTags[0][captRenderOutputTags::e_RenderType] = itString(L"RenderType");
-	l_RenderOutputTags[1][captRenderOutputTags::e_RenderType] = itString(L"");
-	l_RenderOutputTags[0][captRenderOutputTags::e_StereoEye] = itString(L"StereoEye");
-	l_RenderOutputTags[1][captRenderOutputTags::e_StereoEye] = itString(L"");
+	l_RenderOutputTags[0][captRenderOutputTags::e_SceneFilename] = std::string("SceneFilename");
+	l_RenderOutputTags[1][captRenderOutputTags::e_SceneFilename] = std::string();
+	l_RenderOutputTags[0][captRenderOutputTags::e_CameraName] = std::string("CameraName");
+	l_RenderOutputTags[1][captRenderOutputTags::e_CameraName] = std::string();
+	l_RenderOutputTags[0][captRenderOutputTags::e_RenderLayerName] = std::string("RenderLayerName");
+	l_RenderOutputTags[1][captRenderOutputTags::e_RenderLayerName] = std::string();
+	l_RenderOutputTags[0][captRenderOutputTags::e_CompressionType] = std::string("CompressionType");
+	l_RenderOutputTags[1][captRenderOutputTags::e_CompressionType] = std::string();
+	l_RenderOutputTags[0][captRenderOutputTags::e_RenderPassName] = std::string("RenderPassName");
+	l_RenderOutputTags[1][captRenderOutputTags::e_RenderPassName] = std::string();
+	l_RenderOutputTags[0][captRenderOutputTags::e_Counters] = std::string("#");
+	l_RenderOutputTags[1][captRenderOutputTags::e_Counters] = std::string();
+	l_RenderOutputTags[0][captRenderOutputTags::e_CountersZeros] = std::string("0");
+	l_RenderOutputTags[1][captRenderOutputTags::e_CountersZeros] = std::string();
+	l_RenderOutputTags[0][captRenderOutputTags::e_OutputBaseDir] = std::string("OutputBaseDir");
+	l_RenderOutputTags[1][captRenderOutputTags::e_OutputBaseDir] = std::string();
+	l_RenderOutputTags[0][captRenderOutputTags::e_CaptureUnique] = std::string("CaptureUnique");
+	l_RenderOutputTags[1][captRenderOutputTags::e_CaptureUnique] = std::string();
+	l_RenderOutputTags[0][captRenderOutputTags::e_Resolution] = std::string("Resolution");
+	l_RenderOutputTags[1][captRenderOutputTags::e_Resolution] = std::string();
+	l_RenderOutputTags[0][captRenderOutputTags::e_ResolutionWidth] = std::string("ResolutionWidth");
+	l_RenderOutputTags[1][captRenderOutputTags::e_ResolutionWidth] = std::string();
+	l_RenderOutputTags[0][captRenderOutputTags::e_ResolutionHeight] = std::string("ResolutionHeight");
+	l_RenderOutputTags[1][captRenderOutputTags::e_ResolutionHeight] = std::string();
+	l_RenderOutputTags[0][captRenderOutputTags::e_FPS] = std::string("FPS");
+	l_RenderOutputTags[1][captRenderOutputTags::e_FPS] = std::string();
+	l_RenderOutputTags[0][captRenderOutputTags::e_Time] = std::string("Time");
+	l_RenderOutputTags[1][captRenderOutputTags::e_Time] = std::string();
+	l_RenderOutputTags[0][captRenderOutputTags::e_Minutes] = std::string("Minutes");
+	l_RenderOutputTags[1][captRenderOutputTags::e_Minutes] = std::string();
+	l_RenderOutputTags[0][captRenderOutputTags::e_Seconds] = std::string("Seconds");
+	l_RenderOutputTags[1][captRenderOutputTags::e_Seconds] = std::string();
+	l_RenderOutputTags[0][captRenderOutputTags::e_Milliseconds] = std::string("Milliseconds");
+	l_RenderOutputTags[1][captRenderOutputTags::e_Milliseconds] = std::string();
+	l_RenderOutputTags[0][captRenderOutputTags::e_Frame] = std::string("Frame");
+	l_RenderOutputTags[1][captRenderOutputTags::e_Frame] = std::string();
+	l_RenderOutputTags[0][captRenderOutputTags::e_RenderType] = std::string("RenderType");
+	l_RenderOutputTags[1][captRenderOutputTags::e_RenderType] = std::string();
+	l_RenderOutputTags[0][captRenderOutputTags::e_StereoEye] = std::string("StereoEye");
+	l_RenderOutputTags[1][captRenderOutputTags::e_StereoEye] = std::string();
 }
 
 
@@ -327,7 +330,7 @@ int captRenderOutputTagsUtil::GetNumTags()
 /// @param i_TagNum index of the tag
 /// @param i_Tag string to set at the tag index
 //------------------------------------------------------------------------
-void captRenderOutputTagsUtil::SetTag(int i_TagNum, itString& i_Tag)
+void captRenderOutputTagsUtil::SetTag(int i_TagNum, std::string& i_Tag)
 {
 	if ((i_TagNum >= 0) && (i_TagNum < captRenderOutputTags::e_SceneEnvTagsCount))
 	{
@@ -339,13 +342,13 @@ void captRenderOutputTagsUtil::SetTag(int i_TagNum, itString& i_Tag)
 /// @param i_TagNum index of the tag
 /// @return the tag string associated with this index
 //------------------------------------------------------------------------
-itString captRenderOutputTagsUtil::GetTag(int i_TagNum)
+std::string captRenderOutputTagsUtil::GetTag(int i_TagNum)
 {
 	if ((i_TagNum >= 0) && (i_TagNum < captRenderOutputTags::e_SceneEnvTagsCount))
 	{
 		return l_RenderOutputTags[0][i_TagNum];
 	}
-	return itString();
+	return std::string();
 }
 
 //------------------------------------------------------------------------
@@ -354,48 +357,48 @@ itString captRenderOutputTagsUtil::GetTag(int i_TagNum)
 /// @param i_Data render output data structure
 /// @param o_OutputString the generated file name based on the tags
 //------------------------------------------------------------------------
-void captRenderOutputTagsUtil::GenerateOutputFilename(captRenderOutputData& i_Data, itString& o_OutputString, bool i_bCapturingRenderman /*false*/)
+void captRenderOutputTagsUtil::GenerateOutputFilename(captRenderOutputData& i_Data, std::string& o_OutputString, bool i_bCapturingRenderman /*false*/)
 {
 	if (i_Data.m_bOutputFileCustomize.GetValue())
 	{
-		o_OutputString.Clear();
+		o_OutputString.clear();
 
 		//	break apart the string into tags and non-tags
 		bool bTagParse = false;
 		int cindex = 0;
-		itString::CharType ch;
-		itString accum;
-		itString tags( i_Data.m_OutputFileTags.GetValue() );
+		char ch;
+		std::string accum;
+		std::string tags( i_Data.m_OutputFileTags.GetValue() );
 
 		//DBG_LOG( "Tagged String = " << tags );
 
-		for (int i=0; i < tags.GetLength(); ++i)
+		for (int i=0; i < tags.size(); ++i)
 		{
 			ch = tags[i];
 			if (ch == '<')
 			{
-				if (accum.GetLength() > 0)
+				if (accum.size() > 0)
 				{
 					ParsedNode node;
 					node.bIsTag = false;
 					node.StringData = accum;
 					ParsedData.push(node);
 					//DBG_LOG("\t\tnon-tag = " << accum);
-					accum.Clear();
+					accum.clear();
 				}
 				bTagParse = true;
 			}
 			else if (ch == '>')
 			{
 				bTagParse = false;
-				if (accum.GetLength() > 0)
+				if (accum.size() > 0)
 				{
 					ParsedNode node;
 					node.bIsTag = true;
 					node.StringData = accum;
 					ParsedData.push(node);
 					//DBG_LOG("\t\ttag = " << accum);
-					accum.Clear();
+					accum.clear();
 				}
 			}
 			else
@@ -405,100 +408,100 @@ void captRenderOutputTagsUtil::GenerateOutputFilename(captRenderOutputData& i_Da
 		}
 
 		//	if there are characters left over, add them as a non-tag
-		if (accum.GetLength() > 0)
+		if (accum.size() > 0)
 		{
 			ParsedNode node;
 			node.bIsTag = false;
 			node.StringData = accum;
 			ParsedData.push(node);
 			//DBG_LOG("\t\tnon-tag = " << accum);
-			accum.Clear();
+			accum.clear();
 		}
 
 		//	go through the list and build the text string
 		while (!ParsedData.empty())
 		{
-			itString nodestr = ParsedData.front().StringData;
+			std::string nodestr = ParsedData.front().StringData;
 
 			if (ParsedData.front().bIsTag)
 			{
-				if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_SceneFilename] ))
+				if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_SceneFilename] ))
 				{
 					o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_SceneFilename);
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_CameraName] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_CameraName] ))
 				{
 					o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_CameraName);
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_RenderLayerName] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_RenderLayerName] ))
 				{
 					o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_RenderLayerName);
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_CompressionType] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_CompressionType] ))
 				{
 					o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_CompressionType);
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_RenderPassName] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_RenderPassName] ))
 				{
 					o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_RenderPassName);
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_Counters] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_Counters] ))
 				{
 					o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_Counters);
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_CountersZeros] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_CountersZeros] ))
 				{
 					o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_CountersZeros);
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_OutputBaseDir] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_OutputBaseDir] ))
 				{
 					o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_OutputBaseDir);
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_CaptureUnique] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_CaptureUnique] ))
 				{
 					o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_CaptureUnique);
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_ResolutionWidth] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_ResolutionWidth] ))
 				{
 					o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_ResolutionWidth);
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_ResolutionHeight] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_ResolutionHeight] ))
 				{
 					o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_ResolutionHeight);
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_Resolution] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_Resolution] ))
 				{
 					o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_Resolution);
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_FPS] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_FPS] ))
 				{
 					o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_FPS);
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_Time] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_Time] ))
 				{
 					o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_Time);
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_Minutes] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_Minutes] ))
 				{
 					o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_Minutes);
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_Seconds] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_Seconds] ))
 				{
 					o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_Seconds);
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_Milliseconds] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_Milliseconds] ))
 				{
 					o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_Milliseconds);
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_Frame] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_Frame] ))
 				{
 					o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_Frame);
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_RenderType] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_RenderType] ))
 				{
 					o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_RenderType);
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_StereoEye] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_StereoEye] ))
 				{
 					o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_StereoEye);
 				}
@@ -513,7 +516,7 @@ void captRenderOutputTagsUtil::GenerateOutputFilename(captRenderOutputData& i_Da
 	else
 	{
 		//	parse the input string, check tags, create output string
-		o_OutputString.Clear();
+		o_OutputString.clear();
 
 		//	Scene
 		if ( i_Data.m_bUseSceneFilenameInFilename.GetValue() )
@@ -524,28 +527,28 @@ void captRenderOutputTagsUtil::GenerateOutputFilename(captRenderOutputData& i_Da
 		//	camera
 		if ( i_Data.m_bUseCameraNameInFilename.GetValue() )
 		{
-			o_OutputString += itString(L"_");
+			o_OutputString += std::string("_");
 			o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_CameraName);
 		}
 
 		//	render layer
 		if ( i_Data.m_bUseLayerNameInFilename.GetValue() )
 		{
-			o_OutputString += itString(L"_");
+			o_OutputString += std::string("_");
 			o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_RenderLayerName);
 		}
 
 		//	Render Pass
 		if ( i_Data.m_bUseRenderPassInFilename.GetValue())
 		{
-			o_OutputString += itString(L"_");
+			o_OutputString += std::string("_");
 			o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_RenderPassName);
 		}
 
 		//	compression
 		if ( i_Data.m_bUseCompressionInFilename.GetValue() && i_Data.m_bCaptureMovie.GetValue())
 		{
-			o_OutputString += itString(L"_");
+			o_OutputString += std::string("_");
 			o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_CompressionType);
 		}
 
@@ -553,14 +556,14 @@ void captRenderOutputTagsUtil::GenerateOutputFilename(captRenderOutputData& i_Da
 		if (   (i_Data.m_CurrentStereoMode.GetValue() == STEREO_LEFTCAM )
 			|| (i_Data.m_CurrentStereoMode.GetValue() == STEREO_RIGHTCAM ))
 		{
-			o_OutputString += itString(L"_");
+			o_OutputString += std::string("_");
 			o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_StereoEye);
 		}
 
 		//	digits
 		if ( !i_Data.m_bCaptureMovie.GetValue() || i_bCapturingRenderman )
 		{
-			o_OutputString += itString(L"_");
+			o_OutputString += std::string("_");
 			o_OutputString += get_tagstring(i_Data, captRenderOutputTags::e_CountersZeros);
 		}
 	}
@@ -582,58 +585,58 @@ void captRenderOutputTagsUtil::GenerateOutputDirectory(captRenderOutputData& i_D
 		//	break apart the string into tags and non-tags
 		bool bTagParse = false;
 		int cindex = 0;
-		itString::CharType ch;
-		itString accum;
-		itString tags( i_Data.m_OutputDirectoryTags.GetValue() );
+		char ch;
+		std::string accum;
+		std::string tags( i_Data.m_OutputDirectoryTags.GetValue() );
 
 		//DBG_LOG( "Tagged String = " << tags );
 
-		for (int i=0; i < tags.GetLength(); ++i)
+		for (int i=0; i < tags.size(); ++i)
 		{
 			ch = tags[i];
 			if (ch == '<')
 			{
-				if (accum.GetLength() > 0)
+				if (accum.size() > 0)
 				{
 					ParsedNode node;
 					node.bIsTag = false;
 					node.StringData = accum;
 					ParsedData.push(node);
 					//DBG_LOG("\t\tnon-tag = " << accum);
-					accum.Clear();
+					accum.clear();
 				}
 				bTagParse = true;
 			}
 			else if (ch == '>')
 			{
 				bTagParse = false;
-				if (accum.GetLength() > 0)
+				if (accum.size() > 0)
 				{
 					ParsedNode node;
 					node.bIsTag = true;
 					node.StringData = accum;
 					ParsedData.push(node);
 					//DBG_LOG("\t\ttag = " << accum);
-					accum.Clear();
+					accum.clear();
 				}
 			}
 			else if (ch == '\\')
 			{
 				//	add what has accumulated before the slash
-				if (accum.GetLength() > 0)
+				if (accum.size() > 0)
 				{
 					ParsedNode node;
 					node.bIsTag = false;
 					node.StringData = accum;
 					ParsedData.push(node);
 					//DBG_LOG("\t\tnon-tag = " << accum);
-					accum.Clear();
+					accum.clear();
 				}
 
 				//	if last node was a backslash, then this is part
 				//	of a UNC path most likely, so add to the slash node
 				if (   (ParsedData.size() > 0)
-					&& (ParsedData.back().StringData == itString("\\")))
+					&& (ParsedData.back().StringData == "\\"))
 				{
 					ParsedData.back().StringData += ch;
 				}
@@ -646,7 +649,7 @@ void captRenderOutputTagsUtil::GenerateOutputDirectory(captRenderOutputData& i_D
 					node.StringData = accum;
 					ParsedData.push(node);
 					//DBG_LOG("\t\tnon-tag = " << accum);
-					accum.Clear();
+					accum.clear();
 				}
 			}
 			else
@@ -656,141 +659,141 @@ void captRenderOutputTagsUtil::GenerateOutputDirectory(captRenderOutputData& i_D
 		}
 
 		//	if there are left over chars, add them.
-		if (accum.GetLength() > 0)
+		if (accum.size() > 0)
 		{
 			ParsedNode node;
 			node.bIsTag = false;
 			node.StringData = accum;
 			ParsedData.push(node);
 			//DBG_LOG("\t\tnon-tag = " << accum);
-			accum.Clear();
+			accum.clear();
 		}
 
 		//	go through the list and build the text string
-		itString singledir;
-		accum.Clear();
+		std::string singledir;
+		accum.clear();
 		while (!ParsedData.empty())
 		{
-			itString nodestr = ParsedData.front().StringData;
+			std::string nodestr = ParsedData.front().StringData;
 			
 			//DBG_LOG("Node -> " << nodestr );
 
 			if (ParsedData.front().bIsTag)
 			{
-				if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_SceneFilename] ))
+				if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_SceneFilename] ))
 				{
 					singledir += ( get_tagstring(i_Data, captRenderOutputTags::e_SceneFilename) );
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_CameraName] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_CameraName] ))
 				{
 					singledir += ( get_tagstring(i_Data, captRenderOutputTags::e_CameraName) );
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_RenderLayerName] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_RenderLayerName] ))
 				{
 					singledir += ( get_tagstring(i_Data, captRenderOutputTags::e_RenderLayerName) );
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_CompressionType] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_CompressionType] ))
 				{
 					singledir += ( get_tagstring(i_Data, captRenderOutputTags::e_CompressionType) );
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_RenderPassName] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_RenderPassName] ))
 				{
 					singledir += ( get_tagstring(i_Data, captRenderOutputTags::e_RenderPassName) );
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_Counters] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_Counters] ))
 				{
 					singledir += ( get_tagstring(i_Data, captRenderOutputTags::e_Counters) );
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_CountersZeros] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_CountersZeros] ))
 				{
 					singledir += ( get_tagstring(i_Data, captRenderOutputTags::e_CountersZeros) );
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_OutputBaseDir] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_OutputBaseDir] ))
 				{
 					singledir += ( get_tagstring(i_Data, captRenderOutputTags::e_OutputBaseDir) );
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_CaptureUnique] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_CaptureUnique] ))
 				{
 					singledir += ( get_tagstring(i_Data, captRenderOutputTags::e_CaptureUnique) );
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_ResolutionWidth] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_ResolutionWidth] ))
 				{
 					singledir += ( get_tagstring(i_Data, captRenderOutputTags::e_ResolutionWidth) );
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_ResolutionHeight] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_ResolutionHeight] ))
 				{
 					singledir += ( get_tagstring(i_Data, captRenderOutputTags::e_ResolutionHeight) );
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_Resolution] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_Resolution] ))
 				{
 					singledir += ( get_tagstring(i_Data, captRenderOutputTags::e_Resolution) );
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_FPS] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_FPS] ))
 				{
 					singledir += ( get_tagstring(i_Data, captRenderOutputTags::e_FPS) );
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_Time] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_Time] ))
 				{
 					singledir += ( get_tagstring(i_Data, captRenderOutputTags::e_Time) );
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_Minutes] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_Minutes] ))
 				{
 					singledir += ( get_tagstring(i_Data, captRenderOutputTags::e_Minutes) );
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_Seconds] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_Seconds] ))
 				{
 					singledir += ( get_tagstring(i_Data, captRenderOutputTags::e_Seconds) );
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_Milliseconds] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_Milliseconds] ))
 				{
 					singledir += ( get_tagstring(i_Data, captRenderOutputTags::e_Milliseconds) );
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_Frame] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_Frame] ))
 				{
 					singledir += ( get_tagstring(i_Data, captRenderOutputTags::e_Frame) );
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_RenderType] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_RenderType] ))
 				{
 					singledir += ( get_tagstring(i_Data, captRenderOutputTags::e_RenderType) );
 				}
-				else if (nodestr.StartsWith( l_RenderOutputTags[0][captRenderOutputTags::e_StereoEye] ))
+				else if (envString::StartsWith(nodestr,  l_RenderOutputTags[0][captRenderOutputTags::e_StereoEye] ))
 				{
 					singledir += ( get_tagstring(i_Data, captRenderOutputTags::e_StereoEye) );
 				}
 			}
 			else
 			{
-				if (nodestr == itString("\\"))
+				if (nodestr == "\\")
 				{
 					//	ignore nodes that are just the "\"
 					fsLocator subdir;
 					fsFileUtil::UnicodeStringToLocator( singledir, subdir );
 					dir.Push( subdir );
 					//DBG_LOG("\t\t->dir node = " << singledir);
-					singledir.Clear();
+					singledir.clear();
 				}
 				//else if (nodestr.StartsWith("\\")
 				else
 				{
 					//UNC?????
-					if (nodestr.StartsWith(itString("\\\\")))
+					if (envString::StartsWith(nodestr, std::string("\\\\")))
 					{
 						dir.SetUNCPath(true);
 					}
-					else if (nodestr.StartsWith(itString("\\")))
+					else if (envString::StartsWith(nodestr, std::string("\\")))
 					{
-						nodestr.RemoveCharAt(0);
+						nodestr.erase(0, 1);
 					}
 
-					if (nodestr.EndsWith(itString("\\")))
+					if (envString::EndsWith(nodestr, std::string("\\")))
 					{
-						nodestr.RemoveCharAt(nodestr.GetLength()-1);
+						nodestr.pop_back();
 						singledir += nodestr;
 						fsLocator subdir;
 						fsFileUtil::UnicodeStringToLocator( singledir, subdir );
 						dir.Push( subdir );
 						//DBG_LOG("\t\t->dir node - " << singledir);
-						singledir.Clear();
+						singledir.clear();
 					}
 					else
 						singledir += nodestr;
@@ -800,7 +803,7 @@ void captRenderOutputTagsUtil::GenerateOutputDirectory(captRenderOutputData& i_D
 		}
 
 		//	push anything left over on the directory
-		if (singledir.GetLength() > 0)
+		if (singledir.size() > 0)
 		{
 			fsLocator subdir;
 			fsFileUtil::UnicodeStringToLocator( singledir, subdir );
@@ -904,63 +907,63 @@ void captRenderOutputTagsUtil::BuildTagsForFile(captRenderOutputData& io_Data)
 	if (io_Data.m_bOutputFileCustomize == true)
 		return;
 
-	itString FilenameTags;
+	std::string FilenameTags;
 
 	if (io_Data.m_bUseSceneFilenameInFilename == true)
 	{
-		FilenameTags += itString(L"<");
+		FilenameTags += std::string("<");
 		FilenameTags += l_RenderOutputTags[0][captRenderOutputTags::e_SceneFilename];
-		FilenameTags += itString(L">");
+		FilenameTags += std::string(">");
 	}
 	if (io_Data.m_bUseCameraNameInFilename == true)
 	{
-		if (FilenameTags.GetLength() > 0)
-			FilenameTags += itString(L"_");
-		FilenameTags += itString(L"<");
+		if (FilenameTags.size() > 0)
+			FilenameTags += std::string("_");
+		FilenameTags += std::string("<");
 		FilenameTags += l_RenderOutputTags[0][captRenderOutputTags::e_CameraName];
-		FilenameTags += itString(L">");
+		FilenameTags += std::string(">");
 	}
 	if (io_Data.m_bUseLayerNameInFilename == true)
 	{
-		if (FilenameTags.GetLength() > 0)
-			FilenameTags += itString(L"_");
-		FilenameTags += itString(L"<");
+		if (FilenameTags.size() > 0)
+			FilenameTags += std::string("_");
+		FilenameTags += std::string("<");
 		FilenameTags += l_RenderOutputTags[0][captRenderOutputTags::e_RenderLayerName];
-		FilenameTags += itString(L">");
+		FilenameTags += std::string(">");
 	}
 	if (io_Data.m_bUseCompressionInFilename == true)
 	{
-		if (FilenameTags.GetLength() > 0)
-			FilenameTags += itString(L"_");
-		FilenameTags += itString(L"<");
+		if (FilenameTags.size() > 0)
+			FilenameTags += std::string("_");
+		FilenameTags += std::string("<");
 		FilenameTags += l_RenderOutputTags[0][captRenderOutputTags::e_CompressionType];
-		FilenameTags += itString(L">");
+		FilenameTags += std::string(">");
 	}
 	if (io_Data.m_bUseRenderPassInFilename == true)
 	{
-		if (FilenameTags.GetLength() > 0)
-			FilenameTags += itString(L"_");
-		FilenameTags += itString(L"<");
+		if (FilenameTags.size() > 0)
+			FilenameTags += std::string("_");
+		FilenameTags += std::string("<");
 		FilenameTags += l_RenderOutputTags[0][captRenderOutputTags::e_RenderPassName];
-		FilenameTags += itString(L">");
+		FilenameTags += std::string(">");
 	}
 	//if (using stereo)
 	{
-		if (FilenameTags.GetLength() > 0)
-			FilenameTags += itString(L"_");
-		FilenameTags += itString(L"<");
+		if (FilenameTags.size() > 0)
+			FilenameTags += std::string("_");
+		FilenameTags += std::string("<");
 		FilenameTags += l_RenderOutputTags[0][captRenderOutputTags::e_StereoEye];
-		FilenameTags += itString(L">");
+		FilenameTags += std::string(">");
 	}
 
 	if (io_Data.m_nCounterDigits > 0)
 	{
-		if (FilenameTags.GetLength() > 0)
-			FilenameTags += itString(L"_");
-		FilenameTags += itString(L"<");
+		if (FilenameTags.size() > 0)
+			FilenameTags += std::string("_");
+		FilenameTags += std::string("<");
 		for (int i=0; i < io_Data.m_nCounterDigits.GetValue(); ++i)
-			FilenameTags += itString(L"0");
-		FilenameTags += itString(L">");
+			FilenameTags += std::string("0");
+		FilenameTags += std::string(">");
 	}
 
 	io_Data.m_OutputFileTags.SetValue( FilenameTags );
@@ -976,54 +979,54 @@ void captRenderOutputTagsUtil::BuildTagsForDirectory(captRenderOutputData& io_Da
 	if (io_Data.m_bOutputDirectoryCustomize == true)
 		return;
 
-	itString DirectoryTags;
+	std::string DirectoryTags;
 
 	if (io_Data.m_OutputDirectoryRoot.GetValue().GetNumNames() > 0)
 	{
 		//fsFileUtil::LocatorToUnicodeString( io_Data.m_OutputDirectoryRoot.GetValue(), DirectoryTags );
-		DirectoryTags += itString(L"<");
+		DirectoryTags += std::string("<");
 		DirectoryTags += l_RenderOutputTags[0][captRenderOutputTags::e_OutputBaseDir];
-		DirectoryTags += itString(L">");
+		DirectoryTags += std::string(">");
 	}
 	if (io_Data.m_bUseSceneFilenameAsDirectory == true)
 	{
-		if (DirectoryTags.GetLength() > 0)
-			DirectoryTags += itString(L"\\");
-		DirectoryTags += itString(L"<");
+		if (DirectoryTags.size() > 0)
+			DirectoryTags += std::string("\\");
+		DirectoryTags += std::string("<");
 		DirectoryTags += l_RenderOutputTags[0][captRenderOutputTags::e_SceneFilename];
-		DirectoryTags += itString(L">");
+		DirectoryTags += std::string(">");
 	}
 	if (io_Data.m_bUseCameraNameAsDirectory == true)
 	{
-		if (DirectoryTags.GetLength() > 0)
-			DirectoryTags += itString(L"\\");
-		DirectoryTags += itString(L"<");
+		if (DirectoryTags.size() > 0)
+			DirectoryTags += std::string("\\");
+		DirectoryTags += std::string("<");
 		DirectoryTags += l_RenderOutputTags[0][captRenderOutputTags::e_CameraName];
-		DirectoryTags += itString(L">");
+		DirectoryTags += std::string(">");
 	}
 	if (io_Data.m_bUseLayerNameAsDirectory == true)
 	{
-		if (DirectoryTags.GetLength() > 0)
-			DirectoryTags += itString(L"\\");
-		DirectoryTags += itString(L"<");
+		if (DirectoryTags.size() > 0)
+			DirectoryTags += std::string("\\");
+		DirectoryTags += std::string("<");
 		DirectoryTags += l_RenderOutputTags[0][captRenderOutputTags::e_RenderLayerName];
-		DirectoryTags += itString(L">");
+		DirectoryTags += std::string(">");
 	}
 	if (io_Data.m_bUseRenderPassAsDirectory == true)
 	{
-		if (DirectoryTags.GetLength() > 0)
-			DirectoryTags += itString(L"\\");
-		DirectoryTags += itString(L"<");
+		if (DirectoryTags.size() > 0)
+			DirectoryTags += std::string("\\");
+		DirectoryTags += std::string("<");
 		DirectoryTags += l_RenderOutputTags[0][captRenderOutputTags::e_RenderPassName];
-		DirectoryTags += itString(L">");
+		DirectoryTags += std::string(">");
 	}
 	if (io_Data.m_bUseResolutionAsDirectory == true)
 	{
-		if (DirectoryTags.GetLength() > 0)
-			DirectoryTags += itString(L"\\");
-		DirectoryTags += itString(L"<");
+		if (DirectoryTags.size() > 0)
+			DirectoryTags += std::string("\\");
+		DirectoryTags += std::string("<");
 		DirectoryTags += l_RenderOutputTags[0][captRenderOutputTags::e_Resolution];
-		DirectoryTags += itString(L">");
+		DirectoryTags += std::string(">");
 	}
 
 	io_Data.m_OutputDirectoryTags.SetValue( DirectoryTags );

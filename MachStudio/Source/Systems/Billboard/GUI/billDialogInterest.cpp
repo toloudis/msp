@@ -36,7 +36,7 @@ billDialogInterest::billDialogInterest()
 //	Add Object to Placed
 //--------------------------------------------------------------------
 //virtual 
-void billDialogInterest::AddObject(const itString& i_FileName, const fsLocator& i_Path)
+void billDialogInterest::AddObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 	//std::string dir1, dir2;
 	//dir1 = itStringUtil::GetStdString(i_Path.GetName(0));
@@ -168,7 +168,7 @@ void billDialogInterest::GetAvailableObjects(fsysFileList& io_FileList) const
 	path.Push(c_SystemName);
 
 	// Basic creation of Billboard
-	io_FileList.AddFilename(path, itString("Billboard"));
+	io_FileList.AddFilename(path, std::string("Billboard"));
 }
 
 

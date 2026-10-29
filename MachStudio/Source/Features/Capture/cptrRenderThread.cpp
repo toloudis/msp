@@ -1033,11 +1033,11 @@ void cptrRenderThread::SetupPass(rlyrPassesObject::ePassType i_CurrentPass)
 	//this->SetViewer(m_pViewer);
 	cptrRenderUtil::SetCaptureRenderer(pRenderer);
 
-	itString layer_name;
+	std::string layer_name;
 	nameString layer_desc = rlyrRenderLayerMgr::GetLayerName( m_CurrentLayerIndex );
 	layer_name = layer_desc.GetString().c_str();
 
-	itString pass_name = captRenderOutputDataUtil::GetRenderPassName(i_CurrentPass);
+	std::string pass_name = captRenderOutputDataUtil::GetRenderPassName(i_CurrentPass);
 
 	data.m_RenderPosLayer.SetValue( layer_name );			// for saving render position
 
@@ -1092,7 +1092,7 @@ void cptrRenderThread::CreateOutputDir(const fsLocator& i_OutputDirName)
 			if(data.m_bBatchMode.GetValue()
 				&& data.m_bBatchSkipDialog.GetValue())
 			{
-				cptrRenderStatsDialogUtil::AddStatsMessage(itString(msg.c_str()));
+				cptrRenderStatsDialogUtil::AddStatsMessage(msg);
 				cptrRenderStatsDialogUtil::Newline();
 			}
 			else
@@ -1108,7 +1108,7 @@ void cptrRenderThread::CreateOutputDir(const fsLocator& i_OutputDirName)
 			if(data.m_bBatchMode.GetValue()
 				&& data.m_bBatchSkipDialog.GetValue())
 			{
-				cptrRenderStatsDialogUtil::AddStatsMessage(itString(msg.c_str()));
+				cptrRenderStatsDialogUtil::AddStatsMessage(msg);
 				cptrRenderStatsDialogUtil::Newline();
 			}
 			else

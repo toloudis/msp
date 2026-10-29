@@ -187,9 +187,9 @@ namespace fbxMaterialImport
 
 			shared_ptr<effShaderParams> phong_params(new effShaderParams()); 
 			if (diffuse_texture.empty())
-				phong_params->SetShaderName(itString("Simple.fx"));
+				phong_params->SetShaderName(std::string("Simple.fx"));
 			else
-				phong_params->SetShaderName(itString("Phong.fx"));
+				phong_params->SetShaderName(std::string("Phong.fx"));
 			phong_data->AddToParams(*phong_params);
 
 			o_MatInfo.SetShaderParams(phong_params);
@@ -210,7 +210,7 @@ namespace fbxMaterialImport
 		phong_data->m_Transparency = 1;
 		
 		shared_ptr<effShaderParams> phong_params(new effShaderParams());
-		phong_params->SetShaderName(itString("Simple.fx"));
+		phong_params->SetShaderName(std::string("Simple.fx"));
 		phong_data->AddToParams(*phong_params);
 
 		o_MatInfo.SetShaderParams(phong_params);

@@ -308,25 +308,25 @@ namespace prjltOperations
 	{
 		if (i_Filename.IsEmpty())
 		{
-			itString name_prefix;
+			std::string name_prefix;
 			switch(i_LightType)
 			{
 			default:
 			case prjltData::e_ProjectedLight:
-				name_prefix = itString("ProjectedLight");
+				name_prefix = std::string("ProjectedLight");
 				break;
 			case prjltData::e_SpotLight:
-				name_prefix = itString("SpotLight");
+				name_prefix = std::string("SpotLight");
 				break;
 			case prjltData::e_DirectionalLight:
-				name_prefix = itString("DirectionalLight");
+				name_prefix = std::string("DirectionalLight");
 				break;
 			}
 			prjltObjectMgr::create_default_name(name_prefix, o_NameString, l_ObjectCounter);
 		}
 		else
 		{
-			prjltObjectMgr::create_duplicate_name(itString(i_Filename.GetString().c_str()), o_NameString);
+			prjltObjectMgr::create_duplicate_name(i_Filename.GetString(), o_NameString);
 		}
 	}
 

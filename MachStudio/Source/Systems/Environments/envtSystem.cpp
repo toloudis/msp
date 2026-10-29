@@ -57,11 +57,11 @@ namespace envtSystem
 	//--------------------------------------------------------------------
 	// Init
 	//--------------------------------------------------------------------
-	void Init(const fsLocator& i_AppDir, const itString& i_EnvtTexDir)
+	void Init(const fsLocator& i_AppDir, const std::string& i_EnvtTexDir)
 	{
 		// assign directories for textures
 		envtTextureList::Init( i_EnvtTexDir, 
-			itString(gfPaths::GetSubPath(gfPaths::e_Textures)) );
+			std::string(gfPaths::GetSubPath(gfPaths::e_Textures)) );
 		envtTextureList::SetAppDirectory( i_AppDir );
 
 		// Initialize namespaces

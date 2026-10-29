@@ -246,7 +246,7 @@ namespace docSingleDocumentMgr
 			if (fullpath.GetNumNames() == 0)
 				o_Filename = "";
 			else
-				o_Filename = itStringUtil::GetStdString( fullpath.GetLastName() );
+				o_Filename = fullpath.GetLastName();
 		}
 	}
 

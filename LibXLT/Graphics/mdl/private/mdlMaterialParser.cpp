@@ -108,19 +108,19 @@ namespace mdlMaterialParser
 			fsLocator fullShaderPath;
 			std::string shadername;	
 			std::string shaderFileName;
-			itString finalShaderName;
+			std::string finalShaderName;
 
 			while ( i_Reader.ReadChunkHeader(name, version, size) )
 			{
 				if (name == c_SHNM)
 				{
 					i_Reader.Read(shadername);
-					finalShaderName = itString(shadername.c_str());
+					finalShaderName = shadername;
 
 					if ( version < 2 )
 					{
-						fsFileUtil::UnicodeStringToLocator( itString(shadername.c_str()), fullShaderPath );
-						shaderFileName = itStringUtil::GetStdString( fullShaderPath.GetLastName() );
+						fsFileUtil::UnicodeStringToLocator( shadername, fullShaderPath );
+						shaderFileName = fullShaderPath.GetLastName();
 
 						if ( fullShaderPath.GetNumNames() == 1 )
 						{
@@ -258,7 +258,7 @@ namespace mdlMaterialParser
 						std::string glowMask;
 						i_Reader.Read(glowMask);
 
-						fsLocator locGlowMask(itString(glowMask.c_str()));
+						fsLocator locGlowMask(glowMask);
 						resolve_fullpath(locGlowMask, i_Reader.GetLocator());
 						o_MaterialInfo.GlowParams().m_NameGlowMask = locGlowMask;
 					}
@@ -657,7 +657,7 @@ namespace mdlMaterialParser
 //						o_MaterialInfo.SetShader("Water.fx", water_data.get());
 
 						shared_ptr<effShaderParams> water_params(new effShaderParams());
-						water_params->SetShaderName(itString("Water.fx"));
+						water_params->SetShaderName(std::string("Water.fx"));
 						mdlMaterialLegacyParser::ReadWaterParams(i_Reader, version, size, *water_params);
 						o_MaterialInfo.SetShaderParams(water_params);
 					}
@@ -686,7 +686,7 @@ namespace mdlMaterialParser
 				std::string shader_name = mdlMaterialLegacyParser::GetShaderNameForLegacyPhong(*phong_data);
 
 				shared_ptr<effShaderParams> phong_params(new effShaderParams());
-				phong_params->SetShaderName(itString(shader_name.c_str()));
+				phong_params->SetShaderName(shader_name);
 				phong_data->AddToParams(*phong_params);
 
 				//o_MaterialInfo.SetShader(shader_name, phong_data.get());
@@ -750,8 +750,8 @@ namespace mdlMaterialParser
 					// we can compare this to the filename we are currently loading
 					// in order to resolve absolute paths to textures
 					fsLocator org_locator;
-					itString savefilename;
-					chChunkParserUtil::Read( i_Reader, savefilename );
+					std::string savefilename;
+					chChunkParserUtil::ReadItString( i_Reader, savefilename );
 					fsFileUtil::UnicodeStringToLocator( savefilename, org_locator );
 					fsAbsolutePathMgr::AddDirMappingFromFiles(org_locator, i_Reader.GetLocator());
 				}

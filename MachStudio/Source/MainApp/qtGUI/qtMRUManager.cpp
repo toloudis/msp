@@ -95,9 +95,9 @@ void qtMRUManager::OnMenuOpen()
 		bool have_MRU = (locators.size() > i);
 		if (have_MRU)
 		{
-			itString filename;
+			std::string filename;
 			fsFileUtil::LocatorToUnicodeString(locators[i], filename);
-			m_Items[i]->setText(QString::fromWCharArray(filename.GetString()));
+			m_Items[i]->setText(QString::fromStdString(filename));
 		}
 		else
 		{

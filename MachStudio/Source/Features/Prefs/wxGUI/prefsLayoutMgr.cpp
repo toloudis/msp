@@ -39,8 +39,8 @@ namespace
 	const WCHAR * lc_MainForm_Size_Keyname	= L"LastPerspective/MainForm/Size";
 	const WCHAR * lc_MainForm_Max_Keyname	= L"LastPerspective/MainForm/Maximized";
 
-	const itString lc_LayoutsFileName(L"Layouts.cfg");
-	const itString lc_LayoutsFileName_Default(L"Layouts-Default.cfg");
+	const std::string lc_LayoutsFileName("Layouts.cfg");
+	const std::string lc_LayoutsFileName_Default("Layouts-Default.cfg");
 	const char * lc_DefaultLayoutName		= "Default Layout";
 
 	const char * lc_Element_Layout		= "Layout";

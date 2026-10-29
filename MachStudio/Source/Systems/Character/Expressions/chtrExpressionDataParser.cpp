@@ -45,7 +45,7 @@ namespace chtrExpressionDataParser
 			// and could be removed in product
 			if (anim_loc.GetNumNames() == 1)
 			{
-				itString filename = anim_loc.GetLastName();
+				std::string filename = anim_loc.GetLastName();
 				fsLocator char_dir; // not needed to resolve expressions
 				anim_loc = chtrAnimList::GetAnimationLocator(filename, char_dir);
 			}

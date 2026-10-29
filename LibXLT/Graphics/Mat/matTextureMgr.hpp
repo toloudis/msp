@@ -21,6 +21,7 @@
 #endif
 
 #include <vector>
+#include <string>
 
 
 //============================================================================
@@ -31,7 +32,6 @@ class fsLocator;
 class fsResourceFinder;
 class g2dPFD;
 class g2dRenderTarget;
-class itString;
 class maFloatRGBA;
 class matTexture;
 class matTextureMgrImpl;
@@ -132,8 +132,8 @@ namespace matTextureMgr
 	// if not found it will load from disk.
 	//--------------------------------------------------------------------
 	matTexture* LoadTexture(const fsLocator& i_Locator, const TEXTURE_TYPE i_Type = TEXTURE_TYPE_2D, const bool mipmap_if_2D = true);
-	matTexture* LoadTexture(const fsLocator& i_Directory, const itString& i_Name, const TEXTURE_TYPE i_Type = TEXTURE_TYPE_2D, const bool mipmap_if_2D = true, const bool i_bIgnoreTUVSuffix = false);
-	matTexture* LoadTexture(const fsResourceFinder& i_Directory, const itString& i_Name, const TEXTURE_TYPE i_Type = TEXTURE_TYPE_2D, const bool mipmap_if_2D = true);
+	matTexture* LoadTexture(const fsLocator& i_Directory, const std::string& i_Name, const TEXTURE_TYPE i_Type = TEXTURE_TYPE_2D, const bool mipmap_if_2D = true, const bool i_bIgnoreTUVSuffix = false);
+	matTexture* LoadTexture(const fsResourceFinder& i_Directory, const std::string& i_Name, const TEXTURE_TYPE i_Type = TEXTURE_TYPE_2D, const bool mipmap_if_2D = true);
 
 	//--------------------------------------------------------------------
 	//	WriteUVATexture writes the given UVA to a binary file with the
@@ -143,7 +143,7 @@ namespace matTextureMgr
 	//--------------------------------------------------------------------
 	void WriteUVATexture(	const matUVATexture& i_Texture,
 							const fsLocator& i_Locator,
-							const itString* i_Textures);
+							const std::string* i_Textures);
 
 	//--------------------------------------------------------------------
 	//	WriteUVATexture writes the given UVA using the given chWriter.
@@ -153,7 +153,7 @@ namespace matTextureMgr
 	//--------------------------------------------------------------------
 	void WriteUVATexture(	const matUVATexture& i_Texture,
 							chWriter& i_Writer,
-							const itString* i_Textures);
+							const std::string* i_Textures);
 
 	//--------------------------------------------------------------------
 	//	ReadUVATexture reads the given UVA from a binary file with the
@@ -162,7 +162,7 @@ namespace matTextureMgr
 	//	texture.
 	//--------------------------------------------------------------------
 	matUVATexture* ReadUVATexture(	const fsLocator& i_Locator,
-									std::vector<itString>& o_Textures);
+									std::vector<std::string>& o_Textures);
 
 	//--------------------------------------------------------------------
 	//	CreateUVATexture creates a "blank" UVA texture.  When this option
@@ -357,8 +357,8 @@ public:
 	// a single codebase for this function
 	//--------------------------------------------------------------------
 	virtual matTexture* LoadTexture(const fsLocator& i_Directory,
-									const itString& i_Name,
-									std::vector<itString>& o_UVANames,
+									const std::string& i_Name,
+									std::vector<std::string>& o_UVANames,
 									TEXTURE_TYPE i_Type = TEXTURE_TYPE_2D, 
 									bool i_bIgnoreTUVSuffix = false,
 									bool mipmap_if_2D = true) = 0;

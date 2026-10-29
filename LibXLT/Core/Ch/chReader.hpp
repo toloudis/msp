@@ -117,7 +117,7 @@ class chReader
 		//	(docs/plans/2026-10-28-itstring-to-std-string.md; removed in
 		//	step 4): ReadItString into an itString.
 		//--------------------------------------------------------------------
-		void Read(itString& o_Val);
+		void ReadItString(itString& o_Val);
 
 		//--------------------------------------------------------------------
 		//	Read in an envAppVersion structure

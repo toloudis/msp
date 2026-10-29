@@ -44,11 +44,11 @@ mtrlHair::mtrlHair(mdlMaterialInfo& i_Data,
 	m_Data.m_UVAngle.SetValue(m_pShaderData->m_UV.m_UVAngle );
 	m_Data.m_Reflectivity.SetValue(m_pShaderData->m_Reflectivity );
 
-	m_Data.m_TextureBase.SetValue(itString(m_pShaderData->m_NameBase.c_str()));
-	m_Data.m_TextureAlpha.SetValue(itString(m_pShaderData->m_NameAlpha.c_str()));
-	m_Data.m_TextureSpecularShift.SetValue(itString(m_pShaderData->m_NameSpecularShift.c_str()));
-	m_Data.m_TextureSpecularMask.SetValue(itString(m_pShaderData->m_NameSpecularMask.c_str()));
-	m_Data.m_TextureNormalMap.SetValue(itString(m_pShaderData->m_NameNormalMap.c_str()));
+	m_Data.m_TextureBase.SetValue(m_pShaderData->m_NameBase);
+	m_Data.m_TextureAlpha.SetValue(m_pShaderData->m_NameAlpha);
+	m_Data.m_TextureSpecularShift.SetValue(m_pShaderData->m_NameSpecularShift);
+	m_Data.m_TextureSpecularMask.SetValue(m_pShaderData->m_NameSpecularMask);
+	m_Data.m_TextureNormalMap.SetValue(m_pShaderData->m_NameNormalMap);
 
 	m_Data.m_SpecularColor0.SetValue(m_pShaderData->m_SpecularColor0);
 	m_Data.m_SpecularColor1.SetValue(m_pShaderData->m_SpecularColor1);

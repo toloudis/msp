@@ -368,7 +368,7 @@ int DoWinMain(HINSTANCE hInstance,
 	//
 	mnmAppPackageMgr::SetRestricted(false);
 	envAppVersion user_version( mainConstants::mc_ExecutableVersion );
-	itString app_name(mnmConstants::c_PRODUCT);
+	std::string app_name(mnmConstants::c_PRODUCT);
 	mnmAppPackageMgr::SetAppData( app_name, user_version );
 
 	// Begin mainInitLibrary scope
@@ -422,8 +422,8 @@ int DoWinMain(HINSTANCE hInstance,
 			
 			DBG_ASSERT(pWindow != NULL, "Qt Window not properly initialized");
 
-			itString it_title(mnmConstants::c_PRODUCT);
-			QString title( itStringUtil::GetStdString( it_title ).c_str() );
+			std::string it_title(mnmConstants::c_PRODUCT);
+			QString title( it_title.c_str() );
 			pWindow->setWindowTitle( title );
 
 			// The application icon, typically displayed in the upper left corner of the application top-level windows,
@@ -449,7 +449,7 @@ int DoWinMain(HINSTANCE hInstance,
 
 			mdlModelingPackageListMgr::Clear();
 		#ifdef MODELINGPACKAGE_RHINO
-			mdlModelingPackageListMgr::Add( itString("Rhino") );
+			mdlModelingPackageListMgr::Add( std::string("Rhino") );
 		#endif
 	#endif	// MSAPP == MS_CORE
 
@@ -1050,18 +1050,16 @@ int _tmain(int argc, TCHAR** argv)
 
 	// Do main work of application setup and run here:
 	HINSTANCE hInstance = ::GetModuleHandle(NULL);
-	itString command_line;
+	std::wstring command_line;
 	char* arg[1024];
 	for (int i=1; i<argc; i++)
 	{
-//		std::cout << itString(argv[i]) << std::endl;
-
 		if (i>1) command_line += L" ";
-		command_line += itString(argv[i]);
+		command_line += argv[i];
 		arg[i]= (char*)(argv[i]);
 	}
 
-	LPTSTR lpCmdLine = (LPTSTR)command_line.GetString();
+	LPTSTR lpCmdLine = (LPTSTR)command_line.c_str();
 #ifdef FUSION //#if(SGPU_APP == MS_FUSION)
 	QApplication a(argc,arg );
 #endif

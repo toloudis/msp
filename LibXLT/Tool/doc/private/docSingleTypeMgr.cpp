@@ -29,7 +29,7 @@ namespace docSingleTypeMgr
 		const char * lc_MRU_Group = "MostRecentlyUsed";
 		const char * lc_MRU_Entry = "Entry";
 
-		fsLocator l_MRUFile(itString("RecentFiles.cfg"));
+		fsLocator l_MRUFile(std::string("RecentFiles.cfg"));
 		std::string l_Filter;
 		// the pieces of l_Filter GetOpenFilter adds the foreign opener's patterns to
 		std::string l_FilterHead, l_FilterDescription, l_FilterExt;

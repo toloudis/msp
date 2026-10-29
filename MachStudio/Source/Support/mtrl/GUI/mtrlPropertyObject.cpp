@@ -49,7 +49,7 @@ namespace
 		const std::vector<matShaderInfo>& shaders = matShaderMgr::GetMaterialShaders();
 		for (size_t i = 0; i < shaders.size(); i++)
 		{
-			std::string label = itStringUtil::GetStdString(shaders[i].m_Name);
+			std::string label = shaders[i].m_Name;
 			const size_t dot = label.rfind('.');
 			if (dot != std::string::npos)
 				label.erase(dot);
@@ -546,7 +546,7 @@ std::string mtrlPropertyObject::GetDisplayName() const
 		// just filename for now, no relative paths from a standardized 
 		// material library anymore
 		//fsFileUtil::LocatorToANSIFilename(m_Data.GetLibraryFilename(), rel_path);
-		rel_path = itStringUtil::GetStdString(m_Data.GetLibraryFilename().GetLastName());
+		rel_path = m_Data.GetLibraryFilename().GetLastName();
 		material_name += rel_path;
 	}
 	return material_name;
@@ -660,7 +660,7 @@ void mtrlPropertyObject::UpdateShader(prtyProperty *i_pProperty, bool i_bDirty)
 
 	fsLocator old_shader = m_Data.GetShader(layer_index);
 	fsLocator new_shader = pFilePathPrty->GetValue();
-	itString new_shader_filename = new_shader.GetLastName();
+	std::string new_shader_filename = new_shader.GetLastName();
 
 	if (new_shader != old_shader)
 	{

@@ -34,7 +34,7 @@ namespace guiSingleDocHandler
 {
 	namespace
 	{
-		fsLocator	l_InitialDirectory( 0, itString(".") );
+		fsLocator	l_InitialDirectory( 0, std::string(".") );
 		bool		l_bRememberLastDirectory = false;
 
 		//--------------------------------------------------------------------------
@@ -49,7 +49,7 @@ namespace guiSingleDocHandler
 		#ifndef _DEBUG
 			//Setup loading text for the new file, truncates if filename length is too long
 			std::string load_txt = "Loading : ";
-			std::string cur_scene = itStringUtil::GetStdString( i_Loc.GetLastName() );
+			std::string cur_scene = i_Loc.GetLastName();
 
 			int ext_pos = cur_scene.find(".");
 			int substr_count = cur_scene.length();

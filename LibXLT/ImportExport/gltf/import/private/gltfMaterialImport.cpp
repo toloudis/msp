@@ -135,7 +135,7 @@ namespace gltfMaterialImport
 		pbr_data.m_EmissiveMap = get_texture_path(i_pModel, desc.m_EmissiveMap.m_Texture, i_ContainingFile);
 
 		shared_ptr<effShaderParams> eff_params(new effShaderParams());
-		eff_params->SetShaderName(itString(effPbrData::c_ShaderName));
+		eff_params->SetShaderName(std::string(effPbrData::c_ShaderName));
 		pbr_data.AddToParams(*eff_params);
 		o_MatInfo.SetShaderParams(eff_params);
 

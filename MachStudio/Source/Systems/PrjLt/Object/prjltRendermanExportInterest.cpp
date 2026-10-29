@@ -154,7 +154,7 @@ void prjltRendermanExportInterest::GatherSceneData( rmanSceneData &o_SceneData, 
 		{
 			std::string shadowMapFileName = lightName;
 			shadowMapFileName.append("_SHADOWMAP.z");
-			o_GlobalData.m_ShadowMapRibs.push_back( fsLocator( itString(shadowMapFileName.c_str()) ) );
+			o_GlobalData.m_ShadowMapRibs.push_back( fsLocator( shadowMapFileName ) );
 		}
 
 		o_GlobalData.m_SceneLights.push_back( pObject->GetPropertyName().GetValue().GetString() );

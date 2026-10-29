@@ -34,7 +34,7 @@ namespace
 					chDefs::Size i_Size,
 					tmlnDriverFileNameInfo &o_Driver )
 	{
-		chChunkParserUtil::Read(i_Reader, o_Driver.m_Value);
+		chChunkParserUtil::ReadItString(i_Reader, o_Driver.m_Value);
 	}
 
 	//========================================================================

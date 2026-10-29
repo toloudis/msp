@@ -48,15 +48,15 @@ mtrlSkin::mtrlSkin(mdlMaterialInfo& i_Data,
 	m_Data.m_TransRampOff.SetValue(m_pShaderData->m_TransRampOff);
 	m_Data.m_MicroScale.SetValue(m_pShaderData->m_MicroScale);
 
-	m_Data.m_DiffTex.SetValue(itString(m_pShaderData->m_NameDiffTex.c_str()));
-	m_Data.m_NormalTex.SetValue(itString(m_pShaderData->m_NameNormalTex.c_str()));
-	m_Data.m_MicroTex.SetValue(itString(m_pShaderData->m_NameMicroTex.c_str()));
-	m_Data.m_SpecTex.SetValue(itString(m_pShaderData->m_NameSpecTex.c_str()));
-	m_Data.m_SpecPowerTex.SetValue(itString(m_pShaderData->m_NameSpecPowerTex.c_str()));
-	m_Data.m_TransTex.SetValue(itString(m_pShaderData->m_NameTransTex.c_str()));
-	m_Data.m_CubeMapTex.SetValue(itString(m_pShaderData->m_NameCubeMapTex.c_str()));
-	m_Data.m_ReflectFactorTex.SetValue(itString(m_pShaderData->m_NameReflectFactorTex.c_str()));
-	m_Data.m_TransparencyTex.SetValue(itString(m_pShaderData->m_NameTransparencyTex.c_str()));
+	m_Data.m_DiffTex.SetValue(m_pShaderData->m_NameDiffTex);
+	m_Data.m_NormalTex.SetValue(m_pShaderData->m_NameNormalTex);
+	m_Data.m_MicroTex.SetValue(m_pShaderData->m_NameMicroTex);
+	m_Data.m_SpecTex.SetValue(m_pShaderData->m_NameSpecTex);
+	m_Data.m_SpecPowerTex.SetValue(m_pShaderData->m_NameSpecPowerTex);
+	m_Data.m_TransTex.SetValue(m_pShaderData->m_NameTransTex);
+	m_Data.m_CubeMapTex.SetValue(m_pShaderData->m_NameCubeMapTex);
+	m_Data.m_ReflectFactorTex.SetValue(m_pShaderData->m_NameReflectFactorTex);
+	m_Data.m_TransparencyTex.SetValue(m_pShaderData->m_NameTransparencyTex);
 
 	m_Data.m_BumpMapScale.SetValue(m_pShaderData->m_BumpMapScale );
 	m_Data.m_Transparency.SetValue(m_pShaderData->m_Transparency );

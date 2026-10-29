@@ -13,7 +13,6 @@
 #include "Core/env/envPackage.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/it/itPackage.hpp"
-#include "Core/it/itString.hpp"
 #include "Graphics/an/anPackage.hpp"
 #include "Graphics/g2d/g2dPackage.hpp"
 #include "Graphics/g3d/g3dRendererMgr.hpp"

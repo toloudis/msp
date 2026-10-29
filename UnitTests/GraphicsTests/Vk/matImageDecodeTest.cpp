@@ -26,9 +26,7 @@
 #ifndef FS_LOCATOR_HPP
 #include "Core/Fs/fsLocator.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/It/itString.hpp"
-#endif
+#include <string>
 #ifndef IT_STRINGUTIL_HPP
 #include "Core/It/itStringUtil.hpp"
 #endif
@@ -272,11 +270,11 @@ TEST_F(matImageDecodeTest, DecodeMatchesDirectXTex)
 		std::string error;
 		ASSERT_TRUE(gtLoadReference(file, reference, error)) << error;
 		matDecodedImage decoded;
-		itString decode_error;
+		std::string decode_error;
 		fsLocator locator;
-		fsFileUtil::UnicodeStringToLocator(itString(file.m_Path.wstring().c_str()), locator);
+		fsFileUtil::UnicodeStringToLocator(file.m_Path.u8string(), locator);
 		ASSERT_TRUE(matDecodeImage(locator, file_type(file.m_Kind), decoded, &decode_error))
-			<< file.m_Name << ": " << itStringUtil::GetStdString(decode_error);
+			<< file.m_Name << ": " << decode_error;
 		expect_same(file, reference, decoded);
 		//	From memory, the same
 		const std::vector<uint8_t> bytes = read_file(file.m_Path);
@@ -302,9 +300,9 @@ TEST_F(matImageDecodeTest, LegacyDdsConverted)
 		ASSERT_TRUE(gtLoadReference(file, reference, error)) << error;
 		const std::vector<uint8_t> bytes = read_file(file.m_Path);
 		matDecodedImage decoded;
-		itString decode_error;
+		std::string decode_error;
 		ASSERT_TRUE(matDecodeImageMemory(bytes.data(), bytes.size(), matImageFileType::e_DDS, decoded, &decode_error))
-			<< file.m_Name << ": " << itStringUtil::GetStdString(decode_error);
+			<< file.m_Name << ": " << decode_error;
 		expect_same(file, reference, decoded);
 		compared++;
 	}
@@ -315,9 +313,9 @@ TEST(matImageDecode, WmpUnsupported)
 {
 	const uint8_t c_JpegXr[] = { 0x49, 0x49, 0xBC, 0x01, 0x08, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	matDecodedImage decoded;
-	itString error;
+	std::string error;
 	EXPECT_FALSE(matDecodeImageMemory(c_JpegXr, sizeof(c_JpegXr), matImageFileType::e_WMP, decoded, &error));
-	const std::string message = itStringUtil::GetStdString(error);
+	const std::string message = error;
 	EXPECT_NE(std::string::npos, message.find("JPEG XR")) << message;
 }
 
@@ -337,7 +335,7 @@ TEST_F(matImageDecodeTest, TruncatedFilesFail)
 			std::unique_ptr<uint8_t[]> part(new uint8_t[std::max<size_t>(cut, 1)]);
 			memcpy(part.get(), whole.data(), cut);
 			matDecodedImage decoded;
-			itString error;
+			std::string error;
 			const bool ok = matDecodeImageMemory(part.get(), cut, type, decoded, &error);
 			if (cut + 1 == whole.size() && ok)
 			{
@@ -348,7 +346,7 @@ TEST_F(matImageDecodeTest, TruncatedFilesFail)
 			else
 			{
 				EXPECT_FALSE(ok) << file.m_Name << " cut at " << cut << " of " << whole.size() << " decoded";
-				EXPECT_FALSE(itStringUtil::GetStdString(error).empty()) << file.m_Name << " cut at " << cut << ": no error";
+				EXPECT_FALSE(error.empty()) << file.m_Name << " cut at " << cut << ": no error";
 			}
 			EXPECT_TRUE(_CrtCheckMemory()) << file.m_Name << " cut at " << cut;
 		}

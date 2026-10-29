@@ -11,6 +11,7 @@
 #ifdef ENVT_OPERATIONS_HPP
 #error envtOperations.hpp multiply included
 #endif
+#include <string>
 #define ENVT_OPERATIONS_HPP
 
 class api3dObjectSingle;
@@ -19,7 +20,6 @@ class envtScriptObject;
 class evmtEnvironmentData;
 class nameObject;
 class nameString;
-class itString;
 
 namespace envtOperations
 {

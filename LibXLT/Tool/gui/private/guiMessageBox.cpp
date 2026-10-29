@@ -25,7 +25,7 @@ int guiMessageBox::Show( const char* i_Message, const char* i_Title, int i_Type 
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-int guiMessageBox::Show( const itString& i_Message, const itString& i_Title, int i_Type )
+int guiMessageBox::Show( const std::string& i_Message, const std::string& i_Title, int i_Type )
 {
 	if (sm_pImplementation)
 	{

@@ -35,9 +35,9 @@
 #include <cstddef>
 #include <cstdint>
 #include <vector>
+#include <string>
 
 class fsLocator;
-class itString;
 
 namespace gvk
 {
@@ -67,8 +67,8 @@ namespace gvk
 	//	GraphicsDX11's pick_format kinds (matTextureLoaderWin), plus HDR and GIF
 	enum class matImageFileType { e_DDS, e_TGA, e_HDR, e_BMP, e_JPG, e_PNG, e_TIFF, e_GIF, e_WMP, e_Unknown };
 
-	bool matDecodeImage(const fsLocator& i_File, matImageFileType i_Type, matDecodedImage& o_Image, itString* o_pError);
+	bool matDecodeImage(const fsLocator& i_File, matImageFileType i_Type, matDecodedImage& o_Image, std::string* o_pError);
 	//	LoadFrom...Memory's counterpart
 	bool matDecodeImageMemory(const void* i_pData, size_t i_Size, matImageFileType i_Type, matDecodedImage& o_Image,
-							  itString* o_pError);
+							  std::string* o_pError);
 }

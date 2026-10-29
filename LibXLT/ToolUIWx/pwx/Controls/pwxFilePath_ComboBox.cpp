@@ -161,9 +161,9 @@ void pwxFilePath_ComboBox::SetValueIntoControl(const fsLocator& i_Value)
 	if (index < 0)
 	{
 		// not one of the choices (an old or custom file): show its path
-		itString label;
+		std::string label;
 		fsFileUtil::LocatorToUnicodeString(i_Value, label);
-		index = m_pActualControl->Append(wxString(label.GetString()));
+		index = m_pActualControl->Append(wxString::FromUTF8(label));
 		m_Values.push_back(i_Value);
 	}
 

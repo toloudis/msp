@@ -418,7 +418,7 @@ shdwPassLPVGI::shdwPassLPVGI(const ssgiParams& i_SSGIParams,
 	if (!l_InjectionMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/LPV_GI.fx"), matShaderMgr::GetSpecialEffect("LPV_GI.fx"));
+		p->SetShaderName(std::string("Special/LPV_GI.fx"), matShaderMgr::GetSpecialEffect("LPV_GI.fx"));
 		l_InjectionMat.SetShaderParams(p);
 	}
 

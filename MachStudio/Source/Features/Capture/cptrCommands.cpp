@@ -52,7 +52,7 @@ namespace
 		oss.setf(0, std::ios::floatfield);
 		oss<<"grab"<<std::setw(4)<<std::setfill('0')<<l_ScreenCapCounter++<<".bmp";
 		std::string buffer(oss.str());
-		locator.Push(itString(buffer.c_str()));
+		locator.Push(buffer);
 
 		mnmScreenCaptureUtil::WriteBMP(locator);
 

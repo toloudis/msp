@@ -26,6 +26,9 @@
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
 #include "GraphicsDX11/g2d/g2dFullscreenQuad.hpp"
 #include "GraphicsDX11/g3d/g3dStateMgr.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/Env/envString.hpp"
+#endif
 
 
 //----------------------------------------------------------------------------
@@ -249,9 +252,9 @@ void g2dWindowPrimaryDX11::Present()
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-void g2dWindowPrimaryDX11::SetTitle(const itString& i_Title)
+void g2dWindowPrimaryDX11::SetTitle(const std::string& i_Title)
 {
-	SetWindowText(m_Hwnd, i_Title.GetString());
+	SetWindowTextW(m_Hwnd, envString::UTF8ToWideChar(i_Title).c_str());
 }
 
 //------------------------------------------------------------------------

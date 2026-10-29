@@ -34,9 +34,9 @@ namespace
 	//--------------------------------------------------------------------
 	wxString get_icon_directory()
 	{
-		itString wide_dir;
+		std::string wide_dir;
 		fsFileUtil::LocatorToUnicodeString(guiMenuMgr::GetIconDirectory(), wide_dir);
-		return wxString(wide_dir.GetString());
+		return wxString::FromUTF8(wide_dir);
 	}
 }
 

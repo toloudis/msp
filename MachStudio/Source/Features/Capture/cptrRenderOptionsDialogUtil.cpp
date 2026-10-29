@@ -32,6 +32,9 @@
 #else
 #include "ToolUIWx/twx/twxSystem.hpp"
 #endif
+#ifndef IT_STRINGUTIL_HPP
+#include "Core/It/itStringUtil.hpp"
+#endif
 
 
 //============================================================================
@@ -93,8 +96,8 @@ namespace cptrRenderOptionsDialogUtil
 		//
 		if ( docSingleDocumentMgr::GetFilename().GetNumNames() > 0 )
 		{
-			itString itPrefix = docSingleDocumentMgr::GetFilename().GetLastName();
-			itPrefix.StripExtension();
+			std::string itPrefix = docSingleDocumentMgr::GetFilename().GetLastName();
+			itStringUtil::StripExtension(itPrefix);
 			captRenderOutputDataUtil::SetCurrentScene(itPrefix);
 		}
 

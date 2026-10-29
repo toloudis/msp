@@ -18,7 +18,7 @@
 //===========================================================================
 namespace
 {
-	itString l_AppTitle("Application");
+	std::string l_AppTitle("Application");
 }
 
 
@@ -29,13 +29,13 @@ namespace
 //---------------------------------------------------------------------------
 //	SetAppTitle()
 //---------------------------------------------------------------------------
-void quiMainWindow::SetAppTitle( const itString& i_Text )
+void quiMainWindow::SetAppTitle( const std::string& i_Text )
 {
 	l_AppTitle = i_Text;
 #ifdef USE_QT
 	if (tqtSystem::g_pMainForm)
 	{
-		tqtSystem::g_pMainForm->setWindowTitle(QString::fromWCharArray(i_Text.GetString()));
+		tqtSystem::g_pMainForm->setWindowTitle(QString::fromStdString(i_Text));
 	}
 #endif
 }
@@ -43,7 +43,7 @@ void quiMainWindow::SetAppTitle( const itString& i_Text )
 //---------------------------------------------------------------------------
 //	GetAppTitle()
 //---------------------------------------------------------------------------
-itString quiMainWindow::GetAppTitle()
+std::string quiMainWindow::GetAppTitle()
 {
 	return l_AppTitle;
 }

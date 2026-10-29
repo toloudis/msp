@@ -38,8 +38,8 @@ namespace mdlModelingPackageParser
 		io_Reader.Read(o_Data.m_CreationDate);
 		io_Reader.Read(o_Data.m_ExporterVersion);
 		io_Reader.Read(o_Data.m_SDKVersion);
-		io_Reader.Read(o_Data.m_ModelingPackageName);
-		io_Reader.Read(o_Data.m_ModelingPackageVersion);
+		io_Reader.ReadItString(o_Data.m_ModelingPackageName);
+		io_Reader.ReadItString(o_Data.m_ModelingPackageVersion);
 	}
 }
 

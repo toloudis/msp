@@ -13,22 +13,25 @@
 
 #include "Core/dbg/dbgMsg.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itString.hpp"
+#include <string>
 #include "Graphics/g2d/g2dExceptionX.hpp"
 #include "Graphics/g2d/private/tga.h"
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
 #include "GraphicsDX11/mat/matMipTexture.hpp"
 #include "GraphicsDX11/mat/matPlainTexture.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/Env/envString.hpp"
+#endif
 
 namespace 
 {
 	ID3D11Texture2D* load_tga_data(const fsLocator& i_Locator)
 	{
-		itString filename;
+		std::string filename;
 		fsFileUtil::LocatorToUnicodeString(i_Locator, filename);
 
 		// Read in the TGA light probe.
-		FILE* fp = ::_wfopen( filename.GetString(), L"rb" );
+		FILE* fp = ::_wfopen( envString::UTF8ToWideChar(filename).c_str(), L"rb" );
 		int fileWidth=0, fileHeight=0;
 		uint32_t* fTGAPixels = NULL;
 
@@ -88,12 +91,12 @@ namespace matTextureLoaderTGA
 	//------------------------------------------------------------------------
 	void LoadPlainTexture(matPlainTexture* io_Texture, const fsLocator& i_Locator, int i_WidthReduce, int i_HeightReduce)
 	{
-        itString filename;
+        std::string filename;
         fsFileUtil::LocatorToUnicodeString(i_Locator, filename);
 
         DirectX::TexMetadata info;
         std::unique_ptr<DirectX::ScratchImage> image(new DirectX::ScratchImage);
-        HRESULT hr = DirectX::LoadFromTGAFile(filename.GetString(), &info, *image);
+        HRESULT hr = DirectX::LoadFromTGAFile(envString::UTF8ToWideChar(filename).c_str(), &info, *image);
         std::unique_ptr<DirectX::ScratchImage> imageResult(new DirectX::ScratchImage);
         hr = DirectX::Resize(image->GetImages(), image->GetImageCount(),
             info,
@@ -126,14 +129,14 @@ namespace matTextureLoaderTGA
 	//------------------------------------------------------------------------
 	void LoadTGA(matMipTexture* io_Texture, const fsLocator& i_Locator, bool i_TrueColor, int i_WidthReduce, int i_HeightReduce, bool i_bIsMipMap)
 	{
-        itString filename;
+        std::string filename;
         fsFileUtil::LocatorToUnicodeString(i_Locator, filename);
 
         DirectX::TexMetadata info;
         std::unique_ptr<DirectX::ScratchImage> image(new DirectX::ScratchImage);
         
         // load from file
-        HRESULT hr = DirectX::LoadFromTGAFile(filename.GetString(), &info, *image);
+        HRESULT hr = DirectX::LoadFromTGAFile(envString::UTF8ToWideChar(filename).c_str(), &info, *image);
 
         std::unique_ptr<DirectX::ScratchImage> imageResult(new DirectX::ScratchImage);
         

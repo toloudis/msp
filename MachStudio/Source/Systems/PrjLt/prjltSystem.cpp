@@ -80,10 +80,10 @@ namespace prjltSystem
 	//--------------------------------------------------------------------
 	// Init
 	//--------------------------------------------------------------------
-	void Init(const fsLocator& i_AppDir, const itString& i_ProjTexDir)
+	void Init(const fsLocator& i_AppDir, const std::string& i_ProjTexDir)
 	{
 		// assign directories for textures
-		prjltTextureList::Init( i_ProjTexDir, itString(gfPaths::GetSubPath(gfPaths::e_Textures)) );
+		prjltTextureList::Init( i_ProjTexDir, std::string(gfPaths::GetSubPath(gfPaths::e_Textures)) );
 		prjltTextureList::SetAppDirectory( i_AppDir );
 
 		// Initialize namespaces

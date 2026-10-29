@@ -12,7 +12,6 @@
 
 #include "Core/dbg/dbgMsg.hpp"
 #include "Core/Fs/fsFileUtil.hpp"
-#include "Core/It/itString.hpp"
 
 #include <string>
 
@@ -73,12 +72,12 @@ void  wuiSplashScreen::StartUp(const fsLocator &i_SplashImage,
 	if (fsFileUtil::FileExists(i_SplashImage))
 	{
 		//grab the splash image location
-		itString img_location;
+		std::string img_location;
 		fsFileUtil::LocatorToUnicodeString(i_SplashImage, img_location);
 		
 		//load the splash image and convert to bitmap type for splashscreen constructor
 		wxLogNull nullLog;
-		wxImage image(img_location.GetString(), wxBITMAP_TYPE_PNG);
+		wxImage image(wxString::FromUTF8(img_location), wxBITMAP_TYPE_PNG);
 
 		wxBitmap bmp(image);
 
@@ -102,8 +101,8 @@ void  wuiSplashScreen::StartUp(const fsLocator &i_SplashImage,
 			}
 			
 			wxStaticText* m_staticText1;
-			itString msg(i_Message.c_str());
-			m_staticText1 = new wxStaticText( l_Splash,wxID_ANY, msg.GetString(), wxPoint(198,134), wxDefaultSize, 0 );
+			std::string msg(i_Message.c_str());
+			m_staticText1 = new wxStaticText( l_Splash,wxID_ANY, wxString::FromUTF8(msg), wxPoint(198,134), wxDefaultSize, 0 );
 			m_staticText1->Wrap( -1 );
 			m_staticText1->SetForegroundColour( wxColour(206,206,206,0));
 			m_staticText1->SetBackgroundColour( wxColour(97,97,97,0) );

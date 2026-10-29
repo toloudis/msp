@@ -14,9 +14,6 @@
 #ifndef ENV_APPVERSION_HPP
 #include "Core/env/envAppVersion.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
 
 #include <string>
 
@@ -43,6 +40,6 @@ namespace mainCheckAppVersion
 	//	IsLatestVersion - returns true if app is up to date. If not, it also
 	//	returns the version and the file to download.
 	//----------------------------------------------------------------------------
-	bool IsLatestVersion(const envAppVersion& i_UserVersion, const std::string& i_VersionURL, envAppVersion& o_LatestVersion, itString& o_DownloadFile);
+	bool IsLatestVersion(const envAppVersion& i_UserVersion, const std::string& i_VersionURL, envAppVersion& o_LatestVersion, std::string& o_DownloadFile);
 };
 

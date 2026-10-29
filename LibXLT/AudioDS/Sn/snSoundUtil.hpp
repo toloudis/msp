@@ -17,11 +17,11 @@
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
 #endif
+#include <string>
 
 //----------------------------------------------------------------------------
 //	Forward declarations
 //----------------------------------------------------------------------------
-class itString;
 class snSoundJob;
 class snSoundJob2D;
 class snSoundJob2DStreamed;

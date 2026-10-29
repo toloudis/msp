@@ -44,7 +44,7 @@ void fogDialogDataUtil::RebuildListData(cmmDialogDataList& io_DataList)
 	int startindex = io_DataList.size();
 	io_DataList.resize( startindex + 1 );
 	io_DataList[startindex].m_Name			= nameString("Fog");
-	io_DataList[startindex].m_Filename		= itString("");
+	io_DataList[startindex].m_Filename		= std::string();
 	io_DataList[startindex].m_Desc			= "";
 	io_DataList[startindex].m_SystemName	= c_SystemName;
 	io_DataList[startindex].m_bVisible		= true;

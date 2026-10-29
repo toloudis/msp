@@ -9,13 +9,13 @@
 #ifdef FSYS_FILEUTIL_HPP
 #error fsysFileUtil.hpp multiply included
 #endif
+#include <string>
 #define FSYS_FILEUTIL_HPP
 
 
 //============================================================================
 //============================================================================
 class fsLocator;
-class itString;
 
 
 //============================================================================
@@ -29,8 +29,8 @@ namespace fsysFileUtil
 	//
 	//	Note: this calls fsDirListUtil::BuildDirectoryList.
 	//------------------------------------------------------------------------
-	bool GetFilePath(	const itString& i_SystemDirName, 
-						const itString& i_SceneSubDirName, 
-						const itString& i_FindFile, 
+	bool GetFilePath(	const std::string& i_SystemDirName, 
+						const std::string& i_SceneSubDirName, 
+						const std::string& i_FindFile, 
 						fsLocator& o_FoundDirAndFile);
 }

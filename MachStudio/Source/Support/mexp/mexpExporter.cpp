@@ -14,7 +14,7 @@
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Graphics/g3d/g3dConstants.hpp"
-#include "Core/it/itString.hpp"
+#include <string>
 #include "Core/it/itStringUtil.hpp"
 #include "Core/ma/maConstants.hpp"
 #include "Core/ma/maRotation.hpp"
@@ -33,25 +33,25 @@ namespace
 {
 	const float c_FramesPerSecond = g3dConstants::c_fDefaultFrameRate;
 
-	std::string convert_filename_to_name(const itString& i_Filename,
-		std::map<itString, int> &io_InstanceCount)
+	std::string convert_filename_to_name(const std::string& i_Filename,
+		std::map<std::string, int> &io_InstanceCount)
 	{
-		itString no_ext(i_Filename);
-		no_ext.StripExtension();
+		std::string no_ext(i_Filename);
+		itStringUtil::StripExtension(no_ext);
 
-		const itString::CharType *str_ptr = no_ext.GetString();
+		const char *str_ptr = no_ext.c_str();
 		std::string ReturnString;
-		for (int i = 0; i < no_ext.GetLength(); ++i)
+		for (int i = 0; i < no_ext.size(); ++i)
 		{
 			// Can't have hyphens in Maya names, so we convert them 
 			// to double-underscores
-			if (str_ptr[i] == itString::CharType('-'))
+			if (str_ptr[i] == char('-'))
 				ReturnString += "__";
 			else
 				ReturnString.push_back((char)str_ptr[i]);
 		}
 
-		std::map<itString, int>::iterator it = io_InstanceCount.find(i_Filename);
+		std::map<std::string, int>::iterator it = io_InstanceCount.find(i_Filename);
 		if (it != io_InstanceCount.end())
 		{
 			// Increment count
@@ -230,7 +230,7 @@ void mexpExporter::ExportTimeRange(const maTime& i_Minimum, const maTime& i_Maxi
 // In Maya, the name of the locator will be used to position 
 // the correct geometry in the correct position.
 //--------------------------------------------------------------------
-std::string mexpExporter::ExportGeometryLocation(const itString& i_Filename,
+std::string mexpExporter::ExportGeometryLocation(const std::string& i_Filename,
 										  const maPoint3d& i_Position,
 										  const maRotation& i_Orientation)
 {

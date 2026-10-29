@@ -49,7 +49,7 @@ void mnmAppPackageParser::Read(	chReader& io_Reader,
 								chDefs::Size i_Size,
 								mnmAppPackageData& o_Data )
 {
-	io_Reader.Read( o_Data.m_SGPUAppName );
+	io_Reader.ReadItString( o_Data.m_SGPUAppName );
 	io_Reader.Read( o_Data.m_SGPUAppVersion );
 }
 
@@ -63,8 +63,8 @@ void mnmAppPackageParser::Write(chWriter& io_Writer,
 	const int c_APPV_VERSION = 0;
 	io_Writer.WriteChunkHeader( c_APPV, c_APPV_VERSION, true );
 
-	itString app_name( i_Data.m_SGPUAppName );
-	app_name += itString::CharType(0);
+	std::string app_name( i_Data.m_SGPUAppName );
+	app_name += char(0);
 	io_Writer.Write( app_name );
 	io_Writer.Write( i_Data.m_SGPUAppVersion );
 

@@ -302,6 +302,74 @@ In dependency order: Graphics, GraphicsDX11 and GraphicsVulkan,
 ImportExport, Input, AudioDS, Tool, ToolUIQt and ToolUIWx, then
 MachStudio's Support, Systems, Features, Drivers and MainApp.
 
+**Done (2026-10-29, not yet reviewed):**
+
+- **Reads first.** Before any type changed, the temporary
+  `chReader::Read(itString&)` and `chChunkParserUtil::Read(chReader&,
+  itString&)` were renamed `ReadItString`, so the compiler listed every
+  read of an `itString` field (27, in Graphics, Drivers, MainApp,
+  Support, Systems and one test); each became `ReadItString`, which keeps
+  working when the field turns into a `std::string`. A plain `Read` of a
+  field that was an `itString` can't remain: it wouldn't have compiled.
+- No `itString` is left in LibXLT outside Core, in MachStudio, or in
+  UnitTests outside CoreTests (`itStringTest.cpp`, and `chStringTest.cpp`,
+  which tests the temporary overloads). Not touched: code no project builds
+  (Area18, Record, the Systems folders listed as not built, the WinForms
+  `*Form.h` leftovers).
+- `envString` gained `StartsWith`, `EndsWith` (an empty substring gives
+  false, as `itString`'s did) and `IsASCII`. The file-name members
+  (`GetExtension`, `StripExtension`, `ReplaceExtension`, `GetBase`) became
+  calls to the `itStringUtil` `std::string` helpers from step 2, left for
+  step 4 to place.
+- Overloads that became duplicates were removed (`g2dFontUtil` /
+  `GetLoadedFontName`, `guiXMLTextReader::Convert`, the `WriteElement`s
+  of `guiXMLTextWriter`, `guiXMLTextWriterStd`, `quiXMLTextWriter` and
+  `wuiXMLTextWriter`, and the GraphicsTests font fakes).
+- Windows calls convert at the call, all in `*Win*` files or Windows-only
+  code: `SetWindowTextW` (DX11; Vulkan's `vkdSetWindowTitle` now takes
+  UTF-8), D3DCompile, DirectXTex loads, `_wfopen`, DirectWrite's font
+  family name, the DXGI adapter name, the RenderNode command line (back
+  to a `std::wstring`; it was an `itString` of `TCHAR`s). File streams
+  and `std::filesystem` paths take `std::filesystem::u8path(...)` (OpenEXR,
+  image saving, image decoding, the pipeline cache, RenderMan RIB files).
+- Qt: `fromWCharArray(x.GetString())` → `QString::fromStdString(x)`,
+  `toStdWString()` → `toStdString()` (both UTF-8 in Qt 6). wx:
+  `wxString::FromUTF8(x)` where a wide string went to wx, and
+  `utf8_string()` back (also `pwxDirectory_DirPicker`, which cast a
+  `wxString` to `const char*`, and `wxMainDropTarget`).
+- `mnmConstants`: `c_PRODUCT_FOR_DISPLAY` is a UTF-8 `const char*`; the
+  wide `cw_*` constants became narrow `c_RIGHTS`, `c_64BIT`, `c_32BIT`
+  (`cw_COPYRIGHT` and `cw_PRODUCT` duplicated `c_COPYRIGHT` and
+  `c_PRODUCT` and are gone).
+- Stepping through characters: `scrText` (the bitmap-font text both
+  backends draw) still makes one glyph per UTF-16 unit, decoding the
+  UTF-8 first, as before. `Input/in`'s 114 uses were the key-name table,
+  not text entry. The other loops (render output tags, Maya export names,
+  animated file-name patterns, file extension lists) look for ASCII
+  characters, which UTF-8 never has inside a multi-byte character, so
+  bytes are fine; `InsertCharAt` / `RemoveCharAt` became `insert` /
+  `erase` / `pop_back`.
+- Old bugs found and fixed:
+  - `prtGeneratorUtil` wrote particle texture and geometry names with
+    `Write(name.GetString())`, a `wchar_t*`, which since step 2 picked
+    `Write(bool)`. Now the names are written.
+  - The particle (`prtGeneratorUtil`) and version-1 sound driver
+    (`tmlnDriverSoundParser`) readers dropped the last character of the
+    name they read, to remove a NULL the reader stopped returning long
+    ago (the particle one asserted first). They keep the whole name now.
+  - `g2dFontUtilDX11::GetLoadedFontName` gave DirectWrite a buffer one
+    short (no room for the NULL).
+  - Narrow `std::ofstream`s on wide names went through the C runtime's
+    wide-name extension; `g2dScanlineOpenEXRUtil` cut every character of
+    the EXR file name to a byte.
+- `fsysFileList::GetFilePath(0, ...)` became ambiguous (0 also converts to
+  a `std::string`); `envtDefaultEnvironment` calls it through a const
+  reference.
+- Built: Debug and Release Qt, Wx and RenderNode; CoreTests, MainAppTests
+  and ImportExportTests pass in each. No new warnings. GraphicsTests (Debug), the font,
+  window, image decode, texture manager, image save, capture and glTF
+  tests: 51 pass.
+
 - A rename script does most of each library: `GetLength()` to `size()`,
   `GetString()` to `c_str()`, `Clear()` to `clear()`, `HasSubString(x)`
   to `find(x) != npos`, `StartsWith`/`EndsWith` to helpers in
@@ -324,6 +392,8 @@ MachStudio's Support, Systems, Features, Drivers and MainApp.
 
 - Delete `itString.hpp` / `itString.cpp` and the temporary conversions
   from step 2.
+- Decided (2026-10-29): the helpers go into `envString`, and
+  `itStringUtil` is deleted with `itString`.
 - Port the `itStringUtil` helpers that are still used (`CompareNoCase`,
   `StartsWithNoCase`, `TrimSpaces`, `ToLower`, `Breakup_Filename`,
   `Build_Filename`, `GetInt`, `GetDouble`) to `std::string`, in

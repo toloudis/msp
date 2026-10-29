@@ -124,9 +124,9 @@ bool tqtToolbarMgr::AddToolBarButton( QAction* i_pAction,
 		if( !fsFileUtil::FileExists(icon_loc) )
 			continue;
 
-		itString icon_filename;
+		std::string icon_filename;
 		fsFileUtil::LocatorToUnicodeString(icon_loc, icon_filename);
-		QIcon icon(QString::fromWCharArray(icon_filename.GetString()));
+		QIcon icon(QString::fromStdString(icon_filename));
 		if (icon.isNull())
 			continue;
 

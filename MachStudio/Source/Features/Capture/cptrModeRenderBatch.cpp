@@ -38,6 +38,9 @@
 #include "Tool/gui/guiCustomDocHandler.hpp"
 #include "Tool/gui/guiSingleDocHandler.hpp"
 #include "Tool/gui/guiStatusBarMgr.hpp"
+#ifndef IT_STRINGUTIL_HPP
+#include "Core/It/itStringUtil.hpp"
+#endif
 
 
 //----------------------------------------------------------------------------
@@ -262,9 +265,9 @@ void cptrModeRenderBatch::Think()
 					}
 					catch (...)
 					{
-						itString s("Load Error: ");
-						s += itString(theData.m_Scenes[ m_SceneIndex ].m_Filename.GetString().c_str());
-						cptrRenderStatsDialogUtil::AddStatsMessage(itString(""));
+						std::string s("Load Error: ");
+						s += theData.m_Scenes[ m_SceneIndex ].m_Filename.GetString();
+						cptrRenderStatsDialogUtil::AddStatsMessage(std::string());
 						cptrRenderStatsDialogUtil::AddStatsMessage(s);
 
 					}
@@ -309,9 +312,9 @@ void cptrModeRenderBatch::Think()
 						theCapData.m_OutputFiles.ClearList();
 
 						//	set the prefix to be the scene name
-						itString current_scenename;
+						std::string current_scenename;
 						current_scenename = theData.m_Scenes[m_SceneIndex].m_Filename.GetValue().GetLastName();
-						current_scenename.StripExtension();
+						itStringUtil::StripExtension(current_scenename);
 						captRenderOutputDataUtil::SetCurrentScene( current_scenename );
 
 						//	set the max capture frames
@@ -331,7 +334,7 @@ void cptrModeRenderBatch::Think()
 					else
 					{
 						// Errors while opening the document
-						itString s("Skip Scene: ");
+						std::string s("Skip Scene: ");
 						s += theData.m_Scenes[m_SceneIndex].m_Filename.GetValue().GetLastName();
 						cptrRenderStatsDialogUtil::AddStatsMessage(s);
 						cptrRenderStatsDialogUtil::Newline();
@@ -445,8 +448,8 @@ bool cptrModeRenderBatch::ResolvePathBySkipping(const fsLocator& i_OrigFilename,
 
 	std::string cur_string;
 	fsFileUtil::LocatorToANSIFilename(i_OrigFilename, cur_string);
-	itString s("Missing File: ");
-	s += itString(cur_string.c_str());
+	std::string s("Missing File: ");
+	s += cur_string;
 	cptrRenderStatsDialogUtil::AddStatsMessage(s);
 	
 	return true;
@@ -463,7 +466,7 @@ void cptrModeRenderBatch::update_scenes_percentage()
 	oss.setf(std::ios::fixed, std::ios::floatfield);
 	oss << "Scene "<<m_SceneIndex+1<<" of "<<m_NumScenes;
 	std::string buffer(oss.str());
-	itString cameras_label(buffer.c_str());
+	std::string cameras_label(buffer.c_str());
 
 	float cameras_percentage;
 	cameras_percentage = (float)m_SceneIndex / (float)m_NumScenes;

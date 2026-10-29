@@ -42,7 +42,7 @@ void prjltDialogDataUtil::RebuildListData(cmmDialogDataList& io_DataList)
 		prjltData objdata = prjltObjectMgr::GetBaseData(i);
 		cmmDialogData &dialog_data = io_DataList[startindex+i];
 		dialog_data.m_Name		= objdata.m_Name.GetValue();
-		dialog_data.m_Filename	= itString( objdata.m_Name.GetString().c_str() );
+		dialog_data.m_Filename	= objdata.m_Name.GetString();
 		dialog_data.m_Desc		= "";
 		dialog_data.m_SystemName	= c_SystemName;
 		dialog_data.m_bVisible	= objdata.m_bEditorVisible.GetValue();

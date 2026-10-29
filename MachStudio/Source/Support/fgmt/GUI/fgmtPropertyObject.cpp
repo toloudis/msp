@@ -255,9 +255,9 @@ void fgmtPropertyObject::UpdateBakeFlag(prtyProperty *i_pProperty, bool i_bDirty
 		{
 			color_path = path + std::string("\\") + m_SceneNodes[i]->GetBakeName() + std::string("_Baked_Color.") + m_Data.m_BakedTextureFormat.GetValue();
 			normal_path = path + std::string("\\") + m_SceneNodes[i]->GetBakeName() + std::string("_Baked_Normals.") + m_Data.m_BakedTextureFormat.GetValue();
-			if (fsFileUtil::FileExists(fsLocator(itString(color_path.c_str()))))
+			if (fsFileUtil::FileExists(fsLocator(color_path)))
 				color_path_full += color_path + std::string("\n");
-			if (fsFileUtil::FileExists(fsLocator(itString(normal_path.c_str()))))
+			if (fsFileUtil::FileExists(fsLocator(normal_path)))
 				normal_path_full += normal_path + std::string("\n");
 		}
 		m_BakedColorPath = color_path_full;

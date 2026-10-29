@@ -27,8 +27,8 @@ public:
 	//		i_SystemDirName		- the name of the directory for this system
 	//		i_SceneSubDirName	- the sub-dir to look for in the scene directory (data or textures)
 	//------------------------------------------------------------------------
-	static void Init( const itString& i_SystemDirName, 
-					  const itString& i_SceneSubDirName )
+	static void Init( const std::string& i_SystemDirName, 
+					  const std::string& i_SceneSubDirName )
 	{
 		sm_SystemDirName = i_SystemDirName; 
 		sm_SceneSubDirName = i_SceneSubDirName;
@@ -53,7 +53,7 @@ public:
 	//------------------------------------------------------------------------
 	// system directory name
 	//------------------------------------------------------------------------
-	static itString GetSystemDirName()
+	static std::string GetSystemDirName()
 	{
 		return sm_SystemDirName;
 	}
@@ -95,9 +95,9 @@ public:
 
 private:
 	static fsLocator sm_AppDir;
-	static itString sm_SystemDirName; 
-	static itString sm_SubDirName;
-	static itString sm_SceneSubDirName;
+	static std::string sm_SystemDirName; 
+	static std::string sm_SubDirName;
+	static std::string sm_SceneSubDirName;
 };
 
 //============================================================================
@@ -107,11 +107,11 @@ template<class xxxFileTypeConfig>
 fsLocator cmmFileListTemplate<xxxFileTypeConfig>::sm_AppDir;
 
 template<class xxxFileTypeConfig>
-itString cmmFileListTemplate<xxxFileTypeConfig>::sm_SystemDirName;
+std::string cmmFileListTemplate<xxxFileTypeConfig>::sm_SystemDirName;
 
 template<class xxxFileTypeConfig>
-itString cmmFileListTemplate<xxxFileTypeConfig>::sm_SubDirName;
+std::string cmmFileListTemplate<xxxFileTypeConfig>::sm_SubDirName;
 
 template<class xxxFileTypeConfig>
-itString cmmFileListTemplate<xxxFileTypeConfig>::sm_SceneSubDirName;
+std::string cmmFileListTemplate<xxxFileTypeConfig>::sm_SceneSubDirName;
 

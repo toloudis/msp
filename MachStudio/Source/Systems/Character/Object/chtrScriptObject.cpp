@@ -611,10 +611,10 @@ void chtrScriptObject::SetScriptData(const chtrScriptData &i_Data)
 	this->SetMaterialData( i_Data.m_Materials );
 
 	// set fragment data
-	itString modelName = i_Data.m_BaseData.m_Filename.GetValue().GetLastName();
-	modelName.StripExtension();
+	std::string modelName = i_Data.m_BaseData.m_Filename.GetValue().GetLastName();
+	itStringUtil::StripExtension(modelName);
 	this->SetFragmentData( i_Data.m_Fragments, i_Data.m_AOData, 
-						itStringUtil::GetStdString(modelName), 
+						modelName, 
 						i_Data.m_BaseData.m_Name.GetValue().GetString() );
 
 	//

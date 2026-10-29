@@ -20,12 +20,12 @@
 #ifndef G2D_FONTHANDLE_HPP
 #include "Graphics/g2d/g2dFontHandle.hpp"
 #endif
+#include <string>
 
 
 //============================================================================
 //============================================================================
 class g2dImage;
-class itString;
 
 
 //============================================================================
@@ -122,7 +122,7 @@ public:
 	virtual void DrawText(	int i_X,
 							int i_Y,
 							g2dFontHandle i_Font,
-							const itString& i_Text,
+							const std::string& i_Text,
 							const g2dRGBColor& i_Color) = 0;
 
 	//------------------------------------------------------------------------
@@ -173,7 +173,7 @@ public:
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	virtual void SetTitle(const itString& i_Title) = 0;
+	virtual void SetTitle(const std::string& i_Title) = 0;
 
 	//------------------------------------------------------------------------
 	//	FrameRate information

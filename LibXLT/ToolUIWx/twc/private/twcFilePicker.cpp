@@ -64,16 +64,16 @@ void twcFilePicker::SetFullpath(const fsLocator& i_Value)
 //--------------------------------------------------------------------
 //	Filename
 //--------------------------------------------------------------------
-itString twcFilePicker::GetFilename() const
+std::string twcFilePicker::GetFilename() const
 {
     if (m_Value.GetNumNames() == 0)
-        return itString("");
+        return std::string();
 	else if (fsFileUtil::DirectoryExists(m_Value))
     {
         // If the fullpath is a directory, then the filename
         // should be empty. (The directory would be used to specify
         // the initial directory for the Browse dialog).
-        return itString("");
+        return std::string();
     }
     else
     {
@@ -84,11 +84,11 @@ itString twcFilePicker::GetFilename() const
 //--------------------------------------------------------------------
 //	Filter
 //--------------------------------------------------------------------
-const itString& twcFilePicker::GetFilter() const
+const std::string& twcFilePicker::GetFilter() const
 {
 	return m_Filter;
 }
-void twcFilePicker::SetFilter(const itString& i_Filter)
+void twcFilePicker::SetFilter(const std::string& i_Filter)
 {
 	m_Filter = i_Filter;
 }
@@ -180,9 +180,9 @@ void twcFilePicker::update_textbox()
 	}
 	else
 	{
-		itString full_path;
+		std::string full_path;
 		fsFileUtil::LocatorToUnicodeString( m_Value, full_path );
-		this->m_pTextBox->SetValue(full_path.GetString());
+		this->m_pTextBox->SetValue(wxString::FromUTF8(full_path));
 		this->m_pTextBox->SetInsertionPointEnd(); // show end of fullpath, not beginning
 	}
 }
@@ -201,9 +201,9 @@ void twcFilePicker::notify_callback()
 void twcFilePicker::OnTextChange(wxCommandEvent& i_Event)
 {	
 	wxString lastvalue = m_pTextBox->last_value();
-	itString full_path(m_pTextBox->GetValue().wc_str());
+	std::string full_path(m_pTextBox->GetValue().utf8_string());
 	fsFileUtil::UnicodeStringToLocator(full_path, m_Value);
-	if(full_path.GetLength() != 0 )
+	if(full_path.size() != 0 )
 	{
 		if(!fsFileUtil::FileExists(m_Value))
 		{
@@ -212,7 +212,7 @@ void twcFilePicker::OnTextChange(wxCommandEvent& i_Event)
 			std::string msg = "Cannot find file\n" + filename;
 			guiMessageBox::Show(msg.c_str(), "Error", guiMessageBox::e_OKOnly);
 			m_pTextBox->SetValue(lastvalue);
-			itString path(lastvalue.wc_str());
+			std::string path(lastvalue.utf8_string());
 			fsFileUtil::UnicodeStringToLocator(path, m_Value);
 		}
 	}
@@ -223,21 +223,21 @@ void twcFilePicker::OnTextChange(wxCommandEvent& i_Event)
 //----------------------------------------------------------------------------
 void twcFilePicker::OnBrowseClick(wxCommandEvent& i_Event)
 {	
-	itString init_dir;
+	std::string init_dir;
 	fsFileUtil::LocatorToUnicodeString( get_initial_directory(), init_dir );
 
 	wxFileDialog dialog( this,
 					wxT("Open File"),
-					init_dir.GetString(),
+					wxString::FromUTF8(init_dir),
 					wxEmptyString,
-					m_Filter.GetString()
+					wxString::FromUTF8(m_Filter)
 				 );
 
 	//dialog.CentreOnParent();
 
 	if (dialog.ShowModal() == wxID_OK)
 	{
-		itString full_path(dialog.GetPath().wc_str());
+		std::string full_path(dialog.GetPath().utf8_string());
 		fsFileUtil::UnicodeStringToLocator(full_path, m_Value);
 
 		// maintain the current directory by category

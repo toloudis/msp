@@ -46,7 +46,7 @@ void ptltDialogDataUtil::RebuildListData(cmmDialogDataList& io_DataList)
 		ptltData objdata = ptltObjectMgr::GetBaseData(i);
 		cmmDialogData &dialog_data = io_DataList[startindex+i];
 		dialog_data.m_Name		= objdata.m_Name.GetValue();
-		dialog_data.m_Filename	= itString( io_DataList[startindex+i].m_Name.GetString().c_str() );
+		dialog_data.m_Filename	= io_DataList[startindex+i].m_Name.GetString();
 		dialog_data.m_Desc		= "";
 		dialog_data.m_SystemName	= c_SystemName;
 		dialog_data.m_bVisible	= objdata.m_bEditorVisible.GetValue();

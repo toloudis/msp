@@ -55,16 +55,16 @@ void tqcFilePicker::SetFullpath(const fsLocator& i_Value)
 //--------------------------------------------------------------------
 //	Filename
 //--------------------------------------------------------------------
-itString tqcFilePicker::GetFilename() const
+std::string tqcFilePicker::GetFilename() const
 {
     if (m_Value.GetNumNames() == 0)
-        return itString("");
+        return std::string();
 	else if (fsFileUtil::DirectoryExists(m_Value))
     {
         // If the fullpath is a directory, then the filename
         // should be empty. (The directory would be used to specify
         // the initial directory for the Browse dialog).
-        return itString("");
+        return std::string();
     }
     else
     {
@@ -75,11 +75,11 @@ itString tqcFilePicker::GetFilename() const
 //--------------------------------------------------------------------
 //	Filter
 //--------------------------------------------------------------------
-const itString& tqcFilePicker::GetFilter() const
+const std::string& tqcFilePicker::GetFilter() const
 {
 	return m_Filter;
 }
-void tqcFilePicker::SetFilter(const itString& i_Filter)
+void tqcFilePicker::SetFilter(const std::string& i_Filter)
 {
 	m_Filter = i_Filter;
 }
@@ -171,9 +171,9 @@ void tqcFilePicker::update_textbox()
 	}
 	else
 	{
-		itString full_path;
+		std::string full_path;
 		fsFileUtil::LocatorToUnicodeString( m_Value, full_path );
-		this->m_pTextBox->SetValue(QString::fromWCharArray(full_path.GetString()));
+		this->m_pTextBox->SetValue(QString::fromStdString(full_path));
 		// show end of fullpath, not beginning
 		if (QLineEdit* pLineEdit = this->m_pTextBox->GetLineEdit())
 			pLineEdit->end(false);
@@ -192,9 +192,9 @@ void tqcFilePicker::notify_callback()
 void tqcFilePicker::OnTextChange()
 {
 	QString lastvalue = m_pTextBox->last_value();
-	itString full_path(m_pTextBox->GetValue().toStdWString().c_str());
+	std::string full_path(m_pTextBox->GetValue().toStdString());
 	fsFileUtil::UnicodeStringToLocator(full_path, m_Value);
-	if(full_path.GetLength() != 0 )
+	if(full_path.size() != 0 )
 	{
 		if(!fsFileUtil::FileExists(m_Value))
 		{
@@ -203,7 +203,7 @@ void tqcFilePicker::OnTextChange()
 			std::string msg = "Cannot find file\n" + filename;
 			guiMessageBox::Show(msg.c_str(), "Error", guiMessageBox::e_OKOnly);
 			m_pTextBox->SetValue(lastvalue);
-			itString path(lastvalue.toStdWString().c_str());
+			std::string path(lastvalue.toStdString());
 			fsFileUtil::UnicodeStringToLocator(path, m_Value);
 		}
 	}
@@ -214,15 +214,15 @@ void tqcFilePicker::OnTextChange()
 //----------------------------------------------------------------------------
 void tqcFilePicker::OnBrowseClick()
 {
-	itString init_dir;
+	std::string init_dir;
 	fsFileUtil::LocatorToUnicodeString( get_initial_directory(), init_dir );
 	QString path = QFileDialog::getOpenFileName( this,
 												 "Open File",
-												 QString::fromWCharArray(init_dir.GetString()),
-												 tqtFileDialogFilter(QString::fromWCharArray(m_Filter.GetString())) );
+												 QString::fromStdString(init_dir),
+												 tqtFileDialogFilter(QString::fromStdString(m_Filter)) );
 	if (!path.isEmpty())
 	{
-		itString full_path(QDir::toNativeSeparators(path).toStdWString().c_str());
+		std::string full_path(QDir::toNativeSeparators(path).toStdString());
 		fsFileUtil::UnicodeStringToLocator(full_path, m_Value);
 
 		// maintain the current directory by category

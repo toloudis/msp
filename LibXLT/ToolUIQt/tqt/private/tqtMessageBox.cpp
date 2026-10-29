@@ -9,7 +9,7 @@
 #include "ToolUIQt/tqt/tqtMessageBox.hpp"
 #include "ToolUIQt/tqt/tqtSystem.hpp"
 
-#include "Core/It/itString.hpp"
+#include <string>
 
 
 //===========================================================================
@@ -77,10 +77,10 @@ int tqtMessageBox::Show( const char* i_Message, const char* i_Title, int i_Type 
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-int tqtMessageBox::Show( const itString& i_Message, const itString& i_Title, int i_Type )
+int tqtMessageBox::Show( const std::string& i_Message, const std::string& i_Title, int i_Type )
 {
-	return show_message(QString::fromWCharArray(i_Message.GetString()),
-						QString::fromWCharArray(i_Title.GetString()),
+	return show_message(QString::fromStdString(i_Message),
+						QString::fromStdString(i_Title),
 						i_Type);
 }
 

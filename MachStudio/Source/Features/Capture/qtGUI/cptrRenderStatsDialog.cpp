@@ -32,26 +32,26 @@ cptrRenderStatsDialog::cptrRenderStatsDialog( QWidget* parent )
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-void cptrRenderStatsDialog::append_text( const itString& i_String )
+void cptrRenderStatsDialog::append_text( const std::string& i_String )
 {
 	QTextCursor cursor(m_richText_stats->document());
 	cursor.movePosition(QTextCursor::End);
-	cursor.insertText(QString::fromWCharArray(i_String.GetString()));
+	cursor.insertText(QString::fromStdString(i_String));
 }
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-void cptrRenderStatsDialog::UpdateStatString( itString& i_pString )
+void cptrRenderStatsDialog::UpdateStatString( std::string& i_pString )
 {
 	append_text( i_pString );
 }
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-void cptrRenderStatsDialog::AddStatString( itString& i_pString )
+void cptrRenderStatsDialog::AddStatString( std::string& i_pString )
 {
 	append_text( i_pString );
-	append_text( itString(L"\n") );
+	append_text( std::string("\n") );
 }
 
 //--------------------------------------------------------------------

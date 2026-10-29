@@ -22,6 +22,7 @@
 #define SN_SOUNDMANAGER_HPP
 
 #include <vector>
+#include <string>
 
 
 //============================================================================
@@ -35,7 +36,6 @@ class snSoundJobMIDI;
 class snSoundJobMP3;
 class snSoundJobRedbook;
 class fsLocator;
-class itString;
 class maVector3d;
 class maRotation;
 
@@ -234,7 +234,7 @@ namespace snSoundManager
 	//
 	//		Remove a sound based on a string
 	//------------------------------------------------------------------------
-	snSoundJob * RemovePreloadSound( const itString & i_PreloadSoundToRemove );
+	snSoundJob * RemovePreloadSound( const std::string & i_PreloadSoundToRemove );
 
 	//------------------------------------------------------------------------
 	//	DeletePreloadSound( snSoundJob * )
@@ -248,7 +248,7 @@ namespace snSoundManager
 	//
 	//		Delete a sound based on a string
 	//------------------------------------------------------------------------
-	void DeletePreloadSound( const itString & i_PreloadSoundToDelete );
+	void DeletePreloadSound( const std::string & i_PreloadSoundToDelete );
 
 	//------------------------------------------------------------------------
 	//	FindPreloadSound( snSoundJob * )
@@ -262,7 +262,7 @@ namespace snSoundManager
 	//
 	//	Find a sound based on a string
 	//------------------------------------------------------------------------
-	snSoundJob * FindPreloadSound( const itString & i_PreloadSoundToFind );
+	snSoundJob * FindPreloadSound( const std::string & i_PreloadSoundToFind );
 
 	//------------------------------------------------------------------------
 	//	CreatePreloadSound2DStatic()
@@ -272,7 +272,7 @@ namespace snSoundManager
 	//	so it can be preconfigured.
 	//------------------------------------------------------------------------
 	snSoundJob2D * CreatePreloadSound2DStatic( const fsLocator& i_Filename,
-												const itString& i_Name );
+												const std::string& i_Name );
 
 	//------------------------------------------------------------------------
 	//	CreatePreloadSound3DStatic()
@@ -282,7 +282,7 @@ namespace snSoundManager
 	//	so it can be preconfigured.
 	//------------------------------------------------------------------------
 	snSoundJob3D * CreatePreloadSound3DStatic( const fsLocator& i_Filename,
-												const itString& i_Name );
+												const std::string& i_Name );
 
 	//------------------------------------------------------------------------
 	//	ClonePreloadSound( itString & )
@@ -291,7 +291,7 @@ namespace snSoundManager
 	//	Return the cloned sound job *or* return NULL is the sound isn't in 
 	//	the pre-load list
 	//------------------------------------------------------------------------
-	snSoundJob * ClonePreloadSound( const itString & i_PreloadSoundToClone );
+	snSoundJob * ClonePreloadSound( const std::string & i_PreloadSoundToClone );
 
 	//------------------------------------------------------------------------
 	//	ClonePreloadSound( snSoundJob* )
@@ -411,7 +411,7 @@ namespace snSoundManager
 	//
 	//		Remove a soundjob based on a pointer
 	//------------------------------------------------------------------------
-	snSoundJob * RemoveSoundJob( const itString & i_SoundJobToRemove );
+	snSoundJob * RemoveSoundJob( const std::string & i_SoundJobToRemove );
 
 	//------------------------------------------------------------------------
 	//	DeleteSoundJob( snSoundJob * )
@@ -425,7 +425,7 @@ namespace snSoundManager
 	//
 	//		Delete a soundjob based on a pointer
 	//------------------------------------------------------------------------
-	void DeleteSoundJob( const itString & i_SoundJobToDelete );
+	void DeleteSoundJob( const std::string & i_SoundJobToDelete );
 
 	//------------------------------------------------------------------------
 	//	FindSoundJob( snSoundJob * )
@@ -439,14 +439,14 @@ namespace snSoundManager
 	//
 	//		Find a sound job based on a pointer
 	//------------------------------------------------------------------------
-	snSoundJob * FindSoundJob( const itString & i_SoundJobToFind );
+	snSoundJob * FindSoundJob( const std::string & i_SoundJobToFind );
 
 	//------------------------------------------------------------------------
 	//	FindSoundJobs( itString & )
 	//
 	//		Finds all sound jobs based on a name
 	//------------------------------------------------------------------------
-	void FindSoundJobs( const itString & i_SoundJobToFind, std::vector<snSoundJob *>& o_Jobs );
+	void FindSoundJobs( const std::string & i_SoundJobToFind, std::vector<snSoundJob *>& o_Jobs );
 
 	//------------------------------------------------------------------------
 	//	FindSoundJob( int )
@@ -466,7 +466,7 @@ namespace snSoundManager
 	//	it will try to clone it from the preload list if it exists.
 	//------------------------------------------------------------------------
 	snSoundJob2D * CreateSoundJob2DStatic( const fsLocator&	i_Filename,
-											const itString&		i_Name,
+											const std::string&		i_Name,
 											const bool			i_bCreateFromPreloadIfPossible = true );
 
 	//------------------------------------------------------------------------
@@ -486,7 +486,7 @@ namespace snSoundManager
 	//	so it can be played or its features can be altered.
 	//------------------------------------------------------------------------
 	snSoundJob3D * CreateSoundJob3DStatic( const fsLocator& i_Filename,
-											const itString& i_Name );
+											const std::string& i_Name );
 
 	//------------------------------------------------------------------------
 	//	CreateSoundJob3DStreamed()
@@ -534,7 +534,7 @@ namespace snSoundManager
 	//	If the sound is not pre-loaded, this function will not play a sound
 	//	and return NULL.
 	//------------------------------------------------------------------------
-	snSoundJob2D * Play2DStatic(	const	itString& i_Name,
+	snSoundJob2D * Play2DStatic(	const	std::string& i_Name,
 									float	i_SimulationTime,
 									bool	i_bDeleteWhenFinished = true, 
 									int		i_eExclusiveFlag = SOUNDMODE_NOTEXCLUSIVE, 
@@ -592,7 +592,7 @@ namespace snSoundManager
 	//	and add it to the sound job list.  A pointer is given to the sound
 	//	so it can be played or its features can be altered.
 	//------------------------------------------------------------------------
-	snSoundJob3D * Play3DStatic(	const	itString& i_Filename,
+	snSoundJob3D * Play3DStatic(	const	std::string& i_Filename,
 									float	i_SimulationTime,
 									bool	i_bDeleteWhenFinished = true, 
 									int		i_eExclusiveFlag = SOUNDMODE_NOTEXCLUSIVE, 

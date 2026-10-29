@@ -30,24 +30,24 @@ pwxKeyPropertyButton::pwxKeyPropertyButton(wxWindow* i_pParent,
 {
     wxLogNull nullLog;
 
-	itString icon_filename;
+	std::string icon_filename;
 	fsLocator icon_loc(guiMenuMgr::GetIconDirectory());
 	fsLocator default_loc, selected_loc, hover_loc;
 
 	default_loc = icon_loc;
 	default_loc.Push( "property-key.PNG" );
 	fsFileUtil::LocatorToUnicodeString(default_loc, icon_filename);
-	this->SetBitmapLabel( wxBitmap( wxString(icon_filename.GetString()), wxBITMAP_TYPE_ANY ) );
+	this->SetBitmapLabel( wxBitmap( wxString::FromUTF8(icon_filename), wxBITMAP_TYPE_ANY ) );
 
 	selected_loc = icon_loc;
 	selected_loc.Push( "property-key_pressed.PNG" );
 	fsFileUtil::LocatorToUnicodeString(selected_loc, icon_filename);
-	this->SetBitmapSelected( wxBitmap( wxString(icon_filename.GetString()), wxBITMAP_TYPE_ANY ) );
+	this->SetBitmapSelected( wxBitmap( wxString::FromUTF8(icon_filename), wxBITMAP_TYPE_ANY ) );
 
 	hover_loc = icon_loc;
 	hover_loc.Push( "property-key_highlight.PNG" );
 	fsFileUtil::LocatorToUnicodeString(hover_loc, icon_filename);
-	this->SetBitmapHover( wxBitmap( wxString(icon_filename.GetString()), wxBITMAP_TYPE_ANY ) );
+	this->SetBitmapHover( wxBitmap( wxString::FromUTF8(icon_filename), wxBITMAP_TYPE_ANY ) );
 }
 
 //----------------------------------------------------------------------------

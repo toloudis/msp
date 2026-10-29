@@ -72,7 +72,7 @@ namespace
 				//
 				fsysFileList file_list;
 				chtrGeomList::BuildFileList(file_list);
-				itString tex_fname = geom_loc.GetLastName();
+				std::string tex_fname = geom_loc.GetLastName();
 				if (file_list.FindFilePath(tex_fname, geom_loc))
 					geom_loc.Push(tex_fname);
 			}
@@ -115,7 +115,7 @@ void chtrDataParser::ReadCharacterChunk(chReader& i_Reader,
 										chtrDataParser::GetChunkName(),
 										version, size, bdata);
 			o_Data.m_BaseData.m_Name			= bdata.m_Name;
-			o_Data.m_BaseData.m_Filename		= bdata.m_Filename;
+			o_Data.m_BaseData.m_Filename		= fsLocator(bdata.m_Filename);
 			resolve_fullpath(o_Data.m_BaseData.m_Filename);
 			o_Data.m_BaseData.m_bEditorVisible	= bdata.m_bEditorVisible;
 			o_Data.m_BaseData.m_Position		= bdata.m_Position;

@@ -52,15 +52,15 @@ cptrRenderProgressDialog::~cptrRenderProgressDialog()
 //----------------------------------------------------------------------------
 //	set the percentage for scenes
 //----------------------------------------------------------------------------
-void cptrRenderProgressDialog::SetScenesRenderPercentage( float i_percentage, const itString& i_label )
+void cptrRenderProgressDialog::SetScenesRenderPercentage( float i_percentage, const std::string& i_label )
 {
 	m_fLastScenesPercentage = i_percentage;
 	m_gauge_Scenes->SetValue( (int)i_percentage );
 
-	if (i_label.GetLength() > 0)
+	if (i_label.size() > 0)
 	{
 		this->Freeze();
-		m_staticText_SceneNumber->SetLabel( i_label.GetString() );
+		m_staticText_SceneNumber->SetLabel( wxString::FromUTF8(i_label) );
 		this->Thaw();
 	}
 }
@@ -95,12 +95,12 @@ void cptrRenderProgressDialog::AbortProgress()
 //--------------------------------------------------------------------
 //	set the percentage for scene
 //--------------------------------------------------------------------
-void cptrRenderProgressDialog::SetSceneLabel( const itString& i_label )
+void cptrRenderProgressDialog::SetSceneLabel( const std::string& i_label )
 {
-	if (i_label.GetLength() > 0)
+	if (i_label.size() > 0)
 	{
 		this->Freeze();
-		m_staticText_SceneName->SetLabel( i_label.GetString() );
+		m_staticText_SceneName->SetLabel( wxString::FromUTF8(i_label) );
 		this->Thaw();
 	}
 }
@@ -108,12 +108,12 @@ void cptrRenderProgressDialog::SetSceneLabel( const itString& i_label )
 //--------------------------------------------------------------------
 //	set the label for the current render layer
 //--------------------------------------------------------------------
-void cptrRenderProgressDialog::SetRenderLayerLabel( const itString& i_label )
+void cptrRenderProgressDialog::SetRenderLayerLabel( const std::string& i_label )
 {
-	if (i_label.GetLength() > 0)
+	if (i_label.size() > 0)
 	{
 		this->Freeze();
-		m_staticText_LayerName->SetLabel( i_label.GetString() );
+		m_staticText_LayerName->SetLabel( wxString::FromUTF8(i_label) );
 		this->Thaw();
 	}
 }
@@ -121,15 +121,15 @@ void cptrRenderProgressDialog::SetRenderLayerLabel( const itString& i_label )
 //--------------------------------------------------------------------
 //	set the percentage for cameras
 //--------------------------------------------------------------------
-void cptrRenderProgressDialog::SetCamerasRenderPercentage( float i_percentage, const itString& i_label )
+void cptrRenderProgressDialog::SetCamerasRenderPercentage( float i_percentage, const std::string& i_label )
 {
 	m_gauge_Cameras->SetValue(  (int)i_percentage );
 
-	if (i_label.GetLength() > 0)
+	if (i_label.size() > 0)
 	{
 		this->Freeze();
-		if (i_label.GetLength() > 0)
-			m_staticText_CameraName->SetLabel( i_label.GetString() );
+		if (i_label.size() > 0)
+			m_staticText_CameraName->SetLabel( wxString::FromUTF8(i_label) );
 		this->Thaw();
 	}
 }
@@ -137,14 +137,14 @@ void cptrRenderProgressDialog::SetCamerasRenderPercentage( float i_percentage, c
 //--------------------------------------------------------------------
 //	set the percentage for camera
 //--------------------------------------------------------------------
-void cptrRenderProgressDialog::SetCameraRenderPercentage( float i_percentage, const itString& i_label )
+void cptrRenderProgressDialog::SetCameraRenderPercentage( float i_percentage, const std::string& i_label )
 {
 	m_gauge_Camera->SetValue( (int)i_percentage );
 
-	if (i_label.GetLength() > 0)
+	if (i_label.size() > 0)
 	{
 		this->Freeze();
-		m_staticText_CameraNumber->SetLabel( i_label.GetString() );
+		m_staticText_CameraNumber->SetLabel( wxString::FromUTF8(i_label) );
 		this->Thaw();
 	}
 }

@@ -26,11 +26,11 @@
 namespace
 {
 	// Log text that arrived before the dialog was created
-	itString l_LogString;
+	std::string l_LogString;
 
-	QString to_qstring(const itString& i_String)
+	QString to_qstring(const std::string& i_String)
 	{
-		return QString::fromWCharArray(i_String.GetString());
+		return QString::fromStdString(i_String);
 	}
 }	// end of namespace
 
@@ -77,10 +77,10 @@ pythPythonDialog::pythPythonDialog( QWidget* parent,
 	} );
 
 	// Show the log text that arrived before we were created
-	if (l_LogString.GetLength() > 0)
+	if (l_LogString.size() > 0)
 	{
 		this->AddToLogTextbox(l_LogString);
-		l_LogString = itString();
+		l_LogString = std::string();
 	}
 
 	// Add this panel to the pane manager
@@ -98,7 +98,7 @@ pythPythonDialog::~pythPythonDialog()
 //--------------------------------------------------------------------
 // Add string to log textbox
 //--------------------------------------------------------------------
-void pythPythonDialog::AddToLogTextbox(const itString& i_String)
+void pythPythonDialog::AddToLogTextbox(const std::string& i_String)
 {
 	QTextCursor cursor(m_textCtrl_PythLog->document());
 	cursor.movePosition(QTextCursor::End);
@@ -111,7 +111,7 @@ void pythPythonDialog::AddToLogTextbox(const itString& i_String)
 //	string for later display.
 //--------------------------------------------------------------------
 //static
-void pythPythonDialog::AddToLog(const itString& i_String)
+void pythPythonDialog::AddToLog(const std::string& i_String)
 {
 	if (pythPythonDialog::Instance != NULL)
 	{
@@ -132,7 +132,7 @@ void pythPythonDialog::ExecuteCommand()
 	QString log_string = ">> ";
 	log_string += QString(command).replace("\n", "\n> ");
 	log_string += "\n";
-	this->AddToLogTextbox(itString(log_string.toStdWString().c_str()));
+	this->AddToLogTextbox(log_string.toStdString());
 
 	if (pythUtil::ExecuteCommand( tqtStdString(command) ))
 	{

@@ -110,7 +110,7 @@ namespace chChunkParserUtil
 
 	//	Temporary, while callers still hold itStrings
 	//	(docs/plans/2026-10-28-itstring-to-std-string.md; removed in step 4)
-	void Read( chReader& i_Reader, itString& o_Name );
+	void ReadItString( chReader& i_Reader, itString& o_Name );
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------

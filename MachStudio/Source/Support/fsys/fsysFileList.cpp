@@ -25,12 +25,12 @@ namespace
 {
 	struct filename_search
 	{
-		inline filename_search(const itString& i_Name) : m_Name(i_Name) {};
+		inline filename_search(const std::string& i_Name) : m_Name(i_Name) {};
 		inline bool operator () ( fsysFileInfo& i_Info )
 		{
 			return (m_Name == i_Info.GetFilename());
 		}
-		itString m_Name;
+		std::string m_Name;
 	};
 	struct filename_sort
 	{
@@ -98,7 +98,7 @@ void fsysFileList::AppendFileList()
 		// We can read all the old formats by just using the SystemDirName
 		// and recursing on all subdirectories. So, unless the object directory
 		// name is specified, keep it simple and recursive.
-		if (m_ObjectDirName.GetLength() == 0)
+		if (m_ObjectDirName.size() == 0)
 		{
 			// Just do the system name directory
 			BuildFileListFromDirectory( full_dir );
@@ -107,7 +107,7 @@ void fsysFileList::AppendFileList()
 		{
 			// This test is redundant now, but I leave it as reference in case
 			// we need to roll back the changes for some reason.
-			std::vector<itString> dirs = (m_ObjectDirName.GetLength() > 0) ?
+			std::vector<std::string> dirs = (m_ObjectDirName.size() > 0) ?
 				fsysDirListUtil::BuildDirectoryList( full_dir, m_ObjectDirName ) :
 				fsysDirListUtil::BuildDirectoryList( full_dir );
 
@@ -120,7 +120,7 @@ void fsysFileList::AppendFileList()
 			//	to the list.
 			//
 			int numdirs = dirs.size();
-			bool use_subdirname = (m_SubDirName.GetLength() > 0);
+			bool use_subdirname = (m_SubDirName.size() > 0);
 			for ( int j = 0 ; j < numdirs ; ++j )
 			{
 				full_dir.Push( dirs[j] );
@@ -152,7 +152,7 @@ void fsysFileList::AppendFileList()
 		full_dir = gfPaths::GetPath(mnmPaths::e_DataScene, i);
 
 		// Different sub directory name under Scene (either "Data" or "Textures")
-		if (m_SceneSubDirName.GetLength() > 0)
+		if (m_SceneSubDirName.size() > 0)
 			full_dir.Push( m_SceneSubDirName );
 
 		//	get the files for this directory
@@ -174,12 +174,12 @@ void fsysFileList::AppendFileList()
 //virtual 
 bool fsysFileList::Notify( const fsLocator& i_Directory, const fsLocator& i_File )
 {
-	itString fname;
+	std::string fname;
 	fsFileUtil::LocatorToUnicodeString(i_File, fname);
 
 	// the function puts an extra "\" at end, so need to remove it
-	if (fname[fname.GetLength()-1] == '\\')
-		fname.RemoveCharAt(fname.GetLength()-1);
+	if (fname[fname.size()-1] == '\\')
+		fname.pop_back();
 
 	//	DEBUG only
 	//DBG_LOG( "   file(" << dbgLog::UnicodetoANSI(fname.GetString(),fname.GetLength()).c_str() << ")" );
@@ -228,11 +228,11 @@ void fsysFileList::AppendFromFileList( const fsysFileList& i_FileList )
 //------------------------------------------------------------------------
 // system directory name
 //------------------------------------------------------------------------
-void fsysFileList::SetSystemDirName(const itString& i_SysDirName)
+void fsysFileList::SetSystemDirName(const std::string& i_SysDirName)
 {
 	m_SystemDirName = i_SysDirName;
 }
-void fsysFileList::GetSystemDirName(itString& o_SysDirName)
+void fsysFileList::GetSystemDirName(std::string& o_SysDirName)
 {
 	o_SysDirName = m_SystemDirName;
 }
@@ -240,7 +240,7 @@ void fsysFileList::GetSystemDirName(itString& o_SysDirName)
 //------------------------------------------------------------------------
 // Set the sub-directory name (generally, Data, Model, ....)
 //------------------------------------------------------------------------
-void fsysFileList::SetSubDirName(const itString& i_SubDirName)
+void fsysFileList::SetSubDirName(const std::string& i_SubDirName)
 {
 	m_SubDirName = i_SubDirName;
 }
@@ -249,7 +249,7 @@ void fsysFileList::SetSubDirName(const itString& i_SubDirName)
 // Set the sub-directory name (Data or Textures)
 // to use only in the Scene folder. 
 //------------------------------------------------------------------------
-void fsysFileList::SetSceneSubDirName(const itString& i_SceneSubDirName)
+void fsysFileList::SetSceneSubDirName(const std::string& i_SceneSubDirName)
 {
 	m_SceneSubDirName = i_SceneSubDirName;
 }
@@ -258,7 +258,7 @@ void fsysFileList::SetSceneSubDirName(const itString& i_SceneSubDirName)
 // Set the object directory name 
 // (the name of the character: CLOE_outfit01, etc.)
 //------------------------------------------------------------------------
-void fsysFileList::SetObjectDirName(const itString& i_ObjectDirName)
+void fsysFileList::SetObjectDirName(const std::string& i_ObjectDirName)
 {
 	m_ObjectDirName = i_ObjectDirName;
 }
@@ -266,7 +266,7 @@ void fsysFileList::SetObjectDirName(const itString& i_ObjectDirName)
 //------------------------------------------------------------------------
 // Set the file type extensions to build the list for
 //------------------------------------------------------------------------
-void fsysFileList::SetFileTypeExtensions(const itString& i_FileTypeExtensions)
+void fsysFileList::SetFileTypeExtensions(const std::string& i_FileTypeExtensions)
 {
 	m_FileExtensions = i_FileTypeExtensions;
 }
@@ -286,11 +286,11 @@ int fsysFileList::Size() const
 //	Note: this function will return the first occurrence of the filename.
 //	Note: this function is case INSENSITIVE
 //------------------------------------------------------------------------
-int fsysFileList::GetIndex(const itString& i_Filename)
+int fsysFileList::GetIndex(const std::string& i_Filename)
 {
 	FileListType::iterator it = m_FileList.begin();
 
-	itString s1, s2;
+	std::string s1, s2;
 	s1 = i_Filename;
 	itStringUtil::ToLower(s1);
 
@@ -315,7 +315,7 @@ int fsysFileList::GetIndex(const itString& i_Filename)
 //------------------------------------------------------------------------
 // GetFilename
 //------------------------------------------------------------------------
-const itString& fsysFileList::GetFilename(int i_Index) const
+const std::string& fsysFileList::GetFilename(int i_Index) const
 {
 	DBG_ASSERT( i_Index >= 0 && i_Index < m_FileList.size(), "Index out of range" );
 
@@ -337,9 +337,9 @@ void fsysFileList::GetFilePath(int i_Index, fsLocator& o_FilePath) const
 // Returns false if it cannot be found. Safer version compared to
 // GetFilePath as long as the caller is prepared for the return value.
 //------------------------------------------------------------------------
-bool fsysFileList::FindFilePath(const itString& i_Filename, fsLocator& o_FilePath)
+bool fsysFileList::FindFilePath(const std::string& i_Filename, fsLocator& o_FilePath)
 {
-	if (i_Filename.GetLength() > 0)
+	if (i_Filename.size() > 0)
 	{
 		//	try to find the file
 		int index = GetIndex( i_Filename );
@@ -356,9 +356,9 @@ bool fsysFileList::FindFilePath(const itString& i_Filename, fsLocator& o_FilePat
 // GetFilePath - get the path for the filename (w/out the filename).
 // Note: This throws file not found exception if not found.
 //------------------------------------------------------------------------
-void fsysFileList::GetFilePath(const itString& i_Filename, fsLocator& o_FilePath)
+void fsysFileList::GetFilePath(const std::string& i_Filename, fsLocator& o_FilePath)
 {
-	if (i_Filename.GetLength() == 0)
+	if (i_Filename.size() == 0)
 	{
 		// Empty filenames cannot be found, return empty locator
 		o_FilePath.Clear();
@@ -419,16 +419,16 @@ void fsysFileList::BuildFileListFromDirectory(const fsLocator& i_FullDirectory)
 	// an array to give to gfFileEnum
 	//
 	std::vector<std::string> file_exts;
-	const int num_chars = m_FileExtensions.GetLength();
-	itString ext;
+	const int num_chars = m_FileExtensions.size();
+	std::string ext;
 	for (int i=0; i<num_chars; ++i)
 	{
 		if (m_FileExtensions[i] == ';')
 		{
-			if (ext.GetLength() > 0)
+			if (ext.size() > 0)
 			{
 				file_exts.push_back(ext);
-				ext.Clear();
+				ext.clear();
 			}
 		}
 		else
@@ -437,7 +437,7 @@ void fsysFileList::BuildFileListFromDirectory(const fsLocator& i_FullDirectory)
 		}
 	}
 	// Add whatever is left to the list
-	if (ext.GetLength() > 0)
+	if (ext.size() > 0)
 		file_exts.push_back(ext);
 
 	gfFileEnum::EnumerateFiles( i_FullDirectory, *(this), file_exts, m_bSearchSubDirectories );
@@ -447,7 +447,7 @@ void fsysFileList::BuildFileListFromDirectory(const fsLocator& i_FullDirectory)
 //------------------------------------------------------------------------
 //	AddFilename - add a filename to the list
 //------------------------------------------------------------------------
-void fsysFileList::AddFilename(const fsLocator& i_FullDirectory, const itString& i_Filename)
+void fsysFileList::AddFilename(const fsLocator& i_FullDirectory, const std::string& i_Filename)
 {
 	bool bOKToAdd = true;
 	if ( !m_bAllowDuplicateFilenames )
@@ -469,7 +469,7 @@ void fsysFileList::AddFilename(const fsLocator& i_FullDirectory, const itString&
 //	FilenameExists - returns true if the file exists regardless if the 
 //	path is the same.
 //------------------------------------------------------------------------
-bool fsysFileList::FilenameExists(const itString& i_Filename)
+bool fsysFileList::FilenameExists(const std::string& i_Filename)
 {
 	FileListType::iterator it = std::find_if(m_FileList.begin(), m_FileList.end(), filename_search(i_Filename));
 	return (it != m_FileList.end());
@@ -479,7 +479,7 @@ bool fsysFileList::FilenameExists(const itString& i_Filename)
 //	Strip the paths before the directory name passed in.  If the 
 //	i_bIncludePassDir is true then the passed in dir name is also removed.
 //------------------------------------------------------------------------
-void fsysFileList::StripPathsBefore(const itString& i_DirName, bool i_bIncludePassedDir)
+void fsysFileList::StripPathsBefore(const std::string& i_DirName, bool i_bIncludePassedDir)
 {
 	FileListType::iterator it = m_FileList.begin();
 
@@ -498,7 +498,7 @@ void fsysFileList::StripPathsBefore(const itString& i_DirName, bool i_bIncludePa
 //------------------------------------------------------------------------
 //	Prepend the string before all the paths
 //------------------------------------------------------------------------
-void fsysFileList::PrependOnPaths(const itString& i_DirName)
+void fsysFileList::PrependOnPaths(const std::string& i_DirName)
 {
 	//DBG_LOG("PrependPathList");
 

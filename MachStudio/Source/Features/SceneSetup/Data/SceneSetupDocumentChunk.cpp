@@ -121,7 +121,7 @@ void  SceneSetupDocumentChunk::Read( chReader &i_Reader,
 	// user's machine
 	//
 	fsLocator proj_dir( i_Reader.GetLocator() );
-	bool bRemoved = proj_dir.RemoveAfter( itString("Shots") );
+	bool bRemoved = proj_dir.RemoveAfter( std::string("Shots") );
 	if (!bRemoved) 
 		DBG_ERROR("ERROR-Locator directory removal UNSUCCESSFUL");
 	proj_dir.Pop();

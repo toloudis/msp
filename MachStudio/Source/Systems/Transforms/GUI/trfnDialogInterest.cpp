@@ -35,7 +35,7 @@ trfnDialogInterest::trfnDialogInterest()
 //	Add Object to Placed
 //--------------------------------------------------------------------
 //virtual 
-void trfnDialogInterest::AddObject(const itString& i_FileName, const fsLocator& i_Path)
+void trfnDialogInterest::AddObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 	//std::string dir1, dir2;
 	//dir1 = itStringUtil::GetStdString(i_Path.GetName(0));
@@ -160,8 +160,8 @@ void trfnDialogInterest::GetAvailableObjects(fsysFileList& io_FileList) const
 	fsLocator path;
 	//path.Push("Data");
 	path.Push(c_SystemName);
-	itString fname;
-	fname = itString("Parent");
+	std::string fname;
+	fname = std::string("Parent");
 	io_FileList.AddFilename(path,fname);
 }
 

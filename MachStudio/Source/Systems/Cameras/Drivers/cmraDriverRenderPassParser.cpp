@@ -37,9 +37,9 @@ namespace
 							)
 	{
 		// texture
-		itString savefilename;
+		std::string savefilename;
 		fsLocator texture_locator;
-		chChunkParserUtil::Read( i_Reader, savefilename );
+		chChunkParserUtil::ReadItString( i_Reader, savefilename );
 		fsFileUtil::UnicodeStringToLocator( savefilename, texture_locator );
 		prtyTextureFileData val;
 		val = o_Info.m_FirstTextureFileName.GetFullValue();
@@ -64,7 +64,7 @@ namespace
 		o_Writer.WriteChunkHeader( c_RPFF, c_RPFF_version, false );
 
 		// texture
-		itString savefilename;
+		std::string savefilename;
 		fsFileUtil::LocatorToUnicodeString( i_Info.m_FirstTextureFileName.GetValue(), savefilename );
 		chChunkParserUtil::Write( o_Writer, savefilename );
 

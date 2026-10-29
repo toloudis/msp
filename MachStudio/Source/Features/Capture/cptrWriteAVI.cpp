@@ -41,7 +41,7 @@ namespace
 	bool l_bFirstFrame = false;
 	bool l_bFusionApp = false;
 
-	itString l_OutputFilename;
+	std::string l_OutputFilename;
 
 	fsAviFile::Handle l_hAvi;				// AVI file handle
 
@@ -61,15 +61,15 @@ void create_avi_file(const fsLocator& i_OutputDirectory)
 	
 		if ( l_MovieFileCounter == 0 )
 		{
-			l_OutputFilename += itString(L".avi");
+			l_OutputFilename += std::string(".avi");
 		}
 		else
 		{
-			l_OutputFilename += itString(L"_part");
+			l_OutputFilename += std::string("_part");
 			std::ostringstream o;
 			if (o << (l_MovieFileCounter+1))
-				l_OutputFilename += itString(o.str().c_str());
-			l_OutputFilename += itString(L".avi");
+				l_OutputFilename += o.str();
+			l_OutputFilename += std::string(".avi");
 		}
 
 		// Make sure directory exists
@@ -107,7 +107,7 @@ void create_avi_file(const fsLocator& i_OutputDirectory)
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void append_avi_file(const itString i_origmovie, const itString i_countdown, const itString i_tempPath)
+void append_avi_file(const std::string i_origmovie, const std::string i_countdown, const std::string i_tempPath)
 {
 	fsLocator countdown_loc, origmovie_loc, temp_loc;
 	fsFileUtil::UnicodeStringToLocator(i_countdown, countdown_loc);
@@ -163,7 +163,7 @@ void cptrWriteAVI::EndCapture()
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void cptrWriteAVI::AppendAVI(const itString i_origmovie, const itString i_countdown, const itString i_tempPath)
+void cptrWriteAVI::AppendAVI(const std::string i_origmovie, const std::string i_countdown, const std::string i_tempPath)
 {
 	append_avi_file(i_origmovie,i_countdown,i_tempPath);
 }

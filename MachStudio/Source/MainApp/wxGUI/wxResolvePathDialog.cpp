@@ -25,9 +25,9 @@ wxResolvePathDialog::wxResolvePathDialog( wxWindow* parent,
 : wxResolvePathDialogBase( parent ),
   m_ResolveChoice(e_Skip) // this sets default value for when user closes dialog with "X" in corner
 {
-	itString filename;
+	std::string filename;
 	fsFileUtil::LocatorToUnicodeString(i_Filename,filename);
-	m_staticText_Filename->SetLabel(filename.GetString());
+	m_staticText_Filename->SetLabel(wxString::FromUTF8(filename));
 
 	std::string skipAllString("Skip All");
 	if (!i_Category.empty())

@@ -65,7 +65,7 @@ mnmAppPackageData& mnmAppPackageMgr::GetSceneData()
 //------------------------------------------------------------------------
 //	Set the application specific data
 //------------------------------------------------------------------------
-void mnmAppPackageMgr::SetAppData( itString i_AppName, envAppVersion& i_AppVersion )
+void mnmAppPackageMgr::SetAppData( std::string i_AppName, envAppVersion& i_AppVersion )
 {
 	l_AppData.m_SGPUAppName = i_AppName;
 	l_AppData.m_SGPUAppVersion = i_AppVersion;

@@ -35,7 +35,7 @@ lsetDialogInterest::lsetDialogInterest()
 //	Add Object to Placed
 //--------------------------------------------------------------------
 //virtual 
-void lsetDialogInterest::AddObject(const itString& i_FileName, const fsLocator& i_Path)
+void lsetDialogInterest::AddObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 	//std::string dir1, dir2;
 	//dir1 = itStringUtil::GetStdString(i_Path.GetName(0));
@@ -138,8 +138,8 @@ void lsetDialogInterest::GetAvailableObjects(fsysFileList& io_FileList) const
 	fsLocator path;
 	//path.Push("Data");
 	path.Push(c_SystemName);
-	itString fname;
-	fname = itString("LightSet");
+	std::string fname;
+	fname = std::string("LightSet");
 	io_FileList.AddFilename(path,fname);
 }
 

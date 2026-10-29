@@ -563,7 +563,7 @@ g2dWindow* g2dSystemDX11::CreateSubWindow(void* i_Handle)
 //------------------------------------------------------------------------
 g2dWindow* g2dSystemDX11::CreateSubWindow(int i_Width, int i_Height, int i_X, int i_Y)
 {
-	itString title("");
+	std::string title("");
 	HWND hwnd = (HWND)appApplication::CreateSubWindow(i_Width, i_Height, i_X, i_Y, title);
 
 	g2dWindowDX11* window = new g2dWindowPrimaryDX11(hwnd, true, i_Width, i_Height);

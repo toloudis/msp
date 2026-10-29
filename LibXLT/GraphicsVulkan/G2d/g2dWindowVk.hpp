@@ -79,14 +79,14 @@ namespace gvk
 			virtual void EnableDebugOverlay(bool i_bEnabled);
 			virtual void SetDebugInfo(int i_Line, const char* i_Text);
 			virtual void DrawRect(int i_X1, int i_Y1, int i_X2, int i_Y2, const g2dRGBColor& i_Color);
-			virtual void DrawText(int i_X, int i_Y, g2dFontHandle i_Font, const itString& i_Text, const g2dRGBColor& i_Color);
+			virtual void DrawText(int i_X, int i_Y, g2dFontHandle i_Font, const std::string& i_Text, const g2dRGBColor& i_Color);
 			virtual void DrawImage(int i_DX1, int i_DY1, const g2dImage& i_Image);
 			virtual void DrawImage(int i_DX1, int i_DY1, int i_SX1, int i_SY1, int i_SX2, int i_SY2, const g2dImage& i_Image);
 			virtual void ResizeWindow(int i_Width, int i_Height);
 			virtual void SetRenderResolution(int i_Width, int i_Height);
 			virtual void GetPresentRect(int& o_X, int& o_Y, int& o_Width, int& o_Height) const;
 			virtual void Present();
-			virtual void SetTitle(const itString& i_Title);
+			virtual void SetTitle(const std::string& i_Title);
 			virtual float GetFrameRateAverage();
 			virtual float GetFrameRate();
 

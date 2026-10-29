@@ -216,8 +216,8 @@ void cptrModeRenderFrame::Think()
 			//
 			if ( docSingleDocumentMgr::GetFilename().GetNumNames() > 0 )
 			{
-				itString itPrefix = docSingleDocumentMgr::GetFilename().GetLastName();
-				itPrefix.StripExtension();
+				std::string itPrefix = docSingleDocumentMgr::GetFilename().GetLastName();
+				itStringUtil::StripExtension(itPrefix);
 				captRenderOutputDataUtil::SetCurrentScene(itPrefix);
 			}
 
@@ -346,18 +346,18 @@ void cptrModeRenderFrame::Think()
 				scriptPath.Push("Data");
 				scriptPath.Push("PhotoshopExport.vbs");
 				std::string s_scriptPath;
-				itString uniStr, fsStr;
+				std::string uniStr, fsStr;
 				fsFileUtil::LocatorToUnicodeString(scriptPath, fsStr);
-				uniStr = L"cscript.exe \"";
+				uniStr = "cscript.exe \"";
 				uniStr += fsStr;
-				uniStr += L"\"";
+				uniStr += "\"";
 				DBG_LOG( "Unicode string" << uniStr );
-				DBG_LOG( "Std string" << itStringUtil::GetStdString(uniStr) );
+				DBG_LOG( "Std string" << uniStr );
 #ifdef USE_WXWIDGETS
-				wxString string (itStringUtil::GetStdString(uniStr).c_str(), wxConvUTF8);
+				wxString string (uniStr.c_str(), wxConvUTF8);
 				int temp = ::wxExecute(string);
 #else
-				QProcess::startDetached("cscript.exe", QStringList() << QString::fromWCharArray(fsStr.GetString()));
+				QProcess::startDetached("cscript.exe", QStringList() << QString::fromStdString(fsStr));
 #endif
 #endif
 				cptrRenderUtil::SetPSflag(false);

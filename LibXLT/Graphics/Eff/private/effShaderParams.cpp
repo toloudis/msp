@@ -66,9 +66,9 @@ effParamColor* effParamColor::Clone()
 //------------------------------------------------------------------------
 effParamTexture::effParamTexture(const std::string& i_Name, 
 								 const std::string& i_PrtyName, 
-								 const itString& i_Default)
+								 const std::string& i_Default)
 : effShaderParam(i_Name), 
-  m_Property(i_PrtyName, (i_Default.GetLength()>0) ? fsLocator(i_Default) : fsLocator()), 
+  m_Property(i_PrtyName, (i_Default.size()>0) ? fsLocator(i_Default) : fsLocator()), 
   m_Texture(NULL), m_pRampTexture(NULL), m_Type( TEXTURE_TYPE_UNKNOWN )
 {
 }
@@ -121,7 +121,7 @@ bool effParamTexture::Load(const fsResourceFinder& i_Finder)
 			// We need to distinguish between "file not found" and "error loading texture".
 			//
 			fsLocator found_loc;
-			itString name = newName.GetLastName();
+			std::string name = newName.GetLastName();
 			if (i_Finder.FindResource(name, found_loc))
 			{
 				// found_loc returns full path including filename
@@ -297,13 +297,13 @@ matShaderEffect* effShaderParams::GetShader()
 	if (m_pShader == NULL)
 	{
 		// Make sure shader is loaded in as a tokenized fsLocator
-		itString itName;
+		std::string itName;
 		fsLocator shaderLoc;	
 		fsFileUtil::LocatorToUnicodeString( m_ShaderName, itName );	
 		fsFileUtil::UnicodeStringToLocator( itName, shaderLoc );
 
 		// Get the shader name
-		std::string shaderFileName = itStringUtil::GetStdString(shaderLoc.GetLastName());
+		std::string shaderFileName = shaderLoc.GetLastName();
 
 		//DBG_TRACE("Loading shader " << shaderFileName << " from saved directory.");
 		m_pShader = matShaderMgr::GetEffect( shaderLoc );
@@ -338,7 +338,7 @@ matShaderEffect* effShaderParams::GetShader()
 			fsFileUtil::LocatorToANSIFilename(shaderLoc, fullpath);
 			DBG_WARNING("Material Shader = " <<  shaderFileName.c_str() << " load FAILED using path: " << fullpath.c_str());
 			m_pShader = matShaderMgr::GetSpecialEffect("Simple.fx");
-			m_ShaderName = itString("Simple.fx");
+			m_ShaderName = std::string("Simple.fx");
 		}
 
 		if ( m_pShader )

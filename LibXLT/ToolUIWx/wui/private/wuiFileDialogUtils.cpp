@@ -25,21 +25,21 @@ bool wuiFileDialogUtils::GetOpenFileName(const std::string &i_Filter,
 {
 #ifdef USE_WXWIDGETS
 	wxWindow *pParent = NULL; // could we get pointer to main form here?
-	itString filter_str(i_Filter.c_str());
-	itString init_dir;
+	std::string filter_str(i_Filter.c_str());
+	std::string init_dir;
 	fsFileUtil::LocatorToUnicodeString( i_InitialDir, init_dir );
 	wxFileDialog dialog( pParent,
 					wxT("Open File"),
-					init_dir.GetString(),
+					wxString::FromUTF8(init_dir),
 					wxEmptyString,
-					filter_str.GetString()
+					wxString::FromUTF8(filter_str)
 				 );
 
 	//dialog.CentreOnParent();
 
 	if (dialog.ShowModal() == wxID_OK)
 	{
-		fsFileUtil::UnicodeStringToLocator(itString(dialog.GetPath().wc_str()), o_ChosenLocator);
+		fsFileUtil::UnicodeStringToLocator(dialog.GetPath().utf8_string(), o_ChosenLocator);
 		return true;
 	}
 #endif // USE_WXWIDGETS
@@ -59,14 +59,14 @@ bool wuiFileDialogUtils::GetOpenFileNames(const std::string &i_Filter,
 {
 #ifdef USE_WXWIDGETS
 	wxWindow *pParent = NULL; // could we get pointer to main form here?
-	itString filter_str(i_Filter.c_str());
-	itString init_dir;
+	std::string filter_str(i_Filter.c_str());
+	std::string init_dir;
 	fsFileUtil::LocatorToUnicodeString( i_InitialDir, init_dir );
 	wxFileDialog dialog( pParent,
 					wxT("Open Files"),
-					init_dir.GetString(),
+					wxString::FromUTF8(init_dir),
 					wxEmptyString,
-					filter_str.GetString(),
+					wxString::FromUTF8(filter_str),
 					wxFD_OPEN|wxFD_MULTIPLE
 				 );
 
@@ -79,7 +79,7 @@ bool wuiFileDialogUtils::GetOpenFileNames(const std::string &i_Filter,
 		o_ChosenLocators.resize(paths.size());
 		for (int i=0; i<paths.size(); ++i)
 		{
-			fsFileUtil::UnicodeStringToLocator(itString(paths[i].wc_str()), o_ChosenLocators[i]);
+			fsFileUtil::UnicodeStringToLocator(paths[i].utf8_string(), o_ChosenLocators[i]);
 		}
 		return true;
 	}
@@ -99,14 +99,14 @@ bool wuiFileDialogUtils::GetSaveFileName(const std::string &i_Filter,
 {
 #ifdef USE_WXWIDGETS
 	wxWindow *pParent = NULL; // could we get pointer to main form here?
-	itString filter_str(i_Filter.c_str());
-	itString filename;
+	std::string filter_str(i_Filter.c_str());
+	std::string filename;
 	fsFileUtil::LocatorToUnicodeString( io_ChosenLocator, filename );
 	wxFileDialog dialog( pParent,
 					wxT("Save File"),
 					wxEmptyString,
-					filename.GetString(),
-					filter_str.GetString(),
+					wxString::FromUTF8(filename),
+					wxString::FromUTF8(filter_str),
 					wxFD_SAVE | wxFD_OVERWRITE_PROMPT
 				 );
 
@@ -114,7 +114,7 @@ bool wuiFileDialogUtils::GetSaveFileName(const std::string &i_Filter,
 
 	if (dialog.ShowModal() == wxID_OK)
 	{
-		fsFileUtil::UnicodeStringToLocator(itString(dialog.GetPath().wc_str()), io_ChosenLocator);
+		fsFileUtil::UnicodeStringToLocator(dialog.GetPath().utf8_string(), io_ChosenLocator);
 		return true;
 	}
 #endif // USE_WXWIDGETS

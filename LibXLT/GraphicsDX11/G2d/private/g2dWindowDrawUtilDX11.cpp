@@ -105,7 +105,7 @@ D3DRECT rect;
 void DrawText(	int i_X,
 				int i_Y,
 				g2dFontHandle i_Font,
-				const itString& i_Text,
+				const std::string& i_Text,
 				const g2dRGBColor& i_Color)
 {
 	//DBG_ASSERT(false, "DrawText not implemented");

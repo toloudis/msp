@@ -17,6 +17,7 @@
 #ifndef G2D_PFD_HPP
 #include "Graphics/g2d/g2dPFD.hpp"
 #endif
+#include <string>
 
 
 //============================================================================
@@ -24,7 +25,6 @@
 //============================================================================
 class maFloatRGBA;
 class fsLocator;
-class itString;
 class g2dImage;
 class maVector3d;
 

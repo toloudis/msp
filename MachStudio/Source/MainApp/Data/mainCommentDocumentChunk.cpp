@@ -105,7 +105,7 @@ void  mainCommentDocumentChunk::Read( chReader &i_Reader,
 	}
 	else
 	{
-		chChunkParserUtil::Read(i_Reader, m_CommentString);
+		chChunkParserUtil::ReadItString(i_Reader, m_CommentString);
 	}
 }
 

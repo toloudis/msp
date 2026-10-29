@@ -55,9 +55,9 @@ namespace
 	//--------------------------------------------------------------------
 	wxString get_icon_directory()
 	{
-		itString wide_dir;
+		std::string wide_dir;
 		fsFileUtil::LocatorToUnicodeString(guiMenuMgr::GetIconDirectory(), wide_dir);
-		return wxString(wide_dir.GetString());
+		return wxString::FromUTF8(wide_dir);
 	}
 
 	struct pick_object_filter
@@ -103,9 +103,9 @@ cmmPlacedPane::cmmPlacedPane( wxWindow* parent, ViewType i_Type )
 	//m_Notebook1->SetSelection(0);
 
 	// Create state images to represent checked state
-	itString icon_dir;
+	std::string icon_dir;
 	fsFileUtil::LocatorToUnicodeString( guiMenuMgr::GetIconDirectory(), icon_dir );
-	std::wstring icondir = icon_dir.GetString();
+	wxString icondir = wxString::FromUTF8(icon_dir);
 	wxImageList *pCheckImages = new wxImageList(FromDIP(13), FromDIP(13), false, cmmPlacedImages::e_NumPlacedImageStates);
 	if (i_Type == e_LightsView)
 	{

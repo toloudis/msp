@@ -22,9 +22,6 @@
 #ifndef FS_FILEUTIL_HPP
 #include "Core/fs/fsFileUtil.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
 
 #include <gtest/gtest.h>
 
@@ -60,7 +57,7 @@ int main(int argc, char** argv)
 	const std::filesystem::path user_data = std::filesystem::temp_directory_path() / "MspGraphicsTests" / user_data_name;
 	std::filesystem::create_directories(user_data);
 	fsLocator user_data_locator;
-	fsFileUtil::UnicodeStringToLocator(itString(user_data.wstring().c_str()), user_data_locator);
+	fsFileUtil::UnicodeStringToLocator(user_data.u8string(), user_data_locator);
 	gfPaths::ResetPath(gfPaths::e_UserDataPath, user_data_locator);
 
 	int result = RUN_ALL_TESTS();

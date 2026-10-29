@@ -118,9 +118,9 @@ ImportDialog::ImportDialog( wxWindow* parent, ImportData& i_Data )
 	m_Data(i_Data)
 {
 	// Create state images to represent checked state
-	itString icon_dir;
+	std::string icon_dir;
 	fsFileUtil::LocatorToUnicodeString( guiMenuMgr::GetIconDirectory(), icon_dir );
-	std::wstring icondir = icon_dir.GetString();
+	wxString icondir = wxString::FromUTF8(icon_dir);
 	wxImageList *pCheckImages = new wxImageList(FromDIP(13), FromDIP(13), false, e_NumImportImageStates);
     {
         wxLogNull nullLog;
@@ -363,7 +363,7 @@ std::vector<bool> ImportDialog::chosen_scene_objects() const
 void ImportDialog::filePicker_FileChanged( wxFileDirPickerEvent& i_Event )
 {
 	fsLocator file_loc;
-	fsFileUtil::UnicodeStringToLocator(itString((const char*)i_Event.GetPath().c_str()), file_loc);
+	fsFileUtil::UnicodeStringToLocator((const char*)i_Event.GetPath(), file_loc);
 	clear_data();
 	if ( file_loc.GetNumNames() > 0 && imptSceneAppend::IsSceneFile(file_loc) )
 	{

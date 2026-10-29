@@ -203,7 +203,7 @@ namespace
 			// and could be removed in product
 			if (anim_loc.GetNumNames() == 1)
 			{
-				itString filename = anim_loc.GetLastName();
+				std::string filename = anim_loc.GetLastName();
 				fsysFileList file_list;
 				cmraAnimList::BuildFileList(file_list);
 				if (file_list.FindFilePath(filename, anim_loc))

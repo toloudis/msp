@@ -65,4 +65,17 @@ namespace envString
 	std::string UTF16ToUTF8(const char16_t *i_String, size_t i_Length);
 	std::string UTF16ToUTF8(const std::u16string &i_String);
 
+	//------------------------------------------------------------------------
+	// True if i_String starts or ends with i_SubString. An empty
+	// i_SubString gives false (as itString::StartsWith and EndsWith did).
+	// C++17's std::string has no starts_with or ends_with.
+	//------------------------------------------------------------------------
+	bool StartsWith(const std::string &i_String, const std::string &i_SubString);
+	bool EndsWith(const std::string &i_String, const std::string &i_SubString);
+
+	//------------------------------------------------------------------------
+	// True if every byte of i_String is ASCII (below 0x80).
+	//------------------------------------------------------------------------
+	bool IsASCII(const std::string &i_String);
+
 }

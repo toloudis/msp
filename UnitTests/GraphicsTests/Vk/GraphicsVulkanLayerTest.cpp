@@ -261,7 +261,7 @@ TEST_F(gtLayer, ShaderMgrRegistersTheBuiltInShaders)
 	for (auto& shader : shaders)
 	{
 		EXPECT_NE(nullptr, shader.second.m_pEffect) << shader.first;
-		EXPECT_EQ(itString(shader.first.c_str()), shader.second.m_Name) << shader.first;
+		EXPECT_EQ(shader.first, shader.second.m_Name) << shader.first;
 		delete shader.second.m_DataTemplate;
 		delete shader.second.m_pEffect;
 	}

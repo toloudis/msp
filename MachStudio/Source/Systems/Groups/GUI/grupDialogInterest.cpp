@@ -22,8 +22,8 @@ namespace
 {
 	const char* c_SystemName = "Selection Sets";
 
-	itString c_NewGroupString("New Selection Set");
-	itString c_NewGroupFromSelectionString("New Selection Set from Current Selection");
+	std::string c_NewGroupString("New Selection Set");
+	std::string c_NewGroupFromSelectionString("New Selection Set from Current Selection");
 }
 
 
@@ -38,7 +38,7 @@ grupDialogInterest::grupDialogInterest()
 //	Add Object to Placed
 //--------------------------------------------------------------------
 //virtual 
-void grupDialogInterest::AddObject(const itString& i_FileName, const fsLocator& i_Path)
+void grupDialogInterest::AddObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 	//std::string dir1, dir2;
 	//dir1 = itStringUtil::GetStdString(i_Path.GetName(0));

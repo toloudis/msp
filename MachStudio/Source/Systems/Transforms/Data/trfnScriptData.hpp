@@ -13,9 +13,7 @@
 #ifndef TRFN_DATA_HPP
 #include "Systems/Transforms/Data/trfnData.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 #ifndef MA_POINT3D_HPP
 #include "Core/ma/maPoint3d.hpp"
 #endif

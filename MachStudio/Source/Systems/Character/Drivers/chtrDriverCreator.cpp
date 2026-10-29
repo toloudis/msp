@@ -91,7 +91,7 @@ namespace
 			// and could be removed in product
 			if (anim_loc.GetNumNames() == 1)
 			{
-				itString filename = anim_loc.GetLastName();
+				std::string filename = anim_loc.GetLastName();
 				anim_loc = chtrAnimList::GetAnimationLocator(filename, i_CharacterDir);
 			}
 
@@ -467,9 +467,9 @@ tmlnDriver* chtrDriverCreator::CreateDriverFromInfo( tmlnScriptObject* io_pObjec
 		}
 		else if (driver_info.m_SoundName.GetNumNames() == 1)
 		{
-			itString sdname = chtrGeomList::GetSystemDirName();
+			std::string sdname = chtrGeomList::GetSystemDirName();
 			fsysFileUtil::GetFilePath(  sdname,
-										itString(gfPaths::GetSubPath( gfPaths::e_Sounds )), 
+										std::string(gfPaths::GetSubPath( gfPaths::e_Sounds )), 
 										(driver_info.m_SoundName.GetLastName()), 
 										snddir);
 			

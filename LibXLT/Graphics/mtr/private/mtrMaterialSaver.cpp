@@ -265,7 +265,7 @@ void write_SVFN(chWriter &o_Writer)
 	// Write saved filename in order to resolve absolute paths when read from
 	// a new path.
 	o_Writer.WriteChunkHeader(c_SVFN, 0, false);
-	itString savefilename;
+	std::string savefilename;
 	fsFileUtil::LocatorToUnicodeString( o_Writer.GetLocator(), savefilename );
 	chChunkParserUtil::Write( o_Writer, savefilename );
 	o_Writer.FinishChunk();
@@ -280,7 +280,7 @@ void write_SHDR(chWriter &o_Writer, const mdlMaterialInfo &i_Data)
 	o_Writer.WriteChunkHeader(c_SHDR, version, c_bSHDR_CONTAINER_CHUNK);
 
 	o_Writer.WriteChunkHeader(c_SHNM, 1, false);
-	std::string savename = itStringUtil::GetStdString( i_Data.GetShader().GetLastName() );
+	std::string savename = i_Data.GetShader().GetLastName();
 	savename += '\0';
 
 	fsFileUtil::LocatorToANSIFilename( i_Data.GetShader(), savename );
@@ -549,8 +549,8 @@ void parse_chunks(chReader& i_Reader,
 			// we can compare this to the filename we are currently loading
 			// in order to resolve absolute paths
 			fsLocator org_locator;
-			itString savefilename;
-			chChunkParserUtil::Read( i_Reader, savefilename );
+			std::string savefilename;
+			chChunkParserUtil::ReadItString( i_Reader, savefilename );
 			fsFileUtil::UnicodeStringToLocator( savefilename, org_locator );
 			fsAbsolutePathMgr::AddDirMappingFromFiles(org_locator, i_Reader.GetLocator());
 		}
@@ -789,7 +789,7 @@ bool mtrMaterialSaver::Write( const fsLocator &i_NewLocator,
 		// have backup in case we mess up file, or to make
 		// sure we don't try to overwrite file we are reading
 		fsLocator temp_file = gfPaths::GetPath(gfPaths::e_ExePath);
-		temp_file.Push(itString("model.bak"));
+		temp_file.Push(std::string("model.bak"));
 		if (i_NewLocator == temp_file)
 			return false;	// can't save to our temp file name
 		
@@ -921,8 +921,8 @@ bool mtrMaterialSaver::ReadSingleMaterial( const fsLocator &i_Locator,
 			// we can compare this to the filename we are currently loading
 			// in order to resolve absolute paths
 			fsLocator org_locator;
-			itString savefilename;
-			chChunkParserUtil::Read( reader, savefilename );
+			std::string savefilename;
+			chChunkParserUtil::ReadItString( reader, savefilename );
 			fsFileUtil::UnicodeStringToLocator( savefilename, org_locator );
 			fsAbsolutePathMgr::AddDirMappingFromFiles(org_locator, i_Locator);
 		}

@@ -708,7 +708,7 @@ void cmraDriverMayaScript::AnimFileNameChanged(prtyProperty *i_pProperty, bool i
 			// store this frame rate wirtten to file so we can set the frame rate to it later.
 			m_OriginalFrameRate = anim_fps;
 
-			std::string str = itStringUtil::GetStdString(m_AnimFilename.GetValue().GetLastName());
+			std::string str = m_AnimFilename.GetValue().GetLastName();
 			this->SetName(str.c_str());
 
 			if (m_pAnimKeys)

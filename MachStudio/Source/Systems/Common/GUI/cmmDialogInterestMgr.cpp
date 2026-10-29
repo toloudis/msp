@@ -83,7 +83,7 @@ bool cmmDialogInterestMgr::SystemExists(const std::string& i_SystemName)
 void cmmDialogInterestMgr::AddObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 	DBG_ASSERT( i_Path.GetNumNames() > 0, "Empty path" );
-	std::string system_name = itStringUtil::GetStdString(i_Path.GetName(0));
+	std::string system_name = i_Path.GetName(0);
 	std::map<std::string, cmmDialogInterest*>::iterator it = l_DialogInterestMap.find(system_name);
 	DBG_ASSERT(it != l_DialogInterestMap.end(), "Cannot find system with name: " << system_name.c_str());
 	it->second->AddObject(i_FileName, i_Path);
@@ -92,10 +92,10 @@ void cmmDialogInterestMgr::AddObject(const std::string& i_FileName, const fsLoca
 //--------------------------------------------------------------------
 //	Replace Selected Object with this asset path from available
 //--------------------------------------------------------------------
-void cmmDialogInterestMgr::ReplaceObject(const itString& i_FileName, const fsLocator& i_Path)
+void cmmDialogInterestMgr::ReplaceObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 	DBG_ASSERT( i_Path.GetNumNames() > 0, "Empty path" );
-	std::string system_name = itStringUtil::GetStdString(i_Path.GetName(0));
+	std::string system_name = i_Path.GetName(0);
 	std::map<std::string, cmmDialogInterest*>::iterator it = l_DialogInterestMap.find(system_name);
 	DBG_ASSERT(it != l_DialogInterestMap.end(), "Cannot find system with name: " << system_name.c_str());
 	it->second->ReplaceObject(i_FileName, i_Path);
@@ -309,7 +309,7 @@ void cmmDialogInterestMgr::GetAvailableObjects(fsysFileList& io_FileList)
 int cmmDialogInterestMgr::GetAllowedInteractions(const fsLocator& i_Path)
 {
 	DBG_ASSERT( i_Path.GetNumNames() > 0, "Empty path" );
-	std::string system_name = itStringUtil::GetStdString(i_Path.GetName(0));
+	std::string system_name = i_Path.GetName(0);
 	std::map<std::string, cmmDialogInterest*>::iterator it = l_DialogInterestMap.find(system_name);
 	DBG_ASSERT(it != l_DialogInterestMap.end(), "Cannot find system with name: " << system_name.c_str());
 	return it->second->GetAllowedInteractions(i_Path);

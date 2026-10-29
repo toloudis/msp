@@ -15,7 +15,6 @@
 
 #include "Core/dbg/dbgMsg.hpp"
 #include "Core/Fs/fsFileUtil.hpp"
-#include "Core/It/itString.hpp"
 
 #include <string>
 
@@ -45,10 +44,10 @@ void  quiSplashScreen::StartUp(const fsLocator &i_SplashImage,
 	if (fsFileUtil::FileExists(i_SplashImage))
 	{
 		//grab the splash image location
-		itString img_location;
+		std::string img_location;
 		fsFileUtil::LocatorToUnicodeString(i_SplashImage, img_location);
 
-		QPixmap pixmap(QString::fromWCharArray(img_location.GetString()));
+		QPixmap pixmap(QString::fromStdString(img_location));
 		if (!pixmap.isNull())
 		{
 			delete l_Splash;

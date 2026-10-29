@@ -50,14 +50,14 @@ std::string tmlnDriverFileName::GetHoverDescription()
 {
 	std::string desc;
 	desc = tmlnDriver::GetHoverDescription();
-	desc += itStringUtil::GetStdString(m_Value.GetValue());
+	desc += m_Value.GetValue();
 
 	return desc;
 }
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-void tmlnDriverFileName::SetValue(const itString& i_Val)
+void tmlnDriverFileName::SetValue(const std::string& i_Val)
 {
 	this->MarkDirty();
 	m_Value.SetValue(i_Val);
@@ -113,7 +113,7 @@ void  tmlnDriverFileName::Operate(const maTime& i_Time)
 //--------------------------------------------------------------------
 bool tmlnDriverFileName::AlterKey()
 {
-	itString cur = m_Channel.GetValue();
+	std::string cur = m_Channel.GetValue();
 
 	// Store local info, using undo
 	this->CreateUndoForProperty(m_Value);

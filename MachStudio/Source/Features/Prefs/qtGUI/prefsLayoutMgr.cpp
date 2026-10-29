@@ -46,8 +46,8 @@ namespace
 	const char * lc_WxMainForm_Size_Keyname	= "LastPerspective/MainForm/Size";
 	const char * lc_WxMainForm_Max_Keyname	= "LastPerspective/MainForm/Maximized";
 
-	const itString lc_LayoutsFileName(L"Layouts-Qt.cfg");
-	const itString lc_LayoutsFileName_Default(L"Layouts-Default.cfg");
+	const std::string lc_LayoutsFileName("Layouts-Qt.cfg");
+	const std::string lc_LayoutsFileName_Default("Layouts-Default.cfg");
 	const char * lc_DefaultLayoutName		= "Default Layout";
 
 	const char * lc_Element_Layout		= "Layout";

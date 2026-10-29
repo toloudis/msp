@@ -8,7 +8,7 @@
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsResourceFinder.hpp"
-#include "Core/it/itString.hpp"
+#include <string>
 #include "Graphics/eff/effReflDataParser.hpp"
 #include "Graphics/g3d/g3dPrefs.hpp"
 #include "Graphics/mat/matTexture.hpp"
@@ -219,15 +219,15 @@ void effReflData::GetTextureNames(std::vector<std::string>& o_Names) const
 void effReflData::ReloadTextures(const fsLocator& i_TextureDirectory)
 {
 	if (m_NameDiffuseMap != "")
-		m_TextureDiffuseMap = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameDiffuseMap.c_str()));
+		m_TextureDiffuseMap = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameDiffuseMap);
 	if (m_NameNormalMap != "")
-		m_TextureNormalMap = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameNormalMap.c_str()));
+		m_TextureNormalMap = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameNormalMap);
 	if (m_NameSpecularMap != "")
-		m_TextureSpecularMap = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameSpecularMap.c_str()));
+		m_TextureSpecularMap = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameSpecularMap);
 	if (m_NameReflectFactorMap != "")
-		m_TextureReflectFactorMap = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameReflectFactorMap.c_str()));
+		m_TextureReflectFactorMap = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameReflectFactorMap);
 	if (m_NameTransparencyMap != "")
-		m_TextureTransparencyMap = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameTransparencyMap.c_str()));
+		m_TextureTransparencyMap = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameTransparencyMap);
 }
 
 //----------------------------------------------------------------------------
@@ -235,13 +235,13 @@ void effReflData::ReloadTextures(const fsLocator& i_TextureDirectory)
 void effReflData::ReloadTextures(const fsResourceFinder& i_TextureFinder)
 {
 	if (m_NameDiffuseMap != "")
-		m_TextureDiffuseMap = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameDiffuseMap.c_str()));
+		m_TextureDiffuseMap = matTextureMgr::LoadTexture(i_TextureFinder, m_NameDiffuseMap);
 	if (m_NameNormalMap != "")
-		m_TextureNormalMap = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameNormalMap.c_str()));
+		m_TextureNormalMap = matTextureMgr::LoadTexture(i_TextureFinder, m_NameNormalMap);
 	if (m_NameSpecularMap != "")
-		m_TextureSpecularMap = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameSpecularMap.c_str()));
+		m_TextureSpecularMap = matTextureMgr::LoadTexture(i_TextureFinder, m_NameSpecularMap);
 	if (m_NameReflectFactorMap != "")
-		m_TextureReflectFactorMap = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameReflectFactorMap.c_str()));
+		m_TextureReflectFactorMap = matTextureMgr::LoadTexture(i_TextureFinder, m_NameReflectFactorMap);
 }
 
 //----------------------------------------------------------------------------

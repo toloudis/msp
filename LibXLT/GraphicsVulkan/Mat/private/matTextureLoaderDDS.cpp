@@ -30,9 +30,7 @@
 #ifndef FS_RESOURCETRACKER_HPP
 #include "Core/fs/fsResourceTracker.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 
 namespace gvk
 {
@@ -49,7 +47,7 @@ namespace
 		fsFileUtil::LocatorToANSIFilename(io_Info.s_Locator, txfile);
 
 		matDecodedImage decoded;
-		itString error;
+		std::string error;
 		if (!matDecodeImage(io_Info.s_Locator, matImageFileType::e_DDS, decoded, &error))
 		{
 			DBG_WARNING("A non-DDS file made it into load_dds_data: " << txfile << " (" << error << ")");

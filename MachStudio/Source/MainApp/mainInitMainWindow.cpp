@@ -41,7 +41,7 @@ mainInitMainWindow::mainInitMainWindow()
 {
 #ifdef USE_WXWIDGETS
 	// create the main application window
-	m_pMainFrame = new wxMainForm(wxString(mnmConstants::c_PRODUCT_FOR_DISPLAY, wxConvUTF8));
+	m_pMainFrame = new wxMainForm(wxString::FromUTF8(mnmConstants::c_PRODUCT_FOR_DISPLAY));
 	appApplicationPAC::SetHWND( (HWND)(m_pMainFrame->GetHandle()) );
 
 	// and show it (the frames, unlike simple controls, are not shown when
@@ -49,7 +49,7 @@ mainInitMainWindow::mainInitMainWindow()
 	//m_pMainFrame->Show(true);
 #elif defined(USE_QT)
 	// create the main application window
-	m_pMainFrame = new qtMainForm(QString::fromWCharArray(mnmConstants::c_PRODUCT_FOR_DISPLAY));
+	m_pMainFrame = new qtMainForm(QString::fromUtf8(mnmConstants::c_PRODUCT_FOR_DISPLAY));
 	appApplicationPAC::SetHWND( (HWND)(m_pMainFrame->winId()) );
 #else // USE_WXWIDGETS
 
@@ -57,7 +57,7 @@ mainInitMainWindow::mainInitMainWindow()
 	const int app_height = 600;
 	const int app_x = 100;
 	const int app_y = 100;
-	appApplication::CreateMainWindow( app_width, app_height, app_x, app_y, itString(mnmConstants::c_PRODUCT_FOR_DISPLAY) );
+	appApplication::CreateMainWindow( app_width, app_height, app_x, app_y, std::string(mnmConstants::c_PRODUCT_FOR_DISPLAY) );
 
 	// This line causes the capture mode to use the main application window we just opened
 	// instead of opening a new sub-window.

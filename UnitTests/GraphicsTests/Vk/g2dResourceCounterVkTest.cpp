@@ -21,9 +21,7 @@
 #ifndef G2D_FONTUTIL_HPP
 #include "Graphics/G2d/g2dFontUtil.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/It/itString.hpp"
-#endif
+#include <string>
 #ifndef G2D_RESOURCECOUNTER_HPP
 #include "Graphics/G2d/g2dResourceCounter.hpp"
 #endif
@@ -132,7 +130,7 @@ namespace
 	run count_scene(gtBackend::Kind i_Kind, const std::filesystem::path& i_Dir)
 	{
 		run result;
-		const g2dFontHandle font = g2dFontUtil::LoadFont(itString(), 14);	// g2dDebugDisplay's
+		const g2dFontHandle font = g2dFontUtil::LoadFont(std::string(), 14);	// g2dDebugDisplay's
 		const counts before = counts::Now();
 		{
 			gtPrefsScope prefs;

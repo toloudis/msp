@@ -12,7 +12,7 @@
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsResourceFinder.hpp"
-#include "Core/it/itString.hpp"
+#include <string>
 #include "Graphics/mat/matTexture.hpp"
 #include "Graphics/mat/matTextureMgr.hpp"
 
@@ -146,11 +146,11 @@ void effToonData::GetTextureNames(std::vector<std::string>& o_Names) const
 void effToonData::ReloadTextures(const fsLocator& i_TextureDirectory)
 {
 	if (m_NameDiffuse != "")
-		m_TextureDiffuse = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameDiffuse.c_str()));
+		m_TextureDiffuse = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameDiffuse);
 	if (m_NameGradientMap != "")
-		m_TextureGradientMap = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameGradientMap.c_str()));
+		m_TextureGradientMap = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameGradientMap);
 	if (m_NameTransparencyMap != "")
-		m_TextureTransparencyMap = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameTransparencyMap.c_str()));
+		m_TextureTransparencyMap = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameTransparencyMap);
 }
 
 //----------------------------------------------------------------------------
@@ -158,11 +158,11 @@ void effToonData::ReloadTextures(const fsLocator& i_TextureDirectory)
 void effToonData::ReloadTextures(const fsResourceFinder& i_TextureFinder)
 {
 	if (m_NameDiffuse != "")
-		m_TextureDiffuse = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameDiffuse.c_str()));
+		m_TextureDiffuse = matTextureMgr::LoadTexture(i_TextureFinder, m_NameDiffuse);
 	if (m_NameGradientMap != "")
-		m_TextureGradientMap = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameGradientMap.c_str()));
+		m_TextureGradientMap = matTextureMgr::LoadTexture(i_TextureFinder, m_NameGradientMap);
 	if (m_NameTransparencyMap != "")
-		m_TextureTransparencyMap = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameTransparencyMap.c_str()));
+		m_TextureTransparencyMap = matTextureMgr::LoadTexture(i_TextureFinder, m_NameTransparencyMap);
 }
 
 //----------------------------------------------------------------------------

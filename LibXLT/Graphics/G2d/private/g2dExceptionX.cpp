@@ -48,7 +48,7 @@ std::string g2dHardwareCapabilityX::GetErrorMessage() const
 //	g2dUnknownFontX is thrown when someone requests a font which can't be
 //	found.
 //----------------------------------------------------------------------------
-g2dUnknownFontX::g2dUnknownFontX(const itString& i_Name)
+g2dUnknownFontX::g2dUnknownFontX(const std::string& i_Name)
 :	m_Name(i_Name)
 {
 }
@@ -58,13 +58,13 @@ g2dUnknownFontX::g2dUnknownFontX(const itString& i_Name)
 //----------------------------------------------------------------------------
 std::string g2dUnknownFontX::GetErrorMessage() const
 {
-	return "Unknown font: " + itStringUtil::GetStdString(m_Name);
+	return "Unknown font: " + m_Name;
 }	
 
 //------------------------------------------------------------------------
 //	GetName returns the name of the font which couldn't be found
 //------------------------------------------------------------------------
-const itString& g2dUnknownFontX::GetName() const
+const std::string& g2dUnknownFontX::GetName() const
 {
 	return m_Name;
 }

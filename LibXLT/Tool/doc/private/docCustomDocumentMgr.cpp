@@ -178,7 +178,7 @@ namespace docCustomDocumentMgr
 	{
 		if ( l_Document )
 		{
-			o_Filename = itStringUtil::GetStdString( l_Document->GetFilename().GetLastName() );
+			o_Filename = l_Document->GetFilename().GetLastName();
 		}
 	}
 

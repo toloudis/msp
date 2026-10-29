@@ -76,7 +76,7 @@ namespace
 				std::string strvalue;
 				chChunkParserUtil::Read(i_Reader, strvalue);
 				// read in to user texture, could be overridden by other user texture.
-				o_Data.m_AOUserTextureName.SetValue(itString(strvalue.c_str()));
+				o_Data.m_AOUserTextureName.SetValue(strvalue);
 
 				if (i_Version >= 2)
 				{
@@ -87,7 +87,7 @@ namespace
 					{
 						chChunkParserUtil::Read(i_Reader, strvalue);
 						if (strvalue.length() != 0)
-							o_Data.m_AOUserTextureName.SetValue(itString(strvalue.c_str()));
+							o_Data.m_AOUserTextureName.SetValue(strvalue);
 
 						if (i_Version >= 4)
 						{

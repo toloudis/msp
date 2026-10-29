@@ -36,7 +36,7 @@ TEST(fsFileUtil, FileAndDirectoryExist)
 	EXPECT_TRUE(fsFileUtil::DirectoryExists(sub_dir));
 
 	fsLocator file = sub_dir;
-	file.Push(itString("TestFile.txt"));
+	file.Push(std::string("TestFile.txt"));
 	EXPECT_FALSE(fsFileUtil::FileExists(file));
 	fsFileUtil::CreateFile(file);
 	EXPECT_TRUE(fsFileUtil::FileExists(file));
@@ -68,9 +68,9 @@ TEST(fsFileUtil, LocatorStringRoundTrip)
 {
 	ctTempDir dir;
 	fsLocator file = dir.GetLocator("Some File.txt");
-	EXPECT_EQ("Some File.txt", itStringUtil::GetStdString(file.GetLastName()));
+	EXPECT_EQ("Some File.txt", file.GetLastName());
 
-	itString as_string;
+	std::string as_string;
 	fsFileUtil::LocatorToUnicodeString(file, as_string);
 	fsLocator back;
 	fsFileUtil::UnicodeStringToLocator(as_string, back);

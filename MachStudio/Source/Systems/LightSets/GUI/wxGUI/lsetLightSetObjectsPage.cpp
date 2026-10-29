@@ -132,10 +132,10 @@ lsetLightSetObjectsPage::lsetLightSetObjectsPage( wxWindow* parent )
 : lsetLightSetObjectsPageBase( parent )
 {
 	// Create state images to represent checked state
-	itString icon_dir;
+	std::string icon_dir;
 	fsFileUtil::LocatorToUnicodeString( guiMenuMgr::GetIconDirectory(), icon_dir );
 	wxImageList *pCheckImages = new wxImageList(FromDIP(13), FromDIP(13), false, e_NumPlacedImageStates);
-	std::wstring image_dir( icon_dir.GetString() );
+	wxString image_dir = wxString::FromUTF8(icon_dir);
     {
         wxLogNull nullLog;
 	    pCheckImages->Add(wxBitmap(image_dir + L"\\tree-unchecked.png", wxBITMAP_TYPE_PNG));

@@ -16,6 +16,9 @@
 #include <vector>
 //#include c_g2dDXERR_H
 #include <sstream>
+#ifndef ENV_STRING_HPP
+#include "Core/Env/envString.hpp"
+#endif
 
 //============================================================================
 //	library pragmas
@@ -640,7 +643,7 @@ void PrintDXError( HRESULT hErr )
 		break;
 	}
 
-	DBG_WARNING("DirectX Error: " << itStringUtil::GetStdString(itString(dderr.str().c_str())));
+	DBG_WARNING("DirectX Error: " << envString::WideCharToUTF8(dderr.str()));
 		LocalFree(lpMsgBuf);
 }
 

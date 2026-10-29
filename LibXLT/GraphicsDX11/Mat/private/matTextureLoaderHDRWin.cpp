@@ -13,13 +13,16 @@
 
 #include "Core/dbg/dbgMsg.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itString.hpp"
+#include <string>
 #include "Graphics/g2d/g2dExceptionX.hpp"
 #include "Graphics/g2d/private/rgbe.h"
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
 #include "GraphicsDX11/mat/matMipTexture.hpp"
 #include "GraphicsDX11/mat/matPlainTexture.hpp"
 #include <DirectXPackedVector.h>
+#ifndef ENV_STRING_HPP
+#include "Core/Env/envString.hpp"
+#endif
 //#include <d3dx10math.h>
 //#pragma comment(lib, "d3dx10.lib")
 
@@ -27,11 +30,11 @@ namespace
 {
     std::unique_ptr<DirectX::ScratchImage> load_hdr_data(const fsLocator& i_Locator)
 	{
-		itString filename;
+		std::string filename;
 		fsFileUtil::LocatorToUnicodeString(i_Locator, filename);
 
 		// Read in the HDR light probe.
-		FILE* fp = ::_wfopen( filename.GetString(), L"rb" );
+		FILE* fp = ::_wfopen( envString::UTF8ToWideChar(filename).c_str(), L"rb" );
 		int fileWidth=0, fileHeight=0;
 		rgbe_header_info info;
 		RGBE_ReadHeader( fp, &fileWidth, &fileHeight, &info );

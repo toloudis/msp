@@ -177,8 +177,8 @@ void  mainDocumentChunk::Read( chReader &i_Reader,
 		// locator to the file being loaded now and look for 
 		// path differences.
 		fsLocator org_locator;
-		itString savefilename;
-		chChunkParserUtil::Read( i_Reader, savefilename );
+		std::string savefilename;
+		chChunkParserUtil::ReadItString( i_Reader, savefilename );
 		fsFileUtil::UnicodeStringToLocator( savefilename, org_locator );
 		fsAbsolutePathMgr::AddDirMappingFromFiles(org_locator, i_Reader.GetLocator());
 	}
@@ -198,7 +198,7 @@ void mainDocumentChunk::Write(chWriter &i_Writer, bool i_bResetDirtyFlag)
 
 	// Write saved filename in order to resolve absolute paths when read from
 	// a new path.
-	itString savefilename;
+	std::string savefilename;
 	fsFileUtil::LocatorToUnicodeString( i_Writer.GetLocator(), savefilename );
 	chChunkParserUtil::Write( i_Writer, savefilename );
 

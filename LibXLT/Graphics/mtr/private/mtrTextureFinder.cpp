@@ -28,7 +28,7 @@ namespace
 		bool m_bFound;
 
 		// constructor takes vector to fill
-		FindFileEnum(const itString& i_Filename)
+		FindFileEnum(const std::string& i_Filename)
 			: m_Filename(i_Filename), m_bFound(false)
 		{
 		}
@@ -52,7 +52,7 @@ namespace
 
 	//----------------------------------------------------------------------------
 	//----------------------------------------------------------------------------
-	bool search_material_library(const itString& i_FileName, 
+	bool search_material_library(const std::string& i_FileName, 
 								 fsLocator& o_FoundLocator)
 	{
 		// See if we have a material library path

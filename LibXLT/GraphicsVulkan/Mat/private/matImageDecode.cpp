@@ -12,9 +12,7 @@
 #ifndef FS_FILEUTIL_HPP
 #include "Core/Fs/fsFileUtil.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/It/itString.hpp"
-#endif
+#include <string>
 
 #include <filesystem>
 #include <fstream>
@@ -122,7 +120,7 @@ namespace gvk
 	}
 
 	bool matDecodeImageMemory(const void* i_pData, size_t i_Size, matImageFileType i_Type, matDecodedImage& o_Image,
-							  itString* o_pError)
+							  std::string* o_pError)
 	{
 		using namespace matDecode;
 		std::string error;
@@ -162,23 +160,23 @@ namespace gvk
 			}
 			if (o_pError)
 			{
-				*o_pError = itString(error.c_str());
+				*o_pError = error;
 			}
 		}
 		return ok;
 	}
 
-	bool matDecodeImage(const fsLocator& i_File, matImageFileType i_Type, matDecodedImage& o_Image, itString* o_pError)
+	bool matDecodeImage(const fsLocator& i_File, matImageFileType i_Type, matDecodedImage& o_Image, std::string* o_pError)
 	{
-		itString name;
+		std::string name;
 		fsFileUtil::LocatorToUnicodeString(i_File, name);
-		std::ifstream in(std::filesystem::path(name.GetString()), std::ios::binary);
+		std::ifstream in(std::filesystem::u8path(name), std::ios::binary);
 		if (!in)
 		{
 			o_Image = matDecodedImage();
 			if (o_pError)
 			{
-				*o_pError = itString("the file could not be opened");
+				*o_pError = std::string("the file could not be opened");
 			}
 			return false;
 		}

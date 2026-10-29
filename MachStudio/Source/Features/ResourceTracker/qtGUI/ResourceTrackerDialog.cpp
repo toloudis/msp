@@ -29,9 +29,9 @@ namespace
 {
 	QString to_qstring(const fsLocator& i_Locator)
 	{
-		itString str;
+		std::string str;
 		fsFileUtil::LocatorToUnicodeString(i_Locator, str);
-		return QString::fromWCharArray(str.GetString());
+		return QString::fromStdString(str);
 	}
 
 	QTreeWidget* create_tree(QWidget* i_pParent)

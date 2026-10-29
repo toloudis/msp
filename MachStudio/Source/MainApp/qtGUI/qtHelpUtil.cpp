@@ -12,7 +12,7 @@
 
 #include "Support/mnm/mnmConstants.hpp"
 
-#include "Core/it/itString.hpp"
+#include <string>
 #include "Tool/cma/cmaCommandMgr.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
 #include "ToolUIQt/tqt/tqtSystem.hpp"
@@ -142,28 +142,28 @@ void qtHelpUtil::ShowHelpInfo()
 void qtHelpUtil::ShowHelpAbout()
 {
 	// dialog title
-	itString Title( "About " );
-	Title += mnmConstants::cw_PRODUCT;
+	std::string Title( "About " );
+	Title += mnmConstants::c_PRODUCT;
 
 	// dialog message
-	itString helpMessage = itString(mnmConstants::c_PRODUCT_FOR_DISPLAY);
-	helpMessage += L" ";
+	std::string helpMessage = std::string(mnmConstants::c_PRODUCT_FOR_DISPLAY);
+	helpMessage += " ";
 #ifdef WIN64
-	helpMessage += itString(mnmConstants::cw_64BIT);
+	helpMessage += std::string(mnmConstants::c_64BIT);
 #else
 	#ifdef WIN32
-	helpMessage += itString(mnmConstants::cw_32BIT);
+	helpMessage += std::string(mnmConstants::c_32BIT);
 	#endif
 #endif
-	helpMessage += L" (";
-	helpMessage += itString(mainConstants::mc_ExecutableVersion);
-	helpMessage += L")";
-	helpMessage += L"\r\n";
-	helpMessage += L"\r\n";
-	helpMessage += mnmConstants::cw_COPYRIGHT;
-	helpMessage += L"\r\n";
-	helpMessage += mnmConstants::cw_RIGHTS;
-	helpMessage += L"\r\n";
+	helpMessage += " (";
+	helpMessage += std::string(mainConstants::mc_ExecutableVersion);
+	helpMessage += ")";
+	helpMessage += "\r\n";
+	helpMessage += "\r\n";
+	helpMessage += mnmConstants::c_COPYRIGHT;
+	helpMessage += "\r\n";
+	helpMessage += mnmConstants::c_RIGHTS;
+	helpMessage += "\r\n";
 
 	guiMessageBox::Show( helpMessage, Title, guiMessageBox::e_OKOnly);
 }

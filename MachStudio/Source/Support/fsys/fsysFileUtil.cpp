@@ -62,9 +62,9 @@ namespace
 //
 //	Note: this calls fsDirListUtil::BuildDirectoryList.
 //------------------------------------------------------------------------
-bool fsysFileUtil::GetFilePath( const itString& i_SystemDirName, 
-								const itString& i_SceneSubDirName, 
-								const itString& i_FindFile, 
+bool fsysFileUtil::GetFilePath( const std::string& i_SystemDirName, 
+								const std::string& i_SceneSubDirName, 
+								const std::string& i_FindFile, 
 								fsLocator& o_FoundDirAndFile)
 {
 	o_FoundDirAndFile.Clear();
@@ -83,7 +83,7 @@ bool fsysFileUtil::GetFilePath( const itString& i_SystemDirName,
 		//	generate the list of child directories for this path
 		//
 		full_dir = gfPaths::GetPath(mnmPaths::e_DataSceneAndStock, i);
-		if (i_SystemDirName.GetLength() > 0)
+		if (i_SystemDirName.size() > 0)
 			full_dir.Push( i_SystemDirName );
 
 
@@ -108,7 +108,7 @@ bool fsysFileUtil::GetFilePath( const itString& i_SystemDirName,
 		full_dir = gfPaths::GetPath(mnmPaths::e_DataScene, i);
 
 		// Different sub directory name under Scene (either "Data" or "Textures")
-		if (i_SceneSubDirName.GetLength() > 0)
+		if (i_SceneSubDirName.size() > 0)
 			full_dir.Push( i_SceneSubDirName );
 
 		FindFileEnum find_target(i_FindFile);

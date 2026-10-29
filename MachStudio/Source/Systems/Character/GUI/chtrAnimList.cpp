@@ -18,11 +18,11 @@
 
 namespace
 {
-	const itString c_FileTypeExtensions("cha;jna;htr;gab");
+	const std::string c_FileTypeExtensions("cha;jna;htr;gab");
 
 	fsLocator l_AppDir;
-	itString l_SystemDirName; 
-	itString l_SceneSubDirName;
+	std::string l_SystemDirName; 
+	std::string l_SceneSubDirName;
 
 } // end of anonymous namespace
 
@@ -33,7 +33,7 @@ namespace
 //		i_SystemDirName		- the name of the directory for this system
 //		i_SceneSubDirName		- the sub-dir to look for extensions (data, model,...)
 //------------------------------------------------------------------------
-void chtrAnimList::Init( const itString& i_SystemDirName, const itString& i_SceneSubDirName )
+void chtrAnimList::Init( const std::string& i_SystemDirName, const std::string& i_SceneSubDirName )
 {
 	l_SystemDirName = i_SystemDirName; 
 	l_SceneSubDirName = i_SceneSubDirName;
@@ -57,7 +57,7 @@ void chtrAnimList::SetAppDirectory(const fsLocator &i_Dir)
 //------------------------------------------------------------------------
 // system directory name
 //------------------------------------------------------------------------
-itString chtrAnimList::GetSystemDirName()
+std::string chtrAnimList::GetSystemDirName()
 {
 	return l_SystemDirName;
 }
@@ -79,7 +79,7 @@ void chtrAnimList::BuildFileList(fsysFileList& o_FileList,
 	// Get directory name for character in order to use it as the "object directory"
 	fsLocator object_dir = i_CharacterDirectory;
 	object_dir.Pop(); // Pop off "Data" or "Models"
-	itString obj_name = object_dir.GetLastName();
+	std::string obj_name = object_dir.GetLastName();
 	o_FileList.SetObjectDirName( obj_name );
 
 	o_FileList.BuildFileList();
@@ -91,7 +91,7 @@ void chtrAnimList::BuildFileList(fsysFileList& o_FileList,
 //	file with given filename for the character that was loaded
 //	from the given directory.
 //------------------------------------------------------------------------
-fsLocator chtrAnimList::GetAnimationLocator(const itString& i_Filename, 
+fsLocator chtrAnimList::GetAnimationLocator(const std::string& i_Filename, 
 											const fsLocator& i_CharacterDirectory)
 {
 	// Get directory name for character in order to use it as the "object directory"
@@ -102,7 +102,7 @@ fsLocator chtrAnimList::GetAnimationLocator(const itString& i_Filename,
 
 	fsLocator anim_loc;
 	if (fsysFileUtil::GetFilePath(chtrAnimList::GetSystemDirName(),
-								  itString(gfPaths::GetSubPath(gfPaths::e_Data)), 
+								  std::string(gfPaths::GetSubPath(gfPaths::e_Data)), 
 								  i_Filename, anim_loc) )
 	{
 		return anim_loc;

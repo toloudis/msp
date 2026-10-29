@@ -21,13 +21,13 @@ namespace
 	int l_ObjectCounter = 0;
 
 	//--------------------------------------------------------------------
-	void create_default_name( const itString& i_Filename, nameString& o_NameString )
+	void create_default_name( const std::string& i_Filename, nameString& o_NameString )
 	{
 		//char strName[64];
 		std::string strName;
 		char filename_base[64];
 		char *filename;
-		strcpy( filename_base, itStringUtil::GetStdString( i_Filename ).c_str() );
+		strcpy( filename_base, i_Filename.c_str() );
 		filename = strtok( filename_base, "." );
 
 		do
@@ -59,7 +59,7 @@ lyrsLayerObject* lyrsObjectCreator::Create(const lyrsData &i_Data)
 	//	set a default name for the layer if none provided
 	if (i_Data.m_Name.GetValue().IsEmpty())
 	{
-		create_default_name( itString("Layer"), objName );
+		create_default_name( std::string("Layer"), objName );
 	}
 
 	// create object for layer

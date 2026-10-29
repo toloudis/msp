@@ -187,8 +187,8 @@ namespace ImportUtil
 		//
 		fsLocator temp_locator;
 		temp_locator = i_SourceData.m_LastFile;
-		itString filename;
-		filename = itString("~temp_");
+		std::string filename;
+		filename = std::string("~temp_");
 		filename += temp_locator.GetLastName();
 		temp_locator.Pop();
 		temp_locator.Push( filename );

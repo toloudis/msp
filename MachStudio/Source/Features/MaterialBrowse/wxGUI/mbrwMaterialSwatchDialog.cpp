@@ -45,9 +45,9 @@ namespace
 	//--------------------------------------------------------------------
 	wxString get_icon_directory()
 	{
-		itString wide_dir;
+		std::string wide_dir;
 		fsFileUtil::LocatorToUnicodeString(guiMenuMgr::GetIconDirectory(), wide_dir);
-		return wxString(wide_dir.GetString());
+		return wxString::FromUTF8(wide_dir);
 	}
 		
 	//--------------------------------------------------------------------
@@ -88,7 +88,7 @@ namespace
 						
 						// these lines gather only one level of sub directories and only
 						// those directories that have mtl files somewhere under them
-						itString subdir = i_Directory.GetName( m_RootDir.GetNumNames() );
+						std::string subdir = i_Directory.GetName( m_RootDir.GetNumNames() );
 						m_SubDirs.insert(fsLocator(subdir));
 					}
 				}
@@ -120,7 +120,7 @@ namespace
 			{
 				if (i_File.GetNumNames() > 0)
 				{
-					itString dir_name = i_File.GetLastName();
+					std::string dir_name = i_File.GetLastName();
 					if (dir_name[0] != '.')
 					{
 						m_bHasSubdirs = true;
@@ -255,7 +255,7 @@ void mbrwMaterialSwatchDialog::buttonPaint_Click( wxCommandEvent& i_Event )
 			wxString file_str = m_listCtrl_Icons->GetItemText(item);
 
 			fsLocator mtl_loc = m_CurrentMaterialDir;
-			mtl_loc.Push(itString((const char*)file_str.c_str()));
+			mtl_loc.Push((const char*)file_str);
 			mbrwPaintUtil::AssignMaterialFile(mtl_loc);
 		}
     }
@@ -265,16 +265,16 @@ void mbrwMaterialSwatchDialog::buttonNewFolder_Click(wxCommandEvent& i_Event)
 {
 	fsLocator init_dir;
 	gfDirectoryCategories::GetCurDirectory(c_MaterialDirCategory, init_dir);
-	itString defaultPath;
+	std::string defaultPath;
 	fsFileUtil::LocatorToUnicodeString(init_dir, defaultPath);
 	wxWindow *pParent = twxSystem::g_pMainForm;
 	wxDirDialog dialog(pParent, 
 					   L"Create a new directory",
-					   defaultPath.GetString(), wxDD_NEW_DIR_BUTTON);
+					   wxString::FromUTF8(defaultPath), wxDD_NEW_DIR_BUTTON);
 	if(dialog.ShowModal() == wxID_OK)
 	{
 		fsLocator material_dir;
-        fsFileUtil::UnicodeStringToLocator(itString(dialog.GetPath().wc_str()), material_dir);
+        fsFileUtil::UnicodeStringToLocator(dialog.GetPath().utf8_string(), material_dir);
 		fsFileUtil::CreateDirectory(material_dir);
 	}
 }
@@ -284,17 +284,17 @@ void mbrwMaterialSwatchDialog::buttonBrowse_Click( wxCommandEvent& i_Event )
 {
 	fsLocator init_dir;
 	gfDirectoryCategories::GetCurDirectory(c_MaterialDirCategory, init_dir);
-	itString defaultPath;
+	std::string defaultPath;
 	fsFileUtil::LocatorToUnicodeString(init_dir, defaultPath);
 	
 	wxWindow *pParent = twxSystem::g_pMainForm;
 	wxDirDialog dialog(pParent, 
 					   L"Browse material library directory", 
-					   defaultPath.GetString());
+					   wxString::FromUTF8(defaultPath));
 	if (dialog.ShowModal() == wxID_OK)
 	{
 		fsLocator material_dir;
-        fsFileUtil::UnicodeStringToLocator(itString(dialog.GetPath().wc_str()), material_dir);
+        fsFileUtil::UnicodeStringToLocator(dialog.GetPath().utf8_string(), material_dir);
 		browse_directory( material_dir );
 
 		//bga - not sure about this, using the browse button to 
@@ -336,11 +336,11 @@ void mbrwMaterialSwatchDialog::listCtrl_beginDrag( wxListEvent& i_Event )
 			wxFileDataObject matFileObject;
 
 			fsLocator fullpath = m_CurrentMaterialDir;
-			fullpath.Push( itString((const char*)filename.c_str()) );
+			fullpath.Push( (const char*)filename );
 
-			itString itFilename;
+			std::string itFilename;
 			fsFileUtil::LocatorToUnicodeString(fullpath, itFilename);
-			matFileObject.AddFile(itFilename.GetString());
+			matFileObject.AddFile(wxString::FromUTF8(itFilename));
 
 			wxDropSource source(matFileObject, this);
 								//wxDROP_ICON(dnd_copy),
@@ -373,7 +373,7 @@ void mbrwMaterialSwatchDialog::listCtrl_doubleClick( wxListEvent& i_Event )
 		{
 			// Concatenate relative path to the root directory to get fullpath
 			fsLocator new_dir = m_CurrentMaterialDir;
-			new_dir.Push( itString((const char*)sub_dir_str.c_str()) );
+			new_dir.Push( (const char*)sub_dir_str );
 			browse_directory( new_dir );
 		}
 	}
@@ -460,7 +460,7 @@ void mbrwMaterialSwatchDialog::browse_directory(const fsLocator &i_Directory,
 	for (int sdi=0; sdi<dir_list.size(); ++sdi)
 	{
 		fsLocator subdir = dir_list[sdi];
-		itString subdir_name = subdir.GetName( i_Directory.GetNumNames() );
+		std::string subdir_name = subdir.GetName( i_Directory.GetNumNames() );
 		if (subdir_name[0] != '.')
 		{
 			SubDirectoryTarget subdir_search;
@@ -492,7 +492,7 @@ void mbrwMaterialSwatchDialog::browse_directory(const fsLocator &i_Directory,
 
 	struct sThumbnailInfo
 	{
-		itString m_Filename;
+		std::string m_Filename;
 		int m_ImageIndex;
 	};
 
@@ -615,15 +615,15 @@ void mbrwMaterialSwatchDialog::browse_directory(const fsLocator &i_Directory,
 	std::set<fsLocator>::const_iterator it;
 	for (it = material_list.m_SubDirs.begin(); it != material_list.m_SubDirs.end(); ++it)
 	{
-		itString subpath;
+		std::string subpath;
 		fsFileUtil::LocatorToUnicodeString(*it, subpath);
-		m_listCtrl_Icons->InsertItem(index++, subpath.GetString(), folder_index);
+		m_listCtrl_Icons->InsertItem(index++, wxString::FromUTF8(subpath), folder_index);
 	}
 
 	const int num_items = thumbnail_items.size();
 	for (int i=0; i<num_items; ++i)
 	{
-		m_listCtrl_Icons->InsertItem(index++, thumbnail_items[i].m_Filename.GetString(), 
+		m_listCtrl_Icons->InsertItem(index++, wxString::FromUTF8(thumbnail_items[i].m_Filename), 
 								   thumbnail_items[i].m_ImageIndex);
 	}
 

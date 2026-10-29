@@ -25,7 +25,7 @@ namespace matTexturePathUtil
 		// Use a basic search from the directory of the containing file
 		// to try to find the texture.
 		//--------------------------------------------------------------------
-		bool find_texture(const itString &i_Filename,
+		bool find_texture(const std::string &i_Filename,
 						  const fsLocator& i_ContainingFile,
 						  fsLocator &o_FilePath)
 		{
@@ -97,7 +97,7 @@ namespace matTexturePathUtil
 		{
 			if (tex_loc.GetNumNames() == 1)
 			{
-				itString filename = tex_loc.GetLastName();
+				std::string filename = tex_loc.GetLastName();
 				find_texture(filename, i_ContainingFile, tex_loc);
 				io_FilePath = tex_loc;
 				bChangedLocator = true;

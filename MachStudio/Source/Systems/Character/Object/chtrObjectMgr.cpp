@@ -59,13 +59,13 @@ namespace
 	const char* c_DefaultName = "Object";
 
 	//--------------------------------------------------------------------
-	void create_default_name( const itString& i_Filename, nameString& o_NameString )
+	void create_default_name( const std::string& i_Filename, nameString& o_NameString )
 	{
 		//char strName[256];
 		char filename_base[256];
 		char *filename;
 		std::string strName;
-		strcpy( filename_base, itStringUtil::GetStdString( i_Filename ).c_str() );
+		strcpy( filename_base, i_Filename.c_str() );
 		filename = strtok( filename_base, "." );
 
 		do
@@ -179,7 +179,7 @@ namespace
 	//--------------------------------------------------------------------
 	// find full locator to filename
 	//--------------------------------------------------------------------
-	fsLocator locate_character(const itString& i_ObjectFilename)
+	fsLocator locate_character(const std::string& i_ObjectFilename)
 	{
 		//	grab the filename + load the object
 		fsLocator file_loc;
@@ -350,7 +350,7 @@ namespace
 			}
 			else
 			{
-				create_default_name( itString(c_DefaultName), objName );
+				create_default_name( std::string(c_DefaultName), objName );
 			}
 			pCharacter->SetName( objName );
 		}

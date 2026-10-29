@@ -37,7 +37,7 @@ gpxText::~gpxText()
 //	Proxies functions just set the data internally. The changes are
 //	only pushed through to the character when "Update()" is called.
 //--------------------------------------------------------------------
-void gpxText::SetText(const itString& i_Text)
+void gpxText::SetText(const std::string& i_Text)
 {
 	PROXY_SET_OR_STORE(m_Text, SetText, m_String, i_Text);
 }

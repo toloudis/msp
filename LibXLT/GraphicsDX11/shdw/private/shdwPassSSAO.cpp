@@ -204,7 +204,7 @@ shdwPassSSAO::shdwPassSSAO(matRenderTargetTexture* i_NearDepthBuffer,
 	if (!l_DepthMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/DepthRender.fx"), matShaderMgr::GetSpecialEffect("DepthRender.fx"));
+		p->SetShaderName(std::string("Special/DepthRender.fx"), matShaderMgr::GetSpecialEffect("DepthRender.fx"));
 		l_DepthMat.SetShaderParams(p);
 	}
 }

@@ -23,9 +23,9 @@ mtrlLambertData::mtrlLambertData()
 	m_UTrans("U Translate", 0.0f),
 	m_VTrans("V Translate", 0.0f),
 	m_UVAngle("UV Rotate", 0.0f),
-	m_TextureDiffuse("Diffuse Map", itString("")),
-	m_TextureNormalMap("Normal Map", itString("")),
-	m_TextureTransparencyMap("Transparency Map", itString(""))
+	m_TextureDiffuse("Diffuse Map", std::string()),
+	m_TextureNormalMap("Normal Map", std::string()),
+	m_TextureTransparencyMap("Transparency Map", std::string())
 {
 }
 
@@ -42,9 +42,9 @@ mtrlLambertData::mtrlLambertData(const mtrlLambertData& i_Data)
 	m_UTrans("U Translate", 0.0f),
 	m_VTrans("V Translate", 0.0f),
 	m_UVAngle("UV Rotate", 0.0f),
-	m_TextureDiffuse("Diffuse Map", itString("")),
-	m_TextureNormalMap("Normal Map", itString("")),
-	m_TextureTransparencyMap("Transprency Map", itString(""))
+	m_TextureDiffuse("Diffuse Map", std::string()),
+	m_TextureNormalMap("Normal Map", std::string()),
+	m_TextureTransparencyMap("Transprency Map", std::string())
 {
 	(*this) = i_Data;
 }

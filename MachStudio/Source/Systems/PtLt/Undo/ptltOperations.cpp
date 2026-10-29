@@ -201,11 +201,11 @@ namespace ptltOperations
 	{
 		if (i_Filename.IsEmpty())
 		{
-			ptltObjectMgr::create_default_name(itString("PointLight"), o_NameString, l_ObjectCounter);
+			ptltObjectMgr::create_default_name(std::string("PointLight"), o_NameString, l_ObjectCounter);
 		}
 		else
 		{
-			ptltObjectMgr::create_duplicate_name(itString(i_Filename.GetString().c_str()), o_NameString);
+			ptltObjectMgr::create_duplicate_name(i_Filename.GetString(), o_NameString);
 		}
 	}
 

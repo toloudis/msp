@@ -102,14 +102,14 @@ void shdwPassNormals::InitializeMaterial()
 	if (!l_DrawNormalMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/NormalMap.fx"), matShaderMgr::GetSpecialEffect("NormalMap.fx"));
+		p->SetShaderName(std::string("Special/NormalMap.fx"), matShaderMgr::GetSpecialEffect("NormalMap.fx"));
 		l_DrawNormalMat.SetShaderParams(p);
 	}
 
 	if (!l_DrawHairMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/HairDefault.fx"), matShaderMgr::GetSpecialEffect("HairDefault.fx"));
+		p->SetShaderName(std::string("Special/HairDefault.fx"), matShaderMgr::GetSpecialEffect("HairDefault.fx"));
 		l_DrawHairMat.SetShaderParams(p);
 	}
 }

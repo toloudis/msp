@@ -50,24 +50,9 @@ namespace
 //--------------------------------------------------------------------
 std::string getFileName(const fsLocator& i_Locator) 
 {
-	itString itFileName;
-	fsFileUtil::LocatorToUnicodeString(i_Locator,itFileName);
-	const itString::CharType* UTF_8_str = itFileName.GetString();
-
-	std::string ReturnString;
-	for (int i = 0; i < itFileName.GetLength(); ++i)
-	{
-		ReturnString.push_back((char)UTF_8_str[i]);
-	}
-
-	/*
-	int strSize = UTF_8_str.size();
-	char *fileName = new char[strSize+1];
-	fileName[strSize] = 0;
-	memcpy( fileName , UTF_8_str.c_str() , strSize );
-	*/
-
-	return ReturnString;
+	std::string fileName;
+	fsFileUtil::LocatorToUnicodeString(i_Locator, fileName);
+	return fileName;
 }
 
 //--------------------------------------------------------------------

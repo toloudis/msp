@@ -18,13 +18,13 @@
 #ifndef GF_PATHS_HPP
 #include "Core/gf/gfPaths.hpp"
 #endif
+#include <string>
 
 
 //============================================================================
 //	Forward References
 //============================================================================
 class fsLocator;
-class itString;
 
 
 //============================================================================
@@ -70,7 +70,7 @@ namespace mnmPaths
 	//----------------------------------------------------------------------------
 	//	SetupPaths build the paths in the gfPaths and the Scene Directory Name
 	//----------------------------------------------------------------------------
-	void SetupPaths( const fsLocator& i_AppPathLocator, const itString& i_SceneDirName );
+	void SetupPaths( const fsLocator& i_AppPathLocator, const std::string& i_SceneDirName );
 
 	//----------------------------------------------------------------------------
 	//	SetupPaths build the paths in the gfPaths
@@ -80,7 +80,7 @@ namespace mnmPaths
 	//----------------------------------------------------------------------------
 	//	SetupDataPaths build the paths in the gfPaths
 	//----------------------------------------------------------------------------
-	void SetupDataPaths( const itString& i_SceneDirName );
+	void SetupDataPaths( const std::string& i_SceneDirName );
 
 	//----------------------------------------------------------------------------
 	//	AppendSubPath appends the subpath string to the locator
@@ -95,17 +95,17 @@ namespace mnmPaths
 	//------------------------------------------------------------------------
 	//	CreateStockDirectories() - create the Stock directories for a new project
 	//------------------------------------------------------------------------
-	void CreateStockDirectories( const fsLocator& i_Root, const itString& i_SceneDirName );
+	void CreateStockDirectories( const fsLocator& i_Root, const std::string& i_SceneDirName );
 
 	//------------------------------------------------------------------------
 	//	CreateSceneDirectories() - create the directories for a new scene
 	//------------------------------------------------------------------------
-	void CreateSceneDirectories( const fsLocator& i_Root, const itString& i_SceneDirName );
+	void CreateSceneDirectories( const fsLocator& i_Root, const std::string& i_SceneDirName );
 
 	//------------------------------------------------------------------------
 	//	return the name of the object directory from the passed in directory.
 	//------------------------------------------------------------------------
-	void ExtractObjectDirectoryName( const fsLocator i_FullDir, itString& o_ObjDirName );
+	void ExtractObjectDirectoryName( const fsLocator i_FullDir, std::string& o_ObjDirName );
 
 	//------------------------------------------------------------------------
 	//	Convert the filename to have the correct project path
@@ -121,7 +121,7 @@ namespace mnmPaths
 	//----------------------------------------------------------------------------
 	//	SetupMoviePackPaths build the paths in the gfPaths
 	//----------------------------------------------------------------------------
-	void SetupMoviePackPaths( const itString& i_MoviePackName );
+	void SetupMoviePackPaths( const std::string& i_MoviePackName );
 //#endif
 }
 

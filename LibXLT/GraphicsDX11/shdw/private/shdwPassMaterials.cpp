@@ -66,14 +66,14 @@ shdwPassMaterials::shdwPassMaterials(g2dRenderTarget* i_pMaterialsTarget,
 	if (!l_MaterialsMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/Solid.fx"), matShaderMgr::GetSpecialEffect("Solid.fx"));
+		p->SetShaderName(std::string("Special/Solid.fx"), matShaderMgr::GetSpecialEffect("Solid.fx"));
 		l_MaterialsMat.SetShaderParams(p);
 	}
 	// lazy init so that this material can be reused across instantiations.
 	if (!l_HairMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/HairDefault.fx"), matShaderMgr::GetSpecialEffect("HairDefault.fx"));
+		p->SetShaderName(std::string("Special/HairDefault.fx"), matShaderMgr::GetSpecialEffect("HairDefault.fx"));
 		l_HairMat.SetShaderParams(p);
 	}
 	m_OverscanPixels = 0;

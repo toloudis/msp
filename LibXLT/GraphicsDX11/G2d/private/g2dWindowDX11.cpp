@@ -19,6 +19,10 @@
 #include "Graphics/g2d/g2dExceptionX.hpp"
 
 #include <iomanip>
+#include <sstream>
+#ifndef DBG_MSG_HPP
+#include "Core/Dbg/dbgMsg.hpp"
+#endif
 
 
 //============================================================================
@@ -275,7 +279,7 @@ void g2dWindowDX11::DrawRect(	int i_X1,
 void g2dWindowDX11::DrawText(	int i_X,
 								int i_Y,
 								g2dFontHandle i_Font,
-								const itString& i_Text,
+								const std::string& i_Text,
 								const g2dRGBColor& i_Color)
 {
 	/*if ((m_pBackBuffer2D == NULL) || (m_pSolidBrush2D == NULL))

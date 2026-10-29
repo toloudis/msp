@@ -15,12 +15,12 @@
 #ifndef G2D_FONTHANDLE_HPP
 #include "Graphics/G2d/g2dFontHandle.hpp"
 #endif
+#include <string>
 
 #undef DrawText
 
 class g2dImage;
 class g2dRGBColor;
-class itString;
 
 namespace gvk
 {
@@ -53,7 +53,7 @@ namespace gvk
 		void DrawText(	int i_X,
 						int i_Y,
 						g2dFontHandle i_Font,
-						const itString& i_Text,
+						const std::string& i_Text,
 						const g2dRGBColor& i_Color);
 
 		//------------------------------------------------------------------------

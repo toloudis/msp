@@ -56,7 +56,7 @@ namespace pfxPostEffectMgr
 			l_PfxObjects[e_ViewportPfx] = new pfxPostEffectObject(l_DefaultPfxName, l_DefaultPfxPath);
 		}
 		/*shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("PostEffect/BlackAndWhite.fx"), matShaderMgr::GetSpecialEffect("BlackAndWhite.fx"));
+		p->SetShaderName(std::string("PostEffect/BlackAndWhite.fx"), matShaderMgr::GetSpecialEffect("BlackAndWhite.fx"));
 		g3dPostProcessing::SetActive(true);
 		g3dPostProcessing::SetPostEffect(p);*/
 	}

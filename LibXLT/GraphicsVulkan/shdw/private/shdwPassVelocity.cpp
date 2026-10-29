@@ -134,7 +134,7 @@ shdwPassVelocity::shdwPassVelocity(g2dRenderTarget* i_pVelocityTarget,
 	if (!l_DrawVelocityMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/VelocityRender.fx"), matShaderMgr::GetSpecialEffect("VelocityRender.fx"));
+		p->SetShaderName(std::string("Special/VelocityRender.fx"), matShaderMgr::GetSpecialEffect("VelocityRender.fx"));
 		l_DrawVelocityMat.SetShaderParams(p);
 	}
 }

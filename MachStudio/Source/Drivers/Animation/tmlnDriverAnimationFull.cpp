@@ -440,7 +440,7 @@ void tmlnDriverAnimationFull::check_driver_name()
 	}
 	else if (m_AnimFilename.GetValue().GetNumNames() > 0)
 	{
-		std::string str = itStringUtil::GetStdString(m_AnimFilename.GetValue().GetLastName());
+		std::string str = m_AnimFilename.GetValue().GetLastName();
 		this->SetName(str.c_str());
 	}
 }

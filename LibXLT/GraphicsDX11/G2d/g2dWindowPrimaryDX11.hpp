@@ -75,7 +75,7 @@ public:
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	virtual void SetTitle(const itString& i_Title);
+	virtual void SetTitle(const std::string& i_Title);
 
 	//------------------------------------------------------------------------
 	//	IsOpen returns true if the window is still open

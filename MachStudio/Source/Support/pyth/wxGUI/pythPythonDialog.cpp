@@ -21,7 +21,7 @@
 //============================================================================
 namespace
 {
-	itString l_LogString;
+	std::string l_LogString;
 }	// end of namespace
 
 
@@ -57,9 +57,9 @@ pythPythonDialog::~pythPythonDialog()
 //--------------------------------------------------------------------
 // Add string to log textbox
 //--------------------------------------------------------------------
-void pythPythonDialog::AddToLogTextbox(const itString& i_String)
+void pythPythonDialog::AddToLogTextbox(const std::string& i_String)
 {
-	this->m_textCtrl_PythLog->AppendText( i_String.GetString() );
+	this->m_textCtrl_PythLog->AppendText( wxString::FromUTF8(i_String) );
 }
 
 //--------------------------------------------------------------------
@@ -67,7 +67,7 @@ void pythPythonDialog::AddToLogTextbox(const itString& i_String)
 //	string for later display.
 //--------------------------------------------------------------------
 //static 
-void pythPythonDialog::AddToLog(const itString& i_String)
+void pythPythonDialog::AddToLog(const std::string& i_String)
 {
 	if (pythPythonDialog::Instance != NULL)
 	{
@@ -113,7 +113,7 @@ void pythPythonDialog::ExecuteCommand()
 	std::wstring log_string = L">> ";
 	log_string += replace_all_copy(command_str, L"\n", L"\n> ");
 	log_string += L"\n";
-	this->AddToLogTextbox(itString(log_string.c_str()));
+	this->AddToLogTextbox(envString::WideCharToUTF8(log_string));
 
 	if (pythUtil::ExecuteCommand( envString::WideCharToUTF8(command_str) ))
 	{

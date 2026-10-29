@@ -19,9 +19,9 @@
 void pqtDirectory_DirPicker_Converter::SetValueIntoControl(tqcDirPicker* i_pActualControl,
 											   fsLocator i_Value)
 {
-	itString file_path;
+	std::string file_path;
 	fsFileUtil::LocatorToUnicodeString(i_Value, file_path);
-	i_pActualControl->SetPath(QString::fromWCharArray(file_path.GetString()));
+	i_pActualControl->SetPath(QString::fromStdString(file_path));
 }
 
 //----------------------------------------------------------------------------
@@ -29,7 +29,7 @@ void pqtDirectory_DirPicker_Converter::SetValueIntoControl(tqcDirPicker* i_pActu
 //----------------------------------------------------------------------------
 fsLocator pqtDirectory_DirPicker_Converter::GetValueFromControl(tqcDirPicker* i_pActualControl)
 {
-	itString fullpath(i_pActualControl->GetPath().toStdWString().c_str());
+	std::string fullpath(i_pActualControl->GetPath().toStdString());
 	fsLocator locator;
 	fsFileUtil::UnicodeStringToLocator(fullpath, locator);
 	return locator;

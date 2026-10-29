@@ -196,11 +196,11 @@ void cptrModeRenderBake::Think()
 			cptrRenderBakeData& data = cptrRenderBakeDataUtil::Data();
 			std::string filename;
 			docSingleDocumentMgr::GetFilenameOnly(filename);
-			itString sfname(filename.c_str());
-			sfname.StripExtension();
+			std::string sfname(filename.c_str());
+			itStringUtil::StripExtension(sfname);
 			
 			fsLocator path = data.m_OutputDir.GetValue();
-			path.Push(itStringUtil::GetStdString(sfname).c_str());
+			path.Push(sfname.c_str());
 
 			path.Push("BakedTextures");
 
@@ -326,7 +326,7 @@ void cptrModeRenderBake::update_scenes_percentage()
 	oss.setf(std::ios::fixed, std::ios::floatfield);
 	oss << "Scene "<<m_SceneIndex+1<<" of "<<m_NumScenes;
 	std::string buffer(oss.str());
-	itString cameras_label(buffer.c_str());
+	std::string cameras_label(buffer.c_str());
 
 	float cameras_percentage;
 	cameras_percentage = (float)m_SceneIndex / (float)m_NumScenes;

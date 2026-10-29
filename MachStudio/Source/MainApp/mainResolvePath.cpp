@@ -113,14 +113,14 @@ bool mainResolvePath::ResolvePath(const fsLocator& i_OrigFilename,
 					//if (init_dir.GetNumNames() > 0)
 					//	init_dir.Pop();
 					//if (guiFileDialogUtils::GetOpenFileName("All files (*.*)|*.*", init_dir, o_LocalFilename))
-					itString fullpath;
+					std::string fullpath;
 					fsFileUtil::LocatorToUnicodeString( i_OrigFilename, fullpath );
-					itString title("Locate File: ");
+					std::string title("Locate File: ");
 					title += i_OrigFilename.GetLastName();
 					wxFileDialog file_dialog( twxSystem::g_pMainForm,
-									title.GetString(),
+									wxString::FromUTF8(title),
 									wxEmptyString,
-									fullpath.GetString(),
+									wxString::FromUTF8(fullpath),
 									_T("*.*"),
 									wxFD_DEFAULT_STYLE|wxFD_FILE_MUST_EXIST
 								 );
@@ -129,7 +129,7 @@ bool mainResolvePath::ResolvePath(const fsLocator& i_OrigFilename,
 
 					if (file_dialog.ShowModal() == wxID_OK)
 					{
-						itString full_path((const char*)file_dialog.GetPath().c_str());
+						std::string full_path((const char*)file_dialog.GetPath().c_str());
 						fsFileUtil::UnicodeStringToLocator(full_path, o_LocalFilename);
 						if (o_LocalFilename.GetNumNames() > 0)
 						{
@@ -191,18 +191,18 @@ bool mainResolvePath::ResolvePath(const fsLocator& i_OrigFilename,
 					//if (init_dir.GetNumNames() > 0)
 					//	init_dir.Pop();
 					//if (guiFileDialogUtils::GetOpenFileName("All files (*.*)|*.*", init_dir, o_LocalFilename))
-					itString fullpath;
+					std::string fullpath;
 					fsFileUtil::LocatorToUnicodeString( i_OrigFilename, fullpath );
-					itString title("Locate File: ");
+					std::string title("Locate File: ");
 					title += i_OrigFilename.GetLastName();
 					QString path = QFileDialog::getOpenFileName( tqtSystem::g_pMainForm,
-									QString::fromWCharArray(title.GetString()),
-									QString::fromWCharArray(fullpath.GetString()),
+									QString::fromStdString(title),
+									QString::fromStdString(fullpath),
 									"All files (*.*)" );
 
 					if (!path.isEmpty())
 					{
-						itString full_path(QDir::toNativeSeparators(path).toStdWString().c_str());
+						std::string full_path(QDir::toNativeSeparators(path).toStdString());
 						fsFileUtil::UnicodeStringToLocator(full_path, o_LocalFilename);
 						if (o_LocalFilename.GetNumNames() > 0)
 						{

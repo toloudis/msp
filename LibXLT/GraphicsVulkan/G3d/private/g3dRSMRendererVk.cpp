@@ -131,7 +131,7 @@ g3dRSMRendererVk::g3dRSMRendererVk()
 	if (!l_HairMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/HairDefault.fx"), matShaderMgr::GetSpecialEffect("HairDefault.fx"));
+		p->SetShaderName(std::string("Special/HairDefault.fx"), matShaderMgr::GetSpecialEffect("HairDefault.fx"));
 		l_HairMat.SetShaderParams(p);
 	}
 }

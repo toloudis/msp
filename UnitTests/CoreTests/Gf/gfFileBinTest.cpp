@@ -106,8 +106,8 @@ TEST(gfPaths, UserDefinedPath)
 	const int my_path = gfPaths::e_FirstUserDefPath;
 
 	fsLocator path;
-	path.Push(itString("C:"));
-	path.Push(itString("gfTestDir"));
+	path.Push(std::string("C:"));
+	path.Push(std::string("gfTestDir"));
 	gfPaths::SetPath(my_path, path);
 
 	EXPECT_TRUE(gfPaths::GetPath(my_path).Equals(path));

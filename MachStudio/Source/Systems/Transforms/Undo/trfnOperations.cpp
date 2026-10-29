@@ -190,11 +190,11 @@ namespace trfnOperations
 	{
 		if (i_Filename.IsEmpty())
 		{
-			trfnObjectMgr::create_default_name(itString("Parent"), o_NameString, l_ObjectCounter);
+			trfnObjectMgr::create_default_name(std::string("Parent"), o_NameString, l_ObjectCounter);
 		}
 		else
 		{
-			trfnObjectMgr::create_duplicate_name(itString(i_Filename.GetString().c_str()), o_NameString);
+			trfnObjectMgr::create_duplicate_name(i_Filename.GetString(), o_NameString);
 		}
 	}
 

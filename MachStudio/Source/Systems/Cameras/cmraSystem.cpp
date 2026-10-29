@@ -109,10 +109,10 @@ namespace cmraSystem
 	//--------------------------------------------------------------------
 	// Init 
 	//--------------------------------------------------------------------
-	void Init(const fsLocator& i_AppDir, const itString& i_CameraDataDir)
+	void Init(const fsLocator& i_AppDir, const std::string& i_CameraDataDir)
 	{
 		// Set paths
-		cmraAnimList::Init( i_CameraDataDir, itString(gfPaths::GetSubPath(gfPaths::e_Data)) );
+		cmraAnimList::Init( i_CameraDataDir, std::string(gfPaths::GetSubPath(gfPaths::e_Data)) );
 		cmraAnimList::SetAppDirectory( i_AppDir );
 
 		// Set up callback

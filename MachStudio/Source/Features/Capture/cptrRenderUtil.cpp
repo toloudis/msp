@@ -56,7 +56,7 @@ namespace
 	bool m_bIsPhotoshop = false;
 	bool l_bCaptureToneMapped = false;
 
-	itString	l_OutputFilename;
+	std::string	l_OutputFilename;
 	fsLocator	l_OutputFilenameFull;
 
 	g2dWindow*			l_pWindow = NULL;		// the capture window
@@ -432,7 +432,7 @@ fsLocator cptrRenderUtil::GetRibFilename()
 
 	// Write bitmap to file
 	int current_frame;
-	itString pureFileName;
+	std::string pureFileName;
 	tmlnTimeUtil::GetTimeInFrames( l_fSimTime, current_frame );
 	captRenderOutputDataUtil::SetCurrentFrame( current_frame );
 	captRenderOutputDataUtil::GenerateFilename( pureFileName, true );
@@ -509,9 +509,9 @@ void cptrRenderUtil::CaptureFrame()
 			captRenderOutputDataUtil::GenerateFilename( l_OutputFilename );
 			//DBG_LOG("capture frame (" << l_OutputFilename.c_str() << ")" );
 
-			l_OutputFilename += itString(L".");
+			l_OutputFilename += std::string(".");
 
-			l_OutputFilename += itString(data.m_CaptureFormat.GetValue().c_str());
+			l_OutputFilename += data.m_CaptureFormat.GetValue();
 			
 			fsLocator dir = data.m_OutputDirectory.GetValue();
 			dir.Push(l_OutputFilename);
@@ -644,7 +644,7 @@ void cptrRenderUtil::OpenOutput()
 		
 		l_OutputFilenameFull = data.m_OutputDirectory.GetValue();
 		l_OutputFilenameFull.Push(l_OutputFilename);
-		l_OutputFilenameFull.Push(itString(L".avi"));
+		l_OutputFilenameFull.Push(std::string(".avi"));
 	}
 }
 
@@ -898,8 +898,8 @@ void cptrRenderUtil::CaptureImage(g2dImage* i_pImage)
 		captRenderOutputDataUtil::GenerateFilename( l_OutputFilename );
 		//DBG_LOG("capture frame (" << l_OutputFilename.c_str() << ")" );
 
-		l_OutputFilename += itString(L".");
-		l_OutputFilename += itString(data.m_CaptureFormat.GetValue().c_str());
+		l_OutputFilename += std::string(".");
+		l_OutputFilename += data.m_CaptureFormat.GetValue();
 		fsLocator dir = data.m_OutputDirectory.GetValue();
 		dir.Push(l_OutputFilename);
 		data.m_OutputDirectory.SetValue(dir);

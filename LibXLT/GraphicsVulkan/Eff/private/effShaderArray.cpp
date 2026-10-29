@@ -427,7 +427,7 @@ void effShaderArray::UnloadEffect(const fsLocator& i_PathToShader,
 								  std::map<fsLocator, matShaderEffect*>& io_ShaderMap)
 {
 	// Make sure shader is loaded in as a tokenized fsLocator
-	itString itName;
+	std::string itName;
 	fsLocator shaderLoc;	
 	fsFileUtil::LocatorToUnicodeString( i_PathToShader, itName );	
 	fsFileUtil::UnicodeStringToLocator( itName, shaderLoc );
@@ -489,7 +489,7 @@ matShaderEffect* effShaderArray::LoadEffect(const fsLocator& i_PathToShader,
 	fsLocator shaderLoc = matShaderMgr::ResolveShaderPath(i_PathToShader);
 
 	// Get the shader name
-	std::string shaderFileName = itStringUtil::GetStdString(shaderLoc.GetLastName());
+	std::string shaderFileName = shaderLoc.GetLastName();
 
 	pEffect = LoadPlainMaterial(shaderLoc, shaderFileName);
 	if (pEffect)

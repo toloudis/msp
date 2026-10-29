@@ -44,13 +44,13 @@ pytDialogInterest::pytDialogInterest()
 //	Add Object to Placed
 //--------------------------------------------------------------------
 //virtual 
-void pytDialogInterest::AddObject(const itString& i_FileName, const fsLocator& i_Path)
+void pytDialogInterest::AddObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 
 	try
 	{
 		std::string execObjectName;
-		execObjectName = itStringUtil::GetStdString(i_FileName);
+		execObjectName = i_FileName;
 		ExecObject(execObjectName);
 	}
 	catch (const fsFileDoesntExistX& i_Ex)
@@ -105,11 +105,11 @@ void pytDialogInterest::GetAvailableObjects(fsysFileList& io_FileList) const
 	path.Push(c_SystemName);
 	std::vector<std::string> pObjectNames;
 	pythCommands::GetPyObjectNames(pObjectNames);
-	itString fname;
+	std::string fname;
 	const int num_objs = pObjectNames.size();
 	for( int i = 0; i < num_objs; ++i )
 	{
-		fname = itString( pObjectNames[i].c_str() );
+		fname = pObjectNames[i];
 		//DBG_WARNING1("The object name is: %s", pObjectNames[i].c_str());
 		io_FileList.AddFilename(path,fname);
 	}

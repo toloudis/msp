@@ -29,6 +29,7 @@
 
 #include "Tool/gui/guiProgressDialog.hpp"
 
+#include <filesystem>
 #include <vector>
 
 #undef CreateDirectory
@@ -599,7 +600,7 @@ void FillRendermanBatchRibs( std::vector<fsLocator> i_Vec, std::string i_Engine,
 void FillRendermanBatchTex( std::map<std::string,std::pair<matTexture*,fsLocator>> i_Map, std::string i_Engine,
 							std::ofstream & i_Stream, int i_MapType, rmanGlobalData & io_GlobalData)
 {
-	std::vector< itString > writtenTextures;
+	std::vector< std::string > writtenTextures;
 
 	for(std::map<std::string, std::pair<matTexture*,fsLocator>>::const_iterator it = i_Map.begin(); it != i_Map.end(); ++it)
 	{
@@ -616,12 +617,12 @@ void FillRendermanBatchTex( std::map<std::string,std::pair<matTexture*,fsLocator
 		destStr.append("\\");
 
 		fsLocator texturePath = rmanUtil::LookupTexturePath(it->first,io_GlobalData);
-		itString tiffFile = itString(rmanUtil::LookupGeneratedTexName(texturePath,io_GlobalData).c_str());
+		std::string tiffFile = rmanUtil::LookupGeneratedTexName(texturePath,io_GlobalData);
 
 		if ( !envSTLHelpers::Contains( writtenTextures , tiffFile ) )
 		{
-			std::string srcFileNameStr = itStringUtil::GetStdString(tiffFile) + ".tif";
-			std::string dstFileNameStr = itStringUtil::GetStdString(tiffFile) + ".tex";	
+			std::string srcFileNameStr = tiffFile + ".tif";
+			std::string dstFileNameStr = tiffFile + ".tex";	
 
 			StartSmartBatchItem(i_Stream, destStr + dstFileNameStr, io_GlobalData);
 
@@ -644,8 +645,8 @@ void rmanMgr::WriteTiffTextures( rmanGlobalData & io_GlobalData )
 	for(std::map<std::string, std::pair<matTexture*,fsLocator>>::const_iterator it = io_GlobalData.m_Textures.begin(); it != io_GlobalData.m_Textures.end(); ++it)
 	{
 		fsLocator texturePath = rmanUtil::LookupTexturePath(it->first,io_GlobalData);
-		itString tiffFile = itString(rmanUtil::LookupGeneratedTexName(texturePath,io_GlobalData).c_str());
-		tiffFile += itString(".tif");
+		std::string tiffFile = rmanUtil::LookupGeneratedTexName(texturePath,io_GlobalData);
+		tiffFile += std::string(".tif");
 
 		fsLocator tiffLoc = io_GlobalData.m_TiffLoc;
 		tiffLoc.Push(tiffFile);
@@ -724,9 +725,9 @@ fsLocator rmanMgr::SetupRendermanBatch(const fsLocator& i_Root, const rmanExport
 	batchFileName.Pop();
 	batchFileName.Pop();
 	batchFileName.Push(batch.c_str());
-	itString itFileName;
+	std::string itFileName;
 	fsFileUtil::LocatorToUnicodeString( batchFileName, itFileName );
-	std::ofstream batchFile( itFileName.GetString() , std::ios::out );
+	std::ofstream batchFile( std::filesystem::u8path(itFileName) , std::ios::out );
 
 	bool skipTextures = false;
 
@@ -803,9 +804,9 @@ fsLocator rmanMgr::WriteMasterBatch()
 	fsLocator rootLoc = l_RootLoc;
 	rootLoc.Push("RMan_Master_batch.bat");
 
-	itString itFileName;
+	std::string itFileName;
 	fsFileUtil::LocatorToUnicodeString( rootLoc, itFileName );
-	std::ofstream batchFile( itFileName.GetString() , std::ios::out );
+	std::ofstream batchFile( std::filesystem::u8path(itFileName) , std::ios::out );
 
 	for ( int i = 0 ; i < batchCollection.size() ; i++ )
 	{
@@ -821,7 +822,7 @@ fsLocator rmanMgr::WriteMasterBatch()
 // RendermanEntry()
 //----------------------------------------------------------------------------
 void rmanMgr::RendermanEntry( float i_AspectRatio, camCamera* i_Camera, g3dPrefs::g3dRenderPrefs i_RenderPrefs,
-							   fsLocator i_FileName, itString i_CurrentScene, int i_Width, int i_Height,
+							   fsLocator i_FileName, std::string i_CurrentScene, int i_Width, int i_Height,
 							   int i_FilterFunc, float i_FilterWidth, int i_CaptureSampling,
 							   const rmanOptionsData & i_Options,
 							   bool & o_err, std::string & o_err_msg )
@@ -832,10 +833,10 @@ void rmanMgr::RendermanEntry( float i_AspectRatio, camCamera* i_Camera, g3dPrefs
 	l_bRmanExportActive = true;
 	l_RootLoc = rootLoc;
 
-	itString currFrameNameIt = i_FileName.GetLastName();
-	currFrameNameIt.StripExtension();
-	std::string currFrameName = itStringUtil::GetStdString(currFrameNameIt);
-	std::string sceneName = itStringUtil::GetStdString(i_CurrentScene);
+	std::string currFrameNameIt = i_FileName.GetLastName();
+	itStringUtil::StripExtension(currFrameNameIt);
+	std::string currFrameName = currFrameNameIt;
+	std::string sceneName = i_CurrentScene;
 	std::string frameNumber = sceneName + "_Frame_" + currFrameName.substr(currFrameName.rfind("_")+1,currFrameName.length()-1);
 
 	std::string engine = "prman";
@@ -849,7 +850,7 @@ void rmanMgr::RendermanEntry( float i_AspectRatio, camCamera* i_Camera, g3dPrefs
 		o_err_msg = "No path to \"prman.exe\" has been specified in MachStudio preferences. Aborting.\n\n";
 		return;
 	} 
-	if ( !fsFileUtil::FileExists( prmanLoc ) || prmanLoc.GetLastName() != itString("prman.exe") )
+	if ( !fsFileUtil::FileExists( prmanLoc ) || prmanLoc.GetLastName() != "prman.exe" )
 	{
 		o_err = true;
 		o_err_msg = "Correct path to \"prman.exe\" has not been specified in MachStudio preferences. Aborting.\n\n";

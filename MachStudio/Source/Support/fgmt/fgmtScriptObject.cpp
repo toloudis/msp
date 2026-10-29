@@ -319,9 +319,9 @@ fgmtScriptObject::fgmtScriptObject(api3dObject* i_pObject,
 	m_ModelTextureLocator = find_texture_path(i_ModelLocator);
 	DBG_ASSERT(i_pObject, "Null api3dObject.");
 	
-	itString modelName = i_ModelLocator.GetLastName();
-	modelName.StripExtension();
-	m_ModelName = itStringUtil::GetStdString(modelName);
+	std::string modelName = i_ModelLocator.GetLastName();
+	itStringUtil::StripExtension(modelName);
+	m_ModelName = modelName;
 	m_BaseName = i_BaseName;
 	GatherFragments();
 	for (int i = 0; i < m_FragmentUI.size(); i++)
@@ -1141,7 +1141,7 @@ void fgmtScriptObject::CreateBakedMaterials()
 			nameStr = m_FragmentNodes[i][j]->GetBakeName();
 			nameStr.append("_Baked_Normals.");
 			nameStr.append(m_FragmentData[i].m_BakedTextureFormat.GetValue().c_str());
-			itString nameItString(nameStr.c_str());
+			std::string nameItString(nameStr.c_str());
 			path.ReplaceLastName( nameItString );
 			if (fsFileUtil::FileExists(path))
 			{

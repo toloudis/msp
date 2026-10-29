@@ -17,9 +17,6 @@
 #include "Core/env/envPlatform.hpp"
 #endif
 
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
 
 #include <list>
 #include <map>
@@ -33,7 +30,7 @@ class matShaderEffect;
 
 struct matShaderInfo
 {
-	itString m_Name;
+	std::string m_Name;
 	std::string m_UIName;
 	std::string m_HelpString;
 	bool m_bSupportsOutline;

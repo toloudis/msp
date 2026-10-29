@@ -42,22 +42,22 @@ namespace
 	//		o_Extension = ".jpg"
 	//----------------------------------------------------------------------------
 
-	void find_number_pattern(const itString &i_Filename, 
-							 itString &o_Prefix, 
+	void find_number_pattern(const std::string &i_Filename, 
+							 std::string &o_Prefix, 
 							 int &o_InitNum, 
 							 std::string &o_Format, 
-							 itString &o_Extension)
+							 std::string &o_Extension)
 	{
-		int length = i_Filename.GetLength();
+		int length = i_Filename.size();
 
 		// Break out extension
 		o_Extension = "";
 		int pos = length-1;
-		if (i_Filename.HasSubString(itString(".")))
+		if ((i_Filename.find(std::string(".")) != std::string::npos))
 		{
 			for (; pos>=0; pos--)
 			{
-				o_Extension.InsertCharAt(0, i_Filename[pos]);
+				o_Extension.insert(o_Extension.begin(), i_Filename[pos]);
 				if (i_Filename[pos] == '.')
 				{
 					pos--;
@@ -71,7 +71,7 @@ namespace
 		int digit_count = 0;
 		for (; pos>=0; pos--)
 		{
-			itString::CharType ch = i_Filename[pos];
+			char ch = i_Filename[pos];
 			if (ch >= '0' && ch <= '9')
 				digit_count++;
 			else
@@ -101,7 +101,7 @@ namespace
 		o_Format = buffer.c_str();
 
 		// Now take off prefix from front of string
-		o_Prefix = itString(0, pos+1, i_Filename);
+		o_Prefix = i_Filename.substr(0, pos+1);
 	}
 
 }	// end of namespace
@@ -171,7 +171,7 @@ std::string tmlnDriverAnimatedTextureFileName::GetHoverDescription()
 	if (m_FirstTextureFileName.GetValue().GetNumNames() > 0)
 	{
 		std::string str = "List : ";
-		str += itStringUtil::GetStdString(m_FirstTextureFileName.GetValue().GetLastName());
+		str += m_FirstTextureFileName.GetValue().GetLastName();
 		desc += str;
 	}
 	return desc;
@@ -324,7 +324,7 @@ void tmlnDriverAnimatedTextureFileName::GetResourceList( fsResourceTrackerData& 
 {
 	if (m_FirstTextureFileName.GetValue().GetNumNames() > 0)
 	{
-		itString first_filename = m_FirstTextureFileName.GetValue().GetLastName();
+		std::string first_filename = m_FirstTextureFileName.GetValue().GetLastName();
 		fsLocator dir_loc(m_FirstTextureFileName.GetValue());
 		dir_loc.Pop();
 
@@ -338,7 +338,7 @@ void tmlnDriverAnimatedTextureFileName::GetResourceList( fsResourceTrackerData& 
 			// find number pattern from filename
 			//
 			int init_num = 0;
-			itString prefix, extension;
+			std::string prefix, extension;
 			std::string format;
 			find_number_pattern(first_filename, prefix, init_num, format, extension);
 
@@ -347,7 +347,7 @@ void tmlnDriverAnimatedTextureFileName::GetResourceList( fsResourceTrackerData& 
 			for (int i=0; i < this->m_NumberOfFrames.GetValue(); i++)
 			{
 				// get filename based on numbering
-				itString filename;
+				std::string filename;
 				if (i==0)
 				{
 					filename = first_filename;
@@ -357,7 +357,7 @@ void tmlnDriverAnimatedTextureFileName::GetResourceList( fsResourceTrackerData& 
 					filename = prefix;
 					char buffer[64];
 					::sprintf(buffer, format.c_str(), init_num+i);
-					filename += itString(buffer);
+					filename += std::string(buffer);
 					filename += extension;
 				}
 			
@@ -481,14 +481,14 @@ void tmlnDriverAnimatedTextureFileName::set_textures( const fsLocator& i_FirstTe
 		{
 			// Load animation - looking for numbers at the end of the 
 			// filename in order to use as a counter
-			itString first_filename = i_FirstTextureFileName.GetLastName();
+			std::string first_filename = i_FirstTextureFileName.GetLastName();
 			fsLocator dir = i_FirstTextureFileName;
 			dir.Pop();
 
 			// find number pattern from filename
 			//
 			int init_num = 0;
-			itString prefix, extension;
+			std::string prefix, extension;
 			std::string format;
 			find_number_pattern(first_filename, prefix, init_num, format, extension);
 			//	create all the texture names
@@ -496,7 +496,7 @@ void tmlnDriverAnimatedTextureFileName::set_textures( const fsLocator& i_FirstTe
 			for (int i=0; i<i_NumFrames; i++)
 			{
 				// get filename based on numbering
-				itString filename;
+				std::string filename;
 				if (i==0)
 				{
 					filename = first_filename;
@@ -506,7 +506,7 @@ void tmlnDriverAnimatedTextureFileName::set_textures( const fsLocator& i_FirstTe
 					filename = prefix;
 					char buffer[64];
 					::sprintf(buffer, format.c_str(), init_num+i);
-					filename += itString(buffer);
+					filename += std::string(buffer);
 					filename += extension;
 				}
 
