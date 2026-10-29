@@ -216,17 +216,6 @@ jobs:
           /nologo
           /v:minimal
 
-      # The XML reports the test runs in the build wrote, uploaded even when
-      # a test failed. The test projects are toolkit-neutral: they build in
-      # plain Debug or Release (see Directory.Build.props).
-      - name: Upload unit test results
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: unit-tests-${{ matrix.configuration }}
-          path: UnitTests/bin/x64/${{ startsWith(matrix.configuration, 'Debug') && 'Debug' || 'Release' }}/*.xml
-          if-no-files-found: ignore
-
       # Each configuration builds into MachStudio/MachStudio-x64-<toolkit>-<Debug|Release>.
       # The exe loads OpenEXR from its own folder; fail if a build would not
       # start because the DLL is missing.
@@ -252,3 +241,16 @@ jobs:
           foreach ($f in "Qt6Core$suffix.dll", "Qt6Gui$suffix.dll", "Qt6Widgets$suffix.dll", "platforms/qwindows$suffix.dll") {
             if (-not (Test-Path "$dir/$f")) { throw "$f is missing" }
           }
+
+      # The Qt application and the RenderNode renderer, Release, as built:
+      # the whole run directory (exe, DLLs, Qt plugins, Data), without the
+      # debug symbols.
+      - name: Upload build
+        if: ${{ matrix.configuration == 'Release Qt' || matrix.configuration == 'Release RenderNode' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: MachStudio-x64-${{ endsWith(matrix.configuration, 'Qt') && 'Qt' || 'RenderNode' }}-Release
+          path: |
+            MachStudio/MachStudio-x64-${{ endsWith(matrix.configuration, 'Qt') && 'Qt' || 'RenderNode' }}-Release/
+            !MachStudio/MachStudio-x64-*-Release/**/*.pdb
+          if-no-files-found: error

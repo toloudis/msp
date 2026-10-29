@@ -163,8 +163,9 @@ hold settings:
   passed. A new test project gets the same reference in `MainApp.vcxproj`
   and may reference whatever libraries it tests. CI builds
   `MainApp;CoreTests;MainAppTests;ImportExportTests;GraphicsTests` in every
-  configuration (which runs all but GraphicsTests) and uploads the XML
-  reports.
+  configuration (which runs all but GraphicsTests), and uploads the
+  `Release Qt` and `Release RenderNode` run directories (without `.pdb`
+  files) as build artifacts.
 - Core headers have `#error` "multiply included" guards, so guard their
   includes in test files as everywhere else (`#ifndef MA_PLANE_HPP ...`).
 - `UnitTests/CoreTests/Data/` holds files the tests read, found from the
