@@ -67,7 +67,7 @@ namespace
 	size_t start = 0.0, finish = 0.0, end = 0.0;
 	void (*l_ReloadObjectsFunction)(const fsLocator& i_Path, const std::string i_SystemName);
 	void (*l_ReloadTextureFunction)(const fsLocator& i_TextureName, bool i_bIsMipMap);
-	void (*l_AddObjectsFunction) (const itString& i_FileName, const fsLocator& i_Path);
+	void (*l_AddObjectsFunction) (const std::string& i_FileName, const fsLocator& i_Path);
  
 
 	//--------------------------------------------------------------------
@@ -141,7 +141,7 @@ namespace
 	void file_check(const size_t start, const size_t end)
 	{
 		std::string fileName, i_fileName; 
-		itString t_FileName, o_Extension;
+		std::string t_FileName, o_Extension;
 		time_t  newTime;
 		bool UpdateObject = false;
 		
@@ -155,14 +155,14 @@ namespace
 			// Check whether the object has been updated 
 			if(newTime != initTimes[i] && newTime!= -1 && need_update[i])
 			{
-				int length = t_FileName.GetLength();
+				int length = int(t_FileName.size());
 				// Break out extension
 				o_Extension = "";
 				int pos = length-1;
-				if (t_FileName.HasSubString(itString(".")))
+				if (t_FileName.find('.') != std::string::npos)
 				{
-					t_FileName.GetExtension(o_Extension);
-					o_Extension = itStringUtil::ToLower(o_Extension);
+					itStringUtil::GetExtension(t_FileName, o_Extension);
+					itStringUtil::ToLower(o_Extension);
 
 				}
 				DBG_TRACE(" Object "<<fileName<<" has been updated");
@@ -188,7 +188,7 @@ namespace
 				if(UpdateObject || !FileUpdated::l_PromptBeforeUpdate)
 				{
 					// Check if the file that needs to be updated is an object
-					if(l_ReloadObjectsFunction !=NULL && o_Extension.HasSubString(itString("gxb")))
+					if(l_ReloadObjectsFunction !=NULL && (o_Extension.find("gxb") != std::string::npos))
 					{
 						if(fsFileUtil::FileExists(fileNames[i]))
 						{
@@ -202,10 +202,10 @@ namespace
 
 				
 				// Reload Textures
-					else if(l_ReloadTextureFunction !=NULL && ( o_Extension.HasSubString(itString("bmp")) || o_Extension.HasSubString(itString("png"))
-															   ||o_Extension.HasSubString(itString("dds")) || o_Extension.HasSubString(itString("tga"))
-																		   ||o_Extension.HasSubString(itString("jpg")) || o_Extension.HasSubString(itString("hdr"))
-																		   ||o_Extension.HasSubString(itString("tif"))))
+					else if(l_ReloadTextureFunction !=NULL && ( (o_Extension.find("bmp") != std::string::npos) || (o_Extension.find("png") != std::string::npos)
+															   ||(o_Extension.find("dds") != std::string::npos) || (o_Extension.find("tga") != std::string::npos)
+																		   ||(o_Extension.find("jpg") != std::string::npos) || (o_Extension.find("hdr") != std::string::npos)
+																		   ||(o_Extension.find("tif") != std::string::npos)))
 					{
 						if(fsFileUtil::FileExists(fileNames[i]))
 						{
@@ -341,7 +341,7 @@ void fsFileNotifyMgr::ObjectReloadFunction(void (*i_ObjectReloadFunction)(const 
 	l_ReloadObjectsFunction = i_ObjectReloadFunction;
 }
 
-void fsFileNotifyMgr::ObjectAddFunction(void (*i_ObjectAddFunction)(const itString& i_Name, const fsLocator& i_Path))
+void fsFileNotifyMgr::ObjectAddFunction(void (*i_ObjectAddFunction)(const std::string& i_Name, const fsLocator& i_Path))
 {
 	l_AddObjectsFunction = i_ObjectAddFunction;
 }

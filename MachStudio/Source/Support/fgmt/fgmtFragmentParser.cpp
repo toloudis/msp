@@ -130,7 +130,7 @@ namespace
 				// added in version 3
 				prtyFileName aoTextureName;
 				aoTextureName.Read(i_Reader);
-				if (aoTextureName.GetValue().GetLength() != 0)
+				if (aoTextureName.GetValue().size() != 0)
 					o_Data.m_AOUserTextureName = aoTextureName;
 				// added in version 4
 				o_Data.m_AOBlendFactor.Read(i_Reader);
@@ -145,7 +145,7 @@ namespace
 				prtyFileName aoTextureName;
 				aoTextureName.Read(i_Reader);
 				// if empty, dont overwrite prty that may have been if already read in above
-				if (aoTextureName.GetValue().GetLength() != 0)
+				if (aoTextureName.GetValue().size() != 0)
 					o_Data.m_AOUserTextureName = aoTextureName;
 				// added in version 4
 				o_Data.m_AOBlendFactor.Read(i_Reader);

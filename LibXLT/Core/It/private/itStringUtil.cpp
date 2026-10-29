@@ -8,7 +8,9 @@
 \****************************************************************************/
 #include "Core/it/itStringUtil.hpp"
 
-#include "Core/Env/envString.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #include <cctype> // for toupper
 #include <string>
@@ -67,6 +69,13 @@ std::string GetStdString(const itString& i_String)
 	return envString::WideCharToUTF8(i_String.GetString(), i_String.GetLength());
 }
 
+std::string GetStdString(const std::string& i_String)
+{
+	return i_String;
+}
+
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
 void GetStdString( const itString& i_String, char* o_szBuffer, int& io_NumChars )
 {
 	std::string string = GetStdString( i_String );
@@ -90,6 +99,11 @@ double GetDouble(const itString& i_String)
 	return atof(strEightBit.data());
 }
 
+double GetDouble(const std::string& i_String)
+{
+	return atof(i_String.c_str());
+}
+
 //------------------------------------------------------------------------
 //	Convert a itString into an int data type.
 //------------------------------------------------------------------------
@@ -100,6 +114,12 @@ int GetInt(const itString& i_String)
 
 	// Convert the 8-bit string into an int
 	return atoi( strEightBit.data() );
+}
+
+//------------------------------------------------------------------------
+int GetInt(const std::string& i_String)
+{
+	return atoi(i_String.c_str());
 }
 
 //------------------------------------------------------------------------
@@ -155,6 +175,11 @@ bool Equal(const itString& i_String1, const itString& i_String2)
 	itString s2 = i_String2;
 	ToLower(s2);
 	return (s1 == s2);
+}
+
+bool Equal(const std::string& i_String1, const std::string& i_String2)
+{
+	return CompareNoCase(i_String1, i_String2) == 0;
 }
 
 //------------------------------------------------------------------------
@@ -219,6 +244,23 @@ bool GreaterThanOrEqual(const itString& i_String1, const itString& i_String2)
 	return (s1 >= s2);
 }
 
+bool LessThan(const std::string& i_String1, const std::string& i_String2)
+{
+	return CompareNoCase(i_String1, i_String2) < 0;
+}
+bool LessThanOrEqual(const std::string& i_String1, const std::string& i_String2)
+{
+	return CompareNoCase(i_String1, i_String2) <= 0;
+}
+bool GreaterThan(const std::string& i_String1, const std::string& i_String2)
+{
+	return CompareNoCase(i_String1, i_String2) > 0;
+}
+bool GreaterThanOrEqual(const std::string& i_String1, const std::string& i_String2)
+{
+	return CompareNoCase(i_String1, i_String2) >= 0;
+}
+
 //----------------------------------------------------------------------------
 //	Break apart the filename into components.  The assumed format of the
 //	filename is TextXXX.ext, where "Text" are letters, "XXX" is a number, and
@@ -276,6 +318,51 @@ int Breakup_Filename(const itString& i_Filename,
 	return number_digits;
 }
 
+int Breakup_Filename(const std::string& i_Filename, 
+					 std::string& o_BaseFilename, 
+					 std::string& o_Ext, 
+					 int& o_InitialNumber)
+{
+	if (i_Filename.empty())
+		return 0;
+
+	GetExtension(i_Filename, o_Ext);
+
+	//	rework the base to not have the numbers associated.
+	GetBase(i_Filename, o_BaseFilename);
+
+	int number_digits = 0;
+	int i, index = -1;
+	const int length = int(o_BaseFilename.size());
+	for (i = length-1; i >= 0; --i)
+	{
+		if (o_BaseFilename[i] < '0' || o_BaseFilename[i] > '9')
+		{
+			//	if there are no numbers, just bail out
+			//	if there is a number, then mark where it ends
+			if (i < (length-1))
+				index = i;
+			break;
+		}
+		else
+		{
+			number_digits++;
+		}
+	}
+
+	if (index == -1)
+	{
+		o_InitialNumber = 0;
+	}
+	else
+	{
+		o_InitialNumber = GetInt(o_BaseFilename.substr(index+1));
+		o_BaseFilename.resize(index+1);
+	}
+
+	return number_digits;
+}
+
 //	// Look for a stream of bitmap files:
 //	int iNumDigits = 0;
 //	if ((pszBasename[iPos-1] == '0') || (pszBasename[iPos-1] == '1')) 
@@ -319,6 +406,21 @@ void Build_Filename(const itString& i_Basename,
 	o_FName += i_Ext;
 }
 
+void Build_Filename(const std::string& i_Basename, 
+					const std::string& i_Ext, 
+					int i_Number, 
+					int i_NumDigits, 
+					std::string& o_FName)
+{
+	std::ostringstream num_ss(std::ostringstream::out);
+	num_ss << std::setw(i_NumDigits) << std::setfill('0') << i_Number;
+
+	o_FName = i_Basename;
+	o_FName += num_ss.str();
+	o_FName += '.';
+	o_FName += i_Ext;
+}
+
 
 //----------------------------------------------------------------------------
 //	trim the leading and ending spaces from a standard string.
@@ -354,6 +456,55 @@ void TrimSpaces(itString& io_String)
 	std::string sstring = GetStdString(io_String);
 	TrimSpaces(sstring);
 	io_String = sstring.c_str();
+}
+
+//----------------------------------------------------------------------------
+//	The file-name helpers itString had as members, for UTF-8 std::strings.
+//----------------------------------------------------------------------------
+void StripExtension(std::string& io_String)
+{
+	const std::string::size_type period = io_String.rfind('.');
+	if (period != std::string::npos)
+		io_String.erase(period);
+}
+
+void ReplaceExtension(std::string& io_String, const std::string& i_NewExtension)
+{
+	StripExtension(io_String);
+	io_String += '.';
+	io_String += i_NewExtension;
+}
+
+void GetExtension(const std::string& i_String, std::string& o_Extension)
+{
+	const std::string::size_type period = i_String.rfind('.');
+	if (period != std::string::npos)
+		o_Extension = i_String.substr(period + 1);
+}
+
+void GetBase(const std::string& i_String, std::string& o_Base)
+{
+	const std::string::size_type period = i_String.rfind('.');
+	if (period != std::string::npos)
+		o_Base = i_String.substr(0, period);
+}
+
+//----------------------------------------------------------------------------
+//	True if i_String starts or ends with i_SubString, which must not be
+//	empty (as itString::StartsWith and EndsWith).
+//----------------------------------------------------------------------------
+bool StartsWith(const std::string& i_String, const std::string& i_SubString)
+{
+	return !i_SubString.empty()
+		&& i_String.size() >= i_SubString.size()
+		&& i_String.compare(0, i_SubString.size(), i_SubString) == 0;
+}
+
+bool EndsWith(const std::string& i_String, const std::string& i_SubString)
+{
+	return !i_SubString.empty()
+		&& i_String.size() >= i_SubString.size()
+		&& i_String.compare(i_String.size() - i_SubString.size(), i_SubString.size(), i_SubString) == 0;
 }
 
 }

@@ -105,7 +105,7 @@ void perform_auto_save()
 	//	perform the save
 	//
 	fsLocator origfile = docSingleDocumentMgr::GetFilename();
-	itString filename = (origfile.GetNumNames() > 0) ? origfile.GetLastName() : itString("Untitled");
+	itString filename = (origfile.GetNumNames() > 0) ? itString(origfile.GetLastName()) : itString("Untitled");
 	
 	fsLocator bufile;
 	bufile = gfPaths::GetPath( mnmPaths::e_AutoSave );

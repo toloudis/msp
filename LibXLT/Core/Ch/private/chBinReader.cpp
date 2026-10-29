@@ -9,6 +9,9 @@
 #include "Core/ch/chBinReader.hpp"
 
 #include "Core/ch/chExceptionX.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/fs/fsFilePosSaver.hpp"
 #include "Core/gf/gfFileBin.hpp"
 #include "Core/gf/gfFileUtil.hpp"
@@ -224,44 +227,37 @@ void chBinReader::Read(std::string& o_Val, int i_Length)
 }
 
 //--------------------------------------------------------------------
-//	This Read reads a NULL-terminated Unicode character string.  
+//	ReadItString reads a NULL-terminated string as UTF-8: stored as UTF-8
+//	in PWFB files, and as UTF-16, which it converts, in older ones and
+//	in files whose header wasn't read (gfFileBin::HasUTF8Strings).
 //--------------------------------------------------------------------
-void chBinReader::Read(itString& o_Val)
+void chBinReader::ReadItString(std::string& o_Val)
 {
+	if( m_File.HasUTF8Strings() )
+	{
+		Read(o_Val);
+		return;
+	}
+
 	DBG_ASSERT( m_File.GetFilePos() < m_ChunkEnds.top(), "Read past end of chunk");
 
-	o_Val.Clear();
-
-	int16_t character;
-
+	//	a string ends at its NUL, or at the end of the chunk in a damaged file
+	std::u16string utf16;
+	uint16_t character = 0;
 	do
 	{
+		if ( m_File.GetFilePos() + 2 > m_ChunkEnds.top() )
+		{
+			DBG_ERROR("UTF-16 string runs past the end of its chunk");
+			break;
+		}
 		gfFileUtil::Read(m_File, character);
-		//o_Val += character;	// add the NULL
 		if ( character )
-			o_Val += character;	// now, do not add the NULL
+			utf16 += char16_t(character);
 	}
 	while( character );
-}
 
-//--------------------------------------------------------------------
-//	This Read Reads a Unicode character string with a length
-//	given by i_Length.
-//--------------------------------------------------------------------
-void chBinReader::Read(itString& o_Val, int i_Length)
-{
-	DBG_ASSERT( m_File.GetFilePos() < m_ChunkEnds.top(), "Read past end of chunk");
-
-	o_Val.Clear();
-
-	int16_t character;
-
-	int i;
-	for( i = 0 ; i < i_Length ; i++ )
-	{
-		gfFileUtil::Read(m_File, character);
-		o_Val += character;
-	}
+	o_Val = envString::UTF16ToUTF8(utf16);
 }
 
 //--------------------------------------------------------------------

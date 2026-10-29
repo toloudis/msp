@@ -23,7 +23,6 @@
 
 //============================================================================
 //============================================================================
-class itString;
 class fsLocator;
 
 
@@ -107,7 +106,7 @@ namespace fsFileUtilPAC
 	//	Windows NT or 2000).  This function is not part of the fsFileUtil 
 	//	interface.
 	//----------------------------------------------------------------------------
-	void LocatorToUnicodeFilename(const fsLocator& i_Locator, itString& o_String );
+	void LocatorToUnicodeFilename(const fsLocator& i_Locator, std::wstring& o_String );
 
 	//----------------------------------------------------------------------------
 	//	LocatorToUnicodeFilename is used internally by the win32 PACs in the fs
@@ -115,7 +114,7 @@ namespace fsFileUtilPAC
 	//	Windows NT or 2000).  This function is not part of the fsFileUtil 
 	//	interface.
 	//----------------------------------------------------------------------------
-	void LocatorToUnicodeFilename(const fsLocator& i_Locator, itString& o_String, const int i_StartNum, const int i_EndNum );
+	void LocatorToUnicodeFilename(const fsLocator& i_Locator, std::wstring& o_String, const int i_StartNum, const int i_EndNum );
 
 	//----------------------------------------------------------------------------
 	//	Create a filename string that is unique within the given pathlocator,

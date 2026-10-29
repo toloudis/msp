@@ -337,7 +337,8 @@ gfFileTxt::ReadToken( std::string &o_Token, int i_MaxChars,
 void	
 gfFileTxt::WriteToken( std::string &i_Token )
 {
-	bool bNeedsQuotes = false;
+	//	an empty token is quoted, or nothing would be written
+	bool bNeedsQuotes = i_Token.empty();
 	int len = i_Token.length();
 
 	for (int i=0; i<len; i++)

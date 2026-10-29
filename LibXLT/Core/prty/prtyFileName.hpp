@@ -15,15 +15,13 @@
 #include "Core/prty/prtyPropertyTemplate.hpp"
 #endif 
 
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 
 
 
 //============================================================================
 //============================================================================
-class prtyFileName : public prtyPropertyTemplate<itString, const itString&>
+class prtyFileName : public prtyPropertyTemplate<std::string, const std::string&>
 {
 	public:
 		//--------------------------------------------------------------------
@@ -36,7 +34,7 @@ class prtyFileName : public prtyPropertyTemplate<itString, const itString&>
 
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		prtyFileName(const std::string& i_Name, const itString& i_InitialValue);
+		prtyFileName(const std::string& i_Name, const std::string& i_InitialValue);
 
 		//--------------------------------------------------------------------
 		//	The type of property it is
@@ -52,15 +50,15 @@ class prtyFileName : public prtyPropertyTemplate<itString, const itString&>
 		//	operators											
 		//--------------------------------------------------------------------
 		prtyFileName& operator =(const prtyFileName& i_Property);
-		prtyFileName& operator =(const itString& i_Value);
+		prtyFileName& operator =(const std::string& i_Value);
 
 		//--------------------------------------------------------------------
 		//	comparison operators											
 		//--------------------------------------------------------------------
 		bool operator ==(const prtyFileName& i_Property) const;
 		bool operator !=(const prtyFileName& i_Property) const;
-		bool operator ==(const itString& i_Value) const;
-		bool operator !=(const itString& i_Value) const;
+		bool operator ==(const std::string& i_Value) const;
+		bool operator !=(const std::string& i_Value) const;
 
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------

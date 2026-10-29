@@ -40,21 +40,21 @@ bool EnumerateFiles(const fsLocator& i_Locator,
 					EnumTarget& o_Target,
 					bool i_bSearchSubdirectories)
 {
-	std::vector<itString> no_substrings;
+	std::vector<std::string> no_substrings;
 	return EnumerateFiles(i_Locator, o_Target, no_substrings, i_bSearchSubdirectories);
 }
 bool EnumerateFiles(const fsLocator& i_Locator, 
 					EnumTarget& o_Target,
-					const itString &i_SubString,
+					const std::string &i_SubString,
 					bool i_bSearchSubdirectories)
 {
-	std::vector<itString> substrings;
+	std::vector<std::string> substrings;
 	substrings.push_back(i_SubString);
 	return EnumerateFiles(i_Locator, o_Target, substrings, i_bSearchSubdirectories);
 }
 bool EnumerateFiles(const fsLocator& i_Locator, 
 					EnumTarget& o_Target,
-					const std::vector<itString> &i_SubStrings,
+					const std::vector<std::string> &i_SubStrings,
 					bool i_bSearchSubdirectories)
 {
 	// Search files in the root directory first
@@ -69,8 +69,8 @@ bool EnumerateFiles(const fsLocator& i_Locator,
 		fsFileList::const_iterator it;
 		for (it = dirList.begin(); it != dirList.end(); ++it)
 		{
-			itString last_name = it->GetLastName();
-			if ((last_name != itString(".")) && (last_name != itString("..")))
+			const std::string& last_name = it->GetLastName();
+			if ((last_name != ".") && (last_name != ".."))
 			{
 				//std::string filename;
 				//fsFileUtil::LocatorToANSIFilename(*it, filename);
@@ -94,21 +94,21 @@ bool EnumerateFiles(const fsLocator& i_Locator,
 					fsFileList& o_FileList,
 					bool i_bSearchSubdirectories)
 {
-	std::vector<itString> no_substrings;
+	std::vector<std::string> no_substrings;
 	return EnumerateFiles(i_Locator, o_FileList, no_substrings, i_bSearchSubdirectories);
 }
 bool EnumerateFiles(const fsLocator& i_Locator, 
 					fsFileList& o_FileList,
-					const itString &i_SubString,
+					const std::string &i_SubString,
 					bool i_bSearchSubdirectories)
 {
-	std::vector<itString> substrings;
+	std::vector<std::string> substrings;
 	substrings.push_back(i_SubString);
 	return EnumerateFiles(i_Locator, o_FileList, substrings, i_bSearchSubdirectories);
 }
 bool EnumerateFiles(const fsLocator& i_Locator, 
 					fsFileList& o_FileList,
-					const std::vector<itString> &i_SubStrings,
+					const std::vector<std::string> &i_SubStrings,
 					bool i_bSearchSubdirectories)
 {
 	FileListTarget FileTarget;

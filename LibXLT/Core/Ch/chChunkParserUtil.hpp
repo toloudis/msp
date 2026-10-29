@@ -101,12 +101,16 @@ namespace chChunkParserUtil
 	void Read(chReader& i_Reader, maGradient& o_Gradient);
 
 	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	void Read( chReader& i_Reader, itString& o_Name );
-
-	//------------------------------------------------------------------------
+	//	Read reads a string that was always written as single bytes;
+	//	ReadItString one that was an itString when it was written (see
+	//	chReader::ReadItString).
 	//------------------------------------------------------------------------
 	void Read( chReader& i_Reader, std::string& o_Name );
+	void ReadItString( chReader& i_Reader, std::string& o_Name );
+
+	//	Temporary, while callers still hold itStrings
+	//	(docs/plans/2026-10-28-itstring-to-std-string.md; removed in step 4)
+	void Read( chReader& i_Reader, itString& o_Name );
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -114,11 +118,10 @@ namespace chChunkParserUtil
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void Write( chWriter& i_Writer, const itString& i_Name, chDefs::Name i_ChunkName );
-
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
 	void Write( chWriter& i_Writer, const std::string& i_Name, chDefs::Name i_ChunkName );
+
+	//	Temporary (see Read( chReader&, itString& ))
+	void Write( chWriter& i_Writer, const itString& i_Name, chDefs::Name i_ChunkName );
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -166,11 +169,10 @@ namespace chChunkParserUtil
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void Write( chWriter& i_Writer, const itString& i_Name );
-
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
 	void Write(chWriter& i_Writer,const std::string& i_Name);
+
+	//	Temporary (see Read( chReader&, itString& ))
+	void Write( chWriter& i_Writer, const itString& i_Name );
 
 
 	//------------------------------------------------------------------------

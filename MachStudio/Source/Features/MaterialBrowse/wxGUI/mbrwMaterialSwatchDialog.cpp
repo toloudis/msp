@@ -66,9 +66,9 @@ namespace
 			//
 			virtual bool Notify(const fsLocator& i_Directory, const fsLocator& i_File)
 			{
-				itString ext;
-				i_File.GetLastName().GetExtension( ext );
-				if (ext == itString(L"MTL") || ext == itString(L"mtl"))
+				std::string ext;
+				itStringUtil::GetExtension( i_File.GetLastName(), ext );
+				if (ext == "MTL" || ext == "mtl")
 				{
 					fsLocator Locator = i_Directory;
 
@@ -442,7 +442,7 @@ void mbrwMaterialSwatchDialog::browse_directory(const fsLocator &i_Directory,
 	MaterialBrowseTarget material_list(m_CurrentMaterialDir);
 	// Enumerate material files in directory, extract thumbnails from the files
 	// and add those bitmaps to the grid as drag sources.
-	std::vector<itString> substrings;
+	std::vector<std::string> substrings;
 	// need to check for extension=="mtl", not just substring
 	//substrings.push_back( itString(".mtl") ); 
 	//substrings.push_back( itString(".MTL") );

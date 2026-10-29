@@ -42,7 +42,7 @@ void WriteSample(chWriter& o_Writer, float i_Float = 2.5f)
 	o_Writer.Write(i_Float);
 	o_Writer.Write(true);
 	o_Writer.Write("abc");
-	o_Writer.Write(itString("wide string").GetString());
+	o_Writer.Write(std::string("text string"));
 	o_Writer.Write(c_Raw, int64_t(sizeof(c_Raw)));
 	o_Writer.FinishChunk();
 	o_Writer.FinishChunk();
@@ -52,12 +52,6 @@ std::vector<uint8_t> ReadFileBytes(const std::filesystem::path& i_Path)
 {
 	std::ifstream in(i_Path, std::ios::binary);
 	return std::vector<uint8_t>(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
-}
-
-void WriteFileBytes(const std::filesystem::path& i_Path, const std::vector<uint8_t>& i_Bytes)
-{
-	std::ofstream out(i_Path, std::ios::binary);
-	out.write(reinterpret_cast<const char*>(i_Bytes.data()), std::streamsize(i_Bytes.size()));
 }
 
 }	// namespace
@@ -98,10 +92,19 @@ TEST(chMemWriter, ReadsBack)
 	chMemWriter mem;
 	WriteSample(mem);
 
+	//	as a file: the header, which says the strings are UTF-8, then the
+	//	chunks
 	ctTempDir dir;
-	WriteFileBytes(dir.GetPath() / "Mem.bin", mem.GetBytes());
+	fsLocator file = dir.GetLocator("Mem.bin");
+	fsFileUtil::CreateFile(file);
+	{
+		gfFileBin write_file(file, fsFileStream::e_WriteOnly);
+		write_file.WriteHeader();
+		write_file.Write(int64_t(mem.GetBytes().size()), mem.GetBytes().data());
+	}
 
-	gfFileBin read_file(dir.GetLocator("Mem.bin"), fsFileStream::e_ReadOnly);
+	gfFileBin read_file(file, fsFileStream::e_ReadOnly);
+	read_file.ReadHeader();
 	chBinReader reader(read_file);
 
 	chDefs::Name name = 0;
@@ -118,19 +121,19 @@ TEST(chMemWriter, ReadsBack)
 	float f = 0;
 	bool b = false;
 	std::string s;
-	itString w;
+	std::string w;
 	uint8_t raw[7] = {};
 	reader.Read(i);
 	reader.Read(f);
 	reader.Read(b);
 	reader.Read(s);
-	reader.Read(w);
+	reader.ReadItString(w);
 	reader.Read(raw, int64_t(sizeof(raw)));
 	EXPECT_EQ(-42, i);
 	EXPECT_EQ(2.5f, f);
 	EXPECT_TRUE(b);
 	EXPECT_EQ("abc", s);
-	EXPECT_TRUE(w == itString("wide string"));
+	EXPECT_EQ("text string", w);
 	EXPECT_TRUE(std::equal(raw, raw + 7, c_Raw));
 	reader.FinishChunk();
 	reader.FinishChunk();

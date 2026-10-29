@@ -233,10 +233,10 @@ int count_materials(const fsLocator &i_Locator)
 {
 	//	handle reading from a binary file and writing to ASCII or the other way around.
 	//
-	itString extension;
-	i_Locator.GetLastName().GetExtension( extension );
-	if ((extension == itString("xml"))
-	        || (extension == itString("XML")) )
+	std::string extension;
+	itStringUtil::GetExtension( i_Locator.GetLastName(), extension );
+	if ((extension == "xml")
+	        || (extension == "XML") )
 	{
 		return count_materials_XML( i_Locator );
 	}
@@ -861,15 +861,15 @@ void mtrMaterialSaver::Read( const fsLocator &i_Locator,
 {
 	//	handle reading from a binary file and writing to ASCII or the other way around.
 	//
-	itString extension;
-	i_Locator.GetLastName().GetExtension( extension );
-	if (   (extension == itString("mtl"))
-	    || (extension == itString("MTL")) )
+	std::string extension;
+	itStringUtil::GetExtension( i_Locator.GetLastName(), extension );
+	if (   (extension == "mtl")
+	    || (extension == "MTL") )
 	{
 		Read_Binary( i_Locator, o_Materials );
 	}
-	else if (   (extension == itString("xml"))
-	         || (extension == itString("XML")) )
+	else if (   (extension == "xml")
+	         || (extension == "XML") )
 	{
 		Read_XML( i_Locator, o_Materials );
 	}

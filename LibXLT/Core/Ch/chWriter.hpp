@@ -102,27 +102,19 @@ class chWriter
 		//	in the given std::string.  It will write a NULL into the file
 		//  to terminate the internal char string.
 		// This just turns around and calls this->Write(i_String.c_str() );
+		//	Every string is written this way, as UTF-8: binary files (PWFB)
+		//	null-terminated, text and XML files as a token. Readers read it
+		//	back with Read, or with ReadItString if it was an itString before
+		//	(binary files written before PWFB stored those as UTF-16).
 		//--------------------------------------------------------------------
 		inline void Write(const std::string& i_String);
 
 		//--------------------------------------------------------------------
-		// This write writes an array of Unicode strings as NULL terminated UInt16
-		// array below.  It is inlined here and requires no override
+		//	Temporary, while callers still hold itStrings
+		//	(docs/plans/2026-10-28-itstring-to-std-string.md; removed in
+		//	step 4): writes the string as UTF-8, as Write(const std::string&).
 		//--------------------------------------------------------------------
 		void Write( const itString& i_String );
-
-		//--------------------------------------------------------------------
-		//	This Write writes a NULL-terminated Unicode character string.  It
-		//	will write the NULL into the file.
-		//--------------------------------------------------------------------
-		virtual void Write(const envType::WChar* i_Val) = 0;
-
-		//--------------------------------------------------------------------
-		//	This Write writes a Unicode character string with a length
-		//	given by i_Length.  It does not write the length into the file;
-		//	you must do that yourself.
-		//--------------------------------------------------------------------
-		virtual void Write(const envType::WChar* i_Val, int i_Length) = 0;
 
 		//--------------------------------------------------------------------
 		//	Write the envAppVersion structure

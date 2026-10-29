@@ -227,19 +227,17 @@ GetPin(IBaseFilter *pFilter, PIN_DIRECTION PinDir)
 void	
 snSoundJobMP3PAC::Start( float i_SimulationTime )
 {
-	itString	UnicodeFilename;
+	std::wstring	UnicodeFilename;
 	HRESULT		hr		= S_OK;
 	IPin *		pPin	= NULL;
 
 	fsLocator ExpandedLoc(this->GetFilename());
 	gfFileTranslationMgr::ExpandLocator(ExpandedLoc);
 	fsFileUtilPAC::LocatorToUnicodeFilename( ExpandedLoc, UnicodeFilename );
-	// null-terminating not needed anymore
-	//UnicodeFilename += 0;
 
 	// Make sure that this file exists
 	//
-	DWORD dwAttr = GetFileAttributesW(UnicodeFilename.GetString());
+	DWORD dwAttr = GetFileAttributesW(UnicodeFilename.c_str());
 	if (dwAttr == (DWORD) -1)
 	{
 		return;
@@ -253,7 +251,7 @@ snSoundJobMP3PAC::Start( float i_SimulationTime )
 	//
 	// Add the new source filter to the graph. (Graph can still be running)
 	//
-	hr = g_pGraphBuilder->AddSourceFilter(UnicodeFilename.GetString(), UnicodeFilename.GetString(), &g_pSourceNext);
+	hr = g_pGraphBuilder->AddSourceFilter(UnicodeFilename.c_str(), UnicodeFilename.c_str(), &g_pSourceNext);
 
 	// Get the first output pin of the new source filter. Audio sources 
 	// typically have only one output pin, so for most audio cases finding 

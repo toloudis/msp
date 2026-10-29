@@ -30,16 +30,16 @@ public:
 	// Set value into control
 	//----------------------------------------------------------------------------
 	static void SetValueIntoControl(twcFilePicker* i_pActualControl,
-									 itString i_Value);
+									 const std::string& i_Value);
 
 	//----------------------------------------------------------------------------
 	// Get value from control
 	//----------------------------------------------------------------------------
-	static itString GetValueFromControl(twcFilePicker* i_pActualControl);
+	static std::string GetValueFromControl(twcFilePicker* i_pActualControl);
 };
 
 //============================================================================
 //============================================================================
-typedef pwxTemplate_FilePicker<prtyFileName, itString, pwxFileName_FilePicker_Converter> pwxFileName_FilePicker;
+typedef pwxTemplate_FilePicker<prtyFileName, std::string, pwxFileName_FilePicker_Converter> pwxFileName_FilePicker;
 
 #endif // USE_WXWIDGETS

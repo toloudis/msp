@@ -18,18 +18,17 @@
 // Set value into control
 //----------------------------------------------------------------------------
 void pwxFileName_TextBox_Converter::SetValueIntoControl(twcTextBox* i_pActualControl,
-														  itString i_Value)
+														  const std::string& i_Value)
 {
-	i_pActualControl->SetValue(i_Value.GetString());
+	i_pActualControl->SetValue(wxString::FromUTF8(i_Value.c_str()));
 }
 
 //----------------------------------------------------------------------------
 // Get value from control
 //----------------------------------------------------------------------------
-itString pwxFileName_TextBox_Converter::GetValueFromControl(twcTextBox* i_pActualControl)
+std::string pwxFileName_TextBox_Converter::GetValueFromControl(twcTextBox* i_pActualControl)
 {
-	itString sel_text((const char*)(i_pActualControl->GetValue().c_str()));
-	return sel_text;
+	return i_pActualControl->GetValue().utf8_string();
 }
 
 #endif

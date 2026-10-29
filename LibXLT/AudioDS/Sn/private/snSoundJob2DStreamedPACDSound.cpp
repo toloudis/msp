@@ -484,13 +484,12 @@ snSoundJob2DStreamedPAC::CreateBuffer()
 	tempWaveInfo.pwfx = NULL;
 
 	std::string filename;
-	itString	UnicodeFilename;
+	std::wstring	UnicodeFilename;
 	fsLocator ExpandedLoc(this->GetFilename());
 	gfFileTranslationMgr::ExpandLocator(ExpandedLoc);
 	fsFileUtilPAC::LocatorToUnicodeFilename( ExpandedLoc, UnicodeFilename );
-	//UnicodeFilename += 0; // not needed anymore, GetString() is NULL-terminated
 
-    if (( nChkErr = WaveUtil::WaveOpenFile( const_cast<const LPWSTR>(UnicodeFilename.GetString()), &tempWaveInfo.hmmio, &tempWaveInfo.pwfx, &tempWaveInfo.mmckInRIFF )) != 0 )
+    if (( nChkErr = WaveUtil::WaveOpenFile( const_cast<LPWSTR>(UnicodeFilename.c_str()), &tempWaveInfo.hmmio, &tempWaveInfo.pwfx, &tempWaveInfo.mmckInRIFF )) != 0 )
     {
 		GlobalFree( tempWaveInfo.pwfx );
 		tempWaveInfo.pwfx = NULL;

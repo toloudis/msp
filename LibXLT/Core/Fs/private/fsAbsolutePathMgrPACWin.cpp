@@ -8,6 +8,9 @@
 \****************************************************************************/
 #include "Core/fs/private/fsAbsolutePathMgrPACWin.hpp"
 
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsLocator.hpp"
 
@@ -31,9 +34,9 @@ namespace fsAbsolutePathMgrPAC
 		void GetUserDocumentsDirectory( fsLocator& o_Locator )
 		{
 			o_Locator.Clear();
-			TCHAR path[MAX_PATH];
-			HRESULT result = SHGetFolderPath( NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, path );
-			fsFileUtil::UnicodeStringToLocator( itString(path), o_Locator );
+			wchar_t path[MAX_PATH];
+			HRESULT result = SHGetFolderPathW( NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, path );
+			fsFileUtil::UnicodeStringToLocator( envString::WideCharToUTF8(path), o_Locator );
 		}
 
 		//------------------------------------------------------------------------
@@ -44,9 +47,9 @@ namespace fsAbsolutePathMgrPAC
 		void GetPublicDocumentsDirectory( fsLocator& o_Locator )
 		{
 			o_Locator.Clear();
-			TCHAR path[MAX_PATH];
-			HRESULT result = SHGetFolderPath( NULL, CSIDL_COMMON_DOCUMENTS, NULL, SHGFP_TYPE_CURRENT, path );
-			fsFileUtil::UnicodeStringToLocator( itString(path), o_Locator );
+			wchar_t path[MAX_PATH];
+			HRESULT result = SHGetFolderPathW( NULL, CSIDL_COMMON_DOCUMENTS, NULL, SHGFP_TYPE_CURRENT, path );
+			fsFileUtil::UnicodeStringToLocator( envString::WideCharToUTF8(path), o_Locator );
 		}
 	}
 
@@ -72,15 +75,15 @@ namespace fsAbsolutePathMgrPAC
 		if (i_OrigFilename.GetNumNames() > 4)
 		{
 			const int c_UserRootIndex = 1; // second string in locator
-			const itString c_UserRootXP("Documents and Settings");
-			const itString c_UserRootVista("Users");
+			const std::string c_UserRootXP("Documents and Settings");
+			const std::string c_UserRootVista("Users");
 			const int c_DocumentIndex = 3; // fourth string in locator
-			const itString c_MyDocumentsXP("My Documents");
-			const itString c_DocumentsXP("Documents");
-			const itString c_DocumentsVista("Documents");
+			const std::string c_MyDocumentsXP("My Documents");
+			const std::string c_DocumentsXP("Documents");
+			const std::string c_DocumentsVista("Documents");
 
 			bool bHaveStandardDirectory = false;
-			itString user_root = i_OrigFilename.GetName(c_UserRootIndex);
+			const std::string& user_root = i_OrigFilename.GetName(c_UserRootIndex);
 			if (user_root == c_UserRootVista)
 			{
 				if (i_OrigFilename.GetName(c_DocumentIndex) == c_DocumentsVista)
@@ -88,7 +91,7 @@ namespace fsAbsolutePathMgrPAC
 			}
 			else if (user_root == c_UserRootXP)
 			{
-				itString docs_dir = i_OrigFilename.GetName(c_DocumentIndex);
+				const std::string& docs_dir = i_OrigFilename.GetName(c_DocumentIndex);
 				if ((docs_dir == c_MyDocumentsXP) ||
 					(docs_dir == c_DocumentsXP))
 					bHaveStandardDirectory = true;

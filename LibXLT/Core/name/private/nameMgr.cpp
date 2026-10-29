@@ -12,6 +12,7 @@
 #include "Core/name/nameObject.hpp"
 
 //	library
+#include "Core/dbg/dbgMsg.hpp"
 #include "Core/env/envSTLHelpers.hpp"
 
 #include <iomanip>

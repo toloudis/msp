@@ -3,8 +3,8 @@
 **
 **	fsLocator represents the name of a file on a disk.
 **	The fsLocator is composed of path names, which are
-**	represented to the user as itStrings, in order that
-**	foreign language file systems can be supported.
+**	UTF-8 std::strings, in order that foreign language file
+**	systems can be supported.
 **	The fsLocator also has (optionally) an index, representing a 
 **	directory (gfPaths), in which case the locator is generally
 **	considered to contain a relative path.
@@ -21,8 +21,9 @@
 #include "Core/It/itString.hpp"
 #endif
 
-#include <vector>
 #include <ostream>
+#include <string>
+#include <vector>
 
 
 //============================================================================
@@ -38,9 +39,20 @@ class fsLocator
 		fsLocator(int i_Index);
 		fsLocator(const fsLocator& i_Locator);
 		fsLocator(const fsLocator& i_Locator, int i_Index);
-		fsLocator(const itString& i_Name);
+		fsLocator(const std::string& i_Name);
 		// This version sets the index and pushes the given name
+		fsLocator(int i_Index, const std::string& i_Name);
+
+		//------------------------------------------------------------------------
+		//	Temporary itString forms of the calls that have an fsLocator
+		//	overload too, where an itString would otherwise be ambiguous
+		//	(docs/plans/2026-10-28-itstring-to-std-string.md; removed in
+		//	step 4 with itString)
+		//------------------------------------------------------------------------
+		fsLocator(const itString& i_Name);
 		fsLocator(int i_Index, const itString& i_Name);
+		void Push(const itString& i_Name);
+		bool Remove(const itString& i_DirName);
 
 		//------------------------------------------------------------------------
 		//	Destructor
@@ -74,24 +86,24 @@ class fsLocator
 		//------------------------------------------------------------------------
 		//	GetName() returns a particular name.
 		//------------------------------------------------------------------------
-		const itString& GetName(int i_Num) const;
+		const std::string& GetName(int i_Num) const;
 		
 		//------------------------------------------------------------------------
 		//	GetLastName() returns the last name in the list
 		//------------------------------------------------------------------------
-		const itString& GetLastName() const;
+		const std::string& GetLastName() const;
 
 		//------------------------------------------------------------------------
 		//	ReplaceLastName() replace the last name in the list
 		//------------------------------------------------------------------------
-		void ReplaceLastName(const itString& i_NewName);
+		void ReplaceLastName(const std::string& i_NewName);
 
 		//------------------------------------------------------------------------
 		//	ReplaceExtension() replace the last name in the list's extension
 		//	with a new one.
 		//	Note: if no '.' is in the new extension string, one will be added.
 		//------------------------------------------------------------------------
-		void ReplaceExtension(const itString& i_NewExtension);
+		void ReplaceExtension(const std::string& i_NewExtension);
 		void ReplaceExtension(const char* i_NewExtension);
 
 		//------------------------------------------------------------------------
@@ -133,7 +145,7 @@ class fsLocator
 		//	Push() adds a name or locator to the end of the list
 		//------------------------------------------------------------------------
 		void Push(const char* i_Name);
-		void Push(const itString& i_Name);
+		void Push(const std::string& i_Name);
 		void Push(const fsLocator& i_Locator);
 
 		//------------------------------------------------------------------------
@@ -145,12 +157,12 @@ class fsLocator
 		//	FindFirst - find the first occurrence of the name.  Returns -1 if
 		//	name is not found.
 		//------------------------------------------------------------------------
-		int FindFirst(const itString& i_Name) const;
+		int FindFirst(const std::string& i_Name) const;
 
 		//------------------------------------------------------------------------
 		//	ReplaceName() changes one of the names in the list
 		//------------------------------------------------------------------------
-		void ReplaceName(const itString& i_Name, int i_Num);
+		void ReplaceName(const std::string& i_Name, int i_Num);
 
 		//------------------------------------------------------------------------
 		//	Clear() gets rid of all names and empties the locator
@@ -163,7 +175,7 @@ class fsLocator
 		//
 		//	returns true if it found the string in the locator
 		//------------------------------------------------------------------------
-		bool RemoveAfter(const itString& i_String);
+		bool RemoveAfter(const std::string& i_String);
 
 		//------------------------------------------------------------------------
 		//	RemoveBefore() find the first occurence of the string passed in and
@@ -176,7 +188,7 @@ class fsLocator
 		//
 		//	returns true if it found the string in the locator
 		//------------------------------------------------------------------------
-		bool RemoveBefore(const itString& i_String);
+		bool RemoveBefore(const std::string& i_String);
 		bool RemoveBefore(int i_Index);
 
 		//------------------------------------------------------------------------
@@ -193,12 +205,12 @@ class fsLocator
 		bool Remove(const fsLocator& i_SubDir);
 
 		//------------------------------------------------------------------------
-		//	Remove() find the first occurence of the itString passed in and
+		//	Remove() find the first occurence of the name passed in and
 		//	remove it.
 		//
 		//	returns true if it found the string in the locator
 		//------------------------------------------------------------------------
-		bool Remove(const itString& i_DirName);
+		bool Remove(const std::string& i_DirName);
 
 		//------------------------------------------------------------------------
 		//	Flag for seeing if path is UNC (uniform naming convention)
@@ -210,7 +222,7 @@ class fsLocator
 		void SetUNCPath(const bool i_bIsUNCPath = true);
 
 	private:
-		std::vector<itString> m_Names;
+		std::vector<std::string> m_Names;
 		int m_Index;
 		bool m_bUNCPath;
 };

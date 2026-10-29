@@ -520,11 +520,11 @@ void tmlnDriverSound::SoundFileChanged(prtyProperty *i_pProperty, bool i_bDirty)
 	if ( pInfo == NULL )
 		return;
 
-	itString ext;
-	pInfo->m_SoundName.GetLastName().GetExtension(ext);
+	std::string ext;
+	itStringUtil::GetExtension(pInfo->m_SoundName.GetLastName(), ext);
 	itStringUtil::ToLower(ext);
 
-	if (ext == itString("wav") || ext == itString("mp3"))
+	if (ext == "wav" || ext == "mp3")
 	{
 		maTime duration = calculate_duration();
 

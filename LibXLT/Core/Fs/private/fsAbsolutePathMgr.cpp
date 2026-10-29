@@ -257,7 +257,7 @@ namespace fsAbsolutePathMgr
 		// the given filename in the specified directories. This way of searching
 		// will handle "flattened" asset directories where all assets are in the 
 		// same directory as the scene file.
-		itString filename = i_OrigFilename.GetLastName();
+		const std::string& filename = i_OrigFilename.GetLastName();
 		std::set<fsLocator>::const_iterator set_it;
 		for (set_it = l_LocalDirs.begin(); set_it != l_LocalDirs.end(); ++set_it)
 		{

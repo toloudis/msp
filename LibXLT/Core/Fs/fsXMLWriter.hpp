@@ -107,7 +107,6 @@ public:
 	void WriteElement(std::string& i_KeyName, const std::string& i_Value);
 	void WriteElement(std::string& i_KeyName, std::string& i_Value);
 	void WriteElement(std::string& i_KeyName, const fsLocator& i_Value);
-	void WriteElement(std::string& i_KeyName, const itString& i_Value);
 	void WriteElement(std::string& i_KeyName, const maFloatRGBA& i_Value);
 	
 private:

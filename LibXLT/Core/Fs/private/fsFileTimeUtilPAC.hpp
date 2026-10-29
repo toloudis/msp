@@ -25,12 +25,12 @@
 	double GetLastAccessTime(const fsLocator& i_Locator);
 	double GetLastModifiedTime(const fsLocator& i_Locator);
 	time_t GetLastModifiedTimeT(const fsLocator& i_Locator);
-	itString GetCreationString(const fsLocator& i_Locator);
-	itString GetLastAccessString(const fsLocator& i_Locator);
-	itString GetLastModifiedString(const fsLocator& i_Locator);
-	itString GetCreationStringWithTime(const fsLocator& i_Locator);
-	itString GetLastAccessStringWithTime(const fsLocator& i_Locator);
-	itString GetLastModifiedStringWithTime(const fsLocator& i_Locator);
+	std::string GetCreationString(const fsLocator& i_Locator);
+	std::string GetLastAccessString(const fsLocator& i_Locator);
+	std::string GetLastModifiedString(const fsLocator& i_Locator);
+	std::string GetCreationStringWithTime(const fsLocator& i_Locator);
+	std::string GetLastAccessStringWithTime(const fsLocator& i_Locator);
+	std::string GetLastModifiedStringWithTime(const fsLocator& i_Locator);
 	void Init();
 	void CleanUp() throw();
 }*/

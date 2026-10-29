@@ -8,7 +8,9 @@
 \****************************************************************************/
 #include "Core/It/itString.hpp"
 
+#ifndef ENV_STRING_HPP
 #include "Core/env/envString.hpp"
+#endif
 
 #include <algorithm>
 #include <string.h>
@@ -144,6 +146,19 @@ itString::itString(int i_Begin, int i_Num, const itString& i_String)
 
 	// simpler with std::wstring
 	m_String = i_String.m_String.substr(i_Begin, i_Num);
+}
+
+//------------------------------------------------------------------------
+//	Temporary conversions to and from a UTF-8 std::string (see the .hpp)
+//------------------------------------------------------------------------
+itString::itString(const std::string& i_UTF8)
+:	m_String(envString::UTF8ToWideChar(i_UTF8))
+{
+}
+
+itString::operator std::string() const
+{
+	return envString::WideCharToUTF8(m_String);
 }
 
 //------------------------------------------------------------------------

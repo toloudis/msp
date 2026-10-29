@@ -102,6 +102,42 @@ TEST(fsFileStream, WriteThenRead)
 	EXPECT_EQ(0, read_stream.Read(sizeof(val), &val));
 }
 
+//	A move back from the current position that leaves the read buffer
+//	(gfFileTxt::ReadToken backs up two bytes after every token) lands where
+//	it should: the stream reads ahead to fill its buffer, so the file's own
+//	pointer is past the stream's position.
+TEST(fsFileStream, MoveBackAcrossTheReadBuffer)
+{
+	ctTempDir dir;
+	fsLocator file = dir.GetLocator("fsTest.bin");
+	fsFileUtil::CreateFile(file);
+
+	{
+		fsFileStream write_stream(file, fsFileStream::e_WriteOnly);
+		for( int i = 0 ; i < 4000 ; i++ )
+		{
+			const uint8_t byte = uint8_t(i % 251);
+			write_stream.Write(1, &byte);
+		}
+	}
+
+	fsFileStream read_stream(file, fsFileStream::e_ReadOnly);
+	for( int i = 0 ; i < 4000 ; i++ )
+	{
+		uint8_t byte = 0;
+		ASSERT_EQ(1, read_stream.Read(1, &byte));
+		ASSERT_EQ(uint8_t(i % 251), byte);
+		if( (i % 3) == 2 )
+		{
+			read_stream.SetFilePos(-2, fsFileStream::e_Current);
+			ASSERT_EQ(i - 1, read_stream.GetFilePos());
+			ASSERT_EQ(1, read_stream.Read(1, &byte));
+			ASSERT_EQ(uint8_t((i - 1) % 251), byte) << "after moving back at " << i;
+			ASSERT_EQ(1, read_stream.Read(1, &byte));
+		}
+	}
+}
+
 TEST(fsFilePosSaver, RestoresPosition)
 {
 	ctTempDir dir;

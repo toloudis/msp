@@ -23,7 +23,7 @@
 {
 void EnumerateFiles(const fsLocator& i_Locator, 
 					fsFileEnum::EnumTarget& o_Target,
-					const itString* i_SubString = NULL);
+					const std::vector<std::string> &i_SubStrings);
 void EnumerateDirectories(	const fsLocator& i_Locator, 
 							fsFileEnum::EnumTarget& o_Target);
 

@@ -35,8 +35,8 @@ namespace snPlaylistParser
 PlaylistFormatType 
 pick_format( const fsLocator& i_PlaylistFilename )
 {
-	if (   ( i_PlaylistFilename.GetLastName().HasSubString( itString( ".m3u" ) ) )
-		|| ( i_PlaylistFilename.GetLastName().HasSubString( itString( ".M3U" ) ) ) )
+	if (   ( i_PlaylistFilename.GetLastName().find( ".m3u" ) != std::string::npos )
+		|| ( i_PlaylistFilename.GetLastName().find( ".M3U" ) != std::string::npos ) )
 	{
 		return e_PLAYLISTTYPE_M3U;
 	}

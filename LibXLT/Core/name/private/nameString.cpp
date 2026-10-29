@@ -8,8 +8,9 @@
 \****************************************************************************/
 #include "Core/name/nameString.hpp"
 
+#ifndef ENV_STRING_HPP
 #include "Core/env/envString.hpp"
-#include "Core/it/itStringUtil.hpp"
+#endif
 
 
 //--------------------------------------------------------------------
@@ -20,12 +21,6 @@ nameString::nameString()
 {
 	m_String.clear();
 }
-nameString::nameString(const itString& i_Name)
-:	m_UID( e_InvalidUID )
-{
-	m_String = itStringUtil::GetStdString(i_Name);
-}
-
 nameString::nameString(const std::string& i_Name)
 :	m_UID( e_InvalidUID ),
 	m_String(i_Name)	// FIX: -- eventually phase this out.

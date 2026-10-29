@@ -22,11 +22,9 @@ chWriter::~chWriter()
 }
 
 //--------------------------------------------------------------------
-// This write writes an array of Unicode strings as NULL terminated UInt16
-// array below.  It is inlined here and requires no override
+//	Temporary: writes an itString as UTF-8 (see the .hpp)
 //--------------------------------------------------------------------
 void chWriter::Write( const itString& i_String )
 {
-	DBG_ASSERT(NULL == i_String[ i_String.GetLength()-1 ], "This must be NULL terminated!" );
-	this->Write( i_String.GetString() );
+	this->Write( std::string(i_String) );
 }

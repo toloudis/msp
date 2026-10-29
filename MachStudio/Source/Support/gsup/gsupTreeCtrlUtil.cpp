@@ -29,7 +29,7 @@ namespace
 		DBG_ASSERT(parent.IsOk(), "Assuming that there is a root node already in tree control.");
 		for ( int i = 0; i < i_Path.GetNumNames(); ++i )
 		{
-			wxString dname(i_Path.GetName(i).GetString());
+			wxString dname = wxString::FromUTF8(i_Path.GetName(i).c_str());
 
 			bool bFoundNode = false;
 
@@ -231,7 +231,7 @@ namespace
 
 		for ( int i = 0; i < i_Path.GetNumNames(); ++i )
 		{
-			QString dname = QString::fromWCharArray(i_Path.GetName(i).GetString());
+			QString dname = QString::fromUtf8(i_Path.GetName(i).c_str());
 			QTreeWidgetItem* node = gsupTreeCtrlUtil::FindNode(parent, dname);
 			if ( node == NULL )
 				node = new QTreeWidgetItem(parent, QStringList(dname));

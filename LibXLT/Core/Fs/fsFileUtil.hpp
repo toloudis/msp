@@ -82,21 +82,27 @@ namespace fsFileUtil
 	bool DirectoryExists(const fsLocator& i_Filename);
 
 	//----------------------------------------------------------------------------
-	// UnicodeStringToLocator returns a locator from a given itString
+	// UnicodeStringToLocator returns a locator from a given UTF-8 string
 	// the string is separted by backslashes in the windows style ,this string
 	// should not be used for pathing, but rather for logging or perhaps
-	// storing a locator as a fully pathed itString. NOTE: the index will be ignored,
+	// storing a locator as a fully pathed string. NOTE: the index will be ignored,
 	// be sure to call gfFileTranslationMgr::ExpandLocator first if you need to
+	// The same as ANSIFilenameToLocator, now that both take UTF-8.
 	//----------------------------------------------------------------------------
-	void UnicodeStringToLocator(const itString& i_String, fsLocator& o_Locator);
+	void UnicodeStringToLocator(const std::string& i_String, fsLocator& o_Locator);
 
 	//----------------------------------------------------------------------------
-	// LocatorToUnicodeString returns an itString from a given locator
+	// LocatorToUnicodeString returns a UTF-8 string from a given locator
 	// the string is separted by backslashes in the windows style ,this string
 	// should not be used for pathing, but rather for logging or perhaps
-	// storing a locator as a fully pathed itString. NOTE: the index will be ignored,
+	// storing a locator as a fully pathed string. NOTE: the index will be ignored,
 	// be sure to call gfFileTranslationMgr::ExpandLocator first if you need to
+	// The same as LocatorToANSIFilename, now that both give UTF-8.
 	//----------------------------------------------------------------------------
+	void LocatorToUnicodeString(const fsLocator& i_Locator, std::string& o_String);
+
+	//	Temporary, for callers that still hold an itString
+	//	(docs/plans/2026-10-28-itstring-to-std-string.md; removed in step 4)
 	void LocatorToUnicodeString(const fsLocator& i_Locator, itString& o_String);
 
 	//----------------------------------------------------------------------------

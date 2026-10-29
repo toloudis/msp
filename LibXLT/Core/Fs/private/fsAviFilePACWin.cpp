@@ -9,6 +9,9 @@
 #include "Core/fs/private/fsAviFilePACWin.hpp"
 
 #include "Core/dbg/dbgMsg.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsLocator.hpp"
 
@@ -183,11 +186,11 @@ HRESULT create_audio_stream(fsAviFile::File* au)
 //----------------------------------------------------------------------------
 //	The file name of a locator, for the Video for Windows functions
 //----------------------------------------------------------------------------
-itString filename(const fsLocator& i_Locator)
+std::wstring filename(const fsLocator& i_Locator)
 {
-	itString name;
+	std::string name;
 	fsFileUtil::LocatorToUnicodeString(i_Locator, name);
-	return name;
+	return envString::UTF8ToWideChar(name);
 }
 
 } // anonymous namespace
@@ -197,14 +200,14 @@ itString filename(const fsLocator& i_Locator)
 //----------------------------------------------------------------------------
 Handle Create(const fsLocator& i_Filename, int i_FramePeriod)
 {
-	itString fn = filename(i_Filename);
+	std::wstring fn = filename(i_Filename);
 	IAVIFile *pfile;
 	AVIFileInit();
-	LastError = AVIFileOpenW(&pfile, fn.GetString(), OF_WRITE|OF_CREATE, NULL);
+	LastError = AVIFileOpenW(&pfile, fn.c_str(), OF_WRITE|OF_CREATE, NULL);
 	if (LastError!=AVIERR_OK)
 	{
 		AVIFileExit();
-		DBG_ERROR("Could not create AVI (" << fn << " Error code (" << LastError << ")");
+		DBG_ERROR("Could not create AVI (" << i_Filename << " Error code (" << LastError << ")");
 		return NULL;
 	}
 	fsAviFile::File *au = create_file();
@@ -307,8 +310,8 @@ bool Append(Handle avi1, Handle avi2, const fsLocator& i_SavePath)
 	aco.dwKeyFrameEvery = 1;
 	aco.dwQuality = au2->psi.dwQuality;
 
-	itString save_path = filename(i_SavePath);
-	AVISaveW(save_path.GetString(), NULL, NULL, 1, pEditableStream, &aco);
+	std::wstring save_path = filename(i_SavePath);
+	AVISaveW(save_path.c_str(), NULL, NULL, 1, pEditableStream, &aco);
 
 	LastError = S_OK;
 	return true;
@@ -357,7 +360,7 @@ bool AddWav(Handle avi, const fsLocator& i_WavFile)
 	fsAviFile::File *au = avi;
 	if (au->iserr){ LastError = AVIERR_ERROR; return false; }
 
-	std::ifstream file(std::filesystem::path(filename(i_WavFile).GetString()), std::ios::binary | std::ios::ate);
+	std::ifstream file(std::filesystem::path(filename(i_WavFile)), std::ios::binary | std::ios::ate);
 	if (!file)
 	{
 		au->iserr=true;
@@ -442,13 +445,13 @@ std::string GetLastErrorMessage()
 //----------------------------------------------------------------------------
 Handle Open(const fsLocator& i_Filename)
 {
-	itString fn = filename(i_Filename);
+	std::wstring fn = filename(i_Filename);
 	AVIFileInit();
 
 	fsAviFile::File *au = create_file();
 
 	// Opens The AVI Stream
-	LastError = AVIStreamOpenFromFileW( &au->ps, fn.GetString(), streamtypeVIDEO, 0, OF_READ, NULL);
+	LastError = AVIStreamOpenFromFileW( &au->ps, fn.c_str(), streamtypeVIDEO, 0, OF_READ, NULL);
 	if( LastError != AVIERR_OK)
 	{
 		HRESULT error = LastError;

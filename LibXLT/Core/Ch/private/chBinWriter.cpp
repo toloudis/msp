@@ -158,36 +158,6 @@ void chBinWriter::Write(const char* i_Val, int i_Length)
 }
 
 //--------------------------------------------------------------------
-//	This Write writes a NULL-terminated Unicode character string
-//--------------------------------------------------------------------
-void chBinWriter::Write(const envType::WChar* i_Val)
-{
-#if (WCHART_SIZE == 2)
-	int num_to_write = 0;
-	
-	while( i_Val[num_to_write] )
-		num_to_write++;
-
-	m_File.Write(2 * (num_to_write + 1), i_Val);	// write NULL also
-#else
-	#error "UTF16 file format needs to be converted to wchar_t"
-#endif
-}
-
-//--------------------------------------------------------------------
-//	This Write writes a Unicode character string with a length
-//	given by i_Length.
-//--------------------------------------------------------------------
-void chBinWriter::Write(const envType::WChar* i_Val, int i_Length)
-{
-#if (WCHART_SIZE == 2)
-	m_File.Write(i_Length * 2, i_Val);
-#else
-	#error "UTF16 file format needs to be converted to wchar_t"
-#endif
-}
-
-//--------------------------------------------------------------------
 //	Write the envAppVersion structure
 //--------------------------------------------------------------------
 void chBinWriter::Write(const envAppVersion& i_Val)

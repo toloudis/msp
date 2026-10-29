@@ -76,6 +76,16 @@ class itString
 		itString(int i_Begin, int i_Num, const itString& i_String);
 
 		//------------------------------------------------------------------------
+		//	Temporary, while LibXLT moves from itString to UTF-8 std::string
+		//	(docs/plans/2026-10-28-itstring-to-std-string.md; removed in step 4
+		//	with itString): an itString converts implicitly to and from a
+		//	std::string holding UTF-8, so code still using itString can call
+		//	code that has moved to std::string, and the other way round.
+		//------------------------------------------------------------------------
+		itString(const std::string& i_UTF8);
+		operator std::string() const;
+
+		//------------------------------------------------------------------------
 		//------------------------------------------------------------------------
 		~itString() throw();
 
@@ -252,6 +262,15 @@ class itString
 		//std::vector<CharType> m_String;
 		std::basic_string<CharType> m_String;
 };
+
+//----------------------------------------------------------------------------
+//	Temporary, with the conversions above (removed in step 4): an itString
+//	compared with a UTF-8 std::string, as UTF-8.
+//----------------------------------------------------------------------------
+inline bool operator == (const std::string& i_UTF8, const itString& i_String) { return i_UTF8 == std::string(i_String); }
+inline bool operator == (const itString& i_String, const std::string& i_UTF8) { return i_UTF8 == std::string(i_String); }
+inline bool operator != (const std::string& i_UTF8, const itString& i_String) { return !(i_UTF8 == i_String); }
+inline bool operator != (const itString& i_String, const std::string& i_UTF8) { return !(i_UTF8 == i_String); }
 
 //------------------------------------------------------------------------
 //	operator [] returns the CharType at i_Index.

@@ -134,13 +134,13 @@ ImportDialog::ImportDialog( wxWindow* parent, ImportData& i_Data )
 	// picker is replaced by one with every scene file format's patterns
 	// (it is m_filePicker1 again, which the base disconnects when it goes)
 	wxFilePickerCtrl* pOldPicker = m_filePicker1;
-	pOldPicker->Disconnect( wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler( ImportDialogBase::filePicker_FileChanged ), NULL, this );
+	pOldPicker->Disconnect( wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler( ImportDialog::filePicker_FileChanged ), NULL, this );
 	const std::string filter = ImportDialogUtil::FileFilter();
 	m_filePicker1 = new wxFilePickerCtrl( pOldPicker->GetParent(), wxID_ANY, wxEmptyString, wxT("Select a scene file to import"),
 										  wxString(filter.c_str(), wxConvUTF8), wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE );
 	GetSizer()->Replace( pOldPicker, m_filePicker1, true );
 	pOldPicker->Destroy();
-	m_filePicker1->Connect( wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler( ImportDialogBase::filePicker_FileChanged ), NULL, this );
+	m_filePicker1->Connect( wxEVT_COMMAND_FILEPICKER_CHANGED, wxFileDirPickerEventHandler( ImportDialog::filePicker_FileChanged ), NULL, this );
 	Layout();
 
 	//

@@ -95,19 +95,6 @@ class chXMLWriter : public chWriter
 		virtual void Write(const char* i_Val, int i_Length);
 
 		//--------------------------------------------------------------------
-		//	This Write writes a NULL-terminated Unicode character string.  It
-		//	will write the NULL into the file.
-		//--------------------------------------------------------------------
-		virtual void Write(const envType::WChar* i_Val);
-
-		//--------------------------------------------------------------------
-		//	This Write writes a Unicode character string with a length
-		//	given by i_Length.  It does not write the length into the file;
-		//	you must do that yourself.
-		//--------------------------------------------------------------------
-		virtual void Write(const envType::WChar* i_Val, int i_Length);
-
-		//--------------------------------------------------------------------
 		//	Write the envAppVersion structure
 		//--------------------------------------------------------------------
 		virtual void Write(const envAppVersion& i_Val);

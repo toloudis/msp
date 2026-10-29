@@ -15,7 +15,6 @@
 #include <ctime>
 #include <string>
 
-class itString;
 class fsLocator;
 
 namespace fsFileTimeUtilPAC
@@ -52,37 +51,37 @@ namespace fsFileTimeUtilPAC
 	//	GetCreationString returns the in an itstring of the form 
 	//	mm/dd/yy hh:mm 
 	//========================================================================
-	itString GetCreationString(const fsLocator& i_Locator);
+	std::string GetCreationString(const fsLocator& i_Locator);
 
 	//========================================================================
 	//	GetLastAccessString returns the in an itstring of the form 
 	//	mm/dd/yy hh:mm 
 	//========================================================================
-	itString GetLastAccessString(const fsLocator& i_Locator);
+	std::string GetLastAccessString(const fsLocator& i_Locator);
 
 	//========================================================================
 	//	GetLastModifiedString returns the in an itstring of the form 
 	//	mm/dd/yy hh:mm 
 	//========================================================================
-	itString GetLastModifiedString(const fsLocator& i_Locator);
+	std::string GetLastModifiedString(const fsLocator& i_Locator);
 
 	//========================================================================
 	//	GetCreationString returns the in an itstring of the form 
 	//	mm/dd/yy hh:mm 
 	//========================================================================
-	itString GetCreationStringWithTime(const fsLocator& i_Locator);
+	std::string GetCreationStringWithTime(const fsLocator& i_Locator);
 
 	//========================================================================
 	//	GetLastAccessString returns the in an itstring of the form 
 	//	mm/dd/yy hh:mm 
 	//========================================================================
-	itString GetLastAccessStringWithTime(const fsLocator& i_Locator);
+	std::string GetLastAccessStringWithTime(const fsLocator& i_Locator);
 
 	//========================================================================
 	//	GetLastModifiedString returns the in an itstring of the form 
 	//	mm/dd/yy hh:mm 
 	//========================================================================
-	itString GetLastModifiedStringWithTime(const fsLocator& i_Locator);
+	std::string GetLastModifiedStringWithTime(const fsLocator& i_Locator);
 
 	//========================================================================
 	//	Don't call Init() and CleanUp() yourself; they are called 

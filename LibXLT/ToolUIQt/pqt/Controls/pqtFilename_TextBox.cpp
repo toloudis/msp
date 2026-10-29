@@ -18,18 +18,17 @@
 // Set value into control
 //----------------------------------------------------------------------------
 void pqtFileName_TextBox_Converter::SetValueIntoControl(tqcTextBox* i_pActualControl,
-														  itString i_Value)
+														  const std::string& i_Value)
 {
-	i_pActualControl->SetValue(QString::fromWCharArray(i_Value.GetString()));
+	i_pActualControl->SetValue(QString::fromUtf8(i_Value.c_str()));
 }
 
 //----------------------------------------------------------------------------
 // Get value from control
 //----------------------------------------------------------------------------
-itString pqtFileName_TextBox_Converter::GetValueFromControl(tqcTextBox* i_pActualControl)
+std::string pqtFileName_TextBox_Converter::GetValueFromControl(tqcTextBox* i_pActualControl)
 {
-	itString sel_text(i_pActualControl->GetValue().toStdWString().c_str());
-	return sel_text;
+	return i_pActualControl->GetValue().toStdString();
 }
 
 #endif

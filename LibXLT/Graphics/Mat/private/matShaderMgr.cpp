@@ -371,7 +371,7 @@ matShaderEffect* GetPostEffect(const fsLocator& i_PathToShader)
 	{	
 		// dealing with naming of post effect
 		if (i_PathToShader.GetNumNames() == 2 && 
-			i_PathToShader.GetName(0) == itString(GetPostShaderFolder().c_str()))
+			i_PathToShader.GetName(0) == GetPostShaderFolder())
 		{
 			std::string tmp_s;
 			fsFileUtil::LocatorToANSIFilename(i_PathToShader, tmp_s);

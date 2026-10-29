@@ -17,6 +17,9 @@
 #include "Core/It/itStringUtil.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
 #include "Tool/gui/guiSingleDocHandler.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #ifdef USE_WXWIDGETS
 
@@ -95,7 +98,7 @@ void SceneSetupDialog::build_project_list()
 	int filenum = filelist.size();
 	for ( int i = 0 ; i < filenum ; i++ )
 	{
-		std::wstring project_name(filelist[i].GetLastName().GetString());
+		std::wstring project_name(envString::UTF8ToWideChar(filelist[i].GetLastName()));
 		// strip off the extension
 		replace_last(project_name, L".mpj", L"");
 		m_listBox_Projects->Append( project_name );

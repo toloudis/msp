@@ -10,6 +10,9 @@
 
 #include "Core/fs/private/fsFileUtilPAC.hpp"
 #include "Core/fs/fsLocator.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #include <windows.h>
 
@@ -33,16 +36,16 @@ namespace
 	//--------------------------------------------------------------------
 	// returns true if the filename contains one of the substrings.
 	//--------------------------------------------------------------------
-	bool substring_match(const itString& i_Filename, 
-						 const std::vector<itString> &i_SubStrings)
+	bool substring_match(const std::string& i_Filename,
+						 const std::vector<std::string> &i_SubStrings)
 	{
 		if (i_SubStrings.empty())
 			return true;
 
-		std::vector<itString>::const_iterator it;
+		std::vector<std::string>::const_iterator it;
 		for (it = i_SubStrings.begin(); it != i_SubStrings.end(); ++it)
 		{
-			if (i_Filename.HasSubString(*it))
+			if (i_Filename.find(*it) != std::string::npos)
 				return true;
 		}
 		return false;
@@ -57,30 +60,28 @@ namespace
 //------------------------------------------------------------------------
 bool EnumerateFiles(const fsLocator& i_Locator, 
 					fsFileEnum::EnumTarget& o_Target,
-					const std::vector<itString> &i_SubStrings)
+					const std::vector<std::string> &i_SubStrings)
 {
 	HANDLE hFind;
 	fsLocator ret_val;
 	bool continue_enum;
 
-	itString filename;
+	std::string filename;
 	WIN32_FIND_DATAW find_file_data;
-	itString root_dir;
+	std::wstring root_dir;
 
 	fsLocator locator_with_wildcard = i_Locator;
-	locator_with_wildcard.Push(itString("*"));
+	locator_with_wildcard.Push("*");
 	fsFileUtilPAC::LocatorToUnicodeFilename(locator_with_wildcard, root_dir);
-	// null-terminating not needed anymore
-	//root_dir += 0;		//NULL terminate
 
-	hFind = ::FindFirstFileW(root_dir.GetString(), &find_file_data);
+	hFind = ::FindFirstFileW(root_dir.c_str(), &find_file_data);
 
 	if( hFind != INVALID_HANDLE_VALUE )
 	{
 		FindCloser closer(hFind);
 		if( (find_file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
 		{
-			filename = find_file_data.cFileName;
+			filename = envString::WideCharToUTF8(find_file_data.cFileName);
 			
 			if (substring_match(filename, i_SubStrings))
 			{
@@ -99,7 +100,7 @@ bool EnumerateFiles(const fsLocator& i_Locator,
 		{
 			if( (find_file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
 			{
-				filename = find_file_data.cFileName;
+				filename = envString::WideCharToUTF8(find_file_data.cFileName);
 				
 				if (substring_match(filename, i_SubStrings))
 				{
@@ -130,24 +131,22 @@ bool EnumerateDirectories(	const fsLocator& i_Locator,
 	fsLocator ret_val;
 	bool continue_enum;
 
-	itString filename;
+	std::string filename;
 	WIN32_FIND_DATAW find_file_data;
-	itString root_dir;
+	std::wstring root_dir;
 
 	fsLocator locator_with_wildcard = i_Locator;
-	locator_with_wildcard.Push(itString("*"));
+	locator_with_wildcard.Push("*");
 	fsFileUtilPAC::LocatorToUnicodeFilename(locator_with_wildcard, root_dir);
-	// null-terminating not needed anymore
-	//root_dir += 0;		//NULL terminate
 
-	hFind = ::FindFirstFileW(root_dir.GetString(), &find_file_data);
+	hFind = ::FindFirstFileW(root_dir.c_str(), &find_file_data);
 
 	if( hFind != INVALID_HANDLE_VALUE )
 	{
 		FindCloser closer(hFind);
 		if( (find_file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0 )
 		{
-			filename = find_file_data.cFileName;
+			filename = envString::WideCharToUTF8(find_file_data.cFileName);
 			
 			ret_val.Push(filename);	
 			continue_enum = o_Target.Notify(i_Locator, ret_val);
@@ -163,7 +162,7 @@ bool EnumerateDirectories(	const fsLocator& i_Locator,
 		{
 			if( (find_file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0 )
 			{
-				filename = find_file_data.cFileName;
+				filename = envString::WideCharToUTF8(find_file_data.cFileName);
 				
 				ret_val.Push(filename);	
 				continue_enum = o_Target.Notify(i_Locator, ret_val);
@@ -188,38 +187,35 @@ void GetDrives(std::vector<fsLocator>& o_DirList)
 	o_DirList.clear();
 
 	unsigned long BufferSize = 128, ActualBufferSize;
-	TCHAR *Buffer = new TCHAR[BufferSize];
-	ActualBufferSize = GetLogicalDriveStrings(BufferSize, Buffer);
+	std::vector<wchar_t> Buffer(BufferSize);
+	ActualBufferSize = GetLogicalDriveStringsW(BufferSize, Buffer.data());
 	if (BufferSize < ActualBufferSize)
 	{
-		delete Buffer;
 		BufferSize = ActualBufferSize;
-		Buffer = new TCHAR[BufferSize];
-		ActualBufferSize = GetLogicalDriveStrings(BufferSize, Buffer);
+		Buffer.resize(BufferSize);
+		ActualBufferSize = GetLogicalDriveStringsW(BufferSize, Buffer.data());
 	}
 
 	int i;
-	itString DriveName;
+	std::wstring DriveName;
 	for (i = 0; i < ActualBufferSize; ++i)
 	{
-		if ('\0' == Buffer[i] && DriveName.GetLength())
+		if (L'\0' == Buffer[i] && !DriveName.empty())
 		{
 			fsLocator Loc;
-			if ('\\' == DriveName[DriveName.GetLength() - 1])
+			if (L'\\' == DriveName.back())
 			{
-				DriveName.RemoveCharAt(DriveName.GetLength() - 1);
+				DriveName.pop_back();
 			}
-			Loc.Push(DriveName);
+			Loc.Push(envString::WideCharToUTF8(DriveName));
 			o_DirList.push_back(Loc);
-			DriveName.Clear();
+			DriveName.clear();
 		}
 		else
 		{
 			DriveName += Buffer[i];
 		}
 	}
-
-	delete Buffer;
 }
 
 }

@@ -13,6 +13,9 @@
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/name/nameMgr.hpp"
 #include "Core/name/nameObject.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include <iterator>
 

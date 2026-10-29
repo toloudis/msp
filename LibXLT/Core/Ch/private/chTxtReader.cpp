@@ -283,43 +283,12 @@ void chTxtReader::Read(std::string& o_String, int i_Length)
 }
 
 //--------------------------------------------------------------------
-//	This Read reads a NULL-terminated Unicode character string.  
+//	ReadItString reads a string as UTF-8, which is how text and XML
+//	files store every string: the same as Read.
 //--------------------------------------------------------------------
-void chTxtReader::Read(itString& o_Val)
+void chTxtReader::ReadItString(std::string& o_Val)
 {
-	std::string str;
-	m_File.ReadToken( str );
-
-	int len = str.length();
-	o_Val.Clear();
-
-	for (int i=0; i<len; i++)
-	{
-		o_Val += str[i];
-	}
-
-	// null-terminating not needed anymore
-	//o_Val += '\0';
-
-}
-
-//--------------------------------------------------------------------
-//	This Read Reads a Unicode character string with a length
-//	given by i_Length.
-//--------------------------------------------------------------------
-void chTxtReader::Read(itString& o_Val, int i_Length)
-{
-	std::string str;
-	m_File.ReadToken( str, i_Length );
-
-	int len = str.length();
-	o_Val.Clear();
-
-	for (int i=0; i<len; i++)
-	{
-		o_Val += str[i];
-	}
-
+	Read(o_Val);
 }
 
 //--------------------------------------------------------------------

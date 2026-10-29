@@ -33,6 +33,7 @@ namespace itStringUtil
 //	we write in english)
 //------------------------------------------------------------------------
 std::string GetStdString(const itString& i_String);
+std::string GetStdString(const std::string& i_String);
 
 //------------------------------------------------------------------------
 // GetStdString, this version sets the output buffer with the ANSI
@@ -47,11 +48,13 @@ void GetStdString( const itString& i_String, char* o_szBuffer, int& io_NumChars 
 //	Convert a itString into a double data type.
 //------------------------------------------------------------------------
 double GetDouble(const itString& i_String);
+double GetDouble(const std::string& i_String);
 
 //------------------------------------------------------------------------
 //	Convert a itString into an int data type.
 //------------------------------------------------------------------------
 int GetInt(const itString& i_String);
+int GetInt(const std::string& i_String);
 
 //------------------------------------------------------------------------
 // ToLower will convert an itString to all lower case.  Note:  This 
@@ -75,6 +78,7 @@ bool Equal(itString& i_String1, itString& i_String2);
 //	Compare the two strings ignoring case.
 //------------------------------------------------------------------------
 bool Equal(const itString& i_String1, const itString& i_String2);
+bool Equal(const std::string& i_String1, const std::string& i_String2);
 
 //------------------------------------------------------------------------
 //	Compare the two strings ignoring case, like strcmp: returns less than,
@@ -90,6 +94,10 @@ bool LessThan(const itString& i_String1, const itString& i_String2);
 bool LessThanOrEqual(const itString& i_String1, const itString& i_String2);
 bool GreaterThan(const itString& i_String1, const itString& i_String2);
 bool GreaterThanOrEqual(const itString& i_String1, const itString& i_String2);
+bool LessThan(const std::string& i_String1, const std::string& i_String2);
+bool LessThanOrEqual(const std::string& i_String1, const std::string& i_String2);
+bool GreaterThan(const std::string& i_String1, const std::string& i_String2);
+bool GreaterThanOrEqual(const std::string& i_String1, const std::string& i_String2);
 
 //----------------------------------------------------------------------------
 //	Break apart the filename into components.  The assumed format of the
@@ -106,6 +114,10 @@ int Breakup_Filename(const itString& i_Filename,
 					 itString& o_BaseFilename, 
 					 itString& o_Ext, 
 					 int& o_InitialNumber);
+int Breakup_Filename(const std::string& i_Filename, 
+					 std::string& o_BaseFilename, 
+					 std::string& o_Ext, 
+					 int& o_InitialNumber);
 
 //----------------------------------------------------------------------------
 //	Build a filename based on the parts gathered from Breakup_Filename.
@@ -116,6 +128,11 @@ void Build_Filename(const itString& i_Basename,
 					int i_Number, 
 					int i_NumDigits, 
 					itString& o_FName);
+void Build_Filename(const std::string& i_Basename, 
+					const std::string& i_Ext, 
+					int i_Number, 
+					int i_NumDigits, 
+					std::string& o_FName);
 
 //----------------------------------------------------------------------------
 //	trim the leading and ending spaces from a standard string.
@@ -125,5 +142,21 @@ void Build_Filename(const itString& i_Basename,
 //----------------------------------------------------------------------------
 void TrimSpaces(std::string& io_String);
 void TrimSpaces(itString& io_String);
+
+//	The file-name helpers itString had as members, for UTF-8 std::strings.
+//	StripExtension removes everything from the last period on (nothing if
+//	there is none); ReplaceExtension strips the extension and appends a
+//	period and i_NewExtension; GetExtension and GetBase return what follows
+//	and what precedes the last period, and leave o_Extension and o_Base
+//	unchanged if there is none.
+void StripExtension(std::string& io_String);
+void ReplaceExtension(std::string& io_String, const std::string& i_NewExtension);
+void GetExtension(const std::string& i_String, std::string& o_Extension);
+void GetBase(const std::string& i_String, std::string& o_Base);
+
+//	True if i_String starts or ends with i_SubString, which must not be
+//	empty (as itString::StartsWith and EndsWith).
+bool StartsWith(const std::string& i_String, const std::string& i_SubString);
+bool EndsWith(const std::string& i_String, const std::string& i_SubString);
 
 }

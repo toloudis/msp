@@ -47,7 +47,7 @@ class fsResourceFinderJoin : public fsResourceFinder
 		//	put the full path to the resource (including filename)
 		//	into o_FoundLocator.
 		//----------------------------------------------------------------
-		virtual bool FindResource(const itString& i_FileName, 
+		virtual bool FindResource(const std::string& i_FileName, 
 								  fsLocator& o_FoundLocator) const;
 
 		//----------------------------------------------------------------
@@ -56,7 +56,7 @@ class fsResourceFinderJoin : public fsResourceFinder
 		//	for the file to be found, which may be important for
 		//	some implementations.
 		//----------------------------------------------------------------
-		virtual bool FindResource(const itString& i_FileName, 
+		virtual bool FindResource(const std::string& i_FileName, 
 								  const fsLocator& i_AskingLocator,
 								  fsLocator& o_FoundLocator) const;
 

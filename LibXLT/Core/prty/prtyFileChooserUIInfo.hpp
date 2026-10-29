@@ -51,9 +51,8 @@ class prtyFileChooserUIInfo : public prtyPropertyUIInfo
 		//	Examples:	"Sound files (*.wav)|*.wav|All files (*.*)|*.*"
 		//				"Model files (*.mx)|*.mx"
 		//--------------------------------------------------------------------
-		const itString& GetFileFilter() const;
+		const std::string& GetFileFilter() const;
 		void SetFileFilter(const std::string& i_FileFilter);
-		void SetFileFilter(const itString& i_FileFilter);
 
 		//--------------------------------------------------------------------
 		//	ShowFileNameOnly
@@ -75,7 +74,7 @@ class prtyFileChooserUIInfo : public prtyPropertyUIInfo
 		void SetDirectoryCategory(const std::string& i_DirectoryCategory);
 
 	private:
-		itString	m_FileFilter;
+		std::string	m_FileFilter;
 		bool		m_bShowFileNameOnly;
 		fsLocator	m_InitialDirectory;
 		std::string	m_DirectoryCategory;

@@ -95,19 +95,6 @@ void chMemWriter::Write(const char* i_Val, int i_Length)
 	Write(static_cast<const void*>(i_Val), int64_t(i_Length));
 }
 
-void chMemWriter::Write(const envType::WChar* i_Val)
-{
-	int length = 0;
-	while( i_Val[length] )
-		length++;
-	Write(i_Val, length + 1);	// with the NULL
-}
-
-void chMemWriter::Write(const envType::WChar* i_Val, int i_Length)
-{
-	Write(static_cast<const void*>(i_Val), int64_t(i_Length) * 2);
-}
-
 void chMemWriter::Write(const envAppVersion& i_Val)
 {
 	WriteValue(i_Val.GetMajor());

@@ -13,9 +13,7 @@
 #endif
 #define NAME_STRING_HPP
 
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 
 #include <ostream>
 #include <string>
@@ -40,7 +38,6 @@ class nameString
 		// implicit constructors
 		//--------------------------------------------------------------------
 		nameString();
-		nameString(const itString& i_Name);
 		nameString(const std::string& i_Name);
 		nameString(const std::string& i_Name, const nameUID i_UID );
 

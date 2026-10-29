@@ -9,7 +9,6 @@
 #include "Core/fs/fsXMLWriter.hpp"
 #include "Core/env/envNumberText.hpp"
 
-#include "Core/it/itStringUtil.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -442,26 +441,6 @@ void fsXMLWriter::WriteElement(std::string& i_KeyName, const fsLocator& i_Value)
 
 #ifdef FSXMLWRITER_DEBUG_OUTPUT 
 	DBG_LOG2("WriteXML: content str2 (%s)[%s]", i_KeyName.c_str(), outstr.c_str());
-#endif
-
-	//	create and write the element
-	write_end_element(i_KeyName);
-}
-//------------------------------------------------------------------------
-void fsXMLWriter::WriteElement(std::string& i_KeyName, const itString& i_Value)
-{
-	DBG_ASSERT(m_pFileStream != NULL, "Must Open() the Writer");
-
-	//	create and write the element
-	write_start_element(i_KeyName);
-
-	//
-	std::string outstr;
-	outstr = itStringUtil::GetStdString(i_Value);
-	m_pFileStream->Write(sizeof(outstr.c_str()), outstr.c_str());
-
-#ifdef FSXMLWRITER_DEBUG_OUTPUT 
-	DBG_LOG2("WriteXML: content str3 (%s)[%s]", i_KeyName.c_str(), outstr.c_str());
 #endif
 
 	//	create and write the element

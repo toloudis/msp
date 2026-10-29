@@ -8,8 +8,11 @@
 \*********************************************************/
 #include "Core/Fs/fsLocator.hpp"
 
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/Fs/fsFileUtil.hpp"	// for debug only
-#include "Core/It/itStringUtil.hpp"	// for debug only
+#include "Core/It/itStringUtil.hpp"
 
 #include <algorithm>
 #include <iterator>
@@ -45,7 +48,7 @@ fsLocator::fsLocator(const fsLocator& i_Locator, int i_Index)
 {
 }
 
-fsLocator::fsLocator(const itString& i_Name)
+fsLocator::fsLocator(const std::string& i_Name)
 :	m_Index(-1),
 	m_Names(1, i_Name),
 	m_bUNCPath(false)
@@ -53,11 +56,34 @@ fsLocator::fsLocator(const itString& i_Name)
 }
 
 // This version sets the index and pushes the given name
-fsLocator::fsLocator(int i_Index, const itString& i_Name)
+fsLocator::fsLocator(int i_Index, const std::string& i_Name)
 :	m_Index(i_Index),
 	m_Names(1, i_Name),
 	m_bUNCPath(false)
 {
+}
+
+//------------------------------------------------------------------------
+//	Temporary itString forms (see the .hpp)
+//------------------------------------------------------------------------
+fsLocator::fsLocator(const itString& i_Name)
+:	fsLocator(std::string(i_Name))
+{
+}
+
+fsLocator::fsLocator(int i_Index, const itString& i_Name)
+:	fsLocator(i_Index, std::string(i_Name))
+{
+}
+
+void fsLocator::Push(const itString& i_Name)
+{
+	Push(std::string(i_Name));
+}
+
+bool fsLocator::Remove(const itString& i_DirName)
+{
+	return Remove(std::string(i_DirName));
 }
 
 //------------------------------------------------------------------------
@@ -90,7 +116,7 @@ int fsLocator::GetNumNames() const
 //------------------------------------------------------------------------
 //	GetName() returns a particular name.
 //------------------------------------------------------------------------
-const itString& fsLocator::GetName(int i_Num) const
+const std::string& fsLocator::GetName(int i_Num) const
 {
 	DBG_ASSERT(i_Num < m_Names.size(), "Name index out of range - " << i_Num);
 	DBG_ASSERT(i_Num >= 0, "Name index out of range - " << i_Num);
@@ -100,7 +126,7 @@ const itString& fsLocator::GetName(int i_Num) const
 //------------------------------------------------------------------------
 //	GetLastName() returns the last name in the list
 //------------------------------------------------------------------------
-const itString& fsLocator::GetLastName() const
+const std::string& fsLocator::GetLastName() const
 {
 	DBG_ASSERT(m_Names.size() > 0, "Must have some names to get last one");
 	return *(m_Names.rbegin());
@@ -109,7 +135,7 @@ const itString& fsLocator::GetLastName() const
 //------------------------------------------------------------------------
 //	ReplaceLastName() replace the last name in the list
 //------------------------------------------------------------------------
-void fsLocator::ReplaceLastName(const itString& i_NewName)
+void fsLocator::ReplaceLastName(const std::string& i_NewName)
 {
 	Pop();
 	Push(i_NewName);
@@ -120,13 +146,13 @@ void fsLocator::ReplaceLastName(const itString& i_NewName)
 //	with a new one.
 //	Note: if no '.' is in the new extension string, one will be added.
 //------------------------------------------------------------------------
-void fsLocator::ReplaceExtension(const itString& i_NewExtension)
+void fsLocator::ReplaceExtension(const std::string& i_NewExtension)
 {
-	(*(m_Names.rbegin())).ReplaceExtension( i_NewExtension );
+	itStringUtil::ReplaceExtension( *(m_Names.rbegin()), i_NewExtension );
 }
 void fsLocator::ReplaceExtension(const char* i_NewExtension)
 {
-	ReplaceExtension( itString(i_NewExtension) );
+	ReplaceExtension( std::string(i_NewExtension) );
 }
 
 //------------------------------------------------------------------------
@@ -186,9 +212,9 @@ std::ostream& operator << (std::ostream& io_os, const fsLocator& i_Locator)
 }
 std::wostream& operator << (std::wostream& io_os, const fsLocator& i_Locator) 
 {
-	itString cur_string;
+	std::string cur_string;
 	fsFileUtil::LocatorToUnicodeString(i_Locator, cur_string);
-	io_os << cur_string;
+	io_os << envString::UTF8ToWideChar(cur_string);
 	return io_os;
 }
 //------------------------------------------------------------------------
@@ -234,12 +260,12 @@ fsLocator& fsLocator::operator = (const fsLocator& i_Locator)
 void fsLocator::Push(const char* i_Name)
 {
 	DBG_ASSERT(NULL != i_Name, "Null directories and filenames are not permitted, ever.");
-	m_Names.push_back(itString(i_Name));
+	m_Names.push_back(std::string(i_Name));
 }
 
-void fsLocator::Push(const itString& i_Name)
+void fsLocator::Push(const std::string& i_Name)
 {
-	DBG_ASSERT(0 != i_Name.GetLength(), "Emtpy directory and filename strings are not permitted, ever.");
+	DBG_ASSERT(!i_Name.empty(), "Emtpy directory and filename strings are not permitted, ever.");
 	m_Names.push_back(i_Name);
 }
 
@@ -261,7 +287,7 @@ void fsLocator::Pop()
 //	FindFirst - find the first occurrence of the name.  Returns -1 if
 //	name is not found.
 //------------------------------------------------------------------------
-int fsLocator::FindFirst(const itString& i_Name) const
+int fsLocator::FindFirst(const std::string& i_Name) const
 {
 	int name_size = m_Names.size();
 
@@ -282,7 +308,7 @@ int fsLocator::FindFirst(const itString& i_Name) const
 //------------------------------------------------------------------------
 //	ReplaceName() changes one of the names in the list
 //------------------------------------------------------------------------
-void fsLocator::ReplaceName(const itString& i_Name, int i_Num)
+void fsLocator::ReplaceName(const std::string& i_Name, int i_Num)
 {
 	DBG_ASSERT(i_Num < m_Names.size(), "Name index out of range");
 	m_Names[i_Num] = i_Name;
@@ -304,7 +330,7 @@ void fsLocator::Clear()
 //
 //	returns true if it found the string in the locator
 //------------------------------------------------------------------------
-bool fsLocator::RemoveAfter(const itString& i_String)
+bool fsLocator::RemoveAfter(const std::string& i_String)
 {
 	int startindex = -1;
 	int name_size = m_Names.size();
@@ -335,7 +361,7 @@ bool fsLocator::RemoveAfter(const itString& i_String)
 //
 //	returns true if it found the string in the locator
 //------------------------------------------------------------------------
-bool fsLocator::RemoveBefore(const itString& i_String)
+bool fsLocator::RemoveBefore(const std::string& i_String)
 {
 	int startindex = -1;
 	int name_size = m_Names.size();
@@ -422,8 +448,8 @@ bool fsLocator::Remove(const fsLocator& i_SubDir)
 		{
 			// DEBUG ONLY
 			//std::string str1,str2;
-			//str1 = itStringUtil::GetStdString( m_Names[i+j] );
-			//str2 = itStringUtil::GetStdString( i_SubDir.GetName(j) );
+			//str1 = m_Names[i+j];
+			//str2 = i_SubDir.GetName(j);
 			//DBG_LOG4("(%02d) (%12s) == (%02d) (%12s)", (i+j),str1.c_str(),j,str2.c_str());
 
 			//	find the first occurence in the list
@@ -475,12 +501,12 @@ bool fsLocator::Remove(const fsLocator& i_SubDir)
 }
 
 //------------------------------------------------------------------------
-//	Remove() find the first occurence of the itString passed in and
+//	Remove() find the first occurence of the name passed in and
 //	remove it.
 //
 //	returns true if it found the string in the locator
 //------------------------------------------------------------------------
-bool fsLocator::Remove(const itString& i_DirName)
+bool fsLocator::Remove(const std::string& i_DirName)
 {
 	DBG_ASSERT(0 < m_Names.size(), "Cannot remove a directory from an empty locator");
 

@@ -312,7 +312,7 @@ void run_python_startup_scripts()
 	//now find each python object script previously created in the user's data path
 	fsLocator python_object_dir = gfPaths::GetPath(mnmPaths::e_Python, pythUtil::e_PythonObjects );
 	fsFileEnum::fsFileList python_objects;
-	itString py_ext("py");
+	std::string py_ext("py");
 	fsFileEnum::EnumerateFiles(python_object_dir, python_objects, py_ext);
 
 	//after finding each python object file, we need to execute them to add them to the menu

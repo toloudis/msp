@@ -357,53 +357,6 @@ void chXMLWriter::Write(const char* i_Val, int i_Length)
 }
 
 //--------------------------------------------------------------------
-//	This Write writes a NULL-terminated Unicode character string
-//--------------------------------------------------------------------
-void chXMLWriter::Write(const envType::WChar* i_Val)
-{
-	// convert to ascii, UNICODE shouldn't be in data files
-	// anyway. it should be in gfTextSetFile only.
-	//
-	const envType::WChar *ptr = i_Val;
-	char ch;
-	std::string str;
-	while (*ptr)
-	{
-		ch = (char) (*ptr);
-		DBG_ASSERT((((*ptr) & 0xff00) == 0), "Can't write true unicode into ascii files.");
-		str += ch;
-		ptr++;
-	}
-
-	m_File.WriteToken( str );
-	write_char(m_File, ' ');
-	l_bLastWriteHeader = false;
-}
-
-//--------------------------------------------------------------------
-//	This Write writes a Unicode character string with a length
-//	given by i_Length.
-//--------------------------------------------------------------------
-void chXMLWriter::Write(const envType::WChar* i_Val, int i_Length)
-{	
-	// convert to ascii, UNICODE shouldn't be in data files
-	// anyway. it should be in gfTextSetFile only.
-	//
-	char ch;
-	std::string str;
-	for (int i=0; i<i_Length; i++)
-	{
-		ch = (char) i_Val[i];
-		DBG_ASSERT(((ch & 0xff00) == 0), "Can't write true unicode into ascii files.");
-		str += ch;
-	}
-
-	m_File.WriteToken( str );
-	write_char(m_File, ' ');
-	l_bLastWriteHeader = false;
-}
-
-//--------------------------------------------------------------------
 //	Write the envAppVersion structure
 //--------------------------------------------------------------------
 void chXMLWriter::Write(const envAppVersion& i_Val)

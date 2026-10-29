@@ -29,12 +29,12 @@ void EnumerateFiles(const fsLocator& i_Locator,
 					fsFileEnum::EnumTarget& o_Target,
 					bool i_bSearchSubdirectories)
 {
-	std::vector<itString> no_substrings;
+	std::vector<std::string> no_substrings;
 	gfFileEnum::EnumerateFiles(i_Locator, o_Target, no_substrings, i_bSearchSubdirectories);
 }
 void EnumerateFiles(const fsLocator& i_Locator, 
 					fsFileEnum::EnumTarget& o_Target,
-					const std::vector<itString> &i_SubStrings,
+					const std::vector<std::string> &i_SubStrings,
 					bool i_bSearchSubdirectories)
 {
 	if (!i_Locator.HasIndex())
@@ -68,12 +68,12 @@ void EnumerateFiles(const fsLocator& i_Locator,
 					fsFileEnum::fsFileList& o_FileList,
 					bool i_bSearchSubdirectories)
 {
-	std::vector<itString> no_substrings;
+	std::vector<std::string> no_substrings;
 	gfFileEnum::EnumerateFiles(i_Locator, o_FileList, no_substrings, i_bSearchSubdirectories);
 }
 void EnumerateFiles(const fsLocator& i_Locator, 
 					fsFileEnum::fsFileList& o_FileList,
-					const std::vector<itString> &i_SubStrings,
+					const std::vector<std::string> &i_SubStrings,
 					bool i_bSearchSubdirectories)
 {
 	fsFileEnum::FileListTarget FileTarget;

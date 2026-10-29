@@ -13,6 +13,8 @@
 #include "Core/fs/private/fsFileUtilPAC.hpp"
 #include "Core/fs/fsLocator.hpp"
 
+#include <algorithm>
+
 
 namespace fsFileUtil
 {
@@ -115,7 +117,7 @@ void CopyDirectory(const fsLocator& i_From, const fsLocator& i_To)
 	for (i = 0; i < Directories.size(); ++i)
 	{
 		//recursively copy subdirectories, skipping "." and ".."
-		if (itString(".") == Directories[i].GetLastName() || itString("..") == Directories[i].GetLastName())
+		if (Directories[i].GetLastName() == "." || Directories[i].GetLastName() == "..")
 		{
 			continue;
 		}
@@ -162,97 +164,34 @@ bool DirectoryExists(const fsLocator& i_Filename)
 }
 
 //----------------------------------------------------------------------------
-// UnicodeStringToLocator returns a locator from a given itString
+// UnicodeStringToLocator returns a locator from a given UTF-8 string
 // the string is separted by backslashes in the windows style ,this string
 // should not be used for pathing, but rather for logging or perhaps
-// storing a locator as a fully pathed itString. NOTE: the index will be ignored,
+// storing a locator as a fully pathed string. NOTE: the index will be ignored,
 // be sure to call gfFileTranslationMgr::ExpandLocator first if you need to
 //----------------------------------------------------------------------------
-void UnicodeStringToLocator(const itString& i_String, fsLocator& o_Locator)
+void UnicodeStringToLocator(const std::string& i_String, fsLocator& o_Locator)
 {
-	//bga - I had to add this so that locators don't keep getting appended
-	o_Locator.Clear();
-
-	int i = 0;
-	itString::CharType ch;
-	itString Name;
-	std::vector<itString> LocNames;
-
-	while (i < i_String.GetLength())
-	{
-		ch = i_String[i];
-		if (('\\' == ch) || ('/' == ch))
-		{
-			//add Name to the vector of strings if it has a length
-			if (Name.GetLength())
-			{
-				LocNames.push_back(Name);
-				Name.Clear();
-			}
-			else
-			{
-				//	if UNC Path then set the flag
-				//
-				if (i == 0)
-				{
-					o_Locator.SetUNCPath(true);
-				}
-			}
-		}
-		else
-		{
-			Name += ch;
-		}
-
-		++i;
-	}
-	//add the final Name to the vector of strings if it has a length
-	if (Name.GetLength())
-	{
-		LocNames.push_back(Name);
-		Name.Clear();
-	}
-
-	for (i = 0; i < LocNames.size(); ++i)
-	{
-		o_Locator.Push(LocNames[i]);
-	}
+	ANSIFilenameToLocator(i_String, o_Locator);
 }
 
 //----------------------------------------------------------------------------
-// LocatorToUnicodeString returns an itString from a given locator
+// LocatorToUnicodeString returns a UTF-8 string from a given locator
 // the string is separted by backslashes in the windows style ,this string
 // should not be used for pathing, but rather for logging or perhaps
-// storing a locator as a fully pathed itString. NOTE: the index will be ignored,
+// storing a locator as a fully pathed string. NOTE: the index will be ignored,
 // be sure to call gfFileTranslationMgr::ExpandLocator first if you need to
 //----------------------------------------------------------------------------
+void LocatorToUnicodeString(const fsLocator& i_Locator, std::string& o_String)
+{
+	LocatorToANSIFilename(i_Locator, o_String);
+}
+
 void LocatorToUnicodeString(const fsLocator& i_Locator, itString& o_String)
 {
-	o_String.Clear();
-
-	int num_names = i_Locator.GetNumNames();
-	if (num_names > 0)
-	{
-		//	if UNC Path then prepend \\ at the beginning
-		//
-		if (i_Locator.IsUNCPath())
-		{
-			o_String += '\\';
-			o_String += '\\';
-		}
-
-		//
-		int i;
-		for (i = 0; i < num_names-1; ++i)
-		{
-			o_String += i_Locator.GetName(i);
-			o_String += '\\';
-		}
-		o_String += i_Locator.GetLastName();
-	}
-
-	//bga - Note, this function used to add an extra backslash at the end of the string
-	// because of the way the algorithm was written. That seems like a bug to me, so I changed it.
+	std::string utf8;
+	LocatorToANSIFilename(i_Locator, utf8);
+	o_String = utf8;
 }
 
 //----------------------------------------------------------------------------
@@ -284,11 +223,10 @@ void LocatorToANSIFilename(const fsLocator& i_Locator, std::string& o_String, bo
 //----------------------------------------------------------------------------
 bool IsFilenameASCII(const fsLocator& i_Locator)
 {
-	itString cur_name;
 	for( int i = 0; i < i_Locator.GetNumNames(); ++i )
 	{
-		cur_name = i_Locator.GetName(i);
-		if(!cur_name.IsStringASCII())
+		const std::string& cur_name = i_Locator.GetName(i);
+		if( std::any_of(cur_name.begin(), cur_name.end(), [](char c) { return (unsigned char)(c) > 127; }) )
 			return false;
 	}
 	return true;

@@ -28,18 +28,17 @@ void pqtFileName_ComboBox_Converter::GetChoices(prtyPropertyUIInfo* i_pUIInfo,
 // Set value into control
 //----------------------------------------------------------------------------
 void pqtFileName_ComboBox_Converter::SetValueIntoControl(QComboBox* i_pActualControl,
-											   itString i_Value)
+											   const std::string& i_Value)
 {
-	pqtControlUtil::SelectString(i_pActualControl, QString::fromWCharArray(i_Value.GetString()));
+	pqtControlUtil::SelectString(i_pActualControl, QString::fromUtf8(i_Value.c_str()));
 }
 
 //----------------------------------------------------------------------------
 // Get value from control
 //----------------------------------------------------------------------------
-itString pqtFileName_ComboBox_Converter::GetValueFromControl(QComboBox* i_pActualControl)
+std::string pqtFileName_ComboBox_Converter::GetValueFromControl(QComboBox* i_pActualControl)
 {
-	itString sel_text(i_pActualControl->currentText().toStdWString().c_str());
-	return sel_text;
+	return i_pActualControl->currentText().toStdString();
 }
 
 #endif

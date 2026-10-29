@@ -16,8 +16,8 @@
 #include <windows.h>
 #include <string>
 
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
+#ifndef ENV_TYPE_HPP
+#include "Core/env/envType.hpp"
 #endif
 
 
@@ -75,7 +75,7 @@ class appApplicationPAC
 		//	window's title bar.  This function can be called from a 
 		//	appStartEvent handler, before the window has been created. 
 		//--------------------------------------------------------------------
-		void SetWindowTitle(const itString& i_Title);
+		void SetWindowTitle(const std::string& i_Title);
 
 		//--------------------------------------------------------------------
 		//	The windows appApplicationPAC defines this Instance function
@@ -196,7 +196,7 @@ class appApplicationPAC
 		//	Create a secondary window for the application
 		//--------------------------------------------------------------------
 		static HWND CreateSubWindow(int i_Width, int i_Height, 
-									int i_X, int i_Y, const itString& i_Title);
+									int i_X, int i_Y, const std::string& i_Title);
 
 		//--------------------------------------------------------------------
 		//	Destory secondary window created by previous call to 
@@ -218,7 +218,7 @@ class appApplicationPAC
 		//	Used for creating an application that doesn't use Run()
 		//--------------------------------------------------------------------
 		static void CreateMainWindow(int i_Width, int i_Height, 
-									 int i_X, int i_Y, const itString& i_Title);
+									 int i_X, int i_Y, const std::string& i_Title);
 
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
@@ -241,7 +241,7 @@ class appApplicationPAC
 	private:
 		int m_X, m_Y, m_Width, m_Height;
 		bool m_bQuit;
-		itString m_Title;
+		std::string m_Title;
 };
 
 

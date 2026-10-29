@@ -5,6 +5,14 @@
 **		a data member tracking endian mode, along with accessor methods for it,
 **		as well as a method for writing binary headers
 **
+**		A binary file starts with a four-byte signature and the Header.
+**		The signature says how the file stores strings that were itStrings
+**		when they were written (chWriter::Write, chReader::ReadItString):
+**			PWFB (petawatt)	UTF-8, null-terminated; every file written now
+**			TWFB (terawatt)	UTF-16LE, null-terminated 16-bit units
+**			GWFB (gigawatt)	UTF-16LE, as TWFB
+**		Narrow strings are single bytes in all three.
+**
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
@@ -41,7 +49,8 @@ class gfFileBin : public gfFile
 		//	structs
 		//------------------------------------------------------------------------
 
-		//this header is preceded in the file by the four-byte signature "TWFB"
+		//this header is preceded in the file by the four-byte signature:
+		//"PWFB", or "TWFB" or "GWFB" in older files (see the top of this file)
 		struct Header
 		{
 			char m_Mode;	// deprecated endian mode; WriteHeader always writes 2 (little endian)
@@ -77,6 +86,8 @@ class gfFileBin : public gfFile
 		//	ReadHeader reads the file's header into the o_Header passed to it. If 
 		//	o_Header is NULL, the file pointer is simply moved past the file header
 		//	Throws: gfInvalidFileBinX
+		//	ReadHeader accepts the signatures PWFB, TWFB and GWFB, and
+		//	remembers which one the file has (HasUTF8Strings).
 		//------------------------------------------------------------------------
 		void ReadHeader(Header* o_Header = NULL);
 
@@ -85,11 +96,25 @@ class gfFileBin : public gfFile
 		//	is ignored; the deprecated endian mode byte is always written as
 		//	little endian. The second version of this function is an inline
 		//	convenience.
+		//	The signature written is always PWFB: the file's strings are
+		//	UTF-8.
 		//------------------------------------------------------------------------
 		void WriteHeader(const Header& i_Header);
 		void WriteHeader(int i_Major = 0, int i_Minor = 0, int i_Rev = 0);
 
+		//------------------------------------------------------------------------
+		//	HasUTF8Strings is true if the file stores text strings as UTF-8
+		//	(its signature is PWFB), false if as UTF-16 (TWFB or GWFB), and
+		//	false until ReadHeader or WriteHeader has been called: a file
+		//	without a header (chunks only, from the legacy exporters) is an
+		//	old one.
+		//------------------------------------------------------------------------
+		bool HasUTF8Strings() const;
+
 		static int GetHeaderSize();
+
+	private:
+		bool m_bUTF8Strings;
 };
 
 

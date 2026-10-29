@@ -10,6 +10,9 @@
 #include "Core/prty/prtyProperty.hpp"
 
 #include "Core/name/nameMgr.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 
 //--------------------------------------------------------------------

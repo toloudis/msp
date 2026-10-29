@@ -11,6 +11,9 @@
 #include "Core/Dbg/private/dbgAssertPAC.hpp"
 #include "Core/Dbg/private/dbgLogPAC.hpp"
 #include "Core/Env/envSTLHelpers.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/Env/envThreadGroup.hpp"
 #include "Core/Env/private/envSystemDataPAC.hpp"
 #include "Core/fs/fsLocator.hpp"
@@ -82,12 +85,11 @@ namespace dbgMsg
 				defaultName = appName;
 			
 			fsLocator streamfile = gfPaths::GetPath(gfPaths::e_UserDataPath);
-			itString fname( defaultName.c_str() );
-			fname += L".log";
-			streamfile.Push(fname);
+			streamfile.Push(envString::WideCharToUTF8(defaultName) + ".log");
+			std::string fname;
 			fsFileUtil::LocatorToUnicodeString(streamfile, fname);
 
-			l_ofs = new std::ofstream( fname.GetString() );
+			l_ofs = new std::ofstream( fname );
 			addStream(std::wstring(L"default"), l_ofs);
 		}
 

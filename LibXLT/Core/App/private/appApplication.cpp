@@ -60,7 +60,7 @@ void appApplication::SetWindowSize(int i_X, int i_Y, int i_Width, int i_Height)
 //	window's title bar.  This function can be called from a 
 //	appStartEvent handler, before the window has been created. 
 //--------------------------------------------------------------------
-void appApplication::SetWindowTitle(const itString& i_Title)
+void appApplication::SetWindowTitle(const std::string& i_Title)
 {
 	m_pImp->SetWindowTitle(i_Title);
 }
@@ -136,7 +136,7 @@ void appApplication::SetMainWindowSize(int i_X, int i_Y, int i_Width, int i_Heig
 //		handle is based on the OS.
 //--------------------------------------------------------------------
 void* appApplication::CreateSubWindow(int i_Width, int i_Height, 
-		int i_X, int i_Y, const itString& i_Title)
+		int i_X, int i_Y, const std::string& i_Title)
 {
 	return (void*)appApplicationPAC::CreateSubWindow(i_Width, i_Height, i_X, i_Y, i_Title);
 }
@@ -173,7 +173,7 @@ bool appApplication::LaunchProgram(const std::string& i_CommandLine, bool i_Show
 //	Used for creating an application that doesn't use Run()
 //--------------------------------------------------------------------
 void appApplication::CreateMainWindow(int i_Width, int i_Height, 
-		int i_X, int i_Y, const itString& i_Title)
+		int i_X, int i_Y, const std::string& i_Title)
 {
 	appApplicationPAC::CreateMainWindow(i_Width, i_Height, i_X, i_Y, i_Title);
 }

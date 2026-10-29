@@ -36,16 +36,16 @@ public:
 	// Set value into control
 	//----------------------------------------------------------------------------
 	static void SetValueIntoControl(QComboBox* i_pActualControl,
-									 itString i_Value);
+									 const std::string& i_Value);
 
 	//----------------------------------------------------------------------------
 	// Get value from control
 	//----------------------------------------------------------------------------
-	static itString GetValueFromControl(QComboBox* i_pActualControl);
+	static std::string GetValueFromControl(QComboBox* i_pActualControl);
 };
 
 //============================================================================
 //============================================================================
-typedef pqtTemplate_ComboBox<prtyFileName, itString, pqtFileName_ComboBox_Converter> pqtFileName_ComboBox;
+typedef pqtTemplate_ComboBox<prtyFileName, std::string, pqtFileName_ComboBox_Converter> pqtFileName_ComboBox;
 
 #endif // USE_QT

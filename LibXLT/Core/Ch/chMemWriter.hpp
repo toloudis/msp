@@ -64,8 +64,6 @@ class chMemWriter : public chWriter
 		virtual void Write(bool i_Val);
 		virtual void Write(const char* i_Val);
 		virtual void Write(const char* i_Val, int i_Length);
-		virtual void Write(const envType::WChar* i_Val);
-		virtual void Write(const envType::WChar* i_Val, int i_Length);
 		virtual void Write(const envAppVersion& i_Val);
 		virtual	void Write(const void* i_Data, int64_t i_NumBytes);
 

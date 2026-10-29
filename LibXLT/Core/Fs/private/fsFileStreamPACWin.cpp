@@ -255,17 +255,17 @@ fsFileStream::fsFileStream(const fsLocator& i_Locator, AccessType i_DesiredAcces
 	{
 		//	Create a file
 		//
-		itString filename;
+		std::wstring filename;
 		fsFileUtilPAC::LocatorToUnicodeFilename(i_Locator, filename);
 		//DBG_LOG("Creating/Opening UNICODE stream  " << filename);
 
-		if ( filename.GetLength() == 0 )
+		if ( filename.empty() )
 		{
 			fsResourceTracker::Remove(i_Locator);		// shouldn't be here?  put where throw is CAUGHT
 			throw fsInvalidLocatorX(i_Locator);
 		}
 
-		new_file = ::CreateFileW(	filename.GetString(),
+		new_file = ::CreateFileW(	filename.c_str(),
 									access,
 									share_mode,
 									NULL,
@@ -558,6 +558,15 @@ void fsFileStream::SetFilePos(  FilePosType i_Pos, AccessPointType i_DesiredAcce
 
 		// Mark the buffer as invalid
 		m_pImp->m_BufferLoc = m_pImp->m_BufferValid = 0;
+
+		// The OS file pointer is past what has been read from the buffer
+		// (it read ahead to fill it), so a move from the current position
+		// is made from m_FilePointer instead
+		if (move_method == FILE_CURRENT)
+		{
+			i_Pos += m_pImp->m_FilePointer;
+			move_method = FILE_BEGIN;
+		}
 
 		//bga - switching this to GetFileSizeEx in order to handle
 		// file sizes greater than 32-bit int can handle.

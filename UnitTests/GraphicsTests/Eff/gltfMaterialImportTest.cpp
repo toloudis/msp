@@ -41,7 +41,7 @@ namespace
 
 	bool IsPbr(const mdlMaterialInfo& i_Info)
 	{
-		return i_Info.GetShaderParams()->GetShaderName().GetLastName() == itString(effPbrData::c_ShaderName);
+		return i_Info.GetShaderParams()->GetShaderName().GetLastName() == effPbrData::c_ShaderName;
 	}
 }
 

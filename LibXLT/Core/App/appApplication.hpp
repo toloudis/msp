@@ -20,7 +20,6 @@
 
 //============================================================================
 //============================================================================
-class itString;
 class appApplicationPAC;
 
 
@@ -93,7 +92,7 @@ class appApplication
 		//		handle is based on the OS.
 		//--------------------------------------------------------------------
 		static void* CreateSubWindow(int i_Width, int i_Height, 
-				int i_X, int i_Y, const itString& i_Title);
+				int i_X, int i_Y, const std::string& i_Title);
 
 		//--------------------------------------------------------------------
 		//	Destory secondary window created by previous call to 
@@ -120,7 +119,7 @@ class appApplication
 		//	Used for creating an application that doesn't use Run()
 		//--------------------------------------------------------------------
 		static void CreateMainWindow(int i_Width, int i_Height, 
-				int i_X, int i_Y, const itString& i_Title);
+				int i_X, int i_Y, const std::string& i_Title);
 
 	protected:
 		friend class appApplicationPAC;
@@ -151,7 +150,7 @@ class appApplication
 		//	window's title bar.  This function can be called from a 
 		//	appStartEvent handler, before the window has been created. 
 		//--------------------------------------------------------------------
-		void SetWindowTitle(const itString& i_Title);
+		void SetWindowTitle(const std::string& i_Title);
 
 		//--------------------------------------------------------------------
 		//	returns true if the app is in a state of quitting

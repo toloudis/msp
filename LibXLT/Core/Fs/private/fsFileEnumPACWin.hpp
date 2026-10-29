@@ -35,7 +35,7 @@ namespace fsFileEnumPAC
 //------------------------------------------------------------------------
 bool EnumerateFiles(const fsLocator& i_Locator, 
 					fsFileEnum::EnumTarget& o_Target,
-					const std::vector<itString> &i_SubStrings);
+					const std::vector<std::string> &i_SubStrings);
 
 //------------------------------------------------------------------------
 //	EnumerateDirectories lists all of the subdirectories in a directory.

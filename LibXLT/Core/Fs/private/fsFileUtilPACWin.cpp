@@ -20,7 +20,9 @@
 #undef CreateDirectory
 
 #include "Core/dbg/dbgMsg.hpp"
-#include "Core/Env/envString.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/env/private/envSystemDataPACWin.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
@@ -170,13 +172,13 @@ void CreateFile(const fsLocator& i_Filename)
 
 	//DBG_LOG("Creating/Opening UNICODE file  " << i_Filename);
 
-	itString filename;
+	std::wstring filename;
 	LocatorToUnicodeFilename(i_Filename, filename);
 
-	if( filename.GetLength() == 0 )
+	if( filename.empty() )
 		throw fsInvalidLocatorX(i_Filename);
 
-	new_file = ::CreateFileW(	filename.GetString(),
+	new_file = ::CreateFileW(	filename.c_str(),
 								GENERIC_WRITE,
 								0,
 								NULL,
@@ -198,18 +200,18 @@ void RenameFile(const fsLocator& i_From, const fsLocator& i_To)
 {
 	BOOL ret_val = 0;
 
-	itString from_filename, to_filename;
+	std::wstring from_filename, to_filename;
 
 	LocatorToUnicodeFilename(i_From, from_filename);
 	LocatorToUnicodeFilename(i_To, to_filename);
 
-	if( from_filename.GetLength() == 0 )
+	if( from_filename.empty() )
 		throw fsInvalidLocatorX(i_From);
 
-	if( to_filename.GetLength() == 0 )
+	if( to_filename.empty() )
 		throw fsInvalidLocatorX(i_To);
 
-	ret_val = ::MoveFileExW(from_filename.GetString(), to_filename.GetString(), MOVEFILE_COPY_ALLOWED);
+	ret_val = ::MoveFileExW(from_filename.c_str(), to_filename.c_str(), MOVEFILE_COPY_ALLOWED);
 
 	if( ret_val == 0 )
 		handle_windows_multifile_error(i_From, i_To);
@@ -223,14 +225,14 @@ void DeleteFile(const fsLocator& i_Filename)
 {
 	BOOL ret_val = 0;
 
-	itString filename;
+	std::wstring filename;
 
 	LocatorToUnicodeFilename(i_Filename, filename);
 
-	if( filename.GetLength() == 0 )
+	if( filename.empty() )
 		throw fsInvalidLocatorX(i_Filename);
 
-	ret_val = ::DeleteFileW(filename.GetString());
+	ret_val = ::DeleteFileW(filename.c_str());
 
 	if( ret_val == 0 )
 		handle_windows_error(i_Filename);
@@ -244,18 +246,18 @@ void CopyFile(const fsLocator& i_From, const fsLocator& i_To)
 {
 	BOOL ret_val = 0;
 
-	itString from_filename, to_filename;
+	std::wstring from_filename, to_filename;
 
 	LocatorToUnicodeFilename(i_From, from_filename);
 	LocatorToUnicodeFilename(i_To, to_filename);
 
-	if( from_filename.GetLength() == 0 )
+	if( from_filename.empty() )
 		throw fsInvalidLocatorX(i_From);
 
-	if( to_filename.GetLength() == 0 )
+	if( to_filename.empty() )
 		throw fsInvalidLocatorX(i_To);
 
-	ret_val = ::CopyFileW(from_filename.GetString(), to_filename.GetString(), true);
+	ret_val = ::CopyFileW(from_filename.c_str(), to_filename.c_str(), true);
 
 	if( ret_val == 0 )
 		handle_windows_multifile_error(i_From, i_To);
@@ -278,15 +280,15 @@ void CreateDirectoryOneDir(const fsLocator& i_DirectoryName)
 
 	//DBG_LOG("Create One Dir= " << i_DirectoryName);
 
-	itString filename;
+	std::string utf8_filename;
+	fsFileUtil::LocatorToANSIFilename(i_DirectoryName, utf8_filename);
+	itStringUtil::TrimSpaces(utf8_filename);
+	const std::wstring filename = envString::UTF8ToWideChar(utf8_filename);
 
-	LocatorToUnicodeFilename(i_DirectoryName, filename);
-
-	if( filename.GetLength() == 0 )
+	if( filename.empty() )
 		throw fsInvalidLocatorX(i_DirectoryName);
 
-	itStringUtil::TrimSpaces(filename);
-	ret_val = ::CreateDirectoryW(filename.GetString(), NULL);
+	ret_val = ::CreateDirectoryW(filename.c_str(), NULL);
 
 	if( ret_val == 0 )
 		handle_windows_error(i_DirectoryName);
@@ -303,7 +305,7 @@ void CreateDirectoryRecursively(const fsLocator& i_DirectoryName)
 			throw fsDirectoryDoesntExistX(i_DirectoryName);
 
 		fsLocator newdir(i_DirectoryName);
-		itString lastdir = newdir.GetLastName();
+		std::string lastdir = newdir.GetLastName();
 		newdir.Pop();
 
 		CreateDirectoryRecursively(newdir);
@@ -329,14 +331,14 @@ void DeleteDirectory(const fsLocator& i_DirectoryName)
 {
 	BOOL ret_val = 0;
 
-	itString filename;
+	std::wstring filename;
 
 	LocatorToUnicodeFilename(i_DirectoryName, filename);
 
-	if( filename.GetLength() == 0 )
+	if( filename.empty() )
 		throw fsInvalidLocatorX(i_DirectoryName);
 
-	ret_val = ::RemoveDirectoryW(filename.GetString());
+	ret_val = ::RemoveDirectoryW(filename.c_str());
 
 	if( ret_val == 0 )
 		handle_windows_error(i_DirectoryName);
@@ -350,13 +352,13 @@ bool FileExists(const fsLocator& i_Filename)
 {
 	DWORD ret_val = -1;
 
-	itString filename;
+	std::wstring filename;
 	LocatorToUnicodeFilename(i_Filename, filename);
 
-	if( filename.GetLength() == 0 )
+	if( filename.empty() )
 		return false;
 
-	ret_val = ::GetFileAttributesW(filename.GetString());
+	ret_val = ::GetFileAttributesW(filename.c_str());
 
 	if( (ret_val == -1) || (ret_val & FILE_ATTRIBUTE_DIRECTORY) )
 		return false;
@@ -372,13 +374,13 @@ bool DirectoryExists(const fsLocator& i_Filename)
 {
 	DWORD ret_val = -1;
 
-	itString filename;
+	std::wstring filename;
 	LocatorToUnicodeFilename(i_Filename, filename);
 
-	if( filename.GetLength() == 0 )
+	if( filename.empty() )
 		return false;
 
-	ret_val = ::GetFileAttributesW(filename.GetString());
+	ret_val = ::GetFileAttributesW(filename.c_str());
 
 	if( (ret_val == -1) || ((ret_val & FILE_ATTRIBUTE_DIRECTORY) == 0) )
 		return false;
@@ -394,37 +396,23 @@ void ANSIFilenameToLocator(const std::string& i_String, fsLocator& o_Locator)
 {
 	o_Locator.Clear();
 
-	int k;
-	int nBegin;
-	itString itName(i_String.c_str()); // this line here assumes UTF8 now
-	itString Piece;
-	nBegin = 0;
-	for (k = 0; k < itName.GetLength(); k++)
+	// The separators are ASCII, so they never occur inside a UTF-8 sequence
+	std::string::size_type begin = 0;
+	for (std::string::size_type k = 0; k <= i_String.size(); k++)
 	{
-		if ((itName[k] == itString::CharType('\\')) ||
-			(itName[k] == itString::CharType('/')))
+		if (k == i_String.size() || i_String[k] == '\\' || i_String[k] == '/')
 		{
-			Piece = itString(nBegin, (k - nBegin), itName);
-			nBegin = k + 1;
-			if (Piece.GetLength())
+			if (k > begin)
 			{
-				o_Locator.Push(Piece);
+				o_Locator.Push(i_String.substr(begin, k - begin));
 			}
-			else
+			else if (k == 0 && k < i_String.size())
 			{
 				//	check for UNC Path
-				if (k == 0)
-				{
-					o_Locator.SetUNCPath(true);
-				}
+				o_Locator.SetUNCPath(true);
 			}
+			begin = k + 1;
 		}
-	}
-
-	Piece = itString(nBegin, (itName.GetLength() - nBegin), itName);
-	if (Piece.GetLength())
-	{
-		o_Locator.Push(Piece);
 	}
 }
 
@@ -436,9 +424,7 @@ void ANSIFilenameToLocator(const std::string& i_String, fsLocator& o_Locator)
 void LocatorToANSIFilename(const fsLocator& i_Locator, std::string& o_String, bool i_bUseDoubleSlashes)
 {
 	std::string work_string;
-	//char work_string[MAX_PATH];
 	int num_names = i_Locator.GetNumNames();
-	//int num_chars;
 
 	o_String.clear();
 
@@ -459,24 +445,7 @@ void LocatorToANSIFilename(const fsLocator& i_Locator, std::string& o_String, bo
 	//
 	for (int i = 0 ; i < num_names ; i++ )
 	{
-		const itString& cur_string = i_Locator.GetName(i);
-
-		// New UTF8 version:
-		work_string = envString::WideCharToUTF8(cur_string.GetString(), cur_string.GetLength());
-
-		// Old ANSI version
-		//num_chars = ::WideCharToMultiByte(	::GetACP(),	// ANSI code page
-		//									0,			// no "lo-performance" flags
-		//									cur_string.GetString(),
-		//									cur_string.GetLength(),
-		//									work_string,
-		//									MAX_PATH,	// size of target buffer
-		//									NULL,
-		//									NULL);
-
-		//// for some reason, this function doesn't seem to terminate the 
-		//// work_string
-		//work_string[num_chars] = 0;
+		work_string = i_Locator.GetName(i);
 
 		o_String += work_string;
 		o_String += '\\';			// official directory separator character
@@ -487,24 +456,7 @@ void LocatorToANSIFilename(const fsLocator& i_Locator, std::string& o_String, bo
 			o_String += '\\';
 	}
 
-	const itString& last_string = i_Locator.GetLastName();
-
-	// New UTF8 version:
-	work_string = envString::WideCharToUTF8(last_string.GetString(), last_string.GetLength());
-
-	// Old ANSI version
-	//num_chars = ::WideCharToMultiByte(	::GetACP(),		// ANSI code page
-	//									0,			// no "lo-performance" flags
-	//									last_string.GetString(),
-	//									last_string.GetLength(),
-	//									work_string,
-	//									MAX_PATH,	// size of target buffer
-	//									NULL,
-	//									NULL);
-
-	//// for some reason, this function doesn't seem to terminate the 
-	//// work_string
-	//work_string[num_chars] = 0;
+	work_string = i_Locator.GetLastName();
 
 	o_String += work_string;
 
@@ -520,9 +472,7 @@ void LocatorToANSIFilename(const fsLocator& i_Locator, std::string& o_String, bo
 void 
 LocatorToANSIFilename(const fsLocator& i_Locator, std::string& o_String, const int i_StartNum, const int i_EndNum )
 {
-	//char work_string[MAX_PATH];
 	int num_names = i_Locator.GetNumNames();
-	//int num_chars;
 
 	o_String.clear();
 
@@ -546,47 +496,13 @@ LocatorToANSIFilename(const fsLocator& i_Locator, std::string& o_String, const i
 	//
 	for (int i = i_StartNum ; i < i_EndNum ; i++ )
 	{
-		const itString& cur_string = i_Locator.GetName(i);
-
-		// New UTF8 version:
-		std::string work_string = envString::WideCharToUTF8(cur_string.GetString(), cur_string.GetLength());
-
-		// Old ANSI version
-		//num_chars = ::WideCharToMultiByte(	::GetACP(),		// ANSI code page
-		//									0,			// no "lo-performance" flags
-		//									cur_string.GetString(),
-		//									cur_string.GetLength(),
-		//									work_string,
-		//									MAX_PATH,	// size of target buffer
-		//									NULL,
-		//									NULL);
-
-		//// for some reason, this function doesn't seem to terminate the 
-		//// work_string
-		//work_string[num_chars] = 0;
+		const std::string& work_string = i_Locator.GetName(i);
 
 		o_String += work_string;
 		o_String += '\\';			// official directory separator character
 	}
 
-	const itString& last_string = i_Locator.GetLastName();
-
-	// New UTF8 version:
-	std::string work_string = envString::WideCharToUTF8(last_string.GetString(), last_string.GetLength());
-
-	// Old ANSI version
-	//num_chars = ::WideCharToMultiByte(	::GetACP(),		// ANSI code page
-	//									0,			// no "lo-performance" flags
-	//									last_string.GetString(),
-	//									last_string.GetLength(),
-	//									work_string,
-	//									MAX_PATH,	// size of target buffer
-	//									NULL,
-	//									NULL);
-
-	//// for some reason, this function doesn't seem to terminate the 
-	//// work_string
-	//work_string[num_chars] = 0;
+	const std::string& work_string = i_Locator.GetLastName();
 
 	o_String += work_string;
 //	o_String += char(0);
@@ -597,12 +513,12 @@ LocatorToANSIFilename(const fsLocator& i_Locator, std::string& o_String, const i
 //	package.  It converts a fsLocator to a Unicode filename (for use in
 //	Windows NT or 2000).
 //----------------------------------------------------------------------------
-void LocatorToUnicodeFilename(const fsLocator& i_Locator, itString& o_String)
+void LocatorToUnicodeFilename(const fsLocator& i_Locator, std::wstring& o_String)
 {
 	int num_names = i_Locator.GetNumNames();
 	int i;
 
-	o_String.Clear();
+	o_String.clear();
 
 	if ( num_names <= 0 ) return;
 
@@ -620,17 +536,11 @@ void LocatorToUnicodeFilename(const fsLocator& i_Locator, itString& o_String)
 	//
 	for ( i = 0 ; i < num_names ; i++ )
 	{
-		o_String += i_Locator.GetName(i);
-	
-		// a harmless assumption here:
-		// Unicode "backslash" character is the same numeric
-		// value as ANSI backslash
-		o_String += itString::CharType('\\');		
+		o_String += envString::UTF8ToWideChar(i_Locator.GetName(i));
+		o_String += L'\\';
 	}
 
-	o_String += i_Locator.GetLastName();
-	// null-terminator implied in itString now
-	//o_String += itString::CharType(0);
+	o_String += envString::UTF8ToWideChar(i_Locator.GetLastName());
 }
 
 
@@ -640,12 +550,12 @@ void LocatorToUnicodeFilename(const fsLocator& i_Locator, itString& o_String)
 //	Windows NT or 2000).
 //----------------------------------------------------------------------------
 void 
-LocatorToUnicodeFilename(const fsLocator& i_Locator, itString& o_String, const int i_StartNum, const int i_EndNum )
+LocatorToUnicodeFilename(const fsLocator& i_Locator, std::wstring& o_String, const int i_StartNum, const int i_EndNum )
 {
 	int num_names = i_Locator.GetNumNames();
 	int i;
 
-	o_String.Clear();
+	o_String.clear();
 
 	if ( num_names <= 0 ) return;
 
@@ -666,23 +576,15 @@ LocatorToUnicodeFilename(const fsLocator& i_Locator, itString& o_String, const i
 	//
 	for ( i = i_StartNum ; i < i_EndNum ; i++ )
 	{
-		o_String += i_Locator.GetName(i);
-	
-		// a harmless assumption here:
-		// Unicode "backslash" character is the same numeric
-		// value as ANSI backslash
-		o_String += itString::CharType('\\');		
+		o_String += envString::UTF8ToWideChar(i_Locator.GetName(i));
+		o_String += L'\\';
 	}
 
 	//bga - This GetLastName() call is actually false, it should be the "EndNum" which makes me think that this
 	// function isn't used anywhere. I am tempted to comment it out completely to see. Fewer functions are
 	// easier to maintain.
 	//o_String += i_Locator.GetLastName();
-	o_String += i_Locator.GetName(i_EndNum);
-
-
-	// null-terminator implied in itString now
-	//o_String += itString::CharType(0);
+	o_String += envString::UTF8ToWideChar(i_Locator.GetName(i_EndNum));
 }
 
 
@@ -698,9 +600,9 @@ bool IsFileNameAbsolute( const fsLocator & i_Loc )
 
 	if( i_Loc.GetNumNames() > 0)
 	{
-		const itString& sRootDir =  i_Loc.GetName( 0 );
+		const std::string& sRootDir =  i_Loc.GetName( 0 );
 
-		if( sRootDir.GetLength() >= 2  &&   sRootDir[1] == L':' )
+		if( sRootDir.size() >= 2  &&   sRootDir[1] == ':' )
 		{
 			return true;
 		}
@@ -715,13 +617,13 @@ bool IsReadOnly(const fsLocator& i_Locator)
 {
 	DWORD attribute = -1;
 
-	itString filename;
+	std::wstring filename;
 	LocatorToUnicodeFilename(i_Locator, filename);
 
-	if( filename.GetLength() == 0 )
+	if( filename.empty() )
 		return false;
 
-	attribute = ::GetFileAttributesW(filename.GetString());
+	attribute = ::GetFileAttributesW(filename.c_str());
 
 	if( (attribute == -1) || ((attribute & FILE_ATTRIBUTE_DIRECTORY) != 0) )
 		throw fsFileDoesntExistX(i_Locator);
@@ -738,24 +640,24 @@ void SetReadOnly( const fsLocator& i_Locator, bool i_bSetReadOnly )
 		return;
 
 	//	create the filename string
-	itString fileName;
+	std::wstring fileName;
 	LocatorToUnicodeFilename( i_Locator, fileName );
 
 	//	check the attributes and determine what to set (if anything)
 	//
-	DWORD attribs = GetFileAttributesW( fileName.GetString() );
+	DWORD attribs = GetFileAttributesW( fileName.c_str() );
 	if ( i_bSetReadOnly )
 	{
 		if (!(attribs & FILE_ATTRIBUTE_READONLY)) 
 		{ 
-			SetFileAttributesW( fileName.GetString(), attribs | FILE_ATTRIBUTE_READONLY); 
+			SetFileAttributesW( fileName.c_str(), attribs | FILE_ATTRIBUTE_READONLY); 
 		} 
 	}
 	else
 	{
 		if ( (attribs & FILE_ATTRIBUTE_READONLY) )
 		{ 
-			SetFileAttributesW( fileName.GetString(), attribs ^ FILE_ATTRIBUTE_READONLY); 
+			SetFileAttributesW( fileName.c_str(), attribs ^ FILE_ATTRIBUTE_READONLY); 
 		} 
 	}
 }

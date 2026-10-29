@@ -153,20 +153,22 @@ void Read(chReader& i_Reader, maGradient& o_Gradient)
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-void Read( chReader& i_Reader, itString& o_Name )
+void Read( chReader& i_Reader, std::string& o_Name )
 {
-	// Old version
-	//itString null_terminated_string;
-	//i_Reader.Read(null_terminated_string);
-	//o_Name = itString(0, null_terminated_string.GetLength() - 1, null_terminated_string); // un-NULL terminate
-
-	// New version - reader stops at NULL-terminator, but does not add it to itString
 	i_Reader.Read(o_Name);
 }
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-void Read( chReader& i_Reader, std::string& o_Name )
+void ReadItString( chReader& i_Reader, std::string& o_Name )
+{
+	i_Reader.ReadItString(o_Name);
+}
+
+//------------------------------------------------------------------------
+//	Temporary
+//------------------------------------------------------------------------
+void Read( chReader& i_Reader, itString& o_Name )
 {
 	i_Reader.Read(o_Name);
 }
@@ -191,14 +193,7 @@ void Read( chReader& i_Reader, maMatrix4x4& o_Matrix )
 //------------------------------------------------------------------------
 void Write( chWriter& i_Writer, const itString& i_Name, chDefs::Name i_ChunkName )
 {
-	// null-terminating not needed anymore
-	//itString null_terminated_string = i_Name;
-	//null_terminated_string += 0;
-
-	i_Writer.WriteChunkHeader(i_ChunkName, 0, false);
-	//i_Writer.Write(null_terminated_string.GetString());
-	i_Writer.Write(i_Name.GetString());
-	i_Writer.FinishChunk();
+	Write(i_Writer, std::string(i_Name), i_ChunkName);
 }
 
 //------------------------------------------------------------------------
@@ -339,13 +334,7 @@ void Write(chWriter& i_Writer,const std::string& i_Name)
 //------------------------------------------------------------------------
 void Write( chWriter& i_Writer, const itString& i_Name )
 {
-	// Old version
-	//itString null_terminated_string = i_Name;
-	//null_terminated_string += 0;
-	//i_Writer.Write(null_terminated_string.GetString());
-
-	// New version relies on itString::GetString() being NULL-terminated
-	i_Writer.Write(i_Name.GetString(), i_Name.GetLength()+1);
+	Write(i_Writer, std::string(i_Name));
 }
 
 //------------------------------------------------------------------------

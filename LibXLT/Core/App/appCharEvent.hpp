@@ -17,8 +17,8 @@
 #include "Core/app/appEvent.hpp"
 #endif
 
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
+#ifndef ENV_TYPE_HPP
+#include "Core/env/envType.hpp"
 #endif
 
 
@@ -85,7 +85,7 @@ class appCharEvent : public appEvent
 
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		appCharEvent(itString::CharType i_Char);
+		appCharEvent(envType::WChar i_Char);
 
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
@@ -94,10 +94,10 @@ class appCharEvent : public appEvent
 		//--------------------------------------------------------------------
 		//	GetChar returns the relevant character.
 		//--------------------------------------------------------------------
-		itString::CharType GetChar() const;
+		envType::WChar GetChar() const;
 
 	private:
 
-		itString::CharType m_Char;
+		envType::WChar m_Char;
 };
 

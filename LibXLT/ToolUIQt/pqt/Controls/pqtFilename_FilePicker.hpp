@@ -30,16 +30,16 @@ public:
 	// Set value into control
 	//----------------------------------------------------------------------------
 	static void SetValueIntoControl(tqcFilePicker* i_pActualControl,
-									 itString i_Value);
+									 const std::string& i_Value);
 
 	//----------------------------------------------------------------------------
 	// Get value from control
 	//----------------------------------------------------------------------------
-	static itString GetValueFromControl(tqcFilePicker* i_pActualControl);
+	static std::string GetValueFromControl(tqcFilePicker* i_pActualControl);
 };
 
 //============================================================================
 //============================================================================
-typedef pqtTemplate_FilePicker<prtyFileName, itString, pqtFileName_FilePicker_Converter> pqtFileName_FilePicker;
+typedef pqtTemplate_FilePicker<prtyFileName, std::string, pqtFileName_FilePicker_Converter> pqtFileName_FilePicker;
 
 #endif // USE_QT

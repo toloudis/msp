@@ -24,6 +24,9 @@
 #undef CreateDirectory
 
 #include "Core/dbg/dbgMsg.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/env/private/envSystemDataPACWin.hpp"
 #include "Core/fs/fsFileX.hpp"
 
@@ -113,13 +116,13 @@ HANDLE GetHandle(const fsLocator& i_Filename)
 {
 	HANDLE new_file = INVALID_HANDLE_VALUE;
 
-	itString filename;
+	std::wstring filename;
 	fsFileUtilPAC::LocatorToUnicodeFilename(i_Filename, filename);
 
-	if( filename.GetLength() == 0 )
+	if( filename.empty() )
 		throw fsInvalidLocatorX(i_Filename);
 
-	new_file = ::CreateFileW(	filename.GetString(),
+	new_file = ::CreateFileW(	filename.c_str(),
 								GENERIC_READ,
 								0,
 								NULL,
@@ -207,11 +210,11 @@ double GetLastAccessTime(const fsLocator& i_Locator)
 //------------------------------------------------------------------------
 time_t GetLastModifiedTimeT(const fsLocator& i_Locator)
 {
-	itString filename;
+	std::wstring filename;
 	fsFileUtilPAC::LocatorToUnicodeFilename(i_Locator, filename);
 
 	struct _stat64 st;
-	if (_wstat64(filename.GetString(), &st) != 0)
+	if (_wstat64(filename.c_str(), &st) != 0)
 		return -1;
 	return st.st_mtime;
 }
@@ -252,7 +255,7 @@ double GetLastModifiedTime(const fsLocator& i_Locator)
 //	GetCreationString returns the in an itstring of the form 
 //	mm/dd/yy hh:mm 
 //------------------------------------------------------------------------
-itString GetCreationString(const fsLocator& i_Locator)
+std::string GetCreationString(const fsLocator& i_Locator)
 {
 	HANDLE Handle = GetHandle(i_Locator);
 	FileCloser closer(Handle);	
@@ -262,11 +265,11 @@ itString GetCreationString(const fsLocator& i_Locator)
 
 	// Retrieve the file times for the file.
 	if (!GetFileTime(Handle, &ftCreate, NULL, NULL))
-		return itString();
+		return std::string();
 
 	// Convert the create time to local time.
 	if (!FileTimeToLocalFileTime(&ftCreate, &ftLocal))
-		return itString();
+		return std::string();
 
 	// Convert the local file time from UTC to system time.
 	FileTimeToSystemTime(&ftLocal, &stCreate);
@@ -281,14 +284,14 @@ itString GetCreationString(const fsLocator& i_Locator)
 	create_ss << std::setw(2) << std::setfill(L'0') << stCreate.wDay << L"/";
 	create_ss << stCreate.wYear;
 	
-	return itString(create_ss.str().c_str());
+	return envString::WideCharToUTF8(create_ss.str());
 }
 
 //------------------------------------------------------------------------
 //	GetLastAccessString returns the in an itstring of the form 
 //	mm/dd/yy hh:mm 
 //------------------------------------------------------------------------
-itString GetLastAccessString(const fsLocator& i_Locator)
+std::string GetLastAccessString(const fsLocator& i_Locator)
 {
 	HANDLE Handle = GetHandle(i_Locator);
 	FileCloser closer(Handle);	
@@ -298,11 +301,11 @@ itString GetLastAccessString(const fsLocator& i_Locator)
 
 	// Retrieve the file times for the file.
 	if (!GetFileTime(Handle, NULL, &ftAccess, NULL))
-		return itString();
+		return std::string();
 
 	// Convert the last-access time to local time.
 	if (!FileTimeToLocalFileTime(&ftAccess, &ftLocal))
-		return itString();
+		return std::string();
 
 	// Convert the local file time from UTC to system time.
 	FileTimeToSystemTime(&ftLocal, &stAccess);
@@ -318,14 +321,14 @@ itString GetLastAccessString(const fsLocator& i_Locator)
 	access_ss << std::setw(2) << std::setfill(L'0') << stAccess.wDay << L"/";
 	access_ss << stAccess.wYear;
 	
-	return itString(access_ss.str().c_str());
+	return envString::WideCharToUTF8(access_ss.str());
 }
 
 //------------------------------------------------------------------------
 //	GetLastModifiedString returns the in an itstring of the form 
 //	mm/dd/yy hh:mm 
 //------------------------------------------------------------------------
-itString GetLastModifiedString(const fsLocator& i_Locator)
+std::string GetLastModifiedString(const fsLocator& i_Locator)
 {
 	HANDLE Handle = GetHandle(i_Locator);
 	FileCloser closer(Handle);	
@@ -335,11 +338,11 @@ itString GetLastModifiedString(const fsLocator& i_Locator)
 
 	// Retrieve the file times for the file.
 	if (!GetFileTime(Handle, NULL, NULL, &ftWrite))
-		return itString();
+		return std::string();
 
 	// Convert the last-write time to local time.
 	if (!FileTimeToLocalFileTime(&ftWrite, &ftLocal))
-		return itString();
+		return std::string();
 
 	// Convert the local file time from UTC to system time.
 	FileTimeToSystemTime(&ftLocal, &stWrite);
@@ -355,14 +358,14 @@ itString GetLastModifiedString(const fsLocator& i_Locator)
 	write_ss << std::setw(2) << std::setfill(L'0') << stWrite.wDay << L"/";
 	write_ss << stWrite.wYear;
 	
-	return itString(write_ss.str().c_str());
+	return envString::WideCharToUTF8(write_ss.str());
 }
 
 //------------------------------------------------------------------------
 //	GetCreationString returns the in an itstring of the form 
 //	mm/dd/yy hh:mm 
 //------------------------------------------------------------------------
-itString GetCreationStringWithTime(const fsLocator& i_Locator)
+std::string GetCreationStringWithTime(const fsLocator& i_Locator)
 {
 	HANDLE Handle = GetHandle(i_Locator);
 	FileCloser closer(Handle);	
@@ -372,11 +375,11 @@ itString GetCreationStringWithTime(const fsLocator& i_Locator)
 
 	// Retrieve the file times for the file.
 	if (!GetFileTime(Handle, &ftCreate, NULL, NULL))
-		return itString();
+		return std::string();
 
 	// Convert the create time to local time.
 	if (!FileTimeToLocalFileTime(&ftCreate, &ftLocal))
-		return itString();
+		return std::string();
 
 	// Convert the local file time from UTC to system time.
 	FileTimeToSystemTime(&ftLocal, &stCreate);
@@ -396,14 +399,14 @@ itString GetCreationStringWithTime(const fsLocator& i_Locator)
 	create_ss << std::setw(2) << std::setfill(L'0') << stCreate.wMinute;
 	
 	
-	return itString(create_ss.str().c_str());
+	return envString::WideCharToUTF8(create_ss.str());
 }
 
 //------------------------------------------------------------------------
 //	GetLastAccessString returns the in an itstring of the form 
 //	mm/dd/yy hh:mm 
 //------------------------------------------------------------------------
-itString GetLastAccessStringWithTime(const fsLocator& i_Locator)
+std::string GetLastAccessStringWithTime(const fsLocator& i_Locator)
 {
 	HANDLE Handle = GetHandle(i_Locator);
 	FileCloser closer(Handle);	
@@ -413,11 +416,11 @@ itString GetLastAccessStringWithTime(const fsLocator& i_Locator)
 
 	// Retrieve the file times for the file.
 	if (!GetFileTime(Handle, NULL, &ftAccess, NULL))
-		return itString();
+		return std::string();
 
 	// Convert the last-access time to local time.
 	if (!FileTimeToLocalFileTime(&ftAccess, &ftLocal))
-		return itString();
+		return std::string();
 
 	// Convert the local file time from UTC to system time.
 	FileTimeToSystemTime(&ftLocal, &stAccess);
@@ -437,14 +440,14 @@ itString GetLastAccessStringWithTime(const fsLocator& i_Locator)
 	access_ss << std::setw(2) << std::setfill(L'0') << stAccess.wMinute;
 	
 	
-	return itString(access_ss.str().c_str());
+	return envString::WideCharToUTF8(access_ss.str());
 }
 
 //------------------------------------------------------------------------
 //	GetLastModifiedString returns the in an itstring of the form 
 //	mm/dd/yy hh:mm 
 //------------------------------------------------------------------------
-itString GetLastModifiedStringWithTime(const fsLocator& i_Locator)
+std::string GetLastModifiedStringWithTime(const fsLocator& i_Locator)
 {
 	HANDLE Handle = GetHandle(i_Locator);
 	FileCloser closer(Handle);	
@@ -454,11 +457,11 @@ itString GetLastModifiedStringWithTime(const fsLocator& i_Locator)
 
 	// Retrieve the file times for the file.
 	if (!GetFileTime(Handle, NULL, NULL, &ftWrite))
-		return itString();
+		return std::string();
 
 	// Convert the last-write time to local time.
 	if (!FileTimeToLocalFileTime(&ftWrite, &ftLocal))
-		return itString();
+		return std::string();
 
 	// Convert the local file time from UTC to system time.
 	FileTimeToSystemTime(&ftLocal, &stWrite);
@@ -478,7 +481,7 @@ itString GetLastModifiedStringWithTime(const fsLocator& i_Locator)
 	write_ss << std::setw(2) << std::setfill(L'0') << stWrite.wMinute;
 	
 	
-	return itString(write_ss.str().c_str());
+	return envString::WideCharToUTF8(write_ss.str());
 }
 
 //------------------------------------------------------------------------

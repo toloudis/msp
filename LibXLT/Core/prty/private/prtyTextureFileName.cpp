@@ -179,8 +179,8 @@ void prtyTextureFileName::Read(chReader& io_Reader)
 void prtyTextureFileName::ReadTexture(chReader& io_Reader)
 {
 	prtyTextureFileData val;
-	itString tex_filename;
-	chChunkParserUtil::Read( io_Reader, tex_filename );
+	std::string tex_filename;
+	chChunkParserUtil::ReadItString( io_Reader, tex_filename );
 	fsFileUtil::UnicodeStringToLocator( tex_filename, val.m_TextureLocator );
 	SetValue(val);
 	m_RevertValue = val;
@@ -206,7 +206,7 @@ void prtyTextureFileName::Write(chWriter& io_Writer) const
 void prtyTextureFileName::WriteTexture(chWriter& io_Writer) const
 {
 	//write out the current texture file
-	itString tex_filename;
+	std::string tex_filename;
 	fsFileUtil::LocatorToUnicodeString( m_Value.m_TextureLocator, tex_filename );
 	chChunkParserUtil::Write( io_Writer, tex_filename );
 }

@@ -73,8 +73,8 @@ void ReadTextureFile(chReader& io_Reader,
 						chDefs::Version i_Version,
 						prtyTextureFileData& o_TextureData )
 {
-	itString tex_filename;
-	chChunkParserUtil::Read( io_Reader, tex_filename );
+	std::string tex_filename;
+	chChunkParserUtil::ReadItString( io_Reader, tex_filename );
 	fsFileUtil::UnicodeStringToLocator( tex_filename, o_TextureData.m_TextureLocator);
 }
 
@@ -88,7 +88,7 @@ void WriteTextureFile(chWriter& o_Writer,
 	o_Writer.WriteChunkHeader( c_FILE, l_cFILE_VERSION, true );
 
 	//write out the current texture file
-	itString tex_filename;
+	std::string tex_filename;
 	fsFileUtil::LocatorToUnicodeString( i_TextureData.m_TextureLocator, tex_filename );
 	chChunkParserUtil::Write( o_Writer, tex_filename );
 	
@@ -103,8 +103,8 @@ void ReadTexturePaint(chReader& io_Reader,
 						prtyTextureFileData& o_TextureData )
 {
 	//**Currently paint has no special parameters, so just read the texture location
-	itString tex_filename;
-	chChunkParserUtil::Read( io_Reader, tex_filename );
+	std::string tex_filename;
+	chChunkParserUtil::ReadItString( io_Reader, tex_filename );
 	fsFileUtil::UnicodeStringToLocator( tex_filename, o_TextureData.m_TextureLocator);
 }
 
@@ -118,7 +118,7 @@ void WriteTexturePaint(chWriter& o_Writer,
 	o_Writer.WriteChunkHeader( c_PNTG, l_cPNTG_VERSION, true );
 
 	//**Currently paint has no special parameters, so just write the texture location
-	itString tex_filename;
+	std::string tex_filename;
 	fsFileUtil::LocatorToUnicodeString( i_TextureData.m_TextureLocator, tex_filename );
 	chChunkParserUtil::Write( o_Writer, tex_filename );
 	

@@ -28,18 +28,17 @@ void pwxFileName_ComboBox_Converter::GetChoices(prtyPropertyUIInfo* i_pUIInfo,
 // Set value into control
 //----------------------------------------------------------------------------
 void pwxFileName_ComboBox_Converter::SetValueIntoControl(wxChoice* i_pActualControl,
-											   itString i_Value)
+											   const std::string& i_Value)
 {
-	i_pActualControl->SetStringSelection(i_Value.GetString());
+	i_pActualControl->SetStringSelection(wxString::FromUTF8(i_Value.c_str()));
 }
 
 //----------------------------------------------------------------------------
 // Get value from control
 //----------------------------------------------------------------------------
-itString pwxFileName_ComboBox_Converter::GetValueFromControl(wxChoice* i_pActualControl)
+std::string pwxFileName_ComboBox_Converter::GetValueFromControl(wxChoice* i_pActualControl)
 {
-	itString sel_text((const char*)(i_pActualControl->GetStringSelection().c_str()));
-	return sel_text;
+	return i_pActualControl->GetStringSelection().utf8_string();
 }
 
 #endif

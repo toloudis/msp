@@ -418,7 +418,7 @@ void fsysFileList::BuildFileListFromDirectory(const fsLocator& i_FullDirectory)
 	// Parse through the list of extensions and convert them into
 	// an array to give to gfFileEnum
 	//
-	std::vector<itString> file_exts;
+	std::vector<std::string> file_exts;
 	const int num_chars = m_FileExtensions.GetLength();
 	itString ext;
 	for (int i=0; i<num_chars; ++i)

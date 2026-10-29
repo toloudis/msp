@@ -10,13 +10,12 @@
 
 #include "Core/ch/chChunkParserUtil.hpp"
 #include "Core/ch/chReader.hpp"
-#include "Core/it/itStringUtil.hpp"
 
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 prtyFileName::prtyFileName()
-:	prtyPropertyTemplate( "FileName", itString() )
+:	prtyPropertyTemplate( "FileName", std::string() )
 {
 	//DBG_LOG("file name (%s)", i_Name.c_str() );
 }
@@ -24,14 +23,14 @@ prtyFileName::prtyFileName()
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 prtyFileName::prtyFileName(const std::string& i_Name)
-:	prtyPropertyTemplate( i_Name, itString() )
+:	prtyPropertyTemplate( i_Name, std::string() )
 {
 	//DBG_LOG("file name (" << i_Name.c_str() << ")" );
 }
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-prtyFileName::prtyFileName(const std::string& i_Name, const itString& i_InitialValue)
+prtyFileName::prtyFileName(const std::string& i_Name, const std::string& i_InitialValue)
 :	prtyPropertyTemplate( i_Name, i_InitialValue )
 {
 	//DBG_LOG("file name (" << i_Name.c_str() << ")" );
@@ -50,7 +49,7 @@ const char* prtyFileName::GetType()
 //--------------------------------------------------------------------
 const std::string prtyFileName::GetString() const
 {
-	return itStringUtil::GetStdString(m_Value);
+	return m_Value;
 }
 
 //--------------------------------------------------------------------
@@ -64,7 +63,7 @@ prtyFileName& prtyFileName::operator =(const prtyFileName& i_Property)
 	SetValue(i_Property.GetValue());
 	return *this;
 }
-prtyFileName& prtyFileName::operator =(const itString& i_Value)
+prtyFileName& prtyFileName::operator =(const std::string& i_Value)
 {
 	SetValue(i_Value);
 	return *this;
@@ -81,11 +80,11 @@ bool prtyFileName::operator !=(const prtyFileName& i_Property) const
 {
 	return (m_Value != i_Property.GetValue());
 }
-bool prtyFileName::operator ==(const itString& i_Value) const
+bool prtyFileName::operator ==(const std::string& i_Value) const
 {
 	return (m_Value == i_Value);
 }
-bool prtyFileName::operator !=(const itString& i_Value) const
+bool prtyFileName::operator !=(const std::string& i_Value) const
 {
 	return (m_Value != i_Value);
 }
@@ -96,8 +95,8 @@ bool prtyFileName::operator !=(const itString& i_Value) const
 //virtual 
 void prtyFileName::Read(chReader& io_Reader)
 {
-	itString temp;
-	chChunkParserUtil::Read(io_Reader,temp);
+	std::string temp;
+	chChunkParserUtil::ReadItString(io_Reader,temp);
 	SetValue(temp);
 }
 

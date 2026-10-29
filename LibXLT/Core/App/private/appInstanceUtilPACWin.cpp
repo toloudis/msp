@@ -9,6 +9,12 @@
 #include "Core/app/private/appInstanceUtilPACWin.hpp"
 
 #include "Core/app/private/appApplicationPACWin.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/Dbg/dbgMsg.hpp"
+#endif
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #include <string>
 #include <windows.h>
@@ -80,9 +86,9 @@ bool HandleAppRunning(const char* i_IDString, const char* i_WindowName)
 	{
 		HWND my_window = NULL;
 
-		itString class_name(appApplicationPAC::GetWindowClassName());
-		itString window_name(i_WindowName);
-		my_window = ::FindWindowW(class_name.GetString(), window_name.GetString());
+		const std::wstring class_name = envString::UTF8ToWideChar(appApplicationPAC::GetWindowClassName());
+		const std::wstring window_name = envString::UTF8ToWideChar(i_WindowName);
+		my_window = ::FindWindowW(class_name.c_str(), window_name.c_str());
 
 		if( my_window != NULL )
 		{

@@ -90,7 +90,10 @@ class chReader
 		virtual void Read(bool& o_Val) = 0;
 		
 		//--------------------------------------------------------------------
-		//	This Read reads a NULL-terminated single-byte character string.
+		//	This Read reads a NULL-terminated single-byte character string:
+		//	the bytes as written, UTF-8 in files written now. It is for strings
+		//	that were always written as single bytes; a string that binary
+		//	files written before PWFB stored as UTF-16 is read with ReadItString.
 		//--------------------------------------------------------------------
 		virtual void Read(std::string& o_Val) = 0;
 
@@ -101,15 +104,20 @@ class chReader
 		virtual void Read(std::string& o_Val, int i_Length) = 0;
 
 		//--------------------------------------------------------------------
-		//	This Read reads a NULL-terminated Unicode character string.  
+		//	ReadItString reads a NULL-terminated string as UTF-8: a string that
+		//	was an itString when it was written. Binary files store it as
+		//	UTF-8 since the PWFB signature and as UTF-16 before it
+		//	(gfFileBin::HasUTF8Strings); text and XML files store it as
+		//	UTF-8, so for them ReadItString is Read.
 		//--------------------------------------------------------------------
-		virtual void Read(itString& o_Val) = 0;
+		virtual void ReadItString(std::string& o_Val) = 0;
 
 		//--------------------------------------------------------------------
-		//	This Read Reads a Unicode character string with a length
-		//	given by i_Length.
+		//	Temporary, while callers still hold itStrings
+		//	(docs/plans/2026-10-28-itstring-to-std-string.md; removed in
+		//	step 4): ReadItString into an itString.
 		//--------------------------------------------------------------------
-		virtual void Read(itString& o_Val, int i_Length) = 0;
+		void Read(itString& o_Val);
 
 		//--------------------------------------------------------------------
 		//	Read in an envAppVersion structure

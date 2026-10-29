@@ -169,10 +169,10 @@ void prtyVideo::Read(chReader& io_Reader)
 	//chChunkParserUtil::Read( io_Reader, savefilename );
 	//fsFileUtil::ANSIFilenameToLocator( savefilename, filename );
 
-	// Read in a single itString with path separators and then 
+	// Read in a single string with path separators and then
 	// split into locator
-	itString savefilename;
-	chChunkParserUtil::Read( io_Reader, savefilename );
+	std::string savefilename;
+	chChunkParserUtil::ReadItString( io_Reader, savefilename );
 	fsFileUtil::UnicodeStringToLocator( savefilename, data.m_Filename );
 	chChunkParserUtil::Read( io_Reader, data.m_Frame );
 	chChunkParserUtil::Read( io_Reader, data.m_Width );
@@ -191,9 +191,9 @@ void prtyVideo::Write(chWriter& io_Writer) const
 	//fsFileUtil::LocatorToANSIFilename( GetValue(), savefilename );
 	//chChunkParserUtil::Write( io_Writer, savefilename );
 
-	// Convert array of itStrings to a single itString with
+	// Convert the locator to a single string with
 	// path separators in order to write to file.
-	itString savefilename;
+	std::string savefilename;
 	fsFileUtil::LocatorToUnicodeString( GetValue().m_Filename, savefilename );
 	chChunkParserUtil::Write( io_Writer, savefilename );
 	chChunkParserUtil::Write( io_Writer, GetValue().m_Frame );

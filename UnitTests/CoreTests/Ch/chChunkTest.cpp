@@ -57,7 +57,7 @@ struct Chunk
 	int32_t m_Data4 = 0;
 	float m_Data5 = 0;
 	std::string m_Data6;
-	itString m_Data7;
+	std::string m_Data7;
 };
 
 //	MakeTree builds a 3-level tree: a root with i_NumChildren containers,
@@ -79,7 +79,7 @@ Chunk MakeTree(int i_NumChildren, int i_NumGrandChildren)
 		// whole numbers, so the text format stores them exactly
 		leaf.m_Data5 = float(rng() % 100000);
 		leaf.m_Data6 = "single-byte string";
-		leaf.m_Data7 = itString("double-byte string");
+		leaf.m_Data7 = u8"text string Crème brûlée";
 		return leaf;
 	};
 
@@ -113,9 +113,8 @@ void WriteChunk(chWriter& io_Writer, const Chunk& i_Chunk)
 		io_Writer.Write(i_Chunk.m_Data4);
 		io_Writer.Write(i_Chunk.m_Data5);
 		io_Writer.Write(i_Chunk.m_Data6.c_str());
-		// as the chunk parsers do; Write(const itString&) still asserts on
-		// an explicit trailing NUL from before itString wrapped std::wstring
-		io_Writer.Write(i_Chunk.m_Data7.GetString());
+		// a text string (an itString before), read back with ReadItString
+		io_Writer.Write(i_Chunk.m_Data7);
 	}
 
 	io_Writer.FinishChunk();
@@ -150,7 +149,7 @@ bool ReadChunk(chReader& io_Reader, Chunk& o_Chunk, int i_Level)
 		io_Reader.Read(o_Chunk.m_Data4);
 		io_Reader.Read(o_Chunk.m_Data5);
 		io_Reader.Read(o_Chunk.m_Data6);
-		io_Reader.Read(o_Chunk.m_Data7);
+		io_Reader.ReadItString(o_Chunk.m_Data7);
 	}
 
 	io_Reader.FinishChunk();
@@ -182,7 +181,7 @@ void ExpectSameTree(const Chunk& i_Expected, const Chunk& i_Actual, bool i_Compa
 	EXPECT_EQ(i_Expected.m_Data4, i_Actual.m_Data4);
 	EXPECT_EQ(i_Expected.m_Data5, i_Actual.m_Data5);
 	EXPECT_EQ(i_Expected.m_Data6, i_Actual.m_Data6);
-	EXPECT_TRUE(i_Expected.m_Data7 == i_Actual.m_Data7);
+	EXPECT_EQ(i_Expected.m_Data7, i_Actual.m_Data7);
 }
 
 }
@@ -196,6 +195,7 @@ TEST(chChunk, BinaryRoundTrip)
 	const Chunk written = MakeTree(20, 5);
 	{
 		gfFileBin write_file(file, fsFileStream::e_WriteOnly);
+		write_file.WriteHeader();
 		chBinWriter writer(write_file);
 		WriteChunk(writer, written);
 	}
@@ -203,6 +203,7 @@ TEST(chChunk, BinaryRoundTrip)
 	Chunk read;
 	{
 		gfFileBin read_file(file, fsFileStream::e_ReadOnly);
+		read_file.ReadHeader();
 		chBinReader reader(read_file);
 		ASSERT_NO_THROW(ReadChunk(reader, read, 0));
 	}

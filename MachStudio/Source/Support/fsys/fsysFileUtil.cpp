@@ -26,13 +26,13 @@ namespace
 	//----------------------------------------------------------------------------
 	class FindFileEnum : public fsFileEnum::EnumTarget
 	{
-		itString m_Filename;
+		std::string m_Filename;
 	public:
 		fsLocator m_FullPath;
 		bool m_bFound;
 
 		// constructor takes vector to fill
-		FindFileEnum(const itString& i_Filename)
+		FindFileEnum(const std::string& i_Filename)
 			: m_Filename(i_Filename), m_bFound(false)
 		{
 

@@ -26,7 +26,7 @@
 		void Run(appApplication* i_App);
 		void Exit();
 		void SetWindowSize(int i_X, int i_Y, int i_Width, int i_Height);
-		void SetWindowTitle(const itString& i_Title);
+		void SetWindowTitle(const std::string& i_Title);
 		static void Init();
 		static void CleanUp() throw();
 		void DialogLoopTasks();

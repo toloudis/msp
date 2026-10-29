@@ -80,7 +80,7 @@ bool cmmDialogInterestMgr::SystemExists(const std::string& i_SystemName)
 //--------------------------------------------------------------------
 //	Add Object to Placed
 //--------------------------------------------------------------------
-void cmmDialogInterestMgr::AddObject(const itString& i_FileName, const fsLocator& i_Path)
+void cmmDialogInterestMgr::AddObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 	DBG_ASSERT( i_Path.GetNumNames() > 0, "Empty path" );
 	std::string system_name = itStringUtil::GetStdString(i_Path.GetName(0));

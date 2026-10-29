@@ -323,12 +323,12 @@ void tmlnDriverVideo::VideoFileNameChanged(prtyProperty *i_pProperty, bool i_bDi
 	//	if no video, don't continue
 	if( pInfo->m_FileName.GetNumNames() == 0 ) return;
 
-	itString ext;
+	std::string ext;
 
-	pInfo->m_FileName.GetLastName().GetExtension(ext);
+	itStringUtil::GetExtension(pInfo->m_FileName.GetLastName(), ext);
 	itStringUtil::ToLower(ext);
 
-	if (ext == itString("avi"))
+	if (ext == "avi")
 	{
 		if( !load_video(*pInfo))
 		{

@@ -17,6 +17,12 @@
 #include "Core/app/appFlowEvent.hpp"
 #include "Core/app/appMouseEvent.hpp"
 #include "Core/env/envAppVersion.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/Dbg/dbgMsg.hpp"
+#endif
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #include <iomanip>
 #include <algorithm>
@@ -66,7 +72,7 @@ LRESULT CALLBACK LocalWindowProc(	HWND hWnd,		// handle to window
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void PostCharEvent(itString::CharType i_Char)
+void PostCharEvent(envType::WChar i_Char)
 {
 	appEventHandlers::appCharEventHandlerList& sorted_list = appEventHandlers::CharEventHandlers();
 	appEventHandlers::appCharEventHandlerList::iterator it = sorted_list.begin();
@@ -325,9 +331,6 @@ appApplicationPAC::appApplicationPAC()
 	DBG_ASSERT(l_App == NULL, "Tried to create two simultaneous applications");
 	DBG_ASSERT(l_HINSTANCE != NULL, "The HINSTANCE (from WinMain) was never set (with appApplicationPACWin::SetHINSTANCE)");
 	l_App = this;
-
-	// make sure that the m_Title is NULL terminated.
-	m_Title += itString::CharType(0);
 }
 
 //--------------------------------------------------------------------
@@ -429,17 +432,13 @@ void appApplicationPAC::SetWindowSize(int i_X, int i_Y, int i_Width, int i_Heigh
 //	window's title bar.  This function can be called from a 
 //	appStartEvent handler, before the window has been created. 
 //--------------------------------------------------------------------
-void appApplicationPAC::SetWindowTitle(const itString& i_Title)
+void appApplicationPAC::SetWindowTitle(const std::string& i_Title)
 {
 	m_Title = i_Title;
 
-	// make sure it's NULL terminated
-	//
-	m_Title += itString::CharType(0);
-
 	if ( l_HWND == NULL ) return; // no window yet
 
-	::SetWindowTextW(l_HWND, m_Title.GetString());
+	::SetWindowTextW(l_HWND, envString::UTF8ToWideChar(m_Title).c_str());
 }
 
 //--------------------------------------------------------------------
@@ -666,7 +665,7 @@ LRESULT appApplicationPAC::WindowProc(	HWND hWnd,      // handle to window
 		case WM_CHAR:
 		{
 			// Unicode
-			itString::CharType unichar = itString::CharType(wParam);
+			envType::WChar unichar = envType::WChar(wParam);
 			PostCharEvent(unichar);
 		}
 		break;
@@ -949,7 +948,7 @@ void AdjustWindowSize( LPRECT o_ClipRect, const LPRECT i_Rect )
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-HWND create_window(int i_Width, int i_Height, int i_X, int i_Y, const itString& i_Title,
+HWND create_window(int i_Width, int i_Height, int i_X, int i_Y, const std::string& i_Title,
 					HWND i_Parent = NULL)
 {
 	HWND hwnd = NULL;
@@ -992,8 +991,8 @@ HWND create_window(int i_Width, int i_Height, int i_X, int i_Y, const itString& 
 	::MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, c_WindowClassName, wLength + 1, wClassName, wLength + 1); 
 	// dont' forget to free wClassName!
 */
-	itString class_name(c_WindowClassName);
-	class_name += (itString::CharType)0;
+	const std::wstring class_name = envString::UTF8ToWideChar(c_WindowClassName);
+	const std::wstring title = envString::UTF8ToWideChar(i_Title);
 
 	memset(&wc, 0, sizeof(wc));
 	wc.cbSize = sizeof(wc);
@@ -1006,7 +1005,7 @@ HWND create_window(int i_Width, int i_Height, int i_X, int i_Y, const itString& 
 	wc.hCursor = NULL;
 	wc.hbrBackground = NULL;
 	wc.lpszMenuName = NULL;
-	wc.lpszClassName = class_name.GetString();
+	wc.lpszClassName = class_name.c_str();
 	wc.hIconSm = l_HICON;
 
 	if (l_RegisterResult == 0)
@@ -1018,8 +1017,8 @@ HWND create_window(int i_Width, int i_Height, int i_X, int i_Y, const itString& 
 	}
 
 	hwnd = ::CreateWindowExW(	l_ExStyle,
-								class_name.GetString(),
-								i_Title.GetString(),
+								class_name.c_str(),
+								title.c_str(),
 								l_Style,
 								clipRect.left,
 								clipRect.top,
@@ -1181,11 +1180,9 @@ void appApplicationPAC::SetCursorFunction( void (*i_pSetCursor)() )
 //--------------------------------------------------------------------
 //	Create a secondary window for the application
 //--------------------------------------------------------------------
-HWND appApplicationPAC::CreateSubWindow(int i_Width, int i_Height, int i_X, int i_Y, const itString& i_Title)
+HWND appApplicationPAC::CreateSubWindow(int i_Width, int i_Height, int i_X, int i_Y, const std::string& i_Title)
 {
-	itString title = i_Title;
-	title += itString::CharType(0);
-	HWND hwnd = create_window(i_Width, i_Height, i_X, i_Y, title, l_HWND);
+	HWND hwnd = create_window(i_Width, i_Height, i_X, i_Y, i_Title, l_HWND);
 	return hwnd;
 }
 
@@ -1224,11 +1221,9 @@ bool appApplicationPAC::LaunchProgram(const std::string& i_CommandLine, bool i_S
 //static 
 void appApplicationPAC::CreateMainWindow(int i_Width, int i_Height, 
 										int i_X, int i_Y, 
-										const itString& i_Title)
+										const std::string& i_Title)
 {
-	itString title = i_Title;
-	title += itString::CharType(0);
-	l_HWND = create_window(i_Width, i_Height, i_X, i_Y, title);
+	l_HWND = create_window(i_Width, i_Height, i_X, i_Y, i_Title);
 	::SetForegroundWindow(l_HWND);
 	::SetActiveWindow(l_HWND);
 }

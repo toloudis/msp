@@ -287,7 +287,7 @@ void twcTextureFilePicker::update_textbox()
 	if (this->m_bShowFileNameOnly)
 	{
 		if (m_Value.GetNumNames() > 0)
-			this->m_pTextBox->SetValue(m_Value.GetLastName().GetString());
+			this->m_pTextBox->SetValue(wxString::FromUTF8(m_Value.GetLastName().c_str()));
 		else
 			this->m_pTextBox->SetValue(L"");
 	}

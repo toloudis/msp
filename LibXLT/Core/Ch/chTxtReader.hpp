@@ -104,15 +104,12 @@ class chTxtReader : public chReader
 		virtual void Read(std::string& o_Val, int i_Length);
 
 		//--------------------------------------------------------------------
-		//	This Read reads a NULL-terminated Unicode character string.  
+		//	ReadItString reads a string as UTF-8, which is how text and XML
+		//	files store every string: the same as Read.
 		//--------------------------------------------------------------------
-		virtual void Read(itString& o_Val);
+		virtual void ReadItString(std::string& o_Val);
 
-		//--------------------------------------------------------------------
-		//	This Read Reads a Unicode character string with a length
-		//	given by i_Length.
-		//--------------------------------------------------------------------
-		virtual void Read(itString& o_Val, int i_Length);
+		using chReader::Read;
 
 		//--------------------------------------------------------------------
 		//	Read in an envAppVersion structure

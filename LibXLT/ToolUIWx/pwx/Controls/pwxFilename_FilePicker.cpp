@@ -18,7 +18,7 @@
 // Set value into control
 //----------------------------------------------------------------------------
 void pwxFileName_FilePicker_Converter::SetValueIntoControl(twcFilePicker* i_pActualControl,
-											   itString i_Value)
+											   const std::string& i_Value)
 {
 	i_pActualControl->SetFullpath(fsLocator(i_Value));
 }
@@ -26,13 +26,13 @@ void pwxFileName_FilePicker_Converter::SetValueIntoControl(twcFilePicker* i_pAct
 //----------------------------------------------------------------------------
 // Get value from control
 //----------------------------------------------------------------------------
-itString pwxFileName_FilePicker_Converter::GetValueFromControl(twcFilePicker* i_pActualControl)
+std::string pwxFileName_FilePicker_Converter::GetValueFromControl(twcFilePicker* i_pActualControl)
 {
 	fsLocator fullpath = i_pActualControl->GetFullpath();
 	if (fullpath.GetNumNames() > 0)
 		return fullpath.GetLastName();
 	else
-		return itString();
+		return std::string();
 }
 
 #endif

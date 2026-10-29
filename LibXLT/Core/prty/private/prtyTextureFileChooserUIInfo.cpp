@@ -48,15 +48,11 @@ prtyPropertyUIInfo* prtyTextureFileChooserUIInfo::Clone()
 //--------------------------------------------------------------------
 //	FileFilter
 //--------------------------------------------------------------------
-const itString& prtyTextureFileChooserUIInfo::GetFileFilter() const
+const std::string& prtyTextureFileChooserUIInfo::GetFileFilter() const
 {
 	return m_FileFilter;
 }
 void prtyTextureFileChooserUIInfo::SetFileFilter(const std::string& i_FileFilter)
-{
-	m_FileFilter = itString(i_FileFilter.c_str());
-}
-void prtyTextureFileChooserUIInfo::SetFileFilter(const itString& i_FileFilter)
 {
 	m_FileFilter = i_FileFilter;
 }

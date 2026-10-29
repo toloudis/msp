@@ -18,7 +18,8 @@
 //	Constructor
 //------------------------------------------------------------------------
 gfFileBin::gfFileBin(const fsLocator& i_Locator, fsFileStream::AccessType i_DesiredAccess)
-:	gfFile(i_Locator, i_DesiredAccess)
+:	gfFile(i_Locator, i_DesiredAccess),
+	m_bUTF8Strings(false)
 {
 }
 
@@ -50,19 +51,27 @@ void gfFileBin::Write(int64_t i_NumBytes, const void* i_Buffer)
 }
 
 //------------------------------------------------------------------------
-//	ReadHeader reads the file's header into the o_Header passed to it. If 
+//	ReadHeader reads the file's header into the o_Header passed to it. If
 //	o_Header is NULL, the file pointer is simply moved past the file header
+//	The signature is PWFB (strings as UTF-8), or TWFB or GWFB (strings as
+//	UTF-16) in older files.
 //	Throws: gfInvalidFileBinX
 //------------------------------------------------------------------------
 void gfFileBin::ReadHeader(gfFileBin::Header *o_Header)
 {
 	//move file pointer past signature, 4 bytes is the size of the signature
 	char Sig[4];
-	std::string strGigaSig("GWFB");
-	std::string strTeraSig("TWFB");
 	this->Read(4, &Sig);
-	std::string strReadSig(Sig, 4);
-	if ( strGigaSig.compare(strReadSig) && strTeraSig.compare(strReadSig) )
+	const std::string strReadSig(Sig, 4);
+	if ( strReadSig == "PWFB" )
+	{
+		m_bUTF8Strings = true;
+	}
+	else if ( strReadSig == "TWFB" || strReadSig == "GWFB" )
+	{
+		m_bUTF8Strings = false;
+	}
+	else
 	{
 		//not a gfFileBin, throw gfInvalidFileBinX
 		throw gfInvalidFileBinX(GetLocator());
@@ -86,11 +95,14 @@ void gfFileBin::ReadHeader(gfFileBin::Header *o_Header)
 //	is ignored; the deprecated endian mode byte is always written as
 //	little endian. The second version of this function is an inline
 //	convenience.
+//	The signature is always PWFB: chWriter writes every string as UTF-8.
+//	(TWFB and GWFB files stored itStrings as UTF-16.)
 //------------------------------------------------------------------------
 void gfFileBin::WriteHeader(const gfFileBin::Header& i_Header)
 {
 	//write signature
-	this->Write(4, "TWFB");
+	this->Write(4, "PWFB");
+	m_bUTF8Strings = true;
 
 	//	m_Mode is a deprecated endian mode (0 native, 1 big, 2 little endian).
 	//	Files are always little endian and nothing reads this byte any more;
@@ -102,6 +114,15 @@ void gfFileBin::WriteHeader(const gfFileBin::Header& i_Header)
 	this->Write(sizeof(gfFileBin::Header), &Header);
 	DBG_ASSERT( GetFilePos() == GetHeaderSize(), "Inconsistency in writing header" );
 }
+//------------------------------------------------------------------------
+//	HasUTF8Strings is true if the file stores text strings as UTF-8
+//	(see the .hpp)
+//------------------------------------------------------------------------
+bool gfFileBin::HasUTF8Strings() const
+{
+	return m_bUTF8Strings;
+}
+
 int  gfFileBin::GetHeaderSize()
 {
 	return ( 4 + sizeof(gfFileBin::Header) ) ;

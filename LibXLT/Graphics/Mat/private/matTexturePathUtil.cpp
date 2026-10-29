@@ -107,7 +107,7 @@ namespace matTexturePathUtil
 		// Also need to consider relative paths here
 		if (tex_loc.GetNumNames() > 1)
 		{
-			if (tex_loc.GetName(0) == itString("."))
+			if (tex_loc.GetName(0) == ".")
 			{
 				fsLocator local_path = i_ContainingFile;
 				local_path.Pop();
@@ -117,7 +117,7 @@ namespace matTexturePathUtil
 				bChangedLocator = true;
 				
 			}
-			else if (tex_loc.GetName(0) == itString(".."))
+			else if (tex_loc.GetName(0) == "..")
 			{
 				fsLocator local_path = i_ContainingFile;
 				local_path.Pop();
@@ -127,7 +127,7 @@ namespace matTexturePathUtil
 				while ((tex_loc.GetNumNames() > 1) &&
 					   (local_path.GetNumNames() > 1) )
 				{
-					if (tex_loc.GetName(0) == itString(".."))
+					if (tex_loc.GetName(0) == "..")
 					{
 						tex_loc.RemoveBefore(1);
 						local_path.Pop();
