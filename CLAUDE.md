@@ -41,14 +41,21 @@ cameras/lights/objects on a timeline, and render frames or sequences on the GPU
     code can include it in any build.
   - Projects that don't depend on the toolkit (Core, Graphics,
     GraphicsDX11, GraphicsVulkan, Tool, Input, InputTPC, AudioDS,
-    ImportExport and the UnitTests projects) have only plain `Debug` and
+    ImportExport, the UnitTests projects, and in MachStudio Drivers and
+    the Systems AO, Billboard, Cameras, Character, Fog, GI, PrjLt, PtLt
+    and Transforms) have only plain `Debug` and
     `Release` configurations; `MachStudio.sln` maps the three toolkit
     configurations onto them, so they build once per Debug/Release, into
     `bin\x64\Debug\` or `Release\`, and are shared by the Qt, Wx and
     RenderNode builds. Build through the solution (a project built on its
     own passes its configuration name to its ProjectReferences). Their
     code must not use `BATCH_MODE`, `USE_QT`, `USE_WXWIDGETS` or
-    `MSP_GUI_*`; a project that does keeps the six configurations. Don't
+    `MSP_GUI_*`, or include a header that does (wx/Qt headers,
+    `ToolUIWx`/`ToolUIQt`, `wxGUI/`/`qtGUI/` headers, or toolkit-dependent
+    MachStudio headers such as `cmmObjectDialogUtil.hpp`); a project that
+    does keeps the six configurations
+    (`docs/plans/2026-10-29-toolkit-neutral-machstudio-libs.md` plans
+    making the rest of MachStudio's libraries neutral). Don't
     run two builds of the same base configuration (e.g. `Debug Qt` and
     `Debug Wx`) at the same time: they write the same files.
 - Each configuration builds into its own run directory,

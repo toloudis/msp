@@ -10,8 +10,6 @@
 
 //#include "Systems/Character/Object/chtrObjectMgr.hpp"
 
-#include "Systems/Common/GUI/cmmObjectDialogUtil.hpp"
-
 //============================================================================
 //============================================================================
 namespace chtrExpressionsDialogUtil
@@ -48,10 +46,6 @@ namespace chtrExpressionsDialogUtil
 	//--------------------------------------------------------------------
 	void UpdateExpressions(prtyObject* i_pObject)
 	{
-
-#if defined(USE_WXWIDGETS) || defined(USE_QT)
-
-#endif
 
 	}
 
