@@ -35,9 +35,7 @@
 #include "Features/Capture/cptrModeRender.hpp"
 #include "Features/Capture/cptrRenderUtil.hpp"
 #include "Features/Channels/chnlDialogUtil.hpp"
-#ifdef FUSION //#if(SGPU_APP == MS_FUSION)
 #include "Features/ObjectManip/mnpPackage.hpp"
-#endif
 #include "Features/Prefs/PrefsData.hpp"
 #include "Features/Prefs/PrefsMgr.hpp"
 #include "Features/RenderPanels/rpnRenderPane.hpp"
@@ -817,6 +815,18 @@ int DoWinMain(HINSTANCE hInstance,
 					#endif	// TIME_LIMITED
 
 					#endif // USE_WXWIDGETS
+
+					#if defined(_DEBUG) && !defined(BATCH_MODE)
+						//	Quitting doesn't end the current mode, so its DeInitialize
+						//	never runs: anything it frees only there outlives the
+						//	graphics layer (as playback's time code text once did)
+						modeMode* pExitMode = modeModeMgr::GetCurrentMode();
+						if (pExitMode && pExitMode->GetID() != mnpPackage::GetModeObjectManipID())
+						{
+							DBG_WARNING("Exiting in mode '" << pExitMode->GetMenuItemName() << "' (ID " << pExitMode->GetID()
+										<< "); its DeInitialize won't run");
+						}
+					#endif
 					} // end mainInitDocument scope
 				} // end mainInitApplication successful
 				else
