@@ -45,6 +45,7 @@
 #include "Support/mnm/mnmPaths.hpp"
 #include "Support/mnm/mnmScreenCaptureUtil.hpp"
 #include "Support/mnm/mnmSecurityMgr.hpp"
+#include "Support/mnm/mnmTimeCodeMgr.hpp"
 #include "Support/mnm/mnmTimeCodeUtil.hpp"
 #include "Support/mnm/mnmVJoystick.hpp"
 #include "Support/mode/modeModeMgr.hpp"
@@ -920,6 +921,10 @@ void mnmApp::DeInitializeRender()
 {
 	// Waits for a render still in progress, then stops the render thread
 	l_pRenderWorker.reset();
+
+	// Playback mode makes the time code text and frees it when the mode
+	// ends, which it doesn't when the app exits during playback
+	mnmTimeCodeMgr::DeInitialize();
 
 	envSTLHelpers::DeleteContainer(m_RenderViews);
 
