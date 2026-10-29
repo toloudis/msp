@@ -7,9 +7,14 @@
 **	Copyright(C) 2009 - All Rights Reserved
 \****************************************************************************/
 #include "Graphics/ent/entAnimTemplate.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Core/env/envSTLHelpers.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Graphics/ent/entAnimation.hpp"
 
 #include <algorithm>
@@ -88,7 +93,7 @@ int entAnimTemplate::GetAnimIndex(const char* i_AnimName) const
 {
 	for (int i = 0 ; i < m_Animations.size() ; i++ )
 	{
-		if (itStringUtil::CompareNoCase(m_AnimNames[i], i_AnimName) == 0)
+		if (envString::CompareNoCase(m_AnimNames[i], i_AnimName) == 0)
 		{
 			return i;
 		}

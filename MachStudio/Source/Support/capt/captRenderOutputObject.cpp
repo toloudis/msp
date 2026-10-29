@@ -23,7 +23,6 @@
 #include "Core/env/envString.hpp"
 #include "Core/fs/fsCategoryConfigFileUtil.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/prty/prtyButtonUIInfo.hpp"
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
 #include "Core/prty/prtyComboBoxUIInfo.hpp"

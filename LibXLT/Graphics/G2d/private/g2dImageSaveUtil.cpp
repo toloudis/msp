@@ -17,8 +17,8 @@
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
 #endif
-#ifndef IT_STRINGUTIL_HPP
-#include "Core/It/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
 #endif
 #ifndef MA_FUNCTIONS_HPP
 #include "Core/Ma/maFunctions.hpp"
@@ -468,9 +468,9 @@ FileType PickFormat(const fsLocator& i_FileName)
 {
 	std::string fname = i_FileName.GetLastName();
 	std::string ext;
-	itStringUtil::GetExtension(fname, ext);
+	envString::GetExtension(fname, ext);
 
-	const std::string& e = itStringUtil::ToLower(ext);
+	const std::string& e = envString::ToLower(ext);
 
 	if (e == "bmp")						return e_BMP;
 	if (e == "jpg" || e == "jpeg")		return e_JPG;

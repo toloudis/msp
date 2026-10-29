@@ -19,8 +19,8 @@
 
 #include <sstream>
 #include <iomanip>
-#ifndef IT_STRINGUTIL_HPP
-#include "Core/It/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
 #endif
 
 //--------------------------------------------------------------------
@@ -57,7 +57,7 @@ void rptReportMem::Generate()
 	fsFileUtil::LocatorToANSIFilename(sceneFile, filename);
 
 	std::string fname = sceneFile.GetLastName();
-	itStringUtil::StripExtension(fname);
+	envString::StripExtension(fname);
 	fname += std::string(".mem");
 
 	sceneFile.Pop();

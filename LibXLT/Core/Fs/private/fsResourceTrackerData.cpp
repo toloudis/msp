@@ -7,6 +7,9 @@
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "Core/fs/fsResourceTrackerData.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 
 //

@@ -14,7 +14,6 @@
 #include "Core/env/envPackage.hpp"
 #include "Core/fs/fsPackage.hpp"
 #include "Core/gf/gfPackage.hpp"
-#include "Core/it/itString.hpp"
 
 
 //============================================================================

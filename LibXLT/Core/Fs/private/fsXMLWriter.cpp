@@ -7,6 +7,9 @@
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "Core/fs/fsXMLWriter.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 #include "Core/env/envNumberText.hpp"
 
 
@@ -133,7 +136,6 @@ void fsXMLWriter::WriteEndElement()
 //		maPoint3d
 //		maMatrix4x4
 //		maFloatRGBA
-//		itString
 //		nameString
 //------------------------------------------------------------------------
 void fsXMLWriter::WriteElement(std::string& i_KeyName, int i_Value)

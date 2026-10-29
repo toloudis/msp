@@ -8,7 +8,6 @@
 \****************************************************************************/
 #include "Graphics/scr/scrText.hpp"
 
-#include "Core/it/itStringUtil.hpp"
 #include "Graphics/eff/effTexturedData.hpp"
 #include "Graphics/g2d/g2dScreenUtil.hpp"
 #include "Graphics/g2d/g2dWindow.hpp"
@@ -101,7 +100,7 @@ void scrText::SetText(const std::string& i_Text)
 
 	m_Text = i_Text;
 
-	//DBG_LOG( "setting string (" << itStringUtil::GetStdString( m_Text ).c_str() << ")" );
+	//DBG_LOG( "setting string (" << m_Text.c_str() << ")" );
 
 	//if (m_pFragment && m_Text.GetLength() <= m_FragmentLengthInChar)
 	//{

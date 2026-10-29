@@ -26,7 +26,6 @@
 #include "Core/env/private/envSystemDataPACWin.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
-#include "Core/it/itStringUtil.hpp"
 
 
 //============================================================================
@@ -282,7 +281,7 @@ void CreateDirectoryOneDir(const fsLocator& i_DirectoryName)
 
 	std::string utf8_filename;
 	fsFileUtil::LocatorToANSIFilename(i_DirectoryName, utf8_filename);
-	itStringUtil::TrimSpaces(utf8_filename);
+	envString::TrimSpaces(utf8_filename);
 	const std::wstring filename = envString::UTF8ToWideChar(utf8_filename);
 
 	if( filename.empty() )

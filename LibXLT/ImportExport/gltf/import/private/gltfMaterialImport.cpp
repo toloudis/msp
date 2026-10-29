@@ -12,7 +12,6 @@
 
 #include "Core/dbg/dbgMsg.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/It/itStringUtil.hpp"
 #include "Graphics/Eff/effNormalsData.hpp"
 #include "Graphics/Eff/effPbrData.hpp"
 #ifndef MAT_SHADEREFFECT_HPP

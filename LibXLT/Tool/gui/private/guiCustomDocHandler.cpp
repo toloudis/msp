@@ -12,7 +12,6 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/It/itStringUtil.hpp"
 #include "Graphics/g2d/g2dExceptionX.hpp"
 #include "Tool/doc/docCustomDocumentMgr.hpp"
 #include "Tool/doc/docSingleTypeMgr.hpp"

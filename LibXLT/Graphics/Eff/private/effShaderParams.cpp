@@ -14,7 +14,6 @@
 #include "Core/fs/fsFileX.hpp"
 #include "Core/Fs/fsResourceFinder.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/prty/prtyTextureFileChooserUIInfo.hpp"
 #include "Graphics/g3d/g3dExceptionX.hpp"
 #include "Graphics/mat/matShaderMgr.hpp"

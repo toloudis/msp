@@ -14,7 +14,6 @@
 #include "Core/ch/chExceptionX.hpp"
 #include "Core/Fs/fsAbsolutePathMgr.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Graphics/an/anKeyAnimation.hpp"
 #include "Graphics/eff/effDisplacementDataParser.hpp"
 #include "Graphics/eff/effFurData.hpp"
@@ -751,7 +750,7 @@ namespace mdlMaterialParser
 					// in order to resolve absolute paths to textures
 					fsLocator org_locator;
 					std::string savefilename;
-					chChunkParserUtil::ReadItString( i_Reader, savefilename );
+					chChunkParserUtil::ReadLegacyWideString( i_Reader, savefilename );
 					fsFileUtil::UnicodeStringToLocator( savefilename, org_locator );
 					fsAbsolutePathMgr::AddDirMappingFromFiles(org_locator, i_Reader.GetLocator());
 				}

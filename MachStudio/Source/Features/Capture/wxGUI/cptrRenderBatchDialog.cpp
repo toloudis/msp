@@ -24,7 +24,6 @@
 #include "Core/fs/fsFileX.hpp"
 #include "Core/gf/gfFileBin.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Tool/doc/docSingleDocumentMgr.hpp"
 #include "Tool/gui/guiFileDialogUtils.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
@@ -160,7 +159,7 @@ void cptrRenderBatchDialog::SetDataValues()
 		m_Data.m_Scenes[i].m_bChecked.SetValue(m_checkList_Scenes->IsChecked(i));
 
 		//std::string sceneFilename;
-		//sceneFilename = itStringUtil::GetStdString( m_Data.m_Scenes[i].m_Filename.GetValue().GetLastName() );
+		//sceneFilename = m_Data.m_Scenes[i].m_Filename.GetValue().GetLastName();
  		//DBG_LOG( i << " - " << sceneFilename.c_str(), << " (" << (m_Data.m_Scenes[i].m_bChecked ? "true":"false") << ")" );
 	}
 

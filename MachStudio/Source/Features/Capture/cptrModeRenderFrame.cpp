@@ -34,7 +34,9 @@
 //	library
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Tool/cam3d/cam3dMgr.hpp"
 #include "Tool/doc/docSingleDocumentMgr.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
@@ -217,7 +219,7 @@ void cptrModeRenderFrame::Think()
 			if ( docSingleDocumentMgr::GetFilename().GetNumNames() > 0 )
 			{
 				std::string itPrefix = docSingleDocumentMgr::GetFilename().GetLastName();
-				itStringUtil::StripExtension(itPrefix);
+				envString::StripExtension(itPrefix);
 				captRenderOutputDataUtil::SetCurrentScene(itPrefix);
 			}
 

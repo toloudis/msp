@@ -86,7 +86,6 @@ public:
 	//		maRotation
 	//		maPoint3d
 	//		maMatrix4x4
-	//		itString
 	//		nameString
 	//------------------------------------------------------------------------
 	void WriteElement(std::string& i_KeyName, int i_Value);

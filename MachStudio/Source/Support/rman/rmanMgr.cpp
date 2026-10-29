@@ -12,7 +12,9 @@
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 //#include "Core/name/nameString.hpp"
 
 #include "Graphics/cam/camCamera.hpp"
@@ -834,7 +836,7 @@ void rmanMgr::RendermanEntry( float i_AspectRatio, camCamera* i_Camera, g3dPrefs
 	l_RootLoc = rootLoc;
 
 	std::string currFrameNameIt = i_FileName.GetLastName();
-	itStringUtil::StripExtension(currFrameNameIt);
+	envString::StripExtension(currFrameNameIt);
 	std::string currFrameName = currFrameNameIt;
 	std::string sceneName = i_CurrentScene;
 	std::string frameNumber = sceneName + "_Frame_" + currFrameName.substr(currFrameName.rfind("_")+1,currFrameName.length()-1);

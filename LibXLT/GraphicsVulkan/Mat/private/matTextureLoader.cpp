@@ -60,8 +60,8 @@
 #ifndef MAT_TEXTURETRACKING_HPP
 #include "Graphics/Mat/matTextureTracking.hpp"
 #endif
-#ifndef IT_STRINGUTIL_HPP
-#include "Core/It/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
 #endif
 
 namespace gvk
@@ -92,7 +92,7 @@ FileType pick_format(const fsLocator& i_FileName)
 	//	decide what kind of file we have
 	std::string fname = i_FileName.GetLastName();
 	std::string ext;
-	itStringUtil::GetExtension(fname, ext);
+	envString::GetExtension(fname, ext);
 
 	if ((ext == "bmp") || (ext == "BMP"))
 	{

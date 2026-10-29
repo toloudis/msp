@@ -390,6 +390,48 @@ MachStudio's Support, Systems, Features, Drivers and MainApp.
 
 ## Step 4: Clean up
 
+**Done (2026-10-29, not yet reviewed):**
+
+- `itString.hpp/.cpp`, `itStringUtil.hpp/.cpp` and `CoreTests/It/itStringTest.cpp`
+  are deleted (and gone from `Core.vcxproj` and `CoreTests.vcxproj`), with
+  every step 2 shim: `chReader::ReadItString(itString&)`,
+  `chWriter::Write(const itString&)`, the `chChunkParserUtil` `itString`
+  overloads, the `fsLocator` `itString` constructors, `Push` and `Remove`,
+  `fsFileUtil::LocatorToUnicodeString(…, itString&)`, and the implicit
+  conversions and free `==`/`!=`. `ReadItString(std::string&)` stays: it is
+  what reads a field that was an `itString` in old files.
+- `ReadItString` is renamed `ReadLegacyWideString` (`chReader` and its
+  readers, `chChunkParserUtil`, the 36 callers, the tests), so its name says
+  it is for old data only. The earlier sections of this plan keep the old
+  name. Its comment in `chReader.hpp` states the rule: it is only for fields
+  that held an `itString` in files written before `PWFB`. New fields always
+  use `Read`, since no older file has them, and an existing call must not
+  become `Read`, which would misread old files.
+- The helpers still used moved to `envString`: `CompareNoCase`,
+  `EqualNoCase` (was `itStringUtil::Equal`), `StartsWithNoCase`, `ToLower`,
+  `TrimSpaces`, `GetInt`, `StripExtension`, `ReplaceExtension`,
+  `GetExtension`, `GetBase`, `Breakup_Filename`, `Build_Filename`
+  (`StartsWith`/`EndsWith` were already there). The one `LessThan` became
+  `CompareNoCase(...) < 0`. `GetStdString(x)` became `x`. Unused helpers
+  (`GetDouble`, the other comparisons, the buffer `GetStdString`) were
+  dropped, and so was `dbgLog::UnicodetoANSI`, which existed only to log
+  `itString`s and had no live caller. Tests moved to
+  `CoreTests/Env/envStringTest.cpp`, plus case-insensitive comparison,
+  `ToLower` and `TrimSpaces` ones.
+- `itString.hpp` included `dbgMsg.hpp`, and many files used `DBG_*` only
+  through it (directly, or through `chReader.hpp`, `chWriter.hpp` and
+  `fsLocator.hpp`); each now includes `dbgMsg.hpp` itself.
+- `chBinWriter`'s `#error` for a 4-byte `wchar_t` went in step 2.
+  `envType::WChar` stays: `appCharEvent` and the `envString` wide
+  conversions use it.
+- `chStringTest` no longer writes and reads the string a second time
+  through the `itString` overloads.
+- CLAUDE.md: the `It` row (locale lookup only) and the `Env` row
+  (`envString`).
+- Not touched: code no project builds (Area18, Record, the Systems folders
+  not built, `Tools/`, the old `.vcproj` files), which still names
+  `itString`.
+
 - Delete `itString.hpp` / `itString.cpp` and the temporary conversions
   from step 2.
 - Decided (2026-10-29): the helpers go into `envString`, and

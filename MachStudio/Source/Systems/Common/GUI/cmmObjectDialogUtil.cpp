@@ -7,8 +7,13 @@
 **	Copyright(C) 2006 - All Rights Reserved
 \****************************************************************************/
 #include "Systems/Common/GUI/cmmObjectDialogUtil.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #include "Features/Channels/chnlDialogUtil.hpp"
 #include "Features/Prefs/PrefsData.hpp"
@@ -227,7 +232,7 @@ namespace cmmObjectDialogUtil
 				int i;
 				for (i=0; i< driver_names.m_DriverNames.size(); i++)
 				{
-					if (itStringUtil::CompareNoCase(driver_names.m_DriverNames[i].m_Name, i_DriverName) == 0)
+					if (envString::CompareNoCase(driver_names.m_DriverNames[i].m_Name, i_DriverName) == 0)
 					{
 						break;
 					}

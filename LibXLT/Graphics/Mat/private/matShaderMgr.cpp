@@ -12,7 +12,9 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsResourceTracker.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Graphics/eff/effShaderParams.hpp"
 #include "Graphics/mat/matMaterial.hpp"
 
@@ -96,7 +98,7 @@ namespace
 	//----------------------------------------------------------------------------
 	bool shader_name_less(const matShaderInfo& i_A, const matShaderInfo& i_B)
 	{
-		return itStringUtil::CompareNoCase(i_A.m_Name,
+		return envString::CompareNoCase(i_A.m_Name,
 										   i_B.m_Name) < 0;
 	}
 
@@ -441,7 +443,7 @@ bool IsMachStudioShader(const fsLocator& i_ShaderName)
 	const std::string name = i_ShaderName.GetLastName();
 	for (size_t i = 0; i < l_MaterialShaders.size(); i++)
 	{
-		if (itStringUtil::CompareNoCase(l_MaterialShaders[i].m_Name, name) == 0)
+		if (envString::CompareNoCase(l_MaterialShaders[i].m_Name, name) == 0)
 			return true;
 	}
 	return false;

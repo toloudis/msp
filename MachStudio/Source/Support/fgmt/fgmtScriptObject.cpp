@@ -26,7 +26,9 @@
 #include "Core/fs/fsResourceTrackerData.hpp"
 #include "Core/gf/gfFileTxt.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
 #include "Core/prty/prtyComboBoxUIInfo.hpp"
 #include "Core/prty/prtyNumericUpDownUIInfo.hpp"
@@ -320,7 +322,7 @@ fgmtScriptObject::fgmtScriptObject(api3dObject* i_pObject,
 	DBG_ASSERT(i_pObject, "Null api3dObject.");
 	
 	std::string modelName = i_ModelLocator.GetLastName();
-	itStringUtil::StripExtension(modelName);
+	envString::StripExtension(modelName);
 	m_ModelName = modelName;
 	m_BaseName = i_BaseName;
 	GatherFragments();

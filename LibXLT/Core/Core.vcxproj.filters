@@ -324,12 +324,6 @@
     <ClInclude Include="It\itPackage.hpp">
       <Filter>It</Filter>
     </ClInclude>
-    <ClInclude Include="It\itString.hpp">
-      <Filter>It</Filter>
-    </ClInclude>
-    <ClInclude Include="It\itStringUtil.hpp">
-      <Filter>It</Filter>
-    </ClInclude>
     <ClInclude Include="It\private\itLocaleUtilPAC.hpp">
       <Filter>It\ItPrivate</Filter>
     </ClInclude>
@@ -973,12 +967,6 @@
       <Filter>It\ItPrivate</Filter>
     </ClCompile>
     <ClCompile Include="It\private\itPackage.cpp">
-      <Filter>It\ItPrivate</Filter>
-    </ClCompile>
-    <ClCompile Include="It\private\itString.cpp">
-      <Filter>It\ItPrivate</Filter>
-    </ClCompile>
-    <ClCompile Include="It\private\itStringUtil.cpp">
       <Filter>It\ItPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Fs\private\fsAbsolutePathMgr.cpp">

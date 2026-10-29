@@ -12,7 +12,6 @@
 #include "Core/env/envString.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsResourceTracker.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Tool/doc/docSingleDocumentMgr.hpp"
 #include "ToolUIWx/twx/twxPaneMgr.hpp"
 

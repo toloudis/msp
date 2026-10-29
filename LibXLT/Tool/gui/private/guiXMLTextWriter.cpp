@@ -7,6 +7,9 @@
 **	Copyright(C) 2007 - All Rights Reserved
 \****************************************************************************/
 #include "Tool/gui/guiXMLTextWriter.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 
 //------------------------------------------------------------------------

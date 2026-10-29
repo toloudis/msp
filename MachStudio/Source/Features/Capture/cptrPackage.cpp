@@ -49,8 +49,8 @@
 #include "Tool/gui/guiMenuMgr.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
 #include "Tool/gui/guiSingleDocHandler.hpp"
-#ifndef IT_STRINGUTIL_HPP
-#include "Core/It/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
 #endif
 
 #define USE_BAKE_TEXTURE
@@ -351,7 +351,7 @@ namespace cptrPackage
 				//	set the prefix to be the scene name
 				std::string current_scenename;
 				current_scenename = docSingleDocumentMgr::GetFilename().GetLastName();
-				itStringUtil::StripExtension(current_scenename);
+				envString::StripExtension(current_scenename);
 				captRenderOutputDataUtil::SetCurrentScene( current_scenename );
 
 				//	set-up the render mode to launch directly
@@ -396,7 +396,7 @@ namespace cptrPackage
 		//	set the prefix to be the scene name
 		std::string current_scenename;
 		current_scenename = docSingleDocumentMgr::GetFilename().GetLastName();
-		itStringUtil::StripExtension(current_scenename);
+		envString::StripExtension(current_scenename);
 		captRenderOutputDataUtil::SetCurrentScene( current_scenename );
 
 		//	set-up the render mode to launch directly

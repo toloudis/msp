@@ -7,6 +7,9 @@
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "Core/fs/fsXMLReader.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 #include "Core/env/envNumberText.hpp"
 
 #include "Core/fs/fsFileX.hpp"
@@ -151,7 +154,6 @@ fsXMLData::fs_Node_Type fsXMLReader::ReadNode(std::string& o_KeyName, std::strin
 //		maPoint3d
 //		maMatrix4x4
 //		maFloatRGBA
-//		itString
 //		fsLocator
 //		nameString
 //------------------------------------------------------------------------

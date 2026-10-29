@@ -7,12 +7,14 @@
 **	Copyright(C) 2009 - All Rights Reserved
 \****************************************************************************/
 #include "Support/cmpr/cmprCompressUtil.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Support/cmpr/private/cmprZipUtil.hpp"
 
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsLocator.hpp"
-#include "Core/it/itStringUtil.hpp"
 
 
 //============================================================================

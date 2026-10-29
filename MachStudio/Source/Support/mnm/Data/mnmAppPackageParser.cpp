@@ -49,7 +49,7 @@ void mnmAppPackageParser::Read(	chReader& io_Reader,
 								chDefs::Size i_Size,
 								mnmAppPackageData& o_Data )
 {
-	io_Reader.ReadItString( o_Data.m_SGPUAppName );
+	io_Reader.ReadLegacyWideString( o_Data.m_SGPUAppName );
 	io_Reader.Read( o_Data.m_SGPUAppVersion );
 }
 

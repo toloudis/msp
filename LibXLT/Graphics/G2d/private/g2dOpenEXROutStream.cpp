@@ -7,7 +7,6 @@
 #include "Graphics/g2d/g2dOpenEXROutStream.hpp"
 
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itStringUtil.hpp"
 
 #include <filesystem>
 

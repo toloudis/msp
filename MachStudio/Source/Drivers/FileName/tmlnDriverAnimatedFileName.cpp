@@ -12,7 +12,6 @@
 #include "Features/Channels/chnlDialogUtil.hpp"
 #include "Support/tmln/tmlnChannelFileName.hpp"
 
-#include "Core/it/itStringUtil.hpp"
 #include "Core/ma/maFunctions.hpp"
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
 #include "Core/prty/prtyFileChooserUIInfo.hpp"

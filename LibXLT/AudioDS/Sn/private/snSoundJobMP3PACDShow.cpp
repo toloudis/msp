@@ -12,6 +12,9 @@
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
 #include "AudioDS/sn/private/snSoundJobMP3PACDShow.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "AudioDS/sn/snSoundUtil.hpp"
 #include "Core/fs/private/fsFileUtilPAC.hpp"

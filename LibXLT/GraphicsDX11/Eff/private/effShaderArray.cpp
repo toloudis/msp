@@ -14,7 +14,6 @@
 #include "Core/fs/fsFileX.hpp"
 #include "Core/fs/fsResourceTracker.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Graphics/eff/effBakeData.hpp"
 #include "Graphics/eff/effBillboardData.hpp"
 #include "Graphics/eff/effBlinnData.hpp"

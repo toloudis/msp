@@ -7,6 +7,9 @@
 **	Copyright(C) 2005 - All Rights Reserved
 \****************************************************************************/
 #include "Support/fsys/fsysFileList.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Support/fsys/fsysDirListUtil.hpp"
 #include "Support/mnm/mnmPaths.hpp"
@@ -14,7 +17,9 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
 #include "Core/gf/gfFileEnum.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #include <algorithm>
 
@@ -36,7 +41,7 @@ namespace
 	{
 		inline bool operator()(fsysFileInfo& lhs, fsysFileInfo& rhs) 
 		{ 
-			return itStringUtil::LessThan(lhs.GetFilename(),rhs.GetFilename()); 
+			return envString::CompareNoCase(lhs.GetFilename(),rhs.GetFilename()) < 0; 
 		} 
 	};
 }
@@ -292,16 +297,16 @@ int fsysFileList::GetIndex(const std::string& i_Filename)
 
 	std::string s1, s2;
 	s1 = i_Filename;
-	itStringUtil::ToLower(s1);
+	envString::ToLower(s1);
 
-	//DBG_LOG2( "GetIndex [%s][%s]", itStringUtil::GetStdString( i_Filename ).c_str(), itStringUtil::GetStdString( s1 ).c_str() );
+	//DBG_LOG2( "GetIndex [%s][%s]", i_Filename.c_str(), s1.c_str() );
 
 	int count = 0;
 	while (it != m_FileList.end())
 	{
 		s2 = it->GetFilename();
-		itStringUtil::ToLower(s2);
-		//DBG_LOG2( "         comparing[%s][%s]", itStringUtil::GetStdString( s2 ).c_str(), itStringUtil::GetStdString( s1 ).c_str() );
+		envString::ToLower(s2);
+		//DBG_LOG2( "         comparing[%s][%s]", s2.c_str(), s1.c_str() );
 		if (s1 == s2)
 		{
 			return count;

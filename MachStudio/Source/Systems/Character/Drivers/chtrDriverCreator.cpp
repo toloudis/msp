@@ -8,7 +8,9 @@
 \****************************************************************************/
 #include "Systems/Character/Drivers/chtrDriverCreator.hpp"
 
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Systems/Character/Data/chtrDataParser.hpp"
 #include "Systems/Character/Drivers/chtrDriverAnimationFull.hpp"
 #include "Systems/Character/GUI/chtrAnimList.hpp"
@@ -232,7 +234,7 @@ tmlnDriver* chtrDriverCreator::CreateDriverByName( const char* i_DriverName,
 	if (pDriver != NULL) 
 		return pDriver;
 
-	//if ( itStringUtil::CompareNoCase(i_DriverName, CHTRDRIVERNAME_AIMOVEBASE) == 0 )
+	//if ( envString::CompareNoCase(i_DriverName, CHTRDRIVERNAME_AIMOVEBASE) == 0 )
 	//{
 	//	chtrDriverAIMoveBase* pDriver = new chtrDriverAIMoveBase( chtr_obj );
 	//	pDriver->SetName( CHTRDRIVERNAME_AIMOVEBASE );
@@ -247,7 +249,7 @@ tmlnDriver* chtrDriverCreator::CreateDriverByName( const char* i_DriverName,
 	//	channelAF.AddDriver( pDriver );
 	//	return pDriver;
 	//}
-	if ( itStringUtil::CompareNoCase(i_DriverName, CHTRDRIVERNAME_ANIMATIONFULL) == 0 )
+	if ( envString::CompareNoCase(i_DriverName, CHTRDRIVERNAME_ANIMATIONFULL) == 0 )
 	{
 		chtrDriverAnimationFull* pDriver = new chtrDriverAnimationFull( chtr_obj->ChannelAnimationFull(),
 			c_CDAF, chtr_obj->GetDirectory(), chtr_obj->GetBaseData().m_SourceIdentity );
@@ -260,7 +262,7 @@ tmlnDriver* chtrDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	//else if ( itStringUtil::CompareNoCase(i_DriverName, CHTRDRIVERNAME_ANIMATIONSUB) == 0 )
+	//else if ( envString::CompareNoCase(i_DriverName, CHTRDRIVERNAME_ANIMATIONSUB) == 0 )
 	//{
 	//	chtrDriverAnimationSub* pDriver = new chtrDriverAnimationSub( chtr_obj->ChannelAnimationSub(),
 	//		chtr_obj->GetDirectory() );
@@ -273,7 +275,7 @@ tmlnDriver* chtrDriverCreator::CreateDriverByName( const char* i_DriverName,
 	//	channel.AddDriver( pDriver );
 	//	return pDriver;
 	//}
-	else if (itStringUtil::CompareNoCase(i_DriverName, CHTRDRIVERNAME_SPLINEORI) == 0)
+	else if (envString::CompareNoCase(i_DriverName, CHTRDRIVERNAME_SPLINEORI) == 0)
 	{
 		tmlnDriverSplineOriented * pDriver = new tmlnDriverSplineOriented( chtr_obj->ChannelPosition(), 
 			chtr_obj->ChannelOrientation(), c_COSP );
@@ -296,7 +298,7 @@ tmlnDriver* chtrDriverCreator::CreateDriverByName( const char* i_DriverName,
 		Ochannel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, CHTRDRIVERNAME_ATTACHORIENT) == 0)
+	else if (envString::CompareNoCase(i_DriverName, CHTRDRIVERNAME_ATTACHORIENT) == 0)
 	{
 		tmlnDriverAttachOrient * pDriver = new tmlnDriverAttachOrient( chtr_obj->ChannelPosition(), chtr_obj->ChannelOrientation(), c_CATO );
 		pDriver->SetName(CHTRDRIVERNAME_ATTACHORIENT);
@@ -311,7 +313,7 @@ tmlnDriver* chtrDriverCreator::CreateDriverByName( const char* i_DriverName,
 		Ochannel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if ( itStringUtil::CompareNoCase(i_DriverName, CHTRDRIVERNAME_SOUND) == 0 )
+	else if ( envString::CompareNoCase(i_DriverName, CHTRDRIVERNAME_SOUND) == 0 )
 	{
 		fsLocator snddir = chtr_obj->GetDirectory();
 		snddir.Pop();
@@ -475,7 +477,7 @@ tmlnDriver* chtrDriverCreator::CreateDriverFromInfo( tmlnScriptObject* io_pObjec
 			
 			//	if the sound isn't found, add the driver, but don't fail loading the scene.
 			//
-			//DBG_ASSERT( snddir.GetNumNames() > 0, "Cannot find sound (%s)", itStringUtil::GetStdString(driver_info.m_SoundName).c_str() );
+			//DBG_ASSERT( snddir.GetNumNames() > 0, "Cannot find sound (%s)", driver_info.m_SoundName.c_str() );
 			if (snddir.GetNumNames() > 0)
 			{
 				snddir.Remove( gfPaths::GetAppPath() );		// make it a relative path

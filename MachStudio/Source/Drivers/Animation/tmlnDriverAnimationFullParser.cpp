@@ -39,7 +39,7 @@ namespace
 		// Read in a single itString with path separators and then 
 		// split into locator
 		std::string savefilename;
-		chChunkParserUtil::ReadItString( i_Reader, savefilename );
+		chChunkParserUtil::ReadLegacyWideString( i_Reader, savefilename );
 		fsFileUtil::UnicodeStringToLocator( savefilename, o_Info.m_AnimFilename );
 		//chChunkParserUtil::Read(i_Reader, o_Info.m_AnimFilename );
 		//Note: not resolving the absolute path here, let the DriverCreator handle that

@@ -7,6 +7,9 @@
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
 #include "Core/Gf/gfFileBin.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Core/Fs/fsFilePosSaver.hpp"
 #include "Core/Gf/gfFileX.hpp"

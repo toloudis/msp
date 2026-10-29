@@ -10,7 +10,6 @@
 
 #include "Support/capt/captRenderOutputTagsUtil.hpp"
 
-#include "Core/it/itStringUtil.hpp"
 #include "Tool/cma/cmaCommandMgr.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
 #include "ToolUIWx/twx/twxSystem.hpp"

@@ -23,7 +23,9 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/gf/gfFileTxt.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/ma/maConstants.hpp"
 #include "Core/ma/maFunctions.hpp"
 #include "Core/rel/relRelationshipMultiple.hpp"
@@ -555,7 +557,7 @@ void mtrlScriptObject::SaveMaterials(const fsLocator& i_Locator,
 	fsLocator gmb_locator = i_Locator;
 	gmb_locator.Pop();
 	std::string filename = i_Locator.GetLastName();
-	itStringUtil::StripExtension(filename);
+	envString::StripExtension(filename);
 	filename += std::string(".gmb");
 	gmb_locator.Push(filename);
 	mtrMaterialSaver::WriteMaterialSet(gmb_locator, m_Materials);
@@ -568,7 +570,7 @@ void mtrlScriptObject::SaveMaterials(const fsLocator& i_Locator,
 
 	//bga -  No clearing of materials when saving to material files anymore...
 	//if (i_Locator != m_ModelLocator)
-	//if (itStringUtil::CompareNoCase(save_name, cur_name))
+	//if (envString::CompareNoCase(save_name, cur_name))
 	//{
 	//	DBG_LOG("Saved to new name, not clearing out materials");
 

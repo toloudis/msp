@@ -8,7 +8,9 @@
 \****************************************************************************/
 #include "Support/dyn/dynDriverCreator.hpp"
 
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #include "Drivers/Float/tmlnDriverFloat.hpp"
 #include "Drivers/Float/tmlnDriverFloatInfo.hpp"
@@ -109,7 +111,7 @@ tmlnDriver* dynDriverCreator::CreateDriverByName(	const char* i_DriverName,
 	dynScriptObject* dyn_obj = dynamic_cast<dynScriptObject*>(i_pObject);
 	if (!dyn_obj) return NULL;
 
-	if (itStringUtil::StartsWithNoCase(i_DriverName, "Control "))
+	if (envString::StartsWithNoCase(i_DriverName, "Control "))
 	{
 		std::string channel_name = i_DriverName + ::strlen("Control ");
 		dynChannelControl *channel = get_transform_channel_by_name(dyn_obj, channel_name);
@@ -128,7 +130,7 @@ tmlnDriver* dynDriverCreator::CreateDriverByName(	const char* i_DriverName,
 		channel->AddDriver( pDriver );
 		return pDriver;
 	}
-//	else if (itStringUtil::StartsWithNoCase(i_DriverName, "Rotate Control "))
+//	else if (envString::StartsWithNoCase(i_DriverName, "Rotate Control "))
 //	{
 //		std::string channel_name = i_DriverName + ::strlen("Rotate Control ");
 //		dynChannelRotateControl *channel = get_rotate_channel_by_name(dyn_obj, channel_name);
@@ -147,7 +149,7 @@ tmlnDriver* dynDriverCreator::CreateDriverByName(	const char* i_DriverName,
 //		channel->AddDriver( pDriver );
 //		return pDriver;
 //	}
-//	else if (itStringUtil::StartsWithNoCase(i_DriverName, "Record Control "))
+//	else if (envString::StartsWithNoCase(i_DriverName, "Record Control "))
 //	{
 //		std::string channel_name = i_DriverName + ::strlen("Record Control ");
 //		dynChannelRotateControl *channel = get_rotate_channel_by_name(dyn_obj, channel_name);

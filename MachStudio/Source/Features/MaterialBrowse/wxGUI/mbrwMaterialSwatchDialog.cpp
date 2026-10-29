@@ -16,7 +16,9 @@
 #include "Core/Gf/gfFileEnum.hpp"
 #include "Core/Gf/gfFileX.hpp"
 #include "Core/Gf/gfPaths.hpp"
-#include "Core/It/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Graphics/mdl/mdlMaterialInfo.hpp"
 #include "Graphics/mtr/mtrMaterialSaver.hpp"
 #include "Graphics/mtr/mtrThumbnailData.hpp"
@@ -67,7 +69,7 @@ namespace
 			virtual bool Notify(const fsLocator& i_Directory, const fsLocator& i_File)
 			{
 				std::string ext;
-				itStringUtil::GetExtension( i_File.GetLastName(), ext );
+				envString::GetExtension( i_File.GetLastName(), ext );
 				if (ext == "MTL" || ext == "mtl")
 				{
 					fsLocator Locator = i_Directory;
@@ -519,7 +521,7 @@ void mbrwMaterialSwatchDialog::browse_directory(const fsLocator &i_Directory,
 
 		//std::string filename;
 		//fsFileUtil::LocatorToANSIFilename(material_list[i], filename);
-		//filename = itStringUtil::GetStdString(material_list[i].GetLastName());
+		//filename = material_list[i].GetLastName();
 		//DBG_LOG("Creating browse icon for material file: " << filename);
 
 		try

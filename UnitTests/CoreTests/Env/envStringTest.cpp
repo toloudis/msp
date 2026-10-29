@@ -130,3 +130,94 @@ TEST(envString, AgreesWithWideConversions)
 		EXPECT_EQ(envString::WideCharToUTF8(wide), envString::UTF16ToUTF8(utf16));
 	}
 }
+
+TEST(envString, CompareNoCase)
+{
+	EXPECT_EQ(0, envString::CompareNoCase("Scene.MAB", "scene.mab"));
+	EXPECT_LT(envString::CompareNoCase("abc", "ABD"), 0);
+	EXPECT_GT(envString::CompareNoCase("abcd", "ABC"), 0);
+	EXPECT_TRUE(envString::EqualNoCase("MTL", "mtl"));
+	EXPECT_FALSE(envString::EqualNoCase("mtl", "mtlx"));
+	// only ASCII letters fold: UTF-8 bytes compare as they are
+	EXPECT_FALSE(envString::EqualNoCase(u8"é", u8"É"));
+
+	EXPECT_TRUE(envString::StartsWithNoCase("Material Diffuse", "material "));
+	EXPECT_FALSE(envString::StartsWithNoCase("Mat", "Material"));
+}
+
+TEST(envString, ToLowerAndTrimSpaces)
+{
+	std::string s = u8"MiXeD É.PNG";
+	EXPECT_EQ(u8"mixed É.png", envString::ToLower(s));
+
+	std::string padded = "  name with spaces  ";
+	envString::TrimSpaces(padded);
+	EXPECT_EQ("name with spaces", padded);
+
+	std::string blank = "   ";
+	envString::TrimSpaces(blank);
+	EXPECT_EQ("", blank);
+}
+
+TEST(envString, Extensions)
+{
+	std::string name = "BaseSuffix";
+	envString::ReplaceExtension(name, "png");
+	EXPECT_EQ("BaseSuffix.png", name);
+	envString::ReplaceExtension(name, "jpg");
+	EXPECT_EQ("BaseSuffix.jpg", name);
+	envString::StripExtension(name);
+	EXPECT_EQ("BaseSuffix", name);
+
+	// the last period separates them
+	std::string base = "unchanged", ext = "unchanged";
+	envString::GetBase("Scene.File.bmp", base);
+	envString::GetExtension("Scene.File.bmp", ext);
+	EXPECT_EQ("Scene.File", base);
+	EXPECT_EQ("bmp", ext);
+
+	// no period: left unchanged
+	envString::GetBase("Scene", base);
+	envString::GetExtension("Scene", ext);
+	EXPECT_EQ("Scene.File", base);
+	EXPECT_EQ("bmp", ext);
+}
+
+TEST(envString, BreakupNumberedFilename)
+{
+	std::string base, ext;
+	int number = -1;
+	const int digits = envString::Breakup_Filename("SceneFile015.mab", base, ext, number);
+
+	EXPECT_EQ("SceneFile", base);
+	EXPECT_EQ("mab", ext);
+	EXPECT_EQ(15, number);
+	EXPECT_EQ(3, digits);
+}
+
+TEST(envString, BreakupUnnumberedFilename)
+{
+	std::string base, ext;
+	int number = -1;
+	const int digits = envString::Breakup_Filename("Scene.File.bmp", base, ext, number);
+
+	EXPECT_EQ("Scene.File", base);
+	EXPECT_EQ("bmp", ext);
+	EXPECT_EQ(0, number);
+	EXPECT_EQ(0, digits);
+}
+
+TEST(envString, BuildFilenameReversesBreakup)
+{
+	std::string name;
+	envString::Build_Filename("SceneFile", "mab", 16, 3, name);
+	EXPECT_EQ("SceneFile016.mab", name);
+
+	std::string base, ext;
+	int number = -1;
+	const int digits = envString::Breakup_Filename(name, base, ext, number);
+	EXPECT_EQ("SceneFile", base);
+	EXPECT_EQ("mab", ext);
+	EXPECT_EQ(16, number);
+	EXPECT_EQ(3, digits);
+}

@@ -22,7 +22,9 @@
 #include "AudioDS/sn/snSoundJob2D.hpp"
 #include "AudioDS/sn/snSoundManager.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/prty/prtyFloatEditUIInfo.hpp"
 #include "Core/prty/prtyFileChooserUIInfo.hpp"
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
@@ -117,7 +119,7 @@ std::string tmlnDriverSound::GetHoverDescription()
 
 	std::string str = "Sound: ";
 	if (m_SoundName.GetValue().GetNumNames())
-		str += itStringUtil::GetStdString(m_SoundName.GetValue().GetLastName());
+		str += m_SoundName.GetValue().GetLastName();
 	desc += str;
 	return desc;
 }
@@ -154,7 +156,7 @@ void tmlnDriverSound::SetDriverInfo(const tmlnDriverSoundInfo& i_Info )
 	this->m_SoundName.SetValue(i_Info.m_SoundName);
 	if (m_SoundName.GetValue().GetNumNames() > 0)
 	{
-		this->SetName(itStringUtil::GetStdString(m_SoundName.GetValue().GetLastName()).c_str());
+		this->SetName(m_SoundName.GetValue().GetLastName().c_str());
 	}
 	this->m_fSoundStartTime.SetValue(i_Info.m_fSoundStartTime);
 	this->m_fSoundEndTime.SetValue(i_Info.m_fSoundEndTime);
@@ -521,8 +523,8 @@ void tmlnDriverSound::SoundFileChanged(prtyProperty *i_pProperty, bool i_bDirty)
 		return;
 
 	std::string ext;
-	itStringUtil::GetExtension(pInfo->m_SoundName.GetLastName(), ext);
-	itStringUtil::ToLower(ext);
+	envString::GetExtension(pInfo->m_SoundName.GetLastName(), ext);
+	envString::ToLower(ext);
 
 	if (ext == "wav" || ext == "mp3")
 	{

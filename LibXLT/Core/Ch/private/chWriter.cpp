@@ -20,11 +20,3 @@ chWriter::chWriter()
 chWriter::~chWriter()
 {
 }
-
-//--------------------------------------------------------------------
-//	Temporary: writes an itString as UTF-8 (see the .hpp)
-//--------------------------------------------------------------------
-void chWriter::Write( const itString& i_String )
-{
-	this->Write( std::string(i_String) );
-}

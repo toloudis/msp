@@ -7,8 +7,13 @@
 **	Copyright(C) 2005 - All Rights Reserved
 \****************************************************************************/
 #include "Features/Channels/chnlCommandCreateDriver.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #include "Features/Channels/chnlDialogUtil.hpp"
 
@@ -59,7 +64,7 @@ namespace chnlCommandCreateDriverNS
 				int i;
 				for (i=0; i< driver_names.m_DriverNames.size(); i++)
 				{
-					if (itStringUtil::CompareNoCase(driver_names.m_DriverNames[i].m_Name, pCom->GetDriverName()) == 0)
+					if (envString::CompareNoCase(driver_names.m_DriverNames[i].m_Name, pCom->GetDriverName()) == 0)
 					{
 						break;
 					}

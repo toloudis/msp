@@ -10,7 +10,9 @@
 
 #include "Core/Fs/fsFileEnum.hpp"
 #include "Core/Gf/gfPaths.hpp"
-#include "Core/It/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 
 //============================================================================
@@ -38,7 +40,7 @@ namespace
 		virtual bool Notify( const fsLocator& i_Directory, const fsLocator& i_File )
 		{
 			// Case-insensitive comparison
-			if (itStringUtil::Equal(i_File.GetLastName(), m_Filename))
+			if (envString::EqualNoCase(i_File.GetLastName(), m_Filename))
 			{
 				m_FullPath = i_Directory;
 				m_FullPath.Push( i_File );

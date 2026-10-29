@@ -102,13 +102,13 @@ class chXMLReader : public chReader
 		virtual void Read(std::string& o_Val, int i_Length);
 
 		//--------------------------------------------------------------------
-		//	ReadItString reads a string as UTF-8, which is how text and XML
+		//	ReadLegacyWideString reads a string as UTF-8, which is how text and XML
 		//	files store every string: the same as Read.
 		//--------------------------------------------------------------------
-		virtual void ReadItString(std::string& o_Val);
+		virtual void ReadLegacyWideString(std::string& o_Val);
 
 		using chReader::Read;
-		using chReader::ReadItString;
+		using chReader::ReadLegacyWideString;
 
 		//--------------------------------------------------------------------
 		//	Read in an envAppVersion structure

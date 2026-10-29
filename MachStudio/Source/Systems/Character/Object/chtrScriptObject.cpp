@@ -38,6 +38,9 @@
 #include "Systems/Common/Object/cmmNamedScriptObjectReference.hpp"
 
 // library
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/geo/geoRayIntersection.hpp"
 #include "Graphics/smdl/smdlSubdivCharacter.hpp"
@@ -612,7 +615,7 @@ void chtrScriptObject::SetScriptData(const chtrScriptData &i_Data)
 
 	// set fragment data
 	std::string modelName = i_Data.m_BaseData.m_Filename.GetValue().GetLastName();
-	itStringUtil::StripExtension(modelName);
+	envString::StripExtension(modelName);
 	this->SetFragmentData( i_Data.m_Fragments, i_Data.m_AOData, 
 						modelName, 
 						i_Data.m_BaseData.m_Name.GetValue().GetString() );

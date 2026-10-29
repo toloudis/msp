@@ -15,7 +15,9 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Graphics/g3d/g3dConstants.hpp"
 #include <string>
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/ma/maConstants.hpp"
 #include "Core/ma/maRotation.hpp"
 #include "Core/Ma/maTime.hpp"
@@ -37,7 +39,7 @@ namespace
 		std::map<std::string, int> &io_InstanceCount)
 	{
 		std::string no_ext(i_Filename);
-		itStringUtil::StripExtension(no_ext);
+		envString::StripExtension(no_ext);
 
 		const char *str_ptr = no_ext.c_str();
 		std::string ReturnString;

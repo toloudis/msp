@@ -8,7 +8,9 @@
 \****************************************************************************/
 #include "Support/tmln/tmlnDriver.hpp"
 
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #include "Support/tmln/tmlnDriverDialogUtil.hpp"
 #include "Support/tmln/tmlnDriverInfo.hpp"
@@ -160,7 +162,7 @@ tmlnDriver::~tmlnDriver()
 //--------------------------------------------------------------------
 void tmlnDriver::SetName(const char* i_Name)
 {
-	if (itStringUtil::CompareNoCase(i_Name, m_Name.GetValue()) != 0)
+	if (envString::CompareNoCase(i_Name, m_Name.GetValue()) != 0)
 		m_Name.SetValue(i_Name);
 }
 

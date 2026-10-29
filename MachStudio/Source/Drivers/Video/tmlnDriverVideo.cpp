@@ -16,7 +16,9 @@
 #include "Support/tmln/tmlnChannelVideo.hpp"
 
 //#include "Core/fs/fsResourceTracker.hpp"
-#include "Core/It/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "core/Fs/fsFileUtil.hpp"
 #include "Core/ma/maFunctions.hpp"
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
@@ -106,7 +108,7 @@ std::string tmlnDriverVideo::GetHoverDescription()
 	if (m_FirstTextureFileName.GetValue().GetNumNames() > 0)
 	{
 		std::string str = "List : ";
-		str += itStringUtil::GetStdString(m_FirstTextureFileName.GetValue().GetLastName());
+		str += m_FirstTextureFileName.GetValue().GetLastName();
 		desc += str;
 	}
 */
@@ -325,8 +327,8 @@ void tmlnDriverVideo::VideoFileNameChanged(prtyProperty *i_pProperty, bool i_bDi
 
 	std::string ext;
 
-	itStringUtil::GetExtension(pInfo->m_FileName.GetLastName(), ext);
-	itStringUtil::ToLower(ext);
+	envString::GetExtension(pInfo->m_FileName.GetLastName(), ext);
+	envString::ToLower(ext);
 
 	if (ext == "avi")
 	{

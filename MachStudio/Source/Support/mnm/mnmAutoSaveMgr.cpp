@@ -26,8 +26,8 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
-#ifndef IT_STRINGUTIL_HPP
-#include "Core/It/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
 #endif
 
 
@@ -59,7 +59,7 @@ void set_auto_save_time()
 //------------------------------------------------------------------------
 void create_autosave_filename( std::string& io_filename )
 {
-	itStringUtil::StripExtension(io_filename);
+	envString::StripExtension(io_filename);
 	
 	/*char extras[ 8 ];
 	sprintf( extras, "~%02d.mab", AutoSaveData::l_AutoSaveBackupCounter );

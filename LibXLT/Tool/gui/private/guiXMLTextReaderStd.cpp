@@ -7,6 +7,9 @@
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "Tool/gui/guiXMLTextReaderStd.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"

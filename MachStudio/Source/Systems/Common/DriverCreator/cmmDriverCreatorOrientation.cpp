@@ -8,7 +8,9 @@
 \****************************************************************************/
 #include "Systems/Common/DriverCreator/cmmDriverCreatorOrientation.hpp"
 
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #include "Support/tmln/tmlnChannelOrientation.hpp"
 #include "Support/tmln/tmlnCreator.hpp"
@@ -164,7 +166,7 @@ tmlnDriver* cmmDriverCreatorOrientation::CreateDriverByName( const char* i_Drive
 	std::string connectchannel_name = get_connectchannel_name(i_ChannelName);
 	std::string userscript_name = get_userscript_name(i_ChannelName);
 
-	if (itStringUtil::CompareNoCase(i_DriverName, key_name) == 0)
+	if (envString::CompareNoCase(i_DriverName, key_name) == 0)
 	{
 		const chDefs::Name c_XXOK = make_key_chunk_name( i_Code );
 		tmlnDriverOrientation * pDriver = new tmlnDriverOrientation( io_Channel, c_XXOK );
@@ -174,7 +176,7 @@ tmlnDriver* cmmDriverCreatorOrientation::CreateDriverByName( const char* i_Drive
 		io_Channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, euler_name) == 0)
+	else if (envString::CompareNoCase(i_DriverName, euler_name) == 0)
 	{
 		const chDefs::Name c_XXOK = make_key_chunk_name( i_Code );
 		tmlnDriverOrientation * pDriver = new tmlnDriverOrientation( io_Channel, c_XXOK );
@@ -189,7 +191,7 @@ tmlnDriver* cmmDriverCreatorOrientation::CreateDriverByName( const char* i_Drive
 		io_Channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, connectchannel_name) == 0)
+	else if (envString::CompareNoCase(i_DriverName, connectchannel_name) == 0)
 	{
 		const chDefs::Name c_XXCZ = make_connectchannel_chunk_name( i_Code );
 		tmlnDriverConnectChannelOrientation * pDriver = new tmlnDriverConnectChannelOrientation( io_Channel, c_XXCZ );
@@ -202,7 +204,7 @@ tmlnDriver* cmmDriverCreatorOrientation::CreateDriverByName( const char* i_Drive
 		io_Channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, userscript_name) == 0)
+	else if (envString::CompareNoCase(i_DriverName, userscript_name) == 0)
 	{
 		const chDefs::Name c_XXUS = make_userscript_chunk_name( i_Code );
 		tmlnDriverUserScriptOrientation * pDriver = new tmlnDriverUserScriptOrientation( io_Channel, c_XXUS );

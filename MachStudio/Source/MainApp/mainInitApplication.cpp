@@ -8,6 +8,9 @@
 \****************************************************************************/
 #include "stdafx.h"
 #include "MainApp/mainInitApplication.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "MainApp/Commands/mainCommands.hpp"
 #include "MainApp/mainPython.hpp"

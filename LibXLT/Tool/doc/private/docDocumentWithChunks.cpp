@@ -24,7 +24,9 @@
 #include "Core/Gf/gfFileBin.hpp"
 #include "Core/Gf/gfFileTxt.hpp"
 #include "Core/Gf/gfFileXML.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Tool/doc/docDocumentChunk.hpp"
 
 
@@ -106,7 +108,7 @@ bool docDocumentWithChunks::Load(const fsLocator &i_Locator, LoadFlags i_LoadMet
 	//	handle reading from a binary file and writing to ASCII or the other way around.
 	//
 	std::string extension;
-	itStringUtil::GetExtension( i_Locator.GetLastName(), extension );
+	envString::GetExtension( i_Locator.GetLastName(), extension );
 
 	//bga - These extensions shouldn't be here. This class docDocumentWithChunks needs to
 	// handle many types of files, not just MachStudio scene files. The extensions need to be

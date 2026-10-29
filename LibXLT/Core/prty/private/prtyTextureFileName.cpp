@@ -180,7 +180,7 @@ void prtyTextureFileName::ReadTexture(chReader& io_Reader)
 {
 	prtyTextureFileData val;
 	std::string tex_filename;
-	chChunkParserUtil::ReadItString( io_Reader, tex_filename );
+	chChunkParserUtil::ReadLegacyWideString( io_Reader, tex_filename );
 	fsFileUtil::UnicodeStringToLocator( tex_filename, val.m_TextureLocator );
 	SetValue(val);
 	m_RevertValue = val;

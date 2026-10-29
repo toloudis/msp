@@ -18,7 +18,6 @@
 //============================================================================
 //============================================================================
 class fsLocator;
-class itString;
 
 
 //============================================================================
@@ -100,10 +99,6 @@ namespace fsFileUtil
 	// The same as LocatorToANSIFilename, now that both give UTF-8.
 	//----------------------------------------------------------------------------
 	void LocatorToUnicodeString(const fsLocator& i_Locator, std::string& o_String);
-
-	//	Temporary, for callers that still hold an itString
-	//	(docs/plans/2026-10-28-itstring-to-std-string.md; removed in step 4)
-	void LocatorToUnicodeString(const fsLocator& i_Locator, itString& o_String);
 
 	//----------------------------------------------------------------------------
 	// ANSIFilenameToLocator returns a locator from an ANSI pathname

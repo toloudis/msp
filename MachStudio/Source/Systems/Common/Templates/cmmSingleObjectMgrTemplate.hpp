@@ -23,9 +23,6 @@
 #ifndef GEO_PICKRAY_HPP
 #include "Core/geo/geoPickRay.hpp"
 #endif
-#ifndef IT_STRINGUTIL_HPP
-#include "Core/it/itStringUtil.hpp"
-#endif
 #ifndef GUI_MESSAGEBOX_HPP
 #include "Tool/gui/guiMessageBox.hpp"
 #endif
@@ -127,7 +124,7 @@ public:
 		{
 			//char msg[512];
 			std::string txt;
-			txt = itStringUtil::GetStdString(i_Ex.GetLocator().GetLastName());
+			txt = i_Ex.GetLocator().GetLastName();
 			//sprintf( msg, "Cannot add the object -- missing %s", txt.c_str() );
 			std::ostringstream oss;
 			oss.setf(0, std::ios::floatfield);

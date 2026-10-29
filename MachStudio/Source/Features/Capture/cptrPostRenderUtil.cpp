@@ -7,6 +7,9 @@
 **	Copyright(C) 2005 - All Rights Reserved
 \****************************************************************************/
 #include "Features/Capture/cptrPostRenderUtil.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 #include "Core/app/appApplication.hpp"
 
 #include "Features/Capture/cptrRenderStatsDataUtil.hpp"

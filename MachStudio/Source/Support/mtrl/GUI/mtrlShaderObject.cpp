@@ -22,7 +22,6 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
 #include "Core/fs/fsResourceFinderDir.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/prty/prtyBoolean.hpp"
 #include "Core/prty/prtyColor.hpp"
 #include "Core/prty/prtyFileName.hpp"

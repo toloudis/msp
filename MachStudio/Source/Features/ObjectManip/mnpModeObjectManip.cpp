@@ -44,7 +44,6 @@
 #include "Core/app/appTime.hpp"
 #include "Core/fs/private/fsFileNotifyMgr.hpp"
 #include "Core/geo/geoPickRay.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/ma/maConstants.hpp"
 #include "Core/undo/undoUndoMgr.hpp"
 #include "Graphics/G3d/g3dPickInfo.hpp"

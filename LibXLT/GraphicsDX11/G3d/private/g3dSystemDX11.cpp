@@ -9,7 +9,6 @@
 #include "GraphicsDX11/g3d/g3dSystemDX11.hpp"
 
 #include "Core/dbg/dbgMsg.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Graphics/g2d/g2dResetHandler.hpp"
 #include "Graphics/g3d/g3dConditionalCompile.hpp"
 #include "Graphics/g3d/g3dExceptionX.hpp"

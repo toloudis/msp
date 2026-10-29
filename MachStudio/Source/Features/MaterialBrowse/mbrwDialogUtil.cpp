@@ -7,6 +7,9 @@
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
 #include "Features/MaterialBrowse/mbrwDialogUtil.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 #ifdef MSP_GUI_QT
 #include "Features/MaterialBrowse/qtGUI/mbrwMaterialSwatchDialog.hpp"
 #else

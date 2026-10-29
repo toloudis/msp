@@ -9,7 +9,6 @@
 #include "Systems/Transforms/Object/trfnObjectMgr.hpp"
 
 #include "Core/env/envSTLHelpers.hpp"
-//#include "Core/it/itStringUtil.hpp"
 //#include "Core/name/nameString.hpp"
 #include <sstream>
 #include <iomanip>

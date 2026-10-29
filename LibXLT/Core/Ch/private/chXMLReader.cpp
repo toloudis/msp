@@ -7,11 +7,16 @@
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "Core/ch/chXMLReader.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 #include "Core/env/envNumberText.hpp"
 
 #include "Core/ch/chExceptionX.hpp"
 #include "Core/gf/gfFileXML.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 
 //============================================================================
@@ -312,7 +317,7 @@ void chXMLReader::Read(bool& o_Val)
 	Read(BoolString);
 
 	// Convert the string into a bool and return.
-	itStringUtil::ToLower( BoolString );
+	envString::ToLower( BoolString );
 	o_Val = ( BoolString == "true" );
 }
 
@@ -334,10 +339,10 @@ void chXMLReader::Read(std::string& o_String, int i_Length)
 }
 
 //----------------------------------------------------------------------------
-//	ReadItString reads a string as UTF-8, which is how text and XML
+//	ReadLegacyWideString reads a string as UTF-8, which is how text and XML
 //	files store every string: the same as Read.
 //----------------------------------------------------------------------------
-void chXMLReader::ReadItString(std::string& o_Val)
+void chXMLReader::ReadLegacyWideString(std::string& o_Val)
 {
 	Read(o_Val);
 }

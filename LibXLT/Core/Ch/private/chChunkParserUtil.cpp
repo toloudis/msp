@@ -9,7 +9,6 @@
 #include "Core/Ch/chChunkParserUtil.hpp"
 
 #include "Core/Ch/chReader.hpp"
-#include "Core/It/itStringUtil.hpp"
 
 
 //============================================================================
@@ -160,17 +159,9 @@ void Read( chReader& i_Reader, std::string& o_Name )
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-void ReadItString( chReader& i_Reader, std::string& o_Name )
+void ReadLegacyWideString( chReader& i_Reader, std::string& o_Name )
 {
-	i_Reader.ReadItString(o_Name);
-}
-
-//------------------------------------------------------------------------
-//	Temporary
-//------------------------------------------------------------------------
-void ReadItString( chReader& i_Reader, itString& o_Name )
-{
-	i_Reader.ReadItString(o_Name);
+	i_Reader.ReadLegacyWideString(o_Name);
 }
 
 //------------------------------------------------------------------------
@@ -187,13 +178,6 @@ void Read( chReader& i_Reader, maMatrix4x4& o_Matrix )
 			o_Matrix(row, column) = val;
 		}
 	}
-}
-
-//------------------------------------------------------------------------
-//------------------------------------------------------------------------
-void Write( chWriter& i_Writer, const itString& i_Name, chDefs::Name i_ChunkName )
-{
-	Write(i_Writer, std::string(i_Name), i_ChunkName);
 }
 
 //------------------------------------------------------------------------
@@ -328,13 +312,6 @@ void Write(chWriter& i_Writer, const maGradient& i_Gradient )
 void Write(chWriter& i_Writer,const std::string& i_Name)
 {
 	i_Writer.Write(i_Name);
-}
-
-//------------------------------------------------------------------------
-//------------------------------------------------------------------------
-void Write( chWriter& i_Writer, const itString& i_Name )
-{
-	Write(i_Writer, std::string(i_Name));
 }
 
 //------------------------------------------------------------------------

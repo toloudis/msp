@@ -7,6 +7,9 @@
 **	Copyright(C) 2006 - All Rights Reserved
 \****************************************************************************/
 #include "Systems/Common/GUI/cmmAddDriverOperation.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Features/Channels/chnlDialogUtil.hpp"
 #include "Support/tmln/tmlnCreator.hpp"

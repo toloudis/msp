@@ -12,7 +12,9 @@
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/ma/maConstants.hpp"
 #include "Core/ma/maRotation.hpp"
 #include "Core/ma/maFunctions.hpp"
@@ -1707,7 +1709,7 @@ void rmanExport::ExportReflectionMaps(rmanGlobalData & io_GlobalData)
 
 			reflectionRib << endl;
 
-			itStringUtil::StripExtension(itFileName);
+			envString::StripExtension(itFileName);
 			itFileName += std::string("_WORLD.rib");
 
 			std::string worldPath = itFileName;
@@ -1780,7 +1782,7 @@ void rmanExport::ExportReflectionMaps(rmanGlobalData & io_GlobalData)
 
 				reflectionRib << endl;
 
-				itStringUtil::StripExtension(itFileName);
+				envString::StripExtension(itFileName);
 				itFileName += std::string("_WORLD.rib");
 
 				std::string worldPath = itFileName;

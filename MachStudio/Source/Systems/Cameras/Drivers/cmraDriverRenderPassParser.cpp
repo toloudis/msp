@@ -39,7 +39,7 @@ namespace
 		// texture
 		std::string savefilename;
 		fsLocator texture_locator;
-		chChunkParserUtil::ReadItString( i_Reader, savefilename );
+		chChunkParserUtil::ReadLegacyWideString( i_Reader, savefilename );
 		fsFileUtil::UnicodeStringToLocator( savefilename, texture_locator );
 		prtyTextureFileData val;
 		val = o_Info.m_FirstTextureFileName.GetFullValue();

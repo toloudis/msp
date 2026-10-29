@@ -19,7 +19,6 @@
 #include "Support/gsup/gsupTreeCtrlUtil.hpp"
 
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Tool/ctxm/ctxmContextMenu.hpp"
 #include "Tool/doc/docSingleDocumentMgr.hpp"
 #include "Tool/gui/guiMenuMgr.hpp"

@@ -8,6 +8,9 @@
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
 #include "Tool/doc/docSingleTypeMgr.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Core/Fs/fsFileUtil.hpp"
 #include "Core/Gf/gfPaths.hpp"

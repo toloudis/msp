@@ -64,9 +64,6 @@
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
 #endif
-#ifndef IT_STRINGUTIL_HPP
-#include "Core/it/itStringUtil.hpp"
-#endif
 
 //	DX11
 #ifndef EFF_SHADERBASEDX11_HPP

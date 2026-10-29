@@ -9,7 +9,6 @@
 \****************************************************************************/
 #include "pqtFileName_TextBox.hpp"
 
-#include "Core/it/itStringUtil.hpp"
 
 
 #ifdef USE_QT

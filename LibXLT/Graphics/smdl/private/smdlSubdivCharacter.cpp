@@ -17,7 +17,6 @@
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/env/envThreadGroup.hpp"
-#include "Core/It/itStringUtil.hpp"
 #include "Core/ma/maFunctions.hpp"
 #include "Core/ma/maSTLHelpers.hpp"
 #include "Graphics/g3d/g3dFragment.hpp"

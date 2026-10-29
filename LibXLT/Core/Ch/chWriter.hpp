@@ -19,9 +19,6 @@
 #ifndef ENV_APPVERSION_HPP
 #include "Core/env/envAppVersion.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
 
 #include <string>
 
@@ -104,17 +101,10 @@ class chWriter
 		// This just turns around and calls this->Write(i_String.c_str() );
 		//	Every string is written this way, as UTF-8: binary files (PWFB)
 		//	null-terminated, text and XML files as a token. Readers read it
-		//	back with Read, or with ReadItString if it was an itString before
-		//	(binary files written before PWFB stored those as UTF-16).
+		//	back with Read, or with ReadLegacyWideString for a field that held
+		//	an itString in binary files written before PWFB (stored as UTF-16).
 		//--------------------------------------------------------------------
 		inline void Write(const std::string& i_String);
-
-		//--------------------------------------------------------------------
-		//	Temporary, while callers still hold itStrings
-		//	(docs/plans/2026-10-28-itstring-to-std-string.md; removed in
-		//	step 4): writes the string as UTF-8, as Write(const std::string&).
-		//--------------------------------------------------------------------
-		void Write( const itString& i_String );
 
 		//--------------------------------------------------------------------
 		//	Write the envAppVersion structure

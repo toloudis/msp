@@ -14,7 +14,6 @@
 #include "Support/tmln/tmlnChannelTextureFileName.hpp"
 
 //#include "Core/fs/fsResourceTracker.hpp"
-#include "Core/It/itStringUtil.hpp"
 #include "Core/ma/maFunctions.hpp"
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
 #include "Core/prty/prtyFileChooserUIInfo.hpp"

@@ -15,7 +15,6 @@
 #include "Core/fs/fsFileX.hpp"
 #include "Core/fs/fsResourceFinderDir.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Graphics/an/an2StateAnimation.hpp"
 #include "Graphics/an/anKeyAnimation.hpp"
 #include "Graphics/eff/effPhongData.hpp"

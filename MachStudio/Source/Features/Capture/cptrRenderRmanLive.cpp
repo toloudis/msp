@@ -13,7 +13,9 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/gf/gfFileBin.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #include "Features/Capture/cptrRenderRmanLiveData.hpp"
 #include "Features/Capture/cptrRenderUtil.hpp"
@@ -176,7 +178,7 @@ void cptrRenderRmanLive::Start(cptrRenderRmanLiveData i_Data)
 	camCamera cam = cam3dMgr::GetCamera();
 
 	std::string sceneName = docSingleDocumentMgr::GetFilename().GetLastName();
-	itStringUtil::StripExtension(sceneName);
+	envString::StripExtension(sceneName);
 	std::string sceneNameWithExt = sceneName;
 	sceneNameWithExt += std::string(".rib");
 
@@ -197,9 +199,9 @@ void cptrRenderRmanLive::Start(cptrRenderRmanLiveData i_Data)
 	rootLoc.Pop();
 
 	std::string currFrameNameIt = fullSceneLoc.GetLastName();
-	itStringUtil::StripExtension(currFrameNameIt);
+	envString::StripExtension(currFrameNameIt);
 	std::string currFrameName = currFrameNameIt;
-	//std::string sceneName = itStringUtil::GetStdString(sceneName);
+	//std::string sceneName = sceneName;
 
 	std::string engine = "prman";
 	std::string renderer = "";

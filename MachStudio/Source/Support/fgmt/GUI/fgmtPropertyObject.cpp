@@ -17,7 +17,6 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsResourceFinderDir.hpp"
 #include "Core/fs/fsResourceFinderJoin.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
 #include "Core/prty/prtyComboBoxUIInfo.hpp"
 #include "Core/prty/prtyNumericUpDownUIInfo.hpp"
@@ -325,7 +324,7 @@ void fgmtPropertyObject::UpdateBakeFlag(prtyProperty *i_pProperty, bool i_bDirty
 //	// look at both aotexture and aousertexture
 //	// usertexture overrides ao recalc and aotexture.
 //	itString newName = m_Data.m_AOUserTextureName.GetValue(); 
-//	std::string sNewName = itStringUtil::GetStdString(newName);
+//	std::string sNewName = newName;
 //	std::string sOldName = m_Fragments->GetOcclusionData()->m_TextureName;
 //	if (sNewName != sOldName)
 //	{

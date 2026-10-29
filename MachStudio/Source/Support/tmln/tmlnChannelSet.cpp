@@ -9,7 +9,9 @@
 \****************************************************************************/
 #include "Support/tmln/tmlnChannelSet.hpp"
 
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #include "Support/tmln/tmlnChannel.hpp"
 #include "Support/tmln/tmlnDriver.hpp"
@@ -172,7 +174,7 @@ int tmlnChannelSet::GetChannel(const char *i_Name) const
 	int num = m_Channels.size();
 	for (int i=0; i<num; i++)
 	{
-		if (itStringUtil::CompareNoCase(m_Channels[i]->GetName(), i_Name) == 0)
+		if (envString::CompareNoCase(m_Channels[i]->GetName(), i_Name) == 0)
 			return i;
 	}
 	return -1;

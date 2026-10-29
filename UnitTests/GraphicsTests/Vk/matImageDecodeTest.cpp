@@ -27,9 +27,6 @@
 #include "Core/Fs/fsLocator.hpp"
 #endif
 #include <string>
-#ifndef IT_STRINGUTIL_HPP
-#include "Core/It/itStringUtil.hpp"
-#endif
 
 #include <gtest/gtest.h>
 #include <crtdbg.h>

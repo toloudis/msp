@@ -14,7 +14,6 @@
 #include "Systems/Billboard/Undo/billOperations.hpp"
 
 #include "Core/fs/fsFileUtil.hpp"
-//#include "Core/it/itStringUtil.hpp"
 #include "Tool/gui/guiMainWindow.hpp"
 //#include "Tool/gui/guiMessageBox.hpp"
 
@@ -39,8 +38,8 @@ billDialogInterest::billDialogInterest()
 void billDialogInterest::AddObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 	//std::string dir1, dir2;
-	//dir1 = itStringUtil::GetStdString(i_Path.GetName(0));
-	//dir2 = itStringUtil::GetStdString(i_Path.GetName(1));
+	//dir1 = i_Path.GetName(0);
+	//dir2 = i_Path.GetName(1);
 	//DBG_LOG2("billDialogInterest %s-%s", dir1.c_str(), dir2.c_str());
 
 	try

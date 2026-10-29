@@ -7,6 +7,9 @@
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
 #include "Features/Channels/chnlDialogUtil.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Features/Channels/chnlOperations.hpp"
 #include "Features/Channels/chnlSnapUtil.hpp"

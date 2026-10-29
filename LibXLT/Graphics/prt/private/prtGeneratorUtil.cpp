@@ -128,10 +128,10 @@ namespace
 					i_Reader.Read(scale_mode);
 					i_Reader.Read(uva_mode);
 					i_Reader.Read(render_mode);
-					i_Reader.ReadItString(texture_name);
+					i_Reader.ReadLegacyWideString(texture_name);
 					i_Reader.Read(num_alpha_keys);
 
-					//	ReadItString gives the name without its terminating NULL
+					//	ReadLegacyWideString gives the name without its terminating NULL
 					fsLocator texture_locator;
 					texture_locator.Push(texture_name);
 
@@ -227,9 +227,9 @@ namespace
 				else if ( name == c_TDPP )
 				{
 					std::string geometry_name;
-					i_Reader.ReadItString(geometry_name);
+					i_Reader.ReadLegacyWideString(geometry_name);
 
-					//	ReadItString gives the name without its terminating NULL
+					//	ReadLegacyWideString gives the name without its terminating NULL
 					fsLocator geometry_locator;
 					geometry_locator.Push(geometry_name);
 					o_Template.SetGeometryLocator(geometry_locator);

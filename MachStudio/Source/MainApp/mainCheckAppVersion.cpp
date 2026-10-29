@@ -8,6 +8,9 @@
 \****************************************************************************/
 #include "stdafx.h"
 #include "MainApp/mainCheckAppVersion.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 #include "MainApp/mainConstants.hpp"
 
 #include "Core/fs/fsFileUtil.hpp"

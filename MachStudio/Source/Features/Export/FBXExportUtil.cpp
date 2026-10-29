@@ -13,7 +13,6 @@
 #include "Core/fs/fsResourceTracker.hpp"
 #include "Core/fs/fsFileStream.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/it/itStringUtil.hpp"
 
 #include "Support/cmpr/cmprCompressUtil.hpp"
 #include "ImportExport/fbx/export/fbxExportData.hpp"

@@ -9,7 +9,6 @@
 
 #include "Core/dbg/dbgMsg.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/It/itStringUtil.hpp"
 #include "Graphics/Eff/effPhongData.hpp"
 #include "Graphics/Mat/matTexturePathUtil.hpp"
 #include "Graphics/mdl/mdlMatInfo.hpp"
@@ -167,7 +166,7 @@ namespace fbxMaterialImport
 
 				// Get just the filename from the full path
 				//itString tex_filename = tex_loc.GetLastName();
-				//phong_data->m_NameDiffuse = itStringUtil::GetStdString(tex_filename);
+				//phong_data->m_NameDiffuse = tex_filename;
 				//DBG_LOG("  Material Texture: " << phong_data->m_NameDiffuse);
 
 				// Resolve single filenames and relative paths here:

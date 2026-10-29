@@ -68,7 +68,9 @@
 #include "Core/Env/envThread.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Graphics/g2d/g2dExceptionX.hpp"
 #include "Graphics/g2d/g2dFontUtil.hpp"
 #include "Graphics/g2d/g2dSystem.hpp"
@@ -1053,7 +1055,7 @@ void cptrModeRender::EndStateInitCaptures()
 	data.m_CurrentSceneFilename.SetValue( filename );
 	data.m_RenderPosScene.SetValue( data.m_CurrentSceneFilename.GetValue() );		// for saving render position
 	std::string sfname = data.m_CurrentSceneFilename.GetValue();
-	itStringUtil::StripExtension(sfname);
+	envString::StripExtension(sfname);
 	data.m_CurrentSceneFilename.SetValue(sfname);
 
 	cptrRenderStatsDataUtil::StartScene( sfname );
@@ -1255,7 +1257,7 @@ void cptrModeRender::OnStateBeginCapture()
 				cam_name += m_cCurrentRenderDriverLetter;
 
 				//	stats: start the render block
-				//cptrRenderStatsDataUtil::StartCameraRenderBlock( itStringUtil::GetStdString(cam_name) );
+				//cptrRenderStatsDataUtil::StartCameraRenderBlock( cam_name );
 			}
 
 			if ( data.m_bUseCameraNameInFilename.GetValue() )
@@ -1914,14 +1916,14 @@ void cptrModeRender::do_titlecard_render()
 	const int c_YLOC_INC = 30;
 	float fps = tmlnTimeLine::GetFPS();
 	//float mintime = tmlnTimeLine::GetMinimum();
-	//::sprintf(buffer,"Scene: %s", itStringUtil::GetStdString(data.m_CurrentSceneFilename.GetValue()).c_str() );
+	//::sprintf(buffer,"Scene: %s", data.m_CurrentSceneFilename.GetValue().c_str() );
 	std::ostringstream oss;
 	oss <<"Scene: "<<data.m_CurrentSceneFilename.GetValue();
 	buffer = oss.str();
 	text = buffer.c_str();
 	m_pWindow->DrawText(c_XLOC,  c_YLOC+c_YLOC_INC*0, font, text, color);
 
-	//::sprintf(buffer,"Camera: %s", itStringUtil::GetStdString(data.m_CurrentCamera.GetValue()).c_str() );
+	//::sprintf(buffer,"Camera: %s", data.m_CurrentCamera.GetValue().c_str() );
 	oss <<"Camera: "<<data.m_CurrentCamera.GetValue();
 	buffer = oss.str();
 	text = buffer.c_str();

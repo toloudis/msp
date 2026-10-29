@@ -8,7 +8,9 @@
 \****************************************************************************/
 #include "Systems/Character/Expressions/chtrExpressionDriverCreator.hpp"
 
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #include "Drivers/Float/tmlnDriverFloat.hpp"
 #include "Drivers/Float/tmlnDriverFloatInfo.hpp"
@@ -70,7 +72,7 @@ tmlnDriver* chtrExpressionDriverCreator::CreateDriverByName(	const char* i_Drive
 	chtrScriptObject* chtr_obj = dynamic_cast<chtrScriptObject*>(i_pObject);
 	if (!chtr_obj) return NULL;
 
-	if (itStringUtil::StartsWithNoCase(i_DriverName, "Expression "))
+	if (envString::StartsWithNoCase(i_DriverName, "Expression "))
 	{
 		std::string channel_name = i_DriverName + ::strlen("Expression ");
 		tmlnChannelFloat *channel = chtr_obj->GetExpressionChannel(channel_name);

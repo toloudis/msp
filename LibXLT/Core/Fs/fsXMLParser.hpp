@@ -65,7 +65,6 @@ public:
 	//		maPoint3d
 	//		maMatrix4x4
 	//		maFloatRGBA
-	//		itString
 	//		fsLocator
 	//		nameString
 	//------------------------------------------------------------------------

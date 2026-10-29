@@ -10,7 +10,9 @@
 #include "Core/dbg/dbgMsg.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsResourceTracker.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #include "Core/fs/private/fsFileNotifyMgr.hpp"
 #include <string>
@@ -336,7 +338,7 @@ namespace fsResourceTracker
 			//DBG_TRACE("            " << strpath2.c_str());
 
 			//
-			if (itStringUtil::Equal(i_Filename, m_ResourceData.m_Resources[i].GetFilePath().GetLastName()))
+			if (envString::EqualNoCase(i_Filename, m_ResourceData.m_Resources[i].GetFilePath().GetLastName()))
 			{
 				//DBG_TRACE("----MATCH!----");
 				return i;
@@ -387,10 +389,10 @@ namespace fsResourceTracker
 			//
 			std::string str1, str2;
 			str1 = i_Filename;
-			itStringUtil::StripExtension(str1);
+			envString::StripExtension(str1);
 			str2 = m_ResourceData.m_Resources[i].GetFilePath().GetLastName();
-			itStringUtil::StripExtension(str2);
-			if (itStringUtil::Equal(str1,str2))
+			envString::StripExtension(str2);
+			if (envString::EqualNoCase(str1,str2))
 			{
 				//DBG_TRACE("----MATCH!---- base filename");
 				return i;
@@ -503,7 +505,7 @@ namespace fsResourceTracker
 
 				//	DEBUG only
 				//std::string strpath;
-				//strpath = itStringUtil::GetStdString( i_FileName );
+				//strpath = i_FileName;
 				//DBG_TRACE("    0B2. " << strpath.c_str());
 			}
 		}

@@ -7,6 +7,9 @@
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
 #include "Support/pyth/GUI/pythDialogUtil.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Support/pyth/pythLog.hpp"
 #include "Support/pyth/pythUtil.hpp"

@@ -40,7 +40,7 @@ namespace
 		// split into locator
 		std::string savefilename;
 		fsLocator driver_loc;
-		chChunkParserUtil::ReadItString( i_Reader, savefilename );
+		chChunkParserUtil::ReadLegacyWideString( i_Reader, savefilename );
 		fsFileUtil::UnicodeStringToLocator( savefilename, driver_loc );
 		prtyTextureFileData val = o_Driver.m_Value.GetFullValue();
 		val.m_TextureLocator = driver_loc;

@@ -12,7 +12,9 @@
 #include "Core/dbg/dbgMsg.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsLocator.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Tool/gui/guiMessageBox.hpp"
 #include <string>
 #include <png/zlib-1.2.5\contrib\minizip\zip.h>
@@ -56,8 +58,8 @@ namespace cmprZipUtil
 			fsLocator new_dest = io_DestLocator;
 			std::string dest_file = io_DestLocator.GetLastName();
 			std::string ext;
-			itStringUtil::GetExtension(dest_file, ext);
-			itStringUtil::StripExtension(dest_file);
+			envString::GetExtension(dest_file, ext);
+			envString::StripExtension(dest_file);
 			
 			if(!(dest_file.find(std::string("_part")) != std::string::npos))
 			{

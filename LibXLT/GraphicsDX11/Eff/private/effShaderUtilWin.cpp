@@ -13,7 +13,6 @@
 
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsResourceTracker.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
 #ifndef ENV_STRING_HPP
 #include "Core/Env/envString.hpp"

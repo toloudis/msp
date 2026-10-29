@@ -6,6 +6,9 @@
 **	Extra Large Technology
 \****************************************************************************/
 #include "Core/ch/chMemWriter.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Core/ch/chExceptionX.hpp"
 

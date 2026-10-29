@@ -7,6 +7,9 @@
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "Core/gf/gfFileXML.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Core/gf/gfFileTranslationMgr.hpp"
 #include "Core/gf/gfFileX.hpp"

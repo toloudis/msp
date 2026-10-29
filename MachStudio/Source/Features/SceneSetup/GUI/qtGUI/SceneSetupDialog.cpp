@@ -15,7 +15,6 @@
 
 #include "Core/Fs/fsFileEnum.hpp"
 #include "Core/Fs/fsFileUtil.hpp"
-#include "Core/It/itStringUtil.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
 #include "Tool/gui/guiSingleDocHandler.hpp"
 #include "ToolUIQt/tqc/tqcDirPicker.hpp"

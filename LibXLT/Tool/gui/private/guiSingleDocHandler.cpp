@@ -7,6 +7,9 @@
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
 #include "Tool/gui/guiSingleDocHandler.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Core/app/appTime.hpp"
 #include "Core/ch/chReader.hpp"
@@ -15,7 +18,6 @@
 #include "Core/fs/fsResourceTracker.hpp"
 #include "Core/fs/private/fsFileNotifyMgr.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/It/itStringUtil.hpp"
 #include "Graphics/g2d/g2dExceptionX.hpp"
 #include "Graphics/mat/matExceptionX.hpp"
 #include "Tool/doc/docSingleDocumentMgr.hpp"

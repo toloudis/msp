@@ -9,7 +9,6 @@
 #include "ImportExport/fbx/export/fbxExport.hpp"
 
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/ma/maConstants.hpp"
 #include "Graphics/g3d/g3dSceneNode.hpp"
 

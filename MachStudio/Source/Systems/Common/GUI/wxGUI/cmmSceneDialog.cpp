@@ -22,7 +22,6 @@
 #include "Core/App/appTime.hpp"
 #include "Core/Env/envSTLHelpers.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/undo/undoUndoMgr.hpp"
 #include "Tool/doc/docSingleDocumentMgr.hpp"
 #include "Tool/gui/guiMenuMgr.hpp"

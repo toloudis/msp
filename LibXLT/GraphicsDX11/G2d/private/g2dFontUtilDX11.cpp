@@ -10,7 +10,9 @@
 
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsLocator.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Graphics/g2d/g2dExceptionX.hpp"
 #include "Graphics/g2d/g2dResetHandler.hpp"
 #include "Graphics/g3d/g3dSceneNode.hpp"

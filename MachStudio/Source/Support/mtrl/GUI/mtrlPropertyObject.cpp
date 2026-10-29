@@ -18,7 +18,6 @@
 
 #include "Core/Fs/fsFileUtil.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/It/itStringUtil.hpp"
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
 #include "Core/prty/prtyComboBoxUIInfo.hpp"
 #include "Core/prty/prtyFilePathComboBoxUIInfo.hpp"

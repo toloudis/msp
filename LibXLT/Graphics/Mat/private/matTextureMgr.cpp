@@ -17,7 +17,9 @@
 #include "Core/fs/fsResourceFinder.hpp"
 #include "Core/fs/fsResourceTracker.hpp"
 #include "Core/gf/gfFileBin.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Graphics/g2d/g2dExceptionX.hpp"
 #include "Graphics/g2d/g2dImage.hpp"
 #include "Graphics/g2d/g2dImageSaveUtil.hpp"
@@ -385,7 +387,7 @@ matTexture* LoadTexture(const fsLocator& i_Directory, const std::string& i_Name,
 	//we want no extension information to remain in the name of the texture
 	std::string tex_name(i_Name);
 	//tex_name.StripExtension();
-	itStringUtil::ToLower(tex_name);
+	envString::ToLower(tex_name);
 
 	// Note:  fsLocators use itStrings which are case sensitive, unlike filenames
 	// themselves.  Force all the names in the list (unexpanded) to lower case
@@ -397,7 +399,7 @@ matTexture* LoadTexture(const fsLocator& i_Directory, const std::string& i_Name,
 	for ( i=0; i<count; ++i )
 	{
 		temp = tex_locator.GetName(i);
-		tex_locator.ReplaceName( itStringUtil::ToLower(temp), i );
+		tex_locator.ReplaceName( envString::ToLower(temp), i );
 	}
 	tex_directory = tex_locator;
 	tex_locator.Push(tex_name);
@@ -439,7 +441,7 @@ matTexture* LoadTexture(const fsLocator& i_Directory, const std::string& i_Name,
 					{
 						uva_name = names[i];
 						//uva_name.StripExtension();
-						itStringUtil::ToLower(uva_name);
+						envString::ToLower(uva_name);
 						uva_locator.Push(uva_name);
 						matTexture *new_texture_page = l_pImpl->LoadTexture(tex_directory,
 																			uva_name,
@@ -770,7 +772,7 @@ void ReloadTexture( const fsLocator& i_Locator, bool i_bIsMipMap )
 	for ( int i = 0; i < count; ++i )
 	{
 		temp = tex_locator.GetName(i);
-		tex_locator.ReplaceName( itStringUtil::ToLower(temp), i );
+		tex_locator.ReplaceName( envString::ToLower(temp), i );
 	}
 
 	std::map<fsLocator, TextureInfo>::iterator it = l_Textures.end();

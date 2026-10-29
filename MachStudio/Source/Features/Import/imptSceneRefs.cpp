@@ -113,9 +113,6 @@
 #ifndef FS_FILEUTIL_HPP
 #include "Core/fs/fsFileUtil.hpp"
 #endif
-#ifndef IT_STRINGUTIL_HPP
-#include "Core/it/itStringUtil.hpp"
-#endif
 #ifndef UNDO_UNDOINTEREST_HPP
 #include "Core/undo/undoUndoInterest.hpp"
 #endif
@@ -220,7 +217,7 @@ namespace imptSceneRefs
 				cmmSourceState* pState = source_state(object, pPick);
 				if (!pState || !pPick || !sel3dMgr::IsSelected(pPick))
 					continue;
-				const std::string file_name = itStringUtil::GetStdString(object.m_File.GetLastName());
+				const std::string file_name = object.m_File.GetLastName();
 				pState->SetSourceState(GetState(object) == iscnRefLedger::e_Reference
 									   ? "Reference: " + file_name
 									   : "Copy (edited): " + file_name);
@@ -276,7 +273,7 @@ namespace imptSceneRefs
 						continue;
 					names.push_back(object.m_Name);
 					files.insert(FileKey(object.m_File));
-					file_name = itStringUtil::GetStdString(object.m_File.GetLastName());
+					file_name = object.m_File.GetLastName();
 				}
 				if (names.empty())
 					return;
@@ -498,7 +495,7 @@ namespace imptSceneRefs
 			const std::string& key = file.first;
 			const std::vector<Sourced>& objects = file.second;
 			const fsLocator& locator = objects.front().m_File;
-			const std::string file_name = itStringUtil::GetStdString(locator.GetLastName());
+			const std::string file_name = locator.GetLastName();
 			auto saved_stamp = i_Saved.m_Files.find(key);
 			const iscnFileStamp stamp = iscnStampFile(locator);
 
@@ -586,7 +583,7 @@ namespace imptSceneRefs
 			return;
 
 		const std::string block_name = scenes.size() == 1
-			? "Revert to " + itStringUtil::GetStdString(files[scenes.begin()->first].front().m_File.GetLastName())
+			? "Revert to " + files[scenes.begin()->first].front().m_File.GetLastName()
 			: std::string("Revert to Source Files");
 		UndoBlock block(block_name);
 		for (const auto& file : scenes)

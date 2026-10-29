@@ -46,12 +46,12 @@ void read_base_data(chReader& i_Reader,
 	chChunkParserUtil::Read(i_Reader, name);
 	o_Data.m_Name.SetString( name );
 
-	chChunkParserUtil::ReadItString(i_Reader, o_Data.m_Filename);
+	chChunkParserUtil::ReadLegacyWideString(i_Reader, o_Data.m_Filename);
 	chChunkParserUtil::Read(i_Reader, o_Data.m_Position);
 	chChunkParserUtil::Read(i_Reader, o_Data.m_Orientation);
 	chChunkParserUtil::Read(i_Reader, o_Data.m_bEditorVisible);
 
-	//DBG_LOG("base-read filename-" << itStringUtil::GetStdString(o_Data.m_Filename).c_str() );
+	//DBG_LOG("base-read filename-" << o_Data.m_Filename.c_str() );
 	//DBG_LOG3("base-read pos(%6.3f,%6.3f,%6.3f)", o_Data.m_Position.GetX(), o_Data.m_Position.GetY(), o_Data.m_Position.GetZ() );
 }
 
@@ -74,7 +74,7 @@ void write_base_data(chWriter& o_Writer,
 
 	o_Writer.FinishChunk();
 
-	//DBG_LOG("base-write filename-" << itStringUtil::GetStdString(i_Data.m_Filename).c_str() );
+	//DBG_LOG("base-write filename-" << i_Data.m_Filename.c_str() );
 	//DBG_LOG3("base-read pos(%6.3f,%6.3f,%6.3f)", i_Data.m_Position.GetX(), i_Data.m_Position.GetY(), i_Data.m_Position.GetZ() );
 }
 

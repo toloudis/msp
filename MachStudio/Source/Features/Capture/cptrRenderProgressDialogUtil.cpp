@@ -7,6 +7,9 @@
 **	Copyright(C) 2004 - All Rights Reserved
 \****************************************************************************/
 #include "Features/Capture/cptrRenderProgressDialogUtil.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Features/Capture/cptrRenderBatchData.hpp"
 #include "Features/Capture/cptrRenderBatchDataUtil.hpp"

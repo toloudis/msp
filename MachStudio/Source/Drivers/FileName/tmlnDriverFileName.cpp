@@ -11,7 +11,6 @@
 #include "Support/tmln/tmlnChannelFileName.hpp"
 #include "Drivers/FileName/tmlnDriverFileNameInfo.hpp"
 
-#include "Core/It/itStringUtil.hpp"
 #include "Core/prty/prtyFileChooserUIInfo.hpp"
 
 

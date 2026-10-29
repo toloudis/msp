@@ -20,7 +20,9 @@
 #include "Core/gf/gfFileBin.hpp"
 #include "Core/gf/gfFileTxt.hpp"
 #include "Core/gf/gfFileTranslationMgr.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 //#include "Core/ma/maFloatRGBA.hpp"
 #include "Core/ma/maFunctions.hpp"
 #include "Graphics/g2d/g2dExceptionX.hpp"
@@ -1103,8 +1105,8 @@ matTexture* matTextureMgrDX11::LoadTexture(const fsLocator& i_Directory,
 	tex_locator.Push(i_Name);
 
 	std::string extension;
-	itStringUtil::GetExtension(i_Name, extension);
-	itStringUtil::ToLower(extension);
+	envString::GetExtension(i_Name, extension);
+	envString::ToLower(extension);
 
 	std::string fnamestr;
 	fsFileUtil::LocatorToANSIFilename( tex_locator, fnamestr );	//debugging only

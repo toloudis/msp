@@ -72,9 +72,6 @@
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
 #endif
-#ifndef IT_STRINGUTIL_HPP
-#include "Core/it/itStringUtil.hpp"
-#endif
 #ifndef NAME_MGR_HPP
 #include "Core/name/nameMgr.hpp"
 #endif
@@ -179,7 +176,7 @@ namespace imptSceneAppend
 	{
 		if (iscnSceneImport::Read(i_File, imptSceneBuild::SceneSettings(), o_Scene))
 			return true;
-		const std::string msg = "Could not load the scene file " + itStringUtil::GetStdString(i_File.GetLastName());
+		const std::string msg = "Could not load the scene file " + i_File.GetLastName();
 		DBG_ERROR(msg);
 		guiMessageBox::Show(msg.c_str(), "Geometry Load Error");
 		return false;
@@ -207,7 +204,7 @@ namespace imptSceneAppend
 
 		DBG_TRACE("Texture load diagnostics: importing " << i_File);
 		matTextureMgr::LoadDiagnostics texture_diagnostics;
-		const std::string file_name = itStringUtil::GetStdString(i_File.GetLastName());
+		const std::string file_name = i_File.GetLastName();
 
 		UndoBlock block("Add " + file_name);
 		// Rebuild trees and property controls once, using the final selection.

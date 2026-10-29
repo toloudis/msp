@@ -8,7 +8,6 @@
 
 #include "Core/Gf/gfDirectoryCategories.hpp"
 #include "Core/Fs/fsFileUtil.hpp"
-#include "Core/It/itStringUtil.hpp"
 
 #include "Tool/gui/guiMessageBox.hpp"
 

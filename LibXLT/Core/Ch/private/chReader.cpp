@@ -22,16 +22,6 @@ chReader::~chReader()
 {
 }
 
-//--------------------------------------------------------------------
-//	Temporary: ReadItString into an itString (see the .hpp)
-//--------------------------------------------------------------------
-void chReader::ReadItString(itString& o_Val)
-{
-	std::string utf8;
-	ReadItString(utf8);
-	o_Val = utf8;
-}
-
 //------------------------------------------------------------------------
 //	A flag that code can set if the file is newer
 //------------------------------------------------------------------------

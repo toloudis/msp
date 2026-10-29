@@ -8,6 +8,9 @@
 \****************************************************************************/
 #include "stdafx.h"
 #include "MainApp/mainInitDocument.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "MainApp/mainConstants.hpp"
 #include "MainApp/Data/mainDocumentInterest.hpp"

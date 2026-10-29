@@ -7,6 +7,9 @@
 **	Copyright(C) 2004 - All Rights Reserved
 \****************************************************************************/
 #include "Features/SceneSetup/GUI/SceneSetupDialogUtil.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #ifdef MSP_GUI_QT
 #include "Features/SceneSetup/GUI/qtGUI/SceneSetupDialog.hpp"

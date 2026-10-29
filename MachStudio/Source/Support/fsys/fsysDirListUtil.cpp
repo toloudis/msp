@@ -15,7 +15,6 @@
 #include "Core/fs/fsLocator.hpp"
 #include "Core/gf/gfFileEnum.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/it/itStringUtil.hpp"
 
 
 namespace

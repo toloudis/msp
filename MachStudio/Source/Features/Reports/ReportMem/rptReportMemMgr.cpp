@@ -7,6 +7,9 @@
 **	Copyright(C) 2006 - All Rights Reserved
 \****************************************************************************/
 #include "Features/Reports/ReportMem/rptReportMemMgr.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Features/Reports/ReportMem/rptReportMemInterest.hpp"
 

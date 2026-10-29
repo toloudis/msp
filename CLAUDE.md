@@ -279,11 +279,11 @@ Platform layer and fundamental services; no graphics.
 | `App` (`app`) | Application object, event loop, char/mouse/flow events and handlers, app modes (`appModeMgr`), sim/real time |
 | `Ch` (`ch`) | Chunked file I/O: binary, text and XML readers/writers and the chunk parser registry; `chMemWriter` writes chunks into memory byte for byte as `chBinWriter` lays them in a file (objects compared by their saved bytes) |
 | `Dbg` (`dbg`) | Asserts, logging, debug message streams, system info |
-| `Env` (`env`) | Platform detection (`envPlatform.hpp`), errors/exceptions, threads, strings, pools, shared assets, package init/cleanup plumbing |
+| `Env` (`env`) | Platform detection (`envPlatform.hpp`), errors/exceptions, threads, pools, shared assets, package init/cleanup plumbing; `envString`: UTF-8 ⇄ UTF-16/wide conversions and the string helpers (case-insensitive compare, starts/ends with, file extensions, numbered file names). Text is UTF-8 `std::string` everywhere; wide strings appear only at Windows calls and in the GUI toolkits |
 | `Fs` (`fs`) | File system: `fsLocator` paths, file streams, resource finders, absolute path resolution, file change notification, resource tracking, AVI files |
 | `Geo` (`geo`) | Geometry: KD-tree, pick rays, ray intersection, twin-edge (half-edge) meshes |
 | `Gf` (`gf`) | Generic file layer (bin/txt/XML file types, translation between versions, standard directories/paths) |
-| `It` (`it`) | Internationalization: locales and localized strings |
+| `It` (`it`) | Internationalization: locale lookup (`itLocales`, `itLocaleUtil`) |
 | `Ma` (`ma`) | Math: vectors, matrices, rotations, planes, boxes, colors, gradients, sampling, random |
 | `Scrty` (`scrty`) | Abstract copy-protection/licensing interface (implemented by `SecuritySoftwareShield`) |
 | `dm` | Finite state machine (`dmFSM`, `dmState`) |

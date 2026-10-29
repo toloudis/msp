@@ -7,12 +7,14 @@
 **	Copyright(C) 2003-10 - All Rights Reserved
 \*********************************************************/
 #include "Core/Fs/fsLocator.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #ifndef ENV_STRING_HPP
 #include "Core/env/envString.hpp"
 #endif
 #include "Core/Fs/fsFileUtil.hpp"	// for debug only
-#include "Core/It/itStringUtil.hpp"
 
 #include <algorithm>
 #include <iterator>
@@ -61,29 +63,6 @@ fsLocator::fsLocator(int i_Index, const std::string& i_Name)
 	m_Names(1, i_Name),
 	m_bUNCPath(false)
 {
-}
-
-//------------------------------------------------------------------------
-//	Temporary itString forms (see the .hpp)
-//------------------------------------------------------------------------
-fsLocator::fsLocator(const itString& i_Name)
-:	fsLocator(std::string(i_Name))
-{
-}
-
-fsLocator::fsLocator(int i_Index, const itString& i_Name)
-:	fsLocator(i_Index, std::string(i_Name))
-{
-}
-
-void fsLocator::Push(const itString& i_Name)
-{
-	Push(std::string(i_Name));
-}
-
-bool fsLocator::Remove(const itString& i_DirName)
-{
-	return Remove(std::string(i_DirName));
 }
 
 //------------------------------------------------------------------------
@@ -148,7 +127,7 @@ void fsLocator::ReplaceLastName(const std::string& i_NewName)
 //------------------------------------------------------------------------
 void fsLocator::ReplaceExtension(const std::string& i_NewExtension)
 {
-	itStringUtil::ReplaceExtension( *(m_Names.rbegin()), i_NewExtension );
+	envString::ReplaceExtension( *(m_Names.rbegin()), i_NewExtension );
 }
 void fsLocator::ReplaceExtension(const char* i_NewExtension)
 {

@@ -114,7 +114,6 @@
     <ClCompile Include="Fs\fsXMLTest.cpp" />
     <ClCompile Include="Geo\geoKDTreeTest.cpp" />
     <ClCompile Include="Gf\gfFileBinTest.cpp" />
-    <ClCompile Include="It\itStringTest.cpp" />
     <ClCompile Include="Ma\maAxisBoxTest.cpp" />
     <ClCompile Include="Ma\maFunctionsTest.cpp" />
     <ClCompile Include="Ma\maMatrixTest.cpp" />

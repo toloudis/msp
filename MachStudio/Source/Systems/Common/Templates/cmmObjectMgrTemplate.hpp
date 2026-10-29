@@ -23,9 +23,6 @@
 #ifndef GEO_PICKRAY_HPP
 #include "Core/geo/geoPickRay.hpp"
 #endif
-#ifndef IT_STRINGUTIL_HPP
-#include "Core/it/itStringUtil.hpp"
-#endif
 #ifndef GUI_MESSAGEBOX_HPP
 #include "Tool/gui/guiMessageBox.hpp"
 #endif

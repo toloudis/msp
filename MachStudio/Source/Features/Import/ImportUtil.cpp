@@ -7,6 +7,9 @@
 **	Copyright(C) 2004 - All Rights Reserved
 \****************************************************************************/
 #include "Features/Import/ImportUtil.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Features/Import/ImportData.hpp"
 #include "Features/Import/ImportDialogUtil.hpp"

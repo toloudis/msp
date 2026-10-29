@@ -74,7 +74,7 @@ void ReadTextureFile(chReader& io_Reader,
 						prtyTextureFileData& o_TextureData )
 {
 	std::string tex_filename;
-	chChunkParserUtil::ReadItString( io_Reader, tex_filename );
+	chChunkParserUtil::ReadLegacyWideString( io_Reader, tex_filename );
 	fsFileUtil::UnicodeStringToLocator( tex_filename, o_TextureData.m_TextureLocator);
 }
 
@@ -104,7 +104,7 @@ void ReadTexturePaint(chReader& io_Reader,
 {
 	//**Currently paint has no special parameters, so just read the texture location
 	std::string tex_filename;
-	chChunkParserUtil::ReadItString( io_Reader, tex_filename );
+	chChunkParserUtil::ReadLegacyWideString( io_Reader, tex_filename );
 	fsFileUtil::UnicodeStringToLocator( tex_filename, o_TextureData.m_TextureLocator);
 }
 

@@ -17,9 +17,6 @@
 #endif
 #define FS_LOCATOR_HPP
 
-#ifndef IT_STRING_HPP
-#include "Core/It/itString.hpp"
-#endif
 
 #include <ostream>
 #include <string>
@@ -42,17 +39,6 @@ class fsLocator
 		fsLocator(const std::string& i_Name);
 		// This version sets the index and pushes the given name
 		fsLocator(int i_Index, const std::string& i_Name);
-
-		//------------------------------------------------------------------------
-		//	Temporary itString forms of the calls that have an fsLocator
-		//	overload too, where an itString would otherwise be ambiguous
-		//	(docs/plans/2026-10-28-itstring-to-std-string.md; removed in
-		//	step 4 with itString)
-		//------------------------------------------------------------------------
-		fsLocator(const itString& i_Name);
-		fsLocator(int i_Index, const itString& i_Name);
-		void Push(const itString& i_Name);
-		bool Remove(const itString& i_DirName);
 
 		//------------------------------------------------------------------------
 		//	Destructor

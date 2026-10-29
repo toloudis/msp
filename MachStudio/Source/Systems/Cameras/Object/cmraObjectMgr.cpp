@@ -17,7 +17,6 @@
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/geo/geoPickRay.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/name/nameMgr.hpp"
 #include "Tool/pick3d/pick3dPickList.hpp"
 #include "Tool/sel3d/sel3dMgr.hpp"

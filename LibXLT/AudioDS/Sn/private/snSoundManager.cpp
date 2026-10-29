@@ -22,7 +22,6 @@
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/ma/maRotation.hpp"
 #include "AudioDS/sn/snExceptionX.hpp"
 #include "AudioDS/sn/snSoundJob.hpp"

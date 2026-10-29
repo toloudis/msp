@@ -13,7 +13,6 @@
 #include "Core/ch/chExceptionX.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/ch/chChunkParserUtil.hpp"
 
 

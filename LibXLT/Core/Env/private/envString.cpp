@@ -9,6 +9,12 @@
 #include "Core/env/envString.hpp"
 #include "Core/env/private/envStringPAC.hpp"
 
+#include <algorithm>
+#include <cctype>
+#include <cstdlib>
+#include <iomanip>
+#include <sstream>
+
 //#include <vector>
 //#include <stdarg.h>
 //#include <stdio.h>
@@ -233,5 +239,145 @@ namespace envString
 				return false;
 		}
 		return true;
+	}
+
+	//------------------------------------------------------------------------
+	// Case-insensitive comparisons
+	//------------------------------------------------------------------------
+	int CompareNoCase(const std::string &i_String1, const std::string &i_String2)
+	{
+		const size_t count = std::min(i_String1.size(), i_String2.size());
+		for( size_t i = 0; i < count; ++i )
+		{
+			const int c1 = std::tolower(static_cast<unsigned char>(i_String1[i]));
+			const int c2 = std::tolower(static_cast<unsigned char>(i_String2[i]));
+			if( c1 != c2 )
+				return c1 - c2;
+		}
+		if( i_String1.size() == i_String2.size() )
+			return 0;
+		return (i_String1.size() < i_String2.size()) ? -1 : 1;
+	}
+
+	bool EqualNoCase(const std::string &i_String1, const std::string &i_String2)
+	{
+		return CompareNoCase(i_String1, i_String2) == 0;
+	}
+
+	bool StartsWithNoCase(const std::string &i_String, const std::string &i_Prefix)
+	{
+		if( i_String.size() < i_Prefix.size() )
+			return false;
+		return CompareNoCase(i_String.substr(0, i_Prefix.size()), i_Prefix) == 0;
+	}
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	const std::string& ToLower(std::string &io_String)
+	{
+		for( char &c : io_String )
+			c = char(std::tolower(static_cast<unsigned char>(c)));
+		return io_String;
+	}
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	void TrimSpaces(std::string &io_String)
+	{
+		const std::string::size_type last = io_String.find_last_not_of(' ');
+		if( last == std::string::npos )
+		{
+			io_String.clear();
+			return;
+		}
+		io_String.erase(last + 1);
+		io_String.erase(0, io_String.find_first_not_of(' '));
+	}
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	int GetInt(const std::string &i_String)
+	{
+		return atoi(i_String.c_str());
+	}
+
+	//------------------------------------------------------------------------
+	// File-name helpers
+	//------------------------------------------------------------------------
+	void StripExtension(std::string &io_String)
+	{
+		const std::string::size_type period = io_String.rfind('.');
+		if( period != std::string::npos )
+			io_String.erase(period);
+	}
+
+	void ReplaceExtension(std::string &io_String, const std::string &i_NewExtension)
+	{
+		StripExtension(io_String);
+		io_String += '.';
+		io_String += i_NewExtension;
+	}
+
+	void GetExtension(const std::string &i_String, std::string &o_Extension)
+	{
+		const std::string::size_type period = i_String.rfind('.');
+		if( period != std::string::npos )
+			o_Extension = i_String.substr(period + 1);
+	}
+
+	void GetBase(const std::string &i_String, std::string &o_Base)
+	{
+		const std::string::size_type period = i_String.rfind('.');
+		if( period != std::string::npos )
+			o_Base = i_String.substr(0, period);
+	}
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	int Breakup_Filename(const std::string &i_Filename,
+						 std::string &o_BaseFilename,
+						 std::string &o_Ext,
+						 int &o_InitialNumber)
+	{
+		if( i_Filename.empty() )
+			return 0;
+
+		GetExtension(i_Filename, o_Ext);
+		GetBase(i_Filename, o_BaseFilename);
+
+		//	the digits at the end of the base name are the number
+		const std::string::size_type last = o_BaseFilename.find_last_not_of("0123456789");
+		const std::string::size_type begin = (last == std::string::npos) ? 0 : last + 1;
+		const int number_digits = int(o_BaseFilename.size() - begin);
+
+		//	a base name that is all digits, or has none, has no number
+		if( last == std::string::npos || number_digits == 0 )
+		{
+			o_InitialNumber = 0;
+		}
+		else
+		{
+			o_InitialNumber = GetInt(o_BaseFilename.substr(begin));
+			o_BaseFilename.resize(begin);
+		}
+
+		return number_digits;
+	}
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	void Build_Filename(const std::string &i_Basename,
+						const std::string &i_Ext,
+						int i_Number,
+						int i_NumDigits,
+						std::string &o_FName)
+	{
+		std::ostringstream num_ss;
+		num_ss << std::setw(i_NumDigits) << std::setfill('0') << i_Number;
+
+		o_FName = i_Basename;
+		o_FName += num_ss.str();
+		o_FName += '.';
+		o_FName += i_Ext;
 	}
 }

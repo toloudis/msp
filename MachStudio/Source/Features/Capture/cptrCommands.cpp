@@ -7,6 +7,9 @@
 **	Copyright(C) 2007- All Rights Reserved
 \****************************************************************************/
 #include "Features/Capture/cptrCommands.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Tool/gui/guiCommandMgr.hpp"
 #include "Tool/cma/cmaCommandSimple.hpp"

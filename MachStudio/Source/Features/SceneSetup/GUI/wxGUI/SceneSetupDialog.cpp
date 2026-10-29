@@ -14,7 +14,6 @@
 
 #include "Core/Fs/fsFileEnum.hpp"
 #include "Core/Fs/fsFileUtil.hpp"
-#include "Core/It/itStringUtil.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
 #include "Tool/gui/guiSingleDocHandler.hpp"
 #ifndef ENV_STRING_HPP
@@ -103,7 +102,7 @@ void SceneSetupDialog::build_project_list()
 		replace_last(project_name, L".mpj", L"");
 		m_listBox_Projects->Append( project_name );
 
-		//DBG_LOG3( "build project list %d of %d (%s)", i, filenum, itStringUtil::GetStdString(name).c_str() );
+		//DBG_LOG3( "build project list %d of %d (%s)", i, filenum, name.c_str() );
 	}
 
 	if (!m_SceneSetupData.m_Data.m_ProjectName.empty())

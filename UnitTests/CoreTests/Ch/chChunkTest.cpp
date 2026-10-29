@@ -113,7 +113,7 @@ void WriteChunk(chWriter& io_Writer, const Chunk& i_Chunk)
 		io_Writer.Write(i_Chunk.m_Data4);
 		io_Writer.Write(i_Chunk.m_Data5);
 		io_Writer.Write(i_Chunk.m_Data6.c_str());
-		// a text string (an itString before), read back with ReadItString
+		// a text string (an itString before), read back with ReadLegacyWideString
 		io_Writer.Write(i_Chunk.m_Data7);
 	}
 
@@ -149,7 +149,7 @@ bool ReadChunk(chReader& io_Reader, Chunk& o_Chunk, int i_Level)
 		io_Reader.Read(o_Chunk.m_Data4);
 		io_Reader.Read(o_Chunk.m_Data5);
 		io_Reader.Read(o_Chunk.m_Data6);
-		io_Reader.ReadItString(o_Chunk.m_Data7);
+		io_Reader.ReadLegacyWideString(o_Chunk.m_Data7);
 	}
 
 	io_Reader.FinishChunk();

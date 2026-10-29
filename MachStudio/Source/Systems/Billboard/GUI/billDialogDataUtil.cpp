@@ -50,7 +50,7 @@ void billDialogDataUtil::RebuildListData(cmmDialogDataList& io_DataList)
 		{
 			io_DataList[startindex+i].m_Filename	= objdata.m_Filename.GetValue().GetLastName();
 			// use filename as description
-			std::string desc = itStringUtil::GetStdString(objdata.m_Filename.GetValue().GetLastName());
+			std::string desc = objdata.m_Filename.GetValue().GetLastName();
 			io_DataList[startindex+i].m_Desc		= desc;
 		}
 		else

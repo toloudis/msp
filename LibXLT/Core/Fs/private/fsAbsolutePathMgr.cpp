@@ -12,7 +12,9 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsLocator.hpp"
 #include "Core/fs/private/fsAbsolutePathMgrPAC.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/Ma/maFunctions.hpp"
 
 #include <map>
@@ -56,7 +58,7 @@ namespace fsAbsolutePathMgr
 			// the given locator.
 			for (int i=0; i<i_Prefix.GetNumNames(); ++i)
 			{
-				if (!itStringUtil::Equal(i_Locator.GetName(i), i_Prefix.GetName(i)))
+				if (!envString::EqualNoCase(i_Locator.GetName(i), i_Prefix.GetName(i)))
 					return false;
 			}
 			return true;
@@ -101,7 +103,7 @@ namespace fsAbsolutePathMgr
 		const int num_to_compare = maFunctions::Lowest(orig_dir.GetNumNames(), local_dir.GetNumNames());
 		for (int i=0; i<num_to_compare; i++)
 		{
-			if (itStringUtil::Equal(orig_dir.GetLastName(), local_dir.GetLastName()))
+			if (envString::EqualNoCase(orig_dir.GetLastName(), local_dir.GetLastName()))
 			{
 				// If the paths match at the end, pop off the parts that are shared
 				// in order to find the stems that are different
@@ -157,7 +159,7 @@ namespace fsAbsolutePathMgr
 		// the local filename has to have some sort of directory to it.
 		if (i_OrigFilename.GetNumNames() > 0 && i_LocalFilename.GetNumNames() > 1)
 		{
-			if (!itStringUtil::Equal(i_OrigFilename.GetLastName(), i_LocalFilename.GetLastName()))
+			if (!envString::EqualNoCase(i_OrigFilename.GetLastName(), i_LocalFilename.GetLastName()))
 			{
 				// Add a mapping for the filename itself so that we can answer
 				// the same mapping again without asking the user

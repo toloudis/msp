@@ -11,7 +11,6 @@
 
 #include "Core/dbg/dbgMsg.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/Fs/fsLocator.hpp"
 #include "Graphics/g2d/g2dImage.hpp"
 #include "Graphics/g2d/g2dOpenEXRDefines.hpp"

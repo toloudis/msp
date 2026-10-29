@@ -17,6 +17,9 @@
 #ifndef ENT_ANIMKEYS_HPP
 #include "Graphics/ent/entAnimKeys.hpp"
 #endif
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
 #endif

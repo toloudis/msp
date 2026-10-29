@@ -8,7 +8,9 @@
 \****************************************************************************/
 #include "Support/mtrl/GUI/mtrlOperations.hpp"
 
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #include "Features/MaterialBrowse/mbrwDialogUtil.hpp"	// unfortunate include
 #include "Support/brsh/brshPaintBrushMgr.hpp"
@@ -348,7 +350,7 @@ namespace mtrlOperations
 		fsLocator new_loc(i_pObject->GetModelLocator());
 		new_loc.Pop();
 		std::string filename = i_pObject->GetModelLocator().GetLastName();
-		itStringUtil::StripExtension(filename);
+		envString::StripExtension(filename);
 		filename += std::string(".gmb");
 		new_loc.Push(filename);
 
@@ -428,7 +430,7 @@ namespace mtrlOperations
 			fsLocator new_loc(i_pObject->GetModelLocator());
 			new_loc.Pop();
 			std::string filename = i_pObject->GetModelLocator().GetLastName();
-			itStringUtil::StripExtension(filename);
+			envString::StripExtension(filename);
 			filename += std::string(".gmb");
 			new_loc.Push(filename);
 			if(fsFileUtil::FileExists(new_loc))
@@ -622,7 +624,7 @@ namespace mtrlOperations
 			// To do directory comparison, need to do case insensitive comparison
 			gfFileTranslationMgr::ExpandLocator(dir);
 			fsFileUtil::LocatorToANSIFilename(dir, dir_str2);
-			if (itStringUtil::CompareNoCase(dir_str1, dir_str2))
+			if (envString::CompareNoCase(dir_str1, dir_str2))
 			//if (i_DestDir != dir)
 			{
 				if (!envSTLHelpers::Contains(textures, i_Textures[i]))

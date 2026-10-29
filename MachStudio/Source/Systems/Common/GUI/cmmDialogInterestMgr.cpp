@@ -7,11 +7,13 @@
 **	Copyright(C) 2006 - All Rights Reserved
 \****************************************************************************/
 #include "Systems/Common/GUI/cmmDialogInterestMgr.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 //	library
 #include "Core/env/envSTLHelpers.hpp"
 #include "Input/in/inDeviceMgr.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/fs/private/fsFileNotifyMgr.hpp"
 #include "Core/fs/fsResourceTracker.hpp"
 

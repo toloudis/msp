@@ -8,7 +8,9 @@
 \****************************************************************************/
 #include "Systems/Cameras/Drivers/cmraDriverCreator.hpp"
 
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #include "Systems/Cameras/GUI/cmraAnimList.hpp"
 #include "Systems/Cameras/Object/cmraScriptObject.hpp"
@@ -601,7 +603,7 @@ tmlnDriver* cmraDriverCreator::CreateDriverByName( const char* i_DriverName,
 	if (pDriver != NULL) 
 		return pDriver;
 
-	if (itStringUtil::CompareNoCase(i_DriverName, CAMDRIVERNAME_KEYPOSTAR) == 0)
+	if (envString::CompareNoCase(i_DriverName, CAMDRIVERNAME_KEYPOSTAR) == 0)
 	{
 		cmraDriverKeyPositionAndTarget * pDriver = new cmraDriverKeyPositionAndTarget( cmra_obj->PositionChannel(), cmra_obj->TargetChannel() );
 		pDriver->SetName("Key");
@@ -614,7 +616,7 @@ tmlnDriver* cmraDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channelP.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, CAMDRIVERNAME_KEYPOS) == 0)
+	else if (envString::CompareNoCase(i_DriverName, CAMDRIVERNAME_KEYPOS) == 0)
 	{
 		cmraDriverKeyPosition * pDriver = new cmraDriverKeyPosition( cmra_obj->PositionChannel() );
 		pDriver->SetName("KeyP");
@@ -625,7 +627,7 @@ tmlnDriver* cmraDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channelP.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, CAMDRIVERNAME_KEYTAR) == 0)
+	else if (envString::CompareNoCase(i_DriverName, CAMDRIVERNAME_KEYTAR) == 0)
 	{
 		cmraDriverKeyTarget * pDriver = new cmraDriverKeyTarget( cmra_obj->TargetChannel() );
 		pDriver->SetName("KeyT");
@@ -636,7 +638,7 @@ tmlnDriver* cmraDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channelT.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, CAMDRIVERNAME_MAYASCRIPT) == 0)
+	else if (envString::CompareNoCase(i_DriverName, CAMDRIVERNAME_MAYASCRIPT) == 0)
 	{
 		cmraDriverMayaScript * pDriver = new cmraDriverMayaScript( cmra_obj->PositionChannel(), 
 			cmra_obj->TargetChannel(), cmra_obj->FOVChannel(), cmra_obj->TiltChannel(), 
@@ -653,7 +655,7 @@ tmlnDriver* cmraDriverCreator::CreateDriverByName( const char* i_DriverName,
 		cmra_obj->HorizontalApertureChannel().AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, CAMDRIVERNAME_CAPTURE) == 0)
+	else if (envString::CompareNoCase(i_DriverName, CAMDRIVERNAME_CAPTURE) == 0)
 	{
 		cmraDriverCapture * pDriver = new cmraDriverCapture( cmra_obj->CaptureChannel() );
 		pDriver->SetName(CAMDRIVERNAME_CAPTURE);
@@ -664,7 +666,7 @@ tmlnDriver* cmraDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, CAMDRIVERNAME_RENDERPASSAO) == 0)
+	else if (envString::CompareNoCase(i_DriverName, CAMDRIVERNAME_RENDERPASSAO) == 0)
 	{
 		cmraDriverRenderPass * pDriver = new cmraDriverRenderPass( cmra_obj->RenderPassAOChannel() , cmraRenderPasses::e_AO);
 		pDriver->SetName(CAMDRIVERNAME_RENDERPASSAO);
@@ -675,7 +677,7 @@ tmlnDriver* cmraDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, CAMDRIVERNAME_RENDERPASSGI) == 0)
+	else if (envString::CompareNoCase(i_DriverName, CAMDRIVERNAME_RENDERPASSGI) == 0)
 	{
 		cmraDriverRenderPass * pDriver = new cmraDriverRenderPass( cmra_obj->RenderPassGIChannel() , cmraRenderPasses::e_GI);
 		pDriver->SetName(CAMDRIVERNAME_RENDERPASSGI);
@@ -686,7 +688,7 @@ tmlnDriver* cmraDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, CAMDRIVERNAME_RENDERPASSREFL) == 0)
+	else if (envString::CompareNoCase(i_DriverName, CAMDRIVERNAME_RENDERPASSREFL) == 0)
 	{
 		cmraDriverRenderPass * pDriver = new cmraDriverRenderPass( cmra_obj->RenderPassReflChannel() , cmraRenderPasses::e_Reflections);
 		pDriver->SetName(CAMDRIVERNAME_RENDERPASSREFL);
@@ -697,7 +699,7 @@ tmlnDriver* cmraDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, CAMDRIVERNAME_RENDERPASSBEAUTY) == 0)
+	else if (envString::CompareNoCase(i_DriverName, CAMDRIVERNAME_RENDERPASSBEAUTY) == 0)
 	{
 		cmraDriverRenderPass * pDriver = new cmraDriverRenderPass( cmra_obj->RenderPassBeautyChannel() , cmraRenderPasses::e_Beauty);
 		pDriver->SetName(CAMDRIVERNAME_RENDERPASSBEAUTY);
@@ -708,7 +710,7 @@ tmlnDriver* cmraDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, CAMDRIVERNAME_CIRCLE) == 0)
+	else if (envString::CompareNoCase(i_DriverName, CAMDRIVERNAME_CIRCLE) == 0)
 	{
 		cmraDriverCircle * pDriver = new cmraDriverCircle( cmra_obj->PositionChannel(), cmra_obj->TargetChannel() );
 		pDriver->SetName(CAMDRIVERNAME_CIRCLE);
@@ -719,7 +721,7 @@ tmlnDriver* cmraDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, CAMDRIVERNAME_DIRECTOR) == 0)
+	else if (envString::CompareNoCase(i_DriverName, CAMDRIVERNAME_DIRECTOR) == 0)
 	{
 		cmraDriverDirector * pDriver = new cmraDriverDirector( cmra_obj->CaptureChannel() );
 		pDriver->SetName(CAMDRIVERNAME_DIRECTOR);
@@ -735,7 +737,7 @@ tmlnDriver* cmraDriverCreator::CreateDriverByName( const char* i_DriverName,
 		cmra_obj->HorizontalApertureChannel().AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, CAMDRIVERNAME_FOLLOW) == 0)
+	else if (envString::CompareNoCase(i_DriverName, CAMDRIVERNAME_FOLLOW) == 0)
 	{
 		cmraDriverFollow * pDriver = new cmraDriverFollow( cmra_obj->PositionChannel(), cmra_obj->TargetChannel() );
 		pDriver->SetName(CAMDRIVERNAME_FOLLOW);
@@ -746,7 +748,7 @@ tmlnDriver* cmraDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, CAMDRIVERNAME_FOCUSATTACH) == 0)
+	else if (envString::CompareNoCase(i_DriverName, CAMDRIVERNAME_FOCUSATTACH) == 0)
 	{
 		cmraDriverFocusAttach* pDriver = new cmraDriverFocusAttach( cmra_obj->GetName().GetUID(),
 			cmra_obj->NearFocusDistanceChannel(), 
@@ -769,7 +771,7 @@ tmlnDriver* cmraDriverCreator::CreateDriverByName( const char* i_DriverName,
 
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, CAMDRIVERNAME_FOCUSDISTANCEATTACH) == 0)
+	else if (envString::CompareNoCase(i_DriverName, CAMDRIVERNAME_FOCUSDISTANCEATTACH) == 0)
 	{
 		cmraDriverFocusDistanceAttach* pDriver = new cmraDriverFocusDistanceAttach( cmra_obj->GetName().GetUID(),
 			cmra_obj->FocusDistanceChannel(), 
@@ -782,7 +784,7 @@ tmlnDriver* cmraDriverCreator::CreateDriverByName( const char* i_DriverName,
 
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, CAMDRIVERNAME_FRAMEDARC) == 0)
+	else if (envString::CompareNoCase(i_DriverName, CAMDRIVERNAME_FRAMEDARC) == 0)
 	{
 		cmraDriverFramedArc * pDriver = new cmraDriverFramedArc( cmra_obj->GetName().GetUID(), cmra_obj->PositionChannel(), cmra_obj->TargetChannel() );
 		pDriver->SetName("Framed Arc");
@@ -795,7 +797,7 @@ tmlnDriver* cmraDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channelP.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, CAMDRIVERNAME_FRAMEDCLOSEUP) == 0)
+	else if (envString::CompareNoCase(i_DriverName, CAMDRIVERNAME_FRAMEDCLOSEUP) == 0)
 	{
 		cmraDriverFramedCloseUp * pDriver = new cmraDriverFramedCloseUp( cmra_obj->GetName().GetUID(), cmra_obj->PositionChannel(), cmra_obj->TargetChannel() );
 		pDriver->SetName("Framed Close-Up");
@@ -808,7 +810,7 @@ tmlnDriver* cmraDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channelP.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, CAMDRIVERNAME_FRAMEDMED) == 0)
+	else if (envString::CompareNoCase(i_DriverName, CAMDRIVERNAME_FRAMEDMED) == 0)
 	{
 		cmraDriverFramedMedLong * pDriver = new cmraDriverFramedMedLong( cmra_obj->GetName().GetUID(), cmra_obj->PositionChannel(), cmra_obj->TargetChannel() );
 		pDriver->SetName("Framed Medium-Long");
@@ -821,7 +823,7 @@ tmlnDriver* cmraDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channelP.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, CAMDRIVERNAME_FRAMEDOVERHEAD) == 0)
+	else if (envString::CompareNoCase(i_DriverName, CAMDRIVERNAME_FRAMEDOVERHEAD) == 0)
 	{
 		cmraDriverFramedOverhead * pDriver = new cmraDriverFramedOverhead( cmra_obj->GetName().GetUID(), cmra_obj->PositionChannel(), cmra_obj->TargetChannel() );
 		pDriver->SetName("Framed Overhead");

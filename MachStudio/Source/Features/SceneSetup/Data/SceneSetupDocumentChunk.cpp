@@ -7,6 +7,9 @@
 **	Copyright(C) 2004 - All Rights Reserved
 \****************************************************************************/
 #include "Features/SceneSetup/Data/SceneSetupDocumentChunk.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Features/ProjectSetup/ProjectSetupMgr.hpp"
 #include "Features/SceneSetup/Data/SceneSetupDataParser.hpp"

@@ -40,9 +40,9 @@ namespace
 	{
 		if (i_Version < 2)
 		{
-			//	ReadItString gives the name without its terminating NULL
+			//	ReadLegacyWideString gives the name without its terminating NULL
 			std::string sound_name;
-			i_Reader.ReadItString(sound_name);
+			i_Reader.ReadLegacyWideString(sound_name);
 			if (!sound_name.empty())
 				o_Driver.m_SoundName = fsLocator(sound_name);
 			else
@@ -53,7 +53,7 @@ namespace
 			// Read in a single itString with path separators and then 
 			// split into locator
 			std::string savefilename;
-			chChunkParserUtil::ReadItString( i_Reader, savefilename );
+			chChunkParserUtil::ReadLegacyWideString( i_Reader, savefilename );
 			fsFileUtil::UnicodeStringToLocator( savefilename, o_Driver.m_SoundName );
 			//Note: not resolving the absolute path here, let the DriverCreator handle that
 		}

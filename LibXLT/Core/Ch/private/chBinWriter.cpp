@@ -7,6 +7,9 @@
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
 #include "Core/ch/chBinWriter.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Core/ch/chExceptionX.hpp"
 #include "Core/fs/fsFilePosSaver.hpp"

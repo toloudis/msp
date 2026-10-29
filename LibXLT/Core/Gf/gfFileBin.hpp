@@ -7,7 +7,7 @@
 **
 **		A binary file starts with a four-byte signature and the Header.
 **		The signature says how the file stores strings that were itStrings
-**		when they were written (chWriter::Write, chReader::ReadItString):
+**		when they were written (chWriter::Write, chReader::ReadLegacyWideString):
 **			PWFB (petawatt)	UTF-8, null-terminated; every file written now
 **			TWFB (terawatt)	UTF-16LE, null-terminated 16-bit units
 **			GWFB (gigawatt)	UTF-16LE, as TWFB

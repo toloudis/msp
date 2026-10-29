@@ -71,7 +71,6 @@
 #include "Core/Fs/fsFileUtil.hpp"
 #include "Core/fs/fsResourceTracker.hpp"
 #include "Core/gf/gfPackage.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Graphics/g2d/g2dExceptionX.hpp"
 #include "Graphics/g3d/g3dExceptionX.hpp"
 #include "Graphics/GraphicsLayer.hpp"

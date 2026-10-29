@@ -22,7 +22,6 @@
 #include "Core/env/envString.hpp"
 #include "Core/fs/fsCategoryConfigFileUtil.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/prty/prtyButtonUIInfo.hpp"
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
 #include "Core/prty/prtyComboBoxUIInfo.hpp"
@@ -373,13 +372,13 @@ namespace captRenderOutputDataUtil
 	{
 		l_DataObject->m_Data.m_CurrentScene.SetValue( i_SceneName );
 
-		//DBG_LOG("Setting CurrentScene (" << itStringUtil::GetStdString(l_DataObject->m_Data.m_CurrentScene).c_str() << ")");
+		//DBG_LOG("Setting CurrentScene (" << l_DataObject->m_Data.m_CurrentScene.c_str() << ")");
 	}
 	void SetCurrentScene( nameString& i_SceneName )
 	{
 		l_DataObject->m_Data.m_CurrentScene.SetValue( i_SceneName.GetString() );
 
-		//DBG_LOG("Setting CurrentScene (" << itStringUtil::GetStdString(l_DataObject->m_Data.m_CurrentScene).c_str() << ")");
+		//DBG_LOG("Setting CurrentScene (" << l_DataObject->m_Data.m_CurrentScene.c_str() << ")");
 	}
 
 	//------------------------------------------------------------------------

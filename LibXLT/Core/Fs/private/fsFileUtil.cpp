@@ -187,13 +187,6 @@ void LocatorToUnicodeString(const fsLocator& i_Locator, std::string& o_String)
 	LocatorToANSIFilename(i_Locator, o_String);
 }
 
-void LocatorToUnicodeString(const fsLocator& i_Locator, itString& o_String)
-{
-	std::string utf8;
-	LocatorToANSIFilename(i_Locator, utf8);
-	o_String = utf8;
-}
-
 //----------------------------------------------------------------------------
 // ANSIFilenameToLocator returns a locator from an ANSI pathname
 //----------------------------------------------------------------------------

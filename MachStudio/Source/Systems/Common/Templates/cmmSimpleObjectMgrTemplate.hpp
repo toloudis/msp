@@ -20,9 +20,6 @@
 #ifndef FS_RESOURCETRACKERDATA_HPP
 #include "Core/fs/fsResourceTrackerData.hpp"
 #endif
-#ifndef IT_STRINGUTIL_HPP
-#include "Core/it/itStringUtil.hpp"
-#endif
 #ifndef GUI_MESSAGEBOX_HPP
 #include "Tool/gui/guiMessageBox.hpp"
 #endif
@@ -139,7 +136,7 @@ public:
 		{
 			//char msg[512];
 			std::string txt;
-			txt = itStringUtil::GetStdString(i_Ex.GetLocator().GetLastName());
+			txt = i_Ex.GetLocator().GetLastName();
 			std::ostringstream oss;
 			oss << "Cannot add the object -- missing "<<txt;
 			std::string msg(oss.str());

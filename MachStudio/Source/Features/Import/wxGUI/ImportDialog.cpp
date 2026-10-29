@@ -12,7 +12,6 @@
 #include "Support/gsup/gsupTreeCtrlUtil.hpp"
 
 #include "Core/Fs/fsFileUtil.hpp"
-#include "Core/It/itStringUtil.hpp"
 #include "ImportExport/iscn/iscnSceneChoice.hpp"
 #include "Tool/doc/docSingleDocumentMgr.hpp"
 #include "Tool/doc/docSingleTypeMgr.hpp"

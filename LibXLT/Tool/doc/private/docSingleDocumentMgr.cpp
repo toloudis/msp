@@ -7,11 +7,13 @@
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
 #include "Tool/doc/docSingleDocumentMgr.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Core/App/appTime.hpp"
 #include "Core/fs/fsFileX.hpp"
 #include "Core/Fs/fsResourceTracker.hpp"
-#include "Core/It/itStringUtil.hpp"
 #include "Core/name/nameMgr.hpp"
 #include "Core/undo/undoUndoMgr.hpp"
 #include "Tool/doc/docSingleTypeMgr.hpp"

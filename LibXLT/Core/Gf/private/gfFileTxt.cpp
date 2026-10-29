@@ -8,6 +8,9 @@
 \****************************************************************************/
 
 #include "Core/Gf/gfFileTxt.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Core/Gf/gfFileX.hpp"
 #include "Core/Gf/gfPaths.hpp"

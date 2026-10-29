@@ -37,7 +37,7 @@ namespace
 		// Read in a single itString with path separators and then 
 		// split into locator
 		std::string loadfilename;
-		chChunkParserUtil::ReadItString( i_Reader, loadfilename );
+		chChunkParserUtil::ReadLegacyWideString( i_Reader, loadfilename );
 		fsFileUtil::UnicodeStringToLocator( loadfilename, o_Info.m_FileName );
 //		chChunkParserUtil::Read(i_Reader, o_Info.m_FileName);
 

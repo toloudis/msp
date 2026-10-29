@@ -10,7 +10,6 @@
 
 #include "Support/mnm/mnmConstants.hpp"
 
-#include "Core/it/itStringUtil.hpp"
 #include "Tool/doc/docSingleDocumentMgr.hpp"
 #include "Tool/gui/guiMainWindow.hpp"
 

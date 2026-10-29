@@ -21,7 +21,6 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
 #include "Core/gf/gfFileBin.hpp"
-#include "Core/it/itStringUtil.hpp"
 
 
 //============================================================================
@@ -77,7 +76,7 @@ namespace
 		{
 			std::string new_desc;
 			std::string desc;
-			chChunkParserUtil::ReadItString(i_Reader,desc);
+			chChunkParserUtil::ReadLegacyWideString(i_Reader,desc);
 			new_desc = desc;
 			o_Data.m_Description.SetValue(new_desc);
 		}

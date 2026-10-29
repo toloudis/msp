@@ -172,7 +172,7 @@ void prtyVideo::Read(chReader& io_Reader)
 	// Read in a single string with path separators and then
 	// split into locator
 	std::string savefilename;
-	chChunkParserUtil::ReadItString( io_Reader, savefilename );
+	chChunkParserUtil::ReadLegacyWideString( io_Reader, savefilename );
 	fsFileUtil::UnicodeStringToLocator( savefilename, data.m_Filename );
 	chChunkParserUtil::Read( io_Reader, data.m_Frame );
 	chChunkParserUtil::Read( io_Reader, data.m_Width );

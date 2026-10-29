@@ -7,6 +7,9 @@
 **	Copyright(C) 2004 - All Rights Reserved
 \****************************************************************************/
 #include "ToolUIWx/twx/twxToolbarMgr.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "ToolUIWx/twx/twxPaneMgr.hpp"
 #include "ToolUIWx/twx/twxSystem.hpp"

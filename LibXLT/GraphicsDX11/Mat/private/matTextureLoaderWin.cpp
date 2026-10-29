@@ -15,7 +15,6 @@
 #include "Core/fs/fsFileX.hpp"
 #include "Core/fs/fsResourceTracker.hpp"
 #include "Core/gf/gfFileBin.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/ma/maFunctions.hpp"
 #include "Graphics/g2d/g2dARGBColor.hpp"
 #include "Graphics/g2d/g2dExceptionX.hpp"
@@ -81,7 +80,7 @@ FileType pick_format(const fsLocator& i_FileName)
     //	decide what kind of file we have
     std::string fname = i_FileName.GetLastName();
     std::string ext;
-    itStringUtil::GetExtension(fname, ext);
+    envString::GetExtension(fname, ext);
 
     if ((ext == "bmp") || (ext == "BMP"))
     {
@@ -365,7 +364,7 @@ void LoadResource(matPlainTexture* io_Texture, const fsLocator& i_Locator, int i
     fsFileUtil::LocatorToUnicodeString(i_Locator, file_name);
     DBG_LOG("loading resource " << i_Locator << " (" << file_name << ")");
 
-    HRSRC myResource = ::FindResource(NULL, MAKEINTRESOURCE(itStringUtil::GetInt(file_name)), RT_RCDATA);
+    HRSRC myResource = ::FindResource(NULL, MAKEINTRESOURCE(envString::GetInt(file_name)), RT_RCDATA);
     unsigned int size = ::SizeofResource(NULL, myResource);
     HGLOBAL myResourceData = ::LoadResource(NULL, myResource);
     void* pSource = ::LockResource(myResourceData);

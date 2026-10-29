@@ -178,7 +178,7 @@ void  mainDocumentChunk::Read( chReader &i_Reader,
 		// path differences.
 		fsLocator org_locator;
 		std::string savefilename;
-		chChunkParserUtil::ReadItString( i_Reader, savefilename );
+		chChunkParserUtil::ReadLegacyWideString( i_Reader, savefilename );
 		fsFileUtil::UnicodeStringToLocator( savefilename, org_locator );
 		fsAbsolutePathMgr::AddDirMappingFromFiles(org_locator, i_Reader.GetLocator());
 	}

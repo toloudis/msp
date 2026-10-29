@@ -7,6 +7,9 @@
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
 #include "Core/ch/chBinReader.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Core/ch/chExceptionX.hpp"
 #ifndef ENV_STRING_HPP
@@ -227,11 +230,11 @@ void chBinReader::Read(std::string& o_Val, int i_Length)
 }
 
 //--------------------------------------------------------------------
-//	ReadItString reads a NULL-terminated string as UTF-8: stored as UTF-8
+//	ReadLegacyWideString reads a NULL-terminated string as UTF-8: stored as UTF-8
 //	in PWFB files, and as UTF-16, which it converts, in older ones and
 //	in files whose header wasn't read (gfFileBin::HasUTF8Strings).
 //--------------------------------------------------------------------
-void chBinReader::ReadItString(std::string& o_Val)
+void chBinReader::ReadLegacyWideString(std::string& o_Val)
 {
 	if( m_File.HasUTF8Strings() )
 	{

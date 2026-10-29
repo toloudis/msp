@@ -8,6 +8,9 @@
 \****************************************************************************/
 #include "stdafx.h"
 #include "MainApp/mainResolvePath.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 #ifdef MSP_GUI_QT
 #include "MainApp/qtGUI/qtResolvePathDialog.hpp"
 #else

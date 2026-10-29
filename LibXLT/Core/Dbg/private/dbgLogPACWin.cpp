@@ -82,36 +82,6 @@ void WriteDebugOutput(const std::string& i_UTF8Text)
 }
 
 //------------------------------------------------------------------------
-//	UnicodetoANSI is a convenience function for debug logging that will turn an
-//	itString into a std::string.
-//
-// \param i_String the original string
-// \param i_Length the length of the original string
-//
-// \return the converted string
-//------------------------------------------------------------------------
-std::string UnicodetoANSI(const envType::WChar *i_String, int i_Length)
-{
-	char work_string[DBG_LOG_STRING_LENGTH];
-	int num_chars;
-
-	num_chars = ::WideCharToMultiByte(	CP_ACP,		// ANSI code page
-										0,			// no "lo-performance" flags
-										i_String,
-										i_Length,
-										work_string,
-										DBG_LOG_STRING_LENGTH,	// size of target buffer
-										NULL,
-										NULL);
-
-	// for some reason, this function doesn't seem to terminate the 
-	// work_string
-	work_string[num_chars] = 0;
-
-	return std::string(work_string);
-}
-
-//------------------------------------------------------------------------
 //	Don't call Init() yourself; it is called by the package Init().
 //
 // \param none

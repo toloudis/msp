@@ -19,7 +19,6 @@
 
 #include "Core/env/envSharedAssetMgr.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
 #include "Core/prty/prtyComboBoxUIInfo.hpp"
 #include "Core/prty/prtyFileChooserUIInfo.hpp"
@@ -200,7 +199,7 @@ void tmlnDriverAnimationFull::SetDelayAnimations(bool i_bDelay)
 //	for (int i=0; i<i_FileList.Size(); i++)
 //	{
 //		itString filename = i_FileList.GetFilename(i);
-//		m_pAnimFilenameUIInfo->AddItem( itStringUtil::GetStdString( filename ) );
+//		m_pAnimFilenameUIInfo->AddItem( filename );
 //	}
 //
 //	if (i_bUpdateControl)

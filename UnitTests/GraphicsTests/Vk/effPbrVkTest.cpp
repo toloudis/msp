@@ -99,9 +99,6 @@
 #ifndef PRTY_RANGEDFLOATUIINFO_HPP
 #include "Core/prty/prtyRangedFloatUIInfo.hpp"
 #endif
-#ifndef IT_STRINGUTIL_HPP
-#include "Core/it/itStringUtil.hpp"
-#endif
 
 #include <gtest/gtest.h>
 

@@ -8,7 +8,9 @@
 \****************************************************************************/
 #include "Systems/Common/DriverCreator/cmmDriverCreatorColor.hpp"
 
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #include "Support/tmln/tmlnChannelColor.hpp"
 #include "Support/tmln/tmlnCreator.hpp"
@@ -178,7 +180,7 @@ tmlnDriver* cmmDriverCreatorColor::CreateDriverByName( const char* i_DriverName,
 	std::string connectchannel_name = get_connectchannel_name(i_ChannelName);
 	std::string userscript_name = get_userscript_name(i_ChannelName);
 
-	if (itStringUtil::CompareNoCase(i_DriverName, key_name) == 0)
+	if (envString::CompareNoCase(i_DriverName, key_name) == 0)
 	{
 		const chDefs::Name c_XXCK = make_key_chunk_name( i_Code );
 		tmlnDriverColor * pDriver = new tmlnDriverColor( io_Channel, c_XXCK );
@@ -188,7 +190,7 @@ tmlnDriver* cmmDriverCreatorColor::CreateDriverByName( const char* i_DriverName,
 		io_Channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, flicker_name) == 0)
+	else if (envString::CompareNoCase(i_DriverName, flicker_name) == 0)
 	{
 		const chDefs::Name c_XXCF = make_flicker_chunk_name( i_Code );
 		tmlnDriverColorFlicker * pDriver = new tmlnDriverColorFlicker( io_Channel, c_XXCF );
@@ -198,7 +200,7 @@ tmlnDriver* cmmDriverCreatorColor::CreateDriverByName( const char* i_DriverName,
 		io_Channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (itStringUtil::CompareNoCase(i_DriverName, connectchannel_name) == 0)
+	else if (envString::CompareNoCase(i_DriverName, connectchannel_name) == 0)
 	{
 		const chDefs::Name c_XXCZ = make_connectchannel_chunk_name( i_Code );
 		tmlnDriverConnectChannelColor * pDriver = new tmlnDriverConnectChannelColor( io_Channel, c_XXCZ );
@@ -211,7 +213,7 @@ tmlnDriver* cmmDriverCreatorColor::CreateDriverByName( const char* i_DriverName,
 		io_Channel.AddDriver( pDriver );
 		return pDriver;
 	}	
-	else if (itStringUtil::CompareNoCase(i_DriverName, userscript_name) == 0)
+	else if (envString::CompareNoCase(i_DriverName, userscript_name) == 0)
 	{
 		const chDefs::Name c_XXUS = make_userscript_chunk_name( i_Code );
 		tmlnDriverUserScriptColor * pDriver = new tmlnDriverUserScriptColor( io_Channel, c_XXUS );

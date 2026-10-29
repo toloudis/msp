@@ -9,7 +9,6 @@
 #include "Support/pfx/pfxPostEffectObject.hpp"
 
 #include "Core/fs/fsResourceFinderDir.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/prty/prtyButtonUIInfo.hpp"
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
 #include "Core/prty/prtyTextBoxUIInfo.hpp"

@@ -9,7 +9,6 @@
 \****************************************************************************/
 #include "pqtFileName_ComboBox.hpp"
 
-#include "Core/it/itStringUtil.hpp"
 #include "Core/prty/prtyComboBoxUIInfo.hpp"
 
 #ifdef USE_QT

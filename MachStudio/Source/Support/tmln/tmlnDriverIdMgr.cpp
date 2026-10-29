@@ -7,6 +7,9 @@
 **	Copyright(C) 2007 - All Rights Reserved
 \****************************************************************************/
 #include "Support/tmln/tmlnDriverIdMgr.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Support/tmln/tmlnDriver.hpp"
 

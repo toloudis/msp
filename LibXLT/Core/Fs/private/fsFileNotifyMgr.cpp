@@ -10,12 +10,17 @@
 
 
 #include "Core/fs/private/fsFileNotifyMgr.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 #ifndef FS_FILEUTIL_HPP
 #include "Core/fs/fsFileUtil.hpp"
 #endif
 
 
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/fs/fsXMLReader.hpp"
 #include "Core/fs/fsXMLWriter.hpp"
 #include "Core/fs/private/fsFileTimeUtilPAC.hpp"
@@ -161,8 +166,8 @@ namespace
 				int pos = length-1;
 				if (t_FileName.find('.') != std::string::npos)
 				{
-					itStringUtil::GetExtension(t_FileName, o_Extension);
-					itStringUtil::ToLower(o_Extension);
+					envString::GetExtension(t_FileName, o_Extension);
+					envString::ToLower(o_Extension);
 
 				}
 				DBG_TRACE(" Object "<<fileName<<" has been updated");

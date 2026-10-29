@@ -38,8 +38,8 @@
 #include "Tool/gui/guiCustomDocHandler.hpp"
 #include "Tool/gui/guiSingleDocHandler.hpp"
 #include "Tool/gui/guiStatusBarMgr.hpp"
-#ifndef IT_STRINGUTIL_HPP
-#include "Core/It/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
 #endif
 
 
@@ -314,7 +314,7 @@ void cptrModeRenderBatch::Think()
 						//	set the prefix to be the scene name
 						std::string current_scenename;
 						current_scenename = theData.m_Scenes[m_SceneIndex].m_Filename.GetValue().GetLastName();
-						itStringUtil::StripExtension(current_scenename);
+						envString::StripExtension(current_scenename);
 						captRenderOutputDataUtil::SetCurrentScene( current_scenename );
 
 						//	set the max capture frames

@@ -96,7 +96,7 @@ bool prtyFileName::operator !=(const std::string& i_Value) const
 void prtyFileName::Read(chReader& io_Reader)
 {
 	std::string temp;
-	chChunkParserUtil::ReadItString(io_Reader,temp);
+	chChunkParserUtil::ReadLegacyWideString(io_Reader,temp);
 	SetValue(temp);
 }
 

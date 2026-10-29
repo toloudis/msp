@@ -48,7 +48,6 @@
 //============================================================================
 //============================================================================
 class chReader;
-class itString;
 class maIntPoint2d;
 
 
@@ -101,16 +100,14 @@ namespace chChunkParserUtil
 	void Read(chReader& i_Reader, maGradient& o_Gradient);
 
 	//------------------------------------------------------------------------
-	//	Read reads a string that was always written as single bytes;
-	//	ReadItString one that was an itString when it was written (see
-	//	chReader::ReadItString).
+	//	Read reads a string; ReadLegacyWideString one from a field that
+	//	held an itString in binary files written before PWFB (itString
+	//	wasn't portable UTF-8 but 16-bit wide characters, stored as
+	//	UTF-16). New fields always use Read; see
+	//	chReader::ReadLegacyWideString.
 	//------------------------------------------------------------------------
 	void Read( chReader& i_Reader, std::string& o_Name );
-	void ReadItString( chReader& i_Reader, std::string& o_Name );
-
-	//	Temporary, while callers still hold itStrings
-	//	(docs/plans/2026-10-28-itstring-to-std-string.md; removed in step 4)
-	void ReadItString( chReader& i_Reader, itString& o_Name );
+	void ReadLegacyWideString( chReader& i_Reader, std::string& o_Name );
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -119,9 +116,6 @@ namespace chChunkParserUtil
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	void Write( chWriter& i_Writer, const std::string& i_Name, chDefs::Name i_ChunkName );
-
-	//	Temporary (see Read( chReader&, itString& ))
-	void Write( chWriter& i_Writer, const itString& i_Name, chDefs::Name i_ChunkName );
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -170,9 +164,6 @@ namespace chChunkParserUtil
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	void Write(chWriter& i_Writer,const std::string& i_Name);
-
-	//	Temporary (see Read( chReader&, itString& ))
-	void Write( chWriter& i_Writer, const itString& i_Name );
 
 
 	//------------------------------------------------------------------------

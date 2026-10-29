@@ -26,9 +26,6 @@
 #ifndef GF_PATHS_HPP
 #include "Core/gf/gfPaths.hpp"
 #endif
-#ifndef IT_STRINGUTIL_HPP
-#include "Core/it/itStringUtil.hpp"
-#endif
 #ifndef EFF_BAKEDATA_HPP
 #include "Graphics/eff/effBakeData.hpp"
 #endif

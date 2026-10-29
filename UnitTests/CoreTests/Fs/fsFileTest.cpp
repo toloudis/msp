@@ -18,9 +18,6 @@
 #ifndef FS_FILESTREAM_HPP
 #include "Core/fs/fsFileStream.hpp"
 #endif
-#ifndef IT_STRINGUTIL_HPP
-#include "Core/it/itStringUtil.hpp"
-#endif
 
 #include <gtest/gtest.h>
 

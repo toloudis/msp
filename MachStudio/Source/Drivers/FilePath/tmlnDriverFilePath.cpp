@@ -11,7 +11,6 @@
 #include "Support/tmln/tmlnChannelFilePath.hpp"
 #include "Drivers/FilePath/tmlnDriverFilePathInfo.hpp"
 
-#include "Core/It/itStringUtil.hpp"
 #include "Core/prty/prtyFileChooserUIInfo.hpp"
 
 
@@ -51,7 +50,7 @@ std::string tmlnDriverFilePath::GetHoverDescription()
 	std::string desc;
 	desc = tmlnDriver::GetHoverDescription();
 	if (m_Value.GetValue().GetNumNames() > 0)
-		desc += itStringUtil::GetStdString(m_Value.GetValue().GetLastName());
+		desc += m_Value.GetValue().GetLastName();
 
 	return desc;
 }

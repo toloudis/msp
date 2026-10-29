@@ -80,7 +80,7 @@ const std::vector<std::string> c_Samples =
 };
 
 //	One string as read back: the text string (an itString when it was
-//	written, read with ReadItString) and the narrow one (read with Read).
+//	written, read with ReadLegacyWideString) and the narrow one (read with Read).
 struct ReadString
 {
 	std::string m_Text;
@@ -126,7 +126,7 @@ std::vector<ReadString> ReadStrings(chReader& io_Reader)
 		EXPECT_EQ(int32_t(strings.size()), index);
 
 		std::string text;
-		chChunkParserUtil::ReadItString(io_Reader, text);
+		chChunkParserUtil::ReadLegacyWideString(io_Reader, text);
 		std::string narrow;
 		io_Reader.Read(narrow);
 		strings.push_back({ text, narrow });
@@ -154,8 +154,8 @@ void ExpectStrings(const std::vector<std::string>& i_Expected, const std::vector
 }
 
 //	WriteParserUtilStrings writes each string in a leaf chunk through
-//	chChunkParserUtil, as the chunk parsers do: as a std::string, as an
-//	itString (the temporary overloads), and in a chunk of its own.
+//	chChunkParserUtil, as the chunk parsers do: on its own and in a chunk
+//	of its own.
 void WriteParserUtilStrings(chWriter& io_Writer, const std::vector<std::string>& i_Strings)
 {
 	io_Writer.WriteChunkHeader(c_Strings, 1, true);
@@ -164,7 +164,6 @@ void WriteParserUtilStrings(chWriter& io_Writer, const std::vector<std::string>&
 		io_Writer.WriteChunkHeader(c_String, 1, true);
 		io_Writer.WriteChunkHeader(c_String, 1, false);
 		chChunkParserUtil::Write(io_Writer, s);
-		chChunkParserUtil::Write(io_Writer, itString(s.c_str()));
 		io_Writer.Write(c_Sentinel);
 		io_Writer.FinishChunk();
 		chChunkParserUtil::Write(io_Writer, s, c_String);
@@ -189,11 +188,8 @@ void ReadParserUtilStrings(chReader& io_Reader, const std::vector<std::string>& 
 
 		ASSERT_TRUE(io_Reader.ReadChunkHeader(name, version, size));
 		std::string text;
-		chChunkParserUtil::ReadItString(io_Reader, text);
+		chChunkParserUtil::ReadLegacyWideString(io_Reader, text);
 		EXPECT_EQ(expected, text);
-		itString wide;
-		chChunkParserUtil::ReadItString(io_Reader, wide);
-		EXPECT_EQ(expected, std::string(wide));
 		int32_t sentinel = 0;
 		io_Reader.Read(sentinel);
 		EXPECT_EQ(c_Sentinel, sentinel);
@@ -201,7 +197,7 @@ void ReadParserUtilStrings(chReader& io_Reader, const std::vector<std::string>& 
 
 		ASSERT_TRUE(io_Reader.ReadChunkHeader(name, version, size));
 		std::string in_chunk;
-		chChunkParserUtil::ReadItString(io_Reader, in_chunk);
+		chChunkParserUtil::ReadLegacyWideString(io_Reader, in_chunk);
 		EXPECT_EQ(expected, in_chunk);
 		io_Reader.FinishChunk();
 

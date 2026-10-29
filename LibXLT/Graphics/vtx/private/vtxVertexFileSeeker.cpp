@@ -5,6 +5,9 @@
 **	Copyright(C) 2009 - All Rights Reserved
 \****************************************************************************/
 #include "Graphics/vtx/private/vtxVertexFileSeeker.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Core/Ch/chBinReader.hpp"
 #include "Core/Gf/gfFileBin.hpp"

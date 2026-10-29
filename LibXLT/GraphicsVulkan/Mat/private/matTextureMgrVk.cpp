@@ -93,8 +93,8 @@
 #ifndef GF_FILETRANSLATIONMGR_HPP
 #include "Core/gf/gfFileTranslationMgr.hpp"
 #endif
-#ifndef IT_STRINGUTIL_HPP
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
 #endif
 #ifndef MA_FLOATRGBA_HPP
 #include "Core/Ma/maFloatRGBA.hpp"
@@ -829,8 +829,8 @@ matTexture* matTextureMgrVk::LoadTexture(const fsLocator& i_Directory,
 	tex_locator.Push(i_Name);
 
 	std::string extension;
-	itStringUtil::GetExtension(i_Name, extension);
-	itStringUtil::ToLower(extension);
+	envString::GetExtension(i_Name, extension);
+	envString::ToLower(extension);
 
 	if (gfFileTranslationMgr::FileExists(tex_locator))
 	{

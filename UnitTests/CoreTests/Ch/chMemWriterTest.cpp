@@ -127,7 +127,7 @@ TEST(chMemWriter, ReadsBack)
 	reader.Read(f);
 	reader.Read(b);
 	reader.Read(s);
-	reader.ReadItString(w);
+	reader.ReadLegacyWideString(w);
 	reader.Read(raw, int64_t(sizeof(raw)));
 	EXPECT_EQ(-42, i);
 	EXPECT_EQ(2.5f, f);

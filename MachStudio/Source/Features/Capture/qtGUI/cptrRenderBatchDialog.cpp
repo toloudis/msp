@@ -23,7 +23,6 @@
 #include "Core/fs/fsFileX.hpp"
 #include "Core/gf/gfFileBin.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Tool/doc/docSingleDocumentMgr.hpp"
 #include "Tool/gui/guiFileDialogUtils.hpp"
 #include "Tool/gui/guiMessageBox.hpp"

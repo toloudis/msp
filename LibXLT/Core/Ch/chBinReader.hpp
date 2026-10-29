@@ -94,14 +94,14 @@ class chBinReader : public chReader
 		virtual void Read(std::string& o_Val, int i_Length);
 
 		//--------------------------------------------------------------------
-		//	ReadItString reads a NULL-terminated string as UTF-8: stored as UTF-8
+		//	ReadLegacyWideString reads a NULL-terminated string as UTF-8: stored as UTF-8
 		//	in PWFB files, and as UTF-16, which it converts, in older ones and
 		//	in files whose header wasn't read (gfFileBin::HasUTF8Strings).
 		//--------------------------------------------------------------------
-		virtual void ReadItString(std::string& o_Val);
+		virtual void ReadLegacyWideString(std::string& o_Val);
 
 		using chReader::Read;
-		using chReader::ReadItString;
+		using chReader::ReadLegacyWideString;
 
 		//--------------------------------------------------------------------
 		//	Read in an envAppVersion structure

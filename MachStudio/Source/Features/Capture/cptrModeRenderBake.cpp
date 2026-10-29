@@ -10,7 +10,9 @@
 
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Features/Capture/cptrModeRender.hpp"
 #include "Features/Capture/cptrRenderBakeData.hpp"
 #include "Features/Capture/cptrRenderBakeDataUtil.hpp"
@@ -197,7 +199,7 @@ void cptrModeRenderBake::Think()
 			std::string filename;
 			docSingleDocumentMgr::GetFilenameOnly(filename);
 			std::string sfname(filename.c_str());
-			itStringUtil::StripExtension(sfname);
+			envString::StripExtension(sfname);
 			
 			fsLocator path = data.m_OutputDir.GetValue();
 			path.Push(sfname.c_str());

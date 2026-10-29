@@ -77,9 +77,6 @@
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
 #endif
-#ifndef IT_STRINGUTIL_HPP
-#include "Core/it/itStringUtil.hpp"
-#endif
 
 #include <gtest/gtest.h>
 

@@ -7,6 +7,9 @@
 **	Copyright(C) 2004-5 - All Rights Reserved
 \****************************************************************************/
 #include "Features/ProjectSetup/ProjectSetupMgr.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Features/ProjectSetup/Data/ProjectSetupDataParser.hpp"
 #include "Features/ProjectSetup/prjPython.hpp"

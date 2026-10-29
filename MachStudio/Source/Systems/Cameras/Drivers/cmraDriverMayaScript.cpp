@@ -22,7 +22,6 @@
 #include "Support/tmln/tmlnTimeEditUIInfo.hpp"
 
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/ma/maFunctions.hpp"
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
 #include "Core/prty/prtyComboBoxUIInfo.hpp"
@@ -93,7 +92,7 @@ cmraDriverMayaScript::cmraDriverMayaScript(tmlnChannelPosition &i_ChannelPositio
 	//for (int i=0; i<file_list.Size(); i++)
 	//{
 	//	itString filename = file_list.GetFilename(i);
-	//	m_pAnimFilenameUIInfo->AddItem( itStringUtil::GetStdString( filename ) );
+	//	m_pAnimFilenameUIInfo->AddItem( filename );
 	//}
 	//AddProperty( m_pAnimFilenameUIInfo );
 	prtyFileChooserUIInfo* pFCUII = new prtyFileChooserUIInfo(&(m_AnimFilename), "Asset", "Animation filename");

@@ -24,7 +24,9 @@
 #include "Core/gf/gfFileX.hpp"
 #include "Core/gf/gfFileXML.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Graphics/eff/effDisplacementData.hpp"
 #include "Graphics/eff/effDisplacementDataParser.hpp"
 #include "Graphics/eff/effGlowData.hpp"
@@ -234,7 +236,7 @@ int count_materials(const fsLocator &i_Locator)
 	//	handle reading from a binary file and writing to ASCII or the other way around.
 	//
 	std::string extension;
-	itStringUtil::GetExtension( i_Locator.GetLastName(), extension );
+	envString::GetExtension( i_Locator.GetLastName(), extension );
 	if ((extension == "xml")
 	        || (extension == "XML") )
 	{
@@ -550,7 +552,7 @@ void parse_chunks(chReader& i_Reader,
 			// in order to resolve absolute paths
 			fsLocator org_locator;
 			std::string savefilename;
-			chChunkParserUtil::ReadItString( i_Reader, savefilename );
+			chChunkParserUtil::ReadLegacyWideString( i_Reader, savefilename );
 			fsFileUtil::UnicodeStringToLocator( savefilename, org_locator );
 			fsAbsolutePathMgr::AddDirMappingFromFiles(org_locator, i_Reader.GetLocator());
 		}
@@ -775,7 +777,7 @@ bool mtrMaterialSaver::Write( const fsLocator &i_NewLocator,
 	std::string old_fname, new_fname;
 	fsFileUtil::LocatorToANSIFilename(i_OldLocator, old_fname);
 	fsFileUtil::LocatorToANSIFilename(i_NewLocator, new_fname);
-	bool bSame = (itStringUtil::CompareNoCase(old_fname, new_fname) == 0);
+	bool bSame = (envString::CompareNoCase(old_fname, new_fname) == 0);
 
 	fsLocator input_locator = i_OldLocator;
 	if (bSame)
@@ -862,7 +864,7 @@ void mtrMaterialSaver::Read( const fsLocator &i_Locator,
 	//	handle reading from a binary file and writing to ASCII or the other way around.
 	//
 	std::string extension;
-	itStringUtil::GetExtension( i_Locator.GetLastName(), extension );
+	envString::GetExtension( i_Locator.GetLastName(), extension );
 	if (   (extension == "mtl")
 	    || (extension == "MTL") )
 	{
@@ -922,7 +924,7 @@ bool mtrMaterialSaver::ReadSingleMaterial( const fsLocator &i_Locator,
 			// in order to resolve absolute paths
 			fsLocator org_locator;
 			std::string savefilename;
-			chChunkParserUtil::ReadItString( reader, savefilename );
+			chChunkParserUtil::ReadLegacyWideString( reader, savefilename );
 			fsFileUtil::UnicodeStringToLocator( savefilename, org_locator );
 			fsAbsolutePathMgr::AddDirMappingFromFiles(org_locator, i_Locator);
 		}

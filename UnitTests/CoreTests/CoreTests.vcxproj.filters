@@ -25,9 +25,6 @@
     <Filter Include="Gf">
       <UniqueIdentifier>{c31b29d1-0778-4a62-aac2-97ca4ea6d638}</UniqueIdentifier>
     </Filter>
-    <Filter Include="It">
-      <UniqueIdentifier>{37c065b4-92b4-45a1-839d-1ea4dc17456f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Ma">
       <UniqueIdentifier>{c5ad39dd-4534-4739-9ad8-540fec20e936}</UniqueIdentifier>
     </Filter>
@@ -98,9 +95,6 @@
     </ClCompile>
     <ClCompile Include="Gf\gfFileBinTest.cpp">
       <Filter>Gf</Filter>
-    </ClCompile>
-    <ClCompile Include="It\itStringTest.cpp">
-      <Filter>It</Filter>
     </ClCompile>
     <ClCompile Include="Ma\maAxisBoxTest.cpp">
       <Filter>Ma</Filter>

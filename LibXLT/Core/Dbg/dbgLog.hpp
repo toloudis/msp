@@ -83,18 +83,6 @@ namespace dbgLog
 	void WriteError(std::wstring& i_File, int i_Line, const char* i_Format, ...);
 
 	//------------------------------------------------------------------------
-	//	UnicodetoANSI is a convenience function for debug logging that will turn an
-	//	itString into a std::string that is then returned
-	//	this function is windows only
-	//
-	// \param i_String original itString
-	// \param i_Length length of the string
-	//
-	// \return the converted string
-	//------------------------------------------------------------------------
-	std::string UnicodetoANSI(const uint16_t *i_String, int i_Length);
-
-	//------------------------------------------------------------------------
 	//	Don't call Init() and CleanUp() yourself; they are called 
 	//	by the package Init and Cleanup.
 	//

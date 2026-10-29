@@ -8,7 +8,9 @@
 \****************************************************************************/
 #include "Systems/Common/DriverCreator/cmmDriverCreatorVideo.hpp"
 
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 //#include "Support/tmln/tmlnChannelFilePath.hpp"
 #include "Support/tmln/tmlnChannelVideo.hpp"
@@ -115,7 +117,7 @@ tmlnDriver* cmmDriverCreatorVideo::CreateDriverByName( const char* i_DriverName,
 {
 	std::string key_name = get_key_name(i_ChannelName);
 
-	if (itStringUtil::CompareNoCase(i_DriverName, key_name) == 0)
+	if (envString::CompareNoCase(i_DriverName, key_name) == 0)
 	{
 		const chDefs::Name c_XXXK = make_key_chunk_name( i_Code );
 		tmlnDriverVideo * pDriver = new tmlnDriverVideo( io_Channel, c_XXXK );

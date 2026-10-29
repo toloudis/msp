@@ -8,6 +8,9 @@
 \****************************************************************************/
 
 #include "Core/ch/chXMLWriter.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 #include "Core/env/envNumberText.hpp"
 
 #include "Core/fs/fsFilePosSaver.hpp"

@@ -126,9 +126,9 @@ namespace
 	{
 		read_name_string(i_Reader, o_Data.m_Name);
 
-		chChunkParserUtil::ReadItString(i_Reader, o_Data.m_DiffuseMapName);
+		chChunkParserUtil::ReadLegacyWideString(i_Reader, o_Data.m_DiffuseMapName);
 		chChunkParserUtil::Read(i_Reader, o_Data.m_DiffuseFactor);
-		chChunkParserUtil::ReadItString(i_Reader, o_Data.m_SpecularMapName);
+		chChunkParserUtil::ReadLegacyWideString(i_Reader, o_Data.m_SpecularMapName);
 		chChunkParserUtil::Read(i_Reader, o_Data.m_SpecularFactor);
 		chChunkParserUtil::Read(i_Reader, o_Data.m_DiffuseAngle);
 		int32_t num_objects;

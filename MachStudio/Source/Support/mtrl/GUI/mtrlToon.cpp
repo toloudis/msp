@@ -9,7 +9,6 @@
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsResourceTracker.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
 #include "Core/prty/prtyColorRGBAEditUIInfo.hpp"
 #include "Core/prty/prtyComboBoxUIInfo.hpp"

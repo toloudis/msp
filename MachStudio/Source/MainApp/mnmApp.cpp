@@ -74,7 +74,9 @@
 #include "Core/fs/fsPackage.hpp"
 #include "Core/gf/gfPackage.hpp"
 #include "Core/it/itPackage.hpp"
-#include "Core/It/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/Ma/maFunctions.hpp"
 #include "Graphics/GraphicsLayer.hpp"
 #include "Graphics/g2d/g2dExceptionX.hpp"
@@ -440,25 +442,25 @@ void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 		case mainCommandLine::e_CapWidth:
 		{
 			DBG_LOG( "   Command-line CAPTURE-WIDTH " << value );
-			captRenderOutputDataUtil::SetCaptureWidth(itStringUtil::GetInt(value));
+			captRenderOutputDataUtil::SetCaptureWidth(envString::GetInt(value));
 			break;
 		}
 		case mainCommandLine::e_CapHeight:
 		{
 			DBG_LOG( "   Command-line CAPTURE-HEIGHT " << value );
-			captRenderOutputDataUtil::SetCaptureHeight(itStringUtil::GetInt(value));
+			captRenderOutputDataUtil::SetCaptureHeight(envString::GetInt(value));
 			break;
 		}
 		case mainCommandLine::e_CapStartFrame:
 		{
 			DBG_LOG( "   Command-line CAPTURE-STARTFRAME " << value );
-			captRenderOutputDataUtil::SetFrameWindowStart(itStringUtil::GetInt(value));
+			captRenderOutputDataUtil::SetFrameWindowStart(envString::GetInt(value));
 			break;
 		}
 		case mainCommandLine::e_CapEndFrame:
 		{
 			DBG_LOG( "   Command-line CAPTURE-ENDFRAME " << value );
-			captRenderOutputDataUtil::SetFrameWindowEnd(itStringUtil::GetInt(value));
+			captRenderOutputDataUtil::SetFrameWindowEnd(envString::GetInt(value));
 			break;
 		}
 		case mainCommandLine::e_CapOutputFile:
@@ -482,7 +484,7 @@ void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 		case mainCommandLine::e_CapSampling:
 		{
 			DBG_LOG( "   Command-line CAPTURE-SAMPLING " << value );
-			captRenderOutputDataUtil::SetCaptureSampling(itStringUtil::GetInt(value));
+			captRenderOutputDataUtil::SetCaptureSampling(envString::GetInt(value));
 			break;
 		}
 		case mainCommandLine::e_CapJitter:
@@ -504,7 +506,7 @@ void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 		case mainCommandLine::e_CapMotionSamples:
 		{
 			DBG_LOG( "   Command-line CAPTURE-MOTIONSAMPLES " << value );
-			captRenderOutputDataUtil::SetMotionSamples(itStringUtil::GetInt(value));
+			captRenderOutputDataUtil::SetMotionSamples(envString::GetInt(value));
 			break;
 		}
 		case mainCommandLine::e_CapPasses:

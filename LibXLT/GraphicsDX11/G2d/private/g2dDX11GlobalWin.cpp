@@ -9,8 +9,10 @@
 \****************************************************************************/
 
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
-#include "Core/it/itStringUtil.hpp"
 #include "Graphics/g2d/g2dPFD.hpp"
 
 #include <vector>

@@ -38,7 +38,7 @@ namespace
 							chDefs::Size i_Size,
 							tmlnDriverAnimatedFileNameInfo &o_Info )
 	{
-		chChunkParserUtil::ReadItString(i_Reader, o_Info.m_FirstFileName);
+		chChunkParserUtil::ReadLegacyWideString(i_Reader, o_Info.m_FirstFileName);
 		chChunkParserUtil::Read(i_Reader, o_Info.m_NumberOfFrames );
 		chChunkParserUtil::Read(i_Reader, o_Info.m_FrameRate);
 		chChunkParserUtil::Read(i_Reader, o_Info.m_bLooping );

@@ -27,7 +27,6 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
 #include "Core/gf/gfFileBin.hpp"
-#include "Core/it/itStringUtil.hpp"
 
 
 //============================================================================
@@ -123,7 +122,7 @@ void chtrDataParser::ReadCharacterChunk(chReader& i_Reader,
 			//o_Data.m_BaseData.m_Scale			= bdata.m_Position;
 
 			//DBG_TRACE("Char Name = " << (bdata.m_Name.GetString()));
-			//DBG_TRACE(" filename = " << (itStringUtil::GetStdString( bdata.m_Filename )));
+			//DBG_TRACE(" filename = " << (bdata.m_Filename));
 		}
 		else if ( name == tmlnBaseDataParser::GetChunkName() )
 		{
