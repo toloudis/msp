@@ -185,9 +185,16 @@ void rpnPanelViewer::Think( float i_fSimTime )
 //virtual
 void rpnPanelViewer::Render( float i_fSimTime, bool i_bClear )
 {
+	// The playback mode changes the fast render and low-res settings from
+	// the UI thread while this renders, so read each once: the state set
+	// here is the one restored below (restoring by a second read left low
+	// resolution on for good when it was turned off mid-render)
+	const bool bNoShadows = !m_bAllowShadows || rpnRenderingPrefs::GetAllFastRender();
+	const bool bAllLowRes = rpnRenderingPrefs::GetAllLowResolution();
+
 	// Turn off shadows if needed
 	bool bShadowsWereOn = g3dSingleLightRendering::GetDoSingleLightRendering();
-	if (!m_bAllowShadows || rpnRenderingPrefs::GetAllFastRender())
+	if (bNoShadows)
 	{
 		rndrPrefsUtil::SetMultipassRendering( false );
 	}
@@ -195,7 +202,7 @@ void rpnPanelViewer::Render( float i_fSimTime, bool i_bClear )
 	// Low resolution is turned on/off as a whole, not per individual panel
 	// right now. But this might change.
 	bool bWasLowRes = g3dPrefs::CurrentPrefs().m_bLowResolution;
-	if (rpnRenderingPrefs::GetAllLowResolution())
+	if (bAllLowRes)
 	{
 		// Should use CurrentPrefs or ViewportPrefs?
 		// Maybe it should be that this panel viewer has its
@@ -224,13 +231,13 @@ void rpnPanelViewer::Render( float i_fSimTime, bool i_bClear )
 	//	m_pTextLabel->SetRenderable(false);
 
 	// Restore the shadow state if we changed it
-	if (!m_bAllowShadows || rpnRenderingPrefs::GetAllFastRender())
+	if (bNoShadows)
 	{
 		rndrPrefsUtil::SetMultipassRendering( bShadowsWereOn );
 	}
 
 	// Restore low-res state
-	if (rpnRenderingPrefs::GetAllLowResolution())
+	if (bAllLowRes)
 	{
 		g3dPrefs::CurrentPrefs().m_bLowResolution = bWasLowRes;
 	}
