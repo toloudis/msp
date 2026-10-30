@@ -16,25 +16,24 @@
 
 #ifdef USE_QT
 
+#include <QGridLayout>
+
 namespace
 {
 	// Width of the time edit boxes
 	const int c_TimeEditWidth = 80;
 
 	//------------------------------------------------------------------------
-	// Time edit box with a label under it
+	// Time edit box in the first row of the grid, with a label under it
 	//------------------------------------------------------------------------
-	ptmTimeEdit* add_time_edit(QWidget* i_pParent, QHBoxLayout* i_pLayout, const char* i_pLabel)
+	ptmTimeEdit* add_time_edit(QWidget* i_pParent, QGridLayout* i_pLayout, int i_Column, const char* i_pLabel)
 	{
-		QVBoxLayout* pColumn = new QVBoxLayout;
-		pColumn->setSpacing(0);
 		ptmTimeEdit* pEdit = new ptmTimeEdit(i_pParent);
 		pEdit->setFixedWidth(c_TimeEditWidth);
 		pEdit->setAlignment(Qt::AlignCenter);
-		pColumn->addWidget(pEdit);
+		i_pLayout->addWidget(pEdit, 0, i_Column, Qt::AlignVCenter);
 		QLabel* pLabel = new QLabel(i_pLabel, i_pParent);
-		pColumn->addWidget(pLabel, 0, Qt::AlignHCenter);
-		i_pLayout->addLayout(pColumn);
+		i_pLayout->addWidget(pLabel, 1, i_Column, Qt::AlignHCenter | Qt::AlignTop);
 		return pEdit;
 	}
 }
@@ -45,12 +44,18 @@ namespace
 qtTimeSlider::qtTimeSlider( QWidget* parent )
 : QWidget( parent )
 {
-	QHBoxLayout* bSizer1 = new QHBoxLayout(this);
+	// The time boxes and the slider share the first row, centred on each
+	// other; the labels are in the second, and the rest of the pane's
+	// height goes below them.
+	QGridLayout* bSizer1 = new QGridLayout(this);
 	bSizer1->setContentsMargins(5, 5, 5, 5);
-	bSizer1->setSpacing(5);
+	bSizer1->setHorizontalSpacing(5);
+	bSizer1->setVerticalSpacing(0);
+	bSizer1->setColumnStretch(1, 1);
+	bSizer1->setRowStretch(2, 1);
 
 	// Min Time
-	m_floatEdit_MinTime = add_time_edit(this, bSizer1, "Min time");
+	m_floatEdit_MinTime = add_time_edit(this, bSizer1, 0, "Min time");
 	m_floatEdit_MinTime->SetTimeValue(tmlnTimeLine::GetMinimum());
 	m_floatEdit_MinTime->SetValueChangedCallback([this]() { MinTimeChanged(); });
 
@@ -64,15 +69,15 @@ qtTimeSlider::qtTimeSlider( QWidget* parent )
 	m_slider1->SetValueChangedCallback([this]() { SliderChanged(); });
 	QObject::connect(m_slider1->GetSlider(), &QSlider::sliderPressed, [this]() { SliderThumbDown(); });
 	QObject::connect(m_slider1->GetSlider(), &QSlider::sliderReleased, [this]() { SliderThumbUp(); });
-	bSizer1->addWidget( m_slider1, 1 );
+	bSizer1->addWidget( m_slider1, 0, 1, Qt::AlignVCenter );
 
 	// Current Time
-	m_floatEdit_CurrentTime = add_time_edit(this, bSizer1, "Current time");
+	m_floatEdit_CurrentTime = add_time_edit(this, bSizer1, 2, "Current time");
 	m_floatEdit_CurrentTime->SetTimeValue(tmlnTimeLine::GetValue());
 	m_floatEdit_CurrentTime->SetValueChangedCallback([this]() { CurrentTimeChanged(); });
 
 	// Max Time
-	m_floatEdit_MaxTime = add_time_edit(this, bSizer1, "Max time");
+	m_floatEdit_MaxTime = add_time_edit(this, bSizer1, 3, "Max time");
 	m_floatEdit_MaxTime->SetTimeValue(tmlnTimeLine::GetMaximum());
 	m_floatEdit_MaxTime->SetValueChangedCallback([this]() { MaxTimeChanged(); });
 

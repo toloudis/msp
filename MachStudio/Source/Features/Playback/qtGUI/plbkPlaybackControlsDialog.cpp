@@ -57,7 +57,7 @@ namespace
 
 		QToolButton* pButton = new QToolButton(i_pParent);
 		pButton->setIcon(icon);
-		pButton->setIconSize(QSize(30, 30));
+		pButton->setIconSize(QSize(24, 24));	// the images' own size
 		pButton->setAutoRaise(true);
 		pButton->setToolTip(i_pToolTip);
 		return pButton;
@@ -78,12 +78,15 @@ plbkPlaybackControlsDialog::plbkPlaybackControlsDialog( QWidget* parent,
 {
 	const QString icon_dir = get_icon_directory();
 
+	// Each row keeps its natural size, centred, at the top of the pane
 	QVBoxLayout* bSizer_panel = new QVBoxLayout( this );
+	bSizer_panel->setContentsMargins( 5, 5, 5, 5 );
+	bSizer_panel->setSpacing( 0 );
 
 	// Transport buttons: each one switches to the playback mode and
 	// runs one of its operations.
 	QHBoxLayout* pButtons = new QHBoxLayout();
-	pButtons->setSpacing( 3 );
+	pButtons->setSpacing( 0 );
 	struct ButtonInfo { const char* m_pIcon; const char* m_pToolTip; void (plbkModePlayback::*m_Op)(); };
 	const ButtonInfo buttons[] =
 	{
@@ -123,8 +126,10 @@ plbkPlaybackControlsDialog::plbkPlaybackControlsDialog( QWidget* parent,
 		}
 	}
 	bSizer_panel->addLayout( pButtons );
+	bSizer_panel->setAlignment( pButtons, Qt::AlignHCenter );
 
 	QHBoxLayout* bSizer_Settings = new QHBoxLayout();
+	bSizer_Settings->setContentsMargins( 0, 2, 0, 2 );
 	m_checkBox_loop = new QCheckBox( "Loop", this );
 	m_checkBox_loop->setToolTip( "Loop" );
 	bSizer_Settings->addWidget( m_checkBox_loop );
@@ -141,9 +146,13 @@ plbkPlaybackControlsDialog::plbkPlaybackControlsDialog( QWidget* parent,
 	m_slider_SloMo = new QSlider( Qt::Horizontal, this );
 	m_slider_SloMo->setRange( 0, 100 );
 	m_slider_SloMo->setToolTip( "Speed of Playback" );
-	bSizer4->addWidget( m_slider_SloMo, 1 );
+	m_slider_SloMo->setFixedWidth( 100 );	// wxSlider's default width
+	bSizer4->addStretch( 1 );
+	bSizer4->addWidget( m_slider_SloMo );
 	bSizer4->addWidget( new QLabel( "Slo-Mo", this ) );
+	bSizer4->addStretch( 1 );
 	bSizer_panel->addLayout( bSizer4 );
+	bSizer_panel->addStretch( 1 );
 
 	//	set the default from the prefs
 	PrefsData& data = PrefsMgr::Data();

@@ -307,8 +307,9 @@ chnlTraxDialog::chnlTraxDialog( QWidget* parent,
 	m_choice_Display->setMinimumWidth( 120 );
 	fgSizer_upperleft->addWidget( m_choice_Display, 0, 1 );
 
+	// Snap under the zoom slider, the notes and markers under the filter
 	m_checkBox_Snap = new QCheckBox( "Snap", this );
-	fgSizer_upperleft->addWidget( m_checkBox_Snap, 1, 1, Qt::AlignRight );
+	fgSizer_upperleft->addWidget( m_checkBox_Snap, 1, 0, Qt::AlignRight | Qt::AlignTop );
 
 	QVBoxLayout* bSizer2 = new QVBoxLayout();
 	struct RowInfo { const char* m_pLabel; const char* m_pRemoveTip; const char* m_pAddTip; const char* m_pPrevTip; const char* m_pNextTip;
@@ -340,7 +341,7 @@ chnlTraxDialog::chnlTraxDialog( QWidget* parent,
 		QObject::connect( pPrev, &QPushButton::clicked, row.m_Prev );
 		QObject::connect( pNext, &QPushButton::clicked, row.m_Next );
 	}
-	fgSizer_upperleft->addLayout( bSizer2, 1, 0 );
+	fgSizer_upperleft->addLayout( bSizer2, 1, 1 );
 
 	// Driver conflict messages
 	m_staticText2 = new QLabel( this );
