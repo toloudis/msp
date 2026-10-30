@@ -13,6 +13,7 @@
 #include "Core/dbg/dbgMsg.hpp"
 
 #include <algorithm>
+#include <climits>
 #include <functional>
 #include <map>
 #include <vector>
@@ -61,6 +62,21 @@ namespace
 
 	//---------------------------------------------------------------------------
 	//---------------------------------------------------------------------------
+	//---------------------------------------------------------------------------
+	// The left and right docks run the full height of the window, so a pane
+	// there can sit beside the viewport and the bottom docks (the time
+	// slider) both, as wxAUI's outer layers can. Saved states hold the
+	// corners too, so this follows every restoreState: layouts saved before
+	// gave the bottom docks the corners.
+	//---------------------------------------------------------------------------
+	void set_corners(QMainWindow* i_pMainForm)
+	{
+		i_pMainForm->setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+		i_pMainForm->setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
+	}
+
+	//---------------------------------------------------------------------------
+	//---------------------------------------------------------------------------
 	void show_dock(QDockWidget* i_pDock, bool i_bShow)
 	{
 		i_pDock->setVisible(i_bShow);
@@ -96,6 +112,7 @@ namespace
 		QString m_Name;
 		int m_State, m_Dir, m_Layer, m_Row, m_Pos, m_Prop;
 		QRect m_FloatRect;
+		int m_FixedSize;		// physical pixels along its row, or -1 to share it by m_Prop
 	};
 
 	struct WxPerspective
@@ -153,6 +170,7 @@ namespace
 			pane.m_Prop		= std::max(1, values["prop"].toInt());
 			pane.m_FloatRect = QRect(values["floatx"].toInt(), values["floaty"].toInt(),
 									 values["floatw"].toInt(), values["floath"].toInt());
+			pane.m_FixedSize = -1;
 			o_Perspective.m_Panes.push_back(pane);
 		}
 		return true;
@@ -197,6 +215,67 @@ namespace
 	bool same_row(const WxPane& i_A, const WxPane& i_B)
 	{
 		return i_A.m_Dir == i_B.m_Dir && i_A.m_Layer == i_B.m_Layer && i_A.m_Row == i_B.m_Row;
+	}
+
+	bool is_docked(const WxPane& i_Pane)
+	{
+		return !(i_Pane.m_State & (c_WxToolbar | c_WxHidden | c_WxFloating));
+	}
+
+	//---------------------------------------------------------------------------
+	// Qt's left and right docks run the full height of the window (see
+	// Init), so a bottom row that wxAUI puts outside the side columns,
+	// running under them, can't span the window here. Its first pane goes
+	// to the bottom of the left column and its last to the bottom of the
+	// right one, keeping the row's height; the panes between stay at the
+	// bottom. A side with no docked panes leaves the row alone.
+	//---------------------------------------------------------------------------
+	void move_outer_bottom_panes(WxPerspective& io_Perspective)
+	{
+		// the outermost row of each side column
+		const WxPane* pLeft = NULL;
+		const WxPane* pRight = NULL;
+		for (const WxPane& pane : io_Perspective.m_Panes)
+		{
+			if (!is_docked(pane))
+				continue;
+			if (pane.m_Dir == c_WxDockLeft && (!pLeft || outer_first(pane, *pLeft)))
+				pLeft = &pane;
+			else if (pane.m_Dir == c_WxDockRight && (!pRight || outer_first(pane, *pRight)))
+				pRight = &pane;
+		}
+		if (!pLeft && !pRight)
+			return;
+
+		// the docked panes of each bottom row, in order along it
+		std::map<std::pair<int, int>, std::vector<WxPane*> > rows;
+		for (WxPane& pane : io_Perspective.m_Panes)
+			if (pane.m_Dir == c_WxDockBottom && is_docked(pane))
+				rows[std::make_pair(pane.m_Layer, pane.m_Row)].push_back(&pane);
+
+		for (auto& row : rows)
+		{
+			std::vector<WxPane*>& panes = row.second;
+			std::stable_sort(panes.begin(), panes.end(),
+				[](const WxPane* i_pA, const WxPane* i_pB) { return i_pA->m_Pos < i_pB->m_Pos; });
+			const int height = io_Perspective.DockSize(c_WxDockBottom, row.first.first, row.first.second);
+
+			const auto move_to = [height](WxPane* io_pPane, const WxPane& i_Column)
+			{
+				io_pPane->m_Dir = i_Column.m_Dir;
+				io_pPane->m_Layer = i_Column.m_Layer;
+				io_pPane->m_Row = i_Column.m_Row;
+				io_pPane->m_Pos = INT_MAX;		// below the column's panes
+				io_pPane->m_FixedSize = height;
+			};
+			if (pLeft && row.first.first > pLeft->m_Layer && !panes.empty())
+			{
+				move_to(panes.front(), *pLeft);
+				panes.erase(panes.begin());
+			}
+			if (pRight && row.first.first > pRight->m_Layer && !panes.empty())
+				move_to(panes.back(), *pRight);
+		}
 	}
 
 	//---------------------------------------------------------------------------
@@ -257,7 +336,39 @@ namespace
 	{
 		QList<QDockWidget*> m_Docks;
 		QList<int> m_Sizes;
+		QList<int> m_FixedSizes;		// physical pixels, or -1 to share the rest by m_Sizes
 		Qt::Orientation m_Orientation;
+
+		// Sizes for resizeDocks: the fixed ones in logical pixels and the
+		// rest sharing what the docks have now, less those
+		QList<int> Resolve(double i_Scale) const
+		{
+			bool bFixed = false;
+			for (int size : m_FixedSizes)
+				bFixed = bFixed || size > 0;
+			if (!bFixed)
+				return m_Sizes;
+
+			int total = 0, fixed = 0, shared = 0;
+			for (int i = 0; i < m_Docks.size(); ++i)
+			{
+				total += (m_Orientation == Qt::Vertical) ? m_Docks[i]->height() : m_Docks[i]->width();
+				if (m_FixedSizes[i] > 0)
+					fixed += int(m_FixedSizes[i] / i_Scale + 0.5);
+				else
+					shared += m_Sizes[i];
+			}
+			const int rest = std::max(0, total - fixed);
+			QList<int> sizes;
+			for (int i = 0; i < m_Docks.size(); ++i)
+			{
+				if (m_FixedSizes[i] > 0)
+					sizes << int(m_FixedSizes[i] / i_Scale + 0.5);
+				else
+					sizes << ((shared > 0) ? int(double(rest) * m_Sizes[i] / shared + 0.5) : 0);
+			}
+			return sizes;
+		}
 	};
 
 	void apply_wx_side(QMainWindow* i_pMainForm, const WxPerspective& i_Perspective, int i_Dir,
@@ -324,6 +435,7 @@ namespace
 				}
 				along_sizes.m_Docks << pDock;
 				along_sizes.m_Sizes << rows[r][i].first.m_Prop;
+				along_sizes.m_FixedSizes << rows[r][i].first.m_FixedSize;
 			}
 			if (along_sizes.m_Docks.size() > 1)
 				o_Sizes.push_back(along_sizes);
@@ -334,6 +446,7 @@ namespace
 			{
 				row_sizes.m_Docks << rows[r].front().second;
 				row_sizes.m_Sizes << int(size / scale + 0.5);	// wx sizes are in physical pixels
+				row_sizes.m_FixedSizes << -1;
 			}
 		}
 		if (!row_sizes.m_Docks.isEmpty())
@@ -389,7 +502,10 @@ namespace
 	//---------------------------------------------------------------------------
 	void apply_wx_perspective(QMainWindow* i_pMainForm, const WxPerspective& i_Perspective)
 	{
-		apply_wx_toolbars(i_pMainForm, i_Perspective);
+		WxPerspective perspective = i_Perspective;	// moved to suit Qt's dock areas
+		move_outer_bottom_panes(perspective);
+
+		apply_wx_toolbars(i_pMainForm, perspective);
 
 		// Docks the perspective doesn't mention are hidden, as wxAUI does;
 		// hidden ones stay on their side, ready to be shown there.
@@ -397,7 +513,7 @@ namespace
 		for (QDockWidget* pDock : all_docks)
 		{
 			const WxPane* pPane = NULL;
-			for (const WxPane& pane : i_Perspective.m_Panes)
+			for (const WxPane& pane : perspective.m_Panes)
 				if (pane.m_Name == pDock->objectName())
 					pPane = &pane;
 
@@ -427,12 +543,13 @@ namespace
 		std::vector<DockSizes> sizes;
 		const int sides[] = { c_WxDockTop, c_WxDockBottom, c_WxDockLeft, c_WxDockRight };
 		for (int dir : sides)
-			apply_wx_side(i_pMainForm, i_Perspective, dir, sizes);
+			apply_wx_side(i_pMainForm, perspective, dir, sizes);
 
 		new LayoutApplier(i_pMainForm, [i_pMainForm, sizes]()
 		{
 			for (const DockSizes& dock_sizes : sizes)
-				i_pMainForm->resizeDocks(dock_sizes.m_Docks, dock_sizes.m_Sizes, dock_sizes.m_Orientation);
+				i_pMainForm->resizeDocks(dock_sizes.m_Docks, dock_sizes.Resolve(i_pMainForm->devicePixelRatioF()),
+										 dock_sizes.m_Orientation);
 		});
 	}
 } // end of namespace
@@ -449,6 +566,7 @@ void tqtPaneMgr::Init()
 		tqtSystem::g_pMainForm->setDockOptions(QMainWindow::AnimatedDocks |
 											   QMainWindow::AllowTabbedDocks |
 											   QMainWindow::AllowNestedDocks);
+		set_corners(tqtSystem::g_pMainForm);
 	}
 	l_bInitialized = true;
 }
@@ -623,14 +741,22 @@ void tqtPaneMgr::SetCurrentPerspective(const std::string& i_Perspective)
 			QByteArray state = QByteArray::fromBase64(QByteArray(i_Perspective.c_str() + prefix_len));
 			QMainWindow* pMainForm = tqtSystem::g_pMainForm;
 			pMainForm->restoreState(state);
-			new LayoutApplier(pMainForm, [pMainForm, state]() { pMainForm->restoreState(state); });
+			set_corners(pMainForm);
+			new LayoutApplier(pMainForm, [pMainForm, state]()
+			{
+				pMainForm->restoreState(state);
+				set_corners(pMainForm);
+			});
 		}
 		else
 		{
 			// a layout saved by the wxWidgets build
 			WxPerspective perspective;
 			if (parse_wx_perspective(i_Perspective, perspective))
+			{
+				set_corners(tqtSystem::g_pMainForm);
 				apply_wx_perspective(tqtSystem::g_pMainForm, perspective);
+			}
 			else
 				DBG_LOG("Ignoring a pane layout that is neither a Qt nor a wxWidgets one.");
 		}
