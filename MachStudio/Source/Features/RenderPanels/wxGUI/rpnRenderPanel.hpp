@@ -41,6 +41,7 @@ public:
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	rpnRenderPanel(wxWindow* parent);
+	~rpnRenderPanel();
 
 	//------------------------------------------------------------------------
 	// Set render view to control
@@ -174,6 +175,7 @@ private:
 	tma3dRenderView* m_pRenderView;
 	rpnPanelViewer *m_pPanelViewer; // just a cast of the viewer owned by m_pRenderView
 	int m_RenderWidth, m_RenderHeight;
+	wxSize m_ResizedSize;		// client size the render window was last sized to
 	bool m_bHasFocus;
 	bool m_bCanChangeRenderPass;
 	std::string	m_CameraName;

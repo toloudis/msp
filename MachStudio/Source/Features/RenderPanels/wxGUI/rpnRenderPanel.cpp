@@ -41,14 +41,39 @@
 #include "ToolUIWx/twx/twxContextMenu.hpp"
 #include "ToolUIWx/twx/twxMessaging.hpp"
 
+#include <algorithm>
 #include <sstream>
+#include <vector>
 
 
 #ifdef USE_WXWIDGETS
+#include <wx/msw/wrapwin.h>
+
 //============================================================================
 //============================================================================
 namespace
 {
+	//--------------------------------------------------------------------
+	// wx freezes windows around layout passes (many while a scene loads,
+	// one when a pane is shown), and freezes each one's children with it.
+	// WM_SETREDRAW turns redrawing off, which takes a window and all its
+	// children out of what the compositor shows: a Vulkan swap chain's
+	// image flickers off and on. The render panels draw nothing with GDI,
+	// so they and the windows holding them keep redrawing on (wx keeps its
+	// own freeze count); other windows freeze as before.
+	//--------------------------------------------------------------------
+	std::vector<rpnRenderPanel*> l_RenderPanels;
+
+	bool keep_redraw(wxWindowMSW* i_pWindow, WXUINT, WXWPARAM, WXLPARAM)
+	{
+		for (rpnRenderPanel* pPanel : l_RenderPanels)
+		{
+			if (i_pWindow->IsDescendant(pPanel))	// the panel or one holding it
+				return true;
+		}
+		return false;
+	}
+
 	// Highlight text color if render panel has focus?
 	const bool c_bHighlightTextColor = true; 
 	const maFloatRGBA c_HighlightTextColor(1,1,0,1); // yellow highlight
@@ -121,6 +146,7 @@ rpnRenderPanel::rpnRenderPanel(wxWindow* parent)
 	m_pRenderView(NULL),
 	m_RenderWidth(-1), 
 	m_RenderHeight(-1),
+	m_ResizedSize(0, 0),
 	m_PassName("Beauty"),
 	m_CameraName(""),
 	m_bHasFocus(false),
@@ -130,6 +156,19 @@ rpnRenderPanel::rpnRenderPanel(wxWindow* parent)
 	// Since we are drawing using DirectX, we can set the custom flag
 	// to prevent flickering:
 	this->SetBackgroundStyle(wxBG_STYLE_CUSTOM);
+
+	if (l_RenderPanels.empty())
+		wxWindow::MSWRegisterMessageHandler(WM_SETREDRAW, keep_redraw);
+	l_RenderPanels.push_back(this);
+}
+
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+rpnRenderPanel::~rpnRenderPanel()
+{
+	l_RenderPanels.erase(std::remove(l_RenderPanels.begin(), l_RenderPanels.end(), this), l_RenderPanels.end());
+	if (l_RenderPanels.empty())
+		wxWindow::MSWUnregisterMessageHandler(WM_SETREDRAW, keep_redraw);
 }
 
 //--------------------------------------------------------------------
@@ -456,6 +495,8 @@ void rpnRenderPanel::do_resize()
 	{		
 		if (rect.GetWidth() > 0 && rect.GetHeight() > 0)
 		{
+			m_ResizedSize = rect.GetSize();
+
 			// Resize the underlying window to fill the panel. With a render
 			// resolution, render at that size and scale it to fit the panel.
 			if (m_RenderWidth > 0 && m_RenderHeight > 0)
@@ -719,6 +760,12 @@ void rpnRenderPanel::OnLeave(wxMouseEvent& i_Event)
 //--------------------------------------------------------------------
 void rpnRenderPanel::OnSize(wxSizeEvent& i_Event)
 {		
+	// Layout passes (AUI updates as panes are shown and filled in while
+	// a scene loads) size the panel again at the size it has: resizing the
+	// render window then would only stop the render thread and remake its
+	// buffers, which flickers the viewport
+	if (this->GetClientSize() == m_ResizedSize)
+		return;
 	this->do_resize();
 }
 

@@ -434,8 +434,16 @@ namespace gvk
 	{
 		//	An image acquired at the old size can't be given back unpresented:
 		//	present it now (DX11's ResizeBuffers drops the frame being drawn),
-		//	so the next frame acquires one of the new size
+		//	so the next frame acquires one of the new size. Panels resize to
+		//	the same size often (layout passes, a scene's render size): then
+		//	the swap chain is kept, as presenting a half-drawn image and
+		//	making new images each time flickers.
+		int client_width = 0, client_height = 0;
 		if (m_pSwapchain)
+		{
+			vkdWindowClientSize(m_Hwnd, client_width, client_height);
+		}
+		if (m_pSwapchain && (client_width != (int)m_pSwapchain->Width() || client_height != (int)m_pSwapchain->Height()))
 		{
 			if (m_pSwapchain->IsAcquired())
 			{
