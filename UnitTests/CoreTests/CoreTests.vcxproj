@@ -111,6 +111,8 @@
     <ClCompile Include="Env\envWorkerThreadTest.cpp" />
     <ClCompile Include="Fs\fsFileTest.cpp" />
     <ClCompile Include="Fs\fsFileUtilTest.cpp" />
+    <ClCompile Include="Fs\fsFileEnumTest.cpp" />
+    <ClCompile Include="Fs\fsFileStreamModeTest.cpp" />
     <ClCompile Include="Fs\fsPathUtilTest.cpp" />
     <ClCompile Include="Fs\fsNarrowPathTest.cpp" />
     <ClCompile Include="Fs\fsXMLTest.cpp" />

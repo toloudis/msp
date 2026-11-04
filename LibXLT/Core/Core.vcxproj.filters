@@ -26,12 +26,6 @@
     <Filter Include="Geo\GeoPrivate">
       <UniqueIdentifier>{5fe8731f-23c5-4bc0-8a57-635067cb8fa0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="It">
-      <UniqueIdentifier>{4a78c454-c17f-41cf-9ece-de23fbc2121f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="It\ItPrivate">
-      <UniqueIdentifier>{f6015260-a791-4316-bf0c-08dd95d1a737}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Fs">
       <UniqueIdentifier>{fb264a63-0083-4e49-ab5d-a3813b65ac59}</UniqueIdentifier>
     </Filter>
@@ -315,21 +309,6 @@
     <ClInclude Include="Geo\geoTwinVertexEdgeIterator.hpp">
       <Filter>Geo</Filter>
     </ClInclude>
-    <ClInclude Include="It\itLocales.hpp">
-      <Filter>It</Filter>
-    </ClInclude>
-    <ClInclude Include="It\itLocaleUtil.hpp">
-      <Filter>It</Filter>
-    </ClInclude>
-    <ClInclude Include="It\itPackage.hpp">
-      <Filter>It</Filter>
-    </ClInclude>
-    <ClInclude Include="It\private\itLocaleUtilPAC.hpp">
-      <Filter>It\ItPrivate</Filter>
-    </ClInclude>
-    <ClInclude Include="It\private\itLocaleUtilPACWin.hpp">
-      <Filter>It\ItPrivate</Filter>
-    </ClInclude>
     <ClInclude Include="Fs\fsAbsolutePathMgr.hpp">
       <Filter>Fs</Filter>
     </ClInclude>
@@ -343,9 +322,6 @@
       <Filter>Fs</Filter>
     </ClInclude>
     <ClInclude Include="Fs\fsFileStream.hpp">
-      <Filter>Fs</Filter>
-    </ClInclude>
-    <ClInclude Include="Fs\fsFileTimeUtil.hpp">
       <Filter>Fs</Filter>
     </ClInclude>
     <ClInclude Include="Fs\fsFileUtil.hpp">
@@ -396,22 +372,10 @@
     <ClInclude Include="Fs\fsCategoryConfigFileUtil.hpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClInclude>
-    <ClInclude Include="Fs\private\fsFileEnumPAC.hpp">
-      <Filter>Fs\FsPrivate</Filter>
-    </ClInclude>
-    <ClInclude Include="Fs\private\fsFileEnumPACWin.hpp">
-      <Filter>Fs\FsPrivate</Filter>
-    </ClInclude>
     <ClInclude Include="Fs\private\fsFileNotify.hpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClInclude>
     <ClInclude Include="Fs\private\fsFileNotifyMgr.hpp">
-      <Filter>Fs\FsPrivate</Filter>
-    </ClInclude>
-    <ClInclude Include="Fs\private\fsFileTimeUtilPAC.hpp">
-      <Filter>Fs\FsPrivate</Filter>
-    </ClInclude>
-    <ClInclude Include="Fs\private\fsFileTimeUtilPACWin.hpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClInclude>
     <ClInclude Include="Fs\private\fsAbsolutePathMgrPAC.hpp">
@@ -960,15 +924,6 @@
     <ClCompile Include="Geo\private\geoTwinMesh.cpp">
       <Filter>Geo\GeoPrivate</Filter>
     </ClCompile>
-    <ClCompile Include="It\private\itLocaleUtil.cpp">
-      <Filter>It\ItPrivate</Filter>
-    </ClCompile>
-    <ClCompile Include="It\private\itLocaleUtilPACWin.cpp">
-      <Filter>It\ItPrivate</Filter>
-    </ClCompile>
-    <ClCompile Include="It\private\itPackage.cpp">
-      <Filter>It\ItPrivate</Filter>
-    </ClCompile>
     <ClCompile Include="Fs\private\fsAbsolutePathMgr.cpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClCompile>
@@ -987,22 +942,13 @@
     <ClCompile Include="Fs\private\fsFileEnum.cpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClCompile>
-    <ClCompile Include="Fs\private\fsFileEnumPACWin.cpp">
-      <Filter>Fs\FsPrivate</Filter>
-    </ClCompile>
     <ClCompile Include="Fs\private\fsFileNotify.cpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Fs\private\fsFileNotifyMgr.cpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClCompile>
-    <ClCompile Include="Fs\private\fsFileStreamPACWin.cpp">
-      <Filter>Fs\FsPrivate</Filter>
-    </ClCompile>
-    <ClCompile Include="Fs\private\fsFileTimeUtil.cpp">
-      <Filter>Fs\FsPrivate</Filter>
-    </ClCompile>
-    <ClCompile Include="Fs\private\fsFileTimeUtilPACWin.cpp">
+    <ClCompile Include="Fs\private\fsFileStream.cpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Fs\private\fsFileUtil.cpp">

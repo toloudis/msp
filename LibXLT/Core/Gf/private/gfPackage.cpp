@@ -13,7 +13,6 @@
 #include "Core/env/envPackage.hpp"
 #include "Core/fs/fsPackage.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/it/itPackage.hpp"
 
 
 //============================================================================
@@ -44,7 +43,6 @@ void gfPackage::Init()
 		envPackage::Init();
 		dbgPackage::Init();
 		fsPackage::Init();
-		itPackage::Init();
 
 		// initialize our internal stuff
 		//
@@ -72,7 +70,6 @@ void gfPackage::CleanUp() throw()
 
 		// clean up packages we depend on, in reverse order
 		//
-		itPackage::CleanUp();
 		fsPackage::CleanUp();
 		dbgPackage::CleanUp();
 		envPackage::CleanUp();

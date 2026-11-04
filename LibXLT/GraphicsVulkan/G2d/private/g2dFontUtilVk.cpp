@@ -2,8 +2,8 @@
 **  g2dFontUtilVk.cpp
 **
 **      GraphicsVulkan port of GraphicsDX11's g2dFontUtilDX11.cpp (the
-**	BITMAP_FONT_SPRITE path; the DirectWrite path and the DXUT text code
-**	after it are compiled out or unused in DX11 and not ported).
+**	bitmap font; the DXUT text code after it is unused in DX11 and not
+**	ported).
 **
 **	StudioGPU
 **	Copyright(C) 2009 - All Rights Reserved
@@ -400,8 +400,6 @@ g2dFontHandle g2dFontUtilVk::LoadFont(const std::string& /*i_Name*/, int i_Size)
 //------------------------------------------------------------------------
 //	ReleaseFont informs the system that you are done with the given
 //	g2dFontHandle.
-//	(DX11 also calls Win32's DeleteObject on the handle, which isn't a GDI
-//	object; not ported.)
 //------------------------------------------------------------------------
 void g2dFontUtilVk::ReleaseFont(g2dFontHandle i_Handle)
 {

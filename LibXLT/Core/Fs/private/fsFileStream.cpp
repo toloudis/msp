@@ -1,35 +1,46 @@
 /**********************************************************
-**  fsFileStreamPACWin.cpp
+**  fsFileStream.cpp
 **
 **      see .hpp
+**
+**	The file is a std::filebuf opened with a std::filesystem::path, so
+**	this is the same on every platform. Reads and writes go through the
+**	stream's own buffer as before; its behavior is pinned down by
+**	UnitTests/CoreTests/Fs/fsFileStreamModeTest.cpp and fsFileTest.cpp.
 **
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved
 \*********************************************************/
 #include "Core/fs/fsFileStream.hpp"
 
-#include <windows.h>
-
-// Windows unfortunately defines several functions as macros to conditionally
-// compile with Unicode or ANSI.  We will undefine them here and call the
-// specific versions (which we have to do anyway).
-//
-#undef CreateFile
-
-//	The windows documentation mentions INVALID_SET_FILE_POINTER,
-//	but it is stupidly never defined in a windows header.  So I must
-//	define it here.  Normally I would never use a #define but I
-//	will try to emulate how Windows would have done it.  sigh...
-#define INVALID_SET_FILE_POINTER ((DWORD)-1)
-
-#include "Core/app/private/appApplicationPAC.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
+#ifndef FS_FILEUTIL_HPP
 #include "Core/fs/fsFileUtil.hpp"
+#endif
+#ifndef FS_FILEX_HPP
 #include "Core/fs/fsFileX.hpp"
-#include "Core/fs/fsResourceTracker.hpp"
+#endif
+#ifndef FS_LOCATOR_HPP
+#include "Core/fs/fsLocator.hpp"
+#endif
 #ifndef FS_PATHUTIL_HPP
 #include "Core/fs/fsPathUtil.hpp"
 #endif
+#ifndef FS_RESOURCETRACKER_HPP
+#include "Core/fs/fsResourceTracker.hpp"
+#endif
+#ifndef FS_FILEERRORUTIL_HPP
+#include "Core/fs/private/fsFileErrorUtil.hpp"
+#endif
 #include "Core/Ma/maFunctions.hpp"
+
+#include <cerrno>
+#include <cstring>
+#include <filesystem>
+#include <fstream>
+#include <system_error>
 
 
 //============================================================================
@@ -57,17 +68,18 @@ public:
 	//----------------------------------------------------------------------------
 	//----------------------------------------------------------------------------
 	fsFileStreamImp()
-	:	m_File(NULL),
+	:	m_Access(fsFileStream::e_ReadOnly),
 		m_FilePointer(0),
 		m_pBuffer(NULL),
 		m_BufferLoc(0),
 		m_BufferValid(0),
-		m_Access(fsFileStream::e_ReadOnly) //e_ReadWrite)
+		m_BufferFormat(e_BufferRead)
 	{
 	}
 
 public:
-	HANDLE m_File;
+	std::filebuf m_File;
+	std::filesystem::path m_Path;
 	fsFileStream::AccessType m_Access;
 	fsFileStream::FilePosType m_FilePointer;
 	fsLocator m_Locator;
@@ -84,50 +96,15 @@ public:
 namespace
 {
 	//------------------------------------------------------------------------
+	//	A read or write failed: the C runtime under std::filebuf reports why
+	//	in errno (the standard doesn't promise it, so with no errno the
+	//	error is unknown)
 	//------------------------------------------------------------------------
-	void handle_windows_error(const fsLocator& i_Locator)
+	[[noreturn]] void throw_io_error(const fsLocator& i_Locator)
 	{
-		DWORD error = ::GetLastError();
-
-		switch ( error )
-		{
-			case ERROR_FILE_NOT_FOUND:
-				throw fsFileDoesntExistX(i_Locator);
-				break;
-			case ERROR_PATH_NOT_FOUND:
-				throw fsDirectoryDoesntExistX(i_Locator);
-				break;
-			case ERROR_INVALID_DRIVE:
-				throw fsInvalidLocatorX(i_Locator);
-				break;
-			case ERROR_SHARING_VIOLATION:
-				throw fsFileInUseX(i_Locator);
-				break;
-			case ERROR_LOCK_VIOLATION:
-				throw fsFileInUseX(i_Locator);
-				break;
-			case ERROR_FILE_EXISTS:
-				throw fsFileExistsX(i_Locator);
-				break;
-			case ERROR_DRIVE_LOCKED:
-				throw fsFileInUseX(i_Locator);
-				break;
-			case ERROR_INVALID_NAME:
-				throw fsInvalidLocatorX(i_Locator);
-				break;
-			case ERROR_DIR_NOT_EMPTY:
-				throw fsDirectoryNotEmptyX(i_Locator);
-				break;
-			case ERROR_PATH_BUSY:
-				throw fsFileInUseX(i_Locator);
-				break;
-			case ERROR_ACCESS_DENIED:
-				throw fsReadOnlyX(i_Locator);
-				break;
-			default:
-				throw fsUnknownX(i_Locator);
-				break;
-		}
+		if (errno == 0)
+			throw fsUnknownX(i_Locator);
+		fsFileErrorUtil::Throw(std::error_code(errno, std::generic_category()), i_Locator);
 	}
 
 	//------------------------------------------------------------------------
@@ -137,19 +114,7 @@ namespace
 	{
 		DBG_ASSERT(io_pImp->m_BufferFormat==e_BufferRead, "Needs read buffer format.");
 		io_pImp->m_BufferLoc = 0;
-		io_pImp->m_BufferValid = 0;
-		DWORD num_read = 0;
-		BOOL ret_val = ::ReadFile(	io_pImp->m_File,
-								io_pImp->m_pBuffer,
-								DWORD(c_ReadBufferSize),
-								&num_read,
-								NULL);
-		if ( ret_val == 0 )
-		{
-			// handle failure
-			handle_windows_error(io_pImp->m_Locator);
-		}
-		io_pImp->m_BufferValid = num_read;
+		io_pImp->m_BufferValid = int(io_pImp->m_File.sgetn(reinterpret_cast<char*>(io_pImp->m_pBuffer), c_ReadBufferSize));
 	}
 
 	//------------------------------------------------------------------------
@@ -159,17 +124,10 @@ namespace
 	void write_out_buffer(fsFileStreamImp* io_pImp)
 	{
 		DBG_ASSERT(io_pImp->m_BufferFormat==e_BufferWrite, "Needs write buffer format.");
-		DWORD num_written = 0;
-		BOOL ret_val = ::WriteFile(	io_pImp->m_File,
-								io_pImp->m_pBuffer,
-								io_pImp->m_BufferValid,
-								&num_written,
-								NULL);
-		if ( ret_val == 0 )
-		{
-			// handle failure
-			handle_windows_error(io_pImp->m_Locator);
-		}
+		const std::streamsize count = io_pImp->m_BufferValid;
+		errno = 0;
+		if (io_pImp->m_File.sputn(reinterpret_cast<const char*>(io_pImp->m_pBuffer), count) != count)
+			throw_io_error(io_pImp->m_Locator);
 		io_pImp->m_BufferLoc = 0;
 		io_pImp->m_BufferValid = 0;
 	}
@@ -187,53 +145,52 @@ namespace
 		}
 	}
 
+	//------------------------------------------------------------------------
+	//	The stream couldn't be opened: forget the file and throw
+	//------------------------------------------------------------------------
+	[[noreturn]] void open_failed(const fsLocator& i_Locator, const std::error_code& i_Error)
+	{
+		std::string filename;
+		fsFileUtil::LocatorToANSIFilename(i_Locator, filename);
+		DBG_WARNING( "Can't open file " << filename.c_str() );
+
+		fsResourceTracker::Remove(i_Locator);		// shouldn't be here?  put where throw is CAUGHT
+
+		if (!i_Error)
+			throw fsUnknownX(i_Locator);
+		fsFileErrorUtil::Throw(i_Error, i_Locator);
+	}
 }
 
 //------------------------------------------------------------------------
 //	Constructor.  This could throw an exception if the file doesn't
 //	exist, or something.  So be ready!
+//
+//	Every access type opens an existing file; none creates one
+//	(fsFileUtil::CreateFile does). e_WriteOnly writes over the file from
+//	the start, keeping what is past the end of what is written;
+//	e_WriteCreate empties it first.
 //------------------------------------------------------------------------
 fsFileStream::fsFileStream(const fsLocator& i_Locator, AccessType i_DesiredAccess)
 {
-	DWORD access;
-	DWORD share_mode;
-	DWORD open_flag = OPEN_EXISTING;
-	BufferFormat format;
+	std::ios::openmode mode = std::ios::binary;
+	BufferFormat format = e_BufferRead;
 
 	switch ( i_DesiredAccess )
 	{
 		case e_ReadOnly:
-			//DBG_LOG("      file access: read only");
-			access = GENERIC_READ;
-			share_mode = FILE_SHARE_READ;
+			mode |= std::ios::in;
 			format = e_BufferRead;
 		break;
 
 		case e_WriteOnly:
-			//DBG_LOG("      file access: write only");
-			access = GENERIC_WRITE;
-			share_mode = 0;
+			// in | out opens an existing file without emptying it
+			mode |= std::ios::in | std::ios::out;
 			format = e_BufferWrite;
 		break;
 
-		//case e_ReadWrite:
-		//	//DBG_LOG("      file access: read-write only");
-		//	access = GENERIC_READ | GENERIC_WRITE;
-		//	share_mode = 0;
-		//break;
-
-		//case e_ReadWriteCreate:
-		//	//DBG_LOG("      file access: read-write-create only");
-		//	access = GENERIC_READ | GENERIC_WRITE;
-		//	share_mode = 0;
-		//	open_flag = OPEN_ALWAYS | TRUNCATE_EXISTING;
-		//break;
-
 		case e_WriteCreate:
-			//DBG_LOG("      file access: read-write-create only");
-			access = GENERIC_WRITE;
-			share_mode = 0;
-			open_flag = OPEN_ALWAYS | TRUNCATE_EXISTING;
+			mode |= std::ios::out | std::ios::trunc;
 			format = e_BufferWrite;
 		break;
 
@@ -242,58 +199,34 @@ fsFileStream::fsFileStream(const fsLocator& i_Locator, AccessType i_DesiredAcces
 		break;
 	}
 
-	//	for DEBUG only
-	//
-	//if (!fsResourceTracker::IsInList(i_Locator))
-	//{
-	//	std::string file_path;
-	//	fsFileUtil::LocatorToANSIFilename(i_Locator, file_path);
-	//	DBG_LOG("File is NOT begin tracked (" << file_path.c_str() << ")" );
-	//}
-
-	HANDLE new_file = INVALID_HANDLE_VALUE;
-
-	while( true )
+	const std::filesystem::path path = fsPathUtil::LocatorToPath(i_Locator);
+	if ( path.empty() )
 	{
-		//	Create a file
-		//
-		std::wstring filename;
-		filename = fsPathUtil::LocatorToPath(i_Locator).wstring();
-		//DBG_LOG("Creating/Opening UNICODE stream  " << filename);
-
-		if ( filename.empty() )
-		{
-			fsResourceTracker::Remove(i_Locator);		// shouldn't be here?  put where throw is CAUGHT
-			throw fsInvalidLocatorX(i_Locator);
-		}
-
-		new_file = ::CreateFileW(	filename.c_str(),
-									access,
-									share_mode,
-									NULL,
-									open_flag,
-									FILE_ATTRIBUTE_NORMAL,
-									NULL);
-
-		//	file couldn't be created
-		//
-		if ( new_file == INVALID_HANDLE_VALUE )
-		{
-			std::string filename2;
-			fsFileUtil::LocatorToANSIFilename(i_Locator, filename2);
-			DBG_WARNING( "INVALID HANDLE VALUE " << filename2.c_str() );
-
-			fsResourceTracker::Remove(i_Locator);		// shouldn't be here?  put where throw is CAUGHT
-
-			handle_windows_error(i_Locator); // this will end up throwing, and abort construction
-		}
-
-		break;
+		fsResourceTracker::Remove(i_Locator);		// shouldn't be here?  put where throw is CAUGHT
+		throw fsInvalidLocatorX(i_Locator);
 	}
+
+	// The file must exist (out | trunc would create it), and be a file
+	std::error_code status_error;
+	const std::filesystem::file_status status = std::filesystem::status(path, status_error);
+	if ( !std::filesystem::exists(status) )
+		open_failed(i_Locator, std::make_error_code(std::errc::no_such_file_or_directory));
+	if ( std::filesystem::is_directory(status) )
+		open_failed(i_Locator, std::make_error_code(std::errc::permission_denied));
 
 	// save our work
 	m_pImp = new fsFileStreamImp;
-	m_pImp->m_File = new_file;
+
+	errno = 0;
+	if ( !m_pImp->m_File.open(path, mode) )
+	{
+		const int error = errno;
+		delete m_pImp;
+		m_pImp = NULL;
+		open_failed(i_Locator, error != 0 ? std::error_code(error, std::generic_category()) : std::error_code());
+	}
+
+	m_pImp->m_Path = path;
 	m_pImp->m_Access = i_DesiredAccess;
 	m_pImp->m_FilePointer = 0;
 	m_pImp->m_Locator = i_Locator;
@@ -309,7 +242,7 @@ fsFileStream::~fsFileStream()
 {
 	//m_pImp->m_FilePointer
 	flush_buffer(m_pImp);	// make sure write buffer is flushed to disk before closing
-	::CloseHandle(m_pImp->m_File);
+	m_pImp->m_File.close();
 	if (m_pImp->m_pBuffer != NULL)
 		delete [] m_pImp->m_pBuffer;
 	delete m_pImp;
@@ -343,8 +276,8 @@ int fsFileStream::Read(int64_t i_NumBytes, void* o_Buffer)
 	{
 		// We can deliver this request purely with data already in
 		// the buffer.
-		::memcpy(o_Buffer, m_pImp->m_pBuffer+m_pImp->m_BufferLoc, i_NumBytes);
-		m_pImp->m_BufferLoc += i_NumBytes;
+		::memcpy(o_Buffer, m_pImp->m_pBuffer+m_pImp->m_BufferLoc, size_t(i_NumBytes));
+		m_pImp->m_BufferLoc += int(i_NumBytes);
 		num_read = i_NumBytes;
 	}
 	else
@@ -354,8 +287,8 @@ int fsFileStream::Read(int64_t i_NumBytes, void* o_Buffer)
 		if (num_left_in_buffer > 0)
 		{
 			// Put the rest of our buffer into the requesting array
-			::memcpy(o_Buffer, m_pImp->m_pBuffer+m_pImp->m_BufferLoc, num_left_in_buffer);
-			m_pImp->m_BufferLoc += num_left_in_buffer;
+			::memcpy(o_Buffer, m_pImp->m_pBuffer+m_pImp->m_BufferLoc, size_t(num_left_in_buffer));
+			m_pImp->m_BufferLoc += int(num_left_in_buffer);
 
 			left_to_read -= num_left_in_buffer;
 			output_buffer += num_left_in_buffer;
@@ -366,21 +299,7 @@ int fsFileStream::Read(int64_t i_NumBytes, void* o_Buffer)
 		// read, then just read that directly into the output buffer
 		if (left_to_read > c_ReadBufferSize)
 		{
-			DWORD num_actual_read = 0;
-			BOOL ret_val = ::ReadFile(	m_pImp->m_File,
-									output_buffer,
-									DWORD(left_to_read),
-									&num_actual_read,
-									NULL);
-			if ( ret_val == 0 )
-			{
-				// handle failure
-				handle_windows_error(m_pImp->m_Locator);
-			}
-			else
-			{
-				num_read += num_actual_read;
-			}
+			num_read += m_pImp->m_File.sgetn(reinterpret_cast<char*>(output_buffer), left_to_read);
 		}
 		else if (left_to_read > 0)
 		{
@@ -391,7 +310,7 @@ int fsFileStream::Read(int64_t i_NumBytes, void* o_Buffer)
 			if (num_left_in_buffer > 0)
 			{
 				// Copy more from our buffer into the requesting array
-				int amount_to_copy = maFunctions::Lowest(num_left_in_buffer, left_to_read);
+				int amount_to_copy = int(maFunctions::Lowest(num_left_in_buffer, left_to_read));
 				::memcpy(output_buffer, m_pImp->m_pBuffer, amount_to_copy);
 				m_pImp->m_BufferLoc += amount_to_copy;
 				num_read += amount_to_copy;
@@ -402,7 +321,7 @@ int fsFileStream::Read(int64_t i_NumBytes, void* o_Buffer)
 	// Advance the internal file pointer
 	m_pImp->m_FilePointer += num_read;
 
-	return num_read;
+	return int(num_read);
 }
 
 //------------------------------------------------------------------------
@@ -414,8 +333,6 @@ void fsFileStream::Write(int64_t i_NumBytes, const void* i_Buffer)
 	DBG_ASSERT(m_pImp->m_Access != e_ReadOnly, "Wrong access type for Write");
 	DBG_ASSERT(m_pImp->m_BufferFormat==e_BufferWrite, "Needs write buffer format.");
 
-	DWORD num_written = 0;
-
 	// If the requester wants to write more data than can fit in a single buffer,
 	// then just write that directly into the file
 	if (i_NumBytes > c_WriteBufferSize)
@@ -424,17 +341,9 @@ void fsFileStream::Write(int64_t i_NumBytes, const void* i_Buffer)
 		flush_buffer(m_pImp);
 
 		// Write the full request directly to file
-		BOOL ret_val = 0;
-		ret_val = ::WriteFile(	m_pImp->m_File,
-								i_Buffer,
-								i_NumBytes,
-								&(num_written),
-								NULL);
-		if ( ret_val == 0 )
-		{
-			// handle failure
-			handle_windows_error(m_pImp->m_Locator);
-		}
+		errno = 0;
+		if (m_pImp->m_File.sputn(static_cast<const char*>(i_Buffer), i_NumBytes) != i_NumBytes)
+			throw_io_error(m_pImp->m_Locator);
 	}
 	else
 	{
@@ -457,18 +366,17 @@ void fsFileStream::Write(int64_t i_NumBytes, const void* i_Buffer)
 		// Since there was an earlier test for whether the request was
 		// larger than the buffer size, we know we can handle this request
 		// purely within the memory buffer
-		::memcpy(m_pImp->m_pBuffer+m_pImp->m_BufferLoc, i_Buffer, i_NumBytes);
-		m_pImp->m_BufferLoc += i_NumBytes;
+		::memcpy(m_pImp->m_pBuffer+m_pImp->m_BufferLoc, i_Buffer, size_t(i_NumBytes));
+		m_pImp->m_BufferLoc += int(i_NumBytes);
 		// Note that we might have backed up within the memory buffer,
 		// so we only want to increase the valid counter when the
 		// current buffer loc has written pass the old valid counter.
 		if (m_pImp->m_BufferLoc > m_pImp->m_BufferValid)
 			m_pImp->m_BufferValid = m_pImp->m_BufferLoc;
-		num_written = i_NumBytes;
 	}
 
 	// Advance the internal file pointer
-	m_pImp->m_FilePointer += num_written;
+	m_pImp->m_FilePointer += i_NumBytes;
 }
 
 //------------------------------------------------------------------------
@@ -480,16 +388,18 @@ fsFileStream::FilePosType fsFileStream::GetFilePos() const
 }
 
 //------------------------------------------------------------------------
-//	GetFileSize returns the size of the file.
+//	GetFileSize returns the size of the file: what has reached it, not
+//	what is still in this stream's write buffer.
 //------------------------------------------------------------------------
 int64_t fsFileStream::GetFileSize() const
 {
-	LARGE_INTEGER file_size;
-	if (!::GetFileSizeEx(m_pImp->m_File, &file_size))
-	{
-		return 0;
-	}
-	return file_size.QuadPart;
+	// What std::filebuf holds back has been handed to the file already
+	if (m_pImp->m_BufferFormat == e_BufferWrite)
+		m_pImp->m_File.pubsync();
+
+	std::error_code error;
+	const std::uintmax_t size = std::filesystem::file_size(m_pImp->m_Path, error);
+	return error ? 0 : int64_t(size);
 }
 
 //------------------------------------------------------------------------
@@ -506,26 +416,19 @@ const fsLocator& fsFileStream::GetLocator() const
 //------------------------------------------------------------------------
 void fsFileStream::SetFilePos(  FilePosType i_Pos, AccessPointType i_DesiredAccessPoint )
 {
-	DWORD move_method;
 	if( i_DesiredAccessPoint == e_Beginning )
 	{
 		DBG_ASSERT( i_Pos >= 0,  "Negative seek attempted" );
-		move_method = FILE_BEGIN;
 	}
 	else if( i_DesiredAccessPoint == e_Current )
 	{
-		DBG_ASSERT( m_pImp->m_FilePointer - i_Pos >= 0, "Negative seek attempted" );
-		move_method = FILE_CURRENT;
-	}
-	else
-	{
-		move_method = FILE_END;
+		DBG_ASSERT( m_pImp->m_FilePointer + i_Pos >= 0, "Negative seek attempted" );
 	}
 
 	// See if we can resolve this move simply by moving within
 	// the buffer we already have in memory.
 	bool bNeedFileSeek = true;
-	if ((m_pImp->m_pBuffer != NULL) && (move_method != FILE_END))
+	if ((m_pImp->m_pBuffer != NULL) && (i_DesiredAccessPoint != e_End))
 	{
 		// Convert both seek methods into a delta from the current position
 		int64_t delta = (i_DesiredAccessPoint == e_Beginning) ? (i_Pos - m_pImp->m_FilePointer) : i_Pos;
@@ -536,19 +439,13 @@ void fsFileStream::SetFilePos(  FilePosType i_Pos, AccessPointType i_DesiredAcce
 		}
 		else if (m_pImp->m_BufferValid > 0)
 		{
-			//static int s_NumAttempts = 0;
-			//static int s_NumFails = 0;
-			//s_NumAttempts++;
-
 			int64_t new_pos = m_pImp->m_BufferLoc + delta;
 			if (new_pos >= 0 && new_pos < m_pImp->m_BufferValid)
 			{
 				bNeedFileSeek = false;
-				m_pImp->m_BufferLoc = new_pos;
+				m_pImp->m_BufferLoc = int(new_pos);
 				m_pImp->m_FilePointer += delta;
 			}
-			//else
-			//	 s_NumFails++;
 		}
 	}
 
@@ -561,35 +458,20 @@ void fsFileStream::SetFilePos(  FilePosType i_Pos, AccessPointType i_DesiredAcce
 		// Mark the buffer as invalid
 		m_pImp->m_BufferLoc = m_pImp->m_BufferValid = 0;
 
-		// The OS file pointer is past what has been read from the buffer
+		// The file's position is past what has been read from the buffer
 		// (it read ahead to fill it), so a move from the current position
 		// is made from m_FilePointer instead
-		if (move_method == FILE_CURRENT)
-		{
-			i_Pos += m_pImp->m_FilePointer;
-			move_method = FILE_BEGIN;
-		}
-
-		//bga - switching this to GetFileSizeEx in order to handle
-		// file sizes greater than 32-bit int can handle.
-		//
-		//DWORD ret_val = INVALID_SET_FILE_POINTER;
-		//ret_val = ::SetFilePointer(	m_pImp->m_File,
-		//							i_Pos,
-		//							NULL,
-		//							move_method );
-		//if ( ret_val == INVALID_SET_FILE_POINTER )
-
-		LARGE_INTEGER file_pos, ret_val;
-		file_pos.QuadPart = i_Pos;
-		if (::SetFilePointerEx( m_pImp->m_File, file_pos, &ret_val, move_method) == 0) // error case is return of zero
-		{
-			// handle failure
-			handle_windows_error(m_pImp->m_Locator);
-		}
+		std::streampos new_pos;
+		if (i_DesiredAccessPoint == e_End)
+			new_pos = m_pImp->m_File.pubseekoff(i_Pos, std::ios::end);
+		else if (i_DesiredAccessPoint == e_Current)
+			new_pos = m_pImp->m_File.pubseekpos(m_pImp->m_FilePointer + i_Pos);
 		else
-		{
-			m_pImp->m_FilePointer = ret_val.QuadPart;
-		}
+			new_pos = m_pImp->m_File.pubseekpos(i_Pos);
+
+		if (new_pos == std::streampos(std::streamoff(-1)))
+			throw fsUnknownX(m_pImp->m_Locator);
+
+		m_pImp->m_FilePointer = std::streamoff(new_pos);
 	}
 }

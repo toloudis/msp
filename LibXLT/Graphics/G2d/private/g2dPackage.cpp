@@ -12,7 +12,6 @@
 #include "Core/dbg/dbgPackage.hpp"
 #include "Core/env/envPackage.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itPackage.hpp"
 #include <string>
 #include "Graphics/g2d/g2dFontUtil.hpp"
 
@@ -37,7 +36,6 @@ void g2dPackage::Init()
 		// initialize packages we depend on
 		envPackage::Init();
 		dbgPackage::Init();
-		itPackage::Init();
 		appPackage::Init();
 
 		// initialize our internal stuff
@@ -67,7 +65,6 @@ void g2dPackage::CleanUp() throw()
 
 		// clean up packages we depend on
 		appPackage::CleanUp();
-		itPackage::CleanUp();
 		dbgPackage::CleanUp();
 		envPackage::CleanUp();
 	}

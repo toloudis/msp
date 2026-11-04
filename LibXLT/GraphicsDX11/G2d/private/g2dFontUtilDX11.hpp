@@ -24,7 +24,6 @@
 #include <string>
 #include <map>
 
-#define BITMAP_FONT_SPRITE
 #undef DrawText
 
 class matTexture;
@@ -111,11 +110,7 @@ public:
 	{
 		FontInfo() : /*m_Font(NULL),*/ m_Reference(0) {}
 
-#ifdef BITMAP_FONT_SPRITE
 		g2dFontObjectDX11* m_Font;
-#else
-		IDWriteTextFormat* m_Font;
-#endif
 
 		int m_Reference;
 	};

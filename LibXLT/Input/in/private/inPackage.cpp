@@ -14,7 +14,6 @@
 #include "Core/dbg/dbgPackage.hpp"
 #include "Core/env/envPackage.hpp"
 #include "Input/in/inDeviceMgr.hpp"
-#include "Core/it/itPackage.hpp"
 
 namespace
 {
@@ -37,7 +36,6 @@ void inPackage::Init(int i_NumSticksOnVJoystick/* = 5*/)
 		envPackage::Init();
 		dbgPackage::Init();
 		appPackage::Init();
-		itPackage::Init();
 
 		// initialize our internal stuff
 		//
@@ -70,7 +68,6 @@ void inPackage::Init(int i_Range, float i_DeadZone, float i_Saturation, int i_Nu
 		envPackage::Init();
 		dbgPackage::Init();
 		appPackage::Init();
-		itPackage::Init();
 
 		// initialize our internal stuff
 		//
@@ -99,7 +96,6 @@ void inPackage::CleanUp() throw()
 
 		// clean up packages we depend on
 		//
-		itPackage::CleanUp();
 		appPackage::CleanUp();
 		dbgPackage::CleanUp();
 		envPackage::CleanUp();

@@ -1,8 +1,11 @@
 # Replacing itString with UTF-8 std::string
 
 Plan for removing `Core/It/itString` in favor of `std::string` holding
-UTF-8, and then making `fsLocator` hold a `std::filesystem::path`. The aim
-is to move MachStudio toward building on macOS and Linux.
+UTF-8 (steps 1 to 4, done), then moving the file system code onto
+`std::filesystem` (step 5: `fsFileUtil` done; whether `fsLocator` should
+hold a `std::filesystem::path` is still open). The aim is to move
+MachStudio toward building on macOS and Linux. What remains is listed
+at the end, under "Left to do".
 
 ## Why std::string and not std::wstring
 
@@ -242,7 +245,8 @@ the rest) from `itString` to `std::string`.
   file-chooser filters, `appApplication` titles, `nameString` are
   `std::string`. `appCharEvent` keeps a `envType::WChar` (step 3 decides
   about code points). Win32 PACs convert with `envString` at each `W` call
-  (`fsFileUtilPAC::LocatorToUnicodeFilename` gives `std::wstring`).
+  (`fsFileUtilPAC::LocatorToUnicodeFilename` gives `std::wstring`; step
+  5a replaced it with `fsPathUtil::LocatorToPath`).
 - Found by the tests: `fsFileStream::SetFilePos` (Windows) made a relative
   move that left the read buffer from the OS file pointer, which is ahead
   by the read-ahead, so `gfFileTxt::ReadToken`'s two-byte back-up landed
@@ -287,7 +291,8 @@ the rest) from `itString` to `std::string`.
   (`UnicodeStringToLocator`, `LocatorToUnicodeString`,
   `ANSIFilenameToLocator`, `LocatorToANSIFilename`) take and give
   `std::string`; the "Unicode" and "ANSI" pairs become the same thing
-  and can be merged (step 5 replaces them anyway).
+  and can be merged. (Step 5a kept both pairs: they give the saved,
+  backslash form; `fsPathUtil::LocatorToPath` gives the OS name.)
 - `prty` file-name, file-path, texture and video properties hold
   `std::string`.
 - So the rest of the solution keeps building, `itString` temporarily
@@ -450,55 +455,141 @@ MachStudio's Support, Systems, Features, Drivers and MainApp.
 - Update CLAUDE.md (the `It` row in the Core table, and the include-guard
   example if it mentions `itString`).
 
-## Step 5: fsLocator on std::filesystem::path
+## Step 5: fsFileUtil on std::filesystem; fsLocator storage later
+
+Decided (2026-11-03): split in two. fsFileUtil moves onto
+`std::filesystem` now (5a). `fsLocator` keeps its name list (5b, not
+started) until the problems listed under 5b are settled.
+
+### 5a: fsFileUtil on std::filesystem
+
+**Done (2026-11-03, not yet reviewed):**
+
+- Before anything changed, `CoreTests/Fs/fsFileUtilTest.cpp` recorded
+  what every fsFileUtil call did on the Win32 code, including the
+  exception each failure throws (34 tests, all passing on the old code).
+  The new code passes them unchanged.
+- `fsPathUtil` (new, public, portable): `Utf8ToPath` / `PathToUtf8`
+  (the only uses of C++17's `u8path` / `u8string`, so only they change
+  for C++20), `LocatorToPath` (names joined with the platform separator,
+  two in front of a UNC locator; joined as one string because
+  `path("C:") / "dir"` is the drive-relative `C:dir`) and
+  `PathToLocator`. Tests: `CoreTests/Fs/fsPathUtilTest.cpp`.
+- `fsFileErrorUtil` (new, private): turns a `std::error_code` (from
+  `std::filesystem`, or an OS error in `std::system_category()`) into the
+  existing `fs*X` exceptions by matching portable `std::errc` conditions.
+  "Missing" is `fsDirectoryDoesntExistX` when the parent directory is
+  missing too, else `fsFileDoesntExistX`, as Win32's PATH/FILE_NOT_FOUND
+  were (callers such as `gfFileTranslationMgr` and the capture output
+  folders catch the two separately).
+- `fsFileUtil.cpp` implements Rename, Delete, Copy, CreateDirectory,
+  DeleteDirectory, FileExists, DirectoryExists, IsReadOnly and
+  SetReadOnly with `std::filesystem`. Where MSVC's `std::filesystem`
+  differs from what fsFileUtil promised, the difference is checked for
+  first: `rename` replaces an existing file (MoveFileEx with
+  `MOVEFILE_REPLACE_EXISTING`), so an existing target throws
+  `fsFileExistsX`, except a target that differs only in case;
+  `remove` deletes read-only files and empty directories, and
+  `DeleteFile` refuses both (`fsReadOnlyX`), as `DeleteFileW` did.
+  Read-only is the owner's write permission, which MSVC maps to the
+  read-only attribute. Elsewhere, a rename across devices falls back
+  to copy and delete, as `MOVEFILE_COPY_ALLOWED` did on Windows.
+- The string conversions (`ANSIFilenameToLocator`,
+  `LocatorToANSIFilename`), `GenerateFileName` and `IsFileNameAbsolute`
+  moved out of the Windows PAC unchanged; they were plain string code. The saved
+  string form still uses backslashes on every platform;
+  `fsPathUtil::LocatorToPath` is the name to give the OS. The unused
+  range overloads of `LocatorToANSIFilename` and
+  `LocatorToUnicodeFilename` are gone, as is the PAC's unimplemented
+  `CopyDirectory`.
+- `CreateFile` (create only if new) uses C11's `fopen(name, "wx")`,
+  which checks and creates in one step; the name is UTF-8, which the
+  narrow C runtime reads as UTF-8 through the manifest's process code
+  page (`fsNarrowPathTest`). Its `errno` goes through `fsFileErrorUtil`.
+  So fsFileUtil has no PAC left: `fsFileUtilPAC.hpp`,
+  `fsFileUtilPACWin.hpp` and `.cpp` are deleted.
+  `LocatorToUnicodeFilename` is gone: the other
+  Windows PACs (`fsFileEnumPACWin`, `fsFileStreamPACWin`,
+  `fsFileTimeUtilPACWin`) and AudioDS take
+  `fsPathUtil::LocatorToPath(...).wstring()`.
+- Behavior differences: `CreateDirectory` no longer trims spaces from
+  the whole path name; a sharing violation now reports `fsReadOnlyX`
+  rather than `fsFileInUseX` (MSVC maps both to `permission_denied`;
+  nothing catches `fsFileInUseX`); `DeleteDirectory` on a file throws
+  `fsDirectoryDoesntExistX` rather than `fsUnknownX`.
+- Left for later: `fsFileEnum`, `fsFileTimeUtil` and `fsFileStream` are
+  still Win32 PACs. `fsFileEnum` could become `directory_iterator`;
+  `fsFileTimeUtil` needs `file_time_type` converted to `time_t`, which
+  C++17 can't do portably (C++20's `clock_cast` can).
+
+### 5b: fsLocator holding a std::filesystem::path (not started)
 
 `fsLocator` is used about 4,350 times in about 1,100 files, so keep the
 class and change what it holds, rather than replacing it at every use.
+The first idea was one `std::filesystem::path` plus the index, the
+name-list calls mapped onto the path's elements. Looking at the code
+(2026-11-03) found these problems, to settle before starting:
 
-- Today it holds `std::vector<itString> m_Names`, an optional directory
-  index (`m_Index`, a `gfPaths` category, meaning the names are relative
-  to that directory) and a UNC flag (`m_bUNCPath`).
-- New storage: one `std::filesystem::path` plus the index. The UNC flag
-  goes: `path` recognizes `\\server\share` itself (keep `IsUNCPath()` as
-  a query on the path's root name while callers need it).
-- The C++ standard is C++17 (`stdcpp17` in every project). In C++17,
-  `std::filesystem::u8path(std::string)` builds a path from UTF-8 and
-  `path::u8string()` returns UTF-8 as `std::string`. Wrap both in
-  `fsLocator` (for example `FromUtf8` / `ToUtf8`), because C++20
-  deprecates `u8path` and changes `u8string()` to return
-  `std::u8string`; only that wrapper changes when the standard moves.
-  Never use `path::string()` (on Windows it converts through the ANSI
-  code page).
-- Map the name-list API onto the path: `GetNumNames` / `GetName(i)` iterate
-  the path's elements, `GetLastName` is `filename()`,
-  `ReplaceExtension` is `replace_extension`, `Push` is `/=`, `Pop` is
-  `parent_path()`, `operator +` is `/`. Keep these wrappers while there
-  are callers, and add `GetPath()` for new code.
-- `RemoveAfter`, `RemoveBefore`, `Remove(subdir)`, `FindFirst` and
-  `ReplaceName(i)` are name-list editing with no direct `path`
-  equivalent; implement them over the path's elements and look at their
-  callers, since many may be simpler as `lexically_relative` or
-  `parent_path` calls.
-- Comparisons: today they compare the name lists (and so are
-  case-sensitive and separator-neutral). Keep that behavior explicitly
-  (compare element by element), not `path::operator==`, so `std::map`
-  and `std::set` keys don't change order. Decide separately whether
-  comparisons should ignore case on Windows.
-- `fsFileUtil`'s `LocatorTo*Filename` / `*ToLocator` functions become
-  `ToUtf8` / `FromUtf8`; `i_bUseDoubleSlashes` callers (scripts and
-  RenderMan export) get their own escaping helper.
-- The `*PACWin*` file functions take `path.c_str()` (a `wchar_t*` on
-  Windows) directly, with no conversion. Portable code can use
-  `std::filesystem` (`exists`, `create_directories`, `copy`, `rename`,
-  `remove_all`) for `fsFileUtil`'s `FileExists`, `CreateDirectory`,
-  `CopyDirectory` and so on, which shrinks the PAC to what has no
-  standard equivalent (file change notification, AVI).
-- Paths saved in scene files: callers write locators as strings
-  (`LocatorToUnicodeString` and friends). Keep those strings the same
-  (same separators, relative paths stay relative to their `gfPaths`
-  index) so scenes load unchanged; check with the step 1 round-trip
-  tests and by loading existing scenes.
-- Tests in CoreTests (`Fs/`): construction from UTF-8 (including
-  non-ASCII and UNC), the name-list operations, comparison order,
-  extension replacement, and the string form of indexed and absolute
-  locators matching what the current class produces.
+- **Names don't match path elements.** Today `C:\a\b` has the names `C:`,
+  `a`, `b`, and a UNC path has `server`, `share`, ... plus a flag. A
+  path's elements are `C:`, `\`, `a`, `b` and `\\server`, `\`, `share`.
+  `GetName(0)` (24 uses), `RemoveBefore(int)` and the `GetNumNames`
+  loops depend on positions, so a wrapper would have to hide the root
+  elements.
+- **`Push` isn't `/=`**: `/=` replaces the whole path when its argument
+  has a root.
+- **Accessors return references.** `GetName` and `GetLastName` return
+  `const std::string&`; with a path inside (UTF-16 on Windows) they
+  would return a converted copy. There are 89
+  `GetName(...)/GetLastName().c_str()` uses and 8 reference bindings to
+  check for dangling pointers, and every name access would convert.
+- **Separators.** A path keeps `/` as given unless `make_preferred()`
+  is called, so saved strings could change. On macOS and Linux `\` is a
+  legal file name character, so loading old scenes there needs the
+  saved backslash form converted explicitly. (The name list already
+  does this: `ANSIFilenameToLocator` splits on both.)
+- Comparisons compare the name lists (case-sensitive, separator-neutral);
+  keep that, element by element, so `std::map` and `std::set` keys keep
+  their order.
+
+Alternative to weigh: keep the name list for good, with
+`fsPathUtil::LocatorToPath` as the bridge, and move callers that build
+OS paths to it. That gives the portability without the risks above.
+Whichever is chosen, first write CoreTests for `fsLocator` itself
+(construction from UTF-8, non-ASCII and UNC, the name-list operations,
+comparison order, extension replacement, string forms), and save
+existing scenes to compare against (step 1 and 2 left that undone).
+
+## Left to do
+
+Checked against the code on 2026-11-03. No `itString` is left in built
+code except in comments (below); the Qt and wx conversions, the
+`gfFileBin` signature comments and the `chStringTest` skips are done.
+
+1. **Reviews.** Steps 1 to 4 and 5a are marked "not yet reviewed".
+2. **Scenes by hand.** Steps 1 and 2 planned to save existing scenes
+   (one with non-ASCII object names and paths) before the change and
+   check they load and save the same after it. Not done; it needs the
+   application. The old-format fixtures in `CoreTests/Data/` cover the
+   chunk format, not whole scenes.
+3. **Decide 5b** (fsLocator holding a path, or keeping the name list
+   with `fsPathUtil` as the bridge), then the `fsLocator` tests listed
+   there.
+4. **The other Win32 file PACs** (from 5a): `fsFileEnum` could become
+   `std::filesystem::directory_iterator`; `fsFileStream` and
+   `fsFileTimeUtil` need more thought (`file_time_type` to `time_t`
+   isn't portable before C++20's `clock_cast`).
+5. **Small leftovers** (cosmetic; nothing misbehaves):
+   - Stale comments and commented-out code that still name `itString`:
+     AudioDS `snSoundManager` (the `...( itString & )` headings),
+     `gfPathsPACWin.cpp`, `effShaderParams`, `effWaterData`,
+     `entPackage`. (The mentions in `chReader`, `chWriter`,
+     `chChunkParserUtil`, `gfFileBin` and `envString` explain the old
+     file format or old behavior on purpose and stay.)
+   - `tqtPaneInfo::Name` / `Caption` take `const wchar_t*`
+     (`QString::fromWCharArray`); they could take UTF-8.
+   - Qt `SceneSetupDialog` converts project names to `std::wstring` to
+     strip the extension; `envString::StripExtension` on the UTF-8 name
+     would do (check the wx dialog, to keep both in step).
+6. **Open from step 4:** whether `itLocales` / `itLocaleUtil` (locale
+   lookup) are still needed.

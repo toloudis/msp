@@ -12,8 +12,6 @@
 #include "Core/dbg/dbgPackage.hpp"
 #include "Core/env/envPackage.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/fs/fsFileTimeUtil.hpp"
-#include "Core/it/itPackage.hpp"
 
 
 //============================================================================
@@ -37,12 +35,10 @@ void fsPackage::Init()
 		// initialize packages we depend on
 		envPackage::Init();
 		dbgPackage::Init();
-		itPackage::Init();
 
 		// initialize our internal stuff
 		//
 		fsFileUtil::Init();
-		fsFileTimeUtil::Init();
 	}
 
 	l_RefCount++;
@@ -62,11 +58,9 @@ void fsPackage::CleanUp() throw()
 	{
 		// clean up our internal stuff, in reverse order
 		//
-		fsFileTimeUtil::CleanUp();
 		fsFileUtil::CleanUp();
 
 		// clean up packages we depend on
-		itPackage::CleanUp();
 		dbgPackage::CleanUp();
 		envPackage::CleanUp();
 	}

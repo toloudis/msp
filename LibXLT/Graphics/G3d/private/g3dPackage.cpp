@@ -12,7 +12,6 @@
 #include "Core/dbg/dbgPackage.hpp"
 #include "Core/env/envPackage.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itPackage.hpp"
 #include "Graphics/an/anPackage.hpp"
 #include "Graphics/g2d/g2dPackage.hpp"
 #include "Graphics/g3d/g3dRendererMgr.hpp"
@@ -46,7 +45,6 @@ void g3dPackage::Init()
 		// initialize packages we depend on
 		envPackage::Init();
 		dbgPackage::Init();
-		itPackage::Init();
 		appPackage::Init();
 		anPackage::Init();
 		g2dPackage::Init();
@@ -80,7 +78,6 @@ void g3dPackage::CleanUp() throw()
 		g2dPackage::CleanUp();
 		anPackage::CleanUp();
 		appPackage::CleanUp();
-		itPackage::CleanUp();
 		dbgPackage::CleanUp();
 		envPackage::CleanUp();
 	}

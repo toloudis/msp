@@ -73,7 +73,6 @@
 #include "Core/fs/fsFileX.hpp"
 #include "Core/fs/fsPackage.hpp"
 #include "Core/gf/gfPackage.hpp"
-#include "Core/it/itPackage.hpp"
 #ifndef ENV_STRING_HPP
 #include "Core/env/envString.hpp"
 #endif

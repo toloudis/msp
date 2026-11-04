@@ -14,7 +14,6 @@
 #include "Core/app/appTime.hpp"
 #include "Core/dbg/dbgPackage.hpp"
 #include "Core/env/envPackage.hpp"
-#include "Core/it/itPackage.hpp"
 
 
 //============================================================================
@@ -38,7 +37,6 @@ void appPackage::Init()
 		//
 		envPackage::Init();
 		dbgPackage::Init();
-		itPackage::Init();
 
 		// initialize our internal stuff
 		//
@@ -69,7 +67,6 @@ void appPackage::CleanUp() throw()
 
 		// clean up packages we depend on
 		//
-		itPackage::CleanUp();
 		dbgPackage::CleanUp();
 		envPackage::CleanUp();
 	}

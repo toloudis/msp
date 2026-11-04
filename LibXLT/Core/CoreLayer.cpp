@@ -16,7 +16,6 @@
 #include "Core/fs/fsPackage.hpp"
 #include "Core/geo/geoPackage.hpp"
 #include "Core/gf/gfPackage.hpp"
-#include "Core/it/itPackage.hpp"
 #include "Core/ma/maPackage.hpp"
 #include "Core/prty/prtyPackage.hpp"
 
@@ -43,7 +42,6 @@ void CoreLayer::Init()
 		maPackage::Init();
 		geoPackage::Init();
 		fsPackage::Init();
-		itPackage::Init();
 		appPackage::Init();
 		gfPackage::Init();
 		chPackage::Init();
@@ -70,7 +68,6 @@ void CoreLayer::CleanUp() throw()
 		chPackage::CleanUp();
 		gfPackage::CleanUp();
 		appPackage::CleanUp();
-		itPackage::CleanUp();
 		fsPackage::CleanUp();
 		geoPackage::CleanUp();
 		maPackage::CleanUp();

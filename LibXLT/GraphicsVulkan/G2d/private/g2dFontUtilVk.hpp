@@ -2,7 +2,7 @@
 **  g2dFontUtilVk.hpp
 **
 **      GraphicsVulkan port of GraphicsDX11's g2dFontUtilDX11: the bitmap
-**	font (BITMAP_FONT_SPRITE, the path DX11 builds). A font is an scrText
+**	font. A font is an scrText
 **	sprite drawn as a tmeshFrag with the font map texture and the font
 **	shaders (G2d/private/Shaders/FontVS.hlsl, FontPS.hlsl, compiled at
 **	build time instead of from strings at run time).

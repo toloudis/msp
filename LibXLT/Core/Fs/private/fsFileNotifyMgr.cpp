@@ -23,7 +23,9 @@
 #endif
 #include "Core/fs/fsXMLReader.hpp"
 #include "Core/fs/fsXMLWriter.hpp"
-#include "Core/fs/private/fsFileTimeUtilPAC.hpp"
+#ifndef FS_PATHUTIL_HPP
+#include "Core/fs/fsPathUtil.hpp"
+#endif
 #include "Core/gf/gfPaths.hpp"
 #include "Core/name/nameMgr.hpp"
 #include "Core/name/nameObject.hpp"
@@ -32,7 +34,9 @@
 
 #include <string>
 #include <vector>
+#include <filesystem>
 #include <fstream>
+#include <system_error>
 
 namespace FileUpdated
 {
@@ -63,7 +67,7 @@ namespace FileUpdated
 namespace 
 {
 	std::vector<fsLocator> fileNames;
-	std::vector<time_t> initTimes;
+	std::vector<std::filesystem::file_time_type> initTimes;
 	std::vector<bool> need_update(true);
 	
 	unsigned short m_prevTime = 0.0;
@@ -74,6 +78,19 @@ namespace
 	void (*l_ReloadTextureFunction)(const fsLocator& i_TextureName, bool i_bIsMipMap);
 	void (*l_AddObjectsFunction) (const std::string& i_FileName, const fsLocator& i_Path);
  
+
+	//--------------------------------------------------------------------
+	//	last_modified - when the file was last written, or c_Unreadable
+	//		if that can't be read (the file is missing, say)
+	//--------------------------------------------------------------------
+	const std::filesystem::file_time_type c_Unreadable = std::filesystem::file_time_type::min();
+
+	std::filesystem::file_time_type last_modified(const fsLocator& i_File)
+	{
+		std::error_code error;
+		const std::filesystem::file_time_type time = std::filesystem::last_write_time(fsPathUtil::LocatorToPath(i_File), error);
+		return error ? c_Unreadable : time;
+	}
 
 	//--------------------------------------------------------------------
 	//	FileAdded - a file has been 
@@ -90,7 +107,7 @@ namespace
 		fsFileUtil::LocatorToANSIFilename(i_FileToCheck, fileNameStr);
 		fileNames.push_back(i_FileToCheck);
 		DBG_TRACE(" Object "<<fileNameStr<<" has been added");
-		initTimes.push_back(fsFileTimeUtilPAC::GetLastModifiedTimeT(i_FileToCheck));
+		initTimes.push_back(last_modified(i_FileToCheck));
 		need_update.push_back(true);
 	}
 
@@ -147,7 +164,7 @@ namespace
 	{
 		std::string fileName, i_fileName; 
 		std::string t_FileName, o_Extension;
-		time_t  newTime;
+		std::filesystem::file_time_type newTime;
 		bool UpdateObject = false;
 		
 		for(size_t i = start; i < end; i++)
@@ -156,9 +173,9 @@ namespace
 			fsFileUtil::LocatorToANSIFilename(fileNames[i], fileName);
 			fsFileUtil::LocatorToANSIFilename(fileNames[i].GetLastName(), i_fileName);
 
-			newTime = fsFileTimeUtilPAC::GetLastModifiedTimeT(fileNames[i]);
+			newTime = last_modified(fileNames[i]);
 			// Check whether the object has been updated 
-			if(newTime != initTimes[i] && newTime!= -1 && need_update[i])
+			if(newTime != initTimes[i] && newTime != c_Unreadable && need_update[i])
 			{
 				int length = int(t_FileName.size());
 				// Break out extension
