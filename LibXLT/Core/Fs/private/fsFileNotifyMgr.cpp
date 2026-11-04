@@ -32,6 +32,7 @@
 
 //#include "Tool/gui/guiMessageBox.hpp"
 
+#include <algorithm>
 #include <string>
 #include <vector>
 #include <filesystem>
@@ -66,14 +67,18 @@ namespace FileUpdated
 
 namespace 
 {
+	// One entry per watched file in each, in step (same index, same file)
 	std::vector<fsLocator> fileNames;
 	std::vector<std::filesystem::file_time_type> initTimes;
-	std::vector<bool> need_update(true);
-	
-	unsigned short m_prevTime = 0.0;
+	std::vector<bool> need_update;
 
-	int l_count = 0;
-	size_t start = 0.0, finish = 0.0, end = 0.0;
+	// Check: when it last looked at files, and the first file of the next
+	// batch it looks at
+	unsigned short m_prevTime = 0;
+	size_t l_NextToCheck = 0;
+
+	const unsigned short c_CheckIntervalSeconds = 5;
+	const size_t c_CheckBatchSize = 100;
 	void (*l_ReloadObjectsFunction)(const fsLocator& i_Path, const std::string i_SystemName);
 	void (*l_ReloadTextureFunction)(const fsLocator& i_TextureName, bool i_bIsMipMap);
 	void (*l_AddObjectsFunction) (const std::string& i_FileName, const fsLocator& i_Path);
@@ -125,6 +130,8 @@ namespace
 				fsFileUtil::LocatorToANSIFilename(fileNames[i], fileNameStr);
 				DBG_TRACE(" Object "<<fileNameStr<<" has been deleted");
 				fileNames.erase(fileNames.begin() + i);
+				initTimes.erase(initTimes.begin() + i);
+				need_update.erase(need_update.begin() + i);
 				return;
 			}
 		}
@@ -253,6 +260,9 @@ void fsFileNotifyMgr::Intialize()
 {
 	fileNames.clear();
 	initTimes.clear();
+	need_update.clear();
+	m_prevTime = 0;
+	l_NextToCheck = 0;
 }
 
 //------------------------------------------------------------------------
@@ -260,48 +270,33 @@ void fsFileNotifyMgr::Intialize()
 //------------------------------------------------------------------------
 void fsFileNotifyMgr::DeInitialize()
 {
-	fileNames.clear();
-	initTimes.clear();
+	Intialize();
 }
 
 //--------------------------------------------------------------------
-// Check if a file has been modified. 
+// Check if a file has been modified. Called every frame; when more
+// than c_CheckIntervalSeconds have passed since it last looked, it
+// looks at the next c_CheckBatchSize files, starting again from the
+// first after the last.
+//
+// i_Time is the clock in seconds cut to 16 bits, so it wraps (about
+// every 18 hours); the difference is taken in 16 bits too, so the
+// interval is right across the wrap.
 //--------------------------------------------------------------------
 void fsFileNotifyMgr::Check(unsigned short time)
 {
+	const unsigned short elapsed = static_cast<unsigned short>(time - m_prevTime);
+	if (elapsed <= c_CheckIntervalSeconds)
+		return;
+	m_prevTime = time;
 
-	float waitTime = 5.0; // This is the time interval in seconds between each check
-	int num_of_resources = fileNames.size(); // Get the number of resources to check
-	int num_of_counts = num_of_resources/100; // Strip them in counts of 100
-	int remaining = num_of_resources%100; 
-	bool fromFirstSet = false; 
+	if (l_NextToCheck >= fileNames.size())
+		l_NextToCheck = 0;
 
-	
-	if(l_count != num_of_counts && num_of_counts > 0) // If there are more than 100 elements
-	{
-		start = 100 * l_count;
-		finish = start + 100;
-		end = finish;
-		if ( time > m_prevTime + waitTime)
-		{
-			file_check(start,finish);
-			m_prevTime = time;
-		}
-		l_count++;
-		fromFirstSet = true;
-	}
-	else if(l_count == num_of_counts && !fromFirstSet) // When the resources are less than 100
-	{
-		start = end;
-		finish = remaining;
-		if ( time > m_prevTime + waitTime)
-		{
-			file_check(start,finish);
-			m_prevTime = time;
-		}
-
-		l_count = 0;
-	}
+	const size_t first = l_NextToCheck;
+	const size_t last = std::min(first + c_CheckBatchSize, fileNames.size());
+	l_NextToCheck = last;
+	file_check(first, last);
 }
 
 //--------------------------------------------------------------------

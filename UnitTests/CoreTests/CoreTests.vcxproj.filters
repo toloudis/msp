@@ -87,6 +87,9 @@
     <ClCompile Include="Fs\fsFileUtilTest.cpp">
       <Filter>Fs</Filter>
     </ClCompile>
+    <ClCompile Include="Fs\fsFileNotifyMgrTest.cpp">
+      <Filter>Fs</Filter>
+    </ClCompile>
     <ClCompile Include="Fs\fsFileEnumTest.cpp">
       <Filter>Fs</Filter>
     </ClCompile>
