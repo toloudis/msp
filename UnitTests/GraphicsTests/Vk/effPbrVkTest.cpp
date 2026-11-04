@@ -853,12 +853,16 @@ TEST(effPbrVkTest, SavedAndReloaded)
 			mdlMaterialInfo info;
 			info.SetShaderParams(written);
 			gfFileBin write_file(file, fsFileStream::e_WriteOnly);
+			// The header says the strings are UTF-8; a file read without
+			// it counts as an old UTF-16 one (gfFileBin::HasUTF8Strings)
+			write_file.WriteHeader();
 			chBinWriter writer(write_file);
 			mtrMaterialSaver::WriteMaterialData(writer, info);
 		}
 		mdlMaterialInfo read_info;
 		{
 			gfFileBin read_file(file, fsFileStream::e_ReadOnly);
+			read_file.ReadHeader();
 			chBinReader reader(read_file);
 			chDefs::Name name;
 			chDefs::Version version;
