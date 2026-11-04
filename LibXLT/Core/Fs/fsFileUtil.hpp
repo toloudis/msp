@@ -3,6 +3,9 @@
 **
 **      fsFileUtil.hpp supplies functions that operate on files.
 **
+**      The file operations are implemented with std::filesystem; their
+**      behavior is pinned down by UnitTests/CoreTests/Fs/fsFileUtilTest.cpp.
+**
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
@@ -107,18 +110,11 @@ namespace fsFileUtil
 	void ANSIFilenameToLocator(const std::string& i_String, fsLocator& o_Locator);
 
 	//----------------------------------------------------------------------------
-	//	LocatorToANSIFilename converts a fsLocator to a narrow (UTF-8) filename
-	//	string, for APIs that take char filenames.  It is provided here to assist in error reporting.
-	// API Change: This now returns the std::string as UTF8.
+	//	LocatorToANSIFilename converts a fsLocator to a UTF-8 path name with
+	//	backslash separators on every platform, the form locators are saved in
+	//	and logged in. For a name to open, use fsPathUtil::LocatorToPath.
 	//----------------------------------------------------------------------------
 	void LocatorToANSIFilename(const fsLocator& i_Locator, std::string& o_String, bool i_bUseDoubleSlashes = false);
-
-	//----------------------------------------------------------------------------
-	//	LocatorToANSIFilename converts a fsLocator to a narrow (UTF-8) filename
-	//	string, for APIs that take char filenames.  It is provided here to assist in error reporting.
-	// API Change: This now returns the std::string as UTF8.
-	//----------------------------------------------------------------------------
-	void LocatorToANSIFilename(const fsLocator& i_Locator, std::string& o_String, const int i_StartNum, const int i_EndNum );
 
 	//----------------------------------------------------------------------------
 	// Return true if every path in the filename is an ascii string

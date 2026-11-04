@@ -17,7 +17,9 @@
 #endif
 
 #include "AudioDS/sn/snSoundUtil.hpp"
-#include "Core/fs/private/fsFileUtilPAC.hpp"
+#ifndef FS_PATHUTIL_HPP
+#include "Core/fs/fsPathUtil.hpp"
+#endif
 #include "Core/gf/gfFileTranslationMgr.hpp"
 
 #include <control.h>
@@ -236,7 +238,7 @@ snSoundJobMP3PAC::Start( float i_SimulationTime )
 
 	fsLocator ExpandedLoc(this->GetFilename());
 	gfFileTranslationMgr::ExpandLocator(ExpandedLoc);
-	fsFileUtilPAC::LocatorToUnicodeFilename( ExpandedLoc, UnicodeFilename );
+	UnicodeFilename = fsPathUtil::LocatorToPath(ExpandedLoc).wstring();
 
 	// Make sure that this file exists
 	//

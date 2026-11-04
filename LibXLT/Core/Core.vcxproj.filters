@@ -351,6 +351,9 @@
     <ClInclude Include="Fs\fsFileUtil.hpp">
       <Filter>Fs</Filter>
     </ClInclude>
+    <ClInclude Include="Fs\fsPathUtil.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
     <ClInclude Include="Fs\fsFileX.hpp">
       <Filter>Fs</Filter>
     </ClInclude>
@@ -423,10 +426,7 @@
     <ClInclude Include="Fs\private\fsAviFilePACWin.hpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClInclude>
-    <ClInclude Include="Fs\private\fsFileUtilPAC.hpp">
-      <Filter>Fs\FsPrivate</Filter>
-    </ClInclude>
-    <ClInclude Include="Fs\private\fsFileUtilPACWin.hpp">
+    <ClInclude Include="Fs\private\fsFileErrorUtil.hpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClInclude>
     <ClInclude Include="App\appApplication.hpp">
@@ -1008,7 +1008,10 @@
     <ClCompile Include="Fs\private\fsFileUtil.cpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClCompile>
-    <ClCompile Include="Fs\private\fsFileUtilPACWin.cpp">
+    <ClCompile Include="Fs\private\fsFileErrorUtil.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsPathUtil.cpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Fs\private\fsFileX.cpp">

@@ -9,7 +9,9 @@
 
 #include "Core/fs/private/fsFileTimeUtilPACWin.hpp"
 
-#include "Core/fs/private/fsFileUtilPACWin.hpp"
+#ifndef FS_PATHUTIL_HPP
+#include "Core/fs/fsPathUtil.hpp"
+#endif
 
 #include <stdio.h>
 #include <sys/stat.h>
@@ -117,7 +119,7 @@ HANDLE GetHandle(const fsLocator& i_Filename)
 	HANDLE new_file = INVALID_HANDLE_VALUE;
 
 	std::wstring filename;
-	fsFileUtilPAC::LocatorToUnicodeFilename(i_Filename, filename);
+	filename = fsPathUtil::LocatorToPath(i_Filename).wstring();
 
 	if( filename.empty() )
 		throw fsInvalidLocatorX(i_Filename);
@@ -211,7 +213,7 @@ double GetLastAccessTime(const fsLocator& i_Locator)
 time_t GetLastModifiedTimeT(const fsLocator& i_Locator)
 {
 	std::wstring filename;
-	fsFileUtilPAC::LocatorToUnicodeFilename(i_Locator, filename);
+	filename = fsPathUtil::LocatorToPath(i_Locator).wstring();
 
 	struct _stat64 st;
 	if (_wstat64(filename.c_str(), &st) != 0)

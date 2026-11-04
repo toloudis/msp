@@ -26,7 +26,9 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
 #include "Core/fs/fsResourceTracker.hpp"
-#include "Core/fs/private/fsFileUtilPAC.hpp"
+#ifndef FS_PATHUTIL_HPP
+#include "Core/fs/fsPathUtil.hpp"
+#endif
 #include "Core/Ma/maFunctions.hpp"
 
 
@@ -256,7 +258,7 @@ fsFileStream::fsFileStream(const fsLocator& i_Locator, AccessType i_DesiredAcces
 		//	Create a file
 		//
 		std::wstring filename;
-		fsFileUtilPAC::LocatorToUnicodeFilename(i_Locator, filename);
+		filename = fsPathUtil::LocatorToPath(i_Locator).wstring();
 		//DBG_LOG("Creating/Opening UNICODE stream  " << filename);
 
 		if ( filename.empty() )
@@ -278,7 +280,7 @@ fsFileStream::fsFileStream(const fsLocator& i_Locator, AccessType i_DesiredAcces
 		if ( new_file == INVALID_HANDLE_VALUE )
 		{
 			std::string filename2;
-			fsFileUtilPAC::LocatorToANSIFilename(i_Locator, filename2);
+			fsFileUtil::LocatorToANSIFilename(i_Locator, filename2);
 			DBG_WARNING( "INVALID HANDLE VALUE " << filename2.c_str() );
 
 			fsResourceTracker::Remove(i_Locator);		// shouldn't be here?  put where throw is CAUGHT

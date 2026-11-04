@@ -191,6 +191,7 @@
     <ClInclude Include="Fs\fsFileStream.hpp" />
     <ClInclude Include="Fs\fsFileTimeUtil.hpp" />
     <ClInclude Include="Fs\fsFileUtil.hpp" />
+    <ClInclude Include="Fs\fsPathUtil.hpp" />
     <ClInclude Include="Fs\fsFileX.hpp" />
     <ClInclude Include="Fs\fsLocator.hpp" />
     <ClInclude Include="Fs\fsPackage.hpp" />
@@ -215,8 +216,7 @@
     <ClInclude Include="Fs\private\fsAbsolutePathMgrPACWin.hpp" />
     <ClInclude Include="Fs\private\fsAviFilePAC.hpp" />
     <ClInclude Include="Fs\private\fsAviFilePACWin.hpp" />
-    <ClInclude Include="Fs\private\fsFileUtilPAC.hpp" />
-    <ClInclude Include="Fs\private\fsFileUtilPACWin.hpp" />
+    <ClInclude Include="Fs\private\fsFileErrorUtil.hpp" />
     <ClInclude Include="App\appApplication.hpp" />
     <ClInclude Include="App\appCharEvent.hpp" />
     <ClInclude Include="App\appCharEventHandler.hpp" />
@@ -716,7 +716,16 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <ClCompile Include="Fs\private\fsFileUtilPACWin.cpp">
+    <ClCompile Include="Fs\private\fsFileErrorUtil.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">EnableFastChecks</BasicRuntimeChecks>
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsPathUtil.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>

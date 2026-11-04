@@ -14,7 +14,6 @@
 #include "Core/dbg/dbgMsg.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
-#include "Core/fs/private/fsFileUtilPAC.hpp"
 #include "Core/gf/gfFileTranslationMgr.hpp"
 #include "Core/gf/gfFileTxt.hpp"
 #include "AudioDS/sn/snExceptionX.hpp"
@@ -92,7 +91,7 @@ ReadList_M3U( const fsLocator& i_PlaylistFilename, snPlaylist& o_Songs, bool i_b
 	//	print out the playlist name
 	//
 	std::string playlist_path;
-	fsFileUtilPAC::LocatorToANSIFilename(i_PlaylistFilename, playlist_path);
+	fsFileUtil::LocatorToANSIFilename(i_PlaylistFilename, playlist_path);
 	//DBG_LOG( "Playlist " << playlist_path.c_str() );
 
 	//	if the user asked to clear the list, then clear it.

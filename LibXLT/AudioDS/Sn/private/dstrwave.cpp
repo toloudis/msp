@@ -19,7 +19,6 @@
  ***************************************************************************/
 
 /* PROTOTYPES */
-#include "Core/fs/private/fsFileUtilPAC.hpp"
 
 #include <windows.h>
 #include <windowsx.h>

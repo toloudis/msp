@@ -3,29 +3,98 @@
 **
 **      see .hpp
 **
+**	The file operations use std::filesystem (and C's fopen for CreateFile's
+**	exclusive create), so they are the same on every platform and fsFileUtil
+**	has no PAC. Where std::filesystem differs from what fsFileUtil promises (it
+**	replaces an existing file on rename and deletes read-only files), the
+**	difference is checked for here first.
+**
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
 
 #include "Core/fs/fsFileUtil.hpp"
 
+#ifndef FS_FILEENUM_HPP
 #include "Core/fs/fsFileEnum.hpp"
-#include "Core/fs/private/fsFileUtilPAC.hpp"
+#endif
+#ifndef FS_FILEX_HPP
+#include "Core/fs/fsFileX.hpp"
+#endif
+#ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
-
+#endif
+#ifndef FS_PATHUTIL_HPP
+#include "Core/fs/fsPathUtil.hpp"
+#endif
+#ifndef FS_FILEERRORUTIL_HPP
+#include "Core/fs/private/fsFileErrorUtil.hpp"
+#endif
 #include <algorithm>
+#include <cerrno>
+#include <cstdio>
+#include <filesystem>
+#include <string>
+#include <system_error>
 
 
 namespace fsFileUtil
 {
 
+namespace
+{
+	namespace sfs = std::filesystem;
+
+	//	The status of a path, file_type::not_found when it can't be read
+	sfs::file_status Status(const sfs::path& i_Path)
+	{
+		std::error_code ignored;
+		sfs::file_status status = sfs::status(i_Path, ignored);
+		if (status.type() == sfs::file_type::none)
+			return sfs::file_status(sfs::file_type::not_found);
+		return status;
+	}
+
+	//	Read-only is the owner's write permission (the read-only attribute on
+	//	Windows, where std::filesystem maps one to the other)
+	bool IsReadOnlyStatus(const sfs::file_status& i_Status)
+	{
+		return (i_Status.permissions() & sfs::perms::owner_write) == sfs::perms::none;
+	}
+
+	//	The path to give the file system, or fsInvalidLocatorX for an empty
+	//	locator
+	sfs::path PathOrThrow(const fsLocator& i_Locator)
+	{
+		sfs::path path = fsPathUtil::LocatorToPath(i_Locator);
+		if (path.empty())
+			throw fsInvalidLocatorX(i_Locator);
+		return path;
+	}
+}
+
 //----------------------------------------------------------------------------
-//	CreateFile creates a file with the given name.  This must be done before
-//	reading or writing with a fsFileStream.
+//	CreateFile creates an empty file with the given name, failing with
+//	fsFileExistsX if it exists.  This must be done before reading or
+//	writing with a fsFileStream.
+//
+//	fopen's "x" (C11) creates the file only if it doesn't exist, in one step,
+//	so nothing can create it between a check and the create. Narrow file
+//	names are UTF-8 (on Windows through the UTF-8 process code page that
+//	Utf8CodePage.manifest gives every exe; fsNarrowPathTest checks it).
 //----------------------------------------------------------------------------
 void CreateFile(const fsLocator& i_Filename)
 {
-	fsFileUtilPAC::CreateFile(i_Filename);
+	const sfs::path path = PathOrThrow(i_Filename);
+
+	errno = 0;
+	std::FILE* file = std::fopen(fsPathUtil::PathToUtf8(path).c_str(), "wx");
+	if (!file)
+	{
+		const int error = errno != 0 ? errno : EIO;
+		fsFileErrorUtil::Throw(std::error_code(error, std::generic_category()), i_Filename);
+	}
+	std::fclose(file);
 }
 
 //----------------------------------------------------------------------------
@@ -34,7 +103,32 @@ void CreateFile(const fsLocator& i_Filename)
 //----------------------------------------------------------------------------
 void RenameFile(const fsLocator& i_From, const fsLocator& i_To)
 {
-	fsFileUtilPAC::RenameFile(i_From, i_To);
+	const sfs::path from = PathOrThrow(i_From);
+	const sfs::path to = PathOrThrow(i_To);
+
+	if (!sfs::exists(Status(from)))
+		fsFileErrorUtil::ThrowMissing(i_From);
+
+	// std::filesystem::rename replaces an existing file; fsFileUtil never
+	// has. A name that differs only in case is the same file on Windows,
+	// and renaming it to that name is allowed.
+	std::error_code error;
+	if (sfs::exists(Status(to)) && !sfs::equivalent(from, to, error))
+		throw fsFileExistsX(i_To);
+
+	sfs::rename(from, to, error);
+
+	// Across volumes: Windows moves the file itself (MoveFileEx with
+	// MOVEFILE_COPY_ALLOWED); elsewhere rename fails, so copy then delete
+	if (error == std::errc::cross_device_link && sfs::is_regular_file(Status(from)))
+	{
+		error.clear();
+		if (sfs::copy_file(from, to, sfs::copy_options::none, error))
+			sfs::remove(from, error);
+	}
+
+	if (error)
+		fsFileErrorUtil::Throw(error, i_From, i_To);
 }
 
 //----------------------------------------------------------------------------
@@ -43,7 +137,21 @@ void RenameFile(const fsLocator& i_From, const fsLocator& i_To)
 //----------------------------------------------------------------------------
 void DeleteFile(const fsLocator& i_Filename)
 {
-	fsFileUtilPAC::DeleteFile(i_Filename);
+	const sfs::path path = PathOrThrow(i_Filename);
+	const sfs::file_status status = Status(path);
+
+	if (!sfs::exists(status))
+		fsFileErrorUtil::ThrowMissing(i_Filename);
+
+	// std::filesystem::remove also removes an empty directory, and a
+	// read-only file; fsFileUtil refuses both
+	if (sfs::is_directory(status) || IsReadOnlyStatus(status))
+		throw fsReadOnlyX(i_Filename);
+
+	std::error_code error;
+	sfs::remove(path, error);
+	if (error)
+		fsFileErrorUtil::Throw(error, i_Filename);
 }
 
 //----------------------------------------------------------------------------
@@ -52,16 +160,34 @@ void DeleteFile(const fsLocator& i_Filename)
 //----------------------------------------------------------------------------
 void CopyFile(const fsLocator& i_From, const fsLocator& i_To)
 {
-	fsFileUtilPAC::CopyFile(i_From, i_To);
+	const sfs::path from = PathOrThrow(i_From);
+	const sfs::path to = PathOrThrow(i_To);
+
+	std::error_code error;
+	sfs::copy_file(from, to, sfs::copy_options::none, error);
+	if (error)
+		fsFileErrorUtil::Throw(error, i_From, i_To);
 }
 
 //----------------------------------------------------------------------------
-//	CreateDirectory creates a directory with the given name.
-//
+//	CreateDirectory creates a directory with the given name, and any
+//	directories above it that are missing.
 //----------------------------------------------------------------------------
 void CreateDirectory(const fsLocator& i_DirectoryName)
 {
-	fsFileUtilPAC::CreateDirectory(i_DirectoryName);
+	const sfs::path path = fsPathUtil::LocatorToPath(i_DirectoryName);
+	if (path.empty())
+		throw fsDirectoryDoesntExistX(i_DirectoryName);
+
+	std::error_code error;
+	sfs::create_directories(path, error);
+	if (!error)
+		return;
+
+	// A missing drive or share: the place for the directory doesn't exist
+	if (error == std::errc::no_such_file_or_directory)
+		throw fsDirectoryDoesntExistX(i_DirectoryName);
+	fsFileErrorUtil::Throw(error, i_DirectoryName);
 }
 
 //----------------------------------------------------------------------------
@@ -70,7 +196,20 @@ void CreateDirectory(const fsLocator& i_DirectoryName)
 //----------------------------------------------------------------------------
 void DeleteDirectory(const fsLocator& i_DirectoryName)
 {
-	fsFileUtilPAC::DeleteDirectory(i_DirectoryName);
+	const sfs::path path = PathOrThrow(i_DirectoryName);
+	const sfs::file_status status = Status(path);
+
+	if (!sfs::exists(status))
+		fsFileErrorUtil::ThrowMissing(i_DirectoryName);
+
+	// std::filesystem::remove would delete a file
+	if (!sfs::is_directory(status))
+		throw fsDirectoryDoesntExistX(i_DirectoryName);
+
+	std::error_code error;
+	sfs::remove(path, error);
+	if (error)
+		fsFileErrorUtil::Throw(error, i_DirectoryName);
 }
 
 //----------------------------------------------------------------------------
@@ -94,7 +233,7 @@ bool DeleteDirectoryRecursively(const fsLocator& i_DirectoryName)
 		FilesToDelete.Push(Files[i].GetLastName());
 		if(IsReadOnly(FilesToDelete))
 			return false;
-		else 
+		else
 			DeleteFile(FilesToDelete);
 	}
 	return true;
@@ -146,12 +285,17 @@ void CopyDirectory(const fsLocator& i_From, const fsLocator& i_To)
 }
 
 //----------------------------------------------------------------------------
-//	FileExists tests if a file exists.
-//
+//	FileExists tests if a file exists.  Anything that isn't a directory
+//	counts as a file.
 //----------------------------------------------------------------------------
 bool FileExists(const fsLocator& i_Filename)
 {
-	return fsFileUtilPAC::FileExists(i_Filename);
+	const sfs::path path = fsPathUtil::LocatorToPath(i_Filename);
+	if (path.empty())
+		return false;
+
+	const sfs::file_status status = Status(path);
+	return sfs::exists(status) && !sfs::is_directory(status);
 }
 
 //----------------------------------------------------------------------------
@@ -160,7 +304,11 @@ bool FileExists(const fsLocator& i_Filename)
 //----------------------------------------------------------------------------
 bool DirectoryExists(const fsLocator& i_Filename)
 {
-	return fsFileUtilPAC::DirectoryExists(i_Filename);
+	const sfs::path path = fsPathUtil::LocatorToPath(i_Filename);
+	if (path.empty())
+		return false;
+
+	return sfs::is_directory(Status(path));
 }
 
 //----------------------------------------------------------------------------
@@ -188,27 +336,68 @@ void LocatorToUnicodeString(const fsLocator& i_Locator, std::string& o_String)
 }
 
 //----------------------------------------------------------------------------
-// ANSIFilenameToLocator returns a locator from an ANSI pathname
+//	ANSIFilenameToLocator returns a locator from a UTF-8 path name. Either
+//	slash separates names; a name can't be empty, so doubled separators
+//	count as one, except that a leading separator marks a UNC path.
 //----------------------------------------------------------------------------
 void ANSIFilenameToLocator(const std::string& i_String, fsLocator& o_Locator)
 {
-	if ( 0 == i_String.size() )
-	{
-		// nothing to do, it's not a filename, it is empty!
-		o_Locator.Clear();
-		return;
-	}
+	o_Locator.Clear();
 
-	fsFileUtilPAC::ANSIFilenameToLocator(i_String, o_Locator);
+	// The separators are ASCII, so they never occur inside a UTF-8 sequence
+	std::string::size_type begin = 0;
+	for (std::string::size_type k = 0; k <= i_String.size(); k++)
+	{
+		if (k == i_String.size() || i_String[k] == '\\' || i_String[k] == '/')
+		{
+			if (k > begin)
+			{
+				o_Locator.Push(i_String.substr(begin, k - begin));
+			}
+			else if (k == 0 && k < i_String.size())
+			{
+				//	check for UNC Path
+				o_Locator.SetUNCPath(true);
+			}
+			begin = k + 1;
+		}
+	}
 }
 
 //----------------------------------------------------------------------------
-//	LocatorToANSIFilename converts a fsLocator to a narrow (UTF-8) filename
-//	string, for APIs that take char filenames.  It is provided here to assist in error reporting.
+//	LocatorToANSIFilename converts a fsLocator to a UTF-8 path name with
+//	backslash separators, on every platform: this is the form locators are
+//	saved in. Use fsPathUtil::LocatorToPath for a name to open.
 //----------------------------------------------------------------------------
 void LocatorToANSIFilename(const fsLocator& i_Locator, std::string& o_String, bool i_bUseDoubleSlashes)
 {
-	fsFileUtilPAC::LocatorToANSIFilename(i_Locator, o_String, i_bUseDoubleSlashes);
+	const int num_names = i_Locator.GetNumNames();
+
+	o_String.clear();
+
+	if ( num_names <= 0 )
+		return;
+
+	//	if UNC Path then prepend \\ at the beginning
+	//
+	if (i_Locator.IsUNCPath())
+	{
+		o_String += "\\\\";
+	}
+
+	for (int i = 0 ; i < num_names ; i++ )
+	{
+		if (i > 0)
+		{
+			o_String += '\\';			// official directory separator character
+
+			//add a second slash seperator - this is a fix for appending
+			//"My Documents" directory to python sys.path
+			if(i_bUseDoubleSlashes)
+				o_String += '\\';
+		}
+		o_String += i_Locator.GetName(i);
+	}
 }
 
 //----------------------------------------------------------------------------
@@ -226,12 +415,47 @@ bool IsFilenameASCII(const fsLocator& i_Locator)
 }
 
 //----------------------------------------------------------------------------
+//	Create a filename string that is unique within the given pathlocator,
+//	using the given prefix and extension: prefix + extension, else prefix,
+//	a number counting from 0, and extension.
 //----------------------------------------------------------------------------
 void GenerateFileName(const fsLocator& i_PathLocator, std::string& i_Prefix, std::string& i_Extension, std::string& o_Name)
 {
-	fsFileUtilPAC::GenerateFileName(i_PathLocator, i_Prefix, i_Extension, o_Name);
+	std::string name = i_Prefix + i_Extension;
+	fsLocator loc = i_PathLocator;
+	loc.Push(name);
+
+	int index = 0;
+	while (FileExists(loc))
+	{
+		name = i_Prefix + std::to_string(index++) + i_Extension;
+		loc.ReplaceLastName(name);
+	}
+	o_Name = name;
 }
 
+//----------------------------------------------------------------------------
+//	Check whether filename is absolute: a UNC path, or one that starts with
+//	a drive ("C:").
+//----------------------------------------------------------------------------
+bool IsFileNameAbsolute( const fsLocator & i_Loc )
+{
+	if ( i_Loc.IsUNCPath() )
+	{
+		return true;
+	}
+
+	if( i_Loc.GetNumNames() > 0)
+	{
+		const std::string& sRootDir =  i_Loc.GetName( 0 );
+
+		if( sRootDir.size() >= 2  &&   sRootDir[1] == ':' )
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 //----------------------------------------------------------------------------
 //	IsReadOnly returns true if the file is read-only, meaning that write
@@ -239,37 +463,51 @@ void GenerateFileName(const fsLocator& i_PathLocator, std::string& i_Prefix, std
 //----------------------------------------------------------------------------
 bool IsReadOnly(const fsLocator& i_Locator)
 {
-	return fsFileUtilPAC::IsReadOnly(i_Locator);
+	const sfs::path path = fsPathUtil::LocatorToPath(i_Locator);
+	if (path.empty())
+		return false;
+
+	const sfs::file_status status = Status(path);
+	if (!sfs::exists(status) || sfs::is_directory(status))
+		throw fsFileDoesntExistX(i_Locator);
+
+	return IsReadOnlyStatus(status);
 }
 
 //----------------------------------------------------------------------------
 //	SetReadOnly() - sets the file to be read only if true is passed in.
+//	Setting it removes every write permission; clearing it gives the owner
+//	write permission back (on Windows, either changes the read-only
+//	attribute).
 //----------------------------------------------------------------------------
 void SetReadOnly( const fsLocator& i_Locator, bool i_bSetReadOnly )
 {
-	fsFileUtilPAC::SetReadOnly( i_Locator, i_bSetReadOnly );
-}
+	if ( !FileExists( i_Locator ) )
+		return;
 
-//=============================================================================
-//  Check whether filename is absolute or not
-//=============================================================================
-bool IsFileNameAbsolute( const fsLocator & i_Loc )
-{
-	return fsFileUtilPAC::IsFileNameAbsolute( i_Loc );
+	const sfs::path path = fsPathUtil::LocatorToPath(i_Locator);
+	std::error_code ignored;	// as before, failing to change it isn't reported
+	if (i_bSetReadOnly)
+	{
+		const sfs::perms all_write = sfs::perms::owner_write | sfs::perms::group_write | sfs::perms::others_write;
+		sfs::permissions(path, all_write, sfs::perm_options::remove, ignored);
+	}
+	else
+	{
+		sfs::permissions(path, sfs::perms::owner_write, sfs::perm_options::add, ignored);
+	}
 }
 
 //------------------------------------------------------------------------
-//	Don't call Init() and CleanUp() yourself; they are called 
+//	Don't call Init() and CleanUp() yourself; they are called
 //	by the package Init and Cleanup.
 //------------------------------------------------------------------------
 void Init()
 {
-	fsFileUtilPAC::Init();
 }
 
 void CleanUp() throw()
 {
-	fsFileUtilPAC::CleanUp();
 }
 
 }

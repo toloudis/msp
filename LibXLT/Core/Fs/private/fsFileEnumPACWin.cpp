@@ -8,7 +8,9 @@
 \****************************************************************************/
 #include "Core/fs/private/fsFileEnumPAC.hpp"
 
-#include "Core/fs/private/fsFileUtilPAC.hpp"
+#ifndef FS_PATHUTIL_HPP
+#include "Core/fs/fsPathUtil.hpp"
+#endif
 #include "Core/fs/fsLocator.hpp"
 #ifndef ENV_STRING_HPP
 #include "Core/env/envString.hpp"
@@ -72,7 +74,7 @@ bool EnumerateFiles(const fsLocator& i_Locator,
 
 	fsLocator locator_with_wildcard = i_Locator;
 	locator_with_wildcard.Push("*");
-	fsFileUtilPAC::LocatorToUnicodeFilename(locator_with_wildcard, root_dir);
+	root_dir = fsPathUtil::LocatorToPath(locator_with_wildcard).wstring();
 
 	hFind = ::FindFirstFileW(root_dir.c_str(), &find_file_data);
 
@@ -137,7 +139,7 @@ bool EnumerateDirectories(	const fsLocator& i_Locator,
 
 	fsLocator locator_with_wildcard = i_Locator;
 	locator_with_wildcard.Push("*");
-	fsFileUtilPAC::LocatorToUnicodeFilename(locator_with_wildcard, root_dir);
+	root_dir = fsPathUtil::LocatorToPath(locator_with_wildcard).wstring();
 
 	hFind = ::FindFirstFileW(root_dir.c_str(), &find_file_data);
 
