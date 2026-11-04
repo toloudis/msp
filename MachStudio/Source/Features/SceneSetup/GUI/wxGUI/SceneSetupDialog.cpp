@@ -70,7 +70,7 @@ SceneSetupDialog::~SceneSetupDialog()
 	
 }
 
-void replace_last(std::wstring& str, const std::wstring& from, const std::wstring& to) {
+void replace_last(std::string& str, const std::string& from, const std::string& to) {
 	std::size_t pos = str.rfind(from);
 	if (pos == std::string::npos) {
 		return;
@@ -97,10 +97,10 @@ void SceneSetupDialog::build_project_list()
 	int filenum = filelist.size();
 	for ( int i = 0 ; i < filenum ; i++ )
 	{
-		std::wstring project_name(envString::UTF8ToWideChar(filelist[i].GetLastName()));
+		std::string project_name(filelist[i].GetLastName());
 		// strip off the extension
-		replace_last(project_name, L".mpj", L"");
-		m_listBox_Projects->Append( project_name );
+		replace_last(project_name, ".mpj", "");
+		m_listBox_Projects->Append( wxString::FromUTF8(project_name) );
 
 		//DBG_LOG3( "build project list %d of %d (%s)", i, filenum, name.c_str() );
 	}

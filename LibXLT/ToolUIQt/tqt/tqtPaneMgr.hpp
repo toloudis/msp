@@ -41,11 +41,9 @@ public:
 	tqtPaneInfo& Name(const QString& i_Name)			{ m_Name = i_Name; return *this; }
 	tqtPaneInfo& Name(const std::string& i_Name)		{ m_Name = tqtQString(i_Name); return *this; }
 	tqtPaneInfo& Name(const char* i_pName)				{ m_Name = tqtQString(i_pName); return *this; }
-	tqtPaneInfo& Name(const wchar_t* i_pName)			{ m_Name = QString::fromWCharArray(i_pName); return *this; }
 	tqtPaneInfo& Caption(const QString& i_Caption)		{ m_Caption = i_Caption; return *this; }
 	tqtPaneInfo& Caption(const std::string& i_Caption)	{ m_Caption = tqtQString(i_Caption); return *this; }
 	tqtPaneInfo& Caption(const char* i_pCaption)		{ m_Caption = tqtQString(i_pCaption); return *this; }
-	tqtPaneInfo& Caption(const wchar_t* i_pCaption)		{ m_Caption = QString::fromWCharArray(i_pCaption); return *this; }
 	tqtPaneInfo& Show(bool i_bShow = true)				{ m_bShown = i_bShow; return *this; }
 	tqtPaneInfo& Hide()									{ m_bShown = false; return *this; }
 	tqtPaneInfo& Layer(int i_Layer)						{ m_Layer = i_Layer; return *this; }

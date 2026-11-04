@@ -236,9 +236,9 @@ public:
 	}
 
 	//------------------------------------------------------------------------
-	// To support old code, this constructor is kept around in order
-	// to check for empty strings in the itString, which cannot
-	// be Push'ed onto the fsLocator.
+	// This constructor takes the default texture as a name: an empty
+	// name gives an empty locator (an empty name can't be Push'ed onto
+	// an fsLocator).
 	//------------------------------------------------------------------------
 	effParamTexture(const std::string& i_Name, const std::string& i_PrtyName, const std::string& i_Default);
 

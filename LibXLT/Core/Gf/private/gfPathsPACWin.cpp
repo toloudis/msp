@@ -119,40 +119,6 @@ void add_path_to_locator(const std::wstring& i_PathName, fsLocator& o_Locator)
 	}
 }
 
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-//void add_path_to_locator(const std::string& i_PathName, fsLocator& o_Locator)
-//{
-//	std::string::size_type last_pos = 0;
-//	std::string::size_type token_pos = 0;
-//	std::string name;
-//	itString wide_char_itstring;
-//
-//	while( token_pos != std::string::npos )
-//	{
-//		token_pos = i_PathName.find('\\', last_pos);
-//
-//		name = i_PathName.substr(last_pos, token_pos - last_pos);
-//
-//		if( name.size() > 0 )
-//		{
-//			itString::CharType wide_char_name[512];
-//
-//			::MultiByteToWideChar(	::GetACP(),
-//									0,
-//									name.c_str(),
-//									-1,
-//									wide_char_name,
-//									512);
-//
-//			wide_char_itstring = wide_char_name;
-//
-//			o_Locator.Push(wide_char_itstring);
-//			last_pos = token_pos + 1;
-//		}
-//	}
-//}
-
 void get_sysdat_path(std::wstring& o_SysdatPath)
 {
 	//	all users documents folder will be used

@@ -725,7 +725,7 @@ RemovePreloadSound( const snSoundJob * i_pPreloadSoundToRemove )
 
 
 //========================================================================
-//	RemovePreloadSound( itString & )
+//	RemovePreloadSound( const std::string & )
 //
 //		Remove a sound based on a string
 //========================================================================
@@ -783,7 +783,7 @@ DeletePreloadSound( const snSoundJob * i_pPreloadSoundToDelete )
 
 
 //========================================================================
-//	DeletePreloadSound( itString & )
+//	DeletePreloadSound( const std::string & )
 //
 //		Delete a sound based on a string
 //========================================================================
@@ -847,7 +847,7 @@ FindPreloadSound( const snSoundJob * i_pPreloadSoundToFind )
 
 
 //========================================================================
-//	FindPreloadSound( itString & )
+//	FindPreloadSound( const std::string & )
 //
 //		Find a sound based on a string
 //========================================================================
@@ -931,7 +931,7 @@ CreatePreloadSound3DStatic( const fsLocator& i_Filename,
 
 
 //========================================================================
-//	ClonePreloadSound( itString & )
+//	ClonePreloadSound( const std::string & )
 //
 //	Clone a sound based on a string and add it to the sound job list.  
 //	Return the cloned sound job *or* return NULL is the sound isn't in 
@@ -1377,7 +1377,7 @@ RemoveSoundJob( const snSoundJob * i_pSoundJobToRemove )
 
 
 //========================================================================
-//	RemoveSoundJob( itString & )
+//	RemoveSoundJob( const std::string & )
 //
 //		Remove a soundjob based on a pointer
 //========================================================================
@@ -1422,7 +1422,7 @@ DeleteSoundJob( const snSoundJob * i_pSoundJobToDelete )
 
 
 //========================================================================
-//	DeleteSoundJob( itString & )
+//	DeleteSoundJob( const std::string & )
 //
 //		Delete a soundjob based on a pointer
 //========================================================================
@@ -1477,7 +1477,7 @@ FindSoundJob( const snSoundJob * i_pSoundJobToFind )
 
 
 //========================================================================
-//	FindSoundJob( itString & )
+//	FindSoundJob( const std::string & )
 //
 //		Find a sound job based on a pointer
 //========================================================================
@@ -1509,7 +1509,7 @@ FindSoundJob( const std::string & i_SoundJobToFind )
 }
 
 //========================================================================
-//	FindSoundJobs( itString & )
+//	FindSoundJobs( const std::string & )
 //
 //		Finds all sound jobs based on a name
 //========================================================================
