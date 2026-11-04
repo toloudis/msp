@@ -517,10 +517,45 @@ started) until the problems listed under 5b are settled.
   rather than `fsFileInUseX` (MSVC maps both to `permission_denied`;
   nothing catches `fsFileInUseX`); `DeleteDirectory` on a file throws
   `fsDirectoryDoesntExistX` rather than `fsUnknownX`.
-- Left for later: `fsFileEnum`, `fsFileTimeUtil` and `fsFileStream` are
-  still Win32 PACs. `fsFileEnum` could become `directory_iterator`;
-  `fsFileTimeUtil` needs `file_time_type` converted to `time_t`, which
-  C++17 can't do portably (C++20's `clock_cast` can).
+- The other Win32 file PACs, done next (below).
+
+**The other file PACs (done 2026-11-03):** Core's `Fs` package now has
+no file-access PAC left (`fsAbsolutePathMgr`, `fsAviFile` and the file
+change notification are other matters). As before, tests came first:
+`CoreTests/Fs/fsFileEnumTest.cpp` (8) and `fsFileStreamModeTest.cpp`
+(16) were run on the Win32 code; all passed but one, which found a bug
+(below).
+
+- `fsFileEnum` lists with `std::filesystem::directory_iterator`
+  (`fsFileEnumPAC*` deleted, with the unused `GetDrives`). Differences:
+  "." and ".." aren't listed any more (every caller skipped them:
+  `fsFileUtil::CopyDirectory`, the recursive `EnumerateFiles`,
+  `fsysDirListUtil`, the material browser's `SubDirectoryTarget`). An
+  empty locator still lists the current directory.
+- `fsFileStream` (`fsFileStreamPACWin.cpp` renamed `fsFileStream.cpp`)
+  is a `std::filebuf` opened with the `std::filesystem::path`; its own
+  512-byte buffering and seek logic are unchanged. Every access type
+  opens an existing file, as before: `e_WriteCreate` passed
+  `OPEN_ALWAYS | TRUNCATE_EXISTING`, which is `TRUNCATE_EXISTING` (4 | 5
+  = 5), so despite its name it never created a file, and callers call
+  `fsFileUtil::CreateFile` first; it still doesn't. `e_WriteOnly` writes
+  over the file without emptying it (`in | out`). Open errors go through
+  `fsFileErrorUtil` (missing file or directory checked first; a
+  directory is `fsReadOnlyX`, as `CreateFileW` gave).
+- Bug fixed: `SetFilePos(n, e_Current)` asserted
+  `m_FilePointer - n >= 0` instead of `+`, so in Debug any forward
+  relative seek longer than the current position asserted.
+- Behavior difference: the Win32 code opened files exclusively for
+  writing (share mode 0) and shared for reading only with readers
+  (`FILE_SHARE_READ`); `std::filebuf` shares with everyone (MSVC opens
+  with `_SH_DENYNO`), so two streams can now write one file at once.
+  Nothing catches `fsFileInUseX`, which that used to raise.
+- `fsFileTimeUtil` is deleted: none of its public functions had a
+  caller. The one user, `fsFileNotifyMgr`, called its PAC's
+  `GetLastModifiedTimeT` only to see whether a file changed, so it now
+  compares `std::filesystem::last_write_time` values directly (finer
+  than the seconds `_wstat64` gave), and no `time_t` conversion is
+  needed.
 
 ### 5b: fsLocator holding a std::filesystem::path (not started)
 
@@ -566,30 +601,35 @@ Checked against the code on 2026-11-03. No `itString` is left in built
 code except in comments (below); the Qt and wx conversions, the
 `gfFileBin` signature comments and the `chStringTest` skips are done.
 
-1. **Reviews.** Steps 1 to 4 and 5a are marked "not yet reviewed".
-2. **Scenes by hand.** Steps 1 and 2 planned to save existing scenes
-   (one with non-ASCII object names and paths) before the change and
-   check they load and save the same after it. Not done; it needs the
-   application. The old-format fixtures in `CoreTests/Data/` cover the
-   chunk format, not whole scenes.
-3. **Decide 5b** (fsLocator holding a path, or keeping the name list
+Done since: the reviews of steps 1 to 5a and the check of scenes by
+hand (the owner, 2026-11-03); the other Win32 file PACs (end of 5a);
+deleting the `It` package (`itLocales`, `itLocaleUtil` and `itPackage`
+had no users: `itPackage::Init` only started the env and dbg packages,
+which each of its nine callers already started itself).
+
+The small leftovers are done too (2026-11-04):
+
+- Stale comments and commented-out code that named `itString`: the
+  AudioDS `snSoundManager` headings now name `const std::string &`; the
+  commented-out `add_path_to_locator` in `gfPathsPACWin.cpp` is
+  deleted; `effShaderParams`, `effWaterData` and `entPackage` no longer
+  mention it. (The mentions in `chReader`, `chWriter`,
+  `chChunkParserUtil`, `gfFileBin` and `envString` explain the old file
+  format or old behavior on purpose and stay.)
+- `tqtPaneInfo::Name` / `Caption`: the `const wchar_t*` overloads
+  (`QString::fromWCharArray`) are gone; no caller used them, and the
+  UTF-8 `std::string` and `const char*` ones remain.
+- `SceneSetupDialog` (Qt and wx): project names stay UTF-8;
+  `replace_last` takes `std::string` (it removes the last ".mpj"
+  anywhere in the name, which isn't `StripExtension`'s from-the-last-dot
+  rule, so it stays).
+- `BITMAP_FONT_SPRITE` is gone from `g2dFontUtilDX11`. It was always
+  defined, so its `#else` branches (the old DirectWrite fonts, with a
+  "should bury in itLocale" comment) never compiled; they're deleted,
+  and with them the `DeleteObject` that `ReleaseFont` called on a font
+  handle that isn't a GDI object. (Area18, which isn't built, still has
+  it.)
+
+1. **Decide 5b** (fsLocator holding a path, or keeping the name list
    with `fsPathUtil` as the bridge), then the `fsLocator` tests listed
-   there.
-4. **The other Win32 file PACs** (from 5a): `fsFileEnum` could become
-   `std::filesystem::directory_iterator`; `fsFileStream` and
-   `fsFileTimeUtil` need more thought (`file_time_type` to `time_t`
-   isn't portable before C++20's `clock_cast`).
-5. **Small leftovers** (cosmetic; nothing misbehaves):
-   - Stale comments and commented-out code that still name `itString`:
-     AudioDS `snSoundManager` (the `...( itString & )` headings),
-     `gfPathsPACWin.cpp`, `effShaderParams`, `effWaterData`,
-     `entPackage`. (The mentions in `chReader`, `chWriter`,
-     `chChunkParserUtil`, `gfFileBin` and `envString` explain the old
-     file format or old behavior on purpose and stay.)
-   - `tqtPaneInfo::Name` / `Caption` take `const wchar_t*`
-     (`QString::fromWCharArray`); they could take UTF-8.
-   - Qt `SceneSetupDialog` converts project names to `std::wstring` to
-     strip the extension; `envString::StripExtension` on the UTF-8 name
-     would do (check the wx dialog, to keep both in step).
-6. **Open from step 4:** whether `itLocales` / `itLocaleUtil` (locale
-   lookup) are still needed.
+   there. This is all that is left.
