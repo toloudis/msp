@@ -48,8 +48,8 @@ class cmmSceneDialog : public QWidget
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
 		cmmSceneDialog( QWidget* parent, 
-						const std::wstring& i_Title = L"Scene-Manager",
-						const std::wstring& i_Caption = L"Scene Manager");
+						const std::string& i_Title = "Scene-Manager",
+						const std::string& i_Caption = "Scene Manager");
 
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------

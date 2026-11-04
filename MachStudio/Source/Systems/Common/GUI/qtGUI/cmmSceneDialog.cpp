@@ -52,8 +52,8 @@ cmmSceneDialog* cmmSceneDialog::FormInstance = NULL;
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 cmmSceneDialog::cmmSceneDialog( QWidget* parent,
-								const std::wstring& i_Title,
-								const std::wstring& i_Caption )
+								const std::string& i_Title,
+								const std::string& i_Caption )
 :	QWidget( parent )
 {
 	QVBoxLayout* sizer_Dialog = new QVBoxLayout( this );
@@ -93,7 +93,7 @@ cmmSceneDialog::cmmSceneDialog( QWidget* parent,
 	m_notebook1->setCurrentIndex(0);
 
 	// Add this panel to the pane manager
-	tqtPaneMgr::AddPane(this, tqtPaneInfo().Name(i_Title.c_str()).Caption(i_Caption.c_str()).Show().Layer(1).Left().BestSize(300, 400));
+	tqtPaneMgr::AddPane(this, tqtPaneInfo().Name(i_Title).Caption(i_Caption).Show().Layer(1).Left().BestSize(300, 400));
 }
 
 //--------------------------------------------------------------------

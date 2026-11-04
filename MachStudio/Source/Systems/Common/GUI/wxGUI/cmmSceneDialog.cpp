@@ -51,8 +51,8 @@ cmmSceneDialog* cmmSceneDialog::FormInstance = NULL;
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 cmmSceneDialog::cmmSceneDialog( wxWindow* parent, 
-								const std::wstring& i_Title,
-								const std::wstring& i_Caption ) 
+								const std::string& i_Title,
+								const std::string& i_Caption ) 
 :	cmmSceneDialogBase( parent )
 {
 	m_pCategoryPane = new cmmPlacedPane(this, cmmPlacedPane::e_CategoryView);
@@ -89,7 +89,7 @@ cmmSceneDialog::cmmSceneDialog( wxWindow* parent,
 	m_notebook1->SetSelection(0);
 
 	// Add this panel to the AUI manager
-	wxAuiPaneInfo api = wxAuiPaneInfo().Name(i_Title).Caption(i_Caption).Show().Layer(1).Left();
+	wxAuiPaneInfo api = wxAuiPaneInfo().Name(wxString::FromUTF8(i_Title)).Caption(wxString::FromUTF8(i_Caption)).Show().Layer(1).Left();
 	twxPaneMgr::AddPane(this, api);
 }
 
