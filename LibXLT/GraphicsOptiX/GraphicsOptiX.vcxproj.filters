@@ -20,6 +20,7 @@
   <ItemGroup>
     <ClCompile Include="GraphicsOptiXLayer.cpp" />
     <ClCompile Include="optx\private\optxLoaderWin.cpp"><Filter>optx</Filter></ClCompile>
+    <ClCompile Include="optx\private\optxEmbeddedPrograms.cpp"><Filter>optx</Filter></ClCompile>
     <ClCompile Include="G2d\private\g2dSystemOptiX.cpp"><Filter>G2d</Filter></ClCompile>
     <ClCompile Include="G2d\private\g2dWindowOptiX.cpp"><Filter>G2d</Filter></ClCompile>
     <ClCompile Include="G2d\private\g2dWindowPACWin.cpp"><Filter>G2d</Filter></ClCompile>
@@ -42,6 +43,8 @@
     <ClInclude Include="GraphicsOptiXLayer.hpp" />
     <ClInclude Include="optx\optxSdk.hpp"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\optxLoader.hpp"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\private\optxEmbeddedPrograms.hpp"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\private\Programs\optxRayQueryParams.h"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="G2d\g2dSystemOptiX.hpp"><Filter>G2d</Filter></ClInclude>
     <ClInclude Include="G2d\g2dWindowOptiX.hpp"><Filter>G2d</Filter></ClInclude>
     <ClInclude Include="G2d\private\g2dWindowPAC.hpp"><Filter>G2d</Filter></ClInclude>
@@ -63,5 +66,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="optix.props" />
+    <None Include="cuda.props" />
+    <None Include="optx\private\EmbedProgramsOptiX.ps1"><Filter>optx</Filter></None>
+    <None Include="optx\private\Programs\optxRayQuery.cu"><Filter>optx</Filter></None>
   </ItemGroup>
 </Project>

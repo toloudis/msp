@@ -62,6 +62,12 @@ bool GraphicsOptiXLayer::Init(void* /*i_hWnd*/, const g3dGfxOptions& i_Options)
 	DBG_ASSERT(!l_bInitialized, "GraphicsOptiXLayer::Init called twice");
 	l_InitError.clear();
 
+#ifdef GOX_NO_CUDA_TOOLKIT
+	//	No device programs (cuda.props): nothing could be drawn
+	l_InitError = "this build was made without the CUDA toolkit";
+	DBG_LOG("GraphicsOptiX: " << l_InitError);
+	return false;
+#endif
 	if (!optxLoader::Load(l_InitError))
 	{
 		DBG_LOG("GraphicsOptiX: " << l_InitError);

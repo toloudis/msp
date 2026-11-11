@@ -9,6 +9,10 @@
     OPTIX_ROOT, else the default install folder); it is header-only, loaded
     from the display driver at run time. For now every Graphics hook is a
     stub that renders, loads and creates nothing.
+
+    The CUDA toolkit (cuda.props) supplies nvcc, which compiles the device
+    programs in optx\private\Programs to OptiX IR before the C++ is compiled
+    (target EmbedOptixPrograms, below), and the CUDA headers.
   -->
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
@@ -43,6 +47,7 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="optix.props" />
+    <Import Project="cuda.props" />
   </ImportGroup>
   <PropertyGroup>
     <OutDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
@@ -83,6 +88,7 @@
   <ItemGroup>
     <ClCompile Include="GraphicsOptiXLayer.cpp" />
     <ClCompile Include="optx\private\optxLoaderWin.cpp" />
+    <ClCompile Include="optx\private\optxEmbeddedPrograms.cpp" />
     <ClCompile Include="G2d\private\g2dSystemOptiX.cpp" />
     <ClCompile Include="G2d\private\g2dWindowOptiX.cpp" />
     <ClCompile Include="G2d\private\g2dWindowPACWin.cpp" />
@@ -105,6 +111,8 @@
     <ClInclude Include="GraphicsOptiXLayer.hpp" />
     <ClInclude Include="optx\optxSdk.hpp" />
     <ClInclude Include="optx\optxLoader.hpp" />
+    <ClInclude Include="optx\private\optxEmbeddedPrograms.hpp" />
+    <ClInclude Include="optx\private\Programs\optxRayQueryParams.h" />
     <ClInclude Include="G2d\g2dSystemOptiX.hpp" />
     <ClInclude Include="G2d\g2dWindowOptiX.hpp" />
     <ClInclude Include="G2d\private\g2dWindowPAC.hpp" />
@@ -126,6 +134,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="optix.props" />
+    <None Include="cuda.props" />
+    <None Include="optx\private\EmbedProgramsOptiX.ps1" />
+    <None Include="optx\private\Programs\optxRayQuery.cu" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">
@@ -136,4 +147,20 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <!-- The device programs: optx\private\Programs\*.cu, compiled by nvcc to OptiX IR and
+       embedded by optx\private\EmbedProgramsOptiX.ps1 as optxEmbeddedPrograms::k_Programs
+       (included by optx\private\optxEmbeddedPrograms.cpp). nvcc preprocesses with the
+       project's own cl.exe. Skipped without the CUDA toolkit or the OptiX SDK, which
+       leaves the table empty. -->
+  <PropertyGroup>
+    <OptixProgramDir>$(MSBuildThisFileDirectory)optx\private\Programs</OptixProgramDir>
+    <OptixProgramScript>$(MSBuildThisFileDirectory)optx\private\EmbedProgramsOptiX.ps1</OptixProgramScript>
+    <OptixProgramOutput>$(MSBuildThisFileDirectory)optx\private\Generated\optxEmbeddedPrograms.inc</OptixProgramOutput>
+  </PropertyGroup>
+  <ItemGroup>
+    <OptixProgramInput Include="$(OptixProgramDir)\*.cu;$(OptixProgramDir)\*.h;$(OptixProgramScript)" />
+  </ItemGroup>
+  <Target Name="EmbedOptixPrograms" BeforeTargets="ClCompile" Condition="'$(MspCudaFound)' == 'true' and '$(MspOptixFound)' == 'true'" Inputs="@(OptixProgramInput)" Outputs="$(OptixProgramOutput)">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(OptixProgramScript)&quot; -ProgramDir &quot;$(OptixProgramDir)&quot; -OutFile &quot;$(OptixProgramOutput)&quot; -Nvcc &quot;$(MspNvcc)&quot; -OptixInclude &quot;$(MspOptixDir)include&quot; -HostCompilerDir &quot;$(VC_ExecutablePath_x64_x64)&quot;" />
+  </Target>
 </Project>

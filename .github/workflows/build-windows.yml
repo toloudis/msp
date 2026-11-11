@@ -139,11 +139,55 @@ jobs:
       QT_VERSION: 6.9.3
       QT_ARCH: win64_msvc2022_64
       QT_ROOT: C:\Qt
+      # GraphicsOptiX compiles its device programs with nvcc (the CUDA
+      # toolkit) against the OptiX headers. Keep CUDA_VERSION in step with
+      # the default in LibXLT/GraphicsOptiX/cuda.props, and OPTIX_VERSION
+      # with the SDK version in LibXLT/GraphicsOptiX/optix.props.
+      CUDA_VERSION: 13.5.0
+      CUDA_ROOT: C:\cuda
+      OPTIX_VERSION: v9.1.0
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up MSBuild
         uses: microsoft/setup-msbuild@v2
+
+      # Only nvcc and the CUDA headers, from NVIDIA's redistributable
+      # archives (see the script); cuda.props finds them through CUDA_PATH
+      - name: Restore CUDA toolkit cache
+        id: cuda-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.CUDA_ROOT }}
+          key: cuda-${{ runner.os }}-${{ env.CUDA_VERSION }}-${{ hashFiles('.github/scripts/install-cuda.ps1') }}
+
+      - name: Install CUDA toolkit ${{ env.CUDA_VERSION }} (nvcc and headers)
+        if: ${{ steps.cuda-cache.outputs.cache-hit != 'true' }}
+        shell: pwsh
+        run: .github/scripts/install-cuda.ps1 -Version $env:CUDA_VERSION -Destination $env:CUDA_ROOT
+
+      - name: Set CUDA_PATH
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "$env:CUDA_ROOT\bin\nvcc.exe")) { throw "nvcc not found in $env:CUDA_ROOT" }
+          "CUDA_PATH=$env:CUDA_ROOT" >> $env:GITHUB_ENV
+
+      # The OptiX headers alone (NVIDIA publishes them on GitHub; the SDK
+      # download needs a developer account). optix.props finds them through
+      # OPTIX_ROOT.
+      - name: Check out the OptiX headers ${{ env.OPTIX_VERSION }}
+        uses: actions/checkout@v4
+        with:
+          repository: NVIDIA/optix-dev
+          ref: ${{ env.OPTIX_VERSION }}
+          path: optix-dev
+
+      - name: Set OPTIX_ROOT
+        shell: pwsh
+        run: |
+          $root = "$env:GITHUB_WORKSPACE\optix-dev"
+          if (-not (Test-Path "$root\include\optix.h")) { throw "OptiX headers not found in $root" }
+          "OPTIX_ROOT=$root" >> $env:GITHUB_ENV
 
       - name: Restore Qt install cache
         if: ${{ endsWith(matrix.configuration, 'Qt') }}

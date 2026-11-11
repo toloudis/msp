@@ -226,9 +226,22 @@ install too: `LibXLT/GraphicsOptiX/optix.props` finds it through
 `MspOptixDir`, then `OPTIX_ROOT`, else
 `C:\ProgramData\NVIDIA Corporation\OptiX SDK 9.1.0`. Without it the
 library still builds (a build warning; `GOX_NO_OPTIX_SDK` is defined), so
-CI and machines without it build MachStudio, and `-gfx optix` fails at
+machines without it build MachStudio, and `-gfx optix` fails at
 start-up saying so. OptiX is header-only (loaded from the
-display driver at run time); the CUDA toolkit isn't needed yet.
+display driver at run time). CI uses the headers alone, from NVIDIA's
+`NVIDIA/optix-dev` GitHub repository at the matching tag (`OPTIX_ROOT`).
+
+**CUDA toolkit** (for `LibXLT/GraphicsOptiX` only), another separate
+install: `LibXLT/GraphicsOptiX/cuda.props` finds it through `MspCudaDir`,
+then `CUDA_PATH`, else `C:\Program Files\NVIDIA GPU Computing
+Toolkit\CUDA\v13.5`. It supplies nvcc, which compiles GraphicsOptiX's
+device programs to OptiX IR at build time, and `cuda.h` (types only:
+nothing links CUDA; the driver API is loaded from `nvcuda.dll` at run
+time, so MachStudio still starts without an NVIDIA driver). Without it
+the library still builds (a build warning; `GOX_NO_CUDA_TOOLKIT`), and
+`-gfx optix` fails at start-up saying so. CI installs only nvcc and the
+headers, from NVIDIA's redistributable archives
+(`.github/scripts/install-cuda.ps1`; `CUDA_VERSION` in the workflow).
 
 ## Code conventions
 
@@ -438,7 +451,13 @@ meshes in `BumpTex1Vertex` with 32-bit indices) and lights are Graphics'
 own classes, as MachStudio's start-up needs real ones; textures, images
 and imported-model fragments (`mayFragCreateOptiX`) are still NULL, so
 loading a scene may crash. `optx/optxSdk.hpp` is the one place the OptiX
-headers are included.
+and CUDA headers are included. Device programs are `.cu` files in
+`optx/private/Programs`, compiled by nvcc to OptiX IR by the
+`EmbedOptixPrograms` target (`optx/private/EmbedProgramsOptiX.ps1`, which
+holds the nvcc options) and embedded, looked up by file name with
+`optxEmbeddedPrograms::Find`; launch parameters live in a plain-C header
+beside each (`optxRayQueryParams.h`). Plan:
+`docs/plans/2026-11-11-optix-bvh-progressive-ao.md`.
 
 ### Other LibXLT libraries
 
