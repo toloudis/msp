@@ -14,28 +14,6 @@
 
 #include <string>
 
-#ifdef GOX_NO_OPTIX_SDK
-
-//	Built without the OptiX SDK (optix.props): OptiX never loads
-namespace gox
-{
-	bool optxLoader::Load(std::string& o_Error)
-	{
-		o_Error = "this build was made without the NVIDIA OptiX SDK";
-		return false;
-	}
-
-	void optxLoader::Unload()
-	{
-	}
-
-	bool optxLoader::IsLoaded()
-	{
-		return false;
-	}
-}
-
-#else
 
 #ifndef GOX_OPTXSDK_HPP
 #include "GraphicsOptiX/optx/optxSdk.hpp"
@@ -94,4 +72,3 @@ namespace gox
 	}
 }
 
-#endif	// GOX_NO_OPTIX_SDK

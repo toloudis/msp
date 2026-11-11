@@ -16,6 +16,9 @@
     <Filter Include="gltf">
       <UniqueIdentifier>{355e3fc0-0bdf-4630-acde-1287a1ce1f91}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Ox">
+      <UniqueIdentifier>{7A0C3E51-2B6D-4F1A-9C8E-5D4B3A2F1E0D}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Vk">
       <UniqueIdentifier>{e41e15ae-4660-8c90-5013-d92f7425fee5}</UniqueIdentifier>
     </Filter>
@@ -269,5 +272,13 @@
     <CustomBuild Include="Vk\Shaders\gtIsoline.hlsl">
       <Filter>Vk\Shaders</Filter>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Ox\optxContextTest.cpp">
+      <Filter>Ox</Filter>
+    </ClCompile>
+    <ClInclude Include="Ox\gtOptiX.hpp">
+      <Filter>Ox</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

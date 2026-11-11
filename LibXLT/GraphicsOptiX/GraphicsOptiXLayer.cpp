@@ -14,6 +14,12 @@
 #ifndef GOX_OPTXLOADER_HPP
 #include "GraphicsOptiX/optx/optxLoader.hpp"
 #endif
+#ifndef GOX_OPTXCONTEXT_HPP
+#include "GraphicsOptiX/optx/optxContext.hpp"
+#endif
+#ifndef GOX_CULOADER_HPP
+#include "GraphicsOptiX/cu/cuLoader.hpp"
+#endif
 #ifndef GOX_G2DSYSTEMOPTIX_HPP
 #include "GraphicsOptiX/G2d/g2dSystemOptiX.hpp"
 #endif
@@ -62,15 +68,22 @@ bool GraphicsOptiXLayer::Init(void* /*i_hWnd*/, const g3dGfxOptions& i_Options)
 	DBG_ASSERT(!l_bInitialized, "GraphicsOptiXLayer::Init called twice");
 	l_InitError.clear();
 
-#ifdef GOX_NO_CUDA_TOOLKIT
-	//	No device programs (cuda.props): nothing could be drawn
-	l_InitError = "this build was made without the CUDA toolkit";
-	DBG_LOG("GraphicsOptiX: " << l_InitError);
-	return false;
-#endif
+	if (!cuLoader::Load(l_InitError))
+	{
+		DBG_LOG("GraphicsOptiX: " << l_InitError);
+		return false;
+	}
 	if (!optxLoader::Load(l_InitError))
 	{
 		DBG_LOG("GraphicsOptiX: " << l_InitError);
+		cuLoader::Unload();
+		return false;
+	}
+	if (!optxContext::Create(i_Options.m_bValidation, l_InitError))
+	{
+		DBG_LOG("GraphicsOptiX: " << l_InitError);
+		optxLoader::Unload();
+		cuLoader::Unload();
 		return false;
 	}
 	l_bInitialized = true;
@@ -108,7 +121,9 @@ void GraphicsOptiXLayer::CleanUp() throw()
 	l_pSystem3D = NULL;
 	l_pSystem2D = NULL;
 
+	optxContext::Destroy();
 	optxLoader::Unload();
+	cuLoader::Unload();
 	l_bInitialized = false;
 }
 

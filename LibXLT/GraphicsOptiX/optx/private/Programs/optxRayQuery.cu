@@ -20,7 +20,11 @@
 
 using namespace gox;
 
-extern "C" __constant__ optxRayQueryParams params;
+//	The launch parameters: OptiX finds them by name (pipelineLaunchParamsVariableName)
+extern "C"
+{
+	__constant__ optxRayQueryParams params;
+}
 
 extern "C" __global__ void __raygen__rayQuery()
 {

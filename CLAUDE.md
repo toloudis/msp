@@ -112,10 +112,15 @@ hold settings:
   Helpers use the `iet` prefix.
 - `UnitTests/GraphicsTests` tests `LibXLT/Graphics` code that needs no GPU
   (`g3dProfiler`, and the glTF material import, which builds Graphics
-  materials) and `LibXLT/GraphicsVulkan` (`Vk/`); it links Core,
-  Graphics, ImportExport, GraphicsVulkan and GraphicsDX11, the reference the Vulkan
+  materials), `LibXLT/GraphicsVulkan` (`Vk/`) and `LibXLT/GraphicsOptiX`
+  (`Ox/`); it links Core, Graphics, ImportExport, GraphicsVulkan,
+  GraphicsOptiX and GraphicsDX11, the reference the Vulkan
   port is compared with (`Dx11/gtD3D11`: a D3D11 device on the hardware
-  adapter, else WARP). Helpers use the `gt` prefix. The Vulkan tests run
+  adapter, else WARP). Helpers use the `gt` prefix. The OptiX tests
+  (`Ox/gtOptiX`: one context per suite, validation on, a test fails on
+  any OptiX error or warning it caused) are skipped without an NVIDIA
+  device, and compiled only when GraphicsOptiX's SDKs were found (it
+  imports `optix.props` and `cuda.props`). The Vulkan tests run
   with validation on (`gtVulkan` fails a test on any validation message)
   and are skipped when there is no usable Vulkan device; the tests that
   need only reflection run everywhere. No build runs them (they take a
@@ -437,8 +442,8 @@ says why) and installs a Vulkan implementation for every Graphics hook.
 An NVIDIA OptiX (ray tracing) backend, started as stubs to be built up.
 Namespace `gox`, include guards `GOX_*`, class names end in `OptiX`.
 `GraphicsOptiXLayer` has the same calls as `GraphicsVulkanLayer` (`Init`
-loads OptiX from the driver, `optx/optxLoader`, and fails with
-`GetInitError` if it can't) and installs an OptiX class for every Graphics
+loads CUDA and OptiX from the driver and creates the context, and fails
+with `GetInitError` if it can't) and installs an OptiX class for every Graphics
 hook, where GraphicsVulkan installs its own: the 2D system (resource
 counter, fonts, image creation), the 3D system (lights, textures, shaders,
 screen capture), the layer (scene renderer creator, fragment creators;
@@ -458,6 +463,15 @@ holds the nvcc options) and embedded, looked up by file name with
 `optxEmbeddedPrograms::Find`; launch parameters live in a plain-C header
 beside each (`optxRayQueryParams.h`). Plan:
 `docs/plans/2026-11-11-optix-bvh-progressive-ao.md`.
+
+| Package | Purpose |
+|---|---|
+| `cu` | The CUDA driver API: `cuLoader` loads `nvcuda.dll` and fills a table of the functions used (`cu().cuMemAlloc(...)`; add a function to `GOX_CU_FUNCTIONS`), fetched with `cuGetProcAddress` at the headers' `CUDA_VERSION`; `cuBuffer`, a device allocation (grow-only `Reserve`, upload, download, clear on the context's stream) |
+| `optx` | OptiX: `optxLoader` (`nvoptix.dll`), `optxContext` (the one GPU: the first CUDA device of compute 7.5 or newer, or the first whose name contains `MSP_GFX_OPTIX_DEVICE`; its primary context, one stream all work goes on, the `OptixDeviceContext`, OptiX's log in the application log with errors and warnings counted, validation in Debug and with `-gfxValidation`; CUDA contexts are per thread, so code calling CUDA on a thread calls `MakeCurrent`), `optxCheck` (`CU_CHECK`/`OPTIX_CHECK`, as `VK_CHECK`), `optxEmbeddedPrograms`, and `optxRayQuery` (traces batches of rays against an IAS or GAS and reads back distance, instance and triangle: for picking and tests) |
+
+A build without the OptiX SDK or the CUDA toolkit compiles only
+`GraphicsOptiXLayerNoSdk.cpp` (its `Init` fails, naming what was
+missing), so no other source needs `GOX_NO_*` checks.
 
 ### Other LibXLT libraries
 

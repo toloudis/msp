@@ -85,10 +85,21 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
     </ClCompile>
   </ItemDefinitionGroup>
-  <ItemGroup>
+  <!-- Without the OptiX SDK or the CUDA toolkit, only GraphicsOptiXLayerNoSdk.cpp is compiled:
+       its Init fails, saying what was missing, so the rest of the library uses OptiX and CUDA
+       freely. -->
+  <ItemGroup Condition="'$(MspOptixFound)' != 'true' or '$(MspCudaFound)' != 'true'">
+    <ClCompile Include="GraphicsOptiXLayerNoSdk.cpp" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(MspOptixFound)' == 'true' and '$(MspCudaFound)' == 'true'">
     <ClCompile Include="GraphicsOptiXLayer.cpp" />
+    <ClCompile Include="cu\private\cuLoaderWin.cpp" />
+    <ClCompile Include="cu\private\cuBuffer.cpp" />
     <ClCompile Include="optx\private\optxLoaderWin.cpp" />
     <ClCompile Include="optx\private\optxEmbeddedPrograms.cpp" />
+    <ClCompile Include="optx\private\optxCheck.cpp" />
+    <ClCompile Include="optx\private\optxContext.cpp" />
+    <ClCompile Include="optx\private\optxRayQuery.cpp" />
     <ClCompile Include="G2d\private\g2dSystemOptiX.cpp" />
     <ClCompile Include="G2d\private\g2dWindowOptiX.cpp" />
     <ClCompile Include="G2d\private\g2dWindowPACWin.cpp" />
@@ -111,6 +122,11 @@
     <ClInclude Include="GraphicsOptiXLayer.hpp" />
     <ClInclude Include="optx\optxSdk.hpp" />
     <ClInclude Include="optx\optxLoader.hpp" />
+    <ClInclude Include="optx\optxCheck.hpp" />
+    <ClInclude Include="optx\optxContext.hpp" />
+    <ClInclude Include="optx\optxRayQuery.hpp" />
+    <ClInclude Include="cu\cuLoader.hpp" />
+    <ClInclude Include="cu\cuBuffer.hpp" />
     <ClInclude Include="optx\private\optxEmbeddedPrograms.hpp" />
     <ClInclude Include="optx\private\Programs\optxRayQueryParams.h" />
     <ClInclude Include="G2d\g2dSystemOptiX.hpp" />

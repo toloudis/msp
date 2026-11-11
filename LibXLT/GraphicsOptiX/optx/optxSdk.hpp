@@ -1,20 +1,18 @@
 /*****************************************************************************
 **  optxSdk.hpp
 **
-**      Includes the OptiX host API (types and function declarations), and
-**	through it the CUDA driver API header (cuda.h, from the CUDA toolkit;
-**	cuda.props). Every GraphicsOptiX file that names OptiX or CUDA includes
-**	this header rather than the SDKs'.
+**      Includes the CUDA driver API header (cuda.h, from the CUDA toolkit;
+**	cuda.props) and the OptiX host API (types and function declarations).
+**	Every GraphicsOptiX file that names OptiX or CUDA includes this header
+**	rather than the SDKs'.
 **
 **	Only cuda.h's types and constants are used directly: nothing links the
 **	CUDA driver library, so calling a cu* function declared there fails
-**	to link. CUDA calls go through the functions loaded from nvcuda.dll at
-**	run time.
+**	to link. CUDA calls go through cuLoader's table (cu/cuLoader.hpp), and
+**	OptiX calls through OptiX's own function table (optxLoader).
 **
-**	In a build without the CUDA toolkit (GOX_NO_CUDA_TOOLKIT) the two CUDA
-**	types OptiX's host API names (CUcontext, CUstream) are declared here
-**	exactly as cuda.h declares them, so the library still compiles;
-**	GraphicsOptiXLayer::Init then fails.
+**	A build without either SDK compiles none of the files that include
+**	this (GraphicsOptiXLayerNoSdk.cpp).
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -23,10 +21,5 @@
 #endif
 #define GOX_OPTXSDK_HPP
 
-#ifdef GOX_NO_CUDA_TOOLKIT
-#define OPTIX_DONT_INCLUDE_CUDA
-typedef struct CUctx_st* CUcontext;
-typedef struct CUstream_st* CUstream;
-#endif
-
+#include <cuda.h>
 #include <optix_host.h>

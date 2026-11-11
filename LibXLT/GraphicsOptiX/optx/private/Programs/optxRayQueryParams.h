@@ -32,7 +32,8 @@ namespace gox
 		unsigned int	m_Pad[3];
 	};
 
-	//	What a ray hit; m_Hit is 0 for a miss (the rest is then undefined)
+	//	What a ray hit; m_Hit is 0 for a miss (the rest is then undefined).
+	//	m_InstanceId is ~0u when the traversable is a GAS (no instance).
 	struct optxRayQueryHit
 	{
 		float			m_T;

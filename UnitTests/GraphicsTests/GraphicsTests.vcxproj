@@ -39,6 +39,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <!-- GraphicsOptiX's SDKs: the Ox tests include its headers (OptiX, cuda.h) -->
+    <Import Project="..\..\LibXLT\GraphicsOptiX\optix.props" />
+    <Import Project="..\..\LibXLT\GraphicsOptiX\cuda.props" />
   </ImportGroup>
   <PropertyGroup>
     <OutDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\</OutDir>
@@ -221,6 +224,11 @@
       <Outputs>$(IntDir)%(Filename)VS.h;$(IntDir)%(Filename)PS.h</Outputs>
     </CustomBuild>
   </ItemDefinitionGroup>
+  <!-- GraphicsOptiX's tests, compiled only when its sources are (both SDKs found) -->
+  <ItemGroup Condition="'$(MspOptixFound)' == 'true' and '$(MspCudaFound)' == 'true'">
+    <ClCompile Include="Ox\optxContextTest.cpp" />
+    <ClInclude Include="Ox\gtOptiX.hpp" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\LibXLT\Core\Core.vcxproj">
       <Project>{846C097D-3B0E-4A0A-B6D7-222ED73125F8}</Project>
@@ -233,6 +241,9 @@
     </ProjectReference>
     <ProjectReference Include="..\..\LibXLT\GraphicsVulkan\GraphicsVulkan.vcxproj">
       <Project>{216ED7AE-3E0C-4B0D-A1DF-8D4D80C8AD71}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\LibXLT\GraphicsOptiX\GraphicsOptiX.vcxproj">
+      <Project>{00727FBC-E9E8-4949-A83B-2FBDD284FFCE}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\LibXLT\ImportExport\ImportExport.vcxproj">
       <Project>{1EC94900-3482-471B-B642-AF82738A9CFF}</Project>
