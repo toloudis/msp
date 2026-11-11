@@ -218,6 +218,14 @@ TEST(mainCommandLine, GfxDx11CaseInsensitive)
 	EXPECT_TRUE(line.m_Warnings.empty());
 }
 
+TEST(mainCommandLine, GfxOptiX)
+{
+	mainCommandLine line = mainCommandLine::Parse("-gfx OptiX -new");
+	EXPECT_EQ(g3dGfxOptions::e_OptiX, line.m_Gfx.m_Backend);
+	expect_actions({act(mainCommandLine::e_New)}, line);
+	EXPECT_TRUE(line.m_Warnings.empty());
+}
+
 TEST(mainCommandLine, GfxBadValueWarns)
 {
 	mainCommandLine line = mainCommandLine::Parse("-gfx metal");

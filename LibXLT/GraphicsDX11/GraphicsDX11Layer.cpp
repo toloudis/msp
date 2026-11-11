@@ -127,3 +127,22 @@ g3dSystem* GraphicsDX11Layer::GetSystem3D()
 {
 	return l_pSystem3D;
 }
+
+//------------------------------------------------------------------------
+//	Names
+//------------------------------------------------------------------------
+const char* GraphicsDX11Layer::GetName()
+{
+	return "DirectX 11";
+}
+
+const char* GraphicsDX11Layer::GetCodeName()
+{
+	return "dx11";
+}
+
+const std::string& GraphicsDX11Layer::GetInitError()
+{
+	static const std::string none;
+	return none;
+}

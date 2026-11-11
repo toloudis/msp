@@ -58,6 +58,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GraphicsDX11", "..\..\LibXL
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GraphicsVulkan", "..\..\LibXLT\GraphicsVulkan\GraphicsVulkan.vcxproj", "{216ED7AE-3E0C-4B0D-A1DF-8D4D80C8AD71}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GraphicsOptiX", "..\..\LibXLT\GraphicsOptiX\GraphicsOptiX.vcxproj", "{00727FBC-E9E8-4949-A83B-2FBDD284FFCE}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImportExport", "..\..\LibXLT\ImportExport\ImportExport.vcxproj", "{1EC94900-3482-471B-B642-AF82738A9CFF}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SoftwareShield", "..\..\LibXLT\SecuritySoftwareShield\SecuritySoftwareShield.vcxproj", "{4F086E7B-E7E0-4358-9C37-964AE63E31D6}"
@@ -402,6 +404,18 @@ Global
 		{216ED7AE-3E0C-4B0D-A1DF-8D4D80C8AD71}.Release Wx|x64.Build.0 = Release|x64
 		{216ED7AE-3E0C-4B0D-A1DF-8D4D80C8AD71}.Release RenderNode|x64.ActiveCfg = Release|x64
 		{216ED7AE-3E0C-4B0D-A1DF-8D4D80C8AD71}.Release RenderNode|x64.Build.0 = Release|x64
+		{00727FBC-E9E8-4949-A83B-2FBDD284FFCE}.Debug RenderNode|x64.ActiveCfg = Debug|x64
+		{00727FBC-E9E8-4949-A83B-2FBDD284FFCE}.Debug RenderNode|x64.Build.0 = Debug|x64
+		{00727FBC-E9E8-4949-A83B-2FBDD284FFCE}.Debug Qt|x64.ActiveCfg = Debug|x64
+		{00727FBC-E9E8-4949-A83B-2FBDD284FFCE}.Debug Wx|x64.ActiveCfg = Debug|x64
+		{00727FBC-E9E8-4949-A83B-2FBDD284FFCE}.Debug Qt|x64.Build.0 = Debug|x64
+		{00727FBC-E9E8-4949-A83B-2FBDD284FFCE}.Debug Wx|x64.Build.0 = Debug|x64
+		{00727FBC-E9E8-4949-A83B-2FBDD284FFCE}.Release Qt|x64.ActiveCfg = Release|x64
+		{00727FBC-E9E8-4949-A83B-2FBDD284FFCE}.Release Wx|x64.ActiveCfg = Release|x64
+		{00727FBC-E9E8-4949-A83B-2FBDD284FFCE}.Release Qt|x64.Build.0 = Release|x64
+		{00727FBC-E9E8-4949-A83B-2FBDD284FFCE}.Release Wx|x64.Build.0 = Release|x64
+		{00727FBC-E9E8-4949-A83B-2FBDD284FFCE}.Release RenderNode|x64.ActiveCfg = Release|x64
+		{00727FBC-E9E8-4949-A83B-2FBDD284FFCE}.Release RenderNode|x64.Build.0 = Release|x64
 		{1EC94900-3482-471B-B642-AF82738A9CFF}.Debug RenderNode|x64.ActiveCfg = Debug|x64
 		{1EC94900-3482-471B-B642-AF82738A9CFF}.Debug RenderNode|x64.Build.0 = Debug|x64
 		{1EC94900-3482-471B-B642-AF82738A9CFF}.Debug Qt|x64.ActiveCfg = Debug|x64

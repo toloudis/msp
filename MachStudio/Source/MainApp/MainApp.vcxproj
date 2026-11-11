@@ -517,6 +517,9 @@
     <ProjectReference Include="..\..\..\LibXLT\GraphicsVulkan\GraphicsVulkan.vcxproj">
       <Project>{216ed7ae-3e0c-4b0d-a1df-8d4d80c8ad71}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\LibXLT\GraphicsOptiX\GraphicsOptiX.vcxproj">
+      <Project>{00727FBC-E9E8-4949-A83B-2FBDD284FFCE}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\LibXLT\Graphics\Graphics.vcxproj">
       <Project>{1d25a739-3967-4baf-aa18-53690b00bd55}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

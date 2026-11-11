@@ -55,6 +55,13 @@ class GraphicsVulkanLayer
 		static g3dSystem* GetSystem3D();
 
 		//------------------------------------------------------------------------
+		//	GetName - the backend's name for people ("Vulkan");
+		//	GetCodeName - its name in command lines, logs and files ("vulkan")
+		//------------------------------------------------------------------------
+		static const char* GetName();
+		static const char* GetCodeName();
+
+		//------------------------------------------------------------------------
 		//	GetInitError - why Init failed (empty if it didn't)
 		//------------------------------------------------------------------------
 		static const std::string& GetInitError();

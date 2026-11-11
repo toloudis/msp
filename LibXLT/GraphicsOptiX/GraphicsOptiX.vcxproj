@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    GraphicsOptiX: an NVIDIA OptiX (ray tracing) implementation of the
+    LibXLT/Graphics abstractions, alongside GraphicsDX11 and GraphicsVulkan.
+    Everything is in C++ namespace gox. Toolkit-neutral, so only Debug and
+    Release (MachStudio.sln maps the toolkit configurations onto them).
+
+    OptiX comes from the NVIDIA OptiX SDK (optix.props: MspOptixDir, then
+    OPTIX_ROOT, else the default install folder); it is header-only, loaded
+    from the display driver at run time. For now every Graphics hook is a
+    stub that renders, loads and creates nothing.
+  -->
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{00727FBC-E9E8-4949-A83B-2FBDD284FFCE}</ProjectGuid>
+    <RootNamespace>GraphicsOptiX</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(MspBaseConfiguration)' == 'Debug'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(MspBaseConfiguration)' == 'Release'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="optix.props" />
+  </ImportGroup>
+  <PropertyGroup>
+    <OutDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\lib\</OutDir>
+    <IntDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ProjectDir)..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_CRT_SECURE_NO_DEPRECATE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <WarningLevel>Level3</WarningLevel>
+      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </ClCompile>
+    <Lib>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(MspBaseConfiguration)' == 'Debug'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(MspBaseConfiguration)' == 'Release'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="GraphicsOptiXLayer.cpp" />
+    <ClCompile Include="optx\private\optxLoaderWin.cpp" />
+    <ClCompile Include="G2d\private\g2dSystemOptiX.cpp" />
+    <ClCompile Include="G2d\private\g2dWindowOptiX.cpp" />
+    <ClCompile Include="G2d\private\g2dWindowPACWin.cpp" />
+    <ClCompile Include="G2d\private\g2dResourceCounterOptiX.cpp" />
+    <ClCompile Include="G2d\private\g2dFontUtilOptiX.cpp" />
+    <ClCompile Include="G2d\private\g2dImageCreateOptiX.cpp" />
+    <ClCompile Include="G2d\private\g2dScreenCaptureUtilOptiX.cpp" />
+    <ClCompile Include="G3d\private\g3dSystemOptiX.cpp" />
+    <ClCompile Include="G3d\private\g3dLightMgrOptiX.cpp" />
+    <ClCompile Include="G3d\private\g3dSceneRendererOptiX.cpp" />
+    <ClCompile Include="G3d\private\g3dSceneRendererCreateOptiX.cpp" />
+    <ClCompile Include="G3d\private\g3dBakeOptiX.cpp" />
+    <ClCompile Include="G3d\private\g3dFragmentOptiX.cpp" />
+    <ClCompile Include="G3d\private\g3dFragmentCreateOptiX.cpp" />
+    <ClCompile Include="Mat\private\matTextureMgrOptiX.cpp" />
+    <ClCompile Include="Mat\private\matShaderMgrOptiX.cpp" />
+    <ClCompile Include="may\private\mayFragCreateOptiX.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GraphicsOptiXLayer.hpp" />
+    <ClInclude Include="optx\optxSdk.hpp" />
+    <ClInclude Include="optx\optxLoader.hpp" />
+    <ClInclude Include="G2d\g2dSystemOptiX.hpp" />
+    <ClInclude Include="G2d\g2dWindowOptiX.hpp" />
+    <ClInclude Include="G2d\private\g2dWindowPAC.hpp" />
+    <ClInclude Include="G2d\private\g2dWindowPACWin.hpp" />
+    <ClInclude Include="G2d\private\g2dResourceCounterOptiX.hpp" />
+    <ClInclude Include="G2d\private\g2dFontUtilOptiX.hpp" />
+    <ClInclude Include="G2d\private\g2dImageCreateOptiX.hpp" />
+    <ClInclude Include="G2d\private\g2dScreenCaptureUtilOptiX.hpp" />
+    <ClInclude Include="G3d\g3dSystemOptiX.hpp" />
+    <ClInclude Include="G3d\g3dSceneRendererOptiX.hpp" />
+    <ClInclude Include="G3d\g3dFragmentOptiX.hpp" />
+    <ClInclude Include="G3d\private\g3dLightMgrOptiX.hpp" />
+    <ClInclude Include="G3d\private\g3dSceneRendererCreateOptiX.hpp" />
+    <ClInclude Include="G3d\private\g3dBakeOptiX.hpp" />
+    <ClInclude Include="G3d\private\g3dFragmentCreateOptiX.hpp" />
+    <ClInclude Include="Mat\private\matTextureMgrOptiX.hpp" />
+    <ClInclude Include="Mat\private\matShaderMgrOptiX.hpp" />
+    <ClInclude Include="may\private\mayFragCreateOptiX.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="optix.props" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.vcxproj">
+      <Project>{846C097D-3B0E-4A0A-B6D7-222ED73125F8}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Graphics\Graphics.vcxproj">
+      <Project>{1D25A739-3967-4BAF-AA18-53690B00BD55}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

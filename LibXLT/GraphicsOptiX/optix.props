@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The NVIDIA OptiX SDK, for GraphicsOptiX (and, later, whatever links or
+    tests it). OptiX is header-only: optix_stubs.h loads nvoptix.dll from the
+    display driver at run time, so there is nothing to link but Cfgmgr32.lib
+    (pulled in by a #pragma in optix_stubs.h) and nothing to ship.
+
+    The SDK is found through MspOptixDir, then OPTIX_ROOT, else the default
+    install folder of OptiX SDK 9.1.0. Without it the library still builds
+    (with a warning, and GOX_NO_OPTIX_SDK defined), so builds on machines
+    without it (CI) work; GraphicsOptiXLayer::Init then fails, saying so.
+    The CUDA toolkit isn't needed yet: optxSdk.hpp declares the two CUDA
+    driver types OptiX's host API names.
+  -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MspOptixDir Condition="'$(MspOptixDir)' == '' and '$(OPTIX_ROOT)' != ''">$(OPTIX_ROOT)</MspOptixDir>
+    <MspOptixDir Condition="'$(MspOptixDir)' == ''">C:\ProgramData\NVIDIA Corporation\OptiX SDK 9.1.0</MspOptixDir>
+    <MspOptixDir Condition="!HasTrailingSlash('$(MspOptixDir)')">$(MspOptixDir)\</MspOptixDir>
+  </PropertyGroup>
+  <PropertyGroup>
+    <MspOptixFound>false</MspOptixFound>
+    <MspOptixFound Condition="Exists('$(MspOptixDir)include\optix.h')">true</MspOptixFound>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(MspOptixFound)' == 'true'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MspOptixDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(MspOptixFound)' != 'true'">
+    <ClCompile>
+      <PreprocessorDefinitions>GOX_NO_OPTIX_SDK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Target Name="MspCheckOptixSdk" BeforeTargets="ClCompile">
+    <Warning Condition="'$(MspOptixFound)' != 'true'"
+             Text="The NVIDIA OptiX SDK was not found at '$(MspOptixDir)', so -gfx optix won't start. Install it, or set OPTIX_ROOT (or the MSBuild property MspOptixDir) to its folder." />
+  </Target>
+</Project>

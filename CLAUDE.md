@@ -40,7 +40,7 @@ cameras/lights/objects on a timeline, and render frames or sequences on the GPU
     `#include <wx/...>` lines inside `#ifdef USE_WXWIDGETS` so toolkit-neutral
     code can include it in any build.
   - Projects that don't depend on the toolkit (Core, Graphics,
-    GraphicsDX11, GraphicsVulkan, Tool, Input, InputTPC, AudioDS,
+    GraphicsDX11, GraphicsVulkan, GraphicsOptiX, Tool, Input, InputTPC, AudioDS,
     ImportExport, the UnitTests projects, and in MachStudio Drivers and
     the Systems AO, Billboard, Cameras, Character, Fog, GI, PrjLt, PtLt
     and Transforms) have only plain `Debug` and
@@ -220,6 +220,15 @@ exists (FBX support is compiled out; see the leftovers note above).
 
 **Qt 6** is a separate install (see the toolkit notes above), not in
 `3rdParty/` or vcpkg.
+
+**NVIDIA OptiX SDK** (for `LibXLT/GraphicsOptiX` only) is a separate
+install too: `LibXLT/GraphicsOptiX/optix.props` finds it through
+`MspOptixDir`, then `OPTIX_ROOT`, else
+`C:\ProgramData\NVIDIA Corporation\OptiX SDK 9.1.0`. Without it the
+library still builds (a build warning; `GOX_NO_OPTIX_SDK` is defined), so
+CI and machines without it build MachStudio, and `-gfx optix` fails at
+start-up saying so. OptiX is header-only (loaded from the
+display driver at run time); the CUDA toolkit isn't needed yet.
 
 ## Code conventions
 
@@ -411,6 +420,26 @@ says why) and installs a Vulkan implementation for every Graphics hook.
   outputs from a copy of the SPIR-V (`vkd/private/vkdLinkStages.hpp`,
   SPIRV-Tools); the image doesn't change.
 
+### GraphicsOptiX (`LibXLT/GraphicsOptiX`)
+An NVIDIA OptiX (ray tracing) backend, started as stubs to be built up.
+Namespace `gox`, include guards `GOX_*`, class names end in `OptiX`.
+`GraphicsOptiXLayer` has the same calls as `GraphicsVulkanLayer` (`Init`
+loads OptiX from the driver, `optx/optxLoader`, and fails with
+`GetInitError` if it can't) and installs an OptiX class for every Graphics
+hook, where GraphicsVulkan installs its own: the 2D system (resource
+counter, fonts, image creation), the 3D system (lights, textures, shaders,
+screen capture), the layer (scene renderer creator, fragment creators;
+baking in `InitGraphics`). MachStudio starts it with `-gfx optix`. Nothing
+is rendered yet: renderers are no-ops, and a window's `Present` fills it
+with the color it was last cleared to (GDI, behind
+`G2d/private/g2dWindowPAC`), logging `GraphicsOptiX: first frame
+presented ...` once per window. Fragments are `g3dFragmentOptiX` (CPU
+meshes in `BumpTex1Vertex` with 32-bit indices) and lights are Graphics'
+own classes, as MachStudio's start-up needs real ones; textures, images
+and imported-model fragments (`mayFragCreateOptiX`) are still NULL, so
+loading a scene may crash. `optx/optxSdk.hpp` is the one place the OptiX
+headers are included.
+
 ### Other LibXLT libraries
 
 | Library | Purpose |
@@ -463,9 +492,12 @@ slider, drop target and resolve-path dialog for each toolkit. `Commands/` and
 
 The command line is parsed first thing in `DoWinMain`, before the main
 window and graphics exist, by `mainCommandLine::Parse` (all flags; tested in
-`UnitTests/MainAppTests`): graphics options (`-gfx dx11|vulkan`,
+`UnitTests/MainAppTests`): graphics options (`-gfx dx11|vulkan|optix`,
 `-gfxValidation`, `-gfxProfile`) go to `mainInitGraphics`, which starts the
-chosen graphics layer and logs `Graphics backend: <name> on <adapter>`;
+chosen graphics layer and logs `Graphics backend: <code name> on <adapter>`
+(each layer names itself: `GraphicsXxxLayer::GetName()` for people,
+"DirectX 11", "Vulkan", "OptiX", and `GetCodeName()`, "dx11", "vulkan",
+"optix", for the log line and the profiler);
 `-NoSplash`/`-show` are applied at once; and the actions (`-file`,
 `-render`, `-cap*`, `-script`, ...) run after start-up, in order, in
 `mnmApp::RunCommandLine`. `-render <scene>` loads the scene, which replaces

@@ -90,9 +90,11 @@
 **	  -capHardwareAA on|off      the renderer's own antialiasing (HDR AA)
 **
 **	Graphics
-**	  -gfx dx11|vulkan           graphics backend; default vulkan. If Vulkan
-**	                             can't start, MachStudio says why and exits
-**	                             (it never falls back to DX11)
+**	  -gfx dx11|vulkan|optix     graphics backend; default vulkan. If the
+**	                             backend can't start, MachStudio says why and
+**	                             exits (it never falls back to another).
+**	                             optix is NVIDIA OptiX, in development: it
+**	                             renders nothing yet
 **	  -gfxValidation             turn on the Vulkan validation layer (Debug
 **	                             builds always have it on); the error and
 **	                             warning counts are printed at exit

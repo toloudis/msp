@@ -75,6 +75,7 @@
 #endif
 #include "GraphicsDX11/GraphicsDX11Layer.hpp"
 #include "GraphicsVulkan/GraphicsVulkanLayer.hpp"
+#include "GraphicsOptiX/GraphicsOptiXLayer.hpp"
 #include "MainApp/mainGfxBackend.hpp"
 
 
@@ -87,7 +88,9 @@ namespace
 	//--------------------------------------------------------------------
 	// gfx_layer - the graphics layers have the same calls; chosen_layer
 	// is the one -gfx asked for. DX11's Init can't return failure (it
-	// throws the g2d exceptions caught below instead).
+	// throws the g2d exceptions caught below instead). GetName is the
+	// backend's name for people ("DirectX 11"), GetCodeName its name in
+	// logs and files ("dx11").
 	//--------------------------------------------------------------------
 	struct gfx_layer
 	{
@@ -97,6 +100,9 @@ namespace
 		void (*CleanUp)();
 		g2dSystem* (*GetSystem2D)();
 		g3dSystem* (*GetSystem3D)();
+		const char* (*GetName)();
+		const char* (*GetCodeName)();
+		const std::string& (*GetInitError)();
 	};
 
 	bool init_dx11(void* i_hWnd, const g3dGfxOptions& /*i_Options*/)
@@ -106,18 +112,28 @@ namespace
 	}
 
 	const gfx_layer l_DX11Layer = { init_dx11, GraphicsDX11Layer::InitGraphics, GraphicsDX11Layer::CleanUpGraphics,
-									GraphicsDX11Layer::CleanUp, GraphicsDX11Layer::GetSystem2D, GraphicsDX11Layer::GetSystem3D };
+									GraphicsDX11Layer::CleanUp, GraphicsDX11Layer::GetSystem2D, GraphicsDX11Layer::GetSystem3D,
+									GraphicsDX11Layer::GetName, GraphicsDX11Layer::GetCodeName, GraphicsDX11Layer::GetInitError };
 	const gfx_layer l_VulkanLayer = { GraphicsVulkanLayer::Init, GraphicsVulkanLayer::InitGraphics, GraphicsVulkanLayer::CleanUpGraphics,
-									  GraphicsVulkanLayer::CleanUp, GraphicsVulkanLayer::GetSystem2D, GraphicsVulkanLayer::GetSystem3D };
+									  GraphicsVulkanLayer::CleanUp, GraphicsVulkanLayer::GetSystem2D, GraphicsVulkanLayer::GetSystem3D,
+									  GraphicsVulkanLayer::GetName, GraphicsVulkanLayer::GetCodeName, GraphicsVulkanLayer::GetInitError };
+	const gfx_layer l_OptiXLayer = { GraphicsOptiXLayer::Init, GraphicsOptiXLayer::InitGraphics, GraphicsOptiXLayer::CleanUpGraphics,
+									 GraphicsOptiXLayer::CleanUp, GraphicsOptiXLayer::GetSystem2D, GraphicsOptiXLayer::GetSystem3D,
+									 GraphicsOptiXLayer::GetName, GraphicsOptiXLayer::GetCodeName, GraphicsOptiXLayer::GetInitError };
 
 	bool l_bLayerInitialized = false;
 
 	const gfx_layer& chosen_layer()
 	{
-		return l_GfxOptions.m_Backend == g3dGfxOptions::e_Vulkan ? l_VulkanLayer : l_DX11Layer;
+		switch (l_GfxOptions.m_Backend)
+		{
+			case g3dGfxOptions::e_Vulkan:	return l_VulkanLayer;
+			case g3dGfxOptions::e_OptiX:	return l_OptiXLayer;
+			default:						return l_DX11Layer;
+		}
 	}
 
-	// The chosen layer's Init returned false (GraphicsVulkanLayer::GetInitError says why)
+	// The chosen layer's Init returned false (its GetInitError says why)
 	struct gfx_layer_init_failed {};
 
 	//--------------------------------------------------------------------
@@ -211,11 +227,11 @@ mainInitGraphics::mainInitGraphics(int i_AppWidth,
 			throw gfx_layer_init_failed();
 		}
 		l_bLayerInitialized = true;
-		report(mainGfxBackend::BackendLine(l_GfxOptions.m_Backend, layer.GetSystem3D()->GetVideoAdapterName()));
+		report(mainGfxBackend::BackendLine(layer.GetCodeName(), layer.GetSystem3D()->GetVideoAdapterName()));
 
 		GraphicsLayer::InitGraphics(layer.GetSystem2D(), layer.GetSystem3D());
 		layer.InitGraphics();
-		start_profiler(mainGfxBackend::Name(l_GfxOptions.m_Backend));
+		start_profiler(layer.GetCodeName());
 
 		fsLocator font_loc;
 		font_loc.Push( gfPaths::GetPath(mnmPaths::e_ExeArt) ); 
@@ -333,7 +349,8 @@ mainInitGraphics::mainInitGraphics(int i_AppWidth,
 	catch( const gfx_layer_init_failed& )
 	{
 		mnmAppUtil::SetErrorCode(mnmErrorCodes::c_ErrorCreatingGraphics);
-		const std::string message = "Vulkan graphics could not start: " + GraphicsVulkanLayer::GetInitError();
+		const gfx_layer& layer = chosen_layer();
+		const std::string message = std::string(layer.GetName()) + " graphics could not start: " + layer.GetInitError();
 		report(message);
 #ifndef BATCH_MODE
 		guiMessageBox::Show(message.c_str(), "Error Initializing Graphics");

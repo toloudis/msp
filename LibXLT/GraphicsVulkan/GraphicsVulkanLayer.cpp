@@ -231,6 +231,16 @@ g3dSystem* GraphicsVulkanLayer::GetSystem3D()
 	return l_pSystem3D;
 }
 
+const char* GraphicsVulkanLayer::GetName()
+{
+	return "Vulkan";
+}
+
+const char* GraphicsVulkanLayer::GetCodeName()
+{
+	return "vulkan";
+}
+
 const std::string& GraphicsVulkanLayer::GetInitError()
 {
 	return l_InitError;

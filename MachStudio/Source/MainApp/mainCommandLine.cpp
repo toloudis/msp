@@ -411,9 +411,13 @@ mainCommandLine mainCommandLine::Parse(const std::string& i_Line)
 				{
 					result.m_Gfx.m_Backend = g3dGfxOptions::e_Vulkan;
 				}
+				else if (lower == "optix")
+				{
+					result.m_Gfx.m_Backend = g3dGfxOptions::e_OptiX;
+				}
 				else
 				{
-					result.m_Warnings.push_back("Command-line " + token + " " + value + ": unknown backend (use dx11 or vulkan); using dx11");
+					result.m_Warnings.push_back("Command-line " + token + " " + value + ": unknown backend (use dx11, vulkan or optix); ignored");
 				}
 			}
 			else
@@ -553,9 +557,10 @@ Rendering
   -capHardwareAA on|off      the renderer's own antialiasing (HDR AA)
 
 Graphics
-  -gfx dx11|vulkan           graphics backend; default vulkan. If Vulkan can't
-                             start, MachStudio says why and exits (it never
-                             falls back to DX11)
+  -gfx dx11|vulkan|optix     graphics backend; default vulkan. If the backend
+                             can't start, MachStudio says why and exits (it
+                             never falls back to another). optix is NVIDIA
+                             OptiX, in development: it renders nothing yet
   -gfxValidation             turn on the Vulkan validation layer (Debug
                              builds always have it on); the error and
                              warning counts are printed at exit
