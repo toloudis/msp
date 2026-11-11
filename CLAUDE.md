@@ -452,7 +452,8 @@ is rendered yet: renderers are no-ops, and a window's `Present` fills it
 with the color it was last cleared to (GDI, behind
 `G2d/private/g2dWindowPAC`), logging `GraphicsOptiX: first frame
 presented ...` once per window. Fragments are `g3dFragmentOptiX` (CPU
-meshes in `BumpTex1Vertex` with 32-bit indices) and lights are Graphics'
+meshes in `BumpTex1Vertex` with 32-bit indices; see the `G3d` row below
+for their GAS) and lights are Graphics'
 own classes, as MachStudio's start-up needs real ones; textures, images
 and imported-model fragments (`mayFragCreateOptiX`) are still NULL, so
 loading a scene may crash. `optx/optxSdk.hpp` is the one place the OptiX
@@ -467,6 +468,7 @@ beside each (`optxRayQueryParams.h`). Plan:
 | Package | Purpose |
 |---|---|
 | `cu` | The CUDA driver API: `cuLoader` loads `nvcuda.dll` and fills a table of the functions used (`cu().cuMemAlloc(...)`; add a function to `GOX_CU_FUNCTIONS`), fetched with `cuGetProcAddress` at the headers' `CUDA_VERSION`; `cuBuffer`, a device allocation (grow-only `Reserve`, upload, download, clear on the context's stream) |
+| `G3d` | `g3dFragmentOptiX`: a fragment's vertices are in a `g3dVertexStoreOptiX` (shared by `shared_ptr`, so a group's fragments can share one), its indices its own; each has a generation from one process-wide counter, changed by `Unlock`/`UpdateVertices` (the store's `Publish`) and `UnlockIndices`. `EnsureGAS` (render thread) uploads and builds only what changed: static fragments built for fast trace and compacted, morphable ones refit, rebuilt on an index or count change and after `c_MaxRefits` refits. A morphable store uploads a copy taken at `Publish` under its own mutex, as animation threads write between `Lock` and `Unlock` |
 | `optx` | OptiX: `optxLoader` (`nvoptix.dll`), `optxContext` (the one GPU: the first CUDA device of compute 7.5 or newer, or the first whose name contains `MSP_GFX_OPTIX_DEVICE`; its primary context, one stream all work goes on, the `OptixDeviceContext`, OptiX's log in the application log with errors and warnings counted, validation in Debug and with `-gfxValidation`; CUDA contexts are per thread, so code calling CUDA on a thread calls `MakeCurrent`), `optxCheck` (`CU_CHECK`/`OPTIX_CHECK`, as `VK_CHECK`), `optxEmbeddedPrograms`, and `optxRayQuery` (traces batches of rays against an IAS or GAS and reads back distance, instance and triangle: for picking and tests) |
 
 A build without the OptiX SDK or the CUDA toolkit compiles only

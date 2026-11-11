@@ -277,6 +277,9 @@
     <ClCompile Include="Ox\optxContextTest.cpp">
       <Filter>Ox</Filter>
     </ClCompile>
+    <ClCompile Include="Ox\g3dFragmentOptiXTest.cpp">
+      <Filter>Ox</Filter>
+    </ClCompile>
     <ClInclude Include="Ox\gtOptiX.hpp">
       <Filter>Ox</Filter>
     </ClInclude>
