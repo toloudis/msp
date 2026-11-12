@@ -114,6 +114,7 @@
     <ClCompile Include="G3d\private\g3dBakeOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dFragmentOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dVertexStoreOptiX.cpp" />
+    <ClCompile Include="G3d\private\g3dVertexBufferOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dFragmentCreateOptiX.cpp" />
     <ClCompile Include="Mat\private\matTextureMgrOptiX.cpp" />
     <ClCompile Include="Mat\private\matShaderMgrOptiX.cpp" />
@@ -142,6 +143,7 @@
     <ClInclude Include="G3d\g3dSceneRendererOptiX.hpp" />
     <ClInclude Include="G3d\g3dFragmentOptiX.hpp" />
     <ClInclude Include="G3d\g3dVertexStoreOptiX.hpp" />
+    <ClInclude Include="G3d\g3dVertexBufferOptiX.hpp" />
     <ClInclude Include="G3d\private\g3dLightMgrOptiX.hpp" />
     <ClInclude Include="G3d\private\g3dSceneRendererCreateOptiX.hpp" />
     <ClInclude Include="G3d\private\g3dBakeOptiX.hpp" />

@@ -5,7 +5,16 @@
 **	models (mdlFragCreate), installed by GraphicsOptiXLayer while it
 **	exists, as mayPackage installs GraphicsVulkan's.
 **
-**	Stub: makes no fragments (NULL) and leaves the import data unchanged.
+**	CreateFragment makes a g3dFragmentOptiX from an mdlSplitFragInfo.
+**	CreateFragmentGroup makes one g3dVertexBufferOptiX (over one
+**	g3dVertexStoreOptiX) and one fragment per material on it, each with
+**	its own indices (mdlFragInfo::GetIndexRange), as GraphicsVulkan's
+**	mayFragCreate does; UpdateFragmentGroup replaces the store's vertices
+**	and each fragment's indices. Shadow-volume weld indices (the ones past
+**	mdlSplitFragInfo::m_WeldIndex) are dropped: they only build stencil
+**	shadow volumes, which a ray tracer doesn't use. OptimizeFragment does nothing (DX11's is compiled out) and bump
+**	fragments aren't used (UseBumpFrag). No hair yet: CreateHairFragment
+**	returns NULL.
 **
 **	Extra Large Technology
 \****************************************************************************/

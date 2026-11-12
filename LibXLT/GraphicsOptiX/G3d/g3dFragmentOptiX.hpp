@@ -10,6 +10,9 @@
 **	writes its vertices works unchanged. Lock and LockIndices give the
 **	arrays themselves; Unlock, UpdateVertices and UnlockIndices mark them
 **	changed (the store's generation, or the fragment's index generation).
+**	The fragments of an imported group (mayFragCreateOptiX) share one
+**	store, written through the group's g3dVertexBufferOptiX, and each has
+**	its own indices, replaced by SetIndices when the group is updated.
 **
 **	EnsureGAS, called by the scene BVH on the render thread, uploads and
 **	builds only what changed since the GAS was built:
@@ -51,6 +54,7 @@
 #include <atomic>
 #include <cstdint>
 #include <memory>
+#include <mutex>
 #include <vector>
 
 class g3dIndexPtr;
@@ -79,6 +83,14 @@ namespace gox
 							 matMaterial* i_pMaterial,
 							 bool i_bMorphable,
 							 PrimitiveType i_PrimitiveType);
+
+			//--------------------------------------------------------------------
+			//	A triangle list on a store shared with other fragments (a
+			//	group's), with its own indices. Morphable if the store is.
+			//--------------------------------------------------------------------
+			g3dFragmentOptiX(const std::shared_ptr<g3dVertexStoreOptiX>& i_pStore,
+							 std::vector<uint32_t>&& i_Indices,
+							 matMaterial* i_pMaterial);
 			g3dFragmentOptiX(const g3dFragmentOptiX& i_Frag);
 			virtual ~g3dFragmentOptiX();
 
@@ -89,6 +101,12 @@ namespace gox
 			//	group)
 			//--------------------------------------------------------------------
 			const std::shared_ptr<g3dVertexStoreOptiX>& GetStore() const { return m_pStore; }
+
+			//--------------------------------------------------------------------
+			//	SetIndices - replaces the indices (and their count); for
+			//	UpdateFragmentGroup
+			//--------------------------------------------------------------------
+			void SetIndices(std::vector<uint32_t>&& i_Indices);
 
 			//--------------------------------------------------------------------
 			//	GetVertexGeneration, GetIndexGeneration - change whenever the
@@ -136,6 +154,7 @@ namespace gox
 
 			std::shared_ptr<g3dVertexStoreOptiX>	m_pStore;
 			std::vector<uint32_t>					m_Indices;
+			std::mutex								m_IndexMutex;	// SetIndices against EnsureGAS
 			std::atomic<uint64_t>					m_IndexGeneration;
 			PrimitiveType							m_PrimitiveType;
 

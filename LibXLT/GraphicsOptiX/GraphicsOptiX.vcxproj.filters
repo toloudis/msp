@@ -44,6 +44,7 @@
     <ClCompile Include="G3d\private\g3dBakeOptiX.cpp"><Filter>G3d</Filter></ClCompile>
     <ClCompile Include="G3d\private\g3dFragmentOptiX.cpp"><Filter>G3d</Filter></ClCompile>
     <ClCompile Include="G3d\private\g3dVertexStoreOptiX.cpp"><Filter>G3d</Filter></ClCompile>
+    <ClCompile Include="G3d\private\g3dVertexBufferOptiX.cpp"><Filter>G3d</Filter></ClCompile>
     <ClCompile Include="G3d\private\g3dFragmentCreateOptiX.cpp"><Filter>G3d</Filter></ClCompile>
     <ClCompile Include="Mat\private\matTextureMgrOptiX.cpp"><Filter>Mat</Filter></ClCompile>
     <ClCompile Include="Mat\private\matShaderMgrOptiX.cpp"><Filter>Mat</Filter></ClCompile>
@@ -72,6 +73,7 @@
     <ClInclude Include="G3d\g3dSceneRendererOptiX.hpp"><Filter>G3d</Filter></ClInclude>
     <ClInclude Include="G3d\g3dFragmentOptiX.hpp"><Filter>G3d</Filter></ClInclude>
     <ClInclude Include="G3d\g3dVertexStoreOptiX.hpp"><Filter>G3d</Filter></ClInclude>
+    <ClInclude Include="G3d\g3dVertexBufferOptiX.hpp"><Filter>G3d</Filter></ClInclude>
     <ClInclude Include="G3d\private\g3dLightMgrOptiX.hpp"><Filter>G3d</Filter></ClInclude>
     <ClInclude Include="G3d\private\g3dSceneRendererCreateOptiX.hpp"><Filter>G3d</Filter></ClInclude>
     <ClInclude Include="G3d\private\g3dBakeOptiX.hpp"><Filter>G3d</Filter></ClInclude>

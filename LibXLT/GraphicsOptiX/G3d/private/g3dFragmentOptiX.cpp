@@ -26,6 +26,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <utility>
 
 namespace gox
 {
@@ -86,6 +87,30 @@ namespace gox
 				m_Indices[i] = i_Indices.GetIndex(static_cast<int>(i));
 			}
 		}
+		update_bounding_box();
+	}
+
+	g3dFragmentOptiX::g3dFragmentOptiX(const std::shared_ptr<g3dVertexStoreOptiX>& i_pStore,
+									   std::vector<uint32_t>&& i_Indices,
+									   matMaterial* i_pMaterial)
+		: g3dFragment(i_pMaterial, c_RenderMode, i_pStore->GetMorphable())
+		, m_pStore(i_pStore)
+		, m_Indices(std::move(i_Indices))
+		, m_IndexGeneration(g3dVertexStoreOptiX::NewGeneration())
+		, m_PrimitiveType(e_TriangleList)
+		, m_DeviceIndexGeneration(0)
+		, m_MaxIndex(0)
+		, m_GasHandle(0)
+		, m_GasVertexGeneration(0)
+		, m_GasIndexGeneration(0)
+		, m_GasVertexCount(0)
+		, m_GasTriangleCount(0)
+		, m_nRefitsSinceBuild(0)
+		, m_nGasBuilds(0)
+		, m_nGasRefits(0)
+	{
+		//	The whole group's box, as smdlSubdivSurface gives each fragment of a
+		//	group: the group is one surface in the modelling package
 		update_bounding_box();
 	}
 
@@ -272,10 +297,17 @@ namespace gox
 			return m_GasHandle;
 		}
 
-		const unsigned triangles = static_cast<unsigned>(m_Indices.size() / 3);
+		//	The indices under m_IndexMutex, as SetIndices may replace them on
+		//	another thread; upload_indices records the generation it uploaded
+		unsigned triangles = 0;
+		bool ok = false;
+		{
+			std::lock_guard<std::mutex> lock(m_IndexMutex);
+			triangles = static_cast<unsigned>(m_Indices.size() / 3);
+			ok = m_PrimitiveType == e_TriangleList && triangles > 0 && upload_indices(triangles);
+		}
 		g3dVertexStoreOptiX::DeviceVertices vertices;
-		bool ok = m_PrimitiveType == e_TriangleList && triangles > 0 && m_pStore->GetNumVertices() > 0 &&
-				  m_pStore->EnsureDevice(vertices) && vertices.m_Count > 0 && upload_indices(triangles);
+		ok = ok && m_pStore->EnsureDevice(vertices) && vertices.m_Count > 0;
 		if (ok && m_MaxIndex >= vertices.m_Count)
 		{
 			DBG_LOG("GraphicsOptiX: a fragment has index " << m_MaxIndex << " but only " << vertices.m_Count
@@ -285,7 +317,7 @@ namespace gox
 
 		if (ok)
 		{
-			const bool refit = GetMorphable() && m_GasHandle != 0 && index_generation == m_GasIndexGeneration &&
+			const bool refit = GetMorphable() && m_GasHandle != 0 && m_DeviceIndexGeneration == m_GasIndexGeneration &&
 							   vertices.m_Count == m_GasVertexCount && triangles == m_GasTriangleCount &&
 							   m_nRefitsSinceBuild < c_MaxRefits;
 			ok = build_gas(vertices, triangles, refit);
@@ -310,10 +342,10 @@ namespace gox
 			release_gas();
 		}
 
-		//	Record what the GAS (or its absence) is from: the generation actually
-		//	uploaded, which may be newer than the one read above
+		//	Record what the GAS (or its absence) is from: the generations actually
+		//	uploaded, which may be newer than the ones read above
 		m_GasVertexGeneration = ok ? vertices.m_Generation : vertex_generation;
-		m_GasIndexGeneration = index_generation;
+		m_GasIndexGeneration = ok ? m_DeviceIndexGeneration : index_generation;
 		return m_GasHandle;
 	}
 
@@ -335,6 +367,13 @@ namespace gox
 	{
 		m_pStore->UpdateVertices(i_NumVertices, i_pVertices, i_pNormals);
 		update_bounding_box();
+	}
+
+	void g3dFragmentOptiX::SetIndices(std::vector<uint32_t>&& i_Indices)
+	{
+		std::lock_guard<std::mutex> lock(m_IndexMutex);
+		m_Indices = std::move(i_Indices);
+		m_IndexGeneration = g3dVertexStoreOptiX::NewGeneration();
 	}
 
 	int g3dFragmentOptiX::GetNumVertices() const

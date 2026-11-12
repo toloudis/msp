@@ -228,6 +228,7 @@
   <ItemGroup Condition="'$(MspOptixFound)' == 'true' and '$(MspCudaFound)' == 'true'">
     <ClCompile Include="Ox\optxContextTest.cpp" />
     <ClCompile Include="Ox\g3dFragmentOptiXTest.cpp" />
+    <ClCompile Include="Ox\mayFragCreateOptiXTest.cpp" />
     <ClInclude Include="Ox\gtOptiX.hpp" />
   </ItemGroup>
   <ItemGroup>
