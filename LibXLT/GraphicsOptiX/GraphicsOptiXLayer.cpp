@@ -35,6 +35,11 @@
 #ifndef GVK_VKDGLOBAL_HPP
 #include "GraphicsVulkan/vkd/vkdGlobal.hpp"
 #endif
+#ifdef MSP_GFX_PROFILING
+#ifndef GOX_G3DPROFILERGPUOPTIX_HPP
+#include "GraphicsOptiX/G3d/g3dProfilerGpuOptiX.hpp"
+#endif
+#endif
 #ifndef G3D_GFXOPTIONS_HPP
 #include "Graphics/G3d/g3dGfxOptions.hpp"
 #endif
@@ -54,6 +59,9 @@ namespace
 	g3dGasCacheOptiX*				l_pGasCache = NULL;
 	int								l_nOptixErrors = 0;		// kept after CleanUp
 	int								l_nOptixWarnings = 0;
+#ifdef MSP_GFX_PROFILING
+	g3dProfilerGpuOptiX*			l_pProfilerGpu = NULL;	// over Vulkan's timer
+#endif
 
 	void unload_optix()
 	{
@@ -112,6 +120,7 @@ bool GraphicsOptiXLayer::Init(void* i_hWnd, const g3dGfxOptions& i_Options)
 
 	l_pRendererCreator = new g3dSceneRendererCreateOptiX(g3dSceneRendererCreate::SetImplementation(NULL));
 	g3dSceneRendererCreate::SetImplementation(l_pRendererCreator);
+
 	return true;
 }
 
@@ -144,10 +153,27 @@ void GraphicsOptiXLayer::CleanUp() throw()
 void GraphicsOptiXLayer::InitGraphics()
 {
 	GraphicsVulkanLayer::InitGraphics();
+#ifdef MSP_GFX_PROFILING
+	//	CUDA stream times too (cuda_ms), around the GPU timer Vulkan just installed
+	if (g3dProfilerGpu* vulkan_timer = g3dProfiler::GetGpu())
+	{
+		l_pProfilerGpu = new g3dProfilerGpuOptiX(vulkan_timer);
+		g3dProfiler::SetGpu(l_pProfilerGpu);
+	}
+#endif
 }
 
 void GraphicsOptiXLayer::CleanUpGraphics()
 {
+#ifdef MSP_GFX_PROFILING
+	//	Vulkan's timer back, for its own CleanUpGraphics to remove
+	if (l_pProfilerGpu)
+	{
+		g3dProfiler::SetGpu(l_pProfilerGpu->GetInner());
+		delete l_pProfilerGpu;
+		l_pProfilerGpu = NULL;
+	}
+#endif
 	GraphicsVulkanLayer::CleanUpGraphics();
 }
 

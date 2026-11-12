@@ -53,6 +53,10 @@ namespace gox
 			virtual g3dSceneRenderer* CreateReflectionOnlyRenderer();
 			virtual g3dSceneRenderer* CreateGlowRenderer();
 
+			//	False for the types the OptiX renderer draws: it traces
+			//	the scene and reads no shadow, opacity or reflection maps
+			virtual bool UsesTargetRenderers(g3dSceneRendererTypes::RendererType i_Type);
+
 		private:
 			g3dSceneRendererCreateImpl* m_pInner;
 	};

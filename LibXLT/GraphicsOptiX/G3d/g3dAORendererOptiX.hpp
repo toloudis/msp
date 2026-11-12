@@ -170,5 +170,7 @@ namespace gox
 			int							m_nLaunches;
 			int							m_nRestarts;
 			bool						m_bLoggedTarget;
+			unsigned					m_nLoggedInstances;		// the BVH's sizes last logged
+			unsigned					m_nLoggedGas;
 	};
 }

@@ -41,6 +41,10 @@
 #include <cstring>
 #include <utility>
 
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
+
 namespace gox
 {
 	namespace
@@ -428,6 +432,7 @@ namespace gox
 
 	bool g3dGasCacheOptiX::build(Entry& io_Entry, bool i_bRefit)
 	{
+		G3D_PROFILE_SCOPE(i_bRefit ? "GasRefit" : "GasBuild");
 		const OptixDeviceContext context = optxContext::GetOptix();
 		const CUstream stream = optxContext::GetStream();
 		Gas& gas = io_Entry.m_Gas;

@@ -38,11 +38,14 @@ namespace
 		float				m_SimTime;
 		std::vector<Scope>	m_Scopes;
 		std::vector<double>	m_GpuMs;		// per GPU token
+		double				m_StartMs;		// the frame's start, ms after Start()
+		std::vector<double>	m_SecondMs;		// per GPU token, the GPU timer's second clock (CUDA)
 		bool				m_bGpuDone;		// GPU times known (or not expected)
 		bool				m_bGpuValid;
 	};
 
 	bool				l_bEnabled = false;
+	Clock::time_point	l_Started;
 	std::ofstream*		l_pOut = NULL;
 	std::string			l_Backend;
 	g3dProfilerGpu*		l_pGpu = NULL;
@@ -80,7 +83,13 @@ namespace
 			{
 				out << i_Frame.m_GpuMs[scope.m_GpuToken];
 			}
-			out << ',' << scope.m_Draws << '\n';
+			out << ',' << scope.m_Draws << ',';
+			if (i_Frame.m_bGpuValid && scope.m_GpuToken >= 0 &&
+				scope.m_GpuToken < static_cast<int>(i_Frame.m_SecondMs.size()))
+			{
+				out << i_Frame.m_SecondMs[scope.m_GpuToken];
+			}
+			out << ',' << i_Frame.m_StartMs << '\n';
 		}
 	}
 
@@ -101,6 +110,7 @@ namespace
 					if (frame.m_Id == frame_id)
 					{
 						frame.m_GpuMs = scope_ms;
+						l_pGpu->GetSecondMs(frame.m_SecondMs);
 						frame.m_bGpuValid = valid;
 						frame.m_bGpuDone = true;
 						break;
@@ -129,9 +139,10 @@ void g3dProfiler::Start(const std::string& i_CsvPath, const std::string& i_Backe
 		l_pOut = NULL;
 		return;
 	}
-	*l_pOut << "backend,frame,sim_time,path,depth,cpu_ms,gpu_ms,draws\n";
+	*l_pOut << "backend,frame,sim_time,path,depth,cpu_ms,gpu_ms,draws,cuda_ms,start_ms\n";
 	l_Backend = i_Backend;
 	l_NextFrameId = 0;
+	l_Started = Clock::now();
 	l_bInFrame = false;
 	l_Stack.clear();
 	l_Finished.clear();
@@ -159,6 +170,11 @@ void g3dProfiler::Stop()
 	l_bInFrame = false;
 }
 
+g3dProfilerGpu* g3dProfiler::GetGpu()
+{
+	return l_pGpu;
+}
+
 bool g3dProfiler::IsEnabled()
 {
 	return l_bEnabled;
@@ -182,6 +198,7 @@ void g3dProfiler::BeginFrame(float i_SimTime)
 	l_Current = Frame();
 	l_Current.m_Id = l_NextFrameId++;
 	l_Current.m_SimTime = i_SimTime;
+	l_Current.m_StartMs = std::chrono::duration<double, std::milli>(Clock::now() - l_Started).count();
 	l_Current.m_bGpuDone = (l_pGpu == NULL);
 	l_Current.m_bGpuValid = false;
 	l_Stack.clear();

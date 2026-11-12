@@ -5,12 +5,16 @@
 **	time, GPU time (from a backend's g3dProfilerGpu) and draw counts,
 **	written to a CSV file, one row per scope per frame:
 **
-**	  backend,frame,sim_time,path,depth,cpu_ms,gpu_ms,draws
+**	  backend,frame,sim_time,path,depth,cpu_ms,gpu_ms,draws,cuda_ms,start_ms
 **
 **	path joins scope names from the frame's root with '/'. GPU times
 **	arrive frames later; rows are written in frame order once a frame's
 **	GPU times are known, and on Stop() whatever never resolved is written
 **	with an empty gpu_ms. Times and draws are inclusive of child scopes.
+**	cuda_ms is the GPU timer's second clock (g3dProfilerGpu::GetSecondMs:
+**	the OptiX backend's CUDA stream), empty for the other backends.
+**	start_ms is when the frame began, in ms after Start(): frame to frame
+**	intervals include what no scope covers (presenting, waiting).
 **
 **	Markers go through the G3D_PROFILE_* macros, which compile to nothing
 **	unless MSP_GFX_PROFILING is defined (Debug builds, or Release built
@@ -51,6 +55,11 @@ class g3dProfilerGpu
 		//	GPU clock was disjoint); the frame is still reported.
 		virtual bool Resolve(bool i_bWait, uint64_t& o_FrameId,
 							 std::vector<double>& o_ScopeMs, bool& o_bValid) = 0;
+
+		//	A second clock's ms per token (GraphicsOptiX: the CUDA stream's)
+		//	for the frame Resolve last returned; empty without one. Written
+		//	to the cuda_ms column.
+		virtual void GetSecondMs(std::vector<double>& o_ScopeMs) { o_ScopeMs.clear(); }
 };
 
 //============================================================================
@@ -70,6 +79,7 @@ class g3dProfiler
 		//	SetGpu installs the backend's GPU timer (not owned); NULL means
 		//	CPU times only.
 		static void SetGpu(g3dProfilerGpu* i_pGpu);
+		static g3dProfilerGpu* GetGpu();
 
 		static void BeginFrame(float i_SimTime);
 		static void EndFrame();

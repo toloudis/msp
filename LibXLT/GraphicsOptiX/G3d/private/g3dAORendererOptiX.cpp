@@ -170,6 +170,8 @@ namespace gox
 		, m_nLaunches(0)
 		, m_nRestarts(0)
 		, m_bLoggedTarget(false)
+		, m_nLoggedInstances(0)
+		, m_nLoggedGas(0)
 	{
 		m_Overlay.SetClearTarget(false);
 		m_Overlay.SetNodeFilter([](const g3dSceneNode& i_Node) { return !g3dSceneBVHOptiX::IsTraced(i_Node); });
@@ -278,6 +280,13 @@ namespace gox
 		{
 			G3D_PROFILE_SCOPE("SceneBVH");
 			m_BVH.Update(i_Scene, i_ViewerLayers, g3dPrefs::CurrentPrefs().m_bLowResolution);
+		}
+		if (m_BVH.GetInstanceCount() != m_nLoggedInstances || m_BVH.GetGasCount() != m_nLoggedGas)
+		{
+			m_nLoggedInstances = m_BVH.GetInstanceCount();
+			m_nLoggedGas = m_BVH.GetGasCount();
+			DBG_LOG("GraphicsOptiX: scene BVH of " << m_nLoggedInstances << " instances, " << m_nLoggedGas << " GAS ("
+					<< (m_BVH.GetGasBytes() >> 20) << " MB), " << m_BVH.GetTriangleCount() << " triangles");
 		}
 
 		Key key;

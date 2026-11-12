@@ -162,6 +162,14 @@ public:
 		//--------------------------------------------------------------------
 		static g3dSceneRenderer* CreateGlowRenderer();
 
+		//--------------------------------------------------------------------
+		//	Whether the renderer this creator makes for i_Type reads the
+		//	target renderers' results (lights' shadow and opacity maps,
+		//	reflection maps); api3dTargetRendererMgr skips rendering them
+		//	when it doesn't. True without an implementation.
+		//--------------------------------------------------------------------
+		static bool UsesTargetRenderers(g3dSceneRendererTypes::RendererType i_Type);
+
 	//--------------------------------------------------------------------
 	// Methods for defining implementation
 	//--------------------------------------------------------------------
@@ -304,4 +312,10 @@ public:
 		//	Creates renderer for glow pass only
 		//--------------------------------------------------------------------
 		virtual g3dSceneRenderer* CreateGlowRenderer() = 0;
+
+		//--------------------------------------------------------------------
+		//	See g3dSceneRendererCreate::UsesTargetRenderers; the default is
+		//	true (the raster backends' renderers read them)
+		//--------------------------------------------------------------------
+		virtual bool UsesTargetRenderers(g3dSceneRendererTypes::RendererType i_Type) { return true; }
 };

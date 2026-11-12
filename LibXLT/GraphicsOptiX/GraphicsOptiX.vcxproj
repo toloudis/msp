@@ -107,6 +107,7 @@
     <ClCompile Include="optx\private\optxAO.cpp" />
     <ClCompile Include="optx\private\optxFrameShare.cpp" />
     <ClCompile Include="G3d\private\g3dAORendererOptiX.cpp" />
+    <ClCompile Include="G3d\private\g3dProfilerGpuOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dSceneRendererCreateOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dSceneBVHOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dGasCacheOptiX.cpp" />
@@ -122,6 +123,7 @@
     <ClInclude Include="optx\optxFrameShare.hpp" />
     <ClInclude Include="optx\private\Programs\optxAOParams.h" />
     <ClInclude Include="G3d\g3dAORendererOptiX.hpp" />
+    <ClInclude Include="G3d\g3dProfilerGpuOptiX.hpp" />
     <ClInclude Include="cu\cuLoader.hpp" />
     <ClInclude Include="cu\cuBuffer.hpp" />
     <ClInclude Include="cu\cuExternal.hpp" />

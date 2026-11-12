@@ -151,4 +151,17 @@ namespace gox
 	{
 		return m_pInner->CreateGlowRenderer();
 	}
+
+	bool g3dSceneRendererCreateOptiX::UsesTargetRenderers(g3dSceneRendererTypes::RendererType i_Type)
+	{
+		const bool optix_type = (i_Type == g3dSceneRendererTypes::e_Default)
+			|| (i_Type == g3dSceneRendererTypes::e_HDR)
+			|| (i_Type == g3dSceneRendererTypes::e_AmbientOcclusion);
+		const bool optix_available = g3dGasCacheOptiX::Get() && gvk::vkdGlobal::IsSet();
+		if (optix_type && optix_available)
+		{
+			return false;
+		}
+		return m_pInner->UsesTargetRenderers(i_Type);
+	}
 }

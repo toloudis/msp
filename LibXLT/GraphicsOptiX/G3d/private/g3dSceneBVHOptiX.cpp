@@ -44,6 +44,10 @@
 #include <string>
 #include <utility>
 
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
+
 namespace gox
 {
 	namespace
@@ -264,6 +268,7 @@ namespace gox
 
 	bool g3dSceneBVHOptiX::rebuild()
 	{
+		G3D_PROFILE_SCOPE("IasBuild");
 		m_Handle = 0;
 		m_nInstances = 0;
 		m_nSbtRecords = 1;

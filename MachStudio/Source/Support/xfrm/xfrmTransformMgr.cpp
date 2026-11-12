@@ -33,6 +33,13 @@ namespace xfrmTransformMgr
 		std::vector<xfrmTransformNode*>  l_Objects;
 		std::vector<xfrmTransformGroup*> l_Transforms;
 
+		// The node whose callback UpdateTransforms is calling: its
+		// UpdateParentTransform asks for its parent matrix by name
+		// (ComputeExclusiveMatrixForNode), which would otherwise search
+		// both lists by name for every node, every frame (quadratic in
+		// the number of objects). Per thread, as captures update too.
+		thread_local xfrmTransformNode* l_pUpdatingNode = NULL;
+
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
 		template<class S> 
@@ -718,8 +725,11 @@ namespace xfrmTransformMgr
 	bool ComputeExclusiveMatrixForNode(const nameString &i_ObjectName, 
 										 maMatrix4x4 &o_Transformation)
 	{
-		// Find named object or transform
-		if (xfrmTransformNode *pNode = find_node(i_ObjectName))
+		// Find named object or transform (the node being updated needs no search)
+		xfrmTransformNode *pNode = l_pUpdatingNode;
+		if (!pNode || !pNode->m_pNameObject || !(pNode->m_pNameObject->GetName() == i_ObjectName))
+			pNode = find_node(i_ObjectName);
+		if (pNode)
 		{
 			if (pNode->m_pParentGroup)
 			{
@@ -743,7 +753,10 @@ namespace xfrmTransformMgr
 		for (git = l_Transforms.begin(); git != l_Transforms.end(); ++git)
 		{
 			if ((*git)->m_pCallback)
+			{
+				l_pUpdatingNode = *git;
 				(*git)->m_pCallback->UpdateParentTransform();
+			}
 			//if ((*git)->m_UpdateFunction != NULL)
 			//	((*git)->m_UpdateFunction)();
 		}
@@ -751,10 +764,14 @@ namespace xfrmTransformMgr
 		for (nit = l_Objects.begin(); nit != l_Objects.end(); ++nit)
 		{
 			if ((*nit)->m_pCallback)
+			{
+				l_pUpdatingNode = *nit;
 				(*nit)->m_pCallback->UpdateParentTransform();
+			}
 			//if ((*nit)->m_UpdateFunction != NULL)
 			//	((*nit)->m_UpdateFunction)();
 		}
+		l_pUpdatingNode = NULL;
 	}
 		
 	//--------------------------------------------------------------------

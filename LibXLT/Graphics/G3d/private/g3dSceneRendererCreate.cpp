@@ -301,6 +301,13 @@ g3dSceneRenderer* g3dSceneRendererCreate::CreateGlowRenderer()
 }
 
 //--------------------------------------------------------------------
+//static
+bool g3dSceneRendererCreate::UsesTargetRenderers(g3dSceneRendererTypes::RendererType i_Type)
+{
+	return sm_pImplementation ? sm_pImplementation->UsesTargetRenderers(i_Type) : true;
+}
+
+//--------------------------------------------------------------------
 // Set new implementation method, returns pointer to last one
 // that was being used.  Both can be NULL.
 // Ownership for the pointer remains with the caller.

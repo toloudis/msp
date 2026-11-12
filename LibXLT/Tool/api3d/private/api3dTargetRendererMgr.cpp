@@ -11,6 +11,7 @@
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Graphics/g3d/g3dPrefs.hpp"
+#include "Graphics/G3d/g3dSceneRendererCreate.hpp"
 #include "Graphics/g3d/g3dSingleLightRendering.hpp"
 #include "Graphics/g3d/g3dTargetRenderer.hpp"
 #include "Graphics/G3d/g3dThreadControl.hpp"
@@ -93,11 +94,17 @@ namespace api3dTargetRendererMgr
 		//	api3dAmbientOcclusion::ComputeAmbientOcclusion(api3dScene::GetRoot(api3dScene::WorldLayerIndex()));
 		//} 
 
+		// A renderer that traces the scene (GraphicsOptiX) reads none of
+		// the shadow, reflection or opacity maps
+		const bool bTargetsUsed =
+			g3dSceneRendererCreate::UsesTargetRenderers(g3dPrefs::CurrentPrefs().m_RendererType);
+
 		int nTargets = l_ShadowTargetRenderers.size();
 		// only need to render shadow targets if shadows are on!
 		// also, AO renderer doesn't need shadows
 		// also, GI renderer doesn't need shadows
-		if (g3dSingleLightRendering::GetDoSingleLightRendering() && 
+		if (bTargetsUsed &&
+			g3dSingleLightRendering::GetDoSingleLightRendering() && 
 			g3dPrefs::CurrentPrefs().m_bDoShadowMapGen &&
 			g3dPrefs::CurrentPrefs().m_bEnableShadows &&
 			(g3dPrefs::CurrentPrefs().m_RendererType != g3dSceneRendererTypes::e_AmbientOcclusion) &&
@@ -115,7 +122,8 @@ namespace api3dTargetRendererMgr
 
 		// AO renderer doesn't need reflections.
 		// GI renderer doesn't need reflections.
-		if ((g3dPrefs::CurrentPrefs().m_RendererType != g3dSceneRendererTypes::e_AmbientOcclusion) &&
+		if (bTargetsUsed &&
+			(g3dPrefs::CurrentPrefs().m_RendererType != g3dSceneRendererTypes::e_AmbientOcclusion) &&
 			(g3dPrefs::CurrentPrefs().m_RendererType != g3dSceneRendererTypes::e_GlobalIllumination) &&
 			g3dPrefs::CurrentPrefs().m_bEnableReflection)
 		{
@@ -151,7 +159,8 @@ namespace api3dTargetRendererMgr
 		// only need to render Opacity targets if shadows and hair are on!
 		// also, AO renderer doesn't need shadows
 		// also, GI renderer doesn't need shadows
-		if (g3dSingleLightRendering::GetDoSingleLightRendering() && 
+		if (bTargetsUsed &&
+			g3dSingleLightRendering::GetDoSingleLightRendering() && 
 			g3dPrefs::CurrentPrefs().m_bDoShadowMapGen &&
 			g3dPrefs::CurrentPrefs().m_bEnableShadows &&
 			g3dPrefs::CurrentPrefs().m_bEnableHair &&
