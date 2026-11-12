@@ -133,6 +133,19 @@ namespace gvk
 			//	TRANSFER_SRC. A depth-stencil image reads its depth.
 			std::vector<uint8_t> ReadBack(uint32_t i_Mip = 0, uint32_t i_Layer = 0);
 
+			//	The colour vkdContext::ClearRenderTarget last cleared this image
+			//	(view) to; transparent black before any. A renderer that writes
+			//	every pixel itself (GraphicsOptiX's) fills its background with
+			//	the colour the target was cleared to before it ran.
+			const float* LastClearColor() const		{ return m_LastClear; }
+			void SetLastClearColor(const float i_Rgba[4])
+			{
+				for (int c = 0; c < 4; ++c)
+				{
+					m_LastClear[c] = i_Rgba[c];
+				}
+			}
+
 		private:
 			vkdImage(vkdDevice& i_Device) : m_Device(i_Device) {}
 			vkdImage(const vkdImage&) = delete;
@@ -156,6 +169,7 @@ namespace gvk
 			std::unique_ptr<vkdImage> m_pDepthView;
 			std::unique_ptr<vkdImage> m_pLayeredView;
 			std::unique_ptr<vkdImage> m_pAlphaView;
+			float			m_LastClear[4] = { 0, 0, 0, 0 };
 	};
 
 	//	vkdFormatSize - bytes per pixel of an uncompressed format; 0 for

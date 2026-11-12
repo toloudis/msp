@@ -17,9 +17,11 @@
 #include "Graphics/g3d/g3dSceneRenderer.hpp"
 #endif
 
+#include <functional>
 #include <vector>
 
 class g3dLayer;
+class g3dSceneNode;
 class camCamera;
 
 namespace gvk
@@ -50,7 +52,27 @@ public:
 
 	void ReleaseResources(){}
 
+	//--------------------------------------------------------------------
+	//	A node filter: in world-space layers, a node it returns false for
+	//	isn't drawn (its children still are). None by default. GraphicsOptiX
+	//	uses it to draw only what its tracer doesn't (lines, gizmos) over
+	//	the traced image.
+	//--------------------------------------------------------------------
+	typedef std::function<bool(const g3dSceneNode&)> NodeFilter;
+	void SetNodeFilter(const NodeFilter& i_Filter) { m_NodeFilter = i_Filter; }
+
+	//--------------------------------------------------------------------
+	//	Whether Render clears the target's colour first (the default);
+	//	false draws over what the target holds, depth-testing against its
+	//	depth
+	//--------------------------------------------------------------------
+	void SetClearTarget(bool i_bClear) { m_bClearTarget = i_bClear; }
+
 	static void InitStates();
 	static void CleanupStates();
+
+private:
+	NodeFilter	m_NodeFilter;
+	bool		m_bClearTarget = true;
 };
 }

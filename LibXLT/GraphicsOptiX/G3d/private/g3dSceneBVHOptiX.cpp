@@ -84,6 +84,13 @@ namespace gox
 
 		const float c_Identity[12] = { 1, 0, 0, 0,  0, 1, 0, 0,  0, 0, 1, 0 };
 
+		//	Camera rays see all but shadow hulls; occlusion rays what casts shadows
+		unsigned mask_of(const gvk::tmeshFrag& i_Fragment)
+		{
+			return (i_Fragment.IsShadowHull() ? 0u : unsigned(e_optxMaskCamera)) |
+				   (i_Fragment.GetCastsShadow() ? unsigned(e_optxMaskOcclusion) : 0u);
+		}
+
 		//	Grows io_Bounds by i_Box under the transform
 		void add_bounds(const maAxisBox& i_Box, const float i_Transform[12], maAxisBox& io_Bounds)
 		{
@@ -125,6 +132,12 @@ namespace gox
 			DBG_LOG("GraphicsOptiX: MSP_GFX_OPTIX_POOLING=\"" << value << "\" is unknown (use none or group); using group");
 		}
 		return e_PoolingGroup;
+	}
+
+	bool g3dSceneBVHOptiX::IsTraced(const g3dSceneNode& i_Node)
+	{
+		const gvk::tmeshFrag* fragment = dynamic_cast<const gvk::tmeshFrag*>(i_Node.GetFragment());
+		return fragment && g3dGasCacheOptiX::IsTraceable(*fragment) && mask_of(*fragment) != 0;
 	}
 
 	bool g3dSceneBVHOptiX::Entry::operator==(const Entry& i_Other) const
@@ -180,8 +193,7 @@ namespace gox
 			entry.m_pIndices = fragment->GetIndexBuffer().get();
 			entry.m_VertexGeneration = fragment->GetVertexBuffer()->GetGeneration();
 			entry.m_IndexGeneration = fragment->GetIndexBuffer()->GetGeneration();
-			entry.m_Mask = (fragment->IsShadowHull() ? 0u : unsigned(e_optxMaskCamera)) |
-						   (fragment->GetCastsShadow() ? unsigned(e_optxMaskOcclusion) : 0u);
+			entry.m_Mask = mask_of(*fragment);
 			if (fragment->IsModelSpaceVertices())
 			{
 				to_optix(i_pNode->GetTotalTransform(), entry.m_Transform);

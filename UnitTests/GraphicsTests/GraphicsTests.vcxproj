@@ -231,6 +231,7 @@
     <ClCompile Include="Ox\optxInteropTest.cpp" />
     <ClCompile Include="Ox\g3dGasCacheOptiXTest.cpp" />
     <ClCompile Include="Ox\g3dSceneBVHOptiXGroupTest.cpp" />
+    <ClCompile Include="Ox\g3dAORendererOptiXTest.cpp" />
     <ClInclude Include="Ox\gtOptiX.hpp" />
   </ItemGroup>
   <ItemGroup>

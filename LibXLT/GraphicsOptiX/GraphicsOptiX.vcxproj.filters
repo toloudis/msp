@@ -22,6 +22,9 @@
     <ClCompile Include="optx\private\optxCheck.cpp"><Filter>optx</Filter></ClCompile>
     <ClCompile Include="optx\private\optxContext.cpp"><Filter>optx</Filter></ClCompile>
     <ClCompile Include="optx\private\optxRayQuery.cpp"><Filter>optx</Filter></ClCompile>
+    <ClCompile Include="optx\private\optxAO.cpp"><Filter>optx</Filter></ClCompile>
+    <ClCompile Include="optx\private\optxFrameShare.cpp"><Filter>optx</Filter></ClCompile>
+    <ClCompile Include="G3d\private\g3dAORendererOptiX.cpp"><Filter>G3d</Filter></ClCompile>
     <ClCompile Include="optx\private\optxLoaderWin.cpp"><Filter>optx</Filter></ClCompile>
     <ClCompile Include="optx\private\optxEmbeddedPrograms.cpp"><Filter>optx</Filter></ClCompile>
     <ClCompile Include="G3d\private\g3dSceneRendererCreateOptiX.cpp"><Filter>G3d</Filter></ClCompile>
@@ -35,6 +38,10 @@
     <ClInclude Include="optx\optxCheck.hpp"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\optxContext.hpp"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\optxRayQuery.hpp"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\optxAO.hpp"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\optxFrameShare.hpp"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\private\Programs\optxAOParams.h"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="G3d\g3dAORendererOptiX.hpp"><Filter>G3d</Filter></ClInclude>
     <ClInclude Include="cu\cuLoader.hpp"><Filter>cu</Filter></ClInclude>
     <ClInclude Include="cu\cuBuffer.hpp"><Filter>cu</Filter></ClInclude>
     <ClInclude Include="cu\cuExternal.hpp"><Filter>cu</Filter></ClInclude>
@@ -52,5 +59,6 @@
     <None Include="cuda.props" />
     <None Include="optx\private\EmbedProgramsOptiX.ps1"><Filter>optx</Filter></None>
     <None Include="optx\private\Programs\optxRayQuery.cu"><Filter>optx</Filter></None>
+    <None Include="optx\private\Programs\optxAO.cu"><Filter>optx</Filter></None>
   </ItemGroup>
 </Project>

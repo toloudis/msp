@@ -85,6 +85,13 @@ namespace gox
 			//--------------------------------------------------------------------
 			static Pooling ReadPoolingEnvironment();
 
+			//--------------------------------------------------------------------
+			//	IsTraced - whether Update lists a node's fragment when the walk
+			//	reaches it (a traceable tmeshFrag seen by camera or occlusion
+			//	rays): what a raster pass over the traced image skips
+			//--------------------------------------------------------------------
+			static bool IsTraced(const g3dSceneNode& i_Node);
+
 			explicit g3dSceneBVHOptiX(g3dGasCacheOptiX& i_Cache);
 			~g3dSceneBVHOptiX();
 			g3dSceneBVHOptiX(const g3dSceneBVHOptiX&) = delete;

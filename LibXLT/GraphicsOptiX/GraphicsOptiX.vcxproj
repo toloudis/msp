@@ -104,6 +104,9 @@
     <ClCompile Include="optx\private\optxCheck.cpp" />
     <ClCompile Include="optx\private\optxContext.cpp" />
     <ClCompile Include="optx\private\optxRayQuery.cpp" />
+    <ClCompile Include="optx\private\optxAO.cpp" />
+    <ClCompile Include="optx\private\optxFrameShare.cpp" />
+    <ClCompile Include="G3d\private\g3dAORendererOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dSceneRendererCreateOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dSceneBVHOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dGasCacheOptiX.cpp" />
@@ -115,6 +118,10 @@
     <ClInclude Include="optx\optxCheck.hpp" />
     <ClInclude Include="optx\optxContext.hpp" />
     <ClInclude Include="optx\optxRayQuery.hpp" />
+    <ClInclude Include="optx\optxAO.hpp" />
+    <ClInclude Include="optx\optxFrameShare.hpp" />
+    <ClInclude Include="optx\private\Programs\optxAOParams.h" />
+    <ClInclude Include="G3d\g3dAORendererOptiX.hpp" />
     <ClInclude Include="cu\cuLoader.hpp" />
     <ClInclude Include="cu\cuBuffer.hpp" />
     <ClInclude Include="cu\cuExternal.hpp" />
@@ -132,6 +139,7 @@
     <None Include="cuda.props" />
     <None Include="optx\private\EmbedProgramsOptiX.ps1" />
     <None Include="optx\private\Programs\optxRayQuery.cu" />
+    <None Include="optx\private\Programs\optxAO.cu" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">

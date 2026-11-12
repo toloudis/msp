@@ -5,9 +5,9 @@
 **	renderers (g3dSceneRendererCreate), installed by GraphicsOptiXLayer
 **	over GraphicsVulkan's creator, which it keeps as the inner creator.
 **
-**	Every type is the inner creator's (Vulkan's) for now. The OptiX
-**	renderer (Part 2b of docs/plans/2026-11-11-optix-on-vulkan-progressive-
-**	ao.md) will replace default, HDR and ambient occlusion.
+**	Default, HDR and ambient occlusion give the OptiX renderer
+**	(g3dAORendererOptiX: while AO is all OptiX draws, it stands in for the
+**	other two); every other type is the inner creator's (Vulkan's).
 **
 **	Extra Large Technology
 \****************************************************************************/

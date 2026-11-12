@@ -210,6 +210,7 @@
     <ClInclude Include="G3d\g3dSystem.hpp" />
     <ClInclude Include="G3d\g3dTargetRenderer.hpp" />
     <ClInclude Include="G3d\g3dThreadControl.hpp" />
+    <ClInclude Include="G3d\g3dProgressive.hpp" />
     <ClInclude Include="G3d\g3dType.hpp" />
     <ClInclude Include="G3d\g3dVertexBuffer.hpp" />
     <ClInclude Include="G3d\g3dViewer.hpp" />
@@ -542,6 +543,7 @@
     <ClCompile Include="G3d\private\g3dSpotLight.cpp" />
     <ClCompile Include="G3d\private\g3dTargetRenderer.cpp" />
     <ClCompile Include="G3d\private\g3dThreadControl.cpp" />
+    <ClCompile Include="G3d\private\g3dProgressive.cpp" />
     <ClCompile Include="G3d\private\g3dViewer.cpp" />
     <ClCompile Include="Sc\private\scAnimatableLODObject.cpp" />
     <ClCompile Include="Sc\private\scAnimatableObject.cpp" />

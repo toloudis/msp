@@ -8,12 +8,36 @@
 #ifndef GOX_G3DSCENERENDERERCREATEOPTIX_HPP
 #include "GraphicsOptiX/G3d/private/g3dSceneRendererCreateOptiX.hpp"
 #endif
+#ifndef GOX_G3DAORENDEREROPTIX_HPP
+#include "GraphicsOptiX/G3d/g3dAORendererOptiX.hpp"
+#endif
+#ifndef GOX_G3DGASCACHEOPTIX_HPP
+#include "GraphicsOptiX/G3d/g3dGasCacheOptiX.hpp"
+#endif
+#ifndef GVK_VKDGLOBAL_HPP
+#include "GraphicsVulkan/vkd/vkdGlobal.hpp"
+#endif
 #ifndef DBG_MSG_HPP
 #include "Core/dbg/dbgMsg.hpp"
 #endif
 
 namespace gox
 {
+	namespace
+	{
+		//	The OptiX renderer, on the process's GAS cache and Vulkan device
+		//	(NULL without them: the inner creator's renderer instead)
+		g3dSceneRenderer* create_ao_renderer()
+		{
+			g3dGasCacheOptiX* cache = g3dGasCacheOptiX::Get();
+			if (!cache || !gvk::vkdGlobal::IsSet())
+			{
+				return NULL;
+			}
+			return new g3dAORendererOptiX(*cache, gvk::vkdGlobal::Device(), gvk::vkdGlobal::Context());
+		}
+	}
+
 	g3dSceneRendererCreateOptiX::g3dSceneRendererCreateOptiX(g3dSceneRendererCreateImpl* i_pInner)
 		: m_pInner(i_pInner)
 	{
@@ -22,12 +46,14 @@ namespace gox
 
 	g3dSceneRenderer* g3dSceneRendererCreateOptiX::CreateDefaultRenderer()
 	{
-		return m_pInner->CreateDefaultRenderer();
+		g3dSceneRenderer* renderer = create_ao_renderer();
+		return renderer ? renderer : m_pInner->CreateDefaultRenderer();
 	}
 
 	g3dSceneRenderer* g3dSceneRendererCreateOptiX::CreateHDRRenderer()
 	{
-		return m_pInner->CreateHDRRenderer();
+		g3dSceneRenderer* renderer = create_ao_renderer();
+		return renderer ? renderer : m_pInner->CreateHDRRenderer();
 	}
 
 	g3dSceneRenderer* g3dSceneRendererCreateOptiX::CreateSimpleRenderer()
@@ -67,7 +93,8 @@ namespace gox
 
 	g3dSceneRenderer* g3dSceneRendererCreateOptiX::CreateAmbientOcclusionRenderer()
 	{
-		return m_pInner->CreateAmbientOcclusionRenderer();
+		g3dSceneRenderer* renderer = create_ao_renderer();
+		return renderer ? renderer : m_pInner->CreateAmbientOcclusionRenderer();
 	}
 
 	g3dSceneRenderer* g3dSceneRendererCreateOptiX::CreateGlobalIlluminationRenderer()

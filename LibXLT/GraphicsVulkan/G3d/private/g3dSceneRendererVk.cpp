@@ -83,6 +83,8 @@ namespace
 	int l_nNumTriangles = 0;
 	SceneNodeVector l_NonWorldSpaceNodes;
 	g3dTransparencySortVk l_transparencySort;
+	//	The rendering renderer's node filter, for the duration of its Render
+	const g3dSceneRendererVk::NodeFilter* l_pNodeFilter = NULL;
 
 	g3dBlendStateMgr::BlendState* st_AddBlend = NULL;
 	g3dBlendStateMgr::BlendState* st_MulBlend = NULL;
@@ -174,8 +176,8 @@ namespace
 
 		const g3dFragment* pFrag = i_pNode->GetFragment();
 
-		// Check if it has geometry
-		if( pFrag )
+		// Check if it has geometry (and is to be drawn)
+		if( pFrag && (!l_pNodeFilter || (*l_pNodeFilter)(*i_pNode)) )
 		{
 			matMaterial* pMatOverride = i_pNode->GetMaterial();
 
@@ -341,7 +343,15 @@ int g3dSceneRendererVk::Render( g2dRenderTarget* i_pWindow, const camCamera& i_C
 	g3dSceneRenderUtil::SetViewingTransforms(i_Camera);
 
 	// Initialize the Z buffer
-	i_pWindow->Clear( maFloatRGBA() );
+	if (m_bClearTarget)
+	{
+		i_pWindow->Clear( maFloatRGBA() );
+	}
+	else
+	{
+		i_pWindow->MakeCurrent();
+	}
+	l_pNodeFilter = m_NodeFilter ? &m_NodeFilter : NULL;
 /*
 	HRESULT op_result;
 	if( g2dVkGlobal::HasStencil() )
@@ -381,6 +391,8 @@ int g3dSceneRendererVk::Render( g2dRenderTarget* i_pWindow, const camCamera& i_C
 //	{
 //		g2dVkGlobal::PrintDXError(op_result);
 //	}
+
+	l_pNodeFilter = NULL;
 
 	// reset d3d state
 	g3dVkUtil::release_textures();

@@ -20,6 +20,9 @@
 #ifndef GVK_GRAPHICSVULKANLAYER_HPP
 #include "GraphicsVulkan/GraphicsVulkanLayer.hpp"
 #endif
+#ifndef GOX_GRAPHICSOPTIXLAYER_HPP
+#include "GraphicsOptiX/GraphicsOptiXLayer.hpp"
+#endif
 #ifndef GVK_VKDVALIDATIONSTATS_HPP
 #include "GraphicsVulkan/vkd/vkdValidationStats.hpp"
 #endif
@@ -45,6 +48,7 @@ namespace
 	bool l_bRunning = false;
 	bool l_bHeadless = false;
 	bool l_bUntrimmed = false;
+	bool l_bOptiX = false;
 
 	//	GTEST_SKIP's effect from a function that returns a value
 	void skip(const std::string& i_Why)
@@ -102,8 +106,41 @@ namespace
 		return true;
 	}
 
+	bool run_optix(void* i_pWindow, const std::function<void()>& i_Function)
+	{
+		g3dGfxOptions options;
+		options.m_Backend = g3dGfxOptions::e_OptiX;
+		options.m_bValidation = true;
+		if (!GraphicsOptiXLayer::Init(i_pWindow, options))
+		{
+			skip("No OptiX device: " + GraphicsOptiXLayer::GetInitError());
+			return false;
+		}
+		GraphicsLayer::InitGraphics(GraphicsOptiXLayer::GetSystem2D(), GraphicsOptiXLayer::GetSystem3D());
+		GraphicsOptiXLayer::InitGraphics();
+
+		i_Function();
+
+		GraphicsOptiXLayer::CleanUpGraphics();
+		GraphicsLayer::CleanUpGraphics();
+		GraphicsOptiXLayer::CleanUp();
+
+		const gvk::vkdValidationStats stats = GraphicsVulkanLayer::GetValidationStats();
+		EXPECT_EQ(0, stats.m_Errors) << "Vulkan validation errors (see the log)";
+		EXPECT_EQ(0, stats.m_Warnings) << "Vulkan validation warnings (see the log)";
+		int errors = 0, warnings = 0;
+		GraphicsOptiXLayer::GetOptixMessageCounts(errors, warnings);
+		EXPECT_EQ(0, errors) << "OptiX errors (see the log)";
+		EXPECT_EQ(0, warnings) << "OptiX warnings (see the log)";
+		return true;
+	}
+
 	bool run_vulkan(void* i_pWindow, const std::function<void()>& i_Function)
 	{
+		if (l_bOptiX)
+		{
+			return run_optix(i_pWindow, i_Function);
+		}
 		g3dGfxOptions options;
 		options.m_Backend = g3dGfxOptions::e_Vulkan;
 		options.m_bValidation = !l_bUntrimmed;
@@ -172,5 +209,14 @@ bool gtBackend::RunVulkanUntrimmed(const std::function<void()>& i_Function)
 	const bool ran = Run(e_Vulkan, i_Function);
 	gvk::vkdPipelineCache::SetTrimOutputs(true);
 	l_bUntrimmed = false;
+	return ran;
+}
+
+bool gtBackend::RunOptiX(const std::function<void()>& i_Function)
+{
+	SCOPED_TRACE("OptiX");
+	l_bOptiX = true;
+	const bool ran = Run(e_Vulkan, i_Function);
+	l_bOptiX = false;
 	return ran;
 }

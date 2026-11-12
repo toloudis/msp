@@ -45,4 +45,11 @@ namespace gtBackend
 	//	unconsumed outputs are warnings): the reference that trimmed runs
 	//	are compared with
 	bool RunVulkanUntrimmed(const std::function<void()>& i_Function);
+
+	//	Run with GraphicsOptiXLayer up instead, as MachStudio's -gfx optix
+	//	starts it (GraphicsVulkan underneath: Current() is e_Vulkan), with
+	//	validation on. Skipped without an NVIDIA GPU with OptiX (or in a
+	//	build without the OptiX SDK and CUDA toolkit). A Vulkan validation
+	//	message or an OptiX error or warning fails the test.
+	bool RunOptiX(const std::function<void()>& i_Function);
 }

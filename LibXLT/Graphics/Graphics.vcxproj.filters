@@ -357,6 +357,9 @@
     <ClInclude Include="G3d\g3dThreadControl.hpp">
       <Filter>G3d</Filter>
     </ClInclude>
+    <ClInclude Include="G3d\g3dProgressive.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
     <ClInclude Include="G3d\g3dType.hpp">
       <Filter>G3d</Filter>
     </ClInclude>
@@ -1264,6 +1267,9 @@
       <Filter>G3d\private</Filter>
     </ClCompile>
     <ClCompile Include="G3d\private\g3dThreadControl.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dProgressive.cpp">
       <Filter>G3d\private</Filter>
     </ClCompile>
     <ClCompile Include="G3d\private\g3dViewer.cpp">

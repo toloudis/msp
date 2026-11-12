@@ -43,6 +43,7 @@
 #include "Graphics/g2d/g2dWindow.hpp"
 #include "Graphics/g3d/g3dSceneRenderer.hpp"
 #include "Graphics/g3d/g3dSceneRendererCreate.hpp"
+#include "Graphics/G3d/g3dProgressive.hpp"
 #include "Graphics/G3d/g3dThreadControl.hpp"
 #include "Graphics/g3d/g3dViewer.hpp"
 #include "ImportExport/rman/export/rmanExportData.hpp"
@@ -248,6 +249,8 @@ void cptrRenderThread::TryRenderCapture()
 	if (!m_pWindow) return;
 
 	this->ClearErrorState();
+	//	progressive renderers (GraphicsOptiX's) finish each captured frame
+	g3dProgressive::CaptureScope capturing;
 	try
 	{
 		DoRenderCaptureLayers();

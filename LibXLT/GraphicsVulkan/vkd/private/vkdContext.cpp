@@ -610,6 +610,7 @@ namespace gvk
 		{
 			return;
 		}
+		i_pTarget->SetLastClearColor(i_Rgba);
 		std::lock_guard<std::recursive_mutex> lock(m_Device.StreamLock());
 		VkCommandBuffer commands = begin_recording();
 		VkClearColorValue color;
