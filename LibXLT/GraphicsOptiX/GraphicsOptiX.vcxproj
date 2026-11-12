@@ -115,6 +115,7 @@
     <ClCompile Include="G3d\private\g3dFragmentOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dVertexStoreOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dVertexBufferOptiX.cpp" />
+    <ClCompile Include="G3d\private\g3dSceneBVHOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dFragmentCreateOptiX.cpp" />
     <ClCompile Include="Mat\private\matTextureMgrOptiX.cpp" />
     <ClCompile Include="Mat\private\matShaderMgrOptiX.cpp" />
@@ -131,6 +132,7 @@
     <ClInclude Include="cu\cuBuffer.hpp" />
     <ClInclude Include="optx\private\optxEmbeddedPrograms.hpp" />
     <ClInclude Include="optx\private\Programs\optxRayQueryParams.h" />
+    <ClInclude Include="optx\private\Programs\optxSceneTypes.h" />
     <ClInclude Include="G2d\g2dSystemOptiX.hpp" />
     <ClInclude Include="G2d\g2dWindowOptiX.hpp" />
     <ClInclude Include="G2d\private\g2dWindowPAC.hpp" />
@@ -144,6 +146,7 @@
     <ClInclude Include="G3d\g3dFragmentOptiX.hpp" />
     <ClInclude Include="G3d\g3dVertexStoreOptiX.hpp" />
     <ClInclude Include="G3d\g3dVertexBufferOptiX.hpp" />
+    <ClInclude Include="G3d\g3dSceneBVHOptiX.hpp" />
     <ClInclude Include="G3d\private\g3dLightMgrOptiX.hpp" />
     <ClInclude Include="G3d\private\g3dSceneRendererCreateOptiX.hpp" />
     <ClInclude Include="G3d\private\g3dBakeOptiX.hpp" />

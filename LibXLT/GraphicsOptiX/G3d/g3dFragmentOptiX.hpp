@@ -128,7 +128,15 @@ namespace gox
 			//--------------------------------------------------------------------
 			int GetGasBuildCount() const { return m_nGasBuilds; }
 			int GetGasRefitCount() const { return m_nGasRefits; }
+
+			//--------------------------------------------------------------------
+			//	What the GAS was built from, after EnsureGAS: the device
+			//	vertices and indices and the triangle count (all 0 without a
+			//	GAS). The scene BVH's instance table points at them.
+			//--------------------------------------------------------------------
+			CUdeviceptr GetDeviceVertices() const { return m_GasHandle ? m_pStore->GetDevicePtr() : 0; }
 			CUdeviceptr GetDeviceIndices() const { return m_DeviceIndices.Get(); }
+			unsigned GetGasTriangleCount() const { return m_GasTriangleCount; }
 
 			virtual void Deallocate();
 			virtual void Reallocate();

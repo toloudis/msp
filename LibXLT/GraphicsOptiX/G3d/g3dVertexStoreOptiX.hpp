@@ -111,6 +111,12 @@ namespace gox
 			int GetUploadCount() const { return m_nUploads; }
 
 			//--------------------------------------------------------------------
+			//	GetDevicePtr - the device copy's address (0 if none); valid
+			//	until the next EnsureDevice or Deallocate
+			//--------------------------------------------------------------------
+			CUdeviceptr GetDevicePtr() const { return m_DeviceCount ? m_Device.Get() : 0; }
+
+			//--------------------------------------------------------------------
 			//	NewGeneration - the next value of the process-wide counter
 			//	(never 0)
 			//--------------------------------------------------------------------

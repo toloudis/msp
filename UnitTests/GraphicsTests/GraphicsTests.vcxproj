@@ -229,6 +229,7 @@
     <ClCompile Include="Ox\optxContextTest.cpp" />
     <ClCompile Include="Ox\g3dFragmentOptiXTest.cpp" />
     <ClCompile Include="Ox\mayFragCreateOptiXTest.cpp" />
+    <ClCompile Include="Ox\g3dSceneBVHOptiXTest.cpp" />
     <ClInclude Include="Ox\gtOptiX.hpp" />
   </ItemGroup>
   <ItemGroup>

@@ -45,6 +45,7 @@
     <ClCompile Include="G3d\private\g3dFragmentOptiX.cpp"><Filter>G3d</Filter></ClCompile>
     <ClCompile Include="G3d\private\g3dVertexStoreOptiX.cpp"><Filter>G3d</Filter></ClCompile>
     <ClCompile Include="G3d\private\g3dVertexBufferOptiX.cpp"><Filter>G3d</Filter></ClCompile>
+    <ClCompile Include="G3d\private\g3dSceneBVHOptiX.cpp"><Filter>G3d</Filter></ClCompile>
     <ClCompile Include="G3d\private\g3dFragmentCreateOptiX.cpp"><Filter>G3d</Filter></ClCompile>
     <ClCompile Include="Mat\private\matTextureMgrOptiX.cpp"><Filter>Mat</Filter></ClCompile>
     <ClCompile Include="Mat\private\matShaderMgrOptiX.cpp"><Filter>Mat</Filter></ClCompile>
@@ -61,6 +62,7 @@
     <ClInclude Include="cu\cuBuffer.hpp"><Filter>cu</Filter></ClInclude>
     <ClInclude Include="optx\private\optxEmbeddedPrograms.hpp"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\private\Programs\optxRayQueryParams.h"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\private\Programs\optxSceneTypes.h"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="G2d\g2dSystemOptiX.hpp"><Filter>G2d</Filter></ClInclude>
     <ClInclude Include="G2d\g2dWindowOptiX.hpp"><Filter>G2d</Filter></ClInclude>
     <ClInclude Include="G2d\private\g2dWindowPAC.hpp"><Filter>G2d</Filter></ClInclude>
@@ -74,6 +76,7 @@
     <ClInclude Include="G3d\g3dFragmentOptiX.hpp"><Filter>G3d</Filter></ClInclude>
     <ClInclude Include="G3d\g3dVertexStoreOptiX.hpp"><Filter>G3d</Filter></ClInclude>
     <ClInclude Include="G3d\g3dVertexBufferOptiX.hpp"><Filter>G3d</Filter></ClInclude>
+    <ClInclude Include="G3d\g3dSceneBVHOptiX.hpp"><Filter>G3d</Filter></ClInclude>
     <ClInclude Include="G3d\private\g3dLightMgrOptiX.hpp"><Filter>G3d</Filter></ClInclude>
     <ClInclude Include="G3d\private\g3dSceneRendererCreateOptiX.hpp"><Filter>G3d</Filter></ClInclude>
     <ClInclude Include="G3d\private\g3dBakeOptiX.hpp"><Filter>G3d</Filter></ClInclude>
