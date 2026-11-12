@@ -227,9 +227,10 @@
   <!-- GraphicsOptiX's tests, compiled only when its sources are (both SDKs found) -->
   <ItemGroup Condition="'$(MspOptixFound)' == 'true' and '$(MspCudaFound)' == 'true'">
     <ClCompile Include="Ox\optxContextTest.cpp" />
-    <ClCompile Include="Ox\g3dFragmentOptiXTest.cpp" />
-    <ClCompile Include="Ox\mayFragCreateOptiXTest.cpp" />
     <ClCompile Include="Ox\g3dSceneBVHOptiXTest.cpp" />
+    <ClCompile Include="Ox\optxInteropTest.cpp" />
+    <ClCompile Include="Ox\g3dGasCacheOptiXTest.cpp" />
+    <ClCompile Include="Ox\g3dSceneBVHOptiXGroupTest.cpp" />
     <ClInclude Include="Ox\gtOptiX.hpp" />
   </ItemGroup>
   <ItemGroup>

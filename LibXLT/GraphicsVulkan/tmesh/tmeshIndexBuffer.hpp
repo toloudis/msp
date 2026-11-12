@@ -7,6 +7,12 @@
 **	A tmeshIndexBuffer represents an index buffer with an optional
 **	system memory copy for updating.
 **
+**	Its generation (g3dVkBufferUtil::NewGeneration) changes whenever its
+**	triangles may have: SetIndexBuffer (creation, Reallocate) and
+**	Deallocate. Not UnlockIndices: its one use is reordering triangles
+**	for transparency sorting (ComponentSort), which changes no geometry,
+**	so GraphicsOptiX's acceleration structures stay as they are.
+**
 **	StudioGPU
 **	Copyright(C) 2009 - All Rights Reserved
 \****************************************************************************/
@@ -21,6 +27,9 @@
 #ifndef GVK_G3DVKBUFFERUTIL_HPP
 #include "GraphicsVulkan/G3d/g3dVkBufferUtil.hpp"
 #endif
+
+#include <atomic>
+#include <cstdint>
 
 namespace gvk
 {
@@ -89,6 +98,11 @@ class tmeshIndexBuffer
 		//----------------------------------------------------------------------------
 		inline int GetSizeOfIndex() const;
 
+		//----------------------------------------------------------------------------
+		//	GetGeneration - see the header comment
+		//----------------------------------------------------------------------------
+		uint64_t GetGeneration() const { return m_Generation.load(); }
+
 		//--------------------------------------------------------------------
 		//  Lock - returns the pointer to the index buffer copy in system memory.
 		//  This should be called when you need to modify the indices
@@ -142,6 +156,7 @@ class tmeshIndexBuffer
 		int m_nIndices;
 		int m_SizeOfIndex;
 		int m_nNonShadowIndices;
+		std::atomic<uint64_t> m_Generation;
 };
 
 //----------------------------------------------------------------------------

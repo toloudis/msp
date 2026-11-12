@@ -38,7 +38,8 @@ namespace gvk
 			return std::find(i_List.begin(), i_List.end(), i_Name) != i_List.end();
 		}
 
-		std::string describe(const std::vector<vkdAdapterInfo>& i_Adapters)
+		std::string describe(const std::vector<vkdAdapterInfo>& i_Adapters,
+							 const std::vector<std::string>& i_ExtraExtensions = {})
 		{
 			if (i_Adapters.empty())
 			{
@@ -47,7 +48,7 @@ namespace gvk
 			std::ostringstream text;
 			for (size_t i = 0; i < i_Adapters.size(); ++i)
 			{
-				std::vector<std::string> missing = vkdMissingRequirements(i_Adapters[i]);
+				std::vector<std::string> missing = vkdMissingRequirements(i_Adapters[i], i_ExtraExtensions);
 				text << (i ? "; " : "") << "\"" << i_Adapters[i].m_Name << "\"";
 				if (missing.empty())
 				{
@@ -115,7 +116,8 @@ namespace gvk
 		return s_Features;
 	}
 
-	std::vector<std::string> vkdMissingRequirements(const vkdAdapterInfo& i_Adapter)
+	std::vector<std::string> vkdMissingRequirements(const vkdAdapterInfo& i_Adapter,
+													const std::vector<std::string>& i_ExtraExtensions)
 	{
 		std::vector<std::string> missing;
 		if (major_minor(i_Adapter.m_ApiVersion) < c_Vulkan14)
@@ -125,6 +127,13 @@ namespace gvk
 		for (const std::string& name : vkdRequiredExtensions())
 		{
 			if (!has(i_Adapter.m_Extensions, name))
+			{
+				missing.push_back(name);
+			}
+		}
+		for (const std::string& name : i_ExtraExtensions)
+		{
+			if (!has(i_Adapter.m_Extensions, name) && !has(missing, name))
 			{
 				missing.push_back(name);
 			}
@@ -142,7 +151,36 @@ namespace gvk
 	int vkdSelectAdapter(const std::vector<vkdAdapterInfo>& i_Adapters,
 						 const std::string& i_Override, std::string& o_Error)
 	{
+		vkdAdapterRequest request;
+		request.m_Override = i_Override;
+		return vkdSelectAdapter(i_Adapters, request, o_Error);
+	}
+
+	int vkdSelectAdapter(const std::vector<vkdAdapterInfo>& i_Adapters,
+						 const vkdAdapterRequest& i_Request, std::string& o_Error)
+	{
 		o_Error.clear();
+		const std::vector<std::string>& extra = i_Request.m_Extensions;
+		if (i_Request.m_RequiredUUID)
+		{
+			const std::string owner = i_Request.m_UUIDOwner.empty() ? std::string("the required device") : i_Request.m_UUIDOwner;
+			for (size_t i = 0; i < i_Adapters.size(); ++i)
+			{
+				if (i_Adapters[i].m_DeviceUUID == *i_Request.m_RequiredUUID)
+				{
+					if (vkdMissingRequirements(i_Adapters[i], extra).empty())
+					{
+						return static_cast<int>(i);
+					}
+					o_Error = "The Vulkan device that is " + owner + " can't be used: " +
+							  describe(std::vector<vkdAdapterInfo>(1, i_Adapters[i]), extra);
+					return -1;
+				}
+			}
+			o_Error = "No Vulkan device is " + owner + ". Devices: " + describe(i_Adapters, extra);
+			return -1;
+		}
+		const std::string& i_Override = i_Request.m_Override;
 		if (!i_Override.empty())
 		{
 			const std::string wanted = lower(i_Override);
@@ -150,16 +188,16 @@ namespace gvk
 			{
 				if (lower(i_Adapters[i].m_Name).find(wanted) != std::string::npos)
 				{
-					if (vkdMissingRequirements(i_Adapters[i]).empty())
+					if (vkdMissingRequirements(i_Adapters[i], extra).empty())
 					{
 						return static_cast<int>(i);
 					}
 					o_Error = "The Vulkan device chosen with MSP_GFX_VK_ADAPTER=\"" + i_Override +
-							  "\" can't be used: " + describe(std::vector<vkdAdapterInfo>(1, i_Adapters[i]));
+							  "\" can't be used: " + describe(std::vector<vkdAdapterInfo>(1, i_Adapters[i]), extra);
 					return -1;
 				}
 			}
-			o_Error = "No Vulkan device matches MSP_GFX_VK_ADAPTER=\"" + i_Override + "\". Devices: " + describe(i_Adapters);
+			o_Error = "No Vulkan device matches MSP_GFX_VK_ADAPTER=\"" + i_Override + "\". Devices: " + describe(i_Adapters, extra);
 			return -1;
 		}
 
@@ -167,7 +205,7 @@ namespace gvk
 		for (size_t i = 0; i < i_Adapters.size(); ++i)
 		{
 			const vkdAdapterInfo& candidate = i_Adapters[i];
-			if (!vkdMissingRequirements(candidate).empty())
+			if (!vkdMissingRequirements(candidate, extra).empty())
 			{
 				continue;
 			}
@@ -191,7 +229,7 @@ namespace gvk
 		}
 		if (best < 0)
 		{
-			o_Error = "No Vulkan device has everything GraphicsVulkan needs. Devices: " + describe(i_Adapters);
+			o_Error = "No Vulkan device has everything GraphicsVulkan needs. Devices: " + describe(i_Adapters, extra);
 		}
 		return best;
 	}

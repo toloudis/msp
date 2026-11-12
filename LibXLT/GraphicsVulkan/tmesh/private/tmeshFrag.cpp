@@ -51,9 +51,30 @@ tmeshFrag::tmeshFrag(   matMaterial* i_pMaterial,
 	m_VertexShader( i_VertexShader ),
 	m_ePrimitiveType( e_TriangleList )
 {
+	m_pVertexBuffer->AddFragment();
+
 	// No, only fragments loaded from Maya files are on by default.
 	// 3D Icons are often created as tmeshFrag's and shouldn't be
 	// casting shadows by default.
+}
+
+//--------------------------------------------------------------------
+//	Copy constructor - shares the buffers
+//--------------------------------------------------------------------
+tmeshFrag::tmeshFrag( const tmeshFrag& i_Frag )
+:	g3dFragment( i_Frag ),
+	m_pVertexBuffer( i_Frag.m_pVertexBuffer ),
+	m_pVertexBuffer_Old( i_Frag.m_pVertexBuffer_Old ),
+	m_pSkinningBuffer( i_Frag.m_pSkinningBuffer ),
+	m_pIndexBuffer( i_Frag.m_pIndexBuffer ),
+	m_VertexShader( i_Frag.m_VertexShader ),
+	m_nZBias( i_Frag.m_nZBias ),
+	m_ePrimitiveType( i_Frag.m_ePrimitiveType )
+{
+	if (m_pVertexBuffer)
+	{
+		m_pVertexBuffer->AddFragment();
+	}
 }
 
 //--------------------------------------------------------------------
@@ -61,6 +82,10 @@ tmeshFrag::tmeshFrag(   matMaterial* i_pMaterial,
 //--------------------------------------------------------------------
 tmeshFrag::~tmeshFrag()
 {
+	if (m_pVertexBuffer)
+	{
+		m_pVertexBuffer->RemoveFragment();
+	}
 }
 
 //------------------------------------------------------------------------
@@ -150,6 +175,18 @@ void tmeshFrag::Unlock()
 //--------------------------------------------------------------------
 void tmeshFrag::SetVertexBuffer( const shared_ptr<tmeshVertexBuffer>& i_pVertexBuffer)
 {
+	if (i_pVertexBuffer == m_pVertexBuffer)
+	{
+		return;
+	}
+	if (i_pVertexBuffer)
+	{
+		i_pVertexBuffer->AddFragment();
+	}
+	if (m_pVertexBuffer)
+	{
+		m_pVertexBuffer->RemoveFragment();
+	}
 	m_pVertexBuffer = i_pVertexBuffer;
 }
 void tmeshFrag::SetVertexBuffer( g2dVkVertexBufferPtr i_pVertexBuffer,

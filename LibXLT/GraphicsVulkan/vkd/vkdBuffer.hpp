@@ -10,6 +10,11 @@
 **	StructuredBuffer through ResourceIndex(). Destruction is deferred until
 **	the GPU is done with it.
 **
+**	An exportable buffer is allocated from the device's vkdExportPool, so
+**	another API (CUDA, for GraphicsOptiX) can import the memory block it
+**	sits in (Memory(), MemoryOffset(), MemoryBlockSize()) and read or write
+**	it in place.
+**
 **	Extra Large Technology
 \****************************************************************************/
 #ifdef GVK_VKDBUFFER_HPP
@@ -33,8 +38,10 @@ namespace gvk
 	{
 		public:
 			//	i_Usage gets TRANSFER_DST and SHADER_DEVICE_ADDRESS added
+			//	i_bExportable: from the export pool (the device must have external
+			//	memory)
 			static std::unique_ptr<vkdBuffer> Create(vkdDevice& i_Device, VkDeviceSize i_Size, VkBufferUsageFlags i_Usage,
-													 const char* i_Name);
+													 const char* i_Name, bool i_bExportable = false);
 			~vkdBuffer();
 
 			//	Copies i_Size bytes to i_Offset, through the ring buffer, as the
@@ -44,6 +51,16 @@ namespace gvk
 			VkBuffer		Buffer() const		{ return m_Buffer; }
 			VkDeviceAddress	Address() const		{ return m_Address; }
 			VkDeviceSize	Size() const		{ return m_Size; }
+
+			//	Where the buffer lives: its memory block, its offset in it, the
+			//	block's size, and whether the block is the buffer's alone
+			//	(dedicated). The block outlives the buffer while other buffers
+			//	share it; vkdDevice's memory-free hooks say when it goes.
+			bool			IsExportable() const	{ return m_bExportable; }
+			VkDeviceMemory	Memory() const;
+			VkDeviceSize	MemoryOffset() const;
+			VkDeviceSize	MemoryBlockSize() const;
+			bool			IsDedicatedMemory() const;
 
 			//	Its read-only storage-buffer descriptor in i_Bindings' resource
 			//	heap (made on first use; one vkdBindings per buffer)
@@ -59,6 +76,7 @@ namespace gvk
 			VmaAllocation	m_Allocation = nullptr;
 			VkDeviceAddress	m_Address = 0;
 			VkDeviceSize	m_Size = 0;
+			bool			m_bExportable = false;
 			vkdBindings*	m_pBindings = nullptr;
 			uint32_t		m_ResourceIndex = UINT32_MAX;
 	};

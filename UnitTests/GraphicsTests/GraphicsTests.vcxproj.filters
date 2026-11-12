@@ -277,13 +277,16 @@
     <ClCompile Include="Ox\optxContextTest.cpp">
       <Filter>Ox</Filter>
     </ClCompile>
-    <ClCompile Include="Ox\g3dFragmentOptiXTest.cpp">
-      <Filter>Ox</Filter>
-    </ClCompile>
-    <ClCompile Include="Ox\mayFragCreateOptiXTest.cpp">
-      <Filter>Ox</Filter>
-    </ClCompile>
     <ClCompile Include="Ox\g3dSceneBVHOptiXTest.cpp">
+      <Filter>Ox</Filter>
+    </ClCompile>
+    <ClCompile Include="Ox\optxInteropTest.cpp">
+      <Filter>Ox</Filter>
+    </ClCompile>
+    <ClCompile Include="Ox\g3dGasCacheOptiXTest.cpp">
+      <Filter>Ox</Filter>
+    </ClCompile>
+    <ClCompile Include="Ox\g3dSceneBVHOptiXGroupTest.cpp">
       <Filter>Ox</Filter>
     </ClCompile>
     <ClInclude Include="Ox\gtOptiX.hpp">

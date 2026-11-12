@@ -3,10 +3,11 @@
 **
 **      g3dSceneRendererCreateOptiX makes the OptiX backend's scene
 **	renderers (g3dSceneRendererCreate), installed by GraphicsOptiXLayer
-**	while it exists.
+**	over GraphicsVulkan's creator, which it keeps as the inner creator.
 **
-**	Stub: every type is a g3dSceneRendererOptiX (the pick renderer a
-**	g3dPickRendererOptiX), which renders nothing.
+**	Every type is the inner creator's (Vulkan's) for now. The OptiX
+**	renderer (Part 2b of docs/plans/2026-11-11-optix-on-vulkan-progressive-
+**	ao.md) will replace default, HDR and ambient occlusion.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -24,6 +25,12 @@ namespace gox
 	class g3dSceneRendererCreateOptiX : public g3dSceneRendererCreateImpl
 	{
 		public:
+			explicit g3dSceneRendererCreateOptiX(g3dSceneRendererCreateImpl* i_pInner);
+
+			//	The creator this one forwards to (Vulkan's), reinstalled by
+			//	GraphicsOptiXLayer::CleanUp
+			g3dSceneRendererCreateImpl* GetInner() const { return m_pInner; }
+
 			virtual g3dSceneRenderer* CreateDefaultRenderer();
 			virtual g3dSceneRenderer* CreateHDRRenderer();
 			virtual g3dSceneRenderer* CreateSimpleRenderer();
@@ -45,5 +52,8 @@ namespace gox
 			virtual g3dSceneRenderer* CreateMaterialsRenderer();
 			virtual g3dSceneRenderer* CreateReflectionOnlyRenderer();
 			virtual g3dSceneRenderer* CreateGlowRenderer();
+
+		private:
+			g3dSceneRendererCreateImpl* m_pInner;
 	};
 }

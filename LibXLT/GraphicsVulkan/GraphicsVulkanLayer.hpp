@@ -18,6 +18,9 @@
 #include "GraphicsVulkan/vkd/vkdValidationStats.hpp"
 #endif
 
+#include <array>
+#include <cstdint>
+#include <optional>
 #include <string>
 
 class g2dSystem;
@@ -32,6 +35,20 @@ class GraphicsVulkanLayer
 		//	false (and GetInitError says why) if Vulkan can't be used.
 		//------------------------------------------------------------------------
 		static bool Init(void* i_hWnd, const g3dGfxOptions& i_Options);
+
+		//------------------------------------------------------------------------
+		//	What a layer stacked on this one (GraphicsOptiX) needs of the
+		//	device: a GPU it already uses, by UUID (m_DeviceName names it in
+		//	messages), and memory and semaphores it can share
+		//	(vkdDeviceOptions::m_bExternalMemory)
+		//------------------------------------------------------------------------
+		struct Interop
+		{
+			std::optional<std::array<uint8_t, 16>>	m_DeviceUUID;
+			std::string								m_DeviceName;
+			bool									m_bExternalMemory = false;
+		};
+		static bool Init(void* i_hWnd, const g3dGfxOptions& i_Options, const Interop& i_Interop);
 
 		//------------------------------------------------------------------------
 		//	CleanUp

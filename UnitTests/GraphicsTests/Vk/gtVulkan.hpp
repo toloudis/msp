@@ -35,6 +35,7 @@ class gtVulkan : public ::testing::Test
 			options.m_pValidation = &m_Validation;
 			gvk::vkdReadEnvironment(options);
 			options.m_bGpuAssisted = options.m_bGpuAssisted || UseGpuAssistedValidation();
+			ConfigureDevice(options);
 			std::string error;
 			m_pDevice.reset(gvk::vkdDevice::Create(options, error));
 			if (!m_pDevice)
@@ -55,6 +56,10 @@ class gtVulkan : public ::testing::Test
 		}
 
 		virtual bool UseGpuAssistedValidation() const { return false; }
+
+		//	Last word on the device options (gtOptiX: the CUDA device's UUID,
+		//	external memory)
+		virtual void ConfigureDevice(gvk::vkdDeviceOptions& /*io_Options*/) {}
 
 		gvk::vkdDevice& Device() { return *m_pDevice; }
 

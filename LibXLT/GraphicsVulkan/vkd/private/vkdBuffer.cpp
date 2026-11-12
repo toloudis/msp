@@ -17,6 +17,9 @@
 #ifndef GVK_VKDDEVICE_HPP
 #include "GraphicsVulkan/vkd/vkdDevice.hpp"
 #endif
+#ifndef GVK_VKDEXPORTPOOL_HPP
+#include "GraphicsVulkan/vkd/vkdExportPool.hpp"
+#endif
 #ifndef GVK_VKDCHECK_HPP
 #include "GraphicsVulkan/vkd/vkdCheck.hpp"
 #endif
@@ -27,10 +30,13 @@
 namespace gvk
 {
 	std::unique_ptr<vkdBuffer> vkdBuffer::Create(vkdDevice& i_Device, VkDeviceSize i_Size, VkBufferUsageFlags i_Usage,
-												 const char* i_Name)
+												 const char* i_Name, bool i_bExportable)
 	{
 		std::unique_ptr<vkdBuffer> buffer(new vkdBuffer(i_Device));
 		buffer->m_Size = i_Size;
+		vkdExportPool* pool = i_bExportable ? i_Device.ExportPool() : NULL;
+		DBG_ASSERT(!i_bExportable || pool, "vkdBuffer: an exportable buffer on a device without external memory");
+		buffer->m_bExportable = pool != NULL;
 
 		VkBufferCreateInfo info = {VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO};
 		info.size = i_Size;
@@ -38,6 +44,15 @@ namespace gvk
 		info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 		VmaAllocationCreateInfo allocation = {};
 		allocation.usage = VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE;
+		if (pool)
+		{
+			info.pNext = pool->BufferCreateNext();
+			allocation.pool = pool->Pool();
+			if (i_Size > vkdExportPool::c_DedicatedSize)
+			{
+				allocation.flags |= VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT;
+			}
+		}
 		VK_CHECK(vmaCreateBuffer(i_Device.Allocator(), &info, &allocation, &buffer->m_Buffer, &buffer->m_Allocation, NULL));
 		i_Device.SetName(VK_OBJECT_TYPE_BUFFER, reinterpret_cast<uint64_t>(buffer->m_Buffer), i_Name);
 
@@ -45,6 +60,34 @@ namespace gvk
 		address.buffer = buffer->m_Buffer;
 		buffer->m_Address = vkGetBufferDeviceAddress(i_Device.Device(), &address);
 		return buffer;
+	}
+
+	VkDeviceMemory vkdBuffer::Memory() const
+	{
+		VmaAllocationInfo info = {};
+		vmaGetAllocationInfo(m_Device.Allocator(), m_Allocation, &info);
+		return info.deviceMemory;
+	}
+
+	VkDeviceSize vkdBuffer::MemoryOffset() const
+	{
+		VmaAllocationInfo info = {};
+		vmaGetAllocationInfo(m_Device.Allocator(), m_Allocation, &info);
+		return info.offset;
+	}
+
+	VkDeviceSize vkdBuffer::MemoryBlockSize() const
+	{
+		VmaAllocationInfo2 info = {};
+		vmaGetAllocationInfo2(m_Device.Allocator(), m_Allocation, &info);
+		return info.blockSize;
+	}
+
+	bool vkdBuffer::IsDedicatedMemory() const
+	{
+		VmaAllocationInfo2 info = {};
+		vmaGetAllocationInfo2(m_Device.Allocator(), m_Allocation, &info);
+		return info.dedicatedMemory == VK_TRUE;
 	}
 
 	uint32_t vkdBuffer::ResourceIndex(vkdBindings& i_Bindings)

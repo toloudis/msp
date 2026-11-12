@@ -70,3 +70,9 @@ const std::string& GraphicsOptiXLayer::GetInitError()
 {
 	return l_InitError;
 }
+
+void GraphicsOptiXLayer::GetOptixMessageCounts(int& o_nErrors, int& o_nWarnings)
+{
+	o_nErrors = 0;
+	o_nWarnings = 0;
+}

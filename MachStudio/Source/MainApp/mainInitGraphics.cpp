@@ -451,8 +451,10 @@ mainInitGraphics::~mainInitGraphics()
 
 #ifdef BATCH_MODE
 	//	GraphicsVulkanLayer::CleanUp logs the counts; RenderNode also
-	//	prints them for gfxcompare ("off" when validation didn't run)
-	if (l_bLayerInitialized && l_GfxOptions.m_Backend == g3dGfxOptions::e_Vulkan)
+	//	prints them for gfxcompare ("off" when validation didn't run).
+	//	OptiX runs on Vulkan, so it prints Vulkan's and its own.
+	if (l_bLayerInitialized && (l_GfxOptions.m_Backend == g3dGfxOptions::e_Vulkan ||
+								l_GfxOptions.m_Backend == g3dGfxOptions::e_OptiX))
 	{
 		if (GraphicsVulkanLayer::IsValidating())
 		{
@@ -463,6 +465,12 @@ mainInitGraphics::~mainInitGraphics()
 		else
 		{
 			std::cerr << "Vulkan validation: off" << std::endl;
+		}
+		if (l_GfxOptions.m_Backend == g3dGfxOptions::e_OptiX)
+		{
+			int errors = 0, warnings = 0;
+			GraphicsOptiXLayer::GetOptixMessageCounts(errors, warnings);
+			std::cerr << "OptiX messages: " << errors << " errors, " << warnings << " warnings" << std::endl;
 		}
 	}
 #endif

@@ -1,10 +1,10 @@
 /*****************************************************************************
 **  GraphicsOptiXLayer.cpp
 **
-**      See GraphicsOptiXLayer.hpp. Hooks are installed where GraphicsVulkan
-**	installs its own: the 2D and 3D systems install theirs while they
-**	exist; Init installs the scene renderer creator and the fragment
-**	creators; InitGraphics installs baking.
+**      See GraphicsOptiXLayer.hpp. Init: CUDA, OptiX, optxContext, then
+**	GraphicsVulkanLayer on the same GPU, then the OptiX scene renderer
+**	creator over Vulkan's. CleanUp reverses it: OptiX's objects, then the
+**	Vulkan layer, the OptiX context last.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -20,23 +20,20 @@
 #ifndef GOX_CULOADER_HPP
 #include "GraphicsOptiX/cu/cuLoader.hpp"
 #endif
-#ifndef GOX_G2DSYSTEMOPTIX_HPP
-#include "GraphicsOptiX/G2d/g2dSystemOptiX.hpp"
-#endif
-#ifndef GOX_G3DSYSTEMOPTIX_HPP
-#include "GraphicsOptiX/G3d/g3dSystemOptiX.hpp"
-#endif
 #ifndef GOX_G3DSCENERENDERERCREATEOPTIX_HPP
 #include "GraphicsOptiX/G3d/private/g3dSceneRendererCreateOptiX.hpp"
 #endif
-#ifndef GOX_G3DBAKEOPTIX_HPP
-#include "GraphicsOptiX/G3d/private/g3dBakeOptiX.hpp"
+#ifndef GOX_G3DGASCACHEOPTIX_HPP
+#include "GraphicsOptiX/G3d/g3dGasCacheOptiX.hpp"
 #endif
-#ifndef GOX_G3DFRAGMENTCREATEOPTIX_HPP
-#include "GraphicsOptiX/G3d/private/g3dFragmentCreateOptiX.hpp"
+#ifndef GVK_GRAPHICSVULKANLAYER_HPP
+#include "GraphicsVulkan/GraphicsVulkanLayer.hpp"
 #endif
-#ifndef GOX_MAYFRAGCREATEOPTIX_HPP
-#include "GraphicsOptiX/may/private/mayFragCreateOptiX.hpp"
+#ifndef GVK_G3DVKBUFFERUTIL_HPP
+#include "GraphicsVulkan/G3d/g3dVkBufferUtil.hpp"
+#endif
+#ifndef GVK_VKDGLOBAL_HPP
+#include "GraphicsVulkan/vkd/vkdGlobal.hpp"
 #endif
 #ifndef G3D_GFXOPTIONS_HPP
 #include "Graphics/G3d/g3dGfxOptions.hpp"
@@ -53,20 +50,27 @@ namespace
 {
 	std::string						l_InitError;
 	bool							l_bInitialized = false;
-	g2dSystemOptiX*					l_pSystem2D = NULL;
-	g3dSystemOptiX*					l_pSystem3D = NULL;
 	g3dSceneRendererCreateOptiX*	l_pRendererCreator = NULL;
-	g3dFragmentCreateOptiX*			l_pFragmentCreator = NULL;
-	mayFragCreateOptiX*				l_pModelFragmentCreator = NULL;
-	g3dBakeOptiX*					l_pBake = NULL;
+	g3dGasCacheOptiX*				l_pGasCache = NULL;
+	int								l_nOptixErrors = 0;		// kept after CleanUp
+	int								l_nOptixWarnings = 0;
+
+	void unload_optix()
+	{
+		optxContext::Destroy();
+		optxLoader::Unload();
+		cuLoader::Unload();
+	}
 }
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-bool GraphicsOptiXLayer::Init(void* /*i_hWnd*/, const g3dGfxOptions& i_Options)
+bool GraphicsOptiXLayer::Init(void* i_hWnd, const g3dGfxOptions& i_Options)
 {
 	DBG_ASSERT(!l_bInitialized, "GraphicsOptiXLayer::Init called twice");
 	l_InitError.clear();
+	l_nOptixErrors = 0;
+	l_nOptixWarnings = 0;
 
 	if (!cuLoader::Load(l_InitError))
 	{
@@ -86,17 +90,28 @@ bool GraphicsOptiXLayer::Init(void* /*i_hWnd*/, const g3dGfxOptions& i_Options)
 		cuLoader::Unload();
 		return false;
 	}
+
+	//	Vulkan on the GPU CUDA chose, sharing memory and semaphores with it
+	GraphicsVulkanLayer::Interop interop;
+	interop.m_DeviceUUID = optxContext::GetDeviceUUID();
+	interop.m_DeviceName = "the CUDA device \"" + optxContext::GetDeviceName() + "\"";
+	interop.m_bExternalMemory = true;
+	if (!GraphicsVulkanLayer::Init(i_hWnd, i_Options, interop))
+	{
+		l_InitError = GraphicsVulkanLayer::GetInitError();
+		DBG_LOG("GraphicsOptiX: " << l_InitError);
+		unload_optix();
+		return false;
+	}
 	l_bInitialized = true;
 
-	l_pSystem2D = new g2dSystemOptiX(i_Options.m_bHeadless);
-	l_pSystem3D = new g3dSystemOptiX;
+	//	Static meshes in exportable memory, so GAS are built from them in place
+	gvk::g3dVkBufferUtil::ExportStaticGeometry(true);
+	l_pGasCache = new g3dGasCacheOptiX(gvk::vkdGlobal::Device(), gvk::vkdGlobal::Context());
+	g3dGasCacheOptiX::Set(l_pGasCache);
 
-	l_pRendererCreator = new g3dSceneRendererCreateOptiX;
+	l_pRendererCreator = new g3dSceneRendererCreateOptiX(g3dSceneRendererCreate::SetImplementation(NULL));
 	g3dSceneRendererCreate::SetImplementation(l_pRendererCreator);
-	l_pFragmentCreator = new g3dFragmentCreateOptiX;
-	g3dFragmentCreate::SetImplementation(l_pFragmentCreator);
-	l_pModelFragmentCreator = new mayFragCreateOptiX;
-	mdlFragCreate::SetImplementation(l_pModelFragmentCreator);
 	return true;
 }
 
@@ -106,48 +121,44 @@ void GraphicsOptiXLayer::CleanUp() throw()
 	{
 		return;
 	}
-	mdlFragCreate::SetImplementation(NULL);
-	delete l_pModelFragmentCreator;
-	l_pModelFragmentCreator = NULL;
-	g3dFragmentCreate::SetImplementation(NULL);
-	delete l_pFragmentCreator;
-	l_pFragmentCreator = NULL;
-	g3dSceneRendererCreate::SetImplementation(NULL);
+	//	Vulkan's creator back, for its own CleanUp to remove
+	g3dSceneRendererCreate::SetImplementation(l_pRendererCreator->GetInner());
 	delete l_pRendererCreator;
 	l_pRendererCreator = NULL;
 
-	delete l_pSystem3D;
-	delete l_pSystem2D;
-	l_pSystem3D = NULL;
-	l_pSystem2D = NULL;
+	//	Before Vulkan frees the memory the GAS were built from
+	g3dGasCacheOptiX::Set(NULL);
+	delete l_pGasCache;
+	l_pGasCache = NULL;
+	gvk::g3dVkBufferUtil::ExportStaticGeometry(false);
 
-	optxContext::Destroy();
-	optxLoader::Unload();
-	cuLoader::Unload();
+	GraphicsVulkanLayer::CleanUp();
+
+	l_nOptixErrors = optxContext::GetErrorCount();
+	l_nOptixWarnings = optxContext::GetWarningCount();
+	DBG_LOG("OptiX messages: " << l_nOptixErrors << " errors, " << l_nOptixWarnings << " warnings");
+	unload_optix();
 	l_bInitialized = false;
 }
 
 void GraphicsOptiXLayer::InitGraphics()
 {
-	l_pBake = new g3dBakeOptiX;
-	g3dBake::SetImplementation(l_pBake);
+	GraphicsVulkanLayer::InitGraphics();
 }
 
 void GraphicsOptiXLayer::CleanUpGraphics()
 {
-	g3dBake::SetImplementation(NULL);
-	delete l_pBake;
-	l_pBake = NULL;
+	GraphicsVulkanLayer::CleanUpGraphics();
 }
 
 g2dSystem* GraphicsOptiXLayer::GetSystem2D()
 {
-	return l_pSystem2D;
+	return GraphicsVulkanLayer::GetSystem2D();
 }
 
 g3dSystem* GraphicsOptiXLayer::GetSystem3D()
 {
-	return l_pSystem3D;
+	return GraphicsVulkanLayer::GetSystem3D();
 }
 
 const char* GraphicsOptiXLayer::GetName()
@@ -163,4 +174,18 @@ const char* GraphicsOptiXLayer::GetCodeName()
 const std::string& GraphicsOptiXLayer::GetInitError()
 {
 	return l_InitError;
+}
+
+void GraphicsOptiXLayer::GetOptixMessageCounts(int& o_nErrors, int& o_nWarnings)
+{
+	if (l_bInitialized)
+	{
+		o_nErrors = optxContext::GetErrorCount();
+		o_nWarnings = optxContext::GetWarningCount();
+	}
+	else
+	{
+		o_nErrors = l_nOptixErrors;
+		o_nWarnings = l_nOptixWarnings;
+	}
 }

@@ -7,8 +7,9 @@
 
     OptiX comes from the NVIDIA OptiX SDK (optix.props: MspOptixDir, then
     OPTIX_ROOT, else the default install folder); it is header-only, loaded
-    from the display driver at run time. For now every Graphics hook is a
-    stub that renders, loads and creates nothing.
+    from the display driver at run time. It runs on top of GraphicsVulkan
+    (a ProjectReference): Vulkan does windows, text, textures and every
+    renderer OptiX doesn't replace.
 
     The CUDA toolkit (cuda.props) supplies nvcc, which compiles the device
     programs in optx\private\Programs to OptiX IR before the C++ is compiled
@@ -56,7 +57,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(ProjectDir)..;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN64;_CRT_SECURE_NO_DEPRECATE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN64;_CRT_SECURE_NO_DEPRECATE;VK_NO_PROTOTYPES;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -95,31 +96,17 @@
     <ClCompile Include="GraphicsOptiXLayer.cpp" />
     <ClCompile Include="cu\private\cuLoaderWin.cpp" />
     <ClCompile Include="cu\private\cuBuffer.cpp" />
+    <ClCompile Include="cu\private\cuExternalWin.cpp" />
+    <ClCompile Include="cu\private\cuExternalMemoryCache.cpp" />
+    <ClCompile Include="cu\private\cuExternalSemaphore.cpp" />
     <ClCompile Include="optx\private\optxLoaderWin.cpp" />
     <ClCompile Include="optx\private\optxEmbeddedPrograms.cpp" />
     <ClCompile Include="optx\private\optxCheck.cpp" />
     <ClCompile Include="optx\private\optxContext.cpp" />
     <ClCompile Include="optx\private\optxRayQuery.cpp" />
-    <ClCompile Include="G2d\private\g2dSystemOptiX.cpp" />
-    <ClCompile Include="G2d\private\g2dWindowOptiX.cpp" />
-    <ClCompile Include="G2d\private\g2dWindowPACWin.cpp" />
-    <ClCompile Include="G2d\private\g2dResourceCounterOptiX.cpp" />
-    <ClCompile Include="G2d\private\g2dFontUtilOptiX.cpp" />
-    <ClCompile Include="G2d\private\g2dImageCreateOptiX.cpp" />
-    <ClCompile Include="G2d\private\g2dScreenCaptureUtilOptiX.cpp" />
-    <ClCompile Include="G3d\private\g3dSystemOptiX.cpp" />
-    <ClCompile Include="G3d\private\g3dLightMgrOptiX.cpp" />
-    <ClCompile Include="G3d\private\g3dSceneRendererOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dSceneRendererCreateOptiX.cpp" />
-    <ClCompile Include="G3d\private\g3dBakeOptiX.cpp" />
-    <ClCompile Include="G3d\private\g3dFragmentOptiX.cpp" />
-    <ClCompile Include="G3d\private\g3dVertexStoreOptiX.cpp" />
-    <ClCompile Include="G3d\private\g3dVertexBufferOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dSceneBVHOptiX.cpp" />
-    <ClCompile Include="G3d\private\g3dFragmentCreateOptiX.cpp" />
-    <ClCompile Include="Mat\private\matTextureMgrOptiX.cpp" />
-    <ClCompile Include="Mat\private\matShaderMgrOptiX.cpp" />
-    <ClCompile Include="may\private\mayFragCreateOptiX.cpp" />
+    <ClCompile Include="G3d\private\g3dGasCacheOptiX.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsOptiXLayer.hpp" />
@@ -130,30 +117,15 @@
     <ClInclude Include="optx\optxRayQuery.hpp" />
     <ClInclude Include="cu\cuLoader.hpp" />
     <ClInclude Include="cu\cuBuffer.hpp" />
+    <ClInclude Include="cu\cuExternal.hpp" />
+    <ClInclude Include="cu\cuExternalMemoryCache.hpp" />
+    <ClInclude Include="cu\cuExternalSemaphore.hpp" />
     <ClInclude Include="optx\private\optxEmbeddedPrograms.hpp" />
     <ClInclude Include="optx\private\Programs\optxRayQueryParams.h" />
     <ClInclude Include="optx\private\Programs\optxSceneTypes.h" />
-    <ClInclude Include="G2d\g2dSystemOptiX.hpp" />
-    <ClInclude Include="G2d\g2dWindowOptiX.hpp" />
-    <ClInclude Include="G2d\private\g2dWindowPAC.hpp" />
-    <ClInclude Include="G2d\private\g2dWindowPACWin.hpp" />
-    <ClInclude Include="G2d\private\g2dResourceCounterOptiX.hpp" />
-    <ClInclude Include="G2d\private\g2dFontUtilOptiX.hpp" />
-    <ClInclude Include="G2d\private\g2dImageCreateOptiX.hpp" />
-    <ClInclude Include="G2d\private\g2dScreenCaptureUtilOptiX.hpp" />
-    <ClInclude Include="G3d\g3dSystemOptiX.hpp" />
-    <ClInclude Include="G3d\g3dSceneRendererOptiX.hpp" />
-    <ClInclude Include="G3d\g3dFragmentOptiX.hpp" />
-    <ClInclude Include="G3d\g3dVertexStoreOptiX.hpp" />
-    <ClInclude Include="G3d\g3dVertexBufferOptiX.hpp" />
     <ClInclude Include="G3d\g3dSceneBVHOptiX.hpp" />
-    <ClInclude Include="G3d\private\g3dLightMgrOptiX.hpp" />
+    <ClInclude Include="G3d\g3dGasCacheOptiX.hpp" />
     <ClInclude Include="G3d\private\g3dSceneRendererCreateOptiX.hpp" />
-    <ClInclude Include="G3d\private\g3dBakeOptiX.hpp" />
-    <ClInclude Include="G3d\private\g3dFragmentCreateOptiX.hpp" />
-    <ClInclude Include="Mat\private\matTextureMgrOptiX.hpp" />
-    <ClInclude Include="Mat\private\matShaderMgrOptiX.hpp" />
-    <ClInclude Include="may\private\mayFragCreateOptiX.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="optix.props" />
@@ -167,6 +139,9 @@
     </ProjectReference>
     <ProjectReference Include="..\Graphics\Graphics.vcxproj">
       <Project>{1D25A739-3967-4BAF-AA18-53690B00BD55}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\GraphicsVulkan\GraphicsVulkan.vcxproj">
+      <Project>{216ED7AE-3E0C-4B0D-A1DF-8D4D80C8AD71}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

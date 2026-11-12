@@ -65,6 +65,11 @@ class tmeshFrag : public g3dFragment
 		//--------------------------------------------------------------------
 		virtual ~tmeshFrag() = 0;
 
+		// A copy shares the buffers (and counts itself in the vertex buffer's
+		// fragments); fragments aren't assigned
+		tmeshFrag( const tmeshFrag& i_Frag );
+		tmeshFrag& operator = ( const tmeshFrag& ) = delete;
+
 		//------------------------------------------------------------------------
 		//	Deallocate - called when all device dependent resources should be
 		//	released.

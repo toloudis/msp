@@ -19,6 +19,12 @@
 **	are released (vkdBuffer defers its destruction; ring memory is held
 **	until its submission completes).
 **
+**	For GraphicsOptiX, which builds acceleration structures from these
+**	buffers: default-usage buffers are exportable (vkdExportPool) once
+**	ExportStaticGeometry(true) is set, and each records the timeline value
+**	its upload is submitted with; NewGeneration numbers changes to the
+**	tmesh buffers that hold them.
+**
 **	StudioGPU
 **	Copyright(C) 2010 - All Rights Reserved
 \****************************************************************************/
@@ -62,6 +68,16 @@ namespace gvk
 			uint32_t	GetSize() const		{ return m_Size; }
 			bool		IsDynamic() const	{ return m_bDynamic; }
 
+			//	A default-usage buffer's device buffer (NULL for a dynamic one),
+			//	and the timeline value its upload is submitted with (0 if it
+			//	was made without data): it has landed once that completes
+			vkdBuffer*	GetDeviceBuffer() const	{ return m_pBuffer.get(); }
+			uint64_t	GetUploadValue() const	{ return m_UploadValue; }
+
+			//	A dynamic buffer's bytes as of the last Unmap (NULL for a
+			//	default-usage one)
+			const uint8_t* GetCpuData() const	{ return m_bDynamic ? m_Cpu.data() : NULL; }
+
 			//	D3D11 Map: WRITE_DISCARD on a dynamic buffer (the old contents
 			//	stay, which D3D11 leaves undefined); a default-usage buffer
 			//	can't be mapped (NULL, as DX11's Map fails)
@@ -80,6 +96,7 @@ namespace gvk
 			uint32_t					m_Size;
 			bool						m_bDynamic;
 			std::unique_ptr<vkdBuffer>	m_pBuffer;		// default usage
+			uint64_t					m_UploadValue = 0;
 			std::vector<uint8_t>		m_Cpu;			// dynamic
 			bool						m_bDirty = true;
 			uint64_t					m_UploadedFor = 0;
@@ -96,6 +113,20 @@ namespace gvk
 		// Set flag for whether to store geometry in video or system memory
 		//--------------------------------------------------------------------
 		void StoreGeometryInVideoMemory(bool i_bVideoMem);
+
+		//--------------------------------------------------------------------
+		//	ExportStaticGeometry - default-usage vertex and index buffers made
+		//	from now on come from the export pool (the device must have
+		//	external memory). GraphicsOptiXLayer turns it on.
+		//--------------------------------------------------------------------
+		void ExportStaticGeometry(bool i_bExport);
+		bool GetExportStaticGeometry();
+
+		//--------------------------------------------------------------------
+		//	NewGeneration - a new value from one process-wide counter, never 0,
+		//	for tmeshVertexBuffer's and tmeshIndexBuffer's generations
+		//--------------------------------------------------------------------
+		uint64_t NewGeneration();
 
 		//--------------------------------------------------------------------
 		// Get current video mem usage totals, in KB

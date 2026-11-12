@@ -53,6 +53,7 @@ namespace gox
 		, m_MissGroup(NULL)
 		, m_HitGroup(NULL)
 		, m_Pipeline(NULL)
+		, m_nHitRecords(0)
 		, m_Sbt()
 	{
 	}
@@ -83,7 +84,7 @@ namespace gox
 		OptixPipelineCompileOptions pipeline_options = {};
 		pipeline_options.usesMotionBlur = 0;
 		pipeline_options.traversableGraphFlags = OPTIX_TRAVERSABLE_GRAPH_FLAG_ALLOW_ANY;
-		pipeline_options.numPayloadValues = 4;
+		pipeline_options.numPayloadValues = 5;
 		pipeline_options.numAttributeValues = 2;
 		pipeline_options.exceptionFlags = OPTIX_EXCEPTION_FLAG_NONE;
 		pipeline_options.pipelineLaunchParamsVariableName = "params";
@@ -159,16 +160,37 @@ namespace gox
 			return false;
 		}
 
-		EmptyRecord records[3];
-		if (OPTIX_CHECK(optixSbtRecordPackHeader(m_RaygenGroup, &records[0])) ||
-			OPTIX_CHECK(optixSbtRecordPackHeader(m_MissGroup, &records[1])) ||
-			OPTIX_CHECK(optixSbtRecordPackHeader(m_HitGroup, &records[2])) ||
-			!m_Records.Upload(records, sizeof(records)))
+		if (!make_records(1))
 		{
 			o_Error = "optxRayQuery: shader binding table couldn't be made";
 			Destroy();
 			return false;
 		}
+		return true;
+	}
+
+	//	Raygen, miss, then i_nHitRecords identical hit group records (one per
+	//	build input of the biggest GAS)
+	bool optxRayQuery::make_records(unsigned i_nHitRecords)
+	{
+		std::vector<EmptyRecord> records(2 + i_nHitRecords);
+		if (OPTIX_CHECK(optixSbtRecordPackHeader(m_RaygenGroup, &records[0])) ||
+			OPTIX_CHECK(optixSbtRecordPackHeader(m_MissGroup, &records[1])))
+		{
+			return false;
+		}
+		for (unsigned i = 0; i < i_nHitRecords; ++i)
+		{
+			if (OPTIX_CHECK(optixSbtRecordPackHeader(m_HitGroup, &records[2 + i])))
+			{
+				return false;
+			}
+		}
+		if (!m_Records.Upload(records.data(), records.size() * sizeof(EmptyRecord)))
+		{
+			return false;
+		}
+		m_nHitRecords = i_nHitRecords;
 		m_Sbt = OptixShaderBindingTable();
 		m_Sbt.raygenRecord = m_Records.Get();
 		m_Sbt.missRecordBase = m_Records.Get() + sizeof(EmptyRecord);
@@ -176,7 +198,7 @@ namespace gox
 		m_Sbt.missRecordCount = 1;
 		m_Sbt.hitgroupRecordBase = m_Records.Get() + 2 * sizeof(EmptyRecord);
 		m_Sbt.hitgroupRecordStrideInBytes = sizeof(EmptyRecord);
-		m_Sbt.hitgroupRecordCount = 1;
+		m_Sbt.hitgroupRecordCount = i_nHitRecords;
 		return true;
 	}
 
@@ -201,6 +223,7 @@ namespace gox
 		m_RaygenGroup = m_MissGroup = m_HitGroup = NULL;
 		m_Module = NULL;
 		m_Sbt = OptixShaderBindingTable();
+		m_nHitRecords = 0;
 		m_Records.Free();
 		m_Rays.Free();
 		m_Hits.Free();
@@ -209,7 +232,8 @@ namespace gox
 
 	bool optxRayQuery::Trace(OptixTraversableHandle i_Handle,
 							 const std::vector<optxRayQueryRay>& i_Rays,
-							 std::vector<optxRayQueryHit>& o_Hits)
+							 std::vector<optxRayQueryHit>& o_Hits,
+							 unsigned i_nHitRecords)
 	{
 		o_Hits.assign(i_Rays.size(), optxRayQueryHit());
 		if (i_Rays.empty())
@@ -217,6 +241,10 @@ namespace gox
 			return true;
 		}
 		if (!m_Pipeline)
+		{
+			return false;
+		}
+		if (i_nHitRecords > m_nHitRecords && !make_records(i_nHitRecords))
 		{
 			return false;
 		}

@@ -31,7 +31,9 @@ tmeshVertexBuffer::tmeshVertexBuffer(g3dType::VertexFormat i_VertexFormat,
 	m_nVertexStride( i_nVertexStride ),
 	m_pVertexBuffer( NULL ),
 	m_pVertexBufferCopy( NULL ),
-	m_UVOverlapping( 0.0f)
+	m_UVOverlapping( 0.0f),
+	m_Generation( g3dVkBufferUtil::NewGeneration() ),
+	m_nFragments( 0 )
 {
 }
 
@@ -57,6 +59,7 @@ void tmeshVertexBuffer::Deallocate()
 	// DX11 keeps the released pointer (and releases it again later); a
 	// deleted buffer must not be used again here
 	m_pVertexBuffer = NULL;
+	m_Generation = g3dVkBufferUtil::NewGeneration();
 }
 
 //------------------------------------------------------------------------
@@ -117,6 +120,8 @@ void tmeshVertexBuffer::Unlock()
 	if (vbuffer_mem)
 		g3dVkBufferUtil::UnlockVertexBuffer( m_pVertexBuffer );
 
+	m_Generation = g3dVkBufferUtil::NewGeneration();
+
 }
 
 //--------------------------------------------------------------------
@@ -160,6 +165,7 @@ void tmeshVertexBuffer::SetVertexBuffer( g2dVkVertexBufferPtr i_pVertexBuffer,
 	m_pVertexBuffer = i_pVertexBuffer;
 	m_pVertexBufferCopy = i_pVertexBufferCopy;
 	m_nVertices = i_nVertices;
+	m_Generation = g3dVkBufferUtil::NewGeneration();
 }
 
 //----------------------------------------------------------------------------

@@ -34,12 +34,15 @@ namespace gox
 
 	//	What a ray hit; m_Hit is 0 for a miss (the rest is then undefined).
 	//	m_InstanceId is ~0u when the traversable is a GAS (no instance).
+	//	m_BuildInput is the GAS build input hit (optixGetSbtGASIndex(): the
+	//	fragment, in a group's GAS); m_PrimitiveIndex counts within it.
 	struct optxRayQueryHit
 	{
 		float			m_T;
 		unsigned int	m_InstanceId;
 		unsigned int	m_PrimitiveIndex;
 		unsigned int	m_Hit;
+		unsigned int	m_BuildInput;
 	};
 
 	//	The launch is m_Count x 1 x 1

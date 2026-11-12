@@ -29,6 +29,8 @@
 #include "GraphicsOptiX/optx/optxSdk.hpp"
 #endif
 
+#include <array>
+#include <cstdint>
 #include <string>
 
 namespace gox
@@ -69,6 +71,12 @@ namespace gox
 			//	GetDeviceName - "NVIDIA GeForce RTX ..."
 			//--------------------------------------------------------------------
 			static const std::string& GetDeviceName();
+
+			//--------------------------------------------------------------------
+			//	GetDeviceUUID - the device's UUID (cuDeviceGetUuid), which
+			//	Vulkan reports for the same GPU (VkPhysicalDeviceIDProperties)
+			//--------------------------------------------------------------------
+			static const std::array<uint8_t, 16>& GetDeviceUUID();
 
 			//--------------------------------------------------------------------
 			//	GetErrorCount - OptiX messages at fatal or error level so far;

@@ -13,6 +13,7 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
+#include <array>
 #include <string>
 #include <vector>
 
@@ -162,4 +163,41 @@ TEST(vkdAdapter, RequiredListsCoverThePlan)
 	{
 		EXPECT_NE(feat.end(), std::find(feat.begin(), feat.end(), std::string(name))) << name;
 	}
+}
+
+TEST(vkdAdapter, RequiredUuidPicksThatDeviceOnly)
+{
+	vkdAdapterInfo a = intel();
+	vkdAdapterInfo b = quadro();
+	a.m_DeviceUUID[0] = 1;
+	b.m_DeviceUUID[0] = 2;
+	vkdAdapterRequest request;
+	request.m_RequiredUUID = a.m_DeviceUUID;
+	request.m_Override = "quadro";	// ignored with a UUID
+	std::string error;
+	EXPECT_EQ(0, vkdSelectAdapter({a, b}, request, error));
+	EXPECT_EQ("", error);
+}
+
+TEST(vkdAdapter, RequiredUuidMissingNamesItsOwner)
+{
+	vkdAdapterRequest request;
+	request.m_RequiredUUID = std::array<uint8_t, 16>{ 9 };
+	request.m_UUIDOwner = "the CUDA device \"X\"";
+	std::string error;
+	EXPECT_EQ(-1, vkdSelectAdapter({intel(), quadro()}, request, error));
+	EXPECT_TRUE(contains(error, "No Vulkan device is the CUDA device \"X\"")) << error;
+}
+
+TEST(vkdAdapter, ExtraExtensionsAreRequired)
+{
+	vkdAdapterInfo a = quadro();
+	a.m_Extensions.push_back("VK_KHR_external_memory_win32");
+	vkdAdapterRequest request;
+	request.m_Extensions = { "VK_KHR_external_memory_win32", "VK_KHR_external_semaphore_win32" };
+	request.m_RequiredUUID = a.m_DeviceUUID;
+	std::string error;
+	EXPECT_EQ(-1, vkdSelectAdapter({a}, request, error));
+	EXPECT_TRUE(contains(error, "VK_KHR_external_semaphore_win32")) << error;
+	EXPECT_EQ(std::vector<std::string>{"VK_KHR_external_semaphore_win32"}, vkdMissingRequirements(a, request.m_Extensions));
 }

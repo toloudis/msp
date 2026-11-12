@@ -39,6 +39,7 @@ namespace gox
 		CUstream			l_Stream = NULL;
 		OptixDeviceContext	l_Optix = NULL;
 		std::string			l_DeviceName;
+		std::array<uint8_t, 16>	l_DeviceUUID = {};
 		std::atomic<int>	l_nErrors(0);
 		std::atomic<int>	l_nWarnings(0);
 
@@ -165,6 +166,15 @@ namespace gox
 			return false;
 		}
 
+		CUuuid uuid = {};
+		if (CU_CHECK(cu().cuDeviceGetUuid(&uuid, device.m_Device)))
+		{
+			cu().cuStreamDestroy(stream);
+			cu().cuDevicePrimaryCtxRelease(device.m_Device);
+			o_Error = "CUDA could not tell the UUID of " + device.m_Name;
+			return false;
+		}
+
 		OptixDeviceContextOptions options = {};
 		options.logCallbackFunction = &log_callback;
 		options.logCallbackLevel = 4;
@@ -187,6 +197,10 @@ namespace gox
 		l_Stream = stream;
 		l_Optix = optix;
 		l_DeviceName = device.m_Name;
+		for (size_t i = 0; i < l_DeviceUUID.size(); ++i)
+		{
+			l_DeviceUUID[i] = static_cast<uint8_t>(uuid.bytes[i]);
+		}
 		l_nErrors = 0;
 		l_nWarnings = 0;
 		l_bExists = true;
@@ -219,6 +233,7 @@ namespace gox
 		l_Cuda = NULL;
 		l_Device = 0;
 		l_DeviceName.clear();
+		l_DeviceUUID = {};
 		l_bExists = false;
 	}
 
@@ -261,6 +276,11 @@ namespace gox
 	const std::string& optxContext::GetDeviceName()
 	{
 		return l_DeviceName;
+	}
+
+	const std::array<uint8_t, 16>& optxContext::GetDeviceUUID()
+	{
+		return l_DeviceUUID;
 	}
 
 	int optxContext::GetErrorCount()

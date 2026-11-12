@@ -39,9 +39,12 @@
 
 #include <volk.h>
 
+#include <array>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <mutex>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -50,6 +53,7 @@ typedef struct VmaAllocator_T* VmaAllocator;
 namespace gvk
 {
 	class vkdBuffer;
+	class vkdExportPool;
 	class vkdImage;
 
 	struct vkdDeviceOptions
@@ -58,6 +62,16 @@ namespace gvk
 		bool		m_bGpuAssisted = false;		// GPU-assisted validation (tests and sign-off runs)
 		bool		m_bBestPractices = false;	// best-practices checks (Khronos and NVIDIA), counted apart
 		std::string	m_AdapterOverride;			// MSP_GFX_VK_ADAPTER: device name substring; empty = automatic
+		//	Only the device with this UUID (GraphicsOptiX: the CUDA device's);
+		//	m_AdapterOverride is then ignored, with a log line. m_RequiredDeviceName
+		//	names it in messages ("the CUDA device \"...\"").
+		std::optional<std::array<uint8_t, 16>> m_RequiredDeviceUUID;
+		std::string	m_RequiredDeviceName;
+		//	Memory and semaphores shared with another API (GraphicsOptiX):
+		//	enables vkdPlatformExternalExtensions() (a device without them
+		//	fails Create, naming them), exports the timeline semaphore and
+		//	makes the export pool (vkdExportPool).
+		bool		m_bExternalMemory = false;
 		vkdValidation* m_pValidation = nullptr;	// counts validation messages; must outlive the device,
 												// so messages during destruction are counted too.
 												// NULL: the device keeps its own.
@@ -93,6 +107,18 @@ namespace gvk
 			VmaAllocator			Allocator() const;
 			const VkPhysicalDeviceProperties& Properties() const;
 			const vkdAdapterInfo&	Adapter() const;
+
+			//	Whether m_bExternalMemory was asked for (and so is on)
+			bool					HasExternalMemory() const;
+
+			//	The timeline semaphore Submit signals. With external memory it
+			//	is exportable (vkdExportSemaphoreHandle), so another API can
+			//	wait for a submission's value.
+			VkSemaphore				Timeline() const;
+
+			//	Exportable device-local memory (vkdBuffer::Create's i_bExportable);
+			//	NULL without external memory
+			vkdExportPool*			ExportPool() const;
 
 			//------------------------------------------------------------------
 			//	Command stream
@@ -138,6 +164,14 @@ namespace gvk
 			int AddBufferDestroyHook(std::function<void(const vkdBuffer*)> i_Hook);
 			void RemoveBufferDestroyHook(int i_Id);
 			void BufferDestroyed(const vkdBuffer* i_pBuffer);
+
+			//	Called whenever a block of device memory is freed (VMA's free
+			//	callback, on whatever thread frees it), so code that imported it
+			//	into another API (GraphicsOptiX) can forget the import. Hooks run
+			//	in the order added; Add returns the id Remove takes. A hook must
+			//	not add or remove hooks.
+			int AddMemoryFreeHook(std::function<void(VkDeviceMemory)> i_Hook);
+			void RemoveMemoryFreeHook(int i_Id);
 
 			//	Runs i_Destroy once the GPU has finished all work submitted so
 			//	far, including the open command buffer.

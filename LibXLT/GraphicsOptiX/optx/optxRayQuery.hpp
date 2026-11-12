@@ -48,19 +48,26 @@ namespace gox
 			void Destroy();
 
 			//--------------------------------------------------------------------
-			//	Trace - one hit per ray, in order; waits for the result
+			//	Trace - one hit per ray, in order; waits for the result.
+			//	i_nHitRecords: the hit group records the traversable needs (the
+			//	most build inputs of any GAS in it: g3dSceneBVHOptiX::
+			//	GetSbtRecordCount)
 			//--------------------------------------------------------------------
 			bool Trace(OptixTraversableHandle i_Handle,
 					   const std::vector<optxRayQueryRay>& i_Rays,
-					   std::vector<optxRayQueryHit>& o_Hits);
+					   std::vector<optxRayQueryHit>& o_Hits,
+					   unsigned i_nHitRecords = 1);
 
 		private:
+			bool make_records(unsigned i_nHitRecords);
+
 			OptixModule					m_Module;
 			OptixProgramGroup			m_RaygenGroup;
 			OptixProgramGroup			m_MissGroup;
 			OptixProgramGroup			m_HitGroup;
 			OptixPipeline				m_Pipeline;
 			cuBuffer					m_Records;		// raygen, miss, hit group SBT records
+			unsigned					m_nHitRecords;
 			OptixShaderBindingTable		m_Sbt;
 			cuBuffer					m_Rays;
 			cuBuffer					m_Hits;

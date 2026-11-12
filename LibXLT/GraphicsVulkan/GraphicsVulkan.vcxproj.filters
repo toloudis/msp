@@ -202,6 +202,12 @@
     <ClCompile Include="vkd\private\vkdFormat.cpp">
       <Filter>vkd\private</Filter>
     </ClCompile>
+    <ClCompile Include="vkd\private\vkdExternalWin.cpp">
+      <Filter>vkd\private</Filter>
+    </ClCompile>
+    <ClCompile Include="vkd\private\vkdExportPool.cpp">
+      <Filter>vkd\private</Filter>
+    </ClCompile>
     <ClCompile Include="Eff\private\effPlainEffectVk.cpp">
       <Filter>Eff\private</Filter>
     </ClCompile>
@@ -711,6 +717,12 @@
       <Filter>vkd</Filter>
     </ClInclude>
     <ClInclude Include="vkd\vkdFormat.hpp">
+      <Filter>vkd</Filter>
+    </ClInclude>
+    <ClInclude Include="vkd\vkdExternal.hpp">
+      <Filter>vkd</Filter>
+    </ClInclude>
+    <ClInclude Include="vkd\vkdExportPool.hpp">
       <Filter>vkd</Filter>
     </ClInclude>
     <ClInclude Include="Eff\effPlainEffectVk.hpp">

@@ -14,6 +14,12 @@
 #ifndef GVK_VKDSURFACE_HPP
 #include "GraphicsVulkan/vkd/vkdSurface.hpp"
 #endif
+#ifndef GVK_VKDEXTERNAL_HPP
+#include "GraphicsVulkan/vkd/vkdExternal.hpp"
+#endif
+#ifndef GVK_VKDEXPORTPOOL_HPP
+#include "GraphicsVulkan/vkd/vkdExportPool.hpp"
+#endif
 #ifndef GVK_VKDVMA_HPP
 #include "GraphicsVulkan/vkd/private/vkdVma.hpp"
 #endif
@@ -171,6 +177,14 @@ namespace gvk
 			VkPhysicalDeviceProperties properties;
 			vkGetPhysicalDeviceProperties(i_Physical, &properties);
 			info.m_Name = properties.deviceName;
+			if (properties.apiVersion >= VK_API_VERSION_1_1)
+			{
+				VkPhysicalDeviceIDProperties ids = {VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES};
+				VkPhysicalDeviceProperties2 properties2 = {VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2};
+				properties2.pNext = &ids;
+				vkGetPhysicalDeviceProperties2(i_Physical, &properties2);
+				std::copy(ids.deviceUUID, ids.deviceUUID + VK_UUID_SIZE, info.m_DeviceUUID.begin());
+			}
 			info.m_bDiscrete = properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
 			info.m_ApiVersion = properties.apiVersion;
 
@@ -234,6 +248,10 @@ namespace gvk
 		VkQueue						m_Queue = VK_NULL_HANDLE;
 		uint32_t					m_QueueFamily = 0;
 		VmaAllocator				m_Allocator = NULL;
+		std::unique_ptr<vkdExportPool>	m_pExportPool;
+		std::vector<std::pair<int, std::function<void(VkDeviceMemory)>>>	m_MemoryFreeHooks;
+		int							m_NextMemoryFreeHook = 1;
+		std::mutex					m_MemoryHookLock;
 
 		VkSemaphore					m_Timeline = VK_NULL_HANDLE;
 		uint64_t					m_LastSubmitted = 0;
@@ -271,6 +289,16 @@ namespace gvk
 		void Destroy();
 		void RunDeferred(bool i_bAll);
 		uint64_t Completed() const;
+
+		static void VKAPI_PTR MemoryFreed(VmaAllocator, uint32_t, VkDeviceMemory i_Memory, VkDeviceSize, void* i_pUserData)
+		{
+			Impl* impl = static_cast<Impl*>(i_pUserData);
+			std::lock_guard<std::mutex> lock(impl->m_MemoryHookLock);
+			for (auto& hook : impl->m_MemoryFreeHooks)
+			{
+				hook.second(i_Memory);
+			}
+		}
 	};
 
 	//------------------------------------------------------------------------
@@ -399,7 +427,20 @@ namespace gvk
 		{
 			adapters.push_back(describe(physical));
 		}
-		int chosen = vkdSelectAdapter(adapters, i_Options.m_AdapterOverride, o_Error);
+		vkdAdapterRequest request;
+		request.m_Override = i_Options.m_AdapterOverride;
+		request.m_RequiredUUID = i_Options.m_RequiredDeviceUUID;
+		request.m_UUIDOwner = i_Options.m_RequiredDeviceName;
+		if (i_Options.m_bExternalMemory)
+		{
+			request.m_Extensions = vkdPlatformExternalExtensions();
+		}
+		if (request.m_RequiredUUID && !request.m_Override.empty())
+		{
+			DBG_LOG("GraphicsVulkan: MSP_GFX_VK_ADAPTER=\"" << request.m_Override << "\" is ignored: the device must be "
+					<< (request.m_UUIDOwner.empty() ? std::string("the required one") : request.m_UUIDOwner));
+		}
+		int chosen = vkdSelectAdapter(adapters, request, o_Error);
 		if (chosen < 0)
 		{
 			return false;
@@ -449,6 +490,10 @@ namespace gvk
 		{
 			device_extensions.push_back(name.c_str());
 		}
+		for (const std::string& name : request.m_Extensions)
+		{
+			device_extensions.push_back(name.c_str());
+		}
 		const float priority = 1.0f;
 		VkDeviceQueueCreateInfo queue_info = {VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO};
 		queue_info.queueFamilyIndex = m_QueueFamily;
@@ -473,7 +518,11 @@ namespace gvk
 		VmaVulkanFunctions functions = {};
 		functions.vkGetInstanceProcAddr = vkGetInstanceProcAddr;
 		functions.vkGetDeviceProcAddr = vkGetDeviceProcAddr;
+		VmaDeviceMemoryCallbacks memory_callbacks = {};
+		memory_callbacks.pfnFree = &Impl::MemoryFreed;
+		memory_callbacks.pUserData = this;
 		VmaAllocatorCreateInfo allocator_info = {};
+		allocator_info.pDeviceMemoryCallbacks = &memory_callbacks;
 		allocator_info.flags = VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT | VMA_ALLOCATOR_CREATE_EXT_MEMORY_BUDGET_BIT;
 		allocator_info.physicalDevice = m_Physical;
 		allocator_info.device = m_Device;
@@ -486,10 +535,26 @@ namespace gvk
 			o_Error = std::string("vmaCreateAllocator failed: ") + vkdResultName(result);
 			return false;
 		}
+		if (i_Options.m_bExternalMemory)
+		{
+			std::string pool_error;
+			m_pExportPool = vkdExportPool::Create(m_Allocator, pool_error);
+			if (!m_pExportPool)
+			{
+				o_Error = m_Adapter.m_Name + " can't share memory: " + pool_error;
+				return false;
+			}
+		}
 
 		//	Command stream
 		VkSemaphoreTypeCreateInfo timeline_type = {VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO};
 		timeline_type.semaphoreType = VK_SEMAPHORE_TYPE_TIMELINE;
+		VkExportSemaphoreCreateInfo timeline_export = {VK_STRUCTURE_TYPE_EXPORT_SEMAPHORE_CREATE_INFO};
+		timeline_export.handleTypes = vkdPlatformSemaphoreHandleType();
+		if (i_Options.m_bExternalMemory)
+		{
+			timeline_type.pNext = &timeline_export;
+		}
 		VkSemaphoreCreateInfo semaphore_info = {VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO};
 		semaphore_info.pNext = &timeline_type;
 		VK_CHECK(vkCreateSemaphore(m_Device, &semaphore_info, NULL, &m_Timeline));
@@ -553,6 +618,7 @@ namespace gvk
 			{
 				vkDestroySemaphore(m_Device, m_Timeline, NULL);
 			}
+			m_pExportPool.reset();
 			if (m_Allocator)
 			{
 				vmaDestroyAllocator(m_Allocator);
@@ -648,6 +714,31 @@ namespace gvk
 	VmaAllocator vkdDevice::Allocator() const				{ return m_pImpl->m_Allocator; }
 	const VkPhysicalDeviceProperties& vkdDevice::Properties() const { return m_pImpl->m_Properties; }
 	const vkdAdapterInfo& vkdDevice::Adapter() const		{ return m_pImpl->m_Adapter; }
+	bool vkdDevice::HasExternalMemory() const				{ return m_pImpl->m_Options.m_bExternalMemory; }
+	VkSemaphore vkdDevice::Timeline() const					{ return m_pImpl->m_Timeline; }
+	vkdExportPool* vkdDevice::ExportPool() const			{ return m_pImpl->m_pExportPool.get(); }
+
+	int vkdDevice::AddMemoryFreeHook(std::function<void(VkDeviceMemory)> i_Hook)
+	{
+		std::lock_guard<std::mutex> lock(m_pImpl->m_MemoryHookLock);
+		const int id = m_pImpl->m_NextMemoryFreeHook++;
+		m_pImpl->m_MemoryFreeHooks.emplace_back(id, std::move(i_Hook));
+		return id;
+	}
+
+	void vkdDevice::RemoveMemoryFreeHook(int i_Id)
+	{
+		std::lock_guard<std::mutex> lock(m_pImpl->m_MemoryHookLock);
+		auto& hooks = m_pImpl->m_MemoryFreeHooks;
+		for (auto it = hooks.begin(); it != hooks.end(); ++it)
+		{
+			if (it->first == i_Id)
+			{
+				hooks.erase(it);
+				return;
+			}
+		}
+	}
 	std::recursive_mutex& vkdDevice::StreamLock()			{ return m_pImpl->m_StreamLock; }
 	std::mutex& vkdDevice::QueueLock()						{ return m_pImpl->m_QueueLock; }
 

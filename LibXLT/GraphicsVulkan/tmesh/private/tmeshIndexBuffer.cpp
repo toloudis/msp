@@ -28,7 +28,8 @@ tmeshIndexBuffer::tmeshIndexBuffer( bool i_bLockable )
 	m_nNonShadowIndices( 0 ),
 	m_SizeOfIndex(2),
 	m_pIndexBuffer( NULL ),
-	m_pIndexBufferCopy(NULL)
+	m_pIndexBufferCopy(NULL),
+	m_Generation( g3dVkBufferUtil::NewGeneration() )
 {
 }
 
@@ -58,6 +59,7 @@ void tmeshIndexBuffer::Deallocate()
 	// DX11 keeps the released pointer (and releases it again later); a
 	// deleted buffer must not be used again here
 	m_pIndexBuffer = NULL;
+	m_Generation = g3dVkBufferUtil::NewGeneration();
 }
 
 //------------------------------------------------------------------------
@@ -168,6 +170,7 @@ void tmeshIndexBuffer::SetIndexBuffer( g2dVkIndexBufferPtr i_pIndexBuffer,
 	m_pIndexBufferCopy = i_pIndexBufferCopy;
 	m_nIndices = i_nIndices;
 	m_SizeOfIndex = i_SizeOfIndex;
+	m_Generation = g3dVkBufferUtil::NewGeneration();
 
 	// number of indices that are not used for shadow welding.  Default of
 	// -1 means all indices are valid.

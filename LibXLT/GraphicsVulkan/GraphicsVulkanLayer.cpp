@@ -118,7 +118,12 @@ namespace
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-bool GraphicsVulkanLayer::Init(void* /*i_hWnd*/, const g3dGfxOptions& i_Options)
+bool GraphicsVulkanLayer::Init(void* i_hWnd, const g3dGfxOptions& i_Options)
+{
+	return Init(i_hWnd, i_Options, Interop());
+}
+
+bool GraphicsVulkanLayer::Init(void* /*i_hWnd*/, const g3dGfxOptions& i_Options, const Interop& i_Interop)
 {
 	DBG_ASSERT(!l_pDevice, "GraphicsVulkanLayer::Init called twice");
 	l_InitError.clear();
@@ -129,6 +134,9 @@ bool GraphicsVulkanLayer::Init(void* /*i_hWnd*/, const g3dGfxOptions& i_Options)
 	options.m_bValidation = i_Options.m_bValidation;
 	options.m_pValidation = &l_Validation;
 	vkdReadEnvironment(options);
+	options.m_RequiredDeviceUUID = i_Interop.m_DeviceUUID;
+	options.m_RequiredDeviceName = i_Interop.m_DeviceName;
+	options.m_bExternalMemory = i_Interop.m_bExternalMemory;
 	l_pDevice = vkdDevice::Create(options, l_InitError);
 	if (!l_pDevice)
 	{

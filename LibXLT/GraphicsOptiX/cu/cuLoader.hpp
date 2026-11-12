@@ -36,7 +36,7 @@
 	X(cuDeviceGetCount)					\
 	X(cuDeviceGet)						\
 	X(cuDeviceGetName)					\
-	X(cuDeviceGetAttribute)				\
+	X(cuDeviceGetAttribute)					X(cuDeviceGetUuid)					\
 	X(cuDeviceTotalMem)					\
 	X(cuDevicePrimaryCtxRetain)			\
 	X(cuDevicePrimaryCtxRelease)		\
@@ -53,7 +53,14 @@
 	X(cuMemcpyHtoDAsync)				\
 	X(cuMemcpyDtoHAsync)				\
 	X(cuMemcpyDtoDAsync)				\
-	X(cuMemsetD8Async)
+	X(cuMemsetD8Async)					\
+	X(cuImportExternalMemory)			\
+	X(cuExternalMemoryGetMappedBuffer)	\
+	X(cuDestroyExternalMemory)			\
+	X(cuImportExternalSemaphore)		\
+	X(cuDestroyExternalSemaphore)		\
+	X(cuWaitExternalSemaphoresAsync)	\
+	X(cuSignalExternalSemaphoresAsync)
 
 namespace gox
 {

@@ -7,6 +7,15 @@
 **	A tmeshVertexBuffer represents a vertex buffer with an optional
 **	system memory copy for updating.
 **
+**	Its generation (g3dVkBufferUtil::NewGeneration) changes whenever its
+**	vertices may have: SetVertexBuffer (creation, Reallocate), Deallocate
+**	and Unlock (UpdateVertices goes through it). GraphicsOptiX rebuilds a
+**	mesh's acceleration structure when it changes.
+**
+**	It also counts the fragments that draw from it (tmeshFrag adds and
+**	removes itself), so GraphicsOptiX can tell when every fragment of a
+**	group (one per material, sharing these vertices) is in view.
+**
 **	StudioGPU
 **	Copyright(C) 2009 - All Rights Reserved
 \****************************************************************************/
@@ -27,6 +36,9 @@
 #ifndef MA_POINT2D_HPP
 #include "Core/ma/maPoint2d.hpp"
 #endif
+
+#include <atomic>
+#include <cstdint>
 
 namespace gvk
 {
@@ -90,6 +102,19 @@ class tmeshVertexBuffer
 		//	GetVertexStride - the size of a vertex in the vertex buffer
 		//----------------------------------------------------------------------------
 		inline int GetVertexStride() const;
+
+		//----------------------------------------------------------------------------
+		//	GetGeneration - see the header comment
+		//----------------------------------------------------------------------------
+		uint64_t GetGeneration() const { return m_Generation.load(); }
+
+		//----------------------------------------------------------------------------
+		//	GetFragmentCount - the tmeshFrags using this buffer; AddFragment and
+		//	RemoveFragment are for tmeshFrag
+		//----------------------------------------------------------------------------
+		int GetFragmentCount() const { return m_nFragments.load(); }
+		void AddFragment() { ++m_nFragments; }
+		void RemoveFragment() { --m_nFragments; }
 
 		//---------------------------------------------------------------------------
 		// GetVertexFormat - returns vertex format of vertex buffer using the
@@ -169,6 +194,8 @@ class tmeshVertexBuffer
 		uint8_t* m_pVertexBufferCopy;
 
 		float m_UVOverlapping;
+		std::atomic<uint64_t> m_Generation;
+		std::atomic<int> m_nFragments;
 		maAxisBox m_BoundingBox;
 		maPoint2d m_BakeUVScale, m_BakeUVTranslate;
 };

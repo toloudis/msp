@@ -9,9 +9,15 @@
 \****************************************************************************/
 #include "Ox/gtOptiX.hpp"
 
+#ifndef GOX_CUBUFFER_HPP
 #include "GraphicsOptiX/cu/cuBuffer.hpp"
+#endif
+#ifndef GOX_OPTXCHECK_HPP
 #include "GraphicsOptiX/optx/optxCheck.hpp"
+#endif
+#ifndef GOX_OPTXRAYQUERY_HPP
 #include "GraphicsOptiX/optx/optxRayQuery.hpp"
+#endif
 
 #include <cstdint>
 #include <string>

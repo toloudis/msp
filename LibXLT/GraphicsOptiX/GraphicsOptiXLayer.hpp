@@ -1,14 +1,17 @@
 /*****************************************************************************
 **  GraphicsOptiXLayer.hpp
 **
-**      GraphicsOptiXLayer initializes the GraphicsOptiX library: an NVIDIA
-**	OptiX (ray tracing) implementation of the Graphics abstractions, with
-**	the same calls as GraphicsDX11Layer and GraphicsVulkanLayer, so
-**	MachStudio can start it the same way. Init can fail (no NVIDIA driver
-**	with OptiX, ...); GetInitError then says why.
+**      GraphicsOptiXLayer initializes the GraphicsOptiX library: NVIDIA
+**	OptiX (ray tracing) on top of GraphicsVulkan, with the same calls as
+**	GraphicsDX11Layer and GraphicsVulkanLayer, so MachStudio can start it
+**	the same way. Init can fail (no NVIDIA driver with OptiX, no Vulkan
+**	device that is the CUDA device, ...); GetInitError then says why.
 **
-**	Stub: every Graphics hook is installed, but renders, loads and creates
-**	nothing yet. The library is built up from here.
+**	Init loads CUDA and OptiX and creates optxContext (the GPU is CUDA's
+**	choice), then starts the whole GraphicsVulkan layer on that same GPU
+**	(by UUID) with external memory, and installs its own scene renderer
+**	creator over Vulkan's. Everything else is Vulkan's: windows, text,
+**	textures, shaders, lights, fragments, capture, picking, baking.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -64,4 +67,11 @@ class GraphicsOptiXLayer
 		//	GetInitError - why Init failed (empty if it didn't)
 		//------------------------------------------------------------------------
 		static const std::string& GetInitError();
+
+		//------------------------------------------------------------------------
+		//	GetOptixMessageCounts - OptiX messages at error (and fatal) and at
+		//	warning level so far; kept after CleanUp, like Vulkan's counts
+		//	(GraphicsVulkanLayer::GetValidationStats)
+		//------------------------------------------------------------------------
+		static void GetOptixMessageCounts(int& o_nErrors, int& o_nWarnings);
 };

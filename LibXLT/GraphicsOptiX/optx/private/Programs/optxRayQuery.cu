@@ -35,7 +35,7 @@ extern "C" __global__ void __raygen__rayQuery()
 	}
 	const optxRayQueryRay& ray = params.m_pRays[i];
 
-	unsigned int t = 0, instance = 0, primitive = 0, hit = 0;
+	unsigned int t = 0, instance = 0, primitive = 0, hit = 0, input = 0;
 	optixTrace(params.m_Handle,
 			   make_float3(ray.m_Origin[0], ray.m_Origin[1], ray.m_Origin[2]),
 			   make_float3(ray.m_Direction[0], ray.m_Direction[1], ray.m_Direction[2]),
@@ -43,13 +43,14 @@ extern "C" __global__ void __raygen__rayQuery()
 			   OptixVisibilityMask(ray.m_Mask & 0xFF),
 			   OPTIX_RAY_FLAG_DISABLE_ANYHIT,
 			   0, 1, 0,
-			   t, instance, primitive, hit);
+			   t, instance, primitive, hit, input);
 
 	optxRayQueryHit& out = params.m_pHits[i];
 	out.m_T = __uint_as_float(t);
 	out.m_InstanceId = instance;
 	out.m_PrimitiveIndex = primitive;
 	out.m_Hit = hit;
+	out.m_BuildInput = input;
 }
 
 extern "C" __global__ void __miss__rayQuery()
@@ -63,4 +64,5 @@ extern "C" __global__ void __closesthit__rayQuery()
 	optixSetPayload_1(optixGetInstanceId());
 	optixSetPayload_2(optixGetPrimitiveIndex());
 	optixSetPayload_3(1);
+	optixSetPayload_4(optixGetSbtGASIndex());
 }

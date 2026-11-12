@@ -27,6 +27,7 @@
 #include "GraphicsVulkan/vkd/vkdGlobal.hpp"
 #endif
 
+#include <atomic>
 #include <cstring>
 
 namespace gvk
@@ -38,6 +39,8 @@ namespace gvk
 namespace
 {
 	bool l_bGeometryInVideoMemory = true;
+	bool l_bExportStaticGeometry = false;
+	std::atomic<uint64_t> l_LastGeneration(0);
 
 	unsigned int l_TotalVertexBufferMemory = 0;
 	unsigned int l_TotalIndexBufferMemory = 0;
@@ -65,10 +68,13 @@ g3dVkBuffer::g3dVkBuffer(Kind i_Kind, uint32_t i_Size, bool i_bDynamic, const vo
 	{
 		const VkBufferUsageFlags usage = (i_Kind == e_Vertex) ? VK_BUFFER_USAGE_VERTEX_BUFFER_BIT : VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
 		//	Vulkan has no zero-sized buffers; D3D11 refuses them too (DX11 asserts)
-		m_pBuffer = vkdBuffer::Create(vkdGlobal::Device(), i_Size ? i_Size : 4, usage, i_pName);
+		vkdDevice& device = vkdGlobal::Device();
+		m_pBuffer = vkdBuffer::Create(device, i_Size ? i_Size : 4, usage, i_pName, l_bExportStaticGeometry);
 		if (i_pData)
 		{
+			std::lock_guard<std::recursive_mutex> lock(device.StreamLock());
 			m_pBuffer->Upload(vkdGlobal::Context(), 0, i_pData, i_Size);
+			m_UploadValue = device.PendingValue();
 		}
 	}
 }
@@ -124,6 +130,21 @@ void g3dVkBuffer::GetBinding(vkdContext& i_Context, VkBuffer& o_Buffer, VkDevice
 void g3dVkBufferUtil::StoreGeometryInVideoMemory(bool i_bVideoMem)
 {
 	l_bGeometryInVideoMemory = i_bVideoMem;
+}
+
+void g3dVkBufferUtil::ExportStaticGeometry(bool i_bExport)
+{
+	l_bExportStaticGeometry = i_bExport;
+}
+
+bool g3dVkBufferUtil::GetExportStaticGeometry()
+{
+	return l_bExportStaticGeometry;
+}
+
+uint64_t g3dVkBufferUtil::NewGeneration()
+{
+	return ++l_LastGeneration;
 }
 
 //--------------------------------------------------------------------
