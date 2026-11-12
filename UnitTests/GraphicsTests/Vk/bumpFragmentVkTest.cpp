@@ -227,7 +227,7 @@ namespace
 	{
 		bool	m_bMorphable = false;
 		bool	m_bSplit = false;				// into sub-fragments (bumpTriMeshBumpFrag::Split), each drawn
-		int		m_DrawLimit = -1;				// bumpBumpRenderer::SetDrawLimit (-1: D3D's)
+		int		m_DrawLimit = -1;				// bumpBumpRenderer::SetDrawLimit (-1: none on Vulkan, D3D's WHQL minimum on DX11)
 		bool	m_bDestroyBeforeRead = false;	// the fragment goes before the GPU has drawn it
 		bool	m_bMorphAfterDraw = false;		// UpdateVertices after the first draw, then draw again
 	};

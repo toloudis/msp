@@ -53,10 +53,10 @@ namespace gvk
 //--------------------------------------------------------------------
 namespace
 {
-	// D3D11_WHQL_DRAWINDEXED_INDEX_COUNT_2_TO_EXP
-	const int c_WhqlDrawIndexedIndexCount2ToExp = 25;
-
-	uint32_t l_DrawCallLimit = 1 << c_WhqlDrawIndexedIndexCount2ToExp;
+	// indices per draw call, 0 for no limit (one draw per fragment).
+	// Vulkan has no per-draw index count limit (DX11 keeps D3D11's WHQL
+	// minimum, 2^25, as its default)
+	uint32_t l_DrawCallLimit = 0;
 
 	// the fragment's PrimitiveType (D3D11 topology numbers) as Vulkan's
 	VkPrimitiveTopology to_topology(tmeshFrag::PrimitiveType i_Type)
@@ -190,7 +190,7 @@ int bumpBumpRenderer::Render( const g3dSceneNode* i_pNode, const matMaterial* i_
 		// ability to limit to a certain number of primitives per draw call:
 
 		int drawCallSize = l_DrawCallLimit;// multiple of 3 and of 2 for tris and lines!!
-		if (drawCallSize > numInds) 
+		if (drawCallSize == 0 || drawCallSize > numInds) 
 			drawCallSize = numInds;
 		int i = 0;
 		// draw in increments of drawCallSize indices.
@@ -235,12 +235,12 @@ int bumpBumpRenderer::Render( const g3dSceneNode* i_pNode, const matMaterial* i_
 // draw a limited number of triangles per draw call.
 // this is to mitigate the windows TDR (timeout detection response)
 // for expensive calls (e.g. high tessellation + GS amplification)
-// -1 means use the D3D limit.
+// -1 means no limit: one draw call per fragment.
 //--------------------------------------------------------------------
 void bumpBumpRenderer::SetDrawLimit(int i_NumIndices)
 {
-	if (i_NumIndices == -1)
-		l_DrawCallLimit = 1 << c_WhqlDrawIndexedIndexCount2ToExp;
+	if (i_NumIndices <= 0)
+		l_DrawCallLimit = 0;
 	else
 		l_DrawCallLimit = i_NumIndices;
 }

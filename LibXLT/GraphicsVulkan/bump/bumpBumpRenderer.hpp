@@ -67,7 +67,7 @@ class bumpBumpRenderer : public g3dBaseRenderer
 		// this is to mitigate the windows TDR (timeout detection response)
 		// for expensive calls (e.g. high tessellation + GS amplification)
 		// i_NumIndices should be a multiple of 2,3 and 4 ideally.
-		// -1 means use the D3D limit.
+		// -1 means no limit: one draw call per fragment.
 		//--------------------------------------------------------------------
 		static void SetDrawLimit(int i_NumIndices);
 	private:

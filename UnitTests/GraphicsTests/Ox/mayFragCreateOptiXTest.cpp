@@ -7,22 +7,47 @@
 **	(two materials on one shared store, uploaded once, each fragment with
 **	its own triangles); the group's vertex buffer written through
 **	Lock/Unlock (every fragment refit); and UpdateFragmentGroup (new
-**	vertices and indices: both generations change, every GAS rebuilt).
+**	vertices and indices: both generations change, every GAS rebuilt);
+**	and a glTF file loaded through gltfImport with mayFragCreateOptiX
+**	installed (the fragment count, the scene BVH's bounds, rays).
 **
 **	Extra Large Technology
 \****************************************************************************/
 #include "Ox/gtOptiX.hpp"
 
 #include "GraphicsOptiX/G3d/g3dFragmentOptiX.hpp"
+#include "GraphicsOptiX/G3d/g3dSceneBVHOptiX.hpp"
 #include "GraphicsOptiX/G3d/g3dVertexBufferOptiX.hpp"
 #include "GraphicsOptiX/may/private/mayFragCreateOptiX.hpp"
 #include "GraphicsOptiX/optx/optxRayQuery.hpp"
+#ifndef GLTF_IMPORT_HPP
+#include "ImportExport/gltf/import/gltfImport.hpp"
+#endif
+#ifndef EMDL_CHARACTERTEMPLATE_HPP
+#include "Graphics/emdl/emdlCharacterTemplate.hpp"
+#endif
+#ifndef G3D_LAYER_HPP
+#include "Graphics/G3d/g3dLayer.hpp"
+#endif
+#ifndef G3D_SCENE_HPP
+#include "Graphics/G3d/g3dScene.hpp"
+#endif
+#ifndef G3D_SCENENODE_HPP
+#include "Graphics/G3d/g3dSceneNode.hpp"
+#endif
+#ifndef MDL_FRAGCREATE_HPP
+#include "Graphics/mdl/mdlFragCreate.hpp"
+#endif
 #ifndef MDL_FRAGINFO_HPP
 #include "Graphics/mdl/mdlFragInfo.hpp"
 #endif
 #ifndef MDL_SPLITFRAGINFO_HPP
 #include "Graphics/mdl/mdlSplitFragInfo.hpp"
 #endif
+
+#include "gtTempDir.hpp"
+// the glTF model builders the ImportExport tests use
+#include "../ImportExportTests/ietGltfModel.hpp"
 
 #include <cstdint>
 #include <memory>
@@ -48,13 +73,13 @@ namespace
 				ASSERT_TRUE(m_Query.Create(error)) << error;
 			}
 
-			//	A ray down -z from (x, y, 5): {hit distance or -1, triangle}
-			std::pair<float, unsigned> trace_down(OptixTraversableHandle i_Handle, float x, float y)
+			//	A ray down -z from (x, y, i_Z): {hit distance or -1, triangle}
+			std::pair<float, unsigned> trace_down(OptixTraversableHandle i_Handle, float x, float y, float i_Z = 5.0f)
 			{
 				optxRayQueryRay ray = {};
 				ray.m_Origin[0] = x;
 				ray.m_Origin[1] = y;
-				ray.m_Origin[2] = 5.0f;
+				ray.m_Origin[2] = i_Z;
 				ray.m_Direction[2] = -1.0f;
 				ray.m_TMax = 1e30f;
 				ray.m_Mask = 0xFF;
@@ -117,6 +142,34 @@ namespace
 			group.m_Fragments.emplace_back(dynamic_cast<g3dFragmentOptiX*>(f));
 		}
 		return group;
+	}
+
+	//	A mesh of one primitive per material in i_Materials, primitive p the
+	//	triangle i_Triangles[p] (three positions, in metres), not indexed
+	int add_mesh(tinygltf::Model& io_Model, const std::vector<std::vector<float>>& i_Triangles,
+				 const std::vector<int>& i_Materials)
+	{
+		tinygltf::Mesh mesh;
+		for (size_t p = 0; p < i_Triangles.size(); ++p)
+		{
+			tinygltf::Primitive primitive;
+			primitive.attributes["POSITION"] = ietAddFloatAccessor(io_Model, i_Triangles[p], TINYGLTF_TYPE_VEC3);
+			primitive.material = i_Materials[p];
+			primitive.mode = TINYGLTF_MODE_TRIANGLES;
+			mesh.primitives.push_back(primitive);
+		}
+		io_Model.meshes.push_back(mesh);
+		return (int)io_Model.meshes.size() - 1;
+	}
+
+	//	Total transforms for a whole tree, as the renderers update them
+	void update_total_transforms(g3dSceneNode* io_pNode)
+	{
+		io_pNode->UpdateTotalTransform();
+		for (g3dSceneNode* child : io_pNode->GetChildren())
+		{
+			update_total_transforms(child);
+		}
 	}
 }
 
@@ -255,4 +308,82 @@ TEST_F(mayFragCreateOptiXTest, UpdateFragmentGroup)
 	EXPECT_EQ(std::make_pair(7.0f, 0u), trace_down(hb, 0, 0.5f));
 	EXPECT_EQ(std::make_pair(7.0f, 1u), trace_down(hb, -0.5f, 0));
 	EXPECT_EQ(-1.0f, trace_down(ha, 0, 0.5f).first);
+}
+
+TEST_F(mayFragCreateOptiXTest, ImportedGltfModel)
+{
+	//	Two nodes: "Quad" at x = 2 m, a mesh of two triangles (the unit quad
+	//	in z = 0, split along y = x) with a material each; "Tri" at z = -1 m,
+	//	scaled 2 in x, one triangle (-1,-1) (1,-1) (0,1). The importer works
+	//	in centimetres (gltfMeshImport::c_UnitScale)
+	tinygltf::Model model;
+	model.materials.resize(2);
+	model.materials[0].name = "a";
+	model.materials[1].name = "b";
+	const int quad = add_mesh(model, { { -1, -1, 0, 1, -1, 0, 1, 1, 0 }, { -1, -1, 0, 1, 1, 0, -1, 1, 0 } }, { 0, 1 });
+	const int tri = add_mesh(model, { { -1, -1, 0, 1, -1, 0, 0, 1, 0 } }, { 0 });
+	model.nodes.resize(2);
+	model.nodes[0].name = "Quad";
+	model.nodes[0].mesh = quad;
+	model.nodes[0].translation = { 2, 0, 0 };
+	model.nodes[1].name = "Tri";
+	model.nodes[1].mesh = tri;
+	model.nodes[1].translation = { 0, 0, -1 };
+	model.nodes[1].scale = { 2, 1, 1 };
+	model.scenes.resize(1);
+	model.scenes[0].nodes = { 0, 1 };
+	model.defaultScene = 0;
+	model.asset.version = "2.0";
+
+	gtTempDir tmp;
+	const std::filesystem::path file = tmp.GetPath() / "model.gltf";
+	tinygltf::TinyGLTF writer;
+	ASSERT_TRUE(writer.WriteGltfSceneToFile(&model, file.string(), false, true, true, false));
+
+	//	As GraphicsOptiXLayer installs it
+	mdlFragCreateImpl* previous = mdlFragCreate::SetImplementation(&m_Create);
+	gltfImport import;
+	std::unique_ptr<entModelTemplate> base(import.LoadGeometry(tmp.GetLocator("model.gltf")));
+	mdlFragCreate::SetImplementation(previous);
+	emdlCharacterTemplate* loaded = dynamic_cast<emdlCharacterTemplate*>(base.get());
+	ASSERT_NE(nullptr, loaded);
+	ASSERT_NE(nullptr, loaded->GetModel());
+
+	//	One fragment per material of each mesh, all ours
+	ASSERT_EQ(3u, loaded->GetFragments().size());
+	for (g3dFragment* fragment : loaded->GetFragments())
+	{
+		g3dFragmentOptiX* ours = dynamic_cast<g3dFragmentOptiX*>(fragment);
+		ASSERT_NE(nullptr, ours);
+		EXPECT_EQ(1, ours->GetNumIndices() / 3);
+	}
+
+	{
+		g3dSceneNode* root = loaded->GetModel();
+		update_total_transforms(root);
+		g3dScene scene(new g3dLayer(root));		// the template keeps the nodes
+		g3dSceneBVHOptiX bvh;
+		ASSERT_TRUE(bvh.Update(scene, std::vector<g3dLayer*>(), false));
+		ASSERT_NE(0u, bvh.GetHandle());
+		EXPECT_EQ(3u, bvh.GetInstanceCount());
+
+		//	Quad: x 100..300, y -100..100, z 0; Tri: x -200..200, y -100..100, z -100
+		const maAxisBox& bounds = bvh.GetBounds();
+		EXPECT_NEAR(-200.0f, bounds.GetMinX(), 1e-3f);
+		EXPECT_NEAR(300.0f, bounds.GetMaxX(), 1e-3f);
+		EXPECT_NEAR(-100.0f, bounds.GetMinY(), 1e-3f);
+		EXPECT_NEAR(100.0f, bounds.GetMaxY(), 1e-3f);
+		EXPECT_NEAR(-100.0f, bounds.GetMinZ(), 1e-3f);
+		EXPECT_NEAR(0.0f, bounds.GetMaxZ(), 1e-3f);
+
+		//	Rays down from z = 500: both halves of the quad, the scaled
+		//	triangle where only its scaled copy reaches, and a miss
+		const OptixTraversableHandle handle = bvh.GetHandle();
+		EXPECT_NEAR(500.0f, trace_down(handle, 250, -50, 500).first, 1e-2f);
+		EXPECT_NEAR(500.0f, trace_down(handle, 150, 50, 500).first, 1e-2f);
+		EXPECT_NEAR(600.0f, trace_down(handle, -150, -90, 500).first, 1e-2f);
+		EXPECT_EQ(-1.0f, trace_down(handle, 250, 150, 500).first);
+
+		EXPECT_FALSE(bvh.Update(scene, std::vector<g3dLayer*>(), false));
+	}
 }
