@@ -85,7 +85,7 @@ void g3dRenderStateTraverser::AddRenderState( const g3dRenderState* i_pRenderSta
 				g3dLight* pLight = i_pRenderState->m_Lights[i];
 				if( pLight->IsEnabled() )
 				{
-					if (!i_bJustAmbientLights || !pLight->GetCastsShadow())
+					if (!i_bJustAmbientLights || !pLight->GetIsSinglePassLight())
 					{
 						g3dLightMgrVk::Implementation()->SetLight( pLight );
 						g3dLightMgrVk::Implementation()->EnableLight( pLight );
@@ -122,7 +122,7 @@ void g3dRenderStateTraverser::SubtractRenderState( const g3dRenderState* i_pRend
 				g3dLight* pLight = i_pRenderState->m_Lights[i];
 				if( pLight->IsEnabled() )
 				{
-					if (!i_bJustAmbientLights || !pLight->GetCastsShadow())
+					if (!i_bJustAmbientLights || !pLight->GetIsSinglePassLight())
 					{
 						g3dLightMgrVk::Implementation()->DisableLight( pLight );
 					}
@@ -251,7 +251,7 @@ void g3dRenderStateTraverser::set_render_state( const g3dRenderState& i_RenderSt
 
 		if( pLight->IsEnabled() )
 		{
-			if (!i_bJustAmbientLights || !pLight->GetCastsShadow())
+			if (!i_bJustAmbientLights || !pLight->GetIsSinglePassLight())
 			{
 				g3dLightMgrVk::Implementation()->SetLight( pLight );
 				g3dLightMgrVk::Implementation()->EnableLight( pLight );

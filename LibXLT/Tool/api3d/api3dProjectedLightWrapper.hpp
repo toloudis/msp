@@ -2,7 +2,9 @@
 **	api3dProjectedLightWrapper.hpp
 **
 **		An object to keep track of data needed for a projected light,
-**	especially for rendering the depth map for the shadows.
+**	especially for rendering the depth map for the shadows. Under a
+**	backend that needs no shadow maps (g3dSceneRendererCreate::
+**	NeedsShadowMaps, GraphicsOptiX) it makes no depth map or renderer.
 **
 **	StudioGPU
 **	Copyright(C) 2004 - All Rights Reserved

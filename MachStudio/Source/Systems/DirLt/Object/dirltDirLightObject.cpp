@@ -156,7 +156,7 @@ dirltData dirltDirLightObject::GetData() const
 	if ( m_pLight )
 	{
 		data.m_Direction	= m_pLight->GetDirection();
-		data.m_ShadowSource = m_pLight->GetCastsShadow();
+		data.m_ShadowSource = m_pLight->GetShadowSource();
 	}
 
 	return data;
@@ -182,7 +182,7 @@ void dirltDirLightObject::SetData(const dirltData &i_Data)
 	if ( m_pLight )
 	{
 		m_pLight->SetIntensity(i_Data.m_Color.GetValue());
-		m_pLight->SetCastsShadow(i_Data.m_ShadowSource.GetValue());
+		m_pLight->SetShadowSource(i_Data.m_ShadowSource.GetValue());
 		m_pLight->SetEnable( i_Data.m_Enabled.GetValue() );
 		m_pLight->SetDirection( i_Data.m_Direction.GetValue() );
 		m_pLight->SetDiffuseEnabled( i_Data.m_bDiffuseEnabled.GetValue() );

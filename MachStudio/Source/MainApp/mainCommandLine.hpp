@@ -88,13 +88,30 @@
 **	                             RenderMan passes (COLBL) are skipped with a
 **	                             warning: GPU renders can't make them
 **	  -capHardwareAA on|off      the renderer's own antialiasing (HDR AA)
+**	  -capTraceSamples <n>       ray tracing (-gfx optix): samples per pixel
+**	                             of each captured frame, 1 to 65536
+**	  -capTraceSamplesPerFrame <n>
+**	                             ray tracing: samples per pixel each launch
+**	                             adds, 1 to 1024
+**	  -capTraceSampleLimit <n>   ray tracing: samples per pixel at which a
+**	                             view stops (and of a captured frame when
+**	                             -capTraceSamples isn't given), 1 to 65536
+**	  -capTraceAORays <n>        ray tracing: occlusion rays per ambient
+**	                             occlusion sample, 0 to 64
+**	  -capTraceBounces <n>       ray tracing: diffuse bounces after the first
+**	                             hit (Illumination Only), 0 to 32 (0: direct
+**	                             light only)
+**	                             The -capTrace* flags set every render
+**	                             layer's ray tracing preferences; other
+**	                             backends ignore them
 **
 **	Graphics
 **	  -gfx dx11|vulkan|optix     graphics backend; default vulkan. If the
 **	                             backend can't start, MachStudio says why and
 **	                             exits (it never falls back to another).
-**	                             optix is NVIDIA OptiX, in development: it
-**	                             renders nothing yet
+**	                             optix is NVIDIA OptiX ray tracing, in
+**	                             development: it traces ambient occlusion,
+**	                             Illumination Only and Shadow Mask
 **	  -gfxValidation             turn on the Vulkan validation layer (Debug
 **	                             builds always have it on); the error and
 **	                             warning counts are printed at exit
@@ -159,6 +176,11 @@ struct mainCommandLine
 		e_CapMotionSamples,	// -capMotionSamples <n>: motion samples per frame ("1" to "16")
 		e_CapPasses,		// -capPasses <pass,...>: the passes to render, by name (MatchPasses)
 		e_CapHardwareAA,	// -capHardwareAA on|off: "on" or "off"
+		e_CapTraceSamples,			// -capTraceSamples <n>: "1" to "65536"
+		e_CapTraceSamplesPerFrame,	// -capTraceSamplesPerFrame <n>: "1" to "1024"
+		e_CapTraceSampleLimit,		// -capTraceSampleLimit <n>: "1" to "65536"
+		e_CapTraceAORays,			// -capTraceAORays <n>: "0" to "64"
+		e_CapTraceBounces,			// -capTraceBounces <n>: "0" to "32"
 		e_New,				// -new: start a new, empty scene
 		e_License,			// -license <key>: validate a license key
 		e_Version,			// -version: print the version

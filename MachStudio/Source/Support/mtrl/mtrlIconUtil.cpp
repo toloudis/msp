@@ -357,7 +357,7 @@ namespace mtrlIconUtil
 			l_PointLight->SetDiffuseEnabled(true);
 			l_PointLight->SetSpecularEnabled(true);
 			l_PointLight->SetAffectsGlow(true);
-			l_PointLight->SetCastsShadow(true);
+			l_PointLight->SetIsSinglePassLight(true);
 			l_PointLight->SetFalloff0(1.00f);
 			l_PointLight->SetFalloff1(1.00f);
 			l_PointLight->SetFalloff2(0.00f);
@@ -384,7 +384,7 @@ namespace mtrlIconUtil
 			l_ProjectedLight1->SetDiffuseEnabled(true);
 			l_ProjectedLight1->SetSpecularEnabled(true);
 			l_ProjectedLight1->SetAffectsGlow(true);
-			l_ProjectedLight1->SetCastsShadow(true);
+			l_ProjectedLight1->SetIsSinglePassLight(true);
 			l_ProjectedLight1->SetDepthBias(0.005f);
 			l_ProjectedLight1->SetShadowQuality(g3dProjectedLight::SQ_HIGH);
 			l_ProjectedLight1->SetShadowIntensity(1.0f);
@@ -407,7 +407,7 @@ namespace mtrlIconUtil
 			l_ProjectedLight2->SetDiffuseEnabled(true);
 			l_ProjectedLight2->SetSpecularEnabled(true);
 			l_ProjectedLight2->SetAffectsGlow(true);
-			l_ProjectedLight2->SetCastsShadow(true);
+			l_ProjectedLight2->SetIsSinglePassLight(true);
 			l_ProjectedLight2->SetDepthBias(0.005f);
 			l_ProjectedLight2->SetShadowQuality(g3dProjectedLight::SQ_HIGH);
 			l_ProjectedLight2->SetShadowIntensity(1.0f);

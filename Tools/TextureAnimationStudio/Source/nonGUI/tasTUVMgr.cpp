@@ -75,14 +75,14 @@ void tasTUVMgr::Initialize()
 	////l_pDirLight->SetIntensity(maFloatRGBA(0.65f, 0.65f, 0.6f, 1.0f));
 	l_pDirLight->SetIntensity(maFloatRGBA(0.5f, 0.5f, 0.5f, 1.0f));
 	l_pDirLight->Enable();
-	l_pDirLight->SetCastsShadow(false);
+	l_pDirLight->SetIsSinglePassLight(false);
 
 	//l_pPointLight1 = api3dLightMgr::CreatePointLight();
 	//l_pPointLight1->SetPosition(maVector3d(1.2f, -1.0f, -1.0f));
 	////l_pPointLight1->SetIntensity(maFloatRGBA(0.65f, 0.6f, 0.6f, 1.0f));
 	//l_pPointLight1->SetIntensity(maFloatRGBA(1.0f, 1.0f, 1.0f, 1.0f));
 	//l_pPointLight1->Enable();
-	//l_pPointLight1->SetCastsShadow(true);
+	//l_pPointLight1->SetIsSinglePassLight(true);
 
 	//l_pPointObj1 = api3dShape::CreateSphere(l_pPointLight1->GetIntensity(), 0.25f, 6, 6);
 	//api3dScene::AddObject(l_pPointObj1);
@@ -91,7 +91,7 @@ void tasTUVMgr::Initialize()
 	//l_pProjectedLight->SetPosition(maVector3d(1.2f, -1.0f, -1.0f));
 	//l_pProjectedLight->SetIntensity(maFloatRGBA(1.0f, 1.0f, 1.0f, 1.0f));
 	//l_pProjectedLight->Disable();				// off by default
-	//l_pProjectedLight->SetCastsShadow(true);
+	//l_pProjectedLight->SetIsSinglePassLight(true);
 
 	//l_pPrjLightWrapper = new api3dProjectedLightWrapper(*l_pProjectedLight);
 	//fsLocator tex_loc = gfPaths::GetPath(gfPaths::e_ExePath);

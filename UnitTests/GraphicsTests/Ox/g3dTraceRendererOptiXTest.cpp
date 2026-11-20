@@ -1,7 +1,7 @@
 /*****************************************************************************
-**  g3dAORendererOptiXTest.cpp
+**  g3dTraceRendererOptiXTest.cpp
 **
-**      The OptiX AO renderer (g3dAORendererOptiX), with the whole
+**      The OptiX renderer in its AO mode (g3dTraceRendererOptiX), with the whole
 **	GraphicsOptiX layer up (gtBackend::RunOptiX), rendering into an RGBA8
 **	render-target texture through g3dTargetRenderer, as MachStudio's views
 **	do: the creator gives it for the default, HDR and AO types; a quad
@@ -21,8 +21,8 @@
 #include "gtScene.hpp"
 #include "gtTarget.hpp"
 
-#ifndef GOX_G3DAORENDEREROPTIX_HPP
-#include "GraphicsOptiX/G3d/g3dAORendererOptiX.hpp"
+#ifndef GOX_G3DTRACERENDEREROPTIX_HPP
+#include "GraphicsOptiX/G3d/g3dTraceRendererOptiX.hpp"
 #endif
 #ifndef GOX_CULOADER_HPP
 #include "GraphicsOptiX/cu/cuLoader.hpp"
@@ -75,6 +75,7 @@
 #include <filesystem>
 #include <string>
 #include <memory>
+#include <utility>
 #include <vector>
 
 using namespace gox;
@@ -110,16 +111,16 @@ namespace
 	}
 
 	//	The renderer the creator gives for the AO type
-	std::unique_ptr<g3dAORendererOptiX> ao_renderer()
+	std::unique_ptr<g3dTraceRendererOptiX> ao_renderer()
 	{
 		g3dSceneRenderer* renderer = g3dSceneRendererCreate::CreateAmbientOcclusionRenderer();
-		g3dAORendererOptiX* ao = dynamic_cast<g3dAORendererOptiX*>(renderer);
+		g3dTraceRendererOptiX* ao = dynamic_cast<g3dTraceRendererOptiX*>(renderer);
 		EXPECT_NE(nullptr, ao) << "the AO type isn't the OptiX renderer";
 		if (!ao)
 		{
 			delete renderer;
 		}
-		return std::unique_ptr<g3dAORendererOptiX>(ao);
+		return std::unique_ptr<g3dTraceRendererOptiX>(ao);
 	}
 
 	//	The builder's camera i_Height above (x, y, 0), looking down -z
@@ -369,7 +370,7 @@ namespace
 		gtSceneBuilder builder;
 		floor_and_wall(builder, i_bCorner);
 		gtTarget target(gtBackend::e_Vulkan, c_Size, c_Size, c_Clear);
-		std::unique_ptr<g3dAORendererOptiX> renderer = ao_renderer();
+		std::unique_ptr<g3dTraceRendererOptiX> renderer = ao_renderer();
 		if (!renderer)
 		{
 			return gtPicture();
@@ -392,15 +393,24 @@ TEST(g3dAORendererOptiXTest, CreatorGivesIt)
 {
 	gtBackend::RunOptiX([]()
 	{
-		for (g3dSceneRenderer* renderer : { g3dSceneRendererCreate::CreateDefaultRenderer(),
-											g3dSceneRendererCreate::CreateHDRRenderer(),
-											g3dSceneRendererCreate::CreateAmbientOcclusionRenderer() })
+		const std::pair<g3dSceneRenderer*, g3dTraceRendererOptiX::Mode> made[] = {
+			{ g3dSceneRendererCreate::CreateDefaultRenderer(), g3dTraceRendererOptiX::e_AO },
+			{ g3dSceneRendererCreate::CreateHDRRenderer(), g3dTraceRendererOptiX::e_AO },
+			{ g3dSceneRendererCreate::CreateAmbientOcclusionRenderer(), g3dTraceRendererOptiX::e_AO },
+			{ g3dSceneRendererCreate::CreateIlluminationRenderer(), g3dTraceRendererOptiX::e_Illumination },
+			{ g3dSceneRendererCreate::CreateShadowMaskRenderer(), g3dTraceRendererOptiX::e_ShadowMask } };
+		for (const auto& entry : made)
 		{
-			EXPECT_NE(nullptr, dynamic_cast<g3dAORendererOptiX*>(renderer));
-			delete renderer;
+			const g3dTraceRendererOptiX* traced = dynamic_cast<g3dTraceRendererOptiX*>(entry.first);
+			EXPECT_NE(nullptr, traced);
+			if (traced)
+			{
+				EXPECT_EQ(entry.second, traced->GetMode());
+			}
+			delete entry.first;
 		}
 		g3dSceneRenderer* simple = g3dSceneRendererCreate::CreateSimpleRenderer();
-		EXPECT_EQ(nullptr, dynamic_cast<g3dAORendererOptiX*>(simple));
+		EXPECT_EQ(nullptr, dynamic_cast<g3dTraceRendererOptiX*>(simple));
 		delete simple;
 	});
 }
@@ -413,7 +423,7 @@ TEST(g3dAORendererOptiXTest, OpenSkyIsWhiteOnTheBackground)
 		builder.Add(gtScene::Plane(), builder.Keep(gtScene::DataMaterial("default")), scale_translate(10, 0, 0, 0));
 		look_down(builder.Camera(), 0, 0, 50);
 		gtTarget target(gtBackend::e_Vulkan, c_Size, c_Size, c_Clear);
-		std::unique_ptr<g3dAORendererOptiX> renderer = ao_renderer();
+		std::unique_ptr<g3dTraceRendererOptiX> renderer = ao_renderer();
 		ASSERT_TRUE(renderer);
 		renderer->SetAORays(4);
 		renderer->SetSamplesPerFrame(4);
@@ -459,7 +469,7 @@ TEST(g3dAORendererOptiXTest, SameSeedSameImage)
 		auto render = [&](unsigned i_Seed)
 		{
 			gtTarget target(gtBackend::e_Vulkan, c_Size, c_Size, c_Clear);
-			std::unique_ptr<g3dAORendererOptiX> renderer = ao_renderer();
+			std::unique_ptr<g3dTraceRendererOptiX> renderer = ao_renderer();
 			renderer->SetAORays(1);
 			renderer->SetSamplesPerFrame(2);
 			renderer->SetSampleLimit(2);
@@ -485,7 +495,7 @@ TEST(g3dAORendererOptiXTest, RestartKeys)
 		gtSceneBuilder builder;
 		floor_and_wall(builder);
 		std::unique_ptr<gtTarget> target(new gtTarget(gtBackend::e_Vulkan, c_Size, c_Size, c_Clear));
-		std::unique_ptr<g3dAORendererOptiX> renderer = ao_renderer();
+		std::unique_ptr<g3dTraceRendererOptiX> renderer = ao_renderer();
 		ASSERT_TRUE(renderer);
 		renderer->SetSamplesPerFrame(1);
 		renderer->SetSampleLimit(3);
@@ -555,7 +565,7 @@ TEST(g3dAORendererOptiXTest, AsksForFramesUntilConverged)
 		gtSceneBuilder builder;
 		floor_and_wall(builder);
 		gtTarget target(gtBackend::e_Vulkan, c_Size, c_Size, c_Clear);
-		std::unique_ptr<g3dAORendererOptiX> renderer = ao_renderer();
+		std::unique_ptr<g3dTraceRendererOptiX> renderer = ao_renderer();
 		ASSERT_TRUE(renderer);
 		renderer->SetSamplesPerFrame(1);
 		renderer->SetSampleLimit(3);
@@ -578,7 +588,7 @@ TEST(g3dAORendererOptiXTest, CaptureFinishesTheFrame)
 		gtSceneBuilder builder;
 		floor_and_wall(builder);
 		gtTarget target(gtBackend::e_Vulkan, c_Size, c_Size, c_Clear);
-		std::unique_ptr<g3dAORendererOptiX> renderer = ao_renderer();
+		std::unique_ptr<g3dTraceRendererOptiX> renderer = ao_renderer();
 		ASSERT_TRUE(renderer);
 		renderer->SetSamplesPerFrame(2);
 		renderer->SetSampleLimit(4);
@@ -628,7 +638,7 @@ TEST(g3dAORendererOptiXTest, RasterDrawsTheRestOverTheTrace)
 				builder.AddViewerLayer(gtScene::Sphere(16, 32), material, gtScene::Place(0, 0, 200, 40));
 			}
 			gtTarget target(gtBackend::e_Vulkan, c_Size, c_Size, c_Clear);
-			std::unique_ptr<g3dAORendererOptiX> renderer = ao_renderer();
+			std::unique_ptr<g3dTraceRendererOptiX> renderer = ao_renderer();
 			renderer->SetSampleLimit(1);
 			g3dTargetRenderer view(target.Target(), renderer.get(), &builder.Scene(), &builder.Camera());
 			view.Render(1.0f, builder.ViewerLayers());
@@ -656,7 +666,7 @@ TEST(g3dAORendererOptiXTest, SharedBuffersReachTheTarget)
 		gtSceneBuilder builder;
 		floor_and_wall(builder);
 		gtTarget target(gtBackend::e_Vulkan, c_Size, c_Size, c_Clear);
-		std::unique_ptr<g3dAORendererOptiX> renderer = ao_renderer();
+		std::unique_ptr<g3dTraceRendererOptiX> renderer = ao_renderer();
 		ASSERT_TRUE(renderer);
 		renderer->SetSamplesPerFrame(2);
 		renderer->SetSampleLimit(2);
@@ -710,7 +720,7 @@ TEST(g3dAORendererOptiXTest, TracedDepthMatchesRasterDepth)
 		const std::vector<uint32_t> raster_depth = read_depth(raster_target);
 
 		gtTarget traced_target(gtBackend::e_Vulkan, c_Size, c_Size, c_Clear);
-		std::unique_ptr<g3dAORendererOptiX> renderer = ao_renderer();
+		std::unique_ptr<g3dTraceRendererOptiX> renderer = ao_renderer();
 		ASSERT_TRUE(renderer);
 		renderer->SetSampleLimit(1);
 		g3dTargetRenderer traced_view(traced_target.Target(), renderer.get(), &builder.Scene(), &builder.Camera());
@@ -775,7 +785,7 @@ TEST(g3dAORendererOptiXTest, DISABLED_Showcase)
 		builder.Camera().LookAt(maPoint3d(0, -16, 12), maPoint3d(0, 0, 0.5f), maVector3d(0, 0, 1));
 
 		gtTarget target(gtBackend::e_Vulkan, 256, 256, c_Clear);
-		std::unique_ptr<g3dAORendererOptiX> renderer = ao_renderer();
+		std::unique_ptr<g3dTraceRendererOptiX> renderer = ao_renderer();
 		ASSERT_TRUE(renderer);
 		renderer->SetAORays(4);
 		renderer->SetSamplesPerFrame(256);

@@ -454,16 +454,36 @@ windows, text, textures, shaders, lights, fragments, capture, picking,
 baking; `GetSystem2D`/`GetSystem3D` return Vulkan's. MachStudio starts it
 with `-gfx optix` (Vulkan's requirements plus an NVIDIA GPU of compute 7.5
 or newer); at exit the log (and RenderNode's stderr) gives Vulkan's
-validation counts and `OptiX messages: N errors, M warnings`. Every
-renderer type is still Vulkan's (the OptiX AO renderer is Part 2b of the
-plan). `optx/optxSdk.hpp` is the one place the OptiX and CUDA headers are
+validation counts and `OptiX messages: N errors, M warnings`. The
+default, HDR and AO types give `g3dTraceRendererOptiX` in its AO mode
+(progressive AO; it stands in for the beauty pass until that is traced),
+Illumination Only and Shadow Mask give it in its lighting modes
+(`optxLighting.cu`: the scene's lights, `g3dLightTableOptiX`, with light
+linking from the BVH walk's render states, traced soft shadows from
+projected lights' light size, diffuse bounces, MIS for area lights); every
+other type is Vulkan's, drawn over the traced image where traced (the
+raster overlay skips traced nodes, shadow hulls and strand hair, which
+isn't drawn at all). The backend makes no maps for the raster to read
+(`g3dSceneRendererCreate::NeedsShadowMaps`, `NeedsOpacityMaps` and
+`NeedsReflectionMaps` are false): lights get no shadow or opacity maps,
+materials no reflection targets; a light traces shadows
+when `g3dLight::GetShadowSource` (its Shadow Source; the rasterizers'
+`GetIsSinglePassLight`, which only picks a light's raster pass, is
+ignored). The tracer
+settings (`g3dRenderPrefs::m_Trace*`: samples per frame, sample limit,
+capture samples, AO rays, bounces) are render preferences
+(`rprfPrefsData`, "Ray Tracing", shown only when
+`g3dSceneRendererCreate::UsesTracerSettings`) and RenderNode's
+`-capTrace*` flags. `optx/optxSdk.hpp` is the one place the OptiX and CUDA headers are
 included. Device programs are `.cu` files in `optx/private/Programs`,
 compiled by nvcc to OptiX IR by the `EmbedOptixPrograms` target
 (`optx/private/EmbedProgramsOptiX.ps1`, which holds the nvcc options) and
 embedded, looked up by file name with `optxEmbeddedPrograms::Find`; launch
 parameters live in a plain-C header beside each (`optxRayQueryParams.h`).
-Plan: `docs/plans/2026-11-11-optix-on-vulkan-progressive-ao.md` (Part 2a
-done; Part 1 in `2026-11-11-optix-bvh-progressive-ao.md`).
+Plans: `docs/plans/2026-11-11-optix-on-vulkan-progressive-ao.md` (Part 2;
+Part 1 in `2026-11-11-optix-bvh-progressive-ao.md`) and
+`docs/plans/2026-11-19-optix-lights-materials-beauty.md` (Part 3: 3a and
+3b done; 3c materials and 3d beauty to come).
 
 | Package | Purpose |
 |---|---|

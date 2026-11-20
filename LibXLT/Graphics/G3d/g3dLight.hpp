@@ -99,11 +99,25 @@ class g3dLight
 		const maFloatRGBA& GetScaledIntensity() const;
 
 		//----------------------------------------------------------------------------
-		//	These functions control if the light casts a shadow.  To see a shadow
-		//	you must also set the shadow layer range in the g3dPackage.
+		//	For the rasterizers only: whether the light is drawn in a pass of its
+		//	own (g3dSingleLightRendering: the lit pass, Illumination Only, Shadow
+		//	Mask, the per-light hair and transparency loops) rather than with the
+		//	ambient pass's forward lighting. It doesn't say whether the light
+		//	casts shadows: a rasterized light is shadowed when it has a shadow
+		//	map. False by default; MachStudio sets it on every light.
 		//----------------------------------------------------------------------------
-		inline bool GetCastsShadow() const;
-		inline void SetCastsShadow(bool i_bShadow);
+		inline bool GetIsSinglePassLight() const;
+		inline void SetIsSinglePassLight(bool i_bSinglePass);
+
+		//----------------------------------------------------------------------------
+		//	Whether the light casts shadows (its owner's "Shadow Source"). A
+		//	backend that traces shadows (GraphicsOptiX) traces shadow rays for a
+		//	light only when this is true; the rasterizers decide by whether the
+		//	light has a shadow map, which its owner makes only when this is
+		//	true. True by default.
+		//----------------------------------------------------------------------------
+		inline bool GetShadowSource() const;
+		inline void SetShadowSource(bool i_bShadowSource);
 
 		//----------------------------------------------------------------------------
 		// Lights can give just diffuse or specular light contributions
@@ -119,7 +133,8 @@ class g3dLight
 	private:
 
 		bool m_Enabled;
-		bool m_bShadow;
+		bool m_bSinglePass;
+		bool m_bShadowSource;
 		maFloatRGBA m_Color;
 		maFloatRGBA m_ScaledIntensity;
 		float m_FadeFactor;
@@ -131,17 +146,29 @@ class g3dLight
 
 
 //----------------------------------------------------------------------------
-//	These functions control if the light casts a shadow.  To see a shadow
-//	you must also set the shadow layer range in the g3dPackage.
+//	Whether the rasterizers draw the light in a pass of its own
 //----------------------------------------------------------------------------
-inline bool g3dLight::GetCastsShadow() const
+inline bool g3dLight::GetIsSinglePassLight() const
 {
-	return m_bShadow;
+	return m_bSinglePass;
 }
 
-inline void g3dLight::SetCastsShadow(bool i_bShadow)
+inline void g3dLight::SetIsSinglePassLight(bool i_bSinglePass)
 {
-	m_bShadow = i_bShadow;
+	m_bSinglePass = i_bSinglePass;
+}
+
+//----------------------------------------------------------------------------
+//	Whether the light casts shadows
+//----------------------------------------------------------------------------
+inline bool g3dLight::GetShadowSource() const
+{
+	return m_bShadowSource;
+}
+
+inline void g3dLight::SetShadowSource(bool i_bShadowSource)
+{
+	m_bShadowSource = i_bShadowSource;
 }
 
 //----------------------------------------------------------------------------

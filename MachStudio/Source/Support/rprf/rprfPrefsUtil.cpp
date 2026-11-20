@@ -22,6 +22,7 @@
 #include "Core/prty/prtyFileChooserUIInfo.hpp" 
 #include "Graphics/G3d/g3dConditionalCompile.hpp"
 #include "Graphics/g3d/g3dScene.hpp"
+#include "Graphics/G3d/g3dSceneRendererCreate.hpp"
 
 //============================================================================
 //============================================================================
@@ -308,6 +309,19 @@ namespace rprfPrefsUtil
 		}
 
 		//--------------------------------------------------------------------
+		// the traced render types (GraphicsOptiX): the default and HDR
+		// types (AO until the beauty pass is traced), AO, Shadow Mask and
+		// Illumination Only
+		//--------------------------------------------------------------------
+		void setup_raytracing_category(rprfPrefsCategory* o_pCategory)
+		{
+			o_pCategory->AddRenderer(0);
+			o_pCategory->AddRenderer(1);
+			o_pCategory->AddRenderer(3);
+			o_pCategory->AddRenderer(4);
+		}
+
+		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
 		void setup_rpf_category(rprfPrefsCategory* o_pCategory)
 		{
@@ -496,6 +510,17 @@ namespace rprfPrefsUtil
 				o_Data.m_HairClumpRadius.SetVisible(bVisible);
 			}
 
+			if(l_CategoryMap["Ray Tracing"] != NULL )
+			{
+				bVisible = l_CategoryMap["Ray Tracing"]->GetCategoryVisible(rendererID) && choseMspEngine &&
+						   g3dSceneRendererCreate::UsesTracerSettings();
+				o_Data.m_TraceSamplesPerFrame.SetVisible(bVisible);
+				o_Data.m_TraceSampleLimit.SetVisible(bVisible);
+				o_Data.m_TraceCaptureSamples.SetVisible(bVisible);
+				o_Data.m_TraceAORays.SetVisible(bVisible);
+				o_Data.m_TraceBounces.SetVisible(bVisible);
+			}
+
 			if(l_CategoryMap["Render Passes from File"] != NULL )
 			{
 				bVisible = l_CategoryMap["Render Passes from File"]->GetCategoryVisible(rendererID) && choseMspEngine;
@@ -594,6 +619,9 @@ namespace rprfPrefsUtil
 
 		cur_category = new rprfPrefsCategory("Hair");
 		l_CategoryMap["Hair"] = cur_category; 
+
+		cur_category = new rprfPrefsCategory("Ray Tracing");
+		l_CategoryMap["Ray Tracing"] = cur_category; 
 
 		cur_category = new rprfPrefsCategory("Render Passes from File");
 		l_CategoryMap["Render Passes from File"] = cur_category; 
@@ -885,6 +913,51 @@ namespace rprfPrefsUtil
 		pRFUII->SetNumTicks(100);
 		o_PrefsObject->AddProperty(pRFUII);
 #endif
+
+		// The tracer settings, only for a backend that traces rays
+		// (GraphicsOptiX); see g3dRenderPrefs::m_Trace*
+		if (g3dSceneRendererCreate::UsesTracerSettings())
+		{
+			pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_TraceSamplesPerFrame), "Ray Tracing", "Samples Per Frame");
+			pNUDUII->SetDescription("Samples per pixel each viewport frame adds while the image converges.");
+			pNUDUII->SetDecimalPlaces(0);
+			pNUDUII->SetMinimum(1.0f);
+			pNUDUII->SetMaximum(1024.0f);
+			pNUDUII->SetRestrictFlag(true);
+			o_PrefsObject->AddProperty( pNUDUII );
+
+			pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_TraceSampleLimit), "Ray Tracing", "Sample Limit");
+			pNUDUII->SetDescription("Samples per pixel after which the viewport stops tracing (the image has converged).");
+			pNUDUII->SetDecimalPlaces(0);
+			pNUDUII->SetMinimum(1.0f);
+			pNUDUII->SetMaximum(65536.0f);
+			pNUDUII->SetRestrictFlag(true);
+			o_PrefsObject->AddProperty( pNUDUII );
+
+			pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_TraceCaptureSamples), "Ray Tracing", "Samples Per Captured Frame");
+			pNUDUII->SetDescription("Samples per pixel of each captured frame (0: the sample limit).");
+			pNUDUII->SetDecimalPlaces(0);
+			pNUDUII->SetMinimum(0.0f);
+			pNUDUII->SetMaximum(65536.0f);
+			pNUDUII->SetRestrictFlag(true);
+			o_PrefsObject->AddProperty( pNUDUII );
+
+			pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_TraceAORays), "Ray Tracing", "AO Rays Per Sample");
+			pNUDUII->SetDescription("Occlusion rays each ambient occlusion sample traces.");
+			pNUDUII->SetDecimalPlaces(0);
+			pNUDUII->SetMinimum(0.0f);
+			pNUDUII->SetMaximum(64.0f);
+			pNUDUII->SetRestrictFlag(true);
+			o_PrefsObject->AddProperty( pNUDUII );
+
+			pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_TraceBounces), "Ray Tracing", "Bounces");
+			pNUDUII->SetDescription("Diffuse bounces after the first hit (0: direct light only).");
+			pNUDUII->SetDecimalPlaces(0);
+			pNUDUII->SetMinimum(0.0f);
+			pNUDUII->SetMaximum(32.0f);
+			pNUDUII->SetRestrictFlag(true);
+			o_PrefsObject->AddProperty( pNUDUII );
+		}
 
 //#ifdef ACTIVATE_RENDERMAN
 
@@ -1268,6 +1341,10 @@ namespace rprfPrefsUtil
 		category = get_category_object("Hair");
 		if(category != NULL)
 			setup_hair_category(category);
+
+		category = get_category_object("Ray Tracing");
+		if(category != NULL)
+			setup_raytracing_category(category);
 
 		category = get_category_object("Render Passes from File");
 		if(category != NULL)

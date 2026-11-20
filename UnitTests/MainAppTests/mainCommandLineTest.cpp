@@ -187,6 +187,8 @@ TEST(mainCommandLine, HelpListsEveryFlag)
 		"-license", "-NoSplash", "-show", "-version", "-help", "-gfxProfile",
 		"-gfx", "-gfxValidation",
 		"-capSampling", "-capJitter", "-capMotionSamples", "-capPasses", "-capHardwareAA",
+		"-capTraceSamples", "-capTraceSamplesPerFrame", "-capTraceSampleLimit", "-capTraceAORays",
+		"-capTraceBounces",
 	};
 	for (const char* flag : flags)
 	{
@@ -348,6 +350,14 @@ TEST(mainCommandLine, CaptureNewFlagsBadValue)
 		"-render s.mab -capHardwareAA maybe",
 		"-render s.mab -capPasses BTY,,Z",
 		"-render s.mab -capPasses ,",
+		"-render s.mab -capTraceSamples 0",
+		"-render s.mab -capTraceSamples 65537",
+		"-render s.mab -capTraceSamplesPerFrame 1025",
+		"-render s.mab -capTraceSampleLimit 0",
+		"-render s.mab -capTraceAORays 65",
+		"-render s.mab -capTraceBounces -1",
+		"-render s.mab -capTraceBounces 33",
+		"-render s.mab -capTraceBounces two",
 	};
 	for (const char* text : lines)
 	{
@@ -366,6 +376,23 @@ TEST(mainCommandLine, CaptureNewFlagsInRange)
 					act(mainCommandLine::e_CapSampling, "8"),
 					act(mainCommandLine::e_CapMotionSamples, "1"),
 					act(mainCommandLine::e_CapMotionSamples, "16")}, line);
+	EXPECT_TRUE(line.m_Warnings.empty());
+}
+
+TEST(mainCommandLine, CaptureTraceFlagsInRange)
+{
+	mainCommandLine line = mainCommandLine::Parse(
+		"-render s.mab -capTraceSamples 1 -capTraceSamples 65536 -capTraceSamplesPerFrame 1024 "
+		"-capTraceSampleLimit 4096 -capTraceAORays 0 -capTraceAORays 64 -capTraceBounces 0 -capTraceBounces 32");
+	expect_actions({act(mainCommandLine::e_Render, "s.mab"),
+					act(mainCommandLine::e_CapTraceSamples, "1"),
+					act(mainCommandLine::e_CapTraceSamples, "65536"),
+					act(mainCommandLine::e_CapTraceSamplesPerFrame, "1024"),
+					act(mainCommandLine::e_CapTraceSampleLimit, "4096"),
+					act(mainCommandLine::e_CapTraceAORays, "0"),
+					act(mainCommandLine::e_CapTraceAORays, "64"),
+					act(mainCommandLine::e_CapTraceBounces, "0"),
+					act(mainCommandLine::e_CapTraceBounces, "32")}, line);
 	EXPECT_TRUE(line.m_Warnings.empty());
 }
 

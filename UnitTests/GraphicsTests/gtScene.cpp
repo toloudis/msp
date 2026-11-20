@@ -773,7 +773,7 @@ g3dProjectedLight* gtSceneBuilder::ProjectedLight(const maPoint3d& i_Position, c
 												  const maFloatRGBA& i_Color, int i_ShadowMapSize)
 {
 	g3dProjectedLight* light = g3dLightMgr::CreateProjectedLight();
-	light->SetCastsShadow(true);
+	light->SetIsSinglePassLight(true);
 	light->SetIntensity(i_Color);
 	light->SetEnable(true);
 	light->SetPosition(i_Position);
@@ -972,23 +972,25 @@ void gtSceneBuilder::GlobalEnvironment(matTexture* i_pDiffuse, matTexture* i_pSp
 	m_pRoot->SetRenderState(m_pRenderState.get());
 }
 
-void gtSceneBuilder::PointLight(const maPoint3d& i_Position, const maFloatRGBA& i_Color, float i_Range)
+g3dPointLight* gtSceneBuilder::PointLight(const maPoint3d& i_Position, const maFloatRGBA& i_Color, float i_Range)
 {
 	g3dPointLight* light = g3dLightMgr::CreatePointLight();
 	light->SetPosition(i_Position);
 	light->SetIntensity(i_Color);
 	light->SetRange(i_Range);
-	light->SetCastsShadow(m_bLightsCastShadows);
+	light->SetIsSinglePassLight(m_bSinglePassLights);
 	light->SetEnable(true);
 	m_Lights.push_back(light);
+	return light;
 }
 
-void gtSceneBuilder::DirectionalLight(const maVector3d& i_Direction, const maFloatRGBA& i_Color)
+g3dDirectionalLight* gtSceneBuilder::DirectionalLight(const maVector3d& i_Direction, const maFloatRGBA& i_Color)
 {
 	g3dDirectionalLight* light = g3dLightMgr::CreateDirectionalLight();
 	light->SetDirection(i_Direction);
 	light->SetIntensity(i_Color);
-	light->SetCastsShadow(m_bLightsCastShadows);
+	light->SetIsSinglePassLight(m_bSinglePassLights);
 	light->SetEnable(true);
 	m_Lights.push_back(light);
+	return light;
 }

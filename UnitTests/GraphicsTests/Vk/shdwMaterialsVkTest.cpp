@@ -196,7 +196,7 @@ namespace
 	{
 		return [=](gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
 		{
-			io_Builder.LightsCastShadows(true);
+			io_Builder.SinglePassLights(true);
 			const gtMesh sphere = gtScene::Sphere(16, 32);
 			const gtScene::Values values[3] = { gtScene::e_NonDefault, gtScene::e_Zero, gtScene::e_Huge };
 			matTexture* checker = io_Builder.Keep(gtScene::CheckerTexture(i_Dir, 128, 128, 8));

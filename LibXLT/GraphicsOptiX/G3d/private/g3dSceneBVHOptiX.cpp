@@ -20,6 +20,9 @@
 #ifndef GVK_TMESH_FRAG_HPP
 #include "GraphicsVulkan/tmesh/tmeshFrag.hpp"
 #endif
+#ifndef GVK_HAIR_MODELFRAGVK_HPP
+#include "GraphicsVulkan/hair/hairModelFragVk.hpp"
+#endif
 #ifndef G3D_SCENE_HPP
 #include "Graphics/G3d/g3dScene.hpp"
 #endif
@@ -28,6 +31,9 @@
 #endif
 #ifndef G3D_SCENENODE_HPP
 #include "Graphics/G3d/g3dSceneNode.hpp"
+#endif
+#ifndef G3D_RENDERSTATE_HPP
+#include "Graphics/G3d/g3dRenderState.hpp"
 #endif
 #ifndef ENV_STRING_HPP
 #include "Core/Env/envString.hpp"
@@ -88,6 +94,24 @@ namespace gox
 
 		const float c_Identity[12] = { 1, 0, 0, 0,  0, 1, 0, 0,  0, 0, 1, 0 };
 
+		//	The index of a light set (sorted, without repeats) in io_Sets,
+		//	added if new
+		unsigned intern(const g3dSceneBVHOptiX::LightSet& i_Lights, std::vector<g3dSceneBVHOptiX::LightSet>& io_Sets)
+		{
+			g3dSceneBVHOptiX::LightSet set = i_Lights;
+			std::sort(set.begin(), set.end());
+			set.erase(std::unique(set.begin(), set.end()), set.end());
+			for (size_t i = 0; i < io_Sets.size(); ++i)
+			{
+				if (io_Sets[i] == set)
+				{
+					return static_cast<unsigned>(i);
+				}
+			}
+			io_Sets.push_back(set);
+			return static_cast<unsigned>(io_Sets.size() - 1);
+		}
+
 		//	Camera rays see all but shadow hulls; occlusion rays what casts shadows
 		unsigned mask_of(const gvk::tmeshFrag& i_Fragment)
 		{
@@ -144,11 +168,19 @@ namespace gox
 		return fragment && g3dGasCacheOptiX::IsTraceable(*fragment) && mask_of(*fragment) != 0;
 	}
 
+	bool g3dSceneBVHOptiX::IsRasterOverlay(const g3dSceneNode& i_Node)
+	{
+		const g3dFragment* fragment = i_Node.GetFragment();
+		return !IsTraced(i_Node) && !(fragment && fragment->IsShadowHull()) &&
+			   !dynamic_cast<const gvk::hairModelFragVk*>(fragment);
+	}
+
 	bool g3dSceneBVHOptiX::Entry::operator==(const Entry& i_Other) const
 	{
 		return m_pFragment == i_Other.m_pFragment && m_pVertices == i_Other.m_pVertices &&
 			   m_pIndices == i_Other.m_pIndices && m_VertexGeneration == i_Other.m_VertexGeneration &&
 			   m_IndexGeneration == i_Other.m_IndexGeneration && m_Mask == i_Other.m_Mask &&
+			   m_LightSet == i_Other.m_LightSet && m_Flags == i_Other.m_Flags &&
 			   std::memcmp(m_Transform, i_Other.m_Transform, sizeof(m_Transform)) == 0;
 	}
 
@@ -180,12 +212,21 @@ namespace gox
 		}
 	}
 
-	void g3dSceneBVHOptiX::gather(g3dSceneNode* i_pNode, bool i_bLowResolution, std::vector<Entry>& io_Entries) const
+	void g3dSceneBVHOptiX::gather(g3dSceneNode* i_pNode, bool i_bLowResolution, LightState& io_State,
+								  std::vector<Entry>& io_Entries, std::vector<LightSet>& io_Sets) const
 	{
 		if (!i_pNode || !i_pNode->GetRenderable() || !i_pNode->GetActiveInRenderLayer() ||
 			!check_resolution(*i_pNode, i_bLowResolution))
 		{
 			return;
+		}
+
+		//	The node's render state applies to it and its subtree
+		const g3dRenderState* state = i_pNode->GetRenderState();
+		if (state)
+		{
+			++io_State.m_nStates;
+			io_State.m_Lights.insert(io_State.m_Lights.end(), state->m_Lights.begin(), state->m_Lights.end());
 		}
 
 		gvk::tmeshFrag* fragment = dynamic_cast<gvk::tmeshFrag*>(i_pNode->GetFragment());
@@ -198,6 +239,8 @@ namespace gox
 			entry.m_VertexGeneration = fragment->GetVertexBuffer()->GetGeneration();
 			entry.m_IndexGeneration = fragment->GetIndexBuffer()->GetGeneration();
 			entry.m_Mask = mask_of(*fragment);
+			entry.m_LightSet = io_State.m_nStates ? intern(io_State.m_Lights, io_Sets) : c_optxAllLights;
+			entry.m_Flags = fragment->GetReceivesShadow() ? unsigned(e_optxInstanceReceivesShadow) : 0u;
 			if (fragment->IsModelSpaceVertices())
 			{
 				to_optix(i_pNode->GetTotalTransform(), entry.m_Transform);
@@ -214,29 +257,38 @@ namespace gox
 
 		for (g3dSceneNode* child : i_pNode->GetChildren())
 		{
-			gather(child, i_bLowResolution, io_Entries);
+			gather(child, i_bLowResolution, io_State, io_Entries, io_Sets);
+		}
+
+		if (state)
+		{
+			io_State.m_Lights.resize(io_State.m_Lights.size() - state->m_Lights.size());
+			--io_State.m_nStates;
 		}
 	}
 
 	bool g3dSceneBVHOptiX::Update(const g3dScene& i_Scene, const std::vector<g3dLayer*>& i_ViewerLayers, bool i_bLowResolution)
 	{
 		m_Gathered.clear();
+		m_GatheredSets.clear();
 		for (const std::vector<g3dLayer*>* layers : { &i_Scene.GetLayers(), &i_ViewerLayers })
 		{
 			for (const g3dLayer* layer : *layers)
 			{
 				if (layer && layer->GetModelSpace() == g3dLayer::e_World)
 				{
-					gather(layer->GetRootNode(), i_bLowResolution, m_Gathered);
+					LightState state;
+					gather(layer->GetRootNode(), i_bLowResolution, state, m_Gathered, m_GatheredSets);
 				}
 			}
 		}
 
-		if (m_bBuilt && m_Gathered == m_Entries)
+		if (m_bBuilt && m_Gathered == m_Entries && m_GatheredSets == m_LightSets)
 		{
 			return false;
 		}
 		std::swap(m_Entries, m_Gathered);
+		std::swap(m_LightSets, m_GatheredSets);
 		optxContext::MakeCurrent();
 		m_bBuilt = rebuild();
 		++m_SceneVersion;
@@ -245,7 +297,7 @@ namespace gox
 
 	//	Whether a group's entries (sharing a vertex buffer) can share one GAS:
 	//	every fragment that uses the buffer is listed, each once, all with the
-	//	same transform and mask
+	//	same transform, mask, light set and flags
 	bool g3dSceneBVHOptiX::poolable(const std::vector<size_t>& i_Group) const
 	{
 		if (i_Group.size() < 2)
@@ -257,7 +309,8 @@ namespace gox
 		for (size_t index : i_Group)
 		{
 			const Entry& entry = m_Entries[index];
-			if (entry.m_Mask != first.m_Mask || std::memcmp(entry.m_Transform, first.m_Transform, sizeof(first.m_Transform)) != 0 ||
+			if (entry.m_Mask != first.m_Mask || entry.m_LightSet != first.m_LightSet || entry.m_Flags != first.m_Flags ||
+				std::memcmp(entry.m_Transform, first.m_Transform, sizeof(first.m_Transform)) != 0 ||
 				!fragments.insert(entry.m_pFragment).second)
 			{
 				return false;
@@ -321,6 +374,8 @@ namespace gox
 			data.m_NormalOffset = i_pGas->m_NormalOffset;
 			data.m_NumInputs = static_cast<unsigned>(i_pGas->m_Inputs.size());
 			data.m_NumTriangles = i_pGas->m_NumTriangles;
+			data.m_LightSet = i_Entry.m_LightSet;
+			data.m_Flags = i_Entry.m_Flags;
 			table.push_back(data);
 			first_input.push_back(inputs.size());
 			for (const g3dGasCacheOptiX::Input& input : i_pGas->m_Inputs)
@@ -435,6 +490,7 @@ namespace gox
 		m_GasBytes = 0;
 		m_nTriangles = 0;
 		m_Entries.clear();
+		m_LightSets.clear();
 		m_bBuilt = false;
 	}
 }

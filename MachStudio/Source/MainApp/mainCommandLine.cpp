@@ -141,7 +141,7 @@ namespace
 	//------------------------------------------------------------------------
 	//	parse_capture_flag - the capture flags whose values are checked
 	//	while parsing (-capSampling, -capJitter, -capMotionSamples,
-	//	-capPasses, -capHardwareAA). False if i_Tokens[io_Index] isn't one
+	//	-capPasses, -capHardwareAA, -capTrace*). False if i_Tokens[io_Index] isn't one
 	//	of them; else io_Index moves past the values, and a missing or bad
 	//	value drops the flag with a warning.
 	//------------------------------------------------------------------------
@@ -168,6 +168,26 @@ namespace
 		else if (appCommandLine::IsFlag(token, "capHardwareAA"))
 		{
 			kind = mainCommandLine::e_CapHardwareAA;
+		}
+		else if (appCommandLine::IsFlag(token, "capTraceSamples"))
+		{
+			kind = mainCommandLine::e_CapTraceSamples;
+		}
+		else if (appCommandLine::IsFlag(token, "capTraceSamplesPerFrame"))
+		{
+			kind = mainCommandLine::e_CapTraceSamplesPerFrame;
+		}
+		else if (appCommandLine::IsFlag(token, "capTraceSampleLimit"))
+		{
+			kind = mainCommandLine::e_CapTraceSampleLimit;
+		}
+		else if (appCommandLine::IsFlag(token, "capTraceAORays"))
+		{
+			kind = mainCommandLine::e_CapTraceAORays;
+		}
+		else if (appCommandLine::IsFlag(token, "capTraceBounces"))
+		{
+			kind = mainCommandLine::e_CapTraceBounces;
 		}
 		else
 		{
@@ -211,6 +231,34 @@ namespace
 			}
 			action_value = std::to_string(number);
 			break;
+		case mainCommandLine::e_CapTraceSamples:
+		case mainCommandLine::e_CapTraceSamplesPerFrame:
+		case mainCommandLine::e_CapTraceSampleLimit:
+		case mainCommandLine::e_CapTraceAORays:
+		case mainCommandLine::e_CapTraceBounces:
+		{
+			int low = 1, high = 65536;
+			if (kind == mainCommandLine::e_CapTraceSamplesPerFrame)
+			{
+				high = 1024;
+			}
+			else if (kind == mainCommandLine::e_CapTraceAORays)
+			{
+				low = 0;
+				high = 64;
+			}
+			else if (kind == mainCommandLine::e_CapTraceBounces)
+			{
+				low = 0;
+				high = 32;
+			}
+			if (!parse_int(value, number) || number < low || number > high)
+			{
+				problem = "must be " + std::to_string(low) + " to " + std::to_string(high);
+			}
+			action_value = std::to_string(number);
+			break;
+		}
 		case mainCommandLine::e_CapHardwareAA:
 			action_value = to_lower(value);
 			if (action_value != "on" && action_value != "off")
@@ -555,12 +603,30 @@ Rendering
                              are skipped with a warning: GPU renders can't
                              make them
   -capHardwareAA on|off      the renderer's own antialiasing (HDR AA)
+  -capTraceSamples <n>       ray tracing (-gfx optix): samples per pixel of
+                             each captured frame, 1 to 65536
+  -capTraceSamplesPerFrame <n>
+                             ray tracing: samples per pixel each launch adds,
+                             1 to 1024
+  -capTraceSampleLimit <n>   ray tracing: samples per pixel at which a view
+                             stops (and of a captured frame when
+                             -capTraceSamples isn't given), 1 to 65536
+  -capTraceAORays <n>        ray tracing: occlusion rays per ambient
+                             occlusion sample, 0 to 64
+  -capTraceBounces <n>       ray tracing: diffuse bounces after the first hit
+                             (Illumination Only), 0 to 32 (0: direct light
+                             only)
+                             The -capTrace* flags set every render layer's
+                             ray tracing preferences; other backends ignore
+                             them
 
 Graphics
   -gfx dx11|vulkan|optix     graphics backend; default vulkan. If the backend
                              can't start, MachStudio says why and exits (it
                              never falls back to another). optix is NVIDIA
-                             OptiX, in development: it renders nothing yet
+                             OptiX ray tracing, in development: it traces
+                             ambient occlusion, Illumination Only and Shadow
+                             Mask
   -gfxValidation             turn on the Vulkan validation layer (Debug
                              builds always have it on); the error and
                              warning counts are printed at exit

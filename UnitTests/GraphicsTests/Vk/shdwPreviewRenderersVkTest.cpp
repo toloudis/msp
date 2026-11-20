@@ -213,7 +213,7 @@ namespace
 	//	lit glow is drawn for those only)
 	void glow_scene(gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
 	{
-		io_Builder.LightsCastShadows(true);
+		io_Builder.SinglePassLights(true);
 		const gtMesh sphere = gtScene::Sphere(24, 48);
 		matTexture* mask = io_Builder.Keep(gtScene::CheckerTexture(i_Dir, 64, 64, 4));
 		for (int i = 0; i < 3; i++)
@@ -261,7 +261,7 @@ namespace
 	//	each frame (reflection_options)
 	void reflection_scene(gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
 	{
-		io_Builder.LightsCastShadows(true);
+		io_Builder.SinglePassLights(true);
 		io_Builder.Camera().LookAt(maPoint3d(0, 1.5f, 6.0f), maPoint3d(0, -0.4f, 0), maVector3d(0, 1, 0));
 		g3dSceneNode* floor = io_Builder.Add(gtScene::Plane(), reflector(io_Builder), floor_at(-1.0f, 3.0f));
 		const gtMesh sphere = gtScene::Sphere(16, 32);
@@ -301,7 +301,7 @@ namespace
 	//	the materials, normal, illumination and reflection-only passes
 	void cutout_scene(gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
 	{
-		io_Builder.LightsCastShadows(true);
+		io_Builder.SinglePassLights(true);
 		matTexture* diffuse = io_Builder.Keep(gtScene::CheckerTexture(i_Dir, 64, 64, 4));
 		matTexture* web = io_Builder.Keep(gtScene::WebTexture(i_Dir, 128, 8));
 		matMaterial* material = io_Builder.Keep(gtScene::ShaderMaterial("Blinn.fx", gtScene::e_Tinted, { diffuse }));
@@ -405,10 +405,10 @@ namespace
 			g3dProjectedLight* light = io_Builder.ProjectedLight(maPoint3d(1.5f, 2.5f, 7.0f), maPoint3d(0, 0, -1.5f),
 																 maFloatRGBA(1.0f, 0.95f, 0.85f, 1), 1024);
 			if (!i_bProjectedShadows)
-				light->SetCastsShadow(false);
+				light->SetIsSinglePassLight(false);
 			if (i_bPointLight)
 			{
-				io_Builder.LightsCastShadows(true);
+				io_Builder.SinglePassLights(true);
 				io_Builder.PointLight(maPoint3d(-3.0f, 1.0f, 3.0f), maFloatRGBA(0.7f, 0.7f, 0.8f, 1), 25.0f);
 			}
 		};
@@ -434,7 +434,7 @@ namespace
 	{
 		return [=](gtSceneBuilder& io_Builder, const std::filesystem::path&)
 		{
-			io_Builder.LightsCastShadows(true);
+			io_Builder.SinglePassLights(true);
 			matMaterial* floor = io_Builder.Keep(gtScene::ShaderMaterial("Lambert.fx", gtScene::e_Tinted));
 			io_Builder.Add(gtScene::Plane(), floor, gtScene::Place(0, 0, -1.0f, 2.6f));
 			const gtMesh sphere = gtScene::Sphere(16, 32);
@@ -496,7 +496,7 @@ namespace
 	//	SSGI scene's
 	void gi_room(gtSceneBuilder& io_Builder, const std::filesystem::path&)
 	{
-		io_Builder.LightsCastShadows(true);
+		io_Builder.SinglePassLights(true);
 		matMaterial* white = io_Builder.Keep(coloured(maFloatRGBA(0.5f, 0.5f, 0.5f, 1.0f)));
 		matMaterial* red = io_Builder.Keep(coloured(maFloatRGBA(0.8f, 0.08f, 0.04f, 1.0f)));
 		matMaterial* green = io_Builder.Keep(coloured(maFloatRGBA(0.08f, 0.7f, 0.08f, 1.0f)));

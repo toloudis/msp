@@ -280,4 +280,12 @@ public:
 	prtyInt32	m_RmanGridSize;
 	prtyInt32	m_RmanRayDepth;
 	prtyBoolean m_bRmanTonemapEnable;
+
+	// Ray tracing: the tracer settings of a backend that traces rays
+	// (GraphicsOptiX; g3dRenderPrefs::m_Trace*)
+	prtyInt32	m_TraceSamplesPerFrame;
+	prtyInt32	m_TraceSampleLimit;
+	prtyInt32	m_TraceCaptureSamples;
+	prtyInt32	m_TraceAORays;
+	prtyInt32	m_TraceBounces;
 };

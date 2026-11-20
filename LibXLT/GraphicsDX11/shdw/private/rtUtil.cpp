@@ -308,7 +308,7 @@ void GetLightInfo(const g3dLight* i_pLight, LightSource &o_Info)
 	if (point_light)
 	{
 		maPoint3d pos = point_light->GetPosition();
-		o_Info.pos.Set(pos.m_X, pos.m_Y, pos.m_Z, point_light->GetCastsShadow() ? 1.0f : 0.0f);
+		o_Info.pos.Set(pos.m_X, pos.m_Y, pos.m_Z, point_light->GetShadowSource() ? 1.0f : 0.0f);
 
 		o_Info.fallOff.Set(point_light->GetFalloff0(), point_light->GetFalloff1(), point_light->GetFalloff2());
 	}

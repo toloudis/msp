@@ -39,7 +39,7 @@ g3dProjectedLight::g3dProjectedLight()
 	m_HairMaxBound = 1000000.0f;
 	m_HairShadowType = HAIR_SHADOW_OSM4;
 
-	this->SetCastsShadow(true);
+	this->SetIsSinglePassLight(true);
 }
 
 //--------------------------------------------------------------------
@@ -66,7 +66,8 @@ g3dProjectedLight::g3dProjectedLight(const g3dProjectedLight& i_Copy)
 	}
 	m_pOpacityVolume = NULL;
 
-	this->SetCastsShadow(i_Copy.GetCastsShadow());
+	this->SetIsSinglePassLight(i_Copy.GetIsSinglePassLight());
+	this->SetShadowSource(i_Copy.GetShadowSource());
 }
 
 

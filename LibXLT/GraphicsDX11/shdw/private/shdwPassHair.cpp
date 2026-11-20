@@ -124,7 +124,7 @@ namespace
 	bool CullLight( g3dLight* pLight, const maAxisBox& NodeBounds )
 	{
 		if( !pLight->IsEnabled() ) return true;
-		if ( !pLight->GetCastsShadow() ) return true;
+		if ( !pLight->GetIsSinglePassLight() ) return true;
 
 		//check if outside light frustum
 		const g3dProjectedLight* proj_light = dynamic_cast<const g3dProjectedLight*>(pLight);
@@ -286,7 +286,7 @@ namespace
 				if( pLight->IsEnabled() )
 				{
 					if (!g3dSingleLightRendering::GetDoSingleLightRendering() || 
-						!pLight->GetCastsShadow())
+						!pLight->GetIsSinglePassLight())
 					{
 						g3dLightMgrDX11::Implementation()->SetLight( pLight );
 						g3dLightMgrDX11::Implementation()->EnableLight( pLight );

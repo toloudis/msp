@@ -275,7 +275,7 @@ int shdwShadowsOnlyRendererVk::Render( g2dRenderTarget* i_pWindow, const camCame
 		g3dLight* pLight = lights[i];
 		if ( !pLight->IsEnabled() )
 			continue;
-		if ( !pLight->GetCastsShadow() )
+		if ( !pLight->GetIsSinglePassLight() )
 			continue;
 
 		const g3dProjectedLight* proj_light = dynamic_cast<const g3dProjectedLight*>(pLight);

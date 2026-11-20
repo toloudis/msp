@@ -141,6 +141,18 @@ namespace g3dPrefs
 		unsigned int m_HairInterpolationCount;
 		float m_HairClumpRadius;
 
+		// tracer settings, read by a backend that traces rays
+		// (g3dSceneRendererCreate::UsesTracerSettings: GraphicsOptiX):
+		// samples per pixel each frame adds, the samples after which a
+		// view stops (converged), samples per captured frame (0: the
+		// limit), occlusion rays per AO sample, and diffuse bounces after
+		// the first hit (0: direct light only)
+		int m_TraceSamplesPerFrame;
+		int m_TraceSampleLimit;
+		int m_TraceCaptureSamples;
+		int m_TraceAORays;
+		int m_TraceBounces;
+
 		g3dRenderPrefs();
 	};
 	

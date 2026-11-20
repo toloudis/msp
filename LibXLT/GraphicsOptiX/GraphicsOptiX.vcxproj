@@ -105,8 +105,10 @@
     <ClCompile Include="optx\private\optxContext.cpp" />
     <ClCompile Include="optx\private\optxRayQuery.cpp" />
     <ClCompile Include="optx\private\optxAO.cpp" />
+    <ClCompile Include="optx\private\optxLighting.cpp" />
     <ClCompile Include="optx\private\optxFrameShare.cpp" />
-    <ClCompile Include="G3d\private\g3dAORendererOptiX.cpp" />
+    <ClCompile Include="G3d\private\g3dTraceRendererOptiX.cpp" />
+    <ClCompile Include="G3d\private\g3dLightTableOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dProfilerGpuOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dSceneRendererCreateOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dSceneBVHOptiX.cpp" />
@@ -120,9 +122,13 @@
     <ClInclude Include="optx\optxContext.hpp" />
     <ClInclude Include="optx\optxRayQuery.hpp" />
     <ClInclude Include="optx\optxAO.hpp" />
+    <ClInclude Include="optx\optxLighting.hpp" />
     <ClInclude Include="optx\optxFrameShare.hpp" />
     <ClInclude Include="optx\private\Programs\optxAOParams.h" />
-    <ClInclude Include="G3d\g3dAORendererOptiX.hpp" />
+    <ClInclude Include="optx\private\Programs\optxLightingParams.h" />
+    <ClInclude Include="optx\private\Programs\optxLightTypes.h" />
+    <ClInclude Include="G3d\g3dTraceRendererOptiX.hpp" />
+    <ClInclude Include="G3d\g3dLightTableOptiX.hpp" />
     <ClInclude Include="G3d\g3dProfilerGpuOptiX.hpp" />
     <ClInclude Include="cu\cuLoader.hpp" />
     <ClInclude Include="cu\cuBuffer.hpp" />
@@ -142,6 +148,7 @@
     <None Include="optx\private\EmbedProgramsOptiX.ps1" />
     <None Include="optx\private\Programs\optxRayQuery.cu" />
     <None Include="optx\private\Programs\optxAO.cu" />
+    <None Include="optx\private\Programs\optxLighting.cu" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">

@@ -302,9 +302,30 @@ g3dSceneRenderer* g3dSceneRendererCreate::CreateGlowRenderer()
 
 //--------------------------------------------------------------------
 //static
-bool g3dSceneRendererCreate::UsesTargetRenderers(g3dSceneRendererTypes::RendererType i_Type)
+bool g3dSceneRendererCreate::NeedsShadowMaps()
 {
-	return sm_pImplementation ? sm_pImplementation->UsesTargetRenderers(i_Type) : true;
+	return sm_pImplementation ? sm_pImplementation->NeedsShadowMaps() : true;
+}
+
+//--------------------------------------------------------------------
+//static
+bool g3dSceneRendererCreate::NeedsOpacityMaps()
+{
+	return sm_pImplementation ? sm_pImplementation->NeedsOpacityMaps() : true;
+}
+
+//--------------------------------------------------------------------
+//static
+bool g3dSceneRendererCreate::NeedsReflectionMaps()
+{
+	return sm_pImplementation ? sm_pImplementation->NeedsReflectionMaps() : true;
+}
+
+//--------------------------------------------------------------------
+//static
+bool g3dSceneRendererCreate::UsesTracerSettings()
+{
+	return sm_pImplementation ? sm_pImplementation->UsesTracerSettings() : false;
 }
 
 //--------------------------------------------------------------------

@@ -64,7 +64,7 @@ namespace
 	//	casting lights
 	void spheres(gtSceneBuilder& io_Builder, const std::filesystem::path&)
 	{
-		io_Builder.LightsCastShadows(true);
+		io_Builder.SinglePassLights(true);
 		const gtMesh sphere = gtScene::Sphere(16, 32);
 		const char* shaders[2] = { "Blinn.fx", "Lambert.fx" };
 		for (int i = 0; i < 4; i++)

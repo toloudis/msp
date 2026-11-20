@@ -99,7 +99,7 @@ void shdwPassLit::LightingLoopPerLight(const std::vector<g3dLight*>& i_Lights, c
 		g3dLight* pLight = i_Lights[i];
 		if ( !pLight->IsEnabled() ) 
 			continue;
-		if ( !pLight->GetCastsShadow() ) 
+		if ( !pLight->GetIsSinglePassLight() ) 
 			continue;
 
 		const g3dProjectedLight* proj_light = dynamic_cast<const g3dProjectedLight*>(pLight);
@@ -169,7 +169,7 @@ int shdwPassLit::RenderNode(const sNodePlusState& i_Node, const std::vector<g3dL
 		g3dLight* pLight = i_Lights[i];
 		if ( !pLight->IsEnabled() ) 
 			continue;
-		if ( !pLight->GetCastsShadow() ) 
+		if ( !pLight->GetIsSinglePassLight() ) 
 			continue;
 
 		const g3dProjectedLight* proj_light = dynamic_cast<const g3dProjectedLight*>(pLight);
@@ -237,7 +237,7 @@ int shdwPassLit::RenderNode(const sNodePlusState& i_Node, const std::vector<g3dL
 //		light = i_Lights[i];
 //		if ( !light->IsEnabled() ) 
 //			continue;
-//		if ( !light->GetCastsShadow() ) 
+//		if ( !light->GetIsSinglePassLight() ) 
 //			continue;
 //		if (i_RenderStateCache->IsLightInState(i_Node.m_StateCache, light))
 //		{

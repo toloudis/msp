@@ -137,7 +137,7 @@ namespace
 			gtSceneWindow window(i_Kind, 256, 256);
 			{
 				gtSceneBuilder builder;
-				builder.LightsCastShadows(true);
+				builder.SinglePassLights(true);
 				builder.LitSpheres(true, false);
 				builder.ProjectedLight(maPoint3d(0, 4, 4), maPoint3d(0, 0, 0), maFloatRGBA(0.8f, 0.8f, 0.7f, 1), 512);
 

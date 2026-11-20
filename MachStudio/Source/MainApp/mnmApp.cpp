@@ -105,6 +105,9 @@
 #ifndef RLYR_RENDERLAYERMGR_HPP
 #include "Support/rlyr/rlyrRenderLayerMgr.hpp"
 #endif
+#ifndef RPRFPREFSOBJECT_HPP
+#include "Support/rprf/rprfPrefsObject.hpp"
+#endif
 #include "Tool/api3d/api3dLightMgr.hpp"
 #include "Tool/api3d/api3dScene.hpp"
 #include "Tool/api3d/api3dTargetRendererMgr.hpp"
@@ -556,6 +559,34 @@ void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 		{
 			DBG_LOG( "   Command-line CAPTURE-HARDWAREAA " << value );
 			captRenderOutputDataUtil::SetHardwareAA( value == "on" );
+			break;
+		}
+		case mainCommandLine::e_CapTraceSamples:
+		case mainCommandLine::e_CapTraceSamplesPerFrame:
+		case mainCommandLine::e_CapTraceSampleLimit:
+		case mainCommandLine::e_CapTraceAORays:
+		case mainCommandLine::e_CapTraceBounces:
+		{
+			DBG_LOG( "   Command-line CAPTURE-TRACE " << int(it->m_Kind) << " " << value );
+			//	every render layer's ray tracing preferences (their callbacks
+			//	pass the values on to the layer's g3dRenderPrefs)
+			const int number = envString::GetInt(value);
+			for ( int layer = 0; layer < rlyrRenderLayerMgr::GetNumRenderLayers(); ++layer )
+			{
+				rprfPrefsObject* prefs = rlyrRenderLayerMgr::GetLayerRenderPrefs( rlyrRenderLayerMgr::GetLayerName( layer ) );
+				if ( !prefs )
+				{
+					continue;
+				}
+				switch ( it->m_Kind )
+				{
+				case mainCommandLine::e_CapTraceSamples:			prefs->m_Data.m_TraceCaptureSamples.SetValue( number ); break;
+				case mainCommandLine::e_CapTraceSamplesPerFrame:	prefs->m_Data.m_TraceSamplesPerFrame.SetValue( number ); break;
+				case mainCommandLine::e_CapTraceSampleLimit:		prefs->m_Data.m_TraceSampleLimit.SetValue( number ); break;
+				case mainCommandLine::e_CapTraceAORays:				prefs->m_Data.m_TraceAORays.SetValue( number ); break;
+				default:											prefs->m_Data.m_TraceBounces.SetValue( number ); break;
+				}
+			}
 			break;
 		}
 		case mainCommandLine::e_New:

@@ -139,6 +139,11 @@ namespace rndrPrefsMgr
 		const char* lc_Key_HairSubPixelPower = "HairSubPixelPower";
 		const char* lc_Key_HairDepthPeel	= "HairDepthEnable";
 		const char* lc_Key_HairDepthPeelLayers	= "HairDepthLayers";
+		const char* lc_Key_TraceSamplesPerFrame	= "TraceSamplesPerFrame";
+		const char* lc_Key_TraceSampleLimit		= "TraceSampleLimit";
+		const char* lc_Key_TraceCaptureSamples	= "TraceCaptureSamples";
+		const char* lc_Key_TraceAORays			= "TraceAORays";
+		const char* lc_Key_TraceBounces			= "TraceBounces";
 
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
@@ -242,6 +247,7 @@ namespace rndrPrefsMgr
 				virtual void UpdateRenderWireframe( prtyProperty *o_pProperty, bool i_bDirty );
 				virtual void UpdateTransparency(prtyProperty *i_pProperty, bool i_bDirty);
 				virtual void UpdateHair(prtyProperty *i_pProperty, bool i_bDirty);
+				virtual void UpdateTrace(prtyProperty *i_pProperty, bool i_bDirty);
 
 			protected:
 				//--------------------------------------------------------------------
@@ -531,6 +537,16 @@ namespace rndrPrefsMgr
 							{bool value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_bHairDepthPeel.SetValue(value);};
 						if (keyname == lc_Key_HairDepthPeelLayers )
 							{int value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_nHairDepthPeelLayers.SetValue(value);};
+						if (keyname == lc_Key_TraceSamplesPerFrame)
+							{int value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_TraceSamplesPerFrame.SetValue(value);};
+						if (keyname == lc_Key_TraceSampleLimit)
+							{int value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_TraceSampleLimit.SetValue(value);};
+						if (keyname == lc_Key_TraceCaptureSamples)
+							{int value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_TraceCaptureSamples.SetValue(value);};
+						if (keyname == lc_Key_TraceAORays)
+							{int value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_TraceAORays.SetValue(value);};
+						if (keyname == lc_Key_TraceBounces)
+							{int value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_TraceBounces.SetValue(value);};
 					}
 				}
 
@@ -631,6 +647,12 @@ namespace rndrPrefsMgr
 			guiXMLTextWriter::WriteElement(lc_Key_HairDepthPeel, m_Data.m_bHairDepthPeel.GetValue());
 			guiXMLTextWriter::WriteElement(lc_Key_HairDepthPeelLayers, m_Data.m_nHairDepthPeelLayers.GetValue());
 			guiXMLTextWriter::WriteElement(lc_Key_HairLines, m_Data.m_bHairLines.GetValue());
+
+			guiXMLTextWriter::WriteElement(lc_Key_TraceSamplesPerFrame, m_Data.m_TraceSamplesPerFrame.GetValue());
+			guiXMLTextWriter::WriteElement(lc_Key_TraceSampleLimit, m_Data.m_TraceSampleLimit.GetValue());
+			guiXMLTextWriter::WriteElement(lc_Key_TraceCaptureSamples, m_Data.m_TraceCaptureSamples.GetValue());
+			guiXMLTextWriter::WriteElement(lc_Key_TraceAORays, m_Data.m_TraceAORays.GetValue());
+			guiXMLTextWriter::WriteElement(lc_Key_TraceBounces, m_Data.m_TraceBounces.GetValue());
 
 			//	finish it up
 			guiXMLTextWriter::WriteEndElement();
@@ -740,6 +762,12 @@ namespace rndrPrefsMgr
 			m_Data.m_HairInterpolationCount.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateHair));
 			m_Data.m_HairClumpRadius.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateHair));
 #endif
+
+			m_Data.m_TraceSamplesPerFrame.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateTrace));
+			m_Data.m_TraceSampleLimit.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateTrace));
+			m_Data.m_TraceCaptureSamples.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateTrace));
+			m_Data.m_TraceAORays.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateTrace));
+			m_Data.m_TraceBounces.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateTrace));
 		}
 
 		//--------------------------------------------------------------------
@@ -1414,6 +1442,17 @@ namespace rndrPrefsMgr
 			m_PrefsProxy->SetHairDepthPeelLayer( m_Data.m_nHairDepthPeelLayers.GetValue() );
 			m_PrefsProxy->SetHairInterpolationCount( (unsigned int)m_Data.m_HairInterpolationCount.GetValue() );
 			m_PrefsProxy->SetHairClumpRadius( m_Data.m_HairClumpRadius.GetValue() );
+			WritePrefsToConfigFile();
+			update_statusbar_renderprefs();
+		}
+
+		void rndrPrefsObject::UpdateTrace(prtyProperty *i_pProperty, bool i_bDirty)
+		{
+			m_PrefsProxy->SetTraceSamplesPerFrame( m_Data.m_TraceSamplesPerFrame.GetValue() );
+			m_PrefsProxy->SetTraceSampleLimit( m_Data.m_TraceSampleLimit.GetValue() );
+			m_PrefsProxy->SetTraceCaptureSamples( m_Data.m_TraceCaptureSamples.GetValue() );
+			m_PrefsProxy->SetTraceAORays( m_Data.m_TraceAORays.GetValue() );
+			m_PrefsProxy->SetTraceBounces( m_Data.m_TraceBounces.GetValue() );
 			WritePrefsToConfigFile();
 			update_statusbar_renderprefs();
 		}

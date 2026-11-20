@@ -77,6 +77,12 @@ void read_pointlight_data(	chReader& i_Reader,
 		o_Data.m_Color.Read(i_Reader);
 		o_Data.m_Enabled.Read(i_Reader);
 		o_Data.m_ShadowSource.Read(i_Reader);
+		if (i_Version < 10)
+		{
+			//	saved false by default while it did nothing: point lights
+			//	cast traced shadows
+			o_Data.m_ShadowSource.SetValue(true);
+		}
 		check_falloff(i_Reader, i_Version); // check for version 8 problems
 		o_Data.m_Falloff.Read(i_Reader);
 		o_Data.m_Range.Read(i_Reader);
@@ -110,6 +116,7 @@ void read_pointlight_data(	chReader& i_Reader,
 		o_Data.m_Color.Read(i_Reader);
 		o_Data.m_Enabled.Read(i_Reader);
 		o_Data.m_ShadowSource.Read(i_Reader);
+		o_Data.m_ShadowSource.SetValue(true);	// see above
 		o_Data.m_Position.Read(i_Reader);
 		o_Data.m_Falloff.Read(i_Reader);
 		o_Data.m_Range.Read(i_Reader);
@@ -265,8 +272,9 @@ void  ptltDataParser::WritePointLightData(	chWriter& o_Writer,
 	//	version 2 = use of mnmBaseData and tmlnBaseData
 	//	version 3 = all data written from ptltScriptData structure
 	//  version 4 = adds DiffuseEnabled and SpecularEnabled flags
+	//  version 10 = Shadow Source honoured (older files read as true)
 	//
-	const int l_PTLTITEM_VERSION = 9; // not 8: see check_falloff
+	const int l_PTLTITEM_VERSION = 10; // not 8: see check_falloff
 	o_Writer.WriteChunkHeader( c_PTLT, l_PTLTITEM_VERSION, false );
 	i_Data.m_BaseData.m_Color.Write(o_Writer);
 	i_Data.m_BaseData.m_Enabled.Write(o_Writer);

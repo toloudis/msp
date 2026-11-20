@@ -1411,7 +1411,10 @@ void mtrlScriptObject::UpdateTargetRenderer(int i_Index)
 	DBG_ASSERT( found == (pRenderTargetInfo!=NULL) , "inconsistent reflection render target state");
 
 	effReflectionMap* pData = &pMaterial->ReflectionData();
-	if (pMaterial->GetHasReflection() && (pData != NULL) && ShaderSupportsReflection(pMaterial))
+	// A backend that traces reflections (GraphicsOptiX) makes no planar or
+	// cube reflection targets: the material keeps no reflection map
+	if (pMaterial->GetHasReflection() && (pData != NULL) && ShaderSupportsReflection(pMaterial) &&
+		g3dSceneRendererCreate::NeedsReflectionMaps())
 	{
 		// this is critical to get the reflection to show up in the shader!
 		if (pRenderTargetInfo != NULL)

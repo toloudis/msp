@@ -138,7 +138,7 @@ int delayed_transp_lit_render( g3dSceneNode* i_pSceneNode,
 			g3dLight* pLight = render_state.m_Lights[i];
 			if( !pLight->IsEnabled() )
 				continue;
-			if ( !pLight->GetCastsShadow() )
+			if ( !pLight->GetIsSinglePassLight() )
 				continue;
 
 			const g3dProjectedLight* proj_light = dynamic_cast<const g3dProjectedLight*>(pLight);
@@ -181,7 +181,7 @@ int delayed_transp_lit_render( g3dSceneNode* i_pSceneNode,
 			if( pLight->IsEnabled() )
 			{
 				if (!g3dSingleLightRendering::GetDoSingleLightRendering() || 
-					!pLight->GetCastsShadow())
+					!pLight->GetIsSinglePassLight())
 				{
 					g3dLightMgrDX11::Implementation()->SetLight( pLight );
 					g3dLightMgrDX11::Implementation()->EnableLight( pLight );
@@ -595,7 +595,7 @@ int shdwPassTransparent::RenderDeferred(float i_time)
 		for (int i=0; i<num_lights; i++)
 		{
 			g3dLight* pLight = lights[i];
-			if (pLight->IsEnabled() && pLight->GetCastsShadow())
+			if (pLight->IsEnabled() && pLight->GetIsSinglePassLight())
 			{
 				l_bHaveShadowCastingLights = true;
 				break;

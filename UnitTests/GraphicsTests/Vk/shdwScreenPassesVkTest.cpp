@@ -62,7 +62,7 @@ namespace
 	//	casting lights. i_pEdit, if given, edits each sphere's material.
 	void spheres_on_backdrop(gtSceneBuilder& io_Builder, const std::function<void(int, matMaterial*)>& i_Edit = nullptr)
 	{
-		io_Builder.LightsCastShadows(true);
+		io_Builder.SinglePassLights(true);
 		matMaterial* back = io_Builder.Keep(gtScene::ShaderMaterial("Lambert.fx", gtScene::e_Tinted));
 		io_Builder.Add(gtScene::Plane(), back, gtScene::Place(0, 0, -1.0f, 2.6f));
 

@@ -79,7 +79,7 @@ namespace
 	//	Plan 4b's twelve spheres, lit by shadow-casting lights
 	void spheres(gtSceneBuilder& io_Builder)
 	{
-		io_Builder.LightsCastShadows(true);
+		io_Builder.SinglePassLights(true);
 		io_Builder.LitSpheres(true, true);
 	}
 
@@ -272,7 +272,7 @@ namespace
 		return [=](gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
 		{
 			io_State->Reset();
-			io_Builder.LightsCastShadows(true);
+			io_Builder.SinglePassLights(true);
 			io_Builder.Camera().LookAt(maPoint3d(0, 1.5f, 6.0f), maPoint3d(0, -0.4f, 0), maVector3d(0, 1, 0));
 			g3dSceneNode* floor = io_Builder.Add(gtScene::Plane(), reflector(io_Builder), floor_at(-1.0f, 3.0f));
 			const gtMesh sphere = gtScene::Sphere(16, 32);
@@ -297,7 +297,7 @@ namespace
 		return [=](gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
 		{
 			io_State->Reset();
-			io_Builder.LightsCastShadows(true);
+			io_Builder.SinglePassLights(true);
 			const gtMesh sphere = gtScene::Sphere(16, 32);
 			g3dSceneNode* mirror = io_Builder.Add(sphere, reflector(io_Builder), gtScene::Place(0, 0, 0, 0.9f));
 			const char* shaders[4] = { "Blinn.fx", "Phong.fx", "Lambert.fx", "Blinn.fx" };
@@ -329,7 +329,7 @@ namespace
 		return [=](gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
 		{
 			io_State->Reset();
-			io_Builder.LightsCastShadows(true);
+			io_Builder.SinglePassLights(true);
 			io_Builder.Camera().LookAt(maPoint3d(0, 1.5f, 6.0f), maPoint3d(0, -0.4f, 0), maVector3d(0, 1, 0));
 			g3dSceneNode* floor = io_Builder.Add(gtScene::Plane(), reflector(io_Builder), floor_at(-1.0f, 3.0f));
 			maMatrix4x4 behind;

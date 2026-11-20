@@ -145,7 +145,7 @@ namespace
 	//	name (the file name's start).
 	void bake_room(gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
 	{
-		io_Builder.LightsCastShadows(true);
+		io_Builder.SinglePassLights(true);
 		matMaterial* white = io_Builder.Keep(coloured("Lambert.fx", maFloatRGBA(0.5f, 0.5f, 0.5f, 1.0f)));
 		matMaterial* red = io_Builder.Keep(coloured("Lambert.fx", maFloatRGBA(0.8f, 0.08f, 0.04f, 1.0f)));
 		matMaterial* blinn = io_Builder.Keep(coloured("Blinn.fx", maFloatRGBA(0.5f, 0.5f, 0.5f, 1.0f)));
@@ -193,7 +193,7 @@ namespace
 	{
 		return [=](gtSceneBuilder& io_Builder, const std::filesystem::path&)
 		{
-			io_Builder.LightsCastShadows(true);
+			io_Builder.SinglePassLights(true);
 			matMaterial* white = io_Builder.Keep(coloured("Lambert.fx", maFloatRGBA(0.5f, 0.5f, 0.5f, 1.0f)));
 			gtMesh mesh = gtScene::Grid(4);
 			i_Edit(mesh);

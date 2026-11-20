@@ -206,7 +206,10 @@ prjltProjectedLightObject::prjltProjectedLightObject(prjltData::LightType i_Ligh
 
 	// Create g3d light
 	m_pProjectedLight = api3dLightMgr::CreateProjectedLight();
-	m_pProjectedLight->SetCastsShadow(true);
+	//	the rasterizers draw every light in its own pass (whether it casts
+	//	shadows is Shadow Source: a map, or traced shadows)
+	m_pProjectedLight->SetIsSinglePassLight(true);
+	m_pProjectedLight->SetShadowSource(m_Data.m_ShadowSource.GetValue());
 	// ensure current defaults are set in light.
 	m_pProjectedLight->SetIntensity(m_Data.m_Color.GetValue());
 	m_pProjectedLight->SetEnable(m_Data.m_Enabled.GetValue());
@@ -258,14 +261,22 @@ prjltProjectedLightObject::prjltProjectedLightObject(prjltData::LightType i_Ligh
 	m_pLightProxy = new gpxProjectedLight(*m_pProjectedLight);
 	m_ShadowCameraProxy = new gpxCamera(m_ShadowCamera);
 
-	// simple renderer for shadow maps (put into api3d somehow?)
-	m_pDepthRenderer = g3dSceneRendererCreate::CreateDepthMapRenderer();
+	// A backend that traces shadows (GraphicsOptiX) makes no shadow or
+	// opacity maps, so it needs none of their renderers either
+	if (g3dSceneRendererCreate::NeedsShadowMaps())
+	{
+		// simple renderer for shadow maps (put into api3d somehow?)
+		m_pDepthRenderer = g3dSceneRendererCreate::CreateDepthMapRenderer();
+	}
 
 	// simple renderer for reflective shadow maps (put into api3d somehow?)
 	//m_pRSMRenderer = g3dSceneRendererCreate::CreateRSMRenderer();
 
-	// simple renderer for Opacity shadow maps (put into api3d somehow?)
-	m_pOpacityRenderer = g3dSceneRendererCreate::CreateOpacityMapRenderer( m_pProjectedLight );
+	if (g3dSceneRendererCreate::NeedsOpacityMaps())
+	{
+		// simple renderer for Opacity shadow maps (put into api3d somehow?)
+		m_pOpacityRenderer = g3dSceneRendererCreate::CreateOpacityMapRenderer( m_pProjectedLight );
+	}
 
 	// Create 3D icon based on light type
 	if (m_Data.m_LightType == prjltData::e_SpotLight)
@@ -804,12 +815,6 @@ void prjltProjectedLightObject::SetData( const prjltData &i_Data )
 	// when all of the property values are at their default value
 	// (when no callbacks are called)
 	this->ConfirmTexture();
-
-	// don't tell the light if we're not casting shadows.
-	// this is because that flag is used to determine whether
-	// the light contributes to the ambient pass or not.
-	// maybe these 2 concepts should be separated semantically?
-	//m_pLightProxy->SetCastsShadow(i_Data.m_ShadowSource);
 
 	this->ConfirmDepthMap();
 	this->ConfirmOpacityMap();
@@ -1623,7 +1628,10 @@ void prjltProjectedLightObject::ConfirmTexture()
 //--------------------------------------------------------------------
 void prjltProjectedLightObject::ConfirmDepthMap()
 {
-	if (m_Data.m_ShadowSource.GetValue())
+	// Traced shadows (GraphicsOptiX) read the flag; they have no map
+	m_pLightProxy->SetShadowSource(m_Data.m_ShadowSource.GetValue());
+
+	if (m_Data.m_ShadowSource.GetValue() && g3dSceneRendererCreate::NeedsShadowMaps())
 	{
 		int new_depth_map_size = m_Data.m_DepthMapSize.GetValue();
 		if (new_depth_map_size < 256)
@@ -1727,7 +1735,9 @@ void prjltProjectedLightObject::ConfirmDepthMap()
 //--------------------------------------------------------------------
 void prjltProjectedLightObject::ConfirmOpacityMap()
 {
-	if (m_Data.m_HairShadowEnable.GetValue())
+	// Only hair reads opacity maps, and a tracing backend draws no strand
+	// hair (and makes no target maps)
+	if (m_Data.m_HairShadowEnable.GetValue() && g3dSceneRendererCreate::NeedsOpacityMaps())
 	{
 		int new_depth_map_size = m_Data.m_HairShadowSize.GetValue();
 		if (new_depth_map_size < 64)
@@ -2306,9 +2316,6 @@ void prjltProjectedLightObject::EnabledChanged(prtyProperty *i_pProperty, bool i
 }
 void prjltProjectedLightObject::ShadowSourceChanged(prtyProperty *i_pProperty, bool i_bDirty)
 {
-	//DBG_LOG("Light casts shadow: " << (m_Data.m_ShadowSource ? "True" : "False"));
-//	m_pLightProxy->SetCastsShadow(m_Data.m_ShadowSource);
-
 	this->ConfirmDepthMap();
 	//this->ConfirmReflectiveMap();
 	this->UpdateLightShaft();

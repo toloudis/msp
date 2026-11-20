@@ -48,7 +48,7 @@ namespace
 	//	false leaves the cleared background behind them
 	void spheres_in_depth(gtSceneBuilder& io_Builder, bool i_bBackdrop = true)
 	{
-		io_Builder.LightsCastShadows(true);
+		io_Builder.SinglePassLights(true);
 		if (i_bBackdrop)
 		{
 			matMaterial* back = io_Builder.Keep(gtScene::ShaderMaterial("Lambert.fx", gtScene::e_Tinted));

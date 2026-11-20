@@ -91,7 +91,7 @@ namespace
 	//	Plan 4b's twelve spheres, lit by shadow-casting lights
 	void spheres(gtSceneBuilder& io_Builder, bool i_bLights = true)
 	{
-		io_Builder.LightsCastShadows(true);
+		io_Builder.SinglePassLights(true);
 		io_Builder.LitSpheres(i_bLights, true);
 	}
 
@@ -99,7 +99,7 @@ namespace
 	//	tinted colours; lit by shadow-casting lights
 	void moderate(gtSceneBuilder& io_Builder, bool i_bLights = true)
 	{
-		io_Builder.LightsCastShadows(true);
+		io_Builder.SinglePassLights(true);
 		const gtMesh sphere = gtScene::Sphere(16, 32);
 		const gtScene::Values values[2] = { gtScene::e_Defaults, gtScene::e_Tinted };
 		const char* shaders[3] = { "Blinn.fx", "Phong.fx", "Lambert.fx" };

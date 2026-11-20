@@ -20,7 +20,8 @@ gpxLight::gpxLight(g3dLight &i_Light)
 {
 #if USE_PROXIES
 	m_bEnabled = i_Light.IsEnabled();
-	m_bShadow = i_Light.GetCastsShadow();
+	m_bSinglePass = i_Light.GetIsSinglePassLight();
+	m_bShadowSource = i_Light.GetShadowSource();
 	m_Color = i_Light.GetIntensity();
 	m_IntensityFactor = i_Light.GetIntensityFactor();
 	m_bDiffuseEnabled = i_Light.IsDiffuseEnabled();
@@ -51,9 +52,13 @@ void gpxLight::SetIntensityFactor(float i_IntensityFactor)
 {
 	PROXY_SET_OR_STORE(m_Light, SetIntensityFactor, m_IntensityFactor, i_IntensityFactor);
 }
-void gpxLight::SetCastsShadow(bool i_bShadow)
+void gpxLight::SetIsSinglePassLight(bool i_bSinglePass)
 {
-	PROXY_SET_OR_STORE(m_Light, SetCastsShadow, m_bShadow, i_bShadow);
+	PROXY_SET_OR_STORE(m_Light, SetIsSinglePassLight, m_bSinglePass, i_bSinglePass);
+}
+void gpxLight::SetShadowSource(bool i_bShadowSource)
+{
+	PROXY_SET_OR_STORE(m_Light, SetShadowSource, m_bShadowSource, i_bShadowSource);
 }
 void gpxLight::SetDiffuseEnabled(bool i_bEnabled)
 {
@@ -80,7 +85,8 @@ bool gpxLight::Update()
 
 #if USE_PROXIES
 	m_Light.SetEnable( m_bEnabled );
-	m_Light.SetCastsShadow( m_bShadow );
+	m_Light.SetIsSinglePassLight( m_bSinglePass );
+	m_Light.SetShadowSource( m_bShadowSource );
 	m_Light.SetIntensity( m_Color );
 	m_Light.SetIntensityFactor( m_IntensityFactor );
 	m_Light.SetDiffuseEnabled( m_bDiffuseEnabled );

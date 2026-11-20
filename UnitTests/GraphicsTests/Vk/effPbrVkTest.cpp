@@ -184,7 +184,7 @@ namespace
 	{
 		return [=](gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
 		{
-			io_Builder.LightsCastShadows(true);
+			io_Builder.SinglePassLights(true);
 			const gtMesh sphere = gtScene::Sphere(16, 32);
 			std::vector<const PbrCase*> chosen;
 			for (const PbrCase& c : cases())
@@ -463,7 +463,7 @@ namespace
 	{
 		return [=](gtSceneBuilder& io_Builder, const std::filesystem::path& i_Dir)
 		{
-			io_Builder.LightsCastShadows(true);
+			io_Builder.SinglePassLights(true);
 			auto shadowed = [](g3dSceneNode* io_pNode)
 			{
 				g3dFragment* fragment = const_cast<g3dFragment*>(io_pNode->GetFragment());

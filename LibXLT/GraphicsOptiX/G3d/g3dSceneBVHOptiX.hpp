@@ -14,8 +14,16 @@
 **	resolution), and lists each node whose fragment is a GraphicsVulkan
 **	tmeshFrag triangle list (bump fragments are): the fragment, its vertex
 **	and index buffers and their generations, the node's world transform,
-**	and a visibility mask (camera rays see all but shadow hulls, occlusion
-**	rays what casts shadows). The walk costs no GPU work. If the list
+**	a visibility mask (camera rays see all but shadow hulls, occlusion
+**	rays what casts shadows), whether it receives shadows, and its light
+**	set. The walk costs no GPU work.
+**
+**	Light sets (light linking) follow the raster's render state traverser
+**	(GraphicsVulkan's g3dRenderStateTraverser): a node under no render
+**	state is reached by every light (c_optxAllLights); under one or more,
+**	by the lights those render states name, together. Each distinct set is
+**	listed once (GetLightSets), and instances name it by index; the light
+**	table (g3dLightTableOptiX) turns the sets into light indices. If the list
 **	equals the last one, nothing changed: Update returns false and touches
 **	nothing. Otherwise it asks the cache for each GAS (which does nothing
 **	for unchanged ones), rebuilds the IAS from scratch, uploads the
@@ -58,6 +66,7 @@
 #include <vector>
 
 class g3dLayer;
+class g3dLight;
 class g3dScene;
 class g3dSceneNode;
 
@@ -73,6 +82,8 @@ namespace gox
 	class g3dSceneBVHOptiX
 	{
 		public:
+			typedef std::vector<const g3dLight*> LightSet;
+
 			enum Pooling
 			{
 				e_PoolingNone,		// a GAS and an instance per fragment
@@ -91,6 +102,15 @@ namespace gox
 			//	rays): what a raster pass over the traced image skips
 			//--------------------------------------------------------------------
 			static bool IsTraced(const g3dSceneNode& i_Node);
+
+			//--------------------------------------------------------------------
+			//	IsRasterOverlay - whether a raster pass over the traced image
+			//	draws a node: not if it is traced, nor a shadow hull (never
+			//	seen by the camera, traced or not), nor strand hair (a
+			//	hairModelFragVk), which isn't drawn at all until hair is
+			//	traced
+			//--------------------------------------------------------------------
+			static bool IsRasterOverlay(const g3dSceneNode& i_Node);
 
 			explicit g3dSceneBVHOptiX(g3dGasCacheOptiX& i_Cache);
 			~g3dSceneBVHOptiX();
@@ -158,6 +178,12 @@ namespace gox
 			size_t GetIasBytes() const { return m_Ias.GetSize(); }
 			unsigned GetTriangleCount() const { return m_nTriangles; }
 
+			//--------------------------------------------------------------------
+			//	GetLightSets - the light sets the instances name (sorted lights),
+			//	as of the last Update
+			//--------------------------------------------------------------------
+			const std::vector<LightSet>& GetLightSets() const { return m_LightSets; }
+
 		private:
 			struct Entry
 			{
@@ -168,11 +194,22 @@ namespace gox
 				uint64_t			m_IndexGeneration;
 				float				m_Transform[12];	// OptiX's row-major 3x4, for column vectors
 				unsigned			m_Mask;
+				unsigned			m_LightSet;		// index into the light sets, or c_optxAllLights
+				unsigned			m_Flags;		// optxInstanceFlags
 
 				bool operator==(const Entry& i_Other) const;
 			};
 
-			void gather(g3dSceneNode* i_pNode, bool i_bLowResolution, std::vector<Entry>& io_Entries) const;
+			//	The walk's render state: the lights the render states above
+			//	name, and how many render states there are
+			struct LightState
+			{
+				LightSet	m_Lights;
+				int			m_nStates = 0;
+			};
+
+			void gather(g3dSceneNode* i_pNode, bool i_bLowResolution, LightState& io_State, std::vector<Entry>& io_Entries,
+						std::vector<LightSet>& io_Sets) const;
 			bool poolable(const std::vector<size_t>& i_Group) const;
 			bool rebuild();
 
@@ -180,6 +217,8 @@ namespace gox
 			Pooling				m_Pooling;
 			std::vector<Entry>	m_Entries;			// the last Update's list
 			std::vector<Entry>	m_Gathered;			// this Update's (kept for its capacity)
+			std::vector<LightSet>	m_LightSets;		// the last Update's
+			std::vector<LightSet>	m_GatheredSets;		// this Update's
 			bool				m_bBuilt;			// m_Entries describes what is on the device
 			cuBuffer			m_Instances;		// OptixInstance array
 			cuBuffer			m_InstanceTable;	// optxInstanceData array

@@ -289,7 +289,10 @@
     <ClCompile Include="Ox\g3dSceneBVHOptiXGroupTest.cpp">
       <Filter>Ox</Filter>
     </ClCompile>
-    <ClCompile Include="Ox\g3dAORendererOptiXTest.cpp">
+    <ClCompile Include="Ox\g3dTraceRendererOptiXTest.cpp">
+      <Filter>Ox</Filter>
+    </ClCompile>
+    <ClCompile Include="Ox\g3dLightingOptiXTest.cpp">
       <Filter>Ox</Filter>
     </ClCompile>
     <ClInclude Include="Ox\gtOptiX.hpp">

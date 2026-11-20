@@ -163,7 +163,7 @@ namespace
 			io_Builder.Camera().SetClip(0.5f, 20.0f);
 		if (i_Setup.m_bSpheres)
 		{
-			io_Builder.LightsCastShadows(true);		// else the HDR renderer's lit pass skips them
+			io_Builder.SinglePassLights(true);		// else the HDR renderer's lit pass skips them
 			io_Builder.LitSpheres(false);
 		}
 		if (i_Setup.m_bSSAO)

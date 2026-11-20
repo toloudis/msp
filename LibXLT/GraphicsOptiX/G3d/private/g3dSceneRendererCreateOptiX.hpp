@@ -5,9 +5,10 @@
 **	renderers (g3dSceneRendererCreate), installed by GraphicsOptiXLayer
 **	over GraphicsVulkan's creator, which it keeps as the inner creator.
 **
-**	Default, HDR and ambient occlusion give the OptiX renderer
-**	(g3dAORendererOptiX: while AO is all OptiX draws, it stands in for the
-**	other two); every other type is the inner creator's (Vulkan's).
+**	Default, HDR and ambient occlusion give the OptiX renderer in its AO
+**	mode (g3dTraceRendererOptiX: until the beauty pass is traced, AO stands
+**	in for the other two); Illumination Only and Shadow Mask give it in
+**	those modes; every other type is the inner creator's (Vulkan's).
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -53,9 +54,18 @@ namespace gox
 			virtual g3dSceneRenderer* CreateReflectionOnlyRenderer();
 			virtual g3dSceneRenderer* CreateGlowRenderer();
 
-			//	False for the types the OptiX renderer draws: it traces
-			//	the scene and reads no shadow, opacity or reflection maps
-			virtual bool UsesTargetRenderers(g3dSceneRendererTypes::RendererType i_Type);
+			//	False: the OptiX backend traces shadows and reflections
+			//	instead, so no light makes a shadow or opacity map and no
+			//	material a reflection target, whatever the renderer type (the
+			//	raster types it still draws treat a missing map as unshadowed,
+			//	unreflected). Vulkan's answers if the tracer isn't available
+			//	(no GAS cache or Vulkan device): every type is then Vulkan's.
+			virtual bool NeedsShadowMaps();
+			virtual bool NeedsOpacityMaps();
+			virtual bool NeedsReflectionMaps();
+
+			//	True while the tracer is available
+			virtual bool UsesTracerSettings();
 
 		private:
 			g3dSceneRendererCreateImpl* m_pInner;

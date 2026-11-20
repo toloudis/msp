@@ -8,8 +8,8 @@
 #ifndef GOX_G3DSCENERENDERERCREATEOPTIX_HPP
 #include "GraphicsOptiX/G3d/private/g3dSceneRendererCreateOptiX.hpp"
 #endif
-#ifndef GOX_G3DAORENDEREROPTIX_HPP
-#include "GraphicsOptiX/G3d/g3dAORendererOptiX.hpp"
+#ifndef GOX_G3DTRACERENDEREROPTIX_HPP
+#include "GraphicsOptiX/G3d/g3dTraceRendererOptiX.hpp"
 #endif
 #ifndef GOX_G3DGASCACHEOPTIX_HPP
 #include "GraphicsOptiX/G3d/g3dGasCacheOptiX.hpp"
@@ -25,16 +25,24 @@ namespace gox
 {
 	namespace
 	{
-		//	The OptiX renderer, on the process's GAS cache and Vulkan device
-		//	(NULL without them: the inner creator's renderer instead)
-		g3dSceneRenderer* create_ao_renderer()
+		//	Whether the OptiX renderer can be made: the process's GAS cache
+		//	and the Vulkan device exist
+		bool tracer_available()
+		{
+			return g3dGasCacheOptiX::Get() && gvk::vkdGlobal::IsSet();
+		}
+
+		//	The OptiX renderer in a mode, on the process's GAS cache and
+		//	Vulkan device (NULL without them: the inner creator's renderer
+		//	instead)
+		g3dSceneRenderer* create_tracer(g3dTraceRendererOptiX::Mode i_Mode)
 		{
 			g3dGasCacheOptiX* cache = g3dGasCacheOptiX::Get();
 			if (!cache || !gvk::vkdGlobal::IsSet())
 			{
 				return NULL;
 			}
-			return new g3dAORendererOptiX(*cache, gvk::vkdGlobal::Device(), gvk::vkdGlobal::Context());
+			return new g3dTraceRendererOptiX(i_Mode, *cache, gvk::vkdGlobal::Device(), gvk::vkdGlobal::Context());
 		}
 	}
 
@@ -46,13 +54,13 @@ namespace gox
 
 	g3dSceneRenderer* g3dSceneRendererCreateOptiX::CreateDefaultRenderer()
 	{
-		g3dSceneRenderer* renderer = create_ao_renderer();
+		g3dSceneRenderer* renderer = create_tracer(g3dTraceRendererOptiX::e_AO);
 		return renderer ? renderer : m_pInner->CreateDefaultRenderer();
 	}
 
 	g3dSceneRenderer* g3dSceneRendererCreateOptiX::CreateHDRRenderer()
 	{
-		g3dSceneRenderer* renderer = create_ao_renderer();
+		g3dSceneRenderer* renderer = create_tracer(g3dTraceRendererOptiX::e_AO);
 		return renderer ? renderer : m_pInner->CreateHDRRenderer();
 	}
 
@@ -93,7 +101,7 @@ namespace gox
 
 	g3dSceneRenderer* g3dSceneRendererCreateOptiX::CreateAmbientOcclusionRenderer()
 	{
-		g3dSceneRenderer* renderer = create_ao_renderer();
+		g3dSceneRenderer* renderer = create_tracer(g3dTraceRendererOptiX::e_AO);
 		return renderer ? renderer : m_pInner->CreateAmbientOcclusionRenderer();
 	}
 
@@ -119,12 +127,14 @@ namespace gox
 
 	g3dSceneRenderer* g3dSceneRendererCreateOptiX::CreateShadowMaskRenderer()
 	{
-		return m_pInner->CreateShadowMaskRenderer();
+		g3dSceneRenderer* renderer = create_tracer(g3dTraceRendererOptiX::e_ShadowMask);
+		return renderer ? renderer : m_pInner->CreateShadowMaskRenderer();
 	}
 
 	g3dSceneRenderer* g3dSceneRendererCreateOptiX::CreateIlluminationRenderer()
 	{
-		return m_pInner->CreateIlluminationRenderer();
+		g3dSceneRenderer* renderer = create_tracer(g3dTraceRendererOptiX::e_Illumination);
+		return renderer ? renderer : m_pInner->CreateIlluminationRenderer();
 	}
 
 	g3dSceneRenderer* g3dSceneRendererCreateOptiX::CreateNormalRenderer()
@@ -152,16 +162,23 @@ namespace gox
 		return m_pInner->CreateGlowRenderer();
 	}
 
-	bool g3dSceneRendererCreateOptiX::UsesTargetRenderers(g3dSceneRendererTypes::RendererType i_Type)
+	bool g3dSceneRendererCreateOptiX::NeedsShadowMaps()
 	{
-		const bool optix_type = (i_Type == g3dSceneRendererTypes::e_Default)
-			|| (i_Type == g3dSceneRendererTypes::e_HDR)
-			|| (i_Type == g3dSceneRendererTypes::e_AmbientOcclusion);
-		const bool optix_available = g3dGasCacheOptiX::Get() && gvk::vkdGlobal::IsSet();
-		if (optix_type && optix_available)
-		{
-			return false;
-		}
-		return m_pInner->UsesTargetRenderers(i_Type);
+		return !tracer_available() && m_pInner->NeedsShadowMaps();
+	}
+
+	bool g3dSceneRendererCreateOptiX::NeedsOpacityMaps()
+	{
+		return !tracer_available() && m_pInner->NeedsOpacityMaps();
+	}
+
+	bool g3dSceneRendererCreateOptiX::NeedsReflectionMaps()
+	{
+		return !tracer_available() && m_pInner->NeedsReflectionMaps();
+	}
+
+	bool g3dSceneRendererCreateOptiX::UsesTracerSettings()
+	{
+		return tracer_available();
 	}
 }

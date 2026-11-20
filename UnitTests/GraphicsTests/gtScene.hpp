@@ -43,7 +43,9 @@
 class effShaderData;
 class g3dFragment;
 class g3dLayer;
+class g3dDirectionalLight;
 class g3dLight;
+class g3dPointLight;
 class g3dProjectedLight;
 class g3dScene;
 class g3dSceneNode;
@@ -226,8 +228,8 @@ class gtSceneBuilder
 		//	material as hairImport sets it, placed by i_World
 		g3dSceneNode*	Hair(const gtHairShape& i_Shape, const maMatrix4x4& i_World);
 
-		void			PointLight(const maPoint3d& i_Position, const maFloatRGBA& i_Color, float i_Range = 50.0f);
-		void			DirectionalLight(const maVector3d& i_Direction, const maFloatRGBA& i_Color);
+		g3dPointLight*	PointLight(const maPoint3d& i_Position, const maFloatRGBA& i_Color, float i_Range = 50.0f);
+		g3dDirectionalLight*	DirectionalLight(const maVector3d& i_Direction, const maFloatRGBA& i_Color);
 
 		//	A spot light at i_Position aimed at i_Target (a 60 degree cone,
 		//	range 30), casting shadows. With i_ShadowMapSize > 0 it gets a
@@ -279,10 +281,11 @@ class gtSceneBuilder
 		//	The usual two lights: a warm point light and a cool directional one
 		void			TwoLights();
 
-		//	Whether the lights made from now on cast shadows (as MachStudio's
-		//	point and projected lights do: the HDR renderer's lit pass draws
-		//	only those); off by default
-		void			LightsCastShadows(bool i_bCast)		{ m_bLightsCastShadows = i_bCast; }
+		//	Whether the point and directional lights made from now on are
+		//	single-pass lights (g3dLight::SetIsSinglePassLight), as MachStudio
+		//	makes every light: the HDR renderer's lit pass draws only those;
+		//	off by default (projected lights always are)
+		void			SinglePassLights(bool i_bSinglePass)	{ m_bSinglePassLights = i_bSinglePass; }
 
 		//	Twelve spheres (Plan 4b's): rows Blinn, Phong, Lambert material
 		//	shaders and the built-in Phong (left out if !i_bBuiltInPhong: its
@@ -331,5 +334,5 @@ class gtSceneBuilder
 		std::vector<std::unique_ptr<g3dTargetRenderer>>	m_TargetRenderers;
 		struct OpacityShadows;
 		std::vector<std::unique_ptr<OpacityShadows>>	m_OpacityShadows;	// HairShadows', rendered after m_TargetRenderers
-		bool							m_bLightsCastShadows = false;
+		bool							m_bSinglePassLights = false;
 };

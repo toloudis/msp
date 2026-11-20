@@ -1,12 +1,12 @@
 /*****************************************************************************
-**  g3dAORendererOptiX.cpp
+**  g3dTraceRendererOptiX.cpp
 **
-**      See g3dAORendererOptiX.hpp.
+**      See g3dTraceRendererOptiX.hpp.
 **
 **	Extra Large Technology
 \****************************************************************************/
-#ifndef GOX_G3DAORENDEREROPTIX_HPP
-#include "GraphicsOptiX/G3d/g3dAORendererOptiX.hpp"
+#ifndef GOX_G3DTRACERENDEREROPTIX_HPP
+#include "GraphicsOptiX/G3d/g3dTraceRendererOptiX.hpp"
 #endif
 #ifndef GOX_G3DGASCACHEOPTIX_HPP
 #include "GraphicsOptiX/G3d/g3dGasCacheOptiX.hpp"
@@ -146,23 +146,38 @@ namespace gox
 		}
 	}
 
-	bool g3dAORendererOptiX::Key::operator==(const Key& i_Other) const
+	bool g3dTraceRendererOptiX::Key::operator==(const Key& i_Other) const
 	{
-		return m_SceneVersion == i_Other.m_SceneVersion && m_Width == i_Other.m_Width && m_Height == i_Other.m_Height &&
-			   m_Radius == i_Other.m_Radius && m_AORays == i_Other.m_AORays && m_Seed == i_Other.m_Seed &&
+		return m_SceneVersion == i_Other.m_SceneVersion && m_LightVersion == i_Other.m_LightVersion &&
+			   m_Width == i_Other.m_Width && m_Height == i_Other.m_Height && m_Mode == i_Other.m_Mode &&
+			   m_Radius == i_Other.m_Radius && m_AORays == i_Other.m_AORays && m_Bounces == i_Other.m_Bounces &&
+			   m_Albedo == i_Other.m_Albedo && m_Sampling == i_Other.m_Sampling && m_bUseCosine == i_Other.m_bUseCosine &&
+			   m_bShadows == i_Other.m_bShadows && m_Seed == i_Other.m_Seed &&
 			   std::memcmp(m_ViewProj, i_Other.m_ViewProj, sizeof(m_ViewProj)) == 0 &&
 			   std::memcmp(m_Background, i_Other.m_Background, sizeof(m_Background)) == 0;
 	}
 
-	g3dAORendererOptiX::g3dAORendererOptiX(g3dGasCacheOptiX& i_Cache, gvk::vkdDevice& i_Device, gvk::vkdContext& i_Context)
-		: m_Context(i_Context)
+	bool g3dTraceRendererOptiX::PrefSettings::operator==(const PrefSettings& i_Other) const
+	{
+		return m_SamplesPerFrame == i_Other.m_SamplesPerFrame && m_SampleLimit == i_Other.m_SampleLimit &&
+			   m_CaptureSamples == i_Other.m_CaptureSamples && m_AORays == i_Other.m_AORays &&
+			   m_Bounces == i_Other.m_Bounces;
+	}
+
+	g3dTraceRendererOptiX::g3dTraceRendererOptiX(Mode i_Mode, g3dGasCacheOptiX& i_Cache, gvk::vkdDevice& i_Device,
+												 gvk::vkdContext& i_Context)
+		: m_Mode(i_Mode)
+		, m_Context(i_Context)
 		, m_BVH(i_Cache)
-		, m_bAOFailed(false)
+		, m_bProgramsFailed(false)
 		, m_Share(i_Device, i_Context, i_Cache.GetMemoryCache(), i_Cache.GetVulkanTimeline())
 		, m_nSamplesPerFrame(c_DefaultSamplesPerFrame)
 		, m_nSampleLimit(c_DefaultSampleLimit)
 		, m_nCaptureSamples(0)
 		, m_nAORays(c_DefaultAORays)
+		, m_nBounces(c_DefaultBounces)
+		, m_Albedo(c_DefaultAlbedo)
+		, m_Sampling(e_optxSampleBoth)
 		, m_Seed(0)
 		, m_bRestart(true)
 		, m_bHaveFrame(false)
@@ -174,10 +189,11 @@ namespace gox
 		, m_nLoggedGas(0)
 	{
 		m_Overlay.SetClearTarget(false);
-		m_Overlay.SetNodeFilter([](const g3dSceneNode& i_Node) { return !g3dSceneBVHOptiX::IsTraced(i_Node); });
+		m_Overlay.SetNodeFilter([](const g3dSceneNode& i_Node) { return g3dSceneBVHOptiX::IsRasterOverlay(i_Node); });
+		apply_prefs();
 	}
 
-	g3dAORendererOptiX::~g3dAORendererOptiX()
+	g3dTraceRendererOptiX::~g3dTraceRendererOptiX()
 	{
 		if (optxContext::Exists())
 		{
@@ -185,48 +201,107 @@ namespace gox
 		}
 	}
 
-	void g3dAORendererOptiX::ReleaseResources()
+	void g3dTraceRendererOptiX::ReleaseResources()
 	{
 		optxContext::MakeCurrent();
 		m_Share.Release();
 		m_Accum.Free();
 		m_BVH.Release();
+		m_Lights.Release();
 		m_bHaveFrame = false;
 		m_bRestart = true;
 	}
 
-	void g3dAORendererOptiX::SetSamplesPerFrame(unsigned i_nSamples)
+	//	The preferences' tracer settings, if they changed since last applied
+	//	(so a setter's value stands until the user changes a preference)
+	void g3dTraceRendererOptiX::apply_prefs()
+	{
+		const g3dPrefs::g3dRenderPrefs& prefs = g3dPrefs::CurrentPrefs();
+		PrefSettings settings;
+		settings.m_SamplesPerFrame = unsigned(std::max(1, prefs.m_TraceSamplesPerFrame));
+		settings.m_SampleLimit = unsigned(std::max(1, prefs.m_TraceSampleLimit));
+		settings.m_CaptureSamples = unsigned(std::max(0, prefs.m_TraceCaptureSamples));
+		settings.m_AORays = unsigned(std::max(0, prefs.m_TraceAORays));
+		settings.m_Bounces = unsigned(std::max(0, prefs.m_TraceBounces));
+		if (settings == m_Prefs)
+		{
+			return;
+		}
+		m_Prefs = settings;
+		SetSamplesPerFrame(settings.m_SamplesPerFrame);
+		SetSampleLimit(settings.m_SampleLimit);
+		SetCaptureSamples(settings.m_CaptureSamples);
+		SetAORays(settings.m_AORays);
+		SetBounces(settings.m_Bounces);
+	}
+
+	void g3dTraceRendererOptiX::SetSamplesPerFrame(unsigned i_nSamples)
 	{
 		m_nSamplesPerFrame = std::max(1u, i_nSamples);
 	}
 
-	void g3dAORendererOptiX::SetSampleLimit(unsigned i_nSamples)
+	void g3dTraceRendererOptiX::SetSampleLimit(unsigned i_nSamples)
 	{
 		m_nSampleLimit = std::max(1u, i_nSamples);
 	}
 
-	void g3dAORendererOptiX::SetCaptureSamples(unsigned i_nSamples)
+	void g3dTraceRendererOptiX::SetCaptureSamples(unsigned i_nSamples)
 	{
 		m_nCaptureSamples = i_nSamples;
 	}
 
-	unsigned g3dAORendererOptiX::GetCaptureSamples() const
+	unsigned g3dTraceRendererOptiX::GetCaptureSamples() const
 	{
 		return m_nCaptureSamples ? m_nCaptureSamples : m_nSampleLimit;
 	}
 
-	void g3dAORendererOptiX::SetAORays(unsigned i_nRays)
+	void g3dTraceRendererOptiX::SetAORays(unsigned i_nRays)
 	{
 		m_nAORays = i_nRays;
 	}
 
-	void g3dAORendererOptiX::SetSeed(unsigned i_Seed)
+	void g3dTraceRendererOptiX::SetBounces(unsigned i_nBounces)
+	{
+		m_nBounces = i_nBounces;
+	}
+
+	void g3dTraceRendererOptiX::SetAlbedo(float i_Albedo)
+	{
+		m_Albedo = std::min(1.0f, std::max(0.0f, i_Albedo));
+	}
+
+	void g3dTraceRendererOptiX::SetLightSampling(optxLightSampling i_Sampling)
+	{
+		m_Sampling = i_Sampling;
+	}
+
+	void g3dTraceRendererOptiX::SetSeed(unsigned i_Seed)
 	{
 		m_Seed = i_Seed;
 	}
 
-	int g3dAORendererOptiX::raster_only(g2dRenderTarget* i_pTarget, const camCamera& i_Camera, const g3dScene& i_Scene,
-										const std::vector<g3dLayer*>& i_ViewerLayers, float i_fSimTime)
+	bool g3dTraceRendererOptiX::create_programs()
+	{
+		if (lighting() ? m_Lighting.IsCreated() : m_AO.IsCreated())
+		{
+			return true;
+		}
+		if (m_bProgramsFailed)
+		{
+			return false;
+		}
+		std::string error;
+		if (!(lighting() ? m_Lighting.Create(error) : m_AO.Create(error)))
+		{
+			DBG_LOG("GraphicsOptiX: " << error);
+			m_bProgramsFailed = true;
+			return false;
+		}
+		return true;
+	}
+
+	int g3dTraceRendererOptiX::raster_only(g2dRenderTarget* i_pTarget, const camCamera& i_Camera, const g3dScene& i_Scene,
+										   const std::vector<g3dLayer*>& i_ViewerLayers, float i_fSimTime)
 	{
 		m_Overlay.SetClearTarget(true);
 		const int triangles = m_Overlay.Render(i_pTarget, i_Camera, i_Scene, i_ViewerLayers, i_fSimTime);
@@ -234,11 +309,12 @@ namespace gox
 		return triangles;
 	}
 
-	int g3dAORendererOptiX::Render(g2dRenderTarget* i_pTarget, const camCamera& i_Camera, const g3dScene& i_Scene,
-								   const std::vector<g3dLayer*>& i_ViewerLayers, float i_fSimTime)
+	int g3dTraceRendererOptiX::Render(g2dRenderTarget* i_pTarget, const camCamera& i_Camera, const g3dScene& i_Scene,
+									  const std::vector<g3dLayer*>& i_ViewerLayers, float i_fSimTime)
 	{
-		G3D_PROFILE_SCOPE("AORendererOptiX");
+		G3D_PROFILE_SCOPE("TraceRendererOptiX");
 		optxContext::MakeCurrent();
+		apply_prefs();
 
 		//	The target's images, as vkdContext has them once it is current
 		i_pTarget->MakeCurrent();
@@ -263,18 +339,9 @@ namespace gox
 			}
 			return raster_only(i_pTarget, i_Camera, i_Scene, i_ViewerLayers, i_fSimTime);
 		}
-		if (!m_AO.IsCreated())
+		if (!create_programs())
 		{
-			std::string error;
-			if (m_bAOFailed || !m_AO.Create(error))
-			{
-				if (!m_bAOFailed)
-				{
-					DBG_LOG("GraphicsOptiX: " << error);
-					m_bAOFailed = true;
-				}
-				return raster_only(i_pTarget, i_Camera, i_Scene, i_ViewerLayers, i_fSimTime);
-			}
+			return raster_only(i_pTarget, i_Camera, i_Scene, i_ViewerLayers, i_fSimTime);
 		}
 
 		{
@@ -289,21 +356,45 @@ namespace gox
 					<< (m_BVH.GetGasBytes() >> 20) << " MB), " << m_BVH.GetTriangleCount() << " triangles");
 		}
 
+		const g3dPrefs::g3dRenderPrefs& prefs = g3dPrefs::CurrentPrefs();
 		Key key;
 		key.m_SceneVersion = m_BVH.GetSceneVersion();
 		view_projection(i_Camera, key.m_ViewProj);
 		key.m_Width = color->Width();
 		key.m_Height = color->Height();
-		ssaoParams ao_settings;
-		i_Scene.GetSSAOSettings(ao_settings);
-		key.m_Radius = ao_settings.m_AORadius;
-		key.m_AORays = m_nAORays;
+		key.m_Mode = m_Mode;
 		key.m_Seed = m_Seed;
-		//	what g3dTargetRenderer cleared the target to
-		const float* background = color->LastClearColor();
-		key.m_Background[0] = background[0];
-		key.m_Background[1] = background[1];
-		key.m_Background[2] = background[2];
+		if (lighting())
+		{
+			{
+				G3D_PROFILE_SCOPE("LightTable");
+				m_Lights.Update(m_BVH.GetLightSets());
+			}
+			key.m_LightVersion = m_Lights.GetVersion();
+			key.m_bShadows = prefs.m_bEnableShadows ? 1 : 0;
+			if (m_Mode == e_Illumination)
+			{
+				key.m_Bounces = m_nBounces;
+				key.m_Albedo = m_Albedo;
+				key.m_Sampling = m_Sampling;
+				key.m_bUseCosine = prefs.m_bIlluminationUsesNormals ? 1 : 0;
+			}
+			//	What the raster passes clear to: black, or white for the mask
+			const float background = (m_Mode == e_ShadowMask) ? 1.0f : 0.0f;
+			key.m_Background[0] = key.m_Background[1] = key.m_Background[2] = background;
+		}
+		else
+		{
+			ssaoParams ao_settings;
+			i_Scene.GetSSAOSettings(ao_settings);
+			key.m_Radius = ao_settings.m_AORadius;
+			key.m_AORays = m_nAORays;
+			//	what g3dTargetRenderer cleared the target to
+			const float* background = color->LastClearColor();
+			key.m_Background[0] = background[0];
+			key.m_Background[1] = background[1];
+			key.m_Background[2] = background[2];
+		}
 		if (m_bRestart || !(key == m_Key))
 		{
 			m_Key = key;
@@ -348,36 +439,19 @@ namespace gox
 	//	i_bAll launches until it is reached or the capture is aborted), then
 	//	resolved into the shared buffers: by the last launch itself, or (an
 	//	aborted capture) by a resolve launch
-	bool g3dAORendererOptiX::trace(const Key& i_Key, const optxColorOrder i_Order, const optxDepthLayout i_Layout,
-								   unsigned i_nGoal, bool i_bAll)
+	bool g3dTraceRendererOptiX::trace(const Key& i_Key, const optxColorOrder i_Order, const optxDepthLayout i_Layout,
+									  unsigned i_nGoal, bool i_bAll)
 	{
 		const size_t accum_bytes = size_t(i_Key.m_Width) * i_Key.m_Height * 4 * sizeof(float);
 		if (!m_Share.Resize(i_Key.m_Width, i_Key.m_Height) || !m_Accum.Reserve(accum_bytes))
 		{
 			return false;
 		}
-
-		optxAOParams params = {};
-		params.m_Handle = m_BVH.GetHandle();
-		params.m_Instances = m_BVH.GetInstanceTable();
-		params.m_Accum = m_Accum.Get();
-		params.m_Width = i_Key.m_Width;
-		params.m_Height = i_Key.m_Height;
 		double inverse[16];
 		if (!invert(i_Key.m_ViewProj, inverse))
 		{
 			return false;
 		}
-		for (int i = 0; i < 16; ++i)
-		{
-			params.m_ViewProj[i] = float(i_Key.m_ViewProj[i]);
-			params.m_InvViewProj[i] = float(inverse[i]);
-		}
-		for (int c = 0; c < 3; ++c)
-		{
-			params.m_Background[c] = srgb_to_linear(i_Key.m_Background[c]);
-		}
-		params.m_Radius = i_Key.m_Radius;
 		//	Off the surface by a little of the scene's size
 		const maAxisBox& bounds = m_BVH.GetBounds();
 		float size = 1.0f;
@@ -388,40 +462,122 @@ namespace gox
 			const float dz = bounds.GetMaxZ() - bounds.GetMinZ();
 			size = std::sqrt(dx * dx + dy * dy + dz * dz);
 		}
-		params.m_Epsilon = std::max(size * 1e-5f, 1e-5f);
-		params.m_AORays = i_Key.m_AORays;
-		params.m_ColorOrder = i_Order;
-		params.m_DepthLayout = i_Layout;
-		params.m_Seed = i_Key.m_Seed;
+		const float epsilon = std::max(size * 1e-5f, 1e-5f);
+
+		//	Each program has its own parameters; only the mode's are used
+		optxAOParams ao = {};
+		optxLightingParams lit = {};
+		if (lighting())
+		{
+			lit.m_Handle = m_BVH.GetHandle();
+			lit.m_Instances = m_BVH.GetInstanceTable();
+			lit.m_Lights = m_Lights.GetLights();
+			lit.m_LightSets = m_Lights.GetSets();
+			lit.m_LightIndices = m_Lights.GetIndices();
+			lit.m_NumLights = m_Lights.GetLightCount();
+			lit.m_Accum = m_Accum.Get();
+			lit.m_Width = i_Key.m_Width;
+			lit.m_Height = i_Key.m_Height;
+			for (int i = 0; i < 16; ++i)
+			{
+				lit.m_ViewProj[i] = float(i_Key.m_ViewProj[i]);
+				lit.m_InvViewProj[i] = float(inverse[i]);
+			}
+			for (int c = 0; c < 3; ++c)
+			{
+				lit.m_Background[c] = i_Key.m_Background[c];
+			}
+			lit.m_Epsilon = epsilon;
+			lit.m_Albedo = i_Key.m_Albedo;
+			lit.m_Mode = (m_Mode == e_ShadowMask) ? e_optxLightingShadowMask : e_optxLightingIllumination;
+			lit.m_Bounces = i_Key.m_Bounces;
+			lit.m_Sampling = i_Key.m_Sampling;
+			lit.m_bUseCosine = i_Key.m_bUseCosine;
+			lit.m_bShadows = i_Key.m_bShadows;
+			lit.m_ColorOrder = i_Order;
+			lit.m_DepthLayout = i_Layout;
+			lit.m_Seed = i_Key.m_Seed;
+		}
+		else
+		{
+			ao.m_Handle = m_BVH.GetHandle();
+			ao.m_Instances = m_BVH.GetInstanceTable();
+			ao.m_Accum = m_Accum.Get();
+			ao.m_Width = i_Key.m_Width;
+			ao.m_Height = i_Key.m_Height;
+			for (int i = 0; i < 16; ++i)
+			{
+				ao.m_ViewProj[i] = float(i_Key.m_ViewProj[i]);
+				ao.m_InvViewProj[i] = float(inverse[i]);
+			}
+			for (int c = 0; c < 3; ++c)
+			{
+				ao.m_Background[c] = srgb_to_linear(i_Key.m_Background[c]);
+			}
+			ao.m_Radius = i_Key.m_Radius;
+			ao.m_Epsilon = epsilon;
+			ao.m_AORays = i_Key.m_AORays;
+			ao.m_ColorOrder = i_Order;
+			ao.m_DepthLayout = i_Layout;
+			ao.m_Seed = i_Key.m_Seed;
+		}
 
 		if (!m_Share.BeginWrite())
 		{
 			return false;
 		}
-		params.m_Color = m_Share.Color();	// the pair BeginWrite picked
-		params.m_Depth = m_Share.Depth();
+		ao.m_Color = lit.m_Color = m_Share.Color();	// the pair BeginWrite picked
+		ao.m_Depth = lit.m_Depth = m_Share.Depth();
 		bool resolved = false;
 		do
 		{
-			G3D_PROFILE_SCOPE("AOLaunch");
-			params.m_FirstSample = m_nSamples;
-			params.m_Samples = std::min(m_nSamplesPerFrame, i_nGoal - m_nSamples);
-			params.m_Resolve = (!i_bAll || m_nSamples + params.m_Samples >= i_nGoal) ? 1 : 0;			if (!m_AO.Accumulate(params, m_BVH.GetSbtRecordCount()))
+			G3D_PROFILE_SCOPE("TraceLaunch");
+			const unsigned first = m_nSamples;
+			const unsigned samples = std::min(m_nSamplesPerFrame, i_nGoal - m_nSamples);
+			const unsigned resolve = (!i_bAll || m_nSamples + samples >= i_nGoal) ? 1 : 0;
+			bool launched;
+			if (lighting())
+			{
+				lit.m_FirstSample = first;
+				lit.m_Samples = samples;
+				lit.m_Resolve = resolve;
+				launched = m_Lighting.Accumulate(lit, m_BVH.GetSbtRecordCount());
+			}
+			else
+			{
+				ao.m_FirstSample = first;
+				ao.m_Samples = samples;
+				ao.m_Resolve = resolve;
+				launched = m_AO.Accumulate(ao, m_BVH.GetSbtRecordCount());
+			}
+			if (!launched)
 			{
 				return false;
 			}
-			m_nSamples += params.m_Samples;
+			m_nSamples += samples;
 			++m_nLaunches;
-			resolved = params.m_Resolve != 0;
+			resolved = resolve != 0;
 		}
 		while (i_bAll && m_nSamples < i_nGoal && !g3dThreadControl::ShouldRenderThreadAbort());
 		if (!resolved)
 		{
-			G3D_PROFILE_SCOPE("AOResolve");
-			params.m_FirstSample = m_nSamples;
-			params.m_Samples = 0;
-			params.m_Resolve = 0;
-			if (!m_AO.Resolve(params))
+			G3D_PROFILE_SCOPE("TraceResolve");
+			bool done;
+			if (lighting())
+			{
+				lit.m_FirstSample = m_nSamples;
+				lit.m_Samples = 0;
+				lit.m_Resolve = 0;
+				done = m_Lighting.Resolve(lit);
+			}
+			else
+			{
+				ao.m_FirstSample = m_nSamples;
+				ao.m_Samples = 0;
+				ao.m_Resolve = 0;
+				done = m_AO.Resolve(ao);
+			}
+			if (!done)
 			{
 				return false;
 			}

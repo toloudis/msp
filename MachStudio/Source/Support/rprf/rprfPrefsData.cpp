@@ -142,7 +142,13 @@ rprfPrefsData::rprfPrefsData()
 	m_bRmanTonemapEnable("Renderman Capture Tonemapped Pixels",true),
 
 	m_bUseAOVolumes("Use AO Volumes", false),
-	m_bUseLPVGI("Use LPV GI", false)
+	m_bUseLPVGI("Use LPV GI", false),
+
+	m_TraceSamplesPerFrame("Trace Samples Per Frame", 1),
+	m_TraceSampleLimit("Trace Sample Limit", 1024),
+	m_TraceCaptureSamples("Trace Capture Samples", 0),
+	m_TraceAORays("Trace AO Rays", 1),
+	m_TraceBounces("Trace Bounces", 2)
 {
 	m_RendererEngine.SetEnumTag(0, "MachStudio Rasterizer");
 	m_RendererEngine.SetEnumTag(1, "RenderMan (PRMan)");

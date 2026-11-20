@@ -98,7 +98,7 @@ namespace
 	//	i_bMaskOne, sphere 3 doesn't receive occlusion (the stencil mask)
 	void spheres_on_floor(gtSceneBuilder& io_Builder, bool i_bMaskOne)
 	{
-		io_Builder.LightsCastShadows(true);
+		io_Builder.SinglePassLights(true);
 		matMaterial* floor = io_Builder.Keep(gtScene::ShaderMaterial("Lambert.fx", gtScene::e_Tinted));
 		io_Builder.Add(gtScene::Plane(), floor, gtScene::Place(0, 0, -1.0f, 2.6f));
 
@@ -184,7 +184,7 @@ namespace
 	//	i_bMaskOne, the back wall doesn't receive GI
 	void spheres_between_walls(gtSceneBuilder& io_Builder, bool i_bMaskOne)
 	{
-		io_Builder.LightsCastShadows(true);
+		io_Builder.SinglePassLights(true);
 		matMaterial* white = io_Builder.Keep(coloured("Lambert.fx", maFloatRGBA(0.3f, 0.3f, 0.3f, 1.0f)));
 		matMaterial* red = io_Builder.Keep(coloured("Lambert.fx", maFloatRGBA(0.4f, 0.04f, 0.02f, 1.0f)));
 		matMaterial* green = io_Builder.Keep(coloured("Lambert.fx", maFloatRGBA(0.04f, 0.35f, 0.04f, 1.0f)));
@@ -318,7 +318,7 @@ namespace
 	//	doesn't receive GI. o_ppLight: the projected light, if any.
 	void lpv_room(gtSceneBuilder& io_Builder, LpvLight i_Light, bool i_bMaskFloor, g3dProjectedLight** o_ppLight)
 	{
-		io_Builder.LightsCastShadows(true);
+		io_Builder.SinglePassLights(true);
 		matMaterial* white = io_Builder.Keep(coloured("Lambert.fx", maFloatRGBA(0.5f, 0.5f, 0.5f, 1.0f)));
 		matMaterial* red = io_Builder.Keep(coloured("Lambert.fx", maFloatRGBA(0.8f, 0.08f, 0.04f, 1.0f)));
 		matMaterial* green = io_Builder.Keep(coloured("Lambert.fx", maFloatRGBA(0.08f, 0.7f, 0.08f, 1.0f)));
@@ -354,7 +354,7 @@ namespace
 											  maFloatRGBA(1.0f, 0.95f, 0.9f, 1.0f), i_Light == e_NoShadows ? 0 : 256);
 			light->SetGIEnabled(i_Light != e_GIOff);
 			if (i_Light == e_NoShadows)
-				light->SetCastsShadow(false);
+				light->SetIsSinglePassLight(false);
 		}
 		if (o_ppLight)
 			*o_ppLight = light;

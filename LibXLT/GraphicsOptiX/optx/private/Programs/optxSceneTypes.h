@@ -16,6 +16,11 @@
 **	m_NormalOffset; so no GAS needs OPTIX_BUILD_FLAG_ALLOW_RANDOM_VERTEX_-
 **	ACCESS. Material data goes here later.
 **
+**	Each instance also names its light set (m_LightSet): the lights that
+**	reach it (light linking), an index into the light table's sets
+**	(optxLightTypes.h), or c_optxAllLights; and its flags
+**	(optxInstanceFlags).
+**
 **	Plain C structs: the host and nvcc must lay them out the same way.
 **
 **	Extra Large Technology
@@ -38,6 +43,15 @@ namespace gox
 	//	m_NormalOffset of a vertex format without normals
 	const unsigned int c_optxNoNormal = 0xFFFFFFFFu;
 
+	//	m_LightSet of an instance every light reaches
+	const unsigned int c_optxAllLights = 0xFFFFFFFFu;
+
+	//	m_Flags bits
+	enum optxInstanceFlags
+	{
+		e_optxInstanceReceivesShadow = 1u << 0	// shadow rays are traced for its points
+	};
+
 	//	One build input of a GAS: one fragment's triangles
 	struct optxGeometryInput
 	{
@@ -54,5 +68,7 @@ namespace gox
 		unsigned int		m_NormalOffset;	// bytes from a vertex's start to its normal, or c_optxNoNormal
 		unsigned int		m_NumInputs;
 		unsigned int		m_NumTriangles;	// over all inputs
+		unsigned int		m_LightSet;		// index of its light set, or c_optxAllLights
+		unsigned int		m_Flags;		// optxInstanceFlags
 	};
 }

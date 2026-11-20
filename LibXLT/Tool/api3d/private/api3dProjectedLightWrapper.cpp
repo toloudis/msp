@@ -32,12 +32,18 @@ api3dProjectedLightWrapper::api3dProjectedLightWrapper(g3dProjectedLight& i_Ligh
   m_pTexture(NULL),
   m_pShadowMap(NULL),
   m_pMapRenderer(NULL),
+  m_pDepthRenderer(NULL),
   m_pScene(i_pScene ? i_pScene : api3dScene::GetScene())
 {
-	// simple renderer for shadow maps 
-	m_pDepthRenderer = g3dSceneRendererCreate::CreateDepthMapRenderer();
+	// A backend that traces shadows (GraphicsOptiX) makes no shadow maps:
+	// the light gets none, and nothing renders one
+	if (g3dSceneRendererCreate::NeedsShadowMaps())
+	{
+		// simple renderer for shadow maps 
+		m_pDepthRenderer = g3dSceneRendererCreate::CreateDepthMapRenderer();
 	
-	update_shadow_map(i_DepthMapResolution);
+		update_shadow_map(i_DepthMapResolution);
+	}
 }
 
 //--------------------------------------------------------------------
@@ -78,7 +84,10 @@ void api3dProjectedLightWrapper::SetTexture(matTexture* i_pTexture)
 //--------------------------------------------------------------------
 void api3dProjectedLightWrapper::ResizeDepthMap(int i_Size)
 {
-	update_shadow_map(i_Size);
+	if (m_pDepthRenderer)
+	{
+		update_shadow_map(i_Size);
+	}
 }
 
 
@@ -99,7 +108,10 @@ void api3dProjectedLightWrapper::OrientCamera()
 //--------------------------------------------------------------------
 void api3dProjectedLightWrapper::RenderDepthMap(float i_Time)
 {
-	m_pMapRenderer->Render(i_Time);
+	if (m_pMapRenderer)
+	{
+		m_pMapRenderer->Render(i_Time);
+	}
 }
 
 //--------------------------------------------------------------------
