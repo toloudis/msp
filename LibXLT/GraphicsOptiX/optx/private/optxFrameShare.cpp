@@ -77,12 +77,10 @@ namespace gox
 		, m_VulkanTimeline(i_VulkanTimeline)
 		, m_Width(0)
 		, m_Height(0)
-		, m_ColorPtr(0)
-		, m_DepthPtr(0)
+		, m_Current(0)
 		, m_Frames(VK_NULL_HANDLE)
 		, m_FrameValue(0)
 		, m_bWaitPending(false)
-		, m_LastReadValue(0)
 	{
 		DBG_ASSERT(m_Device.HasExternalMemory(), "optxFrameShare needs a device with external memory");
 	}
@@ -130,17 +128,14 @@ namespace gox
 		{
 			return false;
 		}
-		if (i_Width == m_Width && i_Height == m_Height && m_pColor)
+		if (i_Width == m_Width && i_Height == m_Height && m_Outputs[0].m_pColor)
 		{
 			return true;
 		}
 		//	CUDA may still write the old buffers; Vulkan's copies from them are
 		//	waited for by the deferred destruction of the vkdBuffers
 		optxContext::Synchronize();
-		m_pColor.reset();
-		m_pDepth.reset();
-		m_ColorPtr = m_DepthPtr = 0;
-		m_Width = m_Height = 0;
+		free_buffers();
 		if (i_Width == 0 || i_Height == 0)
 		{
 			return false;
@@ -148,42 +143,47 @@ namespace gox
 
 		const VkDeviceSize bytes = VkDeviceSize(i_Width) * i_Height * 4;
 		const VkBufferUsageFlags usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
-		m_pColor = gvk::vkdBuffer::Create(m_Device, bytes, usage, "optxFrameShare colour", true);
-		m_pDepth = gvk::vkdBuffer::Create(m_Device, bytes, usage, "optxFrameShare depth", true);
-		if (!m_pColor || !m_pDepth)
+		for (FrameOutputs& outputs : m_Outputs)
 		{
-			DBG_LOG("GraphicsOptiX: shared frame buffers of " << i_Width << "x" << i_Height << " couldn't be made");
-			m_pColor.reset();
-			m_pDepth.reset();
-			return false;
-		}
-		m_ColorPtr = m_Memory.Map(*m_pColor);
-		m_DepthPtr = m_Memory.Map(*m_pDepth);
-		if (!m_ColorPtr || !m_DepthPtr)
-		{
-			m_pColor.reset();
-			m_pDepth.reset();
-			m_ColorPtr = m_DepthPtr = 0;
-			return false;
+			outputs.m_pColor = gvk::vkdBuffer::Create(m_Device, bytes, usage, "optxFrameShare colour", true);
+			outputs.m_pDepth = gvk::vkdBuffer::Create(m_Device, bytes, usage, "optxFrameShare depth", true);
+			if (!outputs.m_pColor || !outputs.m_pDepth)
+			{
+				DBG_LOG("GraphicsOptiX: shared frame buffers of " << i_Width << "x" << i_Height << " couldn't be made");
+				free_buffers();
+				return false;
+			}
+			outputs.m_ColorPtr = m_Memory.Map(*outputs.m_pColor);
+			outputs.m_DepthPtr = m_Memory.Map(*outputs.m_pDepth);
+			if (!outputs.m_ColorPtr || !outputs.m_DepthPtr)
+			{
+				free_buffers();
+				return false;
+			}
 		}
 		m_Width = i_Width;
 		m_Height = i_Height;
-		m_LastReadValue = 0;
 		return true;
+	}
+
+	void optxFrameShare::free_buffers()
+	{
+		for (FrameOutputs& outputs : m_Outputs)
+		{
+			outputs = FrameOutputs();		// the buffers are destroyed once Vulkan is done with them
+		}
+		m_Current = 0;
+		m_Width = m_Height = 0;
 	}
 
 	void optxFrameShare::Release()
 	{
-		if (!m_Frames && !m_pColor)
+		if (!m_Frames && !m_Outputs[0].m_pColor)
 		{
 			return;
 		}
 		optxContext::Synchronize();		// CUDA's signals and writes are done
-		m_pColor.reset();				// destroyed once Vulkan is done with them
-		m_pDepth.reset();
-		m_ColorPtr = m_DepthPtr = 0;
-		m_Width = m_Height = 0;
-		m_LastReadValue = 0;
+		free_buffers();
 		m_CudaFrames.Release();
 		if (m_Frames)
 		{
@@ -200,11 +200,12 @@ namespace gox
 
 	bool optxFrameShare::BeginWrite()
 	{
-		if (!m_pColor)
+		if (!m_Outputs[0].m_pColor)
 		{
 			return false;
 		}
-		const uint64_t value = m_LastReadValue;
+		m_Current = (m_Current + 1) % c_OutputCount;
+		const uint64_t value = m_Outputs[m_Current].m_LastReadValue;
 		if (value == 0 || m_Device.CompletedValue() >= value)
 		{
 			return true;
@@ -231,7 +232,8 @@ namespace gox
 
 	void optxFrameShare::CopyTo(gvk::vkdImage* i_pColor, gvk::vkdImage* i_pDepth)
 	{
-		if (!m_pColor || !i_pColor)
+		FrameOutputs& outputs = m_Outputs[m_Current];
+		if (!outputs.m_pColor || !i_pColor)
 		{
 			return;
 		}
@@ -250,13 +252,13 @@ namespace gox
 		VkBufferImageCopy region = {};
 		region.imageSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
 		region.imageExtent = { m_Width, m_Height, 1 };
-		vkCmdCopyBufferToImage(commands, m_pColor->Buffer(), i_pColor->Image(), VK_IMAGE_LAYOUT_GENERAL, 1, &region);
+		vkCmdCopyBufferToImage(commands, outputs.m_pColor->Buffer(), i_pColor->Image(), VK_IMAGE_LAYOUT_GENERAL, 1, &region);
 		if (i_pDepth)
 		{
 			DBG_ASSERT(i_pDepth->Width() == m_Width && i_pDepth->Height() == m_Height, "optxFrameShare: depth size differs");
 			region.imageSubresource = { VK_IMAGE_ASPECT_DEPTH_BIT, 0, 0, 1 };
-			vkCmdCopyBufferToImage(commands, m_pDepth->Buffer(), i_pDepth->Image(), VK_IMAGE_LAYOUT_GENERAL, 1, &region);
+			vkCmdCopyBufferToImage(commands, outputs.m_pDepth->Buffer(), i_pDepth->Image(), VK_IMAGE_LAYOUT_GENERAL, 1, &region);
 		}
-		m_LastReadValue = m_Device.PendingValue();
+		outputs.m_LastReadValue = m_Device.PendingValue();
 	}
 }

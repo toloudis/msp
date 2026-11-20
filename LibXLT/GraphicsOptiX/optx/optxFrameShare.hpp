@@ -10,11 +10,19 @@
 **	(cuExternalMemoryCache), and Vulkan copies into the target's images
 **	(vkCmdCopyBufferToImage). One owner per target size: a renderer.
 **
+**	Double buffered: each BeginWrite moves to the other set of frame
+**	outputs (FrameOutputs: a colour and a depth buffer), so CUDA writes
+**	frame N+1 while Vulkan still copies frame N (with one set, each side
+**	waited for the other every frame). Color() and Depth() are the outputs
+**	being written, or after EndWrite the outputs last written, which
+**	CopyTo copies.
+**
 **	Synchronization, one timeline semaphore each way:
-**	- BeginWrite, before CUDA overwrites the buffers, puts a wait on the
-**	  OptiX stream for Vulkan's timeline value of the last copy from them
-**	  (submitting Vulkan's open command buffer first if the copy is still
-**	  in it; nothing if that value has completed).
+**	- BeginWrite, before CUDA overwrites a set of outputs, puts a wait on
+**	  the OptiX stream for Vulkan's timeline value of the last copy from
+**	  that set (submitting Vulkan's open command buffer first if the copy is
+**	  still in it; nothing if that value has completed, as it usually has:
+**	  the copy was two frames ago).
 **	- EndWrite, after the work that writes them is queued, signals the
 **	  frame semaphore (made here by Vulkan, exportable, imported into
 **	  CUDA) with the next value.
@@ -95,12 +103,13 @@ namespace gox
 			void Release();
 
 			//--------------------------------------------------------------------
-			//	The CUDA side: BeginWrite, then the work writing Color() and
-			//	Depth() on the OptiX stream, then EndWrite (see above)
+			//	The CUDA side: BeginWrite (which picks the outputs to write), then
+			//	the work writing Color() and Depth() on the OptiX stream, then
+			//	EndWrite (see above)
 			//--------------------------------------------------------------------
 			bool BeginWrite();
-			CUdeviceptr Color() const { return m_ColorPtr; }
-			CUdeviceptr Depth() const { return m_DepthPtr; }
+			CUdeviceptr Color() const { return m_Outputs[m_Current].m_ColorPtr; }
+			CUdeviceptr Depth() const { return m_Outputs[m_Current].m_DepthPtr; }
 			bool EndWrite();
 
 			//--------------------------------------------------------------------
@@ -114,11 +123,23 @@ namespace gox
 
 			//	For tests: the last value the frame semaphore was signalled with
 			uint64_t GetFrameValue() const { return m_FrameValue; }
-			const gvk::vkdBuffer* GetColorBuffer() const { return m_pColor.get(); }
-			const gvk::vkdBuffer* GetDepthBuffer() const { return m_pDepth.get(); }
+			const gvk::vkdBuffer* GetColorBuffer() const { return m_Outputs[m_Current].m_pColor.get(); }
+			const gvk::vkdBuffer* GetDepthBuffer() const { return m_Outputs[m_Current].m_pDepth.get(); }
 
 		private:
+			//	What CUDA writes for one frame and Vulkan copies: a colour and a depth buffer
+			struct FrameOutputs
+			{
+				std::unique_ptr<gvk::vkdBuffer>	m_pColor;
+				std::unique_ptr<gvk::vkdBuffer>	m_pDepth;
+				CUdeviceptr						m_ColorPtr = 0;
+				CUdeviceptr						m_DepthPtr = 0;
+				uint64_t						m_LastReadValue = 0;	// Vulkan's timeline value of the last copy (0: none)
+			};
+			static const int c_OutputCount = 2;
+
 			bool make_semaphore();
+			void free_buffers();
 
 			gvk::vkdDevice&				m_Device;
 			gvk::vkdContext&			m_Context;
@@ -126,14 +147,11 @@ namespace gox
 			cuExternalSemaphore&		m_VulkanTimeline;
 			unsigned					m_Width;
 			unsigned					m_Height;
-			std::unique_ptr<gvk::vkdBuffer>	m_pColor;
-			std::unique_ptr<gvk::vkdBuffer>	m_pDepth;
-			CUdeviceptr					m_ColorPtr;
-			CUdeviceptr					m_DepthPtr;
+			FrameOutputs				m_Outputs[c_OutputCount];
+			int							m_Current;			// the outputs written, or last written
 			VkSemaphore					m_Frames;			// signalled by CUDA
 			cuExternalSemaphore			m_CudaFrames;		// the same, imported
 			uint64_t					m_FrameValue;		// the last value signalled
 			bool						m_bWaitPending;		// no copy has waited for m_FrameValue yet
-			uint64_t					m_LastReadValue;	// Vulkan's timeline value of the last copy (0: none)
 	};
 }

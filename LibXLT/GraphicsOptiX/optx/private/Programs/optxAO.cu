@@ -5,7 +5,8 @@
 **
 **	Compiled to OptiX IR by nvcc at build time and embedded as "optxAO"
 **	(optxEmbeddedPrograms). Entry points: __raygen__ao and
-**	__raygen__resolve (one launch each), __miss__camera (miss record 0),
+**	__raygen__resolve (one launch each; __raygen__ao resolves too with
+**	m_Resolve), __miss__camera (miss record 0),
 **	__miss__occlusion (miss record 1), __closesthit__camera (every hit
 **	group record: one per build input of the biggest GAS). Occlusion rays
 **	run no hit programs (TERMINATE_ON_FIRST_HIT, DISABLE_CLOSESTHIT).
@@ -111,6 +112,23 @@ namespace
 		return static_cast<unsigned int>(linear_to_srgb(c) * 255.0f + 0.5f);
 	}
 
+	//	The colour and depth buffers' texels of a pixel: i_Sum over i_nSamples
+	//	samples, and i_Depth (in [0, 1])
+	__forceinline__ __device__ void write_pixel(unsigned int i_Pixel, float3 i_Sum, unsigned int i_nSamples, float i_Depth)
+	{
+		const float scale = 1.0f / i_nSamples;
+		const unsigned int r = to_byte(i_Sum.x * scale);
+		const unsigned int g = to_byte(i_Sum.y * scale);
+		const unsigned int b = to_byte(i_Sum.z * scale);
+		unsigned int* color = reinterpret_cast<unsigned int*>(params.m_Color);
+		color[i_Pixel] = params.m_ColorOrder == e_optxColorBGRA ? (b | (g << 8) | (r << 16) | (255u << 24))
+																: (r | (g << 8) | (b << 16) | (255u << 24));
+		unsigned int* depth = reinterpret_cast<unsigned int*>(params.m_Depth);
+		//	(depth * 16777215 + 0.5 in float would round 1 up to 2^24)
+		depth[i_Pixel] = params.m_DepthLayout == e_optxDepthFloat ? __float_as_uint(i_Depth)
+																  : min(__float2uint_rn(i_Depth * 16777215.0f), 16777215u);
+	}
+
 	//	Whether an occlusion ray from i_Origin along i_Direction hits anything
 	//	within the radius
 	__forceinline__ __device__ bool occluded(float3 i_Origin, float3 i_Direction)
@@ -136,6 +154,7 @@ extern "C" __global__ void __raygen__ao()
 	const float3 background = make_float3(params.m_Background[0], params.m_Background[1], params.m_Background[2]);
 
 	float3 sum = make_float3(0.0f, 0.0f, 0.0f);
+	float first_depth = 1.0f;		// sample 0's, if this launch has it
 	for (unsigned int s = 0; s < params.m_Samples; ++s)
 	{
 		const unsigned int sample = params.m_FirstSample + s;
@@ -197,23 +216,23 @@ extern "C" __global__ void __raygen__ao()
 
 		if (sample == 0)
 		{
-			unsigned int* out = reinterpret_cast<unsigned int*>(params.m_Depth);
-			depth = fminf(fmaxf(depth, 0.0f), 1.0f);
-			//	(depth * 16777215 + 0.5 in float would round 1 up to 2^24)
-			out[pixel] = params.m_DepthLayout == e_optxDepthFloat ? __float_as_uint(depth)
-																  : min(__float2uint_rn(depth * 16777215.0f), 16777215u);
+			first_depth = fminf(fmaxf(depth, 0.0f), 1.0f);
 		}
 	}
 
-	float* accum = reinterpret_cast<float*>(params.m_Accum) + 4 * pixel;
+	float4* accum = reinterpret_cast<float4*>(params.m_Accum) + pixel;
+	float depth = first_depth;
 	if (params.m_FirstSample != 0)
 	{
-		sum = sum + make_float3(accum[0], accum[1], accum[2]);
+		const float4 before = *accum;
+		sum = sum + make_float3(before.x, before.y, before.z);
+		depth = before.w;
 	}
-	accum[0] = sum.x;
-	accum[1] = sum.y;
-	accum[2] = sum.z;
-	accum[3] = 1.0f;
+	*accum = make_float4(sum.x, sum.y, sum.z, depth);
+	if (params.m_Resolve)
+	{
+		write_pixel(pixel, sum, params.m_FirstSample + params.m_Samples, depth);
+	}
 }
 
 extern "C" __global__ void __raygen__resolve()
@@ -224,14 +243,8 @@ extern "C" __global__ void __raygen__resolve()
 		return;
 	}
 	const unsigned int pixel = index.y * params.m_Width + index.x;
-	const float* accum = reinterpret_cast<const float*>(params.m_Accum) + 4 * pixel;
-	const float scale = 1.0f / params.m_FirstSample;
-	const unsigned int r = to_byte(accum[0] * scale);
-	const unsigned int g = to_byte(accum[1] * scale);
-	const unsigned int b = to_byte(accum[2] * scale);
-	unsigned int* out = reinterpret_cast<unsigned int*>(params.m_Color);
-	out[pixel] = params.m_ColorOrder == e_optxColorBGRA ? (b | (g << 8) | (r << 16) | (255u << 24))
-														: (r | (g << 8) | (b << 16) | (255u << 24));
+	const float4 accum = reinterpret_cast<const float4*>(params.m_Accum)[pixel];
+	write_pixel(pixel, make_float3(accum.x, accum.y, accum.z), params.m_FirstSample, accum.w);
 }
 
 extern "C" __global__ void __miss__camera()

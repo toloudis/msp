@@ -49,7 +49,8 @@ namespace gox
 			bool IsCreated() const { return m_Pipeline != NULL; }
 
 			//--------------------------------------------------------------------
-			//	Accumulate - __raygen__ao over m_Width x m_Height.
+			//	Accumulate - __raygen__ao over m_Width x m_Height (resolving
+			//	too with m_Resolve).
 			//	i_nHitRecords: the hit group records the traversable needs
 			//	(g3dSceneBVHOptiX::GetSbtRecordCount)
 			//--------------------------------------------------------------------

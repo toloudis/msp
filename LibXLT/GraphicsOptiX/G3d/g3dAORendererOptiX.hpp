@@ -9,9 +9,11 @@
 **
 **	1. Updates its scene BVH (g3dSceneBVHOptiX: GAS from the cache, IAS).
 **	2. Unless the image has converged, launches GetSamplesPerFrame more AO
-**	   samples per pixel into its accumulation buffer, then resolves them
-**	   into the shared colour buffer and writes depth (optxAO, on the OptiX
-**	   stream), and signals the frame semaphore (optxFrameShare).
+**	   samples per pixel into its accumulation buffer, resolving them into
+**	   the shared colour and depth buffers in the same launch (optxAO, on
+**	   the OptiX stream), and signals the frame semaphore (optxFrameShare,
+**	   double buffered, so tracing the next frame doesn't wait for Vulkan's
+**	   copy of this one).
 **	3. Copies the shared colour and depth buffers into the target's colour
 **	   and depth images (Vulkan waits for the frame semaphore).
 **	4. Draws the rest with g3dSceneRendererVk, without clearing and

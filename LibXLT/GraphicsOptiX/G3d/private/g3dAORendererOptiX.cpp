@@ -346,7 +346,8 @@ namespace gox
 
 	//	Step 2 of Render: more samples toward i_nGoal (one launch, or with
 	//	i_bAll launches until it is reached or the capture is aborted), then
-	//	resolved into the shared buffers
+	//	resolved into the shared buffers: by the last launch itself, or (an
+	//	aborted capture) by a resolve launch
 	bool g3dAORendererOptiX::trace(const Key& i_Key, const optxColorOrder i_Order, const optxDepthLayout i_Layout,
 								   unsigned i_nGoal, bool i_bAll)
 	{
@@ -360,8 +361,6 @@ namespace gox
 		params.m_Handle = m_BVH.GetHandle();
 		params.m_Instances = m_BVH.GetInstanceTable();
 		params.m_Accum = m_Accum.Get();
-		params.m_Color = m_Share.Color();
-		params.m_Depth = m_Share.Depth();
 		params.m_Width = i_Key.m_Width;
 		params.m_Height = i_Key.m_Height;
 		double inverse[16];
@@ -399,23 +398,29 @@ namespace gox
 		{
 			return false;
 		}
+		params.m_Color = m_Share.Color();	// the pair BeginWrite picked
+		params.m_Depth = m_Share.Depth();
+		bool resolved = false;
 		do
 		{
 			G3D_PROFILE_SCOPE("AOLaunch");
 			params.m_FirstSample = m_nSamples;
 			params.m_Samples = std::min(m_nSamplesPerFrame, i_nGoal - m_nSamples);
-			if (!m_AO.Accumulate(params, m_BVH.GetSbtRecordCount()))
+			params.m_Resolve = (!i_bAll || m_nSamples + params.m_Samples >= i_nGoal) ? 1 : 0;			if (!m_AO.Accumulate(params, m_BVH.GetSbtRecordCount()))
 			{
 				return false;
 			}
 			m_nSamples += params.m_Samples;
 			++m_nLaunches;
+			resolved = params.m_Resolve != 0;
 		}
 		while (i_bAll && m_nSamples < i_nGoal && !g3dThreadControl::ShouldRenderThreadAbort());
-		params.m_FirstSample = m_nSamples;
-		params.m_Samples = 0;
+		if (!resolved)
 		{
 			G3D_PROFILE_SCOPE("AOResolve");
+			params.m_FirstSample = m_nSamples;
+			params.m_Samples = 0;
+			params.m_Resolve = 0;
 			if (!m_AO.Resolve(params))
 			{
 				return false;

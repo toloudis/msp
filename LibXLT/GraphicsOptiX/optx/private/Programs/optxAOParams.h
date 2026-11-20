@@ -6,16 +6,20 @@
 **	(optxAO). Two launches, each m_Width x m_Height:
 **
 **	- __raygen__ao adds m_Samples samples per pixel to the accumulation
-**	  buffer (the first, at m_FirstSample 0, replaces what it holds). Each
+**	  buffer's rgb (the first, at m_FirstSample 0, replaces what it holds). Each
 **	  sample is a camera ray through a point of the pixel (its centre for
 **	  sample 0, else a random point) from the inverse view-projection; on a
 **	  hit, m_AORays cosine-weighted occlusion rays up to m_Radius from the
 **	  hit point add the fraction that escaped; a miss adds the background.
-**	  Sample 0 also writes the depth buffer: the hit's clip-space z/w from
-**	  m_ViewProj (the raster's), or 1 for a miss.
+**	  Sample 0 also keeps the pixel's depth in the buffer's fourth float:
+**	  the hit's clip-space z/w from m_ViewProj (the raster's), or 1 for a
+**	  miss. With m_Resolve, it then resolves the pixel as __raygen__resolve
+**	  does (with m_FirstSample + m_Samples samples), so a frame that adds
+**	  samples and shows them is one launch.
 **	- __raygen__resolve divides the sums by m_FirstSample (the samples
 **	  accumulated so far), encodes them as sRGB and writes the 8-bit colour
-**	  buffer in the target's byte order.
+**	  buffer in the target's byte order, and writes the kept depth to the
+**	  depth buffer.
 **
 **	Matrices multiply row vectors (p * M), as maMatrix4x4 does; row-major.
 **	Random numbers are a hash of (pixel, sample, m_Seed): the same
@@ -69,5 +73,6 @@ namespace gox
 		unsigned int				m_ColorOrder;		// optxColorOrder
 		unsigned int				m_DepthLayout;		// optxDepthLayout
 		unsigned int				m_Seed;
+		unsigned int				m_Resolve;			// __raygen__ao: also resolve (non-zero)
 	};
 }
