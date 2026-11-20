@@ -32,6 +32,9 @@
 #ifndef GVK_G3DVKBUFFERUTIL_HPP
 #include "GraphicsVulkan/G3d/g3dVkBufferUtil.hpp"
 #endif
+#ifndef GVK_G3DVKTEXTUREUTIL_HPP
+#include "GraphicsVulkan/G3d/g3dVkTextureUtil.hpp"
+#endif
 #ifndef GVK_VKDGLOBAL_HPP
 #include "GraphicsVulkan/vkd/vkdGlobal.hpp"
 #endif
@@ -113,8 +116,10 @@ bool GraphicsOptiXLayer::Init(void* i_hWnd, const g3dGfxOptions& i_Options)
 	}
 	l_bInitialized = true;
 
-	//	Static meshes in exportable memory, so GAS are built from them in place
+	//	Static meshes in exportable memory, so GAS are built from them in place;
+	//	2D textures too, so CUDA samples them in place
 	gvk::g3dVkBufferUtil::ExportStaticGeometry(true);
+	gvk::g3dVkTextureUtil::ExportTextures(true);
 	l_pGasCache = new g3dGasCacheOptiX(gvk::vkdGlobal::Device(), gvk::vkdGlobal::Context());
 	g3dGasCacheOptiX::Set(l_pGasCache);
 
@@ -140,6 +145,7 @@ void GraphicsOptiXLayer::CleanUp() throw()
 	delete l_pGasCache;
 	l_pGasCache = NULL;
 	gvk::g3dVkBufferUtil::ExportStaticGeometry(false);
+	gvk::g3dVkTextureUtil::ExportTextures(false);
 
 	GraphicsVulkanLayer::CleanUp();
 

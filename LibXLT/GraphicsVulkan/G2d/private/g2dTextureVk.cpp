@@ -12,6 +12,9 @@
 #ifndef GVK_VKDIMAGE_HPP
 #include "GraphicsVulkan/vkd/vkdImage.hpp"
 #endif
+#ifndef GVK_G3DVKTEXTUREUTIL_HPP
+#include "GraphicsVulkan/G3d/g3dVkTextureUtil.hpp"
+#endif
 #ifndef GVK_VKDFORMAT_HPP
 #include "GraphicsVulkan/vkd/vkdFormat.hpp"
 #endif
@@ -73,6 +76,7 @@ namespace gvk
 		desc.m_Width = i_Width;
 		desc.m_Height = i_Height;
 		desc.m_Usage = c_TextureUsage;
+		g3dVkTextureUtil::MakeExportable(desc);
 		if (desc.m_Format == VK_FORMAT_UNDEFINED)
 		{
 			DBG_ERROR("g2dTextureVk: unsupported format " << i_DxgiFormat);

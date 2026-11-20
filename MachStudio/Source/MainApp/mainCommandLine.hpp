@@ -101,6 +101,9 @@
 **	  -capTraceBounces <n>       ray tracing: diffuse bounces after the first
 **	                             hit (Illumination Only), 0 to 32 (0: direct
 **	                             light only)
+**	  -capTraceDebug <view>      ray tracing: the debug view the default and
+**	                             HDR passes show: off, basecolor, normal,
+**	                             roughness, metallic, emission or opacity
 **	                             The -capTrace* flags set every render
 **	                             layer's ray tracing preferences; other
 **	                             backends ignore them
@@ -181,6 +184,7 @@ struct mainCommandLine
 		e_CapTraceSampleLimit,		// -capTraceSampleLimit <n>: "1" to "65536"
 		e_CapTraceAORays,			// -capTraceAORays <n>: "0" to "64"
 		e_CapTraceBounces,			// -capTraceBounces <n>: "0" to "32"
+		e_CapTraceDebug,			// -capTraceDebug <view>: the view's number, "0" (off) to "6"
 		e_New,				// -new: start a new, empty scene
 		e_License,			// -license <key>: validate a license key
 		e_Version,			// -version: print the version

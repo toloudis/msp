@@ -411,6 +411,7 @@ void copy_image(vkdImage* i_pSource, vkdImage* i_pDest, uint32_t i_Mips)
 		region.extent = { std::max(1u, src.m_Width >> mip), std::max(1u, src.m_Height >> mip), std::max(1u, src.m_Depth >> mip) };
 		vkCmdCopyImage(commands, i_pSource->Image(), VK_IMAGE_LAYOUT_GENERAL, i_pDest->Image(), VK_IMAGE_LAYOUT_GENERAL, 1, &region);
 	}
+	i_pDest->MarkWritten();
 }
 
 //	Same size, samples and bytes per texel (D3D11's CopyResource rule,

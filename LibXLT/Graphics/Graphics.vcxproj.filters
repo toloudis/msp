@@ -561,6 +561,9 @@
     <ClInclude Include="Eff\effOpacity.hpp">
       <Filter>Eff</Filter>
     </ClInclude>
+    <ClInclude Include="Eff\effTraceMaterial.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
     <ClInclude Include="Eff\effPbrData.hpp">
       <Filter>Eff</Filter>
     </ClInclude>
@@ -1444,6 +1447,9 @@
       <Filter>Eff\private</Filter>
     </ClCompile>
     <ClCompile Include="Eff\private\effPbrData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effTraceMaterial.cpp">
       <Filter>Eff\private</Filter>
     </ClCompile>
     <ClCompile Include="Eff\private\effBlurData.cpp">

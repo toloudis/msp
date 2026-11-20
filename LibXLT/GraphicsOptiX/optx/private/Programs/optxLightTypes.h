@@ -18,8 +18,11 @@
 **	- projected lights: the light's world-to-texture matrix (row vectors)
 **	  gives (u, v, z, w); the light reaches a point with z in [0, m_Far),
 **	  scaled by the elliptical penumbra of its inner and outer angles (or,
-**	  if the inner angle is the bigger, the square u, v in [0, 1]).
-**	  Projector textures aren't applied yet (they need texture sharing).
+**	  if the inner angle is the bigger, the square u, v in [0, 1]), and
+**	  by its texture (m_Texture: the projector image, or its ramp) sampled
+**	  at (u, v): bilinear, mip 0, black outside, as the raster's projSampler.
+**	  For an area light the texture is read at the shaded point's (u, v),
+**	  not per light sample, as the raster does. The Shadow Mask ignores it.
 **	- the direction to the light: to its position, or against its
 **	  direction (directional lights, and directional projected lights).
 **
@@ -71,7 +74,8 @@ namespace gox
 		float			m_InnerAngle;	// projected: radians
 		float			m_OuterAngle;
 		float			m_Aspect;
-		float			m_Pad[2];
+		unsigned int	m_Texture;		// projected: texture table index, or c_optxNoTexture
+		float			m_Pad;
 		float			m_Matrix[16];	// projected: world to texture, row vectors, row-major
 	};
 

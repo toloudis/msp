@@ -38,6 +38,9 @@
 #ifndef GVK_VKDIMAGE_HPP
 #include "GraphicsVulkan/vkd/vkdImage.hpp"
 #endif
+#ifndef GVK_G3DVKTEXTUREUTIL_HPP
+#include "GraphicsVulkan/G3d/g3dVkTextureUtil.hpp"
+#endif
 #ifndef DBG_MSG_HPP
 #include "Core/dbg/dbgMsg.hpp"
 #endif
@@ -300,6 +303,7 @@ std::unique_ptr<vkdImage> CreateImage(const matDecodedImage& i_Image, const char
 	desc.m_Layers = i_Image.m_Layers;
 	desc.m_bCube = i_Image.m_bCube;
 	desc.m_Usage = c_TextureUsage;
+	g3dVkTextureUtil::MakeExportable(desc);
 	if (desc.m_Format == VK_FORMAT_UNDEFINED)
 	{
 		DBG_WARNING("Texture format " << i_Image.m_DxgiFormat << " has no Vulkan format: " << i_Name);

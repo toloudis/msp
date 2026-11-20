@@ -174,6 +174,7 @@ namespace gvk
 		region.dstSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
 		region.extent = { i_pSource->Width(), i_pSource->Height(), 1 };
 		vkCmdResolveImage(context.Commands(), i_pSource->Image(), VK_IMAGE_LAYOUT_GENERAL, i_pDest->Image(), VK_IMAGE_LAYOUT_GENERAL, 1, &region);
+		i_pDest->MarkWritten();
 	}
 
 	//------------------------------------------------------------------------
@@ -368,6 +369,7 @@ namespace gvk
 			region.extent = { (uint32_t)(iW < oW ? iW : oW), (uint32_t)iH, 1 };
 			vkCmdCopyImage(vkdGlobal::Context().Commands(), GetTextureSurface()->Image(), VK_IMAGE_LAYOUT_GENERAL,
 						   o_pTexture->GetTextureSurface()->Image(), VK_IMAGE_LAYOUT_GENERAL, 1, &region);
+			o_pTexture->GetTextureSurface()->MarkWritten();
 		}
 		else if( !IsAA() )	//resort to a scaled copy if source is not MSAA
 		{

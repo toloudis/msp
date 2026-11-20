@@ -121,7 +121,8 @@ namespace g3dPrefs
 		m_TraceSampleLimit(1024),
 		m_TraceCaptureSamples(0),
 		m_TraceAORays(1),
-		m_TraceBounces(2)
+		m_TraceBounces(2),
+		m_TraceDebugView(e_TraceDebugOff)
 	{
 	}
 

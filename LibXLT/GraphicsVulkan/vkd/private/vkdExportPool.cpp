@@ -26,6 +26,7 @@ namespace gvk
 		pool->m_Allocator = i_Allocator;
 		pool->m_ExportInfo.handleTypes = vkdPlatformMemoryHandleType();
 		pool->m_BufferInfo.handleTypes = vkdPlatformMemoryHandleType();
+		pool->m_ImageInfo.handleTypes = vkdPlatformMemoryHandleType();
 
 		//	The memory type for what the pool holds: mesh buffers (vertices,
 		//	indices) and the frame buffers OptiX writes (storage, copies)
@@ -58,11 +59,46 @@ namespace gvk
 			return NULL;
 		}
 		vmaSetPoolName(i_Allocator, pool->m_Pool, "vkdExportPool");
+
+		//	The memory type for exportable textures (sampled, uploaded, mips
+		//	blitted, rendered into); without one, images aren't exported
+		VkImageCreateInfo image_info = {VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO};
+		image_info.pNext = &pool->m_ImageInfo;
+		image_info.imageType = VK_IMAGE_TYPE_2D;
+		image_info.format = VK_FORMAT_R8G8B8A8_UNORM;
+		image_info.extent = { 256, 256, 1 };
+		image_info.mipLevels = 9;
+		image_info.arrayLayers = 1;
+		image_info.samples = VK_SAMPLE_COUNT_1_BIT;
+		image_info.tiling = VK_IMAGE_TILING_OPTIMAL;
+		image_info.usage = VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT |
+						   VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+		image_info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+		image_info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		uint32_t image_type = 0;
+		if (vmaFindMemoryTypeIndexForImageInfo(i_Allocator, &image_info, &allocation, &image_type) == VK_SUCCESS)
+		{
+			VmaPoolCreateInfo image_pool = {};
+			image_pool.memoryTypeIndex = image_type;
+			image_pool.pMemoryAllocateNext = &pool->m_ExportInfo;
+			if (vmaCreatePool(i_Allocator, &image_pool, &pool->m_ImagePool) == VK_SUCCESS)
+			{
+				vmaSetPoolName(i_Allocator, pool->m_ImagePool, "vkdExportPool images");
+			}
+			else
+			{
+				pool->m_ImagePool = nullptr;
+			}
+		}
 		return pool;
 	}
 
 	vkdExportPool::~vkdExportPool()
 	{
+		if (m_ImagePool)
+		{
+			vmaDestroyPool(m_Allocator, m_ImagePool);
+		}
 		if (m_Pool)
 		{
 			vmaDestroyPool(m_Allocator, m_Pool);

@@ -1,17 +1,19 @@
 /*****************************************************************************
 **  optxLighting.cu
 **
-**      The lighting programs: Illumination Only and Shadow Mask, traced.
-**	See optxLightingParams.h (what each launch and mode does) and
-**	optxLightTypes.h (the lights).
+**      The lighting programs: Illumination Only, Shadow Mask and the
+**	tracer debug view, traced. See optxLightingParams.h (what each launch
+**	and mode does), optxLightTypes.h (the lights), optxMaterialTypes.h and
+**	optxMaterial.h (materials, textures, ray cones, opacity).
 **
 **	Compiled to OptiX IR by nvcc at build time and embedded as
 **	"optxLighting" (optxEmbeddedPrograms). Entry points:
 **	__raygen__lighting and __raygen__resolve, __miss__camera (miss
 **	record 0), __miss__occlusion (miss record 1), __closesthit__camera
-**	(every hit group record: one per build input of the biggest GAS).
+**	and __anyhit__opacity (every hit group record: one per build input of
+**	the biggest GAS; opaque build inputs disable the any-hit program).
 **	Every ray is traced from a ray generation program (trace depth 1).
-**	Occlusion rays run no hit programs.
+**	Occlusion rays run no closest hit program.
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -28,6 +30,12 @@
 #endif
 #ifndef GOX_OPTXSCENETYPES_H
 #include "optxSceneTypes.h"
+#endif
+#ifndef GOX_OPTXMATERIALTYPES_H
+#include "optxMaterialTypes.h"
+#endif
+#ifndef GOX_OPTXMATERIAL_H
+#include "optxMaterial.h"
 #endif
 
 using namespace gox;
@@ -78,6 +86,12 @@ namespace
 	__forceinline__ __device__ float3 normalize(float3 a) { return a * rsqrtf(dot(a, a)); }
 	__forceinline__ __device__ float saturate(float x) { return fminf(fmaxf(x, 0.0f), 1.0f); }
 	__forceinline__ __device__ float3 load3(const float* p) { return make_float3(p[0], p[1], p[2]); }
+	__forceinline__ __device__ float3 mul3(float3 a, float3 b) { return make_float3(a.x * b.x, a.y * b.y, a.z * b.z); }
+	__forceinline__ __device__ float3 read_float3(unsigned long long i_Address)
+	{
+		const float* p = reinterpret_cast<const float*>(i_Address);
+		return make_float3(p[0], p[1], p[2]);
+	}
 
 	//	(x, y, z, 1) * M, divided by w (row vectors, row-major M)
 	__forceinline__ __device__ float3 project(const float* M, float x, float y, float z, float& o_W)
@@ -143,24 +157,35 @@ namespace
 		float3			m_Geometric;	// geometric normal, facing the ray
 		float3			m_Shading;		// interpolated vertex normal, on the geometric normal's side
 		unsigned int	m_Instance;
+		unsigned int	m_Material;		// index, or c_optxNoMaterial
+		float2			m_UV;			// transformed by the material's UV transform
+		float3			m_S;			// world tangents (raster's tangent and binormal), flipped with the normal
+		float3			m_T3;
+		float			m_LodBase;		// 0.5 log2(texel area / world area) of the triangle
 	};
 
 	__forceinline__ __device__ Hit trace_camera(float3 i_Origin, float3 i_Direction, float i_TMax)
 	{
-		unsigned int t = 0, g0 = 0, g1 = 0, g2 = 0, s0 = 0, s1 = 0, s2 = 0, instance = 0, hit = 0;
+		unsigned int p[19] = {};
 		if (params.m_Handle)
 		{
 			optixTrace(params.m_Handle, i_Origin, i_Direction, 0.0f, i_TMax, 0.0f,
-					   OptixVisibilityMask(e_optxMaskCamera), OPTIX_RAY_FLAG_DISABLE_ANYHIT,
+					   OptixVisibilityMask(e_optxMaskCamera), OPTIX_RAY_FLAG_NONE,
 					   0, 1, 0,		// SBT offset, stride, miss index 0
-					   t, g0, g1, g2, s0, s1, s2, instance, hit);
+					   p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14],
+					   p[15], p[16], p[17], p[18]);
 		}
 		Hit result;
-		result.m_bHit = hit != 0;
-		result.m_T = __uint_as_float(t);
-		result.m_Geometric = make_float3(__uint_as_float(g0), __uint_as_float(g1), __uint_as_float(g2));
-		result.m_Shading = make_float3(__uint_as_float(s0), __uint_as_float(s1), __uint_as_float(s2));
-		result.m_Instance = instance;
+		result.m_bHit = p[8] != 0;
+		result.m_T = __uint_as_float(p[0]);
+		result.m_Geometric = make_float3(__uint_as_float(p[1]), __uint_as_float(p[2]), __uint_as_float(p[3]));
+		result.m_Shading = make_float3(__uint_as_float(p[4]), __uint_as_float(p[5]), __uint_as_float(p[6]));
+		result.m_Instance = p[7];
+		result.m_Material = p[9];
+		result.m_UV = make_float2(__uint_as_float(p[10]), __uint_as_float(p[11]));
+		result.m_S = make_float3(__uint_as_float(p[12]), __uint_as_float(p[13]), __uint_as_float(p[14]));
+		result.m_T3 = make_float3(__uint_as_float(p[15]), __uint_as_float(p[16]), __uint_as_float(p[17]));
+		result.m_LodBase = __uint_as_float(p[18]);
 		return result;
 	}
 
@@ -174,7 +199,7 @@ namespace
 		unsigned int hit = 1;
 		optixTrace(params.m_Handle, i_Origin, i_Direction, 0.0f, i_TMax, 0.0f,
 				   OptixVisibilityMask(e_optxMaskOcclusion),
-				   OPTIX_RAY_FLAG_TERMINATE_ON_FIRST_HIT | OPTIX_RAY_FLAG_DISABLE_CLOSESTHIT | OPTIX_RAY_FLAG_DISABLE_ANYHIT,
+				   OPTIX_RAY_FLAG_TERMINATE_ON_FIRST_HIT | OPTIX_RAY_FLAG_DISABLE_CLOSESTHIT,
 				   0, 1, 1,		// SBT offset, stride, miss index 1
 				   hit);
 		return hit != 0;
@@ -277,6 +302,13 @@ namespace
 					o_Distance = c_Infinity;
 				}
 				o_Color = color * factor;
+				if (i_Light.m_Texture != c_optxNoTexture && factor > 0.0f)
+				{
+					//	The projector image (or ramp) at the point, as the raster's projSampler
+					const optxTexture& texture = reinterpret_cast<const optxTexture*>(params.m_Textures)[i_Light.m_Texture];
+					const float4 tint = optxm::sample(texture, u, v, 0.0f);
+					o_Color = mul3(o_Color, make_float3(tint.x, tint.y, tint.z));
+				}
 				return factor > 0.0f;
 			}
 		}
@@ -359,25 +391,175 @@ namespace
 	{
 		float3			m_P;
 		float3			m_Geometric;	// facing the incoming ray
-		float3			m_Shading;
+		float3			m_Shading;		// normal-mapped, never past the horizon
 		float3			m_Origin;		// off the surface, for secondary rays
+		float3			m_Albedo;		// what bounces leave with
+		float			m_LodBase;		// the hit's ray-cone level, without a texture's size
 		bool			m_bReceivesShadow;
 		unsigned int	m_First;
 		unsigned int	m_Count;
 		bool			m_bAll;
 	};
 
-	__forceinline__ __device__ Surface make_surface(float3 i_P, const Hit& i_Hit)
+	__forceinline__ __device__ const optxMaterial* material_of(const Hit& i_Hit)
+	{
+		if (i_Hit.m_Material == c_optxNoMaterial || !params.m_Materials)
+		{
+			return NULL;
+		}
+		return reinterpret_cast<const optxMaterial*>(params.m_Materials) + i_Hit.m_Material;
+	}
+
+	__forceinline__ __device__ float4 material_sample(unsigned int i_Map, const Surface& i_Surface, const Hit& i_Hit)
+	{
+		return optxm::sample_lod(params.m_Textures, i_Map, i_Hit.m_UV, i_Surface.m_LodBase);
+	}
+
+	__forceinline__ __device__ float3 base_color(const optxMaterial& i_Material, const Surface& i_Surface, const Hit& i_Hit)
+	{
+		float3 base = load3(i_Material.m_BaseColor);
+		if (i_Material.m_BaseColorMap != c_optxNoTexture)
+		{
+			const float4 s = material_sample(i_Material.m_BaseColorMap, i_Surface, i_Hit);
+			base = mul3(base, make_float3(s.x, s.y, s.z));
+		}
+		return base;
+	}
+
+	__forceinline__ __device__ float metallic_of(const optxMaterial& i_Material, const Surface& i_Surface, const Hit& i_Hit)
+	{
+		float metallic = i_Material.m_Metallic;
+		if (i_Material.m_MetallicRoughnessMap != c_optxNoTexture)
+		{
+			metallic *= material_sample(i_Material.m_MetallicRoughnessMap, i_Surface, i_Hit).z;
+		}
+		return metallic;
+	}
+
+	__forceinline__ __device__ float roughness_of(const optxMaterial& i_Material, const Surface& i_Surface, const Hit& i_Hit)
+	{
+		float roughness = i_Material.m_Roughness;
+		if (i_Material.m_GlossMap != c_optxNoTexture && (i_Material.m_Flags & (e_optxMaterialGlossBlinn | e_optxMaterialGlossPhong)))
+		{
+			//	effTraceMaterial::RoughnessForGloss
+			const float gloss = material_sample(i_Material.m_GlossMap, i_Surface, i_Hit).x;
+			if (i_Material.m_Flags & e_optxMaterialGlossBlinn)
+			{
+				roughness = 1.0f - saturate(i_Material.m_Shininess * gloss);
+			}
+			else
+			{
+				const float alpha = sqrtf(2.0f / (fmaxf(i_Material.m_Shininess * gloss, 0.0f) + 2.0f));
+				roughness = saturate(sqrtf(alpha));
+			}
+		}
+		if (i_Material.m_MetallicRoughnessMap != c_optxNoTexture)
+		{
+			roughness *= material_sample(i_Material.m_MetallicRoughnessMap, i_Surface, i_Hit).y;
+		}
+		return roughness;
+	}
+
+	//	A hit made a shading point: lights, the normal map (as the raster's
+	//	GetBumpNormal: (map * 2 - 1) scaled by (s, s, 1) in the S, T, N
+	//	frame), bent back above the horizon, and the albedo bounces take.
+	//	i_Width: the ray cone's width at the hit.
+	__forceinline__ __device__ Surface make_surface(float3 i_P, const Hit& i_Hit, float3 i_Direction, float i_Width)
 	{
 		Surface s;
 		s.m_P = i_P;
 		s.m_Geometric = i_Hit.m_Geometric;
 		s.m_Shading = i_Hit.m_Shading;
 		s.m_Origin = i_P + i_Hit.m_Geometric * params.m_Epsilon;
+		const float cosine = fmaxf(fabsf(dot(i_Direction, i_Hit.m_Geometric)), 1e-4f);
+		s.m_LodBase = i_Hit.m_LodBase + __log2f(fmaxf(i_Width, 1e-30f) / cosine);
 		const optxInstanceData& instance = reinterpret_cast<const optxInstanceData*>(params.m_Instances)[i_Hit.m_Instance];
 		s.m_bReceivesShadow = (instance.m_Flags & e_optxInstanceReceivesShadow) != 0;
 		light_range(instance, s.m_First, s.m_Count, s.m_bAll);
+
+		const optxMaterial* material = material_of(i_Hit);
+		s.m_Albedo = make_float3(1.0f, 1.0f, 1.0f);
+		if (material)
+		{
+			if (material->m_NormalMap != c_optxNoTexture && material->m_NormalScale != 0.0f)
+			{
+				const float4 m = material_sample(material->m_NormalMap, s, i_Hit);
+				const float nx = (m.x * 2.0f - 1.0f) * material->m_NormalScale;
+				const float ny = (m.y * 2.0f - 1.0f) * material->m_NormalScale;
+				const float nz = m.z * 2.0f - 1.0f;
+				const float3 n = i_Hit.m_S * nx + i_Hit.m_T3 * ny + i_Hit.m_Shading * nz;
+				const float n2 = dot(n, n);
+				if (n2 > 1e-20f)
+				{
+					s.m_Shading = n * rsqrtf(n2);
+				}
+			}
+			s.m_Albedo = base_color(*material, s, i_Hit) * (1.0f - saturate(metallic_of(*material, s, i_Hit)));
+		}
+		//	Never past the horizon: a normal map can't light a surface's back
+		const float above = dot(s.m_Shading, s.m_Geometric);
+		if (above < 1e-3f)
+		{
+			s.m_Shading = normalize(s.m_Shading + s.m_Geometric * (1e-3f - above));
+		}
+		if (params.m_bAlbedoOverride)
+		{
+			s.m_Albedo = make_float3(params.m_Albedo, params.m_Albedo, params.m_Albedo);
+		}
 		return s;
+	}
+
+	//	The debug view's quantity at the first hit (optxDebugView)
+	__forceinline__ __device__ float3 debug_value(const Hit& i_Hit, const Surface& i_Surface, float3 i_Direction, float i_Width)
+	{
+		const optxMaterial* material = material_of(i_Hit);
+		switch (params.m_DebugView)
+		{
+			case e_optxDebugNormal:
+				return i_Surface.m_Shading * 0.5f + make_float3(0.5f, 0.5f, 0.5f);
+			case e_optxDebugBaseColor:
+				return material ? base_color(*material, i_Surface, i_Hit) : make_float3(1.0f, 1.0f, 1.0f);
+			case e_optxDebugRoughness:
+			{
+				const float r = material ? roughness_of(*material, i_Surface, i_Hit) : 1.0f;
+				return make_float3(r, r, r);
+			}
+			case e_optxDebugMetallic:
+			{
+				const float m = material ? metallic_of(*material, i_Surface, i_Hit) : 0.0f;
+				return make_float3(m, m, m);
+			}
+			case e_optxDebugEmission:
+			{
+				if (!material)
+				{
+					return make_float3(0.0f, 0.0f, 0.0f);
+				}
+				float3 e = load3(material->m_Emission);
+				if (material->m_EmissionMap != c_optxNoTexture)
+				{
+					const float4 s = material_sample(material->m_EmissionMap, i_Surface, i_Hit);
+					e = mul3(e, make_float3(s.x, s.y, s.z));
+				}
+				return e;
+			}
+			case e_optxDebugOpacity:
+			{
+				float o = 1.0f;
+				if (material && (material->m_Flags & (e_optxMaterialCutOut | e_optxMaterialTransparent)))
+				{
+					o = material->m_Opacity;
+					if (material->m_OpacityMap != c_optxNoTexture)
+					{
+						const float4 s = material_sample(material->m_OpacityMap, i_Surface, i_Hit);
+						o *= (material->m_Flags & e_optxMaterialOpacityAlpha) ? s.w : s.x;
+					}
+				}
+				return make_float3(o, o, o);
+			}
+			default:
+				return make_float3(0.0f, 0.0f, 0.0f);
+		}
 	}
 
 	__forceinline__ __device__ bool shadowed_pair(const Surface& i_Surface, const optxLight& i_Light)
@@ -652,9 +834,15 @@ extern "C" __global__ void __raygen__lighting()
 		{
 			const float3 position = near_point + direction * first.m_T;
 			depth = project(params.m_ViewProj, position.x, position.y, position.z, w).z;
-			Surface surface = make_surface(position, first);
+			float width = params.m_ConeWidth + params.m_ConeSpread * first.m_T;
+			float spread = params.m_ConeSpread;
+			Surface surface = make_surface(position, first, direction, width);
 
-			if (params.m_Mode == e_optxLightingShadowMask)
+			if (params.m_Mode == e_optxLightingDebug)
+			{
+				sum = sum + debug_value(first, surface, direction, width);
+			}
+			else if (params.m_Mode == e_optxLightingShadowMask)
 			{
 				const float mask = shadow_mask(surface, rng);
 				sum = sum + make_float3(mask, mask, mask);
@@ -662,11 +850,11 @@ extern "C" __global__ void __raygen__lighting()
 			else
 			{
 				float3 radiance = make_float3(0.0f, 0.0f, 0.0f);
-				float throughput = 1.0f;
+				float3 throughput = make_float3(1.0f, 1.0f, 1.0f);
 				for (unsigned int bounce = 0;; ++bounce)
 				{
 					bool any_weighted = false;
-					radiance = radiance + direct_light(surface, rng, any_weighted) * throughput;
+					radiance = radiance + mul3(direct_light(surface, rng, any_weighted), throughput);
 					if (bounce >= params.m_Bounces && !any_weighted)
 					{
 						break;
@@ -680,23 +868,26 @@ extern "C" __global__ void __raygen__lighting()
 					const Hit next = trace_camera(surface.m_Origin, wi, c_Infinity);
 					if (any_weighted)
 					{
-						radiance = radiance + bounce_light(surface, wi, next.m_bHit ? next.m_T : c_Infinity) * throughput;
+						radiance = radiance + mul3(bounce_light(surface, wi, next.m_bHit ? next.m_T : c_Infinity), throughput);
 					}
 					if (bounce >= params.m_Bounces || !next.m_bHit)
 					{
 						break;
 					}
-					throughput *= params.m_Albedo;
+					//	The path leaves with this surface's diffuse albedo
+					throughput = mul3(throughput, surface.m_Albedo);
 					if (bounce + 1 >= 3)
 					{
-						const float survive = fminf(throughput, 0.95f);
+						const float survive = fminf(fmaxf(throughput.x, fmaxf(throughput.y, throughput.z)), 0.95f);
 						if (rng.Next() >= survive)
 						{
 							break;
 						}
-						throughput /= survive;
+						throughput = throughput * (1.0f / survive);
 					}
-					surface = make_surface(surface.m_Origin + wi * next.m_T, next);
+					spread += c_optxBounceSpread;
+					width += spread * next.m_T;
+					surface = make_surface(surface.m_Origin + wi * next.m_T, next, wi, width);
 				}
 				sum = sum + radiance;
 			}
@@ -745,46 +936,30 @@ extern "C" __global__ void __miss__occlusion()
 	optixSetPayload_0(0);
 }
 
-namespace
-{
-	__forceinline__ __device__ float3 read_float3(unsigned long long i_Address)
-	{
-		const float* p = reinterpret_cast<const float*>(i_Address);
-		return make_float3(p[0], p[1], p[2]);
-	}
-}
-
-//	The hit's distance, world-space geometric normal (facing the ray) and
-//	interpolated vertex normal (on the same side), and instance
+//	The hit (see Hit): its distance, world-space geometric normal (facing
+//	the ray), interpolated vertex normal and tangents S and T (flipped
+//	together onto the geometric normal's side, as the raster flips the
+//	bumped normal of a back face), instance, material, transformed texture
+//	coordinates and ray-cone level base
 extern "C" __global__ void __closesthit__camera()
 {
 	const unsigned int instance_id = optixGetInstanceId();
 	const optxInstanceData& instance = reinterpret_cast<const optxInstanceData*>(params.m_Instances)[instance_id];
 	const optxGeometryInput& input = reinterpret_cast<const optxGeometryInput*>(instance.m_Inputs)[optixGetSbtGASIndex()];
-	const unsigned int triangle = optixGetPrimitiveIndex();
-	unsigned int i0, i1, i2;
-	if (input.m_IndexSize == 2)
-	{
-		const unsigned short* indices = reinterpret_cast<const unsigned short*>(input.m_Indices) + 3 * triangle;
-		i0 = indices[0];
-		i1 = indices[1];
-		i2 = indices[2];
-	}
-	else
-	{
-		const unsigned int* indices = reinterpret_cast<const unsigned int*>(input.m_Indices) + 3 * triangle;
-		i0 = indices[0];
-		i1 = indices[1];
-		i2 = indices[2];
-	}
-	const unsigned long long v0 = instance.m_Vertices + (unsigned long long)i0 * instance.m_VertexStride;
-	const unsigned long long v1 = instance.m_Vertices + (unsigned long long)i1 * instance.m_VertexStride;
-	const unsigned long long v2 = instance.m_Vertices + (unsigned long long)i2 * instance.m_VertexStride;
+	const uint3 idx = optxm::triangle_indices(input, optixGetPrimitiveIndex());
+	const unsigned long long v0 = instance.m_Vertices + (unsigned long long)idx.x * instance.m_VertexStride;
+	const unsigned long long v1 = instance.m_Vertices + (unsigned long long)idx.y * instance.m_VertexStride;
+	const unsigned long long v2 = instance.m_Vertices + (unsigned long long)idx.z * instance.m_VertexStride;
 	const float3 p0 = read_float3(v0);
 	const float3 p1 = read_float3(v1);
 	const float3 p2 = read_float3(v2);
+	const float2 b = optixGetTriangleBarycentrics();
+	const float b0 = 1.0f - b.x - b.y;
 
 	const float3 direction = optixGetWorldRayDirection();
+	const float3 e1 = optixTransformVectorFromObjectToWorldSpace(p1 - p0);
+	const float3 e2 = optixTransformVectorFromObjectToWorldSpace(p2 - p0);
+	const float world_area = sqrtf(dot(cross(e1, e2), cross(e1, e2)));
 	float3 geometric = optixTransformNormalFromObjectToWorldSpace(cross(p1 - p0, p2 - p0));
 	const float length2 = dot(geometric, geometric);
 	if (!(length2 > 1e-30f))
@@ -801,17 +976,47 @@ extern "C" __global__ void __closesthit__camera()
 	}
 
 	float3 shading = geometric;
-	if (instance.m_NormalOffset != c_optxNoNormal)
+	float flip = 1.0f;
+	if (instance.m_NormalOffset != c_optxNoAttribute)
 	{
-		const float2 b = optixGetTriangleBarycentrics();
-		const float3 n = read_float3(v0 + instance.m_NormalOffset) * (1.0f - b.x - b.y) +
-						 read_float3(v1 + instance.m_NormalOffset) * b.x + read_float3(v2 + instance.m_NormalOffset) * b.y;
+		const float3 n = read_float3(v0 + instance.m_NormalOffset) * b0 + read_float3(v1 + instance.m_NormalOffset) * b.x +
+						 read_float3(v2 + instance.m_NormalOffset) * b.y;
 		float3 world = optixTransformNormalFromObjectToWorldSpace(n);
 		const float n2 = dot(world, world);
 		if (n2 > 1e-30f)
 		{
 			world = world * rsqrtf(n2);
-			shading = dot(world, geometric) < 0.0f ? world * -1.0f : world;
+			flip = dot(world, geometric) < 0.0f ? -1.0f : 1.0f;
+			shading = world * flip;
+		}
+	}
+
+	float3 s = make_float3(0.0f, 0.0f, 0.0f), t = make_float3(0.0f, 0.0f, 0.0f);
+	if (instance.m_TangentOffset != c_optxNoAttribute && instance.m_BitangentOffset != c_optxNoAttribute)
+	{
+		s = optixTransformVectorFromObjectToWorldSpace(read_float3(v0 + instance.m_TangentOffset) * b0 +
+													   read_float3(v1 + instance.m_TangentOffset) * b.x +
+													   read_float3(v2 + instance.m_TangentOffset) * b.y) * flip;
+		t = optixTransformVectorFromObjectToWorldSpace(read_float3(v0 + instance.m_BitangentOffset) * b0 +
+													   read_float3(v1 + instance.m_BitangentOffset) * b.x +
+													   read_float3(v2 + instance.m_BitangentOffset) * b.y) * flip;
+	}
+
+	float2 uv = make_float2(0.0f, 0.0f);
+	float lod_base = -64.0f;
+	if (input.m_Material != c_optxNoMaterial && params.m_Materials)
+	{
+		const optxMaterial& material = reinterpret_cast<const optxMaterial*>(params.m_Materials)[input.m_Material];
+		float2 uv0, uv1, uv2;
+		optxm::triangle_uvs(instance, idx, uv0, uv1, uv2);
+		uv0 = optxm::transform_uv(material, uv0);
+		uv1 = optxm::transform_uv(material, uv1);
+		uv2 = optxm::transform_uv(material, uv2);
+		uv = optxm::lerp2(uv0, uv1, uv2, b);
+		const float uv_area = fabsf((uv1.x - uv0.x) * (uv2.y - uv0.y) - (uv2.x - uv0.x) * (uv1.y - uv0.y));
+		if (uv_area > 0.0f && world_area > 0.0f)
+		{
+			lod_base = 0.5f * __log2f(uv_area / world_area);
 		}
 	}
 
@@ -824,4 +1029,23 @@ extern "C" __global__ void __closesthit__camera()
 	optixSetPayload_6(__float_as_uint(shading.z));
 	optixSetPayload_7(instance_id);
 	optixSetPayload_8(1);
+	optixSetPayload_9(input.m_Material);
+	optixSetPayload_10(__float_as_uint(uv.x));
+	optixSetPayload_11(__float_as_uint(uv.y));
+	optixSetPayload_12(__float_as_uint(s.x));
+	optixSetPayload_13(__float_as_uint(s.y));
+	optixSetPayload_14(__float_as_uint(s.z));
+	optixSetPayload_15(__float_as_uint(t.x));
+	optixSetPayload_16(__float_as_uint(t.y));
+	optixSetPayload_17(__float_as_uint(t.z));
+	optixSetPayload_18(__float_as_uint(lod_base));
+}
+
+//	Cut-out and transparent materials let rays through (optxMaterial.h)
+extern "C" __global__ void __anyhit__opacity()
+{
+	if (!optxm::opacity_passes(params.m_Instances, params.m_Materials, params.m_Textures, params.m_Seed))
+	{
+		optixIgnoreIntersection();
+	}
 }

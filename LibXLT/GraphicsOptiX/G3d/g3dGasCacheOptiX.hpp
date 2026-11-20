@@ -33,6 +33,12 @@
 **	built from (reordering triangles for transparency sorting keeps the
 **	index generation: it changes no geometry).
 **
+**	Opacity: an input whose fragment's material may let light through
+**	(NeedsAnyHit: a cut-out or transparent material) is built with the
+**	any-hit program enabled, every other with OPTIX_GEOMETRY_FLAG_DISABLE_-
+**	ANYHIT, so opaque geometry costs nothing. A change of that flag rebuilds
+**	the GAS.
+**
 **	Vertices must have a float3 position at offset 0: the formats the
 **	fragment creators make (BumpTex1Vertex) are checked; another format
 **	gets no GAS (logged once). Indices are 16- or 32-bit, as the buffer
@@ -53,6 +59,9 @@
 #endif
 #ifndef GOX_CUEXTERNALMEMORYCACHE_HPP
 #include "GraphicsOptiX/cu/cuExternalMemoryCache.hpp"
+#endif
+#ifndef GOX_CUEXTERNALIMAGECACHE_HPP
+#include "GraphicsOptiX/cu/cuExternalImageCache.hpp"
 #endif
 #ifndef GOX_CUEXTERNALSEMAPHORE_HPP
 #include "GraphicsOptiX/cu/cuExternalSemaphore.hpp"
@@ -89,6 +98,7 @@ namespace gox
 				CUdeviceptr	m_Indices;
 				unsigned	m_IndexSize;		// 2 or 4
 				unsigned	m_NumTriangles;
+				bool		m_bAnyHit = false;	// built with the any-hit program
 			};
 
 			//--------------------------------------------------------------------
@@ -101,6 +111,9 @@ namespace gox
 				CUdeviceptr				m_Vertices = 0;
 				unsigned				m_VertexStride = 0;
 				unsigned				m_NormalOffset = 0;	// or c_optxNoNormal
+				unsigned				m_TexCoordOffset = 0;	// or c_optxNoAttribute
+				unsigned				m_TangentOffset = 0;
+				unsigned				m_BitangentOffset = 0;
 				unsigned				m_NumVertices = 0;
 				unsigned				m_NumTriangles = 0;	// over all inputs
 				std::vector<Input>		m_Inputs;
@@ -142,6 +155,12 @@ namespace gox
 			static bool IsTraceable(const gvk::tmeshFrag& i_Fragment);
 
 			//--------------------------------------------------------------------
+			//	NeedsAnyHit - whether a fragment's material can let rays through
+			//	(effOpacity: a map, a value below 1, or a MASK cutoff)
+			//--------------------------------------------------------------------
+			static bool NeedsAnyHit(const gvk::tmeshFrag& i_Fragment);
+
+			//--------------------------------------------------------------------
 			//	Ensure - the GAS for i_Fragments (one build input each, in this
 			//	order), which must share one vertex buffer: built, refit or
 			//	left as it is, as needed. NULL if it can't have one. The
@@ -170,11 +189,25 @@ namespace gox
 			cuExternalMemoryCache& GetMemoryCache() { return m_Memory; }
 
 			//--------------------------------------------------------------------
+			//	GetImageCache - textures as CUDA sees them, shared by every
+			//	renderer using this cache
+			//--------------------------------------------------------------------
+			cuExternalImageCache& GetImageCache() { return m_Images; }
+
+			//--------------------------------------------------------------------
 			//	GetVulkanTimeline - Vulkan's timeline semaphore, imported once
 			//	(CUDA refuses a second import of the same semaphore): for any
 			//	CUDA work that waits for Vulkan's submissions
 			//--------------------------------------------------------------------
 			cuExternalSemaphore& GetVulkanTimeline() { return m_Timeline; }
+
+			//--------------------------------------------------------------------
+			//	WaitForVulkan - CUDA work queued from now on waits until Vulkan's
+			//	timeline reaches i_Value (0 or a completed value: no wait),
+			//	submitting Vulkan's open command buffer first if the value is
+			//	still in it. False if the wait couldn't be queued.
+			//--------------------------------------------------------------------
+			bool WaitForVulkan(uint64_t i_Value);
 
 		private:
 			struct Key
@@ -191,12 +224,12 @@ namespace gox
 			bool update(Entry& io_Entry, const gvk::tmeshFrag* const* i_Fragments, size_t i_nFragments);
 			bool device_pointer(const gvk::g3dVkBuffer* i_pBuffer, const uint8_t* i_pCpuCopy, size_t i_Bytes,
 								cuBuffer& io_Upload, CUdeviceptr& o_Ptr, uint64_t& io_WaitValue);
-			bool wait_for_uploads(uint64_t i_Value);
 			bool build(Entry& io_Entry, bool i_bRefit);
 
 			gvk::vkdDevice&							m_Device;
 			gvk::vkdContext&						m_Context;
 			cuExternalMemoryCache					m_Memory;
+			cuExternalImageCache					m_Images;
 			cuExternalSemaphore						m_Timeline;		// Vulkan's, for uploads
 			std::map<Key, std::unique_ptr<Entry>>	m_Entries;
 			uint64_t								m_LastGeneration;

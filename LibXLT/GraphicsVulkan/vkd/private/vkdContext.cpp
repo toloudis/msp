@@ -399,6 +399,7 @@ namespace gvk
 				colors[c].imageLayout = VK_IMAGE_LAYOUT_GENERAL;
 				colors[c].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
 				colors[c].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+				m_Colors[c]->MarkWritten();		// for importers (vkdImage::Generation)
 				width = std::min(width, m_Colors[c]->Width());
 				height = std::min(height, m_Colors[c]->Height());
 			}
@@ -612,6 +613,7 @@ namespace gvk
 		}
 		i_pTarget->SetLastClearColor(i_Rgba);
 		std::lock_guard<std::recursive_mutex> lock(m_Device.StreamLock());
+		i_pTarget->MarkWritten();
 		VkCommandBuffer commands = begin_recording();
 		VkClearColorValue color;
 		memcpy(color.float32, i_Rgba, sizeof(color.float32));

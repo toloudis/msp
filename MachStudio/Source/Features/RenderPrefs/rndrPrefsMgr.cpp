@@ -144,6 +144,7 @@ namespace rndrPrefsMgr
 		const char* lc_Key_TraceCaptureSamples	= "TraceCaptureSamples";
 		const char* lc_Key_TraceAORays			= "TraceAORays";
 		const char* lc_Key_TraceBounces			= "TraceBounces";
+		const char* lc_Key_TraceDebugView		= "TraceDebugView";
 
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
@@ -547,6 +548,8 @@ namespace rndrPrefsMgr
 							{int value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_TraceAORays.SetValue(value);};
 						if (keyname == lc_Key_TraceBounces)
 							{int value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_TraceBounces.SetValue(value);};
+						if (keyname == lc_Key_TraceDebugView)
+							{int value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_TraceDebugView.SetValue(value);};
 					}
 				}
 
@@ -653,6 +656,7 @@ namespace rndrPrefsMgr
 			guiXMLTextWriter::WriteElement(lc_Key_TraceCaptureSamples, m_Data.m_TraceCaptureSamples.GetValue());
 			guiXMLTextWriter::WriteElement(lc_Key_TraceAORays, m_Data.m_TraceAORays.GetValue());
 			guiXMLTextWriter::WriteElement(lc_Key_TraceBounces, m_Data.m_TraceBounces.GetValue());
+			guiXMLTextWriter::WriteElement(lc_Key_TraceDebugView, m_Data.m_TraceDebugView.GetValue());
 
 			//	finish it up
 			guiXMLTextWriter::WriteEndElement();
@@ -768,6 +772,7 @@ namespace rndrPrefsMgr
 			m_Data.m_TraceCaptureSamples.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateTrace));
 			m_Data.m_TraceAORays.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateTrace));
 			m_Data.m_TraceBounces.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateTrace));
+			m_Data.m_TraceDebugView.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateTrace));
 		}
 
 		//--------------------------------------------------------------------
@@ -1453,6 +1458,7 @@ namespace rndrPrefsMgr
 			m_PrefsProxy->SetTraceCaptureSamples( m_Data.m_TraceCaptureSamples.GetValue() );
 			m_PrefsProxy->SetTraceAORays( m_Data.m_TraceAORays.GetValue() );
 			m_PrefsProxy->SetTraceBounces( m_Data.m_TraceBounces.GetValue() );
+			m_PrefsProxy->SetTraceDebugView( m_Data.m_TraceDebugView.GetValue() );
 			WritePrefsToConfigFile();
 			update_statusbar_renderprefs();
 		}

@@ -18,15 +18,19 @@
     <ClCompile Include="cu\private\cuBuffer.cpp"><Filter>cu</Filter></ClCompile>
     <ClCompile Include="cu\private\cuExternalWin.cpp"><Filter>cu</Filter></ClCompile>
     <ClCompile Include="cu\private\cuExternalMemoryCache.cpp"><Filter>cu</Filter></ClCompile>
+    <ClCompile Include="cu\private\cuExternalImageCache.cpp"><Filter>cu</Filter></ClCompile>
     <ClCompile Include="cu\private\cuExternalSemaphore.cpp"><Filter>cu</Filter></ClCompile>
     <ClCompile Include="optx\private\optxCheck.cpp"><Filter>optx</Filter></ClCompile>
     <ClCompile Include="optx\private\optxContext.cpp"><Filter>optx</Filter></ClCompile>
     <ClCompile Include="optx\private\optxRayQuery.cpp"><Filter>optx</Filter></ClCompile>
+    <ClCompile Include="optx\private\optxTextureProbe.cpp"><Filter>optx</Filter></ClCompile>
     <ClCompile Include="optx\private\optxAO.cpp"><Filter>optx</Filter></ClCompile>
     <ClCompile Include="optx\private\optxLighting.cpp"><Filter>optx</Filter></ClCompile>
     <ClCompile Include="optx\private\optxFrameShare.cpp"><Filter>optx</Filter></ClCompile>
     <ClCompile Include="G3d\private\g3dTraceRendererOptiX.cpp"><Filter>G3d</Filter></ClCompile>
     <ClCompile Include="G3d\private\g3dLightTableOptiX.cpp"><Filter>G3d</Filter></ClCompile>
+    <ClCompile Include="G3d\private\g3dMaterialTableOptiX.cpp"><Filter>G3d</Filter></ClCompile>
+    <ClCompile Include="G3d\private\g3dTextureTableOptiX.cpp"><Filter>G3d</Filter></ClCompile>
     <ClCompile Include="G3d\private\g3dProfilerGpuOptiX.cpp"><Filter>G3d</Filter></ClCompile>
     <ClCompile Include="optx\private\optxLoaderWin.cpp"><Filter>optx</Filter></ClCompile>
     <ClCompile Include="optx\private\optxEmbeddedPrograms.cpp"><Filter>optx</Filter></ClCompile>
@@ -41,22 +45,29 @@
     <ClInclude Include="optx\optxCheck.hpp"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\optxContext.hpp"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\optxRayQuery.hpp"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\optxTextureProbe.hpp"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\optxAO.hpp"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\optxLighting.hpp"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\optxFrameShare.hpp"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\private\Programs\optxAOParams.h"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\private\Programs\optxLightingParams.h"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\private\Programs\optxLightTypes.h"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\private\Programs\optxMaterialTypes.h"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\private\Programs\optxMaterial.h"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="G3d\g3dTraceRendererOptiX.hpp"><Filter>G3d</Filter></ClInclude>
     <ClInclude Include="G3d\g3dLightTableOptiX.hpp"><Filter>G3d</Filter></ClInclude>
+    <ClInclude Include="G3d\g3dMaterialTableOptiX.hpp"><Filter>G3d</Filter></ClInclude>
+    <ClInclude Include="G3d\g3dTextureTableOptiX.hpp"><Filter>G3d</Filter></ClInclude>
     <ClInclude Include="G3d\g3dProfilerGpuOptiX.hpp"><Filter>G3d</Filter></ClInclude>
     <ClInclude Include="cu\cuLoader.hpp"><Filter>cu</Filter></ClInclude>
     <ClInclude Include="cu\cuBuffer.hpp"><Filter>cu</Filter></ClInclude>
     <ClInclude Include="cu\cuExternal.hpp"><Filter>cu</Filter></ClInclude>
     <ClInclude Include="cu\cuExternalMemoryCache.hpp"><Filter>cu</Filter></ClInclude>
+    <ClInclude Include="cu\cuExternalImageCache.hpp"><Filter>cu</Filter></ClInclude>
     <ClInclude Include="cu\cuExternalSemaphore.hpp"><Filter>cu</Filter></ClInclude>
     <ClInclude Include="optx\private\optxEmbeddedPrograms.hpp"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\private\Programs\optxRayQueryParams.h"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\private\Programs\optxTextureProbeParams.h"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\private\Programs\optxSceneTypes.h"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="G3d\g3dSceneBVHOptiX.hpp"><Filter>G3d</Filter></ClInclude>
     <ClInclude Include="G3d\g3dGasCacheOptiX.hpp"><Filter>G3d</Filter></ClInclude>
@@ -69,5 +80,6 @@
     <None Include="optx\private\Programs\optxRayQuery.cu"><Filter>optx</Filter></None>
     <None Include="optx\private\Programs\optxAO.cu"><Filter>optx</Filter></None>
     <None Include="optx\private\Programs\optxLighting.cu"><Filter>optx</Filter></None>
+    <None Include="optx\private\Programs\optxTextureProbe.cu"><Filter>optx</Filter></None>
   </ItemGroup>
 </Project>

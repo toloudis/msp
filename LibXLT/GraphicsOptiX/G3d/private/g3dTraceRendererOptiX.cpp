@@ -144,11 +144,67 @@ namespace gox
 		{
 			return c <= 0.04045f ? c / 12.92f : std::pow((c + 0.055f) / 1.055f, 2.4f);
 		}
+
+		//	(x, y, z, 1) * M / w, row vectors
+		void unproject(const double i_M[16], double x, double y, double z, double o_P[3])
+		{
+			double p[4];
+			for (int c = 0; c < 4; ++c)
+			{
+				p[c] = x * i_M[c] + y * i_M[4 + c] + z * i_M[8 + c] + i_M[12 + c];
+			}
+			for (int c = 0; c < 3; ++c)
+			{
+				o_P[c] = p[c] / p[3];
+			}
+		}
+
+		//	A camera ray through NDC (x, y), as the programs make it: its
+		//	origin on the near plane and its direction
+		void camera_ray(const double i_InvViewProj[16], double x, double y, double o_Origin[3], double o_Direction[3])
+		{
+			double mid[3];
+			unproject(i_InvViewProj, x, y, 0.0, o_Origin);
+			unproject(i_InvViewProj, x, y, 0.5, mid);
+			double length = 0.0;
+			for (int c = 0; c < 3; ++c)
+			{
+				o_Direction[c] = mid[c] - o_Origin[c];
+				length += o_Direction[c] * o_Direction[c];
+			}
+			length = std::sqrt(length);
+			for (int c = 0; c < 3; ++c)
+			{
+				o_Direction[c] /= length > 0.0 ? length : 1.0;
+			}
+		}
+
+		//	A pixel's ray cone at the centre of the view: the distance between
+		//	two neighbouring pixels' ray origins (an orthographic pixel's
+		//	width) and the angle between their directions (a perspective
+		//	pixel's)
+		void pixel_cone(const double i_InvViewProj[16], unsigned i_Height, float& o_Width, float& o_Spread)
+		{
+			const double step = 2.0 / std::max(1u, i_Height);
+			double o0[3], d0[3], o1[3], d1[3];
+			camera_ray(i_InvViewProj, 0.0, 0.0, o0, d0);
+			camera_ray(i_InvViewProj, 0.0, step, o1, d1);
+			double distance = 0.0, cosine = 0.0;
+			for (int c = 0; c < 3; ++c)
+			{
+				distance += (o1[c] - o0[c]) * (o1[c] - o0[c]);
+				cosine += d0[c] * d1[c];
+			}
+			o_Width = float(std::sqrt(distance));
+			o_Spread = float(std::acos(std::min(1.0, std::max(-1.0, cosine))));
+		}
 	}
 
 	bool g3dTraceRendererOptiX::Key::operator==(const Key& i_Other) const
 	{
 		return m_SceneVersion == i_Other.m_SceneVersion && m_LightVersion == i_Other.m_LightVersion &&
+			   m_MaterialVersion == i_Other.m_MaterialVersion && m_TextureVersion == i_Other.m_TextureVersion &&
+			   m_DebugView == i_Other.m_DebugView && m_bAlbedoOverride == i_Other.m_bAlbedoOverride &&
 			   m_Width == i_Other.m_Width && m_Height == i_Other.m_Height && m_Mode == i_Other.m_Mode &&
 			   m_Radius == i_Other.m_Radius && m_AORays == i_Other.m_AORays && m_Bounces == i_Other.m_Bounces &&
 			   m_Albedo == i_Other.m_Albedo && m_Sampling == i_Other.m_Sampling && m_bUseCosine == i_Other.m_bUseCosine &&
@@ -167,8 +223,10 @@ namespace gox
 	g3dTraceRendererOptiX::g3dTraceRendererOptiX(Mode i_Mode, g3dGasCacheOptiX& i_Cache, gvk::vkdDevice& i_Device,
 												 gvk::vkdContext& i_Context)
 		: m_Mode(i_Mode)
+		, m_Cache(i_Cache)
 		, m_Context(i_Context)
 		, m_BVH(i_Cache)
+		, m_Textures(i_Cache.GetImageCache())
 		, m_bProgramsFailed(false)
 		, m_Share(i_Device, i_Context, i_Cache.GetMemoryCache(), i_Cache.GetVulkanTimeline())
 		, m_nSamplesPerFrame(c_DefaultSamplesPerFrame)
@@ -177,6 +235,8 @@ namespace gox
 		, m_nAORays(c_DefaultAORays)
 		, m_nBounces(c_DefaultBounces)
 		, m_Albedo(c_DefaultAlbedo)
+		, m_bAlbedoOverride(false)
+		, m_DebugView(-1)
 		, m_Sampling(e_optxSampleBoth)
 		, m_Seed(0)
 		, m_bRestart(true)
@@ -208,6 +268,8 @@ namespace gox
 		m_Accum.Free();
 		m_BVH.Release();
 		m_Lights.Release();
+		m_Materials.Release();
+		m_Textures.Release();
 		m_bHaveFrame = false;
 		m_bRestart = true;
 	}
@@ -268,6 +330,7 @@ namespace gox
 	void g3dTraceRendererOptiX::SetAlbedo(float i_Albedo)
 	{
 		m_Albedo = std::min(1.0f, std::max(0.0f, i_Albedo));
+		m_bAlbedoOverride = true;
 	}
 
 	void g3dTraceRendererOptiX::SetLightSampling(optxLightSampling i_Sampling)
@@ -280,9 +343,20 @@ namespace gox
 		m_Seed = i_Seed;
 	}
 
-	bool g3dTraceRendererOptiX::create_programs()
+	//	The debug view the e_AO mode shows (0: none)
+	unsigned g3dTraceRendererOptiX::debug_view() const
 	{
-		if (lighting() ? m_Lighting.IsCreated() : m_AO.IsCreated())
+		if (m_Mode != e_AO)
+		{
+			return 0;
+		}
+		const int view = m_DebugView >= 0 ? m_DebugView : g3dPrefs::CurrentPrefs().m_TraceDebugView;
+		return (view > 0 && view < g3dPrefs::g3dRenderPrefs::e_TraceDebugCount) ? unsigned(view) : 0u;
+	}
+
+	bool g3dTraceRendererOptiX::create_programs(bool i_bLighting)
+	{
+		if (i_bLighting ? m_Lighting.IsCreated() : m_AO.IsCreated())
 		{
 			return true;
 		}
@@ -291,7 +365,7 @@ namespace gox
 			return false;
 		}
 		std::string error;
-		if (!(lighting() ? m_Lighting.Create(error) : m_AO.Create(error)))
+		if (!(i_bLighting ? m_Lighting.Create(error) : m_AO.Create(error)))
 		{
 			DBG_LOG("GraphicsOptiX: " << error);
 			m_bProgramsFailed = true;
@@ -339,7 +413,9 @@ namespace gox
 			}
 			return raster_only(i_pTarget, i_Camera, i_Scene, i_ViewerLayers, i_fSimTime);
 		}
-		if (!create_programs())
+		const unsigned debug = debug_view();
+		const bool lighting_program = lighting() || debug != 0;
+		if (!create_programs(lighting_program))
 		{
 			return raster_only(i_pTarget, i_Camera, i_Scene, i_ViewerLayers, i_fSimTime);
 		}
@@ -364,18 +440,32 @@ namespace gox
 		key.m_Height = color->Height();
 		key.m_Mode = m_Mode;
 		key.m_Seed = m_Seed;
-		if (lighting())
+		key.m_DebugView = debug;
 		{
+			G3D_PROFILE_SCOPE("MaterialTables");
+			m_Textures.Begin();
+			m_Materials.Update(m_BVH.GetMaterials(), m_Textures);
+			if (lighting())
 			{
-				G3D_PROFILE_SCOPE("LightTable");
-				m_Lights.Update(m_BVH.GetLightSets());
+				m_Lights.Update(m_BVH.GetLightSets(), m_Textures);
 			}
+			m_Textures.End();
+		}
+		key.m_MaterialVersion = m_Materials.GetVersion();
+		key.m_TextureVersion = m_Textures.GetVersion();
+		if (debug)
+		{
+			key.m_Background[0] = key.m_Background[1] = key.m_Background[2] = 0.0f;
+		}
+		else if (lighting())
+		{
 			key.m_LightVersion = m_Lights.GetVersion();
 			key.m_bShadows = prefs.m_bEnableShadows ? 1 : 0;
 			if (m_Mode == e_Illumination)
 			{
 				key.m_Bounces = m_nBounces;
-				key.m_Albedo = m_Albedo;
+				key.m_bAlbedoOverride = m_bAlbedoOverride ? 1 : 0;
+				key.m_Albedo = m_bAlbedoOverride ? m_Albedo : 0.0f;
 				key.m_Sampling = m_Sampling;
 				key.m_bUseCosine = prefs.m_bIlluminationUsesNormals ? 1 : 0;
 			}
@@ -463,14 +553,20 @@ namespace gox
 			size = std::sqrt(dx * dx + dy * dy + dz * dz);
 		}
 		const float epsilon = std::max(size * 1e-5f, 1e-5f);
+		const bool lighting_program = lighting() || i_Key.m_DebugView != 0;
 
 		//	Each program has its own parameters; only the mode's are used
 		optxAOParams ao = {};
 		optxLightingParams lit = {};
-		if (lighting())
+		if (lighting_program)
 		{
 			lit.m_Handle = m_BVH.GetHandle();
 			lit.m_Instances = m_BVH.GetInstanceTable();
+			lit.m_Materials = m_Materials.GetMaterials();
+			lit.m_Textures = m_Textures.GetTextures();
+			pixel_cone(inverse, i_Key.m_Height, lit.m_ConeWidth, lit.m_ConeSpread);
+			lit.m_bAlbedoOverride = i_Key.m_bAlbedoOverride;
+			lit.m_DebugView = i_Key.m_DebugView;
 			lit.m_Lights = m_Lights.GetLights();
 			lit.m_LightSets = m_Lights.GetSets();
 			lit.m_LightIndices = m_Lights.GetIndices();
@@ -489,7 +585,8 @@ namespace gox
 			}
 			lit.m_Epsilon = epsilon;
 			lit.m_Albedo = i_Key.m_Albedo;
-			lit.m_Mode = (m_Mode == e_ShadowMask) ? e_optxLightingShadowMask : e_optxLightingIllumination;
+			lit.m_Mode = i_Key.m_DebugView ? e_optxLightingDebug
+										   : (m_Mode == e_ShadowMask) ? e_optxLightingShadowMask : e_optxLightingIllumination;
 			lit.m_Bounces = i_Key.m_Bounces;
 			lit.m_Sampling = i_Key.m_Sampling;
 			lit.m_bUseCosine = i_Key.m_bUseCosine;
@@ -502,6 +599,8 @@ namespace gox
 		{
 			ao.m_Handle = m_BVH.GetHandle();
 			ao.m_Instances = m_BVH.GetInstanceTable();
+			ao.m_Materials = m_Materials.GetMaterials();
+			ao.m_Textures = m_Textures.GetTextures();
 			ao.m_Accum = m_Accum.Get();
 			ao.m_Width = i_Key.m_Width;
 			ao.m_Height = i_Key.m_Height;
@@ -522,7 +621,8 @@ namespace gox
 			ao.m_Seed = i_Key.m_Seed;
 		}
 
-		if (!m_Share.BeginWrite())
+		//	The textures' last Vulkan writes (uploads, renders) land first
+		if (!m_Cache.WaitForVulkan(m_Textures.GetWaitValue()) || !m_Share.BeginWrite())
 		{
 			return false;
 		}
@@ -536,7 +636,7 @@ namespace gox
 			const unsigned samples = std::min(m_nSamplesPerFrame, i_nGoal - m_nSamples);
 			const unsigned resolve = (!i_bAll || m_nSamples + samples >= i_nGoal) ? 1 : 0;
 			bool launched;
-			if (lighting())
+			if (lighting_program)
 			{
 				lit.m_FirstSample = first;
 				lit.m_Samples = samples;
@@ -563,7 +663,7 @@ namespace gox
 		{
 			G3D_PROFILE_SCOPE("TraceResolve");
 			bool done;
-			if (lighting())
+			if (lighting_program)
 			{
 				lit.m_FirstSample = m_nSamples;
 				lit.m_Samples = 0;

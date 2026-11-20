@@ -26,6 +26,9 @@
 #ifndef GVK_VKDINFO_HPP
 #include "GraphicsVulkan/vkd/vkdInfo.hpp"
 #endif
+#ifndef GVK_VKDEXPORTPOOL_HPP
+#include "GraphicsVulkan/vkd/vkdExportPool.hpp"
+#endif
 #ifndef GVK_VKDVMA_HPP
 #include "GraphicsVulkan/vkd/private/vkdVma.hpp"
 #endif
@@ -93,6 +96,12 @@ namespace gvk
 		}
 	}
 
+	uint64_t vkdNewGeneration()
+	{
+		static std::atomic<uint64_t> s_Last(0);
+		return ++s_Last;
+	}
+
 	uint32_t vkdFormatSize(VkFormat i_Format)
 	{
 		const vkdFormatInfo info = vkdFormatInfoOf(i_Format);
@@ -130,8 +139,39 @@ namespace gvk
 		info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 		VmaAllocationCreateInfo allocation = {};
 		allocation.usage = VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE;
-		VK_CHECK(vmaCreateImage(i_Device.Allocator(), &info, &allocation, &image->m_Image, &image->m_Allocation, NULL));
+		DBG_ASSERT(!i_Desc.m_bExportable || (i_Desc.m_Type == VK_IMAGE_TYPE_2D && !i_Desc.m_bCube && i_Desc.m_Layers == 1 &&
+											 i_Desc.m_Samples == VK_SAMPLE_COUNT_1_BIT),
+				   "vkdImage::Create: only plain 2D images can be exportable");
+		vkdExportPool* pool = i_Desc.m_bExportable ? i_Device.ExportPool() : NULL;
+		if (pool && pool->ImagePool())
+		{
+			//	Alone in its block, so the importer maps the image at offset 0
+			info.pNext = pool->ImageCreateNext();
+			allocation.pool = pool->ImagePool();
+			allocation.flags |= VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT;
+			if (vmaCreateImage(i_Device.Allocator(), &info, &allocation, &image->m_Image, &image->m_Allocation, NULL) != VK_SUCCESS)
+			{
+				//	(the pool's memory type may not suit every format)
+				static bool s_bLogged = false;
+				if (!s_bLogged)
+				{
+					s_bLogged = true;
+					DBG_LOG("vkdImage: an image of format " << i_Desc.m_Format << " can't be made exportable; made without");
+				}
+				image->m_Image = VK_NULL_HANDLE;
+				image->m_Allocation = NULL;
+				info.pNext = NULL;
+				allocation = VmaAllocationCreateInfo();
+				allocation.usage = VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE;
+			}
+		}
+		if (!image->m_Image)
+		{
+			image->m_Desc.m_bExportable = false;
+			VK_CHECK(vmaCreateImage(i_Device.Allocator(), &info, &allocation, &image->m_Image, &image->m_Allocation, NULL));
+		}
 		i_Device.SetName(VK_OBJECT_TYPE_IMAGE, reinterpret_cast<uint64_t>(image->m_Image), i_Name);
+		image->m_Generation = vkdNewGeneration();
 
 		VkImageViewCreateInfo& view = image->m_ViewInfo;
 		view.image = image->m_Image;
@@ -170,6 +210,8 @@ namespace gvk
 		image->m_Image = i_Image;
 		image->m_View = i_View;
 		image->m_bOwnsView = false;
+		image->m_Desc.m_bExportable = false;
+		image->m_Generation = vkdNewGeneration();
 		VkImageViewCreateInfo& view = image->m_ViewInfo;
 		view.image = i_Image;
 		view.viewType = VK_IMAGE_VIEW_TYPE_2D;
@@ -204,6 +246,7 @@ namespace gvk
 		desc.m_Layers = i_Range.layerCount;
 		desc.m_bCube = i_Type == VK_IMAGE_VIEW_TYPE_CUBE || i_Type == VK_IMAGE_VIEW_TYPE_CUBE_ARRAY;
 		desc.m_Aspect = i_Range.aspectMask;
+		view->m_pRoot = m_pRoot;
 		view->m_Image = m_Image;
 		view->m_ViewInfo = m_ViewInfo;
 		view->m_ViewInfo.viewType = i_Type;
@@ -357,6 +400,7 @@ namespace gvk
 		region.imageSubresource = { p.m_Aspect, i_Mip, i_Layer, 1 };
 		region.imageExtent = p.m_Extent;
 		vkCmdCopyBufferToImage(i_Context.Commands(), staging.m_Buffer, m_Image, VK_IMAGE_LAYOUT_GENERAL, 1, &region);
+		MarkWritten();
 	}
 
 	void vkdImage::GenerateMips(vkdContext& i_Context)
@@ -380,6 +424,61 @@ namespace gvk
 								   (int32_t)mip_size(m_Desc.m_Depth, mip) };
 			vkCmdBlitImage(commands, m_Image, VK_IMAGE_LAYOUT_GENERAL, m_Image, VK_IMAGE_LAYOUT_GENERAL, 1, &blit, VK_FILTER_LINEAR);
 		}
+		MarkWritten();
+	}
+
+	bool vkdImage::IsExportable() const
+	{
+		return m_pRoot->m_Desc.m_bExportable;
+	}
+
+	VkDeviceMemory vkdImage::Memory() const
+	{
+		if (!m_pRoot->m_Allocation)
+		{
+			return VK_NULL_HANDLE;
+		}
+		VmaAllocationInfo info = {};
+		vmaGetAllocationInfo(m_Device.Allocator(), m_pRoot->m_Allocation, &info);
+		return info.deviceMemory;
+	}
+
+	VkDeviceSize vkdImage::MemorySize() const
+	{
+		if (!m_pRoot->m_Allocation)
+		{
+			return 0;
+		}
+		VmaAllocationInfo2 info = {};
+		vmaGetAllocationInfo2(m_Device.Allocator(), m_pRoot->m_Allocation, &info);
+		return info.blockSize;
+	}
+
+	bool vkdImage::IsDedicatedMemory() const
+	{
+		if (!m_pRoot->m_Allocation)
+		{
+			return false;
+		}
+		VmaAllocationInfo2 info = {};
+		vmaGetAllocationInfo2(m_Device.Allocator(), m_pRoot->m_Allocation, &info);
+		return info.dedicatedMemory == VK_TRUE;
+	}
+
+	uint64_t vkdImage::Generation() const
+	{
+		return m_pRoot->m_Generation;
+	}
+
+	uint64_t vkdImage::WriteValue() const
+	{
+		return m_pRoot->m_WriteValue;
+	}
+
+	void vkdImage::MarkWritten()
+	{
+		m_pRoot->m_Generation = vkdNewGeneration();
+		m_pRoot->m_WriteValue = m_Device.PendingValue();
 	}
 
 	std::vector<uint8_t> vkdImage::ReadBack(uint32_t i_Mip, uint32_t i_Layer)

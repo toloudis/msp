@@ -21,6 +21,10 @@
 **	  buffer in the target's byte order, and writes the kept depth to the
 **	  depth buffer.
 **
+**	Cut-out and transparent materials (m_Materials, m_Textures:
+**	optxMaterialTypes.h) let camera and occlusion rays through, as
+**	optxMaterial.h's OpacityPasses says (the any-hit program).
+**
 **	Matrices multiply row vectors (p * M), as maMatrix4x4 does; row-major.
 **	Random numbers are a hash of (pixel, sample, m_Seed): the same
 **	parameters give the same image.
@@ -57,6 +61,8 @@ namespace gox
 	{
 		OptixTraversableHandle		m_Handle;		// the scene's IAS; 0: every ray misses
 		unsigned long long			m_Instances;	// device address of the optxInstanceData table
+		unsigned long long			m_Materials;	// device address of the optxMaterial table (0: all opaque)
+		unsigned long long			m_Textures;		// device address of the optxTexture table
 		unsigned long long			m_Accum;		// device address of 4 floats per pixel (rgb sums)
 		unsigned long long			m_Color;		// device address of a 32-bit texel per pixel
 		unsigned long long			m_Depth;		// device address of a 32-bit texel per pixel

@@ -502,6 +502,7 @@ void g3dVkUtil::CopyBackBufferToRenderTargetTex(matRenderTargetTexture* io_desti
 	region.extent = { pCurrentRenderTarget->Width(), pCurrentRenderTarget->Height(), 1 };
 	vkCmdCopyImage(context.Commands(), pCurrentRenderTarget->Image(), VK_IMAGE_LAYOUT_GENERAL,
 				   io_destination->GetTextureSurface()->Image(), VK_IMAGE_LAYOUT_GENERAL, 1, &region);
+	io_destination->GetTextureSurface()->MarkWritten();
 
 	// now io_destination has the backbuffer in it!
 }

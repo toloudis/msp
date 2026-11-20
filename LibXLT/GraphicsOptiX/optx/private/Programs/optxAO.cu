@@ -8,8 +8,10 @@
 **	__raygen__resolve (one launch each; __raygen__ao resolves too with
 **	m_Resolve), __miss__camera (miss record 0),
 **	__miss__occlusion (miss record 1), __closesthit__camera (every hit
-**	group record: one per build input of the biggest GAS). Occlusion rays
-**	run no hit programs (TERMINATE_ON_FIRST_HIT, DISABLE_CLOSESTHIT).
+**	group record: one per build input of the biggest GAS) with
+**	__anyhit__opacity (cut-out and transparent materials; build inputs of
+**	opaque materials disable it). Occlusion rays run no closest hit
+**	(TERMINATE_ON_FIRST_HIT, DISABLE_CLOSESTHIT).
 **
 **	Extra Large Technology
 \****************************************************************************/
@@ -20,6 +22,12 @@
 #endif
 #ifndef GOX_OPTXSCENETYPES_H
 #include "optxSceneTypes.h"
+#endif
+#ifndef GOX_OPTXMATERIALTYPES_H
+#include "optxMaterialTypes.h"
+#endif
+#ifndef GOX_OPTXMATERIAL_H
+#include "optxMaterial.h"
 #endif
 
 using namespace gox;
@@ -136,7 +144,7 @@ namespace
 		unsigned int hit = 1;
 		optixTrace(params.m_Handle, i_Origin, i_Direction, 0.0f, params.m_Radius, 0.0f,
 				   OptixVisibilityMask(e_optxMaskOcclusion),
-				   OPTIX_RAY_FLAG_TERMINATE_ON_FIRST_HIT | OPTIX_RAY_FLAG_DISABLE_CLOSESTHIT | OPTIX_RAY_FLAG_DISABLE_ANYHIT,
+				   OPTIX_RAY_FLAG_TERMINATE_ON_FIRST_HIT | OPTIX_RAY_FLAG_DISABLE_CLOSESTHIT,
 				   0, 1, 1,		// SBT offset, stride, miss index 1
 				   hit);
 		return hit != 0;
@@ -184,7 +192,7 @@ extern "C" __global__ void __raygen__ao()
 		if (params.m_Handle)
 		{
 			optixTrace(params.m_Handle, near_point, direction, 0.0f, length, 0.0f,
-					   OptixVisibilityMask(e_optxMaskCamera), OPTIX_RAY_FLAG_DISABLE_ANYHIT,
+					   OptixVisibilityMask(e_optxMaskCamera), OPTIX_RAY_FLAG_NONE,
 					   0, 1, 0,		// SBT offset, stride, miss index 0
 					   t, n0, n1, n2, hit);
 		}
@@ -255,6 +263,15 @@ extern "C" __global__ void __miss__camera()
 extern "C" __global__ void __miss__occlusion()
 {
 	optixSetPayload_0(0);
+}
+
+//	Cut-out and transparent materials let rays through (optxMaterial.h)
+extern "C" __global__ void __anyhit__opacity()
+{
+	if (!optxm::opacity_passes(params.m_Instances, params.m_Materials, params.m_Textures, params.m_Seed))
+	{
+		optixIgnoreIntersection();
+	}
 }
 
 //	The hit's distance and world-space geometric normal, facing the ray

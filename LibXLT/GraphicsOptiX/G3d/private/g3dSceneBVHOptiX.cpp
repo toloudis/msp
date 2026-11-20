@@ -177,7 +177,8 @@ namespace gox
 
 	bool g3dSceneBVHOptiX::Entry::operator==(const Entry& i_Other) const
 	{
-		return m_pFragment == i_Other.m_pFragment && m_pVertices == i_Other.m_pVertices &&
+		return m_pFragment == i_Other.m_pFragment && m_pMaterial == i_Other.m_pMaterial && m_bAnyHit == i_Other.m_bAnyHit &&
+			   m_pVertices == i_Other.m_pVertices &&
 			   m_pIndices == i_Other.m_pIndices && m_VertexGeneration == i_Other.m_VertexGeneration &&
 			   m_IndexGeneration == i_Other.m_IndexGeneration && m_Mask == i_Other.m_Mask &&
 			   m_LightSet == i_Other.m_LightSet && m_Flags == i_Other.m_Flags &&
@@ -234,6 +235,8 @@ namespace gox
 		{
 			Entry entry;
 			entry.m_pFragment = fragment;
+			entry.m_pMaterial = fragment->GetMaterial();
+			entry.m_bAnyHit = g3dGasCacheOptiX::NeedsAnyHit(*fragment);
 			entry.m_pVertices = fragment->GetVertexBuffer().get();
 			entry.m_pIndices = fragment->GetIndexBuffer().get();
 			entry.m_VertexGeneration = fragment->GetVertexBuffer()->GetGeneration();
@@ -329,7 +332,24 @@ namespace gox
 		m_GasBytes = 0;
 		m_nTriangles = 0;
 		m_Bounds = maAxisBox();
+		m_Materials.clear();
 		m_Cache.Collect();
+		std::map<const matMaterial*, unsigned> material_of;
+		auto material_index = [&](const gvk::tmeshFrag* i_pFragment) -> unsigned
+		{
+			const matMaterial* material = i_pFragment->GetMaterial();
+			if (!material)
+			{
+				return c_optxNoMaterial;
+			}
+			auto found = material_of.find(material);
+			if (found == material_of.end())
+			{
+				found = material_of.emplace(material, unsigned(m_Materials.size())).first;
+				m_Materials.push_back(material);
+			}
+			return found->second;
+		};
 
 		//	The entries by vertex buffer, in the order first seen
 		std::vector<std::vector<size_t>> groups;
@@ -372,18 +392,23 @@ namespace gox
 			data.m_Vertices = i_pGas->m_Vertices;
 			data.m_VertexStride = i_pGas->m_VertexStride;
 			data.m_NormalOffset = i_pGas->m_NormalOffset;
+			data.m_TexCoordOffset = i_pGas->m_TexCoordOffset;
+			data.m_TangentOffset = i_pGas->m_TangentOffset;
+			data.m_BitangentOffset = i_pGas->m_BitangentOffset;
 			data.m_NumInputs = static_cast<unsigned>(i_pGas->m_Inputs.size());
 			data.m_NumTriangles = i_pGas->m_NumTriangles;
 			data.m_LightSet = i_Entry.m_LightSet;
 			data.m_Flags = i_Entry.m_Flags;
 			table.push_back(data);
 			first_input.push_back(inputs.size());
-			for (const g3dGasCacheOptiX::Input& input : i_pGas->m_Inputs)
+			for (size_t i = 0; i < i_pGas->m_Inputs.size(); ++i)
 			{
+				const g3dGasCacheOptiX::Input& input = i_pGas->m_Inputs[i];
 				optxGeometryInput geometry = {};
 				geometry.m_Indices = input.m_Indices;
 				geometry.m_IndexSize = input.m_IndexSize;
 				geometry.m_NumTriangles = input.m_NumTriangles;
+				geometry.m_Material = i < i_Fragments.size() ? material_index(i_Fragments[i]) : c_optxNoMaterial;
 				inputs.push_back(geometry);
 			}
 
@@ -491,6 +516,7 @@ namespace gox
 		m_nTriangles = 0;
 		m_Entries.clear();
 		m_LightSets.clear();
+		m_Materials.clear();
 		m_bBuilt = false;
 	}
 }

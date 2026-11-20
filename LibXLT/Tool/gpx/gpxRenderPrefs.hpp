@@ -120,6 +120,7 @@ public:
 	void SetTraceCaptureSamples( int i_nSamples );
 	void SetTraceAORays( int i_nRays );
 	void SetTraceBounces( int i_nBounces );
+	void SetTraceDebugView( int i_View );
 
 	//--------------------------------------------------------------------
 	// Update() pushes changes from proxy object into the graphics

@@ -519,6 +519,7 @@ namespace rprfPrefsUtil
 				o_Data.m_TraceCaptureSamples.SetVisible(bVisible);
 				o_Data.m_TraceAORays.SetVisible(bVisible);
 				o_Data.m_TraceBounces.SetVisible(bVisible);
+				o_Data.m_TraceDebugView.SetVisible(bVisible);
 			}
 
 			if(l_CategoryMap["Render Passes from File"] != NULL )
@@ -957,6 +958,17 @@ namespace rprfPrefsUtil
 			pNUDUII->SetMaximum(32.0f);
 			pNUDUII->SetRestrictFlag(true);
 			o_PrefsObject->AddProperty( pNUDUII );
+
+			prtyComboBoxUIInfo* pTraceDebug = new prtyComboBoxUIInfo(&(i_Data.m_TraceDebugView), "Ray Tracing", "Debug View");
+			pTraceDebug->SetDescription("What the traced default and HDR views show in place of their image: a material quantity of the first surface hit, unlit.");
+			pTraceDebug->AddItem(std::string("Off"), 0);
+			pTraceDebug->AddItem(std::string("Base Colour"), 1);
+			pTraceDebug->AddItem(std::string("Shading Normal"), 2);
+			pTraceDebug->AddItem(std::string("Roughness"), 3);
+			pTraceDebug->AddItem(std::string("Metallic"), 4);
+			pTraceDebug->AddItem(std::string("Emission"), 5);
+			pTraceDebug->AddItem(std::string("Opacity"), 6);
+			o_PrefsObject->AddProperty( pTraceDebug );
 		}
 
 //#ifdef ACTIVATE_RENDERMAN

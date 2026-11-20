@@ -22,6 +22,18 @@
 **	Wrap() gives a vkdImage for an image and view made elsewhere (a swap
 **	chain's), so it can be bound like any other; it destroys neither.
 **
+**	For another API that reads images (GraphicsOptiX's CUDA):
+**	- An image made with m_bExportable sits alone in a block of exportable
+**	  memory (a dedicated allocation from the device's vkdExportPool), so
+**	  the other API imports that block (Memory(), MemorySize()) and maps
+**	  the image in it. Only plain 2D images (one layer, one sample) can be.
+**	- Generation() changes whenever the contents may have: an upload, mip
+**	  generation, rendering into the image (vkdContext marks the targets
+**	  it begins rendering to), a clear, or a copy into it (MarkWritten);
+**	  views share their image's. WriteValue() is the timeline value of the
+**	  submission holding the last of those writes, which the other API
+**	  waits for before reading.
+**
 **	Extra Large Technology
 \****************************************************************************/
 #ifdef GVK_VKDIMAGE_HPP
@@ -31,6 +43,7 @@
 
 #include <volk.h>
 
+#include <atomic>
 #include <cstdint>
 #include <map>
 #include <memory>
@@ -58,7 +71,12 @@ namespace gvk
 		VkImageUsageFlags		m_Usage = 0;
 		VkImageAspectFlags		m_Aspect = VK_IMAGE_ASPECT_COLOR_BIT;
 		bool					m_bLayeredTarget = false;	// 3D images only: rendered into slice by slice (LayeredView)
+		bool					m_bExportable = false;		// 2D images only: in exportable memory of its own (the device must have external memory)
 	};
+
+	//	vkdNewGeneration - a new value from one process-wide counter, never 0
+	//	(images' generations; GraphicsVulkan's mesh buffers use it too)
+	uint64_t vkdNewGeneration();
 
 	class vkdImage
 	{
@@ -133,6 +151,22 @@ namespace gvk
 			//	TRANSFER_SRC. A depth-stencil image reads its depth.
 			std::vector<uint8_t> ReadBack(uint32_t i_Mip = 0, uint32_t i_Layer = 0);
 
+			//	Exportable images (see above): whether this is one, and the
+			//	memory block it alone sits in (whether VMA made it a dedicated
+			//	allocation, VkMemoryDedicatedAllocateInfo, which an importer
+			//	must say). A view answers for its image.
+			bool			IsExportable() const;
+			VkDeviceMemory	Memory() const;
+			VkDeviceSize	MemorySize() const;
+			bool			IsDedicatedMemory() const;
+
+			//	See above. MarkWritten gives the image a new generation and the
+			//	timeline value of the submission being recorded; for code that
+			//	writes the image with its own commands (copies, resolves).
+			uint64_t	Generation() const;
+			uint64_t	WriteValue() const;
+			void		MarkWritten();
+
 			//	The colour vkdContext::ClearRenderTarget last cleared this image
 			//	(view) to; transparent black before any. A renderer that writes
 			//	every pixel itself (GraphicsOptiX's) fills its background with
@@ -156,6 +190,7 @@ namespace gvk
 												const char* i_Name, const VkComponentMapping& i_Components = {});
 
 			vkdDevice&		m_Device;
+			vkdImage*		m_pRoot = this;				// the image a view is of (this for an image)
 			vkdImageDesc	m_Desc;
 			VkImage			m_Image = VK_NULL_HANDLE;
 			VkImageView		m_View = VK_NULL_HANDLE;
@@ -170,6 +205,8 @@ namespace gvk
 			std::unique_ptr<vkdImage> m_pLayeredView;
 			std::unique_ptr<vkdImage> m_pAlphaView;
 			float			m_LastClear[4] = { 0, 0, 0, 0 };
+			std::atomic<uint64_t>	m_Generation{0};
+			std::atomic<uint64_t>	m_WriteValue{0};
 	};
 
 	//	vkdFormatSize - bytes per pixel of an uncompressed format; 0 for

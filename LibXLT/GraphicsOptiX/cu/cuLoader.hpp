@@ -57,6 +57,10 @@
 	X(cuMemsetD8Async)					\
 	X(cuImportExternalMemory)			\
 	X(cuExternalMemoryGetMappedBuffer)	\
+	X(cuExternalMemoryGetMappedMipmappedArray)	\
+	X(cuMipmappedArrayDestroy)			\
+	X(cuTexObjectCreate)				\
+	X(cuTexObjectDestroy)				\
 	X(cuDestroyExternalMemory)			\
 	X(cuImportExternalSemaphore)		\
 	X(cuDestroyExternalSemaphore)		\

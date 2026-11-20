@@ -15,6 +15,15 @@
 #ifndef GVK_VKDIMAGE_HPP
 #include "GraphicsVulkan/vkd/vkdImage.hpp"
 #endif
+#ifndef GVK_VKDDEVICE_HPP
+#include "GraphicsVulkan/vkd/vkdDevice.hpp"
+#endif
+#ifndef GVK_VKDEXPORTPOOL_HPP
+#include "GraphicsVulkan/vkd/vkdExportPool.hpp"
+#endif
+#ifndef GVK_VKDGLOBAL_HPP
+#include "GraphicsVulkan/vkd/vkdGlobal.hpp"
+#endif
 #ifndef EFF_OPACITY_HPP
 #include "Graphics/Eff/effOpacity.hpp"
 #endif
@@ -36,6 +45,32 @@
 
 namespace gvk
 {
+	namespace
+	{
+		bool l_bExportTextures = false;
+	}
+
+	void g3dVkTextureUtil::ExportTextures(bool i_bExport)
+	{
+		l_bExportTextures = i_bExport;
+	}
+
+	bool g3dVkTextureUtil::GetExportTextures()
+	{
+		return l_bExportTextures;
+	}
+
+	void g3dVkTextureUtil::MakeExportable(vkdImageDesc& io_Desc)
+	{
+		if (!l_bExportTextures || io_Desc.m_Type != VK_IMAGE_TYPE_2D || io_Desc.m_bCube || io_Desc.m_Layers != 1 ||
+			io_Desc.m_Samples != VK_SAMPLE_COUNT_1_BIT)
+		{
+			return;
+		}
+		vkdExportPool* pool = vkdGlobal::Device().ExportPool();
+		io_Desc.m_bExportable = pool && pool->ImagePool();
+	}
+
 	//------------------------------------------------------------------------
 	// GetImage - return the image for Terawatt texture
 	//------------------------------------------------------------------------

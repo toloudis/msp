@@ -189,6 +189,10 @@ namespace
 		{
 			kind = mainCommandLine::e_CapTraceBounces;
 		}
+		else if (appCommandLine::IsFlag(token, "capTraceDebug"))
+		{
+			kind = mainCommandLine::e_CapTraceDebug;
+		}
 		else
 		{
 			return false;
@@ -257,6 +261,22 @@ namespace
 				problem = "must be " + std::to_string(low) + " to " + std::to_string(high);
 			}
 			action_value = std::to_string(number);
+			break;
+		}
+		case mainCommandLine::e_CapTraceDebug:
+		{
+			//	g3dRenderPrefs::TraceDebugView's order
+			static const char* const c_Views[] = { "off", "basecolor", "normal", "roughness", "metallic", "emission", "opacity" };
+			const std::string view = to_lower(value);
+			problem = "must be off, basecolor, normal, roughness, metallic, emission or opacity";
+			for (int i = 0; i < int(sizeof(c_Views) / sizeof(c_Views[0])); ++i)
+			{
+				if (view == c_Views[i])
+				{
+					action_value = std::to_string(i);
+					problem.clear();
+				}
+			}
 			break;
 		}
 		case mainCommandLine::e_CapHardwareAA:
@@ -616,6 +636,9 @@ Rendering
   -capTraceBounces <n>       ray tracing: diffuse bounces after the first hit
                              (Illumination Only), 0 to 32 (0: direct light
                              only)
+  -capTraceDebug <view>      ray tracing: the debug view the default and HDR
+                             passes show: off, basecolor, normal, roughness,
+                             metallic, emission or opacity
                              The -capTrace* flags set every render layer's
                              ray tracing preferences; other backends ignore
                              them

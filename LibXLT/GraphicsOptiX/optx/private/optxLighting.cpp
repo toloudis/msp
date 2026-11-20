@@ -89,7 +89,7 @@ namespace gox
 		OptixPipelineCompileOptions pipeline_options = {};
 		pipeline_options.usesMotionBlur = 0;
 		pipeline_options.traversableGraphFlags = OPTIX_TRAVERSABLE_GRAPH_FLAG_ALLOW_SINGLE_LEVEL_INSTANCING;
-		pipeline_options.numPayloadValues = 9;
+		pipeline_options.numPayloadValues = 19;
 		pipeline_options.numAttributeValues = 2;
 		pipeline_options.exceptionFlags = OPTIX_EXCEPTION_FLAG_NONE;
 		pipeline_options.pipelineLaunchParamsVariableName = "params";
@@ -124,6 +124,8 @@ namespace gox
 		descs[e_Hit].kind = OPTIX_PROGRAM_GROUP_KIND_HITGROUP;
 		descs[e_Hit].hitgroup.moduleCH = m_Module;
 		descs[e_Hit].hitgroup.entryFunctionNameCH = "__closesthit__camera";
+		descs[e_Hit].hitgroup.moduleAH = m_Module;
+		descs[e_Hit].hitgroup.entryFunctionNameAH = "__anyhit__opacity";
 		OptixProgramGroupOptions group_options = {};
 		log_size = sizeof(log);
 		log[0] = 0;

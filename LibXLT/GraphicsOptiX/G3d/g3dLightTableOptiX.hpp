@@ -26,6 +26,11 @@
 **	when its diffuse light, or the preference for diffuse lighting, is
 **	off).
 **
+**	A projected light's texture (g3dProjectedLight::GetTexture: its image,
+**	or its ramp's texture) is added to the renderer's texture table in
+**	projector mode (border, bilinear, mip 0); its contents changing is the
+**	texture table's version.
+**
 **	A light set (the BVH's GetLightSets: the lights each instance's render
 **	states name) becomes the indices of those of its lights in the table.
 **	While the headlight is on, every set holds it.
@@ -56,6 +61,8 @@ class g3dLight;
 
 namespace gox
 {
+	class g3dTextureTableOptiX;
+
 	class g3dLightTableOptiX
 	{
 		public:
@@ -63,7 +70,8 @@ namespace gox
 
 			//--------------------------------------------------------------------
 			//	Describe - a light as the lighting programs see it (see above).
-			//	i_bHeadlight: it is the headlight (no shadows).
+			//	i_bHeadlight: it is the headlight (no shadows). m_Texture is
+			//	c_optxNoTexture (Update sets it).
 			//--------------------------------------------------------------------
 			static optxLight Describe(const g3dLight& i_Light, bool i_bHeadlight);
 
@@ -75,7 +83,7 @@ namespace gox
 			//--------------------------------------------------------------------
 			//	Update - see above. Returns whether the table changed.
 			//--------------------------------------------------------------------
-			bool Update(const std::vector<LightSet>& i_Sets);
+			bool Update(const std::vector<LightSet>& i_Sets, g3dTextureTableOptiX& i_Textures);
 
 			//--------------------------------------------------------------------
 			//	Release - frees everything on the device; the next Update

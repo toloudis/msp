@@ -11,6 +11,9 @@
 #ifndef GOX_OPTXCONTEXT_HPP
 #include "GraphicsOptiX/optx/optxContext.hpp"
 #endif
+#ifndef GOX_G3DTEXTURETABLEOPTIX_HPP
+#include "GraphicsOptiX/G3d/g3dTextureTableOptiX.hpp"
+#endif
 #ifndef GVK_G3DLIGHTMGRVK_HPP
 #include "GraphicsVulkan/G3d/g3dLightMgrVk.hpp"
 #endif
@@ -71,6 +74,7 @@ namespace gox
 		std::memset(&light, 0, sizeof(light));
 		light.m_Falloff[0] = 1.0f;
 		light.m_Direction[2] = 1.0f;
+		light.m_Texture = c_optxNoTexture;
 
 		//	effShaderBaseVk's get_light_info: colour times intensity factor
 		if (i_Light.IsDiffuseEnabled() && g3dPrefs::CurrentPrefs().m_bEnableDiffuseLighting)
@@ -143,7 +147,7 @@ namespace gox
 	{
 	}
 
-	bool g3dLightTableOptiX::Update(const std::vector<LightSet>& i_Sets)
+	bool g3dLightTableOptiX::Update(const std::vector<LightSet>& i_Sets, g3dTextureTableOptiX& i_Textures)
 	{
 		const g3dPrefs::g3dRenderPrefs& prefs = g3dPrefs::CurrentPrefs();
 		gvk::g3dLightMgrVk* manager = gvk::g3dLightMgrVk::Implementation();
@@ -165,6 +169,10 @@ namespace gox
 					continue;
 				}
 				table.push_back(Describe(*light, headlight));
+				if (const g3dProjectedLight* projected = dynamic_cast<const g3dProjectedLight*>(light))
+				{
+					table.back().m_Texture = i_Textures.Add(projected->GetTexture(), cuExternalImageCache::e_Projector);
+				}
 				sources.push_back(light);
 			}
 		}

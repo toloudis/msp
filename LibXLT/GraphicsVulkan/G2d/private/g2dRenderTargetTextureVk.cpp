@@ -15,6 +15,9 @@
 #ifndef GVK_VKDIMAGE_HPP
 #include "GraphicsVulkan/vkd/vkdImage.hpp"
 #endif
+#ifndef GVK_G3DVKTEXTUREUTIL_HPP
+#include "GraphicsVulkan/G3d/g3dVkTextureUtil.hpp"
+#endif
 #ifndef GVK_VKDFORMAT_HPP
 #include "GraphicsVulkan/vkd/vkdFormat.hpp"
 #endif
@@ -66,6 +69,7 @@ namespace gvk
 		desc.m_Mips = i_bGenerateMips ? g2dFullMipCount(i_Width, i_Height) : 1;
 		desc.m_Samples = i_Multisample;
 		desc.m_Usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | c_TextureUsage;
+		g3dVkTextureUtil::MakeExportable(desc);
 		if (desc.m_Format == VK_FORMAT_UNDEFINED)
 		{
 			DBG_ERROR("g2dRenderTargetTextureVk: unsupported format " << i_DxgiFormat);

@@ -322,6 +322,10 @@ void gpxRenderPrefs::SetTraceBounces( int i_nBounces )
 {
 	PROXY_SET_VARIABLE(m_Prefs.m_TraceBounces, m_PrefsCopy.m_TraceBounces, i_nBounces);
 }
+void gpxRenderPrefs::SetTraceDebugView( int i_View )
+{
+	PROXY_SET_VARIABLE(m_Prefs.m_TraceDebugView, m_PrefsCopy.m_TraceDebugView, i_View);
+}
 
 
 //--------------------------------------------------------------------

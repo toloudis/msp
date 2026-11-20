@@ -152,6 +152,20 @@ namespace g3dPrefs
 		int m_TraceCaptureSamples;
 		int m_TraceAORays;
 		int m_TraceBounces;
+		// the tracer debug view: what the traced default/HDR view shows in
+		// place of its image (TraceDebugView; e_TraceDebugOff: nothing)
+		enum TraceDebugView
+		{
+			e_TraceDebugOff = 0,
+			e_TraceDebugBaseColor,
+			e_TraceDebugNormal,
+			e_TraceDebugRoughness,
+			e_TraceDebugMetallic,
+			e_TraceDebugEmission,
+			e_TraceDebugOpacity,
+			e_TraceDebugCount
+		};
+		int m_TraceDebugView;
 
 		g3dRenderPrefs();
 	};

@@ -147,6 +147,8 @@
     <ClCompile Include="Vk\effPbrVkTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
+    <ClCompile Include="Vk\effTraceMaterialVkTest.cpp">
+      <Filter>Vk</Filter>
     <ClCompile Include="Vk\g3dSceneRendererVkTest.cpp">
       <Filter>Vk</Filter>
     </ClCompile>
@@ -295,6 +297,8 @@
     <ClCompile Include="Ox\g3dLightingOptiXTest.cpp">
       <Filter>Ox</Filter>
     </ClCompile>
+    <ClCompile Include="Ox\g3dMaterialsOptiXTest.cpp">
+      <Filter>Ox</Filter>
     <ClInclude Include="Ox\gtOptiX.hpp">
       <Filter>Ox</Filter>
     </ClInclude>

@@ -26,6 +26,9 @@
 #ifndef GVK_VKDGLOBAL_HPP
 #include "GraphicsVulkan/vkd/vkdGlobal.hpp"
 #endif
+#ifndef GVK_VKDIMAGE_HPP
+#include "GraphicsVulkan/vkd/vkdImage.hpp"
+#endif
 
 #include <atomic>
 #include <cstring>
@@ -40,7 +43,6 @@ namespace
 {
 	bool l_bGeometryInVideoMemory = true;
 	bool l_bExportStaticGeometry = false;
-	std::atomic<uint64_t> l_LastGeneration(0);
 
 	unsigned int l_TotalVertexBufferMemory = 0;
 	unsigned int l_TotalIndexBufferMemory = 0;
@@ -144,7 +146,7 @@ bool g3dVkBufferUtil::GetExportStaticGeometry()
 
 uint64_t g3dVkBufferUtil::NewGeneration()
 {
-	return ++l_LastGeneration;
+	return vkdNewGeneration();
 }
 
 //--------------------------------------------------------------------

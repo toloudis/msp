@@ -18,6 +18,9 @@
 #ifndef GVK_VKDIMAGE_HPP
 #include "GraphicsVulkan/vkd/vkdImage.hpp"
 #endif
+#ifndef GVK_G3DVKTEXTUREUTIL_HPP
+#include "GraphicsVulkan/G3d/g3dVkTextureUtil.hpp"
+#endif
 #ifndef GVK_VKDFORMAT_HPP
 #include "GraphicsVulkan/vkd/vkdFormat.hpp"
 #endif
@@ -98,6 +101,7 @@ namespace gvk
 		desc.m_Height = i_Height;
 		desc.m_Mips = i_NumMipLevels > 0 ? i_NumMipLevels : g2dFullMipCount(i_Width, i_Height);
 		desc.m_Usage = c_TextureUsage;
+		g3dVkTextureUtil::MakeExportable(desc);
 		if (desc.m_Format == VK_FORMAT_UNDEFINED)
 		{
 			DBG_ERROR("matMipTexture: unsupported format " << format);

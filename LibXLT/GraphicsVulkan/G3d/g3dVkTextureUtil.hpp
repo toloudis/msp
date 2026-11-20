@@ -6,6 +6,10 @@
 **	rectangles and blur offsets of the HDR renderer's tone mapping.
 **	TexRect stands in for Windows' RECT, with SetRect and InflateRect.
 **
+**	For GraphicsOptiX, which samples textures in CUDA: 2D textures are
+**	made exportable (vkdImageDesc::m_bExportable) once ExportTextures(true)
+**	is set; the texture classes ask MakeExportable.
+**
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
@@ -22,6 +26,7 @@ class maVector4d;
 namespace gvk
 {
 	class vkdImage;
+	struct vkdImageDesc;
 
 	// Texture coordinate rectangle
 	struct CoordRect
@@ -43,6 +48,20 @@ namespace gvk
 		// without one; read through its alpha view for a PBR base color map
 		//------------------------------------------------------------------------
 		vkdImage* GetOpacityImage(const effOpacity& i_Opacity);
+
+		//------------------------------------------------------------------------
+		// ExportTextures - 2D textures made from now on (loaded, mip, plain
+		// and render-target textures) are exportable, when the device has
+		// exportable image memory. GraphicsOptiXLayer turns it on.
+		//------------------------------------------------------------------------
+		void ExportTextures(bool i_bExport);
+		bool GetExportTextures();
+
+		//------------------------------------------------------------------------
+		// MakeExportable - sets io_Desc.m_bExportable if textures are exported
+		// and io_Desc is a plain 2D image (one layer, one sample, no cube)
+		//------------------------------------------------------------------------
+		void MakeExportable(vkdImageDesc& io_Desc);
 
 		//------------------------------------------------------------------------
 		// TexRect - Windows' RECT (right and bottom exclusive), with its

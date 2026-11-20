@@ -32,6 +32,12 @@
 #ifndef G3D_TYPE_HPP
 #include "Graphics/G3d/g3dType.hpp"
 #endif
+#ifndef EFF_OPACITY_HPP
+#include "Graphics/Eff/effOpacity.hpp"
+#endif
+#ifndef MAT_MATERIAL_HPP
+#include "Graphics/Mat/matMaterial.hpp"
+#endif
 #ifndef DBG_MSG_HPP
 #include "Core/dbg/dbgMsg.hpp"
 #endif
@@ -56,12 +62,23 @@ namespace gox
 		static_assert(offsetof(g3dType::BumpTex1Vertex, m_Vertex) == 0, "the GAS reads positions at the start of each vertex");
 		static_assert(sizeof(g3dType::BumpTex1Vertex) % 4 == 0, "OptiX needs a vertex stride that is a multiple of 4");
 
-		bool supported_format(const gvk::tmeshVertexBuffer& i_Vertices, unsigned& o_NormalOffset)
+		struct Offsets
+		{
+			unsigned	m_Normal = c_optxNoAttribute;
+			unsigned	m_TexCoord = c_optxNoAttribute;
+			unsigned	m_Tangent = c_optxNoAttribute;
+			unsigned	m_Bitangent = c_optxNoAttribute;
+		};
+
+		bool supported_format(const gvk::tmeshVertexBuffer& i_Vertices, Offsets& o_Offsets)
 		{
 			if (i_Vertices.GetVertexFormat() == g3dType::e_BumpTex1Vertex &&
 				i_Vertices.GetVertexStride() == int(sizeof(g3dType::BumpTex1Vertex)))
 			{
-				o_NormalOffset = unsigned(offsetof(g3dType::BumpTex1Vertex, m_Normal));
+				o_Offsets.m_Normal = unsigned(offsetof(g3dType::BumpTex1Vertex, m_Normal));
+				o_Offsets.m_TexCoord = unsigned(offsetof(g3dType::BumpTex1Vertex, m_TexCoord));
+				o_Offsets.m_Tangent = unsigned(offsetof(g3dType::BumpTex1Vertex, m_S));
+				o_Offsets.m_Bitangent = unsigned(offsetof(g3dType::BumpTex1Vertex, m_T));
 				return true;
 			}
 			return false;
@@ -88,7 +105,8 @@ namespace gox
 			}
 		}
 
-		const unsigned int c_GeometryFlags = OPTIX_GEOMETRY_FLAG_DISABLE_ANYHIT;
+		const unsigned int c_OpaqueFlags = OPTIX_GEOMETRY_FLAG_DISABLE_ANYHIT;
+		const unsigned int c_AnyHitFlags = OPTIX_GEOMETRY_FLAG_NONE;
 	}
 
 	//------------------------------------------------------------------------
@@ -130,6 +148,7 @@ namespace gox
 		: m_Device(i_Device)
 		, m_Context(i_Context)
 		, m_Memory(i_Device)
+		, m_Images(i_Device, i_Context)
 		, m_LastGeneration(0)
 	{
 		DBG_ASSERT(i_Device.HasExternalMemory(), "g3dGasCacheOptiX needs a Vulkan device with external memory");
@@ -169,13 +188,24 @@ namespace gox
 		{
 			return false;
 		}
-		unsigned normal_offset = 0;
-		if (!supported_format(*vertices, normal_offset))
+		Offsets offsets;
+		if (!supported_format(*vertices, offsets))
 		{
 			log_format_once(*vertices);
 			return false;
 		}
 		return true;
+	}
+
+	bool g3dGasCacheOptiX::NeedsAnyHit(const gvk::tmeshFrag& i_Fragment)
+	{
+		const matMaterial* material = i_Fragment.GetMaterial();
+		if (!material)
+		{
+			return false;
+		}
+		const effOpacity opacity = effOpacity::Of(*material);
+		return opacity.m_pMap || opacity.m_bCutOut || opacity.m_Value < 1.0f;
 	}
 
 	size_t g3dGasCacheOptiX::GetGasBytes() const
@@ -308,7 +338,7 @@ namespace gox
 		return true;
 	}
 
-	bool g3dGasCacheOptiX::wait_for_uploads(uint64_t i_Value)
+	bool g3dGasCacheOptiX::WaitForVulkan(uint64_t i_Value)
 	{
 		if (i_Value == 0 || i_Value <= m_Device.CompletedValue())
 		{
@@ -337,7 +367,17 @@ namespace gox
 		{
 			index_generations[i] = i_Fragments[i]->GetIndexBuffer()->GetGeneration();
 		}
-		if (vertex_generation == io_Entry.m_VertexGeneration && index_generations == io_Entry.m_IndexGenerations)
+		std::vector<bool> any_hit(i_nFragments);
+		for (size_t i = 0; i < i_nFragments; ++i)
+		{
+			any_hit[i] = NeedsAnyHit(*i_Fragments[i]);
+		}
+		bool same_any_hit = io_Entry.m_Gas.m_Inputs.size() == i_nFragments;
+		for (size_t i = 0; i < i_nFragments && same_any_hit; ++i)
+		{
+			same_any_hit = io_Entry.m_Gas.m_Inputs[i].m_bAnyHit == any_hit[i];
+		}
+		if (vertex_generation == io_Entry.m_VertexGeneration && index_generations == io_Entry.m_IndexGenerations && same_any_hit)
 		{
 			return io_Entry.m_Gas.m_Handle != 0;
 		}
@@ -347,7 +387,12 @@ namespace gox
 		const std::vector<Input> old_inputs = gas.m_Inputs;
 		const bool vertices_changed = vertex_generation != io_Entry.m_VertexGeneration || gas.m_Vertices == 0;
 
-		bool ok = supported_format(vertices, gas.m_NormalOffset);
+		Offsets offsets;
+		bool ok = supported_format(vertices, offsets);
+		gas.m_NormalOffset = offsets.m_Normal;
+		gas.m_TexCoordOffset = offsets.m_TexCoord;
+		gas.m_TangentOffset = offsets.m_Tangent;
+		gas.m_BitangentOffset = offsets.m_Bitangent;
 		const gvk::g3dVkBuffer* vk_vertices = vertices.GetVertexBuffer();
 		const unsigned vertex_count = unsigned(std::max(vertices.GetNumVertices(), 0));
 		uint64_t wait_value = 0;
@@ -378,6 +423,7 @@ namespace gox
 			}
 			input.m_IndexSize = index_size;
 			input.m_NumTriangles = triangles;
+			input.m_bAnyHit = any_hit[i];
 			gas.m_NumTriangles += triangles;
 
 			//	Indices past the vertices would read outside the buffer
@@ -399,10 +445,10 @@ namespace gox
 			}
 		}
 
-		ok = ok && wait_for_uploads(wait_value);
+		ok = ok && WaitForVulkan(wait_value);
 		if (ok)
 		{
-			bool same_triangles = !indices_changed && old_inputs.size() == gas.m_Inputs.size();
+			bool same_triangles = !indices_changed && same_any_hit && old_inputs.size() == gas.m_Inputs.size();
 			for (size_t i = 0; i < old_inputs.size() && same_triangles; ++i)
 			{
 				same_triangles = old_inputs[i].m_NumTriangles == gas.m_Inputs[i].m_NumTriangles;
@@ -454,7 +500,7 @@ namespace gox
 			input.triangleArray.indexStrideInBytes = 3 * gas.m_Inputs[i].m_IndexSize;
 			input.triangleArray.numIndexTriplets = gas.m_Inputs[i].m_NumTriangles;
 			input.triangleArray.indexBuffer = gas.m_Inputs[i].m_Indices;
-			input.triangleArray.flags = &c_GeometryFlags;
+			input.triangleArray.flags = gas.m_Inputs[i].m_bAnyHit ? &c_AnyHitFlags : &c_OpaqueFlags;
 			input.triangleArray.numSbtRecords = 1;
 		}
 

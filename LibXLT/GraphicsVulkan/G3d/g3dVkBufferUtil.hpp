@@ -124,7 +124,8 @@ namespace gvk
 
 		//--------------------------------------------------------------------
 		//	NewGeneration - a new value from one process-wide counter, never 0,
-		//	for tmeshVertexBuffer's and tmeshIndexBuffer's generations
+		//	for tmeshVertexBuffer's and tmeshIndexBuffer's generations (the
+		//	counter vkdImage's generations use: vkdNewGeneration)
 		//--------------------------------------------------------------------
 		uint64_t NewGeneration();
 

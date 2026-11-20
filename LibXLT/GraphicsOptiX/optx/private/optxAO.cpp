@@ -124,6 +124,8 @@ namespace gox
 		descs[e_Hit].kind = OPTIX_PROGRAM_GROUP_KIND_HITGROUP;
 		descs[e_Hit].hitgroup.moduleCH = m_Module;
 		descs[e_Hit].hitgroup.entryFunctionNameCH = "__closesthit__camera";
+		descs[e_Hit].hitgroup.moduleAH = m_Module;
+		descs[e_Hit].hitgroup.entryFunctionNameAH = "__anyhit__opacity";
 		OptixProgramGroupOptions group_options = {};
 		log_size = sizeof(log);
 		log[0] = 0;

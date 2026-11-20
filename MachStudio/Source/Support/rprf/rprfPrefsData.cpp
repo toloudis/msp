@@ -148,8 +148,17 @@ rprfPrefsData::rprfPrefsData()
 	m_TraceSampleLimit("Trace Sample Limit", 1024),
 	m_TraceCaptureSamples("Trace Capture Samples", 0),
 	m_TraceAORays("Trace AO Rays", 1),
-	m_TraceBounces("Trace Bounces", 2)
+	m_TraceBounces("Trace Bounces", 2),
+	m_TraceDebugView("Trace Debug View", 0)
 {
+	m_TraceDebugView.SetEnumTag(0, "Off");
+	m_TraceDebugView.SetEnumTag(1, "Base Colour");
+	m_TraceDebugView.SetEnumTag(2, "Shading Normal");
+	m_TraceDebugView.SetEnumTag(3, "Roughness");
+	m_TraceDebugView.SetEnumTag(4, "Metallic");
+	m_TraceDebugView.SetEnumTag(5, "Emission");
+	m_TraceDebugView.SetEnumTag(6, "Opacity");
+
 	m_RendererEngine.SetEnumTag(0, "MachStudio Rasterizer");
 	m_RendererEngine.SetEnumTag(1, "RenderMan (PRMan)");
 

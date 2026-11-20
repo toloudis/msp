@@ -608,6 +608,10 @@ void ReadPrefsData(	chReader& io_Reader, chDefs::Version i_Version,
 			o_PrefsData.m_TraceAORays.Read( io_Reader );
 			o_PrefsData.m_TraceBounces.Read( io_Reader );
 		}
+		if ( i_Version > 53 )
+		{
+			o_PrefsData.m_TraceDebugView.Read( io_Reader );
+		}
 	}
 }
 
@@ -617,7 +621,7 @@ void ReadPrefsData(	chReader& io_Reader, chDefs::Version i_Version,
 void WritePrefsData(chWriter& o_Writer,
 					const rprfPrefsData& i_PrefsData )
 {
-	const int l_cPRFD_VERSION = 53;
+	const int l_cPRFD_VERSION = 54;
 	o_Writer.WriteChunkHeader( c_PRFD, l_cPRFD_VERSION, false );
 
 	i_PrefsData.m_bMultipassOn.Write( o_Writer );
@@ -816,6 +820,9 @@ void WritePrefsData(chWriter& o_Writer,
 	i_PrefsData.m_TraceCaptureSamples.Write( o_Writer );
 	i_PrefsData.m_TraceAORays.Write( o_Writer );
 	i_PrefsData.m_TraceBounces.Write( o_Writer );
+
+	// added v54: the tracer debug view
+	i_PrefsData.m_TraceDebugView.Write( o_Writer );
 
 	o_Writer.FinishChunk();
 }

@@ -188,7 +188,7 @@ TEST(mainCommandLine, HelpListsEveryFlag)
 		"-gfx", "-gfxValidation",
 		"-capSampling", "-capJitter", "-capMotionSamples", "-capPasses", "-capHardwareAA",
 		"-capTraceSamples", "-capTraceSamplesPerFrame", "-capTraceSampleLimit", "-capTraceAORays",
-		"-capTraceBounces",
+		"-capTraceBounces", "-capTraceDebug",
 	};
 	for (const char* flag : flags)
 	{
@@ -358,6 +358,8 @@ TEST(mainCommandLine, CaptureNewFlagsBadValue)
 		"-render s.mab -capTraceBounces -1",
 		"-render s.mab -capTraceBounces 33",
 		"-render s.mab -capTraceBounces two",
+		"-render s.mab -capTraceDebug albedo",
+		"-render s.mab -capTraceDebug 1",
 	};
 	for (const char* text : lines)
 	{
@@ -393,6 +395,22 @@ TEST(mainCommandLine, CaptureTraceFlagsInRange)
 					act(mainCommandLine::e_CapTraceAORays, "64"),
 					act(mainCommandLine::e_CapTraceBounces, "0"),
 					act(mainCommandLine::e_CapTraceBounces, "32")}, line);
+	EXPECT_TRUE(line.m_Warnings.empty());
+}
+
+TEST(mainCommandLine, CaptureTraceDebugTakesViewNames)
+{
+	mainCommandLine line = mainCommandLine::Parse(
+		"-render s.mab -capTraceDebug off -capTraceDebug BaseColor -capTraceDebug normal -capTraceDebug roughness "
+		"-capTraceDebug metallic -capTraceDebug emission -capTraceDebug opacity");
+	expect_actions({act(mainCommandLine::e_Render, "s.mab"),
+					act(mainCommandLine::e_CapTraceDebug, "0"),
+					act(mainCommandLine::e_CapTraceDebug, "1"),
+					act(mainCommandLine::e_CapTraceDebug, "2"),
+					act(mainCommandLine::e_CapTraceDebug, "3"),
+					act(mainCommandLine::e_CapTraceDebug, "4"),
+					act(mainCommandLine::e_CapTraceDebug, "5"),
+					act(mainCommandLine::e_CapTraceDebug, "6")}, line);
 	EXPECT_TRUE(line.m_Warnings.empty());
 }
 

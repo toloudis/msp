@@ -16,7 +16,15 @@
 **	and index buffers and their generations, the node's world transform,
 **	a visibility mask (camera rays see all but shadow hulls, occlusion
 **	rays what casts shadows), whether it receives shadows, and its light
-**	set. The walk costs no GPU work.
+**	set, its material, and whether that material can let rays through
+**	(g3dGasCacheOptiX::NeedsAnyHit). The walk costs no GPU work.
+**
+**	Materials: the distinct materials of the listed fragments, in the
+**	order first seen, are GetMaterials(); each build input's
+**	optxGeometryInput::m_Material is its fragment's index in that list (a
+**	renderer's material table converts the list, g3dMaterialTableOptiX).
+**	A fragment given another material, or a material that starts or stops
+**	letting rays through, changes the list: the BVH is rebuilt.
 **
 **	Light sets (light linking) follow the raster's render state traverser
 **	(GraphicsVulkan's g3dRenderStateTraverser): a node under no render
@@ -58,6 +66,9 @@
 #ifndef GOX_OPTXSCENETYPES_H
 #include "GraphicsOptiX/optx/private/Programs/optxSceneTypes.h"
 #endif
+#ifndef GOX_OPTXMATERIALTYPES_H
+#include "GraphicsOptiX/optx/private/Programs/optxMaterialTypes.h"
+#endif
 #ifndef MA_AXISBOX_HPP
 #include "Core/Ma/maAxisBox.hpp"
 #endif
@@ -67,6 +78,7 @@
 
 class g3dLayer;
 class g3dLight;
+class matMaterial;
 class g3dScene;
 class g3dSceneNode;
 
@@ -184,10 +196,18 @@ namespace gox
 			//--------------------------------------------------------------------
 			const std::vector<LightSet>& GetLightSets() const { return m_LightSets; }
 
+			//--------------------------------------------------------------------
+			//	GetMaterials - the materials build inputs name by index, as of the
+			//	last Update
+			//--------------------------------------------------------------------
+			const std::vector<const matMaterial*>& GetMaterials() const { return m_Materials; }
+
 		private:
 			struct Entry
 			{
 				gvk::tmeshFrag*		m_pFragment;
+				const matMaterial*	m_pMaterial;
+				bool				m_bAnyHit;
 				const void*			m_pVertices;
 				const void*			m_pIndices;
 				uint64_t			m_VertexGeneration;
@@ -219,6 +239,7 @@ namespace gox
 			std::vector<Entry>	m_Gathered;			// this Update's (kept for its capacity)
 			std::vector<LightSet>	m_LightSets;		// the last Update's
 			std::vector<LightSet>	m_GatheredSets;		// this Update's
+			std::vector<const matMaterial*>	m_Materials;	// as of the last rebuild
 			bool				m_bBuilt;			// m_Entries describes what is on the device
 			cuBuffer			m_Instances;		// OptixInstance array
 			cuBuffer			m_InstanceTable;	// optxInstanceData array

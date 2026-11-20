@@ -288,4 +288,5 @@ public:
 	prtyInt32	m_TraceCaptureSamples;
 	prtyInt32	m_TraceAORays;
 	prtyInt32	m_TraceBounces;
+	prtyEnum	m_TraceDebugView;		// g3dRenderPrefs::TraceDebugView
 };

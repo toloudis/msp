@@ -238,6 +238,7 @@ void rprfPrefsObject::AddCallbacks()
 	m_Data.m_TraceCaptureSamples.AddCallback(new prtyCallbackWrapper<rprfPrefsObject>(this, &rprfPrefsObject::UpdateTrace));
 	m_Data.m_TraceAORays.AddCallback(new prtyCallbackWrapper<rprfPrefsObject>(this, &rprfPrefsObject::UpdateTrace));
 	m_Data.m_TraceBounces.AddCallback(new prtyCallbackWrapper<rprfPrefsObject>(this, &rprfPrefsObject::UpdateTrace));
+	m_Data.m_TraceDebugView.AddCallback(new prtyCallbackWrapper<rprfPrefsObject>(this, &rprfPrefsObject::UpdateTrace));
 }
 
 //--------------------------------------------------------------------
@@ -637,6 +638,7 @@ void rprfPrefsObject::UpdateTrace(prtyProperty *i_pProperty, bool i_bDirty)
 	m_PrefsProxy->SetTraceCaptureSamples( m_Data.m_TraceCaptureSamples.GetValue() );
 	m_PrefsProxy->SetTraceAORays( m_Data.m_TraceAORays.GetValue() );
 	m_PrefsProxy->SetTraceBounces( m_Data.m_TraceBounces.GetValue() );
+	m_PrefsProxy->SetTraceDebugView( m_Data.m_TraceDebugView.GetValue() );
 }
 
 void rprfPrefsObject::UpdateRenderManOptions(prtyProperty *i_pProperty, bool i_bDirty)

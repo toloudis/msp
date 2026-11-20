@@ -142,6 +142,7 @@
     <ClCompile Include="Vk\bumpFragmentVkTest.cpp" />
     <ClCompile Include="Vk\effShaderVkTest.cpp" />
     <ClCompile Include="Vk\effPbrVkTest.cpp" />
+    <ClCompile Include="Vk\effTraceMaterialVkTest.cpp" />
     <ClCompile Include="gtTarget.cpp" />
     <ClCompile Include="Vk\g3dSceneRendererVkTest.cpp" />
     <ClCompile Include="gtSceneWindow.cpp" />
@@ -233,6 +234,7 @@
     <ClCompile Include="Ox\g3dSceneBVHOptiXGroupTest.cpp" />
     <ClCompile Include="Ox\g3dTraceRendererOptiXTest.cpp" />
     <ClCompile Include="Ox\g3dLightingOptiXTest.cpp" />
+    <ClCompile Include="Ox\g3dMaterialsOptiXTest.cpp" />
     <ClInclude Include="Ox\gtOptiX.hpp" />
   </ItemGroup>
   <ItemGroup>

@@ -10,15 +10,26 @@
 **	  encoded as sRGB, as grey; misses the background (the colour the
 **	  target was last cleared to);
 **	- e_Illumination: the Illumination Only pass (optxLighting): the light
-**	  that reaches white diffuse surfaces from the scene's lights, with
-**	  traced soft shadows and diffuse bounces; linear, as the raster pass
-**	  writes it; misses black;
+**	  that reaches the surfaces from the scene's lights (projectors'
+**	  textures included), with traced soft shadows and diffuse bounces that
+**	  carry the surfaces' albedo; linear, as the raster pass writes it;
+**	  misses black;
 **	- e_ShadowMask: the Shadow Mask pass (optxLighting): the projected
 **	  lights' traced shadows; linear; misses white.
+**	In e_AO mode, the tracer debug view (g3dRenderPrefs::m_TraceDebugView,
+**	or SetDebugView) shows a material quantity of the first hit instead
+**	(optxLighting's debug mode), unlit and linear.
+**
+**	Every mode reads materials (g3dMaterialTableOptiX) and their textures
+**	(g3dTextureTableOptiX): cut-out and transparent surfaces let camera,
+**	bounce and shadow rays through.
+**
 **	Render:
 **
-**	1. Updates its scene BVH (g3dSceneBVHOptiX: GAS from the cache, IAS)
-**	   and, lighting, its light table (g3dLightTableOptiX).
+**	1. Updates its scene BVH (g3dSceneBVHOptiX: GAS from the cache, IAS),
+**	   its material table, its light table (lighting: g3dLightTableOptiX)
+**	   and the texture table both fill; CUDA waits for Vulkan's last write
+**	   to those textures.
 **	2. Unless the image has converged, launches GetSamplesPerFrame more
 **	   samples per pixel into its accumulation buffer, resolving them into
 **	   the shared colour and depth buffers in the same launch (on the OptiX
@@ -41,9 +52,11 @@
 **	the view-projection matrix (which holds the capture jitter), the
 **	target's size, the mode, the seed or a setting that changes the image
 **	(AO: the AO radius, the scene's ssaoParams::m_AORadius, AO rays and the
-**	background; lighting: the light table's version, bounces, albedo, light
-**	sampling, and the preferences for shadows and for illumination using
-**	normals) changes, or on Restart. At the sample limit it stops
+**	background; lighting: the light table's version, bounces, the albedo
+**	override, light sampling, and the preferences for shadows and for
+**	illumination using normals; every mode: the material table's version,
+**	the texture table's (a texture's contents changing), and the debug
+**	view) changes, or on Restart. At the sample limit it stops
 **	launching: Render only copies the last frame again, and the GPU's
 **	tracing is idle while nothing changes. Until then, each Render asks for
 **	another frame (g3dProgressive::RequestFrame), so MachStudio keeps
@@ -72,6 +85,12 @@
 #endif
 #ifndef GOX_G3DLIGHTTABLEOPTIX_HPP
 #include "GraphicsOptiX/G3d/g3dLightTableOptiX.hpp"
+#endif
+#ifndef GOX_G3DMATERIALTABLEOPTIX_HPP
+#include "GraphicsOptiX/G3d/g3dMaterialTableOptiX.hpp"
+#endif
+#ifndef GOX_G3DTEXTURETABLEOPTIX_HPP
+#include "GraphicsOptiX/G3d/g3dTextureTableOptiX.hpp"
 #endif
 #ifndef GOX_G3DSCENEBVHOPTIX_HPP
 #include "GraphicsOptiX/G3d/g3dSceneBVHOptiX.hpp"
@@ -137,9 +156,11 @@ namespace gox
 			//	Settings: samples per pixel each Render adds (at least 1), the
 			//	samples per pixel after which it stops (at least 1), occlusion
 			//	rays per AO sample, bounces after the first hit (lighting; 0:
-			//	direct light only), the albedo of the surfaces bounces leave
-			//	(lighting, in [0, 1]), how area lights are sampled (lighting;
-			//	for tests), and the random seed
+			//	direct light only), an albedo every surface bounces leave with
+			//	in place of its material's (lighting, in [0, 1]; for tests;
+			//	ClearAlbedo goes back to the materials'), how area lights are
+			//	sampled (lighting; for tests), the debug view (an optxDebugView;
+			//	-1, the default: the preference's), and the random seed
 			//--------------------------------------------------------------------
 			void SetSamplesPerFrame(unsigned i_nSamples);
 			unsigned GetSamplesPerFrame() const { return m_nSamplesPerFrame; }
@@ -153,7 +174,9 @@ namespace gox
 			void SetBounces(unsigned i_nBounces);
 			unsigned GetBounces() const { return m_nBounces; }
 			void SetAlbedo(float i_Albedo);
+			void ClearAlbedo() { m_bAlbedoOverride = false; }
 			float GetAlbedo() const { return m_Albedo; }
+			void SetDebugView(int i_View) { m_DebugView = i_View; }
 			void SetLightSampling(optxLightSampling i_Sampling);
 			void SetSeed(unsigned i_Seed);
 
@@ -172,6 +195,8 @@ namespace gox
 			int GetRestartCount() const { return m_nRestarts; }
 			g3dSceneBVHOptiX& GetSceneBVH() { return m_BVH; }
 			g3dLightTableOptiX& GetLightTable() { return m_Lights; }
+			g3dMaterialTableOptiX& GetMaterialTable() { return m_Materials; }
+			g3dTextureTableOptiX& GetTextureTable() { return m_Textures; }
 			optxFrameShare& GetFrameShare() { return m_Share; }
 
 		private:
@@ -180,6 +205,10 @@ namespace gox
 			{
 				uint64_t	m_SceneVersion = 0;
 				uint64_t	m_LightVersion = 0;
+				uint64_t	m_MaterialVersion = 0;
+				uint64_t	m_TextureVersion = 0;
+				unsigned	m_DebugView = 0;
+				unsigned	m_bAlbedoOverride = 0;
 				double		m_ViewProj[16] = {};
 				unsigned	m_Width = 0;
 				unsigned	m_Height = 0;
@@ -211,15 +240,19 @@ namespace gox
 
 			void apply_prefs();
 			bool lighting() const { return m_Mode != e_AO; }
-			bool create_programs();
+			unsigned debug_view() const;
+			bool create_programs(bool i_bLighting);
 			int raster_only(g2dRenderTarget* i_pTarget, const camCamera& i_Camera, const g3dScene& i_Scene,
 							const std::vector<g3dLayer*>& i_ViewerLayers, float i_fSimTime);
 			bool trace(const Key& i_Key, const optxColorOrder i_Order, const optxDepthLayout i_Layout,
 					   unsigned i_nGoal, bool i_bAll);
 
 			Mode						m_Mode;
+			g3dGasCacheOptiX&			m_Cache;
 			gvk::vkdContext&			m_Context;
 			g3dSceneBVHOptiX			m_BVH;
+			g3dTextureTableOptiX		m_Textures;
+			g3dMaterialTableOptiX		m_Materials;
 			g3dLightTableOptiX			m_Lights;
 			optxAO						m_AO;
 			optxLighting				m_Lighting;
@@ -234,6 +267,8 @@ namespace gox
 			unsigned					m_nAORays;
 			unsigned					m_nBounces;
 			float						m_Albedo;
+			bool						m_bAlbedoOverride;
+			int							m_DebugView;
 			optxLightSampling			m_Sampling;
 			unsigned					m_Seed;
 			Key							m_Key;
