@@ -9,9 +9,7 @@
 **	- e_Color8: a 32-bit texel per pixel, in the target's byte order,
 **	  R8G8B8A8 or B8G8R8A8;
 **	- e_ColorHalf: a 64-bit RGBA16F texel per pixel (the beauty pass's HDR
-**	  image, copied into an R16G16B16A16_SFLOAT image), plus an auxiliary
-**	  buffer of the same layout (Aux, CopyAuxTo: the beauty pass's colour
-**	  with the depth of field blurriness in alpha).
+**	  image, copied into an R16G16B16A16_SFLOAT image).
 **	All are exportable vkdBuffers that CUDA writes in place
 **	(cuExternalMemoryCache), and Vulkan copies into images
 **	(vkCmdCopyBufferToImage). One owner per target size: a renderer.
@@ -97,7 +95,7 @@ namespace gox
 			enum ColorLayout
 			{
 				e_Color8,		// R8G8B8A8 or B8G8R8A8
-				e_ColorHalf		// R16G16B16A16_SFLOAT, and the auxiliary buffer
+				e_ColorHalf		// R16G16B16A16_SFLOAT
 			};
 
 			//--------------------------------------------------------------------
@@ -125,7 +123,6 @@ namespace gox
 			bool BeginWrite();
 			CUdeviceptr Color() const { return m_Outputs[m_Current].m_ColorPtr; }
 			CUdeviceptr Depth() const { return m_Outputs[m_Current].m_DepthPtr; }
-			CUdeviceptr Aux() const { return m_Outputs[m_Current].m_AuxPtr; }	// e_ColorHalf; else 0
 			bool EndWrite();
 
 			//--------------------------------------------------------------------
@@ -137,12 +134,6 @@ namespace gox
 			//--------------------------------------------------------------------
 			void CopyTo(gvk::vkdImage* i_pColor, gvk::vkdImage* i_pDepth);
 
-			//--------------------------------------------------------------------
-			//	CopyAuxTo - the auxiliary buffer (e_ColorHalf) into i_pImage
-			//	(R16G16B16A16_SFLOAT, the buffers' size), as CopyTo does
-			//--------------------------------------------------------------------
-			void CopyAuxTo(gvk::vkdImage* i_pImage);
-
 			//	For tests: the last value the frame semaphore was signalled with
 			uint64_t GetFrameValue() const { return m_FrameValue; }
 			const gvk::vkdBuffer* GetColorBuffer() const { return m_Outputs[m_Current].m_pColor.get(); }
@@ -150,7 +141,6 @@ namespace gox
 			//	For tests: the outputs last written, e_ColorHalf, as floats (rgba
 			//	per pixel; empty on failure), after the OptiX stream's work
 			std::vector<float> ReadColor() const { return read_half(Color()); }
-			std::vector<float> ReadAux() const { return read_half(Aux()); }
 
 		private:
 			//	What CUDA writes for one frame and Vulkan copies: a colour and a depth buffer
@@ -158,10 +148,8 @@ namespace gox
 			{
 				std::unique_ptr<gvk::vkdBuffer>	m_pColor;
 				std::unique_ptr<gvk::vkdBuffer>	m_pDepth;
-				std::unique_ptr<gvk::vkdBuffer>	m_pAux;		// e_ColorHalf
 				CUdeviceptr						m_ColorPtr = 0;
 				CUdeviceptr						m_DepthPtr = 0;
-				CUdeviceptr						m_AuxPtr = 0;
 				uint64_t						m_LastReadValue = 0;	// Vulkan's timeline value of the last copy (0: none)
 			};
 			static const int c_OutputCount = 2;

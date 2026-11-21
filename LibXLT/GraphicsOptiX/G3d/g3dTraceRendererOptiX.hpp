@@ -9,10 +9,11 @@
 **	- e_Beauty: the beauty pass (optxLighting's beauty mode): a path tracer
 **	  (one BRDF for every surface, next-event estimation with one light
 **	  chosen per hit, multiple importance sampling for area lights,
-**	  emission, m_Bounces bounces), resolved as linear HDR (RGBA16F, alpha
-**	  the coverage) and finished by the HDR renderer's post chain
-**	  (shdwPostProcessVk: tone mapping, bloom and star, the matte, depth of
-**	  field from the traced depth, the HDR debug modes) into the target;
+**	  emission, m_Bounces bounces, depth of field through the camera's
+**	  lens), resolved as linear HDR (RGBA16F, alpha the coverage) and
+**	  finished by the HDR renderer's post chain (shdwPostProcessVk: tone
+**	  mapping, bloom and star, the matte, the HDR debug modes; not its depth
+**	  of field) into the target;
 **	  misses the background (the colour the target was last cleared to);
 **	- e_AO: ambient occlusion (optxAO): hits the unoccluded fraction,
 **	  encoded as sRGB, as grey; misses the background (the colour the
@@ -48,8 +49,7 @@
 **	3. Copies the shared colour and depth buffers into the target's colour
 **	   and depth images (Vulkan waits for the frame semaphore); e_Beauty:
 **	   the colour into the post chain's HDR scene texture, then runs the
-**	   post chain into the target (its DOF prep copies the shared colour
-**	   with the traced blurriness in alpha into the scene texture).
+**	   post chain into the target.
 **	4. Draws the rest with g3dSceneRendererVk, without clearing and
 **	   skipping the nodes the tracer drew and strand hair (g3dSceneBVHOptiX::
 **	   IsRasterOverlay), depth-testing against the traced depth.
@@ -68,8 +68,8 @@
 **	background; lighting: the light table's version, bounces, the albedo
 **	override, light sampling, and the preferences for shadows and for
 **	illumination using normals; beauty: also the light selection, the
-**	radiance limit, the background and the depth of field settings (the
-**	DOF preference and the camera's distances); every mode: the material
+**	radiance limit, the background and the lens (see GetLens); every
+**	mode: the material
 **	table's version,
 **	the texture table's (a texture's contents changing), and the debug
 **	view) changes, or on Restart. At the sample limit it stops
@@ -210,6 +210,23 @@ namespace gox
 			void SetSeed(unsigned i_Seed);
 
 			//--------------------------------------------------------------------
+			//	GetLens - the thin lens the beauty pass focuses through: false
+			//	(a pinhole) unless the depth of field preference is on and the
+			//	camera's depth of field is set (camDOFData), and the view is a
+			//	perspective one. With the camera's Advanced Lens Properties on,
+			//	the aperture's radius is its focal length over twice its f-stop
+			//	(millimetres to centimetres, the scene's units) and the focus
+			//	is its focus distance. Without them, a lens is derived from the
+			//	depth of field distances: focus halfway through the range in
+			//	focus, and the aperture that blurs a point at the far blur
+			//	distance to the camera's Focus Blur (m_MaxCoC) pixels times its
+			//	far blur limit (or, with no far blur, a point at the near blur
+			//	distance to Focus Blur pixels); i_PixelAngle is the angle a
+			//	pixel spans.
+			//--------------------------------------------------------------------
+			static bool GetLens(const camCamera& i_Camera, float i_PixelAngle, float& o_Radius, float& o_Focus);
+
+			//--------------------------------------------------------------------
 			//	Restart - the next Render starts accumulating again
 			//--------------------------------------------------------------------
 			void Restart() { m_bRestart = true; }
@@ -254,8 +271,8 @@ namespace gox
 				float		m_Background[3] = {};
 				unsigned	m_Selection = 0;
 				float		m_MaxRadiance = 0;
-				unsigned	m_bDof = 0;
-				float		m_Dof[5] = {};		// near blur, near focal, far focal, far blur, far limit
+				float		m_LensRadius = 0;
+				float		m_Focus = 0;
 
 				bool operator==(const Key& i_Other) const;
 			};

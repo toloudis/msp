@@ -29,15 +29,17 @@
 **	  Contributions after the first bounce are scaled down so no component
 **	  exceeds m_MaxRadiance (0: no limit); direct light at the first hit is
 **	  never limited. Camera misses add m_Background; other misses nothing.
+**	  Depth of field is the camera's lens: with m_LensRadius above 0, every
+**	  sample but sample 0 (which gives the depth) starts its camera ray at
+**	  a uniformly chosen point of a disk of that radius around m_Eye (in
+**	  the plane of m_LensRight and m_LensUp) and aims it at the point the
+**	  pinhole ray reaches at depth m_FocusDistance along m_Forward (a thin
+**	  lens); the ray starts at the near plane's depth.
 **	  The accumulation buffer has three planes of m_Width x m_Height float4
 **	  (each plane after the last): rgb sums and depth; first-hit base
 **	  colour sums and coverage (the samples that hit); first-hit shading
-**	  normal sums and sample 0's view-space depth (m_ViewZ; c_Infinity for
-**	  a miss). The resolve writes the linear mean (unclamped) and the
-**	  coverage as RGBA16F into m_Color, and, when m_Aux is set, the mean
-**	  with the depth of field blurriness in alpha (the DOF prep pass's
-**	  ComputeDepthBlur of the view depth with m_Dof and m_DofCutoff; 0.5,
-**	  no blur, for misses) into m_Aux.
+**	  normal sums (w unused). The resolve writes the linear mean
+**	  (unclamped) and the coverage as RGBA16F into m_Color.
 **	- e_optxLightingIllumination: the light arriving at the first hit, as
 **	  the raster Illumination Only pass draws it (light colour times
 **	  attenuation, penumbra and the cosine, summed over the lights that
@@ -139,7 +141,6 @@ namespace gox
 		unsigned long long			m_Accum;		// device address of 4 floats per pixel (beauty: 3 planes of them)
 		unsigned long long			m_Color;		// device address of a 32-bit texel per pixel (beauty: 64-bit, RGBA16F)
 		unsigned long long			m_Depth;		// device address of a 32-bit texel per pixel
-		unsigned long long			m_Aux;			// beauty: device address of an RGBA16F texel per pixel, or 0
 		unsigned int				m_Width;
 		unsigned int				m_Height;
 		float						m_InvViewProj[16];
@@ -149,9 +150,13 @@ namespace gox
 		float						m_Albedo;			// of the bounce surfaces, with m_bAlbedoOverride
 		float						m_ConeWidth;		// a camera ray's cone width at its origin (orthographic: the pixel's)
 		float						m_ConeSpread;		// its spread angle (perspective: a pixel's angle)
-		float						m_ViewZ[4];			// view-space depth = dot(p, xyz) + w (the camera matrix's third column)
-		float						m_Dof[4];			// near blur, near focal, far focal, far blur distances
-		float						m_DofCutoff;		// the far blur's limit
+		float						m_Eye[3];			// beauty: the lens's centre (the camera's position)
+		float						m_LensRadius;		// beauty: the aperture's radius (world units; 0: a pinhole)
+		float						m_Forward[3];		// beauty: the view direction (unit)
+		float						m_FocusDistance;	// beauty: the depth in focus, along m_Forward
+		float						m_LensRight[3];		// beauty: the lens plane's axes (unit)
+		float						m_Pad0;
+		float						m_LensUp[3];
 		float						m_MaxRadiance;		// beauty: the limit after the first bounce (0: none)
 		unsigned int				m_bAlbedoOverride;
 		unsigned int				m_DebugView;		// optxDebugView, e_optxLightingDebug

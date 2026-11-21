@@ -5,8 +5,10 @@
 **	KHR_materials_specular and KHR_materials_ior, in Pbr.hlsl's terms
 **	(Vulkan's raster Pbr.fx):
 **	- GGX distribution D, height-correlated Smith-GGX visibility V,
-**	  Schlick Fresnel F from F0 to F90 at the half vector, Lambert diffuse
-**	  on (1 - F) x baseColor x (1 - metallic);
+**	  Schlick Fresnel F from F0 to F90 at the half vector for the specular
+**	  lobe, Lambert diffuse on baseColor x (1 - metallic) weighted by
+**	  (1 - F(n.wo)) (1 - F(n.wi)), Schlick at the normal both ways, so a
+**	  white surface never reflects more than arrives (reciprocal);
 **	- roughness clamped to [c_MinRoughness, 1] (Pbr.hlsl's clamp), alpha =
 **	  roughness^2;
 **	- F0 = mix(min(((ior - 1) / (ior + 1))^2 x specularColor, 1) x specular,
@@ -14,8 +16,8 @@
 **	  extensions (specular 1, specular colour white, IOR 1.5) that is the
 **	  core model's F0 = mix(0.04, baseColor, metallic), F90 = 1.
 **
-**	Convention (Pbr.hlsl's PbrDirect): the BRDF is f = (1 - F) diffuse / pi
-**	+ D V F, and a light of colour C delivers irradiance pi C: a light
+**	Convention (Pbr.hlsl's PbrDirect): the BRDF is f = (1 - F(n.wo))
+**	(1 - F(n.wi)) diffuse / pi + D V F, and a light of colour C delivers irradiance pi C: a light
 **	sample adds pi C f cos. Evaluate returns the two lobes apart (diffuse
 **	and specular), so the light's diffuse colour lights the one and its
 **	specular colour the other, as in the raster.
@@ -23,8 +25,9 @@
 **	Sampling: the specular lobe by GGX visible normals (Heitz 2018, in the
 **	spherical-cap form of Dupuy and Benyoub 2023), the diffuse lobe
 **	cosine-weighted; the lobe is chosen in proportion to an estimate of
-**	its weight (the Fresnel at the view angle, against (1 - F) times the
-**	diffuse colour, as luminance), and the pdf is the mixture of both
+**	its weight (the Fresnel at the view angle, against the diffuse colour
+**	times the diffuse weight averaged over light directions, as
+**	luminance), and the pdf is the mixture of both
 **	lobes, so multiple importance sampling sees the true pdf.
 **
 **	Directions are world-space unit vectors: wo towards the viewer, wi
@@ -121,12 +124,20 @@ namespace optxb
 		return normalize(i_Wo + i_N * (c_MinCosine - c));
 	}
 
+	//	The diffuse lobe's weight averaged over cosine-weighted light
+	//	directions: 1 - F0 - (F90 - F0) / 21 (Pbr.hlsl's
+	//	PbrDiffuseWeightAmbient without the view's factor)
+	__forceinline__ __device__ float3 diffuse_mean(const Bsdf& i_Bsdf)
+	{
+		return splat3(1.0f) - i_Bsdf.m_F0 - (i_Bsdf.m_F90 - i_Bsdf.m_F0) * (1.0f / 21.0f);
+	}
+
 	//	The chance of choosing the specular lobe at a view
 	__forceinline__ __device__ float specular_chance(const Bsdf& i_Bsdf, float i_NdotV)
 	{
 		const float3 f = fresnel(i_Bsdf, i_NdotV);
 		const float s = luminance(f);
-		const float d = luminance(mul3(splat3(1.0f) - f, i_Bsdf.m_Diffuse));
+		const float d = luminance(mul3(mul3(splat3(1.0f) - f, diffuse_mean(i_Bsdf)), i_Bsdf.m_Diffuse));
 		if (s + d <= 0.0f)
 		{
 			return 0.0f;
@@ -146,7 +157,7 @@ namespace optxb
 	//	The BRDF (both lobes, no cosine) and the sampling pdf of wi
 	struct Value
 	{
-		float3	m_Diffuse;		// (1 - F) diffuse / pi
+		float3	m_Diffuse;		// (1 - F(n.wo)) (1 - F(n.wi)) diffuse / pi
 		float3	m_Specular;		// D V F
 		float	m_Pdf;			// the mixture's, solid angle
 	};
@@ -172,7 +183,8 @@ namespace optxb
 		const float a = i_Bsdf.m_Alpha;
 		const float3 F = fresnel(i_Bsdf, VdotH);
 		v.m_Specular = F * (d_ggx(NdotH, a) * v_smith(saturate(NdotL), NdotV, a));
-		v.m_Diffuse = mul3(splat3(1.0f) - F, i_Bsdf.m_Diffuse) * (1.0f / c_Pi);
+		const float3 weight = mul3(splat3(1.0f) - fresnel(i_Bsdf, NdotV), splat3(1.0f) - fresnel(i_Bsdf, NdotL));
+		v.m_Diffuse = mul3(weight, i_Bsdf.m_Diffuse) * (1.0f / c_Pi);
 		const float chance = specular_chance(i_Bsdf, NdotV);
 		v.m_Pdf = chance * specular_pdf(NdotV, NdotH, a) + (1.0f - chance) * (NdotL / c_Pi);
 		return v;

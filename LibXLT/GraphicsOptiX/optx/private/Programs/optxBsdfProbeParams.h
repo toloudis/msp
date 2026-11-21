@@ -36,7 +36,7 @@ namespace gox
 
 	struct optxBsdfResult
 	{
-		float			m_Diffuse[3];		// at m_Wi: (1 - F) diffuse / pi
+		float			m_Diffuse[3];		// at m_Wi: (1 - F(n.wo)) (1 - F(n.wi)) diffuse / pi
 		float			m_Pdf;				// at m_Wi: the sampling pdf
 		float			m_Specular[3];		// at m_Wi: D V F
 		unsigned int	m_Lobe;				// the sample's lobe (optxb::Lobe; 0: none)

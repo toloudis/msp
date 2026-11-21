@@ -6,14 +6,15 @@
 **	optxBsdf.h), evaluated and sampled in CUDA through optxBsdfProbe, on
 **	a gtOptiX device:
 **	- evaluation matches a CPU port of Pbr.hlsl's terms (GGX D,
-**	  height-correlated Smith V, Schlick F, Lambert on (1 - F) diffuse) at
+**	  height-correlated Smith V, Schlick F, Lambert diffuse weighted by
+**	  (1 - F(n.wo)) (1 - F(n.wi))) at
 **	  sampled angles, roughnesses, metallic values and KHR specular and IOR
 **	  values; without the extensions it is the core model's F0 = mix(0.04,
 **	  baseColor, metallic);
 **	- reciprocity: f(wi, wo) = f(wo, wi);
 **	- the white furnace: a white surface reflects at most what arrives
-**	  (the sample weights' mean), all of it for a Lambert surface, nearly
-**	  all for rough diffuse and for a mirror metal;
+**	  (the sample weights' mean), at every view angle; all of it for a
+**	  Lambert surface, nearly all for rough diffuse and a mirror metal;
 **	- the pdf integrates over the hemisphere to the share of samples that
 **	  are directions, and a histogram of the samples matches the pdf
 **	  (chi-square).
@@ -93,8 +94,8 @@ namespace
 	}
 
 	//	Pbr.hlsl's terms (PbrLightTerms, PbrDirect), with the plan's KHR
-	//	specular and IOR F0 and F90: the diffuse lobe (1 - F) diffuse / pi
-	//	and the specular lobe D V F, per channel
+	//	specular and IOR F0 and F90: the diffuse lobe (1 - F(NdotV))
+	//	(1 - F(NdotL)) diffuse / pi and the specular lobe D V F, per channel
 	void reference(const Material& i_M, V3 n, V3 wo, V3 wi, double o_Diffuse[3], double o_Specular[3])
 	{
 		const double metallic = std::min(1.0, std::max(0.0, i_M.m_Metallic));
@@ -119,8 +120,10 @@ namespace
 			const double f0 = dielectric + (i_M.m_Base[c] - dielectric) * metallic;
 			const double f90 = specular + (1.0 - specular) * metallic;
 			const double F = f0 + (f90 - f0) * std::pow(1 - VdotH, 5);
+			const double Fv = f0 + (f90 - f0) * std::pow(1 - std::min(1.0, NdotV), 5);
+			const double Fl = f0 + (f90 - f0) * std::pow(1 - NdotL, 5);
 			o_Specular[c] = D * Vis * F;
-			o_Diffuse[c] = (1 - F) * i_M.m_Base[c] * (1 - metallic) / c_Pi;
+			o_Diffuse[c] = (1 - Fv) * (1 - Fl) * i_M.m_Base[c] * (1 - metallic) / c_Pi;
 		}
 	}
 
@@ -275,7 +278,7 @@ TEST_F(optxBsdfTest, WithoutTheExtensionsItIsTheCoreModel)
 		{
 			const double f0 = 0.04 + (materials[i].m_Base[c] - 0.04) * materials[i].m_Metallic;
 			EXPECT_TRUE(close(D * Vis * f0, results[i].m_Specular[c], 2e-3)) << i << " " << c;
-			EXPECT_TRUE(close((1 - f0) * materials[i].m_Base[c] * (1 - materials[i].m_Metallic) / c_Pi, results[i].m_Diffuse[c], 2e-3))
+			EXPECT_TRUE(close((1 - f0) * (1 - f0) * materials[i].m_Base[c] * (1 - materials[i].m_Metallic) / c_Pi, results[i].m_Diffuse[c], 2e-3))
 				<< i << " " << c;
 		}
 	}
@@ -330,13 +333,7 @@ TEST_F(optxBsdfTest, WhiteFurnace)
 				m.m_Roughness = roughness;
 				m.m_Metallic = metallic;
 				const double albedo = furnace(m, theta, n);
-				//	Pbr.hlsl's model weights the diffuse lobe by 1 - F at the
-				//	half vector, so at grazing views a dielectric's strong
-				//	specular doesn't come out of its diffuse: it gains energy
-				//	(about 1.5 at 83 degrees). The tracer matches the raster,
-				//	so that is bounded here, not ruled out.
-				const double ceiling = (metallic == 0.0 && theta > 1.0) ? 1.6 : 1.01;
-				EXPECT_LE(albedo, ceiling) << "roughness " << roughness << " metallic " << metallic;
+				EXPECT_LE(albedo, 1.01) << "roughness " << roughness << " metallic " << metallic;
 				if (theta < 1.0)
 				{
 					//	single scattering loses energy: a fully rough metal (alpha

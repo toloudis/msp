@@ -5,8 +5,15 @@
 **      original, and DX11 draws Pbr.fx materials as Blinn).
 **
 **      BRDF: GGX distribution, height-correlated Smith-GGX visibility,
-**      Schlick Fresnel with F0 = mix(0.04, baseColor, metallic), Lambert
-**      diffuse on (1 - F) * baseColor * (1 - metallic). The effect has
+**      Schlick Fresnel with F0 = mix(0.04, baseColor, metallic) at the half
+**      vector for the specular lobe, Lambert diffuse on baseColor * (1 -
+**      metallic) weighted by (1 - F(NdotV)) (1 - F(NdotL)) (Schlick at the
+**      normal, both ways: what the specular lobe reflects doesn't also
+**      reach the diffuse, so a white surface never reflects more than
+**      arrives, even at grazing angles; reciprocal). Image-based diffuse is
+**      weighted by (1 - F(NdotV)) times the cosine-weighted mean of
+**      1 - F(NdotL), 1 - F0 - (1 - F0) / 21. GraphicsOptiX's tracer
+**      (optxBsdf.h) uses the same terms. The effect has
 **      Blinn's techniques, passes and entry-point names, so every shdw pass
 **      that draws Blinn draws Pbr; lights come one per pass.
 **
@@ -181,9 +188,23 @@ float3 F_Schlick(float3 F0, float VdotH)
 	return F0 + (1 - F0) * pow(1 - VdotH, 5);
 }
 
-// The light's terms at the surface: NdotL, the Fresnel term and the
-// specular BRDF (times PI, see PbrDirect)
-void PbrLightTerms(PbrSurface s, IncidentLight light, out float NdotL, out float3 F, out float3 specular)
+// The diffuse lobe's weight for a view and a light: what Schlick's
+// Fresnel at the normal leaves both ways
+float3 PbrDiffuseWeight(float3 F0, float NdotV, float NdotL)
+{
+	return (1 - F_Schlick(F0, saturate(NdotV))) * (1 - F_Schlick(F0, saturate(NdotL)));
+}
+
+// The same for light from every direction (image-based light): the
+// cosine-weighted mean of 1 - F(NdotL) is 1 - F0 - (1 - F0) / 21
+float3 PbrDiffuseWeightAmbient(float3 F0, float NdotV)
+{
+	return (1 - F_Schlick(F0, saturate(NdotV))) * (1 - F0 - (1 - F0) / 21.0);
+}
+
+// The light's terms at the surface: NdotL, the diffuse lobe's weight and
+// the specular BRDF (times PI, see PbrDirect)
+void PbrLightTerms(PbrSurface s, IncidentLight light, out float NdotL, out float3 diffuseWeight, out float3 specular)
 {
 	float3 L = normalize(light.L);
 	// L + V is zero when the light is exactly behind the surface, seen
@@ -195,8 +216,9 @@ void PbrLightTerms(PbrSurface s, IncidentLight light, out float NdotL, out float
 	float NdotH = saturate(dot(s.N, H));
 	float VdotH = saturate(dot(s.V, H));
 	float a = s.roughness * s.roughness;
-	F = F_Schlick(s.F0, VdotH);
+	float3 F = F_Schlick(s.F0, VdotH);
 	specular = PI * D_GGX(NdotH, a) * V_SmithGGX(NdotL, NdotV, a) * F;
+	diffuseWeight = PbrDiffuseWeight(s.F0, NdotV, NdotL);
 }
 
 // One light. MachStudio's light convention (as PhongDiffuse): a white
@@ -207,17 +229,17 @@ void PbrLightTerms(PbrSurface s, IncidentLight light, out float NdotL, out float
 float3 PbrDirect(PbrSurface s, IncidentLight light)
 {
 	float NdotL;
-	float3 F, specular;
-	PbrLightTerms(s, light, NdotL, F, specular);
-	return NdotL * (light.Cld * (1 - F) * s.diffuseColor + light.Cls * specular);
+	float3 diffuseWeight, specular;
+	PbrLightTerms(s, light, NdotL, diffuseWeight, specular);
+	return NdotL * (light.Cld * diffuseWeight * s.diffuseColor + light.Cls * specular);
 }
 
 // The specular term alone (Glow)
 float3 PbrSpecularOnly(PbrSurface s, IncidentLight light)
 {
 	float NdotL;
-	float3 F, specular;
-	PbrLightTerms(s, light, NdotL, F, specular);
+	float3 diffuseWeight, specular;
+	PbrLightTerms(s, light, NdotL, diffuseWeight, specular);
 	return NdotL * light.Cls * specular;
 }
 
@@ -349,7 +371,7 @@ pixelOutput iblPS(TANGENT_VERTEX_OUTPUT IN, bool vFace)
 	if (hasOcclusionMap)
 		ao = lerp(1, occlusionMap.Sample(g_DefaultSampler, s.uv).r, g_occlusionStrength);
 
-	float3 diffuse = s.diffuseColor * g_envDiffuseColor.rgb * g_diffuseFactor;
+	float3 diffuse = s.diffuseColor * PbrDiffuseWeightAmbient(s.F0, NdotV) * g_envDiffuseColor.rgb * g_diffuseFactor;
 	if (g_bHasDiffuseEnvMap)
 		diffuse *= SampleEnvDiffuse(s.N, diffuseEnvMap, g_diffuseEnvAngle).rgb;
 

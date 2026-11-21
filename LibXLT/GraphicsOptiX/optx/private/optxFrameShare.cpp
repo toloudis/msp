@@ -157,11 +157,7 @@ namespace gox
 		{
 			outputs.m_pColor = gvk::vkdBuffer::Create(m_Device, color_bytes, usage, "optxFrameShare colour", true);
 			outputs.m_pDepth = gvk::vkdBuffer::Create(m_Device, bytes, usage, "optxFrameShare depth", true);
-			if (half)
-			{
-				outputs.m_pAux = gvk::vkdBuffer::Create(m_Device, color_bytes, usage, "optxFrameShare auxiliary", true);
-			}
-			if (!outputs.m_pColor || !outputs.m_pDepth || (half && !outputs.m_pAux))
+			if (!outputs.m_pColor || !outputs.m_pDepth)
 			{
 				DBG_LOG("GraphicsOptiX: shared frame buffers of " << i_Width << "x" << i_Height << " couldn't be made");
 				free_buffers();
@@ -169,8 +165,7 @@ namespace gox
 			}
 			outputs.m_ColorPtr = m_Memory.Map(*outputs.m_pColor);
 			outputs.m_DepthPtr = m_Memory.Map(*outputs.m_pDepth);
-			outputs.m_AuxPtr = half ? m_Memory.Map(*outputs.m_pAux) : 0;
-			if (!outputs.m_ColorPtr || !outputs.m_DepthPtr || (half && !outputs.m_AuxPtr))
+			if (!outputs.m_ColorPtr || !outputs.m_DepthPtr)
 			{
 				free_buffers();
 				return false;
@@ -345,17 +340,5 @@ namespace gox
 			values[i] = half_to_float(halves[i]);
 		}
 		return values;
-	}
-
-	void optxFrameShare::CopyAuxTo(gvk::vkdImage* i_pImage)
-	{
-		FrameOutputs& outputs = m_Outputs[m_Current];
-		if (!outputs.m_pAux || !i_pImage)
-		{
-			return;
-		}
-		std::lock_guard<std::recursive_mutex> lock(m_Device.StreamLock());
-		add_wait();
-		copy(*outputs.m_pAux, i_pImage, VK_IMAGE_ASPECT_COLOR_BIT);
 	}
 }

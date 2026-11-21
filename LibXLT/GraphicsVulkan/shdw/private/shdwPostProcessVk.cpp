@@ -236,7 +236,7 @@ int shdwPostProcessVk::Run(g2dRenderTarget* i_pWindow, shdwFrameBufferMgr& i_Fra
 
 			camDOFData dof;
 			i_Camera.GetDOFParams(dof);
-			if (g3dPrefs::CurrentPrefs().m_bEnableDOF && (dof.m_MaxFarBlur != -1))
+			if (i_Options.m_bDof && g3dPrefs::CurrentPrefs().m_bEnableDOF && (dof.m_MaxFarBlur != -1))
 			{
 				// set into global 3d rendering state
 				g3dSceneGlobal::g_DOFParams.m_FarBlurDist = dof.m_FarBlurDist;
@@ -304,7 +304,7 @@ int shdwPostProcessVk::Run(g2dRenderTarget* i_pWindow, shdwFrameBufferMgr& i_Fra
 			// DOF
 			camDOFData dof;
 			i_Camera.GetDOFParams(dof);
-			if (g3dPrefs::CurrentPrefs().m_bEnableDOF && (dof.m_MaxFarBlur != -1))
+			if (i_Options.m_bDof && g3dPrefs::CurrentPrefs().m_bEnableDOF && (dof.m_MaxFarBlur != -1))
 			{
 				// set into global 3d rendering state
 				g3dSceneGlobal::g_DOFParams.m_FarBlurDist = dof.m_FarBlurDist;

@@ -17,7 +17,10 @@
 **	RGBA16F frame) and lights a floor through bounces; the radiance limit
 **	leaves direct light alone and darkens bounced light, and changing it
 **	restarts accumulation; the post chain draws the HDR frame into the
-**	target.
+**	target; the lens comes from the camera (its real lens with Advanced
+**	Lens Properties, else one derived from its depth of field distances)
+**	and focuses: a glowing square is sharp in focus and spread, with its
+**	light kept, out of focus.
 **
 **	With MSP_GT_AO_IMAGES set to a folder, the tone-mapped pictures are
 **	saved there.
@@ -355,7 +358,9 @@ namespace
 		{
 			const double f0 = 0.04 + (i_Base[k] - 0.04) * i_Metallic;
 			const double F = f0 + (1 - f0) * std::pow(1 - VdotH, 5);
-			o_Rgb[k] = NdotL * (c[k] * (1 - F) * i_Base[k] * (1 - i_Metallic) + c[k] * c_Pi * D * Vis * F);
+			const double Fv = f0 + (1 - f0) * std::pow(1 - std::min(1.0, NdotV), 5);
+			const double Fl = f0 + (1 - f0) * std::pow(1 - NdotL, 5);
+			o_Rgb[k] = NdotL * (c[k] * (1 - Fv) * (1 - Fl) * i_Base[k] * (1 - i_Metallic) + c[k] * c_Pi * D * Vis * F);
 		}
 	}
 }
@@ -680,5 +685,118 @@ TEST(g3dBeautyOptiX, PostChainDrawsTheHdrFrame)
 		const uint8_t* corner = &picture.m_Rgba[(size_t(2) * c_Size + 2) * 4];
 		EXPECT_GT(centre[0], 20);
 		EXPECT_GT(centre[0], corner[0]);
+	});
+}
+
+TEST(g3dBeautyOptiX, LensComesFromTheCamera)
+{
+	gtBackend::RunOptiX([]()
+	{
+		g3dPrefs::g3dRenderPrefs& prefs = g3dPrefs::CurrentPrefs();
+		const bool dof_pref = prefs.m_bEnableDOF;
+		prefs.m_bEnableDOF = true;
+		camCamera camera;
+		const float pixel = 0.001f;
+		float radius = 0, focus = 0;
+
+		//	no depth of field on the camera: a pinhole
+		EXPECT_FALSE(g3dTraceRendererOptiX::GetLens(camera, pixel, radius, focus));
+
+		camDOFData dof;
+		dof.m_bEnableDOF = true;
+		dof.m_NearBlurDist = 50;
+		dof.m_NearFocalDist = 100;
+		dof.m_FarFocalDist = 140;
+		dof.m_FarBlurDist = 300;
+		dof.m_MaxFarBlur = 0.5f;
+		dof.m_MaxCoC = 8;
+		camera.SetDOFParams(dof);
+
+		//	Advanced Lens Properties: the real lens (50 mm at f/2.5: a 1 cm radius)
+		camera.SetEnableALP(true);
+		camera.SetFStop(2.5f);
+		camera.SetFocalLength(50.0f);
+		camera.SetFocalDistance(250.0f);
+		ASSERT_TRUE(g3dTraceRendererOptiX::GetLens(camera, pixel, radius, focus));
+		EXPECT_FLOAT_EQ(1.0f, radius);
+		EXPECT_FLOAT_EQ(250.0f, focus);
+
+		//	without them: focus mid-range, the far blur distance blurred to
+		//	Focus Blur x far limit pixels
+		camera.SetEnableALP(false);
+		ASSERT_TRUE(g3dTraceRendererOptiX::GetLens(camera, pixel, radius, focus));
+		EXPECT_FLOAT_EQ(120.0f, focus);
+		const float aperture = 2.0f * radius;
+		const float blur_pixels = aperture * std::fabs(300.0f - 120.0f) / 300.0f / (120.0f * pixel);
+		EXPECT_NEAR(8.0f * 0.5f, blur_pixels, 1e-3f);
+
+		//	the preference off: a pinhole
+		prefs.m_bEnableDOF = false;
+		EXPECT_FALSE(g3dTraceRendererOptiX::GetLens(camera, pixel, radius, focus));
+		prefs.m_bEnableDOF = dof_pref;
+	});
+}
+
+TEST(g3dBeautyOptiX, LensFocusesAtItsFocusDistance)
+{
+	gtBackend::RunOptiX([]()
+	{
+		g3dPrefs::g3dRenderPrefs& prefs = g3dPrefs::CurrentPrefs();
+		const bool dof_pref = prefs.m_bEnableDOF;
+		prefs.m_bEnableDOF = true;
+
+		//	a small glowing square 30 below the camera, nothing else
+		gtSceneBuilder builder;
+		matMaterial* glow = pbr(builder, maFloatRGBA(0, 0, 0, 1), 0.0f, 1.0f);
+		gtScene::SetColor(glow, effPbrData::c_Emissive, maFloatRGBA(1, 1, 1, 1));
+		builder.Add(gtScene::Plane(), glow, scale_translate(3.0f, 0, 0, 0));
+		look_down(builder.Camera(), 0, 0, 30);
+		camDOFData dof;
+		dof.m_bEnableDOF = true;
+		dof.m_MaxFarBlur = 1.0f;
+		dof.m_MaxCoC = 5.0f;
+		builder.Camera().SetDOFParams(dof);
+		builder.Camera().SetEnableALP(true);
+		builder.Camera().SetFStop(1.4f);
+		builder.Camera().SetFocalLength(50.0f);
+
+		auto render = [&](float i_Focus)
+		{
+			builder.Camera().SetFocalDistance(i_Focus);
+			std::unique_ptr<g3dTraceRendererOptiX> renderer = beauty_renderer();
+			renderer->SetBounces(0);
+			renderer->SetSamplesPerFrame(128);
+			renderer->SetSampleLimit(128);
+			View view(builder, *renderer);
+			return view.Hdr();
+		};
+		//	the pixels partly covered by the square: its blurred edge
+		auto edge_pixels = [](const std::vector<float>& i_Hdr)
+		{
+			int count = 0;
+			for (int i = 0; i < c_Size * c_Size; ++i)
+			{
+				const float v = i_Hdr[size_t(i) * 4];
+				count += (v > 0.05f && v < 0.95f) ? 1 : 0;
+			}
+			return count;
+		};
+		const std::vector<float> sharp = render(30.0f);
+		const std::vector<float> blurred = render(8.0f);
+		prefs.m_bEnableDOF = dof_pref;
+		ASSERT_FALSE(sharp.empty() || blurred.empty());
+		//	in focus: only the pixels the square's edge crosses; out of focus
+		//	(50 mm at f/1.4, a 3.6 cm aperture, focused at 8: a blur about
+		//	20 pixels across at the square) a wide band
+		EXPECT_LT(edge_pixels(sharp), 4 * 20 + 8);
+		EXPECT_GT(edge_pixels(blurred), 3 * edge_pixels(sharp));
+		//	the light is spread, not lost: the image's total stays about the same
+		double sum_sharp = 0, sum_blurred = 0;
+		for (int i = 0; i < c_Size * c_Size; ++i)
+		{
+			sum_sharp += sharp[size_t(i) * 4];
+			sum_blurred += blurred[size_t(i) * 4];
+		}
+		EXPECT_NEAR(sum_sharp, sum_blurred, sum_sharp * 0.05);
 	});
 }

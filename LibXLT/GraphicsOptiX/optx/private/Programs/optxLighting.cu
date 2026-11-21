@@ -114,41 +114,42 @@ namespace
 		return make_uint2(to_half(x) | (unsigned(to_half(y)) << 16), to_half(z) | (unsigned(to_half(w)) << 16));
 	}
 
-	//	ComputeDepthBlur (Support.hlsli) of a view-space depth: the DOF prep
-	//	pass's blurriness, 0.5 for none
-	__forceinline__ __device__ float depth_blur(float i_Depth)
-	{
-		const float* p = params.m_Dof;
-		float f = 0.0f;
-		if (i_Depth < p[1])
-		{
-			f = fminf(fmaxf((i_Depth - p[1]) / (p[1] - p[0]), -1.0f), 0.0f);
-		}
-		else if (i_Depth > p[2])
-		{
-			f = fminf(fmaxf((i_Depth - p[2]) / (p[3] - p[2]), 0.0f), params.m_DofCutoff);
-		}
-		return f * 0.5f + 0.5f;
-	}
-
 	//	The beauty resolve: the linear mean (unclamped) and coverage as
-	//	RGBA16F, the same with the DOF blurriness in alpha, and depth
+	//	RGBA16F, and depth
 	__forceinline__ __device__ void write_hdr_pixel(unsigned int i_Pixel, const float4* i_Planes, unsigned int i_nSamples)
 	{
 		const unsigned int count = params.m_Width * params.m_Height;
 		const float4 color = i_Planes[0];
 		const float4 guide = i_Planes[count];
-		const float4 normal = i_Planes[2 * count];
 		const float scale = 1.0f / i_nSamples;
-		const float r = color.x * scale, g = color.y * scale, b = color.z * scale;
-		reinterpret_cast<uint2*>(params.m_Color)[i_Pixel] = half4(r, g, b, guide.w * scale);
-		if (params.m_Aux)
-		{
-			//	normal.w: sample 0's view-space depth (c_Infinity for a miss)
-			const float blur = normal.w < c_Infinity ? depth_blur(normal.w) : 0.5f;
-			reinterpret_cast<uint2*>(params.m_Aux)[i_Pixel] = half4(r, g, b, blur);
-		}
+		reinterpret_cast<uint2*>(params.m_Color)[i_Pixel] = half4(color.x * scale, color.y * scale, color.z * scale, guide.w * scale);
 		write_depth(i_Pixel, color.w);
+	}
+
+	//	The thin lens (optxLightingParams.h): a camera ray from a point of
+	//	the aperture towards where the pinhole ray (i_Origin on the near
+	//	plane, i_Direction) meets the plane in focus; its length to the far
+	//	plane becomes io_Length
+	__forceinline__ __device__ void lens_ray(float3& io_Origin, float3& io_Direction, float& io_Length, float u1, float u2)
+	{
+		const float3 eye = load3(params.m_Eye);
+		const float3 forward = load3(params.m_Forward);
+		const float along = dot(io_Direction, forward);
+		if (!(along > 1e-6f))
+		{
+			return;
+		}
+		const float near_depth = dot(io_Origin - eye, forward);
+		const float far_depth = near_depth + io_Length * along;
+		const float3 focus = io_Origin + io_Direction * ((params.m_FocusDistance - near_depth) / along);
+		const float r = params.m_LensRadius * sqrtf(u1);
+		const float phi = 2.0f * c_Pi * u2;
+		const float3 lens = eye + load3(params.m_LensRight) * (r * __cosf(phi)) + load3(params.m_LensUp) * (r * __sinf(phi));
+		const float3 d = normalize(focus - lens);
+		const float d_along = fmaxf(dot(d, forward), 1e-6f);
+		io_Origin = lens + d * (near_depth / d_along);
+		io_Direction = d;
+		io_Length = (far_depth - near_depth) / d_along;
 	}
 
 	//------------------------------------------------------------------------
@@ -669,7 +670,6 @@ extern "C" __global__ void __raygen__lighting()
 	float3 normal = splat3(0.0f);
 	float coverage = 0.0f;
 	float first_depth = 1.0f;
-	float first_view_depth = c_Infinity;
 	for (unsigned int s = 0; s < params.m_Samples; ++s)
 	{
 		const unsigned int sample = params.m_FirstSample + s;
@@ -689,21 +689,26 @@ extern "C" __global__ void __raygen__lighting()
 		const float3 mid_point = project(params.m_InvViewProj, nx, ny, 0.5f, w);
 		const float3 far_point = project(params.m_InvViewProj, nx, ny, 1.0f, w);
 		const float3 step = mid_point - near_point;
-		const float3 direction = step * rsqrtf(dot(step, step));
-		const float length = dot(far_point - near_point, direction);
+		float3 direction = step * rsqrtf(dot(step, step));
+		float length = dot(far_point - near_point, direction);
+		float3 origin = near_point;
+		if (hdr && params.m_LensRadius > 0.0f && sample != 0)
+		{
+			//	sample 0 stays the pinhole's: it gives the depth the raster overlay tests
+			const float u1 = rng.Next(), u2 = rng.Next();
+			lens_ray(origin, direction, length, u1, u2);
+		}
 
-		const Hit first = trace_camera(near_point, direction, length);
+		const Hit first = trace_camera(origin, direction, length);
 		float depth = 1.0f;
-		float view_depth = c_Infinity;
 		if (!first.m_bHit)
 		{
 			sum = sum + background;
 		}
 		else
 		{
-			const float3 position = near_point + direction * first.m_T;
+			const float3 position = origin + direction * first.m_T;
 			depth = project(params.m_ViewProj, position.x, position.y, position.z, w).z;
-			view_depth = dot(position, load3(params.m_ViewZ)) + params.m_ViewZ[3];
 			const float width = params.m_ConeWidth + params.m_ConeSpread * first.m_T;
 			const Surface surface = make_surface(position, first, direction, width, hdr);
 
@@ -731,7 +736,6 @@ extern "C" __global__ void __raygen__lighting()
 		if (sample == 0)
 		{
 			first_depth = fminf(fmaxf(depth, 0.0f), 1.0f);
-			first_view_depth = view_depth;
 		}
 	}
 
@@ -746,9 +750,8 @@ extern "C" __global__ void __raygen__lighting()
 	*accum = make_float4(sum.x, sum.y, sum.z, depth);
 	if (hdr)
 	{
-		//	Two more planes: albedo and coverage; normal and sample 0's view depth
+		//	Two more planes: albedo and coverage; normal
 		const unsigned int count = params.m_Width * params.m_Height;
-		float view_depth = first_view_depth;
 		if (params.m_FirstSample != 0)
 		{
 			const float4 a = accum[count];
@@ -756,10 +759,9 @@ extern "C" __global__ void __raygen__lighting()
 			albedo = albedo + make_float3(a.x, a.y, a.z);
 			coverage += a.w;
 			normal = normal + make_float3(n.x, n.y, n.z);
-			view_depth = n.w;
 		}
 		accum[count] = make_float4(albedo.x, albedo.y, albedo.z, coverage);
-		accum[2 * count] = make_float4(normal.x, normal.y, normal.z, view_depth);
+		accum[2 * count] = make_float4(normal.x, normal.y, normal.z, 0.0f);
 		if (params.m_Resolve)
 		{
 			write_hdr_pixel(pixel, accum, params.m_FirstSample + params.m_Samples);

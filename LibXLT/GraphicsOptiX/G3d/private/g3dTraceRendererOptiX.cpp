@@ -210,6 +210,69 @@ namespace gox
 		}
 	}
 
+	bool g3dTraceRendererOptiX::GetLens(const camCamera& i_Camera, float i_PixelAngle, float& o_Radius, float& o_Focus)
+	{
+		o_Radius = 0.0f;
+		o_Focus = 0.0f;
+		camDOFData dof;
+		i_Camera.GetDOFParams(dof);
+		if (!g3dPrefs::CurrentPrefs().m_bEnableDOF || dof.m_MaxFarBlur == -1 || !(i_PixelAngle > 1e-7f))
+		{
+			return false;
+		}
+		if (i_Camera.GetEnableALP())
+		{
+			//	A real lens: focal length in millimetres, the scene in centimetres
+			const float stop = i_Camera.GetFStop(), length = i_Camera.GetFocalLength(), focus = i_Camera.GetFocalDistance();
+			if (stop > 0.0f && length > 0.0f && focus > 0.0f)
+			{
+				o_Radius = length / (2.0f * stop) / 10.0f;
+				o_Focus = focus;
+			}
+		}
+		else
+		{
+			//	Derived from the distances: a point at depth d seen through an
+			//	aperture A focused at s blurs to A |d - s| / d at the focus
+			//	plane, where a pixel is s times its angle across
+			float focus = 0.0f;
+			if (dof.m_NearFocalDist > 0.0f && dof.m_FarFocalDist > 0.0f)
+			{
+				focus = 0.5f * (dof.m_NearFocalDist + dof.m_FarFocalDist);
+			}
+			else
+			{
+				focus = std::max(dof.m_NearFocalDist, dof.m_FarFocalDist);
+			}
+			if (focus > 0.0f && dof.m_MaxCoC > 0.0f)
+			{
+				float pixels = 0.0f, depth = 0.0f;
+				if (dof.m_FarBlurDist > focus && dof.m_MaxFarBlur > 0.0f)
+				{
+					pixels = dof.m_MaxCoC * std::min(1.0f, dof.m_MaxFarBlur);
+					depth = dof.m_FarBlurDist;
+				}
+				else if (dof.m_NearBlurDist > 0.0f && dof.m_NearBlurDist < focus)
+				{
+					pixels = dof.m_MaxCoC;
+					depth = dof.m_NearBlurDist;
+				}
+				if (pixels > 0.0f)
+				{
+					const float aperture = pixels * focus * i_PixelAngle * depth / std::fabs(depth - focus);
+					o_Radius = 0.5f * aperture;
+					o_Focus = focus;
+				}
+			}
+		}
+		if (!(o_Radius > 0.0f) || !(o_Focus > 0.0f))
+		{
+			o_Radius = o_Focus = 0.0f;
+			return false;
+		}
+		return true;
+	}
+
 	bool g3dTraceRendererOptiX::Key::operator==(const Key& i_Other) const
 	{
 		return m_SceneVersion == i_Other.m_SceneVersion && m_LightVersion == i_Other.m_LightVersion &&
@@ -219,8 +282,8 @@ namespace gox
 			   m_Radius == i_Other.m_Radius && m_AORays == i_Other.m_AORays && m_Bounces == i_Other.m_Bounces &&
 			   m_Albedo == i_Other.m_Albedo && m_Sampling == i_Other.m_Sampling && m_bUseCosine == i_Other.m_bUseCosine &&
 			   m_bShadows == i_Other.m_bShadows && m_Seed == i_Other.m_Seed &&
-			   m_Selection == i_Other.m_Selection && m_MaxRadiance == i_Other.m_MaxRadiance && m_bDof == i_Other.m_bDof &&
-			   std::memcmp(m_Dof, i_Other.m_Dof, sizeof(m_Dof)) == 0 &&
+			   m_Selection == i_Other.m_Selection && m_MaxRadiance == i_Other.m_MaxRadiance &&
+			   m_LensRadius == i_Other.m_LensRadius && m_Focus == i_Other.m_Focus &&
 			   std::memcmp(m_ViewProj, i_Other.m_ViewProj, sizeof(m_ViewProj)) == 0 &&
 			   std::memcmp(m_Background, i_Other.m_Background, sizeof(m_Background)) == 0;
 	}
@@ -504,18 +567,14 @@ namespace gox
 				{
 					key.m_Background[c] = srgb_to_linear(background[c]);
 				}
-				//	The DOF prep's distances, as the post chain sets them
-				camDOFData dof;
-				i_Camera.GetDOFParams(dof);
-				if (prefs.m_bEnableDOF && dof.m_MaxFarBlur != -1)
+				//	The lens, from the pixel's angle at the view's centre
+				double inverse[16];
+				float width = 0.0f, spread = 0.0f;
+				if (invert(key.m_ViewProj, inverse))
 				{
-					key.m_bDof = 1;
-					key.m_Dof[0] = dof.m_NearBlurDist;
-					key.m_Dof[1] = dof.m_NearFocalDist;
-					key.m_Dof[2] = dof.m_FarFocalDist;
-					key.m_Dof[3] = dof.m_FarBlurDist;
-					key.m_Dof[4] = dof.m_MaxFarBlur;
+					pixel_cone(inverse, key.m_Height, width, spread);
 				}
+				GetLens(i_Camera, spread, key.m_LensRadius, key.m_Focus);
 			}
 			else
 			{
@@ -648,16 +707,37 @@ namespace gox
 										   : (m_Mode == e_Beauty) ? e_optxLightingBeauty : e_optxLightingIllumination;
 			lit.m_LightSelection = i_Key.m_Selection;
 			lit.m_MaxRadiance = i_Key.m_MaxRadiance;
-			//	View-space depth: the camera matrix's third column
-			for (int r = 0; r < 4; ++r)
+			if (i_Key.m_LensRadius > 0.0f)
 			{
-				lit.m_ViewZ[r] = float(i_View[r * 4 + 2]);
+				//	The lens: centred on the eye, across the camera's x and y
+				//	axes (the camera matrix's first two columns), focused along
+				//	the view direction (the centre pixel's ray)
+				double eye[3], forward[3], origin[3];
+				camera_ray(inverse, 0.0, 0.0, origin, forward);
+				for (int c = 0; c < 3; ++c)
+				{
+					eye[c] = -(i_View[12] * i_View[c * 4] + i_View[13] * i_View[c * 4 + 1] + i_View[14] * i_View[c * 4 + 2]);
+				}
+				double right[3] = { i_View[0], i_View[4], i_View[8] };
+				double up[3] = { i_View[1], i_View[5], i_View[9] };
+				for (double* axis : { right, up })
+				{
+					const double length = std::sqrt(axis[0] * axis[0] + axis[1] * axis[1] + axis[2] * axis[2]);
+					for (int c = 0; c < 3; ++c)
+					{
+						axis[c] /= length > 0.0 ? length : 1.0;
+					}
+				}
+				for (int c = 0; c < 3; ++c)
+				{
+					lit.m_Eye[c] = float(eye[c]);
+					lit.m_Forward[c] = float(forward[c]);
+					lit.m_LensRight[c] = float(right[c]);
+					lit.m_LensUp[c] = float(up[c]);
+				}
+				lit.m_LensRadius = i_Key.m_LensRadius;
+				lit.m_FocusDistance = i_Key.m_Focus;
 			}
-			for (int i = 0; i < 4; ++i)
-			{
-				lit.m_Dof[i] = i_Key.m_Dof[i];
-			}
-			lit.m_DofCutoff = i_Key.m_Dof[4];
 			lit.m_Bounces = i_Key.m_Bounces;
 			lit.m_Sampling = i_Key.m_Sampling;
 			lit.m_bUseCosine = i_Key.m_bUseCosine;
@@ -699,7 +779,6 @@ namespace gox
 		}
 		ao.m_Color = lit.m_Color = m_Share.Color();	// the pair BeginWrite picked
 		ao.m_Depth = lit.m_Depth = m_Share.Depth();
-		lit.m_Aux = (beauty && i_Key.m_bDof) ? m_Share.Aux() : 0;
 		bool resolved = false;
 		do
 		{
@@ -764,9 +843,8 @@ namespace gox
 
 	//	Step 3 of Render for the beauty pass: the HDR frame into the post
 	//	chain's scene texture and the traced depth into the target's, then
-	//	the post chain into the target. Its DOF prep copies the colour with
-	//	the traced blurriness in alpha over the scene texture (the colour is
-	//	the same). Returns the triangles the post chain drew.
+	//	the post chain (without its depth of field) into the target. Returns
+	//	the triangles the post chain drew.
 	int g3dTraceRendererOptiX::post_process(g2dRenderTarget* i_pTarget, gvk::vkdImage* i_pDepth, const camCamera& i_Camera,
 											const g3dScene& i_Scene, float i_fSimTime)
 	{
@@ -783,11 +861,7 @@ namespace gox
 		gvk::shdwPostProcessVk::Options options;
 		options.m_bAATarget = false;
 		options.m_bOverlayLayers = false;	// the raster overlay draws every layer's untraced nodes
-		options.m_DofPrep = [this, scene](float)
-		{
-			m_Share.CopyAuxTo(scene->GetImage());
-			return 0;
-		};
+		options.m_bDof = false;				// the lens focused the traced image
 		const int triangles = m_Post.Run(i_pTarget, m_FrameBuffer, i_Camera, i_Scene, i_fSimTime, options);
 		i_pTarget->MakeCurrent();
 		return triangles;

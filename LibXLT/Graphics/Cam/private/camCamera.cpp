@@ -770,7 +770,7 @@ void camCamera::SetFocalLength(float i_FocalLength)
 //--------------------------------------------------------------------
 // GetEnableALP()
 //--------------------------------------------------------------------
-bool camCamera::GetEnableALP()
+bool camCamera::GetEnableALP() const
 {
 	return m_bEnableALP;
 }
@@ -778,7 +778,7 @@ bool camCamera::GetEnableALP()
 //--------------------------------------------------------------------
 // GetFStop()
 //--------------------------------------------------------------------
-float camCamera::GetFStop()
+float camCamera::GetFStop() const
 {
 	return m_FStop;
 }
@@ -786,7 +786,7 @@ float camCamera::GetFStop()
 //--------------------------------------------------------------------
 // GetFocalDistance()
 //--------------------------------------------------------------------
-float camCamera::GetFocalDistance()
+float camCamera::GetFocalDistance() const
 {
 	return m_FocalDistance;
 }
@@ -794,7 +794,7 @@ float camCamera::GetFocalDistance()
 //--------------------------------------------------------------------
 // GetFocalLength()
 //--------------------------------------------------------------------
-float camCamera::GetFocalLength()
+float camCamera::GetFocalLength() const
 {
 	return m_FocalLength;
 }

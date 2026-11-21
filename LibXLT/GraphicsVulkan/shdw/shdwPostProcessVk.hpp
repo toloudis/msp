@@ -8,9 +8,11 @@
 **	matte's coverage) and the target's depth, and draws into the target:
 **	- tone mapping (shdwPassToneMap), with bloom and star;
 **	- or, with the matte preference, the matte;
-**	- depth of field: Options::m_DofPrep writes each pixel's blurriness
-**	  into the HDR scene texture's alpha (shdwHDRRendererVk: shdwPassDOF
-**	  over its scene), then the blurred image is blended in;
+**	- depth of field (unless Options::m_bDof is off: GraphicsOptiX's
+**	  tracer focuses through its camera's lens instead): Options::
+**	  m_DofPrep writes each pixel's blurriness into the HDR scene
+**	  texture's alpha (shdwHDRRendererVk: shdwPassDOF over its scene), then
+**	  the blurred image is blended in;
 **	- the post shader (g3dPostProcessing);
 **	- with Options::m_bOverlayLayers, the scene's layers after the first;
 **	- or one of the HDR debug modes (g3dPrefs::m_HDRDebugMode).
@@ -50,6 +52,9 @@ public:
 		bool m_bAATarget = false;
 		//	Draw the scene's layers after the first over the result
 		bool m_bOverlayLayers = true;
+		//	The depth of field post effect (when the preference and the
+		//	camera ask for it)
+		bool m_bDof = true;
 		//	Writes the blurriness into the HDR scene texture's alpha, with
 		//	the HDR target current; returns the triangles it drew
 		std::function<int(float)> m_DofPrep;
