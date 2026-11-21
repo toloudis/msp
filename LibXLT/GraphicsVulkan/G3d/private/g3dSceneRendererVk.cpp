@@ -66,6 +66,9 @@
 #ifndef G2D_RENDERTARGET_HPP
 #include "Graphics/G2d/g2dRenderTarget.hpp"
 #endif
+#ifndef GVK_G2DVKGLOBAL_HPP
+#include "GraphicsVulkan/G2d/g2dVkGlobal.hpp"
+#endif
 #ifndef G3D_PROFILER_HPP
 #include "Graphics/G3d/g3dProfiler.hpp"
 #endif
@@ -266,9 +269,19 @@ namespace
 
 	// render a layer by setting up its attributes and then rendering
 	// its scene graph
-	void render_layer(g3dLayer& i_Layer, const camCamera& i_Camera)
+	void render_layer(g3dLayer& i_Layer, const camCamera& i_Camera, g2dRenderTarget* i_pTarget)
 	{
 		setup_layer(i_Layer);
+
+		//	As the multi-pass renderers' layers do (g3dRenderLayer): a layer
+		//	that clears depth (the manipulators') draws over everything, and
+		//	camera- and screen-space layers (the world axis, film gates, the
+		//	viewer's label) use their own transforms
+		if (i_Layer.GetClearDepth())
+		{
+			i_pTarget->ClearDepthStencil(1.0f, g2dVkGlobal::HasStencil(), 0);
+		}
+		g3dSceneRenderUtil::SetViewingTransforms(i_Camera, i_Layer.GetModelSpace());
 
 		g3dSceneRenderUtil::enable_lights();
 
@@ -303,6 +316,7 @@ namespace
 			std::sort( l_NonWorldSpaceNodes.begin(), l_NonWorldSpaceNodes.end(), g3dSceneRenderUtil::screen_space_sort );
 			envSTLHelpers::ForAll( l_NonWorldSpaceNodes, g3dSceneRenderUtil::nonworld_space_render );
 			l_NonWorldSpaceNodes.clear();
+			g3dSceneRenderUtil::SetViewingTransforms(i_Camera);
 		}
 	}
 }
@@ -377,12 +391,12 @@ int g3dSceneRendererVk::Render( g2dRenderTarget* i_pWindow, const camCamera& i_C
 	const std::vector<g3dLayer*> &layers = i_Scene.GetLayers();
 	for (int i=0; i<layers.size(); i++)
 	{
-		render_layer(*layers[i], i_Camera);
+		render_layer(*layers[i], i_Camera, i_pWindow);
 	}
 	// Render additional layers from viewer
 	for (int i=0; i<i_ViewerLayers.size(); i++)
 	{
-		render_layer(*i_ViewerLayers[i], i_Camera);
+		render_layer(*i_ViewerLayers[i], i_Camera, i_pWindow);
 	}
 
 	// End Scene (Flip)
