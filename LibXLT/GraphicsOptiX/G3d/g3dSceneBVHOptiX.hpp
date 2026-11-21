@@ -31,7 +31,18 @@
 **	state is reached by every light (c_optxAllLights); under one or more,
 **	by the lights those render states name, together. Each distinct set is
 **	listed once (GetLightSets), and instances name it by index; the light
-**	table (g3dLightTableOptiX) turns the sets into light indices. If the list
+**	table (g3dLightTableOptiX) turns the sets into light indices.
+**
+**	Environments follow the render state traverser too: a fragment is lit
+**	by the environment of the nearest node at or above it that has one
+**	(g3dSceneNode::GetEnvironment), but only under a render state (with
+**	none, the traverser's default: no environment). The walk counts the
+**	listed fragments per distinct environment (compared by value);
+**	GetEnvironment is the one most of them have (the beauty pass's
+**	environment light when the global one is off), every Update, whether or
+**	not the BVH changed. Environments never change the BVH.
+**
+**	If the list
 **	equals the last one, nothing changed: Update returns false and touches
 **	nothing. Otherwise it asks the cache for each GAS (which does nothing
 **	for unchanged ones), rebuilds the IAS from scratch, uploads the
@@ -72,8 +83,12 @@
 #ifndef MA_AXISBOX_HPP
 #include "Core/Ma/maAxisBox.hpp"
 #endif
+#ifndef G3D_RENDERSTATE_HPP
+#include "Graphics/G3d/g3dRenderState.hpp"
+#endif
 
 #include <cstdint>
+#include <utility>
 #include <vector>
 
 class g3dLayer;
@@ -202,6 +217,15 @@ namespace gox
 			//--------------------------------------------------------------------
 			const std::vector<const matMaterial*>& GetMaterials() const { return m_Materials; }
 
+			//--------------------------------------------------------------------
+			//	GetEnvironment - the environment most listed fragments are lit
+			//	by, as of the last Update (the default state, no maps and no
+			//	factors, if most have none or nothing is listed);
+			//	GetEnvironmentCount - how many distinct ones they have
+			//--------------------------------------------------------------------
+			const g3dAmbientEnvState& GetEnvironment() const { return m_Environment; }
+			unsigned GetEnvironmentCount() const { return m_nEnvironments; }
+
 		private:
 			struct Entry
 			{
@@ -221,15 +245,20 @@ namespace gox
 			};
 
 			//	The walk's render state: the lights the render states above
-			//	name, and how many render states there are
+			//	name, how many render states there are, and the nearest
+			//	environment above
 			struct LightState
 			{
 				LightSet	m_Lights;
 				int			m_nStates = 0;
+				const g3dAmbientEnvState*	m_pEnvironment = nullptr;
 			};
 
+			//	An environment and the listed fragments it lights
+			typedef std::vector<std::pair<g3dAmbientEnvState, unsigned>> EnvironmentCounts;
+
 			void gather(g3dSceneNode* i_pNode, bool i_bLowResolution, LightState& io_State, std::vector<Entry>& io_Entries,
-						std::vector<LightSet>& io_Sets) const;
+						std::vector<LightSet>& io_Sets, EnvironmentCounts& io_Environments) const;
 			bool poolable(const std::vector<size_t>& i_Group) const;
 			bool rebuild();
 
@@ -240,6 +269,9 @@ namespace gox
 			std::vector<LightSet>	m_LightSets;		// the last Update's
 			std::vector<LightSet>	m_GatheredSets;		// this Update's
 			std::vector<const matMaterial*>	m_Materials;	// as of the last rebuild
+			EnvironmentCounts	m_GatheredEnvironments;	// this Update's
+			g3dAmbientEnvState	m_Environment;		// the last Update's most common
+			unsigned			m_nEnvironments;
 			bool				m_bBuilt;			// m_Entries describes what is on the device
 			cuBuffer			m_Instances;		// OptixInstance array
 			cuBuffer			m_InstanceTable;	// optxInstanceData array

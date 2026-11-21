@@ -9,12 +9,15 @@
 **	- e_Beauty: the beauty pass (optxLighting's beauty mode): a path tracer
 **	  (one BRDF for every surface, next-event estimation with one light
 **	  chosen per hit, multiple importance sampling for area lights,
-**	  emission, m_Bounces bounces, depth of field through the camera's
-**	  lens), resolved as linear HDR (RGBA16F, alpha the coverage) and
-**	  finished by the HDR renderer's post chain (shdwPostProcessVk: tone
-**	  mapping, bloom and star, the matte, the HDR debug modes; not its depth
-**	  of field) into the target;
-**	  misses the background (the colour the target was last cleared to);
+**	  emission, the scene's environment as a light (g3dEnvironmentOptiX:
+**	  importance sampled, occluded, MIS), m_Bounces bounces, depth of
+**	  field through the camera's lens), resolved as linear HDR (RGBA16F,
+**	  alpha the coverage) and finished by the HDR renderer's post chain
+**	  (shdwPostProcessVk: tone mapping, bloom and star, the matte, the HDR
+**	  debug modes; not its depth of field) into the target;
+**	  misses show the environment when the global environment's background
+**	  is on, else the background (the colour the target was last cleared
+**	  to);
 **	- e_AO: ambient occlusion (optxAO): hits the unoccluded fraction,
 **	  encoded as sRGB, as grey; misses the background (the colour the
 **	  target was last cleared to);
@@ -37,9 +40,10 @@
 **	Render:
 **
 **	1. Updates its scene BVH (g3dSceneBVHOptiX: GAS from the cache, IAS),
-**	   its material table, its light table (lighting: g3dLightTableOptiX)
-**	   and the texture table both fill; CUDA waits for Vulkan's last write
-**	   to those textures.
+**	   its material table, its light table (lighting: g3dLightTableOptiX),
+**	   its environment light (e_Beauty: g3dEnvironmentOptiX) and the
+**	   texture table they fill; CUDA waits for Vulkan's last write to those
+**	   textures, then the environment's sampling table is built if needed.
 **	2. Unless the image has converged, launches GetSamplesPerFrame more
 **	   samples per pixel into its accumulation buffer, resolving them into
 **	   the shared colour and depth buffers in the same launch (on the OptiX
@@ -68,7 +72,8 @@
 **	background; lighting: the light table's version, bounces, the albedo
 **	override, light sampling, and the preferences for shadows and for
 **	illumination using normals; beauty: also the light selection, the
-**	radiance limit, the background and the lens (see GetLens); every
+**	radiance limit, the background, the lens (see GetLens) and the
+**	environment light's version; every
 **	mode: the material
 **	table's version,
 **	the texture table's (a texture's contents changing), and the debug
@@ -99,6 +104,9 @@
 
 #ifndef G3D_SCENERENDERER_HPP
 #include "Graphics/G3d/g3dSceneRenderer.hpp"
+#endif
+#ifndef GOX_G3DENVIRONMENTOPTIX_HPP
+#include "GraphicsOptiX/G3d/g3dEnvironmentOptiX.hpp"
 #endif
 #ifndef GOX_G3DLIGHTTABLEOPTIX_HPP
 #include "GraphicsOptiX/G3d/g3dLightTableOptiX.hpp"
@@ -243,6 +251,7 @@ namespace gox
 			g3dLightTableOptiX& GetLightTable() { return m_Lights; }
 			g3dMaterialTableOptiX& GetMaterialTable() { return m_Materials; }
 			g3dTextureTableOptiX& GetTextureTable() { return m_Textures; }
+			g3dEnvironmentOptiX& GetEnvironment() { return m_Environment; }
 			optxFrameShare& GetFrameShare() { return m_Share; }
 			gvk::shdwFrameBufferMgr& GetFrameBuffer() { return m_FrameBuffer; }
 
@@ -254,6 +263,7 @@ namespace gox
 				uint64_t	m_LightVersion = 0;
 				uint64_t	m_MaterialVersion = 0;
 				uint64_t	m_TextureVersion = 0;
+				uint64_t	m_EnvironmentVersion = 0;
 				unsigned	m_DebugView = 0;
 				unsigned	m_bAlbedoOverride = 0;
 				double		m_ViewProj[16] = {};
@@ -310,6 +320,7 @@ namespace gox
 			g3dTextureTableOptiX		m_Textures;
 			g3dMaterialTableOptiX		m_Materials;
 			g3dLightTableOptiX			m_Lights;
+			g3dEnvironmentOptiX			m_Environment;		// e_Beauty
 			optxAO						m_AO;
 			optxLighting				m_Lighting;
 			bool						m_bProgramsFailed;

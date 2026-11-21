@@ -277,6 +277,7 @@ namespace gox
 	{
 		return m_SceneVersion == i_Other.m_SceneVersion && m_LightVersion == i_Other.m_LightVersion &&
 			   m_MaterialVersion == i_Other.m_MaterialVersion && m_TextureVersion == i_Other.m_TextureVersion &&
+			   m_EnvironmentVersion == i_Other.m_EnvironmentVersion &&
 			   m_DebugView == i_Other.m_DebugView && m_bAlbedoOverride == i_Other.m_bAlbedoOverride &&
 			   m_Width == i_Other.m_Width && m_Height == i_Other.m_Height && m_Mode == i_Other.m_Mode &&
 			   m_Radius == i_Other.m_Radius && m_AORays == i_Other.m_AORays && m_Bounces == i_Other.m_Bounces &&
@@ -346,6 +347,7 @@ namespace gox
 		m_FrameBuffer.ReleaseSurfaces();
 		m_BVH.Release();
 		m_Lights.Release();
+		m_Environment.Release();
 		m_Materials.Release();
 		m_Textures.Release();
 		m_bHaveFrame = false;
@@ -534,6 +536,10 @@ namespace gox
 			{
 				m_Lights.Update(m_BVH.GetLightSets(), m_Textures);
 			}
+			if (hdr_image)
+			{
+				m_Environment.Update(i_Scene, m_BVH, m_Textures);
+			}
 			m_Textures.End();
 		}
 		key.m_MaterialVersion = m_Materials.GetVersion();
@@ -561,6 +567,7 @@ namespace gox
 			{
 				key.m_Selection = m_Selection;
 				key.m_MaxRadiance = m_MaxRadiance;
+				key.m_EnvironmentVersion = hdr_image ? m_Environment.GetVersion() : 0;
 				//	what g3dTargetRenderer cleared the target to
 				const float* background = color->LastClearColor();
 				for (int c = 0; c < 3; ++c)
@@ -776,6 +783,14 @@ namespace gox
 		if (!m_Cache.WaitForVulkan(m_Textures.GetWaitValue()) || !m_Share.BeginWrite())
 		{
 			return false;
+		}
+		if (beauty)
+		{
+			//	The environment's sampling table, built if its map or colour
+			//	changed (queued before the launches that read it); without
+			//	one it is sampled cosine-weighted
+			m_Environment.Prepare(m_Lighting, m_Textures);
+			lit.m_Environment = m_Environment.GetLight();
 		}
 		ao.m_Color = lit.m_Color = m_Share.Color();	// the pair BeginWrite picked
 		ao.m_Depth = lit.m_Depth = m_Share.Depth();

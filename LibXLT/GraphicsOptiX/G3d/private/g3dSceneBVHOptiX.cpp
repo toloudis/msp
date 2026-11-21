@@ -189,6 +189,7 @@ namespace gox
 		: m_Cache(i_Cache)
 		, m_Pooling(ReadPoolingEnvironment())
 		, m_bBuilt(false)
+		, m_nEnvironments(0)
 		, m_Handle(0)
 		, m_nInstances(0)
 		, m_nSbtRecords(1)
@@ -214,7 +215,8 @@ namespace gox
 	}
 
 	void g3dSceneBVHOptiX::gather(g3dSceneNode* i_pNode, bool i_bLowResolution, LightState& io_State,
-								  std::vector<Entry>& io_Entries, std::vector<LightSet>& io_Sets) const
+								  std::vector<Entry>& io_Entries, std::vector<LightSet>& io_Sets,
+								  EnvironmentCounts& io_Environments) const
 	{
 		if (!i_pNode || !i_pNode->GetRenderable() || !i_pNode->GetActiveInRenderLayer() ||
 			!check_resolution(*i_pNode, i_bLowResolution))
@@ -228,6 +230,12 @@ namespace gox
 		{
 			++io_State.m_nStates;
 			io_State.m_Lights.insert(io_State.m_Lights.end(), state->m_Lights.begin(), state->m_Lights.end());
+		}
+		//	and so does its environment
+		const g3dAmbientEnvState* outer_environment = io_State.m_pEnvironment;
+		if (i_pNode->GetEnvironment())
+		{
+			io_State.m_pEnvironment = i_pNode->GetEnvironment();
 		}
 
 		gvk::tmeshFrag* fragment = dynamic_cast<gvk::tmeshFrag*>(i_pNode->GetFragment());
@@ -255,13 +263,29 @@ namespace gox
 			if (entry.m_Mask)
 			{
 				io_Entries.push_back(entry);
+				//	The traverser's default (no environment) outside every render state
+				static const g3dAmbientEnvState s_None;
+				const g3dAmbientEnvState& environment =
+					(io_State.m_nStates && io_State.m_pEnvironment) ? *io_State.m_pEnvironment : s_None;
+				auto counted = std::find_if(io_Environments.begin(), io_Environments.end(),
+											[&](const std::pair<g3dAmbientEnvState, unsigned>& i_Count)
+											{ return i_Count.first == environment; });
+				if (counted != io_Environments.end())
+				{
+					++counted->second;
+				}
+				else
+				{
+					io_Environments.emplace_back(environment, 1u);
+				}
 			}
 		}
 
 		for (g3dSceneNode* child : i_pNode->GetChildren())
 		{
-			gather(child, i_bLowResolution, io_State, io_Entries, io_Sets);
+			gather(child, i_bLowResolution, io_State, io_Entries, io_Sets, io_Environments);
 		}
+		io_State.m_pEnvironment = outer_environment;
 
 		if (state)
 		{
@@ -274,6 +298,7 @@ namespace gox
 	{
 		m_Gathered.clear();
 		m_GatheredSets.clear();
+		m_GatheredEnvironments.clear();
 		for (const std::vector<g3dLayer*>* layers : { &i_Scene.GetLayers(), &i_ViewerLayers })
 		{
 			for (const g3dLayer* layer : *layers)
@@ -281,8 +306,21 @@ namespace gox
 				if (layer && layer->GetModelSpace() == g3dLayer::e_World)
 				{
 					LightState state;
-					gather(layer->GetRootNode(), i_bLowResolution, state, m_Gathered, m_GatheredSets);
+					gather(layer->GetRootNode(), i_bLowResolution, state, m_Gathered, m_GatheredSets, m_GatheredEnvironments);
 				}
+			}
+		}
+
+		//	The environment most fragments have (the first seen, on a tie)
+		m_Environment = g3dAmbientEnvState();
+		m_nEnvironments = unsigned(m_GatheredEnvironments.size());
+		unsigned most = 0;
+		for (const std::pair<g3dAmbientEnvState, unsigned>& count : m_GatheredEnvironments)
+		{
+			if (count.second > most)
+			{
+				most = count.second;
+				m_Environment = count.first;
 			}
 		}
 

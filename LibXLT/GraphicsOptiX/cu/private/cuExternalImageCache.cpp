@@ -427,6 +427,10 @@ namespace gox
 		CUDA_TEXTURE_DESC sampler = {};
 		const CUaddress_mode address = (i_Mode == e_Projector) ? CU_TR_ADDRESS_MODE_BORDER : CU_TR_ADDRESS_MODE_WRAP;
 		sampler.addressMode[0] = sampler.addressMode[1] = sampler.addressMode[2] = address;
+		if (i_Mode == e_Environment)
+		{
+			sampler.addressMode[1] = CU_TR_ADDRESS_MODE_CLAMP;	// the poles don't wrap into each other
+		}
 		sampler.filterMode = CU_TR_FILTER_MODE_LINEAR;
 		sampler.flags = CU_TRSF_NORMALIZED_COORDINATES | (image.m_bSrgb ? CU_TRSF_SRGB : 0);
 		sampler.maxAnisotropy = 1;

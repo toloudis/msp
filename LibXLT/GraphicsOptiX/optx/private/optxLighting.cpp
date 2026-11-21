@@ -36,6 +36,9 @@ namespace gox
 		{
 			e_RaygenLighting,
 			e_RaygenResolve,
+			e_RaygenEnvCells,
+			e_RaygenEnvRows,
+			e_RaygenEnvMarginal,
 			e_MissCamera,
 			e_MissOcclusion,
 			e_Hit,
@@ -115,6 +118,13 @@ namespace gox
 		descs[e_RaygenResolve].kind = OPTIX_PROGRAM_GROUP_KIND_RAYGEN;
 		descs[e_RaygenResolve].raygen.module = m_Module;
 		descs[e_RaygenResolve].raygen.entryFunctionName = "__raygen__resolve";
+		const char* env_programs[3] = { "__raygen__env_cells", "__raygen__env_rows", "__raygen__env_marginal" };
+		for (int i = 0; i < 3; ++i)
+		{
+			descs[e_RaygenEnvCells + i].kind = OPTIX_PROGRAM_GROUP_KIND_RAYGEN;
+			descs[e_RaygenEnvCells + i].raygen.module = m_Module;
+			descs[e_RaygenEnvCells + i].raygen.entryFunctionName = env_programs[i];
+		}
 		descs[e_MissCamera].kind = OPTIX_PROGRAM_GROUP_KIND_MISS;
 		descs[e_MissCamera].miss.module = m_Module;
 		descs[e_MissCamera].miss.entryFunctionName = "__miss__camera";
@@ -186,12 +196,12 @@ namespace gox
 		return true;
 	}
 
-	//	Two raygen, two miss, then i_nHitRecords identical hit group records
+	//	Five raygen, two miss, then i_nHitRecords identical hit group records
 	//	(one per build input of the biggest GAS)
 	bool optxLighting::make_records(unsigned i_nHitRecords)
 	{
-		std::vector<EmptyRecord> records(4 + i_nHitRecords);
-		for (int g = 0; g < 4; ++g)
+		std::vector<EmptyRecord> records(e_Hit + i_nHitRecords);
+		for (int g = 0; g < e_Hit; ++g)
 		{
 			if (OPTIX_CHECK(optixSbtRecordPackHeader(m_Groups[g], &records[g])))
 			{
@@ -200,7 +210,7 @@ namespace gox
 		}
 		for (unsigned i = 0; i < i_nHitRecords; ++i)
 		{
-			if (OPTIX_CHECK(optixSbtRecordPackHeader(m_Groups[e_Hit], &records[4 + i])))
+			if (OPTIX_CHECK(optixSbtRecordPackHeader(m_Groups[e_Hit], &records[e_Hit + i])))
 			{
 				return false;
 			}
@@ -214,10 +224,10 @@ namespace gox
 		m_nHitRecords = i_nHitRecords;
 		m_Sbt = OptixShaderBindingTable();
 		m_Sbt.raygenRecord = m_Records.Get();
-		m_Sbt.missRecordBase = m_Records.Get() + 2 * sizeof(EmptyRecord);
+		m_Sbt.missRecordBase = m_Records.Get() + e_MissCamera * sizeof(EmptyRecord);
 		m_Sbt.missRecordStrideInBytes = sizeof(EmptyRecord);
 		m_Sbt.missRecordCount = 2;
-		m_Sbt.hitgroupRecordBase = m_Records.Get() + 4 * sizeof(EmptyRecord);
+		m_Sbt.hitgroupRecordBase = m_Records.Get() + e_Hit * sizeof(EmptyRecord);
 		m_Sbt.hitgroupRecordStrideInBytes = sizeof(EmptyRecord);
 		m_Sbt.hitgroupRecordCount = i_nHitRecords;
 		return true;
@@ -248,23 +258,29 @@ namespace gox
 		m_Records.Free();
 		m_AccumulateParams.Free();
 		m_ResolveParams.Free();
+		m_EnvironmentParams.Free();
 	}
 
 	bool optxLighting::launch(const optxLightingParams& i_Params, CUdeviceptr i_Raygen, cuBuffer& io_ParamBuffer)
 	{
-		if (!m_Pipeline || i_Params.m_Width == 0 || i_Params.m_Height == 0)
+		//	Stream-ordered: a launch queued before reads the old contents
+		if (!m_Pipeline || !io_ParamBuffer.Upload(&i_Params, sizeof(i_Params)))
 		{
 			return false;
 		}
-		//	Stream-ordered: a launch queued before reads the old contents
-		if (!io_ParamBuffer.Upload(&i_Params, sizeof(i_Params)))
+		return launch_uploaded(i_Raygen, io_ParamBuffer, i_Params.m_Width, i_Params.m_Height);
+	}
+
+	bool optxLighting::launch_uploaded(CUdeviceptr i_Raygen, const cuBuffer& i_ParamBuffer, unsigned i_Width, unsigned i_Height)
+	{
+		if (!m_Pipeline || i_Width == 0 || i_Height == 0)
 		{
 			return false;
 		}
 		OptixShaderBindingTable sbt = m_Sbt;
 		sbt.raygenRecord = i_Raygen;
-		return !OPTIX_CHECK(optixLaunch(m_Pipeline, optxContext::GetStream(), io_ParamBuffer.Get(), sizeof(i_Params), &sbt,
-										i_Params.m_Width, i_Params.m_Height, 1));
+		return !OPTIX_CHECK(optixLaunch(m_Pipeline, optxContext::GetStream(), i_ParamBuffer.Get(), sizeof(optxLightingParams),
+										&sbt, i_Width, i_Height, 1));
 	}
 
 	bool optxLighting::Accumulate(const optxLightingParams& i_Params, unsigned i_nHitRecords)
@@ -273,11 +289,26 @@ namespace gox
 		{
 			return false;
 		}
-		return launch(i_Params, m_Records.Get(), m_AccumulateParams);
+		return launch(i_Params, m_Records.Get() + e_RaygenLighting * sizeof(EmptyRecord), m_AccumulateParams);
 	}
 
 	bool optxLighting::Resolve(const optxLightingParams& i_Params)
 	{
-		return launch(i_Params, m_Records.Get() + sizeof(EmptyRecord), m_ResolveParams);
+		return launch(i_Params, m_Records.Get() + e_RaygenResolve * sizeof(EmptyRecord), m_ResolveParams);
+	}
+
+	bool optxLighting::BuildEnvironmentTable(const optxLightingParams& i_Params)
+	{
+		const optxEnvironmentLight& env = i_Params.m_Environment;
+		if (!m_Pipeline || !env.m_Table || env.m_TableWidth == 0 || env.m_TableHeight == 0 ||
+			!m_EnvironmentParams.Upload(&i_Params, sizeof(i_Params)))
+		{
+			return false;
+		}
+		const CUdeviceptr records = m_Records.Get();
+		return launch_uploaded(records + e_RaygenEnvCells * sizeof(EmptyRecord), m_EnvironmentParams, env.m_TableWidth,
+							   env.m_TableHeight) &&
+			   launch_uploaded(records + e_RaygenEnvRows * sizeof(EmptyRecord), m_EnvironmentParams, env.m_TableHeight, 1) &&
+			   launch_uploaded(records + e_RaygenEnvMarginal * sizeof(EmptyRecord), m_EnvironmentParams, 1, 1);
 	}
 }

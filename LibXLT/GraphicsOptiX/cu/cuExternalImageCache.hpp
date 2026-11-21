@@ -70,6 +70,7 @@ namespace gox
 			{
 				e_Material,			// wrap, trilinear (a material's textures)
 				e_Projector,		// black border, bilinear, mip 0 (a projected light's texture, as the raster's projSampler)
+				e_Environment,		// wrap in u, clamp in v, trilinear (a lat-long environment map)
 				e_ModeCount
 			};
 

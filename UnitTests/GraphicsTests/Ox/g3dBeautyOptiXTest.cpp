@@ -22,6 +22,20 @@
 **	and focuses: a glowing square is sharp in focus and spread, with its
 **	light kept, out of focus.
 **
+**	3d-2, the environment light: a white Lambert floor open to a constant
+**	environment of radiance L gets L x albedo, and half of it beside an
+**	endless wall; camera misses show the map (the test map's own formula,
+**	read as the raster's CartesianToPolar reads it, turned by the angle)
+**	with the global environment's background on, the clear colour with it
+**	off; the specular map is chosen over the diffuse one; light samples,
+**	BRDF samples and both converge to the same image of a map with a sun,
+**	and the sun casts a shadow; the GPU-built sampling table matches one
+**	built here from the map's formula, and is rebuilt when the colour or
+**	the map changes but not the angle; a change of colour, factor, angle,
+**	map or background restarts accumulation; without the global
+**	environment, the one most fragments have (under a render state) is
+**	chosen.
+**
 **	With MSP_GT_AO_IMAGES set to a folder, the tone-mapped pictures are
 **	saved there.
 **
@@ -30,6 +44,7 @@
 #include "gtBackend.hpp"
 #include "gtScene.hpp"
 #include "gtTarget.hpp"
+#include "gtTempDir.hpp"
 
 #ifndef GOX_G3DTRACERENDEREROPTIX_HPP
 #include "GraphicsOptiX/G3d/g3dTraceRendererOptiX.hpp"
@@ -51,6 +66,9 @@
 #endif
 #ifndef G3D_RENDERSTATE_HPP
 #include "Graphics/G3d/g3dRenderState.hpp"
+#endif
+#ifndef G3D_SCENE_HPP
+#include "Graphics/G3d/g3dScene.hpp"
 #endif
 #ifndef G3D_SCENENODE_HPP
 #include "Graphics/G3d/g3dSceneNode.hpp"
@@ -104,6 +122,33 @@ namespace
 		const std::string file = std::string(dir) + "/" + ::testing::UnitTest::GetInstance()->current_test_info()->name() +
 								 "_" + i_pName + ".png";
 		stbi_write_png(file.c_str(), w, h, 4, big.data(), w * 4);
+	}
+
+	//	An HDR frame (rgba floats) saved like save_if_asked, linear, scaled so
+	//	its brightest channel (at most i_Max) is white
+	void save_hdr_if_asked(const std::vector<float>& i_Hdr, int i_Width, int i_Height, const char* i_pName, float i_Max = 1e30f)
+	{
+		if (!std::getenv("MSP_GT_AO_IMAGES") || i_Hdr.size() != size_t(i_Width) * i_Height * 4)
+		{
+			return;
+		}
+		float peak = 1e-6f;
+		for (size_t i = 0; i < i_Hdr.size(); ++i)
+		{
+			if (i % 4 != 3)
+			{
+				peak = std::max(peak, std::min(i_Hdr[i], i_Max));
+			}
+		}
+		gtPicture picture;
+		picture.m_Width = i_Width;
+		picture.m_Height = i_Height;
+		picture.m_Rgba.resize(size_t(i_Width) * i_Height * 4);
+		for (size_t i = 0; i < i_Hdr.size(); ++i)
+		{
+			picture.m_Rgba[i] = (i % 4 == 3) ? 255 : uint8_t(std::min(1.0f, std::max(0.0f, i_Hdr[i] / peak)) * 255.0f + 0.5f);
+		}
+		save_if_asked(picture, i_pName);
 	}
 
 	//	The renderer the creator gives for the default type
@@ -798,5 +843,615 @@ TEST(g3dBeautyOptiX, LensFocusesAtItsFocusDistance)
 			sum_blurred += blurred[size_t(i) * 4];
 		}
 		EXPECT_NEAR(sum_sharp, sum_blurred, sum_sharp * 0.05);
+	});
+}
+
+//----------------------------------------------------------------------------
+//	3d-2: the environment
+//----------------------------------------------------------------------------
+
+namespace
+{
+	//	gtScene::Plane() turned into the floor y = i_Y (normal +y), i_Half across
+	maMatrix4x4 floor_y_matrix(float i_Half, float i_Y = 0.0f)
+	{
+		return maMatrix4x4(i_Half, 0, 0, 0,  0, 0, -i_Half, 0,  0, i_Half, 0, 0,  0, i_Y, 0, 1);
+	}
+
+	//	Looking straight down -y at (x, 0, 0) from i_Height
+	void look_down_y(camCamera& io_Camera, float x, float i_Height)
+	{
+		io_Camera.SetFOV(60.0f);
+		io_Camera.SetAspect(1.0f);
+		io_Camera.SetClip(1.0f, 5000.0f);
+		io_Camera.LookAt(maPoint3d(x, i_Height, 0), maPoint3d(x, 0, 0), maVector3d(0, 0, -1));
+	}
+
+	//	A pixel centre's ray: its origin on the near plane and its direction
+	void pixel_ray(const camCamera& i_Camera, int x, int y, double o_Origin[3], double o_Direction[3])
+	{
+		double vp[16], inverse[16];
+		view_projection(i_Camera, vp);
+		invert(vp, inverse);
+		const double ndc[2] = { (x + 0.5) / c_Size * 2 - 1, 1 - (y + 0.5) / c_Size * 2 };
+		double ends[2][3];
+		for (int e = 0; e < 2; ++e)
+		{
+			const double p[3] = { ndc[0], ndc[1], double(e) };
+			double h[4];
+			transform(inverse, p, h);
+			for (int k = 0; k < 3; ++k)
+			{
+				ends[e][k] = h[k] / h[3];
+			}
+		}
+		double length = 0;
+		for (int k = 0; k < 3; ++k)
+		{
+			o_Origin[k] = ends[0][k];
+			o_Direction[k] = ends[1][k] - ends[0][k];
+			length += o_Direction[k] * o_Direction[k];
+		}
+		length = std::sqrt(length);
+		for (int k = 0; k < 3; ++k)
+		{
+			o_Direction[k] /= length;
+		}
+	}
+
+	//	The floor (y = 0) point (x, z) a pixel's centre sees
+	void floor_xz(const camCamera& i_Camera, int x, int y, double& o_X, double& o_Z)
+	{
+		double o[3], d[3];
+		pixel_ray(i_Camera, x, y, o, d);
+		const double t = -o[1] / d[1];
+		o_X = o[0] + d[0] * t;
+		o_Z = o[2] + d[2] * t;
+	}
+
+	//	A Lambert.fx material: base colour, no specular (KHR specular 0)
+	matMaterial* lambert(gtSceneBuilder& io_Builder, const maFloatRGBA& i_Color)
+	{
+		matMaterial* material = io_Builder.Keep(gtScene::ShaderMaterial("Lambert.fx", gtScene::e_Defaults));
+		gtScene::SetColor(material, "g_diffuse", i_Color);
+		return material;
+	}
+
+	//	The global environment with both maps' colour, factor and angle (degrees)
+	void global_environment(gtSceneBuilder& io_Builder, matTexture* i_pDiffuse, matTexture* i_pSpecular, const maFloatRGBA& i_Color,
+							float i_Factor, float i_Angle, bool i_bBackground)
+	{
+		io_Builder.GlobalEnvironment(i_pDiffuse, i_pSpecular, i_bBackground);
+		g3dAmbientEnvState state;
+		io_Builder.Scene().GetGlobalAmbient(state);
+		state.m_DiffuseColor = state.m_SpecularColor = i_Color;
+		state.m_DiffuseFactor = state.m_SpecularFactor = i_Factor;
+		state.m_DiffuseAngle = state.m_SpecularAngle = i_Angle;
+		io_Builder.Scene().SetGlobalAmbient(state);
+	}
+
+	double luminance3(const double i_Rgb[3])
+	{
+		return 0.2126 * i_Rgb[0] + 0.7152 * i_Rgb[1] + 0.0722 * i_Rgb[2];
+	}
+
+	//	gtScene::HdrTexture's value at (u, v), and its sun's weight there
+	void sky_value(double u, double v, double i_Peak, double o_Rgb[3], double& o_Sun)
+	{
+		const double t_sky = std::min(v / 0.5, 1.0);
+		const double t_ground = std::max((v - 0.5) / 0.5, 0.0);
+		const double stripe = 0.85 + 0.15 * std::sin(u * 6.2831853 * 8.0);
+		const double sky[3] = { 0.15 + 0.6 * t_sky, 0.3 + 0.55 * t_sky, 0.9 + 0.3 * t_sky };
+		const double ground[3] = { (0.35 - 0.25 * t_ground) * stripe, (0.25 - 0.18 * t_ground) * stripe,
+								   (0.12 - 0.08 * t_ground) * stripe };
+		double blend = std::min(std::max((v - 0.45) / 0.1, 0.0), 1.0);
+		blend = blend * blend * (3.0 - 2.0 * blend);
+		for (int c = 0; c < 3; ++c)
+		{
+			o_Rgb[c] = sky[c] + (ground[c] - sky[c]) * blend;
+		}
+		const double du = u - 0.295, dv = (v - 0.43) * 0.5;
+		o_Sun = std::exp(-(du * du + dv * dv) / (0.015 * 0.015));
+		o_Rgb[0] += (i_Peak - o_Rgb[0]) * o_Sun;
+		o_Rgb[1] += (i_Peak - o_Rgb[1]) * o_Sun;
+		o_Rgb[2] += (i_Peak * 0.8 - o_Rgb[2]) * o_Sun;
+	}
+
+	//	Support.hlsli's rotateAboutY, then CartesianToPolar
+	void map_uv(const double i_D[3], double i_AngleRadians, double& o_U, double& o_V)
+	{
+		const double s = std::sin(i_AngleRadians), c = std::cos(i_AngleRadians);
+		double d[3] = { i_D[2] * s + i_D[0] * c, i_D[1], i_D[2] * c - i_D[0] * s };
+		const double length = std::sqrt(d[0] * d[0] + d[1] * d[1] + d[2] * d[2]);
+		for (double& x : d)
+		{
+			x /= length;
+		}
+		o_U = (std::atan2(d[2], d[0] + 0.001) + c_Pi) / (2 * c_Pi);
+		o_V = std::acos(std::min(1.0, std::max(-1.0, d[1]))) / c_Pi;
+	}
+
+	double mean_luminance(const std::vector<float>& i_Hdr)
+	{
+		double sum = 0;
+		for (int i = 0; i < c_Size * c_Size; ++i)
+		{
+			sum += luminance(&i_Hdr[size_t(i) * 4]);
+		}
+		return sum / (c_Size * c_Size);
+	}
+}
+
+TEST(g3dBeautyOptiX, ConstantEnvironmentGivesRadianceTimesAlbedo)
+{
+	gtBackend::RunOptiX([]()
+	{
+		const maFloatRGBA base(0.6f, 0.5f, 0.4f, 1);
+		const float color[3] = { 0.5f, 0.4f, 0.3f }, factor = 2.0f;
+		auto render = [&](bool i_bWall, std::vector<double>& o_FloorX)
+		{
+			gtSceneBuilder builder;
+			builder.Add(gtScene::Plane(), lambert(builder, base), floor_y_matrix(1000));
+			if (i_bWall)
+			{
+				builder.Add(gtScene::Plane(), lambert(builder, base), wall_x_matrix(1000));
+			}
+			global_environment(builder, NULL, NULL, maFloatRGBA(color[0], color[1], color[2], 1), factor, 0, false);
+			look_down_y(builder.Camera(), 10, 40);
+			std::unique_ptr<g3dTraceRendererOptiX> renderer = beauty_renderer();
+			renderer->SetBounces(0);
+			renderer->SetSamplesPerFrame(64);
+			renderer->SetSampleLimit(64);
+			View view(builder, *renderer);
+			std::vector<float> hdr = view.Hdr();
+			save_if_asked(view.Render(), i_bWall ? "wall" : "open");
+			EXPECT_EQ(nullptr, renderer->GetEnvironment().GetMap());
+			EXPECT_EQ(0, renderer->GetEnvironment().GetBuildCount()) << "a constant environment needs no table";
+			o_FloorX.assign(size_t(c_Size) * c_Size, 0.0);
+			for (int y = 0; y < c_Size; ++y)
+			{
+				for (int x = 0; x < c_Size; ++x)
+				{
+					double z;
+					floor_xz(builder.Camera(), x, y, o_FloorX[size_t(y) * c_Size + x], z);
+				}
+			}
+			return hdr;
+		};
+
+		//	open to the sky: every sample gives L x albedo exactly (cosine
+		//	samples of a constant light on a Lambert surface)
+		std::vector<double> xs;
+		const std::vector<float> open = render(false, xs);
+		ASSERT_FALSE(open.empty());
+		const float* centre = hdr_at(open, c_Size / 2, c_Size / 2);
+		for (int c = 0; c < 3; ++c)
+		{
+			const float expected = color[c] * factor * base.GetPtr()[c];
+			EXPECT_NEAR(expected, centre[c], expected * 1e-3f) << "channel " << c;
+		}
+
+		//	beside an endless wall (seen from x > 0): half the sky in
+		//	cosine-weighted measure, wherever the point is
+		const std::vector<float> walled = render(true, xs);
+		ASSERT_FALSE(walled.empty());
+		double sum = 0;
+		int count = 0;
+		for (int i = 0; i < c_Size * c_Size; ++i)
+		{
+			if (xs[i] > 1.0)
+			{
+				sum += walled[size_t(i) * 4];
+				++count;
+			}
+		}
+		EXPECT_GT(count, 1000);
+		const double half = 0.5 * color[0] * factor * base.GetPtr()[0];
+		EXPECT_NEAR(half, sum / std::max(count, 1), half * 0.02);
+	});
+}
+
+TEST(g3dBeautyOptiX, BackgroundShowsTheMapTurnedByItsAngle)
+{
+	gtBackend::RunOptiX([]()
+	{
+		gtTempDir dir;
+		const float peak = 20.0f;
+		//	What a camera miss shows without the environment's background:
+		//	what the target was cleared to, which a scene without any
+		//	environment shows
+		float clear[3] = {};
+		{
+			gtSceneBuilder builder;
+			builder.Camera().LookAt(maPoint3d(0, 0, 50), maPoint3d(0, 0, 0), maVector3d(0, 1, 0));
+			std::unique_ptr<g3dTraceRendererOptiX> renderer = beauty_renderer();
+			ASSERT_TRUE(renderer);
+			renderer->SetSampleLimit(1);
+			View view(builder, *renderer);
+			const std::vector<float> hdr = view.Hdr();
+			ASSERT_FALSE(hdr.empty());
+			std::memcpy(clear, hdr_at(hdr, 0, 0), sizeof(clear));
+		}
+		for (float angle : { 0.0f, 90.0f })
+		{
+			for (bool background : { true, false })
+			{
+				gtSceneBuilder builder;
+				matTexture* sky = builder.Keep(gtScene::HdrTexture(dir.GetPath(), 512, 256, peak));
+				ASSERT_NE(nullptr, sky);
+				global_environment(builder, NULL, sky, maFloatRGBA(1, 1, 1, 1), 1.0f, angle, background);
+				builder.Camera().SetFOV(60.0f);
+				builder.Camera().SetAspect(1.0f);
+				builder.Camera().SetClip(1.0f, 5000.0f);
+				builder.Camera().LookAt(maPoint3d(0, 0, 50), maPoint3d(0, 0, 0), maVector3d(0, 1, 0));
+				std::unique_ptr<g3dTraceRendererOptiX> renderer = beauty_renderer();
+				ASSERT_TRUE(renderer);
+				renderer->SetSampleLimit(1);	// the pixel centres
+				View view(builder, *renderer);
+				const std::vector<float> hdr = view.Hdr();
+				ASSERT_FALSE(hdr.empty());
+				if (background && angle == 0.0f)
+				{
+					save_if_asked(view.Render(), "background");
+				}
+				int checked = 0;
+				for (int y = 2; y < c_Size; y += 5)
+				{
+					for (int x = 2; x < c_Size; x += 5)
+					{
+						const float* got = hdr_at(hdr, x, y);
+						if (!background)
+						{
+							for (int c = 0; c < 3; ++c)
+							{
+								EXPECT_EQ(clear[c], got[c]) << "the clear colour";
+							}
+							continue;
+						}
+						double o[3], d[3], u, v, rgb[3], sun;
+						pixel_ray(builder.Camera(), x, y, o, d);
+						map_uv(d, angle * c_Pi / 180.0, u, v);
+						sky_value(u, v, peak, rgb, sun);
+						if (sun > 1e-3)
+						{
+							continue;	// steep: a filtered read differs from the formula
+						}
+						for (int c = 0; c < 3; ++c)
+						{
+							EXPECT_NEAR(rgb[c], got[c], rgb[c] * 0.03 + 0.01) << x << ", " << y << " channel " << c << " angle " << angle;
+						}
+						++checked;
+					}
+				}
+				if (background)
+				{
+					EXPECT_GT(checked, 100);
+				}
+			}
+		}
+	});
+}
+
+TEST(g3dBeautyOptiX, SpecularMapIsChosenOverDiffuse)
+{
+	gtBackend::RunOptiX([]()
+	{
+		gtTempDir dir;
+		gtSceneBuilder builder;
+		matTexture* diffuse = builder.Keep(gtScene::HdrTexture(dir.GetPath(), 64, 32, 2.0f));
+		matTexture* specular = builder.Keep(gtScene::HdrTexture(dir.GetPath(), 64, 32, 4.0f));
+		builder.Add(gtScene::Plane(), lambert(builder, maFloatRGBA(0.5f, 0.5f, 0.5f, 1)), floor_y_matrix(1000));
+		look_down_y(builder.Camera(), 0, 40);
+		std::unique_ptr<g3dTraceRendererOptiX> renderer = beauty_renderer();
+		ASSERT_TRUE(renderer);
+		renderer->SetSampleLimit(1);
+		View view(builder, *renderer);
+
+		global_environment(builder, diffuse, specular, maFloatRGBA(1, 1, 1, 1), 1.0f, 0, false);
+		view.Render();
+		EXPECT_EQ(specular, renderer->GetEnvironment().GetMap());
+		global_environment(builder, diffuse, NULL, maFloatRGBA(1, 1, 1, 1), 1.0f, 0, false);
+		view.Render();
+		EXPECT_EQ(diffuse, renderer->GetEnvironment().GetMap());
+
+		//	the environment preference off: no environment light
+		g3dPrefs::g3dRenderPrefs& prefs = g3dPrefs::CurrentPrefs();
+		const bool before = prefs.m_bEnableEnvironment;
+		prefs.m_bEnableEnvironment = false;
+		view.Render();
+		prefs.m_bEnableEnvironment = before;
+		EXPECT_EQ(nullptr, renderer->GetEnvironment().GetMap());
+		EXPECT_EQ(0u, renderer->GetEnvironment().GetLight().m_Flags);
+	});
+}
+
+TEST(g3dBeautyOptiX, EnvironmentSamplingStrategiesAgree)
+{
+	gtBackend::RunOptiX([]()
+	{
+		gtTempDir dir;
+		gtSceneBuilder builder;
+		matTexture* sky = builder.Keep(gtScene::HdrTexture(dir.GetPath(), 512, 256, 50.0f));
+		ASSERT_NE(nullptr, sky);
+		builder.Add(gtScene::Plane(), pbr(builder, maFloatRGBA(0.6f, 0.6f, 0.6f, 1), 0.0f, 0.4f), floor_y_matrix(1000));
+		global_environment(builder, NULL, sky, maFloatRGBA(1, 1, 1, 1), 1.0f, 30.0f, false);
+		look_down_y(builder.Camera(), 0, 30);
+
+		auto render = [&](optxLightSampling i_Sampling)
+		{
+			std::unique_ptr<g3dTraceRendererOptiX> renderer = beauty_renderer();
+			renderer->SetBounces(0);
+			renderer->SetLightSampling(i_Sampling);
+			renderer->SetSamplesPerFrame(256);
+			renderer->SetSampleLimit(512);
+			View view(builder, *renderer);
+			view.Render();
+			std::vector<float> hdr = view.Hdr();
+			EXPECT_EQ(1, renderer->GetEnvironment().GetBuildCount());
+			return hdr;
+		};
+		const std::vector<float> lights = render(e_optxSampleLights);
+		const std::vector<float> brdf = render(e_optxSampleBounces);
+		const std::vector<float> both = render(e_optxSampleBoth);
+		ASSERT_FALSE(lights.empty() || brdf.empty() || both.empty());
+		const double by_lights = mean_luminance(lights), by_brdf = mean_luminance(brdf), by_both = mean_luminance(both);
+		EXPECT_GT(by_lights, 0.1);
+		EXPECT_NEAR(by_lights, by_both, by_lights * 0.02);
+		EXPECT_NEAR(by_lights, by_brdf, by_lights * 0.05);
+	});
+}
+
+TEST(g3dBeautyOptiX, SunCastsAShadow)
+{
+	gtBackend::RunOptiX([]()
+	{
+		gtTempDir dir;
+		gtSceneBuilder builder;
+		matTexture* sky = builder.Keep(gtScene::HdrTexture(dir.GetPath(), 512, 256, 1000.0f));
+		ASSERT_NE(nullptr, sky);
+		builder.Add(gtScene::Plane(), lambert(builder, maFloatRGBA(0.7f, 0.7f, 0.7f, 1)), floor_y_matrix(1000));
+		//	a square roof, 4 across, 3 above the floor
+		builder.Add(gtScene::Plane(), lambert(builder, maFloatRGBA(0.7f, 0.7f, 0.7f, 1)), floor_y_matrix(2.0f, 3.0f));
+		global_environment(builder, NULL, sky, maFloatRGBA(1, 1, 1, 1), 1.0f, 0, false);
+		look_down_y(builder.Camera(), 0, 30);
+		std::unique_ptr<g3dTraceRendererOptiX> renderer = beauty_renderer();
+		ASSERT_TRUE(renderer);
+		renderer->SetBounces(0);
+		renderer->SetSamplesPerFrame(128);
+		renderer->SetSampleLimit(128);
+		View view(builder, *renderer);
+		const std::vector<float> hdr = view.Hdr();
+		save_hdr_if_asked(hdr, c_Size, c_Size, "sun_shadow_linear");
+		ASSERT_FALSE(hdr.empty());
+
+		//	the sun's direction: the inverse of CartesianToPolar at the map's
+		//	sun centre (u, v) = (0.295, 0.43), angle 0
+		const double theta = 0.43 * c_Pi, phi = 0.295 * 2 * c_Pi - c_Pi;
+		const double sun[3] = { std::sin(theta) * std::cos(phi), std::cos(theta), std::sin(theta) * std::sin(phi) };
+		ASSERT_GT(sun[1], 0.1) << "the sun is above the floor";
+		//	the roof's umbra on the floor (a little nearer than the sun's centre
+		//	casts it: the disc's higher half lights the floor more strongly),
+		//	and a lit point as far on the other side
+		const double reach = 0.8 * 3.0;
+		const double shadow[2] = { -sun[0] / sun[1] * reach, -sun[2] / sun[1] * reach };
+		const double lit[2] = { -shadow[0], -shadow[1] };
+		auto value_at = [&](const double i_P[2])
+		{
+			double sum = 0;
+			int count = 0;
+			for (int y = 0; y < c_Size; ++y)
+			{
+				for (int x = 0; x < c_Size; ++x)
+				{
+					double px, pz;
+					floor_xz(builder.Camera(), x, y, px, pz);
+					if ((px - i_P[0]) * (px - i_P[0]) + (pz - i_P[1]) * (pz - i_P[1]) < 1.5 * 1.5)
+					{
+						sum += luminance(hdr_at(hdr, x, y));
+						++count;
+					}
+				}
+			}
+			EXPECT_GT(count, 10);
+			return count ? sum / count : 0.0;
+		};
+		//	The sky gives the floor about 60% of its light, the sun the rest; in
+		//	the umbra only the sky remains
+		const double in_shadow = value_at(shadow), in_sun = value_at(lit);
+		EXPECT_LT(in_shadow, 0.75 * in_sun) << "shadow at " << shadow[0] << ", " << shadow[1];
+		EXPECT_GT(in_shadow, 0.4 * in_sun) << "the sky still lights the shadow";
+	});
+}
+
+TEST(g3dBeautyOptiX, EnvironmentTableIsTheMapsAndRebuiltWhenItChanges)
+{
+	gtBackend::RunOptiX([]()
+	{
+		gtTempDir dir;
+		const float peak = 30.0f;
+		gtSceneBuilder builder;
+		matTexture* sky = builder.Keep(gtScene::HdrTexture(dir.GetPath(), 512, 256, peak));
+		matTexture* other = builder.Keep(gtScene::HdrTexture(dir.GetPath(), 1024, 512, peak));
+		ASSERT_TRUE(sky && other);
+		builder.Add(gtScene::Plane(), lambert(builder, maFloatRGBA(0.5f, 0.5f, 0.5f, 1)), floor_y_matrix(1000));
+		global_environment(builder, NULL, sky, maFloatRGBA(1, 1, 1, 1), 1.0f, 0, false);
+		look_down_y(builder.Camera(), 0, 40);
+		std::unique_ptr<g3dTraceRendererOptiX> renderer = beauty_renderer();
+		ASSERT_TRUE(renderer);
+		renderer->SetSampleLimit(64);
+		View view(builder, *renderer);
+		view.Render();
+		const g3dEnvironmentOptiX& environment = renderer->GetEnvironment();
+		EXPECT_EQ(1, environment.GetBuildCount());
+		const optxEnvironmentLight& light = environment.GetLight();
+		const unsigned W = light.m_TableWidth, H = light.m_TableHeight;
+		ASSERT_EQ(512u, W);
+		ASSERT_EQ(256u, H);
+		EXPECT_EQ(1u, light.m_Taps);
+		const std::vector<float> table = environment.ReadTable();
+		ASSERT_EQ(size_t(optxEnvTableFloats(W, H)), table.size());
+
+		//	the table built here from the map's formula: luminance x sin theta
+		//	at each texel's centre, then the CDFs
+		std::vector<double> cells(size_t(W) * H);
+		std::vector<double> sums(H, 0.0);
+		double total = 0;
+		for (unsigned j = 0; j < H; ++j)
+		{
+			for (unsigned i = 0; i < W; ++i)
+			{
+				double rgb[3], sun;
+				sky_value((i + 0.5) / W, (j + 0.5) / H, peak, rgb, sun);
+				const double f = luminance3(rgb) * std::sin((j + 0.5) / H * c_Pi);
+				cells[size_t(j) * W + i] = f;
+				sums[j] += f;
+			}
+			total += sums[j];
+		}
+		int checked = 0;
+		for (unsigned j = 0; j < H; j += 7)
+		{
+			for (unsigned i = 0; i < W; i += 11)
+			{
+				const double f = cells[size_t(j) * W + i];
+				EXPECT_NEAR(f, table[size_t(j) * W + i], f * 0.03 + 1e-4) << i << ", " << j;
+				++checked;
+			}
+		}
+		EXPECT_GT(checked, 1000);
+		EXPECT_NEAR(total, table[optxEnvTotalAt(W, H)], total * 0.01);
+		for (unsigned j = 0; j < H; j += 13)
+		{
+			EXPECT_NEAR(sums[j], table[optxEnvRowSumsAt(W, H) + j], sums[j] * 0.02 + 1e-4) << "row " << j;
+			const float* row = &table[optxEnvRowCdfAt(W, H) + size_t(j) * (W + 1)];
+			EXPECT_EQ(0.0f, row[0]);
+			EXPECT_EQ(1.0f, row[W]);
+			double running = 0;
+			for (unsigned i = 0; i < W; ++i)
+			{
+				EXPECT_LE(row[i], row[i + 1]);
+				running += cells[size_t(j) * W + i];
+				if (i % 37 == 0)
+				{
+					EXPECT_NEAR(running / sums[j], row[i + 1], 3e-3) << "row " << j << " entry " << i;
+				}
+			}
+		}
+		const float* marginal = &table[optxEnvMarginalAt(W, H)];
+		EXPECT_EQ(0.0f, marginal[0]);
+		EXPECT_EQ(1.0f, marginal[H]);
+		double running = 0;
+		for (unsigned j = 0; j < H; ++j)
+		{
+			running += sums[j];
+			EXPECT_NEAR(running / total, marginal[j + 1], 3e-3) << "row " << j;
+		}
+
+		//	rebuilt for a new colour or map, not for a new angle or nothing
+		auto settle = [&]()
+		{
+			view.Render();
+			view.Render();
+		};
+		settle();
+		EXPECT_EQ(1, environment.GetBuildCount());
+		global_environment(builder, NULL, sky, maFloatRGBA(1, 1, 1, 1), 1.0f, 45.0f, false);
+		settle();
+		EXPECT_EQ(1, environment.GetBuildCount()) << "the table is in map coordinates";
+		global_environment(builder, NULL, sky, maFloatRGBA(1, 0.5f, 1, 1), 1.0f, 45.0f, false);
+		settle();
+		EXPECT_EQ(2, environment.GetBuildCount());
+		global_environment(builder, NULL, other, maFloatRGBA(1, 0.5f, 1, 1), 1.0f, 45.0f, false);
+		settle();
+		EXPECT_EQ(3, environment.GetBuildCount());
+		//	a 1024 x 512 map: a 512 x 256 table (level 1), 2 x 2 samples per cell at level 0
+		EXPECT_EQ(512u, environment.GetLight().m_TableWidth);
+		EXPECT_EQ(2u, environment.GetLight().m_Taps);
+		EXPECT_EQ(1.0f, environment.GetLight().m_TableLevel);
+		EXPECT_EQ(0.0f, environment.GetLight().m_TapLevel);
+	});
+}
+
+TEST(g3dBeautyOptiX, EnvironmentChangesRestart)
+{
+	gtBackend::RunOptiX([]()
+	{
+		gtTempDir dir;
+		gtSceneBuilder builder;
+		matTexture* sky = builder.Keep(gtScene::HdrTexture(dir.GetPath(), 64, 32, 5.0f));
+		matTexture* other = builder.Keep(gtScene::HdrTexture(dir.GetPath(), 64, 32, 6.0f));
+		builder.Add(gtScene::Plane(), lambert(builder, maFloatRGBA(0.5f, 0.5f, 0.5f, 1)), floor_y_matrix(1000));
+		global_environment(builder, NULL, sky, maFloatRGBA(1, 1, 1, 1), 1.0f, 0, false);
+		look_down_y(builder.Camera(), 0, 40);
+		std::unique_ptr<g3dTraceRendererOptiX> renderer = beauty_renderer();
+		ASSERT_TRUE(renderer);
+		renderer->SetSampleLimit(64);
+		View view(builder, *renderer);
+		view.Render();
+		view.Render();
+		int restarts = renderer->GetRestartCount();
+		EXPECT_EQ(2u, renderer->GetSampleCount());
+
+		auto expect_restart = [&](const char* i_pWhat)
+		{
+			view.Render();
+			EXPECT_EQ(restarts + 1, renderer->GetRestartCount()) << i_pWhat;
+			restarts = renderer->GetRestartCount();
+			view.Render();
+			EXPECT_EQ(restarts, renderer->GetRestartCount()) << i_pWhat << ", unchanged";
+		};
+		global_environment(builder, NULL, sky, maFloatRGBA(1, 0.8f, 1, 1), 1.0f, 0, false);
+		expect_restart("colour");
+		global_environment(builder, NULL, sky, maFloatRGBA(1, 0.8f, 1, 1), 1.5f, 0, false);
+		expect_restart("factor");
+		global_environment(builder, NULL, sky, maFloatRGBA(1, 0.8f, 1, 1), 1.5f, 20.0f, false);
+		expect_restart("angle");
+		global_environment(builder, NULL, other, maFloatRGBA(1, 0.8f, 1, 1), 1.5f, 20.0f, false);
+		expect_restart("map");
+		global_environment(builder, NULL, other, maFloatRGBA(1, 0.8f, 1, 1), 1.5f, 20.0f, true);
+		expect_restart("background");
+	});
+}
+
+TEST(g3dBeautyOptiX, MostCommonEnvironmentWithoutTheGlobalOne)
+{
+	gtBackend::RunOptiX([]()
+	{
+		g3dRenderState state;		// outlive the builder's nodes
+		g3dAmbientEnvState first, second;
+		first.m_DiffuseFactor = 0.3f;
+		second.m_DiffuseFactor = 0.7f;
+		gtSceneBuilder builder;
+		matMaterial* material = lambert(builder, maFloatRGBA(0.5f, 0.5f, 0.5f, 1));
+		g3dSceneNode* a = builder.Add(gtScene::Plane(), material, scale_translate(2.0f, -6, 0, 0));
+		g3dSceneNode* b = builder.Add(gtScene::Plane(), material, scale_translate(2.0f, 0, 0, 0));
+		g3dSceneNode* c = builder.Add(gtScene::Plane(), material, scale_translate(2.0f, 6, 0, 0));
+		a->SetEnvironment(&first);
+		b->SetEnvironment(&second);
+		c->SetEnvironment(&second);
+		look_down(builder.Camera(), 0, 0, 30);
+		std::unique_ptr<g3dTraceRendererOptiX> renderer = beauty_renderer();
+		ASSERT_TRUE(renderer);
+		renderer->SetSampleLimit(1);
+		View view(builder, *renderer);
+
+		//	outside every render state the traverser's default applies
+		view.Render();
+		EXPECT_EQ(1u, renderer->GetSceneBVH().GetEnvironmentCount());
+		EXPECT_EQ(0.0f, renderer->GetSceneBVH().GetEnvironment().m_DiffuseFactor);
+		EXPECT_EQ(0u, renderer->GetEnvironment().GetLight().m_Flags);
+
+		//	under one: two of the three have the second
+		a->SetRenderState(&state);
+		b->SetRenderState(&state);
+		c->SetRenderState(&state);
+		view.Render();
+		EXPECT_EQ(2u, renderer->GetSceneBVH().GetEnvironmentCount());
+		EXPECT_EQ(0.7f, renderer->GetSceneBVH().GetEnvironment().m_DiffuseFactor);
+		EXPECT_FLOAT_EQ(0.7f, renderer->GetEnvironment().GetLight().m_Color[0]) << "the diffuse colour (white) x factor, no maps";
+		EXPECT_NE(0u, renderer->GetEnvironment().GetLight().m_Flags & e_optxEnvironmentOn);
+		a->SetRenderState(NULL);
+		b->SetRenderState(NULL);
+		c->SetRenderState(NULL);
 	});
 }

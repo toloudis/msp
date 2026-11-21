@@ -6,12 +6,15 @@
 **	optxLightingParams.h (what each launch and mode does), optxLightTypes.h
 **	(the lights), optxMaterialTypes.h and optxMaterial.h (materials,
 **	textures, ray cones, opacity), optxBsdf.h (the BRDF). The device code
-**	the modes share is in optxRays.h (rays), optxLights.h (lights) and
-**	optxSurface.h (shading points).
+**	the modes share is in optxRays.h (rays), optxLights.h (lights),
+**	optxSurface.h (shading points) and optxEnvironment.h (the beauty
+**	pass's environment light).
 **
 **	Compiled to OptiX IR by nvcc at build time and embedded as
 **	"optxLighting" (optxEmbeddedPrograms). Entry points:
-**	__raygen__lighting and __raygen__resolve, __miss__camera (miss
+**	__raygen__lighting and __raygen__resolve, __raygen__env_cells,
+**	__raygen__env_rows and __raygen__env_marginal (the environment's
+**	sampling table; they trace nothing), __miss__camera (miss
 **	record 0), __miss__occlusion (miss record 1), __closesthit__camera
 **	and __anyhit__opacity (every hit group record: one per build input of
 **	the biggest GAS; opaque build inputs disable the any-hit program).
@@ -63,6 +66,9 @@ extern "C"
 #endif
 #ifndef GOX_OPTXSURFACE_H
 #include "optxSurface.h"
+#endif
+#ifndef GOX_OPTXENVIRONMENT_H
+#include "optxEnvironment.h"
 #endif
 
 using namespace gox::optxv;
@@ -407,11 +413,12 @@ namespace
 	}
 
 	//	The light chosen at a surface: one in proportion to its importance
-	//	(one random number, kept uniform as it is reused down the list), or
-	//	every light (e_optxSelectAll)
+	//	(one random number, kept uniform as it is reused down the list; the
+	//	environment, if it lights surfaces, is the last choice, index
+	//	m_Count), or every light (e_optxSelectAll)
 	struct Chosen
 	{
-		unsigned int	m_Index;		// in the surface's light range
+		unsigned int	m_Index;		// in the surface's light range; m_Count: the environment
 		float3			m_Color;
 		float3			m_ToLight;
 		float			m_Distance;
@@ -423,12 +430,19 @@ namespace
 	{
 		o_Chosen.m_Total = 0.0f;
 		bool found = false;
-		for (unsigned int i = 0; i < i_Surface.m_Count; ++i)
+		for (unsigned int i = 0; i <= i_Surface.m_Count; ++i)
 		{
-			const optxLight& light = light_of(i_Surface.m_First, i, i_Surface.m_bAll);
-			float3 color, to_light;
-			float distance;
-			const float w = importance(light, i_Surface, color, to_light, distance);
+			float3 color = splat3(0.0f), to_light = splat3(0.0f);
+			float distance = 0.0f;
+			float w;
+			if (i < i_Surface.m_Count)
+			{
+				w = importance(light_of(i_Surface.m_First, i, i_Surface.m_bAll), i_Surface, color, to_light, distance);
+			}
+			else
+			{
+				w = optxe::importance();
+			}
 			if (!(w > 0.0f))
 			{
 				continue;
@@ -451,6 +465,54 @@ namespace
 			}
 		}
 		return found;
+	}
+
+	//	The chance the environment had of being chosen at a surface
+	__forceinline__ __device__ float environment_chance(float i_Total)
+	{
+		if (params.m_LightSelection == e_optxSelectAll)
+		{
+			return 1.0f;
+		}
+		return i_Total > 0.0f ? optxe::importance() / i_Total : 0.0f;
+	}
+
+	//	The environment's light sample at a surface through the BRDF (its map
+	//	read at i_Level), over i_Chance (its chance of being chosen), weighted
+	//	against the BRDF's pdf. Every surface the camera sees occludes it, as
+	//	it stops BRDF rays (casting shadows or not), so both strategies see
+	//	the same sky.
+	__forceinline__ __device__ float3 environment_sample(const Surface& i_Surface, float3 i_Wo, float i_Chance, float i_Level,
+														 Rng& io_Rng)
+	{
+		const float u1 = io_Rng.Next(), u2 = io_Rng.Next();
+		if (params.m_Sampling == e_optxSampleBounces || !(i_Chance > 0.0f))
+		{
+			return splat3(0.0f);	// BRDF rays alone
+		}
+		float3 wi;
+		float pdf;
+		if (!optxe::sample(i_Surface, u1, u2, wi, pdf))
+		{
+			return splat3(0.0f);
+		}
+		const float cosine = dot(wi, i_Surface.m_Shading);
+		if (cosine <= 0.0f || dot(wi, i_Surface.m_Geometric) <= 0.0f)
+		{
+			return splat3(0.0f);
+		}
+		const optxb::Value f = optxb::evaluate(i_Surface.m_Bsdf, i_Surface.m_Shading, i_Wo, wi);
+		const float3 value = optxe::lit(optxe::radiance(wi, i_Level), f, cosine);
+		if (max3(value) <= 0.0f || occluded(i_Surface.m_Origin, wi, c_Infinity, e_optxMaskCamera))
+		{
+			return splat3(0.0f);
+		}
+		float weight = 1.0f / (i_Chance * pdf);
+		if (params.m_Sampling == e_optxSampleBoth)
+		{
+			weight *= power_heuristic(i_Chance * pdf, f.m_Pdf);
+		}
+		return value * weight;
 	}
 
 	//	The chance a light had of being chosen at a surface (1 with every
@@ -512,13 +574,14 @@ namespace
 
 	//	The beauty pass's direct light at a surface (next-event estimation):
 	//	one chosen light's sample over its chance, or with e_optxSelectAll
-	//	every light's; o_Total: the importances' sum (for select_chance), and
-	//	whether any light there is also reached by BRDF rays
-	__forceinline__ __device__ float3 beauty_direct(const Surface& i_Surface, float3 i_Wo, Rng& io_Rng, float& o_Total,
-													bool& o_bWeighted)
+	//	every light's (the environment's map read at i_EnvLevel); o_Total:
+	//	the importances' sum (for select_chance), and whether any light
+	//	there is also reached by BRDF rays (an area light, the environment)
+	__forceinline__ __device__ float3 beauty_direct(const Surface& i_Surface, float3 i_Wo, float i_EnvLevel, Rng& io_Rng,
+													float& o_Total, bool& o_bWeighted)
 	{
 		o_Total = 0.0f;
-		o_bWeighted = false;
+		o_bWeighted = optxe::lights();
 		for (unsigned int i = 0; i < i_Surface.m_Count; ++i)
 		{
 			o_bWeighted |= weighted(i_Surface, light_of(i_Surface.m_First, i, i_Surface.m_bAll));
@@ -536,6 +599,10 @@ namespace
 					sum = sum + light_sample(i_Surface, i_Wo, light, color, to_light, distance, 1.0f, io_Rng);
 				}
 			}
+			if (optxe::lights())
+			{
+				sum = sum + environment_sample(i_Surface, i_Wo, 1.0f, i_EnvLevel, io_Rng);
+			}
 			return sum;
 		}
 		Chosen chosen;
@@ -544,6 +611,10 @@ namespace
 			return splat3(0.0f);
 		}
 		o_Total = chosen.m_Total;
+		if (chosen.m_Index == i_Surface.m_Count)
+		{
+			return environment_sample(i_Surface, i_Wo, chosen.m_Importance / chosen.m_Total, i_EnvLevel, io_Rng);
+		}
 		const optxLight& light = light_of(i_Surface.m_First, chosen.m_Index, i_Surface.m_bAll);
 		return light_sample(i_Surface, i_Wo, light, chosen.m_Color, chosen.m_ToLight, chosen.m_Distance,
 							chosen.m_Importance / chosen.m_Total, io_Rng);
@@ -608,9 +679,11 @@ namespace
 		for (unsigned int bounce = 0;; ++bounce)
 		{
 			const float3 wo = direction * -1.0f;
+			//	One environment level for every ray leaving this surface
+			const float env_level = optxe::surface_level(spread + c_optxBounceSpread * surface.m_Bsdf.m_Roughness);
 			float total;
 			bool any_weighted;
-			const float3 direct = mul3(beauty_direct(surface, wo, rng, total, any_weighted), throughput);
+			const float3 direct = mul3(beauty_direct(surface, wo, env_level, rng, total, any_weighted), throughput);
 			radiance = radiance + (bounce == 0 ? direct : clamp_radiance(direct));
 			if (bounce >= params.m_Bounces && !any_weighted)
 			{
@@ -625,8 +698,20 @@ namespace
 			const Hit next = trace_camera(surface.m_Origin, sample.m_Wi, c_Infinity);
 			if (any_weighted)
 			{
-				const float3 light = mul3(beauty_bounce_light(surface, sample, next.m_bHit ? next.m_T : c_Infinity, total),
-										  throughput);
+				float3 light = beauty_bounce_light(surface, sample, next.m_bHit ? next.m_T : c_Infinity, total);
+				if (!next.m_bHit && optxe::lights() && params.m_Sampling != e_optxSampleLights)
+				{
+					//	Into the environment, weighted against its light samples
+					float weight = 1.0f;
+					if (params.m_Sampling == e_optxSampleBoth)
+					{
+						weight = power_heuristic(sample.m_Value.m_Pdf, environment_chance(total) * optxe::pdf(sample.m_Wi, surface));
+					}
+					const float cosine = dot(sample.m_Wi, surface.m_Shading);
+					light = light + optxe::lit(optxe::radiance(sample.m_Wi, env_level), sample.m_Value, cosine) *
+										(weight / sample.m_Value.m_Pdf);
+				}
+				light = mul3(light, throughput);
 				radiance = radiance + (bounce == 0 ? light : clamp_radiance(light));
 			}
 			if (bounce >= params.m_Bounces || !next.m_bHit)
@@ -703,7 +788,9 @@ extern "C" __global__ void __raygen__lighting()
 		float depth = 1.0f;
 		if (!first.m_bHit)
 		{
-			sum = sum + background;
+			//	The beauty pass shows the environment behind the scene if asked
+			sum = sum + ((hdr && optxe::background()) ? optxe::radiance(direction, optxe::level_for(params.m_ConeSpread))
+													  : background);
 		}
 		else
 		{
@@ -788,6 +875,93 @@ extern "C" __global__ void __raygen__resolve()
 		return;
 	}
 	write_pixel(pixel, make_float3(accum->x, accum->y, accum->z), params.m_FirstSample, accum->w);
+}
+
+//	The environment's sampling table (optxLightingParams.h): each cell's
+//	luminance of colour x map (m_Taps x m_Taps samples at m_TapLevel)
+//	times sin theta at its centre
+extern "C" __global__ void __raygen__env_cells()
+{
+	const uint3 index = optixGetLaunchIndex();
+	const optxEnvironmentLight& env = params.m_Environment;
+	const unsigned int W = env.m_TableWidth, H = env.m_TableHeight;
+	const optxTexture* map = optxe::texture();
+	if (index.x >= W || index.y >= H || !map || !env.m_Table)
+	{
+		return;
+	}
+	const float3 color = load3(env.m_Color);
+	const unsigned int taps = max(env.m_Taps, 1u);
+	float sum = 0.0f;
+	for (unsigned int b = 0; b < taps; ++b)
+	{
+		const float v = (index.y + (b + 0.5f) / taps) / H;
+		for (unsigned int a = 0; a < taps; ++a)
+		{
+			const float u = (index.x + (a + 0.5f) / taps) / W;
+			const float4 s = optxm::sample(*map, u, v, env.m_TapLevel);
+			sum += fmaxf(luminance(mul3(color, make_float3(s.x, s.y, s.z))), 0.0f);
+		}
+	}
+	const float sin_theta = __sinf((index.y + 0.5f) / H * c_Pi);
+	float* table = reinterpret_cast<float*>(env.m_Table);
+	table[index.y * W + index.x] = sum / float(taps * taps) * sin_theta;
+}
+
+//	Each row's sum and CDF (from 0 to 1; even steps for a row of zeros)
+extern "C" __global__ void __raygen__env_rows()
+{
+	const uint3 index = optixGetLaunchIndex();
+	const optxEnvironmentLight& env = params.m_Environment;
+	const unsigned int W = env.m_TableWidth, H = env.m_TableHeight;
+	if (index.x >= H || !env.m_Table)
+	{
+		return;
+	}
+	float* table = reinterpret_cast<float*>(env.m_Table);
+	const float* cells = table + index.x * W;
+	float* cdf = table + optxEnvRowCdfAt(W, H) + index.x * (W + 1);
+	float sum = 0.0f;
+	cdf[0] = 0.0f;
+	for (unsigned int i = 0; i < W; ++i)
+	{
+		sum += cells[i];
+		cdf[i + 1] = sum;
+	}
+	for (unsigned int i = 1; i <= W; ++i)
+	{
+		cdf[i] = sum > 0.0f ? cdf[i] / sum : float(i) / W;
+	}
+	cdf[W] = 1.0f;
+	table[optxEnvRowSumsAt(W, H) + index.x] = sum;
+}
+
+//	The rows' CDF and the cells' total
+extern "C" __global__ void __raygen__env_marginal()
+{
+	const uint3 index = optixGetLaunchIndex();
+	const optxEnvironmentLight& env = params.m_Environment;
+	const unsigned int W = env.m_TableWidth, H = env.m_TableHeight;
+	if (index.x != 0 || index.y != 0 || !env.m_Table)
+	{
+		return;
+	}
+	float* table = reinterpret_cast<float*>(env.m_Table);
+	const float* sums = table + optxEnvRowSumsAt(W, H);
+	float* cdf = table + optxEnvMarginalAt(W, H);
+	float total = 0.0f;
+	cdf[0] = 0.0f;
+	for (unsigned int j = 0; j < H; ++j)
+	{
+		total += sums[j];
+		cdf[j + 1] = total;
+	}
+	for (unsigned int j = 1; j <= H; ++j)
+	{
+		cdf[j] = total > 0.0f ? cdf[j] / total : float(j) / H;
+	}
+	cdf[H] = 1.0f;
+	table[optxEnvTotalAt(W, H)] = total;
 }
 
 extern "C" __global__ void __miss__camera()

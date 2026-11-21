@@ -1,12 +1,13 @@
 /*****************************************************************************
 **  optxLighting.hpp
 **
-**      optxLighting launches the lighting programs (Illumination Only and
-**	Shadow Mask): the host side of optx/private/Programs/optxLighting.cu
-**	(launch parameters and what each launch does in optxLightingParams.h).
-**	One pipeline holds both ray generation programs; Accumulate and
-**	Resolve pick one through the shader binding table's ray generation
-**	record. Laid out as optxAO.
+**      optxLighting launches the lighting programs (the beauty pass,
+**	Illumination Only, Shadow Mask, the debug view): the host side of
+**	optx/private/Programs/optxLighting.cu (launch parameters and what each
+**	launch does in optxLightingParams.h). One pipeline holds every ray
+**	generation program; Accumulate, Resolve and BuildEnvironmentTable pick
+**	theirs through the shader binding table's ray generation record. Laid
+**	out as optxAO.
 **
 **	Launches are queued on optxContext's stream and not waited for.
 **	Create builds the module, program groups, pipeline and shader binding
@@ -65,17 +66,27 @@ namespace gox
 			//--------------------------------------------------------------------
 			bool Resolve(const optxLightingParams& i_Params);
 
+			//--------------------------------------------------------------------
+			//	BuildEnvironmentTable - the three launches that fill
+			//	m_Environment's sampling table (m_Table, m_TableWidth x
+			//	m_TableHeight cells) from its map (m_Texture in m_Textures) and
+			//	colour; false if any can't be queued
+			//--------------------------------------------------------------------
+			bool BuildEnvironmentTable(const optxLightingParams& i_Params);
+
 		private:
 			bool make_records(unsigned i_nHitRecords);
 			bool launch(const optxLightingParams& i_Params, CUdeviceptr i_Raygen, cuBuffer& io_ParamBuffer);
+			bool launch_uploaded(CUdeviceptr i_Raygen, const cuBuffer& i_ParamBuffer, unsigned i_Width, unsigned i_Height);
 
 			OptixModule					m_Module;
-			OptixProgramGroup			m_Groups[5];	// raygen lighting, raygen resolve, miss camera, miss occlusion, hit
+			OptixProgramGroup			m_Groups[8];	// raygen lighting, resolve, env cells, env rows, env marginal; miss camera, occlusion; hit
 			OptixPipeline				m_Pipeline;
-			cuBuffer					m_Records;		// the two raygen, two miss, then the hit group records
+			cuBuffer					m_Records;		// the five raygen, two miss, then the hit group records
 			unsigned					m_nHitRecords;
 			OptixShaderBindingTable		m_Sbt;
 			cuBuffer					m_AccumulateParams;
 			cuBuffer					m_ResolveParams;
+			cuBuffer					m_EnvironmentParams;
 	};
 }

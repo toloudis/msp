@@ -9,6 +9,12 @@
 **	sums and, from sample 0, the pixel's clip-space depth (1 for a miss);
 **	__raygen__lighting adds m_Samples samples (resolving too with
 **	m_Resolve), __raygen__resolve resolves m_FirstSample samples.
+**	Three more launches build m_Environment's sampling table (see
+**	optxEnvTableFloats), in order on the stream: __raygen__env_cells over
+**	the table's W x H cells (each cell's luminance of colour x map, read
+**	as m_Taps x m_Taps samples at m_TapLevel, times sin theta at the
+**	cell's centre), __raygen__env_rows over its H rows (each row's sum and
+**	CDF), __raygen__env_marginal once (the rows' CDF and the total).
 **
 **	Modes (m_Mode):
 **	- e_optxLightingBeauty: the path-traced beauty pass. Every surface
@@ -28,7 +34,25 @@
 **	  samples; emissive surfaces only by BRDF rays (and camera rays).
 **	  Contributions after the first bounce are scaled down so no component
 **	  exceeds m_MaxRadiance (0: no limit); direct light at the first hit is
-**	  never limited. Camera misses add m_Background; other misses nothing.
+**	  never limited.
+**	  The environment (m_Environment, optxEnvironmentLight, when
+**	  e_optxEnvironmentOn) is an infinitely distant sphere of radiance
+**	  colour x map(direction) (the map read as the raster reads a lat-long
+**	  map: CartesianToPolar of the direction turned about y by the angle;
+**	  no map: the colour alone). It is one of the choices of the light
+**	  sample, weighted by its mean radiance's luminance, and is sampled
+**	  from its sampling table (in proportion to luminance x sin theta per
+**	  cell) or, without one, cosine-weighted about the shading normal; its
+**	  shadow rays go to infinity, and every surface the camera sees
+**	  occludes it (casting shadows or not, as for BRDF rays). BRDF rays
+**	  that miss add it, weighted against its light samples by the power
+**	  heuristic. It lights the BRDF's diffuse and specular lobes as its
+**	  switches say. Rays leaving a surface read the map at one level per
+**	  surface (its ray cone's, but never blurrier than the sampling
+**	  table), so both strategies see the same radiance. Camera misses add
+**	  the environment (at the pixel's cone level) with
+**	  e_optxEnvironmentBackground, else m_Background; with the
+**	  environment off, other misses add nothing.
 **	  Depth of field is the camera's lens: with m_LensRadius above 0, every
 **	  sample but sample 0 (which gives the depth) starts its camera ray at
 **	  a uniformly chosen point of a disk of that radius around m_Eye (in
@@ -129,6 +153,48 @@ namespace gox
 		e_optxSampleBounces = 2		// bounce rays only (delta lights still by light samples)
 	};
 
+	//	optxEnvironmentLight::m_Flags
+	enum optxEnvironmentFlags
+	{
+		e_optxEnvironmentOn = 1,			// the beauty pass has an environment light
+		e_optxEnvironmentDiffuse = 2,		// it lights the diffuse lobe
+		e_optxEnvironmentSpecular = 4,		// it lights the specular lobe
+		e_optxEnvironmentBackground = 8		// camera misses show it
+	};
+
+	//	The sampling table (a float array at m_Table, m_TableWidth = W by
+	//	m_TableHeight = H cells over the map's u and v), laid out as these
+	//	offsets give: the cells' values (luminance x sin theta at the cell,
+	//	H rows of W), each row's CDF (H rows of W + 1, from 0 to 1), the
+	//	rows' CDF (H + 1), each row's sum (H), and the cells' total (1)
+#if defined(__CUDACC__)
+#define GOX_ENV_HD __host__ __device__
+#else
+#define GOX_ENV_HD
+#endif
+	GOX_ENV_HD inline unsigned int optxEnvRowCdfAt(unsigned int W, unsigned int H) { return W * H; }
+	GOX_ENV_HD inline unsigned int optxEnvMarginalAt(unsigned int W, unsigned int H) { return W * H + (W + 1) * H; }
+	GOX_ENV_HD inline unsigned int optxEnvRowSumsAt(unsigned int W, unsigned int H) { return W * H + (W + 1) * H + H + 1; }
+	GOX_ENV_HD inline unsigned int optxEnvTotalAt(unsigned int W, unsigned int H) { return W * H + (W + 1) * H + 2 * H + 1; }
+	GOX_ENV_HD inline unsigned int optxEnvTableFloats(unsigned int W, unsigned int H) { return optxEnvTotalAt(W, H) + 1; }
+#undef GOX_ENV_HD
+
+	//	The beauty pass's environment light (see above)
+	struct optxEnvironmentLight
+	{
+		unsigned long long		m_Table;		// device address of the sampling table; 0: cosine-weighted samples
+		unsigned int			m_Texture;		// index into the texture table; c_optxNoTexture: the colour alone
+		unsigned int			m_Flags;		// optxEnvironmentFlags
+		float					m_Color[3];		// linear: the map's colour x factor
+		float					m_Angle;		// radians: a direction d reads the map at rotateAboutY(d, m_Angle)
+		unsigned int			m_TableWidth;
+		unsigned int			m_TableHeight;
+		float					m_TableLevel;	// the map's level the table's cells match (rays never read blurrier)
+		unsigned int			m_Taps;			// building the table: samples per cell along each axis
+		float					m_TapLevel;		// and the level they are read at
+		float					m_Pad;
+	};
+
 	struct optxLightingParams
 	{
 		OptixTraversableHandle		m_Handle;		// the scene's IAS; 0: every ray misses
@@ -173,5 +239,7 @@ namespace gox
 		unsigned int				m_DepthLayout;		// optxDepthLayout (optxAOParams.h)
 		unsigned int				m_Seed;
 		unsigned int				m_Resolve;			// __raygen__lighting: also resolve (non-zero)
+		unsigned int				m_Pad1;
+		optxEnvironmentLight		m_Environment;		// beauty (and the table's build launches)
 	};
 }

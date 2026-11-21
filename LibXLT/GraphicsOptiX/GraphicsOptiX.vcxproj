@@ -112,6 +112,7 @@
     <ClCompile Include="optx\private\optxFrameShare.cpp" />
     <ClCompile Include="G3d\private\g3dTraceRendererOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dLightTableOptiX.cpp" />
+    <ClCompile Include="G3d\private\g3dEnvironmentOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dMaterialTableOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dTextureTableOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dProfilerGpuOptiX.cpp" />
@@ -142,8 +143,10 @@
     <ClInclude Include="optx\private\Programs\optxRays.h" />
     <ClInclude Include="optx\private\Programs\optxLights.h" />
     <ClInclude Include="optx\private\Programs\optxSurface.h" />
+    <ClInclude Include="optx\private\Programs\optxEnvironment.h" />
     <ClInclude Include="G3d\g3dTraceRendererOptiX.hpp" />
     <ClInclude Include="G3d\g3dLightTableOptiX.hpp" />
+    <ClInclude Include="G3d\g3dEnvironmentOptiX.hpp" />
     <ClInclude Include="G3d\g3dMaterialTableOptiX.hpp" />
     <ClInclude Include="G3d\g3dTextureTableOptiX.hpp" />
     <ClInclude Include="G3d\g3dProfilerGpuOptiX.hpp" />

@@ -102,8 +102,11 @@ namespace optxr
 		return result;
 	}
 
-	//	Whether anything that casts shadows lies along the ray before i_TMax
-	__forceinline__ __device__ bool occluded(float3 i_Origin, float3 i_Direction, float i_TMax)
+	//	Whether anything that casts shadows (i_Mask: the instances of that
+	//	visibility mask, e_optxMaskCamera for every surface the camera sees)
+	//	lies along the ray before i_TMax
+	__forceinline__ __device__ bool occluded(float3 i_Origin, float3 i_Direction, float i_TMax,
+											 unsigned int i_Mask = e_optxMaskOcclusion)
 	{
 		if (!params.m_Handle)
 		{
@@ -111,7 +114,7 @@ namespace optxr
 		}
 		unsigned int hit = 1;
 		optixTrace(params.m_Handle, i_Origin, i_Direction, 0.0f, i_TMax, 0.0f,
-				   OptixVisibilityMask(e_optxMaskOcclusion),
+				   OptixVisibilityMask(i_Mask),
 				   OPTIX_RAY_FLAG_TERMINATE_ON_FIRST_HIT | OPTIX_RAY_FLAG_DISABLE_CLOSESTHIT,
 				   0, 1, 1,		// SBT offset, stride, miss index 1
 				   hit);
