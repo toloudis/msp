@@ -754,8 +754,8 @@ void cptrModeRender::EndStateInitCaptures()
 
 	// make sure sampling settings are within bounds that we can handle:
 	static const int maxSize = 16384;
-	int width	= data.m_nWidth.GetValue() * (data.m_bJitteredSampling.GetValue() ? 1 : data.m_nCaptureSampling.GetValue());
-	int height	= data.m_nHeight.GetValue() * (data.m_bJitteredSampling.GetValue() ? 1 : data.m_nCaptureSampling.GetValue());
+	int width	= data.m_nWidth.GetValue() * (cptrRenderUtil::UsesJitteredSampling() ? 1 : data.m_nCaptureSampling.GetValue());
+	int height	= data.m_nHeight.GetValue() * (cptrRenderUtil::UsesJitteredSampling() ? 1 : data.m_nCaptureSampling.GetValue());
 	if ((width > maxSize) || (height > maxSize))
 	{
 		if (data.m_bBatchMode.GetValue()
@@ -1165,8 +1165,8 @@ void cptrModeRender::OnStateBeginCapture()
 					else
 					{
 						// Create sub window of correct size
-						int width	= data.m_nWidth.GetValue() * (data.m_bJitteredSampling.GetValue() ? 1 : data.m_nCaptureSampling.GetValue());
-						int height	= data.m_nHeight.GetValue() * (data.m_bJitteredSampling.GetValue() ? 1 : data.m_nCaptureSampling.GetValue());
+						int width	= data.m_nWidth.GetValue() * (cptrRenderUtil::UsesJitteredSampling() ? 1 : data.m_nCaptureSampling.GetValue());
+						int height	= data.m_nHeight.GetValue() * (cptrRenderUtil::UsesJitteredSampling() ? 1 : data.m_nCaptureSampling.GetValue());
 
 						if (cptrRenderUtil::GetCaptureQuadrants())
 						{
@@ -1329,7 +1329,7 @@ void cptrModeRender::EndStateBeginCapture()
 	cptrRenderProgressDialogUtil::SetSceneLabel( scene_label );
 	cptrRenderProgressDialogUtil::Raise();
 
-	//DBG_LOG("Begin Capture (end) " << (data.m_bJitteredSampling.GetValue() ? "true":"false") );
+	//DBG_LOG("Begin Capture (end) " << (cptrRenderUtil::UsesJitteredSampling() ? "true":"false") );
 }
 
 //----------------------------------------------------------------------------

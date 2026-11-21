@@ -40,31 +40,6 @@ extern "C"
 
 namespace
 {
-	//	PCG hash (Jarzynski and Olano, "Hash Functions for GPU Rendering")
-	__forceinline__ __device__ unsigned int pcg(unsigned int v)
-	{
-		const unsigned int state = v * 747796405u + 2891336453u;
-		const unsigned int word = ((state >> ((state >> 28u) + 4u)) ^ state) * 277803737u;
-		return (word >> 22u) ^ word;
-	}
-
-	struct Rng
-	{
-		unsigned int m_State;
-
-		__forceinline__ __device__ Rng(unsigned int i_Pixel, unsigned int i_Sample, unsigned int i_Seed)
-			: m_State(pcg(i_Pixel ^ pcg(i_Sample ^ pcg(i_Seed))))
-		{
-		}
-
-		//	[0, 1)
-		__forceinline__ __device__ float Next()
-		{
-			m_State = pcg(m_State);
-			return (m_State >> 8) * (1.0f / 16777216.0f);
-		}
-	};
-
 	__forceinline__ __device__ float3 operator+(float3 a, float3 b) { return make_float3(a.x + b.x, a.y + b.y, a.z + b.z); }
 	__forceinline__ __device__ float3 operator-(float3 a, float3 b) { return make_float3(a.x - b.x, a.y - b.y, a.z - b.z); }
 	__forceinline__ __device__ float3 operator*(float3 a, float s) { return make_float3(a.x * s, a.y * s, a.z * s); }
@@ -120,11 +95,11 @@ namespace
 		return static_cast<unsigned int>(linear_to_srgb(c) * 255.0f + 0.5f);
 	}
 
-	//	The colour and depth buffers' texels of a pixel: i_Sum over i_nSamples
-	//	samples, and i_Depth (in [0, 1])
-	__forceinline__ __device__ void write_pixel(unsigned int i_Pixel, float3 i_Sum, unsigned int i_nSamples, float i_Depth)
+	//	The colour and depth buffers' texels of a pixel: i_Sum over
+	//	i_Weight (the samples' weights' sum), and i_Depth (in [0, 1])
+	__forceinline__ __device__ void write_pixel(unsigned int i_Pixel, float3 i_Sum, float i_Weight, float i_Depth)
 	{
-		const float scale = 1.0f / i_nSamples;
+		const float scale = i_Weight > 0.0f ? 1.0f / i_Weight : 0.0f;
 		const unsigned int r = to_byte(i_Sum.x * scale);
 		const unsigned int g = to_byte(i_Sum.y * scale);
 		const unsigned int b = to_byte(i_Sum.z * scale);
@@ -159,24 +134,23 @@ extern "C" __global__ void __raygen__ao()
 		return;
 	}
 	const unsigned int pixel = index.y * params.m_Width + index.x;
+	const unsigned int count = params.m_Width * params.m_Height;
 	const float3 background = make_float3(params.m_Background[0], params.m_Background[1], params.m_Background[2]);
 
 	float3 sum = make_float3(0.0f, 0.0f, 0.0f);
+	float weights = 0.0f;
 	float first_depth = 1.0f;		// sample 0's, if this launch has it
 	for (unsigned int s = 0; s < params.m_Samples; ++s)
 	{
 		const unsigned int sample = params.m_FirstSample + s;
-		Rng rng(pixel, sample, params.m_Seed);
-		float jx = 0.5f, jy = 0.5f;
-		if (sample != 0)
-		{
-			jx = rng.Next();
-			jy = rng.Next();
-		}
+		optxq::Sampler sampler(params.m_Sequence, params.m_ImageX + index.x, params.m_ImageY + index.y, sample);
+		const optxq::Pair at = sampler.camera_pixel();
+		const float dx = optxf::offset(params.m_Filter, at.u), dy = optxf::offset(params.m_Filter, at.v);
+		const float weight = optxf::weight(params.m_Filter, dx, dy);
 
 		//	D3D's viewport: y down in pixels, up in NDC; depth 0 near, 1 far
-		const float nx = (index.x + jx) / params.m_Width * 2.0f - 1.0f;
-		const float ny = 1.0f - (index.y + jy) / params.m_Height * 2.0f;
+		const float nx = (index.x + 0.5f + dx) / params.m_Width * 2.0f - 1.0f;
+		const float ny = 1.0f - (index.y + 0.5f + dy) / params.m_Height * 2.0f;
 		//	The direction from the near plane to depth 0.5 (about twice the
 		//	near distance in perspective): the far plane's w is tiny, and
 		//	unprojecting it in float bends the ray enough to show in depth
@@ -198,11 +172,8 @@ extern "C" __global__ void __raygen__ao()
 		}
 
 		float depth = 1.0f;
-		if (!hit)
-		{
-			sum = sum + background;
-		}
-		else
+		float3 value = background;
+		if (hit)
 		{
 			const float3 position = near_point + direction * __uint_as_float(t);
 			const float3 normal = make_float3(__uint_as_float(n0), __uint_as_float(n1), __uint_as_float(n2));
@@ -210,17 +181,18 @@ extern "C" __global__ void __raygen__ao()
 			unsigned int open = 0;
 			for (unsigned int r = 0; r < params.m_AORays; ++r)
 			{
-				const float u1 = rng.Next();
-				const float u2 = rng.Next();
-				if (!occluded(origin, cosine_direction(normal, u1, u2)))
+				const optxq::Pair u = sampler.direction(0, r);
+				if (!occluded(origin, cosine_direction(normal, u.u, u.v)))
 				{
 					++open;
 				}
 			}
 			const float ao = params.m_AORays ? float(open) / float(params.m_AORays) : 1.0f;
-			sum = sum + make_float3(ao, ao, ao);
+			value = make_float3(ao, ao, ao);
 			depth = project(params.m_ViewProj, position.x, position.y, position.z, w).z;
 		}
+		sum = sum + value * weight;
+		weights += weight;
 
 		if (sample == 0)
 		{
@@ -232,14 +204,16 @@ extern "C" __global__ void __raygen__ao()
 	float depth = first_depth;
 	if (params.m_FirstSample != 0)
 	{
-		const float4 before = *accum;
+		const float4 before = accum[0];
 		sum = sum + make_float3(before.x, before.y, before.z);
 		depth = before.w;
+		weights += accum[count].x;
 	}
-	*accum = make_float4(sum.x, sum.y, sum.z, depth);
+	accum[0] = make_float4(sum.x, sum.y, sum.z, depth);
+	accum[count] = make_float4(weights, 0.0f, 0.0f, 0.0f);
 	if (params.m_Resolve)
 	{
-		write_pixel(pixel, sum, params.m_FirstSample + params.m_Samples, depth);
+		write_pixel(pixel, sum, weights, depth);
 	}
 }
 
@@ -251,8 +225,9 @@ extern "C" __global__ void __raygen__resolve()
 		return;
 	}
 	const unsigned int pixel = index.y * params.m_Width + index.x;
-	const float4 accum = reinterpret_cast<const float4*>(params.m_Accum)[pixel];
-	write_pixel(pixel, make_float3(accum.x, accum.y, accum.z), params.m_FirstSample, accum.w);
+	const float4* accum = reinterpret_cast<const float4*>(params.m_Accum) + pixel;
+	const float4 color = accum[0];
+	write_pixel(pixel, make_float3(color.x, color.y, color.z), accum[params.m_Width * params.m_Height].x, color.w);
 }
 
 extern "C" __global__ void __miss__camera()

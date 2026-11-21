@@ -81,6 +81,13 @@
     <ClInclude Include="optx\private\Programs\optxLights.h"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\private\Programs\optxSurface.h"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\private\Programs\optxEnvironment.h"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\private\Programs\optxHostDevice.h"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\private\Programs\optxRandom.h"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\private\Programs\optxOwen.h"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\private\Programs\optxSobol.h"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\private\Programs\optxBlueNoise.h"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\private\Programs\optxPixelFilter.h"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\private\Programs\optxSampler.h"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\private\Programs\optxSceneTypes.h"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="G3d\g3dSceneBVHOptiX.hpp"><Filter>G3d</Filter></ClInclude>
     <ClInclude Include="G3d\g3dGasCacheOptiX.hpp"><Filter>G3d</Filter></ClInclude>

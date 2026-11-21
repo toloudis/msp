@@ -82,6 +82,15 @@ public:
 	//	Sometimes we need to access the buffer's pfd type
 	//--------------------------------------------------------------------
 	virtual g2dPFD::PixelFormat GetRawBufferPFD() {return g2dPFD::e_Unknown;}
+
+	//--------------------------------------------------------------------
+	//	Whether the renderer applies a capture's supersampling and pixel
+	//	filter itself (g3dProgressive::CaptureSampling: GraphicsOptiX's
+	//	tracer, which traces more samples per pixel), so the capture code
+	//	renders a captured frame once, with no jittered sub-viewports and
+	//	no enlarged window or tiles of its own
+	//--------------------------------------------------------------------
+	virtual bool SamplesCaptures() const {return false;}
 };
 
 

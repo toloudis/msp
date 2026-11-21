@@ -1,9 +1,8 @@
 /*****************************************************************************
 **  optxRays.h
 **
-**      Rays for the lighting programs (optxLighting.cu): the random number
-**	generator, projection through the view-projection matrices, the
-**	camera-ray hit (Hit, as __closesthit__camera reports it) and the
+**      Rays for the lighting programs (optxLighting.cu): projection
+**	through the view-projection matrices, the camera-ray hit (Hit, as __closesthit__camera reports it) and the
 **	occlusion test. Device only (nvcc); include in a program after its
 **	launch parameters `params` (an optxLightingParams: m_Handle) are
 **	declared, after optix.h, optxVector.h and the scene types.
@@ -20,31 +19,6 @@ namespace gox
 namespace optxr
 {
 	using namespace optxv;
-
-	//	PCG hash (Jarzynski and Olano, "Hash Functions for GPU Rendering")
-	__forceinline__ __device__ unsigned int pcg(unsigned int v)
-	{
-		const unsigned int state = v * 747796405u + 2891336453u;
-		const unsigned int word = ((state >> ((state >> 28u) + 4u)) ^ state) * 277803737u;
-		return (word >> 22u) ^ word;
-	}
-
-	struct Rng
-	{
-		unsigned int m_State;
-
-		__forceinline__ __device__ Rng(unsigned int i_Pixel, unsigned int i_Sample, unsigned int i_Seed)
-			: m_State(pcg(i_Pixel ^ pcg(i_Sample ^ pcg(i_Seed))))
-		{
-		}
-
-		//	[0, 1)
-		__forceinline__ __device__ float Next()
-		{
-			m_State = pcg(m_State);
-			return (m_State >> 8) * (1.0f / 16777216.0f);
-		}
-	};
 
 	__forceinline__ __device__ float3 read_float3(unsigned long long i_Address)
 	{

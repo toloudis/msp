@@ -150,6 +150,17 @@ namespace gox
 			return true;
 		}
 
+		//	The smallest n with 2^n >= v (at most 31)
+		unsigned ceil_log2(unsigned v)
+		{
+			unsigned n = 0;
+			while (n < 31 && (1u << n) < v)
+			{
+				++n;
+			}
+			return n;
+		}
+
 		float srgb_to_linear(float c)
 		{
 			return c <= 0.04045f ? c / 12.92f : std::pow((c + 0.055f) / 1.055f, 2.4f);
@@ -285,8 +296,19 @@ namespace gox
 			   m_bShadows == i_Other.m_bShadows && m_Seed == i_Other.m_Seed &&
 			   m_Selection == i_Other.m_Selection && m_MaxRadiance == i_Other.m_MaxRadiance &&
 			   m_LensRadius == i_Other.m_LensRadius && m_Focus == i_Other.m_Focus && m_Denoise == i_Other.m_Denoise &&
+			   m_Filter == i_Other.m_Filter && m_FilterWidth == i_Other.m_FilterWidth &&
+			   m_Log2Samples == i_Other.m_Log2Samples && m_Order == i_Other.m_Order &&
+			   m_ImageWidth == i_Other.m_ImageWidth && m_ImageHeight == i_Other.m_ImageHeight &&
+			   m_TargetX == i_Other.m_TargetX && m_TargetY == i_Other.m_TargetY && m_RegionX == i_Other.m_RegionX &&
+			   m_RegionY == i_Other.m_RegionY && m_RegionWidth == i_Other.m_RegionWidth &&
+			   m_RegionHeight == i_Other.m_RegionHeight &&
 			   std::memcmp(m_ViewProj, i_Other.m_ViewProj, sizeof(m_ViewProj)) == 0 &&
 			   std::memcmp(m_Background, i_Other.m_Background, sizeof(m_Background)) == 0;
+	}
+
+	bool g3dTraceRendererOptiX::Frame::operator==(const Frame& i_Other) const
+	{
+		return m_fTime == i_Other.m_fTime && std::memcmp(m_WholeViewProj, i_Other.m_WholeViewProj, sizeof(m_WholeViewProj)) == 0;
 	}
 
 	bool g3dTraceRendererOptiX::PrefSettings::operator==(const PrefSettings& i_Other) const
@@ -318,9 +340,11 @@ namespace gox
 		, m_MaxRadiance(0.0f)
 		, m_Denoise(g3dPrefs::g3dRenderPrefs::e_TraceDenoiseOff)
 		, m_Seed(0)
+		, m_Order(e_optxOrderBlueNoise)
 		, m_bRestart(true)
 		, m_bHaveFrame(false)
 		, m_bFrameDenoised(false)
+		, m_bMeasuredFrame(false)
 		, m_nSamples(0)
 		, m_nLaunches(0)
 		, m_nRestarts(0)
@@ -356,6 +380,7 @@ namespace gox
 		m_Textures.Release();
 		m_bHaveFrame = false;
 		m_bFrameDenoised = false;
+		m_bMeasuredFrame = false;
 		m_bRestart = true;
 	}
 
@@ -417,7 +442,7 @@ namespace gox
 		{
 			return std::vector<float>();
 		}
-		std::vector<float> values(optxDenoiser::InputBytes(m_Key.m_Width, m_Key.m_Height) / sizeof(float));
+		std::vector<float> values(optxDenoiser::InputBytes(m_Key.m_RegionWidth, m_Key.m_RegionHeight) / sizeof(float));
 		if (!m_DenoiseInput.Download(values.data(), values.size() * sizeof(float)))
 		{
 			return std::vector<float>();
@@ -511,6 +536,229 @@ namespace gox
 		return triangles;
 	}
 
+	//	Step 1 of Render: the material, light and environment tables (and
+	//	the texture table they fill) for the BVH's materials and light sets
+	void g3dTraceRendererOptiX::update_tables(const g3dScene& i_Scene, bool i_bEnvironment)
+	{
+		G3D_PROFILE_SCOPE("MaterialTables");
+		m_Textures.Begin();
+		m_Materials.Update(m_BVH.GetMaterials(), m_Textures);
+		if (lighting())
+		{
+			m_Lights.Update(m_BVH.GetLightSets(), m_Textures);
+		}
+		if (i_bEnvironment)
+		{
+			m_Environment.Update(i_Scene, m_BVH, m_Textures);
+		}
+		m_Textures.End();
+	}
+
+	unsigned g3dTraceRendererOptiX::Log2Samples(unsigned i_nGoal)
+	{
+		return std::min(ceil_log2(i_nGoal), c_MaxLog2Samples);
+	}
+
+	//	The samples per pixel to reach and what they are weighted by: in a
+	//	view, the sample limit and a box of width 1; capturing, the capture
+	//	samples times the capture's n x n supersampling, weighted by its
+	//	filter (with no supersampling, a box of width 1, as the raster
+	//	capture doesn't filter then)
+	g3dTraceRendererOptiX::Sampling g3dTraceRendererOptiX::sampling_for(bool i_bCapturing) const
+	{
+		Sampling sampling;
+		sampling.m_nGoal = m_nSampleLimit;
+		if (i_bCapturing)
+		{
+			const g3dProgressive::CaptureSampling capture = g3dProgressive::GetCaptureSampling();
+			const unsigned n = unsigned(std::max(1, capture.m_nSupersampling));
+			sampling.m_nGoal = GetCaptureSamples() * n * n;
+			if (n > 1 && capture.m_Filter >= 0 && capture.m_Filter < g3dProgressive::e_FilterCount && capture.m_FilterWidth > 0.0f)
+			{
+				static_assert(int(g3dProgressive::e_FilterCount) == int(e_optxFilterCount),
+							  "optxPixelFilterKind mirrors g3dProgressive::FilterKind");
+				sampling.m_Filter.m_Kind = unsigned(capture.m_Filter);
+				sampling.m_Filter.m_Width = capture.m_FilterWidth;
+			}
+		}
+		sampling.m_nGoal = std::max(1u, sampling.m_nGoal);
+		sampling.m_Log2Samples = Log2Samples(sampling.m_nGoal);
+		return sampling;
+	}
+
+	bool g3dTraceRendererOptiX::GetImageWindow(const camCamera& i_Camera, unsigned i_Width, unsigned i_Height,
+											   ImageWindow& o_Window, double o_WholeViewProj[16])
+	{
+		o_Window = ImageWindow();
+		o_Window.m_Width = o_Window.m_ImageWidth = i_Width;
+		o_Window.m_Height = o_Window.m_ImageHeight = i_Height;
+		double view[16];
+		float top, bottom, left, right;
+		i_Camera.GetSubViewport(top, bottom, left, right);
+		if (top == -1.0f && bottom == 1.0f && left == -1.0f && right == 1.0f)
+		{
+			view_projection(i_Camera, o_WholeViewProj, view);
+			return true;
+		}
+		//	The tile's corners through its own inverse view-projection and the
+		//	whole view's view-projection (the same camera without the
+		//	sub-viewport) give where it lies in the whole image
+		camCamera whole(i_Camera);
+		whole.SetSubViewport(-1.0f, 1.0f, -1.0f, 1.0f);
+		view_projection(whole, o_WholeViewProj, view);
+		double tile[16], inverse[16];
+		view_projection(i_Camera, tile, view);
+		if (!invert(tile, inverse))
+		{
+			return false;
+		}
+		double corners[2][2];
+		const double ndc[2][2] = { { -1.0, 1.0 }, { 1.0, -1.0 } };		// the tile's top left and bottom right
+		for (int i = 0; i < 2; ++i)
+		{
+			double p[3], q[3];
+			unproject(inverse, ndc[i][0], ndc[i][1], 0.5, p);
+			unproject(o_WholeViewProj, p[0], p[1], p[2], q);
+			corners[i][0] = q[0];
+			corners[i][1] = q[1];
+		}
+		const double span_x = std::fabs(corners[1][0] - corners[0][0]) * 0.5;
+		const double span_y = std::fabs(corners[1][1] - corners[0][1]) * 0.5;
+		if (!(span_x > 1e-6) || !(span_y > 1e-6) || span_x > 1.0 + 1e-6 || span_y > 1.0 + 1e-6)
+		{
+			return false;
+		}
+		const double image_width = std::floor(i_Width / span_x + 0.5);
+		const double image_height = std::floor(i_Height / span_y + 0.5);
+		const double x = std::floor((std::min(corners[0][0], corners[1][0]) + 1.0) * 0.5 * image_width + 0.5);
+		const double y = std::floor((1.0 - std::max(corners[0][1], corners[1][1])) * 0.5 * image_height + 0.5);
+		if (x < 0.0 || y < 0.0 || x + i_Width > image_width || y + i_Height > image_height || image_width > 65536.0 ||
+			image_height > 65536.0)
+		{
+			return false;
+		}
+		o_Window.m_X = unsigned(x);
+		o_Window.m_Y = unsigned(y);
+		o_Window.m_ImageWidth = unsigned(image_width);
+		o_Window.m_ImageHeight = unsigned(image_height);
+		return true;
+	}
+
+	//	The pixels traced for a target: the target itself, or for a tile of a
+	//	bigger image that is denoised, the tile with the denoiser's overlap
+	//	around it (clipped to the image), so its edges see their
+	//	neighbours; in whole-image pixels
+	void g3dTraceRendererOptiX::traced_region(const ImageWindow& i_Window, bool i_bDenoise, Key& io_Key)
+	{
+		io_Key.m_RegionX = i_Window.m_X;
+		io_Key.m_RegionY = i_Window.m_Y;
+		io_Key.m_RegionWidth = i_Window.m_Width;
+		io_Key.m_RegionHeight = i_Window.m_Height;
+		unsigned overlap = 0;
+		if (!i_bDenoise || !i_Window.IsTile() || !m_Denoiser.GetOverlap(overlap) || overlap == 0)
+		{
+			return;
+		}
+		const unsigned x0 = i_Window.m_X > overlap ? i_Window.m_X - overlap : 0;
+		const unsigned y0 = i_Window.m_Y > overlap ? i_Window.m_Y - overlap : 0;
+		const unsigned x1 = std::min(i_Window.m_ImageWidth, i_Window.m_X + i_Window.m_Width + overlap);
+		const unsigned y1 = std::min(i_Window.m_ImageHeight, i_Window.m_Y + i_Window.m_Height + overlap);
+		io_Key.m_RegionX = x0;
+		io_Key.m_RegionY = y0;
+		io_Key.m_RegionWidth = x1 - x0;
+		io_Key.m_RegionHeight = y1 - y0;
+	}
+
+	//	What the image depends on, for the mode (see the header's restart
+	//	list); o_View: the camera matrix
+	g3dTraceRendererOptiX::Key g3dTraceRendererOptiX::make_key(const camCamera& i_Camera, const gvk::vkdImage& i_Color,
+															   unsigned i_DebugView, const g3dScene& i_Scene,
+															   const Sampling& i_Sampling, const ImageWindow& i_Window,
+															   double o_View[16]) const
+	{
+		const g3dPrefs::g3dRenderPrefs& prefs = g3dPrefs::CurrentPrefs();
+		const bool hdr_image = hdr(i_DebugView);
+		Key key;
+		key.m_SceneVersion = m_BVH.GetSceneVersion();
+		view_projection(i_Camera, key.m_ViewProj, o_View);
+		key.m_Width = i_Color.Width();
+		key.m_Height = i_Color.Height();
+		key.m_Mode = m_Mode;
+		key.m_Seed = m_Seed;
+		key.m_DebugView = i_DebugView;
+		key.m_MaterialVersion = m_Materials.GetVersion();
+		key.m_TextureVersion = m_Textures.GetVersion();
+		key.m_Filter = i_Sampling.m_Filter.m_Kind;
+		key.m_FilterWidth = i_Sampling.m_Filter.m_Width;
+		key.m_Log2Samples = i_Sampling.m_Log2Samples;
+		key.m_Order = m_Order;
+		key.m_ImageWidth = i_Window.m_ImageWidth;
+		key.m_ImageHeight = i_Window.m_ImageHeight;
+		key.m_TargetX = i_Window.m_X;
+		key.m_TargetY = i_Window.m_Y;
+		if (i_DebugView)
+		{
+			key.m_Background[0] = key.m_Background[1] = key.m_Background[2] = 0.0f;
+		}
+		else if (lighting())
+		{
+			key.m_LightVersion = m_Lights.GetVersion();
+			key.m_bShadows = prefs.m_bEnableShadows ? 1 : 0;
+			if (m_Mode == e_Illumination || path_traced())
+			{
+				key.m_Bounces = m_nBounces;
+				key.m_bAlbedoOverride = m_bAlbedoOverride ? 1 : 0;
+				key.m_Albedo = m_bAlbedoOverride ? m_Albedo : 0.0f;
+				key.m_Sampling = m_Sampling;
+			}
+			if (m_Mode == e_Illumination)
+			{
+				key.m_bUseCosine = prefs.m_bIlluminationUsesNormals ? 1 : 0;
+			}
+			if (path_traced())
+			{
+				key.m_Selection = m_Selection;
+				key.m_MaxRadiance = m_MaxRadiance;
+				key.m_Denoise = m_Denoise;
+				key.m_EnvironmentVersion = hdr_image ? m_Environment.GetVersion() : 0;
+				//	what g3dTargetRenderer cleared the target to (Reflection
+				//	Only: black, as the raster pass clears its scene)
+				const float* background = i_Color.LastClearColor();
+				for (int c = 0; c < 3; ++c)
+				{
+					key.m_Background[c] = m_Mode == e_ReflectionOnly ? 0.0f : srgb_to_linear(background[c]);
+				}
+				//	The lens, from the pixel's angle at the view's centre
+				double inverse[16];
+				float width = 0.0f, spread = 0.0f;
+				if (invert(key.m_ViewProj, inverse))
+				{
+					pixel_cone(inverse, key.m_Height, width, spread);
+				}
+				GetLens(i_Camera, spread, key.m_LensRadius, key.m_Focus);
+			}
+			else
+			{
+				//	What the raster passes clear to: black, or white for the mask
+				const float background = (m_Mode == e_ShadowMask) ? 1.0f : 0.0f;
+				key.m_Background[0] = key.m_Background[1] = key.m_Background[2] = background;
+			}
+		}
+		else
+		{
+			ssaoParams ao_settings;
+			i_Scene.GetSSAOSettings(ao_settings);
+			key.m_Radius = ao_settings.m_AORadius;
+			key.m_AORays = m_nAORays;
+			//	what g3dTargetRenderer cleared the target to
+			const float* background = i_Color.LastClearColor();
+			key.m_Background[0] = background[0];
+			key.m_Background[1] = background[1];
+			key.m_Background[2] = background[2];
+		}
+		return key;
+	}
+
 	int g3dTraceRendererOptiX::Render(g2dRenderTarget* i_pTarget, const camCamera& i_Camera, const g3dScene& i_Scene,
 									  const std::vector<g3dLayer*>& i_ViewerLayers, float i_fSimTime)
 	{
@@ -563,93 +811,27 @@ namespace gox
 			DBG_LOG("GraphicsOptiX: scene BVH of " << m_nLoggedInstances << " instances, " << m_nLoggedGas << " GAS ("
 					<< (m_BVH.GetGasBytes() >> 20) << " MB), " << m_BVH.GetTriangleCount() << " triangles");
 		}
+		update_tables(i_Scene, hdr_image);
 
-		const g3dPrefs::g3dRenderPrefs& prefs = g3dPrefs::CurrentPrefs();
-		Key key;
-		key.m_SceneVersion = m_BVH.GetSceneVersion();
+		//	Capturing, the frame is finished before it is shown; else a few
+		//	samples, and another frame asked for until the limit
+		const bool capturing = g3dProgressive::IsCapturing();
+		const Sampling sampling = sampling_for(capturing);
+		ImageWindow window;
+		Frame frame;
+		frame.m_fTime = i_fSimTime;
+		if (!GetImageWindow(i_Camera, color->Width(), color->Height(), window, frame.m_WholeViewProj))
+		{
+			//	a sub-viewport that isn't a tile of a frame: traced as its own image
+			window = ImageWindow();
+			window.m_Width = window.m_ImageWidth = color->Width();
+			window.m_Height = window.m_ImageHeight = color->Height();
+		}
 		double view[16];
-		view_projection(i_Camera, key.m_ViewProj, view);
-		key.m_Width = color->Width();
-		key.m_Height = color->Height();
-		key.m_Mode = m_Mode;
-		key.m_Seed = m_Seed;
-		key.m_DebugView = debug;
-		{
-			G3D_PROFILE_SCOPE("MaterialTables");
-			m_Textures.Begin();
-			m_Materials.Update(m_BVH.GetMaterials(), m_Textures);
-			if (lighting())
-			{
-				m_Lights.Update(m_BVH.GetLightSets(), m_Textures);
-			}
-			if (hdr_image)
-			{
-				m_Environment.Update(i_Scene, m_BVH, m_Textures);
-			}
-			m_Textures.End();
-		}
-		key.m_MaterialVersion = m_Materials.GetVersion();
-		key.m_TextureVersion = m_Textures.GetVersion();
-		if (debug)
-		{
-			key.m_Background[0] = key.m_Background[1] = key.m_Background[2] = 0.0f;
-		}
-		else if (lighting())
-		{
-			key.m_LightVersion = m_Lights.GetVersion();
-			key.m_bShadows = prefs.m_bEnableShadows ? 1 : 0;
-			if (m_Mode == e_Illumination || path_traced())
-			{
-				key.m_Bounces = m_nBounces;
-				key.m_bAlbedoOverride = m_bAlbedoOverride ? 1 : 0;
-				key.m_Albedo = m_bAlbedoOverride ? m_Albedo : 0.0f;
-				key.m_Sampling = m_Sampling;
-			}
-			if (m_Mode == e_Illumination)
-			{
-				key.m_bUseCosine = prefs.m_bIlluminationUsesNormals ? 1 : 0;
-			}
-			if (path_traced())
-			{
-				key.m_Selection = m_Selection;
-				key.m_MaxRadiance = m_MaxRadiance;
-				key.m_Denoise = m_Denoise;
-				key.m_EnvironmentVersion = hdr_image ? m_Environment.GetVersion() : 0;
-				//	what g3dTargetRenderer cleared the target to (Reflection
-				//	Only: black, as the raster pass clears its scene)
-				const float* background = color->LastClearColor();
-				for (int c = 0; c < 3; ++c)
-				{
-					key.m_Background[c] = m_Mode == e_ReflectionOnly ? 0.0f : srgb_to_linear(background[c]);
-				}
-				//	The lens, from the pixel's angle at the view's centre
-				double inverse[16];
-				float width = 0.0f, spread = 0.0f;
-				if (invert(key.m_ViewProj, inverse))
-				{
-					pixel_cone(inverse, key.m_Height, width, spread);
-				}
-				GetLens(i_Camera, spread, key.m_LensRadius, key.m_Focus);
-			}
-			else
-			{
-				//	What the raster passes clear to: black, or white for the mask
-				const float background = (m_Mode == e_ShadowMask) ? 1.0f : 0.0f;
-				key.m_Background[0] = key.m_Background[1] = key.m_Background[2] = background;
-			}
-		}
-		else
-		{
-			ssaoParams ao_settings;
-			i_Scene.GetSSAOSettings(ao_settings);
-			key.m_Radius = ao_settings.m_AORadius;
-			key.m_AORays = m_nAORays;
-			//	what g3dTargetRenderer cleared the target to
-			const float* background = color->LastClearColor();
-			key.m_Background[0] = background[0];
-			key.m_Background[1] = background[1];
-			key.m_Background[2] = background[2];
-		}
+		Key key = make_key(i_Camera, *color, debug, i_Scene, sampling, window, view);
+		//	Whether a frame resolved now is denoised, and so the traced region
+		const bool denoise = wants_denoise(key, capturing);
+		traced_region(window, denoise && lighting_program, key);
 		if (m_bRestart || !(key == m_Key))
 		{
 			m_Key = key;
@@ -659,19 +841,23 @@ namespace gox
 			++m_nRestarts;
 		}
 
-		//	Capturing, the frame is finished before it is shown; else a few
-		//	samples, and another frame asked for until the limit
-		const bool capturing = g3dProgressive::IsCapturing();
-		const unsigned goal = capturing ? GetCaptureSamples() : m_nSampleLimit;
 		//	A finished frame resolved again (no new samples) when it is now
 		//	to be denoised, or no longer (a capture starting or ending)
-		const bool denoise = wants_denoise(m_Key, capturing);
+		const unsigned goal = sampling.m_nGoal;
 		if (m_nSamples < goal || (m_bHaveFrame && denoise != m_bFrameDenoised))
 		{
-			if (!trace(m_Key, view, order, layout, goal, capturing, denoise))
+			//	The denoiser's exposure: measured for each whole image; a tile
+			//	takes the first measured tile's of the same frame
+			const bool measure = !window.IsTile() || !m_bMeasuredFrame || !(frame == m_MeasuredFrame);
+			if (!trace(m_Key, view, order, layout, goal, capturing, denoise, measure))
 			{
 				m_bHaveFrame = false;
 				return raster_only(i_pTarget, i_Camera, i_Scene, i_ViewerLayers, i_fSimTime);
+			}
+			if (m_bFrameDenoised && measure)
+			{
+				m_MeasuredFrame = frame;
+				m_bMeasuredFrame = true;
 			}
 			if (!capturing && m_nSamples < goal)
 			{
@@ -697,20 +883,49 @@ namespace gox
 		return triangles;
 	}
 
+	//	The launch parameters both programs share (each has its own struct)
+	//	for the key's frame: where its pixels lie in the whole image, the
+	//	sequence and the filter
+	template <class Params>
+	void g3dTraceRendererOptiX::fill_common(const Key& i_Key, const double i_Inverse[16], float i_Epsilon, Params& o_Params) const
+	{
+		o_Params.m_Handle = m_BVH.GetHandle();
+		o_Params.m_Instances = m_BVH.GetInstanceTable();
+		o_Params.m_Materials = m_Materials.GetMaterials();
+		o_Params.m_Textures = m_Textures.GetTextures();
+		o_Params.m_Accum = m_Accum.Get();
+		for (int i = 0; i < 16; ++i)
+		{
+			o_Params.m_ViewProj[i] = float(i_Key.m_ViewProj[i]);
+			o_Params.m_InvViewProj[i] = float(i_Inverse[i]);
+		}
+		o_Params.m_Epsilon = i_Epsilon;
+		o_Params.m_Seed = i_Key.m_Seed;
+		o_Params.m_Sequence.m_Order = i_Key.m_Order;
+		o_Params.m_Sequence.m_Log2Resolution = ceil_log2(std::max(i_Key.m_ImageWidth, i_Key.m_ImageHeight));
+		o_Params.m_Sequence.m_Log2Samples = i_Key.m_Log2Samples;
+		o_Params.m_Sequence.m_Seed = i_Key.m_Seed;
+		o_Params.m_Filter.m_Kind = i_Key.m_Filter;
+		o_Params.m_Filter.m_Width = i_Key.m_FilterWidth;
+	}
+
 	//	Step 2 of Render: more samples toward i_nGoal (one launch, or with
 	//	i_bAll launches until it is reached or the capture is aborted; at
 	//	the goal already, one launch that adds none), then resolved into
 	//	the shared buffers: by the last launch itself, or (an aborted
 	//	capture) by a resolve launch. With i_bDenoise (the beauty pass and
-	//	Reflection Only), the resolve writes the denoiser's input and the
-	//	denoiser writes the shared colour; if it can't, the image is
-	//	resolved again undenoised.
+	//	Reflection Only), the resolve writes the denoiser's input over the
+	//	traced region and the denoiser writes the frame into the shared
+	//	colour (measuring the exposure first with i_bMeasure); if it can't,
+	//	the image is resolved again undenoised.
 	bool g3dTraceRendererOptiX::trace(const Key& i_Key, const double i_View[16], const optxColorOrder i_Order,
-									  const optxDepthLayout i_Layout, unsigned i_nGoal, bool i_bAll, bool i_bDenoise)
+									  const optxDepthLayout i_Layout, unsigned i_nGoal, bool i_bAll, bool i_bDenoise,
+									  bool i_bMeasure)
 	{
-		//	The beauty pass and Reflection Only: three planes of accumulation, an HDR frame
+		//	The beauty pass and Reflection Only: three planes of accumulation,
+		//	an HDR frame; the other modes two planes; over the traced region
 		const bool beauty = hdr(i_Key.m_DebugView);
-		const size_t accum_bytes = size_t(i_Key.m_Width) * i_Key.m_Height * 4 * sizeof(float) * (beauty ? 3 : 1);
+		const size_t accum_bytes = size_t(i_Key.m_RegionWidth) * i_Key.m_RegionHeight * 4 * sizeof(float) * (beauty ? 3 : 2);
 		const optxFrameShare::ColorLayout color_layout = beauty ? optxFrameShare::e_ColorHalf : optxFrameShare::e_Color8;
 		if (!m_Share.Resize(i_Key.m_Width, i_Key.m_Height, color_layout) || !m_Accum.Reserve(accum_bytes))
 		{
@@ -721,8 +936,8 @@ namespace gox
 		bool denoise = false;
 		if (i_bDenoise && beauty)
 		{
-			denoise = m_Denoiser.Prepare(i_Key.m_Width, i_Key.m_Height) &&
-					  m_DenoiseInput.Reserve(optxDenoiser::InputBytes(i_Key.m_Width, i_Key.m_Height));
+			denoise = m_Denoiser.Prepare(i_Key.m_RegionWidth, i_Key.m_RegionHeight) &&
+					  m_DenoiseInput.Reserve(optxDenoiser::InputBytes(i_Key.m_RegionWidth, i_Key.m_RegionHeight));
 		}
 		double inverse[16];
 		if (!invert(i_Key.m_ViewProj, inverse))
@@ -747,10 +962,16 @@ namespace gox
 		optxLightingParams lit = {};
 		if (lighting_program)
 		{
-			lit.m_Handle = m_BVH.GetHandle();
-			lit.m_Instances = m_BVH.GetInstanceTable();
-			lit.m_Materials = m_Materials.GetMaterials();
-			lit.m_Textures = m_Textures.GetTextures();
+			fill_common(i_Key, inverse, epsilon, lit);
+			//	The launch covers the traced region; the frame lies inside it
+			lit.m_Width = i_Key.m_RegionWidth;
+			lit.m_Height = i_Key.m_RegionHeight;
+			lit.m_OutX = i_Key.m_TargetX - i_Key.m_RegionX;
+			lit.m_OutY = i_Key.m_TargetY - i_Key.m_RegionY;
+			lit.m_OutWidth = i_Key.m_Width;
+			lit.m_OutHeight = i_Key.m_Height;
+			lit.m_ImageX = i_Key.m_RegionX;
+			lit.m_ImageY = i_Key.m_RegionY;
 			pixel_cone(inverse, i_Key.m_Height, lit.m_ConeWidth, lit.m_ConeSpread);
 			lit.m_bAlbedoOverride = i_Key.m_bAlbedoOverride;
 			lit.m_DebugView = i_Key.m_DebugView;
@@ -758,19 +979,10 @@ namespace gox
 			lit.m_LightSets = m_Lights.GetSets();
 			lit.m_LightIndices = m_Lights.GetIndices();
 			lit.m_NumLights = m_Lights.GetLightCount();
-			lit.m_Accum = m_Accum.Get();
-			lit.m_Width = i_Key.m_Width;
-			lit.m_Height = i_Key.m_Height;
-			for (int i = 0; i < 16; ++i)
-			{
-				lit.m_ViewProj[i] = float(i_Key.m_ViewProj[i]);
-				lit.m_InvViewProj[i] = float(inverse[i]);
-			}
 			for (int c = 0; c < 3; ++c)
 			{
 				lit.m_Background[c] = i_Key.m_Background[c];
 			}
-			lit.m_Epsilon = epsilon;
 			lit.m_Albedo = i_Key.m_Albedo;
 			lit.m_Mode = i_Key.m_DebugView ? e_optxLightingDebug
 										   : (m_Mode == e_ShadowMask) ? e_optxLightingShadowMask
@@ -780,34 +992,7 @@ namespace gox
 			lit.m_MaxRadiance = i_Key.m_MaxRadiance;
 			if (i_Key.m_LensRadius > 0.0f)
 			{
-				//	The lens: centred on the eye, across the camera's x and y
-				//	axes (the camera matrix's first two columns), focused along
-				//	the view direction (the centre pixel's ray)
-				double eye[3], forward[3], origin[3];
-				camera_ray(inverse, 0.0, 0.0, origin, forward);
-				for (int c = 0; c < 3; ++c)
-				{
-					eye[c] = -(i_View[12] * i_View[c * 4] + i_View[13] * i_View[c * 4 + 1] + i_View[14] * i_View[c * 4 + 2]);
-				}
-				double right[3] = { i_View[0], i_View[4], i_View[8] };
-				double up[3] = { i_View[1], i_View[5], i_View[9] };
-				for (double* axis : { right, up })
-				{
-					const double length = std::sqrt(axis[0] * axis[0] + axis[1] * axis[1] + axis[2] * axis[2]);
-					for (int c = 0; c < 3; ++c)
-					{
-						axis[c] /= length > 0.0 ? length : 1.0;
-					}
-				}
-				for (int c = 0; c < 3; ++c)
-				{
-					lit.m_Eye[c] = float(eye[c]);
-					lit.m_Forward[c] = float(forward[c]);
-					lit.m_LensRight[c] = float(right[c]);
-					lit.m_LensUp[c] = float(up[c]);
-				}
-				lit.m_LensRadius = i_Key.m_LensRadius;
-				lit.m_FocusDistance = i_Key.m_Focus;
+				set_lens(i_Key, inverse, i_View, lit);
 			}
 			lit.m_Bounces = i_Key.m_Bounces;
 			lit.m_Sampling = i_Key.m_Sampling;
@@ -815,33 +1000,23 @@ namespace gox
 			lit.m_bShadows = i_Key.m_bShadows;
 			lit.m_ColorOrder = i_Order;
 			lit.m_DepthLayout = i_Layout;
-			lit.m_Seed = i_Key.m_Seed;
 			lit.m_DenoiseInput = denoise ? m_DenoiseInput.Get() : 0;
 		}
 		else
 		{
-			ao.m_Handle = m_BVH.GetHandle();
-			ao.m_Instances = m_BVH.GetInstanceTable();
-			ao.m_Materials = m_Materials.GetMaterials();
-			ao.m_Textures = m_Textures.GetTextures();
-			ao.m_Accum = m_Accum.Get();
+			fill_common(i_Key, inverse, epsilon, ao);
 			ao.m_Width = i_Key.m_Width;
 			ao.m_Height = i_Key.m_Height;
-			for (int i = 0; i < 16; ++i)
-			{
-				ao.m_ViewProj[i] = float(i_Key.m_ViewProj[i]);
-				ao.m_InvViewProj[i] = float(inverse[i]);
-			}
+			ao.m_ImageX = i_Key.m_TargetX;
+			ao.m_ImageY = i_Key.m_TargetY;
 			for (int c = 0; c < 3; ++c)
 			{
 				ao.m_Background[c] = srgb_to_linear(i_Key.m_Background[c]);
 			}
 			ao.m_Radius = i_Key.m_Radius;
-			ao.m_Epsilon = epsilon;
 			ao.m_AORays = i_Key.m_AORays;
 			ao.m_ColorOrder = i_Order;
 			ao.m_DepthLayout = i_Layout;
-			ao.m_Seed = i_Key.m_Seed;
 		}
 
 		//	The textures' last Vulkan writes (uploads, renders) land first
@@ -916,7 +1091,12 @@ namespace gox
 		if (denoise)
 		{
 			G3D_PROFILE_SCOPE("Denoise");
-			if (!m_Denoiser.Run(m_DenoiseInput.Get(), m_Share.Color()))
+			optxDenoiser::Window frame;
+			frame.m_X = lit.m_OutX;
+			frame.m_Y = lit.m_OutY;
+			frame.m_Width = i_Key.m_Width;
+			frame.m_Height = i_Key.m_Height;
+			if (!m_Denoiser.Run(m_DenoiseInput.Get(), m_Share.Color(), frame, i_bMeasure))
 			{
 				//	Reported by the denoiser: the image resolved undenoised
 				lit.m_DenoiseInput = 0;
@@ -937,6 +1117,39 @@ namespace gox
 		m_bHaveFrame = true;
 		m_bFrameDenoised = denoise;
 		return true;
+	}
+
+	//	The thin lens's launch parameters: centred on the eye, across the
+	//	camera's x and y axes (the camera matrix's first two columns),
+	//	focused along the view direction (the centre pixel's ray)
+	void g3dTraceRendererOptiX::set_lens(const Key& i_Key, const double i_Inverse[16], const double i_View[16],
+										 optxLightingParams& o_Params)
+	{
+		double eye[3], forward[3], origin[3];
+		camera_ray(i_Inverse, 0.0, 0.0, origin, forward);
+		for (int c = 0; c < 3; ++c)
+		{
+			eye[c] = -(i_View[12] * i_View[c * 4] + i_View[13] * i_View[c * 4 + 1] + i_View[14] * i_View[c * 4 + 2]);
+		}
+		double right[3] = { i_View[0], i_View[4], i_View[8] };
+		double up[3] = { i_View[1], i_View[5], i_View[9] };
+		for (double* axis : { right, up })
+		{
+			const double length = std::sqrt(axis[0] * axis[0] + axis[1] * axis[1] + axis[2] * axis[2]);
+			for (int c = 0; c < 3; ++c)
+			{
+				axis[c] /= length > 0.0 ? length : 1.0;
+			}
+		}
+		for (int c = 0; c < 3; ++c)
+		{
+			o_Params.m_Eye[c] = float(eye[c]);
+			o_Params.m_Forward[c] = float(forward[c]);
+			o_Params.m_LensRight[c] = float(right[c]);
+			o_Params.m_LensUp[c] = float(up[c]);
+		}
+		o_Params.m_LensRadius = i_Key.m_LensRadius;
+		o_Params.m_FocusDistance = i_Key.m_Focus;
 	}
 
 	//	Step 3 of Render for the beauty pass and Reflection Only: the HDR frame into the post

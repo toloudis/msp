@@ -307,6 +307,12 @@
     <ClCompile Include="Ox\g3dBeautyOptiXTest.cpp">
       <Filter>Ox</Filter>
     </ClCompile>
+    <ClCompile Include="Ox\optxSamplerTest.cpp">
+      <Filter>Ox</Filter>
+    </ClCompile>
+    <ClCompile Include="Ox\g3dSamplingOptiXTest.cpp">
+      <Filter>Ox</Filter>
+    </ClCompile>
     <ClInclude Include="Ox\gtOptiX.hpp">
       <Filter>Ox</Filter>
     </ClInclude>

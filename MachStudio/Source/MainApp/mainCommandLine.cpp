@@ -637,9 +637,13 @@ Rendering
                              output root; may use the same tags
   -capOutputPathRoot <dir>   output root folder for relative output folders
   -capSampling <n>           supersampling: n x n samples per pixel, 1 to 8
-                             (1 = none); how they are taken is -capJitter's
+                             (1 = none); how they are taken is -capJitter's.
+                             Ray tracing: n x n times -capTraceSamples,
+                             traced in one frame at the output size
   -capJitter off             take the samples on a regular grid (the frame
-                             is rendered n times the size and scaled down)
+                             is rendered n times the size and scaled down;
+                             with -gfx optix, jittered with a Box of width
+                             1 instead, never larger than the output)
   -capJitter <filter> <width>
                              take jittered samples, accumulated with this
                              filter (Box, Gaussian, Mitchell, Triangle, Sinc,

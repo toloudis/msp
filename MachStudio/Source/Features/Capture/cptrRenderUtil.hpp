@@ -20,6 +20,9 @@
 #ifndef MA_TIME_HPP
 #include "Core/Ma/maTime.hpp"
 #endif
+#ifndef G3D_PROGRESSIVE_HPP
+#include "Graphics/G3d/g3dProgressive.hpp"
+#endif
 
 //============================================================================
 //	forward references
@@ -190,6 +193,30 @@ namespace cptrRenderUtil
 	//	the given sampling pass
 	//------------------------------------------------------------------------
 	maVector3d GetSamplePos(int i);
+
+	//------------------------------------------------------------------------
+	//	The capture's sampling as the capture code runs it. Grid sampling
+	//	(jittered sampling off) renders a frame n times as big and scales it
+	//	down, except under a tracing backend (g3dSceneRendererCreate::
+	//	UsesTracerSettings: GraphicsOptiX), where it runs as jittered
+	//	sampling with a box filter of width 1, so nothing is rendered
+	//	larger than the output (raster passes still take n x n jittered
+	//	frames). UsesJitteredSampling, GetFilterFunc (a captRenderOutputData::
+	//	eFilterFunc) and GetFilterWidth give that sampling; GetCaptureSampling
+	//	gives it as a renderer that samples captures itself takes it.
+	//------------------------------------------------------------------------
+	bool UsesJitteredSampling();
+	int GetFilterFunc();
+	float GetFilterWidth();
+	g3dProgressive::CaptureSampling GetCaptureSampling();
+
+	//------------------------------------------------------------------------
+	//	RendererSamplesCaptures - whether the current capture renderer applies
+	//	the capture's supersampling and filter itself (g3dSceneRenderer::
+	//	SamplesCaptures): it renders each captured frame once, at the output
+	//	size, with no jitter loop and no automatic quadrants
+	//------------------------------------------------------------------------
+	bool RendererSamplesCaptures();
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------

@@ -146,6 +146,13 @@
     <ClInclude Include="optx\private\Programs\optxLights.h" />
     <ClInclude Include="optx\private\Programs\optxSurface.h" />
     <ClInclude Include="optx\private\Programs\optxEnvironment.h" />
+    <ClInclude Include="optx\private\Programs\optxHostDevice.h" />
+    <ClInclude Include="optx\private\Programs\optxRandom.h" />
+    <ClInclude Include="optx\private\Programs\optxOwen.h" />
+    <ClInclude Include="optx\private\Programs\optxSobol.h" />
+    <ClInclude Include="optx\private\Programs\optxBlueNoise.h" />
+    <ClInclude Include="optx\private\Programs\optxPixelFilter.h" />
+    <ClInclude Include="optx\private\Programs\optxSampler.h" />
     <ClInclude Include="G3d\g3dTraceRendererOptiX.hpp" />
     <ClInclude Include="G3d\g3dLightTableOptiX.hpp" />
     <ClInclude Include="G3d\g3dEnvironmentOptiX.hpp" />

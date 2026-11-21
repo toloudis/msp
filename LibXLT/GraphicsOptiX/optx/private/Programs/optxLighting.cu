@@ -6,7 +6,9 @@
 **	optxLightingParams.h (what each launch and mode does), optxLightTypes.h
 **	(the lights), optxMaterialTypes.h and optxMaterial.h (materials,
 **	textures, ray cones, opacity), optxBsdf.h (the BRDF). The device code
-**	the modes share is in optxRays.h (rays), optxLights.h (lights),
+**	the modes share is in optxSampler.h (every number a sample draws:
+**	pixel positions, lens, light and direction samples, through
+**	optxPixelFilter.h's weights), optxRays.h (rays), optxLights.h (lights),
 **	optxSurface.h (shading points) and optxEnvironment.h (the beauty
 **	pass's environment light).
 **
@@ -89,6 +91,21 @@ namespace
 		return static_cast<unsigned int>(saturate(c) * 255.0f + 0.5f);
 	}
 
+	//	The frame's pixel (in m_Color and m_Depth) a traced pixel is; false
+	//	for the traced region's border around the frame (the denoiser's
+	//	overlap)
+	__forceinline__ __device__ bool frame_pixel(uint3 i_Index, unsigned int& o_Pixel)
+	{
+		const int x = int(i_Index.x) - int(params.m_OutX);
+		const int y = int(i_Index.y) - int(params.m_OutY);
+		if (x < 0 || y < 0 || x >= int(params.m_OutWidth) || y >= int(params.m_OutHeight))
+		{
+			return false;
+		}
+		o_Pixel = unsigned(y) * params.m_OutWidth + unsigned(x);
+		return true;
+	}
+
 	__forceinline__ __device__ void write_depth(unsigned int i_Pixel, float i_Depth)
 	{
 		unsigned int* depth = reinterpret_cast<unsigned int*>(params.m_Depth);
@@ -96,12 +113,19 @@ namespace
 																  : min(__float2uint_rn(i_Depth * 16777215.0f), 16777215u);
 	}
 
-	__forceinline__ __device__ void write_pixel(unsigned int i_Pixel, float3 i_Sum, unsigned int i_nSamples, float i_Depth)
+	//	1 / the weights' sum (0 for none)
+	__forceinline__ __device__ float inverse(float i_Weights)
 	{
-		const float scale = 1.0f / i_nSamples;
-		const unsigned int r = to_byte(i_Sum.x * scale);
-		const unsigned int g = to_byte(i_Sum.y * scale);
-		const unsigned int b = to_byte(i_Sum.z * scale);
+		return i_Weights > 0.0f ? 1.0f / i_Weights : 0.0f;
+	}
+
+	//	The 8-bit resolve of frame pixel i_Pixel: the weighted mean of i_Sum
+	//	(i_Scale: 1 / the weights' sum), and depth
+	__forceinline__ __device__ void write_pixel(unsigned int i_Pixel, float3 i_Sum, float i_Scale, float i_Depth)
+	{
+		const unsigned int r = to_byte(i_Sum.x * i_Scale);
+		const unsigned int g = to_byte(i_Sum.y * i_Scale);
+		const unsigned int b = to_byte(i_Sum.z * i_Scale);
 		unsigned int* color = reinterpret_cast<unsigned int*>(params.m_Color);
 		color[i_Pixel] = params.m_ColorOrder == e_optxColorBGRA ? (b | (g << 8) | (r << 16) | (255u << 24))
 																: (r | (g << 8) | (b << 16) | (255u << 24));
@@ -120,28 +144,35 @@ namespace
 		return make_uint2(to_half(x) | (unsigned(to_half(y)) << 16), to_half(z) | (unsigned(to_half(w)) << 16));
 	}
 
-	//	The beauty resolve: the linear mean (unclamped) and coverage as
-	//	RGBA16F, or with m_DenoiseInput the denoiser's input planes (the
-	//	means of colour and coverage, albedo, normal); and depth
-	__forceinline__ __device__ void write_hdr_pixel(unsigned int i_Pixel, const float4* i_Planes, unsigned int i_nSamples)
+	//	The beauty resolve of traced pixel i_Region (the accumulation's
+	//	three planes at i_Planes; the weights' sum in the third's w): the
+	//	weighted linear mean (unclamped) and coverage as RGBA16F into the
+	//	frame, or with m_DenoiseInput the denoiser's input planes over the
+	//	whole traced region (the means of colour and coverage, albedo,
+	//	normal); and depth into the frame
+	__forceinline__ __device__ void write_hdr_pixel(unsigned int i_Region, const float4* i_Planes, bool i_bInFrame,
+													unsigned int i_Pixel)
 	{
 		const unsigned int count = params.m_Width * params.m_Height;
 		const float4 color = i_Planes[0];
 		const float4 guide = i_Planes[count];
-		const float scale = 1.0f / i_nSamples;
+		const float4 normal = i_Planes[2 * count];
+		const float scale = inverse(normal.w);
 		if (params.m_DenoiseInput)
 		{
-			const float4 normal = i_Planes[2 * count];
-			float4* input = reinterpret_cast<float4*>(params.m_DenoiseInput) + i_Pixel;
+			float4* input = reinterpret_cast<float4*>(params.m_DenoiseInput) + i_Region;
 			input[0] = make_float4(color.x * scale, color.y * scale, color.z * scale, guide.w * scale);
 			input[count] = make_float4(guide.x * scale, guide.y * scale, guide.z * scale, 1.0f);
 			input[2 * count] = make_float4(normal.x * scale, normal.y * scale, normal.z * scale, 0.0f);
 		}
-		else
+		else if (i_bInFrame)
 		{
 			reinterpret_cast<uint2*>(params.m_Color)[i_Pixel] = half4(color.x * scale, color.y * scale, color.z * scale, guide.w * scale);
 		}
-		write_depth(i_Pixel, color.w);
+		if (i_bInFrame)
+		{
+			write_depth(i_Pixel, color.w);
+		}
 	}
 
 	//	The thin lens (optxLightingParams.h): a camera ray from a point of
@@ -214,7 +245,8 @@ namespace
 	//	Illumination: the direct light at a surface by light samples (one
 	//	per light; the lights' diffuse colour), and whether any light there
 	//	is also reached by bounce rays
-	__forceinline__ __device__ float3 direct_light(const Surface& i_Surface, Rng& io_Rng, bool& o_bWeighted)
+	__forceinline__ __device__ float3 direct_light(const Surface& i_Surface, optxq::Sampler& io_Sampler, unsigned int i_Bounce,
+												   bool& o_bWeighted)
 	{
 		float3 sum = splat3(0.0f);
 		o_bWeighted = false;
@@ -239,10 +271,10 @@ namespace
 			float3 wi;
 			float pdf_light = 0.0f;		// solid angle, area lights
 			float tmax = distance;
-			const float u1 = io_Rng.Next(), u2 = io_Rng.Next();
+			const optxq::Pair u = io_Sampler.light(i_Bounce, i);
 			if (shadows && is_area(light))
 			{
-				area_sample(light, i_Surface.m_P, u1, u2, wi, tmax, pdf_light);
+				area_sample(light, i_Surface.m_P, u.u, u.v, wi, tmax, pdf_light);
 			}
 			else
 			{
@@ -302,7 +334,7 @@ namespace
 
 	//	Shadow Mask: the product over the projected lights that reach the
 	//	surface and face it of 1 - (1 - visibility) * cosine
-	__forceinline__ __device__ float shadow_mask(const Surface& i_Surface, Rng& io_Rng)
+	__forceinline__ __device__ float shadow_mask(const Surface& i_Surface, optxq::Sampler& io_Sampler)
 	{
 		float mask = 1.0f;
 		for (unsigned int i = 0; i < i_Surface.m_Count; ++i)
@@ -312,7 +344,7 @@ namespace
 			{
 				continue;
 			}
-			const float u1 = io_Rng.Next(), u2 = io_Rng.Next();
+			const optxq::Pair u = io_Sampler.light(0, i);
 			//	The mask ignores the light's colour, penumbra and attenuation:
 			//	only whether the point is in its frustum (as the raster's
 			//	IlluminateProjLightShadowsOnly)
@@ -346,7 +378,7 @@ namespace
 			if (is_area(light))
 			{
 				float pdf;
-				area_sample(light, p, u1, u2, wi, tmax, pdf);
+				area_sample(light, p, u.u, u.v, wi, tmax, pdf);
 			}
 			if (blocked(i_Surface, wi, tmax))
 			{
@@ -358,20 +390,20 @@ namespace
 
 	//	Illumination Only: the light arriving at the first hit, then up to
 	//	m_Bounces diffuse bounces carrying the surfaces' albedo
-	__forceinline__ __device__ float3 illumination(Surface surface, Rng& rng, float width, float spread)
+	__forceinline__ __device__ float3 illumination(Surface surface, optxq::Sampler& sampler, float width, float spread)
 	{
 		float3 radiance = splat3(0.0f);
 		float3 throughput = splat3(1.0f);
 		for (unsigned int bounce = 0;; ++bounce)
 		{
 			bool any_weighted = false;
-			radiance = radiance + mul3(direct_light(surface, rng, any_weighted), throughput);
+			radiance = radiance + mul3(direct_light(surface, sampler, bounce, any_weighted), throughput);
 			if (bounce >= params.m_Bounces && !any_weighted)
 			{
 				break;
 			}
-			const float u1 = rng.Next(), u2 = rng.Next();
-			const float3 wi = cosine_direction(surface.m_Shading, u1, u2);
+			const optxq::Pair u = sampler.direction(bounce);
+			const float3 wi = cosine_direction(surface.m_Shading, u.u, u.v);
 			if (dot(wi, surface.m_Geometric) <= 0.0f)
 			{
 				break;	// below the surface: the shading normal leans past the geometric one
@@ -390,7 +422,7 @@ namespace
 			if (bounce + 1 >= 3)
 			{
 				const float survive = fminf(max3(throughput), 0.95f);
-				if (rng.Next() >= survive)
+				if (sampler.next() >= survive)
 				{
 					break;
 				}
@@ -502,16 +534,15 @@ namespace
 	//	it stops BRDF rays (casting shadows or not), so both strategies see
 	//	the same sky.
 	__forceinline__ __device__ float3 environment_sample(const Surface& i_Surface, float3 i_Wo, float i_Chance, float i_Level,
-														 Rng& io_Rng)
+														 optxq::Pair u)
 	{
-		const float u1 = io_Rng.Next(), u2 = io_Rng.Next();
 		if (params.m_Sampling == e_optxSampleBounces || !(i_Chance > 0.0f))
 		{
 			return splat3(0.0f);	// BRDF rays alone
 		}
 		float3 wi;
 		float pdf;
-		if (!optxe::sample(i_Surface, u1, u2, wi, pdf))
+		if (!optxe::sample(i_Surface, u.u, u.v, wi, pdf))
 		{
 			return splat3(0.0f);
 		}
@@ -552,11 +583,10 @@ namespace
 	//	(area lights also reached by BRDF rays) weighted against the BRDF's
 	//	pdf, the light's pdf times i_Chance (its chance of being chosen)
 	__forceinline__ __device__ float3 light_sample(const Surface& i_Surface, float3 i_Wo, const optxLight& i_Light, float3 i_Color,
-												   float3 i_ToLight, float i_Distance, float i_Chance, Rng& io_Rng)
+												   float3 i_ToLight, float i_Distance, float i_Chance, optxq::Pair u)
 	{
 		const bool shadows = shadowed_pair(i_Surface, i_Light);
 		const bool mis = weighted(i_Surface, i_Light);
-		const float u1 = io_Rng.Next(), u2 = io_Rng.Next();
 		if (mis && params.m_Sampling == e_optxSampleBounces)
 		{
 			return splat3(0.0f);	// BRDF rays alone
@@ -566,7 +596,7 @@ namespace
 		float tmax = i_Distance;
 		if (shadows && is_area(i_Light))
 		{
-			area_sample(i_Light, i_Surface.m_P, u1, u2, wi, tmax, pdf_light);
+			area_sample(i_Light, i_Surface.m_P, u.u, u.v, wi, tmax, pdf_light);
 		}
 		else
 		{
@@ -595,9 +625,11 @@ namespace
 	//	one chosen light's sample over its chance, or with e_optxSelectAll
 	//	every light's (the environment's map read at i_EnvLevel); o_Total:
 	//	the importances' sum (for select_chance), and whether any light
-	//	there is also reached by BRDF rays (an area light, the environment)
-	__forceinline__ __device__ float3 beauty_direct(const Surface& i_Surface, float3 i_Wo, float i_EnvLevel, Rng& io_Rng,
-													float& o_Total, bool& o_bWeighted)
+	//	there is also reached by BRDF rays (an area light, the environment);
+	//	i_Bounce: which hit of the path (the sampler's numbers for it)
+	__forceinline__ __device__ float3 beauty_direct(const Surface& i_Surface, float3 i_Wo, float i_EnvLevel,
+													optxq::Sampler& io_Sampler, unsigned int i_Bounce, float& o_Total,
+													bool& o_bWeighted)
 	{
 		o_Total = 0.0f;
 		o_bWeighted = optxe::lights();
@@ -615,28 +647,28 @@ namespace
 				float distance;
 				if (light_at(light, i_Surface.m_P, color, to_light, distance))
 				{
-					sum = sum + light_sample(i_Surface, i_Wo, light, color, to_light, distance, 1.0f, io_Rng);
+					sum = sum + light_sample(i_Surface, i_Wo, light, color, to_light, distance, 1.0f, io_Sampler.light(i_Bounce, i));
 				}
 			}
 			if (optxe::lights())
 			{
-				sum = sum + environment_sample(i_Surface, i_Wo, 1.0f, i_EnvLevel, io_Rng);
+				sum = sum + environment_sample(i_Surface, i_Wo, 1.0f, i_EnvLevel, io_Sampler.light(i_Bounce, i_Surface.m_Count));
 			}
 			return sum;
 		}
 		Chosen chosen;
-		if (!choose_light(i_Surface, io_Rng.Next(), chosen))
+		if (!choose_light(i_Surface, io_Sampler.next(), chosen))
 		{
 			return splat3(0.0f);
 		}
 		o_Total = chosen.m_Total;
 		if (chosen.m_Index == i_Surface.m_Count)
 		{
-			return environment_sample(i_Surface, i_Wo, chosen.m_Importance / chosen.m_Total, i_EnvLevel, io_Rng);
+			return environment_sample(i_Surface, i_Wo, chosen.m_Importance / chosen.m_Total, i_EnvLevel, io_Sampler.light(i_Bounce));
 		}
 		const optxLight& light = light_of(i_Surface.m_First, chosen.m_Index, i_Surface.m_bAll);
 		return light_sample(i_Surface, i_Wo, light, chosen.m_Color, chosen.m_ToLight, chosen.m_Distance,
-							chosen.m_Importance / chosen.m_Total, io_Rng);
+							chosen.m_Importance / chosen.m_Total, io_Sampler.light(i_Bounce));
 	}
 
 	//	The light a BRDF ray from a surface brings from the area lights it
@@ -699,7 +731,8 @@ namespace
 	//	BRDF's Fresnel weights the reflection) whose ray brings all the light
 	//	it finds; from the surface it reaches, the beauty path, with
 	//	m_Bounces bounces after that surface.
-	__forceinline__ __device__ float3 beauty_path(Surface surface, float3 direction, Rng& rng, float width, float spread)
+	__forceinline__ __device__ float3 beauty_path(Surface surface, float3 direction, optxq::Sampler& sampler, float width,
+												  float spread)
 	{
 		//	Reflection Only's reflection vertex comes before the beauty path's
 		//	first hit: it doesn't count as a bounce
@@ -718,16 +751,17 @@ namespace
 			bool any_weighted = true;	// Reflection Only: the reflection ray brings all its light
 			if (!reflect)
 			{
-				const float3 direct = mul3(beauty_direct(surface, wo, env_level, rng, total, any_weighted), throughput);
+				const float3 direct = mul3(beauty_direct(surface, wo, env_level, sampler, bounce, total, any_weighted), throughput);
 				radiance = radiance + (limited ? clamp_radiance(direct) : direct);
 				if (bounce >= params.m_Bounces + first && !any_weighted)
 				{
 					break;
 				}
 			}
-			const float u0 = rng.Next(), u1 = rng.Next(), u2 = rng.Next();
-			const optxb::Sample sample = reflect ? optxb::sample_specular(surface.m_Bsdf, surface.m_Shading, wo, u1, u2)
-												 : optxb::sample(surface.m_Bsdf, surface.m_Shading, wo, u0, u1, u2);
+			const float lobe = sampler.next();
+			const optxq::Pair u = sampler.direction(bounce);
+			const optxb::Sample sample = reflect ? optxb::sample_specular(surface.m_Bsdf, surface.m_Shading, wo, u.u, u.v)
+												 : optxb::sample(surface.m_Bsdf, surface.m_Shading, wo, lobe, u.u, u.v);
 			if (sample.m_Lobe == optxb::e_LobeNone || dot(sample.m_Wi, surface.m_Geometric) <= 0.0f)
 			{
 				break;	// no direction, or one below the surface
@@ -760,7 +794,7 @@ namespace
 			if (bounce + 1 >= 3 + first)
 			{
 				const float survive = fminf(max3(throughput), 0.95f);
-				if (rng.Next() >= survive)
+				if (sampler.next() >= survive)
 				{
 					break;
 				}
@@ -787,29 +821,32 @@ extern "C" __global__ void __raygen__lighting()
 	{
 		return;
 	}
-	const unsigned int pixel = index.y * params.m_Width + index.x;
+	const unsigned int pixel = index.y * params.m_Width + index.x;		// in the traced region
+	const unsigned int count = params.m_Width * params.m_Height;
+	//	The pixel's centre in the frame's coordinates (the border around it
+	//	lies outside [0, size))
+	const float fx = float(int(index.x) - int(params.m_OutX)) + 0.5f;
+	const float fy = float(int(index.y) - int(params.m_OutY)) + 0.5f;
 	const float3 background = load3(params.m_Background);
 	const bool hdr = beauty();
 
-	float3 sum = splat3(0.0f);
+	float3 sum = splat3(0.0f);			// each sample's value times its filter weight
 	float3 albedo = splat3(0.0f);		// beauty: first-hit guides
 	float3 normal = splat3(0.0f);
 	float coverage = 0.0f;
+	float weights = 0.0f;
 	float first_depth = 1.0f;
 	for (unsigned int s = 0; s < params.m_Samples; ++s)
 	{
 		const unsigned int sample = params.m_FirstSample + s;
-		Rng rng(pixel, sample, params.m_Seed);
-		float jx = 0.5f, jy = 0.5f;
-		if (sample != 0)
-		{
-			jx = rng.Next();
-			jy = rng.Next();
-		}
+		optxq::Sampler sampler(params.m_Sequence, params.m_ImageX + index.x, params.m_ImageY + index.y, sample);
+		const optxq::Pair at = sampler.camera_pixel();
+		const float dx = optxf::offset(params.m_Filter, at.u), dy = optxf::offset(params.m_Filter, at.v);
+		const float weight = optxf::weight(params.m_Filter, dx, dy);
 
 		//	The camera ray, as the AO programs make it (optxAO.cu)
-		const float nx = (index.x + jx) / params.m_Width * 2.0f - 1.0f;
-		const float ny = 1.0f - (index.y + jy) / params.m_Height * 2.0f;
+		const float nx = (fx + dx) / params.m_OutWidth * 2.0f - 1.0f;
+		const float ny = 1.0f - (fy + dy) / params.m_OutHeight * 2.0f;
 		float w;
 		const float3 near_point = project(params.m_InvViewProj, nx, ny, 0.0f, w);
 		const float3 mid_point = project(params.m_InvViewProj, nx, ny, 0.5f, w);
@@ -821,18 +858,19 @@ extern "C" __global__ void __raygen__lighting()
 		if (hdr && params.m_LensRadius > 0.0f && sample != 0)
 		{
 			//	sample 0 stays the pinhole's: it gives the depth the raster overlay tests
-			const float u1 = rng.Next(), u2 = rng.Next();
-			lens_ray(origin, direction, length, u1, u2);
+			const optxq::Pair lens = sampler.camera_lens();
+			lens_ray(origin, direction, length, lens.u, lens.v);
 		}
 
 		const Hit first = trace_camera(origin, direction, length);
 		float depth = 1.0f;
+		float3 value;
 		if (!first.m_bHit)
 		{
 			//	The beauty pass shows the environment behind the scene if asked
 			//	(Reflection Only never: it shows reflections alone)
 			const bool show_environment = hdr && !reflection_only() && optxe::background();
-			sum = sum + (show_environment ? optxe::radiance(direction, optxe::level_for(params.m_ConeSpread)) : background);
+			value = show_environment ? optxe::radiance(direction, optxe::level_for(params.m_ConeSpread)) : background;
 		}
 		else
 		{
@@ -843,28 +881,31 @@ extern "C" __global__ void __raygen__lighting()
 
 			if (params.m_Mode == e_optxLightingDebug)
 			{
-				sum = sum + debug_value(first, surface);
+				value = debug_value(first, surface);
 			}
 			else if (params.m_Mode == e_optxLightingShadowMask)
 			{
-				sum = sum + splat3(shadow_mask(surface, rng));
+				value = splat3(shadow_mask(surface, sampler));
 			}
 			else if (hdr)
 			{
-				sum = sum + beauty_path(surface, direction, rng, width, params.m_ConeSpread);
+				value = beauty_path(surface, direction, sampler, width, params.m_ConeSpread);
 				//	The denoiser's albedo guide: what the image is the light
 				//	times. Reflection Only shows the specular lobe alone,
 				//	weighted by the BRDF's Fresnel at the view.
-				albedo = albedo + (reflection_only() ? optxb::fresnel(surface.m_Bsdf, dot(surface.m_Shading, direction * -1.0f))
-													 : surface.m_BaseColor);
-				normal = normal + surface.m_Shading;
-				coverage += 1.0f;
+				const float3 guide = reflection_only() ? optxb::fresnel(surface.m_Bsdf, dot(surface.m_Shading, direction * -1.0f))
+													   : surface.m_BaseColor;
+				albedo = albedo + guide * weight;
+				normal = normal + surface.m_Shading * weight;
+				coverage += weight;
 			}
 			else
 			{
-				sum = sum + illumination(surface, rng, width, params.m_ConeSpread);
+				value = illumination(surface, sampler, width, params.m_ConeSpread);
 			}
 		}
+		sum = sum + value * weight;
+		weights += weight;
 
 		if (sample == 0)
 		{
@@ -876,15 +917,16 @@ extern "C" __global__ void __raygen__lighting()
 	float depth = first_depth;
 	if (params.m_FirstSample != 0)
 	{
-		const float4 before = *accum;
+		const float4 before = accum[0];
 		sum = sum + make_float3(before.x, before.y, before.z);
 		depth = before.w;
 	}
-	*accum = make_float4(sum.x, sum.y, sum.z, depth);
+	accum[0] = make_float4(sum.x, sum.y, sum.z, depth);
+	unsigned int out = 0;
+	const bool in_frame = frame_pixel(index, out);
 	if (hdr)
 	{
-		//	Two more planes: albedo and coverage; normal
-		const unsigned int count = params.m_Width * params.m_Height;
+		//	Two more planes: albedo and coverage; normal and the weights' sum
 		if (params.m_FirstSample != 0)
 		{
 			const float4 a = accum[count];
@@ -892,17 +934,27 @@ extern "C" __global__ void __raygen__lighting()
 			albedo = albedo + make_float3(a.x, a.y, a.z);
 			coverage += a.w;
 			normal = normal + make_float3(n.x, n.y, n.z);
+			weights += n.w;
 		}
 		accum[count] = make_float4(albedo.x, albedo.y, albedo.z, coverage);
-		accum[2 * count] = make_float4(normal.x, normal.y, normal.z, 0.0f);
+		accum[2 * count] = make_float4(normal.x, normal.y, normal.z, weights);
 		if (params.m_Resolve)
 		{
-			write_hdr_pixel(pixel, accum, params.m_FirstSample + params.m_Samples);
+			write_hdr_pixel(pixel, accum, in_frame, out);
 		}
 	}
-	else if (params.m_Resolve)
+	else
 	{
-		write_pixel(pixel, sum, params.m_FirstSample + params.m_Samples, depth);
+		//	One more plane: the weights' sum
+		if (params.m_FirstSample != 0)
+		{
+			weights += accum[count].x;
+		}
+		accum[count] = make_float4(weights, 0.0f, 0.0f, 0.0f);
+		if (params.m_Resolve && in_frame)
+		{
+			write_pixel(out, sum, inverse(weights), depth);
+		}
 	}
 }
 
@@ -915,12 +967,18 @@ extern "C" __global__ void __raygen__resolve()
 	}
 	const unsigned int pixel = index.y * params.m_Width + index.x;
 	const float4* accum = reinterpret_cast<const float4*>(params.m_Accum) + pixel;
+	unsigned int out = 0;
+	const bool in_frame = frame_pixel(index, out);
 	if (beauty())
 	{
-		write_hdr_pixel(pixel, accum, params.m_FirstSample);
+		write_hdr_pixel(pixel, accum, in_frame, out);
 		return;
 	}
-	write_pixel(pixel, make_float3(accum->x, accum->y, accum->z), params.m_FirstSample, accum->w);
+	if (in_frame)
+	{
+		const float4 color = accum[0];
+		write_pixel(out, make_float3(color.x, color.y, color.z), inverse(accum[params.m_Width * params.m_Height].x), color.w);
+	}
 }
 
 //	The environment's sampling table (optxLightingParams.h): each cell's

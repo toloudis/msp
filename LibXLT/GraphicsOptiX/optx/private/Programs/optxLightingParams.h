@@ -4,11 +4,31 @@
 **      The launch parameters of the lighting programs (optxLighting.cu),
 **	shared by the device programs and the host code that launches them
 **	(optxLighting). Surfaces are lit by the light table's lights
-**	(optxLightTypes.h). Two launches, each m_Width x m_Height, laid out as
-**	the AO programs' (optxAOParams.h): the accumulation buffer holds rgb
-**	sums and, from sample 0, the pixel's clip-space depth (1 for a miss);
+**	(optxLightTypes.h). Two launches, each over the traced region (m_Width
+**	x m_Height), laid out as the AO programs' (optxAOParams.h):
 **	__raygen__lighting adds m_Samples samples (resolving too with
 **	m_Resolve), __raygen__resolve resolves m_FirstSample samples.
+**
+**	Samples: each is a camera ray through a point of its pixel, the centre
+**	for sample 0, else the point the sampler gives (optxSampler.h,
+**	m_Sequence: Owen-scrambled Sobol in a blue-noise order; the lens, the
+**	first hit's first light sample and its sampled direction are
+**	low-discrepancy too), spread over the pixel filter's width
+**	(optxPixelFilter.h, m_Filter); the sample's value, and its guides,
+**	are added times the filter's weight there, and the weights summed.
+**	The resolve divides by the weights' sum. The accumulation buffer's
+**	first plane holds rgb sums and, from sample 0, the pixel's clip-space
+**	depth (1 for a miss); the weights' sum is in a second plane's x
+**	(beauty: the third plane's w).
+**
+**	The traced region and the frame: m_Color and m_Depth are the frame,
+**	m_OutWidth x m_OutHeight, the traced region's pixels from (m_OutX,
+**	m_OutY); m_InvViewProj is the frame's view, so a border around it
+**	(the denoiser's overlap when a tile of a bigger image is denoised)
+**	traces outside its NDC square and is resolved only into the
+**	denoiser's input (which covers the whole region). Pixels are
+**	identified for the sampler by their place in the whole image:
+**	(m_ImageX, m_ImageY) plus the launch index.
 **	Three more launches build m_Environment's sampling table (see
 **	optxEnvTableFloats), in order on the stream: __raygen__env_cells over
 **	the table's W x H cells (each cell's luminance of colour x map, read
@@ -60,14 +80,16 @@
 **	  pinhole ray reaches at depth m_FocusDistance along m_Forward (a thin
 **	  lens); the ray starts at the near plane's depth.
 **	  The accumulation buffer has three planes of m_Width x m_Height float4
-**	  (each plane after the last): rgb sums and depth; first-hit albedo
-**	  sums (the denoiser's guide: the base colour) and coverage (the
-**	  samples that hit); first-hit shading normal sums, world space (w
-**	  unused). The resolve writes the linear mean (unclamped) and the
-**	  coverage as RGBA16F into m_Color; or, with m_DenoiseInput, the
-**	  denoiser's input (optxDenoiser.hpp: three planes of float4, the
-**	  colour mean and coverage, the albedo mean, the normal mean), which
-**	  the denoiser turns into m_Color (the resolve still writes depth).
+**	  (each plane after the last), every sum weighted by the filter: rgb
+**	  sums and depth; first-hit albedo sums (the denoiser's guide: the
+**	  base colour) and coverage (the weights of samples that hit);
+**	  first-hit shading normal sums, world space, and the weights' sum.
+**	  The resolve writes the linear mean (unclamped) and the coverage as
+**	  RGBA16F into m_Color; or, with m_DenoiseInput, the denoiser's input
+**	  over the traced region (optxDenoiser.hpp: three planes of float4,
+**	  the colour mean and coverage, the albedo mean, the normal mean),
+**	  which the denoiser turns into m_Color (the resolve still writes
+**	  depth).
 **	- e_optxLightingReflection: Reflection Only, traced: the beauty pass
 **	  (everything above, its output included) with its first hit changed.
 **	  There, nothing is emitted, no light is sampled and the diffuse lobe
@@ -105,9 +127,9 @@
 **	  over the projected lights that reach the surface and face it, of 1 -
 **	  (1 - visibility) * cosine; no bounces. Misses add m_Background
 **	  (white).
-**	Except in beauty mode, the resolve writes the mean, clamped to [0, 1],
-**	straight into the 8-bit colour buffer (no sRGB encoding: the raster
-**	passes copy their linear buffer the same way).
+**	Except in beauty mode, the resolve writes the weighted mean, clamped
+**	to [0, 1], straight into the 8-bit colour buffer (no sRGB encoding:
+**	the raster passes copy their linear buffer the same way).
 **
 **	Surfaces have their materials (optxMaterialTypes.h): textures sampled
 **	at ray-cone levels (optxMaterial.h; camera rays start m_ConeWidth wide
@@ -130,6 +152,13 @@
 #define GOX_OPTXLIGHTINGPARAMS_H
 
 #include <optix_types.h>
+
+#ifndef GOX_OPTXSAMPLER_H
+#include "optxSampler.h"
+#endif
+#ifndef GOX_OPTXPIXELFILTER_H
+#include "optxPixelFilter.h"
+#endif
 
 namespace gox
 {
@@ -227,8 +256,16 @@ namespace gox
 		unsigned long long			m_Color;		// device address of a 32-bit texel per pixel (beauty: 64-bit, RGBA16F)
 		unsigned long long			m_Depth;		// device address of a 32-bit texel per pixel
 		unsigned long long			m_DenoiseInput;	// beauty: device address of the denoiser's input planes; 0: resolve into m_Color
-		unsigned int				m_Width;
+		unsigned int				m_Width;		// the traced region: the launch's size, and the accumulation's
 		unsigned int				m_Height;
+		unsigned int				m_OutX;			// the frame (m_Color, m_Depth; m_InvViewProj's view) inside the traced region
+		unsigned int				m_OutY;
+		unsigned int				m_OutWidth;
+		unsigned int				m_OutHeight;
+		unsigned int				m_ImageX;		// the traced region's first pixel in the whole image
+		unsigned int				m_ImageY;
+		optxPixelSequence			m_Sequence;		// where samples go in their pixels, and the low-discrepancy numbers
+		optxPixelFilter				m_Filter;		// what the samples are weighted by
 		float						m_InvViewProj[16];
 		float						m_ViewProj[16];
 		float						m_Background[3];	// linear

@@ -10,6 +10,7 @@
 #endif
 
 #include <atomic>
+#include <mutex>
 
 namespace g3dProgressive
 {
@@ -34,8 +35,18 @@ namespace g3dProgressive
 		l_bFrameRequested = false;
 	}
 
-	void SetCapturing(bool i_bCapturing)
+	namespace
 	{
+		std::mutex		l_SamplingMutex;
+		CaptureSampling	l_Sampling;
+	}
+
+	void SetCapturing(bool i_bCapturing, const CaptureSampling& i_Sampling)
+	{
+		{
+			std::lock_guard<std::mutex> lock(l_SamplingMutex);
+			l_Sampling = i_bCapturing ? i_Sampling : CaptureSampling();
+		}
 		l_bCapturing = i_bCapturing;
 	}
 
@@ -44,13 +55,21 @@ namespace g3dProgressive
 		return l_bCapturing;
 	}
 
-	CaptureScope::CaptureScope()
-		: m_bWasCapturing(l_bCapturing.exchange(true))
+	CaptureSampling GetCaptureSampling()
 	{
+		std::lock_guard<std::mutex> lock(l_SamplingMutex);
+		return l_bCapturing ? l_Sampling : CaptureSampling();
+	}
+
+	CaptureScope::CaptureScope(const CaptureSampling& i_Sampling)
+		: m_bWasCapturing(IsCapturing())
+		, m_WasSampling(GetCaptureSampling())
+	{
+		SetCapturing(true, i_Sampling);
 	}
 
 	CaptureScope::~CaptureScope()
 	{
-		l_bCapturing = m_bWasCapturing;
+		SetCapturing(m_bWasCapturing, m_WasSampling);
 	}
 }

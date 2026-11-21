@@ -43,7 +43,9 @@
 #include "Graphics/g2d/g2dWindow.hpp"
 #include "Graphics/g3d/g3dSceneRenderer.hpp"
 #include "Graphics/g3d/g3dSceneRendererCreate.hpp"
+#ifndef G3D_PROGRESSIVE_HPP
 #include "Graphics/G3d/g3dProgressive.hpp"
+#endif
 #include "Graphics/G3d/g3dThreadControl.hpp"
 #include "Graphics/g3d/g3dViewer.hpp"
 #include "ImportExport/rman/export/rmanExportData.hpp"
@@ -249,8 +251,9 @@ void cptrRenderThread::TryRenderCapture()
 	if (!m_pWindow) return;
 
 	this->ClearErrorState();
-	//	progressive renderers (GraphicsOptiX's) finish each captured frame
-	g3dProgressive::CaptureScope capturing;
+	//	progressive renderers (GraphicsOptiX's) finish each captured frame,
+	//	and one that samples captures itself takes the capture's sampling
+	g3dProgressive::CaptureScope capturing(cptrRenderUtil::GetCaptureSampling());
 	try
 	{
 		DoRenderCaptureLayers();
@@ -483,7 +486,7 @@ void cptrRenderThread::DoRenderCapture()
 		// Render capture window normally
 		if (m_pViewer)
 		{
-			if (data.m_bJitteredSampling.GetValue() && choseMspEngine )
+			if (cptrRenderUtil::UsesJitteredSampling() && choseMspEngine )
 			{
 				RenderJitteredFrame(viewportShift);
 			}
@@ -500,7 +503,7 @@ void cptrRenderThread::DoRenderCapture()
 		if ( cptrRenderUtil::GetCapture() && choseMspEngine )
 		{
 
-			if (data.m_bJitteredSampling.GetValue())
+			if (cptrRenderUtil::UsesJitteredSampling())
 			{
 				DBG_ASSERT(m_AccBuf, "Accumulation buffer not initialized");
 				cptrRenderUtil::CaptureImage( m_AccBuf->GetAsImage() );
@@ -513,7 +516,7 @@ void cptrRenderThread::DoRenderCapture()
 		}
 
 		//	
-		if (m_pViewer && !data.m_bJitteredSampling.GetValue())
+		if (m_pViewer && !cptrRenderUtil::UsesJitteredSampling())
 		{
 			m_pViewer->Present();
 		}
@@ -690,7 +693,7 @@ void cptrRenderThread::processAnaglyph(camCamera *pCamera)
 			// Render from translated camera
 			if (m_pViewer)
 			{
-				if (data.m_bJitteredSampling.GetValue() && choseMspEngine)
+				if (cptrRenderUtil::UsesJitteredSampling() && choseMspEngine)
 				{
 					RenderJitteredFrame(viewportOffset);
 				}
@@ -705,7 +708,7 @@ void cptrRenderThread::processAnaglyph(camCamera *pCamera)
 			// Send render to pImg
 			if ( cptrRenderUtil::GetCapture() && choseMspEngine )
 			{
-				if (data.m_bJitteredSampling.GetValue())
+				if (cptrRenderUtil::UsesJitteredSampling())
 				{
 					DBG_ASSERT(m_AccBuf, "Accumulation buffer not initialized");
 					pAccum = m_AccBuf->GetAsImage();
@@ -785,15 +788,24 @@ bool cptrRenderThread::RenderJitteredFrame(float i_StereoOffset)
 	/////////////////////////////////////////////////////////
 	pCamera->SetHorizontalFilmOffset( i_StereoOffset );
 	bool choseMspEngine = g3dPrefs::CurrentPrefs().m_RendererEngine == g3dSceneRenderEngineCreate::e_Default ? true : false;
+	//	a renderer that samples captures itself (the tracer) takes the n x n
+	//	samples and the filter in one frame (g3dProgressive's capture
+	//	sampling): rendered once, unshifted, with weight 1
+	const bool renderer_samples = cptrRenderUtil::RendererSamplesCaptures();
+	const int num_samples = renderer_samples ? 1 : data.m_nCaptureSampling.GetValue()*data.m_nCaptureSampling.GetValue();
 	int i;
-	for (i = 0; i < data.m_nCaptureSampling.GetValue()*data.m_nCaptureSampling.GetValue(); i++)
+	for (i = 0; i < num_samples; i++)
 	{
 		// See if we should abort the render thread before doing the next target
 		if (g3dThreadControl::ShouldRenderThreadAbort())
 			break;
 
-		float dx = (cptrRenderUtil::GetSamplePos(i).GetX() - 0.5f)*2.0f/(float)data.m_nWidth.GetValue();
-		float dy = (cptrRenderUtil::GetSamplePos(i).GetY() - 0.5f)*2.0f/(float)data.m_nHeight.GetValue();
+		float dx = 0.0f, dy = 0.0f;
+		if (!renderer_samples)
+		{
+			dx = (cptrRenderUtil::GetSamplePos(i).GetX() - 0.5f)*2.0f/(float)data.m_nWidth.GetValue();
+			dy = (cptrRenderUtil::GetSamplePos(i).GetY() - 0.5f)*2.0f/(float)data.m_nHeight.GetValue();
+		}
 
 		pCamera->SetSubViewport(-1+dx, 1+dx, -1+dy, 1+dy);
 
@@ -809,7 +821,7 @@ bool cptrRenderThread::RenderJitteredFrame(float i_StereoOffset)
 		{
 			data.m_nWidth.SetValue(pImg->GetWidth());
 			data.m_nHeight.SetValue(pImg->GetHeight());
-			m_AccBuf->Add(pImg, cptrRenderUtil::GetSamplePos(i).GetZ());
+			m_AccBuf->Add(pImg, renderer_samples ? 1.0f : cptrRenderUtil::GetSamplePos(i).GetZ());
 			delete pImg;
 		}
 

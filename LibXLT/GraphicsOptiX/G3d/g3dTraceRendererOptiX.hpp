@@ -53,6 +53,26 @@
 **	the denoiser can't be made or run, it is reported once and frames are
 **	shown undenoised.
 **
+**	Sampling (every mode): sample 0 of a pixel goes through its centre
+**	(its depth is the one the raster overlay tests against); the others
+**	through the points of an Owen-scrambled Sobol sequence ordered for
+**	blue-noise error in screen space (optxSampler.h), spread over the
+**	pixel filter's width and weighted by the filter. In a view the filter
+**	is a box of width 1 and the goal the sample limit. While a capture
+**	runs, the renderer applies the capture's sampling itself
+**	(SamplesCaptures; g3dProgressive::CaptureSampling): the goal is the
+**	capture samples times n x n, and with n above 1 the samples are
+**	weighted by the capture's filter and width, so a captured frame is
+**	traced once (and denoised once) at the output size. A pixel is
+**	identified by its place in the whole image: a target rendered through
+**	the camera's sub-viewport is a tile of a bigger image (GetImageWindow),
+**	and takes the same samples as the whole image's pixels there, so a
+**	frame traced in tiles equals one traced whole (undenoised). A tile
+**	that is denoised is traced with the denoiser's overlap around it
+**	(clipped to the image), denoised with it and cropped, and takes the
+**	exposure the denoiser measured for the first tile of its frame (same
+**	whole view, same time).
+**
 **	Every mode reads materials (g3dMaterialTableOptiX) and their textures
 **	(g3dTextureTableOptiX): cut-out and transparent surfaces let camera,
 **	bounce and shadow rays through.
@@ -87,8 +107,11 @@
 **	override them until then.
 **
 **	Accumulation restarts (sample count back to 0) when the scene version,
-**	the view-projection matrix (which holds the capture jitter), the
-**	target's size, the mode, the seed or a setting that changes the image
+**	the view-projection matrix, the target's size, its place in the whole
+**	image (and the whole image's size, and the traced region), the pixel
+**	filter, the sequence's block size (2^n at least the goal: raising the
+**	sample limit past a power of two restarts), the sequence order, the
+**	mode, the seed or a setting that changes the image
 **	(AO: the AO radius, the scene's ssaoParams::m_AORadius, AO rays and the
 **	background; lighting: the light table's version, bounces, the albedo
 **	override, light sampling, and the preferences for shadows and for
@@ -209,6 +232,8 @@ namespace gox
 			virtual int Render(g2dRenderTarget* i_pTarget, const camCamera& i_Camera, const g3dScene& i_Scene,
 							   const std::vector<g3dLayer*>& i_ViewerLayers, float i_fSimTime);
 			virtual void ReleaseResources();
+			//	The tracer applies a capture's supersampling and filter itself
+			virtual bool SamplesCaptures() const { return true; }
 
 			//--------------------------------------------------------------------
 			//	Settings: samples per pixel each Render adds (at least 1), the
@@ -246,6 +271,38 @@ namespace gox
 			void SetDenoise(int i_Mode);
 			int GetDenoise() const { return m_Denoise; }
 			void SetSeed(unsigned i_Seed);
+			//	The sample positions' sequence (optxSequenceOrder; for tests:
+			//	the default is the blue-noise ordered one)
+			void SetSequenceOrder(optxSequenceOrder i_Order) { m_Order = i_Order; }
+
+			//--------------------------------------------------------------------
+			//	Log2Samples - the sequence's block size for a goal: the smallest
+			//	n with 2^n >= i_nGoal, at most c_MaxLog2Samples
+			//--------------------------------------------------------------------
+			static constexpr unsigned c_MaxLog2Samples = 24;
+			static unsigned Log2Samples(unsigned i_nGoal);
+
+			//--------------------------------------------------------------------
+			//	GetImageWindow - where a target of i_Width x i_Height drawn
+			//	through the camera lies in the whole image: with no sub-viewport,
+			//	the whole image; with one, the tile it is (its first pixel, the
+			//	whole image's size). False (o_Window: the target as a whole
+			//	image) for a sub-viewport that isn't a tile of a whole view.
+			//	o_WholeViewProj: the whole view's view-projection.
+			//--------------------------------------------------------------------
+			struct ImageWindow
+			{
+				unsigned	m_X = 0;
+				unsigned	m_Y = 0;
+				unsigned	m_Width = 0;		// the target's
+				unsigned	m_Height = 0;
+				unsigned	m_ImageWidth = 0;	// the whole image's
+				unsigned	m_ImageHeight = 0;
+
+				bool IsTile() const { return m_Width != m_ImageWidth || m_Height != m_ImageHeight; }
+			};
+			static bool GetImageWindow(const camCamera& i_Camera, unsigned i_Width, unsigned i_Height, ImageWindow& o_Window,
+									   double o_WholeViewProj[16]);
 
 			//--------------------------------------------------------------------
 			//	GetLens - the thin lens the beauty pass focuses through: false
@@ -321,8 +378,37 @@ namespace gox
 				float		m_LensRadius = 0;
 				float		m_Focus = 0;
 				int			m_Denoise = 0;
+				unsigned	m_Filter = 0;			// optxPixelFilterKind
+				float		m_FilterWidth = 0;
+				unsigned	m_Log2Samples = 0;		// the sequence's block size
+				unsigned	m_Order = 0;			// optxSequenceOrder
+				unsigned	m_ImageWidth = 0;		// the whole image the target is (a tile of)
+				unsigned	m_ImageHeight = 0;
+				unsigned	m_TargetX = 0;			// the target's first pixel in it
+				unsigned	m_TargetY = 0;
+				unsigned	m_RegionX = 0;			// the pixels traced (the target, or a tile and its border), in it
+				unsigned	m_RegionY = 0;
+				unsigned	m_RegionWidth = 0;
+				unsigned	m_RegionHeight = 0;
 
 				bool operator==(const Key& i_Other) const;
+			};
+
+			//	The samples per pixel to reach and what they are weighted by
+			struct Sampling
+			{
+				unsigned		m_nGoal = 0;
+				optxPixelFilter	m_Filter = { e_optxFilterBox, 1.0f };
+				unsigned		m_Log2Samples = 0;
+			};
+
+			//	Which frame a tile belongs to (its exposure for the denoiser)
+			struct Frame
+			{
+				double		m_WholeViewProj[16] = {};
+				float		m_fTime = 0;
+
+				bool operator==(const Frame& i_Other) const;
 			};
 
 			//	The tracer settings of the render preferences last applied
@@ -347,13 +433,22 @@ namespace gox
 			bool hdr(unsigned i_DebugView) const { return path_traced() && i_DebugView == 0; }
 			unsigned debug_view() const;
 			bool create_programs(bool i_bLighting);
+			void update_tables(const g3dScene& i_Scene, bool i_bEnvironment);
+			Sampling sampling_for(bool i_bCapturing) const;
+			Key make_key(const camCamera& i_Camera, const gvk::vkdImage& i_Color, unsigned i_DebugView, const g3dScene& i_Scene,
+						 const Sampling& i_Sampling, const ImageWindow& i_Window, double o_View[16]) const;
+			void traced_region(const ImageWindow& i_Window, bool i_bDenoise, Key& io_Key);
+			template <class Params>
+			void fill_common(const Key& i_Key, const double i_Inverse[16], float i_Epsilon, Params& o_Params) const;
+			static void set_lens(const Key& i_Key, const double i_Inverse[16], const double i_View[16],
+								 optxLightingParams& o_Params);
 			int raster_only(g2dRenderTarget* i_pTarget, const camCamera& i_Camera, const g3dScene& i_Scene,
 							const std::vector<g3dLayer*>& i_ViewerLayers, float i_fSimTime);
 			//	Whether a frame resolved now is to be denoised (the mode and
 			//	whether a capture runs; never once the denoiser has failed)
 			bool wants_denoise(const Key& i_Key, bool i_bCapturing) const;
 			bool trace(const Key& i_Key, const double i_View[16], const optxColorOrder i_Order,
-					   const optxDepthLayout i_Layout, unsigned i_nGoal, bool i_bAll, bool i_bDenoise);
+					   const optxDepthLayout i_Layout, unsigned i_nGoal, bool i_bAll, bool i_bDenoise, bool i_bMeasure);
 			int post_process(g2dRenderTarget* i_pTarget, gvk::vkdImage* i_pDepth, const camCamera& i_Camera,
 							 const g3dScene& i_Scene, float i_fSimTime);
 
@@ -389,10 +484,13 @@ namespace gox
 			float						m_MaxRadiance;
 			int							m_Denoise;
 			unsigned					m_Seed;
+			optxSequenceOrder			m_Order;
 			Key							m_Key;
 			bool						m_bRestart;
 			bool						m_bHaveFrame;		// the shared buffers hold a frame for m_Key
 			bool						m_bFrameDenoised;	// and it was denoised
+			bool						m_bMeasuredFrame;	// the denoiser's exposure was measured for m_MeasuredFrame
+			Frame						m_MeasuredFrame;
 			unsigned					m_nSamples;
 			int							m_nLaunches;
 			int							m_nRestarts;

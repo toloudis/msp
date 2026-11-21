@@ -33,6 +33,7 @@
 #include "Graphics/g2d/g2dScreenCaptureUtil.hpp"
 #include "Graphics/g2d/g2dWindow.hpp"
 #include "Graphics/g3d/g3dSceneRenderer.hpp"
+#include "Graphics/G3d/g3dSceneRendererCreate.hpp"
 
 #include "Tool/gui/guiMenuMgr.hpp"
 
@@ -40,6 +41,8 @@
 #include "Core/app/appTime.hpp"
 #include "Core/Fs/fsFileUtil.hpp"
 #include "Core/Ma/maSampling.hpp"
+
+#include <algorithm>
 
 //============================================================================
 //============================================================================
@@ -76,7 +79,7 @@ namespace
 		//return 2;
 
 		captRenderOutputData& data = captRenderOutputDataUtil::Data();
-		int width	= data.m_nWidth.GetValue() * (data.m_bJitteredSampling.GetValue() ? 1 : data.m_nCaptureSampling.GetValue());
+		int width	= data.m_nWidth.GetValue() * (cptrRenderUtil::UsesJitteredSampling() ? 1 : data.m_nCaptureSampling.GetValue());
 		
 		// Determine a power of 2 that will keep the quadrants under 
 		// the maximum quadrant size
@@ -274,16 +277,16 @@ void cptrRenderUtil::Initialize()
 	l_pWindow = 0;
 	l_pRenderer = 0;
 
-	if (data.m_bJitteredSampling.GetValue())
+	if (cptrRenderUtil::UsesJitteredSampling())
 	{
 		maSampling::GetSamples2D_Repeatable(data.m_nCaptureSampling.GetValue(), data.m_nCaptureSampling.GetValue(),
-			l_SamplePoints, 1, data.m_FilterWidth.GetValue(), data.m_FilterWidth.GetValue());
+			l_SamplePoints, 1, GetFilterWidth(), GetFilterWidth());
 		
-		maFilter* filter = CreateFilter((captRenderOutputData::eFilterFunc)data.m_FilterFunc.GetValue());
+		maFilter* filter = CreateFilter((captRenderOutputData::eFilterFunc)GetFilterFunc());
 
 		if (filter != NULL)
 		{
-			maSampling::WeightSamples(l_SamplePoints, filter, data.m_FilterWidth.GetValue(), data.m_FilterWidth.GetValue());
+			maSampling::WeightSamples(l_SamplePoints, filter, GetFilterWidth(), GetFilterWidth());
 			delete filter;
 		}
 	}
@@ -469,7 +472,7 @@ void cptrRenderUtil::CaptureFrame()
 		g2dImage* pDownSampledImg = NULL;
 
 		//	check if jittered or not
-		if ( !data.m_bJitteredSampling.GetValue() )
+		if ( !cptrRenderUtil::UsesJitteredSampling() )
 		{
 			pDownSampledImg = g2dImageCreate::Make(data.m_nWidth.GetValue(),
 											 data.m_nHeight.GetValue(),
@@ -553,7 +556,7 @@ void cptrRenderUtil::CaptureFrame()
 			DBG_ASSERT(false,"Invalid file format selected - " << data.m_CaptureFormat.GetValue().c_str());
 		}
 
-		if ( !data.m_bJitteredSampling.GetValue() )
+		if ( !cptrRenderUtil::UsesJitteredSampling() )
 		{				
 			delete pDownSampledImg;
 			pDownSampledImg = NULL;
@@ -685,8 +688,14 @@ bool cptrRenderUtil::GetCaptureQuadrants()
 
 	// Adding a check to see if the resolution is too big, even 
 	// when not using capture sampling.
+	// a renderer that samples captures itself renders the frame whole: it
+	// isn't limited to a raster's sizes and never renders larger than the
+	// output (the quadrant code still works for it when asked)
+	if (RendererSamplesCaptures())
+		return false;
+
 	int quad_div = get_quadrant_div();
-	if ((data.m_bJitteredSampling.GetValue() ? 1 : data.m_nCaptureSampling.GetValue()) > 1)
+	if ((cptrRenderUtil::UsesJitteredSampling() ? 1 : data.m_nCaptureSampling.GetValue()) > 1)
 		return (quad_div > 1);
 	else 
 		return (quad_div > 2);
@@ -857,7 +866,7 @@ void cptrRenderUtil::CaptureImage(g2dImage* i_pImage)
 	g2dImage* pDownSampledImg = NULL;
 
 	//
-	if ( !data.m_bJitteredSampling.GetValue() )
+	if ( !cptrRenderUtil::UsesJitteredSampling() )
 	{
 		pDownSampledImg = g2dImageCreate::Make(data.m_nWidth.GetValue(),
 										 data.m_nHeight.GetValue(),
@@ -931,7 +940,7 @@ void cptrRenderUtil::CaptureImage(g2dImage* i_pImage)
 		DBG_ASSERT(false,"Invalid file format selected - " << data.m_CaptureFormat.GetValue().c_str());
 	}
 
-	if ( !data.m_bJitteredSampling.GetValue() )
+	if ( !cptrRenderUtil::UsesJitteredSampling() )
 	{				
 		delete pDownSampledImg;
 		pDownSampledImg = NULL;
@@ -945,6 +954,43 @@ maVector3d cptrRenderUtil::GetSamplePos(int i)
 {
 	DBG_ASSERT(i < l_SamplePoints.size(), "Bad sampling index");
 	return l_SamplePoints[i];
+}
+
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
+bool cptrRenderUtil::UsesJitteredSampling()
+{
+	return captRenderOutputDataUtil::Data().m_bJitteredSampling.GetValue() || g3dSceneRendererCreate::UsesTracerSettings();
+}
+
+int cptrRenderUtil::GetFilterFunc()
+{
+	captRenderOutputData& data = captRenderOutputDataUtil::Data();
+	return data.m_bJitteredSampling.GetValue() ? data.m_FilterFunc.GetValue() : int(captRenderOutputData::eFilterBox);
+}
+
+float cptrRenderUtil::GetFilterWidth()
+{
+	captRenderOutputData& data = captRenderOutputDataUtil::Data();
+	return data.m_bJitteredSampling.GetValue() ? data.m_FilterWidth.GetValue() : 1.0f;
+}
+
+g3dProgressive::CaptureSampling cptrRenderUtil::GetCaptureSampling()
+{
+	static_assert(int(g3dProgressive::e_FilterCatmullRom) == int(captRenderOutputData::eFilterCatmullRom),
+				  "g3dProgressive::FilterKind mirrors captRenderOutputData::eFilterFunc");
+	g3dProgressive::CaptureSampling sampling;
+	sampling.m_nSupersampling = std::max(1, int(captRenderOutputDataUtil::Data().m_nCaptureSampling.GetValue()));
+	const int filter = GetFilterFunc();
+	sampling.m_Filter = (filter >= 0 && filter < g3dProgressive::e_FilterCount) ? g3dProgressive::FilterKind(filter)
+																			   : g3dProgressive::e_FilterBox;
+	sampling.m_FilterWidth = GetFilterWidth() > 0.0f ? GetFilterWidth() : 1.0f;
+	return sampling;
+}
+
+bool cptrRenderUtil::RendererSamplesCaptures()
+{
+	return l_pRenderer && l_pRenderer->SamplesCaptures();
 }
 
 //------------------------------------------------------------------------

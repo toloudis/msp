@@ -237,6 +237,8 @@
     <ClCompile Include="Ox\g3dMaterialsOptiXTest.cpp" />
     <ClCompile Include="Ox\optxBsdfTest.cpp" />
     <ClCompile Include="Ox\g3dBeautyOptiXTest.cpp" />
+    <ClCompile Include="Ox\optxSamplerTest.cpp" />
+    <ClCompile Include="Ox\g3dSamplingOptiXTest.cpp" />
     <ClInclude Include="Ox\gtOptiX.hpp" />
   </ItemGroup>
   <ItemGroup>
