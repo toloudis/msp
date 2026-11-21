@@ -44,6 +44,9 @@
 #ifndef GVK_SHDW_HDRRENDERERVK_HPP
 #include "GraphicsVulkan/shdw/shdwHDRRendererVk.hpp"
 #endif
+#ifndef GVK_SHDW_POSTPROCESSVK_HPP
+#include "GraphicsVulkan/shdw/shdwPostProcessVk.hpp"
+#endif
 #ifndef GVK_SHDW_PASSHAIR_HPP
 #include "GraphicsVulkan/shdw/shdwPassHair.hpp"
 #endif
@@ -221,6 +224,7 @@ void shdwPackage::InitGraphics()
 	shdwPassFog::InitStates();
 	shdwPassDOF::InitStates();
 	shdwHDRRendererVk::InitStates();
+	shdwPostProcessVk::InitStates();
 	shdwGIPreviewRendererVk::InitStates();
 	shdwVelocityMapRendererVk::InitStates();
 	shdwUVRendererVk::InitStates();
@@ -257,6 +261,7 @@ void shdwPackage::CleanUpGraphics()
 	shdwUVRendererVk::CleanupStates();
 	shdwVelocityMapRendererVk::CleanupStates();
 	shdwGIPreviewRendererVk::CleanupStates();
+	shdwPostProcessVk::CleanupStates();
 	shdwHDRRendererVk::CleanupStates();
 	shdwPassDOF::CleanupStates();
 	shdwPassFog::CleanupStates();

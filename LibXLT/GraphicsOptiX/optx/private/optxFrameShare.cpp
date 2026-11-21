@@ -14,6 +14,12 @@
 #ifndef GOX_OPTXCONTEXT_HPP
 #include "GraphicsOptiX/optx/optxContext.hpp"
 #endif
+#ifndef GOX_OPTXCHECK_HPP
+#include "GraphicsOptiX/optx/optxCheck.hpp"
+#endif
+#ifndef GOX_CULOADER_HPP
+#include "GraphicsOptiX/cu/cuLoader.hpp"
+#endif
 #ifndef GVK_VKDBUFFER_HPP
 #include "GraphicsVulkan/vkd/vkdBuffer.hpp"
 #endif
@@ -33,6 +39,7 @@
 #include "Core/dbg/dbgMsg.hpp"
 #endif
 
+#include <cstring>
 #include <mutex>
 
 namespace gox
@@ -77,6 +84,7 @@ namespace gox
 		, m_VulkanTimeline(i_VulkanTimeline)
 		, m_Width(0)
 		, m_Height(0)
+		, m_Layout(e_Color8)
 		, m_Current(0)
 		, m_Frames(VK_NULL_HANDLE)
 		, m_FrameValue(0)
@@ -122,13 +130,13 @@ namespace gox
 		return true;
 	}
 
-	bool optxFrameShare::Resize(unsigned i_Width, unsigned i_Height)
+	bool optxFrameShare::Resize(unsigned i_Width, unsigned i_Height, ColorLayout i_Layout)
 	{
 		if (!make_semaphore())
 		{
 			return false;
 		}
-		if (i_Width == m_Width && i_Height == m_Height && m_Outputs[0].m_pColor)
+		if (i_Width == m_Width && i_Height == m_Height && i_Layout == m_Layout && m_Outputs[0].m_pColor)
 		{
 			return true;
 		}
@@ -141,13 +149,19 @@ namespace gox
 			return false;
 		}
 
+		const bool half = i_Layout == e_ColorHalf;
 		const VkDeviceSize bytes = VkDeviceSize(i_Width) * i_Height * 4;
+		const VkDeviceSize color_bytes = half ? 2 * bytes : bytes;
 		const VkBufferUsageFlags usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
 		for (FrameOutputs& outputs : m_Outputs)
 		{
-			outputs.m_pColor = gvk::vkdBuffer::Create(m_Device, bytes, usage, "optxFrameShare colour", true);
+			outputs.m_pColor = gvk::vkdBuffer::Create(m_Device, color_bytes, usage, "optxFrameShare colour", true);
 			outputs.m_pDepth = gvk::vkdBuffer::Create(m_Device, bytes, usage, "optxFrameShare depth", true);
-			if (!outputs.m_pColor || !outputs.m_pDepth)
+			if (half)
+			{
+				outputs.m_pAux = gvk::vkdBuffer::Create(m_Device, color_bytes, usage, "optxFrameShare auxiliary", true);
+			}
+			if (!outputs.m_pColor || !outputs.m_pDepth || (half && !outputs.m_pAux))
 			{
 				DBG_LOG("GraphicsOptiX: shared frame buffers of " << i_Width << "x" << i_Height << " couldn't be made");
 				free_buffers();
@@ -155,7 +169,8 @@ namespace gox
 			}
 			outputs.m_ColorPtr = m_Memory.Map(*outputs.m_pColor);
 			outputs.m_DepthPtr = m_Memory.Map(*outputs.m_pDepth);
-			if (!outputs.m_ColorPtr || !outputs.m_DepthPtr)
+			outputs.m_AuxPtr = half ? m_Memory.Map(*outputs.m_pAux) : 0;
+			if (!outputs.m_ColorPtr || !outputs.m_DepthPtr || (half && !outputs.m_AuxPtr))
 			{
 				free_buffers();
 				return false;
@@ -163,6 +178,7 @@ namespace gox
 		}
 		m_Width = i_Width;
 		m_Height = i_Height;
+		m_Layout = i_Layout;
 		return true;
 	}
 
@@ -230,15 +246,9 @@ namespace gox
 		return true;
 	}
 
-	void optxFrameShare::CopyTo(gvk::vkdImage* i_pColor, gvk::vkdImage* i_pDepth)
+	//	The first copy after a write waits for it (stream lock held)
+	void optxFrameShare::add_wait()
 	{
-		FrameOutputs& outputs = m_Outputs[m_Current];
-		if (!outputs.m_pColor || !i_pColor)
-		{
-			return;
-		}
-		DBG_ASSERT(i_pColor->Width() == m_Width && i_pColor->Height() == m_Height, "optxFrameShare: target size differs");
-		std::lock_guard<std::recursive_mutex> lock(m_Device.StreamLock());
 		if (m_bWaitPending)
 		{
 			VkSemaphoreSubmitInfo wait = { VK_STRUCTURE_TYPE_SEMAPHORE_SUBMIT_INFO };
@@ -248,17 +258,104 @@ namespace gox
 			m_Device.AddSubmitWait(wait);
 			m_bWaitPending = false;
 		}
-		VkCommandBuffer commands = m_Context.Commands();
+	}
+
+	void optxFrameShare::copy(const gvk::vkdBuffer& i_Buffer, gvk::vkdImage* i_pImage, VkImageAspectFlags i_Aspect)
+	{
+		DBG_ASSERT(i_pImage->Width() == m_Width && i_pImage->Height() == m_Height, "optxFrameShare: image size differs");
 		VkBufferImageCopy region = {};
-		region.imageSubresource = { VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1 };
+		region.imageSubresource = { i_Aspect, 0, 0, 1 };
 		region.imageExtent = { m_Width, m_Height, 1 };
-		vkCmdCopyBufferToImage(commands, outputs.m_pColor->Buffer(), i_pColor->Image(), VK_IMAGE_LAYOUT_GENERAL, 1, &region);
+		vkCmdCopyBufferToImage(m_Context.Commands(), i_Buffer.Buffer(), i_pImage->Image(), VK_IMAGE_LAYOUT_GENERAL, 1, &region);
+		m_Outputs[m_Current].m_LastReadValue = m_Device.PendingValue();
+	}
+
+	void optxFrameShare::CopyTo(gvk::vkdImage* i_pColor, gvk::vkdImage* i_pDepth)
+	{
+		FrameOutputs& outputs = m_Outputs[m_Current];
+		if (!outputs.m_pColor || !i_pColor)
+		{
+			return;
+		}
+		std::lock_guard<std::recursive_mutex> lock(m_Device.StreamLock());
+		add_wait();
+		copy(*outputs.m_pColor, i_pColor, VK_IMAGE_ASPECT_COLOR_BIT);
 		if (i_pDepth)
 		{
-			DBG_ASSERT(i_pDepth->Width() == m_Width && i_pDepth->Height() == m_Height, "optxFrameShare: depth size differs");
-			region.imageSubresource = { VK_IMAGE_ASPECT_DEPTH_BIT, 0, 0, 1 };
-			vkCmdCopyBufferToImage(commands, outputs.m_pDepth->Buffer(), i_pDepth->Image(), VK_IMAGE_LAYOUT_GENERAL, 1, &region);
+			copy(*outputs.m_pDepth, i_pDepth, VK_IMAGE_ASPECT_DEPTH_BIT);
 		}
-		outputs.m_LastReadValue = m_Device.PendingValue();
+	}
+
+	namespace
+	{
+		float half_to_float(uint16_t h)
+		{
+			const uint32_t sign = uint32_t(h & 0x8000u) << 16;
+			uint32_t exponent = (h >> 10) & 0x1Fu;
+			uint32_t mantissa = h & 0x3FFu;
+			uint32_t bits;
+			if (exponent == 0)
+			{
+				if (mantissa == 0)
+				{
+					bits = sign;
+				}
+				else
+				{
+					exponent = 1;
+					while (!(mantissa & 0x400u))
+					{
+						mantissa <<= 1;
+						--exponent;
+					}
+					mantissa &= 0x3FFu;
+					bits = sign | ((exponent + 112u) << 23) | (mantissa << 13);
+				}
+			}
+			else if (exponent == 31)
+			{
+				bits = sign | 0x7F800000u | (mantissa << 13);
+			}
+			else
+			{
+				bits = sign | ((exponent + 112u) << 23) | (mantissa << 13);
+			}
+			float f;
+			std::memcpy(&f, &bits, sizeof(f));
+			return f;
+		}
+	}
+
+	std::vector<float> optxFrameShare::read_half(CUdeviceptr i_Ptr) const
+	{
+		if (!i_Ptr || m_Layout != e_ColorHalf)
+		{
+			return std::vector<float>();
+		}
+		std::vector<uint16_t> halves(size_t(m_Width) * m_Height * 4);
+		CUstream stream = optxContext::GetStream();
+		if (CU_CHECK(cu().cuMemcpyDtoHAsync(halves.data(), i_Ptr, halves.size() * sizeof(uint16_t), stream)) ||
+			CU_CHECK(cu().cuStreamSynchronize(stream)))
+		{
+			return std::vector<float>();
+		}
+		std::vector<float> values(halves.size());
+		for (size_t i = 0; i < halves.size(); ++i)
+		{
+			values[i] = half_to_float(halves[i]);
+		}
+		return values;
+	}
+
+	void optxFrameShare::CopyAuxTo(gvk::vkdImage* i_pImage)
+	{
+		FrameOutputs& outputs = m_Outputs[m_Current];
+		if (!outputs.m_pAux || !i_pImage)
+		{
+			return;
+		}
+		std::lock_guard<std::recursive_mutex> lock(m_Device.StreamLock());
+		add_wait();
+		copy(*outputs.m_pAux, i_pImage, VK_IMAGE_ASPECT_COLOR_BIT);
 	}
 }

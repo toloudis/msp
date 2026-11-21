@@ -29,6 +29,10 @@
 #include "GraphicsVulkan/shdw/shdwVelocityStateManager.hpp"
 #endif
 
+#ifndef GVK_SHDW_POSTPROCESSVK_HPP
+#include "GraphicsVulkan/shdw/shdwPostProcessVk.hpp"
+#endif
+
 #ifndef ENV_BOOST_HPP
 #include "Core/env/envBoost.hpp"
 #endif
@@ -47,7 +51,6 @@ namespace gvk
 
 class matPlainTexture;
 class matRenderTargetTexture;
-class shdwPassToneMap;
 
 class shdwHDRRendererVk : public shdwSceneRendererVk
 {
@@ -93,11 +96,10 @@ protected:
 
 	shdwPassTraversal m_SceneDatabase;
 
-	shdwPassToneMap* m_pToneMapper;
+	// the post chain: tone mapping, matte, DOF, debug modes
+	shdwPostProcessVk m_Post;
 
 	VelocityStateManager*		velocityStateManager;
-
-	void RenderDOF(float i_fSimTime, bool i_debug);
 
 //	float ReadFirstFloat(matRenderTargetTexture* i_pTex);
 //	float ReadFirstFloat(PDIRECT3DSURFACE9 pSurfSource);
@@ -106,10 +108,8 @@ protected:
 
 	void IncludeAlphas(float i_fSimTime);
 	void CopyToBackBuf(matRenderTargetTexture* pTex, bool bDoBlend = false, bool isRGB=true);
-	// i_pTexFilter: a D3D11 filter name, as fxEffectDesc's (ignored, as on DX11)
-	void LuminanceToGrayscale(matRenderTargetTexture* pTex, const char* i_pTexFilter = "MIN_MAG_MIP_POINT");
-	void DrawAlpha(matRenderTargetTexture* i_src, g2dRenderTarget* i_dest);
 
+	// shdwPostProcessVk's Run, with shdwPassDOF over the scene as its DOF prep
 	void PostProcessing( g2dRenderTarget* i_pWindow, const camCamera& i_Camera, const g3dScene &i_Scene, float i_fSimTime);
 
 	void Slideshow();

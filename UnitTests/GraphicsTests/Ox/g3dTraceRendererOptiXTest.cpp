@@ -394,8 +394,8 @@ TEST(g3dAORendererOptiXTest, CreatorGivesIt)
 	gtBackend::RunOptiX([]()
 	{
 		const std::pair<g3dSceneRenderer*, g3dTraceRendererOptiX::Mode> made[] = {
-			{ g3dSceneRendererCreate::CreateDefaultRenderer(), g3dTraceRendererOptiX::e_AO },
-			{ g3dSceneRendererCreate::CreateHDRRenderer(), g3dTraceRendererOptiX::e_AO },
+			{ g3dSceneRendererCreate::CreateDefaultRenderer(), g3dTraceRendererOptiX::e_Beauty },
+			{ g3dSceneRendererCreate::CreateHDRRenderer(), g3dTraceRendererOptiX::e_Beauty },
 			{ g3dSceneRendererCreate::CreateAmbientOcclusionRenderer(), g3dTraceRendererOptiX::e_AO },
 			{ g3dSceneRendererCreate::CreateIlluminationRenderer(), g3dTraceRendererOptiX::e_Illumination },
 			{ g3dSceneRendererCreate::CreateShadowMaskRenderer(), g3dTraceRendererOptiX::e_ShadowMask } };

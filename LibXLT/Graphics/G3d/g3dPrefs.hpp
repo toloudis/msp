@@ -145,7 +145,7 @@ namespace g3dPrefs
 		// (g3dSceneRendererCreate::UsesTracerSettings: GraphicsOptiX):
 		// samples per pixel each frame adds, the samples after which a
 		// view stops (converged), samples per captured frame (0: the
-		// limit), occlusion rays per AO sample, and diffuse bounces after
+		// limit), occlusion rays per AO sample, and bounces after
 		// the first hit (0: direct light only)
 		int m_TraceSamplesPerFrame;
 		int m_TraceSampleLimit;
@@ -166,6 +166,9 @@ namespace g3dPrefs
 			e_TraceDebugCount
 		};
 		int m_TraceDebugView;
+		// the beauty pass's firefly limit: light reaching a pixel after the
+		// first bounce is scaled down so no component exceeds it (0: none)
+		float m_TraceMaxRadiance;
 
 		g3dRenderPrefs();
 	};

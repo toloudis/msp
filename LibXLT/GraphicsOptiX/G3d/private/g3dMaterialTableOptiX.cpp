@@ -49,6 +49,7 @@ namespace gox
 		m.m_Specular = i_Material.m_Specular;
 		m.m_Ior = i_Material.m_Ior;
 		m.m_Shininess = i_Material.m_Shininess;
+		m.m_ReflectionRoughness = i_Material.m_ReflectionRoughness;
 		m.m_GlossMap = i_Textures.Add(i_Material.m_pGlossMap, mode);
 		if (m.m_GlossMap != c_optxNoTexture)
 		{

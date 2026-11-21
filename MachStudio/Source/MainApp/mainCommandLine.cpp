@@ -193,6 +193,10 @@ namespace
 		{
 			kind = mainCommandLine::e_CapTraceDebug;
 		}
+		else if (appCommandLine::IsFlag(token, "capTraceMaxRadiance"))
+		{
+			kind = mainCommandLine::e_CapTraceMaxRadiance;
+		}
 		else
 		{
 			return false;
@@ -277,6 +281,16 @@ namespace
 					problem.clear();
 				}
 			}
+			break;
+		}
+		case mainCommandLine::e_CapTraceMaxRadiance:
+		{
+			float limit = 0.0f;
+			if (!parse_float(value, limit) || !(limit >= 0.0f) || limit > 1e30f)
+			{
+				problem = "must be a number, 0 or more";
+			}
+			action_value = value;
 			break;
 		}
 		case mainCommandLine::e_CapHardwareAA:
@@ -633,12 +647,15 @@ Rendering
                              -capTraceSamples isn't given), 1 to 65536
   -capTraceAORays <n>        ray tracing: occlusion rays per ambient
                              occlusion sample, 0 to 64
-  -capTraceBounces <n>       ray tracing: diffuse bounces after the first hit
-                             (Illumination Only), 0 to 32 (0: direct light
-                             only)
+  -capTraceBounces <n>       ray tracing: bounces after the first hit (the
+                             default, HDR and Illumination Only passes), 0
+                             to 32 (0: direct light only)
   -capTraceDebug <view>      ray tracing: the debug view the default and HDR
                              passes show: off, basecolor, normal, roughness,
                              metallic, emission or opacity
+  -capTraceMaxRadiance <x>   ray tracing: the default and HDR passes' firefly
+                             limit: light after the first bounce is scaled
+                             down so no component exceeds it (0: no limit)
                              The -capTrace* flags set every render layer's
                              ray tracing preferences; other backends ignore
                              them

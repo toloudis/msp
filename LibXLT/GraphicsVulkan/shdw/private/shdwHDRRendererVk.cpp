@@ -182,80 +182,14 @@ namespace
 	g3dBlendStateMgr::BlendState* st_IncludeAlpha1 = NULL;
 	g3dBlendStateMgr::BlendState* st_IncludeAlpha2 = NULL;
 
-	g3dBlendStateMgr::BlendState* st_CopyToBackBuf1 = NULL;
-	g3dBlendStateMgr::BlendState* st_CopyToBackBuf2 = NULL;
-
-	g3dBlendStateMgr::BlendState* st_DOF1 = NULL;
-	g3dBlendStateMgr::BlendState* st_DOF2 = NULL;
-	g3dBlendStateMgr::BlendState* st_DOFRestore = NULL;
-
 	g3dDepthStencilStateMgr::DepthStencilState* ds_Test_Write_LessE_NS = NULL;
 	g3dDepthStencilStateMgr::DepthStencilState* ds_Test_Less_NS = NULL;
 	g3dDepthStencilStateMgr::DepthStencilState* ds_Test_LessE_NS = NULL;
 	g3dDepthStencilStateMgr::DepthStencilState* ds_Disable_NS = NULL;
 	g3dDepthStencilStateMgr::DepthStencilState* ds_Test_Equal_NS = NULL;
 
-//	(DX11's CopyCurrentTargetIntoTexture, a CopyResource of the current
-//	target, is left out: both its calls are commented out)
-
-//--------------------------------------------------------------------
-//--------------------------------------------------------------------
-void CopyBackBufInto(matRenderTargetTexture* pTex)
-{
-
-    g3dBlendStateMgr::SetBlendState(st_CopyToBackBuf1);
-
-    g3dDepthStencilStateMgr::SetDepthStencilState(ds_Disable_NS);
-
-    // Draw the high dynamic range scene texture to the low dynamic range
-    // back buffer.
-    uint32_t uiPassCount, uiPass;
-
-    matShaderEffect* pEffBase = g3dVkUtil::GetEffect("HDRLighting");
-
-    pEffBase->SetTechnique("SimpleCopy");
-
-    // source is whatever g_curRenderTarget is (its image is read
-    // directly: no view to make)
-    vkdImage* pSrc = g2dVkGlobal::GetColorTarget();
-
-    vkdImage* inputTextures[1] = {
-        pSrc
-    };
-
-    g3dRasterizerStateMgr::SetRasterizerState(VK_CULL_MODE_NONE, g3dDrawStyleUtilVk::GetD3DDrawStyle());
-
-    // save current render target and depth buf to pop them back on when we are done?
-    vkdImage* pDepth = g2dVkGlobal::GetDepthTarget();
-    pTex->MakeCurrent();
-    int w, h;
-    pTex->GetDimensions(w, h);
-
-    uiPassCount = pEffBase->Begin();
-    for (uiPass = 0; uiPass < uiPassCount; uiPass++)
-    {
-        pEffBase->BeginPass(uiPass);
-
-        vkdGlobal::Context().SetShaderResources(0, 1, inputTextures);
-        g3dVkUtil::DrawFullScreenQuad(w, h);
-
-        pEffBase->EndPass();
-    }
-    pEffBase->End();
-
-    g3dBlendStateMgr::SetBlendState(st_CopyToBackBuf2);
-
-    g3dDepthStencilStateMgr::SetDepthStencilState(ds_Test_Write_LessE_NS);
-
-    g3dRasterizerStateMgr::SetRasterizerState(g3dVkUtil::GetCullMode(), g3dDrawStyleUtilVk::GetD3DDrawStyle());
-
-    vkdImage* nullTex[1] = { NULL };
-    vkdGlobal::Context().SetShaderResources(0, 1, nullTex);
-
-    g2dVkGlobal::SetRenderTargets(pSrc, pDepth);
-
-}
-
+//	(CopyBackBufInto, the HDR renderers' copy of the current colour target,
+//	is shdwPostProcessVk's)
 
 }
 
@@ -279,28 +213,6 @@ void shdwHDRRendererVk::InitStates()
 	    VK_BLEND_FACTOR_SRC_ALPHA,VK_BLEND_FACTOR_ONE,VK_BLEND_OP_ADD,
 		VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT);
 
-	st_CopyToBackBuf1 = new g3dBlendStateMgr::BlendState( false, false,
-		VK_BLEND_FACTOR_SRC_ALPHA,VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,VK_BLEND_OP_ADD,
-	    VK_BLEND_FACTOR_SRC_ALPHA,VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,VK_BLEND_OP_ADD,
-		VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT);
-	st_CopyToBackBuf2 = new g3dBlendStateMgr::BlendState( false, true,
-		VK_BLEND_FACTOR_SRC_ALPHA,VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,VK_BLEND_OP_ADD,
-	    VK_BLEND_FACTOR_SRC_ALPHA,VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,VK_BLEND_OP_ADD,
-		VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT);
-
-	st_DOF1 = new g3dBlendStateMgr::BlendState( false, true,
-		VK_BLEND_FACTOR_ONE,VK_BLEND_FACTOR_ZERO,VK_BLEND_OP_ADD,
-	    VK_BLEND_FACTOR_ONE,VK_BLEND_FACTOR_ZERO,VK_BLEND_OP_ADD,
-		VK_COLOR_COMPONENT_A_BIT);
-	st_DOF2 = new g3dBlendStateMgr::BlendState( false, false,
-		VK_BLEND_FACTOR_SRC_ALPHA,VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,VK_BLEND_OP_ADD,
-	    VK_BLEND_FACTOR_SRC_ALPHA,VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,VK_BLEND_OP_ADD,
-		VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT);
-	st_DOFRestore = new g3dBlendStateMgr::BlendState( false, true,
-		VK_BLEND_FACTOR_SRC_ALPHA,VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,VK_BLEND_OP_ADD,
-	    VK_BLEND_FACTOR_SRC_ALPHA,VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,VK_BLEND_OP_ADD,
-		VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT);
-
 	g3dDepthStencilStateMgr::DepthStencilOp_Desc OP_DEFAULT( VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP, VK_STENCIL_OP_KEEP, VK_COMPARE_OP_ALWAYS );
 
 	ds_Test_Write_LessE_NS = new g3dDepthStencilStateMgr::DepthStencilState( true, true, VK_COMPARE_OP_LESS_OR_EQUAL, false, /*0,*/ 0xff, 0xff, OP_DEFAULT, OP_DEFAULT );
@@ -317,13 +229,6 @@ void shdwHDRRendererVk::CleanupStates()
 
 	delete st_IncludeAlpha1;
 	delete st_IncludeAlpha2;
-
-	delete st_CopyToBackBuf1;
-	delete st_CopyToBackBuf2;
-
-	delete st_DOF1;
-	delete st_DOF2;
-	delete st_DOFRestore;
 
 	delete ds_Test_Write_LessE_NS;
 	delete ds_Test_Less_NS;
@@ -344,8 +249,6 @@ shdwHDRRendererVk::shdwHDRRendererVk()
 
 	m_pWindow = NULL;
 
-	m_pToneMapper = new shdwPassToneMap;
-
 	velocityStateManager = new VelocityStateManager();
 }
 
@@ -356,8 +259,6 @@ shdwHDRRendererVk::~shdwHDRRendererVk()
 	ReleaseResources();
 	delete velocityStateManager;
 	velocityStateManager = NULL;
-
-	delete m_pToneMapper;
 }
 
 //--------------------------------------------------------------------
@@ -901,194 +802,17 @@ int shdwHDRRendererVk::Render( g2dRenderTarget* i_pWindow, const camCamera& i_Ca
 
 void shdwHDRRendererVk::PostProcessing( g2dRenderTarget* i_pWindow, const camCamera& i_Camera, const g3dScene &i_Scene, float i_fSimTime)
 {
-	const std::vector<g3dLayer*> &layers = i_Scene.GetLayers();
-
-	//////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////
-
-	m_pToneMapper->Setup(i_Scene, i_Camera);
-
-	// Create a scaled copy of the scene
-	m_pToneMapper->Scene_To_SceneScaled(m_pFrameBuffer->HDRScaledTex(), m_pFrameBuffer->HDRRenderTargetTex());
-
-	// Now that luminance information has been gathered, the scene can be bright-pass filtered
-	// to remove everything except bright lights and reflections.
-	m_pToneMapper->SceneScaled_To_BrightPass(m_pFrameBuffer->HDRScaledTex(), m_pFrameBuffer->TexBrightPass());
-
-	// Blur the bright-pass filtered image to create the source texture for the star effect
-	m_pToneMapper->BrightPass_To_StarSource(m_pFrameBuffer->TexBrightPass(), m_pFrameBuffer->TexStarSource());
-
-	// Scale-down the source texture for the star effect to create the source texture
-	// for the bloom effect
-	m_pToneMapper->StarSource_To_BloomSource(m_pFrameBuffer->TexStarSource(), m_pFrameBuffer->TexBloomSource());
-
-	// Render post-process lighting effects
-	m_pToneMapper->RenderBloom(m_pFrameBuffer->TexBloomSource(), m_pFrameBuffer->TexBloom().m_apTexBloom);
-	m_pToneMapper->RenderStar(m_pFrameBuffer->TexStarSource(), m_pFrameBuffer->TexStar().m_apTexStar);
-
-
-	switch( g3dPrefs::CurrentPrefs().m_HDRDebugMode )
+	shdwPostProcessVk::Options options;
+	options.m_bAATarget = g3dPrefs::CurrentPrefs().m_bHDRAA;
+	options.m_bOverlayLayers = true;
+	options.m_DofPrep = [this](float i_fTime)
 	{
-	case 0:
-		{
-
-			//////////////////////////////////////////////////////////////////////////////////////////////
-			//////////////////////////////////////////////////////////////////////////////////////////////
-			//////////////////////////////////////////////////////////////////////////////////////////////
-			if (g3dPrefs::CurrentPrefs().m_bRenderMatte)
-			{
-
-				g3dBlendStateMgr::SetBlendState(st_NoBlend);
-				g3dRenderAlpha mattePass( m_pFrameBuffer->HDRRenderTargetTex(), i_pWindow);
-
-				l_nNumTrianglesRendered += mattePass.Render(i_fSimTime);
-
-				// render star + bloom on top.
-				g3dBlendStateMgr::SetBlendState(st_Blend);
-
-				g3dDepthStencilStateMgr::SetDepthStencilState( ds_Test_LessE_NS );
-
-				LuminanceToGrayscale(m_pFrameBuffer->TexBloom().m_apTexBloom[0], "MIN_MAG_LINEAR_MIP_POINT");
-				LuminanceToGrayscale(m_pFrameBuffer->TexStar().m_apTexStar[0], "MIN_MAG_LINEAR_MIP_POINT");
-				g3dBlendStateMgr::SetBlendState(st_NoBlend);
-			}
-			else
-			{
-				// main render just does tonemap and be done with it
-				m_pToneMapper->ToneMap(m_pWindow, m_pFrameBuffer->HDRRenderTargetTex(),
-					m_pFrameBuffer->TexBloom().m_apTexBloom[0],
-					m_pFrameBuffer->TexStar().m_apTexStar[0],
-					m_pFrameBuffer->TexToneMap().m_apTexToneMap[0]);
-			}
-
-			//////////////////////////////////////////////////////////////////////////////////////////////
-			//////////////////////////////////////////////////////////////////////////////////////////////
-			//////////////////////////////////////////////////////////////////////////////////////////////
-			// DOF
-
-			camDOFData dof;
-			i_Camera.GetDOFParams(dof);
-			if (g3dPrefs::CurrentPrefs().m_bEnableDOF && (dof.m_MaxFarBlur != -1))
-			{
-				// set into global 3d rendering state
-				g3dSceneGlobal::g_DOFParams.m_FarBlurDist = dof.m_FarBlurDist;
-				g3dSceneGlobal::g_DOFParams.m_FarFocalDist = dof.m_FarFocalDist;
-				g3dSceneGlobal::g_DOFParams.m_NearFocalDist = dof.m_NearFocalDist;
-				g3dSceneGlobal::g_DOFParams.m_NearBlurDist = dof.m_NearBlurDist;
-				g3dSceneGlobal::g_DOFParams.m_MaxFarBlur = dof.m_MaxFarBlur;
-				g3dSceneGlobal::g_DOFParams.m_MaxCoC = dof.m_MaxCoC;
-				RenderDOF(i_fSimTime, false);
-			}
-
-			// overlay layers need the current z buffer.
-			// in non-msaa, i have the window's zbuf.
-			// in msaa mode, the zbuf is msaa'd so i should use the depth buffer z buffer!
-
-			// note this will not antialias the layers.
-			// to antialias, clear the msaa buffer, make current,
-			// render to it, then resolve to hdrrendertarget and blend onto i_pWindow
-			i_pWindow->MakeCurrent();
-
-			// overscan causes this buffer to be a mismatch with the color buffer.
-			//m_pFrameBuffer->DepthBuffer()->MakeDepthCurrent();
-			//			i_pWindow->ClearDepthStencil();
-			//			g3dDepthStencilStateMgr::SetDepthStencilState( ds_Test_Write_LessE_NS );
-			g3dDepthStencilStateMgr::SetDepthStencilState( ds_Test_LessE_NS );
-
-			//CopyCurrentTargetIntoTexture(m_pFrameBuffer->HDRScratchTex1());
-
-            CopyBackBufInto(m_pFrameBuffer->HDRScratchTex1());
-
-            if (g3dPostProcessing::GetActive())
-			{
-				shdwPassPostShader postPass(m_pFrameBuffer->HDRScratchTex0(), m_pFrameBuffer->HDRScratchTex1());
-				l_nNumTrianglesRendered += postPass.Render(i_fSimTime);
-			}
-			CopyToBackBuf(m_pFrameBuffer->HDRScratchTex1());
-
-
-			//			shdwPassZFill depthPrePass;
-			//			depthPrePass.SetSceneInfo(&m_SceneDatabase);
-			//			l_nNumTrianglesRendered += depthPrePass.Render(i_fSimTime);
-
-			// remaining scene layers will be overlays
-			// note this is a 1-pass default renderer
-			// with no special lighting passes.
-			for (int i = 1; i < layers.size(); i++)
-			{
-				g3dRenderLayer rLayer;
-				rLayer.Set(layers[i], &i_Camera, i_pWindow);
-				rLayer.PerFrameInit(i_fSimTime);
-				l_nNumTrianglesRendered += rLayer.Render(i_fSimTime);
-			}
-			// Also add in the extra layers that are specific to this viewer
-			//			for (int i = 0; i < i_ViewerLayers.size(); i++)
-			//			{
-			//				g3dRenderLayer rLayer;
-			//				rLayer.Set(i_ViewerLayers[i], &i_Camera, i_pWindow);
-			//				rLayer.PerFrameInit(i_fSimTime);
-			//				l_nNumTrianglesRendered += rLayer.Render(i_fSimTime);
-			//			}
-		}
-		break;
-	case 1:
-		CopyToBackBuf(m_pFrameBuffer->HDRRenderTargetTex());
-		break;
-	case 2:
-		CopyToBackBuf(m_pFrameBuffer->HDRScaledTex());
-		break;
-	case 3:
-		g3dBlendStateMgr::SetBlendState(st_NoBlend);
-
-		LuminanceToGrayscale(m_pFrameBuffer->HDRRenderTargetTex());
-		g3dBlendStateMgr::SetBlendState(st_Blend);
-
-		break;
-	case 4:
-		{
-			// just put something in the backbuf
-			CopyToBackBuf(m_pFrameBuffer->HDRRenderTargetTex());
-
-			// DOF
-			camDOFData dof;
-			i_Camera.GetDOFParams(dof);
-			if (g3dPrefs::CurrentPrefs().m_bEnableDOF && (dof.m_MaxFarBlur != -1))
-			{
-				// set into global 3d rendering state
-				g3dSceneGlobal::g_DOFParams.m_FarBlurDist = dof.m_FarBlurDist;
-				g3dSceneGlobal::g_DOFParams.m_FarFocalDist = dof.m_FarFocalDist;
-				g3dSceneGlobal::g_DOFParams.m_NearFocalDist = dof.m_NearFocalDist;
-				g3dSceneGlobal::g_DOFParams.m_NearBlurDist = dof.m_NearBlurDist;
-				g3dSceneGlobal::g_DOFParams.m_MaxFarBlur = dof.m_MaxFarBlur;
-				g3dSceneGlobal::g_DOFParams.m_MaxCoC = dof.m_MaxCoC;
-				RenderDOF(i_fSimTime, true);
-			}
-		}
-		break;
-	case 5:
-		CopyToBackBuf(m_pFrameBuffer->TexToneMap().m_apTexToneMap[NUM_TONEMAP_TEXTURES-1], false);
-		break;
-	case 6:
-		CopyToBackBuf(m_pFrameBuffer->TexBrightPass());
-		break;
-	case 7:
-		CopyToBackBuf(m_pFrameBuffer->TexBloomSource());
-		break;
-	case 8:
-		CopyToBackBuf(m_pFrameBuffer->TexBloom().m_apTexBloom[0]);
-		break;
-	case 9:
-		CopyToBackBuf(m_pFrameBuffer->TexStar().m_apTexStar[0]);
-		break;
-	case 10:
-		if (g3dSingleLightRendering::GetDoSingleLightRendering() &&
-			g3dPrefs::CurrentPrefs().m_bEnableSSAO)
-		{
-			CopyToBackBuf(m_pFrameBuffer->MultiDepthBuffer());
-		}
-		break;
-	}
+		shdwPassDOF dofPass;
+		dofPass.SetSceneInfo(&m_SceneDatabase);
+		dofPass.Render(i_fTime);
+		return 0;
+	};
+	l_nNumTrianglesRendered += m_Post.Run(i_pWindow, *m_pFrameBuffer, i_Camera, i_Scene, i_fSimTime, options);
 }
 
 //--------------------------------------------------------------------
@@ -1101,7 +825,7 @@ void shdwHDRRendererVk::Slideshow()
 	switch( ((iView++)/nFramesToHold) % nSlides)
 	{
 	case 0:
-		m_pToneMapper->ToneMap(m_pWindow, m_pFrameBuffer->HDRRenderTargetTex(),
+		m_Post.ToneMapper().ToneMap(m_pWindow, m_pFrameBuffer->HDRRenderTargetTex(),
 				m_pFrameBuffer->TexBloom().m_apTexBloom[0],
 				m_pFrameBuffer->TexStar().m_apTexStar[0],
 				m_pFrameBuffer->TexToneMap().m_apTexToneMap[0]);
@@ -1115,7 +839,7 @@ void shdwHDRRendererVk::Slideshow()
 	case 3:
 		g3dBlendStateMgr::SetBlendState(st_NoBlend);
 
-		LuminanceToGrayscale(m_pFrameBuffer->HDRRenderTargetTex());
+		shdwPostProcessVk::LuminanceToGrayscale(m_pWindow, m_pFrameBuffer->HDRRenderTargetTex());
 		g3dBlendStateMgr::SetBlendState(st_Blend);
 
 		break;
@@ -1205,259 +929,7 @@ void shdwHDRRendererVk::IncludeAlphas(float i_fSimTime)
 //--------------------------------------------------------------------
 void shdwHDRRendererVk::CopyToBackBuf(matRenderTargetTexture* pTex, bool bDoBlend, bool isRGB)
 {
-
-	g3dBlendStateMgr::SetBlendState(st_CopyToBackBuf1);
-
-	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Disable_NS );
-
-//	g3dRenderFullScreenQuad fsq(m_HDRRenderTargetTex, m_pWindow, true);
-//	fsq.Render(0);
-
-
-// Draw the high dynamic range scene texture to the low dynamic range
-    // back buffer.
-    uint32_t uiPassCount, uiPass;
-
-	matShaderEffect* pEffBase = g3dVkUtil::GetEffect("HDRLighting");
-
-	pEffBase->SetTechnique(isRGB?"SimpleCopyLDR":"SimpleCopyLumLDR");
-
-	m_pWindow->MakeCurrent();
-	int w,h;
-	m_pWindow->GetDimensions(w,h);
-    //g2dDX11Global::g_pDevice->SetRenderTarget(0, m_pWindow);
-
-	vkdImage* inputTextures[1] = {
-		pTex->GetImage()
-	};
-//	g2dDX11Global::g_pDevice->SetTexture( 0, pTex->GetImage() );
-//	g2dDX11Global::g_pDevice->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_POINT  );
-//	g2dDX11Global::g_pDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_POINT  );
-
-	g3dRasterizerStateMgr::SetRasterizerState( VK_CULL_MODE_NONE, g3dDrawStyleUtilVk::GetD3DDrawStyle() );
-
-    uiPassCount = pEffBase->Begin();
-    for (uiPass = 0; uiPass < uiPassCount; uiPass++)
-    {
-        pEffBase->BeginPass(uiPass);
-
-		vkdGlobal::Context().SetShaderResources(0, 1, inputTextures);
-        g3dVkUtil::DrawFullScreenQuad( w,h );
-
-        pEffBase->EndPass();
-    }
-    pEffBase->End();
-
-	g3dBlendStateMgr::SetBlendState(st_CopyToBackBuf2);
-
-	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Test_Write_LessE_NS );
-
-	g3dRasterizerStateMgr::SetRasterizerState( g3dVkUtil::GetCullMode(), g3dDrawStyleUtilVk::GetD3DDrawStyle() );
-
-	vkdImage* nullTex[1] = {NULL};
-	vkdGlobal::Context().SetShaderResources(0, 1, nullTex);
-
-}
-
-//--------------------------------------------------------------------
-//--------------------------------------------------------------------
-void shdwHDRRendererVk::LuminanceToGrayscale(matRenderTargetTexture* pTex, const char* i_pTexFilter /* = "MIN_MAG_MIP_POINT" */)
-{
-
-	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Disable_NS );
-
-// Draw the high dynamic range scene texture to the low dynamic range
-    // back buffer.
-    uint32_t uiPassCount, uiPass;
-
-	matShaderEffect* pEffBase = g3dVkUtil::GetEffect("HDRLighting");
-
-	pEffBase->SetTechnique("DrawLuminance");
-
-	m_pWindow->MakeCurrent();
-	int w,h;
-	m_pWindow->GetDimensions(w,h);
-    //g2dDX11Global::g_pDevice->SetRenderTarget(0, m_pWindow);
-
-	vkdImage* inputTextures[1] = {
-		pTex->GetImage()
-	};
-//    g2dDX11Global::g_pDevice->SetTexture( 0, pTex->GetImage() );
-
-	// using POINT sampling by default now. Ignoring the passed in parameter.
-//	g2dDX11Global::g_pDevice->SetSamplerState( 0, D3DSAMP_MAGFILTER, i_D3DTexFilter );
-//	g2dDX11Global::g_pDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, i_D3DTexFilter );
-
-	g3dRasterizerStateMgr::SetRasterizerState( VK_CULL_MODE_NONE, g3dDrawStyleUtilVk::GetD3DDrawStyle() );
-
-    uiPassCount = pEffBase->Begin();
-    for (uiPass = 0; uiPass < uiPassCount; uiPass++)
-    {
-        pEffBase->BeginPass(uiPass);
-
-		vkdGlobal::Context().SetShaderResources(0, 1, inputTextures);
-        g3dVkUtil::DrawFullScreenQuad( w,h );
-
-        pEffBase->EndPass();
-    }
-    pEffBase->End();
-
-	g3dRasterizerStateMgr::SetRasterizerState( g3dVkUtil::GetCullMode(), g3dDrawStyleUtilVk::GetD3DDrawStyle() );
-
-	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Test_Write_LessE_NS );
-
-}
-
-//--------------------------------------------------------------------
-//--------------------------------------------------------------------
-void shdwHDRRendererVk::RenderDOF(float i_fSimTime, bool i_debug)
-{
-//	HRESULT op_result;
-
-	m_pWindow->MakeCurrent();
-//	m_pWindow->ClearDepthStencil();
-
-	// replace alpha in HDR render target with blurriness factor
-
-	// draw this to a AA buffer if AA enabled.
-	// then resolve to one of our scratch buffers.
-	// replace alpha in render target with blurriness factor
-#ifdef NEW_AA_CODE
-	matRenderTargetTexture* currentHDRTarget = m_pFrameBuffer->HDRRenderTarget();
-#else
-	g2dRenderTarget* currentHDRTarget = NULL;
-	if (g3dPrefs::CurrentPrefs().m_bHDRAA)
-	{
-		// this target has its own depth buffer with it!
-		currentHDRTarget = m_pFrameBuffer->HDRAATarget();
-	}
-	else
-	{
-		// this target uses the backbuffer's depth buffer!
-		currentHDRTarget = m_pFrameBuffer->HDRRenderTargetTex()->GetRenderTargetAPI();
-	}
-#endif
-
-	currentHDRTarget->MakeCurrent();
-//	currentHDRTarget->ClearDepthStencil();
-	shdwPassDOF dofPass;
-	dofPass.SetSceneInfo(&m_SceneDatabase);
-	dofPass.Render(i_fSimTime);
-
-#ifdef NEW_AA_CODE
-	currentHDRTarget->CopyWithResolve( m_pFrameBuffer->HDRRenderTargetTex() );
-#else
-	if (currentHDRTarget == m_pFrameBuffer->HDRAATarget())
-	{
-		m_pFrameBuffer->HDRAATarget()->Resolve(m_pFrameBuffer->HDRRenderTargetTex());
-	}
-#endif
-
-	// Now, prepare blurred version of color buffer:
-
-	m_pWindow->MakeCurrent();
-
-	// Copy backbuffer to DOF Reserve Target.
-	// This will be the source texture with color data.
-//	CopyCurrentTargetIntoTexture(m_pFrameBuffer->DOFReserveTarget());
-    CopyBackBufInto(m_pFrameBuffer->DOFReserveTarget());
-
-	// now put alphas in m_pDOFReserveTarget.
-	m_pFrameBuffer->DOFReserveTarget()->MakeCurrent();
-	int w,h;
-	m_pFrameBuffer->DOFReserveTarget()->GetDimensions(w,h);
-	g3dBlendStateMgr::SetBlendState(st_DOF1);
-
-//	g2dDX11Global::g_pDevice->SetVertexShader(NULL);
-//	g2dDX11Global::g_pDevice->SetPixelShader(NULL);
-
-	matShaderEffect* pEffBase = g3dVkUtil::GetEffect("HDRLighting");
-	pEffBase->SetTechnique("SimpleCopyLDR");
-	vkdImage* inputTextures[1] = {
-		m_pFrameBuffer->HDRRenderTargetTex()->GetImage()
-	};
-//	g2dDX11Global::g_pDevice->SetTexture( 0, m_pFrameBuffer->HDRRenderTargetTex()->GetSurface() );
-//	g2dDX11Global::g_pDevice->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_POINT  );
-//	g2dDX11Global::g_pDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_POINT  );
-
-	g3dRasterizerStateMgr::SetRasterizerState( VK_CULL_MODE_NONE, g3dDrawStyleUtilVk::GetD3DDrawStyle() );
-
-	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Disable_NS );
-
-    uint32_t uiPassCount, uiPass;
-    uiPassCount = pEffBase->Begin();
-    for (uiPass = 0; uiPass < uiPassCount; uiPass++)
-    {
-        pEffBase->BeginPass(uiPass);
-		vkdGlobal::Context().SetShaderResources(0, 1, inputTextures);
-        g3dVkUtil::DrawFullScreenQuad( w,h );
-        pEffBase->EndPass();
-    }
-    pEffBase->End();
-
-//	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Test_Write_LessE_NS );
-
-	g3dBlendStateMgr::SetBlendState(st_DOF2);
-
-	g3dRasterizerStateMgr::SetRasterizerState( g3dVkUtil::GetCullMode(), g3dDrawStyleUtilVk::GetD3DDrawStyle() );
-
-	m_pWindow->MakeCurrent();
-	if (i_debug)
-		DrawAlpha(m_pFrameBuffer->DOFReserveTarget(), m_pWindow);
-	else
-	{
-	// run the Blur effect on this data
-		matShaderEffect* effBlur = matShaderMgr::GetSpecialEffect("Blur");
-		effBlurData blurData;
-		blurData.m_pSceneTexture = m_pFrameBuffer->DOFReserveTarget();
-		blurData.m_pDownsampledTexture = m_pFrameBuffer->DOFBlurTarget();
-		blurData.m_pHorizontalBlurTexture = m_pFrameBuffer->DOFHBlurTarget();
-		effBlur->SetupParams(&blurData);
-
-		vkdImage* nullTex[1] = {NULL};
-
-		g3dBlendStateMgr::SetBlendState(st_DOF2);
-
-		effBlur->SetTechnique(matShaderEffect::e_Default);
-		int nPasses = effBlur->Begin();
-		// DBG_ASSERT(nPasses == 3, "Wrong number of passes in blur shader");
-
-		m_pFrameBuffer->DOFBlurTarget()->MakeCurrent();
-		effBlur->BeginPass(0);
-		g3dRenderFullScreenQuad fsq0(m_pFrameBuffer->DOFReserveTarget(), m_pFrameBuffer->DOFBlurTarget());
-		l_nNumTrianglesRendered += fsq0.Render(i_fSimTime);
-		effBlur->EndPass();
-
-		vkdGlobal::Context().SetShaderResources(0, 1, nullTex);
-
-		m_pFrameBuffer->DOFHBlurTarget()->MakeCurrent();
-		effBlur->BeginPass(1);
-		g3dRenderFullScreenQuad fsq1(m_pFrameBuffer->DOFBlurTarget(), m_pFrameBuffer->DOFHBlurTarget());
-		l_nNumTrianglesRendered += fsq1.Render(i_fSimTime);
-		effBlur->EndPass();
-
-		vkdGlobal::Context().SetShaderResources(0, 1, nullTex);
-
-		m_pFrameBuffer->DOFBlurTarget()->MakeCurrent();
-		effBlur->BeginPass(2);
-		g3dRenderFullScreenQuad fsq2(m_pFrameBuffer->DOFHBlurTarget(), m_pFrameBuffer->DOFBlurTarget());
-		l_nNumTrianglesRendered += fsq2.Render(i_fSimTime);
-		effBlur->EndPass();
-
-		vkdGlobal::Context().SetShaderResources(0, 1, nullTex);
-
-		effBlur->End();
-
-		g3dBlendStateMgr::SetBlendState(st_DOFRestore);
-		/////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////////////
-
-		// post process full screen quad
-		g3dRenderDOF rpass_DOF(m_pFrameBuffer->DOFReserveTarget(), m_pFrameBuffer->DOFBlurTarget(), m_pWindow);
-		l_nNumTrianglesRendered += rpass_DOF.Render(i_fSimTime);
-	}
+	shdwPostProcessVk::CopyToBackBuf(m_pWindow, pTex, bDoBlend, isRGB);
 }
 
 //	(DX11's CheckForNaN, ReadFirstFloat and WriteFirstFloat, D3D9 code that is
@@ -1571,49 +1043,6 @@ void shdwHDRRendererVk::SetAvgLuminance(float i_Luminance)
 //	if ( !FAILED(hr) )
 //		WriteFirstFloat(pSurfToneMap, i_Luminance);
 //	SAFE_RELEASE(pSurfToneMap);
-}
-
-//--------------------------------------------------------------------
-//--------------------------------------------------------------------
-void shdwHDRRendererVk::DrawAlpha(matRenderTargetTexture* i_src, g2dRenderTarget* i_dest)
-{
-    uint32_t uiPassCount, uiPass;
-
-
-	matShaderEffect* pEffBase = g3dVkUtil::GetEffect("HDRLighting");
-
-	pEffBase->SetTechnique("DrawAlpha");
-
-	i_dest->MakeCurrent();
-	int w,h;
-	i_dest->GetDimensions(w,h);
-
-	vkdImage* inputTextures[1] = {
-		i_src->GetImage()
-	};
-    //g2dDX11Global::g_pDevice->SetTexture( 0, i_src->GetImage() );
-//	g2dDX11Global::g_pDevice->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_POINT  );
-//	g2dDX11Global::g_pDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_POINT  );
-
-	g3dRasterizerStateMgr::SetRasterizerState( VK_CULL_MODE_NONE, g3dDrawStyleUtilVk::GetD3DDrawStyle() );
-
-	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Disable_NS );
-
-    uiPassCount = pEffBase->Begin();
-    for (uiPass = 0; uiPass < uiPassCount; uiPass++)
-    {
-        pEffBase->BeginPass(uiPass);
-        vkdGlobal::Context().SetShaderResources(0,1,inputTextures);
-        g3dVkUtil::DrawFullScreenQuad( w,h );
-
-        pEffBase->EndPass();
-    }
-    pEffBase->End();
-
-	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Test_Write_LessE_NS );
-
-	g3dRasterizerStateMgr::SetRasterizerState( g3dVkUtil::GetCullMode(), g3dDrawStyleUtilVk::GetD3DDrawStyle() );
-
 }
 
 g2dRenderTarget* shdwHDRRendererVk::GetRawBuffer()

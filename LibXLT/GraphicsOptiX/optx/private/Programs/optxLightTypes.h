@@ -9,9 +9,12 @@
 **	A light's values are what the raster lighting (Lighting.hlsli) uses,
 **	so a traced point gets the same linear light as a rastered one where
 **	nothing shadows it:
-**	- colour: the light's intensity colour times its intensity factor
-**	  (black when its diffuse light is off, or diffuse lighting is off in
-**	  the preferences);
+**	- colour: the light's intensity colour times its intensity factor;
+**	  e_optxLightDiffuse when it lights diffuse surfaces (its diffuse light
+**	  on, and diffuse lighting on in the preferences), e_optxLightSpecular
+**	  when it gives highlights (its specular light on, and specular
+**	  lighting on in the preferences): the raster's diffuse and specular
+**	  light colours are the colour or black;
 **	- attenuation (point lights and spot projected lights): 1 / (f0 +
 **	  f1 d + f2 d^2 + f3 d^3), d the distance past the falloff start (1/f0
 **	  before it);
@@ -56,7 +59,9 @@ namespace gox
 
 	enum optxLightFlags
 	{
-		e_optxLightShadows = 1u << 0	// shadow rays are traced towards it
+		e_optxLightShadows = 1u << 0,	// shadow rays are traced towards it
+		e_optxLightDiffuse = 1u << 1,	// it lights the BRDF's diffuse lobe (and Illumination)
+		e_optxLightSpecular = 1u << 2	// it lights the BRDF's specular lobe
 	};
 
 	struct optxLight

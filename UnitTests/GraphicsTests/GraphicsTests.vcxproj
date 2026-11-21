@@ -235,6 +235,8 @@
     <ClCompile Include="Ox\g3dTraceRendererOptiXTest.cpp" />
     <ClCompile Include="Ox\g3dLightingOptiXTest.cpp" />
     <ClCompile Include="Ox\g3dMaterialsOptiXTest.cpp" />
+    <ClCompile Include="Ox\optxBsdfTest.cpp" />
+    <ClCompile Include="Ox\g3dBeautyOptiXTest.cpp" />
     <ClInclude Include="Ox\gtOptiX.hpp" />
   </ItemGroup>
   <ItemGroup>

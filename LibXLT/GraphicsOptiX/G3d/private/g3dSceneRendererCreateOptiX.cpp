@@ -54,13 +54,13 @@ namespace gox
 
 	g3dSceneRenderer* g3dSceneRendererCreateOptiX::CreateDefaultRenderer()
 	{
-		g3dSceneRenderer* renderer = create_tracer(g3dTraceRendererOptiX::e_AO);
+		g3dSceneRenderer* renderer = create_tracer(g3dTraceRendererOptiX::e_Beauty);
 		return renderer ? renderer : m_pInner->CreateDefaultRenderer();
 	}
 
 	g3dSceneRenderer* g3dSceneRendererCreateOptiX::CreateHDRRenderer()
 	{
-		g3dSceneRenderer* renderer = create_tracer(g3dTraceRendererOptiX::e_AO);
+		g3dSceneRenderer* renderer = create_tracer(g3dTraceRendererOptiX::e_Beauty);
 		return renderer ? renderer : m_pInner->CreateHDRRenderer();
 	}
 

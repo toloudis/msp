@@ -1,10 +1,13 @@
 /*****************************************************************************
 **  optxLighting.cu
 **
-**      The lighting programs: Illumination Only, Shadow Mask and the
-**	tracer debug view, traced. See optxLightingParams.h (what each launch
-**	and mode does), optxLightTypes.h (the lights), optxMaterialTypes.h and
-**	optxMaterial.h (materials, textures, ray cones, opacity).
+**      The lighting programs: the beauty pass (a path tracer), Illumination
+**	Only, Shadow Mask and the tracer debug view, traced. See
+**	optxLightingParams.h (what each launch and mode does), optxLightTypes.h
+**	(the lights), optxMaterialTypes.h and optxMaterial.h (materials,
+**	textures, ray cones, opacity), optxBsdf.h (the BRDF). The device code
+**	the modes share is in optxRays.h (rays), optxLights.h (lights) and
+**	optxSurface.h (shading points).
 **
 **	Compiled to OptiX IR by nvcc at build time and embedded as
 **	"optxLighting" (optxEmbeddedPrograms). Entry points:
@@ -18,6 +21,7 @@
 **	Extra Large Technology
 \****************************************************************************/
 #include <optix.h>
+#include <cuda_fp16.h>
 
 #ifndef GOX_OPTXAOPARAMS_H
 #include "optxAOParams.h"
@@ -37,6 +41,12 @@
 #ifndef GOX_OPTXMATERIAL_H
 #include "optxMaterial.h"
 #endif
+#ifndef GOX_OPTXVECTOR_H
+#include "optxVector.h"
+#endif
+#ifndef GOX_OPTXBSDF_H
+#include "optxBsdf.h"
+#endif
 
 using namespace gox;
 
@@ -45,91 +55,39 @@ extern "C"
 	__constant__ optxLightingParams params;
 }
 
+#ifndef GOX_OPTXRAYS_H
+#include "optxRays.h"
+#endif
+#ifndef GOX_OPTXLIGHTS_H
+#include "optxLights.h"
+#endif
+#ifndef GOX_OPTXSURFACE_H
+#include "optxSurface.h"
+#endif
+
+using namespace gox::optxv;
+using namespace gox::optxr;
+using namespace gox::optxl;
+using namespace gox::optxs;
+
 namespace
 {
-	constexpr float c_Pi = 3.14159265358979f;
-	constexpr float c_Infinity = 1e30f;
+	//------------------------------------------------------------------------
+	//	Output
+	//------------------------------------------------------------------------
 
-	//	PCG hash (Jarzynski and Olano, "Hash Functions for GPU Rendering")
-	__forceinline__ __device__ unsigned int pcg(unsigned int v)
-	{
-		const unsigned int state = v * 747796405u + 2891336453u;
-		const unsigned int word = ((state >> ((state >> 28u) + 4u)) ^ state) * 277803737u;
-		return (word >> 22u) ^ word;
-	}
-
-	struct Rng
-	{
-		unsigned int m_State;
-
-		__forceinline__ __device__ Rng(unsigned int i_Pixel, unsigned int i_Sample, unsigned int i_Seed)
-			: m_State(pcg(i_Pixel ^ pcg(i_Sample ^ pcg(i_Seed))))
-		{
-		}
-
-		//	[0, 1)
-		__forceinline__ __device__ float Next()
-		{
-			m_State = pcg(m_State);
-			return (m_State >> 8) * (1.0f / 16777216.0f);
-		}
-	};
-
-	__forceinline__ __device__ float3 operator+(float3 a, float3 b) { return make_float3(a.x + b.x, a.y + b.y, a.z + b.z); }
-	__forceinline__ __device__ float3 operator-(float3 a, float3 b) { return make_float3(a.x - b.x, a.y - b.y, a.z - b.z); }
-	__forceinline__ __device__ float3 operator*(float3 a, float s) { return make_float3(a.x * s, a.y * s, a.z * s); }
-	__forceinline__ __device__ float dot(float3 a, float3 b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
-	__forceinline__ __device__ float3 cross(float3 a, float3 b)
-	{
-		return make_float3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
-	}
-	__forceinline__ __device__ float3 normalize(float3 a) { return a * rsqrtf(dot(a, a)); }
-	__forceinline__ __device__ float saturate(float x) { return fminf(fmaxf(x, 0.0f), 1.0f); }
-	__forceinline__ __device__ float3 load3(const float* p) { return make_float3(p[0], p[1], p[2]); }
-	__forceinline__ __device__ float3 mul3(float3 a, float3 b) { return make_float3(a.x * b.x, a.y * b.y, a.z * b.z); }
-	__forceinline__ __device__ float3 read_float3(unsigned long long i_Address)
-	{
-		const float* p = reinterpret_cast<const float*>(i_Address);
-		return make_float3(p[0], p[1], p[2]);
-	}
-
-	//	(x, y, z, 1) * M, divided by w (row vectors, row-major M)
-	__forceinline__ __device__ float3 project(const float* M, float x, float y, float z, float& o_W)
-	{
-		const float px = x * M[0] + y * M[4] + z * M[8] + M[12];
-		const float py = x * M[1] + y * M[5] + z * M[9] + M[13];
-		const float pz = x * M[2] + y * M[6] + z * M[10] + M[14];
-		o_W = x * M[3] + y * M[7] + z * M[11] + M[15];
-		const float inv = 1.0f / o_W;
-		return make_float3(px * inv, py * inv, pz * inv);
-	}
-
-	//	An orthonormal basis (s, t) about the unit vector n (Duff et al.,
-	//	"Building an Orthonormal Basis, Revisited")
-	__forceinline__ __device__ void basis(float3 n, float3& o_S, float3& o_T)
-	{
-		const float sign = copysignf(1.0f, n.z);
-		const float a = -1.0f / (sign + n.z);
-		const float b = n.x * n.y * a;
-		o_S = make_float3(1.0f + sign * n.x * n.x * a, sign * b, -sign * n.x);
-		o_T = make_float3(b, sign + n.y * n.y * a, -n.y);
-	}
-
-	//	A direction about n, cosine-weighted
-	__forceinline__ __device__ float3 cosine_direction(float3 n, float u1, float u2)
-	{
-		const float r = sqrtf(u1);
-		const float phi = 2.0f * c_Pi * u2;
-		float3 s, t;
-		basis(n, s, t);
-		return s * (r * __cosf(phi)) + t * (r * __sinf(phi)) + n * sqrtf(fmaxf(0.0f, 1.0f - u1));
-	}
-
-	//	The resolve: the mean, clamped, as linear bytes (the raster copies
-	//	its linear buffer into the 8-bit target the same way)
+	//	The 8-bit resolve: the mean, clamped, as linear bytes (the raster
+	//	copies its linear buffer into the 8-bit target the same way)
 	__forceinline__ __device__ unsigned int to_byte(float c)
 	{
 		return static_cast<unsigned int>(saturate(c) * 255.0f + 0.5f);
+	}
+
+	__forceinline__ __device__ void write_depth(unsigned int i_Pixel, float i_Depth)
+	{
+		unsigned int* depth = reinterpret_cast<unsigned int*>(params.m_Depth);
+		depth[i_Pixel] = params.m_DepthLayout == e_optxDepthFloat ? __float_as_uint(i_Depth)
+																  : min(__float2uint_rn(i_Depth * 16777215.0f), 16777215u);
 	}
 
 	__forceinline__ __device__ void write_pixel(unsigned int i_Pixel, float3 i_Sum, unsigned int i_nSamples, float i_Depth)
@@ -141,437 +99,78 @@ namespace
 		unsigned int* color = reinterpret_cast<unsigned int*>(params.m_Color);
 		color[i_Pixel] = params.m_ColorOrder == e_optxColorBGRA ? (b | (g << 8) | (r << 16) | (255u << 24))
 																: (r | (g << 8) | (b << 16) | (255u << 24));
-		unsigned int* depth = reinterpret_cast<unsigned int*>(params.m_Depth);
-		depth[i_Pixel] = params.m_DepthLayout == e_optxDepthFloat ? __float_as_uint(i_Depth)
-																  : min(__float2uint_rn(i_Depth * 16777215.0f), 16777215u);
+		write_depth(i_Pixel, i_Depth);
+	}
+
+	//	A half, finite (NaN reads as 0; beyond the largest half, the largest)
+	__forceinline__ __device__ unsigned short to_half(float c)
+	{
+		const float v = (c == c) ? fminf(fmaxf(c, -65504.0f), 65504.0f) : 0.0f;
+		return __half_as_ushort(__float2half_rn(v));
+	}
+
+	__forceinline__ __device__ uint2 half4(float x, float y, float z, float w)
+	{
+		return make_uint2(to_half(x) | (unsigned(to_half(y)) << 16), to_half(z) | (unsigned(to_half(w)) << 16));
+	}
+
+	//	ComputeDepthBlur (Support.hlsli) of a view-space depth: the DOF prep
+	//	pass's blurriness, 0.5 for none
+	__forceinline__ __device__ float depth_blur(float i_Depth)
+	{
+		const float* p = params.m_Dof;
+		float f = 0.0f;
+		if (i_Depth < p[1])
+		{
+			f = fminf(fmaxf((i_Depth - p[1]) / (p[1] - p[0]), -1.0f), 0.0f);
+		}
+		else if (i_Depth > p[2])
+		{
+			f = fminf(fmaxf((i_Depth - p[2]) / (p[3] - p[2]), 0.0f), params.m_DofCutoff);
+		}
+		return f * 0.5f + 0.5f;
+	}
+
+	//	The beauty resolve: the linear mean (unclamped) and coverage as
+	//	RGBA16F, the same with the DOF blurriness in alpha, and depth
+	__forceinline__ __device__ void write_hdr_pixel(unsigned int i_Pixel, const float4* i_Planes, unsigned int i_nSamples)
+	{
+		const unsigned int count = params.m_Width * params.m_Height;
+		const float4 color = i_Planes[0];
+		const float4 guide = i_Planes[count];
+		const float4 normal = i_Planes[2 * count];
+		const float scale = 1.0f / i_nSamples;
+		const float r = color.x * scale, g = color.y * scale, b = color.z * scale;
+		reinterpret_cast<uint2*>(params.m_Color)[i_Pixel] = half4(r, g, b, guide.w * scale);
+		if (params.m_Aux)
+		{
+			//	normal.w: sample 0's view-space depth (c_Infinity for a miss)
+			const float blur = normal.w < c_Infinity ? depth_blur(normal.w) : 0.5f;
+			reinterpret_cast<uint2*>(params.m_Aux)[i_Pixel] = half4(r, g, b, blur);
+		}
+		write_depth(i_Pixel, color.w);
 	}
 
 	//------------------------------------------------------------------------
-	//	Rays
+	//	Illumination Only and the Shadow Mask
 	//------------------------------------------------------------------------
-
-	struct Hit
-	{
-		bool			m_bHit;
-		float			m_T;
-		float3			m_Geometric;	// geometric normal, facing the ray
-		float3			m_Shading;		// interpolated vertex normal, on the geometric normal's side
-		unsigned int	m_Instance;
-		unsigned int	m_Material;		// index, or c_optxNoMaterial
-		float2			m_UV;			// transformed by the material's UV transform
-		float3			m_S;			// world tangents (raster's tangent and binormal), flipped with the normal
-		float3			m_T3;
-		float			m_LodBase;		// 0.5 log2(texel area / world area) of the triangle
-	};
-
-	__forceinline__ __device__ Hit trace_camera(float3 i_Origin, float3 i_Direction, float i_TMax)
-	{
-		unsigned int p[19] = {};
-		if (params.m_Handle)
-		{
-			optixTrace(params.m_Handle, i_Origin, i_Direction, 0.0f, i_TMax, 0.0f,
-					   OptixVisibilityMask(e_optxMaskCamera), OPTIX_RAY_FLAG_NONE,
-					   0, 1, 0,		// SBT offset, stride, miss index 0
-					   p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14],
-					   p[15], p[16], p[17], p[18]);
-		}
-		Hit result;
-		result.m_bHit = p[8] != 0;
-		result.m_T = __uint_as_float(p[0]);
-		result.m_Geometric = make_float3(__uint_as_float(p[1]), __uint_as_float(p[2]), __uint_as_float(p[3]));
-		result.m_Shading = make_float3(__uint_as_float(p[4]), __uint_as_float(p[5]), __uint_as_float(p[6]));
-		result.m_Instance = p[7];
-		result.m_Material = p[9];
-		result.m_UV = make_float2(__uint_as_float(p[10]), __uint_as_float(p[11]));
-		result.m_S = make_float3(__uint_as_float(p[12]), __uint_as_float(p[13]), __uint_as_float(p[14]));
-		result.m_T3 = make_float3(__uint_as_float(p[15]), __uint_as_float(p[16]), __uint_as_float(p[17]));
-		result.m_LodBase = __uint_as_float(p[18]);
-		return result;
-	}
-
-	//	Whether anything that casts shadows lies along the ray before i_TMax
-	__forceinline__ __device__ bool occluded(float3 i_Origin, float3 i_Direction, float i_TMax)
-	{
-		if (!params.m_Handle)
-		{
-			return false;
-		}
-		unsigned int hit = 1;
-		optixTrace(params.m_Handle, i_Origin, i_Direction, 0.0f, i_TMax, 0.0f,
-				   OptixVisibilityMask(e_optxMaskOcclusion),
-				   OPTIX_RAY_FLAG_TERMINATE_ON_FIRST_HIT | OPTIX_RAY_FLAG_DISABLE_CLOSESTHIT,
-				   0, 1, 1,		// SBT offset, stride, miss index 1
-				   hit);
-		return hit != 0;
-	}
-
-	//------------------------------------------------------------------------
-	//	Lights (Lighting.hlsli's formulas)
-	//------------------------------------------------------------------------
-
-	__forceinline__ __device__ float attenuation(const optxLight& i_Light, float i_Distance)
-	{
-		const float* f = i_Light.m_Falloff;
-		if (i_Distance > i_Light.m_FalloffStart)
-		{
-			const float d = i_Distance - i_Light.m_FalloffStart;
-			return 1.0f / fmaxf(1e-6f, f[0] + f[1] * d + f[2] * d * d + f[3] * d * d * d);
-		}
-		return 1.0f / fmaxf(1e-6f, f[0]);
-	}
-
-	__forceinline__ __device__ float smoothstep(float e0, float e1, float x)
-	{
-		const float t = saturate((x - e0) / (e1 - e0));
-		return t * t * (3.0f - 2.0f * t);
-	}
-
-	//	EllipticalPenumbra (ARman section 14.3.1)
-	__forceinline__ __device__ float elliptical_penumbra(float i_Inner, float i_Outer, float i_Aspect, float u, float v)
-	{
-		const float x = fabsf(u - 0.5f), y = fabsf(v - 0.5f);
-		if (x == 0.0f && y == 0.0f)
-		{
-			return 1.0f;
-		}
-		const float a = 0.5f * tanf(i_Inner * 0.5f) / tanf(i_Outer * 0.5f);
-		const float b = 0.5f * tanf(i_Aspect * i_Inner * 0.5f) / tanf(i_Aspect * i_Outer * 0.5f);
-		const float A = 0.5f, B = 0.5f;
-		const float q = a * b / sqrtf(b * b * x * x + a * a * y * y);
-		const float r = A * B / sqrtf(B * B * x * x + A * A * y * y);
-		return 1.0f - smoothstep(q, r + 0.001f, 1.0f);
-	}
-
-	//	What a light gives a point, unshadowed and before the cosine: its
-	//	colour times attenuation and penumbra; and the way to it (towards
-	//	its centre, unnormalized; for directional lights, against its
-	//	direction) and its distance (c_Infinity for directional lights).
-	//	False if the light doesn't reach the point.
-	__forceinline__ __device__ bool light_at(const optxLight& i_Light, float3 i_P, float3& o_Color, float3& o_ToLight,
-											 float& o_Distance)
-	{
-		const float3 color = load3(i_Light.m_Color);
-		const float3 position = load3(i_Light.m_Position);
-		const float3 direction = load3(i_Light.m_Direction);
-		switch (i_Light.m_Type)
-		{
-			case e_optxLightPoint:
-			{
-				o_ToLight = position - i_P;
-				o_Distance = sqrtf(dot(o_ToLight, o_ToLight));
-				o_Color = color * attenuation(i_Light, o_Distance);
-				return o_Distance > 0.0f;
-			}
-			case e_optxLightDirectional:
-			{
-				o_ToLight = direction * -1.0f;
-				o_Distance = c_Infinity;
-				o_Color = color;
-				return true;
-			}
-			default:	// projected
-			{
-				const float* M = i_Light.m_Matrix;
-				const float tx = i_P.x * M[0] + i_P.y * M[4] + i_P.z * M[8] + M[12];
-				const float ty = i_P.x * M[1] + i_P.y * M[5] + i_P.z * M[9] + M[13];
-				const float tz = i_P.x * M[2] + i_P.y * M[6] + i_P.z * M[10] + M[14];
-				const float tw = i_P.x * M[3] + i_P.y * M[7] + i_P.z * M[11] + M[15];
-				if (!(tz >= 0.0f && tz < i_Light.m_Far) || tw == 0.0f)
-				{
-					return false;
-				}
-				const float u = tx / tw, v = ty / tw;
-				float factor;
-				if (i_Light.m_InnerAngle <= i_Light.m_OuterAngle)
-				{
-					factor = elliptical_penumbra(i_Light.m_InnerAngle, i_Light.m_OuterAngle, i_Light.m_Aspect, u, v);
-				}
-				else
-				{
-					factor = (u >= 0.0f && u <= 1.0f && v >= 0.0f && v <= 1.0f) ? 1.0f : 0.0f;
-				}
-				if (i_Light.m_Type == e_optxLightProjected)
-				{
-					o_ToLight = position - i_P;
-					o_Distance = sqrtf(dot(o_ToLight, o_ToLight));
-					factor *= attenuation(i_Light, o_Distance);
-				}
-				else
-				{
-					o_ToLight = direction * -1.0f;
-					o_Distance = c_Infinity;
-				}
-				o_Color = color * factor;
-				if (i_Light.m_Texture != c_optxNoTexture && factor > 0.0f)
-				{
-					//	The projector image (or ramp) at the point, as the raster's projSampler
-					const optxTexture& texture = reinterpret_cast<const optxTexture*>(params.m_Textures)[i_Light.m_Texture];
-					const float4 tint = optxm::sample(texture, u, v, 0.0f);
-					o_Color = mul3(o_Color, make_float3(tint.x, tint.y, tint.z));
-				}
-				return factor > 0.0f;
-			}
-		}
-	}
-
-	__forceinline__ __device__ bool is_area(const optxLight& i_Light)
-	{
-		return i_Light.m_Radius > 0.0f &&
-			   (i_Light.m_Type == e_optxLightProjected || i_Light.m_Type == e_optxLightProjectedDirectional);
-	}
-
-	//	The solid angle of a directional area light's cone
-	__forceinline__ __device__ float cone_solid_angle(const optxLight& i_Light)
-	{
-		return 2.0f * c_Pi * fmaxf(1e-7f, 1.0f - i_Light.m_CosCone);
-	}
-
-	//	A point on a disk light (centre c, radius r, facing p), and the
-	//	disk's normal
-	__forceinline__ __device__ float3 disk_point(const optxLight& i_Light, float3 i_P, float u1, float u2, float3& o_Normal)
-	{
-		const float3 centre = load3(i_Light.m_Position);
-		o_Normal = normalize(i_P - centre);
-		float3 s, t;
-		basis(o_Normal, s, t);
-		const float r = i_Light.m_Radius * sqrtf(u1);
-		const float phi = 2.0f * c_Pi * u2;
-		return centre + s * (r * __cosf(phi)) + t * (r * __sinf(phi));
-	}
-
-	//	A direction in a directional area light's cone
-	__forceinline__ __device__ float3 cone_direction(const optxLight& i_Light, float u1, float u2)
-	{
-		const float3 axis = load3(i_Light.m_Direction) * -1.0f;
-		const float cos_a = 1.0f - u1 * (1.0f - i_Light.m_CosCone);
-		const float sin_a = sqrtf(fmaxf(0.0f, 1.0f - cos_a * cos_a));
-		const float phi = 2.0f * c_Pi * u2;
-		float3 s, t;
-		basis(axis, s, t);
-		return s * (sin_a * __cosf(phi)) + t * (sin_a * __sinf(phi)) + axis * cos_a;
-	}
-
-	__forceinline__ __device__ float power_heuristic(float a, float b)
-	{
-		const float a2 = a * a, b2 = b * b;
-		return a2 + b2 > 0.0f ? a2 / (a2 + b2) : 0.0f;
-	}
-
-	//	The lights that reach an instance: indices i_First .. i_First +
-	//	o_Count into the light set indices, or (o_bAll) every light
-	__forceinline__ __device__ void light_range(const optxInstanceData& i_Instance, unsigned int& o_First,
-												unsigned int& o_Count, bool& o_bAll)
-	{
-		o_bAll = i_Instance.m_LightSet == c_optxAllLights;
-		if (o_bAll)
-		{
-			o_First = 0;
-			o_Count = params.m_NumLights;
-		}
-		else
-		{
-			const optxLightSet set = reinterpret_cast<const optxLightSet*>(params.m_LightSets)[i_Instance.m_LightSet];
-			o_First = set.m_First;
-			o_Count = set.m_Count;
-		}
-	}
-
-	__forceinline__ __device__ const optxLight& light_of(unsigned int i_First, unsigned int i, bool i_bAll)
-	{
-		const optxLight* lights = reinterpret_cast<const optxLight*>(params.m_Lights);
-		if (i_bAll)
-		{
-			return lights[i];
-		}
-		return lights[reinterpret_cast<const unsigned int*>(params.m_LightIndices)[i_First + i]];
-	}
-
-	//	A point being shaded
-	struct Surface
-	{
-		float3			m_P;
-		float3			m_Geometric;	// facing the incoming ray
-		float3			m_Shading;		// normal-mapped, never past the horizon
-		float3			m_Origin;		// off the surface, for secondary rays
-		float3			m_Albedo;		// what bounces leave with
-		float			m_LodBase;		// the hit's ray-cone level, without a texture's size
-		bool			m_bReceivesShadow;
-		unsigned int	m_First;
-		unsigned int	m_Count;
-		bool			m_bAll;
-	};
-
-	__forceinline__ __device__ const optxMaterial* material_of(const Hit& i_Hit)
-	{
-		if (i_Hit.m_Material == c_optxNoMaterial || !params.m_Materials)
-		{
-			return NULL;
-		}
-		return reinterpret_cast<const optxMaterial*>(params.m_Materials) + i_Hit.m_Material;
-	}
-
-	__forceinline__ __device__ float4 material_sample(unsigned int i_Map, const Surface& i_Surface, const Hit& i_Hit)
-	{
-		return optxm::sample_lod(params.m_Textures, i_Map, i_Hit.m_UV, i_Surface.m_LodBase);
-	}
-
-	__forceinline__ __device__ float3 base_color(const optxMaterial& i_Material, const Surface& i_Surface, const Hit& i_Hit)
-	{
-		float3 base = load3(i_Material.m_BaseColor);
-		if (i_Material.m_BaseColorMap != c_optxNoTexture)
-		{
-			const float4 s = material_sample(i_Material.m_BaseColorMap, i_Surface, i_Hit);
-			base = mul3(base, make_float3(s.x, s.y, s.z));
-		}
-		return base;
-	}
-
-	__forceinline__ __device__ float metallic_of(const optxMaterial& i_Material, const Surface& i_Surface, const Hit& i_Hit)
-	{
-		float metallic = i_Material.m_Metallic;
-		if (i_Material.m_MetallicRoughnessMap != c_optxNoTexture)
-		{
-			metallic *= material_sample(i_Material.m_MetallicRoughnessMap, i_Surface, i_Hit).z;
-		}
-		return metallic;
-	}
-
-	__forceinline__ __device__ float roughness_of(const optxMaterial& i_Material, const Surface& i_Surface, const Hit& i_Hit)
-	{
-		float roughness = i_Material.m_Roughness;
-		if (i_Material.m_GlossMap != c_optxNoTexture && (i_Material.m_Flags & (e_optxMaterialGlossBlinn | e_optxMaterialGlossPhong)))
-		{
-			//	effTraceMaterial::RoughnessForGloss
-			const float gloss = material_sample(i_Material.m_GlossMap, i_Surface, i_Hit).x;
-			if (i_Material.m_Flags & e_optxMaterialGlossBlinn)
-			{
-				roughness = 1.0f - saturate(i_Material.m_Shininess * gloss);
-			}
-			else
-			{
-				const float alpha = sqrtf(2.0f / (fmaxf(i_Material.m_Shininess * gloss, 0.0f) + 2.0f));
-				roughness = saturate(sqrtf(alpha));
-			}
-		}
-		if (i_Material.m_MetallicRoughnessMap != c_optxNoTexture)
-		{
-			roughness *= material_sample(i_Material.m_MetallicRoughnessMap, i_Surface, i_Hit).y;
-		}
-		return roughness;
-	}
-
-	//	A hit made a shading point: lights, the normal map (as the raster's
-	//	GetBumpNormal: (map * 2 - 1) scaled by (s, s, 1) in the S, T, N
-	//	frame), bent back above the horizon, and the albedo bounces take.
-	//	i_Width: the ray cone's width at the hit.
-	__forceinline__ __device__ Surface make_surface(float3 i_P, const Hit& i_Hit, float3 i_Direction, float i_Width)
-	{
-		Surface s;
-		s.m_P = i_P;
-		s.m_Geometric = i_Hit.m_Geometric;
-		s.m_Shading = i_Hit.m_Shading;
-		s.m_Origin = i_P + i_Hit.m_Geometric * params.m_Epsilon;
-		const float cosine = fmaxf(fabsf(dot(i_Direction, i_Hit.m_Geometric)), 1e-4f);
-		s.m_LodBase = i_Hit.m_LodBase + __log2f(fmaxf(i_Width, 1e-30f) / cosine);
-		const optxInstanceData& instance = reinterpret_cast<const optxInstanceData*>(params.m_Instances)[i_Hit.m_Instance];
-		s.m_bReceivesShadow = (instance.m_Flags & e_optxInstanceReceivesShadow) != 0;
-		light_range(instance, s.m_First, s.m_Count, s.m_bAll);
-
-		const optxMaterial* material = material_of(i_Hit);
-		s.m_Albedo = make_float3(1.0f, 1.0f, 1.0f);
-		if (material)
-		{
-			if (material->m_NormalMap != c_optxNoTexture && material->m_NormalScale != 0.0f)
-			{
-				const float4 m = material_sample(material->m_NormalMap, s, i_Hit);
-				const float nx = (m.x * 2.0f - 1.0f) * material->m_NormalScale;
-				const float ny = (m.y * 2.0f - 1.0f) * material->m_NormalScale;
-				const float nz = m.z * 2.0f - 1.0f;
-				const float3 n = i_Hit.m_S * nx + i_Hit.m_T3 * ny + i_Hit.m_Shading * nz;
-				const float n2 = dot(n, n);
-				if (n2 > 1e-20f)
-				{
-					s.m_Shading = n * rsqrtf(n2);
-				}
-			}
-			s.m_Albedo = base_color(*material, s, i_Hit) * (1.0f - saturate(metallic_of(*material, s, i_Hit)));
-		}
-		//	Never past the horizon: a normal map can't light a surface's back
-		const float above = dot(s.m_Shading, s.m_Geometric);
-		if (above < 1e-3f)
-		{
-			s.m_Shading = normalize(s.m_Shading + s.m_Geometric * (1e-3f - above));
-		}
-		if (params.m_bAlbedoOverride)
-		{
-			s.m_Albedo = make_float3(params.m_Albedo, params.m_Albedo, params.m_Albedo);
-		}
-		return s;
-	}
-
-	//	The debug view's quantity at the first hit (optxDebugView)
-	__forceinline__ __device__ float3 debug_value(const Hit& i_Hit, const Surface& i_Surface, float3 i_Direction, float i_Width)
-	{
-		const optxMaterial* material = material_of(i_Hit);
-		switch (params.m_DebugView)
-		{
-			case e_optxDebugNormal:
-				return i_Surface.m_Shading * 0.5f + make_float3(0.5f, 0.5f, 0.5f);
-			case e_optxDebugBaseColor:
-				return material ? base_color(*material, i_Surface, i_Hit) : make_float3(1.0f, 1.0f, 1.0f);
-			case e_optxDebugRoughness:
-			{
-				const float r = material ? roughness_of(*material, i_Surface, i_Hit) : 1.0f;
-				return make_float3(r, r, r);
-			}
-			case e_optxDebugMetallic:
-			{
-				const float m = material ? metallic_of(*material, i_Surface, i_Hit) : 0.0f;
-				return make_float3(m, m, m);
-			}
-			case e_optxDebugEmission:
-			{
-				if (!material)
-				{
-					return make_float3(0.0f, 0.0f, 0.0f);
-				}
-				float3 e = load3(material->m_Emission);
-				if (material->m_EmissionMap != c_optxNoTexture)
-				{
-					const float4 s = material_sample(material->m_EmissionMap, i_Surface, i_Hit);
-					e = mul3(e, make_float3(s.x, s.y, s.z));
-				}
-				return e;
-			}
-			case e_optxDebugOpacity:
-			{
-				float o = 1.0f;
-				if (material && (material->m_Flags & (e_optxMaterialCutOut | e_optxMaterialTransparent)))
-				{
-					o = material->m_Opacity;
-					if (material->m_OpacityMap != c_optxNoTexture)
-					{
-						const float4 s = material_sample(material->m_OpacityMap, i_Surface, i_Hit);
-						o *= (material->m_Flags & e_optxMaterialOpacityAlpha) ? s.w : s.x;
-					}
-				}
-				return make_float3(o, o, o);
-			}
-			default:
-				return make_float3(0.0f, 0.0f, 0.0f);
-		}
-	}
 
 	__forceinline__ __device__ bool shadowed_pair(const Surface& i_Surface, const optxLight& i_Light)
 	{
 		return params.m_bShadows && i_Surface.m_bReceivesShadow && (i_Light.m_Flags & e_optxLightShadows);
 	}
 
+	__forceinline__ __device__ bool beauty()
+	{
+		return params.m_Mode == e_optxLightingBeauty;
+	}
+
 	//	Whether a light is sampled by both light samples and bounce rays
-	//	(an area light whose shadows are traced, with the cosine on)
+	//	(an area light whose shadows are traced; Illumination: with the
+	//	cosine on)
 	__forceinline__ __device__ bool weighted(const Surface& i_Surface, const optxLight& i_Light)
 	{
-		return is_area(i_Light) && shadowed_pair(i_Surface, i_Light) && params.m_bUseCosine &&
+		return is_area(i_Light) && shadowed_pair(i_Surface, i_Light) && (beauty() || params.m_bUseCosine) &&
 			   params.m_Sampling != e_optxSampleLights;
 	}
 
@@ -580,11 +179,18 @@ namespace
 		return params.m_bUseCosine ? saturate(dot(i_Direction, i_Surface.m_Shading)) : 1.0f;
 	}
 
-	//	The direct light at a surface by light samples (one per light), and
-	//	whether any light there is also reached by bounce rays
+	//	Whether a light sample's direction is blocked
+	__forceinline__ __device__ bool blocked(const Surface& i_Surface, float3 i_Wi, float i_Distance)
+	{
+		return dot(i_Wi, i_Surface.m_Geometric) <= 0.0f || occluded(i_Surface.m_Origin, i_Wi, shadow_tmax(i_Distance));
+	}
+
+	//	Illumination: the direct light at a surface by light samples (one
+	//	per light; the lights' diffuse colour), and whether any light there
+	//	is also reached by bounce rays
 	__forceinline__ __device__ float3 direct_light(const Surface& i_Surface, Rng& io_Rng, bool& o_bWeighted)
 	{
-		float3 sum = make_float3(0.0f, 0.0f, 0.0f);
+		float3 sum = splat3(0.0f);
 		o_bWeighted = false;
 		for (unsigned int i = 0; i < i_Surface.m_Count; ++i)
 		{
@@ -595,6 +201,7 @@ namespace
 			{
 				continue;
 			}
+			color = color * diffuse(light);
 			const bool shadows = shadowed_pair(i_Surface, light);
 			const bool mis = weighted(i_Surface, light);
 			o_bWeighted |= mis;
@@ -609,24 +216,7 @@ namespace
 			const float u1 = io_Rng.Next(), u2 = io_Rng.Next();
 			if (shadows && is_area(light))
 			{
-				if (light.m_Type == e_optxLightProjected)
-				{
-					float3 normal;
-					const float3 y = disk_point(light, i_Surface.m_P, u1, u2, normal);
-					const float3 to_y = y - i_Surface.m_P;
-					const float d2 = dot(to_y, to_y);
-					const float d = sqrtf(d2);
-					wi = to_y * (1.0f / d);
-					tmax = d;
-					const float cos_l = fmaxf(1e-6f, -dot(wi, normal));
-					pdf_light = d2 / (c_Pi * light.m_Radius * light.m_Radius * cos_l);
-				}
-				else
-				{
-					wi = cone_direction(light, u1, u2);
-					tmax = c_Infinity;
-					pdf_light = 1.0f / cone_solid_angle(light);
-				}
+				area_sample(light, i_Surface.m_P, u1, u2, wi, tmax, pdf_light);
 			}
 			else
 			{
@@ -638,13 +228,9 @@ namespace
 			{
 				continue;
 			}
-			if (shadows)
+			if (shadows && blocked(i_Surface, wi, tmax))
 			{
-				if (dot(wi, i_Surface.m_Geometric) <= 0.0f ||
-					occluded(i_Surface.m_Origin, wi, tmax < c_Infinity ? tmax * (1.0f - 1e-4f) - params.m_Epsilon : c_Infinity))
-				{
-					continue;
-				}
+				continue;
 			}
 			float weight = 1.0f;
 			if (mis)
@@ -656,16 +242,17 @@ namespace
 		return sum;
 	}
 
-	//	The light a bounce ray from a surface brings from the area lights it
-	//	reaches before i_THit (the nearest geometry, c_Infinity for none),
-	//	weighted against their light samples. With the cosine-weighted
-	//	bounce pdf (cos / pi), a hit's estimate is the light's radiance:
-	//	pi times the light at its centre over its solid angle density (a
-	//	disk: d^2 / (area cos); a cone: 1 / solid angle), so that a light
-	//	sample's estimate (colour times cosine) has the same expectation
+	//	Illumination: the light a bounce ray from a surface brings from the
+	//	area lights it reaches before i_THit (the nearest geometry,
+	//	c_Infinity for none), weighted against their light samples. With the
+	//	cosine-weighted bounce pdf (cos / pi), a hit's estimate is the
+	//	light's radiance: pi times the light at its centre over its solid
+	//	angle density (a disk: d^2 / (area cos); a cone: 1 / solid angle),
+	//	so that a light sample's estimate (colour times cosine) has the same
+	//	expectation
 	__forceinline__ __device__ float3 bounce_light(const Surface& i_Surface, float3 i_W, float i_THit)
 	{
-		float3 sum = make_float3(0.0f, 0.0f, 0.0f);
+		float3 sum = splat3(0.0f);
 		const float pdf_bounce = saturate(dot(i_W, i_Surface.m_Shading)) / c_Pi;
 		for (unsigned int i = 0; i < i_Surface.m_Count; ++i)
 		{
@@ -675,49 +262,14 @@ namespace
 				continue;
 			}
 			float3 color, to_light;
-			float distance;
-			if (!light_at(light, i_Surface.m_P, color, to_light, distance))
+			float distance, pdf_light;
+			if (!light_at(light, i_Surface.m_P, color, to_light, distance) ||
+				!area_hit(light, i_Surface.m_P, i_Surface.m_Origin, i_W, i_THit, pdf_light))
 			{
 				continue;
 			}
-			float value = 0.0f, pdf_light = 0.0f;
-			if (light.m_Type == e_optxLightProjected)
-			{
-				const float3 centre = load3(light.m_Position);
-				const float3 normal = normalize(i_Surface.m_P - centre);
-				const float facing = dot(i_W, normal);
-				if (facing >= 0.0f)
-				{
-					continue;
-				}
-				const float t = dot(centre - i_Surface.m_Origin, normal) / facing;
-				if (!(t > 0.0f) || t >= i_THit)
-				{
-					continue;
-				}
-				const float3 y = i_Surface.m_Origin + i_W * t;
-				const float3 off = y - centre;
-				if (dot(off, off) > light.m_Radius * light.m_Radius)
-				{
-					continue;
-				}
-				const float3 to_y = y - i_Surface.m_P;
-				const float d2 = dot(to_y, to_y);
-				const float area_cos = c_Pi * light.m_Radius * light.m_Radius * (-facing);
-				pdf_light = d2 / area_cos;
-				value = c_Pi * pdf_light;
-			}
-			else
-			{
-				if (i_THit < c_Infinity || dot(i_W, load3(light.m_Direction)) > -light.m_CosCone)
-				{
-					continue;
-				}
-				pdf_light = 1.0f / cone_solid_angle(light);
-				value = c_Pi * pdf_light;
-			}
 			const float weight = params.m_Sampling == e_optxSampleBounces ? 1.0f : power_heuristic(pdf_bounce, pdf_light);
-			sum = sum + color * (value * weight);
+			sum = sum + color * (diffuse(light) * c_Pi * pdf_light * weight);
 		}
 		return sum;
 	}
@@ -767,26 +319,337 @@ namespace
 			float tmax = distance;
 			if (is_area(light))
 			{
-				if (light.m_Type == e_optxLightProjected)
-				{
-					float3 normal;
-					const float3 to_y = disk_point(light, p, u1, u2, normal) - p;
-					tmax = sqrtf(dot(to_y, to_y));
-					wi = to_y * (1.0f / tmax);
-				}
-				else
-				{
-					wi = cone_direction(light, u1, u2);
-				}
+				float pdf;
+				area_sample(light, p, u1, u2, wi, tmax, pdf);
 			}
-			const bool blocked = dot(wi, i_Surface.m_Geometric) <= 0.0f ||
-								 occluded(i_Surface.m_Origin, wi, tmax < c_Infinity ? tmax * (1.0f - 1e-4f) - params.m_Epsilon : c_Infinity);
-			if (blocked)
+			if (blocked(i_Surface, wi, tmax))
 			{
 				mask *= 1.0f - saturate(cosine);
 			}
 		}
 		return mask;
+	}
+
+	//	Illumination Only: the light arriving at the first hit, then up to
+	//	m_Bounces diffuse bounces carrying the surfaces' albedo
+	__forceinline__ __device__ float3 illumination(Surface surface, Rng& rng, float width, float spread)
+	{
+		float3 radiance = splat3(0.0f);
+		float3 throughput = splat3(1.0f);
+		for (unsigned int bounce = 0;; ++bounce)
+		{
+			bool any_weighted = false;
+			radiance = radiance + mul3(direct_light(surface, rng, any_weighted), throughput);
+			if (bounce >= params.m_Bounces && !any_weighted)
+			{
+				break;
+			}
+			const float u1 = rng.Next(), u2 = rng.Next();
+			const float3 wi = cosine_direction(surface.m_Shading, u1, u2);
+			if (dot(wi, surface.m_Geometric) <= 0.0f)
+			{
+				break;	// below the surface: the shading normal leans past the geometric one
+			}
+			const Hit next = trace_camera(surface.m_Origin, wi, c_Infinity);
+			if (any_weighted)
+			{
+				radiance = radiance + mul3(bounce_light(surface, wi, next.m_bHit ? next.m_T : c_Infinity), throughput);
+			}
+			if (bounce >= params.m_Bounces || !next.m_bHit)
+			{
+				break;
+			}
+			//	The path leaves with this surface's diffuse albedo
+			throughput = mul3(throughput, surface.m_Albedo);
+			if (bounce + 1 >= 3)
+			{
+				const float survive = fminf(max3(throughput), 0.95f);
+				if (rng.Next() >= survive)
+				{
+					break;
+				}
+				throughput = throughput * (1.0f / survive);
+			}
+			spread += c_optxBounceSpread;
+			width += spread * next.m_T;
+			surface = make_surface(surface.m_Origin + wi * next.m_T, next, wi, width, false);
+		}
+		return radiance;
+	}
+
+	//------------------------------------------------------------------------
+	//	The beauty pass
+	//------------------------------------------------------------------------
+
+	//	What a light gives through the BRDF towards wo from direction wi:
+	//	pi (f_diffuse Cd + f_specular Cs) cos, Cd and Cs the light's colour
+	//	times its diffuse and specular switches
+	__forceinline__ __device__ float3 lit(const optxLight& i_Light, float3 i_Color, const optxb::Value& i_F, float i_Cosine)
+	{
+		return mul3(i_Color, (i_F.m_Diffuse * diffuse(i_Light) + i_F.m_Specular * specular(i_Light)) * (c_Pi * i_Cosine));
+	}
+
+	//	How much a light might give a point, for choosing one (step 26):
+	//	its unshadowed light there (attenuation, penumbra, projector
+	//	texture) times the cosine to its centre, as luminance; 0 if it can't
+	//	light the point at all
+	__forceinline__ __device__ float importance(const optxLight& i_Light, const Surface& i_Surface, float3& o_Color,
+												float3& o_ToLight, float& o_Distance)
+	{
+		if ((i_Light.m_Flags & (e_optxLightDiffuse | e_optxLightSpecular)) == 0 ||
+			!light_at(i_Light, i_Surface.m_P, o_Color, o_ToLight, o_Distance))
+		{
+			return 0.0f;
+		}
+		const float cosine = dot(normalize(o_ToLight), i_Surface.m_Shading);
+		return luminance(o_Color) * fmaxf(cosine, 0.0f);
+	}
+
+	//	The light chosen at a surface: one in proportion to its importance
+	//	(one random number, kept uniform as it is reused down the list), or
+	//	every light (e_optxSelectAll)
+	struct Chosen
+	{
+		unsigned int	m_Index;		// in the surface's light range
+		float3			m_Color;
+		float3			m_ToLight;
+		float			m_Distance;
+		float			m_Importance;
+		float			m_Total;		// the importances' sum: the light's chance is m_Importance / m_Total
+	};
+
+	__forceinline__ __device__ bool choose_light(const Surface& i_Surface, float u, Chosen& o_Chosen)
+	{
+		o_Chosen.m_Total = 0.0f;
+		bool found = false;
+		for (unsigned int i = 0; i < i_Surface.m_Count; ++i)
+		{
+			const optxLight& light = light_of(i_Surface.m_First, i, i_Surface.m_bAll);
+			float3 color, to_light;
+			float distance;
+			const float w = importance(light, i_Surface, color, to_light, distance);
+			if (!(w > 0.0f))
+			{
+				continue;
+			}
+			o_Chosen.m_Total += w;
+			const float chance = w / o_Chosen.m_Total;
+			if (u < chance)
+			{
+				u = u / chance;
+				o_Chosen.m_Index = i;
+				o_Chosen.m_Color = color;
+				o_Chosen.m_ToLight = to_light;
+				o_Chosen.m_Distance = distance;
+				o_Chosen.m_Importance = w;
+				found = true;
+			}
+			else
+			{
+				u = (u - chance) / (1.0f - chance);
+			}
+		}
+		return found;
+	}
+
+	//	The chance a light had of being chosen at a surface (1 with every
+	//	light selected)
+	__forceinline__ __device__ float select_chance(const optxLight& i_Light, const Surface& i_Surface, float i_Total)
+	{
+		if (params.m_LightSelection == e_optxSelectAll)
+		{
+			return 1.0f;
+		}
+		float3 color, to_light;
+		float distance;
+		const float w = importance(i_Light, i_Surface, color, to_light, distance);
+		return i_Total > 0.0f ? w / i_Total : 0.0f;
+	}
+
+	//	One light's sample at a surface through the BRDF: shadowed, and
+	//	(area lights also reached by BRDF rays) weighted against the BRDF's
+	//	pdf, the light's pdf times i_Chance (its chance of being chosen)
+	__forceinline__ __device__ float3 light_sample(const Surface& i_Surface, float3 i_Wo, const optxLight& i_Light, float3 i_Color,
+												   float3 i_ToLight, float i_Distance, float i_Chance, Rng& io_Rng)
+	{
+		const bool shadows = shadowed_pair(i_Surface, i_Light);
+		const bool mis = weighted(i_Surface, i_Light);
+		const float u1 = io_Rng.Next(), u2 = io_Rng.Next();
+		if (mis && params.m_Sampling == e_optxSampleBounces)
+		{
+			return splat3(0.0f);	// BRDF rays alone
+		}
+		float3 wi;
+		float pdf_light = 0.0f;
+		float tmax = i_Distance;
+		if (shadows && is_area(i_Light))
+		{
+			area_sample(i_Light, i_Surface.m_P, u1, u2, wi, tmax, pdf_light);
+		}
+		else
+		{
+			wi = normalize(i_ToLight);
+		}
+		const float cosine = dot(wi, i_Surface.m_Shading);
+		if (cosine <= 0.0f)
+		{
+			return splat3(0.0f);
+		}
+		const optxb::Value f = optxb::evaluate(i_Surface.m_Bsdf, i_Surface.m_Shading, i_Wo, wi);
+		float3 value = lit(i_Light, i_Color, f, cosine);
+		if (max3(value) <= 0.0f || (shadows && blocked(i_Surface, wi, tmax)))
+		{
+			return splat3(0.0f);
+		}
+		float weight = 1.0f / i_Chance;
+		if (mis)
+		{
+			weight *= power_heuristic(i_Chance * pdf_light, f.m_Pdf);
+		}
+		return value * weight;
+	}
+
+	//	The beauty pass's direct light at a surface (next-event estimation):
+	//	one chosen light's sample over its chance, or with e_optxSelectAll
+	//	every light's; o_Total: the importances' sum (for select_chance), and
+	//	whether any light there is also reached by BRDF rays
+	__forceinline__ __device__ float3 beauty_direct(const Surface& i_Surface, float3 i_Wo, Rng& io_Rng, float& o_Total,
+													bool& o_bWeighted)
+	{
+		o_Total = 0.0f;
+		o_bWeighted = false;
+		for (unsigned int i = 0; i < i_Surface.m_Count; ++i)
+		{
+			o_bWeighted |= weighted(i_Surface, light_of(i_Surface.m_First, i, i_Surface.m_bAll));
+		}
+		if (params.m_LightSelection == e_optxSelectAll)
+		{
+			float3 sum = splat3(0.0f);
+			for (unsigned int i = 0; i < i_Surface.m_Count; ++i)
+			{
+				const optxLight& light = light_of(i_Surface.m_First, i, i_Surface.m_bAll);
+				float3 color, to_light;
+				float distance;
+				if (light_at(light, i_Surface.m_P, color, to_light, distance))
+				{
+					sum = sum + light_sample(i_Surface, i_Wo, light, color, to_light, distance, 1.0f, io_Rng);
+				}
+			}
+			return sum;
+		}
+		Chosen chosen;
+		if (!choose_light(i_Surface, io_Rng.Next(), chosen))
+		{
+			return splat3(0.0f);
+		}
+		o_Total = chosen.m_Total;
+		const optxLight& light = light_of(i_Surface.m_First, chosen.m_Index, i_Surface.m_bAll);
+		return light_sample(i_Surface, i_Wo, light, chosen.m_Color, chosen.m_ToLight, chosen.m_Distance,
+							chosen.m_Importance / chosen.m_Total, io_Rng);
+	}
+
+	//	The light a BRDF ray from a surface brings from the area lights it
+	//	reaches before i_THit, weighted against their light samples (each
+	//	light's pdf times its chance of being chosen). An area light's
+	//	radiance is pi times its light at the surface over its solid angle
+	//	density (see optxLightTypes.h)
+	__forceinline__ __device__ float3 beauty_bounce_light(const Surface& i_Surface, const optxb::Sample& i_Sample, float i_THit,
+														  float i_Total)
+	{
+		float3 sum = splat3(0.0f);
+		const float cosine = dot(i_Sample.m_Wi, i_Surface.m_Shading);
+		for (unsigned int i = 0; i < i_Surface.m_Count; ++i)
+		{
+			const optxLight& light = light_of(i_Surface.m_First, i, i_Surface.m_bAll);
+			if (!weighted(i_Surface, light))
+			{
+				continue;
+			}
+			float3 color, to_light;
+			float distance, pdf_light;
+			if (!light_at(light, i_Surface.m_P, color, to_light, distance) ||
+				!area_hit(light, i_Surface.m_P, i_Surface.m_Origin, i_Sample.m_Wi, i_THit, pdf_light))
+			{
+				continue;
+			}
+			float weight = 1.0f;
+			if (params.m_Sampling != e_optxSampleBounces)
+			{
+				weight = power_heuristic(i_Sample.m_Value.m_Pdf, select_chance(light, i_Surface, i_Total) * pdf_light);
+			}
+			//	L f cos / pdf, L = pi pdf_light C
+			sum = sum + lit(light, color, i_Sample.m_Value, cosine) * (pdf_light * weight / i_Sample.m_Value.m_Pdf);
+		}
+		return sum;
+	}
+
+	//	Scaled down so no component exceeds m_MaxRadiance (0: as it is)
+	__forceinline__ __device__ float3 clamp_radiance(float3 c)
+	{
+		if (params.m_MaxRadiance > 0.0f)
+		{
+			const float m = max3(c);
+			if (m > params.m_MaxRadiance)
+			{
+				return c * (params.m_MaxRadiance / m);
+			}
+		}
+		return c;
+	}
+
+	//	The beauty pass's radiance along a camera ray from its first hit: a
+	//	unidirectional path tracer with next-event estimation and multiple
+	//	importance sampling (optxLightingParams.h)
+	__forceinline__ __device__ float3 beauty_path(Surface surface, float3 direction, Rng& rng, float width, float spread)
+	{
+		float3 radiance = surface.m_Emission;
+		float3 throughput = splat3(1.0f);
+		for (unsigned int bounce = 0;; ++bounce)
+		{
+			const float3 wo = direction * -1.0f;
+			float total;
+			bool any_weighted;
+			const float3 direct = mul3(beauty_direct(surface, wo, rng, total, any_weighted), throughput);
+			radiance = radiance + (bounce == 0 ? direct : clamp_radiance(direct));
+			if (bounce >= params.m_Bounces && !any_weighted)
+			{
+				break;
+			}
+			const float u0 = rng.Next(), u1 = rng.Next(), u2 = rng.Next();
+			const optxb::Sample sample = optxb::sample(surface.m_Bsdf, surface.m_Shading, wo, u0, u1, u2);
+			if (sample.m_Lobe == optxb::e_LobeNone || dot(sample.m_Wi, surface.m_Geometric) <= 0.0f)
+			{
+				break;	// no direction, or one below the surface
+			}
+			const Hit next = trace_camera(surface.m_Origin, sample.m_Wi, c_Infinity);
+			if (any_weighted)
+			{
+				const float3 light = mul3(beauty_bounce_light(surface, sample, next.m_bHit ? next.m_T : c_Infinity, total),
+										  throughput);
+				radiance = radiance + (bounce == 0 ? light : clamp_radiance(light));
+			}
+			if (bounce >= params.m_Bounces || !next.m_bHit)
+			{
+				break;
+			}
+			throughput = mul3(throughput, sample.m_Weight);
+			if (bounce + 1 >= 3)
+			{
+				const float survive = fminf(max3(throughput), 0.95f);
+				if (rng.Next() >= survive)
+				{
+					break;
+				}
+				throughput = throughput * (1.0f / survive);
+			}
+			//	The cone widens by the lobe's spread: a mirror keeps it sharp
+			spread += sample.m_Lobe == optxb::e_LobeDiffuse ? c_optxBounceSpread : c_optxBounceSpread * surface.m_Bsdf.m_Roughness;
+			width += spread * next.m_T;
+			direction = sample.m_Wi;
+			surface = make_surface(surface.m_Origin + direction * next.m_T, next, direction, width, true);
+			radiance = radiance + clamp_radiance(mul3(surface.m_Emission, throughput));
+		}
+		return radiance;
 	}
 }
 
@@ -798,10 +661,15 @@ extern "C" __global__ void __raygen__lighting()
 		return;
 	}
 	const unsigned int pixel = index.y * params.m_Width + index.x;
-	const float3 background = make_float3(params.m_Background[0], params.m_Background[1], params.m_Background[2]);
+	const float3 background = load3(params.m_Background);
+	const bool hdr = beauty();
 
-	float3 sum = make_float3(0.0f, 0.0f, 0.0f);
+	float3 sum = splat3(0.0f);
+	float3 albedo = splat3(0.0f);		// beauty: first-hit guides
+	float3 normal = splat3(0.0f);
+	float coverage = 0.0f;
 	float first_depth = 1.0f;
+	float first_view_depth = c_Infinity;
 	for (unsigned int s = 0; s < params.m_Samples; ++s)
 	{
 		const unsigned int sample = params.m_FirstSample + s;
@@ -826,6 +694,7 @@ extern "C" __global__ void __raygen__lighting()
 
 		const Hit first = trace_camera(near_point, direction, length);
 		float depth = 1.0f;
+		float view_depth = c_Infinity;
 		if (!first.m_bHit)
 		{
 			sum = sum + background;
@@ -834,68 +703,35 @@ extern "C" __global__ void __raygen__lighting()
 		{
 			const float3 position = near_point + direction * first.m_T;
 			depth = project(params.m_ViewProj, position.x, position.y, position.z, w).z;
-			float width = params.m_ConeWidth + params.m_ConeSpread * first.m_T;
-			float spread = params.m_ConeSpread;
-			Surface surface = make_surface(position, first, direction, width);
+			view_depth = dot(position, load3(params.m_ViewZ)) + params.m_ViewZ[3];
+			const float width = params.m_ConeWidth + params.m_ConeSpread * first.m_T;
+			const Surface surface = make_surface(position, first, direction, width, hdr);
 
 			if (params.m_Mode == e_optxLightingDebug)
 			{
-				sum = sum + debug_value(first, surface, direction, width);
+				sum = sum + debug_value(first, surface);
 			}
 			else if (params.m_Mode == e_optxLightingShadowMask)
 			{
-				const float mask = shadow_mask(surface, rng);
-				sum = sum + make_float3(mask, mask, mask);
+				sum = sum + splat3(shadow_mask(surface, rng));
+			}
+			else if (hdr)
+			{
+				sum = sum + beauty_path(surface, direction, rng, width, params.m_ConeSpread);
+				albedo = albedo + surface.m_BaseColor;
+				normal = normal + surface.m_Shading;
+				coverage += 1.0f;
 			}
 			else
 			{
-				float3 radiance = make_float3(0.0f, 0.0f, 0.0f);
-				float3 throughput = make_float3(1.0f, 1.0f, 1.0f);
-				for (unsigned int bounce = 0;; ++bounce)
-				{
-					bool any_weighted = false;
-					radiance = radiance + mul3(direct_light(surface, rng, any_weighted), throughput);
-					if (bounce >= params.m_Bounces && !any_weighted)
-					{
-						break;
-					}
-					const float u1 = rng.Next(), u2 = rng.Next();
-					const float3 wi = cosine_direction(surface.m_Shading, u1, u2);
-					if (dot(wi, surface.m_Geometric) <= 0.0f)
-					{
-						break;	// below the surface: the shading normal leans past the geometric one
-					}
-					const Hit next = trace_camera(surface.m_Origin, wi, c_Infinity);
-					if (any_weighted)
-					{
-						radiance = radiance + mul3(bounce_light(surface, wi, next.m_bHit ? next.m_T : c_Infinity), throughput);
-					}
-					if (bounce >= params.m_Bounces || !next.m_bHit)
-					{
-						break;
-					}
-					//	The path leaves with this surface's diffuse albedo
-					throughput = mul3(throughput, surface.m_Albedo);
-					if (bounce + 1 >= 3)
-					{
-						const float survive = fminf(fmaxf(throughput.x, fmaxf(throughput.y, throughput.z)), 0.95f);
-						if (rng.Next() >= survive)
-						{
-							break;
-						}
-						throughput = throughput * (1.0f / survive);
-					}
-					spread += c_optxBounceSpread;
-					width += spread * next.m_T;
-					surface = make_surface(surface.m_Origin + wi * next.m_T, next, wi, width);
-				}
-				sum = sum + radiance;
+				sum = sum + illumination(surface, rng, width, params.m_ConeSpread);
 			}
 		}
 
 		if (sample == 0)
 		{
 			first_depth = fminf(fmaxf(depth, 0.0f), 1.0f);
+			first_view_depth = view_depth;
 		}
 	}
 
@@ -908,7 +744,28 @@ extern "C" __global__ void __raygen__lighting()
 		depth = before.w;
 	}
 	*accum = make_float4(sum.x, sum.y, sum.z, depth);
-	if (params.m_Resolve)
+	if (hdr)
+	{
+		//	Two more planes: albedo and coverage; normal and sample 0's view depth
+		const unsigned int count = params.m_Width * params.m_Height;
+		float view_depth = first_view_depth;
+		if (params.m_FirstSample != 0)
+		{
+			const float4 a = accum[count];
+			const float4 n = accum[2 * count];
+			albedo = albedo + make_float3(a.x, a.y, a.z);
+			coverage += a.w;
+			normal = normal + make_float3(n.x, n.y, n.z);
+			view_depth = n.w;
+		}
+		accum[count] = make_float4(albedo.x, albedo.y, albedo.z, coverage);
+		accum[2 * count] = make_float4(normal.x, normal.y, normal.z, view_depth);
+		if (params.m_Resolve)
+		{
+			write_hdr_pixel(pixel, accum, params.m_FirstSample + params.m_Samples);
+		}
+	}
+	else if (params.m_Resolve)
 	{
 		write_pixel(pixel, sum, params.m_FirstSample + params.m_Samples, depth);
 	}
@@ -922,8 +779,13 @@ extern "C" __global__ void __raygen__resolve()
 		return;
 	}
 	const unsigned int pixel = index.y * params.m_Width + index.x;
-	const float4 accum = reinterpret_cast<const float4*>(params.m_Accum)[pixel];
-	write_pixel(pixel, make_float3(accum.x, accum.y, accum.z), params.m_FirstSample, accum.w);
+	const float4* accum = reinterpret_cast<const float4*>(params.m_Accum) + pixel;
+	if (beauty())
+	{
+		write_hdr_pixel(pixel, accum, params.m_FirstSample);
+		return;
+	}
+	write_pixel(pixel, make_float3(accum->x, accum->y, accum->z), params.m_FirstSample, accum->w);
 }
 
 extern "C" __global__ void __miss__camera()
@@ -991,7 +853,7 @@ extern "C" __global__ void __closesthit__camera()
 		}
 	}
 
-	float3 s = make_float3(0.0f, 0.0f, 0.0f), t = make_float3(0.0f, 0.0f, 0.0f);
+	float3 s = splat3(0.0f), t = splat3(0.0f);
 	if (instance.m_TangentOffset != c_optxNoAttribute && instance.m_BitangentOffset != c_optxNoAttribute)
 	{
 		s = optixTransformVectorFromObjectToWorldSpace(read_float3(v0 + instance.m_TangentOffset) * b0 +

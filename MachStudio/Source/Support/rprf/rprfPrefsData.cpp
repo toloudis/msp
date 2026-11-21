@@ -149,7 +149,8 @@ rprfPrefsData::rprfPrefsData()
 	m_TraceCaptureSamples("Trace Capture Samples", 0),
 	m_TraceAORays("Trace AO Rays", 1),
 	m_TraceBounces("Trace Bounces", 2),
-	m_TraceDebugView("Trace Debug View", 0)
+	m_TraceDebugView("Trace Debug View", 0),
+	m_TraceMaxRadiance("Trace Max Radiance", 0.0f)
 {
 	m_TraceDebugView.SetEnumTag(0, "Off");
 	m_TraceDebugView.SetEnumTag(1, "Base Colour");

@@ -5,10 +5,11 @@
 **	renderers (g3dSceneRendererCreate), installed by GraphicsOptiXLayer
 **	over GraphicsVulkan's creator, which it keeps as the inner creator.
 **
-**	Default, HDR and ambient occlusion give the OptiX renderer in its AO
-**	mode (g3dTraceRendererOptiX: until the beauty pass is traced, AO stands
-**	in for the other two); Illumination Only and Shadow Mask give it in
-**	those modes; every other type is the inner creator's (Vulkan's).
+**	Default and HDR give the OptiX renderer in its beauty mode
+**	(g3dTraceRendererOptiX: the path-traced beauty pass through the HDR
+**	post chain), ambient occlusion in its AO mode; Illumination Only and
+**	Shadow Mask give it in those modes; every other type is the inner
+**	creator's (Vulkan's).
 **
 **	Extra Large Technology
 \****************************************************************************/

@@ -49,6 +49,10 @@
 
 namespace
 {
+	//	The environment blur level at roughness 1 (Pbr.hlsl's c_EnvMaxLod):
+	//	a reflection map's reflBlur over it is the roughness as sharp
+	const float c_EnvMaxLod = 6.0f;
+
 	//	How a .fx shader maps to the model
 	enum Rule
 	{
@@ -186,6 +190,37 @@ namespace
 																			  : effTraceMaterial::RoughnessFromExponent(shininess);
 	}
 
+	//	A reflective Blinn or Phong material (see the header): its reflection
+	//	map's strength, Fresnel bias and sharpness through KHR specular
+	void reflective(const effShaderParams& i_Params, effTraceMaterial& io_Material)
+	{
+		float reflectivity = 1.0f, bias = 0.2f, blur = 0.0f;
+		get_float(i_Params, "g_reflectivity", reflectivity);
+		get_float(i_Params, "fresnelBias", bias);
+		get_float(i_Params, "reflBlur", blur);
+		const float f0 = clamp01(reflectivity * clamp01(bias));
+		const float f90 = clamp01(reflectivity);
+		io_Material.m_Specular = f90;
+		const float r = (io_Material.m_Ior - 1.0f) / (io_Material.m_Ior + 1.0f);
+		const float dielectric = r * r * f90;
+		const float grey = dielectric > 0.0f ? f0 / dielectric : 1.0f;
+		io_Material.m_SpecularColor = maFloatRGBA(grey, grey, grey, 1.0f);
+		if (matTexture* factor = get_texture(i_Params, "reflectFactorMap"))
+		{
+			if (!io_Material.m_pSpecularColorMap)
+			{
+				io_Material.m_pSpecularColorMap = factor;
+			}
+			else
+			{
+				drop(io_Material, "the reflection factor map (the specular map is the specular colour)");
+			}
+		}
+		const float sharp = clamp01(std::max(0.0f, blur) / c_EnvMaxLod);
+		io_Material.m_Roughness = std::min(io_Material.m_Roughness, sharp);
+		io_Material.m_ReflectionRoughness = sharp;
+	}
+
 	//	Emission: g_emissive x g_emissiveIntensity x emissiveMap
 	void emission(const effShaderParams& i_Params, effTraceMaterial& io_Material)
 	{
@@ -297,7 +332,11 @@ namespace
 
 		if (get_texture(i_Params, "cubeMap") || get_texture(i_Params, "CubeReflMap") || get_texture(i_Params, "cubeTex"))
 		{
-			drop(io_Material, "cube-map reflections (the BRDF reflects)");
+			if (rule == e_RuleBlinn || rule == e_RulePhong || rule == e_RuleBlinnSkin)
+			{
+				reflective(i_Params, io_Material);
+			}
+			drop(io_Material, "the reflection map (the BRDF reflects the scene)");
 		}
 	}
 

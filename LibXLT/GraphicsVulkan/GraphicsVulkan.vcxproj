@@ -207,6 +207,7 @@
     <ClCompile Include="shdw\private\shdwVelocityStateManager.cpp" />
     <ClCompile Include="shdw\private\GlareDefVk.cpp" />
     <ClCompile Include="shdw\private\shdwHDRRendererVk.cpp" />
+    <ClCompile Include="shdw\private\shdwPostProcessVk.cpp" />
     <ClCompile Include="shdw\private\shdwShadowLayerRendererVk.cpp" />
     <ClCompile Include="shdw\private\shdwPlanarReflectionRendererVk.cpp" />
     <ClCompile Include="shdw\private\shdwCubeMapRendererVk.cpp" />
@@ -376,6 +377,7 @@
     <ClInclude Include="shdw\shdwVelocityStateManager.hpp" />
     <ClInclude Include="shdw\private\GlareDefVk.h" />
     <ClInclude Include="shdw\shdwHDRRendererVk.hpp" />
+    <ClInclude Include="shdw\shdwPostProcessVk.hpp" />
     <ClInclude Include="shdw\shdwShadowLayerRendererVk.hpp" />
     <ClInclude Include="shdw\shdwPlanarReflectionRendererVk.hpp" />
     <ClInclude Include="shdw\shdwCubeMapRendererVk.hpp" />

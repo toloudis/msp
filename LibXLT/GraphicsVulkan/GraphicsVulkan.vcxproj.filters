@@ -467,6 +467,9 @@
     <ClCompile Include="shdw\private\shdwHDRRendererVk.cpp">
       <Filter>shdw\private</Filter>
     </ClCompile>
+    <ClCompile Include="shdw\private\shdwPostProcessVk.cpp">
+      <Filter>shdw\private</Filter>
+    </ClCompile>
     <ClCompile Include="shdw\private\shdwShadowLayerRendererVk.cpp">
       <Filter>shdw\private</Filter>
     </ClCompile>
@@ -967,6 +970,9 @@
       <Filter>shdw\private</Filter>
     </ClInclude>
     <ClInclude Include="shdw\shdwHDRRendererVk.hpp">
+      <Filter>shdw</Filter>
+    </ClInclude>
+    <ClInclude Include="shdw\shdwPostProcessVk.hpp">
       <Filter>shdw</Filter>
     </ClInclude>
     <ClInclude Include="shdw\shdwShadowLayerRendererVk.hpp">

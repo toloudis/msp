@@ -22,9 +22,11 @@
 **	  radius / GetScale).
 **	Any light traces shadows when GetShadowSource, except the headlight;
 **	GetIsSinglePassLight is the rasterizers' and is ignored.
-**	Its colour is the intensity colour times the intensity factor (black
-**	when its diffuse light, or the preference for diffuse lighting, is
-**	off).
+**	Its colour is the intensity colour times the intensity factor; it
+**	lights diffuse surfaces (e_optxLightDiffuse) when its diffuse light and
+**	the preference for diffuse lighting are on, and gives highlights
+**	(e_optxLightSpecular) when its specular light and the preference for
+**	specular lighting are on.
 **
 **	A projected light's texture (g3dProjectedLight::GetTexture: its image,
 **	or its ramp's texture) is added to the renderer's texture table in

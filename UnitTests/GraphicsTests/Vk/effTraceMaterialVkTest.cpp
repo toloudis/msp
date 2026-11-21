@@ -159,6 +159,40 @@ TEST(effTraceMaterial, BlinnBySemantic)
 	});
 }
 
+TEST(effTraceMaterial, ReflectiveBlinnReflectsThroughKhrSpecular)
+{
+	gtBackend::Run(gtBackend::e_Vulkan, []()
+	{
+		gtTempDir dir;
+		gtSceneBuilder b;
+		matTexture* cube = b.Keep(gtScene::CheckerTexture(dir.GetPath(), 16, 16, 4));
+		matTexture* factor = b.Keep(gtScene::CheckerTexture(dir.GetPath(), 16, 16, 2));
+		matMaterial* m = b.Keep(gtScene::ShaderMaterial("Blinn.fx", gtScene::e_Defaults));
+		gtScene::SetFloat(m, "g_shininess", 0.3f);		// a broad highlight: roughness 0.7
+		gtScene::SetFloat(m, "g_reflectivity", 0.8f);
+		gtScene::SetFloat(m, "fresnelBias", 0.25f);
+		gtScene::SetFloat(m, "reflBlur", 1.5f);
+
+		//	no reflection map: the highlight's lobe, unchanged
+		effTraceMaterial t = effTraceMaterial::Of(*m);
+		EXPECT_FLOAT_EQ(0.7f, t.m_Roughness);
+		EXPECT_FLOAT_EQ(1.0f, t.m_ReflectionRoughness);
+
+		//	with one: F0 = reflectivity x bias, F90 = reflectivity, as sharp as the map
+		gtScene::SetTexture(m, "cubeMap", cube);
+		gtScene::SetTexture(m, "reflectFactorMap", factor);
+		t = effTraceMaterial::Of(*m);
+		EXPECT_FLOAT_EQ(0.8f, t.m_Specular) << "F90";
+		const float r = (t.m_Ior - 1) / (t.m_Ior + 1);
+		EXPECT_NEAR(0.2f, r * r * t.m_SpecularColor.GetRed() * t.m_Specular, 1e-5f) << "F0";
+		EXPECT_FLOAT_EQ(t.m_SpecularColor.GetRed(), t.m_SpecularColor.GetGreen());
+		EXPECT_FLOAT_EQ(t.m_SpecularColor.GetRed(), t.m_SpecularColor.GetBlue());
+		EXPECT_FLOAT_EQ(0.25f, t.m_Roughness) << "reflBlur / 6";
+		EXPECT_FLOAT_EQ(0.25f, t.m_ReflectionRoughness);
+		EXPECT_EQ(factor, t.m_pSpecularColorMap);
+	});
+}
+
 TEST(effTraceMaterial, PhongLambertSimpleCartoon)
 {
 	gtBackend::Run(gtBackend::e_Vulkan, []()

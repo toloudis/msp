@@ -106,6 +106,7 @@
     <ClCompile Include="optx\private\optxContext.cpp" />
     <ClCompile Include="optx\private\optxRayQuery.cpp" />
     <ClCompile Include="optx\private\optxTextureProbe.cpp" />
+    <ClCompile Include="optx\private\optxBsdfProbe.cpp" />
     <ClCompile Include="optx\private\optxAO.cpp" />
     <ClCompile Include="optx\private\optxLighting.cpp" />
     <ClCompile Include="optx\private\optxFrameShare.cpp" />
@@ -126,6 +127,7 @@
     <ClInclude Include="optx\optxContext.hpp" />
     <ClInclude Include="optx\optxRayQuery.hpp" />
     <ClInclude Include="optx\optxTextureProbe.hpp" />
+    <ClInclude Include="optx\optxBsdfProbe.hpp" />
     <ClInclude Include="optx\optxAO.hpp" />
     <ClInclude Include="optx\optxLighting.hpp" />
     <ClInclude Include="optx\optxFrameShare.hpp" />
@@ -134,6 +136,12 @@
     <ClInclude Include="optx\private\Programs\optxLightTypes.h" />
     <ClInclude Include="optx\private\Programs\optxMaterialTypes.h" />
     <ClInclude Include="optx\private\Programs\optxMaterial.h" />
+    <ClInclude Include="optx\private\Programs\optxVector.h" />
+    <ClInclude Include="optx\private\Programs\optxBsdf.h" />
+    <ClInclude Include="optx\private\Programs\optxBsdfProbeParams.h" />
+    <ClInclude Include="optx\private\Programs\optxRays.h" />
+    <ClInclude Include="optx\private\Programs\optxLights.h" />
+    <ClInclude Include="optx\private\Programs\optxSurface.h" />
     <ClInclude Include="G3d\g3dTraceRendererOptiX.hpp" />
     <ClInclude Include="G3d\g3dLightTableOptiX.hpp" />
     <ClInclude Include="G3d\g3dMaterialTableOptiX.hpp" />
@@ -161,6 +169,7 @@
     <None Include="optx\private\Programs\optxAO.cu" />
     <None Include="optx\private\Programs\optxLighting.cu" />
     <None Include="optx\private\Programs\optxTextureProbe.cu" />
+    <None Include="optx\private\Programs\optxBsdfProbe.cu" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">

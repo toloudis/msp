@@ -20,6 +20,9 @@
 #ifndef GVK_VKDIMAGE_HPP
 #include "GraphicsVulkan/vkd/vkdImage.hpp"
 #endif
+#ifndef GVK_MATRENDERTARGETTEXTURE_HPP
+#include "GraphicsVulkan/Mat/matRenderTargetTexture.hpp"
+#endif
 #ifndef G2D_RENDERTARGET_HPP
 #include "Graphics/G2d/g2dRenderTarget.hpp"
 #endif
@@ -60,11 +63,18 @@ namespace gox
 		//	The raster's world view-projection (g3dSceneRenderUtil::
 		//	SetViewingTransforms for world space: camera, then projection
 		//	mirrored in x for D3D's left-handed coordinates), row vectors
-		void view_projection(const camCamera& i_Camera, double o_ViewProj[16])
+		void view_projection(const camCamera& i_Camera, double o_ViewProj[16], double o_View[16])
 		{
 			maMatrix4x4 camera, projection;
 			i_Camera.GetCameraMatrix(camera);
 			i_Camera.GetProjectionMatrix(projection);
+			for (int r = 0; r < 4; ++r)
+			{
+				for (int c = 0; c < 4; ++c)
+				{
+					o_View[r * 4 + c] = camera(r, c);
+				}
+			}
 			projection.ScaleBy(-1.0f, 1.0f, 1.0f);
 			for (int r = 0; r < 4; ++r)
 			{
@@ -209,6 +219,8 @@ namespace gox
 			   m_Radius == i_Other.m_Radius && m_AORays == i_Other.m_AORays && m_Bounces == i_Other.m_Bounces &&
 			   m_Albedo == i_Other.m_Albedo && m_Sampling == i_Other.m_Sampling && m_bUseCosine == i_Other.m_bUseCosine &&
 			   m_bShadows == i_Other.m_bShadows && m_Seed == i_Other.m_Seed &&
+			   m_Selection == i_Other.m_Selection && m_MaxRadiance == i_Other.m_MaxRadiance && m_bDof == i_Other.m_bDof &&
+			   std::memcmp(m_Dof, i_Other.m_Dof, sizeof(m_Dof)) == 0 &&
 			   std::memcmp(m_ViewProj, i_Other.m_ViewProj, sizeof(m_ViewProj)) == 0 &&
 			   std::memcmp(m_Background, i_Other.m_Background, sizeof(m_Background)) == 0;
 	}
@@ -217,7 +229,7 @@ namespace gox
 	{
 		return m_SamplesPerFrame == i_Other.m_SamplesPerFrame && m_SampleLimit == i_Other.m_SampleLimit &&
 			   m_CaptureSamples == i_Other.m_CaptureSamples && m_AORays == i_Other.m_AORays &&
-			   m_Bounces == i_Other.m_Bounces;
+			   m_Bounces == i_Other.m_Bounces && m_MaxRadiance == i_Other.m_MaxRadiance;
 	}
 
 	g3dTraceRendererOptiX::g3dTraceRendererOptiX(Mode i_Mode, g3dGasCacheOptiX& i_Cache, gvk::vkdDevice& i_Device,
@@ -238,6 +250,8 @@ namespace gox
 		, m_bAlbedoOverride(false)
 		, m_DebugView(-1)
 		, m_Sampling(e_optxSampleBoth)
+		, m_Selection(e_optxSelectOne)
+		, m_MaxRadiance(0.0f)
 		, m_Seed(0)
 		, m_bRestart(true)
 		, m_bHaveFrame(false)
@@ -266,6 +280,7 @@ namespace gox
 		optxContext::MakeCurrent();
 		m_Share.Release();
 		m_Accum.Free();
+		m_FrameBuffer.ReleaseSurfaces();
 		m_BVH.Release();
 		m_Lights.Release();
 		m_Materials.Release();
@@ -285,6 +300,7 @@ namespace gox
 		settings.m_CaptureSamples = unsigned(std::max(0, prefs.m_TraceCaptureSamples));
 		settings.m_AORays = unsigned(std::max(0, prefs.m_TraceAORays));
 		settings.m_Bounces = unsigned(std::max(0, prefs.m_TraceBounces));
+		settings.m_MaxRadiance = std::max(0.0f, prefs.m_TraceMaxRadiance);
 		if (settings == m_Prefs)
 		{
 			return;
@@ -295,6 +311,7 @@ namespace gox
 		SetCaptureSamples(settings.m_CaptureSamples);
 		SetAORays(settings.m_AORays);
 		SetBounces(settings.m_Bounces);
+		SetMaxRadiance(settings.m_MaxRadiance);
 	}
 
 	void g3dTraceRendererOptiX::SetSamplesPerFrame(unsigned i_nSamples)
@@ -343,10 +360,10 @@ namespace gox
 		m_Seed = i_Seed;
 	}
 
-	//	The debug view the e_AO mode shows (0: none)
+	//	The debug view the e_Beauty mode shows (0: none)
 	unsigned g3dTraceRendererOptiX::debug_view() const
 	{
-		if (m_Mode != e_AO)
+		if (m_Mode != e_Beauty)
 		{
 			return 0;
 		}
@@ -400,9 +417,14 @@ namespace gox
 		{
 			return 0;	// the frame is skipped (a window with no area)
 		}
+		const unsigned debug = debug_view();
+		const bool hdr_image = hdr(debug);
 		optxColorOrder order = e_optxColorRGBA;
 		optxDepthLayout layout = e_optxDepthD24;
-		if (!optxFrameShare::GetColorOrder(color->Format(), order) || color->Samples() != VK_SAMPLE_COUNT_1_BIT ||
+		//	The beauty pass's own image goes through the post chain, which
+		//	draws into any colour target
+		const bool color_ok = hdr_image || optxFrameShare::GetColorOrder(color->Format(), order);
+		if (!color_ok || color->Samples() != VK_SAMPLE_COUNT_1_BIT ||
 			(depth && (!optxFrameShare::GetDepthLayout(depth->Format(), layout) || depth->Samples() != VK_SAMPLE_COUNT_1_BIT)))
 		{
 			if (!m_bLoggedTarget)
@@ -413,7 +435,6 @@ namespace gox
 			}
 			return raster_only(i_pTarget, i_Camera, i_Scene, i_ViewerLayers, i_fSimTime);
 		}
-		const unsigned debug = debug_view();
 		const bool lighting_program = lighting() || debug != 0;
 		if (!create_programs(lighting_program))
 		{
@@ -435,7 +456,8 @@ namespace gox
 		const g3dPrefs::g3dRenderPrefs& prefs = g3dPrefs::CurrentPrefs();
 		Key key;
 		key.m_SceneVersion = m_BVH.GetSceneVersion();
-		view_projection(i_Camera, key.m_ViewProj);
+		double view[16];
+		view_projection(i_Camera, key.m_ViewProj, view);
 		key.m_Width = color->Width();
 		key.m_Height = color->Height();
 		key.m_Mode = m_Mode;
@@ -461,17 +483,46 @@ namespace gox
 		{
 			key.m_LightVersion = m_Lights.GetVersion();
 			key.m_bShadows = prefs.m_bEnableShadows ? 1 : 0;
-			if (m_Mode == e_Illumination)
+			if (m_Mode == e_Illumination || m_Mode == e_Beauty)
 			{
 				key.m_Bounces = m_nBounces;
 				key.m_bAlbedoOverride = m_bAlbedoOverride ? 1 : 0;
 				key.m_Albedo = m_bAlbedoOverride ? m_Albedo : 0.0f;
 				key.m_Sampling = m_Sampling;
+			}
+			if (m_Mode == e_Illumination)
+			{
 				key.m_bUseCosine = prefs.m_bIlluminationUsesNormals ? 1 : 0;
 			}
-			//	What the raster passes clear to: black, or white for the mask
-			const float background = (m_Mode == e_ShadowMask) ? 1.0f : 0.0f;
-			key.m_Background[0] = key.m_Background[1] = key.m_Background[2] = background;
+			if (m_Mode == e_Beauty)
+			{
+				key.m_Selection = m_Selection;
+				key.m_MaxRadiance = m_MaxRadiance;
+				//	what g3dTargetRenderer cleared the target to
+				const float* background = color->LastClearColor();
+				for (int c = 0; c < 3; ++c)
+				{
+					key.m_Background[c] = srgb_to_linear(background[c]);
+				}
+				//	The DOF prep's distances, as the post chain sets them
+				camDOFData dof;
+				i_Camera.GetDOFParams(dof);
+				if (prefs.m_bEnableDOF && dof.m_MaxFarBlur != -1)
+				{
+					key.m_bDof = 1;
+					key.m_Dof[0] = dof.m_NearBlurDist;
+					key.m_Dof[1] = dof.m_NearFocalDist;
+					key.m_Dof[2] = dof.m_FarFocalDist;
+					key.m_Dof[3] = dof.m_FarBlurDist;
+					key.m_Dof[4] = dof.m_MaxFarBlur;
+				}
+			}
+			else
+			{
+				//	What the raster passes clear to: black, or white for the mask
+				const float background = (m_Mode == e_ShadowMask) ? 1.0f : 0.0f;
+				key.m_Background[0] = key.m_Background[1] = key.m_Background[2] = background;
+			}
 		}
 		else
 		{
@@ -500,7 +551,7 @@ namespace gox
 		const unsigned goal = capturing ? GetCaptureSamples() : m_nSampleLimit;
 		if (m_nSamples < goal)
 		{
-			if (!trace(m_Key, order, layout, goal, capturing))
+			if (!trace(m_Key, view, order, layout, goal, capturing))
 			{
 				m_bHaveFrame = false;
 				return raster_only(i_pTarget, i_Camera, i_Scene, i_ViewerLayers, i_fSimTime);
@@ -511,13 +562,17 @@ namespace gox
 			}
 		}
 
-		if (m_bHaveFrame)
+		int triangles = m_BVH.GetTriangleCount();
+		if (m_bHaveFrame && m_Share.GetColorLayout() == optxFrameShare::e_ColorHalf)
+		{
+			triangles += post_process(i_pTarget, depth, i_Camera, i_Scene, i_fSimTime);
+		}
+		else if (m_bHaveFrame)
 		{
 			G3D_PROFILE_SCOPE("Composite");
 			m_Share.CopyTo(color, depth);
 		}
 
-		int triangles = m_BVH.GetTriangleCount();
 		{
 			G3D_PROFILE_SCOPE("RasterOverlay");
 			triangles += m_Overlay.Render(i_pTarget, i_Camera, i_Scene, i_ViewerLayers, i_fSimTime);
@@ -529,11 +584,14 @@ namespace gox
 	//	i_bAll launches until it is reached or the capture is aborted), then
 	//	resolved into the shared buffers: by the last launch itself, or (an
 	//	aborted capture) by a resolve launch
-	bool g3dTraceRendererOptiX::trace(const Key& i_Key, const optxColorOrder i_Order, const optxDepthLayout i_Layout,
-									  unsigned i_nGoal, bool i_bAll)
+	bool g3dTraceRendererOptiX::trace(const Key& i_Key, const double i_View[16], const optxColorOrder i_Order,
+									  const optxDepthLayout i_Layout, unsigned i_nGoal, bool i_bAll)
 	{
-		const size_t accum_bytes = size_t(i_Key.m_Width) * i_Key.m_Height * 4 * sizeof(float);
-		if (!m_Share.Resize(i_Key.m_Width, i_Key.m_Height) || !m_Accum.Reserve(accum_bytes))
+		//	The beauty pass: three planes of accumulation, an HDR frame
+		const bool beauty = hdr(i_Key.m_DebugView);
+		const size_t accum_bytes = size_t(i_Key.m_Width) * i_Key.m_Height * 4 * sizeof(float) * (beauty ? 3 : 1);
+		const optxFrameShare::ColorLayout color_layout = beauty ? optxFrameShare::e_ColorHalf : optxFrameShare::e_Color8;
+		if (!m_Share.Resize(i_Key.m_Width, i_Key.m_Height, color_layout) || !m_Accum.Reserve(accum_bytes))
 		{
 			return false;
 		}
@@ -586,7 +644,20 @@ namespace gox
 			lit.m_Epsilon = epsilon;
 			lit.m_Albedo = i_Key.m_Albedo;
 			lit.m_Mode = i_Key.m_DebugView ? e_optxLightingDebug
-										   : (m_Mode == e_ShadowMask) ? e_optxLightingShadowMask : e_optxLightingIllumination;
+										   : (m_Mode == e_ShadowMask) ? e_optxLightingShadowMask
+										   : (m_Mode == e_Beauty) ? e_optxLightingBeauty : e_optxLightingIllumination;
+			lit.m_LightSelection = i_Key.m_Selection;
+			lit.m_MaxRadiance = i_Key.m_MaxRadiance;
+			//	View-space depth: the camera matrix's third column
+			for (int r = 0; r < 4; ++r)
+			{
+				lit.m_ViewZ[r] = float(i_View[r * 4 + 2]);
+			}
+			for (int i = 0; i < 4; ++i)
+			{
+				lit.m_Dof[i] = i_Key.m_Dof[i];
+			}
+			lit.m_DofCutoff = i_Key.m_Dof[4];
 			lit.m_Bounces = i_Key.m_Bounces;
 			lit.m_Sampling = i_Key.m_Sampling;
 			lit.m_bUseCosine = i_Key.m_bUseCosine;
@@ -628,6 +699,7 @@ namespace gox
 		}
 		ao.m_Color = lit.m_Color = m_Share.Color();	// the pair BeginWrite picked
 		ao.m_Depth = lit.m_Depth = m_Share.Depth();
+		lit.m_Aux = (beauty && i_Key.m_bDof) ? m_Share.Aux() : 0;
 		bool resolved = false;
 		do
 		{
@@ -688,5 +760,36 @@ namespace gox
 		}
 		m_bHaveFrame = true;
 		return true;
+	}
+
+	//	Step 3 of Render for the beauty pass: the HDR frame into the post
+	//	chain's scene texture and the traced depth into the target's, then
+	//	the post chain into the target. Its DOF prep copies the colour with
+	//	the traced blurriness in alpha over the scene texture (the colour is
+	//	the same). Returns the triangles the post chain drew.
+	int g3dTraceRendererOptiX::post_process(g2dRenderTarget* i_pTarget, gvk::vkdImage* i_pDepth, const camCamera& i_Camera,
+											const g3dScene& i_Scene, float i_fSimTime)
+	{
+		m_FrameBuffer.CreateSurfaces(i_pTarget, 0);
+		gvk::matRenderTargetTexture* scene = m_FrameBuffer.HDRRenderTargetTex();
+		if (!scene || !scene->GetImage())
+		{
+			return 0;
+		}
+		{
+			G3D_PROFILE_SCOPE("Composite");
+			m_Share.CopyTo(scene->GetImage(), i_pDepth);
+		}
+		gvk::shdwPostProcessVk::Options options;
+		options.m_bAATarget = false;
+		options.m_bOverlayLayers = false;	// the raster overlay draws every layer's untraced nodes
+		options.m_DofPrep = [this, scene](float)
+		{
+			m_Share.CopyAuxTo(scene->GetImage());
+			return 0;
+		};
+		const int triangles = m_Post.Run(i_pTarget, m_FrameBuffer, i_Camera, i_Scene, i_fSimTime, options);
+		i_pTarget->MakeCurrent();
+		return triangles;
 	}
 }

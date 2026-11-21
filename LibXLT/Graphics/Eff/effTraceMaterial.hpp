@@ -39,11 +39,23 @@
 **	- Every material: the normal map from NormalsData (scale m_BumpScale;
 **	  a Skin shader's normalTex instead when set, scale g_bumpMapScale),
 **	  opacity from effOpacity::Of, the UV transform from UVTransform(0).
+**	- Reflective materials (a Blinn- or Phong-family shader with its
+**	  reflection map set: cubeMap, CubeReflMap or cubeTex): the raster
+**	  reflects map(R) x g_reflectivity x fastFresnel(fresnelBias, ...),
+**	  blurred by reflBlur. The traced BRDF reflects the scene instead, as
+**	  strongly: F0 = g_reflectivity x fresnelBias and F90 = g_reflectivity
+**	  through KHR specular (specular factor F90; the specular colour grey,
+**	  scaled so the IOR's dielectric F0 times it reaches F0), so Schlick's
+**	  curve stands in for fastFresnel; roughness at most reflBlur /
+**	  c_EnvMaxLod (6, Pbr.hlsl's), so the reflection is as sharp as the
+**	  map's (m_ReflectionRoughness caps a gloss map's roughness the same
+**	  way); reflectFactorMap is the specular colour map when the shader has
+**	  no specular map. The highlight sharpens with it: one specular lobe.
 **	- Dropped, listed in m_Dropped (Of logs each shader's list once): other
 **	  material layers; fur and displacement (the surface is traced bare,
-**	  undisplaced); glow and outline (post effects, not light); cube-map
-**	  reflections (the BRDF reflects in Part 3d); and the shader's own
-**	  effects named above (subsurface scattering, flakes, anisotropy,
+**	  undisplaced); glow and outline (post effects, not light); the
+**	  reflection map itself (the BRDF reflects the scene); and the shader's
+**	  own effects named above (subsurface scattering, flakes, anisotropy,
 **	  second lobes, water waves).
 **
 **	Double-sidedness is the fragment's (g3dFragment::GetDoubleSided), and
@@ -95,6 +107,7 @@ struct effTraceMaterial
 	Gloss			m_GlossMode = e_GlossNone;
 	float			m_Shininess = 0.0f;					// with m_pGlossMap: what its red scales
 	matTexture*		m_pGlossMap = nullptr;
+	float			m_ReflectionRoughness = 1.0f;		// the gloss map's roughness is at most this (reflective materials)
 
 	float			m_Specular = 0.0f;					// KHR_materials_specular's factor
 	maFloatRGBA		m_SpecularColor = maFloatRGBA(1, 1, 1, 1);

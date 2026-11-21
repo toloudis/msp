@@ -188,7 +188,7 @@ TEST(mainCommandLine, HelpListsEveryFlag)
 		"-gfx", "-gfxValidation",
 		"-capSampling", "-capJitter", "-capMotionSamples", "-capPasses", "-capHardwareAA",
 		"-capTraceSamples", "-capTraceSamplesPerFrame", "-capTraceSampleLimit", "-capTraceAORays",
-		"-capTraceBounces", "-capTraceDebug",
+		"-capTraceBounces", "-capTraceDebug", "-capTraceMaxRadiance",
 	};
 	for (const char* flag : flags)
 	{
@@ -360,6 +360,8 @@ TEST(mainCommandLine, CaptureNewFlagsBadValue)
 		"-render s.mab -capTraceBounces two",
 		"-render s.mab -capTraceDebug albedo",
 		"-render s.mab -capTraceDebug 1",
+		"-render s.mab -capTraceMaxRadiance -1",
+		"-render s.mab -capTraceMaxRadiance bright",
 	};
 	for (const char* text : lines)
 	{
@@ -395,6 +397,15 @@ TEST(mainCommandLine, CaptureTraceFlagsInRange)
 					act(mainCommandLine::e_CapTraceAORays, "64"),
 					act(mainCommandLine::e_CapTraceBounces, "0"),
 					act(mainCommandLine::e_CapTraceBounces, "32")}, line);
+	EXPECT_TRUE(line.m_Warnings.empty());
+}
+
+TEST(mainCommandLine, CaptureTraceMaxRadianceTakesNumbers)
+{
+	mainCommandLine line = mainCommandLine::Parse("-render s.mab -capTraceMaxRadiance 0 -capTraceMaxRadiance 12.5");
+	expect_actions({act(mainCommandLine::e_Render, "s.mab"),
+					act(mainCommandLine::e_CapTraceMaxRadiance, "0"),
+					act(mainCommandLine::e_CapTraceMaxRadiance, "12.5")}, line);
 	EXPECT_TRUE(line.m_Warnings.empty());
 }
 

@@ -76,12 +76,22 @@ namespace gox
 		light.m_Direction[2] = 1.0f;
 		light.m_Texture = c_optxNoTexture;
 
-		//	effShaderBaseVk's get_light_info: colour times intensity factor
-		if (i_Light.IsDiffuseEnabled() && g3dPrefs::CurrentPrefs().m_bEnableDiffuseLighting)
+		//	effShaderBaseVk's get_light_info: colour times intensity factor,
+		//	lighting diffuse surfaces and giving highlights as its switches
+		//	and the preferences say (baking turns highlights off: the tracer
+		//	doesn't bake)
+		const maFloatRGBA& color = i_Light.GetIntensity();
+		const float factor = i_Light.GetIntensityFactor();
+		set3(light.m_Color, color.GetRed() * factor, color.GetGreen() * factor, color.GetBlue() * factor);
+		const g3dPrefs::g3dRenderPrefs& prefs = g3dPrefs::CurrentPrefs();
+		unsigned flags = 0;
+		if (i_Light.IsDiffuseEnabled() && prefs.m_bEnableDiffuseLighting)
 		{
-			const maFloatRGBA& color = i_Light.GetIntensity();
-			const float factor = i_Light.GetIntensityFactor();
-			set3(light.m_Color, color.GetRed() * factor, color.GetGreen() * factor, color.GetBlue() * factor);
+			flags |= e_optxLightDiffuse;
+		}
+		if (i_Light.IsSpecularEnabled() && prefs.m_bEnableSpecularLighting)
+		{
+			flags |= e_optxLightSpecular;
 		}
 
 		const bool shadows = i_Light.GetShadowSource() && !i_bHeadlight;
@@ -133,7 +143,7 @@ namespace gox
 			light.m_Type = e_optxLightDirectional;
 			set_direction(light.m_Direction, directional->GetDirection());
 		}
-		light.m_Flags = shadows ? unsigned(e_optxLightShadows) : 0u;
+		light.m_Flags = flags | (shadows ? unsigned(e_optxLightShadows) : 0u);
 		return light;
 	}
 

@@ -520,6 +520,7 @@ namespace rprfPrefsUtil
 				o_Data.m_TraceAORays.SetVisible(bVisible);
 				o_Data.m_TraceBounces.SetVisible(bVisible);
 				o_Data.m_TraceDebugView.SetVisible(bVisible);
+				o_Data.m_TraceMaxRadiance.SetVisible(bVisible);
 			}
 
 			if(l_CategoryMap["Render Passes from File"] != NULL )
@@ -969,6 +970,14 @@ namespace rprfPrefsUtil
 			pTraceDebug->AddItem(std::string("Emission"), 5);
 			pTraceDebug->AddItem(std::string("Opacity"), 6);
 			o_PrefsObject->AddProperty( pTraceDebug );
+
+			pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_TraceMaxRadiance), "Ray Tracing", "Max Radiance");
+			pNUDUII->SetDescription("Limits fireflies: light reaching a pixel after the first bounce is scaled down so no colour component exceeds this (0: no limit, unbiased). Direct light is never limited.");
+			pNUDUII->SetDecimalPlaces(2);
+			pNUDUII->SetMinimum(0.0f);
+			pNUDUII->SetMaximum(1000000.0f);
+			pNUDUII->SetRestrictFlag(true);
+			o_PrefsObject->AddProperty( pNUDUII );
 		}
 
 //#ifdef ACTIVATE_RENDERMAN

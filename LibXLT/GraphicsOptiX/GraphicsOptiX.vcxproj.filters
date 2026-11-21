@@ -24,6 +24,7 @@
     <ClCompile Include="optx\private\optxContext.cpp"><Filter>optx</Filter></ClCompile>
     <ClCompile Include="optx\private\optxRayQuery.cpp"><Filter>optx</Filter></ClCompile>
     <ClCompile Include="optx\private\optxTextureProbe.cpp"><Filter>optx</Filter></ClCompile>
+    <ClCompile Include="optx\private\optxBsdfProbe.cpp"><Filter>optx</Filter></ClCompile>
     <ClCompile Include="optx\private\optxAO.cpp"><Filter>optx</Filter></ClCompile>
     <ClCompile Include="optx\private\optxLighting.cpp"><Filter>optx</Filter></ClCompile>
     <ClCompile Include="optx\private\optxFrameShare.cpp"><Filter>optx</Filter></ClCompile>
@@ -46,6 +47,7 @@
     <ClInclude Include="optx\optxContext.hpp"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\optxRayQuery.hpp"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\optxTextureProbe.hpp"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\optxBsdfProbe.hpp"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\optxAO.hpp"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\optxLighting.hpp"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\optxFrameShare.hpp"><Filter>optx</Filter></ClInclude>
@@ -68,6 +70,12 @@
     <ClInclude Include="optx\private\optxEmbeddedPrograms.hpp"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\private\Programs\optxRayQueryParams.h"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\private\Programs\optxTextureProbeParams.h"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\private\Programs\optxBsdfProbeParams.h"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\private\Programs\optxVector.h"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\private\Programs\optxBsdf.h"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\private\Programs\optxRays.h"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\private\Programs\optxLights.h"><Filter>optx</Filter></ClInclude>
+    <ClInclude Include="optx\private\Programs\optxSurface.h"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="optx\private\Programs\optxSceneTypes.h"><Filter>optx</Filter></ClInclude>
     <ClInclude Include="G3d\g3dSceneBVHOptiX.hpp"><Filter>G3d</Filter></ClInclude>
     <ClInclude Include="G3d\g3dGasCacheOptiX.hpp"><Filter>G3d</Filter></ClInclude>
@@ -81,5 +89,6 @@
     <None Include="optx\private\Programs\optxAO.cu"><Filter>optx</Filter></None>
     <None Include="optx\private\Programs\optxLighting.cu"><Filter>optx</Filter></None>
     <None Include="optx\private\Programs\optxTextureProbe.cu"><Filter>optx</Filter></None>
+    <None Include="optx\private\Programs\optxBsdfProbe.cu"><Filter>optx</Filter></None>
   </ItemGroup>
 </Project>

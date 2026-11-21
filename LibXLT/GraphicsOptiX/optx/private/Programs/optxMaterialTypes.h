@@ -76,6 +76,7 @@ namespace gox
 		float			m_Cutoff;
 		unsigned int	m_OpacityMap;
 		float			m_UV[6];				// u' = [0]u + [1]v + [2], v' = [3]u + [4]v + [5]
-		float			m_Pad[5];			// to 144 bytes, a multiple of 16
+		float			m_ReflectionRoughness;	// a gloss map's roughness is at most this (1: no limit)
+		float			m_Pad[4];			// to 144 bytes, a multiple of 16
 	};
 }
