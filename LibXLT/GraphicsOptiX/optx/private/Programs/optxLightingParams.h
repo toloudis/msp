@@ -64,6 +64,19 @@
 **	  colour sums and coverage (the samples that hit); first-hit shading
 **	  normal sums (w unused). The resolve writes the linear mean
 **	  (unclamped) and the coverage as RGBA16F into m_Color.
+**	- e_optxLightingReflection: Reflection Only, traced: the beauty pass
+**	  (everything above, its output included) with its first hit changed.
+**	  There, nothing is emitted, no light is sampled and the diffuse lobe
+**	  is skipped: one direction is sampled from the specular lobe alone
+**	  (GGX visible normals) and weighted by f_spec cos / pdf_spec, so the
+**	  BRDF's Fresnel (Schlick from F0 to F90) is the reflection's weight: a
+**	  metal tints it, it grows at grazing angles, and a surface with no
+**	  specular (F0 and F90 black) reflects nothing. That ray takes all the
+**	  light it finds (an area light it hits, the environment if it misses:
+**	  no light sample there to weigh it against); the surface it reaches is
+**	  lit as the beauty pass's first hit (its emission, direct light, then
+**	  m_Bounces bounces). Camera misses add m_Background, never the
+**	  environment.
 **	- e_optxLightingIllumination: the light arriving at the first hit, as
 **	  the raster Illumination Only pass draws it (light colour times
 **	  attenuation, penumbra and the cosine, summed over the lights that
@@ -120,7 +133,8 @@ namespace gox
 		e_optxLightingIllumination = 0,
 		e_optxLightingShadowMask = 1,
 		e_optxLightingDebug = 2,
-		e_optxLightingBeauty = 3
+		e_optxLightingBeauty = 3,
+		e_optxLightingReflection = 4
 	};
 
 	//	How the beauty pass picks the light it samples at a hit

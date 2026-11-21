@@ -154,7 +154,8 @@ namespace gox
 
 	g3dSceneRenderer* g3dSceneRendererCreateOptiX::CreateReflectionOnlyRenderer()
 	{
-		return m_pInner->CreateReflectionOnlyRenderer();
+		g3dSceneRenderer* renderer = create_tracer(g3dTraceRendererOptiX::e_ReflectionOnly);
+		return renderer ? renderer : m_pInner->CreateReflectionOnlyRenderer();
 	}
 
 	g3dSceneRenderer* g3dSceneRendererCreateOptiX::CreateGlowRenderer()

@@ -29,6 +29,8 @@
 **	times the diffuse weight averaged over light directions, as
 **	luminance), and the pdf is the mixture of both
 **	lobes, so multiple importance sampling sees the true pdf.
+**	sample_specular samples the specular lobe alone, with its own pdf
+**	(Reflection Only's first hit).
 **
 **	Directions are world-space unit vectors: wo towards the viewer, wi
 **	towards the light; n the shading normal. A view below the shading
@@ -247,6 +249,50 @@ namespace optxb
 			return s;
 		}
 		s.m_Weight = (s.m_Value.m_Diffuse + s.m_Value.m_Specular) * (cosine / s.m_Value.m_Pdf);
+		return s;
+	}
+
+	//	A direction from the specular lobe alone (Reflection Only's first
+	//	hit): m_Value has no diffuse part and the specular lobe's own pdf,
+	//	and m_Weight is f_spec cos / pdf_spec (the lobe's Fresnel included).
+	//	A direction below the shading normal, or a lobe that reflects
+	//	nothing (F0 and F90 black), gives no sample.
+	__forceinline__ __device__ Sample sample_specular(const Bsdf& i_Bsdf, float3 i_N, float3 i_Wo, float u1, float u2)
+	{
+		Sample s;
+		s.m_Lobe = e_LobeNone;
+		s.m_Weight = splat3(0.0f);
+		s.m_Value.m_Diffuse = s.m_Value.m_Specular = splat3(0.0f);
+		s.m_Value.m_Pdf = 0.0f;
+		if (max3(i_Bsdf.m_F0) <= 0.0f && max3(i_Bsdf.m_F90) <= 0.0f)
+		{
+			s.m_Wi = i_N;
+			return s;
+		}
+		const float3 wo = view_above(i_N, i_Wo);
+		const float NdotV = fmaxf(dot(i_N, wo), c_MinCosine);
+		float3 t, b;
+		basis(i_N, t, b);
+		const float3 local = make_float3(dot(wo, t), dot(wo, b), NdotV);
+		const float3 m = sample_visible_normal(local, i_Bsdf.m_Alpha, u1, u2);
+		const float3 h = t * m.x + b * m.y + i_N * m.z;
+		s.m_Wi = h * (2.0f * dot(wo, h)) - wo;
+		const float cosine = dot(i_N, s.m_Wi);
+		if (cosine <= 0.0f)
+		{
+			return s;
+		}
+		const Value v = evaluate(i_Bsdf, i_N, i_Wo, s.m_Wi);
+		const float3 H = normalize(s.m_Wi + wo);
+		const float pdf = specular_pdf(NdotV, saturate(dot(i_N, H)), i_Bsdf.m_Alpha);
+		if (!(pdf > 0.0f))
+		{
+			return s;
+		}
+		s.m_Value.m_Specular = v.m_Specular;
+		s.m_Value.m_Pdf = pdf;
+		s.m_Weight = v.m_Specular * (cosine / pdf);
+		s.m_Lobe = e_LobeSpecular;
 		return s;
 	}
 }

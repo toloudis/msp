@@ -36,6 +36,15 @@
 **	environment, the one most fragments have (under a render state) is
 **	chosen.
 **
+**	3d-3, Reflection Only (e_ReflectionOnly, the Reflection Only type): a
+**	floor under a glowing ceiling reflects the ceiling times the BRDF's
+**	Fresnel at normal incidence (chrome all of it, gold tinted by its F0, a
+**	dielectric 4%, a Lambert nothing); a chrome floor shows a lit red
+**	ceiling as the beauty pass sees it from the mirrored eye; nothing at
+**	the first hit (emission, direct light, diffuse) adds light; camera
+**	misses are black, never the environment, which a mirror still
+**	reflects.
+**
 **	With MSP_GT_AO_IMAGES set to a folder, the tone-mapped pictures are
 **	saved there.
 **
@@ -1453,5 +1462,271 @@ TEST(g3dBeautyOptiX, MostCommonEnvironmentWithoutTheGlobalOne)
 		a->SetRenderState(NULL);
 		b->SetRenderState(NULL);
 		c->SetRenderState(NULL);
+	});
+}
+
+//----------------------------------------------------------------------------
+//	3d-3: Reflection Only
+//----------------------------------------------------------------------------
+
+namespace
+{
+	//	The renderer the creator gives for Reflection Only
+	std::unique_ptr<g3dTraceRendererOptiX> reflection_renderer()
+	{
+		g3dSceneRenderer* renderer = g3dSceneRendererCreate::CreateReflectionOnlyRenderer();
+		g3dTraceRendererOptiX* traced = dynamic_cast<g3dTraceRendererOptiX*>(renderer);
+		EXPECT_NE(nullptr, traced) << "the type isn't the OptiX renderer";
+		if (!traced)
+		{
+			delete renderer;
+			return nullptr;
+		}
+		EXPECT_EQ(g3dTraceRendererOptiX::e_ReflectionOnly, traced->GetMode());
+		return std::unique_ptr<g3dTraceRendererOptiX>(traced);
+	}
+
+	//	The mean of a channel over the 2 i_Half x 2 i_Half pixels about the
+	//	centre (symmetric, so a mirrored view gives the same)
+	double centre_mean(const std::vector<float>& i_Hdr, int i_Channel, int i_Half = 2)
+	{
+		double sum = 0;
+		int count = 0;
+		for (int y = c_Size / 2 - i_Half; y < c_Size / 2 + i_Half; ++y)
+		{
+			for (int x = c_Size / 2 - i_Half; x < c_Size / 2 + i_Half; ++x)
+			{
+				sum += hdr_at(i_Hdr, x, y)[i_Channel];
+				++count;
+			}
+		}
+		return sum / count;
+	}
+
+	double max_value(const std::vector<float>& i_Hdr)
+	{
+		double peak = 0;
+		for (size_t i = 0; i < i_Hdr.size(); ++i)
+		{
+			if (i % 4 != 3)
+			{
+				peak = std::max(peak, double(i_Hdr[i]));
+			}
+		}
+		return peak;
+	}
+
+	//	A Pbr.fx material that glows (base black, fully rough)
+	matMaterial* glowing(gtSceneBuilder& io_Builder, const maFloatRGBA& i_Emission, float i_Strength)
+	{
+		matMaterial* material = pbr(io_Builder, maFloatRGBA(0, 0, 0, 1), 0.0f, 1.0f);
+		gtScene::SetColor(material, effPbrData::c_Emissive, i_Emission);
+		gtScene::SetFloat(material, effPbrData::c_EmissiveStrength, i_Strength);
+		return material;
+	}
+
+	void constant_falloff(g3dPointLight* io_pLight)
+	{
+		io_pLight->SetFalloff0(1.0f);
+		io_pLight->SetFalloff1(0.0f);
+		io_pLight->SetFalloff2(0.0f);
+		io_pLight->SetFalloff3(0.0f);
+		io_pLight->SetFalloffStart(0.0f);
+	}
+}
+
+TEST(g3dBeautyOptiX, ReflectionOnlyIsWeightedByTheBrdfsFresnel)
+{
+	gtBackend::RunOptiX([]()
+	{
+		//	A floor of each material under a glowing ceiling (z = 40) of
+		//	radiance E, seen straight down from z = 20: the centre reflects E
+		//	times the BRDF's Fresnel at normal incidence, F0
+		const float E[3] = { 2.0f, 0.5f, 0.25f };
+		auto render = [&](matMaterial* (*i_Floor)(gtSceneBuilder&))
+		{
+			gtSceneBuilder builder;
+			add_floor(builder, i_Floor(builder));
+			builder.Add(gtScene::Plane(), glowing(builder, maFloatRGBA(E[0] / 4, E[1] / 4, E[2] / 4, 1), 4.0f),
+						scale_translate(1000, 0, 0, 40));
+			look_down(builder.Camera(), 0, 0, 20);
+			std::unique_ptr<g3dTraceRendererOptiX> renderer = reflection_renderer();
+			EXPECT_TRUE(renderer);
+			if (!renderer)
+			{
+				return std::vector<float>();
+			}
+			renderer->SetBounces(0);
+			renderer->SetSamplesPerFrame(16);
+			renderer->SetSampleLimit(16);
+			View view(builder, *renderer);
+			return view.Hdr();
+		};
+
+		//	a white metal mirror: F0 = F90 = 1, the ceiling itself
+		const std::vector<float> chrome = render([](gtSceneBuilder& b) { return pbr(b, maFloatRGBA(1, 1, 1, 1), 1.0f, 0.0f); });
+		ASSERT_FALSE(chrome.empty());
+		save_hdr_if_asked(chrome, c_Size, c_Size, "chrome");
+		for (int c = 0; c < 3; ++c)
+		{
+			EXPECT_NEAR(E[c], centre_mean(chrome, c), E[c] * 0.01) << "chrome, channel " << c;
+		}
+		EXPECT_NEAR(1.0, centre_mean(chrome, 3), 1e-3) << "coverage";
+
+		//	a gold metal tints its reflection with its F0 (its base colour)
+		const float gold[3] = { 1.0f, 0.8f, 0.4f };
+		const std::vector<float> golden =
+			render([](gtSceneBuilder& b) { return pbr(b, maFloatRGBA(1.0f, 0.8f, 0.4f, 1), 1.0f, 0.0f); });
+		ASSERT_FALSE(golden.empty());
+		for (int c = 0; c < 3; ++c)
+		{
+			EXPECT_NEAR(E[c] * gold[c], centre_mean(golden, c), E[c] * gold[c] * 0.01) << "gold, channel " << c;
+		}
+
+		//	a smooth dielectric reflects 4% head-on
+		const std::vector<float> glossy = render([](gtSceneBuilder& b) { return pbr(b, maFloatRGBA(0, 0, 0, 1), 0.0f, 0.0f); });
+		ASSERT_FALSE(glossy.empty());
+		for (int c = 0; c < 3; ++c)
+		{
+			EXPECT_NEAR(E[c] * 0.04, centre_mean(glossy, c), E[c] * 0.04 * 0.03) << "dielectric, channel " << c;
+		}
+
+		//	a Lambert (KHR specular 0) reflects nothing at all
+		const std::vector<float> matte =
+			render([](gtSceneBuilder& b) { return lambert(b, maFloatRGBA(0.8f, 0.8f, 0.8f, 1)); });
+		ASSERT_FALSE(matte.empty());
+		EXPECT_EQ(0.0, max_value(matte)) << "a surface with no specular reflects";
+	});
+}
+
+TEST(g3dBeautyOptiX, ReflectionOnlyShowsTheLitSceneInAMirror)
+{
+	gtBackend::RunOptiX([]()
+	{
+		//	A red Lambert ceiling (z = 40) lit from below by a point light;
+		//	a chrome floor (z = 0) seen from z = 20 shows it as the beauty
+		//	pass sees it from the mirrored eye (z = -20, looking up, no
+		//	floor). Lights are global (the light manager's), so each scene
+		//	is rendered while it is the only one.
+		const maPoint3d at(2, 1, 30);
+		auto scene = [&](gtSceneBuilder& io_Builder, bool i_bFloor)
+		{
+			if (i_bFloor)
+			{
+				add_floor(io_Builder, pbr(io_Builder, maFloatRGBA(1, 1, 1, 1), 1.0f, 0.0f));
+			}
+			io_Builder.Add(gtScene::Plane(), lambert(io_Builder, maFloatRGBA(0.8f, 0.1f, 0.1f, 1)), scale_translate(1000, 0, 0, 40));
+			constant_falloff(io_Builder.PointLight(at, maFloatRGBA(1, 1, 1, 1)));
+		};
+		auto render = [](gtSceneBuilder& io_Builder, std::unique_ptr<g3dTraceRendererOptiX> i_Renderer)
+		{
+			EXPECT_TRUE(i_Renderer);
+			if (!i_Renderer)
+			{
+				return std::vector<float>();
+			}
+			i_Renderer->SetBounces(0);
+			i_Renderer->SetSamplesPerFrame(16);
+			i_Renderer->SetSampleLimit(16);
+			View view(io_Builder, *i_Renderer);
+			return view.Hdr();
+		};
+
+		std::vector<float> reflected, seen;
+		{
+			gtSceneBuilder mirrored;
+			scene(mirrored, true);
+			look_down(mirrored.Camera(), 0, 0, 20);
+			reflected = render(mirrored, reflection_renderer());
+		}
+		{
+			gtSceneBuilder direct;
+			scene(direct, false);
+			direct.Camera().SetFOV(60.0f);
+			direct.Camera().SetAspect(1.0f);
+			direct.Camera().SetClip(1.0f, 5000.0f);
+			direct.Camera().LookAt(maPoint3d(0, 0, -20), maPoint3d(0, 0, 40), maVector3d(0, 1, 0));
+			seen = render(direct, beauty_renderer());
+		}
+		ASSERT_FALSE(reflected.empty() || seen.empty());
+		save_hdr_if_asked(reflected, c_Size, c_Size, "reflected");
+		save_hdr_if_asked(seen, c_Size, c_Size, "seen");
+
+		EXPECT_GT(centre_mean(seen, 0), 0.01) << "the ceiling isn't lit";
+		for (int c = 0; c < 3; ++c)
+		{
+			const double expected = centre_mean(seen, c);
+			EXPECT_NEAR(expected, centre_mean(reflected, c), expected * 0.02 + 1e-5) << "channel " << c;
+		}
+		EXPECT_GT(centre_mean(reflected, 0), 4.0 * centre_mean(reflected, 1)) << "the reflection is the red ceiling's";
+	});
+}
+
+TEST(g3dBeautyOptiX, ReflectionOnlyAddsNothingAtTheFirstHit)
+{
+	gtBackend::RunOptiX([]()
+	{
+		//	A glowing, glossy floor under a point light, with nothing to
+		//	reflect: the beauty pass sees its emission and the light;
+		//	Reflection Only sees black (no emission, no direct light and no
+		//	diffuse at the first hit), even with bounces
+		gtSceneBuilder builder;
+		matMaterial* floor = pbr(builder, maFloatRGBA(0.5f, 0.5f, 0.5f, 1), 0.0f, 0.3f);
+		gtScene::SetColor(floor, effPbrData::c_Emissive, maFloatRGBA(1, 1, 1, 1));
+		gtScene::SetFloat(floor, effPbrData::c_EmissiveStrength, 1.0f);
+		add_floor(builder, floor, 10.0f);
+		constant_falloff(builder.PointLight(maPoint3d(0, 0, 10), maFloatRGBA(1, 1, 1, 1)));
+		look_down(builder.Camera(), 0, 0, 30);
+
+		std::unique_ptr<g3dTraceRendererOptiX> beauty = beauty_renderer();
+		ASSERT_TRUE(beauty);
+		beauty->SetBounces(0);
+		beauty->SetSampleLimit(4);
+		View beauty_view(builder, *beauty);
+		const std::vector<float> lit = beauty_view.Hdr();
+		ASSERT_FALSE(lit.empty());
+		EXPECT_GT(centre_mean(lit, 0), 1.0) << "the beauty pass sees the emission and the light";
+
+		std::unique_ptr<g3dTraceRendererOptiX> reflection = reflection_renderer();
+		ASSERT_TRUE(reflection);
+		reflection->SetBounces(2);
+		reflection->SetSamplesPerFrame(8);
+		reflection->SetSampleLimit(8);
+		View reflection_view(builder, *reflection);
+		const std::vector<float> reflected = reflection_view.Hdr();
+		ASSERT_FALSE(reflected.empty());
+		EXPECT_EQ(0.0, max_value(reflected));
+		EXPECT_NEAR(1.0, centre_mean(reflected, 3), 1e-3) << "coverage";
+	});
+}
+
+TEST(g3dBeautyOptiX, ReflectionOnlyMissesAreBlack)
+{
+	gtBackend::RunOptiX([]()
+	{
+		//	With the global environment's background on, the beauty pass
+		//	shows the environment behind the scene; Reflection Only doesn't
+		//	(it shows reflections alone, on black, as the raster pass), while
+		//	a mirror still reflects the environment
+		gtSceneBuilder builder;
+		add_floor(builder, pbr(builder, maFloatRGBA(1, 1, 1, 1), 1.0f, 0.0f), 5.0f);
+		global_environment(builder, NULL, NULL, maFloatRGBA(0.5f, 0.4f, 0.3f, 1), 2.0f, 0, true);
+		look_down(builder.Camera(), 0, 0, 30);
+		std::unique_ptr<g3dTraceRendererOptiX> reflection = reflection_renderer();
+		ASSERT_TRUE(reflection);
+		reflection->SetBounces(0);
+		reflection->SetSamplesPerFrame(4);
+		reflection->SetSampleLimit(4);
+		View view(builder, *reflection);
+		const std::vector<float> hdr = view.Hdr();
+		ASSERT_FALSE(hdr.empty());
+		const float* corner = hdr_at(hdr, 0, 0);
+		EXPECT_EQ(0.0f, corner[0] + corner[1] + corner[2]) << "a camera miss shows the environment";
+		EXPECT_EQ(0.0f, corner[3]) << "coverage";
+		const float expected[3] = { 1.0f, 0.8f, 0.6f };
+		for (int c = 0; c < 3; ++c)
+		{
+			EXPECT_NEAR(expected[c], centre_mean(hdr, c), expected[c] * 0.01) << "the mirror's environment, channel " << c;
+		}
 	});
 }

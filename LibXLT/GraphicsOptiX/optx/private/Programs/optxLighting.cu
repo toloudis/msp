@@ -167,9 +167,16 @@ namespace
 		return params.m_bShadows && i_Surface.m_bReceivesShadow && (i_Light.m_Flags & e_optxLightShadows);
 	}
 
+	//	Whether the launch runs the beauty path: the beauty pass, or
+	//	Reflection Only (the beauty path after its first hit)
 	__forceinline__ __device__ bool beauty()
 	{
-		return params.m_Mode == e_optxLightingBeauty;
+		return params.m_Mode == e_optxLightingBeauty || params.m_Mode == e_optxLightingReflection;
+	}
+
+	__forceinline__ __device__ bool reflection_only()
+	{
+		return params.m_Mode == e_optxLightingReflection;
 	}
 
 	//	Whether a light is sampled by both light samples and bounce rays
@@ -622,18 +629,21 @@ namespace
 
 	//	The light a BRDF ray from a surface brings from the area lights it
 	//	reaches before i_THit, weighted against their light samples (each
-	//	light's pdf times its chance of being chosen). An area light's
+	//	light's pdf times its chance of being chosen; with i_bAlone, no light
+	//	was sampled there, so the ray takes it all). An area light's
 	//	radiance is pi times its light at the surface over its solid angle
 	//	density (see optxLightTypes.h)
 	__forceinline__ __device__ float3 beauty_bounce_light(const Surface& i_Surface, const optxb::Sample& i_Sample, float i_THit,
-														  float i_Total)
+														  float i_Total, bool i_bAlone)
 	{
 		float3 sum = splat3(0.0f);
 		const float cosine = dot(i_Sample.m_Wi, i_Surface.m_Shading);
 		for (unsigned int i = 0; i < i_Surface.m_Count; ++i)
 		{
 			const optxLight& light = light_of(i_Surface.m_First, i, i_Surface.m_bAll);
-			if (!weighted(i_Surface, light))
+			//	Alone, every area light whose shadows are traced is reached
+			//	(whatever m_Sampling says: nothing else can reach it here)
+			if (i_bAlone ? !(is_area(light) && shadowed_pair(i_Surface, light)) : !weighted(i_Surface, light))
 			{
 				continue;
 			}
@@ -645,7 +655,7 @@ namespace
 				continue;
 			}
 			float weight = 1.0f;
-			if (params.m_Sampling != e_optxSampleBounces)
+			if (!i_bAlone && params.m_Sampling != e_optxSampleBounces)
 			{
 				weight = power_heuristic(i_Sample.m_Value.m_Pdf, select_chance(light, i_Surface, i_Total) * pdf_light);
 			}
@@ -671,26 +681,41 @@ namespace
 
 	//	The beauty pass's radiance along a camera ray from its first hit: a
 	//	unidirectional path tracer with next-event estimation and multiple
-	//	importance sampling (optxLightingParams.h)
+	//	importance sampling (optxLightingParams.h). Reflection Only: at the
+	//	first hit, no emission, no light sample and no diffuse lobe, only one
+	//	sample of the specular lobe (weighted f_spec cos / pdf_spec, so the
+	//	BRDF's Fresnel weights the reflection) whose ray brings all the light
+	//	it finds; from the surface it reaches, the beauty path, with
+	//	m_Bounces bounces after that surface.
 	__forceinline__ __device__ float3 beauty_path(Surface surface, float3 direction, Rng& rng, float width, float spread)
 	{
-		float3 radiance = surface.m_Emission;
+		//	Reflection Only's reflection vertex comes before the beauty path's
+		//	first hit: it doesn't count as a bounce
+		const unsigned int first = reflection_only() ? 1u : 0u;
+		float3 radiance = first ? splat3(0.0f) : surface.m_Emission;
 		float3 throughput = splat3(1.0f);
 		for (unsigned int bounce = 0;; ++bounce)
 		{
 			const float3 wo = direction * -1.0f;
+			const bool reflect = bounce < first;
+			//	Light from here on is limited past the beauty path's first hit
+			const bool limited = bounce > first;
 			//	One environment level for every ray leaving this surface
 			const float env_level = optxe::surface_level(spread + c_optxBounceSpread * surface.m_Bsdf.m_Roughness);
-			float total;
-			bool any_weighted;
-			const float3 direct = mul3(beauty_direct(surface, wo, env_level, rng, total, any_weighted), throughput);
-			radiance = radiance + (bounce == 0 ? direct : clamp_radiance(direct));
-			if (bounce >= params.m_Bounces && !any_weighted)
+			float total = 0.0f;
+			bool any_weighted = true;	// Reflection Only: the reflection ray brings all its light
+			if (!reflect)
 			{
-				break;
+				const float3 direct = mul3(beauty_direct(surface, wo, env_level, rng, total, any_weighted), throughput);
+				radiance = radiance + (limited ? clamp_radiance(direct) : direct);
+				if (bounce >= params.m_Bounces + first && !any_weighted)
+				{
+					break;
+				}
 			}
 			const float u0 = rng.Next(), u1 = rng.Next(), u2 = rng.Next();
-			const optxb::Sample sample = optxb::sample(surface.m_Bsdf, surface.m_Shading, wo, u0, u1, u2);
+			const optxb::Sample sample = reflect ? optxb::sample_specular(surface.m_Bsdf, surface.m_Shading, wo, u1, u2)
+												 : optxb::sample(surface.m_Bsdf, surface.m_Shading, wo, u0, u1, u2);
 			if (sample.m_Lobe == optxb::e_LobeNone || dot(sample.m_Wi, surface.m_Geometric) <= 0.0f)
 			{
 				break;	// no direction, or one below the surface
@@ -698,12 +723,13 @@ namespace
 			const Hit next = trace_camera(surface.m_Origin, sample.m_Wi, c_Infinity);
 			if (any_weighted)
 			{
-				float3 light = beauty_bounce_light(surface, sample, next.m_bHit ? next.m_T : c_Infinity, total);
-				if (!next.m_bHit && optxe::lights() && params.m_Sampling != e_optxSampleLights)
+				float3 light = beauty_bounce_light(surface, sample, next.m_bHit ? next.m_T : c_Infinity, total, reflect);
+				if (!next.m_bHit && optxe::lights() && (reflect || params.m_Sampling != e_optxSampleLights))
 				{
 					//	Into the environment, weighted against its light samples
+					//	(none at the reflection vertex)
 					float weight = 1.0f;
-					if (params.m_Sampling == e_optxSampleBoth)
+					if (!reflect && params.m_Sampling == e_optxSampleBoth)
 					{
 						weight = power_heuristic(sample.m_Value.m_Pdf, environment_chance(total) * optxe::pdf(sample.m_Wi, surface));
 					}
@@ -712,14 +738,14 @@ namespace
 										(weight / sample.m_Value.m_Pdf);
 				}
 				light = mul3(light, throughput);
-				radiance = radiance + (bounce == 0 ? light : clamp_radiance(light));
+				radiance = radiance + (limited ? clamp_radiance(light) : light);
 			}
-			if (bounce >= params.m_Bounces || !next.m_bHit)
+			if (bounce >= params.m_Bounces + first || !next.m_bHit)
 			{
 				break;
 			}
 			throughput = mul3(throughput, sample.m_Weight);
-			if (bounce + 1 >= 3)
+			if (bounce + 1 >= 3 + first)
 			{
 				const float survive = fminf(max3(throughput), 0.95f);
 				if (rng.Next() >= survive)
@@ -733,7 +759,10 @@ namespace
 			width += spread * next.m_T;
 			direction = sample.m_Wi;
 			surface = make_surface(surface.m_Origin + direction * next.m_T, next, direction, width, true);
-			radiance = radiance + clamp_radiance(mul3(surface.m_Emission, throughput));
+			//	(Reflection Only: the surface the reflection shows glows as
+			//	the beauty pass's first hit does, unlimited)
+			const float3 emitted = mul3(surface.m_Emission, throughput);
+			radiance = radiance + (reflect ? emitted : clamp_radiance(emitted));
 		}
 		return radiance;
 	}
@@ -789,8 +818,9 @@ extern "C" __global__ void __raygen__lighting()
 		if (!first.m_bHit)
 		{
 			//	The beauty pass shows the environment behind the scene if asked
-			sum = sum + ((hdr && optxe::background()) ? optxe::radiance(direction, optxe::level_for(params.m_ConeSpread))
-													  : background);
+			//	(Reflection Only never: it shows reflections alone)
+			const bool show_environment = hdr && !reflection_only() && optxe::background();
+			sum = sum + (show_environment ? optxe::radiance(direction, optxe::level_for(params.m_ConeSpread)) : background);
 		}
 		else
 		{

@@ -398,7 +398,8 @@ TEST(g3dAORendererOptiXTest, CreatorGivesIt)
 			{ g3dSceneRendererCreate::CreateHDRRenderer(), g3dTraceRendererOptiX::e_Beauty },
 			{ g3dSceneRendererCreate::CreateAmbientOcclusionRenderer(), g3dTraceRendererOptiX::e_AO },
 			{ g3dSceneRendererCreate::CreateIlluminationRenderer(), g3dTraceRendererOptiX::e_Illumination },
-			{ g3dSceneRendererCreate::CreateShadowMaskRenderer(), g3dTraceRendererOptiX::e_ShadowMask } };
+			{ g3dSceneRendererCreate::CreateShadowMaskRenderer(), g3dTraceRendererOptiX::e_ShadowMask },
+			{ g3dSceneRendererCreate::CreateReflectionOnlyRenderer(), g3dTraceRendererOptiX::e_ReflectionOnly } };
 		for (const auto& entry : made)
 		{
 			const g3dTraceRendererOptiX* traced = dynamic_cast<g3dTraceRendererOptiX*>(entry.first);

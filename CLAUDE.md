@@ -468,7 +468,11 @@ the GPU, weighted by MIS, occluded by every visible surface, and shown
 behind the scene when the global environment's background is on; depth
 of field through the camera's lens, traced (a thin lens); resolved as
 linear RGBA16F and finished by GraphicsVulkan's HDR post chain,
-`shdwPostProcessVk`: tone mapping, bloom, star, matte), AO in its AO
+`shdwPostProcessVk`: tone mapping, bloom, star, matte), Reflection Only
+in its reflection mode (the beauty path with its first hit changed: no
+emission, direct light or diffuse there, one specular-lobe sample
+weighted by the BRDF's Fresnel, then what that ray sees lit; misses
+black), AO in its AO
 mode (progressive AO),
 Illumination Only and Shadow Mask in its lighting modes
 (`optxLighting.cu`: the scene's lights, `g3dLightTableOptiX`, with light

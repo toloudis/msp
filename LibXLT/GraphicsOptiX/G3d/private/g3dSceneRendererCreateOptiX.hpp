@@ -7,9 +7,9 @@
 **
 **	Default and HDR give the OptiX renderer in its beauty mode
 **	(g3dTraceRendererOptiX: the path-traced beauty pass through the HDR
-**	post chain), ambient occlusion in its AO mode; Illumination Only and
-**	Shadow Mask give it in those modes; every other type is the inner
-**	creator's (Vulkan's).
+**	post chain), ambient occlusion in its AO mode; Illumination Only,
+**	Shadow Mask and Reflection Only give it in those modes; every other
+**	type is the inner creator's (Vulkan's).
 **
 **	Extra Large Technology
 \****************************************************************************/

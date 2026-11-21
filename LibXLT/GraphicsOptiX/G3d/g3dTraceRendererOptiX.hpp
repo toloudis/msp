@@ -18,6 +18,14 @@
 **	  misses show the environment when the global environment's background
 **	  is on, else the background (the colour the target was last cleared
 **	  to);
+**	- e_ReflectionOnly: the Reflection Only pass (optxLighting's
+**	  reflection mode): the beauty pass with its first hit changed: no
+**	  emission, direct light or diffuse there, only one sample of the
+**	  specular lobe weighted by the BRDF (its Fresnel included), and what
+**	  that ray sees lit as the beauty pass lights it; every surface
+**	  reflects as its BRDF says (not only materials with a reflection map);
+**	  HDR through the same post chain; misses black (as the raster pass
+**	  clears), never the environment;
 **	- e_AO: ambient occlusion (optxAO): hits the unoccluded fraction,
 **	  encoded as sRGB, as grey; misses the background (the colour the
 **	  target was last cleared to);
@@ -41,7 +49,7 @@
 **
 **	1. Updates its scene BVH (g3dSceneBVHOptiX: GAS from the cache, IAS),
 **	   its material table, its light table (lighting: g3dLightTableOptiX),
-**	   its environment light (e_Beauty: g3dEnvironmentOptiX) and the
+**	   its environment light (e_Beauty, e_ReflectionOnly: g3dEnvironmentOptiX) and the
 **	   texture table they fill; CUDA waits for Vulkan's last write to those
 **	   textures, then the environment's sampling table is built if needed.
 **	2. Unless the image has converged, launches GetSamplesPerFrame more
@@ -51,7 +59,8 @@
 **	   buffered, so tracing the next frame doesn't wait for Vulkan's copy of
 **	   this one).
 **	3. Copies the shared colour and depth buffers into the target's colour
-**	   and depth images (Vulkan waits for the frame semaphore); e_Beauty:
+**	   and depth images (Vulkan waits for the frame semaphore); e_Beauty and
+**	   e_ReflectionOnly:
 **	   the colour into the post chain's HDR scene texture, then runs the
 **	   post chain into the target.
 **	4. Draws the rest with g3dSceneRendererVk, without clearing and
@@ -71,7 +80,7 @@
 **	(AO: the AO radius, the scene's ssaoParams::m_AORadius, AO rays and the
 **	background; lighting: the light table's version, bounces, the albedo
 **	override, light sampling, and the preferences for shadows and for
-**	illumination using normals; beauty: also the light selection, the
+**	illumination using normals; beauty and Reflection Only: also the light selection, the
 **	radiance limit, the background, the lens (see GetLens) and the
 **	environment light's version; every
 **	mode: the material
@@ -88,7 +97,8 @@
 **	changed reuses the last one.
 **
 **	A target whose colour isn't R8G8B8A8 or B8G8R8A8 (any colour format,
-**	e_Beauty without the debug view: the post chain draws it), or is
+**	e_Beauty without the debug view and e_ReflectionOnly: the post chain
+**	draws it), or is
 **	multisampled (or whose depth isn't D24S8 or D32), isn't traced: it is
 **	cleared and only the raster part is drawn (logged once).
 **
@@ -159,7 +169,8 @@ namespace gox
 				e_AO,
 				e_Illumination,
 				e_ShadowMask,
-				e_Beauty
+				e_Beauty,
+				e_ReflectionOnly
 			};
 
 			//	Defaults of the settings below (the render preferences have
@@ -302,8 +313,10 @@ namespace gox
 
 			void apply_prefs();
 			bool lighting() const { return m_Mode != e_AO; }
-			//	The beauty pass's own image (not its debug view): HDR, through the post chain
-			bool hdr(unsigned i_DebugView) const { return m_Mode == e_Beauty && i_DebugView == 0; }
+			//	The modes that run the beauty path (Reflection Only: after its first hit)
+			bool path_traced() const { return m_Mode == e_Beauty || m_Mode == e_ReflectionOnly; }
+			//	Their own image (not the debug view): HDR, through the post chain
+			bool hdr(unsigned i_DebugView) const { return path_traced() && i_DebugView == 0; }
 			unsigned debug_view() const;
 			bool create_programs(bool i_bLighting);
 			int raster_only(g2dRenderTarget* i_pTarget, const camCamera& i_Camera, const g3dScene& i_Scene,
@@ -320,13 +333,13 @@ namespace gox
 			g3dTextureTableOptiX		m_Textures;
 			g3dMaterialTableOptiX		m_Materials;
 			g3dLightTableOptiX			m_Lights;
-			g3dEnvironmentOptiX			m_Environment;		// e_Beauty
+			g3dEnvironmentOptiX			m_Environment;		// e_Beauty, e_ReflectionOnly
 			optxAO						m_AO;
 			optxLighting				m_Lighting;
 			bool						m_bProgramsFailed;
 			optxFrameShare				m_Share;
 			cuBuffer					m_Accum;
-			gvk::shdwFrameBufferMgr		m_FrameBuffer;		// the post chain's surfaces (e_Beauty)
+			gvk::shdwFrameBufferMgr		m_FrameBuffer;		// the post chain's surfaces (e_Beauty, e_ReflectionOnly)
 			gvk::shdwPostProcessVk		m_Post;
 			gvk::g3dSceneRendererVk		m_Overlay;
 			PrefSettings				m_Prefs;

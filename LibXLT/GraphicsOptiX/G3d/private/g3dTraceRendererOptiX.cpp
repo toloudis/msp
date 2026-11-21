@@ -552,7 +552,7 @@ namespace gox
 		{
 			key.m_LightVersion = m_Lights.GetVersion();
 			key.m_bShadows = prefs.m_bEnableShadows ? 1 : 0;
-			if (m_Mode == e_Illumination || m_Mode == e_Beauty)
+			if (m_Mode == e_Illumination || path_traced())
 			{
 				key.m_Bounces = m_nBounces;
 				key.m_bAlbedoOverride = m_bAlbedoOverride ? 1 : 0;
@@ -563,16 +563,17 @@ namespace gox
 			{
 				key.m_bUseCosine = prefs.m_bIlluminationUsesNormals ? 1 : 0;
 			}
-			if (m_Mode == e_Beauty)
+			if (path_traced())
 			{
 				key.m_Selection = m_Selection;
 				key.m_MaxRadiance = m_MaxRadiance;
 				key.m_EnvironmentVersion = hdr_image ? m_Environment.GetVersion() : 0;
-				//	what g3dTargetRenderer cleared the target to
+				//	what g3dTargetRenderer cleared the target to (Reflection
+				//	Only: black, as the raster pass clears its scene)
 				const float* background = color->LastClearColor();
 				for (int c = 0; c < 3; ++c)
 				{
-					key.m_Background[c] = srgb_to_linear(background[c]);
+					key.m_Background[c] = m_Mode == e_ReflectionOnly ? 0.0f : srgb_to_linear(background[c]);
 				}
 				//	The lens, from the pixel's angle at the view's centre
 				double inverse[16];
@@ -653,7 +654,7 @@ namespace gox
 	bool g3dTraceRendererOptiX::trace(const Key& i_Key, const double i_View[16], const optxColorOrder i_Order,
 									  const optxDepthLayout i_Layout, unsigned i_nGoal, bool i_bAll)
 	{
-		//	The beauty pass: three planes of accumulation, an HDR frame
+		//	The beauty pass and Reflection Only: three planes of accumulation, an HDR frame
 		const bool beauty = hdr(i_Key.m_DebugView);
 		const size_t accum_bytes = size_t(i_Key.m_Width) * i_Key.m_Height * 4 * sizeof(float) * (beauty ? 3 : 1);
 		const optxFrameShare::ColorLayout color_layout = beauty ? optxFrameShare::e_ColorHalf : optxFrameShare::e_Color8;
@@ -711,7 +712,8 @@ namespace gox
 			lit.m_Albedo = i_Key.m_Albedo;
 			lit.m_Mode = i_Key.m_DebugView ? e_optxLightingDebug
 										   : (m_Mode == e_ShadowMask) ? e_optxLightingShadowMask
-										   : (m_Mode == e_Beauty) ? e_optxLightingBeauty : e_optxLightingIllumination;
+										   : (m_Mode == e_Beauty) ? e_optxLightingBeauty
+										   : (m_Mode == e_ReflectionOnly) ? e_optxLightingReflection : e_optxLightingIllumination;
 			lit.m_LightSelection = i_Key.m_Selection;
 			lit.m_MaxRadiance = i_Key.m_MaxRadiance;
 			if (i_Key.m_LensRadius > 0.0f)
@@ -856,7 +858,7 @@ namespace gox
 		return true;
 	}
 
-	//	Step 3 of Render for the beauty pass: the HDR frame into the post
+	//	Step 3 of Render for the beauty pass and Reflection Only: the HDR frame into the post
 	//	chain's scene texture and the traced depth into the target's, then
 	//	the post chain (without its depth of field) into the target. Returns
 	//	the triangles the post chain drew.
