@@ -122,6 +122,7 @@ public:
 	void SetTraceBounces( int i_nBounces );
 	void SetTraceDebugView( int i_View );
 	void SetTraceMaxRadiance( float i_Max );
+	void SetTraceDenoise( int i_Mode );
 
 	//--------------------------------------------------------------------
 	// Update() pushes changes from proxy object into the graphics

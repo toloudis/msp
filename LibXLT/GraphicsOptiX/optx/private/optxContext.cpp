@@ -292,4 +292,10 @@ namespace gox
 	{
 		return l_nWarnings;
 	}
+
+	void optxContext::ReportError(const char* i_pTag, const std::string& i_Message)
+	{
+		++l_nErrors;
+		DBG_LOG("OptiX [" << (i_pTag ? i_pTag : "") << "]: " << i_Message);
+	}
 }

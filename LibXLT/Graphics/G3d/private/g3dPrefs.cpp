@@ -123,7 +123,8 @@ namespace g3dPrefs
 		m_TraceAORays(1),
 		m_TraceBounces(2),
 		m_TraceDebugView(e_TraceDebugOff),
-		m_TraceMaxRadiance(0.0f)
+		m_TraceMaxRadiance(0.0f),
+		m_TraceDenoise(e_TraceDenoiseOff)
 	{
 	}
 

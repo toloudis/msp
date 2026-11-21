@@ -150,8 +150,14 @@ rprfPrefsData::rprfPrefsData()
 	m_TraceAORays("Trace AO Rays", 1),
 	m_TraceBounces("Trace Bounces", 2),
 	m_TraceDebugView("Trace Debug View", 0),
-	m_TraceMaxRadiance("Trace Max Radiance", 0.0f)
+	m_TraceMaxRadiance("Trace Max Radiance", 0.0f),
+	m_TraceDenoise("Trace Denoise", 0)
 {
+	m_TraceDenoise.SetEnumTag(0, "Off");
+	m_TraceDenoise.SetEnumTag(1, "Viewport");
+	m_TraceDenoise.SetEnumTag(2, "Capture");
+	m_TraceDenoise.SetEnumTag(3, "Both");
+
 	m_TraceDebugView.SetEnumTag(0, "Off");
 	m_TraceDebugView.SetEnumTag(1, "Base Colour");
 	m_TraceDebugView.SetEnumTag(2, "Shading Normal");

@@ -41,6 +41,18 @@
 **	first hit instead (optxLighting's debug mode), unlit and linear, not
 **	tone mapped.
 **
+**	Denoising (e_Beauty and e_ReflectionOnly, not the debug view): with
+**	the Denoise setting (g3dRenderPrefs::TraceDenoise) on for views and no
+**	capture running, or on for captures while one runs, each resolve
+**	writes the current means (colour and coverage, the albedo guide, the
+**	world-space normal guide) into the denoiser's input instead of the
+**	shared colour, and optxDenoiser writes the shared colour from them
+**	(depth stays the traced one). The accumulation itself is never
+**	denoised. A finished frame is resolved again, with no new samples,
+**	when whether it is denoised changes (a capture starting or ending). If
+**	the denoiser can't be made or run, it is reported once and frames are
+**	shown undenoised.
+**
 **	Every mode reads materials (g3dMaterialTableOptiX) and their textures
 **	(g3dTextureTableOptiX): cut-out and transparent surfaces let camera,
 **	bounce and shadow rays through.
@@ -69,8 +81,8 @@
 **	It returns the triangles traced plus those the raster drew.
 **
 **	Settings: samples per frame, the sample limit, samples per captured
-**	frame, AO rays per sample, bounces and the beauty pass's radiance limit
-**	come from the render preferences (g3dPrefs::m_Trace*) when the renderer
+**	frame, AO rays per sample, bounces, the beauty pass's radiance limit
+**	and when it is denoised come from the render preferences (g3dPrefs::m_Trace*) when the renderer
 **	is made, and again whenever the preferences change; the setters below
 **	override them until then.
 **
@@ -81,8 +93,8 @@
 **	background; lighting: the light table's version, bounces, the albedo
 **	override, light sampling, and the preferences for shadows and for
 **	illumination using normals; beauty and Reflection Only: also the light selection, the
-**	radiance limit, the background, the lens (see GetLens) and the
-**	environment light's version; every
+**	radiance limit, the Denoise setting, the background, the lens (see
+**	GetLens) and the environment light's version; every
 **	mode: the material
 **	table's version,
 **	the texture table's (a texture's contents changing), and the debug
@@ -138,6 +150,9 @@
 #endif
 #ifndef GOX_OPTXFRAMESHARE_HPP
 #include "GraphicsOptiX/optx/optxFrameShare.hpp"
+#endif
+#ifndef GOX_OPTXDENOISER_HPP
+#include "GraphicsOptiX/optx/optxDenoiser.hpp"
 #endif
 #ifndef GVK_G3D_SCENERENDERERVK_HPP
 #include "GraphicsVulkan/G3d/g3dSceneRendererVk.hpp"
@@ -226,6 +241,10 @@ namespace gox
 			void SetLightSelection(optxLightSelection i_Selection) { m_Selection = i_Selection; }
 			void SetMaxRadiance(float i_Max) { m_MaxRadiance = i_Max > 0.0f ? i_Max : 0.0f; }
 			float GetMaxRadiance() const { return m_MaxRadiance; }
+			//	When the beauty pass and Reflection Only are denoised: a
+			//	g3dRenderPrefs::TraceDenoise
+			void SetDenoise(int i_Mode);
+			int GetDenoise() const { return m_Denoise; }
 			void SetSeed(unsigned i_Seed);
 
 			//--------------------------------------------------------------------
@@ -265,6 +284,13 @@ namespace gox
 			g3dEnvironmentOptiX& GetEnvironment() { return m_Environment; }
 			optxFrameShare& GetFrameShare() { return m_Share; }
 			gvk::shdwFrameBufferMgr& GetFrameBuffer() { return m_FrameBuffer; }
+			optxDenoiser& GetDenoiser() { return m_Denoiser; }
+			//	Whether the frame last resolved was denoised
+			bool IsFrameDenoised() const { return m_bFrameDenoised; }
+			//	The denoiser's input planes of the frame last resolved
+			//	(optxDenoiser.hpp; empty unless it was denoised), as floats,
+			//	after the OptiX stream's work
+			std::vector<float> ReadDenoiseInput() const;
 
 		private:
 			//	What restarts accumulation when it changes
@@ -294,6 +320,7 @@ namespace gox
 				float		m_MaxRadiance = 0;
 				float		m_LensRadius = 0;
 				float		m_Focus = 0;
+				int			m_Denoise = 0;
 
 				bool operator==(const Key& i_Other) const;
 			};
@@ -307,6 +334,7 @@ namespace gox
 				unsigned	m_AORays = 0;
 				unsigned	m_Bounces = 0;
 				float		m_MaxRadiance = 0;
+				int			m_Denoise = 0;
 
 				bool operator==(const PrefSettings& i_Other) const;
 			};
@@ -321,8 +349,11 @@ namespace gox
 			bool create_programs(bool i_bLighting);
 			int raster_only(g2dRenderTarget* i_pTarget, const camCamera& i_Camera, const g3dScene& i_Scene,
 							const std::vector<g3dLayer*>& i_ViewerLayers, float i_fSimTime);
+			//	Whether a frame resolved now is to be denoised (the mode and
+			//	whether a capture runs; never once the denoiser has failed)
+			bool wants_denoise(const Key& i_Key, bool i_bCapturing) const;
 			bool trace(const Key& i_Key, const double i_View[16], const optxColorOrder i_Order,
-					   const optxDepthLayout i_Layout, unsigned i_nGoal, bool i_bAll);
+					   const optxDepthLayout i_Layout, unsigned i_nGoal, bool i_bAll, bool i_bDenoise);
 			int post_process(g2dRenderTarget* i_pTarget, gvk::vkdImage* i_pDepth, const camCamera& i_Camera,
 							 const g3dScene& i_Scene, float i_fSimTime);
 
@@ -339,6 +370,8 @@ namespace gox
 			bool						m_bProgramsFailed;
 			optxFrameShare				m_Share;
 			cuBuffer					m_Accum;
+			optxDenoiser				m_Denoiser;			// e_Beauty, e_ReflectionOnly
+			cuBuffer					m_DenoiseInput;		// its input planes
 			gvk::shdwFrameBufferMgr		m_FrameBuffer;		// the post chain's surfaces (e_Beauty, e_ReflectionOnly)
 			gvk::shdwPostProcessVk		m_Post;
 			gvk::g3dSceneRendererVk		m_Overlay;
@@ -354,10 +387,12 @@ namespace gox
 			optxLightSampling			m_Sampling;
 			optxLightSelection			m_Selection;
 			float						m_MaxRadiance;
+			int							m_Denoise;
 			unsigned					m_Seed;
 			Key							m_Key;
 			bool						m_bRestart;
 			bool						m_bHaveFrame;		// the shared buffers hold a frame for m_Key
+			bool						m_bFrameDenoised;	// and it was denoised
 			unsigned					m_nSamples;
 			int							m_nLaunches;
 			int							m_nRestarts;

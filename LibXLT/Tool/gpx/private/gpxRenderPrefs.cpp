@@ -332,6 +332,11 @@ void gpxRenderPrefs::SetTraceMaxRadiance( float i_Max )
 	PROXY_SET_VARIABLE(m_Prefs.m_TraceMaxRadiance, m_PrefsCopy.m_TraceMaxRadiance, i_Max);
 }
 
+void gpxRenderPrefs::SetTraceDenoise( int i_Mode )
+{
+	PROXY_SET_VARIABLE(m_Prefs.m_TraceDenoise, m_PrefsCopy.m_TraceDenoise, i_Mode);
+}
+
 
 //--------------------------------------------------------------------
 // Update() pushes changes from proxy object into the graphics

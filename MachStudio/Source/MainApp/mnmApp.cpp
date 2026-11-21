@@ -568,6 +568,7 @@ void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 		case mainCommandLine::e_CapTraceBounces:
 		case mainCommandLine::e_CapTraceDebug:
 		case mainCommandLine::e_CapTraceMaxRadiance:
+		case mainCommandLine::e_CapTraceDenoise:
 		{
 			DBG_LOG( "   Command-line CAPTURE-TRACE " << int(it->m_Kind) << " " << value );
 			//	every render layer's ray tracing preferences (their callbacks
@@ -588,6 +589,7 @@ void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 				case mainCommandLine::e_CapTraceAORays:				prefs->m_Data.m_TraceAORays.SetValue( number ); break;
 				case mainCommandLine::e_CapTraceDebug:				prefs->m_Data.m_TraceDebugView.SetValue( number ); break;
 				case mainCommandLine::e_CapTraceMaxRadiance:		prefs->m_Data.m_TraceMaxRadiance.SetValue( strtof( value.c_str(), NULL ) ); break;
+				case mainCommandLine::e_CapTraceDenoise:			prefs->m_Data.m_TraceDenoise.SetValue( number ); break;
 				default:											prefs->m_Data.m_TraceBounces.SetValue( number ); break;
 				}
 			}

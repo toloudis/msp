@@ -60,10 +60,14 @@
 **	  pinhole ray reaches at depth m_FocusDistance along m_Forward (a thin
 **	  lens); the ray starts at the near plane's depth.
 **	  The accumulation buffer has three planes of m_Width x m_Height float4
-**	  (each plane after the last): rgb sums and depth; first-hit base
-**	  colour sums and coverage (the samples that hit); first-hit shading
-**	  normal sums (w unused). The resolve writes the linear mean
-**	  (unclamped) and the coverage as RGBA16F into m_Color.
+**	  (each plane after the last): rgb sums and depth; first-hit albedo
+**	  sums (the denoiser's guide: the base colour) and coverage (the
+**	  samples that hit); first-hit shading normal sums, world space (w
+**	  unused). The resolve writes the linear mean (unclamped) and the
+**	  coverage as RGBA16F into m_Color; or, with m_DenoiseInput, the
+**	  denoiser's input (optxDenoiser.hpp: three planes of float4, the
+**	  colour mean and coverage, the albedo mean, the normal mean), which
+**	  the denoiser turns into m_Color (the resolve still writes depth).
 **	- e_optxLightingReflection: Reflection Only, traced: the beauty pass
 **	  (everything above, its output included) with its first hit changed.
 **	  There, nothing is emitted, no light is sampled and the diffuse lobe
@@ -76,7 +80,8 @@
 **	  no light sample there to weigh it against); the surface it reaches is
 **	  lit as the beauty pass's first hit (its emission, direct light, then
 **	  m_Bounces bounces). Camera misses add m_Background, never the
-**	  environment.
+**	  environment. The albedo guide is the first hit's specular albedo
+**	  (the BRDF's Fresnel at the view), which weights what it reflects.
 **	- e_optxLightingIllumination: the light arriving at the first hit, as
 **	  the raster Illumination Only pass draws it (light colour times
 **	  attenuation, penumbra and the cosine, summed over the lights that
@@ -221,6 +226,7 @@ namespace gox
 		unsigned long long			m_Accum;		// device address of 4 floats per pixel (beauty: 3 planes of them)
 		unsigned long long			m_Color;		// device address of a 32-bit texel per pixel (beauty: 64-bit, RGBA16F)
 		unsigned long long			m_Depth;		// device address of a 32-bit texel per pixel
+		unsigned long long			m_DenoiseInput;	// beauty: device address of the denoiser's input planes; 0: resolve into m_Color
 		unsigned int				m_Width;
 		unsigned int				m_Height;
 		float						m_InvViewProj[16];

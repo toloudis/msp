@@ -284,7 +284,7 @@ namespace gox
 			   m_Albedo == i_Other.m_Albedo && m_Sampling == i_Other.m_Sampling && m_bUseCosine == i_Other.m_bUseCosine &&
 			   m_bShadows == i_Other.m_bShadows && m_Seed == i_Other.m_Seed &&
 			   m_Selection == i_Other.m_Selection && m_MaxRadiance == i_Other.m_MaxRadiance &&
-			   m_LensRadius == i_Other.m_LensRadius && m_Focus == i_Other.m_Focus &&
+			   m_LensRadius == i_Other.m_LensRadius && m_Focus == i_Other.m_Focus && m_Denoise == i_Other.m_Denoise &&
 			   std::memcmp(m_ViewProj, i_Other.m_ViewProj, sizeof(m_ViewProj)) == 0 &&
 			   std::memcmp(m_Background, i_Other.m_Background, sizeof(m_Background)) == 0;
 	}
@@ -293,7 +293,7 @@ namespace gox
 	{
 		return m_SamplesPerFrame == i_Other.m_SamplesPerFrame && m_SampleLimit == i_Other.m_SampleLimit &&
 			   m_CaptureSamples == i_Other.m_CaptureSamples && m_AORays == i_Other.m_AORays &&
-			   m_Bounces == i_Other.m_Bounces && m_MaxRadiance == i_Other.m_MaxRadiance;
+			   m_Bounces == i_Other.m_Bounces && m_MaxRadiance == i_Other.m_MaxRadiance && m_Denoise == i_Other.m_Denoise;
 	}
 
 	g3dTraceRendererOptiX::g3dTraceRendererOptiX(Mode i_Mode, g3dGasCacheOptiX& i_Cache, gvk::vkdDevice& i_Device,
@@ -316,9 +316,11 @@ namespace gox
 		, m_Sampling(e_optxSampleBoth)
 		, m_Selection(e_optxSelectOne)
 		, m_MaxRadiance(0.0f)
+		, m_Denoise(g3dPrefs::g3dRenderPrefs::e_TraceDenoiseOff)
 		, m_Seed(0)
 		, m_bRestart(true)
 		, m_bHaveFrame(false)
+		, m_bFrameDenoised(false)
 		, m_nSamples(0)
 		, m_nLaunches(0)
 		, m_nRestarts(0)
@@ -344,6 +346,8 @@ namespace gox
 		optxContext::MakeCurrent();
 		m_Share.Release();
 		m_Accum.Free();
+		m_Denoiser.Release();
+		m_DenoiseInput.Free();
 		m_FrameBuffer.ReleaseSurfaces();
 		m_BVH.Release();
 		m_Lights.Release();
@@ -351,6 +355,7 @@ namespace gox
 		m_Materials.Release();
 		m_Textures.Release();
 		m_bHaveFrame = false;
+		m_bFrameDenoised = false;
 		m_bRestart = true;
 	}
 
@@ -366,6 +371,7 @@ namespace gox
 		settings.m_AORays = unsigned(std::max(0, prefs.m_TraceAORays));
 		settings.m_Bounces = unsigned(std::max(0, prefs.m_TraceBounces));
 		settings.m_MaxRadiance = std::max(0.0f, prefs.m_TraceMaxRadiance);
+		settings.m_Denoise = prefs.m_TraceDenoise;
 		if (settings == m_Prefs)
 		{
 			return;
@@ -377,6 +383,46 @@ namespace gox
 		SetAORays(settings.m_AORays);
 		SetBounces(settings.m_Bounces);
 		SetMaxRadiance(settings.m_MaxRadiance);
+		SetDenoise(settings.m_Denoise);
+	}
+
+	void g3dTraceRendererOptiX::SetDenoise(int i_Mode)
+	{
+		const bool known = i_Mode >= 0 && i_Mode < g3dPrefs::g3dRenderPrefs::e_TraceDenoiseCount;
+		m_Denoise = known ? i_Mode : g3dPrefs::g3dRenderPrefs::e_TraceDenoiseOff;
+	}
+
+	bool g3dTraceRendererOptiX::wants_denoise(const Key& i_Key, bool i_bCapturing) const
+	{
+		if (!hdr(i_Key.m_DebugView) || m_Denoiser.HasFailed())
+		{
+			return false;
+		}
+		switch (i_Key.m_Denoise)
+		{
+			case g3dPrefs::g3dRenderPrefs::e_TraceDenoiseViewport:
+				return !i_bCapturing;
+			case g3dPrefs::g3dRenderPrefs::e_TraceDenoiseCapture:
+				return i_bCapturing;
+			case g3dPrefs::g3dRenderPrefs::e_TraceDenoiseBoth:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	std::vector<float> g3dTraceRendererOptiX::ReadDenoiseInput() const
+	{
+		if (!m_bFrameDenoised || !m_DenoiseInput.Get())
+		{
+			return std::vector<float>();
+		}
+		std::vector<float> values(optxDenoiser::InputBytes(m_Key.m_Width, m_Key.m_Height) / sizeof(float));
+		if (!m_DenoiseInput.Download(values.data(), values.size() * sizeof(float)))
+		{
+			return std::vector<float>();
+		}
+		return values;
 	}
 
 	void g3dTraceRendererOptiX::SetSamplesPerFrame(unsigned i_nSamples)
@@ -567,6 +613,7 @@ namespace gox
 			{
 				key.m_Selection = m_Selection;
 				key.m_MaxRadiance = m_MaxRadiance;
+				key.m_Denoise = m_Denoise;
 				key.m_EnvironmentVersion = hdr_image ? m_Environment.GetVersion() : 0;
 				//	what g3dTargetRenderer cleared the target to (Reflection
 				//	Only: black, as the raster pass clears its scene)
@@ -616,9 +663,12 @@ namespace gox
 		//	samples, and another frame asked for until the limit
 		const bool capturing = g3dProgressive::IsCapturing();
 		const unsigned goal = capturing ? GetCaptureSamples() : m_nSampleLimit;
-		if (m_nSamples < goal)
+		//	A finished frame resolved again (no new samples) when it is now
+		//	to be denoised, or no longer (a capture starting or ending)
+		const bool denoise = wants_denoise(m_Key, capturing);
+		if (m_nSamples < goal || (m_bHaveFrame && denoise != m_bFrameDenoised))
 		{
-			if (!trace(m_Key, view, order, layout, goal, capturing))
+			if (!trace(m_Key, view, order, layout, goal, capturing, denoise))
 			{
 				m_bHaveFrame = false;
 				return raster_only(i_pTarget, i_Camera, i_Scene, i_ViewerLayers, i_fSimTime);
@@ -648,11 +698,15 @@ namespace gox
 	}
 
 	//	Step 2 of Render: more samples toward i_nGoal (one launch, or with
-	//	i_bAll launches until it is reached or the capture is aborted), then
-	//	resolved into the shared buffers: by the last launch itself, or (an
-	//	aborted capture) by a resolve launch
+	//	i_bAll launches until it is reached or the capture is aborted; at
+	//	the goal already, one launch that adds none), then resolved into
+	//	the shared buffers: by the last launch itself, or (an aborted
+	//	capture) by a resolve launch. With i_bDenoise (the beauty pass and
+	//	Reflection Only), the resolve writes the denoiser's input and the
+	//	denoiser writes the shared colour; if it can't, the image is
+	//	resolved again undenoised.
 	bool g3dTraceRendererOptiX::trace(const Key& i_Key, const double i_View[16], const optxColorOrder i_Order,
-									  const optxDepthLayout i_Layout, unsigned i_nGoal, bool i_bAll)
+									  const optxDepthLayout i_Layout, unsigned i_nGoal, bool i_bAll, bool i_bDenoise)
 	{
 		//	The beauty pass and Reflection Only: three planes of accumulation, an HDR frame
 		const bool beauty = hdr(i_Key.m_DebugView);
@@ -661,6 +715,14 @@ namespace gox
 		if (!m_Share.Resize(i_Key.m_Width, i_Key.m_Height, color_layout) || !m_Accum.Reserve(accum_bytes))
 		{
 			return false;
+		}
+		//	The denoiser and its input, if this frame is denoised (a failure
+		//	to make them shows it undenoised)
+		bool denoise = false;
+		if (i_bDenoise && beauty)
+		{
+			denoise = m_Denoiser.Prepare(i_Key.m_Width, i_Key.m_Height) &&
+					  m_DenoiseInput.Reserve(optxDenoiser::InputBytes(i_Key.m_Width, i_Key.m_Height));
 		}
 		double inverse[16];
 		if (!invert(i_Key.m_ViewProj, inverse))
@@ -754,6 +816,7 @@ namespace gox
 			lit.m_ColorOrder = i_Order;
 			lit.m_DepthLayout = i_Layout;
 			lit.m_Seed = i_Key.m_Seed;
+			lit.m_DenoiseInput = denoise ? m_DenoiseInput.Get() : 0;
 		}
 		else
 		{
@@ -850,11 +913,29 @@ namespace gox
 				return false;
 			}
 		}
+		if (denoise)
+		{
+			G3D_PROFILE_SCOPE("Denoise");
+			if (!m_Denoiser.Run(m_DenoiseInput.Get(), m_Share.Color()))
+			{
+				//	Reported by the denoiser: the image resolved undenoised
+				lit.m_DenoiseInput = 0;
+				lit.m_FirstSample = m_nSamples;
+				lit.m_Samples = 0;
+				lit.m_Resolve = 0;
+				if (!m_Lighting.Resolve(lit))
+				{
+					return false;
+				}
+				denoise = false;
+			}
+		}
 		if (!m_Share.EndWrite())
 		{
 			return false;
 		}
 		m_bHaveFrame = true;
+		m_bFrameDenoised = denoise;
 		return true;
 	}
 

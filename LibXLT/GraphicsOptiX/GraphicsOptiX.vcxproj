@@ -110,6 +110,7 @@
     <ClCompile Include="optx\private\optxAO.cpp" />
     <ClCompile Include="optx\private\optxLighting.cpp" />
     <ClCompile Include="optx\private\optxFrameShare.cpp" />
+    <ClCompile Include="optx\private\optxDenoiser.cpp" />
     <ClCompile Include="G3d\private\g3dTraceRendererOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dLightTableOptiX.cpp" />
     <ClCompile Include="G3d\private\g3dEnvironmentOptiX.cpp" />
@@ -132,6 +133,7 @@
     <ClInclude Include="optx\optxAO.hpp" />
     <ClInclude Include="optx\optxLighting.hpp" />
     <ClInclude Include="optx\optxFrameShare.hpp" />
+    <ClInclude Include="optx\optxDenoiser.hpp" />
     <ClInclude Include="optx\private\Programs\optxAOParams.h" />
     <ClInclude Include="optx\private\Programs\optxLightingParams.h" />
     <ClInclude Include="optx\private\Programs\optxLightTypes.h" />

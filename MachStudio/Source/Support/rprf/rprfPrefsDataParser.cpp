@@ -616,6 +616,10 @@ void ReadPrefsData(	chReader& io_Reader, chDefs::Version i_Version,
 		{
 			o_PrefsData.m_TraceMaxRadiance.Read( io_Reader );
 		}
+		if ( i_Version > 55 )
+		{
+			o_PrefsData.m_TraceDenoise.Read( io_Reader );
+		}
 	}
 }
 
@@ -625,7 +629,7 @@ void ReadPrefsData(	chReader& io_Reader, chDefs::Version i_Version,
 void WritePrefsData(chWriter& o_Writer,
 					const rprfPrefsData& i_PrefsData )
 {
-	const int l_cPRFD_VERSION = 55;
+	const int l_cPRFD_VERSION = 56;
 	o_Writer.WriteChunkHeader( c_PRFD, l_cPRFD_VERSION, false );
 
 	i_PrefsData.m_bMultipassOn.Write( o_Writer );
@@ -830,6 +834,9 @@ void WritePrefsData(chWriter& o_Writer,
 
 	// added v55: the beauty pass's firefly limit
 	i_PrefsData.m_TraceMaxRadiance.Write( o_Writer );
+
+	// added v56: when the beauty pass is denoised
+	i_PrefsData.m_TraceDenoise.Write( o_Writer );
 
 	o_Writer.FinishChunk();
 }

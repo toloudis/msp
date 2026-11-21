@@ -121,14 +121,26 @@ namespace
 	}
 
 	//	The beauty resolve: the linear mean (unclamped) and coverage as
-	//	RGBA16F, and depth
+	//	RGBA16F, or with m_DenoiseInput the denoiser's input planes (the
+	//	means of colour and coverage, albedo, normal); and depth
 	__forceinline__ __device__ void write_hdr_pixel(unsigned int i_Pixel, const float4* i_Planes, unsigned int i_nSamples)
 	{
 		const unsigned int count = params.m_Width * params.m_Height;
 		const float4 color = i_Planes[0];
 		const float4 guide = i_Planes[count];
 		const float scale = 1.0f / i_nSamples;
-		reinterpret_cast<uint2*>(params.m_Color)[i_Pixel] = half4(color.x * scale, color.y * scale, color.z * scale, guide.w * scale);
+		if (params.m_DenoiseInput)
+		{
+			const float4 normal = i_Planes[2 * count];
+			float4* input = reinterpret_cast<float4*>(params.m_DenoiseInput) + i_Pixel;
+			input[0] = make_float4(color.x * scale, color.y * scale, color.z * scale, guide.w * scale);
+			input[count] = make_float4(guide.x * scale, guide.y * scale, guide.z * scale, 1.0f);
+			input[2 * count] = make_float4(normal.x * scale, normal.y * scale, normal.z * scale, 0.0f);
+		}
+		else
+		{
+			reinterpret_cast<uint2*>(params.m_Color)[i_Pixel] = half4(color.x * scale, color.y * scale, color.z * scale, guide.w * scale);
+		}
 		write_depth(i_Pixel, color.w);
 	}
 
@@ -840,7 +852,11 @@ extern "C" __global__ void __raygen__lighting()
 			else if (hdr)
 			{
 				sum = sum + beauty_path(surface, direction, rng, width, params.m_ConeSpread);
-				albedo = albedo + surface.m_BaseColor;
+				//	The denoiser's albedo guide: what the image is the light
+				//	times. Reflection Only shows the specular lobe alone,
+				//	weighted by the BRDF's Fresnel at the view.
+				albedo = albedo + (reflection_only() ? optxb::fresnel(surface.m_Bsdf, dot(surface.m_Shading, direction * -1.0f))
+													 : surface.m_BaseColor);
 				normal = normal + surface.m_Shading;
 				coverage += 1.0f;
 			}

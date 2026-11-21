@@ -188,7 +188,7 @@ TEST(mainCommandLine, HelpListsEveryFlag)
 		"-gfx", "-gfxValidation",
 		"-capSampling", "-capJitter", "-capMotionSamples", "-capPasses", "-capHardwareAA",
 		"-capTraceSamples", "-capTraceSamplesPerFrame", "-capTraceSampleLimit", "-capTraceAORays",
-		"-capTraceBounces", "-capTraceDebug", "-capTraceMaxRadiance",
+		"-capTraceBounces", "-capTraceDebug", "-capTraceMaxRadiance", "-capTraceDenoise",
 	};
 	for (const char* flag : flags)
 	{
@@ -362,6 +362,8 @@ TEST(mainCommandLine, CaptureNewFlagsBadValue)
 		"-render s.mab -capTraceDebug 1",
 		"-render s.mab -capTraceMaxRadiance -1",
 		"-render s.mab -capTraceMaxRadiance bright",
+		"-render s.mab -capTraceDenoise on",
+		"-render s.mab -capTraceDenoise 1",
 	};
 	for (const char* text : lines)
 	{
@@ -406,6 +408,18 @@ TEST(mainCommandLine, CaptureTraceMaxRadianceTakesNumbers)
 	expect_actions({act(mainCommandLine::e_Render, "s.mab"),
 					act(mainCommandLine::e_CapTraceMaxRadiance, "0"),
 					act(mainCommandLine::e_CapTraceMaxRadiance, "12.5")}, line);
+	EXPECT_TRUE(line.m_Warnings.empty());
+}
+
+TEST(mainCommandLine, CaptureTraceDenoiseTakesModeNames)
+{
+	mainCommandLine line = mainCommandLine::Parse(
+		"-render s.mab -capTraceDenoise off -capTraceDenoise Viewport -capTraceDenoise capture -capTraceDenoise BOTH");
+	expect_actions({act(mainCommandLine::e_Render, "s.mab"),
+					act(mainCommandLine::e_CapTraceDenoise, "0"),
+					act(mainCommandLine::e_CapTraceDenoise, "1"),
+					act(mainCommandLine::e_CapTraceDenoise, "2"),
+					act(mainCommandLine::e_CapTraceDenoise, "3")}, line);
 	EXPECT_TRUE(line.m_Warnings.empty());
 }
 

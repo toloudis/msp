@@ -108,6 +108,9 @@
 **	                             firefly limit: light after the first bounce
 **	                             is scaled down so no component exceeds it
 **	                             (0: no limit)
+**	  -capTraceDenoise <when>    ray tracing: when the default, HDR and
+**	                             Reflection Only passes are denoised (OptiX
+**	                             denoiser): off, viewport, capture or both
 **	                             The -capTrace* flags set every render
 **	                             layer's ray tracing preferences; other
 **	                             backends ignore them
@@ -190,6 +193,7 @@ struct mainCommandLine
 		e_CapTraceBounces,			// -capTraceBounces <n>: "0" to "32"
 		e_CapTraceDebug,			// -capTraceDebug <view>: the view's number, "0" (off) to "6"
 		e_CapTraceMaxRadiance,		// -capTraceMaxRadiance <x>: a number, 0 or more, as given
+		e_CapTraceDenoise,			// -capTraceDenoise <when>: the mode's number, "0" (off) to "3" (both)
 		e_New,				// -new: start a new, empty scene
 		e_License,			// -license <key>: validate a license key
 		e_Version,			// -version: print the version

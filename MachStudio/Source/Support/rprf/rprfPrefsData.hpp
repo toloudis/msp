@@ -290,4 +290,5 @@ public:
 	prtyInt32	m_TraceBounces;
 	prtyEnum	m_TraceDebugView;		// g3dRenderPrefs::TraceDebugView
 	prtyFloat	m_TraceMaxRadiance;		// 0: no limit
+	prtyEnum	m_TraceDenoise;			// g3dRenderPrefs::TraceDenoise
 };

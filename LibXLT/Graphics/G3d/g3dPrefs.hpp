@@ -169,6 +169,17 @@ namespace g3dPrefs
 		// the beauty pass's firefly limit: light reaching a pixel after the
 		// first bounce is scaled down so no component exceeds it (0: none)
 		float m_TraceMaxRadiance;
+		// when the beauty pass and Reflection Only are denoised (OptiX's
+		// denoiser): never, in views, in captured frames, or both
+		enum TraceDenoise
+		{
+			e_TraceDenoiseOff = 0,
+			e_TraceDenoiseViewport,
+			e_TraceDenoiseCapture,
+			e_TraceDenoiseBoth,
+			e_TraceDenoiseCount
+		};
+		int m_TraceDenoise;
 
 		g3dRenderPrefs();
 	};

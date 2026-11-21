@@ -521,6 +521,7 @@ namespace rprfPrefsUtil
 				o_Data.m_TraceBounces.SetVisible(bVisible);
 				o_Data.m_TraceDebugView.SetVisible(bVisible);
 				o_Data.m_TraceMaxRadiance.SetVisible(bVisible);
+				o_Data.m_TraceDenoise.SetVisible(bVisible);
 			}
 
 			if(l_CategoryMap["Render Passes from File"] != NULL )
@@ -978,6 +979,14 @@ namespace rprfPrefsUtil
 			pNUDUII->SetMaximum(1000000.0f);
 			pNUDUII->SetRestrictFlag(true);
 			o_PrefsObject->AddProperty( pNUDUII );
+
+			prtyComboBoxUIInfo* pTraceDenoise = new prtyComboBoxUIInfo(&(i_Data.m_TraceDenoise), "Ray Tracing", "Denoise");
+			pTraceDenoise->SetDescription("Runs the OptiX denoiser over the traced default, HDR and Reflection Only images: in views (each time the image is shown), in captured frames (once each), or both.");
+			pTraceDenoise->AddItem(std::string("Off"), 0);
+			pTraceDenoise->AddItem(std::string("Viewport"), 1);
+			pTraceDenoise->AddItem(std::string("Capture"), 2);
+			pTraceDenoise->AddItem(std::string("Both"), 3);
+			o_PrefsObject->AddProperty( pTraceDenoise );
 		}
 
 //#ifdef ACTIVATE_RENDERMAN

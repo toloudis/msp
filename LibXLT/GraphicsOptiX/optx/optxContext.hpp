@@ -84,5 +84,12 @@ namespace gox
 			//--------------------------------------------------------------------
 			static int GetErrorCount();
 			static int GetWarningCount();
+
+			//--------------------------------------------------------------------
+			//	ReportError - logs a GraphicsOptiX failure that OptiX itself
+			//	didn't report ("OptiX [i_pTag]: i_Message") and counts it as an
+			//	error
+			//--------------------------------------------------------------------
+			static void ReportError(const char* i_pTag, const std::string& i_Message);
 	};
 }

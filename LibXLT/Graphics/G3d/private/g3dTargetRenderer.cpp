@@ -27,6 +27,7 @@ g3dTargetRenderer::g3dTargetRenderer()
 	m_pCamera(NULL),
 	m_fAspectRatio(1.0),
 //	m_bMatchAspectToWindow(false),
+	m_BackgroundColor(0, 0, 0),
 	m_NumPrimitivesRendered(0),
 	m_pPrefs(NULL)
 {
@@ -41,6 +42,7 @@ g3dTargetRenderer::g3dTargetRenderer(g2dRenderTarget* i_pTarget, g3dSceneRendere
 	m_pCamera(NULL),
 	m_fAspectRatio(1.0),
 //	m_bMatchAspectToWindow(false),
+	m_BackgroundColor(0, 0, 0),
 	m_NumPrimitivesRendered(0),
 	m_pPrefs(NULL)
 {
@@ -56,6 +58,7 @@ g3dTargetRenderer::g3dTargetRenderer(g2dRenderTarget* i_pTarget, g3dSceneRendere
 	m_pCamera(i_pCamera),
 	m_fAspectRatio(1.0),
 //	m_bMatchAspectToWindow(false),
+	m_BackgroundColor(0, 0, 0),
 	m_NumPrimitivesRendered(0),
 	m_pPrefs(NULL)
 {

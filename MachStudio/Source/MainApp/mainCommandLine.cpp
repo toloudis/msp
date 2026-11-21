@@ -197,6 +197,10 @@ namespace
 		{
 			kind = mainCommandLine::e_CapTraceMaxRadiance;
 		}
+		else if (appCommandLine::IsFlag(token, "capTraceDenoise"))
+		{
+			kind = mainCommandLine::e_CapTraceDenoise;
+		}
 		else
 		{
 			return false;
@@ -276,6 +280,22 @@ namespace
 			for (int i = 0; i < int(sizeof(c_Views) / sizeof(c_Views[0])); ++i)
 			{
 				if (view == c_Views[i])
+				{
+					action_value = std::to_string(i);
+					problem.clear();
+				}
+			}
+			break;
+		}
+		case mainCommandLine::e_CapTraceDenoise:
+		{
+			//	g3dRenderPrefs::TraceDenoise's order
+			static const char* const c_Modes[] = { "off", "viewport", "capture", "both" };
+			const std::string mode = to_lower(value);
+			problem = "must be off, viewport, capture or both";
+			for (int i = 0; i < int(sizeof(c_Modes) / sizeof(c_Modes[0])); ++i)
+			{
+				if (mode == c_Modes[i])
 				{
 					action_value = std::to_string(i);
 					problem.clear();
@@ -656,6 +676,9 @@ Rendering
   -capTraceMaxRadiance <x>   ray tracing: the default and HDR passes' firefly
                              limit: light after the first bounce is scaled
                              down so no component exceeds it (0: no limit)
+  -capTraceDenoise <when>    ray tracing: when the default, HDR and
+                             Reflection Only passes are denoised (OptiX
+                             denoiser): off, viewport, capture or both
                              The -capTrace* flags set every render layer's
                              ray tracing preferences; other backends ignore
                              them

@@ -240,6 +240,7 @@ void rprfPrefsObject::AddCallbacks()
 	m_Data.m_TraceBounces.AddCallback(new prtyCallbackWrapper<rprfPrefsObject>(this, &rprfPrefsObject::UpdateTrace));
 	m_Data.m_TraceDebugView.AddCallback(new prtyCallbackWrapper<rprfPrefsObject>(this, &rprfPrefsObject::UpdateTrace));
 	m_Data.m_TraceMaxRadiance.AddCallback(new prtyCallbackWrapper<rprfPrefsObject>(this, &rprfPrefsObject::UpdateTrace));
+	m_Data.m_TraceDenoise.AddCallback(new prtyCallbackWrapper<rprfPrefsObject>(this, &rprfPrefsObject::UpdateTrace));
 }
 
 //--------------------------------------------------------------------
@@ -641,6 +642,7 @@ void rprfPrefsObject::UpdateTrace(prtyProperty *i_pProperty, bool i_bDirty)
 	m_PrefsProxy->SetTraceBounces( m_Data.m_TraceBounces.GetValue() );
 	m_PrefsProxy->SetTraceDebugView( m_Data.m_TraceDebugView.GetValue() );
 	m_PrefsProxy->SetTraceMaxRadiance( m_Data.m_TraceMaxRadiance.GetValue() );
+	m_PrefsProxy->SetTraceDenoise( m_Data.m_TraceDenoise.GetValue() );
 }
 
 void rprfPrefsObject::UpdateRenderManOptions(prtyProperty *i_pProperty, bool i_bDirty)

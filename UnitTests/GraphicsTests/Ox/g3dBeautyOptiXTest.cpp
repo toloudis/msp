@@ -45,12 +45,24 @@
 **	misses are black, never the environment, which a mirror still
 **	reflects.
 **
+**	3d-4, the denoiser: a 4-sample image of soft shadows and bounce light,
+**	denoised, is closer to the 1024-sample image (mean error of the
+**	tone-mapped pictures, gfxcompare's metric) than the undenoised one, and
+**	keeps its brightness; the denoiser's input is the accumulated means
+**	(the colour the undenoised resolve writes, the base colour as albedo,
+**	the world normal, the coverage, which the output's alpha copies);
+**	Reflection Only's albedo guide is the Fresnel at the view; each Denoise
+**	mode denoises views, captures, both or neither, and a finished frame is
+**	resolved again, with no new samples, when a capture starts or ends;
+**	changing Denoise restarts accumulation.
+**
 **	With MSP_GT_AO_IMAGES set to a folder, the tone-mapped pictures are
 **	saved there.
 **
 **	Extra Large Technology
 \****************************************************************************/
 #include "gtBackend.hpp"
+#include "gtImage.hpp"
 #include "gtScene.hpp"
 #include "gtTarget.hpp"
 #include "gtTempDir.hpp"
@@ -69,6 +81,9 @@
 #endif
 #ifndef G3D_POINTLIGHT_HPP
 #include "Graphics/G3d/g3dPointLight.hpp"
+#endif
+#ifndef G3D_PROGRESSIVE_HPP
+#include "Graphics/G3d/g3dProgressive.hpp"
 #endif
 #ifndef G3D_PREFS_HPP
 #include "Graphics/G3d/g3dPrefs.hpp"
@@ -1728,5 +1743,285 @@ TEST(g3dBeautyOptiX, ReflectionOnlyMissesAreBlack)
 		{
 			EXPECT_NEAR(expected[c], centre_mean(hdr, c), expected[c] * 0.01) << "the mirror's environment, channel " << c;
 		}
+	});
+}
+
+//----------------------------------------------------------------------------
+//	3d-4
+//----------------------------------------------------------------------------
+
+namespace
+{
+	typedef g3dPrefs::g3dRenderPrefs Prefs;
+
+	//	An HDR frame as an 8-bit picture: x / (1 + x), as a tone mapper
+	//	would, so errors in shadows and highlights weigh alike
+	std::vector<uint8_t> tone_mapped(const std::vector<float>& i_Hdr)
+	{
+		std::vector<uint8_t> rgba(i_Hdr.size());
+		for (size_t i = 0; i < i_Hdr.size(); ++i)
+		{
+			const float v = (i % 4 == 3) ? 1.0f : std::max(0.0f, i_Hdr[i]) / (1.0f + std::max(0.0f, i_Hdr[i]));
+			rgba[i] = uint8_t(std::min(1.0f, v) * 255.0f + 0.5f);
+		}
+		return rgba;
+	}
+
+	//	gfxcompare's mean error (0..1) between two frames' tone-mapped pictures
+	double mean_error(const std::vector<float>& i_A, const std::vector<float>& i_B)
+	{
+		const std::vector<uint8_t> a = tone_mapped(i_A), b = tone_mapped(i_B);
+		return gtCompareImages(a.data(), b.data(), c_Size, c_Size).m_MeanErr;
+	}
+
+	//	A plane of the denoiser's input (0 colour, 1 albedo, 2 normal) at a pixel
+	const float* input_at(const std::vector<float>& i_Input, int i_Plane, int x, int y)
+	{
+		return &i_Input[(size_t(i_Plane) * c_Size * c_Size + size_t(y) * c_Size + x) * 4];
+	}
+}
+
+TEST(g3dBeautyOptiX, DenoisedFewSamplesAreCloserToConverged)
+{
+	gtBackend::RunOptiX([]()
+	{
+		//	Soft shadows of a raised square under a disk light, and bounce
+		//	light: noisy at 4 samples
+		gtSceneBuilder builder;
+		add_floor(builder, pbr(builder, maFloatRGBA(0.7f, 0.6f, 0.5f, 1), 0.0f, 0.6f));
+		g3dSceneNode* square = builder.Add(gtScene::Plane(), pbr(builder, maFloatRGBA(0.3f, 0.5f, 0.7f, 1), 0.0f, 0.4f),
+										   scale_translate(4, 2, 1, 4));
+		square->GetFragment()->SetCastsShadow(true);
+		g3dProjectedLight* light = builder.ProjectedLight(maPoint3d(0, 0, 14), maPoint3d(0, 0, 0),
+														  maFloatRGBA(0.9f, 0.9f, 0.9f, 1), 0);
+		light->SetRange(100.0f);
+		light->SetAngle(120.0f);
+		light->SetInnerAngle(120.0f);
+		light->SetLightSize(8.0f);
+		look_down(builder.Camera(), 0, 0, 30);
+
+		auto render = [&](unsigned i_nSamples, int i_Denoise, bool& o_bDenoised)
+		{
+			std::unique_ptr<g3dTraceRendererOptiX> renderer = beauty_renderer();
+			EXPECT_TRUE(renderer);
+			if (!renderer)
+			{
+				return std::vector<float>();
+			}
+			renderer->SetBounces(1);
+			renderer->SetSamplesPerFrame(std::min(i_nSamples, 256u));
+			renderer->SetSampleLimit(i_nSamples);
+			renderer->SetDenoise(i_Denoise);
+			renderer->SetSeed(11);
+			View view(builder, *renderer);
+			std::vector<float> hdr;
+			while (renderer->GetSampleCount() < i_nSamples)
+			{
+				hdr = view.Hdr();
+			}
+			o_bDenoised = renderer->IsFrameDenoised();
+			return hdr;
+		};
+		bool denoised = false;
+		const std::vector<float> converged = render(1024, Prefs::e_TraceDenoiseOff, denoised);
+		const std::vector<float> noisy = render(4, Prefs::e_TraceDenoiseOff, denoised);
+		EXPECT_FALSE(denoised);
+		const std::vector<float> cleaned = render(4, Prefs::e_TraceDenoiseViewport, denoised);
+		EXPECT_TRUE(denoised);
+		ASSERT_FALSE(converged.empty() || noisy.empty() || cleaned.empty());
+		save_hdr_if_asked(converged, c_Size, c_Size, "converged");
+		save_hdr_if_asked(noisy, c_Size, c_Size, "noisy");
+		save_hdr_if_asked(cleaned, c_Size, c_Size, "denoised");
+
+		const double noisy_error = mean_error(noisy, converged);
+		const double cleaned_error = mean_error(cleaned, converged);
+		EXPECT_GT(noisy_error, 0.0);
+		EXPECT_LT(cleaned_error, noisy_error) << "noisy " << noisy_error * 255 << "/255, denoised " << cleaned_error * 255 << "/255";
+		EXPECT_NEAR(mean_luminance(converged), mean_luminance(cleaned), mean_luminance(converged) * 0.05)
+			<< "the denoiser keeps the image's brightness";
+	});
+}
+
+TEST(g3dBeautyOptiX, DenoiserInputIsTheAccumulatedMeans)
+{
+	gtBackend::RunOptiX([]()
+	{
+		//	A floor smaller than the view (the corners miss) under a point light
+		gtSceneBuilder builder;
+		add_floor(builder, pbr(builder, maFloatRGBA(0.6f, 0.5f, 0.4f, 1), 0.0f, 0.5f), 10.0f);
+		constant_falloff(builder.PointLight(maPoint3d(2, 1, 10), maFloatRGBA(0.8f, 0.8f, 0.8f, 1)));
+		look_down(builder.Camera(), 0, 0, 30);
+
+		auto renderer_for = [](int i_Denoise)
+		{
+			std::unique_ptr<g3dTraceRendererOptiX> renderer = beauty_renderer();
+			if (renderer)
+			{
+				renderer->SetBounces(1);
+				renderer->SetSamplesPerFrame(8);
+				renderer->SetSampleLimit(8);
+				renderer->SetSeed(3);
+				renderer->SetDenoise(i_Denoise);
+			}
+			return renderer;
+		};
+		std::unique_ptr<g3dTraceRendererOptiX> plain = renderer_for(Prefs::e_TraceDenoiseOff);
+		ASSERT_TRUE(plain);
+		View plain_view(builder, *plain);
+		const std::vector<float> undenoised = plain_view.Hdr();
+		EXPECT_TRUE(plain->ReadDenoiseInput().empty()) << "no input without denoising";
+
+		std::unique_ptr<g3dTraceRendererOptiX> denoising = renderer_for(Prefs::e_TraceDenoiseBoth);
+		ASSERT_TRUE(denoising);
+		View denoised_view(builder, *denoising);
+		const std::vector<float> denoised = denoised_view.Hdr();
+		ASSERT_TRUE(denoising->IsFrameDenoised());
+		EXPECT_EQ(1, denoising->GetDenoiser().GetRunCount());
+		const std::vector<float> input = denoising->ReadDenoiseInput();
+		ASSERT_EQ(size_t(c_Size) * c_Size * 4 * 3, input.size());
+		ASSERT_FALSE(undenoised.empty() || denoised.empty());
+
+		//	the colour plane is what the undenoised resolve writes (it in half precision)
+		for (int y = 0; y < c_Size; y += 3)
+		{
+			for (int x = 0; x < c_Size; x += 3)
+			{
+				const float* expected = hdr_at(undenoised, x, y);
+				const float* got = input_at(input, 0, x, y);
+				for (int c = 0; c < 4; ++c)
+				{
+					ASSERT_NEAR(expected[c], got[c], std::fabs(expected[c]) * 2e-3 + 1e-4) << x << ", " << y << " channel " << c;
+				}
+			}
+		}
+		//	on the floor: the base colour, the world normal, full coverage
+		const int centre = c_Size / 2;
+		const float base[3] = { 0.6f, 0.5f, 0.4f };
+		for (int c = 0; c < 3; ++c)
+		{
+			EXPECT_NEAR(base[c], input_at(input, 1, centre, centre)[c], 1e-5) << "albedo, channel " << c;
+		}
+		EXPECT_NEAR(0.0f, input_at(input, 2, centre, centre)[0], 1e-5);
+		EXPECT_NEAR(0.0f, input_at(input, 2, centre, centre)[1], 1e-5);
+		EXPECT_NEAR(1.0f, input_at(input, 2, centre, centre)[2], 1e-5);
+		EXPECT_EQ(1.0f, input_at(input, 0, centre, centre)[3]);
+		//	a corner misses: no albedo, no normal, no coverage
+		for (int plane = 0; plane < 3; ++plane)
+		{
+			const float* corner = input_at(input, plane, 0, 0);
+			EXPECT_EQ(0.0f, corner[0] + corner[1] + corner[2]) << "plane " << plane;
+		}
+		EXPECT_EQ(0.0f, input_at(input, 0, 0, 0)[3]);
+		//	the denoised frame copies the coverage into its alpha
+		EXPECT_EQ(0.0f, hdr_at(denoised, 0, 0)[3]);
+		EXPECT_NEAR(1.0f, hdr_at(denoised, centre, centre)[3], 1e-3);
+		EXPECT_GT(hdr_at(denoised, centre, centre)[0], 0.01f);
+	});
+}
+
+TEST(g3dBeautyOptiX, ReflectionOnlyAlbedoGuideIsTheFresnel)
+{
+	gtBackend::RunOptiX([]()
+	{
+		//	Floors seen head-on under a glowing ceiling: Reflection Only's
+		//	albedo guide is the BRDF's Fresnel at the view, F0 at the centre
+		auto guide = [](float i_Base, float i_Metallic)
+		{
+			gtSceneBuilder builder;
+			add_floor(builder, pbr(builder, maFloatRGBA(i_Base, i_Base, i_Base, 1), i_Metallic, 0.0f));
+			builder.Add(gtScene::Plane(), glowing(builder, maFloatRGBA(1, 1, 1, 1), 1.0f), scale_translate(1000, 0, 0, 40));
+			look_down(builder.Camera(), 0, 0, 20);
+			std::unique_ptr<g3dTraceRendererOptiX> renderer = reflection_renderer();
+			EXPECT_TRUE(renderer);
+			if (!renderer)
+			{
+				return -1.0f;
+			}
+			renderer->SetBounces(0);
+			renderer->SetSampleLimit(1);
+			renderer->SetDenoise(Prefs::e_TraceDenoiseViewport);
+			View view(builder, *renderer);
+			view.Hdr();
+			EXPECT_TRUE(renderer->IsFrameDenoised());
+			const std::vector<float> input = renderer->ReadDenoiseInput();
+			return input.empty() ? -1.0f : input_at(input, 1, c_Size / 2, c_Size / 2)[1];
+		};
+		EXPECT_NEAR(1.0f, guide(1.0f, 1.0f), 2e-3) << "chrome";
+		EXPECT_NEAR(0.04f, guide(0.5f, 0.0f), 2e-3) << "a dielectric";
+	});
+}
+
+TEST(g3dBeautyOptiX, DenoiseModesPickViewsAndCaptures)
+{
+	gtBackend::RunOptiX([]()
+	{
+		gtSceneBuilder builder;
+		add_floor(builder, pbr(builder, maFloatRGBA(0.5f, 0.5f, 0.5f, 1), 0.0f, 0.5f));
+		builder.PointLight(maPoint3d(0, 0, 10), maFloatRGBA(0.5f, 0.5f, 0.5f, 1));
+		look_down(builder.Camera(), 0, 0, 30);
+		std::unique_ptr<g3dTraceRendererOptiX> renderer = beauty_renderer();
+		ASSERT_TRUE(renderer);
+		renderer->SetSamplesPerFrame(4);
+		renderer->SetSampleLimit(4);
+		renderer->SetCaptureSamples(4);
+		View view(builder, *renderer);
+
+		//	each mode: denoised in a view, and while capturing
+		const int modes[4] = { Prefs::e_TraceDenoiseOff, Prefs::e_TraceDenoiseViewport, Prefs::e_TraceDenoiseCapture,
+							   Prefs::e_TraceDenoiseBoth };
+		const bool in_view[4] = { false, true, false, true };
+		const bool in_capture[4] = { false, false, true, true };
+		for (int m = 0; m < 4; ++m)
+		{
+			renderer->SetDenoise(modes[m]);
+			view.Render();
+			EXPECT_EQ(4u, renderer->GetSampleCount());
+			EXPECT_EQ(in_view[m], renderer->IsFrameDenoised()) << "mode " << modes[m] << " in a view";
+			const int launches = renderer->GetLaunchCount();
+			const int restarts = renderer->GetRestartCount();
+			{
+				//	the finished frame is resolved again (one launch, no
+				//	samples) only if whether it is denoised changes
+				g3dProgressive::CaptureScope capturing;
+				view.Render();
+				EXPECT_EQ(in_capture[m], renderer->IsFrameDenoised()) << "mode " << modes[m] << " capturing";
+				EXPECT_EQ(launches + (in_view[m] != in_capture[m] ? 1 : 0), renderer->GetLaunchCount());
+				EXPECT_EQ(4u, renderer->GetSampleCount());
+				EXPECT_EQ(restarts, renderer->GetRestartCount());
+			}
+			view.Render();
+			EXPECT_EQ(in_view[m], renderer->IsFrameDenoised()) << "mode " << modes[m] << " after the capture";
+		}
+	});
+}
+
+TEST(g3dBeautyOptiX, RestartsWhenDenoiseChanges)
+{
+	gtBackend::RunOptiX([]()
+	{
+		gtSceneBuilder builder;
+		add_floor(builder, pbr(builder, maFloatRGBA(0.5f, 0.5f, 0.5f, 1), 0.0f, 0.5f));
+		builder.PointLight(maPoint3d(0, 0, 10), maFloatRGBA(0.5f, 0.5f, 0.5f, 1));
+		look_down(builder.Camera(), 0, 0, 30);
+		std::unique_ptr<g3dTraceRendererOptiX> renderer = beauty_renderer();
+		ASSERT_TRUE(renderer);
+		renderer->SetSampleLimit(4);
+		View view(builder, *renderer);
+		view.Render();
+		view.Render();
+		const int restarts = renderer->GetRestartCount();
+		renderer->SetDenoise(Prefs::e_TraceDenoiseCapture);
+		view.Render();
+		EXPECT_EQ(restarts + 1, renderer->GetRestartCount());
+
+		//	through the preferences
+		Prefs& prefs = g3dPrefs::CurrentPrefs();
+		const int before = prefs.m_TraceDenoise;
+		prefs.m_TraceDenoise = Prefs::e_TraceDenoiseBoth;
+		view.Render();
+		prefs.m_TraceDenoise = before;
+		EXPECT_EQ(restarts + 2, renderer->GetRestartCount());
+		EXPECT_EQ(int(Prefs::e_TraceDenoiseBoth), renderer->GetDenoise());
+		EXPECT_TRUE(renderer->IsFrameDenoised());
 	});
 }
