@@ -838,11 +838,15 @@
         },
         "SasUiDescription": {
           "type": "string",
-          "value": "base color of the surface (glTF baseColorFactor)"
+          "value": "base color of the surface (glTF baseColorFactor); its alpha is the Blend and Mask alpha"
         },
         "UiCategory": {
           "type": "string",
           "value": "Base"
+        },
+        "SasUiAlpha": {
+          "type": "int",
+          "value": 1
         },
         "UiIndex": {
           "type": "int",

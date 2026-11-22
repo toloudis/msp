@@ -59,6 +59,17 @@ class prtyComboBoxUIInfo : public prtyPropertyUIInfo
 		const int GetWidth() const;
 		void SetWidth(const int i_Width);
 
+		//--------------------------------------------------------------------
+		//	An integer property's value and the item that shows it, for the
+		//	toolkits' integer combo boxes. When every item is a whole number
+		//	("256,512,1024") the value is the item's number; otherwise (named
+		//	items, "Opaque,Mask,Blend") it is the item's index.
+		//	ValueOfItem - the value item i_Item stands for (0 if out of range)
+		//	ItemOfValue - the item that shows i_Value, -1 if none
+		//--------------------------------------------------------------------
+		static int ValueOfItem(const std::vector<std::string>& i_Items, int i_Item);
+		static int ItemOfValue(const std::vector<std::string>& i_Items, int i_Value);
+
 	public:
 		std::vector<std::string> m_List;
 

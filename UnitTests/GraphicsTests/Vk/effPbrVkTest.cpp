@@ -90,6 +90,9 @@
 #ifndef FS_RESOURCEFINDERDIR_HPP
 #include "Core/fs/fsResourceFinderDir.hpp"
 #endif
+#ifndef PRTY_COLORRGBAEDITUIINFO_HPP
+#include "Core/prty/prtyColorRGBAEditUIInfo.hpp"
+#endif
 #ifndef PRTY_COMBOBOXUIINFO_HPP
 #include "Core/prty/prtyComboBoxUIInfo.hpp"
 #endif
@@ -713,11 +716,13 @@ TEST(effPbrVkTest, EditorControlsFromManifest)
 		const prtyPropertyUIInfo* slider = ui_info(blinn_params, "Roughness");
 		ASSERT_TRUE(colour && texture && file && slider) << "Blinn's labels changed";
 
-		enum Kind { e_Colour, e_Texture, e_File, e_Slider, e_Combo };
+		//	Base Color also edits alpha (its SasUiAlpha annotation): the
+		//	material's opacity under Blend and Mask
+		enum Kind { e_Colour, e_ColourAlpha, e_Texture, e_File, e_Slider, e_Combo };
 		struct Control { const char* m_pLabel; const char* m_pCategory; Kind m_Kind; float m_Max; };
 		const std::vector<Control> expected =
 		{
-			{ "Base Color", "Base", e_Colour, 0 },
+			{ "Base Color", "Base", e_ColourAlpha, 0 },
 			{ "Base Color Map", "Base", e_Texture, 0 },
 			{ "Metallic", "Metal/Rough", e_Slider, 1 },
 			{ "Roughness", "Metal/Rough", e_Slider, 1 },
@@ -745,6 +750,10 @@ TEST(effPbrVkTest, EditorControlsFromManifest)
 			switch (c.m_Kind)
 			{
 				case e_Colour:	EXPECT_EQ(typeid(*colour), typeid(got)); break;
+				case e_ColourAlpha:
+					EXPECT_EQ(typeid(prtyColorRGBAEditUIInfo), typeid(got));
+					EXPECT_EQ(&params->FindColorParam(effPbrData::c_BaseColor)->Property(), got.GetProperty(0));
+					break;
 				case e_Texture:	EXPECT_EQ(typeid(*texture), typeid(got)); break;
 				case e_File:	EXPECT_EQ(typeid(*file), typeid(got)); break;
 				case e_Slider:

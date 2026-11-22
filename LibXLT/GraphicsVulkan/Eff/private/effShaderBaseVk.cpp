@@ -20,6 +20,9 @@
 #ifndef PRTY_CHECKBOXUIINFO_HPP
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
 #endif
+#ifndef PRTY_COLORRGBAEDITUIINFO_HPP
+#include "Core/prty/prtyColorRGBAEditUIInfo.hpp"
+#endif
 #ifndef PRTY_COLORRGBEDITUIINFO_HPP
 #include "Core/prty/prtyColorRGBEditUIInfo.hpp"
 #endif
@@ -2369,8 +2372,19 @@ effParamColor* effShaderBaseVk::MapColorParam(effShaderParams* o_pParams,
 	{
 		fxEffectVariable* hAnnot = NULL;
 
+		//	An SasUiAlpha annotation (non-zero) asks for an alpha field too
+		//	(Pbr.fx's Base Color, whose alpha is the material's opacity)
+		int alpha = 0;
+		hAnnot = i_hParam->GetAnnotationByName("SasUiAlpha");
+		if (hAnnot)
+		{
+			hAnnot->AsScalar()->GetInt(&alpha);
+		}
 		prtyPropertyUIInfo* pPUII;
-		pPUII  = new prtyColorRGBEditUIInfo(effParam->GetBaseProperty(), uiCategory, uiDesc);
+		if (alpha)
+			pPUII = new prtyColorRGBAEditUIInfo(effParam->GetBaseProperty(), uiCategory, uiDesc);
+		else
+			pPUII = new prtyColorRGBEditUIInfo(effParam->GetBaseProperty(), uiCategory, uiDesc);
 		ShaderParamUIInfo info;
 		info.UIInfo = pPUII;
 		info.Index = 0;

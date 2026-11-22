@@ -28,6 +28,9 @@
     <Filter Include="Ma">
       <UniqueIdentifier>{c5ad39dd-4534-4739-9ad8-540fec20e936}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Prty">
+      <UniqueIdentifier>{7e0c2b8a-4f3d-4b6e-9a51-2d8c6f1e3a47}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Rel">
       <UniqueIdentifier>{51d893f3-3007-4c85-8147-ab204725b3cf}</UniqueIdentifier>
     </Filter>
@@ -128,6 +131,9 @@
     </ClCompile>
     <ClCompile Include="Ma\maVectorTest.cpp">
       <Filter>Ma</Filter>
+    </ClCompile>
+    <ClCompile Include="Prty\prtyComboBoxUIInfoTest.cpp">
+      <Filter>Prty</Filter>
     </ClCompile>
     <ClCompile Include="Rel\relReferenceTest.cpp">
       <Filter>Rel</Filter>

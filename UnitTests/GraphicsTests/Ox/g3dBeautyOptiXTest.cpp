@@ -1480,6 +1480,44 @@ TEST(g3dBeautyOptiX, MostCommonEnvironmentWithoutTheGlobalOne)
 	});
 }
 
+TEST(g3dBeautyOptiX, MapLessEnvironmentWithBlackSpecularUsesDiffuse)
+{
+	gtBackend::RunOptiX([]()
+	{
+		//	MachStudio's environments' defaults (envtData, evmtEnvironment):
+		//	grey diffuse and black specular, both at factor 1, no maps
+		g3dRenderState state;		// outlive the builder's nodes
+		g3dAmbientEnvState environment;
+		environment.m_DiffuseColor = maFloatRGBA(0.5f, 0.5f, 0.5f, 1);
+		environment.m_DiffuseFactor = 1.0f;
+		environment.m_SpecularColor = maFloatRGBA(0, 0, 0, 1);
+		environment.m_SpecularFactor = 1.0f;
+		gtSceneBuilder builder;
+		g3dSceneNode* node = builder.Add(gtScene::Plane(), lambert(builder, maFloatRGBA(0.5f, 0.5f, 0.5f, 1)), scale_translate(2.0f, 0, 0, 0));
+		node->SetEnvironment(&environment);
+		node->SetRenderState(&state);
+		look_down(builder.Camera(), 0, 0, 30);
+		std::unique_ptr<g3dTraceRendererOptiX> renderer = beauty_renderer();
+		ASSERT_TRUE(renderer);
+		renderer->SetSampleLimit(1);
+		View view(builder, *renderer);
+
+		view.Render();
+		const optxEnvironmentLight& light = renderer->GetEnvironment().GetLight();
+		EXPECT_NE(0u, light.m_Flags & e_optxEnvironmentOn) << "the diffuse colour lights the scene";
+		for (int c = 0; c < 3; ++c)
+		{
+			EXPECT_FLOAT_EQ(0.5f, light.m_Color[c]) << "channel " << c;
+		}
+
+		//	a specular colour that gives light is still preferred
+		environment.m_SpecularColor = maFloatRGBA(0.25f, 0.25f, 0.25f, 1);
+		view.Render();
+		EXPECT_FLOAT_EQ(0.25f, renderer->GetEnvironment().GetLight().m_Color[0]);
+		node->SetRenderState(NULL);
+	});
+}
+
 //----------------------------------------------------------------------------
 //	3d-3: Reflection Only
 //----------------------------------------------------------------------------

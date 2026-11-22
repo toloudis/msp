@@ -11,9 +11,22 @@
 
 #include "Core/prty/prtyComboBoxUIInfo.hpp"
 
-#include <sstream>
+#include <string>
+#include <vector>
 
 #ifdef USE_QT
+
+namespace
+{
+	//	The control's items (its choices, as GetChoices gave them)
+	std::vector<std::string> items_of(const QComboBox* i_pControl)
+	{
+		std::vector<std::string> items;
+		for (int i = 0; i < i_pControl->count(); ++i)
+			items.push_back(tqtStdString(i_pControl->itemText(i)));
+		return items;
+	}
+}
 
 //----------------------------------------------------------------------------
 // Get list of string choices for combo box
@@ -26,14 +39,13 @@ void pqtInt32_ComboBox_Converter::GetChoices(prtyPropertyUIInfo* i_pUIInfo,
 }
 
 //----------------------------------------------------------------------------
-// Set value into control
+// Set value into control: the item that shows it (numbered items: the one
+// with that number; named items: the one at that index), else none
 //----------------------------------------------------------------------------
 void pqtInt32_ComboBox_Converter::SetValueIntoControl(QComboBox* i_pActualControl,
 													 int i_Value)
 {
-	std::ostringstream str;
-	str << i_Value;
-	pqtControlUtil::SelectString(i_pActualControl, tqtQString(str.str()));
+	i_pActualControl->setCurrentIndex(prtyComboBoxUIInfo::ItemOfValue(items_of(i_pActualControl), i_Value));
 }
 
 //----------------------------------------------------------------------------
@@ -41,10 +53,7 @@ void pqtInt32_ComboBox_Converter::SetValueIntoControl(QComboBox* i_pActualContro
 //----------------------------------------------------------------------------
 int pqtInt32_ComboBox_Converter::GetValueFromControl(QComboBox* i_pActualControl)
 {
-	std::istringstream str(tqtStdString(i_pActualControl->currentText()));
-	int value = 0;
-	str >> value;
-	return value;
+	return prtyComboBoxUIInfo::ValueOfItem(items_of(i_pActualControl), i_pActualControl->currentIndex());
 }
 
 #endif
