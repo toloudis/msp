@@ -44,6 +44,22 @@
 
 namespace gox
 {
+	namespace
+	{
+		//	Whether a colour x factor has any positive component
+		bool gives_light(const maFloatRGBA& i_Color, float i_Factor)
+		{
+			for (int c = 0; c < 3; ++c)
+			{
+				if (i_Color.GetPtr()[c] * i_Factor > 0.0f)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+
 	bool g3dEnvironmentOptiX::State::operator==(const State& i_Other) const
 	{
 		return m_pImage == i_Other.m_pImage && m_Generation == i_Other.m_Generation && m_Flags == i_Other.m_Flags &&
@@ -111,9 +127,11 @@ namespace gox
 				}
 			}
 
-			//	Which map: the specular one, else the diffuse one
+			//	Which map: the specular one, else the diffuse one; with neither,
+			//	the specular colour if it gives light (MachStudio's environments
+			//	default to a black specular colour at factor 1), else the diffuse
 			const bool specular_map = chosen.m_SpecularMap != NULL;
-			const bool use_specular = specular_map || (!chosen.m_DiffuseMap && chosen.m_SpecularFactor > 0.0f);
+			const bool use_specular = specular_map || (!chosen.m_DiffuseMap && gives_light(chosen.m_SpecularColor, chosen.m_SpecularFactor));
 			const matTexture* map = use_specular ? chosen.m_SpecularMap : chosen.m_DiffuseMap;
 			const maFloatRGBA& color = use_specular ? chosen.m_SpecularColor : chosen.m_DiffuseColor;
 			const float factor = use_specular ? chosen.m_SpecularFactor : chosen.m_DiffuseFactor;

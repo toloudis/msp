@@ -17,8 +17,9 @@
 **	raster reads along the reflection vector, usually the sharp radiance)
 **	if there is one, else the diffuse map, with that map's colour x factor
 **	and Y rotation angle (degrees, as the raster's); with no map, a constant
-**	colour x factor (the specular one if its factor is above 0, else the
-**	diffuse one). The map is added to the texture table in environment
+**	colour x factor (the specular one if it gives light, else the diffuse
+**	one: MachStudio's environments default to a black specular colour at
+**	factor 1 and a grey diffuse one). The map is added to the texture table in environment
 **	mode (wrap in u, clamp in v, trilinear). It lights the BRDF's diffuse
 **	and specular lobes as the diffuse and specular lighting preferences
 **	say; camera misses show it when it is the global environment and its
