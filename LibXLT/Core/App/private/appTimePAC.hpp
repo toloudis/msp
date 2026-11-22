@@ -39,13 +39,5 @@
 #if ENV_WINDOWS
 	#include "Core/app/private/appTimePACWin.hpp"
 #else
-	#if ENV_OS == ENV_PS2OS
-		#include "Core/app/private/appTimePACPS2.hpp"
-	#else
-		#if ENV_OS == ENV_XBOXOS
-			#include "Core/app/private/appTimePACXbox.hpp"
-		#else
-			#error appTimePAC not defined for this platform
-		#endif
-	#endif
+	#error appTimePAC not defined for this platform
 #endif

@@ -27,7 +27,6 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
 #include "Core/gf/gfFileBin.hpp"
-#include "Core/it/itStringUtil.hpp"
 
 
 //============================================================================
@@ -72,7 +71,7 @@ namespace
 				//
 				fsysFileList file_list;
 				chtrGeomList::BuildFileList(file_list);
-				itString tex_fname = geom_loc.GetLastName();
+				std::string tex_fname = geom_loc.GetLastName();
 				if (file_list.FindFilePath(tex_fname, geom_loc))
 					geom_loc.Push(tex_fname);
 			}
@@ -115,7 +114,7 @@ void chtrDataParser::ReadCharacterChunk(chReader& i_Reader,
 										chtrDataParser::GetChunkName(),
 										version, size, bdata);
 			o_Data.m_BaseData.m_Name			= bdata.m_Name;
-			o_Data.m_BaseData.m_Filename		= bdata.m_Filename;
+			o_Data.m_BaseData.m_Filename		= fsLocator(bdata.m_Filename);
 			resolve_fullpath(o_Data.m_BaseData.m_Filename);
 			o_Data.m_BaseData.m_bEditorVisible	= bdata.m_bEditorVisible;
 			o_Data.m_BaseData.m_Position		= bdata.m_Position;
@@ -123,7 +122,7 @@ void chtrDataParser::ReadCharacterChunk(chReader& i_Reader,
 			//o_Data.m_BaseData.m_Scale			= bdata.m_Position;
 
 			//DBG_TRACE("Char Name = " << (bdata.m_Name.GetString()));
-			//DBG_TRACE(" filename = " << (itStringUtil::GetStdString( bdata.m_Filename )));
+			//DBG_TRACE(" filename = " << (bdata.m_Filename));
 		}
 		else if ( name == tmlnBaseDataParser::GetChunkName() )
 		{
@@ -199,6 +198,10 @@ void chtrDataParser::ReadCharacterChunk(chReader& i_Reader,
 				{
 					o_Data.m_BaseData.m_bLockedMaterials.Read(i_Reader);
 				}
+				if (version >= 9)
+				{
+					chChunkParserUtil::Read(i_Reader, o_Data.m_BaseData.m_SourceIdentity);
+				}
 
 				// HACK: [rjk] oh this hurts.  because some files wrote out invalid IDs
 				//	this hack will find an ID "up higher" so they don't get assigned an
@@ -260,7 +263,7 @@ void chtrDataParser::WriteCharacterChunk(chWriter& o_Writer,
 	const bool c_bCHRC_CONTAINER_CHUNK = true;
 	o_Writer.WriteChunkHeader( c_CHRC, c_CHRCHUNK_VERSION, c_bCHRC_CONTAINER_CHUNK );
 
-	const int l_CHRD_VERSION = 8;
+	const int l_CHRD_VERSION = 9;
 	o_Writer.WriteChunkHeader( c_CHRD, l_CHRD_VERSION, false );
 	i_Data.m_BaseData.m_Name.Write(o_Writer);
 	i_Data.m_BaseData.m_Filename.Write(o_Writer);
@@ -276,6 +279,8 @@ void chtrDataParser::WriteCharacterChunk(chWriter& o_Writer,
 
 	//	version 8 adds locked materials flag
 	i_Data.m_BaseData.m_bLockedMaterials.Write(o_Writer);
+	//	version 9 adds the part of the file (a scene file node's identity)
+	chChunkParserUtil::Write(o_Writer, i_Data.m_BaseData.m_SourceIdentity);
 
 	o_Writer.FinishChunk();
 

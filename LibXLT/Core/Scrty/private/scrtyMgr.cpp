@@ -9,11 +9,11 @@
 #include "Core/scrty/scrtyMgr.hpp"
 
 #include "Core/dbg/dbgMsg.hpp"
+#include "Core/env/envString.hpp"
 
 #include <assert.h>
 //#include <iomanip>
 //#include <algorithm>
-#include <objbase.h>		// for BSTR
 
 
 //------------------------------------------------------------------------
@@ -44,20 +44,11 @@ long scrtyMgr::ValidateLicense(std::string& i_LicenseStr)
 {
 	if (sm_pImplementation)
 	{
-		//	convert the std string to BSTR
-		std::wstring wstr( i_LicenseStr.length()+1, 0 );
-		MultiByteToWideChar( ::GetACP(),
-							0,
-							i_LicenseStr.c_str(),
-							i_LicenseStr.length(),
-							&wstr[0],
-							i_LicenseStr.length() );
-		BSTR b_str = SysAllocString( wstr.c_str() );
+		//	convert the std string to a wide string
+		std::wstring wstr = envString::UTF8ToWideChar( i_LicenseStr );
 
 		//	validate the license
-		return sm_pImplementation->ValidateLicense( b_str );
-
-		SysFreeString( b_str );
+		return sm_pImplementation->ValidateLicense( wstr );
 	}
 
 	return -1;

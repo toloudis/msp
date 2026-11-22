@@ -90,8 +90,8 @@ void effWaterData::AddToParams(effShaderParams& o_Params)
 //	o_Params.AddParam(new effParamColor("g_diffuse", "g_diffuse", m_ColorDiffuse));
 //	o_Params.AddParam(new effParamColor("g_specular", "g_specular", m_ColorSpecular));
 
-//	o_Params.AddParam(new effParamTexture("diffuseTexture", "diffuseTexture", itString(m_NameDiffTex.c_str())));
-//	o_Params.AddParam(new effParamTexture("cubeMap", "cubeMap", itString(m_NameCubeMapTex.c_str())));
+//	o_Params.AddParam(new effParamTexture("diffuseTexture", "diffuseTexture", m_NameDiffTex));
+//	o_Params.AddParam(new effParamTexture("cubeMap", "cubeMap", m_NameCubeMapTex));
 
 	o_Params.AddParam(new effParamColor("waterColor", "waterColor", m_WaterColor));
 	o_Params.AddParam(new effParamFloat("noiseBumpFactor", "noiseBumpFactor", m_NoiseBumpFactor));

@@ -38,6 +38,9 @@
 #include "GraphicsDX11/G2d/g2dWindowDX11.hpp"
 #include "GraphicsDX11/G2d/g2dRenderTargetDX11.hpp"
 #include "GraphicsDX11/Mat/matVolumeTexture.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 //Note that Alpha test pass cannot work with depth peeling (so currently bypassed)
 //depth peeling requires the exact depths at each layer, pre passing causes holes in the solid parts.
@@ -51,8 +54,7 @@ namespace
 {
 	bool l_sSaveOpacity = true;
 
-	matRenderTargetTexture* l_pColor = NULL;	//hair main target color
-	g2dRenderTargetDX11* l_pColorAA = NULL;	//hair main target color with MSAA
+	g2dRenderTarget* l_pColor = NULL;	//hair main target color (with MSAA if HDR AA is on)
 	g2dWindowDX11* l_pDepth = NULL;	//hair main target depth
 	matRenderTargetTexture*	l_pOSMTextures[4] = {NULL};
 	const camCamera *l_pCamera = NULL;
@@ -122,7 +124,7 @@ namespace
 	bool CullLight( g3dLight* pLight, const maAxisBox& NodeBounds )
 	{
 		if( !pLight->IsEnabled() ) return true;
-		if ( !pLight->GetCastsShadow() ) return true;
+		if ( !pLight->GetIsSinglePassLight() ) return true;
 
 		//check if outside light frustum
 		const g3dProjectedLight* proj_light = dynamic_cast<const g3dProjectedLight*>(pLight);
@@ -161,15 +163,14 @@ namespace
 		const matMaterial* pMaterial = g3dDX11Util::GetMaterial(i_pSceneNode);
 		matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 		//	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)pEffect;
-		//	ID3DXEffect* pD3DEffect = i_pEffect->GetD3DXEffect();
+		//	ID3DXEffect* pD3DEffect = i_pEffect->GetFxEffect();
 
 		//	effStrandHair* i_pHairEffect = dynamic_cast<effStrandHair*>(pEffect);
 		effStrandHairData& HairData = pMaterial->StrandHairData();
 		HairData.Default();
 
 		int W, H;
-		if( l_pColorAA ) l_pColorAA->GetDimensions( W, H );
-		else l_pColor->GetDimensions( W, H );
+		l_pColor->GetDimensions( W, H );
 		HairData.m_InvScreenSize = maVector2d( 1.0f / W, 1.0f / H );
 
 		if( 0==g3dPrefs::CurrentPrefs().m_HairTransparencyMode )	//if solid set power high to disable alpha
@@ -285,7 +286,7 @@ namespace
 				if( pLight->IsEnabled() )
 				{
 					if (!g3dSingleLightRendering::GetDoSingleLightRendering() || 
-						!pLight->GetCastsShadow())
+						!pLight->GetIsSinglePassLight())
 					{
 						g3dLightMgrDX11::Implementation()->SetLight( pLight );
 						g3dLightMgrDX11::Implementation()->EnableLight( pLight );
@@ -352,17 +353,9 @@ shdwPassHair::shdwPassHair(
 	m_pTargets[2] = i_Targets[2];
 	m_pTargets[3] = i_Targets[3];
 
-	//hack to acquire actual targets
-	if( g3dPrefs::CurrentPrefs().m_bHDRAA )
-	{
-		l_pColorAA = dynamic_cast<g2dRenderTargetDX11*>(i_destination);
-		l_pColor = NULL;
-	}
-	else
-	{
-		l_pColorAA = NULL;
-		l_pColor = dynamic_cast<matRenderTargetTexture*>(i_destination);
-	}
+	//(the HDR AA target is a matRenderTargetTexture, not a g2dRenderTargetDX11:
+	//casting by type left no target with HDR AA on)
+	l_pColor = i_destination;
 	l_pDepth = dynamic_cast<g2dWindowDX11*>(i_ZBuffer);
 }
 
@@ -385,6 +378,7 @@ shdwPassHair::~shdwPassHair()
 //--------------------------------------------------------------------------------------------------------
 int shdwPassHair::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassHair");
 	m_stats.Reset();
 
 	g3dTransparencySortDX11* hairSort = m_sceneInfo->GetHairNodes();

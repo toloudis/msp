@@ -21,7 +21,7 @@ class matMaterial;
 class effParticle : public effShaderBaseDX11
 {
 public:
-	effParticle(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, std::string i_name);
+	effParticle(const fsLocator& i_Directory, std::unique_ptr<fxEffect> i_pEffect, std::string i_name);
 
 	virtual effShaderData* CreateData(const matMaterial* i_Mat);
 
@@ -29,8 +29,8 @@ public:
 							   int i_MaterialLayerIndex = 0) const;
 
 protected:
-	ID3DX11EffectShaderResourceVariable* m_hDiffuseMap;
-	ID3DX11EffectVectorVariable* m_MaterialAmbientHandle;
-	ID3DX11EffectVectorVariable* m_MaterialEmissiveHandle;
-	ID3DX11EffectScalarVariable* m_MaterialSpecularPowerHandle;
+	fxEffectVariable* m_hDiffuseMap;
+	fxEffectVariable* m_MaterialAmbientHandle;
+	fxEffectVariable* m_MaterialEmissiveHandle;
+	fxEffectVariable* m_MaterialSpecularPowerHandle;
 };

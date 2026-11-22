@@ -25,7 +25,14 @@ namespace trfnOperations
 	//  Add new transform to world
 	//--------------------------------------------------------------------
 	void  AddObject();
-	void  AddObject(const trfnScriptData& i_Data);
+	// returns the name the new object got, empty if it couldn't be added
+	nameString  AddObject(const trfnScriptData& i_Data);
+
+	//--------------------------------------------------------------------
+	// Set the whole object of that name (values, drivers, channels) as one
+	// undoable step; nothing if no parent has that name
+	//--------------------------------------------------------------------
+	void SetObjectData(const nameString& i_Name, const trfnScriptData& i_Data);
 
 	//--------------------------------------------------------------------
 	//  Select transform with given index

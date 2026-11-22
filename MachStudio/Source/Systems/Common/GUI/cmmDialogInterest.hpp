@@ -18,9 +18,6 @@
 #ifndef	FSYS_FILELIST_HPP
 #include "Support/fsys/fsysFileList.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
 #ifndef NAME_STRING_HPP
 #include "Core/name/nameString.hpp"
 #endif
@@ -77,7 +74,7 @@ public:
 	bool		m_bVisible;
 	bool		m_bEnabled;
 	nameString	m_Name;
-	itString	m_Filename;
+	std::string	m_Filename;
 	std::string	m_Desc;
 	std::string	m_SystemName;
 	// Part names grouped by category
@@ -134,12 +131,12 @@ public:
 	//--------------------------------------------------------------------
 	//	Add Object to Placed
 	//--------------------------------------------------------------------
-	virtual void AddObject(const itString& i_FileName, const fsLocator& i_Path) = 0;
+	virtual void AddObject(const std::string& i_FileName, const fsLocator& i_Path) = 0;
 
 	//--------------------------------------------------------------------
 	//	Replace Selected Object with this asset path from available
 	//--------------------------------------------------------------------
-	virtual void ReplaceObject(const itString& i_FileName, const fsLocator& i_Path) {}
+	virtual void ReplaceObject(const std::string& i_FileName, const fsLocator& i_Path) {}
 
 	//--------------------------------------------------------------------
 	//	Delete Object from Placed

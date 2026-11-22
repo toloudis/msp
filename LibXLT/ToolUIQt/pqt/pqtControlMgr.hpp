@@ -11,19 +11,18 @@
 #endif
 #define PQT_CONTROLMGR_HPP
 
-#ifndef ENV_BOOST_HPP
-#include "Core/Env/envBoost.hpp"
-#endif 
-#ifndef PRTY_INTCALLBACKMGR_HPP
-#include "Core/prty/prtyIntCallbackMgr.hpp"
-#endif
 #ifndef TQT_WIDGETS_HPP
 #include "ToolUIQt/tqt/tqtWidgets.hpp"
 #endif
+#ifndef PRTY_INTCALLBACKMGR_HPP
+#include "Core/prty/prtyIntCallbackMgr.hpp"
+#endif
+#ifndef ENV_BOOST_HPP
+#include "Core/Env/envBoost.hpp"
+#endif 
 
 
-#ifdef USE_QT
-#include <QtGui/QWidget>
+#ifdef USE_QT 
 
 
 //============================================================================

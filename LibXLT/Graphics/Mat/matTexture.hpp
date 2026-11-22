@@ -21,9 +21,7 @@
 #include "Core/dbg/dbgMsg.hpp"
 #endif
 
-#ifndef IT_STRING_HPP
-#include "Core/It/itString.hpp"
-#endif
+#include <string>
 
 class g2dRenderTarget;
 

@@ -1,10 +1,12 @@
 /*****************************************************************************
 **  tqtToolbarMgr.hpp
 **
-**      Interface to the toolbar manager.
+**     Manages the toolbars of the main window. Toolbar buttons are the
+**	QActions of their menu items (see tqtMenuMgr), so the enabled and
+**	checked states are shared with the menu.
 **
 **	StudioGPU
-**	Copyright(C) 2004 - All Rights Reserved
+**	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #ifdef TQT_TOOLBARMGR_HPP
 #error tqtToolbarMgr.hpp multiply included
@@ -19,11 +21,9 @@
 #include "Core/fs/fsLocator.hpp"
 #endif
 
-#ifdef USE_QT
-#include <QtGui/QToolBar>
-#include <QtGui/QWidget>
-#endif
+#include <vector>
 
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
@@ -50,33 +50,20 @@ namespace tqtToolbarMgr
 	void Refresh(const char* i_ToolbarName);
 
 	//---------------------------------------------------------------------------
-	// Set directory to use to find toolbar icons
+	// Set directories to use to find toolbar icons
 	//---------------------------------------------------------------------------
 	void SetIconDirectory( std::vector<fsLocator>& i_IconPathList );
 
 	//---------------------------------------------------------------------------
-	// Add button with given image to toolbar with given name
+	// Add the menu item's action to the toolbar as a button, using the
+	//	given image from the icon directories. Returns false if the image
+	//	was not found, in which case no button is added.
 	//---------------------------------------------------------------------------
-	void AddToolBarButton( int i_Id,
-						   const char * i_ToolBarName, 
-						   const char * i_ToolStripButton_Image, 
+	bool AddToolBarButton( QAction* i_pAction,
+						   const char * i_ToolBarName,
+						   const char * i_ToolStripButton_Image,
 						   const char * i_ToolStripButton_Name,
 						   bool i_bCheckable = false);
-
-	//---------------------------------------------------------------------------
-	// Set enabled state of toolbar button
-	//---------------------------------------------------------------------------
-	void EnableButton( int i_Id, bool i_bEnabled );
-
-	//---------------------------------------------------------------------------
-	// Set toggled state of toolbar button
-	//---------------------------------------------------------------------------
-	void CheckButton( int i_Id, bool i_bChecked );
-
-	//---------------------------------------------------------------------------
-	// Set Help string to display when mouse is over given tool item
-	//---------------------------------------------------------------------------
-	void SetToolItemHelpString( int i_ObjectID, const char * i_HelpString );
 
 	//---------------------------------------------------------------------------
 	// Creates the actual toolbars. Should be called once all toolbar buttons
@@ -85,13 +72,11 @@ namespace tqtToolbarMgr
 	void RealizeAllToolbars();
 
 	//---------------------------------------------------------------------------
-	// Perspectives save the size of toolbars, but when new buttons are added,
-	// we need to make sure that the toolbars are big enough to show all of
-	// their buttons.
+	// Make sure the toolbars are big enough to show their buttons after
+	// a layout was restored.
 	//---------------------------------------------------------------------------
 	void ResizeToolbars();
 
-#ifdef USE_QT
 	//---------------------------------------------------------------------------
 	// Access to toolbar control, can be used as parent for controls that
 	//	will be added to the toolbar.
@@ -103,7 +88,11 @@ namespace tqtToolbarMgr
 	//---------------------------------------------------------------------------
 	void AddControlToToolBar(const char* i_ToolbarName,
 							 QWidget* i_pControl);
-#endif
+
+	//---------------------------------------------------------------------------
+	// Forget all toolbars (the main window owns and deletes them)
+	//---------------------------------------------------------------------------
+	void CleanUp();
 }
 
-
+#endif // USE_QT

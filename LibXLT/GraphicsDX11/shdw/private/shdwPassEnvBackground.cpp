@@ -21,6 +21,9 @@
 #include "GraphicsDX11/mat/matRenderTargetTexture.hpp"
 #include "GraphicsDX11/eff/effShaderBaseDX11.hpp"
 #include "GraphicsDX11/g3d/g3dDX11TextureUtil.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 
 namespace
@@ -30,7 +33,7 @@ namespace
 	g3dBlendStateMgr::BlendState* st_NoBlend = NULL;
 	g3dDepthStencilStateMgr::DepthStencilState* ds_Disable_NS = NULL;
 
-	void setupEnvGlobal(ID3DX11Effect* i_pD3DEffect, 
+	void setupEnvGlobal(fxEffect* i_pD3DEffect,
 						const g3dAmbientEnvState& i_EnvState,
 						const camCamera* i_pCam)
 	{
@@ -56,7 +59,7 @@ namespace
 
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
-shdwPassEnvBackground::shdwPassEnvBackground(g2dRenderTarget* i_pRenderTarget, 
+shdwPassEnvBackground::shdwPassEnvBackground(g2dRenderTarget* i_pRenderTarget,
 											 const camCamera* i_pCamera,
 											 const g3dAmbientEnvState& i_AmbientState)
 	: m_pCamera(i_pCamera), m_AmbientState(i_AmbientState)
@@ -67,7 +70,7 @@ shdwPassEnvBackground::shdwPassEnvBackground(g2dRenderTarget* i_pRenderTarget,
 	if (!l_EnvBgMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/EnvBackground.fx"), matShaderMgr::GetSpecialEffect("EnvBackground.fx"));
+		p->SetShaderName(std::string("Special/EnvBackground.fx"), matShaderMgr::GetSpecialEffect("EnvBackground.fx"));
 		l_EnvBgMat.SetShaderParams(p);
 	}
 }
@@ -82,6 +85,7 @@ shdwPassEnvBackground::~shdwPassEnvBackground()
 //----------------------------------------------------------------------------------------
 int shdwPassEnvBackground::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassEnvBackground");
 	UINT uiPass;
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassEnvBackground::Render" );
 
@@ -92,7 +96,7 @@ int shdwPassEnvBackground::Render(float i_time)
 
 	const matMaterial* pMaterial = &l_EnvBgMat;
 	effShaderBaseDX11* pEffect = (effShaderBaseDX11*)(matShaderMgr::GetEffect(*pMaterial));
-	ID3DX11Effect* pD3DEffect = pEffect->GetD3DXEffect();
+	fxEffect* pD3DEffect = pEffect->GetFxEffect();
 	setupEnvGlobal(pD3DEffect, m_AmbientState, m_pCamera);
 	pEffect->SetTechnique("Default");
 
@@ -117,9 +121,9 @@ void shdwPassEnvBackground::InitStates()
 {
 	st_NoBlend = new g3dBlendStateMgr::BlendState( false, FALSE,
 		D3D11_BLEND_ONE,D3D11_BLEND_ONE,D3D11_BLEND_OP_ADD,
-		D3D11_BLEND_ONE,D3D11_BLEND_ONE,D3D11_BLEND_OP_ADD, 
+		D3D11_BLEND_ONE,D3D11_BLEND_ONE,D3D11_BLEND_OP_ADD,
 		D3D11_COLOR_WRITE_ENABLE_RED | D3D11_COLOR_WRITE_ENABLE_GREEN | D3D11_COLOR_WRITE_ENABLE_BLUE);
-	
+
 	g3dDepthStencilStateMgr::DepthStencilOp_Desc OP_DEFAULT( D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_STENCIL_OP_KEEP, D3D11_COMPARISON_ALWAYS );
 	ds_Disable_NS = new g3dDepthStencilStateMgr::DepthStencilState( FALSE, FALSE, D3D11_COMPARISON_NEVER, FALSE, /*0,*/ 0xff, 0xff, OP_DEFAULT, OP_DEFAULT );
 }

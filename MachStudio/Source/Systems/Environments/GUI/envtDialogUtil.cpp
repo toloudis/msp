@@ -10,11 +10,23 @@
 
 #include "Systems/Environments/GUI/envtDialogDataUtil.hpp"
 #include "Systems/Environments/Data/envtDocumentChunk.hpp"
+#ifdef MSP_GUI_QT
+#include "Systems/Environments/GUI/qtGUI/envtEnvironmentObjectsPage.hpp"
+#else
 #include "Systems/Environments/GUI/wxGUI/envtEnvironmentObjectsPage.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "Systems/Environments/GUI/qtGUI/envtEnvironmentSwlPage.hpp"
+#else
 #include "Systems/Environments/GUI/wxGUI/envtEnvironmentSwlPage.hpp"
+#endif
 #include "Support/evmt/evmtEnvironmentInterest.hpp"
 
+#ifdef MSP_GUI_QT
+#include "Systems/Common/GUI/qtGUI/cmmObjectDialog.hpp"
+#else
 #include "Systems/Common/GUI/wxGUI/cmmObjectDialog.hpp"
+#endif
 #include "Systems/Common/GUI/cmmObjectDialogUtil.hpp"
 #include "Systems/Common/GUI/cmmSystemDialogInterest.hpp"
 #include "Systems/Common/GUI/cmmSystemDialogUtil.hpp"
@@ -147,7 +159,7 @@ void envtDialogUtil::UpdateEnvironmentData(int i_Index, const envtScriptData& i_
 //--------------------------------------------------------------------
 void envtDialogUtil::ClearDialog()
 {
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (envtEnvironmentObjectsPage::Instance)
 		envtEnvironmentObjectsPage::Instance->Clear();
 	if (envtEnvironmentObjectsPage::Instance)
@@ -161,7 +173,7 @@ void envtDialogUtil::ClearDialog()
 void envtDialogUtil::UpdateDialog(const nameString& i_EnvironmentName)
 {
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (envtEnvironmentObjectsPage::Instance)
 	{
 		envtEnvironmentObjectsPage::Instance->Update(i_EnvironmentName);
@@ -181,7 +193,7 @@ void envtDialogUtil::UpdateDialog(const nameString& i_EnvironmentName)
 //--------------------------------------------------------------------
 void envtDialogUtil::UpdateObjectsPage()
 {
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (envtEnvironmentObjectsPage::Instance)
 	{
 		if (cmmObjectDialogUtil::HasTabPage(envtEnvironmentObjectsPage::Instance))
@@ -206,7 +218,7 @@ void envtDialogUtil::UpdateObjectsPage()
 //--------------------------------------------------------------------
 void  envtDialogUtil::AddDataPage()
 {
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (cmmObjectDialog::FormInstance)
 	{
 #ifdef USE_SWL_UI
@@ -230,13 +242,17 @@ void  envtDialogUtil::AddDataPage()
 
 void  envtDialogUtil::RemoveDataPage()
 {
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (envtEnvironmentObjectsPage::Instance)
 	{
 		if (cmmObjectDialogUtil::HasTabPage(envtEnvironmentObjectsPage::Instance))
 		{
 			cmmObjectDialogUtil::RemoveTabPage( envtEnvironmentObjectsPage::Instance );
+#ifdef USE_QT
+			envtEnvironmentObjectsPage::Instance->hide();
+#else
 			envtEnvironmentObjectsPage::Instance->Show(false);
+#endif
 		}
 	}
 #ifdef USE_SWL_UI 
@@ -245,7 +261,11 @@ void  envtDialogUtil::RemoveDataPage()
 		if (cmmObjectDialogUtil::HasTabPage(envtEnvironmentSwlPage::Instance))
 		{
 			cmmObjectDialogUtil::RemoveTabPage( envtEnvironmentSwlPage::Instance );
+#ifdef USE_QT
+			envtEnvironmentSwlPage::Instance->hide();
+#else
 			envtEnvironmentSwlPage::Instance->Show(false);
+#endif
 		}
 	}
 #endif

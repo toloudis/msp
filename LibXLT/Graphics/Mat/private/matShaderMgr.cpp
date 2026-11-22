@@ -12,12 +12,15 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsResourceTracker.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/gf/gfFileEnum.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Graphics/eff/effShaderParams.hpp"
 #include "Graphics/mat/matMaterial.hpp"
 
+#include <algorithm>
 #include <map>
+#include <string.h>
 
 
 //============================================================================
@@ -41,6 +44,13 @@ namespace
 
 	// cache of loaded user shaders
 	std::map<fsLocator, matShaderEffect*> l_LoadedShaders;
+
+	// incremented each time the effects above are deleted
+	int l_Generation = 0;
+
+	// the built-in shaders offered in the shader pickers
+	std::vector<matShaderInfo> l_MaterialShaders;
+	std::vector<matShaderInfo> l_PostEffectShaders;
 
 	const int c_NumBitsPerLayer = 3; // holds 8 types (Nothing, Error, plus 6 others)
 	const int c_MaxNumLayers = 4; // could be 8 later
@@ -77,6 +87,40 @@ namespace
 			delete it2->second;
 		}
 		l_LoadedShaders.clear();
+
+		l_MaterialShaders.clear();
+		l_PostEffectShaders.clear();
+
+		l_Generation++;
+	}
+
+	//----------------------------------------------------------------------------
+	//----------------------------------------------------------------------------
+	bool shader_name_less(const matShaderInfo& i_A, const matShaderInfo& i_B)
+	{
+		return envString::CompareNoCase(i_A.m_Name,
+										   i_B.m_Name) < 0;
+	}
+
+	//----------------------------------------------------------------------------
+	// Effects converted to plain HLSL are registered by effect name ("Blur")
+	// rather than by their old file name ("Blur.fx"). Materials, scenes and
+	// code may still ask for the old name, so a missing "X.fx" falls back to "X".
+	//----------------------------------------------------------------------------
+	std::map<std::string, matShaderInfo>::iterator find_shader(const std::string& i_Name)
+	{
+		std::map<std::string, matShaderInfo>::iterator it = l_ShaderMap.find(i_Name);
+		if (it != l_ShaderMap.end())
+			return it;
+
+		const size_t n = i_Name.size();
+		if (n > 3 && i_Name[n - 3] == '.' &&
+			(i_Name[n - 2] == 'f' || i_Name[n - 2] == 'F') &&
+			(i_Name[n - 1] == 'x' || i_Name[n - 1] == 'X'))
+		{
+			return l_ShaderMap.find(i_Name.substr(0, n - 3));
+		}
+		return l_ShaderMap.end();
 	}
 
 }	// end of namespace
@@ -107,6 +151,9 @@ void Initialize()
 {
 	if (l_pImpl)
 	{
+		// The shader folder is optional: the built-in shaders are compiled
+		// into the library. The RenderMan exporter looks for its own
+		// shaders under it (rman).
 		fsLocator fx_dir = gfPaths::GetPath(gfPaths::e_ExePath);
 		fx_dir.Push("Shaders");
 
@@ -122,17 +169,18 @@ void Initialize()
 		}
 
 		// Ensure drive letter is in upper case
-		itString fx_dir_itStr;
+		std::string fx_dir_itStr;
 		fsFileUtil::LocatorToUnicodeString( fx_dir.GetName(0) , fx_dir_itStr );
-		std::string driveLetter = uppercase( itStringUtil::GetStdString(fx_dir_itStr) );
-		fx_dir.ReplaceName( itString(driveLetter.c_str()) , 0 );
+		std::string driveLetter = uppercase( fx_dir_itStr );
+		fx_dir.ReplaceName( driveLetter , 0 );
 
 		l_ShadersRoot = fx_dir;
 
 		clear_map();
 		l_pImpl->RegisterEffects(fx_dir, l_ShaderMap);
-		//l_pImpl->RegisterUserShaders(fx_dir, l_UserShaders);
-		
+		l_pImpl->RegisterSelectableShaders(l_MaterialShaders, l_PostEffectShaders);
+		std::sort(l_MaterialShaders.begin(), l_MaterialShaders.end(), shader_name_less);
+		std::sort(l_PostEffectShaders.begin(), l_PostEffectShaders.end(), shader_name_less);
 	}
 }
 
@@ -142,6 +190,34 @@ void Initialize()
 void DeInitialize()
 {
 	clear_map();
+}
+
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
+int GetGeneration()
+{
+	return l_Generation;
+}
+
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
+matShaderEffect* FindEffect(const fsLocator& i_ShaderName)
+{
+	// as a tokenized fsLocator (a name set from one string isn't)
+	std::string name;
+	fsLocator shaderLoc;
+	fsFileUtil::LocatorToUnicodeString(i_ShaderName, name);
+	fsFileUtil::UnicodeStringToLocator(name, shaderLoc);
+
+	std::map<std::string, matShaderInfo>::iterator it =
+		find_shader(shaderLoc.GetLastName());
+	if (it != l_ShaderMap.end())
+		return it->second.m_pEffect;
+
+	std::map<fsLocator, matShaderEffect*>::iterator it2 = l_LoadedShaders.find(shaderLoc);
+	if (it2 != l_LoadedShaders.end())
+		return it2->second;
+	return NULL;
 }
 
 //------------------------------------------------------------------------
@@ -171,7 +247,7 @@ fsLocator ResolveShaderPath(const fsLocator& i_ShaderName)
 	if ( shaderLoc.GetNumNames() == 1 )
 	{
 		// Get the shader name
-		std::string shaderFileName = itStringUtil::GetStdString(shaderLoc.GetLastName());
+		std::string shaderFileName = shaderLoc.GetLastName();
 
 		shaderLoc = matShaderMgr::GetDefaultShaderPath();
 		shaderLoc.Push( shaderFileName.c_str() );
@@ -187,7 +263,7 @@ effShaderData* CreateData(const std::string& i_EffectID)
 	if (!l_bEnabled) 
 		return NULL;
 
-	std::map<std::string, matShaderInfo>::iterator it = l_ShaderMap.find( i_EffectID );
+	std::map<std::string, matShaderInfo>::iterator it = find_shader( i_EffectID );
 	if (it != l_ShaderMap.end())
 	{
 //		DBG_ASSERT(it->second.m_DataTemplate != NULL, "bad shader info data template");
@@ -243,7 +319,7 @@ matShaderEffect* GetSpecialEffect(const std::string& i_Name)
 		return NULL;
 
 	// assuming special effect shaders are already loaded.
-	std::map<std::string, matShaderInfo>::iterator it = l_ShaderMap.find( i_Name );
+	std::map<std::string, matShaderInfo>::iterator it = find_shader( i_Name );
 	if (it == l_ShaderMap.end()) {
 		DBG_WARNING("Failed shader lookup due to missing entry for " << i_Name);
 		return NULL;
@@ -285,18 +361,23 @@ matShaderEffect* GetPostEffect(const fsLocator& i_PathToShader)
 		return NULL;
 
 	fsLocator path = i_PathToShader;
-	std::string lastName = itStringUtil::GetStdString(path.GetLastName());
+	std::string lastName = path.GetLastName();
 
-	std::map<std::string, matShaderInfo>::iterator it = l_ShaderMap.find( lastName );
+	// a single name can hold a folder too ("PostEffect/Sepia.fx")
+	const size_t sep = lastName.find_last_of("/\\");
+	if (sep != std::string::npos)
+		lastName.erase(0, sep + 1);
+
+	std::map<std::string, matShaderInfo>::iterator it = find_shader( lastName );
 	if (it == l_ShaderMap.end() || it->second.m_pEffect == NULL)
 	{	
 		// dealing with naming of post effect
 		if (i_PathToShader.GetNumNames() == 2 && 
-			i_PathToShader.GetName(0) == itString(GetPostShaderFolder().c_str()))
+			i_PathToShader.GetName(0) == GetPostShaderFolder())
 		{
 			std::string tmp_s;
 			fsFileUtil::LocatorToANSIFilename(i_PathToShader, tmp_s);
-			path = fsLocator(itString(tmp_s.c_str()));
+			path = fsLocator(tmp_s);
 		}
 
 		std::map<fsLocator, matShaderEffect*>::iterator it = l_LoadedShaders.find( path );
@@ -338,23 +419,33 @@ void ReloadShader( matMaterial * i_pMaterial )
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-bool IsMachStudioShader(const fsLocator& i_ShaderName)
-{	
-	fsFileEnum::fsFileList flist;
-	std::vector<itString> searchStrings;
-	searchStrings.push_back(itString(".fx"));
-	fsFileEnum::EnumerateFiles(matShaderMgr::GetDefaultShaderPath(), flist, searchStrings);
-	
-	int i;
-	for ( i = 0 ; i < flist.size() ; i++ )
-	{
-		// Filenames match
-		if ( flist[i] == i_ShaderName )
-		{
-			return true;
-		}
-	}
+const std::vector<matShaderInfo>& GetMaterialShaders()
+{
+	return l_MaterialShaders;
+}
 
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
+const std::vector<matShaderInfo>& GetPostEffectShaders()
+{
+	return l_PostEffectShaders;
+}
+
+//------------------------------------------------------------------------
+// The built-in material shaders are compiled into the library, so this
+//	checks the registered list rather than the files in the shader folder.
+//------------------------------------------------------------------------
+bool IsMachStudioShader(const fsLocator& i_ShaderName)
+{
+	if (i_ShaderName.GetNumNames() == 0)
+		return false;
+
+	const std::string name = i_ShaderName.GetLastName();
+	for (size_t i = 0; i < l_MaterialShaders.size(); i++)
+	{
+		if (envString::CompareNoCase(l_MaterialShaders[i].m_Name, name) == 0)
+			return true;
+	}
 	return false;
 }
 

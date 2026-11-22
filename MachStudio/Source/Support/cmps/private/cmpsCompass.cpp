@@ -241,7 +241,7 @@ bool cmpsCompass::RayPick(	int i_IconLayerIndex,
 //----------------------------------------------------------------------------
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
-pick3dPickObject* cmpsCompass::MatchPickCode(envType::UInt32 i_PickCode) const
+pick3dPickObject* cmpsCompass::MatchPickCode(uint32_t i_PickCode) const
 {
 	DBG_ASSERT( m_pCompassObject, "No compass object" );
 

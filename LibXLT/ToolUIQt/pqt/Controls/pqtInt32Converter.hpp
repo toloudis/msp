@@ -18,19 +18,16 @@
 #include "ToolUIQt/tqt/tqtWidgets.hpp"
 #endif
 
+#ifdef USE_QT
 
-//============================================================================
-//============================================================================
 class prtyPropertyUIInfo;
 class pqtControl;
-
 
 //============================================================================
 //============================================================================
 class pqtInt32Converter
 {
 public:
-#ifdef USE_QT
 	//----------------------------------------------------------------------------
 	//----------------------------------------------------------------------------
 	static int GetPropertyValue(prtyProperty* i_pProperty);
@@ -44,6 +41,6 @@ public:
 	// Set value into properties for control
 	//----------------------------------------------------------------------------
 	static void SetCommonValue(pqtControl* io_pControl, int i_NewValue);
-#endif // USE_QT
 };
 
+#endif // USE_QT

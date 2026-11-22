@@ -61,9 +61,9 @@ namespace
 	//------------------------------------------------------------------------
 	wxString get_icon_directory()
 	{
-		itString wide_dir;
+		std::string wide_dir;
 		fsFileUtil::LocatorToUnicodeString(guiMenuMgr::GetIconDirectory(), wide_dir);
-		return wxString(wide_dir.GetString());
+		return wxString::FromUTF8(wide_dir);
 	}
    
 	const float c_InitialZoom = 60.0f;
@@ -1542,7 +1542,7 @@ void chnlTraxDialog::add_channels_for_object(tmlnScriptObject* i_pObject)
 	if (!i_pObject) return;
 
 	// Add Category based on object's name
-	this->add_category(itString(i_pObject->GetDisplayName().c_str()));
+	this->add_category(i_pObject->GetDisplayName());
 
 	// Add Channels for object that have a driver ONLY
 	//
@@ -1586,9 +1586,9 @@ void chnlTraxDialog::add_channels_for_object(tmlnScriptObject* i_pObject)
 //--------------------------------------------------------------------
 // Add category label to form
 //--------------------------------------------------------------------
-void chnlTraxDialog::add_category(const itString& i_CategoryName)
+void chnlTraxDialog::add_category(const std::string& i_CategoryName)
 {
-	wxStaticText *pCategory = new wxStaticText( m_scrollwin_names, wxID_ANY, i_CategoryName.GetString(), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
+	wxStaticText *pCategory = new wxStaticText( m_scrollwin_names, wxID_ANY, wxString::FromUTF8(i_CategoryName), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
 	pCategory->Wrap( -1 );
 	pCategory->SetFont(wxFont( 8, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD ));
 	pCategory->SetMinSize(FromDIP(wxSize(-1, 20)));

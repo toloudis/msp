@@ -41,9 +41,9 @@ maMatrix4x4 gpxReference::GetMatrix() const
 	// version together right now. A correct way to do this
 	// is to proxy the entire scene graph and run all animations on that
 	// scene graph and then push only the transforms through to the
-	// rendering scene graph copy. 
+	// rendering scene graph copy.
 	// This hack prevents conflicts where two threads alter the
-	// total transform and bboxs of the scene graph and 
+	// total transform and bboxs of the scene graph and
 	// allows the capture mode to be correct, but
 	// makes the interactive version one frame behind.
 	//
@@ -74,7 +74,7 @@ maMatrix4x4 gpxReference::GetMatrix() const
 //	This function will only be called if "NeedsUpdate" is true
 //	so it is not necessary to check this flag again.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 bool gpxReference::Update()
 {
 #if USE_PROXIES
@@ -87,6 +87,6 @@ bool gpxReference::Update()
 	this->SetNeedsUpdate(false);
 #endif
 
-	// This class doesn´t actually change anything, so return false
+	// This class doesn't actually change anything, so return false
 	return false;
 }

@@ -10,11 +10,23 @@
 
 #include "Systems/LightSets/GUI/lsetDialogDataUtil.hpp"
 #include "Systems/LightSets/Data/lsetDocumentChunk.hpp"
+#ifdef MSP_GUI_QT
+#include "Systems/LightSets/GUI/qtGUI/lsetLightSetLightsPage.hpp"
+#else
 #include "Systems/LightSets/GUI/wxGUI/lsetLightSetLightsPage.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "Systems/LightSets/GUI/qtGUI/lsetLightSetObjectsPage.hpp"
+#else
 #include "Systems/LightSets/GUI/wxGUI/lsetLightSetObjectsPage.hpp"
+#endif
 #include "Support/ltst/ltstLightSetInterest.hpp"
 
+#ifdef MSP_GUI_QT
+#include "Systems/Common/GUI/qtGUI/cmmObjectDialog.hpp"
+#else
 #include "Systems/Common/GUI/wxGUI/cmmObjectDialog.hpp"
+#endif
 #include "Systems/Common/GUI/cmmObjectDialogUtil.hpp"
 #include "Systems/Common/GUI/cmmSystemDialogInterest.hpp"
 #include "Systems/Common/GUI/cmmSystemDialogUtil.hpp"
@@ -113,7 +125,7 @@ void lsetDialogUtil::UpdateListDialog()
 //--------------------------------------------------------------------
 void lsetDialogUtil::ClearDialog()
 {
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (lsetLightSetLightsPage::Instance)
 		lsetLightSetLightsPage::Instance->Clear();
 	if (lsetLightSetObjectsPage::Instance)
@@ -123,7 +135,7 @@ void lsetDialogUtil::ClearDialog()
 void lsetDialogUtil::UpdateDialog(const nameString &i_LightSetName)
 {
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (lsetLightSetLightsPage::Instance)
 		lsetLightSetLightsPage::Instance->Update(i_LightSetName);
 	if (lsetLightSetObjectsPage::Instance)
@@ -137,7 +149,7 @@ void lsetDialogUtil::UpdateDialog(const nameString &i_LightSetName)
 //--------------------------------------------------------------------
 void lsetDialogUtil::UpdateObjectsPage()
 {
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (lsetLightSetObjectsPage::Instance)
 	{
 		if (cmmObjectDialogUtil::HasTabPage(lsetLightSetObjectsPage::Instance))
@@ -149,7 +161,7 @@ void lsetDialogUtil::UpdateObjectsPage()
 }
 void lsetDialogUtil::UpdateLightsPage()
 {
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (lsetLightSetLightsPage::Instance)
 	{
 		if (cmmObjectDialogUtil::HasTabPage(lsetLightSetLightsPage::Instance))
@@ -166,7 +178,7 @@ void lsetDialogUtil::UpdateLightsPage()
 void  lsetDialogUtil::AddDataPage()
 {
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (cmmObjectDialog::FormInstance)
 	{
 		if (!lsetLightSetObjectsPage::Instance)
@@ -188,13 +200,17 @@ void  lsetDialogUtil::AddDataPage()
 void  lsetDialogUtil::RemoveDataPage()
 {
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (lsetLightSetLightsPage::Instance)
 	{
 		if (cmmObjectDialogUtil::HasTabPage(lsetLightSetLightsPage::Instance))
 		{
 			cmmObjectDialogUtil::RemoveTabPage( lsetLightSetLightsPage::Instance );
+#ifdef USE_QT
+			lsetLightSetLightsPage::Instance->hide();
+#else
 			lsetLightSetLightsPage::Instance->Show(false);
+#endif
 		}
 	}
 	if (lsetLightSetObjectsPage::Instance)
@@ -202,7 +218,11 @@ void  lsetDialogUtil::RemoveDataPage()
 		if (cmmObjectDialogUtil::HasTabPage(lsetLightSetObjectsPage::Instance))
 		{
 			cmmObjectDialogUtil::RemoveTabPage( lsetLightSetObjectsPage::Instance );
+#ifdef USE_QT
+			lsetLightSetObjectsPage::Instance->hide();
+#else
 			lsetLightSetObjectsPage::Instance->Show(false);
+#endif
 		}
 	}
 #endif

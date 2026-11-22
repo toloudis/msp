@@ -37,8 +37,10 @@
 #include "GraphicsDX11/shdw/shdwFrameBufferMgr.hpp"
 #include "GraphicsDX11/shdw/shdwPassZFill.hpp"
 #include "GraphicsDX11/G3d/g3dDrawStyleUtilDX11.hpp"
-#include "GraphicsDX11/G2d/g2dWindowDX11.hpp"
 #include "GraphicsDX11/G3d/g3dDX11TextureUtil.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 //	The reason a macro is used here (instead of a function, an inline function, or a template inline function)
 //	is that I need the __FILE__ and __LINE__ macros to resolve to useful values
@@ -139,13 +141,13 @@ int shdwShadowsOnlyRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCa
 									const g3dScene &i_Scene, const std::vector<g3dLayer*>& i_ViewerLayers,
 									float i_fSimTime )
 {//PROFILE("Render");
+	G3D_PROFILE_SCOPE("ShadowsOnlyRenderer");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwShadowsOnlyRendererDX11::Render" );
 
 	if (!g3dPrefs::CurrentPrefs().m_bProjLightsOn)
 		return 0;
 
-	m_pWindow = dynamic_cast<g2dWindowDX11*>(i_pWindow);
-	DBG_ASSERT( m_pWindow, "Render requires a g2dWindowDX11 render target" );
+	m_pWindow = i_pWindow;
 
 	CreateSurfaces(i_pWindow);
 	
@@ -219,7 +221,7 @@ int shdwShadowsOnlyRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCa
 		g3dLight* pLight = lights[i];
 		if ( !pLight->IsEnabled() ) 
 			continue;
-		if ( !pLight->GetCastsShadow() ) 
+		if ( !pLight->GetIsSinglePassLight() ) 
 			continue;
 
 		const g3dProjectedLight* proj_light = dynamic_cast<const g3dProjectedLight*>(pLight);
@@ -374,7 +376,7 @@ int shdwShadowsOnlyRendererDX11::DrawNode(const g3dSceneNode* i_pNode,
 	// resolve material/effect
 	matShaderEffect* pEffect = matShaderMgr::GetEffect( m_bMasking ? *m_pShadowMat : *m_pIlluminationMat );
 	effShaderBaseDX11* pEffDX11 = dynamic_cast<effShaderBaseDX11*>(pEffect);
-	ID3DX11Effect* pID3DXEffect = pEffDX11->GetD3DXEffect();
+	fxEffect* pID3DXEffect = pEffDX11->GetFxEffect();
 
 	pID3DXEffect->GetVariableByName("g_UseCosine")->AsScalar()->SetBool((!m_bMasking && g3dPrefs::CurrentPrefs().m_bIlluminationUsesNormals) ? TRUE : FALSE);
 
@@ -455,10 +457,10 @@ int shdwShadowsOnlyRendererDX11::DrawHairNode(const g3dSceneNode* i_pNode,
 	matShaderEffect* pEffect = matShaderMgr::GetEffect( *m_pHairMat );
 	effStrandHair* pHairEffect = dynamic_cast<effStrandHair*>(pEffect);
 	DBG_ASSERT( pHairEffect, "Non hair effect used." );
-	ID3DX11Effect* pID3DXEffect = pHairEffect->GetD3DXEffect();
+	fxEffect* pID3DXEffect = pHairEffect->GetFxEffect();
 
 //	effShaderBaseDX11* pEffDX11 = dynamic_cast<effShaderBaseDX11*>(pEffect);
-//	ID3DXEffect* pID3DXEffect = pEffDX11->GetD3DXEffect();
+//	ID3DXEffect* pID3DXEffect = pEffDX11->GetFxEffect();
 	pID3DXEffect->GetVariableByName("g_UseCosine")->AsScalar()->SetBool((!m_bMasking && g3dPrefs::CurrentPrefs().m_bIlluminationUsesNormals) ? TRUE : FALSE);
 
 	DBG_ASSERT(i_pLight != NULL, "null light in shadows only drawnode");

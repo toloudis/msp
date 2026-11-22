@@ -65,9 +65,5 @@ class snSoundJobMP3PAC
 		#include "AudioDS/sn/private/snSoundJobMP3PACXAudio.hpp"
 	#endif
 #else
-	#if ENV_OS == ENV_XBOXOS
-		#include "AudioDS/sn/private/snSoundJobMP3PACXbox.hpp"
-	#else
-		#error snSoundJobMP3PAC not defined for this platform
-	#endif
+	#error snSoundJobMP3PAC not defined for this platform
 #endif

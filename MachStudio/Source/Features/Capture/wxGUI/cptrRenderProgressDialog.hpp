@@ -22,9 +22,7 @@
 #endif
 
 //	Library
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 
 
 #ifdef USE_WXWIDGETS
@@ -54,7 +52,7 @@ class cptrRenderProgressDialog : public cptrRenderProgressDialogBase
 		//----------------------------------------------------------------------------
 		//	set the percentage for scenes
 		//----------------------------------------------------------------------------
-		void SetScenesRenderPercentage( float i_percentage, const itString& i_label );
+		void SetScenesRenderPercentage( float i_percentage, const std::string& i_label );
 
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
@@ -63,22 +61,22 @@ class cptrRenderProgressDialog : public cptrRenderProgressDialogBase
 		//--------------------------------------------------------------------
 		//	set the percentage for scene
 		//--------------------------------------------------------------------
-		void SetSceneLabel( const itString& i_label );
+		void SetSceneLabel( const std::string& i_label );
 
 		//--------------------------------------------------------------------
 		//	set the label for the current render layer
 		//--------------------------------------------------------------------
-		void SetRenderLayerLabel( const itString& i_label );
+		void SetRenderLayerLabel( const std::string& i_label );
 
 		//--------------------------------------------------------------------
 		//	set the percentage for cameras
 		//--------------------------------------------------------------------
-		void SetCamerasRenderPercentage( float i_percentage, const itString& i_label );
+		void SetCamerasRenderPercentage( float i_percentage, const std::string& i_label );
 
 		//--------------------------------------------------------------------
 		//	set the percentage for camera
 		//--------------------------------------------------------------------
-		void SetCameraRenderPercentage( float i_percentage, const itString& i_label );
+		void SetCameraRenderPercentage( float i_percentage, const std::string& i_label );
 
 		//--------------------------------------------------------------------
 		//	set the time that has elapsed

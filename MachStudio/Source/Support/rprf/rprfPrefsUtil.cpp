@@ -22,6 +22,7 @@
 #include "Core/prty/prtyFileChooserUIInfo.hpp" 
 #include "Graphics/G3d/g3dConditionalCompile.hpp"
 #include "Graphics/g3d/g3dScene.hpp"
+#include "Graphics/G3d/g3dSceneRendererCreate.hpp"
 
 //============================================================================
 //============================================================================
@@ -308,6 +309,19 @@ namespace rprfPrefsUtil
 		}
 
 		//--------------------------------------------------------------------
+		// the traced render types (GraphicsOptiX): the default and HDR
+		// types (AO until the beauty pass is traced), AO, Shadow Mask and
+		// Illumination Only
+		//--------------------------------------------------------------------
+		void setup_raytracing_category(rprfPrefsCategory* o_pCategory)
+		{
+			o_pCategory->AddRenderer(0);
+			o_pCategory->AddRenderer(1);
+			o_pCategory->AddRenderer(3);
+			o_pCategory->AddRenderer(4);
+		}
+
+		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
 		void setup_rpf_category(rprfPrefsCategory* o_pCategory)
 		{
@@ -351,7 +365,6 @@ namespace rprfPrefsUtil
 		{	
 			bool choseMspEngine = o_Data.m_RendererEngine.GetValue() == g3dSceneRenderEngineCreate::e_Default ? true : false;
 			bool choseRmanEngine = o_Data.m_RendererEngine.GetValue() == g3dSceneRenderEngineCreate::e_RmanPrman ? true : false;
-			bool choseMRayEngine = o_Data.m_RendererEngine.GetValue() == g3dSceneRenderEngineCreate::e_MentalRay ? true : false;
 
 			int rendererID = 0;
 
@@ -497,6 +510,20 @@ namespace rprfPrefsUtil
 				o_Data.m_HairClumpRadius.SetVisible(bVisible);
 			}
 
+			if(l_CategoryMap["Ray Tracing"] != NULL )
+			{
+				bVisible = l_CategoryMap["Ray Tracing"]->GetCategoryVisible(rendererID) && choseMspEngine &&
+						   g3dSceneRendererCreate::UsesTracerSettings();
+				o_Data.m_TraceSamplesPerFrame.SetVisible(bVisible);
+				o_Data.m_TraceSampleLimit.SetVisible(bVisible);
+				o_Data.m_TraceCaptureSamples.SetVisible(bVisible);
+				o_Data.m_TraceAORays.SetVisible(bVisible);
+				o_Data.m_TraceBounces.SetVisible(bVisible);
+				o_Data.m_TraceDebugView.SetVisible(bVisible);
+				o_Data.m_TraceMaxRadiance.SetVisible(bVisible);
+				o_Data.m_TraceDenoise.SetVisible(bVisible);
+			}
+
 			if(l_CategoryMap["Render Passes from File"] != NULL )
 			{
 				bVisible = l_CategoryMap["Render Passes from File"]->GetCategoryVisible(rendererID) && choseMspEngine;
@@ -549,56 +576,6 @@ namespace rprfPrefsUtil
 				o_Data.m_bRmanTonemapEnable.SetVisible(bVisible);
 			}
 
-
-			if(l_CategoryMap["MentalRay"] != NULL )
-			{
-				bVisible = choseMRayEngine;
-				//o_Data.m_MrayVerbosity.SetVisible(bVisible);
-				o_Data.m_MrayNumReflBounces.SetVisible(bVisible);
-				o_Data.m_MrayNumRefrBounces.SetVisible(bVisible);
-				o_Data.m_MrayMaxTraceDepth.SetVisible(bVisible);
-				o_Data.m_bMrayAO.SetVisible(bVisible);
-				o_Data.m_MrayAOSamples.SetVisible(bVisible);
-				o_Data.m_bMrayFinalGather.SetVisible(bVisible);
-				//o_Data.m_bMrayFGBlur.SetVisible(bVisible);
-				o_Data.m_MrayFGNDiffuse.SetVisible(bVisible);
-				o_Data.m_MrayFGNRefl.SetVisible(bVisible);
-				o_Data.m_MrayFGNRefr.SetVisible(bVisible);
-				o_Data.m_MrayFGNRays.SetVisible(bVisible);
-				//o_Data.m_MrayFGColor.SetVisible(bVisible);
-				o_Data.m_MrayOutputFormat.SetVisible(bVisible);
-				o_Data.m_MrayNumThreads.SetVisible(bVisible);
-				o_Data.m_MrayMemoryLimit.SetVisible(bVisible);
-				o_Data.m_bMrayEnableReflections.SetVisible(bVisible);
-				o_Data.m_bMrayEnableShadows.SetVisible(bVisible);
-				o_Data.m_MrayShadowType.SetVisible(bVisible);
-				o_Data.m_bMrayRewriteAssets.SetVisible(bVisible);
-				o_Data.m_MrayVerbosityLevel.SetVisible(bVisible);
-				o_Data.m_bMrayFGMapEnable.SetVisible(bVisible);
-				o_Data.m_MrayFGMapRebuild.SetVisible(bVisible);
-				o_Data.m_MrayFGMapPath.SetVisible(bVisible);
-				o_Data.m_MrayReflSamples.SetVisible(bVisible);
-				o_Data.m_bMrayOverrideMSPSampling.SetVisible(bVisible);
-				o_Data.m_MrayMinCaptureSamples.SetVisible(bVisible);
-				o_Data.m_MrayMaxCaptureSamples.SetVisible(bVisible);
-				o_Data.m_MRayAAContrast.SetVisible(bVisible);
-				o_Data.m_bMrayProgressive.SetVisible(bVisible);
-				o_Data.m_bMRayTonemapEnable.SetVisible(bVisible);
-				o_Data.m_bEnableIBL.SetVisible(bVisible);
-				o_Data.m_IBLQuality.SetVisible(bVisible);
-				o_Data.m_IBLMapRes.SetVisible(bVisible);
-				o_Data.m_IBLScale.SetVisible(bVisible);
-				o_Data.m_IBLSampleNum.SetVisible(bVisible);
-				o_Data.m_bMrayIgnoreBadTex.SetVisible(bVisible);
-				o_Data.m_bMrayDisplayPreview.SetVisible(bVisible);				
-				o_Data.m_MrayProgSubsamplingSize.SetVisible(bVisible);
-				o_Data.m_MrayProgSubsamplingMode.SetVisible(bVisible);
-				o_Data.m_MrayProgSubsamplingPattern.SetVisible(bVisible);
-				o_Data.m_MrayProgMinSamples.SetVisible(bVisible);
-				o_Data.m_MrayProgMaxSamples.SetVisible(bVisible);
-				o_Data.m_MrayProgMaxTime.SetVisible(bVisible);
-				o_Data.m_MrayProgErrorThreshold.SetVisible(bVisible);
-			}
 		}
 	}
 
@@ -646,14 +623,14 @@ namespace rprfPrefsUtil
 		cur_category = new rprfPrefsCategory("Hair");
 		l_CategoryMap["Hair"] = cur_category; 
 
+		cur_category = new rprfPrefsCategory("Ray Tracing");
+		l_CategoryMap["Ray Tracing"] = cur_category; 
+
 		cur_category = new rprfPrefsCategory("Render Passes from File");
 		l_CategoryMap["Render Passes from File"] = cur_category; 
 
 		cur_category = new rprfPrefsCategory("RenderMan");
 		l_CategoryMap["RenderMan"] = cur_category; 
-
-		cur_category = new rprfPrefsCategory("MentalRay");
-		l_CategoryMap["MentalRay"] = cur_category; 
 
 		//setup category options
 		SetupCategories();
@@ -940,6 +917,78 @@ namespace rprfPrefsUtil
 		o_PrefsObject->AddProperty(pRFUII);
 #endif
 
+		// The tracer settings, only for a backend that traces rays
+		// (GraphicsOptiX); see g3dRenderPrefs::m_Trace*
+		if (g3dSceneRendererCreate::UsesTracerSettings())
+		{
+			pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_TraceSamplesPerFrame), "Ray Tracing", "Samples Per Frame");
+			pNUDUII->SetDescription("Samples per pixel each viewport frame adds while the image converges.");
+			pNUDUII->SetDecimalPlaces(0);
+			pNUDUII->SetMinimum(1.0f);
+			pNUDUII->SetMaximum(1024.0f);
+			pNUDUII->SetRestrictFlag(true);
+			o_PrefsObject->AddProperty( pNUDUII );
+
+			pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_TraceSampleLimit), "Ray Tracing", "Sample Limit");
+			pNUDUII->SetDescription("Samples per pixel after which the viewport stops tracing (the image has converged).");
+			pNUDUII->SetDecimalPlaces(0);
+			pNUDUII->SetMinimum(1.0f);
+			pNUDUII->SetMaximum(65536.0f);
+			pNUDUII->SetRestrictFlag(true);
+			o_PrefsObject->AddProperty( pNUDUII );
+
+			pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_TraceCaptureSamples), "Ray Tracing", "Samples Per Captured Frame");
+			pNUDUII->SetDescription("Samples per pixel of each captured frame (0: the sample limit).");
+			pNUDUII->SetDecimalPlaces(0);
+			pNUDUII->SetMinimum(0.0f);
+			pNUDUII->SetMaximum(65536.0f);
+			pNUDUII->SetRestrictFlag(true);
+			o_PrefsObject->AddProperty( pNUDUII );
+
+			pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_TraceAORays), "Ray Tracing", "AO Rays Per Sample");
+			pNUDUII->SetDescription("Occlusion rays each ambient occlusion sample traces.");
+			pNUDUII->SetDecimalPlaces(0);
+			pNUDUII->SetMinimum(0.0f);
+			pNUDUII->SetMaximum(64.0f);
+			pNUDUII->SetRestrictFlag(true);
+			o_PrefsObject->AddProperty( pNUDUII );
+
+			pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_TraceBounces), "Ray Tracing", "Bounces");
+			pNUDUII->SetDescription("Diffuse bounces after the first hit (0: direct light only).");
+			pNUDUII->SetDecimalPlaces(0);
+			pNUDUII->SetMinimum(0.0f);
+			pNUDUII->SetMaximum(32.0f);
+			pNUDUII->SetRestrictFlag(true);
+			o_PrefsObject->AddProperty( pNUDUII );
+
+			prtyComboBoxUIInfo* pTraceDebug = new prtyComboBoxUIInfo(&(i_Data.m_TraceDebugView), "Ray Tracing", "Debug View");
+			pTraceDebug->SetDescription("What the traced default and HDR views show in place of their image: a material quantity of the first surface hit, unlit.");
+			pTraceDebug->AddItem(std::string("Off"), 0);
+			pTraceDebug->AddItem(std::string("Base Colour"), 1);
+			pTraceDebug->AddItem(std::string("Shading Normal"), 2);
+			pTraceDebug->AddItem(std::string("Roughness"), 3);
+			pTraceDebug->AddItem(std::string("Metallic"), 4);
+			pTraceDebug->AddItem(std::string("Emission"), 5);
+			pTraceDebug->AddItem(std::string("Opacity"), 6);
+			o_PrefsObject->AddProperty( pTraceDebug );
+
+			pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_TraceMaxRadiance), "Ray Tracing", "Max Radiance");
+			pNUDUII->SetDescription("Limits fireflies: light reaching a pixel after the first bounce is scaled down so no colour component exceeds this (0: no limit, unbiased). Direct light is never limited.");
+			pNUDUII->SetDecimalPlaces(2);
+			pNUDUII->SetMinimum(0.0f);
+			pNUDUII->SetMaximum(1000000.0f);
+			pNUDUII->SetRestrictFlag(true);
+			o_PrefsObject->AddProperty( pNUDUII );
+
+			prtyComboBoxUIInfo* pTraceDenoise = new prtyComboBoxUIInfo(&(i_Data.m_TraceDenoise), "Ray Tracing", "Denoise");
+			pTraceDenoise->SetDescription("Runs the OptiX denoiser over the traced default, HDR and Reflection Only images: in views (each time the image is shown), in captured frames (once each), or both.");
+			pTraceDenoise->AddItem(std::string("Off"), 0);
+			pTraceDenoise->AddItem(std::string("Viewport"), 1);
+			pTraceDenoise->AddItem(std::string("Capture"), 2);
+			pTraceDenoise->AddItem(std::string("Both"), 3);
+			o_PrefsObject->AddProperty( pTraceDenoise );
+		}
+
 //#ifdef ACTIVATE_RENDERMAN
 
 	if( !i_bIsViewport )
@@ -1146,215 +1195,6 @@ namespace rprfPrefsUtil
 		//pRFUII->SetMaximum(90);
 		//o_PrefsObject->AddProperty(pRFUII);
 
-		pPUII = new prtyCheckBoxUIInfo(&(i_Data.m_bMrayRewriteAssets), "mental ray Export Settings", "Enable");
-		o_PrefsObject->AddProperty( pPUII );
-
-		pPUII = new prtyCheckBoxUIInfo(&(i_Data.m_bMrayOverrideMSPSampling), "mental ray Sampling Settings", "Enable");
-		o_PrefsObject->AddProperty( pPUII );
-
-		pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_MrayMinCaptureSamples), "mental ray Sampling Settings", "Min Samples");
-		pNUDUII->SetDecimalPlaces(0);
-		pNUDUII->SetMinimum(-8);
-		pNUDUII->SetMaximum(8);
-		pNUDUII->SetRestrictFlag(true);
-		o_PrefsObject->AddProperty( pNUDUII );
-
-		pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_MrayMaxCaptureSamples), "mental ray Sampling Settings", "Max Samples");
-		pNUDUII->SetDecimalPlaces(0);
-		pNUDUII->SetMinimum(-8);
-		pNUDUII->SetMaximum(8);
-		pNUDUII->SetRestrictFlag(true);
-		o_PrefsObject->AddProperty( pNUDUII );
-
-		pRFUII = new prtyRangedFloatUIInfo(&(i_Data.m_MRayAAContrast), "mental ray Sampling Settings", "AA Contrast");
-		pRFUII->SetDecimalPlaces(2);
-		pRFUII->SetMinimum(0);
-		pRFUII->SetMaximum(1);
-		o_PrefsObject->AddProperty(pRFUII);
-
-		pCBUII = new prtyComboBoxUIInfo(&(i_Data.m_MrayOutputFormat), "mental ray Render Settings", "Output Type");
-		o_PrefsObject->AddProperty( pCBUII );
-
-		pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_MrayNumReflBounces), "mental ray Render Settings", "Reflection bounces");
-		pNUDUII->SetDecimalPlaces(0);
-		pNUDUII->SetMinimum(0);
-		pNUDUII->SetMaximum(32);
-		pNUDUII->SetRestrictFlag(true);
-		o_PrefsObject->AddProperty( pNUDUII );
-		pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_MrayNumRefrBounces), "mental ray Render Settings", "Refraction bounces");
-		pNUDUII->SetDecimalPlaces(0);
-		pNUDUII->SetMinimum(0);
-		pNUDUII->SetMaximum(32);
-		pNUDUII->SetRestrictFlag(true);
-		o_PrefsObject->AddProperty( pNUDUII );
-		pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_MrayMaxTraceDepth), "mental ray Render Settings", "Total bounces");
-		pNUDUII->SetDecimalPlaces(0);
-		pNUDUII->SetMinimum(0);
-		pNUDUII->SetMaximum(64);
-		pNUDUII->SetRestrictFlag(true);
-		o_PrefsObject->AddProperty( pNUDUII );
-
-		pPUII = new prtyCheckBoxUIInfo(&(i_Data.m_bMrayDisplayPreview), "mental ray Render Settings", "Enable");
-		o_PrefsObject->AddProperty( pPUII );
-
-		pPUII = new prtyCheckBoxUIInfo(&(i_Data.m_bMrayIgnoreBadTex), "mental ray Render Settings", "Enable");
-		o_PrefsObject->AddProperty( pPUII );
-
-		pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_MrayNumThreads), "mental ray Performance Settings", "Number of Render Threads");
-		pNUDUII->SetDecimalPlaces(0);
-		pNUDUII->SetRestrictFlag(true);
-		o_PrefsObject->AddProperty( pNUDUII );
-
-		pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_MrayMemoryLimit), "mental ray Performance Settings", "Memory Limit (MB)");
-		pNUDUII->SetDecimalPlaces(0);
-		pNUDUII->SetRestrictFlag(true);
-		o_PrefsObject->AddProperty( pNUDUII );
-
-		//pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_MrayVerbosity), "mental ray Performance Settings", "Output verbosity");
-		//pNUDUII->SetDecimalPlaces(0);
-		//pNUDUII->SetMinimum(0);
-		//pNUDUII->SetMaximum(5);
-		//pNUDUII->SetRestrictFlag(true);
-		//o_PrefsObject->AddProperty( pNUDUII );
-
-		pCBUII = new prtyComboBoxUIInfo(&(i_Data.m_MrayVerbosityLevel), "mental ray Performance Settings", "Verbosity Level");
-		o_PrefsObject->AddProperty( pCBUII );
-
-		pPUII = new prtyCheckBoxUIInfo(&(i_Data.m_bMRayTonemapEnable), "mental ray Tonemapping", "Enable");
-		o_PrefsObject->AddProperty( pPUII );
-
-		pPUII = new prtyCheckBoxUIInfo(&(i_Data.m_bMrayEnableReflections), "mental ray Reflection and Refraction", "Enable");
-		o_PrefsObject->AddProperty( pPUII );
-
-		pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_MrayReflSamples), "mental ray Reflection and Refraction", "Number of Samples");
-		pNUDUII->SetDecimalPlaces(0);
-		pNUDUII->SetMinimum(1);
-		pNUDUII->SetMaximum(64);
-		pNUDUII->SetRestrictFlag(true);
-		o_PrefsObject->AddProperty( pNUDUII );
-
-		pPUII = new prtyCheckBoxUIInfo(&(i_Data.m_bMrayEnableShadows), "mental ray Shadows", "Enable");
-		o_PrefsObject->AddProperty( pPUII );
-
-		pCBUII = new prtyComboBoxUIInfo(&(i_Data.m_MrayShadowType), "mental ray Shadows", "Shadow Type");
-		o_PrefsObject->AddProperty( pCBUII );
-
-		pPUII = new prtyCheckBoxUIInfo(&(i_Data.m_bMrayAO), "mental ray Ambient Occlusion", "Enable");
-		o_PrefsObject->AddProperty( pPUII );
-
-		pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_MrayAOSamples), "mental ray Ambient Occlusion", "Number of Samples");
-		pNUDUII->SetDecimalPlaces(0);
-		pNUDUII->SetMinimum(1);
-		pNUDUII->SetMaximum(1024);
-		pNUDUII->SetRestrictFlag(true);
-		o_PrefsObject->AddProperty( pNUDUII );
-
-		// IBL properties
-		/*pPUII = new prtyCheckBoxUIInfo(&(i_Data.m_bEnableIBL), "mental ray IBL", "Enable");
-		pPUII->SetReadOnly(true);
-		o_PrefsObject->AddProperty( pPUII );*/
-		pRFUII = new prtyRangedFloatUIInfo(&(i_Data.m_IBLQuality), "mental ray IBL", "IBL Quality");
-		pRFUII->SetDecimalPlaces(1);
-		pRFUII->SetMinimum(0.0f);
-		pRFUII->SetMaximum(10.0f);
-		o_PrefsObject->AddProperty(pRFUII);
-		pCBUII = new prtyComboBoxUIInfo(&(i_Data.m_IBLMapRes), "mental ray IBL", "IBL Resolution");
-		o_PrefsObject->AddProperty( pCBUII );
-		/*pRFUII = new prtyRangedFloatUIInfo(&(i_Data.m_IBLScale), "mental ray IBL", "IBL Scale");
-		pRFUII->SetDecimalPlaces(1);
-		pRFUII->SetMinimum(0.0f);
-		pRFUII->SetMaximum(10.0f);
-		o_PrefsObject->AddProperty(pRFUII);*/
-		pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_IBLSampleNum), "mental ray IBL", "Number of Samples");
-		pNUDUII->SetDecimalPlaces(0);
-		pNUDUII->SetMinimum(1);
-		pNUDUII->SetMaximum(64);
-		pNUDUII->SetRestrictFlag(true);
-		o_PrefsObject->AddProperty( pNUDUII );
-
-		pPUII = new prtyCheckBoxUIInfo(&(i_Data.m_bMrayFinalGather), "mental ray Final Gather", "Enable");
-		o_PrefsObject->AddProperty( pPUII );
-
-		/*pPUII = new prtyCheckBoxUIInfo(&(i_Data.m_bMrayFGBlur), "mental ray Final Gather", "Enable blur");
-		o_PrefsObject->AddProperty( pPUII );*/
-
-		pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_MrayFGNDiffuse), "mental ray Final Gather", "Diffuse bounces");
-		pNUDUII->SetDecimalPlaces(0);
-		pNUDUII->SetMinimum(0);
-		pNUDUII->SetMaximum(10);
-		pNUDUII->SetRestrictFlag(true);
-		o_PrefsObject->AddProperty( pNUDUII );
-
-		pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_MrayFGNRefl), "mental ray Final Gather", "Refl bounces");
-		pNUDUII->SetDecimalPlaces(0);
-		pNUDUII->SetMinimum(0);
-		pNUDUII->SetMaximum(10);
-		pNUDUII->SetRestrictFlag(true);
-		o_PrefsObject->AddProperty( pNUDUII );
-
-		pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_MrayFGNRefr), "mental ray Final Gather", "Refr bounces");
-		pNUDUII->SetDecimalPlaces(0);
-		pNUDUII->SetMinimum(0);
-		pNUDUII->SetMaximum(10);
-		pNUDUII->SetRestrictFlag(true);
-		o_PrefsObject->AddProperty( pNUDUII );
-
-		pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_MrayFGNRays), "mental ray Final Gather", "num rays");
-		pNUDUII->SetDecimalPlaces(0);
-		pNUDUII->SetMinimum(1);
-		pNUDUII->SetMaximum(10000);
-		pNUDUII->SetRestrictFlag(true);
-		o_PrefsObject->AddProperty( pNUDUII );
-
-		
-		pPUII = new prtyCheckBoxUIInfo(&(i_Data.m_bMrayFGMapEnable), "mental ray Final Gather Map", "Enable FG Map");
-		o_PrefsObject->AddProperty( pPUII );
-
-		pCBUII = new prtyComboBoxUIInfo(&(i_Data.m_MrayFGMapRebuild), "mental ray Final Gather Map", "FG Map Rebuilding");
-		o_PrefsObject->AddProperty( pCBUII );
-
-		pPUII = new prtyFileChooserUIInfo(&(i_Data.m_MrayFGMapPath), "mental ray Final Gather Map", "FG Map Location");
-		o_PrefsObject->AddProperty( pPUII );
-
-
-
-		pPUII = new prtyCheckBoxUIInfo(&(i_Data.m_bMrayProgressive), "mental ray Progressive Rendering", "Enable");
-		o_PrefsObject->AddProperty( pPUII );
-
-		pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_MrayProgSubsamplingSize), "mental ray Progressive Rendering", "Subsampling Size");
-		pNUDUII->SetDecimalPlaces(0);
-		pNUDUII->SetMinimum(0);
-		pNUDUII->SetMaximum(32);
-		pNUDUII->SetRestrictFlag(true);
-		o_PrefsObject->AddProperty( pNUDUII );
-
-		pCBUII = new prtyComboBoxUIInfo(&(i_Data.m_MrayProgSubsamplingMode), "mental ray Progressive Rendering", "Subsampling Mode");
-		o_PrefsObject->AddProperty( pCBUII );
-
-		pCBUII = new prtyComboBoxUIInfo(&(i_Data.m_MrayProgSubsamplingPattern), "mental ray Progressive Rendering", "Subsampling Pattern");
-		o_PrefsObject->AddProperty( pCBUII );
-
-		pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_MrayProgMinSamples), "mental ray Progressive Rendering", "Min Samples");
-		pNUDUII->SetDecimalPlaces(0);
-		o_PrefsObject->AddProperty( pNUDUII );
-
-		pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_MrayProgMaxSamples), "mental ray Progressive Rendering", "Max Samples");
-		pNUDUII->SetDecimalPlaces(0);
-		o_PrefsObject->AddProperty( pNUDUII );
-
-		pNUDUII = new prtyNumericUpDownUIInfo(&(i_Data.m_MrayProgMaxTime), "mental ray Progressive Rendering", "Max Render Time");
-		pNUDUII->SetDecimalPlaces(0);
-		pNUDUII->SetMinimum(0);
-		pNUDUII->SetMaximum(21600); // an hour
-		pNUDUII->SetRestrictFlag(true);
-		o_PrefsObject->AddProperty( pNUDUII );
-
-		pRFUII = new prtyRangedFloatUIInfo(&(i_Data.m_MrayProgErrorThreshold), "mental ray Progressive Rendering", "Error Threshold");
-		pRFUII->SetDecimalPlaces(2);
-		pRFUII->SetMinimum(0.0f);
-		pRFUII->SetMaximum(1.0f);
-		o_PrefsObject->AddProperty(pRFUII);
-
 	}
 
 	}
@@ -1531,6 +1371,10 @@ namespace rprfPrefsUtil
 		category = get_category_object("Hair");
 		if(category != NULL)
 			setup_hair_category(category);
+
+		category = get_category_object("Ray Tracing");
+		if(category != NULL)
+			setup_raytracing_category(category);
 
 		category = get_category_object("Render Passes from File");
 		if(category != NULL)

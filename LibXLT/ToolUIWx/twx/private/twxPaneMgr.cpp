@@ -15,8 +15,33 @@
 
 #ifdef USE_WXWIDGETS
 
+#include <wx/dcbuffer.h>
+
 namespace
 {
+	//------------------------------------------------------------------------
+	// AUI draws its captions, sashes and borders straight onto the frame,
+	// so a caption updated every frame (the timeline's, during playback)
+	// flickers between its background and its text: draw through a buffer
+	//------------------------------------------------------------------------
+	class twxBufferedAuiManager : public wxAuiManager
+	{
+	public:
+		twxBufferedAuiManager(wxWindow* i_pManagedWindow, unsigned int i_Flags)
+		:	wxAuiManager(i_pManagedWindow, i_Flags)
+		{
+			// a bound handler runs before wxAuiManager's event table
+			Bind(wxEVT_PAINT, &twxBufferedAuiManager::OnBufferedPaint, this);
+		}
+
+	private:
+		void OnBufferedPaint(wxPaintEvent&)
+		{
+			wxBufferedPaintDC dc(GetManagedWindow());
+			Repaint(&dc);
+		}
+	};
+
 	wxAuiManager *l_pAuiMgr = NULL;
 
 } // end of namespace
@@ -29,7 +54,7 @@ void twxPaneMgr::Init()
 {
 	DBG_ASSERT(twxSystem::g_pMainForm, "MainForm not yet initialized.");
 	//l_pAuiMgr = new wxAuiManager(twxSystem::g_pMainForm);
-	l_pAuiMgr = new wxAuiManager(twxSystem::g_pMainForm,
+	l_pAuiMgr = new twxBufferedAuiManager(twxSystem::g_pMainForm,
 					wxAUI_MGR_DEFAULT | wxAUI_MGR_ALLOW_ACTIVE_PANE);
 }
 
@@ -135,10 +160,27 @@ void twxPaneMgr::SetCaption(wxWindow *i_pWindow, const std::string& i_Caption)
 	if (l_pAuiMgr)
 	{
 		wxAuiPaneInfo &pane_info = l_pAuiMgr->GetPane(i_pWindow);
-		if (pane_info.IsOk())
+		const wxString caption(i_Caption.c_str(), wxConvUTF8);
+		if (pane_info.IsOk() && pane_info.caption != caption)
 		{
-			pane_info.Caption(wxString(i_Caption.c_str(), wxConvUTF8));
-			l_pAuiMgr->Update();
+			// Only the caption is redrawn: l_pAuiMgr->Update() would lay out
+			// the whole frame again, freezing, resizing and repainting every pane, to
+			// change one caption's text (the timeline's changes every frame
+			// of playback). Qt's pane manager likewise only sets the title.
+			pane_info.Caption(caption);
+			if (pane_info.IsFloating() && pane_info.frame)
+			{
+				pane_info.frame->SetTitle(caption);
+			}
+			else if (pane_info.IsDocked() && pane_info.IsShown() && pane_info.HasCaption())
+			{
+				// a docked caption is drawn on the managed window, just
+				// above the pane's window
+				const wxRect window_rect = i_pWindow->GetRect();
+				const int caption_size = l_pAuiMgr->GetArtProvider()->GetMetric(wxAUI_DOCKART_CAPTION_SIZE);
+				l_pAuiMgr->GetManagedWindow()->RefreshRect(
+					wxRect(window_rect.x, window_rect.y - caption_size, window_rect.width, caption_size), false);
+			}
 		}
 	}
 }

@@ -124,8 +124,8 @@ namespace mdlSubdivParser
 
 		std::vector<maPoint3d> orig_vertices;
 		std::vector<maPoint2d> orig_uvs;
-		std::vector<envType::UInt32> orig_geom_inds;
-		std::vector<envType::UInt32> orig_uv_inds;
+		std::vector<uint32_t> orig_geom_inds;
+		std::vector<uint32_t> orig_uv_inds;
 
 		bool did_read_GVER = false, did_read_GFAC = false, did_read_VRMP = false;
 		bool has_texture_indices = false;
@@ -142,18 +142,18 @@ namespace mdlSubdivParser
 				else if( name == c_GVER )
 				{
 					did_read_GVER = true;
-					envType::UInt32 num = mdlIndexUtil::ReadNumber(i_Reader, (version >= 2));
+					uint32_t num = mdlIndexUtil::ReadNumber(i_Reader, (version >= 2));
 					chChunkParserUtil::ReadArray(i_Reader, orig_vertices, num);
 				}
 				else if( name == c_TVER )
 				{
-					envType::UInt32 num = mdlIndexUtil::ReadNumber(i_Reader, (version >= 2));
+					uint32_t num = mdlIndexUtil::ReadNumber(i_Reader, (version >= 2));
 					chChunkParserUtil::ReadArray(i_Reader, orig_uvs, num);
 
 					// Only flip UVs if we are reading in an older version
 					if (version < 2)
 					{
-						for (envType::UInt32 cur = 0 ; cur < num ; cur++ )
+						for (uint32_t cur = 0 ; cur < num ; cur++ )
 						{
 							orig_uvs[cur].m_Y = 1 - orig_uvs[cur].m_Y;
 						}
@@ -162,7 +162,7 @@ namespace mdlSubdivParser
 				}
 				else if( name == c_MTLS)
 				{
-					envType::UInt16 num_mats;
+					uint16_t num_mats;
 					i_Reader.Read(num_mats);
 					for (int i=0; i<num_mats; ++i)
 					{
@@ -196,7 +196,7 @@ namespace mdlSubdivParser
 						// Read material changes (index when next material should be used).			
 						if (i<num_mats-1)
 						{
-							envType::Int32 ind;
+							int32_t ind;
 							i_Reader.Read(ind);
 							o_SubdivInfo.m_MaterialChanges.push_back(ind);
 						}
@@ -244,8 +244,8 @@ namespace mdlSubdivParser
 				{
 					did_read_GFAC = true;
 					// Version 2 uses 32-bit for number of faces and indices
-					envType::UInt32 num_faces = mdlIndexUtil::ReadNumber(i_Reader, (version >= 2));
-					envType::UInt32 num_indices = mdlIndexUtil::ReadNumber(i_Reader, (version >= 2));
+					uint32_t num_faces = mdlIndexUtil::ReadNumber(i_Reader, (version >= 2));
+					uint32_t num_indices = mdlIndexUtil::ReadNumber(i_Reader, (version >= 2));
 					o_SubdivInfo.m_NumFaces = num_faces;
 					orig_geom_inds.resize(num_indices);
 					//DBG_LOG2("Reading %d subdiv indices, including %d faces", num_indices, num_faces);
@@ -258,8 +258,8 @@ namespace mdlSubdivParser
 					}
 					else
 					{
-						envType::UInt8 num_poly_verts;
-						envType::UInt16 gind;
+						uint8_t num_poly_verts;
+						uint16_t gind;
 						int ind = 0;
 						for (int f=0; f<num_faces; f++)
 						{
@@ -281,13 +281,13 @@ namespace mdlSubdivParser
 					has_texture_indices = true;
 //					DBG_LOG("Reading texture indices");
 
-					envType::UInt16 num_faces, num_indices;
+					uint16_t num_faces, num_indices;
 					i_Reader.Read(num_faces);
 					i_Reader.Read(num_indices);
 					orig_uv_inds.resize(num_indices);
 					
-					envType::UInt8 num_poly_verts;
-					envType::UInt16 gind;
+					uint8_t num_poly_verts;
+					uint16_t gind;
 					int ind = 0;
 					for (int f=0; f<num_faces; f++)
 					{
@@ -304,20 +304,20 @@ namespace mdlSubdivParser
 				else if( name == c_VRMP )
 				{
 					did_read_VRMP = true;
-					envType::UInt32 num_orig;
+					uint32_t num_orig;
 					i_Reader.Read(num_orig);
 					o_SubdivInfo.m_NumOrigVertices = num_orig;
 					mdlIndexUtil::ReadRemap(i_Reader, o_SubdivInfo.m_VertexRemap);
 				}
 				else if( name == c_CRSV )
 				{
-					envType::UInt16 num, maxlevel;
+					uint16_t num, maxlevel;
 					i_Reader.Read(maxlevel);
 					o_SubdivInfo.m_MaxVertexCreaseLevel = maxlevel;
 					i_Reader.Read(num);
 					o_SubdivInfo.m_VertexCreases.resize(num);
-					envType::UInt32 base, path, corner;
-					envType::UInt16 first, level;
+					uint32_t base, path, corner;
+					uint16_t first, level;
 					for (int c = 0 ; c < num ; c++ )
 					{
 						i_Reader.Read(base);
@@ -335,13 +335,13 @@ namespace mdlSubdivParser
 				}
 				else if( name == c_CRSE )
 				{
-					envType::UInt16 num, maxlevel;
+					uint16_t num, maxlevel;
 					i_Reader.Read(maxlevel);
 					o_SubdivInfo.m_MaxEdgeCreaseLevel = maxlevel;
 					i_Reader.Read(num);
 					o_SubdivInfo.m_EdgeCreases.resize(num);
-					envType::UInt32 base, path, corner;
-					envType::UInt16 first, level;
+					uint32_t base, path, corner;
+					uint16_t first, level;
 					for (int c = 0 ; c < num ; c++ )
 					{
 						i_Reader.Read(base);
@@ -363,8 +363,8 @@ namespace mdlSubdivParser
 				{
 					// fragment flags
 					//did_read_FLAG = true;
-					envType::Int8 doubleSided;
-					envType::Int8 triangleSort;
+					int8_t doubleSided;
+					int8_t triangleSort;
 
 					// Version 0 has 2 flags, doubleSided and triangleSort:
 					i_Reader.Read(doubleSided);
@@ -375,9 +375,9 @@ namespace mdlSubdivParser
 					// skipped version 1 in order to sync with polygon flags
 					if (version >= 2)
 					{
-						envType::Int8 castsShadow;
-						envType::Int8 receivesShadow;
-						envType::Int8 shadowHull;
+						int8_t castsShadow;
+						int8_t receivesShadow;
+						int8_t shadowHull;
 
 						i_Reader.Read(castsShadow);
 						o_SubdivInfo.m_Flags.m_bCastsShadow = (castsShadow != 0);
@@ -389,7 +389,7 @@ namespace mdlSubdivParser
 						// version 3 adds control of when to auto generate low resolution
 						if (version >= 3)
 						{
-							envType::Int8 autoGenLowRes;
+							int8_t autoGenLowRes;
 							i_Reader.Read(autoGenLowRes);
 							o_SubdivInfo.m_Flags.m_bAutoGenLowRes = (autoGenLowRes != 0);
 						}
@@ -512,7 +512,7 @@ namespace mdlSubdivParser
 		o_Writer.FinishChunk();
 
 		// Write 32 bit number when writing number of verts for subdivs
-		envType::UInt32 num, cur;
+		uint32_t num, cur;
 
 		// Vertices - version 2 is 32-bit
 		o_Writer.WriteChunkHeader(c_GVER, 2, false);
@@ -538,7 +538,7 @@ namespace mdlSubdivParser
 		if (!i_SubdivInfo.m_VertexRemap.empty())
 		{
 			o_Writer.WriteChunkHeader(c_VRMP, 0, false);
-			o_Writer.Write(envType::Int32(i_SubdivInfo.m_NumOrigVertices));
+			o_Writer.Write(int32_t(i_SubdivInfo.m_NumOrigVertices));
 			mdlIndexUtil::WriteRemap(o_Writer, i_SubdivInfo.m_VertexRemap);
 			o_Writer.FinishChunk();
 		}
@@ -549,7 +549,7 @@ namespace mdlSubdivParser
 		// we just write it out as 32-bit indices.
 		// Version 2 uses 32-bit for num faces and num indices.
 		o_Writer.WriteChunkHeader(c_GFAC, 2, false);
-		o_Writer.Write(envType::UInt32(i_SubdivInfo.m_NumFaces));
+		o_Writer.Write(uint32_t(i_SubdivInfo.m_NumFaces));
 		num = i_SubdivInfo.m_Indices.size();
 		o_Writer.Write(num);
 		for( cur = 0 ; cur < num ; cur++ )
@@ -560,7 +560,7 @@ namespace mdlSubdivParser
 		// of the material, assuming that we will read a material table
 		// from some other part of the file.
 		// MaterialChanges array needs to be one fewer than number of materials.
-		envType::Int16 num_mats = i_SubdivInfo.m_Materials.size();
+		int16_t num_mats = i_SubdivInfo.m_Materials.size();
 		DBG_ASSERT(num_mats-1 == i_SubdivInfo.m_MaterialChanges.size(), "Incorrect number of material changes.");
 		o_Writer.WriteChunkHeader(c_MTLS, 0, false);
 		o_Writer.Write(num_mats);	
@@ -569,7 +569,7 @@ namespace mdlSubdivParser
 			chChunkParserUtil::Write(o_Writer, i_SubdivInfo.m_Materials[i]->m_Info.GetMaterialName());
 			if (i<num_mats-1)
 			{
-				o_Writer.Write(envType::Int32(i_SubdivInfo.m_MaterialChanges[i]));
+				o_Writer.Write(int32_t(i_SubdivInfo.m_MaterialChanges[i]));
 			}
 		}
 		o_Writer.FinishChunk();
@@ -591,18 +591,18 @@ namespace mdlSubdivParser
 		{
 			// Write vertex creasing information
 			o_Writer.WriteChunkHeader(c_CRSV, 0, false);
-			o_Writer.Write(envType::Int16(i_SubdivInfo.m_MaxVertexCreaseLevel));
+			o_Writer.Write(int16_t(i_SubdivInfo.m_MaxVertexCreaseLevel));
 			const int nvi = i_SubdivInfo.m_VertexCreases.size();
-			o_Writer.Write(envType::Int16(nvi));
+			o_Writer.Write(int16_t(nvi));
 			for (int i=0; i<nvi; i++)
 			{
 				const mayCreaseInfo &crease = i_SubdivInfo.m_VertexCreases[i];
 				// Some of these items need many bits, some just a few
-				o_Writer.Write(envType::Int32(crease.m_Base));
-				o_Writer.Write(envType::Int16(crease.m_First));
-				o_Writer.Write(envType::Int16(crease.m_Level));
-				o_Writer.Write(envType::Int32(crease.m_Path));
-				o_Writer.Write(envType::Int32(crease.m_Corner));
+				o_Writer.Write(int32_t(crease.m_Base));
+				o_Writer.Write(int16_t(crease.m_First));
+				o_Writer.Write(int16_t(crease.m_Level));
+				o_Writer.Write(int32_t(crease.m_Path));
+				o_Writer.Write(int32_t(crease.m_Corner));
 			}
 			o_Writer.FinishChunk();
 		}
@@ -611,18 +611,18 @@ namespace mdlSubdivParser
 		{
 			// Write vertex creasing information
 			o_Writer.WriteChunkHeader(c_CRSE, 0, false);
-			o_Writer.Write(envType::Int16(i_SubdivInfo.m_MaxEdgeCreaseLevel));
+			o_Writer.Write(int16_t(i_SubdivInfo.m_MaxEdgeCreaseLevel));
 			const int nvi = i_SubdivInfo.m_EdgeCreases.size();
-			o_Writer.Write(envType::Int16(nvi));
+			o_Writer.Write(int16_t(nvi));
 			for (int i=0; i<nvi; i++)
 			{
 				const mayCreaseInfo &crease = i_SubdivInfo.m_EdgeCreases[i];
 				// Some of these items need many bits, some just a few
-				o_Writer.Write(envType::Int32(crease.m_Base));
-				o_Writer.Write(envType::Int16(crease.m_First));
-				o_Writer.Write(envType::Int16(crease.m_Level));
-				o_Writer.Write(envType::Int32(crease.m_Path));
-				o_Writer.Write(envType::Int32(crease.m_Corner));
+				o_Writer.Write(int32_t(crease.m_Base));
+				o_Writer.Write(int16_t(crease.m_First));
+				o_Writer.Write(int16_t(crease.m_Level));
+				o_Writer.Write(int32_t(crease.m_Path));
+				o_Writer.Write(int32_t(crease.m_Corner));
 			}
 			o_Writer.FinishChunk();
 		}
@@ -633,12 +633,12 @@ namespace mdlSubdivParser
 		// Version 2 is last version used in old Maya exporter
 		// Version 3 adds m_bAutoGenLowRes
 		o_Writer.WriteChunkHeader(c_FLAG, 3, false);
-		o_Writer.Write(envType::Int8(i_SubdivInfo.m_Flags.m_bDoubleSided));
-		o_Writer.Write(envType::Int8(i_SubdivInfo.m_Flags.m_bTriangleSort));
-		o_Writer.Write(envType::Int8(i_SubdivInfo.m_Flags.m_bCastsShadow));
-		o_Writer.Write(envType::Int8(i_SubdivInfo.m_Flags.m_bReceivesShadow));
-		o_Writer.Write(envType::Int8(i_SubdivInfo.m_Flags.m_bShadowHull));
-		o_Writer.Write(envType::Int8(i_SubdivInfo.m_Flags.m_bAutoGenLowRes));
+		o_Writer.Write(int8_t(i_SubdivInfo.m_Flags.m_bDoubleSided));
+		o_Writer.Write(int8_t(i_SubdivInfo.m_Flags.m_bTriangleSort));
+		o_Writer.Write(int8_t(i_SubdivInfo.m_Flags.m_bCastsShadow));
+		o_Writer.Write(int8_t(i_SubdivInfo.m_Flags.m_bReceivesShadow));
+		o_Writer.Write(int8_t(i_SubdivInfo.m_Flags.m_bShadowHull));
+		o_Writer.Write(int8_t(i_SubdivInfo.m_Flags.m_bAutoGenLowRes));
 		o_Writer.FinishChunk(); // c_FLAG
 
 		o_Writer.FinishChunk(); // c_GFRG

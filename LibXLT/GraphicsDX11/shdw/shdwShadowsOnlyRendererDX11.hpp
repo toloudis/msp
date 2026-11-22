@@ -19,8 +19,8 @@
 #ifndef MA_POINT3D_HPP
 #include "Core/ma/maPoint3d.hpp"
 #endif
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 #ifndef SHDW_PASSTRAVERSAL_HPP
 #include "GraphicsDX11/shdw/shdwPassTraversal.hpp"
@@ -37,7 +37,6 @@ class g3dProjectedLight;
 class matMaterial;
 class matRenderTargetTexture;
 class camCamera;
-class g2dWindowDX11;
 
 class shdwShadowsOnlyRendererDX11 : public shdwSceneRendererDX11
 {
@@ -108,7 +107,7 @@ private:
 	void CreateSurfaces(g2dRenderTarget* i_pWindow);
 	void CopyToBackBuf(matRenderTargetTexture* pSrcTex);
 
-	g2dWindowDX11* m_pWindow;
+	g2dRenderTarget* m_pWindow;
 	const camCamera* m_pCamera;
 };
 

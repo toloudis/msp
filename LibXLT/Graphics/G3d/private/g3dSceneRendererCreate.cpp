@@ -301,6 +301,34 @@ g3dSceneRenderer* g3dSceneRendererCreate::CreateGlowRenderer()
 }
 
 //--------------------------------------------------------------------
+//static
+bool g3dSceneRendererCreate::NeedsShadowMaps()
+{
+	return sm_pImplementation ? sm_pImplementation->NeedsShadowMaps() : true;
+}
+
+//--------------------------------------------------------------------
+//static
+bool g3dSceneRendererCreate::NeedsOpacityMaps()
+{
+	return sm_pImplementation ? sm_pImplementation->NeedsOpacityMaps() : true;
+}
+
+//--------------------------------------------------------------------
+//static
+bool g3dSceneRendererCreate::NeedsReflectionMaps()
+{
+	return sm_pImplementation ? sm_pImplementation->NeedsReflectionMaps() : true;
+}
+
+//--------------------------------------------------------------------
+//static
+bool g3dSceneRendererCreate::UsesTracerSettings()
+{
+	return sm_pImplementation ? sm_pImplementation->UsesTracerSettings() : false;
+}
+
+//--------------------------------------------------------------------
 // Set new implementation method, returns pointer to last one
 // that was being used.  Both can be NULL.
 // Ownership for the pointer remains with the caller.

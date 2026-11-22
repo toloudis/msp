@@ -1,50 +1,38 @@
 /*****************************************************************************
-**  tqtDialogTabbed.cpp
+**	tqtDialogTabbed.cpp
 **
-**      see .hpp
+**		see .hpp
 **
 **	StudioGPU
-**	Copyright(C) 2004 - All Rights Reserved
+**	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "ToolUIQt/tqt/tqtDialogTabbed.hpp"
+
 #include "ToolUIQt/tqt/tqtPaneMgr.hpp"
 #include "ToolUIQt/tqt/tqtDialogTabbedMgr.hpp"
-
 #include "ToolUIQt/pqt/pqtFormControlBuilder.hpp"
-
 
 #ifdef USE_QT
 
-#ifdef QT_FINISH_PORT
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-tqtDialogTabbed::tqtDialogTabbed( QWidget* parent, 
-								  QWidgetID id, 
-								  const wxString& name, 
-								  const wxString& title, 
-								  const wxPoint& pos, 
-								  const wxSize& size, 
-								  long style ) 
-//: wxDialog( parent, id, title, pos, size, style )
-: wxPanel( parent, id, pos, size, style )
+tqtDialogTabbed::tqtDialogTabbed( QWidget* parent,
+								  const QString& name,
+								  const QString& title )
+: QWidget( parent )
 {
-	this->SetSizeHints( 450, 300 );
-	
-	wxBoxSizer* bSizer1;
-	bSizer1 = new wxBoxSizer( wxVERTICAL );
-	
-	m_Notebook = new wxAuiNotebook( this, wxID_ANY, wxDefaultPosition, wxSize(450,300), 0 );
-	
-	bSizer1->Add( m_Notebook, 1, wxEXPAND | wxALL, 5 );
-	
-	this->SetSizer( bSizer1 );
-	this->Layout();
-	bSizer1->Fit( this );
+	this->setMinimumSize( 450, 300 );
 
-	// Add this panel to the AUI manager
-	tqtPaneMgr::AddPane(this, wxAuiPaneInfo().Name(name).Caption(title).Hide().Layer(1).Float());
+	QVBoxLayout* pLayout = new QVBoxLayout(this);
+	pLayout->setContentsMargins(5, 5, 5, 5);
+
+	m_Notebook = new QTabWidget(this);
+	m_Notebook->setMovable(true);
+	pLayout->addWidget(m_Notebook);
+
+	// Add this panel to the pane manager
+	tqtPaneMgr::AddPane(this, tqtPaneInfo().Name(name).Caption(title).Hide().Layer(1).Float());
 }
-#endif
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
@@ -57,89 +45,83 @@ tqtDialogTabbed::~tqtDialogTabbed()
 //--------------------------------------------------------------------
 void tqtDialogTabbed::AddTabPage(const std::string& i_Title)
 {
-#ifdef QT_FINISH_PORT
-	wxScrolledWindow *pTabPage = new wxScrolledWindow( m_Notebook, 
-				wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL );
-	pTabPage->SetScrollRate( 0, 5 );
-	pTabPage->SetMinSize(wxSize(100,200));
-	m_Notebook->AddPage( pTabPage, wxString(i_Title.c_str(), wxConvUTF8), false );
-#endif
+	QScrollArea* pScroll = new QScrollArea(m_Notebook);
+	pScroll->setWidgetResizable(true);
+	pScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	pScroll->setMinimumSize(100, 200);
+
+	QWidget* pTabPage = new QWidget;
+	pScroll->setWidget(pTabPage);
+
+	m_Notebook->addTab( pScroll, tqtQString(i_Title) );
+}
+
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+int tqtDialogTabbed::find_page(const std::string& i_Title)
+{
+	QString title = tqtQString(i_Title);
+	for (int i=0; i<m_Notebook->count(); ++i)
+	{
+		if (title == m_Notebook->tabText(i))
+			return i;
+	}
+	return -1;
+}
+
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+QWidget* tqtDialogTabbed::page_contents(int i_Index)
+{
+	QScrollArea* pScroll = dynamic_cast<QScrollArea*>(m_Notebook->widget(i_Index));
+	return pScroll ? pScroll->widget() : NULL;
 }
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 void tqtDialogTabbed::RemoveTabPage(const std::string& i_Title)
 {
-#ifdef QT_FINISH_PORT
-	const int num_pages = m_Notebook->GetPageCount();
-	wxString title(i_Title.c_str(),  wxConvUTF8);
-	for (int i=0; i<num_pages; ++i)
-	{
-		if (title == m_Notebook->GetPageText(i))
-		{
-			//TODO: RemovePage or DeletePage?
-			m_Notebook->RemovePage(i);
-			break;
-		}
-	}
-#endif
+	// wxAuiNotebook::RemovePage left the page alive, but nothing holds on
+	// to it, so it is deleted here like DeleteTabPage.
+	DeleteTabPage(i_Title);
 }
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 void tqtDialogTabbed::DeleteTabPage(const std::string& i_Title)
 {
-#ifdef QT_FINISH_PORT
-	const int num_pages = m_Notebook->GetPageCount();
-	wxString title(i_Title.c_str(),  wxConvUTF8);
-	for (int i=0; i<num_pages; ++i)
+	int index = find_page(i_Title);
+	if (index >= 0)
 	{
-		if (title == m_Notebook->GetPageText(i))
-		{
-			//TODO: RemovePage or DeletePage?
-			m_Notebook->DeletePage(i);
-			break;
-		}
+		if (QWidget* pPage = page_contents(index))
+			pqtFormControlBuilder::ClearForm(pPage);
+		QWidget* pScroll = m_Notebook->widget(index);
+		m_Notebook->removeTab(index);
+		delete pScroll;
 	}
-#endif
 }
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 void tqtDialogTabbed::RemoveTabPages()
 {
-#ifdef QT_FINISH_PORT
 	// Remove all property controls from the tab pages before deleting
-	const int num_pages = m_Notebook->GetPageCount();
-	for (int i=0; i<num_pages; ++i)
+	while (m_Notebook->count() > 0)
 	{
-		wxPanel *pPanel = dynamic_cast<wxPanel*>(m_Notebook->GetPage(i));
-		if (pPanel)
-			pqtFormControlBuilder::ClearForm(pPanel);
-		m_Notebook->DeletePage(i);
+		if (QWidget* pPage = page_contents(0))
+			pqtFormControlBuilder::ClearForm(pPage);
+		QWidget* pScroll = m_Notebook->widget(0);
+		m_Notebook->removeTab(0);
+		delete pScroll;
 	}
-
-	//TODO: Remove or Delete here?
-	//m_Notebook->DeleteAllPages();
-#endif
 }
 
-#ifdef QT_FINISH_PORT
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-wxPanel* tqtDialogTabbed::GetTabPage(const std::string& i_Title)
+QWidget* tqtDialogTabbed::GetTabPage(const std::string& i_Title)
 {
-	const int num_pages = m_Notebook->GetPageCount();
-	wxString title(i_Title.c_str(),  wxConvUTF8);
-	for (int i=0; i<num_pages; ++i)
-	{
-		if (title == m_Notebook->GetPageText(i))
-		{
-			return dynamic_cast<wxPanel*>(m_Notebook->GetPage(i));
-		}
-	}
-	return NULL;
+	int index = find_page(i_Title);
+	return (index >= 0) ? page_contents(index) : NULL;
 }
-#endif
 
 #endif // USE_QT

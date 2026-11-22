@@ -25,14 +25,12 @@ namespace
 //--------------------------------------------------------------------
 void  cmraDialogDataUtil::UpdateListDialog()
 {
-	cmmDialogDataList data_list;
 	std::vector<shared_ptr<camCamera>> camera_list;
 	std::vector<std::string> name_list;
 
-	cmraDialogDataUtil::RebuildListData(data_list);
 	cmraDialogDataUtil::RebuildCameraList(camera_list, name_list);
 
-	cmmSystemDialogUtil::UpdatePlacedList(c_SystemName,data_list);
+	cmmSystemDialogUtil::UpdatePlacedList(c_SystemName, &cmraDialogDataUtil::RebuildListData);
 	billObjectMgr::UpdateCameraList(camera_list, name_list);
 }
 
@@ -49,7 +47,7 @@ void cmraDialogDataUtil::RebuildListData(cmmDialogDataList& io_DataList)
 
 	// Create item for editor camera 
 	io_DataList[startindex].m_Name			= nameString(cmraObjectMgr::GetEditorCameraObjectName());
-	io_DataList[startindex].m_Filename		= itString("");
+	io_DataList[startindex].m_Filename		= std::string();
 	io_DataList[startindex].m_Desc			= "";
 	io_DataList[startindex].m_SystemName	= c_SystemName;
 	io_DataList[startindex].m_bVisible		= true;
@@ -61,7 +59,7 @@ void cmraDialogDataUtil::RebuildListData(cmmDialogDataList& io_DataList)
 		cmraCameraData objdata = cmraObjectMgr::GetBaseData(i);
 		cmmDialogData &dialog_data = io_DataList[startindex+i];
 		dialog_data.m_Name		= objdata.m_Name.GetValue();
-		dialog_data.m_Filename	= itString( objdata.m_Name.GetString().c_str() );
+		dialog_data.m_Filename	= objdata.m_Name.GetString();
 		// use filename as description
 		dialog_data.m_Desc		= objdata.m_Description.GetValue();
 		dialog_data.m_SystemName	= c_SystemName;

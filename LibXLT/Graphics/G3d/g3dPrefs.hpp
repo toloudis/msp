@@ -141,6 +141,46 @@ namespace g3dPrefs
 		unsigned int m_HairInterpolationCount;
 		float m_HairClumpRadius;
 
+		// tracer settings, read by a backend that traces rays
+		// (g3dSceneRendererCreate::UsesTracerSettings: GraphicsOptiX):
+		// samples per pixel each frame adds, the samples after which a
+		// view stops (converged), samples per captured frame (0: the
+		// limit), occlusion rays per AO sample, and bounces after
+		// the first hit (0: direct light only)
+		int m_TraceSamplesPerFrame;
+		int m_TraceSampleLimit;
+		int m_TraceCaptureSamples;
+		int m_TraceAORays;
+		int m_TraceBounces;
+		// the tracer debug view: what the traced default/HDR view shows in
+		// place of its image (TraceDebugView; e_TraceDebugOff: nothing)
+		enum TraceDebugView
+		{
+			e_TraceDebugOff = 0,
+			e_TraceDebugBaseColor,
+			e_TraceDebugNormal,
+			e_TraceDebugRoughness,
+			e_TraceDebugMetallic,
+			e_TraceDebugEmission,
+			e_TraceDebugOpacity,
+			e_TraceDebugCount
+		};
+		int m_TraceDebugView;
+		// the beauty pass's firefly limit: light reaching a pixel after the
+		// first bounce is scaled down so no component exceeds it (0: none)
+		float m_TraceMaxRadiance;
+		// when the beauty pass and Reflection Only are denoised (OptiX's
+		// denoiser): never, in views, in captured frames, or both
+		enum TraceDenoise
+		{
+			e_TraceDenoiseOff = 0,
+			e_TraceDenoiseViewport,
+			e_TraceDenoiseCapture,
+			e_TraceDenoiseBoth,
+			e_TraceDenoiseCount
+		};
+		int m_TraceDenoise;
+
 		g3dRenderPrefs();
 	};
 	

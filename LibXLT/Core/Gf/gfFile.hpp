@@ -45,13 +45,13 @@ class gfFile
 		//	value is the number actually read into the o_Buffer.  This function
 		//	also advances the file pointer.
 		//------------------------------------------------------------------------
-		virtual int Read(envType::Int64 i_NumBytes, void* o_Buffer) = 0;
+		virtual int Read(int64_t i_NumBytes, void* o_Buffer) = 0;
 
 		//------------------------------------------------------------------------
 		//	Write writes i_NumBytes from o_Buffer into the file.  The file 
 		//	pointer will also be advanced.
 		//------------------------------------------------------------------------
-		virtual void Write(envType::Int64 i_NumBytes, const void* i_Buffer) = 0;
+		virtual void Write(int64_t i_NumBytes, const void* i_Buffer) = 0;
 
 		//------------------------------------------------------------------------
 		//	GetFilePos returns the current position of the file pointer.
@@ -61,7 +61,7 @@ class gfFile
 		//------------------------------------------------------------------------
 		//	GetFileSize returns the size of the file in bytes.
 		//------------------------------------------------------------------------
-		envType::Int64 GetFileSize() const;
+		int64_t GetFileSize() const;
 
 		//------------------------------------------------------------------------
 		//	SetFilePos sets the file pointer to the given value.  It is valid

@@ -710,7 +710,7 @@ geoKDTree::Clear()
 void	
 geoKDTree::AddTriangles(const maPoint3d*			i_Vertices,
 						int							i_NumVertices,
-						const envType::UInt32*		i_Indices,
+						const uint32_t*		i_Indices,
 						int							i_NumIndices)
 {
 	int triCount = (i_NumIndices / 3);

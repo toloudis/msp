@@ -45,7 +45,7 @@ namespace
 			fsFileUtil::CreateDirectory( i_RootPath );
 		i_RootPath.Pop();
 
-		// Not créating Models or Sounds directories anymore
+		// Not creating Models or Sounds directories anymore
 		//i_RootPath.Push( gfPaths::GetSubPath(gfPaths::e_Models) );
 		//if ( !fsFileUtil::DirectoryExists( i_RootPath ) )
 		//	fsFileUtil::CreateDirectory( i_RootPath );
@@ -82,24 +82,24 @@ namespace
 //----------------------------------------------------------------------------
 void mnmPaths::SetupPaths( const fsLocator& i_AppPathLocator )
 {
-	itString scene_name( c_SUBDIRNAME_STOCK );
+	std::string scene_name( c_SUBDIRNAME_STOCK );
 	SetupPaths( i_AppPathLocator, scene_name );
 }
 
 //----------------------------------------------------------------------------
 //	SetupPaths build the paths in the gfPaths and the Scene Directory Name
 //----------------------------------------------------------------------------
-void mnmPaths::SetupPaths( const fsLocator& i_AppPathLocator, const itString& i_SceneDirName )
+void mnmPaths::SetupPaths( const fsLocator& i_AppPathLocator, const std::string& i_SceneDirName )
 {
 	DBG_ASSERT( i_AppPathLocator.GetNumNames() > 0, "App Path has nothing in it" );
 
-	itString scene_dir_name(i_SceneDirName);
+	std::string scene_dir_name(i_SceneDirName);
 
 	//	if the scene name is zero then just use the stock folders
 	//
-	if ( i_SceneDirName.GetLength() == 0 )
+	if ( i_SceneDirName.size() == 0 )
 	{
-		scene_dir_name = itString(c_SUBDIRNAME_STOCK);
+		scene_dir_name = std::string(c_SUBDIRNAME_STOCK);
 	}
 
 	fsLocator locator;
@@ -275,7 +275,7 @@ void mnmPaths::SetupPaths( const fsLocator& i_AppPathLocator, const itString& i_
 //----------------------------------------------------------------------------
 //	SetupDataPaths build the paths in the gfPaths
 //----------------------------------------------------------------------------
-void mnmPaths::SetupDataPaths( const itString& i_SceneDirName )
+void mnmPaths::SetupDataPaths( const std::string& i_SceneDirName )
 {
 	fsLocator locator;
 
@@ -286,7 +286,7 @@ void mnmPaths::SetupDataPaths( const itString& i_SceneDirName )
 	gfPaths::SetPath(mnmPaths::e_DataScene, locator);
 	gfPaths::SetPath(mnmPaths::e_DataSceneAndStock, locator);
 
-	if ( i_SceneDirName != itString(c_SUBDIRNAME_STOCK) )
+	if ( i_SceneDirName != std::string(c_SUBDIRNAME_STOCK) )
 	{
 		locator.Clear();
 		locator.Push( gfPaths::GetPath(mnmPaths::e_DataRoot) );
@@ -319,14 +319,14 @@ void mnmPaths::CreateProjectDirectories( const fsLocator& i_Root )
 	if ( !fsFileUtil::DirectoryExists( rootpath ) )
 		fsFileUtil::CreateDirectory( rootpath );
 
-	CreateStockDirectories( rootpath, itString(c_SUBDIRNAME_STOCK) );
+	CreateStockDirectories( rootpath, std::string(c_SUBDIRNAME_STOCK) );
 }
 
 
 //------------------------------------------------------------------------
 //	CreateStockDirectories() - create the Stock directories for a new project
 //------------------------------------------------------------------------
-void mnmPaths::CreateStockDirectories( const fsLocator& i_Root, const itString& i_SceneDirName )
+void mnmPaths::CreateStockDirectories( const fsLocator& i_Root, const std::string& i_SceneDirName )
 {
 	fsLocator rootpath( i_Root );
 
@@ -380,7 +380,7 @@ void mnmPaths::CreateStockDirectories( const fsLocator& i_Root, const itString& 
 	//	maybe expose the function CreateSystemDirectory()?
 	//
 
-	// Sounds 
+	// Sounds
 	rootpath.Push( "Sounds" );
 	if ( !fsFileUtil::DirectoryExists( rootpath ) )
 		fsFileUtil::CreateDirectory( rootpath );
@@ -420,7 +420,7 @@ void mnmPaths::CreateStockDirectories( const fsLocator& i_Root, const itString& 
 //------------------------------------------------------------------------
 //	CreateSceneDirectories() - create the directories for a new scene
 //------------------------------------------------------------------------
-void mnmPaths::CreateSceneDirectories( const fsLocator& i_Root, const itString& i_SceneDirName )
+void mnmPaths::CreateSceneDirectories( const fsLocator& i_Root, const std::string& i_SceneDirName )
 {
 	fsLocator rootpath( i_Root );
 
@@ -454,11 +454,11 @@ void mnmPaths::CreateSceneDirectories( const fsLocator& i_Root, const itString& 
 //------------------------------------------------------------------------
 //	return the name of the object directory from the passed in directory.
 //------------------------------------------------------------------------
-void mnmPaths::ExtractObjectDirectoryName( const fsLocator i_FullDir, itString& o_ObjDirName )
+void mnmPaths::ExtractObjectDirectoryName( const fsLocator i_FullDir, std::string& o_ObjDirName )
 {
 	fsLocator dir( i_FullDir );
 
-	dir.RemoveBefore( itString("Data") );
+	dir.RemoveBefore( std::string("Data") );
 
 	//Note: this 2 is alright to hard-code since it fits in with the path
 	//	methodology.  After "Data" there is the "scene name" directory,
@@ -473,7 +473,7 @@ void mnmPaths::ExtractObjectDirectoryName( const fsLocator i_FullDir, itString& 
 void mnmPaths::ConvertFilename( fsLocator& io_FileName )
 {
 	std::string dir;
-	
+
 	fsFileUtil::LocatorToANSIFilename( io_FileName, dir );
 	DBG_TRACE( "original directory = " << dir.c_str() );
 
@@ -515,11 +515,11 @@ void mnmPaths::SetupMainPaths()
 	locator.Push(c_SUBDIRNAME_USER_PROJECTS);
 	gfPaths::SetPath(mnmPaths::e_UserProjects, locator);
 
-	
+
 	locator.Pop();
 	locator.Push(c_SUBDIRNAME_CACHE);
 	gfPaths::SetPath(mnmPaths::e_Cache, locator);
-	
+
 	locator.Pop();
 	locator.Push(c_SUBDIRNAME_DATA);
 	gfPaths::SetPath(mnmPaths::e_Data, locator);
@@ -536,7 +536,7 @@ void mnmPaths::SetupMainPaths()
 //----------------------------------------------------------------------------
 //	SetupMoviePackPaths build the paths in the gfPaths
 //----------------------------------------------------------------------------
-void mnmPaths::SetupMoviePackPaths( const itString& i_MoviePackName )
+void mnmPaths::SetupMoviePackPaths( const std::string& i_MoviePackName )
 {
 	fsLocator locator;
 	locator.Push(gfPaths::GetPath(mnmPaths::e_MoviePacks));

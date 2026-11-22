@@ -28,13 +28,13 @@
 #include "Core/dbg/dbgMsg.hpp"
 #endif
 
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
 template<class PropertyType, class ValueType, class Converter>
 class pqtTemplate_RangedFloat : public pqtControl, public prtyUnitsInterest
 {
-#ifdef QT_FINISH_PORT
 	public:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
@@ -67,9 +67,7 @@ class pqtTemplate_RangedFloat : public pqtControl, public prtyUnitsInterest
 
 			//	hook up events
 			//
-			this->Connect( m_pActualControl->GetId(), wxEVT_VALUE_CHANGED,
-							wxCommandEventHandler(pqtTemplate_RangedFloat::RangedFloat_ValueChanged) );
-			m_pActualControl->PushEventHandler(this);
+			m_pActualControl->SetValueChangedCallback([this]() { RangedFloat_ValueChanged(); });
 		}
 
 		//----------------------------------------------------------------------------
@@ -78,7 +76,6 @@ class pqtTemplate_RangedFloat : public pqtControl, public prtyUnitsInterest
 		virtual ~pqtTemplate_RangedFloat()
 		{
 			prtyUnits::UnRegisterUnitsInterest(this);
-			m_pActualControl->RemoveEventHandler(this);
 		}
 
 		//----------------------------------------------------------------------------
@@ -116,7 +113,7 @@ class pqtTemplate_RangedFloat : public pqtControl, public prtyUnitsInterest
 		//----------------------------------------------------------------------------
 		void UpdateControl(prtyPropertyUIInfo* i_pUIInfo)
 		{
-			m_pActualControl->Enable(!i_pUIInfo->GetReadOnly());
+			m_pActualControl->setEnabled(!i_pUIInfo->GetReadOnly());
 
 			prtyRangedFloatUIInfo* pRFUII = static_cast<prtyRangedFloatUIInfo*>(i_pUIInfo);
 			m_pActualControl->SetDecimalPlaces( pRFUII->GetDecimalPlaces() );
@@ -147,7 +144,7 @@ class pqtTemplate_RangedFloat : public pqtControl, public prtyUnitsInterest
 	private:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
-		void RangedFloat_ValueChanged(wxCommandEvent& i_Event)
+		void RangedFloat_ValueChanged()
 		{
 			if (m_bLocalChangeNoUpdate) return;
 
@@ -162,6 +159,6 @@ class pqtTemplate_RangedFloat : public pqtControl, public prtyUnitsInterest
 		}
 
 		tqcRangedFloat* m_pActualControl;
-#endif // USE_QT
 };
 
+#endif // USE_QT

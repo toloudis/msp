@@ -25,6 +25,12 @@
 #include "GraphicsDX11/shdw/shdwPassDepth.hpp"
 #include "GraphicsDX11/Eff/effShaderBaseDX11.hpp"
 #include "GraphicsDX11/G3d/g3dDX11TextureUtil.hpp"
+#ifndef FX_EFFECTDX11_HPP
+#include "GraphicsDX11/Fx/fxEffectDX11.hpp"
+#endif
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 bool l_bHaveShadowCastingLights = false;
 
@@ -132,7 +138,7 @@ int delayed_transp_lit_render( g3dSceneNode* i_pSceneNode,
 			g3dLight* pLight = render_state.m_Lights[i];
 			if( !pLight->IsEnabled() )
 				continue;
-			if ( !pLight->GetCastsShadow() )
+			if ( !pLight->GetIsSinglePassLight() )
 				continue;
 
 			const g3dProjectedLight* proj_light = dynamic_cast<const g3dProjectedLight*>(pLight);
@@ -175,7 +181,7 @@ int delayed_transp_lit_render( g3dSceneNode* i_pSceneNode,
 			if( pLight->IsEnabled() )
 			{
 				if (!g3dSingleLightRendering::GetDoSingleLightRendering() || 
-					!pLight->GetCastsShadow())
+					!pLight->GetIsSinglePassLight())
 				{
 					g3dLightMgrDX11::Implementation()->SetLight( pLight );
 					g3dLightMgrDX11::Implementation()->EnableLight( pLight );
@@ -264,6 +270,7 @@ void shdwPassTransparent::SetBuffers(
 //--------------------------------------------------------------------------------------------------------
 int shdwPassTransparent::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassTransparent");
 	m_stats.Reset();
 
 	g3dTransparencySortDX11* transparencySort = m_sceneInfo->GetTransparentNodes();
@@ -532,9 +539,8 @@ void shdwPassTransparent::CompositeTextureInverse(matTexture* src, g2dRenderTarg
 	UINT uiPass;
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassTransparent::CompositeTextureInverse" );
 
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
-	ID3DX11EffectTechnique* pEffectTechnique = pEffect->GetTechniqueByName("SimpleCopyInvAlpha");
+	fxEffectDX11* pEffect = g3dDX11Util::GetPlainEffect("HDRLighting");
+	int technique = pEffect->FindTechnique("SimpleCopyInvAlpha");
 
 	tgt->MakeCurrent();
 	int w,h;
@@ -544,11 +550,10 @@ void shdwPassTransparent::CompositeTextureInverse(matTexture* src, g2dRenderTarg
 	g3dRasterizerStateMgr::SetRasterizerState( D3D11_CULL_NONE, g3dDrawStyleUtilDX11::GetD3DDrawStyle() );
 	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Disable_NS );
 
-	D3DX11_TECHNIQUE_DESC techDesc;
-	pEffectTechnique->GetDesc( &techDesc );
-	for (uiPass = 0; uiPass < techDesc.Passes; ++uiPass)
+	UINT nTechPasses = (UINT)pEffect->GetPassCount(technique);
+	for (uiPass = 0; uiPass < nTechPasses; ++uiPass)
 	{
-		pEffectTechnique->GetPassByIndex(uiPass)->Apply(0, g2dDX11Global::g_pDeviceContext);
+		pEffect->Apply(technique, uiPass, g2dDX11Global::g_pDeviceContext);
 
 		// alpha blending/z writing control by callar
 		ID3D11ShaderResourceView* aRes = g3dDX11TextureUtil::GetD3DTexture(src);
@@ -590,7 +595,7 @@ int shdwPassTransparent::RenderDeferred(float i_time)
 		for (int i=0; i<num_lights; i++)
 		{
 			g3dLight* pLight = lights[i];
-			if (pLight->IsEnabled() && pLight->GetCastsShadow())
+			if (pLight->IsEnabled() && pLight->GetIsSinglePassLight())
 			{
 				l_bHaveShadowCastingLights = true;
 				break;

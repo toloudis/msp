@@ -21,7 +21,6 @@
 #include "Support/rprf/rprfPrefsObject.hpp"
 
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/name/nameMgr.hpp"
 #include "Core/name/nameObject.hpp"
 #include "Tool/gui/guiMenuMgr.hpp"
@@ -352,9 +351,9 @@ rdrLayersDialog::rdrLayersDialog( wxWindow* parent, const std::string& i_Title,
 	m_bPreviewDialog = false;
 
 	// Create state images to represent checked state
-	itString icon_dir;
+	std::string icon_dir;
 	fsFileUtil::LocatorToUnicodeString( guiMenuMgr::GetIconDirectory(), icon_dir );
-	std::wstring icondir = icon_dir.GetString();
+	wxString icondir = wxString::FromUTF8(icon_dir);
 	wxImageList *pCheckImages = new wxImageList(FromDIP(13), FromDIP(13), false, e_NumBoxStates);
     {
         wxLogNull nullLog;

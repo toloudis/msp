@@ -1,0 +1,265 @@
+/*****************************************************************************
+**  GraphicsVulkanLayer.cpp
+**
+**      See GraphicsVulkanLayer.hpp. Hooks are installed where GraphicsDX11
+**	installs its own: the 2D and 3D systems install theirs while they
+**	exist; Init initializes the packages in GraphicsDX11Layer's order
+**	(shdw, tmesh, bump, may, hair), which install the
+**	scene renderer creator and the fragment creators; InitGraphics makes
+**	shdw's render states, installs baking (as shdwPackage::InitGraphics
+**	does) and the bump vertex layouts.
+**
+**	Extra Large Technology
+\****************************************************************************/
+#ifndef GVK_GRAPHICSVULKANLAYER_HPP
+#include "GraphicsVulkan/GraphicsVulkanLayer.hpp"
+#endif
+#ifndef GVK_VKDVALIDATION_HPP
+#include "GraphicsVulkan/vkd/vkdValidation.hpp"
+#endif
+#ifndef GVK_VKDDEVICE_HPP
+#include "GraphicsVulkan/vkd/vkdDevice.hpp"
+#endif
+#ifndef GVK_VKDRINGBUFFER_HPP
+#include "GraphicsVulkan/vkd/vkdRingBuffer.hpp"
+#endif
+#ifndef GVK_VKDBINDINGS_HPP
+#include "GraphicsVulkan/vkd/vkdBindings.hpp"
+#endif
+#ifndef GVK_VKDCONTEXT_HPP
+#include "GraphicsVulkan/vkd/vkdContext.hpp"
+#endif
+#ifndef GVK_VKDGLOBAL_HPP
+#include "GraphicsVulkan/vkd/vkdGlobal.hpp"
+#endif
+#ifndef GVK_G2DSYSTEMVK_HPP
+#include "GraphicsVulkan/G2d/g2dSystemVk.hpp"
+#endif
+#ifndef GVK_G3DSYSTEMVK_HPP
+#include "GraphicsVulkan/G3d/g3dSystemVk.hpp"
+#endif
+#ifndef GVK_HAIR_PACKAGE_HPP
+#include "GraphicsVulkan/hair/hairPackage.hpp"
+#endif
+#ifndef GVK_SHDW_PACKAGE_HPP
+#include "GraphicsVulkan/shdw/shdwPackage.hpp"
+#endif
+#ifndef GVK_TMESH_PACKAGE_HPP
+#include "GraphicsVulkan/tmesh/tmeshPackage.hpp"
+#endif
+#ifndef GVK_BUMP_PACKAGE_HPP
+#include "GraphicsVulkan/bump/bumpPackage.hpp"
+#endif
+#ifndef GVK_MAY_PACKAGE_HPP
+#include "GraphicsVulkan/may/mayPackage.hpp"
+#endif
+#ifndef G3D_FRAGMENTCREATE_HPP
+#include "Graphics/G3d/g3dFragmentCreate.hpp"
+#endif
+#ifndef MDL_FRAGCREATE_HPP
+#include "Graphics/mdl/mdlFragCreate.hpp"
+#endif
+#ifdef MSP_GFX_PROFILING
+#ifndef GVK_G3DPROFILERGPUVK_HPP
+#include "GraphicsVulkan/G3d/g3dProfilerGpuVk.hpp"
+#endif
+#endif
+#ifndef G3D_GFXOPTIONS_HPP
+#include "Graphics/G3d/g3dGfxOptions.hpp"
+#endif
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
+#ifndef GF_PATHS_HPP
+#include "Core/Gf/gfPaths.hpp"
+#endif
+#ifndef FS_FILEUTIL_HPP
+#include "Core/fs/fsFileUtil.hpp"
+#endif
+#include <string>
+
+#include <cstdlib>
+#include <filesystem>
+
+using namespace gvk;
+
+namespace
+{
+	const VkDeviceSize c_RingBlockSize = 4 * 1024 * 1024;
+
+	//	Where pipelines persist between runs: the user data folder (UTF-8),
+	//	or nowhere when the app hasn't set one up
+	std::string pipeline_cache_file()
+	{
+		if (!gfPaths::IsPathValid(gfPaths::e_UserDataPath))
+		{
+			DBG_LOG("GraphicsVulkan: no user data folder; pipelines are not kept between runs");
+			return std::string();
+		}
+		std::string folder;
+		fsFileUtil::LocatorToUnicodeString(gfPaths::GetPath(gfPaths::e_UserDataPath), folder);
+		return (std::filesystem::u8path(folder) / "VulkanPipelineCache.bin").u8string();
+	}
+
+	std::string					l_InitError;
+	vkdValidation				l_Validation;		// outlives the device: counts its destruction too
+	bool						l_bValidating = false;
+	vkdDevice*					l_pDevice = NULL;
+	vkdRingBuffer*				l_pRing = NULL;
+	vkdBindings*				l_pBindings = NULL;
+	vkdPipelineCache*			l_pPipelines = NULL;
+	vkdContext*					l_pContext = NULL;
+	g2dSystemVk*				l_pSystem2D = NULL;
+	g3dSystemVk*				l_pSystem3D = NULL;
+#ifdef MSP_GFX_PROFILING
+	g3dProfilerGpuVk*			l_pProfilerGpu = NULL;
+#endif
+}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+bool GraphicsVulkanLayer::Init(void* i_hWnd, const g3dGfxOptions& i_Options)
+{
+	return Init(i_hWnd, i_Options, Interop());
+}
+
+bool GraphicsVulkanLayer::Init(void* /*i_hWnd*/, const g3dGfxOptions& i_Options, const Interop& i_Interop)
+{
+	DBG_ASSERT(!l_pDevice, "GraphicsVulkanLayer::Init called twice");
+	l_InitError.clear();
+	l_Validation.Reset();
+	l_bValidating = false;
+
+	vkdDeviceOptions options;
+	options.m_bValidation = i_Options.m_bValidation;
+	options.m_pValidation = &l_Validation;
+	vkdReadEnvironment(options);
+	options.m_RequiredDeviceUUID = i_Interop.m_DeviceUUID;
+	options.m_RequiredDeviceName = i_Interop.m_DeviceName;
+	options.m_bExternalMemory = i_Interop.m_bExternalMemory;
+	l_pDevice = vkdDevice::Create(options, l_InitError);
+	if (!l_pDevice)
+	{
+		DBG_LOG("GraphicsVulkan: " << l_InitError);
+		return false;
+	}
+	l_bValidating = l_pDevice->IsValidating();
+	l_pRing = new vkdRingBuffer(*l_pDevice, c_RingBlockSize);
+	l_pBindings = new vkdBindings(*l_pDevice);
+	l_pPipelines = new vkdPipelineCache(*l_pDevice, *l_pBindings, pipeline_cache_file());
+	l_pContext = new vkdContext(*l_pDevice, *l_pRing, *l_pBindings, *l_pPipelines);
+	vkdGlobal::Set(l_pDevice, l_pRing, l_pBindings, l_pPipelines, l_pContext);
+
+	l_pSystem2D = new g2dSystemVk(*l_pDevice, i_Options.m_bHeadless);
+	l_pSystem3D = new g3dSystemVk(*l_pDevice);
+
+	// initialize packages in the layer
+	shdwPackage::Init();
+	tmeshPackage::Init();
+	bumpPackage::Init();
+	mayPackage::Init();
+	hairPackage::Init();
+	return true;
+}
+
+void GraphicsVulkanLayer::CleanUp() throw()
+{
+	if (!l_pDevice)
+	{
+		return;
+	}
+	l_pDevice->WaitIdle();
+	// clean up our internal stuff, in reverse order (DX11's packages leave
+	// the creators installed after deleting them; they are removed here)
+	hairPackage::CleanUp();
+	mayPackage::CleanUp();
+	mdlFragCreate::SetImplementation(NULL);
+	bumpPackage::CleanUp();
+	g3dFragmentCreate::SetImplementation(NULL);
+	tmeshPackage::CleanUp();
+	shdwPackage::CleanUp();
+
+	delete l_pSystem3D;
+	delete l_pSystem2D;
+	l_pSystem3D = NULL;
+	l_pSystem2D = NULL;
+
+	vkdGlobal::Set(NULL, NULL, NULL, NULL, NULL);
+	delete l_pContext;
+	delete l_pPipelines;
+	l_pContext = NULL;
+	l_pPipelines = NULL;
+	delete l_pBindings;
+	delete l_pRing;
+	l_pBindings = NULL;
+	l_pRing = NULL;
+	delete l_pDevice;
+	l_pDevice = NULL;
+
+	const vkdValidationStats stats = l_Validation.Stats();
+	if (l_bValidating)
+	{
+		DBG_LOG("Vulkan validation: " << stats.m_Errors << " errors, " << stats.m_Warnings << " warnings, "
+				<< stats.m_BestPractices << " best-practices notes");
+	}
+	else
+	{
+		DBG_LOG("Vulkan validation: off");
+	}
+}
+
+void GraphicsVulkanLayer::InitGraphics()
+{
+	shdwPackage::InitGraphics();
+	bumpPackage::InitGraphics();
+#ifdef MSP_GFX_PROFILING
+	l_pProfilerGpu = new g3dProfilerGpuVk(*l_pDevice);
+	g3dProfiler::SetGpu(l_pProfilerGpu);
+#endif
+}
+
+void GraphicsVulkanLayer::CleanUpGraphics()
+{
+#ifdef MSP_GFX_PROFILING
+	g3dProfiler::SetGpu(NULL);
+	delete l_pProfilerGpu;
+	l_pProfilerGpu = NULL;
+#endif
+	bumpPackage::CleanUpGraphics();
+	shdwPackage::CleanUpGraphics();
+}
+
+g2dSystem* GraphicsVulkanLayer::GetSystem2D()
+{
+	return l_pSystem2D;
+}
+
+g3dSystem* GraphicsVulkanLayer::GetSystem3D()
+{
+	return l_pSystem3D;
+}
+
+const char* GraphicsVulkanLayer::GetName()
+{
+	return "Vulkan";
+}
+
+const char* GraphicsVulkanLayer::GetCodeName()
+{
+	return "vulkan";
+}
+
+const std::string& GraphicsVulkanLayer::GetInitError()
+{
+	return l_InitError;
+}
+
+vkdValidationStats GraphicsVulkanLayer::GetValidationStats()
+{
+	return l_Validation.Stats();
+}
+
+bool GraphicsVulkanLayer::IsValidating()
+{
+	return l_bValidating;
+}

@@ -994,16 +994,16 @@ void chnlChannelControl::OnContextMenu(wxContextMenuEvent& i_Event)
 		}
 
 		wxMenu menu;
-		menu.Append(MENU_SHOW_PROPERTIES, _T("Show &Properties"));
-		menu.Append(MENU_SELECTICON, _T("Select &Icon"));
+		menu.Append(MENU_SHOW_PROPERTIES, wxT("Show &Properties"));
+		menu.Append(MENU_SELECTICON, wxT("Select &Icon"));
 		menu.AppendSeparator();
-		menu.Append(MENU_BLEND_NONE,	_T("Blend None"));
-		menu.Append(MENU_BLEND_PREVIOUS,_T("Blend Previous"));
-		menu.Append(MENU_BLEND_SMOOTH,  _T("Blend Smooth"));
+		menu.Append(MENU_BLEND_NONE,	wxT("Blend None"));
+		menu.Append(MENU_BLEND_PREVIOUS,wxT("Blend Previous"));
+		menu.Append(MENU_BLEND_SMOOTH,  wxT("Blend Smooth"));
 		menu.AppendSeparator();
-		menu.Append(MENU_CUT, _T("Cut"));
-		menu.Append(MENU_COPY, _T("Copy"));
-		menu.Append(MENU_PASTE, _T("Paste"));
+		menu.Append(MENU_CUT, wxT("Cut"));
+		menu.Append(MENU_COPY, wxT("Copy"));
+		menu.Append(MENU_PASTE, wxT("Paste"));
 		PopupMenu(&menu, point.x, point.y);
 	}
 
@@ -1023,7 +1023,7 @@ void chnlChannelControl::OnContextMenu(wxContextMenuEvent& i_Event)
 		}
 
 		wxMenu menu;
-		menu.Append(MENU_PASTE, _T("Paste"));
+		menu.Append(MENU_PASTE, wxT("Paste"));
 		PopupMenu(&menu, point.x, point.y);
 	}
 }

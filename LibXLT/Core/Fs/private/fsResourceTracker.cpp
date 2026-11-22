@@ -10,7 +10,9 @@
 #include "Core/dbg/dbgMsg.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsResourceTracker.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #include "Core/fs/private/fsFileNotifyMgr.hpp"
 #include <string>
@@ -213,7 +215,7 @@ namespace fsResourceTracker
 	//------------------------------------------------------------------------
 	//	Remove the file and all of it's sub-files.
 	//------------------------------------------------------------------------
-	void Remove(const itString& i_Filename)
+	void Remove(const std::string& i_Filename)
 	{
 		if (!m_bTracking) return;
 
@@ -266,7 +268,7 @@ namespace fsResourceTracker
 	//------------------------------------------------------------------------
 	//	ReplaceFile() - replace JUST the filename (not the sub-files)
 	//------------------------------------------------------------------------
-	void ReplaceFile(const itString& i_OrigFilename, const fsLocator& i_NewFilename)
+	void ReplaceFile(const std::string& i_OrigFilename, const fsLocator& i_NewFilename)
 	{
 		if (!m_bTracking) return;
 
@@ -325,18 +327,18 @@ namespace fsResourceTracker
 	//	Find out if an item is already in the list, if so return the index.
 	//	A return value of -1 means the file is not in the list.
 	//------------------------------------------------------------------------
-	int GetIndex(const itString& i_Filename)
+	int GetIndex(const std::string& i_Filename)
 	{
 		for (int i = 0; i < m_ResourceData.m_Resources.size(); ++i)
 		{
 			//	DEBUG only 
 			//std::string strpath2;
 			//fsFileUtil::LocatorToANSIFilename( m_ResourceData.m_Resources[i].GetFilePath(), strpath2 );
-			//DBG_TRACE("GI+    %03d. %s", i, itStringUtil::GetStdString(i_Filename).c_str());
+			//DBG_TRACE("GI+    %03d. %s", i, i_Filename.c_str());
 			//DBG_TRACE("            " << strpath2.c_str());
 
 			//
-			if (itStringUtil::Equal(i_Filename, m_ResourceData.m_Resources[i].GetFilePath().GetLastName()))
+			if (envString::EqualNoCase(i_Filename, m_ResourceData.m_Resources[i].GetFilePath().GetLastName()))
 			{
 				//DBG_TRACE("----MATCH!----");
 				return i;
@@ -374,23 +376,23 @@ namespace fsResourceTracker
 	//	Try to find the index based only on the base filename, NOT the
 	//	extension.
 	//------------------------------------------------------------------------
-	int GetIndexFromBaseFileName(const itString& i_Filename)
+	int GetIndexFromBaseFileName(const std::string& i_Filename)
 	{
 		for (int i = 0; i < m_ResourceData.m_Resources.size(); ++i)
 		{
 			//	DEBUG only
 			//std::string strpath2;
 			//fsFileUtil::LocatorToANSIFilename( m_ResourceData.m_Resources[i].GetFilePath(), strpath2 );
-			//DBG_TRACE("GI+    %03d. %s", i, itStringUtil::GetStdString(i_Filename).c_str());
+			//DBG_TRACE("GI+    %03d. %s", i, i_Filename.c_str());
 			//DBG_TRACE("            " << strpath2.c_str());
 
 			//
-			itString str1, str2;
+			std::string str1, str2;
 			str1 = i_Filename;
-			str1.StripExtension();
+			envString::StripExtension(str1);
 			str2 = m_ResourceData.m_Resources[i].GetFilePath().GetLastName();
-			str2.StripExtension();
-			if (itStringUtil::Equal(str1,str2))
+			envString::StripExtension(str2);
+			if (envString::EqualNoCase(str1,str2))
 			{
 				//DBG_TRACE("----MATCH!---- base filename");
 				return i;
@@ -458,7 +460,7 @@ namespace fsResourceTracker
 	//	GetResourceList - based on the file name, return a list of all the 
 	//	resources associated with that file.
 	//------------------------------------------------------------------------
-	void GetResourceList( const itString& i_FileName, fsResourceTrackerDataList& io_ResourceList )
+	void GetResourceList( const std::string& i_FileName, fsResourceTrackerDataList& io_ResourceList )
 	{
 		int index = GetIndex(i_FileName);
 		if (index != -1)
@@ -503,7 +505,7 @@ namespace fsResourceTracker
 
 				//	DEBUG only
 				//std::string strpath;
-				//strpath = itStringUtil::GetStdString( i_FileName );
+				//strpath = i_FileName;
 				//DBG_TRACE("    0B2. " << strpath.c_str());
 			}
 		}

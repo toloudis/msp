@@ -17,8 +17,8 @@
 
 //====================================================================
 //====================================================================
-effBillboard::effBillboard(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, std::string i_name)
-:	effTextured(i_Directory, i_pEffect, i_name)
+effBillboard::effBillboard(const fsLocator& i_Directory, std::unique_ptr<fxEffect> i_pEffect, std::string i_name)
+:	effTextured(i_Directory, std::move(i_pEffect), i_name)
 {
 	MapParameter("bCKActive", m_hCKActive );
 	MapParameter("CKColor", m_hCKColor );

@@ -12,9 +12,9 @@
 #endif
 #define MDL_INDEXUTIL_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/Env/envType.hpp"
-#endif 
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
+#endif
 #ifndef MA_CONSTANTS_HPP
 #include "Core/Ma/maConstants.hpp"
 #endif 
@@ -39,7 +39,7 @@ namespace mdlIndexUtil
 	//------------------------------------------------------------------------
 	// read 16 or 32 bit number returning a 32-bit integer.
 	//------------------------------------------------------------------------
-	envType::UInt32 ReadNumber(chReader& i_Reader, bool b32Bit);
+	uint32_t ReadNumber(chReader& i_Reader, bool b32Bit);
 	
 	//------------------------------------------------------------------------
 	// Read index size (4 or 2) and return bool if 32-bit
@@ -51,7 +51,7 @@ namespace mdlIndexUtil
 	//	16 and 32 bit indices.
 	//------------------------------------------------------------------------
 	void ReadIndexSet(chReader& i_Reader, 
-						std::vector<envType::UInt32> &o_Set, 
+						std::vector<uint32_t> &o_Set, 
 						int i_NumIndices, 
 						bool i_b32Bit);
 
@@ -70,7 +70,7 @@ namespace mdlIndexUtil
 	template <class T>
 	void CompressValues(const std::vector<T> &i_Values, 
 						std::vector<T> &o_NewValues, 
-						std::vector<envType::UInt32> &o_Remapping)
+						std::vector<uint32_t> &o_Remapping)
 	{
 		// n-squared algorithm, could be improved with hash table
 		// or similar data structure
@@ -107,10 +107,10 @@ namespace mdlIndexUtil
 	//--------------------------------------------------------------------
 	template <class T>
 	void CompressIndices(std::vector<T> &io_Values, 
-						std::vector< std::vector<envType::UInt32> > &io_Indices)
+						std::vector< std::vector<uint32_t> > &io_Indices)
 	{
 		std::vector<T> new_values;
-		std::vector<envType::UInt32> remap;
+		std::vector<uint32_t> remap;
 		CompressValues(io_Values, new_values, remap);
 
 		// Now, see if we shrunk up the list at all
@@ -124,8 +124,8 @@ namespace mdlIndexUtil
 			}
 
 			// If so, then remap indices
-			std::vector< std::vector<envType::UInt32> >::iterator list_it;
-			std::vector<envType::UInt32>::iterator it;
+			std::vector< std::vector<uint32_t> >::iterator list_it;
+			std::vector<uint32_t>::iterator it;
 			for (list_it = io_Indices.begin(); list_it != io_Indices.end(); ++list_it)
 			{
 				for (it = list_it->begin(); it != list_it->end(); ++it)

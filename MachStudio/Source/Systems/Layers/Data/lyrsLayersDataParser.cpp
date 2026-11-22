@@ -86,7 +86,7 @@ void lyrsLayersDataParser::ReadLayerData(	chReader& i_Reader,
 	else
 	{
 		// Version 0 wrote an enumeration
-		envType::UInt8 style;
+		uint8_t style;
 		i_Reader.Read(style);
 		//o_Data.m_Style = (lyerLayerStyle)style;
 
@@ -113,7 +113,7 @@ void lyrsLayersDataParser::ReadLayerData(	chReader& i_Reader,
 		}
 	}
 
-	envType::Int32 num_objects;
+	int32_t num_objects;
 	i_Reader.Read(num_objects);
 	o_Data.m_Objects.resize(num_objects);
 	for (int i=0; i<num_objects; i++)
@@ -139,7 +139,7 @@ void lyrsLayersDataParser::WriteLayerData(	chWriter& o_Writer,
 	i_Data.m_bLowRes.Write(o_Writer);
 
 	const int num_objects = i_Data.m_Objects.size();
-	o_Writer.Write(envType::Int32(num_objects));
+	o_Writer.Write(int32_t(num_objects));
 	for (int i=0; i<num_objects; i++)
 	{
 		write_name_string(o_Writer,i_Data.m_Objects[i]);

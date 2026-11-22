@@ -4,13 +4,8 @@ Boost
 https://sourceforge.net/projects/boost/files/boost-binaries/
 boost_1_60_0-msvc-14.0-64.exe
 
-curl 7.48 (http://curl.haxx.se/download.html "Win32 - MSVC" to build from source)
-cd winbuild
-set RTLIBCFG=static
-nmake /f Makefile.vc mode=static VC=14 MACHINE=x64 DEBUG=no
-nmake /f Makefile.vc mode=static VC=14 MACHINE=x64 DEBUG=yes
-
-D3DX11Effects (https://github.com/Microsoft/FX11)
+curl
+now comes from vcpkg (vcpkg.json at the repository root), linked as libcurl.dll
 
 libs/x64 (drop various .lib files in here)
 
@@ -25,7 +20,7 @@ png/zlib-1.2.5 (http://sourceforge.net/projects/libpng/files/zlib/1.2.5/)
 
 Python (need include files here, libs in libs)
 
-Tiff (http://download.osgeo.org/libtiff/  v4.0.6)
+Tiff: no longer here; from vcpkg (vcpkg.json at the repository root)
 
 WxWidgets 
 https://github.com/wxWidgets/wxWidgets/releases/tag/v3.1.0

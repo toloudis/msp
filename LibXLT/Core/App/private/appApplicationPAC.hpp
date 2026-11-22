@@ -26,7 +26,7 @@
 		void Run(appApplication* i_App);
 		void Exit();
 		void SetWindowSize(int i_X, int i_Y, int i_Width, int i_Height);
-		void SetWindowTitle(const itString& i_Title);
+		void SetWindowTitle(const std::string& i_Title);
 		static void Init();
 		static void CleanUp() throw();
 		void DialogLoopTasks();
@@ -36,13 +36,5 @@
 #if ENV_WINDOWS
 	#include "Core/app/private/appApplicationPACWin.hpp"
 #else
-	#if ENV_OS == ENV_PS2OS
-		#include "Core/app/private/appApplicationPACPS2.hpp"
-	#else
-		#if ENV_OS == ENV_XBOXOS
-			#include "Core/app/private/appApplicationPACXbox.hpp"
-		#else
-			#error appApplicationPAC not defined for this platform
-		#endif
-	#endif
+	#error appApplicationPAC not defined for this platform
 #endif

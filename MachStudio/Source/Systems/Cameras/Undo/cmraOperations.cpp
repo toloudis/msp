@@ -89,21 +89,25 @@ namespace cmraOperations
 		cmraObjectMgr::GenerateNewCameraName( basename, newname, i_bOrthographic );
 		default_data.m_BaseData.m_Name = newname;
 
-		//
-		int index = cmraActualOperations::AddObject(default_data);
-		if (index < 0) return;	// if there is a problem loading the object, return immediately
+		AddObject(default_data);
+	}
+	nameString  AddObject(const cmraScriptData& i_Data)
+	{
+		int index = cmraActualOperations::AddObject(i_Data);
+		if (index < 0) return nameString();	// if there is a problem loading the object, return immediately
 
 		l_LastOp = NULL;
 		//char displaytext[256];
-		//sprintf(displaytext, "%s - %s", c_AddOperationDisplayName, default_data.m_BaseData.m_Name.GetString().c_str());
+		//sprintf(displaytext, "%s - %s", c_AddOperationDisplayName, i_Data.m_BaseData.m_Name.GetString().c_str());
 		
 		std::ostringstream oss;
 		oss.setf(0, std::ios::floatfield);
-		oss << c_AddOperationDisplayName <<" - " << default_data.m_BaseData.m_Name.GetString().c_str() ;
+		oss << c_AddOperationDisplayName <<" - " << i_Data.m_BaseData.m_Name.GetString().c_str() ;
 		std::string displaytext(oss.str());
 		
 		// Need new name given to new object when making udo operation
 		undoUndoMgr::AddOperation(new cmraAddOperation(index, cmraObjectMgr::GetScriptData(index), displaytext.c_str()));
+		return cmraObjectMgr::GetScriptData(index).m_BaseData.m_Name.GetValue();
 	}
 
 	//------------------------------------------------------------------------
@@ -362,6 +366,22 @@ namespace cmraOperations
 		nameString Description;// = cmraObjectMgr::GetBaseData(l_SelectedIndex).m_Description;
 		Description.SetString(i_Description.c_str());
 		cmraActualOperations::SetDescription(l_SelectedIndex, Description);
+	}
+
+	//--------------------------------------------------------------------
+	// Set the whole object of that name as one undoable step
+	//--------------------------------------------------------------------
+	void SetObjectData(const nameString& i_Name, const cmraScriptData& i_Data)
+	{
+		const int index = cmraObjectMgr::GetIndexForObject(i_Name);
+		if (index < 0)
+			return;
+
+		typedef cmmSetOperationTemplate< cmraScriptData, cmraActualOperations, cmraObjectMgr> SetObjectOperation;
+		const std::string display_name = "Change " + i_Name.GetString();
+		undoUndoMgr::AddOperation(new SetObjectOperation(index, cmraObjectMgr::GetScriptData(index), display_name.c_str()));
+		l_LastOp = NULL;	// later edits start their own step
+		cmraActualOperations::SetData(index, i_Data);
 	}
 
 }	// end of namespace

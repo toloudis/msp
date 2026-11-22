@@ -1,0 +1,185 @@
+/*****************************************************************************
+**	rpnRenderPanel.hpp
+**
+**		Window using Qt for doing MachStudio rendering
+**
+**	StudioGPU
+**	Copyright(C) 2008 - All Rights Reserved
+\****************************************************************************/
+#ifdef RPN_RENDERPANEL_HPP
+#error rpnRenderPanel.hpp multiply included
+#endif
+#define RPN_RENDERPANEL_HPP
+
+#ifndef MA_POINT3D_HPP
+#include "Core/Ma/maPoint3d.hpp"
+#endif 
+
+#ifndef TQC_NATIVEWINDOW_HPP
+#include "ToolUIQt/tqc/tqcNativeWindow.hpp"
+#endif
+
+
+#ifdef USE_QT
+
+//============================================================================
+//============================================================================
+class g3dPickInfo;
+class gpxCamera;
+class camsDirectorsCut;
+class rpnPanelViewer;
+class tma3dRenderView;
+class tqtContextMenu;
+
+
+//============================================================================
+// Panel showing one render view, drawn with DirectX into its own window
+//============================================================================
+class rpnRenderPanel : public tqcNativeWindow
+{
+public:
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	rpnRenderPanel(QWidget* parent);
+
+	//------------------------------------------------------------------------
+	// Set render view to control
+	//------------------------------------------------------------------------
+	void SetRenderView(tma3dRenderView* i_pRenderView);
+
+	//------------------------------------------------------------------------
+	// Set whether this render panel should display the context menu items
+	// related to changing the render pass.
+	//------------------------------------------------------------------------
+	void SetCanChangeRenderPass(bool i_bEnable);
+
+	//----------------------------------------------------------------------------
+	// Enable rendering in this pane.
+	//----------------------------------------------------------------------------
+	void EnableViewer(bool i_bEnabled);
+
+	//----------------------------------------------------------------------------
+	// Turn visibility of text label on or off
+	//----------------------------------------------------------------------------
+	void SetTextVisible(bool i_bShow);
+
+	//----------------------------------------------------------------------------
+	// Set pass label.
+	//----------------------------------------------------------------------------
+	void SetPass(const std::string& i_Label);
+
+	//----------------------------------------------------------------------------
+	// Set camera and label. If this view is active, the camera manipulator
+	//	will also be set.
+	//----------------------------------------------------------------------------
+	void SetCamera(gpxCamera *i_pCameraProxy, const std::string& i_Label);
+
+	//----------------------------------------------------------------------------
+	// Set directors cut and label. If this view is active, the camera
+	//	manipulator will de disabled.
+	//----------------------------------------------------------------------------
+	void SetDirectorsCut(camsDirectorsCut *i_pDirectorsCut, const std::string& i_Label);
+
+	//----------------------------------------------------------------------------
+	// ConfirmCameraManip - make sure that the camera manip for this viewer is 
+	//	tracking changes in the scripted camera. Should be called every
+	//	Think() cycle.
+	//----------------------------------------------------------------------------
+	void ConfirmCameraManip();
+
+	//----------------------------------------------------------------------------
+	// ConfirmCamera - make sure that the camera for this viewer is one
+	//	of the editor or scripted cameras. This should be called when 
+	//	cameras are deleted.
+	//----------------------------------------------------------------------------
+	void ConfirmCamera();
+	
+	//--------------------------------------------------------------------
+	// Focus_Camera centers camera with respect to the point
+	//--------------------------------------------------------------------
+	void FocusCamera(const maPoint3d& i_Focus, float i_Radius);
+
+	//--------------------------------------------------------------------
+	//	Return true if this render pane is the active view
+	//--------------------------------------------------------------------
+	bool IsActiveView();
+
+	//--------------------------------------------------------------------
+	//	Return true if this render pane has keyboard focus
+	//--------------------------------------------------------------------
+	bool GetHasFocus();
+
+	//--------------------------------------------------------------------
+	//	Return true if this render pane is using a directors cut
+	//--------------------------------------------------------------------
+	bool HasDirectorsCut();
+
+	//--------------------------------------------------------------------
+	//	Set the focus distance to the given depth
+	//--------------------------------------------------------------------
+	void FocusAtDepth(const float& i_Depth);
+
+	//----------------------------------------------------------------------------
+	// Select the camera object for the camera used in the view.
+	// Switching out of directors cut mode if necessary.
+	//----------------------------------------------------------------------------
+	void SelectCamera();
+
+	//----------------------------------------------------------------------------
+	// SetRenderResolution - set the size of the rendered image in pixels.
+	//	The image is scaled to fit the panel, keeping its aspect ratio.
+	//	Use -1 -1 in order to render at the panel size.
+	//----------------------------------------------------------------------------
+	void SetRenderResolution(int i_Width, int i_Height);
+
+private:
+	//------------------------------------------------------------------------
+	// private functions
+	//------------------------------------------------------------------------
+	void do_resize();
+	void panel_to_render_pixel(int& io_X, int& io_Y) const;
+	void add_cameras_to_context_menu(tqtContextMenu &i_Menu);
+	void add_renderpasses_to_context_menu(tqtContextMenu &io_ContextMenu);
+	void do_pick_at_cursor(int i_X, int i_Y, g3dPickInfo& o_PickInfo);
+	void build_text_string();
+
+protected:
+	//------------------------------------------------------------------------
+	// Qt event handlers
+	//------------------------------------------------------------------------
+	virtual void paintEvent(QPaintEvent* i_pEvent);
+	virtual void mousePressEvent(QMouseEvent* i_pEvent);
+	virtual void mouseMoveEvent(QMouseEvent* i_pEvent);
+	virtual void wheelEvent(QWheelEvent* i_pEvent);
+	virtual void enterEvent(QEnterEvent* i_pEvent);
+	virtual void leaveEvent(QEvent* i_pEvent);
+	virtual void resizeEvent(QResizeEvent* i_pEvent);
+	virtual void focusInEvent(QFocusEvent* i_pEvent);
+	virtual void focusOutEvent(QFocusEvent* i_pEvent);
+
+private:
+	//------------------------------------------------------------------------
+	// context menu handlers
+	//------------------------------------------------------------------------
+	void clear_selection();
+	void select_camera();
+	void focus_camera(const float& i_Depth);
+	void OnEditorPersp();
+	void OnEditorTop();
+	void OnEditorFront();
+	void OnEditorSide();
+	void cameraScripted_Click(int i_Index);
+	void directorsCut_Click(int i_Index);
+
+private:
+	tma3dRenderView* m_pRenderView;
+	rpnPanelViewer *m_pPanelViewer; // just a cast of the viewer owned by m_pRenderView
+	int m_RenderWidth, m_RenderHeight;
+	bool m_bHasFocus;
+	bool m_bCanChangeRenderPass;
+	std::string	m_CameraName;
+	std::string	m_PassName;
+
+};
+
+#endif // USE_QT

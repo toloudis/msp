@@ -41,6 +41,9 @@
 #include "Tool/api3d/api3dSharedModelMgr.hpp"
 #include "Tool/api3d/api3dSubdiv.hpp"
 #include "Tool/pick3d/pick3dPickList.hpp"
+#ifndef SEL3D_MGR_HPP
+#include "Tool/sel3d/sel3dMgr.hpp"
+#endif
 
 #include <iomanip>
 #include <sstream>
@@ -56,13 +59,13 @@ namespace
 	const char* c_DefaultName = "Object";
 
 	//--------------------------------------------------------------------
-	void create_default_name( const itString& i_Filename, nameString& o_NameString )
+	void create_default_name( const std::string& i_Filename, nameString& o_NameString )
 	{
 		//char strName[256];
 		char filename_base[256];
 		char *filename;
 		std::string strName;
-		strcpy( filename_base, itStringUtil::GetStdString( i_Filename ).c_str() );
+		strcpy( filename_base, i_Filename.c_str() );
 		filename = strtok( filename_base, "." );
 
 		do
@@ -105,9 +108,11 @@ namespace
 	};
 
 	//--------------------------------------------------------------------
-	// load entity from .chx (usually loaded from .edf)
+	// load entity from .chx (usually loaded from .edf); i_Identity is the
+	// part of the file (a scene file's node), empty for the whole file
 	//--------------------------------------------------------------------
 	api3dObjectEntity* load_chx_entity(const fsLocator& i_Locator,
+							const std::string& i_Identity,
 							const std::vector< shared_ptr<mdlMaterialInfo> > &i_MaterialOverrides)
 	{
 		if (fsFileUtil::FileExists(i_Locator))
@@ -121,7 +126,7 @@ namespace
 			if (!i_MaterialOverrides.empty())
 				matShaderParser::SetResolveAbsolutePaths(false);
 			std::unique_ptr<entModelTemplate> mdl_template(
-							api3dSharedModelMgr::LoadModelTemplate(i_Locator) );
+							api3dSharedModelMgr::LoadModelTemplate(i_Locator, i_Identity) );
 							//entImport::LoadGeometry(i_Locator));
 			if (mdl_template.get())
 			{
@@ -174,7 +179,7 @@ namespace
 	//--------------------------------------------------------------------
 	// find full locator to filename
 	//--------------------------------------------------------------------
-	fsLocator locate_character(const itString& i_ObjectFilename)
+	fsLocator locate_character(const std::string& i_ObjectFilename)
 	{
 		//	grab the filename + load the object
 		fsLocator file_loc;
@@ -345,7 +350,7 @@ namespace
 			}
 			else
 			{
-				create_default_name( itString(c_DefaultName), objName );
+				create_default_name( std::string(c_DefaultName), objName );
 			}
 			pCharacter->SetName( objName );
 		}
@@ -406,7 +411,7 @@ chtrScriptObject* chtrObjectCreator::Create(const chtrScriptData &i_Data)
 	geom_loc = file_loc;
 
 	try{
-		entity_obj = load_chx_entity(file_loc, i_Data.m_Materials);
+		entity_obj = load_chx_entity(file_loc, i_Data.m_BaseData.m_SourceIdentity, i_Data.m_Materials);
 	}
 	catch (const g2dOutOfSystemMemoryX&)
 	{
@@ -460,20 +465,35 @@ void  chtrObjectMgr::ReloadCharacter(int i_Index)
 	if (l_bCreatingCharacter)
 		return;
 
-	chtrScriptObject* old_obj = sm_Objects[i_Index];
-	chtrScriptData data = old_obj->GetScriptData();
+	chtrScriptData data = sm_Objects[i_Index]->GetScriptData();
 
 	// When we have shared geometry instances, we can only force
 	// a reload of the geometry file by first removing the filename from
 	// shared asset management. In this way, the next call to "Load" will
 	// reload the geometry file and not return the cached shared template.
-	api3dSharedModelMgr::StopSharing(data.m_BaseData.m_Filename.GetValue());
+	api3dSharedModelMgr::StopSharing(data.m_BaseData.m_Filename.GetValue(), data.m_BaseData.m_SourceIdentity);
+
+	ReplaceCharacter(i_Index, data);
+	SelectObject(i_Index);
+}
+
+//--------------------------------------------------------------------
+//  Recreate the character with given index from i_Data
+//--------------------------------------------------------------------
+void  chtrObjectMgr::ReplaceCharacter(int i_Index, const chtrScriptData& i_Data)
+{
+	//	prevent the changing of filename to cause an infinite loop
+	if (l_bCreatingCharacter)
+		return;
+
+	chtrScriptObject* old_obj = sm_Objects[i_Index];
+	const bool was_selected = sel3dMgr::IsSelected(old_obj->GetPickObject());
 
 	// I think the safest way to handle this is to delete the old
 	// object and create a new one from the data, recreating drivers
 	// and channels for the new object. Instead of trying to remap
 	// all of the old pointers.
-	chtrScriptObject* new_obj = chtrObjectCreator::Create(data);
+	chtrScriptObject* new_obj = chtrObjectCreator::Create(i_Data);
 	if (new_obj)
 	{
 		// Transfer light set assignments from old object to new object
@@ -491,9 +511,12 @@ void  chtrObjectMgr::ReloadCharacter(int i_Index)
 		// Transfer transform
 		xfrmTransformMgr::ReplaceObject(old_obj->GetPickObject(), new_obj->GetPickObject());
 
+		if (was_selected)
+			sel3dMgr::RemoveFromSelection(old_obj->GetPickObject());
 		sm_Objects[i_Index] = new_obj;
 		chtrDialogDataUtil::UpdateListDialog();
-		SelectObject(i_Index);
+		if (was_selected)
+			sel3dMgr::AddToSelection(new_obj->GetPickObject());
 
 		delete old_obj;
 	}
@@ -517,6 +540,7 @@ void  chtrObjectMgr::ChangeFilename(int i_Index, const fsLocator& i_Filename)
 	chtrScriptObject* old_obj = sm_Objects[i_Index];
 	chtrScriptData data = old_obj->GetScriptData();
 	data.m_BaseData.m_Filename = i_Filename;
+	data.m_BaseData.m_SourceIdentity.clear();	// a new file is loaded whole
 	data.m_Materials.clear();	// Clear out material overrides when switching to new model.
 	chtrScriptObject* new_obj = chtrObjectCreator::Create(data);
 	if (new_obj)
@@ -632,7 +656,8 @@ void chtrObjectMgr::SetData(const chtrCharactersData &i_Data)
 
 				// This only handles straight geometry files
 				geom_locs[i] = file_locs[i];
-				entities[i] = load_chx_entity(file_locs[i], i_Data.m_Items[i].m_Materials);
+				entities[i] = load_chx_entity(file_locs[i], i_Data.m_Items[i].m_BaseData.m_SourceIdentity,
+											  i_Data.m_Items[i].m_Materials);
 			}
 			catch ( gfInvalidFileBinX& /*i_Ex*/ )
 			{

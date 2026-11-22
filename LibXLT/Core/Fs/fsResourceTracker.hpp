@@ -19,7 +19,6 @@
 //============================================================================
 //============================================================================
 class fsLocator;
-class itString;
 class fsResourceTrackerInterest;
 
 
@@ -49,13 +48,13 @@ namespace fsResourceTracker
 	//	Remove the file and all of it's sub-files.
 	//------------------------------------------------------------------------
 	void Remove(const fsLocator& i_Filename);
-	void Remove(const itString& i_Filename);
+	void Remove(const std::string& i_Filename);
 
 	//------------------------------------------------------------------------
 	//	ReplaceFile() - replace JUST the filename (not the sub-files)
 	//------------------------------------------------------------------------
 	void ReplaceFile(const fsLocator& i_OrigFilename, const fsLocator& i_NewFilename);
-	void ReplaceFile(const itString& i_OrigFilename, const fsLocator& i_NewFilename);
+	void ReplaceFile(const std::string& i_OrigFilename, const fsLocator& i_NewFilename);
 
 	//------------------------------------------------------------------------
 	//	After a file (and all its sub-files) has been read, this will give
@@ -72,7 +71,7 @@ namespace fsResourceTracker
 	//	Find out if an item is already in the list, if so return the index.
 	//	A return value of -1 means the file is not in the list.
 	//------------------------------------------------------------------------
-	int GetIndex(const itString& i_Filename);
+	int GetIndex(const std::string& i_Filename);
 	int GetIndex(const fsLocator& i_Filename);
 	bool IsInList(const fsLocator& i_Filename);
 
@@ -80,7 +79,7 @@ namespace fsResourceTracker
 	//	Try to find the index based only on the base filename, NOT the
 	//	extension.
 	//------------------------------------------------------------------------
-	int GetIndexFromBaseFileName(const itString& i_Filename);
+	int GetIndexFromBaseFileName(const std::string& i_Filename);
 
 	//------------------------------------------------------------------------
 	//	Given the resource index passed in, find the last index of all of 
@@ -93,7 +92,7 @@ namespace fsResourceTracker
 	//	resources associated with that file.
 	//------------------------------------------------------------------------
 	void GetResourceList( const fsLocator& i_FilePath, fsResourceTrackerDataList& io_ResourceList );
-	void GetResourceList( const itString& i_FileName, fsResourceTrackerDataList& io_ResourceList );
+	void GetResourceList( const std::string& i_FileName, fsResourceTrackerDataList& io_ResourceList );
 
 	//------------------------------------------------------------------------
 	//	Output the list to the debug.log

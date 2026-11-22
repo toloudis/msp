@@ -15,7 +15,9 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsLocator.hpp"
 #include "Core/gf/gfFileEnum.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 
 namespace
@@ -26,13 +28,13 @@ namespace
 	//----------------------------------------------------------------------------
 	class FindFileEnum : public fsFileEnum::EnumTarget
 	{
-		itString m_Filename;
+		std::string m_Filename;
 	public:
 		fsLocator m_FullPath;
 		bool m_bFound;
 
 		// constructor takes vector to fill
-		FindFileEnum(const itString& i_Filename)
+		FindFileEnum(const std::string& i_Filename)
 			: m_Filename(i_Filename), m_bFound(false)
 		{
 
@@ -41,7 +43,7 @@ namespace
 		virtual bool Notify( const fsLocator& i_Directory, const fsLocator& i_File )
 		{
 			// Case-insensitive comparison
-			if (itStringUtil::Equal(i_File.GetLastName(), m_Filename))
+			if (envString::EqualNoCase(i_File.GetLastName(), m_Filename))
 			{
 				m_FullPath = i_Directory;
 				m_FullPath.Push( i_File );
@@ -62,9 +64,9 @@ namespace
 //
 //	Note: this calls fsDirListUtil::BuildDirectoryList.
 //------------------------------------------------------------------------
-bool fsysFileUtil::GetFilePath( const itString& i_SystemDirName, 
-								const itString& i_SceneSubDirName, 
-								const itString& i_FindFile, 
+bool fsysFileUtil::GetFilePath( const std::string& i_SystemDirName, 
+								const std::string& i_SceneSubDirName, 
+								const std::string& i_FindFile, 
 								fsLocator& o_FoundDirAndFile)
 {
 	o_FoundDirAndFile.Clear();
@@ -83,7 +85,7 @@ bool fsysFileUtil::GetFilePath( const itString& i_SystemDirName,
 		//	generate the list of child directories for this path
 		//
 		full_dir = gfPaths::GetPath(mnmPaths::e_DataSceneAndStock, i);
-		if (i_SystemDirName.GetLength() > 0)
+		if (i_SystemDirName.size() > 0)
 			full_dir.Push( i_SystemDirName );
 
 
@@ -108,7 +110,7 @@ bool fsysFileUtil::GetFilePath( const itString& i_SystemDirName,
 		full_dir = gfPaths::GetPath(mnmPaths::e_DataScene, i);
 
 		// Different sub directory name under Scene (either "Data" or "Textures")
-		if (i_SceneSubDirName.GetLength() > 0)
+		if (i_SceneSubDirName.size() > 0)
 			full_dir.Push( i_SceneSubDirName );
 
 		FindFileEnum find_target(i_FindFile);

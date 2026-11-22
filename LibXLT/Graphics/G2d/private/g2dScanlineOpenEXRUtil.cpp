@@ -11,7 +11,6 @@
 
 #include "Core/dbg/dbgMsg.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/Fs/fsLocator.hpp"
 #include "Graphics/g2d/g2dImage.hpp"
 #include "Graphics/g2d/g2dOpenEXRDefines.hpp"
@@ -32,13 +31,7 @@
 #include <OpenEXR/ImfOutputFile.h>
 #include <OpenEXR/ImfStringAttribute.h>
 
-// OpenEXR Libs
-#pragma comment(lib, "Iex-3_2_d.lib")
-#pragma comment(lib, "IlmThread-3_2_d.lib")
-#pragma comment(lib, "Imath-3_1_d.lib")
-#pragma comment(lib, "deflate.lib")
-#pragma comment(lib, "OpenEXR-3_2_d.lib")
-#pragma comment(lib, "OpenEXRCore-3_2_d.lib")
+// The OpenEXR libraries come from vcpkg, which links them into the executables
 
 #include <stdio.h>
 
@@ -56,24 +49,9 @@ namespace
 //--------------------------------------------------------------------
 std::string getFileName(const fsLocator& i_Locator) 
 {
-	itString itFileName;
-	fsFileUtil::LocatorToUnicodeString(i_Locator,itFileName);
-	const itString::CharType* UTF_8_str = itFileName.GetString();
-
-	std::string ReturnString;
-	for (int i = 0; i < itFileName.GetLength(); ++i)
-	{
-		ReturnString.push_back((char)UTF_8_str[i]);
-	}
-
-	/*
-	int strSize = UTF_8_str.size();
-	char *fileName = new char[strSize+1];
-	fileName[strSize] = 0;
-	memcpy( fileName , UTF_8_str.c_str() , strSize );
-	*/
-
-	return ReturnString;
+	std::string fileName;
+	fsFileUtil::LocatorToUnicodeString(i_Locator, fileName);
+	return fileName;
 }
 
 //--------------------------------------------------------------------
@@ -84,7 +62,7 @@ void ColorBufferToEXR_RGBA(g2dImage* in, Imf::Rgba * out, int numBytesPerPixel)
 {
 	// Lock surfaces
 	void* imgBits = in->Lock();
-	BYTE* pImgBits = (BYTE*)imgBits; // Format: B, G, R, A
+	uint8_t* pImgBits = (uint8_t*)imgBits; // Format: B, G, R, A
 
 	//Loop through all the pixels
 	int i, j, dst_idx(0);
@@ -111,7 +89,7 @@ void g2dImageToHalfArray(g2dImage* in, half * out, int numBytesPerPixel, int cur
 {
 	// Lock surfaces
 	void* imgBits = in->Lock();
-	BYTE* pImgBits = (BYTE*)imgBits;
+	uint8_t* pImgBits = (uint8_t*)imgBits;
 
 	//Loop through all the pixels
 	int i, j, dst_idx(0);
@@ -136,7 +114,7 @@ void g2dImageToFloatArray(g2dImage* in, float * out, int numBytesPerPixel, int c
 {
 	// Lock surfaces
 	void* imgBits = in->Lock();
-	BYTE* pImgBits = (BYTE*)imgBits;
+	uint8_t* pImgBits = (uint8_t*)imgBits;
 
 	//Loop through all the pixels
 	int i, j, dst_idx(0);
@@ -314,10 +292,10 @@ void g2dScanlineOpenEXRUtil::WriteToScanlineEXR(const fsLocator& i_Locator, cons
 	{
 
 		// Create buffer to hold arbitrary RGBA channels
-		half * r_arb_channel = new half[width*height];
-		half * g_arb_channel = new half[width*height];
-		half * b_arb_channel = new half[width*height];
-		half * a_arb_channel = new half[width*height];
+		half * r_arb_channel = new half[width*height]();
+		half * g_arb_channel = new half[width*height]();
+		half * b_arb_channel = new half[width*height]();
+		half * a_arb_channel = new half[width*height]();
 
 		// Fill buffers with motion data from the RGBA16f D3D surface
 		if ( pixelFormat == g2dPFD::e_RGBA16f ) 
@@ -356,10 +334,10 @@ void g2dScanlineOpenEXRUtil::WriteToScanlineEXR(const fsLocator& i_Locator, cons
 	else if ( pixelFormat == g2dPFD::e_RGBA32f || pixelFormat == g2dPFD::e_Float32 ) 
 	{
 		// Create buffer to hold arbitrary RGBA channels
-		float * r_arb_channel = new float[width*height];
-		float * g_arb_channel = new float[width*height];
-		float * b_arb_channel = new float[width*height];
-		float * a_arb_channel = new float[width*height];
+		float * r_arb_channel = new float[width*height]();
+		float * g_arb_channel = new float[width*height]();
+		float * b_arb_channel = new float[width*height]();
+		float * a_arb_channel = new float[width*height]();
 
 		// Fill buffers with motion data from the 32f D3D surface
 		if ( pixelFormat == g2dPFD::e_RGBA32f ) 

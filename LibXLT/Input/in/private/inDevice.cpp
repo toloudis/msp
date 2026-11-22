@@ -54,7 +54,7 @@ bool inDevice::IsEnabled() const
 //	GetDeviceName returns the name of the device, for example, 
 //	"Microsoft SideWinder Pro"
 //========================================================================
-const itString& inDevice::GetDeviceName() const
+const std::string& inDevice::GetDeviceName() const
 {
 	return m_DeviceName;
 }
@@ -63,7 +63,7 @@ const itString& inDevice::GetDeviceName() const
 //	GetDeviceName returns the name of the device, for example, 
 //	"Microsoft SideWinder Pro"
 //========================================================================
-void inDevice::SetDeviceName(itString& i_DeviceName)
+void inDevice::SetDeviceName(std::string& i_DeviceName)
 {
 	m_DeviceName = i_DeviceName;
 }

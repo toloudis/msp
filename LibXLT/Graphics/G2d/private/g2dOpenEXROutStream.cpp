@@ -7,7 +7,8 @@
 #include "Graphics/g2d/g2dOpenEXROutStream.hpp"
 
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itStringUtil.hpp"
+
+#include <filesystem>
 
 //--------------------------------------------------------------------
 // g2dOpenEXROutStream()
@@ -16,9 +17,9 @@ g2dOpenEXROutStream::g2dOpenEXROutStream(const char fileName[],const fsLocator& 
 :
 	Imf::OStream(fileName)
 {
-	itString itFileName;
+	std::string itFileName;
 	fsFileUtil::LocatorToUnicodeString( i_Locator, itFileName );
-	m_OutStream = new std::ofstream( itFileName.GetString() , std::ios::binary );
+	m_OutStream = new std::ofstream( std::filesystem::u8path( itFileName ), std::ios::binary );
 }
 
 //--------------------------------------------------------------------

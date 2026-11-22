@@ -7,9 +7,16 @@
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
 #include "Core/ch/chTxtReader.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
+#include "Core/env/envNumberText.hpp"
 
 #include "Core/ch/chExceptionX.hpp"
 #include "Core/gf/gfFileTxt.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 
 //============================================================================
@@ -20,7 +27,7 @@ namespace
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 template<class T>
-bool read_int(gfFileTxt &i_File, T &o_Val)
+bool read_number(gfFileTxt &i_File, T &o_Val)
 {
 	std::string tag;
 	if (!i_File.ReadToken(tag))
@@ -29,14 +36,18 @@ bool read_int(gfFileTxt &i_File, T &o_Val)
 		return false;
 	}
 
-	o_Val = atoi(tag.c_str());
+	if (!envNumberText::FromText(tag, o_Val))
+		o_Val = 0;
 	return true;
 }
 
 //----------------------------------------------------------------------------
+//	Int8 and UInt8 were once written as raw characters (by chTxtWriter until 2026),
+//	so a one-character token that isn't a number is taken as that byte.
+//	Bytes that are whitespace, digits, '"' or '#' can't be recovered.
 //----------------------------------------------------------------------------
 template<class T>
-bool read_float(gfFileTxt &i_File, T &o_Val)
+bool read_byte(gfFileTxt &i_File, T &o_Val)
 {
 	std::string tag;
 	if (!i_File.ReadToken(tag))
@@ -45,7 +56,8 @@ bool read_float(gfFileTxt &i_File, T &o_Val)
 		return false;
 	}
 
-	o_Val = (float) atof(tag.c_str());
+	if (!envNumberText::FromText(tag, o_Val))
+		o_Val = (tag.length() == 1) ? T(tag[0]) : 0;
 	return true;
 }
 
@@ -193,54 +205,54 @@ void chTxtReader::FinishChunk()
 //	but I think there would be problems getting them instantiated
 //	so that they are part of the abstract base interface.
 //--------------------------------------------------------------------
-void chTxtReader::Read(envType::Int8& o_Val)
+void chTxtReader::Read(int8_t& o_Val)
 {
-	read_int<envType::Int8>(m_File, o_Val);
+	read_byte<int8_t>(m_File, o_Val);
 }
 
-void chTxtReader::Read(envType::UInt8& o_Val)
+void chTxtReader::Read(uint8_t& o_Val)
 {
-	read_int<envType::UInt8>(m_File, o_Val);
+	read_byte<uint8_t>(m_File, o_Val);
 }
 
-void chTxtReader::Read(envType::Int16& o_Val)
+void chTxtReader::Read(int16_t& o_Val)
 {
-	read_int<envType::Int16>(m_File, o_Val);
+	read_number<int16_t>(m_File, o_Val);
 }
 
-void chTxtReader::Read(envType::UInt16& o_Val)
+void chTxtReader::Read(uint16_t& o_Val)
 {
-	read_int<envType::UInt16>(m_File, o_Val);
+	read_number<uint16_t>(m_File, o_Val);
 }
 
-void chTxtReader::Read(envType::Int32& o_Val)
+void chTxtReader::Read(int32_t& o_Val)
 {
-	read_int<envType::Int32>(m_File, o_Val);
+	read_number<int32_t>(m_File, o_Val);
 }
 
-void chTxtReader::Read(envType::UInt32& o_Val)
+void chTxtReader::Read(uint32_t& o_Val)
 {
-	read_int<envType::UInt32>(m_File, o_Val);
+	read_number<uint32_t>(m_File, o_Val);
 }
 
-void chTxtReader::Read(envType::Int64& o_Val)
+void chTxtReader::Read(int64_t& o_Val)
 {
-	read_int<envType::Int64>(m_File, o_Val);
+	read_number<int64_t>(m_File, o_Val);
 }
 
-void chTxtReader::Read(envType::UInt64& o_Val)
+void chTxtReader::Read(uint64_t& o_Val)
 {
-	read_int<envType::UInt64>(m_File, o_Val);
+	read_number<uint64_t>(m_File, o_Val);
 }
 
-void chTxtReader::Read(envType::Float32& o_Val)
+void chTxtReader::Read(float& o_Val)
 {
-	read_float<envType::Float32>(m_File, o_Val);
+	read_number<float>(m_File, o_Val);
 }
 
-void chTxtReader::Read(envType::Float64& o_Val)
+void chTxtReader::Read(double& o_Val)
 {
-	read_float<envType::Float64>(m_File, o_Val);
+	read_number<double>(m_File, o_Val);
 }
 
 //--------------------------------------------------------------------
@@ -254,7 +266,8 @@ void chTxtReader::Read(bool& o_Val)
 	Read(BoolString);
 
 	// Convert the string into a bool and return.
-	o_Val = ( !_stricmp( BoolString.c_str(), "TRUE" ) ) ? true : false;
+	envString::ToLower( BoolString );
+	o_Val = ( BoolString == "true" );
 }
 
 //--------------------------------------------------------------------
@@ -275,43 +288,12 @@ void chTxtReader::Read(std::string& o_String, int i_Length)
 }
 
 //--------------------------------------------------------------------
-//	This Read reads a NULL-terminated Unicode character string.  
+//	ReadLegacyWideString reads a string as UTF-8, which is how text and XML
+//	files store every string: the same as Read.
 //--------------------------------------------------------------------
-void chTxtReader::Read(itString& o_Val)
+void chTxtReader::ReadLegacyWideString(std::string& o_Val)
 {
-	std::string str;
-	m_File.ReadToken( str );
-
-	int len = str.length();
-	o_Val.Clear();
-
-	for (int i=0; i<len; i++)
-	{
-		o_Val += str[i];
-	}
-
-	// null-terminating not needed anymore
-	//o_Val += '\0';
-
-}
-
-//--------------------------------------------------------------------
-//	This Read Reads a Unicode character string with a length
-//	given by i_Length.
-//--------------------------------------------------------------------
-void chTxtReader::Read(itString& o_Val, int i_Length)
-{
-	std::string str;
-	m_File.ReadToken( str, i_Length );
-
-	int len = str.length();
-	o_Val.Clear();
-
-	for (int i=0; i<len; i++)
-	{
-		o_Val += str[i];
-	}
-
+	Read(o_Val);
 }
 
 //--------------------------------------------------------------------

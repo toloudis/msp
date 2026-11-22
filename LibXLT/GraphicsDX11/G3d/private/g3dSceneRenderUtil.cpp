@@ -114,7 +114,7 @@ namespace g3dSceneRenderUtil
 			if( pLight->IsEnabled() )
 			{
 				if (!g3dSingleLightRendering::GetDoSingleLightRendering() || 
-					!pLight->GetCastsShadow())
+					!pLight->GetIsSinglePassLight())
 				{
 					g3dLightMgrDX11::Implementation()->SetLight( pLight );
 					g3dLightMgrDX11::Implementation()->EnableLight( pLight );

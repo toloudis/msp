@@ -9,13 +9,13 @@
 #ifdef MNM_APPPACKAGEMGR_HPP
 #error mnmAppPackageMgr.hpp multiply included
 #endif
+#include <string>
 #define MNM_APPPACKAGEMGR_HPP
 
 
 //============================================================================
 //============================================================================
 class envAppVersion;
-class itString;
 struct mnmAppPackageData;
 
 
@@ -49,6 +49,6 @@ namespace mnmAppPackageMgr
 	//------------------------------------------------------------------------
 	//	Set the application specific data
 	//------------------------------------------------------------------------
-	void SetAppData( itString i_AppName, envAppVersion& i_AppVersion );
+	void SetAppData( std::string i_AppName, envAppVersion& i_AppVersion );
 };
 

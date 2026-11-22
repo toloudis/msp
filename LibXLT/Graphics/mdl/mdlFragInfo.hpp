@@ -48,7 +48,7 @@ public:
 		//name of the source fragment that contributed to this part
 		std::string m_Name;
 		//beginning index of triangles of this part
-		envType::UInt32 m_PartBeginIndex;
+		uint32_t m_PartBeginIndex;
 	};
 
 	//----------------------------------------------------------------------------
@@ -129,7 +129,7 @@ public:
 	int m_NumOrigNormals;
 	std::multimap<int, int> m_VertexRemap;
 	std::multimap<int, int> m_NormalRemap;
-	std::vector<envType::UInt32> m_Indices;
+	std::vector<uint32_t> m_Indices;
 
 	std::vector< shared_ptr<mdlMatInfo> > m_Materials;
 	std::vector<int> m_MaterialChanges;	
@@ -153,6 +153,6 @@ public:
 	} m_Flags;
 
 	int m_ResolutionLevel;		// 0 - all res, 1 - low res, 2 - high res
-	std::vector<envType::UInt32> m_WeldIndices;
+	std::vector<uint32_t> m_WeldIndices;
 };
 

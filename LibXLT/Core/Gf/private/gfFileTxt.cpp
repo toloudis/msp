@@ -8,6 +8,9 @@
 \****************************************************************************/
 
 #include "Core/Gf/gfFileTxt.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Core/Gf/gfFileX.hpp"
 #include "Core/Gf/gfPaths.hpp"
@@ -22,8 +25,10 @@ namespace
 {
 
 //----------------------------------------------------------------------------
+//	The characters are unsigned: the ctype functions are undefined for
+//	negative values other than EOF (and assert on them in debug builds).
 //----------------------------------------------------------------------------
-inline bool is_whitespace(char i_Ch)
+inline bool is_whitespace(unsigned char i_Ch)
 {
 	// make colon whitespace to make "name:value" pairs easier
 	return (isspace(i_Ch) || (i_Ch == ':'));
@@ -31,21 +36,24 @@ inline bool is_whitespace(char i_Ch)
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-bool should_break(char i_LastChar, char i_ThisChar, char i_NextChar)
+bool should_break(unsigned char i_LastChar, unsigned char i_ThisChar, unsigned char i_NextChar)
 {
-	// alpha breaks unless last char was alpha or period or underscore
+	// alpha breaks unless last char was alpha or period or underscore,
+	// or it starts "inf" or "nan" after a minus ("-inf")
 	if( isalpha(i_ThisChar) || (i_ThisChar == '_') )
 	{
-		if( !(isalnum(i_LastChar) || (i_LastChar == '.') || (i_LastChar == '_')) )
+		bool minus_inf_nan = (i_LastChar == '-') &&
+			(((i_ThisChar == 'i') && (i_NextChar == 'n')) || ((i_ThisChar == 'n') && (i_NextChar == 'a')));
+		if( !(isalnum(i_LastChar) || (i_LastChar == '.') || (i_LastChar == '_') || minus_inf_nan) )
 			return true;
 		else
 			return false;
 	}
 
-	// number breaks unless last char was alnum, period or minus
+	// number breaks unless last char was alnum, period, sign or underscore
 	if( isdigit(i_ThisChar) )
 	{
-		if( !(isalnum(i_LastChar) || (i_LastChar == '.') || (i_LastChar == '-') || (i_LastChar == '_')) )
+		if( !(isalnum(i_LastChar) || (i_LastChar == '.') || (i_LastChar == '-') || (i_LastChar == '+') || (i_LastChar == '_')) )
 			return true;
 		else
 			return false;
@@ -57,6 +65,11 @@ bool should_break(char i_LastChar, char i_ThisChar, char i_NextChar)
 	// space or newline always breaks
 	//if( (isspace(i_ThisChar)) || (i_ThisChar == '\n') ) return true;
 	if( (is_whitespace(i_ThisChar)) || (i_ThisChar == '\n') ) return true;
+
+	// the sign of a float's exponent ("1e-05", "1e+38") doesn't break
+	if( ((i_ThisChar == '-') || (i_ThisChar == '+')) &&
+		((i_LastChar == 'e') || (i_LastChar == 'E')) && isdigit(i_NextChar) )
+		return false;
 
 	// punctuation besides certain values always breaks
 	if( ispunct(i_ThisChar) && 
@@ -327,12 +340,13 @@ gfFileTxt::ReadToken( std::string &o_Token, int i_MaxChars,
 void	
 gfFileTxt::WriteToken( std::string &i_Token )
 {
-	bool bNeedsQuotes = false;
+	//	an empty token is quoted, or nothing would be written
+	bool bNeedsQuotes = i_Token.empty();
 	int len = i_Token.length();
 
 	for (int i=0; i<len; i++)
 	{
-		if (isspace(i_Token[i]) || (i_Token[i] == '\"') || (i_Token[i] == '\\'))
+		if (isspace(static_cast<unsigned char>(i_Token[i])) || (i_Token[i] == '\"') || (i_Token[i] == '\\'))
 		{
 			bNeedsQuotes = true;
 			break;
@@ -491,7 +505,7 @@ gfFileTxt::WriteLine( const std::string &i_Line )
 //	value is the number actually read into the o_Buffer.  This function
 //	also advances the file pointer.
 //------------------------------------------------------------------------
-int gfFileTxt::Read( envType::Int64 i_NumBytes, void* o_Buffer )
+int gfFileTxt::Read( int64_t i_NumBytes, void* o_Buffer )
 {
 	return m_FileStream->Read(i_NumBytes, o_Buffer);
 }
@@ -501,7 +515,7 @@ int gfFileTxt::Read( envType::Int64 i_NumBytes, void* o_Buffer )
 //	Write writes i_NumBytes from o_Buffer into the file.  The file 
 //	pointer will also be advanced.
 //------------------------------------------------------------------------
-void gfFileTxt::Write(envType::Int64 i_NumBytes, const void* i_Buffer)
+void gfFileTxt::Write(int64_t i_NumBytes, const void* i_Buffer)
 {
 	DBG_ASSERT(m_FileStream != NULL, "Must have a fsFileStream to write");
 	m_FileStream->Write(i_NumBytes, i_Buffer);

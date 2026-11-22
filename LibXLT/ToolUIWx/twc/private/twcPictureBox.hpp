@@ -15,10 +15,11 @@
 #include "ToolUIWx/twx/twxWidgets.hpp"
 #endif
 
-#include <wx/panel.h>
-#include <wx/sizer.h>
 
 #ifdef USE_WXWIDGETS
+
+#include <wx/panel.h>
+#include <wx/sizer.h>
 
 //============================================================================
 // wxEVT_VALUE_CHANGED event : this control throws this event type when the

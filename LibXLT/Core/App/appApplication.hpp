@@ -15,10 +15,11 @@
 #endif
 #define APP_APPLICATION_HPP
 
+#include <string>
+
 
 //============================================================================
 //============================================================================
-class itString;
 class appApplicationPAC;
 
 
@@ -91,7 +92,7 @@ class appApplication
 		//		handle is based on the OS.
 		//--------------------------------------------------------------------
 		static void* CreateSubWindow(int i_Width, int i_Height, 
-				int i_X, int i_Y, const itString& i_Title);
+				int i_X, int i_Y, const std::string& i_Title);
 
 		//--------------------------------------------------------------------
 		//	Destory secondary window created by previous call to 
@@ -101,10 +102,24 @@ class appApplication
 		static void DestroySubWindow(void* i_Hwnd);
 
 		//--------------------------------------------------------------------
+		//	Make the OS accessibility services (screen readers and the like)
+		//	let go of the application's windows, so that the GUI toolkit can
+		//	destroy them.  Call before shutting down the GUI.
+		//--------------------------------------------------------------------
+		static void ReleaseAccessibilityClients();
+
+		//--------------------------------------------------------------------
+		//	Start the program on the given command line and return without
+		//	waiting for it.  i_ShowWindow shows or hides its window.
+		//	Returns false if the program couldn't be started.
+		//--------------------------------------------------------------------
+		static bool LaunchProgram(const std::string& i_CommandLine, bool i_ShowWindow);
+
+		//--------------------------------------------------------------------
 		//	Used for creating an application that doesn't use Run()
 		//--------------------------------------------------------------------
 		static void CreateMainWindow(int i_Width, int i_Height, 
-				int i_X, int i_Y, const itString& i_Title);
+				int i_X, int i_Y, const std::string& i_Title);
 
 	protected:
 		friend class appApplicationPAC;
@@ -135,7 +150,7 @@ class appApplication
 		//	window's title bar.  This function can be called from a 
 		//	appStartEvent handler, before the window has been created. 
 		//--------------------------------------------------------------------
-		void SetWindowTitle(const itString& i_Title);
+		void SetWindowTitle(const std::string& i_Title);
 
 		//--------------------------------------------------------------------
 		//	returns true if the app is in a state of quitting

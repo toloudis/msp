@@ -32,6 +32,9 @@
 #include "GraphicsDX11/g3d/g3dDX11TextureUtil.hpp"
 #include "GraphicsDX11/eff/effShaderBaseDX11.hpp"
 #include "GraphicsDX11/mat/matRenderTargetTexture.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 namespace
 {
@@ -63,14 +66,14 @@ shdwPassMaterials::shdwPassMaterials(g2dRenderTarget* i_pMaterialsTarget,
 	if (!l_MaterialsMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/Solid.fx"), matShaderMgr::GetSpecialEffect("Solid.fx"));
+		p->SetShaderName(std::string("Special/Solid.fx"), matShaderMgr::GetSpecialEffect("Solid.fx"));
 		l_MaterialsMat.SetShaderParams(p);
 	}
 	// lazy init so that this material can be reused across instantiations.
 	if (!l_HairMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/HairDefault.fx"), matShaderMgr::GetSpecialEffect("HairDefault.fx"));
+		p->SetShaderName(std::string("Special/HairDefault.fx"), matShaderMgr::GetSpecialEffect("HairDefault.fx"));
 		l_HairMat.SetShaderParams(p);
 	}
 	m_OverscanPixels = 0;
@@ -124,6 +127,7 @@ void shdwPassMaterials::GenerateHSVStruct(int i_NumNodes)
 //--------------------------------------------------------------------
 int shdwPassMaterials::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassMaterials");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassMaterials::Render" );
 	m_stats.Reset();
 
@@ -251,7 +255,7 @@ int shdwPassMaterials::RenderNode(const sNodePlusState& i_Node)
 	matMaterial* pMaterial = &l_MaterialsMat;	
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)pEffect;
-	ID3DX11Effect* pD3DEffect = i_pEffect->GetD3DXEffect();
+	fxEffect* pD3DEffect = i_pEffect->GetFxEffect();
 
 	// set shader globals
 	g3dDX11Util::SetupShaderGlobals(pEffect);
@@ -336,7 +340,7 @@ int shdwPassMaterials::RenderHairNode(const sNodePlusState& i_Node)
 	const matMaterial* pMaterial = &l_HairMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)pEffect;
-	ID3DX11Effect* pD3DEffect = i_pEffect->GetD3DXEffect();
+	fxEffect* pD3DEffect = i_pEffect->GetFxEffect();
 
 	g3dDrawStyleUtilDX11::SetDrawStyle(i_Node.m_drawStyle);
 
@@ -447,9 +451,9 @@ float shdwPassMaterials::hash_material(const std::string i_MaterialName)
 float shdwPassMaterials::hash_material_one(const std::string i_MaterialName)
 {
 	
-	const envType::UInt32 mask = 0x00ffffff;
+	const uint32_t mask = 0x00ffffff;
 
-	envType::UInt32 result = 0;
+	uint32_t result = 0;
 	int len = i_MaterialName.length();
 	if (len < 16)
 	{
@@ -479,7 +483,7 @@ float shdwPassMaterials::hash_material_two(const std::string i_MaterialName)
 {
 	unsigned char * str = (unsigned char *)i_MaterialName.c_str();
 
-	const envType::UInt32 mask = 0x00ffffff;
+	const uint32_t mask = 0x00ffffff;
     unsigned long result = 5381;
     int c;
 
@@ -498,7 +502,7 @@ float shdwPassMaterials::hash_material_two(const std::string i_MaterialName)
 float shdwPassMaterials::hash_material_three(const std::string i_MaterialName)
 {
 	unsigned char * str = (unsigned char *)i_MaterialName.c_str();
-	const envType::UInt32 mask = 0x00ffffff;
+	const uint32_t mask = 0x00ffffff;
 
 	unsigned long result = 0;
 	int c;

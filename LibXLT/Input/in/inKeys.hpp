@@ -13,9 +13,7 @@
 #endif
 #define IN_KEYS_HPP
 
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 
 namespace inKeys
 {
@@ -128,5 +126,5 @@ enum Keys
 	e_NUMTERAWATTKEYS	//this should always be last, to facilitate looping over the keyboard
 };
 
-extern itString TerawattKeyStrings[e_NUMTERAWATTKEYS];
+extern std::string TerawattKeyStrings[e_NUMTERAWATTKEYS];
 }

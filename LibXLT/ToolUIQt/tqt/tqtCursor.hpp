@@ -1,7 +1,7 @@
 /****************************************************************************\
 **	tqtCursor.cpp
 **
-**	class to invloke wxCursor
+**	class to invoke the Qt wait cursor
 **	
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
@@ -15,7 +15,7 @@
 #include "ToolUIQt/tqt/tqtWidgets.hpp"
 #endif
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 namespace tqtCursor
 {

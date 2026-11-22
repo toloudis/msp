@@ -44,7 +44,6 @@
 #include "Core/app/appTime.hpp"
 #include "Core/fs/private/fsFileNotifyMgr.hpp"
 #include "Core/geo/geoPickRay.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/ma/maConstants.hpp"
 #include "Core/undo/undoUndoMgr.hpp"
 #include "Graphics/G3d/g3dPickInfo.hpp"
@@ -71,7 +70,6 @@
 #include "FCSupport/fcui/fcuiFormMgr.hpp"
 #endif
 
-#include <windows.h>
 #include <time.h>
 
 
@@ -225,7 +223,7 @@ namespace
 	//----------------------------------------------------------------------------
 	void DoPickAtCursor(g3dPickInfo& o_PickInfo, 
 						bool i_bTablet = false, 
-						envType::UInt32 i_PickMask = mnmPickMask::c_NoFilter)
+						uint32_t i_PickMask = mnmPickMask::c_NoFilter)
 	{
 		// stop any render threads while doing GPU picking
 		gpxRenderControl::ConfirmSingleThread();
@@ -237,7 +235,11 @@ namespace
 		if(!i_bTablet)
 			tma3dCursorMgr::GetCursorPos(x,y);
 		else
+		{
+			// the tablet gives panel pixels, convert to the rendered image
 			get_tablet_position(x,y);
+			pRenderView->PanelToRenderPixel(x,y);
+		}
 		//DBG_TRACE("pick at (" << x << "," << y << ")  " << i_bTablet);
 
 		pRenderView->DoPickRender(x,y, tmlnTimeLine::GetTimeInSeconds(), o_PickInfo, i_PickMask);
@@ -268,7 +270,7 @@ namespace
 		//	do the pick
 		return pick3dMgr::Pick( ray, l_PickList );*/
 
-		envType::UInt32 pick_mask = mnmPickMask::c_NoFilter;
+		uint32_t pick_mask = mnmPickMask::c_NoFilter;
 		if (i_PickMode == mnpModeObjectManip::e_PickMaterials)
 			pick_mask = mnmPickMask::c_Material;
 		if (i_PickMode == mnpModeObjectManip::e_PickSurfaces)
@@ -277,7 +279,7 @@ namespace
 		g3dPickInfo pickInfo;
 		DoPickAtCursor(pickInfo, false, pick_mask);
 		//cam3dMgr::SetManipDepth(pickInfo.m_Depth);
-		envType::UInt32 pick_code = pickInfo.m_ObjectID;
+		uint32_t pick_code = pickInfo.m_ObjectID;
 		
 		//if(brshPaintBrushMgr::IsEnabled())
 		//	brshPaintBrushMgr::Paint(pickInfo);

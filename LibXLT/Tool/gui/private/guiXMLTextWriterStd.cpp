@@ -7,6 +7,9 @@
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "Tool/gui/guiXMLTextWriterStd.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Core/fs/fsXMLWriter.hpp"
 
@@ -114,52 +117,52 @@ void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, float i_Value)
 
 	XMLWriter::m_pWriter->WriteElement(std::string(i_KeyName), i_Value);
 }
-void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, envType::Int8 i_Value)
+void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, int8_t i_Value)
 {
 	DBG_ASSERT(XMLWriter::m_pWriter != NULL, "Must Open() the Writer");
 
 	XMLWriter::m_pWriter->WriteElement(std::string(i_KeyName), i_Value);
 }
-void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, envType::UInt8 i_Value)
+void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, uint8_t i_Value)
 {
 	DBG_ASSERT(XMLWriter::m_pWriter != NULL, "Must Open() the Writer");
 
 	XMLWriter::m_pWriter->WriteElement(std::string(i_KeyName), i_Value);
 }
-//void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, envType::Int16 i_Value)
+//void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, int16_t i_Value)
 //{
 //}
-void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, envType::UInt16 i_Value)
+void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, uint16_t i_Value)
 {
 	DBG_ASSERT(XMLWriter::m_pWriter != NULL, "Must Open() the Writer");
 
 	XMLWriter::m_pWriter->WriteElement(std::string(i_KeyName), i_Value);
 }
-//void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, envType::Int32 i_Value)
+//void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, int32_t i_Value)
 //{
 //}
-void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, envType::UInt32 i_Value)
+void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, uint32_t i_Value)
 {
 	DBG_ASSERT(XMLWriter::m_pWriter != NULL, "Must Open() the Writer");
 
 	XMLWriter::m_pWriter->WriteElement(std::string(i_KeyName), i_Value);
 }
-void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, envType::Int64 i_Value)
+void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, int64_t i_Value)
 {
 	DBG_ASSERT(XMLWriter::m_pWriter != NULL, "Must Open() the Writer");
 
 	XMLWriter::m_pWriter->WriteElement(std::string(i_KeyName), i_Value);
 }
-void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, envType::UInt64 i_Value)
+void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, uint64_t i_Value)
 {
 	DBG_ASSERT(XMLWriter::m_pWriter != NULL, "Must Open() the Writer");
 
 	XMLWriter::m_pWriter->WriteElement(std::string(i_KeyName), i_Value);
 }
-//void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, envType::Float32 i_Value)
+//void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, float i_Value)
 //{
 //}
-void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, envType::Float64 i_Value)
+void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, double i_Value)
 {
 	DBG_ASSERT(XMLWriter::m_pWriter != NULL, "Must Open() the Writer");
 
@@ -178,12 +181,6 @@ void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, const std::string&
 	XMLWriter::m_pWriter->WriteElement(std::string(i_KeyName), (i_Value.c_str()));
 }
 void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, const fsLocator& i_Value)
-{
-	DBG_ASSERT(XMLWriter::m_pWriter != NULL, "Must Open() the Writer");
-
-	XMLWriter::m_pWriter->WriteElement(std::string(i_KeyName), i_Value);
-}
-void guiXMLTextWriterStd::WriteElement(const char* i_KeyName, const itString& i_Value)
 {
 	DBG_ASSERT(XMLWriter::m_pWriter != NULL, "Must Open() the Writer");
 

@@ -33,6 +33,9 @@
 #include "GraphicsDX11/g3d/g3dSceneGlobal.hpp"
 #include "GraphicsDX11/g3d/g3dSceneRenderUtil.hpp"
 #include "GraphicsDX11/mat/matRenderTargetTexture.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 namespace
 {
@@ -79,6 +82,7 @@ shdwPassGlow::~shdwPassGlow()
 //----------------------------------------------------------------------------------------
 int shdwPassGlow::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassGlow");
 	m_stats.Reset();
 
 	if (!g3dSingleLightRendering::GetDoSingleLightRendering())

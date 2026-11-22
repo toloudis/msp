@@ -107,9 +107,9 @@ float g3dPointLight::GetFalloffStart() const
 //--------------------------------------------------------------------
 void g3dPointLight::SetFalloff0(float i_Val)
 {
-	DBG_ASSERT(i_Val != 0, "This value can't be zero");
+	DBG_ASSERT(i_Val >= 0, "This value can't be negative");
 
-	if (i_Val == 0.0f)
+	if (i_Val < 0.0f)
 		i_Val = 1.0f;
 
 	m_f0 = i_Val;
@@ -170,4 +170,3 @@ void g3dPointLight::SetRange(float i_Range)
 {
 	m_fRange = i_Range;
 }
-

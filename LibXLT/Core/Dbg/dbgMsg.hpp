@@ -42,8 +42,8 @@
 #endif
 #define DBG_MSG_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 #ifndef DBG_STREAM_HPP
@@ -52,15 +52,16 @@
 
 #include <sstream>
 #include <vector>
-#include <tchar.h>
 
 //Macros that get the unicode (wchar_t) version of a string
 //always, irrespective of whether UNICODE is defined.
 //as opposed to the _T( ) macro in tchar.h.
 //A double layer of macro-s is needed,
 //because some of the arguments are macro-s itself (eg: __FILE__)
+#ifndef SGPU_L
 #define SGPU_L_TEMP(a) L ## a
 #define SGPU_L(a) SGPU_L_TEMP(a)
+#endif
 
 //============================================================================
 //============================================================================
@@ -172,6 +173,22 @@ namespace dbgMsg
 	//
 	//------------------------------------------------------------------------
 	std::stringstream& GetAssertStream();
+
+	//------------------------------------------------------------------------
+	//  An AssertHandler receives the full text of a failed assertion
+	//  (file, line and message).
+	//
+	//------------------------------------------------------------------------
+	typedef void (*AssertHandler)(const std::string& i_Message);
+
+	//------------------------------------------------------------------------
+	//  SetAssertHandler sends failed DBG_ASSERTs to i_Handler instead of
+	//  the abort/continue dialog; the unit tests use it to turn assertions
+	//  into test failures. Pass nullptr to restore the dialog. Returns the
+	//  previous handler.
+	//
+	//------------------------------------------------------------------------
+	AssertHandler SetAssertHandler(AssertHandler i_Handler);
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------

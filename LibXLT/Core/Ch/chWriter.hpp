@@ -19,9 +19,6 @@
 #ifndef ENV_APPVERSION_HPP
 #include "Core/env/envAppVersion.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
 
 #include <string>
 
@@ -67,16 +64,16 @@ class chWriter
 		//	but I think there would be problems getting them instantiated
 		//	so that they are part of the abstract base interface.
 		//--------------------------------------------------------------------
-		virtual void Write(envType::Int8 i_Val) = 0;
-		virtual void Write(envType::UInt8 i_Val) = 0;
-		virtual void Write(envType::Int16 i_Val) = 0;
-		virtual void Write(envType::UInt16 i_Val) = 0;
-		virtual void Write(envType::Int32 i_Val) = 0;
-		virtual void Write(envType::UInt32 i_Val) = 0;
-		virtual void Write(envType::Int64 i_Val) = 0;
-		virtual void Write(envType::UInt64 i_Val) = 0;
-		virtual void Write(envType::Float32 i_Val) = 0;
-		virtual void Write(envType::Float64 i_Val) = 0;
+		virtual void Write(int8_t i_Val) = 0;
+		virtual void Write(uint8_t i_Val) = 0;
+		virtual void Write(int16_t i_Val) = 0;
+		virtual void Write(uint16_t i_Val) = 0;
+		virtual void Write(int32_t i_Val) = 0;
+		virtual void Write(uint32_t i_Val) = 0;
+		virtual void Write(int64_t i_Val) = 0;
+		virtual void Write(uint64_t i_Val) = 0;
+		virtual void Write(float i_Val) = 0;
+		virtual void Write(double i_Val) = 0;
 
 		//--------------------------------------------------------------------
 		//	This Write writes a string called either "TRUE" or "FALSE" based 
@@ -102,27 +99,12 @@ class chWriter
 		//	in the given std::string.  It will write a NULL into the file
 		//  to terminate the internal char string.
 		// This just turns around and calls this->Write(i_String.c_str() );
+		//	Every string is written this way, as UTF-8: binary files (PWFB)
+		//	null-terminated, text and XML files as a token. Readers read it
+		//	back with Read, or with ReadLegacyWideString for a field that held
+		//	an itString in binary files written before PWFB (stored as UTF-16).
 		//--------------------------------------------------------------------
 		inline void Write(const std::string& i_String);
-
-		//--------------------------------------------------------------------
-		// This write writes an array of Unicode strings as NULL terminated UInt16
-		// array below.  It is inlined here and requires no override
-		//--------------------------------------------------------------------
-		void Write( const itString& i_String );
-
-		//--------------------------------------------------------------------
-		//	This Write writes a NULL-terminated Unicode character string.  It
-		//	will write the NULL into the file.
-		//--------------------------------------------------------------------
-		virtual void Write(const envType::WChar* i_Val) = 0;
-
-		//--------------------------------------------------------------------
-		//	This Write writes a Unicode character string with a length
-		//	given by i_Length.  It does not write the length into the file;
-		//	you must do that yourself.
-		//--------------------------------------------------------------------
-		virtual void Write(const envType::WChar* i_Val, int i_Length) = 0;
 
 		//--------------------------------------------------------------------
 		//	Write the envAppVersion structure
@@ -133,7 +115,7 @@ class chWriter
 		//	Write chunk of binary data; this is only for
 		//	the implementations, it is not a function of chWriter base class
 		//--------------------------------------------------------------------
-		virtual	void Write(const void* i_Data, envType::Int64 i_NumBytes) = 0;
+		virtual	void Write(const void* i_Data, int64_t i_NumBytes) = 0;
 
 		//------------------------------------------------------------------------
 		//	GetLocator returns this file's associated locator

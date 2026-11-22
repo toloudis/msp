@@ -13,7 +13,6 @@
 #include "Systems/Environments/Undo/envtOperations.hpp"
 
 #include "Core/fs/fsFileUtil.hpp"
-//#include "Core/it/itStringUtil.hpp"
 #include "Tool/gui/guiMainWindow.hpp"
 //#include "Tool/gui/guiMessageBox.hpp"
 
@@ -35,11 +34,11 @@ envtDialogInterest::envtDialogInterest()
 //	Add Object to Placed
 //--------------------------------------------------------------------
 //virtual 
-void envtDialogInterest::AddObject(const itString& i_FileName, const fsLocator& i_Path)
+void envtDialogInterest::AddObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 	//std::string dir1, dir2;
-	//dir1 = itStringUtil::GetStdString(i_Path.GetName(0));
-	//dir2 = itStringUtil::GetStdString(i_Path.GetName(1));
+	//dir1 = i_Path.GetName(0);
+	//dir2 = i_Path.GetName(1);
 	//DBG_LOG2("envtDialogInterest %s-%s", dir1.c_str(), dir2.c_str());
 
 	try
@@ -126,8 +125,8 @@ void envtDialogInterest::GetAvailableObjects(fsysFileList& io_FileList) const
 	fsLocator path;
 	//path.Push("Data");
 	path.Push(c_SystemName);
-	itString fname;
-	fname = itString("Environment Lights");
+	std::string fname;
+	fname = std::string("Environment Lights");
 	io_FileList.AddFilename(path,fname);
 }
 

@@ -1,47 +1,44 @@
 /****************************************************************************\
-**	tqcRangedFloat.hpp
+**	tqcRangedFloat.cpp
+**
+**	see .hpp
 **
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "ToolUIQt/tqc/tqcRangedFloat.hpp"
 
-#include "ToolUIQt/tqc/tqcEvent.hpp"
+#include <math.h>
 
-#ifdef QT_FINISH_PORT
-
-BEGIN_EVENT_TABLE(tqcRangedFloat, wxPanel)
-    EVT_COMMAND_SCROLL(wxID_ANY, tqcRangedFloat::OnScrollChanged)
-END_EVENT_TABLE()
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 tqcRangedFloat::tqcRangedFloat(QWidget* i_pParent)
-:	wxPanel(i_pParent, wxID_ANY),
+:	QWidget(i_pParent),
 	m_Value(0),
 	m_Minimum(0),
 	m_Maximum(1),
 	m_NumTicks(100),
 	m_Exponent(1),
 	m_bExpandRange(true),
-	m_bRestrictValue(false)
-{		
-	wxBoxSizer* bSizer1;
-	bSizer1 = new wxBoxSizer( wxHORIZONTAL );
-	
-	m_pSlider = new wxSlider( this, wxID_ANY, 0, 0, 100, wxDefaultPosition, wxSize( 100,20 ), wxSL_HORIZONTAL );
-	bSizer1->Add( m_pSlider, 1, wxALL, 0 );
-	
-	m_pFloatEdit = new tqcFloatEdit(this, wxID_ANY, wxDefaultPosition, wxSize( 54,20 ));
-	this->Connect( m_pFloatEdit->GetId(), wxEVT_VALUE_CHANGED,
-					wxCommandEventHandler(tqcRangedFloat::OnTextChange) );
-	bSizer1->Add( m_pFloatEdit, 0, wxALL, 0 );
+	m_bRestrictValue(false),
+	m_bUpdatingSlider(false)
+{
+	QHBoxLayout* bSizer1 = new QHBoxLayout(this);
+	bSizer1->setContentsMargins(0, 0, 0, 0);
+	bSizer1->setSpacing(2);
 
-	// Set up font and colors
-	this->InheritAttributes();
-	
-	this->SetSizer( bSizer1 );
-	this->Layout();
+	m_pSlider = new QSlider( Qt::Horizontal, this );
+	m_pSlider->setRange(0, m_NumTicks);
+	m_pSlider->setMinimumWidth(60);
+	QObject::connect(m_pSlider, &QSlider::valueChanged, [this](int i_Position) { OnScrollChanged(i_Position); });
+	bSizer1->addWidget( m_pSlider, 1 );
+
+	m_pFloatEdit = new tqcFloatEdit(this);
+	m_pFloatEdit->setFixedWidth(54);
+	m_pFloatEdit->SetValueChangedCallback([this]() { OnTextChange(); });
+	bSizer1->addWidget( m_pFloatEdit, 0 );
 
 	update_slider();
 }
@@ -99,12 +96,10 @@ void tqcRangedFloat::SetMaximum(const float i_Maximum)
 //--------------------------------------------------------------------
 // Functions to check if the flag restricting the ranges are set
 //--------------------------------------------------------------------
-
 const bool tqcRangedFloat::GetRestrictFlag() const
 {
 	return m_bRestrictValue;
 }
-
 void tqcRangedFloat::SetRestrictFlag( const bool i_bRestrictValue)
 {
 	m_bRestrictValue = i_bRestrictValue;
@@ -132,7 +127,9 @@ const short tqcRangedFloat::GetNumTicks() const
 void tqcRangedFloat::SetNumTicks(const short i_NumTicks)
 {
 	m_NumTicks = i_NumTicks;
-	m_pSlider->SetRange(0, m_NumTicks);
+	m_bUpdatingSlider = true;
+	m_pSlider->setRange(0, m_NumTicks);
+	m_bUpdatingSlider = false;
 	update_slider();
 }
 
@@ -154,11 +151,11 @@ void tqcRangedFloat::SetExponent(const short i_Exponent)
 //--------------------------------------------------------------------
 void tqcRangedFloat::ShowValue(bool i_bShow)
 {
-	m_pFloatEdit->Show( i_bShow );
+	m_pFloatEdit->setVisible( i_bShow );
 }
 
 //--------------------------------------------------------------------
-// If true, this flag allows the slider to expand its range to 
+// If true, this flag allows the slider to expand its range to
 // accomodate values outside of its minimum and maximum.
 //--------------------------------------------------------------------
 void tqcRangedFloat::AllowExpandRange(bool i_bExpand)
@@ -168,50 +165,47 @@ void tqcRangedFloat::AllowExpandRange(bool i_bExpand)
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void tqcRangedFloat::OnTextChange(wxCommandEvent& i_Event)
+void tqcRangedFloat::OnTextChange()
 {
-	wxString str;
 	m_Value = m_pFloatEdit->GetFloatValue();
 	if(GetRestrictFlag())
 	{
 		if(m_Value < GetMinimum())
 		{
-			str << (int)GetMinimum();
-			m_pFloatEdit->ChangeValue(str);
 			m_Value = GetMinimum();
+			m_pFloatEdit->SetFloatValue(m_Value);
 		}
 		else if ( m_Value > GetMaximum())
 		{
-			str << (int)GetMaximum();
-			m_pFloatEdit->ChangeValue(str);
 			m_Value = GetMaximum();
+			m_pFloatEdit->SetFloatValue(m_Value);
 		}
 	}
 	update_slider();
-	notify_callback();
+	NotifyValueChanged();
 }
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void tqcRangedFloat::OnScrollChanged(wxScrollEvent& i_Event)
+void tqcRangedFloat::OnScrollChanged(int i_Position)
 {
+	if (m_bUpdatingSlider)
+		return;
+
 	float range = m_Maximum - m_Minimum;
 	if (range > 0)
 	{
-		float val = m_pSlider->GetValue() / (float) m_NumTicks;
+		float val = i_Position / (float) m_NumTicks;
 		val = ::powf(val, m_Exponent);
 		float new_val = val * range + m_Minimum;
 		if (new_val != m_Value)
 		{
 			m_Value = new_val;
 			m_pFloatEdit->SetFloatValue(m_Value);
-
-			notify_callback();
+			NotifyValueChanged();
 		}
 	}
 	update_slider();
-	// Allow parent classes to also trap for scroll events
-	i_Event.Skip();
 }
 
 //----------------------------------------------------------------------------
@@ -228,6 +222,7 @@ void tqcRangedFloat::update_slider()
 			m_Minimum = m_Value - ::fabsf(m_Value);
 	}
 
+	int position = 0;
 	float range = m_Maximum - m_Minimum;
 	if (range > 0)
 	{
@@ -236,24 +231,20 @@ void tqcRangedFloat::update_slider()
             val = 0;
         else
         {
-            float exp = (m_Exponent != 0) ? (1.0 / m_Exponent) : 1;
+            float exp = (m_Exponent != 0) ? (1.0f / m_Exponent) : 1;
 			val = ::powf(val, exp);
             val *= m_NumTicks;
             if (val > m_NumTicks) val = m_NumTicks;
         }
-        m_pSlider->SetValue((int)val);
+		position = (int)val;
 	}
-	else
-		m_pSlider->SetValue(0);
-}
 
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-void tqcRangedFloat::notify_callback()
-{
-	// trigger the callback
-	wxCommandEvent changed_event(wxEVT_VALUE_CHANGED, this->GetId());
-	m_pFloatEdit->ProcessCommand(changed_event);
+	if (m_pSlider->value() != position)
+	{
+		m_bUpdatingSlider = true;
+		m_pSlider->setValue(position);
+		m_bUpdatingSlider = false;
+	}
 }
 
 #endif // USE_QT

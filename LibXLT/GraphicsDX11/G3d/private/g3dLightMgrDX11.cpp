@@ -360,7 +360,7 @@ void g3dLightMgrDX11::EnableOnlyNonShadowLights()
 	{
 		g3dLight* pLight = m_Lights[i];
 
-		if( pLight->GetCastsShadow() )
+		if( pLight->GetIsSinglePassLight() )
 		{
 			DisableLight( pLight );
 		}
@@ -386,7 +386,7 @@ int g3dLightMgrDX11::CountNumShadowLights()
 	int count = 0;
 	for (int i = 0; i < m_Lights.size(); i++)
 	{
-		if( m_Lights[i]->IsEnabled() && m_Lights[i]->GetCastsShadow() )
+		if( m_Lights[i]->IsEnabled() && m_Lights[i]->GetIsSinglePassLight() )
 		{
 			count++;
 		}
@@ -409,7 +409,7 @@ g3dLight* g3dLightMgrDX11::EnableOnlyShadowLight( int i_Num )
 	{
 		g3dLight* pLight = m_Lights[i];
 
-		bool shadow = pLight->GetCastsShadow() && pLight->IsEnabled();
+		bool shadow = pLight->GetIsSinglePassLight() && pLight->IsEnabled();
 
 		if( shadow && ( count == i_Num ) )
 		{

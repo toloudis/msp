@@ -8,14 +8,70 @@
 \****************************************************************************/
 #include "Core/fs/fsFileEnum.hpp"
 
+#ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
-#include "Core/fs/private/fsFileEnumPAC.hpp"
+#endif
+#ifndef FS_PATHUTIL_HPP
+#include "Core/fs/fsPathUtil.hpp"
+#endif
+
+#include <filesystem>
+#include <system_error>
 
 
 //============================================================================
 //============================================================================
 namespace fsFileEnum
 {
+
+namespace
+{
+	// returns true if the file name contains one of the substrings, or there are none
+	bool substring_match(const std::string& i_Filename, const std::vector<std::string>& i_SubStrings)
+	{
+		if (i_SubStrings.empty())
+			return true;
+		for (const std::string& substring : i_SubStrings)
+		{
+			if (i_Filename.find(substring) != std::string::npos)
+				return true;
+		}
+		return false;
+	}
+
+	//--------------------------------------------------------------------
+	//	enumerate gives the target each entry of i_Locator that is a
+	//	directory (i_bDirectories) or isn't, as a one-name locator,
+	//	until the target returns false. A directory that can't be read
+	//	lists nothing. "." and ".." aren't listed.
+	//--------------------------------------------------------------------
+	bool enumerate(const fsLocator& i_Locator, EnumTarget& o_Target, bool i_bDirectories,
+				   const std::vector<std::string>& i_SubStrings)
+	{
+		// An empty locator is the current directory, as it was to FindFirstFile
+		std::filesystem::path dir = fsPathUtil::LocatorToPath(i_Locator);
+		if (dir.empty())
+			dir = ".";
+
+		std::error_code error;
+		std::filesystem::directory_iterator it(dir, error), end;
+		for (; !error && it != end; it.increment(error))
+		{
+			std::error_code type_error;
+			if (it->is_directory(type_error) != i_bDirectories)
+				continue;
+
+			const std::string name = fsPathUtil::PathToUtf8(it->path().filename());
+			if (!substring_match(name, i_SubStrings))
+				continue;
+
+			if (!o_Target.Notify(i_Locator, fsLocator(name)))
+				return false;
+		}
+		return true;
+	}
+}
+
 FileListTarget::FileListTarget() 					{m_FileList.clear();}
 FileListTarget::~FileListTarget()					{}
 const fsFileList& FileListTarget::GetList() const	{return m_FileList;}
@@ -40,25 +96,25 @@ bool EnumerateFiles(const fsLocator& i_Locator,
 					EnumTarget& o_Target,
 					bool i_bSearchSubdirectories)
 {
-	std::vector<itString> no_substrings;
+	std::vector<std::string> no_substrings;
 	return EnumerateFiles(i_Locator, o_Target, no_substrings, i_bSearchSubdirectories);
 }
 bool EnumerateFiles(const fsLocator& i_Locator, 
 					EnumTarget& o_Target,
-					const itString &i_SubString,
+					const std::string &i_SubString,
 					bool i_bSearchSubdirectories)
 {
-	std::vector<itString> substrings;
+	std::vector<std::string> substrings;
 	substrings.push_back(i_SubString);
 	return EnumerateFiles(i_Locator, o_Target, substrings, i_bSearchSubdirectories);
 }
 bool EnumerateFiles(const fsLocator& i_Locator, 
 					EnumTarget& o_Target,
-					const std::vector<itString> &i_SubStrings,
+					const std::vector<std::string> &i_SubStrings,
 					bool i_bSearchSubdirectories)
 {
 	// Search files in the root directory first
-	bool continue_enum = fsFileEnumPAC::EnumerateFiles(i_Locator, o_Target, i_SubStrings);
+	bool continue_enum = enumerate(i_Locator, o_Target, false, i_SubStrings);
 
 	// If we should search subdirectories and the target wants to continue looking,
 	// enumerate the directories and then search each of those
@@ -69,8 +125,8 @@ bool EnumerateFiles(const fsLocator& i_Locator,
 		fsFileList::const_iterator it;
 		for (it = dirList.begin(); it != dirList.end(); ++it)
 		{
-			itString last_name = it->GetLastName();
-			if ((last_name != itString(".")) && (last_name != itString("..")))
+			const std::string& last_name = it->GetLastName();
+			if ((last_name != ".") && (last_name != ".."))
 			{
 				//std::string filename;
 				//fsFileUtil::LocatorToANSIFilename(*it, filename);
@@ -94,21 +150,21 @@ bool EnumerateFiles(const fsLocator& i_Locator,
 					fsFileList& o_FileList,
 					bool i_bSearchSubdirectories)
 {
-	std::vector<itString> no_substrings;
+	std::vector<std::string> no_substrings;
 	return EnumerateFiles(i_Locator, o_FileList, no_substrings, i_bSearchSubdirectories);
 }
 bool EnumerateFiles(const fsLocator& i_Locator, 
 					fsFileList& o_FileList,
-					const itString &i_SubString,
+					const std::string &i_SubString,
 					bool i_bSearchSubdirectories)
 {
-	std::vector<itString> substrings;
+	std::vector<std::string> substrings;
 	substrings.push_back(i_SubString);
 	return EnumerateFiles(i_Locator, o_FileList, substrings, i_bSearchSubdirectories);
 }
 bool EnumerateFiles(const fsLocator& i_Locator, 
 					fsFileList& o_FileList,
-					const std::vector<itString> &i_SubStrings,
+					const std::vector<std::string> &i_SubStrings,
 					bool i_bSearchSubdirectories)
 {
 	FileListTarget FileTarget;
@@ -127,7 +183,7 @@ bool EnumerateFiles(const fsLocator& i_Locator,
 bool EnumerateDirectories(	const fsLocator& i_Locator, 
 							EnumTarget& o_Target)
 {
-	return fsFileEnumPAC::EnumerateDirectories(i_Locator, o_Target);
+	return enumerate(i_Locator, o_Target, true, std::vector<std::string>());
 }
 
 //----------------------------------------------------------------------------

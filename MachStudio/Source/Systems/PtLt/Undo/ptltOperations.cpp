@@ -65,10 +65,10 @@ namespace ptltOperations
 		default_data.m_BaseData.m_Name = objName;
 		AddObject(default_data);
 	}
-	void  AddObject(const ptltScriptData& i_Data)
+	nameString  AddObject(const ptltScriptData& i_Data)
 	{
 		int index = ptltActualOperations::AddObject(i_Data);
-		if (index < 0) return;	// if there is a problem loading the object, return immediately
+		if (index < 0) return nameString();	// if there is a problem loading the object, return immediately
 
 		l_LastOp = NULL;
 		std::string add_operation_name(c_AddOperationDisplayName);
@@ -79,6 +79,7 @@ namespace ptltOperations
 		std::string display_text = add_operation_name + data_name;
 		// Need new name given to new object when making udo operation
 		undoUndoMgr::AddOperation(new ptltAddOperation(index, ptltObjectMgr::GetScriptData(index), display_text.c_str()));
+		return ptltObjectMgr::GetScriptData(index).m_BaseData.m_Name.GetValue();
 	}
 
 	//--------------------------------------------------------------------
@@ -200,12 +201,28 @@ namespace ptltOperations
 	{
 		if (i_Filename.IsEmpty())
 		{
-			ptltObjectMgr::create_default_name(itString("PointLight"), o_NameString, l_ObjectCounter);
+			ptltObjectMgr::create_default_name(std::string("PointLight"), o_NameString, l_ObjectCounter);
 		}
 		else
 		{
-			ptltObjectMgr::create_duplicate_name(itString(i_Filename.GetString().c_str()), o_NameString);
+			ptltObjectMgr::create_duplicate_name(i_Filename.GetString(), o_NameString);
 		}
+	}
+
+	//--------------------------------------------------------------------
+	// Set the whole object of that name as one undoable step
+	//--------------------------------------------------------------------
+	void SetObjectData(const nameString& i_Name, const ptltScriptData& i_Data)
+	{
+		const int index = ptltObjectMgr::GetIndexForObject(i_Name);
+		if (index < 0)
+			return;
+
+		typedef cmmSetOperationTemplate< ptltScriptData, ptltActualOperations, ptltObjectMgr> SetObjectOperation;
+		const std::string display_name = "Change " + i_Name.GetString();
+		undoUndoMgr::AddOperation(new SetObjectOperation(index, ptltObjectMgr::GetScriptData(index), display_name.c_str()));
+		l_LastOp = NULL;	// later edits start their own step
+		ptltActualOperations::SetData(index, i_Data);
 	}
 
 }	// end of namespace

@@ -13,7 +13,6 @@
 #include "Systems/PtLt/Undo/ptltOperations.hpp"
 
 #include "Core/fs/fsFileUtil.hpp"
-//#include "Core/it/itStringUtil.hpp"
 #include "Tool/gui/guiMainWindow.hpp"
 //#include "Tool/gui/guiMessageBox.hpp"
 
@@ -36,16 +35,16 @@ ptltDialogInterest::ptltDialogInterest()
 //	Add Object to Placed
 //--------------------------------------------------------------------
 //virtual 
-void ptltDialogInterest::AddObject(const itString& i_FileName, const fsLocator& i_Path)
+void ptltDialogInterest::AddObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 	//std::string dir1, dir2;
-	//dir1 = itStringUtil::GetStdString(i_Path.GetName(0));
-	//dir2 = itStringUtil::GetStdString(i_Path.GetName(1));
+	//dir1 = i_Path.GetName(0);
+	//dir2 = i_Path.GetName(1);
 	//DBG_LOG2("ptltDialogInterest %s-%s", dir1.c_str(), dir2.c_str());
 
 	try
 	{
-		if (i_FileName == itString(c_CurrentViewLabel))
+		if (i_FileName == std::string(c_CurrentViewLabel))
 			ptltOperations::AddLightAtCameraPosition();
 		else
 			ptltOperations::AddObject();
@@ -161,10 +160,10 @@ void ptltDialogInterest::GetAvailableObjects(fsysFileList& io_FileList) const
 	path.Push(c_SystemName);
 
 	// Basic creation of Point Light
-	io_FileList.AddFilename(path, itString("Point Light"));
+	io_FileList.AddFilename(path, std::string("Point Light"));
 
 	// Create Point Light at current view
-	io_FileList.AddFilename(path, itString(c_CurrentViewLabel));
+	io_FileList.AddFilename(path, std::string(c_CurrentViewLabel));
 }
 
 //--------------------------------------------------------------------

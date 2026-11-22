@@ -11,7 +11,6 @@
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsResourceTracker.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
 #include "Core/prty/prtyColorRGBAEditUIInfo.hpp"
 #include "Core/prty/prtyComboBoxUIInfo.hpp"
@@ -27,11 +26,11 @@
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-mtrlUVTransform::mtrlUVTransform(mdlMaterialInfo& i_Data, 
+mtrlUVTransform::mtrlUVTransform(mdlMaterialInfo& i_Data,
 				   effUVTransform* i_pShaderData,
 				   const fsLocator &i_TextureDir)
 :	mtrlShaderObject(i_TextureDir),
-	m_Material(i_Data), 
+	m_Material(i_Data),
 	m_pShaderData(i_pShaderData)
 {
 	DBG_ASSERT(m_pShaderData != NULL, "mtrlUVTransform expected effUVTransform");
@@ -42,7 +41,7 @@ mtrlUVTransform::mtrlUVTransform(mdlMaterialInfo& i_Data,
 	m_Data.m_VTrans.SetValue(m_pShaderData->m_VTrans );
 	m_Data.m_UVAngle.SetValue(m_pShaderData->m_UVAngle );
 
-	// Create thread-safe proxy as association between the data and the material´s effect data.
+	// Create thread-safe proxy as association between the data and the material's effect data.
 	m_pShaderDataProxy.reset( new gpxEffectUVTransform(*m_pShaderData) );
 
 	// Create channels for the properties (this will set the "original value"
@@ -53,14 +52,14 @@ mtrlUVTransform::mtrlUVTransform(mdlMaterialInfo& i_Data,
 	this->AddFloatChannel(m_Material.GetMaterialName(), m_Data.m_VTrans);
 	this->AddFloatChannel(m_Material.GetMaterialName(), m_Data.m_UVAngle);
 
-	RegisterData(i_TextureDir); 
+	RegisterData(i_TextureDir);
 }
 
 //------------------------------------------------------------------------
 // Set a new directory for the material in order to find the textures.
 // Called when the material has been exported to the material library.
 //------------------------------------------------------------------------
-//virtual 
+//virtual
 void mtrlUVTransform::UpdateTextureDirectory(const fsLocator &i_TextureDir)
 {
 	mtrlShaderObject::UpdateTextureDirectory(i_TextureDir);
@@ -70,7 +69,7 @@ void mtrlUVTransform::UpdateTextureDirectory(const fsLocator &i_TextureDir)
 // Get list of used textures in order to support copying them
 // to the material library when exporting.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 void mtrlUVTransform::GetTextureList(std::vector<fsLocator>& o_TextureList)
 {
 }
@@ -120,7 +119,7 @@ void mtrlUVTransform::Update(prtyProperty *i_pProperty, bool i_bDirty)
 		mtrlOperations::SetChunkDataChanged();
 	}
 
-	// use proxy to update material´s shader at a thread-safe time
+	// use proxy to update material's shader at a thread-safe time
 	m_pShaderDataProxy->SetUVTransform(m_Data.m_UScale.GetValue(),
 									   m_Data.m_VScale.GetValue(),
 									   m_Data.m_UTrans.GetValue(),

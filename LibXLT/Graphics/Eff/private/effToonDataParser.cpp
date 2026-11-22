@@ -77,10 +77,10 @@ void effToonDataParser::Read(	chReader& i_Reader,
 	o_Shader.AddParam(new effParamColor("g_ambient", "g_ambient", data.m_ColorMidtone));
 	o_Shader.AddParam(new effParamColor("g_diffuse", "g_diffuse", data.m_ColorDiffuse));
 	o_Shader.AddParam(new effParamColor("g_specular", "g_specular", data.m_ColorSpecular));
-	o_Shader.AddParam(new effParamTexture("diffuseMap", "diffuseMap", itString(data.m_NameDiffuse.c_str())));
-	o_Shader.AddParam(new effParamTexture("gradientMap", "gradientMap", itString(data.m_NameGradientMap.c_str())));
+	o_Shader.AddParam(new effParamTexture("diffuseMap", "diffuseMap", data.m_NameDiffuse));
+	o_Shader.AddParam(new effParamTexture("gradientMap", "gradientMap", data.m_NameGradientMap));
 	o_Shader.AddParam(new effParamFloat("g_transparency", "g_transparency", data.m_Transparency));
-	o_Shader.AddParam(new effParamTexture("transparencyMap", "transparencyMap", itString(data.m_NameTransparencyMap.c_str())));
+	o_Shader.AddParam(new effParamTexture("transparencyMap", "transparencyMap", data.m_NameTransparencyMap));
 	o_Shader.AddParam(new effParamFloat("g_colorTransition0", "g_colorTransition0", data.m_Transition1));
 	o_Shader.AddParam(new effParamFloat("g_colorTransition1", "g_colorTransition1", data.m_Transition2));
 	o_Shader.AddParam(new effParamFloat("g_colorTransition2", "g_colorTransition2", data.m_Transition3));

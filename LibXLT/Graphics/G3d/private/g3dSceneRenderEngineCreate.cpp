@@ -27,8 +27,6 @@ g3dSceneRenderEngine* g3dSceneRenderEngineCreate::CreateRenderEngine(RenderEngin
 			return CreateDefaultEngine();
 		case e_RmanPrman:
 			return CreateRmanPrmanEngine();
-		case e_MentalRay:
-			return CreateMentalRayEngine();
 		default:
 			return CreateDefaultEngine();
 	}
@@ -52,16 +50,6 @@ g3dSceneRenderEngine* g3dSceneRenderEngineCreate::CreateRmanPrmanEngine( )
 	DBG_ASSERT(g3dSceneRenderEngineCreate::sm_pImplementation, "g3dSceneRenderEngineCreate: No implementation");
 	if (!sm_pImplementation) return NULL;
 	return sm_pImplementation->CreateRmanPrmanEngine();
-}
-
-//--------------------------------------------------------------------
-//--------------------------------------------------------------------
-//static 
-g3dSceneRenderEngine* g3dSceneRenderEngineCreate::CreateMentalRayEngine( )
-{
-	DBG_ASSERT(g3dSceneRenderEngineCreate::sm_pImplementation, "g3dSceneRenderEngineCreate: No implementation");
-	if (!sm_pImplementation) return NULL;
-	return sm_pImplementation->CreateMentalRayEngine();
 }
 
 //--------------------------------------------------------------------

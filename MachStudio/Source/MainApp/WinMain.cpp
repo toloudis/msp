@@ -8,6 +8,7 @@
 \********************************************************************************************/
 #include "stdafx.h"
 
+#include "MainApp/mainCommandLine.hpp"
 #include "MainApp/mainInitApplication.hpp"
 #include "MainApp/mainInitDocument.hpp"
 #include "MainApp/mainInitGraphics.hpp"
@@ -23,20 +24,26 @@
 #include "MainApp/mainPython.hpp"
 #include "MainApp/mainResolvePath.hpp"
 #include "MainApp/mnmApp.hpp"
+#ifdef MSP_GUI_QT
+#include "MainApp/qtGUI/qtMainForm.hpp"
+#else
 #include "MainApp/wxGUI/wxMainForm.hpp"
+#endif
 #include "Support/mnm/mnmConstants.hpp"
 
 // Local Project includes
 #include "Features/Capture/cptrModeRender.hpp"
 #include "Features/Capture/cptrRenderUtil.hpp"
 #include "Features/Channels/chnlDialogUtil.hpp"
-#ifdef FUSION //#if(SGPU_APP == MS_FUSION)
 #include "Features/ObjectManip/mnpPackage.hpp"
-#endif
 #include "Features/Prefs/PrefsData.hpp"
 #include "Features/Prefs/PrefsMgr.hpp"
 #include "Features/RenderPanels/rpnRenderPane.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/RenderPanels/qtGUI/rpnRenderPanel.hpp"
+#else
 #include "Features/RenderPanels/wxGUI/rpnRenderPanel.hpp"
+#endif
 #include "Features/RenderPrefs/rndrPrefsMgr.hpp"
 #include "Support/mode/modeModeMgr.hpp"
 #include "Support/mnm/mnmAppPackageMgr.hpp"
@@ -64,7 +71,6 @@
 #include "Core/Fs/fsFileUtil.hpp"
 #include "Core/fs/fsResourceTracker.hpp"
 #include "Core/gf/gfPackage.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Graphics/g2d/g2dExceptionX.hpp"
 #include "Graphics/g3d/g3dExceptionX.hpp"
 #include "Graphics/GraphicsLayer.hpp"
@@ -77,11 +83,32 @@
 #include "Tool/gui/guiMessageBox.hpp"
 #include "Tool/gui/guiSingleDocHandler.hpp"
 #include "Tool/gui/guiSplashScreen.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/qui/quiSplashScreen.hpp"
+#else
+#include "ToolUIWx/wui/wuiSplashScreen.hpp"
+#endif
 #include "Tool/rstk/rstkDocumentInterest.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/pqt/pqtControlMgr.hpp"
+#else
 #include "ToolUIWx/pwx/pwxControlMgr.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtAppUtil.hpp"
+#else
 #include "ToolUIWx/twx/twxAppUtil.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtToolbarMgr.hpp"
+#else
 #include "ToolUIWx/twx/twxToolbarMgr.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/qui/quiPackage.hpp"
+#else
 #include "ToolUIWx/wui/wuiPackage.hpp"
+#endif
 
 #include "Core/app/private/appApplicationPAC.hpp"	// FIX - if this is sorted with includes, it compiles with errors.
 
@@ -194,24 +221,24 @@ bool app_instance_exists()
 	bAppRunning |= app_instance_exists( exe.c_str() );
 	//bAppRunning |= app_instance_exists(L"Global\\MachStudio.exe");
 
-	//EnumWindows((WNDENUMPROC)Report, 0); 
+	//EnumWindows(Report, 0);
 
 	return bAppRunning;
 }
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-bool CALLBACK Report(int hwnd, int lParam)
+BOOL CALLBACK Report(HWND hwnd, LPARAM lParam)
 {
 	LPTSTR lpString = new TCHAR[128];
-	GetWindowText((HWND)hwnd, lpString, 128);
+	GetWindowText(hwnd, lpString, 128);
 
 	LPTSTR lpStringF = new TCHAR[256];
-	GetWindowModuleFileName((HWND)hwnd,lpStringF,256);
+	GetWindowModuleFileName(hwnd,lpStringF,256);
 
 	DBG_LOG("Window title " << lpString << " filename " << lpStringF);
 
-	return true;
+	return TRUE;
 }
 
 //----------------------------------------------------------------------------
@@ -282,7 +309,7 @@ void run_python_startup_scripts()
 	//now find each python object script previously created in the user's data path
 	fsLocator python_object_dir = gfPaths::GetPath(mnmPaths::e_Python, pythUtil::e_PythonObjects );
 	fsFileEnum::fsFileList python_objects;
-	itString py_ext("py");
+	std::string py_ext("py");
 	fsFileEnum::EnumerateFiles(python_object_dir, python_objects, py_ext);
 
 	//after finding each python object file, we need to execute them to add them to the menu
@@ -305,7 +332,24 @@ int DoWinMain(HINSTANCE hInstance,
 			  LPTSTR lpCmdLine,
 			  int nCmdShow)
 {
-#ifndef USE_WXWIDGETS
+	//	Parse the whole command line before anything starts: the graphics
+	//	options are needed to initialize graphics, -NoSplash and -show
+	//	before the splash screen and windows appear. The actions run once
+	//	the application is up (mnmApp::RunCommandLine below).
+	//
+	const std::string raw_command_line( envString::WideCharToUTF8(lpCmdLine) );
+	const mainCommandLine command_line = mainCommandLine::Parse( raw_command_line );
+	if ( command_line.m_bNoSplash )
+	{
+		splashscreen::SetSplashFlag(false);
+	}
+	if ( command_line.m_bShowWindows )
+	{
+		appApplicationPAC::SetShowWindows(true);
+	}
+	mainInitGraphics::SetGfxOptions( command_line.m_Gfx );
+
+#if !defined(USE_WXWIDGETS) && !defined(USE_QT)
 	// MOVED TO TOP SO SUSPENDED IS TURNED OFF FOR RENDERNODE EARLY ENOUGH
 	//
 	// Don't want to have suspend messages so that we can render in the background in batch mode
@@ -323,7 +367,7 @@ int DoWinMain(HINSTANCE hInstance,
 	//
 	mnmAppPackageMgr::SetRestricted(false);
 	envAppVersion user_version( mainConstants::mc_ExecutableVersion );
-	itString app_name(mnmConstants::c_PRODUCT);
+	std::string app_name(mnmConstants::c_PRODUCT);
 	mnmAppPackageMgr::SetAppData( app_name, user_version );
 
 	// Begin mainInitLibrary scope
@@ -377,8 +421,8 @@ int DoWinMain(HINSTANCE hInstance,
 			
 			DBG_ASSERT(pWindow != NULL, "Qt Window not properly initialized");
 
-			itString it_title(mnmConstants::c_PRODUCT);
-			QString title( itStringUtil::GetStdString( it_title ).c_str() );
+			std::string it_title(mnmConstants::c_PRODUCT);
+			QString title( it_title.c_str() );
 			pWindow->setWindowTitle( title );
 
 			// The application icon, typically displayed in the upper left corner of the application top-level windows,
@@ -404,16 +448,18 @@ int DoWinMain(HINSTANCE hInstance,
 
 			mdlModelingPackageListMgr::Clear();
 		#ifdef MODELINGPACKAGE_RHINO
-			mdlModelingPackageListMgr::Add( itString("Rhino") );
+			mdlModelingPackageListMgr::Add( std::string("Rhino") );
 		#endif
 	#endif	// MSAPP == MS_CORE
 
+#elif defined(USE_QT)
+			qtMainForm *main_frame = mainWindow.GetMainFrame();
 #endif // USE_WXWIDGETS
 			// Begin mainInitGraphics scope
 			{
 				// Initialize graphics systems here, if exception is thrown after, 
 				// those systems will be closed automatically.
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 				mainInitGraphics mainGraphics(main_frame);
 #else
 #ifdef FUSION //#if(SGPU_APP == MS_FUSION)
@@ -474,11 +520,9 @@ int DoWinMain(HINSTANCE hInstance,
 						mainInitSecurity mainSecurity;
 
 						//
-						//	parse the command line and configure the app accordingly
+						//	run the command line's actions (parsed at the top)
 						//
-						//bga - This is not good...
-						std::string cmdline( envString::WideCharToUTF8(lpCmdLine) );
-						mnmApp::ParseCommandLine( cmdline );
+						mnmApp::RunCommandLine( command_line );
 
 #ifdef FUSION //#if(SGPU_APP == MS_FUSION)
 						//	don't show the 3D icons
@@ -486,7 +530,7 @@ int DoWinMain(HINSTANCE hInstance,
 						sel3dMgr::ClearSelection();
 
 						//	Automatically open an empty application if no command line options
-						if (cmdline.size() == 0)
+						if (raw_command_line.size() == 0)
 							mnpPackage::LaunchNew();
 #endif
 						// valid the license initially
@@ -692,6 +736,34 @@ int DoWinMain(HINSTANCE hInstance,
 						}
 						#endif
 
+					#elif defined(USE_QT)
+						// Add toolbars should be full of buttons by now,
+						// so create the toolbars and set their size
+						tqtToolbarMgr::RealizeAllToolbars();
+
+						// Read in the preferences
+						main_frame->prefs_ReadAndApply();
+
+						// Show the main window
+						main_frame->show();
+
+						// Update interface
+						cmmSystemDialogUtil::UpdateDialog();
+						chnlDialogUtil::UpdateZoom();
+
+						// Think and render whenever there are no events to handle
+						main_frame->StartIdleProcessing();
+
+						tqtAppUtil::Run();
+
+						// Write out the preferences
+						main_frame->prefs_UpdateAndWrite();
+
+						// The panes and dialogs go away with the window, before
+						// the rest of the application shuts down.
+						mainWindow.DestroyMainFrame();
+						main_frame = NULL;
+
 					#else // USE_WXWIDGETS	
 						// Want to have a click on the "X" button close the application
 						appApplicationPAC::SetWantCloseMessage(true);
@@ -742,6 +814,18 @@ int DoWinMain(HINSTANCE hInstance,
 					#endif	// TIME_LIMITED
 
 					#endif // USE_WXWIDGETS
+
+					#if defined(_DEBUG) && !defined(BATCH_MODE)
+						//	Quitting doesn't end the current mode, so its DeInitialize
+						//	never runs: anything it frees only there outlives the
+						//	graphics layer (as playback's time code text once did)
+						modeMode* pExitMode = modeModeMgr::GetCurrentMode();
+						if (pExitMode && pExitMode->GetID() != mnpPackage::GetModeObjectManipID())
+						{
+							DBG_WARNING("Exiting in mode '" << pExitMode->GetMenuItemName() << "' (ID " << pExitMode->GetID()
+										<< "); its DeInitialize won't run");
+						}
+					#endif
 					} // end mainInitDocument scope
 				} // end mainInitApplication successful
 				else
@@ -965,18 +1049,16 @@ int _tmain(int argc, TCHAR** argv)
 
 	// Do main work of application setup and run here:
 	HINSTANCE hInstance = ::GetModuleHandle(NULL);
-	itString command_line;
+	std::wstring command_line;
 	char* arg[1024];
 	for (int i=1; i<argc; i++)
 	{
-//		std::cout << itString(argv[i]) << std::endl;
-
 		if (i>1) command_line += L" ";
-		command_line += itString(argv[i]);
+		command_line += argv[i];
 		arg[i]= (char*)(argv[i]);
 	}
 
-	LPTSTR lpCmdLine = (LPTSTR)command_line.GetString();
+	LPTSTR lpCmdLine = (LPTSTR)command_line.c_str();
 #ifdef FUSION //#if(SGPU_APP == MS_FUSION)
 	QApplication a(argc,arg );
 #endif

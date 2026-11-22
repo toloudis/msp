@@ -21,6 +21,7 @@
 #endif
 
 #include <vector>
+#include <string>
 
 
 //============================================================================
@@ -31,7 +32,6 @@ class fsLocator;
 class fsResourceFinder;
 class g2dPFD;
 class g2dRenderTarget;
-class itString;
 class maFloatRGBA;
 class matTexture;
 class matTextureMgrImpl;
@@ -104,6 +104,17 @@ namespace matTextureMgr
 	void SetCompressTextures(bool i_bSkip);
 	bool IsCompressTextures();
 
+	// Logs per-cache-path requests, hits, backend loads and successful texture
+	// creations at scope exit, in Release too. Nested scopes share one report.
+	// Counts file loads through LoadTexture, not procedural textures or reloads.
+	class LoadDiagnostics
+	{
+	public:
+		LoadDiagnostics();
+		~LoadDiagnostics();
+		LoadDiagnostics(const LoadDiagnostics&) = delete;
+		LoadDiagnostics& operator=(const LoadDiagnostics&) = delete;
+	};
 
 	//------------------------------------------------------------------------
 	//	GetTotalTextureMemory returns alleged amount of texture memory
@@ -121,8 +132,8 @@ namespace matTextureMgr
 	// if not found it will load from disk.
 	//--------------------------------------------------------------------
 	matTexture* LoadTexture(const fsLocator& i_Locator, const TEXTURE_TYPE i_Type = TEXTURE_TYPE_2D, const bool mipmap_if_2D = true);
-	matTexture* LoadTexture(const fsLocator& i_Directory, const itString& i_Name, const TEXTURE_TYPE i_Type = TEXTURE_TYPE_2D, const bool mipmap_if_2D = true, const bool i_bIgnoreTUVSuffix = false);
-	matTexture* LoadTexture(const fsResourceFinder& i_Directory, const itString& i_Name, const TEXTURE_TYPE i_Type = TEXTURE_TYPE_2D, const bool mipmap_if_2D = true);
+	matTexture* LoadTexture(const fsLocator& i_Directory, const std::string& i_Name, const TEXTURE_TYPE i_Type = TEXTURE_TYPE_2D, const bool mipmap_if_2D = true, const bool i_bIgnoreTUVSuffix = false);
+	matTexture* LoadTexture(const fsResourceFinder& i_Directory, const std::string& i_Name, const TEXTURE_TYPE i_Type = TEXTURE_TYPE_2D, const bool mipmap_if_2D = true);
 
 	//--------------------------------------------------------------------
 	//	WriteUVATexture writes the given UVA to a binary file with the
@@ -132,7 +143,7 @@ namespace matTextureMgr
 	//--------------------------------------------------------------------
 	void WriteUVATexture(	const matUVATexture& i_Texture,
 							const fsLocator& i_Locator,
-							const itString* i_Textures);
+							const std::string* i_Textures);
 
 	//--------------------------------------------------------------------
 	//	WriteUVATexture writes the given UVA using the given chWriter.
@@ -142,7 +153,7 @@ namespace matTextureMgr
 	//--------------------------------------------------------------------
 	void WriteUVATexture(	const matUVATexture& i_Texture,
 							chWriter& i_Writer,
-							const itString* i_Textures);
+							const std::string* i_Textures);
 
 	//--------------------------------------------------------------------
 	//	ReadUVATexture reads the given UVA from a binary file with the
@@ -151,7 +162,7 @@ namespace matTextureMgr
 	//	texture.
 	//--------------------------------------------------------------------
 	matUVATexture* ReadUVATexture(	const fsLocator& i_Locator,
-									std::vector<itString>& o_Textures);
+									std::vector<std::string>& o_Textures);
 
 	//--------------------------------------------------------------------
 	//	CreateUVATexture creates a "blank" UVA texture.  When this option
@@ -241,6 +252,13 @@ namespace matTextureMgr
 	void UnloadTexture( const fsLocator& i_Locator);
 
 	//------------------------------------------------------------------------
+	//	Texture saving: mip 0 of layer 0, read back with
+	//	g2dScreenCaptureUtil::Capture2DTextureToImage and written with
+	//	g2dImageSaveUtil (the same on every backend). SaveTextureToFile
+	//	writes the type the extension names, and throws g2dImageSaveX if
+	//	there is no texture to read back; SaveTextureToRgbaTiff and
+	//	SaveTextureToRgbaPNG write TIFF and PNG whatever the extension. A
+	//	file that can't be written is traced, not thrown.
 	//------------------------------------------------------------------------
 	void SaveTextureToFile(matTexture* i_pTexture, 
 		const fsLocator& i_FilePathLocator);
@@ -339,8 +357,8 @@ public:
 	// a single codebase for this function
 	//--------------------------------------------------------------------
 	virtual matTexture* LoadTexture(const fsLocator& i_Directory,
-									const itString& i_Name,
-									std::vector<itString>& o_UVANames,
+									const std::string& i_Name,
+									std::vector<std::string>& o_UVANames,
 									TEXTURE_TYPE i_Type = TEXTURE_TYPE_2D, 
 									bool i_bIgnoreTUVSuffix = false,
 									bool mipmap_if_2D = true) = 0;
@@ -409,21 +427,6 @@ public:
 	//	UnloadTextures resets the d3d surface of a texture
 	//--------------------------------------------------------------------
 	virtual void UnloadTexture( const fsLocator& i_Locator ) = 0;
-
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	virtual void SaveTextureToRgbaTiff(matTexture* i_pTexture, 
-		const fsLocator& i_FilePathLocator) = 0;
-
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	virtual void SaveTextureToRgbaPNG(matTexture* i_pTexture, 
-		const fsLocator& i_FilePathLocator) = 0;
-
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	virtual void SaveTextureToFile(matTexture* i_pTexture, 
-		const fsLocator& i_FilePathLocator) = 0;
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------

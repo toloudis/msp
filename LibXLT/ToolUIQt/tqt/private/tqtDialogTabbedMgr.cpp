@@ -1,7 +1,7 @@
 /*****************************************************************************
-**	tqtDialogTabbedMgr.cpp
+**  tqtDialogTabbedMgr.cpp
 **
-**		see .hpp
+**      see .hpp
 **
 **	StudioGPU
 **	Copyright(C) 2004 - All Rights Reserved
@@ -16,8 +16,8 @@
 
 #include <map>
 
-
 #ifdef USE_QT
+
 
 //============================================================================
 //============================================================================
@@ -31,15 +31,12 @@ namespace
 		std::map<std::string, tqtDialogTabbed*>::iterator it = m_DialogMap.find(i_Name);
 		if (it == m_DialogMap.end())
 		{
-			DBG_ASSERT(tqtSystem::g_pMainForm != NULL, "MainForm not yet initialized.");
-
-#ifdef QT_FINISH_PORT
-			wxString name(i_Name.c_str(), wxConvUTF8);
-			wxString title(((i_Title) ? i_Title : i_Name.c_str()), wxConvUTF8);
-			tqtDialogTabbed* pDialog = new tqtDialogTabbed(tqtSystem::g_pMainForm, wxID_ANY, name, title);
+			DBG_ASSERT(tqtSystem::g_pMainForm, "MainForm not yet initialized.");
+			QString name = tqtQString(i_Name);
+			QString title = tqtQString((i_Title) ? i_Title : i_Name.c_str());
+			tqtDialogTabbed* pDialog = new tqtDialogTabbed(tqtSystem::g_pMainForm, name, title);
 			m_DialogMap[i_Name] = pDialog;
 			return pDialog;
-#endif
 		}
 		return it->second;
 	}
@@ -70,12 +67,9 @@ void tqtDialogTabbedMgr::Show(const char* i_DialogName)
 //---------------------------------------------------------------------------
 void tqtDialogTabbedMgr::Hide(const char* i_DialogName)
 {
-	if (tqtSystem::g_pMainForm != NULL)
+	if (tqtSystem::g_pMainForm)
 	{
 		tqtDialogTabbed* pDialog = get_or_create_dialog(i_DialogName);
-#ifdef QT_FINISH_PORT
-		pDialog->Hide();
-#endif
 		tqtPaneMgr::Show(pDialog, false);
 	}
 }
@@ -157,8 +151,7 @@ void tqtDialogTabbedMgr::RemoveTabPages(const char* i_DialogName)
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-#ifdef QT_FINISH_PORT
-wxPanel* tqtDialogTabbedMgr::GetTabPage(const char* i_DialogName, const std::string& i_TabName)
+QWidget* tqtDialogTabbedMgr::GetTabPage(const char* i_DialogName, const std::string& i_TabName)
 {
 	std::map<std::string, tqtDialogTabbed*>::iterator it = m_DialogMap.find(i_DialogName);
 	if (it != m_DialogMap.end())
@@ -168,7 +161,6 @@ wxPanel* tqtDialogTabbedMgr::GetTabPage(const char* i_DialogName, const std::str
 	}
 	return NULL;
 }
-#endif
 
 //---------------------------------------------------------------------------
 // Called from destructor of tqtDialogTabbed in order to make sure we free
@@ -197,9 +189,7 @@ void tqtDialogTabbedMgr::Freeze(const char* i_DialogName)
 	if (it != m_DialogMap.end())
 	{
 		tqtDialogTabbed* pDialog = it->second;
-#ifdef QT_FINISH_PORT
-		pDialog->Freeze();
-#endif
+		pDialog->setUpdatesEnabled(false);
 	}
 }
 
@@ -212,10 +202,8 @@ void tqtDialogTabbedMgr::Thaw(const char* i_DialogName)
 	if (it != m_DialogMap.end())
 	{
 		tqtDialogTabbed* pDialog = it->second;
-#ifdef QT_FINISH_PORT
-		pDialog->Thaw();
-#endif
+		pDialog->setUpdatesEnabled(true);
 	}
 }
 
-#endif	// USE_QT
+#endif // USE_QT

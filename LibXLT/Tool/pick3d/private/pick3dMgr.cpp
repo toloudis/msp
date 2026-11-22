@@ -54,7 +54,7 @@ void pick3dMgr::Clear()
 //----------------------------------------------------------------------------
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
-pick3dPickObject* pick3dMgr::MatchPickCode(envType::UInt32 i_PickCode)
+pick3dPickObject* pick3dMgr::MatchPickCode(uint32_t i_PickCode)
 {
 	std::vector<pick3dPickInterest*>::iterator it;
 	std::vector<pick3dPickInterest*>::iterator end = m_PickInterestList.end();

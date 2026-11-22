@@ -19,7 +19,6 @@
 
 #include "Core/env/envSharedAssetMgr.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
 #include "Core/prty/prtyComboBoxUIInfo.hpp"
 #include "Core/prty/prtyFileChooserUIInfo.hpp"
@@ -43,14 +42,29 @@ namespace
 {
 	const bool c_UseSharedAssetMgr = true;
 
-	class SharedAnimMgr : public envSharedAssetMgr<entAnimKeys, fsLocator>
+	// an animation: a file, or one clip of a file built for one part of it
+	struct AnimKey
+	{
+		fsLocator m_File;
+		std::string m_Part, m_Clip;
+
+		bool operator<(const AnimKey& i_Other) const
+		{
+			if (m_File < i_Other.m_File) return true;
+			if (i_Other.m_File < m_File) return false;
+			if (m_Part != i_Other.m_Part) return m_Part < i_Other.m_Part;
+			return m_Clip < i_Other.m_Clip;
+		}
+	};
+
+	class SharedAnimMgr : public envSharedAssetMgr<entAnimKeys, AnimKey>
 	{
 		//--------------------------------------------------------------------
 		// Load Animation from filename
 		//--------------------------------------------------------------------
-		virtual entAnimKeys* LoadAsset(const fsLocator& i_Locator)
+		virtual entAnimKeys* LoadAsset(const AnimKey& i_Key)
 		{
-			return entImport::LoadAnimKeys( i_Locator );
+			return entImport::LoadAnimKeys( i_Key.m_File, i_Key.m_Part, i_Key.m_Clip );
 		}
 	};
 	SharedAnimMgr l_SharedAnimationMgr;
@@ -65,7 +79,7 @@ bool tmlnDriverAnimationFull::sm_bDelayAnimations = false;
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-tmlnDriverAnimationFull::tmlnDriverAnimationFull(tmlnChannelAnimationFull &i_Channel, 
+tmlnDriverAnimationFull::tmlnDriverAnimationFull(tmlnChannelAnimationFull &i_Channel,
 												 chDefs::Name i_ChunkName)
 :	m_Channel(i_Channel),
 	m_ChunkName(i_ChunkName),
@@ -74,6 +88,7 @@ tmlnDriverAnimationFull::tmlnDriverAnimationFull(tmlnChannelAnimationFull &i_Cha
 	m_bDriverToAnimLength("Driver to Anim Length",true),
 	m_bUseAnimStart("Use Anim Start",false),
 	m_AnimFilename("Animation File Name"),
+	m_AnimClip("Anim Clip"),
 	m_AnimName("Anim Name"),
 	m_FrameRate("Frame Rate",g3dConstants::c_fDefaultFrameRate),
 	m_StartFrame("Start Frame",-1),			// -1.0 is default / not set
@@ -94,6 +109,10 @@ tmlnDriverAnimationFull::tmlnDriverAnimationFull(tmlnChannelAnimationFull &i_Cha
 	pTBUII = new prtyTextBoxUIInfo(&(m_AnimName), "Asset", "Display name for animation");
 	const int lc_ANIMTEXT_WIDTH = 150;
 	pTBUII->SetMaxWidth( lc_ANIMTEXT_WIDTH );
+	AddProperty( pTBUII );
+	pTBUII = new prtyTextBoxUIInfo(&(m_AnimClip), "Asset", "Animation in the file, empty for the whole file");
+	pTBUII->SetMaxWidth( lc_ANIMTEXT_WIDTH );
+	pTBUII->SetReadOnly(true);
 	AddProperty( pTBUII );
 	pPUII = new prtyCheckBoxUIInfo(&(m_bDriverToAnimLength), "Asset", "Resize driver length to length of animation at given frame rate");
 	AddProperty( pPUII );
@@ -119,6 +138,7 @@ tmlnDriverAnimationFull::tmlnDriverAnimationFull(tmlnChannelAnimationFull &i_Cha
 
 	// Register callbacks to update dirty bit when properties change
 	m_AnimFilename.AddCallback(new prtyCallbackWrapper<tmlnDriverAnimationFull>(this, &tmlnDriverAnimationFull::AnimFileNameChanged));
+	m_AnimClip.AddCallback(new prtyCallbackWrapper<tmlnDriverAnimationFull>(this, &tmlnDriverAnimationFull::AnimClipChanged));
 	m_AnimName.AddCallback(new prtyCallbackWrapper<tmlnDriverAnimationFull>(this, &tmlnDriverAnimationFull::AnimNameChanged));
 	m_bDriverToAnimLength.AddCallback(new prtyCallbackWrapper<tmlnDriverAnimationFull>(this, &tmlnDriverAnimationFull::DriverToAnimLengthChanged));
 	m_bUseAnimStart.AddCallback(new prtyCallbackWrapper<tmlnDriverAnimationFull>(this, &tmlnDriverAnimationFull::UseAnimStartChanged));
@@ -152,7 +172,7 @@ void tmlnDriverAnimationFull::load_animation(const std::string& i_AnimFile)
 // Set all drivers to skip the loading of all animations in order to
 //	speed loading when they aren't needed.
 //----------------------------------------------------------------------------
-//static 
+//static
 void tmlnDriverAnimationFull::SetSkipAnimations(bool i_bSkip)
 {
 	sm_bSkipAnimations = i_bSkip;
@@ -162,7 +182,7 @@ void tmlnDriverAnimationFull::SetSkipAnimations(bool i_bSkip)
 // Set all drivers to wait until the first call to Operate before loading
 //	the driver data.
 //----------------------------------------------------------------------------
-//static 
+//static
 void tmlnDriverAnimationFull::SetDelayAnimations(bool i_bDelay)
 {
 	sm_bDelayAnimations = i_bDelay;
@@ -179,7 +199,7 @@ void tmlnDriverAnimationFull::SetDelayAnimations(bool i_bDelay)
 //	for (int i=0; i<i_FileList.Size(); i++)
 //	{
 //		itString filename = i_FileList.GetFilename(i);
-//		m_pAnimFilenameUIInfo->AddItem( itStringUtil::GetStdString( filename ) );
+//		m_pAnimFilenameUIInfo->AddItem( filename );
 //	}
 //
 //	if (i_bUpdateControl)
@@ -207,11 +227,11 @@ void  tmlnDriverAnimationFull::Operate(const maTime& i_Time)
 		return;	// don't continue
 	}
 
-	// Check this often in order to tell when someone is trying to 
+	// Check this often in order to tell when someone is trying to
 	// alter the end time and is breaking the constraint
 	//update_driver_length_from_anim_length();
 
-	// stop any render threads because we can´t do animation 
+	// stop any render threads because we can't do animation
 	// through proxies yet.
 	gpxRenderControl::ConfirmSingleThread();
 
@@ -230,7 +250,7 @@ void  tmlnDriverAnimationFull::Operate(const maTime& i_Time)
 				if (pPrevDriver)
 					easeOut = pPrevDriver->GetEaseOutWeight();
 			}
-			
+
 			//TIME - should the channel use maTime also?
 			m_Channel.BlendAnimation( m_pAnimation, this->GetBeginTime().AsSeconds(), blend_time.AsSeconds(),
 				bSmoothBlend, easeIn, easeOut);
@@ -263,6 +283,7 @@ tmlnDriverInfo*  tmlnDriverAnimationFull::GetDriverInfo() const
 	int anim_index = 0;
 
 	pInfo->m_Info.m_AnimFilename	= m_AnimFilename.GetValue();
+	pInfo->m_Info.m_AnimClip		= m_AnimClip.GetValue();
 	pInfo->m_Info.m_AnimName		= m_AnimName.GetValue();
 	pInfo->m_Info.m_bDriverToAnimLength = m_bDriverToAnimLength.GetValue();
 	pInfo->m_Info.m_bUseAnimStart	= m_bUseAnimStart.GetValue();
@@ -280,7 +301,7 @@ tmlnDriverInfo*  tmlnDriverAnimationFull::GetDriverInfo() const
 //--------------------------------------------------------------------
 void tmlnDriverAnimationFull::SetDriverInfo(const tmlnDriverAnimationFullInfo& i_Info )
 {
-	// Turn off the driver length flag in order to prevent 
+	// Turn off the driver length flag in order to prevent
 	// multiple updates to the driver length as the anim
 	// info is set.
 	this->m_bDriverToAnimLength = false;
@@ -288,9 +309,12 @@ void tmlnDriverAnimationFull::SetDriverInfo(const tmlnDriverAnimationFullInfo& i
 
 	this->SetBaseDriverInfo(i_Info);
 
+	// the clip first: the file name's change loads the animation
+	this->m_AnimClip.SetValue(i_Info.m_Info.m_AnimClip );
+
 	// this will load and create the animation as needed
 	this->m_AnimFilename.SetValue(i_Info.m_Info.m_AnimFilename );
-	
+
 	this->m_AnimName.SetValue(i_Info.m_Info.m_AnimName );
 	this->m_FrameRate.SetValue(i_Info.m_Info.m_FrameRate );
 	this->m_bLooping.SetValue(i_Info.m_Info.m_bLooping );
@@ -298,8 +322,8 @@ void tmlnDriverAnimationFull::SetDriverInfo(const tmlnDriverAnimationFullInfo& i
 	this->m_EndFrame.SetValue(i_Info.m_Info.m_EndFrame );
 
 	// Set this data last so that the begin and end time are correct.
-	// the earlier sets will alter end time because of the 
-	// m_bDriverToAnimLength flag. 
+	// the earlier sets will alter end time because of the
+	// m_bDriverToAnimLength flag.
 	this->m_bDriverToAnimLength.SetValue(i_Info.m_Info.m_bDriverToAnimLength );
 	this->m_bUseAnimStart.SetValue(i_Info.m_Info.m_bUseAnimStart );
 }
@@ -319,7 +343,7 @@ float tmlnDriverAnimationFull::GetAnimationNumFrames() const
 }
 
 //--------------------------------------------------------------------
-// Returns how long the animation is in seconds given the 
+// Returns how long the animation is in seconds given the
 // frame rate and other data about this animation.
 //--------------------------------------------------------------------
 float tmlnDriverAnimationFull::GetAnimationLength() const
@@ -345,7 +369,7 @@ void tmlnDriverAnimationFull::SetFrameRateFromAnimData()
 //  get a list of resources.  the resources will be appended to the
 //	passed in list.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 void tmlnDriverAnimationFull::GetResourceList( fsResourceTrackerData& io_List )
 {
 	if (m_AnimFilename.GetValue().GetNumNames() > 0)
@@ -367,7 +391,7 @@ maFloatRGBA tmlnDriverAnimationFull::GetClipFillColor() const
 //	PerformSplit - Split up the details of this driver between itself
 //	and the driver passed in.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 void tmlnDriverAnimationFull::PerformSplit( tmlnDriver* io_pDriverAtEnd, const maTime& i_Time )
 {
 	float percent = tmlnDriver::CalculatePercent( i_Time );
@@ -415,13 +439,13 @@ void tmlnDriverAnimationFull::check_driver_name()
 	}
 	else if (m_AnimFilename.GetValue().GetNumNames() > 0)
 	{
-		std::string str = itStringUtil::GetStdString(m_AnimFilename.GetValue().GetLastName());
+		std::string str = m_AnimFilename.GetValue().GetLastName();
 		this->SetName(str.c_str());
 	}
 }
 
 //--------------------------------------------------------------------
-// Check value of animation start properties and move 
+// Check value of animation start properties and move
 //	begin time if needed.
 //--------------------------------------------------------------------
 void tmlnDriverAnimationFull::snap_anim_start()
@@ -529,11 +553,16 @@ void tmlnDriverAnimationFull::load_animation()
 		if (fsFileUtil::FileExists(anim_loc))
 		{
 			// Load the animation (either ourselves, or through shared animation manager
+			AnimKey key;
+			key.m_File = anim_loc;
+			key.m_Clip = m_AnimClip.GetValue();
+			if (!key.m_Clip.empty())
+				key.m_Part = this->GetAnimPart();
 			if (c_UseSharedAssetMgr)
-				m_pAnimKeys = l_SharedAnimationMgr.Load( anim_loc );
+				m_pAnimKeys = l_SharedAnimationMgr.Load( key );
 			else
-				m_pAnimKeys = entImport::LoadAnimKeys( anim_loc );
-			
+				m_pAnimKeys = entImport::LoadAnimKeys( key.m_File, key.m_Part, key.m_Clip );
+
 			// Get start time exported with animation data
 			if (m_pAnimKeys)
 				this->m_AnimStartTime = m_pAnimKeys->GetStartTime();
@@ -547,10 +576,10 @@ void tmlnDriverAnimationFull::load_animation()
 
 				if (!m_Channel.CheckAnimation(m_pAnimation))
 				{
-					// Model is incompatible, delete the new animation 
+					// Model is incompatible, delete the new animation
 					// and notify the user
 					free_animation();
-					
+
 					std::string filename;
 					fsFileUtil::LocatorToANSIFilename(anim_loc, filename);
 					std::ostringstream message;
@@ -565,9 +594,9 @@ void tmlnDriverAnimationFull::load_animation()
 					//fsFileUtil::LocatorToANSIFilename(anim_loc, tempstr2);
 					//DBG_LOG3( "--Loaded and Created Animation %d-%d - %s", i, j, tempstr2.c_str() );
 
-					// Instead of setting the animation's frame rate here, 
+					// Instead of setting the animation's frame rate here,
 					// set our frame rate property from the animation's frame rate
-					// which was written when the animation was exported. 
+					// which was written when the animation was exported.
 					// If this is coming from SetData(), then the existing
 					// frame rate will overwrite it, but if this is a new animation
 					// then we will use the desired frame rate automagically.
@@ -624,7 +653,7 @@ void tmlnDriverAnimationFull::free_animation()
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 void tmlnDriverAnimationFull::AnimFileNameChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{			
+{
 	if (m_pAnimation)
 	{
 		// Clear out animation in channel so that it doesn't use the animation
@@ -641,9 +670,17 @@ void tmlnDriverAnimationFull::AnimFileNameChanged(prtyProperty *i_pProperty, boo
 }
 
 //--------------------------------------------------------------------
+// a new clip reloads, as a new file does
+//--------------------------------------------------------------------
+void tmlnDriverAnimationFull::AnimClipChanged(prtyProperty *i_pProperty, bool i_bDirty)
+{
+	AnimFileNameChanged(i_pProperty, i_bDirty);
+}
+
+//--------------------------------------------------------------------
 //--------------------------------------------------------------------
 void tmlnDriverAnimationFull::AnimNameChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	check_driver_name();
 
 	this->MarkDirty();
@@ -652,7 +689,7 @@ void tmlnDriverAnimationFull::AnimNameChanged(prtyProperty *i_pProperty, bool i_
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 void tmlnDriverAnimationFull::FrameRateChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	if (m_pAnimation)
 	{
 		m_pAnimation->SetFrameRate( m_FrameRate.GetValue() );
@@ -665,7 +702,7 @@ void tmlnDriverAnimationFull::FrameRateChanged(prtyProperty *i_pProperty, bool i
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 void tmlnDriverAnimationFull::AnimationPropertiesChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	if (m_pAnimation)
 	{
 		m_pAnimation->SetLooping( m_bLooping.GetValue() );
@@ -678,14 +715,14 @@ void tmlnDriverAnimationFull::AnimationPropertiesChanged(prtyProperty *i_pProper
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 void tmlnDriverAnimationFull::DriverToAnimLengthChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	update_driver_length_from_anim_length();
 }
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 void tmlnDriverAnimationFull::UseAnimStartChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	snap_anim_start();
 }
 
@@ -693,7 +730,7 @@ void tmlnDriverAnimationFull::UseAnimStartChanged(prtyProperty *i_pProperty, boo
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 void tmlnDriverAnimationFull::LengthChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	if (m_pAnimation)
 	{
 		//	TODO - figure out a way to UNCHECK the "driver to anim length" flag
@@ -703,7 +740,7 @@ void tmlnDriverAnimationFull::LengthChanged(prtyProperty *i_pProperty, bool i_bD
 		m_pAnimation->SetStartFrame( m_StartFrame.GetValue() );
 		m_pAnimation->SetEndFrame( m_EndFrame.GetValue() );
 
-		//	
+		//
 		update_driver_length_from_anim_length();
 	}
 

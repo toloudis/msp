@@ -31,7 +31,7 @@
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 envtEnvironmentObject::envtEnvironmentObject()
-:	m_pParent(NULL), 
+:	m_pParent(NULL),
 	m_bEnabledRamp(false)
 {
 	m_pEnvironment = evmtEnvironmentMgr::CreateEnvironment();
@@ -120,7 +120,7 @@ envtEnvironmentObject::~envtEnvironmentObject()
 //--------------------------------------------------------------------
 // Get the name of the object.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 std::string envtEnvironmentObject::GetDisplayName() const
 {
 	return GetName().GetString();
@@ -133,7 +133,7 @@ const envtData& envtEnvironmentObject::GetData() const
 {
 	// Since we don't have properties that handle things like
 	// checked lists and tree controls, the environment manager
-	// still maintains the "true" object and environment connectíons.
+	// still maintains the "true" object and environment connections.
 	// We have to refresh that info from the manager whenever
 	// someone asks for the data.
 	std::vector<nameString> objects;
@@ -160,7 +160,7 @@ void envtEnvironmentObject::SetData(const envtData &i_Data)
 	nameString set_name = m_Data.m_Name.GetValue();
 	const int num_objects = m_Data.m_Objects.size();
 
-	if( m_Data.m_DiffuseMapName.GetFullValue().m_CurrentCallback == 
+	if( m_Data.m_DiffuseMapName.GetFullValue().m_CurrentCallback ==
 		prtyTextureFileChooserUIInfo::GetType(prtyTextureFileChooserUIInfo::e_Ramp) )
 	{
 		//UpdateRampData();
@@ -258,7 +258,7 @@ void envtEnvironmentObject::SetName(const nameString& i_Name)
 // Callbacks for when properties change, updates member data
 //--------------------------------------------------------------------
 void envtEnvironmentObject::NameChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	// The property's check will prevent an infinite
 	// loop here.
 	this->SetName( m_Data.m_Name.GetValue() );
@@ -392,7 +392,7 @@ void envtEnvironmentObject::RampChangedFromData(prtyProperty *i_pProperty, bool 
 	{
 		UpdateRampData();
 		m_pEnvironment->RampChanged(m_Data.m_RampData);
-		
+
 		if (i_bDirty)
 		{
 			envtDialogDataUtil::UpdateListDialog();
@@ -405,7 +405,7 @@ void envtEnvironmentObject::RampChangedFromData(prtyProperty *i_pProperty, bool 
 // Get parent object of this object in order to define relationships
 //	between icons and their affected objects.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 //sel3dObject* envtEnvironmentObject::GetParentObject() const
 //{
 //	return m_pParent;
@@ -446,7 +446,7 @@ rmpData envtEnvironmentObject::GetRampData()
 void envtEnvironmentObject::ReportMemory(gfFileTxt& i_File)
 {
     std::ostringstream stm;
-	
+
 	if (m_pEnvironment->m_DiffuseMap)
 	{
 		stm << "  Diffuse : " << m_pEnvironment->m_DiffuseMap->GetSize() << "KB\r\n";

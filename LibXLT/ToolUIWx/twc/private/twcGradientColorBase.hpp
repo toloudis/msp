@@ -41,9 +41,10 @@
 #endif
 
 #include <vector>
-#include <wx/choice.h>
 
 #ifdef USE_WXWIDGETS
+
+#include <wx/choice.h>
 
 
 //============================================================================

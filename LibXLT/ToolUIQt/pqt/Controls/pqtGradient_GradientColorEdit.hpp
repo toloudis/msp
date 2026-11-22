@@ -19,12 +19,12 @@
 #include "ToolUIQt/tqc/tqcGradientColorEdit.hpp"
 #endif
 
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
 class pqtGradient_GradientColorEdit : public pqtControl
 {
-#ifdef QT_FINISH_PORT
 	public:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
@@ -58,9 +58,9 @@ class pqtGradient_GradientColorEdit : public pqtControl
 	private:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
-		void GradientColorEdit_ValueChanged(wxCommandEvent& i_Event);
+		void GradientColorEdit_ValueChanged();
 
 		tqcGradientColorEdit* m_pActualControl;
-#endif // USE_QT
 };
 
+#endif // USE_QT

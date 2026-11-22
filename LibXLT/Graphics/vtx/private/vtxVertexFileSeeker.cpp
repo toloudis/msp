@@ -5,6 +5,9 @@
 **	Copyright(C) 2009 - All Rights Reserved
 \****************************************************************************/
 #include "Graphics/vtx/private/vtxVertexFileSeeker.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Core/Ch/chBinReader.hpp"
 #include "Core/Gf/gfFileBin.hpp"
@@ -27,7 +30,7 @@ void vtxVertexFileSeeker::Attach()
 		DBG_ASSERT(!m_File, "File should not already be open");
 		if (m_File)
 			return;
-		m_File.reset(new gfFileBin(m_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian));
+		m_File.reset(new gfFileBin(m_Locator, fsFileStream::e_ReadOnly));
 		m_Reader.reset(new chBinReader(*m_File));
 	}
 	m_AttachCount++;

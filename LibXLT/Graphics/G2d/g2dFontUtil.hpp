@@ -22,7 +22,6 @@
 //============================================================================
 //============================================================================
 class fsLocator;
-class itString;
 
 
 //============================================================================
@@ -39,7 +38,7 @@ public:
 	//	a g2dFontHandle which can be used later.  When you are done with the
 	//	font, call ReleaseFont.
 	//------------------------------------------------------------------------
-	virtual g2dFontHandle LoadFont(const itString& i_Name, int i_Size) = 0;
+	virtual g2dFontHandle LoadFont(const std::string& i_Name, int i_Size) = 0;
 
 	//------------------------------------------------------------------------
 	//	ReleaseFont informs the system that you are done with the given
@@ -52,14 +51,13 @@ public:
 	// g2dFontHandle.  It looks this up in the system to learn exactly what
 	// the system loaded.
 	//------------------------------------------------------------------------
-	virtual void GetLoadedFontName( g2dFontHandle i_Font, itString& o_Name ) = 0;
 	virtual void GetLoadedFontName( g2dFontHandle i_Font, std::string& o_Name ) = 0;
 
 	//------------------------------------------------------------------------
 	//	GetTextSizeInPixels returns the width and height in pixels of the given text and font
 	//------------------------------------------------------------------------
 	virtual void GetTextSizeInPixels(g2dFontHandle i_Font,
-									 const itString& i_Text,
+									 const std::string& i_Text,
 									 int& o_Width,
 									 int& o_Height) = 0;
 
@@ -102,7 +100,7 @@ namespace g2dFontUtil
 	//	font, call ReleaseFont. i_Index is an index into the fontutil's .tsf
 	//	identifying the name of the font
 	//------------------------------------------------------------------------
-	g2dFontHandle LoadFont(const itString& i_Name, int i_Size);
+	g2dFontHandle LoadFont(const std::string& i_Name, int i_Size);
 	//g2dFontHandle LoadFont(int i_Index, int i_Size);
 
 	//------------------------------------------------------------------------
@@ -114,12 +112,12 @@ namespace g2dFontUtil
 	//------------------------------------------------------------------------
 	//	GetTextSizeInPixels returns the width and height in pixels of the given text and font
 	//------------------------------------------------------------------------
-	void GetTextSizeInPixels(g2dFontHandle i_Font, const itString& i_Text, int& o_Width, int& o_Height);
+	void GetTextSizeInPixels(g2dFontHandle i_Font, const std::string& i_Text, int& o_Width, int& o_Height);
 
 	//------------------------------------------------------------------------
 	//	GetFontInfoFromHandle returns the name and size of the given fonthandle
 	//------------------------------------------------------------------------
-	bool GetFontInfoFromHandle(g2dFontHandle i_Font, itString& o_Name, int& o_Size, int& o_Index);
+	bool GetFontInfoFromHandle(g2dFontHandle i_Font, std::string& o_Name, int& o_Size, int& o_Index);
 
 	//------------------------------------------------------------------------
 	//	ReleaseAllFonts releases all fonts and clears the map

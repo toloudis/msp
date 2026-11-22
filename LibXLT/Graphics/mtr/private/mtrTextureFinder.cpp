@@ -10,7 +10,9 @@
 
 #include "Core/Fs/fsFileEnum.hpp"
 #include "Core/Gf/gfPaths.hpp"
-#include "Core/It/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 
 //============================================================================
@@ -22,13 +24,13 @@ namespace
 	//============================================================================
 	class FindFileEnum : public fsFileEnum::EnumTarget
 	{
-		itString m_Filename;
+		std::string m_Filename;
 	public:
 		fsLocator m_FullPath;
 		bool m_bFound;
 
 		// constructor takes vector to fill
-		FindFileEnum(const itString& i_Filename)
+		FindFileEnum(const std::string& i_Filename)
 			: m_Filename(i_Filename), m_bFound(false)
 		{
 		}
@@ -38,7 +40,7 @@ namespace
 		virtual bool Notify( const fsLocator& i_Directory, const fsLocator& i_File )
 		{
 			// Case-insensitive comparison
-			if (itStringUtil::Equal(i_File.GetLastName(), m_Filename))
+			if (envString::EqualNoCase(i_File.GetLastName(), m_Filename))
 			{
 				m_FullPath = i_Directory;
 				m_FullPath.Push( i_File );
@@ -52,7 +54,7 @@ namespace
 
 	//----------------------------------------------------------------------------
 	//----------------------------------------------------------------------------
-	bool search_material_library(const itString& i_FileName, 
+	bool search_material_library(const std::string& i_FileName, 
 								 fsLocator& o_FoundLocator)
 	{
 		// See if we have a material library path
@@ -101,7 +103,7 @@ mtrTextureFinder::mtrTextureFinder(const mtrTextureFinder& i_Finder)
 //	put the full path to the resource (including filename)
 //	into o_FoundLocator.
 //----------------------------------------------------------------
-bool mtrTextureFinder::FindResource(const itString& i_FileName, 
+bool mtrTextureFinder::FindResource(const std::string& i_FileName, 
 									fsLocator& o_FoundLocator) const
 {
 	if (m_pFinder->FindResource(i_FileName, o_FoundLocator))
@@ -116,7 +118,7 @@ bool mtrTextureFinder::FindResource(const itString& i_FileName,
 //	for the file to be found, which may be important for
 //	some implementations.
 //----------------------------------------------------------------
-bool mtrTextureFinder::FindResource(const itString& i_FileName, 
+bool mtrTextureFinder::FindResource(const std::string& i_FileName, 
 							const fsLocator& i_AskingLocator,
 							fsLocator& o_FoundLocator) const
 {

@@ -15,9 +15,7 @@
 #ifndef TMLN_DRIVERINFO_HPP
 #include "Support/tmln/tmlnDriverInfo.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 
 
 class tmlnDriverFileNameInfo : public tmlnDriverInfo
@@ -37,7 +35,7 @@ public:
 	virtual tmlnDriverInfo* Clone();
 
 
-	itString m_Value;
+	std::string m_Value;
 
 };
 

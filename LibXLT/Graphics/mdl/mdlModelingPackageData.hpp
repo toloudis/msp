@@ -14,19 +14,17 @@
 #ifndef ENV_APPVERSION_HPP
 #include "Core/env/envAppVersion.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 
 
 //============================================================================
 //============================================================================
 struct mdlModelingPackageData
 {
-	envType::Int32	m_CreationDate;			// Julian date
+	int32_t	m_CreationDate;			// Julian date
 	envAppVersion	m_ExporterVersion;
 	envAppVersion	m_SDKVersion;
-	itString		m_ModelingPackageName;
-	itString		m_ModelingPackageVersion;
+	std::string		m_ModelingPackageName;
+	std::string		m_ModelingPackageVersion;
 };
 

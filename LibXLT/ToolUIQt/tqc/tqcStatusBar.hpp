@@ -1,8 +1,8 @@
-/****************************************************************************\
+/*****************************************************************************
 **	tqcStatusBar.hpp
 **
-**		Status bar that monitors mouse motion in order to set the tool
-**	tip based on over which panel of the status bar the mouse is hovering.
+**		Status bar divided into fields (like wxStatusBar), with a tool tip
+**	for each field.
 **
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
@@ -19,34 +19,38 @@
 #include <vector>
 #include <string>
 
-
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
-class tqcStatusBar : public wxStatusBar
+class tqcStatusBar : public QStatusBar
 {
 	public:
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		tqcStatusBar(QWidget* i_pParent, 
-					   QWidgetID i_Id = wxID_ANY,
-					   long i_Style = wxST_SIZEGRIP,
-					   const wxString& i_Name = L"statusBar");
+		tqcStatusBar(QWidget* i_pParent);
 
 		//--------------------------------------------------------------------
-		// Set the tool tip for a given panel by index
+		// Create the fields. A width of -1 makes a field share the space
+		//	left over by the fixed width fields.
 		//--------------------------------------------------------------------
+		void SetFields(int i_NumFields, const int* i_pWidths);
+		int GetFieldsCount() const;
+
+		//--------------------------------------------------------------------
+		// Text and tool tip of a field
+		//--------------------------------------------------------------------
+		void SetStatusText(const QString& i_Text, int i_Field);
+		QString GetStatusText(int i_Field) const;
 		void SetPanelToolTip(int i_Panel, const std::string& i_String);
 
+		//--------------------------------------------------------------------
+		// The label widget showing a field
+		//--------------------------------------------------------------------
+		QLabel* GetField(int i_Field) const;
+
 	private:
-		//--------------------------------------------------------------------
-		//--------------------------------------------------------------------
-		void OnMouseMove(wxMouseEvent &i_Event);
-
-		std::vector<std::string> m_ToolTips;
-
-		DECLARE_EVENT_TABLE()
+		std::vector<QLabel*> m_Fields;
 };
 
 #endif // USE_QT

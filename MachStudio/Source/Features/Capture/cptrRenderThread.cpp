@@ -25,7 +25,6 @@
 //#include "Support/rlyr/data/rlyrPassesData.hpp"
 #include "Support/rlyr/rlyrPassesObject.hpp"
 #include "Support/rman/rmanMgr.hpp"
-#include "Support/mray/mrayMgr.hpp"
 #include "Support/rprf/rprfPrefsObject.hpp"
 #include "Support/rprf/rprfPrefsUtil.hpp"
 #include "Support/tmln/tmlnTimeLine.hpp"
@@ -44,9 +43,11 @@
 #include "Graphics/g2d/g2dWindow.hpp"
 #include "Graphics/g3d/g3dSceneRenderer.hpp"
 #include "Graphics/g3d/g3dSceneRendererCreate.hpp"
+#ifndef G3D_PROGRESSIVE_HPP
+#include "Graphics/G3d/g3dProgressive.hpp"
+#endif
 #include "Graphics/G3d/g3dThreadControl.hpp"
 #include "Graphics/g3d/g3dViewer.hpp"
-#include "ImportExport/mray/export/mrayExportData.hpp"
 #include "ImportExport/rman/export/rmanExportData.hpp"
 #include "Tool/api3d/api3dScene.hpp"
 #include "Tool/api3d/api3dTargetRendererMgr.hpp"
@@ -55,8 +56,6 @@
 //#include "Tool/gpx/gpxProxyMgr.hpp"
 
 #undef CreateDirectory
-
-#include <windows.h>
 
 #include <fstream>
 #include <iostream>
@@ -252,6 +251,9 @@ void cptrRenderThread::TryRenderCapture()
 	if (!m_pWindow) return;
 
 	this->ClearErrorState();
+	//	progressive renderers (GraphicsOptiX's) finish each captured frame,
+	//	and one that samples captures itself takes the capture's sampling
+	g3dProgressive::CaptureScope capturing(cptrRenderUtil::GetCaptureSampling());
 	try
 	{
 		DoRenderCaptureLayers();
@@ -314,7 +316,6 @@ void cptrRenderThread::DoRenderCaptureLayers()
 	int frame_count;
 
 	rmanMgr::ClearWrittenTextures();
-	mrayMgr::ClearWrittenTextures();
 
 	for (; 
 		(m_CurrentLayerIndex < lastLayerIndex) && (m_CurrentLayerIndex != -1);
@@ -485,7 +486,7 @@ void cptrRenderThread::DoRenderCapture()
 		// Render capture window normally
 		if (m_pViewer)
 		{
-			if (data.m_bJitteredSampling.GetValue() && choseMspEngine )
+			if (cptrRenderUtil::UsesJitteredSampling() && choseMspEngine )
 			{
 				RenderJitteredFrame(viewportShift);
 			}
@@ -502,7 +503,7 @@ void cptrRenderThread::DoRenderCapture()
 		if ( cptrRenderUtil::GetCapture() && choseMspEngine )
 		{
 
-			if (data.m_bJitteredSampling.GetValue())
+			if (cptrRenderUtil::UsesJitteredSampling())
 			{
 				DBG_ASSERT(m_AccBuf, "Accumulation buffer not initialized");
 				cptrRenderUtil::CaptureImage( m_AccBuf->GetAsImage() );
@@ -515,7 +516,7 @@ void cptrRenderThread::DoRenderCapture()
 		}
 
 		//	
-		if (m_pViewer && !data.m_bJitteredSampling.GetValue())
+		if (m_pViewer && !cptrRenderUtil::UsesJitteredSampling())
 		{
 			m_pViewer->Present();
 		}
@@ -556,33 +557,6 @@ void cptrRenderThread::RenderScene( const maTime& i_timeline )
 		rmanMgr::RendermanEntry( m_pViewer->GetAspectRatio() , m_pViewer->GetCamera() , m_CurrentLayerPrefs,
 								  fileName, data.m_CurrentScene.GetValue(), data.m_nWidth.GetValue(), data.m_nHeight.GetValue(),
 								  data.m_FilterFunc.GetValue(), data.m_FilterWidth.GetValue(), data.m_nCaptureSampling.GetValue(), 
-								  options,
-								  err, err_str);
-		if ( err )
-		{
-			m_ErrorMessage = err_str;
-			DBG_ERROR(m_ErrorMessage);
-			m_bErrorState = true;
-			m_bAppExit  = false;
-		}
-	}
-
-	// Render using Mental Ray
-	else if ( g3dPrefs::CurrentPrefs().m_RendererEngine == g3dSceneRenderEngineCreate::e_MentalRay )
-	{
-		captRenderOutputData& data = captRenderOutputDataUtil::Data();
-
-		rprfPrefsObject* prefsObject = rlyrRenderLayerMgr::GetLayerRenderPrefs(
-			rlyrRenderLayerMgr::GetLayerName(m_CurrentLayerIndex));
-
-		fsLocator fileName = cptrRenderUtil::GetMiFilename();
-		mrayOptionsData options = GetMRayOptions(prefsObject);
-
-		bool err = false;
-		std::string err_str;
-		mrayMgr::MentalRayEntry( m_pViewer->GetAspectRatio() , m_pViewer->GetCamera() , m_CurrentLayerPrefs,
-								  fileName, data.m_CurrentScene.GetValue(), data.m_nWidth.GetValue(), data.m_nHeight.GetValue(),
-								  data.m_FilterFunc.GetValue(), data.m_FilterWidth.GetValue(), data.m_nCaptureSampling.GetValue(),
 								  options,
 								  err, err_str);
 		if ( err )
@@ -719,7 +693,7 @@ void cptrRenderThread::processAnaglyph(camCamera *pCamera)
 			// Render from translated camera
 			if (m_pViewer)
 			{
-				if (data.m_bJitteredSampling.GetValue() && choseMspEngine)
+				if (cptrRenderUtil::UsesJitteredSampling() && choseMspEngine)
 				{
 					RenderJitteredFrame(viewportOffset);
 				}
@@ -734,7 +708,7 @@ void cptrRenderThread::processAnaglyph(camCamera *pCamera)
 			// Send render to pImg
 			if ( cptrRenderUtil::GetCapture() && choseMspEngine )
 			{
-				if (data.m_bJitteredSampling.GetValue())
+				if (cptrRenderUtil::UsesJitteredSampling())
 				{
 					DBG_ASSERT(m_AccBuf, "Accumulation buffer not initialized");
 					pAccum = m_AccBuf->GetAsImage();
@@ -814,15 +788,24 @@ bool cptrRenderThread::RenderJitteredFrame(float i_StereoOffset)
 	/////////////////////////////////////////////////////////
 	pCamera->SetHorizontalFilmOffset( i_StereoOffset );
 	bool choseMspEngine = g3dPrefs::CurrentPrefs().m_RendererEngine == g3dSceneRenderEngineCreate::e_Default ? true : false;
+	//	a renderer that samples captures itself (the tracer) takes the n x n
+	//	samples and the filter in one frame (g3dProgressive's capture
+	//	sampling): rendered once, unshifted, with weight 1
+	const bool renderer_samples = cptrRenderUtil::RendererSamplesCaptures();
+	const int num_samples = renderer_samples ? 1 : data.m_nCaptureSampling.GetValue()*data.m_nCaptureSampling.GetValue();
 	int i;
-	for (i = 0; i < data.m_nCaptureSampling.GetValue()*data.m_nCaptureSampling.GetValue(); i++)
+	for (i = 0; i < num_samples; i++)
 	{
 		// See if we should abort the render thread before doing the next target
 		if (g3dThreadControl::ShouldRenderThreadAbort())
 			break;
 
-		float dx = (cptrRenderUtil::GetSamplePos(i).GetX() - 0.5f)*2.0f/(float)data.m_nWidth.GetValue();
-		float dy = (cptrRenderUtil::GetSamplePos(i).GetY() - 0.5f)*2.0f/(float)data.m_nHeight.GetValue();
+		float dx = 0.0f, dy = 0.0f;
+		if (!renderer_samples)
+		{
+			dx = (cptrRenderUtil::GetSamplePos(i).GetX() - 0.5f)*2.0f/(float)data.m_nWidth.GetValue();
+			dy = (cptrRenderUtil::GetSamplePos(i).GetY() - 0.5f)*2.0f/(float)data.m_nHeight.GetValue();
+		}
 
 		pCamera->SetSubViewport(-1+dx, 1+dx, -1+dy, 1+dy);
 
@@ -830,13 +813,17 @@ bool cptrRenderThread::RenderJitteredFrame(float i_StereoOffset)
 		RenderScene( timeline_time );
 		pCamera->SetSubViewport(-1, 1, -1, 1);
 
+		//	nothing is captured before the start time (lead-in frames, and
+		//	the frame before a -capStartFrame window): those are only rendered
 		g2dImage* pImg = NULL;
 		cptrRenderUtil::CaptureFrameToImage(pImg);
-		DBG_ASSERT(pImg != NULL, "failed to capture frame to image");
-		data.m_nWidth.SetValue(pImg->GetWidth());
-		data.m_nHeight.SetValue(pImg->GetHeight());
-		m_AccBuf->Add(pImg, cptrRenderUtil::GetSamplePos(i).GetZ());
-		delete pImg;
+		if (pImg != NULL)
+		{
+			data.m_nWidth.SetValue(pImg->GetWidth());
+			data.m_nHeight.SetValue(pImg->GetHeight());
+			m_AccBuf->Add(pImg, renderer_samples ? 1.0f : cptrRenderUtil::GetSamplePos(i).GetZ());
+			delete pImg;
+		}
 
 		// we can now draw the frame sample into the window.
 		if ( pCamera->GetStereoType() == STEREO_OFF )
@@ -909,68 +896,6 @@ rmanOptionsData cptrRenderThread::GetRmanOptions(rprfPrefsObject* prefsObject)
 	options.m_RmanGIsamples = prefsObject->m_Data.m_RmanGIsamples.GetValue();
 	options.m_RmanGIMaxVariation = prefsObject->m_Data.m_RmanGIMaxVariation.GetValue();
 	options.m_bTonemapEnable = prefsObject->m_Data.m_bRmanTonemapEnable.GetValue();
-	return options;
-}
-
-//----------------------------------------------------------------------------
-// GetMRayOptions()
-//----------------------------------------------------------------------------
-mrayOptionsData cptrRenderThread::GetMRayOptions(rprfPrefsObject* prefsObject)
-{
-	mrayOptionsData options;
-
-	bool allowReflections = false;
-	if ( m_CurrentPass == rlyrPassesObject::e_Beauty || m_CurrentPass == rlyrPassesObject::e_ReflectionsOnly )
-	{
-		allowReflections = true;
-	}
-
-	options.m_Verbosity = prefsObject->m_Data.m_MrayVerbosity.GetValue();
-	options.m_NumReflBounces = prefsObject->m_Data.m_MrayNumReflBounces.GetValue();
-	options.m_NumRefrBounces = prefsObject->m_Data.m_MrayNumRefrBounces.GetValue();
-	options.m_MrayMaxTraceDepth = prefsObject->m_Data.m_MrayMaxTraceDepth.GetValue();
-	options.m_bAO = prefsObject->m_Data.m_bMrayAO.GetValue();
-	options.m_AOSamples = prefsObject->m_Data.m_MrayAOSamples.GetValue();
-	options.m_bFinalGather = prefsObject->m_Data.m_bMrayFinalGather.GetValue();
-	//options.m_bFGBlur = prefsObject->m_Data.m_bMrayFGBlur.GetValue();
-	options.m_FGNDiffuse = prefsObject->m_Data.m_MrayFGNDiffuse.GetValue();
-	options.m_FGNRefl = prefsObject->m_Data.m_MrayFGNRefl.GetValue();
-	options.m_FGNRefr = prefsObject->m_Data.m_MrayFGNRefr.GetValue();
-	options.m_FGNRays = prefsObject->m_Data.m_MrayFGNRays.GetValue();
-	options.m_FGColor = prefsObject->m_Data.m_MrayFGColor.GetValue();
-	options.m_OutputFormat = prefsObject->m_Data.m_MrayOutputFormat.GetValue();
-	options.m_NumThreads = prefsObject->m_Data.m_MrayNumThreads.GetValue();
-	options.m_MemoryLimit = prefsObject->m_Data.m_MrayMemoryLimit.GetValue();
-	options.m_bEnableReflections = prefsObject->m_Data.m_bMrayEnableReflections.GetValue() & allowReflections;
-	options.m_bEnableShadows = prefsObject->m_Data.m_bMrayEnableShadows.GetValue();
-	options.m_MrayShadowType = prefsObject->m_Data.m_MrayShadowType.GetValue();
-	options.m_bRewriteAssets = prefsObject->m_Data.m_bMrayRewriteAssets.GetValue();
-	options.m_VerbosityLevel = prefsObject->m_Data.m_MrayVerbosityLevel.GetValue();
-	options.m_bFGMapEnable = prefsObject->m_Data.m_bMrayFGMapEnable.GetValue();
-	options.m_FGMapRebuild = prefsObject->m_Data.m_MrayFGMapRebuild.GetValue();
-	options.m_FGMapPath = prefsObject->m_Data.m_MrayFGMapPath.GetValue();
-	options.m_ReflSamples = prefsObject->m_Data.m_MrayReflSamples.GetValue();
-	options.m_bOverrideMSPSampling = prefsObject->m_Data.m_bMrayOverrideMSPSampling.GetValue();
-	options.m_MinCaptureSamples = prefsObject->m_Data.m_MrayMinCaptureSamples.GetValue();
-	options.m_MaxCaptureSamples = prefsObject->m_Data.m_MrayMaxCaptureSamples.GetValue();
-	options.m_AAContrast = prefsObject->m_Data.m_MRayAAContrast.GetValue();
-	options.m_bProgressive = prefsObject->m_Data.m_bMrayProgressive.GetValue();
-	options.m_bTonemapEnable = prefsObject->m_Data.m_bMRayTonemapEnable.GetValue();
-	options.m_bEnableIBL = prefsObject->m_Data.m_bEnableIBL.GetValue();
-	options.m_IBLQuality = prefsObject->m_Data.m_IBLQuality.GetValue();
-	options.m_IBLMapRes = prefsObject->m_Data.m_IBLMapRes.GetValue();
-	options.m_IBLScale = prefsObject->m_Data.m_IBLScale.GetValue();
-	options.m_IBLSampleNum = prefsObject->m_Data.m_IBLSampleNum.GetValue();
-	options.m_bIgnoreBadTex = prefsObject->m_Data.m_bMrayIgnoreBadTex.GetValue();
-	options.m_bDisplayPreviewer = prefsObject->m_Data.m_bMrayDisplayPreview.GetValue();
-	options.m_ProgSubsamplingSize = prefsObject->m_Data.m_MrayProgSubsamplingSize.GetValue();
-	options.m_ProgSubsamplingMode = prefsObject->m_Data.m_MrayProgSubsamplingMode.GetValue();
-	options.m_ProgSubsamplingPattern = prefsObject->m_Data.m_MrayProgSubsamplingPattern.GetValue();
-	options.m_ProgMinSamples = prefsObject->m_Data.m_MrayProgMinSamples.GetValue();
-	options.m_ProgMaxSamples = prefsObject->m_Data.m_MrayProgMaxSamples.GetValue();
-	options.m_ProgMaxTime = prefsObject->m_Data.m_MrayProgMaxTime.GetValue();
-	options.m_ProgErrorThreshold = prefsObject->m_Data.m_MrayProgErrorThreshold.GetValue();
-
 	return options;
 }
 
@@ -1123,11 +1048,11 @@ void cptrRenderThread::SetupPass(rlyrPassesObject::ePassType i_CurrentPass)
 	//this->SetViewer(m_pViewer);
 	cptrRenderUtil::SetCaptureRenderer(pRenderer);
 
-	itString layer_name;
+	std::string layer_name;
 	nameString layer_desc = rlyrRenderLayerMgr::GetLayerName( m_CurrentLayerIndex );
 	layer_name = layer_desc.GetString().c_str();
 
-	itString pass_name = captRenderOutputDataUtil::GetRenderPassName(i_CurrentPass);
+	std::string pass_name = captRenderOutputDataUtil::GetRenderPassName(i_CurrentPass);
 
 	data.m_RenderPosLayer.SetValue( layer_name );			// for saving render position
 
@@ -1182,7 +1107,7 @@ void cptrRenderThread::CreateOutputDir(const fsLocator& i_OutputDirName)
 			if(data.m_bBatchMode.GetValue()
 				&& data.m_bBatchSkipDialog.GetValue())
 			{
-				cptrRenderStatsDialogUtil::AddStatsMessage(itString(msg.c_str()));
+				cptrRenderStatsDialogUtil::AddStatsMessage(msg);
 				cptrRenderStatsDialogUtil::Newline();
 			}
 			else
@@ -1198,7 +1123,7 @@ void cptrRenderThread::CreateOutputDir(const fsLocator& i_OutputDirName)
 			if(data.m_bBatchMode.GetValue()
 				&& data.m_bBatchSkipDialog.GetValue())
 			{
-				cptrRenderStatsDialogUtil::AddStatsMessage(itString(msg.c_str()));
+				cptrRenderStatsDialogUtil::AddStatsMessage(msg);
 				cptrRenderStatsDialogUtil::Newline();
 			}
 			else

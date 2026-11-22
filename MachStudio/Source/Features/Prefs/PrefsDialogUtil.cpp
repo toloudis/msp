@@ -9,12 +9,20 @@
 #include "Features/Prefs/PrefsData.hpp"
 #include "Features/Prefs/PrefsDialogUtil.hpp"
 #include "Features/Prefs/PrefsMgr.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/Prefs/qtGUI/prefsLayoutChoice.hpp"
+#else
 #include "Features/Prefs/wxGUI/prefsLayoutChoice.hpp"
+#endif
 //#include "Features/Prefs/prefsQuickMgr.hpp"
 
 #include "Tool/cma/cmaCommandMgr.hpp"
 #include "Tool/gui/guiDialogTabbedMgr.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtToolbarMgr.hpp"
+#else
 #include "ToolUIWx/twx/twxToolbarMgr.hpp"
+#endif
 
 
 //============================================================================
@@ -84,6 +92,15 @@ namespace PrefsDialogUtil
 			prefsLayoutChoice::Instance->Update();
 			twxToolbarMgr::AddControlToToolBar(c_LayoutToolbarName, prefsLayoutChoice::Instance);
 		}
+#elif defined(USE_QT)
+		// In Qt version, the layout choices appear in 
+		// a combo box in a toolbar pane
+		if (prefsLayoutChoice::Instance == NULL)
+		{
+			prefsLayoutChoice::Instance = new prefsLayoutChoice(tqtToolbarMgr::GetToolbarByName(c_LayoutToolbarName)); 
+			prefsLayoutChoice::Instance->Update();
+			tqtToolbarMgr::AddControlToToolBar(c_LayoutToolbarName, prefsLayoutChoice::Instance);
+		}
 #endif
 
 	}
@@ -94,13 +111,17 @@ namespace PrefsDialogUtil
 	//------------------------------------------------------------------------
 	void  UpdateLayouts(const std::string& i_CurrentLayoutName)
 	{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (prefsLayoutChoice::Instance != NULL)
 		{
 			prefsLayoutChoice::Instance->Update();
 			if (!i_CurrentLayoutName.empty())
 			{
+#ifdef USE_QT
+				prefsLayoutChoice::Instance->SetStringSelection(i_CurrentLayoutName);
+#else
 				prefsLayoutChoice::Instance->SetStringSelection(wxString(i_CurrentLayoutName.c_str(), wxConvUTF8));
+#endif
 			}
 		}
 #endif

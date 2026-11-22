@@ -28,13 +28,13 @@
 #include "Core/dbg/dbgMsg.hpp"
 #endif
 
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
 template<class PropertyType, class ValueType, class Converter>
 class pqtTemplate_Vector3EditUpDown : public pqtControl, public prtyUnitsInterest
 {
-#ifdef QT_FINISH_PORT
 	public:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
@@ -65,9 +65,7 @@ class pqtTemplate_Vector3EditUpDown : public pqtControl, public prtyUnitsInteres
 
 			//	hook up events
 			//
-			this->Connect( m_pActualControl->GetId(), wxEVT_VALUE_CHANGED,
-							wxCommandEventHandler(pqtTemplate_Vector3EditUpDown::Vector3EditUpDown_ValueChanged) );
-			m_pActualControl->PushEventHandler(this);
+			m_pActualControl->SetValueChangedCallback([this]() { Vector3EditUpDown_ValueChanged(); });
 		}
 
 		//----------------------------------------------------------------------------
@@ -76,7 +74,6 @@ class pqtTemplate_Vector3EditUpDown : public pqtControl, public prtyUnitsInteres
 		virtual ~pqtTemplate_Vector3EditUpDown()
 		{
 			prtyUnits::UnRegisterUnitsInterest(this);
-			m_pActualControl->RemoveEventHandler(this);
 		}
 
 		//----------------------------------------------------------------------------
@@ -124,7 +121,7 @@ class pqtTemplate_Vector3EditUpDown : public pqtControl, public prtyUnitsInteres
 		//----------------------------------------------------------------------------
 		void UpdateControl(prtyPropertyUIInfo* i_pUIInfo)
 		{
-			m_pActualControl->Enable(!i_pUIInfo->GetReadOnly());
+			m_pActualControl->setEnabled(!i_pUIInfo->GetReadOnly());
 
 			prtyVector3dEditUpDownUIInfo* pUII = static_cast<prtyVector3dEditUpDownUIInfo*>(i_pUIInfo);
 			m_pActualControl->SetIncrement( pUII->GetIncrement() );
@@ -136,7 +133,7 @@ class pqtTemplate_Vector3EditUpDown : public pqtControl, public prtyUnitsInteres
 	private:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
-		void Vector3EditUpDown_ValueChanged(wxCommandEvent& i_Event)
+		void Vector3EditUpDown_ValueChanged()
 		{
 			if (m_bLocalChangeNoUpdate) return;
 
@@ -151,6 +148,6 @@ class pqtTemplate_Vector3EditUpDown : public pqtControl, public prtyUnitsInteres
 		}
 
 		tqcVector3EditUpDown* m_pActualControl;
-#endif // USE_QT
 };
 
+#endif // USE_QT

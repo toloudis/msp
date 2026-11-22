@@ -12,7 +12,11 @@
 #include "Support/fgmt/fgmtFragmentData.hpp"
 #include "Support/fgmt/GUI/fgmtOperations.hpp"
 #include "Support/fgmt/GUI/fgmtPropertyObject.hpp"
+#ifdef MSP_GUI_QT
+#include "Support/fgmt/qtGUI/fgmtUVEditor.hpp"
+#else
 #include "Support/fgmt/wxGUI/fgmtUVEditor.hpp"
+#endif
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/Fs/fsFileEnum.hpp"
@@ -22,7 +26,9 @@
 #include "Core/fs/fsResourceTrackerData.hpp"
 #include "Core/gf/gfFileTxt.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
 #include "Core/prty/prtyComboBoxUIInfo.hpp"
 #include "Core/prty/prtyNumericUpDownUIInfo.hpp"
@@ -315,9 +321,9 @@ fgmtScriptObject::fgmtScriptObject(api3dObject* i_pObject,
 	m_ModelTextureLocator = find_texture_path(i_ModelLocator);
 	DBG_ASSERT(i_pObject, "Null api3dObject.");
 	
-	itString modelName = i_ModelLocator.GetLastName();
-	modelName.StripExtension();
-	m_ModelName = itStringUtil::GetStdString(modelName);
+	std::string modelName = i_ModelLocator.GetLastName();
+	envString::StripExtension(modelName);
+	m_ModelName = modelName;
 	m_BaseName = i_BaseName;
 	GatherFragments();
 	for (int i = 0; i < m_FragmentUI.size(); i++)
@@ -885,7 +891,7 @@ void fgmtScriptObject::ChangeFragmentDataAO(int i_Index)
 // Get fragment index by looking for the node with the given 
 //	pick code.
 //--------------------------------------------------------------------
-int fgmtScriptObject::GetFragmentIndexFromPickCode(envType::UInt32 i_PickCode) const
+int fgmtScriptObject::GetFragmentIndexFromPickCode(uint32_t i_PickCode) const
 {
 	const g3dSceneNode *pPickedNode = m_pObject->GetPickedNode(i_PickCode);
 	if (pPickedNode)
@@ -1137,7 +1143,7 @@ void fgmtScriptObject::CreateBakedMaterials()
 			nameStr = m_FragmentNodes[i][j]->GetBakeName();
 			nameStr.append("_Baked_Normals.");
 			nameStr.append(m_FragmentData[i].m_BakedTextureFormat.GetValue().c_str());
-			itString nameItString(nameStr.c_str());
+			std::string nameItString(nameStr.c_str());
 			path.ReplaceLastName( nameItString );
 			if (fsFileUtil::FileExists(path))
 			{

@@ -9,7 +9,11 @@
 #include "Features/Prefs/prefsCommands.hpp"
 
 #include "Features/Prefs/PrefsDialogUtil.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/Prefs/qtGUI/prefsLayoutMgr.hpp"
+#else
 #include "Features/Prefs/wxGUI/prefsLayoutMgr.hpp"
+#endif
 
 #include "Systems/Common/GUI/cmmSystemDialogUtil.hpp"
 
@@ -43,7 +47,7 @@ namespace
 	//--------------------------------------------------------------------
 	void Execute_SaveLayout()
 	{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		prtyText layoutName("Layout Name");
 		layoutName.SetValue(prefsLayoutMgr::GetCurrentLayoutName());
 		prtyPropertyUIInfoContainer layoutInfo;
@@ -62,7 +66,7 @@ namespace
 	//--------------------------------------------------------------------
 	void Execute_DeleteLayout()
 	{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (!prefsLayoutMgr::GetCurrentLayoutName().empty())
 		{
 			prefsLayoutMgr::DeleteNamedLayout(prefsLayoutMgr::GetCurrentLayoutName());
@@ -75,14 +79,14 @@ namespace
 	//--------------------------------------------------------------------
 	void Execute_NextLayout()
 	{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		prefsLayoutMgr::SwitchToNextLayout();
 		PrefsDialogUtil::UpdateLayouts(prefsLayoutMgr::GetCurrentLayoutName());
 #endif // USE_WXWIDGETS
 	}
 	void Execute_PrevLayout()
 	{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		prefsLayoutMgr::SwitchToPrevLayout();
 		PrefsDialogUtil::UpdateLayouts(prefsLayoutMgr::GetCurrentLayoutName());
 #endif // USE_WXWIDGETS

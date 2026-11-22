@@ -37,9 +37,5 @@ class snSoundManagerPAC
 #if ENV_WINDOWS
 	#include "AudioDS/sn/private/snSoundManagerPACWin.hpp"
 #else
-	#if ENV_OS == ENV_XBOXOS
-		#include "AudioDS/sn/private/snSoundManagerPACXbox.hpp"
-	#else
-		#error snSoundManagerPAC not defined for this platform
-	#endif
+	#error snSoundManagerPAC not defined for this platform
 #endif

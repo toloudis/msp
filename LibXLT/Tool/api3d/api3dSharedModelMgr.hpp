@@ -27,11 +27,12 @@ class fsLocator;
 namespace api3dSharedModelMgr
 {
 	//------------------------------------------------------------------------
-	// See if the file has already been loaded. If so, return that
-	// model template. Otherwise, load the geometry file.
+	// See if the file (or the part of it, entImport::LoadGeometry) has
+	// already been loaded. If so, return that model template. Otherwise,
+	// load the geometry file. An empty part is the whole file.
 	// If there is an error, NULL is returned.
 	//------------------------------------------------------------------------
-	entModelTemplate* LoadModelTemplate(const fsLocator& i_Locator);
+	entModelTemplate* LoadModelTemplate(const fsLocator& i_Locator, const std::string& i_Part = "");
 
 	//------------------------------------------------------------------------
 	// Release a usage of the template. If the usage count goes to
@@ -41,9 +42,9 @@ namespace api3dSharedModelMgr
 	int ReleaseModelTemplate(entModelTemplate* i_ModelTemplate);
 
 	//------------------------------------------------------------------------
-	// Remove the given filename from shared management such that the
-	// next call to LoadModelTemplate() will reload the original
+	// Remove the given filename (or part of it) from shared management such
+	// that the next call to LoadModelTemplate() will reload the original
 	// geometry file.
 	//------------------------------------------------------------------------
-	void StopSharing(const fsLocator& i_Locator);
+	void StopSharing(const fsLocator& i_Locator, const std::string& i_Part = "");
 };

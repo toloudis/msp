@@ -15,9 +15,7 @@
 #ifndef TMLN_DRIVER_HPP
 #include "Support/tmln/tmlnDriver.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 #ifndef MA_POINT3D_HPP
 #include "Core/ma/maPoint3d.hpp"
 #endif

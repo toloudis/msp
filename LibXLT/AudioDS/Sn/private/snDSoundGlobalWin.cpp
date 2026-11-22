@@ -8,6 +8,9 @@
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
 #include "AudioDS/sn/private/snDSoundGlobalWin.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "AudioDS/sn/snExceptionX.hpp"
 #include "Core/app/private/appApplicationPACWin.hpp"

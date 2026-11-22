@@ -9,7 +9,6 @@
 #include "Core/Ch/chChunkParserUtil.hpp"
 
 #include "Core/Ch/chReader.hpp"
-#include "Core/It/itStringUtil.hpp"
 
 
 //============================================================================
@@ -21,7 +20,7 @@ namespace chChunkParserUtil
 //------------------------------------------------------------------------
 void Read(chReader& i_Reader, bool& o_bValue)
 {
-	envType::UInt8 val;
+	uint8_t val;
 	i_Reader.Read(val);
 	o_bValue = val ? true : false;
 }
@@ -30,7 +29,7 @@ void Read(chReader& i_Reader, bool& o_bValue)
 //------------------------------------------------------------------------
 void Read(chReader& i_Reader, float& o_fValue)
 {
-	envType::Float32 val;
+	float val;
 	i_Reader.Read(val);
 	o_fValue = val;
 }
@@ -39,7 +38,7 @@ void Read(chReader& i_Reader, float& o_fValue)
 //------------------------------------------------------------------------
 void Read(chReader& i_Reader, int& o_nFirst)
 {
-	envType::Int32 val;
+	int32_t val;
 	i_Reader.Read(val);
 	o_nFirst = val;
 }
@@ -48,7 +47,7 @@ void Read(chReader& i_Reader, int& o_nFirst)
 //------------------------------------------------------------------------
 void Read(chReader& i_Reader, unsigned int& o_nFirst)
 {
-	envType::UInt32 val;
+	uint32_t val;
 	i_Reader.Read(val);
 	o_nFirst = val;
 }
@@ -57,7 +56,7 @@ void Read(chReader& i_Reader, unsigned int& o_nFirst)
 //------------------------------------------------------------------------
 void Read(chReader& i_Reader, maVector4d& o_Vec)
 {
-	envType::Float32 val;
+	float val;
 	i_Reader.Read(val);
 	o_Vec.SetX(val);
 	i_Reader.Read(val);
@@ -72,7 +71,7 @@ void Read(chReader& i_Reader, maVector4d& o_Vec)
 //------------------------------------------------------------------------
 void Read(chReader& i_Reader, maPoint3d& o_Point)
 {
-	envType::Float32 val;
+	float val;
 	i_Reader.Read(val);
 	o_Point.SetX(val);
 	i_Reader.Read(val);
@@ -85,7 +84,7 @@ void Read(chReader& i_Reader, maPoint3d& o_Point)
 //------------------------------------------------------------------------
 void Read(chReader& i_Reader, maPoint2d& o_Point)
 {
-	envType::Float32 val;
+	float val;
 	i_Reader.Read(val);
 	o_Point.SetX(val);
 	i_Reader.Read(val);
@@ -96,7 +95,7 @@ void Read(chReader& i_Reader, maPoint2d& o_Point)
 //------------------------------------------------------------------------
 void Read(chReader& i_Reader, maIntPoint2d& o_Point)
 {
-	envType::Int32 val;
+	int32_t val;
 	i_Reader.Read(val);
 	o_Point.SetX(val);
 	i_Reader.Read(val);
@@ -107,7 +106,7 @@ void Read(chReader& i_Reader, maIntPoint2d& o_Point)
 //------------------------------------------------------------------------
 void Read(chReader& i_Reader, maRotation& o_Orientation)
 {
-	envType::Float32 x, y, z, angle;
+	float x, y, z, angle;
 	i_Reader.Read(x);
 	i_Reader.Read(y);
 	i_Reader.Read(z);
@@ -120,7 +119,7 @@ void Read(chReader& i_Reader, maRotation& o_Orientation)
 //------------------------------------------------------------------------
 void Read(chReader& i_Reader, maFloatRGBA& o_Color)
 {
-	envType::Float32 val;
+	float val;
 	i_Reader.Read(val);
 	o_Color.SetAlpha(val);
 	i_Reader.Read(val);
@@ -137,10 +136,10 @@ void Read(chReader& i_Reader, maGradient& o_Gradient)
 {
 	o_Gradient.Clear();
 
-	envType::Int32 size;
+	int32_t size;
 	i_Reader.Read(size);
 
-	envType::Float32 val;
+	float val;
 	maFloatRGBA color;
 	
 	for (int i = 0; i < size; i++)
@@ -153,19 +152,6 @@ void Read(chReader& i_Reader, maGradient& o_Gradient)
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-void Read( chReader& i_Reader, itString& o_Name )
-{
-	// Old version
-	//itString null_terminated_string;
-	//i_Reader.Read(null_terminated_string);
-	//o_Name = itString(0, null_terminated_string.GetLength() - 1, null_terminated_string); // un-NULL terminate
-
-	// New version - reader stops at NULL-terminator, but does not add it to itString
-	i_Reader.Read(o_Name);
-}
-
-//------------------------------------------------------------------------
-//------------------------------------------------------------------------
 void Read( chReader& i_Reader, std::string& o_Name )
 {
 	i_Reader.Read(o_Name);
@@ -173,10 +159,17 @@ void Read( chReader& i_Reader, std::string& o_Name )
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
+void ReadLegacyWideString( chReader& i_Reader, std::string& o_Name )
+{
+	i_Reader.ReadLegacyWideString(o_Name);
+}
+
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
 void Read( chReader& i_Reader, maMatrix4x4& o_Matrix )
 {
 	int row, column;
-	envType::Float32 val;
+	float val;
 	for( row = 0 ; row < 4 ; row++ )
 	{
 		for( column = 0 ; column < 4 ; column++ )
@@ -185,20 +178,6 @@ void Read( chReader& i_Reader, maMatrix4x4& o_Matrix )
 			o_Matrix(row, column) = val;
 		}
 	}
-}
-
-//------------------------------------------------------------------------
-//------------------------------------------------------------------------
-void Write( chWriter& i_Writer, const itString& i_Name, chDefs::Name i_ChunkName )
-{
-	// null-terminating not needed anymore
-	//itString null_terminated_string = i_Name;
-	//null_terminated_string += 0;
-
-	i_Writer.WriteChunkHeader(i_ChunkName, 0, false);
-	//i_Writer.Write(null_terminated_string.GetString());
-	i_Writer.Write(i_Name.GetString());
-	i_Writer.FinishChunk();
 }
 
 //------------------------------------------------------------------------
@@ -301,7 +280,7 @@ void Write(chWriter& i_Writer,float i_fValue, chDefs::Name i_ChunkName)
 void Write(chWriter& i_Writer, const maMatrix4x4& i_Matrix )
 {
 	int row, column;
-	envType::Float32 val;
+	float val;
 	for( row = 0 ; row < 4 ; row++ )
 	{
 		for( column = 0 ; column < 4 ; column++ )
@@ -317,9 +296,9 @@ void Write(chWriter& i_Writer, const maMatrix4x4& i_Matrix )
 void Write(chWriter& i_Writer, const maGradient& i_Gradient )
 {
 	int size = i_Gradient.GetSize();
-	envType::Float32 val;
+	float val;
 
-	i_Writer.Write(envType::Int32(size));
+	i_Writer.Write(int32_t(size));
 	for(int i = 0; i < size; i++)
 	{
 		val = i_Gradient[i].first;
@@ -333,19 +312,6 @@ void Write(chWriter& i_Writer, const maGradient& i_Gradient )
 void Write(chWriter& i_Writer,const std::string& i_Name)
 {
 	i_Writer.Write(i_Name);
-}
-
-//------------------------------------------------------------------------
-//------------------------------------------------------------------------
-void Write( chWriter& i_Writer, const itString& i_Name )
-{
-	// Old version
-	//itString null_terminated_string = i_Name;
-	//null_terminated_string += 0;
-	//i_Writer.Write(null_terminated_string.GetString());
-
-	// New version relies on itString::GetString() being NULL-terminated
-	i_Writer.Write(i_Name.GetString(), i_Name.GetLength()+1);
 }
 
 //------------------------------------------------------------------------

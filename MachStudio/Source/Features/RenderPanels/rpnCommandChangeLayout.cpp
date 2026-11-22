@@ -8,7 +8,11 @@
 \****************************************************************************/
 #include "Features/RenderPanels/rpnCommandChangeLayout.hpp"
 
+#ifdef MSP_GUI_QT
+#include "Features/RenderPanels/qtGUI/rpnPanelGrid.hpp"
+#else
 #include "Features/RenderPanels/wxGUI/rpnPanelGrid.hpp"
+#endif
 
 #include "Tool/cma/cmaCommandMgr.hpp"
 
@@ -83,7 +87,7 @@ rpnCommandChangeLayout::~rpnCommandChangeLayout()
 void rpnCommandChangeLayout::ChangeLayout(LayoutStyle  i_Style)
 {
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	switch (i_Style)
 	{
 	default:

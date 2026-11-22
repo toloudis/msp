@@ -117,24 +117,24 @@ namespace mdlMeshParser
 				else if ( name == c_GVER )
 				{
 					did_read_GVER = true;
-					envType::UInt32 num = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
+					uint32_t num = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
 					chChunkParserUtil::ReadArray(i_Reader, o_FragInfo.m_Vertices, num);
 				}
 				else if ( name == c_NVER )
 				{
 					did_read_NVER = true;
-					envType::UInt32 num = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
+					uint32_t num = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
 					chChunkParserUtil::ReadArray(i_Reader, o_FragInfo.m_Normals, num);
 				}
 				else if ( name == c_TVER )
 				{
-					envType::UInt32 num = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
+					uint32_t num = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
 					chChunkParserUtil::ReadArray(i_Reader, o_FragInfo.m_UVs, num);
 				}
 				else if ( name == c_BVEC )
 				{
 					// basis vectors
-					envType::UInt32 num;
+					uint32_t num;
 					i_Reader.Read(num);
 					chChunkParserUtil::ReadArray(i_Reader, o_FragInfo.m_Ss, num);
 					chChunkParserUtil::ReadArray(i_Reader, o_FragInfo.m_Ts, num);
@@ -142,9 +142,9 @@ namespace mdlMeshParser
 				//else if ( name == c_VCOL )
 				//{
 				//	// vertex colors, RGB (0-1)
-				//	envType::UInt32 num = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
+				//	uint32_t num = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
 				//	o_FragInfo.m_Colors.resize(num);
-				//	envType::UInt32 cur;
+				//	uint32_t cur;
 				//	maVector3d colorRGB;
 				//	for ( cur = 0 ; cur < num ; cur++ )
 				//	{
@@ -156,7 +156,7 @@ namespace mdlMeshParser
 				else if ( name == c_VRMP )
 				{
 					did_read_VRMP = true;
-					envType::UInt32 num_orig;
+					uint32_t num_orig;
 					i_Reader.Read(num_orig);
 					o_FragInfo.m_NumOrigVertices = num_orig;
 					mdlIndexUtil::ReadRemap(i_Reader, o_FragInfo.m_VertexRemap);
@@ -164,14 +164,14 @@ namespace mdlMeshParser
 				else if ( name == c_NRMP )
 				{
 					did_read_NRMP = true;
-					envType::UInt32 num_orig;
+					uint32_t num_orig;
 					i_Reader.Read(num_orig);
 					o_FragInfo.m_NumOrigNormals = num_orig;
 					mdlIndexUtil::ReadRemap(i_Reader, o_FragInfo.m_NormalRemap);
 				}
 				else if ( name == c_MTLS)
 				{
-					envType::UInt16 num_mats;
+					uint16_t num_mats;
 					i_Reader.Read(num_mats);
 					for (int i=0; i<num_mats; ++i)
 					{
@@ -205,7 +205,7 @@ namespace mdlMeshParser
 						// Read material changes (index when next material should be used).			
 						if (i<num_mats-1)
 						{
-							envType::Int32 ind;
+							int32_t ind;
 							i_Reader.Read(ind);
 							o_FragInfo.m_MaterialChanges.push_back(ind);
 						}
@@ -214,27 +214,27 @@ namespace mdlMeshParser
 				else if ( name == c_GIND )
 				{
 					did_read_GIND = true;
-					envType::UInt32 num_indices = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
+					uint32_t num_indices = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
 					const bool b32Bit = true;
 					o_FragInfo.m_Indices.resize(num_indices);
 					mdlIndexUtil::ReadIndexSet(i_Reader, o_FragInfo.m_Indices, num_indices, b32Bit);
 				} else if ( name == c_FPRT )
 				{
-					envType::UInt32 num_parts;
+					uint32_t num_parts;
 					i_Reader.Read(num_parts);
 					std::string part_name;
 					for ( int i=0; i < num_parts; ++i )
 					{
 						i_Reader.Read( part_name );
 					}
-					std::vector< envType::UInt32 > beginIndices;					
+					std::vector< uint32_t > beginIndices;					
 					const bool b32Bit = true;
 					beginIndices.resize(num_parts);
 					mdlIndexUtil::ReadIndexSet(i_Reader, beginIndices, num_parts, b32Bit);
 				} else if ( name == c_FLAG )
 				{
 					// fragment flags
-					envType::Int8 flag_val;
+					int8_t flag_val;
 
 					i_Reader.Read(flag_val);
 					o_FragInfo.m_Flags.m_bDoubleSided = (flag_val != 0);
@@ -328,7 +328,7 @@ namespace mdlMeshParser
 			DBG_TEXT("");
 			DBG_TEXT("mdlMeshParser::ReadGNDP loading from %s" << filename.c_str());
 		}
-		envType::UInt32 num;
+		uint32_t num;
 		i_Reader.Read( num );
 		mdlPathReference::TPath & path = o_NodeInfoProxy.m_Path;
 		std::back_insert_iterator< mdlPathReference::TPath > bit( path );
@@ -362,7 +362,7 @@ namespace mdlMeshParser
 		o_Writer.FinishChunk();
 
 		// Write 32 bit number when writing number of verts
-		envType::UInt32 num, cur;
+		uint32_t num, cur;
 
 		// Vertices - version 1 signifies 32-bit num verts
 		o_Writer.WriteChunkHeader(c_GVER, 1, false);
@@ -427,7 +427,7 @@ namespace mdlMeshParser
 		if (!i_FragInfo.m_VertexRemap.empty())
 		{
 			o_Writer.WriteChunkHeader(c_VRMP, 0, false);
-			o_Writer.Write(envType::Int32(i_FragInfo.m_NumOrigVertices));
+			o_Writer.Write(int32_t(i_FragInfo.m_NumOrigVertices));
 			mdlIndexUtil::WriteRemap(o_Writer, i_FragInfo.m_VertexRemap);
 			o_Writer.FinishChunk();
 		}
@@ -436,7 +436,7 @@ namespace mdlMeshParser
 		if (!i_FragInfo.m_NormalRemap.empty())
 		{
 			o_Writer.WriteChunkHeader(c_NRMP, 0, false);
-			o_Writer.Write(envType::Int32(i_FragInfo.m_NumOrigNormals));
+			o_Writer.Write(int32_t(i_FragInfo.m_NumOrigNormals));
 			mdlIndexUtil::WriteRemap(o_Writer, i_FragInfo.m_NormalRemap);
 			o_Writer.FinishChunk();
 		}
@@ -453,7 +453,7 @@ namespace mdlMeshParser
 		// of the material, assuming that we will read a material table
 		// from some other part of the file.
 		// MaterialChanges array needs to be one fewer than number of materials.
-		envType::Int16 num_mats = i_FragInfo.m_Materials.size();
+		int16_t num_mats = i_FragInfo.m_Materials.size();
 		DBG_ASSERT(num_mats-1 == i_FragInfo.m_MaterialChanges.size(), "Incorrect number of material changes.");
 		o_Writer.WriteChunkHeader(c_MTLS, 0, false);
 		o_Writer.Write(num_mats);	
@@ -462,7 +462,7 @@ namespace mdlMeshParser
 			chChunkParserUtil::Write(o_Writer, i_FragInfo.m_Materials[i]->m_Info.GetMaterialName());
 			if (i<num_mats-1)
 			{
-				o_Writer.Write(envType::Int32(i_FragInfo.m_MaterialChanges[i]));
+				o_Writer.Write(int32_t(i_FragInfo.m_MaterialChanges[i]));
 			}
 		}
 		o_Writer.FinishChunk();
@@ -490,17 +490,17 @@ namespace mdlMeshParser
 		// Note: need to increment version when adding flags
 		// Version 5 is last version used in old Maya exporter
 		o_Writer.WriteChunkHeader(c_FLAG, 5, false);
-		o_Writer.Write(envType::Int8(i_FragInfo.m_Flags.m_bDoubleSided));
-		o_Writer.Write(envType::Int8(i_FragInfo.m_Flags.m_bTriangleSort));
-		o_Writer.Write(envType::Int8(i_FragInfo.m_Flags.m_bCastsShadow));
-		o_Writer.Write(envType::Int8(i_FragInfo.m_Flags.m_bReceivesShadow));
-		o_Writer.Write(envType::Int8(i_FragInfo.m_Flags.m_bShadowHull));
+		o_Writer.Write(int8_t(i_FragInfo.m_Flags.m_bDoubleSided));
+		o_Writer.Write(int8_t(i_FragInfo.m_Flags.m_bTriangleSort));
+		o_Writer.Write(int8_t(i_FragInfo.m_Flags.m_bCastsShadow));
+		o_Writer.Write(int8_t(i_FragInfo.m_Flags.m_bReceivesShadow));
+		o_Writer.Write(int8_t(i_FragInfo.m_Flags.m_bShadowHull));
 		// "low-resolution" flag is 3-way state
 		//  0 - appear in all resolutions
 		//	1 - appear only in low resolutions
 		//	2 - appear only in high resolutions
-		o_Writer.Write(envType::Int8(i_FragInfo.m_ResolutionLevel));
-		o_Writer.Write(envType::Int8(i_FragInfo.m_Flags.m_bVertexAnimation));
+		o_Writer.Write(int8_t(i_FragInfo.m_ResolutionLevel));
+		o_Writer.Write(int8_t(i_FragInfo.m_Flags.m_bVertexAnimation));
 		o_Writer.FinishChunk(); // c_FLAG
 	
 		o_Writer.FinishChunk(); // c_GFRG
@@ -521,7 +521,7 @@ namespace mdlMeshParser
 		typedef mdlPathReference::TPath TPath;
 		const TPath &path = i_NodeInfoProxy.m_Path;
 		TPath::const_iterator pit;
-		envType::UInt32 num = static_cast< envType::UInt32> ( path.size() );
+		uint32_t num = static_cast< uint32_t> ( path.size() );
 		o_Writer.Write( num );
 		for ( pit = path.begin();  pit != path.end(); ++pit )
 		{

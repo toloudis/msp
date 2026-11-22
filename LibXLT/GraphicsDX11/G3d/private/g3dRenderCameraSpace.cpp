@@ -9,6 +9,9 @@
 #include "GraphicsDX11/g3d/g3dFogDX11.hpp"
 #include "GraphicsDX11/g3d/g3dSceneGlobal.hpp"
 #include "GraphicsDX11/g3d/g3dSceneRenderUtil.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 namespace 
 {
@@ -30,6 +33,7 @@ g3dRenderCameraSpaceObjects::~g3dRenderCameraSpaceObjects()
 
 int g3dRenderCameraSpaceObjects::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("RenderCameraSpaceObjects");
 	if (m_pLayer == NULL)
 		return 0;
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"g3dRenderCameraSpaceObjects::Render" );

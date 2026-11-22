@@ -1,0 +1,48 @@
+{
+  "source": "Special/MotionBlur.fx",
+  "hlsl": "MotionBlur.hlsl",
+  "techniques": [
+    {
+      "name": "Default",
+      "passes": [
+        {
+          "name": "SceneBlur",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "MotionBlurVS"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "PS_LIC"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "samplers": {
+    "g_Sampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_POINT",
+        "AddressU": "Clamp",
+        "AddressV": "Clamp"
+      }
+    }
+  },
+  "variables": {
+    "SceneTexture": {
+      "type": "Texture2D"
+    },
+    "VelocityTexture": {
+      "type": "Texture2D"
+    },
+    "g_nSamples": {
+      "type": "int"
+    },
+    "g_Scale": {
+      "type": "float"
+    }
+  }
+}

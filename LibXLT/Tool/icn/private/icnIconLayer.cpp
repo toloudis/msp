@@ -55,7 +55,7 @@ namespace icnIconLayer
 	// Note: all icon layers need to be created before the first
 	// icon set is created.
 	// Returns a layer index that can be used with icnIconSet objects
-	// to alter the transformation of just that´s view's copy.
+	// to alter the transformation of just that view's copy.
 	//--------------------------------------------------------------------
 	int AddIconLayers(g3dSceneNode* i_pIconsRootNode,
 					  g3dSceneNode* i_pManipulatorsRootNode)
@@ -69,7 +69,7 @@ namespace icnIconLayer
 
 	//--------------------------------------------------------------------
 	// Put the given scene subgraph into each registered icon layer,
-	// returning an icon set class that allows you to control all 
+	// returning an icon set class that allows you to control all
 	// icons at once.
 	//--------------------------------------------------------------------
 	icnIconSet* CreateIconSet(api3dObjectSingle* i_pBaseObject)
@@ -113,7 +113,7 @@ namespace icnIconLayer
 	{
 		DBG_ASSERT(i_IconLayerIndex<l_IconLayers.size(), "SetCameraForIconLayer, layer index out of range, " << i_IconLayerIndex << " out of " << l_IconLayers.size());
 		l_LayerCameras[i_IconLayerIndex] = i_pCamera;
-	}	
+	}
 	const camCamera* GetCameraForIconLayer(int i_IconLayerIndex)
 	{
 		DBG_ASSERT(i_IconLayerIndex<l_IconLayers.size(), "GetCameraForIconLayer, layer index out of range, " << i_IconLayerIndex << " out of " << l_IconLayers.size());

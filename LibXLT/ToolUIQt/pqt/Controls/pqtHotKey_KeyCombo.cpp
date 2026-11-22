@@ -12,7 +12,7 @@
 
 #include "Core/prty/prtyHotKey.hpp"
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
@@ -34,14 +34,12 @@ pqtHotKey_KeyCombo::pqtHotKey_KeyCombo(shared_ptr<prtyPropertyUIInfo>& i_pUIInfo
 
 	if (bSameValue)
 	{
-		m_pActualControl->SetValue(wxString(newvalue.c_str(), wxConvUTF8));
+		m_pActualControl->SetValue(tqtQString(newvalue));
 	}
 
 	//	hook up events
 	//
-	this->Connect( m_pActualControl->GetId(), wxEVT_VALUE_CHANGED,
-					wxCommandEventHandler(pqtHotKey_KeyCombo::HotKeyCtrl_ValueChanged) );
-	m_pActualControl->PushEventHandler(this);
+	m_pActualControl->SetValueChangedCallback([this]() { HotKeyCtrl_ValueChanged(); });
 };
 
 //----------------------------------------------------------------------------
@@ -49,7 +47,6 @@ pqtHotKey_KeyCombo::pqtHotKey_KeyCombo(shared_ptr<prtyPropertyUIInfo>& i_pUIInfo
 //----------------------------------------------------------------------------
 pqtHotKey_KeyCombo::~pqtHotKey_KeyCombo()
 {
-	m_pActualControl->RemoveEventHandler(this);
 }
 
 //----------------------------------------------------------------------------
@@ -72,7 +69,7 @@ void pqtHotKey_KeyCombo::PropertyChanged(prtyProperty* i_pProperty, bool i_bDirt
 {
 	if (m_bLocalChangeNoUpdate) return;
 
-	 wxString newvalue( (static_cast<prtyHotKey*>(i_pProperty))->GetValue().c_str(), wxConvUTF8);
+		QString newvalue = tqtQString((static_cast<prtyHotKey*>(i_pProperty))->GetValue());
 
 	m_bLocalChangeNoUpdate = true;
 	if ( m_pActualControl->GetValue() != newvalue )
@@ -87,19 +84,19 @@ void pqtHotKey_KeyCombo::PropertyChanged(prtyProperty* i_pProperty, bool i_bDirt
 //----------------------------------------------------------------------------
 void pqtHotKey_KeyCombo::UpdateControl(prtyPropertyUIInfo* i_pUIInfo)
 {
-	m_pActualControl->Enable(!i_pUIInfo->GetReadOnly());
+	m_pActualControl->setEnabled(!i_pUIInfo->GetReadOnly());
 }
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void pqtHotKey_KeyCombo::HotKeyCtrl_ValueChanged(wxCommandEvent& i_Event)
+void pqtHotKey_KeyCombo::HotKeyCtrl_ValueChanged()
 {
 	if (m_bLocalChangeNoUpdate) return;
 
 	m_bLocalChangeNoUpdate = true;
 	//if (m_OriginalValue != m_pActualControl->GetValue())
 	{
-		std::string hot_key_str = m_pActualControl->GetValue().utf8_str();
+		std::string hot_key_str = tqtStdString(m_pActualControl->GetValue());
 		pqtControlUtil::SetCommonValue<std::string, prtyHotKey>(this, hot_key_str);
 	}
 	m_bLocalChangeNoUpdate = false;

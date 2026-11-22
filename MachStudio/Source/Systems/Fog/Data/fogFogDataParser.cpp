@@ -60,13 +60,13 @@ void fogFogDataParser::ReadLegacyFogData(	chReader& i_Reader,
 {
 	if (i_Version == 0)
 	{
-		envType::Int32 mode;
+		int32_t mode;
 		i_Reader.Read(mode);
 		o_Data.m_Mode.SetValue(fogFogData::FogMode(mode));
 	}
 	else
 	{
-		envType::Int8 mode;
+		int8_t mode;
 		i_Reader.Read(mode);
 		o_Data.m_Mode.SetValue(fogFogData::FogMode(mode));
 	}

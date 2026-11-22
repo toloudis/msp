@@ -10,6 +10,7 @@
 #include "ImportExport/gltf/gltfPackage.hpp"
 
 #include "ImportExport/gltf/import/gltfImport.hpp"
+#include "ImportExport/gltf/import/private/gltfSceneImport.hpp"
 
 #include "Graphics/ent/entPackage.hpp"
 
@@ -20,6 +21,7 @@ namespace
 {
 
 int l_RefCount = 0;
+gltfSceneImport* l_pSceneImport = NULL;		// owned by iscnSceneImport
 
 }
 
@@ -39,6 +41,10 @@ void gltfPackage::Init()
 		//	implement an entImport importer,
 		//	ownership passes to entImport namespace
 		entImport::AddImplementation(new gltfImport());
+
+		//	and the scene importer (glTF objects as MachStudio's)
+		l_pSceneImport = new gltfSceneImport();
+		iscnSceneImport::AddImplementation(l_pSceneImport);
 	}
 
 	//	increment the ref count
@@ -59,6 +65,8 @@ void gltfPackage::CleanUp() throw()
 	{
 		// clean up our internal stuff, in reverse order
 		//
+		iscnSceneImport::RemoveImplementation(l_pSceneImport);
+		l_pSceneImport = NULL;
 
 		// clean up packages we depend on
 		entPackage::CleanUp();

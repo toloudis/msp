@@ -26,7 +26,7 @@ namespace
 	//	char strName[64];
 	//	char filename_base[64];
 	//	char *filename;
-	//	strcpy( filename_base, itStringUtil::GetStdString( i_Filename ).c_str() );
+	//	strcpy( filename_base, i_Filename.c_str() );
 	//	filename = strtok( filename_base, "." );
 
 	//	do

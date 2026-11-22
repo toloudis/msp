@@ -6,6 +6,9 @@
 **  Copyright(C) 2004 - All Rights Reserved
 \********************************************************************************************/
 #include "Systems/PrjLt/Data/prjltData.hpp"
+#ifndef MA_MATRIX4X4_HPP
+#include "Core/ma/maMatrix4x4.hpp"
+#endif
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Graphics/G3d/g3dProjectedLight.hpp"
@@ -70,18 +73,12 @@ prjltData::prjltData()
 	m_HairShadowType("Hair Shadow Type"),
 	m_GISource("GI Source", false),
 	m_ReflectiveMapSize("GI Map Size", 256),
-	m_bMRayAreaLight("Enable Area Light", false),
-	m_MRayAreaLightType("Area Light Type", 0),
-	m_MRayAreaLightSampling("Area Light Sampling", 8),
-	m_bMRayAreaLightVisible("Visible", false)
+	m_SourceFile("Source File")
 {
 	m_ShadowQuality.SetEnumTag(0, "Low");
 	m_ShadowQuality.SetEnumTag(1, "Medium");
 	m_ShadowQuality.SetEnumTag(2, "High");
 	m_ShadowQuality.SetEnumTag(3, "Very High");
-
-	m_MRayAreaLightType.SetEnumTag(0, "Rectangle");
-	m_MRayAreaLightType.SetEnumTag(1, "Disc");
 
 	/*m_RampShape.SetEnumTag(0, "Linear X");
 	m_RampShape.SetEnumTag(1, "Linear Y");
@@ -144,10 +141,7 @@ prjltData::prjltData(const prjltData& i_Data)
 	m_RampTrigger("Ramp Edit"),
 	m_GISource("GI Source", false),
 	m_ReflectiveMapSize("GI Map Size", 256),
-	m_bMRayAreaLight("Enable Area Light", false),
-	m_MRayAreaLightSampling("Area Light Sampling", 8),
-	m_MRayAreaLightType("Area Light Type", 0),
-	m_bMRayAreaLightVisible("Visible", false)
+	m_SourceFile("Source File")
 	/*m_RampGradient("Ramp", maGradient()),
 	m_RampShape("Ramp Shape", 0),
 	m_RampInterpolation("Ramp Interpolation", 0),
@@ -261,11 +255,25 @@ prjltData& prjltData::operator=(const prjltData& i_Data)
 	this->m_HairMaxBound	= i_Data.m_HairMaxBound;
 
 	this->m_GISource			= i_Data.m_GISource;
-
-	this->m_bMRayAreaLight			= i_Data.m_bMRayAreaLight;
-	this->m_MRayAreaLightSampling	= i_Data.m_MRayAreaLightSampling;
-	this->m_MRayAreaLightType		= i_Data.m_MRayAreaLightType;
-	this->m_bMRayAreaLightVisible	= i_Data.m_bMRayAreaLightVisible;
+	this->m_SourceFile			= i_Data.m_SourceFile;
+	this->m_SourceIdentity		= i_Data.m_SourceIdentity;
 
 	return *this;
+}
+
+
+//---------------------------------------------------------------------------
+// Apply i_Matrix to its placement, without undo (position and target; an
+// orientation stays as it is)
+//---------------------------------------------------------------------------
+void prjltData::ApplyTransformation(const maMatrix4x4& i_Matrix)
+{
+	maPoint3d position = m_Position.GetValue();
+	maPoint3d target = m_Target.GetValue();
+
+	i_Matrix.Transform(position);
+	i_Matrix.Transform(target);
+
+	m_Position.SetValue(position);
+	m_Target.SetValue(target);
 }

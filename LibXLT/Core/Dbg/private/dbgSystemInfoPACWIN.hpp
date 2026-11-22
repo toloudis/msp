@@ -18,9 +18,6 @@
 #include "Core/env/envPlatform.hpp"
 #endif
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
-#endif
 
 
 //============================================================================

@@ -74,14 +74,14 @@ namespace
 		//l_pDirLight->SetIntensity(maFloatRGBA(0.65f, 0.65f, 0.6f, 1.0f));
 		l_pDirLight->SetIntensity(maFloatRGBA(0.5f, 0.5f, 0.5f, 1.0f));
 		l_pDirLight->Enable();
-		l_pDirLight->SetCastsShadow(true);
+		l_pDirLight->SetIsSinglePassLight(true);
 
 		l_pPointLight1 = api3dLightMgr::CreatePointLight();
 		l_pPointLight1->SetPosition(maVector3d(1.2f, -1.0f, -1.0f));
 		//l_pPointLight1->SetIntensity(maFloatRGBA(0.65f, 0.6f, 0.6f, 1.0f));
 		l_pPointLight1->SetIntensity(maFloatRGBA(1.0f, 1.0f, 1.0f, 1.0f));
 		l_pPointLight1->Enable();
-		l_pPointLight1->SetCastsShadow(true);
+		l_pPointLight1->SetIsSinglePassLight(true);
 
 		l_pPointObj1 = api3dShape::CreateSphere(l_pPointLight1->GetIntensity(), 0.25f, 6, 6);
 		api3dScene::AddObject(l_pPointObj1);
@@ -90,7 +90,7 @@ namespace
 		l_pProjectedLight->SetPosition(maVector3d(1.2f, -1.0f, -1.0f));
 		l_pProjectedLight->SetIntensity(maFloatRGBA(1.0f, 1.0f, 1.0f, 1.0f));
 		l_pProjectedLight->Disable(); // off by default
-		l_pProjectedLight->SetCastsShadow(true);
+		l_pProjectedLight->SetIsSinglePassLight(true);
 
 		l_pPrjLightWrapper = new api3dProjectedLightWrapper(*l_pProjectedLight);
 		fsLocator tex_loc = gfPaths::GetPath(gfPaths::e_ExePath);
@@ -192,11 +192,11 @@ namespace
 
 	bool GetDirLightCastShadow()
 	{
-		return l_pDirLight->GetCastsShadow();
+		return l_pDirLight->GetIsSinglePassLight();
 	}
 	void SetDirLightCastShadow(bool i_bCastShadow)
 	{
-		l_pDirLight->SetCastsShadow(i_bCastShadow);
+		l_pDirLight->SetIsSinglePassLight(i_bCastShadow);
 	}
 
 	bool IsEnabledDirLight()
@@ -246,11 +246,11 @@ namespace
 
 	bool GetPointLight1CastShadow()
 	{
-		return l_pPointLight1->GetCastsShadow();
+		return l_pPointLight1->GetIsSinglePassLight();
 	}
 	void SetPointLight1CastShadow(bool i_bCastShadow)
 	{
-		l_pPointLight1->SetCastsShadow(i_bCastShadow);
+		l_pPointLight1->SetIsSinglePassLight(i_bCastShadow);
 	}
 
 	bool IsEnabledPointLight1()

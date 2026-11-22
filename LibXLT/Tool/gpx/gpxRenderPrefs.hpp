@@ -114,6 +114,16 @@ public:
 	void SetHairInterpolationCount( unsigned int i_Count );
 	void SetHairClumpRadius( float i_Value );
 
+	// tracer settings (g3dRenderPrefs::m_Trace*)
+	void SetTraceSamplesPerFrame( int i_nSamples );
+	void SetTraceSampleLimit( int i_nSamples );
+	void SetTraceCaptureSamples( int i_nSamples );
+	void SetTraceAORays( int i_nRays );
+	void SetTraceBounces( int i_nBounces );
+	void SetTraceDebugView( int i_View );
+	void SetTraceMaxRadiance( float i_Max );
+	void SetTraceDenoise( int i_Mode );
+
 	//--------------------------------------------------------------------
 	// Update() pushes changes from proxy object into the graphics
 	//	library object. Should return true if changes were made.

@@ -68,7 +68,10 @@ ptltPointLightObject::ptltPointLightObject()
 {
 	// Create g3d light
 	m_pPointLight = api3dLightMgr::CreatePointLight();
-	m_pPointLight->SetCastsShadow(true);
+	//	the rasterizers draw every light in its own pass; they never shadow
+	//	point lights, the tracer does when Shadow Source is on
+	m_pPointLight->SetIsSinglePassLight(true);
+	m_pPointLight->SetShadowSource(m_Data.m_ShadowSource.GetValue());
 	// ensure current defaults are set in light.
 	m_pPointLight->SetIntensity(m_Data.m_Color.GetValue());
 	m_pPointLight->SetEnable(m_Data.m_Enabled.GetValue());
@@ -113,6 +116,9 @@ ptltPointLightObject::ptltPointLightObject()
 	AddProperty( pPUII );
 	AddProperty( new prtyCheckBoxUIInfo(&(m_Data.m_Enabled), "Asset", "Is the object enabled") );
 
+	// whether it still follows the scene file it came from (imptSceneRefs)
+	AddProperty( CreateSourceStateUIInfo() );
+
 	// Falloff group
 	cmmFalloffAspect::RegisterProperties( this, &(m_Data.m_Falloff));
 
@@ -139,7 +145,7 @@ ptltPointLightObject::ptltPointLightObject()
 
 	// Editor visible is set from other part of GUI
 	//AddProperty( new prtyCheckBoxUIInfo(&(m_Data.m_bEditorVisible), "Editor", "Is the object visible in the editor") );
-//	AddProperty( new prtyCheckBoxUIInfo(&(m_Data.m_ShadowSource), "Light", "Is the object a shadow source") );
+	AddProperty( new prtyCheckBoxUIInfo(&(m_Data.m_ShadowSource), "Light", "Does the light cast shadows (ray traced only: point lights have no shadow maps)") );
 	AddProperty( new prtyCheckBoxUIInfo(&(m_Data.m_bDiffuseEnabled), "Light", "Is the diffuse enabled") );
 	AddProperty( new prtyCheckBoxUIInfo(&(m_Data.m_bSpecularEnabled), "Light", "Is the specular enabled") );
 //	AddProperty( new prtyCheckBoxUIInfo(&(m_Data.m_bAffectsFur), "Light", "Does this light affect fur") );
@@ -155,7 +161,7 @@ ptltPointLightObject::ptltPointLightObject()
 	m_Data.m_Range.AddCallback(new prtyCallbackWrapper<ptltPointLightObject>(this, &ptltPointLightObject::LightChanged));
 	m_Data.m_Color.AddCallback(new prtyCallbackWrapper<ptltPointLightObject>(this, &ptltPointLightObject::LightChanged));
 	m_Data.m_Enabled.AddCallback(new prtyCallbackWrapper<ptltPointLightObject>(this, &ptltPointLightObject::LightChanged));
-//	m_Data.m_ShadowSource.AddCallback(new prtyCallbackWrapper<ptltPointLightObject>(this, &ptltPointLightObject::LightChanged));
+	m_Data.m_ShadowSource.AddCallback(new prtyCallbackWrapper<ptltPointLightObject>(this, &ptltPointLightObject::LightChanged));
 	m_Data.m_bDiffuseEnabled.AddCallback(new prtyCallbackWrapper<ptltPointLightObject>(this, &ptltPointLightObject::LightChanged));
 	m_Data.m_bSpecularEnabled.AddCallback(new prtyCallbackWrapper<ptltPointLightObject>(this, &ptltPointLightObject::LightChanged));
 //	m_Data.m_bAffectsFur.AddCallback(new prtyCallbackWrapper<ptltPointLightObject>(this, &ptltPointLightObject::LightChanged));
@@ -480,7 +486,7 @@ void ptltPointLightObject::UpdateScale(const maPoint3d& i_Scale,
 //----------------------------------------------------------------------------
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
-bool ptltPointLightObject::MatchPickCode(envType::UInt32 i_PickCode) const
+bool ptltPointLightObject::MatchPickCode(uint32_t i_PickCode) const
 {
 	if (!m_pObject->GetRenderable())
 		return false;
@@ -652,7 +658,7 @@ void ptltPointLightObject::LightChanged(prtyProperty *i_pProperty, bool i_bDirty
 	m_pLightProxy->SetIntensity(m_Data.m_Color.GetValue());
 	m_pLightProxy->SetIntensityFactor(m_Data.m_Intensity.GetValue() * this->GetIsolationAlpha());
 
-//	m_pLightProxy->SetCastsShadow(m_Data.m_ShadowSource.GetValue());
+	m_pLightProxy->SetShadowSource(m_Data.m_ShadowSource.GetValue());
 	m_pLightProxy->SetRange(m_Data.m_Range.GetValue());
 	m_pLightProxy->SetEnable( m_Data.m_Enabled.GetValue() && this->GetIsolationVisible() );
 	m_pLightProxy->SetDiffuseEnabled( m_Data.m_bDiffuseEnabled.GetValue() );
@@ -736,9 +742,7 @@ void ptltPointLightObject::UpdateParentTransform()
 //--------------------------------------------------------------------
 void ptltPointLightObject::ApplyTransformation(const maMatrix4x4& i_Matrix)
 {
-	maPoint3d position = m_Data.m_Position.GetValue();
-	i_Matrix.Transform(position);
-	m_Data.m_Position.SetValue(position);
+	m_Data.ApplyTransformation(i_Matrix);
 }
 
 //--------------------------------------------------------------------

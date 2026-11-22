@@ -281,53 +281,14 @@ public:
 	prtyInt32	m_RmanRayDepth;
 	prtyBoolean m_bRmanTonemapEnable;
 
-	//---------------------------------------------------------------------------
-	//	MentalRay data
-	//---------------------------------------------------------------------------
-	prtyInt32	m_MrayVerbosity;
-	prtyInt32	m_MrayNumReflBounces;
-	prtyInt32	m_MrayNumRefrBounces;
-	prtyInt32	m_MrayMaxTraceDepth;
-	prtyBoolean	m_bMrayAO;
-	prtyInt32	m_MrayAOSamples;
-	prtyBoolean	m_bMrayFinalGather;
-	prtyBoolean	m_bMrayFGBlur;
-	prtyInt32	m_MrayFGNDiffuse;
-	prtyInt32	m_MrayFGNRefl;
-	prtyInt32	m_MrayFGNRefr;
-	prtyInt32	m_MrayFGNRays;
-	prtyColor	m_MrayFGColor;
-	prtyEnum	m_MrayOutputFormat;
-	prtyInt32	m_MrayNumThreads;
-	prtyInt32	m_MrayMemoryLimit;
-	prtyBoolean	m_bMrayEnableReflections;
-	prtyBoolean	m_bMrayEnableShadows;
-	prtyEnum	m_MrayShadowType;
-	prtyBoolean	m_bMrayRewriteAssets;
-	prtyEnum	m_MrayVerbosityLevel;
-	prtyBoolean	m_bMrayFGMapEnable;
-	prtyEnum	m_MrayFGMapRebuild;
-	prtyFilePath m_MrayFGMapPath;
-	prtyInt32	m_MrayReflSamples;
-	prtyBoolean	m_bMrayOverrideMSPSampling;
-	prtyInt32	m_MrayMinCaptureSamples;
-	prtyInt32	m_MrayMaxCaptureSamples;
-	prtyFloat	m_MRayAAContrast;
-	prtyBoolean	m_bMrayIgnoreBadTex;
-	prtyBoolean	m_bMrayDisplayPreview;
-	prtyBoolean m_bMRayTonemapEnable;
-	prtyBoolean m_bEnableIBL;
-	prtyFloat	m_IBLQuality;
-	prtyEnum	m_IBLMapRes;
-	prtyFloat	m_IBLScale;
-	prtyInt32	m_IBLSampleNum;
-	prtyBoolean	m_bMrayProgressive;
-	prtyInt32	m_MrayProgSubsamplingSize;
-	prtyEnum	m_MrayProgSubsamplingMode;
-	prtyEnum	m_MrayProgSubsamplingPattern;
-	prtyInt32	m_MrayProgMinSamples;
-	prtyInt32	m_MrayProgMaxSamples;
-	prtyInt32	m_MrayProgMaxTime;
-	prtyFloat	m_MrayProgErrorThreshold;
-
+	// Ray tracing: the tracer settings of a backend that traces rays
+	// (GraphicsOptiX; g3dRenderPrefs::m_Trace*)
+	prtyInt32	m_TraceSamplesPerFrame;
+	prtyInt32	m_TraceSampleLimit;
+	prtyInt32	m_TraceCaptureSamples;
+	prtyInt32	m_TraceAORays;
+	prtyInt32	m_TraceBounces;
+	prtyEnum	m_TraceDebugView;		// g3dRenderPrefs::TraceDebugView
+	prtyFloat	m_TraceMaxRadiance;		// 0: no limit
+	prtyEnum	m_TraceDenoise;			// g3dRenderPrefs::TraceDenoise
 };

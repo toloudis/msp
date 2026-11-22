@@ -19,27 +19,27 @@
 #include "Core/prty/prtyFileName.hpp"
 #endif
 
+#ifdef USE_QT
 
 //===================================================================================
 //===================================================================================
 class pqtFileName_TextBox_Converter 
 {
-#ifdef QT_FINISH_PORT
 public:
 	//----------------------------------------------------------------------------
 	// Set value into control
 	//----------------------------------------------------------------------------
 	static void SetValueIntoControl(tqcTextBox* i_pActualControl,
-									 itString i_Value);
+									 const std::string& i_Value);
 
 	//----------------------------------------------------------------------------
 	// Get value from control
 	//----------------------------------------------------------------------------
-	static itString GetValueFromControl(tqcTextBox* i_pActualControl);
-#endif // USE_QT
+	static std::string GetValueFromControl(tqcTextBox* i_pActualControl);
 };
 
 //============================================================================
 //============================================================================
-typedef pqtTemplate_TextBox<prtyFileName, itString, pqtFileName_TextBox_Converter> pqtFileName_TextBox;
+typedef pqtTemplate_TextBox<prtyFileName, std::string, pqtFileName_TextBox_Converter> pqtFileName_TextBox;
 
+#endif // USE_QT

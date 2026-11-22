@@ -9,13 +9,25 @@
 #include "Features/LoadPrefs/LoadPrefsDialogUtil.hpp"
 
 #include "Features/LoadPrefs/LoadPrefsMgr.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/LoadPrefs/qtGUI/LoadPreferencesDialog.hpp"
+#else
 #include "Features/LoadPrefs/wxGUI/LoadPreferencesDialog.hpp"
+#endif
 
 #include "Core/prty/prtyObject.hpp"
 #include "Graphics/mat/matTextureTracking.hpp"
 #include "Graphics/smdl/smdlSubdivCharacter.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/pqt/pqtFormControlBuilder.hpp"
+#else
 #include "ToolUIWx/pwx/pwxFormControlBuilder.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtSystem.hpp"
+#else
 #include "ToolUIWx/twx/twxSystem.hpp"
+#endif
 
 
 //============================================================================
@@ -50,6 +62,17 @@ namespace LoadPrefsDialogUtil
 		dialog.SetMissingTextureList( matTextureTracking::GetMissingTextureSet() );
 
 		dialog.ShowModal();
+#elif defined(USE_QT)
+		DBG_ASSERT(tqtSystem::g_pMainForm, "MainForm not yet initialized.");
+		LoadPreferencesDialog dialog(tqtSystem::g_pMainForm);
+		
+		pqtFormControlBuilder::BuildForm(dialog.GetTabPageMain(), "LoadPrefs",
+			(pDO->GetListContainer()), cbSHOW_CATEGORY, cbAUTO_COLLAPSE );
+
+		// Load up the list of missing textures
+		dialog.SetMissingTextureList( matTextureTracking::GetMissingTextureSet() );
+
+		dialog.exec();
 #endif
 	}
 

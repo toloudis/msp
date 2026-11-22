@@ -55,7 +55,7 @@ fsFileStream::FilePosType gfFile::GetFilePos() const
 //------------------------------------------------------------------------
 //	GetFileSize returns the size of the file in bytes.
 //------------------------------------------------------------------------
-envType::Int64 gfFile::GetFileSize() const
+int64_t gfFile::GetFileSize() const
 {
 	// Old way was to seek to end of file and determine offset from there
 	//fsFilePosSaver<fsFileStream> saver(*m_FileStream);

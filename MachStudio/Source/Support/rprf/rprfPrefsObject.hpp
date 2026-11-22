@@ -129,6 +129,7 @@ class rprfPrefsObject : public prtyObject
 		virtual void UpdateIlluminationRender(prtyProperty *i_pProperty, bool i_bDirty);
 		virtual void UpdateHair(prtyProperty *i_pProperty, bool i_bDirty);
 		virtual void UpdateRenderManOptions(prtyProperty *i_pProperty, bool i_bDirty);
+		virtual void UpdateTrace(prtyProperty *i_pProperty, bool i_bDirty);
 
 	protected:
 		//--------------------------------------------------------------------

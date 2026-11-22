@@ -19,8 +19,8 @@
 #ifndef MA_POINT3D_HPP
 #include "Core/ma/maPoint3d.hpp"
 #endif
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 #ifndef G2D_DX11TYPES_HPP
 #include "GraphicsDX11/g2d/g2dDX11Types.hpp"
@@ -83,7 +83,7 @@ private:
 
 	matMaterial* m_pColorCodeMat;
 	effMaskAlphaData* m_pMaskAlphaData;
-	envType::UInt32	m_FragmentCount;
+	uint32_t	m_FragmentCount;
 
 	g2dD3D11TexturePtr m_pReadbackSurface;
 
@@ -95,10 +95,10 @@ private:
 	//--------------------------------------------------------------------
 	// Static conversion functions for pixel color to object index
 	//--------------------------------------------------------------------
-	static maFloatRGBA ConvertIndexToColor(envType::UInt32 i_FragmentIndex);
-	static envType::UInt32 ConvertColorToIndex(envType::UInt8 i_Red, 
-												envType::UInt8 i_Green,
-												envType::UInt8 i_Blue);
+	static maFloatRGBA ConvertIndexToColor(uint32_t i_FragmentIndex);
+	static uint32_t ConvertColorToIndex(uint8_t i_Red, 
+												uint8_t i_Green,
+												uint8_t i_Blue);
 
 };
 

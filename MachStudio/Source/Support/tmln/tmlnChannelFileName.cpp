@@ -23,12 +23,12 @@ tmlnChannelFileName::tmlnChannelFileName(const char* i_Name)
 //	The channel has the idea of an "original" state that it
 //	goes to if there is no driver active.
 //--------------------------------------------------------------------
-void  tmlnChannelFileName::SetOriginalValue(const itString& i_Val)
+void  tmlnChannelFileName::SetOriginalValue(const std::string& i_Val)
 {
 	m_OriginalValue = i_Val;
 	this->MarkDirty();
 }
-const itString& tmlnChannelFileName::GetOriginalValue() const
+const std::string& tmlnChannelFileName::GetOriginalValue() const
 {
 	return m_OriginalValue;
 }
@@ -69,7 +69,7 @@ tmlnChannelFileNameProperty::tmlnChannelFileNameProperty(prtyFileName& i_Propert
 //--------------------------------------------------------------------
 //  Set new state for property
 //--------------------------------------------------------------------
-void  tmlnChannelFileNameProperty::SetValue(const itString& i_Val)
+void  tmlnChannelFileNameProperty::SetValue(const std::string& i_Val)
 {
 	m_Property.SetValue(i_Val);
 	m_bScriptedValue = true;
@@ -78,7 +78,7 @@ void  tmlnChannelFileNameProperty::SetValue(const itString& i_Val)
 //--------------------------------------------------------------------
 //  Get current state of property
 //--------------------------------------------------------------------
-const itString& tmlnChannelFileNameProperty::GetValue() const
+const std::string& tmlnChannelFileNameProperty::GetValue() const
 {
 	return m_Property.GetValue();
 }

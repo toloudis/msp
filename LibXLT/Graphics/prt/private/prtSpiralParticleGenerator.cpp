@@ -35,7 +35,7 @@ namespace
 		public:
 			//----------------------------------------------------------------------------
 			//----------------------------------------------------------------------------
-			SpiralParticle(	envType::Int32 i_ID,
+			SpiralParticle(	int32_t i_ID,
 							const maPoint3d& i_Position,
 							const maVector3d& i_Velocity,
 							const maVector3d& i_Acceleration,
@@ -76,7 +76,7 @@ namespace
 			//--------------------------------------------------------------------
 			// accessors
 			//--------------------------------------------------------------------
-			envType::Int32 GetID() { return m_ID; }
+			int32_t GetID() { return m_ID; }
 
 			//--------------------------------------------------------------------
 			//	Think thinks each particle.
@@ -108,7 +108,7 @@ namespace
 			SpiralParticle* m_pNext;
 			SpiralParticle* m_pPrev;
 
-			envType::Int32 m_ID;
+			int32_t m_ID;
 			maPoint3d  m_RotCenter; 
 			maVector3d m_Velocity;		// velocity of the center which particles rotate around
 			maVector3d m_StartVelocity;	// 
@@ -151,7 +151,7 @@ namespace
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	SpiralParticle::SpiralParticle(	envType::Int32 i_ID,
+	SpiralParticle::SpiralParticle(	int32_t i_ID,
 									const maPoint3d& i_Position, 
 									const maVector3d& i_Velocity, 
 									const maVector3d& i_Acceleration, 
@@ -355,13 +355,13 @@ struct prtSpiralParticleCreator
 	int num_uva_frames;
 	prtSpriteGroupParticleGenerator::UVAMode uva_mode;
 
-	SpiralParticle* CreateParticle(envType::Int32 i_ID, const maPoint3d& i_Position) const;
+	SpiralParticle* CreateParticle(int32_t i_ID, const maPoint3d& i_Position) const;
 };
 
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-SpiralParticle* prtSpiralParticleCreator::CreateParticle(envType::Int32 i_ID, const maPoint3d& i_Position) const
+SpiralParticle* prtSpiralParticleCreator::CreateParticle(int32_t i_ID, const maPoint3d& i_Position) const
 {
 	//	calculate the frame
 	int init_frame = 0;

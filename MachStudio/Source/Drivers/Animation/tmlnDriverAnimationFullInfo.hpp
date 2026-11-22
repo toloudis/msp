@@ -32,6 +32,7 @@ public:
 	tmlnAnimationFullInfo();
 
 	fsLocator	m_AnimFilename;
+	std::string	m_AnimClip;		// the clip's identity in the file; empty: the file is the animation
 	bool		m_bDriverToAnimLength;
 	bool		m_bUseAnimStart;
 

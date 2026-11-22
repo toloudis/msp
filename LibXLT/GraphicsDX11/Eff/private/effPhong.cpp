@@ -17,8 +17,8 @@
 #include "GraphicsDX11/g3d/g3dDX11TextureUtil.hpp"
 #include "GraphicsDX11/g3d/g3dLightMgrDX11.hpp"
 
-effPhong::effPhong(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, std::string i_name)
-:	effShaderBaseDX11(i_Directory, i_pEffect, i_name)
+effPhong::effPhong(const fsLocator& i_Directory, std::unique_ptr<fxEffect> i_pEffect, std::string i_name)
+:	effShaderBaseDX11(i_Directory, std::move(i_pEffect), i_name)
 {
 	MapParameter("hasDiffuseMap", m_hHasDiffuse);
 	MapParameter("diffuseMap", m_hDiffuseMap);

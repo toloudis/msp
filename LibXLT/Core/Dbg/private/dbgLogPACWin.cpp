@@ -15,6 +15,7 @@
 
 #include "dbgLogPACWin.hpp"
 #include "Core/Env/envInitX.hpp"
+#include "Core/Env/envString.hpp"
 #include "Core/Dbg/dbgMsg.hpp"
 
 #include <sstream>
@@ -66,33 +67,18 @@ void WriteLog(const char* i_Text)
 }
 
 //------------------------------------------------------------------------
-//	UnicodetoANSI is a convenience function for debug logging that will turn an
-//	itString into a std::string.
+//	WriteDebugOutput sends UTF-8 text to the debugger's output window.
 //
-// \param i_String the original string
-// \param i_Length the length of the original string
+// \param i_UTF8Text text to send, without any line ending added
 //
-// \return the converted string
+// \return void
 //------------------------------------------------------------------------
-std::string UnicodetoANSI(const envType::WChar *i_String, int i_Length)
+void WriteDebugOutput(const std::string& i_UTF8Text)
 {
-	char work_string[DBG_LOG_STRING_LENGTH];
-	int num_chars;
-
-	num_chars = ::WideCharToMultiByte(	CP_ACP,		// ANSI code page
-										0,			// no "lo-performance" flags
-										i_String,
-										i_Length,
-										work_string,
-										DBG_LOG_STRING_LENGTH,	// size of target buffer
-										NULL,
-										NULL);
-
-	// for some reason, this function doesn't seem to terminate the 
-	// work_string
-	work_string[num_chars] = 0;
-
-	return std::string(work_string);
+	// The stream text is UTF-8, so promote it to a wide string and use the
+	// "W" variation, even in ANSI builds.
+	std::wstring wide_str = envString::UTF8ToWideChar( i_UTF8Text );
+	::OutputDebugStringW( wide_str.c_str() );
 }
 
 //------------------------------------------------------------------------

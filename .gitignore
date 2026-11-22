@@ -2,4 +2,15 @@ MachStudio/bin/
 MachStudio/source/packages
 MachStudio/Source/.vs
 LibXLT/bin/
+UnitTests/bin/
+*.vcxproj.user
+__pycache__
 vcpkg_installed/
+graphify-out/
+LibXLT/GraphicsDX11/Fx/private/Generated/
+LibXLT/GraphicsVulkan/Fx/private/Generated/
+LibXLT/GraphicsOptiX/optx/private/Generated/
+# The run directories MainApp builds into, one per configuration
+# (MachStudio-x64-<Qt|Wx|RenderNode>-<Debug|Release>): the exe and everything the
+# build copies next to it (Runtime/Data, vcpkg, 3rdParty, wx and Qt DLLs)
+MachStudio/MachStudio-x64-*/

@@ -12,13 +12,16 @@
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/ma/maConstants.hpp"
 #include "Core/ma/maRotation.hpp"
 #include "Core/ma/maFunctions.hpp"
 #include "Core/name/nameString.hpp"
 
 #include "Graphics/cam/camCamera.hpp"
+#include "Graphics/eff/effPbrData.hpp"
 #include "Graphics/eff/effShaderParams.hpp"
 #include "Graphics/g3d/g3dConstants.hpp"
 #include "Graphics/g3d/g3dFragment.hpp"
@@ -34,6 +37,7 @@
 
 #include <sstream>
 #include <string>
+#include <filesystem>
 #include <map>
 #include <utility>
 #include <vector>
@@ -435,6 +439,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 	std::string normMapName = "";
 	std::string envDiffMapName = "";
 	std::string envSpecMapName = "";
+	const shared_ptr<effShaderParams> shaderParams = rmanExport::ExportShaderParams(*i_pFrag->GetMaterial());
 	
 	currAttribute << "  Displacement \"Tessellate\" ";
 	
@@ -539,7 +544,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 			currAttribute << endl;
 
 			std::vector<effParamFloat*> floatParams;
-			i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetAllFloatParams(floatParams);
+			shaderParams->GetAllFloatParams(floatParams);
 			for ( int i = 0 ; i < floatParams.size() ; i++ )
 			{
 				effParamFloat* currParam = floatParams[i];
@@ -551,7 +556,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 			}
 			std::vector<effParamTexture*> textureParams;
 
-			i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetAllTextureParams(textureParams);
+			shaderParams->GetAllTextureParams(textureParams);
 			for ( int i = 0 ; i < textureParams.size() ; i++ )
 			{
 				effParamTexture* currParam = textureParams[i];	
@@ -591,7 +596,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 			currAttribute << endl;
 
 			std::vector<effParamFloat*> floatParams;
-			i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetAllFloatParams(floatParams);
+			shaderParams->GetAllFloatParams(floatParams);
 			for ( int i = 0 ; i < floatParams.size() ; i++ )
 			{
 				effParamFloat* currParam = floatParams[i];
@@ -603,7 +608,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 			}
 			std::vector<effParamTexture*> textureParams;
 
-			i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetAllTextureParams(textureParams);
+			shaderParams->GetAllTextureParams(textureParams);
 			for ( int i = 0 ; i < textureParams.size() ; i++ )
 			{
 				effParamTexture* currParam = textureParams[i];	
@@ -656,7 +661,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 			currAttribute << WriteFloat("camFarClip",  io_GlobalData.m_SceneCamera->GetFarClip() );
 
 			std::vector<effParamFloat*> floatParams;
-			i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetAllFloatParams(floatParams);
+			shaderParams->GetAllFloatParams(floatParams);
 			for ( int i = 0 ; i < floatParams.size() ; i++ )
 			{
 				effParamFloat* currParam = floatParams[i];
@@ -667,7 +672,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 			}
 			std::vector<effParamTexture*> textureParams;
 
-			i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetAllTextureParams(textureParams);
+			shaderParams->GetAllTextureParams(textureParams);
 			for ( int i = 0 ; i < textureParams.size() ; i++ )
 			{
 				effParamTexture* currParam = textureParams[i];	
@@ -689,7 +694,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 		// Beauty pass
 		else 
 		{
-			fsLocator shader = fsLocator( i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetShaderName() );
+			fsLocator shader = fsLocator( shaderParams->GetShaderName() );
 			std::string shaderName;
 			fsFileUtil::LocatorToANSIFilename(shader.GetLastName(),shaderName,false);
 			shaderName = shaderName.substr(0,shaderName.length()-3);
@@ -699,7 +704,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 			std::vector<std::string> tempVals;
 			
 			std::vector<effParamTexture*> textureParams;
-			i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetAllTextureParams(textureParams);
+			shaderParams->GetAllTextureParams(textureParams);
 			for ( int i = 0 ; i < textureParams.size() ; i++ )
 			{
 				effParamTexture* currParam = textureParams[i];	
@@ -718,7 +723,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 			}
 			
 			std::vector<effParamColor*> colorParams;
-			i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetAllColorParams(colorParams);
+			shaderParams->GetAllColorParams(colorParams);
 			for ( int i = 0 ; i < colorParams.size() ; i++ )
 			{
 				effParamColor* currParam = colorParams[i];
@@ -731,7 +736,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 			}
 
 			std::vector<effParamFloat*> floatParams;
-			i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetAllFloatParams(floatParams);
+			shaderParams->GetAllFloatParams(floatParams);
 			for ( int i = 0 ; i < floatParams.size() ; i++ )
 			{
 				effParamFloat* currParam = floatParams[i];
@@ -743,7 +748,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 			}
 
 			std::vector<effParamBool*> boolParams;
-			i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetAllBoolParams(boolParams);
+			shaderParams->GetAllBoolParams(boolParams);
 			for ( int i = 0 ; i < boolParams.size() ; i++ )
 			{
 				effParamBool* currParam = boolParams[i];
@@ -751,7 +756,7 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 			}
 
 			std::vector<effParamInt*> intParams;
-			i_pFrag->GetMaterial()->GetMaterialLayer(0)->GetShaderParams()->GetAllIntParams(intParams);
+			shaderParams->GetAllIntParams(intParams);
 			for ( int i = 0 ; i < intParams.size() ; i++ )
 			{
 				effParamInt* currParam = intParams[i];
@@ -881,6 +886,23 @@ void ExportShaderInfo(rmanGlobalData & io_GlobalData,
 }
 
 //--------------------------------------------------------------------
+// ExportShaderParams()
+//--------------------------------------------------------------------
+std::shared_ptr<effShaderParams> rmanExport::ExportShaderParams(const matMaterial& i_Material)
+{
+	shared_ptr<effShaderParams> params = i_Material.GetShaderParams(0);
+	if (!params || params->GetShaderName().GetNumNames() == 0)
+		return params;
+	std::string shader;
+	fsFileUtil::LocatorToANSIFilename(params->GetShaderName().GetLastName(), shader, false);
+	if (_stricmp(shader.c_str(), effPbrData::c_ShaderName) != 0)
+		return params;
+	shared_ptr<effShaderParams> blinn = effPbrData::MakeBlinnFallbackParams(*params);
+	blinn->SetShaderName(fsLocator(std::string("Blinn.fx")));
+	return blinn;
+}
+
+//--------------------------------------------------------------------
 // ExportPolygonMesh()
 //--------------------------------------------------------------------
 void rmanExport::ExportPolygonMesh(rmanGlobalData & io_GlobalData, rmanGeometryData i_GeometryData , const g3dSceneNode * i_pNode)
@@ -903,7 +925,7 @@ void rmanExport::ExportPolygonMesh(rmanGlobalData & io_GlobalData, rmanGeometryD
 			std::string archiveName = objName + std::string(".rib");
 			fsLocator loc = io_GlobalData.m_ArchivesLoc;
 			loc.Push(archiveName.c_str());
-			itString itFileName;
+			std::string itFileName;
 			fsFileUtil::LocatorToUnicodeString( loc, itFileName );
 
 			std::ostringstream currAttribute;
@@ -962,7 +984,7 @@ void rmanExport::ExportPolygonMesh(rmanGlobalData & io_GlobalData, rmanGeometryD
 				bool indexSize32 = g3dIndexPtr::Needs32Bit( currFrag->GetNumVertices() );
 				if (indexSize32)
 				{
-					envType::UInt32 *buffer = reinterpret_cast<envType::UInt32*>(pIndexBuffer);
+					uint32_t *buffer = reinterpret_cast<uint32_t*>(pIndexBuffer);
 					for ( int i = 0 ; i < currFrag->GetNumIndices() ; i++ )
 					{
 						int currIdx = buffer[i];
@@ -973,7 +995,7 @@ void rmanExport::ExportPolygonMesh(rmanGlobalData & io_GlobalData, rmanGeometryD
 				}
 				else
 				{
-					envType::UInt16 *buffer = reinterpret_cast<envType::UInt16*>(pIndexBuffer);
+					uint16_t *buffer = reinterpret_cast<uint16_t*>(pIndexBuffer);
 					for ( int i = 0 ; i < currFrag->GetNumIndices() ; i++ )
 					{
 						int currIdx = buffer[i];
@@ -998,7 +1020,7 @@ void rmanExport::ExportPolygonMesh(rmanGlobalData & io_GlobalData, rmanGeometryD
 				// done with buffer.
 				currFrag->ReadOnlyUnlock();
 
-				std::ofstream archiveFile( itFileName.GetString() , std::ios::out );
+				std::ofstream archiveFile( std::filesystem::u8path(itFileName) , std::ios::out );
 
 				archiveFile << "#******************************************************************" << endl;
 				archiveFile << "# RenderMan Interface Bytestream generated by MachStudio - GEOMETRY"  << endl; 
@@ -1246,9 +1268,9 @@ void rmanExport::ExportPointLight(rmanGlobalData & io_GlobalData, rmanPointLight
 //--------------------------------------------------------------------
 void rmanExport::ExportMasterRib(rmanGlobalData & io_GlobalData)
 {
-	itString itFileNameMaster;
+	std::string itFileNameMaster;
 	fsFileUtil::LocatorToUnicodeString( io_GlobalData.m_RibPath, itFileNameMaster );
-	std::ofstream masterRib( itFileNameMaster.GetString() , std::ios::out );
+	std::ofstream masterRib( std::filesystem::u8path(itFileNameMaster) , std::ios::out );
 
 	masterRib << "#****************************************************************" << endl;
 	masterRib << "# RenderMan Interface Bytestream generated by MachStudio - MASTER"  << endl; 
@@ -1410,9 +1432,9 @@ void rmanExport::ExportMasterRib(rmanGlobalData & io_GlobalData)
 
 	masterRib.close();
 
-	itString itFileNameWorld;
+	std::string itFileNameWorld;
 	fsFileUtil::LocatorToUnicodeString( worldLoc, itFileNameWorld );
-	std::ofstream worldRib( itFileNameWorld.GetString() , std::ios::out );
+	std::ofstream worldRib( std::filesystem::u8path(itFileNameWorld) , std::ios::out );
 
 	worldRib << "WorldBegin" << endl ;
 	worldRib << endl;
@@ -1433,18 +1455,18 @@ void rmanExport::ExportShadowMaps(rmanGlobalData & io_GlobalData)
 {
 	for ( int i = 0 ; i < io_GlobalData.m_ProjectedLightNames.size() ; i++ )
 	{	
-		itString fileName = itString(io_GlobalData.m_ProjectedLightNames[i].c_str());
-		fileName += itString("_SHADOWMAP.rib");
+		std::string fileName = io_GlobalData.m_ProjectedLightNames[i];
+		fileName += std::string("_SHADOWMAP.rib");
 
 		fsLocator loc = io_GlobalData.m_ShadowMapsLoc;
 		loc.Push(fileName);
-		itString itFileName;
+		std::string itFileName;
 		std::string plain_name;
 		fsFileUtil::LocatorToANSIFilename( loc, plain_name);
 		plain_name = remove_extension(plain_name);
 		replace_all(plain_name, "\\", "/");
 		fsFileUtil::LocatorToUnicodeString( loc, itFileName );
-		std::ofstream shadowRib( itFileName.GetString() , std::ios::out );			
+		std::ofstream shadowRib( std::filesystem::u8path(itFileName) , std::ios::out );			
 
 		shadowRib << "#********************************************************************" << endl;
 		shadowRib << "# RenderMan Interface Bytestream generated by MachStudio - SHADOW MAP"  << endl; 
@@ -1618,9 +1640,9 @@ void rmanExport::ExportReflectionMaps(rmanGlobalData & io_GlobalData)
 			reflName << objName << "_PLANARREFLECTIONMAP.rib";
 			fsLocator loc = io_GlobalData.m_ReflectionMapsLoc;
 			loc.Push(reflName.str().c_str());
-			itString itFileName;
+			std::string itFileName;
 			fsFileUtil::LocatorToUnicodeString( loc , itFileName );
-			std::ofstream reflectionRib( itFileName.GetString() , std::ios::out );
+			std::ofstream reflectionRib( std::filesystem::u8path(itFileName) , std::ios::out );
 
 			std::string plain_name;
 			fsFileUtil::LocatorToANSIFilename( loc, plain_name);
@@ -1687,16 +1709,16 @@ void rmanExport::ExportReflectionMaps(rmanGlobalData & io_GlobalData)
 
 			reflectionRib << endl;
 
-			itFileName.StripExtension();
-			itFileName += itString("_WORLD.rib");
+			envString::StripExtension(itFileName);
+			itFileName += std::string("_WORLD.rib");
 
-			std::string worldPath = itStringUtil::GetStdString( itFileName );
+			std::string worldPath = itFileName;
 			replace_all(worldPath, "\\", "/");
 
 			reflectionRib << "ReadArchive \"" << worldPath << "\"" << endl;
 			reflectionRib.close();
 
-			std::ofstream worldRib( itFileName.GetString() , std::ios::out );
+			std::ofstream worldRib( std::filesystem::u8path(itFileName) , std::ios::out );
 
 			worldRib << "WorldBegin" << endl ;
 			worldRib << endl;
@@ -1728,9 +1750,9 @@ void rmanExport::ExportReflectionMaps(rmanGlobalData & io_GlobalData)
 				reflName << objName << "_CUBEREFLECTIONMAP_FACE" << j << ".rib";
 				fsLocator loc = io_GlobalData.m_ReflectionMapsLoc;
 				loc.Push(reflName.str().c_str());
-				itString itFileName;
+				std::string itFileName;
 				fsFileUtil::LocatorToUnicodeString( loc , itFileName );
-				std::ofstream reflectionRib( itFileName.GetString() , std::ios::out );
+				std::ofstream reflectionRib( std::filesystem::u8path(itFileName) , std::ios::out );
 
 				std::string plain_name;
 				fsFileUtil::LocatorToANSIFilename( loc, plain_name);
@@ -1760,16 +1782,16 @@ void rmanExport::ExportReflectionMaps(rmanGlobalData & io_GlobalData)
 
 				reflectionRib << endl;
 
-				itFileName.StripExtension();
-				itFileName += itString("_WORLD.rib");
+				envString::StripExtension(itFileName);
+				itFileName += std::string("_WORLD.rib");
 
-				std::string worldPath = itStringUtil::GetStdString( itFileName );
+				std::string worldPath = itFileName;
 				replace_all(worldPath, "\\", "/");
 
 				reflectionRib << "ReadArchive \"" << worldPath << "\"" << endl;
 				reflectionRib.close();
 
-				std::ofstream worldRib( itFileName.GetString() , std::ios::out );
+				std::ofstream worldRib( std::filesystem::u8path(itFileName) , std::ios::out );
 
 				worldRib << "WorldBegin" << endl ;
 				worldRib << endl;
@@ -1892,7 +1914,7 @@ void rmanExport::ExportReflectionMaps(rmanGlobalData & io_GlobalData)
 //--------------------------------------------------------------------
 // ExportSubdivisionMesh()
 //--------------------------------------------------------------------
-//void rmanExport::ExportSubdivisionMesh( std::vector<envType::UInt32>* i_Indices,
+//void rmanExport::ExportSubdivisionMesh( std::vector<uint32_t>* i_Indices,
 //										  std::vector<maPoint3d>* i_Vertices,
 //										  std::vector<maPoint2d>* i_UVs,
 //										  std::string i_SubdivName,

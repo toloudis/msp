@@ -56,6 +56,12 @@ public:
 
 	virtual shared_ptr<gpxShaderParams> GetShaderData();
 
+	//--------------------------------------------------------------------
+	// The channel of the shader parameter with that name (an effect
+	// parameter name, e.g. effPbrData::c_BaseColor); NULL if none
+	//--------------------------------------------------------------------
+	tmlnChannel* FindParamChannel(const std::string& i_Param) const;
+
 private:
 	//---------------------------------------------------------------------------
 	//---------------------------------------------------------------------------

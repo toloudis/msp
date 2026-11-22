@@ -10,7 +10,6 @@
 
 #include "Support/mnm/mnmConstants.hpp"
 
-#include "Core/it/itStringUtil.hpp"
 #include "Tool/doc/docSingleDocumentMgr.hpp"
 #include "Tool/gui/guiMainWindow.hpp"
 
@@ -30,22 +29,22 @@ namespace
 //------------------------------------------------------------------------
 void mnmAppUtil::UpdateTitleBar( bool i_bDisplayDirtyFlag )
 {
-	itString title_str(mnmConstants::c_PRODUCT_FOR_DISPLAY);
-	title_str += L" - ";
+	std::string title_str(mnmConstants::c_PRODUCT_FOR_DISPLAY);
+	title_str += " - ";
 
-	itString sceneFilename;
+	std::string sceneFilename;
 	if ( docSingleDocumentMgr::GetFilename().GetNumNames() > 0 )
 	{
 		sceneFilename = docSingleDocumentMgr::GetFilename().GetLastName();
 	}
 	else
 	{
-		sceneFilename = L"Untitled";
+		sceneFilename = "Untitled";
 	}
 	title_str += sceneFilename;
 
 	if (i_bDisplayDirtyFlag)
-		title_str += L"*";
+		title_str += "*";
 	guiMainWindow::SetAppTitle(title_str);
 
 	//std::ostringstream buffer;

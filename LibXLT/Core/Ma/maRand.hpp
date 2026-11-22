@@ -59,8 +59,8 @@
 #ifndef DBG_MSG_HPP
 #include "Core/dbg/dbgMsg.hpp"
 #endif
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 #include <string.h>
@@ -72,20 +72,20 @@
 // as in 64 bit platforms.  Usually this will just be 32.
 // Note:  GOLDEN_RATIO is defined by Jenkins in his code.
 #ifndef __ISAAC64
-   const envType::UInt32 GOLDEN_RATIO = envType::UInt32(0x9e3779b9);
+   const uint32_t GOLDEN_RATIO = uint32_t(0x9e3779b9);
 #else   // __ISAAC64
-const envType::UInt64 GOLDEN_RATIO = envType::UInt64(0x9e3779b97f4a7c13);
-typedef envType::UInt64 ISAAC_INT;
+const uint64_t GOLDEN_RATIO = uint64_t(0x9e3779b97f4a7c13);
+typedef uint64_t ISAAC_INT;
 #endif  // __ISAAC64
 
 
 //////////////////////////
 // Predeclaration
-template <int ALPHA=8, class T=envType::UInt32> class maRand;
+template <int ALPHA=8, class T=uint32_t> class maRand;
 
 ///////////////////////////////////
 // Typedef that users should use
-typedef maRand<8, envType::UInt32> maRand32;
+typedef maRand<8, uint32_t> maRand32;
 
 
 //============================================================================
@@ -342,7 +342,7 @@ void maRand<ALPHA, T>::Init()
 	// Note:  This code is taken directly from Jenkins's original 
 	// code in his randinit function.  The names have been changed 
 	// to protect the innocent.
-	envType::UInt32 i;
+	uint32_t i;
 	for(i=0; i < 4; ++i)         
 	{
 		Shuffle(a,b,c,d,e,f,g,h);
@@ -395,7 +395,7 @@ void maRand<ALPHA,T>::Isaac()
 
 	// x, y -- intermediate variables for indirection calculation
 	T x, y;
-	envType::UInt32 i;
+	uint32_t i;
 
 	// Jenkins:  [Counter] "just gets incremented once per 256 results then combined with" previous result.
 	m_PreviousResult += (++m_Counter);
@@ -439,7 +439,7 @@ void maRand<ALPHA,T>::Isaac()
 #error
 /*
 #error Don't know yet how to convert old indirection to new concise 64 bit version
-#error used to be ind(x) { return (*(T*)((envType::UInt8*)(m_pMemory) + ((x) & ((m_SIZE-1)<<3)))); }
+#error used to be ind(x) { return (*(T*)((uint8_t*)(m_pMemory) + ((x) & ((m_SIZE-1)<<3)))); }
 #error These y>>n & m_SIZE parts need to be replaced with someting else?
 */
 		m_pMemory[i]   = y  = m_pMemory[ (x>>2)%m_SIZE ] + m_Accumulator + m_PreviousResult;

@@ -92,14 +92,14 @@ void effBlinnDataParser::Read(	chReader& i_Reader,
 	o_Shader.AddParam(new effParamColor("g_specular", "g_specular", data.m_ColorSpecular));
 	o_Shader.AddParam(new effParamFloat("g_IOR", "g_IOR", data.m_IOR));
 	o_Shader.AddParam(new effParamFloat("g_roughness", "g_roughness", data.m_DiffuseRoughness));
-	o_Shader.AddParam(new effParamTexture("diffuseMap", "diffuseMap", itString(data.m_NameDiffuse.c_str())));
-	o_Shader.AddParam(new effParamTexture("normalMap", "normalMap", itString(data.m_NameNormalMap.c_str())));
-	o_Shader.AddParam(new effParamTexture("cubeMap", "cubeMap", itString(data.m_NameEnvironment.c_str())));
-	o_Shader.AddParam(new effParamTexture("specularMap", "specularMap", itString(data.m_NameSpecular.c_str())));
-	o_Shader.AddParam(new effParamTexture("glossMap", "glossMap", itString(data.m_NameGloss.c_str())));
-	o_Shader.AddParam(new effParamTexture("reflectFactorMap", "reflectFactorMap", itString(data.m_NameReflectFactorMap.c_str())));
-	o_Shader.AddParam(new effParamTexture("iorMap", "iorMap", itString(data.m_NameIORMap.c_str())));
-	o_Shader.AddParam(new effParamTexture("transparencyMap", "transparencyMap", itString(data.m_NameTransparencyMap.c_str())));
+	o_Shader.AddParam(new effParamTexture("diffuseMap", "diffuseMap", data.m_NameDiffuse));
+	o_Shader.AddParam(new effParamTexture("normalMap", "normalMap", data.m_NameNormalMap));
+	o_Shader.AddParam(new effParamTexture("cubeMap", "cubeMap", data.m_NameEnvironment));
+	o_Shader.AddParam(new effParamTexture("specularMap", "specularMap", data.m_NameSpecular));
+	o_Shader.AddParam(new effParamTexture("glossMap", "glossMap", data.m_NameGloss));
+	o_Shader.AddParam(new effParamTexture("reflectFactorMap", "reflectFactorMap", data.m_NameReflectFactorMap));
+	o_Shader.AddParam(new effParamTexture("iorMap", "iorMap", data.m_NameIORMap));
+	o_Shader.AddParam(new effParamTexture("transparencyMap", "transparencyMap", data.m_NameTransparencyMap));
 }
 
 //----------------------------------------------------------------------------

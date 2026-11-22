@@ -14,7 +14,11 @@
 #include "Core/Dbg/dbgMsg.hpp"
 #include "Core/Fs/fsFileUtil.hpp"
 #include "Core/Fs/fsLocator.hpp"
-#include "Core/It/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
+#include "Tool/tma3d/tma3dRenderView.hpp"
+#include "Tool/doc/docSingleTypeMgr.hpp"
 #include "Tool/gui/guiSingleDocHandler.hpp"
 #include "Systems/Character/Undo/chtrOperations.hpp"
 #ifdef USE_WXWIDGETS
@@ -45,22 +49,27 @@ bool wxMainDropTarget::OnDropFiles(wxCoord x, wxCoord y,
 	if (filenames.size() == 1)
 	{
 		fsLocator file_loc;
-		fsFileUtil::UnicodeStringToLocator( itString((const char*)filenames[0].c_str()), file_loc );
+		fsFileUtil::UnicodeStringToLocator( filenames[0].utf8_string(), file_loc );
 
-		itString filename = file_loc.GetLastName();
-		itString ext;
-		filename.GetExtension( ext );
+		std::string filename = file_loc.GetLastName();
+		std::string ext;
+		envString::GetExtension(filename,  ext );
 
-		if (itStringUtil::Equal(ext, itString("mtl")))
+		if (envString::EqualNoCase(ext, std::string("mtl")))
 		{
-			mbrwPaintUtil::PasteMaterialFile( m_pRenderView, x, y, file_loc);
+			// convert the panel position to a pixel in the rendered image
+			int render_x = x;
+			int render_y = y;
+			m_pRenderView->PanelToRenderPixel(render_x, render_y);
+			mbrwPaintUtil::PasteMaterialFile( m_pRenderView, render_x, render_y, file_loc);
 		}
-		if(itStringUtil::Equal(ext, itString("mab")))
+		// a scene, or a scene file of another format (glTF), opened as a new scene
+		if(envString::EqualNoCase(ext, std::string("mab")) || docSingleTypeMgr::IsForeignFile(file_loc))
 		{
 			//DBG_LOG("Received drag and drop");
 			guiSingleDocHandler::Open(file_loc, false);
 		}
-		if(itStringUtil::Equal(ext, itString("gxb")))
+		if(envString::EqualNoCase(ext, std::string("gxb")))
 		{
 			chtrOperations::AddObject(chtrScriptData(file_loc));
 		}

@@ -18,12 +18,12 @@
 #include <map>
 #include <vector>
 #include <fstream>
+#include <string>
 
 //============================================================================
 //	Forward References
 //============================================================================
 class fsLocator;
-class itString;
 class maRotation;
 class maTime;
 class mexpChannelRecorder;
@@ -78,7 +78,7 @@ public:
 	// Returns assigned asset name for exporting purposes, pass this
 	// name to the functions for animation export.
 	//--------------------------------------------------------------------
-	std::string ExportGeometryLocation(const itString& i_Filename,
+	std::string ExportGeometryLocation(const std::string& i_Filename,
 								const maPoint3d& i_Position,
 								const maRotation& i_Orientation);
 
@@ -164,7 +164,7 @@ public:
 private:
 	std::ofstream m_OutFile;
 	std::vector<mexpChannelRecorder*> m_Recorders;
-	std::map<itString, int> m_InstanceCount;
+	std::map<std::string, int> m_InstanceCount;
 	bool m_bExportAnimation;
 	bool m_bExportJoints;
 };

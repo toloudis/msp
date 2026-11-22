@@ -22,12 +22,12 @@
 #include "ToolUIQt/pqt/Controls/pqtInt32Converter.hpp"
 #endif
 
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
 class pqtInt32_FloatEdit_Converter : public pqtInt32Converter
 {
-#ifdef USE_QT
 public:
 	//----------------------------------------------------------------------------
 	// Set value into control
@@ -39,10 +39,10 @@ public:
 	// Get value from control
 	//----------------------------------------------------------------------------
 	static int GetValueFromControl(tqcFloatEdit* i_pActualControl);
-#endif // USE_QT
 };
 
 //============================================================================
 //============================================================================
 typedef pqtTemplate_FloatEdit<prtyInt32, int, pqtInt32_FloatEdit_Converter> pqtInt32_FloatEdit;
 
+#endif // USE_QT

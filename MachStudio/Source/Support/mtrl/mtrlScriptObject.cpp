@@ -14,6 +14,8 @@
 #include "Support/mtrl/GUI/mtrlSetOperation.hpp"
 #include "Support/mtrl/GUI/mtrlShaderObject.hpp"
 #include "Support/mtrl/GUI/mtrlShaderUtil.hpp"
+#include "Support/mtrl/GUI/mtrlNormals.hpp"
+#include "Support/mtrl/GUI/mtrlSurfaceShader.hpp"
 #include "Support/mtrl/mtrlHighlight.hpp"
 #include "Support/tmln/tmlnScriptObject.hpp"
 
@@ -21,7 +23,9 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/gf/gfFileTxt.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/ma/maConstants.hpp"
 #include "Core/ma/maFunctions.hpp"
 #include "Core/rel/relRelationshipMultiple.hpp"
@@ -552,9 +556,9 @@ void mtrlScriptObject::SaveMaterials(const fsLocator& i_Locator,
 	// the geometry files anymore (that was the old way of doing it).
 	fsLocator gmb_locator = i_Locator;
 	gmb_locator.Pop();
-	itString filename = i_Locator.GetLastName();
-	filename.StripExtension();
-	filename += itString(".gmb");
+	std::string filename = i_Locator.GetLastName();
+	envString::StripExtension(filename);
+	filename += std::string(".gmb");
 	gmb_locator.Push(filename);
 	mtrMaterialSaver::WriteMaterialSet(gmb_locator, m_Materials);
 
@@ -566,7 +570,7 @@ void mtrlScriptObject::SaveMaterials(const fsLocator& i_Locator,
 
 	//bga -  No clearing of materials when saving to material files anymore...
 	//if (i_Locator != m_ModelLocator)
-	//if (_stricmp(save_name.c_str(), cur_name.c_str()))
+	//if (envString::CompareNoCase(save_name, cur_name))
 	//{
 	//	DBG_LOG("Saved to new name, not clearing out materials");
 
@@ -693,6 +697,36 @@ matMaterial* mtrlScriptObject::GetMaterial(int i_Index) const
 {
 	DBG_ASSERT(i_Index < m_pModelInstance->GetMaterials().size(), "Material index out of range");
 	return m_pModelInstance->GetMaterials()[i_Index];
+}
+
+//--------------------------------------------------------------------
+// The channel of a material's shader parameter
+//--------------------------------------------------------------------
+tmlnChannel* mtrlScriptObject::FindMaterialChannel(const std::string& i_Material, const std::string& i_Param) const
+{
+	for (mtrlPropertyObject* pObject : m_PropertyObjects)
+	{
+		if (!pObject || pObject->GetName() != i_Material)
+			continue;
+		if (mtrlSurfaceShader* pShader = dynamic_cast<mtrlSurfaceShader*>(pObject->GetShaderDataObject()))
+			return pShader->FindParamChannel(i_Param);
+	}
+	return NULL;
+}
+
+//--------------------------------------------------------------------
+// The channel of a material's normal map scale
+//--------------------------------------------------------------------
+tmlnChannel* mtrlScriptObject::FindNormalScaleChannel(const std::string& i_Material) const
+{
+	for (mtrlPropertyObject* pObject : m_PropertyObjects)
+	{
+		if (!pObject || pObject->GetName() != i_Material)
+			continue;
+		if (mtrlNormals* pNormals = dynamic_cast<mtrlNormals*>(pObject->GetNormalsDataObject()))
+			return pNormals->BumpScaleChannel();
+	}
+	return NULL;
 }
 
 //--------------------------------------------------------------------
@@ -1075,7 +1109,7 @@ void mtrlScriptObject::GetMaterialResources( fsResourceTrackerData& io_List )
 	{
 		this->GetTextureList( i, texture_list );
 
-		itString itName;
+		std::string itName;
 		fsLocator shaderLoc;	
 		fsFileUtil::LocatorToUnicodeString( m_Materials[i]->GetShaderParams()->GetShaderName(), itName );	
 		fsFileUtil::UnicodeStringToLocator( itName, shaderLoc );
@@ -1090,13 +1124,13 @@ void mtrlScriptObject::GetMaterialResources( fsResourceTrackerData& io_List )
 	std::vector<fsLocator>::iterator it;
 
 	std::sort( texture_list.begin(), texture_list.end() );
-	std::unique( texture_list.begin(), texture_list.end() );
+	texture_list.erase( std::unique( texture_list.begin(), texture_list.end() ), texture_list.end() );
 	
 	for (it = texture_list.begin(); it != texture_list.end(); ++it)
 		io_List.Add( *it );
 
 	std::sort( shader_list.begin(), shader_list.end() );
-	std::unique( shader_list.begin(), shader_list.end() );
+	shader_list.erase( std::unique( shader_list.begin(), shader_list.end() ), shader_list.end() );
 
 	for (it = shader_list.begin(); it != shader_list.end(); ++it)
 		io_List.Add( *it );
@@ -1229,7 +1263,7 @@ void mtrlScriptObject::GetBoundingBoxForMaterial(int i_Index, maAxisBox &o_BBox)
 // Get material index by looking for the node with the given 
 //	pick code.
 //--------------------------------------------------------------------
-int mtrlScriptObject::GetMaterialIndexFromPickCode(envType::UInt32 i_PickCode) const
+int mtrlScriptObject::GetMaterialIndexFromPickCode(uint32_t i_PickCode) const
 {
 	const g3dSceneNode *pPickedNode = m_pObject->GetPickedNode(i_PickCode);
 	if (pPickedNode)
@@ -1377,7 +1411,10 @@ void mtrlScriptObject::UpdateTargetRenderer(int i_Index)
 	DBG_ASSERT( found == (pRenderTargetInfo!=NULL) , "inconsistent reflection render target state");
 
 	effReflectionMap* pData = &pMaterial->ReflectionData();
-	if (pMaterial->GetHasReflection() && (pData != NULL) && ShaderSupportsReflection(pMaterial))
+	// A backend that traces reflections (GraphicsOptiX) makes no planar or
+	// cube reflection targets: the material keeps no reflection map
+	if (pMaterial->GetHasReflection() && (pData != NULL) && ShaderSupportsReflection(pMaterial) &&
+		g3dSceneRendererCreate::NeedsReflectionMaps())
 	{
 		// this is critical to get the reflection to show up in the shader!
 		if (pRenderTargetInfo != NULL)

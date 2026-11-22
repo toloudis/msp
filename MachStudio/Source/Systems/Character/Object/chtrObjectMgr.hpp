@@ -59,6 +59,14 @@ public:
 	//  Reload geometry of character with given index
 	//--------------------------------------------------------------------
 	static void  ReloadCharacter(int i_Index);
+
+	//--------------------------------------------------------------------
+	//  Recreate the character with given index from i_Data (its model,
+	//	materials, values and drivers), as ReloadCharacter recreates one:
+	//	light sets, environment, layers, groups and transform carry over,
+	//	and it stays selected if it was. Without undo.
+	//--------------------------------------------------------------------
+	static void  ReplaceCharacter(int i_Index, const chtrScriptData& i_Data);
 	
 	//--------------------------------------------------------------------
 	//  Change geometry of character with given index

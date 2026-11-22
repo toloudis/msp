@@ -737,7 +737,7 @@ void g3dSceneNode::SetPickHull(bool i_bPickHull)
 // PickMask is a user defined bit mask that can be used to filter
 // the pickable objects. The default value of "0" means "do not filter".
 //----------------------------------------------------------------------------
-void g3dSceneNode::SetPickMask(envType::UInt32 i_PickMask)
+void g3dSceneNode::SetPickMask(uint32_t i_PickMask)
 {
 	m_PickMask = i_PickMask;
 }
@@ -746,11 +746,11 @@ void g3dSceneNode::SetPickMask(envType::UInt32 i_PickMask)
 // Set ranges of pick codes for this node and its children in order
 //	to locate the fragment that was picked.
 //----------------------------------------------------------------------------
-void g3dSceneNode::SetLowPickCode(envType::UInt32 i_PickCode)
+void g3dSceneNode::SetLowPickCode(uint32_t i_PickCode)
 {
 	m_PickCodeLow = i_PickCode;
 }
-void g3dSceneNode::SetHighPickCode(envType::UInt32 i_PickCode)
+void g3dSceneNode::SetHighPickCode(uint32_t i_PickCode)
 {
 	m_PickCodeHigh = i_PickCode;
 }
@@ -759,7 +759,7 @@ void g3dSceneNode::SetHighPickCode(envType::UInt32 i_PickCode)
 // Is the pick code given within the high and low pick codes assigned
 // to this node?
 //----------------------------------------------------------------------------
-bool g3dSceneNode::ContainsPickCode(envType::UInt32 i_PickCode) const
+bool g3dSceneNode::ContainsPickCode(uint32_t i_PickCode) const
 {
 	// We have to check the flags before cheking the pick code,
 	// because our pick code was not updated if these
@@ -775,7 +775,7 @@ bool g3dSceneNode::ContainsPickCode(envType::UInt32 i_PickCode) const
 //--------------------------------------------------------------------
 //	Returns the node with a fragment with the given pick code
 //--------------------------------------------------------------------
-const g3dSceneNode* g3dSceneNode::GetPickedNode(envType::UInt32 i_PickCode) const
+const g3dSceneNode* g3dSceneNode::GetPickedNode(uint32_t i_PickCode) const
 {
 	if (this->ContainsPickCode(i_PickCode))
 	{

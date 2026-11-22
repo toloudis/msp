@@ -8,6 +8,10 @@
 \****************************************************************************/
 #include "Support/mtrl/GUI/mtrlOperations.hpp"
 
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
+
 #include "Features/MaterialBrowse/mbrwDialogUtil.hpp"	// unfortunate include
 #include "Support/brsh/brshPaintBrushMgr.hpp"
 
@@ -345,9 +349,9 @@ namespace mtrlOperations
 		// Initial filename comes from stem of filename, but with .gmb extension
 		fsLocator new_loc(i_pObject->GetModelLocator());
 		new_loc.Pop();
-		itString filename = i_pObject->GetModelLocator().GetLastName();
-		filename.StripExtension();
-		filename += itString(".gmb");
+		std::string filename = i_pObject->GetModelLocator().GetLastName();
+		envString::StripExtension(filename);
+		filename += std::string(".gmb");
 		new_loc.Push(filename);
 
 		if (guiFileDialogUtils::GetSaveFileName(c_GMBFileFilter, new_loc))
@@ -425,9 +429,9 @@ namespace mtrlOperations
 		{
 			fsLocator new_loc(i_pObject->GetModelLocator());
 			new_loc.Pop();
-			itString filename = i_pObject->GetModelLocator().GetLastName();
-			filename.StripExtension();
-			filename += itString(".gmb");
+			std::string filename = i_pObject->GetModelLocator().GetLastName();
+			envString::StripExtension(filename);
+			filename += std::string(".gmb");
 			new_loc.Push(filename);
 			if(fsFileUtil::FileExists(new_loc))
 			{
@@ -531,8 +535,8 @@ namespace mtrlOperations
 			gfDirectoryCategories::GetCurDirectory(c_MaterialDirCategory, init_dir);
 
 			fsLocator new_loc(init_dir);
-			itString default_name(mat_info.GetMaterialName().c_str());
-			default_name += itString(".mtl");
+			std::string default_name(mat_info.GetMaterialName().c_str());
+			default_name += std::string(".mtl");
 			new_loc.Push(default_name);
 			
 			if (guiFileDialogUtils::GetSaveFileName(c_MaterialFileFilter, new_loc))
@@ -620,7 +624,7 @@ namespace mtrlOperations
 			// To do directory comparison, need to do case insensitive comparison
 			gfFileTranslationMgr::ExpandLocator(dir);
 			fsFileUtil::LocatorToANSIFilename(dir, dir_str2);
-			if (::_stricmp(dir_str1.c_str(), dir_str2.c_str()))
+			if (envString::CompareNoCase(dir_str1, dir_str2))
 			//if (i_DestDir != dir)
 			{
 				if (!envSTLHelpers::Contains(textures, i_Textures[i]))
@@ -768,7 +772,7 @@ namespace mtrlOperations
 					mdlMaterialInfo material_data = pMaterialObject->GetMaterialData(mat_index);
 
 					// Create a simple Phong material to go on top
-					fsLocator phong_loc(itString("Phong.fx"));
+					fsLocator phong_loc(std::string("Phong.fx"));
 					matShaderEffect* eff = matShaderMgr::GetEffect(phong_loc);
 					shared_ptr<effShaderParams> params(new effShaderParams());
 					params->SetShaderName(phong_loc, eff);
@@ -997,7 +1001,7 @@ namespace mtrlOperations
 					matMaterial * pMaterial = pMaterialObj->GetMaterial(mat_index);	
 					
 					// Do not reload shader if current material has Simple.fx shader assigned to it. Special case.
-					if ( pMaterial->GetShaderParams()->GetShaderName().GetLastName() != itString("Simple.fx") )
+					if ( pMaterial->GetShaderParams()->GetShaderName().GetLastName() != "Simple.fx" )
 					{
 						matShaderMgr::ReloadShader( pMaterial );
 					}

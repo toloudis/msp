@@ -31,12 +31,12 @@
 #endif
 
 #include <vector>
+#include <string>
 
 
 //============================================================================
 //============================================================================
 class fsLocator;
-class itString;
 
 
 //============================================================================
@@ -87,30 +87,30 @@ public:
 	//------------------------------------------------------------------------
 	// Set the sub-directory name (generally, Data, Model, ....)
 	//------------------------------------------------------------------------
-	void SetSubDirName(const itString& i_SubDirName);
+	void SetSubDirName(const std::string& i_SubDirName);
 
 	//------------------------------------------------------------------------
 	// Set the sub-directory name (Data or Textures)
 	// to use only in the Scene folder. 
 	//------------------------------------------------------------------------
-	void SetSceneSubDirName(const itString& i_SceneSubDirName);
+	void SetSceneSubDirName(const std::string& i_SceneSubDirName);
 
 	//------------------------------------------------------------------------
 	// Set the object directory name 
 	// (the name of the character: CLOE_outfit01, etc.)
 	//------------------------------------------------------------------------
-	void SetObjectDirName(const itString& i_ObjectDirName);
+	void SetObjectDirName(const std::string& i_ObjectDirName);
 
 	//------------------------------------------------------------------------
 	// system directory name
 	//------------------------------------------------------------------------
-	void SetSystemDirName(const itString& i_SysDirName);
-	void GetSystemDirName(itString& o_SysDirName);
+	void SetSystemDirName(const std::string& i_SysDirName);
+	void GetSystemDirName(std::string& o_SysDirName);
 
 	//------------------------------------------------------------------------
 	// Set the file type extensions to build the list for
 	//------------------------------------------------------------------------
-	void SetFileTypeExtensions(const itString& i_FileTypeExtensions);
+	void SetFileTypeExtensions(const std::string& i_FileTypeExtensions);
 
 	//------------------------------------------------------------------------
 	// Size() - number of file entres
@@ -124,19 +124,19 @@ public:
 	//	Note: this function will return the first occurrence of the filename.
 	//	Note: this function is case INSENSITIVE
 	//------------------------------------------------------------------------
-	int GetIndex(const itString& i_Filename);
+	int GetIndex(const std::string& i_Filename);
 
 	//------------------------------------------------------------------------
 	// GetFilename
 	//------------------------------------------------------------------------
-	const itString& GetFilename(int i_Index) const;
+	const std::string& GetFilename(int i_Index) const;
 
 	//------------------------------------------------------------------------
 	// FindFilePath - get the fullpath for the filename (w/out the filename).
 	// Returns false if it cannot be found. Safer version compared to
 	// GetFilePath as long as the caller is prepared for the return value.
 	//------------------------------------------------------------------------
-	bool FindFilePath(const itString& i_Filename, fsLocator& o_FilePath);
+	bool FindFilePath(const std::string& i_Filename, fsLocator& o_FilePath);
 
 	//------------------------------------------------------------------------
 	// GetFilePath - get the path for the filename (w/out the filename).
@@ -147,7 +147,7 @@ public:
 	//------------------------------------------------------------------------
 	// GetFilePath - get the path for the filename (w/out the filename)
 	//------------------------------------------------------------------------
-	void GetFilePath(const itString& i_Filename, fsLocator& o_FilePath);
+	void GetFilePath(const std::string& i_Filename, fsLocator& o_FilePath);
 
 	//------------------------------------------------------------------------
 	// GetDataPath
@@ -157,7 +157,7 @@ public:
 	//------------------------------------------------------------------------
 	// GetDataPath
 	//------------------------------------------------------------------------
-	const fsLocator& GetDataPath(const itString& i_Filename);
+	const fsLocator& GetDataPath(const std::string& i_Filename);
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -178,18 +178,18 @@ public:
 	//------------------------------------------------------------------------
 	//	AddFilename - add a filename to the list
 	//------------------------------------------------------------------------
-	void AddFilename(const fsLocator& i_FullDirectory, const itString& i_Filename);
+	void AddFilename(const fsLocator& i_FullDirectory, const std::string& i_Filename);
 
 	//------------------------------------------------------------------------
 	//	Strip the paths before the directory name passed in.  If the 
 	//	i_bIncludePassDir is true then the passed in dir name is also removed.
 	//------------------------------------------------------------------------
-	void StripPathsBefore(const itString& i_DirName, bool i_bIncludePassedDir);
+	void StripPathsBefore(const std::string& i_DirName, bool i_bIncludePassedDir);
 
 	//------------------------------------------------------------------------
 	//	Prepend the string before all the paths
 	//------------------------------------------------------------------------
-	void PrependOnPaths(const itString& i_DirName);
+	void PrependOnPaths(const std::string& i_DirName);
 
 	//------------------------------------------------------------------------
 	//	Sort the filenames within each directory
@@ -206,7 +206,7 @@ private:
 	//	FilenameExists - returns true if the file exists regardless if the 
 	//	path is the same.
 	//------------------------------------------------------------------------
-	bool FilenameExists(const itString& i_Filename);
+	bool FilenameExists(const std::string& i_Filename);
 
 	//------------------------------------------------------------------------
 	//	sort criteria
@@ -224,11 +224,11 @@ private:
 	bool		m_bSortList;
 	bool		m_bAllowDuplicateFilenames;
 	bool		m_bSearchSubDirectories;
-	itString	m_SystemDirName;
-	itString	m_FileExtensions;
-	itString	m_SubDirName;
-	itString	m_SceneSubDirName;
-	itString	m_ObjectDirName;
+	std::string	m_SystemDirName;
+	std::string	m_FileExtensions;
+	std::string	m_SubDirName;
+	std::string	m_SceneSubDirName;
+	std::string	m_ObjectDirName;
 	fsLocator	m_AppDir;			// TODO: - can we get rid of this?
 
 	FileListType	m_FileList;

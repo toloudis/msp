@@ -100,7 +100,7 @@ namespace mtrlIconUtil
 		scObject *l_pSphereObject = NULL;
 		entModelInstance *l_pModelInstance = NULL;
 
-		//envType::UInt8* l_Buffer;
+		//uint8_t* l_Buffer;
 		//int l_BufSize;
 		//mtrlScriptObject* l_mtrlObject = NULL;
 		//int l_mtrlIndex;
@@ -357,7 +357,7 @@ namespace mtrlIconUtil
 			l_PointLight->SetDiffuseEnabled(true);
 			l_PointLight->SetSpecularEnabled(true);
 			l_PointLight->SetAffectsGlow(true);
-			l_PointLight->SetCastsShadow(true);
+			l_PointLight->SetIsSinglePassLight(true);
 			l_PointLight->SetFalloff0(1.00f);
 			l_PointLight->SetFalloff1(1.00f);
 			l_PointLight->SetFalloff2(0.00f);
@@ -369,7 +369,7 @@ namespace mtrlIconUtil
 
 			//create the projection texture for both projection lights
 			fsResourceFinderDir finder(get_texture_path(l_ObjectFile));
-			itString tex_name("Shader_Ball_projection.dds");
+			std::string tex_name("Shader_Ball_projection.dds");
 			l_LightTexture = matTextureMgr::LoadTexture(finder, tex_name);
 
 			l_ProjectedLight1 = g3dLightMgr::CreateProjectedLight();
@@ -384,7 +384,7 @@ namespace mtrlIconUtil
 			l_ProjectedLight1->SetDiffuseEnabled(true);
 			l_ProjectedLight1->SetSpecularEnabled(true);
 			l_ProjectedLight1->SetAffectsGlow(true);
-			l_ProjectedLight1->SetCastsShadow(true);
+			l_ProjectedLight1->SetIsSinglePassLight(true);
 			l_ProjectedLight1->SetDepthBias(0.005f);
 			l_ProjectedLight1->SetShadowQuality(g3dProjectedLight::SQ_HIGH);
 			l_ProjectedLight1->SetShadowIntensity(1.0f);
@@ -407,7 +407,7 @@ namespace mtrlIconUtil
 			l_ProjectedLight2->SetDiffuseEnabled(true);
 			l_ProjectedLight2->SetSpecularEnabled(true);
 			l_ProjectedLight2->SetAffectsGlow(true);
-			l_ProjectedLight2->SetCastsShadow(true);
+			l_ProjectedLight2->SetIsSinglePassLight(true);
 			l_ProjectedLight2->SetDepthBias(0.005f);
 			l_ProjectedLight2->SetShadowQuality(g3dProjectedLight::SQ_HIGH);
 			l_ProjectedLight2->SetShadowIntensity(1.0f);
@@ -486,7 +486,7 @@ namespace mtrlIconUtil
 			if (image != NULL)
 			{
 				int w=0,h=0,bpp=0;
-				envType::UInt8* buffer = NULL;
+				uint8_t* buffer = NULL;
 				int bufSize = 0;
 
 				image->GetPixels(&buffer, &bufSize, &w, &h, &bpp);

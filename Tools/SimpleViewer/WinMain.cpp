@@ -77,13 +77,8 @@ int APIENTRY _tWinMain( HINSTANCE hInstance,
 #ifdef USE_WXWIDGETS
 	twxAppUtil::SetInstance(hInstance, nCmdShow);
 
-	// Get command line arguments in format that wxWidgets likes
-	int argc = 0;
-    wxChar **argv = NULL;
-	twxAppUtil::ParseCommandLine(argc, argv);
-
 	// Initialize wxWidgets
-	if (!twxAppUtil::Init(argc, argv))
+	if (!twxAppUtil::Init(0, NULL))
 	{
 		return -1;
 	}
@@ -248,8 +243,6 @@ int APIENTRY _tWinMain( HINSTANCE hInstance,
 #ifdef USE_WXWIDGETS
 	// clean up wxWidgets
 	twxAppUtil::CleanUp();
-
-	twxAppUtil::FreeArgs(argc, argv);
 #endif // USE_WXWIDGETS
 
 	return 0;

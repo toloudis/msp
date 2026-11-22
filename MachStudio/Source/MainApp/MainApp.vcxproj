@@ -1,84 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug Iterator|Win32">
-      <Configuration>Debug Iterator</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug Iterator|x64">
-      <Configuration>Debug Iterator</Configuration>
+    <ProjectConfiguration Include="Debug RenderNode|x64">
+      <Configuration>Debug RenderNode</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug Managed|Win32">
-      <Configuration>Debug Managed</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug Managed|x64">
-      <Configuration>Debug Managed</Configuration>
+    <ProjectConfiguration Include="Debug Qt|x64">
+      <Configuration>Debug Qt</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug_RenderNode|Win32">
-      <Configuration>Debug_RenderNode</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug_RenderNode|x64">
-      <Configuration>Debug_RenderNode</Configuration>
+    <ProjectConfiguration Include="Debug Wx|x64">
+      <Configuration>Debug Wx</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|x64">
-      <Configuration>Debug</Configuration>
+    <ProjectConfiguration Include="Release Qt|x64">
+      <Configuration>Release Qt</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="DM-NoSys|Win32">
-      <Configuration>DM-NoSys</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="DM-NoSys|x64">
-      <Configuration>DM-NoSys</Configuration>
+    <ProjectConfiguration Include="Release Wx|x64">
+      <Configuration>Release Wx</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Gold|Win32">
-      <Configuration>Gold</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Gold|x64">
-      <Configuration>Gold</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release Managed|Win32">
-      <Configuration>Release Managed</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release Managed|x64">
-      <Configuration>Release Managed</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|x64">
-      <Configuration>Release</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="RenderNode|Win32">
-      <Configuration>RenderNode</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="RenderNode|x64">
-      <Configuration>RenderNode</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Template|Win32">
-      <Configuration>Template</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Template|x64">
-      <Configuration>Template</Configuration>
+    <ProjectConfiguration Include="Release RenderNode|x64">
+      <Configuration>Release RenderNode</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -89,404 +33,126 @@
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Qt|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>false</CLRSupport>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Wx|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>false</CLRSupport>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug RenderNode|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>false</CLRSupport>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Qt|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>false</CLRSupport>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DM-NoSys|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Wx|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>false</CLRSupport>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release RenderNode|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <CLRSupport>false</CLRSupport>
-    <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>true</CLRSupport>
-    <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>true</CLRSupport>
-    <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>false</CLRSupport>
-    <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>false</CLRSupport>
-    <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Gold|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>false</CLRSupport>
-    <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>false</CLRSupport>
-    <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DM-NoSys|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>false</CLRSupport>
-    <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>false</CLRSupport>
-    <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>true</CLRSupport>
-    <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>true</CLRSupport>
-    <PlatformToolset>v143</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Qt|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
-    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" />
+    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" Condition="'$(MspGuiToolkit)' != 'Qt'" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Wx|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
-    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" />
+    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" Condition="'$(MspGuiToolkit)' != 'Qt'" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug RenderNode|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
-    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release Qt|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
-    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" />
+    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" Condition="'$(MspGuiToolkit)' != 'Qt'" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DM-NoSys|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release Wx|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
-    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" />
+    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" Condition="'$(MspGuiToolkit)' != 'Qt'" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release RenderNode|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
-    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
-    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
-    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
-    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
-    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Gold|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
-    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
-    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DM-NoSys|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
-    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
-    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
-    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
-    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" />
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
-    <Import Project="..\..\..\3rdParty\WxWidgets\wxwidgets.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</GenerateManifest>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)..\$(SolutionName)-$(Platform)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='DM-NoSys|Win32'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='DM-NoSys|Win32'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='DM-NoSys|x64'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='DM-NoSys|x64'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">true</LinkIncremental>
-    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">true</GenerateManifest>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Qt|x64'">$(SolutionDir)..\$(SolutionName)-$(Platform)-Qt-Release\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Wx|x64'">$(SolutionDir)..\$(SolutionName)-$(Platform)-Wx-Release\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release RenderNode|x64'">$(SolutionDir)..\$(SolutionName)-$(Platform)-RenderNode-Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Qt|x64'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Wx|x64'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release RenderNode|x64'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release Qt|x64'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release Wx|x64'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release RenderNode|x64'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Qt|x64'">$(SolutionDir)..\$(SolutionName)-$(Platform)-Qt-Debug\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Wx|x64'">$(SolutionDir)..\$(SolutionName)-$(Platform)-Wx-Debug\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug RenderNode|x64'">$(SolutionDir)..\$(SolutionName)-$(Platform)-RenderNode-Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Qt|x64'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Wx|x64'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug RenderNode|x64'">..\..\bin\$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug Qt|x64'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug Wx|x64'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug RenderNode|x64'">false</LinkIncremental>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Qt|x64'">
     <LibraryPath>$(LibraryPath)</LibraryPath>
+    <TargetName>MachStudio-$(Platform)-$(MspGuiToolkit)-$(MspBaseConfiguration)</TargetName>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Wx|x64'">
     <LibraryPath>$(LibraryPath)</LibraryPath>
-    <TargetName>MachStudio-$(Platform)-$(Configuration)</TargetName>
+    <TargetName>MachStudio-$(Platform)-$(MspGuiToolkit)-$(MspBaseConfiguration)</TargetName>
   </PropertyGroup>
-  <PropertyGroup Label="Vcpkg">
-    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release RenderNode|x64'">
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <TargetName>MachStudio-$(Platform)-RenderNode-$(MspBaseConfiguration)</TargetName>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">
-    <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty</AdditionalIncludeDirectories>
-      <AdditionalUsingDirectories>.\..\..\..\MachStudio\bin\($PlatformName)\$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>false</MinimalRebuild>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
-      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <ExpandAttributedSource>false</ExpandAttributedSource>
-      <AssemblerOutput>
-      </AssemblerOutput>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;4522;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-    </ClCompile>
-    <Link>
-      <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
-      <Version>1.2.0.0</Version>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);$(SolutionDir)..\..\3rdParty\WxWidgets\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AssemblyDebug>true</AssemblyDebug>
-      <GenerateMapFile>true</GenerateMapFile>
-      <MapFileName>$(OutDir)$(ProjectName).map</MapFileName>
-      <SubSystem>Windows</SubSystem>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention>
-      </DataExecutionPrevention>
-      <TargetMachine>MachineX86</TargetMachine>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">
-    <Midl>
-      <TargetEnvironment>X64</TargetEnvironment>
-    </Midl>
-    <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty</AdditionalIncludeDirectories>
-      <AdditionalUsingDirectories>.\..\..\..\MachStudio\bin\($PlatformName)\$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>false</MinimalRebuild>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
-      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <ExpandAttributedSource>false</ExpandAttributedSource>
-      <AssemblerOutput>
-      </AssemblerOutput>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;4522;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-    </ClCompile>
-    <Link>
-      <AdditionalDependencies>tiff.lib;jpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
-      <Version>2.0.0.0</Version>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);$(SolutionDir)..\..\3rdParty\WxWidgets\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AssemblyDebug>true</AssemblyDebug>
-      <GenerateMapFile>true</GenerateMapFile>
-      <MapFileName>$(OutDir)$(ProjectName).map</MapFileName>
-      <SubSystem>Windows</SubSystem>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention>
-      </DataExecutionPrevention>
-      <TargetMachine>MachineX64</TargetMachine>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">
-    <ClCompile>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty</AdditionalIncludeDirectories>
-      <AdditionalUsingDirectories>.\..\..\..\MachStudio\bin\($PlatformName)\$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <StringPooling>true</StringPooling>
-      <MinimalRebuild>false</MinimalRebuild>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
-      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;4522;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-    </ClCompile>
-    <Link>
-      <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
-      <Version>1.2.0.0</Version>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);$(SolutionDir)..\..\3rdParty\WxWidgets\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Windows</SubSystem>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention>
-      </DataExecutionPrevention>
-      <TargetMachine>MachineX86</TargetMachine>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Qt|x64'">
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <TargetName>MachStudio-$(Platform)-$(MspGuiToolkit)-$(MspBaseConfiguration)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Wx|x64'">
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <TargetName>MachStudio-$(Platform)-$(MspGuiToolkit)-$(MspBaseConfiguration)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug RenderNode|x64'">
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <TargetName>MachStudio-$(Platform)-RenderNode-$(MspBaseConfiguration)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Qt|x64'">
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\3rdParty</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>.\..\..\..\MachStudio\bin\($PlatformName)\$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -500,79 +166,10 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>tiff.lib;jpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
-      <Version>2.0.0.0</Version>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);$(SolutionDir)..\..\3rdParty\WxWidgets\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Windows</SubSystem>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention>
-      </DataExecutionPrevention>
-      <TargetMachine>MachineX64</TargetMachine>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty</AdditionalIncludeDirectories>
-      <AdditionalUsingDirectories>.\..\..\..\MachStudio\bin\($PlatformName)\$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <StringPooling>true</StringPooling>
-      <MinimalRebuild>false</MinimalRebuild>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
-      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;4522;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-    </ClCompile>
-    <Link>
-      <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
-      <Version>1.2.0.0</Version>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);$(SolutionDir)..\..\3rdParty\WxWidgets\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <GenerateMapFile>true</GenerateMapFile>
-      <MapFileName>test.map</MapFileName>
-      <SubSystem>Windows</SubSystem>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention>
-      </DataExecutionPrevention>
-      <TargetMachine>MachineX86</TargetMachine>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <Midl>
-      <TargetEnvironment>X64</TargetEnvironment>
-    </Midl>
-    <ClCompile>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty\WxWidgets\include\msvc;.\..\..\..\3rdParty\curl\curl-7.35.0\include;.\..\..\..\3rdParty</AdditionalIncludeDirectories>
-      <AdditionalUsingDirectories>.\..\..\..\MachStudio\bin\($PlatformName)\$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;CURL_STATICLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <StringPooling>true</StringPooling>
-      <MinimalRebuild>false</MinimalRebuild>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
-      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;4522;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-    </ClCompile>
-    <Link>
-      <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName).exe</OutputFile>
       <Version>2.0</Version>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Boost\lib;$(SolutionDir)..\..\3rdParty\OpenEXR\zlib\lib;$(SolutionDir)..\..\3rdParty\OpenEXR\build\lib;$(SolutionDir)..\..\3rdParty\WxWidgets\lib\vc140_x64_dll;$(SolutionDir)..\..\3rdParty\Libs\$(Platform);D:\FreeImage\Dist;$(SolutionDir)..\..\3rdParty\DirectXTex\DirectXTex\Bin\Desktop_2015_Win10\x64\Release;$(SolutionDir)..\..\3rdParty\FX11\Bin\Desktop_2015_Win10\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -580,58 +177,99 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX64</TargetMachine>
-      <AdditionalDependencies>libpng16.lib;tiff.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng16.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
-      <AdditionalManifestFiles>DeclareDPIAware.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
+      <AdditionalManifestFiles>DeclareDPIAware.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Wx|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
     <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty</AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\3rdParty</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>.\..\..\..\MachStudio\bin\($PlatformName)\$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <ExpandAttributedSource>false</ExpandAttributedSource>
-      <AssemblerOutput>
-      </AssemblerOutput>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;4522;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
-      <Version>1.2.0.0</Version>
+      <OutputFile>$(OutDir)$(TargetName).exe</OutputFile>
+      <Version>2.0</Version>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);$(SolutionDir)..\..\3rdParty\WxWidgets\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libcmt.lib;libcmtd.lib;msvcrt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AssemblyDebug>true</AssemblyDebug>
-      <GenerateMapFile>true</GenerateMapFile>
-      <MapFileName>$(OutDir)$(ProjectName).map</MapFileName>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <TargetMachine>MachineX86</TargetMachine>
+      <TargetMachine>MachineX64</TargetMachine>
+      <AdditionalDependencies>libpng16.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Manifest>
+      <AdditionalManifestFiles>DeclareDPIAware.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release RenderNode|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\3rdParty</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>.\..\..\..\MachStudio\bin\($PlatformName)\$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;4522;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)$(TargetName).exe</OutputFile>
+      <Version>2.0</Version>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+      <AdditionalDependencies>libpng16.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Manifest>
+      <AdditionalManifestFiles>DeclareDPIAware.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Qt|x64'">
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty\WxWidgets\include\msvc;.\..\..\..\3rdParty\curl\curl-7.35.0\include;.\..\..\..\3rdParty;.\..\..\..\LibXLT\ToolUIWx\vcpkg_installed\x64-windows\x64-windows\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\3rdParty</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>.\..\..\..\MachStudio\bin\($PlatformName)\$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;CURL_STATICLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -649,10 +287,10 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(TargetName).exe</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName).exe</OutputFile>
       <Version>2.0</Version>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\LibXLT\ToolUIWx\vcpkg_installed\x64-windows\x64-windows\debug\ib;$(SolutionDir)..\..\LibXLT\Graphics\vcpkg_installed\x64-windows\x64-windows\debug\lib;$(SolutionDir)..\..\LibXLT\GraphicsDX11\vcpkg_installed\x64-windows\x64-windows\debug\lib;$(SolutionDir)..\..\3rdParty\Boost\lib;$(SolutionDir)..\..\3rdParty\OpenEXR\zlib\lib;$(SolutionDir)..\..\3rdParty\OpenEXR\build\lib;$(SolutionDir)..\..\3rdParty\WxWidgets\lib\vc140_x64_dll;$(SolutionDir)..\..\3rdParty\Libs\$(Platform);D:\FreeImage\Dist;$(SolutionDir)..\..\3rdParty\DirectXTex\DirectXTex\Bin\Desktop_2015_Win10\x64\Debug;$(SolutionDir)..\..\3rdParty\FX11\Bin\Desktop_2015_Win10\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
@@ -663,94 +301,19 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX64</TargetMachine>
-      <AdditionalDependencies>libpng16.lib;tiff.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng16.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
-      <AdditionalManifestFiles>DeclareDPIAware.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
+      <AdditionalManifestFiles>DeclareDPIAware.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DM-NoSys|Win32'">
-    <ClCompile>
-      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty</AdditionalIncludeDirectories>
-      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-    </ClCompile>
-    <Link>
-      <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
-      <Version>1.2.0.0</Version>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);$(SolutionDir)..\..\3rdParty\WxWidgets\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention>
-      </DataExecutionPrevention>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DM-NoSys|x64'">
-    <Midl>
-      <TargetEnvironment>X64</TargetEnvironment>
-    </Midl>
-    <ClCompile>
-      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty</AdditionalIncludeDirectories>
-      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-    </ClCompile>
-    <Link>
-      <AdditionalDependencies>tiff.lib;jpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
-      <Version>2.0.0.0</Version>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);$(SolutionDir)..\..\3rdParty\WxWidgets\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention>
-      </DataExecutionPrevention>
-      <TargetMachine>MachineX64</TargetMachine>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">
-    <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty</AdditionalIncludeDirectories>
-      <AdditionalUsingDirectories>.\..\..\..\MachStudio\bin\($PlatformName)\$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>false</MinimalRebuild>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
-      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <ExpandAttributedSource>false</ExpandAttributedSource>
-      <AssemblerOutput>
-      </AssemblerOutput>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;4522;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-    </ClCompile>
-    <Link>
-      <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
-      <Version>1.2.0.0</Version>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);$(SolutionDir)..\..\3rdParty\WxWidgets\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libcmt.lib;msvcrt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AssemblyDebug>true</AssemblyDebug>
-      <GenerateMapFile>true</GenerateMapFile>
-      <MapFileName>$(OutDir)$(ProjectName).map</MapFileName>
-      <SubSystem>Windows</SubSystem>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention>
-      </DataExecutionPrevention>
-      <TargetMachine>MachineX86</TargetMachine>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Wx|x64'">
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\3rdParty</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>.\..\..\..\MachStudio\bin\($PlatformName)\$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
       <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
@@ -766,220 +329,40 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;4522;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ShowIncludes>false</ShowIncludes>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>tiff.lib;jpeg.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
-      <Version>2.0.0.0</Version>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);$(SolutionDir)..\..\3rdParty\WxWidgets\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libcmt.lib;msvcrt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AssemblyDebug>true</AssemblyDebug>
-      <GenerateMapFile>true</GenerateMapFile>
-      <MapFileName>$(OutDir)$(ProjectName).map</MapFileName>
-      <SubSystem>Windows</SubSystem>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention>
-      </DataExecutionPrevention>
-      <TargetMachine>MachineX64</TargetMachine>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">
-    <ClCompile>
-      <Optimization>Full</Optimization>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty</AdditionalIncludeDirectories>
-      <AdditionalUsingDirectories>.\..\..\..\MachStudio\bin\($PlatformName)\$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;ENV_BUILD=ENV_GOLDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <StringPooling>true</StringPooling>
-      <MinimalRebuild>false</MinimalRebuild>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
-      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;4522;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-    </ClCompile>
-    <Link>
-      <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
-      <Version>1.2.0.0</Version>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);$(SolutionDir)..\..\3rdParty\WxWidgets\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Windows</SubSystem>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention>
-      </DataExecutionPrevention>
-      <TargetMachine>MachineX86</TargetMachine>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">
-    <Midl>
-      <TargetEnvironment>X64</TargetEnvironment>
-    </Midl>
-    <ClCompile>
-      <Optimization>Full</Optimization>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty</AdditionalIncludeDirectories>
-      <AdditionalUsingDirectories>.\..\..\..\MachStudio\bin\($PlatformName)\$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;ENV_BUILD=ENV_GOLDBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <StringPooling>true</StringPooling>
-      <MinimalRebuild>false</MinimalRebuild>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
-      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;4522;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-    </ClCompile>
-    <Link>
-      <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
-      <Version>2.0.0.0</Version>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);$(SolutionDir)..\..\3rdParty\WxWidgets\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ManifestFile>$(IntDir)$(TargetFileName).intermediate.manifest</ManifestFile>
-      <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Windows</SubSystem>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention>
-      </DataExecutionPrevention>
-      <TargetMachine>MachineX64</TargetMachine>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">
-    <ClCompile>
-      <Optimization>Full</Optimization>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty</AdditionalIncludeDirectories>
-      <AdditionalUsingDirectories>.\..\..\..\MachStudio\bin\($PlatformName)\$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE;ENV_BUILD=ENV_GOLDBUILD;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <StringPooling>true</StringPooling>
-      <MinimalRebuild>false</MinimalRebuild>
-      <ExceptionHandling>Async</ExceptionHandling>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
-      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;4522;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-    </ClCompile>
-    <Link>
-      <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
-      <Version>1.2.0.0</Version>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);$(SolutionDir)..\..\3rdParty\WxWidgets\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Console</SubSystem>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention>
-      </DataExecutionPrevention>
-      <TargetMachine>MachineX86</TargetMachine>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">
-    <Midl>
-      <TargetEnvironment>X64</TargetEnvironment>
-    </Midl>
-    <ClCompile>
-      <Optimization>Full</Optimization>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <WholeProgramOptimization>true</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty\WxWidgets\include\msvc;.\..\..\..\3rdParty\curl\curl-7.35.0\include;.\..\..\..\3rdParty</AdditionalIncludeDirectories>
-      <AdditionalUsingDirectories>.\..\..\..\MachStudio\bin\($PlatformName)\$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <PreprocessorDefinitions>WIN64;NDEBUG;_CRT_SECURE_NO_DEPRECATE;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <StringPooling>true</StringPooling>
-      <MinimalRebuild>false</MinimalRebuild>
-      <ExceptionHandling>Async</ExceptionHandling>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
-      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;4522;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-    </ClCompile>
-    <Link>
-      <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName).exe</OutputFile>
       <Version>2.0</Version>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(DXSDK_DIR)Lib\x64;$(SolutionDir)..\..\3rdParty\Boost\lib;$(SolutionDir)..\..\3rdParty\OpenEXR\zlib\lib;$(SolutionDir)..\..\3rdParty\OpenEXR\build\lib;$(SolutionDir)..\..\3rdParty\WxWidgets\lib\vc140_x64_dll;$(SolutionDir)..\..\3rdParty\Libs\$(Platform);D:\FreeImage\Dist;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ManifestFile>$(IntDir)$(TargetName)$(TargetExt).intermediate.manifest</ManifestFile>
-      <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Console</SubSystem>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention>
-      </DataExecutionPrevention>
-      <TargetMachine>MachineX64</TargetMachine>
-      <AdditionalDependencies>libpng16.lib;tiff.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">
-    <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty</AdditionalIncludeDirectories>
-      <AdditionalUsingDirectories>.\..\..\..\MachStudio\bin\($PlatformName)\$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>false</MinimalRebuild>
-      <ExceptionHandling>Async</ExceptionHandling>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
-      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <ExpandAttributedSource>false</ExpandAttributedSource>
-      <AssemblerOutput>
-      </AssemblerOutput>
-      <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;4522;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-    </ClCompile>
-    <Link>
-      <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
-      <Version>1.2.0.0</Version>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);$(SolutionDir)..\..\3rdParty\WxWidgets\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libcmt.lib;libcmtd.lib;msvcrt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
       <GenerateMapFile>true</GenerateMapFile>
       <MapFileName>$(OutDir)$(ProjectName).map</MapFileName>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
-      <TargetMachine>MachineX86</TargetMachine>
+      <TargetMachine>MachineX64</TargetMachine>
+      <AdditionalDependencies>libpng16.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Manifest>
+      <AdditionalManifestFiles>DeclareDPIAware.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug RenderNode|x64'">
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;.\..\..\..\3rdParty\Boost;.\..\..\..\3rdParty\WxWidgets\include;.\..\..\..\3rdParty</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\..\..\machstudio\source;.\..\..\..\libxlt;.\..\..\..\3rdParty\Python\include;$(MspWxIncludeDirs);.\..\..\..\3rdParty</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>.\..\..\..\MachStudio\bin\($PlatformName)\$(OutDir);%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
       <PreprocessorDefinitions>WIN64;_DEBUG;_CRT_SECURE_NO_DEPRECATE;BATCH_MODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
-      <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
@@ -992,14 +375,15 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4514;4127;4786;4100;4663;4018;4244;4522;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <ShowIncludes>false</ShowIncludes>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <OutputFile>$(SolutionDir)..\$(SolutionName)-$(Platform)\$(SolutionName)-$(Platform)-$(Configuration).exe</OutputFile>
-      <Version>2.0.0.0</Version>
+      <OutputFile>$(OutDir)$(TargetName).exe</OutputFile>
+      <Version>2.0</Version>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);$(SolutionDir)..\..\3rdParty\WxWidgets\lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libcmt.lib;libcmtd.lib;msvcrt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\..\3rdParty\Libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>true</AssemblyDebug>
       <GenerateMapFile>true</GenerateMapFile>
@@ -1009,17 +393,20 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX64</TargetMachine>
+      <AdditionalDependencies>libpng16.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
-    <ClCompile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-    </ClCompile>
+    <Manifest>
+      <AdditionalManifestFiles>DeclareDPIAware.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="mainCheckAppVersion.cpp" />
     <ClCompile Include="mainInitApplication.cpp" />
     <ClCompile Include="mainInitDocument.cpp" />
+    <ClCompile Include="mainCommandLine.cpp">
+      <!-- also compiled by UnitTests/MainAppTests, which has no stdafx.h -->
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="mainInitGraphics.cpp" />
     <ClCompile Include="mainInitLibrary.cpp" />
     <ClCompile Include="mainInitMainWindow.cpp" />
@@ -1029,40 +416,18 @@
     <ClCompile Include="MemMgr.cpp" />
     <ClCompile Include="mnmApp.cpp" />
     <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DM-NoSys|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DM-NoSys|x64'">Create</PrecompiledHeader>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">.\..\..\..\machstudio\mnm;.\..\..\..\machstudio\mnm\modes;.\..\..\..\terawatt\app\it;.\..\..\..\terawatt\app\fs;.\..\..\..\terawatt\app\app;.\..\..\..\terawatt\app\app\private;.\..\..\..\terawatt\app\gf;.\..\..\..\terawatt\app\in;.\..\..\..\terawatt\app\ch;.\..\..\..\terawatt\app\lvl;.\..\..\..\terawatt\base\env;.\..\..\..\terawatt\base\dbg;.\..\..\..\terawatt\graphics\g2d;.\..\..\..\terawatt\graphics\g3d;.\..\..\..\terawatt\graphics\sc;.\..\..\..\terawatt\graphics\mat;.\..\..\..\terawatt\graphics\cam;.\..\..\..\terawatt\math\ma;.\..\..\..\terawatt\math\geo;.\..\..\..\terawatt\tool\doc;.\..\..\..\terawatt\tool\undo;.\..\..\..\terawatt\tool\mui;.\..\..\..\terawatt\tool\tma;.\..\..\..\terawatt\tool\cma;.\..\..\..\terawatt\world\dm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|Win32'">Create</PrecompiledHeader>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">.\..\..\..\machstudio\mnm;.\..\..\..\machstudio\mnm\modes;.\..\..\..\terawatt\app\it;.\..\..\..\terawatt\app\fs;.\..\..\..\terawatt\app\app;.\..\..\..\terawatt\app\app\private;.\..\..\..\terawatt\app\gf;.\..\..\..\terawatt\app\in;.\..\..\..\terawatt\app\ch;.\..\..\..\terawatt\app\lvl;.\..\..\..\terawatt\base\env;.\..\..\..\terawatt\base\dbg;.\..\..\..\terawatt\graphics\g2d;.\..\..\..\terawatt\graphics\g3d;.\..\..\..\terawatt\graphics\sc;.\..\..\..\terawatt\graphics\mat;.\..\..\..\terawatt\graphics\cam;.\..\..\..\terawatt\math\ma;.\..\..\..\terawatt\math\geo;.\..\..\..\terawatt\tool\doc;.\..\..\..\terawatt\tool\undo;.\..\..\..\terawatt\tool\mui;.\..\..\..\terawatt\tool\tma;.\..\..\..\terawatt\tool\cma;.\..\..\..\terawatt\world\dm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Iterator|x64'">Create</PrecompiledHeader>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">.\..\..\..\machstudio\mnm;.\..\..\..\machstudio\mnm\modes;.\..\..\..\terawatt\app\it;.\..\..\..\terawatt\app\fs;.\..\..\..\terawatt\app\app;.\..\..\..\terawatt\app\app\private;.\..\..\..\terawatt\app\gf;.\..\..\..\terawatt\app\in;.\..\..\..\terawatt\app\ch;.\..\..\..\terawatt\app\lvl;.\..\..\..\terawatt\base\env;.\..\..\..\terawatt\base\dbg;.\..\..\..\terawatt\graphics\g2d;.\..\..\..\terawatt\graphics\g3d;.\..\..\..\terawatt\graphics\sc;.\..\..\..\terawatt\graphics\mat;.\..\..\..\terawatt\graphics\cam;.\..\..\..\terawatt\math\ma;.\..\..\..\terawatt\math\geo;.\..\..\..\terawatt\tool\doc;.\..\..\..\terawatt\tool\undo;.\..\..\..\terawatt\tool\mui;.\..\..\..\terawatt\tool\tma;.\..\..\..\terawatt\tool\cma;.\..\..\..\terawatt\world\dm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Managed|Win32'">Create</PrecompiledHeader>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">.\..\..\..\machstudio\mnm;.\..\..\..\machstudio\mnm\modes;.\..\..\..\terawatt\app\it;.\..\..\..\terawatt\app\fs;.\..\..\..\terawatt\app\app;.\..\..\..\terawatt\app\app\private;.\..\..\..\terawatt\app\gf;.\..\..\..\terawatt\app\in;.\..\..\..\terawatt\app\ch;.\..\..\..\terawatt\app\lvl;.\..\..\..\terawatt\base\env;.\..\..\..\terawatt\base\dbg;.\..\..\..\terawatt\graphics\g2d;.\..\..\..\terawatt\graphics\g3d;.\..\..\..\terawatt\graphics\sc;.\..\..\..\terawatt\graphics\mat;.\..\..\..\terawatt\graphics\cam;.\..\..\..\terawatt\math\ma;.\..\..\..\terawatt\math\geo;.\..\..\..\terawatt\tool\doc;.\..\..\..\terawatt\tool\undo;.\..\..\..\terawatt\tool\mui;.\..\..\..\terawatt\tool\tma;.\..\..\..\terawatt\tool\cma;.\..\..\..\terawatt\world\dm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Managed|x64'">Create</PrecompiledHeader>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">.\..\..\..\machstudio\mnm;.\..\..\..\machstudio\mnm\modes;.\..\..\..\terawatt\app\it;.\..\..\..\terawatt\app\fs;.\..\..\..\terawatt\app\app;.\..\..\..\terawatt\app\app\private;.\..\..\..\terawatt\app\gf;.\..\..\..\terawatt\app\in;.\..\..\..\terawatt\app\ch;.\..\..\..\terawatt\app\lvl;.\..\..\..\terawatt\base\env;.\..\..\..\terawatt\base\dbg;.\..\..\..\terawatt\graphics\g2d;.\..\..\..\terawatt\graphics\g3d;.\..\..\..\terawatt\graphics\sc;.\..\..\..\terawatt\graphics\mat;.\..\..\..\terawatt\graphics\cam;.\..\..\..\terawatt\math\ma;.\..\..\..\terawatt\math\geo;.\..\..\..\terawatt\tool\doc;.\..\..\..\terawatt\tool\undo;.\..\..\..\terawatt\tool\mui;.\..\..\..\terawatt\tool\tma;.\..\..\..\terawatt\tool\cma;.\..\..\..\terawatt\world\dm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|Win32'">Create</PrecompiledHeader>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">.\..\..\..\machstudio\mnm;.\..\..\..\machstudio\mnm\modes;.\..\..\..\terawatt\app\it;.\..\..\..\terawatt\app\fs;.\..\..\..\terawatt\app\app;.\..\..\..\terawatt\app\app\private;.\..\..\..\terawatt\app\gf;.\..\..\..\terawatt\app\in;.\..\..\..\terawatt\app\ch;.\..\..\..\terawatt\app\lvl;.\..\..\..\terawatt\base\env;.\..\..\..\terawatt\base\dbg;.\..\..\..\terawatt\graphics\g2d;.\..\..\..\terawatt\graphics\g3d;.\..\..\..\terawatt\graphics\sc;.\..\..\..\terawatt\graphics\mat;.\..\..\..\terawatt\graphics\cam;.\..\..\..\terawatt\math\ma;.\..\..\..\terawatt\math\geo;.\..\..\..\terawatt\tool\doc;.\..\..\..\terawatt\tool\undo;.\..\..\..\terawatt\tool\mui;.\..\..\..\terawatt\tool\tma;.\..\..\..\terawatt\tool\cma;.\..\..\..\terawatt\world\dm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_RenderNode|x64'">Create</PrecompiledHeader>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\..\..\machstudio\mnm;.\..\..\..\machstudio\mnm\modes;.\..\..\..\terawatt\app\it;.\..\..\..\terawatt\app\fs;.\..\..\..\terawatt\app\app;.\..\..\..\terawatt\app\app\private;.\..\..\..\terawatt\app\gf;.\..\..\..\terawatt\app\in;.\..\..\..\terawatt\app\ch;.\..\..\..\terawatt\app\lvl;.\..\..\..\terawatt\base\env;.\..\..\..\terawatt\base\dbg;.\..\..\..\terawatt\graphics\g2d;.\..\..\..\terawatt\graphics\g3d;.\..\..\..\terawatt\graphics\sc;.\..\..\..\terawatt\graphics\mat;.\..\..\..\terawatt\graphics\cam;.\..\..\..\terawatt\math\ma;.\..\..\..\terawatt\math\geo;.\..\..\..\terawatt\tool\doc;.\..\..\..\terawatt\tool\undo;.\..\..\..\terawatt\tool\mui;.\..\..\..\terawatt\tool\tma;.\..\..\..\terawatt\tool\cma;.\..\..\..\terawatt\world\dm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\..\..\..\machstudio\mnm;.\..\..\..\machstudio\mnm\modes;.\..\..\..\terawatt\app\it;.\..\..\..\terawatt\app\fs;.\..\..\..\terawatt\app\app;.\..\..\..\terawatt\app\app\private;.\..\..\..\terawatt\app\gf;.\..\..\..\terawatt\app\in;.\..\..\..\terawatt\app\ch;.\..\..\..\terawatt\app\lvl;.\..\..\..\terawatt\base\env;.\..\..\..\terawatt\base\dbg;.\..\..\..\terawatt\graphics\g2d;.\..\..\..\terawatt\graphics\g3d;.\..\..\..\terawatt\graphics\sc;.\..\..\..\terawatt\graphics\mat;.\..\..\..\terawatt\graphics\cam;.\..\..\..\terawatt\math\ma;.\..\..\..\terawatt\math\geo;.\..\..\..\terawatt\tool\doc;.\..\..\..\terawatt\tool\undo;.\..\..\..\terawatt\tool\mui;.\..\..\..\terawatt\tool\tma;.\..\..\..\terawatt\tool\cma;.\..\..\..\terawatt\world\dm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">.\..\..\..\machstudio\mnm;.\..\..\..\machstudio\mnm\modes;.\..\..\..\terawatt\app\it;.\..\..\..\terawatt\app\fs;.\..\..\..\terawatt\app\app;.\..\..\..\terawatt\app\app\private;.\..\..\..\terawatt\app\gf;.\..\..\..\terawatt\app\in;.\..\..\..\terawatt\app\ch;.\..\..\..\terawatt\app\lvl;.\..\..\..\terawatt\base\env;.\..\..\..\terawatt\base\dbg;.\..\..\..\terawatt\graphics\g2d;.\..\..\..\terawatt\graphics\g3d;.\..\..\..\terawatt\graphics\sc;.\..\..\..\terawatt\graphics\mat;.\..\..\..\terawatt\graphics\cam;.\..\..\..\terawatt\math\ma;.\..\..\..\terawatt\math\geo;.\..\..\..\terawatt\tool\doc;.\..\..\..\terawatt\tool\undo;.\..\..\..\terawatt\tool\mui;.\..\..\..\terawatt\tool\tma;.\..\..\..\terawatt\tool\cma;.\..\..\..\terawatt\world\dm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Gold|Win32'">Create</PrecompiledHeader>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">.\..\..\..\machstudio\mnm;.\..\..\..\machstudio\mnm\modes;.\..\..\..\terawatt\app\it;.\..\..\..\terawatt\app\fs;.\..\..\..\terawatt\app\app;.\..\..\..\terawatt\app\app\private;.\..\..\..\terawatt\app\gf;.\..\..\..\terawatt\app\in;.\..\..\..\terawatt\app\ch;.\..\..\..\terawatt\app\lvl;.\..\..\..\terawatt\base\env;.\..\..\..\terawatt\base\dbg;.\..\..\..\terawatt\graphics\g2d;.\..\..\..\terawatt\graphics\g3d;.\..\..\..\terawatt\graphics\sc;.\..\..\..\terawatt\graphics\mat;.\..\..\..\terawatt\graphics\cam;.\..\..\..\terawatt\math\ma;.\..\..\..\terawatt\math\geo;.\..\..\..\terawatt\tool\doc;.\..\..\..\terawatt\tool\undo;.\..\..\..\terawatt\tool\mui;.\..\..\..\terawatt\tool\tma;.\..\..\..\terawatt\tool\cma;.\..\..\..\terawatt\world\dm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Gold|x64'">Create</PrecompiledHeader>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">.\..\..\..\machstudio\mnm;.\..\..\..\machstudio\mnm\modes;.\..\..\..\terawatt\app\it;.\..\..\..\terawatt\app\fs;.\..\..\..\terawatt\app\app;.\..\..\..\terawatt\app\app\private;.\..\..\..\terawatt\app\gf;.\..\..\..\terawatt\app\in;.\..\..\..\terawatt\app\ch;.\..\..\..\terawatt\app\lvl;.\..\..\..\terawatt\base\env;.\..\..\..\terawatt\base\dbg;.\..\..\..\terawatt\graphics\g2d;.\..\..\..\terawatt\graphics\g3d;.\..\..\..\terawatt\graphics\sc;.\..\..\..\terawatt\graphics\mat;.\..\..\..\terawatt\graphics\cam;.\..\..\..\terawatt\math\ma;.\..\..\..\terawatt\math\geo;.\..\..\..\terawatt\tool\doc;.\..\..\..\terawatt\tool\undo;.\..\..\..\terawatt\tool\mui;.\..\..\..\terawatt\tool\tma;.\..\..\..\terawatt\tool\cma;.\..\..\..\terawatt\world\dm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Managed|Win32'">Create</PrecompiledHeader>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">.\..\..\..\machstudio\mnm;.\..\..\..\machstudio\mnm\modes;.\..\..\..\terawatt\app\it;.\..\..\..\terawatt\app\fs;.\..\..\..\terawatt\app\app;.\..\..\..\terawatt\app\app\private;.\..\..\..\terawatt\app\gf;.\..\..\..\terawatt\app\in;.\..\..\..\terawatt\app\ch;.\..\..\..\terawatt\app\lvl;.\..\..\..\terawatt\base\env;.\..\..\..\terawatt\base\dbg;.\..\..\..\terawatt\graphics\g2d;.\..\..\..\terawatt\graphics\g3d;.\..\..\..\terawatt\graphics\sc;.\..\..\..\terawatt\graphics\mat;.\..\..\..\terawatt\graphics\cam;.\..\..\..\terawatt\math\ma;.\..\..\..\terawatt\math\geo;.\..\..\..\terawatt\tool\doc;.\..\..\..\terawatt\tool\undo;.\..\..\..\terawatt\tool\mui;.\..\..\..\terawatt\tool\tma;.\..\..\..\terawatt\tool\cma;.\..\..\..\terawatt\world\dm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Managed|x64'">Create</PrecompiledHeader>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\..\..\machstudio\mnm;.\..\..\..\machstudio\mnm\modes;.\..\..\..\terawatt\app\it;.\..\..\..\terawatt\app\fs;.\..\..\..\terawatt\app\app;.\..\..\..\terawatt\app\app\private;.\..\..\..\terawatt\app\gf;.\..\..\..\terawatt\app\in;.\..\..\..\terawatt\app\ch;.\..\..\..\terawatt\app\lvl;.\..\..\..\terawatt\base\env;.\..\..\..\terawatt\base\dbg;.\..\..\..\terawatt\graphics\g2d;.\..\..\..\terawatt\graphics\g3d;.\..\..\..\terawatt\graphics\sc;.\..\..\..\terawatt\graphics\mat;.\..\..\..\terawatt\graphics\cam;.\..\..\..\terawatt\math\ma;.\..\..\..\terawatt\math\geo;.\..\..\..\terawatt\tool\doc;.\..\..\..\terawatt\tool\undo;.\..\..\..\terawatt\tool\mui;.\..\..\..\terawatt\tool\tma;.\..\..\..\terawatt\tool\cma;.\..\..\..\terawatt\world\dm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\..\..\..\machstudio\mnm;.\..\..\..\machstudio\mnm\modes;.\..\..\..\terawatt\app\it;.\..\..\..\terawatt\app\fs;.\..\..\..\terawatt\app\app;.\..\..\..\terawatt\app\app\private;.\..\..\..\terawatt\app\gf;.\..\..\..\terawatt\app\in;.\..\..\..\terawatt\app\ch;.\..\..\..\terawatt\app\lvl;.\..\..\..\terawatt\base\env;.\..\..\..\terawatt\base\dbg;.\..\..\..\terawatt\graphics\g2d;.\..\..\..\terawatt\graphics\g3d;.\..\..\..\terawatt\graphics\sc;.\..\..\..\terawatt\graphics\mat;.\..\..\..\terawatt\graphics\cam;.\..\..\..\terawatt\math\ma;.\..\..\..\terawatt\math\geo;.\..\..\..\terawatt\tool\doc;.\..\..\..\terawatt\tool\undo;.\..\..\..\terawatt\tool\mui;.\..\..\..\terawatt\tool\tma;.\..\..\..\terawatt\tool\cma;.\..\..\..\terawatt\world\dm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">.\..\..\..\machstudio\mnm;.\..\..\..\machstudio\mnm\modes;.\..\..\..\terawatt\app\it;.\..\..\..\terawatt\app\fs;.\..\..\..\terawatt\app\app;.\..\..\..\terawatt\app\app\private;.\..\..\..\terawatt\app\gf;.\..\..\..\terawatt\app\in;.\..\..\..\terawatt\app\ch;.\..\..\..\terawatt\app\lvl;.\..\..\..\terawatt\base\env;.\..\..\..\terawatt\base\dbg;.\..\..\..\terawatt\graphics\g2d;.\..\..\..\terawatt\graphics\g3d;.\..\..\..\terawatt\graphics\sc;.\..\..\..\terawatt\graphics\mat;.\..\..\..\terawatt\graphics\cam;.\..\..\..\terawatt\math\ma;.\..\..\..\terawatt\math\geo;.\..\..\..\terawatt\tool\doc;.\..\..\..\terawatt\tool\undo;.\..\..\..\terawatt\tool\mui;.\..\..\..\terawatt\tool\tma;.\..\..\..\terawatt\tool\cma;.\..\..\..\terawatt\world\dm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RenderNode|Win32'">Create</PrecompiledHeader>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">.\..\..\..\machstudio\mnm;.\..\..\..\machstudio\mnm\modes;.\..\..\..\terawatt\app\it;.\..\..\..\terawatt\app\fs;.\..\..\..\terawatt\app\app;.\..\..\..\terawatt\app\app\private;.\..\..\..\terawatt\app\gf;.\..\..\..\terawatt\app\in;.\..\..\..\terawatt\app\ch;.\..\..\..\terawatt\app\lvl;.\..\..\..\terawatt\base\env;.\..\..\..\terawatt\base\dbg;.\..\..\..\terawatt\graphics\g2d;.\..\..\..\terawatt\graphics\g3d;.\..\..\..\terawatt\graphics\sc;.\..\..\..\terawatt\graphics\mat;.\..\..\..\terawatt\graphics\cam;.\..\..\..\terawatt\math\ma;.\..\..\..\terawatt\math\geo;.\..\..\..\terawatt\tool\doc;.\..\..\..\terawatt\tool\undo;.\..\..\..\terawatt\tool\mui;.\..\..\..\terawatt\tool\tma;.\..\..\..\terawatt\tool\cma;.\..\..\..\terawatt\world\dm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RenderNode|x64'">Create</PrecompiledHeader>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Qt|x64'">.\..\..\..\machstudio\mnm;.\..\..\..\machstudio\mnm\modes;.\..\..\..\terawatt\app\it;.\..\..\..\terawatt\app\fs;.\..\..\..\terawatt\app\app;.\..\..\..\terawatt\app\app\private;.\..\..\..\terawatt\app\gf;.\..\..\..\terawatt\app\in;.\..\..\..\terawatt\app\ch;.\..\..\..\terawatt\app\lvl;.\..\..\..\terawatt\base\env;.\..\..\..\terawatt\base\dbg;.\..\..\..\terawatt\graphics\g2d;.\..\..\..\terawatt\graphics\g3d;.\..\..\..\terawatt\graphics\sc;.\..\..\..\terawatt\graphics\mat;.\..\..\..\terawatt\graphics\cam;.\..\..\..\terawatt\math\ma;.\..\..\..\terawatt\math\geo;.\..\..\..\terawatt\tool\doc;.\..\..\..\terawatt\tool\undo;.\..\..\..\terawatt\tool\mui;.\..\..\..\terawatt\tool\tma;.\..\..\..\terawatt\tool\cma;.\..\..\..\terawatt\world\dm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug Wx|x64'">.\..\..\..\machstudio\mnm;.\..\..\..\machstudio\mnm\modes;.\..\..\..\terawatt\app\it;.\..\..\..\terawatt\app\fs;.\..\..\..\terawatt\app\app;.\..\..\..\terawatt\app\app\private;.\..\..\..\terawatt\app\gf;.\..\..\..\terawatt\app\in;.\..\..\..\terawatt\app\ch;.\..\..\..\terawatt\app\lvl;.\..\..\..\terawatt\base\env;.\..\..\..\terawatt\base\dbg;.\..\..\..\terawatt\graphics\g2d;.\..\..\..\terawatt\graphics\g3d;.\..\..\..\terawatt\graphics\sc;.\..\..\..\terawatt\graphics\mat;.\..\..\..\terawatt\graphics\cam;.\..\..\..\terawatt\math\ma;.\..\..\..\terawatt\math\geo;.\..\..\..\terawatt\tool\doc;.\..\..\..\terawatt\tool\undo;.\..\..\..\terawatt\tool\mui;.\..\..\..\terawatt\tool\tma;.\..\..\..\terawatt\tool\cma;.\..\..\..\terawatt\world\dm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug RenderNode|x64'">.\..\..\..\machstudio\mnm;.\..\..\..\machstudio\mnm\modes;.\..\..\..\terawatt\app\it;.\..\..\..\terawatt\app\fs;.\..\..\..\terawatt\app\app;.\..\..\..\terawatt\app\app\private;.\..\..\..\terawatt\app\gf;.\..\..\..\terawatt\app\in;.\..\..\..\terawatt\app\ch;.\..\..\..\terawatt\app\lvl;.\..\..\..\terawatt\base\env;.\..\..\..\terawatt\base\dbg;.\..\..\..\terawatt\graphics\g2d;.\..\..\..\terawatt\graphics\g3d;.\..\..\..\terawatt\graphics\sc;.\..\..\..\terawatt\graphics\mat;.\..\..\..\terawatt\graphics\cam;.\..\..\..\terawatt\math\ma;.\..\..\..\terawatt\math\geo;.\..\..\..\terawatt\tool\doc;.\..\..\..\terawatt\tool\undo;.\..\..\..\terawatt\tool\mui;.\..\..\..\terawatt\tool\tma;.\..\..\..\terawatt\tool\cma;.\..\..\..\terawatt\world\dm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Qt|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug Wx|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug RenderNode|x64'">Create</PrecompiledHeader>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Qt|x64'">.\..\..\..\machstudio\mnm;.\..\..\..\machstudio\mnm\modes;.\..\..\..\terawatt\app\it;.\..\..\..\terawatt\app\fs;.\..\..\..\terawatt\app\app;.\..\..\..\terawatt\app\app\private;.\..\..\..\terawatt\app\gf;.\..\..\..\terawatt\app\in;.\..\..\..\terawatt\app\ch;.\..\..\..\terawatt\app\lvl;.\..\..\..\terawatt\base\env;.\..\..\..\terawatt\base\dbg;.\..\..\..\terawatt\graphics\g2d;.\..\..\..\terawatt\graphics\g3d;.\..\..\..\terawatt\graphics\sc;.\..\..\..\terawatt\graphics\mat;.\..\..\..\terawatt\graphics\cam;.\..\..\..\terawatt\math\ma;.\..\..\..\terawatt\math\geo;.\..\..\..\terawatt\tool\doc;.\..\..\..\terawatt\tool\undo;.\..\..\..\terawatt\tool\mui;.\..\..\..\terawatt\tool\tma;.\..\..\..\terawatt\tool\cma;.\..\..\..\terawatt\world\dm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release Wx|x64'">.\..\..\..\machstudio\mnm;.\..\..\..\machstudio\mnm\modes;.\..\..\..\terawatt\app\it;.\..\..\..\terawatt\app\fs;.\..\..\..\terawatt\app\app;.\..\..\..\terawatt\app\app\private;.\..\..\..\terawatt\app\gf;.\..\..\..\terawatt\app\in;.\..\..\..\terawatt\app\ch;.\..\..\..\terawatt\app\lvl;.\..\..\..\terawatt\base\env;.\..\..\..\terawatt\base\dbg;.\..\..\..\terawatt\graphics\g2d;.\..\..\..\terawatt\graphics\g3d;.\..\..\..\terawatt\graphics\sc;.\..\..\..\terawatt\graphics\mat;.\..\..\..\terawatt\graphics\cam;.\..\..\..\terawatt\math\ma;.\..\..\..\terawatt\math\geo;.\..\..\..\terawatt\tool\doc;.\..\..\..\terawatt\tool\undo;.\..\..\..\terawatt\tool\mui;.\..\..\..\terawatt\tool\tma;.\..\..\..\terawatt\tool\cma;.\..\..\..\terawatt\world\dm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release RenderNode|x64'">.\..\..\..\machstudio\mnm;.\..\..\..\machstudio\mnm\modes;.\..\..\..\terawatt\app\it;.\..\..\..\terawatt\app\fs;.\..\..\..\terawatt\app\app;.\..\..\..\terawatt\app\app\private;.\..\..\..\terawatt\app\gf;.\..\..\..\terawatt\app\in;.\..\..\..\terawatt\app\ch;.\..\..\..\terawatt\app\lvl;.\..\..\..\terawatt\base\env;.\..\..\..\terawatt\base\dbg;.\..\..\..\terawatt\graphics\g2d;.\..\..\..\terawatt\graphics\g3d;.\..\..\..\terawatt\graphics\sc;.\..\..\..\terawatt\graphics\mat;.\..\..\..\terawatt\graphics\cam;.\..\..\..\terawatt\math\ma;.\..\..\..\terawatt\math\geo;.\..\..\..\terawatt\tool\doc;.\..\..\..\terawatt\tool\undo;.\..\..\..\terawatt\tool\mui;.\..\..\..\terawatt\tool\tma;.\..\..\..\terawatt\tool\cma;.\..\..\..\terawatt\world\dm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Qt|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release Wx|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release RenderNode|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="Commands\mainCommands.cpp" />
@@ -1079,12 +444,21 @@
     <ClCompile Include="wxGUI\wxResolvePathDialog.cpp" />
     <ClCompile Include="wxGUI\wxResolvePathDialogBase.cpp" />
     <ClCompile Include="wxGUI\wxTimeSlider.cpp" />
+    <ClCompile Include="qtGUI\qtHelpUtil.cpp" />
+    <ClCompile Include="qtGUI\qtMRUManager.cpp" />
+    <ClCompile Include="qtGUI\qtMainDropTarget.cpp" />
+    <ClCompile Include="qtGUI\qtMainForm.cpp" />
+    <ClCompile Include="qtGUI\qtResolvePathDialog.cpp" />
+    <ClCompile Include="qtGUI\qtResolvePathDialogBase.cpp" />
+    <ClCompile Include="qtGUI\qtTimeSlider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mainCheckAppVersion.hpp" />
     <ClInclude Include="mainConstants.hpp" />
     <ClInclude Include="mainInitApplication.hpp" />
     <ClInclude Include="mainInitDocument.hpp" />
+    <ClInclude Include="mainCommandLine.hpp" />
+    <ClInclude Include="mainGfxBackend.hpp" />
     <ClInclude Include="mainInitGraphics.hpp" />
     <ClInclude Include="mainInitLibrary.hpp" />
     <ClInclude Include="mainInitMainWindow.hpp" />
@@ -1110,6 +484,13 @@
     <ClInclude Include="wxGUI\wxResolvePathDialog.hpp" />
     <ClInclude Include="wxGUI\wxResolvePathDialogBase.h" />
     <ClInclude Include="wxGUI\wxTimeSlider.hpp" />
+    <ClInclude Include="qtGUI\qtHelpUtil.hpp" />
+    <ClInclude Include="qtGUI\qtMRUManager.hpp" />
+    <ClInclude Include="qtGUI\qtMainDropTarget.hpp" />
+    <ClInclude Include="qtGUI\qtMainForm.hpp" />
+    <ClInclude Include="qtGUI\qtResolvePathDialog.hpp" />
+    <ClInclude Include="qtGUI\qtResolvePathDialogBase.h" />
+    <ClInclude Include="qtGUI\qtTimeSlider.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.ico" />
@@ -1133,16 +514,18 @@
     <ProjectReference Include="..\..\..\LibXLT\GraphicsDX11\GraphicsDX11.vcxproj">
       <Project>{419458ff-14d9-40ec-a36e-0a72774bc100}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\LibXLT\GraphicsVulkan\GraphicsVulkan.vcxproj">
+      <Project>{216ed7ae-3e0c-4b0d-a1df-8d4d80c8ad71}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\LibXLT\GraphicsOptiX\GraphicsOptiX.vcxproj">
+      <Project>{00727FBC-E9E8-4949-A83B-2FBDD284FFCE}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\LibXLT\Graphics\Graphics.vcxproj">
       <Project>{1d25a739-3967-4baf-aa18-53690b00bd55}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\..\..\LibXLT\ImportExport\ImportExport.vcxproj">
       <Project>{1ec94900-3482-471b-b642-af82738a9cff}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\LibXLT\InputDI\InputDI.vcxproj">
-      <Project>{f3bd86cb-9337-4ddd-9bfe-7e4b9ec1b411}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\..\..\LibXLT\InputTPC\InputTPC.vcxproj">
@@ -1157,8 +540,35 @@
       <Project>{4f086e7b-e7e0-4358-9c37-964ae63e31d6}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\LibXLT\ToolUIWx\ToolUIWx.vcxproj">
+    <!-- MachStudio isn't built until the unit tests have built and passed
+         (their Post-Build Event runs them; GraphicsTests has none, and is
+         only built). Nothing is linked from them. -->
+    <ProjectReference Include="..\..\..\UnitTests\CoreTests\CoreTests.vcxproj">
+      <Project>{a47f6ef0-4e08-4c1a-a930-cc4af2bbe402}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\UnitTests\MainAppTests\MainAppTests.vcxproj">
+      <Project>{673eb3cc-c4ae-421f-9644-cae53f4e7fa0}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\UnitTests\ImportExportTests\ImportExportTests.vcxproj">
+      <Project>{0c3462fd-854b-47ca-8870-b0b8461b9966}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\UnitTests\GraphicsTests\GraphicsTests.vcxproj">
+      <Project>{35fadf25-2926-45f7-8f3d-19f065d16917}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\LibXLT\ToolUIWx\ToolUIWx.vcxproj" Condition="'$(MspGuiToolkit)' != 'Qt'">
       <Project>{7d34475e-30da-48f0-831c-76cf42035352}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\LibXLT\ToolUIQt\ToolUIQt.vcxproj" Condition="'$(MspGuiToolkit)' == 'Qt'">
+      <Project>{3b0f4c6e-8e0a-4f4b-9c55-2d7a1e6c9a41}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\..\..\LibXLT\Tool\Tool.vcxproj">
@@ -1238,8 +648,25 @@
     <Manifest Include="DeclareDPIAware.manifest" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <!-- Each configuration builds into its own run directory
+       (MachStudio/MachStudio-x64-<Qt|Wx|RenderNode>-<Debug|Release>/). Next to the exe
+       go the runtime data (MachStudio/Runtime/Data, found next to the exe), the 3rdParty
+       DLLs every build needs (libpng, zlibwapi) and, in Wx builds, the wxWidgets DLLs of
+       that Debug/Release. vcpkg copies its own DLLs, and windeployqt Qt's
+       (Directory.Build.targets). Unchanged files are skipped. -->
+  <Target Name="MspDeployRuntime" AfterTargets="Build">
+    <PropertyGroup>
+      <MspWxDllSuffix Condition="'$(MspBaseConfiguration)' == 'Debug'">ud</MspWxDllSuffix>
+      <MspWxDllSuffix Condition="'$(MspBaseConfiguration)' != 'Debug'">u</MspWxDllSuffix>
+    </PropertyGroup>
+    <ItemGroup>
+      <MspRuntimeData Include="$(ProjectDir)..\..\Runtime\Data\**\*" />
+      <MspRuntimeDll Include="$(ProjectDir)..\..\..\3rdParty\Libs\$(Platform)\libpng16.dll;$(ProjectDir)..\..\..\3rdParty\Libs\$(Platform)\zlibwapi.dll" />
+      <MspRuntimeDll Include="$(ProjectDir)..\..\..\3rdParty\WxWidgets\lib\vc14x_x64_dll\wx*32$(MspWxDllSuffix)_*.dll" Condition="'$(MspGuiToolkit)' == 'Wx'" />
+    </ItemGroup>
+    <Copy SourceFiles="@(MspRuntimeData)" DestinationFiles="@(MspRuntimeData->'$(OutDir)Data\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(MspRuntimeDll)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+  </Target>
   <ProjectExtensions>
     <VisualStudio>
       <UserProperties RESOURCE_FILE="app.rc" />

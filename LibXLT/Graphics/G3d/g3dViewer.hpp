@@ -20,9 +20,7 @@
 #ifndef G2D_FONTHANDLE_HPP
 #include "Graphics/g2d/g2dFontHandle.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 
 
 //============================================================================
@@ -60,7 +58,7 @@ class g3dViewer : public g3dTargetRenderer
 		//----------------------------------------------------------------------------
 		// Set text string to display on given line.
 		//----------------------------------------------------------------------------
-		void SetTextMessage(int i, const itString &i_Msg);
+		void SetTextMessage(int i, const std::string &i_Msg);
 
 		//----------------------------------------------------------------------------
 		// Remove any text messages
@@ -100,7 +98,7 @@ class g3dViewer : public g3dTargetRenderer
 
 		// This data is for displaying text strings on the window.
 		// This arguably could be in a specialized class, not the base.
-		std::vector<itString> m_Messages;
+		std::vector<std::string> m_Messages;
 		g2dFontHandle m_Font;
 
 		// Each viewer gets a list of view-dependent render targets that

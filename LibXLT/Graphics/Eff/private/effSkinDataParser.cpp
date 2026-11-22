@@ -111,15 +111,15 @@ void effSkinDataParser::Read(	chReader& i_Reader,
 	o_Shader.AddParam(new effParamFloat("g_transMultiplier", "g_transMultiplier", data.m_TransMultiplier));
 	o_Shader.AddParam(new effParamFloat("g_transRampOff", "g_transRampOff", data.m_TransRampOff));
 	o_Shader.AddParam(new effParamFloat("g_microScale", "g_microScale", data.m_MicroScale));
-	o_Shader.AddParam(new effParamTexture("diffTex", "diffTex", itString(data.m_NameDiffTex.c_str())));
-	o_Shader.AddParam(new effParamTexture("normalTex", "normalTex", itString(data.m_NameNormalTex.c_str())));
-	o_Shader.AddParam(new effParamTexture("microTex", "microTex", itString(data.m_NameMicroTex.c_str())));
-	o_Shader.AddParam(new effParamTexture("specTex", "specTex", itString(data.m_NameSpecTex.c_str())));
-	o_Shader.AddParam(new effParamTexture("specPowerTex", "specPowerTex", itString(data.m_NameSpecPowerTex.c_str())));
-	o_Shader.AddParam(new effParamTexture("transTex", "transTex", itString(data.m_NameTransTex.c_str())));
-	o_Shader.AddParam(new effParamTexture("cubeTex", "cubeTex", itString(data.m_NameCubeMapTex.c_str())));
-	o_Shader.AddParam(new effParamTexture("reflectFactorTex", "reflectFactorTex", itString(data.m_NameReflectFactorTex.c_str())));
-	o_Shader.AddParam(new effParamTexture("transparencyTex", "transparencyTex", itString(data.m_NameTransparencyTex.c_str())));
+	o_Shader.AddParam(new effParamTexture("diffTex", "diffTex", data.m_NameDiffTex));
+	o_Shader.AddParam(new effParamTexture("normalTex", "normalTex", data.m_NameNormalTex));
+	o_Shader.AddParam(new effParamTexture("microTex", "microTex", data.m_NameMicroTex));
+	o_Shader.AddParam(new effParamTexture("specTex", "specTex", data.m_NameSpecTex));
+	o_Shader.AddParam(new effParamTexture("specPowerTex", "specPowerTex", data.m_NameSpecPowerTex));
+	o_Shader.AddParam(new effParamTexture("transTex", "transTex", data.m_NameTransTex));
+	o_Shader.AddParam(new effParamTexture("cubeTex", "cubeTex", data.m_NameCubeMapTex));
+	o_Shader.AddParam(new effParamTexture("reflectFactorTex", "reflectFactorTex", data.m_NameReflectFactorTex));
+	o_Shader.AddParam(new effParamTexture("transparencyTex", "transparencyTex", data.m_NameTransparencyTex));
 
 	//	debugging
 	//o_Shader.Dump();

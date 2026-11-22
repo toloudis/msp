@@ -54,6 +54,9 @@
     <ClCompile Include="Undo\chtrOperations.cpp">
       <Filter>Undo</Filter>
     </ClCompile>
+    <ClCompile Include="Undo\chtrReplaceOperation.cpp">
+      <Filter>Undo</Filter>
+    </ClCompile>
     <ClCompile Include="Data\chtrData.cpp">
       <Filter>Data</Filter>
     </ClCompile>
@@ -76,9 +79,6 @@
       <Filter>Object</Filter>
     </ClCompile>
     <ClCompile Include="Object\chtrFBXExportInterest.cpp">
-      <Filter>Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\chtrMRayExportInterest.cpp">
       <Filter>Object</Filter>
     </ClCompile>
     <ClCompile Include="Object\chtrObject.cpp">
@@ -162,6 +162,9 @@
     <ClInclude Include="Undo\chtrOperations.hpp">
       <Filter>Undo</Filter>
     </ClInclude>
+    <ClInclude Include="Undo\chtrReplaceOperation.hpp">
+      <Filter>Undo</Filter>
+    </ClInclude>
     <ClInclude Include="Data\chtrData.hpp">
       <Filter>Data</Filter>
     </ClInclude>
@@ -184,9 +187,6 @@
       <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="Object\chtrFBXExportInterest.hpp">
-      <Filter>Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\chtrMRayExportInterest.hpp">
       <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="Object\chtrObject.hpp">

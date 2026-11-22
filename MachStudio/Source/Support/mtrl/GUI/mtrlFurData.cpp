@@ -13,7 +13,7 @@
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 mtrlFurData::mtrlFurData()
-:	m_TextureFolder("Texture Folder", itString("C:\\projects\\MachStudio\\Shaders\\Special\\Fur\\")),
+:	m_TextureFolder("Texture Folder", std::string("C:\\projects\\MachStudio\\Shaders\\Special\\Fur\\")),
 	m_NumShells("Num Shells", 32),
 	m_LengthScale("Length Scale", 1),
 	m_SpreadScale("Spread Scale", maVector3d(1,1,1)),
@@ -29,7 +29,7 @@ mtrlFurData::mtrlFurData()
 //-------------------------------------------------
 //-------------------------------------------------
 mtrlFurData::mtrlFurData(const mtrlFurData& i_Data)
-:	m_TextureFolder("Texture Folder", itString("C:\\projects\\MachStudio\\Shaders\\Special\\Fur\\")),
+:	m_TextureFolder("Texture Folder", std::string("C:\\projects\\MachStudio\\Shaders\\Special\\Fur\\")),
 	m_NumShells("Num Shells", 32),
 	m_LengthScale("Length Scale", 1),
 	m_SpreadScale("Spread Scale", maVector3d(1,1,1)),

@@ -1,14 +1,13 @@
 #include "tga.h"
 
-#include "Core/it/itString.hpp"
+#include <string>
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <string.h>
+#include <ostream>
 
-inline void writeRGBA (envType::UInt32 *p, envType::UInt8 r, envType::UInt8 g, envType::UInt8 b, envType::UInt8 a)
+inline void writeRGBA (uint32_t *p, uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
-  envType::UInt8 *dp = (envType::UInt8 *)p;
+  uint8_t *dp = (uint8_t *)p;
   dp[0] = r;
   dp[1] = g;
   dp[2] = b;
@@ -20,12 +19,12 @@ inline void writeRGBA (envType::UInt32 *p, envType::UInt8 r, envType::UInt8 g, e
 * by allocating a new block, then copying
 * the rows in reverse order
 */ 
-envType::UInt32* flip(envType::UInt32* in, int w, int h)
+uint32_t* flip(uint32_t* in, int w, int h)
 {
 	int adv, adv2, i;
-	envType::UInt32* out;
+	uint32_t* out;
 
-	out = new envType::UInt32[w * h];
+	out = new uint32_t[w * h];
 	if(!out)
 	{
 		return NULL;
@@ -36,7 +35,7 @@ envType::UInt32* flip(envType::UInt32* in, int w, int h)
 	for(i = 0; i < h; i++)
 	{
 		adv2 -= w;
-		::memmove(out + adv, in + adv2, w * sizeof(envType::UInt32));
+		::memmove(out + adv, in + adv2, w * sizeof(uint32_t));
 		adv += w;
 	}
 
@@ -46,7 +45,7 @@ envType::UInt32* flip(envType::UInt32* in, int w, int h)
 
 /* read or write headers */
 /* you may set rgbe_header_info to null if you want to */
-int TGA_Read(const itString& filePath, FILE *fp, int *width, int *height, envType::UInt32** o_data)
+int TGA_Read(const std::string& filePath, FILE *fp, int *width, int *height, uint32_t** o_data)
 {
 	TgaHeader header; 
 	TgaFooter footer; 
@@ -90,7 +89,7 @@ int TGA_Read(const itString& filePath, FILE *fp, int *width, int *height, envTyp
 
 	*width = im_w;
 	*height = im_h;
-	*o_data = new envType::UInt32[im_w*im_h];
+	*o_data = new uint32_t[im_w*im_h];
 
 	// this flag indicated bottom-up pixel storage 
 	int vinverted = header.descriptor ^ TGA_DESC_VERTICAL; 
@@ -126,9 +125,11 @@ int TGA_Read(const itString& filePath, FILE *fp, int *width, int *height, envTyp
     // find out how much data must be read from the file 
     // (this is NOT simply width*height*4, due to compression) 
 
-	struct ::_stat64i32 ss;
-	::_wstat(filePath.GetString(), &ss);
-	int datasize = ss.st_size - sizeof(TgaHeader) - header.idLength -
+	long data_start = ftell(fp);
+	fseek(fp, 0, SEEK_END);
+	long file_size = ftell(fp);
+	fseek(fp, data_start, SEEK_SET);
+	int datasize = file_size - sizeof(TgaHeader) - header.idLength -
 		(hasFooter ? TGA_FOOTER_LEN : 0);
 	
 	unsigned char* buf = new unsigned char[datasize]; 
@@ -151,7 +152,7 @@ int TGA_Read(const itString& filePath, FILE *fp, int *width, int *height, envTyp
 	unsigned char* bufptr = buf; 
 
 	// dataptr is the next 32-bit pixel to be filled in 
-	envType::UInt32* dataptr = *o_data;
+	uint32_t* dataptr = *o_data;
 	
 	// decode uncompressed BGRA data 
 	if(!rle) 
@@ -220,7 +221,7 @@ int TGA_Read(const itString& filePath, FILE *fp, int *width, int *height, envTyp
 	else 
 	{ 
 		unsigned char curbyte, red, green, blue, alpha; 
-		envType::UInt32 *final_pixel = dataptr + im_w * im_h; 
+		uint32_t *final_pixel = dataptr + im_w * im_h; 
 
 		// loop until we've got all the pixels 
 		while(dataptr < final_pixel)	
@@ -342,7 +343,7 @@ int TGA_Read(const itString& filePath, FILE *fp, int *width, int *height, envTyp
 	  return 1;
 }
 
-void TGA_Write_RGBA(FILE *fp, int width, int height, envType::UInt32** data)
+void TGA_Write_RGBA(std::ostream &os, int width, int height, uint32_t** data)
 {
 	TgaHeader tgah;
 	memset(&tgah,0,sizeof(TgaHeader));
@@ -365,14 +366,14 @@ void TGA_Write_RGBA(FILE *fp, int width, int height, envType::UInt32** data)
 	tgah.heightHi=(height & 0xFF00) / 256;
 	tgah.bpp=(unsigned char)32;
 	tgah.descriptor=0;
-	fwrite(&tgah,1,sizeof(TgaHeader),fp);
+	os.write((const char*)&tgah, sizeof(TgaHeader));
 
-	long slsize = width * sizeof(envType::UInt32);
+	long slsize = width * sizeof(uint32_t);
 	unsigned char *scanline = new unsigned char[slsize];
 	unsigned char r,g,b,a;
 	int x, y;
 	memset(scanline, 0, slsize);
-	envType::UInt32* dataptr = *data;
+	uint32_t* dataptr = *data;
 	
 	for( y = 0; y < height; y++)
 	{
@@ -388,7 +389,7 @@ void TGA_Write_RGBA(FILE *fp, int width, int height, envType::UInt32** data)
 			scanline[x*4 + 2] = r;
 			scanline[x*4 + 3] = a;
 		}
-		fwrite(scanline, 1, slsize, fp);
+		os.write((const char*)scanline, slsize);
 	}
 
 	delete [] scanline;

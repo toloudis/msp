@@ -22,9 +22,12 @@ class chtrDriverAnimationFull : public tmlnDriverAnimationFull
 public:
 	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------
+	// i_SourceIdentity: the character's chtrData::m_SourceIdentity, the part
+	// of its file its clips are built for
 	chtrDriverAnimationFull(tmlnChannelAnimationFull &i_Channel, 
 							chDefs::Name i_ChunkName,
-							const fsLocator &i_CharacterDir);
+							const fsLocator &i_CharacterDir,
+							const std::string &i_SourceIdentity);
 
 	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------
@@ -39,8 +42,14 @@ public:
 	//--------------------------------------------------------------------
 	inline const fsLocator&	GetCharacterDir() const;
 
+	//--------------------------------------------------------------------
+	// The character's part of its file
+	//--------------------------------------------------------------------
+	virtual std::string GetAnimPart() const;
+
 private:
 	fsLocator	m_CharacterDir;
+	std::string	m_SourceIdentity;
 };
 
 

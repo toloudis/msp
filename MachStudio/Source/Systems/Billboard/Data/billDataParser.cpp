@@ -62,7 +62,7 @@ namespace
 			// and could be removed in product
 			if (tex_loc.GetNumNames() == 1)
 			{
-				itString filename = tex_loc.GetLastName();
+				std::string filename = tex_loc.GetLastName();
 				billGeomList::FindFile(filename, tex_loc);
 			}
 
@@ -105,7 +105,7 @@ void billDataParser::ReadBillboardChunk(chReader& i_Reader,
 							version, size, data);
 
 			o_Data.m_BaseData.m_bEditorVisible	= data.m_bEditorVisible;
-			o_Data.m_BaseData.m_Filename		= data.m_Filename;
+			o_Data.m_BaseData.m_Filename		= fsLocator(data.m_Filename);
 			resolve_fullpath(o_Data.m_BaseData.m_Filename);
 			o_Data.m_BaseData.m_Name			= data.m_Name;
 //			o_Data.m_BaseData.m_Orientation		= data.m_Orientation;

@@ -19,12 +19,12 @@
 #include "Core/prty/prtyFloat.hpp"
 #endif
 
+#ifdef USE_QT
 
 //===================================================================================
 //===================================================================================
 class pqtFloat_ComboBox_Converter 
 {
-#ifdef QT_FINISH_PORT
 public:
 	//----------------------------------------------------------------------------
 	// Get list of string choices for combo box
@@ -35,17 +35,17 @@ public:
 	//----------------------------------------------------------------------------
 	// Set value into control
 	//----------------------------------------------------------------------------
-	static void SetValueIntoControl(wxChoice* i_pActualControl,
+	static void SetValueIntoControl(QComboBox* i_pActualControl,
 									 float i_Value);
 
 	//----------------------------------------------------------------------------
 	// Get value from control
 	//----------------------------------------------------------------------------
-	static float GetValueFromControl(wxChoice* i_pActualControl);
-#endif // USE_QT
+	static float GetValueFromControl(QComboBox* i_pActualControl);
 };
 
 //============================================================================
 //============================================================================
 typedef pqtTemplate_ComboBox<prtyFloat, float, pqtFloat_ComboBox_Converter> pqtFloat_ComboBox;
 
+#endif // USE_QT

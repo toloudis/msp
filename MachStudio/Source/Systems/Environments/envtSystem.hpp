@@ -10,12 +10,12 @@
 #ifdef ENVT_SYSTEM_HPP
 #error envtSystem.hpp multiply included
 #endif
+#include <string>
 #define ENVT_SYSTEM_HPP
 
 //============================================================================
 //============================================================================
 class fsLocator;
-class itString;
 
 //============================================================================
 //============================================================================
@@ -24,7 +24,7 @@ namespace envtSystem
 		//--------------------------------------------------------------------
 		// Init
 		//--------------------------------------------------------------------
-		void Init(const fsLocator& i_AppDir, const itString& i_EnvtTexDir);
+		void Init(const fsLocator& i_AppDir, const std::string& i_EnvtTexDir);
 
 		//--------------------------------------------------------------------
 		// CleanUp -- cleanup system

@@ -170,7 +170,7 @@ class propPropObject : public mnmObject, public nameObject, public prtyObject
 		//----------------------------------------------------------------------------
 		// Find the object that matches the pick code from an earlier pick render.
 		//----------------------------------------------------------------------------
-		virtual bool MatchPickCode(envType::UInt32 i_PickCode) const;
+		virtual bool MatchPickCode(uint32_t i_PickCode) const;
 
 		//--------------------------------------------------------------------
 		//  Changes visible state of prop based on GUI

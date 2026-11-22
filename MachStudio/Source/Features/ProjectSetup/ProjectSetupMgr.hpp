@@ -16,9 +16,7 @@
 #include "Features/ProjectSetup/Data/ProjectSetupData.hpp"
 #endif
 
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 
 
 //============================================================================
@@ -77,12 +75,12 @@ namespace ProjectSetupMgr
 	//------------------------------------------------------------------------
 	//	WriteProject() - write the current project data
 	//------------------------------------------------------------------------
-	void WriteProject( const itString& i_Filename );
+	void WriteProject( const std::string& i_Filename );
 
 	//------------------------------------------------------------------------
 	//	ReadProject() - read the current project data
 	//------------------------------------------------------------------------
-	void ReadProject( const itString& i_Filename );
+	void ReadProject( const std::string& i_Filename );
 
 	//------------------------------------------------------------------------
 	//	CreateDirectories() - create directories based on the current

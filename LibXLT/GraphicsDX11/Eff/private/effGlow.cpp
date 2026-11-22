@@ -13,15 +13,15 @@
 #include "GraphicsDX11/g3d/g3dDX11TextureUtil.hpp"
 #include "Graphics/mat/matMaterial.hpp"
 
-effGlow::effGlow(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, std::string i_name)
-:	effShaderBaseDX11(i_Directory, i_pEffect, i_name)
+effGlow::effGlow(std::unique_ptr<fxEffectDX11> i_pEffect, std::string i_name)
+:	effPlainShaderDX11(std::move(i_pEffect), i_name)
 {
-	MapParameter("glowTexture", m_hTexture );
-	MapParameter("glowAmount", m_hGlowAmount );
-	MapParameter("glowScale", m_hGlowScale );
-	MapParameter("glowSize", m_hGlowSize );
-	MapParameter("bConstantGlow", m_hConstantGlow );
-	MapParameter("srcSizeInfo", m_hSrcSizeInfo );
+	m_hTexture = m_pEffect->FindResource("glowTexture");
+	m_hGlowAmount = m_pEffect->FindConstant("glowAmount");
+	m_hGlowScale = m_pEffect->FindConstant("glowScale");
+	m_hGlowSize = m_pEffect->FindConstant("glowSize");
+	m_hConstantGlow = m_pEffect->FindConstant("bConstantGlow");
+	m_hSrcSizeInfo = m_pEffect->FindConstant("srcSizeInfo");
 }
 
 void effGlow::SetupMaterial(const matMaterial* i_Material,
@@ -30,12 +30,12 @@ void effGlow::SetupMaterial(const matMaterial* i_Material,
 	const effGlowData* pData = &(i_Material->GetGlowData());
 	DBG_ASSERT(pData != NULL, "Bad effect data type matched with effGlow");
 
-	m_hTexture->SetResource(g3dDX11TextureUtil::GetD3DTexture(pData->m_pTexture));
-	m_hGlowAmount->SetFloat(pData->m_GlowAmount);
-	m_hGlowScale->SetFloatVector( pData->m_GlowScale.Ptr() );
-	m_hGlowSize->SetFloat(pData->m_GlowSize);
-	m_hConstantGlow->SetBool(pData->m_bConstantGlow);
-	m_hSrcSizeInfo->SetFloatVector( pData->m_SrcSizeInfo.Ptr() );
+	m_pEffect->SetResource(m_hTexture, g3dDX11TextureUtil::GetD3DTexture(pData->m_pTexture));
+	m_pEffect->SetConstant(m_hGlowAmount, (float)pData->m_GlowAmount);
+	m_pEffect->SetFloatVector(m_hGlowScale, pData->m_GlowScale.Ptr());
+	m_pEffect->SetConstant(m_hGlowSize, (float)pData->m_GlowSize);
+	m_pEffect->SetConstant(m_hConstantGlow, (int)(pData->m_bConstantGlow ? 1 : 0));	// HLSL bool is 4 bytes
+	m_pEffect->SetFloatVector(m_hSrcSizeInfo, pData->m_SrcSizeInfo.Ptr());
 }
 
 effShaderData* effGlow::CreateData(const matMaterial* i_Mat)

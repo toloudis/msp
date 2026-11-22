@@ -80,10 +80,10 @@ namespace prjltOperations
 	//--------------------------------------------------------------------
 	//  Add new projected light to world
 	//--------------------------------------------------------------------
-	void  AddObject(const prjltScriptData& i_Data)
+	nameString  AddObject(const prjltScriptData& i_Data)
 	{
 		int index = prjltActualOperations::AddObject(i_Data);
-		if (index < 0) return;	// if there is a problem loading the object, return immediately
+		if (index < 0) return nameString();	// if there is a problem loading the object, return immediately
 
 		l_LastOp = NULL;
 		//char displaytext[128];
@@ -96,6 +96,7 @@ namespace prjltOperations
 		
 		// Need new name given to new object when making udo operation
 		undoUndoMgr::AddOperation(new prjltAddOperation(index, prjltObjectMgr::GetScriptData(index), displaytext.c_str()));
+		return prjltObjectMgr::GetScriptData(index).m_BaseData.m_Name.GetValue();
 	}
 
 	//--------------------------------------------------------------------
@@ -307,26 +308,42 @@ namespace prjltOperations
 	{
 		if (i_Filename.IsEmpty())
 		{
-			itString name_prefix;
+			std::string name_prefix;
 			switch(i_LightType)
 			{
 			default:
 			case prjltData::e_ProjectedLight:
-				name_prefix = itString("ProjectedLight");
+				name_prefix = std::string("ProjectedLight");
 				break;
 			case prjltData::e_SpotLight:
-				name_prefix = itString("SpotLight");
+				name_prefix = std::string("SpotLight");
 				break;
 			case prjltData::e_DirectionalLight:
-				name_prefix = itString("DirectionalLight");
+				name_prefix = std::string("DirectionalLight");
 				break;
 			}
 			prjltObjectMgr::create_default_name(name_prefix, o_NameString, l_ObjectCounter);
 		}
 		else
 		{
-			prjltObjectMgr::create_duplicate_name(itString(i_Filename.GetString().c_str()), o_NameString);
+			prjltObjectMgr::create_duplicate_name(i_Filename.GetString(), o_NameString);
 		}
+	}
+
+	//--------------------------------------------------------------------
+	// Set the whole object of that name as one undoable step
+	//--------------------------------------------------------------------
+	void SetObjectData(const nameString& i_Name, const prjltScriptData& i_Data)
+	{
+		const int index = prjltObjectMgr::GetIndexForObject(i_Name);
+		if (index < 0)
+			return;
+
+		typedef cmmSetOperationTemplate< prjltScriptData, prjltActualOperations, prjltObjectMgr> SetObjectOperation;
+		const std::string display_name = "Change " + i_Name.GetString();
+		undoUndoMgr::AddOperation(new SetObjectOperation(index, prjltObjectMgr::GetScriptData(index), display_name.c_str()));
+		l_LastOp = NULL;	// later edits start their own step
+		prjltActualOperations::SetData(index, i_Data);
 	}
 
 }	// end of namespace

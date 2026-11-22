@@ -42,7 +42,6 @@
 #include "Core/prty/prtyFileChooserUIInfo.hpp"
 #include "Core/prty/prtyFloatEditUIInfo.hpp"
 #include "Core/prty/prtyGradientEditUIInfo.hpp"
-#include "Core/prty/prtyNumericUpDownUIInfo.hpp"
 #include "Core/prty/prtyRangedFloatUIInfo.hpp"
 #include "Core/prty/prtyTextureFileChooserUIInfo.hpp"
 #include "Core/prty/prtyTextBoxUIInfo.hpp"
@@ -95,8 +94,8 @@ namespace
 								-l_BoxRadius, l_BoxRadius);
 	const maVector3d l_Zero(0,0,0);
 	const maVector3d l_One(1,1,1);
-	const maRotation l_NoRot;		
-	
+	const maRotation l_NoRot;
+
 	const float c_InvLn = 2.7182818284590452353602874713527f;
 
 	enum ManipModes
@@ -147,12 +146,12 @@ namespace
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 prjltProjectedLightObject::prjltProjectedLightObject(prjltData::LightType i_LightType)
-:	m_pTexture(NULL), 
+:	m_pTexture(NULL),
 	m_DepthMapSize(0),
 	m_HairShadowSize(0),
 	m_HairShadowType(HAIR_SHADOW_OSM4),
-	m_pShadowMap(NULL), 
-	m_pDepthRenderer(NULL), 
+	m_pShadowMap(NULL),
+	m_pDepthRenderer(NULL),
 	m_pMapRenderer(NULL),
 	m_pOpacityMapRenderer(NULL),
 	m_pOpacityRenderer(NULL),
@@ -207,7 +206,10 @@ prjltProjectedLightObject::prjltProjectedLightObject(prjltData::LightType i_Ligh
 
 	// Create g3d light
 	m_pProjectedLight = api3dLightMgr::CreateProjectedLight();
-	m_pProjectedLight->SetCastsShadow(true);
+	//	the rasterizers draw every light in its own pass (whether it casts
+	//	shadows is Shadow Source: a map, or traced shadows)
+	m_pProjectedLight->SetIsSinglePassLight(true);
+	m_pProjectedLight->SetShadowSource(m_Data.m_ShadowSource.GetValue());
 	// ensure current defaults are set in light.
 	m_pProjectedLight->SetIntensity(m_Data.m_Color.GetValue());
 	m_pProjectedLight->SetEnable(m_Data.m_Enabled.GetValue());
@@ -225,7 +227,7 @@ prjltProjectedLightObject::prjltProjectedLightObject(prjltData::LightType i_Ligh
 	}
 	else
 	{
-		// Otherwise, inner angle is set to maximum and the full 
+		// Otherwise, inner angle is set to maximum and the full
 		// rectangular light frustrum is used.
 		m_pProjectedLight->SetAngle(m_Data.m_Angle.GetValue());
 		m_pProjectedLight->SetInnerAngle(180.0f);
@@ -259,14 +261,22 @@ prjltProjectedLightObject::prjltProjectedLightObject(prjltData::LightType i_Ligh
 	m_pLightProxy = new gpxProjectedLight(*m_pProjectedLight);
 	m_ShadowCameraProxy = new gpxCamera(m_ShadowCamera);
 
-	// simple renderer for shadow maps (put into api3d somehow?)
-	m_pDepthRenderer = g3dSceneRendererCreate::CreateDepthMapRenderer();
+	// A backend that traces shadows (GraphicsOptiX) makes no shadow or
+	// opacity maps, so it needs none of their renderers either
+	if (g3dSceneRendererCreate::NeedsShadowMaps())
+	{
+		// simple renderer for shadow maps (put into api3d somehow?)
+		m_pDepthRenderer = g3dSceneRendererCreate::CreateDepthMapRenderer();
+	}
 
 	// simple renderer for reflective shadow maps (put into api3d somehow?)
 	//m_pRSMRenderer = g3dSceneRendererCreate::CreateRSMRenderer();
 
-	// simple renderer for Opacity shadow maps (put into api3d somehow?)
-	m_pOpacityRenderer = g3dSceneRendererCreate::CreateOpacityMapRenderer( m_pProjectedLight );
+	if (g3dSceneRendererCreate::NeedsOpacityMaps())
+	{
+		// simple renderer for Opacity shadow maps (put into api3d somehow?)
+		m_pOpacityRenderer = g3dSceneRendererCreate::CreateOpacityMapRenderer( m_pProjectedLight );
+	}
 
 	// Create 3D icon based on light type
 	if (m_Data.m_LightType == prjltData::e_SpotLight)
@@ -286,9 +296,9 @@ prjltProjectedLightObject::prjltProjectedLightObject(prjltData::LightType i_Ligh
 	// Create Ramp texture
 	m_pRampTexture = rmpTextureMgr::CreateRampTexture(512);
 	m_pShaftRampTexture = rmpTextureMgr::CreateRampTexture(512);
-	
-	ltstLightSetMgr::AddLight(this, m_pProjectedLight);	
-	ltstIsolateMgr::AddLight(this, this);	
+
+	ltstLightSetMgr::AddLight(this, m_pProjectedLight);
+	ltstIsolateMgr::AddLight(this, this);
 	// give our name to transform manager with a callback for notifying
 	// when the parent transformation changes.
 	xfrmTransformMgr::AddObject(this, this);
@@ -300,7 +310,6 @@ prjltProjectedLightObject::prjltProjectedLightObject(prjltData::LightType i_Ligh
 	prtyPropertyUIInfo* pPUII;
 	prtyRangedFloatUIInfo* pRFUII;
 	prtyComboBoxUIInfo* pCBUII;
-	prtyNumericUpDownUIInfo* pNUDUII;
 	pPUII = new prtyTextBoxUIInfo(&(m_Data.m_Name), "Asset", "Name of the object");
 	AddProperty( pPUII );
 
@@ -323,6 +332,9 @@ prjltProjectedLightObject::prjltProjectedLightObject(prjltData::LightType i_Ligh
 	}
 
 	AddProperty( new prtyCheckBoxUIInfo(&(m_Data.m_Enabled), "Asset", "Enabled object") );
+
+	// whether it still follows the scene file it came from (imptSceneRefs)
+	AddProperty( CreateSourceStateUIInfo() );
 
 	if (bDoShaft)
 	{
@@ -368,12 +380,12 @@ prjltProjectedLightObject::prjltProjectedLightObject(prjltData::LightType i_Ligh
 		AddProperty( m_pAngleControl );
 
 		m_pPenumbraControl  = new prtyRangedFloatUIInfo(&(m_Data.m_Penumbra), "Light", "Falloff Angle of the spot light");
-		m_pPenumbraControl->SetMinimum(0.0f); 
+		m_pPenumbraControl->SetMinimum(0.0f);
 		m_pPenumbraControl->SetMaximum(180.0f);
 		m_pPenumbraControl->SetDecimalPlaces(2);
 		m_pPenumbraControl->SetNumTicks(100);
-		AddProperty( m_pPenumbraControl );	
-		
+		AddProperty( m_pPenumbraControl );
+
 		// Projected lights have modes that enable and disable certain angle properties
 		if (m_Data.m_LightType == prjltData::e_ProjectedLight)
 		{
@@ -398,8 +410,8 @@ prjltProjectedLightObject::prjltProjectedLightObject(prjltData::LightType i_Ligh
 	}
 	if (m_Data.m_LightType == prjltData::e_ProjectedLight)
 	{
-		//pRFUII  = new prtyRangedFloatUIInfo(&(m_Data.m_Aspect), "Light", "Aspect of the light´s view region");
-		pRFUII  = new prtyRangedFloatUIInfo(&(m_LogAspect), "Light", "Aspect (log) of the light´s view region");
+		//pRFUII  = new prtyRangedFloatUIInfo(&(m_Data.m_Aspect), "Light", "Aspect of the light's view region");
+		pRFUII  = new prtyRangedFloatUIInfo(&(m_LogAspect), "Light", "Aspect (log) of the light's view region");
 		pRFUII->SetMinimum(-4.0f);
 		pRFUII->SetMaximum(4.0f);
 		pRFUII->SetDecimalPlaces(2);
@@ -433,7 +445,7 @@ prjltProjectedLightObject::prjltProjectedLightObject(prjltData::LightType i_Ligh
 	//pCBUII->AddItem(std::string("2048"), 3);
 	////pCBUII->SetReadOnly(true);
 	//AddProperty( pCBUII );
-	
+
 	pCBUII = new prtyComboBoxUIInfo(&(m_Data.m_ShadowQuality), "Shadow Quality", "Shadow quality level");
 	AddProperty( pCBUII );
 
@@ -535,7 +547,7 @@ prjltProjectedLightObject::prjltProjectedLightObject(prjltData::LightType i_Ligh
 	pRFUII->SetDecimalPlaces(1);
 	pRFUII->SetNumTicks(90);
 	AddProperty( pRFUII );
-	
+
 	if (m_Data.m_LightType == prjltData::e_ProjectedLight)
 	{
 		pRFUII  = new prtyRangedFloatUIInfo(&(m_Data.m_Tilt), "Transform", "Tilt angle around light direction");
@@ -556,7 +568,7 @@ prjltProjectedLightObject::prjltProjectedLightObject(prjltData::LightType i_Ligh
 		pPVEUDUII->SetDecimalPlaces(1);
 		AddProperty( pPVEUDUII );
 	}
-	
+
 	if (m_Data.m_LightType != prjltData::e_DirectionalLight)
 	{
 		pPUII  = new prtyVector3dEditUpDownUIInfo(&(m_Data.m_Target), "Transform", "Target of the object");
@@ -592,16 +604,6 @@ prjltProjectedLightObject::prjltProjectedLightObject(prjltData::LightType i_Ligh
 		pTFCI->SetDirectoryCategory("Gels");
 		AddProperty( pTFCI );
 	}
-
-	AddProperty( new prtyCheckBoxUIInfo(&(m_Data.m_bMRayAreaLight), "mental ray", "Enable Area Light") );
-	AddProperty( new prtyComboBoxUIInfo(&(m_Data.m_MRayAreaLightType), "mental ray", "Area Light Type") );
-	pNUDUII = new prtyNumericUpDownUIInfo(&(m_Data.m_MRayAreaLightSampling), "mental ray", "Number of Samples");
-	pNUDUII->SetDecimalPlaces(0);
-	pNUDUII->SetMinimum(1);
-	pNUDUII->SetMaximum(256);
-	pNUDUII->SetRestrictFlag(true);
-	AddProperty( pNUDUII );
-	//AddProperty( new prtyCheckBoxUIInfo(&(m_Data.m_bMRayAreaLightVisible), "Mental Ray", "Visible") );
 
 	// Register callbacks to update particle generator and icons
 	// when properties change
@@ -658,7 +660,7 @@ prjltProjectedLightObject::prjltProjectedLightObject(prjltData::LightType i_Ligh
 	m_Data.m_ShaftTextureFilename.AddCallback(new prtyCallbackWrapper<prjltProjectedLightObject>(this, &prjltProjectedLightObject::LightShaftTextureChanged));
 	//m_Data.m_bEnabledRamp.AddCallback(new prtyCallbackWrapper<prjltProjectedLightObject>(this, &prjltProjectedLightObject::RampEnabledChanged));
 	//m_Data.m_RampTrigger.AddCallback(new prtyCallbackWrapper<prjltProjectedLightObject>(this, &prjltProjectedLightObject::RampTriggerChanged));
-	
+
 	// this callback is shared by all the properties in ramp data, user must use shared-pointer here
 	shared_ptr<prtyPropertyCallback> rampCallbackPtr(new prtyCallbackWrapper<prjltProjectedLightObject>(this, &prjltProjectedLightObject::RampChangedFromData));
 	m_Data.m_RampData.RegisterCallback(rampCallbackPtr);
@@ -680,7 +682,7 @@ prjltProjectedLightObject::prjltProjectedLightObject(prjltData::LightType i_Ligh
 	m_LogAspect.AddCallback(new prtyCallbackWrapper<prjltProjectedLightObject>(this, &prjltProjectedLightObject::LogAspectChanged));
 	m_ShowFrustrum.AddCallback(new prtyCallbackWrapper<prjltProjectedLightObject>(this, &prjltProjectedLightObject::IconDisplayChanged));
 	m_ShowTexture.AddCallback(new prtyCallbackWrapper<prjltProjectedLightObject>(this, &prjltProjectedLightObject::IconDisplayChanged));
-	m_TexturePosition.AddCallback(new prtyCallbackWrapper<prjltProjectedLightObject>(this, &prjltProjectedLightObject::IconDisplayChanged));	
+	m_TexturePosition.AddCallback(new prtyCallbackWrapper<prjltProjectedLightObject>(this, &prjltProjectedLightObject::IconDisplayChanged));
 }
 
 //----------------------------------------------------------------------------
@@ -692,9 +694,9 @@ prjltProjectedLightObject::~prjltProjectedLightObject()
 
 	icnIconScale::UnRegisterScaleInterest(this);
 
-	ltstLightSetMgr::RemoveLight(this, m_pProjectedLight);	
-	ltstIsolateMgr::RemoveLight(this, this);	
-	xfrmTransformMgr::RemoveObject(this); 
+	ltstLightSetMgr::RemoveLight(this, m_pProjectedLight);
+	ltstIsolateMgr::RemoveLight(this, this);
+	xfrmTransformMgr::RemoveObject(this);
 
 	// delete proxies
 	delete m_pLightProxy;
@@ -761,13 +763,13 @@ prjltProjectedLightObject::~prjltProjectedLightObject()
 		delete m_pLightShaft;
 		//delete m_pLightShaftMat;
 	}
-	
+
 	if (m_pRampTexture)
 	{
 		matTextureMgr::ReleaseTexture(m_pRampTexture);
 		m_pRampTexture = NULL;
 	}
-	
+
 	//CleanupRampScene();
 }
 
@@ -775,7 +777,7 @@ prjltProjectedLightObject::~prjltProjectedLightObject()
 //--------------------------------------------------------------------
 // Get the name of the object.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 std::string prjltProjectedLightObject::GetDisplayName() const
 {
 	return GetName().GetString();
@@ -784,7 +786,7 @@ std::string prjltProjectedLightObject::GetDisplayName() const
 //--------------------------------------------------------------------
 //	UpdateIconScale - function that sets the icons scale.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 void prjltProjectedLightObject::UpdateIconScale( int i_IconLayerIndex, const camCamera& i_Camera, float i_Scale )
 {
 	if( m_pObject )
@@ -810,16 +812,10 @@ void prjltProjectedLightObject::SetData( const prjltData &i_Data )
 {
 	// I am going to leave these "confirm" functions in SetData, because
 	// we need to make sure that the textures and depth maps are created even
-	// when all of the property values are at their default value 
+	// when all of the property values are at their default value
 	// (when no callbacks are called)
 	this->ConfirmTexture();
 
-	// don't tell the light if we're not casting shadows.
-	// this is because that flag is used to determine whether
-	// the light contributes to the ambient pass or not.
-	// maybe these 2 concepts should be separated semantically?
-	//m_pLightProxy->SetCastsShadow(i_Data.m_ShadowSource);
-	
 	this->ConfirmDepthMap();
 	this->ConfirmOpacityMap();
 	this->ConfirmLightShaft();
@@ -831,14 +827,14 @@ void prjltProjectedLightObject::SetData( const prjltData &i_Data )
 	// Get initial value of falloff type and then let user change it after this
 	cmmFalloffAspect::InitializeFalloffType();
 
-	if( m_Data.m_TextureFilename.GetFullValue().m_CurrentCallback == 
+	if( m_Data.m_TextureFilename.GetFullValue().m_CurrentCallback ==
 		prtyTextureFileChooserUIInfo::GetType(prtyTextureFileChooserUIInfo::e_Ramp) )
 	{
 		m_Data.m_bEnabledRamp.SetValue(true);
 		this->RampChanged(false);
 	}
 
-	if( m_Data.m_ShaftTextureFilename.GetFullValue().m_CurrentCallback == 
+	if( m_Data.m_ShaftTextureFilename.GetFullValue().m_CurrentCallback ==
 		prtyTextureFileChooserUIInfo::GetType(prtyTextureFileChooserUIInfo::e_Ramp) )
 	{
 		m_Data.m_bEnabledShaftRamp.SetValue(true);
@@ -1231,7 +1227,7 @@ maAxisBox prjltProjectedLightObject::GetWorldBox(int i_IconLayerIndex) const
 		if (m_ManipMode.GetValue() == e_Target)
 			sph_rad = m_pObject->GetPickTargetScale(i_IconLayerIndex);
 		else
-			sph_rad = m_pObject->GetPickPositionScale(i_IconLayerIndex); 
+			sph_rad = m_pObject->GetPickPositionScale(i_IconLayerIndex);
 	}
 
 	maAxisBox icon_box(-sph_rad, sph_rad,
@@ -1248,7 +1244,7 @@ maAxisBox prjltProjectedLightObject::GetWorldBox(int i_IconLayerIndex) const
 //		object will rotate around. Used to center rotation and
 //		scale compasses.
 //--------------------------------------------------------------------
-//virtual 
+//virtual
 maPoint3d prjltProjectedLightObject::GetWorldPivot() const
 {
 	// pivot point in world space is based on manipulation mode
@@ -1266,7 +1262,7 @@ maPoint3d prjltProjectedLightObject::GetWorldPivot() const
 }
 
 //--------------------------------------------------------------------
-//  Get sum of matrices of all parents of this node. 
+//  Get sum of matrices of all parents of this node.
 //--------------------------------------------------------------------
 void prjltProjectedLightObject::GetParentMatrix(maMatrix4x4 &o_Transformation) const
 {
@@ -1306,7 +1302,7 @@ maPoint3d prjltProjectedLightObject::GetPosition() const
 //	UpdatePosition - compass interaction has altered the position of
 //	of this light
 //----------------------------------------------------------------------------
-void prjltProjectedLightObject::UpdatePosition(const maPoint3d& i_Position, 
+void prjltProjectedLightObject::UpdatePosition(const maPoint3d& i_Position,
 										bool i_bNewOperation)
 {
 	const bool bSetDirty = true;
@@ -1354,14 +1350,14 @@ maRotation prjltProjectedLightObject::GetOrientation() const
 	}
 	else
 	{
-		return maRotation(-m_Pitch.GetValue() * maConstants::c_fAngleToRad, 
-						  m_Yaw.GetValue() * maConstants::c_fAngleToRad, 
+		return maRotation(-m_Pitch.GetValue() * maConstants::c_fAngleToRad,
+						  m_Yaw.GetValue() * maConstants::c_fAngleToRad,
 						  0);	// don't do tilt here
 	}
 }
-void prjltProjectedLightObject::UpdateOrientation(const maRotation& i_Orientation, 
+void prjltProjectedLightObject::UpdateOrientation(const maRotation& i_Orientation,
 										bool i_bNewOperation)
-{		
+{
 	// We don't store the light's direction as a rotation. The rotation
 	//	was derived from the pitch and yaw angles which are derived
 	//	from vector from the light position to the target point.
@@ -1405,7 +1401,7 @@ maPoint3d prjltProjectedLightObject::GetScale() const
 	//return l_One;
 }
 
-void prjltProjectedLightObject::UpdateScale(const maPoint3d& i_Scale, 
+void prjltProjectedLightObject::UpdateScale(const maPoint3d& i_Scale,
 										bool i_bNewOperation)
 {
 	if (i_bNewOperation) this->CreateUndoForProperty(m_Data.m_Scale);
@@ -1418,7 +1414,7 @@ void prjltProjectedLightObject::UpdateScale(const maPoint3d& i_Scale,
 //----------------------------------------------------------------------------
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
-bool prjltProjectedLightObject::MatchPickCode(envType::UInt32 i_PickCode)
+bool prjltProjectedLightObject::MatchPickCode(uint32_t i_PickCode)
 {
 	if (!m_pObject->GetRenderable())
 		return false;
@@ -1446,7 +1442,7 @@ void prjltProjectedLightObject::SetRenderable(bool i_bRenderable)
 
 	// icon is visible only if channel and gui and layer are all
 	// are set visible == true;
-	bool bRenderable = m_Data.m_bEditorVisible.GetValue() 
+	bool bRenderable = m_Data.m_bEditorVisible.GetValue()
 		&& m_bRenderable
 		&& m_bLayerVisible
 		&& this->GetIsolationVisible();
@@ -1469,7 +1465,7 @@ void  prjltProjectedLightObject::SetEditorVisible(bool i_bVisible)
 
 	// icon is visible only if channel and gui and layer are all
 	// are set visible == true;
-	bool bRenderable = m_Data.m_bEditorVisible.GetValue() 
+	bool bRenderable = m_Data.m_bEditorVisible.GetValue()
 		&& m_bRenderable
 		&& m_bLayerVisible;
 	m_pObject->SetRenderable( bRenderable );
@@ -1478,7 +1474,7 @@ bool prjltProjectedLightObject::GetEditorVisible() const
 {
 	return m_Data.m_bEditorVisible.GetValue();
 }
- 
+
 //--------------------------------------------------------------------
 //	LayerVisible represents if objects in the layer are visible
 //--------------------------------------------------------------------
@@ -1488,7 +1484,7 @@ void prjltProjectedLightObject::SetLayerVisible(bool i_bVisible)
 
 	// object is visible only if channel and gui and layer are all
 	// are set visible == true;
-	bool bRenderable = m_Data.m_bEditorVisible.GetValue() 
+	bool bRenderable = m_Data.m_bEditorVisible.GetValue()
 		&& m_bRenderable
 		&& m_bLayerVisible;
 	m_pObject->SetRenderable(bRenderable);
@@ -1563,26 +1559,26 @@ g3dProjectedLight* prjltProjectedLightObject::GetLight()
 // Get parent object of the spline in order for selection to trace from
 //	this spline back to the controlled object.
 //----------------------------------------------------------------------------
-//virtual 
+//virtual
 //sel3dObject* prjltProjectedLightObject::GetParentObject() const
 //{
 //	return m_pParent;
 //}
-////virtual 
+////virtual
 //void prjltProjectedLightObject::SetParentObject(sel3dObject* i_pParent)
 //{
 //	m_pParent = i_pParent;
 //}
-		
+
 //--------------------------------------------------------------------
-// Makes sure that the texture in the light matches the 
+// Makes sure that the texture in the light matches the
 //	properties in the data structure
 //--------------------------------------------------------------------
 void prjltProjectedLightObject::ConfirmTexture()
-{	
+{
 	// Create texture to project for the light
 	//
-	
+
 	if (!m_pTexture || (m_Data.m_TextureFilename.GetValue() != m_TextureNameLoaded))
 	{
 		// stop any render threads for texture manager changes
@@ -1603,7 +1599,7 @@ void prjltProjectedLightObject::ConfirmTexture()
 			// FIX - the texture filename coming in may be ".dds", but the
 			//	texture loader will search for other extensions as well.  The
 			//	result is that the filename stored in data fields (and the resource
-			//	tracker) may have the wrong extension.  This is a problem when 
+			//	tracker) may have the wrong extension.  This is a problem when
 			//	trying to replace a file in the resource tracker. [rjk]
 			//
 			m_pTexture = matTextureMgr::LoadTexture(tex_loc, TEXTURE_TYPE_2D, false);
@@ -1627,12 +1623,15 @@ void prjltProjectedLightObject::ConfirmTexture()
 }
 
 //--------------------------------------------------------------------
-// Makes sure that the depth map in the light matches the 
+// Makes sure that the depth map in the light matches the
 //	properties in the data structure
 //--------------------------------------------------------------------
 void prjltProjectedLightObject::ConfirmDepthMap()
-{	
-	if (m_Data.m_ShadowSource.GetValue())
+{
+	// Traced shadows (GraphicsOptiX) read the flag; they have no map
+	m_pLightProxy->SetShadowSource(m_Data.m_ShadowSource.GetValue());
+
+	if (m_Data.m_ShadowSource.GetValue() && g3dSceneRendererCreate::NeedsShadowMaps())
 	{
 		int new_depth_map_size = m_Data.m_DepthMapSize.GetValue();
 		if (new_depth_map_size < 256)
@@ -1695,7 +1694,7 @@ void prjltProjectedLightObject::ConfirmDepthMap()
 				delete m_pMapRenderer;
 				m_pMapRenderer = NULL;
 			}
-			
+
 			if (m_pShadowMap != NULL)
 			{
 				g2dRenderTarget* pTarget = m_pShadowMap->GetRenderTargetAPI();
@@ -1710,7 +1709,7 @@ void prjltProjectedLightObject::ConfirmDepthMap()
 	{
 		// Remove shadow map, if we have one
 		if (m_pShadowMap || m_pMapRenderer || m_pProjectedLight->GetShadowMap())
-		{		
+		{
 			// stop any render threads for texture manager changes
 			gpxRenderControl::ConfirmSingleThread();
 
@@ -1731,12 +1730,14 @@ void prjltProjectedLightObject::ConfirmDepthMap()
 }
 
 //--------------------------------------------------------------------
-// Makes sure that the depth map in the light matches the 
+// Makes sure that the depth map in the light matches the
 //	properties in the data structure
 //--------------------------------------------------------------------
 void prjltProjectedLightObject::ConfirmOpacityMap()
 {
-	if (m_Data.m_HairShadowEnable.GetValue())
+	// Only hair reads opacity maps, and a tracing backend draws no strand
+	// hair (and makes no target maps)
+	if (m_Data.m_HairShadowEnable.GetValue() && g3dSceneRendererCreate::NeedsOpacityMaps())
 	{
 		int new_depth_map_size = m_Data.m_HairShadowSize.GetValue();
 		if (new_depth_map_size < 64)
@@ -1797,7 +1798,7 @@ void prjltProjectedLightObject::ConfirmOpacityMap()
 					     new_shadow_type == HAIR_SHADOW_DOSM32 ) count = 8;
 				for( int i = 0; i < count; i++ )
 				{
-					m_pOpacityShadowMap[i] = matTextureMgr::CreateRenderTargetTexture( new_depth_map_size, new_depth_map_size, 
+					m_pOpacityShadowMap[i] = matTextureMgr::CreateRenderTargetTexture( new_depth_map_size, new_depth_map_size,
 						false, &l_ldrPFD, false, true, matTextureMgr::e_ShadowMap );
 				}
 				if( new_shadow_type == HAIR_SHADOW_VOLUME4 )
@@ -1864,7 +1865,7 @@ void prjltProjectedLightObject::ConfirmOpacityMap()
 	{
 		// Remove shadow map, if we have one
 		if (m_pOpacityShadowMap[0] || m_pOpacityMapRenderer || m_pProjectedLight->GetOpacityShadowMap())
-		{		
+		{
 			// stop any render threads for texture manager changes
 			gpxRenderControl::ConfirmSingleThread();
 
@@ -1890,7 +1891,7 @@ void prjltProjectedLightObject::ConfirmOpacityMap()
 }
 
 //--------------------------------------------------------------------
-// Creates/destroys light shaft object depending on 
+// Creates/destroys light shaft object depending on
 //	properties in the data structure
 //--------------------------------------------------------------------
 void prjltProjectedLightObject::ConfirmLightShaft()
@@ -1900,7 +1901,7 @@ void prjltProjectedLightObject::ConfirmLightShaft()
 
 	if (m_Data.m_bShaftVisible.GetValue())
 	{
-		// Do we always need to delete the old light shaft? 
+		// Do we always need to delete the old light shaft?
 		if (m_pLightShaft)
 		{
 			gpxRenderControl::ConfirmSingleThread();
@@ -1925,7 +1926,7 @@ void prjltProjectedLightObject::ConfirmLightShaft()
 			float baseRadius = fullConeHeight*tan(maConstants::c_fAngleToRad*m_Data.m_Angle.GetValue()*0.5f);
 			float truncatedRadius = baseRadius * m_Data.m_Scale.GetValue() / fullConeHeight;
 			int divisions = 360;
-			m_pLightShaft = api3dShape::CreateCylinder(m_Data.m_Color.GetValue(), 
+			m_pLightShaft = api3dShape::CreateCylinder(m_Data.m_Color.GetValue(),
 				truncatedRadius, baseRadius, truncatedHeight, divisions);
 			m_pLightShaft->Fragment()->SetCastsShadow(false);
 			m_pLightShaft->Object()->GetBase()->SetCastsShadow(false);
@@ -1961,11 +1962,11 @@ void prjltProjectedLightObject::ConfirmLightShaft()
 }
 
 //--------------------------------------------------------------------
-// Makes sure that the depth map in the light matches the 
+// Makes sure that the depth map in the light matches the
 //	properties in the data structure
 //--------------------------------------------------------------------
 //void prjltProjectedLightObject::ConfirmReflectiveMap()
-//{	
+//{
 //	if (m_Data.m_GISource.GetValue())
 //	{
 //		int new_rsm_size = m_Data.m_ReflectiveMapSize.GetValue();
@@ -2022,7 +2023,7 @@ void prjltProjectedLightObject::ConfirmLightShaft()
 //				delete m_pRSMTargetRenderer;
 //				m_pRSMTargetRenderer = NULL;
 //			}
-//			
+//
 //			if (m_pReflectiveMap != NULL)
 //			{
 //				g2dRenderTarget* pTarget = m_pReflectiveMap->GetRenderTargetAPI();
@@ -2037,7 +2038,7 @@ void prjltProjectedLightObject::ConfirmLightShaft()
 //	{
 //		// Remove shadow map, if we have one
 //		if (m_pReflectiveMap || m_pRSMRenderer || m_pProjectedLight->GetReflectiveMap())
-//		{		
+//		{
 //			// stop any render threads for texture manager changes
 //			gpxRenderControl::ConfirmSingleThread();
 //
@@ -2085,7 +2086,7 @@ void prjltProjectedLightObject::UpdateLightShaft()
 	rotvec.Normalize();
 	rot.SetValue(maVector3d(0,1,0), rotvec);
 	// adjust for tilt and off-axis scaling:
-	maRotation rotTilt(dir, 
+	maRotation rotTilt(dir,
 		maConstants::c_fAngleToRad * m_Data.m_Tilt.GetValue() + atan2(rotvec.GetZ(), rotvec.GetX()));
 	rot = rotTilt * rot;
 	m_pLightShaft->SetOrientation(rot);
@@ -2108,11 +2109,11 @@ void prjltProjectedLightObject::UpdateLightShaft()
 }
 
 //--------------------------------------------------------------------
-// Makes sure that the texture in the light matches the 
+// Makes sure that the texture in the light matches the
 //	properties in the data structure
 //--------------------------------------------------------------------
 void prjltProjectedLightObject::ConfirmLightShaftTexture()
-{	
+{
 	// Create texture to project for the light
 	//
 	if (!m_pShaftTexture || (m_Data.m_ShaftTextureFilename.GetValue() != m_ShaftTextureNameLoaded))
@@ -2135,7 +2136,7 @@ void prjltProjectedLightObject::ConfirmLightShaftTexture()
 			// FIX - the texture filename coming in may be ".dds", but the
 			//	texture loader will search for other extensions as well.  The
 			//	result is that the filename stored in data fields (and the resource
-			//	tracker) may have the wrong extension.  This is a problem when 
+			//	tracker) may have the wrong extension.  This is a problem when
 			//	trying to replace a file in the resource tracker. [rjk]
 			//
 			m_pShaftTexture = matTextureMgr::LoadTexture(tex_loc);
@@ -2158,7 +2159,7 @@ void prjltProjectedLightObject::ConfirmLightShaftTexture()
 // Callbacks for when properties change, updates member data
 //--------------------------------------------------------------------
 void prjltProjectedLightObject::NameChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	// The property's check will prevent an infinite
 	// loop here.
 	this->SetName( m_Data.m_Name.GetValue() );
@@ -2171,7 +2172,7 @@ void prjltProjectedLightObject::NameChanged(prtyProperty *i_pProperty, bool i_bD
 }
 
 void prjltProjectedLightObject::TextureChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	std::string callback( m_Data.m_TextureFilename.GetFullValue().m_CurrentCallback );
 
 	//if the button on one of the texture options was clicked we need to pass
@@ -2242,7 +2243,7 @@ void prjltProjectedLightObject::OpacityMapChanged(prtyProperty *i_pProperty, boo
 
 void prjltProjectedLightObject::TransformChanged(prtyProperty *i_pProperty, bool i_bDirty)
 {
-	// This callback is triggered from changes to the properties 
+	// This callback is triggered from changes to the properties
 	// that require a call to "OrientCamera":
 	// Position, Target, Scale, Aspect, Range, Angle
 	//
@@ -2255,7 +2256,7 @@ void prjltProjectedLightObject::TransformChanged(prtyProperty *i_pProperty, bool
 }
 
 void prjltProjectedLightObject::AngleMeaningChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	// This callback is for the boolean checkboxes (Directional, Cone Lighting)
 	// that control the  type of light frustrum and the meaning of the angle controls
 
@@ -2281,7 +2282,7 @@ void prjltProjectedLightObject::AngleMeaningChanged(prtyProperty *i_pProperty, b
 		prjltDocumentChunk::ActiveDataChanged();
 }
 void prjltProjectedLightObject::ColorChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{		
+{
 	// color is reflected in the light, the 3d icon and the light shaft
 	m_pLightProxy->SetIntensity(m_Data.m_Color.GetValue());
 
@@ -2298,7 +2299,7 @@ void prjltProjectedLightObject::ColorChanged(prtyProperty *i_pProperty, bool i_b
 }
 
 void prjltProjectedLightObject::EnabledChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	// Enable light
 	// Combine the isoalted and enabled states to determine if the light is "on"
 	m_pLightProxy->SetEnable( m_Data.m_Enabled.GetValue() && this->GetIsolationVisible() );
@@ -2314,10 +2315,7 @@ void prjltProjectedLightObject::EnabledChanged(prtyProperty *i_pProperty, bool i
 		prjltDocumentChunk::ActiveDataChanged();
 }
 void prjltProjectedLightObject::ShadowSourceChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
-	//DBG_LOG("Light casts shadow: " << (m_Data.m_ShadowSource ? "True" : "False"));
-//	m_pLightProxy->SetCastsShadow(m_Data.m_ShadowSource);
-
+{
 	this->ConfirmDepthMap();
 	//this->ConfirmReflectiveMap();
 	this->UpdateLightShaft();
@@ -2327,7 +2325,7 @@ void prjltProjectedLightObject::ShadowSourceChanged(prtyProperty *i_pProperty, b
 }
 
 void prjltProjectedLightObject::GISourceChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	m_pLightProxy->SetGIEnabled(m_Data.m_GISource.GetValue());
 	//this->ConfirmReflectiveMap();
 
@@ -2336,7 +2334,7 @@ void prjltProjectedLightObject::GISourceChanged(prtyProperty *i_pProperty, bool 
 }
 
 void prjltProjectedLightObject::LightChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	// Set properties of light that are only reflected in the light itself,
 	// not in the 3d icon or in the depth map
 	//
@@ -2368,7 +2366,7 @@ void prjltProjectedLightObject::LightChanged(prtyProperty *i_pProperty, bool i_b
 		prjltDocumentChunk::ActiveDataChanged();
 }
 void prjltProjectedLightObject::LightShaftChanged(prtyProperty *i_pProperty, bool i_bDirty)
-{	
+{
 	// properties related to light shaft have changed
 
 	this->ConfirmLightShaft();
@@ -2539,7 +2537,7 @@ void prjltProjectedLightObject::RampEnabledChanged(prtyProperty *i_pProperty, bo
 	}
 
 	this->update_3d_icon();
-	
+
 	if (i_bDirty)
 	{
 		prjltDocumentChunk::ActiveDataChanged();
@@ -2549,7 +2547,7 @@ void prjltProjectedLightObject::RampEnabledChanged(prtyProperty *i_pProperty, bo
 void prjltProjectedLightObject::RampTriggerChanged(prtyProperty *i_pProperty, bool i_bDirty)
 {
 	//NotifyRampUI();
-	
+
 	rmpDialogUtil::Show();
 }
 
@@ -2746,10 +2744,10 @@ void prjltProjectedLightObject::update_3d_icon()
 {
 	if (!m_pObject) return;
 
-	// If we are not showing the frustum, then shorten the range to 
+	// If we are not showing the frustum, then shorten the range to
 	// a shorter value.
 	const float c_ShortFrustrum = 0.1f;
-	float range = (m_ShowFrustrum.GetValue()) ? 
+	float range = (m_ShowFrustrum.GetValue()) ?
 		(m_ParentScale * m_Data.m_Range.GetValue()) : c_ShortFrustrum;
 
 	matTexture* pTexture = (m_ShowTexture.GetValue() && m_pTexture) ? m_pTexture : NULL;
@@ -2760,8 +2758,8 @@ void prjltProjectedLightObject::update_3d_icon()
 	get_world_positions(position, target);
 	m_pObject->Update( position, target, m_Data.m_Orientation.GetValue(),
 		m_ParentScale * m_Data.m_Scale.GetValue(),
-		m_Data.m_Tilt.GetValue(), m_Data.m_bDirectional.GetValue(), 
-		m_pLightProxy->GetAngle(), m_pLightProxy->GetInnerAngle(), 
+		m_Data.m_Tilt.GetValue(), m_Data.m_bDirectional.GetValue(),
+		m_pLightProxy->GetAngle(), m_pLightProxy->GetInnerAngle(),
 		m_Data.m_Aspect.GetValue(), range, pTexture, m_TexturePosition.GetValue());
 }
 
@@ -2840,9 +2838,9 @@ void prjltProjectedLightObject::transformation_changed(bool i_bCheckForDifferenc
 	}
 	else if (m_Data.m_LightType == prjltData::e_DirectionalLight)
 	{
-		// Directional lights use orientation property, 
+		// Directional lights use orientation property,
 		// but pass direction to light by using the position and target fields.
-		// api3dScene will resize the directional light so that it 
+		// api3dScene will resize the directional light so that it
 		// lights the whole scene later
 		maVector3d new_view(0,0,1.0f);
 		m_Data.m_Orientation.GetValue().RotateVector( new_view );
@@ -2897,7 +2895,7 @@ void prjltProjectedLightObject::transformation_changed(bool i_bCheckForDifferenc
 		}
 		else
 		{
-			// Otherwise, inner angle is set to maximum and the full 
+			// Otherwise, inner angle is set to maximum and the full
 			// rectangular light frustrum is used.
 			m_pLightProxy->SetAngle(m_Data.m_Angle.GetValue());
 			m_pLightProxy->SetInnerAngle(180.0f);
@@ -2971,7 +2969,7 @@ void prjltProjectedLightObject::UpdateParentTransform()
 	// This allows the render thread to shut down if there are no differences.
 	bool bCheckForDifferences = (!bChangedParentScale);
 	this->transformation_changed(bCheckForDifferences);
-	
+
 	// Also update pickable flag here, once per frame,
 	// because it is inherited from the parent transforms
 	bool bParentPickable = xfrmTransformMgr::GetParentPickable(this->GetName());
@@ -2980,33 +2978,25 @@ void prjltProjectedLightObject::UpdateParentTransform()
 }
 
 //--------------------------------------------------------------------
-// Called from transformation manager when the parenting of this 
+// Called from transformation manager when the parenting of this
 // object changes in a way that we need to alter our values to
 // saty in the same world position.
 //--------------------------------------------------------------------
 void prjltProjectedLightObject::ApplyTransformation(const maMatrix4x4& i_Matrix)
 {
-	maPoint3d position = m_Data.m_Position.GetValue();
-	maPoint3d target = m_Data.m_Target.GetValue();
-
-	i_Matrix.Transform(position);
-	i_Matrix.Transform(target);
-
-	m_Data.m_Position.SetValue(position);
-	m_Data.m_Target.SetValue(target);
-
+	m_Data.ApplyTransformation(i_Matrix);
 }
 
 //--------------------------------------------------------------------
 // Return true if this object has a pivot point based on its icon.
 // If so, return pivot point in the o_Pivot argument.
 //--------------------------------------------------------------------
-bool prjltProjectedLightObject::HasIconPivotPoint(maPoint3d& o_Pivot) 
-{ 
+bool prjltProjectedLightObject::HasIconPivotPoint(maPoint3d& o_Pivot)
+{
 	maPoint3d position, target;
 	get_world_positions(position, target);
 	o_Pivot = position;
-	return true; 
+	return true;
 }
 
 //--------------------------------------------------------------------
@@ -3020,7 +3010,7 @@ void prjltProjectedLightObject::UpdateFalloffIcon()
 	get_world_positions(position, target);
 	m_pRangeIcon->Update(position,
 						 target - position,
-						 m_FalloffRange.GetValue(), 
+						 m_FalloffRange.GetValue(),
 						 m_FalloffPercent.GetValue());
 }
 

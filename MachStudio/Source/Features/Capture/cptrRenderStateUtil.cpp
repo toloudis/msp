@@ -7,6 +7,9 @@
 **	Copyright(C) 2010 - All Rights Reserved
 \****************************************************************************/
 #include "Features/Capture/cptrRenderStateUtil.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Features/Capture/cptrRenderBatchData.hpp"
 #include "Features/Capture/cptrRenderBatchDataUtil.hpp"
@@ -22,6 +25,9 @@
 #include "Core/gf/gfFileBin.hpp"
 #include "Tool/doc/docSingleDocumentMgr.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 
 //============================================================================
@@ -50,9 +56,9 @@ namespace cptrRenderStateUtil
 			i_Locator.Push( docSingleDocumentMgr::GetFilename().GetLastName() );
 		}
 
-		itString fname = i_Locator.GetLastName();
-		fname.StripExtension();
-		fname += itString(c_RENDERSTATE_EXTENSION);
+		std::string fname = i_Locator.GetLastName();
+		envString::StripExtension(fname);
+		fname += std::string(c_RENDERSTATE_EXTENSION);
 		i_Locator.Pop();
 		i_Locator.Push(fname);
 

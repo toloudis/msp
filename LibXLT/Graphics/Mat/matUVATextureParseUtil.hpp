@@ -17,11 +17,11 @@
 #endif
 
 #include <vector>
+#include <string>
 
 class chReader;
 class chWriter;
 class fsLocator;
-class itString;
 
 namespace matUVATextureParseUtil
 {
@@ -30,11 +30,11 @@ namespace matUVATextureParseUtil
 //	ReadUVATexture reads the given UVA using the given chReader.
 //--------------------------------------------------------------------
 matUVATexture* ReadUVATexture(	chReader& i_Reader,
-								std::vector<itString>& o_Names);
+								std::vector<std::string>& o_Names);
 
 //--------------------------------------------------------------------
 //	WriteUVATexture writes the given UVA using the given chWriter.
 //--------------------------------------------------------------------
-void WriteUVATexture(chWriter& i_Writer, const matUVATexture& i_Texture, const itString* i_Textures);
+void WriteUVATexture(chWriter& i_Writer, const matUVATexture& i_Texture, const std::string* i_Textures);
 
 }

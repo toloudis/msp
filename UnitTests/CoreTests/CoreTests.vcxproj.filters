@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Support">
+      <UniqueIdentifier>{84170c16-3394-4775-a52f-5c1fedcb5085}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="App">
+      <UniqueIdentifier>{5b0e3f7c-2a41-4c8e-9d1f-7e6a3c2b9f10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ch">
+      <UniqueIdentifier>{2de0216a-0a6e-4cb9-84d9-5771104eef07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dbg">
+      <UniqueIdentifier>{13b9e07a-632d-4481-936b-fc362432bcca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Env">
+      <UniqueIdentifier>{d852dbfd-0349-4985-9102-955e539e6ab1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fs">
+      <UniqueIdentifier>{900f58d3-bd2a-4cb7-8a57-8fbe9fa1aa0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Geo">
+      <UniqueIdentifier>{a85a265f-f1b1-4d33-b411-a12a6f0f5268}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Gf">
+      <UniqueIdentifier>{c31b29d1-0778-4a62-aac2-97ca4ea6d638}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ma">
+      <UniqueIdentifier>{c5ad39dd-4534-4739-9ad8-540fec20e936}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Prty">
+      <UniqueIdentifier>{7e0c2b8a-4f3d-4b6e-9a51-2d8c6f1e3a47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rel">
+      <UniqueIdentifier>{51d893f3-3007-4c85-8147-ab204725b3cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Name">
+      <UniqueIdentifier>{B158D7DE-62E6-4A72-85DB-BEC509DFF3C8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Undo">
+      <UniqueIdentifier>{8e0b6c2a-4f1d-4c39-9a57-3d2e6b1f7c41}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CoreTestsMain.cpp">
+      <Filter>Support</Filter>
+    </ClCompile>
+    <ClCompile Include="Name\nameObjectTest.cpp">
+      <Filter>Name</Filter>
+    </ClCompile>
+    <ClCompile Include="ctPlatformWin.cpp">
+      <Filter>Support</Filter>
+    </ClCompile>
+    <ClCompile Include="App\appCommandLineTest.cpp">
+      <Filter>App</Filter>
+    </ClCompile>
+    <ClCompile Include="Ch\chChunkTest.cpp">
+      <Filter>Ch</Filter>
+    </ClCompile>
+    <ClCompile Include="Ch\chMemWriterTest.cpp">
+      <Filter>Ch</Filter>
+    </ClCompile>
+    <ClCompile Include="Ch\chNumberTest.cpp">
+      <Filter>Ch</Filter>
+    </ClCompile>
+    <ClCompile Include="Ch\chStringTest.cpp">
+      <Filter>Ch</Filter>
+    </ClCompile>
+    <ClCompile Include="Dbg\dbgMsgTest.cpp">
+      <Filter>Dbg</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\envNumberTextTest.cpp">
+      <Filter>Env</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\envSTLHelpersTest.cpp">
+      <Filter>Env</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\envStringTest.cpp">
+      <Filter>Env</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\envThreadGroupTest.cpp">
+      <Filter>Env</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\envWorkerThreadTest.cpp">
+      <Filter>Env</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\fsFileTest.cpp">
+      <Filter>Fs</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\fsFileUtilTest.cpp">
+      <Filter>Fs</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\fsFileNotifyMgrTest.cpp">
+      <Filter>Fs</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\fsFileEnumTest.cpp">
+      <Filter>Fs</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\fsFileStreamModeTest.cpp">
+      <Filter>Fs</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\fsPathUtilTest.cpp">
+      <Filter>Fs</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\fsNarrowPathTest.cpp">
+      <Filter>Fs</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\fsXMLTest.cpp">
+      <Filter>Fs</Filter>
+    </ClCompile>
+    <ClCompile Include="Geo\geoKDTreeTest.cpp">
+      <Filter>Geo</Filter>
+    </ClCompile>
+    <ClCompile Include="Gf\gfFileBinTest.cpp">
+      <Filter>Gf</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\maAxisBoxTest.cpp">
+      <Filter>Ma</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\maFunctionsTest.cpp">
+      <Filter>Ma</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\maMatrixTest.cpp">
+      <Filter>Ma</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\maPlaneTest.cpp">
+      <Filter>Ma</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\maRotationTest.cpp">
+      <Filter>Ma</Filter>
+    </ClCompile>
+    <ClCompile Include="Ma\maVectorTest.cpp">
+      <Filter>Ma</Filter>
+    </ClCompile>
+    <ClCompile Include="Prty\prtyComboBoxUIInfoTest.cpp">
+      <Filter>Prty</Filter>
+    </ClCompile>
+    <ClCompile Include="Rel\relReferenceTest.cpp">
+      <Filter>Rel</Filter>
+    </ClCompile>
+    <ClCompile Include="Undo\undoUndoMgrTest.cpp">
+      <Filter>Undo</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ctMath.hpp">
+      <Filter>Support</Filter>
+    </ClInclude>
+    <ClInclude Include="ctNumbers.hpp">
+      <Filter>Support</Filter>
+    </ClInclude>
+    <ClInclude Include="ctPlatform.hpp">
+      <Filter>Support</Filter>
+    </ClInclude>
+    <ClInclude Include="ctTempDir.hpp">
+      <Filter>Support</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

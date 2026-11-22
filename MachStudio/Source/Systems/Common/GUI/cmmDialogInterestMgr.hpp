@@ -55,12 +55,12 @@ namespace cmmDialogInterestMgr
 	//--------------------------------------------------------------------
 	//	Add Object to Placed
 	//--------------------------------------------------------------------
-	void AddObject(const itString& i_FileName, const fsLocator& i_Path);
+	void AddObject(const std::string& i_FileName, const fsLocator& i_Path);
 
 	//--------------------------------------------------------------------
 	//	Replace Selected Object with this asset path from available
 	//--------------------------------------------------------------------
-	void ReplaceObject(const itString& i_FileName, const fsLocator& i_Path);
+	void ReplaceObject(const std::string& i_FileName, const fsLocator& i_Path);
 
 	//--------------------------------------------------------------------
 	//	Delete Object from Placed

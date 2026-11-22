@@ -15,7 +15,7 @@
 // Set value into control
 //----------------------------------------------------------------------------
 void pwxInt8_NumericUpDown_Converter::SetValueIntoControl(twcNumericUpDown* i_pActualControl,
-													 envType::Int8 i_Value)
+													 int8_t i_Value)
 {
 	i_pActualControl->SetValue(i_Value);
 }
@@ -23,9 +23,9 @@ void pwxInt8_NumericUpDown_Converter::SetValueIntoControl(twcNumericUpDown* i_pA
 //----------------------------------------------------------------------------
 // Get value from control
 //----------------------------------------------------------------------------
-envType::Int8 pwxInt8_NumericUpDown_Converter::GetValueFromControl(twcNumericUpDown* i_pActualControl)
+int8_t pwxInt8_NumericUpDown_Converter::GetValueFromControl(twcNumericUpDown* i_pActualControl)
 {
-	return (envType::Int8) i_pActualControl->GetValue();
+	return (int8_t) i_pActualControl->GetValue();
 }
 
 #endif

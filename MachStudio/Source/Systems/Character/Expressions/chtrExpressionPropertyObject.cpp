@@ -15,7 +15,6 @@
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/prty/prtyComboBoxUIInfo.hpp"
 #include "Core/prty/prtyFileChooserUIInfo.hpp"
 #include "Core/prty/prtyRangedFloatUIInfo.hpp"
@@ -300,7 +299,7 @@ void chtrSingleExpressionPropertyObject::ConfigureProperties()
 	//	for (int i=0 ; i < fileList.Size(); ++i)
 	//	{
 	//		std::string fname;
-	//		fname = itStringUtil::GetStdString( fileList.GetFilename(i) );
+	//		fname = fileList.GetFilename(i);
 	//		pFPUII->AddItem( fname );
 	//	}
 	//}
@@ -532,7 +531,7 @@ void chtrDualExpressionPropertyObject::ConfigureProperties()
 	//	for (int i=0 ; i < fileList.Size(); ++i)
 	//	{
 	//		std::string fname;
-	//		fname = itStringUtil::GetStdString( fileList.GetFilename(i) );
+	//		fname = fileList.GetFilename(i);
 	//		pFPUII_1->AddItem( fname );
 	//		pFPUII_2->AddItem( fname );
 	//	}

@@ -42,6 +42,9 @@
 #include "Tool/gpx/gpxRenderControl.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
 #include "Tool/tma3d/tma3dScreenUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #include<string>
 #include<sstream>
@@ -436,9 +439,9 @@ namespace brshPaintBrushMgr
 		// check for invalid file formats with the current texture;
 		if(i_pParam->Property().GetValue().GetNumNames() > 0)
 		{
-			itString ext;
-			i_pParam->Property().GetValue().GetLastName().GetExtension( ext );
-			if( ext == itString("dds") )
+			std::string ext;
+			envString::GetExtension( i_pParam->Property().GetValue().GetLastName(), ext );
+			if( ext == "dds" )
 			{
 				guiMessageBox::Show("The texture file format is not a valid paint canvas", "Invalid Texture Type");
 				l_pCurrentParam = NULL;

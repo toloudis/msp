@@ -1,0 +1,392 @@
+{
+  "source": "Billboard.fx",
+  "hlsl": "Billboard.hlsl",
+  "techniques": [
+    {
+      "name": "Default",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "labPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "DOFPrep",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "DOFPrepVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "DOFPrep_PS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Matte",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "simpleMattePS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Environment",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "singleLightVS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "iblPS"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "samplers": {
+    "g_DefaultSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "ANISOTROPIC",
+        "MaxAnisotropy": 16,
+        "AddressU": "Wrap",
+        "AddressV": "Wrap"
+      }
+    },
+    "g_CubeSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_LINEAR",
+        "AddressU": "Wrap",
+        "AddressV": "Clamp"
+      }
+    }
+  },
+  "variables": {
+    "g_uvTransform": {
+      "type": "float4x4",
+      "default": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    "g_ClipPlane": {
+      "type": "float4",
+      "default": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    "g_bakeTransform": {
+      "type": "float4",
+      "default": [
+        1,
+        1,
+        0,
+        0
+      ]
+    },
+    "g_bake": {
+      "type": "bool",
+      "default": false
+    },
+    "g_FirstLight": {
+      "type": "bool",
+      "default": false
+    },
+    "g_worldIT": {
+      "type": "float4x4",
+      "semantic": "WorldIT"
+    },
+    "g_wvp": {
+      "type": "float4x4",
+      "semantic": "WorldViewProjection"
+    },
+    "g_wv": {
+      "type": "float4x4",
+      "semantic": "WorldView"
+    },
+    "g_world": {
+      "type": "float4x4",
+      "semantic": "World"
+    },
+    "g_vp": {
+      "type": "float4x4",
+      "semantic": "ViewProjection"
+    },
+    "g_proj": {
+      "type": "float4x4",
+      "semantic": "Projection"
+    },
+    "g_eyePos": {
+      "type": "float4",
+      "semantic": "CameraPos"
+    },
+    "g_targetRes": {
+      "type": "float4"
+    },
+    "g_bumpMapScale": {
+      "type": "float",
+      "semantic": "BumpMapScale",
+      "default": 0.0
+    },
+    "hasNormalMap": {
+      "type": "bool",
+      "default": false
+    },
+    "normalMap": {
+      "type": "Texture2D",
+      "semantic": "NormalMap"
+    },
+    "g_time_0_X": {
+      "type": "float"
+    },
+    "g_AlphaTestRef": {
+      "type": "float",
+      "default": 0.0
+    },
+    "g_bDoubleSided": {
+      "type": "bool",
+      "semantic": "DoubleSided",
+      "default": false
+    },
+    "g_IsolateReflection": {
+      "type": "bool",
+      "default": false
+    },
+    "g_bCubeMapEnabled": {
+      "type": "bool",
+      "default": false
+    },
+    "g_diffuseFactor": {
+      "type": "float",
+      "default": 0.1
+    },
+    "g_bHasDiffuseEnvMap": {
+      "type": "bool"
+    },
+    "g_diffuseEnvAngle": {
+      "type": "float",
+      "default": 0
+    },
+    "g_envDiffuseColor": {
+      "type": "float4",
+      "default": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "diffuseEnvMap": {
+      "type": "Texture2D"
+    },
+    "g_specularFactor": {
+      "type": "float",
+      "default": 0.1
+    },
+    "g_bHasSpecularEnvMap": {
+      "type": "bool"
+    },
+    "g_specularEnvAngle": {
+      "type": "float",
+      "default": 0
+    },
+    "g_envSpecularColor": {
+      "type": "float4",
+      "default": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "specularEnvMap": {
+      "type": "Texture2D"
+    },
+    "g_glowSize": {
+      "type": "float",
+      "default": 0
+    },
+    "g_bHasMask": {
+      "type": "bool",
+      "default": false
+    },
+    "g_bConstGlow": {
+      "type": "bool",
+      "default": false
+    },
+    "g_fDofBlurCutoff": {
+      "type": "float",
+      "default": 1
+    },
+    "g_vDofParams": {
+      "type": "float4",
+      "default": [
+        30,
+        60,
+        80,
+        120
+      ]
+    },
+    "g_diffuse": {
+      "type": "float4",
+      "semantic": "MaterialDiffuse",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "ColorPicker"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Diffuse Color"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "diffuse color of surface"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Diffuse"
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 1
+        }
+      },
+      "default": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "hasDiffuseMap": {
+      "type": "bool",
+      "default": false
+    },
+    "diffuseMap": {
+      "type": "Texture2D",
+      "semantic": "DiffuseTexture",
+      "annotations": {
+        "SasUiControl": {
+          "type": "string",
+          "value": "FilePicker"
+        },
+        "SasUiLabel": {
+          "type": "string",
+          "value": "Diffuse Map"
+        },
+        "SasUiDescription": {
+          "type": "string",
+          "value": "diffuse color"
+        },
+        "UiCategory": {
+          "type": "string",
+          "value": "Diffuse"
+        },
+        "ExistVar": {
+          "type": "string",
+          "value": "hasDiffuseMap"
+        },
+        "UiIndex": {
+          "type": "int",
+          "value": 2
+        }
+      }
+    },
+    "bCKActive": {
+      "type": "bool",
+      "default": false
+    },
+    "CKColor": {
+      "type": "float4",
+      "default": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "CKTolerance": {
+      "type": "float",
+      "default": 0.1
+    },
+    "bCKRemoveSpill": {
+      "type": "bool",
+      "default": false
+    },
+    "CKSpillType": {
+      "type": "int",
+      "default": 0
+    },
+    "CKSpillBias": {
+      "type": "float",
+      "default": 0.0
+    },
+    "CKEdgeBlur": {
+      "type": "int",
+      "default": 0
+    },
+    "g_brightness": {
+      "type": "float",
+      "default": 1.0
+    },
+    "texWidth": {
+      "type": "int",
+      "default": 1
+    },
+    "texHeight": {
+      "type": "int",
+      "default": 1
+    }
+  }
+}

@@ -33,9 +33,7 @@
 //#include <d3dx11.h>
 
 // 3rdparty for now.
-// https://github.com/Microsoft/FX11
 // https://github.com/Microsoft/DirectXTex
-#include "Effects11/d3dx11effect.h"
 #include <DirectXTex.h>
 //#include <d3dx11.h>
 

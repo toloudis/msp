@@ -8,6 +8,10 @@
 \****************************************************************************/
 #include "Support/tmln/tmlnDriver.hpp"
 
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
+
 #include "Support/tmln/tmlnDriverDialogUtil.hpp"
 #include "Support/tmln/tmlnDriverInfo.hpp"
 #include "Support/tmln/tmlnTimeEditUIInfo.hpp"
@@ -158,7 +162,7 @@ tmlnDriver::~tmlnDriver()
 //--------------------------------------------------------------------
 void tmlnDriver::SetName(const char* i_Name)
 {
-	if (_stricmp(i_Name, m_Name.GetValue().c_str()) != 0)
+	if (envString::CompareNoCase(i_Name, m_Name.GetValue()) != 0)
 		m_Name.SetValue(i_Name);
 }
 
@@ -723,7 +727,7 @@ void tmlnDriver::AddBasePropertiesTab()
 //static 
 void tmlnDriver::SetDefaultBlendType(const tmlnDriver::BlendType i_BlendType)
 {
-	//tmlnDriver::m_BlendDefault.SetValue( (envType::Int8)(i_BlendType) );
+	//tmlnDriver::m_BlendDefault.SetValue( (int8_t)(i_BlendType) );
 	//tmlnDriver::m_BlendDefault.SetValue( (tmlnDriver::BlendType)i_BlendType );	
 }
 //static 

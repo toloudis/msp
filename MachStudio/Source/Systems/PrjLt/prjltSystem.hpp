@@ -9,12 +9,12 @@
 #ifdef PRJLT_SYSTEM_HPP
 #error prjltSystem.hpp multiply included
 #endif
+#include <string>
 #define PRJLT_SYSTEM_HPP
 
 //============================================================================
 //============================================================================
 class fsLocator;
-class itString;
 
 
 //============================================================================
@@ -24,7 +24,7 @@ namespace prjltSystem
 	//--------------------------------------------------------------------
 	// Init
 	//--------------------------------------------------------------------
-	void Init(const fsLocator& i_AppDir, const itString& i_ProjTexDir);
+	void Init(const fsLocator& i_AppDir, const std::string& i_ProjTexDir);
 
 	//--------------------------------------------------------------------
 	// CleanUp -- cleanup system

@@ -26,12 +26,6 @@
     <Filter Include="Geo\GeoPrivate">
       <UniqueIdentifier>{5fe8731f-23c5-4bc0-8a57-635067cb8fa0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="It">
-      <UniqueIdentifier>{4a78c454-c17f-41cf-9ece-de23fbc2121f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="It\ItPrivate">
-      <UniqueIdentifier>{f6015260-a791-4316-bf0c-08dd95d1a737}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Fs">
       <UniqueIdentifier>{fb264a63-0083-4e49-ab5d-a3813b65ac59}</UniqueIdentifier>
     </Filter>
@@ -138,6 +132,9 @@
     <ClInclude Include="Env\envSTLHelpers.hpp">
       <Filter>Env</Filter>
     </ClInclude>
+    <ClInclude Include="Env\envNumberText.hpp">
+      <Filter>Env</Filter>
+    </ClInclude>
     <ClInclude Include="Env\envString.hpp">
       <Filter>Env</Filter>
     </ClInclude>
@@ -152,6 +149,15 @@
     </ClInclude>
     <ClInclude Include="Env\envWaitCondition.hpp">
       <Filter>Env</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\envWorkerThread.hpp">
+      <Filter>Env</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\private\envExceptionXPAC.hpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Env\private\envExceptionXPACWin.hpp">
+      <Filter>Env\EnvPrivate</Filter>
     </ClInclude>
     <ClInclude Include="Env\private\envStringPAC.hpp">
       <Filter>Env\EnvPrivate</Filter>
@@ -303,28 +309,10 @@
     <ClInclude Include="Geo\geoTwinVertexEdgeIterator.hpp">
       <Filter>Geo</Filter>
     </ClInclude>
-    <ClInclude Include="It\itLocales.hpp">
-      <Filter>It</Filter>
-    </ClInclude>
-    <ClInclude Include="It\itLocaleUtil.hpp">
-      <Filter>It</Filter>
-    </ClInclude>
-    <ClInclude Include="It\itPackage.hpp">
-      <Filter>It</Filter>
-    </ClInclude>
-    <ClInclude Include="It\itString.hpp">
-      <Filter>It</Filter>
-    </ClInclude>
-    <ClInclude Include="It\itStringUtil.hpp">
-      <Filter>It</Filter>
-    </ClInclude>
-    <ClInclude Include="It\private\itLocaleUtilPAC.hpp">
-      <Filter>It\ItPrivate</Filter>
-    </ClInclude>
-    <ClInclude Include="It\private\itLocaleUtilPACWin.hpp">
-      <Filter>It\ItPrivate</Filter>
-    </ClInclude>
     <ClInclude Include="Fs\fsAbsolutePathMgr.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\fsAviFile.hpp">
       <Filter>Fs</Filter>
     </ClInclude>
     <ClInclude Include="Fs\fsFileEnum.hpp">
@@ -336,10 +324,10 @@
     <ClInclude Include="Fs\fsFileStream.hpp">
       <Filter>Fs</Filter>
     </ClInclude>
-    <ClInclude Include="Fs\fsFileTimeUtil.hpp">
+    <ClInclude Include="Fs\fsFileUtil.hpp">
       <Filter>Fs</Filter>
     </ClInclude>
-    <ClInclude Include="Fs\fsFileUtil.hpp">
+    <ClInclude Include="Fs\fsPathUtil.hpp">
       <Filter>Fs</Filter>
     </ClInclude>
     <ClInclude Include="Fs\fsFileX.hpp">
@@ -369,6 +357,9 @@
     <ClInclude Include="Fs\fsResourceTrackerInterest.hpp">
       <Filter>Fs</Filter>
     </ClInclude>
+    <ClInclude Include="Fs\fsXMLData.hpp">
+      <Filter>Fs</Filter>
+    </ClInclude>
     <ClInclude Include="Fs\fsXMLParser.hpp">
       <Filter>Fs</Filter>
     </ClInclude>
@@ -381,28 +372,25 @@
     <ClInclude Include="Fs\fsCategoryConfigFileUtil.hpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClInclude>
-    <ClInclude Include="Fs\private\fsFileEnumPAC.hpp">
-      <Filter>Fs\FsPrivate</Filter>
-    </ClInclude>
-    <ClInclude Include="Fs\private\fsFileEnumPACWin.hpp">
-      <Filter>Fs\FsPrivate</Filter>
-    </ClInclude>
     <ClInclude Include="Fs\private\fsFileNotify.hpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClInclude>
     <ClInclude Include="Fs\private\fsFileNotifyMgr.hpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClInclude>
-    <ClInclude Include="Fs\private\fsFileTimeUtilPAC.hpp">
+    <ClInclude Include="Fs\private\fsAbsolutePathMgrPAC.hpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClInclude>
-    <ClInclude Include="Fs\private\fsFileTimeUtilPACWin.hpp">
+    <ClInclude Include="Fs\private\fsAbsolutePathMgrPACWin.hpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClInclude>
-    <ClInclude Include="Fs\private\fsFileUtilPAC.hpp">
+    <ClInclude Include="Fs\private\fsAviFilePAC.hpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClInclude>
-    <ClInclude Include="Fs\private\fsFileUtilPACWin.hpp">
+    <ClInclude Include="Fs\private\fsAviFilePACWin.hpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="Fs\private\fsFileErrorUtil.hpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClInclude>
     <ClInclude Include="App\appApplication.hpp">
@@ -450,6 +438,9 @@
     <ClInclude Include="App\appTimeUtils.hpp">
       <Filter>App</Filter>
     </ClInclude>
+    <ClInclude Include="App\appCommandLine.hpp">
+      <Filter>App</Filter>
+    </ClInclude>
     <ClInclude Include="App\private\appApplicationPAC.hpp">
       <Filter>App\AppPrivate</Filter>
     </ClInclude>
@@ -459,7 +450,10 @@
     <ClInclude Include="App\private\appEventHandlers.hpp">
       <Filter>App\AppPrivate</Filter>
     </ClInclude>
-    <ClInclude Include="App\private\appInstanceUtilWin.hpp">
+    <ClInclude Include="App\private\appInstanceUtilPAC.hpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClInclude>
+    <ClInclude Include="App\private\appInstanceUtilPACWin.hpp">
       <Filter>App\AppPrivate</Filter>
     </ClInclude>
     <ClInclude Include="App\private\appTimePAC.hpp">
@@ -520,6 +514,9 @@
       <Filter>Ch</Filter>
     </ClInclude>
     <ClInclude Include="Ch\chBinWriter.hpp">
+      <Filter>Ch</Filter>
+    </ClInclude>
+    <ClInclude Include="Ch\chMemWriter.hpp">
       <Filter>Ch</Filter>
     </ClInclude>
     <ClInclude Include="Ch\chChunkParserUtil.hpp">
@@ -601,6 +598,9 @@
       <Filter>Prty\UIInfo</Filter>
     </ClInclude>
     <ClInclude Include="prty\prtyFileChooserUIInfo.hpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="prty\prtyFilePathComboBoxUIInfo.hpp">
       <Filter>Prty\UIInfo</Filter>
     </ClInclude>
     <ClInclude Include="prty\prtyFloatEditUIInfo.hpp">
@@ -792,7 +792,13 @@
     <ClCompile Include="Env\private\envPool.cpp">
       <Filter>Env\EnvPrivate</Filter>
     </ClCompile>
+    <ClCompile Include="Env\private\envNumberText.cpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClCompile>
     <ClCompile Include="Env\private\envString.cpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\private\envExceptionXPACWin.cpp">
       <Filter>Env\EnvPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Env\private\envStringPACWin.cpp">
@@ -808,6 +814,9 @@
       <Filter>Env\EnvPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Env\private\envWaitCondition.cpp">
+      <Filter>Env\EnvPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Env\private\envWorkerThread.cpp">
       <Filter>Env\EnvPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Dbg\private\dbgAssertPACWin.cpp">
@@ -915,22 +924,16 @@
     <ClCompile Include="Geo\private\geoTwinMesh.cpp">
       <Filter>Geo\GeoPrivate</Filter>
     </ClCompile>
-    <ClCompile Include="It\private\itLocaleUtil.cpp">
-      <Filter>It\ItPrivate</Filter>
-    </ClCompile>
-    <ClCompile Include="It\private\itLocaleUtilPACWin.cpp">
-      <Filter>It\ItPrivate</Filter>
-    </ClCompile>
-    <ClCompile Include="It\private\itPackage.cpp">
-      <Filter>It\ItPrivate</Filter>
-    </ClCompile>
-    <ClCompile Include="It\private\itString.cpp">
-      <Filter>It\ItPrivate</Filter>
-    </ClCompile>
-    <ClCompile Include="It\private\itStringUtil.cpp">
-      <Filter>It\ItPrivate</Filter>
-    </ClCompile>
     <ClCompile Include="Fs\private\fsAbsolutePathMgr.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsAbsolutePathMgrPACWin.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsAviFile.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsAviFilePACWin.cpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Fs\private\fsCategoryConfigFileUtil.cpp">
@@ -939,28 +942,22 @@
     <ClCompile Include="Fs\private\fsFileEnum.cpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClCompile>
-    <ClCompile Include="Fs\private\fsFileEnumPACWin.cpp">
-      <Filter>Fs\FsPrivate</Filter>
-    </ClCompile>
     <ClCompile Include="Fs\private\fsFileNotify.cpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Fs\private\fsFileNotifyMgr.cpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClCompile>
-    <ClCompile Include="Fs\private\fsFileStreamWin.cpp">
-      <Filter>Fs\FsPrivate</Filter>
-    </ClCompile>
-    <ClCompile Include="Fs\private\fsFileTimeUtil.cpp">
-      <Filter>Fs\FsPrivate</Filter>
-    </ClCompile>
-    <ClCompile Include="Fs\private\fsFileTimeUtilPACWin.cpp">
+    <ClCompile Include="Fs\private\fsFileStream.cpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Fs\private\fsFileUtil.cpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClCompile>
-    <ClCompile Include="Fs\private\fsFileUtilPACWin.cpp">
+    <ClCompile Include="Fs\private\fsFileErrorUtil.cpp">
+      <Filter>Fs\FsPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Fs\private\fsPathUtil.cpp">
       <Filter>Fs\FsPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Fs\private\fsFileX.cpp">
@@ -1020,7 +1017,7 @@
     <ClCompile Include="App\private\appFlowEventHandler.cpp">
       <Filter>App\AppPrivate</Filter>
     </ClCompile>
-    <ClCompile Include="App\private\appInstanceUtilWin.cpp">
+    <ClCompile Include="App\private\appInstanceUtilPACWin.cpp">
       <Filter>App\AppPrivate</Filter>
     </ClCompile>
     <ClCompile Include="App\private\appMode.cpp">
@@ -1051,6 +1048,9 @@
       <Filter>App\AppPrivate</Filter>
     </ClCompile>
     <ClCompile Include="App\private\appTimeUtils.cpp">
+      <Filter>App\AppPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="App\private\appCommandLine.cpp">
       <Filter>App\AppPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Gf\private\gfDirectoryCategories.cpp">
@@ -1096,6 +1096,9 @@
       <Filter>Ch\ChPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Ch\private\chBinWriter.cpp">
+      <Filter>Ch\ChPrivate</Filter>
+    </ClCompile>
+    <ClCompile Include="Ch\private\chMemWriter.cpp">
       <Filter>Ch\ChPrivate</Filter>
     </ClCompile>
     <ClCompile Include="Ch\private\chChunkParserUtil.cpp">
@@ -1168,6 +1171,9 @@
       <Filter>Prty\UIInfo</Filter>
     </ClCompile>
     <ClCompile Include="prty\private\prtyFileChooserUIInfo.cpp">
+      <Filter>Prty\UIInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="prty\private\prtyFilePathComboBoxUIInfo.cpp">
       <Filter>Prty\UIInfo</Filter>
     </ClCompile>
     <ClCompile Include="prty\private\prtyFloatEditUIInfo.cpp">

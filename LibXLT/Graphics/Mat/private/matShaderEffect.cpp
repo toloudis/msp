@@ -46,6 +46,21 @@ effUVTransform& effUVTransform::operator = (const effUVTransform& i_CopyFrom)
 	return *this;
 }
 
+// KHR_texture_transform is uv' = T * R * S * uv with R = [[cos r, sin r], [-sin r, cos r]],
+// which turns uv clockwise by r; MakeUVTransform's rotation about Z turns it
+// counterclockwise by m_UVAngle, so the angle is -r (in degrees). Scale and offset
+// map directly: both apply scale, then rotation, then translation.
+effUVTransform effUVTransform::FromKhrTextureTransform(float i_OffsetU, float i_OffsetV, float i_Rotation, float i_ScaleU, float i_ScaleV)
+{
+	effUVTransform t;
+	t.m_UScale = i_ScaleU;
+	t.m_VScale = i_ScaleV;
+	t.m_UTrans = i_OffsetU;
+	t.m_VTrans = i_OffsetV;
+	t.m_UVAngle = -i_Rotation * maConstants::c_fRadToAngle;
+	return t;
+}
+
 // uv transformation parameters are a feature of all material shaders!
 maMatrix4x4 effUVTransform::MakeUVTransform() const
 {

@@ -34,13 +34,16 @@
 #endif
 
 #ifdef USE_QT
-#include <QtGui/QWidget>
-
 
 //============================================================================
 //============================================================================
 namespace pqtControlUtil
 {
+	//----------------------------------------------------------------------------
+	// Checks if a new undo operation is needed, or if an old one can be
+	//	continued. It will either submit the undo operation or delete it.
+	//----------------------------------------------------------------------------
+	void SubmitOrContinueUndo(pqtControl* i_pControl, undoUndoOperation *i_pOperation);
 	//------------------------------------------------------------------------
 	// Gets value from set of properties in UIInfo. Returns true
 	//	if all properties have the same value.
@@ -91,7 +94,7 @@ namespace pqtControlUtil
 
 		const int num_properties = io_pControl->GetNumberOfProperties();
 		undoUndoOperation *pSubmitUndoOp = NULL;
-		std::auto_ptr<undoMultipleOperation> pMultipleBlock;
+		std::unique_ptr<undoMultipleOperation> pMultipleBlock;
 		if (num_properties > 1)
 			pMultipleBlock.reset( new undoMultipleOperation(io_pControl->GetName().c_str()) );
 
@@ -137,7 +140,7 @@ namespace pqtControlUtil
 
 		const int num_properties = io_pControl->GetNumberOfProperties();
 		undoUndoOperation *pSubmitUndoOp = NULL;
-		std::auto_ptr<undoMultipleOperation> pMultipleBlock;
+		std::unique_ptr<undoMultipleOperation> pMultipleBlock;
 		if (num_properties > 1)
 			pMultipleBlock.reset( new undoMultipleOperation(io_pControl->GetName().c_str()) );
 
@@ -175,7 +178,7 @@ namespace pqtControlUtil
 
 	//------------------------------------------------------------------------
 	// Create derivation of widget that notifies the control manager
-	// when it is deleted by wxWidgets
+	// when it is deleted by Qt
 	//------------------------------------------------------------------------
 	template <class T>
 	class CleanUpWidget : public T
@@ -183,17 +186,35 @@ namespace pqtControlUtil
 	public:
 		CleanUpWidget(QWidget* i_pParent)
 			: T(i_pParent) {}
-#ifdef QT_FINISH_PORT
-		CleanUpWidget(QWidget* i_pParent, 
-					 QWidgetID i_Id)
-			: T(i_pParent, i_Id) {}
-#endif
 		~CleanUpWidget()
 		{
 			pqtControlMgr::DeleteControl(this);
 		}
 	};
 
+	//------------------------------------------------------------------------
+	// Select the item with the given text, or nothing if there is no such 
+	// item. Returns true if the item was found.
+	//------------------------------------------------------------------------
+	inline bool SelectString(QComboBox* io_pControl, const QString& i_Text)
+	{
+		int index = io_pControl->findText(i_Text);
+		io_pControl->setCurrentIndex(index);
+		return (index >= 0);
+	}
+	inline bool SelectString(QListWidget* io_pControl, const QString& i_Text)
+	{
+		QList<QListWidgetItem*> found = io_pControl->findItems(i_Text, Qt::MatchExactly);
+		if (found.isEmpty())
+		{
+			io_pControl->setCurrentItem(NULL);
+			io_pControl->clearSelection();
+			return false;
+		}
+		io_pControl->setCurrentItem(found[0]);
+		return true;
+	}
+		
 	//----------------------------------------------------------------------------
 	// Checks if a new undo operation is needed, or if an old one can be
 	//	continued. It will either submit the undo operation or delete it.

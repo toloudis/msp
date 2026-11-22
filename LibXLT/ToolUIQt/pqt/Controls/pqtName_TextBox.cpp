@@ -9,7 +9,7 @@
 \****************************************************************************/
 #include "ToolUIQt/pqt/Controls/pqtName_TextBox.hpp"
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 // Set value into control
@@ -17,8 +17,7 @@
 void pqtName_TextBox_Converter::SetValueIntoControl(tqcTextBox* i_pActualControl,
 											   nameString i_Value)
 {
-	wxString name_str(i_Value.GetString().c_str(), wxConvUTF8);
-	i_pActualControl->SetValue(name_str);
+	i_pActualControl->SetValue(tqtQString(i_Value.GetString()));
 }
 
 //----------------------------------------------------------------------------
@@ -26,7 +25,7 @@ void pqtName_TextBox_Converter::SetValueIntoControl(tqcTextBox* i_pActualControl
 //----------------------------------------------------------------------------
 nameString pqtName_TextBox_Converter::GetValueFromControl(tqcTextBox* i_pActualControl)
 {
-	std::string sel_text = i_pActualControl->GetValue().utf8_str();
+	std::string sel_text = tqtStdString(i_pActualControl->GetValue());
 	return nameString(sel_text);
 }
 

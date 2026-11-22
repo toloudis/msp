@@ -208,7 +208,7 @@ int shdwBakingRenderer::CleanUp()
 	if (m_GIDepthBuffer)
 	{
 		matTextureMgr::ReleaseTexture(m_GIDepthBuffer);
-		m_GIScratchBuffer = NULL;
+		m_GIDepthBuffer = NULL;
 	}
 
 	//if (m_AOBuffer)

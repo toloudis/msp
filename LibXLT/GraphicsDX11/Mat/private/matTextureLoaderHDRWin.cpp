@@ -13,13 +13,16 @@
 
 #include "Core/dbg/dbgMsg.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itString.hpp"
+#include <string>
 #include "Graphics/g2d/g2dExceptionX.hpp"
 #include "Graphics/g2d/private/rgbe.h"
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
 #include "GraphicsDX11/mat/matMipTexture.hpp"
 #include "GraphicsDX11/mat/matPlainTexture.hpp"
 #include <DirectXPackedVector.h>
+#ifndef ENV_STRING_HPP
+#include "Core/Env/envString.hpp"
+#endif
 //#include <d3dx10math.h>
 //#pragma comment(lib, "d3dx10.lib")
 
@@ -27,11 +30,11 @@ namespace
 {
     std::unique_ptr<DirectX::ScratchImage> load_hdr_data(const fsLocator& i_Locator)
 	{
-		itString filename;
+		std::string filename;
 		fsFileUtil::LocatorToUnicodeString(i_Locator, filename);
 
 		// Read in the HDR light probe.
-		FILE* fp = ::_wfopen( filename.GetString(), L"rb" );
+		FILE* fp = ::_wfopen( envString::UTF8ToWideChar(filename).c_str(), L"rb" );
 		int fileWidth=0, fileHeight=0;
 		rgbe_header_info info;
 		RGBE_ReadHeader( fp, &fileWidth, &fileHeight, &info );
@@ -50,22 +53,33 @@ namespace
 
 		// Convert the 32-bit floats into 16-bit floats and include the alpha component
 		DirectX::PackedVector::HALF* fHDR = new DirectX::PackedVector::HALF[4 * fileWidth * fileHeight];
-		int j = 0;
+        const size_t pixelCount = static_cast<size_t>(fileWidth) * static_cast<size_t>(fileHeight);
 
         DirectX::PackedVector::XMConvertFloatToHalfStream(
             fHDR,
-			4 * 2,
-			fHDRPixels,
-			4*4,
-			fileWidth*fileHeight
-		);
-		for( int i = 0; i < 4 * fileWidth * fileHeight; i += 4 )
+            4 * sizeof(DirectX::PackedVector::HALF),
+            fHDRPixels,
+            3 * sizeof(float),
+            pixelCount
+        );
+        DirectX::PackedVector::XMConvertFloatToHalfStream(
+            fHDR + 1,
+            4 * sizeof(DirectX::PackedVector::HALF),
+            fHDRPixels + 1,
+            3 * sizeof(float),
+            pixelCount
+        );
+        DirectX::PackedVector::XMConvertFloatToHalfStream(
+            fHDR + 2,
+            4 * sizeof(DirectX::PackedVector::HALF),
+            fHDRPixels + 2,
+            3 * sizeof(float),
+            pixelCount
+        );
+
+        for( size_t i = 0; i < pixelCount; ++i )
 		{
-			fHDR[i] = DirectX::PackedVector::XMConvertFloatToHalf(fHDRPixels[i - j]);
-			fHDR[i + 1] = DirectX::PackedVector::XMConvertFloatToHalf(fHDRPixels[i + 1 - j]);
-			fHDR[i + 2] = DirectX::PackedVector::XMConvertFloatToHalf(fHDRPixels[i + 2 - j]);
-			fHDR[i + 3] = DirectX::PackedVector::XMConvertFloatToHalf(1.0f);
-			j++;
+            fHDR[i * 4 + 3] = DirectX::PackedVector::XMConvertFloatToHalf(1.0f);
 		}
 
         std::unique_ptr<DirectX::ScratchImage> pStagingTexture(new DirectX::ScratchImage);

@@ -17,6 +17,9 @@
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
 #endif
+#ifndef CMM_SOURCESTATE_HPP
+#include "Systems/Common/Object/cmmSourceState.hpp"
+#endif
 #ifndef MNM_OBJECT_HPP
 #include "Support/mnm/mnmObject.hpp"
 #endif
@@ -48,7 +51,8 @@ class gpxSceneObject;
 //============================================================================
 class chtrObject :	public mnmObject, 
 					public cmmNamedPropertyObject,
-					public xfrmTransformNodeCallback
+					public xfrmTransformNodeCallback,
+					public cmmSourceState
 {
 	public:
 		//--------------------------------------------------------------------
@@ -173,7 +177,7 @@ class chtrObject :	public mnmObject,
 		//----------------------------------------------------------------------------
 		// Find the object that matches the pick code from an earlier pick render.
 		//----------------------------------------------------------------------------
-		virtual bool MatchPickCode(envType::UInt32 i_PickCode) const;
+		virtual bool MatchPickCode(uint32_t i_PickCode) const;
 
 		//--------------------------------------------------------------------
 		//	Set/GetVisible comes from channel controlling visibility 

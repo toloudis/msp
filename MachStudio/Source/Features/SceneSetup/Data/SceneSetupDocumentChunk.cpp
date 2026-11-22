@@ -7,6 +7,9 @@
 **	Copyright(C) 2004 - All Rights Reserved
 \****************************************************************************/
 #include "Features/SceneSetup/Data/SceneSetupDocumentChunk.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Features/ProjectSetup/ProjectSetupMgr.hpp"
 #include "Features/SceneSetup/Data/SceneSetupDataParser.hpp"
@@ -121,7 +124,7 @@ void  SceneSetupDocumentChunk::Read( chReader &i_Reader,
 	// user's machine
 	//
 	fsLocator proj_dir( i_Reader.GetLocator() );
-	bool bRemoved = proj_dir.RemoveAfter( itString("Shots") );
+	bool bRemoved = proj_dir.RemoveAfter( std::string("Shots") );
 	if (!bRemoved) 
 		DBG_ERROR("ERROR-Locator directory removal UNSUCCESSFUL");
 	proj_dir.Pop();

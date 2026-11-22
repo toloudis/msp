@@ -9,8 +9,16 @@
 #include "Features/RenderPanels/rpnCommandFocusCamera.hpp"
 
 #include "Features/RenderPanels/rpnCommandChangeLayout.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/RenderPanels/qtGUI/rpnPanelGrid.hpp"
+#else
 #include "Features/RenderPanels/wxGUI/rpnPanelGrid.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "Features/RenderPanels/qtGUI/rpnRenderPanel.hpp"
+#else
 #include "Features/RenderPanels/wxGUI/rpnRenderPanel.hpp"
+#endif
 
 #include "Support/fgmt/GUI/fgmtPropertyObject.hpp"
 #include "Support/mtrl/GUI/mtrlOperations.hpp"

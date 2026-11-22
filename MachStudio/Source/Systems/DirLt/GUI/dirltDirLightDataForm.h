@@ -14,9 +14,6 @@
 #include "dirltOperations.hpp"
 #endif
 
-#ifndef TMA_MANAGEDCONVERSIONUTIL_HPP
-#include "tmaManagedConversionUtil.hpp"
-#endif
 
 
 using namespace System;

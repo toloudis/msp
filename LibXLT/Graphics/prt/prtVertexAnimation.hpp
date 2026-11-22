@@ -109,7 +109,7 @@ class prtVertexAnimInstance : public anFrameAnimInstance
 		// given ID was not found.
 		//--------------------------------------------------------------------
 		bool GetPositionForParticle(float i_SimulationTime,
-								   envType::Int32 i_ID,
+								   int32_t i_ID,
 								   maPoint3d& o_Position) const;
 
 		//--------------------------------------------------------------------
@@ -117,7 +117,7 @@ class prtVertexAnimInstance : public anFrameAnimInstance
 		// once for the whole generator. This would be more efficient
 		// if you know that the streak length is the same for all particles.
 		//--------------------------------------------------------------------
-		bool GetPositionForParticle( envType::Int32 i_ID,
+		bool GetPositionForParticle( int32_t i_ID,
 									 const prtVertexFrame* i_pPrevFrame,
 									 const prtVertexFrame* i_pNextFrame,
 									 float i_Alpha,

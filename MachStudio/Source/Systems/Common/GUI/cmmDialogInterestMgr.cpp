@@ -7,11 +7,13 @@
 **	Copyright(C) 2006 - All Rights Reserved
 \****************************************************************************/
 #include "Systems/Common/GUI/cmmDialogInterestMgr.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 //	library
 #include "Core/env/envSTLHelpers.hpp"
 #include "Input/in/inDeviceMgr.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/fs/private/fsFileNotifyMgr.hpp"
 #include "Core/fs/fsResourceTracker.hpp"
 
@@ -80,10 +82,10 @@ bool cmmDialogInterestMgr::SystemExists(const std::string& i_SystemName)
 //--------------------------------------------------------------------
 //	Add Object to Placed
 //--------------------------------------------------------------------
-void cmmDialogInterestMgr::AddObject(const itString& i_FileName, const fsLocator& i_Path)
+void cmmDialogInterestMgr::AddObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 	DBG_ASSERT( i_Path.GetNumNames() > 0, "Empty path" );
-	std::string system_name = itStringUtil::GetStdString(i_Path.GetName(0));
+	std::string system_name = i_Path.GetName(0);
 	std::map<std::string, cmmDialogInterest*>::iterator it = l_DialogInterestMap.find(system_name);
 	DBG_ASSERT(it != l_DialogInterestMap.end(), "Cannot find system with name: " << system_name.c_str());
 	it->second->AddObject(i_FileName, i_Path);
@@ -92,10 +94,10 @@ void cmmDialogInterestMgr::AddObject(const itString& i_FileName, const fsLocator
 //--------------------------------------------------------------------
 //	Replace Selected Object with this asset path from available
 //--------------------------------------------------------------------
-void cmmDialogInterestMgr::ReplaceObject(const itString& i_FileName, const fsLocator& i_Path)
+void cmmDialogInterestMgr::ReplaceObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 	DBG_ASSERT( i_Path.GetNumNames() > 0, "Empty path" );
-	std::string system_name = itStringUtil::GetStdString(i_Path.GetName(0));
+	std::string system_name = i_Path.GetName(0);
 	std::map<std::string, cmmDialogInterest*>::iterator it = l_DialogInterestMap.find(system_name);
 	DBG_ASSERT(it != l_DialogInterestMap.end(), "Cannot find system with name: " << system_name.c_str());
 	it->second->ReplaceObject(i_FileName, i_Path);
@@ -309,7 +311,7 @@ void cmmDialogInterestMgr::GetAvailableObjects(fsysFileList& io_FileList)
 int cmmDialogInterestMgr::GetAllowedInteractions(const fsLocator& i_Path)
 {
 	DBG_ASSERT( i_Path.GetNumNames() > 0, "Empty path" );
-	std::string system_name = itStringUtil::GetStdString(i_Path.GetName(0));
+	std::string system_name = i_Path.GetName(0);
 	std::map<std::string, cmmDialogInterest*>::iterator it = l_DialogInterestMap.find(system_name);
 	DBG_ASSERT(it != l_DialogInterestMap.end(), "Cannot find system with name: " << system_name.c_str());
 	return it->second->GetAllowedInteractions(i_Path);

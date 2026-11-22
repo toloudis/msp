@@ -4,9 +4,8 @@
 **      inPackage contains the initialization functions
 **	for the in package.
 **
-**		NOTICE!!!!!!!!
-**		Be sure to include both dinput.lib and dxguid.lib in any projects using
-**		this package or you will have link problems when under Windows
+**		The keyboard and mouse get their input from the GUI toolkit (see
+**		inKeyboard and inMouse), which has to be hooked up after Init.
 **
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved

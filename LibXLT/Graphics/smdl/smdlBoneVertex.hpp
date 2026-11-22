@@ -12,8 +12,8 @@
 #endif
 #define SMDL_BONEVERTEX_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 #ifndef MA_POINT4D_HPP
 #include "Core/ma/maPoint4d.hpp"
@@ -30,7 +30,7 @@
 struct scBoneInfluence
 {
 	float m_fWeight;
-	envType::UInt32 m_BoneIndex;
+	uint32_t m_BoneIndex;
 };
 
 

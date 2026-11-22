@@ -7,6 +7,9 @@
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
 #include "Tool/gui/guiSingleDocHandler.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Core/app/appTime.hpp"
 #include "Core/ch/chReader.hpp"
@@ -15,7 +18,6 @@
 #include "Core/fs/fsResourceTracker.hpp"
 #include "Core/fs/private/fsFileNotifyMgr.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/It/itStringUtil.hpp"
 #include "Graphics/g2d/g2dExceptionX.hpp"
 #include "Graphics/mat/matExceptionX.hpp"
 #include "Tool/doc/docSingleDocumentMgr.hpp"
@@ -34,20 +36,22 @@ namespace guiSingleDocHandler
 {
 	namespace
 	{
-		fsLocator	l_InitialDirectory( 0, itString(".") );
+		fsLocator	l_InitialDirectory( 0, std::string(".") );
 		bool		l_bRememberLastDirectory = false;
 
 		//--------------------------------------------------------------------------
 		//--------------------------------------------------------------------------
 		void safe_load_document(const fsLocator &i_Loc, bool i_bSkipErrorDialog = false)
 		{
-		
-		gfPaths::SetPath(gfPaths::e_MabPath, i_Loc);
+		// a foreign file opens as a new, untitled document (no .mab path, as after New)
+		const bool bForeign = docSingleTypeMgr::IsForeignFile(i_Loc);
+		if (!bForeign)
+			gfPaths::SetPath(gfPaths::e_MabPath, i_Loc);
 
 		#ifndef _DEBUG
 			//Setup loading text for the new file, truncates if filename length is too long
 			std::string load_txt = "Loading : ";
-			std::string cur_scene = itStringUtil::GetStdString( i_Loc.GetLastName() );
+			std::string cur_scene = i_Loc.GetLastName();
 
 			int ext_pos = cur_scene.find(".");
 			int substr_count = cur_scene.length();
@@ -86,9 +90,13 @@ namespace guiSingleDocHandler
 			//
 			try
 			{
-				bNewerVersion = docSingleDocumentMgr::LoadDocument(i_Loc);
+				bool bOpened = true;
+				if (bForeign)
+					bOpened = docSingleDocumentMgr::OpenForeignFile(i_Loc);
+				else
+					bNewerVersion = docSingleDocumentMgr::LoadDocument(i_Loc);
 
-				if ( l_bRememberLastDirectory )
+				if ( bOpened && l_bRememberLastDirectory )
 				{
 					fsLocator file_loc = i_Loc;
 					file_loc.Pop();						// pop off the filename
@@ -233,7 +241,7 @@ namespace guiSingleDocHandler
 	void Open(bool i_bSkipErrorDialog)
 	{
 		
-		std::string filter = docSingleTypeMgr::GetFilter();
+		std::string filter = docSingleTypeMgr::GetOpenFilter();
 		fsLocator initial_dir;
 		fsLocator file_loc;
 		//fsFileUtil::UnicodeStringToLocator( itString("."), initial_dir );'

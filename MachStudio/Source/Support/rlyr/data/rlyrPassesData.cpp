@@ -34,7 +34,6 @@ rlyrPassesData::rlyrPassesData()
 	m_DiffLit("Diffuse Lights"),
 	m_GI("Global Illumination"),
 	m_Glow("Glow"),
-	m_RmanColorBleed("Color Bleeding"),
-	m_MrayFinalGather("Final Gather")
+	m_RmanColorBleed("Color Bleeding")
 {
 }

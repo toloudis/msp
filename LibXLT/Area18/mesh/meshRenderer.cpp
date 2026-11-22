@@ -174,7 +174,7 @@ int meshRenderer::Render( const meshTriMeshFrag* i_pFrag, const matMaterial* i_p
 //	}
 
 	GLenum indType = GL_UNSIGNED_SHORT;
-	if (i_pFrag->GetIndexBuffer()->GetSizeOfIndex() == sizeof(envType::UInt16)) 
+	if (i_pFrag->GetIndexBuffer()->GetSizeOfIndex() == sizeof(uint16_t)) 
 		indType = GL_UNSIGNED_SHORT;
 	else
 		indType = GL_UNSIGNED_INT;

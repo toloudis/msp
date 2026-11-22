@@ -11,7 +11,7 @@
 
 #include "Core/ma/maConstants.hpp"
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 // Set value into control

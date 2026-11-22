@@ -15,8 +15,8 @@
 #ifndef SEL3D_SELECTINTEREST_HPP
 #include "Tool/sel3d/sel3dSelectInterest.hpp"
 #endif
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 
@@ -48,6 +48,6 @@ class xtraSelectInterest : public sel3dSelectInterest
 		//	object and set the selected material index to match.
 		//--------------------------------------------------------------------
 		static bool SelectFromPickCode(sel3dObject *i_pPicked,
-										envType::UInt32 i_PickCode,
+										uint32_t i_PickCode,
 										bool i_bAppendSelection);
 };

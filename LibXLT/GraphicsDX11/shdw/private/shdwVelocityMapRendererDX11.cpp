@@ -31,6 +31,9 @@
 #include "GraphicsDX11/shdw/shdwFrameBufferMgr.hpp"
 #include "GraphicsDX11/shdw/shdwPassDepth.hpp"
 #include "GraphicsDX11/shdw/shdwPassVelocity.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 //	The reason a macro is used here (instead of a function, an inline function, or a template inline function)
 //	is that I need the __FILE__ and __LINE__ macros to resolve to useful values
@@ -102,11 +105,12 @@ int shdwVelocityMapRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCa
 								const g3dScene &i_Scene, const std::vector<g3dLayer*>& i_ViewerLayers,
 							   float i_fSimTime )
 {//PROFILE("Render");
+	G3D_PROFILE_SCOPE("VelocityMapRenderer");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwVelocityMapRendererDX11::Render" );
 	
 	// Assign shader
 	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)matShaderMgr::GetSpecialEffect(("VelocityRender.fx"));
-	ID3DX11Effect* pEffect = i_pEffect->GetD3DXEffect();
+	fxEffect* pEffect = i_pEffect->GetFxEffect();
 
 	// Initialize the triangle count
 	l_nNumTrianglesRendered = 0;
@@ -129,7 +133,7 @@ int shdwVelocityMapRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCa
 	int w,h;
 	i_pWindow->GetDimensions(w,h);
 
-	ID3DX11EffectTechnique* pTechnique = pEffect->GetTechniqueByName("DisplayVelocity");
+	fxEffectTechnique* pTechnique = pEffect->GetTechniqueByName("DisplayVelocity");
 
 	//	pEffect->SetTexture("velocityBuffer", m_pFrameBuffer->VelocityBuffer()->GetSurface());
 	pEffect->GetVariableByName("velocityBuffer")->AsShaderResource()->SetResource( m_pFrameBuffer->VelocityBuffer()->GetSurface() );
@@ -143,7 +147,7 @@ int shdwVelocityMapRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCa
 
 	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Disable_NS );
 
-	ID3DX11EffectPass* pPass = pTechnique->GetPassByIndex(0);
+	fxEffectPass* pPass = pTechnique->GetPassByIndex(0);
 	pPass->Apply(0, g2dDX11Global::g_pDeviceContext);
 	g3dDX11Util::DrawFullScreenQuad( w,h );
 
@@ -217,7 +221,8 @@ g2dRenderTarget* shdwVelocityMapRendererDX11::GetRawBuffer()
 //--------------------------------------------------------------------
 g2dPFD::PixelFormat shdwVelocityMapRendererDX11::GetRawBufferPFD()
 {
-	return g2dPFD::e_RGBA16f;
+	// the velocity buffer's own format (shdwFrameBufferMgr makes it e_GR32f)
+	return g2dPFD::e_GR32f;
 }
 
 void shdwVelocityMapRendererDX11::InitStates()

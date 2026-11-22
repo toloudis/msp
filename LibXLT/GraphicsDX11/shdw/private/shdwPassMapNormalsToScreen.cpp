@@ -12,6 +12,9 @@
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
 #include "GraphicsDX11/g2d/g2dFullscreenQuad.hpp"
 #include "GraphicsDX11/g3d/g3dDX11TextureUtil.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 shdwPassMapNormalsToScreen::shdwPassMapNormalsToScreen(matTexture* i_pNormals, 
 													   g2dRenderTarget* i_pScreen)
@@ -35,6 +38,7 @@ shdwPassMapNormalsToScreen::~shdwPassMapNormalsToScreen()
 
 int shdwPassMapNormalsToScreen::Render(float i_Time)
 {
+	G3D_PROFILE_SCOPE("PassMapNormalsToScreen");
 	m_pDestination->MakeCurrent();
 	int w,h;
 	m_pDestination->GetDimensions(w,h);

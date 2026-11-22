@@ -63,3 +63,13 @@ void  trfnActualOperations::RemoveNodeFromParent(const nameString& i_ObjectName)
 	trfnDocumentChunk::ActiveDataChanged();
 	trfnDialogDataUtil::UpdateSceneHierarchy();
 }
+
+//--------------------------------------------------------------------
+//  Set the whole object (values, drivers, channels)
+//--------------------------------------------------------------------
+void trfnActualOperations::SetData(int i_Index, const trfnScriptData& i_Data)
+{
+	trfnObjectMgr::SetScriptData(i_Index, i_Data);
+	trfnDialogDataUtil::UpdateListDialog();
+	trfnDocumentChunk::ActiveDataChanged();
+}

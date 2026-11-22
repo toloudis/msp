@@ -13,9 +13,7 @@
 #endif
 #define CHTR_ANIMLIST_HPP
 
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 
 class fsysFileList;
 class fsLocator;
@@ -30,7 +28,7 @@ namespace chtrAnimList
 	//		i_SystemDirName		- the name of the directory for this system
 	//		i_SceneSubDirName		- the sub-dir to look for extensions (data, model,...)
 	//------------------------------------------------------------------------
-	void Init( const itString& i_SystemDirName, const itString& i_SceneSubDirName );
+	void Init( const std::string& i_SystemDirName, const std::string& i_SceneSubDirName );
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -45,7 +43,7 @@ namespace chtrAnimList
 	//------------------------------------------------------------------------
 	// system directory name
 	//------------------------------------------------------------------------
-	itString GetSystemDirName();
+	std::string GetSystemDirName();
 
 	//------------------------------------------------------------------------
 	// Get list of animation files, returning into given file list.
@@ -61,6 +59,6 @@ namespace chtrAnimList
 	//	file with given filename for the character that was loaded
 	//	from the given directory.
 	//------------------------------------------------------------------------
-	fsLocator GetAnimationLocator(const itString& i_Filename, 
+	fsLocator GetAnimationLocator(const std::string& i_Filename, 
 								  const fsLocator& i_CharacterDirectory);
 }

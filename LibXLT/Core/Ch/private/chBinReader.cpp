@@ -7,8 +7,14 @@
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
 #include "Core/ch/chBinReader.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Core/ch/chExceptionX.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/fs/fsFilePosSaver.hpp"
 #include "Core/gf/gfFileBin.hpp"
 #include "Core/gf/gfFileUtil.hpp"
@@ -107,61 +113,61 @@ void chBinReader::FinishChunk()
 //	but I think there would be problems getting them instantiated
 //	so that they are part of the abstract base interface.
 //--------------------------------------------------------------------
-void chBinReader::Read(envType::Int8& o_Val)
+void chBinReader::Read(int8_t& o_Val)
 {
 	DBG_ASSERT( m_File.GetFilePos() < m_ChunkEnds.top(), "Read past end of chunk");
 	gfFileUtil::Read(m_File, o_Val);
 }
 
-void chBinReader::Read(envType::UInt8& o_Val)
+void chBinReader::Read(uint8_t& o_Val)
 {
 	DBG_ASSERT( m_File.GetFilePos() < m_ChunkEnds.top(), "Read past end of chunk");
 	gfFileUtil::Read(m_File, o_Val);
 }
 
-void chBinReader::Read(envType::Int16& o_Val)
+void chBinReader::Read(int16_t& o_Val)
 {
 	DBG_ASSERT( m_File.GetFilePos() < m_ChunkEnds.top(), "Read past end of chunk");
 	gfFileUtil::Read(m_File, o_Val);
 }
 
-void chBinReader::Read(envType::UInt16& o_Val)
+void chBinReader::Read(uint16_t& o_Val)
 {
 	DBG_ASSERT( m_File.GetFilePos() < m_ChunkEnds.top(), "Read past end of chunk");
 	gfFileUtil::Read(m_File, o_Val);
 }
 
-void chBinReader::Read(envType::Int32& o_Val)
+void chBinReader::Read(int32_t& o_Val)
 {
 	DBG_ASSERT( m_File.GetFilePos() < m_ChunkEnds.top(), "Read past end of chunk");
 	gfFileUtil::Read(m_File, o_Val);
 }
 
-void chBinReader::Read(envType::UInt32& o_Val)
+void chBinReader::Read(uint32_t& o_Val)
 {
 	DBG_ASSERT( m_File.GetFilePos() < m_ChunkEnds.top(), "Read past end of chunk");
 	gfFileUtil::Read(m_File, o_Val);
 }
 
-void chBinReader::Read(envType::Int64& o_Val)
+void chBinReader::Read(int64_t& o_Val)
 {
 	DBG_ASSERT( m_File.GetFilePos() < m_ChunkEnds.top(), "Read past end of chunk");
 	gfFileUtil::Read(m_File, o_Val);
 }
 
-void chBinReader::Read(envType::UInt64& o_Val)
+void chBinReader::Read(uint64_t& o_Val)
 {
 	DBG_ASSERT( m_File.GetFilePos() < m_ChunkEnds.top(), "Read past end of chunk");
 	gfFileUtil::Read(m_File, o_Val);
 }
 
-void chBinReader::Read(envType::Float32& o_Val)
+void chBinReader::Read(float& o_Val)
 {
 	DBG_ASSERT( m_File.GetFilePos() < m_ChunkEnds.top(), "Read past end of chunk");
 	gfFileUtil::Read(m_File, o_Val);
 }
 
-void chBinReader::Read(envType::Float64& o_Val)
+void chBinReader::Read(double& o_Val)
 {
 	DBG_ASSERT( m_File.GetFilePos() < m_ChunkEnds.top(), "Read past end of chunk");
 	gfFileUtil::Read(m_File, o_Val);
@@ -175,7 +181,7 @@ void chBinReader::Read(bool& o_Val)
 {
 	DBG_ASSERT( m_File.GetFilePos() < m_ChunkEnds.top(), "Read past end of chunk");
 
-	envType::Int8 int8_value;
+	int8_t int8_value;
 	gfFileUtil::Read(m_File, int8_value);
 	o_Val = ( int8_value == 0 ) ? false : true;
 }
@@ -189,7 +195,7 @@ void chBinReader::Read(std::string& o_String)
 
 	o_String.resize(0);
 
-	envType::Int8 character;
+	int8_t character;
 
 	do
 	{
@@ -210,7 +216,7 @@ void chBinReader::Read(std::string& o_Val, int i_Length)
 	
 	o_Val.resize(i_Length);
 
-	static std::vector<envType::Int8> characters;
+	static std::vector<int8_t> characters;
 	characters.resize(i_Length);
 
 	//	we can read all in one block because each character is one byte - no
@@ -224,44 +230,37 @@ void chBinReader::Read(std::string& o_Val, int i_Length)
 }
 
 //--------------------------------------------------------------------
-//	This Read reads a NULL-terminated Unicode character string.  
+//	ReadLegacyWideString reads a NULL-terminated string as UTF-8: stored as UTF-8
+//	in PWFB files, and as UTF-16, which it converts, in older ones and
+//	in files whose header wasn't read (gfFileBin::HasUTF8Strings).
 //--------------------------------------------------------------------
-void chBinReader::Read(itString& o_Val)
+void chBinReader::ReadLegacyWideString(std::string& o_Val)
 {
+	if( m_File.HasUTF8Strings() )
+	{
+		Read(o_Val);
+		return;
+	}
+
 	DBG_ASSERT( m_File.GetFilePos() < m_ChunkEnds.top(), "Read past end of chunk");
 
-	o_Val.Clear();
-
-	envType::Int16 character;
-
+	//	a string ends at its NUL, or at the end of the chunk in a damaged file
+	std::u16string utf16;
+	uint16_t character = 0;
 	do
 	{
+		if ( m_File.GetFilePos() + 2 > m_ChunkEnds.top() )
+		{
+			DBG_ERROR("UTF-16 string runs past the end of its chunk");
+			break;
+		}
 		gfFileUtil::Read(m_File, character);
-		//o_Val += character;	// add the NULL
 		if ( character )
-			o_Val += character;	// now, do not add the NULL
+			utf16 += char16_t(character);
 	}
 	while( character );
-}
 
-//--------------------------------------------------------------------
-//	This Read Reads a Unicode character string with a length
-//	given by i_Length.
-//--------------------------------------------------------------------
-void chBinReader::Read(itString& o_Val, int i_Length)
-{
-	DBG_ASSERT( m_File.GetFilePos() < m_ChunkEnds.top(), "Read past end of chunk");
-
-	o_Val.Clear();
-
-	envType::Int16 character;
-
-	int i;
-	for( i = 0 ; i < i_Length ; i++ )
-	{
-		gfFileUtil::Read(m_File, character);
-		o_Val += character;
-	}
+	o_Val = envString::UTF16ToUTF8(utf16);
 }
 
 //--------------------------------------------------------------------
@@ -269,7 +268,7 @@ void chBinReader::Read(itString& o_Val, int i_Length)
 //--------------------------------------------------------------------
 void chBinReader::Read(envAppVersion& o_Val)
 {
-	envType::Int32 major,minor,rev,build;
+	int32_t major,minor,rev,build;
 	gfFileUtil::Read(m_File, major);
 	gfFileUtil::Read(m_File, minor);
 	gfFileUtil::Read(m_File, rev);
@@ -281,7 +280,7 @@ void chBinReader::Read(envAppVersion& o_Val)
 //	Read chunk of binary data; this is only for
 //	chBinReader, it is not a function of chReader base class
 //--------------------------------------------------------------------
-void chBinReader::Read(void* i_Data, envType::Int64 i_NumBytes)
+void chBinReader::Read(void* i_Data, int64_t i_NumBytes)
 {
 	DBG_ASSERT( m_File.GetFilePos() < m_ChunkEnds.top(), "Read past end of chunk");
 

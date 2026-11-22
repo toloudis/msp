@@ -19,13 +19,13 @@
 #include "Core/Fs/fsLocator.hpp"
 #endif 
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //============================================================================
-// wxEVT_VALUE_CHANGED event : this control throws this event type when the
+// Value changed callback (tqcEvent.hpp): this control calls it when the
 //	value in the control has changed after ENTER is pressed, or the
-//	focus leaves the text box. Users should register for this event, 
-//	not for the individual enter pressed and leave events.
+//	focus leaves the text box. Users should set this callback, 
+//	not watch for the individual enter pressed and leave events.
 //============================================================================
 
 //----------------------------------------------------------------------------
@@ -35,7 +35,7 @@ class prtyPropertyUIInfo;
 
 //============================================================================
 //============================================================================
-class tqcTextureFilePicker : public wxPanel
+class tqcTextureFilePicker : public QWidget, public tqcValueChangedNotifier
 {
 	public:
 		//--------------------------------------------------------------------
@@ -57,13 +57,13 @@ class tqcTextureFilePicker : public wxPanel
 		//--------------------------------------------------------------------
 		//	Filename
 		//--------------------------------------------------------------------
-		itString GetFilename() const;
+		std::string GetFilename() const;
 
 		//--------------------------------------------------------------------
 		//	Filter
 		//--------------------------------------------------------------------
-		const itString& GetFilter() const;
-		void SetFilter(const itString& i_Filter);
+		const std::string& GetFilter() const;
+		void SetFilter(const std::string& i_Filter);
 
 		//--------------------------------------------------------------------
 		//	ShowFileNameOnly
@@ -128,16 +128,16 @@ class tqcTextureFilePicker : public wxPanel
 
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		void OnTextChange(wxCommandEvent& i_Event);
-		void OnChoiceSelected(wxCommandEvent& i_Event);
-		void OnInvokeClick(wxCommandEvent& i_Event);
+		void OnTextChange();
+		void OnChoiceSelected();
+		void OnInvokeClick();
 
 		tqcTextBox* m_pTextBox;
-		wxChoice* m_pChoice;
-		wxBitmapButton* m_pInvokeButton;
+		QComboBox* m_pChoice;
+		QToolButton* m_pInvokeButton;
 		
 		fsLocator	m_Value;
-		itString	m_Filter;
+		std::string	m_Filter;
 		bool		m_bShowFileNameOnly;
 		bool		m_bButtonPress;
 		fsLocator	m_InitialDirectory;

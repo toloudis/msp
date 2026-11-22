@@ -16,12 +16,12 @@
 #include "ToolUIQt/pqt/pqtControl.hpp"
 #endif
 
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
 class pqtTrigger_Button : public pqtControl
 {
-#ifdef USE_QT
 	public:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
@@ -55,11 +55,9 @@ class pqtTrigger_Button : public pqtControl
 	private:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
-#ifdef QT_FINISH_PORT
-		void button_Clicked(wxCommandEvent& i_Event);
-#endif
+		void button_Clicked();
 
-		QWidget* m_pActualControl;
-#endif // USE_QT
+		QPushButton* m_pActualControl;
 };
 
+#endif // USE_QT

@@ -64,13 +64,17 @@ public:
 		e_DiffLit,
 		e_GlobalIllumination,
 		e_Glow,
-		e_RmanColorBleed,
-		e_MrayFinalGather
+		e_RmanColorBleed
 	};
 
 	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------
 	void CollectPasses(std::vector<ePassType>& o_Passes);
+
+	//--------------------------------------------------------------------
+	// Turn on the given passes and turn off all others (-capPasses)
+	//--------------------------------------------------------------------
+	void SetPasses(const std::vector<ePassType>& i_Passes);
 
 	//--------------------------------------------------------------------
 	// Modify prefs flags relevant to the given pass type

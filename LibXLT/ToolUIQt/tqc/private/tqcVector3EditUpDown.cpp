@@ -6,36 +6,26 @@
 \****************************************************************************/
 #include "ToolUIQt/tqc/tqcVector3EditUpDown.hpp"
 
-#include "ToolUIQt/tqc/tqcEvent.hpp"
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 tqcVector3EditUpDown::tqcVector3EditUpDown(QWidget* i_pParent)
-:	wxPanel(i_pParent),
+:	QWidget(i_pParent),
 	m_Value(0,0,0)
 {		
-	wxBoxSizer* bSizer1;
-	bSizer1 = new wxBoxSizer( wxHORIZONTAL );
-	
-	m_pNumericUpDownX = new tqcNumericUpDown(this);
-	this->Connect( m_pNumericUpDownX->GetId(), wxEVT_VALUE_CHANGED,
-					wxCommandEventHandler(tqcVector3EditUpDown::OnTextChange) );
-	bSizer1->Add( m_pNumericUpDownX, 1, wxALL, 2 );
+	QHBoxLayout* bSizer1 = new QHBoxLayout(this);
+	bSizer1->setContentsMargins(0, 0, 0, 0);
+	bSizer1->setSpacing(2);
 
-	m_pNumericUpDownY = new tqcNumericUpDown(this);
-	this->Connect( m_pNumericUpDownY->GetId(), wxEVT_VALUE_CHANGED,
-					wxCommandEventHandler(tqcVector3EditUpDown::OnTextChange) );
-	bSizer1->Add( m_pNumericUpDownY, 1, wxALL, 2 );
-
-	m_pNumericUpDownZ = new tqcNumericUpDown(this);
-	this->Connect( m_pNumericUpDownZ->GetId(), wxEVT_VALUE_CHANGED,
-					wxCommandEventHandler(tqcVector3EditUpDown::OnTextChange) );
-	bSizer1->Add( m_pNumericUpDownZ, 1, wxALL, 2 );
-	
-	this->SetSizer( bSizer1 );
-	this->Layout();
+	tqcNumericUpDown** spinners[3] = { &m_pNumericUpDownX, &m_pNumericUpDownY, &m_pNumericUpDownZ };
+	for (int i = 0; i < 3; ++i)
+	{
+		*spinners[i] = new tqcNumericUpDown(this);
+		(*spinners[i])->SetValueChangedCallback([this]() { OnTextChange(); });
+		bSizer1->addWidget( *spinners[i], 1 );
+	}
 }
 
 //--------------------------------------------------------------------
@@ -137,21 +127,16 @@ void tqcVector3EditUpDown::SetDecimalPlaces(const short i_DecimalPlaces)
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void tqcVector3EditUpDown::OnTextChange(wxCommandEvent& i_Event)
+void tqcVector3EditUpDown::OnTextChange()
 {
 	maVector3d new_value( m_pNumericUpDownX->GetValue(), 
-					  m_pNumericUpDownY->GetValue(), 
-					  m_pNumericUpDownZ->GetValue() );
-
+						  m_pNumericUpDownY->GetValue(), 
+						  m_pNumericUpDownZ->GetValue() );
 	if (m_Value != new_value)
 	{
 		m_Value = new_value;
-
-		// Use one of the float edit fields to trigger the callback
-		wxCommandEvent changed_event(wxEVT_VALUE_CHANGED, this->GetId());
-		m_pNumericUpDownX->ProcessCommand(changed_event);
+		NotifyValueChanged();
 	}
 }
-
 
 #endif // USE_QT

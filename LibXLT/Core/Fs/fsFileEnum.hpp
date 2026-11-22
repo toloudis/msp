@@ -17,12 +17,12 @@
 #include "Core/env/envPlatform.hpp"
 #endif
 
+#include <string>
 #include <vector>
 
 
 //============================================================================
 //============================================================================
-class itString;
 class fsLocator;
 
 
@@ -91,11 +91,11 @@ bool EnumerateFiles(const fsLocator& i_Locator,
 					bool i_bSearchSubdirectories = false);
 bool EnumerateFiles(const fsLocator& i_Locator, 
 					EnumTarget& o_Target,
-					const itString &i_SubString,
+					const std::string &i_SubString,
 					bool i_bSearchSubdirectories = false);
 bool EnumerateFiles(const fsLocator& i_Locator, 
 					EnumTarget& o_Target,
-					const std::vector<itString> &i_SubStrings,
+					const std::vector<std::string> &i_SubStrings,
 					bool i_bSearchSubdirectories = false);
 
 //========================================================================
@@ -107,11 +107,11 @@ bool EnumerateFiles(const fsLocator& i_Locator,
 					bool i_bSearchSubdirectories = false);
 bool EnumerateFiles(const fsLocator& i_Locator, 
 					fsFileList& o_FileList,
-					const itString &i_SubString,
+					const std::string &i_SubString,
 					bool i_bSearchSubdirectories = false);
 bool EnumerateFiles(const fsLocator& i_Locator, 
 					fsFileList& o_FileList,
-					const std::vector<itString> &i_SubStrings,
+					const std::vector<std::string> &i_SubStrings,
 					bool i_bSearchSubdirectories = false);
 
 //========================================================================

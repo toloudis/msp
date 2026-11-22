@@ -92,7 +92,7 @@ class cmpsCompassObjectSingle : public cmpsCompassObject
 		//----------------------------------------------------------------------------
 		// Find the object that matches the pick code from an earlier pick render.
 		//----------------------------------------------------------------------------
-		virtual bool MatchPickCode(envType::UInt32 i_PickCode);
+		virtual bool MatchPickCode(uint32_t i_PickCode);
 
 		//--------------------------------------------------------------------
 		//	SetLayerScale changes the scale of the compass for only a 

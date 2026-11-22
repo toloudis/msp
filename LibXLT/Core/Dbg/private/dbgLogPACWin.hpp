@@ -40,15 +40,13 @@ namespace dbgLogPAC
 	void WriteLog(const char* i_Text);
 
 	//------------------------------------------------------------------------
-	//	UnicodetoANSI is a convenience function for debug logging that will turn an
-	//	itString into a std::string.
+	//	WriteDebugOutput sends UTF-8 text to the debugger's output window.
 	//
-	// \param i_String the original string
-	// \param i_Length the length of the original string
+	// \param i_UTF8Text text to send, without any line ending added
 	//
-	// \return the converted string
+	// \return void
 	//------------------------------------------------------------------------
-	std::string UnicodetoANSI(const envType::WChar *i_String, int i_Length);
+	void WriteDebugOutput(const std::string& i_UTF8Text);
 
 	//------------------------------------------------------------------------
 	//	Don't call Init() yourself; it is called by the package Init().

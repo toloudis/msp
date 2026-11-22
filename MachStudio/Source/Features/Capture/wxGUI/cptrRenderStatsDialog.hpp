@@ -21,9 +21,7 @@
 #include "Features/Capture/wxGUI/cptrRenderStatsDialogBase.h"
 #endif
 
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 
 
 
@@ -37,11 +35,11 @@ class cptrRenderStatsDialog : public cptrRenderStatsDialogBase
 	public:
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		void UpdateStatString( itString& i_pString );
+		void UpdateStatString( std::string& i_pString );
 
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		void AddStatString( itString& i_pString );
+		void AddStatString( std::string& i_pString );
 
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------

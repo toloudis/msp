@@ -23,7 +23,7 @@ class effMaskAlpha : public effShaderBaseDX11
 public:
 	//====================================================================
 	//====================================================================
-	effMaskAlpha(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, std::string i_name);
+	effMaskAlpha(const fsLocator& i_Directory, std::unique_ptr<fxEffect> i_pEffect, std::string i_name);
 
 	//====================================================================
 	//====================================================================
@@ -40,11 +40,11 @@ public:
 							   int i_MaterialLayerIndex = 0) const;
 
 protected:
-	ID3DX11EffectVectorVariable* m_hSolidColor;
-	ID3DX11EffectScalarVariable* m_hHasTransparency;
-	ID3DX11EffectShaderResourceVariable* m_hTransparencyMap;
+	fxEffectVariable* m_hSolidColor;
+	fxEffectVariable* m_hHasTransparency;
+	fxEffectVariable* m_hTransparencyMap;
 
-	ID3DX11EffectScalarVariable* m_hUseDither;
-	ID3DX11EffectScalarVariable* m_hDitherAlphaBias;
-	ID3DX11EffectScalarVariable* m_hTransparency;
+	fxEffectVariable* m_hUseDither;
+	fxEffectVariable* m_hDitherAlphaBias;
+	fxEffectVariable* m_hTransparency;
 };

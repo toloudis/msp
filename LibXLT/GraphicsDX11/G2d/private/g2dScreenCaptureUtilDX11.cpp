@@ -26,165 +26,16 @@
 #include "GraphicsDX11/g2d/g2dWindowDX11.hpp"
 #include "GraphicsDX11/mat/matRenderTargetTexture.hpp"
 
+#include <DirectXTex.h>
+
+#include <utility>
+#include <vector>
+
 
 //============================================================================
 //============================================================================
 namespace
 {
-/*
-//
-//	BMP functions
-//
-
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-void fill_bmp_header(BITMAPINFOHEADER &i_Header, 
-					 int i_Width, 
-					 int i_Height,
-					 int i_DestBitsPerPixel, 
-					 int i_DestImageSize)
-{
-	//--------------------------------------------------------------//
-	// BitmapInfoHeader
-	//
-	i_Header.biSize				= sizeof( BITMAPINFOHEADER );
-	i_Header.biWidth			= i_Width;
-	i_Header.biHeight			= i_Height;
-	i_Header.biPlanes			= 1;
-	i_Header.biBitCount			= (unsigned short)i_DestBitsPerPixel;
-	i_Header.biCompression		= BI_RGB;
-	i_Header.biSizeImage		= i_DestImageSize;
-	i_Header.biXPelsPerMeter	= i_Width;
-	i_Header.biYPelsPerMeter	= i_Height;
-	i_Header.biClrUsed			= 0;
-	i_Header.biClrImportant		= 0;
-}
-
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-void write_bmp_header(fsFileStream &i_File, 
-					  int i_Width, 
-					  int i_Height,
-					  int i_DestBitsPerPixel, 
-					  int i_PaletteSize,
-					  int i_DestImageSize)
-{
-	//--------------------------------------------------------------//
-	// BitmapFileHeader
-	//
-	BITMAPINFOHEADER	bih;
-	BITMAPFILEHEADER	bfh;
-
-	bfh.bfType		= 0x4d42;
-	bfh.bfSize		= sizeof( BITMAPFILEHEADER ) + sizeof( bih ) +
-					  i_PaletteSize + i_DestImageSize;
-	bfh.bfReserved1	= 0;
-	bfh.bfReserved2	= 0;
-	bfh.bfOffBits	= sizeof( BITMAPFILEHEADER ) + sizeof( bih ) +
-					  i_PaletteSize;
-
-	i_File.Write( sizeof( bfh ), &bfh );
-
-	//--------------------------------------------------------------//
-	// BitmapInfoHeader
-	//
-	fill_bmp_header(bih, i_Width, i_Height, i_DestBitsPerPixel, i_DestImageSize);
-
-	i_File.Write( sizeof( bih ), &bih );
-}
-
-
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-void write_bmp_header(	fsFileStream &i_File,
-						g2dD3D11SurfacePtr i_pSurface,
-						bool	i_bGreyscale = false,
-						int		i_Sampling = 1,
-						RECT*	i_pRect = NULL )
-{
-	D3DSURFACE_DESC	SDesc;
-	HRESULT	op_result;
-
-	op_result = i_pSurface->GetDesc( &SDesc );
-	if ( op_result != D3D_OK )
-	{
-		DBG_ASSERT(op_result == D3D_OK, "Couldn't get surface info");
-	}
-
-	//--------------------------------------------------------------//
-	// Get width and height from rect or surface
-	//
-	int Width	= (i_pRect) ? (i_pRect->right - i_pRect->left) : SDesc.Width;
-	int Height	= (i_pRect) ? (i_pRect->bottom - i_pRect->top) : SDesc.Height;
-
-	if (i_Sampling > 1)
-	{
-		Width /= i_Sampling;
-		Height /= i_Sampling;
-	}
-
-	if (i_bGreyscale)
-	{
-		//--------------------------------------------------------------//
-		// 8-bit format
-		//
-		int DestBitsPerPixel = 8;
-		int PaletteSize = 256;
-		int DestImageSize	= Width * Height;
-
-		write_bmp_header(i_File, Width, Height,
-					DestBitsPerPixel, PaletteSize, DestImageSize);
-
-		//--------------------------------------------------------------//
-		// Palette
-		//
-		PALETTEENTRY TempColor;
-		for ( int loop = 0; loop < 256; ++loop )
-		{
-			TempColor.peBlue = (envType::UInt8) loop;
-			TempColor.peRed = (envType::UInt8) loop;
-			TempColor.peGreen = (envType::UInt8) loop;
-			i_File.Write( sizeof(PALETTEENTRY), &TempColor );
-		}
-	}
-	else
-	{
-		//--------------------------------------------------------------//
-		// 24-bit format
-		//
-		int DestBitsPerPixel = 24;
-		int PaletteSize = 0;
-		int DestImageSize	= 3 * Width * Height;
-
-		write_bmp_header(i_File, Width, Height,
-					DestBitsPerPixel, PaletteSize, DestImageSize);
-	}
-}
-
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-void write_bmp_data(fsFileStream &i_File,
-					g2dD3D11SurfacePtr i_pSurface,
-					bool	i_bGreyscale = false,
-					int		i_Sampling = 1,
-					RECT *i_pRect = NULL)
-{
-	int wid=0, ht=0, bpp=0;
-	int bufferSize = 0;
-	envType::UInt8* pBuffer = NULL;
-	g2dDX11SurfaceUtil::GetSurfacePixels(i_pSurface,
-									 &pBuffer,
-									 &bufferSize,
-									 &wid,
-									 &ht,
-									 &bpp,
-									 i_Sampling,
-									 i_bGreyscale,
-									 i_pRect);
-	i_File.Write( bufferSize, pBuffer );
-	delete [] pBuffer;
-}
-*/
 
 //----------------------------------------------------------------------------
 // capture back buffer to surface in memory
@@ -219,6 +70,7 @@ ID3D11Texture2D* capture_rendertarget(ID3D11Resource* i_pSource, DXGI_FORMAT for
 	{
 		g2dDX11Global::PrintDXError(op_result);
 		DBG_ASSERT( false, "Error allocating offscreen surface (w" << i_Width << "-h" << i_Height << "-f" << format << ")");
+		return NULL;
 	}
 	
 //	2. Call CopyResource() or CopySubresourceRegion() to copy from 
@@ -245,6 +97,112 @@ ID3D11Texture2D* capture_rendertarget(ID3D11Resource* i_pSource, DXGI_FORMAT for
 //		calling Map() without the DO_NOT_WAIT flag.
 
 	return pSurface;
+}
+
+//----------------------------------------------------------------------------
+//	A 2D texture's mip 0 of layer 0 in a staging texture, as DirectXTex's
+//	CaptureTexture reads it: in the resource's format (i_ViewFormat, the
+//	texture's PFD's, if that is typeless), a multisampled texture resolved.
+//	B8G8R8A8 and B8G8R8X8 become R8G8B8A8 (alpha 255 for X8), as on Vulkan.
+//	Throws g2dCaptureX if there is nothing to read back.
+//----------------------------------------------------------------------------
+ID3D11Texture2D* capture_texture(ID3D11Resource* i_pSource, DXGI_FORMAT i_ViewFormat)
+{
+	D3D11_RESOURCE_DIMENSION dimension = D3D11_RESOURCE_DIMENSION_UNKNOWN;
+	if (i_pSource)
+		i_pSource->GetType(&dimension);
+	ID3D11Texture2D* source = NULL;
+	if (dimension != D3D11_RESOURCE_DIMENSION_TEXTURE2D ||
+		!SUCCEEDED(i_pSource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&source)))
+	{
+		DBG_TRACE("Capture2DTextureToImage: no 2D texture to read back");
+		throw g2dCaptureX();
+	}
+	D3D11_TEXTURE2D_DESC desc;
+	source->GetDesc(&desc);
+	const DXGI_FORMAT format = DirectX::IsTypeless(desc.Format) ? i_ViewFormat : desc.Format;
+
+	ID3D11Texture2D* resolved = NULL;
+	if (desc.SampleDesc.Count > 1)
+	{
+		D3D11_TEXTURE2D_DESC single = desc;
+		single.MipLevels = 1;
+		single.ArraySize = 1;
+		single.Format = format;
+		single.SampleDesc.Count = 1;
+		single.SampleDesc.Quality = 0;
+		single.Usage = D3D11_USAGE_DEFAULT;
+		single.BindFlags = 0;
+		single.CPUAccessFlags = 0;
+		single.MiscFlags = 0;
+		if (!SUCCEEDED(g2dDX11Global::g_pDevice->CreateTexture2D(&single, NULL, &resolved)))
+		{
+			source->Release();
+			DBG_TRACE("Capture2DTextureToImage: couldn't make the texture to resolve into");
+			throw g2dCaptureX();
+		}
+		g2dDX11Global::g_pDeviceContext->ResolveSubresource(resolved, 0, source, 0, format);
+	}
+
+	ID3D11Texture2D* staging = capture_rendertarget(resolved ? resolved : source, format, desc.Width, desc.Height, true);
+	if (resolved)
+		resolved->Release();
+	source->Release();
+	if (!staging)
+	{
+		throw g2dCaptureX();
+	}
+
+	const bool bgra = (format == DXGI_FORMAT_B8G8R8A8_UNORM || format == DXGI_FORMAT_B8G8R8A8_UNORM_SRGB);
+	const bool bgrx = (format == DXGI_FORMAT_B8G8R8X8_UNORM || format == DXGI_FORMAT_B8G8R8X8_UNORM_SRGB);
+	if (!bgra && !bgrx)
+	{
+		return staging;
+	}
+
+	//	swizzle into an R8G8B8A8 staging texture
+	std::vector<uint8_t> pixels((size_t)desc.Width * desc.Height * 4);
+	D3D11_MAPPED_SUBRESOURCE mapped;
+	if (!SUCCEEDED(g2dDX11Global::g_pDeviceContext->Map(staging, 0, D3D11_MAP_READ, 0, &mapped)))
+	{
+		staging->Release();
+		throw g2dCaptureX();
+	}
+	for (UINT y = 0; y < desc.Height; y++)
+	{
+		const uint8_t* row = static_cast<const uint8_t*>(mapped.pData) + (size_t)y * mapped.RowPitch;
+		uint8_t* out = &pixels[(size_t)y * desc.Width * 4];
+		for (UINT x = 0; x < desc.Width; x++)
+		{
+			out[x * 4 + 0] = row[x * 4 + 2];
+			out[x * 4 + 1] = row[x * 4 + 1];
+			out[x * 4 + 2] = row[x * 4 + 0];
+			out[x * 4 + 3] = bgrx ? 255 : row[x * 4 + 3];
+		}
+	}
+	g2dDX11Global::g_pDeviceContext->Unmap(staging, 0);
+	staging->Release();
+
+	D3D11_TEXTURE2D_DESC rgba;
+	rgba.Width = desc.Width;
+	rgba.Height = desc.Height;
+	rgba.MipLevels = 1;
+	rgba.ArraySize = 1;
+	rgba.Format = (format == DXGI_FORMAT_B8G8R8A8_UNORM_SRGB || format == DXGI_FORMAT_B8G8R8X8_UNORM_SRGB)
+				  ? DXGI_FORMAT_R8G8B8A8_UNORM_SRGB : DXGI_FORMAT_R8G8B8A8_UNORM;
+	rgba.SampleDesc.Count = 1;
+	rgba.SampleDesc.Quality = 0;
+	rgba.Usage = D3D11_USAGE_STAGING;
+	rgba.BindFlags = 0;
+	rgba.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ;
+	rgba.MiscFlags = 0;
+	D3D11_SUBRESOURCE_DATA data = { pixels.data(), desc.Width * 4, 0 };
+	ID3D11Texture2D* converted = NULL;
+	if (!SUCCEEDED(g2dDX11Global::g_pDevice->CreateTexture2D(&rgba, &data, &converted)))
+	{
+		throw g2dCaptureX();
+	}
+	return converted;
 }
 
 } // end of anonymous namespace
@@ -375,26 +333,12 @@ void g2dScreenCaptureUtilDX11::Capture2DTextureToImage( matTexture* i_pTexture,
 {
 	matTextureDX11* texture = dynamic_cast<matTextureDX11*>(i_pTexture);
 	DBG_ASSERT(texture != NULL, "Expected a D3D texture");
-
-	int width = texture->GetWidth();
-	int height = texture->GetHeight();
-
-	DXGI_FORMAT format;
-	format = g2dDX11Global::D3DFormatFromPFD( texture->GetPixelFormat() );
-
-	g2dD3D11ResourcePtr buffer = texture->GetResource();
-
-	g2dD3D11TexturePtr lpSurface = NULL;
-	lpSurface = capture_rendertarget(buffer, format, width, height, true);
-	if (lpSurface != NULL)
-	{
-		// ownership of lpSurface goes to o_Image.
-		o_Image = new g2dImageDX11(lpSurface);
-	}
-	else
-	{
-		DBG_ERROR("Couldn't copy surface");
+	if (texture == NULL)
 		throw g2dCaptureX();
-	}
+
+	g2dD3D11TexturePtr lpSurface = capture_texture(texture->GetResource(),
+		g2dDX11Global::D3DFormatFromPFD( texture->GetPixelFormat() ));
+	// ownership of lpSurface goes to o_Image.
+	o_Image = new g2dImageDX11(lpSurface);
 }
 

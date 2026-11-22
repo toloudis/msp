@@ -154,7 +154,7 @@ namespace mdlHairParser
 				{
 					did_read_NINT = true;
 					//number of vertices in the HairInfo (bga - do we need this anymore?)
-					envType::UInt32 num;
+					uint32_t num;
 					i_Reader.Read(num);
 					o_HairInfo.m_nHairVertices = static_cast<int> ( num );
 
@@ -269,7 +269,7 @@ namespace mdlHairParser
 		chChunkParserUtil::Write(o_Writer, i_HairInfo.m_HairName);
 		o_Writer.FinishChunk();
 
-		envType::UInt32 num;
+		uint32_t num;
 		//Initialization params of the HairInfo
 		o_Writer.WriteChunkHeader(c_NINT, 0, false);
 		//number of hairvertices

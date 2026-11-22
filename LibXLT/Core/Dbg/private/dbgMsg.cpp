@@ -11,15 +11,18 @@
 #include "Core/Dbg/private/dbgAssertPAC.hpp"
 #include "Core/Dbg/private/dbgLogPAC.hpp"
 #include "Core/Env/envSTLHelpers.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/Env/envThreadGroup.hpp"
+#include "Core/Env/private/envSystemDataPAC.hpp"
 #include "Core/fs/fsLocator.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/gf/gfPaths.hpp"
 
 #include <stdarg.h>
 #include <stdio.h>
-#include <time.h>
-#include <windows.h>
+#include <ctime>
 #include <fstream>
 #include <iostream>
 #include <ostream>
@@ -41,6 +44,7 @@ namespace dbgMsg
 		//vector that will hold all of the streams this logging system will write to.
 		std::vector<dbgStream*> m_StreamList;
 		std::stringstream		m_AssertStream;
+		AssertHandler			l_AssertHandler = nullptr;
 
 		//hacks to remove memory leaks
 		std::ofstream*		l_ofs = NULL;
@@ -54,12 +58,10 @@ namespace dbgMsg
 		//--------------------------------------------------------------------
 		std::wstring getDefaultStreamName()
 		{
-			TCHAR exepath[MAX_PATH];
-			GetModuleFileName(0, exepath, MAX_PATH);
-			std::wstring fileString(exepath);
+			std::wstring fileString = envSystemDataPAC::GetExecutablePath();
 		
 			//get just the exe file
-			int fileIndex = fileString.rfind(L"\\");
+			int fileIndex = fileString.find_last_of(L"/\\");
 			std::wstring exeFile = fileString.substr(fileIndex + 1);
 
 			//extract the .exe to get only the name
@@ -83,12 +85,11 @@ namespace dbgMsg
 				defaultName = appName;
 			
 			fsLocator streamfile = gfPaths::GetPath(gfPaths::e_UserDataPath);
-			itString fname( defaultName.c_str() );
-			fname += L".log";
-			streamfile.Push(fname);
+			streamfile.Push(envString::WideCharToUTF8(defaultName) + ".log");
+			std::string fname;
 			fsFileUtil::LocatorToUnicodeString(streamfile, fname);
 
-			l_ofs = new std::ofstream( fname.GetString() );
+			l_ofs = new std::ofstream( fname );
 			addStream(std::wstring(L"default"), l_ofs);
 		}
 
@@ -129,6 +130,17 @@ namespace dbgMsg
 			std::wstring fileName = defaultName + L".csv";
 			l_csvfs = new std::ofstream(fileName.c_str());
 			addCSVStream(std::wstring(L"defaultCSV"), l_csvfs);
+		}
+
+		//--------------------------------------------------------------------
+		// Format the current local time with a strftime format string
+		//--------------------------------------------------------------------
+		std::string CurrentTimeString(const char* i_Format)
+		{
+			std::time_t now = std::time(NULL);
+			char buffer[64];
+			std::strftime(buffer, sizeof(buffer), i_Format, std::localtime(&now));
+			return buffer;
 		}
 
 		//--------------------------------------------------------------------
@@ -185,13 +197,8 @@ namespace dbgMsg
 		char* sep = " ";
 		if (stream_data->m_WriteTime_Date)
 		{
-			//	date + time wide because in some languages things like "AM" and "PM" are multi-byte
-			wchar_t date_string[64];
-			_wstrdate_s(date_string);
-			*(cur_os) << envString::WideCharToUTF8(date_string) << sep;
-			wchar_t time_string[64];
-			_wstrtime_s(time_string);
-			*(cur_os) << envString::WideCharToUTF8(time_string) << sep;
+			*(cur_os) << CurrentTimeString("%m/%d/%y") << sep;
+			*(cur_os) << CurrentTimeString("%H:%M:%S") << sep;
 			doMsgColon = true;
 		}
 
@@ -237,9 +244,7 @@ namespace dbgMsg
 		//first write the date
 		if (stream_data->m_WriteTime_Date)
 		{
-			wchar_t date_string[64];
-			_wstrdate_s(date_string);
-			*(cur_os) << date_string;
+			*(cur_os) << CurrentTimeString("%m/%d/%y");
 		}
 		//add seperator after every entry to still have an empty cell if 
 		//that information wasn't written
@@ -248,9 +253,7 @@ namespace dbgMsg
 		//now write the time
 		if (stream_data->m_WriteTime_Date)
 		{
-			wchar_t time_string[64];
-			_wstrtime_s(time_string);
-			*(cur_os) << time_string;
+			*(cur_os) << CurrentTimeString("%H:%M:%S");
 		}
 		*(cur_os) << sep;
 
@@ -341,6 +344,7 @@ namespace dbgMsg
 	{
 		std::ostringstream dbg_line(std::ostringstream::out);
 		std::string assert_msg = m_AssertStream.str();
+		m_AssertStream.str(std::string());
 
 		dbg_line << "assertion failure in " << envString::WideCharToUTF8( i_File.c_str() ) << "(" << i_Line << "):\n" << assert_msg;
 
@@ -350,6 +354,12 @@ namespace dbgMsg
 			if (_osList[i]->isStreamActive())
 				if (_osList[i]->logEnabled())
 					*(dbgMsg::WriteLog( i_File, i_Line , _osList[i])) << dbg_line.str() << std::endl;
+		}
+
+		if ( l_AssertHandler )
+		{
+			l_AssertHandler(dbg_line.str());
+			return;
 		}
 
 		if ( dbgAssertPAC::AbortContinueMessage(dbg_line.str().c_str()) )
@@ -366,6 +376,17 @@ namespace dbgMsg
 	std::stringstream& GetAssertStream()
 	{
 		return m_AssertStream;
+	}
+
+	//------------------------------------------------------------------------
+	//  Send failed assertions to i_Handler instead of the dialog
+	//
+	//------------------------------------------------------------------------
+	AssertHandler SetAssertHandler(AssertHandler i_Handler)
+	{
+		AssertHandler previous = l_AssertHandler;
+		l_AssertHandler = i_Handler;
+		return previous;
 	}
 
 	//------------------------------------------------------------------------

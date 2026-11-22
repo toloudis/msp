@@ -2,7 +2,7 @@
 **	nameString.hpp
 **
 **		This class encapsulates our system of naming.  For now it is just
-**	a std::string, but it could be extended to use a itString or hash ids or
+**	a std::string, but it could be extended to use hash ids or
 **	some other method that could save memory.
 **
 **	StudioGPU
@@ -13,9 +13,7 @@
 #endif
 #define NAME_STRING_HPP
 
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 
 #include <ostream>
 #include <string>
@@ -40,7 +38,6 @@ class nameString
 		// implicit constructors
 		//--------------------------------------------------------------------
 		nameString();
-		nameString(const itString& i_Name);
 		nameString(const std::string& i_Name);
 		nameString(const std::string& i_Name, const nameUID i_UID );
 
@@ -82,9 +79,8 @@ class nameString
 		bool IsEmpty() const;
 
 		//------------------------------------------------------------------------
-		//	operator << writes itString properties to a stream
-		// API Change: This now converts the itString to UTF8 in order to write 
-		//	to the stream.
+		//	operator << writes the string (UTF-8) to a stream; the wide
+		//	stream form converts it to a wide string.
 		//------------------------------------------------------------------------
 		friend std::ostream& operator << (std::ostream& io_os, const nameString& i_String );
 		friend std::wostream& operator << (std::wostream& io_os, const nameString& i_String );

@@ -8,7 +8,6 @@
 #include "ToolUIQt/pqt/Controls/pqtFloatConverter.hpp"
 #include "ToolUIQt/pqt/Controls/pqtControlUtil.hpp"
 
-
 #ifdef USE_QT
 
 //----------------------------------------------------------------------------
@@ -33,4 +32,6 @@ void pqtFloatConverter::SetCommonValue(pqtControl* io_pControl, float i_NewValue
 {
 	pqtControlUtil::SetScaledCommonValue<float, prtyFloat>(io_pControl, i_NewValue);
 }
+
+
 #endif

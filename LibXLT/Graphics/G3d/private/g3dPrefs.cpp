@@ -116,7 +116,15 @@ namespace g3dPrefs
 		m_bHairDepthPeel(false),
 		m_nHairDepthPeelLayers(0),
 		m_HairInterpolationCount(0),
-		m_HairClumpRadius(0.0f)
+		m_HairClumpRadius(0.0f),
+		m_TraceSamplesPerFrame(1),
+		m_TraceSampleLimit(1024),
+		m_TraceCaptureSamples(0),
+		m_TraceAORays(1),
+		m_TraceBounces(2),
+		m_TraceDebugView(e_TraceDebugOff),
+		m_TraceMaxRadiance(0.0f),
+		m_TraceDenoise(e_TraceDenoiseOff)
 	{
 	}
 

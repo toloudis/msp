@@ -14,9 +14,7 @@
 #ifndef TWX_WIDGETS_HPP
 #include "ToolUIWx/twx/twxWidgets.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 
 
 #ifdef USE_WXWIDGETS
@@ -50,13 +48,13 @@ class pythPythonDialog : public pythPythonDialogBase
 		//--------------------------------------------------------------------
 		// Add string to log textbox
 		//--------------------------------------------------------------------
-		void AddToLogTextbox(const itString& i_String);
+		void AddToLogTextbox(const std::string& i_String);
 				
 		//--------------------------------------------------------------------
 		// Add string to log. If dialog is not created yet, store the
 		//	string for later display.
 		//--------------------------------------------------------------------
-		static void AddToLog(const itString& i_String);
+		static void AddToLog(const std::string& i_String);
 
 
 	private:

@@ -50,7 +50,7 @@ pick3dPickBuffer::~pick3dPickBuffer()
 //--------------------------------------------------------------------
 // Render objects at given pixel with color encodings.
 //--------------------------------------------------------------------
-void pick3dPickBuffer::DoPickRender(int i_X, int i_Y, float i_Time, envType::UInt32 i_PickMask,
+void pick3dPickBuffer::DoPickRender(int i_X, int i_Y, float i_Time, uint32_t i_PickMask,
 									g3dPickInfo& o_PickInfo,
 									const std::vector<g3dLayer*>& i_ViewerLayers)
 {

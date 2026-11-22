@@ -17,7 +17,6 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsResourceFinderDir.hpp"
 #include "Core/fs/fsResourceFinderJoin.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
 #include "Core/prty/prtyComboBoxUIInfo.hpp"
 #include "Core/prty/prtyNumericUpDownUIInfo.hpp"
@@ -255,9 +254,9 @@ void fgmtPropertyObject::UpdateBakeFlag(prtyProperty *i_pProperty, bool i_bDirty
 		{
 			color_path = path + std::string("\\") + m_SceneNodes[i]->GetBakeName() + std::string("_Baked_Color.") + m_Data.m_BakedTextureFormat.GetValue();
 			normal_path = path + std::string("\\") + m_SceneNodes[i]->GetBakeName() + std::string("_Baked_Normals.") + m_Data.m_BakedTextureFormat.GetValue();
-			if (fsFileUtil::FileExists(fsLocator(itString(color_path.c_str()))))
+			if (fsFileUtil::FileExists(fsLocator(color_path)))
 				color_path_full += color_path + std::string("\n");
-			if (fsFileUtil::FileExists(fsLocator(itString(normal_path.c_str()))))
+			if (fsFileUtil::FileExists(fsLocator(normal_path)))
 				normal_path_full += normal_path + std::string("\n");
 		}
 		m_BakedColorPath = color_path_full;
@@ -325,7 +324,7 @@ void fgmtPropertyObject::UpdateBakeFlag(prtyProperty *i_pProperty, bool i_bDirty
 //	// look at both aotexture and aousertexture
 //	// usertexture overrides ao recalc and aotexture.
 //	itString newName = m_Data.m_AOUserTextureName.GetValue(); 
-//	std::string sNewName = itStringUtil::GetStdString(newName);
+//	std::string sNewName = newName;
 //	std::string sOldName = m_Fragments->GetOcclusionData()->m_TextureName;
 //	if (sNewName != sOldName)
 //	{

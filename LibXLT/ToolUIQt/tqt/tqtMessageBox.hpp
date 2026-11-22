@@ -1,10 +1,10 @@
 /*****************************************************************************
-**	tqtMessageBox.hpp
+**  tqtMessageBox.hpp
 **
-**	An interface to a message box.
+**      A non-managed interface to a message box.
 **
 **	StudioGPU
-**	Copyright(C) 2010 - All Rights Reserved
+**	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #ifdef TQT_MESSAGEBOX_HPP
 #error tqtMessageBox.hpp multiply included
@@ -14,12 +14,14 @@
 #ifndef TQT_WIDGETS_HPP
 #include "ToolUIQt/tqt/tqtWidgets.hpp"
 #endif
+#include <string>
 
+
+#ifdef USE_QT
 
 //============================================================================
 //	Forward references
 //============================================================================
-class itString;
 
 
 //============================================================================
@@ -47,11 +49,12 @@ namespace tqtMessageBox
 		e_AbortRetryIgnore,
 	};
 
-	//---------------------------------------------------------------------------
+	//---------------------------------------------------------------------------'
 	//	Show() - display a dialog with text
 	//
 	//	return: one of the enumerations MBReturn
 	//---------------------------------------------------------------------------
 	int Show( const char* i_Message, const char* i_Title, int i_Type = e_OKOnly );
-	int Show( const itString& i_Message, const itString& i_Title, int i_Type = e_OKOnly );
+	int Show( const std::string& i_Message, const std::string& i_Title, int i_Type = e_OKOnly );
 }
+#endif

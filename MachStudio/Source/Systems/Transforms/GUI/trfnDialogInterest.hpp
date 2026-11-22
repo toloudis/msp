@@ -34,7 +34,7 @@ class trfnDialogInterest : public cmmDialogInterest
 		//--------------------------------------------------------------------
 		//	Add Object to Placed
 		//--------------------------------------------------------------------
-		virtual void AddObject(const itString& i_FileName, const fsLocator& i_Path);
+		virtual void AddObject(const std::string& i_FileName, const fsLocator& i_Path);
 
 		//--------------------------------------------------------------------
 		//	Delete Object from Placed

@@ -27,9 +27,9 @@ mtrlToonData::mtrlToonData()
 	m_Transition1("Ambient to Midtone", 0.0f ),
 	m_Transition2("Midtone to Diffuse", 0.0f ),
 	m_Transition3("Diffuse to Specular", 0.0f ),
-	m_TextureDiffuse("Diffuse Map", itString("")),
-	m_TextureGradientMap("Gradient Map", itString("")),
-	m_TextureTransparencyMap("Transparency Map", itString("")),
+	m_TextureDiffuse("Diffuse Map", std::string()),
+	m_TextureGradientMap("Gradient Map", std::string()),
+	m_TextureTransparencyMap("Transparency Map", std::string()),
 	m_SpecularEnable("Specular Enable", true)
 {
 }
@@ -51,9 +51,9 @@ mtrlToonData::mtrlToonData(const mtrlToonData& i_Data)
 	m_Transition1("Ambient to Midtone", 0.0f ),
 	m_Transition2("Midtone to Diffuse", 0.0f ),
 	m_Transition3("Diffuse to Specular", 0.0f ),
-	m_TextureDiffuse("Diffuse Map", itString("")),
-	m_TextureGradientMap("Gradient Map", itString("")),
-	m_TextureTransparencyMap("Transprency Map", itString("")),
+	m_TextureDiffuse("Diffuse Map", std::string()),
+	m_TextureGradientMap("Gradient Map", std::string()),
+	m_TextureTransparencyMap("Transprency Map", std::string()),
 	m_SpecularEnable("Specular Enable", true )
 {
 	(*this) = i_Data;

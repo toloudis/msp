@@ -12,13 +12,13 @@
 #ifdef MDL_MODELINGPACKAGELIST_HPP
 #error mdlModelingPackageListMgr.hpp multiply included
 #endif
+#include <string>
 #define MDL_MODELINGPACKAGELIST_HPP
 
 
 //============================================================================
 //	Forward References
 //============================================================================
-class itString;
 
 
 //============================================================================
@@ -36,11 +36,11 @@ namespace mdlModelingPackageListMgr
 	//	This should be a base name so it covers all versions of the package.
 	//	For instance, "Max" would cover all versions of 3D Studio Max.
 	//------------------------------------------------------------------------
-	void Add( itString& i_ModelingPackageName );
+	void Add( const std::string& i_ModelingPackageName );
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	bool IsInList( itString& i_ModelingPackageName );
+	bool IsInList( const std::string& i_ModelingPackageName );
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------

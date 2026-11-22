@@ -17,10 +17,7 @@
 #endif
 
 // Use this define to control whether to use threading
-// Only have boost threads compiled for VC++9 in 64-bit
-#if _MSC_VER >= 1500 
 #define ENV_USE_THREADS 1
-#endif
 
 
 #ifdef ENV_USE_THREADS

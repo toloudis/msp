@@ -11,9 +11,7 @@
 #endif
 #define GUI_MAINWINDOW_HPP
 
-#ifndef IT_STRING_HPP
-#include "Core/It/itString.hpp"
-#endif 
+#include <string>
 
 #ifndef ENV_ABSTRACTION_HPP
 #include "Core/env/envAbstraction.hpp"
@@ -35,12 +33,12 @@ public:
 	//---------------------------------------------------------------------------
 	//	SetAppTitle()
 	//---------------------------------------------------------------------------
-	static void SetAppTitle( const itString& i_Text );
+	static void SetAppTitle( const std::string& i_Text );
 
 	//---------------------------------------------------------------------------
 	//	GetAppTitle()
 	//---------------------------------------------------------------------------
-	static itString GetAppTitle();
+	static std::string GetAppTitle();
 
 	//---------------------------------------------------------------------------
 	//	give focus to the main window
@@ -57,12 +55,12 @@ public:
 	//---------------------------------------------------------------------------
 	//	SetAppTitle()
 	//---------------------------------------------------------------------------
-	virtual void SetAppTitle( const itString& i_Text ) = 0;
+	virtual void SetAppTitle( const std::string& i_Text ) = 0;
 
 	//---------------------------------------------------------------------------
 	//	GetAppTitle()
 	//---------------------------------------------------------------------------
-	virtual itString GetAppTitle() = 0;
+	virtual std::string GetAppTitle() = 0;
 
 	//---------------------------------------------------------------------------
 	//	give focus to the main window

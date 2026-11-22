@@ -42,7 +42,7 @@ namespace mbrwPaintUtil
 		// GPU Pick technique
 		g3dPickInfo pickInfo;
 		i_pRenderView->DoPickRender(i_XMousePos, i_YMousePos, tmlnTimeLine::GetTimeInSeconds(), pickInfo, mnmPickMask::c_Material);
-		envType::UInt32 pick_code = pickInfo.m_ObjectID;
+		uint32_t pick_code = pickInfo.m_ObjectID;
 
 		// Get picked object
 		pick3dPickObject *pPickedObject = pick3dMgr::MatchPickCode(pick_code);

@@ -63,11 +63,7 @@ PrefsData::PrefsData()
 	m_bMultithreadViewer("Viewer Thread", true),
 	m_bDuplicateObjectsName("Duplicate Objects Keep Name", false),
 	//m_CameraPanRate("Camera Pan Rate", 1.0f),
-#ifdef WIN64
-	m_VertexAnimationBudget("Vertex Anim Budget", 2000), // in MBs
-#else
-	m_VertexAnimationBudget("Vertex Anim Budget", 200), // in MBs
-#endif
+	m_VertexAnimationBudget("Vertex Anim Budget", (sizeof(void*) == 8) ? 2000 : 200), // in MBs
 //	m_bUseHardwareTessellation("Use Hardware Tessellation", false),
 //	m_HardwareTessellationValue("Tessellation Value", 1.0f ),
 //	m_bFlatTessellation("Disable PN Smoothing", false),
@@ -84,8 +80,6 @@ PrefsData::PrefsData()
 	m_FrameRate("Frames per Second", 24.0f),
 	m_PRmanLocation("Renderer Location (prman.exe)"),
 	m_PixieLocation("Pixie Location (rndr.exe)"),
-	m_MRayLocation("Renderer Location (ray.exe)"),
-	m_MRayViewerLocation("Viewer v1.19 Location (imf_disp.exe)"),
 	m_bEnableAutoUpdate("Prompt Before Asset Update", false),
 	m_bEnableRevision("Enable Asset Update", false)
 {

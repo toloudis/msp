@@ -17,7 +17,6 @@
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/geo/geoPickRay.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/name/nameMgr.hpp"
 #include "Tool/pick3d/pick3dPickList.hpp"
 #include "Tool/sel3d/sel3dMgr.hpp"
@@ -59,11 +58,11 @@ namespace
 
 	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------
-	void create_default_name( const itString& i_Filename, nameString& o_NameString )
+	void create_default_name( const std::string& i_Filename, nameString& o_NameString )
 	{	
 		nameMgr::VerifyNoDupNameFunc verifyFunc = &verify_nodupe_name;
 		nameMgr::CreateDefaultName( 
-			nameString(itStringUtil::GetStdString( i_Filename ).c_str()),
+			nameString(i_Filename.c_str()),
 			verifyFunc,
 			o_NameString,
 			l_ObjectCounter
@@ -73,11 +72,11 @@ namespace
 
 	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------
-	void create_duplicate_name( const itString& i_Filename, nameString& o_NameString )
+	void create_duplicate_name( const std::string& i_Filename, nameString& o_NameString )
 	{
 		nameMgr::VerifyNoDupNameFunc verifyFunc = &verify_nodupe_name;
 		nameMgr::CreateDuplicateName(
-			nameString(itStringUtil::GetStdString( i_Filename ).c_str()),
+			nameString(i_Filename.c_str()),
 			verifyFunc,
 			o_NameString);
 	}
@@ -90,13 +89,13 @@ namespace
 		//	creating a generic name.
 		if (i_Name.IsEmpty())
 		{
-			itString base((i_bOrthographic) ? "ORTHO" : "CAM" );
+			std::string base((i_bOrthographic) ? "ORTHO" : "CAM" );
 			create_default_name( base, o_Name );
 		}
 		else
 		{
 			// use the original name as based to generate the new name
-			itString base(i_Name.GetString().c_str());
+			std::string base(i_Name.GetString().c_str());
 			create_duplicate_name(base, o_Name);
 			//o_Name = i_Name;
 		}
@@ -419,7 +418,7 @@ int cmraObjectMgr::GetIndexForObject( const nameString& i_Name )
 //----------------------------------------------------------------------------
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
-pick3dPickObject* cmraObjectMgr::MatchPickCode(envType::UInt32 i_PickCode)
+pick3dPickObject* cmraObjectMgr::MatchPickCode(uint32_t i_PickCode)
 {
 	const int num_objects = l_Cameras.size();
 	for (int i=0; i<num_objects; i++)

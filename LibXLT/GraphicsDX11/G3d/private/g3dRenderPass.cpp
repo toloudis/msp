@@ -34,6 +34,9 @@
 #include "Graphics/Mat/matMaterial.hpp"
 
 #include <algorithm>
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 namespace
 {
@@ -97,6 +100,7 @@ g3dRenderFullScreenQuad::~g3dRenderFullScreenQuad(void)
 
 int g3dRenderFullScreenQuad::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("RenderFullScreenQuad");
 	m_pRenderTarget->MakeCurrent();
 
 	if (m_clearDest)
@@ -146,7 +150,7 @@ g3dRenderDOF::g3dRenderDOF(matTextureDX11* i_Tex, matTextureDX11* i_Blurry,
 	m_Blurry(i_Blurry)
 {
 	// get the shader effect
-	m_Effect = g3dDX11Util::GetEffect("DOF.fx");
+	m_Effect = g3dDX11Util::GetEffect("DOF");
 }
 
 g3dRenderDOF::~g3dRenderDOF(void)
@@ -174,7 +178,7 @@ g3dRenderAlpha::g3dRenderAlpha(matTextureDX11* i_tex, g2dRenderTarget* i_target)
 :	g3dRenderFullScreenQuad(i_tex, i_target)
 {
 	// get the shader effect
-	m_effect = g3dDX11Util::GetEffect("PostAlphaMatte.fx");
+	m_effect = g3dDX11Util::GetEffect("PostAlphaMatte");
 }
 
 g3dRenderAlpha::~g3dRenderAlpha(void)
@@ -217,7 +221,7 @@ void g3dRenderAlpha::DrawQuad(float i_time)
 	m_effect->End();
 }
 
-g3dRenderText::g3dRenderText(std::vector<itString>& i_Messages, g2dFontHandle i_Font)
+g3dRenderText::g3dRenderText(std::vector<std::string>& i_Messages, g2dFontHandle i_Font)
 {
 	m_Messages = i_Messages;
 	m_Font = i_Font;
@@ -227,9 +231,10 @@ g3dRenderText::~g3dRenderText()
 }
 int g3dRenderText::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("RenderText");
 	// Display text messages
 	g2dRGBColor text_color(0x00,0xff,0x00);
-	std::vector<itString>::const_iterator it, end = m_Messages.end();
+	std::vector<std::string>::const_iterator it, end = m_Messages.end();
 	int offset = 0; 
 	int nChars = 0;
 	for ( it = m_Messages.begin(); it != end; ++it, ++offset )
@@ -237,7 +242,7 @@ int g3dRenderText::Render(float i_time)
 		int y = (offset * 15) + 30;
 		int x = 10;
 		g2dWindowDrawUtilDX11::DrawText(x, y, m_Font, (*it), text_color);
-		nChars += (*it).GetLength();
+		nChars += (*it).size();
 	}
 
 	// 2 triangles per character
@@ -340,7 +345,7 @@ g3dRenderGlow::g3dRenderGlow(matTextureDX11* i_src, g2dRenderTarget* i_dest, con
 :	g3dRenderFullScreenQuad(i_src, i_dest, false)
 {
 	// get the shader effect
-	m_effect = g3dDX11Util::GetEffect("Glow.fx");
+	m_effect = g3dDX11Util::GetEffect("Glow");
 	m_pNode = i_node;
 	m_depth = i_depth;
 }
@@ -385,7 +390,7 @@ g3dRenderOutline::g3dRenderOutline(matTextureDX11* i_src, g2dRenderTarget* i_des
 :	g3dRenderFullScreenQuad(i_src, i_dest, false)
 {
 	// get the shader effect
-	m_effect = g3dDX11Util::GetEffect("Outline.fx");
+	m_effect = g3dDX11Util::GetEffect("Outline");
 	m_mtl = pMtl;
 	m_bUseNormals = i_useNormals;
 }
@@ -441,6 +446,7 @@ void g3dRenderOutline::DrawQuad(float i_time)
 
 int g3dRenderLayer::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("RenderLayer");
 	if (m_pLayer == NULL)
 		return 0;
 
@@ -506,7 +512,7 @@ g3dRenderAA::g3dRenderAA(matTextureDX11* i_src, g2dRenderTarget* i_dest )
 :	g3dRenderFullScreenQuad(i_src, i_dest, false)
 {
 	// get the shader effect
-	m_effect = g3dDX11Util::GetEffect("AAEdgeFilter.fx");
+	m_effect = g3dDX11Util::GetEffect("AAEdgeFilter");
 }
 g3dRenderAA::~g3dRenderAA(void)
 {

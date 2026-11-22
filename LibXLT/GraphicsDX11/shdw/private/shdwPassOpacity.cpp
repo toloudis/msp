@@ -33,6 +33,9 @@
 //#include "Graphics/eff/effStrandHairData.hpp"
 #include "GraphicsDX11/eff/effStrandHair.hpp"
 #include "GraphicsDX11/Mat/matVolumeTexture.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 //define to have depths output between 0-1
 //#define USE_NORMALIZED_DEPTHS
@@ -76,7 +79,7 @@ shdwPassOpacity::shdwPassOpacity(matRenderTargetTexture* (&i_pTargets)[8], const
 	if (!l_OpacityMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/OpacityRender.fx"), matShaderMgr::GetSpecialEffect("OpacityRender.fx"));
+		p->SetShaderName(std::string("Special/OpacityRender.fx"), matShaderMgr::GetSpecialEffect("OpacityRender.fx"));
 		l_OpacityMat.SetShaderParams(p);
 	}
 	m_OverscanPixels = 0;
@@ -201,6 +204,7 @@ int shdwPassOpacity::DrawNodes()
 //----------------------------------------------------------------------------------------
 int shdwPassOpacity::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassOpacity");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassOpacity::Render" );
 	m_stats.Reset();
 
@@ -261,7 +265,7 @@ int shdwPassOpacity::RenderNode(const sNodePlusState& i_Node)
 	const matMaterial* pMaterial = &l_OpacityMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)pEffect;
-	ID3DX11Effect* pD3DEffect = i_pEffect->GetD3DXEffect();
+	fxEffect* pD3DEffect = i_pEffect->GetFxEffect();
 
 	effStrandHairData& HairData = pMaterial->StrandHairData();
 	HairData.Default();
@@ -389,7 +393,7 @@ int shdwPassOpacity::RenderHairNode(const sNodePlusState& i_Node)
 	const matMaterial* pMaterial = &l_OpacityMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)pEffect;
-	ID3DX11Effect* pD3DEffect = i_pEffect->GetD3DXEffect();
+	fxEffect* pD3DEffect = i_pEffect->GetFxEffect();
 
 //	effStrandHairData HairData;
 	effStrandHairData& HairData = pMaterial->StrandHairData();

@@ -33,6 +33,9 @@
 #include "GraphicsDX11/g3d/g3dSceneRenderUtil.hpp"
 #include "GraphicsDX11/mat/matRenderTargetTexture.hpp"
 #include "GraphicsDX11/G3d/g3dDrawStyleUtilDX11.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 //#include "profile.h"
 
 
@@ -75,7 +78,7 @@ namespace
 	// Make sure all children underneath this node
 	// have their pick codes flushed to a "not picked" state.
 	//------------------------------------------------------------------------
-	void flush_pickcodes(g3dSceneNode* i_pNode, envType::UInt32 i_PickCode)
+	void flush_pickcodes(g3dSceneNode* i_pNode, uint32_t i_PickCode)
 	{
 		i_pNode->SetLowPickCode( i_PickCode );
 		i_pNode->SetHighPickCode( i_PickCode );
@@ -91,7 +94,7 @@ namespace
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-maFloatRGBA g3dPickBufferRendererDX11::ConvertIndexToColor(envType::UInt32 i_FragmentIndex)
+maFloatRGBA g3dPickBufferRendererDX11::ConvertIndexToColor(uint32_t i_FragmentIndex)
 {
 	float r = (i_FragmentIndex & c_Mask) / c_Div;
 	i_FragmentIndex >>= c_Shift;
@@ -106,9 +109,9 @@ maFloatRGBA g3dPickBufferRendererDX11::ConvertIndexToColor(envType::UInt32 i_Fra
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-envType::UInt32 g3dPickBufferRendererDX11::ConvertColorToIndex(envType::UInt8 i_Red, 
-	envType::UInt8 i_Green,
-	envType::UInt8 i_Blue)
+uint32_t g3dPickBufferRendererDX11::ConvertColorToIndex(uint8_t i_Red, 
+	uint8_t i_Green,
+	uint8_t i_Blue)
 {
 	return ( (i_Blue << (c_Shift*2)) + (i_Green << c_Shift) + i_Red);
 }
@@ -153,6 +156,7 @@ int g3dPickBufferRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCame
 									const g3dScene &i_Scene, const std::vector<g3dLayer*>& i_ViewerLayers,
 									float i_fSimTime )
 {//PROFILE("Render");
+	G3D_PROFILE_SCOPE("PickBufferRenderer");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"g3dPickBufferRendererDX11::Render" );
 
 //	HRESULT op_result;
@@ -443,10 +447,10 @@ void g3dPickBufferRendererDX11::GetPickInfo(g2dRenderTarget* i_pWindow, g3dPickI
 	// Get color at (0,0) pixel location (the single pixel viewport set above)
 	// red is object ID, (green,blue) is UV, and alpha is depth.
 	// see MaskAlpha.fx for details.
-	envType::Float32 red = 0, green = 0, blue = 0, alpha = 0;
+	float red = 0, green = 0, blue = 0, alpha = 0;
 	// note RGBA-BGRA swap here. this undoes a channel swap that happens internally:
 	image_wrapper.GetPixelColor(0, 0, red, green, blue, alpha);
-	envType::UInt32 objectCode = (envType::UInt32)red;
+	uint32_t objectCode = (uint32_t)red;
 
 	o_PickInfo.m_ObjectID = objectCode;
 	o_PickInfo.m_Depth = alpha;

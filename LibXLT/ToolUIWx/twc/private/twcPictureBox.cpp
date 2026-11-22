@@ -6,9 +6,10 @@
 \****************************************************************************/
 #include "ToolUIWx/twc/private/twcPictureBox.hpp"
 
-#include <wx/dcclient.h>
 
 #ifdef USE_WXWIDGETS
+
+#include <wx/dcclient.h>
 
 BEGIN_EVENT_TABLE(twcPictureBox, wxPanel)
 

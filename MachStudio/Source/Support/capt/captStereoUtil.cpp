@@ -134,9 +134,9 @@ void captStereoUtil::MergeLeftRight(g2dImage* ana, g2dImage* left, g2dImage* rig
 	void* leftBits = left->Lock();
 	void* rightBits = right->Lock();
 	void* anaBits = ana->Lock();
-	BYTE* pLeftBits = (BYTE*)leftBits;
-	BYTE* pRightBits = (BYTE*)rightBits;
-	BYTE* pAnaBits = (BYTE*)anaBits;
+	uint8_t* pLeftBits = (uint8_t*)leftBits;
+	uint8_t* pRightBits = (uint8_t*)rightBits;
+	uint8_t* pAnaBits = (uint8_t*)anaBits;
 
 	int r_offset = offsets[0];
 	int g_offset = offsets[1];
@@ -213,7 +213,7 @@ void captStereoUtil::ApplyAnaglyphColorFilter(g2dImage* orig, const maFloatRGBA&
 
 	// Access bits in pImg and pAnaglyph
 	void* imgBits = orig->Lock();
-	BYTE* pImgBits = (BYTE*)imgBits;
+	uint8_t* pImgBits = (uint8_t*)imgBits;
 
 	int r_offset = offsets[0];
 	int g_offset = offsets[1];
@@ -234,10 +234,10 @@ void captStereoUtil::ApplyAnaglyphColorFilter(g2dImage* orig, const maFloatRGBA&
 			if ( rendererPFD == g2dPFD::e_Color )
 			{
 				// Apply color filter
-				pImgBits[idx+r_offset] *= (BYTE)(filter.GetRed());
-				pImgBits[idx+g_offset] *= (BYTE)(filter.GetGreen());
-				pImgBits[idx+b_offset] *= (BYTE)(filter.GetBlue());
-				pImgBits[idx+a_offset] *= (BYTE)(filter.GetAlpha());
+				pImgBits[idx+r_offset] *= (uint8_t)(filter.GetRed());
+				pImgBits[idx+g_offset] *= (uint8_t)(filter.GetGreen());
+				pImgBits[idx+b_offset] *= (uint8_t)(filter.GetBlue());
+				pImgBits[idx+a_offset] *= (uint8_t)(filter.GetAlpha());
 			} 
 			else if ( rendererPFD == g2dPFD::e_RGBA32f )
 			{

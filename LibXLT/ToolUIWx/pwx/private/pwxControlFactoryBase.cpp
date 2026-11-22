@@ -12,6 +12,7 @@
 #include "ToolUIWx/pwx/Controls/pwxEnum_ComboBox.hpp"
 #include "ToolUIWx/pwx/Controls/pwxFileName_ComboBox.hpp"
 #include "ToolUIWx/pwx/Controls/pwxFileName_TextBox.hpp"
+#include "ToolUIWx/pwx/Controls/pwxFilePath_ComboBox.hpp"
 #include "ToolUIWx/pwx/Controls/pwxFloat_ComboBox.hpp"
 #include "ToolUIWx/pwx/Controls/pwxInt32_ComboBox.hpp"
 #include "ToolUIWx/pwx/Controls/pwxListChecked_CheckListBox.hpp"
@@ -61,6 +62,10 @@ pwxControl* pwxControlFactoryBase::CreateControl(shared_ptr<prtyPropertyUIInfo>&
 		else if ( strcmp(property_type.c_str(),"FileName") == 0)
 		{
 			return new pwxFileName_ComboBox(i_pUIInfo, i_pParent);
+		}
+		else if ( strcmp(property_type.c_str(),"File Path") == 0)
+		{
+			return new pwxFilePath_ComboBox(i_pUIInfo, i_pParent);
 		}
 		else if ( strcmp(property_type.c_str(),"Float") == 0)
 		{

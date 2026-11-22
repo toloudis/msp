@@ -29,6 +29,9 @@
 #include "GraphicsDX11/g3d/g3dSceneRenderUtil.hpp"
 #include "GraphicsDX11/mat/matRenderTargetTexture.hpp"
 #include "GraphicsDX11/shdw/shdwPassTraversal.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 namespace
 {
@@ -86,7 +89,7 @@ shdwPassVelocity::shdwPassVelocity(g2dRenderTarget* i_pVelocityTarget,
 	if (!l_DrawVelocityMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/VelocityRender.fx"), matShaderMgr::GetSpecialEffect("VelocityRender.fx"));
+		p->SetShaderName(std::string("Special/VelocityRender.fx"), matShaderMgr::GetSpecialEffect("VelocityRender.fx"));
 		l_DrawVelocityMat.SetShaderParams(p);
 	}
 }
@@ -108,12 +111,13 @@ void shdwPassVelocity::SetOldTime(float time)
 //--------------------------------------------------------------------
 int shdwPassVelocity::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassVelocity");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwVelocityRendererDX11::Render" );
 	m_stats.Reset();
 	
 	// Assign shader
 	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("VelocityRender.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
+	fxEffect* pEffect = pEffBase->GetFxEffect();
 
 	// Set our global / local frame time value
 	g3dSceneGlobal::g_FrameTime = i_time;
@@ -283,7 +287,7 @@ void shdwPassVelocity::ClearObjects()
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-void shdwPassVelocity::SetupOldMatrix( const g3dSceneNode* pNode, ID3DX11Effect* pEffect ) 
+void shdwPassVelocity::SetupOldMatrix( const g3dSceneNode* pNode, fxEffect* pEffect ) 
 {
 	std::string key = get_key_str((g3dSceneNode*)pNode);
 	

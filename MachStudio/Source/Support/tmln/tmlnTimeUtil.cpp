@@ -296,7 +296,7 @@ void GetTimeStringInHMSF(const maTime& i_Time, std::string& o_TimeString)
 	std::ostringstream oss;
 	oss.setf(0, std::ios::floatfield);
 	oss.setf(std::ios::fixed, std::ios::floatfield);
-	oss<<sign<<std::setw(2)<<std::setfill('0')<<hrs<<":"<<min<<":"<<sec<<":"<<frm;
+	oss<<sign<<std::setfill('0')<<std::setw(2)<<hrs<<":"<<std::setw(2)<<min<<":"<<std::setw(2)<<sec<<"."<<std::setw(2)<<frm;
 	std::string buffer(oss.str());
 	
 	o_TimeString = buffer;
@@ -322,7 +322,7 @@ void GetTimeStringInMSF(const maTime& i_Time, std::string& o_TimeString)
 	std::ostringstream oss;
 	oss.setf(0, std::ios::floatfield);
 	oss.setf(std::ios::fixed, std::ios::floatfield);
-	oss<<sign<<std::setw(2)<<std::setfill('0')<<min<<":"<<sec<<":"<<frm;
+	oss<<sign<<std::setfill('0')<<std::setw(2)<<min<<":"<<std::setw(2)<<sec<<"."<<std::setw(2)<<frm;
 	std::string buffer(oss.str());
 	
 	o_TimeString = buffer;
@@ -346,7 +346,7 @@ void GetTimeStringInHMSM(const maTime& i_Time, std::string& o_TimeString)
 	std::ostringstream oss;
 	oss.setf(0, std::ios::floatfield);
 	oss.setf(std::ios::fixed, std::ios::floatfield);
-	oss<<sign<<std::setw(2)<<std::setfill('0')<<hrs<<":"<<min<<":"<<sec<<":"<<msec_out;
+	oss<<sign<<std::setfill('0')<<std::setw(2)<<hrs<<":"<<std::setw(2)<<min<<":"<<std::setw(2)<<sec<<":"<<std::setw(2)<<msec_out;
 	std::string buffer(oss.str());
 	
 	o_TimeString = buffer;
@@ -403,7 +403,7 @@ void GetTimeStringInHMSMAndFrames(const maTime& i_Time, float i_FPS, std::string
 	std::ostringstream oss;
 	oss.setf(0, std::ios::floatfield);
 	oss.setf(std::ios::fixed, std::ios::floatfield);
-	oss<<sign<<std::setw(2)<<std::setfill('0')<<hrs<<":"<<mins<<":"<<secs<<" ("<<std::setw(6)<<frames<<")";
+	oss<<sign<<std::setfill('0')<<std::setw(2)<<hrs<<":"<<std::setw(2)<<mins<<":"<<std::setw(2)<<secs<<":"<<std::setw(2)<<msec_out<<" ("<<std::setw(6)<<frames<<")";
 	std::string buffer(oss.str());
 	
 	o_TimeString = buffer;
@@ -419,8 +419,6 @@ void GetTimeStringInSeconds(const maTime& i_Time, std::string& o_TimeString)
 	//::sprintf( buffer, "%03.3f", i_Time );
 	std::ostringstream oss(std::ostringstream::out);
 	oss.setf(std::ios::fixed, std::ios::floatfield);
-	std::setw(3);
-	std::setfill('0');
 	oss.precision(3);
 	oss << i_Time.AsSeconds();
 	std::string buffer_temp(oss.str());

@@ -39,7 +39,7 @@ snSoundJob::~snSoundJob()
 //	SetName()
 //========================================================================
 void	
-snSoundJob::SetName( const itString i_Name )
+snSoundJob::SetName( const std::string i_Name )
 {
 	m_Name = i_Name;
 }
@@ -48,7 +48,7 @@ snSoundJob::SetName( const itString i_Name )
 //========================================================================
 //	GetName()
 //========================================================================
-itString	
+std::string	
 snSoundJob::GetName() const
 {
 	return m_Name;

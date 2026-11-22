@@ -41,7 +41,7 @@ namespace
 		float minAngle, maxAngle;
 		chChunkParserUtil::Read(i_Reader, minAngle);
 		chChunkParserUtil::Read(i_Reader, maxAngle);
-		envType::Int32 axis;
+		int32_t axis;
 		i_Reader.Read(axis);
 
 		if (i_Version >= 1)
@@ -55,7 +55,7 @@ namespace
 				// don't need control type anymore
 				//	e_RotateControl = 0,
 				//	e_TransformControl = 1
-				envType::Int32 control_type;
+				int32_t control_type;
 				i_Reader.Read(control_type);
 
 				// was vector3d, now 3 individual floats

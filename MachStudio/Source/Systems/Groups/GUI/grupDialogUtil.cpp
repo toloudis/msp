@@ -10,10 +10,18 @@
 
 #include "Systems/Groups/GUI/grupDialogDataUtil.hpp"
 #include "Systems/Groups/Data/grupDocumentChunk.hpp"
+#ifdef MSP_GUI_QT
+#include "Systems/Groups/GUI/qtGUI/grupGroupObjectsPage.hpp"
+#else
 #include "Systems/Groups/GUI/wxGUI/grupGroupObjectsPage.hpp"
+#endif
 #include "Support/grps/grpsGroupInterest.hpp"
 
+#ifdef MSP_GUI_QT
+#include "Systems/Common/GUI/qtGUI/cmmObjectDialog.hpp"
+#else
 #include "Systems/Common/GUI/wxGUI/cmmObjectDialog.hpp"
+#endif
 #include "Systems/Common/GUI/cmmObjectDialogUtil.hpp"
 #include "Systems/Common/GUI/cmmSystemDialogInterest.hpp"
 #include "Systems/Common/GUI/cmmSystemDialogUtil.hpp"
@@ -113,7 +121,7 @@ void grupDialogUtil::UpdateListDialog()
 void grupDialogUtil::UpdateDialog(grupGroupObject *i_pObject)
 {
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (i_pObject)
 	{
 		if (grupGroupObjectsPage::Instance)
@@ -133,7 +141,7 @@ void grupDialogUtil::UpdateDialog(grupGroupObject *i_pObject)
 //--------------------------------------------------------------------
 void grupDialogUtil::UpdateObjectsPage()
 {
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (grupGroupObjectsPage::Instance)
 	{
 		if (cmmObjectDialogUtil::HasTabPage(grupGroupObjectsPage::Instance))
@@ -150,7 +158,7 @@ void grupDialogUtil::UpdateObjectsPage()
 void  grupDialogUtil::AddDataPage()
 {
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (cmmObjectDialog::FormInstance)
 	{
 		if (!grupGroupObjectsPage::Instance)
@@ -166,13 +174,17 @@ void  grupDialogUtil::AddDataPage()
 void  grupDialogUtil::RemoveDataPage()
 {
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	if (grupGroupObjectsPage::Instance)
 	{
 		if (cmmObjectDialogUtil::HasTabPage(grupGroupObjectsPage::Instance))
 		{
 			cmmObjectDialogUtil::RemoveTabPage( grupGroupObjectsPage::Instance );
+#ifdef USE_QT
+			grupGroupObjectsPage::Instance->hide();
+#else
 			grupGroupObjectsPage::Instance->Show(false);
+#endif
 		}
 	}
 #endif

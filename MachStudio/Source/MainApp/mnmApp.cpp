@@ -8,9 +8,14 @@
 \****************************************************************************/
 #include "stdafx.h"
 #include "MainApp/mnmApp.hpp"
+#include "MainApp/mainCommandLine.hpp"
 
 #include "MainApp/mainConstants.hpp"
+#ifdef MSP_GUI_QT
+#include "MainApp/qtGUI/qtMainForm.hpp"
+#else
 #include "MainApp/wxGUI/wxMainForm.hpp"
+#endif
 
 #ifdef FUSION
 #include "FCSupport/fcmd/fcmdModeMgr.hpp"
@@ -22,8 +27,16 @@
 #include "Features/Prefs/PrefsData.hpp"
 #include "Features/Prefs/PrefsMgr.hpp"
 #include "Features/RenderPanels/rpnPanelViewer.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/RenderPanels/qtGUI/rpnRenderPanel.hpp"
+#else
 #include "Features/RenderPanels/wxGUI/rpnRenderPanel.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "Features/RenderPanels/qtGUI/rpnPanelGrid.hpp"
+#else
 #include "Features/RenderPanels/wxGUI/rpnPanelGrid.hpp"
+#endif
 #include "Features/SceneSetup/Data/SceneSetupData.hpp"
 #include "Support/capt/captRenderOutputDataUtil.hpp"
 #include "Support/fgmt/fgmtHighlight.hpp"
@@ -32,6 +45,7 @@
 #include "Support/mnm/mnmPaths.hpp"
 #include "Support/mnm/mnmScreenCaptureUtil.hpp"
 #include "Support/mnm/mnmSecurityMgr.hpp"
+#include "Support/mnm/mnmTimeCodeMgr.hpp"
 #include "Support/mnm/mnmTimeCodeUtil.hpp"
 #include "Support/mnm/mnmVJoystick.hpp"
 #include "Support/mode/modeModeMgr.hpp"
@@ -54,12 +68,14 @@
 #include "Core/env/envPackage.hpp"
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/Env/envThread.hpp"
+#include "Core/Env/envWorkerThread.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
 #include "Core/fs/fsPackage.hpp"
 #include "Core/gf/gfPackage.hpp"
-#include "Core/it/itPackage.hpp"
-#include "Core/It/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/Ma/maFunctions.hpp"
 #include "Graphics/GraphicsLayer.hpp"
 #include "Graphics/g2d/g2dExceptionX.hpp"
@@ -83,6 +99,15 @@
 #include "Input/in/inDeviceMgr.hpp"
 #include "Input/in/inPackage.hpp"
 #include "Support/pyth/pythUtil.hpp"
+#ifndef RLYR_PASSESOBJECT_HPP
+#include "Support/rlyr/rlyrPassesObject.hpp"
+#endif
+#ifndef RLYR_RENDERLAYERMGR_HPP
+#include "Support/rlyr/rlyrRenderLayerMgr.hpp"
+#endif
+#ifndef RPRFPREFSOBJECT_HPP
+#include "Support/rprf/rprfPrefsObject.hpp"
+#endif
 #include "Tool/api3d/api3dLightMgr.hpp"
 #include "Tool/api3d/api3dScene.hpp"
 #include "Tool/api3d/api3dTargetRendererMgr.hpp"
@@ -98,9 +123,15 @@
 #include "Tool/tma3d/tma3dRenderView.hpp"
 #include "Tool/tma3d/tma3dScreenUtil.hpp"
 #include "Tool/tma3d/tma3dViewerMgr.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/qui/quiSplashScreen.hpp"
+#else
 #include "ToolUIWx/wui/wuiSplashScreen.hpp"
+#endif
 
 #include <assert.h>
+#include <iostream>
+#include <memory>
 #include <vector>
 
 
@@ -142,11 +173,14 @@ namespace
 	//int		l_nIconsLayerIndex = 0;
 	//int		l_nManipulatorsLayerIndex = 0;
 
+	// The thread that renders each frame, kept for the next frame
+	std::unique_ptr<envWorkerThread> l_pRenderWorker;
+
 #if ENV_BUILD == ENV_DEBUGBUILD
 	const int	lc_SECURITY_CHECK_DELAY_NORMAL	= 60.0f * 0.5f;		// 30 seconds (for testing only)
-	const int	lc_SECURITY_CHECK_DELAY_INVALID	= 60.0f * 1.0f;		// 
+	const int	lc_SECURITY_CHECK_DELAY_INVALID	= 60.0f * 1.0f;		//
 	const int	lc_SECURITY_VALID_DELAY_NORMAL	= 60.0f * 0.125f;	// less than "checks"
-	const int	lc_SECURITY_VALID_DELAY_INVALID	= 60.0f * 0.25f;	// 
+	const int	lc_SECURITY_VALID_DELAY_INVALID	= 60.0f * 0.25f;	//
 	const UINT	lc_SECURITY_INVALID_COUNTER_MAX	= 2;
 #else
 	const int	lc_SECURITY_CHECK_DELAY_NORMAL	= 60.0f * 30.0f;	// 30 minutes
@@ -207,7 +241,7 @@ void render_3dWindow()
 //	RunApp() should be called to start the application.  When control
 //	returns from RunApp(), the application is finished.
 //--------------------------------------------------------------------
-//static 
+//static
 void mnmApp::RunApp()
 {
 	DBG_ASSERT( l_pAppInstance,"The app has not been created");
@@ -246,7 +280,7 @@ bool mnmApp::IsActive()
 //--------------------------------------------------------------------
 //	set this app as "active"
 //--------------------------------------------------------------------
-//static 
+//static
 void mnmApp::SetActive( bool i_bActive )
 {
 	l_bActive = i_bActive;
@@ -268,7 +302,7 @@ bool mnmApp::IsRenderEnabled()
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-//static 
+//static
 int mnmApp::GetScreenSpaceIndex()
 {
 	return l_nScreenSpaceIndex;
@@ -276,7 +310,7 @@ int mnmApp::GetScreenSpaceIndex()
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-//static 
+//static
 //int mnmApp::GetIconsLayerIndex()
 //{
 //	return l_nIconsLayerIndex;
@@ -284,50 +318,40 @@ int mnmApp::GetScreenSpaceIndex()
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-//static 
+//static
 //int mnmApp::GetManipulatorsLayerIndex()
 //{
 //	return l_nManipulatorsLayerIndex;
 //}
 
 //--------------------------------------------------------------------
-//	parse the command line and configure the app accordingly
+//	run the command line's actions, in order (it was parsed before
+//	start-up by mainCommandLine::Parse)
 //--------------------------------------------------------------------
 //static
-void mnmApp::ParseCommandLine(std::string& i_lpCmdLine)
+void mnmApp::RunCommandLine(const mainCommandLine& i_CommandLine)
 {
-	if ( i_lpCmdLine.length() == 0 )
-		return;
-
-	DBG_TRACE("Command Line: " << i_lpCmdLine.c_str());
-
-	bool bParsedAnyData	= false;
-	char seps[]		= " \t\n";
-	char seps_tok1[]	= "\"";
-	char seps_tok2[]	= " \"";
-	char seps3[]	= "\n";
-	char *token;
-
-	char pLine[1024];
-	strcpy( pLine, i_lpCmdLine.c_str() );
-	token = strtok( pLine, seps );
-	while( token != NULL )
+	std::vector<std::string>::const_iterator warning, warnings_end = i_CommandLine.m_Warnings.end();
+	for ( warning = i_CommandLine.m_Warnings.begin(); warning != warnings_end; ++warning )
 	{
-		//DBG_TRACE( "   " << token );
+		DBG_LOG( "   " << *warning );
+	}
 
-		if (   ( strcmp(token,"-file") == 0 )
-			|| ( strcmp(token,"/file") == 0 ))
+	std::vector<mainCommandLine::Action>::const_iterator it, end = i_CommandLine.m_Actions.end();
+	for ( it = i_CommandLine.m_Actions.begin(); it != end; ++it )
+	{
+		const std::string& value = it->m_Value;
+		switch ( it->m_Kind )
 		{
-			token = strtok( NULL, seps_tok1 );
-			DBG_LOG( "   Command-line FILE " << token );
+		case mainCommandLine::e_File:
+		{
+			DBG_LOG( "   Command-line FILE " << value );
 			fsLocator scenefile;
-			fsFileUtil::ANSIFilenameToLocator(std::string(token), scenefile );
-
+			fsFileUtil::ANSIFilenameToLocator(value, scenefile );
 			mnpPackage::LaunchFile( scenefile );
-			bParsedAnyData	= true;
+			break;
 		}
-		else if (   ( strcmp(token, "-lastfile") == 0 )
-				 || ( strcmp(token, "/lastfile") == 0 ))
+		case mainCommandLine::e_LastFile:
 		{
 			std::vector<fsLocator>	mru_list;
 			docSingleTypeMgr::GetMRUList( mru_list );
@@ -336,86 +360,46 @@ void mnmApp::ParseCommandLine(std::string& i_lpCmdLine)
 				fsLocator lastfile = mru_list[0];
 				mnpPackage::LaunchFile( lastfile );
 			}
-			bParsedAnyData	= true;
+			break;
 		}
-		else if (   ( strcmp(token,"-help") == 0 )
-				 || ( strcmp(token,"/help") == 0 ))
+		case mainCommandLine::e_Help:
 		{
-			// TODO - Implement a list of available commands on the command line
-			std::cout << "Command Line Parameters";
-			std::cout << "-----------------------";
-			std::cout << "-file";
-			std::cout << "-lastfile";
+			std::cout << mainCommandLine::HelpText() << std::flush;
+			break;
 		}
-		else if (   ( strcmp(token,"-show") == 0 )
-				 || ( strcmp(token,"/show") == 0 ))
+		case mainCommandLine::e_Batch:
 		{
-			// Batch mode usually hides render windows, use /show
-			// to display them.
-			appApplicationPAC::SetShowWindows(true);
-		}
-		else if (   ( strcmp(token,"-batch") == 0 )
-				 || ( strcmp(token,"/batch") == 0 ))
-		{
-			token = strtok( NULL, seps_tok1 );
-			DBG_LOG( "   Command-line BATCH-RENDER " << token );
-
+			DBG_LOG( "   Command-line BATCH-RENDER " << value );
 			fsLocator scenefile;
-			fsFileUtil::ANSIFilenameToLocator(std::string(token), scenefile );
-
+			fsFileUtil::ANSIFilenameToLocator(value, scenefile );
 			cptrPackage::LaunchBatchRender( scenefile );
-			bParsedAnyData	= true;
+			break;
 		}
-		else if (   ( strcmp(token,"-render") == 0 )
-				 || ( strcmp(token,"/render") == 0 ))
+		case mainCommandLine::e_Render:
 		{
-			token = strtok( NULL, seps_tok1 );
-			DBG_LOG( "   Command-line RENDER " << token );
-
+			DBG_LOG( "   Command-line RENDER " << value );
 			fsLocator scenefile;
-			fsFileUtil::ANSIFilenameToLocator(std::string(token), scenefile );
-
+			fsFileUtil::ANSIFilenameToLocator(value, scenefile );
 			cptrPackage::LaunchRender( scenefile );
-			bParsedAnyData	= true;
+			break;
 		}
-		else if (   ( strcmp(token,"-script") == 0 )
-				 || ( strcmp(token,"/script") == 0 ))
+		case mainCommandLine::e_Script:
 		{
-			size_t startpos = i_lpCmdLine.find("script");
-			DBG_ASSERT( startpos != std::string::npos, "SCRIPT command not found when accessing script prompt" );
-			
-			std::string command_line_string = i_lpCmdLine.substr(startpos);
-
-			startpos = command_line_string.find_first_not_of("script");
-			size_t endpos = command_line_string.find_last_not_of("\"");
-			size_t endpos2 = command_line_string.find_last_of("\"");
-			if( endpos2 != std::string::npos &&
-				endpos2 < endpos &&
-				endpos2 > startpos )
-				endpos = endpos2;
-			if( endpos == std::string::npos )
-				endpos = command_line_string.length();
-
-			std::string script_command = command_line_string.substr( startpos+1, endpos-startpos );
-			startpos = script_command.find_first_not_of(" ");
-			if( startpos != std::string::npos )
-				script_command = script_command.substr( startpos );
-
-			DBG_LOG( "   Script Line " << script_command );
+			DBG_LOG( "   Script Line " << value );
 
 			std::string command_string;
 			std::string script_string;
 			std::string args_string;
 
 			//grab just the .py
-			startpos = script_command.find_first_not_of("\"");
-			endpos = script_command.find_last_not_of("\"");
+			size_t startpos = value.find_first_not_of("\"");
+			size_t endpos = value.find_last_not_of("\"");
 			if( startpos == std::string::npos )
 				startpos = 0;
 			if( endpos == std::string::npos )
-				endpos = script_command.length();
+				endpos = value.length();
 
-			command_string = script_command.substr(startpos, endpos+1);
+			command_string = value.substr(startpos, endpos+1);
 			std::string::size_type ext = command_string.find(".py", 0);
 			ext += 3;
 			if ( ext != std::string::npos)
@@ -429,7 +413,7 @@ void mnmApp::ParseCommandLine(std::string& i_lpCmdLine)
 
 			fsLocator script_file;
 			fsFileUtil::ANSIFilenameToLocator(script_string, script_file );
-			
+
 			if (fsFileUtil::FileExists( script_file ))
 			{
 				if (args_string != "")
@@ -437,209 +421,285 @@ void mnmApp::ParseCommandLine(std::string& i_lpCmdLine)
 				else
 					pythUtil::ScriptFile( script_file );
 			}
-			bParsedAnyData	= true;
+			break;
 		}
-		else if (   ( strcmp(token,"-capFormat") == 0 )
-				 || ( strcmp(token,"/capFormat") == 0 ))
+		case mainCommandLine::e_CapFormat:
 		{
-			token = strtok( NULL, seps_tok2 );
-			DBG_LOG( "   Command-line CAPTURE-FORMAT " << token );
-			itString format(token);
-			captRenderOutputDataUtil::SetCaptureFormat( format );
-			bParsedAnyData	= true;
+			DBG_LOG( "   Command-line CAPTURE-FORMAT " << value );
+			captRenderOutputDataUtil::SetCaptureFormat( value );
+			break;
 		}
-		else if (   ( strcmp(token,"-capCompress") == 0 )
-				 || ( strcmp(token,"/capCompress") == 0 ))
+		case mainCommandLine::e_CapCompress:
 		{
-			token = strtok( NULL, seps_tok2 );
-			DBG_LOG( "   Command-line CAPTURE-COMPRESS " << token );
-			itString code(token);
-			captRenderOutputDataUtil::SetCompressCode( code );
-			bParsedAnyData	= true;
+			DBG_LOG( "   Command-line CAPTURE-COMPRESS " << value );
+			captRenderOutputDataUtil::SetCompressCode( value );
+			break;
 		}
-		else if (   ( strcmp(token,"-capCamera") == 0 )
-				 || ( strcmp(token,"/capCamera") == 0 ))
+		case mainCommandLine::e_CapCamera:
 		{
-			token = strtok( NULL, seps_tok1 );
-			DBG_LOG( "   Command-line CAPTURE-CAMERA " << token );
-			itString cam(token);
-			captRenderOutputDataUtil::SetActiveCamera( cam );
-			bParsedAnyData	= true;
+			DBG_LOG( "   Command-line CAPTURE-CAMERA " << value );
+			captRenderOutputDataUtil::SetActiveCamera( value );
+			break;
 		}
-		else if (   ( strcmp(token,"-capWidth") == 0 )
-				 || ( strcmp(token,"/capWidth") == 0 ))
+		case mainCommandLine::e_CapWidth:
 		{
-			token = strtok( NULL, seps_tok2 );
-			DBG_LOG( "   Command-line CAPTURE-WIDTH " << token );
-			itString width(token);
-			captRenderOutputDataUtil::SetCaptureWidth(itStringUtil::GetInt(width));
-			bParsedAnyData	= true;
+			DBG_LOG( "   Command-line CAPTURE-WIDTH " << value );
+			captRenderOutputDataUtil::SetCaptureWidth(envString::GetInt(value));
+			break;
 		}
-		else if (   ( strcmp(token,"-capHeight") == 0 )
-				 || ( strcmp(token,"/capHeight") == 0 ))
+		case mainCommandLine::e_CapHeight:
 		{
-			token = strtok( NULL, seps_tok2 );
-			DBG_LOG( "   Command-line CAPTURE-HEIGHT " << token );
-			itString height(token);
-			captRenderOutputDataUtil::SetCaptureHeight(itStringUtil::GetInt(height));
-			bParsedAnyData	= true;
+			DBG_LOG( "   Command-line CAPTURE-HEIGHT " << value );
+			captRenderOutputDataUtil::SetCaptureHeight(envString::GetInt(value));
+			break;
 		}
-		else if (   ( strcmp(token,"-capOutputFile") == 0 )
-				 || ( strcmp(token,"/capOutputFile") == 0 ))
+		case mainCommandLine::e_CapStartFrame:
 		{
-			token = strtok( NULL, seps_tok1 );
-			DBG_LOG( "   Command-line CAPTURE-OUTPUTFILE " << token );
-			itString file(token);
-			captRenderOutputDataUtil::SetCaptureOutputFile( file );
-			bParsedAnyData	= true;
+			DBG_LOG( "   Command-line CAPTURE-STARTFRAME " << value );
+			captRenderOutputDataUtil::SetFrameWindowStart(envString::GetInt(value));
+			break;
 		}
-		else if (   ( strcmp(token,"-capOutputPath") == 0 )
-				 || ( strcmp(token,"/capOutputPath") == 0 ))
+		case mainCommandLine::e_CapEndFrame:
 		{
-			token = strtok( NULL, seps_tok1 );
-			DBG_LOG( "   Command-line CAPTURE-OUTPUTPATH " << token );
-			itString path(token);
-			captRenderOutputDataUtil::SetCaptureOutputDirectory( path );
-			bParsedAnyData	= true;
+			DBG_LOG( "   Command-line CAPTURE-ENDFRAME " << value );
+			captRenderOutputDataUtil::SetFrameWindowEnd(envString::GetInt(value));
+			break;
 		}
-		else if (   ( strcmp(token,"-capOutputPathRoot") == 0 )
-				 || ( strcmp(token,"/capOutputPathRoot") == 0 ))
+		case mainCommandLine::e_CapOutputFile:
 		{
-			token = strtok( NULL, seps_tok1 );
-			DBG_LOG( "   Command-line CAPTURE-OUTPUTPATHROOT " << token );
-			itString path(token);
-			captRenderOutputDataUtil::SetCaptureOutputDirectoryRoot( path );
-			bParsedAnyData	= true;
+			DBG_LOG( "   Command-line CAPTURE-OUTPUTFILE " << value );
+			captRenderOutputDataUtil::SetCaptureOutputFile( value );
+			break;
 		}
-		else if (   ( strcmp(token,"-NoSplash") == 0 )
-				 || ( strcmp(token,"/NoSplash") == 0 ))
+		case mainCommandLine::e_CapOutputPath:
 		{
-			splashscreen::SetSplashFlag(false);
-			bParsedAnyData = true;
+			DBG_LOG( "   Command-line CAPTURE-OUTPUTPATH " << value );
+			captRenderOutputDataUtil::SetCaptureOutputDirectory( value );
+			break;
 		}
-		else if (   ( strcmp(token,"-new") == 0 )
-				 || ( strcmp(token,"/new") == 0 ))
+		case mainCommandLine::e_CapOutputPathRoot:
+		{
+			DBG_LOG( "   Command-line CAPTURE-OUTPUTPATHROOT " << value );
+			captRenderOutputDataUtil::SetCaptureOutputDirectoryRoot( value );
+			break;
+		}
+		case mainCommandLine::e_CapSampling:
+		{
+			DBG_LOG( "   Command-line CAPTURE-SAMPLING " << value );
+			captRenderOutputDataUtil::SetCaptureSampling(envString::GetInt(value));
+			break;
+		}
+		case mainCommandLine::e_CapJitter:
+		{
+			DBG_LOG( "   Command-line CAPTURE-JITTER " << value );
+			int filter = 0;
+			float width = 0.0f;
+			if ( mainCommandLine::SplitJitter( value, filter, width ) )
+			{
+				captRenderOutputDataUtil::SetJitteredSampling( true );
+				captRenderOutputDataUtil::SetJitterFilter( filter, width );
+			}
+			else
+			{
+				captRenderOutputDataUtil::SetJitteredSampling( false );
+			}
+			break;
+		}
+		case mainCommandLine::e_CapMotionSamples:
+		{
+			DBG_LOG( "   Command-line CAPTURE-MOTIONSAMPLES " << value );
+			captRenderOutputDataUtil::SetMotionSamples(envString::GetInt(value));
+			break;
+		}
+		case mainCommandLine::e_CapPasses:
+		{
+			DBG_LOG( "   Command-line CAPTURE-PASSES " << value );
+			//	the scene's pass names, by pass type
+			std::vector<std::string> pass_names;
+			for ( int pass = rlyrPassesObject::e_Beauty; pass <= rlyrPassesObject::e_RmanColorBleed; ++pass )
+			{
+				pass_names.push_back( captRenderOutputDataUtil::GetRenderPassName( static_cast<rlyrPassesObject::ePassType>(pass) ) );
+			}
+			//	RenderMan passes have no GPU renderer (a capture of one crashes)
+			const std::vector<int> refused = { rlyrPassesObject::e_RmanColorBleed };
+			std::vector<int> passes;
+			std::string unknown;
+			std::vector<std::string> skipped;
+			const bool matched = mainCommandLine::MatchPasses( value, pass_names, refused, passes, unknown, skipped );
+			for ( size_t i = 0; i < skipped.size(); ++i )
+			{
+				DBG_WARNING( "Command-line -capPasses: " << skipped[i]
+							 << " is a RenderMan pass, which GPU renders can't make; skipped" );
+			}
+			if ( !matched )
+			{
+				if ( unknown.empty() )
+					DBG_LOG( "   Command-line -capPasses: no pass left to render; ignored" );
+				else
+					DBG_LOG( "   Command-line -capPasses: unknown pass " << unknown << "; ignored" );
+				break;
+			}
+			std::vector<rlyrPassesObject::ePassType> pass_types;
+			for ( size_t i = 0; i < passes.size(); ++i )
+			{
+				pass_types.push_back( static_cast<rlyrPassesObject::ePassType>(passes[i]) );
+			}
+			for ( int layer = 0; layer < rlyrRenderLayerMgr::GetNumRenderLayers(); ++layer )
+			{
+				rlyrPassesObject* layer_passes = rlyrRenderLayerMgr::GetLayerRenderPasses(
+					rlyrRenderLayerMgr::GetLayerName( layer ) );
+				if ( layer_passes )
+				{
+					layer_passes->SetPasses( pass_types );
+				}
+			}
+			break;
+		}
+		case mainCommandLine::e_CapHardwareAA:
+		{
+			DBG_LOG( "   Command-line CAPTURE-HARDWAREAA " << value );
+			captRenderOutputDataUtil::SetHardwareAA( value == "on" );
+			break;
+		}
+		case mainCommandLine::e_CapTraceSamples:
+		case mainCommandLine::e_CapTraceSamplesPerFrame:
+		case mainCommandLine::e_CapTraceSampleLimit:
+		case mainCommandLine::e_CapTraceAORays:
+		case mainCommandLine::e_CapTraceBounces:
+		case mainCommandLine::e_CapTraceDebug:
+		case mainCommandLine::e_CapTraceMaxRadiance:
+		case mainCommandLine::e_CapTraceDenoise:
+		{
+			DBG_LOG( "   Command-line CAPTURE-TRACE " << int(it->m_Kind) << " " << value );
+			//	every render layer's ray tracing preferences (their callbacks
+			//	pass the values on to the layer's g3dRenderPrefs)
+			const int number = envString::GetInt(value);
+			for ( int layer = 0; layer < rlyrRenderLayerMgr::GetNumRenderLayers(); ++layer )
+			{
+				rprfPrefsObject* prefs = rlyrRenderLayerMgr::GetLayerRenderPrefs( rlyrRenderLayerMgr::GetLayerName( layer ) );
+				if ( !prefs )
+				{
+					continue;
+				}
+				switch ( it->m_Kind )
+				{
+				case mainCommandLine::e_CapTraceSamples:			prefs->m_Data.m_TraceCaptureSamples.SetValue( number ); break;
+				case mainCommandLine::e_CapTraceSamplesPerFrame:	prefs->m_Data.m_TraceSamplesPerFrame.SetValue( number ); break;
+				case mainCommandLine::e_CapTraceSampleLimit:		prefs->m_Data.m_TraceSampleLimit.SetValue( number ); break;
+				case mainCommandLine::e_CapTraceAORays:				prefs->m_Data.m_TraceAORays.SetValue( number ); break;
+				case mainCommandLine::e_CapTraceDebug:				prefs->m_Data.m_TraceDebugView.SetValue( number ); break;
+				case mainCommandLine::e_CapTraceMaxRadiance:		prefs->m_Data.m_TraceMaxRadiance.SetValue( strtof( value.c_str(), NULL ) ); break;
+				case mainCommandLine::e_CapTraceDenoise:			prefs->m_Data.m_TraceDenoise.SetValue( number ); break;
+				default:											prefs->m_Data.m_TraceBounces.SetValue( number ); break;
+				}
+			}
+			break;
+		}
+		case mainCommandLine::e_New:
 		{
 			DBG_LOG( "   Command-line NEW" );
-
 			mnpPackage::LaunchNew();
-			bParsedAnyData	= true;
+			break;
 		}
-		else if (   ( strcmp(token,"-license") == 0 )
-				 || ( strcmp(token,"/license") == 0 ))
+		case mainCommandLine::e_License:
 		{
-			token = strtok( NULL, seps_tok1 );
-			DBG_LOG( "   Command-line license " << token );
-
-			std::string license_str(token);
+			DBG_LOG( "   Command-line license " << value );
+			std::string license_str(value);
 			mnmSecurityMgr::ValidateLicense(license_str);
-			bParsedAnyData	= true;
+			break;
 		}
-		else if (   ( strcmp(token,"-version") == 0 )
-				 || ( strcmp(token,"/version") == 0 ))
+		case mainCommandLine::e_Version:
 		{
-			itString helpMessage = itString(mnmConstants::c_PRODUCT_FOR_DISPLAY);
-			helpMessage += L" ";
+			std::string helpMessage = std::string(mnmConstants::c_PRODUCT_FOR_DISPLAY);
+			helpMessage += " ";
 		#ifdef WIN64
-			helpMessage += itString(mnmConstants::cw_64BIT);
+			helpMessage += std::string(mnmConstants::c_64BIT);
 		#else
 			#ifdef WIN32
-			helpMessage += itString(mnmConstants::cw_32BIT);
+			helpMessage += std::string(mnmConstants::c_32BIT);
 			#endif
 		#endif
-			helpMessage += L" (";
-			helpMessage += itString(mainConstants::mc_ExecutableVersion);
-			helpMessage += L")";
-			helpMessage += L"\r\n";
-			helpMessage += L"\r\n";
-			helpMessage += mnmConstants::cw_COPYRIGHT;
-			helpMessage += L"\r\n";
-			helpMessage += mnmConstants::cw_RIGHTS;
-			helpMessage += L"\r\n";
-			std::string outputstr = itStringUtil::GetStdString(helpMessage);
+			helpMessage += " (";
+			helpMessage += std::string(mainConstants::mc_ExecutableVersion);
+			helpMessage += ")";
+			helpMessage += "\r\n";
+			helpMessage += "\r\n";
+			helpMessage += mnmConstants::c_COPYRIGHT;
+			helpMessage += "\r\n";
+			helpMessage += mnmConstants::c_RIGHTS;
+			helpMessage += "\r\n";
+			std::string outputstr = helpMessage;
 			std::cout << outputstr.c_str();
+			break;
 		}
-		else
+		case mainCommandLine::e_OpenPath:
 		{
-			if (!bParsedAnyData)
+			DBG_LOG( "   Open File from command line = " << value.c_str() );
+
+			fsLocator scenefile;
+			std::string typeCheck;
+			fsFileUtil::ANSIFilenameToLocator(value, scenefile );
+			if ( fsFileUtil::FileExists( scenefile ) )
 			{
-				//	If the code gets to this case then we assume the user
-				//	has double-clicked on an MAB and launched the app via
-				//	file type association.
-				//
-				//	Ignore the token and use the whole line.
-				//
-				size_t startpos = i_lpCmdLine.find_first_not_of("\"");
-				size_t endpos = i_lpCmdLine.find_last_not_of("\"");
-				i_lpCmdLine = i_lpCmdLine.substr( startpos, endpos-startpos+1 );
-				DBG_LOG( "   Open File from command line = " << i_lpCmdLine.c_str() );
-
-				fsLocator scenefile;
-				std::string typeCheck;
-				fsFileUtil::ANSIFilenameToLocator(i_lpCmdLine, scenefile );
-				if ( fsFileUtil::FileExists( scenefile ) )
-				{	
-					fsFileUtil::LocatorToANSIFilename(scenefile, typeCheck);
-					if (typeCheck.find(".mab") != std::string::npos)
-					{
-						//DBG_TRACE( "   Opening Scene " << token );
-						mnpPackage::LaunchFile( scenefile );
-					}
-					else if ((typeCheck.find(".chx") != std::string::npos)
-						  || (typeCheck.find(".gxb") != std::string::npos) )
-					{
-						SceneSetupData SceneData;
-						std::string chtrFileName;
-
-						//get the project directory for this character file
-						fsLocator tempLocator = scenefile;
-						tempLocator.RemoveAfter(itString("Data"));
-						tempLocator.Pop();
-						std::string tempString;
-						fsFileUtil::LocatorToANSIFilename(tempLocator, tempString);
-						//DBG_TRACE( "   projectDirectory " << tempString.c_str());
-
-						SceneData.m_Data.m_ProjectDirectory = tempString;
-
-						//Get the project name
-						tempString = itStringUtil::GetStdString(tempLocator.GetLastName());
-						//DBG_TRACE( "   projectName " << tempString.c_str());
-						SceneData.m_Data.m_ProjectName = tempString;
-
-						//Create a new scene file name with tempScene appended after the character's file name
-						tempString = itStringUtil::GetStdString(scenefile.GetLastName());
-						chtrFileName = tempString;
-						tempString = tempString.substr(0, tempString.find("."));
-						tempString += "_tempScene";
-						//DBG_TRACE( "   New Scene File name " << tempString.c_str() );
-						SceneData.m_Data.m_SceneName = tempString;
-
-						//scene info is complete
-						SceneData.m_Data.m_bFinished = true;
-
-						//	prepare the initial scene directory based on project settings
-						//
-						itString scene_name(SceneData.m_Data.m_SceneName.c_str());
-						fsLocator project_dir;
-						fsFileUtil::ANSIFilenameToLocator( SceneData.m_Data.m_ProjectDirectory, project_dir );
-						mnmPaths::SetupPaths( project_dir, scene_name );
-						guiSingleDocHandler::SetInitialDirectory( gfPaths::GetPath( mnmPaths::e_SaveShots ) );
-
-						chtrDialogInterest newCharacter;
-						newCharacter.AddObject(itString(chtrFileName.c_str()), scenefile);
-					}
+				fsFileUtil::LocatorToANSIFilename(scenefile, typeCheck);
+				if (typeCheck.find(".mab") != std::string::npos
+					|| docSingleTypeMgr::IsForeignFile(scenefile))
+				{
+					//DBG_TRACE( "   Opening Scene " << token );
+					mnpPackage::LaunchFile( scenefile );
 				}
+				else if ((typeCheck.find(".chx") != std::string::npos)
+					  || (typeCheck.find(".gxb") != std::string::npos) )
+				{
+					SceneSetupData SceneData;
+					std::string chtrFileName;
 
-				return;
+					//get the project directory for this character file
+					fsLocator tempLocator = scenefile;
+					tempLocator.RemoveAfter(std::string("Data"));
+					tempLocator.Pop();
+					std::string tempString;
+					fsFileUtil::LocatorToANSIFilename(tempLocator, tempString);
+					//DBG_TRACE( "   projectDirectory " << tempString.c_str());
+
+					SceneData.m_Data.m_ProjectDirectory = tempString;
+
+					//Get the project name
+					tempString = tempLocator.GetLastName();
+					//DBG_TRACE( "   projectName " << tempString.c_str());
+					SceneData.m_Data.m_ProjectName = tempString;
+
+					//Create a new scene file name with tempScene appended after the character's file name
+					tempString = scenefile.GetLastName();
+					chtrFileName = tempString;
+					tempString = tempString.substr(0, tempString.find("."));
+					tempString += "_tempScene";
+					//DBG_TRACE( "   New Scene File name " << tempString.c_str() );
+					SceneData.m_Data.m_SceneName = tempString;
+
+					//scene info is complete
+					SceneData.m_Data.m_bFinished = true;
+
+					//	prepare the initial scene directory based on project settings
+					//
+					std::string scene_name(SceneData.m_Data.m_SceneName.c_str());
+					fsLocator project_dir;
+					fsFileUtil::ANSIFilenameToLocator( SceneData.m_Data.m_ProjectDirectory, project_dir );
+					mnmPaths::SetupPaths( project_dir, scene_name );
+					guiSingleDocHandler::SetInitialDirectory( gfPaths::GetPath( mnmPaths::e_SaveShots ) );
+
+					chtrDialogInterest newCharacter;
+					newCharacter.AddObject(chtrFileName, scenefile);
+				}
 			}
+			break;
 		}
-
-		token = strtok( NULL, seps );
+		}
 	}
 }
 
 //--------------------------------------------------------------------
-//static 
+//static
 // return value in KB
 //--------------------------------------------------------------------
 float mnmApp::QueryVideoMemory()
@@ -680,14 +740,14 @@ void mnmApp::SetWindowSize(int i_width, int i_height)
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 mnmApp::mnmApp()
-:	m_pSystem(NULL), 
+:	m_pSystem(NULL),
 	m_pSystem3D(NULL)
 {
 	l_pAppInstance = this;
 
 	mnmApp::sm_FPSAverage.SetHistorySize(100);
 	mnmApp::SetActive( false );
-	
+
 	std::vector<fsLocator> iconPathList;
 	gfPaths::GetPathList(mnmPaths::e_ExeArt, iconPathList);
 
@@ -742,7 +802,7 @@ void mnmApp::InitializeRender(void *i_HwndFake, void *i_Hwnd, int i_Width, int i
 #ifdef DEMO_VERSION
 	//	limit the memory for the demo
 	const int lc_MINIMUM_VIDEO_MEMORY = 1000000;	// 1gb = 1073741824 4gb = 4021288960 (divide by 1024 to get constant)
-	//const envType::UInt64 lc_MINIMUM_VIDEO_MEMORY = 8000000000;	// 1gb = 1073741824 4gb = 4021288960
+	//const uint64_t lc_MINIMUM_VIDEO_MEMORY = 8000000000;	// 1gb = 1073741824 4gb = 4021288960
 	if (l_MaxVideoMem < lc_MINIMUM_VIDEO_MEMORY)
 	{
 		std::string msg = "Unfortunately, your graphics card does not have a sufficient amount of memory to run this trial version of ";
@@ -793,7 +853,7 @@ void mnmApp::InitializeRender(void *i_HwndFake, void *i_Hwnd, int i_Width, int i
 	this->m_RenderViews.push_back(pMainView);
 	tma3dRenderView::SetActiveRenderView(pMainView);
 
-	std::vector<dbgStream*> _osList = dbgMsg::GetStreamList(); 
+	std::vector<dbgStream*> _osList = dbgMsg::GetStreamList();
 	std::vector<bool> doThreadList(_osList.size());
 	std::vector<bool> doFileList(_osList.size());
 
@@ -833,7 +893,7 @@ void mnmApp::InitializeRender(void *i_HwndFake, void *i_Hwnd, int i_Width, int i
 	//	g3dLayer::e_World, g3dLayer::e_Additive,
 	//	false, false, false, true);
 
-	
+
 	// Now we can create the text label for the main render window
 	// after the shaders are enabled and the screen layer has been created.
 	fsLocator font_loc;
@@ -884,7 +944,7 @@ tma3dRenderView* mnmApp::GetRenderView(int i_Index)
 }
 
 //--------------------------------------------------------------------
-// GetNumberOfRenderViews - return the number of render views 
+// GetNumberOfRenderViews - return the number of render views
 //--------------------------------------------------------------------
 int mnmApp::GetNumberOfRenderViews()
 {
@@ -896,6 +956,13 @@ int mnmApp::GetNumberOfRenderViews()
 //--------------------------------------------------------------------
 void mnmApp::DeInitializeRender()
 {
+	// Waits for a render still in progress, then stops the render thread
+	l_pRenderWorker.reset();
+
+	// Playback mode makes the time code text and frees it when the mode
+	// ends, which it doesn't when the app exits during playback
+	mnmTimeCodeMgr::DeInitialize();
+
 	envSTLHelpers::DeleteContainer(m_RenderViews);
 
 	//api3dBakeScene::DeInitialize();
@@ -912,8 +979,8 @@ void mnmApp::TryThink()
 {
 	//bga - I would like to handle exceptions here, but I am not sure what we could
 	// do about them. I don't want to continually pop up messages when the rendering fails
-	// because the user will need to be able to click other menu items in order to 
-	// fix the problem. 
+	// because the user will need to be able to click other menu items in order to
+	// fix the problem.
 	//
 	try
 	{
@@ -963,8 +1030,8 @@ void mnmApp::Think()
 	// think the camera manager
 	//mnmCameraMgr::Think();
 
-	// Look for tilde hotkey here instead of in 
-	// the window code so that we can turn on 
+	// Look for tilde hotkey here instead of in
+	// the window code so that we can turn on
 	// a tighter render loop, even when not currently rendering.
 	if ( inDeviceMgr::GetKeyboard() &&
 		inDeviceMgr::GetKeyboard()->IsReleased(inKeys::e_TILDE) )
@@ -1008,7 +1075,7 @@ void mnmApp::Think()
 
 	if (mnmApp::IsRenderEnabled())
 	{
-		// Our panel viewers need to do some thinking to setup the 
+		// Our panel viewers need to do some thinking to setup the
 		// overlay planes for their rendering. Do this before the proxy manager
 		// update, and not in Render() anymore in order to better multithread it.
 		float timeline_time = tmlnTimeLine::GetTimeInSeconds();
@@ -1107,7 +1174,7 @@ void mnmApp::Render()
 	// the rendering is controlled by the mode itself.
 	if (mnmApp::IsRenderEnabled())
 	{
-		// If there is already a render thread active, have to 
+		// If there is already a render thread active, have to
 		// wait until it finishes
 		if (!g3dThreadControl::IsRenderThreadActive())
 		{
@@ -1131,14 +1198,14 @@ void mnmApp::Render()
 				// in the highlighting.
 				bool bHighlightIsOn = (mtrlHighlight::AreMaterialsHighlighted() ||
 									   fgmtHighlight::AreSurfacesHighlighted());
-			
-				// Note: debug display forces re-renders in order to measure 
+
+				// Note: debug display forces re-renders in order to measure
 				// the frame rate correctly.
 				m_RenderViews[0]->GetWindow()->EnableDebugOverlay(l_bDebugDisplay);
 
 				// Were there any changes made by the proxies? If not,
-				// then we don´t have to update the render views.
-				if ( bHadProxyUpdates || gpxRenderControl::IsRenderNeeded() 
+				// then we don't have to update the render views.
+				if ( bHadProxyUpdates || gpxRenderControl::IsRenderNeeded()
 					|| bHighlightIsOn ||  l_bDebugDisplay)
 				{
 					// Clear dirty bit now
@@ -1151,9 +1218,10 @@ void mnmApp::Render()
 						guiStatusBarMgr::SetText( mnmConstants::e_SBPanel_RenderThread, "*" );
 						guiStatusBarMgr::SetToolTip( mnmConstants::e_SBPanel_RenderThread, "Render thread active");
 
-						envThread render_thread(DoRenderThread);
+						if (!l_pRenderWorker)
+							l_pRenderWorker = std::make_unique<envWorkerThread>();
+						l_pRenderWorker->Post(DoRenderThread);
 						g3dThreadControl::WaitForRenderThreadStart();
-						render_thread.detach();//?
 					}
 					else
 					{
@@ -1190,10 +1258,10 @@ void mnmApp::DoRender()
 	//	keep start time of render
 	float render_time = appTime::GetTime();
 
-	// Scene's Think() was pulled out of the mode´s Think in order to 
+	// Scene's Think() was pulled out of the mode's Think in order to
 	// refactor it into the render thread.
 	float timeline_time = tmlnTimeLine::GetTimeInSeconds();
-	//DBG_ASSERT(timeline_time == appSimTime::GetTime(), "Timeline and simulation time don´t match");
+	//DBG_ASSERT(timeline_time == appSimTime::GetTime(), "Timeline and simulation time don't match");
 	//DBG_LOG("Timeline: " << timeline_time << " Sim time: " << appSimTime::GetTime());
 	api3dScene::Think( timeline_time );
 
@@ -1275,7 +1343,7 @@ void mnmApp::SetRenderPass(int i_RenderPassType, std::string& i_RenderPassName)
 //		g3dPrefs::g3dRenderPrefs prefs = g3dPrefs::CurrentPrefs();
 		// set up prefs for renderpass
 //		rlyrPassesObject::AdjustPrefs((rlyrPassesObject::ePassType)i_RenderPassType, prefs);
-		
+
 		// enum type conversion
 		tma3dRenderView::RendererType rType;
 		switch (i_RenderPassType)
@@ -1336,7 +1404,7 @@ void mnmApp::SetRenderPass(int i_RenderPassType, std::string& i_RenderPassName)
 
 		// set the pass string.
 		//
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		rpnRenderPanel *pRenderPane = rpnPanelGrid::Instance->GetRenderPanel(0);
 		if (pRenderPane != NULL && pRenderPane->IsActiveView())
 		{
@@ -1393,6 +1461,8 @@ void mnmApp::Exit()
 
 #ifdef USE_WXWIDGETS
 	wxMainForm::Exit();
+#elif defined(USE_QT)
+	qtMainForm::Exit();
 #else
 	appApplication::Exit();
 #endif

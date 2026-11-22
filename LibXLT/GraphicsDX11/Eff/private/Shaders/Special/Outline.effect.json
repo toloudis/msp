@@ -1,0 +1,76 @@
+{
+  "source": "Special/Outline.fx",
+  "hlsl": "Outline.hlsl",
+  "techniques": [
+    {
+      "name": "Default",
+      "passes": [
+        {
+          "name": "p0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "PS_OutlineD"
+            }
+          }
+        },
+        {
+          "name": "p1",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VSMain"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "PS_OutlineN"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "samplers": {
+    "g_Sampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_POINT",
+        "AddressU": "Clamp",
+        "AddressV": "Clamp"
+      }
+    }
+  },
+  "variables": {
+    "colorTexture": {
+      "type": "Texture2D"
+    },
+    "g_depthScale": {
+      "type": "float"
+    },
+    "g_minAngle": {
+      "type": "float"
+    },
+    "g_maxAngle": {
+      "type": "float"
+    },
+    "g_thickness": {
+      "type": "float"
+    },
+    "g_outlineClr": {
+      "type": "float4"
+    },
+    "g_ViewportDimensions": {
+      "type": "float2"
+    },
+    "g_minWidth": {
+      "type": "float"
+    },
+    "g_maxWidth": {
+      "type": "float"
+    }
+  }
+}

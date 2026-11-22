@@ -48,7 +48,7 @@
 #endif
 
 #ifndef MNM_AVIUTIL_HPP
-#include "Support/mnm/mnmAviUtil.hpp"
+#include "Core/fs/fsAviFile.hpp"
 #endif
 
 #include <vector>
@@ -200,7 +200,7 @@ private:
 	//prtyFloat				m_fVideoStartTime;
 	//prtyFloat				m_fVideoEndTime;
 
-	mnmAviUtil::HAVI		m_pPlayingVideo;
+	fsAviFile::Handle		m_pPlayingVideo;
 };
 
 //--------------------------------------------------------------------

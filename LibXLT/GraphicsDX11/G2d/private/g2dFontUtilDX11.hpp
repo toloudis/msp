@@ -24,10 +24,8 @@
 #include <string>
 #include <map>
 
-#define BITMAP_FONT_SPRITE
 #undef DrawText
 
-class itString;
 class matTexture;
 class scrText;
 
@@ -37,7 +35,7 @@ public:
 	g2dFontObjectDX11(matTexture* i_FontMap);
 	~g2dFontObjectDX11();
 
-	void DrawText(const itString& i_Text, const maFloatRGBA& i_Color, int i_OffsetX = 0, int i_OffsetY = 0);
+	void DrawText(const std::string& i_Text, const maFloatRGBA& i_Color, int i_OffsetX = 0, int i_OffsetY = 0);
 	void SetFontMap(matTexture* i_fontMap);
 	void SetTextSize(float i_Size) {m_TextSize = i_Size;}
 
@@ -76,7 +74,7 @@ public:
 	//	a g2dFontHandle which can be used later.  When you are done with the
 	//	font, call ReleaseFont.
 	//------------------------------------------------------------------------
-	g2dFontHandle LoadFont(const itString& i_Name, int i_Size);
+	g2dFontHandle LoadFont(const std::string& i_Name, int i_Size);
 
 	//------------------------------------------------------------------------
 	//	ReleaseFont informs the system that you are done with the given
@@ -89,13 +87,12 @@ public:
 	// g2dFontHandle.  It looks this up in the system to learn exactly what
 	// the system loaded.
 	//------------------------------------------------------------------------
-	void GetLoadedFontName( g2dFontHandle i_Font, itString& o_Name );
 	void GetLoadedFontName( g2dFontHandle i_Font, std::string& o_Name );
 
 	//------------------------------------------------------------------------
 	//	GetTextSizeInPixels returns the width and height in pixels of the given text and font
 	//------------------------------------------------------------------------
-	void GetTextSizeInPixels(g2dFontHandle i_Font, const itString& i_Text, int& o_Width, int& o_Height);
+	void GetTextSizeInPixels(g2dFontHandle i_Font, const std::string& i_Text, int& o_Width, int& o_Height);
 
 	//------------------------------------------------------------------------
 	//	Get and set the global font path
@@ -113,11 +110,7 @@ public:
 	{
 		FontInfo() : /*m_Font(NULL),*/ m_Reference(0) {}
 
-#ifdef BITMAP_FONT_SPRITE
 		g2dFontObjectDX11* m_Font;
-#else
-		IDWriteTextFormat* m_Font;
-#endif
 
 		int m_Reference;
 	};

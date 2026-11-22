@@ -31,6 +31,9 @@
 #include "Graphics/G3d/g3dConditionalCompile.hpp"
 #include "GraphicsDX11/eff/effShaderBaseDX11.hpp"
 #include "GraphicsDX11/G3d/g3dDX11TextureUtil.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 #define TANGENT_NORMALS true
 
@@ -99,14 +102,14 @@ void shdwPassNormals::InitializeMaterial()
 	if (!l_DrawNormalMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/NormalMap.fx"), matShaderMgr::GetSpecialEffect("NormalMap.fx"));
+		p->SetShaderName(std::string("Special/NormalMap.fx"), matShaderMgr::GetSpecialEffect("NormalMap.fx"));
 		l_DrawNormalMat.SetShaderParams(p);
 	}
 
 	if (!l_DrawHairMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/HairDefault.fx"), matShaderMgr::GetSpecialEffect("HairDefault.fx"));
+		p->SetShaderName(std::string("Special/HairDefault.fx"), matShaderMgr::GetSpecialEffect("HairDefault.fx"));
 		l_DrawHairMat.SetShaderParams(p);
 	}
 }
@@ -115,6 +118,7 @@ void shdwPassNormals::InitializeMaterial()
 //----------------------------------------------------------------------------------------
 int shdwPassNormals::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassNormals");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassNormals::Render" );
 	m_stats.Reset();
 
@@ -229,7 +233,7 @@ int shdwPassNormals::RenderNode(const sNodePlusState& i_Node, bool i_isTanSpace,
 	const matMaterial* pMaterial = &l_DrawNormalMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)pEffect;
-	ID3DX11Effect* pD3DEffect = i_pEffect->GetD3DXEffect();
+	fxEffect* pD3DEffect = i_pEffect->GetFxEffect();
 
 	if (i_bRenderPositions)
 	{

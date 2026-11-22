@@ -12,11 +12,19 @@
 
 #include "Features/Prefs/PrefsDialogUtil.hpp"
 #include "Features/Prefs/PrefsMgr.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/Prefs/qtGUI/prefsLayoutChoice.hpp"
+#else
 #include "Features/Prefs/wxGUI/prefsLayoutChoice.hpp"
+#endif
 
 #include "Tool/cma/cmaCommandMgr.hpp"
 #include "Tool/gui/guiDialogTabbedMgr.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtToolbarMgr.hpp"
+#else
 #include "ToolUIWx/twx/twxToolbarMgr.hpp"
+#endif
 #include "Systems/Common/GUI/cmmSystemDialogUtil.hpp"
 
 #include "Tool/cma/cmaCommandSimple.hpp"

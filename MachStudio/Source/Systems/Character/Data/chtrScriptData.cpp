@@ -38,14 +38,14 @@ chtrScriptData::chtrScriptData(const chtrData& i_BaseData )
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-chtrScriptData::chtrScriptData(const itString& i_Filename )
+chtrScriptData::chtrScriptData(const std::string& i_Filename )
 : m_BaseData(i_Filename)
 {
 }
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-chtrScriptData::chtrScriptData(	const itString& i_Filename,
+chtrScriptData::chtrScriptData(	const std::string& i_Filename,
 								const maPoint3d& i_Position,
 								const maRotation& i_Orientation )
 : m_BaseData(i_Filename, i_Position, i_Orientation)
@@ -99,7 +99,7 @@ chtrScriptData& chtrScriptData::operator=(const chtrScriptData& i_Data)
 //----------------------------------------------------------------------------
 //		chtrCharactersData
 //----------------------------------------------------------------------------
-void chtrCharactersData::Add(	const itString& i_Filename,
+void chtrCharactersData::Add(	const std::string& i_Filename,
 								const maPoint3d& i_Position,
 								const maRotation& i_Orientation )
 {

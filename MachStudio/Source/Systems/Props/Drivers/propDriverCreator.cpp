@@ -9,6 +9,8 @@
 
 #include "Systems/Props/Drivers/propDriverCreator.hpp"
 
+#include "Core/it/itStringUtil.hpp"
+
 #include "Systems/Props/Timeline/propAdapterGetPosition.hpp"
 #include "Systems/Props/Data/propDataParser.hpp"
 //#include "Systems/Props/Drivers/propDriverAIMoveBase.hpp"
@@ -216,7 +218,7 @@ tmlnDriver* propDriverCreator::CreateDriverByName( const char* i_DriverName,
 	if (pDriver != NULL) 
 		return pDriver;
 
-	//if ( !::_stricmp(i_DriverName,PROPDRIVERNAME_AIMOVEBASE) )
+	//if ( itStringUtil::CompareNoCase(i_DriverName, PROPDRIVERNAME_AIMOVEBASE) == 0 )
 	//{
 	//	propDriverAIMoveBase* pDriver = new propDriverAIMoveBase( prop_obj );
 	//	pDriver->SetName( PROPDRIVERNAME_AIMOVEBASE );
@@ -233,7 +235,7 @@ tmlnDriver* propDriverCreator::CreateDriverByName( const char* i_DriverName,
 	//	return pDriver;
 	//}
 	//else 
-	if ( !::_stricmp(i_DriverName,PROPDRIVERNAME_ANIMATIONFULL) )
+	if ( itStringUtil::CompareNoCase(i_DriverName, PROPDRIVERNAME_ANIMATIONFULL) == 0 )
 	{
 		propDriverAnimationFull* pDriver = new propDriverAnimationFull( prop_obj->ChannelAnimationFull(), c_PDAF );
 		pDriver->SetName( PROPDRIVERNAME_ANIMATIONFULL );
@@ -245,7 +247,7 @@ tmlnDriver* propDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (!::_stricmp(i_DriverName,PROPDRIVERNAME_SPLINEORI))
+	else if (itStringUtil::CompareNoCase(i_DriverName, PROPDRIVERNAME_SPLINEORI) == 0)
 	{
 		tmlnDriverSplineOriented * pDriver = new tmlnDriverSplineOriented( prop_obj->ChannelPosition(), 
 			prop_obj->ChannelOrientation(), c_POSP, prop_obj );
@@ -268,7 +270,7 @@ tmlnDriver* propDriverCreator::CreateDriverByName( const char* i_DriverName,
 		Ochannel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (!::_stricmp(i_DriverName, PROPDRIVERNAME_ATTACHORIENT))
+	else if (itStringUtil::CompareNoCase(i_DriverName, PROPDRIVERNAME_ATTACHORIENT) == 0)
 	{
 		tmlnDriverAttachOrient * pDriver = new tmlnDriverAttachOrient( prop_obj->ChannelPosition(), prop_obj->ChannelOrientation(), c_PATO );
 		pDriver->SetName(PROPDRIVERNAME_ATTACHORIENT);
@@ -283,7 +285,7 @@ tmlnDriver* propDriverCreator::CreateDriverByName( const char* i_DriverName,
 		Ochannel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if ( !::_stricmp(i_DriverName, PROPDRIVERNAME_SOUND) )
+	else if ( itStringUtil::CompareNoCase(i_DriverName, PROPDRIVERNAME_SOUND) == 0 )
 	{
 		fsLocator snddir;
 		prop_obj->GetDirectory(snddir);

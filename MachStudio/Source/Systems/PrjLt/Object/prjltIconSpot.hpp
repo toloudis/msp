@@ -82,8 +82,8 @@ public:
 	//----------------------------------------------------------------------------
 	// Find the object that matches the pick code from an earlier pick render.
 	//----------------------------------------------------------------------------
-	virtual bool PositionContainsPickCode(envType::UInt32 i_PickCode) const;
-	virtual bool TargetContainsPickCode(envType::UInt32 i_PickCode) const;
+	virtual bool PositionContainsPickCode(uint32_t i_PickCode) const;
+	virtual bool TargetContainsPickCode(uint32_t i_PickCode) const;
 
 	//----------------------------------------------------------------------------
 	// Get current scale values for different views of the icons

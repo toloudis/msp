@@ -15,9 +15,7 @@
 #ifndef TMLN_DRIVERINFO_HPP
 #include "Support/tmln/tmlnDriverInfo.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 #ifndef MA_VECTOR3D_HPP
 #include "Core/ma/maVector3d.hpp"
 #endif

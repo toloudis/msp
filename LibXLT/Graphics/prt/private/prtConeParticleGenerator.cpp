@@ -30,7 +30,7 @@ class ConeParticle : public sprtSpriteData
 	public:
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		ConeParticle(	envType::Int32 i_ID,
+		ConeParticle(	int32_t i_ID,
 						const maPoint3d& i_Position,
 						const maVector3d& i_Velocity,
 						const maVector3d& i_Acceleration,
@@ -67,7 +67,7 @@ class ConeParticle : public sprtSpriteData
 		//--------------------------------------------------------------------
 		// accessors
 		//--------------------------------------------------------------------
-		envType::Int32 GetID() { return m_ID; }
+		int32_t GetID() { return m_ID; }
 
 		//--------------------------------------------------------------------
 		//	Think thinks each particle.
@@ -100,7 +100,7 @@ class ConeParticle : public sprtSpriteData
 		ConeParticle* m_pNext;
 		ConeParticle* m_pPrev;
 
-		envType::Int32 m_ID;
+		int32_t m_ID;
 		maVector3d m_StartVelocity;
 		maVector3d m_Velocity;
 		maVector3d m_Acceleration;
@@ -140,7 +140,7 @@ envPool l_Pool(sizeof(ConeParticle));
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-ConeParticle::ConeParticle(	envType::Int32 i_ID,
+ConeParticle::ConeParticle(	int32_t i_ID,
 							const maPoint3d& i_Position, 
 							const maVector3d& i_Velocity, 
 							const maVector3d& i_Acceleration, 
@@ -324,13 +324,13 @@ struct prtConeParticleCreator
 	int num_uva_frames;
 	prtSpriteGroupParticleGenerator::UVAMode uva_mode;
 
-	ConeParticle* CreateParticle(envType::Int32 i_ID, const maPoint3d& i_Position) const;
+	ConeParticle* CreateParticle(int32_t i_ID, const maPoint3d& i_Position) const;
 };
 
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-ConeParticle* prtConeParticleCreator::CreateParticle(envType::Int32 i_ID, const maPoint3d& i_Position) const
+ConeParticle* prtConeParticleCreator::CreateParticle(int32_t i_ID, const maPoint3d& i_Position) const
 {
 	//	calculate the frame
 	int init_frame = 0;

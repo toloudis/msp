@@ -7,6 +7,10 @@
 **	Copyright(C) 2004 - All Rights Reserved
 \****************************************************************************/
 #include "Systems/Transforms/Timeline/trfnDriverCreator.hpp"
+
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Systems/Transforms/Data/trfnTransformsDataParser.hpp"
 #include "Systems/Transforms/Object/trfnObjectMgr.hpp"
 
@@ -143,7 +147,7 @@ tmlnDriver* trfnDriverCreator::CreateDriverByName( const char* i_DriverName,
 	if (pDriver != NULL) 
 		return pDriver;
 
-	if (!::_stricmp(i_DriverName,TRFNDRIVERNAME_SPLINEORI))
+	if (envString::CompareNoCase(i_DriverName, TRFNDRIVERNAME_SPLINEORI) == 0)
 	{
 		tmlnDriverSplineOriented * pDriver = new tmlnDriverSplineOriented( trfn_obj->ChannelPosition(), 
 			trfn_obj->ChannelOrientation(), c_TOSP );
@@ -166,7 +170,7 @@ tmlnDriver* trfnDriverCreator::CreateDriverByName( const char* i_DriverName,
 		Ochannel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (!::_stricmp(i_DriverName, TRFNDRIVERNAME_ATTACHORIENT))
+	else if (envString::CompareNoCase(i_DriverName, TRFNDRIVERNAME_ATTACHORIENT) == 0)
 	{
 		tmlnDriverAttachOrient * pDriver = new tmlnDriverAttachOrient( trfn_obj->ChannelPosition(), trfn_obj->ChannelOrientation(), c_TATO );
 		pDriver->SetName(TRFNDRIVERNAME_ATTACHORIENT);

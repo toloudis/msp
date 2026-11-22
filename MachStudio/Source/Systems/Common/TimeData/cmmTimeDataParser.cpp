@@ -47,7 +47,7 @@ void ReadData(	chReader& i_Reader,
 				cmmTimeData& o_Data )
 {
 	//TIME - reading time in seconds to preserve old file format
-	envType::Float32 time;
+	float time;
 	chChunkParserUtil::Read(i_Reader, time);
 	o_Data.m_MaximumTime.SetSeconds( time );
 	if (i_Version >= 1)
@@ -69,7 +69,7 @@ void WriteData(	chWriter& o_Writer,
 	o_Writer.WriteChunkHeader( c_CTDP, 1, false );
 
 	//TIME - reading time in seconds to preserve old file format
-	envType::Float32 time = i_Data.m_MaximumTime.AsSeconds();
+	float time = i_Data.m_MaximumTime.AsSeconds();
 	chChunkParserUtil::Write(o_Writer, time);
 
 	time = i_Data.m_MinimumTime.AsSeconds();

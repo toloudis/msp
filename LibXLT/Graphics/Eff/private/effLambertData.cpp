@@ -12,7 +12,7 @@
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsResourceFinder.hpp"
-#include "Core/it/itString.hpp"
+#include <string>
 #include "Graphics/mat/matTexture.hpp"
 #include "Graphics/mat/matTextureMgr.hpp"
 
@@ -136,11 +136,11 @@ void effLambertData::GetTextureNames(std::vector<std::string>& o_Names) const
 void effLambertData::ReloadTextures(const fsLocator& i_TextureDirectory)
 {
 	if (m_NameDiffuse != "")
-		m_TextureDiffuse = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameDiffuse.c_str()));
+		m_TextureDiffuse = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameDiffuse);
 	if (m_NameNormalMap != "")
-		m_TextureNormalMap = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameNormalMap.c_str()));
+		m_TextureNormalMap = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameNormalMap);
 	if (m_NameTransparencyMap != "")
-		m_TextureTransparencyMap = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameTransparencyMap.c_str()));
+		m_TextureTransparencyMap = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameTransparencyMap);
 }
 
 //----------------------------------------------------------------------------
@@ -148,11 +148,11 @@ void effLambertData::ReloadTextures(const fsLocator& i_TextureDirectory)
 void effLambertData::ReloadTextures(const fsResourceFinder& i_TextureFinder)
 {
 	if (m_NameDiffuse != "")
-		m_TextureDiffuse = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameDiffuse.c_str()));
+		m_TextureDiffuse = matTextureMgr::LoadTexture(i_TextureFinder, m_NameDiffuse);
 	if (m_NameNormalMap != "")
-		m_TextureNormalMap = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameNormalMap.c_str()));
+		m_TextureNormalMap = matTextureMgr::LoadTexture(i_TextureFinder, m_NameNormalMap);
 	if (m_NameTransparencyMap != "")
-		m_TextureTransparencyMap = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameTransparencyMap.c_str()));
+		m_TextureTransparencyMap = matTextureMgr::LoadTexture(i_TextureFinder, m_NameTransparencyMap);
 }
 
 //----------------------------------------------------------------------------

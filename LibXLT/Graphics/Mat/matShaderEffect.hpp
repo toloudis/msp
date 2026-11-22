@@ -98,6 +98,9 @@ public:
 	effUVTransform(const effUVTransform& i_CopyFrom);
 	effUVTransform& operator = (const effUVTransform& i_CopyFrom);
 
+	// from glTF's KHR_texture_transform (rotation in radians, as glTF gives it)
+	static effUVTransform FromKhrTextureTransform(float i_OffsetU, float i_OffsetV, float i_Rotation, float i_ScaleU, float i_ScaleV);
+
 	// uv transformation parameters are a feature of all material shaders!
 	maMatrix4x4 MakeUVTransform() const;
 	float m_UScale, m_VScale, m_UTrans, m_VTrans, m_UVAngle;

@@ -131,7 +131,7 @@ namespace mdlMeshMayaParser
 		// is written to each index chunk. And the "number of"
 		// values are now 32-bit integers.
 		bool bNeedIndexSize = (i_Version >= 1);
-		typedef std::vector<envType::UInt32> IndexSet;
+		typedef std::vector<uint32_t> IndexSet;
 
 		std::vector<IndexSet> gindices, nindices, tindices, cindices;
 		IndexSet weld_geom, weld_norm, weld_uv;
@@ -155,7 +155,7 @@ namespace mdlMeshMayaParser
 				else if ( name == c_GVER )
 				{
 					did_read_GVER = true;
-					envType::UInt32 num = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
+					uint32_t num = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
 					orig_vertices.resize(num);
 
 					if (i_Reader.CanReadBinaryData())
@@ -169,7 +169,7 @@ namespace mdlMeshMayaParser
 					else
 					{
 						// Individual vector read
-						envType::UInt32 cur;
+						uint32_t cur;
 						for ( cur = 0 ; cur < num ; cur++ )
 							chChunkParserUtil::Read(i_Reader, orig_vertices[cur]);
 					}
@@ -178,7 +178,7 @@ namespace mdlMeshMayaParser
 				else if ( name == c_NVER )
 				{
 					did_read_NVER = true;
-					envType::UInt32 num = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
+					uint32_t num = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
 					orig_normals.resize(num);
 					
 					if (i_Reader.CanReadBinaryData())
@@ -192,7 +192,7 @@ namespace mdlMeshMayaParser
 					else
 					{
 						// Individual vector read
-						envType::UInt32 cur;
+						uint32_t cur;
 						for ( cur = 0 ; cur < num ; cur++ )
 						{
 							chChunkParserUtil::Read(i_Reader, orig_normals[cur]);
@@ -202,7 +202,7 @@ namespace mdlMeshMayaParser
 				}
 				else if ( name == c_TVER )
 				{
-					envType::UInt32 num = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
+					uint32_t num = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
 					orig_uvs.resize(num);
 
 					if (i_Reader.CanReadBinaryData())
@@ -213,7 +213,7 @@ namespace mdlMeshMayaParser
 							i_Reader.Read(&orig_uvs[0], num * sizeof(maPoint2d));
 
 							// Have to flip the Y coordinate
-							envType::UInt32 cur;
+							uint32_t cur;
 							for ( cur = 0 ; cur < num ; cur++ )
 							{
 								orig_uvs[cur].m_Y = 1 - orig_uvs[cur].m_Y;
@@ -223,7 +223,7 @@ namespace mdlMeshMayaParser
 					else
 					{
 						// Individual vector read
-						envType::UInt32 cur;
+						uint32_t cur;
 						for ( cur = 0 ; cur < num ; cur++ )
 						{
 							chChunkParserUtil::Read(i_Reader, orig_uvs[cur]);
@@ -236,9 +236,9 @@ namespace mdlMeshMayaParser
 					did_read_VCOL = true;
 
 					// vertex colors, RGB (0-1)
-					envType::UInt32 num = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
+					uint32_t num = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
 					orig_colors.resize(num);
-					envType::UInt32 cur;
+					uint32_t cur;
 					maVector3d colorRGB;
 					for ( cur = 0 ; cur < num ; cur++ )
 					{
@@ -288,7 +288,7 @@ namespace mdlMeshMayaParser
 				else if ( name == c_GIND )
 				{
 					did_read_GIND = true;
-					envType::UInt32 num_tris = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
+					uint32_t num_tris = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
 					int num_indices = num_tris * 3;
 					IndexSet temp(num_indices);
 					bool b32Bit = false;
@@ -302,7 +302,7 @@ namespace mdlMeshMayaParser
 				else if ( name == c_NIND )
 				{
 					did_read_NIND = true;
-					envType::UInt32 num_tris = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
+					uint32_t num_tris = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
 					int num_indices = num_tris * 3;
 					IndexSet temp(num_indices);
 					bool b32Bit = false;
@@ -315,7 +315,7 @@ namespace mdlMeshMayaParser
 				}
 				else if ( name == c_TIND )
 				{
-					envType::UInt16 texture_layer;
+					uint16_t texture_layer;
 					i_Reader.Read(texture_layer);
 
 					if ( texture_layer == 0 )
@@ -323,7 +323,7 @@ namespace mdlMeshMayaParser
 						//	This importer only handles 1 set of texture vertices right now, so no sense
 						//	reading more
 						has_texture_indices = true;
-						envType::UInt32 num_tris = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
+						uint32_t num_tris = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
 						int num_indices = num_tris * 3;
 						IndexSet temp(num_indices);
 						bool b32Bit = false;
@@ -338,7 +338,7 @@ namespace mdlMeshMayaParser
 				else if ( name == c_CIND )
 				{
 					did_read_CIND = true;
-					envType::UInt32 num_tris = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
+					uint32_t num_tris = mdlIndexUtil::ReadNumber(i_Reader, (version >= 1));
 					int num_indices = num_tris * 3;
 					IndexSet temp(num_indices);
 					bool b32Bit = false;
@@ -355,7 +355,7 @@ namespace mdlMeshMayaParser
 					// stencil shadow welding
 					did_read_SWLD = true;
 
-					envType::UInt16 num_inds, num_sets;
+					uint16_t num_inds, num_sets;
 					i_Reader.Read(num_inds);
 					i_Reader.Read(num_sets); // assuming this is 3 for now
 					DBG_ASSERT(num_sets >= 3, "Need 3 sets of indices for welding");
@@ -376,7 +376,7 @@ namespace mdlMeshMayaParser
 				else if ( name == c_FLAG )
 				{
 					// fragment flags
-					envType::Int8 flag_val;
+					int8_t flag_val;
 
 					if (version >= 2)
 					{

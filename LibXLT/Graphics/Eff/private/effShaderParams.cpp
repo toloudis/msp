@@ -14,7 +14,6 @@
 #include "Core/fs/fsFileX.hpp"
 #include "Core/Fs/fsResourceFinder.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/prty/prtyTextureFileChooserUIInfo.hpp"
 #include "Graphics/g3d/g3dExceptionX.hpp"
 #include "Graphics/mat/matShaderMgr.hpp"
@@ -60,15 +59,15 @@ effParamColor* effParamColor::Clone()
 
 
 //------------------------------------------------------------------------
-// To support old code, this constructor is kept around in order
-// to check for empty strings in the itString, which cannot
-// be Push'ed onto the fsLocator.
+// This constructor takes the default texture as a name: an empty
+// name gives an empty locator (an empty name can't be Push'ed onto
+// an fsLocator).
 //------------------------------------------------------------------------
 effParamTexture::effParamTexture(const std::string& i_Name, 
 								 const std::string& i_PrtyName, 
-								 const itString& i_Default)
+								 const std::string& i_Default)
 : effShaderParam(i_Name), 
-  m_Property(i_PrtyName, (i_Default.GetLength()>0) ? fsLocator(i_Default) : fsLocator()), 
+  m_Property(i_PrtyName, (i_Default.size()>0) ? fsLocator(i_Default) : fsLocator()), 
   m_Texture(NULL), m_pRampTexture(NULL), m_Type( TEXTURE_TYPE_UNKNOWN )
 {
 }
@@ -121,7 +120,7 @@ bool effParamTexture::Load(const fsResourceFinder& i_Finder)
 			// We need to distinguish between "file not found" and "error loading texture".
 			//
 			fsLocator found_loc;
-			itString name = newName.GetLastName();
+			std::string name = newName.GetLastName();
 			if (i_Finder.FindResource(name, found_loc))
 			{
 				// found_loc returns full path including filename
@@ -197,9 +196,9 @@ bool effParamTexture::Load(const fsResourceFinder& i_Finder)
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
 effShaderParams::effShaderParams()
-:	m_pShader(NULL), m_pShaderBindings(NULL), m_pPrtyUI(NULL),
+:	m_pShader(NULL), m_ShaderGeneration(0), m_pShaderBindings(NULL), m_pPrtyUI(NULL),
 	m_pDiffuseMap(NULL), m_pTransparencyMap(NULL), 
-	m_pDiffuseColor(NULL), m_pTransparency(NULL),
+	m_pDiffuseColor(NULL), m_pTransparency(NULL), m_pAlphaMode(NULL), m_pAlphaCutoff(NULL),
 	m_pPathObject(NULL), m_Version(0)
 {
 }
@@ -230,6 +229,7 @@ effShaderParams* effShaderParams::Clone() const
 	effShaderParams* clone = new effShaderParams;
 	clone->m_ShaderName = m_ShaderName;
 	clone->m_pShader = m_pShader;
+	clone->m_ShaderGeneration = m_ShaderGeneration;
 	clone->m_Version = m_Version;
 
 	for (int i = 0; i < m_FloatParams.size(); i++)
@@ -266,6 +266,7 @@ void effShaderParams::SetShaderName(const fsLocator& i_ShaderPath, matShaderEffe
 
 	m_ShaderName = i_ShaderPath;
 	m_pShader = i_pShader;
+	m_ShaderGeneration = matShaderMgr::GetGeneration();
 }
 
 //------------------------------------------------------------------------
@@ -282,17 +283,26 @@ void effShaderParams::SetShaderPathObject(prtyTextureFileName* i_Path)
 //------------------------------------------------------------------------
 matShaderEffect* effShaderParams::GetShader()
 {
+	// The effect was found before matShaderMgr last deleted its effects (the
+	// graphics layer restarted: a device reset, or a test that starts a
+	// layer more than once) and is gone: find the new one by name
+	if (m_pShader != NULL && m_ShaderGeneration != matShaderMgr::GetGeneration())
+	{
+		m_pShader = matShaderMgr::FindEffect(m_ShaderName);
+		m_ShaderGeneration = matShaderMgr::GetGeneration();
+	}
+
 	// this will load shader if it hasn't been instantiated yet!
 	if (m_pShader == NULL)
 	{
 		// Make sure shader is loaded in as a tokenized fsLocator
-		itString itName;
+		std::string itName;
 		fsLocator shaderLoc;	
 		fsFileUtil::LocatorToUnicodeString( m_ShaderName, itName );	
 		fsFileUtil::UnicodeStringToLocator( itName, shaderLoc );
 
 		// Get the shader name
-		std::string shaderFileName = itStringUtil::GetStdString(shaderLoc.GetLastName());
+		std::string shaderFileName = shaderLoc.GetLastName();
 
 		//DBG_TRACE("Loading shader " << shaderFileName << " from saved directory.");
 		m_pShader = matShaderMgr::GetEffect( shaderLoc );
@@ -308,13 +318,8 @@ matShaderEffect* effShaderParams::GetShader()
 
 		}
 
-		// Shader failed to load again, try to find using locate dialog
-		if (m_pShader == NULL)
-		{
-			//DBG_TRACE("Loading shader " << shaderFileName << " from user-located directory.");
-			fsAbsolutePathMgr::ResolvePath(shaderLoc, "Shaders");
-			m_pShader = matShaderMgr::GetEffect( shaderLoc );
-		}		
+		// Shaders are built in and found by name, not read from a file, so
+		// there is no point asking the user to locate a missing shader file.
 
 		// Failed again: check for built-in with same name.
 		if (m_pShader == NULL) {
@@ -332,7 +337,7 @@ matShaderEffect* effShaderParams::GetShader()
 			fsFileUtil::LocatorToANSIFilename(shaderLoc, fullpath);
 			DBG_WARNING("Material Shader = " <<  shaderFileName.c_str() << " load FAILED using path: " << fullpath.c_str());
 			m_pShader = matShaderMgr::GetSpecialEffect("Simple.fx");
-			m_ShaderName = itString("Simple.fx");
+			m_ShaderName = std::string("Simple.fx");
 		}
 
 		if ( m_pShader )
@@ -343,6 +348,7 @@ matShaderEffect* effShaderParams::GetShader()
 			DBG_WARNING("No shader could be loaded for " << m_ShaderName);
 			return NULL;
 		}
+		m_ShaderGeneration = matShaderMgr::GetGeneration();
 	}
 	return m_pShader;
 }
@@ -603,6 +609,13 @@ void effShaderParams::Dump()
 //------------------------------------------------------------------------
 bool effShaderParams::HasTransparency()
 {
+	// an alpha mode decides by itself: BLEND is transparent whatever the
+	// alpha values, MASK cuts out and is drawn as opaque
+	if( m_pAlphaMode )
+	{
+		return m_pAlphaMode->GetProperty().GetValue() == 2;
+	}
+
 	if( m_pTransparency )
 	{
 		if (m_pTransparency->GetProperty().GetValue() < 1)
@@ -689,6 +702,10 @@ void effShaderParams::SetMatchingParams(const effShaderParams* i_pOtherParams)
 		m_pDiffuseColor->Property().SetValue(i_pOtherParams->m_pDiffuseColor->GetProperty().GetValue());
 	if (m_pTransparency && i_pOtherParams->m_pTransparency)
 		m_pTransparency->Property().SetValue(i_pOtherParams->m_pTransparency->GetProperty().GetValue());
+	if (m_pAlphaMode && i_pOtherParams->m_pAlphaMode)
+		m_pAlphaMode->Property().SetValue(i_pOtherParams->m_pAlphaMode->GetProperty().GetValue());
+	if (m_pAlphaCutoff && i_pOtherParams->m_pAlphaCutoff)
+		m_pAlphaCutoff->Property().SetValue(i_pOtherParams->m_pAlphaCutoff->GetProperty().GetValue());
 }
 
 //------------------------------------------------------------------------
@@ -715,6 +732,8 @@ void effShaderParams::Clear()
 	//m_pTransparencyMap = NULL;
 	//m_pDiffuseColor = NULL;
 	//m_pTransparency = NULL;
+	//m_pAlphaMode = NULL;
+	//m_pAlphaCutoff = NULL;
 
 	m_pShader = NULL;
 

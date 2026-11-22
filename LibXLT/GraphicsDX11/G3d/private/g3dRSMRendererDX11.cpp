@@ -36,6 +36,9 @@
 #include "GraphicsDX11/Eff/effShaderBaseDX11.hpp"
 #include "GraphicsDX11/hair/hairModelFrag.hpp"
 #include "GraphicsDX11/G3d/g3dDrawStyleUtilDX11.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 //#include "Graphics/Eff/effStrandHairData.hpp"
 
 //#include "profile.h"
@@ -82,7 +85,7 @@ g3dRSMRendererDX11::g3dRSMRendererDX11()
 	if (!l_HairMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/HairDefault.fx"), matShaderMgr::GetSpecialEffect("HairDefault.fx"));
+		p->SetShaderName(std::string("Special/HairDefault.fx"), matShaderMgr::GetSpecialEffect("HairDefault.fx"));
 		l_HairMat.SetShaderParams(p);
 	}
 }
@@ -111,6 +114,7 @@ int g3dRSMRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera& i_C
 									const g3dScene &i_Scene, const std::vector<g3dLayer*>& i_ViewerLayers,
 									float i_fSimTime )
 {//PROFILE("Render");
+	G3D_PROFILE_SCOPE("RSMRenderer");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"g3dRSMRendererDX11::Render" );
 
 //	HRESULT op_result;
@@ -456,7 +460,7 @@ int g3dRSMRendererDX11::DrawNode(const g3dSceneNode* i_pNode)
 	// resolve material/effect
 	const matMaterial* pMaterial = g3dDX11Util::GetMaterial(i_pNode);//m_pAlphaMaskMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
-	ID3DX11Effect* pEffectDX = dynamic_cast<effShaderBaseDX11*>(pEffect)->GetD3DXEffect();
+	fxEffect* pEffectDX = dynamic_cast<effShaderBaseDX11*>(pEffect)->GetFxEffect();
 
 	const matMaterial* pMaterialOveride = i_pNode->GetMaterial();
 	const g3dFragment* pFrag = i_pNode->GetFragment();
@@ -551,7 +555,7 @@ int g3dRSMRendererDX11::DrawHairNode(const g3dSceneNode* i_pNode)
 	const matMaterial* pMaterial = &l_HairMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 	//	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)pEffect;
-	//	ID3DXEffect* pD3DEffect = i_pEffect->GetD3DXEffect();
+	//	ID3DXEffect* pD3DEffect = i_pEffect->GetFxEffect();
 
 //	effStrandHairData HairData;
 	effStrandHairData& HairData = pMaterial->StrandHairData();

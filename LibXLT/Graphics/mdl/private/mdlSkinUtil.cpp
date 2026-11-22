@@ -28,11 +28,11 @@ namespace mdlSkinUtil
 		// Figures out the set of joint indices used by a surface
 		//------------------------------------------------------------------------
 		void find_set_of_influences(const std::vector<mdlSkinUtil::JointInfluence>& i_JointInfluences,
-									std::vector<envType::UInt32> &o_BoneIndices)
+									std::vector<uint32_t> &o_BoneIndices)
 		{
 			// Insert all joint indices into a set in order to figure out
 			// which joints are needed.
-			std::set<envType::UInt32> joint_index_set;
+			std::set<uint32_t> joint_index_set;
 			std::vector<mdlSkinUtil::JointInfluence>::const_iterator it1;
 			for (it1 = i_JointInfluences.begin(); it1 != i_JointInfluences.end(); ++it1)
 			{
@@ -41,7 +41,7 @@ namespace mdlSkinUtil
 
 			// Add the unique indices to the return vector
 			o_BoneIndices.clear();
-			std::set<envType::UInt32>::const_iterator it2;
+			std::set<uint32_t>::const_iterator it2;
 			for (it2 = joint_index_set.begin(); it2 != joint_index_set.end(); ++it2)
 			{
 				o_BoneIndices.push_back( *it2 );
@@ -150,7 +150,7 @@ namespace mdlSkinUtil
 	// into a sorted vertex list that matches the fragment info.
 	//------------------------------------------------------------------------
 	void BuildMorphTarget(const std::vector<maPoint3d> &i_PositionVecs,
-							const std::vector<envType::UInt32>& i_SparseIndices,
+							const std::vector<uint32_t>& i_SparseIndices,
 							int i_NumVertices,
 							const std::multimap<int, int> &i_VertexRemap,
 							smdlMorphTarget& o_MorphTarget)

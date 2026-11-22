@@ -11,8 +11,8 @@
 #endif
 #define G3D_INDEXPTR_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 
@@ -32,8 +32,8 @@ class g3dIndexPtr
 		//----------------------------------------------------------------------------
 		// Constructors recognize and store pointer type
 		//----------------------------------------------------------------------------
-		g3dIndexPtr(const envType::UInt16* i_pIndices);
-		g3dIndexPtr(const envType::UInt32* i_pIndices);
+		g3dIndexPtr(const uint16_t* i_pIndices);
+		g3dIndexPtr(const uint32_t* i_pIndices);
 
 		//----------------------------------------------------------------------------
 		// Query type of pointer
@@ -44,8 +44,8 @@ class g3dIndexPtr
 		//----------------------------------------------------------------------------
 		// Access pointers
 		//----------------------------------------------------------------------------
-		inline const envType::UInt16* GetIndices16() const;
-		inline const envType::UInt32* GetIndices32() const;
+		inline const uint16_t* GetIndices16() const;
+		inline const uint32_t* GetIndices32() const;
 
 		//----------------------------------------------------------------------------
 		// Get size of an index in bytes (16 -> 2, 32 -> 4)
@@ -55,21 +55,21 @@ class g3dIndexPtr
 		//----------------------------------------------------------------------------
 		// Slow individual index access, try to use the pointers when you can
 		//----------------------------------------------------------------------------
-		envType::UInt32 GetIndex(int i) const;
+		uint32_t GetIndex(int i) const;
 
 	private:
-		const envType::UInt16* m_pIndices16;
-		const envType::UInt32* m_pIndices32;
+		const uint16_t* m_pIndices16;
+		const uint32_t* m_pIndices32;
 };
 
 //----------------------------------------------------------------------------
 // Access pointers
 //----------------------------------------------------------------------------
-inline const envType::UInt16* g3dIndexPtr::GetIndices16() const
+inline const uint16_t* g3dIndexPtr::GetIndices16() const
 {
 	return m_pIndices16;
 }
-inline const envType::UInt32* g3dIndexPtr::GetIndices32() const
+inline const uint32_t* g3dIndexPtr::GetIndices32() const
 {
 	return m_pIndices32;
 }

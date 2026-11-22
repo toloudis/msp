@@ -162,6 +162,30 @@ public:
 		//--------------------------------------------------------------------
 		static g3dSceneRenderer* CreateGlowRenderer();
 
+		//--------------------------------------------------------------------
+		//	Whether this backend's renderers read maps that other renderers
+		//	draw first. False for a backend that traces rays instead
+		//	(GraphicsOptiX): under it the maps are never created, so code
+		//	that makes them asks first. The backend is chosen at start-up and
+		//	never changes. True without an implementation.
+		//	- NeedsShadowMaps: projected lights' shadow (depth) maps and their
+		//	  depth map renderers;
+		//	- NeedsOpacityMaps: projected lights' opacity shadow maps or
+		//	  opacity volume (hair's shadows) and their opacity map renderers;
+		//	- NeedsReflectionMaps: materials' cube and planar reflection
+		//	  targets and their cube map and planar reflection renderers.
+		//--------------------------------------------------------------------
+		static bool NeedsShadowMaps();
+		static bool NeedsOpacityMaps();
+		static bool NeedsReflectionMaps();
+
+		//--------------------------------------------------------------------
+		//	Whether this backend's renderers read the tracer settings
+		//	(g3dPrefs::m_Trace*: bounces, samples per frame, ...), so the
+		//	render preferences show them. False without an implementation.
+		//--------------------------------------------------------------------
+		static bool UsesTracerSettings();
+
 	//--------------------------------------------------------------------
 	// Methods for defining implementation
 	//--------------------------------------------------------------------
@@ -304,4 +328,18 @@ public:
 		//	Creates renderer for glow pass only
 		//--------------------------------------------------------------------
 		virtual g3dSceneRenderer* CreateGlowRenderer() = 0;
+
+		//--------------------------------------------------------------------
+		//	See g3dSceneRendererCreate::NeedsShadowMaps; the defaults are
+		//	true (the raster backends' renderers read them)
+		//--------------------------------------------------------------------
+		virtual bool NeedsShadowMaps() { return true; }
+		virtual bool NeedsOpacityMaps() { return true; }
+		virtual bool NeedsReflectionMaps() { return true; }
+
+		//--------------------------------------------------------------------
+		//	See g3dSceneRendererCreate::UsesTracerSettings; the default is
+		//	false
+		//--------------------------------------------------------------------
+		virtual bool UsesTracerSettings() { return false; }
 };

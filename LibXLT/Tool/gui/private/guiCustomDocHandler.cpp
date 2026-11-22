@@ -12,7 +12,6 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/It/itStringUtil.hpp"
 #include "Graphics/g2d/g2dExceptionX.hpp"
 #include "Tool/doc/docCustomDocumentMgr.hpp"
 #include "Tool/doc/docSingleTypeMgr.hpp"
@@ -29,7 +28,7 @@ namespace guiCustomDocHandler
 {
 	namespace
 	{
-		fsLocator	l_InitialDirectory( 0, itString(".") );
+		fsLocator	l_InitialDirectory( 0, std::string(".") );
 		bool		l_bRememberLastDirectory = false;
 
 		//--------------------------------------------------------------------------
@@ -41,7 +40,7 @@ namespace guiCustomDocHandler
 		#ifndef _DEBUG
 			//Setup loading text for the new file, truncates if filename length is too long
 			std::string load_txt = "Loading : ";
-			std::string cur_scene = itStringUtil::GetStdString( i_Loc.GetLastName() );
+			std::string cur_scene = i_Loc.GetLastName();
 
 			int ext_pos = cur_scene.find(".");
 			int substr_count = cur_scene.length();

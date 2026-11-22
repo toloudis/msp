@@ -107,6 +107,9 @@ chtrObject::chtrObject( api3dObjectEntity* i_pObject,
 	pPUII = new prtyCheckBoxUIInfo(&(m_Data.m_bVisible), "Asset", "Animatable Visibility");
 	AddProperty( pPUII );
 
+	// whether it still follows the scene file it came from (imptSceneRefs)
+	AddProperty( CreateSourceStateUIInfo() );
+
 	pPUII = new prtyVector3dEditUpDownUIInfo(&(m_Data.m_Position), "Transform", "Position of the object");
 	AddProperty( pPUII );
 	prtyVector3dEditUpDownUIInfo *pPVEUDUII  = new prtyVector3dEditUpDownUIInfo(&(m_Data.m_Orientation), "Transform", "Orientation of the object");
@@ -393,7 +396,7 @@ void chtrObject::UpdateScale(const maPoint3d& i_Scale,
 //----------------------------------------------------------------------------
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
-bool chtrObject::MatchPickCode(envType::UInt32 i_PickCode) const
+bool chtrObject::MatchPickCode(uint32_t i_PickCode) const
 {
 	// no proxies for GPU picking
 	if (!m_p3DObject->GetRenderable())
@@ -614,12 +617,7 @@ void chtrObject::UpdateParentTransform()
 //--------------------------------------------------------------------
 void chtrObject::ApplyTransformation(const maMatrix4x4& i_Matrix)
 {
-	xfrmApplyTransformUtil::ApplyTransformation(i_Matrix,
-												m_Data.m_Position,
-												m_Data.m_Orientation,
-												m_Data.m_Scale,
-												m_Data.m_PivotPoint,
-												m_Data.m_PivotCompensation);
+	m_Data.ApplyTransformation(i_Matrix);
 }
 
 //--------------------------------------------------------------------

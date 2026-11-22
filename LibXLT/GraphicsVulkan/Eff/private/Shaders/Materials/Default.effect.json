@@ -1,0 +1,460 @@
+{
+  "source": "Default.fx",
+  "hlsl": "Default.hlsl",
+  "techniques": [
+    {
+      "name": "Default",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "defaultPS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "defaultPS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Tangent_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Tangent_DS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ambient",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ambientPS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ambientPS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Tangent_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Tangent_DS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Environment",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ambientPS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ambientPS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Tangent_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Tangent_DS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SingleLight",
+      "passes": [
+        {
+          "name": "PDefault",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VS_Default"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SingleLight_PDefault_PS"
+            }
+          }
+        },
+        {
+          "name": "PTess",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "VS_Tess"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "SingleLight_PDefault_PS"
+            },
+            "hs": {
+              "profile": "hs_5_0",
+              "entry": "Tangent_HS"
+            },
+            "ds": {
+              "profile": "ds_5_0",
+              "entry": "Tangent_DS"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "samplers": {
+    "g_DefaultSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_LINEAR",
+        "AddressU": "Wrap",
+        "AddressV": "Wrap"
+      }
+    },
+    "bumpMapSampler": {
+      "type": "SamplerState",
+      "state": {
+        "FILTER": "ANISOTROPIC",
+        "AddressU": "WRAP",
+        "AddressV": "WRAP"
+      }
+    },
+    "displacementSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_LINEAR",
+        "AddressU": "Wrap",
+        "AddressV": "Wrap"
+      }
+    },
+    "displacementTapSampler": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_POINT",
+        "AddressU": "Wrap",
+        "AddressV": "Wrap"
+      }
+    }
+  },
+  "variables": {
+    "g_uvTransform": {
+      "type": "float4x4",
+      "default": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    },
+    "g_ClipPlane": {
+      "type": "float4",
+      "default": [0, 0, 0, 1]
+    },
+    "g_bakeTransform": {
+      "type": "float4",
+      "default": [1, 1, 0, 0]
+    },
+    "g_bake": {
+      "type": "bool",
+      "default": false
+    },
+    "g_worldIT": {
+      "type": "float4x4",
+      "semantic": "WorldIT"
+    },
+    "g_wvp": {
+      "type": "float4x4",
+      "semantic": "WorldViewProjection"
+    },
+    "g_wv": {
+      "type": "float4x4",
+      "semantic": "WorldView"
+    },
+    "g_world": {
+      "type": "float4x4",
+      "semantic": "World"
+    },
+    "g_viewIT": {
+      "type": "float4x4",
+      "semantic": "ViewIT"
+    },
+    "g_vp": {
+      "type": "float4x4",
+      "semantic": "ViewProjection"
+    },
+    "g_eyePos": {
+      "type": "float4",
+      "semantic": "CameraPos"
+    },
+    "g_targetRes": {
+      "type": "float4"
+    },
+    "g_AlphaTestRef": {
+      "type": "float",
+      "default": 0.0
+    },
+    "g_shininess": {
+      "type": "float",
+      "semantic": "MaterialPower",
+      "default": 1.0
+    },
+    "g_ambient": {
+      "type": "float4",
+      "semantic": "MaterialAmbient",
+      "default": [0.5, 0.5, 0.5, 1.0]
+    },
+    "g_diffuse": {
+      "type": "float4",
+      "semantic": "MaterialDiffuse",
+      "default": [1.0, 1.0, 1.0, 1.0]
+    },
+    "g_specular": {
+      "type": "float4",
+      "semantic": "MaterialSpecular",
+      "default": [1.0, 1.0, 1.0, 1.0]
+    },
+    "g_uScale": {
+      "type": "float",
+      "semantic": "UScale",
+      "default": 1.0
+    },
+    "g_vScale": {
+      "type": "float",
+      "semantic": "VScale",
+      "default": 1.0
+    },
+    "g_bDoubleSided": {
+      "type": "bool",
+      "semantic": "DoubleSided",
+      "default": false
+    },
+    "g_lightArray": {
+      "type": "LightInfo",
+      "array": "[8]",
+      "semantic": "LightArray"
+    },
+    "g_lightInfo": {
+      "type": "LightInfo",
+      "semantic": "LightInfo"
+    },
+    "hasDiffuseMap": {
+      "type": "bool",
+      "default": false
+    },
+    "diffuseMap": {
+      "type": "Texture2D"
+    },
+    "g_IsReflectionGen": {
+      "type": "bool",
+      "semantic": "IsReflectionGen",
+      "default": false
+    },
+    "g_vTessellationFactor": {
+      "type": "float4"
+    },
+    "meshDataTexture": {
+      "type": "Texture2D",
+      "semantic": "meshdatamap"
+    },
+    "g_MeshDataTextureWidth": {
+      "type": "float",
+      "default": 256.0
+    },
+    "g_MeshDataTextureHeight": {
+      "type": "float",
+      "default": 64.0
+    },
+    "g_view": {
+      "type": "float4x4",
+      "semantic": "View"
+    },
+    "g_hasDisplacementMap": {
+      "type": "bool",
+      "default": false
+    },
+    "g_DisplacementScale": {
+      "type": "float"
+    },
+    "g_DisplacementBias": {
+      "type": "float"
+    },
+    "g_DisplacementBlur": {
+      "type": "float"
+    },
+    "g_DisplacementMapSize": {
+      "type": "float2"
+    },
+    "g_ObjectUVScale": {
+      "type": "float2"
+    },
+    "g_DisplacementMap": {
+      "type": "Texture2D"
+    },
+    "hasHardwareTessellation": {
+      "type": "bool",
+      "default": true
+    },
+    "g_proj": {
+      "type": "float4x4",
+      "semantic": "Projection"
+    },
+    "g_vDofParams": {
+      "type": "float4",
+      "default": [30, 60, 80, 120]
+    },
+    "g_fDofBlurCutoff": {
+      "type": "float",
+      "default": 1
+    },
+    "g_time_0_X": {
+      "type": "float"
+    },
+    "g_IsolateReflection": {
+      "type": "bool",
+      "default": false
+    },
+    "g_bCubeMapEnabled": {
+      "type": "bool",
+      "default": false
+    },
+    "g_BonePalette": {
+      "type": "float4x4",
+      "array": "[50]",
+      "semantic": "BONES"
+    },
+    "g_projLight": {
+      "type": "ProjLightInfo",
+      "semantic": "ProjLightInfo"
+    },
+    "g_lightArrayNum": {
+      "type": "int",
+      "semantic": "LightArrayNum",
+      "default": 0
+    },
+    "g_FirstLight": {
+      "type": "bool",
+      "default": false
+    },
+    "g_bProjLt": {
+      "type": "bool",
+      "default": false
+    },
+    "g_bHasProjMap": {
+      "type": "bool",
+      "semantic": "HasProjectedTexture",
+      "default": false
+    },
+    "g_bHasShadowMap": {
+      "type": "bool",
+      "semantic": "HasShadowMap",
+      "default": false
+    },
+    "g_DistributeFactor": {
+      "type": "float",
+      "default": 256
+    },
+    "g_envDiffuseColor": {
+      "type": "float4",
+      "default": [1, 1, 1, 1]
+    },
+    "g_envSpecularColor": {
+      "type": "float4",
+      "default": [1, 1, 1, 1]
+    },
+    "g_diffuseFactor": {
+      "type": "float",
+      "default": 0.1
+    },
+    "g_bHasDiffuseEnvMap": {
+      "type": "bool"
+    },
+    "g_diffuseEnvAngle": {
+      "type": "float",
+      "default": 0
+    },
+    "g_specularFactor": {
+      "type": "float",
+      "default": 0.1
+    },
+    "g_bHasSpecularEnvMap": {
+      "type": "bool"
+    },
+    "g_specularEnvAngle": {
+      "type": "float",
+      "default": 0
+    },
+    "g_bumpMapScale": {
+      "type": "float",
+      "semantic": "BumpMapScale",
+      "default": 0.0
+    },
+    "hasNormalMap": {
+      "type": "bool",
+      "default": false
+    },
+    "g_glowSize": {
+      "type": "float",
+      "default": 0
+    },
+    "g_bHasMask": {
+      "type": "bool",
+      "default": false
+    },
+    "g_bConstGlow": {
+      "type": "bool",
+      "default": false
+    }
+  }
+}

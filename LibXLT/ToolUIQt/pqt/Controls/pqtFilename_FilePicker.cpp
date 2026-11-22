@@ -7,18 +7,17 @@
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
-#ifdef QT_FINISH_PORT
-
 #include "pqtFileName_FilePicker.hpp"
 
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itStringUtil.hpp"
+
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 // Set value into control
 //----------------------------------------------------------------------------
 void pqtFileName_FilePicker_Converter::SetValueIntoControl(tqcFilePicker* i_pActualControl,
-											   itString i_Value)
+											   const std::string& i_Value)
 {
 	i_pActualControl->SetFullpath(fsLocator(i_Value));
 }
@@ -26,13 +25,13 @@ void pqtFileName_FilePicker_Converter::SetValueIntoControl(tqcFilePicker* i_pAct
 //----------------------------------------------------------------------------
 // Get value from control
 //----------------------------------------------------------------------------
-itString pqtFileName_FilePicker_Converter::GetValueFromControl(tqcFilePicker* i_pActualControl)
+std::string pqtFileName_FilePicker_Converter::GetValueFromControl(tqcFilePicker* i_pActualControl)
 {
 	fsLocator fullpath = i_pActualControl->GetFullpath();
 	if (fullpath.GetNumNames() > 0)
 		return fullpath.GetLastName();
 	else
-		return itString();
+		return std::string();
 }
 
 #endif

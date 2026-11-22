@@ -11,7 +11,7 @@
 #include "AudioDS/sn/snPackage.hpp"
 
 #include "Core/dbg/dbgPackage.hpp"
-#include "Core/it/itString.hpp"
+#include <string>
 #include "AudioDS/sn/snSoundUtil.hpp"
 
 

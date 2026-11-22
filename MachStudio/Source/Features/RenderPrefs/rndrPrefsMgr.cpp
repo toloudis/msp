@@ -139,6 +139,14 @@ namespace rndrPrefsMgr
 		const char* lc_Key_HairSubPixelPower = "HairSubPixelPower";
 		const char* lc_Key_HairDepthPeel	= "HairDepthEnable";
 		const char* lc_Key_HairDepthPeelLayers	= "HairDepthLayers";
+		const char* lc_Key_TraceSamplesPerFrame	= "TraceSamplesPerFrame";
+		const char* lc_Key_TraceSampleLimit		= "TraceSampleLimit";
+		const char* lc_Key_TraceCaptureSamples	= "TraceCaptureSamples";
+		const char* lc_Key_TraceAORays			= "TraceAORays";
+		const char* lc_Key_TraceBounces			= "TraceBounces";
+		const char* lc_Key_TraceDebugView		= "TraceDebugView";
+		const char* lc_Key_TraceMaxRadiance		= "TraceMaxRadiance";
+		const char* lc_Key_TraceDenoise			= "TraceDenoise";
 
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
@@ -201,7 +209,7 @@ namespace rndrPrefsMgr
 
 				//--------------------------------------------------------------------
 				//--------------------------------------------------------------------
-				void Init();	
+				void Init();
 
 			private:
 				void AddCallbacks();
@@ -242,6 +250,7 @@ namespace rndrPrefsMgr
 				virtual void UpdateRenderWireframe( prtyProperty *o_pProperty, bool i_bDirty );
 				virtual void UpdateTransparency(prtyProperty *i_pProperty, bool i_bDirty);
 				virtual void UpdateHair(prtyProperty *i_pProperty, bool i_bDirty);
+				virtual void UpdateTrace(prtyProperty *i_pProperty, bool i_bDirty);
 
 			protected:
 				//--------------------------------------------------------------------
@@ -249,7 +258,7 @@ namespace rndrPrefsMgr
 				//--------------------------------------------------------------------
 				g3dSceneRendererTypes::RendererType GetRendererType(int i_ComboBoxIndex);
 				rlyrPassesObject::ePassType GetRenderPassType(int i_ComboBoxIndex);
-				
+
 			public:
 				rprfPrefsData m_Data;
 				g3dPrefs::g3dRenderPrefs m_ActualPrefs;
@@ -295,7 +304,7 @@ namespace rndrPrefsMgr
 			Init();
 		}
 
-		void rndrPrefsObject::Init() 
+		void rndrPrefsObject::Init()
 		{
 #if(SGPU_APP == MS_CORE)
 			rprfPrefsUtil::RegisterPrefProperties(this, m_Data, false);
@@ -379,7 +388,7 @@ namespace rndrPrefsMgr
 					{
 						if (keyname == lc_Key_Renderer)
 						{
-							int value; guiXMLTextReader::Convert(strvalue, value); 
+							int value; guiXMLTextReader::Convert(strvalue, value);
 							// prtyenum has a maximum set by the number of tags. index must be less than this.
 							if (value < m_Data.m_RendererTypeVP.GetNumTags())
 								m_Data.m_RendererTypeVP.SetValue(value);
@@ -433,8 +442,8 @@ namespace rndrPrefsMgr
 
 						if (keyname == lc_Key_SSAO)
 						{
-							bool value; 
-							guiXMLTextReader::Convert(strvalue, value); 
+							bool value;
+							guiXMLTextReader::Convert(strvalue, value);
 							m_Data.m_bEnableSSAO.SetValue(value);
 							m_Data.m_bEnableBeautySSAO.SetValue(value);
 						};
@@ -452,8 +461,8 @@ namespace rndrPrefsMgr
 
 						if (keyname == lc_Key_SSGI)
 						{
-							bool value; 
-							guiXMLTextReader::Convert(strvalue, value); 
+							bool value;
+							guiXMLTextReader::Convert(strvalue, value);
 							m_Data.m_bEnableSSGI.SetValue(value);
 							m_Data.m_bEnableBeautySSGI.SetValue(value);
 						};
@@ -483,7 +492,7 @@ namespace rndrPrefsMgr
 							{float value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_MotionBlurPercent.SetValue(value);};
 						if (keyname == lc_Key_TransparencyMode)
 						{
-							int value; guiXMLTextReader::Convert(strvalue, value); 
+							int value; guiXMLTextReader::Convert(strvalue, value);
 							// prtyenum has a maximum set by the number of tags. index must be less than this.
 							if (value < m_Data.m_TransparencyMode.GetNumTags())
 							{
@@ -500,21 +509,21 @@ namespace rndrPrefsMgr
 							{bool value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_bHairLines.SetValue(value);};
 						if (keyname == lc_Key_HairTransparencyMode)
 						{
-							int value; guiXMLTextReader::Convert(strvalue, value); 
+							int value; guiXMLTextReader::Convert(strvalue, value);
 							// prtyenum has a maximum set by the number of tags. index must be less than this.
 							if (value < m_Data.m_HairTransparencyMode.GetNumTags())
 								m_Data.m_HairTransparencyMode.SetValue(value);
 						};
 /*						if (keyname == lc_Key_HairShadowType)
 						{
-							int value; guiXMLTextReader::Convert(strvalue, value); 
+							int value; guiXMLTextReader::Convert(strvalue, value);
 							// prtyenum has a maximum set by the number of tags. index must be less than this.
 							if (value < m_Data.m_HairShadowType.GetNumTags())
 								m_Data.m_HairShadowType.SetValue(value);
 						};
 						if (keyname == lc_Key_HairShadowRes)
 						{
-							int value; guiXMLTextReader::Convert(strvalue, value); 
+							int value; guiXMLTextReader::Convert(strvalue, value);
 							// prtyenum has a maximum set by the number of tags. index must be less than this.
 							if (value < m_Data.m_HairShadowRes.GetNumTags())
 								m_Data.m_HairShadowRes.SetValue(value);
@@ -531,6 +540,22 @@ namespace rndrPrefsMgr
 							{bool value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_bHairDepthPeel.SetValue(value);};
 						if (keyname == lc_Key_HairDepthPeelLayers )
 							{int value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_nHairDepthPeelLayers.SetValue(value);};
+						if (keyname == lc_Key_TraceSamplesPerFrame)
+							{int value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_TraceSamplesPerFrame.SetValue(value);};
+						if (keyname == lc_Key_TraceSampleLimit)
+							{int value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_TraceSampleLimit.SetValue(value);};
+						if (keyname == lc_Key_TraceCaptureSamples)
+							{int value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_TraceCaptureSamples.SetValue(value);};
+						if (keyname == lc_Key_TraceAORays)
+							{int value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_TraceAORays.SetValue(value);};
+						if (keyname == lc_Key_TraceBounces)
+							{int value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_TraceBounces.SetValue(value);};
+						if (keyname == lc_Key_TraceDebugView)
+							{int value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_TraceDebugView.SetValue(value);};
+						if (keyname == lc_Key_TraceMaxRadiance)
+							{float value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_TraceMaxRadiance.SetValue(value);};
+						if (keyname == lc_Key_TraceDenoise)
+							{int value; guiXMLTextReader::Convert(strvalue, value); m_Data.m_TraceDenoise.SetValue(value);};
 					}
 				}
 
@@ -632,6 +657,15 @@ namespace rndrPrefsMgr
 			guiXMLTextWriter::WriteElement(lc_Key_HairDepthPeelLayers, m_Data.m_nHairDepthPeelLayers.GetValue());
 			guiXMLTextWriter::WriteElement(lc_Key_HairLines, m_Data.m_bHairLines.GetValue());
 
+			guiXMLTextWriter::WriteElement(lc_Key_TraceSamplesPerFrame, m_Data.m_TraceSamplesPerFrame.GetValue());
+			guiXMLTextWriter::WriteElement(lc_Key_TraceSampleLimit, m_Data.m_TraceSampleLimit.GetValue());
+			guiXMLTextWriter::WriteElement(lc_Key_TraceCaptureSamples, m_Data.m_TraceCaptureSamples.GetValue());
+			guiXMLTextWriter::WriteElement(lc_Key_TraceAORays, m_Data.m_TraceAORays.GetValue());
+			guiXMLTextWriter::WriteElement(lc_Key_TraceBounces, m_Data.m_TraceBounces.GetValue());
+			guiXMLTextWriter::WriteElement(lc_Key_TraceDebugView, m_Data.m_TraceDebugView.GetValue());
+			guiXMLTextWriter::WriteElement(lc_Key_TraceMaxRadiance, m_Data.m_TraceMaxRadiance.GetValue());
+			guiXMLTextWriter::WriteElement(lc_Key_TraceDenoise, m_Data.m_TraceDenoise.GetValue());
+
 			//	finish it up
 			guiXMLTextWriter::WriteEndElement();
 			guiXMLTextWriter::Close();
@@ -695,7 +729,7 @@ namespace rndrPrefsMgr
 			m_Data.m_SSAOEnableBlur.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateSSAO));
 			m_Data.m_bEnableSSAODepthPeeling.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateSSAO));
 			m_Data.m_SSAONumLayers.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateSSAOSampling));
-			
+
 			m_Data.m_bUseLPVGI.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateSSGI));
 			m_Data.m_bEnableSSGI.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateSSGI));
 			m_Data.m_SSGINumSteps.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateSSGISampling));
@@ -704,10 +738,10 @@ namespace rndrPrefsMgr
 			m_Data.m_bEnableSSGIDepthPeeling.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateSSGI));
 			m_Data.m_SSGINumLayers.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateSSGISampling));
 
-			m_Data.m_bUseHardwareTessellation.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateHardwareTessellation));	
-			m_Data.m_PixelSubdivLimit.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateHardwareTessellation));	
+			m_Data.m_bUseHardwareTessellation.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateHardwareTessellation));
+			m_Data.m_PixelSubdivLimit.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateHardwareTessellation));
 
-			m_Data.m_bRenderWireframe.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateRenderWireframe));	
+			m_Data.m_bRenderWireframe.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateRenderWireframe));
 
 			//motion blur
 #ifdef ENABLE_MOTIONBLUR
@@ -740,6 +774,15 @@ namespace rndrPrefsMgr
 			m_Data.m_HairInterpolationCount.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateHair));
 			m_Data.m_HairClumpRadius.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateHair));
 #endif
+
+			m_Data.m_TraceSamplesPerFrame.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateTrace));
+			m_Data.m_TraceSampleLimit.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateTrace));
+			m_Data.m_TraceCaptureSamples.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateTrace));
+			m_Data.m_TraceAORays.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateTrace));
+			m_Data.m_TraceBounces.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateTrace));
+			m_Data.m_TraceDebugView.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateTrace));
+			m_Data.m_TraceMaxRadiance.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateTrace));
+			m_Data.m_TraceDenoise.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateTrace));
 		}
 
 		//--------------------------------------------------------------------
@@ -760,7 +803,7 @@ namespace rndrPrefsMgr
 			case 4:
 				return g3dSceneRendererTypes::e_IlluminationOnly;
 			case 5:
-				return g3dSceneRendererTypes::e_Normals;			
+				return g3dSceneRendererTypes::e_Normals;
 			case 6:
 				return g3dSceneRendererTypes::e_DirtyMatte;
 			case 7:
@@ -800,7 +843,7 @@ namespace rndrPrefsMgr
 			case rprfPrefsData::e_PassDepth:
 				return rlyrPassesObject::e_Depth;
 			case rprfPrefsData::e_PassShadowMask:
-				return rlyrPassesObject::e_ShadowMask;			
+				return rlyrPassesObject::e_ShadowMask;
 			case rprfPrefsData::e_PassIllumination:
 				return rlyrPassesObject::e_IlluminationOnly;
 			case rprfPrefsData::e_PassNormals:
@@ -843,7 +886,7 @@ namespace rndrPrefsMgr
 		void rndrPrefsObject::UpdateShadows(prtyProperty *i_pProperty, bool i_bDirty)
 		{
 			// stop any render threads when changing settings in the graphics system
-			// that aren´t proxied (rndrPrefsUtil::SetMultipassRendering)
+			// that aren't proxied (rndrPrefsUtil::SetMultipassRendering)
 			gpxRenderControl::ConfirmSingleThread();
 
 			if( m_Data.m_bRenderWireframe.GetValue() )
@@ -862,44 +905,44 @@ namespace rndrPrefsMgr
 			}
 		}
 		//void rndrPrefsObject::UpdateHeadlight(prtyProperty *i_pProperty, bool i_bDirty)
-		//{	
+		//{
 		//	this->m_PrefsProxy->SetHeadlightOn(  m_Data.m_bHeadlightOn.GetValue();
 		//	WritePrefsToConfigFile();
 		//	update_statusbar_renderprefs();
 		//}
 		void rndrPrefsObject::UpdateDOF(prtyProperty *i_pProperty, bool i_bDirty)
-		{	
+		{
 			this->m_PrefsProxy->SetEnableDOF( m_Data.m_bEnableDOF.GetValue() );
 			WritePrefsToConfigFile();
 			update_statusbar_renderprefs();
 		}
 		void rndrPrefsObject::UpdateGlow(prtyProperty *i_pProperty, bool i_bDirty)
-		{	
+		{
 			this->m_PrefsProxy->SetEnableGlow(  m_Data.m_bEnableGlow.GetValue() );
 			WritePrefsToConfigFile();
 			update_statusbar_renderprefs();
 		}
 		void rndrPrefsObject::UpdateMatte(prtyProperty *i_pProperty, bool i_bDirty)
-		{	
+		{
 			this->m_PrefsProxy->SetRenderMatte(  m_Data.m_bMatteMode.GetValue() );
 			WritePrefsToConfigFile();
 			update_statusbar_renderprefs();
 		}
 		void rndrPrefsObject::UpdateOutline(prtyProperty *i_pProperty, bool i_bDirty)
-		{	
+		{
 			m_PrefsProxy->SetEnableOutline(  m_Data.m_bEnableOutline.GetValue() );
 			WritePrefsToConfigFile();
 			update_statusbar_renderprefs();
 		}
 		void rndrPrefsObject::UpdateMotionBlur(prtyProperty *i_pProperty, bool i_bDirty)
-		{	
+		{
 			m_PrefsProxy->SetMotionBlurEnable(  m_Data.m_bMotionBlurEnable.GetValue() );
 			m_PrefsProxy->SetMotionBlurSamples(  m_Data.m_MotionBlurSamples.GetValue() );
 			float motion_blur_percent = m_Data.m_MotionBlurPercent.GetValue() * .01f; //convert to 0-1
-			m_PrefsProxy->SetMotionBlurPercent( motion_blur_percent );	
+			m_PrefsProxy->SetMotionBlurPercent( motion_blur_percent );
 
 			// stop any render threads when changing settings in the graphics system
-			// that aren´t proxied (api3dScene::SetMotionBlur)
+			// that aren't proxied (api3dScene::SetMotionBlur)
 			gpxRenderControl::ConfirmSingleThread();
 
 			MotionBlurParams MBParams;
@@ -911,7 +954,7 @@ namespace rndrPrefsMgr
 			update_statusbar_renderprefs();
 		}
 		void rndrPrefsObject::UpdatePasses(prtyProperty *i_pProperty, bool i_bDirty)
-		{	
+		{
 //			this->m_PrefsProxy->SetEnableAmbientPass(  m_Data.m_bEnableAmbientPass.GetValue() );
 			this->m_PrefsProxy->SetEnableLitPass(  m_Data.m_bEnableLitPass.GetValue() );
 			this->m_PrefsProxy->SetEnableDiffuseLighting(  m_Data.m_bEnableDiffuseLighting.GetValue() );
@@ -926,20 +969,20 @@ namespace rndrPrefsMgr
 			update_statusbar_renderprefs();
 		}
 		void rndrPrefsObject::UpdateIlluminationRender(prtyProperty *i_pProperty, bool i_bDirty)
-		{	
+		{
 			this->m_PrefsProxy->SetIlluminationUsesNormals( m_Data.m_bIlluminationUsesNormals.GetValue() );
 			WritePrefsToConfigFile();
 			update_statusbar_renderprefs();
 		}
 		void rndrPrefsObject::UpdateRenderer(prtyProperty *i_pProperty, bool i_bDirty)
-		{	
+		{
 			if(!rprfPrefsUtil::RenderTypeEnabled( m_Data.m_RendererTypeVP.GetValue() ))
 			{
 				m_Data.m_RendererTypeVP.SetValue(g3dSceneRendererTypes::e_Default);
 				return;
 			}
 			// stop any render threads when changing settings in the graphics system
-			// that aren´t proxied (mnmApp::SetRenderer)
+			// that aren't proxied (mnmApp::SetRenderer)
 			gpxRenderControl::ConfirmSingleThread();
 
 			rlyrPassesObject::ePassType pass_type = GetRenderPassType(m_Data.m_RenderPassVP.GetValue());
@@ -1225,7 +1268,7 @@ namespace rndrPrefsMgr
 			//rprfPrefsUtil::UpdateGUICategories(this->m_Data, true);
 		}
 		void rndrPrefsObject::UpdateHDR(prtyProperty *i_pProperty, bool i_bDirty)
-		{	
+		{
 			this->m_PrefsProxy->SetHDRToneMap( m_Data.m_bToneMap.GetValue() );
 //			this->m_PrefsProxy->SetHDRBlueShift( m_Data.m_bBlueShift.GetValue() );
 			if(rprfPrefsUtil::HDRLayerEnabled( m_Data.m_HDRDebugMode.GetValue() ))
@@ -1234,29 +1277,29 @@ namespace rndrPrefsMgr
 			WritePrefsToConfigFile();
 		}
 		void rndrPrefsObject::UpdateReflection(prtyProperty *i_pProperty, bool i_bDirty)
-		{	
+		{
 			this->m_PrefsProxy->SetEnableReflection( m_Data.m_bEnableReflection.GetValue() );
 			WritePrefsToConfigFile();
 			update_statusbar_renderprefs();
 		}
 		void rndrPrefsObject::UpdateEnvironment(prtyProperty *i_pProperty, bool i_bDirty)
-		{	
+		{
 			this->m_PrefsProxy->SetEnableEnvironment( m_Data.m_bEnableEnvironment.GetValue() );
 			WritePrefsToConfigFile();
 			update_statusbar_renderprefs();
 		}
 		void rndrPrefsObject::UpdateResolution(prtyProperty *i_pProperty, bool i_bDirty)
-		{	
+		{
 			this->m_PrefsProxy->SetLowResolution( m_Data.m_bLowResolution.GetValue() );
 			WritePrefsToConfigFile();
 		}
 //		void rndrPrefsObject::UpdateAO(prtyProperty *i_pProperty, bool i_bDirty)
-//		{	
+//		{
 //			this->m_PrefsProxy->SetEnableAO(  m_Data.m_bEnableAO.GetValue() );
 //			this->m_PrefsProxy->SetRecalcAOPerFrame(  m_Data.m_bRecalcAOPerFrame.GetValue() );
 //		}
 		void rndrPrefsObject::UpdateProjLtFrustumCull(prtyProperty *i_pProperty, bool i_bDirty)
-		{	
+		{
 			this->m_PrefsProxy->SetProjLightFrustumCull( m_Data.m_bProjLightFrustumCull.GetValue() );
 			this->m_PrefsProxy->SetProjLightsOn( m_Data.m_bProjLightsOn.GetValue() );
 			this->m_PrefsProxy->SetPtLightsOn( m_Data.m_bPtLightsOn.GetValue() );
@@ -1265,7 +1308,7 @@ namespace rndrPrefsMgr
 		}
 
 		void rndrPrefsObject::UpdateSSAO(prtyProperty *i_pProperty, bool i_bDirty)
-		{	
+		{
 			this->m_PrefsProxy->SetUseAOVolumes( m_Data.m_bUseAOVolumes.GetValue() );
 			this->m_PrefsProxy->SetEnableSSAO( m_Data.m_bEnableSSAO.GetValue() );
 			this->m_PrefsProxy->SetEnableSSAOBlur( m_Data.m_SSAOEnableBlur.GetValue() );
@@ -1279,9 +1322,9 @@ namespace rndrPrefsMgr
 			WritePrefsToConfigFile();
 		}
 		void rndrPrefsObject::UpdateSSAOSampling(prtyProperty *i_pProperty, bool i_bDirty)
-		{	
+		{
 			// custom.
-			// if (i_bDirty)			
+			// if (i_bDirty)
 			int preset = MatchSSAOStateToPreset();
 			m_Data.m_SSAOQualityVP.SetValue(preset);
 			this->m_PrefsProxy->SetSSAONumSteps( m_Data.m_SSAONumSteps.GetValue() );
@@ -1293,9 +1336,9 @@ namespace rndrPrefsMgr
 
 		}
 		void rndrPrefsObject::UpdateSSAOQuality(prtyProperty *i_pProperty, bool i_bDirty)
-		{	
+		{
 			// We only want to do something if the property changed because of
-			//	the user interface combo box. 
+			//	the user interface combo box.
 			switch(m_Data.m_SSAOQualityVP.GetValue())
 				{
 				case rprfPrefsData::e_SSAOLowVP:
@@ -1331,9 +1374,9 @@ namespace rndrPrefsMgr
 			WritePrefsToConfigFile();
 		}
 		void rndrPrefsObject::UpdateSSGISampling(prtyProperty *i_pProperty, bool i_bDirty)
-		{	
+		{
 			// custom.
-			// if (i_bDirty)			
+			// if (i_bDirty)
 			int preset = MatchSSGIStateToPreset();
 			m_Data.m_SSGIQualityVP.SetValue(preset);
 			this->m_PrefsProxy->SetSSGINumSteps( m_Data.m_SSGINumSteps.GetValue() );
@@ -1345,9 +1388,9 @@ namespace rndrPrefsMgr
 
 		}
 		void rndrPrefsObject::UpdateSSGIQuality(prtyProperty *i_pProperty, bool i_bDirty)
-		{	
+		{
 			// We only want to do something if the property changed because of
-			//	the user interface combo box. 
+			//	the user interface combo box.
 			switch(m_Data.m_SSGIQualityVP.GetValue())
 				{
 				case rprfPrefsData::e_SSGILow:
@@ -1400,7 +1443,7 @@ namespace rndrPrefsMgr
 		}
 
 		void rndrPrefsObject::UpdateHair(prtyProperty *i_pProperty, bool i_bDirty)
-		{	
+		{
 			m_PrefsProxy->SetEnableHair( m_Data.m_bEnableHair.GetValue() );
 			m_PrefsProxy->SetHairLines( m_Data.m_bHairLines.GetValue() );
 			m_PrefsProxy->SetHairTransparencyMode( m_Data.m_HairTransparencyMode.GetValue() );
@@ -1418,9 +1461,23 @@ namespace rndrPrefsMgr
 			update_statusbar_renderprefs();
 		}
 
+		void rndrPrefsObject::UpdateTrace(prtyProperty *i_pProperty, bool i_bDirty)
+		{
+			m_PrefsProxy->SetTraceSamplesPerFrame( m_Data.m_TraceSamplesPerFrame.GetValue() );
+			m_PrefsProxy->SetTraceSampleLimit( m_Data.m_TraceSampleLimit.GetValue() );
+			m_PrefsProxy->SetTraceCaptureSamples( m_Data.m_TraceCaptureSamples.GetValue() );
+			m_PrefsProxy->SetTraceAORays( m_Data.m_TraceAORays.GetValue() );
+			m_PrefsProxy->SetTraceBounces( m_Data.m_TraceBounces.GetValue() );
+			m_PrefsProxy->SetTraceDebugView( m_Data.m_TraceDebugView.GetValue() );
+			m_PrefsProxy->SetTraceMaxRadiance( m_Data.m_TraceMaxRadiance.GetValue() );
+			m_PrefsProxy->SetTraceDenoise( m_Data.m_TraceDenoise.GetValue() );
+			WritePrefsToConfigFile();
+			update_statusbar_renderprefs();
+		}
+
 		// note this must match its values with the values in UpdateSSAOQuality
 		int rndrPrefsObject::MatchSSAOStateToPreset()
-		{	
+		{
 			// simple round off, only works for positive ints.
 			int steps = (int)(m_Data.m_SSAONumSteps.GetValue() + 0.5);
 			int dirs = (int)(m_Data.m_SSAONumDirs.GetValue() + 0.5);
@@ -1434,7 +1491,7 @@ namespace rndrPrefsMgr
 
 		// note this must match its values with the values in UpdateSSAOQuality
 		int rndrPrefsObject::MatchSSGIStateToPreset()
-		{	
+		{
 			// simple round off, only works for positive ints.
 			int steps = (int)(m_Data.m_SSGINumSteps.GetValue() + 0.5);
 			int dirs = (int)(m_Data.m_SSGINumDirs.GetValue() + 0.5);
@@ -1446,7 +1503,7 @@ namespace rndrPrefsMgr
 				return 3;
 		}
 
-		void rndrPrefsObject::RegisterSSAOSampling() 
+		void rndrPrefsObject::RegisterSSAOSampling()
 		{
 			prtyComboBoxUIInfo* pCBUII;
 			pCBUII = new prtyComboBoxUIInfo(&(m_Data.m_SSAOQualityVP), "Ambient Occlusion", "Sampling quality presets");
@@ -1454,7 +1511,7 @@ namespace rndrPrefsMgr
 			m_Data.m_SSAOQualityVP.AddCallback(new prtyCallbackWrapper<rndrPrefsObject>(this, &rndrPrefsObject::UpdateSSAOQuality));
 		}
 
-		void rndrPrefsObject::RegisterSSGISampling() 
+		void rndrPrefsObject::RegisterSSGISampling()
 		{
 			prtyComboBoxUIInfo* pCBUII;
 			pCBUII = new prtyComboBoxUIInfo(&(m_Data.m_SSGIQualityVP), "Global Illumination", "Sampling quality presets");
@@ -1498,24 +1555,24 @@ namespace rndrPrefsMgr
 		//void rndrPrefsRenderFullObject::UpdateShadows(prtyProperty *i_pProperty, bool i_bDirty)
 		//{
 		//	this->m_PrefsProxy->SetMultipassOn = m_Data.m_bMultipassOn.GetValue();
-		//	this->m_PrefsProxy->SetHeadlightOn = (!m_Data.m_bMultipassOn.GetValue()); 
+		//	this->m_PrefsProxy->SetHeadlightOn = (!m_Data.m_bMultipassOn.GetValue());
 		//	WritePrefsToConfigFile();
 		//}
 		//
 		//void rndrPrefsRenderFullObject::UpdateRenderer(prtyProperty *i_pProperty, bool i_bDirty)
-		//{	
+		//{
 		//	this->m_PrefsProxy->SetRendererType = GetRendererType(m_Data.m_RendererType.GetValue());
 		//}
 		//
 		//void rndrPrefsRenderFullObject::RegisterSSAOSampling()
-		//{	
-		//	prtyComboBoxUIInfo* pCBUII;		
+		//{
+		//	prtyComboBoxUIInfo* pCBUII;
 		//	pCBUII = new prtyComboBoxUIInfo(&(m_Data.m_SSAOQuality), "Ambient Occlusion", "Sampling quality presets");
 		//	AddProperty( pCBUII );
 		//	m_Data.m_SSAOQuality.AddCallback(new prtyCallbackWrapper<rndrPrefsRenderFullObject>(this, &rndrPrefsRenderFullObject::UpdateSSAOQuality));
 		//}
 
-		//void rndrPrefsRenderFullObject::UpdateSSAOQuality(prtyProperty *i_pProperty, bool i_bDirty) 
+		//void rndrPrefsRenderFullObject::UpdateSSAOQuality(prtyProperty *i_pProperty, bool i_bDirty)
 		//{
 		//	switch(m_Data.m_SSAOQuality.GetValue())
 		//	{
@@ -1556,7 +1613,7 @@ namespace rndrPrefsMgr
 		//==========================================================================
 		static std::vector<rndrPrefsObject*> l_PrefsObjects;
 
-		
+
 		//====================================================================
 		//====================================================================
 		class RenderPrefsNameResolver : public pythProperty::NameResolver
@@ -1600,7 +1657,7 @@ namespace rndrPrefsMgr
 	{
 		if (!l_PrefsObjects.empty())
 		{
-			// Remove name resolver 
+			// Remove name resolver
 			pythProperty::RemoveNameResolver( l_NameResolver );
 
 			delete l_PrefsObjects[e_ViewportPrefs];
@@ -1659,8 +1716,8 @@ namespace rndrPrefsMgr
 		cmaCommand* pCmd;
 
 		//	COMMAND: Import
-		pCmd = new cmaCommandSimple("Viewport Render Preferences", 
-									"View", 
+		pCmd = new cmaCommandSimple("Viewport Render Preferences",
+									"View",
 									"View Render Preferences",
 									&rndrPrefsDialogUtil::Show );
 		menu_id = guiMenuMgr::AddMenuItem( "View", pCmd->GetTag().c_str() );

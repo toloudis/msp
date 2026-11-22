@@ -41,8 +41,8 @@
 #endif
 #define CMD_PACKAGE_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"	// defines NULL
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 

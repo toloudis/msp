@@ -4,12 +4,16 @@
 **		Control builder using factories
 **
 **	StudioGPU
-**	Copyright(C) 2010 - All Rights Reserved
+**	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #ifdef PQT_FORMCONTROLBUILDER_HPP
 #error pqtFormControlBuilder.hpp multiply included
 #endif
 #define PQT_FORMCONTROLBUILDER_HPP
+
+#ifndef TQT_WIDGETS_HPP
+#include "ToolUIQt/tqt/tqtWidgets.hpp"
+#endif
 
 #ifndef PRTY_PROPERTYUIINFOCONTAINER_HPP
 #include "Core/prty/prtyPropertyUIInfoContainer.hpp"
@@ -17,15 +21,10 @@
 #ifndef PRTY_OBJECT_HPP
 #include "Core/prty/prtyObject.hpp"
 #endif
-#ifndef TQT_WIDGETS_HPP
-#include "ToolUIQt/tqt/tqtWidgets.hpp"
-#endif
 
 #include <vector>
 
 #ifdef USE_QT
-#include <QtGui/QWidget>
-
 
 //============================================================================
 //	To build a form:

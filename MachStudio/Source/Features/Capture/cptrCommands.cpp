@@ -7,6 +7,9 @@
 **	Copyright(C) 2007- All Rights Reserved
 \****************************************************************************/
 #include "Features/Capture/cptrCommands.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Tool/gui/guiCommandMgr.hpp"
 #include "Tool/cma/cmaCommandSimple.hpp"
@@ -52,7 +55,7 @@ namespace
 		oss.setf(0, std::ios::floatfield);
 		oss<<"grab"<<std::setw(4)<<std::setfill('0')<<l_ScreenCapCounter++<<".bmp";
 		std::string buffer(oss.str());
-		locator.Push(itString(buffer.c_str()));
+		locator.Push(buffer);
 
 		mnmScreenCaptureUtil::WriteBMP(locator);
 

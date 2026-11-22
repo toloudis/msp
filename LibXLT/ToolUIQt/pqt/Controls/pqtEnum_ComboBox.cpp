@@ -9,7 +9,7 @@
 \****************************************************************************/
 #include "ToolUIQt/pqt/Controls/pqtEnum_ComboBox.hpp"
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 // Get list of string choices for combo box
@@ -30,18 +30,18 @@ void pqtEnum_ComboBox_Converter::GetChoices(prtyPropertyUIInfo* i_pUIInfo,
 //----------------------------------------------------------------------------
 // Set value into control
 //----------------------------------------------------------------------------
-void pqtEnum_ComboBox_Converter::SetValueIntoControl(wxChoice* i_pActualControl,
+void pqtEnum_ComboBox_Converter::SetValueIntoControl(QComboBox* i_pActualControl,
 								 short i_Value)
 {
-	i_pActualControl->SetSelection(i_Value);
+	i_pActualControl->setCurrentIndex(i_Value);
 }
 
 //----------------------------------------------------------------------------
 // Get value from control
 //----------------------------------------------------------------------------
-short pqtEnum_ComboBox_Converter::GetValueFromControl(wxChoice* i_pActualControl)
+short pqtEnum_ComboBox_Converter::GetValueFromControl(QComboBox* i_pActualControl)
 {
-	return i_pActualControl->GetSelection();
+	return (short)i_pActualControl->currentIndex();
 }
 
 #endif

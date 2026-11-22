@@ -19,7 +19,6 @@
 #include <string>
 
 class fsLocator;
-class matShaderEffect;
 
 namespace effShaderUtilWin
 {
@@ -35,18 +34,8 @@ namespace effShaderUtilWin
 	void DeInitialize();
 
 	//------------------------------------------------------------------------
-	// Create effect from file
+	// Compile one entry point of an hlsl file
 	//------------------------------------------------------------------------
-	matShaderEffect* CompileEffect(const fsLocator &i_Locator);
-	matShaderEffect* CompileGenericEffect(const fsLocator &i_Locator);
-
-	//------------------------------------------------------------------------
-	// Create effect from compiled binary data array
-	//------------------------------------------------------------------------
-	ID3DX11Effect* LoadEffectData(void* i_Eff, int i_nBytes, std::string i_Name);
-
-	ID3DX11Effect* LoadEffectDX11(const fsLocator& i_Locator);
-
 	void LoadShaderDX11(const fsLocator& i_Locator, 
 		const std::string& i_Entrypoint,
 		const std::string& i_Profile,

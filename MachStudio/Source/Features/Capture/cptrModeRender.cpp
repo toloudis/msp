@@ -25,7 +25,11 @@
 #include "Features/RenderPrefs/rndrPrefsUtil.hpp"
 #include "MainApp/mnmApp.hpp"
 #include "MainApp/resource.h"
+#ifdef MSP_GUI_QT
+#include "MainApp/qtGUI/qtMainForm.hpp"
+#else
 #include "MainApp/wxGUI/wxMainForm.hpp"
+#endif
 #include "Support/cams/camsCameraMgr.hpp"
 #include "Support/cams/camsFollowUtil.hpp"
 #include "Support/capt/captRenderOutputData.hpp"
@@ -47,7 +51,6 @@
 #include "Support/pfx/pfxPostEffectObject.hpp"
 #include "Support/rlyr/rlyrRenderLayerMgr.hpp"
 #include "Support/rman/rmanMgr.hpp"
-#include "Support/mray/mrayMgr.hpp"
 #include "Support/rprf/rprfPrefsObject.hpp"
 #include "Support/rprf/rprfPrefsUtil.hpp"
 #include "Support/tmln/tmlnTimeInOutMgr.hpp"
@@ -56,7 +59,6 @@
 #include "Support/xfrm/xfrmTransformMgr.hpp"
 #include "Support/vis/visMgr.hpp"
 
-#include <windows.h>
 #undef CreateDirectory
 
 //	library
@@ -66,7 +68,9 @@
 #include "Core/Env/envThread.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Graphics/g2d/g2dExceptionX.hpp"
 #include "Graphics/g2d/g2dFontUtil.hpp"
 #include "Graphics/g2d/g2dSystem.hpp"
@@ -122,9 +126,9 @@ namespace
 	bool l_bRemovedSelectionBox = false;
 	int l_ErrorCode = 1;
 	float m_camera_percentage = 0.0;
-	itString m_camera_label;
-	itString m_cameras_label;
-	itString m_scenes_label;
+	std::string m_camera_label;
+	std::string m_cameras_label;
+	std::string m_scenes_label;
 	float m_scenes_percentage;
 
 	bool l_bDoneFirstPass = false;
@@ -204,7 +208,7 @@ bool cptrModeRender::sm_bThreadingEnabled = true; // default needs to match Pref
 //	the application window to render into. Otherwise, it should
 //	create a subwindow of the correct size to render into.
 //------------------------------------------------------------------------
-//static 
+//static
 void cptrModeRender::SetUseApplicationWindow(bool i_bUseAppWindow)
 {
 	sm_bUseAppWindow = i_bUseAppWindow;
@@ -239,10 +243,15 @@ cptrModeRender::cptrModeRender()
 	m_bPaused(false),
 	m_CurrentCameraNumber(0),
 	m_bUseOnlyValidCaptureTimes(true),
+	m_bWarmUpFrame(false),
+	m_bWarmUpPending(false),
 	m_fRenderStartTime(0.0f),
 	m_RenderPrefsObjectID(rndrPrefsMgr::e_RenderFullPrefs)
 {
 	SetMenuItemName( "Render" );
+
+	// the capture states, in order:
+	// RenderConfig → InitCaptures → BeginCapture → LeadIn → Capture → LeadOut → EndCapture → DeInitCaptures → PostCapture → WaitToEndMode.
 
 	//	set-up the state call-backs
 	m_StateRenderConfig.SetState( this, &cptrModeRender::BeginStateRenderConfig, &cptrModeRender::OnStateRenderConfig, &cptrModeRender::EndStateRenderConfig );
@@ -284,7 +293,7 @@ cptrModeRender::~cptrModeRender()
 //----------------------------------------------------------------------------
 //virtual
 void cptrModeRender::Initialize()
-{	
+{
 	captRenderOutputData& data = captRenderOutputDataUtil::Data();
 
 	if ( !m_bInitialized )
@@ -307,8 +316,8 @@ void cptrModeRender::Initialize()
 			&& data.m_bBatchSkipDialog.GetValue())
 		{
 			// show the message on stats log
-			itString s("Error: No output file specified. Skip Scene ");
-			s += itString(data.m_CurrentSceneFilename.GetString().c_str());
+			std::string s("Error: No output file specified. Skip Scene ");
+			s += data.m_CurrentSceneFilename.GetString();
 			cptrRenderStatsDialogUtil::AddStatsMessage(s);
 			cptrRenderStatsDialogUtil::Newline();
 		}
@@ -342,9 +351,9 @@ void cptrModeRender::Initialize()
 			DBG_ERROR("Cannot render the scene " << data.m_CurrentSceneFilename.GetString().c_str() << ".  There are no cameras created." );
 
 			// show the message on stats log
-			itString s("Cannot render the scene ");
-			s += itString(data.m_CurrentSceneFilename.GetString().c_str());
-			s += itString(".  There are no cameras created.");
+			std::string s("Cannot render the scene ");
+			s += data.m_CurrentSceneFilename.GetString();
+			s += std::string(".  There are no cameras created.");
 			cptrRenderStatsDialogUtil::AddStatsMessage(s);
 			cptrRenderStatsDialogUtil::Newline();
 		}
@@ -407,9 +416,9 @@ void cptrModeRender::Initialize()
 	oss.setf(std::ios::fixed, std::ios::floatfield);
 	oss << IDB_PNG1;
 	std::string numberstr(oss.str());
-	
 
-	itString it_number(numberstr.c_str());
+
+	std::string it_number(numberstr.c_str());
 	fsLocator resource_name;
 	resource_name.Push(it_number);
 	//resource_name.Push(itString(L"C:"));
@@ -502,12 +511,14 @@ void cptrModeRender::ExitMode()
 	restoreCurrentTime();
 	// terminate this mode
 	this->SetTerminateCondition(appMode::e_TerminateAndRemove);
-	
+
 	//check for Complete program termination
 	if (m_bAppExit)
 	{
 		#ifdef USE_WXWIDGETS
 			wxMainForm::Exit();
+#elif defined(USE_QT)
+			qtMainForm::Exit();
 		#endif
 	}
 	DBG_TRACE("ExitMode: bottom");
@@ -526,7 +537,7 @@ void cptrModeRender::Think()
 		AbortRender();
 	}
 
-	// If there is already a render thread active, have to 
+	// If there is already a render thread active, have to
 	// wait until it finishes
 	if (!g3dThreadControl::IsRenderThreadActive())
 	{
@@ -536,7 +547,7 @@ void cptrModeRender::Think()
 
 		//check to see if the dialog needs to be refreshed
 		rprfPrefsUtil::UpdateDialog();
-		
+
 		//	update the state
 		//
 		UpdateState();
@@ -576,7 +587,7 @@ void cptrModeRender::SetUseOnlyValidCaptureTimes( bool i_bUseValid )
 //	Allow another mode (like batch render) to set the start time
 //------------------------------------------------------------------------
 void cptrModeRender::SetRenderStartTime( float i_fRenderStartTime )
-{ 
+{
 	m_fRenderStartTime = i_fRenderStartTime;
 }
 
@@ -743,8 +754,8 @@ void cptrModeRender::EndStateInitCaptures()
 
 	// make sure sampling settings are within bounds that we can handle:
 	static const int maxSize = 16384;
-	int width	= data.m_nWidth.GetValue() * (data.m_bJitteredSampling.GetValue() ? 1 : data.m_nCaptureSampling.GetValue());
-	int height	= data.m_nHeight.GetValue() * (data.m_bJitteredSampling.GetValue() ? 1 : data.m_nCaptureSampling.GetValue());
+	int width	= data.m_nWidth.GetValue() * (cptrRenderUtil::UsesJitteredSampling() ? 1 : data.m_nCaptureSampling.GetValue());
+	int height	= data.m_nHeight.GetValue() * (cptrRenderUtil::UsesJitteredSampling() ? 1 : data.m_nCaptureSampling.GetValue());
 	if ((width > maxSize) || (height > maxSize))
 	{
 		if (data.m_bBatchMode.GetValue()
@@ -754,9 +765,9 @@ void cptrModeRender::EndStateInitCaptures()
 			DBG_ERROR("Cannot render the scene " << data.m_CurrentSceneFilename.GetString().c_str() << ".  Sampling settings too high - please use jitter or reduce the number of samples." );
 
 			// show the message on stats log
-			itString s("Cannot render the scene ");
-			s += itString(data.m_CurrentSceneFilename.GetString().c_str());
-			s += itString(".  Sampling settings too high - please use jitter or reduce the number of samples.");
+			std::string s("Cannot render the scene ");
+			s += data.m_CurrentSceneFilename.GetString();
+			s += std::string(".  Sampling settings too high - please use jitter or reduce the number of samples.");
 			cptrRenderStatsDialogUtil::AddStatsMessage(s);
 			cptrRenderStatsDialogUtil::Newline();
 		}
@@ -798,7 +809,7 @@ void cptrModeRender::EndStateInitCaptures()
 		int result = guiMessageBox::Show("Without the render layer name in the file or directory, you run the risk of overwriting the output files with each render.  Continue?", "Overwriting Output File Risk", guiMessageBox::e_YesNo);
 
 		switch(result)
-		{	
+		{
 		case guiMessageBox::e_No:
 			m_bAborted = true;
 			cptrRenderUtil::SetPSflag(false);
@@ -816,7 +827,7 @@ void cptrModeRender::EndStateInitCaptures()
 		int result = guiMessageBox::Show("Without the render pass name in the file or directory, you run the risk of overwriting the output files with each render.  Continue?", "Overwriting Output File Risk", guiMessageBox::e_YesNo);
 
 		switch(result)
-		{	
+		{
 		case guiMessageBox::e_No:
 			m_bAborted = true;
 			cptrRenderUtil::SetPSflag(false);
@@ -843,13 +854,13 @@ void cptrModeRender::EndStateInitCaptures()
 	//}
 
 	if ( data.m_bCaptureAllCameras.GetValue() )
-	{		
+	{
 		int startcam_index = 0;
 		//	if there has been a saved render state, then start the time
 		//
 		if (data.m_RenderPosTime != captRenderOutputData::c_InitRenderPosTime)
 		{
-			nameString camname( itStringUtil::GetStdString(data.m_RenderPosCamera.GetValue()) );
+			nameString camname( data.m_RenderPosCamera.GetValue() );
 			startcam_index = camsCameraMgr::GetIndexForName(camname);
 			if (startcam_index == -1)
 				startcam_index = 0;
@@ -864,8 +875,8 @@ void cptrModeRender::EndStateInitCaptures()
 		}
 		m_CurrentCameraIndex = startcam_index;
 		l_StartCamIdx = startcam_index;
-		
-		
+
+
 		// Even with Director's Cuts, make this checkbox means only the real *cameras*
 		m_LastCameraIndex = camsCameraMgr::GetNumCameras();
 		m_LastLayerIndex = rlyrRenderLayerMgr::GetNumRenderLayers();
@@ -880,7 +891,7 @@ void cptrModeRender::EndStateInitCaptures()
 		//
 		if (data.m_RenderPosTime != captRenderOutputData::c_InitRenderPosTime)
 		{
-			nameString camname( itStringUtil::GetStdString(data.m_RenderPosCamera.GetValue()) );
+			nameString camname( data.m_RenderPosCamera.GetValue() );
 			int startcam_index = camsCameraMgr::GetIndexForName(camname);
 			if (startcam_index == -1)
 				startcam_index = 0;
@@ -937,7 +948,7 @@ void cptrModeRender::EndStateInitCaptures()
 	//	data.m_fEndTime.SetValue( data.m_fMarkerOutTime.GetValue() );
 
 	//	// fix a bug where the user creates a marker then shortens the end time of the scene to before marker
-	//	if (data.m_fEndTime.GetValue() > tmlnTimeLine::GetMaximum()) 
+	//	if (data.m_fEndTime.GetValue() > tmlnTimeLine::GetMaximum())
 	//		data.m_fEndTime.SetValue( tmlnTimeLine::GetMaximum() );
 	//}
 
@@ -959,7 +970,7 @@ void cptrModeRender::EndStateInitCaptures()
 	{
 		// If the render frame option is "specify", then we only have to check the ranges
 		// against the timeline minimum and maximum.
-		
+
 		// Start time cannot be before timeline minimum (is this necessary?)
 		if (data.m_fStartTime.GetValue() < tmlnTimeLine::GetMinimum())
 		{
@@ -975,7 +986,7 @@ void cptrModeRender::EndStateInitCaptures()
 
 			//DBG_LOG2( "ModeRender Capture Max- = %6.3f %d", capturemax, (int)capturemax );
 		}
-		else 
+		else
 		{
 			cptrRenderUtil::SetCaptureTimeMax( data.m_fEndTime.GetValue() );
 			m_fEndTime = data.m_fEndTime.GetValue();
@@ -992,6 +1003,31 @@ void cptrModeRender::EndStateInitCaptures()
 		//TIME - These weren't in earlier code, but seem to be needed, right?
 		cptrRenderUtil::SetCaptureTimeMax( data.m_fEndTime.GetValue() );
 		m_fEndTime = data.m_fEndTime.GetValue();
+	}
+
+	//	the command line's frame window (-capStartFrame, -capEndFrame)
+	//	narrows the range, whichever way it was set; capture drivers still
+	//	pick the frames and cameras within it. A window that starts later
+	//	renders the frame before it first, unsaved (see OnStateLeadIn).
+	m_bWarmUpFrame = false;
+	if (captRenderOutputDataUtil::GetFrameWindowStart() >= 0)
+	{
+		const maTime start = tmlnTimeUtil::GetTimeFromFrames( captRenderOutputDataUtil::GetFrameWindowStart() );
+		if (start > data.m_fStartTime.GetValue())
+		{
+			data.m_fStartTime.SetValue( start );
+			m_bWarmUpFrame = true;
+		}
+	}
+	if (captRenderOutputDataUtil::GetFrameWindowEnd() >= 0)
+	{
+		const maTime end = tmlnTimeUtil::GetTimeFromFrames( captRenderOutputDataUtil::GetFrameWindowEnd() );
+		if (end < m_fEndTime)
+		{
+			data.m_fEndTime.SetValue( end );
+			cptrRenderUtil::SetCaptureTimeMax( end );
+			m_fEndTime = end;
+		}
 	}
 
 
@@ -1016,13 +1052,13 @@ void cptrModeRender::EndStateInitCaptures()
 
 	std::string filename;
 	docSingleDocumentMgr::GetFilenameOnly(filename);
-	data.m_CurrentSceneFilename.SetValue( itString(filename.c_str()) );
+	data.m_CurrentSceneFilename.SetValue( filename );
 	data.m_RenderPosScene.SetValue( data.m_CurrentSceneFilename.GetValue() );		// for saving render position
-	itString sfname = data.m_CurrentSceneFilename.GetValue();
-	sfname.StripExtension();
+	std::string sfname = data.m_CurrentSceneFilename.GetValue();
+	envString::StripExtension(sfname);
 	data.m_CurrentSceneFilename.SetValue(sfname);
 
-	cptrRenderStatsDataUtil::StartScene( itStringUtil::GetStdString(sfname) );
+	cptrRenderStatsDataUtil::StartScene( sfname );
 	cptrRenderStatsDialogUtil::UpdateStatsDialog();
 
 	cptrRenderUtil::Initialize();
@@ -1044,7 +1080,7 @@ void cptrModeRender::BeginStateBeginCapture()
 	//remove highlights and compasses
 	removeHighlights();
 	removeSelectionBox();
-	
+
 	m_bCaptureStarted = false;
 	m_bCaptureFinished = false;
 	m_bSwitchToCameraRenderRange = true;
@@ -1129,8 +1165,8 @@ void cptrModeRender::OnStateBeginCapture()
 					else
 					{
 						// Create sub window of correct size
-						int width	= data.m_nWidth.GetValue() * (data.m_bJitteredSampling.GetValue() ? 1 : data.m_nCaptureSampling.GetValue());
-						int height	= data.m_nHeight.GetValue() * (data.m_bJitteredSampling.GetValue() ? 1 : data.m_nCaptureSampling.GetValue());
+						int width	= data.m_nWidth.GetValue() * (cptrRenderUtil::UsesJitteredSampling() ? 1 : data.m_nCaptureSampling.GetValue());
+						int height	= data.m_nHeight.GetValue() * (cptrRenderUtil::UsesJitteredSampling() ? 1 : data.m_nCaptureSampling.GetValue());
 
 						if (cptrRenderUtil::GetCaptureQuadrants())
 						{
@@ -1148,7 +1184,7 @@ void cptrModeRender::OnStateBeginCapture()
 							//
 							m_pWindow = m_pSystem->CreateSubWindow(width, height, 300, 10);
 							//m_pWindow = m_pSystem->CreateSubFullScreen(width, height, 32 );
-							m_pWindow->SetTitle(itString(L"Render"));
+							m_pWindow->SetTitle(std::string("Render"));
 						}
 						catch ( const envExceptionX& i_Ex )
 						{
@@ -1157,7 +1193,7 @@ void cptrModeRender::OnStateBeginCapture()
 							if (data.m_bBatchMode.GetValue()
 								&& data.m_bBatchSkipDialog.GetValue())
 							{
-								cptrRenderStatsDialogUtil::AddStatsMessage(itString(msg.c_str()));
+								cptrRenderStatsDialogUtil::AddStatsMessage(msg);
 								cptrRenderStatsDialogUtil::Newline();
 							}
 							else
@@ -1192,7 +1228,7 @@ void cptrModeRender::OnStateBeginCapture()
 				}
 			}
 
-			itString cam_name;
+			std::string cam_name;
 			nameString theName;
 			std::string cam_desc;
 			camsFollowUtil::GetCurrentCameraName(theName);
@@ -1200,7 +1236,7 @@ void cptrModeRender::OnStateBeginCapture()
 			cam_name = theName.GetString().c_str();
 			data.m_RenderPosCamera.SetValue( cam_name );			// for saving render position
 
-			itString layer_name;
+			std::string layer_name;
 			nameString layer_desc = rlyrRenderLayerMgr::GetLayerName( m_CurrentLayerIndex );
 			layer_name = layer_desc.GetString().c_str();
 			data.m_RenderPosLayer.SetValue( layer_name );			// for saving render position
@@ -1221,7 +1257,7 @@ void cptrModeRender::OnStateBeginCapture()
 				cam_name += m_cCurrentRenderDriverLetter;
 
 				//	stats: start the render block
-				//cptrRenderStatsDataUtil::StartCameraRenderBlock( itStringUtil::GetStdString(cam_name) );
+				//cptrRenderStatsDataUtil::StartCameraRenderBlock( cam_name );
 			}
 
 			if ( data.m_bUseCameraNameInFilename.GetValue() )
@@ -1287,13 +1323,13 @@ void cptrModeRender::ApplyRenderPrefs()
 void cptrModeRender::EndStateBeginCapture()
 {
 	captRenderOutputData& data = captRenderOutputDataUtil::Data();
-	itString scene_label;
-	scene_label += itString("Scene - ");
+	std::string scene_label;
+	scene_label += std::string("Scene - ");
 	scene_label += data.m_CurrentSceneFilename.GetValue();
 	cptrRenderProgressDialogUtil::SetSceneLabel( scene_label );
 	cptrRenderProgressDialogUtil::Raise();
 
-	//DBG_LOG("Begin Capture (end) " << (data.m_bJitteredSampling.GetValue() ? "true":"false") );
+	//DBG_LOG("Begin Capture (end) " << (cptrRenderUtil::UsesJitteredSampling() ? "true":"false") );
 }
 
 //----------------------------------------------------------------------------
@@ -1305,12 +1341,34 @@ void cptrModeRender::BeginStateLeadIn()
 
 	captRenderOutputData& data = captRenderOutputDataUtil::Data();
 	m_fLeadTimeDelta = data.m_fLeadIn.GetValue();
+	m_bWarmUpPending = m_bWarmUpFrame;
 }
 //----------------------------------------------------------------------------
 void cptrModeRender::OnStateLeadIn()
 {
 	if ( m_fLeadTimeDelta <= 0.0f )
 	{
+		//	A frame window that starts after the render's range: render
+		//	the frame before the window last, as a full render would have,
+		//	so what the first frame takes from the one before (motion
+		//	vectors) is the same. Its sim time is before the start time, so
+		//	it isn't saved (as lead-in frames aren't), and it is the sim
+		//	time the capture starts from.
+		if ( m_bWarmUpPending )
+		{
+			m_bWarmUpPending = false;
+			set_timeline( captRenderOutputDataUtil::Data().m_fStartTime.GetValue() - tmlnTimeLine::GetFrameIncrement(), true );
+			modeModeTime::Think();
+			xfrmTransformMgr::UpdateTransforms();
+			gpxProxyMgr::Update();
+			api3dScene::Think( tmlnTimeLine::GetTimeInSeconds() );
+			do_lead_render();
+			if (m_bAborted)
+			{
+				GotoState( m_StateEndCapture );
+			}
+			return;
+		}
 		GotoState( m_StateCapture );
 		return;
 	}
@@ -1416,11 +1474,11 @@ void cptrModeRender::OnStateCapture()
 			int loop = rlyrRenderLayerMgr::GetNumRenderLayers();
 			// i is the render layer.
 			// j is how many times we looped.
-			for (int i = start_layer_index, j = 0; 
-				i != -1 && j < loop; 
+			for (int i = start_layer_index, j = 0;
+				i != -1 && j < loop;
 				i = rlyrRenderLayerMgr::GetNextLayerIndex(i), j++)
 			{
-				itString layer_name;
+				std::string layer_name;
 				nameString layer_desc = rlyrRenderLayerMgr::GetLayerName( i );
 				layer_name = layer_desc.GetString().c_str();
 				data.m_RenderPosLayer.SetValue( layer_name );			// for saving render position
@@ -1439,7 +1497,7 @@ void cptrModeRender::OnStateCapture()
 				for (int k = 0; k < loopPasses; k++)
 				{
 					rlyrPassesObject::ePassType passType = thePasses[k];
-					itString pass_name = captRenderOutputDataUtil::GetRenderPassName(passType);
+					std::string pass_name = captRenderOutputDataUtil::GetRenderPassName(passType);
 					captRenderOutputDataUtil::SetCurrentRenderPass( pass_name );
 
 					// set up folder name in data util
@@ -1476,8 +1534,8 @@ void cptrModeRender::OnStateCapture()
 
 	//
 	maTime start_time, end_time;
-	bool bCapture = (m_bUseOnlyValidCaptureTimes ? 
-						m_CurrentInOutList.GetTimesIfWithin( tmlnTimeLine::GetValue(), start_time, end_time, true ) 
+	bool bCapture = (m_bUseOnlyValidCaptureTimes ?
+						m_CurrentInOutList.GetTimesIfWithin( tmlnTimeLine::GetValue(), start_time, end_time, true )
 						: true ); // true for return true if no drivers
 	if (bCapture)
 	{
@@ -1490,7 +1548,7 @@ void cptrModeRender::OnStateCapture()
 		std::ostringstream oss;
 		oss<<"Render at "<<timestring;
 		std::string window_title(oss.str());
-		m_pWindow->SetTitle( itString(window_title.c_str()) );
+		m_pWindow->SetTitle( window_title );
 
 		//	set a time code anytime we have a new camera
 		//
@@ -1509,9 +1567,6 @@ void cptrModeRender::OnStateCapture()
 					cptrRenderUtil::OpenOutput();
 				}
 			}
-
-			//	write a timecode at the beginning of the file
-			cptrRenderUtil::CaptureTimeCode( start_time, end_time );
 		}
 
 
@@ -1529,7 +1584,7 @@ void cptrModeRender::OnStateCapture()
 		if ( !m_bCaptureFinished )
 		{
 			m_bCaptureFinished = true;
-		
+
 			GotoState( m_StateLeadOut );
 		}
 		return;
@@ -1579,7 +1634,7 @@ void cptrModeRender::OnStateLeadOut()
 	xfrmTransformMgr::UpdateTransforms();
 	gpxProxyMgr::Update();
 	api3dScene::Think( tmlnTimeLine::GetTimeInSeconds() );
-	
+
 	try_render_capture();
 
 	m_fLeadTimeDelta -= m_fSimTimeInc;
@@ -1648,7 +1703,6 @@ void cptrModeRender::BeginStateDeInitCaptures()
 	if ( m_bAborted )
 	{
 		ResetRendermanCapture();
-		ResetMRayCapture();
 		g3dPassBuffers::SetDoingFileRefl(false);
 		ExitMode();
 		return;
@@ -1739,7 +1793,6 @@ void cptrModeRender::OnStatePostCapture()
 	//	decide where to go
 	captRenderOutputData& data = captRenderOutputDataUtil::Data();
 
-	MRayPostCapture();
 	RenderManPostCapture();
 	g3dPassBuffers::SetDoingFileRefl(false);
 
@@ -1748,7 +1801,7 @@ void cptrModeRender::OnStatePostCapture()
 		std::ostringstream oss;
 		oss << "Render complete";
 		std::string window_title(oss.str());
-		m_pWindow->SetTitle( itString(window_title.c_str()) );
+		m_pWindow->SetTitle( window_title );
 
 		GotoState(m_StateWaitToEndMode);
 	}
@@ -1761,20 +1814,6 @@ void cptrModeRender::EndStatePostCapture()
 	tmlnTimeLine::SetFPS(g3dConstants::c_fDefaultFrameRate);	// set to a default value again.
 }
 
-//----------------------------------------------------------------------------
-//	MRayPostCapture()
-//----------------------------------------------------------------------------
-void cptrModeRender::MRayPostCapture()
-{
-	if ( mrayMgr::GetMRayExportActive() )
-	{
-		captRenderOutputData& data = captRenderOutputDataUtil::Data();
-		fsLocator rootPath = data.m_OutputDirectory.GetValue();
-		std::string masterBatchPath = mrayMgr::WriteMasterBatch(rootPath);
-		mrayMgr::LaunchMRayMasterBatch(masterBatchPath);
-		ResetMRayCapture();
-	}
-}
 
 //----------------------------------------------------------------------------
 //	RenderManPostCapture()
@@ -1789,13 +1828,6 @@ void cptrModeRender::RenderManPostCapture()
 	}
 }
 
-//----------------------------------------------------------------------------
-//	ResetMRayCapture()
-//----------------------------------------------------------------------------
-void cptrModeRender::ResetMRayCapture()
-{
-	mrayMgr::ResetCapture();
-}
 
 //----------------------------------------------------------------------------
 //	ResetRendermanCapture()
@@ -1851,8 +1883,8 @@ void cptrModeRender::do_titlecard_render()
 
 	//	gather the data
 	//
-	g2dFontHandle font = g2dFontUtil::LoadFont(itString("Arial"), 20);
-	itString text;
+	g2dFontHandle font = g2dFontUtil::LoadFont(std::string("Arial"), 20);
+	std::string text;
 
 	//char buffer[512];
 	//const char* buffer;
@@ -1884,15 +1916,15 @@ void cptrModeRender::do_titlecard_render()
 	const int c_YLOC_INC = 30;
 	float fps = tmlnTimeLine::GetFPS();
 	//float mintime = tmlnTimeLine::GetMinimum();
-	//::sprintf(buffer,"Scene: %s", itStringUtil::GetStdString(data.m_CurrentSceneFilename.GetValue()).c_str() );
+	//::sprintf(buffer,"Scene: %s", data.m_CurrentSceneFilename.GetValue().c_str() );
 	std::ostringstream oss;
-	oss <<"Scene: "<<itStringUtil::GetStdString(data.m_CurrentSceneFilename.GetValue());
+	oss <<"Scene: "<<data.m_CurrentSceneFilename.GetValue();
 	buffer = oss.str();
 	text = buffer.c_str();
 	m_pWindow->DrawText(c_XLOC,  c_YLOC+c_YLOC_INC*0, font, text, color);
 
-	//::sprintf(buffer,"Camera: %s", itStringUtil::GetStdString(data.m_CurrentCamera.GetValue()).c_str() );
-	oss <<"Camera: "<<itStringUtil::GetStdString(data.m_CurrentCamera.GetValue());
+	//::sprintf(buffer,"Camera: %s", data.m_CurrentCamera.GetValue().c_str() );
+	oss <<"Camera: "<<data.m_CurrentCamera.GetValue();
 	buffer = oss.str();
 	text = buffer.c_str();
 	m_pWindow->DrawText(c_XLOC,  c_YLOC+c_YLOC_INC*1, font, text, color);
@@ -1902,7 +1934,7 @@ void cptrModeRender::do_titlecard_render()
 	//::sprintf(buffer,"Start Time: %s", timestr.c_str());
 	oss <<"Start Time: "<<timestr;
 	buffer = oss.str();
-	
+
 	text = buffer.c_str();
 	m_pWindow->DrawText(c_XLOC,  c_YLOC+c_YLOC_INC*2, font, text, color);
 
@@ -1910,7 +1942,7 @@ void cptrModeRender::do_titlecard_render()
 	//::sprintf(buffer,"End Time: %s", timestr.c_str());
 	oss <<"End Time: "<<timestr;
 	buffer = oss.str();
-	
+
 	text = buffer.c_str();
 	m_pWindow->DrawText(c_XLOC, c_YLOC+c_YLOC_INC*3, font, text, color);
 
@@ -1918,7 +1950,7 @@ void cptrModeRender::do_titlecard_render()
 	//::sprintf(buffer,"Duration: %s", timestr.c_str());
 	oss <<"Duration: "<<timestr;
 	buffer = oss.str();
-	
+
 	text = buffer.c_str();
 	m_pWindow->DrawText(c_XLOC, c_YLOC+c_YLOC_INC*4, font, text, color);
 
@@ -1942,7 +1974,6 @@ void cptrModeRender::check_for_render_thread_error()
 	if (m_CaptureRenderThread.IsErrorState())
 	{
 		ResetRendermanCapture();
-		ResetMRayCapture();
 		g3dPassBuffers::SetDoingFileRefl(false);
 
 		captRenderOutputData& data = captRenderOutputDataUtil::Data();
@@ -1958,7 +1989,7 @@ void cptrModeRender::check_for_render_thread_error()
 			msg += " needs to close now.  If necessary, ";
 			msg += mnmConstants::c_PRODUCT;
 			msg += " will ask you to save the current scene before closing.";
-			
+
 			DBG_ERROR(msg);
 			guiMessageBox::Show(msg.c_str(), "Capture Error", guiMessageBox::e_OKOnly);
 
@@ -1985,7 +2016,7 @@ void cptrModeRender::check_for_render_thread_error()
 			if (data.m_bBatchMode.GetValue()
 				&& data.m_bBatchSkipDialog.GetValue())
 			{
-				cptrRenderStatsDialogUtil::AddStatsMessage(itString(msg.c_str()));
+				cptrRenderStatsDialogUtil::AddStatsMessage(msg);
 				cptrRenderStatsDialogUtil::Newline();
 			}
 			else
@@ -2014,7 +2045,7 @@ void cptrModeRender::check_for_render_thread_error()
 // thrown, aborting capture mode if exception is found.
 //--------------------------------------------------------------------
 void cptrModeRender::try_render_capture()
-{	
+{
 	// Whether to capture in a thread is a combination of the compiler define
 	// and the user preference set by PrefsData.
 	if (c_MULTITHREADED_CAPTURE && cptrModeRender::sm_bThreadingEnabled)
@@ -2022,6 +2053,7 @@ void cptrModeRender::try_render_capture()
 		// Start capture render in a thread
 		envThread render_thread( std::bind(&cptrRenderThread::ThreadedRenderCapture, &m_CaptureRenderThread) );
 		g3dThreadControl::WaitForRenderThreadStart();
+		render_thread.detach();
 	}
 	else
 	{
@@ -2035,7 +2067,7 @@ void cptrModeRender::try_render_capture()
 	//	Output a line for each frame rendered
 	//
 	captRenderOutputData& data = captRenderOutputDataUtil::Data();
-	nameString camname( itStringUtil::GetStdString(data.m_RenderPosCamera.GetValue()) );
+	nameString camname( data.m_RenderPosCamera.GetValue() );
 	DBG_LOG("Scene: " << data.m_CurrentSceneFilename.GetValue() << " Camera: " << camname << " Frame: " << tmlnTimeLine::GetValue().AsFrame(tmlnTimeLine::GetFPS()) );
 }
 
@@ -2118,7 +2150,7 @@ void cptrModeRender::calculate_number_of_renderable_cameras()
 {
 	m_NumberOfRenderableCameras = 0;
 	captRenderOutputData& data = captRenderOutputDataUtil::Data();
-	
+
 
 	if ( data.m_bBatchMode.GetValue() )
 	{
@@ -2135,7 +2167,7 @@ void cptrModeRender::calculate_number_of_renderable_cameras()
 				//DBG_LOG2("%d - (%s) renderable camera", i, data.m_CameraList[i].m_CameraName.GetValue().c_str());
 
 				m_NumberOfRenderableCameras++;
-				
+
 			}
 			else
 			{
@@ -2152,7 +2184,7 @@ void cptrModeRender::build_directory()
 	captRenderOutputData& data = captRenderOutputDataUtil::Data();
 
 	// tell the outputdatautil what the current camera name is.
-	itString cam_dir_name;
+	std::string cam_dir_name;
 	nameString theName;
 	camsFollowUtil::GetCurrentCameraName( theName );
 	cam_dir_name = theName.GetString().c_str();
@@ -2183,11 +2215,11 @@ void cptrModeRender::build_directory()
 
 	// i is the render layer.
 	// j is how many times we looped.
-	for (int i = start_layer_index, j = 0; 
-		i != -1 && j < loop; 
+	for (int i = start_layer_index, j = 0;
+		i != -1 && j < loop;
 		i = rlyrRenderLayerMgr::GetNextLayerIndex(i), j++)
 	{
-		itString layer_name;
+		std::string layer_name;
 		nameString layer_desc = rlyrRenderLayerMgr::GetLayerName( i );
 		layer_name = layer_desc.GetString().c_str();
 		data.m_RenderPosLayer.SetValue( layer_name );			// for saving render position
@@ -2213,7 +2245,7 @@ void cptrModeRender::build_directory()
 			if (data.m_bUseRenderPassAsDirectory.GetValue())
 			{
 				rlyrPassesObject::ePassType passType = thePasses[k];
-				itString pass_name = captRenderOutputDataUtil::GetRenderPassName(passType);
+				std::string pass_name = captRenderOutputDataUtil::GetRenderPassName(passType);
 				captRenderOutputDataUtil::SetCurrentRenderPass( pass_name );
 			}
 
@@ -2242,13 +2274,13 @@ void cptrModeRender::build_directory()
 					if(data.m_bBatchMode.GetValue()
 						&& data.m_bBatchSkipDialog.GetValue())
 					{
-						cptrRenderStatsDialogUtil::AddStatsMessage(itString(msg.c_str()));
+						cptrRenderStatsDialogUtil::AddStatsMessage(msg);
 						cptrRenderStatsDialogUtil::Newline();
 					}
 					else
 					{
 						guiMessageBox::Show(msg.c_str(), "Create Directory Error", guiMessageBox::e_OKOnly);
-					}		
+					}
 					m_bAborted = true;
 				}
 				catch ( const envExceptionX& i_Ex )
@@ -2258,15 +2290,15 @@ void cptrModeRender::build_directory()
 					if(data.m_bBatchMode.GetValue()
 						&& data.m_bBatchSkipDialog.GetValue())
 					{
-						cptrRenderStatsDialogUtil::AddStatsMessage(itString(msg.c_str()));
+						cptrRenderStatsDialogUtil::AddStatsMessage(msg);
 						cptrRenderStatsDialogUtil::Newline();
 					}
 					else
 					{
 						guiMessageBox::Show(msg.c_str(), "Create Directory Error", guiMessageBox::e_OKOnly);
-					}		
+					}
 					m_bAborted = true;
-				}	
+				}
 			}
 		}
 	}
@@ -2282,7 +2314,7 @@ void cptrModeRender::update_render_layer_progress()
 	nameString layer_desc = rlyrRenderLayerMgr::GetLayerName( m_CurrentLayerIndex );
 	std::stringstream rl_stream;
 	rl_stream << "Render Layer - " << layer_desc.GetString();
-	itString layer_label(rl_stream.str().c_str());
+	std::string layer_label(rl_stream.str().c_str());
 
 	m_Data.m_LayersCompleted = m_CurrentLayerIndex;
 	m_Data.m_CurLayerName = layer_desc;
@@ -2348,14 +2380,14 @@ void cptrModeRender::update_scenes_percentage(bool i_bCompleted)
 {
 	captRenderOutputData& data = captRenderOutputDataUtil::Data();
 	std::string filename;
-	filename = itStringUtil::GetStdString( data.m_CurrentSceneFilename.GetValue() );
+	filename = data.m_CurrentSceneFilename.GetValue();
 	m_Data.m_CurSceneName = nameString(filename.c_str());
 }
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 void cptrModeRender::update_progress_timeleft()
-{	
+{
 }
 
 //----------------------------------------------------------------------------
@@ -2384,7 +2416,7 @@ void cptrModeRender::update_progress_percentages_dialog()
 	std::ostringstream oss;
 	oss << "Camera - "<< theName.GetString();
 	std::string buffer(oss.str());
-	itString camera_label(buffer.c_str());
+	std::string camera_label(buffer.c_str());
 	float percentage = get_camera_percentage();
 	m_camera_percentage = percentage;
 	m_camera_label = camera_label;
@@ -2396,16 +2428,16 @@ void cptrModeRender::update_progress_percentages_dialog()
 	oss << "Camera  "<< m_CurrentCameraNumber+1 <<" of "<< m_NumberOfRenderableCameras;
 
 	std::string buffer1(oss.str());
-	itString cameras_label(buffer1.c_str());
+	std::string cameras_label(buffer1.c_str());
 	m_camera_label = cameras_label;
 
 	oss.clear();
 	oss.setf(0, std::ios::floatfield);
 	oss << "Scene  "<<data.m_CurrentSceneNumber.GetValue() <<" of "<<data.m_NumberOfScenes.GetValue();
 	std::string buffer2(oss.str());
-	
-	itString scenes_label(buffer2.c_str());
-	
+
+	std::string scenes_label(buffer2.c_str());
+
 	percentage = 0.0f;
 	percentage = ((float)(data.m_CurrentSceneNumber.GetValue()-1) / (float)data.m_NumberOfScenes.GetValue());
 	if (percentage < 0.0f) percentage = 0.0f;
@@ -2434,7 +2466,7 @@ void cptrModeRender::reset_renderer_for_camera()
 	if (!cptrRenderUtil::GetCaptureQuadrants())
 	{
 		camCamera *pCamera = camsFollowUtil::GetFollowCamera();
-		if (m_pViewer && 
+		if (m_pViewer &&
 			(rlyrRenderLayerMgr::GetLayerActualData(m_CurrentLayerIndex).m_RendererType == g3dSceneRendererTypes::e_HDR))
 		{
 			camHDRData hdrOrig;
@@ -2518,7 +2550,7 @@ void cptrModeRender::init_layer_indices()
 	captRenderOutputData& data = captRenderOutputDataUtil::Data();
 
 	//now get the resume layer
-	nameString layername( itStringUtil::GetStdString(data.m_RenderPosLayer.GetValue()) );
+	nameString layername( data.m_RenderPosLayer.GetValue() );
 	m_LastLayerIndex = rlyrRenderLayerMgr::GetNumRenderLayers();
 	m_CurrentLayerIndex = -1;
 	int startlayer_index = rlyrRenderLayerMgr::GetLayerIndexByName(layername);

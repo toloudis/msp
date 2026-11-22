@@ -9,14 +9,12 @@
 #include "Systems/GlobalIllumination/giSystem.hpp"
 
 #include "Support/rman/rmanMgr.hpp"
-#include "Support/mray/mrayMgr.hpp"
 
 #include "Systems/GlobalIllumination/GUI/giDialogInterest.hpp"
 #include "Systems/GlobalIllumination/GUI/giDialogUtil.hpp"
 #include "Systems/GlobalIllumination/Data/giDocumentInterest.hpp"
 #include "Systems/GlobalIllumination/Object/giObjectMgr.hpp"
 #include "Systems/GlobalIllumination/Object/giRendermanExportInterest.hpp"
-#include "Systems/GlobalIllumination/Object/giMRayExportInterest.hpp"
 #include "Systems/GlobalIllumination/Timeline/giDriverCreator.hpp"
 
 #include "Systems/Common/GUI/cmmDialogInterestMgr.hpp"
@@ -36,7 +34,6 @@ namespace giSystem
 //		aoPickInterest*					l_pFogPI = 0;
 		giDialogInterest*				l_pFogDI = 0;
 		giRendermanExportInterest*		l_pFogREI = 0;
-		giMRayExportInterest*			l_pFogMRayEI = 0;
 		giGIObject*						l_pGIObject = 0;
 		
 		//====================================================================
@@ -92,12 +89,6 @@ namespace giSystem
 			rmanMgr::RegisterExportInterest( l_pFogREI );
 		}
 
-		// register the mray interest
-		if ( l_pFogMRayEI == 0 )
-		{
-			l_pFogMRayEI = new giMRayExportInterest();
-			mrayMgr::RegisterExportInterest( l_pFogMRayEI );
-		}
 
 		// Timeline related creators
 		tmlnDriverCreator* pDriverCreator = new giDriverCreator;
@@ -146,13 +137,6 @@ namespace giSystem
 		}
 
 
-		//	Unregister the mray Interest
-		if ( l_pFogMRayEI != 0 )
-		{
-			mrayMgr::UnRegisterExportInterest( l_pFogMRayEI );
-			delete l_pFogMRayEI;
-			l_pFogMRayEI = 0;
-		}
 
 		// Clean up namespaces
 		giDialogUtil::CleanUp();

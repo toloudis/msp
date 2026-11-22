@@ -3,6 +3,9 @@
 **
 **      fsFileUtil.hpp supplies functions that operate on files.
 **
+**      The file operations are implemented with std::filesystem; their
+**      behavior is pinned down by UnitTests/CoreTests/Fs/fsFileUtilTest.cpp.
+**
 **	StudioGPU
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
@@ -18,7 +21,6 @@
 //============================================================================
 //============================================================================
 class fsLocator;
-class itString;
 
 
 //============================================================================
@@ -33,9 +35,7 @@ namespace fsFileUtil
 
 	//----------------------------------------------------------------------------
 	//	RenameFile renames a file or directory.  This can be used to move a 
-	//	file to different directories, etc.  Known bug: it will not correctly 
-	//	handle moving a directory to a different volume on Windows 98 or 95
-	//	systems.
+	//	file to different directories, etc.
 	//----------------------------------------------------------------------------
 	void RenameFile(const fsLocator& i_From, const fsLocator& i_To);
 
@@ -84,22 +84,24 @@ namespace fsFileUtil
 	bool DirectoryExists(const fsLocator& i_Filename);
 
 	//----------------------------------------------------------------------------
-	// UnicodeStringToLocator returns a locator from a given itString
+	// UnicodeStringToLocator returns a locator from a given UTF-8 string
 	// the string is separted by backslashes in the windows style ,this string
 	// should not be used for pathing, but rather for logging or perhaps
-	// storing a locator as a fully pathed itString. NOTE: the index will be ignored,
+	// storing a locator as a fully pathed string. NOTE: the index will be ignored,
 	// be sure to call gfFileTranslationMgr::ExpandLocator first if you need to
+	// The same as ANSIFilenameToLocator, now that both take UTF-8.
 	//----------------------------------------------------------------------------
-	void UnicodeStringToLocator(const itString& i_String, fsLocator& o_Locator);
+	void UnicodeStringToLocator(const std::string& i_String, fsLocator& o_Locator);
 
 	//----------------------------------------------------------------------------
-	// LocatorToUnicodeString returns an itString from a given locator
+	// LocatorToUnicodeString returns a UTF-8 string from a given locator
 	// the string is separted by backslashes in the windows style ,this string
 	// should not be used for pathing, but rather for logging or perhaps
-	// storing a locator as a fully pathed itString. NOTE: the index will be ignored,
+	// storing a locator as a fully pathed string. NOTE: the index will be ignored,
 	// be sure to call gfFileTranslationMgr::ExpandLocator first if you need to
+	// The same as LocatorToANSIFilename, now that both give UTF-8.
 	//----------------------------------------------------------------------------
-	void LocatorToUnicodeString(const fsLocator& i_Locator, itString& o_String);
+	void LocatorToUnicodeString(const fsLocator& i_Locator, std::string& o_String);
 
 	//----------------------------------------------------------------------------
 	// ANSIFilenameToLocator returns a locator from an ANSI pathname
@@ -108,20 +110,11 @@ namespace fsFileUtil
 	void ANSIFilenameToLocator(const std::string& i_String, fsLocator& o_Locator);
 
 	//----------------------------------------------------------------------------
-	//	LocatorToANSIFilename is used internally by the win32 PACs in the fs
-	//	package.  It converts a fsLocator to a ANSI win32 filename (for use in
-	//	Windows 95 or 98).  It is provided here to assist in error reporting.
-	// API Change: This now returns the std::string as UTF8.
+	//	LocatorToANSIFilename converts a fsLocator to a UTF-8 path name with
+	//	backslash separators on every platform, the form locators are saved in
+	//	and logged in. For a name to open, use fsPathUtil::LocatorToPath.
 	//----------------------------------------------------------------------------
 	void LocatorToANSIFilename(const fsLocator& i_Locator, std::string& o_String, bool i_bUseDoubleSlashes = false);
-
-	//----------------------------------------------------------------------------
-	//	LocatorToANSIFilename is used internally by the win32 PACs in the fs
-	//	package.  It converts a fsLocator to a ANSI win32 filename (for use in
-	//	Windows 95 or 98).  It is provided here to assist in error reporting.
-	// API Change: This now returns the std::string as UTF8.
-	//----------------------------------------------------------------------------
-	void LocatorToANSIFilename(const fsLocator& i_Locator, std::string& o_String, const int i_StartNum, const int i_EndNum );
 
 	//----------------------------------------------------------------------------
 	// Return true if every path in the filename is an ascii string

@@ -63,7 +63,7 @@ namespace
 	{
 		o_Writer.WriteChunkHeader( c_SUBI, l_SUBI_VERSION, false );
 
-		chChunkParserUtil::Write(o_Writer, (envType::Int32)(i_Driver.m_ObjectNames.size()) );
+		chChunkParserUtil::Write(o_Writer, (int32_t)(i_Driver.m_ObjectNames.size()) );
 
 		int NumNames = i_Driver.m_ObjectNames.size();
 

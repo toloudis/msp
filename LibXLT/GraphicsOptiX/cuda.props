@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The CUDA toolkit, for GraphicsOptiX (and, later, whatever tests it).
+    Two things come from it:
+
+    - nvcc, which compiles GraphicsOptiX's device programs
+      (optx\private\Programs\*.cu) to OptiX IR at build time
+      (GraphicsOptiX.vcxproj, target EmbedOptixPrograms);
+    - the CUDA headers: optxSdk.hpp includes cuda.h for the driver API's
+      types and prototypes. Nothing is linked: the driver API is called
+      through functions loaded from nvcuda.dll at run time, so MachStudio
+      still starts on machines without an NVIDIA driver.
+
+    The toolkit is found through MspCudaDir, then CUDA_PATH (which NVIDIA's
+    installer sets), else the default install folder of CUDA 13.5. Any
+    CUDA 13 that supports the Visual Studio toolset in use will do. Without
+    it the library still builds (with a warning, and GOX_NO_CUDA_TOOLKIT
+    defined); GraphicsOptiXLayer::Init then fails, saying so. CI installs
+    only the parts the build needs (.github/scripts/install-cuda.ps1).
+  -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MspCudaDir Condition="'$(MspCudaDir)' == '' and '$(CUDA_PATH)' != ''">$(CUDA_PATH)</MspCudaDir>
+    <MspCudaDir Condition="'$(MspCudaDir)' == ''">C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v13.5</MspCudaDir>
+    <MspCudaDir Condition="!HasTrailingSlash('$(MspCudaDir)')">$(MspCudaDir)\</MspCudaDir>
+    <MspNvcc>$(MspCudaDir)bin\nvcc.exe</MspNvcc>
+  </PropertyGroup>
+  <PropertyGroup>
+    <MspCudaFound>false</MspCudaFound>
+    <MspCudaFound Condition="Exists('$(MspNvcc)') and Exists('$(MspCudaDir)include\cuda.h')">true</MspCudaFound>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(MspCudaFound)' == 'true'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MspCudaDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(MspCudaFound)' != 'true'">
+    <ClCompile>
+      <PreprocessorDefinitions>GOX_NO_CUDA_TOOLKIT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Target Name="MspCheckCudaToolkit" BeforeTargets="ClCompile">
+    <Warning Condition="'$(MspCudaFound)' != 'true'"
+             Text="The CUDA toolkit was not found at '$(MspCudaDir)', so -gfx optix won't start. Install it, or set CUDA_PATH (or the MSBuild property MspCudaDir) to its folder." />
+  </Target>
+</Project>

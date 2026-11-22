@@ -15,14 +15,12 @@
 #include "GraphicsDX11/g2d/g2dWindowPrimaryDX11.hpp"
 #include "GraphicsDX11/g2d/private/g2dFontUtilDX11.hpp"
 #include "GraphicsDX11/g2d/private/g2dImageCreateDX11.hpp"
-#include "GraphicsDX11/g2d/private/g2dImageSaveDX11.hpp"
 
 #include "Core/env/envSTLHelpers.hpp"
 //#include "Core/Env/envThread.hpp"
 #include "Core/app/appApplication.hpp"
 #include "Graphics/g2d/g2dExceptionX.hpp"
 #include "Graphics/g2d/g2dResetHandler.hpp"
-#include "GraphicsDX11/eff/effShaderSDKDX11.hpp"
 
 
 //============================================================================
@@ -216,8 +214,7 @@ bool find_has_stencil(int i_BitDepth, const DXGI_FORMAT &i_AdapterFormat, const 
 //------------------------------------------------------------------------
 g2dSystemDX11::g2dSystemDX11(int i_Adapter /*= 0*/)
 :	m_pFontImpl(NULL),
-	m_pImageCreator(NULL),
-	m_pImageSaver(NULL)
+	m_pImageCreator(NULL)
 {
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
@@ -403,17 +400,11 @@ g2dSystemDX11::g2dSystemDX11(int i_Adapter /*= 0*/)
 	m_pResourceCounterImpl = new g2dResourceCounterDX11();
 	g2dResourceCounter::SetImplementation(m_pResourceCounterImpl);
 
-	m_pShaderSDK = new effShaderSDKDX11();
-	effShaderSDK::SetImplementation(m_pShaderSDK);
-
 	m_pFontImpl = new g2dFontUtilDX11();
 	g2dFontUtil::SetImplementation(m_pFontImpl);
 
 	m_pImageCreator = new g2dImageCreateDX11();
 	g2dImageCreate::SetImplementation(m_pImageCreator);
-
-	m_pImageSaver = new g2dImageSaveDX11();
-	g2dImageSave::SetImplementation(m_pImageSaver);
 
 	g2dFullscreenQuad::InitFullscreenQuad();
 
@@ -445,10 +436,8 @@ g2dSystemDX11::~g2dSystemDX11()
 
 	// Delete implementations
 	delete m_pResourceCounterImpl;
-	delete m_pShaderSDK;
 	delete m_pFontImpl;
 	delete m_pImageCreator;
-	delete m_pImageSaver;
 
 	g2dResetHandler::DestroyResetHandlers();
 
@@ -574,7 +563,7 @@ g2dWindow* g2dSystemDX11::CreateSubWindow(void* i_Handle)
 //------------------------------------------------------------------------
 g2dWindow* g2dSystemDX11::CreateSubWindow(int i_Width, int i_Height, int i_X, int i_Y)
 {
-	itString title("");
+	std::string title("");
 	HWND hwnd = (HWND)appApplication::CreateSubWindow(i_Width, i_Height, i_X, i_Y, title);
 
 	g2dWindowDX11* window = new g2dWindowPrimaryDX11(hwnd, true, i_Width, i_Height);

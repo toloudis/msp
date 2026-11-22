@@ -23,9 +23,6 @@
 #ifndef GEO_PICKRAY_HPP
 #include "Core/geo/geoPickRay.hpp"
 #endif
-#ifndef IT_STRINGUTIL_HPP
-#include "Core/it/itStringUtil.hpp"
-#endif
 #ifndef GUI_MESSAGEBOX_HPP
 #include "Tool/gui/guiMessageBox.hpp"
 #endif
@@ -182,7 +179,7 @@ public:
 		{
 			//char msg[512];
 			std::string txt;
-			txt = itStringUtil::GetStdString(i_Ex.GetLocator().GetLastName());
+			txt = i_Ex.GetLocator().GetLastName();
 			//sprintf( msg, "Cannot add the object -- missing %s", txt.c_str() );
 			std::ostringstream oss;
 			oss.setf(0, std::ios::floatfield);
@@ -354,13 +351,13 @@ public:
 	//--------------------------------------------------------------------
 	//	create a default name for the new object
 	//--------------------------------------------------------------------
-	static void create_default_name( const itString& i_Filename, 
+	static void create_default_name( const std::string& i_Filename, 
 									nameString& o_NameString, 
 									int& io_ObjectCounter)
 	{
 		nameMgr::VerifyNoDupNameFunc verifyFunc = &VerifyNodupeName;
 		nameMgr::CreateDefaultName( 
-			nameString(itStringUtil::GetStdString( i_Filename ).c_str()),
+			nameString(i_Filename.c_str()),
 			verifyFunc,
 			o_NameString,
 			io_ObjectCounter
@@ -371,12 +368,12 @@ public:
 	//	create a new name according to the original name and increase
 	//	the ending number
 	//--------------------------------------------------------------------
-	static void create_duplicate_name( const itString& i_Filename, 
+	static void create_duplicate_name( const std::string& i_Filename, 
 										nameString& o_NameString)
 	{
 		nameMgr::VerifyNoDupNameFunc verifyFunc = &VerifyNodupeName;
 		nameMgr::CreateDuplicateName(
-			nameString(itStringUtil::GetStdString( i_Filename ).c_str()),
+			nameString(i_Filename.c_str()),
 			verifyFunc,
 			o_NameString);
 	}
@@ -417,10 +414,14 @@ class cmmObjectMgrTemplateBase:
 	public cmmObjectMgrTemplateNoIcon<xxxScriptObject,xxxPickObject,xxxListData,xxxScriptData,xxxBaseData,xxxObjectCreator>
 {
 public:
+	typedef cmmObjectMgrTemplateNoIcon<xxxScriptObject,xxxPickObject,xxxListData,xxxScriptData,xxxBaseData,xxxObjectCreator> BaseType;
+	using BaseType::sm_Objects;
+	using BaseType::sm_bShowIcons;
+
 	//----------------------------------------------------------------------------
 	// Find the object that matches the pick code from an earlier pick render.
 	//----------------------------------------------------------------------------
-	static pick3dPickObject* MatchPickCode(envType::UInt32 i_PickCode)
+	static pick3dPickObject* MatchPickCode(uint32_t i_PickCode)
 	{
 		const int num_objects = sm_Objects.size();
 		for (int i=0; i<num_objects; i++)
@@ -494,6 +495,9 @@ class cmmObjectMgrTemplate :
 	public cmmObjectMgrTemplateBase<xxxScriptObject,xxxPickObject,xxxListData,xxxScriptData,xxxBaseData,xxxObjectCreator>
 {
 public:
+	typedef cmmObjectMgrTemplateBase<xxxScriptObject,xxxPickObject,xxxListData,xxxScriptData,xxxBaseData,xxxObjectCreator> BaseType;
+	using BaseType::SetDataUnthreaded;
+
 	//--------------------------------------------------------------------
 	// Set data as a whole
 	//--------------------------------------------------------------------
@@ -525,6 +529,9 @@ class cmmObjectMgrGeomTemplate :
 	public cmmObjectMgrTemplate<xxxScriptObject,xxxPickObject,xxxListData,xxxScriptData,xxxBaseData,xxxObjectCreator>
 {
 public:
+	typedef cmmObjectMgrTemplate<xxxScriptObject,xxxPickObject,xxxListData,xxxScriptData,xxxBaseData,xxxObjectCreator> BaseType;
+	using BaseType::sm_Objects;
+
 	//--------------------------------------------------------------------
 	// Make sure that all geometry is visible for rendering
 	//--------------------------------------------------------------------
@@ -544,8 +551,8 @@ public:
 // Initialiazing static members
 //============================================================================
 template<class xxxScriptObject, class xxxPickObject, class xxxListData, class xxxScriptData, class xxxBaseData,	 class xxxObjectCreator>
-std::vector<xxxScriptObject*> cmmObjectMgrTemplateBase<xxxScriptObject,xxxPickObject,xxxListData,xxxScriptData,xxxBaseData,xxxObjectCreator>::sm_Objects;
+std::vector<xxxScriptObject*> cmmObjectMgrTemplateNoIcon<xxxScriptObject,xxxPickObject,xxxListData,xxxScriptData,xxxBaseData,xxxObjectCreator>::sm_Objects;
 
 template<class xxxScriptObject, class xxxPickObject, class xxxListData, class xxxScriptData, class xxxBaseData,	 class xxxObjectCreator>
-bool cmmObjectMgrTemplateBase<xxxScriptObject,xxxPickObject,xxxListData,xxxScriptData,xxxBaseData,xxxObjectCreator>::sm_bShowIcons = true;
+bool cmmObjectMgrTemplateNoIcon<xxxScriptObject,xxxPickObject,xxxListData,xxxScriptData,xxxBaseData,xxxObjectCreator>::sm_bShowIcons = true;
 

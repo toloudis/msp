@@ -10,7 +10,9 @@
 
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsLocator.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Graphics/g2d/g2dExceptionX.hpp"
 #include "Graphics/g2d/g2dResetHandler.hpp"
 #include "Graphics/g3d/g3dSceneNode.hpp"
@@ -28,6 +30,9 @@
 #include "GraphicsDX11/G3d/g3dRasterizerStateMgr.hpp"
 
 #include <string>
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 
 //------------------------------------------------------------------------------
@@ -118,7 +123,7 @@ g2dFontObjectDX11::g2dFontObjectDX11(matTexture* i_FontMap):
 {
 	m_TextSprite = new scrText();
 	m_TextSprite->SetFontMapImage(i_FontMap, 320, 256);
-	m_TextSprite->SetText(itString(""));
+	m_TextSprite->SetText(std::string());
 	m_TextSprite->SetScreenBased(true);
 	m_TextSprite->SetTextSize( m_TextSize / l_baseFontSize);
 	m_TextSprite->SetBackgroundColor(maFloatRGBA(0,0,0,0));
@@ -133,7 +138,7 @@ g2dFontObjectDX11::~g2dFontObjectDX11()
 	m_TextSprite = NULL;
 }
 
-void g2dFontObjectDX11::DrawText(const itString& i_Text, const maFloatRGBA& i_Color, int i_OffsetX, int i_OffsetY)
+void g2dFontObjectDX11::DrawText(const std::string& i_Text, const maFloatRGBA& i_Color, int i_OffsetX, int i_OffsetY)
 {
 	// Save the old viewport
 	D3D11_VIEWPORT vpOld[D3D11_VIEWPORT_AND_SCISSORRECT_MAX_INDEX];
@@ -207,6 +212,7 @@ void g2dFontObjectDX11::DrawText(const itString& i_Text, const maFloatRGBA& i_Co
     g2dDX11Global::g_pDeviceContext->PSSetConstantBuffers( 0, 1, &m_pcbPSColor );
 
 	g2dDX11Global::g_pDeviceContext->DrawIndexed(numInds, startIndex, 0);
+	G3D_PROFILE_DRAWS(1);
 
 	// Restore the Old viewport
 	g2dDX11Global::g_pDeviceContext->RSSetViewports( nViewPorts, vpOld );
@@ -465,9 +471,8 @@ g2dFontUtilDX11::~g2dFontUtilDX11()
 //	a g2dFontHandle which can be used later.  When you are done with the
 //	font, call ReleaseFont.
 //------------------------------------------------------------------------
-g2dFontHandle g2dFontUtilDX11::LoadFont(const itString& i_Name, int i_Size)
+g2dFontHandle g2dFontUtilDX11::LoadFont(const std::string& i_Name, int i_Size)
 {
-#ifdef BITMAP_FONT_SPRITE
 	fsLocator filePath = l_GloablFontMap;
 	//fsFileUtil::UnicodeStringToLocator(i_Name, filePath);
 
@@ -504,75 +509,6 @@ g2dFontHandle g2dFontUtilDX11::LoadFont(const itString& i_Name, int i_Size)
 	}
 
 	return ret_val;
-
-#else
-
-	DBG_ASSERT(g2dDX11Global::g_pDevice, "D3D device must have been created before making a font");
-
-	// should bury in itLocale!!!
-	WCHAR localeName[LOCALE_NAME_MAX_LENGTH+1];
-	int localeNameLength = ::GetUserDefaultLocaleName(
-		localeName,
-		LOCALE_NAME_MAX_LENGTH);
-
-
-	IDWriteTextFormat* pTextFormat = NULL;
-	HRESULT hr = g2dDX11Global::g_pDWriteFactory->CreateTextFormat(
-            i_Name.GetString(),                // Font family name.
-            NULL,                       // Font collection (NULL sets it to use the system font collection).
-            DWRITE_FONT_WEIGHT_REGULAR,
-            DWRITE_FONT_STYLE_NORMAL,
-            DWRITE_FONT_STRETCH_NORMAL,
-            (FLOAT)i_Size,//72.0f,
-            localeName,//L"en-us",
-            &pTextFormat
-            );
-	if (FAILED(hr))
-		throw g2dUnknownFontX(i_Name);
-
-	g2dFontHandle ret_val = reinterpret_cast<g2dFontHandle>(pTextFormat);
-
-	FontMapIt it = m_Fonts.find(ret_val);
-	if( it != m_Fonts.end() )
-	{
-		//	increase ref count
-		++(it->second.m_Reference);
-	}
-	else
-	{
-		//	make new ID3DXFONT and add
-		FontInfo info;
-		info.m_Reference = 1;
-		info.m_Font = pTextFormat;
-//#if 0
-		// fill font info into D3DXFONT struct
-		info.m_FontDesc.Height = i_Size;
-		info.m_FontDesc.Width = 0;
-		info.m_FontDesc.Weight = 0;
-		info.m_FontDesc.MipLevels = 0;	// 0 - full mipmap chain, 1 - only one level 
-		info.m_FontDesc.Italic = FALSE;
-		info.m_FontDesc.CharSet = DEFAULT_CHARSET;
-		info.m_FontDesc.OutputPrecision = OUT_OUTLINE_PRECIS;
-		info.m_FontDesc.Quality = ANTIALIASED_QUALITY;
-		info.m_FontDesc.PitchAndFamily = DEFAULT_PITCH | FF_DONTCARE;
-	
-		// Set the FaceName from i_Name.
-		// Copy no more than LF_FACESIZE characters, saving one for Null termination:
-		int lenWithoutNull = min(LF_FACESIZE-1, i_Name.GetLength());
-		//bga - The second argument is the size of the destination buffer for securtiy reasons,
-		// not a request to transfer a limited number of characters
-		//wcscpy_s(info.m_FontDesc.FaceName, lenWithoutNull, i_Name.GetString());
-		wcscpy_s(info.m_FontDesc.FaceName, LF_FACESIZE, i_Name.GetString());
-		// null term
-		info.m_FontDesc.FaceName[lenWithoutNull] = 0;
-	
-		::D3DX11CreateFontIndirect(g2dDX11Global::g_pDevice, &info.m_FontDesc, &info.m_Font);
-//#endif
-		m_Fonts[ret_val] = info;
-	}
-
-	return ret_val;
-#endif
 }
 
 //------------------------------------------------------------------------
@@ -591,23 +527,13 @@ void g2dFontUtilDX11::ReleaseFont(g2dFontHandle i_Handle)
 		--(it->second.m_Reference);
 		if( it->second.m_Reference == 0 )
 		{
-#ifdef BITMAP_FONT_SPRITE
 			delete it->second.m_Font;
 			it->second.m_Font = NULL;
-#else
-			it->second.m_Font->Release();
-#endif
 			m_Fonts.erase(it);
 		}
 	}
 	else
 		DBG_ASSERT(false, "Unknown g2dFontHandle");
-	
-#ifdef BITMAP_FONT_SPRITE
-	::DeleteObject(reinterpret_cast<matTexture*>(i_Handle));
-#else
-	::DeleteObject(reinterpret_cast<HFONT>(i_Handle));
-#endif
 }
 
 //------------------------------------------------------------------------
@@ -615,76 +541,19 @@ void g2dFontUtilDX11::ReleaseFont(g2dFontHandle i_Handle)
 // g2dFontHandle.  It looks this up in the system to learn exactly what
 // the system loaded.
 //------------------------------------------------------------------------
-void g2dFontUtilDX11::GetLoadedFontName( g2dFontHandle i_Font, itString& o_Name )
-{
-#ifdef BITMAP_FONT_SPRITE
-	// does this function need to be implemented?
-#else
-	IDWriteTextFormat* pTextFormat = reinterpret_cast<IDWriteTextFormat*>(i_Font);
-
-	UINT32 size = pTextFormat->GetFontFamilyNameLength();
-	o_Name.SetLength(size);
-
-	pTextFormat->GetFontFamilyName(&o_Name[0], size);
-#endif
-}
-
 void g2dFontUtilDX11::GetLoadedFontName( g2dFontHandle i_Font, std::string& o_Name )
 {
-#ifdef BITMAP_FONT_SPRITE
-#else
-	itString temp;
-	GetLoadedFontName( i_Font, temp );
-	o_Name = itStringUtil::GetStdString(temp);
-#endif
+	// A bitmap font has no family name to report; o_Name is left as it is
 }
 
 //------------------------------------------------------------------------
 //	GetTextSizeInPixels returns the width and height in pixels of the given text and font
 //------------------------------------------------------------------------
-void g2dFontUtilDX11::GetTextSizeInPixels(g2dFontHandle i_Font, const itString& i_Text, int& o_Width, int& o_Height)
+void g2dFontUtilDX11::GetTextSizeInPixels(g2dFontHandle i_Font, const std::string& i_Text, int& o_Width, int& o_Height)
 {
-	//DBG_ASSERT(false, "g2dFontUtilDX11::GetTextSizeInPixels not implemented");
-#ifdef BITMAP_FONT_SPRITE
+	// Not measured for the bitmap font
 	o_Width = 1;
 	o_Height = 1;
-#else
-	IDWriteTextFormat* pTextFormat = reinterpret_cast<IDWriteTextFormat*>(i_Font);
-	float fsize = pTextFormat->GetFontSize();
-
-	// Create a DC render target.
-	D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(
-		D2D1_RENDER_TARGET_TYPE_DEFAULT,
-		D2D1::PixelFormat(
-			DXGI_FORMAT_B8G8R8A8_UNORM,
-			D2D1_ALPHA_MODE_IGNORE),
-		0,
-		0,
-		D2D1_RENDER_TARGET_USAGE_NONE,
-		D2D1_FEATURE_LEVEL_DEFAULT
-		);
-	ID2D1DCRenderTarget* m_pDCRT = NULL;
-	HRESULT hr = m_pD2DFactory->CreateDCRenderTarget(&props, &m_pDCRT);
-
-
-	HDC dc;
-	dc = ::CreateCompatibleDC(NULL);
-	hr = m_pDCRT->BindDC(dc, NULL);
-
-	GetDpi
-
-	HGDIOBJ old_obj = ::SelectObject(dc, reinterpret_cast<HFONT>(i_Font));
-	DBG_ASSERT0(old_obj, "SelectObject failed");
-
-	SIZE Size;
-	GetTextExtentPoint32W(dc, i_Text.GetString(), i_Text.GetLength(), &Size);
-
-	::SelectObject(dc, old_obj);
-	::DeleteDC(dc);
-
-	o_Width = Size.cx;
-	o_Height = Size.cy;
-#endif 
 }
 
 //------------------------------------------------------------------------
@@ -918,6 +787,7 @@ void EndText11( ID3D11Device* pd3dDevice, ID3D11DeviceContext* pd3d11DeviceConte
     pd3d11DeviceContext->IASetInputLayout( g_pInputLayout11 );
     pd3d11DeviceContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
     pd3d11DeviceContext->Draw( g_FontVertices.size(), 0 );
+    G3D_PROFILE_DRAWS(1);
 
     pd3d11DeviceContext->PSSetShaderResources( 0, 1, &pOldTexture );
     SAFE_RELEASE( pOldTexture );

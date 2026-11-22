@@ -13,13 +13,10 @@
 #endif
 #define MAT_SHADERMGR_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
 
 #include <list>
 #include <map>
@@ -33,7 +30,7 @@ class matShaderEffect;
 
 struct matShaderInfo
 {
-	itString m_Name;
+	std::string m_Name;
 	std::string m_UIName;
 	std::string m_HelpString;
 	bool m_bSupportsOutline;
@@ -53,8 +50,14 @@ public:
 	//------------------------------------------------------------------------
 	virtual void RegisterEffects(const fsLocator &i_ShaderDir,
 			std::map<std::string, matShaderInfo>& io_ShaderMap) = 0;
-	virtual void RegisterUserShaders(const fsLocator& i_ShaderDir, 
-			std::vector<matShaderInfo>& o_Shaders) = 0;
+	//------------------------------------------------------------------------
+	// List the built-in shaders a user can pick: material shaders, named
+	//	"Phong.fx", and post effects, named "Sepia.fx" (they live in the
+	//	GetPostShaderFolder() folder). Only the info is filled in; nothing
+	//	is loaded (m_pEffect and m_DataTemplate stay NULL).
+	//------------------------------------------------------------------------
+	virtual void RegisterSelectableShaders(std::vector<matShaderInfo>& o_Materials,
+			std::vector<matShaderInfo>& o_PostEffects) = 0;
 
 	virtual void UnloadEffect(const fsLocator& i_PathToShader,
 		std::map<fsLocator, matShaderEffect*>& io_ShaderMap) = 0;
@@ -79,6 +82,21 @@ namespace matShaderMgr
 	// Clean up system
 	//------------------------------------------------------------------------
 	void DeInitialize();
+
+	//------------------------------------------------------------------------
+	// GetGeneration - counts the times the effects were deleted (each
+	//	Initialize and DeInitialize): an effect pointer got under an earlier
+	//	generation points to a deleted effect (effShaderParams::GetShader
+	//	finds it again)
+	//------------------------------------------------------------------------
+	int GetGeneration();
+
+	//------------------------------------------------------------------------
+	// FindEffect - the loaded effect named i_ShaderName: a built-in one by
+	//	its file name, else one loaded from that path. NULL (and nothing
+	//	loaded or logged) if there is none.
+	//------------------------------------------------------------------------
+	matShaderEffect* FindEffect(const fsLocator& i_ShaderName);
 
 	//------------------------------------------------------------------------
 	// Get the main shaders root path
@@ -106,7 +124,13 @@ namespace matShaderMgr
 
 	effShaderData* CreateData(const std::string& i_EffectID);
 
-	const std::vector<matShaderInfo>& GetUserShaders();
+	//------------------------------------------------------------------------
+	// The built-in shaders offered in the shader pickers, sorted by name.
+	//	A material is chosen by its m_Name ("Phong.fx"); a post effect by
+	//	GetPostShaderFolder() followed by its m_Name ("PostEffect\\Sepia.fx").
+	//------------------------------------------------------------------------
+	const std::vector<matShaderInfo>& GetMaterialShaders();
+	const std::vector<matShaderInfo>& GetPostEffectShaders();
 
 	void ReloadShader( matMaterial * i_pMaterial );
 
@@ -117,6 +141,10 @@ namespace matShaderMgr
 	bool GetUseShaderArray();
 	void SetUseShaderArray(bool i_bEnable);
 
+	//------------------------------------------------------------------------
+	// True if the last name of the locator names a built-in material
+	//	shader ("Phong.fx"), whatever folder precedes it.
+	//------------------------------------------------------------------------
 	bool IsMachStudioShader(const fsLocator& i_ShaderName);
 
 	class matShaderMapVisitor {

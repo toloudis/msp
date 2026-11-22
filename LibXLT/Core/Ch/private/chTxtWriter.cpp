@@ -8,6 +8,10 @@
 \****************************************************************************/
 
 #include "Core/ch/chTxtWriter.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
+#include "Core/env/envNumberText.hpp"
 
 #include "Core/fs/fsFilePosSaver.hpp"
 #include "Core/gf/gfFileUtil.hpp"
@@ -184,94 +188,82 @@ void chTxtWriter::FinishChunk()
 //--------------------------------------------------------------------
 //	Write functions - These write the data to the chunk file.
 //--------------------------------------------------------------------
-void chTxtWriter::Write(envType::Int8 i_Val)
+void chTxtWriter::Write(int8_t i_Val)
 {
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
-	
-	m_File.Write(l_Buf.length(), l_Buf.c_str());
-}
-
-void chTxtWriter::Write(envType::UInt8 i_Val)
-{
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
 
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 }
 
-void chTxtWriter::Write(envType::Int16 i_Val)
+void chTxtWriter::Write(uint8_t i_Val)
 {
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
 
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 }
 
-void chTxtWriter::Write(envType::UInt16 i_Val)
+void chTxtWriter::Write(int16_t i_Val)
 {
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
 
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 }
 
-void chTxtWriter::Write(envType::Int32 i_Val)
+void chTxtWriter::Write(uint16_t i_Val)
 {
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
 
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 }
 
-void chTxtWriter::Write(envType::UInt32 i_Val)
+void chTxtWriter::Write(int32_t i_Val)
 {
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
 
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 }
 
-void chTxtWriter::Write(envType::Int64 i_Val)
+void chTxtWriter::Write(uint32_t i_Val)
 {
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
 
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 }
 
-void chTxtWriter::Write(envType::UInt64 i_Val)
+void chTxtWriter::Write(int64_t i_Val)
 {
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
 
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 }
 
-void chTxtWriter::Write(envType::Float32 i_Val)
+void chTxtWriter::Write(uint64_t i_Val)
 {
-	buf_ss.str("");
-	buf_ss.setf( 0, std::ios::floatfield );
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
 
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 }
 
-void chTxtWriter::Write(envType::Float64 i_Val)
+void chTxtWriter::Write(float i_Val)
 {
-	buf_ss.str("");
-	buf_ss.setf( 0, std::ios::floatfield );
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
+
+	m_File.Write(l_Buf.length(), l_Buf.c_str());
+}
+
+void chTxtWriter::Write(double i_Val)
+{
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
 
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 }
@@ -313,51 +305,6 @@ void chTxtWriter::Write(const char* i_Val, int i_Length)
 	for (int i=0; i<i_Length; i++)
 	{
 		str[i] = i_Val[i];	
-	}
-
-	m_File.WriteToken( str );
-	write_char(m_File, ' ');
-}
-
-//--------------------------------------------------------------------
-//	This Write writes a NULL-terminated Unicode character string
-//--------------------------------------------------------------------
-void chTxtWriter::Write(const envType::WChar* i_Val)
-{
-	// convert to ascii, UNICODE shouldn't be in data files
-	// anyway. it should be in gfTextSetFile only.
-	//
-	const envType::WChar *ptr = i_Val;
-	char ch;
-	std::string str;
-	while (*ptr)
-	{
-		ch = (char) (*ptr);
-		DBG_ASSERT((((*ptr) & 0xff00) == 0), "Can't write true unicode into ascii files.");
-		str += ch;
-		ptr++;
-	}
-
-	m_File.WriteToken( str );
-	write_char(m_File, ' ');
-}
-
-//--------------------------------------------------------------------
-//	This Write writes a Unicode character string with a length
-//	given by i_Length.
-//--------------------------------------------------------------------
-void chTxtWriter::Write(const envType::WChar* i_Val, int i_Length)
-{	
-	// convert to ascii, UNICODE shouldn't be in data files
-	// anyway. it should be in gfTextSetFile only.
-	//
-	char ch;
-	std::string str;
-	for (int i=0; i<i_Length; i++)
-	{
-		ch = (char) i_Val[i];
-		DBG_ASSERT(((ch & 0xff00) == 0), "Can't write true unicode into ascii files.");
-		str += ch;
 	}
 
 	m_File.WriteToken( str );

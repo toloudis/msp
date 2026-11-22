@@ -16,6 +16,9 @@
 #include "GraphicsDX11/g3d/g3dBlendStateMgr.hpp"
 #include "GraphicsDX11/g3d/g3dSceneRendererDX11.hpp"
 #include "GraphicsDX11/mat/matCubeRenderTargetTexture.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 namespace
 {
@@ -48,6 +51,7 @@ int g3dCubeMapRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCamera&
 									const g3dScene &i_Scene, const std::vector<g3dLayer*>& i_ViewerLayers,
 									float i_fSimTime )
 {//PROFILE("Render");
+	G3D_PROFILE_SCOPE("CubeMapRenderer");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"g3dCubeMapRendererDX11::Render" );
 
 	matCubeRenderTargetTexture* pCubeMap = dynamic_cast<matCubeRenderTargetTexture*>(i_pWindow);

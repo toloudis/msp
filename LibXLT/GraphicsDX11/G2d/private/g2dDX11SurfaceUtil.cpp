@@ -126,8 +126,8 @@ SurfaceIterator::SurfaceIterator(	int i_Width,
 	m_Pitch(i_Pitch),
 	m_PFD(i_PFD),
 	//m_pRect(i_pRect),
-	m_pData((envType::UInt8*)i_pData),
-	m_pBase((envType::UInt8*)i_pData)
+	m_pData((uint8_t*)i_pData),
+	m_pBase((uint8_t*)i_pData)
 {
 	// calculate the number of components
 	//	24-bit should be 3 (RGB) and 32-bit should be 4 (RGBA)
@@ -138,18 +138,18 @@ SurfaceIterator::SurfaceIterator(	int i_Width,
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void SurfaceIterator::GetValue(	envType::UInt8 &o_Red,
-								envType::UInt8 &o_Green,
-								envType::UInt8 &o_Blue,
-								envType::UInt8 &o_Alpha) const
+void SurfaceIterator::GetValue(	uint8_t &o_Red,
+								uint8_t &o_Green,
+								uint8_t &o_Blue,
+								uint8_t &o_Alpha) const
 {
 	static g2dARGBColor color;
-	static envType::UInt16 rgb;
+	static uint16_t rgb;
 	switch( m_PFD.BitsPerPixel() )
 	{
 		case 16:
 		{
-			rgb = *(envType::UInt16*) (m_pData);
+			rgb = *(uint16_t*) (m_pData);
 			color	= m_PFD.MakeScaledColor(rgb);
 			o_Blue	= color.GetBlue();
 			o_Green = color.GetGreen();
@@ -178,10 +178,10 @@ void SurfaceIterator::GetValue(	envType::UInt8 &o_Red,
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void SurfaceIterator::GetValue(	envType::Float32 &o_Red,
-								envType::Float32 &o_Green,
-								envType::Float32 &o_Blue,
-								envType::Float32 &o_Alpha) const
+void SurfaceIterator::GetValue(	float &o_Red,
+								float &o_Green,
+								float &o_Blue,
+								float &o_Alpha) const
 {
 	int nc = m_PFD.GetNumChannels();
 	bool isfloat = m_PFD.IsFloat();
@@ -200,7 +200,7 @@ void SurfaceIterator::GetValue(	envType::Float32 &o_Red,
 	case 16:
 		{
 		DBG_ASSERT(isfloat, "bad capture fmt: 16 bits per channel but not float");
-		envType::UInt16* pHData = (envType::UInt16*)m_pData;
+		uint16_t* pHData = (uint16_t*)m_pData;
 //		float tmp[4];
 		switch (nc)
 		{
@@ -281,15 +281,15 @@ void SurfaceIterator::SetValue(	float i_Red,
 	case 8:
 		DBG_ASSERT(nc == 4, "bad capture fmt: 8 bits per channel but not 4 channels");
 		DBG_ASSERT(!isfloat, "bad capture fmt: 8 bits per channel but float");
-		m_pData[0] = (envType::UInt8)maFunctions::Clamp(i_Red * 255.0f, 0.f, 255.f);
-		m_pData[1] = (envType::UInt8)maFunctions::Clamp(i_Green * 255.0f, 0.f, 255.f);
-		m_pData[2] = (envType::UInt8)maFunctions::Clamp(i_Blue * 255.0f, 0.f, 255.f);
-		m_pData[3] = (envType::UInt8)maFunctions::Clamp(i_Alpha * 255.0f, 0.f, 255.f);
+		m_pData[0] = (uint8_t)maFunctions::Clamp(i_Red * 255.0f, 0.f, 255.f);
+		m_pData[1] = (uint8_t)maFunctions::Clamp(i_Green * 255.0f, 0.f, 255.f);
+		m_pData[2] = (uint8_t)maFunctions::Clamp(i_Blue * 255.0f, 0.f, 255.f);
+		m_pData[3] = (uint8_t)maFunctions::Clamp(i_Alpha * 255.0f, 0.f, 255.f);
 		break;
 	case 16:
 		{
 		DBG_ASSERT(isfloat, "bad capture fmt: 16 bits per channel but not float");
-		envType::UInt16* pHData = (envType::UInt16*)m_pData;
+		uint16_t* pHData = (uint16_t*)m_pData;
 		switch (nc)
 		{
 		case 4:
@@ -497,7 +497,7 @@ void SurfaceIteratorRGBA16F::GetValue(	float &o_Red,
 		float &o_Blue,
 		float &o_Alpha) const
 {
-	envType::UInt16* pHData = (envType::UInt16*)m_pData;
+	uint16_t* pHData = (uint16_t*)m_pData;
 
 	//float tmp[4];
 	//::D3DXFloat16To32Array(tmp, (HALF*)pHData, 4);
@@ -518,7 +518,7 @@ void SurfaceIteratorRGBA16F::SetValue(	float i_Red,
 		float i_Blue,
 		float i_Alpha) const
 {
-	envType::UInt16* pHData = (envType::UInt16*)m_pData;
+	uint16_t* pHData = (uint16_t*)m_pData;
 
 	//float tmp[4] = {i_Blue,i_Green,i_Red,i_Alpha};
 	//::D3DXFloat32To16Array((HALF*)pHData, tmp, 4);
@@ -535,7 +535,7 @@ void SurfaceIteratorRG16F::GetValue( float &o_Red,
 		float &o_Blue,
 		float &o_Alpha) const
 {
-	envType::UInt16* pHData = (envType::UInt16*)m_pData;
+	uint16_t* pHData = (uint16_t*)m_pData;
 
 	//float tmp[2];
 	//::D3DXFloat16To32Array(tmp, (HALF*)pHData, 2);
@@ -555,7 +555,7 @@ void SurfaceIteratorRG16F::SetValue(	float i_Red,
 		float i_Blue,
 		float i_Alpha) const
 {
-	envType::UInt16* pHData = (envType::UInt16*)m_pData;
+	uint16_t* pHData = (uint16_t*)m_pData;
 	//float tmp[2] = {i_Green,i_Red};
 	//::D3DXFloat32To16Array((HALF*)pHData, tmp, 2);
 	pHData[0] = maFunctions::FloatToHalf(i_Red);
@@ -569,7 +569,7 @@ void SurfaceIteratorR16F::GetValue(	float &o_Red,
 		float &o_Blue,
 		float &o_Alpha) const
 {
-	envType::UInt16* pHData = (envType::UInt16*)m_pData;
+	uint16_t* pHData = (uint16_t*)m_pData;
 	//::D3DXFloat16To32Array(&o_Red, (HALF*)pHData, 1);
 	o_Red		= maFunctions::HalfToFloat(*(pHData+0));
 	o_Green		= 0;
@@ -584,7 +584,7 @@ void SurfaceIteratorR16F::SetValue(	float i_Red,
 		float i_Blue,
 		float i_Alpha) const
 {
-	envType::UInt16* pHData = (envType::UInt16*)m_pData;
+	uint16_t* pHData = (uint16_t*)m_pData;
 	//::D3DXFloat32To16Array((HALF*)pHData, &i_Red, 1);
 	pHData[0] = maFunctions::FloatToHalf(i_Red);
 }
@@ -609,23 +609,23 @@ void SurfaceIteratorRGBA8U::SetValue(	float i_Red,
 		float i_Blue,
 		float i_Alpha) const
 {
-	m_pData[0] = (envType::UInt8)maFunctions::Clamp(i_Red * 255.0f, 0.f, 255.f);
-	m_pData[1] = (envType::UInt8)maFunctions::Clamp(i_Green * 255.0f, 0.f, 255.f);
-	m_pData[2] = (envType::UInt8)maFunctions::Clamp(i_Blue * 255.0f, 0.f, 255.f);
-	m_pData[3] = (envType::UInt8)maFunctions::Clamp(i_Alpha * 255.0f, 0.f, 255.f);
+	m_pData[0] = (uint8_t)maFunctions::Clamp(i_Red * 255.0f, 0.f, 255.f);
+	m_pData[1] = (uint8_t)maFunctions::Clamp(i_Green * 255.0f, 0.f, 255.f);
+	m_pData[2] = (uint8_t)maFunctions::Clamp(i_Blue * 255.0f, 0.f, 255.f);
+	m_pData[3] = (uint8_t)maFunctions::Clamp(i_Alpha * 255.0f, 0.f, 255.f);
 }
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void write_bmp_data_greyscale_sampled(envType::UInt8 *i_pBuffer,
+void write_bmp_data_greyscale_sampled(uint8_t *i_pBuffer,
 							SurfaceIterator &i_SurfIt,
 							int i_Width,
 							int i_Height,
 							int i_Sampling)
 {
 	int BufferWidth = i_Width / i_Sampling;
-	envType::UInt8 *ptr = i_pBuffer;
-	envType::UInt8 red,blue,green,alpha;
+	uint8_t *ptr = i_pBuffer;
+	uint8_t red,blue,green,alpha;
 	int average;
 	int num_samples = i_Sampling * i_Sampling;
 	int FinalWidth = (i_Width-i_Sampling);
@@ -647,7 +647,7 @@ void write_bmp_data_greyscale_sampled(envType::UInt8 *i_pBuffer,
 				}
 			}
 
-			*ptr = envType::UInt8(average / num_samples);
+			*ptr = uint8_t(average / num_samples);
 			ptr++;
 		}
 	}
@@ -655,15 +655,15 @@ void write_bmp_data_greyscale_sampled(envType::UInt8 *i_pBuffer,
 }
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void write_bmp_data_24bit_sampled(envType::UInt8 *i_pBuffer,
+void write_bmp_data_24bit_sampled(uint8_t *i_pBuffer,
 							SurfaceIterator &i_SurfIt,
 							int i_Width,
 							int i_Height,
 							int i_Sampling)
 {
 	int BufferWidth = 3 * (i_Width / i_Sampling);
-	envType::UInt8 *ptr = i_pBuffer;
-	envType::UInt8 red,blue,green,alpha;
+	uint8_t *ptr = i_pBuffer;
+	uint8_t red,blue,green,alpha;
 	int red_avg, green_avg, blue_avg;
 	int num_samples = i_Sampling * i_Sampling;
 	int FinalWidth = (i_Width-i_Sampling+1);
@@ -690,22 +690,22 @@ void write_bmp_data_24bit_sampled(envType::UInt8 *i_pBuffer,
 			}
 
 			//	output the information
-			*ptr++ = envType::UInt8(blue_avg / num_samples);
-			*ptr++ = envType::UInt8(green_avg / num_samples);
-			*ptr++ = envType::UInt8(red_avg / num_samples);
+			*ptr++ = uint8_t(blue_avg / num_samples);
+			*ptr++ = uint8_t(green_avg / num_samples);
+			*ptr++ = uint8_t(red_avg / num_samples);
 		}
 	}
 }
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void write_bmp_data_greyscale(envType::UInt8 *i_pBuffer,
+void write_bmp_data_greyscale(uint8_t *i_pBuffer,
 							SurfaceIterator &i_SurfIt,
 							int i_Width,
 							int i_Height)
 {
 	int BufferWidth = i_Width;
-	envType::UInt8 *ptr = i_pBuffer;
-	envType::UInt8 red,blue,green,alpha;
+	uint8_t *ptr = i_pBuffer;
+	uint8_t red,blue,green,alpha;
 
 	for (int r=i_Height-1; r>=0; r--)
 	{
@@ -722,14 +722,14 @@ void write_bmp_data_greyscale(envType::UInt8 *i_pBuffer,
 }
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void write_bmp_data_24bit(	envType::UInt8 *i_pBuffer,
+void write_bmp_data_24bit(	uint8_t *i_pBuffer,
 							SurfaceIterator &i_SurfIt,
 							int i_Width,
 							int i_Height)
 {
 	int BufferWidth = i_Width * 3;
-	envType::UInt8 *ptr = i_pBuffer;
-	envType::UInt8 alpha;
+	uint8_t *ptr = i_pBuffer;
+	uint8_t alpha;
 
 	for (int r=i_Height-1; r>=0; r--)
 	{
@@ -750,7 +750,7 @@ void copyPixels(g2dPixelR16G16B16A16* i_pBuffer,
 							int i_Height)
 {
 	g2dPixelR16G16B16A16 *ptr = i_pBuffer;
-	envType::UInt8 pr,pg,pb,pa;
+	uint8_t pr,pg,pb,pa;
 	for (int r=i_Height-1; r>=0; r--)
 	{
 		i_SurfIt.SetPosition(r,0);
@@ -810,16 +810,16 @@ void copyPixels(g2dPixelRGBA32F* i_pBuffer,
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-int write_packet_RLE(	envType::UInt8 **io_pBuffer, 
-						envType::UInt8 i_R,
-						envType::UInt8 i_G,
-						envType::UInt8 i_B,
-						envType::UInt8 i_Count )
+int write_packet_RLE(	uint8_t **io_pBuffer, 
+						uint8_t i_R,
+						uint8_t i_G,
+						uint8_t i_B,
+						uint8_t i_Count )
 {
 	if ( i_Count > 0 )
-		*(*io_pBuffer+0) = (envType::UInt8)(128 + i_Count);
+		*(*io_pBuffer+0) = (uint8_t)(128 + i_Count);
 	else
-		*(*io_pBuffer+0) = (envType::UInt8)(i_Count);
+		*(*io_pBuffer+0) = (uint8_t)(i_Count);
     *(*io_pBuffer+1) = i_B;
     *(*io_pBuffer+2) = i_G;
     *(*io_pBuffer+3) = i_R;
@@ -848,7 +848,7 @@ void VerifyWriteOK( int i_BufferSize, int i_BufferSizeUsed, int i_BytesToWrite )
 }
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-int write_TGA_data_24bit_sampledRLE(	envType::UInt8 *io_pBuffer,
+int write_TGA_data_24bit_sampledRLE(	uint8_t *io_pBuffer,
 										SurfaceIterator &i_SurfIt,
 										int i_Width,
 										int i_Height,
@@ -856,8 +856,8 @@ int write_TGA_data_24bit_sampledRLE(	envType::UInt8 *io_pBuffer,
 										int i_BufferSize  )
 {
 	int BufferSizeUsed = 0;
-	envType::UInt8 *ptr = io_pBuffer;
-	envType::UInt8 red,blue,green,alpha;
+	uint8_t *ptr = io_pBuffer;
+	uint8_t red,blue,green,alpha;
 	int red_avg, green_avg, blue_avg;
 	int num_samples = i_Sampling * i_Sampling;
 	int FinalWidth = (i_Width-i_Sampling+1);
@@ -869,8 +869,8 @@ int write_TGA_data_24bit_sampledRLE(	envType::UInt8 *io_pBuffer,
 	//for (int r=(i_Height-i_Sampling); r>=0; r-=i_Sampling)
 	for (int row=0; row<=(i_Height-i_Sampling); row+=i_Sampling)
 	{
-		envType::UInt8 matchcount = 255;// (-1)
-		envType::UInt8 rl, gl, bl;		// last
+		uint8_t matchcount = 255;// (-1)
+		uint8_t rl, gl, bl;		// last
 
 		for (int col=0; col<FinalWidth; col+=i_Sampling)
 		{
@@ -890,9 +890,9 @@ int write_TGA_data_24bit_sampledRLE(	envType::UInt8 *io_pBuffer,
 				}
 			}
 
-			red_avg		= (envType::UInt8)(red_avg / num_samples);
-			green_avg	= (envType::UInt8)(green_avg / num_samples);
-			blue_avg	= (envType::UInt8)(blue_avg / num_samples);
+			red_avg		= (uint8_t)(red_avg / num_samples);
+			green_avg	= (uint8_t)(green_avg / num_samples);
+			blue_avg	= (uint8_t)(blue_avg / num_samples);
 
 			//	first time in row, set "previous" values to current
 			if ( matchcount == 255 )
@@ -924,15 +924,15 @@ int write_TGA_data_24bit_sampledRLE(	envType::UInt8 *io_pBuffer,
 }
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void write_TGA_data_24bit_sampled(	envType::UInt8 *io_pBuffer,
+void write_TGA_data_24bit_sampled(	uint8_t *io_pBuffer,
 									SurfaceIterator &i_SurfIt,
 									int i_Width,
 									int i_Height,
 									int i_Sampling)
 {
 	int BufferWidth = 3 * (i_Width / i_Sampling);
-	envType::UInt8 *ptr = io_pBuffer;
-	envType::UInt8 red,blue,green,alpha;
+	uint8_t *ptr = io_pBuffer;
+	uint8_t red,blue,green,alpha;
 	int red_avg, green_avg, blue_avg;
 	int num_samples = i_Sampling * i_Sampling;
 	int FinalWidth = (i_Width-i_Sampling+1);
@@ -960,30 +960,30 @@ void write_TGA_data_24bit_sampled(	envType::UInt8 *io_pBuffer,
 			}
 
 			//	output the information
-			*ptr++ = envType::UInt8(blue_avg / num_samples);
-			*ptr++ = envType::UInt8(green_avg / num_samples);
-			*ptr++ = envType::UInt8(red_avg / num_samples);
+			*ptr++ = uint8_t(blue_avg / num_samples);
+			*ptr++ = uint8_t(green_avg / num_samples);
+			*ptr++ = uint8_t(red_avg / num_samples);
 		}
 	}
 }
 //----------------------------------------------------------------------------
 //	return the *actual* size of the buffer used.
 //----------------------------------------------------------------------------
-int write_TGA_data_24bitRLE(	envType::UInt8 *io_pBuffer,
+int write_TGA_data_24bitRLE(	uint8_t *io_pBuffer,
 								SurfaceIterator &i_SurfIt,
 								int i_Width,
 								int i_Height,
 								int i_BufferSize )
 {
 	int BufferSizeUsed = 0;
-	envType::UInt8 *ptr = io_pBuffer;
+	uint8_t *ptr = io_pBuffer;
 
 	//for (int r=i_Height-1; r>=0; r--)
 	for (int row=0; row<(i_Height-1); row++)
 	{
-		envType::UInt8 matchcount = 255;// (-1)
-		envType::UInt8 r, g, b, a;			// current
-		envType::UInt8 rl, gl, bl, al;		// last
+		uint8_t matchcount = 255;// (-1)
+		uint8_t r, g, b, a;			// current
+		uint8_t rl, gl, bl, al;		// last
 
 		i_SurfIt.SetPosition(row,0);
 		for (int col=0; col<i_Width; col++)
@@ -1023,14 +1023,14 @@ int write_TGA_data_24bitRLE(	envType::UInt8 *io_pBuffer,
 }
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void write_TGA_data_24bit(	envType::UInt8 *io_pBuffer,
+void write_TGA_data_24bit(	uint8_t *io_pBuffer,
 							SurfaceIterator &i_SurfIt,
 							int i_Width,
 							int i_Height)
 {
 	int BufferWidth = i_Width * 3;
-	envType::UInt8 *ptr = io_pBuffer;
-	envType::UInt8 alpha;
+	uint8_t *ptr = io_pBuffer;
+	uint8_t alpha;
 
 	int buffSize = sizeof(io_pBuffer);
 
@@ -1054,7 +1054,7 @@ namespace g2dDX11SurfaceUtil
 // caller must delete [] o_pBuffer when done using it!!!!
 //----------------------------------------------------------------------------
 void GetSurfacePixels(g2dD3D11TexturePtr i_pSurface,
-									 envType::UInt8** o_pBuffer,
+									 uint8_t** o_pBuffer,
 									 int* o_bufSize,
 									 int* o_width,
 									 int* o_height,
@@ -1079,7 +1079,7 @@ void GetSurfacePixels(g2dD3D11TexturePtr i_pSurface,
 			bufferSize /= i_sampling;
 			bufferSize /= i_sampling;
 		}
-		envType::UInt8* pBuffer =  new envType::UInt8[bufferSize];
+		uint8_t* pBuffer =  new uint8_t[bufferSize];
 
 		if (i_sampling > 1)
 		{
@@ -1108,7 +1108,7 @@ void GetSurfacePixels(g2dD3D11TexturePtr i_pSurface,
 	}
 }
 void GetSurfacePixelsTGA(g2dD3D11TexturePtr i_pSurface,
-	envType::UInt8 **o_pBuffer,
+	uint8_t **o_pBuffer,
 	int *o_bufSize,
 	int *o_width,
 	int *o_height,
@@ -1133,7 +1133,7 @@ void GetSurfacePixelsTGA(g2dD3D11TexturePtr i_pSurface,
 			bufferSize /= i_Sampling;
 			bufferSize /= i_Sampling;
 		}
-		envType::UInt8 *pBuffer =  new envType::UInt8[bufferSize];
+		uint8_t *pBuffer =  new uint8_t[bufferSize];
 
 		if (i_Sampling > 1)
 		{
@@ -1306,10 +1306,10 @@ void GetSurfacePixels(g2dD3D11TexturePtr i_pSurface,
 void GetPixelColor(g2dD3D11TexturePtr i_pSurface,
 						int i_X,
 						int i_Y,
-						envType::UInt8 &o_Red,
-						envType::UInt8 &o_Green,
-						envType::UInt8 &o_Blue,
-						envType::UInt8 &o_Alpha)
+						uint8_t &o_Red,
+						uint8_t &o_Green,
+						uint8_t &o_Blue,
+						uint8_t &o_Alpha)
 {
 	SurfaceLocker surf_locker(i_pSurface);
 
@@ -1332,10 +1332,10 @@ void GetPixelColor(g2dD3D11TexturePtr i_pSurface,
 void GetPixelColor(g2dD3D11TexturePtr i_pSurface,
 						int i_X,
 						int i_Y,
-						envType::Float32 &o_Red,
-						envType::Float32 &o_Green,
-						envType::Float32 &o_Blue,
-						envType::Float32 &o_Alpha)
+						float &o_Red,
+						float &o_Green,
+						float &o_Blue,
+						float &o_Alpha)
 {
 	SurfaceLocker surf_locker(i_pSurface);
 

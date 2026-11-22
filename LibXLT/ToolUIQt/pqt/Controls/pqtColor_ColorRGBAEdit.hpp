@@ -19,12 +19,12 @@
 #include "ToolUIQt/tqc/tqcColorRGBAEdit.hpp"
 #endif
 
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
 class pqtColor_ColorRGBAEdit : public pqtControl
 {
-#ifdef QT_FINISH_PORT
 	public:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
@@ -58,9 +58,9 @@ class pqtColor_ColorRGBAEdit : public pqtControl
 	private:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
-		void ColorRGBAEdit_ValueChanged(wxCommandEvent& i_Event);
+		void ColorRGBAEdit_ValueChanged();
 
 		tqcColorRGBAEdit* m_pActualControl;
-#endif // USE_QT
 };
 
+#endif // USE_QT

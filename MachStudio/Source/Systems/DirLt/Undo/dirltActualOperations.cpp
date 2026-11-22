@@ -80,7 +80,7 @@ void dirltActualOperations::SetData(int i_Index, const dirltScriptData& i_Data)
 //--------------------------------------------------------------------
 void dirltActualOperations::ChangeDriverData(int i_Index, const dirltScriptData& i_Data)
 {
-	// no need to notify dirltObjectMgr if there is no undo, 
+	// no need to notify dirltObjectMgr if there is no undo,
 	// this message is coming from the object directly
 
 	dirltDialogUtil::UpdateLightData(i_Index, i_Data);
@@ -100,7 +100,7 @@ void dirltActualOperations::SetName(int i_Index, const nameString& i_Name)
 
 	dirltObjectMgr::SetBaseData(i_Index, data);
 
-	// we don’t need to do the first call since the name isn’t changing.
+	// we don't need to do the first call since the name isn't changing.
 	//
 	dirltDialogUtil::UpdateListDialog();				// because of name
 	dirltDialogUtil::UpdateLightData(i_Index, data);
@@ -121,7 +121,7 @@ void dirltActualOperations::SetPosition(int i_Index, const maPoint3d& i_Position
 
 	dirltObjectMgr::SetBaseData(i_Index, data);
 
-	// we don’t need to do the first call since the name isn’t changing.
+	// we don't need to do the first call since the name isn't changing.
 	//
 	//dirltDialogUtil::UpdateListDialog();			// because of name
 	dirltDialogUtil::UpdateLightData(i_Index, data);
@@ -141,12 +141,12 @@ void dirltActualOperations::SetOrientation(int i_Index, const maRotation& i_Orie
 
 	maVector3d dir( 0.0f, 1.0f, 0.0f );
 	i_Orientation.RotateVector( dir );
-	
+
 	data.m_Direction	= dir;
 
 	dirltObjectMgr::SetBaseData(i_Index, data);
 
-	// we don’t need to do the first call since the name isn’t changing.
+	// we don't need to do the first call since the name isn't changing.
 	//
 	//dirltDialogUtil::UpdateListDialog();			// because of name
 	dirltDialogUtil::UpdateLightData(i_Index, data);
@@ -167,7 +167,7 @@ void dirltActualOperations::SetColor(int i_Index, const maFloatRGBA& i_Color)
 
 	dirltObjectMgr::SetBaseData(i_Index, data);
 
-	// we don’t need to do the first call since the name isn’t changing.
+	// we don't need to do the first call since the name isn't changing.
 	//
 	//dirltDialogUtil::UpdateListDialog();			// because of name
 	dirltDialogUtil::UpdateLightData(i_Index, data);
@@ -188,7 +188,7 @@ void dirltActualOperations::SetEnabled(int i_Index, const bool i_Enabled)
 
 	dirltObjectMgr::SetBaseData(i_Index, data);
 
-	// we don’t need to do the first call since the name isn’t changing.
+	// we don't need to do the first call since the name isn't changing.
 	//
 	//dirltDialogUtil::UpdateListDialog();			// because of name
 	dirltDialogUtil::UpdateLightData(i_Index, data);

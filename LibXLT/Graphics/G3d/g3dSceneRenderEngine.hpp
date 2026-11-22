@@ -12,8 +12,8 @@
 #endif
 #define G3D_SCENERENDERER_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 #ifndef G2D_PFD_HPP
 #include "Graphics/g2d/g2dPFD.hpp"

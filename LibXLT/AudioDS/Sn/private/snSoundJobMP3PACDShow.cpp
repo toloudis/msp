@@ -12,9 +12,14 @@
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
 #include "AudioDS/sn/private/snSoundJobMP3PACDShow.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "AudioDS/sn/snSoundUtil.hpp"
-#include "Core/fs/private/fsFileUtilPAC.hpp"
+#ifndef FS_PATHUTIL_HPP
+#include "Core/fs/fsPathUtil.hpp"
+#endif
 #include "Core/gf/gfFileTranslationMgr.hpp"
 
 #include <control.h>
@@ -227,42 +232,20 @@ GetPin(IBaseFilter *pFilter, PIN_DIRECTION PinDir)
 void	
 snSoundJobMP3PAC::Start( float i_SimulationTime )
 {
-	itString	UnicodeFilename;
+	std::wstring	UnicodeFilename;
 	HRESULT		hr		= S_OK;
 	IPin *		pPin	= NULL;
 
 	fsLocator ExpandedLoc(this->GetFilename());
 	gfFileTranslationMgr::ExpandLocator(ExpandedLoc);
-	fsFileUtilPAC::LocatorToUnicodeFilename( ExpandedLoc, UnicodeFilename );
-	// null-terminating not needed anymore
-	//UnicodeFilename += 0;
+	UnicodeFilename = fsPathUtil::LocatorToPath(ExpandedLoc).wstring();
 
-	if ( fsFileUtilPAC::MustUseANSIFilenames() )
+	// Make sure that this file exists
+	//
+	DWORD dwAttr = GetFileAttributesW(UnicodeFilename.c_str());
+	if (dwAttr == (DWORD) -1)
 	{
-		// Make sure that this file exists
-		//
-		std::string filename;
-		fsFileUtilPAC::LocatorToANSIFilename( ExpandedLoc, filename );
-		if ( filename.size() == 0 )
-		{
-			return;
-		}
-
-		DWORD dwAttr = ::GetFileAttributesA(filename.c_str());
-		if (dwAttr == (DWORD) -1)
-		{
-			return;
-		} 
-	}
-	else
-	{
-		// Make sure that this file exists
-		//
-		DWORD dwAttr = GetFileAttributesW(UnicodeFilename.GetString());
-		if (dwAttr == (DWORD) -1)
-		{
-			return;
-		}
+		return;
 	}
 
 	// OPTIMIZATION OPPORTUNITY
@@ -273,7 +256,7 @@ snSoundJobMP3PAC::Start( float i_SimulationTime )
 	//
 	// Add the new source filter to the graph. (Graph can still be running)
 	//
-	hr = g_pGraphBuilder->AddSourceFilter(UnicodeFilename.GetString(), UnicodeFilename.GetString(), &g_pSourceNext);
+	hr = g_pGraphBuilder->AddSourceFilter(UnicodeFilename.c_str(), UnicodeFilename.c_str(), &g_pSourceNext);
 
 	// Get the first output pin of the new source filter. Audio sources 
 	// typically have only one output pin, so for most audio cases finding 

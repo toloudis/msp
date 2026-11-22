@@ -9,10 +9,12 @@
 #include "Features/Capture/cptrRenderUtil.hpp"
 
 #include "MainApp/mnmApp.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtSystem.hpp"
+#endif
 
 #include "Features/Capture/cptrModeRenderBake.hpp"
 #include "Features/Capture/cptrWriteAVI.hpp"
-#include "Features/Capture/cptrWriteQuickTime.hpp"
 #include "Features/RenderPrefs/rndrPrefsMgr.hpp"
 #include "Features/RenderPrefs/rndrPrefsUtil.hpp"
 
@@ -31,6 +33,7 @@
 #include "Graphics/g2d/g2dScreenCaptureUtil.hpp"
 #include "Graphics/g2d/g2dWindow.hpp"
 #include "Graphics/g3d/g3dSceneRenderer.hpp"
+#include "Graphics/G3d/g3dSceneRendererCreate.hpp"
 
 #include "Tool/gui/guiMenuMgr.hpp"
 
@@ -38,6 +41,8 @@
 #include "Core/app/appTime.hpp"
 #include "Core/Fs/fsFileUtil.hpp"
 #include "Core/Ma/maSampling.hpp"
+
+#include <algorithm>
 
 //============================================================================
 //============================================================================
@@ -54,7 +59,7 @@ namespace
 	bool m_bIsPhotoshop = false;
 	bool l_bCaptureToneMapped = false;
 
-	itString	l_OutputFilename;
+	std::string	l_OutputFilename;
 	fsLocator	l_OutputFilenameFull;
 
 	g2dWindow*			l_pWindow = NULL;		// the capture window
@@ -74,7 +79,7 @@ namespace
 		//return 2;
 
 		captRenderOutputData& data = captRenderOutputDataUtil::Data();
-		int width	= data.m_nWidth.GetValue() * (data.m_bJitteredSampling.GetValue() ? 1 : data.m_nCaptureSampling.GetValue());
+		int width	= data.m_nWidth.GetValue() * (cptrRenderUtil::UsesJitteredSampling() ? 1 : data.m_nCaptureSampling.GetValue());
 		
 		// Determine a power of 2 that will keep the quadrants under 
 		// the maximum quadrant size
@@ -272,16 +277,16 @@ void cptrRenderUtil::Initialize()
 	l_pWindow = 0;
 	l_pRenderer = 0;
 
-	if (data.m_bJitteredSampling.GetValue())
+	if (cptrRenderUtil::UsesJitteredSampling())
 	{
 		maSampling::GetSamples2D_Repeatable(data.m_nCaptureSampling.GetValue(), data.m_nCaptureSampling.GetValue(),
-			l_SamplePoints, 1, data.m_FilterWidth.GetValue(), data.m_FilterWidth.GetValue());
+			l_SamplePoints, 1, GetFilterWidth(), GetFilterWidth());
 		
-		maFilter* filter = CreateFilter((captRenderOutputData::eFilterFunc)data.m_FilterFunc.GetValue());
+		maFilter* filter = CreateFilter((captRenderOutputData::eFilterFunc)GetFilterFunc());
 
 		if (filter != NULL)
 		{
-			maSampling::WeightSamples(l_SamplePoints, filter, data.m_FilterWidth.GetValue(), data.m_FilterWidth.GetValue());
+			maSampling::WeightSamples(l_SamplePoints, filter, GetFilterWidth(), GetFilterWidth());
 			delete filter;
 		}
 	}
@@ -430,7 +435,7 @@ fsLocator cptrRenderUtil::GetRibFilename()
 
 	// Write bitmap to file
 	int current_frame;
-	itString pureFileName;
+	std::string pureFileName;
 	tmlnTimeUtil::GetTimeInFrames( l_fSimTime, current_frame );
 	captRenderOutputDataUtil::SetCurrentFrame( current_frame );
 	captRenderOutputDataUtil::GenerateFilename( pureFileName, true );
@@ -445,28 +450,6 @@ fsLocator cptrRenderUtil::GetRibFilename()
 	return finalPath;
 }
 
-//----------------------------------------------------------------------------
-//	GetMiFilename() - get mental ray filename
-//----------------------------------------------------------------------------
-fsLocator cptrRenderUtil::GetMiFilename()
-{
-	captRenderOutputData& data = captRenderOutputDataUtil::Data();
-
-	// Write bitmap to file
-	int current_frame;
-	itString pureFileName;
-	tmlnTimeUtil::GetTimeInFrames( l_fSimTime, current_frame );
-	captRenderOutputDataUtil::SetCurrentFrame( current_frame );
-	captRenderOutputDataUtil::GenerateFilename( pureFileName, true );
-	pureFileName += '.';
-	pureFileName += 'm';
-	pureFileName += 'i';
-
-	fsLocator finalPath = data.m_OutputDirectory.GetValue();
-	finalPath.Push( pureFileName );
-
-	return finalPath;
-}
 
 //----------------------------------------------------------------------------
 //	CaptureFrame() - capture the frame
@@ -489,7 +472,7 @@ void cptrRenderUtil::CaptureFrame()
 		g2dImage* pDownSampledImg = NULL;
 
 		//	check if jittered or not
-		if ( !data.m_bJitteredSampling.GetValue() )
+		if ( !cptrRenderUtil::UsesJitteredSampling() )
 		{
 			pDownSampledImg = g2dImageCreate::Make(data.m_nWidth.GetValue(),
 											 data.m_nHeight.GetValue(),
@@ -529,9 +512,9 @@ void cptrRenderUtil::CaptureFrame()
 			captRenderOutputDataUtil::GenerateFilename( l_OutputFilename );
 			//DBG_LOG("capture frame (" << l_OutputFilename.c_str() << ")" );
 
-			l_OutputFilename += itString(L".");
+			l_OutputFilename += std::string(".");
 
-			l_OutputFilename += itString(data.m_CaptureFormat.GetValue().c_str());
+			l_OutputFilename += data.m_CaptureFormat.GetValue();
 			
 			fsLocator dir = data.m_OutputDirectory.GetValue();
 			dir.Push(l_OutputFilename);
@@ -568,17 +551,12 @@ void cptrRenderUtil::CaptureFrame()
 			cptrWriteAVI::Write( pDownSampledImg, data.m_OutputDirectory.GetValue(), 1 );
 			data.m_bCaptureMovie.SetValue(true);
 		}
-		else if ( strcmp(data.m_CaptureFormat.GetValue().c_str(),"MOV")==0 )
-		{
-			cptrWriteQuickTime::Write( pDownSampledImg, data.m_OutputDirectory.GetValue(), l_fSimTime.AsSeconds(), 1 );
-			data.m_bCaptureMovie.SetValue(true);
-		}
 		else
 		{
 			DBG_ASSERT(false,"Invalid file format selected - " << data.m_CaptureFormat.GetValue().c_str());
 		}
 
-		if ( !data.m_bJitteredSampling.GetValue() )
+		if ( !cptrRenderUtil::UsesJitteredSampling() )
 		{				
 			delete pDownSampledImg;
 			pDownSampledImg = NULL;
@@ -669,17 +647,7 @@ void cptrRenderUtil::OpenOutput()
 		
 		l_OutputFilenameFull = data.m_OutputDirectory.GetValue();
 		l_OutputFilenameFull.Push(l_OutputFilename);
-		l_OutputFilenameFull.Push(itString(L".avi"));
-	}
-	else if ( strcmp(data.m_CaptureFormat.GetValue().c_str(),"MOV")==0 )
-	{
-		cptrWriteQuickTime::BeginCapture(l_pWindow, data);
-
-		captRenderOutputDataUtil::GenerateFilename( l_OutputFilename );
-		
-		l_OutputFilenameFull = data.m_OutputDirectory.GetValue();
-		l_OutputFilenameFull.Push(l_OutputFilename);
-		l_OutputFilenameFull.Push(itString(L".mov"));
+		l_OutputFilenameFull.Push(std::string(".avi"));
 	}
 }
 
@@ -703,29 +671,6 @@ void cptrRenderUtil::CloseOutput()
 
 		capture_file_finished();
 	}
-	else if ( strcmp(data.m_CaptureFormat.GetValue().c_str(),"MOV")==0 )
-	{
-		if (data.m_SoundFile.GetValue().GetNumNames() > 0)
-		{
-			cptrWriteQuickTime::WriteAudio( data.m_SoundFile.GetValue() );
-		}
-		cptrWriteQuickTime::EndCapture();
-
-		capture_file_finished();
-	}
-}
-
-//------------------------------------------------------------------------
-//------------------------------------------------------------------------
-void cptrRenderUtil::CaptureTimeCode(const maTime& i_fStartTime, const maTime& i_fEndTime)
-{
-	//	if the current time is valid, but the last frame wasn't then write out a time code
-	//
-	captRenderOutputData& data = captRenderOutputDataUtil::Data();
-	if ( strcmp(data.m_CaptureFormat.GetValue().c_str(),"MOV")==0 )
-	{
-		cptrWriteQuickTime::WriteTimeCode( i_fStartTime.AsSeconds(), i_fEndTime.AsSeconds() );
-	}
 }
 
 
@@ -743,8 +688,14 @@ bool cptrRenderUtil::GetCaptureQuadrants()
 
 	// Adding a check to see if the resolution is too big, even 
 	// when not using capture sampling.
+	// a renderer that samples captures itself renders the frame whole: it
+	// isn't limited to a raster's sizes and never renders larger than the
+	// output (the quadrant code still works for it when asked)
+	if (RendererSamplesCaptures())
+		return false;
+
 	int quad_div = get_quadrant_div();
-	if ((data.m_bJitteredSampling.GetValue() ? 1 : data.m_nCaptureSampling.GetValue()) > 1)
+	if ((cptrRenderUtil::UsesJitteredSampling() ? 1 : data.m_nCaptureSampling.GetValue()) > 1)
 		return (quad_div > 1);
 	else 
 		return (quad_div > 2);
@@ -821,17 +772,16 @@ void cptrRenderUtil::CaptureQuadrant(int i_Index)
 	int width, height;
 	l_pWindow->GetDimensions(width, height);
 
-	POINT dest_point;
 	int quad_div = get_quadrant_div();
-	dest_point.x = (i_Index % quad_div) * width;
-	dest_point.y = (i_Index / quad_div) * height;
+	int dest_x = (i_Index % quad_div) * width;
+	int dest_y = (i_Index / quad_div) * height;
 	
 	g2dImage* qimage = NULL;
 	CaptureFrameToImage(qimage);
 	DBG_ASSERT(qimage != NULL, "CaptureWindowToImage failed");
 
 	// blit qimage to l_pQuadImage
-	l_pQuadImage->DrawImage(dest_point.x, dest_point.y, *qimage);
+	l_pQuadImage->DrawImage(dest_x, dest_y, *qimage);
 	delete qimage;
 }
 
@@ -916,7 +866,7 @@ void cptrRenderUtil::CaptureImage(g2dImage* i_pImage)
 	g2dImage* pDownSampledImg = NULL;
 
 	//
-	if ( !data.m_bJitteredSampling.GetValue() )
+	if ( !cptrRenderUtil::UsesJitteredSampling() )
 	{
 		pDownSampledImg = g2dImageCreate::Make(data.m_nWidth.GetValue(),
 										 data.m_nHeight.GetValue(),
@@ -957,8 +907,8 @@ void cptrRenderUtil::CaptureImage(g2dImage* i_pImage)
 		captRenderOutputDataUtil::GenerateFilename( l_OutputFilename );
 		//DBG_LOG("capture frame (" << l_OutputFilename.c_str() << ")" );
 
-		l_OutputFilename += itString(L".");
-		l_OutputFilename += itString(data.m_CaptureFormat.GetValue().c_str());
+		l_OutputFilename += std::string(".");
+		l_OutputFilename += data.m_CaptureFormat.GetValue();
 		fsLocator dir = data.m_OutputDirectory.GetValue();
 		dir.Push(l_OutputFilename);
 		data.m_OutputDirectory.SetValue(dir);
@@ -985,18 +935,12 @@ void cptrRenderUtil::CaptureImage(g2dImage* i_pImage)
 
 		data.m_bCaptureMovie.SetValue(true);
 	}
-	else if ( strcmp(data.m_CaptureFormat.GetValue().c_str(),"MOV")==0 )
-	{
-		cptrWriteQuickTime::Write( pDownSampledImg, data.m_OutputDirectory.GetValue(), l_fSimTime.AsSeconds(), 1 );
-
-		data.m_bCaptureMovie.SetValue(true);
-	}
 	else
 	{
 		DBG_ASSERT(false,"Invalid file format selected - " << data.m_CaptureFormat.GetValue().c_str());
 	}
 
-	if ( !data.m_bJitteredSampling.GetValue() )
+	if ( !cptrRenderUtil::UsesJitteredSampling() )
 	{				
 		delete pDownSampledImg;
 		pDownSampledImg = NULL;
@@ -1010,6 +954,43 @@ maVector3d cptrRenderUtil::GetSamplePos(int i)
 {
 	DBG_ASSERT(i < l_SamplePoints.size(), "Bad sampling index");
 	return l_SamplePoints[i];
+}
+
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
+bool cptrRenderUtil::UsesJitteredSampling()
+{
+	return captRenderOutputDataUtil::Data().m_bJitteredSampling.GetValue() || g3dSceneRendererCreate::UsesTracerSettings();
+}
+
+int cptrRenderUtil::GetFilterFunc()
+{
+	captRenderOutputData& data = captRenderOutputDataUtil::Data();
+	return data.m_bJitteredSampling.GetValue() ? data.m_FilterFunc.GetValue() : int(captRenderOutputData::eFilterBox);
+}
+
+float cptrRenderUtil::GetFilterWidth()
+{
+	captRenderOutputData& data = captRenderOutputDataUtil::Data();
+	return data.m_bJitteredSampling.GetValue() ? data.m_FilterWidth.GetValue() : 1.0f;
+}
+
+g3dProgressive::CaptureSampling cptrRenderUtil::GetCaptureSampling()
+{
+	static_assert(int(g3dProgressive::e_FilterCatmullRom) == int(captRenderOutputData::eFilterCatmullRom),
+				  "g3dProgressive::FilterKind mirrors captRenderOutputData::eFilterFunc");
+	g3dProgressive::CaptureSampling sampling;
+	sampling.m_nSupersampling = std::max(1, int(captRenderOutputDataUtil::Data().m_nCaptureSampling.GetValue()));
+	const int filter = GetFilterFunc();
+	sampling.m_Filter = (filter >= 0 && filter < g3dProgressive::e_FilterCount) ? g3dProgressive::FilterKind(filter)
+																			   : g3dProgressive::e_FilterBox;
+	sampling.m_FilterWidth = GetFilterWidth() > 0.0f ? GetFilterWidth() : 1.0f;
+	return sampling;
+}
+
+bool cptrRenderUtil::RendererSamplesCaptures()
+{
+	return l_pRenderer && l_pRenderer->SamplesCaptures();
 }
 
 //------------------------------------------------------------------------
@@ -1032,6 +1013,21 @@ void cptrRenderUtil::ToggleMenuItems(bool i_bToggle)
 	mid = twxSystem::g_pMainMenu->FindMenuItem(wxT("File"), wxT("Recent Files") );
 	if (mid != -1)
 		twxSystem::g_pMainMenu->Enable(mid, i_bToggle);
+#elif defined(USE_QT)
+	DBG_ASSERT((tqtSystem::g_pMainMenu != NULL), "MainMenu not yet initialized.");
+	const QList<QAction*> top_actions = tqtSystem::g_pMainMenu->actions();
+	for (QAction* pTop : top_actions)
+	{
+		if (pTop->menu() && pTop->text().remove(QLatin1Char('&')) == "File")
+		{
+			const QList<QAction*> file_actions = pTop->menu()->actions();
+			for (QAction* pItem : file_actions)
+			{
+				if (pItem->text().remove(QLatin1Char('&')) == "Recent Files")
+					pItem->setEnabled(i_bToggle);
+			}
+		}
+	}
 #endif
 }
 

@@ -22,7 +22,6 @@
 #include "Support/tmln/tmlnTimeEditUIInfo.hpp"
 
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/ma/maFunctions.hpp"
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
 #include "Core/prty/prtyComboBoxUIInfo.hpp"
@@ -93,7 +92,7 @@ cmraDriverMayaScript::cmraDriverMayaScript(tmlnChannelPosition &i_ChannelPositio
 	//for (int i=0; i<file_list.Size(); i++)
 	//{
 	//	itString filename = file_list.GetFilename(i);
-	//	m_pAnimFilenameUIInfo->AddItem( itStringUtil::GetStdString( filename ) );
+	//	m_pAnimFilenameUIInfo->AddItem( filename );
 	//}
 	//AddProperty( m_pAnimFilenameUIInfo );
 	prtyFileChooserUIInfo* pFCUII = new prtyFileChooserUIInfo(&(m_AnimFilename), "Asset", "Animation filename");
@@ -708,7 +707,7 @@ void cmraDriverMayaScript::AnimFileNameChanged(prtyProperty *i_pProperty, bool i
 			// store this frame rate wirtten to file so we can set the frame rate to it later.
 			m_OriginalFrameRate = anim_fps;
 
-			std::string str = itStringUtil::GetStdString(m_AnimFilename.GetValue().GetLastName());
+			std::string str = m_AnimFilename.GetValue().GetLastName();
 			this->SetName(str.c_str());
 
 			if (m_pAnimKeys)

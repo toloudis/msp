@@ -10,11 +10,17 @@
 #endif
 #define CMRA_DATA_HPP
 
+#ifndef MA_MATRIX4X4_HPP
+#include "Core/ma/maMatrix4x4.hpp"
+#endif
 #ifndef PRTY_BOOLEAN_HPP
 #include "Core/prty/prtyBoolean.hpp"
 #endif
 #ifndef PRTY_ENUM_HPP
 #include "Core/prty/prtyEnum.hpp"
+#endif
+#ifndef PRTY_FILEPATH_HPP
+#include "Core/prty/prtyFilePath.hpp"
 #endif
 #ifndef PRTY_FLOAT_HPP
 #include "Core/prty/prtyFloat.hpp"
@@ -63,6 +69,12 @@ public:
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	cmraCameraData& operator=(const cmraCameraData& i_Data);
+
+	//------------------------------------------------------------------------
+	// Apply i_Matrix to its placement, without undo (what parenting does to
+	// keep the world pose)
+	//------------------------------------------------------------------------
+	void ApplyTransformation(const maMatrix4x4& i_Matrix);
 
 public:
 	//------------------------------------------------------------------------
@@ -150,5 +162,8 @@ public:
 	prtyTextureFileName		m_TextureFilenameBeauty;
 	prtyFloat				m_IntensityBeauty;
 	prtyInt32				m_BlendOpBeauty;
+
+	prtyFilePath			m_SourceFile;		// the scene file this came from; empty: not from a file
+	std::string				m_SourceIdentity;	// its identity in that file (iscnObjectDesc::m_Identity)
 };
 

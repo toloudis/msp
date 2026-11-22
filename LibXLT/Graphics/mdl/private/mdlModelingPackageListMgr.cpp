@@ -8,7 +8,7 @@
 \****************************************************************************/
 #include "Graphics/mdl/mdlModelingPackageListMgr.hpp"
 
-#include "Core/it/itString.hpp"
+#include <string>
 
 #include <list>
 
@@ -17,7 +17,7 @@
 //============================================================================
 namespace
 {
-	std::list<itString> m_List;
+	std::list<std::string> m_List;
 }
 
 //------------------------------------------------------------------------
@@ -34,25 +34,25 @@ void mdlModelingPackageListMgr::Clear()
 //	This should be a base name so it covers all versions of the package.
 //	For instance, "Max" would cover all versions of 3D Studio Max.
 //------------------------------------------------------------------------
-void mdlModelingPackageListMgr::Add( itString& i_ModelingPackageName )
+void mdlModelingPackageListMgr::Add( const std::string& i_ModelingPackageName )
 {
 	m_List.push_back( i_ModelingPackageName );
 }
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-bool mdlModelingPackageListMgr::IsInList( itString& i_ModelingPackageName )
+bool mdlModelingPackageListMgr::IsInList( const std::string& i_ModelingPackageName )
 {
 	if (m_List.size() > 0)
 	{
 		//	The list contains entries so see if the package is in the list
 		//
-		std::list<itString>::iterator it;
+		std::list<std::string>::iterator it;
 		for (it = m_List.begin(); it != m_List.end(); ++it)
 		{
 			//DBG_LOG((*it) << " - " << i_ModelingPackageName);
 
-			if ((*it).HasSubString(i_ModelingPackageName))
+			if (((*it).find(i_ModelingPackageName) != std::string::npos))
 				return true;
 		}
 		return false;	// item not found, this modeling package not allowed

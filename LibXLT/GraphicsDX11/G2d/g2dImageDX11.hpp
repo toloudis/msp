@@ -25,6 +25,8 @@
 
 //============================================================================
 //============================================================================
+class maIntRect;
+
 class g2dImageDX11 : public g2dImage
 {
 	public:
@@ -132,22 +134,22 @@ class g2dImageDX11 : public g2dImage
 		// Copy pixels into buffer. this call allocates a big block of mem!!!!!
 		// caller must delete [] o_pBuffer when done using it!!!!
 		//----------------------------------------------------------------------------
-		virtual void GetPixels(envType::UInt8** o_pBuffer,
+		virtual void GetPixels(uint8_t** o_pBuffer,
 			int* o_bufSize,
 			int* o_width,
 			int* o_height,
 			int* o_bpp,
 			int i_sampling = 1,
 			bool i_bGreyscale = false,
-			RECT* i_pRect = NULL);
-		virtual void GetPixelsTGA(envType::UInt8 **o_pBuffer,
+			const maIntRect* i_pRect = NULL);
+		virtual void GetPixelsTGA(uint8_t **o_pBuffer,
 			int *o_bufSize,
 			int *o_width,
 			int *o_height,
 			int *o_bpp,
 			int	i_Sampling = 1,
 			const std::string& i_CompressionCode = std::string("None"),
-			const RECT* i_pRect = NULL);
+			const maIntRect* i_pRect = NULL);
 		// straight copy, no downsampling. caller must delete.
 		virtual void GetPixels(g2dPixelR16G16B16A16** o_pBuffer,
 			int* o_width,
@@ -171,25 +173,20 @@ class g2dImageDX11 : public g2dImage
 		//----------------------------------------------------------------------------
 		void GetPixelColor(int i_X,
 							int i_Y,
-							envType::UInt8 &o_Red,
-							envType::UInt8 &o_Green,
-							envType::UInt8 &o_Blue,
-							envType::UInt8 &o_Alpha);
+							uint8_t &o_Red,
+							uint8_t &o_Green,
+							uint8_t &o_Blue,
+							uint8_t &o_Alpha);
 
 		//----------------------------------------------------------------------------
 		// Get the color of the pixel at an individual position on the image
 		//----------------------------------------------------------------------------
 		void GetPixelColor(int i_X,
 							int i_Y,
-							envType::Float32 &o_Red,
-							envType::Float32 &o_Green,
-							envType::Float32 &o_Blue,
-							envType::Float32 &o_Alpha);
-
-		//----------------------------------------------------------------------------
-		// caller must destroy the HBITMAP!!!
-		//----------------------------------------------------------------------------
-		virtual HBITMAP GetHBMP(const int i_Sampling );
+							float &o_Red,
+							float &o_Green,
+							float &o_Blue,
+							float &o_Alpha);
 
 		//----------------------------------------------------------------------------
 		// SwapChannels() - assumes 4 bytes per pixel and non-floats

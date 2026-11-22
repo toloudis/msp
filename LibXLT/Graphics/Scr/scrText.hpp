@@ -11,9 +11,7 @@
 #endif
 #define SCR_TEXT_HPP
 
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 #ifndef SCR_IMAGE_HPP
 #include "Graphics/scr/scrImage.hpp"
 #endif
@@ -47,14 +45,20 @@ class scrText : public scrImage
 		void SetSize(int i_Width, int i_Height);
 
 		//--------------------------------------------------------------------
+		//	SetPosition sets the current screen coordinates (the center of
+		//	the text when it is centered)
+		//--------------------------------------------------------------------
+		virtual void SetPosition(const maPoint3d& i_Position);
+
+		//--------------------------------------------------------------------
 		//	GetText returns the text string to be displayed
 		//--------------------------------------------------------------------
-		const itString& GetText() const;
+		const std::string& GetText() const;
 
 		//--------------------------------------------------------------------
 		//	SetText sets the text string to be displayed
 		//--------------------------------------------------------------------
-		void SetText(const itString& i_Text);
+		void SetText(const std::string& i_Text);
 
 		//--------------------------------------------------------------------
 		//	SetFontMapImage passes an fsLocator to the Image to be used as a
@@ -119,7 +123,7 @@ class scrText : public scrImage
 private:
 		int m_CharWidth, m_CharHeight;
 		float m_UVWidth, m_UVHeight;
-		itString m_Text;
+		std::string m_Text;
 		int m_FragmentLengthInChar;
 		bool m_bCentered;
 		int m_CenterOffsetX;

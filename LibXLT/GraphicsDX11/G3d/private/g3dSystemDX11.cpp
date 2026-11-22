@@ -9,7 +9,6 @@
 #include "GraphicsDX11/g3d/g3dSystemDX11.hpp"
 
 #include "Core/dbg/dbgMsg.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Graphics/g2d/g2dResetHandler.hpp"
 #include "Graphics/g3d/g3dConditionalCompile.hpp"
 #include "Graphics/g3d/g3dExceptionX.hpp"
@@ -43,6 +42,9 @@
 #include "GraphicsDX11/G3d/g3dSceneRendererDX11.hpp"
 #include "GraphicsDX11/G3d/g3dTransparencySortDX11.hpp"
 #include "GraphicsDX11/G3d/g3dVSMRendererDX11.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/Env/envString.hpp"
+#endif
 
 //#include "profile.h"
 
@@ -171,8 +173,8 @@ namespace
 		DXGI_ADAPTER_DESC desc;
 		HRESULT hr = g2dDX11Global::g_pAdapter->GetDesc(&desc);
 		DBG_ASSERT(SUCCEEDED(hr), "Could not get video adapter description");
-		itString s(desc.Description);
-		o_VideoName = itStringUtil::GetStdString(s);
+		std::string s = envString::WideCharToUTF8(desc.Description);
+		o_VideoName = s;
 	}
 }
 

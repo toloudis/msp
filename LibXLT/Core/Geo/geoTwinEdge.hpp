@@ -24,8 +24,8 @@
 #ifndef ENV_POOL_HPP
 #include "Core/env/envPool.hpp"
 #endif
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 
@@ -40,7 +40,7 @@ class geoTwinVertex
 {
 	public:
 
-		typedef envType::UInt32 IndexType;
+		typedef uint32_t IndexType;
 
 		//--------------------------------------------------------------------
 		//	Each geoTwinVertex must be created from a vertex index, which

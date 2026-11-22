@@ -1,6 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Fx">
+      <UniqueIdentifier>{aff16938-98cf-4c02-9927-363eae84cd7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fx\private">
+      <UniqueIdentifier>{ff39598a-91ac-48c4-8a0f-776072f762a2}</UniqueIdentifier>
+    </Filter>
     <Filter Include="G2d">
       <UniqueIdentifier>{72835c17-e867-449a-8a2c-558a434ef3f8}</UniqueIdentifier>
     </Filter>
@@ -18,9 +24,6 @@
     </Filter>
     <Filter Include="Eff\private">
       <UniqueIdentifier>{0b42b339-a869-4f92-9ff0-818921a173f8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Eff\private\Wrappers">
-      <UniqueIdentifier>{8532641f-7d57-49c1-82e2-1b3ef7f2958f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Mat">
       <UniqueIdentifier>{ba84f1bb-8b3b-4562-a024-cdccc3fb76ea}</UniqueIdentifier>
@@ -57,6 +60,18 @@
     </Filter>
     <Filter Include="Hair\private">
       <UniqueIdentifier>{78a48e5c-b03e-4e9c-b2be-f352777b15c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{e43b1daa-eb0f-570d-9864-358ea3b217cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Materials">
+      <UniqueIdentifier>{c42b6d41-3a3a-5024-bb3f-56966bb5b7ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\PostEffect">
+      <UniqueIdentifier>{b53747e1-f08d-57e7-b370-4c2ce97eff59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\Special">
+      <UniqueIdentifier>{5d853201-c870-5a38-a017-0942dd908ea6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -111,9 +126,6 @@
     <ClInclude Include="G2d\private\g2dImageDrawUtilDX11.hpp">
       <Filter>G2d\private</Filter>
     </ClInclude>
-    <ClInclude Include="G2d\private\g2dImageSaveDX11.hpp">
-      <Filter>G2d\private</Filter>
-    </ClInclude>
     <ClInclude Include="G2d\private\g2dScreenCaptureUtilDX11.hpp">
       <Filter>G2d\private</Filter>
     </ClInclude>
@@ -151,6 +163,9 @@
       <Filter>G3d</Filter>
     </ClInclude>
     <ClInclude Include="G3d\g3dDX11Util.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dProfilerGpuDX11.hpp">
       <Filter>G3d</Filter>
     </ClInclude>
     <ClInclude Include="G3d\g3dFogDX11.hpp">
@@ -219,13 +234,31 @@
     <ClInclude Include="Eff\effBlur.hpp">
       <Filter>Eff</Filter>
     </ClInclude>
+    <ClInclude Include="Eff\effPlainEffect.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effPlainShaderDX11.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Fx\fxEffectDesc.hpp">
+      <Filter>Fx</Filter>
+    </ClInclude>
+    <ClInclude Include="Fx\fxEffectApi.hpp">
+      <Filter>Fx</Filter>
+    </ClInclude>
+    <ClInclude Include="Fx\fxEffectDX11.hpp">
+      <Filter>Fx</Filter>
+    </ClInclude>
+    <ClInclude Include="Fx\fxMaterialInstance.hpp">
+      <Filter>Fx</Filter>
+    </ClInclude>
+    <ClInclude Include="Fx\fxEmbeddedShaders.hpp">
+      <Filter>Fx</Filter>
+    </ClInclude>
     <ClInclude Include="Eff\effDOF.hpp">
       <Filter>Eff</Filter>
     </ClInclude>
     <ClInclude Include="Eff\effGlow.hpp">
-      <Filter>Eff</Filter>
-    </ClInclude>
-    <ClInclude Include="Eff\effHDRLighting.hpp">
       <Filter>Eff</Filter>
     </ClInclude>
     <ClInclude Include="Eff\effLightGlow.hpp">
@@ -258,13 +291,13 @@
     <ClInclude Include="Eff\effShaderParamsDX11.hpp">
       <Filter>Eff</Filter>
     </ClInclude>
-    <ClInclude Include="Eff\effShaderSDKDX11.hpp">
-      <Filter>Eff</Filter>
-    </ClInclude>
     <ClInclude Include="Eff\effShaderUtilWin.hpp">
       <Filter>Eff</Filter>
     </ClInclude>
     <ClInclude Include="Eff\effSolid.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effPbrFallback.hpp">
       <Filter>Eff</Filter>
     </ClInclude>
     <ClInclude Include="Eff\effStrandHair.hpp">
@@ -570,9 +603,6 @@
     <ClCompile Include="G2d\private\g2dImageDX11.cpp">
       <Filter>G2d\private</Filter>
     </ClCompile>
-    <ClCompile Include="G2d\private\g2dImageSaveDX11.cpp">
-      <Filter>G2d\private</Filter>
-    </ClCompile>
     <ClCompile Include="G2d\private\g2dRenderTargetDX11.cpp">
       <Filter>G2d\private</Filter>
     </ClCompile>
@@ -628,6 +658,9 @@
       <Filter>G3d\private</Filter>
     </ClCompile>
     <ClCompile Include="G3d\private\g3dDX11Util.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dProfilerGpuDX11.cpp">
       <Filter>G3d\private</Filter>
     </ClCompile>
     <ClCompile Include="G3d\private\g3dFogDX11.cpp">
@@ -693,13 +726,28 @@
     <ClCompile Include="Eff\private\effBlur.cpp">
       <Filter>Eff\private</Filter>
     </ClCompile>
+    <ClCompile Include="Eff\private\effPlainEffect.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effPlainShaderDX11.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Fx\private\fxEffectDesc.cpp">
+      <Filter>Fx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Fx\private\fxEffectDX11.cpp">
+      <Filter>Fx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Fx\private\fxMaterialInstance.cpp">
+      <Filter>Fx\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Fx\private\fxEmbeddedShaders.cpp">
+      <Filter>Fx\private</Filter>
+    </ClCompile>
     <ClCompile Include="Eff\private\effDOF.cpp">
       <Filter>Eff\private</Filter>
     </ClCompile>
     <ClCompile Include="Eff\private\effGlow.cpp">
-      <Filter>Eff\private</Filter>
-    </ClCompile>
-    <ClCompile Include="Eff\private\effHDRLighting.cpp">
       <Filter>Eff\private</Filter>
     </ClCompile>
     <ClCompile Include="Eff\private\effLightGlow.cpp">
@@ -732,13 +780,13 @@
     <ClCompile Include="Eff\private\effShaderParamsDX11.cpp">
       <Filter>Eff\private</Filter>
     </ClCompile>
-    <ClCompile Include="Eff\private\effShaderSDKDX11.cpp">
-      <Filter>Eff\private</Filter>
-    </ClCompile>
     <ClCompile Include="Eff\private\effShaderUtilWin.cpp">
       <Filter>Eff\private</Filter>
     </ClCompile>
     <ClCompile Include="Eff\private\effSolid.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effPbrFallback.cpp">
       <Filter>Eff\private</Filter>
     </ClCompile>
     <ClCompile Include="Eff\private\effStrandHair.cpp">
@@ -1011,32 +1059,410 @@
     <ClCompile Include="GraphicsDX11Layer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuildStep Include="Eff\private\Wrappers\Footer.hlsl">
-      <Filter>Eff\private\Wrappers</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="Eff\private\Wrappers\Footer_End.hpp">
-      <Filter>Eff\private\Wrappers</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="Eff\private\Wrappers\Footer_Start.hpp">
-      <Filter>Eff\private\Wrappers</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="Eff\private\Wrappers\Header.hlsl">
-      <Filter>Eff\private\Wrappers</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="Eff\private\Wrappers\Header_End.hpp">
-      <Filter>Eff\private\Wrappers</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="Eff\private\Wrappers\Header_Start.hpp">
-      <Filter>Eff\private\Wrappers</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="Eff\private\Wrappers\ShaderCompiler_Script.py">
-      <Filter>Eff\private\Wrappers</Filter>
-    </CustomBuildStep>
-    <CustomBuildStep Include="Eff\private\Wrappers\ShaderStrings.hpp">
-      <Filter>Eff\private\Wrappers</Filter>
-    </CustomBuildStep>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="Eff\private\Shaders\DumpToTexture.hlsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\EmbedShaders.ps1">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\FinalPass.hlsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\GenRays.hlsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\HDRLighting.hlsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Anisotropic.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Anisotropic.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Bake.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Bake.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Blinn.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Blinn.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\BlinnReflection.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\BlinnReflection.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\BlinnSkin.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\BlinnSkin.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\CarPaint.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\CarPaint.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Cartoon.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Cartoon.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Default.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Default.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\FC3DBlinn.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\FC3DBlinn.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\FC3DPhong.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\FC3DPhong.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\FC3DPhongTransparent.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\FC3DPhongTransparent.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\FC3DSpecularFresnel.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\FC3DSpecularFresnel.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\FC3DSubSurfaceScatter_wBlinnSpecular.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\FC3DSubSurfaceScatter_wBlinnSpecular.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Globals.hlsli">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Hair_SH.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Hair_SH.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Lambert.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Lambert.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Lighting.hlsli">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Phong.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Phong.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Phong_wBump.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Phong_wBump.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\PhongReflection.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\PhongReflection.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Simple.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Simple.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Skin.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Skin.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Skinning.hlsli">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\SpecularFresnel.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\SpecularFresnel.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\SubSurfaceScatter.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\SubSurfaceScatter.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\SubSurfaceScatter_wBlinnSpecular.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\SubSurfaceScatter_wBlinnSpecular.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Support.hlsli">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\SupportHair.hlsli">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\Tessellate.hlsli">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\testtess.effect.json">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Materials\testtess.hlsl">
+      <Filter>Shaders\Materials</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\PostEffect\BlackAndWhite.effect.json">
+      <Filter>Shaders\PostEffect</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\PostEffect\BlackAndWhite.hlsl">
+      <Filter>Shaders\PostEffect</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\PostEffect\GradientMap.effect.json">
+      <Filter>Shaders\PostEffect</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\PostEffect\GradientMap.hlsl">
+      <Filter>Shaders\PostEffect</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\PostEffect\Helper.hlsli">
+      <Filter>Shaders\PostEffect</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\PostEffect\Sepia.effect.json">
+      <Filter>Shaders\PostEffect</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\PostEffect\Sepia.hlsl">
+      <Filter>Shaders\PostEffect</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\PostEffect\Sketch.effect.json">
+      <Filter>Shaders\PostEffect</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\PostEffect\Sketch.hlsl">
+      <Filter>Shaders\PostEffect</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\PostProcess.hlsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\RayTraceCS.hlsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\AAEdgeFilter.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\AAEdgeFilter.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\AOVolumes.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\AOVolumes.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\Billboard.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\Billboard.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\Blur.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\Blur.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\Brushstroke.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\Brushstroke.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\DepthMap.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\DepthMap.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\DepthRender.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\DepthRender.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\DOF.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\DOF.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\EnvBackground.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\EnvBackground.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\Fog.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\Fog.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\GIVolumes.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\GIVolumes.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\Glow.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\Glow.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\HairDefault.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\HairDefault.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\HDRLighting.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\HDRLighting.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\IlluminationOnly.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\IlluminationOnly.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\LightGlow.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\LightGlow.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\LPV_GI.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\LPV_GI.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\MapNormalsToScreen.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\MaskAlpha.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\MaskAlpha.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\MotionBlur.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\MotionBlur.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\NormalMap.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\NormalMap.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\OpacityRender.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\OpacityRender.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\Outline.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\Outline.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\Particle.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\Particle.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\PostAlphaMatte.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\PostAlphaMatte.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\Ramp.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\Ramp.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\ReflectiveShadowMap.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\ReflectiveShadowMap.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\ShadowsOnly.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\ShadowsOnly.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\Solid.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\Solid.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\ssaoBilateralBlurEngine.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\ssaoBilateralBlurEngine.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\ssaoMultiHorizonBasedAO.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\ssaoMultiHorizonBasedAO.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\ssgiMultiHorizonBasedGI.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\ssgiMultiHorizonBasedGI.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\VelocityRender.effect.json">
+      <Filter>Shaders\Special</Filter>
+    </None>
+    <None Include="Eff\private\Shaders\Special\VelocityRender.hlsl">
+      <Filter>Shaders\Special</Filter>
+    </None>
   </ItemGroup>
 </Project>

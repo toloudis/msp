@@ -70,15 +70,15 @@ namespace
 				//
 				fsysFileList file_list;
 				prjltTextureList::BuildFileList(file_list);
-				itString tex_fname = tex_loc.GetLastName();
+				std::string tex_fname = tex_loc.GetLastName();
 
 				//bga - Old file formats relied on the texture manager
 				// promoting "bmp" files to "dds" files. I am just 
 				// going to hack in this particular switch that was
 				// common because it was the default value in really
 				// old files.
-				if (tex_fname == itString("Projection.bmp"))
-					tex_fname = itString("Projection.dds");
+				if (tex_fname == "Projection.bmp")
+					tex_fname = std::string("Projection.dds");
 
 				if (file_list.FindFilePath(tex_fname, tex_loc))
 					tex_loc.Push(tex_fname);
@@ -106,7 +106,7 @@ namespace
 		// that the code was at version 8
 		if (i_Version == 25)
 		{
-			envType::Float32 cubic_falloff;
+			float cubic_falloff;
 			i_Reader.Read(cubic_falloff);
 		}
 	}
@@ -315,7 +315,7 @@ namespace
 																					if (i_Version > 27)
 																					{
 																						// Properties related to spot and directional lighting
-																						envType::Int8 light_type = 0;
+																						int8_t light_type = 0;
 																						i_Reader.Read(light_type);
 																						if (light_type >= 0 && light_type < prjltData::e_NumLightTypes)
 																							o_Data.m_LightType = prjltData::LightType(light_type);
@@ -326,12 +326,24 @@ namespace
 
 																						if (i_Version > 28)
 																						{
-																							o_Data.m_bMRayAreaLight.Read(i_Reader);
-																							o_Data.m_MRayAreaLightType.Read(i_Reader);
-																							o_Data.m_bMRayAreaLightVisible.Read(i_Reader);
+																							if (i_Version < 32)
+																							{
+																								// mental ray area light params (v29), removed in v32
+																								prtyBoolean dummyAreaLight;
+																								prtyEnum dummyAreaLightType;
+																								prtyBoolean dummyAreaLightVisible;
+																								dummyAreaLight.Read(i_Reader);
+																								dummyAreaLightType.Read(i_Reader);
+																								dummyAreaLightVisible.Read(i_Reader);
+																							}
 																							if (i_Version > 29)
 																							{
-																								o_Data.m_MRayAreaLightSampling.Read(i_Reader);
+																								if (i_Version < 32)
+																								{
+																									// mental ray area light sampling (v30), removed in v32
+																									prtyInt32 dummyAreaLightSampling;
+																									dummyAreaLightSampling.Read(i_Reader);
+																								}
 
 																								if (i_Version > 30) 
 																								{
@@ -339,6 +351,11 @@ namespace
 																									o_Data.m_HairShadowEnable.Read(i_Reader);
 																									o_Data.m_HairShadowSize.Read(i_Reader);
 																									o_Data.m_HairShadowType.Read(i_Reader);
+																								}
+																								if (i_Version >= 33)
+																								{
+																									o_Data.m_SourceFile.Read(i_Reader);
+																									chChunkParserUtil::Read(i_Reader, o_Data.m_SourceIdentity);
 																								}
 																							}
 																						}
@@ -497,7 +514,7 @@ void prjltDataParser::WriteProjectedLightData(	chWriter& o_Writer,
 	o_Writer.WriteChunkHeader( c_PRJC, l_PRJCCHNK_VERSION, true );
 
 	// Write base info
-	const int l_PRJTITEM_VERSION = 31; 
+	const int l_PRJTITEM_VERSION = 33; 
 	o_Writer.WriteChunkHeader( c_PRJT, l_PRJTITEM_VERSION, false );
 
 	i_Data.m_BaseData.m_Enabled.Write(o_Writer);
@@ -603,25 +620,23 @@ void prjltDataParser::WriteProjectedLightData(	chWriter& o_Writer,
 	i_Data.m_BaseData.m_ShaftRampData.m_NoiseFreq.Write(o_Writer);
 
 	// version 28 adds properties related to spot and directional light variations
-	envType::Int8 light_type = i_Data.m_BaseData.m_LightType;
+	int8_t light_type = i_Data.m_BaseData.m_LightType;
 	o_Writer.Write(light_type);
 	i_Data.m_BaseData.m_bDirectional.Write(o_Writer);
 	i_Data.m_BaseData.m_bConeLighting.Write(o_Writer);
 	i_Data.m_BaseData.m_Penumbra.Write(o_Writer);
 
-	// version 29 adds mental ray area light params
-	i_Data.m_BaseData.m_bMRayAreaLight.Write(o_Writer);
-	i_Data.m_BaseData.m_MRayAreaLightType.Write(o_Writer);
-	i_Data.m_BaseData.m_bMRayAreaLightVisible.Write(o_Writer);
-
-	// version 30
-	i_Data.m_BaseData.m_MRayAreaLightSampling.Write(o_Writer);
+	// versions 29 and 30 wrote mental ray area light params here; removed in v32
 
 	// version 31
 	i_Data.m_BaseData.m_GISource.Write(o_Writer);
 	i_Data.m_BaseData.m_HairShadowEnable.Write(o_Writer);
 	i_Data.m_BaseData.m_HairShadowSize.Write(o_Writer);
 	i_Data.m_BaseData.m_HairShadowType.Write(o_Writer);
+
+	// version 33: the file and identity it came from
+	i_Data.m_BaseData.m_SourceFile.Write(o_Writer);
+	chChunkParserUtil::Write(o_Writer, i_Data.m_BaseData.m_SourceIdentity);
 
 	o_Writer.FinishChunk();	// c_PRJT
 

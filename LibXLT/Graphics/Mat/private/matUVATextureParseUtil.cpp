@@ -62,12 +62,12 @@ namespace
 					chDefs::Version i_Version,
 					chDefs::Size i_Size)
 	{
-		envType::UInt32 num_frames;
-		envType::UInt32 num_width_frames;
-		envType::UInt32 num_height_frames;
-		envType::Float32 frame_rate;
-		envType::UInt8 looping;
-		envType::UInt8 reversing;
+		uint32_t num_frames;
+		uint32_t num_width_frames;
+		uint32_t num_height_frames;
+		float frame_rate;
+		uint8_t looping;
+		uint8_t reversing;
 
 		i_Reader.Read(num_frames);
 		i_Reader.Read(num_width_frames);
@@ -90,24 +90,24 @@ namespace
 					matUVATexture& o_Texture,
 					chDefs::Version i_Version,
 					chDefs::Size i_Size,
-					std::vector<itString>& o_Names)
+					std::vector<std::string>& o_Names)
 	{
 		std::string texture_filename;
 
 		i_Reader.Read(texture_filename);
-		o_Names.push_back(itString(texture_filename.c_str()));
+		o_Names.push_back(texture_filename);
 	}
 
 	void write_UDAT(chWriter& o_Writer, const matUVATexture& i_Texture)
 	{
 		o_Writer.WriteChunkHeader(c_UDAT, 0, false);
 
-		envType::UInt32 num_frames = i_Texture.GetNumFrames();
-		envType::UInt32 num_width_frames = i_Texture.GetNumWidthFrames();
-		envType::UInt32 num_height_frames = i_Texture.GetNumHeightFrames();
-		envType::Float32 frame_rate = i_Texture.GetFrameRate();
-		envType::UInt8 looping = i_Texture.GetLooping();
-		envType::UInt8 reversing = i_Texture.GetReversing();
+		uint32_t num_frames = i_Texture.GetNumFrames();
+		uint32_t num_width_frames = i_Texture.GetNumWidthFrames();
+		uint32_t num_height_frames = i_Texture.GetNumHeightFrames();
+		float frame_rate = i_Texture.GetFrameRate();
+		uint8_t looping = i_Texture.GetLooping();
+		uint8_t reversing = i_Texture.GetReversing();
 
 		o_Writer.Write(num_frames);
 		o_Writer.Write(num_width_frames);
@@ -119,20 +119,20 @@ namespace
 		o_Writer.FinishChunk();
 	}
 
-	void write_TPAG(chWriter& o_Writer, const itString* i_Textures, int i_Num)
+	void write_TPAG(chWriter& o_Writer, const std::string* i_Textures, int i_Num)
 	{
 		o_Writer.WriteChunkHeader(c_TPAG, 0, false);
 
 		//	We must make a single-byte string out of the itString
 		//	This only works for ANSI strings
 		//
-		const itString& it_string = i_Textures[i_Num];
+		const std::string& it_string = i_Textures[i_Num];
 		std::string single_byte_string;
 
 		int i;
-		int num = it_string.GetLength();
+		int num = it_string.size();
 		for( i = 0 ; i < num ; i++ )
-			single_byte_string += char(it_string.GetString()[i]);
+			single_byte_string += char(it_string.c_str()[i]);
 
 		o_Writer.Write(single_byte_string.c_str());
 
@@ -144,7 +144,7 @@ namespace
 //	ReadUVATexture reads the given UVA using the given chReader.
 //--------------------------------------------------------------------
 matUVATexture* ReadUVATexture(	chReader& i_Reader,
-								std::vector<itString>& o_Names)
+								std::vector<std::string>& o_Names)
 {
 	chDefs::Name name;
 	chDefs::Size size;
@@ -192,7 +192,7 @@ matUVATexture* ReadUVATexture(	chReader& i_Reader,
 //--------------------------------------------------------------------
 //	WriteUVATexture writes the given UVA using the given chWriter.
 //--------------------------------------------------------------------
-void WriteUVATexture(chWriter& i_Writer, const matUVATexture& i_Texture, const itString* i_Textures)
+void WriteUVATexture(chWriter& i_Writer, const matUVATexture& i_Texture, const std::string* i_Textures)
 {
 	i_Writer.WriteChunkHeader(c_TUVA, 0, true);
 

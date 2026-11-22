@@ -48,9 +48,6 @@
     <ClCompile Include="Undo\ptltOperations.cpp">
       <Filter>Undo</Filter>
     </ClCompile>
-    <ClCompile Include="Object\ptltMRayExportInterest.cpp">
-      <Filter>Object</Filter>
-    </ClCompile>
     <ClCompile Include="Object\ptltObjectMgr.cpp">
       <Filter>Object</Filter>
     </ClCompile>
@@ -104,9 +101,6 @@
     </ClInclude>
     <ClInclude Include="Undo\ptltOperations.hpp">
       <Filter>Undo</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\ptltMRayExportInterest.hpp">
-      <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="Object\ptltObjectMgr.hpp">
       <Filter>Object</Filter>

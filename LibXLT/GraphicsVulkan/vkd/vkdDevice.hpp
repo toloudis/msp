@@ -1,0 +1,203 @@
+/*****************************************************************************
+**  vkdDevice.hpp
+**
+**      vkdDevice owns the Vulkan instance, the chosen physical device, the
+**	logical device and its queue, Vulkan Memory Allocator, and a command
+**	stream with DX11 immediate-context semantics: Commands() returns the
+**	open command buffer (opening one if needed) and Submit() closes and
+**	submits it. Up to c_FramesInFlight command buffers are in flight,
+**	tracked by one timeline semaphore; DeferDestroy() runs clean-up once
+**	the GPU has finished with what was submitted so far.
+**
+**	Validation follows the GraphicsVulkan policy: always on in Debug (the
+**	layer is required there), on in Release with m_bValidation; errors
+**	DBG_ASSERT, warnings are logged and counted (see vkdValidation.hpp).
+**	vkdReadEnvironment fills the options from the environment:
+**	  MSP_GFX_VK_ADAPTER	the device, by a substring of its name
+**	  MSP_GFX_VK_VALIDATION	a comma list of extra validation modes:
+**				gpu (GPU-assisted), bestpractices (Khronos and NVIDIA
+**				best practices); either one turns validation on.
+**				Sign-off and test tools, not user options.
+**
+**	Threads: recording and Submit() from more than one thread must hold
+**	StreamLock() for the whole record-and-submit; every queue operation
+**	(submit, present) holds QueueLock().
+**
+**	Extra Large Technology
+\****************************************************************************/
+#ifdef GVK_VKDDEVICE_HPP
+#error vkdDevice.hpp multiply included
+#endif
+#define GVK_VKDDEVICE_HPP
+
+#ifndef GVK_VKDADAPTER_HPP
+#include "GraphicsVulkan/vkd/vkdAdapter.hpp"
+#endif
+#ifndef GVK_VKDVALIDATION_HPP
+#include "GraphicsVulkan/vkd/vkdValidation.hpp"
+#endif
+
+#include <volk.h>
+
+#include <array>
+#include <cstdint>
+#include <functional>
+#include <memory>
+#include <mutex>
+#include <optional>
+#include <string>
+#include <vector>
+
+typedef struct VmaAllocator_T* VmaAllocator;
+
+namespace gvk
+{
+	class vkdBuffer;
+	class vkdExportPool;
+	class vkdImage;
+
+	struct vkdDeviceOptions
+	{
+		bool		m_bValidation = false;		// forced on in Debug builds
+		bool		m_bGpuAssisted = false;		// GPU-assisted validation (tests and sign-off runs)
+		bool		m_bBestPractices = false;	// best-practices checks (Khronos and NVIDIA), counted apart
+		std::string	m_AdapterOverride;			// MSP_GFX_VK_ADAPTER: device name substring; empty = automatic
+		//	Only the device with this UUID (GraphicsOptiX: the CUDA device's);
+		//	m_AdapterOverride is then ignored, with a log line. m_RequiredDeviceName
+		//	names it in messages ("the CUDA device \"...\"").
+		std::optional<std::array<uint8_t, 16>> m_RequiredDeviceUUID;
+		std::string	m_RequiredDeviceName;
+		//	Memory and semaphores shared with another API (GraphicsOptiX):
+		//	enables vkdPlatformExternalExtensions() (a device without them
+		//	fails Create, naming them), exports the timeline semaphore and
+		//	makes the export pool (vkdExportPool).
+		bool		m_bExternalMemory = false;
+		vkdValidation* m_pValidation = nullptr;	// counts validation messages; must outlive the device,
+												// so messages during destruction are counted too.
+												// NULL: the device keeps its own.
+	};
+
+	//	Reads MSP_GFX_VK_ADAPTER and MSP_GFX_VK_VALIDATION into io_Options
+	//	(unset variables change nothing)
+	void vkdReadEnvironment(vkdDeviceOptions& io_Options);
+
+	//	Applies an MSP_GFX_VK_VALIDATION value: "gpu", "bestpractices",
+	//	comma-separated, any case and spacing; unknown words are logged and
+	//	ignored. A mode turns m_bValidation on.
+	void vkdApplyValidationModes(const std::string& i_Modes, vkdDeviceOptions& io_Options);
+
+	class vkdDevice
+	{
+		public:
+			static const uint32_t c_FramesInFlight = 3;
+
+			//	Create returns NULL and o_Error says why if Vulkan can't be used
+			//	(no loader, no suitable device, validation layer missing in Debug, ...).
+			static vkdDevice* Create(const vkdDeviceOptions& i_Options, std::string& o_Error);
+
+			//	Waits for the GPU, runs all deferred destruction, then destroys
+			//	everything in reverse order of creation.
+			~vkdDevice();
+
+			VkInstance				Instance() const;
+			VkPhysicalDevice		Physical() const;
+			VkDevice				Device() const;
+			VkQueue					Queue() const;
+			uint32_t				QueueFamily() const;
+			VmaAllocator			Allocator() const;
+			const VkPhysicalDeviceProperties& Properties() const;
+			const vkdAdapterInfo&	Adapter() const;
+
+			//	Whether m_bExternalMemory was asked for (and so is on)
+			bool					HasExternalMemory() const;
+
+			//	The timeline semaphore Submit signals. With external memory it
+			//	is exportable (vkdExportSemaphoreHandle), so another API can
+			//	wait for a submission's value.
+			VkSemaphore				Timeline() const;
+
+			//	Exportable device-local memory (vkdBuffer::Create's i_bExportable);
+			//	NULL without external memory
+			vkdExportPool*			ExportPool() const;
+
+			//------------------------------------------------------------------
+			//	Command stream
+			//------------------------------------------------------------------
+			//	The open command buffer, opened on first use.
+			VkCommandBuffer Commands();
+
+			//	Closes and submits the open command buffer (an empty one if none
+			//	is open, so waits and signals still happen), signalling the
+			//	timeline. Returns the timeline value of this submission.
+			uint64_t Submit(const std::vector<VkSemaphoreSubmitInfo>& i_Wait = {},
+							const std::vector<VkSemaphoreSubmitInfo>& i_Signal = {});
+
+			//	A wait the next Submit, whoever calls it, adds to its own: a
+			//	swap chain's acquire semaphore, which must be waited on before
+			//	the image is written, by whichever submission comes first
+			//	(a readback mid-frame submits before Present does)
+			void		AddSubmitWait(const VkSemaphoreSubmitInfo& i_Wait);
+
+			void		WaitFor(uint64_t i_TimelineValue);
+			void		WaitIdle();
+			uint64_t	CompletedValue() const;
+
+			//	The timeline value the open command buffer will get when it is
+			//	submitted: anything used in it is free once this completes.
+			uint64_t	PendingValue() const;
+
+			//	Called (under the stream lock) whenever Commands() is about to
+			//	hand out the open command buffer, Submit() included, so the code
+			//	that records state into it (vkdContext) can end what it has open
+			//	first. One hook; empty removes it.
+			void SetRecordingHook(std::function<void()> i_Hook);
+
+			//	Called (under the stream lock) by each vkdImage as it is
+			//	destroyed, so the code that holds it bound (vkdContext as a
+			//	target, fxEffectVk as a resource) can let it go: D3D11 keeps a
+			//	bound resource alive, here the pointer would dangle. Hooks run
+			//	in the order added; Add returns the id Remove takes.
+			int AddImageDestroyHook(std::function<void(const vkdImage*)> i_Hook);
+			void RemoveImageDestroyHook(int i_Id);
+			void ImageDestroyed(const vkdImage* i_pImage);
+			//	The same for each vkdBuffer (fxEffectVk binds structured buffers)
+			int AddBufferDestroyHook(std::function<void(const vkdBuffer*)> i_Hook);
+			void RemoveBufferDestroyHook(int i_Id);
+			void BufferDestroyed(const vkdBuffer* i_pBuffer);
+
+			//	Called whenever a block of device memory is freed (VMA's free
+			//	callback, on whatever thread frees it), so code that imported it
+			//	into another API (GraphicsOptiX) can forget the import. Hooks run
+			//	in the order added; Add returns the id Remove takes. A hook must
+			//	not add or remove hooks.
+			int AddMemoryFreeHook(std::function<void(VkDeviceMemory)> i_Hook);
+			void RemoveMemoryFreeHook(int i_Id);
+
+			//	Runs i_Destroy once the GPU has finished all work submitted so
+			//	far, including the open command buffer.
+			void DeferDestroy(std::function<void()> i_Destroy);
+
+			std::recursive_mutex&	StreamLock();
+			std::mutex&				QueueLock();
+
+			//------------------------------------------------------------------
+			//	Debugging
+			//------------------------------------------------------------------
+			void SetName(VkObjectType i_Type, uint64_t i_Handle, const char* i_Name);
+			void BeginLabel(VkCommandBuffer i_Commands, const char* i_Name);
+			void EndLabel(VkCommandBuffer i_Commands);
+
+			vkdValidationStats ValidationStats() const;
+			//	Whether the validation layer is on (Debug builds, or asked for)
+			bool IsValidating() const;
+			void ResetValidationStats();
+
+		private:
+			vkdDevice();
+			vkdDevice(const vkdDevice&) = delete;
+			vkdDevice& operator = (const vkdDevice&) = delete;
+
+			struct Impl;
+			std::unique_ptr<Impl> m_pImpl;
+	};
+}

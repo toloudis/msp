@@ -10,6 +10,8 @@
 \****************************************************************************/
 #include "Graphics/sc/scThreadGroup.hpp"
 
+#include <memory>
+
 
 //============================================================================
 //============================================================================
@@ -44,11 +46,10 @@ namespace scThreadGroup
 	{
 		envScopedLock group_lock(l_ThreadGroupMutex);
 
-		if (l_pThreadGroup)
-		{
-			l_pThreadGroup->WaitForAll();
-			delete l_pThreadGroup;
-			l_pThreadGroup = NULL;
-		}
+		// deleted even if a task's exception comes out of WaitForAll
+		std::unique_ptr<envThreadGroup> pThreadGroup(l_pThreadGroup);
+		l_pThreadGroup = NULL;
+		if (pThreadGroup)
+			pThreadGroup->WaitForAll();
 	}
 }	// end of namespace

@@ -9,13 +9,13 @@
 #ifdef CAPT_RENDEROUTPUTTAGSUTIL_HPP
 #error captRenderOutputTagsUtil.hpp multiply included
 #endif
+#include <string>
 #define CAPT_RENDEROUTPUTTAGSUTIL_HPP
 
 
 //============================================================================
 //	Forward References
 //============================================================================
-class itString;
 class captRenderOutputData;
 
 
@@ -77,13 +77,13 @@ namespace captRenderOutputTagsUtil
 	/// @param i_TagNum index of the tag
 	/// @param i_Tag string to set at the tag index
 	//------------------------------------------------------------------------
-	void SetTag(int i_TagNum, itString& i_Tag);
+	void SetTag(int i_TagNum, std::string& i_Tag);
 
 	//------------------------------------------------------------------------
 	/// @param i_TagNum index of the tag
 	/// @return the tag string associated with this index
 	//------------------------------------------------------------------------
-	itString GetTag(int i_TagNum);
+	std::string GetTag(int i_TagNum);
 
 	//------------------------------------------------------------------------
 	///	Generate the final text output for the filename
@@ -91,7 +91,7 @@ namespace captRenderOutputTagsUtil
 	/// @param i_Data render output data structure
 	/// @param o_OutputString the generated file name based on the tags
 	//------------------------------------------------------------------------
-	void GenerateOutputFilename(captRenderOutputData& i_Data, itString& o_OutputString, bool i_bCapturingRenderman = false);
+	void GenerateOutputFilename(captRenderOutputData& i_Data, std::string& o_OutputString, bool i_bCapturingRenderman = false);
 
 	//------------------------------------------------------------------------
 	///	Generate the final text output for the directory

@@ -9,13 +9,18 @@
 \****************************************************************************/
 
 #include "GraphicsDX11/g2d/g2dDX11GlobalWin.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
-#include "Core/it/itStringUtil.hpp"
 #include "Graphics/g2d/g2dPFD.hpp"
 
 #include <vector>
 //#include c_g2dDXERR_H
 #include <sstream>
+#ifndef ENV_STRING_HPP
+#include "Core/Env/envString.hpp"
+#endif
 
 //============================================================================
 //	library pragmas
@@ -27,11 +32,6 @@
 #pragma comment(lib,c_g2dDWRITELIBRARY)
 #pragma comment(lib,c_g2dDXGUIDLIBRARY_H)
 #pragma comment(lib,"DirectXTex.lib")
-#ifdef _DEBUG
-    #pragma comment(lib,"Effects11.lib")
-#else
-    #pragma comment(lib,"Effects11.lib")
-#endif
 //============================================================================
 //============================================================================
 namespace g2dDX11Global
@@ -645,7 +645,7 @@ void PrintDXError( HRESULT hErr )
 		break;
 	}
 
-	DBG_WARNING("DirectX Error: " << itStringUtil::GetStdString(itString(dderr.str().c_str())));
+	DBG_WARNING("DirectX Error: " << envString::WideCharToUTF8(dderr.str()));
 		LocalFree(lpMsgBuf);
 }
 

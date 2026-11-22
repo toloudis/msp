@@ -24,8 +24,8 @@ namespace vtxDeltaCompression
 		const float c_MaxQuant = 65535;				// 16-bits
 		//const float c_MaxQuant = 255;
 		const float c_MaxNormalQuant = 32767;		// 15-bits
-		const envType::UInt16 c_SignBit = 0x8000;	// Use 16th bit for sign of normal's Z component
-		const envType::UInt16 c_SignMask = 0x7FFF;	
+		const uint16_t c_SignBit = 0x8000;	// Use 16th bit for sign of normal's Z component
+		const uint16_t c_SignMask = 0x7FFF;	
 	}
 
 	//--------------------------------------------------------------------
@@ -272,7 +272,7 @@ namespace vtxDeltaCompression
 		
 		CodeType *ptr = o_pCodes;
 		maVector3d normalized;
-		envType::UInt16 sign_bit = 0;
+		uint16_t sign_bit = 0;
 		const float half_quant = quant * 0.5f;
 		maVector3d offset(half_quant, half_quant, half_quant); // offset half quant level for better rounding
 		for (int i=0; i<num_pts; ++i)
@@ -307,7 +307,7 @@ namespace vtxDeltaCompression
 
 		const CodeType *ptr = i_pCodes;
 		maVector3d normalized;
-		envType::UInt16 sign_bit = 0;
+		uint16_t sign_bit = 0;
 		for (int i=0; i<num_pts; ++i)
 		{			
 			o_Deltas[i].m_X = (*ptr++) * i_QuantLevel + i_MinBounds.m_X;

@@ -25,13 +25,13 @@
 #include "Core/dbg/dbgMsg.hpp"
 #endif
 
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
 template<class PropertyType, class ValueType, class Converter>
 class pqtTemplate_TextBox : public pqtControl
 {
-#ifdef QT_FINISH_PORT
 	public:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
@@ -52,16 +52,16 @@ class pqtTemplate_TextBox : public pqtControl
 			{
 				if (pTBUII->GetMultilineFixed())
 				{
-					m_pActualControl = new pqtControlUtil::CleanUpWidget<tqcMultilineFixedTextBox>(i_pParent, wxID_ANY);
+					m_pActualControl = new pqtControlUtil::CleanUpWidget<tqcMultilineFixedTextBox>(i_pParent);
 				}
 				else
 				{
-					m_pActualControl = new pqtControlUtil::CleanUpWidget<tqcMultilineTextBox>(i_pParent, wxID_ANY);
+					m_pActualControl = new pqtControlUtil::CleanUpWidget<tqcMultilineTextBox>(i_pParent);
 				}
 			}
 			else
 			{
-				m_pActualControl = new pqtControlUtil::CleanUpWidget<tqcTextBox>(i_pParent, wxID_ANY);
+				m_pActualControl = new pqtControlUtil::CleanUpWidget<tqcTextBox>(i_pParent);
 			}
 			
 			//	set the control values
@@ -74,9 +74,7 @@ class pqtTemplate_TextBox : public pqtControl
 
 			//	hook up events
 			//
-			this->Connect( m_pActualControl->GetId(), wxEVT_VALUE_CHANGED,
-							wxCommandEventHandler(pqtTemplate_TextBox::TextBox_ValueChanged) );
-			m_pActualControl->PushEventHandler(this);
+			m_pActualControl->SetValueChangedCallback([this]() { TextBox_ValueChanged(); });
 		}
 
 		//----------------------------------------------------------------------------
@@ -84,7 +82,6 @@ class pqtTemplate_TextBox : public pqtControl
 		//----------------------------------------------------------------------------
 		virtual ~pqtTemplate_TextBox()
 		{
-			m_pActualControl->RemoveEventHandler(this);
 		}
 
 		//----------------------------------------------------------------------------
@@ -121,13 +118,13 @@ class pqtTemplate_TextBox : public pqtControl
 		//----------------------------------------------------------------------------
 		void UpdateControl(prtyPropertyUIInfo* i_pUIInfo)
 		{
-			m_pActualControl->Enable(!i_pUIInfo->GetReadOnly());
+			m_pActualControl->setEnabled(!i_pUIInfo->GetReadOnly());
 		}
 
 	private:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
-		void TextBox_ValueChanged(wxCommandEvent& i_Event)
+		void TextBox_ValueChanged()
 		{
 			if (m_bLocalChangeNoUpdate) return;
 
@@ -141,6 +138,6 @@ class pqtTemplate_TextBox : public pqtControl
 		}
 
 		tqcTextBox* m_pActualControl;
-#endif // USE_QT
 };
 
+#endif // USE_QT

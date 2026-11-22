@@ -51,8 +51,8 @@ public:
 	//--------------------------------------------------------------------
 	//	Quick Accessors
 	//--------------------------------------------------------------------
-	inline const itString& GetValue() const;
-	inline void SetValue(const itString& i_Val);
+	inline const std::string& GetValue() const;
+	inline void SetValue(const std::string& i_Val);
 
 	//--------------------------------------------------------------------
 	//  GetDriverInfo - return data structure representing state of
@@ -99,7 +99,7 @@ private:
 //--------------------------------------------------------------------
 //	Quick Accessors
 //--------------------------------------------------------------------
-const itString& tmlnDriverFileName::GetValue() const
+const std::string& tmlnDriverFileName::GetValue() const
 {
 	return m_Value.GetValue();
 }

@@ -32,7 +32,7 @@ aoDialogInterest::aoDialogInterest()
 //	Add Object to Placed
 //--------------------------------------------------------------------
 //virtual 
-void aoDialogInterest::AddObject(const itString& i_FileName, const fsLocator& i_Path)
+void aoDialogInterest::AddObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 	// change focus to the main app
 	guiMainWindow::Focus();
@@ -84,8 +84,8 @@ void aoDialogInterest::GetAvailableObjects(fsysFileList& io_FileList) const
 	{
 		fsLocator path;
 		path.Push(c_SystemName);
-		itString fname;
-		fname = itString("AO");
+		std::string fname;
+		fname = std::string("AO");
 		io_FileList.AddFilename(path,fname);
 	}
 }

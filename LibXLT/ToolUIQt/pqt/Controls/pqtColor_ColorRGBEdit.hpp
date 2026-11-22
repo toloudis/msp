@@ -15,17 +15,16 @@
 #ifndef PQT_CONTROL_HPP
 #include "ToolUIQt/pqt/pqtControl.hpp"
 #endif
-
 #ifndef TQC_COLORRGBEDIT_HPP
 #include "ToolUIQt/tqc/tqcColorRGBEdit.hpp"
 #endif
 
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
 class pqtColor_ColorRGBEdit : public pqtControl
 {
-#ifdef QT_FINISH_PORT
 	public:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
@@ -59,9 +58,9 @@ class pqtColor_ColorRGBEdit : public pqtControl
 	private:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
-		void ColorRGBEdit_ValueChanged(wxCommandEvent& i_Event);
+		void ColorRGBEdit_ValueChanged();
 
 		tqcColorRGBEdit* m_pActualControl;
-#endif // USE_QT
 };
 
+#endif // USE_QT

@@ -23,7 +23,7 @@ class effSolid : public effShaderBaseDX11
 public:
 	//====================================================================
 	//====================================================================
-	effSolid(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, std::string i_name);
+	effSolid(const fsLocator& i_Directory, std::unique_ptr<fxEffect> i_pEffect, std::string i_name);
 
 	//====================================================================
 	//====================================================================
@@ -40,5 +40,5 @@ public:
 							   int i_MaterialLayerIndex = 0) const;
 
 protected:
-	ID3DX11EffectVectorVariable* m_hSolidColor;
+	fxEffectVariable* m_hSolidColor;
 };

@@ -24,8 +24,8 @@
 #include "Tool/pick3d/pick3dPickList.hpp"
 #endif
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 #include <vector>
@@ -45,5 +45,5 @@ class pick3dPickInterest
 		//----------------------------------------------------------------------------
 		// Find the object that matches the pick code from an earlier pick render.
 		//----------------------------------------------------------------------------
-		virtual pick3dPickObject* MatchPickCode(envType::UInt32 i_PickCode) const = 0;
+		virtual pick3dPickObject* MatchPickCode(uint32_t i_PickCode) const = 0;
 };

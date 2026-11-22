@@ -155,8 +155,8 @@ void matShaderMgrGL::RegisterEffects(const fsLocator &i_ShaderDir,
 //	io_ShaderMap["Blinn.fx"] = registerShader("Blinn.fx");
 }
 
-void matShaderMgrGL::RegisterUserShaders(const fsLocator& i_ShaderDir, 
-			std::vector<matShaderInfo>& o_Shaders)
+void matShaderMgrGL::RegisterSelectableShaders(std::vector<matShaderInfo>& o_Materials,
+			std::vector<matShaderInfo>& o_PostEffects)
 {
 }
 

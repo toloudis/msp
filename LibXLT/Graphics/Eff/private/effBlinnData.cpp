@@ -179,21 +179,21 @@ void effBlinnData::GetTextureNames(std::vector<std::string>& o_Names) const
 void effBlinnData::ReloadTextures(const fsLocator& i_TextureDirectory)
 {
 	if (m_NameDiffuse != "")
-		m_TextureDiffuse = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameDiffuse.c_str()));
+		m_TextureDiffuse = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameDiffuse);
 	if (m_NameSpecular != "")
-		m_TextureSpecular = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameSpecular.c_str()));
+		m_TextureSpecular = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameSpecular);
 	if (m_NameGloss != "")
-		m_TextureGloss = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameGloss.c_str()));
+		m_TextureGloss = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameGloss);
 	if (m_NameEnvironment != "")
-		m_TextureEnvironment = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameEnvironment.c_str()));
+		m_TextureEnvironment = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameEnvironment);
 	if (m_NameNormalMap != "")
-		m_TextureNormalMap = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameNormalMap.c_str()));
+		m_TextureNormalMap = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameNormalMap);
 	if (m_NameReflectFactorMap != "")
-		m_TextureReflectFactorMap = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameReflectFactorMap.c_str()));
+		m_TextureReflectFactorMap = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameReflectFactorMap);
 	if (m_NameIORMap != "")
-		m_TextureIORMap = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameIORMap.c_str()));
+		m_TextureIORMap = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameIORMap);
 	if (m_NameTransparencyMap != "")
-		m_TextureTransparencyMap = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameTransparencyMap.c_str()));
+		m_TextureTransparencyMap = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameTransparencyMap);
 }
 
 //----------------------------------------------------------------------------
@@ -201,19 +201,19 @@ void effBlinnData::ReloadTextures(const fsLocator& i_TextureDirectory)
 void effBlinnData::ReloadTextures(const fsResourceFinder& i_TextureFinder)
 {
 	if (m_NameDiffuse != "")
-		m_TextureDiffuse = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameDiffuse.c_str()));
+		m_TextureDiffuse = matTextureMgr::LoadTexture(i_TextureFinder, m_NameDiffuse);
 	if (m_NameSpecular != "")
-		m_TextureSpecular = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameSpecular.c_str()));
+		m_TextureSpecular = matTextureMgr::LoadTexture(i_TextureFinder, m_NameSpecular);
 	if (m_NameGloss != "")
-		m_TextureGloss = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameGloss.c_str()));
+		m_TextureGloss = matTextureMgr::LoadTexture(i_TextureFinder, m_NameGloss);
 	if (m_NameEnvironment != "")
-		m_TextureEnvironment = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameEnvironment.c_str()));
+		m_TextureEnvironment = matTextureMgr::LoadTexture(i_TextureFinder, m_NameEnvironment);
 	if (m_NameNormalMap != "")
-		m_TextureNormalMap = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameNormalMap.c_str()));
+		m_TextureNormalMap = matTextureMgr::LoadTexture(i_TextureFinder, m_NameNormalMap);
 	if (m_NameReflectFactorMap != "")
-		m_TextureReflectFactorMap = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameReflectFactorMap.c_str()));
+		m_TextureReflectFactorMap = matTextureMgr::LoadTexture(i_TextureFinder, m_NameReflectFactorMap);
 	if (m_NameIORMap != "")
-		m_TextureIORMap = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameIORMap.c_str()));
+		m_TextureIORMap = matTextureMgr::LoadTexture(i_TextureFinder, m_NameIORMap);
 }
 
 //----------------------------------------------------------------------------
@@ -252,11 +252,11 @@ void effBlinnData::AddToParams(effShaderParams& o_Params)
 	o_Params.AddParam(new effParamColor("g_diffuse", "g_diffuse", m_ColorDiffuse));
 	o_Params.AddParam(new effParamColor("g_specular", "g_specular", m_ColorSpecular));
 
-	o_Params.AddParam(new effParamTexture("diffuseMap", "diffuseMap", itString(m_NameDiffuse.c_str())));
-	o_Params.AddParam(new effParamTexture("normalMap", "normalMap", itString(m_NameNormalMap.c_str())));
-	o_Params.AddParam(new effParamTexture("cubeMap", "cubeMap", itString(m_NameEnvironment.c_str())));
-	o_Params.AddParam(new effParamTexture("specularMap", "specularMap", itString(m_NameSpecular.c_str())));
-	o_Params.AddParam(new effParamTexture("glossMap", "glossMap", itString(m_NameGloss.c_str())));
-	o_Params.AddParam(new effParamTexture("reflectFactorMap", "reflectFactorMap", itString(m_NameReflectFactorMap.c_str())));
-	o_Params.AddParam(new effParamTexture("transparencyMap", "transparencyMap", itString(m_NameTransparencyMap.c_str())));
+	o_Params.AddParam(new effParamTexture("diffuseMap", "diffuseMap", m_NameDiffuse));
+	o_Params.AddParam(new effParamTexture("normalMap", "normalMap", m_NameNormalMap));
+	o_Params.AddParam(new effParamTexture("cubeMap", "cubeMap", m_NameEnvironment));
+	o_Params.AddParam(new effParamTexture("specularMap", "specularMap", m_NameSpecular));
+	o_Params.AddParam(new effParamTexture("glossMap", "glossMap", m_NameGloss));
+	o_Params.AddParam(new effParamTexture("reflectFactorMap", "reflectFactorMap", m_NameReflectFactorMap));
+	o_Params.AddParam(new effParamTexture("transparencyMap", "transparencyMap", m_NameTransparencyMap));
 }

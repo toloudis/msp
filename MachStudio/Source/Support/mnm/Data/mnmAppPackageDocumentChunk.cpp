@@ -114,7 +114,7 @@ void mnmAppPackageDocumentChunk::Read( chReader &io_Reader,
 		//	TODO - allow multiple apps, versions, etc.
 		//
 		//if (sdata.m_SGPUAppName != adata.m_SGPUAppName)
-		if (!(sdata.m_SGPUAppName.HasSubString(adata.m_SGPUAppName)))
+		if (!((sdata.m_SGPUAppName.find(adata.m_SGPUAppName) != std::string::npos)))
 		{
 			throw fsUnsupportedVersionX( io_Reader.GetLocator() );
 		}

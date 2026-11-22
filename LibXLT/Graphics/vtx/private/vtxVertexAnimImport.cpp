@@ -78,18 +78,18 @@ namespace vtxVertexAnimImport
 				{
 					if ( name == c_CFRM )
 					{
-						envType::Float32 time = 0;
+						float time = 0;
 						i_Reader.Read(time);
 
 						vtxVertexAnimKeysCompressed::sFrameData frame_data;
 
-						envType::Int64 ref_frame_pos = 0;
+						int64_t ref_frame_pos = 0;
 						i_Reader.Read(ref_frame_pos);
 
-						envType::Int64 deltas_pos = -1;
+						int64_t deltas_pos = -1;
 						i_Reader.Read(deltas_pos);
 
-						envType::Int64 normals_pos = -1;
+						int64_t normals_pos = -1;
 						i_Reader.Read(normals_pos);
 
 						i_Reader.Read(frame_data.m_DeltaOffset);
@@ -129,7 +129,7 @@ namespace vtxVertexAnimImport
 							{
 								// New deltas block location, offset to position within geometry cache,
 								// also give it the index of the reference frame in order to expand out the deltas
-								envType::Int64 normals_offset = (normals_pos<0) ? -1 : (normals_pos + i_GeometryCacheOffset);
+								int64_t normals_offset = (normals_pos<0) ? -1 : (normals_pos + i_GeometryCacheOffset);
 								frame_data.m_DeltaBlock = io_DeltasSet->AddFilePos(deltas_pos + i_GeometryCacheOffset, normals_offset, frame_data.m_ReferenceFrame);
 								deltas_map[deltas_pos] = frame_data.m_DeltaBlock;
 							}
@@ -181,13 +181,13 @@ namespace vtxVertexAnimImport
 					{
 						if ( name == c_GVER )
 						{
-							envType::Int32 nVerts;
+							int32_t nVerts;
 							i_Reader.Read(nVerts);
 							chChunkParserUtil::ReadArray(i_Reader, o_pVertexFrame->m_Positions, nVerts);
 						}
 						else if ( name == c_NVER )
 						{
-							envType::Int32 nNorms;
+							int32_t nNorms;
 							i_Reader.Read(nNorms);
 							chChunkParserUtil::ReadArray(i_Reader, o_pVertexFrame->m_Normals, nNorms);
 						}
@@ -196,7 +196,7 @@ namespace vtxVertexAnimImport
 						//bga - took this out because it lost the sign of the z component, 
 						// but could be handled in vertex shader...
 						//	// NCMP has only two components per normal
-						//	envType::Int32 nNorms;
+						//	int32_t nNorms;
 						//	i_Reader.Read(nNorms);
 						//	o_pVertexFrame->m_Normals.resize(nNorms);
 						//	for (int i=0; i<nNorms; ++i)
@@ -511,9 +511,9 @@ namespace vtxVertexAnimImport
 		bool bHaveConfigurationInfo = false;
 		shared_ptr<vtxDeltaEncoder> encoder;
 		shared_ptr<vtxDeltaEncoder> normal_encoder;
-		envType::Int32 max_num_frames_per_block = 0;
-		envType::Int32 num_vertices = 0;
-		envType::Int32 num_normals = 0;
+		int32_t max_num_frames_per_block = 0;
+		int32_t num_vertices = 0;
+		int32_t num_normals = 0;
 
 		try
 		{

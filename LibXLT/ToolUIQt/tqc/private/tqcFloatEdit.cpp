@@ -1,37 +1,32 @@
 /****************************************************************************\
-**	tqcFloatEdit.hpp
+**	tqcFloatEdit.cpp
+**
+**	see .hpp
 **
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "ToolUIQt/tqc/tqcFloatEdit.hpp"
 
-#include "ToolUIQt/tqc/tqcEvent.hpp"
-
 #include <sstream>
 
 #ifdef USE_QT
-#ifdef QT_FINISH_PORT
-BEGIN_EVENT_TABLE(tqcFloatEdit, wxTextCtrl)
-    EVT_TEXT_ENTER(wxID_ANY, tqcFloatEdit::OnTextChange)
-	EVT_KILL_FOCUS(tqcFloatEdit::OnTextLeave)
-END_EVENT_TABLE()
-#endif
 
 //----------------------------------------------------------------------------
-// The wxTE_PROCESS_ENTER window style is necessary in order 
-//	to trap for the ENTER pressed event
 //----------------------------------------------------------------------------
 tqcFloatEdit::tqcFloatEdit(QWidget* i_pParent)
-#ifdef QT_FINISH_PORT
-						   QWidgetID i_Id,
-						   const wxPoint& i_Pos,
-						   const wxSize& i_Size)
-#endif
-:	QLineEdit(i_pParent), //, i_Id, L"0", i_Pos, i_Size, wxTE_PROCESS_ENTER),
+:	QLineEdit("0", i_pParent),
 	m_FloatValue(0),
 	m_DecimalPlaces(-1)
 {
+	this->setMinimumWidth(40);
+
+	// editingFinished comes on ENTER and when the control loses focus
+	QObject::connect(this, &QLineEdit::editingFinished, [this]() { text_changed(); });
+
+	// After Enter is pressed, select the full text
+	// in order to make it easier to try out new values
+	QObject::connect(this, &QLineEdit::returnPressed, [this]() { this->selectAll(); });
 }
 
 //--------------------------------------------------------------------
@@ -44,8 +39,7 @@ const float tqcFloatEdit::GetFloatValue() const
 void tqcFloatEdit::SetFloatValue(const float i_Value)
 {
 	m_FloatValue = i_Value;
-
-	std::wostringstream str;
+	std::ostringstream str;
 	// Default (-1) uses 6 digits of precision in natural stream method.
 	// If m_DecimalPlaces has been set, then switch to fixed format and
 	// limit the number of decimal places.
@@ -55,9 +49,7 @@ void tqcFloatEdit::SetFloatValue(const float i_Value)
 		str.precision(m_DecimalPlaces);
 	}
 	str << m_FloatValue;
-#ifdef QT_FINISH_PORT
-	this->ChangeValue(str.str());
-#endif
+	this->ChangeValue(tqtQString(str.str()));
 }
 
 //--------------------------------------------------------------------
@@ -72,47 +64,29 @@ void tqcFloatEdit::SetDecimalPlaces(const short i_DecimalPlaces)
 	m_DecimalPlaces = i_DecimalPlaces;
 }
 
-
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-#ifdef QT_FINISH_PORT
-void tqcFloatEdit::OnTextChange(wxCommandEvent& i_Event)
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+void tqcFloatEdit::ChangeValue(const QString& i_Text)
 {
-	text_changed();
-
-	// After Enter is pressed, select the full text 
-	// in order to make it easier to try out new values
-	this->SetSelection(-1,-1);
+	if (this->text() != i_Text)
+	{
+		this->setText(i_Text);
+		this->setCursorPosition(0);
+	}
 }
-#endif
-
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-#ifdef QT_FINISH_PORT
-void tqcFloatEdit::OnTextLeave(wxFocusEvent& i_Event)
-{
-	text_changed();
-}
-#endif
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 void tqcFloatEdit::text_changed()
 {
 	float old_value = m_FloatValue;
-
-#ifdef QT_FINISH_PORT
-	std::wstring text = this->GetValue();
-	std::wistringstream str(text);
+	std::istringstream str(tqtStdString(this->text()));
 	str >> m_FloatValue;
-
 	if (m_FloatValue != old_value)
 	{
 		// trigger the callback
-		wxCommandEvent changed_event(wxEVT_VALUE_CHANGED, this->GetId());
-		this->ProcessCommand(changed_event);
+		NotifyValueChanged();
 	}
-#endif
 }
 
 #endif // USE_QT

@@ -21,9 +21,9 @@
 class envtTextureListConfig
 {
 public:
-	static itString GetFileTypeExtensions()
+	static std::string GetFileTypeExtensions()
 	{
-		return itString("dds;bmp;png;tga");
+		return std::string("dds;bmp;png;tga");
 	}
 };
 

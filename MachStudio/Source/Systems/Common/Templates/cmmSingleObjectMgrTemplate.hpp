@@ -23,9 +23,6 @@
 #ifndef GEO_PICKRAY_HPP
 #include "Core/geo/geoPickRay.hpp"
 #endif
-#ifndef IT_STRINGUTIL_HPP
-#include "Core/it/itStringUtil.hpp"
-#endif
 #ifndef GUI_MESSAGEBOX_HPP
 #include "Tool/gui/guiMessageBox.hpp"
 #endif
@@ -127,7 +124,7 @@ public:
 		{
 			//char msg[512];
 			std::string txt;
-			txt = itStringUtil::GetStdString(i_Ex.GetLocator().GetLastName());
+			txt = i_Ex.GetLocator().GetLastName();
 			//sprintf( msg, "Cannot add the object -- missing %s", txt.c_str() );
 			std::ostringstream oss;
 			oss.setf(0, std::ios::floatfield);
@@ -281,11 +278,15 @@ class cmmSingleObjectMgrTemplateBase:
 	public cmmSingleObjectMgrTemplateNoIcon<xxxScriptObject,xxxPickObject,xxxScriptData,xxxBaseData>
 {
 public:
+	typedef cmmSingleObjectMgrTemplateNoIcon<xxxScriptObject,xxxPickObject,xxxScriptData,xxxBaseData> BaseType;
+	using BaseType::sm_Object;
+	using BaseType::sm_bShowIcons;
+
 
 	//----------------------------------------------------------------------------
 	// Find the object that matches the pick code from an earlier pick render.
 	//----------------------------------------------------------------------------
-	static pick3dPickObject* MatchPickCode(envType::UInt32 i_PickCode)
+	static pick3dPickObject* MatchPickCode(uint32_t i_PickCode)
 	{
 		if ( sm_Object->GetPickObject()->MatchPickCode( i_PickCode ) )
 		{
@@ -352,6 +353,9 @@ class cmmSingleObjectMgrTemplate :
 	public cmmSingleObjectMgrTemplateBase<xxxScriptObject,xxxPickObject,xxxScriptData,xxxBaseData>
 {
 public:
+	typedef cmmSingleObjectMgrTemplateBase<xxxScriptObject,xxxPickObject,xxxScriptData,xxxBaseData> BaseType;
+	using BaseType::SetDataUnthreaded;
+
 	//--------------------------------------------------------------------
 	// Set data as a whole
 	//--------------------------------------------------------------------
@@ -378,6 +382,9 @@ class cmmSingleObjectMgrGeomTemplate :
 	public cmmSingleObjectMgrTemplate<xxxScriptObject,xxxPickObject,xxxScriptData,xxxBaseData>
 {
 public:
+	typedef cmmSingleObjectMgrTemplate<xxxScriptObject,xxxPickObject,xxxScriptData,xxxBaseData> BaseType;
+	using BaseType::sm_Object;
+
 	//--------------------------------------------------------------------
 	// Make sure that all geometry is visible for rendering
 	//--------------------------------------------------------------------
@@ -394,7 +401,7 @@ public:
 // Initialiazing static members
 //============================================================================
 template<class xxxScriptObject, class xxxPickObject, class xxxScriptData, class xxxBaseData>
-xxxScriptObject* cmmSingleObjectMgrTemplateBase<xxxScriptObject,xxxPickObject,xxxScriptData,xxxBaseData>::sm_Object = NULL;
+xxxScriptObject* cmmSingleObjectMgrTemplateNoIcon<xxxScriptObject,xxxPickObject,xxxScriptData,xxxBaseData>::sm_Object = NULL;
 
 template<class xxxScriptObject, class xxxPickObject, class xxxScriptData, class xxxBaseData>
-bool cmmSingleObjectMgrTemplateBase<xxxScriptObject,xxxPickObject,xxxScriptData,xxxBaseData>::sm_bShowIcons = true;
+bool cmmSingleObjectMgrTemplateNoIcon<xxxScriptObject,xxxPickObject,xxxScriptData,xxxBaseData>::sm_bShowIcons = true;

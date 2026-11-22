@@ -11,9 +11,10 @@
 #include "ToolUIWx/twc/twcEvent.hpp"
 
 #include <algorithm>
-#include <wx/dcbuffer.h>
 
 #ifdef USE_WXWIDGETS
+
+#include <wx/dcbuffer.h>
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------

@@ -10,6 +10,7 @@
 #include "ImportExport/ImportExportLayer.hpp"
 
 #include "ImportExport/fbx/fbxPackage.hpp"
+#include "ImportExport/gltf/gltfPackage.hpp"
 
 namespace
 {
@@ -28,6 +29,7 @@ void ImportExportLayer::Init()
 	{
 		// initialize packages in the layer
 		fbxPackage::Init();
+		gltfPackage::Init();
 	}
 
 	//	increment the ref count
@@ -46,6 +48,7 @@ void ImportExportLayer::CleanUp() throw()
 	{
 		// clean up our internal stuff, in reverse order
 		//
+		gltfPackage::CleanUp();
 		fbxPackage::CleanUp();
 
 	}

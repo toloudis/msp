@@ -23,7 +23,7 @@ mnmBaseData::mnmBaseData()
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-mnmBaseData::mnmBaseData(const itString& i_Filename )
+mnmBaseData::mnmBaseData(const std::string& i_Filename )
 :	m_Filename(i_Filename),
 	m_Position( maPoint3d( 0.0f, 0.0f, 0.0f ) ),
 	m_Orientation( maRotation( 0.0f, 0.0f, 0.0f ) ),
@@ -33,7 +33,7 @@ mnmBaseData::mnmBaseData(const itString& i_Filename )
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-mnmBaseData::mnmBaseData(const itString& i_Filename,
+mnmBaseData::mnmBaseData(const std::string& i_Filename,
 							const maPoint3d& i_Position,
 							const maRotation& i_Orientation )
 :	m_Filename(i_Filename),

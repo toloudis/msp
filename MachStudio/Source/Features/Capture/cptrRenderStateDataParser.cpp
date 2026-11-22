@@ -46,9 +46,9 @@ void ReadFromConfigFile(fsLocator& i_ConfigFile,
 		if ((node_type == guiXMLTextReader::e_Text) && (keyname.length() > 0))
 		{
 			if (keyname == lc_Key_RenderState_Scene)
-				{itString value; guiXMLTextReader::Convert(strvalue, value); o_Data.m_RenderPosScene.SetValue(value);};
+				{std::string value; guiXMLTextReader::Convert(strvalue, value); o_Data.m_RenderPosScene.SetValue(value);};
 			if (keyname == lc_Key_RenderState_Camera)
-				{itString value; guiXMLTextReader::Convert(strvalue, value); o_Data.m_RenderPosCamera.SetValue(value);};
+				{std::string value; guiXMLTextReader::Convert(strvalue, value); o_Data.m_RenderPosCamera.SetValue(value);};
 			if (keyname == lc_Key_RenderState_Time)
 				{float value; guiXMLTextReader::Convert(strvalue, value); o_Data.m_RenderPosTime.SetValue(maTime::FromSeconds(value));};
 		}

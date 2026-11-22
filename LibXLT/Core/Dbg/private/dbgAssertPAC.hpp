@@ -35,13 +35,5 @@
 #if ENV_WINDOWS
 	#include "Core/dbg/private/dbgAssertPACWin.hpp"
 #else
-	#if ENV_OS == ENV_PS2OS
-		#include "Core/dbg/private/dbgAssertPACPS2.hpp"
-	#else
-		#if ENV_OS == ENV_XBOXOS
-			#include "Core/dbg/private/dbgAssertPACXbox.hpp"
-		#else
-			#error dbgAssertPAC not defined for this platform
-		#endif
-	#endif
+	#error dbgAssertPAC not defined for this platform
 #endif

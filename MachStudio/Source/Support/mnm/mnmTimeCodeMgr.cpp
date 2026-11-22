@@ -81,9 +81,9 @@ namespace
 			oss.setf(0, std::ios::floatfield);
 			oss <<time_string<<"("<<frames_string<<")";
 			text = oss.str();
-		
+
 		}
-		TCMData::l_pTimeCodeTextProxy->SetText( itString( text.c_str() ) );
+		TCMData::l_pTimeCodeTextProxy->SetText( text );
 	}
 }
 
@@ -104,7 +104,7 @@ void mnmTimeCodeMgr::Initialize()
 	TCMData::l_pTimeCodeText->SetPosition( maPoint3d( 10, 10, 0 ) );
 	TCMData::l_pTimeCodeText->SetCentered( false );
 	TCMData::l_pTimeCodeText->SetSize( 10, 16 );
-	TCMData::l_pTimeCodeText->SetText( itString("00:00:00") );
+	TCMData::l_pTimeCodeText->SetText( std::string("00:00:00") );
 	TCMData::l_fFramePerSecond = g3dConstants::c_fDefaultFrameRate;
 
 	TCMData::l_ScreenSpaceLayer = mnmApp::GetScreenSpaceIndex();//2;		// FIX: - hard-coded value
@@ -143,7 +143,7 @@ void mnmTimeCodeMgr::Update()
 void mnmTimeCodeMgr::SetShowTimeCode( bool i_bShow )
 {
 	//bga - this should probably just be a "SetRenderable" call so that
-	// we don´t have to stop the threads.
+	// we don't have to stop the threads.
 	if ( i_bShow )
 	{
 		if ( !TCMData::l_bShowTimeCode )
@@ -158,7 +158,7 @@ void mnmTimeCodeMgr::SetShowTimeCode( bool i_bShow )
 	{
 		if ( TCMData::l_bShowTimeCode )
 		{
-			
+
 			// stop running threads before changing scene structure
 			gpxRenderControl::ConfirmSingleThread();
 

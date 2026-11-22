@@ -101,6 +101,9 @@ namespace cmmSystemDialogUtil
 	// Update the placed items within the given system name
 	//------------------------------------------------------------------------
 	void UpdatePlacedList(const std::string& i_SystemName, cmmDialogDataList& i_DataList);
+	// Build list data only when it will be consumed. Deferred updates are
+	// gathered by the scene dialog when the outermost DeferUpdates ends.
+	void UpdatePlacedList(const std::string& i_SystemName, void (*i_RebuildListData)(cmmDialogDataList&));
 
 	//------------------------------------------------------------------------
 	// Update the scene hierarchy tree view
@@ -116,6 +119,23 @@ namespace cmmSystemDialogUtil
 	// Update the available items (todo: within the given system name)
 	//------------------------------------------------------------------------
 	void UpdateAvailableList();
+
+	//------------------------------------------------------------------------
+	// While one exists, the scene dialog's trees aren't updated (placed
+	// lists, hierarchy, light sets, selection); when the last one goes
+	// they are rebuilt once and the selection shown again. For adding
+	// many objects at once (a scene file's), which would otherwise
+	// rebuild every tree once per object.
+	//------------------------------------------------------------------------
+	class DeferUpdates
+	{
+	public:
+		DeferUpdates();
+		~DeferUpdates();
+	private:
+		DeferUpdates(const DeferUpdates&);
+		DeferUpdates& operator=(const DeferUpdates&);
+	};
 
 	//------------------------------------------------------------------------
 	// Operations on selected objects
@@ -162,4 +182,3 @@ namespace cmmSystemDialogUtil
 
 
 }	// end of namespace
-

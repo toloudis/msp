@@ -16,7 +16,9 @@
 #include "AudioDS/sn/snSoundSystem.hpp"
 #include "Core/app/appTime.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/fs/private/fsFileUtilPAC.hpp"
+#ifndef FS_PATHUTIL_HPP
+#include "Core/fs/fsPathUtil.hpp"
+#endif
 #include "Core/gf/gfFileBin.hpp"
 #include "Core/gf/gfFileTranslationMgr.hpp"
 
@@ -484,13 +486,12 @@ snSoundJob2DStreamedPAC::CreateBuffer()
 	tempWaveInfo.pwfx = NULL;
 
 	std::string filename;
-	itString	UnicodeFilename;
+	std::wstring	UnicodeFilename;
 	fsLocator ExpandedLoc(this->GetFilename());
 	gfFileTranslationMgr::ExpandLocator(ExpandedLoc);
-	fsFileUtilPAC::LocatorToUnicodeFilename( ExpandedLoc, UnicodeFilename );
-	//UnicodeFilename += 0; // not needed anymore, GetString() is NULL-terminated
+	UnicodeFilename = fsPathUtil::LocatorToPath(ExpandedLoc).wstring();
 
-    if (( nChkErr = WaveUtil::WaveOpenFile( const_cast<const LPWSTR>(UnicodeFilename.GetString()), &tempWaveInfo.hmmio, &tempWaveInfo.pwfx, &tempWaveInfo.mmckInRIFF )) != 0 )
+    if (( nChkErr = WaveUtil::WaveOpenFile( const_cast<LPWSTR>(UnicodeFilename.c_str()), &tempWaveInfo.hmmio, &tempWaveInfo.pwfx, &tempWaveInfo.mmckInRIFF )) != 0 )
     {
 		GlobalFree( tempWaveInfo.pwfx );
 		tempWaveInfo.pwfx = NULL;

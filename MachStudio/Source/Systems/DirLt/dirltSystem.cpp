@@ -25,10 +25,8 @@
 #include "dayPackage.hpp"
 #include "daySunMoonLights.hpp"
 #include "docSingleTypeMgr.hpp"
-#include "muiMenuMgr.hpp"
 #include "nameMgr.hpp"
 #include "pick3dMgr.hpp"
-#include "tmaCommandTabControlUtil.hpp"
 #include "visMgr.hpp"
 
 #include <string>

@@ -19,12 +19,12 @@
 #include "Core/prty/prtyListChecked.hpp"
 #endif
 
+#ifdef USE_QT
 
 //===================================================================================
 //===================================================================================
 class pqtListChecked_CheckListBox_Converter 
 {
-#ifdef QT_FINISH_PORT
 public:
 	//----------------------------------------------------------------------------
 	// Get list of string choices for combo box
@@ -35,17 +35,17 @@ public:
 	//----------------------------------------------------------------------------
 	// Set value into control
 	//----------------------------------------------------------------------------
-	static void SetValueIntoControl(wxCheckListBox* i_pActualControl,
+	static void SetValueIntoControl(QListWidget* i_pActualControl,
 									 const checked_list_type& i_Value);
 
 	//----------------------------------------------------------------------------
 	// Get value from control
 	//----------------------------------------------------------------------------
-	static checked_list_type GetValueFromControl(wxCheckListBox* i_pActualControl);
-#endif // USE_QT
+	static checked_list_type GetValueFromControl(QListWidget* i_pActualControl);
 };
 
 //============================================================================
 //============================================================================
 typedef pqtTemplate_CheckListBox<prtyListChecked, checked_list_type, pqtListChecked_CheckListBox_Converter> pqtListChecked_CheckListBox;
 
+#endif // USE_QT

@@ -9,7 +9,6 @@
 
 #include "Core/dbg/dbgMsg.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/It/itStringUtil.hpp"
 #include "Graphics/Eff/effPhongData.hpp"
 #include "Graphics/Mat/matTexturePathUtil.hpp"
 #include "Graphics/mdl/mdlMatInfo.hpp"
@@ -167,7 +166,7 @@ namespace fbxMaterialImport
 
 				// Get just the filename from the full path
 				//itString tex_filename = tex_loc.GetLastName();
-				//phong_data->m_NameDiffuse = itStringUtil::GetStdString(tex_filename);
+				//phong_data->m_NameDiffuse = tex_filename;
 				//DBG_LOG("  Material Texture: " << phong_data->m_NameDiffuse);
 
 				// Resolve single filenames and relative paths here:
@@ -187,9 +186,9 @@ namespace fbxMaterialImport
 
 			shared_ptr<effShaderParams> phong_params(new effShaderParams()); 
 			if (diffuse_texture.empty())
-				phong_params->SetShaderName(itString("Simple.fx"));
+				phong_params->SetShaderName(std::string("Simple.fx"));
 			else
-				phong_params->SetShaderName(itString("Phong.fx"));
+				phong_params->SetShaderName(std::string("Phong.fx"));
 			phong_data->AddToParams(*phong_params);
 
 			o_MatInfo.SetShaderParams(phong_params);
@@ -210,7 +209,7 @@ namespace fbxMaterialImport
 		phong_data->m_Transparency = 1;
 		
 		shared_ptr<effShaderParams> phong_params(new effShaderParams());
-		phong_params->SetShaderName(itString("Simple.fx"));
+		phong_params->SetShaderName(std::string("Simple.fx"));
 		phong_data->AddToParams(*phong_params);
 
 		o_MatInfo.SetShaderParams(phong_params);

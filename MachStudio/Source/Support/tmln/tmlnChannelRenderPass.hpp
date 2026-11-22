@@ -60,7 +60,7 @@ public:
 	//--------------------------------------------------------------------
 	//  Set new state for property
 	//--------------------------------------------------------------------
-	virtual void SetIntValue(const envType::Int8& i_Val) = 0;
+	virtual void SetIntValue(const int8_t& i_Val) = 0;
 
 	//--------------------------------------------------------------------
 	//  Get current state of object
@@ -125,7 +125,7 @@ public:
 	//--------------------------------------------------------------------
 	//  Set new state for property
 	//--------------------------------------------------------------------
-	virtual void SetIntValue(const envType::Int8& i_Val);
+	virtual void SetIntValue(const int8_t& i_Val);
 
 	//--------------------------------------------------------------------
 	//  Get current state of property

@@ -1,7 +1,8 @@
 /*****************************************************************************
 **	tqtPropertyDialog.hpp
 **
-**	Modal dialog for gathering data using property interface.
+**		Modal dialog showing property controls for a list of properties
+**	(or a grid of property objects).
 **
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
@@ -13,38 +14,35 @@
 
 #ifndef PRTY_PROPERTYUIINFOCONTAINER_HPP
 #include "Core/prty/prtyPropertyUIInfoContainer.hpp"
-#endif 
+#endif
+
 #ifndef PRTY_OBJECT_HPP
 #include "Core/prty/prtyObject.hpp"
-#endif 
+#endif
+
 #ifndef TQT_WIDGETS_HPP
 #include "ToolUIQt/tqt/tqtWidgets.hpp"
 #endif
 
-
 #ifdef USE_QT
-#include <QtGui/QWidget>
 
-#include "ToolUIQt/tqt/GeneratedFiles/tqtPropertyDialogBase.h"		// Base class generated from Qt Designer
-
-
+#include "ToolUIQt/tqt/private/tqtPropertyDialogBase.h"
 
 //============================================================================
-// Class DialogTabbed
 //============================================================================
-class tqtPropertyDialog : public Ui_tqtPropertyDialogBase
+class tqtPropertyDialog : public tqtPropertyDialogBase
 {
 	public:
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		tqtPropertyDialog(  QWidget* parent, 
+		tqtPropertyDialog( QWidget* parent,
 							const QString& i_Title,
 							const prtyPropertyUIInfoContainer& i_PropertyContainer,
 							const char* i_Message = NULL);
 
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		tqtPropertyDialog(  QWidget* parent, 
+		tqtPropertyDialog( QWidget* parent,
 							const QString& i_Title,
 							std::vector<std::string>& i_RowNames,
 							std::vector<std::string>& i_ColumnNames,
@@ -55,7 +53,7 @@ class tqtPropertyDialog : public Ui_tqtPropertyDialogBase
 		~tqtPropertyDialog();
 
 	private:
-	
+		void fit_to_properties();
 };
 
-#endif // QT_FINISH_PORT
+#endif // USE_QT

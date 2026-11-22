@@ -1,1 +1,0 @@
-#error chtrAddOperation.cpp is obsolete

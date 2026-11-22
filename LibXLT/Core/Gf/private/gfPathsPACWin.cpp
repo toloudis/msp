@@ -14,6 +14,9 @@
 //#include <shlobj.h>
 
 #include "Core/dbg/dbgMsg.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsLocator.hpp"
 #include "Core/gf/gfPaths.hpp"
@@ -101,7 +104,6 @@ void add_path_to_locator(const std::wstring& i_PathName, fsLocator& o_Locator)
 	std::wstring::size_type last_pos = 0;
 	std::wstring::size_type token_pos = 0;
 	std::wstring name;
-	itString wide_char_itstring;
 
 	while( token_pos != std::string::npos )
 	{
@@ -111,45 +113,11 @@ void add_path_to_locator(const std::wstring& i_PathName, fsLocator& o_Locator)
 
 		if( name.size() > 0 )
 		{
-			o_Locator.Push(itString(name.c_str()));
+			o_Locator.Push(envString::WideCharToUTF8(name));
 			last_pos = token_pos + 1;
 		}
 	}
 }
-
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
-//void add_path_to_locator(const std::string& i_PathName, fsLocator& o_Locator)
-//{
-//	std::string::size_type last_pos = 0;
-//	std::string::size_type token_pos = 0;
-//	std::string name;
-//	itString wide_char_itstring;
-//
-//	while( token_pos != std::string::npos )
-//	{
-//		token_pos = i_PathName.find('\\', last_pos);
-//
-//		name = i_PathName.substr(last_pos, token_pos - last_pos);
-//
-//		if( name.size() > 0 )
-//		{
-//			itString::CharType wide_char_name[512];
-//
-//			::MultiByteToWideChar(	::GetACP(),
-//									0,
-//									name.c_str(),
-//									-1,
-//									wide_char_name,
-//									512);
-//
-//			wide_char_itstring = wide_char_name;
-//
-//			o_Locator.Push(wide_char_itstring);
-//			last_pos = token_pos + 1;
-//		}
-//	}
-//}
 
 void get_sysdat_path(std::wstring& o_SysdatPath)
 {
@@ -304,9 +272,9 @@ void GetUserDataDirectory( fsLocator& o_Locator )
 
 	//	find where the user data path is located.
 	//
-	TCHAR path[MAX_PATH];
+	wchar_t path[MAX_PATH];
 	HRESULT result = SHGetFolderPathW( NULL, CSIDL_LOCAL_APPDATA, NULL, SHGFP_TYPE_CURRENT, path );
-	fsFileUtil::UnicodeStringToLocator( itString(path), o_Locator );
+	fsFileUtil::UnicodeStringToLocator( envString::WideCharToUTF8(path), o_Locator );
 	o_Locator.Push( l_UserDataSubPath );
 
 	DBG_TRACE("user data folder =" << o_Locator);
@@ -345,9 +313,9 @@ void GetUserDocumentsDirectory( fsLocator& o_Locator )
 
 	//	find where the user data path is located.
 	//
-	TCHAR path[MAX_PATH];
-	HRESULT result = SHGetFolderPath( NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, path );
-	fsFileUtil::UnicodeStringToLocator( itString(path), o_Locator );
+	wchar_t path[MAX_PATH];
+	HRESULT result = SHGetFolderPathW( NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, path );
+	fsFileUtil::UnicodeStringToLocator( envString::WideCharToUTF8(path), o_Locator );
 	o_Locator.Push( l_UserDataSubPath );
 
 	DBG_TRACE("user documents folder =" << o_Locator);
@@ -371,9 +339,9 @@ void GetCommonDocumentsDirectory( fsLocator& o_Locator )
 
 	//	find where the user data path is located.
 	//
-	TCHAR path[MAX_PATH];
-	HRESULT result = SHGetFolderPath( NULL, CSIDL_COMMON_DOCUMENTS, NULL, SHGFP_TYPE_CURRENT, path );
-	fsFileUtil::UnicodeStringToLocator( itString(path), o_Locator );
+	wchar_t path[MAX_PATH];
+	HRESULT result = SHGetFolderPathW( NULL, CSIDL_COMMON_DOCUMENTS, NULL, SHGFP_TYPE_CURRENT, path );
+	fsFileUtil::UnicodeStringToLocator( envString::WideCharToUTF8(path), o_Locator );
 	o_Locator.Push( l_UserDataSubPath );
 
 	DBG_TRACE("public documents folder =" << o_Locator);

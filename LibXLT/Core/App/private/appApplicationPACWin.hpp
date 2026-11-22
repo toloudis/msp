@@ -14,9 +14,10 @@
 #define APP_APPLICATIONPACWIN_HPP
 
 #include <windows.h>
+#include <string>
 
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
+#ifndef ENV_TYPE_HPP
+#include "Core/env/envType.hpp"
 #endif
 
 
@@ -74,7 +75,7 @@ class appApplicationPAC
 		//	window's title bar.  This function can be called from a 
 		//	appStartEvent handler, before the window has been created. 
 		//--------------------------------------------------------------------
-		void SetWindowTitle(const itString& i_Title);
+		void SetWindowTitle(const std::string& i_Title);
 
 		//--------------------------------------------------------------------
 		//	The windows appApplicationPAC defines this Instance function
@@ -195,19 +196,29 @@ class appApplicationPAC
 		//	Create a secondary window for the application
 		//--------------------------------------------------------------------
 		static HWND CreateSubWindow(int i_Width, int i_Height, 
-									int i_X, int i_Y, const itString& i_Title);
+									int i_X, int i_Y, const std::string& i_Title);
 
 		//--------------------------------------------------------------------
 		//	Destory secondary window created by previous call to 
 		//		CreateSubWindow()
 		//--------------------------------------------------------------------
-		static void DestroySubWindow(HWND i_Hwnd);
+		static void DestroySubWindow(void* i_Hwnd);
+
+		//--------------------------------------------------------------------
+		//	Make UI Automation let go of the application's windows
+		//--------------------------------------------------------------------
+		static void ReleaseAccessibilityClients();
+
+		//--------------------------------------------------------------------
+		//	Start a program without waiting for it
+		//--------------------------------------------------------------------
+		static bool LaunchProgram(const std::string& i_CommandLine, bool i_ShowWindow);
 
 		//--------------------------------------------------------------------
 		//	Used for creating an application that doesn't use Run()
 		//--------------------------------------------------------------------
 		static void CreateMainWindow(int i_Width, int i_Height, 
-									 int i_X, int i_Y, const itString& i_Title);
+									 int i_X, int i_Y, const std::string& i_Title);
 
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
@@ -230,9 +241,7 @@ class appApplicationPAC
 	private:
 		int m_X, m_Y, m_Width, m_Height;
 		bool m_bQuit;
-		itString m_Title;
-		char m_LeadByte;	// lead byte for multi-byte characters
-		bool m_bHasLeadByte;
+		std::string m_Title;
 };
 
 

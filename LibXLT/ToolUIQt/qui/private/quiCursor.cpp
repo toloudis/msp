@@ -1,7 +1,7 @@
 /****************************************************************************\
 **	quiCursor.cpp
 **
-**	class to invloke wxCursor
+**	class to invoke the Qt wait cursor
 **	
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
@@ -13,14 +13,14 @@
 
 void quiCursor::SetWaitCursor()
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	tqtCursor::SetWaitCursor();
 #endif
 }
 		
 void quiCursor::EndWaitCursor()
 {
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 	tqtCursor::EndWaitCursor();
 #endif
 }

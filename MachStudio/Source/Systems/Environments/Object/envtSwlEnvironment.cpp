@@ -31,7 +31,7 @@
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 envtSwlEnvironment::envtSwlEnvironment()
-:	m_pParent(NULL), 
+:	m_pParent(NULL),
 	m_bEnabledRamp(false),
 	m_pGpxEnvironment(new gpxGlobalAmbient())
 {
@@ -60,7 +60,7 @@ envtSwlEnvironment::envtSwlEnvironment()
 	m_pDiffuseFileChooser->SetDirectoryCategory("Environments");
 	m_pDiffuseFileChooser->AddItem( m_pDiffuseFileChooser->e_Ramp );
 	AddProperty( m_pDiffuseFileChooser );
-	
+
 	pPUII  = new prtyColorRGBEditUIInfo(&(m_Data.m_DiffuseColor), "Diffuse", "Tint color for diffuse");
 	AddProperty( pPUII );
 	prtyRangedFloatUIInfo* pRFUII  = new prtyRangedFloatUIInfo(&(m_Data.m_DiffuseFactor), "Diffuse", "Brightness multiplier");
@@ -68,13 +68,13 @@ envtSwlEnvironment::envtSwlEnvironment()
 	pRFUII->SetMaximum(1.0f);
 	pRFUII->SetNumTicks(100);
 	AddProperty( pRFUII );
-	
+
 	pRFUII  = new prtyRangedFloatUIInfo(&(m_Data.m_DiffuseAngle), "Diffuse", "Rotation angle");
 	pRFUII->SetMinimum(0.0f);
 	pRFUII->SetMaximum(360.0f);
 	pRFUII->SetNumTicks(360);
 	AddProperty( pRFUII );
-	
+
 	// Register callbacks to update particle generator and icons
 	// when properties change
 	m_Data.m_SwlData.m_bEnable.AddCallback(new prtyCallbackWrapper<envtSwlEnvironment>(this, &envtSwlEnvironment::EnableChanged));
@@ -83,7 +83,7 @@ envtSwlEnvironment::envtSwlEnvironment()
 	m_Data.m_DiffuseFactor.AddCallback(new prtyCallbackWrapper<envtSwlEnvironment>(this, &envtSwlEnvironment::ValueChanged));
 	m_Data.m_DiffuseAngle.AddCallback(new prtyCallbackWrapper<envtSwlEnvironment>(this, &envtSwlEnvironment::ValueChanged));
 	m_Data.m_SwlData.m_bEnableBG.AddCallback(new prtyCallbackWrapper<envtSwlEnvironment>(this, &envtSwlEnvironment::ValueChanged));
-	
+
 	shared_ptr<prtyPropertyCallback> rampCallbackPtr(new prtyCallbackWrapper<envtSwlEnvironment>(this, &envtSwlEnvironment::RampChangedFromData));
 	m_Data.m_RampData.RegisterCallback(rampCallbackPtr);
 }
@@ -116,7 +116,7 @@ const envtData& envtSwlEnvironment::GetData() const
 {
 	// Since we don't have properties that handle things like
 	// checked lists and tree controls, the environment manager
-	// still maintains the "true" object and environment connectíons.
+	// still maintains the "true" object and environment connections.
 	// We have to refresh that info from the manager whenever
 	// someone asks for the data.
 	std::vector<nameString> objects;
@@ -148,7 +148,7 @@ void envtSwlEnvironment::SetData(const envtData &i_Data)
 	// don't set name into underlying evmt - this env is not nameable.
 //	m_pEnvironment->SetName(m_Data.m_Name.GetValue());
 
-	if( m_Data.m_DiffuseMapName.GetFullValue().m_CurrentCallback == 
+	if( m_Data.m_DiffuseMapName.GetFullValue().m_CurrentCallback ==
 		prtyTextureFileChooserUIInfo::GetType(prtyTextureFileChooserUIInfo::e_Ramp) )
 	{
 		m_pEnvironment->RampChanged(m_Data.m_RampData);
@@ -364,7 +364,7 @@ void envtSwlEnvironment::RampChangedFromData(prtyProperty *i_pProperty, bool i_b
 	{
 		UpdateRampData();
 		m_pEnvironment->RampChanged(m_Data.m_RampData);
-		
+
 		if (i_bDirty)
 		{
 			envtDialogDataUtil::UpdateListDialog();
@@ -404,7 +404,7 @@ rmpData envtSwlEnvironment::GetRampData()
 void envtSwlEnvironment::ReportMemory(gfFileTxt& i_File)
 {
     std::ostringstream stm;
-	
+
 	if (m_pEnvironment->m_DiffuseMap)
 	{
 		stm << "  Diffuse : " << m_pEnvironment->m_DiffuseMap->GetSize() << "KB\r\n";

@@ -72,6 +72,12 @@ public:
 	const std::vector<tmlnChannel*>& GetChannels() const;
 
 	//------------------------------------------------------------------------
+	// The channel of the property with that name ("<material>.<property>",
+	// as the Add...Channel functions name them); NULL if none
+	//------------------------------------------------------------------------
+	tmlnChannel* FindChannel(const std::string& i_MaterialName, const std::string& i_PropertyName) const;
+
+	//------------------------------------------------------------------------
 	// Returns true if there are some drivers on the channels
 	// for the material.
 	//------------------------------------------------------------------------
@@ -120,7 +126,7 @@ protected:
 	//------------------------------------------------------------------------
 	// Convenience functions for locating a texture
 	//------------------------------------------------------------------------
-	fsLocator LocateTexture(const itString& i_Filename);
+	fsLocator LocateTexture(const std::string& i_Filename);
 
 	//----------------------------------------------------------------------------
 	//----------------------------------------------------------------------------

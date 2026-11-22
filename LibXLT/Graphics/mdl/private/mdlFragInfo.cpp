@@ -134,11 +134,11 @@ void mdlFragInfo::AddGeometry(const mdlFragInfo& i_ToAdd,
 	m_Indices.resize( m_Indices.size() + num_new_indices );
 	if (index_base == 0)
 	{
-		::memcpy(&(m_Indices[0]), &(i_ToAdd.m_Indices[0]), num_new_indices*sizeof(envType::UInt32));
+		::memcpy(&(m_Indices[0]), &(i_ToAdd.m_Indices[0]), num_new_indices*sizeof(uint32_t));
 	}
 	else
 	{
-		envType::UInt32 *pInd = &(m_Indices[index_base]);
+		uint32_t *pInd = &(m_Indices[index_base]);
 		for (int i=0; i<num_new_indices; i++, pInd++)
 		{
 			*pInd = vertex_base+i_ToAdd.m_Indices[ i ];
@@ -255,23 +255,23 @@ void mdlFragInfo::AddGeometry(const mdlFragInfo& i_ToAdd,
 	int index_base = m_Indices.size();
 	const std::string &sMeshName_ToAdd = i_ToAdd.m_Name;
 	//iterator to vertex index in i_ToAdd coresponding to the triangle i_BeginIdx
-	std::vector<envType::UInt32>::const_iterator indexBeginIt_ToAdd(i_ToAdd.m_Indices.begin());	
+	std::vector<uint32_t>::const_iterator indexBeginIt_ToAdd(i_ToAdd.m_Indices.begin());	
 	std::advance( indexBeginIt_ToAdd, i_BeginIdx * 3 );	
 	//iterator to vertex index in i_ToAdd coresponding to the triangle i_EndIdx
-	std::vector<envType::UInt32>::const_iterator indexEndIt_ToAdd( i_ToAdd.m_Indices.begin());	
+	std::vector<uint32_t>::const_iterator indexEndIt_ToAdd( i_ToAdd.m_Indices.begin());	
 	std::advance( indexEndIt_ToAdd, i_EndIdx * 3 );
 
-	std::vector<envType::UInt32>::const_iterator iit;
+	std::vector<uint32_t>::const_iterator iit;
 	//collect all the vertex indices corresponding to the partial geometry
 	//in i_ToAdd
-	std::vector< envType::UInt32 > indicesUsedBy_ToAdd;
+	std::vector< uint32_t > indicesUsedBy_ToAdd;
 	indicesUsedBy_ToAdd.reserve( 3* (i_EndIdx - i_BeginIdx) );
 
 	for ( iit = indexBeginIt_ToAdd; iit < indexEndIt_ToAdd; ++iit )
 	{
 		// check if the current vertex index pointed to by 'iit' is already there in indicesUsedBy_ToAdd
 		//else add it
-		std::vector< envType::UInt32 >::const_iterator fit = std::find( indicesUsedBy_ToAdd.begin(), indicesUsedBy_ToAdd.end(), *iit );
+		std::vector< uint32_t >::const_iterator fit = std::find( indicesUsedBy_ToAdd.begin(), indicesUsedBy_ToAdd.end(), *iit );
 		if ( fit == indicesUsedBy_ToAdd.end() )
 		{
 			indicesUsedBy_ToAdd.push_back( *iit );
@@ -279,12 +279,12 @@ void mdlFragInfo::AddGeometry(const mdlFragInfo& i_ToAdd,
 			std::advance( fit, indicesUsedBy_ToAdd.size() -1 );
 		}
 		//now 'fit' points to the current vertex index pointed to by 'it'
-		int newIdx = static_cast< int > ( std::distance< std::vector< envType::UInt32 >::const_iterator >( indicesUsedBy_ToAdd.begin(), fit ) );
+		int newIdx = static_cast< int > ( std::distance< std::vector< uint32_t >::const_iterator >( indicesUsedBy_ToAdd.begin(), fit ) );
 		//newIdx + vertex_base will be new index in 'this'
 		DBG_ASSERT( ( newIdx >= 0 && newIdx < indicesUsedBy_ToAdd.size() ), "index out of range, while merging " << sMeshName_ToAdd.c_str() );
 		m_Indices.push_back( newIdx + vertex_base );
 	}
-	std::vector< envType::UInt32 >::const_iterator vit;
+	std::vector< uint32_t >::const_iterator vit;
 	//reserve enough memory for the new set of vertices and normals
 	//corresponding to the partial geometry
 	int numNewVerticesToBeAdded = static_cast< int > ( indicesUsedBy_ToAdd.size() );

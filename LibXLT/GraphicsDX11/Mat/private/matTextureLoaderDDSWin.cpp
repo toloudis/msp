@@ -24,6 +24,9 @@
 #include <DirectXTex.h>
 
 #include <fstream>
+#ifndef ENV_STRING_HPP
+#include "Core/Env/envString.hpp"
+#endif
 
 
 //============================================================================
@@ -270,14 +273,14 @@ namespace
 		return hr;
 	}
 
-	HRESULT load_CxU8V8_format(const itString& i_srcFile, ID3D11Texture2D** o_tex2D )
+	HRESULT load_CxU8V8_format(const std::string& i_srcFile, ID3D11Texture2D** o_tex2D )
 	{
 		BYTE* pHeapData = NULL;
 		DDS_HEADER* pHeader= NULL;
 		BYTE* pBitData = NULL;
 		UINT BitSize = 0;
 
-		HRESULT hr = LoadTextureDataFromFile( (WCHAR *)i_srcFile.GetString(), &pHeapData, &pHeader, &pBitData, &BitSize );
+		HRESULT hr = LoadTextureDataFromFile( &envString::UTF8ToWideChar(i_srcFile)[0], &pHeapData, &pHeader, &pBitData, &BitSize );
 		if(FAILED(hr))
 		{
 			SAFE_DELETE_ARRAY( pHeapData );
@@ -298,7 +301,7 @@ namespace
 	{
 		fsResourceTracker::MarkBegin(io_Info.s_Locator);
 
-		itString filename;
+		std::string filename;
 		fsFileUtil::LocatorToUnicodeString( io_Info.s_Locator, filename );
 		//filename = "\\projects\\MachStudio\\" + filename;	// FIX: - hardcoded path
 
@@ -306,7 +309,7 @@ namespace
 
 		//DBG_LOG1( "loading DDS texture (%s)", filename.c_str() );
         DirectX::TexMetadata srcInfo;
-        hr = DirectX::GetMetadataFromDDSFile(filename.GetString(), DirectX::DDS_FLAGS::DDS_FLAGS_NONE,
+        hr = DirectX::GetMetadataFromDDSFile(envString::UTF8ToWideChar(filename).c_str(), DirectX::DDS_FLAGS::DDS_FLAGS_NONE,
             srcInfo);
 
 		ID3D11Texture2D* pTex2D = NULL;
@@ -347,7 +350,7 @@ namespace
 
             DirectX::TexMetadata info;
             std::unique_ptr<DirectX::ScratchImage> image(new DirectX::ScratchImage);
-            HRESULT hr = DirectX::LoadFromDDSFile(filename.GetString(), DirectX::DDS_FLAGS::DDS_FLAGS_NONE, &info, *image);
+            HRESULT hr = DirectX::LoadFromDDSFile(envString::UTF8ToWideChar(filename).c_str(), DirectX::DDS_FLAGS::DDS_FLAGS_NONE, &info, *image);
             hr = DirectX::CreateTexture(g2dDX11Global::g_pDevice, image->GetImages(), image->GetImageCount(), info, &pTexture);
 
 			//	check for errors loading

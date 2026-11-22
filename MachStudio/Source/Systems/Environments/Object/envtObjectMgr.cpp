@@ -28,13 +28,13 @@ namespace
 	int l_ObjectCounter = 0;
 
 	//--------------------------------------------------------------------
-	void create_default_name( const itString& i_Filename, nameString& o_NameString )
+	void create_default_name( const std::string& i_Filename, nameString& o_NameString )
 	{
 		//char strName[64];
 		std::string strName;
 		char filename_base[64];
 		char *filename;
-		strcpy( filename_base, itStringUtil::GetStdString( i_Filename ).c_str() );
+		strcpy( filename_base, i_Filename.c_str() );
 		filename = strtok( filename_base, "." );
 
 		do
@@ -68,11 +68,11 @@ envtScriptObject* envtObjectCreator::Create(const envtScriptData &i_Data)
 		//	creating a generic name.
 		if (i_Data.m_BaseData.m_Name.GetValue().IsEmpty())
 		{
-			create_default_name( itString("Environment"), objName );
+			create_default_name( std::string("Environment"), objName );
 		}
 		else
 		{
-			create_default_name( itString(i_Data.m_BaseData.m_Name.GetString().c_str()), objName );
+			create_default_name( i_Data.m_BaseData.m_Name.GetString(), objName );
 		}
 	}
 

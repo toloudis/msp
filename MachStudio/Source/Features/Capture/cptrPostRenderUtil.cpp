@@ -7,6 +7,10 @@
 **	Copyright(C) 2005 - All Rights Reserved
 \****************************************************************************/
 #include "Features/Capture/cptrPostRenderUtil.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
+#include "Core/app/appApplication.hpp"
 
 #include "Features/Capture/cptrRenderStatsDataUtil.hpp"
 #include "Features/Prefs/PrefsMgr.hpp"
@@ -19,7 +23,6 @@
 #include "Core/gf/gfPaths.hpp"
 
 #include <string>
-#include <windows.h>
 
 #undef CreateFile
 #undef DeleteFile
@@ -78,7 +81,7 @@ void Execute()
 		oss << (bmail) << "-s ExtraLargeTech.com -t " << theData.m_PostEmailAddress.GetValue()<<"-f"<<from_email<<"-h -a \"Render Complete\" -m"<<fullpath;
 		std::string cmd(oss.str());
 		DBG_LOG("email command line " << cmd.c_str());
-		WinExec(cmd.c_str(), false);
+		appApplication::LaunchProgram(cmd.c_str(), false);
 	}
 
 	//	execute a shell command
@@ -95,7 +98,7 @@ void Execute()
 			std::ostringstream oss;
 			oss << theData.m_PostCommand.GetValue();
 			std::string cmd(oss.str());
-				WinExec(cmd.c_str(), false);
+				appApplication::LaunchProgram(cmd.c_str(), false);
 		}
 		else
 		{

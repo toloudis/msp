@@ -38,21 +38,21 @@ billScriptData::billScriptData(const billData& i_BaseData)
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-billScriptData::billScriptData(const itString& i_Filename )
+billScriptData::billScriptData(const std::string& i_Filename )
 : m_BaseData(i_Filename)
 {
-	m_BaseData.m_Filename	= i_Filename;
+	m_BaseData.m_Filename	= fsLocator(i_Filename);
 	m_BaseData.m_Scale		= 1.0f;
 }
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-billScriptData::billScriptData(	const itString& i_Filename,
+billScriptData::billScriptData(	const std::string& i_Filename,
 								const maPoint3d& i_Position,
 								float i_Scale )
 : m_BaseData(i_Filename, i_Position, i_Scale)
 {
-	m_BaseData.m_Filename	= i_Filename;
+	m_BaseData.m_Filename	= fsLocator(i_Filename);
 	m_BaseData.m_Position	= i_Position;
 	m_BaseData.m_Scale		= i_Scale;
 }
@@ -93,7 +93,7 @@ billScriptData& billScriptData::operator = (const billScriptData& i_Data)
 //		billListData
 //
 
-void billListData::Add(	const itString& i_Filename,
+void billListData::Add(	const std::string& i_Filename,
 						const maPoint3d& i_Position,
 						float i_Scale )
 {

@@ -15,17 +15,18 @@
 #include "ToolUIQt/pqt/pqtControlFactory.hpp"
 #endif
 
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
 class pqtControlFactoryCustom : public pqtControlFactory
 {
 	public:
-#ifdef USE_QT
 		//----------------------------------------------------------------------------
 		//	Check for Control + Property pairing
 		//----------------------------------------------------------------------------
 		virtual pqtControl* CreateControl(shared_ptr<prtyPropertyUIInfo>& i_pUIInfo,
 										  QWidget* i_pParent);
-#endif
 };
+
+#endif // USE_QT

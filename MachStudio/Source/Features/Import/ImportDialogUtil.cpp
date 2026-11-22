@@ -9,12 +9,21 @@
 
 #include "Features/Import/ImportDialogUtil.hpp"
 
+#ifdef MSP_GUI_QT
+#include "Features/Import/qtGUI/ImportDialog.hpp"
+#else
 #include "Features/Import/wxGUI/ImportDialog.hpp"
+#endif
 #include "Features/SceneSetup/Data/SceneSetupData.hpp"
 #include "Features/SceneSetup/GUI/SceneSetupDialogUtil.hpp"
 
+#include "ImportExport/iscn/iscnSceneImport.hpp"
 #include "Tool/gui/guiSingleDocHandler.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtSystem.hpp"
+#else
 #include "ToolUIWx/twx/twxSystem.hpp"
+#endif
 
 #include <string>
 
@@ -44,6 +53,11 @@ namespace ImportDialogUtil
 			ImportDialog dialog( twxSystem::g_pMainForm, l_Data );
 			dialog.ShowModal();
 			Hide();
+#elif defined(USE_QT)
+			DBG_ASSERT(tqtSystem::g_pMainForm, "MainForm not yet initialized.");
+			ImportDialog dialog( tqtSystem::g_pMainForm, l_Data );
+			dialog.exec();
+			Hide();
 #endif
 		}
 	}
@@ -56,6 +70,17 @@ namespace ImportDialogUtil
 		//	restore the scene setup data
 		SceneSetupData& data = SceneSetupDialogUtil::Data();
 		data = l_SceneSetupDataCopy;
+	}
+
+	//--------------------------------------------------------------------
+	//--------------------------------------------------------------------
+	std::string FileFilter()
+	{
+		std::string patterns = "*.mab";
+		const std::string scene_patterns = iscnSceneImport::GetFilePatterns();
+		if (!scene_patterns.empty())
+			patterns += ";" + scene_patterns;
+		return "Scene files (" + patterns + ")|" + patterns;
 	}
 }	// end of namespace
 

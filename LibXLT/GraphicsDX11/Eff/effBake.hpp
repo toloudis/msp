@@ -21,7 +21,7 @@ class matMaterial;
 class effBake : public effShaderBaseDX11
 {
 public:
-	effBake(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, std::string i_name);
+	effBake(const fsLocator& i_Directory, std::unique_ptr<fxEffect> i_pEffect, std::string i_name);
 
 	virtual effShaderData* CreateData(const matMaterial* i_Mat);
 
@@ -34,11 +34,11 @@ public:
 
 
 protected:
-	ID3DX11EffectScalarVariable* m_hHasEmissive;
-	ID3DX11EffectShaderResourceVariable* m_hEmissiveMap;
-	ID3DX11EffectScalarVariable* m_hHasNormal;
-	ID3DX11EffectShaderResourceVariable* m_hNormalMap;
+	fxEffectVariable* m_hHasEmissive;
+	fxEffectVariable* m_hEmissiveMap;
+	fxEffectVariable* m_hHasNormal;
+	fxEffectVariable* m_hNormalMap;
 	
-	ID3DX11EffectVectorVariable* m_MaterialEmissiveHandle;
+	fxEffectVariable* m_MaterialEmissiveHandle;
 
 };

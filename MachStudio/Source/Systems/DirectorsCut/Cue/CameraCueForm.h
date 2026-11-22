@@ -18,9 +18,6 @@
 #ifndef TMLN_TIMELINE_HPP
 #include "Support/tmln/tmlnTimeline.hpp"
 #endif
-#ifndef TMA_MANAGEDSTRINGUTILS_HPP
-#include "ToolUIManaged/tma/tmaManagedStringUtils.hpp"
-#endif
 #ifndef TMA3D_VIEWERMGR_HPP
 #include "Tool/tma3d/tma3dViewerMgr.hpp"
 #endif

@@ -148,7 +148,7 @@ namespace cmpsCompassMgr
 	//----------------------------------------------------------------------------
 	// Find the object that matches the pick code from an earlier pick render.
 	//----------------------------------------------------------------------------
-	pick3dPickObject* MatchPickCode(envType::UInt32 i_PickCode);
+	pick3dPickObject* MatchPickCode(uint32_t i_PickCode);
 
 	//----------------------------------------------------------------------------
 	//	GetCompass returns the compass

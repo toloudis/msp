@@ -97,6 +97,43 @@ entModelTemplate* entImport::LoadGeometry( const fsLocator& i_ModelLocator,
 }
 
 //----------------------------------------------------------------------------
+//  LoadGeometry of one part
+//----------------------------------------------------------------------------
+entModelTemplate* entImport::LoadGeometry( const fsLocator& i_ModelLocator,
+										   const std::string& i_Part )
+{
+	if (i_Part.empty())
+		return LoadGeometry(i_ModelLocator, (entFragInfoSink*)NULL);
+
+	try
+	{
+		const int nimpl = l_pImplementations.size();
+		for (int i=0; i<nimpl; i++)
+		{
+			entModelTemplate* model_template = l_pImplementations[i]->LoadGeometryPart(i_ModelLocator, i_Part);
+			if (model_template != NULL)
+				return model_template;
+		}
+		// No implementation handled this file format, set error string and return NULL
+		DBG_ERROR("Unrecognized model file format or part " << i_ModelLocator << " (" << i_Part.c_str() << ")");
+	}
+	catch ( const envExceptionX& i_Ex)
+	{
+		DBG_ERROR("Problem occurred loading model: " << i_Ex.GetErrorMessage());
+	}
+	catch (const std::bad_alloc&)
+	{
+		DBG_ERROR("Out of memory while loading model " << i_ModelLocator);
+	}
+	catch (...)
+	{
+		DBG_ERROR("General exception while loading model " << i_ModelLocator);
+	}
+
+	return NULL;
+}
+
+//----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 scObject* entImport::CreateObject( const entModelTemplate& i_Template,
 								   entModelInstance &o_Instance,
@@ -168,6 +205,46 @@ entAnimKeys* entImport::LoadAnimKeys(const fsLocator& i_AnimLocator)
 
 		// No implementation handled this file format, set error string and return NULL
 		DBG_ERROR("Unrecognized animation file format " << i_AnimLocator);
+	}
+	catch ( const envExceptionX& i_Ex)
+	{
+		DBG_ERROR("Problem occurred loading animation: " << i_Ex.GetErrorMessage());
+	}
+	catch (const std::bad_alloc&)
+	{
+		DBG_ERROR("Out of memory while loading animation " << i_AnimLocator);
+	}
+	catch (...)
+	{
+		DBG_ERROR("General exception while loading animation " << i_AnimLocator);
+	}
+
+	// If we got here, there was an error, return NULL
+	return NULL;
+}
+
+//----------------------------------------------------------------------------
+// Load one clip of a file for one part of it
+//----------------------------------------------------------------------------
+entAnimKeys* entImport::LoadAnimKeys(const fsLocator& i_AnimLocator,
+									 const std::string& i_Part,
+									 const std::string& i_Clip)
+{
+	if (i_Clip.empty())
+		return LoadAnimKeys(i_AnimLocator);
+
+	try
+	{
+		int nimpl = (int) l_pImplementations.size();
+		for (int i=0; i<nimpl; i++)
+		{
+			entAnimKeys* keys = l_pImplementations[i]->LoadAnimKeysPart(i_AnimLocator, i_Part, i_Clip);
+			if (keys != NULL)
+				return keys;
+		}
+
+		// No implementation handled this file format, set error string and return NULL
+		DBG_ERROR("Unrecognized animation file format or clip " << i_AnimLocator << " (" << i_Part.c_str() << ", " << i_Clip.c_str() << ")");
 	}
 	catch ( const envExceptionX& i_Ex)
 	{

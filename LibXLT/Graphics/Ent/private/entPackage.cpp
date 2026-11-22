@@ -37,7 +37,7 @@ void entPackage::Init()
 
 		//	set the error handler file for this package
 		//
-		//gfErrorHandler::SetErrorFilename( envPackageErrorIndices::e_Mat,itString("matErrors.tsf") );
+		//gfErrorHandler::SetErrorFilename( envPackageErrorIndices::e_Mat,"matErrors.tsf" );
 	}
 
 	//	increment the ref count

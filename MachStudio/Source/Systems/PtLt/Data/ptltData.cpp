@@ -6,6 +6,9 @@
 **  Copyright(C) 2003 - All Rights Reserved
 \********************************************************************************************/
 #include "Systems/PtLt/Data/ptltData.hpp"
+#ifndef MA_MATRIX4X4_HPP
+#include "Core/ma/maMatrix4x4.hpp"
+#endif
 
 #include "Core/env/envSTLHelpers.hpp"
 //#include "Support/tmln/tmlnDriverInfo.hpp"
@@ -17,7 +20,7 @@ ptltData::ptltData()
 :	m_Enabled("Enabled", true),
 	m_bEditorVisible("Visible in Editor", true),
 	m_Color("Color", maFloatRGBA(0.5f, 0.5f, 0.5f, 1.0f)),
-	m_ShadowSource("Shadow Source", false),
+	m_ShadowSource("Shadow Source", true),
 	m_Falloff("Falloff", maPoint3d(1.0f, 0.0f, 0.0f)),
 	m_Range("Range", 500.0f),
 	m_Intensity("Intensity", 1.0),
@@ -26,7 +29,8 @@ ptltData::ptltData()
 	m_bDiffuseEnabled("Enable Diffuse", true),
 	m_bSpecularEnabled("Enable Specular", true),
 	m_bAffectsFur("Affects Fur", true),
-	m_bAffectsGlow("Affects Glow", true)
+	m_bAffectsGlow("Affects Glow", true),
+	m_SourceFile("Source File")
 {
 }
 
@@ -36,7 +40,7 @@ ptltData::ptltData(const ptltData& i_Data)
 :	m_Enabled("Enabled", true),
 	m_bEditorVisible("Visible in Editor", true),
 	m_Color("Color", maFloatRGBA(0.5f, 0.5f, 0.5f, 1.0f)),
-	m_ShadowSource("Shadow Source", false),
+	m_ShadowSource("Shadow Source", true),
 	m_Falloff("Falloff", maPoint3d(1.0f, 0.0f, 0.0f)),
 	m_Range("Range", 500.0f),
 	m_Intensity("Intensity", 1.0),
@@ -45,7 +49,8 @@ ptltData::ptltData(const ptltData& i_Data)
 	m_bDiffuseEnabled("Enable Diffuse", true),
 	m_bSpecularEnabled("Enable Specular", true),
 	m_bAffectsFur("Affects Fur", true),
-	m_bAffectsGlow("Affects Glow", true)
+	m_bAffectsGlow("Affects Glow", true),
+	m_SourceFile("Source File")
 {
 	(*this) = i_Data;
 }
@@ -82,6 +87,19 @@ ptltData& ptltData::operator=(const ptltData& i_Data)
 	this->m_bSpecularEnabled = i_Data.m_bSpecularEnabled;
 	this->m_bAffectsFur		= i_Data.m_bAffectsFur;
 	this->m_bAffectsGlow	= i_Data.m_bAffectsGlow;
+	this->m_SourceFile		= i_Data.m_SourceFile;
+	this->m_SourceIdentity	= i_Data.m_SourceIdentity;
 
 	return *this;
+}
+
+
+//---------------------------------------------------------------------------
+// Apply i_Matrix to its placement, without undo
+//---------------------------------------------------------------------------
+void ptltData::ApplyTransformation(const maMatrix4x4& i_Matrix)
+{
+	maPoint3d position = m_Position.GetValue();
+	i_Matrix.Transform(position);
+	m_Position.SetValue(position);
 }

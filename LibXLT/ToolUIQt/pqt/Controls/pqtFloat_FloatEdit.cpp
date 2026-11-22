@@ -9,14 +9,13 @@
 \****************************************************************************/
 #include "ToolUIQt/pqt/Controls/pqtFloat_FloatEdit.hpp"
 
-
 #ifdef USE_QT
 
 //----------------------------------------------------------------------------
 // Set value into control
 //----------------------------------------------------------------------------
 void pqtFloat_FloatEdit_Converter::SetValueIntoControl(tqcFloatEdit* i_pActualControl,
-														float i_Value)
+											float i_Value)
 {
 	i_pActualControl->SetFloatValue(i_Value);
 }
@@ -28,5 +27,6 @@ float pqtFloat_FloatEdit_Converter::GetValueFromControl(tqcFloatEdit* i_pActualC
 {
 	return i_pActualControl->GetFloatValue();
 }
+
 
 #endif

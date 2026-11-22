@@ -8,7 +8,7 @@
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsResourceFinder.hpp"
-#include "Core/it/itString.hpp"
+#include <string>
 #include "Graphics/mat/matTexture.hpp"
 #include "Graphics/mat/matTextureMgr.hpp"
 
@@ -111,7 +111,7 @@ void effParticleData::GetTextureNames(std::vector<std::string>& o_Names) const
 void effParticleData::ReloadTextures(const fsLocator& i_TextureDirectory)
 {
 	if (m_NameDiffuse != "")
-		m_TextureDiffuse = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameDiffuse.c_str()));
+		m_TextureDiffuse = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameDiffuse);
 }
 
 //----------------------------------------------------------------------------
@@ -119,7 +119,7 @@ void effParticleData::ReloadTextures(const fsLocator& i_TextureDirectory)
 void effParticleData::ReloadTextures(const fsResourceFinder& i_TextureFinder)
 {
 	if (m_NameDiffuse != "")
-		m_TextureDiffuse = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameDiffuse.c_str()));
+		m_TextureDiffuse = matTextureMgr::LoadTexture(i_TextureFinder, m_NameDiffuse);
 }
 
 //----------------------------------------------------------------------------

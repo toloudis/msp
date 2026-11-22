@@ -1,0 +1,116 @@
+{
+  "source": "Special/Fog.fx",
+  "hlsl": "Fog.hlsl",
+  "techniques": [
+    {
+      "name": "LinearFog",
+      "passes": [
+        {
+          "name": "p0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "FullScreenQuadVS"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "LinearFogPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ExponentialFog",
+      "passes": [
+        {
+          "name": "p0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "FullScreenQuadVS"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ExponentialFogPS"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ExponentialSquaredFog",
+      "passes": [
+        {
+          "name": "p0",
+          "stages": {
+            "vs": {
+              "profile": "vs_5_0",
+              "entry": "FullScreenQuadVS"
+            },
+            "ps": {
+              "profile": "ps_5_0",
+              "entry": "ExponentialSquaredFogPS"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "samplers": {
+    "samNearest": {
+      "type": "SamplerState",
+      "state": {
+        "Filter": "MIN_MAG_MIP_POINT",
+        "AddressU": "Clamp",
+        "AddressV": "Clamp"
+      }
+    }
+  },
+  "variables": {
+    "g_FogDepthStart": {
+      "type": "float"
+    },
+    "g_FogDepthRange": {
+      "type": "float"
+    },
+    "g_FogDensity": {
+      "type": "float",
+      "default": 1
+    },
+    "g_FogColor": {
+      "type": "float4"
+    },
+    "g_FogOrientation": {
+      "type": "float3"
+    },
+    "g_InvFocalLen": {
+      "type": "float2"
+    },
+    "g_CameraToWorldSpace": {
+      "type": "float4x4"
+    },
+    "g_FogAltitudeStart": {
+      "type": "float",
+      "default": 100
+    },
+    "g_FogAltitudeRange": {
+      "type": "float",
+      "default": 100
+    },
+    "g_FogAltitudeDensity": {
+      "type": "float",
+      "default": 1
+    },
+    "g_FogThinning": {
+      "type": "float",
+      "default": 0.1
+    },
+    "tLinDepth": {
+      "type": "Texture2D"
+    },
+    "tColors": {
+      "type": "Texture2D"
+    }
+  }
+}

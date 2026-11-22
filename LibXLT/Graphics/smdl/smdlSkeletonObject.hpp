@@ -47,7 +47,7 @@ class smdlSkeletonObject : public smdlHierarchyObject
 
 		//--------------------------------------------------------------------
 		// GetNumJoints - return number of animating joints in joint tree.
-		//	Does not count ínserted control nodes.
+		//	Does not count inserted control nodes.
 		//--------------------------------------------------------------------
 		inline int GetNumJoints() const;
 

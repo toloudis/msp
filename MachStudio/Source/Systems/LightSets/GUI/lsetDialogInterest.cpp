@@ -13,7 +13,6 @@
 #include "Systems/LightSets/Undo/lsetOperations.hpp"
 
 #include "Core/fs/fsFileUtil.hpp"
-//#include "Core/it/itStringUtil.hpp"
 #include "Tool/gui/guiMainWindow.hpp"
 //#include "Tool/gui/guiMessageBox.hpp"
 
@@ -35,11 +34,11 @@ lsetDialogInterest::lsetDialogInterest()
 //	Add Object to Placed
 //--------------------------------------------------------------------
 //virtual 
-void lsetDialogInterest::AddObject(const itString& i_FileName, const fsLocator& i_Path)
+void lsetDialogInterest::AddObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 	//std::string dir1, dir2;
-	//dir1 = itStringUtil::GetStdString(i_Path.GetName(0));
-	//dir2 = itStringUtil::GetStdString(i_Path.GetName(1));
+	//dir1 = i_Path.GetName(0);
+	//dir2 = i_Path.GetName(1);
 	//DBG_LOG2("lsetDialogInterest %s-%s", dir1.c_str(), dir2.c_str());
 
 	lsetOperations::AddObject();
@@ -138,8 +137,8 @@ void lsetDialogInterest::GetAvailableObjects(fsysFileList& io_FileList) const
 	fsLocator path;
 	//path.Push("Data");
 	path.Push(c_SystemName);
-	itString fname;
-	fname = itString("LightSet");
+	std::string fname;
+	fname = std::string("LightSet");
 	io_FileList.AddFilename(path,fname);
 }
 

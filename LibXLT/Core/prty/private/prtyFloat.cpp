@@ -142,7 +142,7 @@ bool prtyFloat::operator <=(const float i_Value) const
 //virtual 
 void prtyFloat::Read(chReader& io_Reader)
 {
-	envType::Float32 temp;
+	float temp;
 	io_Reader.Read(temp);
 	SetValue(temp);
 }
@@ -152,6 +152,6 @@ void prtyFloat::Read(chReader& io_Reader)
 //virtual 
 void prtyFloat::Write(chWriter& io_Writer) const
 {
-	envType::Float32 temp = GetValue();
+	float temp = GetValue();
 	io_Writer.Write(temp);
 }

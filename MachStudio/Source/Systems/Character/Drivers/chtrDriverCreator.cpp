@@ -7,6 +7,10 @@
 **	Copyright(C) 2004 - All Rights Reserved
 \****************************************************************************/
 #include "Systems/Character/Drivers/chtrDriverCreator.hpp"
+
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Systems/Character/Data/chtrDataParser.hpp"
 #include "Systems/Character/Drivers/chtrDriverAnimationFull.hpp"
 #include "Systems/Character/GUI/chtrAnimList.hpp"
@@ -89,7 +93,7 @@ namespace
 			// and could be removed in product
 			if (anim_loc.GetNumNames() == 1)
 			{
-				itString filename = anim_loc.GetLastName();
+				std::string filename = anim_loc.GetLastName();
 				anim_loc = chtrAnimList::GetAnimationLocator(filename, i_CharacterDir);
 			}
 
@@ -177,7 +181,7 @@ void chtrDriverCreator::GatherPossibleDrivers( const tmlnScriptObject* i_pObject
 chtrDriverAnimationFull* chtrDriverCreator::CreateAnimationDriver( chtrScriptObject* i_pObject )
 {
 	chtrDriverAnimationFull* pDriver = new chtrDriverAnimationFull( i_pObject->ChannelAnimationFull(),
-		c_CDAF, i_pObject->GetDirectory() );
+		c_CDAF, i_pObject->GetDirectory(), i_pObject->GetBaseData().m_SourceIdentity );
 	pDriver->SetName( CHTRDRIVERNAME_ANIMATIONFULL );
 	pDriver->SetInitialTime(0.0f);
 	pDriver->ShowIcons( chtrObjectMgr::IconsVisible() );
@@ -230,7 +234,7 @@ tmlnDriver* chtrDriverCreator::CreateDriverByName( const char* i_DriverName,
 	if (pDriver != NULL) 
 		return pDriver;
 
-	//if ( !::_stricmp(i_DriverName,CHTRDRIVERNAME_AIMOVEBASE) )
+	//if ( envString::CompareNoCase(i_DriverName, CHTRDRIVERNAME_AIMOVEBASE) == 0 )
 	//{
 	//	chtrDriverAIMoveBase* pDriver = new chtrDriverAIMoveBase( chtr_obj );
 	//	pDriver->SetName( CHTRDRIVERNAME_AIMOVEBASE );
@@ -245,10 +249,10 @@ tmlnDriver* chtrDriverCreator::CreateDriverByName( const char* i_DriverName,
 	//	channelAF.AddDriver( pDriver );
 	//	return pDriver;
 	//}
-	if ( !::_stricmp(i_DriverName,CHTRDRIVERNAME_ANIMATIONFULL) )
+	if ( envString::CompareNoCase(i_DriverName, CHTRDRIVERNAME_ANIMATIONFULL) == 0 )
 	{
 		chtrDriverAnimationFull* pDriver = new chtrDriverAnimationFull( chtr_obj->ChannelAnimationFull(),
-			c_CDAF, chtr_obj->GetDirectory() );
+			c_CDAF, chtr_obj->GetDirectory(), chtr_obj->GetBaseData().m_SourceIdentity );
 		pDriver->SetName( CHTRDRIVERNAME_ANIMATIONFULL );
 		pDriver->SetInitialTime(0.0f);
 		pDriver->ShowIcons( chtrObjectMgr::IconsVisible() );
@@ -258,7 +262,7 @@ tmlnDriver* chtrDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	//else if ( !::_stricmp(i_DriverName,CHTRDRIVERNAME_ANIMATIONSUB) )
+	//else if ( envString::CompareNoCase(i_DriverName, CHTRDRIVERNAME_ANIMATIONSUB) == 0 )
 	//{
 	//	chtrDriverAnimationSub* pDriver = new chtrDriverAnimationSub( chtr_obj->ChannelAnimationSub(),
 	//		chtr_obj->GetDirectory() );
@@ -271,7 +275,7 @@ tmlnDriver* chtrDriverCreator::CreateDriverByName( const char* i_DriverName,
 	//	channel.AddDriver( pDriver );
 	//	return pDriver;
 	//}
-	else if (!::_stricmp(i_DriverName,CHTRDRIVERNAME_SPLINEORI))
+	else if (envString::CompareNoCase(i_DriverName, CHTRDRIVERNAME_SPLINEORI) == 0)
 	{
 		tmlnDriverSplineOriented * pDriver = new tmlnDriverSplineOriented( chtr_obj->ChannelPosition(), 
 			chtr_obj->ChannelOrientation(), c_COSP );
@@ -294,7 +298,7 @@ tmlnDriver* chtrDriverCreator::CreateDriverByName( const char* i_DriverName,
 		Ochannel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (!::_stricmp(i_DriverName, CHTRDRIVERNAME_ATTACHORIENT))
+	else if (envString::CompareNoCase(i_DriverName, CHTRDRIVERNAME_ATTACHORIENT) == 0)
 	{
 		tmlnDriverAttachOrient * pDriver = new tmlnDriverAttachOrient( chtr_obj->ChannelPosition(), chtr_obj->ChannelOrientation(), c_CATO );
 		pDriver->SetName(CHTRDRIVERNAME_ATTACHORIENT);
@@ -309,7 +313,7 @@ tmlnDriver* chtrDriverCreator::CreateDriverByName( const char* i_DriverName,
 		Ochannel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if ( !::_stricmp(i_DriverName, CHTRDRIVERNAME_SOUND) )
+	else if ( envString::CompareNoCase(i_DriverName, CHTRDRIVERNAME_SOUND) == 0 )
 	{
 		fsLocator snddir = chtr_obj->GetDirectory();
 		snddir.Pop();
@@ -407,7 +411,7 @@ tmlnDriver* chtrDriverCreator::CreateDriverFromInfo( tmlnScriptObject* io_pObjec
 		tmlnDriverAnimationFullInfo driver_info( dynamic_cast<const tmlnDriverAnimationFullInfo&>(i_Info) );
 		resolve_animpath(driver_info.m_Info.m_AnimFilename, chtr_obj->GetDirectory());
 		chtrDriverAnimationFull * pDriver = new chtrDriverAnimationFull( chtr_obj->ChannelAnimationFull(),
-			c_CDAF, chtr_obj->GetDirectory() );
+			c_CDAF, chtr_obj->GetDirectory(), chtr_obj->GetBaseData().m_SourceIdentity );
 		pDriver->SetDriverInfo(driver_info);
 
 		tmlnChannel& channel = chtr_obj->ChannelAnimationFull();
@@ -465,15 +469,15 @@ tmlnDriver* chtrDriverCreator::CreateDriverFromInfo( tmlnScriptObject* io_pObjec
 		}
 		else if (driver_info.m_SoundName.GetNumNames() == 1)
 		{
-			itString sdname = chtrGeomList::GetSystemDirName();
+			std::string sdname = chtrGeomList::GetSystemDirName();
 			fsysFileUtil::GetFilePath(  sdname,
-										itString(gfPaths::GetSubPath( gfPaths::e_Sounds )), 
+										std::string(gfPaths::GetSubPath( gfPaths::e_Sounds )), 
 										(driver_info.m_SoundName.GetLastName()), 
 										snddir);
 			
 			//	if the sound isn't found, add the driver, but don't fail loading the scene.
 			//
-			//DBG_ASSERT( snddir.GetNumNames() > 0, "Cannot find sound (%s)", itStringUtil::GetStdString(driver_info.m_SoundName).c_str() );
+			//DBG_ASSERT( snddir.GetNumNames() > 0, "Cannot find sound (%s)", driver_info.m_SoundName.c_str() );
 			if (snddir.GetNumNames() > 0)
 			{
 				snddir.Remove( gfPaths::GetAppPath() );		// make it a relative path

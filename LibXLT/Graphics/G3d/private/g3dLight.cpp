@@ -13,7 +13,8 @@
 //----------------------------------------------------------------------------
 g3dLight::g3dLight()
 :	m_Enabled(false),
-	m_bShadow(false),
+	m_bSinglePass(false),
+	m_bShadowSource(true),
 	m_Color(1.0f, 1.0f, 1.0f, 1.0f),
 	m_Intensity(1.0f),
 	m_ScaledIntensity(1.0f, 1.0f, 1.0f, 1.0f),

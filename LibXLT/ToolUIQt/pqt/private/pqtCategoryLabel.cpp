@@ -1,15 +1,17 @@
 /****************************************************************************\
-**	pqtCategoryLabel.hpp
+**	pqtCategoryLabel.cpp
+**
+**	see .hpp
 **
 **	StudioGPU
-**	Copyright(C) 2009 - All Rights Reserved
+**	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "ToolUIQt/pqt/private/pqtCategoryLabel.hpp"
 
 #include <map>
 #include <set>
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 namespace
 {
@@ -17,10 +19,10 @@ namespace
 	// by the user in order to create them in the same state the next time.
 	// The primary mapping is from DialogName to a Set of Category Names that
 	// have been collapsed.
-	std::map< std::string, std::set< wxString > > l_CollapsedStates;
+	std::map< std::string, std::set< QString > > l_CollapsedStates;
 
 	void set_collapsed_state(const std::string& i_DialogName,
-							 const wxString &i_CategoryName,
+							 const QString &i_CategoryName,
 							 bool i_bCollapsed)
 	{
 		if (i_bCollapsed)
@@ -30,34 +32,39 @@ namespace
 	}
 
 	bool get_collapsed_state(const std::string& i_DialogName,
-							 const wxString &i_CategoryName)
+							 const QString &i_CategoryName)
 	{
-		std::set< wxString > &collapsed_states = l_CollapsedStates[i_DialogName];
-		bool bCollapsed = (collapsed_states.find(i_CategoryName) != collapsed_states.end());
-		return bCollapsed;
+		std::set< QString > &collapsed_states = l_CollapsedStates[i_DialogName];
+		return (collapsed_states.find(i_CategoryName) != collapsed_states.end());
 	}
-}
 
-BEGIN_EVENT_TABLE(pqtCategoryLabel, wxControl)
-    EVT_PAINT(pqtCategoryLabel::OnPaint)
-	//EVT_LEFT_DCLICK(pqtCategoryLabel::OnDoubleClick)
-	EVT_LEFT_DOWN(pqtCategoryLabel::OnClick)
-END_EVENT_TABLE()
+	// Size of the expanded/collapsed box
+	const int c_IconSize = 7;
+	// Where the text starts
+	const int c_TextOffset = 12;
+}
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 pqtCategoryLabel::pqtCategoryLabel(QWidget* i_pParent,
-						 const std::string& i_DialogName, 
-						 const wxString& i_LabelText,
-						 wxSizer* i_pSizer,
-						 int i_ItemIndex)
-:	wxControl(i_pParent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER),
+						 const std::string& i_DialogName,
+						 const QString& i_LabelText)
+:	QWidget(i_pParent),
 	m_DialogName(i_DialogName),
 	m_LabelText(i_LabelText),
-	m_pSizer(i_pSizer),
-	m_ItemIndex(i_ItemIndex)
-{		
-	//this->SetBackgroundStyle(wxBG_STYLE_CUSTOM);
+	m_TextColor(palette().color(QPalette::HighlightedText)),
+	m_BackgroundColor(palette().color(QPalette::Highlight))
+{
+	this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+	this->setCursor(Qt::PointingHandCursor);
+}
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+void pqtCategoryLabel::SetGroup(QWidget* i_pGroup)
+{
+	m_pGroup = i_pGroup;
+	update();
 }
 
 //----------------------------------------------------------------------------
@@ -70,96 +77,61 @@ bool pqtCategoryLabel::GetInitialCollapsedState() const
 }
 
 //----------------------------------------------------------------------------
-// This code is based on wxStaticText, but with the code about 
-//	the border removed (assuming border is 0)
 //----------------------------------------------------------------------------
-wxSize pqtCategoryLabel::DoGetBestSize() const
+void pqtCategoryLabel::SetColors(const QColor& i_Text, const QColor& i_Background)
 {
-    wxClientDC dc(wx_const_cast(pqtCategoryLabel *, this));
-    wxFont font(GetFont());
-    if (!font.Ok())
-        font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
-
-    dc.SetFont(font);
-
-    wxCoord widthTextMax, heightTextTotal;
-    dc.GetMultiLineTextExtent(GetLabelText(), &widthTextMax, &heightTextTotal);
-
-	// icon needs at least 9 in height
-	if (heightTextTotal < 9)
-		heightTextTotal = 9;
-
-    wxSize best(widthTextMax, heightTextTotal);
-    CacheBestSize(best);
-    return best;
+	m_TextColor = i_Text;
+	m_BackgroundColor = i_Background;
+	update();
 }
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void pqtCategoryLabel::OnPaint(wxPaintEvent &i_Event)
+QSize pqtCategoryLabel::sizeHint() const
 {
-    wxPaintDC pdc(this);
+	QFontMetrics metrics(this->font());
+	int height = metrics.height() + 2;
+	// icon needs at least 9 in height
+	if (height < 9)
+		height = 9;
+	return QSize(c_TextOffset + metrics.horizontalAdvance(m_LabelText) + 4, height);
+}
 
-//#if wxUSE_GRAPHICS_CONTEXT
-//     wxGCDC gdc( pdc ) ;
-//    wxDC &dc = m_useContext ? (wxDC&) gdc : (wxDC&) pdc ;
-//#else
-    wxDC &dc = pdc ;
-//#endif
-
-    PrepareDC(dc);
-
-    dc.Clear();
-	wxRect client_rect = this->GetClientRect();
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+void pqtCategoryLabel::paintEvent(QPaintEvent*)
+{
+	QPainter painter(this);
+	painter.fillRect(this->rect(), m_BackgroundColor);
 
 	// Expanded, compressed state
-	const int icon_size = 7;
-	int y = (client_rect.height - icon_size) / 2;
-	dc.SetPen( wxPen(this->GetForegroundColour(), 1, wxSOLID) );
-	dc.SetBrush(*wxTRANSPARENT_BRUSH); // turn off fill
-	dc.DrawRectangle(2, y, icon_size, icon_size);
-
-	bool bIsShown = m_pSizer->IsShown(m_ItemIndex);
-	int half_size = icon_size / 2;
-	dc.DrawLine(2, y+half_size, 2+icon_size, y+half_size);
+	int y = (this->height() - c_IconSize) / 2;
+	painter.setPen(QPen(m_TextColor, 1));
+	painter.setBrush(Qt::NoBrush);
+	painter.drawRect(2, y, c_IconSize, c_IconSize);
+	int half_size = c_IconSize / 2;
+	painter.drawLine(2, y+half_size, 2+c_IconSize, y+half_size);
+	const bool bIsShown = m_pGroup ? !m_pGroup->isHidden() : true;
 	if (!bIsShown)
-		dc.DrawLine(2+half_size, y, 2+half_size, y+icon_size);
-	
+		painter.drawLine(2+half_size, y, 2+half_size, y+c_IconSize);
+
 	// Category Text
-	dc.SetTextForeground(this->GetForegroundColour());
-	dc.SetFont(this->GetFont());
-	dc.DrawText(m_LabelText, 12, 0);
+	painter.setFont(this->font());
+	painter.drawText(QRect(c_TextOffset, 0, this->width() - c_TextOffset, this->height()),
+					 Qt::AlignLeft | Qt::AlignVCenter, m_LabelText);
 }
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void pqtCategoryLabel::OnClick(wxMouseEvent& i_Event)
+void pqtCategoryLabel::mousePressEvent(QMouseEvent* i_pEvent)
 {
-	if (m_pSizer)
+	if (m_pGroup && i_pEvent->button() == Qt::LeftButton)
 	{
-		// Toggle visiblity of item and then redo layout
-		bool bIsShown = m_pSizer->IsShown(m_ItemIndex);
-		m_pSizer->Show(m_ItemIndex, !bIsShown);
+		// Toggle visiblity of the group
+		bool bIsShown = !m_pGroup->isHidden();
+		m_pGroup->setVisible(!bIsShown);
 		set_collapsed_state(m_DialogName, m_LabelText, bIsShown); // Collapsed is true, when bIsShown was true
-
-		//m_pSizer->Layout();
-		//this->Refresh();
-
-		// Can't just lay it out, have to 
-		QWidget *pParent = this->GetParent();
-		wxScrolledWindow *pScrollWindow = dynamic_cast<wxScrolledWindow*>(pParent);
-		if (pScrollWindow)
-		{
-			wxSize size = pScrollWindow->GetBestVirtualSize();
-		      // This will call Layout() and AdjustScrollbars()
-		    pScrollWindow->SetVirtualSize( size );
-		}
-		else
-		{
-			pParent->Layout();
-		}
-		// Need to force a redraw also
-		pParent->Refresh();
+		update();
 	}
 }
 

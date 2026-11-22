@@ -19,13 +19,13 @@
 #include "Core/dbg/dbgMsg.hpp"
 #endif
 
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
 template<class PropertyType, class ValueType, class Converter>
 class pqtTemplate_ComboBox : public pqtControl
 {
-#ifdef QT_FINISH_PORT
 	public:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
@@ -39,7 +39,7 @@ class pqtTemplate_ComboBox : public pqtControl
 			bool bSameValue = pqtControlUtil::GetCommonValue<ValueType, PropertyType>(i_pUIInfo, newvalue);
 
 			// create the actual control
-			m_pActualControl = new pqtControlUtil::CleanUpWidget<wxChoice>(i_pParent, wxID_ANY);
+			m_pActualControl = new pqtControlUtil::CleanUpWidget<QComboBox>(i_pParent);
 			//m_pActualControl = new wxChoice(i_pParent, wxID_ANY);
 
 			//	set the control values
@@ -53,9 +53,7 @@ class pqtTemplate_ComboBox : public pqtControl
 
 			//	hook up events
 			//
-			this->Connect( m_pActualControl->GetId(), wxEVT_COMMAND_CHOICE_SELECTED,
-							wxCommandEventHandler(pqtTemplate_ComboBox::ComboBox_ValueChanged) );
-			m_pActualControl->PushEventHandler(this);
+			QObject::connect(m_pActualControl, QOverload<int>::of(&QComboBox::activated), [this](int) { ComboBox_ValueChanged(); });
 		}
 
 		//----------------------------------------------------------------------------
@@ -63,7 +61,6 @@ class pqtTemplate_ComboBox : public pqtControl
 		//----------------------------------------------------------------------------
 		virtual ~pqtTemplate_ComboBox()
 		{
-			m_pActualControl->RemoveEventHandler(this);
 		}
 
 		//----------------------------------------------------------------------------
@@ -101,33 +98,34 @@ class pqtTemplate_ComboBox : public pqtControl
 		//----------------------------------------------------------------------------
 		void UpdateControl(prtyPropertyUIInfo* i_pUIInfo)
 		{
-			m_pActualControl->Enable(!i_pUIInfo->GetReadOnly());
+			m_pActualControl->setEnabled(!i_pUIInfo->GetReadOnly());
 			
 			// Get list of string choices for combo box
 			std::vector<std::string> choices;
 			Converter::GetChoices(i_pUIInfo, choices);
 
 			// Preserve old string value
-			wxString old_value = m_pActualControl->GetStringSelection();
+			QString old_value = m_pActualControl->currentText();
 
 			// Add choices to control
-			m_pActualControl->Clear();
+			QSignalBlocker blocker(m_pActualControl);
+			m_pActualControl->clear();
 			int num_choices = choices.size();
 			for (int i = 0; i < num_choices; ++i)
 			{
-				m_pActualControl->Append(wxString(choices[i].c_str(), wxConvUTF8));
+				m_pActualControl->addItem(tqtQString(choices[i]));
 			}
 
 			// Put old value back in without triggering a callback.
 			// This might fail to set the string if the choices have changed,
 			// but that is okay. 
-			m_pActualControl->SetStringSelection(old_value);
+			pqtControlUtil::SelectString(m_pActualControl, old_value);
 		}
 
 	private:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
-		void ComboBox_ValueChanged(wxCommandEvent& i_Event)
+		void ComboBox_ValueChanged()
 		{
 			if (m_bLocalChangeNoUpdate) return;
 
@@ -146,8 +144,8 @@ class pqtTemplate_ComboBox : public pqtControl
 			m_bLocalChangeNoUpdate = false;
 		}
 
-		wxChoice* m_pActualControl;
+		QComboBox* m_pActualControl;
 		ValueType m_OriginalValue;
-#endif // USE_QT
 };
 
+#endif // USE_QT

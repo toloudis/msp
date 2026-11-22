@@ -153,7 +153,7 @@ entModelTemplate* emdlImport::LoadGeometry( const fsLocator&	i_ModelLocator,
 											  entFragInfoSink* o_Sink)
 {
 	//	What kind of model is it?
-	if( i_ModelLocator.GetLastName().HasSubString(itString(".mx")) )
+	if( (i_ModelLocator.GetLastName().find(".mx") != std::string::npos) )
 	{
 		fsResourceTracker::MarkBegin(i_ModelLocator);
 
@@ -194,9 +194,9 @@ entModelTemplate* emdlImport::LoadGeometry( const fsLocator&	i_ModelLocator,
 		fsResourceTracker::MarkEnd(i_ModelLocator);
 		return mdl_template.release();
 	}
-	else if( (i_ModelLocator.GetLastName().HasSubString(itString(".gxb"))) ||
-			 (i_ModelLocator.GetLastName().HasSubString(itString(".mhx"))) ||
-			 (i_ModelLocator.GetLastName().HasSubString(itString(".chx"))))
+	else if( ((i_ModelLocator.GetLastName().find(".gxb") != std::string::npos)) ||
+			 ((i_ModelLocator.GetLastName().find(".mhx") != std::string::npos)) ||
+			 ((i_ModelLocator.GetLastName().find(".chx") != std::string::npos)))
 	{
 		fsResourceTracker::MarkBegin(i_ModelLocator);
 
@@ -229,7 +229,7 @@ entModelTemplate* emdlImport::LoadGeometry( const fsLocator&	i_ModelLocator,
 		fsResourceTracker::MarkEnd(i_ModelLocator);
 		return mdl_template.release();
 	}
-	//else if( i_ModelLocator.GetLastName().HasSubString(itString(".mhx")))
+	//else if( (i_ModelLocator.GetLastName().find(".mhx") != std::string::npos))
 	//{
 	//	fsResourceTracker::MarkBegin(i_ModelLocator);
 
@@ -249,7 +249,7 @@ entModelTemplate* emdlImport::LoadGeometry( const fsLocator&	i_ModelLocator,
 	//	fsResourceTracker::MarkEnd(i_ModelLocator);
 	//	return mdl_template.release();
 	//}
-	//else if( i_ModelLocator.GetLastName().HasSubString(itString(".chx")) )
+	//else if( (i_ModelLocator.GetLastName().find(".chx") != std::string::npos) )
 	//{
 	//	fsResourceTracker::MarkBegin(i_ModelLocator);
 
@@ -278,7 +278,7 @@ entModelTemplate* emdlImport::LoadGeometry( const fsLocator&	i_ModelLocator,
 	//	fsResourceTracker::MarkEnd(i_ModelLocator);
 	//	return mdl_template.release();
 	//}
-	else if( i_ModelLocator.GetLastName().HasSubString(itString(".jnx")) )
+	else if( (i_ModelLocator.GetLastName().find(".jnx") != std::string::npos) )
 	{
 		fsResourceTracker::MarkBegin(i_ModelLocator);
 
@@ -316,7 +316,7 @@ entModelTemplate* emdlImport::LoadGeometry( const fsLocator&	i_ModelLocator,
 		fsResourceTracker::MarkEnd(i_ModelLocator);
 		return mdl_template.release();
 	}
-	else if( i_ModelLocator.GetLastName().HasSubString(itString(".vtx")) )
+	else if( (i_ModelLocator.GetLastName().find(".vtx") != std::string::npos) )
 	{
 		fsResourceTracker::MarkBegin(i_ModelLocator);
 
@@ -334,7 +334,7 @@ entModelTemplate* emdlImport::LoadGeometry( const fsLocator&	i_ModelLocator,
 		return mdl_template.release();
 	}
 #ifdef HAIR_SUPPORTED
-	else if( i_ModelLocator.GetLastName().HasSubString(itString(".hair")) )
+	else if( (i_ModelLocator.GetLastName().find(".hair") != std::string::npos) )
 	{
 		fsResourceTracker::MarkBegin(i_ModelLocator);
 
@@ -512,8 +512,8 @@ scObject* emdlImport::CreateObject( const entModelTemplate& i_Template,
 entAnimKeys* emdlImport::LoadAnimKeys(const fsLocator& i_AnimLocator)
 {
 	//
-	if ( i_AnimLocator.GetLastName().HasSubString(itString(".jna"))  ||
-		 i_AnimLocator.GetLastName().HasSubString(itString(".mha")))
+	if ( (i_AnimLocator.GetLastName().find(".jna") != std::string::npos)  ||
+		 (i_AnimLocator.GetLastName().find(".mha") != std::string::npos))
 	{
 		// Hierarchical animation
 		std::unique_ptr< emdlAnimKeys > keys(new emdlAnimKeys);
@@ -532,8 +532,8 @@ entAnimKeys* emdlImport::LoadAnimKeys(const fsLocator& i_AnimLocator)
 		fsResourceTracker::MarkEnd(i_AnimLocator);
 		return keys.release();
 	}
-	else if ( i_AnimLocator.GetLastName().HasSubString(itString(".gab")) ||
-			  i_AnimLocator.GetLastName().HasSubString(itString(".cha")))
+	else if ( (i_AnimLocator.GetLastName().find(".gab") != std::string::npos) ||
+			  (i_AnimLocator.GetLastName().find(".cha") != std::string::npos))
 	{
 		// Characters animation
 		std::unique_ptr< emdlCharacterAnimKeys > keys(new emdlCharacterAnimKeys);
@@ -561,7 +561,7 @@ entAnimKeys* emdlImport::LoadAnimKeys(const fsLocator& i_AnimLocator)
 		keys->SetFramesPerSecond( fps );
 		if (fps > 0) keys->SetStartTime( begin_frame / fps );
 		// Old CHA files need to attach to root joint
-		keys->SetAttachToRootJoint(i_AnimLocator.GetLastName().HasSubString(itString(".cha")));
+		keys->SetAttachToRootJoint((i_AnimLocator.GetLastName().find(".cha") != std::string::npos));
 		fsResourceTracker::MarkEnd(i_AnimLocator);
 
 		if (!keys->VertexKeys().empty())
@@ -572,7 +572,7 @@ entAnimKeys* emdlImport::LoadAnimKeys(const fsLocator& i_AnimLocator)
 
 		return keys.release();
 	}
-	else if ( i_AnimLocator.GetLastName().HasSubString(itString(".vta")) )
+	else if ( (i_AnimLocator.GetLastName().find(".vta") != std::string::npos) )
 	{
 		// Baked vertex animation
 		std::unique_ptr< emdlVertexAnimKeys > keys(new emdlVertexAnimKeys);
@@ -588,7 +588,7 @@ entAnimKeys* emdlImport::LoadAnimKeys(const fsLocator& i_AnimLocator)
 		vtxVertexAnimBudget::ReallocateBudget();
 		return keys.release();
 	}
-	//else if ( i_AnimLocator.GetLastName().HasSubString(itString(".htr")) )
+	//else if ( (i_AnimLocator.GetLastName().find(".htr") != std::string::npos) )
 	//{
 	//	// Motion capture ascii - Hierarchical animation
 	//	std::auto_ptr< emdlAnimKeys > keys(new emdlAnimKeys);

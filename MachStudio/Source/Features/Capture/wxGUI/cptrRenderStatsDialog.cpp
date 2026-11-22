@@ -13,13 +13,13 @@
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-void cptrRenderStatsDialog::UpdateStatString( itString& i_pString )
+void cptrRenderStatsDialog::UpdateStatString( std::string& i_pString )
 {
 	m_richText_stats->Freeze();
 	m_richText_stats->BeginSuppressUndo();
 
 	//m_richText_stats->Clear();
-	m_richText_stats->WriteText( wxString(i_pString.GetString()) );
+	m_richText_stats->WriteText( wxString::FromUTF8(i_pString) );
 
 	m_richText_stats->EndSuppressUndo();
 	m_richText_stats->Thaw();
@@ -27,12 +27,12 @@ void cptrRenderStatsDialog::UpdateStatString( itString& i_pString )
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-void cptrRenderStatsDialog::AddStatString( itString& i_pString )
+void cptrRenderStatsDialog::AddStatString( std::string& i_pString )
 {
 	m_richText_stats->Freeze();
 	m_richText_stats->BeginSuppressUndo();
 
-	m_richText_stats->WriteText( wxString(i_pString.GetString()) );
+	m_richText_stats->WriteText( wxString::FromUTF8(i_pString) );
 	m_richText_stats->Newline();
 
 	m_richText_stats->EndSuppressUndo();

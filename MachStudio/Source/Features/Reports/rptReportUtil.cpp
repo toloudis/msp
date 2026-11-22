@@ -8,6 +8,9 @@
 \****************************************************************************/
 
 #include "Features/Reports/rptReportUtil.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Features/Reports/rptReportData.hpp"
 

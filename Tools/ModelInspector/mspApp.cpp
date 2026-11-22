@@ -97,7 +97,7 @@ void initialize_objects()
 	l_pDirLight->SetDirection(maVector3d(1.2f, -1.0f, -1.0f));
 	l_pDirLight->SetIntensity(maFloatRGBA(0.85f, 0.85f, 0.85f, 1.0f));
 	l_pDirLight->Enable();
-	l_pDirLight->SetCastsShadow(true);
+	l_pDirLight->SetIsSinglePassLight(true);
 }
 
 //

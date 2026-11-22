@@ -17,8 +17,6 @@
 #endif
 
 #ifdef USE_QT
-#include <QtGui/QCheckBox>
-
 
 //============================================================================
 //============================================================================
@@ -57,9 +55,7 @@ class pqtBoolean_CheckBox : public pqtControl
 	private:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
-#ifdef QT_FINISH_PORT
-		void CheckBox_ValueChanged(wxCommandEvent& i_Event);
-#endif
+		void CheckBox_ValueChanged();
 
 		QCheckBox* m_pActualControl;
 };

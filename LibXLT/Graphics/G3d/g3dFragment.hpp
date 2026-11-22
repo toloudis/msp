@@ -193,14 +193,14 @@ class g3dFragment
 		//----------------------------------------------------------------------------
 		//	These functions control if the fragment is using baked texture
 		//----------------------------------------------------------------------------
-		inline bool g3dFragment::GetUseBakedTexture() const;
-		inline void g3dFragment::SetUseBakedTexture(bool i_bVal);
+		inline bool GetUseBakedTexture() const;
+		inline void SetUseBakedTexture(bool i_bVal);
 
 		//----------------------------------------------------------------------------
 		//	These functions control if the fragment has been baked
 		//----------------------------------------------------------------------------
-		inline bool g3dFragment::GetHasBeenBaked() const;
-		inline void g3dFragment::SetHasBeenBaked(bool i_bVal);
+		inline bool GetHasBeenBaked() const;
+		inline void SetHasBeenBaked(bool i_bVal);
 
 		//----------------------------------------------------------------------------
 		//	If the fragment is transparent, render it in a second transparency pass.

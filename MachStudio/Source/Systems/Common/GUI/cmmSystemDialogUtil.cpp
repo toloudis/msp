@@ -7,16 +7,34 @@
 **	Copyright(C) 2006 - All Rights Reserved
 \****************************************************************************/
 #include "Systems/Common/GUI/cmmSystemDialogUtil.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Systems/Common/GUI/cmmAddDriverOperation.hpp"
 #include "Systems/Common/GUI/cmmSystemDialogInterest.hpp"
-#include "Systems/Common/GUI/mGUI/cmmSystemForm.h"
+#ifdef MSP_GUI_QT
+#include "Systems/Common/GUI/qtGUI/cmmSceneDialog.hpp"
+#else
 #include "Systems/Common/GUI/wxGUI/cmmSceneDialog.hpp"
+#endif
 #include "Systems/Common/GUI/cmmSceneOperations.hpp"
 
 #include "Core/env/envSTLHelpers.hpp"
+#ifndef SEL3D_MGR_HPP
+#include "Tool/sel3d/sel3dMgr.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtPaneMgr.hpp"
+#else
 #include "ToolUIWx/twx/twxPaneMgr.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtSystem.hpp"
+#else
 #include "ToolUIWx/twx/twxSystem.hpp"
+#endif
+#include "Features/SceneSetup/Data/SceneSetupData.hpp"
 
 
 //============================================================================
@@ -26,6 +44,21 @@ namespace
 	SceneSetupData l_SceneSetupData;
 
 	std::vector<cmmSystemDialogInterest*>	l_cmmInterestList;
+
+	// DeferUpdates: how many exist, and whether an update was held back
+	int  l_nDeferDepth = 0;
+	bool l_bUpdateDeferred = false;
+
+	//--------------------------------------------------------------------
+	// True (and the update remembered) while updates are deferred
+	//--------------------------------------------------------------------
+	bool defer_update()
+	{
+		if (l_nDeferDepth == 0)
+			return false;
+		l_bUpdateDeferred = true;
+		return true;
+	}
 }
 
 
@@ -40,6 +73,9 @@ namespace cmmSystemDialogUtil
 #ifdef USE_WXWIDGETS
 		DBG_ASSERT(twxSystem::g_pMainForm, "MainForm not yet initialized.");
 		cmmSceneDialog::FormInstance = new cmmSceneDialog(twxSystem::g_pMainForm);
+#elif defined(USE_QT)
+		DBG_ASSERT(tqtSystem::g_pMainForm, "MainForm not yet initialized.");
+		cmmSceneDialog::FormInstance = new cmmSceneDialog(tqtSystem::g_pMainForm);
 #endif
 	}
 
@@ -47,7 +83,7 @@ namespace cmmSystemDialogUtil
 	//--------------------------------------------------------------------
 	void CleanUp()
 	{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		// It looks like wxWidgets deletes the dialogs attached to the main form 
 		// so we don'thave to do it.
 		//if (cmmSceneDialog::FormInstance)
@@ -78,6 +114,13 @@ namespace cmmSystemDialogUtil
 		}
 		cmmSceneDialog::FormInstance->Update();
 		twxPaneMgr::Show(cmmSceneDialog::FormInstance);
+#elif defined(USE_QT)
+		if (!cmmSceneDialog::FormInstance)
+		{
+			Init();
+		}
+		cmmSceneDialog::FormInstance->update();
+		tqtPaneMgr::Show(cmmSceneDialog::FormInstance);
 #endif
 	}
 
@@ -91,6 +134,11 @@ namespace cmmSystemDialogUtil
 		if (cmmSceneDialog::FormInstance)
 		{
 			twxPaneMgr::Show(cmmSceneDialog::FormInstance, false);
+		}
+#elif defined(USE_QT)
+		if (cmmSceneDialog::FormInstance)
+		{
+			tqtPaneMgr::Show(cmmSceneDialog::FormInstance, false);
 		}
 #endif
 	}
@@ -122,8 +170,10 @@ namespace cmmSystemDialogUtil
 
 	void UpdateDialog()
 	{
+		if (defer_update())
+			return;
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cmmSceneDialog::FormInstance)
 		{
 			cmmSceneDialog::FormInstance->Clear();
@@ -158,8 +208,10 @@ namespace cmmSystemDialogUtil
 	//------------------------------------------------------------------------
 	void SelectObjectOnPlacedList(sel3dObject* i_pPickObject)
 	{
+		if (defer_update())
+			return;
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cmmSceneDialog::FormInstance)
 		{
 			cmmSceneDialog::FormInstance->SelectObjectOnPlacedList(i_pPickObject);
@@ -172,8 +224,10 @@ namespace cmmSystemDialogUtil
 	//------------------------------------------------------------------------
 	void AddToSelectedObjectsOnPlacedList(sel3dObject* i_pPickObject)
 	{
+		if (defer_update())
+			return;
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cmmSceneDialog::FormInstance)
 		{
 			cmmSceneDialog::FormInstance->AddToSelectedObjectsOnPlacedList(i_pPickObject);
@@ -186,8 +240,10 @@ namespace cmmSystemDialogUtil
 	//------------------------------------------------------------------------
 	void RemoveFromSelectedObjectsOnPlacedList(sel3dObject* i_pPickObject)
 	{
+		if (defer_update())
+			return;
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cmmSceneDialog::FormInstance)
 		{
 			cmmSceneDialog::FormInstance->RemoveFromSelectedObjectsOnPlacedList(i_pPickObject);
@@ -200,8 +256,10 @@ namespace cmmSystemDialogUtil
 	//------------------------------------------------------------------------
 	void UpdatePlacedList(const std::string& i_SystemName, cmmDialogDataList& i_DataList)
 	{
+		if (defer_update())
+			return;
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cmmSceneDialog::FormInstance)
 		{
 			cmmSceneDialog::FormInstance->UpdatePlacedList(i_SystemName, i_DataList);
@@ -209,13 +267,24 @@ namespace cmmSystemDialogUtil
 #endif
 	}
 
+	void UpdatePlacedList(const std::string& i_SystemName, void (*i_RebuildListData)(cmmDialogDataList&))
+	{
+		if (defer_update())
+			return;
+		cmmDialogDataList data_list;
+		i_RebuildListData(data_list);
+		UpdatePlacedList(i_SystemName, data_list);
+	}
+
 	//------------------------------------------------------------------------
 	// Update the scene hierarchy tree view
 	//------------------------------------------------------------------------
 	void UpdateSceneHierarchy()
 	{
+		if (defer_update())
+			return;
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cmmSceneDialog::FormInstance)
 		{
 			cmmSceneDialog::FormInstance->UpdateSceneHierarchy();
@@ -228,8 +297,10 @@ namespace cmmSystemDialogUtil
 	//--------------------------------------------------------------------
 	void  UpdateSetRelationships()
 	{
+		if (defer_update())
+			return;
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cmmSceneDialog::FormInstance)
 		{
 			cmmSceneDialog::FormInstance->UpdateSetRelationships();
@@ -243,10 +314,45 @@ namespace cmmSystemDialogUtil
 	void UpdateAvailableList()
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cmmSceneDialog::FormInstance)
 		{
 			cmmSceneDialog::FormInstance->UpdateAvailableList();
+		}
+#endif
+	}
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	DeferUpdates::DeferUpdates()
+	{
+		++l_nDeferDepth;
+	}
+
+	DeferUpdates::~DeferUpdates()
+	{
+		if (--l_nDeferDepth > 0 || !l_bUpdateDeferred)
+			return;
+		l_bUpdateDeferred = false;
+
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
+		if (cmmSceneDialog::FormInstance)
+		{
+			// every pane gathers its objects again (the trees keep what
+			// they can: expansion, selection of items still there)
+			cmmSceneDialog::FormInstance->UpdateDialog();
+
+			// then shows the current selection, top object first
+			if (sel3dObject* pTop = sel3dMgr::GetSelected())
+			{
+				cmmSceneDialog::FormInstance->SelectObjectOnPlacedList(pTop);
+				const std::list<sel3dObject*>& selected = sel3dMgr::GetSelectedList();
+				for (std::list<sel3dObject*>::const_iterator it = selected.begin(); it != selected.end(); ++it)
+				{
+					if (*it != pTop)
+						cmmSceneDialog::FormInstance->AddToSelectedObjectsOnPlacedList(*it);
+				}
+			}
 		}
 #endif
 	}
@@ -337,4 +443,3 @@ namespace cmmSystemDialogUtil
 	}
 
 }	// end of namespace
-

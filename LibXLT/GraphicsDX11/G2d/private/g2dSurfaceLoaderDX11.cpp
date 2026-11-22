@@ -70,7 +70,7 @@ void warning_fn_for_png(png_structp png_ptr, png_const_charp warning_msg)
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 void load_png_data(	const fsLocator& i_Locator,
-					std::vector<envType::UInt8*>& o_Rows,
+					std::vector<uint8_t*>& o_Rows,
 					bool& o_HasAlpha,
 					int& o_Width,
 					int& o_Height)
@@ -167,7 +167,7 @@ void load_png_data(	const fsLocator& i_Locator,
 	int row_bytes = png_get_rowbytes(png_ptr, info_ptr);
 	int i;
 	for( i = 0 ; i < height ; i++ )
-		o_Rows[i] = new envType::UInt8[row_bytes];
+		o_Rows[i] = new uint8_t[row_bytes];
 
 	//	The actual image read
 	//
@@ -190,7 +190,7 @@ void LoadPNG(g2dImageDX11* io_Image,
 {
 	fsResourceTracker::MarkBegin(i_Locator);
 
-	std::vector<envType::UInt8*> rows;
+	std::vector<uint8_t*> rows;
 	int width;
 	bool alpha;
 
@@ -248,7 +248,7 @@ void LoadBMP(g2dImageDX11* io_Image,
 {
 	fsResourceTracker::MarkBegin(i_Locator);
 
-	std::vector<envType::UInt8*> rows;
+	std::vector<uint8_t*> rows;
 	int width;
 
 	bool bHasAlpha;
@@ -292,9 +292,9 @@ void LoadTIFF(g2dImageDX11* io_Image,
 {
 	fsResourceTracker::MarkBegin(i_Locator);
 
-	std::vector<envType::UInt8*> rows;
-	std::vector<envType::UInt16*> rows16;
-	std::vector<envType::Float32*> rows_fp;
+	std::vector<uint8_t*> rows;
+	std::vector<uint16_t*> rows16;
+	std::vector<float*> rows_fp;
 	int width;
 	bool alpha;
 
@@ -448,7 +448,7 @@ void LoadTIFF(g2dImageDX11* io_Image,
 //	RGB.
 //------------------------------------------------------------------------
 void LoadPNGData(	const fsLocator& i_Locator,
-					std::vector<envType::UInt8*>& o_Rows,
+					std::vector<uint8_t*>& o_Rows,
 					int& o_Width,
 					bool& o_HasAlpha)
 {
@@ -465,7 +465,7 @@ void LoadPNGData(	const fsLocator& i_Locator,
 //	for this function's row data is always RGB.
 //------------------------------------------------------------------------
 void LoadBMPData(	const fsLocator& i_Locator,
-					std::vector<envType::UInt8*>& o_Rows,
+					std::vector<uint8_t*>& o_Rows,
 					int& o_Width, bool& o_HasAlpha)
 {
 	gfFileBin read_stream(i_Locator, fsFileStream::e_ReadOnly);
@@ -512,7 +512,7 @@ void LoadBMPData(	const fsLocator& i_Locator,
 	int i;
 	o_Rows.resize(height);
 	for( i = 0 ; i < height ; ++i )
-		o_Rows[i] = new envType::UInt8[o_Width * pixelsize];
+		o_Rows[i] = new uint8_t[o_Width * pixelsize];
 
 	int file_y;
 	if( top_down )
@@ -530,12 +530,12 @@ void LoadBMPData(	const fsLocator& i_Locator,
 	for( file_y = 0 ; file_y < height ; ++file_y )
 	{
 		int x_pixel;
-		envType::UInt8* row_base = o_Rows[file_y];
+		uint8_t* row_base = o_Rows[file_y];
 
 		for( x_pixel = 0 ; x_pixel < o_Width ; ++x_pixel )
 		{
 			int byte_number = x_pixel * pixelsize;
-			envType::UInt8 temp = row_base[byte_number];
+			uint8_t temp = row_base[byte_number];
 			row_base[byte_number] = row_base[byte_number + 2];
 			row_base[byte_number + 2] = temp;
 		}
@@ -549,7 +549,7 @@ void LoadBMPData(	const fsLocator& i_Locator,
 //	RGB.
 //------------------------------------------------------------------------
 void LoadTIFFData(	const fsLocator& i_Locator,
-					std::vector<envType::UInt8*>& o_Rows,
+					std::vector<uint8_t*>& o_Rows,
 					int& o_Width,
 					bool& o_HasAlpha,
 					TIFF *i_Image)
@@ -609,7 +609,7 @@ void LoadTIFFData(	const fsLocator& i_Locator,
 
 	o_Rows.resize(imagelength);
 	for( int i = 0 ; i < imagelength ; ++i )
-		o_Rows[i] = (envType::UInt8*)_TIFFmalloc(TIFFScanlineSize(i_Image));
+		o_Rows[i] = (uint8_t*)_TIFFmalloc(TIFFScanlineSize(i_Image));
 	
 	//handle the different configuration types of tiff images
 	//rgbargba...
@@ -627,12 +627,12 @@ void LoadTIFFData(	const fsLocator& i_Locator,
 	else if (config == PLANARCONFIG_SEPARATE) 
 	{
 		//int scan_size = TIFFScanlineSize(i_Image);
-		//envType::UInt8* pixel_r = (envType::UInt8*)_TIFFmalloc(scan_size);
-		//envType::UInt8* pixel_g = (envType::UInt8*)_TIFFmalloc(scan_size);
-		//envType::UInt8* pixel_b = (envType::UInt8*)_TIFFmalloc(scan_size);
-		//envType::UInt8* pixel_a = (envType::UInt8*)_TIFFmalloc(scan_size);
+		//uint8_t* pixel_r = (uint8_t*)_TIFFmalloc(scan_size);
+		//uint8_t* pixel_g = (uint8_t*)_TIFFmalloc(scan_size);
+		//uint8_t* pixel_b = (uint8_t*)_TIFFmalloc(scan_size);
+		//uint8_t* pixel_a = (uint8_t*)_TIFFmalloc(scan_size);
 		//
-		//envType::UInt8* cur_line = NULL;
+		//uint8_t* cur_line = NULL;
 		//
 		//for (row = 0; row < imagelength; row++)
 		//{
@@ -659,14 +659,14 @@ void LoadTIFFData(	const fsLocator& i_Locator,
 		//			DBG_ERROR("Error reading TIFF file: " << imagefile.c_str() );
 		//	}
 		//	cur_line = o_Rows[row];
-		//	envType::UInt8 red;
-		//	envType::UInt8 green;
-		//	envType::UInt8 blue;
-		//	envType::UInt8 alpha;
-		//	envType::UInt8* new_r = NULL;
-		//	envType::UInt8* new_g = NULL;
-		//	envType::UInt8* new_b = NULL;
-		//	envType::UInt8* new_a = NULL;
+		//	uint8_t red;
+		//	uint8_t green;
+		//	uint8_t blue;
+		//	uint8_t alpha;
+		//	uint8_t* new_r = NULL;
+		//	uint8_t* new_g = NULL;
+		//	uint8_t* new_b = NULL;
+		//	uint8_t* new_a = NULL;
 
 		//	for (int i = 0; i < scan_size; i++)
 		//	{
@@ -704,7 +704,7 @@ void LoadTIFFData(	const fsLocator& i_Locator,
 //	RGB.
 //------------------------------------------------------------------------
 void LoadTIFFData(const fsLocator& i_Locator,
-						std::vector<envType::UInt16*>& o_Rows,
+						std::vector<uint16_t*>& o_Rows,
 						int& o_Width,
 						bool& o_HasAlpha,
 						TIFF *i_Image)
@@ -765,7 +765,7 @@ void LoadTIFFData(const fsLocator& i_Locator,
 
 	o_Rows.resize(imagelength);
 	for( int i = 0 ; i < imagelength ; ++i )
-		o_Rows[i] = (envType::UInt16*)_TIFFmalloc(TIFFScanlineSize(i_Image));
+		o_Rows[i] = (uint16_t*)_TIFFmalloc(TIFFScanlineSize(i_Image));
 	
 	//handle the different configuration types of tiff images
 	//rgbargba...
@@ -793,7 +793,7 @@ void LoadTIFFData(const fsLocator& i_Locator,
 //	RGB.
 //------------------------------------------------------------------------
 void LoadTIFFData(const fsLocator& i_Locator,
-						std::vector<envType::Float32*>& o_Rows,
+						std::vector<float*>& o_Rows,
 						int& o_Width,
 						bool& o_HasAlpha,
 						TIFF *i_Image)
@@ -854,7 +854,7 @@ void LoadTIFFData(const fsLocator& i_Locator,
 
 	o_Rows.resize(imagelength);
 	for( int i = 0 ; i < imagelength ; ++i )
-		o_Rows[i] = (envType::Float32*)_TIFFmalloc(TIFFScanlineSize(i_Image));
+		o_Rows[i] = (float*)_TIFFmalloc(TIFFScanlineSize(i_Image));
 	
 	//handle the different configuration types of tiff images
 	//rgbargba...
@@ -883,7 +883,7 @@ void CopyImageData(	void* i_DestBits,
 					int i_DestStride,
 					int i_DestWidth,
 					const g2dPFD& i_DestPFD,
-					const std::vector<envType::UInt8*>& i_SourceRows,
+					const std::vector<uint8_t*>& i_SourceRows,
 					bool i_SourceHasAlpha)
 {
 	//	reformat
@@ -891,7 +891,7 @@ void CopyImageData(	void* i_DestBits,
 	int cur_width, cur_height;
 	int height = i_SourceRows.size();
 
-	envType::UInt8* cur_image_line = reinterpret_cast<envType::UInt8*>(i_DestBits);
+	uint8_t* cur_image_line = reinterpret_cast<uint8_t*>(i_DestBits);
 
 	if ( i_SourceHasAlpha )
 	{
@@ -899,26 +899,26 @@ void CopyImageData(	void* i_DestBits,
 		//
 		for( cur_height = 0 ; cur_height < height ; cur_height++ )
 		{
-			envType::UInt8*	cur_src_pixel = i_SourceRows[cur_height];
-			envType::UInt8* cur_image_pixel = cur_image_line;
+			uint8_t*	cur_src_pixel = i_SourceRows[cur_height];
+			uint8_t* cur_image_pixel = cur_image_line;
 
 			for( cur_width = 0 ; cur_width < i_DestWidth ; cur_width++ )
 			{
-				envType::UInt8 red = *cur_src_pixel++;
-				envType::UInt8 green = *cur_src_pixel++;
-				envType::UInt8 blue = *cur_src_pixel++;
-				envType::UInt8 alpha = *cur_src_pixel++;
-				envType::UInt32 pixel = i_DestPFD.MakePixel(red, green, blue, alpha);
+				uint8_t red = *cur_src_pixel++;
+				uint8_t green = *cur_src_pixel++;
+				uint8_t blue = *cur_src_pixel++;
+				uint8_t alpha = *cur_src_pixel++;
+				uint32_t pixel = i_DestPFD.MakePixel(red, green, blue, alpha);
 
 				if( i_DestPFD.BitsPerPixel() == 16 )
 				{
-					envType::UInt16* word_pixel = reinterpret_cast<envType::UInt16*>(cur_image_pixel);
-					*word_pixel = envType::UInt16(pixel);
+					uint16_t* word_pixel = reinterpret_cast<uint16_t*>(cur_image_pixel);
+					*word_pixel = uint16_t(pixel);
 					cur_image_pixel += 2;
 				}
 				else if( i_DestPFD.BitsPerPixel() == 24 )
 				{
-/*					envType::UInt8* png_pixel_ptr = reinterpret_cast<envType::UInt8*>(&pixel);
+/*					uint8_t* png_pixel_ptr = reinterpret_cast<uint8_t*>(&pixel);
 					cur_image_pixel[0] = png_pixel_ptr[0];
 					cur_image_pixel[1] = png_pixel_ptr[1];
 					cur_image_pixel[2] = png_pixel_ptr[2];
@@ -927,7 +927,7 @@ void CopyImageData(	void* i_DestBits,
 				}
 				else if( i_DestPFD.BitsPerPixel() == 32 )
 				{
-					envType::UInt32* dword_pixel = reinterpret_cast<envType::UInt32*>(cur_image_pixel);
+					uint32_t* dword_pixel = reinterpret_cast<uint32_t*>(cur_image_pixel);
 					*dword_pixel = pixel;
 					cur_image_pixel += 4;
 				}
@@ -941,25 +941,25 @@ void CopyImageData(	void* i_DestBits,
 		// non-alpha version
 		for( cur_height = 0 ; cur_height < height ; cur_height++ )
 		{
-			envType::UInt8*	cur_src_pixel = i_SourceRows[cur_height];
-			envType::UInt8* cur_image_pixel = cur_image_line;
+			uint8_t*	cur_src_pixel = i_SourceRows[cur_height];
+			uint8_t* cur_image_pixel = cur_image_line;
 
 			for( cur_width = 0 ; cur_width < i_DestWidth ; cur_width++ )
 			{
-				envType::UInt8 red = *cur_src_pixel++;
-				envType::UInt8 green = *cur_src_pixel++;
-				envType::UInt8 blue = *cur_src_pixel++;
-				envType::UInt32 pixel = i_DestPFD.MakePixel(red, green, blue);
+				uint8_t red = *cur_src_pixel++;
+				uint8_t green = *cur_src_pixel++;
+				uint8_t blue = *cur_src_pixel++;
+				uint32_t pixel = i_DestPFD.MakePixel(red, green, blue);
 
 				if( i_DestPFD.BitsPerPixel() == 16 )
 				{
-					envType::UInt16* word_pixel = reinterpret_cast<envType::UInt16*>(cur_image_pixel);
-					*word_pixel = envType::UInt16(pixel);
+					uint16_t* word_pixel = reinterpret_cast<uint16_t*>(cur_image_pixel);
+					*word_pixel = uint16_t(pixel);
 					cur_image_pixel += 2;
 				}
 				else if( i_DestPFD.BitsPerPixel() == 24 )
 				{
-/*					envType::UInt8* png_pixel_ptr = reinterpret_cast<envType::UInt8*>(&pixel);
+/*					uint8_t* png_pixel_ptr = reinterpret_cast<uint8_t*>(&pixel);
 					cur_image_pixel[0] = png_pixel_ptr[0];
 					cur_image_pixel[1] = png_pixel_ptr[1];
 					cur_image_pixel[2] = png_pixel_ptr[2];
@@ -968,7 +968,7 @@ void CopyImageData(	void* i_DestBits,
 				}
 				else if( i_DestPFD.BitsPerPixel() == 32 )
 				{
-					envType::UInt32* dword_pixel = reinterpret_cast<envType::UInt32*>(cur_image_pixel);
+					uint32_t* dword_pixel = reinterpret_cast<uint32_t*>(cur_image_pixel);
 					*dword_pixel = pixel;
 					cur_image_pixel += 4;
 				}
@@ -988,7 +988,7 @@ void CopyImageData(	void* i_DestBits,
 					int i_DestStride,
 					int i_DestWidth,
 					const g2dPFD& i_DestPFD,
-					const std::vector<envType::UInt16*>& i_SourceRows,
+					const std::vector<uint16_t*>& i_SourceRows,
 					bool i_SourceHasAlpha)
 {
 	//	reformat
@@ -1002,7 +1002,7 @@ void CopyImageData(	void* i_DestBits,
 	if( i_DestStride != valid_stride )
 		i_DestStride = valid_stride;
 
-	envType::UInt16* cur_image_line = reinterpret_cast<envType::UInt16*>(i_DestBits);
+	uint16_t* cur_image_line = reinterpret_cast<uint16_t*>(i_DestBits);
 
 	if ( i_SourceHasAlpha )
 	{
@@ -1010,15 +1010,15 @@ void CopyImageData(	void* i_DestBits,
 		//
 		for( cur_height = 0 ; cur_height < height ; cur_height++ )
 		{
-			envType::UInt16*	cur_src_pixel = i_SourceRows[cur_height];
-			envType::UInt16*	cur_image_pixel = cur_image_line;
+			uint16_t*	cur_src_pixel = i_SourceRows[cur_height];
+			uint16_t*	cur_image_pixel = cur_image_line;
 
 			for( cur_width = 0 ; cur_width < i_DestWidth ; cur_width++ )
 			{
-				envType::UInt16 red = *cur_src_pixel++;
-				envType::UInt16 green = *cur_src_pixel++;
-				envType::UInt16 blue = *cur_src_pixel++;
-				envType::UInt16 alpha = *cur_src_pixel++;
+				uint16_t red = *cur_src_pixel++;
+				uint16_t green = *cur_src_pixel++;
+				uint16_t blue = *cur_src_pixel++;
+				uint16_t alpha = *cur_src_pixel++;
 				
 				if( i_DestPFD.BitsPerPixel() == 16 )
 				{
@@ -1034,10 +1034,10 @@ void CopyImageData(	void* i_DestBits,
 				}
 				else if( i_DestPFD.BitsPerPixel() == 64 )
 				{
-					envType::UInt16* pixel_r = cur_image_pixel++;
-					envType::UInt16* pixel_g = cur_image_pixel++;
-					envType::UInt16* pixel_b = cur_image_pixel++;
-					envType::UInt16* pixel_a = cur_image_pixel++;
+					uint16_t* pixel_r = cur_image_pixel++;
+					uint16_t* pixel_g = cur_image_pixel++;
+					uint16_t* pixel_b = cur_image_pixel++;
+					uint16_t* pixel_a = cur_image_pixel++;
 
 					*pixel_r = red;
 					*pixel_g = green;
@@ -1054,15 +1054,15 @@ void CopyImageData(	void* i_DestBits,
 		// non-alpha version
 		for( cur_height = 0 ; cur_height < height ; cur_height++ )
 		{
-			envType::UInt16* cur_src_pixel = i_SourceRows[cur_height];
-			envType::UInt16* cur_image_pixel = cur_image_line;
+			uint16_t* cur_src_pixel = i_SourceRows[cur_height];
+			uint16_t* cur_image_pixel = cur_image_line;
 
 			for( cur_width = 0 ; cur_width < i_DestWidth ; cur_width++ )
 			{
-				envType::UInt16 red = *cur_src_pixel++;
-				envType::UInt16 green = *cur_src_pixel++;
-				envType::UInt16 blue = *cur_src_pixel++;
-				envType::UInt16 alpha = 1;
+				uint16_t red = *cur_src_pixel++;
+				uint16_t green = *cur_src_pixel++;
+				uint16_t blue = *cur_src_pixel++;
+				uint16_t alpha = 1;
 
 				if( i_DestPFD.BitsPerPixel() == 16 )
 				{
@@ -1078,10 +1078,10 @@ void CopyImageData(	void* i_DestBits,
 				}
 				else if( i_DestPFD.BitsPerPixel() == 64 )
 				{
-					envType::UInt16* pixel_r = cur_image_pixel++;
-					envType::UInt16* pixel_g = cur_image_pixel++;
-					envType::UInt16* pixel_b = cur_image_pixel++;
-					envType::UInt16* pixel_a = cur_image_pixel++;
+					uint16_t* pixel_r = cur_image_pixel++;
+					uint16_t* pixel_g = cur_image_pixel++;
+					uint16_t* pixel_b = cur_image_pixel++;
+					uint16_t* pixel_a = cur_image_pixel++;
 
 					*pixel_r = red;
 					*pixel_g = green;
@@ -1105,7 +1105,7 @@ void CopyImageData(	void* i_DestBits,
 					int i_DestStride,
 					int i_DestWidth,
 					const g2dPFD& i_DestPFD,
-					const std::vector<envType::Float32*>& i_SourceRows,
+					const std::vector<float*>& i_SourceRows,
 					bool i_SourceHasAlpha)
 {
 	//	reformat
@@ -1119,7 +1119,7 @@ void CopyImageData(	void* i_DestBits,
 	if( i_DestStride != valid_stride )
 		i_DestStride = valid_stride;
 
-	envType::Float32* cur_image_line = reinterpret_cast<envType::Float32*>(i_DestBits);
+	float* cur_image_line = reinterpret_cast<float*>(i_DestBits);
 
 	if ( i_SourceHasAlpha )
 	{
@@ -1127,15 +1127,15 @@ void CopyImageData(	void* i_DestBits,
 		//
 		for( cur_height = 0 ; cur_height < height ; cur_height++ )
 		{
-			envType::Float32*	cur_src_pixel = i_SourceRows[cur_height];
-			envType::Float32* cur_image_pixel = cur_image_line;
+			float*	cur_src_pixel = i_SourceRows[cur_height];
+			float* cur_image_pixel = cur_image_line;
 
 			for( cur_width = 0 ; cur_width < i_DestWidth ; cur_width++ )
 			{
-				envType::Float32 red = *cur_src_pixel++;
-				envType::Float32 green = *cur_src_pixel++;
-				envType::Float32 blue = *cur_src_pixel++;
-				envType::Float32 alpha = *cur_src_pixel++;
+				float red = *cur_src_pixel++;
+				float green = *cur_src_pixel++;
+				float blue = *cur_src_pixel++;
+				float alpha = *cur_src_pixel++;
 				
 				if( i_DestPFD.BitsPerPixel() == 16 )
 				{
@@ -1151,10 +1151,10 @@ void CopyImageData(	void* i_DestBits,
 				}
 				else if( i_DestPFD.BitsPerPixel() == 128 )
 				{
-					envType::Float32* pixel_r = cur_image_pixel++;
-					envType::Float32* pixel_g = cur_image_pixel++;
-					envType::Float32* pixel_b = cur_image_pixel++;
-					envType::Float32* pixel_a = cur_image_pixel++;
+					float* pixel_r = cur_image_pixel++;
+					float* pixel_g = cur_image_pixel++;
+					float* pixel_b = cur_image_pixel++;
+					float* pixel_a = cur_image_pixel++;
 
 					*pixel_r = red;
 					*pixel_g = green;
@@ -1171,15 +1171,15 @@ void CopyImageData(	void* i_DestBits,
 		// non-alpha version
 		for( cur_height = 0 ; cur_height < height ; cur_height++ )
 		{
-			envType::Float32*	cur_src_pixel = i_SourceRows[cur_height];
-			envType::Float32* cur_image_pixel = cur_image_line;
+			float*	cur_src_pixel = i_SourceRows[cur_height];
+			float* cur_image_pixel = cur_image_line;
 
 			for( cur_width = 0 ; cur_width < i_DestWidth ; cur_width++ )
 			{
-				envType::Float32 red = *cur_src_pixel++;
-				envType::Float32 green = *cur_src_pixel++;
-				envType::Float32 blue = *cur_src_pixel++;
-				envType::Float32 alpha = 1.0f;
+				float red = *cur_src_pixel++;
+				float green = *cur_src_pixel++;
+				float blue = *cur_src_pixel++;
+				float alpha = 1.0f;
 
 				if( i_DestPFD.BitsPerPixel() == 16 )
 				{
@@ -1195,10 +1195,10 @@ void CopyImageData(	void* i_DestBits,
 				}
 				else if( i_DestPFD.BitsPerPixel() == 128 )
 				{
-					envType::Float32* pixel_r = cur_image_pixel++;
-					envType::Float32* pixel_g = cur_image_pixel++;
-					envType::Float32* pixel_b = cur_image_pixel++;
-					envType::Float32* pixel_a = cur_image_pixel++;
+					float* pixel_r = cur_image_pixel++;
+					float* pixel_g = cur_image_pixel++;
+					float* pixel_b = cur_image_pixel++;
+					float* pixel_a = cur_image_pixel++;
 
 					*pixel_r = red;
 					*pixel_g = green;

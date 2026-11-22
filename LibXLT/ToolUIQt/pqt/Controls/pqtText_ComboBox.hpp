@@ -19,12 +19,12 @@
 #include "Core/prty/prtyText.hpp"
 #endif
 
+#ifdef USE_QT
 
 //===================================================================================
 //===================================================================================
 class pqtText_ComboBox_Converter 
 {
-#ifdef QT_FINISH_PORT
 public:
 	//----------------------------------------------------------------------------
 	// Get list of string choices for combo box
@@ -35,17 +35,17 @@ public:
 	//----------------------------------------------------------------------------
 	// Set value into control
 	//----------------------------------------------------------------------------
-	static void SetValueIntoControl(wxChoice* i_pActualControl,
+	static void SetValueIntoControl(QComboBox* i_pActualControl,
 									 std::string i_Value);
 
 	//----------------------------------------------------------------------------
 	// Get value from control
 	//----------------------------------------------------------------------------
-	static std::string GetValueFromControl(wxChoice* i_pActualControl);
-#endif // USE_QT
+	static std::string GetValueFromControl(QComboBox* i_pActualControl);
 };
 
 //============================================================================
 //============================================================================
 typedef pqtTemplate_ComboBox<prtyText, std::string, pqtText_ComboBox_Converter> pqtText_ComboBox;
 
+#endif // USE_QT

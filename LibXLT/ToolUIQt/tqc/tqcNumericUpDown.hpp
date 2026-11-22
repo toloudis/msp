@@ -1,7 +1,9 @@
 /****************************************************************************\
 **	tqcNumericUpDown.hpp
 **
-**		Custom control with float edit and spin button controls
+**	Float edit box with up/down arrows. Clicking an arrow steps the value
+**	by the increment (repeating while held); dragging up or down from an
+**	arrow changes the value continuously.
 **
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
@@ -14,31 +16,27 @@
 #ifndef TQC_FLOATEDIT_HPP
 #include "ToolUIQt/tqc/tqcFloatEdit.hpp"
 #endif
-#ifndef TQT_WIDGETS_HPP
-#include "ToolUIQt/tqt/tqtWidgets.hpp"
-#endif
 
 #ifdef USE_QT
-#include <QtGui/QSpinBox>
 
-
-//============================================================================
-// wxEVT_VALUE_CHANGED event : this control throws this event type when the
-//	value in the control has changed after ENTER is pressed, or the
-//	focus leaves the text box. Users should register for this event, 
-//	not for the individual enter pressed and leave events.
-//============================================================================
+class tqcSpinArrows;
 
 //============================================================================
 //============================================================================
-class tqcNumericUpDown : public QSpinBox
+class tqcNumericUpDown : public QWidget, public tqcValueChangedNotifier
 {
 	public:
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
 		tqcNumericUpDown(QWidget* i_pParent);
+
+		//--------------------------------------------------------------------
+		//--------------------------------------------------------------------
 		~tqcNumericUpDown();
 
+		//--------------------------------------------------------------------
+		//	Static pointer to the instance of the control
+		//--------------------------------------------------------------------
 		static tqcNumericUpDown* Instance;
 
 		//--------------------------------------------------------------------
@@ -48,26 +46,17 @@ class tqcNumericUpDown : public QSpinBox
 		void SetValue(const float i_Value);
 
 		//--------------------------------------------------------------------
-		//	Minimum
+		//	Minimum / Maximum, used when the restrict flag is set
 		//--------------------------------------------------------------------
 		const float GetMinimum() const;
 		void SetMinimum(const float i_Minimum);
-
-		//--------------------------------------------------------------------
-		//	Maximum
-		//--------------------------------------------------------------------
 		const float GetMaximum() const;
 		void SetMaximum(const float i_Maximum);
-
-		//--------------------------------------------------------------------
-		//  Functions to check if the flags restricting ranges is set
-		//--------------------------------------------------------------------
-
 		const bool GetRestrictFlag() const;
 		void SetRestrictFlag( const bool i_bRestrictValue);
 
 		//--------------------------------------------------------------------
-		//	DecimalPlaces
+		//	DecimalPlaces - passed on to FloatEdit control
 		//--------------------------------------------------------------------
 		const short GetDecimalPlaces() const;
 		void SetDecimalPlaces(const short i_DecimalPlaces);
@@ -78,43 +67,19 @@ class tqcNumericUpDown : public QSpinBox
 		const float GetIncrement() const;
 		void SetIncrement(const float i_Increment);
 
-		//--------------------------------------------------------------------
-		// Calls the callback and appropriate event handlers
-		//--------------------------------------------------------------------
-#ifdef QT_FINISH_PORT
-		bool ProcessCommand(wxCommandEvent& i_Event);
-#endif
-
 	private:
-		//--------------------------------------------------------------------
-		//--------------------------------------------------------------------
-#ifdef QT_FINISH_PORT
-		void OnTextChange(wxCommandEvent& i_Event);
-		void OnScrollUp(wxSpinEvent& i_Event);
-		void OnScrollDown(wxSpinEvent& i_Event);
-		void OnMouseClick(wxMouseEvent& i_Event);
-		void OnMouseDrag(wxMouseEvent& i_Event);
-		void OnMouseUp(wxMouseEvent& i_Event);
-#endif
-		//--------------------------------------------------------------------
-		//--------------------------------------------------------------------
-		void update_slider();
-		void notify_callback();
+		friend class tqcSpinArrows;
 
-		//QSpinBox* m_pSpinner;
-		//tqcFloatEdit* m_pFloatEdit;
-		
+		void OnTextChange();
+		void step(float i_Steps);
+		float restrict_value(float i_Value) const;
+
+		tqcSpinArrows* m_pSpinner;
+		tqcFloatEdit* m_pFloatEdit;
 		float m_fValue;
 		float m_Minimum, m_Maximum;
 		float m_Increment;
-		float m_yInitial, m_yOffset, new_value;
-
 		bool m_bRestrictValue;
-		bool m_bspinButtonClicked;
-
-#ifdef QT_FINISH_PORT
-	DECLARE_EVENT_TABLE()
-#endif
 };
 
 #endif // USE_QT

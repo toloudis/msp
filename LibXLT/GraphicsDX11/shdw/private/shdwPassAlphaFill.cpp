@@ -31,6 +31,12 @@
 #include "GraphicsDX11/shdw/shdwPassTransparent.hpp"
 #include "Graphics/G3d/g3dFragment.hpp"
 #include "GraphicsDX11/G3d/g3dSceneGlobal.hpp"
+#ifndef FX_EFFECTDX11_HPP
+#include "GraphicsDX11/Fx/fxEffectDX11.hpp"
+#endif
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 
 namespace
@@ -145,7 +151,7 @@ shdwPassAlphaFill::shdwPassAlphaFill(g2dRenderTarget* i_destination, bool i_isBi
 	if (!l_AlphaFillMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/DepthMap.fx"), matShaderMgr::GetSpecialEffect("DepthMap.fx"));
+		p->SetShaderName(std::string("Special/DepthMap.fx"), matShaderMgr::GetSpecialEffect("DepthMap.fx"));
 		l_AlphaFillMat.SetShaderParams(p);
 	}
 }
@@ -181,6 +187,7 @@ void shdwPassAlphaFill::SetTransparentPassInfo(g3dLayer* i_pLayer,
 //----------------------------------------------------------------------------------------
 int shdwPassAlphaFill::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassAlphaFill");
 	m_stats.Reset();
 
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassAlphaFill::Render" );
@@ -408,7 +415,15 @@ int shdwPassAlphaFill::RenderNode(const sNodePlusState& i_Node, g3dRenderStateTr
 	const matMaterial* pMaterial = &l_AlphaFillMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 	
-	ID3DX11Effect* pEffectDX = dynamic_cast<effShaderBaseDX11*>(pEffect)->GetD3DXEffect();
+	fxEffect* pEffectDX = dynamic_cast<effShaderBaseDX11*>(pEffect)->GetFxEffect();
+
+	// an opaque node: no transparency. The effect is shared with
+	// RenderTransparentNode, which sets these for each transparent node;
+	// left as they were, ZFill alpha-tested this node against the last
+	// one's transparency map (even after that texture was released)
+	pEffectDX->GetVariableByName("hasTransparencyMap")->AsScalar()->SetBool(FALSE);
+	pEffectDX->GetVariableByName("transparencyMap")->AsShaderResource()->SetResource(NULL);
+	pEffectDX->GetVariableByName("g_transparency")->AsScalar()->SetFloat(1.0f);
 
 	// e_Environment is a different type of ambient pass that is ambient-only.
 	pEffect->SetTechnique(m_bAA ? "ZFillRGBA" : "ZFill");
@@ -449,7 +464,7 @@ int shdwPassAlphaFill::RenderTransparentNode(const g3dSceneNode* i_pNode, g3dRen
 	const matMaterial* pAlphaMaterial = &l_AlphaFillMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pAlphaMaterial);
 	
-	ID3DX11Effect* pEffectDX = dynamic_cast<effShaderBaseDX11*>(pEffect)->GetD3DXEffect();
+	fxEffect* pEffectDX = dynamic_cast<effShaderBaseDX11*>(pEffect)->GetFxEffect();
 
 	const matMaterial* pMaterial = g3dDX11Util::GetMaterial(i_pNode);
 
@@ -547,13 +562,12 @@ void shdwPassAlphaFill::CompositeTexture(matTexture* src, g2dRenderTarget* tgt)
 	UINT uiPass;
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassAlphaFill::CompositeTexture" );
 
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
-	ID3DX11EffectTechnique* pEffectTechnique = NULL;
+	fxEffectDX11* pEffect = g3dDX11Util::GetPlainEffect("HDRLighting");
+	int technique = -1;
 	if (m_bAA)
-		pEffectTechnique = pEffect->GetTechniqueByName("SimpleCopyInvGAlpha");
+		technique = pEffect->FindTechnique("SimpleCopyInvGAlpha");
 	else
-		pEffectTechnique = pEffect->GetTechniqueByName("SimpleCopyInvAlpha");
+		technique = pEffect->FindTechnique("SimpleCopyInvAlpha");
 
 	tgt->MakeCurrent();
 	int w,h;
@@ -564,11 +578,10 @@ void shdwPassAlphaFill::CompositeTexture(matTexture* src, g2dRenderTarget* tgt)
 	g3dRasterizerStateMgr::SetRasterizerState( D3D11_CULL_NONE, g3dDrawStyleUtilDX11::GetD3DDrawStyle() );
 	g3dDepthStencilStateMgr::SetDepthStencilState( dsp_Disable_NS );
 
-	D3DX11_TECHNIQUE_DESC techDesc;
-	pEffectTechnique->GetDesc( &techDesc );
-	for (uiPass = 0; uiPass < techDesc.Passes; ++uiPass)
+	UINT nTechPasses = (UINT)pEffect->GetPassCount(technique);
+	for (uiPass = 0; uiPass < nTechPasses; ++uiPass)
 	{
-		pEffectTechnique->GetPassByIndex(uiPass)->Apply(0, g2dDX11Global::g_pDeviceContext);
+		pEffect->Apply(technique, uiPass, g2dDX11Global::g_pDeviceContext);
 
 		// alpha blending/z writing control by callar
 		ID3D11ShaderResourceView* aRes[1] = { g3dDX11TextureUtil::GetD3DTexture(src)};

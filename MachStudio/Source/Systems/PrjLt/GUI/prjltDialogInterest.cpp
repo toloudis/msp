@@ -13,7 +13,6 @@
 #include "Systems/PrjLt/Undo/prjltOperations.hpp"
 
 #include "Core/fs/fsFileUtil.hpp"
-//#include "Core/it/itStringUtil.hpp"
 #include "Tool/gui/guiMainWindow.hpp"
 //#include "Tool/gui/guiMessageBox.hpp"
 
@@ -37,20 +36,20 @@ prjltDialogInterest::prjltDialogInterest()
 //	Add Object to Placed
 //--------------------------------------------------------------------
 //virtual 
-void prjltDialogInterest::AddObject(const itString& i_FileName, const fsLocator& i_Path)
+void prjltDialogInterest::AddObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 	//std::string dir1, dir2;
-	//dir1 = itStringUtil::GetStdString(i_Path.GetName(0));
-	//dir2 = itStringUtil::GetStdString(i_Path.GetName(1));
+	//dir1 = i_Path.GetName(0);
+	//dir2 = i_Path.GetName(1);
 	//DBG_LOG2("prjltDialogInterest %s-%s", dir1.c_str(), dir2.c_str());
 
 	try
 	{
-		if (i_FileName == itString(c_SpotLightLabel))
+		if (i_FileName == std::string(c_SpotLightLabel))
 			prjltOperations::AddObject(prjltData::e_SpotLight);
-		else if (i_FileName == itString(c_DirectionalLightLabel))
+		else if (i_FileName == std::string(c_DirectionalLightLabel))
 			prjltOperations::AddObject(prjltData::e_DirectionalLight);
-		else if (i_FileName == itString(c_CurrentViewLabel))
+		else if (i_FileName == std::string(c_CurrentViewLabel))
 			prjltOperations::AddLightAtCameraPosition();
 		else
 			prjltOperations::AddObject();
@@ -160,10 +159,10 @@ void prjltDialogInterest::GetAvailableObjects(fsysFileList& io_FileList) const
 	path.Push(c_SystemName);
 
 	// Basic creation of Projected Light
-	io_FileList.AddFilename(path, itString("Projected Light"));
+	io_FileList.AddFilename(path, std::string("Projected Light"));
 
 	// Create Projected Light at current view
-	io_FileList.AddFilename(path, itString(c_CurrentViewLabel));
+	io_FileList.AddFilename(path, std::string(c_CurrentViewLabel));
 }
 
 

@@ -21,9 +21,6 @@
 #ifndef FS_FILESTREAM_HPP
 #include "Core/Fs/fsFileStream.hpp"
 #endif 
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
 
 #include <string>
 
@@ -72,16 +69,16 @@ class chReader
 		//	but I think there would be problems getting them instantiated
 		//	so that they are part of the abstract base interface.
 		//--------------------------------------------------------------------
-		virtual void Read(envType::Int8& o_Val) = 0;
-		virtual void Read(envType::UInt8& o_Val) = 0;
-		virtual void Read(envType::Int16& o_Val) = 0;
-		virtual void Read(envType::UInt16& o_Val) = 0;
-		virtual void Read(envType::Int32& o_Val) = 0;
-		virtual void Read(envType::UInt32& o_Val) = 0;
-		virtual void Read(envType::Int64& o_Val) = 0;
-		virtual void Read(envType::UInt64& o_Val) = 0;
-		virtual void Read(envType::Float32& o_Val) = 0;
-		virtual void Read(envType::Float64& o_Val) = 0;
+		virtual void Read(int8_t& o_Val) = 0;
+		virtual void Read(uint8_t& o_Val) = 0;
+		virtual void Read(int16_t& o_Val) = 0;
+		virtual void Read(uint16_t& o_Val) = 0;
+		virtual void Read(int32_t& o_Val) = 0;
+		virtual void Read(uint32_t& o_Val) = 0;
+		virtual void Read(int64_t& o_Val) = 0;
+		virtual void Read(uint64_t& o_Val) = 0;
+		virtual void Read(float& o_Val) = 0;
+		virtual void Read(double& o_Val) = 0;
 
 		//--------------------------------------------------------------------
 		//	This Read reads a string called either "TRUE" or "FALSE" and 
@@ -90,7 +87,11 @@ class chReader
 		virtual void Read(bool& o_Val) = 0;
 		
 		//--------------------------------------------------------------------
-		//	This Read reads a NULL-terminated single-byte character string.
+		//	This Read reads a NULL-terminated single-byte character string:
+		//	the bytes as written, UTF-8 in files written now. It is for strings
+		//	that were always written as single bytes, and every new field; a
+		//	string that binary files written before PWFB stored as UTF-16 is
+		//	read with ReadLegacyWideString.
 		//--------------------------------------------------------------------
 		virtual void Read(std::string& o_Val) = 0;
 
@@ -101,15 +102,20 @@ class chReader
 		virtual void Read(std::string& o_Val, int i_Length) = 0;
 
 		//--------------------------------------------------------------------
-		//	This Read reads a NULL-terminated Unicode character string.  
+		//	ReadLegacyWideString reads a NULL-terminated string, as UTF-8,
+		//	from a field that held an itString in binary files written before
+		//	the PWFB signature (itString wasn't portable UTF-8 but 16-bit
+		//	wide characters, so those files store the field as UTF-16, which
+		//	this converts). In PWFB files, and in text and XML files, it is
+		//	the same as Read (gfFileBin::HasUTF8Strings).
+		//
+		//	Only for those fields. Nothing in an old file says which strings
+		//	are UTF-16, so each such field's parser says so by calling this.
+		//	New fields always use Read: no file written before PWFB has them.
+		//	Don't change an existing call to Read either: old files would
+		//	misread that field and everything after it.
 		//--------------------------------------------------------------------
-		virtual void Read(itString& o_Val) = 0;
-
-		//--------------------------------------------------------------------
-		//	This Read Reads a Unicode character string with a length
-		//	given by i_Length.
-		//--------------------------------------------------------------------
-		virtual void Read(itString& o_Val, int i_Length) = 0;
+		virtual void ReadLegacyWideString(std::string& o_Val) = 0;
 
 		//--------------------------------------------------------------------
 		//	Read in an envAppVersion structure
@@ -120,7 +126,7 @@ class chReader
 		//	Read chunk of binary data; this is only for
 		//	the implementations, it is not a function of chReader base class
 		//--------------------------------------------------------------------
-		virtual	void Read(void* i_Data, envType::Int64 i_NumBytes) = 0;
+		virtual	void Read(void* i_Data, int64_t i_NumBytes) = 0;
 
 		//--------------------------------------------------------------------
 		// This function asks if it is safe to read binary data in a 

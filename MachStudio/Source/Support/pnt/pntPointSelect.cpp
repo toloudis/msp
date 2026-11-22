@@ -111,7 +111,7 @@ pntPointObject* pntPointSelect::GetPointObject(pntPoint *i_pPoint)
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
 //virtual 
-pick3dPickObject* pntPointSelect::MatchPickCode(envType::UInt32 i_PickCode)
+pick3dPickObject* pntPointSelect::MatchPickCode(uint32_t i_PickCode)
 {
 	PointMap::iterator it, end = l_PointMap.end();
 	for ( it = l_PointMap.begin(); it != end; ++it )

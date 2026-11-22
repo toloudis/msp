@@ -10,7 +10,7 @@
 
 #include "ToolUIWx/twx/twxSystem.hpp"
 
-#include "Core/It/itString.hpp"
+#include <string>
 
 
 //===========================================================================
@@ -23,8 +23,8 @@
 //---------------------------------------------------------------------------
 int twxMessageBox::Show( const char* i_Message, const char* i_Title, int i_Type )
 {
-	itString message(i_Message);
-	itString title(i_Title);
+	std::string message(i_Message);
+	std::string title(i_Title);
 
 	long style = wxOK;
 	switch (i_Type)
@@ -43,16 +43,16 @@ int twxMessageBox::Show( const char* i_Message, const char* i_Title, int i_Type 
 			break;
 		case e_RetryCancel:
 			style = wxOK | wxCANCEL; // no retry?
-			message += itString("\nRetry?");
+			message += std::string("\nRetry?");
 			break;
 		case e_AbortRetryIgnore:
 			style = wxYES_NO | wxCANCEL; // no abort, retry, ignore?
-			message += itString("\nRetry/Ignore/Abort?");
+			message += std::string("\nRetry/Ignore/Abort?");
 			break;
 	}
 
 	wxWindow *pParent = twxSystem::g_pMainForm;
-	wxMessageDialog dialog(pParent, message.GetString(), title.GetString(), style);
+	wxMessageDialog dialog(pParent, wxString::FromUTF8(message), wxString::FromUTF8(title), style);
 
 	int result = dialog.ShowModal();
 	
@@ -90,10 +90,10 @@ int twxMessageBox::Show( const char* i_Message, const char* i_Title, int i_Type 
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-int twxMessageBox::Show( const itString& i_Message, const itString& i_Title, int i_Type )
+int twxMessageBox::Show( const std::string& i_Message, const std::string& i_Title, int i_Type )
 {
-	itString message(i_Message);
-	itString title(i_Title);
+	std::string message(i_Message);
+	std::string title(i_Title);
 
 	long style = wxOK;
 	switch (i_Type)
@@ -112,18 +112,18 @@ int twxMessageBox::Show( const itString& i_Message, const itString& i_Title, int
 			break;
 		case e_RetryCancel:
 			style = wxOK | wxCANCEL; // no retry?
-			message += itString(L"\nRetry?");
+			message += std::string("\nRetry?");
 			break;
 		case e_AbortRetryIgnore:
 			style = wxYES_NO | wxCANCEL; // no abort, retry, ignore?
-			message += itString(L"\nRetry/Ignore/Abort?");
+			message += std::string("\nRetry/Ignore/Abort?");
 			break;
 	}
 
 	wxWindow *pParent = twxSystem::g_pMainForm;
 	wxMessageDialog dialog(pParent, 
-		message.GetString(), 
-		title.GetString(), 
+		wxString::FromUTF8(message), 
+		wxString::FromUTF8(title), 
 		style);
 
 	int result = dialog.ShowModal();

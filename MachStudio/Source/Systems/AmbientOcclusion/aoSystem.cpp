@@ -9,14 +9,12 @@
 #include "Systems/AmbientOcclusion/aoSystem.hpp"
 
 #include "Support/rman/rmanMgr.hpp"
-#include "Support/mray/mrayMgr.hpp"
 
 #include "Systems/AmbientOcclusion/GUI/aoDialogInterest.hpp"
 #include "Systems/AmbientOcclusion/GUI/aoDialogUtil.hpp"
 #include "Systems/AmbientOcclusion/Data/aoDocumentInterest.hpp"
 #include "Systems/AmbientOcclusion/Object/aoObjectMgr.hpp"
 #include "Systems/AmbientOcclusion/Object/aoRendermanExportInterest.hpp"
-#include "Systems/AmbientOcclusion/Object/aoMRayExportInterest.hpp"
 #include "Systems/AmbientOcclusion/Timeline/aoDriverCreator.hpp"
 
 #include "Systems/Common/GUI/cmmDialogInterestMgr.hpp"
@@ -37,7 +35,6 @@ namespace aoSystem
 //		aoPickInterest*				l_pFogPI = 0;
 		aoDialogInterest*			l_pFogDI = 0;
 		aoRendermanExportInterest*	l_pFogREI = 0;
-		aoMRayExportInterest*		l_pFogMRayEI = 0;
 		aoAOObject*					l_pAOObject = 0;
 
 		//====================================================================
@@ -90,11 +87,6 @@ namespace aoSystem
 			l_pFogREI = new aoRendermanExportInterest();
 			rmanMgr::RegisterExportInterest( l_pFogREI );
 		}
-		if ( l_pFogMRayEI == 0 )
-		{
-			l_pFogMRayEI = new aoMRayExportInterest();
-			mrayMgr::RegisterExportInterest( l_pFogMRayEI );
-		}
 
 		// Timeline related creators
 		tmlnDriverCreator* pDriverCreator = new aoDriverCreator;
@@ -137,12 +129,6 @@ namespace aoSystem
 			rmanMgr::UnRegisterExportInterest( l_pFogREI );
 			delete l_pFogREI;
 			l_pFogREI = 0;
-		}
-		if ( l_pFogMRayEI != 0 )
-		{
-			mrayMgr::UnRegisterExportInterest( l_pFogMRayEI );
-			delete l_pFogMRayEI;
-			l_pFogMRayEI = 0;
 		}
 
 		l_pAOObject = NULL;

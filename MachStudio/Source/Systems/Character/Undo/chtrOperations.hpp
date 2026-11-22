@@ -14,6 +14,12 @@
 #ifndef CHTR_SCRIPTDATA_HPP
 #include "Systems/Character/Data/chtrScriptData.hpp"
 #endif
+#ifndef MA_TIME_HPP
+#include "Core/Ma/maTime.hpp"
+#endif
+
+#include <functional>
+#include <string>
 
 
 //============================================================================
@@ -31,14 +37,33 @@ namespace chtrOperations
 	void BrowseLoadObjects();
 
 	//------------------------------------------------------------------------
+	// The code BrowseLoadObjects offers each file to first: a scene file's
+	// objects are added by it (Features/Import's imptSceneAppend, which can
+	// reach every System), and it returns false for a file it doesn't add,
+	// which then loads as a character. i_FilePatterns ("*.a;*.b") are added
+	// to the browse filter. An empty function removes it.
+	//------------------------------------------------------------------------
+	void SetFileAppender(std::function<bool (const fsLocator&)> i_Appender, const std::string& i_FilePatterns);
+
+	//------------------------------------------------------------------------
 	//  LoadAnimation onto the character with the given index.
 	//------------------------------------------------------------------------
 	void LoadAnimation(int i_Index, const fsLocator &i_AnimLocator);
 
 	//------------------------------------------------------------------------
+	//  Add one clip of a file (i_Clip: its identity there) as an Anim-Full
+	//  driver on the named character, beginning at i_Begin and lasting the
+	//  clip; returns the driver's end time (i_Begin when the clip didn't
+	//  load). Undoable, as LoadAnimation.
+	//------------------------------------------------------------------------
+	maTime AddAnimationClip(const nameString& i_Character, const fsLocator& i_File, const std::string& i_Clip,
+							const std::string& i_DisplayName, const maTime& i_Begin);
+
+	//------------------------------------------------------------------------
 	//  Add new item to character
 	//------------------------------------------------------------------------
-	void  AddObject(const chtrScriptData &i_Item);
+	// returns the name the new object got, empty if it couldn't be added
+	nameString  AddObject(const chtrScriptData &i_Item);
 
 	//------------------------------------------------------------------------
 	//  Change data for a specific item
@@ -59,6 +84,12 @@ namespace chtrOperations
 	//  Reload geometry of character with given index
 	//--------------------------------------------------------------------
 	void  ReloadCharacter(int i_Index);
+
+	//--------------------------------------------------------------------
+	//  Replace the character of that name by i_Data (recreating it, as a
+	//	reload does) as one undoable step; nothing if there is none
+	//--------------------------------------------------------------------
+	void  ReplaceObjectData(const nameString& i_Name, const chtrScriptData& i_Data);
 
 	//--------------------------------------------------------------------
 	//  Select character with given index

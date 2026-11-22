@@ -17,7 +17,6 @@
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsResourceTracker.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/prty/prtyCheckBoxUIInfo.hpp"
 #include "Core/prty/prtyColorRGBAEditUIInfo.hpp"
 #include "Core/prty/prtyComboBoxUIInfo.hpp"
@@ -40,6 +39,19 @@
 #include "Tool/gui/guiMessageBox.hpp"
 
 #include <string>
+
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+// The channel made from the parameter's property in the constructor
+//----------------------------------------------------------------------------
+tmlnChannel* mtrlSurfaceShader::FindParamChannel(const std::string& i_Param) const
+{
+	effShaderParam* pParam = m_pShaderDataProxy->GetUIShaderParams().FindParam(i_Param);
+	if (!pParam || !pParam->GetBaseProperty())
+		return NULL;
+	return FindChannel(m_Material.GetMaterialName(), pParam->GetBaseProperty()->GetPropertyName());
+}
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------

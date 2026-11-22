@@ -19,12 +19,12 @@
 #include "ToolUIQt/tqc/tqcHotKeyCtrl.hpp"
 #endif 
 
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
 class pqtHotKey_KeyCombo : public pqtControl
 {
-#ifdef QT_FINISH_PORT
 	public:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
@@ -58,9 +58,9 @@ class pqtHotKey_KeyCombo : public pqtControl
 	private:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
-		void HotKeyCtrl_ValueChanged(wxCommandEvent& i_Event);
+		void HotKeyCtrl_ValueChanged();
 
 		tqcHotKeyCtrl* m_pActualControl;
-#endif // USE_QT
 };
 
+#endif // USE_QT

@@ -71,7 +71,7 @@ void effGlowDataParser::Read(	chReader& i_Reader,
 		fsLocator locGlowMask;
 		if (sGlowMask.length() > 0)
 		{
-			locGlowMask.Push(itString(sGlowMask.c_str()));
+			locGlowMask.Push(sGlowMask);
 			resolve_fullpath(locGlowMask, i_Reader.GetLocator());
 		}
 		data.m_NameGlowMask = locGlowMask;

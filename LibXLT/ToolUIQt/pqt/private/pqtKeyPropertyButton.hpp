@@ -1,10 +1,10 @@
 /****************************************************************************\
 **	pqtKeyPropertyButton.hpp
 **
-**		Label that expands and compresses the properties beneath it.
+**	Button next to an animatable property that keys the property
 **
 **	StudioGPU
-**	Copyright(C) 2009 - All Rights Reserved
+**	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #ifdef PQT_KEYPROPERTYBUTTON_HPP
 #error pqtKeyPropertyButton.hpp multiply included
@@ -15,18 +15,11 @@
 #include "ToolUIQt/tqt/tqtWidgets.hpp"
 #endif
 
-#include <string>
-
 #ifdef USE_QT
-#include <QtGui/QWidget>
-
 
 //============================================================================
 //============================================================================
-class pqtKeyPropertyButton 
-#ifdef QT_FINISH_PORT
-	: public wxBitmapButton
-#endif
+class pqtKeyPropertyButton : public QToolButton
 {
 	public:
 		//--------------------------------------------------------------------
@@ -37,24 +30,17 @@ class pqtKeyPropertyButton
 
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		pqtKeyPropertyButton(QWidget* i_pParent, 
+		pqtKeyPropertyButton(QWidget* i_pParent,
 							 const std::string& i_PropertyName,
 							 KeyPropertyFunction i_KeyPropertyFunction);
 
 	private:
-#ifdef QT_FINISH_PORT
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		void DoKeyProperty(wxCommandEvent &i_Event);
-#endif
+		void DoKeyProperty();
 
-	private:
 		std::string m_PropertyName;
 		KeyPropertyFunction m_KeyPropertyFunction;
-
-#ifdef QT_FINISH_PORT
-	DECLARE_EVENT_TABLE()
-#endif
 };
 
 #endif // USE_QT

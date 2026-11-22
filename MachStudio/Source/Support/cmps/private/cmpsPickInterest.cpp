@@ -30,7 +30,7 @@ cmpsPickInterest::~cmpsPickInterest()
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
 //virtual 
-pick3dPickObject* cmpsPickInterest::MatchPickCode(envType::UInt32 i_PickCode) const
+pick3dPickObject* cmpsPickInterest::MatchPickCode(uint32_t i_PickCode) const
 {
 	return cmpsCompassMgr::MatchPickCode(i_PickCode);
 }

@@ -32,7 +32,7 @@ giDialogInterest::giDialogInterest()
 //	Add Object to Placed
 //--------------------------------------------------------------------
 //virtual 
-void giDialogInterest::AddObject(const itString& i_FileName, const fsLocator& i_Path)
+void giDialogInterest::AddObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 	// change focus to the main app
 	guiMainWindow::Focus();
@@ -84,8 +84,8 @@ void giDialogInterest::GetAvailableObjects(fsysFileList& io_FileList) const
 	{
 		fsLocator path;
 		path.Push(c_SystemName);
-		itString fname;
-		fname = itString("GI");
+		std::string fname;
+		fname = std::string("GI");
 		io_FileList.AddFilename(path,fname);
 	}
 }

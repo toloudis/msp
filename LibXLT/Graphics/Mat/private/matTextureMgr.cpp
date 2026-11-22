@@ -17,14 +17,20 @@
 #include "Core/fs/fsResourceFinder.hpp"
 #include "Core/fs/fsResourceTracker.hpp"
 #include "Core/gf/gfFileBin.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Graphics/g2d/g2dExceptionX.hpp"
+#include "Graphics/g2d/g2dImage.hpp"
+#include "Graphics/g2d/g2dImageSaveUtil.hpp"
+#include "Graphics/g2d/g2dScreenCaptureUtil.hpp"
 #include "Graphics/mat/matUVATexture.hpp"
 #include "Graphics/mat/matUVATextureParseUtil.hpp"
 //#include "Tool/gpx/gpxRenderControl.hpp"
 
 #include <iomanip>
 #include <algorithm>
+#include <memory>
 #include <set>
 
 
@@ -38,6 +44,53 @@ namespace
 	bool l_bAllowNullTextures = false;
 	bool l_bSkipAllTextures = false;
 	bool l_bCompressTextures = false;
+
+	struct LoadCounts
+	{
+		size_t requests = 0;
+		size_t hits = 0;
+		size_t loads = 0;
+		size_t created = 0;
+	};
+	unsigned int l_LoadDiagnosticsDepth = 0;
+	std::map<fsLocator, LoadCounts> l_LoadCounts;
+
+	//------------------------------------------------------------------------
+	//	Texture saving: mip 0 of layer 0 read back into an image (as
+	//	DirectXTex's CaptureTexture, then GetImage(0, 0, 0)); NULL if there
+	//	is nothing to read back
+	//------------------------------------------------------------------------
+	std::unique_ptr<g2dImage> capture_texture(matTexture* i_pTexture)
+	{
+		if (!i_pTexture)
+			return NULL;
+		g2dImage* image = NULL;
+		try
+		{
+			g2dScreenCaptureUtil::Capture2DTextureToImage(i_pTexture, image);
+		}
+		catch (const g2dCaptureX&)
+		{
+			delete image;
+			image = NULL;
+		}
+		return std::unique_ptr<g2dImage>(image);
+	}
+
+	//	As GraphicsDX11 did: a file that can't be written (or a type that
+	//	isn't known) is traced, not thrown
+	template <class F>
+	void write_traced(const char* i_pWhat, const fsLocator& i_Locator, F i_Write)
+	{
+		try
+		{
+			i_Write();
+		}
+		catch (const envExceptionX&)
+		{
+			DBG_TRACE(i_pWhat << ": " << i_Locator << " not written");
+		}
+	}
 	matTextureAdjuster *l_pTextureAdjuster = NULL;
 	fsLocator l_TextureFileName;
 	fsResourceTrackerInterest* rsrInterest;
@@ -142,7 +195,7 @@ namespace
 		DBG_WARNING("Texture Memory Usage Total:  " << std::setprecision(2) << total << " MB");
 	}
 
-	
+
 	//--------------------------------------------------------------------
 	// TEXTURE MANAGEMENT
 	//--------------------------------------------------------------------
@@ -198,7 +251,7 @@ void GetTextureName(const fsLocator& i_TextureFileName)
 //------------------------------------------------------------------------
 void Init()
 {
-	if( NULL == l_pTextureAdjuster ) 
+	if( NULL == l_pTextureAdjuster )
 		l_pTextureAdjuster = new matTextureAdjuster;
 	rsrInterest = fsResourceTracker::GetInterestList();
 	rsrInterest->TextureReloadFunction(&ReloadTexture);
@@ -290,15 +343,51 @@ matTexture* LoadTexture( const fsLocator& i_Locator, const TEXTURE_TYPE i_Type, 
 	return LoadTexture(loc, i_Locator.GetLastName(), i_Type, mipmap_if_2D);
 }
 //--------------------------------------------------------------------
-matTexture* LoadTexture(const fsLocator& i_Directory, const itString& i_Name, const TEXTURE_TYPE i_Type/* = TEXTURE_TYPE_2D*/, const bool mipmap_if_2D /*= true*/, const bool i_bIgnoreTUVSuffix /*= false*/)
+LoadDiagnostics::LoadDiagnostics()
+{
+	if (l_LoadDiagnosticsDepth++ == 0)
+		l_LoadCounts.clear();
+}
+
+LoadDiagnostics::~LoadDiagnostics()
+{
+	if (--l_LoadDiagnosticsDepth != 0)
+		return;
+
+	LoadCounts total;
+	size_t loadedPaths = 0;
+	size_t repeatedPaths = 0;
+	for (const auto& entry : l_LoadCounts)
+	{
+		const LoadCounts& counts = entry.second;
+		total.requests += counts.requests;
+		total.hits += counts.hits;
+		total.loads += counts.loads;
+		total.created += counts.created;
+		if (counts.created != 0)
+			++loadedPaths;
+		if (counts.created > 1)
+			++repeatedPaths;
+		DBG_TRACE("Texture load diagnostics: path=" << entry.first
+			<< " requests=" << counts.requests << " hits=" << counts.hits
+			<< " backendLoads=" << counts.loads << " created=" << counts.created);
+	}
+	DBG_TRACE("Texture load diagnostics: TOTAL requestedPaths=" << l_LoadCounts.size()
+		<< " loadedPaths=" << loadedPaths << " repeatedCreationPaths=" << repeatedPaths
+		<< " requests=" << total.requests << " hits=" << total.hits
+		<< " backendLoads=" << total.loads << " created=" << total.created);
+	l_LoadCounts.clear();
+}
+
+matTexture* LoadTexture(const fsLocator& i_Directory, const std::string& i_Name, const TEXTURE_TYPE i_Type/* = TEXTURE_TYPE_2D*/, const bool mipmap_if_2D /*= true*/, const bool i_bIgnoreTUVSuffix /*= false*/)
 {
 	if (l_pImpl == NULL)
 		return NULL;
 
 	//we want no extension information to remain in the name of the texture
-	itString tex_name(i_Name);
+	std::string tex_name(i_Name);
 	//tex_name.StripExtension();
-	itStringUtil::ToLower(tex_name);
+	envString::ToLower(tex_name);
 
 	// Note:  fsLocators use itStrings which are case sensitive, unlike filenames
 	// themselves.  Force all the names in the list (unexpanded) to lower case
@@ -306,14 +395,18 @@ matTexture* LoadTexture(const fsLocator& i_Directory, const itString& i_Name, co
 	fsLocator tex_locator(i_Directory), tex_directory;
 	int count = tex_locator.GetNumNames();
 	int i;
-	itString temp;
+	std::string temp;
 	for ( i=0; i<count; ++i )
 	{
 		temp = tex_locator.GetName(i);
-		tex_locator.ReplaceName( itStringUtil::ToLower(temp), i );
+		tex_locator.ReplaceName( envString::ToLower(temp), i );
 	}
 	tex_directory = tex_locator;
 	tex_locator.Push(tex_name);
+
+	LoadCounts* counts = l_LoadDiagnosticsDepth ? &l_LoadCounts[tex_locator] : nullptr;
+	if (counts)
+		++counts->requests;
 
 	//
 	std::map<fsLocator, TextureInfo>::iterator it = l_Textures.end();
@@ -327,31 +420,35 @@ matTexture* LoadTexture(const fsLocator& i_Directory, const itString& i_Name, co
 		{
 			try
 			{
-				std::vector<itString> names;
+				std::vector<std::string> names;
 
 				// ACTUALLY LOAD THE TEXTURE!!!!
+				if (counts)
+					++counts->loads;
 				new_texture = l_pImpl->LoadTexture(tex_directory, tex_name, names, i_Type, i_bIgnoreTUVSuffix, mipmap_if_2D);
+				if (counts && new_texture)
+					++counts->created;
 
 				matUVATexture *uva_texture = dynamic_cast<matUVATexture*>(new_texture);
 				if (uva_texture)
 				{
 					//load all the named textures
 					int i, num_names = names.size();
-					itString uva_name;
+					std::string uva_name;
 					fsLocator uva_locator = tex_directory;
-					std::vector<itString> dummy_names;
+					std::vector<std::string> dummy_names;
 					for (i = 0; i < num_names; ++i)
 					{
 						uva_name = names[i];
 						//uva_name.StripExtension();
-						itStringUtil::ToLower(uva_name);
+						envString::ToLower(uva_name);
 						uva_locator.Push(uva_name);
 						matTexture *new_texture_page = l_pImpl->LoadTexture(tex_directory,
 																			uva_name,
 																			dummy_names,
 																			i_Type,
 																			true, mipmap_if_2D);
-		
+
 						l_NRTextures[new_texture_page] = TextureInfoNR(uva_locator, new_texture_page);
 						uva_locator.Pop();
 						uva_texture->AddTexturePage(new_texture_page);
@@ -365,7 +462,7 @@ matTexture* LoadTexture(const fsLocator& i_Directory, const itString& i_Name, co
 				fsFileUtil::LocatorToANSIFilename( tex_locator, dbg_filename );
 				DBG_ERROR("Not enough video memory to load " << dbg_filename.c_str() << "." );
 				DumpTextureList();
-				
+
 				if (new_texture)
 					ReleaseTexture(new_texture);
 				throw; // bring down the game
@@ -398,6 +495,8 @@ matTexture* LoadTexture(const fsLocator& i_Directory, const itString& i_Name, co
 	}
 	else
 	{
+		if (counts)
+			++counts->hits;
 		++(it->second.m_Count);
 		return it->second.m_Texture;
 	}
@@ -405,14 +504,14 @@ matTexture* LoadTexture(const fsLocator& i_Directory, const itString& i_Name, co
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-matTexture* LoadTexture(const fsResourceFinder& i_Finder, const itString& i_Name, const TEXTURE_TYPE i_Type/* = TEXTURE_TYPE_2D*/, const bool mipmap_if_2D /*= true */)
+matTexture* LoadTexture(const fsResourceFinder& i_Finder, const std::string& i_Name, const TEXTURE_TYPE i_Type/* = TEXTURE_TYPE_2D*/, const bool mipmap_if_2D /*= true */)
 {
 	fsLocator found_loc;
 	if (i_Finder.FindResource(i_Name, found_loc))
 	{
 		// found_loc returns full path including filename
 		fsLocator dir = found_loc;
-		itString name = dir.GetLastName();
+		std::string name = dir.GetLastName();
 		dir.Pop();
 
 		return LoadTexture(dir, name, i_Type, mipmap_if_2D);
@@ -427,9 +526,9 @@ matTexture* LoadTexture(const fsResourceFinder& i_Finder, const itString& i_Name
 //--------------------------------------------------------------------
 void WriteUVATexture(	const matUVATexture& i_Texture,
 						const fsLocator& i_Locator,
-						const itString* i_Textures)
+						const std::string* i_Textures)
 {
-	gfFileBin file(i_Locator, fsFileStream::e_WriteOnly, gfFileBin::e_LittleEndian);
+	gfFileBin file(i_Locator, fsFileStream::e_WriteOnly);
 	file.WriteHeader(0, 0, 1);
 	chBinWriter writer(file);
 	matUVATextureParseUtil::WriteUVATexture(writer, i_Texture, i_Textures);
@@ -440,7 +539,7 @@ void WriteUVATexture(	const matUVATexture& i_Texture,
 //--------------------------------------------------------------------
 void WriteUVATexture(	const matUVATexture& i_Texture,
 						chWriter& i_Writer,
-						const itString* i_Textures)
+						const std::string* i_Textures)
 {
 	matUVATextureParseUtil::WriteUVATexture(i_Writer, i_Texture, i_Textures);
 }
@@ -452,9 +551,9 @@ void WriteUVATexture(	const matUVATexture& i_Texture,
 //	texture.
 //--------------------------------------------------------------------
 matUVATexture* ReadUVATexture(const fsLocator& i_Locator,
-							  std::vector<itString>& o_Textures)
+							  std::vector<std::string>& o_Textures)
 {
-	gfFileBin file(i_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin file(i_Locator, fsFileStream::e_ReadOnly);
 	gfFileBin::Header header;
 	file.ReadHeader(&header);
 
@@ -480,20 +579,21 @@ matUVATexture* CreateUVATexture()
 
 
 //--------------------------------------------------------------------
-//	CreateShadowMap creates a shadow map texture that can 
+//	CreateShadowMap creates a shadow map texture that can
 //	be rendered to. Use the GetRenderTargetAPI() function
 //	on the returned texture in order to render to it.
 //--------------------------------------------------------------------
 matTexture* CreateShadowMap(int i_nTextureWidth, int i_nTextureHeight)
 {
-	DBG_WARNING("No texture manager implementation yet.");
-	if (!l_pImpl)
+	if (!l_pImpl) {
+		DBG_WARNING("No texture manager implementation yet.");
 		return NULL;
+	}
 	return l_pImpl->CreateShadowMap(i_nTextureWidth, i_nTextureHeight);
 }
 
 //--------------------------------------------------------------------
-//	CreateShadowMap creates a reflective shadow map texture that can 
+//	CreateShadowMap creates a reflective shadow map texture that can
 //	be rendered to. Use the GetRenderTargetAPI() function
 //	on the returned texture in order to render to it.
 //--------------------------------------------------------------------
@@ -506,7 +606,7 @@ matTexture* CreateReflectiveShadowMap(int i_nTextureWidth, int i_nTextureHeight)
 }
 
 //--------------------------------------------------------------------
-//	CreateRenderTargetTexture creates a texture that can 
+//	CreateRenderTargetTexture creates a texture that can
 //	be rendered to. Use the GetRenderTargetAPI() function
 //	on the returned texture in order to render to it.
 //--------------------------------------------------------------------
@@ -523,12 +623,12 @@ matTexture* CreateRenderTargetTexture(int i_nTextureWidth,
 //	DBG_ASSERT(l_pImpl, "No texture manager implementation yet.");
 	if (!l_pImpl)
 		return NULL;
-	return l_pImpl->CreateRenderTargetTexture(i_nTextureWidth, i_nTextureHeight, 
+	return l_pImpl->CreateRenderTargetTexture(i_nTextureWidth, i_nTextureHeight,
 		i_bFloatingPoint, i_PFD, i_bAutoGenMipmap, i_bAllocDepthBuffer, i_ResourceCategory, i_bFloatDepth, i_bAntiAlias );
 }
 
 //--------------------------------------------------------------------
-//	CreateRenderTargetTexture creates a texture that can 
+//	CreateRenderTargetTexture creates a texture that can
 //	be rendered to. Use the GetRenderTargetAPI() function
 //	on the returned texture in order to render to it.
 //	The texture is initialized with data from the given input texture.
@@ -544,8 +644,8 @@ matTexture* CreateRenderTargetTexture(matTexture* i_Texture,
 }
 
 //--------------------------------------------------------------------
-//	CreateCubeRenderTargetTexture creates a cubemap texture that can 
-//	be rendered to. 
+//	CreateCubeRenderTargetTexture creates a cubemap texture that can
+//	be rendered to.
 //--------------------------------------------------------------------
 matTexture* CreateCubeRenderTargetTexture(int i_nTextureWidth,
 											int i_nTextureHeight,
@@ -591,14 +691,14 @@ void ReleaseTexture(matTexture* i_Texture)
 		//no texture to delete
 		return;
 	}
-	
+
 	// check reusable textures first
 	Textures::iterator it = l_Textures.begin();
 	Textures::iterator end = l_Textures.end();
 
 	for( ; it != end; ++it )
 	{
-		
+
 		if( it->second.m_Texture == i_Texture )
 			break;
 	}
@@ -668,11 +768,11 @@ void ReloadTexture( const fsLocator& i_Locator, bool i_bIsMipMap )
 	//gpxRenderControl::ConfirmSingleThread();
 	fsLocator tex_locator(i_Locator);
 	int count = tex_locator.GetNumNames();
-	itString temp;
+	std::string temp;
 	for ( int i = 0; i < count; ++i )
 	{
 		temp = tex_locator.GetName(i);
-		tex_locator.ReplaceName( itStringUtil::ToLower(temp), i );
+		tex_locator.ReplaceName( envString::ToLower(temp), i );
 	}
 
 	std::map<fsLocator, TextureInfo>::iterator it = l_Textures.end();
@@ -694,35 +794,47 @@ void UnloadTexture( const fsLocator& i_Locator )
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-void SaveTextureToFile(matTexture* i_pTexture, 
+void SaveTextureToFile(matTexture* i_pTexture,
 	const fsLocator& i_FilePathLocator)
 {
-	DBG_ASSERT(l_pImpl, "No texture manager implementation yet.");
-	if (!l_pImpl)
-		return;
-	l_pImpl->SaveTextureToFile(i_pTexture, i_FilePathLocator);
+	std::unique_ptr<g2dImage> image = capture_texture(i_pTexture);
+	if (!image)
+	{
+		DBG_TRACE("SaveTextureToFile: no texture to read back");
+		throw g2dImageSaveX();
+	}
+	write_traced("SaveTextureToFile", i_FilePathLocator,
+				 [&]() { g2dImageSaveUtil::Write(i_FilePathLocator, image.get()); });
 }
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-void SaveTextureToRgbaTiff(matTexture* i_pTexture, 
+void SaveTextureToRgbaTiff(matTexture* i_pTexture,
 	const fsLocator& i_FilePathLocator)
 {
-	DBG_ASSERT(l_pImpl, "No texture manager implementation yet.");
-	if (!l_pImpl)
+	std::unique_ptr<g2dImage> image = capture_texture(i_pTexture);
+	if (!image)
+	{
+		DBG_TRACE("SaveTextureToRgbaTiff: texture not found in memory. Aborting save.");
 		return;
-	l_pImpl->SaveTextureToRgbaTiff(i_pTexture, i_FilePathLocator);
+	}
+	write_traced("SaveTextureToRgbaTiff", i_FilePathLocator,
+				 [&]() { g2dImageSaveUtil::WriteTIFF(i_FilePathLocator, image.get()); });
 }
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-void SaveTextureToRgbaPNG(matTexture* i_pTexture, 
+void SaveTextureToRgbaPNG(matTexture* i_pTexture,
 	const fsLocator& i_FilePathLocator)
 {
-	DBG_ASSERT(l_pImpl, "No texture manager implementation yet.");
-	if (!l_pImpl)
+	std::unique_ptr<g2dImage> image = capture_texture(i_pTexture);
+	if (!image)
+	{
+		DBG_TRACE("SaveTextureToRgbaPNG: texture not found in memory. Aborting save.");
 		return;
-	l_pImpl->SaveTextureToRgbaPNG(i_pTexture, i_FilePathLocator);
+	}
+	write_traced("SaveTextureToRgbaPNG", i_FilePathLocator,
+				 [&]() { g2dImageSaveUtil::WritePNG(i_FilePathLocator, image.get()); });
 }
 
 //------------------------------------------------------------------------
@@ -757,7 +869,7 @@ void UpdateTexture( matTexture* i_pTexture, unsigned char* i_data, int size, int
 
 
 //--------------------------------------------------------------------
-//	CreateTexture creates a texture 
+//	CreateTexture creates a texture
 //  NOTE: The texture will be initialized if i_PixelData and i_Size
 //	are set.
 //--------------------------------------------------------------------
@@ -841,7 +953,6 @@ void CopyTexture(matTexture* i_SrcTex, matTexture* i_DstTex)
 	l_pImpl->CopyTexture(i_SrcTex, i_DstTex);
 }
 }
-
 
 
 

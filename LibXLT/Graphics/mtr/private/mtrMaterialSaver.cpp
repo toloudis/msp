@@ -24,7 +24,9 @@
 #include "Core/gf/gfFileX.hpp"
 #include "Core/gf/gfFileXML.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Graphics/eff/effDisplacementData.hpp"
 #include "Graphics/eff/effDisplacementDataParser.hpp"
 #include "Graphics/eff/effGlowData.hpp"
@@ -199,7 +201,7 @@ void count_nodes(chReader& i_Reader,
 //------------------------------------------------------------------------
 int count_materials_binary(const fsLocator &i_Locator)
 {
-	gfFileBin file(i_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin file(i_Locator, fsFileStream::e_ReadOnly);
 
 	//	If this isn't a real Terawatt/XLT binary file this will throw
 	file.ReadHeader();
@@ -233,10 +235,10 @@ int count_materials(const fsLocator &i_Locator)
 {
 	//	handle reading from a binary file and writing to ASCII or the other way around.
 	//
-	itString extension;
-	i_Locator.GetLastName().GetExtension( extension );
-	if ((extension == itString("xml"))
-	        || (extension == itString("XML")) )
+	std::string extension;
+	envString::GetExtension( i_Locator.GetLastName(), extension );
+	if ((extension == "xml")
+	        || (extension == "XML") )
 	{
 		return count_materials_XML( i_Locator );
 	}
@@ -265,7 +267,7 @@ void write_SVFN(chWriter &o_Writer)
 	// Write saved filename in order to resolve absolute paths when read from
 	// a new path.
 	o_Writer.WriteChunkHeader(c_SVFN, 0, false);
-	itString savefilename;
+	std::string savefilename;
 	fsFileUtil::LocatorToUnicodeString( o_Writer.GetLocator(), savefilename );
 	chChunkParserUtil::Write( o_Writer, savefilename );
 	o_Writer.FinishChunk();
@@ -280,7 +282,7 @@ void write_SHDR(chWriter &o_Writer, const mdlMaterialInfo &i_Data)
 	o_Writer.WriteChunkHeader(c_SHDR, version, c_bSHDR_CONTAINER_CHUNK);
 
 	o_Writer.WriteChunkHeader(c_SHNM, 1, false);
-	std::string savename = itStringUtil::GetStdString( i_Data.GetShader().GetLastName() );
+	std::string savename = i_Data.GetShader().GetLastName();
 	savename += '\0';
 
 	fsFileUtil::LocatorToANSIFilename( i_Data.GetShader(), savename );
@@ -549,8 +551,8 @@ void parse_chunks(chReader& i_Reader,
 			// we can compare this to the filename we are currently loading
 			// in order to resolve absolute paths
 			fsLocator org_locator;
-			itString savefilename;
-			chChunkParserUtil::Read( i_Reader, savefilename );
+			std::string savefilename;
+			chChunkParserUtil::ReadLegacyWideString( i_Reader, savefilename );
 			fsFileUtil::UnicodeStringToLocator( savefilename, org_locator );
 			fsAbsolutePathMgr::AddDirMappingFromFiles(org_locator, i_Reader.GetLocator());
 		}
@@ -692,11 +694,11 @@ bool Write_Binary( const fsLocator &i_NewLocator,
 {
 	// Set up input and output files
 	gfFileBin::Header header;
-	gfFileBin ifile(i_OldLocator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin ifile(i_OldLocator, fsFileStream::e_ReadOnly);
 	ifile.ReadHeader(&header);
 	chBinReader reader(ifile);
 
-	gfFileBin ofile(i_NewLocator, fsFileStream::e_WriteOnly, gfFileBin::e_LittleEndian);
+	gfFileBin ofile(i_NewLocator, fsFileStream::e_WriteOnly);
 	ofile.WriteHeader(header);
 	chBinWriter writer(ofile);
 
@@ -740,7 +742,7 @@ void mtrMaterialSaver::WriteMaterialSet( const fsLocator &i_Locator,
 		fsFileUtil::DeleteFile(i_Locator);
 	fsFileUtil::CreateFile(i_Locator);
 
-	gfFileBin ofile(i_Locator, fsFileStream::e_WriteOnly, gfFileBin::e_LittleEndian);
+	gfFileBin ofile(i_Locator, fsFileStream::e_WriteOnly);
 	ofile.WriteHeader();
 	chBinWriter writer(ofile);
 
@@ -775,7 +777,7 @@ bool mtrMaterialSaver::Write( const fsLocator &i_NewLocator,
 	std::string old_fname, new_fname;
 	fsFileUtil::LocatorToANSIFilename(i_OldLocator, old_fname);
 	fsFileUtil::LocatorToANSIFilename(i_NewLocator, new_fname);
-	bool bSame = !::_stricmp(old_fname.c_str(), new_fname.c_str());
+	bool bSame = (envString::CompareNoCase(old_fname, new_fname) == 0);
 
 	fsLocator input_locator = i_OldLocator;
 	if (bSame)
@@ -789,7 +791,7 @@ bool mtrMaterialSaver::Write( const fsLocator &i_NewLocator,
 		// have backup in case we mess up file, or to make
 		// sure we don't try to overwrite file we are reading
 		fsLocator temp_file = gfPaths::GetPath(gfPaths::e_ExePath);
-		temp_file.Push(itString("model.bak"));
+		temp_file.Push(std::string("model.bak"));
 		if (i_NewLocator == temp_file)
 			return false;	// can't save to our temp file name
 		
@@ -829,7 +831,7 @@ bool mtrMaterialSaver::Write( const fsLocator &i_NewLocator,
 void Read_Binary( const fsLocator &i_Locator,
 					std::vector< shared_ptr<mdlMaterialInfo> > &o_Materials)
 {
-	gfFileBin ifile(i_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin ifile(i_Locator, fsFileStream::e_ReadOnly);
 	ifile.ReadHeader();
 	chBinReader reader(ifile);
 
@@ -861,15 +863,15 @@ void mtrMaterialSaver::Read( const fsLocator &i_Locator,
 {
 	//	handle reading from a binary file and writing to ASCII or the other way around.
 	//
-	itString extension;
-	i_Locator.GetLastName().GetExtension( extension );
-	if (   (extension == itString("mtl"))
-	    || (extension == itString("MTL")) )
+	std::string extension;
+	envString::GetExtension( i_Locator.GetLastName(), extension );
+	if (   (extension == "mtl")
+	    || (extension == "MTL") )
 	{
 		Read_Binary( i_Locator, o_Materials );
 	}
-	else if (   (extension == itString("xml"))
-	         || (extension == itString("XML")) )
+	else if (   (extension == "xml")
+	         || (extension == "XML") )
 	{
 		Read_XML( i_Locator, o_Materials );
 	}
@@ -905,7 +907,7 @@ bool mtrMaterialSaver::ReadSingleMaterial( const fsLocator &i_Locator,
 							mdlMaterialInfo &o_Material)
 {
 
-	gfFileBin ifile(i_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin ifile(i_Locator, fsFileStream::e_ReadOnly);
 	ifile.ReadHeader();
 	chBinReader reader(ifile);
 
@@ -921,8 +923,8 @@ bool mtrMaterialSaver::ReadSingleMaterial( const fsLocator &i_Locator,
 			// we can compare this to the filename we are currently loading
 			// in order to resolve absolute paths
 			fsLocator org_locator;
-			itString savefilename;
-			chChunkParserUtil::Read( reader, savefilename );
+			std::string savefilename;
+			chChunkParserUtil::ReadLegacyWideString( reader, savefilename );
 			fsFileUtil::UnicodeStringToLocator( savefilename, org_locator );
 			fsAbsolutePathMgr::AddDirMappingFromFiles(org_locator, i_Locator);
 		}
@@ -943,11 +945,11 @@ bool mtrMaterialSaver::ReadSingleMaterial( const fsLocator &i_Locator,
 //------------------------------------------------------------------------
 bool mtrMaterialSaver::ReadThumbnail( const fsLocator &i_Locator, 
 									 mtrThumbnailData &o_Thumbnail)
-									 //envType::UInt8* &o_PixelBuffer, 
+									 //uint8_t* &o_PixelBuffer, 
 									 //int &o_BufferSize,
 									 //int &o_BitmapSize)
 {
-	gfFileBin ifile(i_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin ifile(i_Locator, fsFileStream::e_ReadOnly);
 	ifile.ReadHeader();
 	chBinReader reader(ifile);
 
@@ -963,7 +965,7 @@ bool mtrMaterialSaver::ReadThumbnail( const fsLocator &i_Locator,
 			// the version number. Old style thumbnails should fail.
 			if (version >= 1)
 			{
-				envType::UInt8* pixelBuffer = NULL; 
+				uint8_t* pixelBuffer = NULL; 
 				int bufferSize = 0;
 				int bitmapSize = 0;
 				matThumbnailParser::Read(reader, version, size,
@@ -990,7 +992,7 @@ void WriteSingleMaterial_Binary(const fsLocator &i_Locator,
 								const mdlMaterialInfo &i_Material,
 								const mtrThumbnailData &i_Thumbnail)
 {
-	gfFileBin ofile(i_Locator, fsFileStream::e_WriteOnly, gfFileBin::e_LittleEndian);
+	gfFileBin ofile(i_Locator, fsFileStream::e_WriteOnly);
 	ofile.WriteHeader();
 	chBinWriter writer(ofile);
 

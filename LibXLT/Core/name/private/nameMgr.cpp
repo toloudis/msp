@@ -12,6 +12,7 @@
 #include "Core/name/nameObject.hpp"
 
 //	library
+#include "Core/dbg/dbgMsg.hpp"
 #include "Core/env/envSTLHelpers.hpp"
 
 #include <iomanip>
@@ -170,7 +171,7 @@ void nameMgr::CreateDefaultName( const nameString& i_Filename,
 	std::string name;
 	char filename_base[64];
 	char *filename;
-	//strcpy( filename_base, itStringUtil::GetStdString( i_Filename ).c_str() );
+	//strcpy( filename_base, i_Filename.c_str() );
 	strcpy( filename_base, i_Filename.GetString().c_str() );
 	filename = strtok( filename_base, "." );
 

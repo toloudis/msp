@@ -39,6 +39,9 @@
     <ClInclude Include="twx\twxCursor.hpp">
       <Filter>Twx</Filter>
     </ClInclude>
+    <ClInclude Include="twx\twxInputFeed.hpp">
+      <Filter>Twx</Filter>
+    </ClInclude>
     <ClInclude Include="twx\twxDialogTabbed.hpp">
       <Filter>Twx</Filter>
     </ClInclude>
@@ -124,6 +127,9 @@
       <Filter>Pwx\Controls</Filter>
     </ClInclude>
     <ClInclude Include="pwx\Controls\pwxFilePath_FilePicker.hpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="pwx\Controls\pwxFilePath_ComboBox.hpp">
       <Filter>Pwx\Controls</Filter>
     </ClInclude>
     <ClInclude Include="pwx\Controls\pwxFloat_ComboBox.hpp">
@@ -374,6 +380,9 @@
     <ClCompile Include="twx\private\twxCursor.cpp">
       <Filter>Twx\private</Filter>
     </ClCompile>
+    <ClCompile Include="twx\private\twxInputFeed.cpp">
+      <Filter>Twx\private</Filter>
+    </ClCompile>
     <ClCompile Include="twx\private\twxDialogTabbed.cpp">
       <Filter>Twx\private</Filter>
     </ClCompile>
@@ -456,6 +465,9 @@
       <Filter>Pwx\Controls</Filter>
     </ClCompile>
     <ClCompile Include="pwx\Controls\pwxFilePath_FilePicker.cpp">
+      <Filter>Pwx\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="pwx\Controls\pwxFilePath_ComboBox.cpp">
       <Filter>Pwx\Controls</Filter>
     </ClCompile>
     <ClCompile Include="pwx\Controls\pwxFloat_ComboBox.cpp">

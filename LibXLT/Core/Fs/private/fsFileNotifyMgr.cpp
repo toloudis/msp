@@ -10,25 +10,34 @@
 
 
 #include "Core/fs/private/fsFileNotifyMgr.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 #ifndef FS_FILEUTIL_HPP
 #include "Core/fs/fsFileUtil.hpp"
 #endif
 
 
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Core/fs/fsXMLReader.hpp"
 #include "Core/fs/fsXMLWriter.hpp"
+#ifndef FS_PATHUTIL_HPP
+#include "Core/fs/fsPathUtil.hpp"
+#endif
 #include "Core/gf/gfPaths.hpp"
 #include "Core/name/nameMgr.hpp"
 #include "Core/name/nameObject.hpp"
 
 //#include "Tool/gui/guiMessageBox.hpp"
 
+#include <algorithm>
 #include <string>
 #include <vector>
+#include <filesystem>
 #include <fstream>
-#include <sys/types.h>
-#include <sys/stat.h>
+#include <system_error>
 
 namespace FileUpdated
 {
@@ -58,18 +67,35 @@ namespace FileUpdated
 
 namespace 
 {
+	// One entry per watched file in each, in step (same index, same file)
 	std::vector<fsLocator> fileNames;
-	std::vector<time_t> initTimes;
-	std::vector<bool> need_update(true);
-	
-	unsigned short m_prevTime = 0.0;
+	std::vector<std::filesystem::file_time_type> initTimes;
+	std::vector<bool> need_update;
 
-	int l_count = 0;
-	size_t start = 0.0, finish = 0.0, end = 0.0;
+	// Check: when it last looked at files, and the first file of the next
+	// batch it looks at
+	unsigned short m_prevTime = 0;
+	size_t l_NextToCheck = 0;
+
+	const unsigned short c_CheckIntervalSeconds = 5;
+	const size_t c_CheckBatchSize = 100;
 	void (*l_ReloadObjectsFunction)(const fsLocator& i_Path, const std::string i_SystemName);
 	void (*l_ReloadTextureFunction)(const fsLocator& i_TextureName, bool i_bIsMipMap);
-	void (*l_AddObjectsFunction) (const itString& i_FileName, const fsLocator& i_Path);
+	void (*l_AddObjectsFunction) (const std::string& i_FileName, const fsLocator& i_Path);
  
+
+	//--------------------------------------------------------------------
+	//	last_modified - when the file was last written, or c_Unreadable
+	//		if that can't be read (the file is missing, say)
+	//--------------------------------------------------------------------
+	const std::filesystem::file_time_type c_Unreadable = std::filesystem::file_time_type::min();
+
+	std::filesystem::file_time_type last_modified(const fsLocator& i_File)
+	{
+		std::error_code error;
+		const std::filesystem::file_time_type time = std::filesystem::last_write_time(fsPathUtil::LocatorToPath(i_File), error);
+		return error ? c_Unreadable : time;
+	}
 
 	//--------------------------------------------------------------------
 	//	FileAdded - a file has been 
@@ -84,11 +110,9 @@ namespace
 				return;
 		}
 		fsFileUtil::LocatorToANSIFilename(i_FileToCheck, fileNameStr);
-		struct stat st;
-		stat(fileNameStr.c_str(), &st);
 		fileNames.push_back(i_FileToCheck);
 		DBG_TRACE(" Object "<<fileNameStr<<" has been added");
-		initTimes.push_back(st.st_mtime);
+		initTimes.push_back(last_modified(i_FileToCheck));
 		need_update.push_back(true);
 	}
 
@@ -106,6 +130,8 @@ namespace
 				fsFileUtil::LocatorToANSIFilename(fileNames[i], fileNameStr);
 				DBG_TRACE(" Object "<<fileNameStr<<" has been deleted");
 				fileNames.erase(fileNames.begin() + i);
+				initTimes.erase(initTimes.begin() + i);
+				need_update.erase(need_update.begin() + i);
 				return;
 			}
 		}
@@ -144,8 +170,8 @@ namespace
 	void file_check(const size_t start, const size_t end)
 	{
 		std::string fileName, i_fileName; 
-		itString t_FileName, o_Extension;
-		time_t  newTime;
+		std::string t_FileName, o_Extension;
+		std::filesystem::file_time_type newTime;
 		bool UpdateObject = false;
 		
 		for(size_t i = start; i < end; i++)
@@ -154,21 +180,18 @@ namespace
 			fsFileUtil::LocatorToANSIFilename(fileNames[i], fileName);
 			fsFileUtil::LocatorToANSIFilename(fileNames[i].GetLastName(), i_fileName);
 
-			struct _stat64i32 st;
-			//_wstat(t_FileName, &st);
-			_wstat(t_FileName.GetString(),&st);
-			newTime = st.st_mtime;
+			newTime = last_modified(fileNames[i]);
 			// Check whether the object has been updated 
-			if(newTime != initTimes[i] && newTime!= -1 && need_update[i])
+			if(newTime != initTimes[i] && newTime != c_Unreadable && need_update[i])
 			{
-				int length = t_FileName.GetLength();
+				int length = int(t_FileName.size());
 				// Break out extension
 				o_Extension = "";
 				int pos = length-1;
-				if (t_FileName.HasSubString(itString(".")))
+				if (t_FileName.find('.') != std::string::npos)
 				{
-					t_FileName.GetExtension(o_Extension);
-					o_Extension = itStringUtil::ToLower(o_Extension);
+					envString::GetExtension(t_FileName, o_Extension);
+					envString::ToLower(o_Extension);
 
 				}
 				DBG_TRACE(" Object "<<fileName<<" has been updated");
@@ -194,7 +217,7 @@ namespace
 				if(UpdateObject || !FileUpdated::l_PromptBeforeUpdate)
 				{
 					// Check if the file that needs to be updated is an object
-					if(l_ReloadObjectsFunction !=NULL && o_Extension.HasSubString(itString("gxb")))
+					if(l_ReloadObjectsFunction !=NULL && (o_Extension.find("gxb") != std::string::npos))
 					{
 						if(fsFileUtil::FileExists(fileNames[i]))
 						{
@@ -208,10 +231,10 @@ namespace
 
 				
 				// Reload Textures
-					else if(l_ReloadTextureFunction !=NULL && ( o_Extension.HasSubString(itString("bmp")) || o_Extension.HasSubString(itString("png"))
-															   ||o_Extension.HasSubString(itString("dds")) || o_Extension.HasSubString(itString("tga"))
-																		   ||o_Extension.HasSubString(itString("jpg")) || o_Extension.HasSubString(itString("hdr"))
-																		   ||o_Extension.HasSubString(itString("tif"))))
+					else if(l_ReloadTextureFunction !=NULL && ( (o_Extension.find("bmp") != std::string::npos) || (o_Extension.find("png") != std::string::npos)
+															   ||(o_Extension.find("dds") != std::string::npos) || (o_Extension.find("tga") != std::string::npos)
+																		   ||(o_Extension.find("jpg") != std::string::npos) || (o_Extension.find("hdr") != std::string::npos)
+																		   ||(o_Extension.find("tif") != std::string::npos)))
 					{
 						if(fsFileUtil::FileExists(fileNames[i]))
 						{
@@ -237,6 +260,9 @@ void fsFileNotifyMgr::Intialize()
 {
 	fileNames.clear();
 	initTimes.clear();
+	need_update.clear();
+	m_prevTime = 0;
+	l_NextToCheck = 0;
 }
 
 //------------------------------------------------------------------------
@@ -244,48 +270,33 @@ void fsFileNotifyMgr::Intialize()
 //------------------------------------------------------------------------
 void fsFileNotifyMgr::DeInitialize()
 {
-	fileNames.clear();
-	initTimes.clear();
+	Intialize();
 }
 
 //--------------------------------------------------------------------
-// Check if a file has been modified. 
+// Check if a file has been modified. Called every frame; when more
+// than c_CheckIntervalSeconds have passed since it last looked, it
+// looks at the next c_CheckBatchSize files, starting again from the
+// first after the last.
+//
+// i_Time is the clock in seconds cut to 16 bits, so it wraps (about
+// every 18 hours); the difference is taken in 16 bits too, so the
+// interval is right across the wrap.
 //--------------------------------------------------------------------
 void fsFileNotifyMgr::Check(unsigned short time)
 {
+	const unsigned short elapsed = static_cast<unsigned short>(time - m_prevTime);
+	if (elapsed <= c_CheckIntervalSeconds)
+		return;
+	m_prevTime = time;
 
-	float waitTime = 5.0; // This is the time interval in seconds between each check
-	int num_of_resources = fileNames.size(); // Get the number of resources to check
-	int num_of_counts = num_of_resources/100; // Strip them in counts of 100
-	int remaining = num_of_resources%100; 
-	bool fromFirstSet = false; 
+	if (l_NextToCheck >= fileNames.size())
+		l_NextToCheck = 0;
 
-	
-	if(l_count != num_of_counts && num_of_counts > 0) // If there are more than 100 elements
-	{
-		start = 100 * l_count;
-		finish = start + 100;
-		end = finish;
-		if ( time > m_prevTime + waitTime)
-		{
-			file_check(start,finish);
-			m_prevTime = time;
-		}
-		l_count++;
-		fromFirstSet = true;
-	}
-	else if(l_count == num_of_counts && !fromFirstSet) // When the resources are less than 100
-	{
-		start = end;
-		finish = remaining;
-		if ( time > m_prevTime + waitTime)
-		{
-			file_check(start,finish);
-			m_prevTime = time;
-		}
-
-		l_count = 0;
-	}
+	const size_t first = l_NextToCheck;
+	const size_t last = std::min(first + c_CheckBatchSize, fileNames.size());
+	l_NextToCheck = last;
+	file_check(first, last);
 }
 
 //--------------------------------------------------------------------
@@ -347,7 +358,7 @@ void fsFileNotifyMgr::ObjectReloadFunction(void (*i_ObjectReloadFunction)(const 
 	l_ReloadObjectsFunction = i_ObjectReloadFunction;
 }
 
-void fsFileNotifyMgr::ObjectAddFunction(void (*i_ObjectAddFunction)(const itString& i_Name, const fsLocator& i_Path))
+void fsFileNotifyMgr::ObjectAddFunction(void (*i_ObjectAddFunction)(const std::string& i_Name, const fsLocator& i_Path))
 {
 	l_AddObjectsFunction = i_ObjectAddFunction;
 }

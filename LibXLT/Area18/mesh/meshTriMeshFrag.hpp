@@ -304,7 +304,7 @@ private:
 		// triangle struct for sorting
 		struct sTri
 		{
-			envType::UInt32 m_I1, m_I2, m_I3;
+			uint32_t m_I1, m_I2, m_I3;
 			float m_Dist;
 			bool operator < ( const sTri& i_Tri2 );
 		};

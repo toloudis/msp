@@ -236,11 +236,11 @@ public:
 	}
 
 	//------------------------------------------------------------------------
-	// To support old code, this constructor is kept around in order
-	// to check for empty strings in the itString, which cannot
-	// be Push'ed onto the fsLocator.
+	// This constructor takes the default texture as a name: an empty
+	// name gives an empty locator (an empty name can't be Push'ed onto
+	// an fsLocator).
 	//------------------------------------------------------------------------
-	effParamTexture(const std::string& i_Name, const std::string& i_PrtyName, const itString& i_Default);
+	effParamTexture(const std::string& i_Name, const std::string& i_PrtyName, const std::string& i_Default);
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -478,6 +478,12 @@ public:
 	effParamTexture* m_pTransparencyMap;
 	effParamColor* m_pDiffuseColor;
 	effParamFloat* m_pTransparency;
+	// the AlphaMode semantic (Pbr.fx's g_alphaMode: 0 opaque, 1 mask,
+	// 2 blend); when set, it alone decides HasTransparency
+	effParamInt* m_pAlphaMode;
+	// the AlphaCutoff semantic (Pbr.fx's g_alphaCutoff: MASK keeps alpha
+	// at or above it)
+	effParamFloat* m_pAlphaCutoff;
 
 	// shader id
 	fsLocator m_ShaderName;
@@ -485,6 +491,8 @@ public:
 protected:
 	// shader ptr, can be null if shader not yet loaded
 	matShaderEffect* m_pShader;
+	// matShaderMgr::GetGeneration() when m_pShader was set
+	int m_ShaderGeneration;
 
 	// all the variables
 	std::vector<effParamTexture*> m_TextureParams;

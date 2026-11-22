@@ -1,7 +1,8 @@
 /*****************************************************************************
-**  tqtContextMenu.hpp
+**	tqtContextMenu.hpp
 **
-**      Implementation of a context menu for wxWidgets
+**		Qt implementation of a context menu that can be filled by
+**	the guiContextMenu interface.
 **
 **	StudioGPU
 **	Copyright(C) 2010 - All Rights Reserved
@@ -21,11 +22,11 @@
 
 #include <map>
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
-class tqtContextMenu : public wxMenu,
+class tqtContextMenu : public QMenu,
 					   public guiContextMenu
 {
 public:
@@ -47,7 +48,7 @@ public:
 
 	//---------------------------------------------------------------------------
 	//	AddMenuItem()
-	//		add a menu item to the Menu Tree which will call the given 
+	//		add a menu item to the Menu Tree which will call the given
 	//	callback function when clicked.
 	//---------------------------------------------------------------------------
 	virtual int AddMenuItem( const char * i_ParentName,
@@ -65,13 +66,21 @@ public:
 	//---------------------------------------------------------------------------
 	virtual bool IsEmpty();
 
+	//---------------------------------------------------------------------------
+	// Show the menu at the given position in i_pWidget's coordinates and
+	//	run the callback of the chosen item after the menu has closed.
+	//	Returns true if an item was chosen.
+	//---------------------------------------------------------------------------
+	bool Popup(QWidget* i_pWidget, const QPoint& i_Pos);
+
 private:
 	//---------------------------------------------------------------------------
-	// Callback for when the menu item is chosen
+	// Run the callback for the chosen menu item
 	//---------------------------------------------------------------------------
-	void menuItem_Click(wxCommandEvent& i_Event);
+	void menuItem_Click(QAction* i_pAction);
 
-	std::map<int, guiContextMenu::CallbackFunction> m_MenuItemMap;
+	std::map<QAction*, guiContextMenu::CallbackFunction> m_MenuItemMap;
+	int m_NextId;
 };
 
-#endif	// USE_WXWIDGETS
+#endif	// USE_QT

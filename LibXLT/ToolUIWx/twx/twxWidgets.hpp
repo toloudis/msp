@@ -14,9 +14,18 @@
 #define TWX_WIDGETS_HPP
 
 
-#ifndef BATCH_MODE
+// MSP_GUI_QT is set when a project builds the Qt GUI instead (see
+// ToolUIQt/qt6.props); wxWidgets stays off there so the wx GUI code
+// compiles out.
+#if !defined(BATCH_MODE) && !defined(MSP_GUI_QT)
 // This define activates Library usage of wxWidgets
 #define USE_WXWIDGETS 1
+#endif
+
+// Code that tests USE_WXWIDGETS for a GUI being present can also test
+// USE_QT (see ToolUIQt/tqt/tqtWidgets.hpp, which defines it the same way).
+#if !defined(BATCH_MODE) && defined(MSP_GUI_QT) && !defined(USE_QT)
+#define USE_QT 1
 #endif
 
 //#define WXUSINGDLL

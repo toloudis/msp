@@ -20,7 +20,9 @@
 #include "Core/gf/gfFileBin.hpp"
 #include "Core/gf/gfFileTxt.hpp"
 #include "Core/gf/gfFileTranslationMgr.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 //#include "Core/ma/maFloatRGBA.hpp"
 #include "Core/ma/maFunctions.hpp"
 #include "Graphics/g2d/g2dExceptionX.hpp"
@@ -1089,39 +1091,39 @@ unsigned int matTextureMgrDX11::GetNumFramebufferTargets()
 // a single codebase for this function
 //--------------------------------------------------------------------
 matTexture* matTextureMgrDX11::LoadTexture(const fsLocator& i_Directory,
-						const itString& i_Name,
-						std::vector<itString>& o_UVANames,
+						const std::string& i_Name,
+						std::vector<std::string>& o_UVANames,
 						TEXTURE_TYPE i_Type/* = TEXTURE_TYPE_2D*/,
 						bool i_bIgnoreTUVSuffix /*= false*/,
 						bool mipmap_if_2D /*= true*/)
 {
-	DBG_ASSERT( i_Name.GetLength() > 0, "No name for texture" );
+	DBG_ASSERT( i_Name.size() > 0, "No name for texture" );
 
 	int width_reduce, height_reduce;
 
 	fsLocator tex_locator(i_Directory);
 	tex_locator.Push(i_Name);
 
-	itString extension;
-	i_Name.GetExtension(extension);
-	itStringUtil::ToLower(extension);
+	std::string extension;
+	envString::GetExtension(i_Name, extension);
+	envString::ToLower(extension);
 
 	std::string fnamestr;
 	fsFileUtil::LocatorToANSIFilename( tex_locator, fnamestr );	//debugging only
 
 	if (gfFileTranslationMgr::FileExists(tex_locator))
 	{
-		if (extension == itString("dds"))
+		if (extension == "dds")
 		{
 			return this->LoadCompressedTexture( tex_locator, i_Type, mipmap_if_2D );
 		}
-		else if (extension == itString("tuv"))
+		else if (extension == "tuv")
 		{
 			if( i_Type == TEXTURE_TYPE_UNKNOWN || i_Type == TEXTURE_TYPE_2D )
 			{
 				if (!i_bIgnoreTUVSuffix) // do we need this check anymore?
 				{
-					gfFileBin texture_file(tex_locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+					gfFileBin texture_file(tex_locator, fsFileStream::e_ReadOnly);
 					texture_file.ReadHeader();
 					chBinReader reader(texture_file);
 
@@ -2278,149 +2280,6 @@ void matTextureMgrDX11::UnloadTexture( const fsLocator& i_Locator )
 		}
 	}
 
-}
-
-//------------------------------------------------------------------------
-//------------------------------------------------------------------------
-void matTextureMgrDX11::SaveTextureToRgbaTiff(matTexture* i_pTexture, 
-	const fsLocator& i_FilePathLocator)
-{
-	matTextureDX11* textured3d = dynamic_cast<matTextureDX11*>(i_pTexture);
-	DBG_ASSERT(textured3d, "Bad source texture passed in to SaveTextureToFile");
-
-	itString filename;
-	fsFileUtil::LocatorToUnicodeString(i_FilePathLocator, filename);
-
-	HRESULT hr;
-	D3D11_SHADER_RESOURCE_VIEW_DESC srcDesc;
-	
-	if ( !textured3d->GetSurface() ) 
-	{
-		DBG_TRACE( "Texture not found in memory. Aborting save. ");
-		return;
-	}
-	textured3d->GetSurface()->GetDesc(&srcDesc);
-
-    DirectX::ScratchImage scratchImage;
-    hr = DirectX::CaptureTexture(g2dDX11Global::g_pDevice, g2dDX11Global::g_pDeviceContext, textured3d->GetResource(), scratchImage);
-    if (!SUCCEEDED(hr))
-    {
-        DBG_TRACE("SaveTextureToRgbaTiff Return Error result:" << hr);
-        throw g2dImageSaveX();
-    }
-
-    const DirectX::Image* img = scratchImage.GetImage(0, 0, 0);
-    assert(img);
-    hr = DirectX::SaveToWICFile(*img, DirectX::WIC_FLAGS::WIC_FLAGS_NONE,
-        DirectX::GetWICCodec(DirectX::WIC_CODEC_TIFF), filename.GetString());
-
-	if (!SUCCEEDED(hr))
-	{
-		DBG_TRACE( "D3DX11SaveTextureToFile Return Error result: " << hr );
-		//throw g2dImageSaveX();
-	}
-
-}
-
-//------------------------------------------------------------------------
-//------------------------------------------------------------------------
-void matTextureMgrDX11::SaveTextureToRgbaPNG(matTexture* i_pTexture, 
-	const fsLocator& i_FilePathLocator)
-{
-	matTextureDX11* textured3d = dynamic_cast<matTextureDX11*>(i_pTexture);
-	DBG_ASSERT(textured3d, "Bad source texture passed in to SaveTextureToFile");
-
-	itString filename;
-	fsFileUtil::LocatorToUnicodeString(i_FilePathLocator, filename);
-
-	HRESULT hr;
-	D3D11_SHADER_RESOURCE_VIEW_DESC srcDesc;
-	
-	if ( !textured3d->GetSurface() ) 
-	{
-		DBG_TRACE( "Texture not found in memory. Aborting save. ");
-		return;
-	}
-	textured3d->GetSurface()->GetDesc(&srcDesc);
-
-    DirectX::ScratchImage scratchImage;
-    hr = DirectX::CaptureTexture(g2dDX11Global::g_pDevice, g2dDX11Global::g_pDeviceContext, textured3d->GetResource(), scratchImage);
-    if (!SUCCEEDED(hr))
-    {
-        DBG_TRACE("SaveTextureToRgbaPNG Return Error result:" << hr);
-        throw g2dImageSaveX();
-    }
-
-    const DirectX::Image* img = scratchImage.GetImage(0, 0, 0);
-    assert(img);
-    hr = DirectX::SaveToWICFile(*img, DirectX::WIC_FLAGS::WIC_FLAGS_NONE,
-        DirectX::GetWICCodec(DirectX::WIC_CODEC_PNG), filename.GetString());
-
-	if (!SUCCEEDED(hr))
-	{
-		DBG_TRACE( "SaveTextureToRgbaPNG Return Error result: " << hr );
-		//throw g2dImageSaveX();
-	}
-
-}
-
-
-//------------------------------------------------------------------------
-//------------------------------------------------------------------------
-void matTextureMgrDX11::SaveTextureToFile(matTexture* i_pTexture, 
-	const fsLocator& i_FilePathLocator)
-{
-	matTextureDX11* textured3d = dynamic_cast<matTextureDX11*>(i_pTexture);
-	DBG_ASSERT(textured3d, "Bad source texture passed in to SaveTextureToFile");
-
-    DirectX::ScratchImage scratchImage;
-    HRESULT hr = DirectX::CaptureTexture(g2dDX11Global::g_pDevice, g2dDX11Global::g_pDeviceContext, textured3d->GetResource(), scratchImage);
-    if (!SUCCEEDED(hr))
-    {
-        DBG_TRACE("SaveTextureToRgbaPNG Return Error result:" << hr);
-        throw g2dImageSaveX();
-    }
-    const DirectX::Image* img = scratchImage.GetImage(0, 0, 0);
-    assert(img);
-
-    itString filename;
-    fsFileUtil::LocatorToUnicodeString(i_FilePathLocator, filename);
-    
-    //	decide what kind of file format to output
-	itString fname = i_FilePathLocator.GetLastName();
-	itString ext;
-	fname.GetExtension(ext);
-
-	if ((ext == itString("bmp")) || (ext == itString("BMP")))
-	{
-        hr = DirectX::SaveToWICFile(*img, DirectX::WIC_FLAGS::WIC_FLAGS_NONE,
-            DirectX::GetWICCodec(DirectX::WIC_CODEC_BMP), filename.GetString());
-	}
-	else if ((ext == itString("jpg")) || (ext == itString("JPG")) || (ext == itString("JPEG")) || (ext == itString("jpeg")))
-	{
-        hr = DirectX::SaveToWICFile(*img, DirectX::WIC_FLAGS::WIC_FLAGS_NONE,
-            DirectX::GetWICCodec(DirectX::WIC_CODEC_JPEG), filename.GetString());
-    }
-	else if ((ext == itString("png")) || (ext == itString("PNG")))
-	{
-        hr = DirectX::SaveToWICFile(*img, DirectX::WIC_FLAGS::WIC_FLAGS_NONE,
-            DirectX::GetWICCodec(DirectX::WIC_CODEC_PNG), filename.GetString());
-    }
-	else if ((ext == itString("dds")) || (ext == itString("DDS")))
-	{
-        hr = DirectX::SaveToDDSFile(*img, DirectX::DDS_FLAGS::DDS_FLAGS_NONE, filename.GetString());
-	}
-	else if ((ext == itString("tif")) || (ext == itString("TIF")) || (ext == itString("TIFF")) || (ext == itString("tiff")))
-	{
-		SaveTextureToRgbaTiff(i_pTexture, i_FilePathLocator);
-		return;
-	}
-
-	if (!SUCCEEDED(hr))
-	{
-		DBG_TRACE( "D3DX11SaveTextureToFile Return Error result: " << hr );
-		//throw g2dImageSaveX();
-	}
 }
 
 //------------------------------------------------------------------------

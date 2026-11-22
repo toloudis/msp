@@ -19,9 +19,9 @@
 void pwxDirectory_DirPicker_Converter::SetValueIntoControl(wxDirPickerCtrl* i_pActualControl,
 											   fsLocator i_Value)
 {
-	itString file_path;
+	std::string file_path;
 	fsFileUtil::LocatorToUnicodeString(i_Value, file_path);
-	i_pActualControl->SetPath(file_path.GetString());
+	i_pActualControl->SetPath(wxString::FromUTF8(file_path));
 }
 
 //----------------------------------------------------------------------------
@@ -29,7 +29,7 @@ void pwxDirectory_DirPicker_Converter::SetValueIntoControl(wxDirPickerCtrl* i_pA
 //----------------------------------------------------------------------------
 fsLocator pwxDirectory_DirPicker_Converter::GetValueFromControl(wxDirPickerCtrl* i_pActualControl)
 {
-	itString fullpath((const char*)(i_pActualControl->GetPath().c_str()));
+	std::string fullpath(i_pActualControl->GetPath().utf8_string());
 	fsLocator locator;
 	fsFileUtil::UnicodeStringToLocator(fullpath, locator);
 	return locator;

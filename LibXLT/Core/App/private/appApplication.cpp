@@ -60,7 +60,7 @@ void appApplication::SetWindowSize(int i_X, int i_Y, int i_Width, int i_Height)
 //	window's title bar.  This function can be called from a 
 //	appStartEvent handler, before the window has been created. 
 //--------------------------------------------------------------------
-void appApplication::SetWindowTitle(const itString& i_Title)
+void appApplication::SetWindowTitle(const std::string& i_Title)
 {
 	m_pImp->SetWindowTitle(i_Title);
 }
@@ -136,7 +136,7 @@ void appApplication::SetMainWindowSize(int i_X, int i_Y, int i_Width, int i_Heig
 //		handle is based on the OS.
 //--------------------------------------------------------------------
 void* appApplication::CreateSubWindow(int i_Width, int i_Height, 
-		int i_X, int i_Y, const itString& i_Title)
+		int i_X, int i_Y, const std::string& i_Title)
 {
 	return (void*)appApplicationPAC::CreateSubWindow(i_Width, i_Height, i_X, i_Y, i_Title);
 }
@@ -148,14 +148,32 @@ void* appApplication::CreateSubWindow(int i_Width, int i_Height,
 //--------------------------------------------------------------------
 void appApplication::DestroySubWindow(void* i_Hwnd)
 {
-	appApplicationPAC::DestroySubWindow((HWND)i_Hwnd);
+	appApplicationPAC::DestroySubWindow(i_Hwnd);
+}
+
+//--------------------------------------------------------------------
+//	Make the OS accessibility services let go of the application's
+//	windows.
+//--------------------------------------------------------------------
+void appApplication::ReleaseAccessibilityClients()
+{
+	appApplicationPAC::ReleaseAccessibilityClients();
+}
+
+//--------------------------------------------------------------------
+//	Start the program on the given command line and return without
+//	waiting for it.
+//--------------------------------------------------------------------
+bool appApplication::LaunchProgram(const std::string& i_CommandLine, bool i_ShowWindow)
+{
+	return appApplicationPAC::LaunchProgram(i_CommandLine, i_ShowWindow);
 }
 
 //--------------------------------------------------------------------
 //	Used for creating an application that doesn't use Run()
 //--------------------------------------------------------------------
 void appApplication::CreateMainWindow(int i_Width, int i_Height, 
-		int i_X, int i_Y, const itString& i_Title)
+		int i_X, int i_Y, const std::string& i_Title)
 {
 	appApplicationPAC::CreateMainWindow(i_Width, i_Height, i_X, i_Y, i_Title);
 }

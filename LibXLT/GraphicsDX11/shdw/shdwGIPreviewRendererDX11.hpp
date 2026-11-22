@@ -19,8 +19,8 @@
 #ifndef MA_POINT3D_HPP
 #include "Core/ma/maPoint3d.hpp"
 #endif
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 #ifndef SHDW_PASSTRAVERSAL_HPP
 #include "GraphicsDX11/shdw/shdwPassTraversal.hpp"
@@ -34,7 +34,6 @@ class g3dSceneNode;
 class g3dLayer;
 class matMaterial;
 class matRenderTargetTexture;
-class g2dWindowDX11;
 
 class shdwGIPreviewRendererDX11 : public shdwSceneRendererDX11
 {
@@ -68,7 +67,7 @@ private:
 
 	shdwPassTraversal m_SceneDatabase;
 
-	g2dWindowDX11* m_pWindow;
+	g2dRenderTarget* m_pWindow;
 	int m_Width, m_Height;
 	int m_OverscanSize;
 	void CreateSurfaces(g2dRenderTarget* i_pWindow);

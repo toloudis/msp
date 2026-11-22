@@ -32,6 +32,9 @@
 #include "GraphicsDX11/g3d/g3dSceneRenderUtil.hpp"
 #include "GraphicsDX11/g3d/g3dStateMgr.hpp"
 #include "GraphicsDX11/mat/matPlainTexture.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 //#include "Graphics/g3d/g3dSceneNode.hpp"
 
 //--------------------------------------------------------------------
@@ -168,12 +171,14 @@ int bumpBumpRenderer::Render( const g3dSceneNode* i_pNode, const matMaterial* i_
 		while (i <= numInds-drawCallSize)
 		{
 			g2dDX11Global::g_pDeviceContext->DrawIndexed(drawCallSize, i+startIndex, 0);
+			G3D_PROFILE_DRAWS(1);
 			i += drawCallSize;
 		}
 		// draw any remaining.
 		if (i < numInds)
 		{
 			g2dDX11Global::g_pDeviceContext->DrawIndexed(numInds-i, i+startIndex, 0);
+			G3D_PROFILE_DRAWS(1);
 		}
 
 		

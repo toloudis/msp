@@ -12,7 +12,7 @@
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsResourceFinder.hpp"
-#include "Core/it/itString.hpp"
+#include <string>
 #include "Graphics/mat/matTexture.hpp"
 #include "Graphics/mat/matTextureMgr.hpp"
 
@@ -216,23 +216,23 @@ void effSkinData::GetTextureNames(std::vector<std::string>& o_Names) const
 void effSkinData::ReloadTextures(const fsLocator& i_TextureDirectory)
 {
 	if (m_NameDiffTex != "")
-		m_DiffTex = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameDiffTex.c_str()));
+		m_DiffTex = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameDiffTex);
 	if (m_NameNormalTex != "")
-		m_NormalTex = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameNormalTex.c_str()));
+		m_NormalTex = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameNormalTex);
 	if (m_NameMicroTex != "")
-		m_MicroTex = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameMicroTex.c_str()));
+		m_MicroTex = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameMicroTex);
 	if (m_NameSpecTex != "")
-		m_SpecTex = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameSpecTex.c_str()));
+		m_SpecTex = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameSpecTex);
 	if (m_NameSpecPowerTex != "")
-		m_SpecPowerTex = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameSpecPowerTex.c_str()));
+		m_SpecPowerTex = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameSpecPowerTex);
 	if (m_NameTransTex != "")
-		m_TransTex = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameTransTex.c_str()));
+		m_TransTex = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameTransTex);
 	if (m_NameCubeMapTex != "")
-		m_CubeMapTex = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameCubeMapTex.c_str()));
+		m_CubeMapTex = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameCubeMapTex);
 	if (m_NameReflectFactorTex != "")
-		m_ReflectFactorTex = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameReflectFactorTex.c_str()));
+		m_ReflectFactorTex = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameReflectFactorTex);
 	if (m_NameTransparencyTex != "")
-		m_TransparencyTex = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameTransparencyTex.c_str()));
+		m_TransparencyTex = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameTransparencyTex);
 }
 
 //----------------------------------------------------------------------------
@@ -240,23 +240,23 @@ void effSkinData::ReloadTextures(const fsLocator& i_TextureDirectory)
 void effSkinData::ReloadTextures(const fsResourceFinder& i_TextureFinder)
 {
 	if (m_NameDiffTex != "")
-		m_DiffTex = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameDiffTex.c_str()));
+		m_DiffTex = matTextureMgr::LoadTexture(i_TextureFinder, m_NameDiffTex);
 	if (m_NameNormalTex != "")
-		m_NormalTex = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameNormalTex.c_str()));
+		m_NormalTex = matTextureMgr::LoadTexture(i_TextureFinder, m_NameNormalTex);
 	if (m_NameMicroTex != "")
-		m_MicroTex = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameMicroTex.c_str()));
+		m_MicroTex = matTextureMgr::LoadTexture(i_TextureFinder, m_NameMicroTex);
 	if (m_NameSpecTex != "")
-		m_SpecTex = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameSpecTex.c_str()));
+		m_SpecTex = matTextureMgr::LoadTexture(i_TextureFinder, m_NameSpecTex);
 	if (m_NameSpecPowerTex != "")
-		m_SpecPowerTex = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameSpecPowerTex.c_str()));
+		m_SpecPowerTex = matTextureMgr::LoadTexture(i_TextureFinder, m_NameSpecPowerTex);
 	if (m_NameTransTex != "")
-		m_TransTex = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameTransTex.c_str()));
+		m_TransTex = matTextureMgr::LoadTexture(i_TextureFinder, m_NameTransTex);
 	if (m_NameCubeMapTex != "")
-		m_CubeMapTex = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameCubeMapTex.c_str()));
+		m_CubeMapTex = matTextureMgr::LoadTexture(i_TextureFinder, m_NameCubeMapTex);
 	if (m_NameReflectFactorTex != "")
-		m_ReflectFactorTex = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameReflectFactorTex.c_str()));
+		m_ReflectFactorTex = matTextureMgr::LoadTexture(i_TextureFinder, m_NameReflectFactorTex);
 	if (m_NameTransparencyTex != "")
-		m_TransparencyTex = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameTransparencyTex.c_str()));
+		m_TransparencyTex = matTextureMgr::LoadTexture(i_TextureFinder, m_NameTransparencyTex);
 }
 
 //----------------------------------------------------------------------------

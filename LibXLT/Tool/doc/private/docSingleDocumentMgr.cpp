@@ -7,11 +7,13 @@
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
 #include "Tool/doc/docSingleDocumentMgr.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Core/App/appTime.hpp"
 #include "Core/fs/fsFileX.hpp"
 #include "Core/Fs/fsResourceTracker.hpp"
-#include "Core/It/itStringUtil.hpp"
 #include "Core/name/nameMgr.hpp"
 #include "Core/undo/undoUndoMgr.hpp"
 #include "Tool/doc/docSingleTypeMgr.hpp"
@@ -112,6 +114,32 @@ namespace docSingleDocumentMgr
 		}
 
 		return bNewerVersion;
+	}
+
+	//--------------------------------------------------------------------
+	//  Call this on File->Open of a foreign file (see .hpp)
+	//--------------------------------------------------------------------
+	bool OpenForeignFile( const fsLocator &i_Locator )
+	{
+		NewDocument();
+		try
+		{
+			if (!docSingleTypeMgr::OpenForeignFile(i_Locator))
+			{
+				NewDocument();
+				return false;
+			}
+		}
+		catch(...)
+		{
+			l_Document->Clear();
+			throw;
+		}
+
+		// a new scene: undoing what the opener added would empty it
+		undoUndoMgr::Commit();
+		docSingleTypeMgr::AddToMRU(i_Locator);
+		return true;
 	}
 
 	//--------------------------------------------------------------------
@@ -220,7 +248,7 @@ namespace docSingleDocumentMgr
 			if (fullpath.GetNumNames() == 0)
 				o_Filename = "";
 			else
-				o_Filename = itStringUtil::GetStdString( fullpath.GetLastName() );
+				o_Filename = fullpath.GetLastName();
 		}
 	}
 

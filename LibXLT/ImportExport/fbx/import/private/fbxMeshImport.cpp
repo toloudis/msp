@@ -193,7 +193,7 @@ namespace fbxMeshImport
 			// Check to see if we should compress the normal indices
 			bool bCompressedNormals = false;
 			std::vector<maVector3d> compressed_normals;
-			std::vector<envType::UInt32> normal_remap;
+			std::vector<uint32_t> normal_remap;
 			if (normal_mapper.ShouldCompressIndices())
 			{
 				// Get values in Direct Array and then come up with our own indexing scheme

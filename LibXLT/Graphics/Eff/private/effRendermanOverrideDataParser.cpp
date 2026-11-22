@@ -15,7 +15,6 @@
 
 #include "Core/ch/chChunkParserUtil.hpp"
 #include "Core/ch/chReader.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/prty/prtyFilePath.hpp"
 #include "Core/prty/prtyTextureFileName.hpp"
 

@@ -9,6 +9,7 @@
 #ifdef CPTR_WRITEAVI_HPP
 #error cptrWriteAVI.hpp multiply included
 #endif
+#include <string>
 #define CPTR_WRITEAVI_HPP
 
 
@@ -16,7 +17,6 @@
 //	forward references
 //============================================================================
 class fsLocator;
-class itString;
 class g2dImage;
 class g2dWindow;
 class captRenderOutputData;
@@ -59,7 +59,7 @@ namespace cptrWriteAVI
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void AppendAVI(const itString i_origmovie, const itString i_countdown, const itString i_tempPath);
+	void AppendAVI(const std::string i_origmovie, const std::string i_countdown, const std::string i_tempPath);
 
 	//----------------------------------------------------------------------------
 	//----------------------------------------------------------------------------

@@ -20,6 +20,9 @@
 #include "GraphicsDX11/mat/matRenderTargetTexture.hpp"
 #include "GraphicsDX11/eff/effShaderBaseDX11.hpp"
 #include "GraphicsDX11/g3d/g3dDX11TextureUtil.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 
 namespace
@@ -27,7 +30,7 @@ namespace
 	g3dBlendStateMgr::BlendState* st_NoBlend = NULL;
 	g3dDepthStencilStateMgr::DepthStencilState* ds_Disable_NS = NULL;
 
-	void setupPfxGlobal(ID3DX11Effect* i_pD3DEffect, matRenderTargetTexture* i_pTex)
+	void setupPfxGlobal(fxEffect* i_pD3DEffect, matRenderTargetTexture* i_pTex)
 	{
 		i_pD3DEffect->GetVariableByName("g_ImageWidth")->AsScalar()->SetFloat((float)(i_pTex->GetWidth()));
 		i_pD3DEffect->GetVariableByName("g_ImageHeight")->AsScalar()->SetFloat((float)(i_pTex->GetHeight()));
@@ -52,6 +55,7 @@ shdwPassPostShader::~shdwPassPostShader()
 //----------------------------------------------------------------------------------------
 int shdwPassPostShader::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassPostShader");
 	UINT uiPass;
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassPostShader::Render" );
 
@@ -64,7 +68,7 @@ int shdwPassPostShader::Render(float i_time)
 	effShaderParams* pShaderParam = g3dPostProcessing::GetPostEffect().get();
 	const matShaderEffect* pMatEffect = pShaderParam->GetShader();
 	effShaderBaseDX11* pEffect = (effShaderBaseDX11*)pMatEffect;
-	ID3DX11Effect* pD3DEffect = pEffect->GetD3DXEffect();
+	fxEffect* pD3DEffect = pEffect->GetFxEffect();
 	setupPfxGlobal(pD3DEffect, m_pScratchTex);
 	pEffect->SetTechnique("Default");
 

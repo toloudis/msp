@@ -7,6 +7,9 @@
 **	Copyright(C) 2004 - All Rights Reserved
 \****************************************************************************/
 #include "ToolUIWx/twx/twxToolbarMgr.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "ToolUIWx/twx/twxPaneMgr.hpp"
 #include "ToolUIWx/twx/twxSystem.hpp"
@@ -156,11 +159,11 @@ void twxToolbarMgr::AddToolBarButton( int i_Id,
 		if( !fsFileUtil::FileExists(icon_loc) )
 			continue;
 
-		itString icon_filename;
+		std::string icon_filename;
 		fsFileUtil::LocatorToUnicodeString(icon_loc, icon_filename);
         
 		wxLogNull nullLog;
-		wxImage icon_image( icon_filename.GetString(), wxBITMAP_TYPE_PNG );
+		wxImage icon_image( wxString::FromUTF8(icon_filename), wxBITMAP_TYPE_PNG );
 
 		icon_image.Rescale(24,24);
 		wxBitmap icon_bitmap( icon_image );

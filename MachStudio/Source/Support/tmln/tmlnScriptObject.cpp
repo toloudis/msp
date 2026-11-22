@@ -9,6 +9,9 @@
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
 #include "Support/tmln/tmlnScriptObject.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 
 #include "Support/tmln/tmlnChannel.hpp"
@@ -147,6 +150,30 @@ bool tmlnScriptObject::RemoveDriver(tmlnDriver *i_pDriver,
 bool  tmlnScriptObject::HasDriver(tmlnDriver *i_pDriver)
 {
 	return envSTLHelpers::Contains(m_Drivers, i_pDriver);
+}
+
+//--------------------------------------------------------------------
+//  Find a driver an undo operation refers to (see .hpp)
+//--------------------------------------------------------------------
+tmlnDriver* tmlnScriptObject::FindDriver(tmlnDriver *i_pDriver, int i_Position)
+{
+	if (i_Position >= 0 && i_Position < (int)m_Drivers.size() && m_Drivers[i_Position] == i_pDriver)
+		return i_pDriver;
+	if (i_pDriver && HasDriver(i_pDriver))
+		return i_pDriver;		// moved, not recreated
+	if (i_Position >= 0 && i_Position < (int)m_Drivers.size())
+		return m_Drivers[i_Position];
+	return NULL;
+}
+
+int tmlnScriptObject::GetDriverPosition(const tmlnDriver *i_pDriver) const
+{
+	for (int i = 0; i < (int)m_Drivers.size(); ++i)
+	{
+		if (m_Drivers[i] == i_pDriver)
+			return i;
+	}
+	return -1;
 }
 
 //--------------------------------------------------------------------

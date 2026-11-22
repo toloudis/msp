@@ -45,6 +45,12 @@
 #include "GraphicsDX11/g3d/g3dTransparencySortDX11.hpp"
 #include "GraphicsDX11/mat/matPlainTexture.hpp"
 #include "GraphicsDX11/mat/matRenderTargetTexture.hpp"
+#ifndef FX_EFFECTDX11_HPP
+#include "GraphicsDX11/Fx/fxEffectDX11.hpp"
+#endif
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 //#include "profile.h"
 
@@ -216,6 +222,7 @@ int shdwShadowLayerRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCa
 								const g3dScene &i_Scene, const std::vector<g3dLayer*>& i_ViewerLayers,
 							   float i_fSimTime )
 {//PROFILE("Render");
+	G3D_PROFILE_SCOPE("ShadowLayerRenderer");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwShadowLayerRendererDX11::Render" );
 
 	// Initialize the triangle count
@@ -339,7 +346,7 @@ int shdwShadowLayerRendererDX11::Render( g2dRenderTarget* i_pWindow, const camCa
 //
 //
 //// run the Blur effect on this data
-//		matShaderEffect* effBlur = matShaderMgr::GetSpecialEffect("Blur.fx");
+//		matShaderEffect* effBlur = matShaderMgr::GetSpecialEffect("Blur");
 //		effBlurData blurData;
 //		blurData.m_pSceneTexture = m_renderTargetTex;
 //		blurData.m_pDownsampledTexture = m_blurredTex;
@@ -470,6 +477,7 @@ void g3dRenderWorldSpaceObjects::PerFrameCleanup()
 }
 int g3dRenderWorldSpaceObjects::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("RenderWorldSpaceObjects");
 	m_stats.Reset();
 
 	if (m_pLayer == NULL)
@@ -585,6 +593,7 @@ g3dRenderSkyBox::~g3dRenderSkyBox()
 }
 int g3dRenderSkyBox::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("RenderSkyBox");
 	// This chunk of code is never executed
 	m_stats.Reset();
 
@@ -677,9 +686,8 @@ void shdwShadowLayerRendererDX11::CreateSurfaces(g2dRenderTarget* i_pWindow)
 }
 void shdwShadowLayerRendererDX11::DrawAlpha(matRenderTargetTexture* i_src, g2dRenderTarget* i_dest)
 {
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
-	ID3DX11EffectTechnique* pEffectTechnique = pEffect->GetTechniqueByName("DrawAlpha");
+	fxEffectDX11* pEffect = g3dDX11Util::GetPlainEffect("HDRLighting");
+	int technique = pEffect->FindTechnique("DrawAlpha");
 
 	i_dest->MakeCurrent();
 	int w,h;
@@ -692,11 +700,10 @@ void shdwShadowLayerRendererDX11::DrawAlpha(matRenderTargetTexture* i_src, g2dRe
 
 	g3dDepthStencilStateMgr::SetDepthStencilState( ds_Disable_NS );
 
-	D3DX11_TECHNIQUE_DESC techDesc;
-	pEffectTechnique->GetDesc( &techDesc );
-	for( UINT uiPass = 0; uiPass < techDesc.Passes; ++uiPass)
+	UINT nTechPasses = (UINT)pEffect->GetPassCount(technique);
+	for( UINT uiPass = 0; uiPass < nTechPasses; ++uiPass)
 	{
-		pEffectTechnique->GetPassByIndex(uiPass)->Apply(0, g2dDX11Global::g_pDeviceContext);
+		pEffect->Apply(technique, uiPass, g2dDX11Global::g_pDeviceContext);
 
 		g3dDX11Util::DrawFullScreenQuad( w,h );
 	}

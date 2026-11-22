@@ -17,8 +17,16 @@
 #include "Features/Capture/cptrRenderBakeDataUtil.hpp"
 #include "Features/Capture/cptrRenderBatchDataUtil.hpp"
 #include "Features/Capture/cptrRenderProgressDialogUtil.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/Capture/qtGUI/cptrDialogUtil.hpp"
+#else
 #include "Features/Capture/wxGUI/cptrDialogUtil.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "Features/Capture/qtGUI/cptrToPhotoshopdialog.hpp"
+#else
 #include "Features/Capture/wxGUI/cptrToPhotoshopdialog.hpp"
+#endif
 #include "Support/capt/captOutputDataDocumentInterest.hpp"
 #include "Support/capt/captRenderOutputDataUtil.hpp"
 #include "Support/capt/captRenderProgressMgr.hpp"
@@ -41,6 +49,9 @@
 #include "Tool/gui/guiMenuMgr.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
 #include "Tool/gui/guiSingleDocHandler.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #define USE_BAKE_TEXTURE
 
@@ -67,7 +78,9 @@ namespace cptrPackage
 		//--------------------------------------------------------------------
 		void Execute_RenderTagsInfo()
 		{
+#ifndef BATCH_MODE	// no dialogs in batch mode
 			cptrDialogUtil::ShowTagsInfo();
+#endif
 		}
 	}
 
@@ -117,9 +130,11 @@ namespace cptrPackage
 
 		//	set-up the menus + commands
 		cptrCommands::SetupMenu();
+#ifndef BATCH_MODE	// the Photoshop export is a dialog; there are none in batch mode
 		Photoshop::SetupMenu();
 		Photoshop::EnableMenus();
 		Photoshop::SetFrameID(l_ModeIDFrame);
+#endif
 
 		docSingleTypeMgr::AddDocumentInterest(new captOutputDataDocumentInterest());
 		if(l_pRenderPI == NULL)
@@ -276,6 +291,17 @@ namespace cptrPackage
 			DBG_ERROR("File does not exist: " << i_SceneFile);
 			mnmAppUtil::SetErrorCode(mnmErrorCodes::c_SceneFileNotFound); // could not load scene
 		}
+		else if (docSingleTypeMgr::IsForeignFile(i_SceneFile))
+		{
+			// rendering a scene file of another format (glTF) is deferred:
+			// it would open as an untitled scene, which can't be rendered
+			DBG_ERROR("-render takes a .mab scene: open " << i_SceneFile << " in MachStudio and save it as a .mab");
+			if (!modeModeMgr::IsEmpty())
+			{
+				modeModeMgr::Clear();
+			}
+			mnmAppUtil::SetErrorCode(mnmErrorCodes::c_CouldNotLoadScene); // could not load scene
+		}
 		else
 		{
 			//
@@ -323,9 +349,9 @@ namespace cptrPackage
 				//captRenderOutputDataUtil::SetSceneAndDirectory( i_SceneFile );
 
 				//	set the prefix to be the scene name
-				itString current_scenename;
+				std::string current_scenename;
 				current_scenename = docSingleDocumentMgr::GetFilename().GetLastName();
-				current_scenename.StripExtension();
+				envString::StripExtension(current_scenename);
 				captRenderOutputDataUtil::SetCurrentScene( current_scenename );
 
 				//	set-up the render mode to launch directly
@@ -368,9 +394,9 @@ namespace cptrPackage
 		}
 
 		//	set the prefix to be the scene name
-		itString current_scenename;
+		std::string current_scenename;
 		current_scenename = docSingleDocumentMgr::GetFilename().GetLastName();
-		current_scenename.StripExtension();
+		envString::StripExtension(current_scenename);
 		captRenderOutputDataUtil::SetCurrentScene( current_scenename );
 
 		//	set-up the render mode to launch directly

@@ -1,7 +1,7 @@
 /*****************************************************************************
 **  quiPackage.hpp
 **
-**      Initializes wxWidgets implementation for mui 
+**      Initializes Qt implementation of Tool/gui 
 **	user interface package
 **
 **	StudioGPU

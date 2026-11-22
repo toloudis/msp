@@ -27,10 +27,10 @@ namespace
 	//----------------------------------------------------------------------------
 	//----------------------------------------------------------------------------
 	template<class T>
-	envType::UInt32 join_vertices(mdlFragInfo &o_ToAlter,
+	uint32_t join_vertices(mdlFragInfo &o_ToAlter,
 					   const T& i_ToAdd)
 	{
-		envType::UInt32 vertex_base = o_ToAlter.m_Vertices.size();
+		uint32_t vertex_base = o_ToAlter.m_Vertices.size();
 		//int index_base = o_ToAlter.m_Indices.size();
 
 		// Indices go into separate array to be sorted
@@ -129,11 +129,11 @@ void smdlInfluenceSorter::Submit(const T &i_Frag,
 
 	// Join all vertices together, return offset for 
 	// indices into new array.
-	envType::UInt32 index_offset = join_vertices<T>(m_JoinedFrag, i_Frag);
+	uint32_t index_offset = join_vertices<T>(m_JoinedFrag, i_Frag);
 
 	// Now sort the triangles into the indices for each joint
 	int num_indices = i_Frag.m_Indices.size();
-	envType::UInt32 a, b, c;
+	uint32_t a, b, c;
 	for (int i=0; i<num_indices; i+=3)
 	{
 		a = i_Frag.m_Indices[i];

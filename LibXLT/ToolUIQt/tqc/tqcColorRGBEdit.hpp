@@ -11,8 +11,6 @@
 #endif
 #define TQC_COLORRGBEDIT_HPP
 
-#ifdef QT_FINISH_PORT
-
 #ifndef TQC_FLOATEDIT_HPP
 #include "ToolUIQt/tqc/tqcFloatEdit.hpp"
 #endif
@@ -23,16 +21,18 @@
 #include "ToolUIQt/tqc/tqcColorPicker.hpp"
 #endif 
 
+#ifdef USE_QT
+
 //============================================================================
-// wxEVT_VALUE_CHANGED event : this control throws this event type when the
+// Value changed callback (tqcEvent.hpp): this control calls it when the
 //	value in the control has changed aftere ENTER is pressed, or the
-//	focus leaves the text box. Users should register for this event, 
-//	not for the individual enter pressed and leave events.
+//	focus leaves the text box. Users should set this callback, 
+//	not watch for the individual enter pressed and leave events.
 //============================================================================
 
 //============================================================================
 //============================================================================
-class tqcColorRGBEdit : public wxPanel
+class tqcColorRGBEdit : public QWidget, public tqcValueChangedNotifier
 {
 	public:
 		//--------------------------------------------------------------------
@@ -48,14 +48,16 @@ class tqcColorRGBEdit : public wxPanel
 	private:
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		void OnTextChange(wxCommandEvent& i_Event);
-		void OnColorChange(wxCommandEvent& i_Event);
+		void OnTextChange();
+		void OnColorChange();
 
 		tqcFloatEdit* m_pFloatEditR;
 		tqcFloatEdit* m_pFloatEditG;
 		tqcFloatEdit* m_pFloatEditB;
 		tqcColorPicker* m_pColorPicker;
 		
+		void update_edits();
+
 		maFloatRGBA m_Value;
 };
 

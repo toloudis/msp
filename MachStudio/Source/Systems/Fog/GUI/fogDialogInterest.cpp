@@ -32,7 +32,7 @@ fogDialogInterest::fogDialogInterest()
 //	Add Object to Placed
 //--------------------------------------------------------------------
 //virtual 
-void fogDialogInterest::AddObject(const itString& i_FileName, const fsLocator& i_Path)
+void fogDialogInterest::AddObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 	// change focus to the main app
 	guiMainWindow::Focus();
@@ -84,8 +84,8 @@ void fogDialogInterest::GetAvailableObjects(fsysFileList& io_FileList) const
 	{
 		fsLocator path;
 		path.Push(c_SystemName);
-		itString fname;
-		fname = itString("Fog");
+		std::string fname;
+		fname = std::string("Fog");
 		io_FileList.AddFilename(path,fname);
 	}
 }

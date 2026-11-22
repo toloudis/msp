@@ -171,26 +171,26 @@ void twcRenderPanel::OnMouseDown(wxMouseEvent& i_Event)
 			camera_menu->AppendSeparator();
 
 		// Editor cameras at end
-		camera_menu->Append(MENU_EDITORPERSP,  _T("Editor"));
-		camera_menu->Append(MENU_EDITORTOP,  _T("Top"));
-		camera_menu->Append(MENU_EDITORFRONT,  _T("Front"));
-		camera_menu->Append(MENU_EDITORSIDE,  _T("Side"));
+		camera_menu->Append(MENU_EDITORPERSP,  wxT("Editor"));
+		camera_menu->Append(MENU_EDITORTOP,  wxT("Top"));
+		camera_menu->Append(MENU_EDITORFRONT,  wxT("Front"));
+		camera_menu->Append(MENU_EDITORSIDE,  wxT("Side"));
 
 		// flattening the menus to make it easier to select
 		//wxMenu *scripted_menu = new wxMenu();
 		//wxMenu *dcut_menu = new wxMenu();
 
-		//camera_menu->AppendSubMenu(editor_menu, _T("Editor"));
-		//camera_menu->AppendSubMenu(scripted_menu, _T("Scripted"));
-		//camera_menu->AppendSubMenu(dcut_menu, _T("Director's Cut"));
-		menu.AppendSubMenu(camera_menu, _T("Camera"));
+		//camera_menu->AppendSubMenu(editor_menu, wxT("Editor"));
+		//camera_menu->AppendSubMenu(scripted_menu, wxT("Scripted"));
+		//camera_menu->AppendSubMenu(dcut_menu, wxT("Director's Cut"));
+		menu.AppendSubMenu(camera_menu, wxT("Camera"));
 		
 		//wxMenu *select_menu = new wxMenu();
-		//select_menu->Append(MENU_CLEARSELECTION,  _T("Clear Selection"));
-		//select_menu->Append(MENU_SELECTCAMERA,  _T("Select Camera"));
-		//menu.AppendSubMenu(select_menu, _T("Select")); 
-		menu.Append(MENU_CLEARSELECTION,  _T("Clear Selection"));
-		menu.Append(MENU_SELECTCAMERA,  _T("Select Camera"));
+		//select_menu->Append(MENU_CLEARSELECTION,  wxT("Clear Selection"));
+		//select_menu->Append(MENU_SELECTCAMERA,  wxT("Select Camera"));
+		//menu.AppendSubMenu(select_menu, wxT("Select")); 
+		menu.Append(MENU_CLEARSELECTION,  wxT("Clear Selection"));
+		menu.Append(MENU_SELECTCAMERA,  wxT("Select Camera"));
 		PopupMenu(&menu, i_Event.GetX(), i_Event.GetY());
 	}
 	if (i_Event.MiddleDown() && !i_Event.AltDown())

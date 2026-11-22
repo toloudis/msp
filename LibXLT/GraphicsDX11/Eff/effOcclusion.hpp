@@ -21,7 +21,7 @@ class matMaterial;
 class effOcclusion : public effShaderBaseDX11
 {
 public:
-	effOcclusion(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, std::string i_name);
+	effOcclusion(const fsLocator& i_Directory, std::unique_ptr<fxEffect> i_pEffect, std::string i_name);
 
 	virtual effShaderData* CreateData(const matMaterial* i_Mat);
 

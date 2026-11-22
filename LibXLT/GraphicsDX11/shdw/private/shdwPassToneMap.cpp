@@ -21,6 +21,9 @@
 #include "Graphics/g3d/g3dPrefs.hpp"
 #include "Graphics/g3d/g3dScene.hpp"
 #include "Graphics/g3d/g3dSingleLightRendering.hpp"
+#ifndef FX_EFFECTDX11_HPP
+#include "GraphicsDX11/Fx/fxEffectDX11.hpp"
+#endif
 
 #define MAX_SAMPLES           25      // Maximum number of texture grabs
 
@@ -217,14 +220,13 @@ shdwPassToneMap::shdwPassToneMap()
 void shdwPassToneMap::Setup(const g3dScene& i_Scene, const camCamera& i_Camera)
 {
 	// set up per frame HDR vars..
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
+	fxEffectDX11* pEffect = g3dDX11Util::GetPlainEffect("HDRLighting");
 
 	//		bool bKeyValue = g3dPrefs::CurrentPrefs().m_HDRBlueShift; 
 	//		pEffect->SetBool("g_bEnableBlueShift", bKeyValue);
 
 	bool bKeyValue = g3dPrefs::CurrentPrefs().m_HDRToneMap; 
-	pEffect->GetVariableByName("g_bEnableToneMap")->AsScalar()->SetBool(bKeyValue);
+	pEffect->SetConstant(pEffect->FindConstant("g_bEnableToneMap"), (int)((bKeyValue) ? 1 : 0));
 
 	camHDRData hdrData;
 	i_Camera.GetHDRParams(hdrData);
@@ -234,18 +236,18 @@ void shdwPassToneMap::Setup(const g3dScene& i_Scene, const camCamera& i_Camera)
 		g_GlareDef.Initialize( (EGLARELIBTYPE)m_eGlareType );
 	}
 
-	pEffect->GetVariableByName( "g_fMiddleGray")->AsScalar()->SetFloat( hdrData.m_MiddleGray );
-	pEffect->GetVariableByName( "g_fBloomScale")->AsScalar()->SetFloat( hdrData.m_BloomScale );
-	pEffect->GetVariableByName( "g_fStarScale")->AsScalar()->SetFloat( hdrData.m_StarScale );
-	pEffect->GetVariableByName( "g_fWhiteCutoff")->AsScalar()->SetFloat( hdrData.m_WhiteCutoff );
-	pEffect->GetVariableByName( "BRIGHT_PASS_THRESHOLD")->AsScalar()->SetFloat( hdrData.m_BrightPassThresh );
-	pEffect->GetVariableByName( "BRIGHT_PASS_OFFSET")->AsScalar()->SetFloat( hdrData.m_BrightPassOffset );
+	pEffect->SetConstant(pEffect->FindConstant("g_fMiddleGray"), (float)(hdrData.m_MiddleGray));
+	pEffect->SetConstant(pEffect->FindConstant("g_fBloomScale"), (float)(hdrData.m_BloomScale));
+	pEffect->SetConstant(pEffect->FindConstant("g_fStarScale"), (float)(hdrData.m_StarScale));
+	pEffect->SetConstant(pEffect->FindConstant("g_fWhiteCutoff"), (float)(hdrData.m_WhiteCutoff));
+	pEffect->SetConstant(pEffect->FindConstant("BRIGHT_PASS_THRESHOLD"), (float)(hdrData.m_BrightPassThresh));
+	pEffect->SetConstant(pEffect->FindConstant("BRIGHT_PASS_OFFSET"), (float)(hdrData.m_BrightPassOffset));
 
 	// Sample scene to compute average luminance 
 	// no longer used, since we do not do adaptive exposure
 	//		ComputeAvgLuminance(); // value in m_apTexToneMap[0]
 
-	pEffect->GetVariableByName( "g_fixedLuminance")->AsScalar()->SetFloat( hdrData.m_SceneLuminance );
+	pEffect->SetConstant(pEffect->FindConstant("g_fixedLuminance"), (float)(hdrData.m_SceneLuminance));
 }
 
 //-----------------------------------------------------------------------------
@@ -270,8 +272,8 @@ HRESULT shdwPassToneMap::Scene_To_SceneScaled(matRenderTargetTexture* io_ScaledT
     // are 1/8 x 1/8 scale, border texels of the HDR texture will be discarded 
     // to keep the dimensions evenly divisible by 8; this allows for precise 
     // control over sampling inside pixel shaders.
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
+	matShaderEffect* pEffBase = g3dDX11Util::GetEffect("HDRLighting");
+	fxEffectDX11* pEffect = g3dDX11Util::GetPlainEffect("HDRLighting");
     pEffBase->SetTechnique("DownScale4x4");
 
     // Place the rectangle in the center of the back buffer surface
@@ -295,7 +297,7 @@ HRESULT shdwPassToneMap::Scene_To_SceneScaled(matRenderTargetTexture* io_ScaledT
 
     // Get the sample offsets used within the pixel shader
     GetSampleOffsets_DownScale4x4( w, h, avSampleOffsets );
-    pEffect->GetVariableByName("g_avSampleOffsets")->AsVector()->SetFloatVectorArray((float*)avSampleOffsets, 0, MAX_SAMPLES);
+    pEffect->SetVectorArray(pEffect->FindConstant("g_avSampleOffsets"), (float*)avSampleOffsets, 0, MAX_SAMPLES);
 
 	//capture and clear depth (don't need for FSQ (full screen quad))
 	g2dD3D11RenderTargetPtr oldColor = g2dDX11Global::GetColorTarget();
@@ -390,8 +392,7 @@ HRESULT shdwPassToneMap::SceneScaled_To_BrightPass(matRenderTargetTexture* i_pSr
 
     // The bright-pass filter removes everything from the scene except lights and
     // bright reflections
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
+	matShaderEffect* pEffBase = g3dDX11Util::GetEffect("HDRLighting");
     pEffBase->SetTechnique("BrightPassFilter");
 
 	//capture and clear depth (don't need for FSQ (full screen quad))
@@ -486,16 +487,16 @@ HRESULT shdwPassToneMap::BrightPass_To_StarSource(matRenderTargetTexture* i_pSrc
 
     // Get the sample offsets used within the pixel shader
 
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
+	matShaderEffect* pEffBase = g3dDX11Util::GetEffect("HDRLighting");
+	fxEffectDX11* pEffect = g3dDX11Util::GetPlainEffect("HDRLighting");
     
 	// 5x5 filter has a 4 "texel" width.
 	g3dDX11TextureUtil::GetSampleOffsets_GaussBlur5x5( 4.0f/(float)i_pSrcTex->GetWidth(),
 		4.0f/(float)i_pSrcTex->GetHeight(), 
 		avSampleOffsets, avSampleWeights );
 //	g3dDX11TextureUtil::GetSampleOffsets_GaussBlur5x5( 4.0f/(REF_X/4.0f+2.0f), 4.0f/(REF_Y/4.0f+2.0f), avSampleOffsets, avSampleWeights );
-    pEffect->GetVariableByName("g_avSampleOffsets")->AsVector()->SetFloatVectorArray((float*)avSampleOffsets, 0, MAX_SAMPLES);
-    pEffect->GetVariableByName("g_avSampleWeights")->AsVector()->SetFloatVectorArray((float*)avSampleWeights, 0, MAX_SAMPLES);
+    pEffect->SetVectorArray(pEffect->FindConstant("g_avSampleOffsets"), (float*)avSampleOffsets, 0, MAX_SAMPLES);
+    pEffect->SetVectorArray(pEffect->FindConstant("g_avSampleWeights"), (float*)avSampleWeights, 0, MAX_SAMPLES);
     
     // The gaussian blur smooths out rough edges to avoid aliasing effects
     // when the star effect is run
@@ -594,11 +595,11 @@ HRESULT shdwPassToneMap::StarSource_To_BloomSource(matRenderTargetTexture* i_pSr
 
     // Get the sample offsets used within the pixel shader
 
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
+	matShaderEffect* pEffBase = g3dDX11Util::GetEffect("HDRLighting");
+	fxEffectDX11* pEffect = g3dDX11Util::GetPlainEffect("HDRLighting");
 
     GetSampleOffsets_DownScale2x2( i_pSrcTex->GetWidth(), i_pSrcTex->GetHeight(), avSampleOffsets );
-    pEffect->GetVariableByName("g_avSampleOffsets")->AsVector()->SetFloatVectorArray((float*)avSampleOffsets, 0, MAX_SAMPLES);
+    pEffect->SetVectorArray(pEffect->FindConstant("g_avSampleOffsets"), (float*)avSampleOffsets, 0, MAX_SAMPLES);
 
     // Create an exact 1/2 x 1/2 copy of the source texture
     pEffBase->SetTechnique("DownScale2x2");
@@ -705,8 +706,8 @@ HRESULT shdwPassToneMap::RenderBloom(matRenderTargetTexture* i_pBloomSource,
     CoordRect coords;
     g3dDX11TextureUtil::GetTextureCoords( i_pBloomSource, &rectSrc, io_pBloomTex[2], &rectDest, &coords );
    
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
+	matShaderEffect* pEffBase = g3dDX11Util::GetEffect("HDRLighting");
+	fxEffectDX11* pEffect = g3dDX11Util::GetPlainEffect("HDRLighting");
     pEffBase->SetTechnique("GaussBlur5x5");
 
 	// 5x5 filter has a 4 "texel" width.
@@ -715,8 +716,8 @@ HRESULT shdwPassToneMap::RenderBloom(matRenderTargetTexture* i_pBloomSource,
 		4.0f/(float)i_pBloomSource->GetHeight(), 
 		avSampleOffsets, avSampleWeights, 1.0f );
 //	hr = g3dDX11TextureUtil::GetSampleOffsets_GaussBlur5x5( 4.0f/(REF_X/8.0f+2.0f), 4.0f/(REF_Y/8.0f+2.0f), avSampleOffsets, avSampleWeights, 1.0f );
-    pEffect->GetVariableByName("g_avSampleOffsets")->AsVector()->SetFloatVectorArray((float*)avSampleOffsets, 0, MAX_SAMPLES);
-    pEffect->GetVariableByName("g_avSampleWeights")->AsVector()->SetFloatVectorArray((float*)avSampleWeights, 0, MAX_SAMPLES);
+    pEffect->SetVectorArray(pEffect->FindConstant("g_avSampleOffsets"), (float*)avSampleOffsets, 0, MAX_SAMPLES);
+    pEffect->SetVectorArray(pEffect->FindConstant("g_avSampleWeights"), (float*)avSampleWeights, 0, MAX_SAMPLES);
    
 	//capture and clear depth (don't need for FSQ (full screen quad))
 	g2dD3D11RenderTargetPtr oldColor = g2dDX11Global::GetColorTarget();
@@ -769,8 +770,8 @@ HRESULT shdwPassToneMap::RenderBloom(matRenderTargetTexture* i_pBloomSource,
      
 
     pEffBase->SetTechnique("Bloom");
-    pEffect->GetVariableByName("g_avSampleOffsets")->AsVector()->SetFloatVectorArray((float*)avSampleOffsets, 0, MAX_SAMPLES);
-    pEffect->GetVariableByName("g_avSampleWeights")->AsVector()->SetFloatVectorArray((float*)avSampleWeights, 0, MAX_SAMPLES);
+    pEffect->SetVectorArray(pEffect->FindConstant("g_avSampleOffsets"), (float*)avSampleOffsets, 0, MAX_SAMPLES);
+    pEffect->SetVectorArray(pEffect->FindConstant("g_avSampleWeights"), (float*)avSampleWeights, 0, MAX_SAMPLES);
    
 	io_pBloomTex[1]->MakeCurrent();
 	//g2dDX11Global::g_pDevice->SetRenderTarget(0, pSurfTempBloom);
@@ -814,8 +815,8 @@ HRESULT shdwPassToneMap::RenderBloom(matRenderTargetTexture* i_pBloomSource,
 
     
     pEffBase->SetTechnique("Bloom");
-    pEffect->GetVariableByName("g_avSampleOffsets")->AsVector()->SetFloatVectorArray((float*)avSampleOffsets, 0, MAX_SAMPLES);
-    pEffect->GetVariableByName("g_avSampleWeights")->AsVector()->SetFloatVectorArray((float*)avSampleWeights, 0, MAX_SAMPLES);
+    pEffect->SetVectorArray(pEffect->FindConstant("g_avSampleOffsets"), (float*)avSampleOffsets, 0, MAX_SAMPLES);
+    pEffect->SetVectorArray(pEffect->FindConstant("g_avSampleWeights"), (float*)avSampleWeights, 0, MAX_SAMPLES);
     
 	io_pBloomTex[0]->MakeCurrent();
 	//g2dDX11Global::g_pDevice->SetRenderTarget(0, pSurfBloom);
@@ -956,8 +957,8 @@ HRESULT shdwPassToneMap::RenderStar(matRenderTargetTexture* i_pSrcTex, matRender
 
     matRenderTargetTexture* pTexSource = NULL;
 
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
+	matShaderEffect* pEffBase = g3dDX11Util::GetEffect("HDRLighting");
+	fxEffectDX11* pEffect = g3dDX11Util::GetPlainEffect("HDRLighting");
 
 	matRenderTargetTexture* pSurfDest = NULL;
 
@@ -1027,8 +1028,8 @@ HRESULT shdwPassToneMap::RenderStar(matRenderTargetTexture* i_pSrcTex, matRender
 
             
             pEffBase->SetTechnique("Star");
-		    pEffect->GetVariableByName("g_avSampleOffsets")->AsVector()->SetFloatVectorArray((float*)avSampleOffsets, 0, MAX_SAMPLES);
-		    pEffect->GetVariableByName("g_avSampleWeights")->AsVector()->SetFloatVectorArray((float*)avSampleWeights, 0, nSamples);
+		    pEffect->SetVectorArray(pEffect->FindConstant("g_avSampleOffsets"), (float*)avSampleOffsets, 0, MAX_SAMPLES);
+		    pEffect->SetVectorArray(pEffect->FindConstant("g_avSampleWeights"), (float*)avSampleWeights, 0, nSamples);
             
 			pSurfDest->MakeCurrent();
 			int w,h;
@@ -1101,7 +1102,7 @@ HRESULT shdwPassToneMap::RenderStar(matRenderTargetTexture* i_pSrcTex, matRender
 
 	pEffBase->SetTechnique(strTechnique.c_str());
 
-    pEffect->GetVariableByName("g_avSampleWeights")->AsVector()->SetFloatVectorArray((float*)avSampleWeights, 0, starDef.m_nStarLines);
+    pEffect->SetVectorArray(pEffect->FindConstant("g_avSampleWeights"), (float*)avSampleWeights, 0, starDef.m_nStarLines);
 
     pSurfDest->MakeCurrent();
 	int w,h;
@@ -1170,8 +1171,7 @@ void shdwPassToneMap::ToneMap(g2dRenderTarget* io_pDest,
 	// textures will be added to the scene.
     UINT uiPassCount, uiPass;
     
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
+	matShaderEffect* pEffBase = g3dDX11Util::GetEffect("HDRLighting");
 
 	if (g3dSingleLightRendering::GetDoSingleLightRendering())
 		pEffBase->SetTechnique("FinalScenePass");
@@ -1279,10 +1279,10 @@ HRESULT shdwPassToneMap::ComputeAvgLuminance()
     // After this pass, the m_apTexToneMap[NUM_TONEMAP_TEXTURES-1] texture will contain
     // a scaled, grayscale copy of the HDR scene. Individual texels contain the log 
     // of average luminance values for points sampled on the HDR texture.
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
+	matShaderEffect* pEffBase = g3dDX11Util::GetEffect("HDRLighting");
+	fxEffectDX11* pEffect = g3dDX11Util::GetPlainEffect("HDRLighting");
     pEffBase->SetTechnique("SampleAvgLum");
-    pEffect->GetVariableByName("g_avSampleOffsets")->AsVector()->SetFloatVectorArray((float*)avSampleOffsets, 0, MAX_SAMPLES);
+    pEffect->SetVectorArray(pEffect->FindConstant("g_avSampleOffsets"), (float*)avSampleOffsets, 0, MAX_SAMPLES);
     
 	m_pFrameBuffer->TexToneMap().m_apTexToneMap[dwCurTexture]->MakeCurrent();
 	int w,h;
@@ -1327,7 +1327,7 @@ HRESULT shdwPassToneMap::ComputeAvgLuminance()
         // luminance texture created above, storing intermediate results in 
         // m_apTexToneMap[1] through m_apTexToneMap[NUM_TONEMAP_TEXTURES-1].
         pEffBase->SetTechnique("ResampleAvgLum");
-	    pEffect->GetVariableByName("g_avSampleOffsets")->AsVector()->SetFloatVectorArray((float*)avSampleOffsets, 0, MAX_SAMPLES);
+	    pEffect->SetVectorArray(pEffect->FindConstant("g_avSampleOffsets"), (float*)avSampleOffsets, 0, MAX_SAMPLES);
 
 		m_pFrameBuffer->TexToneMap().m_apTexToneMap[dwCurTexture]->MakeCurrent();
 		int w,h;
@@ -1367,7 +1367,7 @@ HRESULT shdwPassToneMap::ComputeAvgLuminance()
 	// an exp() operation to return a single texel cooresponding to the average
 	// luminance of the scene in m_apTexToneMap[0].
     pEffBase->SetTechnique("ResampleAvgLumExp");
-    pEffect->GetVariableByName("g_avSampleOffsets")->AsVector()->SetFloatVectorArray((float*)avSampleOffsets, 0, MAX_SAMPLES);
+    pEffect->SetVectorArray(pEffect->FindConstant("g_avSampleOffsets"), (float*)avSampleOffsets, 0, MAX_SAMPLES);
     
 	m_pFrameBuffer->TexToneMap().m_apTexToneMap[0]->MakeCurrent();
 	m_pFrameBuffer->TexToneMap().m_apTexToneMap[0]->GetDimensions(w,h);

@@ -1,1 +1,0 @@
-#error propChannelAnimationFull.hpp is obsolete

@@ -76,7 +76,7 @@ namespace
 				std::string strvalue;
 				chChunkParserUtil::Read(i_Reader, strvalue);
 				// read in to user texture, could be overridden by other user texture.
-				o_Data.m_AOUserTextureName.SetValue(itString(strvalue.c_str()));
+				o_Data.m_AOUserTextureName.SetValue(strvalue);
 
 				if (i_Version >= 2)
 				{
@@ -87,7 +87,7 @@ namespace
 					{
 						chChunkParserUtil::Read(i_Reader, strvalue);
 						if (strvalue.length() != 0)
-							o_Data.m_AOUserTextureName.SetValue(itString(strvalue.c_str()));
+							o_Data.m_AOUserTextureName.SetValue(strvalue);
 
 						if (i_Version >= 4)
 						{
@@ -130,7 +130,7 @@ namespace
 				// added in version 3
 				prtyFileName aoTextureName;
 				aoTextureName.Read(i_Reader);
-				if (aoTextureName.GetValue().GetLength() != 0)
+				if (aoTextureName.GetValue().size() != 0)
 					o_Data.m_AOUserTextureName = aoTextureName;
 				// added in version 4
 				o_Data.m_AOBlendFactor.Read(i_Reader);
@@ -145,7 +145,7 @@ namespace
 				prtyFileName aoTextureName;
 				aoTextureName.Read(i_Reader);
 				// if empty, dont overwrite prty that may have been if already read in above
-				if (aoTextureName.GetValue().GetLength() != 0)
+				if (aoTextureName.GetValue().size() != 0)
 					o_Data.m_AOUserTextureName = aoTextureName;
 				// added in version 4
 				o_Data.m_AOBlendFactor.Read(i_Reader);

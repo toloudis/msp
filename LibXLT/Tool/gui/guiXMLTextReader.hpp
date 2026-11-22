@@ -17,9 +17,6 @@
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
 #ifndef MA_FLOATRGBA_HPP
 #include "Core/Ma/maFloatRGBA.hpp"
 #endif
@@ -84,20 +81,19 @@ public:
 	static void Convert(const std::string& i_Text, bool& o_Value);
 	static void Convert(const std::string& i_Text, short& o_Value);
 	static void Convert(const std::string& i_Text, float& o_Value);
-	static void Convert(const std::string& i_Text, envType::Int8& o_Value);
-	static void Convert(const std::string& i_Text, envType::UInt8& o_Value);
-	//static void Convert(const std::string& i_Text, envType::Int16& o_Value);
-	static void Convert(const std::string& i_Text, envType::UInt16& o_Value);
-	//static void Convert(const std::string& i_Text, envType::Int32& o_Value);
-	static void Convert(const std::string& i_Text, envType::UInt32& o_Value);
-	static void Convert(const std::string& i_Text, envType::Int64& o_Value);
-	static void Convert(const std::string& i_Text, envType::UInt64& o_Value);
-	//static void Convert(const std::string& i_Text, envType::Float32& o_Value);
-	static void Convert(const std::string& i_Text, envType::Float64& o_Value);
+	static void Convert(const std::string& i_Text, int8_t& o_Value);
+	static void Convert(const std::string& i_Text, uint8_t& o_Value);
+	//static void Convert(const std::string& i_Text, int16_t& o_Value);
+	static void Convert(const std::string& i_Text, uint16_t& o_Value);
+	//static void Convert(const std::string& i_Text, int32_t& o_Value);
+	static void Convert(const std::string& i_Text, uint32_t& o_Value);
+	static void Convert(const std::string& i_Text, int64_t& o_Value);
+	static void Convert(const std::string& i_Text, uint64_t& o_Value);
+	//static void Convert(const std::string& i_Text, float& o_Value);
+	static void Convert(const std::string& i_Text, double& o_Value);
 	static void Convert(const std::string& i_Text, char * o_Value);
 	static void Convert(const std::string& i_Text, std::string& o_Value);
 	static void Convert(const std::string& i_Text, fsLocator& o_Value);
-	static void Convert(const std::string& i_Text, itString& o_Value);
 	static void Convert(const std::string& i_Text, maFloatRGBA& o_Value);
 
 };

@@ -46,13 +46,13 @@ class twcFilePicker : public wxPanel
 		//--------------------------------------------------------------------
 		//	Filename
 		//--------------------------------------------------------------------
-		itString GetFilename() const;
+		std::string GetFilename() const;
 
 		//--------------------------------------------------------------------
 		//	Filter
 		//--------------------------------------------------------------------
-		const itString& GetFilter() const;
-		void SetFilter(const itString& i_Filter);
+		const std::string& GetFilter() const;
+		void SetFilter(const std::string& i_Filter);
 
 		//--------------------------------------------------------------------
 		//	ShowFileNameOnly
@@ -89,7 +89,7 @@ class twcFilePicker : public wxPanel
 		wxButton* m_pBrowseButton;
 		
 		fsLocator	m_Value;
-		itString	m_Filter;
+		std::string	m_Filter;
 		bool		m_bShowFileNameOnly;
 		fsLocator	m_InitialDirectory;
 		std::string	m_DirectoryCategory;

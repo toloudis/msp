@@ -38,7 +38,16 @@ namespace
 		i_Matrix.TransformDir(scale_vec);
 		o_Scale = scale_vec.Length();
 
-		o_Rotation.SetValue(i_Matrix);
+		// the rotation from the unscaled matrix: maRotation::SetValue
+		// expects a pure rotation
+		maMatrix4x4 rotation_matx(i_Matrix);
+		if (o_Scale > 0)
+		{
+			for (int r = 0; r < 3; r++)
+				for (int c = 0; c < 3; c++)
+					rotation_matx(r, c) /= o_Scale;
+		}
+		o_Rotation.SetValue(rotation_matx);
 		o_Rotation.Normalize();
 	}
 }
@@ -64,8 +73,9 @@ void xfrmApplyTransformUtil::ApplyTransformation(const maMatrix4x4& i_Matrix,
 										scale_vec,
 										io_Orientation.GetValue(),
 										local_matx);
-	//local_matx *= i_Matrix;
-	local_matx = i_Matrix * local_matx;
+	// Row vectors: world = local * parent total, so the offset (old total *
+	// inverse new total) goes on the right
+	local_matx *= i_Matrix;
 
 	maPoint3d position;
 	maRotation rotation;

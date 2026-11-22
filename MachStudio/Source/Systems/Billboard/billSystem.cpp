@@ -55,9 +55,9 @@ namespace
 	// Init -- initialize system with directory to use to look for
 	//		geometry files
 	//--------------------------------------------------------------------
-	void Init(const fsLocator& i_AppDir, const itString& i_BillboardDataDir)
+	void Init(const fsLocator& i_AppDir, const std::string& i_BillboardDataDir)
 	{
-		billGeomList::Init( i_BillboardDataDir, itString(gfPaths::GetSubPath(gfPaths::e_Textures)) );
+		billGeomList::Init( i_BillboardDataDir, std::string(gfPaths::GetSubPath(gfPaths::e_Textures)) );
 		billGeomList::SetAppDirectory(i_AppDir);
 
 		// Initialize namespaces

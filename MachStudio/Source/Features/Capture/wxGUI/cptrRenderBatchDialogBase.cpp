@@ -89,6 +89,10 @@ cptrRenderBatchDialogBase::cptrRenderBatchDialogBase( wxWindow* parent, wxWindow
 	bSizer_Main->SetSizeHints(this);
 	this->SetSizer( bSizer_Main );
 	this->Layout();
+	// The default size is in DIPs: scale it for the display's DPI, and
+	// never let the window be smaller than its contents.
+	this->SetSize( FromDIP( size ) );
+	this->SetMinClientSize( this->GetSizer()->GetMinSize() );
 	
 	// Connect Events
 	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( cptrRenderBatchDialogBase::OnClose ) );

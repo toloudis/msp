@@ -14,13 +14,13 @@
 #ifndef ENV_ABSTRACTION_HPP
 #include "Core/env/envAbstraction.hpp"
 #endif
+#include <string>
 
 
 //============================================================================
 // forward declaration
 //============================================================================
 class guiMessageBoxImpl;
-class itString;
 
 
 //============================================================================
@@ -56,7 +56,7 @@ public:
 	//	return: one of the enumerations MBReturn
 	//---------------------------------------------------------------------------
 	static int Show( const char* i_Message, const char* i_Title, int i_Type = e_OKOnly );
-	static int Show( const itString& i_Message, const itString& i_Title, int i_Type = e_OKOnly );
+	static int Show( const std::string& i_Message, const std::string& i_Title, int i_Type = e_OKOnly );
 };
 
 //============================================================================
@@ -71,6 +71,6 @@ public:
 	//	return: one of the enumerations MBReturn
 	//---------------------------------------------------------------------------
 	virtual int Show( const char* i_Message, const char* i_Title, int i_Type ) = 0;
-	virtual int Show( const itString& i_Message, const itString& i_Title, int i_Type ) = 0;
+	virtual int Show( const std::string& i_Message, const std::string& i_Title, int i_Type ) = 0;
 
 };

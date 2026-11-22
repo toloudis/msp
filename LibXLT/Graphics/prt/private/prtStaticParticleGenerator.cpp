@@ -34,7 +34,7 @@ class StaticParticle : public sprtSpriteData
 	public:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
-		StaticParticle(	envType::Int32 i_ID,
+		StaticParticle(	int32_t i_ID,
 						const maPoint3d& i_Position, 
 						float i_SimulationStartTime,
 						float i_StartTimeDelta, 
@@ -69,7 +69,7 @@ class StaticParticle : public sprtSpriteData
 		//--------------------------------------------------------------------
 		// accessors
 		//--------------------------------------------------------------------
-		envType::Int32 GetID() { return m_ID; }
+		int32_t GetID() { return m_ID; }
 
 		//--------------------------------------------------------------------
 		//	Think thinks each particle.
@@ -101,7 +101,7 @@ class StaticParticle : public sprtSpriteData
 		StaticParticle* m_pNext;
 		StaticParticle* m_pPrev;
 
-		envType::Int32 m_ID;
+		int32_t m_ID;
 		float m_StartTime;
 		float m_Elapsed;
 		float m_LifeTime;
@@ -134,7 +134,7 @@ envPool l_Pool(sizeof(StaticParticle));
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-StaticParticle::StaticParticle(	envType::Int32 i_ID,
+StaticParticle::StaticParticle(	int32_t i_ID,
 								const maPoint3d& i_Position, 
 								float i_SimulationStartTime,
 								float i_StartTimeDelta, 
@@ -294,13 +294,13 @@ struct prtStaticParticleCreator
 	int num_uva_frames;
 	prtSpriteGroupParticleGenerator::UVAMode uva_mode;
 
-	StaticParticle* CreateParticle(envType::Int32 i_ID, const maPoint3d& i_Position) const;
+	StaticParticle* CreateParticle(int32_t i_ID, const maPoint3d& i_Position) const;
 };
 
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-StaticParticle* prtStaticParticleCreator::CreateParticle(envType::Int32 i_ID, const maPoint3d& i_Position) const
+StaticParticle* prtStaticParticleCreator::CreateParticle(int32_t i_ID, const maPoint3d& i_Position) const
 {
 	//	calculate the frame
 	int init_frame = 0;

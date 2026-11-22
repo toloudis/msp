@@ -21,7 +21,7 @@ class matMaterial;
 class effLightGlow : public effShaderBaseDX11 
 {
 public:
-	effLightGlow(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, std::string i_name);
+	effLightGlow(const fsLocator& i_Directory, std::unique_ptr<fxEffect> i_pEffect, std::string i_name);
 
 	virtual effShaderData* CreateData(const matMaterial* i_Mat);
 
@@ -34,13 +34,13 @@ public:
 	virtual bool DoesLighting() const;
 
 protected:
-	ID3DX11EffectScalarVariable* m_hHasDiffuseMap;
-	ID3DX11EffectShaderResourceVariable* m_hDiffuseMap;
+	fxEffectVariable* m_hHasDiffuseMap;
+	fxEffectVariable* m_hDiffuseMap;
 
-	ID3DX11EffectScalarVariable* m_hEdgeFuzzCutoff;
-	ID3DX11EffectScalarVariable* m_hDistFalloffStart;
-	ID3DX11EffectScalarVariable* m_hDistFalloffEnd;
-	ID3DX11EffectScalarVariable* m_hGlowAlpha;
-	ID3DX11EffectScalarVariable* m_hUseShadow;
+	fxEffectVariable* m_hEdgeFuzzCutoff;
+	fxEffectVariable* m_hDistFalloffStart;
+	fxEffectVariable* m_hDistFalloffEnd;
+	fxEffectVariable* m_hGlowAlpha;
+	fxEffectVariable* m_hUseShadow;
 };
 

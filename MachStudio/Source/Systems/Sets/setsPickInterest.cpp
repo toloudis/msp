@@ -51,7 +51,7 @@ bool setsPickInterest::ObjectPick(geoPickRay& i_Ray, pick3dPickList& io_PickList
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
 //virtual 
-pick3dPickObject* setsPickInterest::MatchPickCode(envType::UInt32 i_PickCode) const
+pick3dPickObject* setsPickInterest::MatchPickCode(uint32_t i_PickCode) const
 {
 	return setsDataMgr::MatchPickCode(i_PickCode);
 }

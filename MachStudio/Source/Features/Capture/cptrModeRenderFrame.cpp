@@ -14,7 +14,11 @@
 #include "Features/Capture/cptrRenderOptionsDialogUtil.hpp"
 #include "Features/Capture/cptrRenderProgressDialogUtil.hpp"
 #include "Features/Capture/cptrRenderUtil.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/Capture/qtGUI/cptrToPhotoshopdialog.hpp"
+#else
 #include "Features/Capture/wxGUI/cptrToPhotoshopdialog.hpp"
+#endif
 #include "Features/Channels/chnlDialogUtil.hpp"
 #include "Support/cams/camsCameraMgr.hpp"
 #include "Support/cams/camsFollowUtil.hpp"
@@ -30,14 +34,25 @@
 //	library
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Tool/cam3d/cam3dMgr.hpp"
 #include "Tool/doc/docSingleDocumentMgr.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
 #include "Tool/gui/guiSingleDocHandler.hpp"
 #include "Tool/gui/guiStatusBarMgr.hpp"
+#ifdef MSP_GUI_QT
+#ifndef TQT_WIDGETS_HPP
+#include "ToolUIQt/tqt/tqtWidgets.hpp"
+#endif
+#else
 #ifndef TWX_WIDGETS_HPP
 #include "ToolUIWx/twx/twxWidgets.hpp"
+#endif
+#endif
+#ifdef MSP_GUI_QT
+#include <QProcess>
 #endif
 
 #undef CreateDirectory
@@ -203,8 +218,8 @@ void cptrModeRenderFrame::Think()
 			//
 			if ( docSingleDocumentMgr::GetFilename().GetNumNames() > 0 )
 			{
-				itString itPrefix = docSingleDocumentMgr::GetFilename().GetLastName();
-				itPrefix.StripExtension();
+				std::string itPrefix = docSingleDocumentMgr::GetFilename().GetLastName();
+				envString::StripExtension(itPrefix);
 				captRenderOutputDataUtil::SetCurrentScene(itPrefix);
 			}
 
@@ -327,21 +342,25 @@ void cptrModeRenderFrame::Think()
 			m_bProcessing = false;
 			if (cptrRenderUtil::GetPSflag())
 			{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 				fsLocator scriptPath = gfPaths::GetPath(gfPaths::e_ExePath);
 				DBG_LOG("Script Path" << scriptPath);
 				scriptPath.Push("Data");
 				scriptPath.Push("PhotoshopExport.vbs");
 				std::string s_scriptPath;
-				itString uniStr, fsStr;
+				std::string uniStr, fsStr;
 				fsFileUtil::LocatorToUnicodeString(scriptPath, fsStr);
-				uniStr = L"cscript.exe \"";
+				uniStr = "cscript.exe \"";
 				uniStr += fsStr;
-				uniStr += L"\"";
+				uniStr += "\"";
 				DBG_LOG( "Unicode string" << uniStr );
-				DBG_LOG( "Std string" << itStringUtil::GetStdString(uniStr) );
-				wxString string (itStringUtil::GetStdString(uniStr).c_str(), wxConvUTF8);
+				DBG_LOG( "Std string" << uniStr );
+#ifdef USE_WXWIDGETS
+				wxString string (uniStr.c_str(), wxConvUTF8);
 				int temp = ::wxExecute(string);
+#else
+				QProcess::startDetached("cscript.exe", QStringList() << QString::fromStdString(fsStr));
+#endif
 #endif
 				cptrRenderUtil::SetPSflag(false);
 			}

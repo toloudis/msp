@@ -11,7 +11,7 @@
 
 #include "Core/fs/fsFileUtil.hpp"
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 // Get list of string choices for combo box

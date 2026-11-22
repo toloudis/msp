@@ -231,7 +231,7 @@ bool api3dObjectSingle::GetPickHull() const
 // PickMask is a user defined bit mask that can be used to filter
 // the pickable objects. The default value of "0" means "do not filter".
 //----------------------------------------------------------------------------
-void api3dObjectSingle::SetPickMask(envType::UInt32 i_PickMask)
+void api3dObjectSingle::SetPickMask(uint32_t i_PickMask)
 {
 	this->Object()->GetBase()->SetPickMask(i_PickMask);
 }
@@ -255,7 +255,7 @@ bool api3dObjectSingle::GetInheritsTransform() const
 // Is the pick code given within the high and low pick codes assigned
 // to this node?
 //----------------------------------------------------------------------------
-bool api3dObjectSingle::ContainsPickCode(envType::UInt32 i_PickCode) const
+bool api3dObjectSingle::ContainsPickCode(uint32_t i_PickCode) const
 {
 	return (this->GetObject()->GetBase()->ContainsPickCode(i_PickCode));
 }
@@ -263,7 +263,7 @@ bool api3dObjectSingle::ContainsPickCode(envType::UInt32 i_PickCode) const
 //--------------------------------------------------------------------
 //	Returns the node with a fragment with the given pick code
 //--------------------------------------------------------------------
-const g3dSceneNode* api3dObjectSingle::GetPickedNode(envType::UInt32 i_PickCode) const
+const g3dSceneNode* api3dObjectSingle::GetPickedNode(uint32_t i_PickCode) const
 {
 	return (this->GetObject()->GetBase()->GetPickedNode(i_PickCode));
 }

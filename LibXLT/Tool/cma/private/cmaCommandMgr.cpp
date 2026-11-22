@@ -27,26 +27,6 @@
 
 
 //============================================================================
-// Windows API functions and constants
-//============================================================================
-#define DLLIMPORT __declspec(dllimport) 
-//[DllImport("user32", SetLastError=true)]
-//static extern int RegisterHotKey (IntPtr hwnd, int id, int fsModifiers, int vk);
-//[DllImport("user32", SetLastError=true)]
-//static extern int UnregisterHotKey (IntPtr hwnd, int id);
-//__declspec( dllimport ) short GlobalAddAtom(std::string* lpString);
-//[DllImport("kernel32", SetLastError=true)]
-//static extern short GlobalAddAtom (string lpString);
-//[DllImport("kernel32", SetLastError=true)]
-//static extern short GlobalDeleteAtom (short nAtom);
-
-//const int MOD_ALT = 1;
-//const int MOD_CONTROL = 2;
-//const int MOD_SHIFT = 4;
-//const int MOD_WIN = 8;
-
-
-//============================================================================
 //============================================================================
 namespace
 {

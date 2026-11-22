@@ -1,0 +1,50 @@
+/*****************************************************************************
+**  vkdValidation.hpp
+**
+**      The Vulkan validation policy: messages from VK_LAYER_KHRONOS_validation
+**	(through VK_EXT_debug_utils) are counted by severity; errors DBG_ASSERT
+**	with the message ID and text, warnings are logged. A successful port
+**	means zero errors and zero warnings. Best-practices advice (message IDs
+**	starting "BestPractices-", only with MSP_GFX_VK_VALIDATION=bestpractices)
+**	is logged and counted on its own, whatever its severity, and fails
+**	nothing: it is input for later tuning. Lines read "Vulkan validation
+**	[error] <ID> | <text>": not "error <ID>:", which MSBuild would take
+**	for a build error when the tests run after linking.
+**
+**	Extra Large Technology
+\****************************************************************************/
+#ifdef GVK_VKDVALIDATION_HPP
+#error vkdValidation.hpp multiply included
+#endif
+#define GVK_VKDVALIDATION_HPP
+
+#ifndef GVK_VKDVALIDATIONSTATS_HPP
+#include "GraphicsVulkan/vkd/vkdValidationStats.hpp"
+#endif
+
+#include <volk.h>
+
+#include <atomic>
+
+namespace gvk
+{
+	class vkdValidation
+	{
+		public:
+			vkdValidationStats Stats() const;
+			void Reset();
+
+			//	The debug-utils messenger callback; i_pUserData is the vkdValidation.
+			static VKAPI_ATTR VkBool32 VKAPI_CALL Callback(
+				VkDebugUtilsMessageSeverityFlagBitsEXT i_Severity,
+				VkDebugUtilsMessageTypeFlagsEXT i_Types,
+				const VkDebugUtilsMessengerCallbackDataEXT* i_pData,
+				void* i_pUserData);
+
+		private:
+			std::atomic<int> m_Errors{0};
+			std::atomic<int> m_Warnings{0};
+			std::atomic<int> m_Infos{0};
+			std::atomic<int> m_BestPractices{0};
+	};
+}

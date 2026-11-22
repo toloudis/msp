@@ -232,6 +232,15 @@ void rprfPrefsObject::AddCallbacks()
 	m_Data.m_RmanBucketOrder.AddCallback(new prtyCallbackWrapper<rprfPrefsObject>(this, &rprfPrefsObject::UpdateRenderManOptions));
 	m_Data.m_RmanGridSize.AddCallback(new prtyCallbackWrapper<rprfPrefsObject>(this, &rprfPrefsObject::UpdateRenderManOptions));
 	m_Data.m_RmanRayDepth.AddCallback(new prtyCallbackWrapper<rprfPrefsObject>(this, &rprfPrefsObject::UpdateRenderManOptions));
+
+	m_Data.m_TraceSamplesPerFrame.AddCallback(new prtyCallbackWrapper<rprfPrefsObject>(this, &rprfPrefsObject::UpdateTrace));
+	m_Data.m_TraceSampleLimit.AddCallback(new prtyCallbackWrapper<rprfPrefsObject>(this, &rprfPrefsObject::UpdateTrace));
+	m_Data.m_TraceCaptureSamples.AddCallback(new prtyCallbackWrapper<rprfPrefsObject>(this, &rprfPrefsObject::UpdateTrace));
+	m_Data.m_TraceAORays.AddCallback(new prtyCallbackWrapper<rprfPrefsObject>(this, &rprfPrefsObject::UpdateTrace));
+	m_Data.m_TraceBounces.AddCallback(new prtyCallbackWrapper<rprfPrefsObject>(this, &rprfPrefsObject::UpdateTrace));
+	m_Data.m_TraceDebugView.AddCallback(new prtyCallbackWrapper<rprfPrefsObject>(this, &rprfPrefsObject::UpdateTrace));
+	m_Data.m_TraceMaxRadiance.AddCallback(new prtyCallbackWrapper<rprfPrefsObject>(this, &rprfPrefsObject::UpdateTrace));
+	m_Data.m_TraceDenoise.AddCallback(new prtyCallbackWrapper<rprfPrefsObject>(this, &rprfPrefsObject::UpdateTrace));
 }
 
 //--------------------------------------------------------------------
@@ -283,8 +292,6 @@ g3dSceneRenderEngineCreate::RenderEngine rprfPrefsObject::GetRenderEngine(int i_
 		return g3dSceneRenderEngineCreate::e_Default;
 	case 1:
 		return g3dSceneRenderEngineCreate::e_RmanPrman;
-	case 2:
-		return g3dSceneRenderEngineCreate::e_MentalRay;
 	default:
 		return g3dSceneRenderEngineCreate::e_Default;
 	}
@@ -624,6 +631,18 @@ void rprfPrefsObject::UpdateHair(prtyProperty *i_pProperty, bool i_bDirty)
 	m_PrefsProxy->SetHairDepthPeelLayer( m_Data.m_nHairDepthPeelLayers.GetValue() );
 	m_PrefsProxy->SetHairInterpolationCount( (unsigned int)m_Data.m_HairInterpolationCount.GetValue() );
 	m_PrefsProxy->SetHairClumpRadius( m_Data.m_HairClumpRadius.GetValue() );
+}
+
+void rprfPrefsObject::UpdateTrace(prtyProperty *i_pProperty, bool i_bDirty)
+{
+	m_PrefsProxy->SetTraceSamplesPerFrame( m_Data.m_TraceSamplesPerFrame.GetValue() );
+	m_PrefsProxy->SetTraceSampleLimit( m_Data.m_TraceSampleLimit.GetValue() );
+	m_PrefsProxy->SetTraceCaptureSamples( m_Data.m_TraceCaptureSamples.GetValue() );
+	m_PrefsProxy->SetTraceAORays( m_Data.m_TraceAORays.GetValue() );
+	m_PrefsProxy->SetTraceBounces( m_Data.m_TraceBounces.GetValue() );
+	m_PrefsProxy->SetTraceDebugView( m_Data.m_TraceDebugView.GetValue() );
+	m_PrefsProxy->SetTraceMaxRadiance( m_Data.m_TraceMaxRadiance.GetValue() );
+	m_PrefsProxy->SetTraceDenoise( m_Data.m_TraceDenoise.GetValue() );
 }
 
 void rprfPrefsObject::UpdateRenderManOptions(prtyProperty *i_pProperty, bool i_bDirty)

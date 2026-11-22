@@ -8,6 +8,8 @@
 \****************************************************************************/
 #include "Systems/Particles/Timeline/prtclDriverCreator.hpp"
 
+#include "Core/it/itStringUtil.hpp"
+
 #include "Systems/Particles/Timeline/prtclChannelAnimation.hpp"
 #include "Systems/Particles/Timeline/prtclChannelEmit.hpp"
 #include "Systems/Particles/Timeline/prtclChannelPos.hpp"
@@ -670,7 +672,7 @@ tmlnDriver* prtclDriverCreator::CreateDriverByName( const char* i_DriverName,
 	//
 	//	System Level
 	//
-	if ( !::_stricmp(i_DriverName,PRTCLDRIVERNAME_EMIT) )
+	if ( itStringUtil::CompareNoCase(i_DriverName, PRTCLDRIVERNAME_EMIT) == 0 )
 	{
 		prtclDriverEmit* pDriver = new prtclDriverEmit( prtcl_obj->ChannelEmit() );
 		pDriver->SetName( PRTCLDRIVERNAME_EMIT );
@@ -682,7 +684,7 @@ tmlnDriver* prtclDriverCreator::CreateDriverByName( const char* i_DriverName,
 		channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if ( !::_stricmp(i_DriverName,PRTCLDRIVERNAME_ANIMATION) )
+	else if ( itStringUtil::CompareNoCase(i_DriverName, PRTCLDRIVERNAME_ANIMATION) == 0 )
 	{
 		prtclDriverAnimation* pDriver = new prtclDriverAnimation( prtcl_obj->ChannelAnimation(), c_PDAF );
 		pDriver->SetName( PRTCLDRIVERNAME_ANIMATION );

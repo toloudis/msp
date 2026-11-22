@@ -78,7 +78,7 @@ namespace
 			chChunkParserUtil::Read(i_Reader, c);
 		}
 
-		envType::Int32 num_lights;
+		int32_t num_lights;
 		i_Reader.Read(num_lights);
 		o_Data.m_Lights.resize(num_lights);
 		//DBG_LOG("Lights-------------" << num_lights);
@@ -99,7 +99,7 @@ namespace
 			}
 		}
 
-		envType::Int32 num_objects;
+		int32_t num_objects;
 		i_Reader.Read(num_objects);
 		o_Data.m_Objects.resize(num_objects);
 		//DBG_LOG("Objects------------" << num_objects);
@@ -124,7 +124,7 @@ namespace
 			// that are individually lit
 			if (i_Version >= 3)
 			{
-				envType::Int32 num_frags, ind;
+				int32_t num_frags, ind;
 				i_Reader.Read(num_frags);
 				o_Data.m_Objects[i].m_LitFragmentIndices.resize(num_frags);
 				for (int f=0; f<num_frags; f++)
@@ -153,7 +153,7 @@ namespace
 			c.Read(i_Reader);
 		}
 
-		envType::Int32 num_lights;
+		int32_t num_lights;
 		i_Reader.Read(num_lights);
 		o_Data.m_Lights.resize(num_lights);
 		//DBG_LOG("Lights-------------" << num_lights);
@@ -162,7 +162,7 @@ namespace
 			read_name_string(i_Reader, o_Data.m_Lights[i]);
 		}
 
-		envType::Int32 num_objects;
+		int32_t num_objects;
 		i_Reader.Read(num_objects);
 		o_Data.m_Objects.resize(num_objects);
 		//DBG_LOG("Objects------------" << num_objects);
@@ -171,7 +171,7 @@ namespace
 			read_name_string(i_Reader, o_Data.m_Objects[i].m_Name);
 
 			// list of indices of fragments that are individually lit
-			envType::Int32 num_frags, ind;
+			int32_t num_frags, ind;
 			i_Reader.Read(num_frags);
 			o_Data.m_Objects[i].m_LitFragmentIndices.resize(num_frags);
 			for (int f=0; f<num_frags; f++)
@@ -195,24 +195,24 @@ namespace
 		//i_Data.m_AmbientLight.Write(o_Writer);
 
 		const int num_lights = i_Data.m_Lights.size();
-		o_Writer.Write(envType::Int32(num_lights));
+		o_Writer.Write(int32_t(num_lights));
 		for (int i=0; i<num_lights; i++)
 		{
 			write_name_string(o_Writer,i_Data.m_Lights[i]);
 		}
 
 		const int num_objects = i_Data.m_Objects.size();
-		o_Writer.Write(envType::Int32(num_objects));
+		o_Writer.Write(int32_t(num_objects));
 		for (int i=0; i<num_objects; i++)
 		{
 			const ltstLightSetObjectData &obj_data = i_Data.m_Objects[i];
 			write_name_string(o_Writer, obj_data. m_Name);
 
 			const int num_frags = obj_data.m_LitFragmentIndices.size();
-			o_Writer.Write(envType::Int32(num_frags));
+			o_Writer.Write(int32_t(num_frags));
 			for (int f=0; f<num_frags; f++)
 			{
-				o_Writer.Write(envType::Int32(obj_data.m_LitFragmentIndices[f]));
+				o_Writer.Write(int32_t(obj_data.m_LitFragmentIndices[f]));
 			}
 		}
 		o_Writer.FinishChunk();

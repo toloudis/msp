@@ -10,12 +10,12 @@
 #ifdef CHTR_SYSTEM_HPP
 #error chtrSystem.hpp multiply included
 #endif
+#include <string>
 #define CHTR_SYSTEM_HPP
 
 //============================================================================
 //============================================================================
 class fsLocator;
-class itString;
 
 
 //============================================================================
@@ -28,7 +28,7 @@ namespace chtrSystem
 		//
 		//	SoundDir should be the post-fix dir path under the app path.
 		//--------------------------------------------------------------------
-		void Init(const fsLocator& i_AppDir, const itString& i_CharacterDataDir);
+		void Init(const fsLocator& i_AppDir, const std::string& i_CharacterDataDir);
 
 		//--------------------------------------------------------------------
 		// CleanUp -- cleanup system

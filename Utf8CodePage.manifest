@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Makes UTF-8 the process code page (GetACP() == CP_UTF8, Windows 10
+    1903 and later), so narrow strings passed to the C runtime (fopen,
+    std::ifstream/ofstream), the Win32 "A" functions and QString::
+    fromLocal8Bit are taken as UTF-8. Directory.Build.props merges it
+    into the manifest of every executable in the repository.
+  -->
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+  <application xmlns="urn:schemas-microsoft-com:asm.v3">
+    <windowsSettings>
+      <activeCodePage xmlns="http://schemas.microsoft.com/SMI/2019/WindowsSettings">UTF-8</activeCodePage>
+    </windowsSettings>
+  </application>
+</assembly>

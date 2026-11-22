@@ -78,8 +78,8 @@ public:
 	// a single codebase for this function
 	//--------------------------------------------------------------------
 	virtual matTexture* LoadTexture(const fsLocator& i_Directory,
-							const itString& i_Name,
-							std::vector<itString>& o_UVANames,
+							const std::string& i_Name,
+							std::vector<std::string>& o_UVANames,
 							TEXTURE_TYPE i_Type = TEXTURE_TYPE_2D,
 							bool i_bIgnoreTUVSuffix = false,
 							bool mipmap_if_2D = true);
@@ -149,21 +149,6 @@ public:
 	//	UnloadTextures resets the d3d surface of a texture
 	//--------------------------------------------------------------------
 	virtual void UnloadTexture( const fsLocator& i_Locator );
-
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	virtual void SaveTextureToRgbaTiff(matTexture* i_pTexture, 
-		const fsLocator& i_FilePathLocator);
-
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	virtual void SaveTextureToRgbaPNG(matTexture* i_pTexture, 
-		const fsLocator& i_FilePathLocator);
-
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	virtual void SaveTextureToFile(matTexture* i_pTexture, 
-		const fsLocator& i_FilePathLocator);
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------

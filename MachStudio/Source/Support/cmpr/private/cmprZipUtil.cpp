@@ -12,8 +12,11 @@
 #include "Core/dbg/dbgMsg.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsLocator.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Tool/gui/guiMessageBox.hpp"
+#include <string>
 #include <png/zlib-1.2.5\contrib\minizip\zip.h>
 
 #define WRITEBUFFERSIZE (16384)
@@ -53,16 +56,16 @@ namespace cmprZipUtil
 		void increment_destination(fsLocator& io_DestLocator)
 		{
 			fsLocator new_dest = io_DestLocator;
-			itString dest_file = io_DestLocator.GetLastName();
-			itString ext;
-			dest_file.GetExtension(ext);
-			dest_file.StripExtension();
+			std::string dest_file = io_DestLocator.GetLastName();
+			std::string ext;
+			envString::GetExtension(dest_file, ext);
+			envString::StripExtension(dest_file);
 			
-			if(!dest_file.HasSubString(itString("_part")))
+			if(!(dest_file.find(std::string("_part")) != std::string::npos))
 			{
-				std::string dest_string = itStringUtil::GetStdString(dest_file);
+				std::string dest_string = dest_file;
 				dest_string += "_part1";
-				itString dest(dest_string.c_str());
+				std::string dest(dest_string.c_str());
 				dest_file = dest;
 				new_dest.ReplaceLastName(dest);
 				new_dest.ReplaceExtension(ext);
@@ -71,11 +74,11 @@ namespace cmprZipUtil
 				fsFileUtil::RenameFile(io_DestLocator, new_dest);
 			}
 			//get the current part number
-			int length = dest_file.GetLength();
-			itString::CharType counter_char = dest_file[length - 1];
-			int counter = _ttoi(&counter_char);
+			int length = dest_file.size();
+			char counter_char = dest_file[length - 1];
+			int counter = counter_char - L'0';
 			counter++;
-			::_itot(counter, &counter_char, 10);
+			counter_char = (char)std::to_wstring(counter)[0];
 			dest_file[length - 1] = counter_char;
 			new_dest.ReplaceLastName(dest_file);
 			new_dest.ReplaceExtension(ext);
@@ -107,7 +110,7 @@ namespace cmprZipUtil
 		fsFileUtil::LocatorToANSIFilename(io_DestPath, dest_zip_path, true);
 		fsFileUtil::LocatorToANSIFilename(i_SourceFile, src_folder_string);
 
-		file_string = itStringUtil::GetStdString(i_SourceFile.GetLastName());
+		file_string = i_SourceFile.GetLastName();
 
 		/*
 			We need to pop up a warning if the file path has any unicode characters in it because 

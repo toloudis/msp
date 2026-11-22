@@ -181,14 +181,30 @@ void maRotation::GetEuler(float& o_X, float& o_Y, float& o_Z) const
 //	o_Pitch = asinf(2.0f * (m_Y*m_Z - m_X*m_W)); // should be pitch	
 
 	// Here is a formula I found from Wikipedia:
-	o_X = atan2f( 2.0f * (m_W*m_X + m_Y*m_Z) , (1.0f - 2.0f * (sqx + sqy) ) );
+	const float sin_x_cos_y = 2.0f * (m_W*m_X + m_Y*m_Z);
+	const float cos_x_cos_y = 1.0f - 2.0f * (sqx + sqy);
+	o_X = atan2f( sin_x_cos_y, cos_x_cos_y );
 
-	// Need to clamp to -1 to 1 in order to avoid the NaN returned from asinf
+	// Y from its sine and cosine: asinf alone loses precision near +-90 degrees
 	float sin_y = 2.0f * (m_W*m_Y - m_Z*m_X);
 	maFunctions::Clamp(sin_y, -1.0f, 1.0f);
-	o_Y = asinf( sin_y );
+	const float cos_y = sqrtf( sin_x_cos_y * sin_x_cos_y + cos_x_cos_y * cos_x_cos_y );
+	o_Y = atan2f( sin_y, cos_y );
 
 	o_Z = atan2f( 2.0f * (m_W*m_Z + m_X*m_Y) , (1.0f - 2.0f * (sqy + sqz) ) );
+
+	// At Y = +-90 degrees (gimbal lock) X and Z turn about the same axis and
+	// the atan2 terms above are both atan2(0, 0); only their combination is
+	// defined. Put it all in Z: SetEuler's rotz * roty is then
+	// (-sgn sz, sgn cz, sz, cz) * sqrt(1/2), half angles of Z, sgn = sign(Y).
+	const float c_LockCosine = 1e-4f;
+	if (cos_y < c_LockCosine)
+	{
+		const float sgn = (sin_y > 0) ? 1.0f : -1.0f;
+		o_X = 0;
+		o_Y = sgn * maConstants::c_fPI * 0.5f;
+		o_Z = 2.0f * atan2f(m_Z - sgn * m_X, m_W + sgn * m_Y);
+	}
 }
 
 //------------------------------------------------------------------------

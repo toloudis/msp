@@ -12,9 +12,7 @@
 #endif
 #define SN_SOUNDJOB_HPP
 
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 
 
 //============================================================================
@@ -186,8 +184,8 @@ class snSoundJob
 		//========================================================================
 		//	Name
 		//========================================================================
-		void		SetName( const itString i_Name );
-		itString	GetName() const;
+		void		SetName( const std::string i_Name );
+		std::string	GetName() const;
 
 		//========================================================================
 		//	TypeMask
@@ -228,7 +226,7 @@ class snSoundJob
 	//	Member Data
 	//----------------------------------------------------------------------------
 
-		itString	m_Name;
+		std::string	m_Name;
 
 		//	The type mask is a way to mark sounds as being of a certain type.
 		//	These values are set by an application but there are standard types

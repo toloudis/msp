@@ -36,16 +36,16 @@ public:
 	// Set value into control
 	//----------------------------------------------------------------------------
 	static void SetValueIntoControl(wxChoice* i_pActualControl,
-									 itString i_Value);
+									 const std::string& i_Value);
 
 	//----------------------------------------------------------------------------
 	// Get value from control
 	//----------------------------------------------------------------------------
-	static itString GetValueFromControl(wxChoice* i_pActualControl);
+	static std::string GetValueFromControl(wxChoice* i_pActualControl);
 };
 
 //============================================================================
 //============================================================================
-typedef pwxTemplate_ComboBox<prtyFileName, itString, pwxFileName_ComboBox_Converter> pwxFileName_ComboBox;
+typedef pwxTemplate_ComboBox<prtyFileName, std::string, pwxFileName_ComboBox_Converter> pwxFileName_ComboBox;
 
 #endif // USE_WXWIDGETS

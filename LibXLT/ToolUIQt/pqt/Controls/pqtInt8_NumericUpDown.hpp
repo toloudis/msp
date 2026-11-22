@@ -22,27 +22,27 @@
 #include "Core/prty/prtyInt8.hpp"
 #endif
 
+#ifdef USE_QT
 
 //===================================================================================
 //===================================================================================
 class pqtInt8_NumericUpDown_Converter  : public pqtInt8Converter
 {
-#ifdef USE_QT
 public:
 	//----------------------------------------------------------------------------
 	// Set value into control
 	//----------------------------------------------------------------------------
 	static void SetValueIntoControl(tqcNumericUpDown* i_pActualControl,
-									 envType::Int8 i_Value);
+									 int8_t i_Value);
 
 	//----------------------------------------------------------------------------
 	// Get value from control
 	//----------------------------------------------------------------------------
-	static envType::Int8 GetValueFromControl(tqcNumericUpDown* i_pActualControl);
-#endif // USE_QT
+	static int8_t GetValueFromControl(tqcNumericUpDown* i_pActualControl);
 };
 
 //============================================================================
 //============================================================================
-typedef pqtTemplate_NumericUpDown<prtyInt8, envType::Int8, pqtInt8_NumericUpDown_Converter> pqtInt8_NumericUpDown;
+typedef pqtTemplate_NumericUpDown<prtyInt8, int8_t, pqtInt8_NumericUpDown_Converter> pqtInt8_NumericUpDown;
 
+#endif // USE_QT

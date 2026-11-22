@@ -14,8 +14,6 @@
 #include "Core/dbg/dbgPackage.hpp"
 #include "Core/env/envPackage.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itPackage.hpp"
-#include "Core/it/itString.hpp"
 #include "Graphics/an/anPackage.hpp"
 #include "Graphics/g2d/g2dPackage.hpp"
 #include "Graphics/mat/matShaderParser.hpp"
@@ -43,7 +41,6 @@ void matPackage::Init()
 		// initialize packages we depend on
 		envPackage::Init();
 		dbgPackage::Init();
-		itPackage::Init();
 		appPackage::Init();
 		anPackage::Init();
 		g2dPackage::Init();
@@ -79,7 +76,6 @@ void matPackage::CleanUp() throw()
 		g2dPackage::CleanUp();
 		anPackage::CleanUp();
 		appPackage::CleanUp();
-		itPackage::CleanUp();
 		dbgPackage::CleanUp();
 		envPackage::CleanUp();
 	}

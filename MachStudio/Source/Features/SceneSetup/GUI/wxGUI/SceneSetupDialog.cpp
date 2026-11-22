@@ -14,9 +14,11 @@
 
 #include "Core/Fs/fsFileEnum.hpp"
 #include "Core/Fs/fsFileUtil.hpp"
-#include "Core/It/itStringUtil.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
 #include "Tool/gui/guiSingleDocHandler.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #ifdef USE_WXWIDGETS
 
@@ -68,7 +70,7 @@ SceneSetupDialog::~SceneSetupDialog()
 	
 }
 
-void replace_last(std::wstring& str, const std::wstring& from, const std::wstring& to) {
+void replace_last(std::string& str, const std::string& from, const std::string& to) {
 	std::size_t pos = str.rfind(from);
 	if (pos == std::string::npos) {
 		return;
@@ -89,18 +91,18 @@ void SceneSetupDialog::build_project_list()
 
 	//	grab the saved ones
 	fsFileEnum::fsFileList filelist;
-	fsFileEnum::EnumerateFiles( gfPaths::GetPath(mnmPaths::e_SaveProjectFiles), filelist, itString(".mpj") );
+	fsFileEnum::EnumerateFiles( gfPaths::GetPath(mnmPaths::e_SaveProjectFiles), filelist, std::string(".mpj") );
 
 	// build the list
 	int filenum = filelist.size();
 	for ( int i = 0 ; i < filenum ; i++ )
 	{
-		std::wstring project_name(filelist[i].GetLastName().GetString());
+		std::string project_name(filelist[i].GetLastName());
 		// strip off the extension
-		replace_last(project_name, L".mpj", L"");
-		m_listBox_Projects->Append( project_name );
+		replace_last(project_name, ".mpj", "");
+		m_listBox_Projects->Append( wxString::FromUTF8(project_name) );
 
-		//DBG_LOG3( "build project list %d of %d (%s)", i, filenum, itStringUtil::GetStdString(name).c_str() );
+		//DBG_LOG3( "build project list %d of %d (%s)", i, filenum, name.c_str() );
 	}
 
 	if (!m_SceneSetupData.m_Data.m_ProjectName.empty())
@@ -155,7 +157,7 @@ void SceneSetupDialog::update_project_index()
 	{
 		//	Read the Project File
 		//
-        ProjectSetupMgr::ReadProject( itString( m_listBox_Projects->GetStringSelection().wc_str() ) );
+        ProjectSetupMgr::ReadProject(  m_listBox_Projects->GetStringSelection().utf8_string() );
 		mark_project_data_dirty();
 	}
 	else
@@ -375,13 +377,13 @@ void SceneSetupDialog::finalize_data()
 	ProjectSetupData& PSData = ProjectSetupMgr::Data();
 	if (PSData.m_bDirty)
 	{
-		ProjectSetupMgr::WriteProject( itString( PSData.m_ProjectName.c_str() ) );
+		ProjectSetupMgr::WriteProject( PSData.m_ProjectName );
 		PSData.m_bDirty = false;
 	}
 
 	//	prepare the initial scene directory based on project settings
 	//
-	itString scene_name(m_SceneSetupData.m_Data.m_SceneName.c_str());
+	std::string scene_name(m_SceneSetupData.m_Data.m_SceneName.c_str());
 	fsLocator project_dir;
 	fsFileUtil::ANSIFilenameToLocator( m_SceneSetupData.m_Data.m_ProjectDirectory, project_dir );
 	mnmPaths::SetupPaths( project_dir, scene_name );

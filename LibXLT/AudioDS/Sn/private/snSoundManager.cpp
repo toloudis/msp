@@ -22,7 +22,6 @@
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/ma/maRotation.hpp"
 #include "AudioDS/sn/snExceptionX.hpp"
 #include "AudioDS/sn/snSoundJob.hpp"
@@ -726,12 +725,12 @@ RemovePreloadSound( const snSoundJob * i_pPreloadSoundToRemove )
 
 
 //========================================================================
-//	RemovePreloadSound( itString & )
+//	RemovePreloadSound( const std::string & )
 //
 //		Remove a sound based on a string
 //========================================================================
 snSoundJob *	
-RemovePreloadSound( const itString & i_PreloadSoundToRemove )
+RemovePreloadSound( const std::string & i_PreloadSoundToRemove )
 {
 	snSoundJob *	pSound;
 
@@ -784,12 +783,12 @@ DeletePreloadSound( const snSoundJob * i_pPreloadSoundToDelete )
 
 
 //========================================================================
-//	DeletePreloadSound( itString & )
+//	DeletePreloadSound( const std::string & )
 //
 //		Delete a sound based on a string
 //========================================================================
 void	
-DeletePreloadSound( const itString & i_PreloadSoundToDelete )
+DeletePreloadSound( const std::string & i_PreloadSoundToDelete )
 {
 	//	iterate through each item
 	//
@@ -848,12 +847,12 @@ FindPreloadSound( const snSoundJob * i_pPreloadSoundToFind )
 
 
 //========================================================================
-//	FindPreloadSound( itString & )
+//	FindPreloadSound( const std::string & )
 //
 //		Find a sound based on a string
 //========================================================================
 snSoundJob *	
-FindPreloadSound( const itString & i_PreloadSoundToFind )
+FindPreloadSound( const std::string & i_PreloadSoundToFind )
 {
 	//	iterate through each item
 	//
@@ -889,7 +888,7 @@ FindPreloadSound( const itString & i_PreloadSoundToFind )
 //========================================================================
 snSoundJob2D *	
 CreatePreloadSound2DStatic( const fsLocator& i_Filename,
-							const itString& i_Name )
+							const std::string& i_Name )
 {
 	snSoundJob2D * pSound;
 	pSound	= snSoundUtil::CreateSoundJob2DStatic( i_Filename );
@@ -915,7 +914,7 @@ CreatePreloadSound2DStatic( const fsLocator& i_Filename,
 //========================================================================
 snSoundJob3D *	
 CreatePreloadSound3DStatic( const fsLocator& i_Filename,
-							const itString& i_Name )
+							const std::string& i_Name )
 {
 	snSoundJob3D * pSound;
 	pSound	= snSoundUtil::CreateSoundJob3DStatic( i_Filename );
@@ -932,14 +931,14 @@ CreatePreloadSound3DStatic( const fsLocator& i_Filename,
 
 
 //========================================================================
-//	ClonePreloadSound( itString & )
+//	ClonePreloadSound( const std::string & )
 //
 //	Clone a sound based on a string and add it to the sound job list.  
 //	Return the cloned sound job *or* return NULL is the sound isn't in 
 //	the pre-load list
 //========================================================================
 snSoundJob *	
-ClonePreloadSound( const itString & i_PreloadSoundToClone )
+ClonePreloadSound( const std::string & i_PreloadSoundToClone )
 {
 	//	iterate through each item
 	//
@@ -963,7 +962,7 @@ ClonePreloadSound( const itString & i_PreloadSoundToClone )
 			}
 			else
 			{
-				DBG_WARNING( "Cannot Clone Sound " << itStringUtil::GetStdString( i_PreloadSoundToClone ).c_str() << ": unknown type"  );
+				DBG_WARNING( "Cannot Clone Sound " << i_PreloadSoundToClone.c_str() << ": unknown type"  );
 			}
 
 			return pSound;
@@ -972,7 +971,7 @@ ClonePreloadSound( const itString & i_PreloadSoundToClone )
 		++it;
 	}
 
-	DBG_WARNING( "Cannot Clone Sound " << itStringUtil::GetStdString( i_PreloadSoundToClone ).c_str()  << ": does not exist in Preload List" );
+	DBG_WARNING( "Cannot Clone Sound " << i_PreloadSoundToClone.c_str()  << ": does not exist in Preload List" );
 	return NULL;
 }
 
@@ -1000,12 +999,12 @@ snSoundJob *ClonePreloadSound( const snSoundJob * i_pPreloadSoundToFind )
 		}
 		else
 		{
-			DBG_WARNING( "Cannot Clone Sound " << itStringUtil::GetStdString( i_pPreloadSoundToFind->GetName() ).c_str() << ": unknown type" );
+			DBG_WARNING( "Cannot Clone Sound " << i_pPreloadSoundToFind->GetName().c_str() << ": unknown type" );
 		}
 	}
 	else
 	{
-		DBG_WARNING( "Cannot Clone Sound " << itStringUtil::GetStdString( i_pPreloadSoundToFind->GetName() ).c_str() << ": does not exist in Preload List" );
+		DBG_WARNING( "Cannot Clone Sound " << i_pPreloadSoundToFind->GetName().c_str() << ": does not exist in Preload List" );
 	}
 
 	return NULL;
@@ -1378,12 +1377,12 @@ RemoveSoundJob( const snSoundJob * i_pSoundJobToRemove )
 
 
 //========================================================================
-//	RemoveSoundJob( itString & )
+//	RemoveSoundJob( const std::string & )
 //
 //		Remove a soundjob based on a pointer
 //========================================================================
 snSoundJob *	
-RemoveSoundJob( const itString & i_SoundJobToRemove )
+RemoveSoundJob( const std::string & i_SoundJobToRemove )
 {
 	snSoundJob * pSoundJob;
 
@@ -1423,12 +1422,12 @@ DeleteSoundJob( const snSoundJob * i_pSoundJobToDelete )
 
 
 //========================================================================
-//	DeleteSoundJob( itString & )
+//	DeleteSoundJob( const std::string & )
 //
 //		Delete a soundjob based on a pointer
 //========================================================================
 void	
-DeleteSoundJob( const itString & i_SoundJobToDelete )
+DeleteSoundJob( const std::string & i_SoundJobToDelete )
 {
 	snSoundJob * pSoundJob;
 
@@ -1478,12 +1477,12 @@ FindSoundJob( const snSoundJob * i_pSoundJobToFind )
 
 
 //========================================================================
-//	FindSoundJob( itString & )
+//	FindSoundJob( const std::string & )
 //
 //		Find a sound job based on a pointer
 //========================================================================
 snSoundJob *	
-FindSoundJob( const itString & i_SoundJobToFind )
+FindSoundJob( const std::string & i_SoundJobToFind )
 {
 	//	iterate through each item
 	//
@@ -1510,12 +1509,12 @@ FindSoundJob( const itString & i_SoundJobToFind )
 }
 
 //========================================================================
-//	FindSoundJobs( itString & )
+//	FindSoundJobs( const std::string & )
 //
 //		Finds all sound jobs based on a name
 //========================================================================
 void	
-FindSoundJobs( const itString & i_SoundJobToFind, std::vector<snSoundJob *>& o_Jobs )
+FindSoundJobs( const std::string & i_SoundJobToFind, std::vector<snSoundJob *>& o_Jobs )
 {
 	//	iterate through each item
 	//
@@ -1593,7 +1592,7 @@ snSoundJob *	FindSoundJob( int i_eSoundType, bool i_bMustBePlaying )
 //========================================================================
 snSoundJob2D *	
 CreateSoundJob2DStatic( const fsLocator&	i_Filename, 
-					    const itString&		i_Name,
+					    const std::string&		i_Name,
 						const bool			i_bCreateFromPreloadIfPossible )
 {
 	snSoundJob2D * pSound = NULL;
@@ -1655,7 +1654,7 @@ CreateSoundJob2DStreamed( const fsLocator& i_Filename )
 //	so it can be played or its features can be altered.
 //========================================================================
 snSoundJob3D *	
-CreateSoundJob3DStatic( const fsLocator& i_Filename, const itString& i_Name )
+CreateSoundJob3DStatic( const fsLocator& i_Filename, const std::string& i_Name )
 {
 	snSoundJob3D * pSound;
 	pSound	= snSoundUtil::CreateSoundJob3DStatic( i_Filename );
@@ -1835,7 +1834,7 @@ Play2DStaticFromPreload(	const	fsLocator& i_Filename,
 //	The sound job that is played will be returned otherwise NULL.
 //========================================================================
 snSoundJob2D *			
-Play2DStaticFromPreload(	const	itString& i_Name,
+Play2DStaticFromPreload(	const	std::string& i_Name,
 							float	i_SimulationTime,
 							bool	i_bDeleteWhenFinished, 
 							int		i_eExclusiveFlag, 
@@ -1872,7 +1871,7 @@ Play2DStaticFromPreload(	const	itString& i_Name,
 //	so it can be played or its features can be altered.
 //========================================================================
 snSoundJob2D *			
-Play2DStatic(	const	itString& i_Name,
+Play2DStatic(	const	std::string& i_Name,
 				float	i_SimulationTime,
 				bool	i_bDeleteWhenFinished, 
 				int		i_eExclusiveFlag, 
@@ -2264,7 +2263,7 @@ Play3DStatic(	const	fsLocator& i_Filename,
 //	so it can be played or its features can be altered.
 //========================================================================
 snSoundJob3D *			
-Play3DStatic(	const	itString& i_Filename,
+Play3DStatic(	const	std::string& i_Filename,
 				float	i_SimulationTime,
 				bool	i_bDeleteWhenFinished, 
 				int		i_eExclusiveFlag, 

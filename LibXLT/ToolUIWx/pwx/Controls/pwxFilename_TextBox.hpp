@@ -30,16 +30,16 @@ public:
 	// Set value into control
 	//----------------------------------------------------------------------------
 	static void SetValueIntoControl(twcTextBox* i_pActualControl,
-									 itString i_Value);
+									 const std::string& i_Value);
 
 	//----------------------------------------------------------------------------
 	// Get value from control
 	//----------------------------------------------------------------------------
-	static itString GetValueFromControl(twcTextBox* i_pActualControl);
+	static std::string GetValueFromControl(twcTextBox* i_pActualControl);
 };
 
 //============================================================================
 //============================================================================
-typedef pwxTemplate_TextBox<prtyFileName, itString, pwxFileName_TextBox_Converter> pwxFileName_TextBox;
+typedef pwxTemplate_TextBox<prtyFileName, std::string, pwxFileName_TextBox_Converter> pwxFileName_TextBox;
 
 #endif // USE_WXWIDGETS

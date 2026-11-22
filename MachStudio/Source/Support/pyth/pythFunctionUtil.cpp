@@ -37,19 +37,19 @@ namespace pythFunctionUtil
 	//--------------------------------------------------------------------
 	// Variations of integer conversion
 	//--------------------------------------------------------------------
-	PyObject* ConvertInt(envType::Int32 i_Value)
+	PyObject* ConvertInt(int32_t i_Value)
 	{
 		return Py_BuildValue("l", i_Value);
 	}
-	PyObject* ConvertInt(envType::Int64 i_Value)
+	PyObject* ConvertInt(int64_t i_Value)
 	{
 		return Py_BuildValue("L", i_Value);
 	}
-	PyObject* ConvertInt(envType::UInt32 i_Value)
+	PyObject* ConvertInt(uint32_t i_Value)
 	{
 		return Py_BuildValue("k", i_Value);
 	}
-	PyObject* ConvertInt(envType::UInt64 i_Value)
+	PyObject* ConvertInt(uint64_t i_Value)
 	{
 		return Py_BuildValue("K", i_Value);
 	}

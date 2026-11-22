@@ -45,7 +45,7 @@ namespace chtrExpressionDataParser
 			// and could be removed in product
 			if (anim_loc.GetNumNames() == 1)
 			{
-				itString filename = anim_loc.GetLastName();
+				std::string filename = anim_loc.GetLastName();
 				fsLocator char_dir; // not needed to resolve expressions
 				anim_loc = chtrAnimList::GetAnimationLocator(filename, char_dir);
 			}
@@ -209,7 +209,7 @@ void ReadData(	chReader& i_Reader,
 void ReadData(	const fsLocator &i_Locator,
 				chtrExpressionsData& o_Data )
 {
-	gfFileBin ifile(i_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin ifile(i_Locator, fsFileStream::e_ReadOnly);
 	ifile.ReadHeader();
 	chBinReader reader(ifile);
 
@@ -276,7 +276,7 @@ void WriteData( const fsLocator &i_Locator,
 		fsFileUtil::DeleteFile(i_Locator);
 	fsFileUtil::CreateFile(i_Locator);
 
-	gfFileBin ofile(i_Locator, fsFileStream::e_WriteOnly, gfFileBin::e_LittleEndian);
+	gfFileBin ofile(i_Locator, fsFileStream::e_WriteOnly);
 	ofile.WriteHeader();
 	chBinWriter writer(ofile);
 

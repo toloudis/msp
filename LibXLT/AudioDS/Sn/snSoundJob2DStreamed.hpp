@@ -15,6 +15,9 @@
 #ifndef SN_SOUNDJOB2D_HPP
 #include "AudioDS/sn/snSoundJob2D.hpp"
 #endif
+#ifndef DBG_MSG_HPP
+#include "Core/Dbg/dbgMsg.hpp"
+#endif
 
 
 //============================================================================

@@ -14,9 +14,7 @@
 #ifndef CHNL_CHANNELCONTROL_HPP
 #include "Features/Channels/wxGUI/chnlChannelControl.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/It/itString.hpp"
-#endif 
+#include <string>
 
 
 #ifdef USE_WXWIDGETS
@@ -222,7 +220,7 @@ class chnlTraxDialog : public wxPanel, //wxDialog ,
 		void system_object_display(tmlnScriptObject* i_pObject);
 		void all_object_display();
 		void add_channels_for_object(tmlnScriptObject* i_pObject);
-		void add_category(const itString& i_CategoryName);
+		void add_category(const std::string& i_CategoryName);
 		chnlChannelControl* add_channel(tmlnChannel& i_Channel);
 		void resize_scrolled_windows();
 		void current_time_changed();

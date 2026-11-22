@@ -9,13 +9,16 @@
 #include "Tool/gui/guiMainWindow.hpp"
 
 #include <string>
+#ifndef DBG_MSG_HPP
+#include "Core/Dbg/dbgMsg.hpp"
+#endif
 
 
 //===========================================================================
 //===========================================================================
 namespace
 {
-	itString l_AppTitle(L"Application");
+	std::string l_AppTitle("Application");
 }
 
 
@@ -26,7 +29,7 @@ namespace
 //---------------------------------------------------------------------------
 //	SetAppTitle()
 //---------------------------------------------------------------------------
-void guiMainWindow::SetAppTitle( const itString& i_Text )
+void guiMainWindow::SetAppTitle( const std::string& i_Text )
 {
 	DBG_ASSERT(sm_pImplementation, "guiMainWindow: No implementation");
 	if (sm_pImplementation)
@@ -40,7 +43,7 @@ void guiMainWindow::SetAppTitle( const itString& i_Text )
 //---------------------------------------------------------------------------
 //	GetAppTitle()
 //---------------------------------------------------------------------------
-itString guiMainWindow::GetAppTitle()
+std::string guiMainWindow::GetAppTitle()
 {
 	DBG_ASSERT(sm_pImplementation, "guiMainWindow: No implementation");
 	if (sm_pImplementation)

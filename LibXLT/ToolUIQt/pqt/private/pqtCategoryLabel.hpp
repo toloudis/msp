@@ -1,10 +1,11 @@
 /****************************************************************************\
 **	pqtCategoryLabel.hpp
 **
-**		Label that expands and compresses the properties beneath it.
+**	Header of a category of property controls. Clicking it collapses or
+**	expands the widget holding the category's controls.
 **
 **	StudioGPU
-**	Copyright(C) 2009 - All Rights Reserved
+**	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #ifdef PQT_CATEGORYLABEL_HPP
 #error pqtCategoryLabel.hpp multiply included
@@ -15,44 +16,50 @@
 #include "ToolUIQt/tqt/tqtWidgets.hpp"
 #endif
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
-class pqtCategoryLabel : public wxControl
+class pqtCategoryLabel : public QWidget
 {
 	public:
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		pqtCategoryLabel(QWidget* i_pParent, 
+		pqtCategoryLabel(QWidget* i_pParent,
 						 const std::string& i_DialogName,
-						 const wxString& i_LabelText,
-						 wxSizer* i_pSizer,
-						 int i_ItemIndex);
+						 const QString& i_LabelText);
+
+		//--------------------------------------------------------------------
+		// The widget holding the category's controls, shown or hidden
+		// when the label is clicked
+		//--------------------------------------------------------------------
+		void SetGroup(QWidget* i_pGroup);
+
 		//----------------------------------------------------------------------------
 		// Return true if this category label should be initially collapsed
 		// based on what the user has done previously.
 		//----------------------------------------------------------------------------
 		bool GetInitialCollapsedState() const;
 
+		//----------------------------------------------------------------------------
+		// Colors of the label
+		//----------------------------------------------------------------------------
+		void SetColors(const QColor& i_Text, const QColor& i_Background);
+
+		virtual QSize sizeHint() const;
+
 	protected:
 		//--------------------------------------------------------------------
-		// implement/override some base class virtuals
 		//--------------------------------------------------------------------
-		virtual wxSize DoGetBestSize() const;
+		virtual void paintEvent(QPaintEvent* i_pEvent);
+		virtual void mousePressEvent(QMouseEvent* i_pEvent);
 
 	private:
-		//--------------------------------------------------------------------
-		//--------------------------------------------------------------------
-		void OnPaint(wxPaintEvent &i_Event);
-		void OnClick(wxMouseEvent& i_Event);
-
 		std::string m_DialogName;
-		wxString m_LabelText;
-		wxSizer *m_pSizer;
-		int m_ItemIndex;
-
-    DECLARE_EVENT_TABLE()
+		QString m_LabelText;
+		QPointer<QWidget> m_pGroup;
+		QColor m_TextColor;
+		QColor m_BackgroundColor;
 };
 
 #endif // USE_QT

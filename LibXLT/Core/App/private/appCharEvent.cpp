@@ -12,7 +12,7 @@
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-appCharEvent::appCharEvent(itString::CharType i_Char)
+appCharEvent::appCharEvent(envType::WChar i_Char)
 :	m_Char(i_Char)
 {
 }
@@ -26,7 +26,7 @@ appCharEvent::~appCharEvent()
 //----------------------------------------------------------------------------
 //	GetChar returns the relevant character.
 //----------------------------------------------------------------------------
-itString::CharType appCharEvent::GetChar() const
+envType::WChar appCharEvent::GetChar() const
 {
 	return m_Char;
 }

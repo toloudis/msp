@@ -20,7 +20,6 @@
 #include "Systems/Character/Object/chtrExportInterest.hpp"
 #include "Systems/Character/Object/chtrRendermanExportInterest.hpp"
 #include "Systems/Character/Object/chtrFBXExportInterest.hpp"
-#include "Systems/Character/Object/chtrMRayExportInterest.hpp"
 #include "Systems/Character/Expressions/chtrExpressionDriverCreator.hpp"
 #include "Systems/Character/Expressions/chtrExpressionsDialogUtil.hpp"
 #include "Systems/Character/GUI/chtrGeomList.hpp"
@@ -36,7 +35,6 @@
 #include "Systems/Common/Templates/cmmVisibleInterestTemplate.hpp"
 #include "Support/mexp/mexpMgr.hpp"
 #include "Support/rman/rmanMgr.hpp"
-#include "Support/mray/mrayMgr.hpp"
 #include "Support/vis/visMgr.hpp"
 #include "Drivers/Sound/tmlnDriverSound.hpp"
 #include "Drivers/Sound/tmlnDriverSoundParser.hpp"
@@ -66,7 +64,6 @@ namespace
 	chtrExportInterest*				l_pCharactersEI = 0;
 	chtrRendermanExportInterest*	l_pCharactersREI = 0;
 	chtrFBXExportInterest*			l_pCharactersFBXEI = 0;
-	chtrMRayExportInterest*			l_pCharactersMRayEI = 0;
 	chtrReportMemInterest*			l_pCharactersMI = 0;
 	chtrContextMenuInterest*		l_pCharactersCMI = NULL;
 
@@ -90,7 +87,7 @@ namespace
 	//
 	//	SoundDir should be the post-fix dir path under the app path.
 	//--------------------------------------------------------------------
-	void Init(const fsLocator& i_AppDir, const itString& i_CharacterDataDir)
+	void Init(const fsLocator& i_AppDir, const std::string& i_CharacterDataDir)
 	{
 		// Set up callback
 		api3dSubdiv::RegisterSubdivInterest(&l_SubdivCallback);
@@ -99,10 +96,10 @@ namespace
 		smdlSubdivCharacter::SetMaxSubdivLevel(c_MaxSubdivLevel);
 
 		chtrAnimList::Init( i_CharacterDataDir, 
-							itString(gfPaths::GetSubPath(gfPaths::e_Data)) );
+							std::string(gfPaths::GetSubPath(gfPaths::e_Data)) );
 		chtrAnimList::SetAppDirectory( i_AppDir );
 		chtrGeomList::Init(i_CharacterDataDir, 
-						  itString(gfPaths::GetSubPath(gfPaths::e_Data)));		
+						  std::string(gfPaths::GetSubPath(gfPaths::e_Data)));		
 		//chtrGeomList::SetAppDirectory( i_AppDir );
 
 		// Initialize namespaces
@@ -167,13 +164,6 @@ namespace
 		{
 			l_pCharactersFBXEI = new chtrFBXExportInterest();
 			fbxMgr::RegisterExportInterest( l_pCharactersFBXEI );
-		}
-
-		// register the FBX export interest
-		if ( l_pCharactersMRayEI == 0 )
-		{
-			l_pCharactersMRayEI = new chtrMRayExportInterest();
-			mrayMgr::RegisterExportInterest( l_pCharactersMRayEI );
 		}
 
 		// register the memory report interest
@@ -270,14 +260,6 @@ namespace
 			fbxMgr::UnRegisterExportInterest( l_pCharactersFBXEI );
 			delete l_pCharactersFBXEI;
 			l_pCharactersFBXEI = 0;
-		}
-
-		//	Unregister the FBX Export Interest
-		if ( l_pCharactersMRayEI != 0 )
-		{
-			mrayMgr::UnRegisterExportInterest( l_pCharactersMRayEI );
-			delete l_pCharactersMRayEI;
-			l_pCharactersMRayEI = 0;
 		}
 
 		//	Unregister the Memory Report Interest

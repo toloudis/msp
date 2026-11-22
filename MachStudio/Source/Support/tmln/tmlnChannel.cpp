@@ -15,6 +15,7 @@
 #include "Core/env/envSTLHelpers.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
 
+#include <algorithm>
 #include <sstream>
 
 
@@ -93,8 +94,21 @@ void tmlnChannel::ChannelLocked(bool i_lock)
 	SetLocked(i_lock);
 }
 
+//============================================================================
+//============================================================================
+namespace
+{
+	// append a driver to a gather list unless it is already there
+	void add_unique(std::vector<tmlnDriver*> &io_Drivers, tmlnDriver *i_pDriver)
+	{
+		if (std::find(io_Drivers.begin(), io_Drivers.end(), i_pDriver) == io_Drivers.end())
+			io_Drivers.push_back(i_pDriver);
+	}
+}
+
 //--------------------------------------------------------------------
-//  Get active drivers at a given time.  The set is appended to.
+//  Get active drivers at a given time.  The lists are appended to,
+//	each driver appearing at most once.
 //	This is used in the process of updating drivers that are
 //	active and will cause changes to happen to the channel 
 //	and drivers, so it should not be used outside of that process.
@@ -102,8 +116,8 @@ void tmlnChannel::ChannelLocked(bool i_lock)
 //	evaluating drivers.
 //--------------------------------------------------------------------
 bool  tmlnChannel::GatherDriversToEvaluate(const maTime& i_Time,
-					std::set<tmlnDriver*> &io_Preset,
-					std::set<tmlnDriver*> &io_Active)
+					std::vector<tmlnDriver*> &io_Preset,
+					std::vector<tmlnDriver*> &io_Active)
 {
 	bool bNeedsReset = false;
 
@@ -123,7 +137,7 @@ bool  tmlnChannel::GatherDriversToEvaluate(const maTime& i_Time,
 		//	&& (pDriver->GetEndTime() >= i_Time))
 		if (pDriver->IsWithin(i_Time))
 		{
-			io_Active.insert(pDriver);
+			add_unique(io_Active, pDriver);
 			found_active = true;
 
 			// if it's getting added to the list for the first time, let the driver
@@ -178,11 +192,11 @@ bool  tmlnChannel::GatherDriversToEvaluate(const maTime& i_Time,
 
 		if (pNext)
 		{
-			io_Active.insert(pNext);
+			add_unique(io_Active, pNext);
 
 			if (pPrev && !pPrev->IsRestoreOriginalValue())
 			{
-				io_Preset.insert(pPrev);
+				add_unique(io_Preset, pPrev);
 			}
 			else
 			{
@@ -203,7 +217,7 @@ bool  tmlnChannel::GatherDriversToEvaluate(const maTime& i_Time,
 			// alter more than this channel, so it needs to run earlier
 			// than others drivers that might really be active
 			// at this time on other channels.
-			 io_Preset.insert(pPrev);
+			 add_unique(io_Preset, pPrev);
 		}
 		else
 		{
@@ -457,6 +471,28 @@ tmlnChannelInfo  tmlnChannel::GetChannelInfo() const
 void tmlnChannel::SetChannelInfo(const tmlnChannelInfo& i_Info)
 {
 	m_bLocked = i_Info.m_bLocked;
+}
+
+//--------------------------------------------------------------------
+// Returns true if evaluating the channel at the given time would do
+//	nothing; see the header.
+//--------------------------------------------------------------------
+bool  tmlnChannel::IsUpToDate(const maTime& i_Time) const
+{
+	if (m_bNeedsOperate || (i_Time != m_LastOperateTime) ||
+		tmlnTimeLine::GetLoopingToBeginning())
+		return false;
+
+	// Drivers mark themselves dirty when their values or times change.
+	// This checks every driver, a superset of the ones the gather
+	// would check, so a dirty driver is never missed.
+	std::vector<tmlnDriver*>::const_iterator it, end = m_Drivers.end();
+	for (it = m_Drivers.begin(); it != end; ++it)
+	{
+		if ((*it)->IsDirty())
+			return false;
+	}
+	return true;
 }
 
 //--------------------------------------------------------------------

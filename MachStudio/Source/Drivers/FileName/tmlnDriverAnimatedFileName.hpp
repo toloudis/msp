@@ -19,9 +19,7 @@
 #ifndef CH_DEFS_HPP
 #include "Core/ch/chDefs.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 #ifndef PRTY_BOOLEAN_HPP
 #include "Core/prty/prtyBoolean.hpp"
 #endif
@@ -120,12 +118,12 @@ public:
 	// i_FirstFileName defines the pattern, digits before the
 	// file extension are used to specify the numbering.
 	//--------------------------------------------------------------------
-	void SetTextures( const itString& i_FirstFileName,
+	void SetTextures( const std::string& i_FirstFileName,
 					   int i_NumFrames );
 
 	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------
-	inline const itString&	GetFirstFileName() const;
+	inline const std::string&	GetFirstFileName() const;
 
 	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------
@@ -154,7 +152,7 @@ private:
 	// i_FirstFileName defines the pattern, digits before the
 	// file extension are used to specify the numbering.
 	//--------------------------------------------------------------------
-	void set_textures( const itString& i_FirstFileName,
+	void set_textures( const std::string& i_FirstFileName,
 					   int i_NumFrames );
 
 	//--------------------------------------------------------------------
@@ -172,7 +170,7 @@ private:
 	tmlnChannelFileName&	m_ChannelTexture;
 	chDefs::Name m_ChunkName;
 		
-	std::vector<itString> m_Textures;
+	std::vector<std::string> m_Textures;
 
 	prtyFileName	m_FirstFileName;
 	prtyInt32		m_NumberOfFrames;	
@@ -183,7 +181,7 @@ private:
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-inline const itString&	tmlnDriverAnimatedFileName::GetFirstFileName() const
+inline const std::string&	tmlnDriverAnimatedFileName::GetFirstFileName() const
 {
 	return m_FirstFileName.GetValue();
 }

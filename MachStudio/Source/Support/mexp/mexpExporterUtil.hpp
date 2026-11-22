@@ -18,7 +18,6 @@
 //	Forward References
 //============================================================================
 class g3dSceneNode;
-class itString;
 class mexpExporter;
 class prtyFloat;
 class prtyPoint3d;

@@ -7,18 +7,15 @@
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
 #include "Tool/gui/guiCommandMgr.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Tool/cma/cmaCommandMgr.hpp"
 #include "Tool/gui/guiMenuMgr.hpp"
 
 //	system
 #include <string>
-
-
-//============================================================================
-// Windows API functions and constants
-//============================================================================
-#define DLLIMPORT __declspec(dllimport) 
 
 
 //============================================================================

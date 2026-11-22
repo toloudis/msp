@@ -8,6 +8,7 @@
 #include "Tool/gpx/gpxRenderControl.hpp"
 
 #include "Graphics/G3d/g3dThreadControl.hpp"
+#include "Graphics/G3d/g3dProgressive.hpp"
 
 
 //============================================================================
@@ -25,7 +26,8 @@ namespace gpxRenderControl
 	//--------------------------------------------------------------------
 	bool IsRenderNeeded()
 	{
-		return l_bRenderNeeded;
+		//	or a progressive renderer (GraphicsOptiX's) is still refining
+		return l_bRenderNeeded || g3dProgressive::IsFrameRequested();
 	}
 
 	//--------------------------------------------------------------------
@@ -46,6 +48,7 @@ namespace gpxRenderControl
 	{
 		// Do we need a mutex here?
 		l_bRenderNeeded = false;
+		g3dProgressive::ClearFrameRequest();
 	}
 
 	//--------------------------------------------------------------------

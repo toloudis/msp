@@ -7,12 +7,15 @@
 **	Copyright(C) 2010 - All Rights Reserved
 \****************************************************************************/
 #include "Features/Capture/cptrRenderRmanLive.hpp"
+#include "Core/app/appApplication.hpp"
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/gf/gfFileBin.hpp"
 #include "Core/gf/gfPaths.hpp"
-#include "Core/it/itStringUtil.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 
 #include "Features/Capture/cptrRenderRmanLiveData.hpp"
 #include "Features/Capture/cptrRenderUtil.hpp"
@@ -30,8 +33,6 @@
 #include "Tool/gui/guiSplashScreen.hpp"
 #include "Tool/gui/guiCursor.hpp"
 #include "Tool/tma3d/tma3dScreenUtil.hpp"
-
-#include <windows.h>
 
 //----------------------------------------------------------------------------
 // anonymous namespace
@@ -176,10 +177,10 @@ void cptrRenderRmanLive::Start(cptrRenderRmanLiveData i_Data)
 
 	camCamera cam = cam3dMgr::GetCamera();
 
-	itString sceneName = docSingleDocumentMgr::GetFilename().GetLastName();
-	sceneName.StripExtension();
-	itString sceneNameWithExt = sceneName;
-	sceneNameWithExt += itString(".rib");
+	std::string sceneName = docSingleDocumentMgr::GetFilename().GetLastName();
+	envString::StripExtension(sceneName);
+	std::string sceneNameWithExt = sceneName;
+	sceneNameWithExt += std::string(".rib");
 
 	fsLocator rmanLiveRoot = gfPaths::GetPath(gfPaths::e_UserDataPath);
 	rmanLiveRoot.Push("rmanLiveCache");
@@ -197,10 +198,10 @@ void cptrRenderRmanLive::Start(cptrRenderRmanLiveData i_Data)
 	fsLocator rootLoc = fullSceneLoc;
 	rootLoc.Pop();
 
-	itString currFrameNameIt = fullSceneLoc.GetLastName();
-	currFrameNameIt.StripExtension();
-	std::string currFrameName = itStringUtil::GetStdString(currFrameNameIt);
-	//std::string sceneName = itStringUtil::GetStdString(sceneName);
+	std::string currFrameNameIt = fullSceneLoc.GetLastName();
+	envString::StripExtension(currFrameNameIt);
+	std::string currFrameName = currFrameNameIt;
+	//std::string sceneName = sceneName;
 
 	std::string engine = "prman";
 	std::string renderer = "";
@@ -266,7 +267,7 @@ void cptrRenderRmanLive::Start(cptrRenderRmanLiveData i_Data)
 	std::string batchFile;
 	fsFileUtil::LocatorToANSIFilename(batchFileLoc,batchFile);
 
-	WinExec(batchFile.c_str(),true);
+	appApplication::LaunchProgram(batchFile.c_str(),true);
 }
 
 //------------------------------------------------------------------------

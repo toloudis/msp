@@ -7,6 +7,9 @@
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "Core/fs/fsResourceTrackerData.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 
 //
@@ -105,10 +108,10 @@ void fsResourceTrackerFileData::SetFilePath(const fsLocator& i_FileName)
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-void fsResourceTrackerFileData::SetFilePath(const itString& i_FileName)
+void fsResourceTrackerFileData::SetFilePath(const std::string& i_FileName)
 {
 	m_File.Clear();
-	if (i_FileName.GetLength() > 0)
+	if (!i_FileName.empty())
 		m_File.Push(i_FileName);
 }
 
@@ -121,7 +124,7 @@ const fsLocator& fsResourceTrackerFileData::GetFilePath() const
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-const itString& fsResourceTrackerFileData::GetFileName() const
+const std::string& fsResourceTrackerFileData::GetFileName() const
 {
 	return m_File.GetLastName();
 }

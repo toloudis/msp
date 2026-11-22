@@ -28,7 +28,7 @@ namespace
 	//----------------------------------------------------------------------------
 	// a better search algorithm would be useful here
 	//----------------------------------------------------------------------------
-	int find_id(const prtVertexFrame *i_pFrame, envType::Int32 i_ID)
+	int find_id(const prtVertexFrame *i_pFrame, int32_t i_ID)
 	{
 		prtParticleAttr to_find;
 		to_find.m_ID = i_ID;
@@ -188,7 +188,7 @@ void prtVertexAnimInstance::GetFramesForTime(float i_SimulationTime,
 // given ID was not found.
 //--------------------------------------------------------------------
 bool prtVertexAnimInstance::GetPositionForParticle(float i_SimulationTime,
-												   envType::Int32 i_ID,
+												   int32_t i_ID,
 												   maPoint3d& o_Position) const
 {
 	prtVertexFrame *pPrevFrame = NULL, *pNextFrame = NULL;
@@ -202,7 +202,7 @@ bool prtVertexAnimInstance::GetPositionForParticle(float i_SimulationTime,
 // once for the whole generator. This would be more efficient
 // if you know that the streak length is the same for all particles.
 //--------------------------------------------------------------------
-bool prtVertexAnimInstance::GetPositionForParticle( envType::Int32 i_ID,
+bool prtVertexAnimInstance::GetPositionForParticle( int32_t i_ID,
 													const prtVertexFrame* i_pPrevFrame,
 													const prtVertexFrame* i_pNextFrame,
 													float i_Alpha,

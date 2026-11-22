@@ -9,6 +9,7 @@
 #include "Systems/Transforms/Undo/trfnOperations.hpp"
 #include "Systems/Transforms/Undo/trfnActualOperations.hpp"
 #include "Systems/Transforms/Undo/trfnObjectOperation.hpp"
+#include "Systems/Transforms/Object/trfnObjectMgr.hpp"
 #include "Systems/Transforms/Data/trfnDocumentChunk.hpp"
 
 #include "Features/Prefs/PrefsMgr.hpp"
@@ -66,10 +67,10 @@ namespace trfnOperations
 		trfnScriptData default_data;
 		AddObject(default_data);
 	}
-	void  AddObject(const trfnScriptData& i_Data)
+	nameString  AddObject(const trfnScriptData& i_Data)
 	{
 		int index = trfnActualOperations::AddObject(i_Data);
-		if (index < 0) return;	// if there is a problem loading the object, return immediately
+		if (index < 0) return nameString();	// if there is a problem loading the object, return immediately
 
 		//char displaytext[128];
 		//sprintf(displaytext, "%s - %s", c_AddOperationDisplayName, i_Data.m_Name.GetString().c_str());
@@ -79,6 +80,7 @@ namespace trfnOperations
 		std::string displaytext(oss.str());
 		
 		undoUndoMgr::AddOperation(new trfnAddOperation(index, trfnObjectMgr::GetScriptData(index), displaytext.c_str()));
+		return trfnObjectMgr::GetScriptData(index).m_BaseData.m_Name.GetValue();
 	}
 
 	//--------------------------------------------------------------------
@@ -188,11 +190,11 @@ namespace trfnOperations
 	{
 		if (i_Filename.IsEmpty())
 		{
-			trfnObjectMgr::create_default_name(itString("Parent"), o_NameString, l_ObjectCounter);
+			trfnObjectMgr::create_default_name(std::string("Parent"), o_NameString, l_ObjectCounter);
 		}
 		else
 		{
-			trfnObjectMgr::create_duplicate_name(itString(i_Filename.GetString().c_str()), o_NameString);
+			trfnObjectMgr::create_duplicate_name(i_Filename.GetString(), o_NameString);
 		}
 	}
 
@@ -350,6 +352,21 @@ namespace trfnOperations
 		{
 			RemoveNodeFromParent(*nit);
 		}
+	}
+
+	//--------------------------------------------------------------------
+	// Set the whole object of that name as one undoable step
+	//--------------------------------------------------------------------
+	void SetObjectData(const nameString& i_Name, const trfnScriptData& i_Data)
+	{
+		const int index = trfnObjectMgr::GetIndexForObject(i_Name);
+		if (index < 0)
+			return;
+
+		typedef cmmSetOperationTemplate< trfnScriptData, trfnActualOperations, trfnObjectMgr> SetObjectOperation;
+		const std::string display_name = "Change " + i_Name.GetString();
+		undoUndoMgr::AddOperation(new SetObjectOperation(index, trfnObjectMgr::GetScriptData(index), display_name.c_str()));
+		trfnActualOperations::SetData(index, i_Data);
 	}
 
 }	// end of namespace

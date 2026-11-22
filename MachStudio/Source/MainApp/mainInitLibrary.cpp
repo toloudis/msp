@@ -16,10 +16,21 @@
 #include "Core/dbg/dbgPackage.hpp"
 #include "Core/Env/envThreadGroup.hpp"
 #include "Core/Fs/fsLocator.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtAppUtil.hpp"
+#else
 #include "ToolUIWx/twx/twxAppUtil.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/qui/quiPackage.hpp"
+#else
 #include "ToolUIWx/wui/wuiPackage.hpp"
+#endif
 
 #include "Core/app/private/appApplicationPAC.hpp"	// FIX - if this is sorted with includes, it compiles with errors.
+#ifndef ENV_STRING_HPP
+#include "Core/Env/envString.hpp"
+#endif
 
 
 //--------------------------------------------------------------------
@@ -43,11 +54,15 @@ mainInitLibrary::mainInitLibrary(HINSTANCE hInstance,
 	// bother given them the correct ones.
 	m_Argc = 1;
 	m_Argv[0] = new TCHAR[::strlen(mnmConstants::c_EXECUTABLE)+1];
-	wcscpy(m_Argv[0], itString(mnmConstants::c_EXECUTABLE).GetString());
+	wcscpy(m_Argv[0], envString::UTF8ToWideChar(mnmConstants::c_EXECUTABLE).c_str());
 	m_Argv[1] = NULL;
 
 	// Initialize wxWidgets
 	if (twxAppUtil::Init(m_Argc, m_Argv))
+#elif defined(USE_QT)
+	// Initialize Qt. Qt is only given the executable name; our own
+	// command line arguments are parsed later.
+	if (tqtAppUtil::Init(mnmConstants::c_EXECUTABLE))
 #endif // USE_WXWIDGETS
 	{
 		// Initialize the debug library and path configuration
@@ -88,6 +103,10 @@ mainInitLibrary::~mainInitLibrary()
 	// Only have to free args if we used the twxAppUtil to parse them above
 	//twxAppUtil::FreeArgs(argc, argv);
 	delete [] m_Argv[0];
+#elif defined(USE_QT)
+	// clean up Qt
+	quiPackage::DeInitialize();
+	tqtAppUtil::CleanUp();
 #endif // USE_WXWIDGETS
 
 }

@@ -15,7 +15,7 @@
 // Set value into control
 //----------------------------------------------------------------------------
 void pqtInt32_FloatEdit_Converter::SetValueIntoControl(tqcFloatEdit* i_pActualControl,
-														int i_Value)
+											int i_Value)
 {
 	i_pActualControl->SetDecimalPlaces(0);
 	i_pActualControl->SetFloatValue(i_Value);

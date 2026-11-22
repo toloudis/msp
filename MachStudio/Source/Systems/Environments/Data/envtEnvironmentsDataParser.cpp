@@ -61,7 +61,7 @@ namespace
 				//
 				fsysFileList file_list;
 				envtTextureList::BuildFileList(file_list);
-				itString tex_fname = tex_loc.GetLastName();
+				std::string tex_fname = tex_loc.GetLastName();
 				if (file_list.FindFilePath(tex_fname, tex_loc))
 					tex_loc.Push(tex_fname);
 			}
@@ -107,9 +107,9 @@ namespace
 	public:
 		nameString m_Name;
 
-		itString m_DiffuseMapName;
+		std::string m_DiffuseMapName;
 		float m_DiffuseFactor;
-		itString m_SpecularMapName;
+		std::string m_SpecularMapName;
 		float m_SpecularFactor;
 		float m_DiffuseAngle;
 		float m_SpecularAngle;
@@ -126,12 +126,12 @@ namespace
 	{
 		read_name_string(i_Reader, o_Data.m_Name);
 
-		chChunkParserUtil::Read(i_Reader, o_Data.m_DiffuseMapName);
+		chChunkParserUtil::ReadLegacyWideString(i_Reader, o_Data.m_DiffuseMapName);
 		chChunkParserUtil::Read(i_Reader, o_Data.m_DiffuseFactor);
-		chChunkParserUtil::Read(i_Reader, o_Data.m_SpecularMapName);
+		chChunkParserUtil::ReadLegacyWideString(i_Reader, o_Data.m_SpecularMapName);
 		chChunkParserUtil::Read(i_Reader, o_Data.m_SpecularFactor);
 		chChunkParserUtil::Read(i_Reader, o_Data.m_DiffuseAngle);
-		envType::Int32 num_objects;
+		int32_t num_objects;
 		i_Reader.Read(num_objects);
 		o_Data.m_Objects.resize(num_objects);
 		//DBG_LOG("Objects------------" << num_objects);
@@ -199,7 +199,7 @@ namespace
 			}
 		}
 
-		envType::Int32 num_objects;
+		int32_t num_objects;
 		i_Reader.Read(num_objects);
 		o_Data.m_Objects.resize(num_objects);
 		for (int i = 0; i < num_objects; i++)
@@ -353,14 +353,14 @@ void envtEnvironmentsDataParser::ReadEnvironmentData(	chReader& i_Reader,
 		o_Data.m_BaseData.m_Name.SetValue(data.m_Name);
 		o_Data.m_BaseData.m_DiffuseAngle.SetValue(data.m_DiffuseAngle);
 		o_Data.m_BaseData.m_DiffuseFactor.SetValue(data.m_DiffuseFactor);
-		if (data.m_DiffuseMapName.GetLength() > 0)
+		if (data.m_DiffuseMapName.size() > 0)
 		{
 			o_Data.m_BaseData.m_DiffuseMapName.SetValue(fsLocator(data.m_DiffuseMapName));
 			resolve_fullpath(o_Data.m_BaseData.m_DiffuseMapName);
 		}
 		o_Data.m_BaseData.m_SpecularAngle.SetValue(data.m_SpecularAngle);
 		o_Data.m_BaseData.m_SpecularFactor.SetValue(data.m_SpecularFactor);
-		if (data.m_SpecularMapName.GetLength() > 0)
+		if (data.m_SpecularMapName.size() > 0)
 		{
 			o_Data.m_BaseData.m_SpecularMapName.SetValue(fsLocator(data.m_SpecularMapName));
 			resolve_fullpath(o_Data.m_BaseData.m_SpecularMapName);
@@ -483,7 +483,7 @@ void envtEnvironmentsDataParser::WriteEnvironmentData(	chWriter& o_Writer,
 	i_Data.m_BaseData.m_RampData.m_NoiseFreq.Write(o_Writer);
 
 	const int num_objects = i_Data.m_BaseData.m_Objects.size();
-	o_Writer.Write(envType::Int32(num_objects));
+	o_Writer.Write(int32_t(num_objects));
 	for (int i=0; i<num_objects; i++)
 	{
 		write_name_string(o_Writer, i_Data.m_BaseData.m_Objects[i]);

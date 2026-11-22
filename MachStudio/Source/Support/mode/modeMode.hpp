@@ -149,7 +149,7 @@ class modeMode : public appMode
 
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
-		void modeMode::SetMenuItemName( const char * i_Name );
+		void SetMenuItemName( const char * i_Name );
 
 	private:
 		char		m_szMenuItemName[ 64 ];

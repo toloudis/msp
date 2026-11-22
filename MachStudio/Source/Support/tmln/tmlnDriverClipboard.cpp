@@ -7,6 +7,9 @@
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "Support/tmln/tmlnDriverClipboard.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Support/tmln/tmlnChannel.hpp"
 #include "Support/tmln/tmlnCreator.hpp"

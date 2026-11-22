@@ -60,7 +60,7 @@ namespace prefsQuickMgr
 	//------------------------------------------------------------------------
 	void  AddToMenu();
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 #endif
 
 	//------------------------------------------------------------------------

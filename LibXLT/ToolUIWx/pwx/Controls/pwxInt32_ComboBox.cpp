@@ -11,9 +11,26 @@
 
 #include "Core/prty/prtyComboBoxUIInfo.hpp"
 
-#include <sstream>
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
+
+#include <string>
+#include <vector>
 
 #ifdef USE_WXWIDGETS
+
+namespace
+{
+	//	The control's items (its choices, as GetChoices gave them)
+	std::vector<std::string> items_of(const wxChoice* i_pControl)
+	{
+		std::vector<std::string> items;
+		for (unsigned i = 0; i < i_pControl->GetCount(); ++i)
+			items.push_back(envString::WideCharToUTF8(i_pControl->GetString(i).ToStdWstring()));
+		return items;
+	}
+}
 
 //----------------------------------------------------------------------------
 // Get list of string choices for combo box
@@ -26,14 +43,14 @@ void pwxInt32_ComboBox_Converter::GetChoices(prtyPropertyUIInfo* i_pUIInfo,
 }
 
 //----------------------------------------------------------------------------
-// Set value into control
+// Set value into control: the item that shows it (numbered items: the one
+// with that number; named items: the one at that index), else none
 //----------------------------------------------------------------------------
 void pwxInt32_ComboBox_Converter::SetValueIntoControl(wxChoice* i_pActualControl,
 													 int i_Value)
 {
-	std::wostringstream str;
-	str << i_Value;
-	i_pActualControl->SetStringSelection(str.str());
+	const int item = prtyComboBoxUIInfo::ItemOfValue(items_of(i_pActualControl), i_Value);
+	i_pActualControl->SetSelection(item >= 0 ? item : wxNOT_FOUND);
 }
 
 //----------------------------------------------------------------------------
@@ -41,11 +58,7 @@ void pwxInt32_ComboBox_Converter::SetValueIntoControl(wxChoice* i_pActualControl
 //----------------------------------------------------------------------------
 int pwxInt32_ComboBox_Converter::GetValueFromControl(wxChoice* i_pActualControl)
 {
-	std::wstring text = i_pActualControl->GetStringSelection();
-	std::wistringstream str(text);
-	int value = 0;
-	str >> value;
-	return value;
+	return prtyComboBoxUIInfo::ValueOfItem(items_of(i_pActualControl), i_pActualControl->GetSelection());
 }
 
 #endif

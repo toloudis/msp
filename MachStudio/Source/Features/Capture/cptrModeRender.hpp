@@ -352,14 +352,6 @@ public:
 		//----------------------------------------------------------------------------
 		void RenderManPostCapture();
 
-		//----------------------------------------------------------------------------
-		//----------------------------------------------------------------------------
-		void ResetMRayCapture();
-
-		//----------------------------------------------------------------------------
-		//----------------------------------------------------------------------------
-		void MRayPostCapture();
-
 
 	protected:
 		//----------------------------------------------------------------------------
@@ -411,6 +403,8 @@ public:
 		bool m_bAudioMuteState;
 		bool m_bPaused;
 		bool m_bUseOnlyValidCaptureTimes;
+		bool m_bWarmUpFrame;		// the frame window starts after the range: render the frame before it, unsaved
+		bool m_bWarmUpPending;		// ... for the camera being started
 
 		float m_fSimTimeInc;
 		float m_fLeadTimeDelta;

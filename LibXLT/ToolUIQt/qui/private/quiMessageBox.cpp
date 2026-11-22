@@ -10,7 +10,7 @@
 #include "ToolUIQt/tqt/tqtMessageBox.hpp"
 
 #include "Core/dbg/dbgMsg.hpp"
-#include "Core/it/itString.hpp"
+#include <string>
 
 
 //===========================================================================
@@ -31,7 +31,7 @@ int quiMessageBox::Show( const char* i_Message, const char* i_Title, int i_Type 
 
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
-int quiMessageBox::Show( const itString& i_Message, const itString& i_Title, int i_Type )
+int quiMessageBox::Show( const std::string& i_Message, const std::string& i_Title, int i_Type )
 {
 #ifdef USE_QT
 	return tqtMessageBox::Show( i_Message, i_Title, i_Type );

@@ -658,10 +658,10 @@ namespace
 	struct edge_rec
 	{
 		edge_rec() : m_I0(0), m_I1(1), m_Edge0(NULL), m_Edge1(NULL) {}
-		edge_rec(envType::UInt32 i_I0, envType::UInt32 i_I1) : m_I0(i_I0), m_I1(i_I1), m_Edge0(NULL), m_Edge1(NULL) {}
+		edge_rec(uint32_t i_I0, uint32_t i_I1) : m_I0(i_I0), m_I1(i_I1), m_Edge0(NULL), m_Edge1(NULL) {}
 
-		envType::UInt32 m_I0;	//	m_I0 < m_I1
-		envType::UInt32 m_I1;
+		uint32_t m_I0;	//	m_I0 < m_I1
+		uint32_t m_I1;
 
 		//	these members are mutable so that they can be modified in place in a set
 		//	The < operator does not depend on them
@@ -744,9 +744,9 @@ geoTwinMesh::~geoTwinMesh()
 
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
-void geoTwinMesh::AddTriangle(envType::UInt32 i_V0, 
-							  envType::UInt32 i_V1, 
-							  envType::UInt32 i_V2)
+void geoTwinMesh::AddTriangle(uint32_t i_V0, 
+							  uint32_t i_V1, 
+							  uint32_t i_V2)
 {
 	DBG_ASSERT( (i_V0 != i_V1) && (i_V1 != i_V2) && (i_V0 != i_V2), "expected non-identical vertices");
 
@@ -850,7 +850,7 @@ void geoTwinMesh::AddTriangle(envType::UInt32 i_V0,
 //	it will behave better than adding the triangles one by one with
 //	AddTriangle.
 //--------------------------------------------------------------------
-void geoTwinMesh::ConstructMesh(const envType::UInt32* i_Indices, int i_NumIndices)
+void geoTwinMesh::ConstructMesh(const uint32_t* i_Indices, int i_NumIndices)
 {
 	std::set<edge_rec> edge_set;
 	typedef std::set<edge_rec>::iterator set_it;
@@ -859,14 +859,14 @@ void geoTwinMesh::ConstructMesh(const envType::UInt32* i_Indices, int i_NumIndic
 	int num_tris = i_NumIndices / 3;
 	for( cur_tri = 0 ; cur_tri < num_tris ; ++cur_tri )
 	{
-		const envType::UInt32* cur_indices = i_Indices + (cur_tri * 3);
+		const uint32_t* cur_indices = i_Indices + (cur_tri * 3);
 		geoTwinEdge* new_edges[3];
 
 		int i;
 		for( i = 0 ; i < 3 ; ++i )
 		{
-			envType::UInt32 i1 = cur_indices[i];
-			envType::UInt32 i0 = cur_indices[(i+1) % 3];
+			uint32_t i1 = cur_indices[i];
+			uint32_t i0 = cur_indices[(i+1) % 3];
 
 			geoTwinEdge* new_edge = new geoTwinEdge(m_TwinVertices[i0]);
 			m_TwinEdges.push_back(new_edge);

@@ -27,7 +27,7 @@ g3dViewer::g3dViewer()
 	m_fCalculatedFrameRate(0.0f)
 {
 	//	make our font
-	m_Font = g2dFontUtil::LoadFont(itString("Arial"), 16);
+	m_Font = g2dFontUtil::LoadFont(std::string("Arial"), 16);
 }
 
 //----------------------------------------------------------------------------
@@ -38,7 +38,7 @@ g3dViewer::g3dViewer(g2dWindow* i_pWindow, g3dSceneRenderer* i_pRenderer)
 	m_fCalculatedFrameRate(0.0f)
 {
 	//	make our font
-	m_Font = g2dFontUtil::LoadFont(itString("Arial"), 16);
+	m_Font = g2dFontUtil::LoadFont(std::string("Arial"), 16);
 }
 
 //----------------------------------------------------------------------------
@@ -50,7 +50,7 @@ g3dViewer::g3dViewer(g2dWindow* i_pWindow, g3dSceneRenderer* i_pRenderer,
 	m_fCalculatedFrameRate(0.0f)
 {
 	//	make our font
-	m_Font = g2dFontUtil::LoadFont(itString("Arial"), 16);
+	m_Font = g2dFontUtil::LoadFont(std::string("Arial"), 16);
 }
 
 //----------------------------------------------------------------------------
@@ -110,7 +110,7 @@ void g3dViewer::RenderOverlay()
 
 	// Display text messages
 	g2dRGBColor text_color(0x00,0xff,0x00);
-	std::vector<itString>::const_iterator it, end = m_Messages.end();
+	std::vector<std::string>::const_iterator it, end = m_Messages.end();
 	int offset = 0; 
 	for ( it = m_Messages.begin(); it != end; ++it, ++offset )
 	{
@@ -131,10 +131,10 @@ void g3dViewer::Present()
 //----------------------------------------------------------------------------
 // Set text string to display on given line.
 //----------------------------------------------------------------------------
-void g3dViewer::SetTextMessage(int i, const itString &i_Msg)
+void g3dViewer::SetTextMessage(int i, const std::string &i_Msg)
 {
 	if (i >= m_Messages.size())
-		m_Messages.resize(i+1, itString(""));
+		m_Messages.resize(i+1, std::string());
 
 	m_Messages[i] = i_Msg;
 }

@@ -15,9 +15,7 @@
 #ifndef TMLN_DRIVERINFO_HPP
 #include "Support/tmln/tmlnDriverInfo.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 
 
 class tmlnDriverAnimatedFileNameInfo : public tmlnDriverInfo
@@ -37,7 +35,7 @@ public:
 	virtual tmlnDriverInfo* Clone();
 
 	// Texture filenames
-	itString	m_FirstFileName;
+	std::string	m_FirstFileName;
 	int			m_NumberOfFrames;
 
 	float		m_FrameRate;

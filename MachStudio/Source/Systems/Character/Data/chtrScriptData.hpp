@@ -26,9 +26,7 @@
 #ifndef FGMT_FRAGMENTSAODATA_HPP
 #include "Support/fgmt/fgmtFragmentsAOData.hpp"
 #endif
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 #ifndef MA_POINT3D_HPP
 #include "Core/ma/maPoint3d.hpp"
 #endif
@@ -87,11 +85,11 @@ public:
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	chtrScriptData(const itString& i_Filename );
+	chtrScriptData(const std::string& i_Filename );
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	chtrScriptData(	const itString& i_Filename,
+	chtrScriptData(	const std::string& i_Filename,
 					const maPoint3d& i_Position,
 					const maRotation& i_Orientation );
 
@@ -131,7 +129,7 @@ class chtrCharactersData
 public:
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void Add(const itString& i_Filename,
+	void Add(const std::string& i_Filename,
 			 const maPoint3d& i_Position,
 			 const maRotation& i_Orientation );
 

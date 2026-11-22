@@ -1,1 +1,0 @@
-#error propAddOperation.hpp is obsolete

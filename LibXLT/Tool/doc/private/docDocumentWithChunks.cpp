@@ -24,6 +24,9 @@
 #include "Core/Gf/gfFileBin.hpp"
 #include "Core/Gf/gfFileTxt.hpp"
 #include "Core/Gf/gfFileXML.hpp"
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
 #include "Tool/doc/docDocumentChunk.hpp"
 
 
@@ -104,8 +107,8 @@ bool docDocumentWithChunks::Load(const fsLocator &i_Locator, LoadFlags i_LoadMet
 
 	//	handle reading from a binary file and writing to ASCII or the other way around.
 	//
-	itString extension;
-	i_Locator.GetLastName().GetExtension( extension );
+	std::string extension;
+	envString::GetExtension( i_Locator.GetLastName(), extension );
 
 	//bga - These extensions shouldn't be here. This class docDocumentWithChunks needs to
 	// handle many types of files, not just MachStudio scene files. The extensions need to be
@@ -115,15 +118,15 @@ bool docDocumentWithChunks::Load(const fsLocator &i_Locator, LoadFlags i_LoadMet
 	{
 		safe_flag_set load_flag(m_bIsLoading);
 		//m_bIsLoading = true;
-		if (extension == itString("mab"))
+		if (extension == "mab")
 		{
 			bNewerVersion = LoadFile_Binary( i_Locator, i_LoadMethod );
 		}
-		else if (extension == itString("xml"))
+		else if (extension == "xml")
 		{
 			bNewerVersion = LoadFile_XML( i_Locator, i_LoadMethod );
 		}
-		else if (extension == itString("maa"))
+		else if (extension == "maa")
 		{
 			bNewerVersion = LoadFile_ASCII( i_Locator, i_LoadMethod );
 		}	
@@ -371,7 +374,7 @@ void docDocumentWithChunks::LoadFile(chReader& i_Reader, LoadFlags i_LoadMethod)
 //virtual 
 bool docDocumentWithChunks::LoadFile_Binary( const fsLocator &i_Locator, LoadFlags i_LoadMethod )
 {
-	gfFileBin doc_file(i_Locator, fsFileStream::e_ReadOnly, gfFileBin::e_LittleEndian);
+	gfFileBin doc_file(i_Locator, fsFileStream::e_ReadOnly);
 	gfFileBin::Header header;
 	doc_file.ReadHeader(&header);
 	// could check version here?
@@ -505,7 +508,7 @@ void docDocumentWithChunks::SaveFile_Binary( const fsLocator &i_Locator, bool i_
 
 	fsFileUtil::CreateFile(save_file);
 
-	gfFileBin doc_file(save_file, fsFileStream::e_WriteOnly, gfFileBin::e_LittleEndian);
+	gfFileBin doc_file(save_file, fsFileStream::e_WriteOnly);
 	doc_file.WriteHeader(0, 0, 0);
 
 	chBinWriter writer(doc_file);

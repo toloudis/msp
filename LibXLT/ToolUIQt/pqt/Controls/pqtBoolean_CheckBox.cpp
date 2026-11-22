@@ -12,15 +12,12 @@
 
 #include "Core/prty/prtyBoolean.hpp"
 
-
 #ifdef USE_QT
 
-//============================================================================
-//============================================================================
 namespace
 {
 	// Create derivation of widget that notifies the control manager
-	// when it is deleted by wxWidgets
+	// when it is deleted by Qt
 	class CleanUpCheckBox : public QCheckBox
 	{
 	public:
@@ -46,7 +43,7 @@ pqtBoolean_CheckBox::pqtBoolean_CheckBox(shared_ptr<prtyPropertyUIInfo>& i_pUIIn
 
 	// create the actual control
 	m_pActualControl = new CleanUpCheckBox(i_pParent);
-	//m_pActualControl = new QCheckBox(i_pParent, wxID_ANY, wxT(""));
+	//m_pActualControl = new wxCheckBox(i_pParent, wxID_ANY, wxT(""));
 
 	//	set the control values
 	this->UpdateControl(i_pUIInfo.get());
@@ -56,13 +53,9 @@ pqtBoolean_CheckBox::pqtBoolean_CheckBox(shared_ptr<prtyPropertyUIInfo>& i_pUIIn
 		m_pActualControl->setChecked(newvalue);
 	}
 
-#ifdef QT_FINISH_PORT
 	//	hook up events
 	//
-	this->Connect( m_pActualControl->GetId(), wxEVT_COMMAND_CHECKBOX_CLICKED,
-					wxCommandEventHandler(pqtBoolean_CheckBox::CheckBox_ValueChanged) );
-	m_pActualControl->PushEventHandler(this);
-#endif
+	QObject::connect(m_pActualControl, &QCheckBox::clicked, [this](bool) { CheckBox_ValueChanged(); });
 };
 
 //----------------------------------------------------------------------------
@@ -70,9 +63,6 @@ pqtBoolean_CheckBox::pqtBoolean_CheckBox(shared_ptr<prtyPropertyUIInfo>& i_pUIIn
 //----------------------------------------------------------------------------
 pqtBoolean_CheckBox::~pqtBoolean_CheckBox()
 {
-#ifdef QT_FINISH_PORT
-	m_pActualControl->RemoveEventHandler(this);
-#endif
 }
 
 //----------------------------------------------------------------------------
@@ -110,23 +100,20 @@ void pqtBoolean_CheckBox::PropertyChanged(prtyProperty* i_pProperty, bool i_bDir
 //----------------------------------------------------------------------------
 void pqtBoolean_CheckBox::UpdateControl(prtyPropertyUIInfo* i_pUIInfo)
 {
-	m_pActualControl->setDisabled(i_pUIInfo->GetReadOnly());
+	m_pActualControl->setEnabled(!i_pUIInfo->GetReadOnly());
 }
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-#ifdef QT_FINISH_PORT
-void pqtBoolean_CheckBox::CheckBox_ValueChanged(wxCommandEvent& i_Event)
+void pqtBoolean_CheckBox::CheckBox_ValueChanged()
 {
 	if (m_bLocalChangeNoUpdate) return;
 
 	m_bLocalChangeNoUpdate = true;
 	//if (m_OriginalValue != m_pActualControl->GetValue())
 	{
-		pqtControlUtil::SetCommonValue<bool, prtyBoolean>(this, m_pActualControl->GetValue());
+		pqtControlUtil::SetCommonValue<bool, prtyBoolean>(this, m_pActualControl->isChecked());
 	}
 	m_bLocalChangeNoUpdate = false;
 }
 #endif
-#endif	// USE_QT
-

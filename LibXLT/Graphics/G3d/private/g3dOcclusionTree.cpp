@@ -38,7 +38,7 @@ void g3dOcclusionTree::build(const maPoint3d* positions,
 	m_Triangles.resize(i_nIndices/3);
 	if (i_Indices.Is32BitIndices())
 	{
-		const envType::UInt32 *buffer = i_Indices.GetIndices32();
+		const uint32_t *buffer = i_Indices.GetIndices32();
 		for (int i = 0; i < m_Triangles.size(); i++)
 		{
 			m_Triangles[i][0] = buffer[i*3];
@@ -48,7 +48,7 @@ void g3dOcclusionTree::build(const maPoint3d* positions,
 	}
 	else
 	{
-		const envType::UInt16 *buffer = i_Indices.GetIndices16();
+		const uint16_t *buffer = i_Indices.GetIndices16();
 		for (int i = 0; i < m_Triangles.size(); i++)
 		{
 			m_Triangles[i][0] = buffer[i*3];

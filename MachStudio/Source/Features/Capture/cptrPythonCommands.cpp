@@ -70,7 +70,7 @@ namespace cptrPythonCommands
 			}
 
 			//	set the prefix to be the scene name
-			itString current_scenename;
+			std::string current_scenename;
 			current_scenename = docSingleDocumentMgr::GetFilename().GetLastName();
 			current_scenename.StripExtension();
 			captRenderOutputDataUtil::SetCurrentScene( current_scenename );
@@ -141,7 +141,7 @@ namespace cptrPythonCommands
 				return NULL;
 
 			fsLocator sceneLocator;
-			sceneLocator = fsLocator( itString(scene_location) );
+			sceneLocator = fsLocator( std::string(scene_location) );
 
 			cptrRenderBatchData& batchData = cptrRenderBatchDataUtil::Data();
 			cptrRenderBatchDataUtil::WriteData(sceneLocator, batchData);
@@ -159,7 +159,7 @@ namespace cptrPythonCommands
 				return NULL;
 
 			fsLocator sceneLocator;
-			sceneLocator = fsLocator( itString(scene_location) );
+			sceneLocator = fsLocator( std::string(scene_location) );
 
 			cptrRenderBatchData& batchData = cptrRenderBatchDataUtil::Data();
 			cptrRenderBatchDataUtil::ReadData(sceneLocator, batchData);
@@ -179,7 +179,7 @@ namespace cptrPythonCommands
 				return Py_None;
 
 			fsLocator batchLocator;
-			batchLocator = fsLocator( itString(batch_file) );
+			batchLocator = fsLocator( std::string(batch_file) );
 
 			//	open the batch file and loop through the entries
 			//  We'll check the file here, so cptrPackage doesn't try to open a message box if there's an error

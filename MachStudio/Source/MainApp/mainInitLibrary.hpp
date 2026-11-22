@@ -12,8 +12,14 @@
 #endif
 #define MAIN_INITLIBRARY_HPP
 
+#ifdef MSP_GUI_QT
+#ifndef TQT_WIDGETS_HPP
+#include "ToolUIQt/tqt/tqtWidgets.hpp"
+#endif
+#else
 #ifndef TWX_WIDGETS_HPP
 #include "ToolUIWx/twx/twxWidgets.hpp"
+#endif
 #endif
 
 #include <windows.h>

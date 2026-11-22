@@ -18,6 +18,9 @@
 #include "GraphicsDX11/g3d/g3dLightMgrDX11.hpp"
 #include "GraphicsDX11/g3d/g3dSceneGlobal.hpp"
 #include "GraphicsDX11/g3d/g3dSceneRenderUtil.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 namespace
 {
@@ -47,6 +50,7 @@ shdwPassLit::~shdwPassLit()
 
 int shdwPassLit::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassLit");
 	m_stats.Reset();
 
 	if (!g3dSingleLightRendering::GetDoSingleLightRendering())
@@ -95,7 +99,7 @@ void shdwPassLit::LightingLoopPerLight(const std::vector<g3dLight*>& i_Lights, c
 		g3dLight* pLight = i_Lights[i];
 		if ( !pLight->IsEnabled() ) 
 			continue;
-		if ( !pLight->GetCastsShadow() ) 
+		if ( !pLight->GetIsSinglePassLight() ) 
 			continue;
 
 		const g3dProjectedLight* proj_light = dynamic_cast<const g3dProjectedLight*>(pLight);
@@ -165,7 +169,7 @@ int shdwPassLit::RenderNode(const sNodePlusState& i_Node, const std::vector<g3dL
 		g3dLight* pLight = i_Lights[i];
 		if ( !pLight->IsEnabled() ) 
 			continue;
-		if ( !pLight->GetCastsShadow() ) 
+		if ( !pLight->GetIsSinglePassLight() ) 
 			continue;
 
 		const g3dProjectedLight* proj_light = dynamic_cast<const g3dProjectedLight*>(pLight);
@@ -233,7 +237,7 @@ int shdwPassLit::RenderNode(const sNodePlusState& i_Node, const std::vector<g3dL
 //		light = i_Lights[i];
 //		if ( !light->IsEnabled() ) 
 //			continue;
-//		if ( !light->GetCastsShadow() ) 
+//		if ( !light->GetIsSinglePassLight() ) 
 //			continue;
 //		if (i_RenderStateCache->IsLightInState(i_Node.m_StateCache, light))
 //		{

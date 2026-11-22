@@ -85,7 +85,7 @@ bool prtyTime::operator !=( const maTime& i_Value) const
 void prtyTime::Read(chReader& io_Reader)
 {
 	// prtyTime is replacing prtyFloat using seconds, so continue to write as float for now.
-	envType::Float32 timeInSeconds = 0;
+	float timeInSeconds = 0;
 	io_Reader.Read(timeInSeconds);
 	SetValue(maTime::FromSeconds(timeInSeconds));
 }
@@ -96,6 +96,6 @@ void prtyTime::Read(chReader& io_Reader)
 void prtyTime::Write(chWriter& io_Writer) const
 {
 	// prtyTime is replacing prtyFloat using seconds, so continue to write as float for now.
-	envType::Float32 timeInSeconds = GetValue().AsSeconds();
+	float timeInSeconds = GetValue().AsSeconds();
 	io_Writer.Write(timeInSeconds);
 }

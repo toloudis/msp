@@ -19,12 +19,12 @@
 #include "Core/prty/prtyInt32.hpp"
 #endif
 
+#ifdef USE_QT
 
 //===================================================================================
 //===================================================================================
 class pqtInt32_ComboBox_Converter 
 {
-#ifdef QT_FINISH_PORT
 public:
 	//----------------------------------------------------------------------------
 	// Get list of string choices for combo box
@@ -35,17 +35,17 @@ public:
 	//----------------------------------------------------------------------------
 	// Set value into control
 	//----------------------------------------------------------------------------
-	static void SetValueIntoControl(wxChoice* i_pActualControl,
+	static void SetValueIntoControl(QComboBox* i_pActualControl,
 									 int i_Value);
 
 	//----------------------------------------------------------------------------
 	// Get value from control
 	//----------------------------------------------------------------------------
-	static int GetValueFromControl(wxChoice* i_pActualControl);
-#endif // USE_QT
+	static int GetValueFromControl(QComboBox* i_pActualControl);
 };
 
 //============================================================================
 //============================================================================
 typedef pqtTemplate_ComboBox<prtyInt32, int, pqtInt32_ComboBox_Converter> pqtInt32_ComboBox;
 
+#endif // USE_QT

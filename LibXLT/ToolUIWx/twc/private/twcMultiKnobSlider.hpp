@@ -24,10 +24,11 @@
 #endif
 
 #include <vector>
-#include <wx/panel.h>
-#include <wx/sizer.h>
 
 #ifdef USE_WXWIDGETS
+
+#include <wx/panel.h>
+#include <wx/sizer.h>
 
 class twcColorDialog;
 

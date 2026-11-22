@@ -23,16 +23,16 @@ namespace mdlIndexUtil
 	//------------------------------------------------------------------------
 	// read 16 or 32 bit number returning a 32-bit integer.
 	//------------------------------------------------------------------------
-	envType::UInt32 ReadNumber(chReader& i_Reader, bool b32Bit)
+	uint32_t ReadNumber(chReader& i_Reader, bool b32Bit)
 	{
-		envType::UInt32 num;
+		uint32_t num;
 		if (b32Bit)
 		{
 			i_Reader.Read(num);
 		}
 		else
 		{
-			envType::UInt16 num16;
+			uint16_t num16;
 			i_Reader.Read(num16);
 			num = num16;
 		}
@@ -44,7 +44,7 @@ namespace mdlIndexUtil
 	//------------------------------------------------------------------------
 	bool ReadIndexSize(chReader& i_Reader)
 	{
-		envType::UInt16 num;
+		uint16_t num;
 		i_Reader.Read(num);
 		return (num == 4);
 	}
@@ -54,7 +54,7 @@ namespace mdlIndexUtil
 	//	16 and 32 bit indices.
 	//------------------------------------------------------------------------
 	void ReadIndexSet(chReader& i_Reader, 
-						std::vector<envType::UInt32> &o_Set, 
+						std::vector<uint32_t> &o_Set, 
 						int i_NumIndices, 
 						bool i_b32Bit)
 	{
@@ -65,14 +65,14 @@ namespace mdlIndexUtil
 				if (i_NumIndices > 0)
 				{
 					// Read the whole array at once. 
-					i_Reader.Read(&o_Set[0], i_NumIndices * sizeof(envType::UInt32));
+					i_Reader.Read(&o_Set[0], i_NumIndices * sizeof(uint32_t));
 				}
 			}
 			else
 			{
 				// Read a 16 bit array at once, then set each value into our 32-bit array
-				std::vector<envType::UInt16> set_16(i_NumIndices);
-				i_Reader.Read(&set_16[0], i_NumIndices * sizeof(envType::UInt16));
+				std::vector<uint16_t> set_16(i_NumIndices);
+				i_Reader.Read(&set_16[0], i_NumIndices * sizeof(uint16_t));
 				for (int cur = 0 ; cur < i_NumIndices ; ++cur )
 				{
 					o_Set[cur] = set_16[cur];
@@ -92,29 +92,29 @@ namespace mdlIndexUtil
 	void WriteRemap(chWriter& o_Writer,
 					 const std::multimap<int, int>& i_VertexRemap)
 	{
-		envType::Int32 num = i_VertexRemap.size();
+		int32_t num = i_VertexRemap.size();
 		o_Writer.Write(num);
 		std::multimap<int, int>::const_iterator it;
 		for (it = i_VertexRemap.begin(); it != i_VertexRemap.end(); ++it)
 		{
-			chChunkParserUtil::Write(o_Writer, envType::Int32(it->first));
-			chChunkParserUtil::Write(o_Writer, envType::Int32(it->second));
+			chChunkParserUtil::Write(o_Writer, int32_t(it->first));
+			chChunkParserUtil::Write(o_Writer, int32_t(it->second));
 		}
 	}
 	void ReadRemap(chReader& i_Reader,
 					std::multimap<int, int>& o_VertexRemap)
 	{
-		envType::Int32 num = 0;
+		int32_t num = 0;
 		i_Reader.Read(num);
 		if (num > 0)
 		{
 			// Read all values in one step, then sort into map
-			std::vector<envType::Int32> map_vals(num*2);
+			std::vector<int32_t> map_vals(num*2);
 			chChunkParserUtil::ReadArray(i_Reader, map_vals, num*2);
 
-			envType::Int32 *ptr = &map_vals[0];
-			envType::Int32 first;
-			for (envType::Int32 cur = 0; cur < num; ++cur)
+			int32_t *ptr = &map_vals[0];
+			int32_t first;
+			for (int32_t cur = 0; cur < num; ++cur)
 			{
 				first = *ptr++;					// it->first
 				o_VertexRemap.insert(std::pair<int, int>(first, *ptr++)); // it->second

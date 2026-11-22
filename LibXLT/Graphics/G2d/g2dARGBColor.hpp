@@ -12,8 +12,8 @@
 #endif
 #define G2D_ARGBCOLOR_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 
@@ -22,7 +22,7 @@
 class g2dARGBColor
 {
 	public:
-		typedef envType::UInt8 Value;
+		typedef uint8_t Value;
 
 		//------------------------------------------------------------------------
 		//	This constructor does no initialization

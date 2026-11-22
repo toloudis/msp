@@ -10,7 +10,6 @@
 
 #include "Support/capt/captRenderOutputTagsUtil.hpp"
 
-#include "Core/it/itStringUtil.hpp"
 #include "Tool/cma/cmaCommandMgr.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
 #include "ToolUIWx/twx/twxSystem.hpp"
@@ -35,8 +34,8 @@ void cptrDialogUtil::ShowTagsInfo()
 	//	loop through the tags
 	for (int i = 0; i < captRenderOutputTagsUtil::GetNumTags(); ++i)
 	{
-		itString tag = captRenderOutputTagsUtil::GetTag(i);
-		taginfo << "<" << itStringUtil::GetStdString(tag).c_str() << ">" << std::endl;
+		std::string tag = captRenderOutputTagsUtil::GetTag(i);
+		taginfo << "<" << tag.c_str() << ">" << std::endl;
 	}
 
 	taginfo << std::endl;

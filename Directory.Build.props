@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Settings shared by every project in the repository (imported
+    automatically by MSBuild for every project under this directory).
+
+    The solution configuration chooses the GUI toolkit:
+      Debug Qt, Release Qt  - the Qt 6 interface (qtGUI folders,
+                              LibXLT/ToolUIQt)
+      Debug Wx, Release Wx  - the wxWidgets interface (wxGUI folders,
+                              LibXLT/ToolUIWx)
+      Debug RenderNode,     - the headless batch renderer: no GUI toolkit
+      Release RenderNode      (BATCH_MODE; see CLAUDE.md)
+
+    Projects that don't depend on the toolkit (Core, Graphics,
+    GraphicsDX11, GraphicsVulkan, Tool, Input, InputTPC, AudioDS,
+    ImportExport and the UnitTests projects) have only plain Debug and
+    Release configurations, and MachStudio.sln maps all three toolkit
+    configurations onto them, so they build once per Debug/Release instead
+    of once per toolkit. Build through the solution: a project built on
+    its own passes its configuration to its ProjectReferences, which these
+    projects don't have. Their sources must not use BATCH_MODE, USE_QT,
+    USE_WXWIDGETS or the MSP_GUI_* macros; a project that needs them keeps
+    the six configurations.
+
+    MspGuiToolkit (Qt, Wx or None) is the toolkit, and MspBaseConfiguration
+    is the configuration without the toolkit (Debug or Release), for the
+    settings that only care about that (3rdParty/WxWidgets/build/msw/
+    wx_setup.props reads it too).
+
+    A build sees only its own toolkit: the projects take the wxWidgets
+    include directories from MspWxIncludeDirs (empty unless Wx) and import
+    wxwidgets.props (the wx libraries) only for Wx; the Qt include
+    directories and libraries come from LibXLT/ToolUIQt/qt6.props, which
+    is imported only for Qt. The solution leaves ToolUIWx out of the Qt
+    configurations and ToolUIQt out of the Wx ones (and each of them
+    builds nothing for the other toolkit). See
+    MachStudio/Source/Directory.Build.targets for the rest of what the
+    toolkit changes.
+
+    MSP_GFX_PROFILING turns on the graphics profiling markers
+    (G3D_PROFILE_* in Graphics/G3d/g3dProfiler.hpp) and the GPU timers;
+    without it they compile to nothing. It is defined in Debug builds, and
+    in Release when built with /p:MspGfxProfiling=true. MachStudio's
+    -gfxProfile <file.csv> then writes per-pass timings.
+
+    /utf-8: sources are read as UTF-8 and narrow string literals are
+    compiled as UTF-8, in every project. Keep source files UTF-8 (no BOM
+    needed). Visual Studio has no property page setting for it; it shows
+    under C/C++ > Command Line. A project that sets AdditionalOptions must
+    keep %(AdditionalOptions) in it, or it drops this.
+
+    Utf8CodePage.manifest (next to this file) is merged into the manifest
+    of every executable (ConfigurationType Application: MachStudio and
+    the test exes), making UTF-8 the process code page, so narrow
+    strings given to the C runtime and the Win32 "A" functions (file
+    names in particular) are UTF-8. The condition can test
+    ConfigurationType here although projects set it later: MSBuild
+    evaluates every property before any item definition.
+
+    vcpkg: every project uses the one manifest next to this file
+    (vcpkg.json, vcpkg-configuration.json) and the one install of it,
+    vcpkg_installed\ next to this file, the same folder "vcpkg install"
+    run here fills. The first project to compile installs whatever is
+    missing (vcpkg locks the folder while it does); after that the
+    others find vcpkg's stamp file up to date and skip the step. Debug
+    and Release libraries are in the same install. vcpkg adds the
+    include and library folders to every project and copies the DLLs an
+    executable needs next to it. It also links every library in the
+    install into every executable (a static library or DLL the executable
+    doesn't use doesn't end up in it), so no project names vcpkg
+    libraries; triplets\x64-windows.cmake keeps two libraries with the
+    same functions out of the install. MspVcpkgDir is the install for the
+    one triplet, x64-windows, for the paths projects name themselves
+    (tools such as dxc.exe, include subfolders).
+  -->
+<Project>
+  <PropertyGroup>
+    <MspGuiToolkit Condition="$(Configuration.EndsWith(' Qt'))">Qt</MspGuiToolkit>
+    <MspGuiToolkit Condition="$(Configuration.EndsWith(' Wx'))">Wx</MspGuiToolkit>
+    <!-- RenderNode, and the toolkit-neutral projects' plain Debug/Release -->
+    <MspGuiToolkit Condition="'$(MspGuiToolkit)' == ''">None</MspGuiToolkit>
+    <MspBaseConfiguration>$(Configuration)</MspBaseConfiguration>
+    <MspBaseConfiguration Condition="$(Configuration.EndsWith(' Qt')) or $(Configuration.EndsWith(' Wx'))">$(Configuration.Substring(0, $([MSBuild]::Subtract($(Configuration.Length), 3))))</MspBaseConfiguration>
+    <MspBaseConfiguration Condition="$(Configuration.EndsWith(' RenderNode'))">$(Configuration.Substring(0, $([MSBuild]::Subtract($(Configuration.Length), 11))))</MspBaseConfiguration>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+  <ItemDefinitionGroup Condition="'$(ConfigurationType)' == 'Application'">
+    <Manifest>
+      <AdditionalManifestFiles>$(MSBuildThisFileDirectory)Utf8CodePage.manifest;%(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
+  </ItemDefinitionGroup>
+
+  <ItemDefinitionGroup Condition="'$(MspBaseConfiguration)' == 'Debug' or '$(MspGfxProfiling)' == 'true'">
+    <ClCompile>
+      <PreprocessorDefinitions>MSP_GFX_PROFILING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+    <VcpkgManifestRoot>$(MSBuildThisFileDirectory)</VcpkgManifestRoot>
+    <VcpkgInstalledDir>$(MSBuildThisFileDirectory)vcpkg_installed\</VcpkgInstalledDir>
+    <MspVcpkgDir>$(VcpkgInstalledDir)x64-windows\</MspVcpkgDir>
+    <!-- Debug or Release libraries and DLLs; vcpkg would otherwise go by
+         UseDebugLibraries, which not every project sets -->
+    <VcpkgConfiguration>$(MspBaseConfiguration)</VcpkgConfiguration>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(MspGuiToolkit)' == 'Wx'">
+    <MspWxIncludeDirs>$(MSBuildThisFileDirectory)3rdParty\wxWidgets\include;$(MSBuildThisFileDirectory)3rdParty\wxWidgets\include\msvc</MspWxIncludeDirs>
+  </PropertyGroup>
+</Project>

@@ -14,25 +14,31 @@
 #ifndef MA_FLOATRGBA_HPP
 #include "Core/ma/maFloatRGBA.hpp"
 #endif
+
 #ifndef TQC_GRADIENTCOLORBASE_HPP
 #include "ToolUIQt/tqc/private/tqcGradientColorBase.hpp"
 #endif
+
 #ifndef MA_GRADIENT_HPP
 #include "Core/ma/maGradient.hpp"
 #endif
+
+//#ifndef TQC_PICTUREBOX_HPP
+//#include "ToolUIQt/tqc/private/tqcPictureBox.hpp"
+//#endif
+
 #ifndef TQT_WIDGETS_HPP
 #include "ToolUIQt/tqt/tqtWidgets.hpp"
 #endif
 
-#include <wx/choice.h>
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //============================================================================
-// wxEVT_VALUE_CHANGED event : this control throws this event type when the
+// Value changed callback (tqcEvent.hpp): this control calls it when the
 //	value in the control has changed aftere.
 //============================================================================
-class tqcGradientColorEdit : public wxPanel
+class tqcGradientColorEdit : public QWidget, public tqcValueChangedNotifier
 {
 	public:
 		//--------------------------------------------------------------------
@@ -47,15 +53,7 @@ class tqcGradientColorEdit : public wxPanel
 		void SetValue(const maGradient& i_Value);
 
 	private:
-		//--------------------------------------------------------------------
-		// Callback when value change		
-		//--------------------------------------------------------------------
-		void OnValueChange(wxCommandEvent& i_Event);
 
-		//wxChoice* m_choice_shape;
-		/*wxChoice* m_choice_interpolation;
-		tqcPictureBox* m_box_previewTexture;*/
-		wxControl* m_control;	// this control is used to send the value changed event
 		tqcGradientColorBase* m_gradient_gradientEditor;
 };
 

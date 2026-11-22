@@ -7,6 +7,9 @@
 **	Copyright(C) 2003 - All Rights Reserved
 \****************************************************************************/
 #include "Features/Channels/chnlDialogUtil.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Features/Channels/chnlOperations.hpp"
 #include "Features/Channels/chnlSnapUtil.hpp"
@@ -17,7 +20,11 @@
 #include "Features/Channels/Markers/chnlMarkerOperations.hpp"
 #include "Features/Channels/Notes/chnlNotesMgr.hpp"
 #include "Features/Channels/Notes/chnlNotesOperations.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/Channels/qtGUI/chnlTraxDialog.hpp"
+#else
 #include "Features/Channels/wxGUI/chnlTraxDialog.hpp"
+#endif
 
 #include "Features/Prefs/PrefsData.hpp"
 #include "Features/Prefs/prefsMgr.hpp"
@@ -31,8 +38,16 @@
 #include "Support/tmln/tmlnTimeLineMgr.hpp"
 #include "Support/tmln/tmlnTimeUtil.hpp"
 #include "Systems/Common/GUI/cmmObjectDialogUtil.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtPaneMgr.hpp"
+#else
 #include "ToolUIWx/twx/twxPaneMgr.hpp"
+#endif
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtSystem.hpp"
+#else
 #include "ToolUIWx/twx/twxSystem.hpp"
+#endif
 
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/gf/gfPaths.hpp"
@@ -54,21 +69,21 @@ namespace chnlDialogUtil
 		{
 			virtual void TimeChanged(const maTime& i_Time)
 			{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 				if (chnlTraxDialog::FormInstance)
 					chnlTraxDialog::FormInstance->UpdateCurrentTime();
 #endif
 			}
 			virtual void TimeRangeChanged(const maTime& i_MinTime, const maTime& i_MaxTime)
 			{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 				if (chnlTraxDialog::FormInstance)
 					chnlTraxDialog::FormInstance->SetTimeRange(i_MinTime, i_MaxTime);
 #endif
 			}
 			virtual void TimeFormatChanged(int i_TimeFormat)
 			{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 				if (chnlTraxDialog::FormInstance)
 				{
 					chnlTraxDialog::FormInstance->UpdateTimeLabel();
@@ -78,7 +93,7 @@ namespace chnlDialogUtil
 
 			virtual void FrameRateChanged( float i_FrameRate )
 			{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 				//if (chnlTraxDialog::FormInstance)
 				//	chnlTraxDialog::FormInstance->UpdateTimeLabel();
 #endif
@@ -145,6 +160,12 @@ namespace chnlDialogUtil
 			DBG_ASSERT(twxSystem::g_pMainForm, "MainForm not yet initialized.");
 			chnlTraxDialog::FormInstance = new chnlTraxDialog(twxSystem::g_pMainForm);
 		}
+#elif defined(USE_QT)
+		if (chnlTraxDialog::FormInstance == NULL)
+		{
+			DBG_ASSERT(tqtSystem::g_pMainForm, "MainForm not yet initialized.");
+			chnlTraxDialog::FormInstance = new chnlTraxDialog(tqtSystem::g_pMainForm);
+		}
 #endif
 	}
 
@@ -166,6 +187,18 @@ namespace chnlDialogUtil
 		twxPaneMgr::Show(chnlTraxDialog::FormInstance);
 		//if (chnlTraxDialog::FormInstance->WindowState == FormWindowState::Minimized)
 		//	chnlTraxDialog::FormInstance->WindowState = FormWindowState::Normal;
+#elif defined(USE_QT)
+		if (chnlTraxDialog::FormInstance == NULL)
+		{
+			DBG_ASSERT(tqtSystem::g_pMainForm, "MainForm not yet initialized.");
+			chnlTraxDialog::FormInstance = new chnlTraxDialog(tqtSystem::g_pMainForm);
+		}
+		//chnlTraxDialog::FormInstance->SetTotalTime(l_TotalTime);
+		chnlTraxDialog::FormInstance->Select(l_pSelObject);
+		//chnlTraxDialog::FormInstance->SetCanAddChannels(l_bCanAddChannels);
+		tqtPaneMgr::Show(chnlTraxDialog::FormInstance);
+		//if (chnlTraxDialog::FormInstance->WindowState == FormWindowState::Minimized)
+		//	chnlTraxDialog::FormInstance->WindowState = FormWindowState::Normal;
 #endif
 
 		UpdateMarkersAndNotes();
@@ -179,7 +212,7 @@ namespace chnlDialogUtil
 	void  UpdateChannels()
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (chnlTraxDialog::FormInstance)
 			chnlTraxDialog::FormInstance->UpdateChannels();
 #endif
@@ -192,7 +225,7 @@ namespace chnlDialogUtil
 	void  UpdateDriver(tmlnDriver *i_pDriver)
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (chnlTraxDialog::FormInstance)
 			chnlTraxDialog::FormInstance->UpdateDriver(i_pDriver);
 #endif
@@ -203,7 +236,7 @@ namespace chnlDialogUtil
 	//------------------------------------------------------------------------
 	void  UpdateZoom()
 	{
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (chnlTraxDialog::FormInstance)
 			chnlTraxDialog::FormInstance->CalculateMaxZoom();
 #endif
@@ -221,7 +254,7 @@ namespace chnlDialogUtil
 
 		// Update display of time ticks
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (chnlTraxDialog::FormInstance)
 			chnlTraxDialog::FormInstance->UpdateTimeTicks();
 #endif
@@ -233,7 +266,7 @@ namespace chnlDialogUtil
 	void UpdateMarkersAndNotes()
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (chnlTraxDialog::FormInstance)
 			chnlTraxDialog::FormInstance->UpdateMarkersAndNotes();
 #endif
@@ -247,7 +280,7 @@ namespace chnlDialogUtil
 		l_pSelObject = i_pObject;
 
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (chnlTraxDialog::FormInstance)
 			chnlTraxDialog::FormInstance->Select(l_pSelObject);
 #endif
@@ -272,7 +305,7 @@ namespace chnlDialogUtil
 		//l_TotalTime = i_TotalTime;
 
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (chnlTraxDialog::FormInstance)
 			chnlTraxDialog::FormInstance->SetTimeRange(i_MinTime, i_MaxTime);
 #endif
@@ -292,7 +325,7 @@ namespace chnlDialogUtil
 	void GetSelectedDrivers(std::set<tmlnDriver*> &o_Drivers, bool i_bSkipLocked)
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (chnlTraxDialog::FormInstance)
 			chnlTraxDialog::FormInstance->GetSelectedDrivers(o_Drivers, i_bSkipLocked);
 #endif
@@ -304,7 +337,7 @@ namespace chnlDialogUtil
 	void ClearSelection()
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (chnlTraxDialog::FormInstance)
 			chnlTraxDialog::FormInstance->ClearSelection();
 #endif
@@ -317,7 +350,7 @@ namespace chnlDialogUtil
 	void AddToSelection( tmlnDriver* i_pDriver )
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (chnlTraxDialog::FormInstance)
 			chnlTraxDialog::FormInstance->AddToSelection(i_pDriver);
 #endif

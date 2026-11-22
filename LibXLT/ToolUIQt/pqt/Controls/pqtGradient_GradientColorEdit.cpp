@@ -10,11 +10,13 @@
 #include "ToolUIQt/pqt/Controls/pqtGradient_GradientColorEdit.hpp"
 #include "ToolUIQt/pqt/Controls/pqtControlUtil.hpp"
 
+#ifndef TQC_EVENT_HPP
 #include "ToolUIQt/tqc/tqcEvent.hpp"
+#endif
 
 #include "Core/prty/prtyGradient.hpp"
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
@@ -41,9 +43,7 @@ pqtGradient_GradientColorEdit::pqtGradient_GradientColorEdit(shared_ptr<prtyProp
 
 	//	hook up events
 	//
-	this->Connect( m_pActualControl->GetId(), wxEVT_VALUE_CHANGED,
-					wxCommandEventHandler(pqtGradient_GradientColorEdit::GradientColorEdit_ValueChanged) );
-	m_pActualControl->PushEventHandler(this);
+	m_pActualControl->SetValueChangedCallback([this]() { GradientColorEdit_ValueChanged(); });
 };
 
 //----------------------------------------------------------------------------
@@ -51,7 +51,6 @@ pqtGradient_GradientColorEdit::pqtGradient_GradientColorEdit(shared_ptr<prtyProp
 //----------------------------------------------------------------------------
 pqtGradient_GradientColorEdit::~pqtGradient_GradientColorEdit()
 {
-	m_pActualControl->RemoveEventHandler(this);
 }
 
 //----------------------------------------------------------------------------
@@ -89,12 +88,12 @@ void pqtGradient_GradientColorEdit::PropertyChanged(prtyProperty* i_pProperty, b
 //----------------------------------------------------------------------------
 void pqtGradient_GradientColorEdit::UpdateControl(prtyPropertyUIInfo* i_pUIInfo)
 {
-	m_pActualControl->Enable(!i_pUIInfo->GetReadOnly());
+	m_pActualControl->setEnabled(!i_pUIInfo->GetReadOnly());
 }
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-void pqtGradient_GradientColorEdit::GradientColorEdit_ValueChanged(wxCommandEvent& i_Event)
+void pqtGradient_GradientColorEdit::GradientColorEdit_ValueChanged()
 {
 	if (m_bLocalChangeNoUpdate) return;
 

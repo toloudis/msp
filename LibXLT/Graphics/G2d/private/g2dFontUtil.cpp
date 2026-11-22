@@ -32,10 +32,10 @@ g2dFontUtilImpl* l_pImpl = NULL;
 //============================================================================
 struct FontKeyStruct
 {
-	itString m_Name;
+	std::string m_Name;
 	int m_Size;
 	int m_Index;
-	FontKeyStruct(const itString& i_Name, int i_Size, int i_Index = e_NoFontIndex)
+	FontKeyStruct(const std::string& i_Name, int i_Size, int i_Index = e_NoFontIndex)
 		: m_Name(i_Name), m_Size(i_Size), m_Index(i_Index)
 	{
 	}
@@ -103,7 +103,7 @@ g2dFontUtilImpl* Implementation()
 //	a g2dFontHandle which can be used later.  When you are done with the
 //	font, call ReleaseFont.
 //------------------------------------------------------------------------
-g2dFontHandle LoadFont(const itString& i_Name, int i_Size)
+g2dFontHandle LoadFont(const std::string& i_Name, int i_Size)
 {
 	FontMap::iterator i = l_FontMap.find(FontKeyStruct(i_Name, i_Size));
 	if (i != l_FontMap.end())
@@ -113,7 +113,7 @@ g2dFontHandle LoadFont(const itString& i_Name, int i_Size)
 	}
 
 	DBG_ASSERT(l_pImpl, "No font util implementation.");
-	g2dFontHandle Font;
+	g2dFontHandle Font = NULL;
 	if (l_pImpl)
 		Font = l_pImpl->LoadFont(i_Name, i_Size);
 	l_FontMap[FontKeyStruct(i_Name, i_Size)] = FontValueStruct(Font);
@@ -148,7 +148,8 @@ void ReleaseFont(g2dFontHandle i_Handle)
 	{
 		if (i_Handle == i->second.m_Font)
 		{
-			if (!((i->second.m_RefCount)--))
+			// the last user: unload it (an entry starts with a count of 1)
+			if (--(i->second.m_RefCount) == 0)
 			{
 				DBG_ASSERT(l_pImpl, "No font util implementation.");
 				if (l_pImpl)
@@ -164,9 +165,9 @@ void ReleaseFont(g2dFontHandle i_Handle)
 //------------------------------------------------------------------------
 //	GetTextSizeInPixels returns the width and height in pixels of the given text and font
 //------------------------------------------------------------------------
-void GetTextSizeInPixels(g2dFontHandle i_Font, const itString& i_Text, int& o_Width, int& o_Height)
+void GetTextSizeInPixels(g2dFontHandle i_Font, const std::string& i_Text, int& o_Width, int& o_Height)
 {
-	if (!i_Text.GetLength())
+	if (!i_Text.size())
 	{
 		//if there are no characters, then these values must be zero
 		o_Width = 0;
@@ -183,7 +184,7 @@ void GetTextSizeInPixels(g2dFontHandle i_Font, const itString& i_Text, int& o_Wi
 //------------------------------------------------------------------------
 //	GetFontInfoFromHandle returns the name and size of the given fonthandle
 //------------------------------------------------------------------------
-bool GetFontInfoFromHandle(g2dFontHandle i_Font, itString& o_Name, int& o_Size, int& o_Index)
+bool GetFontInfoFromHandle(g2dFontHandle i_Font, std::string& o_Name, int& o_Size, int& o_Index)
 {
 	FontMap::iterator i;
 	for (i = l_FontMap.begin(); i != l_FontMap.end(); ++i)

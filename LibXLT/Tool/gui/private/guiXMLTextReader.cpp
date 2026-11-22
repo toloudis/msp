@@ -7,6 +7,10 @@
 **	Copyright(C) 2007 - All Rights Reserved
 \****************************************************************************/
 #include "Tool/gui/guiXMLTextReader.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
+#include "Core/env/envNumberText.hpp"
 
 #include "Core/fs/fsFileUtil.hpp"
 
@@ -20,14 +24,6 @@
 namespace
 {
 	//
-	template <class T>
-	bool from_string(T& t, 
-					 const std::string& s) //, std::ios_base& (*f)(std::ios_base&))
-	{
-		std::istringstream iss(s);
-		return !(iss >> std::dec >> t).fail();
-	};
-
 	bool boolfrom_string(bool& t, 
 						const std::string& s)
 	{
@@ -102,7 +98,7 @@ guiXMLTextReader::gui_Node_Type guiXMLTextReader::ReadNode(std::string& o_KeyNam
 //------------------------------------------------------------------------
 void guiXMLTextReader::Convert(const std::string& i_Text, int& o_Value)
 {
-	if (i_Text.length() > 0) from_string<int>(o_Value, i_Text);
+	envNumberText::FromText(i_Text, o_Value);
 }
 void guiXMLTextReader::Convert(const std::string& i_Text, bool& o_Value)
 {
@@ -110,63 +106,51 @@ void guiXMLTextReader::Convert(const std::string& i_Text, bool& o_Value)
 }
 void guiXMLTextReader::Convert(const std::string& i_Text, short& o_Value)
 {
-	if (i_Text.length() > 0) from_string<short>(o_Value, i_Text);
+	envNumberText::FromText(i_Text, o_Value);
 }
 void guiXMLTextReader::Convert(const std::string& i_Text, float& o_Value)
 {
-	if (i_Text.length() > 0) from_string<float>(o_Value, i_Text);
+	envNumberText::FromText(i_Text, o_Value);
 }
-void guiXMLTextReader::Convert(const std::string& i_Text, envType::Int8& o_Value)
+void guiXMLTextReader::Convert(const std::string& i_Text, int8_t& o_Value)
 {
-	if (i_Text.length() > 0)
-	{
-		// Promote up to int32 in order to preserve the value as a number
-		envType::Int32 val32 = o_Value;
-		from_string<envType::Int32>(val32, i_Text);
-		o_Value = val32;
-	}
+	envNumberText::FromText(i_Text, o_Value);
 }
-void guiXMLTextReader::Convert(const std::string& i_Text, envType::UInt8& o_Value)
+void guiXMLTextReader::Convert(const std::string& i_Text, uint8_t& o_Value)
 {
-	if (i_Text.length() > 0)
-	{
-		// Promote up to uint32 in order to preserve the value as a number
-		envType::UInt32 val32 = o_Value;
-		from_string<envType::UInt32>(val32, i_Text);
-		o_Value = val32;
-	}
+	envNumberText::FromText(i_Text, o_Value);
 }
-//void guiXMLTextReader::Convert(const std::string& i_Text, envType::Int16& o_Value)
+//void guiXMLTextReader::Convert(const std::string& i_Text, int16_t& o_Value)
 //{
-//	if (i_Text.length() > 0) from_string<envType::Int16>(o_Value, i_Text);
+//	if (i_Text.length() > 0) from_string<int16_t>(o_Value, i_Text);
 //}
-void guiXMLTextReader::Convert(const std::string& i_Text, envType::UInt16& o_Value)
+void guiXMLTextReader::Convert(const std::string& i_Text, uint16_t& o_Value)
 {
-	if (i_Text.length() > 0) from_string<envType::UInt16>(o_Value, i_Text);
+	envNumberText::FromText(i_Text, o_Value);
 }
-//void guiXMLTextReader::Convert(const std::string& i_Text, envType::Int32& o_Value)
+//void guiXMLTextReader::Convert(const std::string& i_Text, int32_t& o_Value)
 //{
-//	if (i_Text.length() > 0) from_string<envType::Int32>(o_Value, i_Text);
+//	if (i_Text.length() > 0) from_string<int32_t>(o_Value, i_Text);
 //}
-void guiXMLTextReader::Convert(const std::string& i_Text, envType::UInt32& o_Value)
+void guiXMLTextReader::Convert(const std::string& i_Text, uint32_t& o_Value)
 {
-	if (i_Text.length() > 0) from_string<envType::UInt32>(o_Value, i_Text);
+	envNumberText::FromText(i_Text, o_Value);
 }
-void guiXMLTextReader::Convert(const std::string& i_Text, envType::Int64& o_Value)
+void guiXMLTextReader::Convert(const std::string& i_Text, int64_t& o_Value)
 {
-	if (i_Text.length() > 0) from_string<envType::Int64>(o_Value, i_Text);
+	envNumberText::FromText(i_Text, o_Value);
 }
-void guiXMLTextReader::Convert(const std::string& i_Text, envType::UInt64& o_Value)
+void guiXMLTextReader::Convert(const std::string& i_Text, uint64_t& o_Value)
 {
-	if (i_Text.length() > 0) from_string<envType::UInt64>(o_Value, i_Text);
+	envNumberText::FromText(i_Text, o_Value);
 }
-//void guiXMLTextReader::Convert(const std::string& i_Text, envType::Float32& o_Value)
+//void guiXMLTextReader::Convert(const std::string& i_Text, float& o_Value)
 //{
-//	if (i_Text.length() > 0) from_string<envType::Float32>(o_Value, i_Text);
+//	if (i_Text.length() > 0) from_string<float>(o_Value, i_Text);
 //}
-void guiXMLTextReader::Convert(const std::string& i_Text, envType::Float64& o_Value)
+void guiXMLTextReader::Convert(const std::string& i_Text, double& o_Value)
 {
-	if (i_Text.length() > 0) from_string<envType::Float64>(o_Value, i_Text);
+	envNumberText::FromText(i_Text, o_Value);
 }
 void guiXMLTextReader::Convert(const std::string& i_Text, char * o_Value)
 {
@@ -179,10 +163,6 @@ void guiXMLTextReader::Convert(const std::string& i_Text, std::string& o_Value)
 void guiXMLTextReader::Convert(const std::string& i_Text, fsLocator& o_Value)
 {
 	if (i_Text.length() > 0) fsFileUtil::ANSIFilenameToLocator( i_Text, o_Value );
-}
-void guiXMLTextReader::Convert(const std::string& i_Text, itString& o_Value)
-{
-	if (i_Text.length() > 0) o_Value = i_Text.c_str();
 }
 void guiXMLTextReader::Convert(const std::string& i_Text, maFloatRGBA& o_Value)
 {

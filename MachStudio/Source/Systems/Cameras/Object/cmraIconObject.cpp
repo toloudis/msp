@@ -392,7 +392,7 @@ void cmraIconObject::SetPickable(bool i_bPickable)
 //----------------------------------------------------------------------------
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
-bool cmraIconObject::PositionContainsPickCode(envType::UInt32 i_PickCode) const
+bool cmraIconObject::PositionContainsPickCode(uint32_t i_PickCode) const
 {
 	// GPU picking is not proxied
 	if (!m_pPickPosition->GetGPUPickable())
@@ -400,7 +400,7 @@ bool cmraIconObject::PositionContainsPickCode(envType::UInt32 i_PickCode) const
 
 	return m_pPickPosition->ContainsPickCode(i_PickCode);
 }
-bool cmraIconObject::TargetContainsPickCode(envType::UInt32 i_PickCode) const
+bool cmraIconObject::TargetContainsPickCode(uint32_t i_PickCode) const
 {
 	// GPU picking is not proxied
 	if (!m_pPickTarget->GetGPUPickable())

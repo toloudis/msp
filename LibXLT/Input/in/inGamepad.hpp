@@ -24,7 +24,30 @@
 #include "Input/in/inDigitalDir.hpp"
 #endif
 
-class inGamepadPAC;
+//========================================================================
+//	inGamepadSource is how inGamepad reads a controller. No source is
+//	implemented at the moment, so no gamepads are created.
+//========================================================================
+class inGamepadSource
+{
+public:
+	virtual ~inGamepadSource() {}
+
+	//========================================================================
+	//	Think reads the controller's current state. o_Dir is -1 for a stick
+	//	that isn't pushed.
+	//========================================================================
+	virtual void Think(	int i_NumSticks,
+						int i_NumButtons,
+						float o_Dir[],				//	stick direction in radians (i_NumSticks)
+						float o_AnalogPressure[],	//	stick offset from center (radius) (i_NumSticks)
+						float o_Twist[],			//	twist (i_NumSticks)
+						int o_X[],					//	X axis of stick (i_NumSticks)
+						int o_Y[],					//	Y axis of stick (i_NumSticks)
+						int o_Z[],					//	Z axis of stick (i_NumSticks)
+						bool o_CurState[],			//	0 up, 1 down, for each button (i_NumButtons)
+						float o_ButtonPressure[]) = 0;	//	0.0f - released, 1.0f - maximum (i_NumButtons)
+};
 
 class inGamepad : public inDevice
 {
@@ -41,8 +64,9 @@ public:
 	//	and saturation. If deadzone plus saturation is greater than 99%, the
 	//	axes will be unable to return data. For this reason, deadzone will be 
 	//	truncated to the range 0-49% and saturation to 51-100%
+	//	The gamepad owns i_pSource.
 	//========================================================================
-	inGamepad(int i_Range, float i_DeadZone, float i_Saturation, inGamepadPAC* i_PAC);
+	inGamepad(int i_Range, float i_DeadZone, float i_Saturation, inGamepadSource* i_pSource);
 
 	//========================================================================
 	//	Destructor
@@ -94,7 +118,7 @@ public:
 	void GetAnalogDir(int i_Stick, int& o_X, int& o_Y) const;
 	void GetAnalogDir(int i_Stick, int& o_X, int& o_Y, int& o_Z) const;
 
-	inline inGamepadPAC* GetPAC() const;
+	inline inGamepadSource* GetSource() const;
 
 private:
 
@@ -112,13 +136,13 @@ private:
 	bool m_PastState[e_PadBufferSize];
 	bool m_CurState[e_PadBufferSize];
 	float m_ButtonPressure[e_PadBufferSize];
-	inGamepadPAC *m_pPAC;
+	inGamepadSource *m_pSource;
 	int m_Range;
 };
 
 //========================================================================
 //========================================================================
-inline inGamepadPAC* inGamepad::GetPAC() const
+inline inGamepadSource* inGamepad::GetSource() const
 {
-	return m_pPAC;
+	return m_pSource;
 }

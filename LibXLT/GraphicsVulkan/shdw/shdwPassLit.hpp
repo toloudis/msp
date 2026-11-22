@@ -1,0 +1,49 @@
+/****************************************************************************\
+**	shdwPassLit.hpp
+**
+**	Render lit objects.
+**
+**	StudioGPU
+**	Copyright(C) 2006 - All Rights Reserved
+\****************************************************************************/
+#ifdef GVK_SHDW_PASSLIT_HPP
+#error shdwPassLit.hpp multiply included
+#endif
+#define GVK_SHDW_PASSLIT_HPP
+
+#ifndef GVK_G3D_RENDERPASS_HPP
+#include "GraphicsVulkan/G3d/g3dRenderPass.hpp"
+#endif
+
+#ifndef GVK_SHDW_PASSTRAVERSAL_HPP
+#include "GraphicsVulkan/shdw/shdwPassTraversal.hpp"
+#endif
+
+#include <vector>
+
+namespace gvk
+{
+
+class shdwPassLit : public g3dRenderPass
+{
+public:
+	shdwPassLit();
+	~shdwPassLit();
+
+	virtual int Render(float i_time);
+
+	void SetSceneInfo(shdwPassTraversal* i_traversal) {m_sceneInfo = i_traversal;}
+
+	static int RenderNode(const sNodePlusState& i_Node, const std::vector<g3dLight*>& i_Lights, g3dRenderStateTraverser* i_RenderStateCache);
+
+	static void InitStates();
+	static void CleanupStates();
+
+protected:
+	shdwPassTraversal* m_sceneInfo;
+
+	void LightingLoopPerNode(const std::vector<g3dLight*>& i_Lights, const nodeCacheList& i_Nodes, g3dRenderStateTraverser* i_RenderStateCache);
+	void LightingLoopPerLight(const std::vector<g3dLight*>& i_Lights, const nodeCacheList& i_Nodes, g3dRenderStateTraverser* i_RenderStateCache);
+};
+
+}

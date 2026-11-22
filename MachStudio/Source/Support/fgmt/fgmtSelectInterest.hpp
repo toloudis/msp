@@ -15,8 +15,8 @@
 #ifndef SEL3D_SELECTINTEREST_HPP
 #include "Tool/sel3d/sel3dSelectInterest.hpp"
 #endif
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 //============================================================================
@@ -46,5 +46,5 @@ class fgmtSelectInterest : public sel3dSelectInterest
 		// with the GPU pick code given. Returns NULL if no fragment selected.
 		//--------------------------------------------------------------------
 		static sel3dObject* GetPartFromPickCode(sel3dObject *i_pPicked,
-												envType::UInt32 i_PickCode);
+												uint32_t i_PickCode);
 };

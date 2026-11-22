@@ -96,6 +96,18 @@ public:
 	bool  HasDriver(tmlnDriver *i_pDriver);
 
 	//--------------------------------------------------------------------
+	//  Undo operations keep a driver's pointer and its position in the
+	//	driver list. When an object's drivers are recreated from their info
+	//	(a whole-object set and its undo, a character reload), they come
+	//	back in the same order but at new addresses. FindDriver returns
+	//	i_pDriver while it is one of this object's drivers, else the driver
+	//	now at i_Position; NULL if neither. GetDriverPosition: -1 if it
+	//	isn't one of this object's drivers.
+	//--------------------------------------------------------------------
+	tmlnDriver* FindDriver(tmlnDriver *i_pDriver, int i_Position);
+	int GetDriverPosition(const tmlnDriver *i_pDriver) const;
+
+	//--------------------------------------------------------------------
 	//  Add Channel with given name. This class owns the channel,
 	// but returns a pointer to it for convenience
 	//--------------------------------------------------------------------

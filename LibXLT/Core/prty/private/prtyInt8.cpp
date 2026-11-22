@@ -28,7 +28,7 @@ prtyInt8::prtyInt8(const std::string& i_Name)
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-prtyInt8::prtyInt8(const std::string& i_Name, envType::Int8 i_InitialValue)
+prtyInt8::prtyInt8(const std::string& i_Name, int8_t i_InitialValue)
 :	prtyPropertyTemplate( i_Name, i_InitialValue )
 {
 }
@@ -52,7 +52,7 @@ prtyInt8& prtyInt8::operator =(const prtyInt8& i_Property)
 	SetValue(i_Property.GetValue());
 	return *this;
 }
-prtyInt8& prtyInt8::operator =(const envType::Int8 i_Value)
+prtyInt8& prtyInt8::operator =(const int8_t i_Value)
 {
 	SetValue(i_Value);
 	return *this;
@@ -69,11 +69,11 @@ bool prtyInt8::operator !=(const prtyInt8& i_Property) const
 {
 	return (m_Value != i_Property.GetValue());
 }
-bool prtyInt8::operator ==(const envType::Int8 i_Value) const
+bool prtyInt8::operator ==(const int8_t i_Value) const
 {
 	return (m_Value == i_Value);
 }
-bool prtyInt8::operator !=(const envType::Int8 i_Value) const
+bool prtyInt8::operator !=(const int8_t i_Value) const
 {
 	return (m_Value != i_Value);
 }
@@ -83,19 +83,19 @@ bool prtyInt8::operator !=(const envType::Int8 i_Value) const
 //--------------------------------------------------------------------
 //	comparison operators											
 //--------------------------------------------------------------------
-bool prtyInt8::operator >(const envType::Int8 i_Value) const
+bool prtyInt8::operator >(const int8_t i_Value) const
 {
 	return (m_Value > i_Value);
 }
-bool prtyInt8::operator >=(const envType::Int8 i_Value) const
+bool prtyInt8::operator >=(const int8_t i_Value) const
 {
 	return (m_Value >= i_Value);
 }
-bool prtyInt8::operator <(const envType::Int8 i_Value) const
+bool prtyInt8::operator <(const int8_t i_Value) const
 {
 	return (m_Value < i_Value);
 }
-bool prtyInt8::operator <=(const envType::Int8 i_Value) const
+bool prtyInt8::operator <=(const int8_t i_Value) const
 {
 	return (m_Value <= i_Value);
 }
@@ -121,7 +121,7 @@ bool prtyInt8::operator <=(const prtyInt8& i_Value) const
 //virtual 
 void prtyInt8::Read(chReader& io_Reader)
 {
-	envType::Int8 temp;
+	int8_t temp;
 	io_Reader.Read(temp);
 	SetValue(temp);
 }
@@ -131,7 +131,7 @@ void prtyInt8::Read(chReader& io_Reader)
 //virtual 
 void prtyInt8::Write(chWriter& io_Writer) const
 {
-	envType::Int8 temp = GetValue();
+	int8_t temp = GetValue();
 	io_Writer.Write(temp);
 }
 

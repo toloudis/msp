@@ -18,6 +18,9 @@
 #ifndef ICN_ICONSCALE_HPP
 #include "Tool/icn/icnIconScale.hpp"
 #endif
+#ifndef CMM_SOURCESTATE_HPP
+#include "Systems/Common/Object/cmmSourceState.hpp"
+#endif
 #ifndef MNM_OBJECT_HPP
 #include "Support/mnm/mnmObject.hpp"
 #endif
@@ -56,7 +59,8 @@ class cmraCameraObject : public mnmObject,
 						 public cmmNamedPropertyObject,
 						 public gpxCamera::CameraChangedCallback,
 						 public icnIconScaleInterest,
-						 public xfrmTransformNodeCallback
+						 public xfrmTransformNodeCallback,
+						 public cmmSourceState
 {
 	public:
 		//--------------------------------------------------------------------
@@ -447,7 +451,7 @@ class cmraCameraObject : public mnmObject,
 		//----------------------------------------------------------------------------
 		// Find the object that matches the pick code from an earlier pick render.
 		//----------------------------------------------------------------------------
-		virtual bool MatchPickCode(envType::UInt32 i_PickCode);
+		virtual bool MatchPickCode(uint32_t i_PickCode);
 
 		//--------------------------------------------------------------------
 		//	Renderable sets whether the cmraCameraObject can be selected.

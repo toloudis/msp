@@ -11,12 +11,18 @@
 #endif
 #define PTM_CONTROLFACTORYTIMELINE_HPP
 
+#ifdef MSP_GUI_QT
+#ifndef PQT_CONTROLFACTORY_HPP
+#include "ToolUIQt/pqt/pqtControlFactory.hpp"
+#endif
+#else
 #ifndef PWX_CONTROLFACTORY_HPP
 #include "ToolUIWx/pwx/pwxControlFactory.hpp"
 #endif
+#endif
 
 //============================================================================
-// wxWidgets version - implements special time controls that recognize
+// Implements special time controls that recognize
 //	and use time format settings.
 //============================================================================
 #ifdef USE_WXWIDGETS
@@ -28,5 +34,15 @@ class ptmControlFactoryTimeline : public pwxControlFactory
 		//----------------------------------------------------------------------------
 		virtual pwxControl* CreateControl(shared_ptr<prtyPropertyUIInfo>& i_pUIInfo,
 										  wxWindow* i_pParent);
+};
+#elif defined(USE_QT)
+class ptmControlFactoryTimeline : public pqtControlFactory
+{
+	public:
+		//----------------------------------------------------------------------------
+		//	Check for Control + Property pairing
+		//----------------------------------------------------------------------------
+		virtual pqtControl* CreateControl(shared_ptr<prtyPropertyUIInfo>& i_pUIInfo,
+										  QWidget* i_pParent);
 };
 #endif // USE_WXWIDGETS

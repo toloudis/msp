@@ -15,6 +15,9 @@
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/name/nameObject.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 #include "Graphics/g3d/g3dRenderState.hpp"
 
 

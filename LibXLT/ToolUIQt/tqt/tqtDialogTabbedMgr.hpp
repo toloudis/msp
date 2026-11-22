@@ -1,7 +1,7 @@
 /*****************************************************************************
-**	tqtDialogTabbedMgr.hpp
+**  tqtDialogTabbedMgr.hpp
 **
-**		Interface to the tabbed dialog manager.
+**      Interface to the tabbed dialog manager.
 **
 **	StudioGPU
 **	Copyright(C) 2004 - All Rights Reserved
@@ -15,21 +15,17 @@
 #include "ToolUIQt/tqt/tqtWidgets.hpp"
 #endif
 
-
 #include <list>
 
 
+#ifdef USE_QT
 
-//============================================================================
-//	Forward References
-//============================================================================
 class prtyPropertyUIInfo;
 class tqtDialogTabbed;
 
-
 //============================================================================
 //============================================================================
-namespace tqtDialogTabbedMgr
+namespace tqtDialogTabbedMgr 
 {
 	//---------------------------------------------------------------------------
 	// Create the dialog with the given name, but will not show it
@@ -76,16 +72,15 @@ namespace tqtDialogTabbedMgr
 	//---------------------------------------------------------------------------
 	void RemoveTabPages(const char* i_DialogName);
 
-#ifdef QT_FINISH_PORT
 	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------
-	wxPanel* GetTabPage(const char* i_DialogName, const std::string& i_Title);
-#endif
+	QWidget* GetTabPage(const char* i_DialogName, const std::string& i_Title);
 
 	//---------------------------------------------------------------------------
 	//---------------------------------------------------------------------------
 	void NotifyDialogDeleted(tqtDialogTabbed* i_pDialog);
 
+	
 	//---------------------------------------------------------------------------
 	// Stop the dialog from updating
 	//---------------------------------------------------------------------------
@@ -96,3 +91,5 @@ namespace tqtDialogTabbedMgr
 	//---------------------------------------------------------------------------
 	void Thaw(const char* i_DialogName);
 }
+
+#endif // USE_QT

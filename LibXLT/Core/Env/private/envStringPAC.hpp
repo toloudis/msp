@@ -22,7 +22,7 @@
 //
 //namespace envStringPAC
 //{
-//	std::string WideCharToUTF8(const envType::UInt16 *i_String, int i_Length);
+//	std::string WideCharToUTF8(const uint16_t *i_String, int i_Length);
 // std::wstring UTF8ToWideChar(const char *i_String, int i_Length);
 //
 //}

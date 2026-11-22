@@ -23,9 +23,9 @@
 class billGeomListConfig
 {
 public:
-	static itString GetFileTypeExtensions()
+	static std::string GetFileTypeExtensions()
 	{
-		return itString("dds;bmp;png;tga"); // scm,nmp,rmp,tuv
+		return std::string("dds;bmp;png;tga"); // scm,nmp,rmp,tuv
 	}
 };
 
@@ -39,6 +39,6 @@ public:
 	// Expand from filename into full locator searching in directory tree.
 	// Returns true if found.
 	//------------------------------------------------------------------------
-	 static bool FindFile(const itString& i_Filename, fsLocator& o_Locator);
+	 static bool FindFile(const std::string& i_Filename, fsLocator& o_Locator);
 };
 

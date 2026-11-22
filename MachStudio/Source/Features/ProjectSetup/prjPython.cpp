@@ -16,7 +16,11 @@
 #include "Core/fs/fsFileX.hpp"
 #include "Core/Fs/fsResourceTracker.hpp"
 #include "Tool/doc/docSingleDocumentMgr.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtSystem.hpp"
+#else
 #include "ToolUIWx/twx/twxSystem.hpp"
+#endif
 
 
 //============================================================================
@@ -144,6 +148,9 @@ namespace
 #ifdef USE_WXWIDGETS
 		//force the frame to close, deleting the window
 		twxSystem::g_pMainForm->Destroy();
+#elif defined(USE_QT)
+		//force the frame to close, deleting the window
+		QCoreApplication::quit();
 #endif
 
 		return Py_None;

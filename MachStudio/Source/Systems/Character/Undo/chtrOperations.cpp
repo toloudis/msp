@@ -15,6 +15,12 @@
 #include "Systems/Character/Drivers/chtrDriverCreator.hpp"
 #include "Systems/Character/Object/chtrObjectMgr.hpp"
 #include "Systems/Character/Undo/chtrActualOperations.hpp"
+#ifndef CHTR_REPLACEOPERATION_HPP
+#include "Systems/Character/Undo/chtrReplaceOperation.hpp"
+#endif
+#ifndef CHTR_DOCUMENTCHUNK_HPP
+#include "Systems/Character/Data/chtrDocumentChunk.hpp"
+#endif
 #include "Systems/Common/Gui/cmmAddDriverOperation.hpp"
 #include "Systems/Common/Templates/cmmAddOperationTemplate.hpp"
 #include "Systems/Common/Templates/cmmDeleteOperationTemplate.hpp"
@@ -48,6 +54,9 @@ namespace chtrOperations
 		typedef cmmSetOperationTemplate< chtrScriptData, chtrActualOperations, chtrObjectMgr> chtrSetOperation;
 
 		const char* c_MultipleLoadOperationName = "Load Objects";
+
+		std::function<bool (const fsLocator&)> l_FileAppender;
+		std::string l_AppenderPatterns;		// ";"-separated, empty if none
 		const char* c_GeometryDirCategory = "Geometry";
 		
 		//--------------------------------------------------------------------
@@ -57,11 +66,13 @@ namespace chtrOperations
 		bool browse_for_objects(std::vector<fsLocator> &o_ChosenLocators) 
 		{
 			//i_Filter should be string like: "My files (*.myf)|*.myf|All files (*.*)|*.*"
+			std::string patterns = "*.*x*";
+			if (!l_AppenderPatterns.empty())
+				patterns += ";" + l_AppenderPatterns;
 #ifdef HAIR_SUPPORTED
-			std::string fileFilter = "Model Files (*.*x*;*.hair)|*.*x*;*.hair|All files (*.*)|*.*";
-#else
-			std::string fileFilter = "Model Files (*.*x*)|*.*x*|All files (*.*)|*.*";
+			patterns += ";*.hair";
 #endif
+			std::string fileFilter = "Model Files (" + patterns + ")|" + patterns + "|All files (*.*)|*.*";
 
 			// Use the geometry directory category here
 			return (guiFileDialogUtils::GetOpenFileNames(fileFilter, c_GeometryDirCategory, o_ChosenLocators));
@@ -84,7 +95,8 @@ namespace chtrOperations
 			{
 				try
 				{
-					chtrOperations::AddObject( chtrScriptData( browseFileNames[i] ) );
+					if (!l_FileAppender || !l_FileAppender(browseFileNames[i]))
+						chtrOperations::AddObject( chtrScriptData( browseFileNames[i] ) );
 				}catch (const g2dOutOfSystemMemoryX&)
 				{
 					// out of memory exception occurred
@@ -101,31 +113,47 @@ namespace chtrOperations
 	}
 
 	//------------------------------------------------------------------------
-	//  LoadAnimation onto the character with the given index.
 	//------------------------------------------------------------------------
-	void  LoadAnimation(int i_Index, const fsLocator &i_AnimLocator)
+	void SetFileAppender(std::function<bool (const fsLocator&)> i_Appender, const std::string& i_FilePatterns)
 	{
-		chtrScriptObject *pCharacter = chtrObjectMgr::GetObject(i_Index);
-		if (pCharacter)
+		l_FileAppender = i_Appender;
+		l_AppenderPatterns = i_Appender ? i_FilePatterns : std::string();
+	}
+
+	namespace
+	{
+		//--------------------------------------------------------------------
+		// The steps LoadAnimation and AddAnimationClip share: a new Anim-Full
+		// driver on the character, its info filled in by i_SetInfo and its
+		// times finally set by i_Place (may be empty), an undo operation, and
+		// the time range widened to show it. The driver joins the character
+		// only once its times are final: AddDriver checks it for conflicts
+		// with the character's other drivers, and a new driver starts as a
+		// zero-length one at the current time.
+		//--------------------------------------------------------------------
+		chtrDriverAnimationFull* add_animation_driver(chtrScriptObject *pCharacter,
+													  const std::function<void (tmlnDriverAnimationFullInfo&)>& i_SetInfo,
+													  const std::function<void (chtrDriverAnimationFull&)>& i_Place)
 		{
 			// Create Animation Driver
 			chtrDriverAnimationFull* pDriver = chtrDriverCreator::CreateAnimationDriver(pCharacter);
 			if (pDriver)
 			{
-				pCharacter->AddDriver( pDriver );
-
 				// GetDriverInfo returns a copy that we need to delete
 				std::unique_ptr<tmlnDriverInfo> pInfo( pDriver->GetDriverInfo() );
 				if (tmlnDriverAnimationFullInfo *pAnimInfo = dynamic_cast<tmlnDriverAnimationFullInfo*>(pInfo.get()))
 				{
-					pAnimInfo->m_Info.m_AnimFilename = i_AnimLocator;
-					pAnimInfo->m_Info.m_bUseAnimStart = true;
+					i_SetInfo( *pAnimInfo );
 					pDriver->SetDriverInfo( *pAnimInfo );
 
 					// The SetDriverInfo call above is going to mess up the frame rate,
 					// so restore it to the value from the animation file.
 					pDriver->SetFrameRateFromAnimData();
 				}
+				if (i_Place)
+					i_Place( *pDriver );
+
+				pCharacter->AddDriver( pDriver );
 
 				// Create an undo operation for this driver
 				undoUndoMgr::AddOperation( new cmmAddDriverOperation(pCharacter->CreateReferenceToSelf(), pDriver) );
@@ -145,19 +173,68 @@ namespace chtrOperations
 					min_time = pDriver->GetBeginTime();
 					tmlnTimeLine::SetTimeRange(min_time, max_time);
 				}
-					
+
 				chnlDialogUtil::ObjectSelected(pCharacter);
 			}
+			return pDriver;
 		}
+	}
+
+	//------------------------------------------------------------------------
+	//  LoadAnimation onto the character with the given index.
+	//------------------------------------------------------------------------
+	void  LoadAnimation(int i_Index, const fsLocator &i_AnimLocator)
+	{
+		chtrScriptObject *pCharacter = chtrObjectMgr::GetObject(i_Index);
+		if (pCharacter)
+		{
+			add_animation_driver(pCharacter, [&](tmlnDriverAnimationFullInfo& io_Info)
+			{
+				io_Info.m_Info.m_AnimFilename = i_AnimLocator;
+				io_Info.m_Info.m_bUseAnimStart = true;
+			}, nullptr);
+		}
+	}
+
+	//------------------------------------------------------------------------
+	//  Add one clip of a file as an Anim-Full driver on the named character
+	//------------------------------------------------------------------------
+	maTime AddAnimationClip(const nameString& i_Character, const fsLocator& i_File, const std::string& i_Clip,
+							const std::string& i_DisplayName, const maTime& i_Begin)
+	{
+		chtrScriptObject *pCharacter = chtrObjectMgr::GetObject(chtrObjectMgr::GetIndexForObject(i_Character));
+		if (!pCharacter)
+			return i_Begin;
+
+		chtrDriverAnimationFull* pDriver = add_animation_driver(pCharacter, [&](tmlnDriverAnimationFullInfo& io_Info)
+		{
+			io_Info.m_Info.m_AnimFilename = i_File;
+			io_Info.m_Info.m_AnimClip = i_Clip;
+			io_Info.m_Info.m_AnimName = i_DisplayName;
+			io_Info.m_Info.m_bUseAnimStart = false;
+			io_Info.m_Info.m_bDriverToAnimLength = true;
+		}, [&](chtrDriverAnimationFull& io_Driver)
+		{
+			// exactly from i_Begin (the info's times are float seconds, which
+			// could leave it a unit inside the clip before), for the clip's length
+			io_Driver.SetBeginTime( i_Begin );
+			if (io_Driver.GetAnimationNumFrames() > 0)
+				io_Driver.SetEndTime( i_Begin + maTime::FromSeconds(io_Driver.GetAnimationLength()) );
+			else
+				io_Driver.SetEndTime( i_Begin );
+		});
+		if (!pDriver || pDriver->GetAnimationNumFrames() <= 0)
+			return i_Begin;
+		return pDriver->GetEndTime();
 	}
 
 	//--------------------------------------------------------------------
 	//  Add new item to Character
 	//--------------------------------------------------------------------
-	void  AddObject(const chtrScriptData &i_Item)
+	nameString  AddObject(const chtrScriptData &i_Item)
 	{
 		int index = chtrActualOperations::AddObject(i_Item);
-		if (index < 0) return;	// if there is a problem loading the object, return immediately
+		if (index < 0) return nameString();	// if there is a problem loading the object, return immediately
 
 		l_LastOp = NULL;
 		//char displaytext[256];
@@ -167,6 +244,7 @@ namespace chtrOperations
 		std::string displaytext(oss.str());
 		// Need new name given to new object when making udo operation
 		undoUndoMgr::AddOperation( new chtrAddOperation( index, chtrObjectMgr::GetScriptData(index), displaytext.c_str() ) );
+		return chtrObjectMgr::GetScriptData(index).m_BaseData.m_Name.GetValue();
 	}
 
 	//--------------------------------------------------------------------
@@ -222,6 +300,22 @@ namespace chtrOperations
 	void  ReloadCharacter(int i_Index)
 	{
 		chtrObjectMgr::ReloadCharacter(i_Index);
+	}
+
+	//--------------------------------------------------------------------
+	//  Replace the character of that name as one undoable step
+	//--------------------------------------------------------------------
+	void  ReplaceObjectData(const nameString& i_Name, const chtrScriptData& i_Data)
+	{
+		const int index = chtrObjectMgr::GetIndexForObject(i_Name);
+		if (index < 0)
+			return;
+
+		undoUndoMgr::AddOperation(new chtrReplaceOperation(i_Name, chtrObjectMgr::GetScriptData(index), "Change " + i_Name.GetString()));
+		l_LastOp = NULL;	// later edits start their own step
+		chtrObjectMgr::ReplaceCharacter(index, i_Data);
+		chtrDocumentChunk::ActiveDataChanged();
+		chnlDialogUtil::UpdateChannels();
 	}
 
 	//--------------------------------------------------------------------
@@ -397,11 +491,11 @@ namespace chtrOperations
 	{
 		if (i_Filename.IsEmpty())
 		{
-			chtrObjectMgr::create_default_name(itString("Object"), o_NameString, l_ObjectCounter);
+			chtrObjectMgr::create_default_name(std::string("Object"), o_NameString, l_ObjectCounter);
 		}
 		else
 		{
-			chtrObjectMgr::create_duplicate_name(itString(i_Filename.GetString().c_str()), o_NameString);
+			chtrObjectMgr::create_duplicate_name(i_Filename.GetString(), o_NameString);
 		}
 	}
 

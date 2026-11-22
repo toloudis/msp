@@ -66,7 +66,7 @@ public:
 
 	void TextureReloadFunction(void (*i_TextureReloadFunction)(const fsLocator& i_TextureName, bool i_bIsMipMap));
 	
-	void ObjectAddFunction (void (*i_AddObjectsFunction)(const itString& i_FileName, const fsLocator& i_Path));
+	void ObjectAddFunction (void (*i_AddObjectsFunction)(const std::string& i_FileName, const fsLocator& i_Path));
 
 	
 	

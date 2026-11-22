@@ -12,7 +12,7 @@
 
 #include "Core/env/envSTLHelpers.hpp"
 #include "Core/fs/fsResourceFinder.hpp"
-#include "Core/it/itString.hpp"
+#include <string>
 #include "Graphics/mat/matTexture.hpp"
 #include "Graphics/mat/matTextureMgr.hpp"
 
@@ -175,15 +175,15 @@ void effHairData::GetTextureNames(std::vector<std::string>& o_Names) const
 void effHairData::ReloadTextures(const fsLocator& i_TextureDirectory)
 {
 	if (m_NameBase != "")
-		m_TextureBase = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameBase.c_str()));
+		m_TextureBase = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameBase);
 	if (m_NameAlpha != "")
-		m_TextureAlpha = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameAlpha.c_str()));
+		m_TextureAlpha = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameAlpha);
 	if (m_NameSpecularShift != "")
-		m_TextureSpecularShift = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameSpecularShift.c_str()));
+		m_TextureSpecularShift = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameSpecularShift);
 	if (m_NameSpecularMask != "")
-		m_TextureSpecularMask = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameSpecularMask.c_str()));
+		m_TextureSpecularMask = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameSpecularMask);
 	if (m_NameNormalMap != "")
-		m_TextureNormalMap = matTextureMgr::LoadTexture(i_TextureDirectory, itString(m_NameNormalMap.c_str()));
+		m_TextureNormalMap = matTextureMgr::LoadTexture(i_TextureDirectory, m_NameNormalMap);
 }
 
 //----------------------------------------------------------------------------
@@ -191,15 +191,15 @@ void effHairData::ReloadTextures(const fsLocator& i_TextureDirectory)
 void effHairData::ReloadTextures(const fsResourceFinder& i_TextureFinder)
 {
 	if (m_NameBase != "")
-		m_TextureBase = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameBase.c_str()));
+		m_TextureBase = matTextureMgr::LoadTexture(i_TextureFinder, m_NameBase);
 	if (m_NameAlpha != "")
-		m_TextureAlpha = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameAlpha.c_str()));
+		m_TextureAlpha = matTextureMgr::LoadTexture(i_TextureFinder, m_NameAlpha);
 	if (m_NameSpecularShift != "")
-		m_TextureSpecularShift = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameSpecularShift.c_str()));
+		m_TextureSpecularShift = matTextureMgr::LoadTexture(i_TextureFinder, m_NameSpecularShift);
 	if (m_NameSpecularMask != "")
-		m_TextureSpecularMask = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameSpecularMask.c_str()));
+		m_TextureSpecularMask = matTextureMgr::LoadTexture(i_TextureFinder, m_NameSpecularMask);
 	if (m_NameNormalMap != "")
-		m_TextureNormalMap = matTextureMgr::LoadTexture(i_TextureFinder, itString(m_NameNormalMap.c_str()));
+		m_TextureNormalMap = matTextureMgr::LoadTexture(i_TextureFinder, m_NameNormalMap);
 }
 
 //----------------------------------------------------------------------------

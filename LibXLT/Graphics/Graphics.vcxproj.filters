@@ -129,9 +129,6 @@
     <ClInclude Include="G2d\g2dFontUtil.hpp">
       <Filter>G2d</Filter>
     </ClInclude>
-    <ClInclude Include="G2d\g2dHDRUtil.hpp">
-      <Filter>G2d</Filter>
-    </ClInclude>
     <ClInclude Include="G2d\g2dImage.hpp">
       <Filter>G2d</Filter>
     </ClInclude>
@@ -139,6 +136,9 @@
       <Filter>G2d</Filter>
     </ClInclude>
     <ClInclude Include="G2d\g2dImageSave.hpp">
+      <Filter>G2d</Filter>
+    </ClInclude>
+    <ClInclude Include="G2d\g2dImageSaveUtil.hpp">
       <Filter>G2d</Filter>
     </ClInclude>
     <ClInclude Include="G2d\g2dOpenEXRDefines.hpp">
@@ -178,9 +178,6 @@
       <Filter>G2d</Filter>
     </ClInclude>
     <ClInclude Include="G2d\g2dSystem.hpp">
-      <Filter>G2d</Filter>
-    </ClInclude>
-    <ClInclude Include="G2d\g2dTGAUtil.hpp">
       <Filter>G2d</Filter>
     </ClInclude>
     <ClInclude Include="G2d\g2dTiledOpenEXRUtil.hpp">
@@ -297,7 +294,13 @@
     <ClInclude Include="G3d\g3dPostProcessing.hpp">
       <Filter>G3d</Filter>
     </ClInclude>
+    <ClInclude Include="G3d\g3dGfxOptions.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
     <ClInclude Include="G3d\g3dPrefs.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dProfiler.hpp">
       <Filter>G3d</Filter>
     </ClInclude>
     <ClInclude Include="G3d\g3dPrimitiveFragmentUtil.hpp">
@@ -352,6 +355,9 @@
       <Filter>G3d</Filter>
     </ClInclude>
     <ClInclude Include="G3d\g3dThreadControl.hpp">
+      <Filter>G3d</Filter>
+    </ClInclude>
+    <ClInclude Include="G3d\g3dProgressive.hpp">
       <Filter>G3d</Filter>
     </ClInclude>
     <ClInclude Include="G3d\g3dType.hpp">
@@ -550,6 +556,15 @@
       <Filter>Eff</Filter>
     </ClInclude>
     <ClInclude Include="Eff\effBlinnDataParser.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effOpacity.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effTraceMaterial.hpp">
+      <Filter>Eff</Filter>
+    </ClInclude>
+    <ClInclude Include="Eff\effPbrData.hpp">
       <Filter>Eff</Filter>
     </ClInclude>
     <ClInclude Include="Eff\effBlurData.hpp">
@@ -1089,13 +1104,13 @@
     <ClCompile Include="G2d\private\g2dFontUtil.cpp">
       <Filter>G2d\private</Filter>
     </ClCompile>
-    <ClCompile Include="G2d\private\g2dHDRUtil.cpp">
-      <Filter>G2d\private</Filter>
-    </ClCompile>
     <ClCompile Include="G2d\private\g2dImageCreate.cpp">
       <Filter>G2d\private</Filter>
     </ClCompile>
     <ClCompile Include="G2d\private\g2dImageSave.cpp">
+      <Filter>G2d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G2d\private\g2dImageSaveUtil.cpp">
       <Filter>G2d\private</Filter>
     </ClCompile>
     <ClCompile Include="G2d\private\g2dOpenEXROutStream.cpp">
@@ -1126,9 +1141,6 @@
       <Filter>G2d\private</Filter>
     </ClCompile>
     <ClCompile Include="G2d\private\g2dSystem.cpp">
-      <Filter>G2d\private</Filter>
-    </ClCompile>
-    <ClCompile Include="G2d\private\g2dTGAUtil.cpp">
       <Filter>G2d\private</Filter>
     </ClCompile>
     <ClCompile Include="G2d\private\g2dTiledOpenEXRUtil.cpp">
@@ -1218,6 +1230,9 @@
     <ClCompile Include="G3d\private\g3dPrefs.cpp">
       <Filter>G3d\private</Filter>
     </ClCompile>
+    <ClCompile Include="G3d\private\g3dProfiler.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
     <ClCompile Include="G3d\private\g3dPrimitiveFragmentUtil.cpp">
       <Filter>G3d\private</Filter>
     </ClCompile>
@@ -1255,6 +1270,9 @@
       <Filter>G3d\private</Filter>
     </ClCompile>
     <ClCompile Include="G3d\private\g3dThreadControl.cpp">
+      <Filter>G3d\private</Filter>
+    </ClCompile>
+    <ClCompile Include="G3d\private\g3dProgressive.cpp">
       <Filter>G3d\private</Filter>
     </ClCompile>
     <ClCompile Include="G3d\private\g3dViewer.cpp">
@@ -1423,6 +1441,15 @@
       <Filter>Eff\private</Filter>
     </ClCompile>
     <ClCompile Include="Eff\private\effBlinnDataParser.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effOpacity.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effPbrData.cpp">
+      <Filter>Eff\private</Filter>
+    </ClCompile>
+    <ClCompile Include="Eff\private\effTraceMaterial.cpp">
       <Filter>Eff\private</Filter>
     </ClCompile>
     <ClCompile Include="Eff\private\effBlurData.cpp">
@@ -1906,8 +1933,5 @@
       <Filter>hair\private</Filter>
     </ClCompile>
     <ClCompile Include="GraphicsLayer.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="vcpkg.json" />
   </ItemGroup>
 </Project>

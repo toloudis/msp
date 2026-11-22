@@ -7,6 +7,9 @@
 **	Copyright(C) 2004 - All Rights Reserved
 \****************************************************************************/
 #include "Features/Import/ImportUtil.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Features/Import/ImportData.hpp"
 #include "Features/Import/ImportDialogUtil.hpp"
@@ -187,8 +190,8 @@ namespace ImportUtil
 		//
 		fsLocator temp_locator;
 		temp_locator = i_SourceData.m_LastFile;
-		itString filename;
-		filename = itString("~temp_");
+		std::string filename;
+		filename = std::string("~temp_");
 		filename += temp_locator.GetLastName();
 		temp_locator.Pop();
 		temp_locator.Push( filename );

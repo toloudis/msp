@@ -13,6 +13,8 @@
 #endif
 #define GRAPHICSDX11_LAYER_HPP
 
+#include <string>
+
 class g2dSystem;
 class g3dSystem;
 
@@ -45,4 +47,17 @@ class GraphicsDX11Layer
 		//------------------------------------------------------------------------
 		static g2dSystem* GetSystem2D();
 		static g3dSystem* GetSystem3D();
+
+		//------------------------------------------------------------------------
+		//	GetName - the backend's name for people ("DirectX 11");
+		//	GetCodeName - its name in command lines, logs and files ("dx11")
+		//------------------------------------------------------------------------
+		static const char* GetName();
+		static const char* GetCodeName();
+
+		//------------------------------------------------------------------------
+		//	GetInitError - always empty: Init reports failure by throwing the
+		//	g2d exceptions (the other layers' Init returns false instead)
+		//------------------------------------------------------------------------
+		static const std::string& GetInitError();
 };

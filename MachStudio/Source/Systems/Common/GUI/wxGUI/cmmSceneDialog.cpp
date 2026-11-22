@@ -22,7 +22,6 @@
 #include "Core/App/appTime.hpp"
 #include "Core/Env/envSTLHelpers.hpp"
 #include "Core/fs/fsFileUtil.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/undo/undoUndoMgr.hpp"
 #include "Tool/doc/docSingleDocumentMgr.hpp"
 #include "Tool/gui/guiMenuMgr.hpp"
@@ -52,8 +51,8 @@ cmmSceneDialog* cmmSceneDialog::FormInstance = NULL;
 //--------------------------------------------------------------------
 //--------------------------------------------------------------------
 cmmSceneDialog::cmmSceneDialog( wxWindow* parent, 
-								const std::wstring& i_Title,
-								const std::wstring& i_Caption ) 
+								const std::string& i_Title,
+								const std::string& i_Caption ) 
 :	cmmSceneDialogBase( parent )
 {
 	m_pCategoryPane = new cmmPlacedPane(this, cmmPlacedPane::e_CategoryView);
@@ -64,9 +63,9 @@ cmmSceneDialog::cmmSceneDialog( wxWindow* parent,
 	m_notebook1->AddPage( m_pLightsPane, wxT("Light Sets"), true, wxNullBitmap );
 
 	// Load images for the different system 
-	itString icon_dir;
+	std::string icon_dir;
 	fsFileUtil::LocatorToUnicodeString( guiMenuMgr::GetIconDirectory(), icon_dir );
-	std::wstring icondir = icon_dir.GetString();
+	wxString icondir = wxString::FromUTF8(icon_dir);
 	wxImageList *pIconImages = new wxImageList(FromDIP(13), FromDIP(13), false, cmmPlacedImages::e_NumSystemImageIcons);
     {
         wxLogNull nullLog;
@@ -90,7 +89,7 @@ cmmSceneDialog::cmmSceneDialog( wxWindow* parent,
 	m_notebook1->SetSelection(0);
 
 	// Add this panel to the AUI manager
-	wxAuiPaneInfo api = wxAuiPaneInfo().Name(i_Title).Caption(i_Caption).Show().Layer(1).Left();
+	wxAuiPaneInfo api = wxAuiPaneInfo().Name(wxString::FromUTF8(i_Title)).Caption(wxString::FromUTF8(i_Caption)).Show().Layer(1).Left();
 	twxPaneMgr::AddPane(this, api);
 }
 

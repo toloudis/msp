@@ -12,8 +12,8 @@
 #endif
 #define G3D_MESHINFO_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/env/envType.hpp"
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
 #endif
 
 #include <vector>
@@ -28,7 +28,7 @@ class matMaterial;
 //============================================================================
 struct g3dMeshInfo
 {
-	std::vector<envType::UInt32> m_Indices;
+	std::vector<uint32_t> m_Indices;
 	matMaterial* m_pMaterial;
 };
 

@@ -11,7 +11,7 @@
 
 #include "Core/dbg/dbgPackage.hpp"
 #include "Core/env/envPackage.hpp"
-#include "Core/it/itString.hpp"
+#include <string>
 
 
 //============================================================================

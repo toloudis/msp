@@ -46,7 +46,8 @@ public:
 	void SetEnable( bool i_bEnable );
 	void SetIntensity(const maFloatRGBA& i_Intensity);
 	void SetIntensityFactor(float i_IntensityFactor);
-	void SetCastsShadow(bool i_bShadow);
+	void SetIsSinglePassLight(bool i_bSinglePass);
+	void SetShadowSource(bool i_bShadowSource);
 	void SetDiffuseEnabled(bool i_bEnabled);
 	void SetSpecularEnabled(bool i_bEnabled);
 	void SetAffectsGlow(bool i_bAffectsGlow);
@@ -64,7 +65,8 @@ private:
 // Extra copy of data if using proxy info
 #if USE_PROXIES
 	bool m_bEnabled;
-	bool m_bShadow;
+	bool m_bSinglePass;
+	bool m_bShadowSource;
 	maFloatRGBA m_Color;
 	float m_IntensityFactor;
 	bool m_bDiffuseEnabled;

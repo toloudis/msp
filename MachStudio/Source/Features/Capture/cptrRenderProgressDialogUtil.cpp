@@ -7,11 +7,18 @@
 **	Copyright(C) 2004 - All Rights Reserved
 \****************************************************************************/
 #include "Features/Capture/cptrRenderProgressDialogUtil.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Features/Capture/cptrRenderBatchData.hpp"
 #include "Features/Capture/cptrRenderBatchDataUtil.hpp"
 #include "Features/Capture/cptrRenderStateDataParser.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/Capture/qtGUI/cptrRenderProgressDialog.hpp"
+#else
 #include "Features/Capture/wxGUI/cptrRenderProgressDialog.hpp"
+#endif
 #include "Support/capt/captRenderOutputDataUtil.hpp"
 #include "Support/mnm/mnmPaths.hpp"
 #include "Support/tmln/tmlnTimeLine.hpp"
@@ -25,7 +32,11 @@
 #include "Tool/gui/guiMenuMgr.hpp"
 #include "Tool/gui/guiMessageBox.hpp"
 #include "Tool/gui/guiSingleDocHandler.hpp"
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtSystem.hpp"
+#else
 #include "ToolUIWx/twx/twxSystem.hpp"
+#endif
 
 
 //============================================================================
@@ -56,6 +67,19 @@ namespace cptrRenderProgressDialogUtil
         l_WindowDisabler = new wxWindowDisabler(cptrRenderProgressDialog::DialogInstance);
         cptrRenderProgressDialog::DialogInstance->Show();
 
+#elif defined(USE_QT)
+		if (cptrRenderProgressDialog::DialogInstance == NULL)
+		{
+			DBG_ASSERT((tqtSystem::g_pMainForm != NULL), "MainForm not yet initialized.");
+
+			cptrRenderProgressDialog::DialogInstance = new cptrRenderProgressDialog( tqtSystem::g_pMainForm );
+			cptrRenderProgressDialog::DialogInstance->SetRenderBatchID( l_RenderBatchID );
+		}
+
+		// Application modal, so the rest of the interface is disabled while
+		// rendering, like the wxWidgets window disabler.
+		cptrRenderProgressDialog::DialogInstance->setWindowModality( Qt::ApplicationModal );
+		cptrRenderProgressDialog::DialogInstance->show();
 #endif
 	}
 
@@ -72,6 +96,11 @@ namespace cptrRenderProgressDialogUtil
             l_WindowDisabler = nullptr;
             cptrRenderProgressDialog::DialogInstance->Show(false);
 		}
+#elif defined(USE_QT)
+		if (cptrRenderProgressDialog::DialogInstance != NULL)
+		{
+			cptrRenderProgressDialog::DialogInstance->hide();
+		}
 #endif
 	}
 
@@ -84,6 +113,11 @@ namespace cptrRenderProgressDialogUtil
 		if (cptrRenderProgressDialog::DialogInstance != NULL)
 		{
 			cptrRenderProgressDialog::DialogInstance->Raise();
+		}
+#elif defined(USE_QT)
+		if (cptrRenderProgressDialog::DialogInstance != NULL)
+		{
+			cptrRenderProgressDialog::DialogInstance->raise();
 		}
 #endif
 	}
@@ -98,12 +132,12 @@ namespace cptrRenderProgressDialogUtil
 	//--------------------------------------------------------------------
 	// Set the current render layer label
 	//--------------------------------------------------------------------
-	void SetRenderLayerProgress( const itString& i_label )
+	void SetRenderLayerProgress( const std::string& i_label )
 	{
-		if (i_label.GetLength() > 0)
+		if (i_label.size() > 0)
 			DBG_LOG(i_label);
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cptrRenderProgressDialog::DialogInstance)
 		{
 			cptrRenderProgressDialog::DialogInstance->SetRenderLayerLabel( i_label );
@@ -114,10 +148,10 @@ namespace cptrRenderProgressDialogUtil
 	//--------------------------------------------------------------------
 	//	set the percentage for scenes
 	//--------------------------------------------------------------------
-	void SetScenesRenderPercentage( float i_percentage, const itString& i_label )
+	void SetScenesRenderPercentage( float i_percentage, const std::string& i_label )
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cptrRenderProgressDialog::DialogInstance)
 		{
 			cptrRenderProgressDialog::DialogInstance->SetScenesRenderPercentage(i_percentage, i_label);
@@ -128,10 +162,10 @@ namespace cptrRenderProgressDialogUtil
 	//--------------------------------------------------------------------
 	//	set the percentage for cameras
 	//--------------------------------------------------------------------
-	void SetCamerasRenderPercentage( float i_percentage, const itString& i_label )
+	void SetCamerasRenderPercentage( float i_percentage, const std::string& i_label )
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cptrRenderProgressDialog::DialogInstance)
 		{
 			cptrRenderProgressDialog::DialogInstance->SetCamerasRenderPercentage(i_percentage, i_label);
@@ -142,10 +176,10 @@ namespace cptrRenderProgressDialogUtil
 	//--------------------------------------------------------------------
 	//	set the percentage for camera
 	//--------------------------------------------------------------------
-	void SetCameraRenderPercentage( float i_percentage, const itString& i_label )
+	void SetCameraRenderPercentage( float i_percentage, const std::string& i_label )
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cptrRenderProgressDialog::DialogInstance)
 		{
 			cptrRenderProgressDialog::DialogInstance->SetCameraRenderPercentage(i_percentage, i_label);
@@ -159,7 +193,7 @@ namespace cptrRenderProgressDialogUtil
 	void SetTimeElapsed( float i_fTimeElapsed )
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cptrRenderProgressDialog::DialogInstance)
 		{
 			cptrRenderProgressDialog::DialogInstance->SetTimeElapsed(i_fTimeElapsed);
@@ -170,13 +204,13 @@ namespace cptrRenderProgressDialogUtil
 	//--------------------------------------------------------------------
 	//	set the percentage for scene
 	//--------------------------------------------------------------------
-	void SetSceneLabel( const itString& i_label )
+	void SetSceneLabel( const std::string& i_label )
 	{
-		if (i_label.GetLength() > 0)
+		if (i_label.size() > 0)
 			DBG_LOG(i_label);
 
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cptrRenderProgressDialog::DialogInstance)
 		{
 			cptrRenderProgressDialog::DialogInstance->SetSceneLabel(i_label);
@@ -189,7 +223,7 @@ namespace cptrRenderProgressDialogUtil
 	void EnablePauseButton()
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cptrRenderProgressDialog::DialogInstance)
 		{
 			cptrRenderProgressDialog::DialogInstance->EnablePauseButton();
@@ -202,7 +236,7 @@ namespace cptrRenderProgressDialogUtil
 	void DisablePauseButton()
 	{
 
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 		if (cptrRenderProgressDialog::DialogInstance)
 		{
 			cptrRenderProgressDialog::DialogInstance->DisablePauseButton();

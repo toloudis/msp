@@ -29,7 +29,7 @@ pntPickInterest::~pntPickInterest()
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
 //virtual 
-pick3dPickObject* pntPickInterest::MatchPickCode(envType::UInt32 i_PickCode) const
+pick3dPickObject* pntPickInterest::MatchPickCode(uint32_t i_PickCode) const
 {
 	return pntPointSelect::MatchPickCode(i_PickCode);
 }

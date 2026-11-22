@@ -16,6 +16,9 @@
     <Filter Include="Object">
       <UniqueIdentifier>{7c8c5350-ade9-460f-b436-9abd88ee3bc6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GUI\qtGUI">
+      <UniqueIdentifier>{b3ef7b77-a4d0-437c-80cf-f3480eea476a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Undo\lyrsActualOperations.cpp">
@@ -70,6 +73,9 @@
       <Filter>Object</Filter>
     </ClCompile>
     <ClCompile Include="lyrsSystem.cpp" />
+    <ClCompile Include="GUI\qtGUI\lyrsLayerObjectsPage.cpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Undo\lyrsActualOperations.hpp">
@@ -124,5 +130,8 @@
       <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="lyrsSystem.hpp" />
+    <ClInclude Include="GUI\qtGUI\lyrsLayerObjectsPage.hpp">
+      <Filter>GUI\qtGUI</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

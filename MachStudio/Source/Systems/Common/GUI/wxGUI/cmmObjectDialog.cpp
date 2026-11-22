@@ -53,12 +53,12 @@ namespace
 			if (strstr(i_DriverNames.m_DriverNames[i].m_Name.c_str(), "Connect Channel") == 0)
 			{
 				category.Push( i_DriverNames.m_DriverNames[i].m_Category.c_str() );
-				o_DriverList.AddFilename( category, itString(i_DriverNames.m_DriverNames[i].m_Name.c_str()) );
+				o_DriverList.AddFilename( category, i_DriverNames.m_DriverNames[i].m_Name );
 			}
 			else
 			{
 				category.Push( "Connect Channel" );
-				connect_driver_list.AddFilename( category, itString(i_DriverNames.m_DriverNames[i].m_Name.c_str()) );
+				connect_driver_list.AddFilename( category, i_DriverNames.m_DriverNames[i].m_Name );
 			}
 		}
 

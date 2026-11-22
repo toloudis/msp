@@ -60,7 +60,7 @@ private:
 	shared_ptr<gpxEffectOutline> m_pShaderDataProxy;
 	mdlMaterialInfo& m_Material;
 
-	itString m_CurrentOutlineMask;
+	std::string m_CurrentOutlineMask;
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------

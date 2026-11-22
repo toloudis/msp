@@ -167,8 +167,8 @@ int oglBufferUtil::CreateAndFillIndexBuffer(oglDevice* i_pDevice,
 	int nBufferSize = i_NumIndices * nSizeOfIndex;
 
 	// get the system mem data ptr squared away.
-	envType::UInt16* buffer_16 = NULL;
-	envType::UInt32* buffer_32 = NULL;
+	uint16_t* buffer_16 = NULL;
+	uint32_t* buffer_32 = NULL;
 	void* pSysMem = NULL;
 	if (i_Indices.Is32BitIndices())
 	{
@@ -181,7 +181,7 @@ int oglBufferUtil::CreateAndFillIndexBuffer(oglDevice* i_pDevice,
 		{
 			// Have 32-bit, but only need 16-bit
 
-			buffer_16 = new envType::UInt16[i_NumIndices];
+			buffer_16 = new uint16_t[i_NumIndices];
 			for (int i=0; i<i_NumIndices; i++)
 			{
 				buffer_16[i] = i_Indices.GetIndices32()[i];
@@ -193,7 +193,7 @@ int oglBufferUtil::CreateAndFillIndexBuffer(oglDevice* i_pDevice,
 	{
 		// Have 16-bit, but need 32-bit
 
-		/*buffer_32 = new envType::UInt32[i_NumIndices];
+		/*buffer_32 = new uint32_t[i_NumIndices];
 		for (int i=0; i<i_NumIndices; i++)
 		{
 			buffer_32[i] = i_Indices.GetIndices16()[i];
@@ -277,8 +277,8 @@ BYTE* oglBufferUtil::CreateBufferCopy( int i_nBufferSize, const BYTE* i_pBuffer 
 BYTE* oglBufferUtil::CreateBufferCopy( int i_nBufferSize, const g3dIndexPtr& i_Indices, int i_indexSize, int i_nIndices )
 {
 	BYTE* buffer_copy = new BYTE[ i_nBufferSize ];
-	envType::UInt16* indices16 = reinterpret_cast<envType::UInt16*>(buffer_copy);
-	envType::UInt32* indices32 = reinterpret_cast<envType::UInt32*>(buffer_copy);
+	uint16_t* indices16 = reinterpret_cast<uint16_t*>(buffer_copy);
+	uint32_t* indices32 = reinterpret_cast<uint32_t*>(buffer_copy);
 	DBG_ASSERT(i_nBufferSize == i_indexSize * i_nIndices, "Bad inputs to CreateBufferCopy");
 	if (i_Indices.Is32BitIndices())
 	{

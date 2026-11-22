@@ -10,11 +10,11 @@
 #ifdef CMRA_SYSTEM_HPP
 #error cmraSystem.hpp multiply included
 #endif
+#include <string>
 #define CMRA_SYSTEM_HPP
 
 class g2dSystem;
 class fsLocator;
-class itString;
 
 namespace cmraSystem
 {
@@ -22,7 +22,7 @@ namespace cmraSystem
 		// Init 
 		//--------------------------------------------------------------------
 		void Init(const fsLocator& i_AppDir, 
-				  const itString& i_CameraDataDir);
+				  const std::string& i_CameraDataDir);
 
 		//--------------------------------------------------------------------
 		// CleanUp -- cleanup system

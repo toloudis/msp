@@ -302,6 +302,40 @@ void gpxRenderPrefs::SetHairClumpRadius( float i_Value )
 {
 	PROXY_SET_VARIABLE(m_Prefs.m_HairClumpRadius, m_PrefsCopy.m_HairClumpRadius, i_Value);
 }
+void gpxRenderPrefs::SetTraceSamplesPerFrame( int i_nSamples )
+{
+	PROXY_SET_VARIABLE(m_Prefs.m_TraceSamplesPerFrame, m_PrefsCopy.m_TraceSamplesPerFrame, i_nSamples);
+}
+void gpxRenderPrefs::SetTraceSampleLimit( int i_nSamples )
+{
+	PROXY_SET_VARIABLE(m_Prefs.m_TraceSampleLimit, m_PrefsCopy.m_TraceSampleLimit, i_nSamples);
+}
+void gpxRenderPrefs::SetTraceCaptureSamples( int i_nSamples )
+{
+	PROXY_SET_VARIABLE(m_Prefs.m_TraceCaptureSamples, m_PrefsCopy.m_TraceCaptureSamples, i_nSamples);
+}
+void gpxRenderPrefs::SetTraceAORays( int i_nRays )
+{
+	PROXY_SET_VARIABLE(m_Prefs.m_TraceAORays, m_PrefsCopy.m_TraceAORays, i_nRays);
+}
+void gpxRenderPrefs::SetTraceBounces( int i_nBounces )
+{
+	PROXY_SET_VARIABLE(m_Prefs.m_TraceBounces, m_PrefsCopy.m_TraceBounces, i_nBounces);
+}
+void gpxRenderPrefs::SetTraceDebugView( int i_View )
+{
+	PROXY_SET_VARIABLE(m_Prefs.m_TraceDebugView, m_PrefsCopy.m_TraceDebugView, i_View);
+}
+
+void gpxRenderPrefs::SetTraceMaxRadiance( float i_Max )
+{
+	PROXY_SET_VARIABLE(m_Prefs.m_TraceMaxRadiance, m_PrefsCopy.m_TraceMaxRadiance, i_Max);
+}
+
+void gpxRenderPrefs::SetTraceDenoise( int i_Mode )
+{
+	PROXY_SET_VARIABLE(m_Prefs.m_TraceDenoise, m_PrefsCopy.m_TraceDenoise, i_Mode);
+}
 
 
 //--------------------------------------------------------------------

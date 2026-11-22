@@ -9,7 +9,7 @@
 \****************************************************************************/
 #include "ToolUIQt/pqt/Controls/pqtInt32_RangedFloat.hpp"
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 // Set value into control

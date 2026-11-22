@@ -16,9 +16,9 @@
 #include "ToolUIWx/twx/twxWidgets.hpp"
 #endif
 
-#include <wx/taskbar.h> 
-
 #ifdef USE_WXWIDGETS
+
+#include <wx/taskbar.h>
 
 //============================================================================
 //	Forward References

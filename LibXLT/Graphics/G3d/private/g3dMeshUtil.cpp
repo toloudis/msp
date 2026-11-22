@@ -144,7 +144,7 @@ namespace
 
 	//----------------------------------------------------------------------------
 	//----------------------------------------------------------------------------
-	void fill_edge(const CoincidentEdge& i_Edge, geoTwinMesh& o_Mesh, std::vector<envType::UInt32>& io_Indices)
+	void fill_edge(const CoincidentEdge& i_Edge, geoTwinMesh& o_Mesh, std::vector<uint32_t>& io_Indices)
 	{
 		geoTwinVertex::IndexType v0, v1, v2, v3;
 
@@ -171,7 +171,7 @@ namespace
 	void maybe_fill_half_edge(	geoTwinEdge* i_Edge,
 								const maPoint3d* i_Vertices,
 								geoTwinMesh& o_Mesh,
-								std::vector<envType::UInt32>& io_Indices)
+								std::vector<uint32_t>& io_Indices)
 	{
 		if ( !i_Edge->GetFaceEmpty() )
 			return;
@@ -263,7 +263,7 @@ namespace
 
 	//----------------------------------------------------------------------------
 	//----------------------------------------------------------------------------
-	void fill_loop(const std::vector<geoTwinEdge*>& i_LoopEdges, std::vector<envType::UInt32>& io_Indices)
+	void fill_loop(const std::vector<geoTwinEdge*>& i_LoopEdges, std::vector<uint32_t>& io_Indices)
 	{
 		int num_tris = i_LoopEdges.size() - 2;
 		int cur_tri_num;
@@ -291,11 +291,11 @@ namespace
 
 	//----------------------------------------------------------------------------
 	//----------------------------------------------------------------------------
-	int find_tri(	const envType::UInt32* i_Indices,
+	int find_tri(	const uint32_t* i_Indices,
 					int i_NumIndices,
-					envType::UInt32 i_V0,
-					envType::UInt32 i_V1,
-					envType::UInt32 i_V2)
+					uint32_t i_V0,
+					uint32_t i_V1,
+					uint32_t i_V2)
 	{
 		int cur_index;
 		for ( cur_index = 0 ; cur_index < i_NumIndices ; cur_index += 3 )
@@ -338,12 +338,12 @@ namespace g3dMeshUtil
 							const maPoint3d* i_Normals,
 							const maPoint2d* i_UVs,
 							int i_NumVertices,
-							const envType::UInt32* i_Indices,
+							const uint32_t* i_Indices,
 							int i_NumIndices,
 							std::vector<maPoint3d>& o_Vertices,
 							std::vector<maPoint3d>& o_Normals,
 							std::vector<maPoint2d>* o_UVs,
-							std::vector<envType::UInt32>& o_Indices)
+							std::vector<uint32_t>& o_Indices)
 	{
 		o_Vertices.resize(i_NumVertices);
 		o_Normals.resize(i_NumVertices);
@@ -356,7 +356,7 @@ namespace g3dMeshUtil
 
 		memcpy(&o_Vertices[0], i_Vertices, i_NumVertices * sizeof(maPoint3d));
 		memcpy(&o_Normals[0], i_Normals, i_NumVertices * sizeof(maPoint3d));
-		memcpy(&o_Indices[0], i_Indices, i_NumIndices * sizeof(envType::UInt32));
+		memcpy(&o_Indices[0], i_Indices, i_NumIndices * sizeof(uint32_t));
 
 		{
 			geoTwinMesh mesh(i_NumVertices);
@@ -437,7 +437,7 @@ namespace g3dMeshUtil
 	//------------------------------------------------------------------------
 	void FillNonWeldedEdges(const maPoint3d* i_Vertices,
 							int i_NumVertices,
-							std::vector<envType::UInt32>& io_Indices)
+							std::vector<uint32_t>& io_Indices)
 	{
 		geoTwinMesh mesh(i_NumVertices);
 		mesh.ConstructMesh(&io_Indices[0], io_Indices.size());

@@ -210,10 +210,10 @@ void vtxStreamCompression::WriteCompressedAnimationData(chWriter &o_Writer)
 	o_Writer.FinishChunk();
 
 	o_Writer.WriteChunkHeader(c_VCFG, 0, false);
-	envType::Int32 max_frames_per_block = m_SyncInterval-1;
+	int32_t max_frames_per_block = m_SyncInterval-1;
 	o_Writer.Write(max_frames_per_block);
-	envType::Int32 num_vertices = m_Deltas.size();
-	envType::Int32 num_normals = m_NormalDeltas.size();
+	int32_t num_vertices = m_Deltas.size();
+	int32_t num_normals = m_NormalDeltas.size();
 	o_Writer.Write(num_vertices);
 	o_Writer.Write(num_normals);
 	chChunkParserUtil::Write(o_Writer, m_EncoderString);

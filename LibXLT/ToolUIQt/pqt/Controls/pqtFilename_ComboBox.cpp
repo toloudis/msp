@@ -7,12 +7,11 @@
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
-#ifdef QT_FINISH_PORT
-
 #include "pqtFileName_ComboBox.hpp"
 
-#include "Core/it/itStringUtil.hpp"
 #include "Core/prty/prtyComboBoxUIInfo.hpp"
+
+#ifdef USE_QT
 
 //----------------------------------------------------------------------------
 // Get list of string choices for combo box
@@ -27,19 +26,18 @@ void pqtFileName_ComboBox_Converter::GetChoices(prtyPropertyUIInfo* i_pUIInfo,
 //----------------------------------------------------------------------------
 // Set value into control
 //----------------------------------------------------------------------------
-void pqtFileName_ComboBox_Converter::SetValueIntoControl(wxChoice* i_pActualControl,
-											   itString i_Value)
+void pqtFileName_ComboBox_Converter::SetValueIntoControl(QComboBox* i_pActualControl,
+											   const std::string& i_Value)
 {
-	i_pActualControl->SetStringSelection(i_Value.GetString());
+	pqtControlUtil::SelectString(i_pActualControl, QString::fromUtf8(i_Value.c_str()));
 }
 
 //----------------------------------------------------------------------------
 // Get value from control
 //----------------------------------------------------------------------------
-itString pqtFileName_ComboBox_Converter::GetValueFromControl(wxChoice* i_pActualControl)
+std::string pqtFileName_ComboBox_Converter::GetValueFromControl(QComboBox* i_pActualControl)
 {
-	itString sel_text(i_pActualControl->GetStringSelection().c_str());
-	return sel_text;
+	return i_pActualControl->currentText().toStdString();
 }
 
 #endif

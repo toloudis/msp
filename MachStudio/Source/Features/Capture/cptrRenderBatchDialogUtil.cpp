@@ -9,16 +9,24 @@
 #include "Features/Capture/cptrRenderBatchDialogUtil.hpp"
 
 #include "Features/Capture/cptrRenderBatchDataUtil.hpp"
+#ifdef MSP_GUI_QT
+#include "Features/Capture/qtGUI/cptrRenderBatchDialog.hpp"
+#else
 #include "Features/Capture/wxGUI/cptrRenderBatchDialog.hpp"
+#endif
 
 //	Library
+#ifdef MSP_GUI_QT
+#include "ToolUIQt/tqt/tqtSystem.hpp"
+#else
 #include "ToolUIWx/twx/twxSystem.hpp"
+#endif
 
 
 //
 namespace cptrRenderBatchDialogUtil
 {
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	cptrRenderBatchDialog* l_pRBDialog;
 #endif
 
@@ -44,6 +52,10 @@ namespace cptrRenderBatchDialogUtil
 		cptrRenderBatchDialog* pDialog = new cptrRenderBatchDialog( l_Data, twxSystem::g_pMainForm );
 		pDialog->Show();
 		l_pRBDialog = pDialog;
+#elif defined(USE_QT)
+		cptrRenderBatchDialog* pDialog = new cptrRenderBatchDialog( l_Data, tqtSystem::g_pMainForm );
+		pDialog->show();
+		l_pRBDialog = pDialog;
 #endif
 	}
 
@@ -61,6 +73,8 @@ namespace cptrRenderBatchDialogUtil
 	
 #ifdef USE_WXWIDGETS
 		l_pRBDialog->Hide();
+#elif defined(USE_QT)
+		l_pRBDialog->hide();
 #endif
 	}
 

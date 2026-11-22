@@ -87,11 +87,11 @@ void effHairDataParser::Read(	chReader& i_Reader,
 	o_Shader.AddParam(new effParamFloat("g_bumpMapScale", "g_bumpMapScale", data.m_BumpMapScale));
 	o_Shader.AddParam(new effParamFloat("g_reflectivity", "g_reflectivity", data.m_Reflectivity));
 	o_Shader.AddParam(new effParamColor("g_ambient", "g_ambient", data.m_HairBaseColor));
-	o_Shader.AddParam(new effParamTexture("tBase", "tBase", itString(data.m_NameBase.c_str())));
-	o_Shader.AddParam(new effParamTexture("tAlpha", "tAlpha", itString(data.m_NameAlpha.c_str())));
-	o_Shader.AddParam(new effParamTexture("tSpecularShift", "tSpecularShift", itString(data.m_NameSpecularShift.c_str())));
-	o_Shader.AddParam(new effParamTexture("tSpecularMask", "tSpecularMask", itString(data.m_NameSpecularMask.c_str())));
-	o_Shader.AddParam(new effParamTexture("tNormalMap", "tNormalMap", itString(data.m_NameNormalMap.c_str())));
+	o_Shader.AddParam(new effParamTexture("tBase", "tBase", data.m_NameBase));
+	o_Shader.AddParam(new effParamTexture("tAlpha", "tAlpha", data.m_NameAlpha));
+	o_Shader.AddParam(new effParamTexture("tSpecularShift", "tSpecularShift", data.m_NameSpecularShift));
+	o_Shader.AddParam(new effParamTexture("tSpecularMask", "tSpecularMask", data.m_NameSpecularMask));
+	o_Shader.AddParam(new effParamTexture("tNormalMap", "tNormalMap", data.m_NameNormalMap));
 	o_Shader.AddParam(new effParamColor("g_specularColor0", "g_specularColor0", data.m_SpecularColor0));
 	o_Shader.AddParam(new effParamColor("g_specularColor1", "g_specularColor1", data.m_SpecularColor1));
 	o_Shader.AddParam(new effParamColor("g_hairBaseColor", "g_hairBaseColor", data.m_HairBaseColor));

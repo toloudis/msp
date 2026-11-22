@@ -19,18 +19,17 @@
 #include "Core/dbg/dbgMsg.hpp"
 #endif
 
+#ifdef USE_QT
 
-#ifdef QT_FINISH_PORT
-#include <wx/filepicker.h>
+#ifndef TQC_DIRPICKER_HPP
+#include "ToolUIQt/tqc/tqcDirPicker.hpp"
 #endif
-
 
 //============================================================================
 //============================================================================
 template<class PropertyType, class ValueType, class Converter>
 class pqtTemplate_DirPicker : public pqtControl
 {
-#ifdef QT_FINISH_PORT
 	public:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
@@ -44,7 +43,7 @@ class pqtTemplate_DirPicker : public pqtControl
 			bool bSameValue = pqtControlUtil::GetCommonValue<ValueType, PropertyType>(i_pUIInfo, newvalue);
 
 			// create the actual control
-			m_pActualControl = new pqtControlUtil::CleanUpWidget<wxDirPickerCtrl>(i_pParent, wxID_ANY);
+			m_pActualControl = new pqtControlUtil::CleanUpWidget<tqcDirPicker>(i_pParent);
 			//m_pActualControl = new wxDirPickerCtrl(i_pParent, wxID_ANY);
 			//wxFLP_OPEN | wxFLP_FILE_MUST_EXIST and, under wxMSW only, wxFLP_USE_TEXTCTRL
 
@@ -58,9 +57,7 @@ class pqtTemplate_DirPicker : public pqtControl
 
 			//	hook up events
 			//
-			this->Connect( m_pActualControl->GetId(), wxEVT_COMMAND_DIRPICKER_CHANGED,
-							wxCommandEventHandler(pqtTemplate_DirPicker::DirPicker_ValueChanged) );
-			m_pActualControl->PushEventHandler(this);
+			m_pActualControl->SetValueChangedCallback([this]() { DirPicker_ValueChanged(); });
 		}
 
 		//----------------------------------------------------------------------------
@@ -68,7 +65,6 @@ class pqtTemplate_DirPicker : public pqtControl
 		//----------------------------------------------------------------------------
 		virtual ~pqtTemplate_DirPicker()
 		{
-			m_pActualControl->RemoveEventHandler(this);
 		}
 
 		//----------------------------------------------------------------------------
@@ -105,13 +101,13 @@ class pqtTemplate_DirPicker : public pqtControl
 		//----------------------------------------------------------------------------
 		void UpdateControl(prtyPropertyUIInfo* i_pUIInfo)
 		{
-			m_pActualControl->Enable(!i_pUIInfo->GetReadOnly());
+			m_pActualControl->setEnabled(!i_pUIInfo->GetReadOnly());
 		}
 
 	private:
 		//----------------------------------------------------------------------------
 		//----------------------------------------------------------------------------
-		void DirPicker_ValueChanged(wxCommandEvent& i_Event)
+		void DirPicker_ValueChanged()
 		{
 			if (m_bLocalChangeNoUpdate) return;
 
@@ -124,7 +120,7 @@ class pqtTemplate_DirPicker : public pqtControl
 			m_bLocalChangeNoUpdate = false;
 		}
 
-		wxDirPickerCtrl* m_pActualControl;
-#endif // USE_QT
+		tqcDirPicker* m_pActualControl;
 };
 
+#endif // USE_QT

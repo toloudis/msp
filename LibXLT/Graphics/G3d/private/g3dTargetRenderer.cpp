@@ -14,6 +14,7 @@
 #include "Graphics/g3d/g3dPrefs.hpp"
 #include "Graphics/g3d/g3dScene.hpp"
 #include "Graphics/g3d/g3dSceneRenderer.hpp"
+#include "Graphics/G3d/g3dProfiler.hpp"
 
 
 //----------------------------------------------------------------------------
@@ -26,6 +27,7 @@ g3dTargetRenderer::g3dTargetRenderer()
 	m_pCamera(NULL),
 	m_fAspectRatio(1.0),
 //	m_bMatchAspectToWindow(false),
+	m_BackgroundColor(0, 0, 0),
 	m_NumPrimitivesRendered(0),
 	m_pPrefs(NULL)
 {
@@ -40,6 +42,7 @@ g3dTargetRenderer::g3dTargetRenderer(g2dRenderTarget* i_pTarget, g3dSceneRendere
 	m_pCamera(NULL),
 	m_fAspectRatio(1.0),
 //	m_bMatchAspectToWindow(false),
+	m_BackgroundColor(0, 0, 0),
 	m_NumPrimitivesRendered(0),
 	m_pPrefs(NULL)
 {
@@ -55,6 +58,7 @@ g3dTargetRenderer::g3dTargetRenderer(g2dRenderTarget* i_pTarget, g3dSceneRendere
 	m_pCamera(i_pCamera),
 	m_fAspectRatio(1.0),
 //	m_bMatchAspectToWindow(false),
+	m_BackgroundColor(0, 0, 0),
 	m_NumPrimitivesRendered(0),
 	m_pPrefs(NULL)
 {
@@ -176,6 +180,8 @@ void g3dTargetRenderer::Render( float i_fSimTime, const std::vector<g3dLayer*>& 
 {
 	if (!m_pRenderer->IsEnabled())
 		return;
+
+	G3D_PROFILE_FRAME_SCOPE("Target", i_fSimTime);
 
 	m_NumPrimitivesRendered = 0;
 

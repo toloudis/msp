@@ -15,8 +15,8 @@
 #include "Graphics/mat/matMaterial.hpp"
 #include "GraphicsDX11/g3d/g3dDX11TextureUtil.hpp"
 
-effBake::effBake(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, std::string i_name)
-:	effShaderBaseDX11(i_Directory, i_pEffect, i_name)
+effBake::effBake(const fsLocator& i_Directory, std::unique_ptr<fxEffect> i_pEffect, std::string i_name)
+:	effShaderBaseDX11(i_Directory, std::move(i_pEffect), i_name)
 {
 	MapParameter("hasEmissiveMap", m_hHasEmissive);
 	MapParameter("emissiveMap", m_hEmissiveMap);

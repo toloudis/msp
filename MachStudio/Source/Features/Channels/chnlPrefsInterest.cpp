@@ -8,7 +8,11 @@
 \****************************************************************************/
 #include "Features/Channels/chnlPrefsInterest.hpp"
 
+#ifdef MSP_GUI_QT
+#include "Features/Channels/qtGUI/chnlTraxDialog.hpp"
+#else
 #include "Features/Channels/wxGUI/chnlTraxDialog.hpp"
+#endif
 
 //	library
 //#include "Core/dbg/dbgMsg.hpp"
@@ -20,7 +24,7 @@
 //virtual 
 void chnlPrefsInterest::PrefsDataUpdated(const PrefsData& i_Data)
 {
-#ifdef USE_WXWIDGETS
+#if defined(USE_WXWIDGETS) || defined(USE_QT)
 	chnlTraxDialog::FormInstance->UpdateScale();
 #endif
 }

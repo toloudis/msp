@@ -16,9 +16,11 @@
 //--------------------------------------------------------------------
 chtrDriverAnimationFull::chtrDriverAnimationFull(tmlnChannelAnimationFull &i_Channel, 
 												 chDefs::Name i_ChunkName,
-											     const fsLocator &i_CharacterDir)
+											     const fsLocator &i_CharacterDir,
+												 const std::string &i_SourceIdentity)
 :	tmlnDriverAnimationFull(i_Channel, i_ChunkName),
-	m_CharacterDir(i_CharacterDir)
+	m_CharacterDir(i_CharacterDir),
+	m_SourceIdentity(i_SourceIdentity)
 {
 	//fsysFileList fileList;
 	//chtrAnimList::BuildFileList(fileList, m_CharacterDir);
@@ -30,6 +32,14 @@ chtrDriverAnimationFull::chtrDriverAnimationFull(tmlnChannelAnimationFull &i_Cha
 //--------------------------------------------------------------------
 chtrDriverAnimationFull::~chtrDriverAnimationFull()
 {
+}
+
+//--------------------------------------------------------------------
+//--------------------------------------------------------------------
+//virtual
+std::string chtrDriverAnimationFull::GetAnimPart() const
+{
+	return m_SourceIdentity;
 }
 
 //--------------------------------------------------------------------

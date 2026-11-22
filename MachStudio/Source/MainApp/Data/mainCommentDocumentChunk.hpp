@@ -109,5 +109,5 @@ public:
 private:
 	static mainCommentDocumentChunk* sm_pActiveChunk;
 
-	itString m_CommentString;
+	std::string m_CommentString;
 };

@@ -7,9 +7,11 @@
 **	Copyright(C) 2004 - All Rights Reserved
 \****************************************************************************/
 #include "Tool/doc/docCustomDocumentMgr.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Core/app/appTime.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/undo/undoUndoMgr.hpp"
 #include "Tool/doc/docSingleTypeMgr.hpp"
 
@@ -178,7 +180,7 @@ namespace docCustomDocumentMgr
 	{
 		if ( l_Document )
 		{
-			o_Filename = itStringUtil::GetStdString( l_Document->GetFilename().GetLastName() );
+			o_Filename = l_Document->GetFilename().GetLastName();
 		}
 	}
 

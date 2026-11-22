@@ -13,9 +13,9 @@
 #endif
 #define MTR_THUMBNAILDATA_HPP
 
-#ifndef ENV_TYPE_HPP
-#include "Core/Env/envType.hpp"
-#endif 
+#ifndef ENV_PLATFORM_HPP
+#include "Core/env/envPlatform.hpp"
+#endif
 
 
 //============================================================================
@@ -34,10 +34,10 @@ class mtrThumbnailData
 		//--------------------------------------------------------------------
 		//	Give thumbnail info for this data structrue to manage,
 		//  The i_ThumbData should have been allocated using new 
-		// envType::UInt8 []. This structure will take ownership of the
+		// uint8_t []. This structure will take ownership of the
 		// data and delete it in the destructor
 		//--------------------------------------------------------------------
-		void SetThumbData(envType::UInt8* i_ThumbData, 
+		void SetThumbData(uint8_t* i_ThumbData, 
 						  int i_BufferSize,
 						  int i_BitmapSize);
 
@@ -46,10 +46,10 @@ class mtrThumbnailData
 		//--------------------------------------------------------------------
 		bool GetHasThumb() const;
 		//void SetHasThumb(bool i_bHasThumb);
-		envType::UInt8* GetThumbParams() const;
+		uint8_t* GetThumbParams() const;
 		int GetBufferSize() const;
 		int GetBitmapSize() const;
-		//envType::UInt8* ThumbParams();
+		//uint8_t* ThumbParams();
 
 	private:
 		//--------------------------------------------------------------------
@@ -62,7 +62,7 @@ class mtrThumbnailData
 	private:
 		// Thumbnail data.  If pointer is null, then no thumbnail for this material
 		//bool m_bHasThumb;
-		envType::UInt8* m_ThumbData;
+		uint8_t* m_ThumbData;
 		int m_BufferSize;
 		int m_BitmapSize;
 

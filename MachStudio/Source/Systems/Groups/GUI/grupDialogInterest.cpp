@@ -13,7 +13,6 @@
 #include "Systems/Groups/Undo/grupOperations.hpp"
 
 #include "Core/fs/fsFileUtil.hpp"
-//#include "Core/it/itStringUtil.hpp"
 #include "Tool/gui/guiMainWindow.hpp"
 //#include "Tool/gui/guiMessageBox.hpp"
 
@@ -22,8 +21,8 @@ namespace
 {
 	const char* c_SystemName = "Selection Sets";
 
-	itString c_NewGroupString("New Selection Set");
-	itString c_NewGroupFromSelectionString("New Selection Set from Current Selection");
+	std::string c_NewGroupString("New Selection Set");
+	std::string c_NewGroupFromSelectionString("New Selection Set from Current Selection");
 }
 
 
@@ -38,11 +37,11 @@ grupDialogInterest::grupDialogInterest()
 //	Add Object to Placed
 //--------------------------------------------------------------------
 //virtual 
-void grupDialogInterest::AddObject(const itString& i_FileName, const fsLocator& i_Path)
+void grupDialogInterest::AddObject(const std::string& i_FileName, const fsLocator& i_Path)
 {
 	//std::string dir1, dir2;
-	//dir1 = itStringUtil::GetStdString(i_Path.GetName(0));
-	//dir2 = itStringUtil::GetStdString(i_Path.GetName(1));
+	//dir1 = i_Path.GetName(0);
+	//dir2 = i_Path.GetName(1);
 	//DBG_LOG2("grupDialogInterest %s-%s", dir1.c_str(), dir2.c_str());
 
 	if (i_FileName == c_NewGroupFromSelectionString)

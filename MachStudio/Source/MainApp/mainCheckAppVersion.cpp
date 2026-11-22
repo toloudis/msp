@@ -8,6 +8,9 @@
 \****************************************************************************/
 #include "stdafx.h"
 #include "MainApp/mainCheckAppVersion.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 #include "MainApp/mainConstants.hpp"
 
 #include "Core/fs/fsFileUtil.hpp"
@@ -15,33 +18,10 @@
 
 #include <iostream>
 
-//uncomment this to use statically linked libraries of curl (must be defined before the include!)
-#define CURL_STATICLIB
-
-// http://curl.haxx.se/download.html
+// libcurl comes from vcpkg (the repository's vcpkg.json) as a DLL; vcpkg's MSBuild
+// integration supplies the include path and links libcurl.lib, and copies
+// libcurl.dll next to the exe.
 #include "curl/curl.h"
-
-
-//==============================================================================
-//	library pragmas
-//==============================================================================
-#ifdef CURL_STATICLIB
-#ifdef _DEBUG
-	#pragma comment(lib,"libcurl_a_debug.lib")		//static
-#else//!_DEBUG
-	#pragma comment(lib,"libcurl_a.lib")		//static
-#endif//_DEBUG
-
-#pragma comment(lib,"ws2_32.lib")		//link with dependent libraries when statically linking
-#pragma comment(lib,"wldap32.lib")
-
-#else//!CURL_STATICLIB
-#ifdef _DEBUG
-	#pragma comment(lib,"libcurld_imp.lib")	//dynamic
-#else//!_DEBUG
-	#pragma comment(lib,"libcurl_imp.lib")	//dynamic
-#endif//_DEBUG
-#endif//CURL_STATICLIB
 
 //============================================================================
 //
@@ -78,11 +58,11 @@ size_t write_data(void *buffer, size_t size, size_t nmemb, void *userp)
 	char outfilename[FILENAME_MAX] = "./body.txt";
 	static FILE *outfile;
 	size_t written;
-	if (first_time) 
+	if (first_time)
 	{
 		first_time = 0;
 		outfile = fopen(outfilename,"w");
-		if (outfile == NULL) 
+		if (outfile == NULL)
 		{
 			return -1;
 		}
@@ -121,7 +101,7 @@ size_t parse_data(void *buffer, size_t size, size_t nmemb, void *userp)
 
 	xmlp.Close();
 
-	delete membuff;
+	delete [] membuff;
 	return nmemb*size;
 }
 }
@@ -132,14 +112,14 @@ size_t parse_data(void *buffer, size_t size, size_t nmemb, void *userp)
 //	IsLatestVersion - returns true if app is up to date. If not, it also
 //	returns the version and the file to download.
 //----------------------------------------------------------------------------
-bool mainCheckAppVersion::IsLatestVersion(const envAppVersion& i_UserVersion, const std::string& i_VersionURL, envAppVersion& o_LatestVersion, itString& o_DownloadFile)
+bool mainCheckAppVersion::IsLatestVersion(const envAppVersion& i_UserVersion, const std::string& i_VersionURL, envAppVersion& o_LatestVersion, std::string& o_DownloadFile)
 {
 	l_UserVersion = i_UserVersion;
 
 	CURL *curl;
 	CURLcode res;
 	curl = curl_easy_init();
-	if (curl) 
+	if (curl)
 	{
 		//curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, parse_data);
@@ -193,34 +173,34 @@ bool mainCheckAppVersion::IsLatestVersion(const envAppVersion& i_UserVersion, co
 //	CInternetSession session(_T("SGPUSession"));
 //	CHttpConnection* pConn = NULL;
 //	CHttpFile* pFile = NULL;
-//	try 
+//	try
 //	{
 //		pConn = session.GetHttpConnection(m_sServer, nPort);
 //		pFile = pConn->OpenRequest( CHttpConnection::HTTP_VERB_GET, lpFileName );
 //		pFile->SendRequest();
 //		pFile->QueryInfoStatusCode(m_dwStatus);
-//		if (m_dwStatus==HTTP_STATUS_OK) 
+//		if (m_dwStatus==HTTP_STATUS_OK)
 //		{
 //			const UINT BUFSIZE = 128;
 //			UINT nRead = pFile->Read(m_version, BUFSIZE);
-//			if (nRead>0) 
+//			if (nRead>0)
 //			{
 //				// read version number in the form Mhi,Mlo,mhi,mlo
 //				m_version[nRead] = 0;
 //				int Mhi,Mlo,mhi,mlo;
-//				_stscanf(m_version, (_T(«%x,%x,%x,%x»)), 
+//				_stscanf(m_version, (_T(ï¿½%x,%x,%x,%xï¿½)),
 //				&Mhi, &Mlo, &mhi, &mlo);
 //				dwMajorVersion = MAKELONG(Mlo,Mhi);
 //				dwMinorVersion = MAKELONG(mlo,mhi);
 //				bRet = TRUE;                // success!
 //			}
-//		} 
-//		else 
+//		}
+//		else
 //		{
 //			pFile->QueryInfo(HTTP_QUERY_STATUS_TEXT, m_sStatus);
 //		}
-//	} 
-//	catch (CInternetException* pEx) 
+//	}
+//	catch (CInternetException* pEx)
 //	{
 //	}
 //	session.Close();

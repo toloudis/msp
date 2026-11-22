@@ -7,8 +7,10 @@
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "Support/gsup/gsupTreeCtrlUtil.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
-#include "Core/it/itStringUtil.hpp"
 
 
 #ifdef USE_WXWIDGETS
@@ -21,7 +23,7 @@ namespace
 	//--------------------------------------------------------------------
 	void add_tree_branch( wxTreeCtrl* io_pTreeCtrl, 
 						  const fsLocator& i_Path, 
-						  const itString& i_Filename )
+						  const std::string& i_Filename )
 	{
 		DBG_ASSERT( io_pTreeCtrl != NULL, "Cannot have a nullptr wxTreeCtrl" );
 
@@ -29,7 +31,7 @@ namespace
 		DBG_ASSERT(parent.IsOk(), "Assuming that there is a root node already in tree control.");
 		for ( int i = 0; i < i_Path.GetNumNames(); ++i )
 		{
-			wxString dname(i_Path.GetName(i).GetString());
+			wxString dname = wxString::FromUTF8(i_Path.GetName(i).c_str());
 
 			bool bFoundNode = false;
 
@@ -56,7 +58,7 @@ namespace
 
 		//	now add the filename
 		//
-		wxString fname(i_Filename.GetString());
+		wxString fname = wxString::FromUTF8(i_Filename);
 		wxTreeItemId node = gsupTreeCtrlUtil::FindNode(io_pTreeCtrl, parent, fname);
 		if (!node.IsOk()) // If not already added..
 		{
@@ -209,6 +211,134 @@ namespace gsupTreeCtrlUtil
 		}
 	}
 	
+
+}	// end of namespace
+
+#elif defined(USE_QT)
+
+#include <QTreeWidget>
+
+namespace
+{
+	//--------------------------------------------------------------------
+	//	add a tree branch (and the corresponding parent nodes based on the
+	//	path)
+	//--------------------------------------------------------------------
+	void add_tree_branch( QTreeWidget* io_pTreeCtrl,
+						  const fsLocator& i_Path,
+						  const std::string& i_Filename )
+	{
+		DBG_ASSERT( io_pTreeCtrl != NULL, "Cannot have a nullptr QTreeWidget" );
+		QTreeWidgetItem* parent = io_pTreeCtrl->invisibleRootItem();
+
+		for ( int i = 0; i < i_Path.GetNumNames(); ++i )
+		{
+			QString dname = QString::fromUtf8(i_Path.GetName(i).c_str());
+			QTreeWidgetItem* node = gsupTreeCtrlUtil::FindNode(parent, dname);
+			if ( node == NULL )
+				node = new QTreeWidgetItem(parent, QStringList(dname));
+			parent = node;
+		}
+
+		//	now add the filename
+		//
+		QString fname = QString::fromStdString(i_Filename);
+		if (gsupTreeCtrlUtil::FindNode(parent, fname) == NULL) // If not already added..
+		{
+			new QTreeWidgetItem(parent, QStringList(fname));
+		}
+	}
+
+	//--------------------------------------------------------------------
+	// Find node with given text within subtree rooted at i_Parent.
+	//--------------------------------------------------------------------
+	QTreeWidgetItem* find_node_recursive(QTreeWidgetItem* i_pParent,
+										 const QString &i_Text)
+	{
+		for (int i = 0; i < i_pParent->childCount(); ++i)
+		{
+			QTreeWidgetItem* pChild = i_pParent->child(i);
+			if (i_Text == pChild->text(0))
+				return pChild;
+
+			QTreeWidgetItem* pFound = find_node_recursive(pChild, i_Text);
+			if (pFound)
+				return pFound;
+		}
+		return NULL;
+	}
+}
+
+//============================================================================
+//============================================================================
+namespace gsupTreeCtrlUtil
+{
+	//--------------------------------------------------------------------
+	//	Populate the TreeView with the FileList hierarchy.  Directories
+	//	will be branches in the tree and files will be the leaves.
+	//--------------------------------------------------------------------
+	void PopulateTreeView( QTreeWidget* io_pTreeCtrl,
+						   const fsysFileList& i_FileList,
+						   bool i_bExpandAll )
+	{
+		io_pTreeCtrl->clear();
+
+		fsLocator path;
+		int num_items = i_FileList.Size();
+		for (int i=0; i<num_items; i++)
+		{
+			i_FileList.GetFilePath(i, path);
+			add_tree_branch( io_pTreeCtrl, path, i_FileList.GetFilename(i) );
+		}
+
+		if (i_bExpandAll)
+			gsupTreeCtrlUtil::ExpandRoot(io_pTreeCtrl);
+	}
+
+	//--------------------------------------------------------------------
+	// Find node with given text as child of parent node.
+	//--------------------------------------------------------------------
+	QTreeWidgetItem* FindNode(QTreeWidgetItem* i_pParent,
+							  const QString &i_Text)
+	{
+		for (int i = 0; i < i_pParent->childCount(); ++i)
+		{
+			if (i_Text == i_pParent->child(i)->text(0))
+				return i_pParent->child(i);
+		}
+		return NULL;
+	}
+
+	//--------------------------------------------------------------------
+	// Find node with given text within whole tree control.
+	//--------------------------------------------------------------------
+	QTreeWidgetItem* FindNode(QTreeWidget* io_pTreeCtrl,
+							  const QString &i_Text)
+	{
+		return find_node_recursive(io_pTreeCtrl->invisibleRootItem(), i_Text);
+	}
+
+	//--------------------------------------------------------------------
+	// Expand or collapse the children of the (hidden) root node
+	//--------------------------------------------------------------------
+	void ExpandRoot(QTreeWidget* io_pTreeCtrl, bool i_bAllChildren)
+	{
+		if (i_bAllChildren)
+		{
+			io_pTreeCtrl->expandAll();
+		}
+		else
+		{
+			QTreeWidgetItem* root = io_pTreeCtrl->invisibleRootItem();
+			for (int i = 0; i < root->childCount(); ++i)
+				root->child(i)->setExpanded(true);
+		}
+	}
+
+	void CollapseAll(QTreeWidget* io_pTreeCtrl)
+	{
+		io_pTreeCtrl->collapseAll();
+	}
 
 }	// end of namespace
 

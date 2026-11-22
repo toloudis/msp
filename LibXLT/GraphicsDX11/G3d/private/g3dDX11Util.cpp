@@ -43,6 +43,9 @@
 //#include "GraphicsDX11/g3d/g3dHelpersWin.hpp"
 #include "GraphicsDX11/G3d/g3dDrawStyleUtilDX11.hpp"
 #include "GraphicsDX11/G2d/g2dDepthStencilBufferDX11.hpp"
+#ifndef EFF_PLAINSHADERDX11_HPP
+#include "GraphicsDX11/eff/effPlainShaderDX11.hpp"
+#endif
 
 //	The reason a macro is used here (instead of a function, an inline function, or a template inline function)
 //	is that I need the __FILE__ and __LINE__ macros to resolve to useful values
@@ -211,6 +214,12 @@ matShaderEffect* g3dDX11Util::GetEffect(const matMaterial &i_Material)
 matShaderEffect* g3dDX11Util::GetEffect(const std::string& i_effectName)
 {
 	return matShaderMgr::GetSpecialEffect(i_effectName);
+}
+
+fxEffectDX11* g3dDX11Util::GetPlainEffect(const std::string& i_effectName)
+{
+	effPlainShaderDX11* pEffect = dynamic_cast<effPlainShaderDX11*>(GetEffect(i_effectName));
+	return pEffect ? pEffect->GetEffect() : NULL;
 }
 
 //------------------------------------------------------------------------
@@ -552,8 +561,7 @@ void g3dDX11Util::CopyTexToTarget(matTexture* src, g2dRenderTarget* tgt, float p
     UINT uiPass;
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"g3dDX11Util::CopyTexToTarget" );
     
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
+	matShaderEffect* pEffBase = g3dDX11Util::GetEffect("HDRLighting");
 	pEffBase->SetTechnique("SimpleCopy");
     
 	tgt->MakeCurrent();
@@ -583,8 +591,7 @@ void g3dDX11Util::CopyTexToTargetTechnique(matTexture* src, g2dRenderTarget* tgt
     UINT uiPass;
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"g3dDX11Util::CopyTexToTarget" );
     
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
+	matShaderEffect* pEffBase = g3dDX11Util::GetEffect("HDRLighting");
 	pEffBase->SetTechnique(i_Technique.c_str());
     
 	tgt->MakeCurrent();
@@ -689,12 +696,11 @@ void g3dDX11Util::CopyTextureComponent(matTexture* src, g2dRenderTarget* tgt, in
 
 	UINT uiPass;
 
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
-	ID3DX11EffectTechnique* pEffectTechnique = pEffect->GetTechniqueByName("CopyComponent");
+	fxEffectDX11* pEffect = g3dDX11Util::GetPlainEffect("HDRLighting");
+	int technique = pEffect->FindTechnique("CopyComponent");
 
-	pEffect->GetVariableByName("g_nSrcComponent")->AsScalar()->SetInt(i_nSrcComp);
-	pEffect->GetVariableByName("g_nDstComponent")->AsScalar()->SetInt(i_nDstComp);
+	pEffect->SetConstant(pEffect->FindConstant("g_nSrcComponent"), (int)(i_nSrcComp));
+	pEffect->SetConstant(pEffect->FindConstant("g_nDstComponent"), (int)(i_nDstComp));
 
 	tgt->MakeCurrent();
 	int w,h;
@@ -706,11 +712,10 @@ void g3dDX11Util::CopyTextureComponent(matTexture* src, g2dRenderTarget* tgt, in
 
 	g3dBlendStateMgr::SetBlendState(stp_ColorComponent[i_nDstComp]);
 
-	D3DX11_TECHNIQUE_DESC techDesc;
-    pEffectTechnique->GetDesc( &techDesc );
-	for (uiPass = 0; uiPass < techDesc.Passes; ++uiPass)
+    UINT nTechPasses = (UINT)pEffect->GetPassCount(technique);
+	for (uiPass = 0; uiPass < nTechPasses; ++uiPass)
 	{
-		pEffectTechnique->GetPassByIndex(uiPass)->Apply(0, g2dDX11Global::g_pDeviceContext);
+		pEffect->Apply(technique, uiPass, g2dDX11Global::g_pDeviceContext);
 		g2dDX11Global::g_pDeviceContext->PSSetShaderResources(0, 1, &aRes);
 		g3dDX11Util::DrawFullScreenQuad( w, h );
 	}
@@ -728,8 +733,7 @@ bool g3dDX11Util::CopyTextureToDepth( matTexture* src, g2dRenderTarget* tgt, flo
 	UINT uiPass;
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"g3dDX11Util::CopyTextureToDepth" );
 
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
+	fxEffectDX11* pEffect = g3dDX11Util::GetPlainEffect("HDRLighting");
 
 	//disable color writes
 	g3dBlendStateMgr::BlendState bs_Saved;
@@ -740,7 +744,7 @@ bool g3dDX11Util::CopyTextureToDepth( matTexture* src, g2dRenderTarget* tgt, flo
 	g3dDepthStencilStateMgr::GetCurrentDepthStencilState( ds_Saved );
 	g3dDepthStencilStateMgr::SetDepthStencilState( dsp_Test_Write_Always_NS );
 
-	ID3DX11EffectTechnique* pEffectTechnique = pEffect->GetTechniqueByName("DepthCopy");
+	int technique = pEffect->FindTechnique("DepthCopy");
 
 	tgt->MakeCurrent();
 	int w,h;
@@ -750,11 +754,10 @@ bool g3dDX11Util::CopyTextureToDepth( matTexture* src, g2dRenderTarget* tgt, flo
 
 	g3dRasterizerStateMgr::SetRasterizerState( D3D11_CULL_NONE, g3dDrawStyleUtilDX11::GetD3DDrawStyle() );
 
-	D3DX11_TECHNIQUE_DESC techDesc;
-    pEffectTechnique->GetDesc( &techDesc );
-	for (uiPass = 0; uiPass < techDesc.Passes; ++uiPass)
+    UINT nTechPasses = (UINT)pEffect->GetPassCount(technique);
+	for (uiPass = 0; uiPass < nTechPasses; ++uiPass)
 	{
-		pEffectTechnique->GetPassByIndex(uiPass)->Apply(0, g2dDX11Global::g_pDeviceContext);
+		pEffect->Apply(technique, uiPass, g2dDX11Global::g_pDeviceContext);
 		g2dDX11Global::g_pDeviceContext->PSSetShaderResources(0, 1, &aRes);
 		g3dDX11Util::DrawFullScreenQuad( w, h, pixOffsetX, pixOffsetY );
 	}
@@ -782,8 +785,7 @@ bool g3dDX11Util::CopyDepth( matRenderTargetTexture* src, g2dRenderTarget* tgt, 
 
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"g3dDX11Util::CopyDepth" );
 
-	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("HDRLighting.fx");
-	ID3DX11Effect* pEffect = pEffBase->GetD3DXEffect();
+	fxEffectDX11* pEffect = g3dDX11Util::GetPlainEffect("HDRLighting");
 
 	//disable color writes
 	g3dBlendStateMgr::BlendState bs_Saved;
@@ -794,16 +796,16 @@ bool g3dDX11Util::CopyDepth( matRenderTargetTexture* src, g2dRenderTarget* tgt, 
 	g3dDepthStencilStateMgr::GetCurrentDepthStencilState( ds_Saved );
 	g3dDepthStencilStateMgr::SetDepthStencilState( dsp_Test_Write_Always_NS );
 
-	ID3DX11EffectTechnique* pEffectTechnique;
+	int technique = -1;
 	UINT Slot = 0;
 	if( pDS->GetMultisampleCount() > 1 )	//has multisampling
 	{
-		pEffectTechnique = pEffect->GetTechniqueByName("DepthCopyMS");
+		technique = pEffect->FindTechnique("DepthCopyMS");
 		Slot = 8;
 	}
 	else
 	{
-		pEffectTechnique = pEffect->GetTechniqueByName("DepthCopy");
+		technique = pEffect->FindTechnique("DepthCopy");
 	}
 
 	tgt->MakeCurrent();
@@ -814,11 +816,10 @@ bool g3dDX11Util::CopyDepth( matRenderTargetTexture* src, g2dRenderTarget* tgt, 
 
 	g3dRasterizerStateMgr::SetRasterizerState( D3D11_CULL_NONE, g3dDrawStyleUtilDX11::GetD3DDrawStyle() );
 
-	D3DX11_TECHNIQUE_DESC techDesc;
-	pEffectTechnique->GetDesc( &techDesc );
-	for (uiPass = 0; uiPass < techDesc.Passes; ++uiPass)
+	UINT nTechPasses = (UINT)pEffect->GetPassCount(technique);
+	for (uiPass = 0; uiPass < nTechPasses; ++uiPass)
 	{
-		pEffectTechnique->GetPassByIndex(uiPass)->Apply(0, g2dDX11Global::g_pDeviceContext);
+		pEffect->Apply(technique, uiPass, g2dDX11Global::g_pDeviceContext);
 		g2dDX11Global::g_pDeviceContext->PSSetShaderResources( Slot, 1, &aRes);
 		g3dDX11Util::DrawFullScreenQuad( w, h, pixOffsetX, pixOffsetY );
 	}
@@ -1048,15 +1049,14 @@ void g3dDX11Util::BlendBuffers(g2dRenderTarget* i_pRenderTarget, matTexture* i_p
 
 	const g3dPrefs::g3dRenderPrefs& p = g3dPrefs::CurrentPrefs();
 
-	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)matShaderMgr::GetSpecialEffect(("HDRLighting.fx"));
-	ID3DX11Effect* pEffect = i_pEffect->GetD3DXEffect();
+	fxEffectDX11* pEffect = g3dDX11Util::GetPlainEffect("HDRLighting");
 
-	ID3DX11EffectTechnique* pTechnique = pEffect->GetTechniqueByName("ScaledCopy");
+	int technique = pEffect->FindTechnique("ScaledCopy");
 
-	pEffect->GetVariableByName("g_scaledCopyFactor")->AsScalar()->SetFloat(i_Intensity);
+	pEffect->SetConstant(pEffect->FindConstant("g_scaledCopyFactor"), (float)(i_Intensity));
 
 	maVector4d viewport = maVector4d(i_Top,i_Bottom,i_Left,i_Right);
-	pEffect->GetVariableByName("g_scaledCopyUVs")->AsVector()->SetFloatVector( viewport.Ptr() );
+	pEffect->SetFloatVector(pEffect->FindConstant("g_scaledCopyUVs"), viewport.Ptr());
 
 	g3dRasterizerStateMgr::SetRasterizerState( D3D11_CULL_NONE, g3dDrawStyleUtilDX11::GetD3DDrawStyle() );
 
@@ -1071,8 +1071,7 @@ void g3dDX11Util::BlendBuffers(g2dRenderTarget* i_pRenderTarget, matTexture* i_p
 
 	g3dBlendStateMgr::SetBlendState(st_Blend);
 
-	ID3DX11EffectPass* pPass = pTechnique->GetPassByIndex(0);
-	pPass->Apply(0, g2dDX11Global::g_pDeviceContext);
+	pEffect->Apply(technique, 0, g2dDX11Global::g_pDeviceContext);
 	g2dDX11Global::g_pDeviceContext->PSSetShaderResources( 0, 1, &pResView );
 	g3dDX11Util::DrawFullScreenQuad( w,h );
 

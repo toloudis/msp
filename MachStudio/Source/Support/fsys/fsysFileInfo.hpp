@@ -11,9 +11,7 @@
 #endif
 #define FSYS_FILEINFO_HPP
 
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
+#include <string>
 
 #ifndef FS_LOCATOR_HPP
 #include "Core/fs/fsLocator.hpp"
@@ -31,11 +29,11 @@ public:
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	inline void SetFilename( const itString& i_Filename );
+	inline void SetFilename( const std::string& i_Filename );
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	inline const itString& GetFilename() const;
+	inline const std::string& GetFilename() const;
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -62,21 +60,21 @@ public:
 	bool operator <=(const fsysFileInfo& i_Item) const;
 
 private:
-	itString	m_Filename;
+	std::string	m_Filename;
 	fsLocator	m_FilePath;
 };
 
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-inline void fsysFileInfo::SetFilename( const itString& i_Filename )
+inline void fsysFileInfo::SetFilename( const std::string& i_Filename )
 {
 	m_Filename = i_Filename;
 }
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------
-inline const itString& fsysFileInfo::GetFilename() const
+inline const std::string& fsysFileInfo::GetFilename() const
 {
 	return m_Filename;
 }

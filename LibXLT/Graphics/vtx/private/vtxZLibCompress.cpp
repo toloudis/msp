@@ -7,6 +7,9 @@
 **	Copyright(C) 2009 - All Rights Reserved
 \****************************************************************************/
 #include "Graphics/vtx/private/vtxZLibCompress.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Core/ch/chReader.hpp"
 #include "Core/ch/chWriter.hpp"

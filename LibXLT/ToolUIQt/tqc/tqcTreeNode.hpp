@@ -1,13 +1,10 @@
 /*****************************************************************************
 **	tqcTreeNode.hpp
 **
-**	tqcTreeNode class is used to describe tree data structure to the
-**	tqcTreeView class. Users of the tree control should create a
-**	tree structure from derivations fo this class and then these nodes
-**	will be given to the caller in callbacks.
+**		Node of data shown in a tqcTreeView
 **
 **	StudioGPU
-**	Copyright(C) 2010 - All Rights Reserved
+**	Copyright(C) 2009 - All Rights Reserved
 \****************************************************************************/
 #ifdef TQC_TREENODE_HPP
 #error tqcTreeNode.hpp multiply included
@@ -20,64 +17,47 @@
 
 #ifndef ENV_BOOST_HPP
 #include "Core/Env/envBoost.hpp"
-#endif 
+#endif
 
+#ifdef USE_QT
 
-#ifdef QT_FINISH_PORT
-
-//----------------------------------------------------------------------------
-//----------------------------------------------------------------------------
 #include <vector>
 
-
-//------------------------------------------------------------------------
-// The tree node structure should be given to the tree view control
-// by constructing a structure of these TreeNode classes and then
-// giving the roots to the control.
-//------------------------------------------------------------------------
+//============================================================================
+//============================================================================
 class tqcTreeNode
 {
 public:
-	//--------------------------------------------------------------------
-	// Return the string to display for this item in the tree view
-	//--------------------------------------------------------------------
-	virtual wxString GetDisplayString() const = 0;
+	virtual ~tqcTreeNode() {}
 
 	//--------------------------------------------------------------------
-	// Should this item have a checkbox?
+	// Text shown for the node
+	//--------------------------------------------------------------------
+	virtual QString GetDisplayString() const = 0;
+
+	//--------------------------------------------------------------------
+	// Checkable nodes show the checked state images; other nodes show
+	// the state image given by GetStateIndex (0 for none).
 	//--------------------------------------------------------------------
 	virtual bool IsCheckable() const { return true; }
-
-	//--------------------------------------------------------------------
-	// For nodes that are not checkable, use this function to set the
-	// state image index to use. A return value of "0" means "no checkbox".
-	//--------------------------------------------------------------------
 	virtual int GetStateIndex() const { return 0; }
 
 	//--------------------------------------------------------------------
-	// Indepenedent of the checkbox, use this function to set the
-	// image index to use. A return value of "-1" means "use no image".
+	// Index into the tree's image list, -1 for no image
 	//--------------------------------------------------------------------
 	virtual int GetImageIndex() const { return -1; }
 
 	//--------------------------------------------------------------------
-	// Initial checked state of this item
 	//--------------------------------------------------------------------
 	virtual bool IsChecked() const = 0;
-
-	//--------------------------------------------------------------------
-	// Should the children of this mode be sorted alphabetically?
-	//--------------------------------------------------------------------
 	virtual bool ShouldSortChildren() const { return true; }
 
 	//--------------------------------------------------------------------
-	// Convenience function for adding a new child tree node
 	//--------------------------------------------------------------------
 	void AddChild(shared_ptr<tqcTreeNode> i_Node)
 		{ m_Children.push_back(i_Node); }
 
 	std::vector< shared_ptr<tqcTreeNode> > m_Children;
 };
-
 
 #endif // USE_QT

@@ -11,7 +11,6 @@
 
 #include "Input/in/inGamepad.hpp"
 
-#include "Input/in/private/inGamepadPAC.hpp"
 #include "Core/ma/maConstants.hpp"
 
 //========================================================================
@@ -25,8 +24,8 @@
 //	axes will be unable to return data. For this reason, deadzone will be 
 //	truncated to the range 0-49% and saturation to 51-100%
 //========================================================================
-inGamepad::inGamepad(int i_Range, float i_DeadZone, float i_Saturation, inGamepadPAC* i_PAC)
- : m_pPAC(i_PAC)
+inGamepad::inGamepad(int i_Range, float i_DeadZone, float i_Saturation, inGamepadSource* i_pSource)
+ : m_pSource(i_pSource)
 {
 //	m_DigitalDir.resize(e_NumSticks);
 //	m_Dir.resize(e_NumSticks);
@@ -46,8 +45,7 @@ inGamepad::inGamepad(int i_Range, float i_DeadZone, float i_Saturation, inGamepa
 //========================================================================
 inGamepad::~inGamepad()
 {
-	if (m_pPAC != NULL)
-		delete m_pPAC;
+	delete m_pSource;
 }
 
 //========================================================================
@@ -75,7 +73,7 @@ void inGamepad::Think()
 		m_Z[i] = 0;
 	}
 
-	m_pPAC->Think(	e_NumSticks,
+	m_pSource->Think(	e_NumSticks,
 					e_PadBufferSize,
 					m_Dir, 
 					m_AnalogPressure, 

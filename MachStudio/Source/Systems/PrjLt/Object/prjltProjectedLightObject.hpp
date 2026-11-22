@@ -15,6 +15,9 @@
 #ifndef PRJLT_DATA_HPP
 #include "Systems/PrjLt/Data/prjltData.hpp"
 #endif
+#ifndef CMM_SOURCESTATE_HPP
+#include "Systems/Common/Object/cmmSourceState.hpp"
+#endif
 #ifndef MNM_OBJECT_HPP
 #include "Support/mnm/mnmObject.hpp"
 #endif
@@ -79,7 +82,8 @@ class prjltProjectedLightObject : public mnmObject,
 									public cmmFalloffAspect,
 									public icnIconScaleInterest,
 									public ltstIsolatable,
-									public xfrmTransformNodeCallback
+									public xfrmTransformNodeCallback,
+									public cmmSourceState
 {
 	public:
 		//------------------------------------------------------------------------
@@ -369,7 +373,7 @@ class prjltProjectedLightObject : public mnmObject,
 		//----------------------------------------------------------------------------
 		// Find the object that matches the pick code from an earlier pick render.
 		//----------------------------------------------------------------------------
-		virtual bool MatchPickCode(envType::UInt32 i_PickCode);
+		virtual bool MatchPickCode(uint32_t i_PickCode);
 
 		//--------------------------------------------------------------------
 		//	Renderable sets whether the icon is visible

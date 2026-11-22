@@ -13,6 +13,9 @@
 #ifndef DYN_CONTROLDATA_HPP
 #include "Support/dyn/dynControlData.hpp"
 #endif
+#ifndef MA_MATRIX4X4_HPP
+#include "Core/ma/maMatrix4x4.hpp"
+#endif
 #ifndef PRTY_BOOLEAN_HPP
 #include "Core/prty/prtyBoolean.hpp"
 #endif
@@ -38,6 +41,7 @@
 #include "Core/prty/prtyVector3d.hpp"
 #endif
 
+#include <string>
 #include <vector>
 
 
@@ -69,6 +73,12 @@ public:
 	chtrData& operator=(const chtrData& i_Data);
 
 	//------------------------------------------------------------------------
+	// Apply i_Matrix to its placement, without undo (what parenting does to
+	// keep the world pose)
+	//------------------------------------------------------------------------
+	void ApplyTransformation(const maMatrix4x4& i_Matrix);
+
+	//------------------------------------------------------------------------
 	//	data
 	//------------------------------------------------------------------------
 	prtyBoolean				m_bEditorVisible;
@@ -81,4 +91,7 @@ public:
 	prtyPoint3d				m_PivotPoint;
 	prtyVector3d			m_PivotCompensation;
 	prtyBoolean				m_bLockedMaterials;
+	std::string				m_SourceIdentity;	// the part of m_Filename this character
+												// is (a scene file's node, iscnObjectDesc::m_Identity);
+												// empty: the whole file
 };

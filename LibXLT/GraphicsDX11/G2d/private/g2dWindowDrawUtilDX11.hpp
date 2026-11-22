@@ -21,11 +21,11 @@
 #ifndef MA_FLOATRGBA_HPP
 #include "Core/ma/maFloatRGBA.hpp"
 #endif
+#include <string>
 
 
 //============================================================================
 //============================================================================
-class itString;
 class g2dImage;
 class g2dRGBColor;
 
@@ -66,7 +66,7 @@ namespace g2dWindowDrawUtilDX11
 	void DrawText(	int i_X,
 					int i_Y,
 					g2dFontHandle i_Font,
-					const itString& i_Text,
+					const std::string& i_Text,
 					const g2dRGBColor& i_Color);
 
 	//------------------------------------------------------------------------

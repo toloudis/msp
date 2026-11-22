@@ -40,7 +40,7 @@ void EnumerateFiles(const fsLocator& i_Locator,
 					bool i_bSearchSubdirectories = false);
 void EnumerateFiles(const fsLocator& i_Locator, 
 					fsFileEnum::EnumTarget& o_Target,
-					const std::vector<itString> &i_SubStrings,
+					const std::vector<std::string> &i_SubStrings,
 					bool i_bSearchSubdirectories = false);
 
 //------------------------------------------------------------------------
@@ -52,7 +52,7 @@ void EnumerateFiles(const fsLocator& i_Locator,
 					bool i_bSearchSubdirectories = false);
 void EnumerateFiles(const fsLocator& i_Locator, 
 					fsFileEnum::fsFileList& o_FileList,
-					const std::vector<itString> &i_SubStrings,
+					const std::vector<std::string> &i_SubStrings,
 					bool i_bSearchSubdirectories = false);
 
 //------------------------------------------------------------------------

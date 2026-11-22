@@ -105,7 +105,7 @@ void mtrlSelectInterest::RemovedFromSelection( sel3dObject* i_pSelObj )
 // with the GPU pick code given. Returns NULL if no material selected.
 //--------------------------------------------------------------------
 sel3dObject* mtrlSelectInterest::GetPartFromPickCode(sel3dObject *i_pPicked,
-													envType::UInt32 i_PickCode)
+													uint32_t i_PickCode)
 {
 	if (mtrlScriptObject *pMatObject = sel3dCastUtil::CastPickObject<mtrlScriptObject>(i_pPicked))
 	{
@@ -134,7 +134,7 @@ sel3dObject* mtrlSelectInterest::GetPartFromPickCode(sel3dObject *i_pPicked,
 //	object and set the selected material index to match.
 //--------------------------------------------------------------------
 bool mtrlSelectInterest::SelectFromPickCode(sel3dObject *i_pPicked,
-											envType::UInt32 i_PickCode,
+											uint32_t i_PickCode,
 											bool i_bAppendSelection)
 {
 	if (sel3dObject *pMaterialObj = mtrlSelectInterest::GetPartFromPickCode(i_pPicked, i_PickCode))

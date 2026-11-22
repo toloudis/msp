@@ -21,6 +21,9 @@
 #include "Graphics/G3d/g3dFragment.hpp"
 #include "GraphicsDX11/G3d/g3dSceneGlobal.hpp"
 #include "GraphicsDX11/G3d/g3dDX11TextureUtil.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 static bool s_bUseSolidHairZFill = false;
 
@@ -41,13 +44,13 @@ shdwPassZFill::shdwPassZFill(bool i_writeAlpha, bool i_bDrawTransparent )
 	if (!l_ZFillMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/DepthMap.fx"), matShaderMgr::GetSpecialEffect("DepthMap.fx"));
+		p->SetShaderName(std::string("Special/DepthMap.fx"), matShaderMgr::GetSpecialEffect("DepthMap.fx"));
 		l_ZFillMat.SetShaderParams(p);
 	}
 	if (!l_HairMat.GetShaderParams())
 	{
 		shared_ptr<effShaderParams> p(new effShaderParams());
-		p->SetShaderName(itString("Special/HairDefault.fx"), matShaderMgr::GetSpecialEffect("HairDefault.fx"));
+		p->SetShaderName(std::string("Special/HairDefault.fx"), matShaderMgr::GetSpecialEffect("HairDefault.fx"));
 		l_HairMat.SetShaderParams(p);
 	}
 }
@@ -58,6 +61,7 @@ shdwPassZFill::~shdwPassZFill()
 
 int shdwPassZFill::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassZFill");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassZFill::Render" );
 
 	m_stats.Reset();
@@ -202,7 +206,7 @@ int shdwPassZFill::RenderNode(const sNodePlusState& i_Node, g3dRenderStateTraver
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 	
 	effShaderBaseDX11* pEffBase = (effShaderBaseDX11*)g3dDX11Util::GetEffect("DepthMap.fx");
-	ID3DX11Effect* pEffectDX = pEffBase->GetD3DXEffect();
+	fxEffect* pEffectDX = pEffBase->GetFxEffect();
 	pEffectDX->GetVariableByName("alphaValue")->AsScalar()->SetFloat(i_OverWriteAlpha);
 
 	// e_Environment is a different type of ambient pass that is ambient-only.
@@ -266,7 +270,7 @@ int shdwPassZFill::RenderHairNode(const sNodePlusState& i_Node)
 	const matMaterial* pMaterial = &l_HairMat;
 	matShaderEffect* pEffect = matShaderMgr::GetEffect(*pMaterial);
 	effShaderBaseDX11* i_pEffect = (effShaderBaseDX11*)pEffect;
-	ID3DX11Effect* pD3DEffect = i_pEffect->GetD3DXEffect();
+	fxEffect* pD3DEffect = i_pEffect->GetFxEffect();
 
 	g3dDrawStyleUtilDX11::SetDrawStyle(i_Node.m_drawStyle);
 

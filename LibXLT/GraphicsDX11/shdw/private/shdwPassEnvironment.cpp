@@ -9,6 +9,9 @@
 #include "GraphicsDX11/g3d/g3dDX11Util.hpp"
 #include "GraphicsDX11/g3d/g3dDrawStyleUtilDX11.hpp"
 #include "GraphicsDX11/g3d/g3dSceneRenderUtil.hpp"
+#ifndef G3D_PROFILER_HPP
+#include "Graphics/G3d/g3dProfiler.hpp"
+#endif
 
 namespace
 {
@@ -44,6 +47,7 @@ shdwPassEnvironment::~shdwPassEnvironment()
 
 int shdwPassEnvironment::Render(float i_time)
 {
+	G3D_PROFILE_SCOPE("PassEnvironment");
 	D3DPERF_BeginEvent( D3DCOLOR_RGBA(255,0,0,255), L"shdwPassEnvironment::Render" );
 	m_stats.Reset();
 

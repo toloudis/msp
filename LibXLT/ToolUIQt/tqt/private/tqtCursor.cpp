@@ -1,24 +1,25 @@
 /****************************************************************************\
 **	tqtCursor.cpp
 **
-**	class to invloke wxCursor
-**	
+**	class to invoke the Qt wait cursor
+**
 **	StudioGPU
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
-
 #include "ToolUIQt/tqt/tqtCursor.hpp"
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 void tqtCursor::SetWaitCursor()
 {
-	wxSetCursor(*wxHOURGLASS_CURSOR);
+	QApplication::setOverrideCursor(Qt::WaitCursor);
 }
 
 void tqtCursor::EndWaitCursor()
 {
-	wxSetCursor(wxNullCursor);
+	// Unwind every wait cursor, like wxSetCursor(wxNullCursor) did.
+	while (QApplication::overrideCursor() != NULL)
+		QApplication::restoreOverrideCursor();
 }
 
 #endif

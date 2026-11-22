@@ -7,6 +7,9 @@
 **	Copyright(C) 2005 - All Rights Reserved
 \****************************************************************************/
 #include "Support/evmt/evmtEnvironmentMgr.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Support/evmt/evmtEnvironment.hpp"
 #include "Support/evmt/evmtEnvironmentInterest.hpp"
@@ -175,7 +178,7 @@ namespace evmtEnvironmentMgr
 	}
 	std::string GetSwlEnvironmentName()
 	{
-		return "mental ray IBL";
+		return "Global Environment";
 	}
 
 	//--------------------------------------------------------------------

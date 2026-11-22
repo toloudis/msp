@@ -9,7 +9,11 @@
 #include "Support/brsh/brshColorDialogUtil.hpp"
 
 #include "Support/brsh/brshPaintBrushMgr.hpp"
+#ifdef MSP_GUI_QT
+#include "Support/brsh/qtGUI/brshColorDialog.hpp"
+#else
 #include "Support/brsh/wxGUI/brshColorDialog.hpp"
+#endif
 #include "Support/brsh/data/brshData.hpp"
 
 #include "Core/prty/prtyObject.hpp"
@@ -18,6 +22,9 @@
 #ifdef USE_WXWIDGETS
 #include "ToolUIWx/twx/twxPaneMgr.hpp"
 #include "ToolUIWx/twx/twxSystem.hpp"
+#elif defined(USE_QT)
+#include "ToolUIQt/tqt/tqtPaneMgr.hpp"
+#include "ToolUIQt/tqt/tqtSystem.hpp"
 #endif
 
 #include "Core/env/envSTLHelpers.hpp"
@@ -47,6 +54,21 @@ namespace brshColorDialogUtil
 		const bool cbAUTO_COLLAPSE = false;
 
 		//pwxFormControlBuilder::BuildForm(pTabPage_Brush, (pDO->GetListContainer()), cbSHOW_CATEGORY, cbAUTO_COLLAPSE );
+		guiDialogTabbedMgr::BuildForm("PaintBrush", "Paint Brush", (pDO->GetListContainer()), cbSHOW_CATEGORY, cbAUTO_COLLAPSE );
+		prtyInterestUtil::AddInterest(std::string("Paint"), brshColorDialogUtil::Show, false);
+#elif defined(USE_QT)
+		/*if (brshColorDialog::Instance == NULL)
+		{
+			brshColorDialog::Instance = new brshColorDialog( tqtSystem::g_pMainForm );
+		}*/
+		guiDialogTabbedMgr::Create("PaintBrush", "Paint");
+		guiDialogTabbedMgr::AddTabPage("PaintBrush", "Paint Brush");
+		//	create the entries for the paint brush tab
+		prtyObject* pDO = brshPaintBrushMgr::GetBrushObject();
+		const bool cbSHOW_CATEGORY = true;
+		const bool cbAUTO_COLLAPSE = false;
+
+		//pqtFormControlBuilder::BuildForm(pTabPage_Brush, (pDO->GetListContainer()), cbSHOW_CATEGORY, cbAUTO_COLLAPSE );
 		guiDialogTabbedMgr::BuildForm("PaintBrush", "Paint Brush", (pDO->GetListContainer()), cbSHOW_CATEGORY, cbAUTO_COLLAPSE );
 		prtyInterestUtil::AddInterest(std::string("Paint"), brshColorDialogUtil::Show, false);
 #endif

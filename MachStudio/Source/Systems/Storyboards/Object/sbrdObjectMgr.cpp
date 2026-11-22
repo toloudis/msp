@@ -9,6 +9,8 @@
 
 #include "Systems/Storyboards/Object/sbrdObjectMgr.hpp"
 
+#include "Core/it/itStringUtil.hpp"
+
 #include "Systems/Storyboards/Timeline/sbrdDriverCreator.hpp"
 #include "Systems/Storyboards/GUI/sbrdGeomList.hpp"
 #include "Systems/Storyboards/Data/sbrdListData.hpp"
@@ -279,7 +281,7 @@ int add_visible_driver(sbrdScriptObject* i_pScriptObject)
 			int i;
 			for (i=0; i< driver_names.m_DriverNames.size(); i++)
 			{
-				if (_stricmp(driver_names.m_DriverNames[i].m_Name.c_str(),"Visible") == 0)
+				if (itStringUtil::CompareNoCase(driver_names.m_DriverNames[i].m_Name, "Visible") == 0)
 				{
 					break;
 				}
@@ -344,7 +346,7 @@ int add_texture_driver(sbrdScriptObject* i_pScriptObject, const itString& i_File
 		int i;
 		for (i=0; i< driver_names.m_DriverNames.size(); i++)
 		{
-			if (_stricmp(driver_names.m_DriverNames[i].m_Name.c_str(),"Animated Texture") == 0)
+			if (itStringUtil::CompareNoCase(driver_names.m_DriverNames[i].m_Name, "Animated Texture") == 0)
 			{
 				break;
 			}
@@ -437,7 +439,7 @@ void add_storyboard_camera()
 			for (i=0; i< driver_names.m_DriverNames.size(); i++)
 			{
 				std::string dname = driver_names.m_DriverNames[i].m_Name;
-				if (_stricmp(dname.c_str(),"Static Position") == 0)
+				if (itStringUtil::CompareNoCase(dname, "Static Position") == 0)
 					break;
 			}
 
@@ -460,7 +462,7 @@ void add_storyboard_camera()
 			for (int i=0; i< driver_names.m_DriverNames.size(); i++)
 			{
 				std::string dname = driver_names.m_DriverNames[i].m_Name;
-				if (_stricmp(dname.c_str(),"Static Target") == 0)
+				if (itStringUtil::CompareNoCase(dname, "Static Target") == 0)
 					break;
 			}
 

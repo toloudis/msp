@@ -66,9 +66,6 @@
     <ClCompile Include="Object\prjltIconSpot.cpp">
       <Filter>Object</Filter>
     </ClCompile>
-    <ClCompile Include="Object\prjltMRayExportInterest.cpp">
-      <Filter>Object</Filter>
-    </ClCompile>
     <ClCompile Include="Object\prjltObjectMgr.cpp">
       <Filter>Object</Filter>
     </ClCompile>
@@ -142,9 +139,6 @@
       <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="Object\prjltIconSpot.hpp">
-      <Filter>Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\prjltMRayExportInterest.hpp">
       <Filter>Object</Filter>
     </ClInclude>
     <ClInclude Include="Object\prjltObjectMgr.hpp">

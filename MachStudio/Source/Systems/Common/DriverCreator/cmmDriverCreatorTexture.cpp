@@ -8,6 +8,10 @@
 \****************************************************************************/
 #include "Systems/Common/DriverCreator/cmmDriverCreatorTexture.hpp"
 
+#ifndef ENV_STRING_HPP
+#include "Core/env/envString.hpp"
+#endif
+
 #include "Support/tmln/tmlnChannelFilePath.hpp"
 #include "Support/tmln/tmlnChannelTextureFileName.hpp"
 #include "Support/tmln/tmlnCreator.hpp"
@@ -222,7 +226,7 @@ tmlnDriver* cmmDriverCreatorTexture::CreateDriverByName( const char* i_DriverNam
 	std::string texlist_name = get_texlist_name(i_ChannelName);
 //	std::string connectchannel_name = get_connectchannel_name(i_ChannelName);
 
-	if (!::_stricmp(i_DriverName, key_name.c_str()))
+	if (envString::CompareNoCase(i_DriverName, key_name) == 0)
 	{
 		const chDefs::Name c_XXXK = make_key_chunk_name( i_Code );
 		tmlnDriverFilePath * pDriver = new tmlnDriverFilePath( io_Channel, c_XXXK );
@@ -232,7 +236,7 @@ tmlnDriver* cmmDriverCreatorTexture::CreateDriverByName( const char* i_DriverNam
 		io_Channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (!::_stricmp(i_DriverName, texlist_name.c_str()))
+	else if (envString::CompareNoCase(i_DriverName, texlist_name) == 0)
 	{
 		const chDefs::Name c_XXAX = make_texlist_chunk_name( i_Code );
 		tmlnDriverAnimatedFilePath * pDriver = new tmlnDriverAnimatedFilePath( io_Channel, c_XXAX );
@@ -242,7 +246,7 @@ tmlnDriver* cmmDriverCreatorTexture::CreateDriverByName( const char* i_DriverNam
 		io_Channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	//else if (!::_stricmp(i_DriverName, connectchannel_name.c_str()))
+	//else if (envString::CompareNoCase(i_DriverName, connectchannel_name) == 0)
 	//{
 	//	const chDefs::Name c_XXCZ = make_connectchannel_chunk_name( i_Code );
 	//	tmlnDriverConnectChannelFilePath * pDriver = new tmlnDriverConnectChannelFilePath( io_Channel, c_XXCZ );
@@ -272,7 +276,7 @@ tmlnDriver* cmmDriverCreatorTexture::CreateDriverByName( const char* i_DriverNam
 	std::string texlist_name = get_texname_texlist_name(i_ChannelName);
 //	std::string connectchannel_name = get_connectchannel_name(i_ChannelName);
 
-	if (!::_stricmp(i_DriverName, key_name.c_str()))
+	if (envString::CompareNoCase(i_DriverName, key_name) == 0)
 	{
 		const chDefs::Name c_XXFK = make_tex_key_chunk_name( i_Code );
 		tmlnDriverTextureFileName * pDriver = new tmlnDriverTextureFileName( io_Channel, c_XXFK );
@@ -282,7 +286,7 @@ tmlnDriver* cmmDriverCreatorTexture::CreateDriverByName( const char* i_DriverNam
 		io_Channel.AddDriver( pDriver );
 		return pDriver;
 	}
-	else if (!::_stricmp(i_DriverName, texlist_name.c_str()))
+	else if (envString::CompareNoCase(i_DriverName, texlist_name) == 0)
 	{
 		const chDefs::Name c_XXAK = make_texname_texlist_chunk_name( i_Code );
 		tmlnDriverAnimatedTextureFileName * pDriver = new tmlnDriverAnimatedTextureFileName( io_Channel, c_XXAK );

@@ -1,0 +1,300 @@
+name: Windows build
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  # Builds the vcpkg packages of the repository's vcpkg.json once, Debug and
+  # Release (the x64-windows triplet builds both), into vcpkg's binary
+  # cache, before the jobs that use them start. Those jobs only restore the
+  # cache: their "vcpkg install" unpacks the packages instead of building
+  # them, and the cache is saved once, here, instead of by whichever of
+  # them finishes first. When the manifest changes, the newest older cache
+  # is restored and only what changed is built.
+  vcpkg-packages:
+    runs-on: windows-latest
+    env:
+      VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}\vcpkg-binary-cache
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore vcpkg binary cache
+        id: vcpkg-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
+          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json') }}
+          restore-keys: vcpkg-${{ runner.os }}-
+
+      - name: Build vcpkg packages
+        if: ${{ steps.vcpkg-cache.outputs.cache-hit != 'true' }}
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path $env:VCPKG_DEFAULT_BINARY_CACHE | Out-Null
+          & "$env:VCPKG_INSTALLATION_ROOT\vcpkg.exe" install --triplet x64-windows
+          if ($LASTEXITCODE -ne 0) { throw "vcpkg install failed" }
+
+      - name: Save vcpkg binary cache
+        if: ${{ steps.vcpkg-cache.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
+          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json') }}
+
+  # Compiles every entry point of the shaders converted from Effects (.fx)
+  # to plain HLSL, one entry point at a time: as SM 5 with fxc (what the DX11
+  # renderer uses), as SM 6 with dxc (for a future DX12 port), and as SPIR-V
+  # with GraphicsVulkan's options. GraphicsVulkan's copy of the shaders is
+  # identical to GraphicsDX11's (GraphicsTests checks that), so the fxc and
+  # dxc steps read GraphicsDX11's.
+  converted-shaders:
+    needs: vcpkg-packages
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Find shader compilers and converted shaders
+        shell: pwsh
+        run: |
+          $bin = "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64"
+          foreach ($tool in "fxc", "dxc") {
+            $exe = Get-ChildItem "$bin\$tool.exe" | Sort-Object FullName -Descending | Select-Object -First 1
+            if (-not $exe) { throw "$tool.exe not found in the Windows SDK" }
+            "$($tool.ToUpper())=$($exe.FullName)" >> $env:GITHUB_ENV
+          }
+
+      - name: Compile converted shaders as SM 5 (fxc)
+        shell: pwsh
+        run: python Tools/fx2hlsl/compile_check.py --compiler fxc --exe $env:FXC --verbose (Get-ChildItem -Recurse -Filter *.effect.json LibXLT/GraphicsDX11).FullName
+
+      - name: Compile converted shaders as SM 6 (dxc)
+        if: ${{ !cancelled() }}
+        shell: pwsh
+        run: python Tools/fx2hlsl/compile_check.py --compiler dxc --exe $env:DXC --verbose (Get-ChildItem -Recurse -Filter *.effect.json LibXLT/GraphicsDX11).FullName
+
+      # The Windows SDK's dxc has no SPIR-V backend: use the one GraphicsVulkan
+      # builds with, from the repository's vcpkg manifest (same baseline, same
+      # version), unpacked from the binary cache vcpkg-packages saved.
+      - name: Restore vcpkg binary cache
+        if: ${{ !cancelled() }}
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ github.workspace }}\vcpkg-binary-cache
+          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json') }}
+          fail-on-cache-miss: true
+
+      - name: Install GraphicsVulkan's DXC (vcpkg)
+        if: ${{ !cancelled() }}
+        shell: pwsh
+        env:
+          VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}\vcpkg-binary-cache
+        run: |
+          New-Item -ItemType Directory -Force -Path $env:VCPKG_DEFAULT_BINARY_CACHE | Out-Null
+          & "$env:VCPKG_INSTALLATION_ROOT\vcpkg.exe" install --triplet x64-windows
+          if ($LASTEXITCODE -ne 0) { throw "vcpkg install failed" }
+          "VKDXC=$env:GITHUB_WORKSPACE\vcpkg_installed\x64-windows\tools\directx-dxc\dxc.exe" >> $env:GITHUB_ENV
+
+      - name: Compile GraphicsVulkan's shaders as SPIR-V (dxc)
+        if: ${{ !cancelled() }}
+        shell: pwsh
+        # the hair files through their Vulkan-only wrappers (ProcessIsolineTessFactors)
+        run: python Tools/fx2hlsl/compile_check.py --compiler dxc --exe $env:VKDXC --spirv --vulkan-only-dir LibXLT/GraphicsVulkan/Eff/private/ShadersVk --verbose (Get-ChildItem -Recurse -Filter *.effect.json LibXLT/GraphicsVulkan/Eff).FullName
+
+  # Unit tests of Tools/gfxcompare, the tool that renders a scene twice
+  # with RenderNode and compares frames and timings (no GPU needed here).
+  gfxcompare-tests:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install gfxcompare requirements
+        shell: pwsh
+        run: python -m pip install -r Tools/gfxcompare/requirements.txt
+
+      - name: Run gfxcompare tests
+        shell: pwsh
+        run: python -m pytest Tools/gfxcompare/tests -q
+
+  build-mainapp:
+    needs: vcpkg-packages
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # All configurations link the vcpkg packages from the one install
+        # of the repository's vcpkg.json (vcpkg_installed/).
+        # The Wx configurations build the wxWidgets interface (from
+        # 3rdParty/WxWidgets); the Qt ones build the Qt 6 interface, with Qt
+        # installed on the runner by aqtinstall. The RenderNode ones build
+        # the headless command-line renderer (BATCH_MODE), with no GUI
+        # toolkit.
+        configuration: [ Debug Wx, Release Wx, Debug Qt, Release Qt, Debug RenderNode, Release RenderNode ]
+    env:
+      VCPKG_ROOT: C:\vcpkg
+      VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}\vcpkg-binary-cache
+      # Keep in step with the default in LibXLT/ToolUIQt/qt6.props
+      QT_VERSION: 6.9.3
+      QT_ARCH: win64_msvc2022_64
+      QT_ROOT: C:\Qt
+      # GraphicsOptiX compiles its device programs with nvcc (the CUDA
+      # toolkit) against the OptiX headers. Keep CUDA_VERSION in step with
+      # the default in LibXLT/GraphicsOptiX/cuda.props, and OPTIX_VERSION
+      # with the SDK version in LibXLT/GraphicsOptiX/optix.props.
+      CUDA_VERSION: 13.5.0
+      CUDA_ROOT: C:\cuda
+      OPTIX_VERSION: v9.1.0
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      # Only nvcc and the CUDA headers, from NVIDIA's redistributable
+      # archives (see the script); cuda.props finds them through CUDA_PATH
+      - name: Restore CUDA toolkit cache
+        id: cuda-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.CUDA_ROOT }}
+          key: cuda-${{ runner.os }}-${{ env.CUDA_VERSION }}-${{ hashFiles('.github/scripts/install-cuda.ps1') }}
+
+      - name: Install CUDA toolkit ${{ env.CUDA_VERSION }} (nvcc and headers)
+        if: ${{ steps.cuda-cache.outputs.cache-hit != 'true' }}
+        shell: pwsh
+        run: .github/scripts/install-cuda.ps1 -Version $env:CUDA_VERSION -Destination $env:CUDA_ROOT
+
+      - name: Set CUDA_PATH
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "$env:CUDA_ROOT\bin\nvcc.exe")) { throw "nvcc not found in $env:CUDA_ROOT" }
+          "CUDA_PATH=$env:CUDA_ROOT" >> $env:GITHUB_ENV
+
+      # The OptiX headers alone (NVIDIA publishes them on GitHub; the SDK
+      # download needs a developer account). optix.props finds them through
+      # OPTIX_ROOT.
+      - name: Check out the OptiX headers ${{ env.OPTIX_VERSION }}
+        uses: actions/checkout@v4
+        with:
+          repository: NVIDIA/optix-dev
+          ref: ${{ env.OPTIX_VERSION }}
+          path: optix-dev
+
+      - name: Set OPTIX_ROOT
+        shell: pwsh
+        run: |
+          $root = "$env:GITHUB_WORKSPACE\optix-dev"
+          if (-not (Test-Path "$root\include\optix.h")) { throw "OptiX headers not found in $root" }
+          "OPTIX_ROOT=$root" >> $env:GITHUB_ENV
+
+      - name: Restore Qt install cache
+        if: ${{ endsWith(matrix.configuration, 'Qt') }}
+        id: qt-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.QT_ROOT }}\${{ env.QT_VERSION }}
+          key: qt-${{ runner.os }}-${{ env.QT_VERSION }}-${{ env.QT_ARCH }}
+
+      # Installs into C:\Qt\<version>\msvc2022_64. qt6.props finds it through
+      # QTDIR; windeployqt from the same install runs after MainApp links.
+      - name: Install Qt ${{ env.QT_VERSION }} (aqtinstall)
+        if: ${{ endsWith(matrix.configuration, 'Qt') && steps.qt-cache.outputs.cache-hit != 'true' }}
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade "aqtinstall==3.*"
+          python -m aqt install-qt windows desktop $env:QT_VERSION $env:QT_ARCH --outputdir $env:QT_ROOT
+
+      - name: Set QTDIR
+        if: ${{ endsWith(matrix.configuration, 'Qt') }}
+        shell: pwsh
+        run: |
+          $qtdir = Join-Path $env:QT_ROOT "$env:QT_VERSION\msvc2022_64"
+          if (-not (Test-Path "$qtdir\include\QtWidgets\QWidget")) { throw "Qt not found at $qtdir" }
+          "QTDIR=$qtdir" >> $env:GITHUB_ENV
+
+      # Built by vcpkg-packages; the install step below only unpacks them
+      - name: Restore vcpkg binary cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
+          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json') }}
+          fail-on-cache-miss: true
+
+      - name: Integrate vcpkg with MSBuild
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path $env:VCPKG_DEFAULT_BINARY_CACHE | Out-Null
+          & "$env:VCPKG_ROOT\vcpkg.exe" integrate install
+
+      # Every project uses this one install (see Directory.Build.props);
+      # installing it before the build keeps its log in a step of its own.
+      # Every package comes from the binary cache.
+      - name: Install vcpkg packages
+        shell: pwsh
+        run: |
+          & "$env:VCPKG_ROOT\vcpkg.exe" install --triplet x64-windows
+          if ($LASTEXITCODE -ne 0) { throw "vcpkg install failed" }
+
+      # /m builds independent projects in parallel. UseMultiToolTask also
+      # compiles the source files within each project in parallel (none of
+      # the projects set /MP), and EnforceProcessCountAcrossBuilds keeps the
+      # total number of cl.exe processes at the core count.
+      #
+      # The GoogleTest unit tests (UnitTests/) run as soon as they are
+      # built, and MainApp references them, so a failing test fails this
+      # step before MachStudio is built. GraphicsTests is built but not run
+      # (no build runs it; it is run by hand): its tests need GPU
+      # capabilities the runners don't reliably have.
+      - name: Build MainApp and unit tests (${{ matrix.configuration }}|x64)
+        working-directory: MachStudio/Source
+        run: >
+          msbuild MachStudio.sln
+          "/t:MainApp;CoreTests;MainAppTests;ImportExportTests;GraphicsTests"
+          "/p:Configuration=${{ matrix.configuration }}"
+          /p:Platform=x64
+          /m
+          /p:UseMultiToolTask=true
+          /p:EnforceProcessCountAcrossBuilds=true
+          /nologo
+          /v:minimal
+
+      # Each configuration builds into MachStudio/MachStudio-x64-<toolkit>-<Debug|Release>.
+      # The exe loads OpenEXR from its own folder; fail if a build would not
+      # start because the DLL is missing.
+      - name: Check OpenEXR DLL is next to the exe
+        shell: pwsh
+        run: |
+          $suffix = if ("${{ matrix.configuration }}".StartsWith("Debug")) { "_d" } else { "" }
+          $base, $toolkit = "${{ matrix.configuration }}".Split(" ")
+          $dir = "MachStudio/MachStudio-x64-$toolkit-$base"
+          $dll = "$dir/OpenEXR-3_[0-9]$suffix.dll"
+          if (-not (Test-Path $dll)) { throw "$dll is missing" }
+          Get-ChildItem $dir/*.dll | Select-Object -ExpandProperty Name
+
+      # windeployqt copies the Qt DLLs and the platform plugin next to the
+      # exe; without them a Qt build would not start.
+      - name: Check Qt deployment is next to the exe
+        if: ${{ endsWith(matrix.configuration, 'Qt') }}
+        shell: pwsh
+        run: |
+          $suffix = if ("${{ matrix.configuration }}".StartsWith("Debug")) { "d" } else { "" }
+          $base, $toolkit = "${{ matrix.configuration }}".Split(" ")
+          $dir = "MachStudio/MachStudio-x64-$toolkit-$base"
+          foreach ($f in "Qt6Core$suffix.dll", "Qt6Gui$suffix.dll", "Qt6Widgets$suffix.dll", "platforms/qwindows$suffix.dll") {
+            if (-not (Test-Path "$dir/$f")) { throw "$f is missing" }
+          }
+
+      # The Qt application and the RenderNode renderer, Release, as built:
+      # the whole run directory (exe, DLLs, Qt plugins, Data), without the
+      # debug symbols.
+      - name: Upload build
+        if: ${{ matrix.configuration == 'Release Qt' || matrix.configuration == 'Release RenderNode' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: MachStudio-x64-${{ endsWith(matrix.configuration, 'Qt') && 'Qt' || 'RenderNode' }}-Release
+          path: |
+            MachStudio/MachStudio-x64-${{ endsWith(matrix.configuration, 'Qt') && 'Qt' || 'RenderNode' }}-Release/
+            !MachStudio/MachStudio-x64-*-Release/**/*.pdb
+          if-no-files-found: error

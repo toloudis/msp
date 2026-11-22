@@ -34,7 +34,7 @@ namespace
 	//	char strName[64];
 	//	char filename_base[64];
 	//	char *filename;
-	//	strcpy( filename_base, itStringUtil::GetStdString( i_Filename ).c_str() );
+	//	strcpy( filename_base, i_Filename.c_str() );
 	//	filename = strtok( filename_base, "." );
 
 	//	do
@@ -80,7 +80,7 @@ billScriptObject* billObjectCreator::Create(const billScriptData &i_Data)
 			//	set a default name for the object
 			nameString objName;
 			//create_default_name( i_Data.m_BaseData.m_Filename.GetValue(), objName );
-			/*create_default_name( itString("Billboard"), objName );
+			/*create_default_name( std::string("Billboard"), objName );
 			Billboard->SetName( objName );*/
 
 			billOperations::CreateNewObjectName(nameString(), objName);

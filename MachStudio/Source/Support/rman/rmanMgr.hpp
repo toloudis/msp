@@ -149,7 +149,7 @@ namespace rmanMgr
 	// RendermanEntry()
 	//----------------------------------------------------------------------------
 	void RendermanEntry( float i_AspectRatio, camCamera* i_Camera, g3dPrefs::g3dRenderPrefs i_RenderPrefs,
-				    	fsLocator i_FileName, itString i_CurrentScene, int i_Width, int i_Height,
+				    	fsLocator i_FileName, std::string i_CurrentScene, int i_Width, int i_Height,
 						int i_FilterFunc, float i_FilterWidth, int i_CaptureSampling,
 						const rmanOptionsData & i_Options,
 						bool & o_err, std::string & o_err_msg );

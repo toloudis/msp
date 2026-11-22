@@ -12,16 +12,16 @@
 #endif
 #define EFF_GLOW_HPP
 
-#ifndef EFF_SHADERBASEDX11_HPP
-#include "GraphicsDX11/eff/effShaderBaseDX11.hpp"
+#ifndef EFF_PLAINSHADERDX11_HPP
+#include "GraphicsDX11/eff/effPlainShaderDX11.hpp"
 #endif
 
 class matMaterial;
 
-class effGlow : public effShaderBaseDX11 
+class effGlow : public effPlainShaderDX11
 {
 public:
-	effGlow(const fsLocator& i_Directory, ID3DX11Effect* i_pEffect, std::string i_name);
+	effGlow(std::unique_ptr<fxEffectDX11> i_pEffect, std::string i_name);
 
 	virtual effShaderData* CreateData(const matMaterial* i_Mat);
 
@@ -29,10 +29,10 @@ public:
 							   int i_MaterialLayerIndex = 0) const;
 
 protected:
-	ID3DX11EffectShaderResourceVariable* m_hTexture;
-	ID3DX11EffectScalarVariable* m_hGlowAmount;
-	ID3DX11EffectVectorVariable* m_hGlowScale;
-	ID3DX11EffectScalarVariable* m_hGlowSize;
-	ID3DX11EffectScalarVariable* m_hConstantGlow;
-	ID3DX11EffectVectorVariable* m_hSrcSizeInfo;
+	fxEffectDX11::Resource m_hTexture;
+	fxEffectDX11::Constant m_hGlowAmount;
+	fxEffectDX11::Constant m_hGlowScale;
+	fxEffectDX11::Constant m_hGlowSize;
+	fxEffectDX11::Constant m_hConstantGlow;
+	fxEffectDX11::Constant m_hSrcSizeInfo;
 };

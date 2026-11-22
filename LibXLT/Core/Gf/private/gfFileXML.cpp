@@ -7,6 +7,9 @@
 **	Copyright(C) 2008 - All Rights Reserved
 \****************************************************************************/
 #include "Core/gf/gfFileXML.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
 
 #include "Core/gf/gfFileTranslationMgr.hpp"
 #include "Core/gf/gfFileX.hpp"
@@ -22,8 +25,10 @@ namespace
 {
 
 //----------------------------------------------------------------------------
+//	The characters are unsigned: the ctype functions are undefined for
+//	negative values other than EOF (and assert on them in debug builds).
 //----------------------------------------------------------------------------
-inline bool is_whitespace(char i_Ch)
+inline bool is_whitespace(unsigned char i_Ch)
 {
 	// make colon whitespace to make "name:value" pairs easier
 	return (isspace(i_Ch) || (i_Ch == ':'));
@@ -31,7 +36,7 @@ inline bool is_whitespace(char i_Ch)
 
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
-bool should_break(char i_LastChar, char i_ThisChar, char i_NextChar)
+bool should_break(unsigned char i_LastChar, unsigned char i_ThisChar, unsigned char i_NextChar)
 {
 	// alpha breaks unless last char was alpha or period or underscore
 	//if( isalpha(i_ThisChar) || (i_ThisChar == '_') )
@@ -340,7 +345,7 @@ gfFileXML::WriteToken( std::string &i_Token )
 	{
 		for (int i=0; i<len; i++)
 		{
-			if (isspace(i_Token[i]) || (i_Token[i] == '\"') || (i_Token[i] == '\\'))
+			if (isspace(static_cast<unsigned char>(i_Token[i])) || (i_Token[i] == '\"') || (i_Token[i] == '\\'))
 			{
 				bNeedsQuotes = true;
 				break;
@@ -542,7 +547,7 @@ void gfFileXML::WriteFooter()
 //	value is the number actually read into the o_Buffer.  This function
 //	also advances the file pointer.
 //------------------------------------------------------------------------
-int gfFileXML::Read( envType::Int64 i_NumBytes, void* o_Buffer )
+int gfFileXML::Read( int64_t i_NumBytes, void* o_Buffer )
 {
 	return m_FileStream->Read(i_NumBytes, o_Buffer);
 }
@@ -552,7 +557,7 @@ int gfFileXML::Read( envType::Int64 i_NumBytes, void* o_Buffer )
 //	Write writes i_NumBytes from o_Buffer into the file.  The file 
 //	pointer will also be advanced.
 //------------------------------------------------------------------------
-void gfFileXML::Write(envType::Int64 i_NumBytes, const void* i_Buffer)
+void gfFileXML::Write(int64_t i_NumBytes, const void* i_Buffer)
 {
 	DBG_ASSERT(m_FileStream != NULL, "Must have a fsFileStream to write");
 	m_FileStream->Write(i_NumBytes, i_Buffer);

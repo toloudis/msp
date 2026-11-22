@@ -15,7 +15,7 @@
 // Set value into control
 //----------------------------------------------------------------------------
 void pwxInt8_FloatEdit_Converter::SetValueIntoControl(twcFloatEdit* i_pActualControl,
-													 envType::Int8 i_Value)
+													 int8_t i_Value)
 {
 	i_pActualControl->SetFloatValue(i_Value);
 }
@@ -23,9 +23,9 @@ void pwxInt8_FloatEdit_Converter::SetValueIntoControl(twcFloatEdit* i_pActualCon
 //----------------------------------------------------------------------------
 // Get value from control
 //----------------------------------------------------------------------------
-envType::Int8 pwxInt8_FloatEdit_Converter::GetValueFromControl(twcFloatEdit* i_pActualControl)
+int8_t pwxInt8_FloatEdit_Converter::GetValueFromControl(twcFloatEdit* i_pActualControl)
 {
-	return (envType::Int8) i_pActualControl->GetFloatValue();
+	return (int8_t) i_pActualControl->GetFloatValue();
 }
 
 #endif

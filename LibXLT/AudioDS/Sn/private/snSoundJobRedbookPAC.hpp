@@ -60,9 +60,5 @@ class snSoundJobRedbookPAC
 #if ENV_WINDOWS
 	#include "AudioDS/sn/private/snSoundJobRedbookPACWin.hpp"
 #else
-	#if ENV_OS == ENV_XBOXOS
-		#include "AudioDS/sn/private/snSoundJobRedbookPACXbox.hpp"
-	#else
-		#error snSoundJobRedbookPAC not defined for this platform
-	#endif
+	#error snSoundJobRedbookPAC not defined for this platform
 #endif

@@ -12,7 +12,6 @@
 #include "Drivers/FilePath/tmlnDriverFilePathInfo.hpp"
 #include "Drivers/TextureFileName/tmlnDriverTextureFileNameInfo.hpp"
 
-#include "Core/It/itStringUtil.hpp"
 #include "Core/prty/prtyFileChooserUIInfo.hpp"
 
 
@@ -53,7 +52,7 @@ std::string tmlnDriverTextureFileName::GetHoverDescription()
 	std::string desc;
 	desc = tmlnDriver::GetHoverDescription();
 	if (m_Value.GetValue().GetNumNames() > 0)
-		desc += itStringUtil::GetStdString(m_Value.GetValue().GetLastName());
+		desc += m_Value.GetValue().GetLastName();
 
 	return desc;
 }

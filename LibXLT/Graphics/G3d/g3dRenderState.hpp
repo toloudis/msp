@@ -46,7 +46,8 @@ struct g3dAmbientEnvState
 	float m_SpecularAngle;
 	maFloatRGBA m_SpecularColor;
 
-	// Mental ray environmental light setting
+	// Global environment ("swl") override: lights every object with this
+	// environment, and optionally draws it as the background
 	bool m_bEnableSwlEnv;
 	bool m_bEnableSwlEnvBG;
 };
@@ -64,7 +65,6 @@ inline g3dAmbientEnvState::g3dAmbientEnvState()
 	m_SpecularAngle(0),
 	m_DiffuseColor(1,1,1,1),
 	m_SpecularColor(1,1,1,1),
-	// Mental ray environmental light
 	m_bEnableSwlEnv(false),
 	m_bEnableSwlEnvBG(false)
 {

@@ -38,6 +38,10 @@ UndoHistoryDialogBase::UndoHistoryDialogBase( wxWindow* parent, wxWindowID id, c
 	
 	this->SetSizer( bSizer3 );
 	this->Layout();
+	// The default size is in DIPs: scale it for the display's DPI, and
+	// never let the window be smaller than its contents.
+	this->SetSize( FromDIP( size ) );
+	this->SetMinClientSize( this->GetSizer()->GetMinSize() );
 	
 	// Connect Events
 	this->Connect( wxEVT_ACTIVATE, wxActivateEventHandler( UndoHistoryDialogBase::UndoHistoryDialog_OnActivate ) );

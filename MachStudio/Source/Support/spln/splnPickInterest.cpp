@@ -28,7 +28,7 @@ splnPickInterest::~splnPickInterest()
 // Find the object that matches the pick code from an earlier pick render.
 //----------------------------------------------------------------------------
 //virtual 
-pick3dPickObject* splnPickInterest::MatchPickCode(envType::UInt32 i_PickCode) const
+pick3dPickObject* splnPickInterest::MatchPickCode(uint32_t i_PickCode) const
 {
 	return splnCurveSelect::MatchPickCode(i_PickCode);
 }

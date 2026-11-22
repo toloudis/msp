@@ -16,36 +16,30 @@
 #include "ToolUIQt/tqt/tqtWidgets.hpp"
 #endif
 
+#ifndef TQC_EVENT_HPP
+#include "ToolUIQt/tqc/tqcEvent.hpp"
+#endif
 #ifndef MA_FLOATRGBA_HPP
 #include "Core/Ma/maFloatRGBA.hpp"
 #endif 
 
-#ifdef QT_FINISH_PORT
+#ifdef USE_QT
 
 //============================================================================
 //============================================================================
 class tqcColorDialog;
 
 //============================================================================
-// wxEVT_VALUE_CHANGED event : this control throws this event type when the
-//	value in the control has changed. Users should register for this event, 
-//	not for the button press event.
 //============================================================================
-
-//============================================================================
-//============================================================================
-class tqcColorPicker : public wxButton
+class tqcColorPicker : public QPushButton, public tqcValueChangedNotifier
 {
 	public:
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		tqcColorPicker(QWidget* i_pParent, 
-				   QWidgetID i_Id = wxID_ANY,
-				   const wxPoint& pos = wxDefaultPosition, 
-				   const wxSize& size = wxDefaultSize);
+		tqcColorPicker(QWidget* i_pParent);
 
-		//----------------------------------------------------------------------------
-		//----------------------------------------------------------------------------
+		//--------------------------------------------------------------------
+		//--------------------------------------------------------------------
 		~tqcColorPicker();
 
 		//--------------------------------------------------------------------
@@ -57,13 +51,11 @@ class tqcColorPicker : public wxButton
 	private:
 		//--------------------------------------------------------------------
 		//--------------------------------------------------------------------
-		void OnButtonClick(wxCommandEvent& i_Event);
+		void OnButtonClick();
 		void OnColorDialogChange();
 
 		maFloatRGBA m_Value;
-		tqcColorDialog* m_pColorDialog;
-
-    DECLARE_EVENT_TABLE()
+		QPointer<tqcColorDialog> m_pColorDialog;
 };
 
 #endif // USE_QT

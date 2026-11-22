@@ -18,7 +18,7 @@
 //===========================================================================
 namespace
 {
-	itString l_AppTitle("Application");
+	std::string l_AppTitle("Application");
 }
 
 
@@ -29,14 +29,14 @@ namespace
 //---------------------------------------------------------------------------
 //	SetAppTitle()
 //---------------------------------------------------------------------------
-void wuiMainWindow::SetAppTitle( const itString& i_Text )
+void wuiMainWindow::SetAppTitle( const std::string& i_Text )
 {
 	l_AppTitle = i_Text;
 #ifdef USE_WXWIDGETS
 	if (twxSystem::g_pMainForm)
 	{
 		//twxSystem::g_pMainForm->SetTitle(wxString(i_Text, wxConvUTF8));
-		twxSystem::g_pMainForm->SetTitle(i_Text.GetString());
+		twxSystem::g_pMainForm->SetTitle(wxString::FromUTF8(i_Text));
 	}
 #endif
 }
@@ -44,7 +44,7 @@ void wuiMainWindow::SetAppTitle( const itString& i_Text )
 //---------------------------------------------------------------------------
 //	GetAppTitle()
 //---------------------------------------------------------------------------
-itString wuiMainWindow::GetAppTitle()
+std::string wuiMainWindow::GetAppTitle()
 {
 	return l_AppTitle;
 }

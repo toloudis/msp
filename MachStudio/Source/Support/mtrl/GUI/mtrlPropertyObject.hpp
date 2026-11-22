@@ -30,7 +30,7 @@ class mtrlShaderObject;
 class mdlMaterialInfo;
 class prtyCheckBoxUIInfo;
 class prtyComboBoxUIInfo;
-class prtyFileChooserUIInfo;
+class prtyFilePathComboBoxUIInfo;
 class tmlnScriptObject;
 
 //============================================================================

@@ -47,3 +47,13 @@ void  ptltActualOperations::DeleteObject(int i_Index)
 	ptltDialogDataUtil::UpdateListDialog();
 	ptltDocumentChunk::ActiveDataChanged();
 }
+
+//--------------------------------------------------------------------
+//  Set the whole object (values, drivers, channels)
+//--------------------------------------------------------------------
+void ptltActualOperations::SetData(int i_Index, const ptltScriptData& i_Data)
+{
+	ptltObjectMgr::SetScriptData(i_Index, i_Data);
+	ptltDialogDataUtil::UpdateListDialog();
+	ptltDocumentChunk::ActiveDataChanged();
+}

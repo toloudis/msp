@@ -12,9 +12,6 @@
 #endif
 #define CHTR_EXPRESSIONDEF_HPP
 
-#ifndef IT_STRING_HPP
-#include "Core/it/itString.hpp"
-#endif
 #ifndef PRTY_FILENAME_HPP
 #include "Core/prty/prtyFileName.hpp"
 #endif
@@ -43,7 +40,7 @@ public:
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	chtrExpressionDef(const std::string& i_Name, const itString &i_Filename) 
+	chtrExpressionDef(const std::string& i_Name, const std::string &i_Filename) 
 	:	m_Name("Expression Name"), 
 		m_Filename("Expression Animation File")
 	{
@@ -75,7 +72,7 @@ public:
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void AddExpression(const std::string& i_Name, const itString &i_Filename)
+	void AddExpression(const std::string& i_Name, const std::string &i_Filename)
 	{
 		m_Expressions.push_back(chtrExpressionDef(i_Name, i_Filename));
 	}

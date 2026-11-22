@@ -22,7 +22,6 @@
 #include "Core/fs/fsFileUtil.hpp"
 #include "Core/fs/fsFileX.hpp"
 #include "Core/fs/fsResourceFinderDir.hpp"
-#include "Core/it/itStringUtil.hpp"
 #include "Core/prty/prtyBoolean.hpp"
 #include "Core/prty/prtyColor.hpp"
 #include "Core/prty/prtyFileName.hpp"
@@ -112,6 +111,20 @@ std::vector<tmlnChannel*>& mtrlShaderObject::Channels()
 const std::vector<tmlnChannel*>& mtrlShaderObject::GetChannels() const
 {
 	return m_Channels;
+}
+
+//------------------------------------------------------------------------
+// The channel of the property with that name
+//------------------------------------------------------------------------
+tmlnChannel* mtrlShaderObject::FindChannel(const std::string& i_MaterialName, const std::string& i_PropertyName) const
+{
+	const std::string channel_name = i_MaterialName + "." + i_PropertyName;
+	for (tmlnChannel* pChannel : m_Channels)
+	{
+		if (pChannel->GetName() == channel_name)
+			return pChannel;
+	}
+	return NULL;
 }
 
 //--------------------------------------------------------------------
@@ -240,7 +253,7 @@ void mtrlShaderObject::PropertyChanged(prtyProperty *i_pProperty, bool i_bDirty)
 //------------------------------------------------------------------------
 // Convenience functions for locating a texture
 //------------------------------------------------------------------------
-fsLocator mtrlShaderObject::LocateTexture(const itString& i_Filename)
+fsLocator mtrlShaderObject::LocateTexture(const std::string& i_Filename)
 {
 	// Construct a fsResourceFinder to use to locate the textures in the object directory
 	const bool bStrict = true; // has to return false if not found

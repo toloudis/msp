@@ -17,6 +17,10 @@
 
 #include <functional>
 #include <list>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
 
 #ifdef USE_WXWIDGETS
 
@@ -105,8 +109,10 @@ class twcTreeView : public wxTreeCtrl
 		// TreeItemIdSet is used to track which nodes are reused and 
 		//	which can be deleted
 		//------------------------------------------------------------------------
-		//typedef std::set<wxTreeItemId> TreeItemIdSet;
-		typedef std::list<wxTreeItemIdValue> TreeItemIdSet;
+		typedef std::vector<wxTreeItemIdValue> TreeItemIdList;
+		typedef std::unordered_set<wxTreeItemIdValue> TreeItemIdSet;
+		// An item's children by their text (the first child with each text)
+		typedef std::unordered_map<std::wstring, wxTreeItemIdValue> ChildrenByText;
 
 		//--------------------------------------------------------------------
 		// private functions
@@ -116,11 +122,11 @@ class twcTreeView : public wxTreeCtrl
 		bool is_mixed_checked(wxTreeItemId i_Node);
 		void set_item_checked(wxTreeItemId i_Node, bool i_bChecked);
 		void check_all_children(wxTreeItemId i_Item, bool i_bNewCheckState);
-		void get_all_tree_items(wxTreeItemId i_Parent, TreeItemIdSet& o_TreeIds);
-		void find_or_create_tree_node(TreeItemIdSet& io_ItemsToDelete,
+		void get_all_tree_items(wxTreeItemId i_Parent, TreeItemIdList& o_TreeIds);
+		void find_or_create_tree_node(TreeItemIdSet& io_ItemsToKeep,
 									   wxTreeItemId i_Parent,
-									   const shared_ptr<twcTreeNode>& i_Node,
-									   bool i_bCreateAlways = false);
+									   ChildrenByText& io_ParentChildren,
+									   const shared_ptr<twcTreeNode>& i_Node);
 		void create_tree_node(wxTreeItemId i_Parent, const shared_ptr<twcTreeNode>& i_Node);
 		int get_item_index(wxTreeItemId i_Node);
 		void update_parent_checked_state(wxTreeItemId i_Parent);

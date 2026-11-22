@@ -8,6 +8,10 @@
 \****************************************************************************/
 
 #include "Core/ch/chXMLWriter.hpp"
+#ifndef DBG_MSG_HPP
+#include "Core/dbg/dbgMsg.hpp"
+#endif
+#include "Core/env/envNumberText.hpp"
 
 #include "Core/fs/fsFilePosSaver.hpp"
 #include "Core/gf/gfFileUtil.hpp"
@@ -218,104 +222,91 @@ void chXMLWriter::FinishChunk()
 //--------------------------------------------------------------------
 //	Write functions - These write the data to the chunk file.
 //--------------------------------------------------------------------
-void chXMLWriter::Write(envType::Int8 i_Val)
+void chXMLWriter::Write(int8_t i_Val)
 {
-
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
-	
-	m_File.Write(l_Buf.length(), l_Buf.c_str());
-	l_bLastWriteHeader = false;
-}
-
-void chXMLWriter::Write(envType::UInt8 i_Val)
-{
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
-	
-	m_File.Write(l_Buf.length(), l_Buf.c_str());
-	l_bLastWriteHeader = false;
-}
-
-void chXMLWriter::Write(envType::Int16 i_Val)
-{
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
-	
-	m_File.Write(l_Buf.length(), l_Buf.c_str());
-	l_bLastWriteHeader = false;
-}
-
-void chXMLWriter::Write(envType::UInt16 i_Val)
-{
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
-	
-	m_File.Write(l_Buf.length(), l_Buf.c_str());
-	l_bLastWriteHeader = false;
-}
-
-void chXMLWriter::Write(envType::Int32 i_Val)
-{
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
-	
-	m_File.Write(l_Buf.length(), l_Buf.c_str());
-	l_bLastWriteHeader = false;
-}
-
-void chXMLWriter::Write(envType::UInt32 i_Val)
-{
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
-	
-	m_File.Write(l_Buf.length(), l_Buf.c_str());
-	l_bLastWriteHeader = false;
-}
-
-void chXMLWriter::Write(envType::Int64 i_Val)
-{
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
-	
-	m_File.Write(l_Buf.length(), l_Buf.c_str());
-	l_bLastWriteHeader = false;
-}
-
-void chXMLWriter::Write(envType::UInt64 i_Val)
-{
-	buf_ss.str("");
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
-	
-	m_File.Write(l_Buf.length(), l_Buf.c_str());
-	l_bLastWriteHeader = false;
-}
-
-void chXMLWriter::Write(envType::Float32 i_Val)
-{
-	buf_ss.str("");
-	buf_ss.setf( 0, std::ios::floatfield );
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
 
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 	l_bLastWriteHeader = false;
 }
 
-void chXMLWriter::Write(envType::Float64 i_Val)
+void chXMLWriter::Write(uint8_t i_Val)
 {
-	buf_ss.str("");
-	buf_ss.setf( 0, std::ios::floatfield );
-	buf_ss << i_Val << " ";
-	l_Buf = buf_ss.str();
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
+
+	m_File.Write(l_Buf.length(), l_Buf.c_str());
+	l_bLastWriteHeader = false;
+}
+
+void chXMLWriter::Write(int16_t i_Val)
+{
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
+
+	m_File.Write(l_Buf.length(), l_Buf.c_str());
+	l_bLastWriteHeader = false;
+}
+
+void chXMLWriter::Write(uint16_t i_Val)
+{
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
+
+	m_File.Write(l_Buf.length(), l_Buf.c_str());
+	l_bLastWriteHeader = false;
+}
+
+void chXMLWriter::Write(int32_t i_Val)
+{
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
+
+	m_File.Write(l_Buf.length(), l_Buf.c_str());
+	l_bLastWriteHeader = false;
+}
+
+void chXMLWriter::Write(uint32_t i_Val)
+{
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
+
+	m_File.Write(l_Buf.length(), l_Buf.c_str());
+	l_bLastWriteHeader = false;
+}
+
+void chXMLWriter::Write(int64_t i_Val)
+{
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
+
+	m_File.Write(l_Buf.length(), l_Buf.c_str());
+	l_bLastWriteHeader = false;
+}
+
+void chXMLWriter::Write(uint64_t i_Val)
+{
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
+
+	m_File.Write(l_Buf.length(), l_Buf.c_str());
+	l_bLastWriteHeader = false;
+}
+
+void chXMLWriter::Write(float i_Val)
+{
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
+
+	m_File.Write(l_Buf.length(), l_Buf.c_str());
+	l_bLastWriteHeader = false;
+}
+
+void chXMLWriter::Write(double i_Val)
+{
+	l_Buf = envNumberText::ToText(i_Val);
+	l_Buf += ' ';
 
 	m_File.Write(l_Buf.length(), l_Buf.c_str());
 	l_bLastWriteHeader = false;
@@ -361,53 +352,6 @@ void chXMLWriter::Write(const char* i_Val, int i_Length)
 	for (int i=0; i<i_Length; i++)
 	{
 		str[i] = i_Val[i];	
-	}
-
-	m_File.WriteToken( str );
-	write_char(m_File, ' ');
-	l_bLastWriteHeader = false;
-}
-
-//--------------------------------------------------------------------
-//	This Write writes a NULL-terminated Unicode character string
-//--------------------------------------------------------------------
-void chXMLWriter::Write(const envType::WChar* i_Val)
-{
-	// convert to ascii, UNICODE shouldn't be in data files
-	// anyway. it should be in gfTextSetFile only.
-	//
-	const envType::WChar *ptr = i_Val;
-	char ch;
-	std::string str;
-	while (*ptr)
-	{
-		ch = (char) (*ptr);
-		DBG_ASSERT((((*ptr) & 0xff00) == 0), "Can't write true unicode into ascii files.");
-		str += ch;
-		ptr++;
-	}
-
-	m_File.WriteToken( str );
-	write_char(m_File, ' ');
-	l_bLastWriteHeader = false;
-}
-
-//--------------------------------------------------------------------
-//	This Write writes a Unicode character string with a length
-//	given by i_Length.
-//--------------------------------------------------------------------
-void chXMLWriter::Write(const envType::WChar* i_Val, int i_Length)
-{	
-	// convert to ascii, UNICODE shouldn't be in data files
-	// anyway. it should be in gfTextSetFile only.
-	//
-	char ch;
-	std::string str;
-	for (int i=0; i<i_Length; i++)
-	{
-		ch = (char) i_Val[i];
-		DBG_ASSERT(((ch & 0xff00) == 0), "Can't write true unicode into ascii files.");
-		str += ch;
 	}
 
 	m_File.WriteToken( str );

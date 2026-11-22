@@ -9,7 +9,7 @@
 #include "Graphics/eff/effOutlineDataParser.hpp"
 
 #include "Core/fs/fsResourceFinder.hpp"
-#include "Core/it/itString.hpp"
+#include <string>
 #include "Graphics/mat/matTextureMgr.hpp"
 
 

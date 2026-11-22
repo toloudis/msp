@@ -11,9 +11,6 @@
 #endif
 #define CPTR_RENDERPROGRESSDIALOGUTIL_HPP
 
-#ifndef IT_STRING_HPP
-#include "Core/It/itString.hpp"
-#endif 
 
 #include <string>
 
@@ -44,22 +41,22 @@ namespace cptrRenderProgressDialogUtil
 	//--------------------------------------------------------------------
 	// Set the current render layer label
 	//--------------------------------------------------------------------
-	void SetRenderLayerProgress( const itString& i_label );
+	void SetRenderLayerProgress( const std::string& i_label );
 
 	//--------------------------------------------------------------------
 	//	set the percentage for scenes
 	//--------------------------------------------------------------------
-	void SetScenesRenderPercentage( float i_percentage, const itString& i_label );
+	void SetScenesRenderPercentage( float i_percentage, const std::string& i_label );
 
 	//--------------------------------------------------------------------
 	//	set the percentage for cameras
 	//--------------------------------------------------------------------
-	void SetCamerasRenderPercentage( float i_percentage, const itString& i_label );
+	void SetCamerasRenderPercentage( float i_percentage, const std::string& i_label );
 
 	//--------------------------------------------------------------------
 	//	set the percentage for camera
 	//--------------------------------------------------------------------
-	void SetCameraRenderPercentage( float i_percentage, const itString& i_label );
+	void SetCameraRenderPercentage( float i_percentage, const std::string& i_label );
 
 	//--------------------------------------------------------------------
 	//	set the time that has elapsed
@@ -69,7 +66,7 @@ namespace cptrRenderProgressDialogUtil
 	//--------------------------------------------------------------------
 	//	set the percentage for scene
 	//--------------------------------------------------------------------
-	void SetSceneLabel( const itString& i_label );
+	void SetSceneLabel( const std::string& i_label );
 
 	//--------------------------------------------------------------------
 	//--------------------------------------------------------------------
